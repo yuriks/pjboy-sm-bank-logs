@@ -1,0 +1,28 @@
+name: Update Banklogs
+on:
+  workflow_dispatch:
+    # Allow manual trigger
+  schedule:
+    # Run daily at a random time
+    - cron: '49 14 * * *'
+jobs:
+  update-banklogs:
+    runs-on: ubuntu-latest
+    permissions:
+      # Give API toke the ability to push commits
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Fetch and unzip logs
+        run: |
+          curl https://patrickjohnston.org/ziplogs.php -o banklogs.zip
+          unzip -ao banklogs.zip \*.asm
+      - name: Commit new changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update logs from website
+          file_pattern: '*.asm'
+          commit_author: Yuri Kunde Schlesner <yuriks@users.noreply.github.com>
