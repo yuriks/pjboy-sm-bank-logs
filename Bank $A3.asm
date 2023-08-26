@@ -6661,8 +6661,8 @@ $A3:CF17 F0 3C       BEQ $3C    [$CF55]
 $A3:CF19 BF 10 78 7E LDA $7E7810,x[$7E:7890]
 $A3:CF1D C9 01 00    CMP #$0001
 $A3:CF20 F0 1A       BEQ $1A    [$CF3C]
-$A3:CF22 AD 3C 0B    LDA $0B3C  [$7E:0B3C]
-$A3:CF25 D0 2E       BNE $2E    [$CF55]
+$A3:CF22 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
+$A3:CF25 D0 2E       BNE $2E    [$CF55]     ;} If [Samus running momentum flag] != 0: go to BRANCH_NOT_SOLID
 $A3:CF27 BF 10 78 7E LDA $7E7810,x[$7E:7890]
 $A3:CF2B C9 02 00    CMP #$0002
 $A3:CF2E F0 1B       BEQ $1B    [$CF4B]
@@ -6672,8 +6672,8 @@ $A3:CF35 C9 05 00    CMP #$0005
 $A3:CF38 D0 11       BNE $11    [$CF4B]
 $A3:CF3A 80 19       BRA $19    [$CF55]
 
-$A3:CF3C AD 3C 0B    LDA $0B3C  [$7E:0B3C]
-$A3:CF3F D0 14       BNE $14    [$CF55]
+$A3:CF3C AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
+$A3:CF3F D0 14       BNE $14    [$CF55]     ;} If [Samus running momentum flag] != 0: go to BRANCH_NOT_SOLID
 $A3:CF41 BD B2 0F    LDA $0FB2,x[$7E:1172]
 $A3:CF44 C9 5F CF    CMP #$CF5F
 $A3:CF47 F0 02       BEQ $02    [$CF4B]
@@ -6684,6 +6684,7 @@ $A3:CF4E 09 00 80    ORA #$8000
 $A3:CF51 9D 86 0F    STA $0F86,x[$7E:1006]
 $A3:CF54 60          RTS
 
+; BRANCH_NOT_SOLID
 $A3:CF55 BD 86 0F    LDA $0F86,x[$7E:1146]
 $A3:CF58 29 FF 7F    AND #$7FFF
 $A3:CF5B 9D 86 0F    STA $0F86,x[$7E:1146]
@@ -7302,8 +7303,8 @@ $A3:D3C9 80 20       BRA $20    [$D3EB]
 $A3:D3CB BD B2 0F    LDA $0FB2,x[$7E:1172]
 $A3:D3CE C9 B3 D1    CMP #$D1B3
 $A3:D3D1 F0 05       BEQ $05    [$D3D8]
-$A3:D3D3 AD 3C 0B    LDA $0B3C  [$7E:0B3C]
-$A3:D3D6 F0 13       BEQ $13    [$D3EB]
+$A3:D3D3 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
+$A3:D3D6 F0 13       BEQ $13    [$D3EB]     ;} If [Samus running momentum flag] = 0: go to BRANCH_D3EB
 
 $A3:D3D8 20 9F D4    JSR $D49F  [$A3:D49F]
 $A3:D3DB BD B2 0F    LDA $0FB2,x[$7E:1172]
@@ -7314,6 +7315,7 @@ $A3:D3E6 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2,
 
 $A3:D3EA 6B          RTL
 
+; BRANCH_D3EB
 $A3:D3EB BD B2 0F    LDA $0FB2,x[$7E:0FB2]
 $A3:D3EE C9 5F CF    CMP #$CF5F
 $A3:D3F1 F0 2D       BEQ $2D    [$D420]

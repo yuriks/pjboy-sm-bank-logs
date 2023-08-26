@@ -2121,6 +2121,8 @@ $84:8DD7 B9 00 00    LDA $0000,y[$84:A9FB]  ;\
 $84:8DDA 10 03       BPL $03    [$8DDF]     ;} If [[Y]] & 8000h:
 $84:8DDC 4C 1F 90    JMP $901F  [$84:901F]  ; Go to BRANCH_VERTICAL
 
+; Horizontal
+{
 $84:8DDF 29 FF 7F    AND #$7FFF             ;\
 $84:8DE2 85 14       STA $14    [$7E:0014]  ;} Draw length = [[Y]]
 $84:8DE4 64 1C       STZ $1C    [$7E:001C]  ; Clear 32-byte increment mode flag
@@ -2429,8 +2431,10 @@ $84:9014 BF 00 A0 7E LDA $7EA000,x[$7E:A420];|
 $84:9018 49 00 C0    EOR #$C000             ;|
 $84:901B 97 06       STA [$06],y[$7E:C6DA]  ;/
 $84:901D 80 8D       BRA $8D    [$8FAC]     ; Go to BRANCH_HORIZONTAL_NEXT_BLOCK
+}
 
 ; BRANCH_VERTICAL
+{
 $84:901F 29 FF 7F    AND #$7FFF             ;\
 $84:9022 85 14       STA $14    [$7E:0014]  ;} Draw length = [[Y]] & 7FFFh
 $84:9024 AD 11 09    LDA $0911  [$7E:0911]  ;\
@@ -2624,6 +2628,7 @@ $84:9189 4C C1 90    JMP $90C1  [$84:90C1]  ; Go to LOOP_VERTICAL_BLOCK
 
 $84:918C FA          PLX
 $84:918D 60          RTS
+}
 
 ; BRANCH_NEXT_DRAW_ENTRY
 $84:918E FA          PLX
@@ -5381,9 +5386,9 @@ $84:AB27 60          RTS
 
 ;;; $AB28: Setup - PLM $B79B (crumble Botwoon wall) - wait 40h frames ;;;
 {
-$84:AB28 BB          TYX
-$84:AB29 A9 40 00    LDA #$0040
-$84:AB2C 9F 1C DE 7E STA $7EDE1C,x[$7E:DE68]
+$84:AB28 BB          TYX                    ;\
+$84:AB29 A9 40 00    LDA #$0040             ;} PLM instruction timer = 40h
+$84:AB2C 9F 1C DE 7E STA $7EDE1C,x[$7E:DE68];/
 $84:AB30 60          RTS
 }
 
@@ -6352,7 +6357,7 @@ $84:B0DB 60          RTS
 $84:B0DC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $84:B0DF 18          CLC                    ;|
 $84:B0E0 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
-$84:B0E3 3A          DEC A                  ;} If Samus bottom border is not block aligned:
+$84:B0E3 3A          DEC A                  ;} If Samus bottom boundary is not block aligned:
 $84:B0E4 29 0F 00    AND #$000F             ;|
 $84:B0E7 C9 0F 00    CMP #$000F             ;|
 $84:B0EA F0 08       BEQ $08    [$B0F4]     ;/
@@ -6381,7 +6386,7 @@ $84:B112 60          RTS
 $84:B113 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $84:B116 38          SEC                    ;|
 $84:B117 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$84:B11A 29 0F 00    AND #$000F             ;} If Samus top border is not block aligned:
+$84:B11A 29 0F 00    AND #$000F             ;} If Samus top boundary is not block aligned:
 $84:B11D F0 08       BEQ $08    [$B127]     ;|
 $84:B11F A9 00 00    LDA #$0000             ;|
 $84:B122 99 37 1C    STA $1C37,y            ;/
@@ -6835,7 +6840,7 @@ $84:B3EB AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $84:B3EE 18          CLC                    ;|
 $84:B3EF 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
 $84:B3F2 3A          DEC A                  ;|
-$84:B3F3 29 0F 00    AND #$000F             ;} If Samus bottom border is not half-block aligned: return
+$84:B3F3 29 0F 00    AND #$000F             ;} If Samus bottom boundary is not half-block aligned: return
 $84:B3F6 C9 07 00    CMP #$0007             ;|
 $84:B3F9 F0 05       BEQ $05    [$B400]     ;|
 $84:B3FB C9 0F 00    CMP #$000F             ;|
@@ -6851,8 +6856,8 @@ $84:B407 60          RTS
 
 ;;; $B408: Setup - PLM $B713 / $B717 / $B71B (inside reaction, special air, BTS Maridia 80h/81h/82h. Quicksand surface) ;;;
 {
-$84:B408 9C 3C 0B    STZ $0B3C  [$7E:0B3C]  ; $0B3C = 0
-$84:B40B 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; $0B3E = 0
+$84:B408 9C 3C 0B    STZ $0B3C  [$7E:0B3C]  ; Samus running momentum flag = 0
+$84:B40B 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost counter / timer = 0
 $84:B40E 9C 40 0B    STZ $0B40  [$7E:0B40]  ; Samus echo sound playing flag = 0
 $84:B411 9C 44 0B    STZ $0B44  [$7E:0B44]  ;\
 $84:B414 9C 42 0B    STZ $0B42  [$7E:0B42]  ;} Samus X extra run speed = 0.0
@@ -7669,7 +7674,7 @@ $84:B97E D0 0A       BNE $0A    [$B98A]     ;/
 $84:B980 29 00 0F    AND #$0F00             ; ...
 $84:B983 A9 00 00    LDA #$0000             ;\
 $84:B986 99 37 1C    STA $1C37,y            ;} Delete PLM
-$84:B989 60          RTS
+$84:B989 60          RTS                    ; Return
 
 $84:B98A BE 87 1C    LDX $1C87,y[$7E:1CD1]  ;\
 $84:B98D BF 02 00 7F LDA $7F0002,x[$7F:0160];|
@@ -10500,7 +10505,7 @@ $84:CED9 60          RTS
 }
 
 
-;;; $CEDA: Setup - PLM $D0B8/$D0BC/$D0C0/$D0A4/$D0C8/$D0CC/$D0D0/$D0D4 (shot/bombed/grappled reaction, bombable, BTS 0..7. (Respawning) bomb block) ;;;
+;;; $CEDA: Setup - PLM $D0B8/$D0BC/$D0C0/$D0C4/$D0C8/$D0CC/$D0D0/$D0D4 (shot/bombed/grappled reaction, bombable, BTS 0..7. (Respawning) bomb block) ;;;
 {
 $84:CEDA AE DE 0D    LDX $0DDE  [$7E:0DDE]  ;\
 $84:CEDD BD 18 0C    LDA $0C18,x[$7E:0C22]  ;|
@@ -11247,7 +11252,7 @@ $84:D4D3 60          RTS
 
 ;;; $D4D4: Instruction list - PLM $D70C (n00b tube) ;;;
 {
-$84:D4D4             dx 882D,000B,D521, ; Go to $D521 if the event 000Bh is set
+$84:D4D4             dx 882D,000B,D521, ; Go to $D521 if the event Bh is set
                         8A24,D4E8,      ; Link instruction = $D4E8
                         86C1,BD26,      ; Pre-instruction = go to link instruction if shot with a power bomb
                         0001,98D1,
@@ -11269,8 +11274,8 @@ $84:D4F2             dx 86CA,           ; Clear pre-instruction
                         D525,           ; Enable water physics
                         D5EE,           ; Enable Samus controls
                         86BC            ; Delete
-                        0001,98E3,
-                        0001,9953,
+$84:D519             dx 0001,98E3,
+                        0001,9953 
 $84:D521             dx D525,           ; Enable water physics
                         86BC            ; Delete
 }
@@ -11432,7 +11437,7 @@ $84:D641 C9 7A 00    CMP #$007A             ;} If Samus is not in morph ball wit
 $84:D644 D0 31       BNE $31    [$D677]     ;/
 
 $84:D646 A9 01 00    LDA #$0001             ;\
-$84:D649 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 Speed = 1
+$84:D649 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 $0FB4 = 1
 $84:D64C A9 02 02    LDA #$0202             ;\
 $84:D64F 8F 27 CD 7E STA $7ECD27[$7E:CD27]  ;} Scrolls 7/8 = green
 $84:D653 A9 01 01    LDA #$0101             ;\
@@ -11697,6 +11702,7 @@ $84:D7EC 20 B4 82    JSR $82B4  [$84:82B4]
 
 ;;; $D7EF: Create 3 block vertical extension ;;;
 {
+; Used to make the rest of the blue door the eye door spawns
 $84:D7EF 8A          TXA
 $84:D7F0 18          CLC
 $84:D7F1 6D A5 07    ADC $07A5  [$7E:07A5]
@@ -12313,7 +12319,7 @@ $84:DCDE             dx 8A24,DCF0,      ; Link instruction = $DCF0
 $84:DCE6             dx 0008,9FCD,
                         86B4,           ; Sleep
                         8724,DCE6,      ; Go to $DCE6
-$84:DCF0             dx 8ACD,03,DD11,   ; Increment room argument; room argument = FFFFh and go to $DD11 if [room argument] >= 03h
+$84:DCF0             dx 8ACD,03,DD11,   ; Increment room argument; room argument = FFFFh and go to $DD11 if [room argument] >= 3
                         0003,9FCD,
                         0004,9FDD,
                         0003,9FCD,
@@ -12342,7 +12348,7 @@ $84:DD27             dx 8A24,DD39,      ; Link instruction = $DD39
 $84:DD2F             dx 0008,9FED,
                         86B4,           ; Sleep
                         8724,DD2F,      ; Go to $DD2F
-$84:DD39             dx 8ACD,03,DD5A,   ; Increment room argument; room argument = FFFFh and go to $DD5A if [room argument] >= 03h
+$84:DD39             dx 8ACD,03,DD5A,   ; Increment room argument; room argument = FFFFh and go to $DD5A if [room argument] >= 3
                         0003,9FED,
                         0004,9FFD,
                         0003,9FED,
@@ -12371,7 +12377,7 @@ $84:DD70             dx 8A24,DD82,      ; Link instruction = $DD82
 $84:DD78             dx 0008,A00D,
                         86B4,           ; Sleep
                         8724,DD78,      ; Go to $DD78
-$84:DD82             dx 8ACD,03,DDA3,   ; Increment room argument; room argument = FFFFh and go to $DDA3 if [room argument] >= 03h
+$84:DD82             dx 8ACD,03,DDA3,   ; Increment room argument; room argument = FFFFh and go to $DDA3 if [room argument] >= 3
                         0003,A00D,
                         0004,A01D,
                         0003,A00D,
@@ -12400,7 +12406,7 @@ $84:DDB9             dx 8A24,DDCB,      ; Link instruction = $DDCB
 $84:DDC1             dx 0008,A0ED,
                         86B4,           ; Sleep
                         8724,DDC1,      ; Go to $DDC1
-$84:DDCB             dx 8ACD,03,DDEC,   ; Increment room argument; room argument = FFFFh and go to $DDEC if [room argument] >= 03h
+$84:DDCB             dx 8ACD,03,DDEC,   ; Increment room argument; room argument = FFFFh and go to $DDEC if [room argument] >= 3
                         0003,A0ED,
                         0004,A101,
                         0003,A0ED,
@@ -12429,7 +12435,7 @@ $84:DE02             dx 8A24,DE14,      ; Link instruction = $DE14
 $84:DE0A             dx 0008,A115,
                         86B4,           ; Sleep
                         8724,DE0A,      ; Go to $DE0A
-$84:DE14             dx 8ACD,03,DE35,   ; Increment room argument; room argument = FFFFh and go to $DE35 if [room argument] >= 03h
+$84:DE14             dx 8ACD,03,DE35,   ; Increment room argument; room argument = FFFFh and go to $DE35 if [room argument] >= 3
                         0003,A115,
                         0004,A129,
                         0003,A115,
@@ -12458,7 +12464,7 @@ $84:DE4B             dx 8A24,DE5D,      ; Link instruction = $DE5D
 $84:DE53             dx 0008,A13D,
                         86B4,           ; Sleep
                         8724,DE53,      ; Go to $DE53
-$84:DE5D             dx 8ACD,03,DE7E,   ; Increment room argument; room argument = FFFFh and go to $DE7E if [room argument] >= 03h
+$84:DE5D             dx 8ACD,03,DE7E,   ; Increment room argument; room argument = FFFFh and go to $DE7E if [room argument] >= 3
                         0003,A13D,
                         0004,A151,
                         0003,A13D,
@@ -12486,7 +12492,7 @@ $84:DE80             dx 0006,A205,
 ;;; $DE94: Setup - PLM $DF59 (Draygon cannon, with shield, facing right) ;;;
 {
 $84:DE94 B9 C7 1D    LDA $1DC7,y[$7E:1E0F]  ;\
-$84:DE97 99 17 1E    STA $1E17,y[$7E:1E5F]  ;} PLM door hit counter = [PLM room argument]
+$84:DE97 99 17 1E    STA $1E17,y[$7E:1E5F]  ;} PLM turret destroyed flag address = [PLM room argument]
 $84:DE9A A9 00 00    LDA #$0000             ;\
 $84:DE9D 99 C7 1D    STA $1DC7,y[$7E:1E0F]  ;} PLM room argument = 0
 $84:DEA0 BE 87 1C    LDX $1C87,y[$7E:1CCF]  ;\
@@ -12506,7 +12512,7 @@ $84:DEB8 60          RTS
 ;;; $DEB9: Setup - PLM $DF5D/$DF61 (unused. Draygon cannon, with shield, facing down-right / up-right) ;;;
 {
 $84:DEB9 B9 C7 1D    LDA $1DC7,y            ;\
-$84:DEBC 99 17 1E    STA $1E17,y            ;} PLM door hit counter = [PLM room argument]
+$84:DEBC 99 17 1E    STA $1E17,y            ;} PLM turret destroyed flag address = [PLM room argument]
 $84:DEBF A9 00 00    LDA #$0000             ;\
 $84:DEC2 99 C7 1D    STA $1DC7,y            ;} PLM room argument = 0
 $84:DEC5 BE 87 1C    LDX $1C87,y            ;\
@@ -12535,7 +12541,7 @@ $84:DEEF 60          RTS
 {
 ; Clone of $DE94
 $84:DEF0 B9 C7 1D    LDA $1DC7,y[$7E:1E0D]  ;\
-$84:DEF3 99 17 1E    STA $1E17,y[$7E:1E5D]  ;} PLM door hit counter = [PLM room argument]
+$84:DEF3 99 17 1E    STA $1E17,y[$7E:1E5D]  ;} PLM turret destroyed flag address = [PLM room argument]
 $84:DEF6 A9 00 00    LDA #$0000             ;\
 $84:DEF9 99 C7 1D    STA $1DC7,y[$7E:1E0D]  ;} PLM room argument = 0
 $84:DEFC BE 87 1C    LDX $1C87,y[$7E:1CCD]  ;\
@@ -12555,7 +12561,7 @@ $84:DF14 60          RTS
 ;;; $DF15: Setup - PLM $DF75/$DF79 (unused. Draygon cannon, with shield, facing down-left / up-left) ;;;
 {
 $84:DF15 B9 C7 1D    LDA $1DC7,y            ;\
-$84:DF18 99 17 1E    STA $1E17,y            ;} PLM door hit counter = [PLM room argument]
+$84:DF18 99 17 1E    STA $1E17,y            ;} PLM turret destroyed flag address = [PLM room argument]
 $84:DF1B A9 00 00    LDA #$0000             ;\
 $84:DF1E 99 C7 1D    STA $1DC7,y            ;} PLM room argument = 0
 $84:DF21 BE 87 1C    LDX $1C87,y            ;\
@@ -12583,7 +12589,7 @@ $84:DF4B 60          RTS
 ;;; $DF4C: Setup - PLM $DF65/$DF69/$DF6D/$DF7D/$DF81/$DF85 (Draygon cannon) ;;;
 {
 $84:DF4C B9 C7 1D    LDA $1DC7,y[$7E:1E11]  ;\
-$84:DF4F 99 17 1E    STA $1E17,y[$7E:1E61]  ;} PLM Draygon turret damaged flag address = [room argument]
+$84:DF4F 99 17 1E    STA $1E17,y[$7E:1E61]  ;} PLM turret damaged flag address = [room argument]
 $84:DF52 A9 03 00    LDA #$0003             ;\
 $84:DF55 99 C7 1D    STA $1DC7,y[$7E:1E11]  ;} PLM room argument = 3
 $84:DF58 60          RTS

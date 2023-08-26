@@ -1470,7 +1470,7 @@ $91:8A67 60          RTS
 {
 $91:8A68 A9 52 EB    LDA #$EB52             ;\
 $91:8A6B 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
-$91:8A6E 22 FA CF 90 JSL $90CFFA[$90:CFFA]
+$91:8A6E 22 FA CF 90 JSL $90CFFA[$90:CFFA]  ; Trigger shinespark windup
 $91:8A72 A9 CD 00    LDA #$00CD
 $91:8A75 8D 1C 0A    STA $0A1C  [$7E:0A1C]
 $91:8A78 22 33 F4 91 JSL $91F433[$91:F433]
@@ -1483,7 +1483,7 @@ $91:8A80 60          RTS
 {
 $91:8A81 A9 52 EB    LDA #$EB52             ;\
 $91:8A84 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
-$91:8A87 22 FA CF 90 JSL $90CFFA[$90:CFFA]
+$91:8A87 22 FA CF 90 JSL $90CFFA[$90:CFFA]  ; Trigger shinespark windup
 $91:8A8B A9 CA 00    LDA #$00CA
 $91:8A8E 8D 1C 0A    STA $0A1C  [$7E:0A1C]
 $91:8A91 22 33 F4 91 JSL $91F433[$91:F433]
@@ -3150,13 +3150,13 @@ $91:B24F             db 05, 02, F8,07
 ; E5h: Facing left  - landing from normal jump - aiming down-left
 $91:B253             db 05, 02, F8,08
 
-; E8h: Facing right - Samus drained - crouching
+; E8h: Facing right - Samus drained - crouching/falling
 $91:B257             db 02, 02, 02, 10, F7,
                         01, FE,01,
                         10, 10, 10, 10, FE,04,
                         03, FD,01
 
-; E9h: Facing left  - Samus drained - crouching
+; E9h: Facing left  - Samus drained - crouching/falling
 $91:B268             db 02, 02, 10, F7,
                         01, FE,01,
                         08,
@@ -3166,7 +3166,10 @@ $91:B268             db 02, 02, 10, F7,
                         10, 10, 10, FD,02,
 
                         ; Samus fails to stand up
-                        10, 10, 10, 10, 10, FE,0E, 10, FE,11,
+                        10, 10, 10, 10, 10, FE,0E,
+
+                        ; Samus gets hit
+                        10, FE,11,
 
                         ; Samus is frozen (receiving hyper beam)
                         10, FE,01
@@ -3687,9 +3690,8 @@ $91:B614             db 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, FF
 }
 
 
-;;; $B61F:  ;;;
+;;; $B61F: Speed boost timer reset values ;;;
 {
-; Values for $0B3E
 ; Indexed by [speed boost counter] * 2
 $91:B61F             dw 0001, 0001, 0001, 0001, 0002
 }
@@ -8151,101 +8153,109 @@ $91:D8A4 60          RTS
 {
 ; This stuff happens after (pseudo) screw attacking / speed boosting / speed booster shine / shinesparking / crystal flash / x-ray / beam effects,
 ; so takes priority
-$91:D8A5 AD 4A 0A    LDA $0A4A  [$7E:0A4A]
-$91:D8A8 D0 06       BNE $06    [$D8B0]
-$91:D8AA AD 48 0A    LDA $0A48  [$7E:0A48]
-$91:D8AD D0 04       BNE $04    [$D8B3]
-$91:D8AF 60          RTS
+$91:D8A5 AD 4A 0A    LDA $0A4A  [$7E:0A4A]  ;\
+$91:D8A8 D0 06       BNE $06    [$D8B0]     ;} If [super special Samus palette flags] = 0:
+$91:D8AA AD 48 0A    LDA $0A48  [$7E:0A48]  ;\
+$91:D8AD D0 04       BNE $04    [$D8B3]     ;} If [Samus hurt flash counter] = 0:
+$91:D8AF 60          RTS                    ; Return
 
-$91:D8B0 4C 54 D9    JMP $D954  [$91:D954]
+                                            ; Else ([super special Samus palette flags] != 0):
+$91:D8B0 4C 54 D9    JMP $D954  [$91:D954]  ; Go to BRANCH_SUPER_SPECIAL
 
-$91:D8B3 C9 02 00    CMP #$0002
-$91:D8B6 D0 21       BNE $21    [$D8D9]
-$91:D8B8 AD 51 1F    LDA $1F51  [$7E:1F51]
-$91:D8BB D0 19       BNE $19    [$D8D6]
+$91:D8B3 C9 02 00    CMP #$0002             ;\
+$91:D8B6 D0 21       BNE $21    [$D8D9]     ;} If [Samus hurt flash counter] != 2: go to BRANCH_NOT_HURT_FRAME_2
+$91:D8B8 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
+$91:D8BB D0 19       BNE $19    [$D8D6]     ;} If [cinematic function] != 0: go to BRANCH_NO_SFX
 $91:D8BD AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
 $91:D8C0 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] = $E8D9 (RTL):
 $91:D8C3 D0 08       BNE $08    [$D8CD]     ;/
-$91:D8C5 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$91:D8C8 C9 54 00    CMP #$0054
-$91:D8CB F0 09       BEQ $09    [$D8D6]
+$91:D8C5 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$91:D8C8 C9 54 00    CMP #$0054             ;} If [Samus pose] = 54h (facing left  - knockback): go to BRANCH_NO_SFX
+$91:D8CB F0 09       BEQ $09    [$D8D6]     ;/
 
-$91:D8CD A9 35 00    LDA #$0035             ;\
+$91:D8CD A9 35 00    LDA #$0035             ;\ Else ([$0A44] != $E8D9):
 $91:D8D0 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 35h, sound library 1, max queued sounds allowed = 6 (Samus damaged)
-$91:D8D4 80 15       BRA $15    [$D8EB]
+$91:D8D4 80 15       BRA $15    [$D8EB]     ; Go to BRANCH_NOT_HURT_FLASH
 
+; BRANCH_NO_SFX
 $91:D8D6 AD 48 0A    LDA $0A48  [$7E:0A48]
 
-$91:D8D9 C9 07 00    CMP #$0007
-$91:D8DC 10 1E       BPL $1E    [$D8FC]
-$91:D8DE 89 01 00    BIT #$0001
-$91:D8E1 F0 08       BEQ $08    [$D8EB]
+; BRANCH_NOT_HURT_FRAME_2
+$91:D8D9 C9 07 00    CMP #$0007             ;\
+$91:D8DC 10 1E       BPL $1E    [$D8FC]     ;} If [Samus hurt flash counter] >= 7: go to BRANCH_HURT_FLASH_DONE
+$91:D8DE 89 01 00    BIT #$0001             ;\
+$91:D8E1 F0 08       BEQ $08    [$D8EB]     ;} If [Samus hurt flash counter] % 2 = 0: go to BRANCH_NOT_HURT_FLASH
 $91:D8E3 A2 80 A3    LDX #$A380             ;\
 $91:D8E6 20 5B DD    JSR $DD5B  [$91:DD5B]  ;} Samus palette = [$A380..9F] (hurt flash)
-$91:D8E9 80 11       BRA $11    [$D8FC]
+$91:D8E9 80 11       BRA $11    [$D8FC]     ; Go to BRANCH_HURT_FLASH_DONE
 
-$91:D8EB AD 51 1F    LDA $1F51  [$7E:1F51]
-$91:D8EE F0 08       BEQ $08    [$D8F8]
+; BRANCH_NOT_HURT_FLASH
+$91:D8EB AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
+$91:D8EE F0 08       BEQ $08    [$D8F8]     ;} If [cinematic function] != 0:
 $91:D8F0 A2 A0 A3    LDX #$A3A0             ;\
-$91:D8F3 20 5B DD    JSR $DD5B  [$91:DD5B]  ;} Samus palette = [$A3A0..BF] (Intro Samus (greyscale))
-$91:D8F6 80 04       BRA $04    [$D8FC]
+$91:D8F3 20 5B DD    JSR $DD5B  [$91:DD5B]  ;} Samus palette = [$A3A0..BF] (intro Samus (greyscale))
+$91:D8F6 80 04       BRA $04    [$D8FC]     ; Go to BRANCH_HURT_FLASH_DONE
 
 $91:D8F8 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 
+; BRANCH_HURT_FLASH_DONE
 $91:D8FC AD 48 0A    LDA $0A48  [$7E:0A48]  ;\
 $91:D8FF 1A          INC A                  ;} Increment Samus hurt flash counter
 $91:D900 8D 48 0A    STA $0A48  [$7E:0A48]  ;/
-$91:D903 C9 28 00    CMP #$0028
-$91:D906 F0 09       BEQ $09    [$D911]
-$91:D908 C9 3C 00    CMP #$003C
-$91:D90B 30 03       BMI $03    [$D910]
-$91:D90D 9C 48 0A    STZ $0A48  [$7E:0A48]
+$91:D903 C9 28 00    CMP #$0028             ;\
+$91:D906 F0 09       BEQ $09    [$D911]     ;} If [Samus hurt flash counter] = 28h: go to BRANCH_NON_HURT_SFX
+$91:D908 C9 3C 00    CMP #$003C             ;\
+$91:D90B 30 03       BMI $03    [$D910]     ;} If [Samus hurt flash counter] >= 3Ch:
+$91:D90D 9C 48 0A    STZ $0A48  [$7E:0A48]  ; Samus hurt flash counter = 0
 
-$91:D910 60          RTS
+$91:D910 60          RTS                    ; Return
 
-$91:D911 AD 32 0D    LDA $0D32  [$7E:0D32]
-$91:D914 C9 F0 C4    CMP #$C4F0
-$91:D917 D0 26       BNE $26    [$D93F]
-$91:D919 AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$91:D91C 29 FF 00    AND #$00FF
-$91:D91F C9 03 00    CMP #$0003
-$91:D922 F0 28       BEQ $28    [$D94C]
-$91:D924 C9 14 00    CMP #$0014
-$91:D927 F0 23       BEQ $23    [$D94C]
-$91:D929 AD D0 0C    LDA $0CD0  [$7E:0CD0]
-$91:D92C C9 10 00    CMP #$0010
-$91:D92F 30 DF       BMI $DF    [$D910]
+; BRANCH_NON_HURT_SFX
+$91:D911 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
+$91:D914 C9 F0 C4    CMP #$C4F0             ;} If [grapple beam function] = inactive:
+$91:D917 D0 26       BNE $26    [$D93F]     ;/
+$91:D919 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$91:D91C 29 FF 00    AND #$00FF             ;|
+$91:D91F C9 03 00    CMP #$0003             ;} If [Samus movement type] = spin jumping: go to BRANCH_SPINNING
+$91:D922 F0 28       BEQ $28    [$D94C]     ;/
+$91:D924 C9 14 00    CMP #$0014             ;\
+$91:D927 F0 23       BEQ $23    [$D94C]     ;} If [Samus movement type] = wall jumping: go to BRANCH_SPINNING
+$91:D929 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
+$91:D92C C9 10 00    CMP #$0010             ;} If [flare counter] < 10h: return
+$91:D92F 30 DF       BMI $DF    [$D910]     ;/
 $91:D931 A5 8B       LDA $8B    [$7E:008B]  ;\
 $91:D933 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: return
 $91:D936 F0 D8       BEQ $D8    [$D910]     ;/
-$91:D938 A9 01 00    LDA #$0001
-$91:D93B 8D C0 0D    STA $0DC0  [$7E:0DC0]
-$91:D93E 60          RTS
+$91:D938 A9 01 00    LDA #$0001             ;\
+$91:D93B 8D C0 0D    STA $0DC0  [$7E:0DC0]  ;} $0DC0 = 1
+$91:D93E 60          RTS                    ; Return
 
-$91:D93F C9 56 C8    CMP #$C856
-$91:D942 10 CC       BPL $CC    [$D910]
+$91:D93F C9 56 C8    CMP #$C856             ;\
+$91:D942 10 CC       BPL $CC    [$D910]     ;} If [grapple beam function] >= cancel: return
 $91:D944 A9 06 00    LDA #$0006             ;\
 $91:D947 22 2B 90 80 JSL $80902B[$80:902B]  ;} Queue sound 6, sound library 1, max queued sounds allowed = 9 (grappling)
-$91:D94B 60          RTS
+$91:D94B 60          RTS                    ; Return
 
+; BRANCH_SPINNING
 $91:D94C A9 1C 00    LDA #$001C             ;\
 $91:D94F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Play spin jump sound if spin jumping
-$91:D953 60          RTS
+$91:D953 60          RTS                    ; Return
 
 ; BRANCH_SUPER_SPECIAL
-$91:D954 30 19       BMI $19    [$D96F]
-$91:D956 89 01 00    BIT #$0001
-$91:D959 F0 0C       BEQ $0C    [$D967]
+$91:D954 30 19       BMI $19    [$D96F]     ; If [super special Samus palette flags] & 8000h != 0: go to BRANCH_ACQUIRING_HYPER_BEAM
+$91:D956 89 01 00    BIT #$0001             ;\
+$91:D959 F0 0C       BEQ $0C    [$D967]     ;} If [super special Samus palette flags] & 1 != 0:
 $91:D95B AE 74 0A    LDX $0A74  [$7E:0A74]  ;\
 $91:D95E BD 98 D9    LDA $D998,x[$91:D99C]  ;|
 $91:D961 AA          TAX                    ;} Samus palette = 20h bytes from $9B:0000 + [$D998 + [Samus suit palette index]]
 $91:D962 20 5B DD    JSR $DD5B  [$91:DD5B]  ;/
 $91:D965 80 04       BRA $04    [$D96B]
 
+                                            ; Else ([super special Samus palette flags] & 1 = 0):
 $91:D967 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 
-$91:D96B EE 4A 0A    INC $0A4A  [$7E:0A4A]
-$91:D96E 60          RTS
+$91:D96B EE 4A 0A    INC $0A4A  [$7E:0A4A]  ; Increment super special Samus palette flags
+$91:D96E 60          RTS                    ; Return
 
 ; BRANCH_ACQUIRING_HYPER_BEAM
 $91:D96F AD 62 0B    LDA $0B62  [$7E:0B62]  ;\
@@ -8254,18 +8264,18 @@ $91:D973 A8          TAY                    ;|
 $91:D974 B9 9E D9    LDA $D99E,y[$91:D99E]  ;} Samus palette = 20h bytes from $9B:0000 + [$D99E + [Samus' charge palette index] * 2]
 $91:D977 AA          TAX                    ;|
 $91:D978 20 5B DD    JSR $DD5B  [$91:DD5B]  ;/
-$91:D97B CE D0 0A    DEC $0AD0  [$7E:0AD0]
-$91:D97E F0 02       BEQ $02    [$D982]
-$91:D980 10 15       BPL $15    [$D997]
+$91:D97B CE D0 0A    DEC $0AD0  [$7E:0AD0]  ; Decrement special Samus palette timer
+$91:D97E F0 02       BEQ $02    [$D982]     ;\
+$91:D980 10 15       BPL $15    [$D997]     ;} If [special Samus palette timer] > 0: return
 
-$91:D982 AD CE 0A    LDA $0ACE  [$7E:0ACE]
-$91:D985 8D D0 0A    STA $0AD0  [$7E:0AD0]
-$91:D988 AD 62 0B    LDA $0B62  [$7E:0B62]
-$91:D98B 1A          INC A
-$91:D98C 8D 62 0B    STA $0B62  [$7E:0B62]
-$91:D98F C9 0A 00    CMP #$000A
-$91:D992 30 03       BMI $03    [$D997]
-$91:D994 9C 62 0B    STZ $0B62  [$7E:0B62]
+$91:D982 AD CE 0A    LDA $0ACE  [$7E:0ACE]  ;\
+$91:D985 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} Special Samus palette timer = [special Samus palette delay]
+$91:D988 AD 62 0B    LDA $0B62  [$7E:0B62]  ;\
+$91:D98B 1A          INC A                  ;|
+$91:D98C 8D 62 0B    STA $0B62  [$7E:0B62]  ;|
+$91:D98F C9 0A 00    CMP #$000A             ;} Samus' charge palette index = ([Samus' charge palette index] + 1) % Ah
+$91:D992 30 03       BMI $03    [$D997]     ;|
+$91:D994 9C 62 0B    STZ $0B62  [$7E:0B62]  ;/
 
 $91:D997 60          RTS
 
@@ -8307,10 +8317,10 @@ $91:D9E3 F0 12       BEQ $12    [$D9F7]
 $91:D9E5 C9 14 00    CMP #$0014
 $91:D9E8 F0 21       BEQ $21    [$DA0B]
 
-$91:D9EA AD 3E 0B    LDA $0B3E  [$7E:0B3E]
-$91:D9ED 29 00 FF    AND #$FF00
-$91:D9F0 C9 00 04    CMP #$0400
-$91:D9F3 F0 7F       BEQ $7F    [$DA74]
+$91:D9EA AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
+$91:D9ED 29 00 FF    AND #$FF00             ;|
+$91:D9F0 C9 00 04    CMP #$0400             ;} If speed boosting: go to BRANCH_SPEED_BOOSTING
+$91:D9F3 F0 7F       BEQ $7F    [$DA74]     ;/
 
 $91:D9F5 38          SEC
 $91:D9F6 60          RTS
@@ -8367,6 +8377,7 @@ $91:DA50             dw 9CA0,9CC0,9CE0,9D00,9CE0,9CC0   ; No suit
 $91:DA5C             dw 9EA0,9EC0,9EE0,9F00,9EE0,9EC0   ; Varia suit
 $91:DA68             dw A0A0,A0C0,A0E0,A100,A0E0,A0C0   ; Gravity suit
 
+; BRANCH_SPEED_BOOSTING
 $91:DA74 CE D0 0A    DEC $0AD0  [$7E:0AD0]
 $91:DA77 F0 02       BEQ $02    [$DA7B]
 $91:DA79 10 2C       BPL $2C    [$DAA7]
@@ -8551,7 +8562,8 @@ $91:DBFB 9C 68 0A    STZ $0A68  [$7E:0A68]
 $91:DBFE 18          CLC
 $91:DBFF 60          RTS
 
-; Samus palette table, colours 0..9. [palette pointer], [timer]
+; Samus palette table, colours 0..9
+; [palette pointer], [timer]
 $91:DC00             dw 96C0,000A, 96E0,000A, 9700,000A, 9720,000A, 9740,000A, 9760,000A, 9740,000A, 9720,000A, 9700,000A, 96E0,000A
 
 ; Samus palette table, colours Ah..Fh
@@ -8807,9 +8819,9 @@ $91:DE55 4B          PHK
 $91:DE56 AB          PLB
 $91:DE57 C2 30       REP #$30
 $91:DE59 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
-$91:DE5C F0 2F       BEQ $2F    [$DE8D]     ;} If [$0B3C] = 0: go to BRANCH_MERGE
-$91:DE5E 9C 3C 0B    STZ $0B3C  [$7E:0B3C]  ; $0B3C = 0
-$91:DE61 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; $0B3E = speed boost counter = 0
+$91:DE5C F0 2F       BEQ $2F    [$DE8D]     ;} If [Samus running momentum flag] = 0: go to BRANCH_MERGE
+$91:DE5E 9C 3C 0B    STZ $0B3C  [$7E:0B3C]  ; Samus running momentum flag = 0
+$91:DE61 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost counter / timer = 0
 $91:DE64 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 $91:DE67 9C D0 0A    STZ $0AD0  [$7E:0AD0]  ; Special Samus palette timer = 0
 $91:DE6A AD A2 09    LDA $09A2  [$7E:09A2]  ;\
@@ -9091,7 +9103,7 @@ $91:E00F 4B          PHK
 $91:E010 AB          PLB
 $91:E011 C2 30       REP #$30
 $91:E013 AD E0 0D    LDA $0DE0  [$7E:0DE0]  ;\
-$91:E016 85 12       STA $12    [$7E:0012]  ;} >_<
+$91:E016 85 12       STA $12    [$7E:0012]  ;} >_<;
 $91:E018 A2 0B 0E    LDX #$0E0B             ;\
 $91:E01B E2 20       SEP #$20               ;|
 $91:E01D A9 00       LDA #$00               ;|
@@ -9145,11 +9157,11 @@ $91:E097 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $91:E09A C9 06 00    CMP #$0006             ;} If [area index] = Ceres:
 $91:E09D D0 08       BNE $08    [$E0A7]     ;/
 $91:E09F A9 E6 E0    LDA #$E0E6             ;\
-$91:E0A2 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E0E6 (handle timer)
+$91:E0A2 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer)
 $91:E0A5 80 06       BRA $06    [$E0AD]
 
 $91:E0A7 A9 0E E9    LDA #$E90E             ;\ Else ([area index] != Ceres):
-$91:E0AA 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = RTS
+$91:E0AA 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 
 $91:E0AD A9 37 A3    LDA #$A337             ;\
 $91:E0B0 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
@@ -9581,8 +9593,8 @@ $91:E462 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ; $0A2C = FFFFh
 $91:E465 9C 2E 0A    STZ $0A2E  [$7E:0A2E]  ; $0A2E = 0
 $91:E468 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
 $91:E46B 9C 32 0A    STZ $0A32  [$7E:0A32]  ; $0A32 = 0
-$91:E46E A9 1F 00    LDA #$001F
-$91:E471 22 84 F0 90 JSL $90F084[$90:F084]
+$91:E46E A9 1F 00    LDA #$001F             ;\
+$91:E471 22 84 F0 90 JSL $90F084[$90:F084]  ;} Kill grapple beam
 $91:E475 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
 $91:E478 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
 $91:E47B 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
@@ -9607,9 +9619,17 @@ $91:E4AC 6B          RTL
 }
 
 
-;;; $E4AD:  ;;;
+;;; $E4AD: Drained Samus controller ;;;
 {
-; Some Mother Brain scripts
+;; Parameters:
+;;     A: Function index
+;;         0: Let drained Samus fall
+;;         1: Put Samus into standing drained pose
+;;         2: Release Samus from drained pose
+;;         3: Enable hyper beam
+;;         4: Put Samus into crouching/falling drained pose
+
+; Very similar to $90:F084
 $91:E4AD 08          PHP
 $91:E4AE 8B          PHB
 $91:E4AF 4B          PHK                    ;\
@@ -9620,7 +9640,7 @@ $91:E4B4 5A          PHY
 $91:E4B5 0A          ASL A                  ;\
 $91:E4B6 AA          TAX                    ;} Execute [$E4EE + [A] * 2]
 $91:E4B7 FC EE E4    JSR ($E4EE,x)[$91:E4F8];/
-$91:E4BA 90 2D       BCC $2D    [$E4E9]     ; If carry clear: return
+$91:E4BA 90 2D       BCC $2D    [$E4E9]     ; If carry set:
 $91:E4BC AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:E4BF 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
 $91:E4C2 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
@@ -9647,7 +9667,7 @@ $91:E4EE             dw E4F8, E571, E59B, E5F0, E60C
 }
 
 
-;;; $E4F8:  ;;;
+;;; $E4F8: Drained Samus controller - 0: let drained Samus fall ;;;
 {
 $91:E4F8 A9 15 00    LDA #$0015             ;\
 $91:E4FB 38          SEC                    ;|
@@ -9700,7 +9720,7 @@ $91:E570 60          RTS                    ;} Return carry set
 }
 
 
-;;; $E571:  ;;;
+;;; $E571: Drained Samus controller - 1: put Samus into standing drained pose ;;;
 {
 ; Put Samus into standing drained pose
 $91:E571 A9 10 00    LDA #$0010             ;\
@@ -9718,43 +9738,45 @@ $91:E58D A9 EB 00    LDA #$00EB             ;\ Else (facing left):
 $91:E590 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - Samus drained - standing
 
 $91:E593 A9 0E E9    LDA #$E90E             ;\
-$91:E596 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = RTS
+$91:E596 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 $91:E599 38          SEC                    ;\
 $91:E59A 60          RTS                    ;} Return carry set
 }
 
 
-;;; $E59B:  ;;;
+;;; $E59B: Drained Samus controller - 2: release Samus from drained pose ;;;
 {
-$91:E59B AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$91:E59E C9 E8 00    CMP #$00E8
-$91:E5A1 F0 1D       BEQ $1D    [$E5C0]
-$91:E5A3 C9 E9 00    CMP #$00E9
-$91:E5A6 F0 18       BEQ $18    [$E5C0]
-$91:E5A8 C9 EA 00    CMP #$00EA
-$91:E5AB F0 05       BEQ $05    [$E5B2]
-$91:E5AD C9 EB 00    CMP #$00EB
-$91:E5B0 D0 1A       BNE $1A    [$E5CC]
+$91:E59B AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$91:E59E C9 E8 00    CMP #$00E8             ;|
+$91:E5A1 F0 1D       BEQ $1D    [$E5C0]     ;} If [Samus pose] = Samus drained - crouching/falling: go to BRANCH_CROUCHING_FALLING
+$91:E5A3 C9 E9 00    CMP #$00E9             ;|
+$91:E5A6 F0 18       BEQ $18    [$E5C0]     ;/
+$91:E5A8 C9 EA 00    CMP #$00EA             ;\
+$91:E5AB F0 05       BEQ $05    [$E5B2]     ;|
+$91:E5AD C9 EB 00    CMP #$00EB             ;} If [Samus pose] != Samus drained - standing: go to BRANCH_MERGE
+$91:E5B0 D0 1A       BNE $1A    [$E5CC]     ;/
 
-$91:E5B2 A9 01 00    LDA #$0001
-$91:E5B5 8D 94 0A    STA $0A94  [$7E:0A94]
-$91:E5B8 A9 04 00    LDA #$0004
-$91:E5BB 8D 96 0A    STA $0A96  [$7E:0A96]
-$91:E5BE 80 0C       BRA $0C    [$E5CC]
+$91:E5B2 A9 01 00    LDA #$0001             ;\
+$91:E5B5 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
+$91:E5B8 A9 04 00    LDA #$0004             ;\
+$91:E5BB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 4
+$91:E5BE 80 0C       BRA $0C    [$E5CC]     ; Go to BRANCH_MERGE
 
-$91:E5C0 A9 01 00    LDA #$0001
-$91:E5C3 8D 94 0A    STA $0A94  [$7E:0A94]
-$91:E5C6 A9 0D 00    LDA #$000D
-$91:E5C9 8D 96 0A    STA $0A96  [$7E:0A96]
+; BRANCH_CROUCHING_FALLING
+$91:E5C0 A9 01 00    LDA #$0001             ;\
+$91:E5C3 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
+$91:E5C6 A9 0D 00    LDA #$000D             ;\
+$91:E5C9 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Dh
 
-$91:E5CC AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$91:E5CF 0A          ASL A
-$91:E5D0 0A          ASL A
-$91:E5D1 0A          ASL A
-$91:E5D2 AA          TAX
-$91:E5D3 BD 2F B6    LDA $B62F,x[$91:BD77]
-$91:E5D6 29 FF 00    AND #$00FF
-$91:E5D9 8D 00 0B    STA $0B00  [$7E:0B00]
+; BRANCH_MERGE
+$91:E5CC AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$91:E5CF 0A          ASL A                  ;|
+$91:E5D0 0A          ASL A                  ;|
+$91:E5D1 0A          ASL A                  ;|
+$91:E5D2 AA          TAX                    ;} Samus Y radius = [$B62F + [Samus pose] * 8]
+$91:E5D3 BD 2F B6    LDA $B62F,x[$91:BD77]  ;|
+$91:E5D6 29 FF 00    AND #$00FF             ;|
+$91:E5D9 8D 00 0B    STA $0B00  [$7E:0B00]  ;/
 $91:E5DC 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $91:E5DF 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $91:E5E2 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
@@ -9766,7 +9788,7 @@ $91:E5EF 60          RTS
 }
 
 
-;;; $E5F0: Enable hyper beam ;;;
+;;; $E5F0: Drained Samus controller - 3: enable hyper beam ;;;
 {
 $91:E5F0 A9 09 10    LDA #$1009             ;\
 $91:E5F3 8D A6 09    STA $09A6  [$7E:09A6]  ;} Equipped beams = wave/plasma | 1000h
@@ -9781,9 +9803,8 @@ $91:E60B 60          RTS
 }
 
 
-;;; $E60C:  ;;;
+;;; $E60C: Drained Samus controller - 4: put Samus into crouching/falling drained pose ;;;
 {
-; Put Samus into crouching/falling drained pose
 $91:E60C A9 10 00    LDA #$0010             ;\
 $91:E60F 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 10h
 $91:E612 A9 08 00    LDA #$0008             ;\
@@ -9816,14 +9837,14 @@ $91:E63C 29 FF 00    AND #$00FF
 $91:E63F 0A          ASL A
 $91:E640 AA          TAX
 $91:E641 FC E1 E6    JSR ($E6E1,x)[$91:E732]
-$91:E644 AD A2 09    LDA $09A2  [$7E:09A2]
-$91:E647 89 00 20    BIT #$2000
-$91:E64A D0 23       BNE $23    [$E66F]
+$91:E644 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$91:E647 89 00 20    BIT #$2000             ;} If speed booster not equipped:
+$91:E64A D0 23       BNE $23    [$E66F]     ;/
 $91:E64C 9C AE 0A    STZ $0AAE  [$7E:0AAE]
 $91:E64F 9C C0 0A    STZ $0AC0  [$7E:0AC0]
 $91:E652 9C C2 0A    STZ $0AC2  [$7E:0AC2]
-$91:E655 9C 3C 0B    STZ $0B3C  [$7E:0B3C]
-$91:E658 9C 3E 0B    STZ $0B3E  [$7E:0B3E]
+$91:E655 9C 3C 0B    STZ $0B3C  [$7E:0B3C]  ; Samus running momentum flag = 0
+$91:E658 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost counter / timer = 0
 $91:E65B 9C CE 0A    STZ $0ACE  [$7E:0ACE]
 $91:E65E 9C D0 0A    STZ $0AD0  [$7E:0AD0]
 $91:E661 9C B0 0A    STZ $0AB0  [$7E:0AB0]
@@ -9832,20 +9853,20 @@ $91:E667 9C B8 0A    STZ $0AB8  [$7E:0AB8]
 $91:E66A 9C BA 0A    STZ $0ABA  [$7E:0ABA]
 $91:E66D 80 16       BRA $16    [$E685]
 
-$91:E66F AD 3C 0B    LDA $0B3C  [$7E:0B3C]
-$91:E672 F0 11       BEQ $11    [$E685]
-$91:E674 AD 3E 0B    LDA $0B3E  [$7E:0B3E]
-$91:E677 D0 0C       BNE $0C    [$E685]
+$91:E66F AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\ Else (speed booster equipped):
+$91:E672 F0 11       BEQ $11    [$E685]     ;} If [Samus running momentum flag] != 0:
+$91:E674 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
+$91:E677 D0 0C       BNE $0C    [$E685]     ;} If [speed boost counter / timer] = 0:
 $91:E679 8D D0 0A    STA $0AD0  [$7E:0AD0]
 $91:E67C 9C CE 0A    STZ $0ACE  [$7E:0ACE]
-$91:E67F AD 1F B6    LDA $B61F  [$91:B61F]
-$91:E682 8D 3E 0B    STA $0B3E  [$7E:0B3E]
+$91:E67F AD 1F B6    LDA $B61F  [$91:B61F]  ;\
+$91:E682 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;} Speed boost timer = 1
 
 $91:E685 AD 32 0D    LDA $0D32  [$7E:0D32]
 $91:E688 C9 F0 C4    CMP #$C4F0
 $91:E68B F0 10       BEQ $10    [$E69D]
-$91:E68D A9 02 00    LDA #$0002
-$91:E690 22 F0 AC 90 JSL $90ACF0[$90:ACF0]
+$91:E68D A9 02 00    LDA #$0002             ;\
+$91:E690 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ;} Load ice beam palette
 $91:E694 A9 06 00    LDA #$0006             ;\
 $91:E697 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 6, sound library 1, max queued sounds allowed = 6 (grappling)
 $91:E69B 80 2E       BRA $2E    [$E6CB]
@@ -10478,12 +10499,12 @@ $91:EADD 60          RTS
 ; Check to see if Samus walked/ran into something.
 ; If so, change to the appropriate pose; 91:EB74,X, X = 2*(aiming direction).
 ; Contains arm pump bug
-$91:EADE AD CE 0D    LDA $0DCE  [$7E:0DCE]
-$91:EAE1 F0 0B       BEQ $0B    [$EAEE]
-$91:EAE3 AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$91:EAE6 29 FF 00    AND #$00FF
-$91:EAE9 C9 01 00    CMP #$0001
-$91:EAEC F0 65       BEQ $65    [$EB53]
+$91:EADE AD CE 0D    LDA $0DCE  [$7E:0DCE]  ;\
+$91:EAE1 F0 0B       BEQ $0B    [$EAEE]     ;} If Samus X speed killed:
+$91:EAE3 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$91:EAE6 29 FF 00    AND #$00FF             ;|
+$91:EAE9 C9 01 00    CMP #$0001             ;} If [Samus movement type] = running: go to BRANCH_EB53
+$91:EAEC F0 65       BEQ $65    [$EB53]     ;/
 
 $91:EAEE AD 28 0A    LDA $0A28  [$7E:0A28]
 $91:EAF1 C9 FF FF    CMP #$FFFF
@@ -10531,6 +10552,7 @@ $91:EB4C 90 1C       BCC $1C    [$EB6A]
 $91:EB4E AD 28 0A    LDA $0A28  [$7E:0A28]
 $91:EB51 80 03       BRA $03    [$EB56]
 
+; BRANCH_EB53
 $91:EB53 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
 
 $91:EB56 0A          ASL A
@@ -10870,7 +10892,7 @@ $91:EDA5 60          RTS
 {
 ; Falling
 $91:EDA6 AD 5A 0A    LDA $0A5A  [$7E:0A5A]  ;\
-$91:EDA9 C9 1B E4    CMP #$E41B             ;} If [$0A5A] = $E41B (unused):
+$91:EDA9 C9 1B E4    CMP #$E41B             ;} If [timer / Samus hack handler] = $E41B (unused special falling):
 $91:EDAC D0 02       BNE $02    [$EDB0]     ;/
 $91:EDAE 18          CLC
 $91:EDAF 60          RTS                    ; Return
@@ -11034,9 +11056,9 @@ $91:EEAC F0 10       BEQ $10    [$EEBE]     ;/
 $91:EEAE C9 05 00    CMP #$0005             ;\
 $91:EEB1 F0 26       BEQ $26    [$EED9]     ;} If [Samus movement type] = crouching: go to BRANCH_CROUCHING
 $91:EEB3 C9 15 00    CMP #$0015             ;\
-$91:EEB6 F0 06       BEQ $06    [$EEBE]     ;} If [Samus movement type] != ran into a wall
+$91:EEB6 F0 06       BEQ $06    [$EEBE]     ;} If [Samus movement type] != ran into a wall:
 $91:EEB8 C9 01 00    CMP #$0001             ;\
-$91:EEBB F0 01       BEQ $01    [$EEBE]     ;} If [Samus movement type] != running(!)
+$91:EEBB F0 01       BEQ $01    [$EEBE]     ;} If [Samus movement type] != running(!):
 $91:EEBD 60          RTS                    ; Return
 
 $91:EEBE AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
@@ -11075,8 +11097,8 @@ $91:EF07 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E918 (x-ray)
 $91:EF0A A9 08 00    LDA #$0008             ;\
 $91:EF0D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 8
 $91:EF10 A9 01 00    LDA #$0001             ;\
-$91:EF13 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} $0AD0 = 1
-$91:EF16 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; $0ACE = 0
+$91:EF13 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} Special Samus palette timer = 0
+$91:EF16 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; X-ray visor palette index = 0
 $91:EF19 9C 68 0A    STZ $0A68  [$7E:0A68]  ; $0A68 = 0
 $91:EF1C 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Beam charge counter = 0
 $91:EF1F 9C D6 0C    STZ $0CD6  [$7E:0CD6]  ;\
@@ -11681,7 +11703,7 @@ $91:F2D2 60          RTS
 ;;; $F2D3:  ;;;
 {
 $91:F2D3 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
-$91:F2D6 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; $0DCE = 0
+$91:F2D6 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed flag = 0
 $91:F2D9 9C 22 0B    STZ $0B22  [$7E:0B22]  ; Set Samus as not falling
 $91:F2DC 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
 $91:F2DF 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
@@ -11696,7 +11718,7 @@ $91:F2EF 60          RTS
 ;;; $F2F0:  ;;;
 {
 $91:F2F0 AD CE 0D    LDA $0DCE  [$7E:0DCE]  ;\
-$91:F2F3 F0 23       BEQ $23    [$F318]     ;} If [$0DCE] = 0: return
+$91:F2F3 F0 23       BEQ $23    [$F318]     ;} If Samus X speed not killed: return
 $91:F2F5 AD 23 0A    LDA $0A23  [$7E:0A23]  ;\
 $91:F2F8 29 FF 00    AND #$00FF             ;|
 $91:F2FB C9 09 00    CMP #$0009             ;} If [Samus previous movement type] != 9 (unused): return
@@ -12083,52 +12105,55 @@ $91:F542 60          RTS
 
 ;;; $F543:  ;;;
 {
-; If current pose is in a checklist,
-; put Samus in superjump pose and JSL 90:CFFA,
-; and move Samus up a pixel if she wasn't jumping previously
-; (Stores new Y position to 0B14 also, unknown use).
-; If Samus jumped and aimed up while standing and aiming up, sets 0A9A to 1.
-; Also has stuff for shooting,
-; triggers firing when Samus has charge and presses fire while spinjumping
-$91:F543 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$91:F546 C9 4E 00    CMP #$004E
-$91:F549 F0 26       BEQ $26    [$F571]
-$91:F54B C9 4D 00    CMP #$004D
-$91:F54E F0 14       BEQ $14    [$F564]
-$91:F550 C9 15 00    CMP #$0015
-$91:F553 F0 0F       BEQ $0F    [$F564]
-$91:F555 C9 16 00    CMP #$0016
-$91:F558 F0 17       BEQ $17    [$F571]
-$91:F55A C9 6A 00    CMP #$006A
-$91:F55D F0 12       BEQ $12    [$F571]
-$91:F55F C9 69 00    CMP #$0069
-$91:F562 D0 36       BNE $36    [$F59A]
+; The $F5CF section seems kinda pointless(?)
+; NOPing it causes fire to be required to be held for more than 1 frame to fire from a spin-jump,
+; otherwise, if charge is equipped, fire only needs to be held for one frame.
+; Note that if Samus has her beam charged, then she only needs to hold fire for one frame to fire the charged beam,
+; regardless of whether this section is NOPed or not
 
-$91:F564 AD 68 0A    LDA $0A68  [$7E:0A68]
-$91:F567 F0 31       BEQ $31    [$F59A]
-$91:F569 A9 C7 00    LDA #$00C7
-$91:F56C 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:F56F 80 0B       BRA $0B    [$F57C]
+$91:F543 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$91:F546 C9 4E 00    CMP #$004E             ;} If [Samus pose] = facing left - normal jump - not aiming - not moving - gun not extended: go to BRANCH_SHINESPARK_FACING_LEFT
+$91:F549 F0 26       BEQ $26    [$F571]     ;/
+$91:F54B C9 4D 00    CMP #$004D             ;\
+$91:F54E F0 14       BEQ $14    [$F564]     ;} If [Samus pose] = facing right - normal jump - not aiming - not moving - gun not extended: go to BRANCH_SHINESPARK_FACING_RIGHT
+$91:F550 C9 15 00    CMP #$0015             ;\
+$91:F553 F0 0F       BEQ $0F    [$F564]     ;} If [Samus pose] = facing right - normal jump - aiming up: go to BRANCH_SHINESPARK_FACING_RIGHT
+$91:F555 C9 16 00    CMP #$0016             ;\
+$91:F558 F0 17       BEQ $17    [$F571]     ;} If [Samus pose] = facing left - normal jump - aiming up: go to BRANCH_SHINESPARK_FACING_LEFT
+$91:F55A C9 6A 00    CMP #$006A             ;\
+$91:F55D F0 12       BEQ $12    [$F571]     ;} If [Samus pose] = facing left - normal jump - aiming up-left: go to BRANCH_SHINESPARK_FACING_LEFT
+$91:F55F C9 69 00    CMP #$0069             ;\
+$91:F562 D0 36       BNE $36    [$F59A]     ;} If [Samus pose] != facing right - normal jump - aiming up-right: go to BRANCH_NOT_SHINESPARK
 
-$91:F571 AD 68 0A    LDA $0A68  [$7E:0A68]
-$91:F574 F0 24       BEQ $24    [$F59A]
-$91:F576 A9 C8 00    LDA #$00C8
-$91:F579 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+; BRANCH_SHINESPARK_FACING_RIGHT
+$91:F564 AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
+$91:F567 F0 31       BEQ $31    [$F59A]     ;} If [Samus shine timer] = 0: go to BRANCH_NOT_SHINESPARK
+$91:F569 A9 C7 00    LDA #$00C7             ;\
+$91:F56C 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - vertical shinespark windup
+$91:F56F 80 0B       BRA $0B    [$F57C]     ; Go to BRANCH_SHINESPARK_MERGE
 
-$91:F57C 22 FA CF 90 JSL $90CFFA[$90:CFFA]
-$91:F580 AD 23 0A    LDA $0A23  [$7E:0A23]
-$91:F583 29 FF 00    AND #$00FF
-$91:F586 C9 02 00    CMP #$0002
-$91:F589 D0 0D       BNE $0D    [$F598]
-$91:F58B AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$91:F58E 38          SEC
-$91:F58F E9 01 00    SBC #$0001
-$91:F592 8D FA 0A    STA $0AFA  [$7E:0AFA]
-$91:F595 8D 14 0B    STA $0B14  [$7E:0B14]
+; BRANCH_SHINESPARK_FACING_LEFT
+$91:F571 AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
+$91:F574 F0 24       BEQ $24    [$F59A]     ;} If [Samus shine timer] = 0: go to BRANCH_NOT_SHINESPARK
+$91:F576 A9 C8 00    LDA #$00C8             ;\
+$91:F579 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - vertical shinespark windup
 
-$91:F598 38          SEC
-$91:F599 60          RTS
+; BRANCH_SHINESPARK_MERGE
+$91:F57C 22 FA CF 90 JSL $90CFFA[$90:CFFA]  ; Trigger shinespark windup
+$91:F580 AD 23 0A    LDA $0A23  [$7E:0A23]  ;\
+$91:F583 29 FF 00    AND #$00FF             ;|
+$91:F586 C9 02 00    CMP #$0002             ;} If [Samus previous movement type] = normal jumping:
+$91:F589 D0 0D       BNE $0D    [$F598]     ;/
+$91:F58B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$91:F58E 38          SEC                    ;|
+$91:F58F E9 01 00    SBC #$0001             ;} Samus Y position -= 1
+$91:F592 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
+$91:F595 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = [Samus Y position]
 
+$91:F598 38          SEC                    ;\
+$91:F599 60          RTS                    ;} Return carry set
+
+; BRANCH_NOT_SHINESPARK
 $91:F59A AD 42 0B    LDA $0B42  [$7E:0B42]  ;\
 $91:F59D D0 0A       BNE $0A    [$F5A9]     ;|
 $91:F59F AD 44 0B    LDA $0B44  [$7E:0B44]  ;} If [Samus X extra run speed] = 0.0:
@@ -12139,33 +12164,34 @@ $91:F5A7 80 06       BRA $06    [$F5AF]
 $91:F5A9 A9 02 00    LDA #$0002             ;\ Else ([Samus X extra run speed] != 0.0):
 $91:F5AC 8D 4A 0B    STA $0B4A  [$7E:0B4A]  ;} Samus X acceleration mode = decelerating
 
-$91:F5AF AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$91:F5B2 C9 15 00    CMP #$0015
-$91:F5B5 F0 05       BEQ $05    [$F5BC]
-$91:F5B7 C9 16 00    CMP #$0016
-$91:F5BA D0 13       BNE $13    [$F5CF]
+$91:F5AF AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$91:F5B2 C9 15 00    CMP #$0015             ;|
+$91:F5B5 F0 05       BEQ $05    [$F5BC]     ;} If [Samus pose] != normal jump - aiming up: go to BRANCH_NO_ANIMATION_SKIP
+$91:F5B7 C9 16 00    CMP #$0016             ;|
+$91:F5BA D0 13       BNE $13    [$F5CF]     ;/
 
-$91:F5BC AD 20 0A    LDA $0A20  [$7E:0A20]
-$91:F5BF C9 55 00    CMP #$0055
-$91:F5C2 F0 05       BEQ $05    [$F5C9]
-$91:F5C4 C9 56 00    CMP #$0056
-$91:F5C7 D0 06       BNE $06    [$F5CF]
+$91:F5BC AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
+$91:F5BF C9 55 00    CMP #$0055             ;|
+$91:F5C2 F0 05       BEQ $05    [$F5C9]     ;} If [Samus previous pose] != normal jump transition - aiming up: go to BRANCH_NO_ANIMATION_SKIP
+$91:F5C4 C9 56 00    CMP #$0056             ;|
+$91:F5C7 D0 06       BNE $06    [$F5CF]     ;/
 
-$91:F5C9 A9 01 00    LDA #$0001
-$91:F5CC 8D 9A 0A    STA $0A9A  [$7E:0A9A]
+$91:F5C9 A9 01 00    LDA #$0001             ;\
+$91:F5CC 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 1
 
+; BRANCH_NO_ANIMATION_SKIP
 $91:F5CF A5 8F       LDA $8F    [$7E:008F]  ;\
-$91:F5D1 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If new pressed shoot:
+$91:F5D1 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If newly pressed shoot:
 $91:F5D4 F0 13       BEQ $13    [$F5E9]     ;/
-$91:F5D6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$91:F5D9 0A          ASL A
-$91:F5DA 0A          ASL A
-$91:F5DB 0A          ASL A
-$91:F5DC AA          TAX
-$91:F5DD BD 2C B6    LDA $B62C,x[$91:B6C4]
-$91:F5E0 29 FF 00    AND #$00FF
-$91:F5E3 09 00 80    ORA #$8000
-$91:F5E6 8D 5E 0B    STA $0B5E  [$7E:0B5E]
+$91:F5D6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$91:F5D9 0A          ASL A                  ;|
+$91:F5DA 0A          ASL A                  ;|
+$91:F5DB 0A          ASL A                  ;|
+$91:F5DC AA          TAX                    ;} Pose transition shot direction = [$B62C + [Samus pose] * 8] (direction shots are fired) | 8000h
+$91:F5DD BD 2C B6    LDA $B62C,x[$91:B6C4]  ;|
+$91:F5E0 29 FF 00    AND #$00FF             ;|
+$91:F5E3 09 00 80    ORA #$8000             ;|
+$91:F5E6 8D 5E 0B    STA $0B5E  [$7E:0B5E]  ;/
 
 $91:F5E9 18          CLC
 $91:F5EA 60          RTS
@@ -12411,15 +12437,15 @@ $91:F7A8             dw F7CE, F7CE, F7CC, F7CC
 ;;; $F7B0:  ;;;
 {
 ; Gives Samus shinespark
-$91:F7B0 AD 3E 0B    LDA $0B3E  [$7E:0B3E]
-$91:F7B3 29 00 FF    AND #$FF00
-$91:F7B6 C9 00 04    CMP #$0400
-$91:F7B9 30 0F       BMI $0F    [$F7CA]
-$91:F7BB A9 B4 00    LDA #$00B4
-$91:F7BE 8D 68 0A    STA $0A68  [$7E:0A68]
+$91:F7B0 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
+$91:F7B3 29 00 FF    AND #$FF00             ;|
+$91:F7B6 C9 00 04    CMP #$0400             ;} If speed boosting:
+$91:F7B9 30 0F       BMI $0F    [$F7CA]     ;/
+$91:F7BB A9 B4 00    LDA #$00B4             ;\
+$91:F7BE 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = B4h
 $91:F7C1 A9 01 00    LDA #$0001             ;\
-$91:F7C4 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 1
-$91:F7C7 9C CE 0A    STZ $0ACE  [$7E:0ACE]
+$91:F7C4 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 1 (speed booster shine)
+$91:F7C7 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; $0ACE = 0
 
 $91:F7CA 18          CLC
 $91:F7CB 60          RTS
@@ -12597,51 +12623,53 @@ $91:F8D2 60          RTS
 
 ;;; $F8D3:  ;;;
 {
-$91:F8D3 AD 20 0A    LDA $0A20  [$7E:0A20]
-$91:F8D6 F0 59       BEQ $59    [$F931]
-$91:F8D8 C9 9B 00    CMP #$009B
-$91:F8DB F0 54       BEQ $54    [$F931]
-$91:F8DD 0A          ASL A
-$91:F8DE 0A          ASL A
-$91:F8DF 0A          ASL A
-$91:F8E0 AA          TAX
-$91:F8E1 BD 2C B6    LDA $B62C,x[$91:B674]
-$91:F8E4 29 FF 00    AND #$00FF
-$91:F8E7 AA          TAX
-$91:F8E8 AD 23 0A    LDA $0A23  [$7E:0A23]
-$91:F8EB 29 FF 00    AND #$00FF
-$91:F8EE C9 10 00    CMP #$0010
-$91:F8F1 D0 25       BNE $25    [$F918]
-$91:F8F3 AD 20 0A    LDA $0A20  [$7E:0A20]
-$91:F8F6 0A          ASL A
-$91:F8F7 0A          ASL A
-$91:F8F8 0A          ASL A
-$91:F8F9 A8          TAY
-$91:F8FA B9 2C B6    LDA $B62C,y[$91:B874]
-$91:F8FD 29 FF 00    AND #$00FF
-$91:F900 09 00 01    ORA #$0100
-$91:F903 8D 5E 0B    STA $0B5E  [$7E:0B5E]
+$91:F8D3 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
+$91:F8D6 F0 59       BEQ $59    [$F931]     ;|
+$91:F8D8 C9 9B 00    CMP #$009B             ;} If [Samus previous pose] = facing forward: go to BRANCH_DONE
+$91:F8DB F0 54       BEQ $54    [$F931]     ;/
+$91:F8DD 0A          ASL A                  ;\
+$91:F8DE 0A          ASL A                  ;|
+$91:F8DF 0A          ASL A                  ;|
+$91:F8E0 AA          TAX                    ;} X = [$B62C + [Samus previous pose] * 8] (direction shots are fired)
+$91:F8E1 BD 2C B6    LDA $B62C,x[$91:B674]  ;|
+$91:F8E4 29 FF 00    AND #$00FF             ;|
+$91:F8E7 AA          TAX                    ;/
+$91:F8E8 AD 23 0A    LDA $0A23  [$7E:0A23]  ;\
+$91:F8EB 29 FF 00    AND #$00FF             ;|
+$91:F8EE C9 10 00    CMP #$0010             ;} If [Samus previous movement type] = moonwalking:
+$91:F8F1 D0 25       BNE $25    [$F918]     ;/
+$91:F8F3 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
+$91:F8F6 0A          ASL A                  ;|
+$91:F8F7 0A          ASL A                  ;|
+$91:F8F8 0A          ASL A                  ;|
+$91:F8F9 A8          TAY                    ;} Pose transition shot direction = [$B62C + [Samus previous pose] * 8] (direction shots are fired) | 100h
+$91:F8FA B9 2C B6    LDA $B62C,y[$91:B874]  ;|
+$91:F8FD 29 FF 00    AND #$00FF             ;|
+$91:F900 09 00 01    ORA #$0100             ;|
+$91:F903 8D 5E 0B    STA $0B5E  [$7E:0B5E]  ;/
 $91:F906 A5 8B       LDA $8B    [$7E:008B]  ;\
-$91:F908 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If not pressing jump: go to BRANCH_F91D
+$91:F908 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If not pressing jump: go to BRANCH_STANDING
 $91:F90B F0 10       BEQ $10    [$F91D]     ;/
-$91:F90D BD EA F9    LDA $F9EA,x[$91:F9F1]
-$91:F910 29 FF 00    AND #$00FF
-$91:F913 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:F916 80 19       BRA $19    [$F931]
+$91:F90D BD EA F9    LDA $F9EA,x[$91:F9F1]  ;\
+$91:F910 29 FF 00    AND #$00FF             ;} Samus pose = [$F9EA + [X]]
+$91:F913 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;/
+$91:F916 80 19       BRA $19    [$F931]     ; Go to BRANCH_DONE
 
-$91:F918 C9 05 00    CMP #$0005
-$91:F91B F0 0B       BEQ $0B    [$F928]
+$91:F918 C9 05 00    CMP #$0005             ;\
+$91:F91B F0 0B       BEQ $0B    [$F928]     ;} If [Samus previous movement type] = crouching: go to BRANCH_CROUCHING
 
-; BRANCH_F91D
-$91:F91D BD C2 F9    LDA $F9C2,x[$91:F9C4]
-$91:F920 29 FF 00    AND #$00FF
-$91:F923 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:F926 80 09       BRA $09    [$F931]
+; BRANCH_STANDING
+$91:F91D BD C2 F9    LDA $F9C2,x[$91:F9C4]  ;\
+$91:F920 29 FF 00    AND #$00FF             ;} Samus pose = [$F9C2 + [X]]
+$91:F923 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;/
+$91:F926 80 09       BRA $09    [$F931]     ; Go to BRANCH_DONE
 
-$91:F928 BD CC F9    LDA $F9CC,x[$91:F9CE]
-$91:F92B 29 FF 00    AND #$00FF
-$91:F92E 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+; BRANCH_CROUCHING
+$91:F928 BD CC F9    LDA $F9CC,x[$91:F9CE]  ;\
+$91:F92B 29 FF 00    AND #$00FF             ;} Samus pose = [$F9CC + [X]]
+$91:F92E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;/
 
+; BRANCH_DONE
 $91:F931 AD 44 0B    LDA $0B44  [$7E:0B44]  ;\
 $91:F934 18          CLC                    ;|
 $91:F935 6D 48 0B    ADC $0B48  [$7E:0B48]  ;|
@@ -13299,7 +13327,7 @@ $91:FDB6 C9 9B 00    CMP #$009B             ;} If not facing forward: go to BRAN
 $91:FDB9 D0 02       BNE $02    [$FDBD]     ;/
 
 $91:FDBB 28          PLP
-$91:FDBC 60          RTS
+$91:FDBC 60          RTS                    ; Return
 
 ; BRANCH_NOT_FACING_FORWARD
 $91:FDBD 9C 34 0A    STZ $0A34  [$7E:0A34]  ; $0A34 = 0
@@ -13334,9 +13362,9 @@ $91:FDF5 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $91:FDF7 A9 02 00    LDA #$0002             ;\
 $91:FDFA 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = up
 $91:FDFD 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FE01 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = [A]
+$91:FE01 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
 $91:FE04 AA          TAX                    ;\
-$91:FE05 F0 06       BEQ $06    [$FE0D]     ;} If [$0DD0] != 0: (collision detected)
+$91:FE05 F0 06       BEQ $06    [$FE0D]     ;} If collision detected:
 $91:FE07 A9 01 00    LDA #$0001             ;\
 $91:FE0A 8D 34 0A    STA $0A34  [$7E:0A34]  ;} Solid enemy collision flags = 1
 
@@ -13348,9 +13376,9 @@ $91:FE17 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $91:FE19 A9 03 00    LDA #$0003             ;\
 $91:FE1C 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = down
 $91:FE1F 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FE23 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = [A]
+$91:FE23 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
 $91:FE26 AA          TAX                    ;\
-$91:FE27 F0 09       BEQ $09    [$FE32]     ;} If [$0DD0] != 0: (collision detected)
+$91:FE27 F0 09       BEQ $09    [$FE32]     ;} If collision detected:
 $91:FE29 AD 34 0A    LDA $0A34  [$7E:0A34]  ;\
 $91:FE2C 09 02 00    ORA #$0002             ;} Solid enemy collision flags |= 2
 $91:FE2F 8D 34 0A    STA $0A34  [$7E:0A34]  ;/
@@ -13439,9 +13467,9 @@ $91:FEBB 8D 00 0B    STA $0B00  [$7E:0B00]  ;/
 $91:FEBE A9 03 00    LDA #$0003             ;\
 $91:FEC1 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = down
 $91:FEC4 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FEC8 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = [A]
+$91:FEC8 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
 $91:FECB AA          TAX                    ;\
-$91:FECC D0 0B       BNE $0B    [$FED9]     ;} If [$0DD0] = 0: (no collision detected)
+$91:FECC D0 0B       BNE $0B    [$FED9]     ;} If collision not detected:
 $91:FECE A5 12       LDA $12    [$7E:0012]  ;\
 $91:FED0 8D 3E 0A    STA $0A3E  [$7E:0A3E]  ;} $0A3E = [$12] (space to move Samus up)
 $91:FED3 68          PLA                    ;\
@@ -13478,9 +13506,9 @@ $91:FEFC 8D 00 0B    STA $0B00  [$7E:0B00]  ;/
 $91:FEFF A9 02 00    LDA #$0002             ;\
 $91:FF02 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = up
 $91:FF05 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FF09 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = [A]
+$91:FF09 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
 $91:FF0C AA          TAX                    ;\
-$91:FF0D D0 0B       BNE $0B    [$FF1A]     ;} If [$0DD0] = 0: (no collision detected)
+$91:FF0D D0 0B       BNE $0B    [$FF1A]     ;} If collision not detected:
 $91:FF0F A5 12       LDA $12    [$7E:0012]  ;\
 $91:FF11 8D 40 0A    STA $0A40  [$7E:0A40]  ;} $0A40 = [$12] (space to move Samus down)
 $91:FF14 68          PLA                    ;\

@@ -1,3 +1,5 @@
+;;; $8000..85E1: Animate Samus ;;;
+{
 ;;; $8000: Animate Samus ;;;
 {
 $90:8000 08          PHP
@@ -282,7 +284,7 @@ $90:81C3 30 47       BMI $47    [$820C]     ;} If [lava Y position] < 0: go to a
 $90:81C5 C5 12       CMP $12    [$7E:0012]  ;\
 $90:81C7 10 43       BPL $43    [$820C]     ;} If [lava Y position] >= [Samus bottom boundary]: go to animate Samus - FX = none
 $90:81C9 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
-$90:81CC F0 0A       BEQ $0A    [$81D8]     ;} If [Samus speed counter] != 0:
+$90:81CC F0 0A       BEQ $0A    [$81D8]     ;} If [Samus speed counter / timer] != 0:
 $90:81CE 22 53 DE 91 JSL $91DE53[$91:DE53]  ; Cancel speed boosting
 $90:81D2 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
 $90:81D5 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
@@ -417,44 +419,6 @@ $90:82DB 60          RTS
 
 ;;; $82DC: Handle Samus animation delay ;;;
 {
-; 90:82DC handles all the game-mechanics related to animating Samus.
-; First off, it gets a pointer to the starting address for the $0A1C's animation frame timers from 91:B010,X (X = 2*$0A1C)
-; If the number is positive,
-;  $84E3 will get a different pointer for the animation frame timer if Samus is running,
-;  depending on Samuss current speed counter (B5E8, B5F3, B5FE, B609, B614).
-;  Whichever pointer it has then,
-;  it's used to find the next animation frame timer and the game is done with 90:8000.
-; If the number is negative,
-;  it first goes to $852C.
-;  If Samus isn't running, this just loads the value animation frame timer again.
-;  If she's running without speed boots, it sets everything up and tells $82DC to branch to the end.
-;  Otherwise, if Samus is running with speed boots, it has a few things to do.
-;  If Samus has just reached blue suit speed, start the sound for it.
-;  Set everything up for speed running, and tell $82DC to branch to end. Very inefficient.
-; Finally, if the routine doesn't branch to the end (Samus isn't running),
-;  the last nybble is used as an index for a JSR ($8324,X).
-; 0-5 all CLC and RTS. (Stop at last frame)
-; 6 causes heavy breathing (go to next animation loop) when low on health (SEC).
-;  Else go back to start of current animation loop
-; 7 is used only when Samus is exhausted (MB or Metroid attack) (SEC).
-;  (Put #$94CB into $0A58, go to next animation loop)
-; 8 makes a lot of checks: If $0A60 is #$E91D or $0A28 is 4B, 4C, 19, or 1A, do nothing.
-;  Else put #$E926 into $0A60 and use the argument for $0A2C (same as D)
-; 9 checks Samus equipment, if a certain item bit isn't equipped (first 2 bytes of argument),
-;  use 3rd byte of argument for $0A2C if Samus is moving vertically, 4th if not,
-;  5th if item is equipped and Samus is moving vertically, 6th if not moving but equipped.
-;  0A32 = #$0003, CLC. Only used by Springball, currently.
-; A If Samus isn't falling, use 1st byte of argument for $0A2C, else use second. 0A32 = #$0003, CLC
-; B is used by walljumps only, I think. Hardcoded stuff,
-;  switches to screw attack, space jump, or spinjump
-;  depending on FX3, Gravity Suit, screw attack, and space jump.
-; C checks Samus equipment, if a certain item bit isn't equipped (first 2 bytes of argument),
-;  use 3rd byte of argument for $0A2C, else use 4th byte of argument for $0A2C. 0A32 = #$0003, CLC. Springball
-; D uses the next byte in the animation frame list for $0A2C, 0A32 = #$0003.
-; E backtracks by the argument's amount of frames (SEC). A targeted loop, basically.
-; F loops back to frame 0. SEC. Straightforward loop.
-; Anyways, if carry is cleared, it's done. Otherwise, it uses the pointer, $0A96 to get the next frame timer
-
 $90:82DC 08          PHP
 $90:82DD E2 20       SEP #$20
 $90:82DF 8B          PHB
@@ -513,20 +477,20 @@ $90:8345 60          RTS
 ;     27h: Facing right - crouching
 ;     28h: Facing left  - crouching
 
-$90:8346 AD C2 09    LDA $09C2  [$7E:09C2]
-$90:8349 C9 1E 00    CMP #$001E
-$90:834C 30 08       BMI $08    [$8356]
-$90:834E A0 00 00    LDY #$0000
-$90:8351 8C 96 0A    STY $0A96  [$7E:0A96]
-$90:8354 38          SEC
-$90:8355 60          RTS
+$90:8346 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$90:8349 C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30:
+$90:834C 30 08       BMI $08    [$8356]     ;/
+$90:834E A0 00 00    LDY #$0000             ;\
+$90:8351 8C 96 0A    STY $0A96  [$7E:0A96]  ;} Y = Samus animation frame = 0
+$90:8354 38          SEC                    ;\
+$90:8355 60          RTS                    ;} Return carry set
 
-$90:8356 AD 96 0A    LDA $0A96  [$7E:0A96]
-$90:8359 1A          INC A
-$90:835A 8D 96 0A    STA $0A96  [$7E:0A96]
-$90:835D A8          TAY
-$90:835E 38          SEC
-$90:835F 60          RTS
+$90:8356 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
+$90:8359 1A          INC A                  ;} Increment Samus animation frame
+$90:835A 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
+$90:835D A8          TAY                    ; Y = [Samus animation frame]
+$90:835E 38          SEC                    ;\
+$90:835F 60          RTS                    ;} Return carry set
 }
 
 
@@ -538,12 +502,12 @@ $90:835F 60          RTS
 
 $90:8360 A9 CB 94    LDA #$94CB             ;\
 $90:8363 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $94CB (Samus drained - crouching)
-$90:8366 AD 96 0A    LDA $0A96  [$7E:0A96]
-$90:8369 1A          INC A
-$90:836A 8D 96 0A    STA $0A96  [$7E:0A96]
-$90:836D A8          TAY
-$90:836E 38          SEC
-$90:836F 60          RTS
+$90:8366 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
+$90:8369 1A          INC A                  ;} Increment Samus animation frame
+$90:836A 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
+$90:836D A8          TAY                    ; Y = [Samus animation frame]
+$90:836E 38          SEC                    ;\
+$90:836F 60          RTS                    ;} Return carry set
 }
 
 
@@ -870,26 +834,26 @@ $90:84C6 60          RTS
 
 ;;; $84C7: Animation delay instruction Eh - go to [Y] - [[$00] + [Y] + 1] ;;;
 {
-$90:84C7 C8          INY
-$90:84C8 B7 00       LDA [$00],y[$91:B34E]
-$90:84CA 29 FF 00    AND #$00FF
-$90:84CD 85 12       STA $12    [$7E:0012]
-$90:84CF AD 96 0A    LDA $0A96  [$7E:0A96]
-$90:84D2 38          SEC
-$90:84D3 E5 12       SBC $12    [$7E:0012]
-$90:84D5 8D 96 0A    STA $0A96  [$7E:0A96]
-$90:84D8 A8          TAY
-$90:84D9 38          SEC
-$90:84DA 60          RTS
+$90:84C7 C8          INY                    ;\
+$90:84C8 B7 00       LDA [$00],y[$91:B34E]  ;|
+$90:84CA 29 FF 00    AND #$00FF             ;|
+$90:84CD 85 12       STA $12    [$7E:0012]  ;|
+$90:84CF AD 96 0A    LDA $0A96  [$7E:0A96]  ;} Samus animation frame -= [[$00] + [Y] + 1]
+$90:84D2 38          SEC                    ;|
+$90:84D3 E5 12       SBC $12    [$7E:0012]  ;|
+$90:84D5 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
+$90:84D8 A8          TAY                    ; Y = [Samus animation frame]
+$90:84D9 38          SEC                    ;\
+$90:84DA 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $84DB: Animation delay instruction Fh - go to beginning ;;;
 {
-$90:84DB A0 00 00    LDY #$0000
-$90:84DE 8C 96 0A    STY $0A96  [$7E:0A96]
-$90:84E1 38          SEC
-$90:84E2 60          RTS
+$90:84DB A0 00 00    LDY #$0000             ;\
+$90:84DE 8C 96 0A    STY $0A96  [$7E:0A96]  ;} Y = Samus animation frame = 0
+$90:84E1 38          SEC                    ;\
+$90:84E2 60          RTS                    ;} Return carry set
 }
 
 
@@ -915,7 +879,7 @@ $90:84EB 48          PHA                    ;\
 $90:84EC AB          PLB                    ;} DB = $91
 $90:84ED C2 30       REP #$30
 $90:84EF AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
-$90:84F2 F0 29       BEQ $29    [$851D]     ;} If [$0B3C] = 0: go to BRANCH_RETURN
+$90:84F2 F0 29       BEQ $29    [$851D]     ;} If [Samus running momentum flag] = 0: go to BRANCH_RETURN
 $90:84F4 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:84F7 29 FF 00    AND #$00FF             ;|
 $90:84FA C9 01 00    CMP #$0001             ;} If [Samus movement type] != running: go to BRANCH_RETURN
@@ -932,7 +896,7 @@ $90:8513 85 00       STA $00    [$7E:0000]  ;/
 $90:8515 80 06       BRA $06    [$851D]
 
 $90:8517 AF D1 B5 91 LDA $91B5D1[$91:B5D1]  ;\ Else (speed booster not equipped):
-$90:851B 85 00       STA $00    [$7E:0000]  ;} $00 = [$91:B5D1]
+$90:851B 85 00       STA $00    [$7E:0000]  ;} $00 = $B5D3
 
 ; BRANCH_RETURN
 $90:851D B7 00       LDA [$00],y[$91:B299]  ;\
@@ -983,7 +947,7 @@ $90:8534 48          PHA                    ;\
 $90:8535 AB          PLB                    ;} DB = $91
 $90:8536 C2 30       REP #$30
 $90:8538 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
-$90:853B D0 03       BNE $03    [$8540]     ;} If [$0B3C] = 0:
+$90:853B D0 03       BNE $03    [$8540]     ;} If [Samus running momentum flag] = 0:
 $90:853D 4C DA 85    JMP $85DA  [$90:85DA]  ; Go to BRANCH_RETURN
 
 $90:8540 A5 8B       LDA $8B    [$7E:008B]  ;\
@@ -1003,7 +967,7 @@ $90:855E D0 1D       BNE $1D    [$857D]     ;/
 $90:8560 A0 00 00    LDY #$0000             ;\
 $90:8563 8C 96 0A    STY $0A96  [$7E:0A96]  ;} Y = Samus animation frame = 0
 $90:8566 AF D1 B5 91 LDA $91B5D1[$91:B5D1]  ;\
-$90:856A 85 00       STA $00    [$7E:0000]  ;} $00 = [$91:B5D1]
+$90:856A 85 00       STA $00    [$7E:0000]  ;} $00 = $B5D3
 $90:856C B7 00       LDA [$00],y[$91:B5D3]  ;\
 $90:856E 29 FF 00    AND #$00FF             ;|
 $90:8571 18          CLC                    ;} Samus animation frame timer = [[$00]] + [Samus animation frame buffer]
@@ -1013,10 +977,10 @@ $90:8578 A9 00 00    LDA #$0000             ; A = 0
 $90:857B 80 62       BRA $62    [$85DF]     ; Return
 
 $90:857D AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
-$90:8580 3A          DEC A                  ;} Decrement $0B3E
+$90:8580 3A          DEC A                  ;} Decrement speed boost timer
 $90:8581 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;/
 $90:8584 89 FF 00    BIT #$00FF             ;\
-$90:8587 D0 51       BNE $51    [$85DA]     ;} If [$0B3E] != 0: go to BRANCH_RETURN
+$90:8587 D0 51       BNE $51    [$85DA]     ;} If [speed boost timer] != 0: go to BRANCH_RETURN
 $90:8589 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
 $90:858C 89 00 04    BIT #$0400             ;} If [speed boost counter] != 4:
 $90:858F D0 19       BNE $19    [$85AA]     ;/
@@ -1036,7 +1000,7 @@ $90:85AE 0A          ASL A                  ;} X = [speed boost counter] * 2 <--
 $90:85AF AA          TAX                    ;/
 $90:85B0 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
 $90:85B3 29 00 FF    AND #$FF00             ;|
-$90:85B6 1F 1F B6 91 ORA $91B61F,x[$91:B621];} $0B3E = [$91:B61F + [X]]
+$90:85B6 1F 1F B6 91 ORA $91B61F,x[$91:B621];} Speed boost timer = [$91:B61F + [X]]
 $90:85BA 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;/
 $90:85BD A0 00 00    LDY #$0000             ;\
 $90:85C0 8C 96 0A    STY $0A96  [$7E:0A96]  ;} Y = Samus animation frame = 0
@@ -1058,8 +1022,11 @@ $90:85DF AB          PLB
 $90:85E0 28          PLP
 $90:85E1 60          RTS
 }
+}
 
 
+;;; $85E2..8A4B: Draw Samus ;;;
+{
 ;;; $85E2: Draw Samus (not including arm cannon nor speed echoes) ;;;
 {
 ; Does not draw non-closed arm cannon, speed echoes, nor charge / grapple flare
@@ -1084,17 +1051,17 @@ $90:8603 4C 47 86    JMP $8647  [$90:8647]  ; Go to BRANCH_INVISIBLE
 $90:8606 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:8609 0A          ASL A                  ;} X = [Samus pose] * 2
 $90:860A AA          TAX                    ;/
-$90:860B DA          PHX                    ;\
-$90:860C BF 63 92 92 LDA $929263,x[$92:9267];|
-$90:8610 18          CLC                    ;} Samus top half spritemap index = [$92:9263 + [Samus pose] * 2] + [Samus animation frame]
-$90:8611 6D 96 0A    ADC $0A96  [$7E:0A96]  ;|
+$90:860B DA          PHX
+$90:860C BF 63 92 92 LDA $929263,x[$92:9267];\
+$90:8610 18          CLC                    ;|
+$90:8611 6D 96 0A    ADC $0A96  [$7E:0A96]  ;} A = Samus top half spritemap index = [$92:9263 + [Samus pose] * 2] + [Samus animation frame]
 $90:8614 8D C8 0A    STA $0AC8  [$7E:0AC8]  ;/
 $90:8617 48          PHA                    ;\
 $90:8618 20 1F 8C    JSR $8C1F  [$90:8C1F]  ;} Calculate Samus spritemap position
 $90:861B 68          PLA                    ;/
 $90:861C 22 AE 89 81 JSL $8189AE[$81:89AE]  ; Add Samus spritemap to OAM
-$90:8620 FA          PLX                    ;\
-$90:8621 86 24       STX $24    [$7E:0024]  ;} $24 = [Samus pose] * 2
+$90:8620 FA          PLX
+$90:8621 86 24       STX $24    [$7E:0024]  ; $24 = [Samus pose] * 2
 $90:8623 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:8626 29 FF 00    AND #$00FF             ;|
 $90:8629 0A          ASL A                  ;} Execute [$864E + [Samus movement type] * 2]
@@ -1103,7 +1070,7 @@ $90:862B FC 4E 86    JSR ($864E,x)[$90:868D];/
 $90:862E 90 17       BCC $17    [$8647]     ; If carry set: (bottom spritemap is drawn)
 $90:8630 A6 24       LDX $24    [$7E:0024]  ;\
 $90:8632 BF 5D 94 92 LDA $92945D,x[$92:9461];|
-$90:8636 18          CLC                    ;} Samus bottom half spritemap index = [$92:945D + [Samus pose] * 2] + [Samus animation frame]
+$90:8636 18          CLC                    ;} A = Samus bottom half spritemap index = [$92:945D + [Samus pose] * 2] + [Samus animation frame]
 $90:8637 6D 96 0A    ADC $0A96  [$7E:0A96]  ;|
 $90:863A 8D CA 0A    STA $0ACA  [$7E:0ACA]  ;/
 $90:863D AE 04 0B    LDX $0B04  [$7E:0B04]  ; X = [Samus spritemap X position]
@@ -1425,7 +1392,7 @@ $90:87E2 A0 00 00    LDY #$0000             ; Y = 0 (speed echo index)
 $90:87E5 20 55 88    JSR $8855  [$90:8855]  ; Draw Samus echo
 
 $90:87E8 28          PLP
-$90:87E9 60          RTS
+$90:87E9 60          RTS                    ; Return
 
 ; BRANCH_MERGING_ECHOES
 $90:87EA A0 02 00    LDY #$0002             ; Y = 2 (speed echo index)
@@ -1545,7 +1512,7 @@ $90:88B9 60          RTS
 }
 
 
-;;; $88BA: Draw shinespark crash echoes ;;;
+;;; $88BA: Draw shinespark crash echo circle ;;;
 {
 ;; Parameters:
 ;;     X: Speed echo index
@@ -1648,12 +1615,12 @@ $90:8956 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $90:8959 89 01 00    BIT #$0001             ;} If [frame counter] % 2 = 0: return
 $90:895C F0 16       BEQ $16    [$8974]     ;/
 $90:895E AD C6 0A    LDA $0AC6  [$7E:0AC6]  ;\
-$90:8961 F0 06       BEQ $06    [$8969]     ;} If [speed echo 3 X speed] != 0:
+$90:8961 F0 06       BEQ $06    [$8969]     ;} If [draw speed echo 3 flag] != 0:
 $90:8963 A0 06 00    LDY #$0006             ; Y = 6 (speed echo index)
 $90:8966 20 55 88    JSR $8855  [$90:8855]  ; Draw Samus echo
 
 $90:8969 AD C4 0A    LDA $0AC4  [$7E:0AC4]  ;\
-$90:896C F0 06       BEQ $06    [$8974]     ;} If [speed echo 2 X speed] != 0:
+$90:896C F0 06       BEQ $06    [$8974]     ;} If [draw speed echo 2 flag] != 0:
 $90:896E A0 04 00    LDY #$0004             ; Y = 4 (speed echo index)
 $90:8971 20 55 88    JSR $8855  [$90:8855]  ; Draw Samus echo
 
@@ -1688,6 +1655,8 @@ $90:8997 6B          RTL
 
 ;;; $8998: Draw Samus during death animation ;;;
 {
+; This is the same as $8A00, except that layer 1 position is added to Samus spritemap position for some reason,
+; to account for this, there's code at $9B:B409 that subtracts the layer 1 position from Samus position...
 $90:8998 08          PHP
 $90:8999 8B          PHB
 $90:899A E2 20       SEP #$20               ;\
@@ -1745,9 +1714,16 @@ $90:89FF 6B          RTL
 }
 
 
-;;; $8A00:  ;;;
+;;; $8A00: Draw inanimate Samus ;;;
 {
-; I think this is used to draw Samus when she's not animating (door transition, taken fatal damage)
+; Used to draw Samus during:
+;     Door transition
+;     Using elevator
+;     Taken fatal damage
+;     Game state 15h
+
+; Compared to $85E2, this routine doesn't update $0A96/$0ACA for speed echo drawing,
+; and doesn't have the checks for being invisible
 $90:8A00 08          PHP
 $90:8A01 8B          PHB
 $90:8A02 E2 20       SEP #$20               ;\
@@ -1762,12 +1738,12 @@ $90:8A0F DA          PHX
 $90:8A10 BF 63 92 92 LDA $929263,x[$92:9275];\
 $90:8A14 18          CLC                    ;} A = [$92:9263 + [Samus pose] * 2] + [Samus animation frame] (Samus spritemap table index - top half)
 $90:8A15 6D 96 0A    ADC $0A96  [$7E:0A96]  ;/
-$90:8A18 48          PHA
-$90:8A19 20 1F 8C    JSR $8C1F  [$90:8C1F]  ; Calculate Samus spritemap position
-$90:8A1C 68          PLA
-$90:8A1D 22 AE 89 81 JSL $8189AE[$81:89AE]  ; Add Samus spritemap [A] to OAM at position ([X], [Y])
+$90:8A18 48          PHA                    ;\
+$90:8A19 20 1F 8C    JSR $8C1F  [$90:8C1F]  ;} Calculate Samus spritemap position
+$90:8A1C 68          PLA                    ;/
+$90:8A1D 22 AE 89 81 JSL $8189AE[$81:89AE]  ; Add Samus spritemap to OAM
 $90:8A21 FA          PLX
-$90:8A22 86 24       STX $24    [$7E:0024]  ; $24 = [X]
+$90:8A22 86 24       STX $24    [$7E:0024]  ; $24 = [Samus pose] * 2
 $90:8A24 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:8A27 29 FF 00    AND #$00FF             ;|
 $90:8A2A 0A          ASL A                  ;} Execute [$864E + [Samus movement type] * 2]
@@ -1780,15 +1756,18 @@ $90:8A37 18          CLC                    ;} A = [$92:945D + [Samus pose] * 2]
 $90:8A38 6D 96 0A    ADC $0A96  [$7E:0A96]  ;/
 $90:8A3B AE 04 0B    LDX $0B04  [$7E:0B04]  ; X = [Samus spritemap X position]
 $90:8A3E AC 06 0B    LDY $0B06  [$7E:0B06]  ; Y = [Samus spritemap Y position]
-$90:8A41 22 AE 89 81 JSL $8189AE[$81:89AE]  ; Add Samus spritemap [A] to OAM at position ([X], [Y])
+$90:8A41 22 AE 89 81 JSL $8189AE[$81:89AE]  ; Add Samus spritemap to OAM
 
 $90:8A45 22 00 80 92 JSL $928000[$92:8000]  ; Set Samus tiles definitions for current animation
 $90:8A49 AB          PLB
 $90:8A4A 28          PLP
 $90:8A4B 6B          RTL
 }
+}
 
 
+;;; $8A4C..8C1E: Handle atmospheric effects ;;;
+{
 ;;; $8A4C: Handle atmospheric effects ;;;
 {
 ; Water splash, air bubbles, footsteps
@@ -2044,10 +2023,18 @@ $90:8BFF             dw 0000, 8C0F, 0000, 0000, 8C17, 0000, 8C17, 8C17
 $90:8C0F             dw 2A2C, 2A2D, 2A2E, 2A2F ; 1 - footstep splashes
 $90:8C17             dw 2A48, 2A49, 2A4A, 2A4B ; 4/6/7 - lava surface damage / dust
 }
+}
 
 
+;;; $8C1F..8E0E: Calculate Samus spritemap position ;;;
+{
 ;;; $8C1F: Calculate Samus spritemap position ;;;
 {
+;; Parameters:
+;;     X: Samus pose * 2
+;; Returns:
+;;     X: Samus spritemap X position
+;;     Y: Samus spritemap Y position
 $90:8C1F AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $90:8C22 10 2B       BPL $2B    [$8C4F]     ;} If [Ceres status] = elevator room is rotating:
 $90:8C24 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -2067,7 +2054,7 @@ $90:8C42 AD 84 0D    LDA $0D84  [$7E:0D84]  ;\
 $90:8C45 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;} Samus Y position = [$0D84]
 $90:8C48 AD 82 0D    LDA $0D82  [$7E:0D82]  ;\
 $90:8C4B 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;} Samus X position = [$0D82]
-$90:8C4E 60          RTS
+$90:8C4E 60          RTS                    ; Return
 
 $90:8C4F 9B          TXY                    ; Y = [X]
 $90:8C50 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
@@ -2077,39 +2064,44 @@ $90:8C57 AA          TAX                    ;|
 $90:8C58 FC 5C 8C    JSR ($8C5C,x)[$90:8CC3];/
 $90:8C5B 60          RTS
 
-$90:8C5C             dw 8CC3, ; 0: Standing
-                        8C94, ; 1: Running
-                        8C94, ; 2: Normal jumping
-                        8C94, ; 3: Spin jumping
-                        8C94, ; 4: Morph ball - on ground
-                        8C94, ; 5: Crouching
-                        8C94, ; 6: Falling
-                        8C94, ; 7: Unused
-                        8C94, ; 8: Morph ball - falling
-                        8C94, ; 9: Unused
-                        8C94, ; Ah: Knockback
-                        8C94, ; Bh: Unused
-                        8C94, ; Ch: Unused
-                        8C94, ; Dh: Unused
-                        8C94, ; Eh: Turning around - on ground
-                        8D3C, ; Fh: Crouching/standing/morphing/unmorphing transition
-                        8C94, ; 10h: Moonwalking
-                        8C94, ; 11h: Spring ball - on ground
-                        8C94, ; 12h: Spring ball - in air
-                        8C94, ; 13h: Spring ball - falling
-                        8C94, ; 14h: Wall jumping
-                        8C94, ; 15h: Ran into a wall
-                        8C94, ; 16h: Grappling
-                        8C94, ; 17h: Turning around - jumping
-                        8C94, ; 18h: Turning around - falling
-                        8C94, ; 19h: Damage boost
-                        8C94, ; 1Ah: Grabbed by Draygon
-                        8D98  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
+$90:8C5C             dw 8CC3, ; *0: Standing
+                        8C94, ;  1: Running
+                        8C94, ;  2: Normal jumping
+                        8C94, ;  3: Spin jumping
+                        8C94, ;  4: Morph ball - on ground
+                        8C94, ;  5: Crouching
+                        8C94, ;  6: Falling
+                        8C94, ;  7: Unused
+                        8C94, ;  8: Morph ball - falling
+                        8C94, ;  9: Unused
+                        8C94, ;  Ah: Knockback
+                        8C94, ;  Bh: Unused
+                        8C94, ;  Ch: Unused
+                        8C94, ;  Dh: Unused
+                        8C94, ;  Eh: Turning around - on ground
+                        8D3C, ; *Fh: Crouching/standing/morphing/unmorphing transition
+                        8C94, ;  10h: Moonwalking
+                        8C94, ;  11h: Spring ball - on ground
+                        8C94, ;  12h: Spring ball - in air
+                        8C94, ;  13h: Spring ball - falling
+                        8C94, ;  14h: Wall jumping
+                        8C94, ;  15h: Ran into a wall
+                        8C94, ;  16h: Grappling
+                        8C94, ;  17h: Turning around - jumping
+                        8C94, ;  18h: Turning around - falling
+                        8C94, ;  19h: Damage boost
+                        8C94, ;  1Ah: Grabbed by Draygon
+                        8D98  ; *1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 }
 
 
 ;;; $8C94: Calculate usual Samus spritemap position ;;;
 {
+;; Parameters:
+;;     Y: Samus pose * 2
+;; Returns:
+;;     X: Samus spritemap X position
+;;     Y: Samus spritemap Y position
 $90:8C94 98          TYA                    ;\
 $90:8C95 0A          ASL A                  ;|
 $90:8C96 0A          ASL A                  ;|
@@ -2139,18 +2131,23 @@ $90:8CC2 60          RTS
 
 ;;; $8CC3: Calculate Samus spritemap position - standing ;;;
 {
+;; Parameters:
+;;     Y: Samus pose * 2
+;; Returns:
+;;     X: Samus spritemap X position
+;;     Y: Samus spritemap Y position
 $90:8CC3 8B          PHB
 $90:8CC4 4B          PHK                    ;\
 $90:8CC5 AB          PLB                    ;} DB = $90
 $90:8CC6 98          TYA                    ;\
 $90:8CC7 4A          LSR A                  ;|
 $90:8CC8 C9 00 00    CMP #$0000             ;|
-$90:8CCB F0 3A       BEQ $3A    [$8D07]     ;} If not facing forward:
+$90:8CCB F0 3A       BEQ $3A    [$8D07]     ;} If (Samus pose) != facing forward:
 $90:8CCD C9 9B 00    CMP #$009B             ;|
 $90:8CD0 F0 35       BEQ $35    [$8D07]     ;/
 $90:8CD2 C9 A4 00    CMP #$00A4             ;\
 $90:8CD5 30 61       BMI $61    [$8D38]     ;|
-$90:8CD7 C9 A8 00    CMP #$00A8             ;} If not landing from a jump: go to calculate usual Samus spritemap position
+$90:8CD7 C9 A8 00    CMP #$00A8             ;} If (Samus pose) != landing from a jump: go to calculate usual Samus spritemap position
 $90:8CDA 10 5C       BPL $5C    [$8D38]     ;/
 $90:8CDC 38          SEC                    ;\
 $90:8CDD E9 A4 00    SBC #$00A4             ;|
@@ -2209,40 +2206,45 @@ $90:8D39 4C 94 8C    JMP $8C94  [$90:8C94]
 
 ;;; $8D3C: Calculate Samus spritemap position - crouching/standing/morphing/unmorphing transition ;;;
 {
+;; Parameters:
+;;     Y: Samus pose * 2
+;; Returns:
+;;     X: Samus spritemap X position
+;;     Y: Samus spritemap Y position
 $90:8D3C 8B          PHB
-$90:8D3D 4B          PHK
-$90:8D3E AB          PLB
-$90:8D3F 98          TYA
-$90:8D40 4A          LSR A
-$90:8D41 C9 35 00    CMP #$0035
-$90:8D44 30 F2       BMI $F2    [$8D38]
-$90:8D46 C9 41 00    CMP #$0041
-$90:8D49 10 ED       BPL $ED    [$8D38]
-$90:8D4B 38          SEC
-$90:8D4C E9 35 00    SBC #$0035
-$90:8D4F 0A          ASL A
-$90:8D50 18          CLC
-$90:8D51 6D 96 0A    ADC $0A96  [$7E:0A96]
-$90:8D54 AA          TAX
-$90:8D55 BD 80 8D    LDA $8D80,x[$90:8D80]
-$90:8D58 29 FF 00    AND #$00FF
-$90:8D5B 89 80 00    BIT #$0080
-$90:8D5E F0 03       BEQ $03    [$8D63]
-$90:8D60 09 00 FF    ORA #$FF00
-
-$90:8D63 85 12       STA $12    [$7E:0012]
-$90:8D65 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:8D68 18          CLC
-$90:8D69 65 12       ADC $12    [$7E:0012]
-$90:8D6B 38          SEC
-$90:8D6C ED 15 09    SBC $0915  [$7E:0915]
-$90:8D6F 8D 06 0B    STA $0B06  [$7E:0B06]
-$90:8D72 A8          TAY
-$90:8D73 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:8D76 38          SEC
-$90:8D77 ED 11 09    SBC $0911  [$7E:0911]
-$90:8D7A 8D 04 0B    STA $0B04  [$7E:0B04]
-$90:8D7D AA          TAX
+$90:8D3D 4B          PHK                    ;\
+$90:8D3E AB          PLB                    ;} DB = $90
+$90:8D3F 98          TYA                    ;\
+$90:8D40 4A          LSR A                  ;|
+$90:8D41 C9 35 00    CMP #$0035             ;|
+$90:8D44 30 F2       BMI $F2    [$8D38]     ;} If (Samus pose) != crouching/standing/morphing/unmorphing transition: go to calculate usual Samus spritemap position
+$90:8D46 C9 41 00    CMP #$0041             ;|
+$90:8D49 10 ED       BPL $ED    [$8D38]     ;/
+$90:8D4B 38          SEC                    ;\
+$90:8D4C E9 35 00    SBC #$0035             ;|
+$90:8D4F 0A          ASL A                  ;|
+$90:8D50 18          CLC                    ;|
+$90:8D51 6D 96 0A    ADC $0A96  [$7E:0A96]  ;|
+$90:8D54 AA          TAX                    ;|
+$90:8D55 BD 80 8D    LDA $8D80,x[$90:8D80]  ;} $12 = ±[$8D80 + ([Y] / 2 - 35h) * 2 + [Samus animation frame]]
+$90:8D58 29 FF 00    AND #$00FF             ;|
+$90:8D5B 89 80 00    BIT #$0080             ;|
+$90:8D5E F0 03       BEQ $03    [$8D63]     ;|
+$90:8D60 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$90:8D63 85 12       STA $12    [$7E:0012]  ;/
+$90:8D65 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:8D68 18          CLC                    ;|
+$90:8D69 65 12       ADC $12    [$7E:0012]  ;|
+$90:8D6B 38          SEC                    ;} Y = Samus spritemap Y position = [Samus Y position] + [$12] - [layer 1 Y position]
+$90:8D6C ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:8D6F 8D 06 0B    STA $0B06  [$7E:0B06]  ;|
+$90:8D72 A8          TAY                    ;/
+$90:8D73 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:8D76 38          SEC                    ;|
+$90:8D77 ED 11 09    SBC $0911  [$7E:0911]  ;} X = Samus spritemap X position = [Samus X position] - [layer 1 X position]
+$90:8D7A 8D 04 0B    STA $0B04  [$7E:0B04]  ;|
+$90:8D7D AA          TAX                    ;/
 $90:8D7E AB          PLB
 $90:8D7F 60          RTS
 
@@ -2264,47 +2266,49 @@ $90:8D80             db F8,00, ; Facing right - crouching transition
 ;;; $8D98: Calculate Samus spritemap position - shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
 {
 $90:8D98 8B          PHB
-$90:8D99 4B          PHK
-$90:8D9A AB          PLB
-$90:8D9B 98          TYA
-$90:8D9C 4A          LSR A
-$90:8D9D C9 E8 00    CMP #$00E8
-$90:8DA0 F0 1F       BEQ $1F    [$8DC1]
-$90:8DA2 C9 E9 00    CMP #$00E9
-$90:8DA5 F0 1A       BEQ $1A    [$8DC1]
-$90:8DA7 C9 EA 00    CMP #$00EA
-$90:8DAA F0 05       BEQ $05    [$8DB1]
-$90:8DAC C9 EB 00    CMP #$00EB
-$90:8DAF D0 0D       BNE $0D    [$8DBE]
+$90:8D99 4B          PHK                    ;\
+$90:8D9A AB          PLB                    ;} DB = $90
+$90:8D9B 98          TYA                    ;\
+$90:8D9C 4A          LSR A                  ;|
+$90:8D9D C9 E8 00    CMP #$00E8             ;|
+$90:8DA0 F0 1F       BEQ $1F    [$8DC1]     ;} If (Samus pose) = Samus drained - crouching/falling: go to BRANCH_DRAINED_NON_STANDING
+$90:8DA2 C9 E9 00    CMP #$00E9             ;|
+$90:8DA5 F0 1A       BEQ $1A    [$8DC1]     ;/
+$90:8DA7 C9 EA 00    CMP #$00EA             ;\
+$90:8DAA F0 05       BEQ $05    [$8DB1]     ;|
+$90:8DAC C9 EB 00    CMP #$00EB             ;} If (Samus pose) != Samus drained - standing: go to calculate usual Samus spritemap position
+$90:8DAF D0 0D       BNE $0D    [$8DBE]     ;/
 
-$90:8DB1 AE 96 0A    LDX $0A96  [$7E:0A96]
-$90:8DB4 E0 05 00    CPX #$0005
-$90:8DB7 30 05       BMI $05    [$8DBE]
-$90:8DB9 A9 FD FF    LDA #$FFFD
-$90:8DBC 80 14       BRA $14    [$8DD2]
+$90:8DB1 AE 96 0A    LDX $0A96  [$7E:0A96]  ;\
+$90:8DB4 E0 05 00    CPX #$0005             ;} If [Samus animation frame] >= 5:
+$90:8DB7 30 05       BMI $05    [$8DBE]     ;/
+$90:8DB9 A9 FD FF    LDA #$FFFD             ; $12 = -3
+$90:8DBC 80 14       BRA $14    [$8DD2]     ; Go to BRANCH_MERGE
 
-$90:8DBE 4C 38 8D    JMP $8D38  [$90:8D38]
+$90:8DBE 4C 38 8D    JMP $8D38  [$90:8D38]  ; Go to calculate usual Samus spritemap position
 
-$90:8DC1 AE 96 0A    LDX $0A96  [$7E:0A96]
-$90:8DC4 BD EF 8D    LDA $8DEF,x[$90:8DF1]
-$90:8DC7 29 FF 00    AND #$00FF
-$90:8DCA 89 80 00    BIT #$0080
-$90:8DCD F0 03       BEQ $03    [$8DD2]
-$90:8DCF 09 00 FF    ORA #$FF00
+; BRANCH_DRAINED_NON_STANDING
+$90:8DC1 AE 96 0A    LDX $0A96  [$7E:0A96]  ;\
+$90:8DC4 BD EF 8D    LDA $8DEF,x[$90:8DF1]  ;|
+$90:8DC7 29 FF 00    AND #$00FF             ;|
+$90:8DCA 89 80 00    BIT #$0080             ;} $12 = ±[$8DEF + [Samus animation frame]]
+$90:8DCD F0 03       BEQ $03    [$8DD2]     ;|
+$90:8DCF 09 00 FF    ORA #$FF00             ;/
 
+; BRANCH_MERGE
 $90:8DD2 85 12       STA $12    [$7E:0012]
-$90:8DD4 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:8DD7 18          CLC
-$90:8DD8 65 12       ADC $12    [$7E:0012]
-$90:8DDA 38          SEC
-$90:8DDB ED 15 09    SBC $0915  [$7E:0915]
-$90:8DDE 8D 06 0B    STA $0B06  [$7E:0B06]
-$90:8DE1 A8          TAY
-$90:8DE2 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:8DE5 38          SEC
-$90:8DE6 ED 11 09    SBC $0911  [$7E:0911]
-$90:8DE9 8D 04 0B    STA $0B04  [$7E:0B04]
-$90:8DEC AA          TAX
+$90:8DD4 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:8DD7 18          CLC                    ;|
+$90:8DD8 65 12       ADC $12    [$7E:0012]  ;|
+$90:8DDA 38          SEC                    ;} Y = Samus spritemap Y position = [Samus Y position] + [$12] - [layer 1 Y position]
+$90:8DDB ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:8DDE 8D 06 0B    STA $0B06  [$7E:0B06]  ;|
+$90:8DE1 A8          TAY                    ;/
+$90:8DE2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:8DE5 38          SEC                    ;|
+$90:8DE6 ED 11 09    SBC $0911  [$7E:0911]  ;} X = Samus spritemap X position = [Samus X position] - [layer 1 X position]
+$90:8DE9 8D 04 0B    STA $0B04  [$7E:0B04]  ;|
+$90:8DEC AA          TAX                    ;/
 $90:8DED AB          PLB
 $90:8DEE 60          RTS
 
@@ -2312,8 +2316,11 @@ $90:8DEE 60          RTS
 $90:8DEF             db 07, 05, F8, F8, F8, F8, F8, FB, 04, 04, 04, 04, 00, 00, 04, FD,
                         FB, 00, 00, 04, FD, FB, FD, 04, 00, 00, 04, 00, 00, 04, 00, 00
 }
+}
 
 
+;;; $8E0F..63: Set liquid physics type ;;;
+{
 ;;; $8E0F: Set liquid physics type ;;;
 {
 $90:8E0F 08          PHP
@@ -2379,8 +2386,11 @@ $90:8E5D A9 01 00    LDA #$0001             ;\
 $90:8E60 8D D2 0A    STA $0AD2  [$7E:0AD2]  ;} Liquid physics type = water
 $90:8E63 60          RTS
 }
+}
 
 
+;;; $8E64..94EB: Samus movement ;;;
+{
 ;;; $8E64: Samus X movement ;;;
 {
 $90:8E64 08          PHP
@@ -2462,35 +2472,37 @@ $90:8EDE 60          RTS
 }
 
 
-;;; $8EDF:  ;;;
+;;; $8EDF: Move Samus horizontally - knockback or bomb jump ;;;
 {
-; Bomb jump rising X movement?
 $90:8EDF 08          PHP
 $90:8EE0 C2 30       REP #$30
-$90:8EE2 AD 52 0A    LDA $0A52  [$7E:0A52]
-$90:8EE5 F0 0D       BEQ $0D    [$8EF4]
+$90:8EE2 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
+$90:8EE5 F0 0D       BEQ $0D    [$8EF4]     ;} If [knockback direction] != none:
 $90:8EE7 20 D1 9B    JSR $9BD1  [$90:9BD1]  ; Determine Samus X speed table entry pointer
 $90:8EEA 20 7E 9A    JSR $9A7E  [$90:9A7E]  ; Calculate Samus X base speed - deceleration allowed
-$90:8EED AD 54 0A    LDA $0A54  [$7E:0A54]
-$90:8EF0 D0 13       BNE $13    [$8F05]
-$90:8EF2 80 16       BRA $16    [$8F0A]
+$90:8EED AD 54 0A    LDA $0A54  [$7E:0A54]  ;\
+$90:8EF0 D0 13       BNE $13    [$8F05]     ;} If [knockback X direction] = right: go to BRANCH_RIGHTWARDS
+$90:8EF2 80 16       BRA $16    [$8F0A]     ; Go to BRANCH_LEFTWARDS
 
-$90:8EF4 A2 25 9F    LDX #$9F25
+$90:8EF4 A2 25 9F    LDX #$9F25             ; X = $9F25
 $90:8EF7 20 7E 9A    JSR $9A7E  [$90:9A7E]  ; Calculate Samus X base speed - deceleration allowed
-$90:8EFA AD 56 0A    LDA $0A56  [$7E:0A56]
-$90:8EFD 29 FF 00    AND #$00FF
-$90:8F00 C9 01 00    CMP #$0001
-$90:8F03 F0 05       BEQ $05    [$8F0A]
+$90:8EFA AD 56 0A    LDA $0A56  [$7E:0A56]  ;\
+$90:8EFD 29 FF 00    AND #$00FF             ;|
+$90:8F00 C9 01 00    CMP #$0001             ;} If [bomb jump direction] = left: go to BRANCH_LEFTWARDS
+$90:8F03 F0 05       BEQ $05    [$8F0A]     ;/
 
+; BRANCH_RIGHTWARDS
 $90:8F05 20 AD E4    JSR $E4AD  [$90:E4AD]  ; Calculate Samus X displacement for moving right
-$90:8F08 80 03       BRA $03    [$8F0D]
+$90:8F08 80 03       BRA $03    [$8F0D]     ; Go to BRANCH_MERGE
 
+; BRANCH_LEFTWARDS
 $90:8F0A 20 64 E4    JSR $E464  [$90:E464]  ; Calculate Samus X displacement for moving left
 
-$90:8F0D A5 12       LDA $12    [$7E:0012]
-$90:8F0F 30 05       BMI $05    [$8F16]
+; BRANCH_MERGE
+$90:8F0D A5 12       LDA $12    [$7E:0012]  ;\
+$90:8F0F 30 05       BMI $05    [$8F16]     ;} If [$12] >= 0:
 $90:8F11 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
-$90:8F14 80 03       BRA $03    [$8F19]
+$90:8F14 80 03       BRA $03    [$8F19]     ; Return
 
 $90:8F16 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
 
@@ -2499,33 +2511,32 @@ $90:8F1A 60          RTS
 }
 
 
-;;; $8F1B:  ;;;
+;;; $8F1B: Handle end of bomb jump ;;;
 {
-; Bomb jump rising Y movement?
 $90:8F1B 08          PHP
 $90:8F1C C2 30       REP #$30
 $90:8F1E AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $90:8F21 C9 01 00    CMP #$0001             ;} If [Samus Y direction] != up: return
 $90:8F24 D0 37       BNE $37    [$8F5D]     ;/
-$90:8F26 AD 2E 0B    LDA $0B2E  [$7E:0B2E]
-$90:8F29 30 15       BMI $15    [$8F40]
-$90:8F2B C9 01 00    CMP #$0001
-$90:8F2E 10 2D       BPL $2D    [$8F5D]
-$90:8F30 AD 60 0A    LDA $0A60  [$7E:0A60]
-$90:8F33 C9 1D E9    CMP #$E91D
-$90:8F36 F0 25       BEQ $25    [$8F5D]
-$90:8F38 A9 13 E9    LDA #$E913
-$90:8F3B 8D 60 0A    STA $0A60  [$7E:0A60]
-$90:8F3E 80 1D       BRA $1D    [$8F5D]
+$90:8F26 AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
+$90:8F29 30 15       BMI $15    [$8F40]     ;} If [Samus Y speed] >= 0:
+$90:8F2B C9 01 00    CMP #$0001             ;\
+$90:8F2E 10 2D       BPL $2D    [$8F5D]     ;} If [Samus Y speed] >= 1: return
+$90:8F30 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
+$90:8F33 C9 1D E9    CMP #$E91D             ;} If [$0A60] = $E91D (demo): return
+$90:8F36 F0 25       BEQ $25    [$8F5D]     ;/
+$90:8F38 A9 13 E9    LDA #$E913             ;\
+$90:8F3B 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$90:8F3E 80 1D       BRA $1D    [$8F5D]     ; Return
 
 $90:8F40 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:8F43 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:8F46 A9 02 00    LDA #$0002             ;\
 $90:8F49 8D 36 0B    STA $0B36  [$7E:0B36]  ;} Samus Y direction = down
-$90:8F4C AD 56 0A    LDA $0A56  [$7E:0A56]
-$90:8F4F 29 FF 00    AND #$00FF
-$90:8F52 C9 02 00    CMP #$0002
-$90:8F55 F0 06       BEQ $06    [$8F5D]
+$90:8F4C AD 56 0A    LDA $0A56  [$7E:0A56]  ;\
+$90:8F4F 29 FF 00    AND #$00FF             ;|
+$90:8F52 C9 02 00    CMP #$0002             ;} If [bomb jump direction] = straight: return
+$90:8F55 F0 06       BEQ $06    [$8F5D]     ;/
 $90:8F57 A9 02 00    LDA #$0002             ;\
 $90:8F5A 8D 4A 0B    STA $0B4A  [$7E:0B4A]  ;} Samus X acceleration mode = decelerating
 
@@ -2534,25 +2545,25 @@ $90:8F5E 60          RTS
 }
 
 
-;;; $8F5F:  ;;;
+;;; $8F5F: Move Samus horizontally - pushed by Ceres Ridley ;;;
 {
-; Bomb jump falling X movement?
 $90:8F5F 08          PHP
 $90:8F60 C2 30       REP #$30
 $90:8F62 20 D1 9B    JSR $9BD1  [$90:9BD1]  ; Determine Samus X speed table entry pointer
 $90:8F65 20 7E 9A    JSR $9A7E  [$90:9A7E]  ; Calculate Samus X base speed - deceleration allowed
-$90:8F68 AD 62 0A    LDA $0A62  [$7E:0A62]
-$90:8F6B C9 01 00    CMP #$0001
-$90:8F6E F0 05       BEQ $05    [$8F75]
+$90:8F68 AD 62 0A    LDA $0A62  [$7E:0A62]  ;\
+$90:8F6B C9 01 00    CMP #$0001             ;} If [Samus push direction] != left:
+$90:8F6E F0 05       BEQ $05    [$8F75]     ;/
 $90:8F70 20 AD E4    JSR $E4AD  [$90:E4AD]  ; Calculate Samus X displacement for moving right
 $90:8F73 80 03       BRA $03    [$8F78]
 
+                                            ; Else ([Samus push direction] = left):
 $90:8F75 20 64 E4    JSR $E464  [$90:E464]  ; Calculate Samus X displacement for moving left
 
-$90:8F78 A5 12       LDA $12    [$7E:0012]
-$90:8F7A 30 05       BMI $05    [$8F81]
+$90:8F78 A5 12       LDA $12    [$7E:0012]  ;\
+$90:8F7A 30 05       BMI $05    [$8F81]     ;} If [$12] >= 0:
 $90:8F7C 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
-$90:8F7F 80 03       BRA $03    [$8F84]
+$90:8F7F 80 03       BRA $03    [$8F84]     ; Return
 
 $90:8F81 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
 
@@ -2561,9 +2572,8 @@ $90:8F85 60          RTS
 }
 
 
-;;; $8F86:  ;;;
+;;; $8F86: Move Samus vertically - pushed by Ceres Ridley ;;;
 {
-; Bomb jump falling Y movement?
 $90:8F86 08          PHP
 $90:8F87 C2 30       REP #$30
 $90:8F89 AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
@@ -2932,7 +2942,6 @@ $90:923E 60          RTS
 
 ;;; $923F: Samus Y movement - no speed calculations ;;;
 {
-; Grounded or at terminal velocity?
 $90:923F 08          PHP
 $90:9240 C2 30       REP #$30
 $90:9242 AD 5C 0B    LDA $0B5C  [$7E:0B5C]  ;\
@@ -3031,6 +3040,7 @@ $90:92C6 60          RTS                    ;} Return carry set
 {
 ;; Returns:
 ;;     Carry: set if [Samus Y direction] != none, clear otherwise
+
 ; Clone of $92B8
 $90:92C7 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $90:92CA D0 02       BNE $02    [$92CE]     ;} If [Samus Y direction] = none:
@@ -3050,11 +3060,11 @@ $90:92D6 08          PHP
 $90:92D7 C2 30       REP #$30
 $90:92D9 80 00       BRA $00    [$92DB]
 
-$90:92DB AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:92DE 18          CLC
-$90:92DF 65 12       ADC $12    [$7E:0012]
-$90:92E1 8D FA 0A    STA $0AFA  [$7E:0AFA]
-$90:92E4 8D 14 0B    STA $0B14  [$7E:0B14]
+$90:92DB AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:92DE 18          CLC                    ;|
+$90:92DF 65 12       ADC $12    [$7E:0012]  ;} Samus Y position += [$12]
+$90:92E1 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
+$90:92E4 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = [Samus Y position]
 $90:92E7 28          PLP
 $90:92E8 60          RTS
 }
@@ -3062,58 +3072,57 @@ $90:92E8 60          RTS
 
 ;;; $92E9: RTS ;;;
 {
+; Looks like an old routine that was RTS'd out
+; Called by $A75F: Samus movement - ran into a wall
 $90:92E9 60          RTS
-}
 
-
-;;; $92EA: Unused ;;;
-{
-; Maybe a debug routine that was RTS'd out?
 $90:92EA 08          PHP
 $90:92EB C2 30       REP #$30
-$90:92ED A9 01 00    LDA #$0001
-$90:92F0 85 12       STA $12    [$7E:0012]
-$90:92F2 64 14       STZ $14    [$7E:0014]
-$90:92F4 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:92F7 29 FF 00    AND #$00FF
-$90:92FA C9 04 00    CMP #$0004
-$90:92FD F0 09       BEQ $09    [$9308]
+$90:92ED A9 01 00    LDA #$0001             ;\
+$90:92F0 85 12       STA $12    [$7E:0012]  ;} $12.$14 = 1.0
+$90:92F2 64 14       STZ $14    [$7E:0014]  ;/
+$90:92F4 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:92F7 29 FF 00    AND #$00FF             ;|
+$90:92FA C9 04 00    CMP #$0004             ;} If facing right:
+$90:92FD F0 09       BEQ $09    [$9308]     ;/
 $90:92FF A5 8B       LDA $8B    [$7E:008B]  ;\
-$90:9301 89 00 01    BIT #$0100             ;} If pressing right: go to BRANCH_9311
+$90:9301 89 00 01    BIT #$0100             ;} If pressing right: go to BRANCH_RIGHTWARDS
 $90:9304 D0 0B       BNE $0B    [$9311]     ;/
 $90:9306 80 3E       BRA $3E    [$9346]     ; Return
 
 $90:9308 A5 8B       LDA $8B    [$7E:008B]  ;\
-$90:930A 89 00 02    BIT #$0200             ;} If pressing left: go to BRANCH_9316
+$90:930A 89 00 02    BIT #$0200             ;} If pressing left: go to BRANCH_LEFTWARDS
 $90:930D D0 07       BNE $07    [$9316]     ;/
 $90:930F 80 35       BRA $35    [$9346]     ; Return
 
-; BRANCH_9311
+; BRANCH_RIGHTWARDS
 $90:9311 20 AD E4    JSR $E4AD  [$90:E4AD]  ; Calculate Samus X displacement for moving right
-$90:9314 80 03       BRA $03    [$9319]
+$90:9314 80 03       BRA $03    [$9319]     ; Go to BRANCH_MERGE
 
-; BRANCH_9316
+; BRANCH_LEFTWARDS
 $90:9316 20 64 E4    JSR $E464  [$90:E464]  ; Calculate Samus X displacement for moving left
 
-$90:9319 A5 12       LDA $12    [$7E:0012]
-$90:931B 30 05       BMI $05    [$9322]
+; BRANCH_MERGE
+$90:9319 A5 12       LDA $12    [$7E:0012]  ;\
+$90:931B 30 05       BMI $05    [$9322]     ;} If [$12] >= 0:
 $90:931D 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
 $90:9320 80 03       BRA $03    [$9325]
 
+                                            ; Else ([$12] < 0):
 $90:9322 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
 
-$90:9325 AD D0 0D    LDA $0DD0  [$7E:0DD0]
-$90:9328 D0 1C       BNE $1C    [$9346]
-$90:932A AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:932D 29 FF 00    AND #$00FF
-$90:9330 C9 04 00    CMP #$0004
-$90:9333 F0 08       BEQ $08    [$933D]
-$90:9335 A9 09 00    LDA #$0009
-$90:9338 8D 28 0A    STA $0A28  [$7E:0A28]
+$90:9325 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
+$90:9328 D0 1C       BNE $1C    [$9346]     ;} If collision detected: return
+$90:932A AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:932D 29 FF 00    AND #$00FF             ;|
+$90:9330 C9 04 00    CMP #$0004             ;} If facing right:
+$90:9333 F0 08       BEQ $08    [$933D]     ;/
+$90:9335 A9 09 00    LDA #$0009             ;\
+$90:9338 8D 28 0A    STA $0A28  [$7E:0A28]  ;} Moving right - not aiming
 $90:933B 80 06       BRA $06    [$9343]
 
-$90:933D A9 0A 00    LDA #$000A
-$90:9340 8D 28 0A    STA $0A28  [$7E:0A28]
+$90:933D A9 0A 00    LDA #$000A             ;\ Else (facing left):
+$90:9340 8D 28 0A    STA $0A28  [$7E:0A28]  ;} Moving left - not aiming
 
 $90:9343 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; $0DC6 = 0
 
@@ -3217,43 +3226,43 @@ $90:93EB 60          RTS
 {
 $90:93EC 08          PHP
 $90:93ED C2 30       REP #$30
-$90:93EF A9 02 00    LDA #$0002
-$90:93F2 8D 02 0B    STA $0B02  [$7E:0B02]
-$90:93F5 A5 12       LDA $12    [$7E:0012]
-$90:93F7 49 FF FF    EOR #$FFFF
-$90:93FA 85 12       STA $12    [$7E:0012]
-$90:93FC A5 14       LDA $14    [$7E:0014]
-$90:93FE 49 FF FF    EOR #$FFFF
-$90:9401 1A          INC A
-$90:9402 85 14       STA $14    [$7E:0014]
-$90:9404 D0 02       BNE $02    [$9408]
-$90:9406 E6 12       INC $12    [$7E:0012]
+$90:93EF A9 02 00    LDA #$0002             ;\
+$90:93F2 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = up
+$90:93F5 A5 12       LDA $12    [$7E:0012]  ;\
+$90:93F7 49 FF FF    EOR #$FFFF             ;|
+$90:93FA 85 12       STA $12    [$7E:0012]  ;|
+$90:93FC A5 14       LDA $14    [$7E:0014]  ;|
+$90:93FE 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:9401 1A          INC A                  ;|
+$90:9402 85 14       STA $14    [$7E:0014]  ;|
+$90:9404 D0 02       BNE $02    [$9408]     ;|
+$90:9406 E6 12       INC $12    [$7E:0012]  ;/
 
 $90:9408 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:940C 8D D0 0D    STA $0DD0  [$7E:0DD0]
-$90:940F AA          TAX
-$90:9410 F0 08       BEQ $08    [$941A]
-$90:9412 20 06 E6    JSR $E606  [$90:E606]
+$90:940C 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$90:940F AA          TAX                    ;\
+$90:9410 F0 08       BEQ $08    [$941A]     ;} If collision detected:
+$90:9412 20 06 E6    JSR $E606  [$90:E606]  ; Execute $E606
 $90:9415 20 8D 98    JSR $988D  [$90:988D]  ; Move Samus up by [$12].[$14], no collision detection
 $90:9418 28          PLP
-$90:9419 60          RTS
+$90:9419 60          RTS                    ; Return
 
-$90:941A A5 12       LDA $12    [$7E:0012]
-$90:941C 49 FF FF    EOR #$FFFF
-$90:941F 85 12       STA $12    [$7E:0012]
-$90:9421 A5 14       LDA $14    [$7E:0014]
-$90:9423 49 FF FF    EOR #$FFFF
-$90:9426 1A          INC A
-$90:9427 85 14       STA $14    [$7E:0014]
-$90:9429 D0 02       BNE $02    [$942D]
-$90:942B E6 12       INC $12    [$7E:0012]
+$90:941A A5 12       LDA $12    [$7E:0012]  ;\
+$90:941C 49 FF FF    EOR #$FFFF             ;|
+$90:941F 85 12       STA $12    [$7E:0012]  ;|
+$90:9421 A5 14       LDA $14    [$7E:0014]  ;|
+$90:9423 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:9426 1A          INC A                  ;|
+$90:9427 85 14       STA $14    [$7E:0014]  ;|
+$90:9429 D0 02       BNE $02    [$942D]     ;|
+$90:942B E6 12       INC $12    [$7E:0012]  ;/
 
-$90:942D 22 63 97 94 JSL $949763[$94:9763]
-$90:9431 A5 14       LDA $14    [$7E:0014]
-$90:9433 8D B4 0D    STA $0DB4  [$7E:0DB4]
-$90:9436 A5 12       LDA $12    [$7E:0012]
-$90:9438 8D B2 0D    STA $0DB2  [$7E:0DB2]
-$90:943B 20 06 E6    JSR $E606  [$90:E606]
+$90:942D 22 63 97 94 JSL $949763[$94:9763]  ; Move Samus down by [$12].[$14], no solid enemy collision
+$90:9431 A5 14       LDA $14    [$7E:0014]  ;\
+$90:9433 8D B4 0D    STA $0DB4  [$7E:0DB4]  ;|
+$90:9436 A5 12       LDA $12    [$7E:0012]  ;} Distance Samus moved up = [$12].[$14]
+$90:9438 8D B2 0D    STA $0DB2  [$7E:0DB2]  ;/
+$90:943B 20 06 E6    JSR $E606  [$90:E606]  ; Execute $E606
 $90:943E 28          PLP
 $90:943F 60          RTS
 }
@@ -3263,23 +3272,23 @@ $90:943F 60          RTS
 {
 $90:9440 08          PHP
 $90:9441 C2 30       REP #$30
-$90:9443 A9 03 00    LDA #$0003
-$90:9446 8D 02 0B    STA $0B02  [$7E:0B02]
+$90:9443 A9 03 00    LDA #$0003             ;\
+$90:9446 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = down
 $90:9449 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:944D 8D D0 0D    STA $0DD0  [$7E:0DD0]
-$90:9450 AA          TAX
-$90:9451 F0 08       BEQ $08    [$945B]
-$90:9453 20 1B E6    JSR $E61B  [$90:E61B]
+$90:944D 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$90:9450 AA          TAX                    ;\
+$90:9451 F0 08       BEQ $08    [$945B]     ;} If collision detected:
+$90:9453 20 1B E6    JSR $E61B  [$90:E61B]  ; Execute $E61B
 $90:9456 20 71 98    JSR $9871  [$90:9871]  ; Move Samus down by [$12].[$14], no collision detection
 $90:9459 28          PLP
-$90:945A 60          RTS
+$90:945A 60          RTS                    ; Return
 
 $90:945B 22 63 97 94 JSL $949763[$94:9763]  ; Collision detection and offset of Samuss Y position all in one
-$90:945F A5 14       LDA $14    [$7E:0014]
-$90:9461 8D B8 0D    STA $0DB8  [$7E:0DB8]
-$90:9464 A5 12       LDA $12    [$7E:0012]
-$90:9466 8D B6 0D    STA $0DB6  [$7E:0DB6]
-$90:9469 20 1B E6    JSR $E61B  [$90:E61B]
+$90:945F A5 14       LDA $14    [$7E:0014]  ;\
+$90:9461 8D B8 0D    STA $0DB8  [$7E:0DB8]  ;|
+$90:9464 A5 12       LDA $12    [$7E:0012]  ;} Distance Samus moved down = [$12].[$14]
+$90:9466 8D B6 0D    STA $0DB6  [$7E:0DB6]  ;/
+$90:9469 20 1B E6    JSR $E61B  [$90:E61B]  ; Execute $E61B
 $90:946C 28          PLP
 $90:946D 60          RTS
 }
@@ -3346,8 +3355,11 @@ $90:94E8 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 
 $90:94EB 60          RTS
 }
+}
 
 
+;;; $94EC..973D: Scrolling ;;;
+{
 ;;; $94EC: Main scrolling routine ;;;
 {
 ; Called by:
@@ -3474,7 +3486,7 @@ $90:95AF 4C 3D 96    JMP $963D  [$90:963D]  ; Return
 $90:95B2 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $90:95B5 85 12       STA $12    [$7E:0012]  ;} $12 = [layer 1 X position]
 $90:95B7 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
-$90:95BA D0 0B       BNE $0B    [$95C7]     ;} If [$0A52] != 0: go to BRANCH_BACKWARDS
+$90:95BA D0 0B       BNE $0B    [$95C7]     ;} If [knockback direction] != none: go to BRANCH_BACKWARDS
 $90:95BC AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:95BF 29 FF 00    AND #$00FF             ;|
 $90:95C2 C9 10 00    CMP #$0010             ;} If [Samus movement type] != moonwalking: go to BRANCH_FORWARDS
@@ -3603,34 +3615,39 @@ $90:96BF 60          RTS
 
 ;;; $96C0: Calculate the horizontal distance Samus has moved last frame + 1 ;;;
 {
-; Results in $0DA2.$0DA4.
+; This check to go to BRANCH_RIGHT doesn't include the subpixel position,
+; so that branch may be taken even if Samus moved left, so long as she hasn't reached the next pixel
+; In that case, the ([Samus X position] - [Samus previous X position]) calculation results in a value -1.0 < x < 0.0,
+; and as such, "absolute X distance Samus moved last frame + 1" can be less than 1
+; >_>;
 $90:96C0 08          PHP
 $90:96C1 C2 30       REP #$30
-$90:96C3 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:96C6 CD 10 0B    CMP $0B10  [$7E:0B10]
-$90:96C9 30 02       BMI $02    [$96CD]
-$90:96CB 80 19       BRA $19    [$96E6]
+$90:96C3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:96C6 CD 10 0B    CMP $0B10  [$7E:0B10]  ;} If [Samus X position] >= [Samus previous X position]:
+$90:96C9 30 02       BMI $02    [$96CD]     ;/
+$90:96CB 80 19       BRA $19    [$96E6]     ; Go to BRANCH_RIGHT
 
-$90:96CD AD 12 0B    LDA $0B12  [$7E:0B12]
-$90:96D0 38          SEC
-$90:96D1 ED F8 0A    SBC $0AF8  [$7E:0AF8]
-$90:96D4 8D A4 0D    STA $0DA4  [$7E:0DA4]
-$90:96D7 AD 10 0B    LDA $0B10  [$7E:0B10]
-$90:96DA ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$90:96DD 18          CLC
-$90:96DE 6D AD 9E    ADC $9EAD  [$90:9EAD]
-$90:96E1 8D A2 0D    STA $0DA2  [$7E:0DA2]
-$90:96E4 80 17       BRA $17    [$96FD]
+$90:96CD AD 12 0B    LDA $0B12  [$7E:0B12]  ;\
+$90:96D0 38          SEC                    ;|
+$90:96D1 ED F8 0A    SBC $0AF8  [$7E:0AF8]  ;|
+$90:96D4 8D A4 0D    STA $0DA4  [$7E:0DA4]  ;|
+$90:96D7 AD 10 0B    LDA $0B10  [$7E:0B10]  ;} Absolute X distance Samus moved last frame + 1 = [Samus previous X position] - [Samus X position] + 1.0
+$90:96DA ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$90:96DD 18          CLC                    ;|
+$90:96DE 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|
+$90:96E1 8D A2 0D    STA $0DA2  [$7E:0DA2]  ;/
+$90:96E4 80 17       BRA $17    [$96FD]     ; Return
 
-$90:96E6 AD F8 0A    LDA $0AF8  [$7E:0AF8]
-$90:96E9 38          SEC
-$90:96EA ED 12 0B    SBC $0B12  [$7E:0B12]
-$90:96ED 8D A4 0D    STA $0DA4  [$7E:0DA4]
-$90:96F0 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:96F3 ED 10 0B    SBC $0B10  [$7E:0B10]
-$90:96F6 18          CLC
-$90:96F7 6D AD 9E    ADC $9EAD  [$90:9EAD]
-$90:96FA 8D A2 0D    STA $0DA2  [$7E:0DA2]  ; <-- *can* be zero, e.g. turning right in mid-air morph
+; BRANCH_RIGHT
+$90:96E6 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
+$90:96E9 38          SEC                    ;|
+$90:96EA ED 12 0B    SBC $0B12  [$7E:0B12]  ;|
+$90:96ED 8D A4 0D    STA $0DA4  [$7E:0DA4]  ;|
+$90:96F0 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} Absolute X distance Samus moved last frame + 1 = [Samus X position] - [Samus previous X position] + 1.0
+$90:96F3 ED 10 0B    SBC $0B10  [$7E:0B10]  ;|
+$90:96F6 18          CLC                    ;|
+$90:96F7 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|
+$90:96FA 8D A2 0D    STA $0DA2  [$7E:0DA2]  ;/
 
 $90:96FD 28          PLP
 $90:96FE 60          RTS
@@ -3639,40 +3656,44 @@ $90:96FE 60          RTS
 
 ;;; $96FF: Calculate the vertical distance Samus has moved last frame + 1 ;;;
 {
-; Results in $0DA6.$0DA8
+; Result can be less than 1.0, see $96C0
 $90:96FF 08          PHP
 $90:9700 C2 30       REP #$30
-$90:9702 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:9705 CD 14 0B    CMP $0B14  [$7E:0B14]
-$90:9708 30 02       BMI $02    [$970C]
-$90:970A 80 19       BRA $19    [$9725]
+$90:9702 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:9705 CD 14 0B    CMP $0B14  [$7E:0B14]  ;} If [Samus Y position] >= [Samus previous Y position]:
+$90:9708 30 02       BMI $02    [$970C]     ;/
+$90:970A 80 19       BRA $19    [$9725]     ; Go to BRANCH_DOWN
 
-$90:970C AD 16 0B    LDA $0B16  [$7E:0B16]
-$90:970F 38          SEC
-$90:9710 ED FC 0A    SBC $0AFC  [$7E:0AFC]
-$90:9713 8D A8 0D    STA $0DA8  [$7E:0DA8]
-$90:9716 AD 14 0B    LDA $0B14  [$7E:0B14]
-$90:9719 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$90:971C 18          CLC
-$90:971D 6D AD 9E    ADC $9EAD  [$90:9EAD]
-$90:9720 8D A6 0D    STA $0DA6  [$7E:0DA6]
-$90:9723 80 17       BRA $17    [$973C]
+$90:970C AD 16 0B    LDA $0B16  [$7E:0B16]  ;\
+$90:970F 38          SEC                    ;|
+$90:9710 ED FC 0A    SBC $0AFC  [$7E:0AFC]  ;|
+$90:9713 8D A8 0D    STA $0DA8  [$7E:0DA8]  ;|
+$90:9716 AD 14 0B    LDA $0B14  [$7E:0B14]  ;} Absolute Y distance Samus moved last frame + 1 = [Samus previous Y position] - [Samus Y position] + 1.0
+$90:9719 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
+$90:971C 18          CLC                    ;|
+$90:971D 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|
+$90:9720 8D A6 0D    STA $0DA6  [$7E:0DA6]  ;/
+$90:9723 80 17       BRA $17    [$973C]     ; Return
 
-$90:9725 AD FC 0A    LDA $0AFC  [$7E:0AFC]
-$90:9728 38          SEC
-$90:9729 ED 16 0B    SBC $0B16  [$7E:0B16]
-$90:972C 8D A8 0D    STA $0DA8  [$7E:0DA8]
-$90:972F AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:9732 ED 14 0B    SBC $0B14  [$7E:0B14]
-$90:9735 18          CLC
-$90:9736 6D AD 9E    ADC $9EAD  [$90:9EAD]
-$90:9739 8D A6 0D    STA $0DA6  [$7E:0DA6]
+; BRANCH_DOWN
+$90:9725 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
+$90:9728 38          SEC                    ;|
+$90:9729 ED 16 0B    SBC $0B16  [$7E:0B16]  ;|
+$90:972C 8D A8 0D    STA $0DA8  [$7E:0DA8]  ;|
+$90:972F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} Absolute Y distance Samus moved last frame + 1 = [Samus Y position] - [Samus previous Y position] + 1.0
+$90:9732 ED 14 0B    SBC $0B14  [$7E:0B14]  ;|
+$90:9735 18          CLC                    ;|
+$90:9736 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|
+$90:9739 8D A6 0D    STA $0DA6  [$7E:0DA6]  ;/
 
 $90:973C 28          PLP
 $90:973D 60          RTS
 }
+}
 
 
+;;; $973E..A7E1: Samus movement ;;;
+{
 ;;; $973E: Handle Samus X extra run speed ;;;
 {
 ; If not eligible to run or not running, set extra run speed to zero
@@ -3721,13 +3742,13 @@ $90:9789 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $90:978C 89 00 20    BIT #$2000             ;} If speed booster not equipped: go to BRANCH_NO_SPEED_BOOSTER
 $90:978F F0 36       BEQ $36    [$97C7]     ;/
 $90:9791 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
-$90:9794 D0 13       BNE $13    [$97A9]     ;} If [$0B3C] = 0:
+$90:9794 D0 13       BNE $13    [$97A9]     ;} If [Samus running momentum flag] = 0:
 $90:9796 A9 01 00    LDA #$0001             ;\
-$90:9799 8D 3C 0B    STA $0B3C  [$7E:0B3C]  ;} $0B3C = 1
+$90:9799 8D 3C 0B    STA $0B3C  [$7E:0B3C]  ;} Samus running momentum flag = 1
 $90:979C 8D D0 0A    STA $0AD0  [$7E:0AD0]  ; Special Samus palette timer = 1
 $90:979F 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 $90:97A2 AF 1F B6 91 LDA $91B61F[$91:B61F]  ;\
-$90:97A6 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;} $0B3E = 1, speed booster counter = 0
+$90:97A6 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;} Speed boost timer = 1, speed booster counter = 0
 
 $90:97A9 AD 42 0B    LDA $0B42  [$7E:0B42]  ;\
 $90:97AC DD 0D 9F    CMP $9F0D,x[$90:9F0D]  ;|
@@ -3743,10 +3764,10 @@ $90:97C5 80 4C       BRA $4C    [$9813]     ; Go to BRANCH_DONE
 
 ; BRANCH_NO_SPEED_BOOSTER
 $90:97C7 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
-$90:97CA D0 09       BNE $09    [$97D5]     ;} If [$0B3C] = 0:
+$90:97CA D0 09       BNE $09    [$97D5]     ;} If [Samus running momentum flag] = 0:
 $90:97CC A9 01 00    LDA #$0001             ;\
-$90:97CF 8D 3C 0B    STA $0B3C  [$7E:0B3C]  ;} $0B3C = 1
-$90:97D2 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; $0B3E = 0, speed booster counter = 0
+$90:97CF 8D 3C 0B    STA $0B3C  [$7E:0B3C]  ;} Samus running momentum flag = 1
+$90:97D2 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost timer = 0, speed booster counter = 0
 
 $90:97D5 AD 42 0B    LDA $0B42  [$7E:0B42]  ;\
 $90:97D8 DD 19 9F    CMP $9F19,x[$90:9F19]  ;|
@@ -3772,7 +3793,7 @@ $90:9806 80 0B       BRA $0B    [$9813]     ; Go to BRANCH_DONE
 
 ; BRANCH_NOT_RUNNING
 $90:9808 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
-$90:980B D0 06       BNE $06    [$9813]     ;} If [$0B3C] = 0:
+$90:980B D0 06       BNE $06    [$9813]     ;} If [Samus running momentum flag] = 0:
 $90:980D 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
 $90:9810 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
 
@@ -4468,64 +4489,68 @@ $90:9CAB 60          RTS
 
 $90:9CAC 08          PHP
 $90:9CAD 8B          PHB
-$90:9CAE 4B          PHK
-$90:9CAF AB          PLB
+$90:9CAE 4B          PHK                    ;\
+$90:9CAF AB          PLB                    ;} DB = $90
 $90:9CB0 C2 30       REP #$30
-$90:9CB2 A9 FF FF    LDA #$FFFF
-$90:9CB5 8D 1C 0E    STA $0E1C  [$7E:0E1C]
-$90:9CB8 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:9CBB 29 FF 00    AND #$00FF
-$90:9CBE C9 04 00    CMP #$0004
-$90:9CC1 F0 2E       BEQ $2E    [$9CF1]
-$90:9CC3 C9 08 00    CMP #$0008
-$90:9CC6 F0 03       BEQ $03    [$9CCB]
-$90:9CC8 4C 31 9D    JMP $9D31  [$90:9D31]
+$90:9CB2 A9 FF FF    LDA #$FFFF             ;\
+$90:9CB5 8D 1C 0E    STA $0E1C  [$7E:0E1C]  ;} Enemy index to shake = FFFFh
+$90:9CB8 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:9CBB 29 FF 00    AND #$00FF             ;|
+$90:9CBE C9 04 00    CMP #$0004             ;} If facing left: go to BRANCH_FACING_LEFT
+$90:9CC1 F0 2E       BEQ $2E    [$9CF1]     ;/
+$90:9CC3 C9 08 00    CMP #$0008             ;\
+$90:9CC6 F0 03       BEQ $03    [$9CCB]     ;} If facing right: go to BRANCH_FACING_RIGHT
 
-$90:9CCB A9 01 00    LDA #$0001
-$90:9CCE 8D 02 0B    STA $0B02  [$7E:0B02]
+$90:9CC8 4C 31 9D    JMP $9D31  [$90:9D31]  ; Return carry clear
+
+; BRANCH_FACING_RIGHT
+$90:9CCB A9 01 00    LDA #$0001             ;\
+$90:9CCE 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = right
 $90:9CD1 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:9CD5 AA          TAX
-$90:9CD6 D0 10       BNE $10    [$9CE8]
-$90:9CD8 22 7F 96 94 JSL $94967F[$94:967F]
-$90:9CDC 90 EA       BCC $EA    [$9CC8]
+$90:9CD5 AA          TAX                    ;\
+$90:9CD6 D0 10       BNE $10    [$9CE8]     ;} If collision not detected:
+$90:9CD8 22 7F 96 94 JSL $94967F[$94:967F]  ; Wall jump block collision detection
+$90:9CDC 90 EA       BCC $EA    [$9CC8]     ; If no collision: return carry clear
 $90:9CDE A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:9CE0 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If newly pressing jump: return carry set
 $90:9CE3 D0 48       BNE $48    [$9D2D]     ;/
 $90:9CE5 4C 31 9D    JMP $9D31  [$90:9D31]  ; Return carry clear
 
 $90:9CE8 A5 8F       LDA $8F    [$7E:008F]  ;\
-$90:9CEA 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If newly pressing jump: go to BRANCH_9D24
+$90:9CEA 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If newly pressing jump: go to BRANCH_WALL_JUMP_ENEMY
 $90:9CED D0 35       BNE $35    [$9D24]     ;/
 $90:9CEF 80 40       BRA $40    [$9D31]     ; Return carry clear
 
-$90:9CF1 9C 02 0B    STZ $0B02  [$7E:0B02]
+; BRANCH_FACING_LEFT
+$90:9CF1 9C 02 0B    STZ $0B02  [$7E:0B02]  ; Collision direction = left
 $90:9CF4 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:9CF8 AA          TAX
-$90:9CF9 D0 22       BNE $22    [$9D1D]
-$90:9CFB A5 12       LDA $12    [$7E:0012]
-$90:9CFD 49 FF FF    EOR #$FFFF
-$90:9D00 85 12       STA $12    [$7E:0012]
-$90:9D02 A5 14       LDA $14    [$7E:0014]
-$90:9D04 49 FF FF    EOR #$FFFF
-$90:9D07 1A          INC A
-$90:9D08 85 14       STA $14    [$7E:0014]
-$90:9D0A D0 02       BNE $02    [$9D0E]
-$90:9D0C E6 12       INC $12    [$7E:0012]
+$90:9CF8 AA          TAX                    ;\
+$90:9CF9 D0 22       BNE $22    [$9D1D]     ;} If collision detected: go to BRANCH_COLLISION_DETECTED
+$90:9CFB A5 12       LDA $12    [$7E:0012]  ;\
+$90:9CFD 49 FF FF    EOR #$FFFF             ;|
+$90:9D00 85 12       STA $12    [$7E:0012]  ;|
+$90:9D02 A5 14       LDA $14    [$7E:0014]  ;|
+$90:9D04 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:9D07 1A          INC A                  ;|
+$90:9D08 85 14       STA $14    [$7E:0014]  ;|
+$90:9D0A D0 02       BNE $02    [$9D0E]     ;|
+$90:9D0C E6 12       INC $12    [$7E:0012]  ;/
 
-$90:9D0E 22 7F 96 94 JSL $94967F[$94:967F]
-$90:9D12 90 1D       BCC $1D    [$9D31]
+$90:9D0E 22 7F 96 94 JSL $94967F[$94:967F]  ; Wall jump block collision detection
+$90:9D12 90 1D       BCC $1D    [$9D31]     ; If no collision: return carry clear
 $90:9D14 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:9D16 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If newly pressing jump: return carry set
 $90:9D19 D0 12       BNE $12    [$9D2D]     ;/
 $90:9D1B 80 14       BRA $14    [$9D31]     ; Return carry clear
 
+; BRANCH_COLLISION_DETECTED
 $90:9D1D A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:9D1F 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If not newly pressing jump: return carry clear
 $90:9D22 F0 0D       BEQ $0D    [$9D31]     ;/
 
-; BRANCH_9D24
-$90:9D24 A5 16       LDA $16    [$7E:0016]
-$90:9D26 8D 1C 0E    STA $0E1C  [$7E:0E1C]
+; BRANCH_WALL_JUMP_ENEMY
+$90:9D24 A5 16       LDA $16    [$7E:0016]  ;\
+$90:9D26 8D 1C 0E    STA $0E1C  [$7E:0E1C]  ;} Enemy index to shake = [$16]
 $90:9D29 AB          PLB
 $90:9D2A 28          PLP
 $90:9D2B 38          SEC
@@ -5033,9 +5058,6 @@ $90:A3E4 60          RTS
 
 ;;; $A3E5: Samus movement - running ;;;
 {
-; Handles X motion (90:8E64), then Y motion (90:923F),
-; then on certain animation frames makes footstep graphics (90:ED88),
-; and if nothing stops it, footstep sounds (80:914D)
 $90:A3E5 08          PHP
 $90:A3E6 C2 30       REP #$30
 $90:A3E8 20 64 8E    JSR $8E64  [$90:8E64]  ; Samus X movement
@@ -5055,7 +5077,7 @@ $90:A40C D0 14       BNE $14    [$A422]     ;} If [boss ID] != 0: return
 $90:A40E AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
 $90:A411 D0 0F       BNE $0F    [$A422]     ;} If [Samus shine timer] != 0: return
 $90:A413 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
-$90:A416 89 00 04    BIT #$0400             ;} If [speed boost counter] = 4: return
+$90:A416 89 00 04    BIT #$0400             ;} If speed boosting: return
 $90:A419 D0 07       BNE $07    [$A422]     ;/
 $90:A41B A9 06 00    LDA #$0006             ;\
 $90:A41E 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 6, sound library 3, max queued sounds allowed = 6 (Samus' footsteps)
@@ -5656,80 +5678,114 @@ $90:A7DD 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; $0DC6 = 0
 $90:A7E0 28          PLP
 $90:A7E1 60          RTS
 }
+}
 
 
+;;; $A7E2..AC1B: Mini-map ;;;
+{
 ;;; $A7E2: Disable mini-map and mark boss room map tiles as explored ;;;
 {
 $90:A7E2 08          PHP
 $90:A7E3 8B          PHB
 $90:A7E4 C2 30       REP #$30
-$90:A7E6 4B          PHK
-$90:A7E7 AB          PLB
-$90:A7E8 A9 01 00    LDA #$0001
-$90:A7EB 8D F7 05    STA $05F7  [$7E:05F7]
-$90:A7EE A9 1F 00    LDA #$001F
-$90:A7F1 09 00 2C    ORA #$2C00
-$90:A7F4 A2 00 00    LDX #$0000
+$90:A7E6 4B          PHK                    ;\
+$90:A7E7 AB          PLB                    ;} DB = $90
+$90:A7E8 A9 01 00    LDA #$0001             ;\
+$90:A7EB 8D F7 05    STA $05F7  [$7E:05F7]  ;} Disable mini-map
+$90:A7EE A9 1F 00    LDA #$001F             ;\
+$90:A7F1 09 00 2C    ORA #$2C00             ;|
+$90:A7F4 A2 00 00    LDX #$0000             ;|
+                                            ;|
+$90:A7F7 9F 3C C6 7E STA $7EC63C,x[$7E:C63C];|
+$90:A7FB 9F 7C C6 7E STA $7EC67C,x[$7E:C67C];} HUD tilemap (1Ah..1Eh, 1..3) = 2C1Fh
+$90:A7FF 9F BC C6 7E STA $7EC6BC,x[$7E:C6BC];|
+$90:A803 E8          INX                    ;|
+$90:A804 E8          INX                    ;|
+$90:A805 E0 0A 00    CPX #$000A             ;|
+$90:A808 30 ED       BMI $ED    [$A7F7]     ;/
+$90:A80A AD 9C 17    LDA $179C  [$7E:179C]  ; A = [boss ID]
+$90:A80D A2 14 00    LDX #$0014             ; X = 14h
 
-$90:A7F7 9F 3C C6 7E STA $7EC63C,x[$7E:C63C]
-$90:A7FB 9F 7C C6 7E STA $7EC67C,x[$7E:C67C]
-$90:A7FF 9F BC C6 7E STA $7EC6BC,x[$7E:C6BC]
-$90:A803 E8          INX
-$90:A804 E8          INX
-$90:A805 E0 0A 00    CPX #$000A
-$90:A808 30 ED       BMI $ED    [$A7F7]
-$90:A80A AD 9C 17    LDA $179C  [$7E:179C]
-$90:A80D A2 14 00    LDX #$0014
-
-$90:A810 DD 3A A8    CMP $A83A,x[$90:A84E]
-$90:A813 F0 09       BEQ $09    [$A81E]
-$90:A815 CA          DEX
-$90:A816 CA          DEX
-$90:A817 CA          DEX
-$90:A818 CA          DEX
-$90:A819 10 F5       BPL $F5    [$A810]
+; LOOP_BOSS_ID
+$90:A810 DD 3A A8    CMP $A83A,x[$90:A84E]  ;\
+$90:A813 F0 09       BEQ $09    [$A81E]     ;} If [$A83A + [X]] != [boss ID]:
+$90:A815 CA          DEX                    ;\
+$90:A816 CA          DEX                    ;|
+$90:A817 CA          DEX                    ;} X -= 4
+$90:A818 CA          DEX                    ;/
+$90:A819 10 F5       BPL $F5    [$A810]     ; If [X] >= 0: go to LOOP_BOSS_ID
 $90:A81B AB          PLB
 $90:A81C 28          PLP
-$90:A81D 6B          RTL
+$90:A81D 6B          RTL                    ; Return
 
-$90:A81E BD 3C A8    LDA $A83C,x[$90:A83C]
-$90:A821 AA          TAX
+$90:A81E BD 3C A8    LDA $A83C,x[$90:A83C]  ;\
+$90:A821 AA          TAX                    ;} X = [$A83A + [X] + 2]
 
-$90:A822 BD 00 00    LDA $0000,x[$90:A852]
-$90:A825 30 10       BMI $10    [$A837]
-$90:A827 85 12       STA $12    [$7E:0012]
-$90:A829 BD 02 00    LDA $0002,x[$90:A854]
-$90:A82C 85 18       STA $18    [$7E:0018]
+; LOOP_MAP_TILES
+$90:A822 BD 00 00    LDA $0000,x[$90:A852]  ;\
+$90:A825 30 10       BMI $10    [$A837]     ;} If [[X]] >= 0:
+$90:A827 85 12       STA $12    [$7E:0012]  ; $12 = [[X]]
+$90:A829 BD 02 00    LDA $0002,x[$90:A854]  ;\
+$90:A82C 85 18       STA $18    [$7E:0018]  ;} $18 = [[X] + 2]
 $90:A82E 20 A6 A8    JSR $A8A6  [$90:A8A6]  ; Mark map tile as explored
-$90:A831 E8          INX
-$90:A832 E8          INX
-$90:A833 E8          INX
-$90:A834 E8          INX
-$90:A835 80 EB       BRA $EB    [$A822]
+$90:A831 E8          INX                    ;\
+$90:A832 E8          INX                    ;|
+$90:A833 E8          INX                    ;} X += 4
+$90:A834 E8          INX                    ;/
+$90:A835 80 EB       BRA $EB    [$A822]     ; Go to LOOP_MAP_TILES
 
 $90:A837 AB          PLB
 $90:A838 28          PLP
 $90:A839 6B          RTL
 
-$90:A83A             dw 0003,A852, 0006,A864, 0007,A872, 0008,A878, 000A,A88A, 0005,A89C
+;                        ________ Boss ID
+;                       |     ___ Pointer to room map tile offsets
+;                       |    |
+$90:A83A             dw 0003,A852,
+                        0006,A864,
+                        0007,A872,
+                        0008,A878,
+                        000A,A88A,
+                        0005,A89C
 
+;                        ________ X offset (in pixels)
+;                       |     ___ Y offset (in pixels)
+;                       |    |
 ; Kraid
-$90:A852             dw 0000,0000, 0100,0000, 0000,0100, 0100,0100, FFFF
+$90:A852             dw 0000,0000,
+                        0100,0000,
+                        0000,0100,
+                        0100,0100,
+                        FFFF
 
 ; Crocomire
-$90:A864             dw 0300,0000, 0400,0000, 0500,0000, FFFF
+$90:A864             dw 0300,0000,
+                        0400,0000,
+                        0500,0000,
+                        FFFF
 
 ; Phantoon
-$90:A872             dw 0000,0000, FFFF
+$90:A872             dw 0000,0000,
+                        FFFF
 
 ; Draygon
-$90:A878             dw 0000,0000, 0100,0000, 0000,0100, 0100,0100, FFFF
+$90:A878             dw 0000,0000,
+                        0100,0000,
+                        0000,0100,
+                        0100,0100,
+                        FFFF
 
 ; Mother Brain
-$90:A88A             dw 0000,0000, 0100,0000, 0200,0000, 0300,0000, FFFF
+$90:A88A             dw 0000,0000,
+                        0100,0000,
+                        0200,0000,
+                        0300,0000,
+                        FFFF
 
 ; Ridley
-$90:A89C             dw 0000,0000, 0000,0100, FFFF
+$90:A89C             dw 0000,0000,
+                        0000,0100,
+                        FFFF
 }
 
 
@@ -5787,7 +5843,7 @@ $90:A8DD 65 14       ADC $14    [$7E:0014]  ;|
 $90:A8DF AA          TAX                    ;/
 $90:A8E0 E2 20       SEP #$20               ;\
 $90:A8E2 BD F7 07    LDA $07F7,x[$7E:08C5]  ;|
-$90:A8E5 19 04 AC    ORA $AC04,y[$90:AC0B]  ;} $07F7 + [X] |= [$AC04 + [Y]]
+$90:A8E5 19 04 AC    ORA $AC04,y[$90:AC0B]  ;} $07F7 + [X] |= 80h >> [Y]
 $90:A8E8 9D F7 07    STA $07F7,x[$7E:08C5]  ;/
 $90:A8EB 7A          PLY
 $90:A8EC FA          PLX
@@ -6201,9 +6257,11 @@ $90:AB42 C6 12       DEC $12    [$7E:0012]  ; Decrement $12 (map columns remaini
 $90:AB44 F0 03       BEQ $03    [$AB49]     ; If [$12] != 0:
 $90:AB46 4C A4 AA    JMP $AAA4  [$90:AAA4]  ; Go to LOOP
 
+; Note that the 8-bit frame counter used here is set to 0 by door transition,
+; which usually causes the flash cycle to reset
 $90:AB49 28          PLP
 $90:AB4A AD B5 05    LDA $05B5  [$7E:05B5]  ;\
-$90:AB4D 29 08 00    AND #$0008             ;} If [frame counter] & 8 = 0:
+$90:AB4D 29 08 00    AND #$0008             ;} If [8-bit frame counter] & 8 = 0:
 $90:AB50 D0 0B       BNE $0B    [$AB5D]     ;/
 $90:AB52 AF 80 C6 7E LDA $7EC680[$7E:C680]  ;\
 $90:AB56 09 00 1C    ORA #$1C00             ;} $7E:C680 |= 1C00h (give Samus position in mini-map palette 7)
@@ -6222,12 +6280,12 @@ $90:AB5E 6B          RTL
 
 $90:AB5F DA          PHX
 $90:AB60 5A          PHY
-$90:AB61 A6 1E       LDX $1E    [$7E:001E]
-$90:AB63 E2 20       SEP #$20
-$90:AB65 A4 20       LDY $20    [$7E:0020]
-$90:AB67 BD F3 07    LDA $07F3,x[$7E:080C]
-$90:AB6A 19 04 AC    ORA $AC04,y[$90:AC0B]
-$90:AB6D 9D F3 07    STA $07F3,x[$7E:080C]
+$90:AB61 A6 1E       LDX $1E    [$7E:001E]  ;\
+$90:AB63 E2 20       SEP #$20               ;|
+$90:AB65 A4 20       LDY $20    [$7E:0020]  ;|
+$90:AB67 BD F3 07    LDA $07F3,x[$7E:080C]  ;} $07F7 + [$1E] |= 80h >> [$20]
+$90:AB6A 19 04 AC    ORA $AC04,y[$90:AC0B]  ;|
+$90:AB6D 9D F3 07    STA $07F3,x[$7E:080C]  ;/
 $90:AB70 C2 20       REP #$20
 $90:AB72 7A          PLY
 $90:AB73 FA          PLX
@@ -6346,8 +6404,11 @@ $90:AC04             db 80, 40, 20, 10, 08, 04, 02, 01
 ; 3Fh << Ah - i
 $90:AC0C             dw FC00, 7E00, 3F00, 1F80, 0FC0, 07E0, 03F0, 01F8
 }
+}
 
 
+;;; $AC1C..CFF9: Projectiles ;;;
+{
 ;;; $AC1C: Handle Samus cooldown ;;;
 {
 $90:AC1C AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
@@ -6356,12 +6417,12 @@ $90:AC21 AD CC 0C    LDA $0CCC  [$7E:0CCC]  ;\
 $90:AC24 F0 0B       BEQ $0B    [$AC31]     ;|
 $90:AC26 30 06       BMI $06    [$AC2E]     ;|
 $90:AC28 3A          DEC A                  ;|
-$90:AC29 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = max(0, cooldown timer - 1)
+$90:AC29 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = max(0, [cooldown timer] - 1)
 $90:AC2C 10 03       BPL $03    [$AC31]     ;|
                                             ;|
 $90:AC2E 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ;/
 
-$90:AC31 60          RTS
+$90:AC31 60          RTS                    ; Return
 
 ; BRANCH_TIME_FROZEN
 $90:AC32 A9 20 00    LDA #$0020             ;\
@@ -6373,9 +6434,9 @@ $90:AC38 60          RTS
 ;;; $AC39: Check if Samus can fire beam ;;;
 {
 ;; Returns
-;;     C: Set if Samus can fire beam
+;;     Carry: Set if Samus can fire beam, clear otherwise
 
-; Increments projectile counter
+; Increments projectile counter(!)
 $90:AC39 AD CE 0C    LDA $0CCE  [$7E:0CCE]  ;\
 $90:AC3C C9 05 00    CMP #$0005             ;} If [projectile counter] >= 5: go to BRANCH_CARRY_CLEAR
 $90:AC3F 10 17       BPL $17    [$AC58]     ;/
@@ -6401,7 +6462,7 @@ $90:AC59 60          RTS                    ;} Return carry clear
 ;; Returns
 ;;     C: Set if Samus can fire (super) missile
 
-; Increments projectile counter
+; Increments projectile counter(!)
 $90:AC5A AD D2 09    LDA $09D2  [$7E:09D2]  ;\
 $90:AC5D C9 02 00    CMP #$0002             ;} If [HUD item index] = super missile: go to BRANCH_SUPER_MISSILE
 $90:AC60 F0 21       BEQ $21    [$AC83]     ;/
@@ -6434,6 +6495,8 @@ $90:AC8C 60          RTS                    ;} Return carry clear
 }
 
 
+;;; $AC8D..AD21: Update beam tiles and palette ;;;
+{
 ;;; $AC8D: Update beam tiles and palette ;;;
 {
 $90:AC8D 08          PHP
@@ -6468,10 +6531,12 @@ $90:ACBF 4C CD AC    JMP $ACCD  [$90:ACCD]  ; Go to write beam palette
 }
 
 
-;;; $ACC2: Write beam [A] palette ;;;
+;;; $ACC2: Load beam palette ;;;
 {
 ;; Parameters:
-;;     Y: Beam index
+;;     A: Beam index
+
+; Same as $ACF0
 $90:ACC2 08          PHP
 $90:ACC3 8B          PHB
 $90:ACC4 4B          PHK                    ;\
@@ -6483,68 +6548,75 @@ $90:ACCC A8          TAY                    ;/
 }
 
 
-;;; $ACCD: Write beam palette ;;;
+;;; $ACCD: Load beam palette ;;;
 {
 ;; Parameters:
 ;;     Y: Beam index * 2 (without the charge beam bit)
-$90:ACCD A9 90 00    LDA #$0090
-$90:ACD0 EB          XBA
-$90:ACD1 85 01       STA $01    [$7E:0001]
-$90:ACD3 B9 C9 C3    LDA $C3C9,y[$90:C3C9]
-$90:ACD6 85 00       STA $00    [$7E:0000]
-$90:ACD8 A0 00 00    LDY #$0000
-$90:ACDB A2 00 00    LDX #$0000
 
-$90:ACDE B7 00       LDA [$00],y[$90:C3E1]
-$90:ACE0 9F C0 C1 7E STA $7EC1C0,x[$7E:C1C0]
-$90:ACE4 E8          INX
-$90:ACE5 E8          INX
-$90:ACE6 C8          INY
-$90:ACE7 C8          INY
-$90:ACE8 C0 20 00    CPY #$0020
-$90:ACEB 30 F1       BMI $F1    [$ACDE]
+; Requires DB and PSR to have been pushed
+$90:ACCD A9 90 00    LDA #$0090             ;\
+$90:ACD0 EB          XBA                    ;|
+$90:ACD1 85 01       STA $01    [$7E:0001]  ;|
+$90:ACD3 B9 C9 C3    LDA $C3C9,y[$90:C3C9]  ;|
+$90:ACD6 85 00       STA $00    [$7E:0000]  ;|
+$90:ACD8 A0 00 00    LDY #$0000             ;|
+$90:ACDB A2 00 00    LDX #$0000             ;|
+                                            ;|
+$90:ACDE B7 00       LDA [$00],y[$90:C3E1]  ;} Copy 20h bytes from $90:0000 + [$C3C9 + [Y]] to sprite palette 6
+$90:ACE0 9F C0 C1 7E STA $7EC1C0,x[$7E:C1C0];|
+$90:ACE4 E8          INX                    ;|
+$90:ACE5 E8          INX                    ;|
+$90:ACE6 C8          INY                    ;|
+$90:ACE7 C8          INY                    ;|
+$90:ACE8 C0 20 00    CPY #$0020             ;|
+$90:ACEB 30 F1       BMI $F1    [$ACDE]     ;/
 $90:ACED AB          PLB
 $90:ACEE 28          PLP
 $90:ACEF 6B          RTL
 }
 
 
-;;; $ACF0: Load projectile palette (external) ;;;
+;;; $ACF0: Load beam palette (external) ;;;
 {
+;; Parameters:
+;;     A: Beam index
 $90:ACF0 08          PHP
 $90:ACF1 8B          PHB
 $90:ACF2 4B          PHK                    ;\
 $90:ACF3 AB          PLB                    ;} DB = $90
 $90:ACF4 C2 30       REP #$30
-$90:ACF6 20 FC AC    JSR $ACFC  [$90:ACFC]  ; Load projectile palette
+$90:ACF6 20 FC AC    JSR $ACFC  [$90:ACFC]  ; Load beam palette
 $90:ACF9 AB          PLB
 $90:ACFA 28          PLP
 $90:ACFB 6B          RTL
 }
 
 
-;;; $ACFC: Load projectile palette ;;;
+;;; $ACFC: Load beam palette ;;;
 {
+;; Parameters:
+;;     A: Beam index
 $90:ACFC 29 FF 0F    AND #$0FFF
 $90:ACFF 0A          ASL A
 $90:AD00 A8          TAY
-$90:AD01 A9 90 00    LDA #$0090
-$90:AD04 EB          XBA
-$90:AD05 85 01       STA $01    [$7E:0001]
-$90:AD07 B9 C9 C3    LDA $C3C9,y[$90:C3CD]
-$90:AD0A 85 00       STA $00    [$7E:0000]
-$90:AD0C A0 00 00    LDY #$0000
-$90:AD0F A2 00 00    LDX #$0000
-
-$90:AD12 B7 00       LDA [$00],y[$90:C401]
-$90:AD14 9F C0 C1 7E STA $7EC1C0,x[$7E:C1C0]
-$90:AD18 E8          INX
-$90:AD19 E8          INX
-$90:AD1A C8          INY
-$90:AD1B C8          INY
-$90:AD1C C0 20 00    CPY #$0020
-$90:AD1F 30 F1       BMI $F1    [$AD12]
+$90:AD01 A9 90 00    LDA #$0090             ;\
+$90:AD04 EB          XBA                    ;|
+$90:AD05 85 01       STA $01    [$7E:0001]  ;|
+$90:AD07 B9 C9 C3    LDA $C3C9,y[$90:C3CD]  ;|
+$90:AD0A 85 00       STA $00    [$7E:0000]  ;|
+$90:AD0C A0 00 00    LDY #$0000             ;|
+$90:AD0F A2 00 00    LDX #$0000             ;|
+                                            ;|
+$90:AD12 B7 00       LDA [$00],y[$90:C401]  ;} Copy 20h bytes from $90:0000 + [$C3C9 + [Y]] to sprite palette 6
+$90:AD14 9F C0 C1 7E STA $7EC1C0,x[$7E:C1C0];|
+$90:AD18 E8          INX                    ;|
+$90:AD19 E8          INX                    ;|
+$90:AD1A C8          INY                    ;|
+$90:AD1B C8          INY                    ;|
+$90:AD1C C0 20 00    CPY #$0020             ;|
+$90:AD1F 30 F1       BMI $F1    [$AD12]     ;/
 $90:AD21 60          RTS
+}
 }
 
 
@@ -6553,57 +6625,58 @@ $90:AD21 60          RTS
 ; Called during door transition ($82:E4A9) and when elevator is activated ($A3:9548)
 $90:AD22 08          PHP
 $90:AD23 C2 30       REP #$30
-$90:AD25 A2 00 00    LDX #$0000
+$90:AD25 A2 00 00    LDX #$0000             ; X = 0 (projectile index)
 
-$90:AD28 9E 90 0C    STZ $0C90,x[$7E:0C90]
-$90:AD2B 9E 64 0B    STZ $0B64,x[$7E:0B64]
-$90:AD2E 9E 78 0B    STZ $0B78,x[$7E:0B78]
-$90:AD31 9E 04 0C    STZ $0C04,x[$7E:0C04]
-$90:AD34 9E DC 0B    STZ $0BDC,x[$7E:0BDC]
-$90:AD37 9E F0 0B    STZ $0BF0,x[$7E:0BF0]
-$90:AD3A 9E B4 0B    STZ $0BB4,x[$7E:0BB4]
-$90:AD3D 9E C8 0B    STZ $0BC8,x[$7E:0BC8]
-$90:AD40 9E 18 0C    STZ $0C18,x[$7E:0C18]
-$90:AD43 9E 2C 0C    STZ $0C2C,x[$7E:0C2C]
-$90:AD46 9E 40 0C    STZ $0C40,x[$7E:0C40]
-$90:AD49 9E 54 0C    STZ $0C54,x[$7E:0C54]
-$90:AD4C 9E 7C 0C    STZ $0C7C,x[$7E:0C7C]
-$90:AD4F 9E B8 0C    STZ $0CB8,x[$7E:0CB8]
-$90:AD52 A9 69 B1    LDA #$B169
-$90:AD55 9D 68 0C    STA $0C68,x[$7E:0C68]
-$90:AD58 E8          INX
-$90:AD59 E8          INX
-$90:AD5A E0 14 00    CPX #$0014
-$90:AD5D 30 C9       BMI $C9    [$AD28]
-$90:AD5F 9C D2 0C    STZ $0CD2  [$7E:0CD2]
-$90:AD62 9C CC 0C    STZ $0CCC  [$7E:0CCC]
-$90:AD65 9C CE 0C    STZ $0CCE  [$7E:0CCE]
+; LOOP
+$90:AD28 9E 90 0C    STZ $0C90,x[$7E:0C90]  ; Projectile trail timer / bomb subspeed = 0
+$90:AD2B 9E 64 0B    STZ $0B64,x[$7E:0B64]  ; Projectile X position = 0
+$90:AD2E 9E 78 0B    STZ $0B78,x[$7E:0B78]  ; Projectile Y position = 0
+$90:AD31 9E 04 0C    STZ $0C04,x[$7E:0C04]  ; Projectile direction = 0
+$90:AD34 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X velocity = 0
+$90:AD37 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y velocity = 0
+$90:AD3A 9E B4 0B    STZ $0BB4,x[$7E:0BB4]  ; Projectile X radius = 0
+$90:AD3D 9E C8 0B    STZ $0BC8,x[$7E:0BC8]  ; Projectile Y radius = 0
+$90:AD40 9E 18 0C    STZ $0C18,x[$7E:0C18]  ; Projectile type = 0
+$90:AD43 9E 2C 0C    STZ $0C2C,x[$7E:0C2C]  ; Projectile damage = 0
+$90:AD46 9E 40 0C    STZ $0C40,x[$7E:0C40]  ; Projectile instruction pointer = 0
+$90:AD49 9E 54 0C    STZ $0C54,x[$7E:0C54]  ; Projectile instruction timer = 0
+$90:AD4C 9E 7C 0C    STZ $0C7C,x[$7E:0C7C]  ; Projectile variable / bomb timer = 0
+$90:AD4F 9E B8 0C    STZ $0CB8,x[$7E:0CB8]  ; Projectile spritemap pointer = 0
+$90:AD52 A9 69 B1    LDA #$B169             ;\
+$90:AD55 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = RTS
+$90:AD58 E8          INX                    ;\
+$90:AD59 E8          INX                    ;} X += 2
+$90:AD5A E0 14 00    CPX #$0014             ;\
+$90:AD5D 30 C9       BMI $C9    [$AD28]     ;} If [X] < 14h: go to LOOP
+$90:AD5F 9C D2 0C    STZ $0CD2  [$7E:0CD2]  ; Bomb counter = 0
+$90:AD62 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ; Cooldown timer = 0
+$90:AD65 9C CE 0C    STZ $0CCE  [$7E:0CCE]  ; Projectile counter = 0
 $90:AD68 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag
-$90:AD6B AD EA 09    LDA $09EA  [$7E:09EA]
-$90:AD6E F0 06       BEQ $06    [$AD76]
-$90:AD70 9C D2 09    STZ $09D2  [$7E:09D2]
-$90:AD73 9C 04 0A    STZ $0A04  [$7E:0A04]
+$90:AD6B AD EA 09    LDA $09EA  [$7E:09EA]  ;\
+$90:AD6E F0 06       BEQ $06    [$AD76]     ;} If [icon cancel flag] != 0:
+$90:AD70 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
+$90:AD73 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = nothing
 
-$90:AD76 9C B0 0A    STZ $0AB0  [$7E:0AB0]
-$90:AD79 9C B2 0A    STZ $0AB2  [$7E:0AB2]
-$90:AD7C 9C B4 0A    STZ $0AB4  [$7E:0AB4]
-$90:AD7F 9C B6 0A    STZ $0AB6  [$7E:0AB6]
-$90:AD82 9C B8 0A    STZ $0AB8  [$7E:0AB8]
-$90:AD85 9C BA 0A    STZ $0ABA  [$7E:0ABA]
-$90:AD88 9C BC 0A    STZ $0ABC  [$7E:0ABC]
-$90:AD8B 9C BE 0A    STZ $0ABE  [$7E:0ABE]
-$90:AD8E 9C C0 0A    STZ $0AC0  [$7E:0AC0]
-$90:AD91 9C C2 0A    STZ $0AC2  [$7E:0AC2]
-$90:AD94 9C C4 0A    STZ $0AC4  [$7E:0AC4]
-$90:AD97 9C C6 0A    STZ $0AC6  [$7E:0AC6]
-$90:AD9A 9C AE 0A    STZ $0AAE  [$7E:0AAE]
-$90:AD9D AD 4A 0A    LDA $0A4A  [$7E:0A4A]
-$90:ADA0 F0 07       BEQ $07    [$ADA9]
-$90:ADA2 9C 4A 0A    STZ $0A4A  [$7E:0A4A]
-$90:ADA5 22 E6 DE 91 JSL $91DEE6[$91:DEE6]
+$90:AD76 9C B0 0A    STZ $0AB0  [$7E:0AB0]  ; Speed echo 0 X position = 0
+$90:AD79 9C B2 0A    STZ $0AB2  [$7E:0AB2]  ; Speed echo 1 X position = 0
+$90:AD7C 9C B4 0A    STZ $0AB4  [$7E:0AB4]  ; Speed echo 2 X position = 0
+$90:AD7F 9C B6 0A    STZ $0AB6  [$7E:0AB6]  ; Speed echo 3 X position = 0
+$90:AD82 9C B8 0A    STZ $0AB8  [$7E:0AB8]  ; Speed echo 0 Y position = 0
+$90:AD85 9C BA 0A    STZ $0ABA  [$7E:0ABA]  ; Speed echo 1 Y position = 0
+$90:AD88 9C BC 0A    STZ $0ABC  [$7E:0ABC]  ; Speed echo 2 Y position = 0
+$90:AD8B 9C BE 0A    STZ $0ABE  [$7E:0ABE]  ; Speed echo 3 Y position = 0
+$90:AD8E 9C C0 0A    STZ $0AC0  [$7E:0AC0]  ; Speed echo 0 X speed = 0
+$90:AD91 9C C2 0A    STZ $0AC2  [$7E:0AC2]  ; Speed echo 1 X speed = 0
+$90:AD94 9C C4 0A    STZ $0AC4  [$7E:0AC4]  ; Draw speed echo 2 flag = 0
+$90:AD97 9C C6 0A    STZ $0AC6  [$7E:0AC6]  ; Draw speed echo 3 flag = 0
+$90:AD9A 9C AE 0A    STZ $0AAE  [$7E:0AAE]  ; Speed echoes index = 0
+$90:AD9D AD 4A 0A    LDA $0A4A  [$7E:0A4A]  ;\
+$90:ADA0 F0 07       BEQ $07    [$ADA9]     ;} If [super special Samus palette flags] != 0:
+$90:ADA2 9C 4A 0A    STZ $0A4A  [$7E:0A4A]  ; Super special Samus palette flags = 0
+$90:ADA5 22 E6 DE 91 JSL $91DEE6[$91:DEE6]  ; Load Samus target colours based on suit
 
-$90:ADA9 AD 76 0A    LDA $0A76  [$7E:0A76]
-$90:ADAC F0 07       BEQ $07    [$ADB5]
+$90:ADA9 AD 76 0A    LDA $0A76  [$7E:0A76]  ;\
+$90:ADAC F0 07       BEQ $07    [$ADB5]     ;} If hyper beam is enabled:
 $90:ADAE A0 F0 E1    LDY #$E1F0             ;\
 $90:ADB1 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn hyper beam palette FX object
 
@@ -6614,7 +6687,6 @@ $90:ADB6 6B          RTL
 
 ;;; $ADB7: Clear projectile ;;;
 {
-; Index in X
 $90:ADB7 08          PHP
 $90:ADB8 C2 30       REP #$30
 $90:ADBA 9E 64 0B    STZ $0B64,x[$7E:0B64]  ; Projectile X position = 0
@@ -6630,7 +6702,7 @@ $90:ADD5 9E 18 0C    STZ $0C18,x[$7E:0C18]  ; Projectile type = 0
 $90:ADD8 9E 2C 0C    STZ $0C2C,x[$7E:0C2C]  ; Projectile damage = 0
 $90:ADDB 9E 40 0C    STZ $0C40,x[$7E:0C40]  ; Projectile instruction pointer = 0
 $90:ADDE 9E 54 0C    STZ $0C54,x[$7E:0C54]  ; Projectile instruction timer = 0
-$90:ADE1 9E 7C 0C    STZ $0C7C,x[$7E:0C7C]  ; Projectile super missile index / bomb timer = 0
+$90:ADE1 9E 7C 0C    STZ $0C7C,x[$7E:0C7C]  ; Projectile variable / bomb timer = 0
 $90:ADE4 9E B8 0C    STZ $0CB8,x[$7E:0CB8]  ; Projectile spritemap pointer = 0
 $90:ADE7 A9 69 B1    LDA #$B169             ;\
 $90:ADEA 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = RTS
@@ -6650,35 +6722,38 @@ $90:AE05 6B          RTL
 }
 
 
+;;; $AE06..CD: Kill projectile ;;;
+{
 ;;; $AE06: Kill projectile ;;;
 {
-; 0C18 index in X
 $90:AE06 08          PHP
 $90:AE07 8B          PHB
-$90:AE08 4B          PHK
-$90:AE09 AB          PLB
+$90:AE08 4B          PHK                    ;\
+$90:AE09 AB          PLB                    ;} DB = $90
 $90:AE0A C2 30       REP #$30
-$90:AE0C BD 19 0C    LDA $0C19,x[$7E:0C19]
-$90:AE0F 29 0F 00    AND #$000F
-$90:AE12 F0 0C       BEQ $0C    [$AE20]
-$90:AE14 C9 03 00    CMP #$0003
-$90:AE17 30 14       BMI $14    [$AE2D]
-$90:AE19 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+$90:AE0C BD 19 0C    LDA $0C19,x[$7E:0C19]  ;\
+$90:AE0F 29 0F 00    AND #$000F             ;} If projectile is beam: go to BRANCH_BEAM
+$90:AE12 F0 0C       BEQ $0C    [$AE20]     ;/
+$90:AE14 C9 03 00    CMP #$0003             ;\
+$90:AE17 30 14       BMI $14    [$AE2D]     ;} If projectile is (super) missile: go to BRANCH_MISSILE
+$90:AE19 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:AE1D AB          PLB
 $90:AE1E 28          PLP
-$90:AE1F 6B          RTL
+$90:AE1F 6B          RTL                    ; Return
 
-$90:AE20 9B          TXY
-$90:AE21 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:AE24 29 0F 00    AND #$000F
-$90:AE27 0A          ASL A
-$90:AE28 AA          TAX
-$90:AE29 FC 3A AE    JSR ($AE3A,x)[$90:AEB9]
-$90:AE2C BB          TYX
+; BRANCH_BEAM
+$90:AE20 9B          TXY                    ;\
+$90:AE21 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;|
+$90:AE24 29 0F 00    AND #$000F             ;|
+$90:AE27 0A          ASL A                  ;} Execute [$AE3A + ([projectile direction] & Fh) * 2]
+$90:AE28 AA          TAX                    ;|
+$90:AE29 FC 3A AE    JSR ($AE3A,x)[$90:AEB9];|
+$90:AE2C BB          TYX                    ;/
 
-$90:AE2D 22 CF 80 93 JSL $9380CF[$93:80CF]
-$90:AE31 A9 69 B1    LDA #$B169
-$90:AE34 9D 68 0C    STA $0C68,x[$7E:0C68]
+; BRANCH_MISSILE
+$90:AE2D 22 CF 80 93 JSL $9380CF[$93:80CF]  ; Part of kill projectile - queue sound effect and set instruction
+$90:AE31 A9 69 B1    LDA #$B169             ;\
+$90:AE34 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = RTS
 $90:AE37 AB          PLB
 $90:AE38 28          PLP
 $90:AE39 6B          RTL
@@ -6687,99 +6762,100 @@ $90:AE3A             dw AE4E, AE59, AE6E, AE79, AE8E, AE8E, AE99, AEAE, AEB9, AE
 }
 
 
-;;; $AE4E:  ;;;
+;;; $AE4E: Kill beam - up ;;;
 {
-$90:AE4E B9 78 0B    LDA $0B78,y[$7E:0B78]
-$90:AE51 38          SEC
-$90:AE52 F9 C8 0B    SBC $0BC8,y[$7E:0BC8]
-$90:AE55 99 78 0B    STA $0B78,y[$7E:0B78]
+$90:AE4E B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$90:AE51 38          SEC                    ;|
+$90:AE52 F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;} Projectile Y position -= [projectile Y radii]
+$90:AE55 99 78 0B    STA $0B78,y[$7E:0B78]  ;/
 $90:AE58 60          RTS
 }
 
 
-;;; $AE59:  ;;;
+;;; $AE59: Kill beam - up-right ;;;
 {
-$90:AE59 B9 64 0B    LDA $0B64,y[$7E:0B66]
-$90:AE5C 18          CLC
-$90:AE5D 79 B4 0B    ADC $0BB4,y[$7E:0BB6]
-$90:AE60 99 64 0B    STA $0B64,y[$7E:0B66]
-$90:AE63 B9 78 0B    LDA $0B78,y[$7E:0B7A]
-$90:AE66 38          SEC
-$90:AE67 F9 C8 0B    SBC $0BC8,y[$7E:0BCA]
-$90:AE6A 99 78 0B    STA $0B78,y[$7E:0B7A]
+$90:AE59 B9 64 0B    LDA $0B64,y[$7E:0B66]  ;\
+$90:AE5C 18          CLC                    ;|
+$90:AE5D 79 B4 0B    ADC $0BB4,y[$7E:0BB6]  ;} Projectile X position += [projectile X radii]
+$90:AE60 99 64 0B    STA $0B64,y[$7E:0B66]  ;/
+$90:AE63 B9 78 0B    LDA $0B78,y[$7E:0B7A]  ;\
+$90:AE66 38          SEC                    ;|
+$90:AE67 F9 C8 0B    SBC $0BC8,y[$7E:0BCA]  ;} Projectile Y position -= [projectile Y radii]
+$90:AE6A 99 78 0B    STA $0B78,y[$7E:0B7A]  ;/
 $90:AE6D 60          RTS
 }
 
 
-;;; $AE6E:  ;;;
+;;; $AE6E: Kill beam - right ;;;
 {
-$90:AE6E B9 64 0B    LDA $0B64,y[$7E:0B64]
-$90:AE71 18          CLC
-$90:AE72 79 B4 0B    ADC $0BB4,y[$7E:0BB4]
-$90:AE75 99 64 0B    STA $0B64,y[$7E:0B64]
+$90:AE6E B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$90:AE71 18          CLC                    ;|
+$90:AE72 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;} Projectile X position += [projectile X radii]
+$90:AE75 99 64 0B    STA $0B64,y[$7E:0B64]  ;/
 $90:AE78 60          RTS
 }
 
 
-;;; $AE79:  ;;;
+;;; $AE79: Kill beam - down-right ;;;
 {
-$90:AE79 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$90:AE7C 18          CLC
-$90:AE7D 79 B4 0B    ADC $0BB4,y[$7E:0BB4]
-$90:AE80 99 64 0B    STA $0B64,y[$7E:0B64]
-$90:AE83 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$90:AE86 18          CLC
-$90:AE87 79 C8 0B    ADC $0BC8,y[$7E:0BC8]
-$90:AE8A 99 78 0B    STA $0B78,y[$7E:0B78]
+$90:AE79 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$90:AE7C 18          CLC                    ;|
+$90:AE7D 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;} Projectile X position += [projectile X radii]
+$90:AE80 99 64 0B    STA $0B64,y[$7E:0B64]  ;/
+$90:AE83 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$90:AE86 18          CLC                    ;|
+$90:AE87 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;} Projectile Y position += [projectile Y radii]
+$90:AE8A 99 78 0B    STA $0B78,y[$7E:0B78]  ;/
 $90:AE8D 60          RTS
 }
 
 
-;;; $AE8E:  ;;;
+;;; $AE8E: Kill beam - down ;;;
 {
-$90:AE8E B9 78 0B    LDA $0B78,y[$7E:0B78]
-$90:AE91 18          CLC
-$90:AE92 79 C8 0B    ADC $0BC8,y[$7E:0BC8]
-$90:AE95 99 78 0B    STA $0B78,y[$7E:0B78]
+$90:AE8E B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$90:AE91 18          CLC                    ;|
+$90:AE92 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;} Projectile Y position += [projectile Y radii]
+$90:AE95 99 78 0B    STA $0B78,y[$7E:0B78]  ;/
 $90:AE98 60          RTS
 }
 
 
-;;; $AE99:  ;;;
+;;; $AE99: Kill beam - down-left ;;;
 {
-$90:AE99 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$90:AE9C 38          SEC
-$90:AE9D F9 B4 0B    SBC $0BB4,y[$7E:0BB4]
-$90:AEA0 99 64 0B    STA $0B64,y[$7E:0B64]
-$90:AEA3 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$90:AEA6 18          CLC
-$90:AEA7 79 C8 0B    ADC $0BC8,y[$7E:0BC8]
-$90:AEAA 99 78 0B    STA $0B78,y[$7E:0B78]
+$90:AE99 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$90:AE9C 38          SEC                    ;|
+$90:AE9D F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} Projectile X position -= [projectile X radii]
+$90:AEA0 99 64 0B    STA $0B64,y[$7E:0B64]  ;/
+$90:AEA3 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$90:AEA6 18          CLC                    ;|
+$90:AEA7 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;} Projectile Y position += [projectile Y radii]
+$90:AEAA 99 78 0B    STA $0B78,y[$7E:0B78]  ;/
 $90:AEAD 60          RTS
 }
 
 
-;;; $AEAE:  ;;;
+;;; $AEAE: Kill beam - left ;;;
 {
-$90:AEAE B9 64 0B    LDA $0B64,y[$7E:0B64]
-$90:AEB1 38          SEC
-$90:AEB2 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]
-$90:AEB5 99 64 0B    STA $0B64,y[$7E:0B64]
+$90:AEAE B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$90:AEB1 38          SEC                    ;|
+$90:AEB2 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} Projectile X position -= [projectile X radii]
+$90:AEB5 99 64 0B    STA $0B64,y[$7E:0B64]  ;/
 $90:AEB8 60          RTS
 }
 
 
-;;; $AEB9:  ;;;
+;;; $AEB9: Kill beam - up-left ;;;
 {
-$90:AEB9 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$90:AEBC 38          SEC
-$90:AEBD F9 B4 0B    SBC $0BB4,y[$7E:0BB4]
-$90:AEC0 99 64 0B    STA $0B64,y[$7E:0B64]
-$90:AEC3 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$90:AEC6 38          SEC
-$90:AEC7 F9 C8 0B    SBC $0BC8,y[$7E:0BC8]
-$90:AECA 99 78 0B    STA $0B78,y[$7E:0B78]
+$90:AEB9 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$90:AEBC 38          SEC                    ;|
+$90:AEBD F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} Projectile X position -= [projectile X radii]
+$90:AEC0 99 64 0B    STA $0B64,y[$7E:0B64]  ;/
+$90:AEC3 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$90:AEC6 38          SEC                    ;|
+$90:AEC7 F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;} Projectile Y position -= [projectile Y radii]
+$90:AECA 99 78 0B    STA $0B78,y[$7E:0B78]  ;/
 $90:AECD 60          RTS
+}
 }
 
 
@@ -6788,7 +6864,7 @@ $90:AECD 60          RTS
 $90:AECE 08          PHP
 $90:AECF C2 30       REP #$30
 $90:AED1 A9 12 00    LDA #$0012             ;\
-$90:AED4 8D DE 0D    STA $0DDE  [$7E:0DDE]  ;} X = projectile index = 12h
+$90:AED4 8D DE 0D    STA $0DDE  [$7E:0DDE]  ;} Projectile index = 12h
 $90:AED7 AA          TAX                    ;/
 
 ; LOOP
@@ -6799,15 +6875,17 @@ $90:AEE0 22 E9 81 93 JSL $9381E9[$93:81E9]  ; Projectile instruction handler
 $90:AEE4 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
 $90:AEE7 CA          DEX                    ;\
-$90:AEE8 CA          DEX                    ;} X -= 2
-$90:AEE9 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
-$90:AEEC 10 EA       BPL $EA    [$AED8]     ; If [X] >= 0: go to LOOP
+$90:AEE8 CA          DEX                    ;} Projectile index -= 2
+$90:AEE9 8E DE 0D    STX $0DDE  [$7E:0DDE]  ;/
+$90:AEEC 10 EA       BPL $EA    [$AED8]     ; If [projectile index] >= 0: go to LOOP
 $90:AEEE 9C D2 0D    STZ $0DD2  [$7E:0DD2]  ; $0DD2 = 0
 $90:AEF1 28          PLP
 $90:AEF2 60          RTS
 }
 
 
+;;; $AEF3..AF67: Beam - no wave beam ;;;
+{
 ;;; $AEF3: Projectile pre-instruction - beam - no wave beam ;;;
 {
 $90:AEF3 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
@@ -6820,12 +6898,12 @@ $90:AF00 DE 90 0C    DEC $0C90,x[$7E:0C90]  ; Decrement projectile trail timer
 $90:AF03 D0 0D       BNE $0D    [$AF12]     ; If [projectile trail timer] = 0:
 $90:AF05 A9 04 00    LDA #$0004             ;\
 $90:AF08 9D 90 0C    STA $0C90,x[$7E:0C90]  ;} Projectile trail timer = 4
-$90:AF0B 22 57 B6 90 JSL $90B657[$90:B657]  ; Execute $90:B657
+$90:AF0B 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:AF0F AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
 $90:AF12 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
 $90:AF15 29 0F 00    AND #$000F             ;|
-$90:AF18 0A          ASL A                  ;} Y = [projectile direction] * 2
+$90:AF18 0A          ASL A                  ;} Y = ([projectile direction] & Fh) * 2
 $90:AF19 A8          TAY                    ;/
 $90:AF1A BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;\
 $90:AF1D 18          CLC                    ;|
@@ -6853,33 +6931,36 @@ $90:AF36             dw AF4A, ; 0: Up, facing right
 }
 
 
-;;; $AF4A:  ;;;
+;;; $AF4A: Beam block collision - no wave beam - vertical ;;;
 {
 $90:AF4A AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AF4D 22 CA A2 94 JSL $94A2CA[$94:A2CA]
+$90:AF4D 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
 $90:AF51 60          RTS
 }
 
 
-;;; $AF52:  ;;;
+;;; $AF52: Beam block collision - no wave beam - diagonal ;;;
 {
 $90:AF52 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AF55 22 3B A2 94 JSL $94A23B[$94:A23B]
-$90:AF59 B0 04       BCS $04    [$AF5F]
-$90:AF5B 22 CA A2 94 JSL $94A2CA[$94:A2CA]
+$90:AF55 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
+$90:AF59 B0 04       BCS $04    [$AF5F]     ; If not collided:
+$90:AF5B 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
 
 $90:AF5F 60          RTS
 }
 
 
-;;; $AF60:  ;;;
+;;; $AF60: Beam block collision - no wave beam - horizontal ;;;
 {
 $90:AF60 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AF63 22 3B A2 94 JSL $94A23B[$94:A23B]
+$90:AF63 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
 $90:AF67 60          RTS
+}
 }
 
 
+;;; $AF68..E4: Missile ;;;
+{
 ;;; $AF68: Projectile pre-instruction - missile ;;;
 {
 $90:AF68 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
@@ -6892,7 +6973,7 @@ $90:AF75 DE 90 0C    DEC $0C90,x[$7E:0C90]  ; Decrement projectile trail timer
 $90:AF78 D0 0D       BNE $0D    [$AF87]     ; If [projectile trail timer] = 0:
 $90:AF7A A9 04 00    LDA #$0004             ;\
 $90:AF7D 9D 90 0C    STA $0C90,x[$7E:0C90]  ;} Projectile trail timer = 4
-$90:AF80 22 57 B6 90 JSL $90B657[$90:B657]  ; Execute $90:B657
+$90:AF80 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:AF84 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
 $90:AF87 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
@@ -6910,7 +6991,7 @@ $90:AFA0 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
 $90:AFA3 98          TYA                    ;\
 $90:AFA4 4A          LSR A                  ;} Y /= 2
 $90:AFA5 A8          TAY                    ;/
-$90:AFA6 20 F6 B2    JSR $B2F6  [$90:B2F6]  ; Execute $B2F6
+$90:AFA6 20 F6 B2    JSR $B2F6  [$90:B2F6]  ; Accelerate (super) missile
 $90:AFA9 98          TYA                    ;\
 $90:AFAA 0A          ASL A                  ;|
 $90:AFAB AA          TAX                    ;} Execute [$AF36 + [Y] * 2]
@@ -6931,344 +7012,352 @@ $90:AFB3             dw AFC7, ; 0: Up, facing right
 }
 
 
-;;; $AFC7:  ;;;
+;;; $AFC7: Missile block collision - vertical ;;;
 {
 $90:AFC7 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AFCA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]
+$90:AFCA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
 $90:AFCE 60          RTS
 }
 
 
-;;; $AFCF:  ;;;
+;;; $AFCF: Missile block collision - diagonal ;;;
 {
 $90:AFCF AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AFD2 22 6F A4 94 JSL $94A46F[$94:A46F]
-$90:AFD6 B0 04       BCS $04    [$AFDC]
-$90:AFD8 22 D9 A4 94 JSL $94A4D9[$94:A4D9]
+$90:AFD2 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:AFD6 B0 04       BCS $04    [$AFDC]     ; If not collided:
+$90:AFD8 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
 
 $90:AFDC 60          RTS
 }
 
 
-;;; $AFDD:  ;;;
+;;; $AFDD: Missile block collision - horizontal ;;;
 {
 $90:AFDD AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AFE0 22 6F A4 94 JSL $94A46F[$94:A46F]
+$90:AFE0 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
 $90:AFE4 60          RTS
 }
-
-
-;;; $AFE5: Projectile pre-instruction - super missile ;;;
-{
-$90:AFE5 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:AFE8 29 F0 00    AND #$00F0
-$90:AFEB F0 06       BEQ $06    [$AFF3]
-$90:AFED 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:AFF1 80 28       BRA $28    [$B01B]
-
-$90:AFF3 DE 90 0C    DEC $0C90,x[$7E:0C90]
-$90:AFF6 D0 0D       BNE $0D    [$B005]
-$90:AFF8 A9 02 00    LDA #$0002
-$90:AFFB 9D 90 0C    STA $0C90,x[$7E:0C90]
-$90:AFFE 22 57 B6 90 JSL $90B657[$90:B657]
-$90:B002 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-
-$90:B005 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:B008 29 0F 00    AND #$000F
-$90:B00B A8          TAY
-$90:B00C 20 F6 B2    JSR $B2F6  [$90:B2F6]
-$90:B00F 98          TYA
-$90:B010 0A          ASL A
-$90:B011 AA          TAX
-$90:B012 FC 33 B0    JSR ($B033,x)[$90:B06A]
-$90:B015 20 6A B1    JSR $B16A  [$90:B16A]
-$90:B018 B0 01       BCS $01    [$B01B]
-$90:B01A 60          RTS
-
-; Delete all super missile projectiles
-$90:B01B A0 08 00    LDY #$0008
-
-$90:B01E B9 18 0C    LDA $0C18,y[$7E:0C20]
-$90:B021 29 FF 0F    AND #$0FFF
-$90:B024 C9 00 02    CMP #$0200
-$90:B027 D0 05       BNE $05    [$B02E]
-$90:B029 BB          TYX
-$90:B02A 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-
-$90:B02E 88          DEY
-$90:B02F 88          DEY
-$90:B030 10 EC       BPL $EC    [$B01E]
-$90:B032 60          RTS
-
-$90:B033             dw B047, B052, B06A, B052, B047, B047, B052, B06A, B052, B047
 }
 
 
-;;; $B047:  ;;;
+;;; $AFE5..B098: Super missile ;;;
+{
+;;; $AFE5: Projectile pre-instruction - super missile ;;;
+{
+$90:AFE5 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:AFE8 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:AFEB F0 06       BEQ $06    [$AFF3]     ;/
+$90:AFED 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:AFF1 80 28       BRA $28    [$B01B]     ; Go to BRANCH_DELETE
+
+$90:AFF3 DE 90 0C    DEC $0C90,x[$7E:0C90]  ; Decrement projectile trail timer
+$90:AFF6 D0 0D       BNE $0D    [$B005]     ; If [projectile trail timer] = 0:
+$90:AFF8 A9 02 00    LDA #$0002             ;\
+$90:AFFB 9D 90 0C    STA $0C90,x[$7E:0C90]  ;} Projectile trail timer = 2
+$90:AFFE 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
+$90:B002 AE DE 0D    LDX $0DDE  [$7E:0DDE]
+
+$90:B005 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:B008 29 0F 00    AND #$000F             ;} Y = [projectile direction]
+$90:B00B A8          TAY                    ;/
+$90:B00C 20 F6 B2    JSR $B2F6  [$90:B2F6]  ; Accelerate (super) missile
+$90:B00F 98          TYA                    ;\
+$90:B010 0A          ASL A                  ;|
+$90:B011 AA          TAX                    ;} Execute [$B033 + [projectile direction] * 2]
+$90:B012 FC 33 B0    JSR ($B033,x)[$90:B06A];/
+$90:B015 20 6A B1    JSR $B16A  [$90:B16A]  ; Delete projectile if too far off-screen
+$90:B018 B0 01       BCS $01    [$B01B]     ; If projectile not deleted:
+$90:B01A 60          RTS                    ; Return
+
+; BRANCH_DELETE
+$90:B01B A0 08 00    LDY #$0008             ; Y = 8 (projectile index)
+
+; LOOP
+$90:B01E B9 18 0C    LDA $0C18,y[$7E:0C20]  ;\
+$90:B021 29 FF 0F    AND #$0FFF             ;|
+$90:B024 C9 00 02    CMP #$0200             ;} If (projectile type) = super missile:
+$90:B027 D0 05       BNE $05    [$B02E]     ;/
+$90:B029 BB          TYX                    ; X = [Y]
+$90:B02A 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+
+$90:B02E 88          DEY                    ;\
+$90:B02F 88          DEY                    ;} Y -= 2
+$90:B030 10 EC       BPL $EC    [$B01E]     ; If [Y] >= 0: go to LOOP
+$90:B032 60          RTS
+
+$90:B033             dw B047, ; 0: Up, facing right
+                        B052, ; 1: Up-right
+                        B06A, ; 2: Right
+                        B052, ; 3: Down-right
+                        B047, ; 4: Down, facing right
+                        B047, ; 5: Down, facing left
+                        B052, ; 6: Down-left
+                        B06A, ; 7: Left
+                        B052, ; 8: Up-left
+                        B047  ; 9: Up, facing left
+}
+
+
+;;; $B047: Super missile block collision - vertical ;;;
 {
 $90:B047 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B04A 22 D9 A4 94 JSL $94A4D9[$94:A4D9]
-$90:B04E 20 66 B3    JSR $B366  [$90:B366]
+$90:B04A 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:B04E 20 66 B3    JSR $B366  [$90:B366]  ; Super missile link vertical block collision detection
 $90:B051 60          RTS
 }
 
 
-;;; $B052:  ;;;
+;;; $B052: Super missile block collision - diagonal ;;;
 {
 $90:B052 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B055 22 6F A4 94 JSL $94A46F[$94:A46F]
-$90:B059 B0 0B       BCS $0B    [$B066]
-$90:B05B 20 06 B4    JSR $B406  [$90:B406]
-$90:B05E 22 D9 A4 94 JSL $94A4D9[$94:A4D9]
-$90:B062 20 66 B3    JSR $B366  [$90:B366]
-$90:B065 60          RTS
+$90:B055 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:B059 B0 0B       BCS $0B    [$B066]     ; If not collided:
+$90:B05B 20 06 B4    JSR $B406  [$90:B406]  ; Super missile link horizontal block collision detection
+$90:B05E 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:B062 20 66 B3    JSR $B366  [$90:B366]  ; Super missile link vertical block collision detection
+$90:B065 60          RTS                    ; Return
 
-$90:B066 20 06 B4    JSR $B406  [$90:B406]
+$90:B066 20 06 B4    JSR $B406  [$90:B406]  ; Super missile link horizontal block collision detection
 $90:B069 60          RTS
 }
 
 
-;;; $B06A:  ;;;
+;;; $B06A: Super missile block collision - horizontal ;;;
 {
 $90:B06A AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B06D 22 6F A4 94 JSL $94A46F[$94:A46F]
-$90:B071 20 06 B4    JSR $B406  [$90:B406]
+$90:B06D 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:B071 20 06 B4    JSR $B406  [$90:B406]  ; Super missile link horizontal block collision detection
 $90:B074 60          RTS
 }
 
 
-;;; $B075:  ;;;
+;;; $B075: Projectile pre-instruction - super missile link ;;;
 {
-; Super missile link projectile pre-instruction?
-$90:B075 BD 04 0C    LDA $0C04,x[$7E:0C06]
-$90:B078 29 F0 00    AND #$00F0
-$90:B07B F0 1B       BEQ $1B    [$B098]
-$90:B07D 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B081 A0 08 00    LDY #$0008
+$90:B075 BD 04 0C    LDA $0C04,x[$7E:0C06]  ;\
+$90:B078 29 F0 00    AND #$00F0             ;} If projectile is not deleted: return
+$90:B07B F0 1B       BEQ $1B    [$B098]     ;/
+$90:B07D 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:B081 A0 08 00    LDY #$0008             ; Y = 8 (projectile index)
 
-$90:B084 B9 18 0C    LDA $0C18,y[$7E:0C20]
-$90:B087 29 FF 0F    AND #$0FFF
-$90:B08A C9 00 02    CMP #$0200
-$90:B08D D0 05       BNE $05    [$B094]
-$90:B08F BB          TYX
-$90:B090 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+; LOOP
+$90:B084 B9 18 0C    LDA $0C18,y[$7E:0C20]  ;\
+$90:B087 29 FF 0F    AND #$0FFF             ;|
+$90:B08A C9 00 02    CMP #$0200             ;} If (projectile type) = super missile:
+$90:B08D D0 05       BNE $05    [$B094]     ;/
+$90:B08F BB          TYX                    ; X = [Y]
+$90:B090 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 
-$90:B094 88          DEY
-$90:B095 88          DEY
-$90:B096 10 EC       BPL $EC    [$B084]
+$90:B094 88          DEY                    ;\
+$90:B095 88          DEY                    ;} Y -= 2
+$90:B096 10 EC       BPL $EC    [$B084]     ; If [Y] >= 0: go to LOOP
 
 $90:B098 60          RTS
+}
 }
 
 
 ;;; $B099: Projectile pre-instruction - bomb ;;;
 {
-$90:B099 BD 04 0C    LDA $0C04,x[$7E:0C0E]
-$90:B09C 29 F0 00    AND #$00F0
-$90:B09F F0 05       BEQ $05    [$B0A6]
-$90:B0A1 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B0A5 60          RTS
+$90:B099 BD 04 0C    LDA $0C04,x[$7E:0C0E]  ;\
+$90:B09C 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:B09F F0 05       BEQ $05    [$B0A6]     ;/
+$90:B0A1 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:B0A5 60          RTS                    ; Return
 
-$90:B0A6 20 28 C1    JSR $C128  [$90:C128]
-$90:B0A9 22 AC 9C 94 JSL $949CAC[$94:9CAC]
+$90:B0A6 20 28 C1    JSR $C128  [$90:C128]  ; Handle bomb
+$90:B0A9 22 AC 9C 94 JSL $949CAC[$94:9CAC]  ; (Power) bomb explosion block collision detection
 $90:B0AD 60          RTS
 }
 
 
 ;;; $B0AE: Projectile pre-instruction - power bomb ;;;
 {
-$90:B0AE BD 04 0C    LDA $0C04,x[$7E:0C0E]
-$90:B0B1 29 F0 00    AND #$00F0
-$90:B0B4 F0 05       BEQ $05    [$B0BB]
-$90:B0B6 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B0BA 60          RTS
+$90:B0AE BD 04 0C    LDA $0C04,x[$7E:0C0E]  ;\
+$90:B0B1 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:B0B4 F0 05       BEQ $05    [$B0BB]     ;/
+$90:B0B6 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:B0BA 60          RTS                    ; Return
 
-$90:B0BB 20 57 C1    JSR $C157  [$90:C157]
-$90:B0BE 22 AC 9C 94 JSL $949CAC[$94:9CAC]
+$90:B0BB 20 57 C1    JSR $C157  [$90:C157]  ; Handle power bomb
+$90:B0BE 22 AC 9C 94 JSL $949CAC[$94:9CAC]  ; (Power) bomb explosion block collision detection
 $90:B0C2 60          RTS
 }
 
 
+;;; $B0C3..B158: Wave beam ;;;
+{
 ;;; $B0C3: Projectile pre-instruction - beam - wave + plasma/spazer / charged (ice) wave ;;;
 {
-$90:B0C3 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:B0C6 29 F0 00    AND #$00F0
-$90:B0C9 F0 05       BEQ $05    [$B0D0]
-$90:B0CB 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B0CF 60          RTS
+$90:B0C3 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:B0C6 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:B0C9 F0 05       BEQ $05    [$B0D0]     ;/
+$90:B0CB 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:B0CF 60          RTS                    ; Return
 
-$90:B0D0 DE 90 0C    DEC $0C90,x[$7E:0C90]
-$90:B0D3 D0 2E       BNE $2E    [$B103]
-$90:B0D5 A9 04 00    LDA #$0004
-$90:B0D8 9D 90 0C    STA $0C90,x[$7E:0C90]
-$90:B0DB 22 57 B6 90 JSL $90B657[$90:B657]
+$90:B0D0 DE 90 0C    DEC $0C90,x[$7E:0C90]  ; Decrement projectile trail timer
+$90:B0D3 D0 2E       BNE $2E    [$B103]     ; If [projectile trail timer] != 0: go to wave beam shared pre-instruction
+$90:B0D5 A9 04 00    LDA #$0004             ;\
+$90:B0D8 9D 90 0C    STA $0C90,x[$7E:0C90]  ;} Projectile trail timer = 4
+$90:B0DB 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:B0DF AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B0E2 80 1F       BRA $1F    [$B103]
+$90:B0E2 80 1F       BRA $1F    [$B103]     ; Go to wave beam shared pre-instruction
 }
 
 
 ;;; $B0E4: Projectile pre-instruction - beam - uncharged (ice) wave ;;;
 {
-$90:B0E4 BD 04 0C    LDA $0C04,x
-$90:B0E7 29 F0 00    AND #$00F0
-$90:B0EA F0 05       BEQ $05    [$B0F1]
-$90:B0EC 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B0F0 60          RTS
+$90:B0E4 BD 04 0C    LDA $0C04,x            ;\
+$90:B0E7 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:B0EA F0 05       BEQ $05    [$B0F1]     ;/
+$90:B0EC 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:B0F0 60          RTS                    ; Return
 
-$90:B0F1 DE 90 0C    DEC $0C90,x
-$90:B0F4 D0 0D       BNE $0D    [$B103]
-$90:B0F6 A9 03 00    LDA #$0003
-$90:B0F9 9D 90 0C    STA $0C90,x
-$90:B0FC 22 57 B6 90 JSL $90B657[$90:B657]
+$90:B0F1 DE 90 0C    DEC $0C90,x            ; Decrement projectile trail timer
+$90:B0F4 D0 0D       BNE $0D    [$B103]     ; If [projectile trail timer] = 0:
+$90:B0F6 A9 03 00    LDA #$0003             ;\
+$90:B0F9 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 3
+$90:B0FC 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:B100 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 }
 
 
-;;; $B103: Wave projectile shared pre-instruction ;;;
+;;; $B103: Wave beam shared pre-instruction ;;;
 {
-$90:B103 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:B106 29 0F 00    AND #$000F
-$90:B109 0A          ASL A
-$90:B10A A8          TAY
-$90:B10B BD DC 0B    LDA $0BDC,x[$7E:0BDC]
-$90:B10E 18          CLC
-$90:B10F 79 53 C3    ADC $C353,y[$90:C361]
-$90:B112 9D DC 0B    STA $0BDC,x[$7E:0BDC]
-$90:B115 BD F0 0B    LDA $0BF0,x[$7E:0BF0]
-$90:B118 18          CLC
-$90:B119 79 67 C3    ADC $C367,y[$90:C375]
-$90:B11C 9D F0 0B    STA $0BF0,x[$7E:0BF0]
-$90:B11F BB          TYX
-$90:B120 FC 27 B1    JSR ($B127,x)[$90:B151]
-$90:B123 20 6A B1    JSR $B16A  [$90:B16A]
+$90:B103 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:B106 29 0F 00    AND #$000F             ;|
+$90:B109 0A          ASL A                  ;} Y = ([projectile direction] & Fh) * 2
+$90:B10A A8          TAY                    ;/
+$90:B10B BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;\
+$90:B10E 18          CLC                    ;|
+$90:B10F 79 53 C3    ADC $C353,y[$90:C361]  ;} Projectile X velocity += [$C353 + [Y]]
+$90:B112 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
+$90:B115 BD F0 0B    LDA $0BF0,x[$7E:0BF0]  ;\
+$90:B118 18          CLC                    ;|
+$90:B119 79 67 C3    ADC $C367,y[$90:C375]  ;} Projectile Y velocity += [$C367 + [Y]]
+$90:B11C 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
+$90:B11F BB          TYX                    ;\
+$90:B120 FC 27 B1    JSR ($B127,x)[$90:B151];} Execute [$B127 + [Y]]
+$90:B123 20 6A B1    JSR $B16A  [$90:B16A]  ; Delete projectile if too far off-screen
 $90:B126 60          RTS
 
 $90:B127             dw B13B, B143, B151, B143, B13B, B13B, B143, B151, B143, B13B
 }
 
 
-;;; $B13B:  ;;;
+;;; $B13B: Wave beam block collision - vertical ;;;
 {
 $90:B13B AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B13E 22 E4 A3 94 JSL $94A3E4[$94:A3E4]
+$90:B13E 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
 $90:B142 60          RTS
 }
 
 
-;;; $B143:  ;;;
+;;; $B143: Wave beam block collision - diagonal ;;;
 {
 $90:B143 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B146 22 52 A3 94 JSL $94A352[$94:A352]
-$90:B14A B0 04       BCS $04    [$B150]
-$90:B14C 22 E4 A3 94 JSL $94A3E4[$94:A3E4]
+$90:B146 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
+$90:B14A B0 04       BCS $04    [$B150]     ; If not collided:
+$90:B14C 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
 
 $90:B150 60          RTS
 }
 
 
-;;; $B151:  ;;;
+;;; $B151: Wave beam block collision - horizontal ;;;
 {
 $90:B151 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B154 22 52 A3 94 JSL $94A352[$94:A352]
+$90:B154 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
 $90:B158 60          RTS
+}
 }
 
 
 ;;; $B159: Projectile pre-instruction - hyper beam ;;;
 {
-$90:B159 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:B15C 29 F0 00    AND #$00F0
-$90:B15F F0 05       BEQ $05    [$B166]
-$90:B161 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B165 60          RTS
+$90:B159 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:B15C 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:B15F F0 05       BEQ $05    [$B166]     ;/
+$90:B161 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:B165 60          RTS                    ; Return
 
-$90:B166 4C 03 B1    JMP $B103  [$90:B103]
+$90:B166 4C 03 B1    JMP $B103  [$90:B103]  ; Go to wave beam shared pre-instruction
 $90:B169 60          RTS
 }
 
 
 ;;; $B16A: Delete projectile if too far off-screen ;;;
 {
+;; Returns:
+;;     Carry: set if projectile deleted, clear otherwise
 $90:B16A AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B16D BD 64 0B    LDA $0B64,x[$7E:0B64]
-$90:B170 38          SEC
-$90:B171 ED 11 09    SBC $0911  [$7E:0911]
-$90:B174 C9 C0 FF    CMP #$FFC0
-$90:B177 30 05       BMI $05    [$B17E]
-$90:B179 C9 40 01    CMP #$0140
-$90:B17C 30 06       BMI $06    [$B184]
+$90:B16D BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
+$90:B170 38          SEC                    ;|
+$90:B171 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$90:B174 C9 C0 FF    CMP #$FFC0             ;} If -40h <= [projectile X position] < 140h: go to BRANCH_VERTICAL_CHECK
+$90:B177 30 05       BMI $05    [$B17E]     ;|
+$90:B179 C9 40 01    CMP #$0140             ;|
+$90:B17C 30 06       BMI $06    [$B184]     ;/
 
-$90:B17E 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B182 38          SEC
-$90:B183 60          RTS
+; BRANCH_DELETE
+$90:B17E 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:B182 38          SEC                    ;\
+$90:B183 60          RTS                    ;} Return carry set
 
-$90:B184 BD 78 0B    LDA $0B78,x[$7E:0B78]
-$90:B187 38          SEC
-$90:B188 ED 15 09    SBC $0915  [$7E:0915]
-$90:B18B C9 C0 FF    CMP #$FFC0
-$90:B18E 30 EE       BMI $EE    [$B17E]
-$90:B190 C9 40 01    CMP #$0140
-$90:B193 10 E9       BPL $E9    [$B17E]
-$90:B195 18          CLC
-$90:B196 60          RTS
+; BRANCH_VERTICAL_CHECK
+$90:B184 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$90:B187 38          SEC                    ;|
+$90:B188 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:B18B C9 C0 FF    CMP #$FFC0             ;} If not -40h <= [projectile Y position] < 140h: go to BRANCH_DELETE
+$90:B18E 30 EE       BMI $EE    [$B17E]     ;|
+$90:B190 C9 40 01    CMP #$0140             ;|
+$90:B193 10 E9       BPL $E9    [$B17E]     ;/
+$90:B195 18          CLC                    ;\
+$90:B196 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $B197:  ;;;
+;;; $B197..B2F5: Initialise projectile velocities ;;;
 {
-; Sets the initial speed for projectiles (including the boost from Samuss current speed)
+;;; $B197: Initialise beam velocities ;;;
+{
 $90:B197 08          PHP
 $90:B198 8B          PHB
-$90:B199 4B          PHK
-$90:B19A AB          PLB
+$90:B199 4B          PHK                    ;\
+$90:B19A AB          PLB                    ;} DB = $90
 $90:B19B C2 30       REP #$30
-$90:B19D A6 14       LDX $14    [$7E:0014]
-$90:B19F BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B1A2 29 0F 00    AND #$000F
-$90:B1A5 0A          ASL A
-$90:B1A6 0A          ASL A
-$90:B1A7 A8          TAY
-$90:B1A8 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:B1AB 29 0F 00    AND #$000F
-$90:B1AE 0A          ASL A
-$90:B1AF AA          TAX
-$90:B1B0 7C C9 B1    JMP ($B1C9,x)[$90:B1BA]
-}
+$90:B19D A6 14       LDX $14    [$7E:0014]  ;\
+$90:B19F BD 18 0C    LDA $0C18,x[$7E:0C18]  ;|
+$90:B1A2 29 0F 00    AND #$000F             ;|
+$90:B1A5 0A          ASL A                  ;} Y = (beam type) * 4
+$90:B1A6 0A          ASL A                  ;|
+$90:B1A7 A8          TAY                    ;/
+$90:B1A8 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:B1AB 29 0F 00    AND #$000F             ;|
+$90:B1AE 0A          ASL A                  ;} If projectile direction is diagonal: go to BRANCH_DIAGONAL
+$90:B1AF AA          TAX                    ;|
+$90:B1B0 7C C9 B1    JMP ($B1C9,x)[$90:B1BA];/
 
+$90:B1B3 B9 D1 C2    LDA $C2D1,y[$90:C2D1]  ;\
+$90:B1B6 85 16       STA $16    [$7E:0016]  ;} $16 = [$C2D1 + [Y]] (base speed)
+$90:B1B8 80 05       BRA $05    [$B1BF]     ; Go to BRANCH_MERGE
 
-;;; $B1B3:  ;;;
-{
-$90:B1B3 B9 D1 C2    LDA $C2D1,y[$90:C2D1]
-$90:B1B6 85 16       STA $16    [$7E:0016]
-$90:B1B8 80 05       BRA $05    [$B1BF]
-}
+; BRANCH_DIAGONAL
+$90:B1BA B9 D3 C2    LDA $C2D3,y[$90:C2D3]  ;\
+$90:B1BD 85 16       STA $16    [$7E:0016]  ;} $16 = [$C2D1 + [Y] + 2] (base speed)
 
-
-;;; $B1BA:  ;;;
-{
-$90:B1BA B9 D3 C2    LDA $C2D3,y[$90:C2D3]
-$90:B1BD 85 16       STA $16    [$7E:0016]
-}
-
-
-;;; $B1BF:  ;;;
-{
-$90:B1BF A6 14       LDX $14    [$7E:0014]
-$90:B1C1 86 12       STX $12    [$7E:0012]
-$90:B1C3 20 F3 B1    JSR $B1F3  [$90:B1F3]
+; BRANCH_MERGE
+$90:B1BF A6 14       LDX $14    [$7E:0014]  ;\
+$90:B1C1 86 12       STX $12    [$7E:0012]  ;} X = $12 = [$14]
+$90:B1C3 20 F3 B1    JSR $B1F3  [$90:B1F3]  ; Initialise projectile velocities
 $90:B1C6 AB          PLB
 $90:B1C7 28          PLP
 $90:B1C8 6B          RTL
-}
 
-
-;;; $B1C9:  ;;;
-{
 $90:B1C9             dw B1B3, B1BA, B1B3, B1BA, B1B3, B1B3, B1BA, B1B3, B1BA, B1B3
 }
 
 
-;;; $B1DD:  ;;;
+;;; $B1DD: Initialise (super) missile velocities ;;;
 {
 ;; Parameters:
 ;;     $14: Projectile index
@@ -7279,9 +7368,9 @@ $90:B1E2 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:B1E5 29 0F 00    AND #$000F             ;|
 $90:B1E8 0A          ASL A                  ;} Y = (beam type) * 2
 $90:B1E9 A8          TAY                    ;/
-$90:B1EA 64 16       STZ $16    [$7E:0016]  ; $16 = 0
+$90:B1EA 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (base speed)
 $90:B1EC 86 12       STX $12    [$7E:0012]  ; $12 = [X]
-$90:B1EE 20 F3 B1    JSR $B1F3  [$90:B1F3]  ; Execute $B1F3
+$90:B1EE 20 F3 B1    JSR $B1F3  [$90:B1F3]  ; Initialise projectile velocities
 $90:B1F1 28          PLP
 $90:B1F2 60          RTS
 }
@@ -7307,23 +7396,28 @@ $90:B204             dw B218, B23D, B268, B277, B28C, B28C, B29B, B2B4, B2C7, B2
 
 ;;; $B218: Initialise projectile velocities - up ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
+
 ; Note: [distance Samus moved up] is non-positive
 $90:B218 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
 $90:B21A AD B1 0D    LDA $0DB1  [$7E:0DB1]  ;\
-$90:B21D 89 00 FF    BIT #$FF00             ;} If [distance Samus moved up] = 0:
-$90:B220 D0 04       BNE $04    [$B226]     ;/
-$90:B222 64 12       STZ $12    [$7E:0012]  ; $12 = 0
-$90:B224 80 07       BRA $07    [$B22D]
-
-$90:B226 4A          LSR A                  ;\ Else ([distance Samus moved up] != 0):
+$90:B21D 89 00 FF    BIT #$FF00             ;|
+$90:B220 D0 04       BNE $04    [$B226]     ;|
+$90:B222 64 12       STZ $12    [$7E:0012]  ;|
+$90:B224 80 07       BRA $07    [$B22D]     ;|
+                                            ;|
+$90:B226 4A          LSR A                  ;|
 $90:B227 4A          LSR A                  ;|
-$90:B228 09 00 C0    ORA #$C000             ;} $12 = [distance Samus moved up] * 40h | C000h
-$90:B22B 85 12       STA $12    [$7E:0012]  ;/
-
-$90:B22D A5 16       LDA $16    [$7E:0016]  ;\
+$90:B228 09 00 C0    ORA #$C000             ;} Projectile Y velocity = ±[distance Samus moved up] * 40h - [$16]
+$90:B22B 85 12       STA $12    [$7E:0012]  ;|
+                                            ;|
+$90:B22D A5 16       LDA $16    [$7E:0016]  ;|
 $90:B22F 49 FF FF    EOR #$FFFF             ;|
 $90:B232 1A          INC A                  ;|
-$90:B233 18          CLC                    ;} Projectile Y velocity = [$12] - [$16]
+$90:B233 18          CLC                    ;|
 $90:B234 65 12       ADC $12    [$7E:0012]  ;|
 $90:B236 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
 $90:B239 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X velocity = 0
@@ -7333,36 +7427,44 @@ $90:B23C 60          RTS
 
 ;;; $B23D: Initialise projectile velocities - up-right ;;;
 {
-$90:B23D A6 12       LDX $12    [$7E:0012]
-$90:B23F AD B1 0D    LDA $0DB1  [$7E:0DB1]
-$90:B242 89 00 FF    BIT #$FF00
-$90:B245 D0 04       BNE $04    [$B24B]
-$90:B247 64 12       STZ $12    [$7E:0012]
-$90:B249 80 07       BRA $07    [$B252]
-
-$90:B24B 4A          LSR A
-$90:B24C 4A          LSR A
-$90:B24D 09 00 C0    ORA #$C000
-$90:B250 85 12       STA $12    [$7E:0012]
-
-$90:B252 A5 16       LDA $16    [$7E:0016]
-$90:B254 49 FF FF    EOR #$FFFF
-$90:B257 1A          INC A
-$90:B258 18          CLC
-$90:B259 65 12       ADC $12    [$7E:0012]
-$90:B25B 9D F0 0B    STA $0BF0,x[$7E:0BF2]
-$90:B25E A5 16       LDA $16    [$7E:0016]
-$90:B260 18          CLC
-$90:B261 6D AD 0D    ADC $0DAD  [$7E:0DAD]
-$90:B264 9D DC 0B    STA $0BDC,x[$7E:0BDE]
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
+$90:B23D A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
+$90:B23F AD B1 0D    LDA $0DB1  [$7E:0DB1]  ;\
+$90:B242 89 00 FF    BIT #$FF00             ;|
+$90:B245 D0 04       BNE $04    [$B24B]     ;|
+$90:B247 64 12       STZ $12    [$7E:0012]  ;|
+$90:B249 80 07       BRA $07    [$B252]     ;|
+                                            ;|
+$90:B24B 4A          LSR A                  ;|
+$90:B24C 4A          LSR A                  ;|
+$90:B24D 09 00 C0    ORA #$C000             ;} Projectile Y velocity = ±[distance Samus moved up] * 40h - [$16]
+$90:B250 85 12       STA $12    [$7E:0012]  ;|
+                                            ;|
+$90:B252 A5 16       LDA $16    [$7E:0016]  ;|
+$90:B254 49 FF FF    EOR #$FFFF             ;|
+$90:B257 1A          INC A                  ;|
+$90:B258 18          CLC                    ;|
+$90:B259 65 12       ADC $12    [$7E:0012]  ;|
+$90:B25B 9D F0 0B    STA $0BF0,x[$7E:0BF2]  ;/
+$90:B25E A5 16       LDA $16    [$7E:0016]  ;\
+$90:B260 18          CLC                    ;|
+$90:B261 6D AD 0D    ADC $0DAD  [$7E:0DAD]  ;} Projectile X velocity = [distance Samus moved right] * 100h + [$16]
+$90:B264 9D DC 0B    STA $0BDC,x[$7E:0BDE]  ;/
 $90:B267 60          RTS
 }
 
 
 ;;; $B268: Initialise projectile velocities - right ;;;
 {
-$90:B268 A6 12       LDX $12    [$7E:0012]  ;\
-$90:B26A 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ;} Projectile Y velocity = 0
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
+$90:B268 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
+$90:B26A 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y velocity = 0
 $90:B26D A5 16       LDA $16    [$7E:0016]  ;\
 $90:B26F 18          CLC                    ;|
 $90:B270 6D AD 0D    ADC $0DAD  [$7E:0DAD]  ;} Projectile X velocity = [distance Samus moved right] * 100h + [$16]
@@ -7373,25 +7475,33 @@ $90:B276 60          RTS
 
 ;;; $B277: Initialise projectile velocities - down-right ;;;
 {
-$90:B277 A6 12       LDX $12    [$7E:0012]
-$90:B279 A5 16       LDA $16    [$7E:0016]
-$90:B27B 18          CLC
-$90:B27C 6D B5 0D    ADC $0DB5  [$7E:0DB5]
-$90:B27F 9D F0 0B    STA $0BF0,x[$7E:0BF0]
-$90:B282 A5 16       LDA $16    [$7E:0016]
-$90:B284 18          CLC
-$90:B285 6D AD 0D    ADC $0DAD  [$7E:0DAD]
-$90:B288 9D DC 0B    STA $0BDC,x[$7E:0BDC]
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
+$90:B277 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
+$90:B279 A5 16       LDA $16    [$7E:0016]  ;\
+$90:B27B 18          CLC                    ;|
+$90:B27C 6D B5 0D    ADC $0DB5  [$7E:0DB5]  ;} Projectile Y velocity = [distance Samus moved down] * 100h + [$16]
+$90:B27F 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
+$90:B282 A5 16       LDA $16    [$7E:0016]  ;\
+$90:B284 18          CLC                    ;|
+$90:B285 6D AD 0D    ADC $0DAD  [$7E:0DAD]  ;} Projectile X velocity = [distance Samus moved right] * 100h + [$16]
+$90:B288 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B28B 60          RTS
 }
 
 
 ;;; $B28C: Initialise projectile velocities - down ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
 $90:B28C A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
 $90:B28E A5 16       LDA $16    [$7E:0016]  ;\
 $90:B290 18          CLC                    ;|
-$90:B291 6D B5 0D    ADC $0DB5  [$7E:0DB5]  ;} Projectile Y velocity = [distance Samus moved up] * 100h + [$16]
+$90:B291 6D B5 0D    ADC $0DB5  [$7E:0DB5]  ;} Projectile Y velocity = [distance Samus moved down] * 100h + [$16]
 $90:B294 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
 $90:B297 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X velocity = 0
 $90:B29A 60          RTS
@@ -7400,88 +7510,101 @@ $90:B29A 60          RTS
 
 ;;; $B29B: Initialise projectile velocities - down-left ;;;
 {
-$90:B29B A6 12       LDX $12    [$7E:0012]
-$90:B29D A5 16       LDA $16    [$7E:0016]
-$90:B29F 18          CLC
-$90:B2A0 6D B5 0D    ADC $0DB5  [$7E:0DB5]
-$90:B2A3 9D F0 0B    STA $0BF0,x[$7E:0BF0]
-$90:B2A6 A5 16       LDA $16    [$7E:0016]
-$90:B2A8 49 FF FF    EOR #$FFFF
-$90:B2AB 1A          INC A
-$90:B2AC 18          CLC
-$90:B2AD 6D A9 0D    ADC $0DA9  [$7E:0DA9]
-$90:B2B0 9D DC 0B    STA $0BDC,x[$7E:0BDC]
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
+$90:B29B A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
+$90:B29D A5 16       LDA $16    [$7E:0016]  ;\
+$90:B29F 18          CLC                    ;|
+$90:B2A0 6D B5 0D    ADC $0DB5  [$7E:0DB5]  ;} Projectile Y velocity = [distance Samus moved down] * 100h + [$16]
+$90:B2A3 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
+$90:B2A6 A5 16       LDA $16    [$7E:0016]  ;\
+$90:B2A8 49 FF FF    EOR #$FFFF             ;|
+$90:B2AB 1A          INC A                  ;|
+$90:B2AC 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16]
+$90:B2AD 6D A9 0D    ADC $0DA9  [$7E:0DA9]  ;|
+$90:B2B0 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B2B3 60          RTS
 }
 
 
 ;;; $B2B4: Initialise projectile velocities - left ;;;
 {
-$90:B2B4 A6 12       LDX $12    [$7E:0012]
-$90:B2B6 9E F0 0B    STZ $0BF0,x[$7E:0BF0]
-$90:B2B9 A5 16       LDA $16    [$7E:0016]
-$90:B2BB 49 FF FF    EOR #$FFFF
-$90:B2BE 1A          INC A
-$90:B2BF 18          CLC
-$90:B2C0 6D A9 0D    ADC $0DA9  [$7E:0DA9]
-$90:B2C3 9D DC 0B    STA $0BDC,x[$7E:0BDC]
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
+$90:B2B4 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
+$90:B2B6 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y velocity = 0
+$90:B2B9 A5 16       LDA $16    [$7E:0016]  ;\
+$90:B2BB 49 FF FF    EOR #$FFFF             ;|
+$90:B2BE 1A          INC A                  ;|
+$90:B2BF 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16]
+$90:B2C0 6D A9 0D    ADC $0DA9  [$7E:0DA9]  ;|
+$90:B2C3 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B2C6 60          RTS
 }
 
 
 ;;; $B2C7: Initialise projectile velocities - up-left ;;;
 {
-$90:B2C7 A6 12       LDX $12    [$7E:0012]
-$90:B2C9 AD B1 0D    LDA $0DB1  [$7E:0DB1]
-$90:B2CC 89 00 FF    BIT #$FF00
-$90:B2CF D0 04       BNE $04    [$B2D5]
-$90:B2D1 64 12       STZ $12    [$7E:0012]
-$90:B2D3 80 07       BRA $07    [$B2DC]
-
-$90:B2D5 4A          LSR A
-$90:B2D6 4A          LSR A
-$90:B2D7 09 00 C0    ORA #$C000
-$90:B2DA 85 12       STA $12    [$7E:0012]
-
-$90:B2DC A5 16       LDA $16    [$7E:0016]
-$90:B2DE 49 FF FF    EOR #$FFFF
-$90:B2E1 1A          INC A
-$90:B2E2 18          CLC
-$90:B2E3 65 12       ADC $12    [$7E:0012]
-$90:B2E5 9D F0 0B    STA $0BF0,x[$7E:0BF0]
-$90:B2E8 A5 16       LDA $16    [$7E:0016]
-$90:B2EA 49 FF FF    EOR #$FFFF
-$90:B2ED 1A          INC A
-$90:B2EE 18          CLC
-$90:B2EF 6D A9 0D    ADC $0DA9  [$7E:0DA9]
-$90:B2F2 9D DC 0B    STA $0BDC,x[$7E:0BDC]
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Projectile index
+;;     $16: Base speed
+$90:B2C7 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
+$90:B2C9 AD B1 0D    LDA $0DB1  [$7E:0DB1]  ;\
+$90:B2CC 89 00 FF    BIT #$FF00             ;|
+$90:B2CF D0 04       BNE $04    [$B2D5]     ;|
+$90:B2D1 64 12       STZ $12    [$7E:0012]  ;|
+$90:B2D3 80 07       BRA $07    [$B2DC]     ;|
+                                            ;|
+$90:B2D5 4A          LSR A                  ;|
+$90:B2D6 4A          LSR A                  ;|
+$90:B2D7 09 00 C0    ORA #$C000             ;} Projectile Y velocity = ±[distance Samus moved up] * 40h - [$16]
+$90:B2DA 85 12       STA $12    [$7E:0012]  ;|
+                                            ;|
+$90:B2DC A5 16       LDA $16    [$7E:0016]  ;|
+$90:B2DE 49 FF FF    EOR #$FFFF             ;|
+$90:B2E1 1A          INC A                  ;|
+$90:B2E2 18          CLC                    ;|
+$90:B2E3 65 12       ADC $12    [$7E:0012]  ;|
+$90:B2E5 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
+$90:B2E8 A5 16       LDA $16    [$7E:0016]  ;\
+$90:B2EA 49 FF FF    EOR #$FFFF             ;|
+$90:B2ED 1A          INC A                  ;|
+$90:B2EE 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16]
+$90:B2EF 6D A9 0D    ADC $0DA9  [$7E:0DA9]  ;|
+$90:B2F2 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B2F5 60          RTS
+}
 }
 
 
-;;; $B2F6:  ;;;
+;;; $B2F6: Accelerate (super) missile ;;;
 {
 $90:B2F6 08          PHP
 $90:B2F7 C2 30       REP #$30
 $90:B2F9 DA          PHX
 $90:B2FA 5A          PHY
 $90:B2FB BD 7C 0C    LDA $0C7C,x[$7E:0C7C]  ;\
-$90:B2FE 29 00 FF    AND #$FF00             ;} If projectile is not super missile link:
+$90:B2FE 29 00 FF    AND #$FF00             ;} If [projectile initialised flag] = 0:
 $90:B301 D0 26       BNE $26    [$B329]     ;/
 $90:B303 BD 7C 0C    LDA $0C7C,x[$7E:0C7C]  ;\
 $90:B306 18          CLC                    ;|
-$90:B307 6D 01 C3    ADC $C301  [$90:C301]  ;} Projectile variable += [$C301]
+$90:B307 6D 01 C3    ADC $C301  [$90:C301]  ;} Projectile initialised flag = 1
 $90:B30A 9D 7C 0C    STA $0C7C,x[$7E:0C7C]  ;/
 $90:B30D 29 00 FF    AND #$FF00             ;\
-$90:B310 F0 50       BEQ $50    [$B362]     ;} If [projectile variable] < 100h: return
+$90:B310 F0 50       BEQ $50    [$B362]     ;} >_<;
 $90:B312 BD 7C 0C    LDA $0C7C,x[$7E:0C7C]  ;\
-$90:B315 85 16       STA $16    [$7E:0016]  ;} $16 = [projectile variable]
+$90:B315 85 16       STA $16    [$7E:0016]  ;} $16 = 100h (base speed)
 $90:B317 86 12       STX $12    [$7E:0012]  ; $12 = [projectile index]
-$90:B319 20 F3 B1    JSR $B1F3  [$90:B1F3]  ; Execute $B1F3
+$90:B319 20 F3 B1    JSR $B1F3  [$90:B1F3]  ; Initialise projectile velocities
 $90:B31C BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
-$90:B31F 89 00 02    BIT #$0200             ;} If [projectile type] != super missile: return (random check?)
+$90:B31F 89 00 02    BIT #$0200             ;} If [projectile type] != super missile: return
 $90:B322 F0 3E       BEQ $3E    [$B362]     ;/
-$90:B324 20 46 BF    JSR $BF46  [$90:BF46]  ; Execute $BF46
+$90:B324 20 46 BF    JSR $BF46  [$90:BF46]  ; Spawn super missile link
 $90:B327 80 39       BRA $39    [$B362]     ; Return
 
 $90:B329 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
@@ -7491,7 +7614,7 @@ $90:B330 0A          ASL A                  ;|
 $90:B331 85 12       STA $12    [$7E:0012]  ;/
 $90:B333 BD 19 0C    LDA $0C19,x[$7E:0C19]  ;\
 $90:B336 29 0F 00    AND #$000F             ;|
-$90:B339 89 02 00    BIT #$0002             ;} If [projectile type] != super missile: (random check???)
+$90:B339 89 02 00    BIT #$0002             ;} If [projectile type] != super missile:
 $90:B33C D0 09       BNE $09    [$B347]     ;/
 $90:B33E A9 03 C3    LDA #$C303             ;\
 $90:B341 18          CLC                    ;|
@@ -7506,11 +7629,11 @@ $90:B34D A8          TAY                    ;/
 
 $90:B34E BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;\
 $90:B351 18          CLC                    ;|
-$90:B352 79 00 00    ADC $0000,y[$90:C31F]  ;} Projectile X speed += [[Y]]
+$90:B352 79 00 00    ADC $0000,y[$90:C31F]  ;} Projectile X velocity += [[Y]]
 $90:B355 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B358 BD F0 0B    LDA $0BF0,x[$7E:0BF0]  ;\
 $90:B35B 18          CLC                    ;|
-$90:B35C 79 02 00    ADC $0002,y[$90:C321]  ;} Projectile Y speed += [[Y] + 2]
+$90:B35C 79 02 00    ADC $0002,y[$90:C321]  ;} Projectile Y velocity += [[Y] + 2]
 $90:B35F 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
 
 $90:B362 7A          PLY
@@ -7520,194 +7643,209 @@ $90:B365 60          RTS
 }
 
 
-;;; $B366:  ;;;
+;;; $B366..B4C8: Super missile link ;;;
 {
+;;; $B366: Super missile link vertical block collision detection ;;;
+{
+; If the super missile is moving fast enough vertically, at least Bh px/frame,
+; do an additional collision check Ah pixels ahead of the old Y position
 $90:B366 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B369 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B36C 29 00 0F    AND #$0F00
-$90:B36F C9 00 02    CMP #$0200
-$90:B372 F0 06       BEQ $06    [$B37A]
-$90:B374 C9 00 08    CMP #$0800
-$90:B377 F0 01       BEQ $01    [$B37A]
-$90:B379 60          RTS
+$90:B369 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B36C 29 00 0F    AND #$0F00             ;|
+$90:B36F C9 00 02    CMP #$0200             ;} If (projectile type) != super missile:
+$90:B372 F0 06       BEQ $06    [$B37A]     ;/
+$90:B374 C9 00 08    CMP #$0800             ;\
+$90:B377 F0 01       BEQ $01    [$B37A]     ;} If (projectile type) != (super) missile explosion:
+$90:B379 60          RTS                    ; Return
 
-$90:B37A BD 7C 0C    LDA $0C7C,x[$7E:0C7C]
-$90:B37D 89 00 FF    BIT #$FF00
-$90:B380 D0 01       BNE $01    [$B383]
-$90:B382 60          RTS
+$90:B37A BD 7C 0C    LDA $0C7C,x[$7E:0C7C]  ;\
+$90:B37D 89 00 FF    BIT #$FF00             ;} If [projectile initialised flag] = 0:
+$90:B380 D0 01       BNE $01    [$B383]     ;/
+$90:B382 60          RTS                    ; Return
 
-$90:B383 29 FF 00    AND #$00FF
-$90:B386 A8          TAY
-$90:B387 BD F0 0B    LDA $0BF0,x[$7E:0BF0]
-$90:B38A 10 04       BPL $04    [$B390]
-$90:B38C 49 FF FF    EOR #$FFFF
-$90:B38F 1A          INC A
-
-$90:B390 29 00 FF    AND #$FF00
-$90:B393 C9 00 0B    CMP #$0B00
-$90:B396 30 5C       BMI $5C    [$B3F4]
-$90:B398 EB          XBA
-$90:B399 38          SEC
-$90:B39A E9 0A 00    SBC #$000A
-$90:B39D 85 12       STA $12    [$7E:0012]
-$90:B39F BD F0 0B    LDA $0BF0,x[$7E:0BF0]
-$90:B3A2 30 28       BMI $28    [$B3CC]
-$90:B3A4 DA          PHX
-$90:B3A5 BD 78 0B    LDA $0B78,x[$7E:0B78]
-$90:B3A8 38          SEC
-$90:B3A9 E5 12       SBC $12    [$7E:0012]
-$90:B3AB 99 78 0B    STA $0B78,y[$7E:0B7A]
-$90:B3AE BB          TYX
-$90:B3AF 8C DE 0D    STY $0DDE  [$7E:0DDE]
-$90:B3B2 22 D9 A4 94 JSL $94A4D9[$94:A4D9]
+$90:B383 29 FF 00    AND #$00FF             ;\
+$90:B386 A8          TAY                    ;} Y = [projectile super missile link index]
+$90:B387 BD F0 0B    LDA $0BF0,x[$7E:0BF0]  ;\
+$90:B38A 10 04       BPL $04    [$B390]     ;|
+$90:B38C 49 FF FF    EOR #$FFFF             ;|
+$90:B38F 1A          INC A                  ;|
+                                            ;} If |[projectile Y velocity]| / 100h < Bh: go to BRANCH_SLOW
+$90:B390 29 00 FF    AND #$FF00             ;|
+$90:B393 C9 00 0B    CMP #$0B00             ;|
+$90:B396 30 5C       BMI $5C    [$B3F4]     ;/
+$90:B398 EB          XBA                    ;\
+$90:B399 38          SEC                    ;|
+$90:B39A E9 0A 00    SBC #$000A             ;} $12 = |[projectile Y velocity]| / 100h - Ah
+$90:B39D 85 12       STA $12    [$7E:0012]  ;/
+$90:B39F BD F0 0B    LDA $0BF0,x[$7E:0BF0]  ;\
+$90:B3A2 30 28       BMI $28    [$B3CC]     ;} If [projectile Y velocity] < 0: go to BRANCH_UPWARDS
+$90:B3A4 DA          PHX                    ; Save X (projectile index)
+$90:B3A5 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$90:B3A8 38          SEC                    ;|
+$90:B3A9 E5 12       SBC $12    [$7E:0012]  ;} Linked projectile Y position = [projectile Y position] - [projectile Y velocity] / 100h + Ah
+$90:B3AB 99 78 0B    STA $0B78,y[$7E:0B7A]  ;/
+$90:B3AE BB          TYX                    ;\
+$90:B3AF 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
+$90:B3B2 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
 $90:B3B6 9B          TXY
-$90:B3B7 FA          PLX
+$90:B3B7 FA          PLX                    ; Restore X
 $90:B3B8 8E DE 0D    STX $0DDE  [$7E:0DDE]
-$90:B3BB BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B3BE 29 00 0F    AND #$0F00
-$90:B3C1 C9 00 08    CMP #$0800
-$90:B3C4 D0 05       BNE $05    [$B3CB]
-$90:B3C6 BB          TYX
-$90:B3C7 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+$90:B3BB BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B3BE 29 00 0F    AND #$0F00             ;|
+$90:B3C1 C9 00 08    CMP #$0800             ;} If (projectile type) = (super) missile explosion:
+$90:B3C4 D0 05       BNE $05    [$B3CB]     ;/
+$90:B3C6 BB          TYX                    ;\
+$90:B3C7 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear linked projectile
 
-$90:B3CB 60          RTS
+$90:B3CB 60          RTS                    ; Return
 
-$90:B3CC DA          PHX
-$90:B3CD BD 78 0B    LDA $0B78,x[$7E:0B78]
-$90:B3D0 18          CLC
-$90:B3D1 65 12       ADC $12    [$7E:0012]
-$90:B3D3 99 78 0B    STA $0B78,y[$7E:0B7A]
-$90:B3D6 BB          TYX
-$90:B3D7 8C DE 0D    STY $0DDE  [$7E:0DDE]
-$90:B3DA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]
+; BRANCH_UPWARDS
+$90:B3CC DA          PHX                    ; Save X (projectile index)
+$90:B3CD BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$90:B3D0 18          CLC                    ;|
+$90:B3D1 65 12       ADC $12    [$7E:0012]  ;} Linked projectile Y position = [projectile Y position] - [projectile Y velocity] / 100h - Ah
+$90:B3D3 99 78 0B    STA $0B78,y[$7E:0B7A]  ;/
+$90:B3D6 BB          TYX                    ;\
+$90:B3D7 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
+$90:B3DA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
 $90:B3DE 9B          TXY
-$90:B3DF FA          PLX
-$90:B3E0 8E DE 0D    STX $0DDE  [$7E:0DDE]
-$90:B3E3 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B3E6 29 00 0F    AND #$0F00
-$90:B3E9 C9 00 08    CMP #$0800
-$90:B3EC D0 DD       BNE $DD    [$B3CB]
+$90:B3DF FA          PLX                    ; Restore X
+$90:B3E0 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
+$90:B3E3 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B3E6 29 00 0F    AND #$0F00             ;|
+$90:B3E9 C9 00 08    CMP #$0800             ;} If (projectile type) != (super) missile explosion: return
+$90:B3EC D0 DD       BNE $DD    [$B3CB]     ;/
 
-$90:B3EE BB          TYX
-$90:B3EF 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B3F3 60          RTS
+; BRANCH_EXPLOSION
+$90:B3EE BB          TYX                    ;\
+$90:B3EF 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear linked projectile
+$90:B3F3 60          RTS                    ; Return
 
-$90:B3F4 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B3F7 29 00 0F    AND #$0F00
-$90:B3FA C9 00 08    CMP #$0800
-$90:B3FD F0 EF       BEQ $EF    [$B3EE]
-$90:B3FF BD 78 0B    LDA $0B78,x[$7E:0B78]
-$90:B402 99 78 0B    STA $0B78,y[$7E:0B7A]
+; BRANCH_SLOW
+$90:B3F4 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B3F7 29 00 0F    AND #$0F00             ;|
+$90:B3FA C9 00 08    CMP #$0800             ;} If (projectile type) = (super) missile explosion: go to BRANCH_EXPLOSION
+$90:B3FD F0 EF       BEQ $EF    [$B3EE]     ;/
+$90:B3FF BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$90:B402 99 78 0B    STA $0B78,y[$7E:0B7A]  ;} Linked projectile Y position = [projectile Y position]
 $90:B405 60          RTS
 }
 
 
-;;; $B406:  ;;;
+;;; $B406: Super missile link horizontal block collision detection ;;;
 {
+; If the super missile is moving fast enough horizontally, at least Bh px/frame,
+; do an additional collision check Ah pixels ahead of the old X position
 $90:B406 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B409 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B40C 29 00 0F    AND #$0F00
-$90:B40F C9 00 02    CMP #$0200
-$90:B412 F0 06       BEQ $06    [$B41A]
-$90:B414 C9 00 08    CMP #$0800
-$90:B417 F0 01       BEQ $01    [$B41A]
-$90:B419 60          RTS
+$90:B409 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B40C 29 00 0F    AND #$0F00             ;|
+$90:B40F C9 00 02    CMP #$0200             ;} If (projectile type) != super missile:
+$90:B412 F0 06       BEQ $06    [$B41A]     ;/
+$90:B414 C9 00 08    CMP #$0800             ;\
+$90:B417 F0 01       BEQ $01    [$B41A]     ;} If (projectile type) != (super) missile explosion:
+$90:B419 60          RTS                    ; Return
 
-$90:B41A BD 7C 0C    LDA $0C7C,x[$7E:0C7C]
-$90:B41D 89 00 FF    BIT #$FF00
-$90:B420 D0 01       BNE $01    [$B423]
-$90:B422 60          RTS
+$90:B41A BD 7C 0C    LDA $0C7C,x[$7E:0C7C]  ;\
+$90:B41D 89 00 FF    BIT #$FF00             ;} If [projectile initialised flag] = 0:
+$90:B420 D0 01       BNE $01    [$B423]     ;/
+$90:B422 60          RTS                    ; Return
 
-$90:B423 29 FF 00    AND #$00FF
-$90:B426 A8          TAY
-$90:B427 BD DC 0B    LDA $0BDC,x[$7E:0BDC]
-$90:B42A 10 04       BPL $04    [$B430]
-$90:B42C 49 FF FF    EOR #$FFFF
-$90:B42F 1A          INC A
-
-$90:B430 29 00 FF    AND #$FF00
-$90:B433 C9 00 0B    CMP #$0B00
-$90:B436 30 5C       BMI $5C    [$B494]
-$90:B438 EB          XBA
-$90:B439 38          SEC
-$90:B43A E9 0A 00    SBC #$000A
-$90:B43D 85 12       STA $12    [$7E:0012]
-$90:B43F BD DC 0B    LDA $0BDC,x[$7E:0BDC]
-$90:B442 30 28       BMI $28    [$B46C]
-$90:B444 DA          PHX
-$90:B445 BD 64 0B    LDA $0B64,x[$7E:0B64]
-$90:B448 38          SEC
-$90:B449 E5 12       SBC $12    [$7E:0012]
-$90:B44B 99 64 0B    STA $0B64,y[$7E:0B66]
-$90:B44E BB          TYX
-$90:B44F 8C DE 0D    STY $0DDE  [$7E:0DDE]
-$90:B452 22 6F A4 94 JSL $94A46F[$94:A46F]
+$90:B423 29 FF 00    AND #$00FF             ;\
+$90:B426 A8          TAY                    ;} Y = [projectile super missile link index]
+$90:B427 BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;\
+$90:B42A 10 04       BPL $04    [$B430]     ;|
+$90:B42C 49 FF FF    EOR #$FFFF             ;|
+$90:B42F 1A          INC A                  ;|
+                                            ;} If |[projectile X velocity]| / 100h < Bh: go to BRANCH_SLOW
+$90:B430 29 00 FF    AND #$FF00             ;|
+$90:B433 C9 00 0B    CMP #$0B00             ;|
+$90:B436 30 5C       BMI $5C    [$B494]     ;/
+$90:B438 EB          XBA                    ;\
+$90:B439 38          SEC                    ;|
+$90:B43A E9 0A 00    SBC #$000A             ;} $12 = |[projectile X velocity]| / 100h - Ah
+$90:B43D 85 12       STA $12    [$7E:0012]  ;/
+$90:B43F BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;\
+$90:B442 30 28       BMI $28    [$B46C]     ;} If [projectile X velocity] < 0: go to BRANCH_LEFTWARDS
+$90:B444 DA          PHX                    ; Save X (projectile index)
+$90:B445 BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
+$90:B448 38          SEC                    ;|
+$90:B449 E5 12       SBC $12    [$7E:0012]  ;} Linked projectile X position = [projectile X position] - [projectile X velocity] / 100h + Ah
+$90:B44B 99 64 0B    STA $0B64,y[$7E:0B66]  ;/
+$90:B44E BB          TYX                    ;\
+$90:B44F 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
+$90:B452 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
 $90:B456 9B          TXY
-$90:B457 FA          PLX
+$90:B457 FA          PLX                    ; Restore X
 $90:B458 8E DE 0D    STX $0DDE  [$7E:0DDE]
-$90:B45B BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B45E 29 00 0F    AND #$0F00
-$90:B461 C9 00 08    CMP #$0800
-$90:B464 D0 05       BNE $05    [$B46B]
-$90:B466 BB          TYX
-$90:B467 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+$90:B45B BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B45E 29 00 0F    AND #$0F00             ;|
+$90:B461 C9 00 08    CMP #$0800             ;} If (projectile type) = (super) missile explosion:
+$90:B464 D0 05       BNE $05    [$B46B]     ;/
+$90:B466 BB          TYX                    ;\
+$90:B467 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear linked projectile
 
-$90:B46B 60          RTS
+$90:B46B 60          RTS                    ; Return
 
-$90:B46C DA          PHX
-$90:B46D BD 64 0B    LDA $0B64,x[$7E:0B64]
-$90:B470 18          CLC
-$90:B471 65 12       ADC $12    [$7E:0012]
-$90:B473 99 64 0B    STA $0B64,y[$7E:0B66]
-$90:B476 BB          TYX
-$90:B477 8C DE 0D    STY $0DDE  [$7E:0DDE]
-$90:B47A 22 6F A4 94 JSL $94A46F[$94:A46F]
+; BRANCH_LEFTWARDS
+$90:B46C DA          PHX                    ; Save X (projectile index)
+$90:B46D BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
+$90:B470 18          CLC                    ;|
+$90:B471 65 12       ADC $12    [$7E:0012]  ;} Linked projectile X position = [projectile X position] - [projectile X velocity] / 100h - Ah
+$90:B473 99 64 0B    STA $0B64,y[$7E:0B66]  ;/
+$90:B476 BB          TYX                    ;\
+$90:B477 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
+$90:B47A 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
 $90:B47E 9B          TXY
-$90:B47F FA          PLX
-$90:B480 8E DE 0D    STX $0DDE  [$7E:0DDE]
-$90:B483 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B486 29 00 0F    AND #$0F00
-$90:B489 C9 00 08    CMP #$0800
-$90:B48C D0 DD       BNE $DD    [$B46B]
+$90:B47F FA          PLX                    ; Restore X
+$90:B480 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
+$90:B483 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B486 29 00 0F    AND #$0F00             ;|
+$90:B489 C9 00 08    CMP #$0800             ;} If (projectile type) != (super) missile explosion: return
+$90:B48C D0 DD       BNE $DD    [$B46B]     ;/
 
-$90:B48E BB          TYX
-$90:B48F 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:B493 60          RTS
+; BRANCH_EXPLOSION
+$90:B48E BB          TYX                    ;\
+$90:B48F 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear linked projectile
+$90:B493 60          RTS                    ; Return
 
-$90:B494 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:B497 29 00 0F    AND #$0F00
-$90:B49A C9 00 08    CMP #$0800
-$90:B49D F0 EF       BEQ $EF    [$B48E]
-$90:B49F BD 64 0B    LDA $0B64,x[$7E:0B64]
-$90:B4A2 99 64 0B    STA $0B64,y[$7E:0B66]
+; BRANCH_SLOW
+$90:B494 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:B497 29 00 0F    AND #$0F00             ;|
+$90:B49A C9 00 08    CMP #$0800             ;} If (projectile type) = (super) missile explosion: go to BRANCH_EXPLOSION
+$90:B49D F0 EF       BEQ $EF    [$B48E]     ;/
+$90:B49F BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
+$90:B4A2 99 64 0B    STA $0B64,y[$7E:0B66]  ;} Linked projectile X position = [projectile X position]
 $90:B4A5 60          RTS
 }
 
 
-;;; $B4A6:  ;;;
+;;; $B4A6: Unused. Clear linked super missile if super missile explosion ;;;
 {
 $90:B4A6 08          PHP
 $90:B4A7 C2 30       REP #$30
-$90:B4A9 BD 7C 0C    LDA $0C7C,x
-$90:B4AC 89 00 FF    BIT #$FF00
-$90:B4AF D0 02       BNE $02    [$B4B3]
+$90:B4A9 BD 7C 0C    LDA $0C7C,x            ;\
+$90:B4AC 89 00 FF    BIT #$FF00             ;} If [projectile initialised flag] = 0:
+$90:B4AF D0 02       BNE $02    [$B4B3]     ;/
 $90:B4B1 28          PLP
-$90:B4B2 6B          RTL
+$90:B4B2 6B          RTL                    ; Return
 
-$90:B4B3 29 FF 00    AND #$00FF
-$90:B4B6 A8          TAY
-$90:B4B7 BD 18 0C    LDA $0C18,x
-$90:B4BA 29 00 0F    AND #$0F00
-$90:B4BD C9 00 08    CMP #$0800
-$90:B4C0 D0 05       BNE $05    [$B4C7]
-$90:B4C2 BB          TYX
-$90:B4C3 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+$90:B4B3 29 FF 00    AND #$00FF             ;\
+$90:B4B6 A8          TAY                    ;} Y = [projectile super missile link index]
+$90:B4B7 BD 18 0C    LDA $0C18,x            ;\
+$90:B4BA 29 00 0F    AND #$0F00             ;|
+$90:B4BD C9 00 08    CMP #$0800             ;} If (projectile type) = (super) missile explosion:
+$90:B4C0 D0 05       BNE $05    [$B4C7]     ;/
+$90:B4C2 BB          TYX                    ;\
+$90:B4C3 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear linked projectile
 
 $90:B4C7 28          PLP
 $90:B4C8 6B          RTL
 }
+}
 
 
+;;; $B4C9..B80C: Projectile trail ;;;
+{
 ;;; $B4C9: Instruction list - beam trail - empty ;;;
 {
 $90:B4C9             dx 0000
@@ -7829,89 +7967,89 @@ $90:B5BA 60          RTS
 
 ;;; $B5BB: Projectile trail instruction list pointers - left ;;;
 {
-$90:B5BB             dw B4C9, ;  Uncharged power
-                        B58F, ; *Uncharged wave
-                        B4CB, ; *Uncharged ice
-                        B4CB, ; *Uncharged ice + wave
-                        B4C9, ;  Uncharged spazer
-                        B4C9, ;  Uncharged spazer + wave
-                        B4CB, ; *Uncharged spazer + ice
-                        B4CB, ; *Uncharged spazer + ice + wave
-                        B4C9, ;  Uncharged plasma
-                        B4C9, ;  Uncharged plasma + wave
-                        B4CB, ; *Uncharged plasma + ice
-                        B4CB, ; *Uncharged plasma + ice + wave
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B4CB, ; *Charged power
-                        B58F, ; *Charged wave
-                        B4CB, ; *Charged ice
-                        B4CB, ; *Charged ice + wave
-                        B4C9, ;  Charged spazer
-                        B4C9, ;  Charged spazer + wave
-                        B4CB, ; *Charged spazer + ice
-                        B4CB, ; *Charged spazer + ice + wave
-                        B4C9, ;  Charged plasma
-                        B4C9, ;  Charged plasma + wave
-                        B4CB, ; *Charged plasma + ice
-                        B4CB, ; *Charged plasma + ice + wave
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B5A1, ; *Missile
-                        B5A1, ; *Super missile
-                        B4C9,
-                        B4C9,
-                        B4CB, ; *Part of spazer SBA
-                        B4CB,
-                        B4CB
+$90:B5BB             dw B4C9, ;  0: Uncharged power
+                        B58F, ; *1: Uncharged wave
+                        B4CB, ; *2: Uncharged ice
+                        B4CB, ; *3: Uncharged ice + wave
+                        B4C9, ;  4: Uncharged spazer
+                        B4C9, ;  5: Uncharged spazer + wave
+                        B4CB, ; *6: Uncharged spazer + ice
+                        B4CB, ; *7: Uncharged spazer + ice + wave
+                        B4C9, ;  8: Uncharged plasma
+                        B4C9, ;  9: Uncharged plasma + wave
+                        B4CB, ; *Ah: Uncharged plasma + ice
+                        B4CB, ; *Bh: Uncharged plasma + ice + wave
+                        B4C9, ;  Ch
+                        B4C9, ;  Dh
+                        B4C9, ;  Eh
+                        B4C9, ;  Fh
+                        B4CB, ; *10h: Charged power
+                        B58F, ; *11h: Charged wave
+                        B4CB, ; *12h: Charged ice
+                        B4CB, ; *13h: Charged ice + wave
+                        B4C9, ;  14h: Charged spazer
+                        B4C9, ;  15h: Charged spazer + wave
+                        B4CB, ; *16h: Charged spazer + ice
+                        B4CB, ; *17h: Charged spazer + ice + wave
+                        B4C9, ;  18h: Charged plasma
+                        B4C9, ;  19h: Charged plasma + wave
+                        B4CB, ; *1Ah: Charged plasma + ice
+                        B4CB, ; *1Bh: Charged plasma + ice + wave
+                        B4C9, ;  1Ch
+                        B4C9, ;  1Dh
+                        B4C9, ;  1Eh
+                        B4C9, ;  1Fh
+                        B5A1, ; *20h: Missile
+                        B5A1, ; *21h: Super missile
+                        B4C9, ;  22h
+                        B4C9, ;  23h
+                        B4CB, ; *24h: Spazer SBA trail
+                        B4CB, ; *25h
+                        B4CB  ; *26h
 }
 
 
 ;;; $B609: Projectile trail instruction list pointers - right ;;;
 {
-$90:B609             dw B4C9, ;  Uncharged power
-                        B4C9, ;  Uncharged wave
-                        B4C9, ;  Uncharged ice
-                        B4C9, ;  Uncharged ice + wave
-                        B4C9, ;  Uncharged spazer
-                        B4C9, ;  Uncharged spazer + wave
-                        B52D, ; *Uncharged spazer + ice
-                        B52D, ; *Uncharged spazer + ice + wave
-                        B4C9, ;  Uncharged plasma
-                        B4C9, ;  Uncharged plasma + wave
-                        B4C9, ;  Uncharged plasma + ice
-                        B52D, ; *Uncharged plasma + ice + wave
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B4C9, ;  Charged power
-                        B58F, ; *Charged wave
-                        B4C9, ;  Charged ice
-                        B52D, ; *Charged ice + wave
-                        B4C9, ;  Charged spazer
-                        B4C9, ;  Charged spazer + wave
-                        B52D, ; *Charged spazer + ice
-                        B52D, ; *Charged spazer + ice + wave
-                        B4C9, ;  Charged plasma
-                        B4C9, ;  Charged plasma + wave
-                        B4C9, ;  Charged plasma + ice
-                        B52D, ; *Charged plasma + ice + wave
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B4C9,
-                        B4C9, ;  Missile
-                        B4C9, ;  Super missile
-                        B4C9,
-                        B4C9,
-                        B4CB, ; *Part of spazer SBA
-                        B52D,
-                        B4CB
+$90:B609             dw B4C9, ;  0: Uncharged power
+                        B4C9, ;  1: Uncharged wave
+                        B4C9, ;  2: Uncharged ice
+                        B4C9, ;  3: Uncharged ice + wave
+                        B4C9, ;  4: Uncharged spazer
+                        B4C9, ;  5: Uncharged spazer + wave
+                        B52D, ; *6: Uncharged spazer + ice
+                        B52D, ; *7: Uncharged spazer + ice + wave
+                        B4C9, ;  8: Uncharged plasma
+                        B4C9, ;  9: Uncharged plasma + wave
+                        B4C9, ;  Ah: Uncharged plasma + ice
+                        B52D, ; *Bh: Uncharged plasma + ice + wave
+                        B4C9, ;  Ch
+                        B4C9, ;  Dh
+                        B4C9, ;  Eh
+                        B4C9, ;  Fh
+                        B4C9, ;  10h: Charged power
+                        B58F, ; *11h: Charged wave
+                        B4C9, ;  12h: Charged ice
+                        B52D, ; *13h: Charged ice + wave
+                        B4C9, ;  14h: Charged spazer
+                        B4C9, ;  15h: Charged spazer + wave
+                        B52D, ; *16h: Charged spazer + ice
+                        B52D, ; *17h: Charged spazer + ice + wave
+                        B4C9, ;  18h: Charged plasma
+                        B4C9, ;  19h: Charged plasma + wave
+                        B4C9, ;  1Ah: Charged plasma + ice
+                        B52D, ; *1Bh: Charged plasma + ice + wave
+                        B4C9, ;  1Ch
+                        B4C9, ;  1Dh
+                        B4C9, ;  1Eh
+                        B4C9, ;  1Fh
+                        B4C9, ;  20h: Missile
+                        B4C9, ;  21h: Super missile
+                        B4C9, ;  22h
+                        B4C9, ;  23h
+                        B4CB, ; *24h: Spazer SBA trail
+                        B52D, ; *25h
+                        B4CB  ; *26h
 }
 
 
@@ -7958,7 +8096,7 @@ $90:B695 99 A0 D6    STA $D6A0,y[$7E:D6C2]  ;} Projectile trail left instruction
 $90:B698 BF 09 B6 90 LDA $90B609,x[$90:B649];\
 $90:B69C 99 C4 D6    STA $D6C4,y[$7E:D6E6]  ;} Projectile trail right instruction list pointer = [$90:B609 + [X]]
 $90:B69F AE DE 0D    LDX $0DDE  [$7E:0DDE]  ; X = [projectile index]
-$90:B6A2 22 CC A3 9B JSL $9BA3CC[$9B:A3CC]  ; Execute $9B:A3CC
+$90:B6A2 22 CC A3 9B JSL $9BA3CC[$9B:A3CC]  ; Set projectile trail position
 $90:B6A6 AB          PLB
 $90:B6A7 18          CLC                    ;\
 $90:B6A8 6B          RTL                    ;} Return carry clear
@@ -8144,6 +8282,7 @@ $90:B808 4C 92 B7    JMP $B792  [$90:B792]  ; Go to LOOP_TIME_IS_FROZEN
 $90:B80B AB          PLB
 $90:B80C 6B          RTL                    ; Return
 }
+}
 
 
 ;;; $B80D: HUD selection handler - nothing / power bombs ;;;
@@ -8165,7 +8304,7 @@ $90:B82A 4C 87 B8    JMP $B887  [$90:B887]  ; Go to fire uncharged beam
 
 ; BRANCH_CHARGE
 $90:B82D AD 5E 0B    LDA $0B5E  [$7E:0B5E]  ;\
-$90:B830 F0 0A       BEQ $0A    [$B83C]     ;} If [$0B5E] != 0:
+$90:B830 F0 0A       BEQ $0A    [$B83C]     ;} If [pose transition shot direction] != 0:
 $90:B832 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
 $90:B835 C9 3C 00    CMP #$003C             ;} If [beam charge counter] >= 60: go to BRANCH_RELEASE_CHARGED_BEAM
 $90:B838 10 33       BPL $33    [$B86D]     ;/
@@ -8227,7 +8366,7 @@ $90:B89A 10 02       BPL $02    [$B89E]     ;/
 $90:B89C 28          PLP
 $90:B89D 60          RTS                    ; Return
 
-$90:B89E 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0
+$90:B89E 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
 $90:B8A1 A9 02 00    LDA #$0002             ;\
 $90:B8A4 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 $90:B8A8 28          PLP
@@ -8262,7 +8401,7 @@ $90:B8DC 0A          ASL A                  ;|
 $90:B8DD A8          TAY                    ;} Queue sound [$C2A7 + ([projectile type] & Fh) * 2], sound library 1, max queued sounds = 15
 $90:B8DE B9 8F C2    LDA $C28F,y[$90:C28F]  ;|
 $90:B8E1 22 21 90 80 JSL $809021[$80:9021]  ;/
-$90:B8E5 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0
+$90:B8E5 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
 $90:B8E8 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:B8EC AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $90:B8EF 89 00 10    BIT #$1000             ;} If charge beam not equipped:
@@ -8277,7 +8416,7 @@ $90:B903 BD 18 0C    LDA $0C18,x[$7E:0C1A]  ;\
 $90:B906 48          PHA                    ;|
 $90:B907 29 3F 00    AND #$003F             ;|
 $90:B90A A8          TAY                    ;|
-$90:B90B B9 83 C2    LDA $C283,y[$90:C283]  ;} Cooldown timer = [$C283 + ([projectile type] & 3Fh)]
+$90:B90B B9 83 C2    LDA $C283,y[$90:C283]  ;} Cooldown timer = [$C283 + ([projectile type] & 3Fh)] (auto-fire cooldown)
 $90:B90E 29 FF 00    AND #$00FF             ;|
 $90:B911 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;|
 $90:B914 68          PLA                    ;/
@@ -8299,7 +8438,7 @@ $90:B931 D0 19       BNE $19    [$B94C]     ;} If wave beam: go to BRANCH_WAVE_B
 $90:B933 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X speed = 0
 $90:B936 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y speed = 0
 $90:B939 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
-$90:B93C 20 64 BD    JSR $BD64  [$90:BD64]  ; Execute $BD64
+$90:B93C 20 64 BD    JSR $BD64  [$90:BD64]  ; Initial beam block collision - no wave beam
 $90:B93F AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:B942 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:B945 89 00 0F    BIT #$0F00             ;} If not beam: return
@@ -8310,7 +8449,7 @@ $90:B94A 80 0C       BRA $0C    [$B958]     ; Go to BRANCH_MERGE
 $90:B94C 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X speed = 0
 $90:B94F 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y speed = 0
 $90:B952 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
-$90:B955 20 B2 BD    JSR $BDB2  [$90:BDB2]  ; Execute $BDB2
+$90:B955 20 B2 BD    JSR $BDB2  [$90:BDB2]  ; Initial wave beam block collision
 
 ; BRANCH_MERGE
 $90:B958 86 14       STX $14    [$7E:0014]  ; $14 = [X] (projectile index)
@@ -8320,7 +8459,7 @@ $90:B960 0A          ASL A                  ;|
 $90:B961 A8          TAY                    ;} Projectile pre-instruction = [$B96E + (beam type) * 2]
 $90:B962 B9 6E B9    LDA $B96E,y[$90:B96E]  ;|
 $90:B965 9D 68 0C    STA $0C68,x[$7E:0C68]  ;/
-$90:B968 22 97 B1 90 JSL $90B197[$90:B197]  ; Execute $90:B197
+$90:B968 22 97 B1 90 JSL $90B197[$90:B197]  ; Initialise beam velocities
 
 $90:B96C 28          PLP
 $90:B96D 60          RTS
@@ -8353,7 +8492,7 @@ $90:B991 10 02       BPL $02    [$B995]     ;/
 $90:B993 28          PLP
 $90:B994 60          RTS                    ; Return
 
-$90:B995 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0
+$90:B995 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
 $90:B998 A9 02 00    LDA #$0002             ;\
 $90:B99B 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 $90:B99F 28          PLP
@@ -8389,7 +8528,7 @@ $90:B9D6 0A          ASL A                  ;|
 $90:B9D7 A8          TAY                    ;} Queue sound [$C2A7 + ([projectile type] & Fh) * 2], sound library 1, max queued sounds = 15
 $90:B9D8 B9 A7 C2    LDA $C2A7,y[$90:C2AF]  ;|
 $90:B9DB 22 21 90 80 JSL $809021[$80:9021]  ;/
-$90:B9DF 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0
+$90:B9DF 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
 $90:B9E2 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:B9E6 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:B9E9 48          PHA                    ;|
@@ -8404,7 +8543,7 @@ $90:B9FB D0 19       BNE $19    [$BA16]     ;} If not wave beam:
 $90:B9FD 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X speed = 0
 $90:BA00 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y speed = 0
 $90:BA03 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
-$90:BA06 20 64 BD    JSR $BD64  [$90:BD64]  ; Execute $BD64
+$90:BA06 20 64 BD    JSR $BD64  [$90:BD64]  ; Initial beam block collision - no wave beam
 $90:BA09 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:BA0C BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:BA0F 89 00 0F    BIT #$0F00             ;} If not beam: go to BRANCH_RETURN
@@ -8415,7 +8554,7 @@ $90:BA14 80 0C       BRA $0C    [$BA22]
 $90:BA16 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X speed = 0
 $90:BA19 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y speed = 0
 $90:BA1C 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
-$90:BA1F 20 B2 BD    JSR $BDB2  [$90:BDB2]  ; Execute $BDB2
+$90:BA1F 20 B2 BD    JSR $BDB2  [$90:BDB2]  ; Initial wave beam block collision
 
 $90:BA22 86 14       STX $14    [$7E:0014]  ; $14 = [X] (projectile index)
 $90:BA24 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
@@ -8424,7 +8563,7 @@ $90:BA2A 0A          ASL A                  ;|
 $90:BA2B A8          TAY                    ;} Projectile pre-instruction = [$BA3E + (beam type) * 2]
 $90:BA2C B9 3E BA    LDA $BA3E,y[$90:BA46]  ;|
 $90:BA2F 9D 68 0C    STA $0C68,x[$7E:0C68]  ;/
-$90:BA32 22 97 B1 90 JSL $90B197[$90:B197]  ; Execute $90:B197
+$90:BA32 22 97 B1 90 JSL $90B197[$90:B197]  ; Initialise beam velocities
 
 ; BRANCH_RETURN
 $90:BA36 A9 04 00    LDA #$0004             ;\
@@ -8460,13 +8599,13 @@ $90:BA5A 0A          ASL A                  ;} X = [Samus pose] * 8
 $90:BA5B 0A          ASL A                  ;|
 $90:BA5C AA          TAX                    ;/
 $90:BA5D A4 14       LDY $14    [$7E:0014]  ; Y = [$14] (projectile index)
-$90:BA5F AD 5E 0B    LDA $0B5E  [$7E:0B5E]  ; A = [$0B5E]
-$90:BA62 F0 08       BEQ $08    [$BA6C]     ; If [$0B5E] != 0:
+$90:BA5F AD 5E 0B    LDA $0B5E  [$7E:0B5E]  ; A = [pose transition shot direction]
+$90:BA62 F0 08       BEQ $08    [$BA6C]     ; If [pose transition shot direction] != 0:
 $90:BA64 29 FF 00    AND #$00FF
-$90:BA67 9C 5E 0B    STZ $0B5E  [$7E:0B5E]  ; $0B5E = 0
+$90:BA67 9C 5E 0B    STZ $0B5E  [$7E:0B5E]  ; Pose transition shot direction = 0
 $90:BA6A 80 14       BRA $14    [$BA80]
 
-$90:BA6C BF 2C B6 91 LDA $91B62C,x[$91:B63C];\ Else ([$0B5E] = 0):
+$90:BA6C BF 2C B6 91 LDA $91B62C,x[$91:B63C];\ Else ([pose transition shot direction] = 0):
 $90:BA70 29 FF 00    AND #$00FF             ;} A = [$91:B62C + [Samus pose] * 8] (direction shots are fired)
 $90:BA73 89 F0 00    BIT #$00F0             ;\
 $90:BA76 F0 08       BEQ $08    [$BA80]     ;} If [A] & F0h != 0:
@@ -8486,7 +8625,7 @@ $90:BA94 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:BA97 C9 75 00    CMP #$0075             ;} If [Samus pose] != facing left - moonwalk - aiming up-left:
 $90:BA9A F0 29       BEQ $29    [$BAC5]     ;/
 $90:BA9C C9 76 00    CMP #$0076             ;\
-$90:BA9F F0 24       BEQ $24    [$BAC5]     ;} If [Samus pose] != facing right - moonwalk - aiming up-left:
+$90:BA9F F0 24       BEQ $24    [$BAC5]     ;} If [Samus pose] != facing right - moonwalk - aiming up-right:
 $90:BAA1 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:BAA4 29 FF 00    AND #$00FF             ;|
 $90:BAA7 C9 01 00    CMP #$0001             ;} If [Samus movement type] != running:
@@ -8551,7 +8690,7 @@ $90:BB07 F0 02       BEQ $02    [$BB0B]     ;} If [beam charge counter] > 0: go 
 $90:BB09 10 05       BPL $05    [$BB10]     ;/
 
 $90:BB0B 28          PLP
-$90:BB0C 60          RTS
+$90:BB0C 60          RTS                    ; Return
 
 $90:BB0D 4C B2 BB    JMP $BBB2  [$90:BBB2]
 
@@ -8675,109 +8814,113 @@ $90:BBE0 60          RTS
 
 ;;; $BBE1: Draw flare animation component ;;;
 {
+;; Parameters:
+;;     X: Flare animation index (0/2/4)
+
 ; Is this making sure charging works in the rotating elevator room?!
 $90:BBE1 08          PHP
-$90:BBE2 E2 20       SEP #$20
-$90:BBE4 A9 93       LDA #$93
-$90:BBE6 85 02       STA $02    [$7E:0002]
-$90:BBE8 C2 30       REP #$30
-$90:BBEA BD D6 0C    LDA $0CD6,x[$7E:0CD6]
-$90:BBED 29 FF 00    AND #$00FF
-$90:BBF0 85 12       STA $12    [$7E:0012]
-$90:BBF2 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:BBF5 29 FF 00    AND #$00FF
-$90:BBF8 C9 04 00    CMP #$0004
-$90:BBFB F0 0B       BEQ $0B    [$BC08]
-$90:BBFD BF 25 A2 93 LDA $93A225,x[$93:A225]
-$90:BC01 18          CLC
-$90:BC02 65 12       ADC $12    [$7E:0012]
-$90:BC04 85 16       STA $16    [$7E:0016]
+$90:BBE2 E2 20       SEP #$20               ;\
+$90:BBE4 A9 93       LDA #$93               ;|
+$90:BBE6 85 02       STA $02    [$7E:0002]  ;} $02 = $93
+$90:BBE8 C2 30       REP #$30               ;/
+$90:BBEA BD D6 0C    LDA $0CD6,x[$7E:0CD6]  ;\
+$90:BBED 29 FF 00    AND #$00FF             ;} $12 = [flare animation frame]
+$90:BBF0 85 12       STA $12    [$7E:0012]  ;/
+$90:BBF2 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:BBF5 29 FF 00    AND #$00FF             ;|
+$90:BBF8 C9 04 00    CMP #$0004             ;} If facing right:
+$90:BBFB F0 0B       BEQ $0B    [$BC08]     ;/
+$90:BBFD BF 25 A2 93 LDA $93A225,x[$93:A225];\
+$90:BC01 18          CLC                    ;|
+$90:BC02 65 12       ADC $12    [$7E:0012]  ;} $16 = [$93:A225 + [X]] + [flare animation frame] (flare spritemap index)
+$90:BC04 85 16       STA $16    [$7E:0016]  ;/
 $90:BC06 80 09       BRA $09    [$BC11]
 
-$90:BC08 BF 2B A2 93 LDA $93A22B,x[$93:A22B]
-$90:BC0C 18          CLC
-$90:BC0D 65 12       ADC $12    [$7E:0012]
-$90:BC0F 85 16       STA $16    [$7E:0016]
+$90:BC08 BF 2B A2 93 LDA $93A22B,x[$93:A22B];\ Else (facing left):
+$90:BC0C 18          CLC                    ;|
+$90:BC0D 65 12       ADC $12    [$7E:0012]  ;} $16 = [$93:A22B + [X]] + [flare animation frame] (flare spritemap index)
+$90:BC0F 85 16       STA $16    [$7E:0016]  ;/
 
-$90:BC11 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$90:BC14 0A          ASL A
-$90:BC15 0A          ASL A
-$90:BC16 0A          ASL A
-$90:BC17 AA          TAX
-$90:BC18 BF 2D B6 91 LDA $91B62D,x[$91:B6CD]
-$90:BC1C 29 FF 00    AND #$00FF
-$90:BC1F 85 18       STA $18    [$7E:0018]
-$90:BC21 BF 2C B6 91 LDA $91B62C,x[$91:B6CC]
-$90:BC25 29 FF 00    AND #$00FF
-$90:BC28 C9 FF 00    CMP #$00FF
-$90:BC2B F0 0A       BEQ $0A    [$BC37]
-$90:BC2D C9 10 00    CMP #$0010
-$90:BC30 F0 05       BEQ $05    [$BC37]
-$90:BC32 C9 10 00    CMP #$0010
-$90:BC35 D0 02       BNE $02    [$BC39]
+$90:BC11 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$90:BC14 0A          ASL A                  ;|
+$90:BC15 0A          ASL A                  ;} X = [Samus pose] * 8
+$90:BC16 0A          ASL A                  ;|
+$90:BC17 AA          TAX                    ;/
+$90:BC18 BF 2D B6 91 LDA $91B62D,x[$91:B6CD];\
+$90:BC1C 29 FF 00    AND #$00FF             ;} $18 = [$91:B62D + [X]] (Y offset of projectile origin)
+$90:BC1F 85 18       STA $18    [$7E:0018]  ;/
+$90:BC21 BF 2C B6 91 LDA $91B62C,x[$91:B6CC];\
+$90:BC25 29 FF 00    AND #$00FF             ;} A = [$91:B62C + [X]]
+$90:BC28 C9 FF 00    CMP #$00FF             ;\
+$90:BC2B F0 0A       BEQ $0A    [$BC37]     ;} If [A] = FFh: return
+$90:BC2D C9 10 00    CMP #$0010             ;\
+$90:BC30 F0 05       BEQ $05    [$BC37]     ;} If [A] = 10h: return
+$90:BC32 C9 10 00    CMP #$0010             ;\
+$90:BC35 D0 02       BNE $02    [$BC39]     ;} Go to BRANCH_CONTINUE
 
 $90:BC37 28          PLP
-$90:BC38 60          RTS
+$90:BC38 60          RTS                    ; Return
 
-$90:BC39 29 0F 00    AND #$000F
-$90:BC3C 0A          ASL A
-$90:BC3D AA          TAX
-$90:BC3E AD 3F 09    LDA $093F  [$7E:093F]
-$90:BC41 10 10       BPL $10    [$BC53]
-$90:BC43 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:BC46 8D 82 0D    STA $0D82  [$7E:0D82]
-$90:BC49 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:BC4C 8D 84 0D    STA $0D84  [$7E:0D84]
+; BRANCH_CONTINUE
+$90:BC39 29 0F 00    AND #$000F             ;\
+$90:BC3C 0A          ASL A                  ;} X = ([A] & Fh) * 2
+$90:BC3D AA          TAX                    ;/
+$90:BC3E AD 3F 09    LDA $093F  [$7E:093F]  ;\
+$90:BC41 10 10       BPL $10    [$BC53]     ;} If Ceres elevator room is rotating:
+$90:BC43 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:BC46 8D 82 0D    STA $0D82  [$7E:0D82]  ;} $0D82 = [Samus X position]
+$90:BC49 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:BC4C 8D 84 0D    STA $0D84  [$7E:0D84]  ;} $0D84 = [Samus Y position]
 $90:BC4F 22 52 8A 8B JSL $8B8A52[$8B:8A52]  ; Calculate position of Samus in rotating elevator room
 
-$90:BC53 AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$90:BC56 29 FF 00    AND #$00FF
-$90:BC59 C9 01 00    CMP #$0001
-$90:BC5C F0 1E       BEQ $1E    [$BC7C]
-$90:BC5E BD A8 C1    LDA $C1A8,x[$90:C1B6]
-$90:BC61 18          CLC
-$90:BC62 6D F6 0A    ADC $0AF6  [$7E:0AF6]
-$90:BC65 38          SEC
-$90:BC66 ED 11 09    SBC $0911  [$7E:0911]
-$90:BC69 85 14       STA $14    [$7E:0014]
-$90:BC6B BD C2 C1    LDA $C1C2,x[$90:C1D0]
-$90:BC6E 18          CLC
-$90:BC6F 6D FA 0A    ADC $0AFA  [$7E:0AFA]
-$90:BC72 38          SEC
-$90:BC73 E5 18       SBC $18    [$7E:0018]
-$90:BC75 ED 15 09    SBC $0915  [$7E:0915]
-$90:BC78 85 12       STA $12    [$7E:0012]
+$90:BC53 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$90:BC56 29 FF 00    AND #$00FF             ;|
+$90:BC59 C9 01 00    CMP #$0001             ;} If [Samus movement type] != running:
+$90:BC5C F0 1E       BEQ $1E    [$BC7C]     ;/
+$90:BC5E BD A8 C1    LDA $C1A8,x[$90:C1B6]  ;\
+$90:BC61 18          CLC                    ;|
+$90:BC62 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;|
+$90:BC65 38          SEC                    ;} $14 = [Samus X position] + [$C1A8 + [X]] - [layer 1 X position]
+$90:BC66 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$90:BC69 85 14       STA $14    [$7E:0014]  ;/
+$90:BC6B BD C2 C1    LDA $C1C2,x[$90:C1D0]  ;\
+$90:BC6E 18          CLC                    ;|
+$90:BC6F 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;|
+$90:BC72 38          SEC                    ;} $12 = [Samus Y position] + [$C1C2 + [X]] - [$18] - [layer 1 Y position]
+$90:BC73 E5 18       SBC $18    [$7E:0018]  ;|
+$90:BC75 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:BC78 85 12       STA $12    [$7E:0012]  ;/
 $90:BC7A 80 1C       BRA $1C    [$BC98]
 
-$90:BC7C BD DC C1    LDA $C1DC,x[$90:C1E0]
-$90:BC7F 18          CLC
-$90:BC80 6D F6 0A    ADC $0AF6  [$7E:0AF6]
-$90:BC83 38          SEC
-$90:BC84 ED 11 09    SBC $0911  [$7E:0911]
-$90:BC87 85 14       STA $14    [$7E:0014]
-$90:BC89 BD F0 C1    LDA $C1F0,x[$90:C1F4]
-$90:BC8C 18          CLC
-$90:BC8D 6D FA 0A    ADC $0AFA  [$7E:0AFA]
-$90:BC90 38          SEC
-$90:BC91 E5 18       SBC $18    [$7E:0018]
-$90:BC93 ED 15 09    SBC $0915  [$7E:0915]
-$90:BC96 85 12       STA $12    [$7E:0012]
+$90:BC7C BD DC C1    LDA $C1DC,x[$90:C1E0]  ;\ ([Samus movement type] = running):
+$90:BC7F 18          CLC                    ;|
+$90:BC80 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;|
+$90:BC83 38          SEC                    ;} $14 = [Samus X position] + [$C1DC + [X]] - [layer 1 X position]
+$90:BC84 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$90:BC87 85 14       STA $14    [$7E:0014]  ;/
+$90:BC89 BD F0 C1    LDA $C1F0,x[$90:C1F4]  ;\
+$90:BC8C 18          CLC                    ;|
+$90:BC8D 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;|
+$90:BC90 38          SEC                    ;} $12 = [Samus Y position] + [$C1F0 + [X]] - [$18] - [layer 1 Y position]
+$90:BC91 E5 18       SBC $18    [$7E:0018]  ;|
+$90:BC93 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:BC96 85 12       STA $12    [$7E:0012]  ;/
 
-$90:BC98 29 00 FF    AND #$FF00
-$90:BC9B D0 08       BNE $08    [$BCA5]
-$90:BC9D A5 16       LDA $16    [$7E:0016]
-$90:BC9F 22 37 8A 81 JSL $818A37[$81:8A37]
+$90:BC98 29 00 FF    AND #$FF00             ;\
+$90:BC9B D0 08       BNE $08    [$BCA5]     ;} If [$12] < 100h:
+$90:BC9D A5 16       LDA $16    [$7E:0016]  ; A = [$16]
+$90:BC9F 22 37 8A 81 JSL $818A37[$81:8A37]  ; Add spritemap from $93:A1A1 table to OAM
 $90:BCA3 80 06       BRA $06    [$BCAB]
 
-$90:BCA5 A5 16       LDA $16    [$7E:0016]
-$90:BCA7 22 B7 8A 81 JSL $818AB7[$81:8AB7]
+$90:BCA5 A5 16       LDA $16    [$7E:0016]  ;\ Else ([$12] >= 100h):
+$90:BCA7 22 B7 8A 81 JSL $818AB7[$81:8AB7]  ;} NOP
 
-$90:BCAB AD 3F 09    LDA $093F  [$7E:093F]
-$90:BCAE 10 0C       BPL $0C    [$BCBC]
-$90:BCB0 AD 84 0D    LDA $0D84  [$7E:0D84]
-$90:BCB3 8D FA 0A    STA $0AFA  [$7E:0AFA]
-$90:BCB6 AD 82 0D    LDA $0D82  [$7E:0D82]
-$90:BCB9 8D F6 0A    STA $0AF6  [$7E:0AF6]
+$90:BCAB AD 3F 09    LDA $093F  [$7E:093F]  ;\
+$90:BCAE 10 0C       BPL $0C    [$BCBC]     ;} If Ceres elevator room is rotating:
+$90:BCB0 AD 84 0D    LDA $0D84  [$7E:0D84]  ;\
+$90:BCB3 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;} Samus Y position = [$0D84]
+$90:BCB6 AD 82 0D    LDA $0D82  [$7E:0D82]  ;\
+$90:BCB9 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;} Samus X position = [$0D82]
 
 $90:BCBC 28          PLP
 $90:BCBD 60          RTS
@@ -8786,39 +8929,40 @@ $90:BCBD 60          RTS
 
 ;;; $BCBE: Clear flare animation state ;;;
 {
-$90:BCBE 9C D6 0C    STZ $0CD6  [$7E:0CD6]
-$90:BCC1 9C D8 0C    STZ $0CD8  [$7E:0CD8]
-$90:BCC4 9C DA 0C    STZ $0CDA  [$7E:0CDA]
-$90:BCC7 9C DC 0C    STZ $0CDC  [$7E:0CDC]
-$90:BCCA 9C DE 0C    STZ $0CDE  [$7E:0CDE]
-$90:BCCD 9C E0 0C    STZ $0CE0  [$7E:0CE0]
+$90:BCBE 9C D6 0C    STZ $0CD6  [$7E:0CD6]  ; Flare animation frame = 0
+$90:BCC1 9C D8 0C    STZ $0CD8  [$7E:0CD8]  ; Flare slow sparks animation frame = 0
+$90:BCC4 9C DA 0C    STZ $0CDA  [$7E:0CDA]  ; Flare fast sparks animation frame = 0
+$90:BCC7 9C DC 0C    STZ $0CDC  [$7E:0CDC]  ; Flare animation timer = 0
+$90:BCCA 9C DE 0C    STZ $0CDE  [$7E:0CDE]  ; Flare slow sparks animation timer = 0
+$90:BCCD 9C E0 0C    STZ $0CE0  [$7E:0CE0]  ; Flare fast sparks animation timer = 0
 $90:BCD0 60          RTS
 }
 
 
 ;;; $BCD1: Fire hyper beam ;;;
 {
-$90:BCD1 20 39 AC    JSR $AC39  [$90:AC39]
-$90:BCD4 B0 02       BCS $02    [$BCD8]
+$90:BCD1 20 39 AC    JSR $AC39  [$90:AC39]  ;\
+$90:BCD4 B0 02       BCS $02    [$BCD8]     ;} If Samus cannot fire beam:
 $90:BCD6 28          PLP
-$90:BCD7 60          RTS
+$90:BCD7 60          RTS                    ; Return
 
-$90:BCD8 A2 00 00    LDX #$0000
+$90:BCD8 A2 00 00    LDX #$0000             ; X = 0 (projectile index)
 
-$90:BCDB BD 2C 0C    LDA $0C2C,x[$7E:0C2C]
-$90:BCDE F0 09       BEQ $09    [$BCE9]
-$90:BCE0 E8          INX
-$90:BCE1 E8          INX
-$90:BCE2 E0 0A 00    CPX #$000A
-$90:BCE5 30 F4       BMI $F4    [$BCDB]
-$90:BCE7 CA          DEX
-$90:BCE8 CA          DEX
+; LOOP
+$90:BCDB BD 2C 0C    LDA $0C2C,x[$7E:0C2C]  ;\
+$90:BCDE F0 09       BEQ $09    [$BCE9]     ;} If [projectile damage] != 0:
+$90:BCE0 E8          INX                    ;\
+$90:BCE1 E8          INX                    ;} X += 2
+$90:BCE2 E0 0A 00    CPX #$000A             ;\
+$90:BCE5 30 F4       BMI $F4    [$BCDB]     ;} If [X] < Ah: go to LOOP
+$90:BCE7 CA          DEX                    ;\
+$90:BCE8 CA          DEX                    ;} X -= 2 (overwrite last slot(!))
 
-$90:BCE9 86 14       STX $14    [$7E:0014]
-$90:BCEB 20 56 BA    JSR $BA56  [$90:BA56]
-$90:BCEE B0 72       BCS $72    [$BD62]
-$90:BCF0 A9 0A 00    LDA #$000A
-$90:BCF3 8D AC 18    STA $18AC  [$7E:18AC]
+$90:BCE9 86 14       STX $14    [$7E:0014]  ; $14 = [X]
+$90:BCEB 20 56 BA    JSR $BA56  [$90:BA56]  ; Initialise projectile position / direction
+$90:BCEE B0 72       BCS $72    [$BD62]     ; If cannot fire: return
+$90:BCF0 A9 0A 00    LDA #$000A             ;\
+$90:BCF3 8D AC 18    STA $18AC  [$7E:18AC]  ;} Projectile invincibility timer = 10
 $90:BCF6 A6 14       LDX $14    [$7E:0014]
 $90:BCF8 DA          PHX
 $90:BCF9 A9 18 90    LDA #$9018             ;\
@@ -8828,50 +8972,51 @@ $90:BD02 0A          ASL A                  ;|
 $90:BD03 AA          TAX                    ;} Queue sound 1Fh, sound library 1, max queued sounds = 15 (charged plasma beam / hyper beam)
 $90:BD04 BD A7 C2    LDA $C2A7,x[$90:C2B7]  ;|
 $90:BD07 22 21 90 80 JSL $809021[$80:9021]  ;/
-$90:BD0B 9C C0 0D    STZ $0DC0  [$7E:0DC0]
+$90:BD0B 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
 $90:BD0E FA          PLX
-$90:BD0F 22 00 80 93 JSL $938000[$93:8000]
-$90:BD13 9E DC 0B    STZ $0BDC,x[$7E:0BDC]
-$90:BD16 9E F0 0B    STZ $0BF0,x[$7E:0BF0]
-$90:BD19 8E DE 0D    STX $0DDE  [$7E:0DDE]
-$90:BD1C 20 B2 BD    JSR $BDB2  [$90:BDB2]
+$90:BD0F 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
+$90:BD13 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X speed = 0
+$90:BD16 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y speed = 0
+$90:BD19 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
+$90:BD1C 20 B2 BD    JSR $BDB2  [$90:BDB2]  ; Initial wave beam block collision
 $90:BD1F AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BD22 AF BF 83 93 LDA $9383BF[$93:83BF]
-$90:BD26 9D 2C 0C    STA $0C2C,x[$7E:0C2C]
-$90:BD29 A9 59 B1    LDA #$B159
-$90:BD2C 9D 68 0C    STA $0C68,x[$7E:0C68]
+$90:BD22 AF BF 83 93 LDA $9383BF[$93:83BF]  ;\
+$90:BD26 9D 2C 0C    STA $0C2C,x[$7E:0C2C]  ;} Projectile damage = 1000
+$90:BD29 A9 59 B1    LDA #$B159             ;\
+$90:BD2C 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = $B159
 $90:BD2F 86 14       STX $14    [$7E:0014]
-$90:BD31 22 97 B1 90 JSL $90B197[$90:B197]
-$90:BD35 A9 15 00    LDA #$0015
-$90:BD38 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:BD3B A9 14 80    LDA #$8014
-$90:BD3E 8D 18 0B    STA $0B18  [$7E:0B18]
-$90:BD41 A9 1D 00    LDA #$001D
-$90:BD44 8D D6 0C    STA $0CD6  [$7E:0CD6]
-$90:BD47 A9 05 00    LDA #$0005
-$90:BD4A 8D D8 0C    STA $0CD8  [$7E:0CD8]
-$90:BD4D 8D DA 0C    STA $0CDA  [$7E:0CDA]
-$90:BD50 A9 03 00    LDA #$0003
-$90:BD53 8D DC 0C    STA $0CDC  [$7E:0CDC]
-$90:BD56 8D DE 0C    STA $0CDE  [$7E:0CDE]
-$90:BD59 8D E0 0C    STA $0CE0  [$7E:0CE0]
-$90:BD5C A9 00 80    LDA #$8000
-$90:BD5F 8D D0 0C    STA $0CD0  [$7E:0CD0]
+$90:BD31 22 97 B1 90 JSL $90B197[$90:B197]  ; Initialise beam velocities
+$90:BD35 A9 15 00    LDA #$0015             ;\
+$90:BD38 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 15h
+$90:BD3B A9 14 80    LDA #$8014             ;\
+$90:BD3E 8D 18 0B    STA $0B18  [$7E:0B18]  ;} Charged shot glow timer = 20
+$90:BD41 A9 1D 00    LDA #$001D             ;\
+$90:BD44 8D D6 0C    STA $0CD6  [$7E:0CD6]  ;} Flare animation frame = 1Dh
+$90:BD47 A9 05 00    LDA #$0005             ;\
+$90:BD4A 8D D8 0C    STA $0CD8  [$7E:0CD8]  ;} Flare slow sparks animation frame = 5
+$90:BD4D 8D DA 0C    STA $0CDA  [$7E:0CDA]  ; Flare fast sparks animation frame = 5
+$90:BD50 A9 03 00    LDA #$0003             ;\
+$90:BD53 8D DC 0C    STA $0CDC  [$7E:0CDC]  ;} Flare animation timer = 3
+$90:BD56 8D DE 0C    STA $0CDE  [$7E:0CDE]  ; Flare slow sparks animation timer = 3
+$90:BD59 8D E0 0C    STA $0CE0  [$7E:0CE0]  ; Flare fast sparks animation timer = 3
+$90:BD5C A9 00 80    LDA #$8000             ;\
+$90:BD5F 8D D0 0C    STA $0CD0  [$7E:0CD0]  ;} Flare counter = 8000h
 
 $90:BD62 28          PLP
 $90:BD63 60          RTS
 }
 
 
-;;; $BD64:  ;;;
+;;; $BD64..BDFF: Initial beam block collision ;;;
 {
-; Goes to a routine depending on the direction. Seems to check for point-blank collisions (fails at GGG)
+;;; $BD64: Initial beam block collision - no wave beam ;;;
+{
 $90:BD64 DA          PHX
-$90:BD65 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:BD68 29 0F 00    AND #$000F
-$90:BD6B 0A          ASL A
-$90:BD6C AA          TAX
-$90:BD6D FC 72 BD    JSR ($BD72,x)[$90:BD8E]
+$90:BD65 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:BD68 29 0F 00    AND #$000F             ;|
+$90:BD6B 0A          ASL A                  ;} Execute [$BD72 + ([projectile direction] & Fh) * 2]
+$90:BD6C AA          TAX                    ;|
+$90:BD6D FC 72 BD    JSR ($BD72,x)[$90:BD8E];/
 $90:BD70 FA          PLX
 $90:BD71 60          RTS
 
@@ -8888,53 +9033,51 @@ $90:BD72             dw BD86, ; 0: Up, facing right
 }
 
 
-;;; $BD86:  ;;;
+;;; $BD86: Initial beam block collision - no wave beam - vertical ;;;
 {
 $90:BD86 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BD89 22 CA A2 94 JSL $94A2CA[$94:A2CA]
+$90:BD89 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
 $90:BD8D 60          RTS
 }
 
 
-;;; $BD8E:  ;;;
+;;; $BD8E: Initial beam block collision - no wave beam - diagonal ;;;
 {
 $90:BD8E AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BD91 22 3B A2 94 JSL $94A23B[$94:A23B]
-$90:BD95 B0 04       BCS $04    [$BD9B]
-$90:BD97 22 CA A2 94 JSL $94A2CA[$94:A2CA]
+$90:BD91 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
+$90:BD95 B0 04       BCS $04    [$BD9B]     ; If not collided:
+$90:BD97 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
 
 $90:BD9B 60          RTS
 }
 
 
-;;; $BD9C:  ;;;
+;;; $BD9C: Initial beam block collision - no wave beam - right ;;;
 {
 $90:BD9C AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BD9F 22 3B A2 94 JSL $94A23B[$94:A23B]
+$90:BD9F 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
 $90:BDA3 60          RTS
 }
 
 
-;;; $BDA4:  ;;;
+;;; $BDA4: Initial beam block collision - no wave beam - left ;;;
 {
 $90:BDA4 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDA7 A9 FF FF    LDA #$FFFF
-$90:BDAA 9D DC 0B    STA $0BDC,x[$7E:0BDC]
-$90:BDAD 22 3B A2 94 JSL $94A23B[$94:A23B]
+$90:BDA7 A9 FF FF    LDA #$FFFF             ;\
+$90:BDAA 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;} Projectile X velocity = -1
+$90:BDAD 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
 $90:BDB1 60          RTS
 }
 
 
-;;; $BDB2:  ;;;
+;;; $BDB2: Initial wave beam block collision ;;;
 {
-; Goes to a routine depending on the direction, when Samus has the wave beam equipped.
-; Probably checks for point-blank collisions with enemies? Pure guess
 $90:BDB2 DA          PHX
-$90:BDB3 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:BDB6 29 0F 00    AND #$000F
-$90:BDB9 0A          ASL A
-$90:BDBA AA          TAX
-$90:BDBB FC C0 BD    JSR ($BDC0,x)[$90:BDF2]
+$90:BDB3 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:BDB6 29 0F 00    AND #$000F             ;|
+$90:BDB9 0A          ASL A                  ;} Execute [$BDC0 + ([projectile direction] & Fh) * 2]
+$90:BDBA AA          TAX                    ;|
+$90:BDBB FC C0 BD    JSR ($BDC0,x)[$90:BDF2];/
 $90:BDBE FA          PLX
 $90:BDBF 60          RTS
 
@@ -8951,40 +9094,41 @@ $90:BDC0             dw BDD4, ; 0: Up, facing right
 }
 
 
-;;; $BDD4:  ;;;
+;;; $BDD4: Initial wave beam block collision - vertical ;;;
 {
 $90:BDD4 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDD7 22 E4 A3 94 JSL $94A3E4[$94:A3E4]
+$90:BDD7 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
 $90:BDDB 60          RTS
 }
 
 
-;;; $BDDC:  ;;;
+;;; $BDDC: Initial wave beam block collision - diagonal ;;;
 {
 $90:BDDC AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDDF 22 52 A3 94 JSL $94A352[$94:A352]
-$90:BDE3 B0 04       BCS $04    [$BDE9]
-$90:BDE5 22 E4 A3 94 JSL $94A3E4[$94:A3E4]
+$90:BDDF 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
+$90:BDE3 B0 04       BCS $04    [$BDE9]     ; If not collided:
+$90:BDE5 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
 
 $90:BDE9 60          RTS
 }
 
 
-;;; $BDEA:  ;;;
+;;; $BDEA: Initial wave beam block collision - right ;;;
 {
 $90:BDEA AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDED 22 52 A3 94 JSL $94A352[$94:A352]
+$90:BDED 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
 $90:BDF1 60          RTS
 }
 
 
-;;; $BDF2:  ;;;
+;;; $BDF2: Initial wave beam block collision - left ;;;
 {
 $90:BDF2 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDF5 A9 FF FF    LDA #$FFFF
-$90:BDF8 9D DC 0B    STA $0BDC,x[$7E:0BDC]
-$90:BDFB 22 52 A3 94 JSL $94A352[$94:A352]
+$90:BDF5 A9 FF FF    LDA #$FFFF             ;\
+$90:BDF8 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;} Projectile X velocity = -1
+$90:BDFB 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
 $90:BDFF 60          RTS
+}
 }
 
 
@@ -8992,45 +9136,47 @@ $90:BDFF 60          RTS
 {
 $90:BE00 08          PHP
 $90:BE01 8B          PHB
-$90:BE02 4B          PHK
-$90:BE03 AB          PLB
+$90:BE02 4B          PHK                    ;\
+$90:BE03 AB          PLB                    ;} DB = $90
 $90:BE04 C2 30       REP #$30
 $90:BE06 DA          PHX
-$90:BE07 A6 14       LDX $14    [$7E:0014]
-$90:BE09 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:BE0C 89 00 01    BIT #$0100
-$90:BE0F D0 1E       BNE $1E    [$BE2F]
-$90:BE11 89 00 02    BIT #$0200
-$90:BE14 D0 2B       BNE $2B    [$BE41]
-$90:BE16 22 97 B1 90 JSL $90B197[$90:B197]
-$90:BE1A 22 00 80 93 JSL $938000[$93:8000]
-$90:BE1E BD 18 0C    LDA $0C18,x[$7E:0C18]
-$90:BE21 29 0F 00    AND #$000F
-$90:BE24 0A          ASL A
-$90:BE25 A8          TAY
-$90:BE26 B9 3E BA    LDA $BA3E,y[$90:BA50]
-$90:BE29 9D 68 0C    STA $0C68,x[$7E:0C68]
-$90:BE2C 9B          TXY
-$90:BE2D 80 2F       BRA $2F    [$BE5E]
+$90:BE07 A6 14       LDX $14    [$7E:0014]  ; X = [$14]
+$90:BE09 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:BE0C 89 00 01    BIT #$0100             ;} If (projectile type) = missile: go to BRANCH_MISSILE
+$90:BE0F D0 1E       BNE $1E    [$BE2F]     ;/
+$90:BE11 89 00 02    BIT #$0200             ;\
+$90:BE14 D0 2B       BNE $2B    [$BE41]     ;} If (projectile type) = super missile: go to BRANCH_SUPER
+$90:BE16 22 97 B1 90 JSL $90B197[$90:B197]  ; Initialise beam velocities
+$90:BE1A 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
+$90:BE1E BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$90:BE21 29 0F 00    AND #$000F             ;|
+$90:BE24 0A          ASL A                  ;|
+$90:BE25 A8          TAY                    ;} Projectile pre-instruction = [$BA3E + (beam type) * 2]
+$90:BE26 B9 3E BA    LDA $BA3E,y[$90:BA50]  ;|
+$90:BE29 9D 68 0C    STA $0C68,x[$7E:0C68]  ;|
+$90:BE2C 9B          TXY                    ;/
+$90:BE2D 80 2F       BRA $2F    [$BE5E]     ; Return
 
-$90:BE2F 22 00 80 93 JSL $938000[$93:8000]
-$90:BE33 A9 68 AF    LDA #$AF68
-$90:BE36 9D 68 0C    STA $0C68,x
-$90:BE39 A9 F0 00    LDA #$00F0
-$90:BE3C 9D 7C 0C    STA $0C7C,x
-$90:BE3F 80 1D       BRA $1D    [$BE5E]
+; BRANCH_MISSILE
+$90:BE2F 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
+$90:BE33 A9 68 AF    LDA #$AF68             ;\
+$90:BE36 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $AF68
+$90:BE39 A9 F0 00    LDA #$00F0             ;\
+$90:BE3C 9D 7C 0C    STA $0C7C,x            ;} Projectile variable = F0h
+$90:BE3F 80 1D       BRA $1D    [$BE5E]     ; Return
 
-$90:BE41 DA          PHX
-$90:BE42 BD 7C 0C    LDA $0C7C,x
-$90:BE45 29 FF 00    AND #$00FF
-$90:BE48 AA          TAX
-$90:BE49 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:BE4D FA          PLX
-$90:BE4E 22 00 80 93 JSL $938000[$93:8000]
-$90:BE52 A9 E5 AF    LDA #$AFE5
-$90:BE55 9D 68 0C    STA $0C68,x
-$90:BE58 A9 F0 00    LDA #$00F0
-$90:BE5B 9D 7C 0C    STA $0C7C,x
+; BRANCH_SUPER
+$90:BE41 DA          PHX                    ;\
+$90:BE42 BD 7C 0C    LDA $0C7C,x            ;|
+$90:BE45 29 FF 00    AND #$00FF             ;|
+$90:BE48 AA          TAX                    ;} Clear super missile link projectile
+$90:BE49 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;|
+$90:BE4D FA          PLX                    ;/
+$90:BE4E 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
+$90:BE52 A9 E5 AF    LDA #$AFE5             ;\
+$90:BE55 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $AFE5
+$90:BE58 A9 F0 00    LDA #$00F0             ;\
+$90:BE5B 9D 7C 0C    STA $0C7C,x            ;} Projectile variable = F0h
 
 $90:BE5E FA          PLX
 $90:BE5F AB          PLB
@@ -9056,7 +9202,7 @@ $90:BE76 20 5A AC    JSR $AC5A  [$90:AC5A]  ; Check if Samus can fire (super) mi
 $90:BE79 B0 07       BCS $07    [$BE82]     ; If so: go to BRANCH_FIRE
 
 $90:BE7B 28          PLP
-$90:BE7C 60          RTS
+$90:BE7C 60          RTS                    ; Return
 
 ; BRANCH_CANNOT_FIRE
 $90:BE7D CE CE 0C    DEC $0CCE  [$7E:0CCE]  ; Decrement projectile counter
@@ -9121,18 +9267,18 @@ $90:BEEA D0 07       BNE $07    [$BEF3]     ;} If [cinematic function] = 0:
 $90:BEEC BD BF C2    LDA $C2BF,x[$90:C2C1]  ;\
 $90:BEEF 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound [$C2BF + [HUD item index] * 2], sound library 1, max queued sounds allowed = 6
 
-$90:BEF3 20 DD B1    JSR $B1DD  [$90:B1DD]  ; Execute $B1DD
+$90:BEF3 20 DD B1    JSR $B1DD  [$90:B1DD]  ; Initialise (super) missile velocities
 $90:BEF6 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:BEFA BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:BEFD 48          PHA                    ;|
 $90:BEFE 89 00 02    BIT #$0200             ;} If projectile is not super missile:
 $90:BF01 D0 08       BNE $08    [$BF0B]     ;/
 $90:BF03 A9 68 AF    LDA #$AF68             ;\
-$90:BF06 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = $AF68
+$90:BF06 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = $AF68 (missile)
 $90:BF09 80 06       BRA $06    [$BF11]
 
 $90:BF0B A9 E5 AF    LDA #$AFE5             ;\ Else (projectile is super missile):
-$90:BF0E 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = $AFE5
+$90:BF0E 9D 68 0C    STA $0C68,x[$7E:0C68]  ;} Projectile pre-instruction = $AFE5 (super missile)
 
 $90:BF11 68          PLA                    ;\
 $90:BF12 EB          XBA                    ;|
@@ -9164,43 +9310,44 @@ $90:BF45 60          RTS
 }
 
 
-;;; $BF46:  ;;;
+;;; $BF46: Spawn super missile link ;;;
 {
-$90:BF46 A2 00 00    LDX #$0000
+$90:BF46 A2 00 00    LDX #$0000             ; X = 0 (new projectile index)
 
-$90:BF49 BD 2C 0C    LDA $0C2C,x[$7E:0C2C]
-$90:BF4C F0 09       BEQ $09    [$BF57]
-$90:BF4E E8          INX
-$90:BF4F E8          INX
-$90:BF50 E0 0A 00    CPX #$000A
-$90:BF53 30 F4       BMI $F4    [$BF49]
-$90:BF55 80 43       BRA $43    [$BF9A]
+; LOOP
+$90:BF49 BD 2C 0C    LDA $0C2C,x[$7E:0C2C]  ;\
+$90:BF4C F0 09       BEQ $09    [$BF57]     ;} If [projectile [X] damage] != 0:
+$90:BF4E E8          INX                    ;\
+$90:BF4F E8          INX                    ;} X += 2
+$90:BF50 E0 0A 00    CPX #$000A             ;\
+$90:BF53 30 F4       BMI $F4    [$BF49]     ;} If [X] < Ah: go to LOOP
+$90:BF55 80 43       BRA $43    [$BF9A]     ; Return
 
-$90:BF57 86 14       STX $14    [$7E:0014]
-$90:BF59 9B          TXY
-$90:BF5A B9 18 0C    LDA $0C18,y[$7E:0C1A]
-$90:BF5D 09 00 82    ORA #$8200
-$90:BF60 99 18 0C    STA $0C18,y[$7E:0C1A]
-$90:BF63 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BF66 BD 64 0B    LDA $0B64,x[$7E:0B64]
-$90:BF69 99 64 0B    STA $0B64,y[$7E:0B66]
-$90:BF6C BD 78 0B    LDA $0B78,x[$7E:0B78]
-$90:BF6F 99 78 0B    STA $0B78,y[$7E:0B7A]
-$90:BF72 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$90:BF75 99 04 0C    STA $0C04,y[$7E:0C06]
-$90:BF78 20 56 BA    JSR $BA56  [$90:BA56]
-$90:BF7B BB          TYX
-$90:BF7C 22 71 80 93 JSL $938071[$93:8071]
-$90:BF80 A9 75 B0    LDA #$B075
-$90:BF83 9D 68 0C    STA $0C68,x[$7E:0C6A]
-$90:BF86 86 12       STX $12    [$7E:0012]
-$90:BF88 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BF8B BD 7C 0C    LDA $0C7C,x[$7E:0C7C]
-$90:BF8E 29 00 FF    AND #$FF00
-$90:BF91 18          CLC
-$90:BF92 65 12       ADC $12    [$7E:0012]
-$90:BF94 9D 7C 0C    STA $0C7C,x[$7E:0C7C]
-$90:BF97 EE CE 0C    INC $0CCE  [$7E:0CCE]
+$90:BF57 86 14       STX $14    [$7E:0014]  ; $14 = [X]
+$90:BF59 9B          TXY                    ; Y = [X]
+$90:BF5A B9 18 0C    LDA $0C18,y[$7E:0C1A]  ;\
+$90:BF5D 09 00 82    ORA #$8200             ;} New projectile type |= 8200h (super missile)
+$90:BF60 99 18 0C    STA $0C18,y[$7E:0C1A]  ;/
+$90:BF63 AE DE 0D    LDX $0DDE  [$7E:0DDE]  ; X = [projectile index]
+$90:BF66 BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
+$90:BF69 99 64 0B    STA $0B64,y[$7E:0B66]  ;} New projectile X position = [projectile X position]
+$90:BF6C BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$90:BF6F 99 78 0B    STA $0B78,y[$7E:0B7A]  ;} New projectile Y position = [projectile Y position]
+$90:BF72 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
+$90:BF75 99 04 0C    STA $0C04,y[$7E:0C06]  ;} New projectile direction = [projectile X direction]
+$90:BF78 20 56 BA    JSR $BA56  [$90:BA56]  ; Initialise projectile position / direction (overwriting the last three stores...)
+$90:BF7B BB          TYX                    ; X = [Y]
+$90:BF7C 22 71 80 93 JSL $938071[$93:8071]  ; Initialise super missile link
+$90:BF80 A9 75 B0    LDA #$B075             ;\
+$90:BF83 9D 68 0C    STA $0C68,x[$7E:0C6A]  ;} New projectile pre-instruction = $B075 (super missile link)
+$90:BF86 86 12       STX $12    [$7E:0012]  ;\
+$90:BF88 AE DE 0D    LDX $0DDE  [$7E:0DDE]  ;|
+$90:BF8B BD 7C 0C    LDA $0C7C,x[$7E:0C7C]  ;|
+$90:BF8E 29 00 FF    AND #$FF00             ;} Projectile super missile link index = [X]
+$90:BF91 18          CLC                    ;|
+$90:BF92 65 12       ADC $12    [$7E:0012]  ;|
+$90:BF94 9D 7C 0C    STA $0C7C,x[$7E:0C7C]  ;/
+$90:BF97 EE CE 0C    INC $0CCE  [$7E:0CCE]  ; Increment projectile counter
 
 $90:BF9A 60          RTS
 }
@@ -9219,145 +9366,146 @@ $90:BF9E C2 30       REP #$30
 $90:BFA0 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:BFA2 2D B2 09    AND $09B2  [$7E:09B2]  ;} If pressing shoot:
 $90:BFA5 F0 0B       BEQ $0B    [$BFB2]     ;/
-$90:BFA7 AD D2 09    LDA $09D2  [$7E:09D2]
-$90:BFAA C9 03 00    CMP #$0003
-$90:BFAD D0 1B       BNE $1B    [$BFCA]
-$90:BFAF 4C 1C C0    JMP $C01C  [$90:C01C]
+$90:BFA7 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
+$90:BFAA C9 03 00    CMP #$0003             ;} If [HUD item index] != power bombs: go to BRANCH_BOMB
+$90:BFAD D0 1B       BNE $1B    [$BFCA]     ;/
+$90:BFAF 4C 1C C0    JMP $C01C  [$90:C01C]  ; Go to BRANCH_POWER_BOMB
 
-$90:BFB2 AD D0 0C    LDA $0CD0  [$7E:0CD0]
-$90:BFB5 F0 11       BEQ $11    [$BFC8]
+$90:BFB2 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
+$90:BFB5 F0 11       BEQ $11    [$BFC8]     ;} If [flare counter] != 0:
 $90:BFB7 A9 02 00    LDA #$0002             ;\
 $90:BFBA 22 2B 90 80 JSL $80902B[$80:902B]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 9 (silence)
-$90:BFBE 9C D0 0C    STZ $0CD0  [$7E:0CD0]
-$90:BFC1 20 BE BC    JSR $BCBE  [$90:BCBE]
-$90:BFC4 22 BA DE 91 JSL $91DEBA[$91:DEBA]
+$90:BFBE 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
+$90:BFC1 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear flare animation state
+$90:BFC4 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 
 $90:BFC8 28          PLP
-$90:BFC9 60          RTS
+$90:BFC9 60          RTS                    ; Return
 
-$90:BFCA 20 AB C0    JSR $C0AB  [$90:C0AB]
-$90:BFCD 90 4B       BCC $4B    [$C01A]
-$90:BFCF A2 0A 00    LDX #$000A
+; BRANCH_BOMB
+$90:BFCA 20 AB C0    JSR $C0AB  [$90:C0AB]  ; Fire bomb or bomb spread
+$90:BFCD 90 4B       BCC $4B    [$C01A]     ; If bomb not fired: return
+$90:BFCF A2 0A 00    LDX #$000A             ; X = Ah (projectile index)
 
-$90:BFD2 BD 18 0C    LDA $0C18,x[$7E:0C22]
-$90:BFD5 F0 09       BEQ $09    [$BFE0]
-$90:BFD7 E8          INX
-$90:BFD8 E8          INX
-$90:BFD9 E0 14 00    CPX #$0014
-$90:BFDC 30 F4       BMI $F4    [$BFD2]
-$90:BFDE CA          DEX
-$90:BFDF CA          DEX
+; LOOP_BOMB
+$90:BFD2 BD 18 0C    LDA $0C18,x[$7E:0C22]  ;\
+$90:BFD5 F0 09       BEQ $09    [$BFE0]     ;} If [projectile type] != 0:
+$90:BFD7 E8          INX                    ;\
+$90:BFD8 E8          INX                    ;} X += 2
+$90:BFD9 E0 14 00    CPX #$0014             ;\
+$90:BFDC 30 F4       BMI $F4    [$BFD2]     ;} If [X] < 14h: go to LOOP
+$90:BFDE CA          DEX                    ;\
+$90:BFDF CA          DEX                    ;} X -= 2 (overwrite last slot(!))
 
-$90:BFE0 86 14       STX $14    [$7E:0014]
-$90:BFE2 A9 00 05    LDA #$0500
-$90:BFE5 9D 18 0C    STA $0C18,x[$7E:0C22]
+$90:BFE0 86 14       STX $14    [$7E:0014]  ; $14 = [X]
+$90:BFE2 A9 00 05    LDA #$0500             ;\
+$90:BFE5 9D 18 0C    STA $0C18,x[$7E:0C22]  ;} Projectile type = bomb
 $90:BFE8 48          PHA
-$90:BFE9 A9 00 00    LDA #$0000
-$90:BFEC 9D 04 0C    STA $0C04,x[$7E:0C0E]
-$90:BFEF AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:BFF2 9D 64 0B    STA $0B64,x[$7E:0B6E]
-$90:BFF5 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:BFF8 9D 78 0B    STA $0B78,x[$7E:0B82]
-$90:BFFB AD 9B BF    LDA $BF9B  [$90:BF9B]
-$90:BFFE 9D 7C 0C    STA $0C7C,x[$7E:0C86]
-$90:C001 22 A0 80 93 JSL $9380A0[$93:80A0]
-$90:C005 A9 99 B0    LDA #$B099
-$90:C008 9D 68 0C    STA $0C68,x[$7E:0C72]
+$90:BFE9 A9 00 00    LDA #$0000             ;\
+$90:BFEC 9D 04 0C    STA $0C04,x[$7E:0C0E]  ;} Projectile direction = 0
+$90:BFEF AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:BFF2 9D 64 0B    STA $0B64,x[$7E:0B6E]  ;} Projectile X position = [Samus X position]
+$90:BFF5 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:BFF8 9D 78 0B    STA $0B78,x[$7E:0B82]  ;} Projectile Y position = [Samus Y position]
+$90:BFFB AD 9B BF    LDA $BF9B  [$90:BF9B]  ;\
+$90:BFFE 9D 7C 0C    STA $0C7C,x[$7E:0C86]  ;} Bomb timer = 60
+$90:C001 22 A0 80 93 JSL $9380A0[$93:80A0]  ; Initialise (power) bomb
+$90:C005 A9 99 B0    LDA #$B099             ;\
+$90:C008 9D 68 0C    STA $0C68,x[$7E:0C72]  ;} Projectile pre-instruction = $B099 (bomb)
 $90:C00B 68          PLA
-$90:C00C EB          XBA
-$90:C00D 29 0F 00    AND #$000F
-$90:C010 A8          TAY
-$90:C011 B9 7A C2    LDA $C27A,y[$90:C27F]
-$90:C014 29 FF 00    AND #$00FF
-$90:C017 8D CC 0C    STA $0CCC  [$7E:0CCC]
+$90:C00C EB          XBA                    ;\
+$90:C00D 29 0F 00    AND #$000F             ;|
+$90:C010 A8          TAY                    ;|
+$90:C011 B9 7A C2    LDA $C27A,y[$90:C27F]  ;} Cooldown timer = 10h
+$90:C014 29 FF 00    AND #$00FF             ;|
+$90:C017 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
 
 $90:C01A 28          PLP
-$90:C01B 60          RTS
-}
+$90:C01B 60          RTS                    ; Return
 
-
-;;; $C01C:  ;;;
-{
-$90:C01C AD EE 0C    LDA $0CEE  [$7E:0CEE]
-$90:C01F 10 02       BPL $02    [$C023]
-
+; BRANCH_POWER_BOMB
+$90:C01C AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
+$90:C01F 10 02       BPL $02    [$C023]     ;} If power bomb is active:
 $90:C021 28          PLP
-$90:C022 60          RTS
+$90:C022 60          RTS                    ; Return
 
-$90:C023 20 E7 C0    JSR $C0E7  [$90:C0E7]
-$90:C026 90 F9       BCC $F9    [$C021]
-$90:C028 AD CE 09    LDA $09CE  [$7E:09CE]
-$90:C02B F0 7C       BEQ $7C    [$C0A9]
-$90:C02D 3A          DEC A
-$90:C02E 8D CE 09    STA $09CE  [$7E:09CE]
-$90:C031 30 76       BMI $76    [$C0A9]
+$90:C023 20 E7 C0    JSR $C0E7  [$90:C0E7]  ; Fire (power) bomb
+$90:C026 90 F9       BCC $F9    [$C021]     ; If bomb not fired: return
+$90:C028 AD CE 09    LDA $09CE  [$7E:09CE]  ;\
+$90:C02B F0 7C       BEQ $7C    [$C0A9]     ;} If [Samus power bombs] = 0: return
+$90:C02D 3A          DEC A                  ;\
+$90:C02E 8D CE 09    STA $09CE  [$7E:09CE]  ;} Decrement Samus power bombs
+$90:C031 30 76       BMI $76    [$C0A9]     ; If [Samus power bombs] < 0: return
 $90:C033 A9 FF FF    LDA #$FFFF             ;\
 $90:C036 8D EE 0C    STA $0CEE  [$7E:0CEE]  ;} Power bomb flag = FFFFh
-$90:C039 A2 0A 00    LDX #$000A
+$90:C039 A2 0A 00    LDX #$000A             ; X = Ah (projectile index)
 
-$90:C03C BD 18 0C    LDA $0C18,x[$7E:0C22]
-$90:C03F F0 09       BEQ $09    [$C04A]
-$90:C041 E8          INX
-$90:C042 E8          INX
-$90:C043 E0 14 00    CPX #$0014
-$90:C046 30 F4       BMI $F4    [$C03C]
-$90:C048 CA          DEX
-$90:C049 CA          DEX
+; LOOP_POWER_BOMB
+$90:C03C BD 18 0C    LDA $0C18,x[$7E:0C22]  ;\
+$90:C03F F0 09       BEQ $09    [$C04A]     ;} If [projectile type] != 0:
+$90:C041 E8          INX                    ;\
+$90:C042 E8          INX                    ;} X += 2
+$90:C043 E0 14 00    CPX #$0014             ;\
+$90:C046 30 F4       BMI $F4    [$C03C]     ;} If [X] < 14h: go to LOOP
+$90:C048 CA          DEX                    ;\
+$90:C049 CA          DEX                    ;} X -= 2 (overwrite last slot(!))
 
-$90:C04A 86 14       STX $14    [$7E:0014]
-$90:C04C AD D2 09    LDA $09D2  [$7E:09D2]
-$90:C04F EB          XBA
-$90:C050 85 12       STA $12    [$7E:0012]
-$90:C052 BD 18 0C    LDA $0C18,x[$7E:0C22]
-$90:C055 05 12       ORA $12    [$7E:0012]
-$90:C057 9D 18 0C    STA $0C18,x[$7E:0C22]
+$90:C04A 86 14       STX $14    [$7E:0014]  ; $14 = [X]
+$90:C04C AD D2 09    LDA $09D2  [$7E:09D2]  ;\
+$90:C04F EB          XBA                    ;|
+$90:C050 85 12       STA $12    [$7E:0012]  ;|
+$90:C052 BD 18 0C    LDA $0C18,x[$7E:0C22]  ;} Projectile type = [HUD item index] * 100h
+$90:C055 05 12       ORA $12    [$7E:0012]  ;|
+$90:C057 9D 18 0C    STA $0C18,x[$7E:0C22]  ;/
 $90:C05A 48          PHA
-$90:C05B A9 00 00    LDA #$0000
-$90:C05E 9D 04 0C    STA $0C04,x[$7E:0C0E]
-$90:C061 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:C064 9D 64 0B    STA $0B64,x[$7E:0B6E]
-$90:C067 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:C06A 9D 78 0B    STA $0B78,x[$7E:0B82]
-$90:C06D AD 9B BF    LDA $BF9B  [$90:BF9B]
-$90:C070 9D 7C 0C    STA $0C7C,x[$7E:0C86]
-$90:C073 22 A0 80 93 JSL $9380A0[$93:80A0]
-$90:C077 A9 AE B0    LDA #$B0AE
-$90:C07A 9D 68 0C    STA $0C68,x[$7E:0C72]
+$90:C05B A9 00 00    LDA #$0000             ;\
+$90:C05E 9D 04 0C    STA $0C04,x[$7E:0C0E]  ;} Projectile direction = 0
+$90:C061 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:C064 9D 64 0B    STA $0B64,x[$7E:0B6E]  ;} Projectile X position = [Samus X position]
+$90:C067 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:C06A 9D 78 0B    STA $0B78,x[$7E:0B82]  ;} Projectile Y position = [Samus Y position]
+$90:C06D AD 9B BF    LDA $BF9B  [$90:BF9B]  ;\
+$90:C070 9D 7C 0C    STA $0C7C,x[$7E:0C86]  ;} Bomb timer = 60
+$90:C073 22 A0 80 93 JSL $9380A0[$93:80A0]  ; Initialise (power) bomb
+$90:C077 A9 AE B0    LDA #$B0AE             ;\
+$90:C07A 9D 68 0C    STA $0C68,x[$7E:0C72]  ;} Projectile pre-instruction = $B0AE (power bomb)
 $90:C07D 68          PLA
-$90:C07E EB          XBA
-$90:C07F 29 0F 00    AND #$000F
-$90:C082 A8          TAY
-$90:C083 B9 7A C2    LDA $C27A,y[$90:C27D]
-$90:C086 29 FF 00    AND #$00FF
-$90:C089 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:C08C AD 04 0A    LDA $0A04  [$7E:0A04]
-$90:C08F F0 08       BEQ $08    [$C099]
-$90:C091 9C D2 09    STZ $09D2  [$7E:09D2]
-$90:C094 9C 04 0A    STZ $0A04  [$7E:0A04]
-$90:C097 80 10       BRA $10    [$C0A9]
+$90:C07E EB          XBA                    ;\
+$90:C07F 29 0F 00    AND #$000F             ;|
+$90:C082 A8          TAY                    ;|
+$90:C083 B9 7A C2    LDA $C27A,y[$90:C27D]  ;} Cooldown timer = 28h
+$90:C086 29 FF 00    AND #$00FF             ;|
+$90:C089 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
+$90:C08C AD 04 0A    LDA $0A04  [$7E:0A04]  ;\
+$90:C08F F0 08       BEQ $08    [$C099]     ;} If [auto-cancel HUD item index] != nothing:
+$90:C091 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
+$90:C094 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = nothing
+$90:C097 80 10       BRA $10    [$C0A9]     ; Return
 
-$90:C099 AD D2 09    LDA $09D2  [$7E:09D2]
-$90:C09C C9 03 00    CMP #$0003
-$90:C09F D0 08       BNE $08    [$C0A9]
-$90:C0A1 AD CE 09    LDA $09CE  [$7E:09CE]
-$90:C0A4 D0 03       BNE $03    [$C0A9]
-$90:C0A6 9C D2 09    STZ $09D2  [$7E:09D2]
+$90:C099 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
+$90:C09C C9 03 00    CMP #$0003             ;} If [HUD item index] = power bombs:
+$90:C09F D0 08       BNE $08    [$C0A9]     ;/
+$90:C0A1 AD CE 09    LDA $09CE  [$7E:09CE]  ;\
+$90:C0A4 D0 03       BNE $03    [$C0A9]     ;} If [Samus power bombs] = 0:
+$90:C0A6 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
 
 $90:C0A9 28          PLP
 $90:C0AA 60          RTS
 }
 
 
-;;; $C0AB:  ;;;
+;;; $C0AB: Fire bomb or bomb spread ;;;
 {
+;; Returns:
+;;     Carry: set if bomb fired, clear otherwise
 $90:C0AB AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $90:C0AE 89 00 10    BIT #$1000             ;} If bombs not equipped: return carry clear
 $90:C0B1 F0 32       BEQ $32    [$C0E5]     ;/
 $90:C0B3 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
-$90:C0B6 C9 3C 00    CMP #$003C             ;} If [beam charge counter] < 60: go to $C0E7
+$90:C0B6 C9 3C 00    CMP #$003C             ;} If [beam charge counter] < 60: go to fire (power) bomb
 $90:C0B9 30 2C       BMI $2C    [$C0E7]     ;/
 $90:C0BB AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
-$90:C0BE D0 27       BNE $27    [$C0E7]     ;} If [bomb counter] != 0: go to $C0E7
+$90:C0BE D0 27       BNE $27    [$C0E7]     ;} If [bomb counter] != 0: go to fire (power) bomb
 $90:C0C0 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:C0C2 89 00 04    BIT #$0400             ;} If pressing down:
 $90:C0C5 F0 10       BEQ $10    [$C0D7]     ;/
@@ -9378,108 +9526,111 @@ $90:C0E6 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $C0E7:  ;;;
+;;; $C0E7: Fire (power) bomb ;;;
 {
+;; Returns:
+;;     Carry: set if bomb fired, clear otherwise
 $90:C0E7 A5 8F       LDA $8F    [$7E:008F]  ;\
-$90:C0E9 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: go to BRANCH_C110
+$90:C0E9 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: go to BRANCH_NO_FIRE
 $90:C0EC F0 22       BEQ $22    [$C110]     ;/
-$90:C0EE AD D2 0C    LDA $0CD2  [$7E:0CD2]
-$90:C0F1 F0 0D       BEQ $0D    [$C100]
-$90:C0F3 C9 05 00    CMP #$0005
-$90:C0F6 10 18       BPL $18    [$C110]
-$90:C0F8 AD CC 0C    LDA $0CCC  [$7E:0CCC]
-$90:C0FB 29 FF 00    AND #$00FF
-$90:C0FE D0 10       BNE $10    [$C110]
+$90:C0EE AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
+$90:C0F1 F0 0D       BEQ $0D    [$C100]     ;} If [bomb counter] != 0:
+$90:C0F3 C9 05 00    CMP #$0005             ;\
+$90:C0F6 10 18       BPL $18    [$C110]     ;} If [bomb counter] >= 5: go to BRANCH_NO_FIRE
+$90:C0F8 AD CC 0C    LDA $0CCC  [$7E:0CCC]  ;\
+$90:C0FB 29 FF 00    AND #$00FF             ;} If [cooldown timer] != 0: go to BRANCH_NO_FIRE
+$90:C0FE D0 10       BNE $10    [$C110]     ;/
 
-$90:C100 AD CC 0C    LDA $0CCC  [$7E:0CCC]
-$90:C103 1A          INC A
-$90:C104 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:C107 AD D2 0C    LDA $0CD2  [$7E:0CD2]
-$90:C10A 1A          INC A
-$90:C10B 8D D2 0C    STA $0CD2  [$7E:0CD2]
-$90:C10E 38          SEC
-$90:C10F 60          RTS
+$90:C100 AD CC 0C    LDA $0CCC  [$7E:0CCC]  ;\
+$90:C103 1A          INC A                  ;} Increment cooldown timer
+$90:C104 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
+$90:C107 AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
+$90:C10A 1A          INC A                  ;} Increment bomb counter
+$90:C10B 8D D2 0C    STA $0CD2  [$7E:0CD2]  ;/
+$90:C10E 38          SEC                    ;\
+$90:C10F 60          RTS                    ;} Return carry set
 
-; BRANCH_C110
-$90:C110 AD D0 0C    LDA $0CD0  [$7E:0CD0]
-$90:C113 F0 11       BEQ $11    [$C126]
+; BRANCH_NO_FIRE
+$90:C110 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
+$90:C113 F0 11       BEQ $11    [$C126]     ;} If [flare counter] != 0:
 $90:C115 A9 02 00    LDA #$0002             ;\
 $90:C118 22 2B 90 80 JSL $80902B[$80:902B]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 9 (silence)
-$90:C11C 9C D0 0C    STZ $0CD0  [$7E:0CD0]
-$90:C11F 20 BE BC    JSR $BCBE  [$90:BCBE]
-$90:C122 22 BA DE 91 JSL $91DEBA[$91:DEBA]
+$90:C11C 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
+$90:C11F 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear flare animation state
+$90:C122 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 
-$90:C126 18          CLC
-$90:C127 60          RTS
+$90:C126 18          CLC                    ;\
+$90:C127 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $C128:  ;;;
+;;; $C128: Handle bomb ;;;
 {
 $90:C128 08          PHP
 $90:C129 C2 30       REP #$30
 $90:C12B AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:C12E BD 7C 0C    LDA $0C7C,x[$7E:0C86]
-$90:C131 F0 22       BEQ $22    [$C155]
-$90:C133 3A          DEC A
-$90:C134 9D 7C 0C    STA $0C7C,x[$7E:0C86]
-$90:C137 F0 11       BEQ $11    [$C14A]
-$90:C139 C9 0F 00    CMP #$000F
-$90:C13C D0 17       BNE $17    [$C155]
-$90:C13E BD 40 0C    LDA $0C40,x[$7E:0C4A]
-$90:C141 18          CLC
-$90:C142 69 1C 00    ADC #$001C
-$90:C145 9D 40 0C    STA $0C40,x[$7E:0C4A]
-$90:C148 80 0B       BRA $0B    [$C155]
+$90:C12E BD 7C 0C    LDA $0C7C,x[$7E:0C86]  ;\
+$90:C131 F0 22       BEQ $22    [$C155]     ;} If [bomb timer] = 0: return
+$90:C133 3A          DEC A                  ;\
+$90:C134 9D 7C 0C    STA $0C7C,x[$7E:0C86]  ;} Decrement bomb timer
+$90:C137 F0 11       BEQ $11    [$C14A]     ; If [bomb timer] != 0:
+$90:C139 C9 0F 00    CMP #$000F             ;\
+$90:C13C D0 17       BNE $17    [$C155]     ;} If [bomb timer] != Fh: return
+$90:C13E BD 40 0C    LDA $0C40,x[$7E:0C4A]  ;\
+$90:C141 18          CLC                    ;|
+$90:C142 69 1C 00    ADC #$001C             ;} Projectile instruction pointer += 1Ch
+$90:C145 9D 40 0C    STA $0C40,x[$7E:0C4A]  ;/
+$90:C148 80 0B       BRA $0B    [$C155]     ; Return
 
 $90:C14A A9 08 00    LDA #$0008             ;\
 $90:C14D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 8, sound library 2, max queued sounds allowed = 6 (bomb explosion)
-$90:C151 22 4E 81 93 JSL $93814E[$93:814E]
+$90:C151 22 4E 81 93 JSL $93814E[$93:814E]  ; Initialise bomb explosion
 
 $90:C155 28          PLP
 $90:C156 60          RTS
 }
 
 
-;;; $C157:  ;;;
+;;; $C157: Handle power bomb ;;;
 {
 $90:C157 08          PHP
 $90:C158 C2 30       REP #$30
 $90:C15A AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:C15D BD 7C 0C    LDA $0C7C,x[$7E:0C86]
-$90:C160 F0 3B       BEQ $3B    [$C19D]
-$90:C162 3A          DEC A
-$90:C163 9D 7C 0C    STA $0C7C,x[$7E:0C86]
-$90:C166 F0 11       BEQ $11    [$C179]
-$90:C168 C9 0F 00    CMP #$000F
-$90:C16B D0 39       BNE $39    [$C1A6]
-$90:C16D BD 40 0C    LDA $0C40,x[$7E:0C4A]
-$90:C170 18          CLC
-$90:C171 69 1C 00    ADC #$001C
-$90:C174 9D 40 0C    STA $0C40,x[$7E:0C4A]
-$90:C177 80 2D       BRA $2D    [$C1A6]
+$90:C15D BD 7C 0C    LDA $0C7C,x[$7E:0C86]  ;\
+$90:C160 F0 3B       BEQ $3B    [$C19D]     ;} If [bomb timer] = 0: go to BRANCH_ZERO
+$90:C162 3A          DEC A                  ;\
+$90:C163 9D 7C 0C    STA $0C7C,x[$7E:0C86]  ;} Decrement bomb timer
+$90:C166 F0 11       BEQ $11    [$C179]     ; If [bomb timer] != 0:
+$90:C168 C9 0F 00    CMP #$000F             ;\
+$90:C16B D0 39       BNE $39    [$C1A6]     ;} If [bomb timer] != Fh: return
+$90:C16D BD 40 0C    LDA $0C40,x[$7E:0C4A]  ;\
+$90:C170 18          CLC                    ;|
+$90:C171 69 1C 00    ADC #$001C             ;} Projectile instruction pointer += 1Ch
+$90:C174 9D 40 0C    STA $0C40,x[$7E:0C4A]  ;/
+$90:C177 80 2D       BRA $2D    [$C1A6]     ; Return
 
-$90:C179 BD 64 0B    LDA $0B64,x[$7E:0B6E]
-$90:C17C 8D E2 0C    STA $0CE2  [$7E:0CE2]
-$90:C17F BD 78 0B    LDA $0B78,x[$7E:0B82]
-$90:C182 8D E4 0C    STA $0CE4  [$7E:0CE4]
+$90:C179 BD 64 0B    LDA $0B64,x[$7E:0B6E]  ;\
+$90:C17C 8D E2 0C    STA $0CE2  [$7E:0CE2]  ;} Power bomb explosion X position = [projectile X position]
+$90:C17F BD 78 0B    LDA $0B78,x[$7E:0B82]  ;\
+$90:C182 8D E4 0C    STA $0CE4  [$7E:0CE4]  ;} Power bomb explosion Y position = [projectile Y position]
 $90:C185 DA          PHX
 $90:C186 5A          PHY
 $90:C187 08          PHP
 $90:C188 8B          PHB
-$90:C189 22 88 82 88 JSL $888288[$88:8288]
+$90:C189 22 88 82 88 JSL $888288[$88:8288]  ; Enable HDMA objects
 $90:C18D 22 A4 8A 88 JSL $888AA4[$88:8AA4]  ; Spawn power bomb explosion
 $90:C191 AB          PLB
 $90:C192 28          PLP
 $90:C193 7A          PLY
 $90:C194 FA          PLX
-$90:C195 A9 FF FF    LDA #$FFFF
-$90:C198 9D 7C 0C    STA $0C7C,x[$7E:0C86]
-$90:C19B 80 09       BRA $09    [$C1A6]
+$90:C195 A9 FF FF    LDA #$FFFF             ;\
+$90:C198 9D 7C 0C    STA $0C7C,x[$7E:0C86]  ;} Bomb timer = FFFFh
+$90:C19B 80 09       BRA $09    [$C1A6]     ; Return
 
-$90:C19D AD EE 0C    LDA $0CEE  [$7E:0CEE]
-$90:C1A0 D0 04       BNE $04    [$C1A6]
-$90:C1A2 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+; BRANCH_ZERO
+$90:C19D AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
+$90:C1A0 D0 04       BNE $04    [$C1A6]     ;} If power bomb is not active:
+$90:C1A2 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 
 $90:C1A6 28          PLP
 $90:C1A7 60          RTS
@@ -9501,11 +9652,11 @@ $90:C1A7 60          RTS
 ;                       |    |    |    |    |    |    |    |    |    |
 ;                       |    |    |    |    |    |    |    |    |    |      ____ ??? ___
 ;                       |    |    |    |    |    |    |    |    |    |     |            |
-$90:C1A8             dw 0002,0012,000F,0011,0003,FFFC,FFEF,FFF1,FFEE,FFFE, FFFC,FFFC,FFFC
-$90:C1C2             dw FFE4,FFED,0001,0006,0011,0011,0006,0001,FFEC,FFE4, FFEC,FFFE,0008
+$90:C1A8             dw 0002,0012,000F,0011,0003,FFFC,FFEF,FFF1,FFEE,FFFE, FFFC,FFFC,FFFC ; Flare X offsets - default
+$90:C1C2             dw FFE4,FFED,0001,0006,0011,0011,0006,0001,FFEC,FFE4, FFEC,FFFE,0008 ; Flare Y offsets - default
 
-$90:C1DC             dw 0002,0013,0014,0012,0003,FFFC,FFEE,FFEC,FFED,FFFE
-$90:C1F0             dw FFE0,FFEA,FFFD,0006,0019,0019,0006,FFFD,FFEC,FFE0
+$90:C1DC             dw 0002,0013,0014,0012,0003,FFFC,FFEE,FFEC,FFED,FFFE ; Flare X offsets - running
+$90:C1F0             dw FFE0,FFEA,FFFD,0006,0019,0019,0006,FFFD,FFEC,FFE0 ; Flare Y offsets - running
 
 $90:C204             dw 0002,000D,000B,000D,0002,FFFB,FFF2,FFF5,FFED,FFFE ; Projectile origin X offsets - default
 $90:C218             dw FFF8,FFF3,0001,0004,000D,000D,0004,0001,FFED,FFF8 ; Projectile origin Y offsets - default
@@ -9518,10 +9669,34 @@ $90:C240             dw FFF8,FFF0,FFFE,0001,000D,000D,0001,FFFE,FFF0,FFF8 ; Proj
 ;;; $C254: Projectile cooldowns ;;;
 {
 ; Uncharged
-$90:C254             db 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0F, 0C, 0F, 00, 00, 00, 00
+$90:C254             db 0F, ; 0: Power
+                        0F, ; 1: Wave
+                        0F, ; 2: Ice
+                        0F, ; 3: Ice + wave
+                        0F, ; 4: Spazer
+                        0F, ; 5: Spazer + wave
+                        0F, ; 6: Spazer + ice
+                        0F, ; 7: Spazer + ice + wave
+                        0F, ; 8: Plasma
+                        0F, ; 9: Plasma + wave
+                        0C, ; Ah: Plasma + ice <-- !
+                        0F, ; Bh: Plasma + ice + wave
+                        00, 00, 00, 00
 
 ; Charged
-$90:C264             db 1E, 1E, 1E, 1E, 1E, 1E, 1E, 1E, 1E, 1E, 1E, 1E, 00, 00, 00, 00
+$90:C264             db 1E, ; 0: Power
+                        1E, ; 1: Wave
+                        1E, ; 2: Ice
+                        1E, ; 3: Ice + wave
+                        1E, ; 4: Spazer
+                        1E, ; 5: Spazer + wave
+                        1E, ; 6: Spazer + ice
+                        1E, ; 7: Spazer + ice + wave
+                        1E, ; 8: Plasma
+                        1E, ; 9: Plasma + wave
+                        1E, ; Ah: Plasma + ice
+                        1E, ; Bh: Plasma + ice + wave
+                        00, 00, 00, 00
 
 ; Useless padding?
 $90:C274             db 00, 00, 00, 00, 00, 00
@@ -9603,14 +9778,18 @@ $90:C2D1             dw 0400,02AB, ; 0: Power
 }
 
 
-;;; $C301: Super missile constant ;;;
+;;; $C301: (Super) missile initialised bitset ;;;
 {
+; This gets added to projectile $0C7C to indicate that it's been initialised
 $90:C301             dw 0100
 }
 
 
-;;; $C303: Super missile accelerations ;;;
+;;; $C303: Missile accelerations ;;;
 {
+;                        ________ X acceleration. Unit 1/100h px/frame²
+;                       |     ___ Y acceleration. Unit 1/100h px/frame²
+;                       |    |
 $90:C303             dw 0000,FFC0, ; 0: Up, facing right
                         0036,FFCA, ; 1: Up-right
                         0040,0000, ; 2: Right
@@ -9621,7 +9800,14 @@ $90:C303             dw 0000,FFC0, ; 0: Up, facing right
                         FFC0,0000, ; 7: Left
                         FFCA,FFCA, ; 8: Up-left
                         0000,FFC0  ; 9: Up, facing left
+}
 
+
+;;; $C32B: Super missile accelerations ;;;
+{
+;                        ________ X acceleration. Unit 1/100h px/frame²
+;                       |     ___ Y acceleration. Unit 1/100h px/frame²
+;                       |    |
 $90:C32B             dw 0000,FF00, ; 0: Up, facing right
                         00B6,FF4A, ; 1: Up-right
                         0100,0000, ; 2: Right
@@ -9637,16 +9823,29 @@ $90:C32B             dw 0000,FF00, ; 0: Up, facing right
 
 ;;; $C353: Projectile accelerations ;;;
 {
-$90:C353             dw 0000,0010, ; 0: Up, facing right
-                        0010,0010, ; 1: Up-right
-                        0000,0000, ; 2: Right
-                        FFF0,FFF0, ; 3: Down-right
-                        FFF0,0000, ; 4: Down, facing right
-                        FFF0,FFF0, ; 5: Down, facing left
-                        0000,0010, ; 6: Down-left
-                        0010,0010, ; 7: Left
-                        0010,0000, ; 8: Up-left
-                        FFF0,FFF0  ; 9: Up, facing left
+; X acceleration. Unit 1/100h px/frame²
+$90:C353             dw 0000, ; 0: Up, facing right
+                        0010, ; 1: Up-right
+                        0010, ; 2: Right
+                        0010, ; 3: Down-right
+                        0000, ; 4: Down, facing right
+                        0000, ; 5: Down, facing left
+                        FFF0, ; 6: Down-left
+                        FFF0, ; 7: Left
+                        FFF0, ; 8: Up-left
+                        0000  ; 9: Up, facing left
+
+; Y acceleration. Unit 1/100h px/frame²
+$90:C367             dw FFF0, ; 0: Up, facing right
+                        FFF0, ; 1: Up-right
+                        0000, ; 2: Right
+                        0010, ; 3: Down-right
+                        0010, ; 4: Down, facing right
+                        0010, ; 5: Down, facing left
+                        0010, ; 6: Down-left
+                        0000, ; 7: Left
+                        FFF0, ; 8: Up-left
+                        FFF0  ; 9: Up, facing left
 }
 
 
@@ -10027,165 +10226,171 @@ $90:C662 60          RTS
 ; Does nothing if arm cannon is fully closed
 $90:C663 08          PHP
 $90:C664 C2 30       REP #$30
-$90:C666 AD A8 0A    LDA $0AA8  [$7E:0AA8]
-$90:C669 F0 0D       BEQ $0D    [$C678]
-$90:C66B AD A8 18    LDA $18A8  [$7E:18A8]
-$90:C66E F0 0A       BEQ $0A    [$C67A]
-$90:C670 AD B6 05    LDA $05B6  [$7E:05B6]
-$90:C673 29 01 00    AND #$0001
-$90:C676 F0 02       BEQ $02    [$C67A]
+$90:C666 AD A8 0A    LDA $0AA8  [$7E:0AA8]  ;\
+$90:C669 F0 0D       BEQ $0D    [$C678]     ;} If [arm cannon frame] = 0: return
+$90:C66B AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$90:C66E F0 0A       BEQ $0A    [$C67A]     ;} If [Samus invincibility timer] = 0: go to BRANCH_DRAW
+$90:C670 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$90:C673 29 01 00    AND #$0001             ;} If [frame counter] % 2 = 0: go to BRANCH_DRAW
+$90:C676 F0 02       BEQ $02    [$C67A]     ;/
 
 $90:C678 28          PLP
-$90:C679 60          RTS
+$90:C679 60          RTS                    ; Return
 
-$90:C67A AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$90:C67D 0A          ASL A
-$90:C67E AA          TAX
-$90:C67F BD DF C7    LDA $C7DF,x[$90:C7E3]
-$90:C682 A8          TAY
-$90:C683 B9 00 00    LDA $0000,y[$90:C9F1]
-$90:C686 29 FF 00    AND #$00FF
-$90:C689 89 80 00    BIT #$0080
-$90:C68C F0 27       BEQ $27    [$C6B5]
-$90:C68E AD 96 0A    LDA $0A96  [$7E:0A96]
-$90:C691 D0 11       BNE $11    [$C6A4]
-$90:C693 B9 00 00    LDA $0000,y[$90:CAB5]
-$90:C696 29 7F 00    AND #$007F
-$90:C699 0A          ASL A
-$90:C69A AA          TAX
-$90:C69B 98          TYA
-$90:C69C 18          CLC
-$90:C69D 69 04 00    ADC #$0004
-$90:C6A0 85 16       STA $16    [$7E:0016]
-$90:C6A2 80 18       BRA $18    [$C6BC]
+; BRANCH_DRAW
+$90:C67A AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$90:C67D 0A          ASL A                  ;|
+$90:C67E AA          TAX                    ;} Y = [$C7DF + [Samus pose] * 2]
+$90:C67F BD DF C7    LDA $C7DF,x[$90:C7E3]  ;|
+$90:C682 A8          TAY                    ;/
+$90:C683 B9 00 00    LDA $0000,y[$90:C9F1]  ;\
+$90:C686 29 FF 00    AND #$00FF             ;|
+$90:C689 89 80 00    BIT #$0080             ;} If [[Y]] & 80h = 0: go to BRANCH_SPRITE_POSITIVE
+$90:C68C F0 27       BEQ $27    [$C6B5]     ;/
+$90:C68E AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
+$90:C691 D0 11       BNE $11    [$C6A4]     ;} If [Samus animation frame] = 0:
+$90:C693 B9 00 00    LDA $0000,y[$90:CAB5]  ;\
+$90:C696 29 7F 00    AND #$007F             ;|
+$90:C699 0A          ASL A                  ;} X = [[Y]] & 7Fh * 2
+$90:C69A AA          TAX                    ;/
+$90:C69B 98          TYA                    ;\
+$90:C69C 18          CLC                    ;|
+$90:C69D 69 04 00    ADC #$0004             ;} $16 = [Y] + 4 (base address of arm cannon X/Y offsets)
+$90:C6A0 85 16       STA $16    [$7E:0016]  ;/
+$90:C6A2 80 18       BRA $18    [$C6BC]     ; Go to BRANCH_MERGE
 
-$90:C6A4 B9 02 00    LDA $0002,y[$90:CA07]
-$90:C6A7 29 7F 00    AND #$007F
-$90:C6AA 0A          ASL A
-$90:C6AB AA          TAX
-$90:C6AC 98          TYA
-$90:C6AD 18          CLC
-$90:C6AE 69 04 00    ADC #$0004
-$90:C6B1 85 16       STA $16    [$7E:0016]
-$90:C6B3 80 07       BRA $07    [$C6BC]
+$90:C6A4 B9 02 00    LDA $0002,y[$90:CA07]  ;\
+$90:C6A7 29 7F 00    AND #$007F             ;|
+$90:C6AA 0A          ASL A                  ;} X = [[Y] + 2] & 7Fh * 2
+$90:C6AB AA          TAX                    ;/
+$90:C6AC 98          TYA                    ;\
+$90:C6AD 18          CLC                    ;|
+$90:C6AE 69 04 00    ADC #$0004             ;} $16 = [Y] + 4 (base address of arm cannon X/Y offsets)
+$90:C6B1 85 16       STA $16    [$7E:0016]  ;/
+$90:C6B3 80 07       BRA $07    [$C6BC]     ; Go to BRANCH_MERGE
 
-$90:C6B5 0A          ASL A
-$90:C6B6 AA          TAX
-$90:C6B7 98          TYA
-$90:C6B8 1A          INC A
-$90:C6B9 1A          INC A
-$90:C6BA 85 16       STA $16    [$7E:0016]
+; BRANCH_SPRITE_POSITIVE
+$90:C6B5 0A          ASL A                  ;\
+$90:C6B6 AA          TAX                    ;} X = [[Y]] * 2
+$90:C6B7 98          TYA                    ;\
+$90:C6B8 1A          INC A                  ;|
+$90:C6B9 1A          INC A                  ;} $16 = [Y] + 2 (base address of arm cannon X/Y offsets)
+$90:C6BA 85 16       STA $16    [$7E:0016]  ;/
 
-$90:C6BC BD 91 C7    LDA $C791,x[$90:C79F]
-$90:C6BF 85 18       STA $18    [$7E:0018]
-$90:C6C1 AD 96 0A    LDA $0A96  [$7E:0A96]
-$90:C6C4 0A          ASL A
-$90:C6C5 18          CLC
-$90:C6C6 65 16       ADC $16    [$7E:0016]
-$90:C6C8 A8          TAY
-$90:C6C9 B9 00 00    LDA $0000,y[$90:C9F3]
-$90:C6CC 29 FF 00    AND #$00FF
-$90:C6CF 89 80 00    BIT #$0080
-$90:C6D2 F0 03       BEQ $03    [$C6D7]
-$90:C6D4 09 00 FF    ORA #$FF00
+; BRANCH_MERGE
+$90:C6BC BD 91 C7    LDA $C791,x[$90:C79F]  ;\
+$90:C6BF 85 18       STA $18    [$7E:0018]  ;} $18 = [$C791 + [X]] (sprite tile number and attributes)
+$90:C6C1 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
+$90:C6C4 0A          ASL A                  ;|
+$90:C6C5 18          CLC                    ;} Y = [$16] + [Samus animation frame] * 2 (address of X/Y offsets)
+$90:C6C6 65 16       ADC $16    [$7E:0016]  ;|
+$90:C6C8 A8          TAY                    ;/
+$90:C6C9 B9 00 00    LDA $0000,y[$90:C9F3]  ;\
+$90:C6CC 29 FF 00    AND #$00FF             ;|
+$90:C6CF 89 80 00    BIT #$0080             ;|
+$90:C6D2 F0 03       BEQ $03    [$C6D7]     ;} $12 = ±[[Y]] (X offset)
+$90:C6D4 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$90:C6D7 85 12       STA $12    [$7E:0012]  ;/
+$90:C6D9 B9 01 00    LDA $0001,y[$90:C9F4]  ;\
+$90:C6DC 29 FF 00    AND #$00FF             ;|
+$90:C6DF 89 80 00    BIT #$0080             ;|
+$90:C6E2 F0 03       BEQ $03    [$C6E7]     ;} $14 = ±[[Y] + 1] (Y offset)
+$90:C6E4 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$90:C6E7 85 14       STA $14    [$7E:0014]  ;/
+$90:C6E9 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$90:C6EC 0A          ASL A                  ;|
+$90:C6ED 0A          ASL A                  ;|
+$90:C6EE 0A          ASL A                  ;|
+$90:C6EF AA          TAX                    ;} $16 = [$91:B62D + [Samus pose] * 8] (projectile origin Y offset)
+$90:C6F0 BF 2D B6 91 LDA $91B62D,x[$91:B63D];|
+$90:C6F4 29 FF 00    AND #$00FF             ;|
+$90:C6F7 85 16       STA $16    [$7E:0016]  ;/
+$90:C6F9 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
+$90:C6FC AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:C6FF 18          CLC                    ;|
+$90:C700 65 12       ADC $12    [$7E:0012]  ;|
+$90:C702 38          SEC                    ;|
+$90:C703 ED 11 09    SBC $0911  [$7E:0911]  ;} If 0 <= [Samus X position] + [$12] - [layer 1 X position] < 100h:
+$90:C706 30 2B       BMI $2B    [$C733]     ;|
+$90:C708 C9 00 01    CMP #$0100             ;|
+$90:C70B 10 26       BPL $26    [$C733]     ;/
+$90:C70D 9D 70 03    STA $0370,x[$7E:0370]  ; OAM entry X position = [Samus X position] + [$12] - [layer 1 X position]
+$90:C710 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:C713 18          CLC                    ;|
+$90:C714 65 14       ADC $14    [$7E:0014]  ;|
+$90:C716 38          SEC                    ;|
+$90:C717 E5 16       SBC $16    [$7E:0016]  ;} If 0 <= [Samus Y position] + [$14] - [$16] - [layer 1 Y position] < 100h:
+$90:C719 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:C71C 30 15       BMI $15    [$C733]     ;|
+$90:C71E C9 00 01    CMP #$0100             ;|
+$90:C721 10 10       BPL $10    [$C733]     ;/
+$90:C723 9D 71 03    STA $0371,x[$7E:0371]  ; OAM entry Y position = [Samus Y position] + [$14] - [$16] - [layer 1 Y position]
+$90:C726 A5 18       LDA $18    [$7E:0018]  ;\
+$90:C728 9D 72 03    STA $0372,x[$7E:0372]  ;} OAM entry tile number and attributes = [$18]
+$90:C72B 8A          TXA                    ;\
+$90:C72C 18          CLC                    ;|
+$90:C72D 69 04 00    ADC #$0004             ;} OAM stack pointer += 4
+$90:C730 8D 90 05    STA $0590  [$7E:0590]  ;/
 
-$90:C6D7 85 12       STA $12    [$7E:0012]
-$90:C6D9 B9 01 00    LDA $0001,y[$90:C9F4]
-$90:C6DC 29 FF 00    AND #$00FF
-$90:C6DF 89 80 00    BIT #$0080
-$90:C6E2 F0 03       BEQ $03    [$C6E7]
-$90:C6E4 09 00 FF    ORA #$FF00
-
-$90:C6E7 85 14       STA $14    [$7E:0014]
-$90:C6E9 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$90:C6EC 0A          ASL A
-$90:C6ED 0A          ASL A
-$90:C6EE 0A          ASL A
-$90:C6EF AA          TAX
-$90:C6F0 BF 2D B6 91 LDA $91B62D,x[$91:B63D]
-$90:C6F4 29 FF 00    AND #$00FF
-$90:C6F7 85 16       STA $16    [$7E:0016]
-$90:C6F9 AE 90 05    LDX $0590  [$7E:0590]
-$90:C6FC AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:C6FF 18          CLC
-$90:C700 65 12       ADC $12    [$7E:0012]
-$90:C702 38          SEC
-$90:C703 ED 11 09    SBC $0911  [$7E:0911]
-$90:C706 30 2B       BMI $2B    [$C733]
-$90:C708 C9 00 01    CMP #$0100
-$90:C70B 10 26       BPL $26    [$C733]
-$90:C70D 9D 70 03    STA $0370,x[$7E:0370]
-$90:C710 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:C713 18          CLC
-$90:C714 65 14       ADC $14    [$7E:0014]
-$90:C716 38          SEC
-$90:C717 E5 16       SBC $16    [$7E:0016]
-$90:C719 ED 15 09    SBC $0915  [$7E:0915]
-$90:C71C 30 15       BMI $15    [$C733]
-$90:C71E C9 00 01    CMP #$0100
-$90:C721 10 10       BPL $10    [$C733]
-$90:C723 9D 71 03    STA $0371,x[$7E:0371]
-$90:C726 A5 18       LDA $18    [$7E:0018]
-$90:C728 9D 72 03    STA $0372,x[$7E:0372]
-$90:C72B 8A          TXA
-$90:C72C 18          CLC
-$90:C72D 69 04 00    ADC #$0004
-$90:C730 8D 90 05    STA $0590  [$7E:0590]
-
-$90:C733 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$90:C736 0A          ASL A
-$90:C737 AA          TAX
-$90:C738 BD DF C7    LDA $C7DF,x[$90:C7E3]
-$90:C73B A8          TAY
-$90:C73C B9 00 00    LDA $0000,y[$90:C9F1]
-$90:C73F 29 FF 00    AND #$00FF
-$90:C742 89 80 00    BIT #$0080
-$90:C745 F0 15       BEQ $15    [$C75C]
-$90:C747 AD 96 0A    LDA $0A96  [$7E:0A96]
-$90:C74A D0 08       BNE $08    [$C754]
-$90:C74C B9 00 00    LDA $0000,y[$90:CAB5]
-$90:C74F 29 7F 00    AND #$007F
+$90:C733 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$90:C736 0A          ASL A                  ;|
+$90:C737 AA          TAX                    ;} Y = [$C7DF + [Samus pose] * 2]
+$90:C738 BD DF C7    LDA $C7DF,x[$90:C7E3]  ;|
+$90:C73B A8          TAY                    ;/
+$90:C73C B9 00 00    LDA $0000,y[$90:C9F1]  ;\
+$90:C73F 29 FF 00    AND #$00FF             ;} A = [[Y]]
+$90:C742 89 80 00    BIT #$0080             ;\
+$90:C745 F0 15       BEQ $15    [$C75C]     ;} If [A] & 80h = 0: go to BRANCH_TILES_POSITIVE
+$90:C747 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
+$90:C74A D0 08       BNE $08    [$C754]     ;} If [Samus animation frame] = 0:
+$90:C74C B9 00 00    LDA $0000,y[$90:CAB5]  ;\
+$90:C74F 29 7F 00    AND #$007F             ;} A = [[Y]] & 7Fh
 $90:C752 80 08       BRA $08    [$C75C]
 
-$90:C754 C8          INY
-$90:C755 C8          INY
-$90:C756 B9 00 00    LDA $0000,y[$90:CA07]
-$90:C759 29 7F 00    AND #$007F
+$90:C754 C8          INY                    ;\ Else ([Samus animation frame] != 0):
+$90:C755 C8          INY                    ;|
+$90:C756 B9 00 00    LDA $0000,y[$90:CA07]  ;} A = [[Y] + 2] & 7Fh
+$90:C759 29 7F 00    AND #$007F             ;/
 
-$90:C75C 0A          ASL A
-$90:C75D AA          TAX
-$90:C75E BD A5 C7    LDA $C7A5,x[$90:C7B3]
-$90:C761 85 16       STA $16    [$7E:0016]
-$90:C763 AD A8 0A    LDA $0AA8  [$7E:0AA8]
-$90:C766 0A          ASL A
-$90:C767 18          CLC
-$90:C768 65 16       ADC $16    [$7E:0016]
-$90:C76A A8          TAY
-$90:C76B AE 30 03    LDX $0330  [$7E:0330]
-$90:C76E A9 20 00    LDA #$0020
-$90:C771 95 D0       STA $D0,x  [$7E:00DE]
-$90:C773 E8          INX
-$90:C774 E8          INX
-$90:C775 B9 00 00    LDA $0000,y[$90:C7C3]
-$90:C778 95 D0       STA $D0,x  [$7E:00E0]
-$90:C77A E8          INX
-$90:C77B E8          INX
-$90:C77C E2 20       SEP #$20
-$90:C77E A9 9A       LDA #$9A
-$90:C780 95 D0       STA $D0,x  [$7E:00E2]
-$90:C782 C2 20       REP #$20
-$90:C784 E8          INX
-$90:C785 A9 F0 61    LDA #$61F0
-$90:C788 95 D0       STA $D0,x  [$7E:00E3]
-$90:C78A E8          INX
-$90:C78B E8          INX
-$90:C78C 8E 30 03    STX $0330  [$7E:0330]
+; BRANCH_TILES_POSITIVE
+$90:C75C 0A          ASL A                  ;\
+$90:C75D AA          TAX                    ;|
+$90:C75E BD A5 C7    LDA $C7A5,x[$90:C7B3]  ;|
+$90:C761 85 16       STA $16    [$7E:0016]  ;|
+$90:C763 AD A8 0A    LDA $0AA8  [$7E:0AA8]  ;} Y = [$C7A5 + [A] * 2] + [arm cannon frame] * 2
+$90:C766 0A          ASL A                  ;|
+$90:C767 18          CLC                    ;|
+$90:C768 65 16       ADC $16    [$7E:0016]  ;|
+$90:C76A A8          TAY                    ;/
+$90:C76B AE 30 03    LDX $0330  [$7E:0330]  ;\
+$90:C76E A9 20 00    LDA #$0020             ;|
+$90:C771 95 D0       STA $D0,x  [$7E:00DE]  ;|
+$90:C773 E8          INX                    ;|
+$90:C774 E8          INX                    ;|
+$90:C775 B9 00 00    LDA $0000,y[$90:C7C3]  ;|
+$90:C778 95 D0       STA $D0,x  [$7E:00E0]  ;|
+$90:C77A E8          INX                    ;|
+$90:C77B E8          INX                    ;|
+$90:C77C E2 20       SEP #$20               ;} Queue transfer of 20h bytes from $9A:0000 + [Y] to VRAM $61F0
+$90:C77E A9 9A       LDA #$9A               ;|
+$90:C780 95 D0       STA $D0,x  [$7E:00E2]  ;|
+$90:C782 C2 20       REP #$20               ;|
+$90:C784 E8          INX                    ;|
+$90:C785 A9 F0 61    LDA #$61F0             ;|
+$90:C788 95 D0       STA $D0,x  [$7E:00E3]  ;|
+$90:C78A E8          INX                    ;|
+$90:C78B E8          INX                    ;|
+$90:C78C 8E 30 03    STX $0330  [$7E:0330]  ;/
 $90:C78F 28          PLP
 $90:C790 60          RTS
 
-$90:C791             dw 281F, 281F, 281F, 681F, A81F, E81F, 281F, 681F, 681F, 681F
-$90:C7A5             dw C7B9, C7D1, C7C1, C7C9, C7B9, C7B9, C7C9, C7C1, C7D1, C7B9
+; Indexed by direction (see $0C04)
+$90:C791             dw 281F, 281F, 281F, 681F, A81F, E81F, 281F, 681F, 681F, 681F ; Sprite tile number and attributes
+$90:C7A5             dw C7B9, C7D1, C7C1, C7C9, C7B9, C7B9, C7C9, C7C1, C7D1, C7B9 ; Pointers to below table
 
+; Pointers to tiles in bank $9A, indexed by arm cannon frame
 $90:C7B9             dw 0000,9A00,9C00,9E00
 $90:C7C1             dw 0000,A000,A200,A400
 $90:C7C9             dw 0000,A600,A800,AA00
@@ -10200,7 +10405,7 @@ $90:C7D9             db 00, 01, 01, 00, 01, 00
 }
 
 
-;;; $C7DF:  ;;;
+;;; $C7DF: Arm cannon drawing data ;;;
 {
 $90:C7DF             dw C9DB, C9DD, C9F1, CA05, CA0D, CA15, CA19, CA1D, CA21, C9D9, C9D9, CA25, CA3B, C9D9, C9D9, CA51,
                         CA67, CA7D, CA93, CAA9, CAAF, CAB5, CABD, CAC5, CACB, C9D9, C9D9, C9D9, C9D9, C9D9, C9D9, C9D9,
@@ -10219,6 +10424,34 @@ $90:C7DF             dw C9DB, C9DD, C9F1, CA05, CA0D, CA15, CA19, CA1D, CA21, C9
                         CC15, CC1B, CA15, CA19, CA1D, CA21, C9DD, C9F1, C9D9, C9D9, C9D9, C9D9, C9D9, CA15, C9DD, CA1D,
                         C9D9, CC15, CC1B, CA15, CA19, CA1D, CA21, CC15, CC1B, CA15, CA19, CA1D, CA21
 
+; Format:
+;     dd aa
+;     [DD aa] ; If d & 80h != 0
+;     [xx yy]...
+;
+; where
+;     d: Direction
+;     D: Direction if [Samus animation frame] = 0
+;     {
+;         0: Up, facing right
+;         1: Up-right
+;         2: Right
+;         3: Down-right
+;         4: Down, facing right
+;         5: Down, facing left
+;         6: Down-left
+;         7: Left
+;         8: Up-left
+;         9: Up, facing left
+;     }
+;     a: Arm cannon drawing mode
+;     {
+;         0: Arm cannon isn't drawn
+;         1: Arm cannon is drawn normally
+;         2: Samus is facing forward (same as 0?)
+;     }
+;     x/y: X/Y offsets, indexed by [Samus animation frame]
+
 ; All other poses
 $90:C9D9             db 00, 00
 
@@ -10232,7 +10465,7 @@ $90:C9DB             db 00, 02
 ; A8h: Unused
 ; E6h: Facing right - landing from normal jump - firing
 ; EEh: Facing right - grabbed by Draygon - firing
-$90:C9DD             db 02, 01, 0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD
+$90:C9DD             db 02, 01, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD
 
 ; 2: Facing left  - normal
 ; 48h: Unused
@@ -10240,13 +10473,13 @@ $90:C9DD             db 02, 01, 0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,
 ; A9h: Unused
 ; BCh: Facing left  - grabbed by Draygon - firing
 ; E7h: Facing left  - landing from normal jump - firing
-$90:C9F1             db 07, 01, ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD
+$90:C9F1             db 07, 01, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD
 
 ; 3: Facing right - aiming up
-$90:CA05             db 81, 01, 80,01,0E,EA,FE,E1
+$90:CA05             db 81, 01, 80, 01, 0E,EA, FE,E1
 
 ; 4: Facing left  - aiming up
-$90:CA0D             db 88, 01, 89,01,EA,E9,FA,E1
+$90:CA0D             db 88, 01, 89, 01, EA,E9, FA,E1
 
 ; 5: Facing right - aiming up-right
 ; 57h: Facing right - normal jump transition - aiming up-right
@@ -10287,105 +10520,105 @@ $90:CA1D             db 03, 01, 0D,02
 $90:CA21             db 06, 01, EB,02
 
 ; Bh: Moving right - gun extended
-$90:CA25             db 02, 01, 11,FA,11,FA,11,F9,11,F8,11,F9,11,FA,11,F9,11,F9,11,F8,11,F9
+$90:CA25             db 02, 01, 11,FA, 11,FA, 11,F9, 11,F8, 11,F9, 11,FA, 11,F9, 11,F9, 11,F8, 11,F9
 
 ; Ch: Moving left  - gun extended
-$90:CA3B             db 07, 01, E7,FA,E7,FA,E7,F8,E7,F9,E7,F9,E7,FA,E7,F9,E7,F8,E7,F9,E7,F9
+$90:CA3B             db 07, 01, E7,FA, E7,FA, E7,F8, E7,F9, E7,F9, E7,FA, E7,F9, E7,F8, E7,F9, E7,F9
 
 ; Fh: Moving right - aiming up-right
-$90:CA51             db 01, 01, 0C,EA,0C,EA,0C,E9,0C,E8,0C,E9,0C,EA,0C,EA,0C,E9,0C,E8,0C,E9
+$90:CA51             db 01, 01, 0C,EA, 0C,EA, 0C,E9, 0C,E8, 0C,E9, 0C,EA, 0C,EA, 0C,E9, 0C,E8, 0C,E9
 
 ; 10h: Moving left  - aiming up-left
-$90:CA67             db 08, 01, EC,EA,EC,EA,EC,E9,EC,E8,EC,E9,EC,EA,EC,EA,EC,E9,EC,E8,EC,E9
+$90:CA67             db 08, 01, EC,EA, EC,EA, EC,E9, EC,E8, EC,E9, EC,EA, EC,EA, EC,E9, EC,E8, EC,E9
 
 ; 11h: Moving right - aiming down-right
-$90:CA7D             db 03, 01, 0B,01,0B,01,0B,00,0B,FF,0B,00,0B,01,0B,01,0B,00,0B,FF,0B,00
+$90:CA7D             db 03, 01, 0B,01, 0B,01, 0B,00, 0B,FF, 0B,00, 0B,01, 0B,01, 0B,00, 0B,FF, 0B,00
 
 ; 12h: Moving left  - aiming down-left
-$90:CA93             db 06, 01, ED,01,ED,01,ED,00,ED,FF,ED,00,ED,01,ED,01,ED,00,ED,FF,ED,00
+$90:CA93             db 06, 01, ED,01, ED,01, ED,00, ED,FF, ED,00, ED,01, ED,01, ED,00, ED,FF, ED,00
 
 ; 13h: Facing right - normal jump - not aiming - not moving - gun extended
 ; ACh: Unused
-$90:CAA9             db 02, 01, 0B,FD,0B,FD
+$90:CAA9             db 02, 01, 0B,FD, 0B,FD
 
 ; 14h: Facing left  - normal jump - not aiming - not moving - gun extended
 ; ADh: Unused
-$90:CAAF             db 07, 01, ED,FD,ED,FD
+$90:CAAF             db 07, 01, ED,FD, ED,FD
 
 ; 15h: Facing right - normal jump - aiming up
-$90:CAB5             db 81, 01, 80,01,0E,E9,FE,E0
+$90:CAB5             db 81, 01, 80, 01, 0E,E9, FE,E0
 
 ; 16h: Facing left  - normal jump - aiming up
-$90:CABD             db 88, 01, 89,01,EA,E8,FA,E0
+$90:CABD             db 88, 01, 89, 01, EA,E8, FA,E0
 
 ; 17h: Facing right - normal jump - aiming down
 ; AEh: Unused
-$90:CAC5             db 04, 01, 00,0D,00,0D
+$90:CAC5             db 04, 01, 00,0D, 00,0D
 
 ; 18h: Facing left  - normal jump - aiming down
 ; AFh: Unused
-$90:CACB             db 05, 01, F7,0D,F7,0D
+$90:CACB             db 05, 01, F7,0D, F7,0D
 
 ; 4Bh: Facing right - normal jump transition
-$90:CAD1             db 03, 01, FB,00,06,02,ED,FE
+$90:CAD1             db 03, 01, FB,00, 06,02, ED,FE
 
 ; 51h: Facing right - normal jump - not aiming - moving forward
-$90:CAD9             db 02, 01, 0B,FD,0B,FD
+$90:CAD9             db 02, 01, 0B,FD, 0B,FD
 
 ; 52h: Facing left  - normal jump - not aiming - moving forward
-$90:CADF             db 07, 01, ED,FD,ED,FD
+$90:CADF             db 07, 01, ED,FD, ED,FD
 
 ; 69h: Facing right - normal jump - aiming up-right
-$90:CAE5             db 01, 01, 0C,EA,0C,EA
+$90:CAE5             db 01, 01, 0C,EA, 0C,EA
 
 ; 6Ah: Facing left  - normal jump - aiming up-left
-$90:CAEB             db 08, 01, EC,EA,EC,EA
+$90:CAEB             db 08, 01, EC,EA, EC,EA
 
 ; 6Bh: Facing right - normal jump - aiming down-right
 ; B0h: Unused
-$90:CAF1             db 03, 01, 0B,01,0B,01
+$90:CAF1             db 03, 01, 0B,01, 0B,01
 
 ; 6Ch: Facing left  - normal jump - aiming down-left
 ; B1h: Unused
-$90:CAF7             db 06, 01, ED,01,ED,01
+$90:CAF7             db 06, 01, ED,01, ED,01
 
 ; 67h: Facing right - falling - gun extended
-$90:CAFD             db 02, 01, 0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD
+$90:CAFD             db 02, 01, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD
 
 ; 68h: Facing left  - falling - gun extended
-$90:CB0D             db 07, 01, ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD
+$90:CB0D             db 07, 01, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD
 
 ; 2Bh: Facing right - falling - aiming up
-$90:CB1D             db 81, 01, 80,01,0E,E9,FE,E0,FE,E0
+$90:CB1D             db 81, 01, 80, 01, 0E,E9, FE,E0, FE,E0
 
 ; 2Ch: Facing left  - falling - aiming up
-$90:CB27             db 88, 01, 89,01,EA,E8,FA,E4,FA,E4
+$90:CB27             db 88, 01, 89, 01, EA,E8, FA,E4, FA,E4
 
 ; 2Dh: Facing right - falling - aiming down
-$90:CB31             db 04, 01, 00,09,00,09
+$90:CB31             db 04, 01, 00,09, 00,09
 
 ; 2Eh: Facing left  - falling - aiming down
-$90:CB37             db 05, 01, F7,09,F7,09
+$90:CB37             db 05, 01, F7,09, F7,09
 
 ; 6Dh: Facing right - falling - aiming up-right
-$90:CB3D             db 01, 01, 0C,EA,0C,EA,0C,EA
+$90:CB3D             db 01, 01, 0C,EA, 0C,EA, 0C,EA
 
 ; 6Eh: Facing left  - falling - aiming up-left
-$90:CB45             db 08, 01, EC,EA,EC,EA,EC,EA
+$90:CB45             db 08, 01, EC,EA, EC,EA, EC,EA
 
 ; 6Fh: Facing right - falling - aiming down-right
-$90:CB4D             db 03, 01, 0B,01,0B,01,0B,01
+$90:CB4D             db 03, 01, 0B,01, 0B,01, 0B,01
 
 ; 70h: Facing left  - falling - aiming down-left
-$90:CB55             db 06, 01, ED,01,ED,01,ED,01
+$90:CB55             db 06, 01, ED,01, ED,01, ED,01
 
 ; 27h: Facing right - crouching
 ; B4h: Unused
-$90:CB5D             db 02, 01, 0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD,0B,FD
+$90:CB5D             db 02, 01, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD, 0B,FD
 
 ; 28h: Facing left  - crouching
 ; B5h: Unused
-$90:CB71             db 07, 01, ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD,ED,FD
+$90:CB71             db 07, 01, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD, ED,FD
 
 ; 71h: Facing right - crouching - aiming up-right
 $90:CB85             db 01, 01, 0E,E9
@@ -10402,46 +10635,46 @@ $90:CB8D             db 03, 01, 0D,02
 $90:CB91             db 06, 01, EB,02
 
 ; 85h: Facing right - crouching - aiming up
-$90:CB95             db 81, 01, 80,01,0E,E9,FE,E0
+$90:CB95             db 81, 01, 80, 01, 0E,E9, FE,E0
 
 ; 86h: Facing left  - crouching - aiming up
-$90:CB9D             db 88, 01, 89,01,EA,E8,FA,E0
+$90:CB9D             db 88, 01, 89, 01, EA,E8, FA,E0
 
 ; 49h: Facing left  - moonwalk
-$90:CBA5             db 02, 01, F1,FD,F1,FC,F1,FC,F1,FD,F1,FC,F1,FC
+$90:CBA5             db 02, 01, F1,FD, F1,FC, F1,FC, F1,FD, F1,FC, F1,FC
 
 ; 4Ah: Facing right - moonwalk
-$90:CBB3             db 07, 01, 07,FD,07,FC,07,FC,07,FD,07,FC,07,FC
+$90:CBB3             db 07, 01, 07,FD, 07,FC, 07,FC, 07,FD, 07,FC, 07,FC
 
 ; 75h: Facing left  - moonwalk - aiming up-left
-$90:CBC1             db 08, 01, EC,EA,EC,E9,EC,E9,EC,EA,EC,E9,EC,E9
+$90:CBC1             db 08, 01, EC,EA, EC,E9, EC,E9, EC,EA, EC,E9, EC,E9
 
 ; 76h: Facing right - moonwalk - aiming up-right
-$90:CBCF             db 01, 01, 0C,EA,0C,E9,0C,E9,0C,EA,0C,E9,0C,E9
+$90:CBCF             db 01, 01, 0C,EA, 0C,E9, 0C,E9, 0C,EA, 0C,E9, 0C,E9
 
 ; 77h: Facing left  - moonwalk - aiming down-left
-$90:CBDD             db 06, 01, ED,01,ED,00,ED,00,ED,01,ED,00,ED,00
+$90:CBDD             db 06, 01, ED,01, ED,00, ED,00, ED,01, ED,00, ED,00
 
 ; 78h: Facing right - moonwalk - aiming down-right
-$90:CBEB             db 03, 01, 0B,01,0B,00,0B,00,0B,01,0B,00,0B,00
+$90:CBEB             db 03, 01, 0B,01, 0B,00, 0B,00, 0B,01, 0B,00, 0B,00
 
 ; A4h: Facing right - landing from normal jump
-$90:CBF9             db 03, 01, FB,00,FB,00,06,02,ED,FE,ED,FE
+$90:CBF9             db 03, 01, FB,00, FB,00, 06,02, ED,FE, ED,FE
 
 ; A6h: Facing right - landing from spin jump
-$90:CC05             db 03, 01, FB,00,FB,00,FB,00,06,02,ED,FE,ED,FE,ED,FE
+$90:CC05             db 03, 01, FB,00, FB,00, FB,00, 06,02, ED,FE, ED,FE, ED,FE
 
 ; 55h: Facing right - normal jump transition - aiming up
 ; E0h: Facing right - landing from normal jump - aiming up
 ; F1h: Facing right - crouching transition - aiming up
 ; F7h: Facing right - standing transition - aiming up
-$90:CC15             db 00, 01, FE,E1,FE,E1
+$90:CC15             db 00, 01, FE,E1, FE,E1
 
 ; 56h: Facing left  - normal jump transition - aiming up
 ; E1h: Facing left  - landing from normal jump - aiming up
 ; F2h: Facing left  - crouching transition - aiming up
 ; F8h: Facing left  - standing transition - aiming up
-$90:CC1B             db 09, 01, FA,E1,FA,E1
+$90:CC1B             db 09, 01, FA,E1, FA,E1
 }
 
 
@@ -10464,50 +10697,50 @@ $90:CC21             dw 0000, ; 0: Power
 }
 
 
-;;; $CC39:  ;;;
+;;; $CC39: ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h)) ;;;
 {
 $90:CC39 08          PHP
 $90:CC3A C2 30       REP #$30
 $90:CC3C DA          PHX
-$90:CC3D 85 18       STA $18    [$7E:0018]
-$90:CC3F 98          TYA
-$90:CC40 85 1A       STA $1A    [$7E:001A]
-$90:CC42 C9 80 00    CMP #$0080
-$90:CC45 10 07       BPL $07    [$CC4E]
-$90:CC47 0A          ASL A
-$90:CC48 AA          TAX
-$90:CC49 20 8A CC    JSR $CC8A  [$90:CC8A]
+$90:CC3D 85 18       STA $18    [$7E:0018]  ; $18 = [A]
+$90:CC3F 98          TYA                    ;\
+$90:CC40 85 1A       STA $1A    [$7E:001A]  ;} $1A = [Y]
+$90:CC42 C9 80 00    CMP #$0080             ;\
+$90:CC45 10 07       BPL $07    [$CC4E]     ;} If [$1A] < 80h:
+$90:CC47 0A          ASL A                  ;\
+$90:CC48 AA          TAX                    ;} $14 = [$18] * sin([$1A] * pi / 80h)
+$90:CC49 20 8A CC    JSR $CC8A  [$90:CC8A]  ;/
 $90:CC4C 80 10       BRA $10    [$CC5E]
 
-$90:CC4E 38          SEC
-$90:CC4F E9 80 00    SBC #$0080
-$90:CC52 29 FF 00    AND #$00FF
-$90:CC55 0A          ASL A
-$90:CC56 AA          TAX
-$90:CC57 20 8A CC    JSR $CC8A  [$90:CC8A]
-$90:CC5A 49 FF FF    EOR #$FFFF
-$90:CC5D 1A          INC A
+$90:CC4E 38          SEC                    ;\ Else ([$1A] >= 80h):
+$90:CC4F E9 80 00    SBC #$0080             ;\
+$90:CC52 29 FF 00    AND #$00FF             ;|
+$90:CC55 0A          ASL A                  ;|
+$90:CC56 AA          TAX                    ;} $14 = -[$18] * sin(([$1A] - 80h) * pi / 80h)
+$90:CC57 20 8A CC    JSR $CC8A  [$90:CC8A]  ;|
+$90:CC5A 49 FF FF    EOR #$FFFF             ;|
+$90:CC5D 1A          INC A                  ;/
 
 $90:CC5E 85 14       STA $14    [$7E:0014]
-$90:CC60 A5 1A       LDA $1A    [$7E:001A]
-$90:CC62 38          SEC
-$90:CC63 E9 40 00    SBC #$0040
-$90:CC66 29 FF 00    AND #$00FF
-$90:CC69 C9 80 00    CMP #$0080
-$90:CC6C 10 07       BPL $07    [$CC75]
-$90:CC6E 0A          ASL A
-$90:CC6F AA          TAX
-$90:CC70 20 8A CC    JSR $CC8A  [$90:CC8A]
+$90:CC60 A5 1A       LDA $1A    [$7E:001A]  ;\
+$90:CC62 38          SEC                    ;|
+$90:CC63 E9 40 00    SBC #$0040             ;} A = ([$1A] - 40h) % 100h
+$90:CC66 29 FF 00    AND #$00FF             ;/
+$90:CC69 C9 80 00    CMP #$0080             ;\
+$90:CC6C 10 07       BPL $07    [$CC75]     ;} If [A] < 80h:
+$90:CC6E 0A          ASL A                  ;\
+$90:CC6F AA          TAX                    ;} $16 = [$18] * sin([A] * pi / 80h)
+$90:CC70 20 8A CC    JSR $CC8A  [$90:CC8A]  ;/
 $90:CC73 80 10       BRA $10    [$CC85]
 
-$90:CC75 38          SEC
-$90:CC76 E9 80 00    SBC #$0080
-$90:CC79 29 FF 00    AND #$00FF
-$90:CC7C 0A          ASL A
-$90:CC7D AA          TAX
-$90:CC7E 20 8A CC    JSR $CC8A  [$90:CC8A]
-$90:CC81 49 FF FF    EOR #$FFFF
-$90:CC84 1A          INC A
+$90:CC75 38          SEC                    ;\ Else ([A] >= 80h):
+$90:CC76 E9 80 00    SBC #$0080             ;\
+$90:CC79 29 FF 00    AND #$00FF             ;|
+$90:CC7C 0A          ASL A                  ;|
+$90:CC7D AA          TAX                    ;} $16 = -[$18] * sin(([A] - 80h) * pi / 80h)
+$90:CC7E 20 8A CC    JSR $CC8A  [$90:CC8A]  ;|
+$90:CC81 49 FF FF    EOR #$FFFF             ;|
+$90:CC84 1A          INC A                  ;/
 
 $90:CC85 85 16       STA $16    [$7E:0016]
 $90:CC87 FA          PLX
@@ -10516,8 +10749,10 @@ $90:CC89 60          RTS
 }
 
 
-;;; $CC8A:  ;;;
+;;; $CC8A: A = [$18] * sin([X] / 2 * pi / 80h) ;;;
 {
+; Clone of $8B:8EA3
+; Angle [X] / 2 must be less than 80h, as this routine does unsigned multiplication
 $90:CC8A E2 20       SEP #$20
 $90:CC8C BF 43 B4 A0 LDA $A0B443,x[$A0:B503]
 $90:CC90 8D 02 42    STA $4202  [$7E:4202]
@@ -10614,55 +10849,59 @@ $90:CD19 60          RTS
 
 ;;; $CD1A: Fire wave SBA ;;;
 {
-$90:CD1A A2 06 00    LDX #$0006
+$90:CD1A A2 06 00    LDX #$0006             ; X = 6 (projectile index)
 
-$90:CD1D A9 04 00    LDA #$0004
-$90:CD20 9D 90 0C    STA $0C90,x
-$90:CD23 AD A6 09    LDA $09A6  [$7E:09A6]
-$90:CD26 29 0F 10    AND #$100F
-$90:CD29 09 10 80    ORA #$8010
-$90:CD2C 9D 18 0C    STA $0C18,x
-$90:CD2F 9E 04 0C    STZ $0C04,x
-$90:CD32 A9 08 DA    LDA #$DA08
-$90:CD35 9D 68 0C    STA $0C68,x
-$90:CD38 A9 58 02    LDA #$0258
-$90:CD3B 9D F0 0B    STA $0BF0,x
-$90:CD3E 9E DC 0B    STZ $0BDC,x
-$90:CD41 9E 7C 0C    STZ $0C7C,x
-$90:CD44 9E 8C 0B    STZ $0B8C,x
-$90:CD47 9E A0 0B    STZ $0BA0,x
-$90:CD4A AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:CD4D 18          CLC
-$90:CD4E 7D 8B CD    ADC $CD8B,x
-$90:CD51 9D 64 0B    STA $0B64,x
-$90:CD54 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:CD57 18          CLC
-$90:CD58 7D 93 CD    ADC $CD93,x
-$90:CD5B 9D 78 0B    STA $0B78,x
-$90:CD5E 22 A4 81 93 JSL $9381A4[$93:81A4]
-$90:CD62 CA          DEX
-$90:CD63 CA          DEX
-$90:CD64 10 B7       BPL $B7    [$CD1D]
-$90:CD66 A9 04 00    LDA #$0004
-$90:CD69 8D CE 0C    STA $0CCE  [$7E:0CCE]
-$90:CD6C AD 18 0C    LDA $0C18  [$7E:0C18]
-$90:CD6F 29 3F 00    AND #$003F
-$90:CD72 A8          TAY
-$90:CD73 B9 54 C2    LDA $C254,y
-$90:CD76 29 FF 00    AND #$00FF
-$90:CD79 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:CD7C A9 04 00    LDA #$0004
-$90:CD7F 8D 60 0B    STA $0B60  [$7E:0B60]
+; LOOP
+$90:CD1D A9 04 00    LDA #$0004             ;\
+$90:CD20 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 4
+$90:CD23 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$90:CD26 29 0F 10    AND #$100F             ;|
+$90:CD29 09 10 80    ORA #$8010             ;} Projectile type = charged beam
+$90:CD2C 9D 18 0C    STA $0C18,x            ;/
+$90:CD2F 9E 04 0C    STZ $0C04,x            ; Projectile direction = 0
+$90:CD32 A9 08 DA    LDA #$DA08             ;\
+$90:CD35 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $DA08 (wave SBA)
+$90:CD38 A9 58 02    LDA #$0258             ;\
+$90:CD3B 9D F0 0B    STA $0BF0,x            ;} Projectile SBA timer = 600
+$90:CD3E 9E DC 0B    STZ $0BDC,x            ; Projectile X velocity = 0
+$90:CD41 9E 7C 0C    STZ $0C7C,x            ; Projectile Y velocity = 0
+$90:CD44 9E 8C 0B    STZ $0B8C,x            ; Projectile X subposition = 0
+$90:CD47 9E A0 0B    STZ $0BA0,x            ; Projectile Y subposition = 0
+$90:CD4A AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:CD4D 18          CLC                    ;|
+$90:CD4E 7D 8B CD    ADC $CD8B,x            ;} Projectile X position = [Samus X position] + [$CD8B + [X]]
+$90:CD51 9D 64 0B    STA $0B64,x            ;/
+$90:CD54 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:CD57 18          CLC                    ;|
+$90:CD58 7D 93 CD    ADC $CD93,x            ;} Projectile Y position = [Samus Y position] + [$CD93 + [X]]
+$90:CD5B 9D 78 0B    STA $0B78,x            ;/
+$90:CD5E 22 A4 81 93 JSL $9381A4[$93:81A4]  ; Initialise SBA projectile
+$90:CD62 CA          DEX                    ;\
+$90:CD63 CA          DEX                    ;} X -= 2
+$90:CD64 10 B7       BPL $B7    [$CD1D]     ; If [X] >= 0: go to LOOP
+$90:CD66 A9 04 00    LDA #$0004             ;\
+$90:CD69 8D CE 0C    STA $0CCE  [$7E:0CCE]  ;} Projectile counter = 4
+$90:CD6C AD 18 0C    LDA $0C18  [$7E:0C18]  ;\
+$90:CD6F 29 3F 00    AND #$003F             ;|
+$90:CD72 A8          TAY                    ;|
+$90:CD73 B9 54 C2    LDA $C254,y            ;} Cooldown timer = [$C254 + ([projectile type] & 3Fh)]
+$90:CD76 29 FF 00    AND #$00FF             ;|
+$90:CD79 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
+$90:CD7C A9 04 00    LDA #$0004             ;\
+$90:CD7F 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = 4 (unused)
 $90:CD82 A9 28 00    LDA #$0028             ;\
 $90:CD85 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 28h, sound library 1, max queued sounds allowed = 6 (wave SBA)
-$90:CD89 38          SEC
-$90:CD8A 60          RTS
+$90:CD89 38          SEC                    ;\
+$90:CD8A 60          RTS                    ;} Return carry set
 
+; X offsets from Samus
 $90:CD8B             dw 0080,
                         0080,
                         FF80,
-                        FF80,
-                        0080,
+                        FF80
+
+; Y offsets from Samus
+$90:CD93             dw 0080,
                         FF80,
                         FF80,
                         0080
@@ -10671,57 +10910,59 @@ $90:CD8B             dw 0080,
 
 ;;; $CD9B: Fire ice SBA ;;;
 {
-$90:CD9B AD 68 0C    LDA $0C68  [$7E:0C68]
-$90:CD9E C9 7A CF    CMP #$CF7A
-$90:CDA1 F0 05       BEQ $05    [$CDA8]
-$90:CDA3 C9 09 CF    CMP #$CF09
-$90:CDA6 D0 02       BNE $02    [$CDAA]
+$90:CD9B AD 68 0C    LDA $0C68  [$7E:0C68]  ;\
+$90:CD9E C9 7A CF    CMP #$CF7A             ;} If [projectile pre-instruction] = $CF7A: return carry clear
+$90:CDA1 F0 05       BEQ $05    [$CDA8]     ;/
+$90:CDA3 C9 09 CF    CMP #$CF09             ;\
+$90:CDA6 D0 02       BNE $02    [$CDAA]     ;} If [projectile pre-instruction] != $CF09: go to BRANCH_FIRE
 
-$90:CDA8 18          CLC
-$90:CDA9 60          RTS
+$90:CDA8 18          CLC                    ;\
+$90:CDA9 60          RTS                    ;} Return carry clear
 
-$90:CDAA A2 06 00    LDX #$0006
+; BRANCH_FIRE
+$90:CDAA A2 06 00    LDX #$0006             ; X = 6 (projectile index)
 
-$90:CDAD A9 04 00    LDA #$0004
-$90:CDB0 9D 90 0C    STA $0C90,x
-$90:CDB3 AD A6 09    LDA $09A6  [$7E:09A6]
-$90:CDB6 29 0F 10    AND #$100F
-$90:CDB9 09 10 80    ORA #$8010
-$90:CDBC 9D 18 0C    STA $0C18,x
-$90:CDBF 9E 04 0C    STZ $0C04,x
-$90:CDC2 A9 09 CF    LDA #$CF09
-$90:CDC5 9D 68 0C    STA $0C68,x
-$90:CDC8 BD 08 CD    LDA $CD08,x
-$90:CDCB 9D 7C 0C    STA $0C7C,x
-$90:CDCE A9 58 02    LDA #$0258
-$90:CDD1 9D F0 0B    STA $0BF0,x
-$90:CDD4 22 00 80 93 JSL $938000[$93:8000]
-$90:CDD8 CA          DEX
-$90:CDD9 CA          DEX
-$90:CDDA 10 D1       BPL $D1    [$CDAD]
-$90:CDDC A9 04 00    LDA #$0004
-$90:CDDF 8D CE 0C    STA $0CCE  [$7E:0CCE]
-$90:CDE2 AD 18 0C    LDA $0C18  [$7E:0C18]
-$90:CDE5 29 3F 00    AND #$003F
-$90:CDE8 A8          TAY
-$90:CDE9 B9 54 C2    LDA $C254,y
-$90:CDEC 29 FF 00    AND #$00FF
-$90:CDEF 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:CDF2 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:CDF5 29 FF 00    AND #$00FF
-$90:CDF8 C9 04 00    CMP #$0004
-$90:CDFB F0 08       BEQ $08    [$CE05]
-$90:CDFD A9 04 00    LDA #$0004
-$90:CE00 8D 60 0B    STA $0B60  [$7E:0B60]
+; LOOP
+$90:CDAD A9 04 00    LDA #$0004             ;\
+$90:CDB0 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 4
+$90:CDB3 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$90:CDB6 29 0F 10    AND #$100F             ;|
+$90:CDB9 09 10 80    ORA #$8010             ;} Projectile type = charged beam
+$90:CDBC 9D 18 0C    STA $0C18,x            ;/
+$90:CDBF 9E 04 0C    STZ $0C04,x            ; Projectile direction = 0
+$90:CDC2 A9 09 CF    LDA #$CF09             ;\
+$90:CDC5 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $CF09 (ice SBA)
+$90:CDC8 BD 08 CD    LDA $CD08,x            ;\
+$90:CDCB 9D 7C 0C    STA $0C7C,x            ;} Projectile angle = [$CD08 + [X]]
+$90:CDCE A9 58 02    LDA #$0258             ;\
+$90:CDD1 9D F0 0B    STA $0BF0,x            ;} Projectile SBA timer = 600
+$90:CDD4 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
+$90:CDD8 CA          DEX                    ;\
+$90:CDD9 CA          DEX                    ;} X -= 2
+$90:CDDA 10 D1       BPL $D1    [$CDAD]     ; If [X] >= 0: go to LOOP
+$90:CDDC A9 04 00    LDA #$0004             ;\
+$90:CDDF 8D CE 0C    STA $0CCE  [$7E:0CCE]  ;} Projectile counter = 4
+$90:CDE2 AD 18 0C    LDA $0C18  [$7E:0C18]  ;\
+$90:CDE5 29 3F 00    AND #$003F             ;|
+$90:CDE8 A8          TAY                    ;|
+$90:CDE9 B9 54 C2    LDA $C254,y            ;} Cooldown timer = [$C254 + ([projectile type] & 3Fh)]
+$90:CDEC 29 FF 00    AND #$00FF             ;|
+$90:CDEF 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
+$90:CDF2 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:CDF5 29 FF 00    AND #$00FF             ;|
+$90:CDF8 C9 04 00    CMP #$0004             ;} If facing right:
+$90:CDFB F0 08       BEQ $08    [$CE05]     ;/
+$90:CDFD A9 04 00    LDA #$0004             ;\
+$90:CE00 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = 4
 $90:CE03 80 06       BRA $06    [$CE0B]
 
-$90:CE05 A9 FC FF    LDA #$FFFC
-$90:CE08 8D 60 0B    STA $0B60  [$7E:0B60]
+$90:CE05 A9 FC FF    LDA #$FFFC             ;\ Else (facing left):
+$90:CE08 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = -4
 
 $90:CE0B A9 23 00    LDA #$0023             ;\
 $90:CE0E 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 23h, sound library 1, max queued sounds allowed = 6 (ice SBA)
-$90:CE12 38          SEC
-$90:CE13 60          RTS
+$90:CE12 38          SEC                    ;\
+$90:CE13 60          RTS                    ;} Return carry set
 }
 
 
@@ -10735,27 +10976,27 @@ $90:CE1A 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = [$CE88 +
 $90:CE1D A9 05 00    LDA #$0005             ;\
 $90:CE20 9D 04 0C    STA $0C04,x            ;} Projectile direction = 5 (down, facing left)
 $90:CE23 A9 06 DB    LDA #$DB06             ;\
-$90:CE26 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $DB06
+$90:CE26 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $DB06 (spazer SBA)
 $90:CE29 A9 28 00    LDA #$0028             ;\
-$90:CE2C 9D DC 0B    STA $0BDC,x            ;} Projectile X speed = 28h
+$90:CE2C 9D DC 0B    STA $0BDC,x            ;} Projectile distance = 28h
 $90:CE2F BD 90 CE    LDA $CE90,x            ;\
-$90:CE32 9D F0 0B    STA $0BF0,x            ;} Projectile Y speed = [$CE90 + [X]]
-$90:CE35 9E 7C 0C    STZ $0C7C,x            ; Projectile $0C7C = 0
-$90:CE38 9E A4 0C    STZ $0CA4,x            ; Projectile $0CA4 = 0
+$90:CE32 9D F0 0B    STA $0BF0,x            ;} Projectile angle delta = [$CE90 + [X]]
+$90:CE35 9E 7C 0C    STZ $0C7C,x            ; Projectile angle = 0
+$90:CE38 9E A4 0C    STZ $0CA4,x            ; Projectile phase = 0
 $90:CE3B 9E 8C 0B    STZ $0B8C,x            ; Projectile X subposition = 0
 $90:CE3E 9E A0 0B    STZ $0BA0,x            ; Projectile Y subposition = 0
 $90:CE41 E0 04 00    CPX #$0004             ;\
 $90:CE44 10 12       BPL $12    [$CE58]     ;} If [X] < 4:
 $90:CE46 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $90:CE49 29 0F 10    AND #$100F             ;|
-$90:CE4C 09 10 80    ORA #$8010             ;} Projectile type = [equipped beams] & 100Fh | 8010h (charged, doesn't interact with Samus)
+$90:CE4C 09 10 80    ORA #$8010             ;} Projectile type = charged beam
 $90:CE4F 9D 18 0C    STA $0C18,x            ;/
 $90:CE52 22 A4 81 93 JSL $9381A4[$93:81A4]  ; Initialise SBA projectile
 $90:CE56 80 0A       BRA $0A    [$CE62]
 
 $90:CE58 A9 24 80    LDA #$8024             ;\ Else ([X] >= 4):
 $90:CE5B 9D 18 0C    STA $0C18,x            ;} Projectile type = 8024h
-$90:CE5E 22 63 81 93 JSL $938163[$93:8163]  ; Initialise shinespark echo or spazer SBA projectile
+$90:CE5E 22 63 81 93 JSL $938163[$93:8163]  ; Initialise spazer SBA trail projectile
 
 $90:CE62 CA          DEX                    ;\
 $90:CE63 CA          DEX                    ;} X -= 2
@@ -10768,17 +11009,20 @@ $90:CE72 A8          TAY                    ;|
 $90:CE73 B9 54 C2    LDA $C254,y            ;} Cooldown timer = [$C254 + ([projectile type] & 3Fh)]
 $90:CE76 29 FF 00    AND #$00FF             ;|
 $90:CE79 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
-$90:CE7C 9C 60 0B    STZ $0B60  [$7E:0B60]  ; $0B60 = 0
+$90:CE7C 9C 60 0B    STZ $0B60  [$7E:0B60]  ; SBA angle delta = 0 (unused)
 $90:CE7F A9 25 00    LDA #$0025             ;\
 $90:CE82 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 25h, sound library 1, max queued sounds allowed = 6 (spazer SBA)
 $90:CE86 38          SEC
 $90:CE87 60          RTS
 
+; Initial trail timers
 $90:CE88             dw 0000,
                         0000,
                         0004,
-                        0004,
-                        0004,
+                        0004
+
+; Angle deltas
+$90:CE90             dw 0004,
                         FFFC,
                         0004,
                         FFFC
@@ -10787,48 +11031,49 @@ $90:CE88             dw 0000,
 
 ;;; $CE98: Fire plasma SBA ;;;
 {
-$90:CE98 AD 68 0C    LDA $0C68  [$7E:0C68]
-$90:CE9B C9 93 D7    CMP #$D793
-$90:CE9E D0 02       BNE $02    [$CEA2]
-$90:CEA0 18          CLC
-$90:CEA1 60          RTS
+$90:CE98 AD 68 0C    LDA $0C68  [$7E:0C68]  ;\
+$90:CE9B C9 93 D7    CMP #$D793             ;} If [projectile pre-instruction] = $D793:
+$90:CE9E D0 02       BNE $02    [$CEA2]     ;/
+$90:CEA0 18          CLC                    ;\
+$90:CEA1 60          RTS                    ;} Return carry clear
 
-$90:CEA2 A2 06 00    LDX #$0006
+$90:CEA2 A2 06 00    LDX #$0006             ; X = 6 (projectile index)
 
-$90:CEA5 AD A6 09    LDA $09A6  [$7E:09A6]
-$90:CEA8 29 0F 10    AND #$100F
-$90:CEAB 09 10 80    ORA #$8010
-$90:CEAE 9D 18 0C    STA $0C18,x[$7E:0C1E]
-$90:CEB1 9E 04 0C    STZ $0C04,x[$7E:0C0A]
-$90:CEB4 A9 93 D7    LDA #$D793
-$90:CEB7 9D 68 0C    STA $0C68,x[$7E:0C6E]
-$90:CEBA BD 08 CD    LDA $CD08,x[$90:CD0E]
-$90:CEBD 9D 7C 0C    STA $0C7C,x[$7E:0C82]
-$90:CEC0 A9 28 00    LDA #$0028
-$90:CEC3 9D DC 0B    STA $0BDC,x[$7E:0BE2]
-$90:CEC6 9E F0 0B    STZ $0BF0,x[$7E:0BF6]
-$90:CEC9 22 A4 81 93 JSL $9381A4[$93:81A4]
-$90:CECD CA          DEX
-$90:CECE CA          DEX
-$90:CECF 10 D4       BPL $D4    [$CEA5]
-$90:CED1 A9 04 00    LDA #$0004
-$90:CED4 8D CE 0C    STA $0CCE  [$7E:0CCE]
-$90:CED7 AD 18 0C    LDA $0C18  [$7E:0C18]
-$90:CEDA 29 3F 00    AND #$003F
-$90:CEDD A8          TAY
-$90:CEDE B9 54 C2    LDA $C254,y[$90:C26C]
-$90:CEE1 29 FF 00    AND #$00FF
-$90:CEE4 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:CEE7 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:CEEA 29 FF 00    AND #$00FF
-$90:CEED C9 04 00    CMP #$0004
-$90:CEF0 F0 08       BEQ $08    [$CEFA]
-$90:CEF2 A9 04 00    LDA #$0004
-$90:CEF5 8D 60 0B    STA $0B60  [$7E:0B60]
-$90:CEF8 80 06       BRA $06    [$CF00]
+; LOOP
+$90:CEA5 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$90:CEA8 29 0F 10    AND #$100F             ;|
+$90:CEAB 09 10 80    ORA #$8010             ;} Projectile type = charged beam
+$90:CEAE 9D 18 0C    STA $0C18,x[$7E:0C1E]  ;/
+$90:CEB1 9E 04 0C    STZ $0C04,x[$7E:0C0A]  ; Projectile direction = 0
+$90:CEB4 A9 93 D7    LDA #$D793             ;\
+$90:CEB7 9D 68 0C    STA $0C68,x[$7E:0C6E]  ;} Projectile pre-instruction = $D793 (plasma SBA)
+$90:CEBA BD 08 CD    LDA $CD08,x[$90:CD0E]  ;\
+$90:CEBD 9D 7C 0C    STA $0C7C,x[$7E:0C82]  ;} Projectile angle = [$CD08 + [X]]
+$90:CEC0 A9 28 00    LDA #$0028             ;\
+$90:CEC3 9D DC 0B    STA $0BDC,x[$7E:0BE2]  ;} Projectile distance = 28h
+$90:CEC6 9E F0 0B    STZ $0BF0,x[$7E:0BF6]  ; Projectile phase = 0
+$90:CEC9 22 A4 81 93 JSL $9381A4[$93:81A4]  ; Initialise projectile
+$90:CECD CA          DEX                    ;\
+$90:CECE CA          DEX                    ;} X -= 2
+$90:CECF 10 D4       BPL $D4    [$CEA5]     ; If [X] >= 0: go to LOOP
+$90:CED1 A9 04 00    LDA #$0004             ;\
+$90:CED4 8D CE 0C    STA $0CCE  [$7E:0CCE]  ;} Projectile counter = 4
+$90:CED7 AD 18 0C    LDA $0C18  [$7E:0C18]  ;\
+$90:CEDA 29 3F 00    AND #$003F             ;|
+$90:CEDD A8          TAY                    ;|
+$90:CEDE B9 54 C2    LDA $C254,y[$90:C26C]  ;} Cooldown timer = [$C254 + ([projectile type] & 3Fh)]
+$90:CEE1 29 FF 00    AND #$00FF             ;|
+$90:CEE4 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
+$90:CEE7 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:CEEA 29 FF 00    AND #$00FF             ;|
+$90:CEED C9 04 00    CMP #$0004             ;} If facing right:
+$90:CEF0 F0 08       BEQ $08    [$CEFA]     ;/
+$90:CEF2 A9 04 00    LDA #$0004             ;\
+$90:CEF5 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = 4
+$90:CEF8 80 06       BRA $06    [$CF00]     
 
-$90:CEFA A9 FC FF    LDA #$FFFC
-$90:CEFD 8D 60 0B    STA $0B60  [$7E:0B60]
+$90:CEFA A9 FC FF    LDA #$FFFC             ;\ Else (facing left):
+$90:CEFD 8D 60 0B    STA $0B60  [$7E:0B60]  ;} SBA angle delta = -4
 
 $90:CF00 A9 27 00    LDA #$0027             ;\
 $90:CF03 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 27h, sound library 1, max queued sounds allowed = 6 (plasma SBA)
@@ -10837,158 +11082,160 @@ $90:CF08 60          RTS
 }
 
 
-;;; $CF09: Projectile pre-instruction - ice SBA ;;;
+;;; $CF09: Projectile pre-instruction - ice SBA - main ;;;
 {
-$90:CF09 BD 04 0C    LDA $0C04,x
-$90:CF0C 29 F0 00    AND #$00F0
-$90:CF0F F0 0C       BEQ $0C    [$CF1D]
+$90:CF09 BD 04 0C    LDA $0C04,x            ;\
+$90:CF0C 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:CF0F F0 0C       BEQ $0C    [$CF1D]     ;/
 $90:CF11 A9 24 00    LDA #$0024             ;\
 $90:CF14 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 24h, sound library 1, max queued sounds allowed = 6 (ice SBA end)
-$90:CF18 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:CF1C 60          RTS
+$90:CF18 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:CF1C 60          RTS                    ; Return
 
-$90:CF1D DE 90 0C    DEC $0C90,x
-$90:CF20 D0 0D       BNE $0D    [$CF2F]
-$90:CF22 A9 04 00    LDA #$0004
-$90:CF25 9D 90 0C    STA $0C90,x
-$90:CF28 22 57 B6 90 JSL $90B657[$90:B657]
+$90:CF1D DE 90 0C    DEC $0C90,x            ; Decrement projectile trail timer
+$90:CF20 D0 0D       BNE $0D    [$CF2F]     ; If [projectile trail timer] = 0:
+$90:CF22 A9 04 00    LDA #$0004             ;\
+$90:CF25 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 4
+$90:CF28 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:CF2C AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
-$90:CF2F BD 7C 0C    LDA $0C7C,x
-$90:CF32 A8          TAY
-$90:CF33 A9 20 00    LDA #$0020
-$90:CF36 20 39 CC    JSR $CC39  [$90:CC39]
-$90:CF39 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:CF3C 18          CLC
-$90:CF3D 65 14       ADC $14    [$7E:0014]
-$90:CF3F 9D 64 0B    STA $0B64,x
-$90:CF42 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:CF45 18          CLC
-$90:CF46 65 16       ADC $16    [$7E:0016]
-$90:CF48 9D 78 0B    STA $0B78,x
-$90:CF4B BD 7C 0C    LDA $0C7C,x
-$90:CF4E 18          CLC
-$90:CF4F 6D 60 0B    ADC $0B60  [$7E:0B60]
-$90:CF52 29 FF 00    AND #$00FF
-$90:CF55 9D 7C 0C    STA $0C7C,x
-$90:CF58 DE F0 0B    DEC $0BF0,x
-$90:CF5B D0 13       BNE $13    [$CF70]
-$90:CF5D A9 7A CF    LDA #$CF7A
-$90:CF60 9D 68 0C    STA $0C68,x
-$90:CF63 A9 28 00    LDA #$0028
-$90:CF66 9D DC 0B    STA $0BDC,x
+$90:CF2F BD 7C 0C    LDA $0C7C,x            ;\
+$90:CF32 A8          TAY                    ;} Y = [projectile angle]
+$90:CF33 A9 20 00    LDA #$0020             ;\
+$90:CF36 20 39 CC    JSR $CC39  [$90:CC39]  ;} ($14, $16) = (20h * sin([Y] * pi / 80h), 20h * -cos([Y] * pi / 80h))
+$90:CF39 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:CF3C 18          CLC                    ;|
+$90:CF3D 65 14       ADC $14    [$7E:0014]  ;} Projectile X position = [Samus X position] + [$14]
+$90:CF3F 9D 64 0B    STA $0B64,x            ;/
+$90:CF42 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:CF45 18          CLC                    ;|
+$90:CF46 65 16       ADC $16    [$7E:0016]  ;} Projectile Y position = [Samus Y position] + [$16]
+$90:CF48 9D 78 0B    STA $0B78,x            ;/
+$90:CF4B BD 7C 0C    LDA $0C7C,x            ;\
+$90:CF4E 18          CLC                    ;|
+$90:CF4F 6D 60 0B    ADC $0B60  [$7E:0B60]  ;} Projectile angle = ([projectile angle] + [SBA angle delta]) % 100h
+$90:CF52 29 FF 00    AND #$00FF             ;|
+$90:CF55 9D 7C 0C    STA $0C7C,x            ;/
+$90:CF58 DE F0 0B    DEC $0BF0,x            ; Decrement SBA timer
+$90:CF5B D0 13       BNE $13    [$CF70]     ; If [SBA timer] = 0:
+$90:CF5D A9 7A CF    LDA #$CF7A             ;\
+$90:CF60 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $CF7A
+$90:CF63 A9 28 00    LDA #$0028             ;\
+$90:CF66 9D DC 0B    STA $0BDC,x            ;} Projectile distance = 28h
 $90:CF69 A9 24 00    LDA #$0024             ;\
 $90:CF6C 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 24h, sound library 1, max queued sounds allowed = 6 (ice SBA end)
 
-$90:CF70 A9 02 00    LDA #$0002
-$90:CF73 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:CF76 9C D0 0C    STZ $0CD0  [$7E:0CD0]
+$90:CF70 A9 02 00    LDA #$0002             ;\
+$90:CF73 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 2
+$90:CF76 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:CF79 60          RTS
 }
 
 
-;;; $CF7A:  ;;;
+;;; $CF7A: Projectile pre-instruction - ice SBA - end ;;;
 {
-$90:CF7A BD 04 0C    LDA $0C04,x
-$90:CF7D 29 F0 00    AND #$00F0
-$90:CF80 F0 05       BEQ $05    [$CF87]
-$90:CF82 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:CF86 60          RTS
+$90:CF7A BD 04 0C    LDA $0C04,x            ;\
+$90:CF7D 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:CF80 F0 05       BEQ $05    [$CF87]     ;/
+$90:CF82 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:CF86 60          RTS                    ; Return
 
-$90:CF87 DE 90 0C    DEC $0C90,x
-$90:CF8A D0 0D       BNE $0D    [$CF99]
-$90:CF8C A9 04 00    LDA #$0004
-$90:CF8F 9D 90 0C    STA $0C90,x
-$90:CF92 22 57 B6 90 JSL $90B657[$90:B657]
+$90:CF87 DE 90 0C    DEC $0C90,x            ; Decrement projectile trail timer
+$90:CF8A D0 0D       BNE $0D    [$CF99]     ; If [projectile trail timer] = 0:
+$90:CF8C A9 04 00    LDA #$0004             ;\
+$90:CF8F 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 4
+$90:CF92 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:CF96 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
-$90:CF99 BD 7C 0C    LDA $0C7C,x
-$90:CF9C A8          TAY
-$90:CF9D BD DC 0B    LDA $0BDC,x
-$90:CFA0 20 39 CC    JSR $CC39  [$90:CC39]
-$90:CFA3 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:CFA6 18          CLC
-$90:CFA7 65 14       ADC $14    [$7E:0014]
-$90:CFA9 9D 64 0B    STA $0B64,x
-$90:CFAC 38          SEC
-$90:CFAD ED 11 09    SBC $0911  [$7E:0911]
-$90:CFB0 C9 E0 FF    CMP #$FFE0
-$90:CFB3 30 40       BMI $40    [$CFF5]
-$90:CFB5 C9 20 01    CMP #$0120
-$90:CFB8 10 3B       BPL $3B    [$CFF5]
-$90:CFBA AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:CFBD 18          CLC
-$90:CFBE 65 16       ADC $16    [$7E:0016]
-$90:CFC0 9D 78 0B    STA $0B78,x
-$90:CFC3 38          SEC
-$90:CFC4 ED 15 09    SBC $0915  [$7E:0915]
-$90:CFC7 C9 10 00    CMP #$0010
-$90:CFCA 30 29       BMI $29    [$CFF5]
-$90:CFCC C9 00 01    CMP #$0100
-$90:CFCF 10 24       BPL $24    [$CFF5]
-$90:CFD1 BD 7C 0C    LDA $0C7C,x
-$90:CFD4 18          CLC
-$90:CFD5 6D 60 0B    ADC $0B60  [$7E:0B60]
-$90:CFD8 29 FF 00    AND #$00FF
-$90:CFDB 9D 7C 0C    STA $0C7C,x
-$90:CFDE BD DC 0B    LDA $0BDC,x
-$90:CFE1 18          CLC
-$90:CFE2 69 08 00    ADC #$0008
-$90:CFE5 29 FF 00    AND #$00FF
-$90:CFE8 9D DC 0B    STA $0BDC,x
-$90:CFEB A9 02 00    LDA #$0002
-$90:CFEE 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:CFF1 9C D0 0C    STZ $0CD0  [$7E:0CD0]
-$90:CFF4 60          RTS
+$90:CF99 BD 7C 0C    LDA $0C7C,x            ;\
+$90:CF9C A8          TAY                    ;} Y = [projectile angle]
+$90:CF9D BD DC 0B    LDA $0BDC,x            ; A = [projectile distance]
+$90:CFA0 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
+$90:CFA3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:CFA6 18          CLC                    ;|
+$90:CFA7 65 14       ADC $14    [$7E:0014]  ;} Projectile X position = [Samus X position] + [$14]
+$90:CFA9 9D 64 0B    STA $0B64,x            ;/
+$90:CFAC 38          SEC                    ;\
+$90:CFAD ED 11 09    SBC $0911  [$7E:0911]  ;|
+$90:CFB0 C9 E0 FF    CMP #$FFE0             ;|
+$90:CFB3 30 40       BMI $40    [$CFF5]     ;} If -20h <= [projectile X position] - [layer 1 X position] < 120h:
+$90:CFB5 C9 20 01    CMP #$0120             ;|
+$90:CFB8 10 3B       BPL $3B    [$CFF5]     ;/
+$90:CFBA AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:CFBD 18          CLC                    ;|
+$90:CFBE 65 16       ADC $16    [$7E:0016]  ;} Projectile Y position = [Samus Y position] + [$16]
+$90:CFC0 9D 78 0B    STA $0B78,x            ;/
+$90:CFC3 38          SEC                    ;\
+$90:CFC4 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:CFC7 C9 10 00    CMP #$0010             ;|
+$90:CFCA 30 29       BMI $29    [$CFF5]     ;} If 10h <= [projectile Y position] - [layer 1 Y position] < 100h:
+$90:CFCC C9 00 01    CMP #$0100             ;|
+$90:CFCF 10 24       BPL $24    [$CFF5]     ;/
+$90:CFD1 BD 7C 0C    LDA $0C7C,x            ;\
+$90:CFD4 18          CLC                    ;|
+$90:CFD5 6D 60 0B    ADC $0B60  [$7E:0B60]  ;} Projectile angle = ([projectile angle] + [SBA angle delta]) % 100h
+$90:CFD8 29 FF 00    AND #$00FF             ;|
+$90:CFDB 9D 7C 0C    STA $0C7C,x            ;/
+$90:CFDE BD DC 0B    LDA $0BDC,x            ;\
+$90:CFE1 18          CLC                    ;|
+$90:CFE2 69 08 00    ADC #$0008             ;} Projectile distance = ([projectile distance] + 8) % 100h
+$90:CFE5 29 FF 00    AND #$00FF             ;|
+$90:CFE8 9D DC 0B    STA $0BDC,x            ;/
+$90:CFEB A9 02 00    LDA #$0002             ;\
+$90:CFEE 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 2
+$90:CFF1 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
+$90:CFF4 60          RTS                    ; Return
 
-$90:CFF5 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+$90:CFF5 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:CFF9 60          RTS
+}
 }
 
 
-;;; $CFFA:  ;;;
+;;; $CFFA..D524: Shinespark ;;;
 {
-; Shinesparking related
+;;; $CFFA: Trigger shinespark windup ;;;
+{
 $90:CFFA 08          PHP
 $90:CFFB 8B          PHB
-$90:CFFC 4B          PHK
-$90:CFFD AB          PLB
+$90:CFFC 4B          PHK                    ;\
+$90:CFFD AB          PLB                    ;} DB = $90
 $90:CFFE C2 30       REP #$30
 $90:D000 A9 68 D0    LDA #$D068             ;\
 $90:D003 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D068 (shinespark windup)
 $90:D006 A9 01 00    LDA #$0001             ;\
 $90:D009 8D 36 0B    STA $0B36  [$7E:0B36]  ;} Samus Y direction = up
-$90:D00C A9 00 04    LDA #$0400
-$90:D00F 8D 3E 0B    STA $0B3E  [$7E:0B3E]
+$90:D00C A9 00 04    LDA #$0400             ;\
+$90:D00F 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;} Speed boost counter = 4, speed boost timer = 0
 $90:D012 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:D015 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
-$90:D018 9C 52 0A    STZ $0A52  [$7E:0A52]
+$90:D018 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = none
 $90:D01B A9 08 00    LDA #$0008             ;\
 $90:D01E 8D 42 0B    STA $0B42  [$7E:0B42]  ;} Samus X extra run speed = 8.0
 $90:D021 9C 44 0B    STZ $0B44  [$7E:0B44]  ;/
 $90:D024 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:D027 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:D02A A9 07 00    LDA #$0007
-$90:D02D 8D EC 0D    STA $0DEC  [$7E:0DEC]
-$90:D030 9C EE 0D    STZ $0DEE  [$7E:0DEE]
-$90:D033 9C CC 0C    STZ $0CCC  [$7E:0CCC]
-$90:D036 A9 1E 00    LDA #$001E
-$90:D039 8D A2 0A    STA $0AA2  [$7E:0AA2]
-$90:D03C A9 3C 00    LDA #$003C
-$90:D03F 8D 68 0A    STA $0A68  [$7E:0A68]
+$90:D02A A9 07 00    LDA #$0007             ;\
+$90:D02D 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Shinespark Y acceleration = 7.0
+$90:D030 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ;/
+$90:D033 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ; Cooldown timer = 0
+$90:D036 A9 1E 00    LDA #$001E             ;\
+$90:D039 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} Shinespark windup timer = 30
+$90:D03C A9 3C 00    LDA #$003C             ;\
+$90:D03F 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = 60
 $90:D042 A9 06 00    LDA #$0006             ;\
 $90:D045 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 6
-$90:D048 9C CE 0A    STZ $0ACE  [$7E:0ACE]
-$90:D04B 9C 56 0A    STZ $0A56  [$7E:0A56]
-$90:D04E AD D0 0C    LDA $0CD0  [$7E:0CD0]
-$90:D051 F0 12       BEQ $12    [$D065]
-$90:D053 C9 10 00    CMP #$0010
-$90:D056 30 07       BMI $07    [$D05F]
+$90:D048 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
+$90:D04B 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = none
+$90:D04E AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
+$90:D051 F0 12       BEQ $12    [$D065]     ;} If [flare counter] = 0: return
+$90:D053 C9 10 00    CMP #$0010             ;\
+$90:D056 30 07       BMI $07    [$D05F]     ;} If [flare counter] >= 10h:
 $90:D058 A9 02 00    LDA #$0002             ;\
 $90:D05B 22 2B 90 80 JSL $80902B[$80:902B]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 9 (silence)
 
-$90:D05F 9C D0 0C    STZ $0CD0  [$7E:0CD0]
-$90:D062 20 BE BC    JSR $BCBE  [$90:BCBE]
+$90:D05F 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
+$90:D062 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear flare animation state
 
 $90:D065 AB          PLB
 $90:D066 28          PLP
@@ -10998,30 +11245,30 @@ $90:D067 6B          RTL
 
 ;;; $D068: Samus movement handler - shinespark windup ;;;
 {
-$90:D068 CE A2 0A    DEC $0AA2  [$7E:0AA2]
-$90:D06B F0 02       BEQ $02    [$D06F]
-$90:D06D 10 3B       BPL $3B    [$D0AA]
+$90:D068 CE A2 0A    DEC $0AA2  [$7E:0AA2]  ; Decrement shinespark windup timer
+$90:D06B F0 02       BEQ $02    [$D06F]     ;\
+$90:D06D 10 3B       BPL $3B    [$D0AA]     ;} If [shinespark windup timer] > 0: return
 
-$90:D06F AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:D072 29 FF 00    AND #$00FF
-$90:D075 C9 04 00    CMP #$0004
-$90:D078 F0 08       BEQ $08    [$D082]
+$90:D06F AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:D072 29 FF 00    AND #$00FF             ;|
+$90:D075 C9 04 00    CMP #$0004             ;} If facing right:
+$90:D078 F0 08       BEQ $08    [$D082]     ;/
 $90:D07A A9 CB 00    LDA #$00CB             ;\
 $90:D07D 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - shinespark - vertical
 $90:D080 80 06       BRA $06    [$D088]
 
-$90:D082 A9 CC 00    LDA #$00CC             ;\
+$90:D082 A9 CC 00    LDA #$00CC             ;\ Else (facing left):
 $90:D085 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - shinespark - vertical
 
 $90:D088 A9 AB D0    LDA #$D0AB             ;\
 $90:D08B 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D0AB (vertical shinespark)
 $90:D08E A9 0E E9    LDA #$E90E             ;\
 $90:D091 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
-$90:D094 9C AE 0A    STZ $0AAE  [$7E:0AAE]
-$90:D097 9C C0 0A    STZ $0AC0  [$7E:0AC0]
-$90:D09A 9C C2 0A    STZ $0AC2  [$7E:0AC2]
-$90:D09D 9C B0 0A    STZ $0AB0  [$7E:0AB0]
-$90:D0A0 9C B2 0A    STZ $0AB2  [$7E:0AB2]
+$90:D094 9C AE 0A    STZ $0AAE  [$7E:0AAE]  ; Speed echoes index = 0
+$90:D097 9C C0 0A    STZ $0AC0  [$7E:0AC0]  ; Speed echo 0 X speed = 0
+$90:D09A 9C C2 0A    STZ $0AC2  [$7E:0AC2]  ; Speed echo 1 X speed = 0
+$90:D09D 9C B0 0A    STZ $0AB0  [$7E:0AB0]  ; Speed echo 0 X position = 0
+$90:D0A0 9C B2 0A    STZ $0AB2  [$7E:0AB2]  ; Speed echo 1 X position = 0
 $90:D0A3 A9 0F 00    LDA #$000F             ;\
 $90:D0A6 22 2F 91 80 JSL $80912F[$80:912F]  ;} Queue sound Fh, sound library 3, max queued sounds allowed = 9 (shinespark)
 
@@ -11031,20 +11278,19 @@ $90:D0AA 60          RTS
 
 ;;; $D0AB: Samus movement handler - vertical shinespark ;;;
 {
-; Used by 0A58
-$90:D0AB A9 02 00    LDA #$0002
-$90:D0AE 8D 6E 0A    STA $0A6E  [$7E:0A6E]
-$90:D0B1 A9 08 00    LDA #$0008
-$90:D0B4 8D 48 0A    STA $0A48  [$7E:0A48]
+$90:D0AB A9 02 00    LDA #$0002             ;\
+$90:D0AE 8D 6E 0A    STA $0A6E  [$7E:0A6E]  ;} Samus contact damage index = shinesparking
+$90:D0B1 A9 08 00    LDA #$0008             ;\
+$90:D0B4 8D 48 0A    STA $0A48  [$7E:0A48]  ;} Samus hurt flash counter = 8
 $90:D0B7 A2 04 00    LDX #$0004
 $90:D0BA AC 20 EF    LDY $EF20  [$90:EF20]
 $90:D0BD 20 E7 EE    JSR $EEE7  [$90:EEE7]  ; Update speed echo position
 $90:D0C0 20 FF D1    JSR $D1FF  [$90:D1FF]  ; Shinespark vertical movement
-$90:D0C3 20 BA D2    JSR $D2BA  [$90:D2BA]
-$90:D0C6 AD C2 09    LDA $09C2  [$7E:09C2]
-$90:D0C9 C9 1E 00    CMP #$001E
-$90:D0CC 30 08       BMI $08    [$D0D6]
-$90:D0CE CE C2 09    DEC $09C2  [$7E:09C2]
+$90:D0C3 20 BA D2    JSR $D2BA  [$90:D2BA]  ; End shinespark if collision detected or low health
+$90:D0C6 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$90:D0C9 C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30:
+$90:D0CC 30 08       BMI $08    [$D0D6]     ;/
+$90:D0CE CE C2 09    DEC $09C2  [$7E:09C2]  ; Decrement Samus health
 $90:D0D1 10 03       BPL $03    [$D0D6]
 $90:D0D3 9C C2 09    STZ $09C2  [$7E:09C2]
 
@@ -11054,21 +11300,20 @@ $90:D0D6 60          RTS
 
 ;;; $D0D7: Samus movement handler - diagonal shinespark ;;;
 {
-; Used by 0A58
-$90:D0D7 A9 02 00    LDA #$0002
-$90:D0DA 8D 6E 0A    STA $0A6E  [$7E:0A6E]
-$90:D0DD A9 08 00    LDA #$0008
-$90:D0E0 8D 48 0A    STA $0A48  [$7E:0A48]
+$90:D0D7 A9 02 00    LDA #$0002             ;\
+$90:D0DA 8D 6E 0A    STA $0A6E  [$7E:0A6E]  ;} Samus contact damage index = shinesparking
+$90:D0DD A9 08 00    LDA #$0008             ;\
+$90:D0E0 8D 48 0A    STA $0A48  [$7E:0A48]  ;} Samus hurt flash counter = 8
 $90:D0E3 A2 04 00    LDX #$0004
 $90:D0E6 AC 20 EF    LDY $EF20  [$90:EF20]
 $90:D0E9 20 E7 EE    JSR $EEE7  [$90:EEE7]  ; Update speed echo position
 $90:D0EC 20 32 D1    JSR $D132  [$90:D132]  ; Shinespark horizontal movement
 $90:D0EF 20 FF D1    JSR $D1FF  [$90:D1FF]  ; Shinespark vertical movement
-$90:D0F2 20 BA D2    JSR $D2BA  [$90:D2BA]
-$90:D0F5 AD C2 09    LDA $09C2  [$7E:09C2]
-$90:D0F8 C9 1E 00    CMP #$001E
-$90:D0FB 30 08       BMI $08    [$D105]
-$90:D0FD CE C2 09    DEC $09C2  [$7E:09C2]
+$90:D0F2 20 BA D2    JSR $D2BA  [$90:D2BA]  ; End shinespark if collision detected or low health
+$90:D0F5 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$90:D0F8 C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30:
+$90:D0FB 30 08       BMI $08    [$D105]     ;/
+$90:D0FD CE C2 09    DEC $09C2  [$7E:09C2]  ; Decrement Samus health
 $90:D100 10 03       BPL $03    [$D105]
 $90:D102 9C C2 09    STZ $09C2  [$7E:09C2]
 
@@ -11078,20 +11323,19 @@ $90:D105 60          RTS
 
 ;;; $D106: Samus movement handler - horizontal shinespark ;;;
 {
-; Used by 0A58
-$90:D106 A9 02 00    LDA #$0002
-$90:D109 8D 6E 0A    STA $0A6E  [$7E:0A6E]
-$90:D10C A9 08 00    LDA #$0008
-$90:D10F 8D 48 0A    STA $0A48  [$7E:0A48]
+$90:D106 A9 02 00    LDA #$0002             ;\
+$90:D109 8D 6E 0A    STA $0A6E  [$7E:0A6E]  ;} Samus contact damage index = shinesparking
+$90:D10C A9 08 00    LDA #$0008             ;\
+$90:D10F 8D 48 0A    STA $0A48  [$7E:0A48]  ;} Samus hurt flash counter = 8
 $90:D112 A2 08 00    LDX #$0008
 $90:D115 AC 20 EF    LDY $EF20  [$90:EF20]
 $90:D118 20 E7 EE    JSR $EEE7  [$90:EEE7]  ; Update speed echo position
 $90:D11B 20 32 D1    JSR $D132  [$90:D132]  ; Shinespark horizontal movement
-$90:D11E 20 BA D2    JSR $D2BA  [$90:D2BA]
-$90:D121 AD C2 09    LDA $09C2  [$7E:09C2]
-$90:D124 C9 1E 00    CMP #$001E
-$90:D127 30 08       BMI $08    [$D131]
-$90:D129 CE C2 09    DEC $09C2  [$7E:09C2]
+$90:D11E 20 BA D2    JSR $D2BA  [$90:D2BA]  ; End shinespark if collision detected or low health
+$90:D121 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$90:D124 C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30:
+$90:D127 30 08       BMI $08    [$D131]     ;/
+$90:D129 CE C2 09    DEC $09C2  [$7E:09C2]  ; Decrement Samus health
 $90:D12C 10 03       BPL $03    [$D131]
 $90:D12E 9C C2 09    STZ $09C2  [$7E:09C2]
 
@@ -11101,11 +11345,8 @@ $90:D131 60          RTS
 
 ;;; $D132: Shinespark horizontal movement ;;;
 {
-; Set $0A68 to #$000F, add acceleration to speed (cap at F.00 pixels),
-; then standard enemy detection/movement (E4AD/E464, A0:A8F0, 94:971E, 94:87F4).
-; Also caps scrolling to F pixels
-$90:D132 A9 0F 00    LDA #$000F
-$90:D135 8D 68 0A    STA $0A68  [$7E:0A68]
+$90:D132 A9 0F 00    LDA #$000F             ;\
+$90:D135 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
 $90:D138 AD 44 0B    LDA $0B44  [$7E:0B44]  ;\
 $90:D13B 18          CLC                    ;|
 $90:D13C 6D 32 0B    ADC $0B32  [$7E:0B32]  ;|
@@ -11113,89 +11354,91 @@ $90:D13F 8D 44 0B    STA $0B44  [$7E:0B44]  ;} Shinespark X speed += [shinespark
 $90:D142 AD 42 0B    LDA $0B42  [$7E:0B42]  ;|
 $90:D145 6D 34 0B    ADC $0B34  [$7E:0B34]  ;|
 $90:D148 8D 42 0B    STA $0B42  [$7E:0B42]  ;/
-$90:D14B C9 0F 00    CMP #$000F
-$90:D14E 30 09       BMI $09    [$D159]
-$90:D150 A9 0F 00    LDA #$000F
-$90:D153 8D 42 0B    STA $0B42  [$7E:0B42]
-$90:D156 9C 44 0B    STZ $0B44  [$7E:0B44]
+$90:D14B C9 0F 00    CMP #$000F             ;\
+$90:D14E 30 09       BMI $09    [$D159]     ;} If [shinespark X speed] >= Fh:
+$90:D150 A9 0F 00    LDA #$000F             ;\
+$90:D153 8D 42 0B    STA $0B42  [$7E:0B42]  ;} Shinespark X speed = Fh.0
+$90:D156 9C 44 0B    STZ $0B44  [$7E:0B44]  ;/
 
-$90:D159 64 12       STZ $12    [$7E:0012]
-$90:D15B 64 14       STZ $14    [$7E:0014]
-$90:D15D AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:D160 29 FF 00    AND #$00FF
-$90:D163 C9 04 00    CMP #$0004
-$90:D166 F0 25       BEQ $25    [$D18D]
+$90:D159 64 12       STZ $12    [$7E:0012]  ;\
+$90:D15B 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
+$90:D15D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:D160 29 FF 00    AND #$00FF             ;|
+$90:D163 C9 04 00    CMP #$0004             ;} If facing left: go to BRANCH_LEFT
+$90:D166 F0 25       BEQ $25    [$D18D]     ;/
 $90:D168 20 AD E4    JSR $E4AD  [$90:E4AD]  ; Calculate Samus X displacement for moving right
-$90:D16B A5 12       LDA $12    [$7E:0012]
-$90:D16D C9 0F 00    CMP #$000F
-$90:D170 30 05       BMI $05    [$D177]
-$90:D172 A9 0F 00    LDA #$000F
-$90:D175 85 12       STA $12    [$7E:0012]
+$90:D16B A5 12       LDA $12    [$7E:0012]  ;\
+$90:D16D C9 0F 00    CMP #$000F             ;|
+$90:D170 30 05       BMI $05    [$D177]     ;} $12 = min([$12], Fh)
+$90:D172 A9 0F 00    LDA #$000F             ;|
+$90:D175 85 12       STA $12    [$7E:0012]  ;/
 
 $90:D177 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:D17B AA          TAX
-$90:D17C F0 05       BEQ $05    [$D183]
-$90:D17E 8D D0 0D    STA $0DD0  [$7E:0DD0]
-$90:D181 80 53       BRA $53    [$D1D6]
+$90:D17B AA          TAX                    ;\
+$90:D17C F0 05       BEQ $05    [$D183]     ;} If collision detected:
+$90:D17E 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:D181 80 53       BRA $53    [$D1D6]     ; Go to BRANCH_MERGE
 
 $90:D183 22 1E 97 94 JSL $94971E[$94:971E]  ; Move Samus right by [$12].[$14], no solid enemy collision
 $90:D187 22 F4 87 94 JSL $9487F4[$94:87F4]  ; Align Samus Y position with non-square slope
-$90:D18B 80 49       BRA $49    [$D1D6]
+$90:D18B 80 49       BRA $49    [$D1D6]     ; Go to BRANCH_MERGE
 
+; BRANCH_LEFT
 $90:D18D 20 64 E4    JSR $E464  [$90:E464]  ; Calculate Samus X displacement for moving left
-$90:D190 A5 12       LDA $12    [$7E:0012]
-$90:D192 49 FF FF    EOR #$FFFF
-$90:D195 85 12       STA $12    [$7E:0012]
-$90:D197 A5 14       LDA $14    [$7E:0014]
-$90:D199 49 FF FF    EOR #$FFFF
-$90:D19C 1A          INC A
-$90:D19D 85 14       STA $14    [$7E:0014]
-$90:D19F D0 02       BNE $02    [$D1A3]
-$90:D1A1 E6 12       INC $12    [$7E:0012]
+$90:D190 A5 12       LDA $12    [$7E:0012]  ;\
+$90:D192 49 FF FF    EOR #$FFFF             ;|
+$90:D195 85 12       STA $12    [$7E:0012]  ;|
+$90:D197 A5 14       LDA $14    [$7E:0014]  ;|
+$90:D199 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:D19C 1A          INC A                  ;|
+$90:D19D 85 14       STA $14    [$7E:0014]  ;|
+$90:D19F D0 02       BNE $02    [$D1A3]     ;|
+$90:D1A1 E6 12       INC $12    [$7E:0012]  ;/
 
-$90:D1A3 A5 12       LDA $12    [$7E:0012]
-$90:D1A5 C9 0F 00    CMP #$000F
-$90:D1A8 30 05       BMI $05    [$D1AF]
-$90:D1AA A9 0F 00    LDA #$000F
-$90:D1AD 85 12       STA $12    [$7E:0012]
+$90:D1A3 A5 12       LDA $12    [$7E:0012]  ;\
+$90:D1A5 C9 0F 00    CMP #$000F             ;|
+$90:D1A8 30 05       BMI $05    [$D1AF]     ;} $12 = min([$12], Fh)
+$90:D1AA A9 0F 00    LDA #$000F             ;|
+$90:D1AD 85 12       STA $12    [$7E:0012]  ;/
 
 $90:D1AF 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:D1B3 AA          TAX
-$90:D1B4 F0 05       BEQ $05    [$D1BB]
-$90:D1B6 8D D0 0D    STA $0DD0  [$7E:0DD0]
-$90:D1B9 80 1B       BRA $1B    [$D1D6]
+$90:D1B3 AA          TAX                    ;\
+$90:D1B4 F0 05       BEQ $05    [$D1BB]     ;} If collision detected:
+$90:D1B6 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:D1B9 80 1B       BRA $1B    [$D1D6]     ; Go to BRANCH_MERGE
 
-$90:D1BB A5 12       LDA $12    [$7E:0012]
-$90:D1BD 49 FF FF    EOR #$FFFF
-$90:D1C0 85 12       STA $12    [$7E:0012]
-$90:D1C2 A5 14       LDA $14    [$7E:0014]
-$90:D1C4 49 FF FF    EOR #$FFFF
-$90:D1C7 1A          INC A
-$90:D1C8 85 14       STA $14    [$7E:0014]
-$90:D1CA D0 02       BNE $02    [$D1CE]
-$90:D1CC E6 12       INC $12    [$7E:0012]
+$90:D1BB A5 12       LDA $12    [$7E:0012]  ;\
+$90:D1BD 49 FF FF    EOR #$FFFF             ;|
+$90:D1C0 85 12       STA $12    [$7E:0012]  ;|
+$90:D1C2 A5 14       LDA $14    [$7E:0014]  ;|
+$90:D1C4 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:D1C7 1A          INC A                  ;|
+$90:D1C8 85 14       STA $14    [$7E:0014]  ;|
+$90:D1CA D0 02       BNE $02    [$D1CE]     ;|
+$90:D1CC E6 12       INC $12    [$7E:0012]  ;/
 
 $90:D1CE 22 1E 97 94 JSL $94971E[$94:971E]  ; Move Samus right by [$12].[$14], no solid enemy collision
 $90:D1D2 22 F4 87 94 JSL $9487F4[$94:87F4]  ; Align Samus Y position with non-square slope
 
-$90:D1D6 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D1D9 38          SEC
-$90:D1DA ED 10 0B    SBC $0B10  [$7E:0B10]
-$90:D1DD 30 10       BMI $10    [$D1EF]
-$90:D1DF C9 10 00    CMP #$0010
-$90:D1E2 30 1A       BMI $1A    [$D1FE]
-$90:D1E4 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D1E7 38          SEC
-$90:D1E8 E9 0F 00    SBC #$000F
-$90:D1EB 8D 10 0B    STA $0B10  [$7E:0B10]
-$90:D1EE 60          RTS
+; BRANCH_MERGE
+$90:D1D6 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D1D9 38          SEC                    ;|
+$90:D1DA ED 10 0B    SBC $0B10  [$7E:0B10]  ;} If [Samus X position] >= [Samus previous X position]:
+$90:D1DD 30 10       BMI $10    [$D1EF]     ;/
+$90:D1DF C9 10 00    CMP #$0010             ;\
+$90:D1E2 30 1A       BMI $1A    [$D1FE]     ;} If [Samus X position] < [Samus previous X position] + 10h: return
+$90:D1E4 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D1E7 38          SEC                    ;|
+$90:D1E8 E9 0F 00    SBC #$000F             ;} Samus previous X position = [Samus X position] - Fh
+$90:D1EB 8D 10 0B    STA $0B10  [$7E:0B10]  ;/
+$90:D1EE 60          RTS                    ; Return
 
-$90:D1EF C9 F1 FF    CMP #$FFF1
-$90:D1F2 10 0A       BPL $0A    [$D1FE]
-$90:D1F4 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D1F7 18          CLC
-$90:D1F8 69 0F 00    ADC #$000F
-$90:D1FB 8D 10 0B    STA $0B10  [$7E:0B10]
+$90:D1EF C9 F1 FF    CMP #$FFF1             ;\
+$90:D1F2 10 0A       BPL $0A    [$D1FE]     ;} If [Samus X position] >= [Samus previous X position] - Fh: return
+$90:D1F4 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D1F7 18          CLC                    ;|
+$90:D1F8 69 0F 00    ADC #$000F             ;} Samus previous X position = [Samus X position] + Fh
+$90:D1FB 8D 10 0B    STA $0B10  [$7E:0B10]  ;/
 
 $90:D1FE 60          RTS
 }
@@ -11203,12 +11446,8 @@ $90:D1FE 60          RTS
 
 ;;; $D1FF: Shinespark vertical movement ;;;
 {
-; Set $0A68 to #$000F, add rate of acceleration (0B32) to acceleration (0DEC),
-; add acceleration to vertical speed, set movement and cap it at at E.XX pixels,
-; add external movement and cap total movement at F.XX pixels.
-; Finally gets to normal movement stuff: A0:A8F0 and 94:9763, then cap scrolling to E pixels.
-$90:D1FF A9 0F 00    LDA #$000F
-$90:D202 8D 68 0A    STA $0A68  [$7E:0A68]
+$90:D1FF A9 0F 00    LDA #$000F             ;\
+$90:D202 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
 $90:D205 AD EE 0D    LDA $0DEE  [$7E:0DEE]  ;\
 $90:D208 18          CLC                    ;|
 $90:D209 6D 32 0B    ADC $0B32  [$7E:0B32]  ;|
@@ -11225,20 +11464,20 @@ $90:D224 AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;|
 $90:D227 6D EC 0D    ADC $0DEC  [$7E:0DEC]  ;|
 $90:D22A 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;/
 $90:D22D 85 12       STA $12    [$7E:0012]  ; $12.$14 = [Samus Y speed]
-$90:D22F C9 0E 00    CMP #$000E
-$90:D232 30 05       BMI $05    [$D239]
-$90:D234 A9 0E 00    LDA #$000E
-$90:D237 85 12       STA $12    [$7E:0012]
+$90:D22F C9 0E 00    CMP #$000E             ;\
+$90:D232 30 05       BMI $05    [$D239]     ;|
+$90:D234 A9 0E 00    LDA #$000E             ;} $12 = min([$12], Eh)
+$90:D237 85 12       STA $12    [$7E:0012]  ;/
 
-$90:D239 A5 12       LDA $12    [$7E:0012]
-$90:D23B 49 FF FF    EOR #$FFFF
-$90:D23E 85 12       STA $12    [$7E:0012]
-$90:D240 A5 14       LDA $14    [$7E:0014]
-$90:D242 49 FF FF    EOR #$FFFF
-$90:D245 1A          INC A
-$90:D246 85 14       STA $14    [$7E:0014]
-$90:D248 D0 02       BNE $02    [$D24C]
-$90:D24A E6 12       INC $12    [$7E:0012]
+$90:D239 A5 12       LDA $12    [$7E:0012]  ;\
+$90:D23B 49 FF FF    EOR #$FFFF             ;|
+$90:D23E 85 12       STA $12    [$7E:0012]  ;|
+$90:D240 A5 14       LDA $14    [$7E:0014]  ;|
+$90:D242 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:D245 1A          INC A                  ;|
+$90:D246 85 14       STA $14    [$7E:0014]  ;|
+$90:D248 D0 02       BNE $02    [$D24C]     ;|
+$90:D24A E6 12       INC $12    [$7E:0012]  ;/
 
 $90:D24C AD 5A 0B    LDA $0B5A  [$7E:0B5A]  ;\
 $90:D24F 18          CLC                    ;|
@@ -11247,204 +11486,206 @@ $90:D252 85 14       STA $14    [$7E:0014]  ;} $12.$14 += [extra Samus Y displac
 $90:D254 AD 5C 0B    LDA $0B5C  [$7E:0B5C]  ;|
 $90:D257 65 12       ADC $12    [$7E:0012]  ;|
 $90:D259 85 12       STA $12    [$7E:0012]  ;/
-$90:D25B A9 02 00    LDA #$0002
-$90:D25E 8D 02 0B    STA $0B02  [$7E:0B02]
-$90:D261 A5 12       LDA $12    [$7E:0012]
-$90:D263 49 FF FF    EOR #$FFFF
-$90:D266 85 12       STA $12    [$7E:0012]
-$90:D268 A5 14       LDA $14    [$7E:0014]
-$90:D26A 49 FF FF    EOR #$FFFF
-$90:D26D 1A          INC A
-$90:D26E 85 14       STA $14    [$7E:0014]
-$90:D270 D0 02       BNE $02    [$D274]
-$90:D272 E6 12       INC $12    [$7E:0012]
+$90:D25B A9 02 00    LDA #$0002             ;\
+$90:D25E 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = up
+$90:D261 A5 12       LDA $12    [$7E:0012]  ;\
+$90:D263 49 FF FF    EOR #$FFFF             ;|
+$90:D266 85 12       STA $12    [$7E:0012]  ;|
+$90:D268 A5 14       LDA $14    [$7E:0014]  ;|
+$90:D26A 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:D26D 1A          INC A                  ;|
+$90:D26E 85 14       STA $14    [$7E:0014]  ;|
+$90:D270 D0 02       BNE $02    [$D274]     ;|
+$90:D272 E6 12       INC $12    [$7E:0012]  ;/
 
-$90:D274 A5 12       LDA $12    [$7E:0012]
-$90:D276 C9 0F 00    CMP #$000F
-$90:D279 30 05       BMI $05    [$D280]
-$90:D27B A9 0F 00    LDA #$000F
-$90:D27E 85 12       STA $12    [$7E:0012]
+$90:D274 A5 12       LDA $12    [$7E:0012]  ;\
+$90:D276 C9 0F 00    CMP #$000F             ;|
+$90:D279 30 05       BMI $05    [$D280]     ;} $12 = min([$12], Fh)
+$90:D27B A9 0F 00    LDA #$000F             ;|
+$90:D27E 85 12       STA $12    [$7E:0012]  ;/
 
 $90:D280 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:D284 AA          TAX
-$90:D285 F0 05       BEQ $05    [$D28C]
-$90:D287 8D D0 0D    STA $0DD0  [$7E:0DD0]
-$90:D28A 80 17       BRA $17    [$D2A3]
+$90:D284 AA          TAX                    ;\
+$90:D285 F0 05       BEQ $05    [$D28C]     ;} If collision detected:
+$90:D287 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:D28A 80 17       BRA $17    [$D2A3]     ; Go to BRANCH_NO_MOVEMENT
 
-$90:D28C A5 12       LDA $12    [$7E:0012]
-$90:D28E 49 FF FF    EOR #$FFFF
-$90:D291 85 12       STA $12    [$7E:0012]
-$90:D293 A5 14       LDA $14    [$7E:0014]
-$90:D295 49 FF FF    EOR #$FFFF
-$90:D298 1A          INC A
-$90:D299 85 14       STA $14    [$7E:0014]
-$90:D29B D0 02       BNE $02    [$D29F]
-$90:D29D E6 12       INC $12    [$7E:0012]
+$90:D28C A5 12       LDA $12    [$7E:0012]  ;\
+$90:D28E 49 FF FF    EOR #$FFFF             ;|
+$90:D291 85 12       STA $12    [$7E:0012]  ;|
+$90:D293 A5 14       LDA $14    [$7E:0014]  ;|
+$90:D295 49 FF FF    EOR #$FFFF             ;} $12.$14 = -[$12].[$14]
+$90:D298 1A          INC A                  ;|
+$90:D299 85 14       STA $14    [$7E:0014]  ;|
+$90:D29B D0 02       BNE $02    [$D29F]     ;|
+$90:D29D E6 12       INC $12    [$7E:0012]  ;/
 
-$90:D29F 22 63 97 94 JSL $949763[$94:9763]
+$90:D29F 22 63 97 94 JSL $949763[$94:9763]  ; Move Samus down by [$12].[$14], no solid enemy collision
 
-$90:D2A3 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:D2A6 38          SEC
-$90:D2A7 ED 14 0B    SBC $0B14  [$7E:0B14]
-$90:D2AA C9 F2 FF    CMP #$FFF2
-$90:D2AD 10 0A       BPL $0A    [$D2B9]
-$90:D2AF AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:D2B2 18          CLC
-$90:D2B3 69 0E 00    ADC #$000E
-$90:D2B6 8D 14 0B    STA $0B14  [$7E:0B14]
+; BRANCH_NO_MOVEMENT
+$90:D2A3 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:D2A6 38          SEC                    ;|
+$90:D2A7 ED 14 0B    SBC $0B14  [$7E:0B14]  ;} If [Samus Y position] >= [Samus previous Y position] - Eh: return
+$90:D2AA C9 F2 FF    CMP #$FFF2             ;|
+$90:D2AD 10 0A       BPL $0A    [$D2B9]     ;/
+$90:D2AF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:D2B2 18          CLC                    ;|
+$90:D2B3 69 0E 00    ADC #$000E             ;} Samus previous Y position = [Samus Y position] + Eh
+$90:D2B6 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
 
 $90:D2B9 60          RTS
 }
 
 
-;;; $D2BA: End Super Jump ;;;
+;;; $D2BA: End shinespark if collision detected or low health ;;;
 {
-$90:D2BA AD C2 09    LDA $09C2  [$7E:09C2]
-$90:D2BD C9 1E 00    CMP #$001E
-$90:D2C0 30 07       BMI $07    [$D2C9]
-$90:D2C2 AD D0 0D    LDA $0DD0  [$7E:0DD0]
-$90:D2C5 D0 02       BNE $02    [$D2C9]
-$90:D2C7 18          CLC
-$90:D2C8 60          RTS
+$90:D2BA AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$90:D2BD C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30:
+$90:D2C0 30 07       BMI $07    [$D2C9]     ;/
+$90:D2C2 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
+$90:D2C5 D0 02       BNE $02    [$D2C9]     ;} If collision not detected:
+$90:D2C7 18          CLC                    ;\
+$90:D2C8 60          RTS                    ;} Return carry clear
 
-$90:D2C9 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:D2CC 29 FF 00    AND #$00FF
-$90:D2CF C9 04 00    CMP #$0004
-$90:D2D2 F0 14       BEQ $14    [$D2E8]
-$90:D2D4 A9 E0 00    LDA #$00E0
-$90:D2D7 8D C0 0A    STA $0AC0  [$7E:0AC0]
-$90:D2DA A9 60 00    LDA #$0060
-$90:D2DD 8D C2 0A    STA $0AC2  [$7E:0AC2]
-$90:D2E0 A9 FC FF    LDA #$FFFC
-$90:D2E3 8D B4 0A    STA $0AB4  [$7E:0AB4]
+$90:D2C9 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:D2CC 29 FF 00    AND #$00FF             ;|
+$90:D2CF C9 04 00    CMP #$0004             ;} If facing right:
+$90:D2D2 F0 14       BEQ $14    [$D2E8]     ;/
+$90:D2D4 A9 E0 00    LDA #$00E0             ;\
+$90:D2D7 8D C0 0A    STA $0AC0  [$7E:0AC0]  ;} Speed echo 0 angle = E0h
+$90:D2DA A9 60 00    LDA #$0060             ;\
+$90:D2DD 8D C2 0A    STA $0AC2  [$7E:0AC2]  ;} Speed echo 1 angle = 60h
+$90:D2E0 A9 FC FF    LDA #$FFFC             ;\
+$90:D2E3 8D B4 0A    STA $0AB4  [$7E:0AB4]  ;} Speed echo angle delta = -4
 $90:D2E6 80 12       BRA $12    [$D2FA]
 
-$90:D2E8 A9 20 00    LDA #$0020
-$90:D2EB 8D C0 0A    STA $0AC0  [$7E:0AC0]
-$90:D2EE A9 A0 00    LDA #$00A0
-$90:D2F1 8D C2 0A    STA $0AC2  [$7E:0AC2]
-$90:D2F4 A9 04 00    LDA #$0004
-$90:D2F7 8D B4 0A    STA $0AB4  [$7E:0AB4]
+$90:D2E8 A9 20 00    LDA #$0020             ;\ Else (facing left):
+$90:D2EB 8D C0 0A    STA $0AC0  [$7E:0AC0]  ;} Speed echo 0 angle = 20h
+$90:D2EE A9 A0 00    LDA #$00A0             ;\
+$90:D2F1 8D C2 0A    STA $0AC2  [$7E:0AC2]  ;} Speed echo 1 angle = A0h
+$90:D2F4 A9 04 00    LDA #$0004             ;\
+$90:D2F7 8D B4 0A    STA $0AB4  [$7E:0AB4]  ;} Speed echo angle delta = 4
 
 $90:D2FA 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:D2FD 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:D300 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
 $90:D303 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
-$90:D306 9C 3E 0B    STZ $0B3E  [$7E:0B3E]
-$90:D309 9C 1A 0B    STZ $0B1A  [$7E:0B1A]
+$90:D306 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed booster counter = 0, speed boost timer = 0
+$90:D309 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
 $90:D30C 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
 $90:D30F A9 46 D3    LDA #$D346             ;\
 $90:D312 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D346 (shinespark crash - echoes circle Samus)
 $90:D315 A9 F3 EB    LDA #$EBF3             ;\
-$90:D318 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = end of shinespark
-$90:D31B 9C AE 0A    STZ $0AAE  [$7E:0AAE]
-$90:D31E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D321 8D B0 0A    STA $0AB0  [$7E:0AB0]
-$90:D324 8D B2 0A    STA $0AB2  [$7E:0AB2]
-$90:D327 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:D32A 8D B8 0A    STA $0AB8  [$7E:0AB8]
-$90:D32D 8D BA 0A    STA $0ABA  [$7E:0ABA]
-$90:D330 9C C4 0A    STZ $0AC4  [$7E:0AC4]
-$90:D333 9C 48 0A    STZ $0A48  [$7E:0A48]
+$90:D318 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = $EBF3 (shinespark crash echo circle)
+$90:D31B 9C AE 0A    STZ $0AAE  [$7E:0AAE]  ; Speed echoes index = 0
+$90:D31E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D321 8D B0 0A    STA $0AB0  [$7E:0AB0]  ;} Speed echo 0/1 X position = [Samus X position]
+$90:D324 8D B2 0A    STA $0AB2  [$7E:0AB2]  ;/
+$90:D327 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:D32A 8D B8 0A    STA $0AB8  [$7E:0AB8]  ;} Speed echo 0/1 Y position = [Samus Y position]
+$90:D32D 8D BA 0A    STA $0ABA  [$7E:0ABA]  ;/
+$90:D330 9C C4 0A    STZ $0AC4  [$7E:0AC4]  ; $0AC4 = 0
+$90:D333 9C 48 0A    STZ $0A48  [$7E:0A48]  ; Samus hurt flash counter = 0
 $90:D336 A9 35 00    LDA #$0035             ;\
 $90:D339 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 35h, sound library 1, max queued sounds allowed = 5 (Samus damaged)
 $90:D33D A9 10 00    LDA #$0010             ;\
 $90:D340 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 10h, sound library 3, max queued sounds allowed = 6 (shinespark ended)
-$90:D344 38          SEC
-$90:D345 60          RTS
+$90:D344 38          SEC                    ;\
+$90:D345 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $D346: Samus movement handler - shinespark crash - echoes circle Samus ;;;
 {
-$90:D346 A9 0F 00    LDA #$000F
-$90:D349 8D 68 0A    STA $0A68  [$7E:0A68]
-$90:D34C AD AF 0A    LDA $0AAF  [$7E:0AAF]
-$90:D34F 29 FF 00    AND #$00FF
-$90:D352 0A          ASL A
-$90:D353 AA          TAX
-$90:D354 FC 7D D3    JSR ($D37D,x)[$90:D383]
-$90:D357 A2 02 00    LDX #$0002
+$90:D346 A9 0F 00    LDA #$000F             ;\
+$90:D349 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
+$90:D34C AD AF 0A    LDA $0AAF  [$7E:0AAF]  ;\
+$90:D34F 29 FF 00    AND #$00FF             ;|
+$90:D352 0A          ASL A                  ;} Execute [$D37D + [shinespark crash echo circle phase] * 2]
+$90:D353 AA          TAX                    ;|
+$90:D354 FC 7D D3    JSR ($D37D,x)[$90:D383];/
+$90:D357 A2 02 00    LDX #$0002             ; X = 2 (speed echo index)
 
-$90:D35A BC C0 0A    LDY $0AC0,x[$7E:0AC2]
-$90:D35D AD AE 0A    LDA $0AAE  [$7E:0AAE]
-$90:D360 29 FF 00    AND #$00FF
-$90:D363 20 39 CC    JSR $CC39  [$90:CC39]
-$90:D366 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D369 18          CLC
-$90:D36A 65 14       ADC $14    [$7E:0014]
-$90:D36C 9D B0 0A    STA $0AB0,x[$7E:0AB2]
-$90:D36F AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:D372 18          CLC
-$90:D373 65 16       ADC $16    [$7E:0016]
-$90:D375 9D B8 0A    STA $0AB8,x[$7E:0ABA]
-$90:D378 CA          DEX
-$90:D379 CA          DEX
-$90:D37A 10 DE       BPL $DE    [$D35A]
+; LOOP
+$90:D35A BC C0 0A    LDY $0AC0,x[$7E:0AC2]  ; Y = [speed echo angle]
+$90:D35D AD AE 0A    LDA $0AAE  [$7E:0AAE]  ;\
+$90:D360 29 FF 00    AND #$00FF             ;} A = [speed echo distance]
+$90:D363 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
+$90:D366 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D369 18          CLC                    ;|
+$90:D36A 65 14       ADC $14    [$7E:0014]  ;} Speed echo X position = [Samus X position] + [$14]
+$90:D36C 9D B0 0A    STA $0AB0,x[$7E:0AB2]  ;/
+$90:D36F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:D372 18          CLC                    ;|
+$90:D373 65 16       ADC $16    [$7E:0016]  ;} Speed echo Y position = [Samus Y position] + [$16]
+$90:D375 9D B8 0A    STA $0AB8,x[$7E:0ABA]  ;/
+$90:D378 CA          DEX                    ;\
+$90:D379 CA          DEX                    ;} X -= 2
+$90:D37A 10 DE       BPL $DE    [$D35A]     ; If [X] >= 0: go to LOOP
 $90:D37C 60          RTS
 
 $90:D37D             dw D383, D396, D3CC
 }
 
 
-;;; $D383:  ;;;
+;;; $D383: Samus movement handler - shinespark crash - echoes circle Samus - phase 0 ;;;
 {
-$90:D383 AD AE 0A    LDA $0AAE  [$7E:0AAE]
-$90:D386 18          CLC
-$90:D387 69 04 00    ADC #$0004
-$90:D38A C9 10 00    CMP #$0010
-$90:D38D 30 03       BMI $03    [$D392]
-$90:D38F 09 00 01    ORA #$0100
+$90:D383 AD AE 0A    LDA $0AAE  [$7E:0AAE]  ;\
+$90:D386 18          CLC                    ;} Speed echo distance += 4
+$90:D387 69 04 00    ADC #$0004             ;/
+$90:D38A C9 10 00    CMP #$0010             ;\
+$90:D38D 30 03       BMI $03    [$D392]     ;} If [speed echo distance] >= 10h:
+$90:D38F 09 00 01    ORA #$0100             ; Shinespark crash echo circle phase = 1
 
 $90:D392 8D AE 0A    STA $0AAE  [$7E:0AAE]
 $90:D395 60          RTS
 }
 
 
-;;; $D396:  ;;;
+;;; $D396: Samus movement handler - shinespark crash - echoes circle Samus - phase 1 ;;;
 {
-$90:D396 AD C0 0A    LDA $0AC0  [$7E:0AC0]
-$90:D399 18          CLC
-$90:D39A 6D B4 0A    ADC $0AB4  [$7E:0AB4]
-$90:D39D 29 FF 00    AND #$00FF
-$90:D3A0 8D C0 0A    STA $0AC0  [$7E:0AC0]
-$90:D3A3 AD C2 0A    LDA $0AC2  [$7E:0AC2]
-$90:D3A6 18          CLC
-$90:D3A7 6D B4 0A    ADC $0AB4  [$7E:0AB4]
-$90:D3AA 29 FF 00    AND #$00FF
-$90:D3AD 8D C2 0A    STA $0AC2  [$7E:0AC2]
-$90:D3B0 AD BC 0A    LDA $0ABC  [$7E:0ABC]
-$90:D3B3 18          CLC
-$90:D3B4 69 04 00    ADC #$0004
-$90:D3B7 8D BC 0A    STA $0ABC  [$7E:0ABC]
-$90:D3BA C9 80 00    CMP #$0080
-$90:D3BD 30 0C       BMI $0C    [$D3CB]
-$90:D3BF AD AE 0A    LDA $0AAE  [$7E:0AAE]
-$90:D3C2 29 FF 00    AND #$00FF
-$90:D3C5 09 00 02    ORA #$0200
-$90:D3C8 8D AE 0A    STA $0AAE  [$7E:0AAE]
+$90:D396 AD C0 0A    LDA $0AC0  [$7E:0AC0]  ;\
+$90:D399 18          CLC                    ;|
+$90:D39A 6D B4 0A    ADC $0AB4  [$7E:0AB4]  ;} Speed echo 0 angle = ([speed echo 0 angle] + [speed echo angle delta]) % 100h
+$90:D39D 29 FF 00    AND #$00FF             ;|
+$90:D3A0 8D C0 0A    STA $0AC0  [$7E:0AC0]  ;/
+$90:D3A3 AD C2 0A    LDA $0AC2  [$7E:0AC2]  ;\
+$90:D3A6 18          CLC                    ;|
+$90:D3A7 6D B4 0A    ADC $0AB4  [$7E:0AB4]  ;} Speed echo 1 angle = ([speed echo 1 angle] + [speed echo angle delta]) % 100h
+$90:D3AA 29 FF 00    AND #$00FF             ;|
+$90:D3AD 8D C2 0A    STA $0AC2  [$7E:0AC2]  ;/
+$90:D3B0 AD BC 0A    LDA $0ABC  [$7E:0ABC]  ;\
+$90:D3B3 18          CLC                    ;|
+$90:D3B4 69 04 00    ADC #$0004             ;} Shinespark crash echo circle timer += 4
+$90:D3B7 8D BC 0A    STA $0ABC  [$7E:0ABC]  ;/
+$90:D3BA C9 80 00    CMP #$0080             ;\
+$90:D3BD 30 0C       BMI $0C    [$D3CB]     ;} If [shinespark crash echo circle timer] >= 80h:
+$90:D3BF AD AE 0A    LDA $0AAE  [$7E:0AAE]  ;\
+$90:D3C2 29 FF 00    AND #$00FF             ;|
+$90:D3C5 09 00 02    ORA #$0200             ;} Shinespark crash echo circle phase = 2
+$90:D3C8 8D AE 0A    STA $0AAE  [$7E:0AAE]  ;/
 
 $90:D3CB 60          RTS
 }
 
 
-;;; $D3CC:  ;;;
+;;; $D3CC: Samus movement handler - shinespark crash - echoes circle Samus - phase 2 ;;;
 {
-$90:D3CC AD AE 0A    LDA $0AAE  [$7E:0AAE]
-$90:D3CF 38          SEC
-$90:D3D0 E9 04 00    SBC #$0004
-$90:D3D3 8D AE 0A    STA $0AAE  [$7E:0AAE]
-$90:D3D6 29 FF 00    AND #$00FF
-$90:D3D9 F0 02       BEQ $02    [$D3DD]
-$90:D3DB 10 15       BPL $15    [$D3F2]
+$90:D3CC AD AE 0A    LDA $0AAE  [$7E:0AAE]  ;\
+$90:D3CF 38          SEC                    ;|
+$90:D3D0 E9 04 00    SBC #$0004             ;} Speed echo distance -= 4
+$90:D3D3 8D AE 0A    STA $0AAE  [$7E:0AAE]  ;/
+$90:D3D6 29 FF 00    AND #$00FF             ;\
+$90:D3D9 F0 02       BEQ $02    [$D3DD]     ;} If [speed echo distance] > 0: return
+$90:D3DB 10 15       BPL $15    [$D3F2]     ;/
 
 $90:D3DD A9 F3 D3    LDA #$D3F3             ;\
 $90:D3E0 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D3F3 (shinespark crash - echoes finished circling Samus)
-$90:D3E3 A9 1E 00    LDA #$001E
-$90:D3E6 8D A2 0A    STA $0AA2  [$7E:0AA2]
-$90:D3E9 9C AE 0A    STZ $0AAE  [$7E:0AAE]
-$90:D3EC 9C C0 0A    STZ $0AC0  [$7E:0AC0]
-$90:D3EF 9C C2 0A    STZ $0AC2  [$7E:0AC2]
+$90:D3E3 A9 1E 00    LDA #$001E             ;\
+$90:D3E6 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} Shinespark crash timer = 30
+$90:D3E9 9C AE 0A    STZ $0AAE  [$7E:0AAE]  ; Speed echo distance = 0
+$90:D3EC 9C C0 0A    STZ $0AC0  [$7E:0AC0]  ; Speed echo 0 angle = 0
+$90:D3EF 9C C2 0A    STZ $0AC2  [$7E:0AC2]  ; Speed echo 1 angle = 0
 
 $90:D3F2 60          RTS
 }
@@ -11452,12 +11693,11 @@ $90:D3F2 60          RTS
 
 ;;; $D3F3: Samus movement handler - shinespark crash - echoes finished circling Samus ;;;
 {
-; Shinespark crash(?)
-$90:D3F3 A9 0F 00    LDA #$000F
-$90:D3F6 8D 68 0A    STA $0A68  [$7E:0A68]
-$90:D3F9 CE A2 0A    DEC $0AA2  [$7E:0AA2]
-$90:D3FC F0 02       BEQ $02    [$D400]
-$90:D3FE 10 0C       BPL $0C    [$D40C]
+$90:D3F3 A9 0F 00    LDA #$000F             ;\
+$90:D3F6 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
+$90:D3F9 CE A2 0A    DEC $0AA2  [$7E:0AA2]  ; Decrement shinespark crash timer
+$90:D3FC F0 02       BEQ $02    [$D400]     ;\
+$90:D3FE 10 0C       BPL $0C    [$D40C]     ;} If [shinespark crash timer] > 0: return
 
 $90:D400 A9 0D D4    LDA #$D40D             ;\
 $90:D403 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D40D (shinespark crash - finish)
@@ -11478,11 +11718,11 @@ $90:D418 C9 04 00    CMP #$0004             ;\
 $90:D41B 10 3D       BPL $3D    [$D45A]     ;} If [projectile counter] < 4:
 $90:D41D EE CE 0C    INC $0CCE  [$7E:0CCE]  ; Increment projectile counter
 $90:D420 A9 40 00    LDA #$0040             ;\
-$90:D423 8D C4 0A    STA $0AC4  [$7E:0AC4]  ;} $0AC4 = 40h
+$90:D423 8D C4 0A    STA $0AC4  [$7E:0AC4]  ;} Draw speed echo 2 flag = 40h
 $90:D426 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$90:D429 8D B4 0A    STA $0AB4  [$7E:0AB4]  ;} $0AB4 = [Samus X position]
+$90:D429 8D B4 0A    STA $0AB4  [$7E:0AB4]  ;} Speed echo 2 X position = [Samus X position]
 $90:D42C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D42F 8D BC 0A    STA $0ABC  [$7E:0ABC]  ;} $0ABC = [Samus Y position]
+$90:D42F 8D BC 0A    STA $0ABC  [$7E:0ABC]  ;} Speed echo 2 Y position = [Samus Y position]
 $90:D432 A9 29 80    LDA #$8029             ;\
 $90:D435 8D 1E 0C    STA $0C1E  [$7E:0C1E]  ;} Projectile 3 type = 8029h
 $90:D438 A2 06 00    LDX #$0006             ; X = 6 (projectile 3 index)
@@ -11493,19 +11733,19 @@ $90:D445 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:D448 38          SEC                    ;|
 $90:D449 E9 C9 00    SBC #$00C9             ;|
 $90:D44C 0A          ASL A                  ;|
-$90:D44D AA          TAX                    ;} Projectile 3 $0C7C = [$D4C6 + ([Samus pose] - C9h) * 2]
+$90:D44D AA          TAX                    ;} Projectile 3 angle = [$D4C6 + ([Samus pose] - C9h) * 2]
 $90:D44E BD C6 D4    LDA $D4C6,x[$90:D4C6]  ;|
 $90:D451 29 FF 00    AND #$00FF             ;|
 $90:D454 8D 82 0C    STA $0C82  [$7E:0C82]  ;/
-$90:D457 9C E2 0B    STZ $0BE2  [$7E:0BE2]  ; Projectile 3 $0BDC = 0
+$90:D457 9C E2 0B    STZ $0BE2  [$7E:0BE2]  ; Projectile 3 distance from Samus = 0
 
 $90:D45A EE CE 0C    INC $0CCE  [$7E:0CCE]  ; Increment projectile counter
 $90:D45D A9 40 00    LDA #$0040             ;\
-$90:D460 8D C6 0A    STA $0AC6  [$7E:0AC6]  ;} $0AC6 = 40h
+$90:D460 8D C6 0A    STA $0AC6  [$7E:0AC6]  ;} Draw speed echo 3 flag = 40h
 $90:D463 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$90:D466 8D B6 0A    STA $0AB6  [$7E:0AB6]  ;} $0AB6 = [Samus X position]
+$90:D466 8D B6 0A    STA $0AB6  [$7E:0AB6]  ;} Speed echo 3 X position = [Samus X position]
 $90:D469 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D46C 8D BE 0A    STA $0ABE  [$7E:0ABE]  ;} $0ABE = [Samus Y position]
+$90:D46C 8D BE 0A    STA $0ABE  [$7E:0ABE]  ;} Speed echo 3 Y position = [Samus Y position]
 $90:D46F A9 29 80    LDA #$8029             ;\
 $90:D472 8D 20 0C    STA $0C20  [$7E:0C20]  ;} Projectile 4 type = 8029h
 $90:D475 A2 08 00    LDX #$0008             ; X = 8 (projectile 4 index)
@@ -11516,11 +11756,11 @@ $90:D482 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:D485 38          SEC                    ;|
 $90:D486 E9 C9 00    SBC #$00C9             ;|
 $90:D489 0A          ASL A                  ;|
-$90:D48A AA          TAX                    ;} Projectile 4 $0C7C = [$D4C6 + ([Samus pose] - C9h) * 2 + 1]
+$90:D48A AA          TAX                    ;} Projectile 4 angle = [$D4C6 + ([Samus pose] - C9h) * 2 + 1]
 $90:D48B BD C7 D4    LDA $D4C7,x[$90:D4C7]  ;|
 $90:D48E 29 FF 00    AND #$00FF             ;|
 $90:D491 8D 84 0C    STA $0C84  [$7E:0C84]  ;/
-$90:D494 9C E4 0B    STZ $0BE4  [$7E:0BE4]  ; Projectile 4 $0BDC = 0
+$90:D494 9C E4 0B    STZ $0BE4  [$7E:0BE4]  ; Projectile 4 distance from Samus = 0
 
 ; BRANCH_DONT_FIRE
 $90:D497 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ; Cooldown timer = 0
@@ -11554,105 +11794,115 @@ $90:D4C6             db 00,80, ; C9h: Facing right - shinespark - horizontal
 
 ;;; $D4D2: Projectile pre-instruction - speed echo ;;;
 {
-$90:D4D2 BD DC 0B    LDA $0BDC,x[$7E:0BE4]
-$90:D4D5 18          CLC
-$90:D4D6 69 08 00    ADC #$0008
-$90:D4D9 9D DC 0B    STA $0BDC,x[$7E:0BE4]
-$90:D4DC BC 7C 0C    LDY $0C7C,x[$7E:0C84]
-$90:D4DF BD DC 0B    LDA $0BDC,x[$7E:0BE4]
-$90:D4E2 29 FF 00    AND #$00FF
-$90:D4E5 20 39 CC    JSR $CC39  [$90:CC39]
-$90:D4E8 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D4EB 18          CLC
-$90:D4EC 65 14       ADC $14    [$7E:0014]
-$90:D4EE 9D AE 0A    STA $0AAE,x[$7E:0AB6]
-$90:D4F1 9D 64 0B    STA $0B64,x[$7E:0B6C]
-$90:D4F4 38          SEC
-$90:D4F5 ED 11 09    SBC $0911  [$7E:0911]
-$90:D4F8 30 1D       BMI $1D    [$D517]
-$90:D4FA C9 00 01    CMP #$0100
-$90:D4FD 10 18       BPL $18    [$D517]
-$90:D4FF AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:D502 18          CLC
-$90:D503 65 16       ADC $16    [$7E:0016]
-$90:D505 9D B6 0A    STA $0AB6,x[$7E:0ABE]
-$90:D508 9D 78 0B    STA $0B78,x[$7E:0B80]
-$90:D50B 38          SEC
-$90:D50C ED 15 09    SBC $0915  [$7E:0915]
-$90:D50F 30 06       BMI $06    [$D517]
-$90:D511 C9 00 01    CMP #$0100
-$90:D514 10 01       BPL $01    [$D517]
-$90:D516 60          RTS
+; Must be projectile slot 3 or 4, corresponding to speed echo 2 or 3 respectively
+$90:D4D2 BD DC 0B    LDA $0BDC,x[$7E:0BE4]  ;\
+$90:D4D5 18          CLC                    ;|
+$90:D4D6 69 08 00    ADC #$0008             ;} Projectile distance += 8
+$90:D4D9 9D DC 0B    STA $0BDC,x[$7E:0BE4]  ;/
+$90:D4DC BC 7C 0C    LDY $0C7C,x[$7E:0C84]  ; Y = [projectile angle]
+$90:D4DF BD DC 0B    LDA $0BDC,x[$7E:0BE4]  ;\
+$90:D4E2 29 FF 00    AND #$00FF             ;} A = [projectile distance]
+$90:D4E5 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
+$90:D4E8 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D4EB 18          CLC                    ;|
+$90:D4EC 65 14       ADC $14    [$7E:0014]  ;} Speed echo X position = projectile X position = [Samus X position] + [$14]
+$90:D4EE 9D AE 0A    STA $0AAE,x[$7E:0AB6]  ;|
+$90:D4F1 9D 64 0B    STA $0B64,x[$7E:0B6C]  ;/
+$90:D4F4 38          SEC                    ;\
+$90:D4F5 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$90:D4F8 30 1D       BMI $1D    [$D517]     ;} If 0 <= [projectile X position] - [layer 1 X position] < 100h:
+$90:D4FA C9 00 01    CMP #$0100             ;|
+$90:D4FD 10 18       BPL $18    [$D517]     ;/
+$90:D4FF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:D502 18          CLC                    ;|
+$90:D503 65 16       ADC $16    [$7E:0016]  ;} Speed echo Y position = projectile Y position = [Samus Y position] + [$16]
+$90:D505 9D B6 0A    STA $0AB6,x[$7E:0ABE]  ;|
+$90:D508 9D 78 0B    STA $0B78,x[$7E:0B80]  ;/
+$90:D50B 38          SEC                    ;\
+$90:D50C ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:D50F 30 06       BMI $06    [$D517]     ;} If 0 <= [projectile Y position] - [layer 1 Y position] < 100h:
+$90:D511 C9 00 01    CMP #$0100             ;|
+$90:D514 10 01       BPL $01    [$D517]     ;/
+$90:D516 60          RTS                    ; Return
 
-$90:D517 9E BE 0A    STZ $0ABE,x[$7E:0AC6]
-$90:D51A 9E AE 0A    STZ $0AAE,x[$7E:0AB6]
-$90:D51D 9E B6 0A    STZ $0AB6,x[$7E:0ABE]
-$90:D520 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+$90:D517 9E BE 0A    STZ $0ABE,x[$7E:0AC6]  ; Draw speed echo flag = 0
+$90:D51A 9E AE 0A    STZ $0AAE,x[$7E:0AB6]  ; Speed echo X position = 0
+$90:D51D 9E B6 0A    STZ $0AB6,x[$7E:0ABE]  ; Speed echo Y position = 0
+$90:D520 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:D524 60          RTS
+}
 }
 
 
-;;; $D525:  ;;;
+;;; $D525: Unused ;;;
 {
+; Looks like this is supposed to make Samus extend and contract her grapple beam in a loop for the duration of [$0A9E]
+; No idea what this would hypothetically be used for
 $90:D525 A5 8B       LDA $8B    [$7E:008B]  ;\
-$90:D527 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If pressing shoot: go to BRANCH_D533
+$90:D527 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If pressing shoot: go to BRANCH_HOLDING_SHOOT
 $90:D52A D0 07       BNE $07    [$D533]     ;/
 
-$90:D52C A9 56 C8    LDA #$C856
-$90:D52F 8D 32 0D    STA $0D32  [$7E:0D32]
-$90:D532 60          RTS
+; BRANCH_CANCEL
+$90:D52C A9 56 C8    LDA #$C856             ;\
+$90:D52F 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = cancel
+$90:D532 60          RTS                    ; Return
 
-; BRANCH_D533
-$90:D533 AD 9E 0A    LDA $0A9E  [$7E:0A9E]
-$90:D536 3A          DEC A
-$90:D537 8D 9E 0A    STA $0A9E  [$7E:0A9E]
-$90:D53A F0 F0       BEQ $F0    [$D52C]
-$90:D53C 30 EE       BMI $EE    [$D52C]
-$90:D53E AD 00 0D    LDA $0D00  [$7E:0D00]
-$90:D541 30 30       BMI $30    [$D573]
-$90:D543 AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$90:D546 18          CLC
-$90:D547 6D 00 0D    ADC $0D00  [$7E:0D00]
-$90:D54A 8D FE 0C    STA $0CFE  [$7E:0CFE]
-$90:D54D C9 60 00    CMP #$0060
-$90:D550 30 21       BMI $21    [$D573]
-$90:D552 A9 10 00    LDA #$0010
-$90:D555 49 FF FF    EOR #$FFFF
-$90:D558 1A          INC A
-$90:D559 8D 00 0D    STA $0D00  [$7E:0D00]
-$90:D55C 80 15       BRA $15    [$D573]
-$90:D55E AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$90:D561 18          CLC
-$90:D562 6D 00 0D    ADC $0D00  [$7E:0D00]
-$90:D565 8D FE 0C    STA $0CFE  [$7E:0CFE]
-$90:D568 10 09       BPL $09    [$D573]
-$90:D56A 9C FE 0C    STZ $0CFE  [$7E:0CFE]
-$90:D56D A9 10 00    LDA #$0010
-$90:D570 8D 00 0D    STA $0D00  [$7E:0D00]
+; BRANCH_HOLDING_SHOOT
+$90:D533 AD 9E 0A    LDA $0A9E  [$7E:0A9E]  ;\
+$90:D536 3A          DEC A                  ;} Decrement [grapple walljump timer]
+$90:D537 8D 9E 0A    STA $0A9E  [$7E:0A9E]  ;/
+$90:D53A F0 F0       BEQ $F0    [$D52C]     ;\
+$90:D53C 30 EE       BMI $EE    [$D52C]     ;} If [grapple walljump timer] <= 0: go to BRANCH_CANCEL
+$90:D53E AD 00 0D    LDA $0D00  [$7E:0D00]  ;\
+$90:D541 30 30       BMI $30    [$D573]     ;} If [grapple beam length delta] < 0: go to BRANCH_CONTINUE <-- think this branch target is wrong
+$90:D543 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$90:D546 18          CLC                    ;|
+$90:D547 6D 00 0D    ADC $0D00  [$7E:0D00]  ;} Grapple beam length += [grapple beam length delta]
+$90:D54A 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
+$90:D54D C9 60 00    CMP #$0060             ;\
+$90:D550 30 21       BMI $21    [$D573]     ;} If [grapple beam length] < 60h: go to BRANCH_CONTINUE
+$90:D552 A9 10 00    LDA #$0010             ;\
+$90:D555 49 FF FF    EOR #$FFFF             ;|
+$90:D558 1A          INC A                  ;} Grapple beam length delta = -10h
+$90:D559 8D 00 0D    STA $0D00  [$7E:0D00]  ;/
+$90:D55C 80 15       BRA $15    [$D573]     ; Go to BRANCH_CONTINUE
 
-$90:D573 AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$90:D576 EB          XBA
-$90:D577 29 FF 00    AND #$00FF
-$90:D57A A8          TAY
-$90:D57B AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$90:D57E 20 39 CC    JSR $CC39  [$90:CC39]
-$90:D581 AD 16 0D    LDA $0D16  [$7E:0D16]
-$90:D584 18          CLC
-$90:D585 65 14       ADC $14    [$7E:0014]
-$90:D587 8D 08 0D    STA $0D08  [$7E:0D08]
-$90:D58A AD 18 0D    LDA $0D18  [$7E:0D18]
-$90:D58D 18          CLC
-$90:D58E 65 16       ADC $16    [$7E:0016]
-$90:D590 8D 0C 0D    STA $0D0C  [$7E:0D0C]
-$90:D593 AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$90:D596 18          CLC
-$90:D597 69 00 08    ADC #$0800
-$90:D59A 8D FA 0C    STA $0CFA  [$7E:0CFA]
-$90:D59D 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]
+; Unused branch
+$90:D55E AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$90:D561 18          CLC                    ;|
+$90:D562 6D 00 0D    ADC $0D00  [$7E:0D00]  ;} Grapple beam length += [grapple beam length delta]
+$90:D565 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
+$90:D568 10 09       BPL $09    [$D573]     ; If [grapple beam length] < 0:
+$90:D56A 9C FE 0C    STZ $0CFE  [$7E:0CFE]  ; Grapple beam length = 0
+$90:D56D A9 10 00    LDA #$0010             ;\
+$90:D570 8D 00 0D    STA $0D00  [$7E:0D00]  ;} Grapple beam length delta = 10h
+
+; BRANCH_CONTINUE
+$90:D573 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$90:D576 EB          XBA                    ;|
+$90:D577 29 FF 00    AND #$00FF             ;} Y = [grapple beam end angle]
+$90:D57A A8          TAY                    ;/
+$90:D57B AD FE 0C    LDA $0CFE  [$7E:0CFE]  ; A = [grapple beam length]
+$90:D57E 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
+$90:D581 AD 16 0D    LDA $0D16  [$7E:0D16]  ;\
+$90:D584 18          CLC                    ;|
+$90:D585 65 14       ADC $14    [$7E:0014]  ;} Grapple beam end X position = [grapple beam start X position] + [$14]
+$90:D587 8D 08 0D    STA $0D08  [$7E:0D08]  ;/
+$90:D58A AD 18 0D    LDA $0D18  [$7E:0D18]  ;\
+$90:D58D 18          CLC                    ;|
+$90:D58E 65 16       ADC $16    [$7E:0016]  ;} Grapple beam end Y position = [grapple beam start Y position] + [$16]
+$90:D590 8D 0C 0D    STA $0D0C  [$7E:0D0C]  ;/
+$90:D593 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$90:D596 18          CLC                    ;|
+$90:D597 69 00 08    ADC #$0800             ;} Grapple beam end angle += 8
+$90:D59A 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;/
+$90:D59D 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]  ; Execute $9B:BF1B
 $90:D5A1 60          RTS
 }
 
 
+;;; $D5A2..D792: Crystal flash ;;;
+{
 ;;; $D5A2: Crystal flash ;;;
 {
 $90:D5A2 08          PHP
@@ -11663,44 +11913,46 @@ $90:D5AB 10 0E       BPL $0E    [$D5BB]     ;/
 $90:D5AD A9 30 04    LDA #$0430             ;\
 $90:D5B0 0D B2 09    ORA $09B2  [$7E:09B2]  ;|
 $90:D5B3 85 12       STA $12    [$7E:0012]  ;|
-$90:D5B5 A5 8B       LDA $8B    [$7E:008B]  ;} If not pressing exactly down+L+R+shoot: return
+$90:D5B5 A5 8B       LDA $8B    [$7E:008B]  ;} If not pressing exactly down + L + R + shoot: return carry set
 $90:D5B7 C5 12       CMP $12    [$7E:0012]  ;|
 $90:D5B9 D0 2F       BNE $2F    [$D5EA]     ;/
 
 $90:D5BB AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
 $90:D5BE D0 2A       BNE $2A    [$D5EA]     ;|
-$90:D5C0 AD 2C 0B    LDA $0B2C  [$7E:0B2C]  ;} If Samus vertical speed != 0.0: return
+$90:D5C0 AD 2C 0B    LDA $0B2C  [$7E:0B2C]  ;} If [Samus Y speed] != 0.0: return carry set
 $90:D5C3 D0 25       BNE $25    [$D5EA]     ;/
 $90:D5C5 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
-$90:D5C8 C9 33 00    CMP #$0033             ;} If Samus health >= 51: return
+$90:D5C8 C9 33 00    CMP #$0033             ;} If [Samus health] > 50: return carry set
 $90:D5CB 10 1D       BPL $1D    [$D5EA]     ;/
 $90:D5CD AD D6 09    LDA $09D6  [$7E:09D6]  ;\
-$90:D5D0 D0 18       BNE $18    [$D5EA]     ;} If Samus reserve tanks != 0: return
+$90:D5D0 D0 18       BNE $18    [$D5EA]     ;} If [Samus reserve tanks] != 0: return carry set
 $90:D5D2 AD C6 09    LDA $09C6  [$7E:09C6]  ;\
-$90:D5D5 C9 0A 00    CMP #$000A             ;} If Samus missiles < 10: return
+$90:D5D5 C9 0A 00    CMP #$000A             ;} If [Samus missiles] < 10: return carry set
 $90:D5D8 30 10       BMI $10    [$D5EA]     ;/
 $90:D5DA AD CA 09    LDA $09CA  [$7E:09CA]  ;\
-$90:D5DD C9 0A 00    CMP #$000A             ;} If Samus super missiles < 10: return
+$90:D5DD C9 0A 00    CMP #$000A             ;} If [Samus super missiles] < 10: return carry set
 $90:D5E0 30 08       BMI $08    [$D5EA]     ;/
 $90:D5E2 AD CE 09    LDA $09CE  [$7E:09CE]  ;\
-$90:D5E5 C9 0A 00    CMP #$000A             ;} If Samus power bombs < 10: return
+$90:D5E5 C9 0A 00    CMP #$000A             ;} If [Samus power bombs] >= 10: go to BRANCH_ACTIVATE
 $90:D5E8 10 03       BPL $03    [$D5ED]     ;/
 
 $90:D5EA 28          PLP
-$90:D5EB 38          SEC
-$90:D5EC 6B          RTL
+$90:D5EB 38          SEC                    ;\
+$90:D5EC 6B          RTL                    ;} Return carry set
 
+; BRANCH_ACTIVATE
 $90:D5ED AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:D5F0 29 FF 00    AND #$00FF             ;|
-$90:D5F3 C9 04 00    CMP #$0004             ;} If Samus is moving right:
+$90:D5F3 C9 04 00    CMP #$0004             ;} If facing right:
 $90:D5F6 F0 05       BEQ $05    [$D5FD]     ;/
-$90:D5F8 A9 D3 00    LDA #$00D3             ; A = D3h (crystal flash facing right)
+$90:D5F8 A9 D3 00    LDA #$00D3             ; Samus pose = D3h (facing right - crystal flash)
 $90:D5FB 80 03       BRA $03    [$D600]
 
-$90:D5FD A9 D4 00    LDA #$00D4             ; Else (Samus facing left): A = D4h (crystal flash facing left)
+                                            ; Else (facing left): 
+$90:D5FD A9 D4 00    LDA #$00D4             ; Samus pose = D4h (facing left  - crystal flash)
 
-$90:D600 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ; Samus pose = [A]
-$90:D603 22 33 F4 91 JSL $91F433[$91:F433]  ; Set Samus X-direction facing and movement type from her pose, JSR $F468, and if Samus was previously screw attacking, reset palette
+$90:D600 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$90:D603 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $90:D607 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:D60B AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:D60E 29 FF 00    AND #$00FF             ;|
@@ -11717,14 +11969,14 @@ $90:D62B 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction /
 $90:D62E A9 78 D6    LDA #$D678             ;\
 $90:D631 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D678 (crystal flash - start)
 $90:D634 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:D637 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D:
+$90:D637 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (demo):
 $90:D63A F0 06       BEQ $06    [$D642]     ;/
 $90:D63C A9 0E E9    LDA #$E90E             ;\
 $90:D63F 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
 
 $90:D642 A9 09 00    LDA #$0009             ;\
-$90:D645 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} $0AA2 = 9
-$90:D648 9C EA 0D    STZ $0DEA  [$7E:0DEA]  ; Set missiles to decrement
+$90:D645 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} Crystal flash raise Samus timer = 9
+$90:D648 9C EA 0D    STZ $0DEA  [$7E:0DEA]  ; Crystal flash ammo decrementing index = missiles
 $90:D64B A9 0A 00    LDA #$000A             ;\
 $90:D64E 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Crystal flash ammo decrementing timer = 10
 $90:D651 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; $0DEE = 0
@@ -11738,7 +11990,7 @@ $90:D666 8D 68 0A    STA $0A68  [$7E:0A68]  ;} $0A68 = 1
 $90:D669 8D F2 0D    STA $0DF2  [$7E:0DF2]  ; $0DF2 = 1
 $90:D66C 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $90:D66F 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
-$90:D672 9C 52 0A    STZ $0A52  [$7E:0A52]  ; $0A52 = 0
+$90:D672 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = none
 $90:D675 28          PLP
 $90:D676 18          CLC
 $90:D677 6B          RTL
@@ -11752,15 +12004,15 @@ $90:D67B 3A          DEC A                  ;|
 $90:D67C 3A          DEC A                  ;} Samus Y position -= 2
 $90:D67D 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $90:D680 AD A2 0A    LDA $0AA2  [$7E:0AA2]  ;\
-$90:D683 3A          DEC A                  ;} --$0AA2
+$90:D683 3A          DEC A                  ;} Decrement crystal flash raise Samus timer
 $90:D684 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;/
-$90:D687 10 44       BPL $44    [$D6CD]     ; If [$0AA2] positive: return
+$90:D687 10 44       BPL $44    [$D6CD]     ; If [crystal flash raise Samus timer] >= 0: return
 $90:D689 A9 03 00    LDA #$0003             ;\
 $90:D68C 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3
 $90:D68F A9 06 00    LDA #$0006             ;\
 $90:D692 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 6
 $90:D695 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D698 8D F0 0D    STA $0DF0  [$7E:0DF0]  ;} $0DF0 = Samus Y position
+$90:D698 8D F0 0D    STA $0DF0  [$7E:0DF0]  ;} $0DF0 = [Samus Y position]
 $90:D69B A9 CE D6    LDA #$D6CE             ;\
 $90:D69E 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D6CE (crystal flash - main)
 $90:D6A1 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
@@ -11769,14 +12021,14 @@ $90:D6A7 A9 01 00    LDA #$0001             ;\
 $90:D6AA 22 25 91 80 JSL $809125[$80:9125]  ;} Queue sound 1, sound library 3, max queued sounds allowed = 15 (silence)
 $90:D6AE 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag = 0
 $90:D6B1 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$90:D6B4 8D E2 0C    STA $0CE2  [$7E:0CE2]  ;} X position of power bomb explosion = Samus X position
+$90:D6B4 8D E2 0C    STA $0CE2  [$7E:0CE2]  ;} X position of power bomb explosion = [Samus X position]
 $90:D6B7 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D6BA 8D E4 0C    STA $0CE4  [$7E:0CE4]  ;} Y position of power bomb explosion = Samus Y position
+$90:D6BA 8D E4 0C    STA $0CE4  [$7E:0CE4]  ;} Y position of power bomb explosion = [Samus Y position]
 $90:D6BD DA          PHX
 $90:D6BE 5A          PHY
 $90:D6BF 08          PHP
 $90:D6C0 8B          PHB
-$90:D6C1 22 88 82 88 JSL $888288[$88:8288]  ; Set HDMA flag
+$90:D6C1 22 88 82 88 JSL $888288[$88:8288]  ; Enable HDMA objects
 $90:D6C5 22 A6 A2 88 JSL $88A2A6[$88:A2A6]  ; Spawn crystal flash HDMA objects
 $90:D6C9 AB          PLB
 $90:D6CA 28          PLP
@@ -11791,7 +12043,7 @@ $90:D6CD 60          RTS
 {
 $90:D6CE AD EA 0D    LDA $0DEA  [$7E:0DEA]  ;\
 $90:D6D1 0A          ASL A                  ;|
-$90:D6D2 AA          TAX                    ;} Decrement ammo
+$90:D6D2 AA          TAX                    ;} Execute [$D6DD + [crystal flash ammo decrementing index] * 2]
 $90:D6D3 FC DD D6    JSR ($D6DD,x)          ;/
 $90:D6D6 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $90:D6D9 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
@@ -11815,7 +12067,7 @@ $90:D6FA 10 09       BPL $09    [$D705]     ;} If crystal flash ammo decrementin
 
 $90:D6FC A9 0A 00    LDA #$000A             ;\
 $90:D6FF 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Crystal flash ammo decrementing timer = 10
-$90:D702 EE EA 0D    INC $0DEA  [$7E:0DEA]  ; Set super missiles to decrement
+$90:D702 EE EA 0D    INC $0DEA  [$7E:0DEA]  ; Crystal flash ammo decrementing index = super missiles
 
 $90:D705 60          RTS
 }
@@ -11835,7 +12087,7 @@ $90:D71D 10 09       BPL $09    [$D728]     ;} If crystal flash ammo decrementin
 
 $90:D71F A9 0A 00    LDA #$000A             ;\
 $90:D722 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Crystal flash ammo decrementing timer = 10
-$90:D725 EE EA 0D    INC $0DEA  [$7E:0DEA]  ; Set power bombs to decrement
+$90:D725 EE EA 0D    INC $0DEA  [$7E:0DEA]  ; Crystal flash ammo decrementing index = power bombs
 
 $90:D728 60          RTS
 }
@@ -11892,165 +12144,169 @@ $90:D78F 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
 
 $90:D792 60          RTS
 }
+}
 
 
+;;; $D793..DDE8: Projectiles ;;;
+{
 ;;; $D793: Projectile pre-instruction - plasma SBA ;;;
 {
-$90:D793 BD 04 0C    LDA $0C04,x[$7E:0C0A]
-$90:D796 29 F0 00    AND #$00F0
-$90:D799 F0 05       BEQ $05    [$D7A0]
-$90:D79B 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:D79F 60          RTS
+$90:D793 BD 04 0C    LDA $0C04,x[$7E:0C0A]  ;\
+$90:D796 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:D799 F0 05       BEQ $05    [$D7A0]     ;/
+$90:D79B 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:D79F 60          RTS                    ; Return
 
-$90:D7A0 A9 02 00    LDA #$0002
-$90:D7A3 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:D7A6 9C D0 0C    STZ $0CD0  [$7E:0CD0]
-$90:D7A9 BD 7C 0C    LDA $0C7C,x[$7E:0C82]
-$90:D7AC A8          TAY
-$90:D7AD BD DC 0B    LDA $0BDC,x[$7E:0BE2]
-$90:D7B0 20 39 CC    JSR $CC39  [$90:CC39]
-$90:D7B3 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D7B6 18          CLC
-$90:D7B7 65 14       ADC $14    [$7E:0014]
-$90:D7B9 9D 64 0B    STA $0B64,x[$7E:0B6A]
-$90:D7BC AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:D7BF 18          CLC
-$90:D7C0 65 16       ADC $16    [$7E:0016]
-$90:D7C2 9D 78 0B    STA $0B78,x[$7E:0B7E]
-$90:D7C5 BD 7C 0C    LDA $0C7C,x[$7E:0C82]
-$90:D7C8 18          CLC
-$90:D7C9 6D 60 0B    ADC $0B60  [$7E:0B60]
-$90:D7CC 29 FF 00    AND #$00FF
-$90:D7CF 9D 7C 0C    STA $0C7C,x[$7E:0C82]
-$90:D7D2 9B          TXY
-$90:D7D3 BD F0 0B    LDA $0BF0,x[$7E:0BF6]
-$90:D7D6 0A          ASL A
-$90:D7D7 AA          TAX
-$90:D7D8 7C DB D7    JMP ($D7DB,x)[$90:D7E1]
+$90:D7A0 A9 02 00    LDA #$0002             ;\
+$90:D7A3 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 2
+$90:D7A6 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
+$90:D7A9 BD 7C 0C    LDA $0C7C,x[$7E:0C82]  ;\
+$90:D7AC A8          TAY                    ;} Y = [projectile angle]
+$90:D7AD BD DC 0B    LDA $0BDC,x[$7E:0BE2]  ; A = [projectile distance]
+$90:D7B0 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
+$90:D7B3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D7B6 18          CLC                    ;|
+$90:D7B7 65 14       ADC $14    [$7E:0014]  ;} Projectile X position = [Samus X position] + [$14]
+$90:D7B9 9D 64 0B    STA $0B64,x[$7E:0B6A]  ;/
+$90:D7BC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:D7BF 18          CLC                    ;|
+$90:D7C0 65 16       ADC $16    [$7E:0016]  ;} Projectile Y position = [Samus Y position] + [$16]
+$90:D7C2 9D 78 0B    STA $0B78,x[$7E:0B7E]  ;/
+$90:D7C5 BD 7C 0C    LDA $0C7C,x[$7E:0C82]  ;\
+$90:D7C8 18          CLC                    ;|
+$90:D7C9 6D 60 0B    ADC $0B60  [$7E:0B60]  ;} Projectile angle = ([projectile angle] + [SBA angle delta]) % 100h
+$90:D7CC 29 FF 00    AND #$00FF             ;|
+$90:D7CF 9D 7C 0C    STA $0C7C,x[$7E:0C82]  ;/
+$90:D7D2 9B          TXY                    ; Y = [X]
+$90:D7D3 BD F0 0B    LDA $0BF0,x[$7E:0BF6]  ;\
+$90:D7D6 0A          ASL A                  ;|
+$90:D7D7 AA          TAX                    ;} Go to [$D7DB + [projectile phase] * 2]
+$90:D7D8 7C DB D7    JMP ($D7DB,x)[$90:D7E1];/
 
 $90:D7DB             dw D7E1, D7FA, D813
 }
 
 
-;;; $D7E1:  ;;;
+;;; $D7E1: Plasma SBA - phase 0: expanding ;;;
 {
-$90:D7E1 B9 DC 0B    LDA $0BDC,y[$7E:0BE2]
-$90:D7E4 18          CLC
-$90:D7E5 69 04 00    ADC #$0004
-$90:D7E8 29 FF 00    AND #$00FF
-$90:D7EB 99 DC 0B    STA $0BDC,y[$7E:0BE2]
-$90:D7EE C9 C0 00    CMP #$00C0
-$90:D7F1 30 06       BMI $06    [$D7F9]
-$90:D7F3 A9 01 00    LDA #$0001
-$90:D7F6 99 F0 0B    STA $0BF0,y[$7E:0BF6]
+$90:D7E1 B9 DC 0B    LDA $0BDC,y[$7E:0BE2]  ;\
+$90:D7E4 18          CLC                    ;|
+$90:D7E5 69 04 00    ADC #$0004             ;} Projectile distance = ([projectile distance] + 4) % 100h
+$90:D7E8 29 FF 00    AND #$00FF             ;|
+$90:D7EB 99 DC 0B    STA $0BDC,y[$7E:0BE2]  ;/
+$90:D7EE C9 C0 00    CMP #$00C0             ;\
+$90:D7F1 30 06       BMI $06    [$D7F9]     ;} If [projectile distance] >= C0h:
+$90:D7F3 A9 01 00    LDA #$0001             ;\
+$90:D7F6 99 F0 0B    STA $0BF0,y[$7E:0BF6]  ;} Projectile phase = 1
 
 $90:D7F9 60          RTS
 }
 
 
-;;; $D7FA:  ;;;
+;;; $D7FA: Plasma SBA - phase 1: contracting ;;;
 {
-$90:D7FA B9 DC 0B    LDA $0BDC,y[$7E:0BE2]
-$90:D7FD 38          SEC
-$90:D7FE E9 04 00    SBC #$0004
-$90:D801 29 FF 00    AND #$00FF
-$90:D804 99 DC 0B    STA $0BDC,y[$7E:0BE2]
-$90:D807 C9 2D 00    CMP #$002D
-$90:D80A 10 06       BPL $06    [$D812]
-$90:D80C A9 02 00    LDA #$0002
-$90:D80F 99 F0 0B    STA $0BF0,y[$7E:0BF6]
+$90:D7FA B9 DC 0B    LDA $0BDC,y[$7E:0BE2]  ;\
+$90:D7FD 38          SEC                    ;|
+$90:D7FE E9 04 00    SBC #$0004             ;} Projectile distance = ([projectile distance] - 4) % 100h
+$90:D801 29 FF 00    AND #$00FF             ;|
+$90:D804 99 DC 0B    STA $0BDC,y[$7E:0BE2]  ;/
+$90:D807 C9 2D 00    CMP #$002D             ;\
+$90:D80A 10 06       BPL $06    [$D812]     ;} If [projectile distance] < 2Dh:
+$90:D80C A9 02 00    LDA #$0002             ;\
+$90:D80F 99 F0 0B    STA $0BF0,y[$7E:0BF6]  ;} Projectile phase = 2
 
 $90:D812 60          RTS
 }
 
 
-;;; $D813:  ;;;
+;;; $D813: Plasma SBA - phase 2: dispersing ;;;
 {
-$90:D813 B9 64 0B    LDA $0B64,y[$7E:0B6A]
-$90:D816 38          SEC
-$90:D817 ED 11 09    SBC $0911  [$7E:0911]
-$90:D81A C9 E0 FF    CMP #$FFE0
-$90:D81D 30 24       BMI $24    [$D843]
-$90:D81F C9 20 01    CMP #$0120
-$90:D822 10 1F       BPL $1F    [$D843]
-$90:D824 B9 78 0B    LDA $0B78,y[$7E:0B7E]
-$90:D827 38          SEC
-$90:D828 ED 15 09    SBC $0915  [$7E:0915]
-$90:D82B C9 10 00    CMP #$0010
-$90:D82E 30 13       BMI $13    [$D843]
-$90:D830 C9 00 01    CMP #$0100
-$90:D833 10 0E       BPL $0E    [$D843]
-$90:D835 B9 DC 0B    LDA $0BDC,y[$7E:0BE2]
-$90:D838 18          CLC
-$90:D839 69 04 00    ADC #$0004
-$90:D83C 29 FF 00    AND #$00FF
-$90:D83F 99 DC 0B    STA $0BDC,y[$7E:0BE2]
-$90:D842 60          RTS
+$90:D813 B9 64 0B    LDA $0B64,y[$7E:0B6A]  ;\
+$90:D816 38          SEC                    ;|
+$90:D817 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$90:D81A C9 E0 FF    CMP #$FFE0             ;} If -20h <= [projectile X position] - [layer 1 X position] < 120h:
+$90:D81D 30 24       BMI $24    [$D843]     ;|
+$90:D81F C9 20 01    CMP #$0120             ;|
+$90:D822 10 1F       BPL $1F    [$D843]     ;/
+$90:D824 B9 78 0B    LDA $0B78,y[$7E:0B7E]  ;\
+$90:D827 38          SEC                    ;|
+$90:D828 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:D82B C9 10 00    CMP #$0010             ;} If 10h <= [projectile Y position] - [layer 1 Y position] < 100h:
+$90:D82E 30 13       BMI $13    [$D843]     ;|
+$90:D830 C9 00 01    CMP #$0100             ;|
+$90:D833 10 0E       BPL $0E    [$D843]     ;/
+$90:D835 B9 DC 0B    LDA $0BDC,y[$7E:0BE2]  ;\
+$90:D838 18          CLC                    ;|
+$90:D839 69 04 00    ADC #$0004             ;} Projectile distance = ([projectile distance] + 4) % 100h
+$90:D83C 29 FF 00    AND #$00FF             ;|
+$90:D83F 99 DC 0B    STA $0BDC,y[$7E:0BE2]  ;/
+$90:D842 60          RTS                    ; Return
 
-$90:D843 BB          TYX
-$90:D844 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
+$90:D843 BB          TYX                    ; X = [Y]
+$90:D844 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:D848 60          RTS
 }
 
 
 ;;; $D849: Bomb spread ;;;
 {
-$90:D849 AD 72 0C    LDA $0C72  [$7E:0C72]
-$90:D84C C9 F7 D8    CMP #$D8F7
-$90:D84F D0 02       BNE $02    [$D853]
+$90:D849 AD 72 0C    LDA $0C72  [$7E:0C72]  ;\
+$90:D84C C9 F7 D8    CMP #$D8F7             ;} If [main bomb pre-instruction] = $D8F7:
+$90:D84F D0 02       BNE $02    [$D853]     ;/
 $90:D851 18          CLC
-$90:D852 60          RTS
+$90:D852 60          RTS                    ; Return
 
-$90:D853 A2 0A 00    LDX #$000A
+$90:D853 A2 0A 00    LDX #$000A             ; X = Ah (projectile index)
 
-$90:D856 A9 00 85    LDA #$8500
-$90:D859 9D 18 0C    STA $0C18,x
-$90:D85C 9E 04 0C    STZ $0C04,x
-$90:D85F A9 F7 D8    LDA #$D8F7
-$90:D862 9D 68 0C    STA $0C68,x
-$90:D865 22 A0 80 93 JSL $9380A0[$93:80A0]
-$90:D869 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:D86C 9D 64 0B    STA $0B64,x
-$90:D86F 9E 8C 0B    STZ $0B8C,x
-$90:D872 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:D875 9D 78 0B    STA $0B78,x
-$90:D878 9E A0 0B    STZ $0BA0,x
-$90:D87B 8A          TXA
-$90:D87C 38          SEC
-$90:D87D E9 0A 00    SBC #$000A
-$90:D880 A8          TAY
-$90:D881 B9 D9 D8    LDA $D8D9,y
-$90:D884 9D DC 0B    STA $0BDC,x
-$90:D887 B9 ED D8    LDA $D8ED,y
-$90:D88A 9D 90 0C    STA $0C90,x
-$90:D88D AD D4 0C    LDA $0CD4  [$7E:0CD4]
-$90:D890 0A          ASL A
-$90:D891 0A          ASL A
-$90:D892 EB          XBA
-$90:D893 29 03 00    AND #$0003
-$90:D896 18          CLC
-$90:D897 79 E3 D8    ADC $D8E3,y
-$90:D89A 49 FF FF    EOR #$FFFF
-$90:D89D 1A          INC A
-$90:D89E 9D F0 0B    STA $0BF0,x
-$90:D8A1 9D A4 0C    STA $0CA4,x
-$90:D8A4 B9 CF D8    LDA $D8CF,y
-$90:D8A7 9D 7C 0C    STA $0C7C,x
-$90:D8AA E8          INX
-$90:D8AB E8          INX
-$90:D8AC E0 14 00    CPX #$0014
-$90:D8AF 30 A5       BMI $A5    [$D856]
-$90:D8B1 A9 05 00    LDA #$0005
-$90:D8B4 8D D2 0C    STA $0CD2  [$7E:0CD2]
-$90:D8B7 AD 22 0C    LDA $0C22  [$7E:0C22]
-$90:D8BA EB          XBA
-$90:D8BB 29 0F 00    AND #$000F
-$90:D8BE A8          TAY
-$90:D8BF B9 7A C2    LDA $C27A,y
-$90:D8C2 29 FF 00    AND #$00FF
-$90:D8C5 8D CC 0C    STA $0CCC  [$7E:0CCC]
+; LOOP
+$90:D856 A9 00 85    LDA #$8500             ;\
+$90:D859 9D 18 0C    STA $0C18,x            ;} Bomb [X] type = bomb, don't interact with Samus
+$90:D85C 9E 04 0C    STZ $0C04,x            ; Bomb [X] direction = 0
+$90:D85F A9 F7 D8    LDA #$D8F7             ;\
+$90:D862 9D 68 0C    STA $0C68,x            ;} Bomb [X] pre-instruction = $D8F7
+$90:D865 22 A0 80 93 JSL $9380A0[$93:80A0]  ; Initialise bomb
+$90:D869 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:D86C 9D 64 0B    STA $0B64,x            ;} Bomb [X] X position = [Samus X position]
+$90:D86F 9E 8C 0B    STZ $0B8C,x            ; Bomb [X] X subposition = 0
+$90:D872 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:D875 9D 78 0B    STA $0B78,x            ;} Bomb [X] Y position = [Samus Y position]
+$90:D878 9E A0 0B    STZ $0BA0,x            ; Bomb [X] Y subposition = 0
+$90:D87B 8A          TXA                    ;\
+$90:D87C 38          SEC                    ;|
+$90:D87D E9 0A 00    SBC #$000A             ;} Y = [X] - Ah
+$90:D880 A8          TAY                    ;/
+$90:D881 B9 D9 D8    LDA $D8D9,y            ;\
+$90:D884 9D DC 0B    STA $0BDC,x            ;} Bomb [X] X speed = [$D8D9 + [Y]]
+$90:D887 B9 ED D8    LDA $D8ED,y            ;\
+$90:D88A 9D 90 0C    STA $0C90,x            ;} Bomb [X] Y subspeed = [$D8ED + [Y]]
+$90:D88D AD D4 0C    LDA $0CD4  [$7E:0CD4]  ;\
+$90:D890 0A          ASL A                  ;|
+$90:D891 0A          ASL A                  ;|
+$90:D892 EB          XBA                    ;|
+$90:D893 29 03 00    AND #$0003             ;|
+$90:D896 18          CLC                    ;} Bomb [X] Y speed = -([bomb spread charge timeout counter] / 40h % 4 + [$D8E3 + [Y]])
+$90:D897 79 E3 D8    ADC $D8E3,y            ;|
+$90:D89A 49 FF FF    EOR #$FFFF             ;|
+$90:D89D 1A          INC A                  ;|
+$90:D89E 9D F0 0B    STA $0BF0,x            ;/
+$90:D8A1 9D A4 0C    STA $0CA4,x            ; Bomb [X] $0CA4 = [bomb [X] Y speed]
+$90:D8A4 B9 CF D8    LDA $D8CF,y            ;\
+$90:D8A7 9D 7C 0C    STA $0C7C,x            ;} Bomb [X] timer = [$D8CF + [Y]]
+$90:D8AA E8          INX                    ;\
+$90:D8AB E8          INX                    ;} X += 2
+$90:D8AC E0 14 00    CPX #$0014             ;\
+$90:D8AF 30 A5       BMI $A5    [$D856]     ;} If [X] < 14h: go to LOOP
+$90:D8B1 A9 05 00    LDA #$0005             ;\
+$90:D8B4 8D D2 0C    STA $0CD2  [$7E:0CD2]  ;} Bomb counter = 5
+$90:D8B7 AD 22 0C    LDA $0C22  [$7E:0C22]  ;\
+$90:D8BA EB          XBA                    ;|
+$90:D8BB 29 0F 00    AND #$000F             ;|
+$90:D8BE A8          TAY                    ;} Cooldown timer = [$C27A + (main bomb projectile type)]
+$90:D8BF B9 7A C2    LDA $C27A,y            ;|
+$90:D8C2 29 FF 00    AND #$00FF             ;|
+$90:D8C5 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;/
 $90:D8C8 9C D4 0C    STZ $0CD4  [$7E:0CD4]  ; Bomb spread charge timeout counter = 0
-$90:D8CB 9C D0 0C    STZ $0CD0  [$7E:0CD0]
+$90:D8CB 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:D8CE 60          RTS
 }
 
@@ -12066,124 +12322,127 @@ $90:D8ED             dw 0000, 0000, 8000, 0000, 0000 ; Bomb Y subspeeds
 
 ;;; $D8F7: Projectile pre-instruction - spread bomb ;;;
 {
-$90:D8F7 BD 04 0C    LDA $0C04,x
-$90:D8FA 29 F0 00    AND #$00F0
-$90:D8FD F0 05       BEQ $05    [$D904]
-$90:D8FF 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:D903 60          RTS
+$90:D8F7 BD 04 0C    LDA $0C04,x            ;\
+$90:D8FA 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:D8FD F0 05       BEQ $05    [$D904]     ;/
+$90:D8FF 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:D903 60          RTS                    ; Return
 
-$90:D904 20 28 C1    JSR $C128  [$90:C128]
-$90:D907 BD 7C 0C    LDA $0C7C,x
-$90:D90A D0 03       BNE $03    [$D90F]
-$90:D90C 4C B7 D9    JMP $D9B7  [$90:D9B7]
+$90:D904 20 28 C1    JSR $C128  [$90:C128]  ; Handle bomb
+$90:D907 BD 7C 0C    LDA $0C7C,x            ;\
+$90:D90A D0 03       BNE $03    [$D90F]     ;} If [bomb timer] = 0:
+$90:D90C 4C B7 D9    JMP $D9B7  [$90:D9B7]  ; Go to BRANCH_MOVEMENT_DONE
 
-$90:D90F BD 90 0C    LDA $0C90,x
-$90:D912 18          CLC
-$90:D913 6D 32 0B    ADC $0B32  [$7E:0B32]
-$90:D916 9D 90 0C    STA $0C90,x
-$90:D919 BD F0 0B    LDA $0BF0,x
-$90:D91C 6D 34 0B    ADC $0B34  [$7E:0B34]
-$90:D91F 9D F0 0B    STA $0BF0,x
-$90:D922 BD A0 0B    LDA $0BA0,x
-$90:D925 18          CLC
-$90:D926 7D 90 0C    ADC $0C90,x
-$90:D929 9D A0 0B    STA $0BA0,x
-$90:D92C BD 78 0B    LDA $0B78,x
-$90:D92F 7D F0 0B    ADC $0BF0,x
-$90:D932 9D 78 0B    STA $0B78,x
-$90:D935 22 21 A6 94 JSL $94A621[$94:A621]
-$90:D939 90 39       BCC $39    [$D974]
+$90:D90F BD 90 0C    LDA $0C90,x            ;\
+$90:D912 18          CLC                    ;|
+$90:D913 6D 32 0B    ADC $0B32  [$7E:0B32]  ;|
+$90:D916 9D 90 0C    STA $0C90,x            ;} Bomb Y speed += [Samus Y acceleration]
+$90:D919 BD F0 0B    LDA $0BF0,x            ;|
+$90:D91C 6D 34 0B    ADC $0B34  [$7E:0B34]  ;|
+$90:D91F 9D F0 0B    STA $0BF0,x            ;/
+$90:D922 BD A0 0B    LDA $0BA0,x            ;\
+$90:D925 18          CLC                    ;|
+$90:D926 7D 90 0C    ADC $0C90,x            ;|
+$90:D929 9D A0 0B    STA $0BA0,x            ;} Bomb Y position += [bomb Y speed]
+$90:D92C BD 78 0B    LDA $0B78,x            ;|
+$90:D92F 7D F0 0B    ADC $0BF0,x            ;|
+$90:D932 9D 78 0B    STA $0B78,x            ;/
+$90:D935 22 21 A6 94 JSL $94A621[$94:A621]  ; Spread bomb block collision detection
+$90:D939 90 39       BCC $39    [$D974]     ; If no collision detected: go to BRANCH_FALLING
 $90:D93B AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:D93E 8A          TXA
-$90:D93F 38          SEC
-$90:D940 E9 0A 00    SBC #$000A
-$90:D943 A8          TAY
-$90:D944 BD A0 0B    LDA $0BA0,x
-$90:D947 38          SEC
-$90:D948 FD 90 0C    SBC $0C90,x
-$90:D94B 9D A0 0B    STA $0BA0,x
-$90:D94E BD 78 0B    LDA $0B78,x
-$90:D951 FD F0 0B    SBC $0BF0,x
-$90:D954 9D 78 0B    STA $0B78,x
-$90:D957 BD F0 0B    LDA $0BF0,x
-$90:D95A 30 0F       BMI $0F    [$D96B]
-$90:D95C B9 ED D8    LDA $D8ED,y
-$90:D95F 9D 90 0C    STA $0C90,x
-$90:D962 BD A4 0C    LDA $0CA4,x
-$90:D965 9D F0 0B    STA $0BF0,x
-$90:D968 4C 07 DA    JMP $DA07  [$90:DA07]
+$90:D93E 8A          TXA                    ;\
+$90:D93F 38          SEC                    ;|
+$90:D940 E9 0A 00    SBC #$000A             ;} Y = [X] - Ah
+$90:D943 A8          TAY                    ;/
+$90:D944 BD A0 0B    LDA $0BA0,x            ;\
+$90:D947 38          SEC                    ;|
+$90:D948 FD 90 0C    SBC $0C90,x            ;|
+$90:D94B 9D A0 0B    STA $0BA0,x            ;} Bomb Y position -= [bomb Y speed]
+$90:D94E BD 78 0B    LDA $0B78,x            ;|
+$90:D951 FD F0 0B    SBC $0BF0,x            ;|
+$90:D954 9D 78 0B    STA $0B78,x            ;/
+$90:D957 BD F0 0B    LDA $0BF0,x            ;\
+$90:D95A 30 0F       BMI $0F    [$D96B]     ;} If [bomb Y speed] & 8000h = 0:
+$90:D95C B9 ED D8    LDA $D8ED,y            ;\
+$90:D95F 9D 90 0C    STA $0C90,x            ;} Bomb Y subspeed = [$D8ED + [Y]]
+$90:D962 BD A4 0C    LDA $0CA4,x            ;\
+$90:D965 9D F0 0B    STA $0BF0,x            ;} Bomb Y speed = [bomb $0CA4]
+$90:D968 4C 07 DA    JMP $DA07  [$90:DA07]  ; Return
 
-$90:D96B 9E F0 0B    STZ $0BF0,x
-$90:D96E 9E C8 0B    STZ $0BC8,x
-$90:D971 4C 07 DA    JMP $DA07  [$90:DA07]
+$90:D96B 9E F0 0B    STZ $0BF0,x            ; Bomb Y speed = 0
+$90:D96E 9E C8 0B    STZ $0BC8,x            ; Bomb Y radius = 0
+$90:D971 4C 07 DA    JMP $DA07  [$90:DA07]  ; Return
 
+; BRANCH_FALLING
 $90:D974 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:D977 BD DC 0B    LDA $0BDC,x
-$90:D97A EB          XBA
-$90:D97B 48          PHA
-$90:D97C 29 00 FF    AND #$FF00
-$90:D97F 85 14       STA $14    [$7E:0014]
-$90:D981 68          PLA
-$90:D982 29 FF 00    AND #$00FF
-$90:D985 85 12       STA $12    [$7E:0012]
-$90:D987 89 80 00    BIT #$0080
-$90:D98A F0 07       BEQ $07    [$D993]
-$90:D98C 29 7F FF    AND #$FF7F
-$90:D98F 85 12       STA $12    [$7E:0012]
-$90:D991 80 13       BRA $13    [$D9A6]
+$90:D977 BD DC 0B    LDA $0BDC,x            ;\
+$90:D97A EB          XBA                    ;|
+$90:D97B 48          PHA                    ;|
+$90:D97C 29 00 FF    AND #$FF00             ;|
+$90:D97F 85 14       STA $14    [$7E:0014]  ;} $12.$14 = [bomb X speed] / 100h
+$90:D981 68          PLA                    ;|
+$90:D982 29 FF 00    AND #$00FF             ;|
+$90:D985 85 12       STA $12    [$7E:0012]  ;/
+$90:D987 89 80 00    BIT #$0080             ;\
+$90:D98A F0 07       BEQ $07    [$D993]     ;} If [$12] & 80h != 0:
+$90:D98C 29 7F FF    AND #$FF7F             ;\
+$90:D98F 85 12       STA $12    [$7E:0012]  ;} $12 &= ~80h
+$90:D991 80 13       BRA $13    [$D9A6]     ; Go to BRANCH_LEFT
 
-$90:D993 BD 8C 0B    LDA $0B8C,x
-$90:D996 18          CLC
-$90:D997 65 14       ADC $14    [$7E:0014]
-$90:D999 9D 8C 0B    STA $0B8C,x
-$90:D99C BD 64 0B    LDA $0B64,x
-$90:D99F 65 12       ADC $12    [$7E:0012]
-$90:D9A1 9D 64 0B    STA $0B64,x
-$90:D9A4 80 11       BRA $11    [$D9B7]
+$90:D993 BD 8C 0B    LDA $0B8C,x            ;\
+$90:D996 18          CLC                    ;|
+$90:D997 65 14       ADC $14    [$7E:0014]  ;|
+$90:D999 9D 8C 0B    STA $0B8C,x            ;} Bomb X position += [$12].[$14]
+$90:D99C BD 64 0B    LDA $0B64,x            ;|
+$90:D99F 65 12       ADC $12    [$7E:0012]  ;|
+$90:D9A1 9D 64 0B    STA $0B64,x            ;/
+$90:D9A4 80 11       BRA $11    [$D9B7]     ; Go to BRANCH_MOVEMENT_DONE
 
-$90:D9A6 BD 8C 0B    LDA $0B8C,x
-$90:D9A9 38          SEC
-$90:D9AA E5 14       SBC $14    [$7E:0014]
-$90:D9AC 9D 8C 0B    STA $0B8C,x
-$90:D9AF BD 64 0B    LDA $0B64,x
-$90:D9B2 E5 12       SBC $12    [$7E:0012]
-$90:D9B4 9D 64 0B    STA $0B64,x
+; BRANCH_LEFT
+$90:D9A6 BD 8C 0B    LDA $0B8C,x            ;\
+$90:D9A9 38          SEC                    ;|
+$90:D9AA E5 14       SBC $14    [$7E:0014]  ;|
+$90:D9AC 9D 8C 0B    STA $0B8C,x            ;} Bomb X position -= [$12].[$14]
+$90:D9AF BD 64 0B    LDA $0B64,x            ;|
+$90:D9B2 E5 12       SBC $12    [$7E:0012]  ;|
+$90:D9B4 9D 64 0B    STA $0B64,x            ;/
 
-$90:D9B7 22 21 A6 94 JSL $94A621[$94:A621]
-$90:D9BB 90 4A       BCC $4A    [$DA07]
+; BRANCH_MOVEMENT_DONE
+$90:D9B7 22 21 A6 94 JSL $94A621[$94:A621]  ; Spread bomb block collision detection
+$90:D9BB 90 4A       BCC $4A    [$DA07]     ; If collision not detected: return
 $90:D9BD AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:D9C0 BD DC 0B    LDA $0BDC,x
-$90:D9C3 48          PHA
-$90:D9C4 EB          XBA
-$90:D9C5 48          PHA
-$90:D9C6 29 00 FF    AND #$FF00
-$90:D9C9 85 14       STA $14    [$7E:0014]
-$90:D9CB 68          PLA
-$90:D9CC 29 7F 00    AND #$007F
-$90:D9CF 85 12       STA $12    [$7E:0012]
-$90:D9D1 68          PLA
-$90:D9D2 89 00 80    BIT #$8000
-$90:D9D5 F0 19       BEQ $19    [$D9F0]
-$90:D9D7 29 FF 7F    AND #$7FFF
-$90:D9DA 9D DC 0B    STA $0BDC,x
-$90:D9DD BD 8C 0B    LDA $0B8C,x
-$90:D9E0 18          CLC
-$90:D9E1 65 14       ADC $14    [$7E:0014]
-$90:D9E3 9D 8C 0B    STA $0B8C,x
-$90:D9E6 BD 64 0B    LDA $0B64,x
-$90:D9E9 65 12       ADC $12    [$7E:0012]
-$90:D9EB 9D 64 0B    STA $0B64,x
+$90:D9C0 BD DC 0B    LDA $0BDC,x            ;\
+$90:D9C3 48          PHA                    ;|
+$90:D9C4 EB          XBA                    ;|
+$90:D9C5 48          PHA                    ;|
+$90:D9C6 29 00 FF    AND #$FF00             ;} $12.$14 = ([bomb X speed] & ~80h) / 100h
+$90:D9C9 85 14       STA $14    [$7E:0014]  ;|
+$90:D9CB 68          PLA                    ;|
+$90:D9CC 29 7F 00    AND #$007F             ;|
+$90:D9CF 85 12       STA $12    [$7E:0012]  ;/
+$90:D9D1 68          PLA                    ;\
+$90:D9D2 89 00 80    BIT #$8000             ;} If [bomb X speed] & 8000h != 0:
+$90:D9D5 F0 19       BEQ $19    [$D9F0]     ;/
+$90:D9D7 29 FF 7F    AND #$7FFF             ;\
+$90:D9DA 9D DC 0B    STA $0BDC,x            ;} Bomb X speed &= ~8000h
+$90:D9DD BD 8C 0B    LDA $0B8C,x            ;\
+$90:D9E0 18          CLC                    ;|
+$90:D9E1 65 14       ADC $14    [$7E:0014]  ;|
+$90:D9E3 9D 8C 0B    STA $0B8C,x            ;} Bomb X position += [$12].[$14]
+$90:D9E6 BD 64 0B    LDA $0B64,x            ;|
+$90:D9E9 65 12       ADC $12    [$7E:0012]  ;|
+$90:D9EB 9D 64 0B    STA $0B64,x            ;/
 $90:D9EE 80 17       BRA $17    [$DA07]
 
-$90:D9F0 09 00 80    ORA #$8000
-$90:D9F3 9D DC 0B    STA $0BDC,x
-$90:D9F6 BD 8C 0B    LDA $0B8C,x
-$90:D9F9 38          SEC
-$90:D9FA E5 14       SBC $14    [$7E:0014]
-$90:D9FC 9D 8C 0B    STA $0B8C,x
-$90:D9FF BD 64 0B    LDA $0B64,x
-$90:DA02 E5 12       SBC $12    [$7E:0012]
-$90:DA04 9D 64 0B    STA $0B64,x
+$90:D9F0 09 00 80    ORA #$8000             ;\ Else ([bomb X speed] & 8000h = 0):
+$90:D9F3 9D DC 0B    STA $0BDC,x            ;} Bomb X speed |= 8000h
+$90:D9F6 BD 8C 0B    LDA $0B8C,x            ;\
+$90:D9F9 38          SEC                    ;|
+$90:D9FA E5 14       SBC $14    [$7E:0014]  ;|
+$90:D9FC 9D 8C 0B    STA $0B8C,x            ;} Bomb X position -= [$12].[$14]
+$90:D9FF BD 64 0B    LDA $0B64,x            ;|
+$90:DA02 E5 12       SBC $12    [$7E:0012]  ;|
+$90:DA04 9D 64 0B    STA $0B64,x            ;/
 
 $90:DA07 60          RTS
 }
@@ -12191,222 +12450,226 @@ $90:DA07 60          RTS
 
 ;;; $DA08: Projectile pre-instruction - wave SBA ;;;
 {
-$90:DA08 BD 04 0C    LDA $0C04,x
-$90:DA0B 89 F0 00    BIT #$00F0
-$90:DA0E D0 07       BNE $07    [$DA17]
-$90:DA10 DE F0 0B    DEC $0BF0,x
-$90:DA13 F0 02       BEQ $02    [$DA17]
-$90:DA15 10 0C       BPL $0C    [$DA23]
+$90:DA08 BD 04 0C    LDA $0C04,x            ;\
+$90:DA0B 89 F0 00    BIT #$00F0             ;} If projectile is not deleted:
+$90:DA0E D0 07       BNE $07    [$DA17]     ;/
+$90:DA10 DE F0 0B    DEC $0BF0,x            ; Decrement projectile SBA timer
+$90:DA13 F0 02       BEQ $02    [$DA17]     ;\
+$90:DA15 10 0C       BPL $0C    [$DA23]     ;} If [projectile SBA timer] > 0: go to BRANCH_ALIVE
 
 $90:DA17 A9 29 00    LDA #$0029             ;\
 $90:DA1A 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 29h, sound library 1, max queued sounds allowed = 6 (wave SBA end)
-$90:DA1E 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DA22 60          RTS
+$90:DA1E 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:DA22 60          RTS                    ; Return
 
-$90:DA23 BD DC 0B    LDA $0BDC,x
-$90:DA26 85 22       STA $22    [$7E:0022]
-$90:DA28 BD 7C 0C    LDA $0C7C,x
-$90:DA2B 85 24       STA $24    [$7E:0024]
-$90:DA2D DE 90 0C    DEC $0C90,x
-$90:DA30 D0 0D       BNE $0D    [$DA3F]
-$90:DA32 A9 04 00    LDA #$0004
-$90:DA35 9D 90 0C    STA $0C90,x
-$90:DA38 22 57 B6 90 JSL $90B657[$90:B657]
+; BRANCH_ALIVE
+$90:DA23 BD DC 0B    LDA $0BDC,x            ;\
+$90:DA26 85 22       STA $22    [$7E:0022]  ;} $22 = [projectile X velocity] (old projectile X velocity)
+$90:DA28 BD 7C 0C    LDA $0C7C,x            ;\
+$90:DA2B 85 24       STA $24    [$7E:0024]  ;} $24 = [projectile Y velocity] (old projectile Y velocity)
+$90:DA2D DE 90 0C    DEC $0C90,x            ; Decrement projectile trail timer
+$90:DA30 D0 0D       BNE $0D    [$DA3F]     ; If [projectile trail timer] = 0:
+$90:DA32 A9 04 00    LDA #$0004             ;\
+$90:DA35 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 4
+$90:DA38 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:DA3C AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
-$90:DA3F AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:DA42 DD 64 0B    CMP $0B64,x
-$90:DA45 30 11       BMI $11    [$DA58]
-$90:DA47 BD DC 0B    LDA $0BDC,x
-$90:DA4A C9 00 08    CMP #$0800
-$90:DA4D 10 18       BPL $18    [$DA67]
-$90:DA4F 18          CLC
-$90:DA50 69 40 00    ADC #$0040
-$90:DA53 9D DC 0B    STA $0BDC,x
+$90:DA3F AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:DA42 DD 64 0B    CMP $0B64,x            ;} If [Samus X position] >= [projectile X position]:
+$90:DA45 30 11       BMI $11    [$DA58]     ;/
+$90:DA47 BD DC 0B    LDA $0BDC,x            ;\
+$90:DA4A C9 00 08    CMP #$0800             ;} If [projectile X velocity] < 800h:
+$90:DA4D 10 18       BPL $18    [$DA67]     ;/
+$90:DA4F 18          CLC                    ;\
+$90:DA50 69 40 00    ADC #$0040             ;} Projectile X velocity += 40h
+$90:DA53 9D DC 0B    STA $0BDC,x            ;/
 $90:DA56 80 0F       BRA $0F    [$DA67]
 
-$90:DA58 BD DC 0B    LDA $0BDC,x
-$90:DA5B C9 01 F8    CMP #$F801
-$90:DA5E 30 07       BMI $07    [$DA67]
-$90:DA60 38          SEC
-$90:DA61 E9 40 00    SBC #$0040
-$90:DA64 9D DC 0B    STA $0BDC,x
+$90:DA58 BD DC 0B    LDA $0BDC,x            ;\ Else ([Samus X position] < [projectile X position]):
+$90:DA5B C9 01 F8    CMP #$F801             ;} If [projectile X velocity] > -800h:
+$90:DA5E 30 07       BMI $07    [$DA67]     ;/
+$90:DA60 38          SEC                    ;\
+$90:DA61 E9 40 00    SBC #$0040             ;} Projectile X velocity -= 40h
+$90:DA64 9D DC 0B    STA $0BDC,x            ;/
 
-$90:DA67 BD DC 0B    LDA $0BDC,x
-$90:DA6A EB          XBA
-$90:DA6B 48          PHA
-$90:DA6C 29 00 FF    AND #$FF00
-$90:DA6F 85 14       STA $14    [$7E:0014]
-$90:DA71 68          PLA
-$90:DA72 29 FF 00    AND #$00FF
-$90:DA75 89 80 00    BIT #$0080
-$90:DA78 F0 03       BEQ $03    [$DA7D]
-$90:DA7A 09 00 FF    ORA #$FF00
-
-$90:DA7D 85 12       STA $12    [$7E:0012]
-$90:DA7F BD 8C 0B    LDA $0B8C,x
-$90:DA82 18          CLC
-$90:DA83 65 14       ADC $14    [$7E:0014]
-$90:DA85 9D 8C 0B    STA $0B8C,x
-$90:DA88 BD 64 0B    LDA $0B64,x
-$90:DA8B 65 12       ADC $12    [$7E:0012]
-$90:DA8D 9D 64 0B    STA $0B64,x
-$90:DA90 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:DA93 DD 78 0B    CMP $0B78,x
-$90:DA96 30 11       BMI $11    [$DAA9]
-$90:DA98 BD 7C 0C    LDA $0C7C,x
-$90:DA9B C9 00 08    CMP #$0800
-$90:DA9E 10 18       BPL $18    [$DAB8]
-$90:DAA0 18          CLC
-$90:DAA1 69 40 00    ADC #$0040
-$90:DAA4 9D 7C 0C    STA $0C7C,x
+$90:DA67 BD DC 0B    LDA $0BDC,x            ;\
+$90:DA6A EB          XBA                    ;|
+$90:DA6B 48          PHA                    ;|
+$90:DA6C 29 00 FF    AND #$FF00             ;|
+$90:DA6F 85 14       STA $14    [$7E:0014]  ;|
+$90:DA71 68          PLA                    ;|
+$90:DA72 29 FF 00    AND #$00FF             ;} $12.$14 = ±[projectile X velocity] * 100h
+$90:DA75 89 80 00    BIT #$0080             ;|
+$90:DA78 F0 03       BEQ $03    [$DA7D]     ;|
+$90:DA7A 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$90:DA7D 85 12       STA $12    [$7E:0012]  ;/
+$90:DA7F BD 8C 0B    LDA $0B8C,x            ;\
+$90:DA82 18          CLC                    ;|
+$90:DA83 65 14       ADC $14    [$7E:0014]  ;|
+$90:DA85 9D 8C 0B    STA $0B8C,x            ;} Projectile X position += [$12].[$14]
+$90:DA88 BD 64 0B    LDA $0B64,x            ;|
+$90:DA8B 65 12       ADC $12    [$7E:0012]  ;|
+$90:DA8D 9D 64 0B    STA $0B64,x            ;/
+$90:DA90 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:DA93 DD 78 0B    CMP $0B78,x            ;} If [Samus Y position] >= [projectile Y position]:
+$90:DA96 30 11       BMI $11    [$DAA9]     ;/
+$90:DA98 BD 7C 0C    LDA $0C7C,x            ;\
+$90:DA9B C9 00 08    CMP #$0800             ;} If [projectile Y velocity] < 800h:
+$90:DA9E 10 18       BPL $18    [$DAB8]     ;/
+$90:DAA0 18          CLC                    ;\
+$90:DAA1 69 40 00    ADC #$0040             ;} Projectile Y velocity += 40h
+$90:DAA4 9D 7C 0C    STA $0C7C,x            ;/
 $90:DAA7 80 0F       BRA $0F    [$DAB8]
 
-$90:DAA9 BD 7C 0C    LDA $0C7C,x
-$90:DAAC C9 01 F8    CMP #$F801
-$90:DAAF 30 07       BMI $07    [$DAB8]
-$90:DAB1 38          SEC
-$90:DAB2 E9 40 00    SBC #$0040
-$90:DAB5 9D 7C 0C    STA $0C7C,x
+$90:DAA9 BD 7C 0C    LDA $0C7C,x            ;\ Else ([Samus Y position] < [projectile Y position]):
+$90:DAAC C9 01 F8    CMP #$F801             ;} If [projectile Y velocity] > -800h:
+$90:DAAF 30 07       BMI $07    [$DAB8]     ;/
+$90:DAB1 38          SEC                    ;\
+$90:DAB2 E9 40 00    SBC #$0040             ;} Projectile Y velocity -= 40h
+$90:DAB5 9D 7C 0C    STA $0C7C,x            ;/
 
-$90:DAB8 BD 7C 0C    LDA $0C7C,x
-$90:DABB EB          XBA
-$90:DABC 48          PHA
-$90:DABD 29 00 FF    AND #$FF00
-$90:DAC0 85 14       STA $14    [$7E:0014]
-$90:DAC2 68          PLA
-$90:DAC3 29 FF 00    AND #$00FF
-$90:DAC6 89 80 00    BIT #$0080
-$90:DAC9 F0 03       BEQ $03    [$DACE]
-$90:DACB 09 00 FF    ORA #$FF00
-
-$90:DACE 85 12       STA $12    [$7E:0012]
-$90:DAD0 BD A0 0B    LDA $0BA0,x
-$90:DAD3 18          CLC
-$90:DAD4 65 14       ADC $14    [$7E:0014]
-$90:DAD6 9D A0 0B    STA $0BA0,x
-$90:DAD9 BD 78 0B    LDA $0B78,x
-$90:DADC 65 12       ADC $12    [$7E:0012]
-$90:DADE 9D 78 0B    STA $0B78,x
-$90:DAE1 E0 06 00    CPX #$0006
-$90:DAE4 D0 16       BNE $16    [$DAFC]
-$90:DAE6 BD DC 0B    LDA $0BDC,x
-$90:DAE9 30 06       BMI $06    [$DAF1]
-$90:DAEB A5 22       LDA $22    [$7E:0022]
-$90:DAED 10 0D       BPL $0D    [$DAFC]
+$90:DAB8 BD 7C 0C    LDA $0C7C,x            ;\
+$90:DABB EB          XBA                    ;|
+$90:DABC 48          PHA                    ;|
+$90:DABD 29 00 FF    AND #$FF00             ;|
+$90:DAC0 85 14       STA $14    [$7E:0014]  ;|
+$90:DAC2 68          PLA                    ;|
+$90:DAC3 29 FF 00    AND #$00FF             ;} $12.$14 = ±[projectile Y velocity] * 100h
+$90:DAC6 89 80 00    BIT #$0080             ;|
+$90:DAC9 F0 03       BEQ $03    [$DACE]     ;|
+$90:DACB 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$90:DACE 85 12       STA $12    [$7E:0012]  ;/
+$90:DAD0 BD A0 0B    LDA $0BA0,x            ;\
+$90:DAD3 18          CLC                    ;|
+$90:DAD4 65 14       ADC $14    [$7E:0014]  ;|
+$90:DAD6 9D A0 0B    STA $0BA0,x            ;} Projectile Y position += [$12].[$14]
+$90:DAD9 BD 78 0B    LDA $0B78,x            ;|
+$90:DADC 65 12       ADC $12    [$7E:0012]  ;|
+$90:DADE 9D 78 0B    STA $0B78,x            ;/
+$90:DAE1 E0 06 00    CPX #$0006             ;\
+$90:DAE4 D0 16       BNE $16    [$DAFC]     ;} If [X] != 6: go to BRANCH_RETURN
+$90:DAE6 BD DC 0B    LDA $0BDC,x            ;\
+$90:DAE9 30 06       BMI $06    [$DAF1]     ;} If [projectile X velocity] >= 0:
+$90:DAEB A5 22       LDA $22    [$7E:0022]  ;\
+$90:DAED 10 0D       BPL $0D    [$DAFC]     ;} If (old projectile X velocity) >= 0: go to BRANCH_RETURN
 $90:DAEF 80 04       BRA $04    [$DAF5]
 
-$90:DAF1 A5 22       LDA $22    [$7E:0022]
-$90:DAF3 30 07       BMI $07    [$DAFC]
+$90:DAF1 A5 22       LDA $22    [$7E:0022]  ;\ Else ([projectile X velocity] < 0):
+$90:DAF3 30 07       BMI $07    [$DAFC]     ;} If (old projectile X velocity) < 0: go to BRANCH_RETURN
 
 $90:DAF5 A9 28 00    LDA #$0028             ;\
 $90:DAF8 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 28h, sound library 1, max queued sounds allowed = 6 (wave SBA)
 
-$90:DAFC A9 02 00    LDA #$0002
-$90:DAFF 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:DB02 9C D0 0C    STZ $0CD0  [$7E:0CD0]
+; BRANCH_RETURN
+$90:DAFC A9 02 00    LDA #$0002             ;\
+$90:DAFF 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 2
+$90:DB02 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:DB05 60          RTS
 }
 
 
 ;;; $DB06: Projectile pre-instruction - spazer SBA ;;;
 {
-$90:DB06 BD 04 0C    LDA $0C04,x
-$90:DB09 29 F0 00    AND #$00F0
-$90:DB0C F0 04       BEQ $04    [$DB12]
-$90:DB0E FC 4F DB    JSR ($DB4F,x)
-$90:DB11 60          RTS
+$90:DB06 BD 04 0C    LDA $0C04,x            ;\
+$90:DB09 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:DB0C F0 04       BEQ $04    [$DB12]     ;/
+$90:DB0E FC 4F DB    JSR ($DB4F,x)          ; Execute [$DB4F + [X]]
+$90:DB11 60          RTS                    ; Return
 
-$90:DB12 DE 90 0C    DEC $0C90,x
-$90:DB15 D0 0D       BNE $0D    [$DB24]
-$90:DB17 A9 04 00    LDA #$0004
-$90:DB1A 9D 90 0C    STA $0C90,x
-$90:DB1D 22 57 B6 90 JSL $90B657[$90:B657]
+$90:DB12 DE 90 0C    DEC $0C90,x            ; Decrement projectile trail timer
+$90:DB15 D0 0D       BNE $0D    [$DB24]     ; If [projectile trail timer] = 0:
+$90:DB17 A9 04 00    LDA #$0004             ;\
+$90:DB1A 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 4
+$90:DB1D 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:DB21 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
-$90:DB24 BD 7C 0C    LDA $0C7C,x
-$90:DB27 A8          TAY
-$90:DB28 BD DC 0B    LDA $0BDC,x
-$90:DB2B 20 39 CC    JSR $CC39  [$90:CC39]
-$90:DB2E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$90:DB31 18          CLC
-$90:DB32 65 14       ADC $14    [$7E:0014]
-$90:DB34 9D 64 0B    STA $0B64,x
-$90:DB37 9B          TXY
-$90:DB38 BD A4 0C    LDA $0CA4,x
-$90:DB3B AA          TAX
-$90:DB3C FC 49 DB    JSR ($DB49,x)
-$90:DB3F A9 02 00    LDA #$0002
-$90:DB42 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:DB45 9C D0 0C    STZ $0CD0  [$7E:0CD0]
+$90:DB24 BD 7C 0C    LDA $0C7C,x            ;\
+$90:DB27 A8          TAY                    ;} Y = [projectile angle]
+$90:DB28 BD DC 0B    LDA $0BDC,x            ; A = [projectile distance]
+$90:DB2B 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
+$90:DB2E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$90:DB31 18          CLC                    ;|
+$90:DB32 65 14       ADC $14    [$7E:0014]  ;} Projectile X position = [Samus X position] + [$14]
+$90:DB34 9D 64 0B    STA $0B64,x            ;/
+$90:DB37 9B          TXY                    ; Y = [X]
+$90:DB38 BD A4 0C    LDA $0CA4,x            ;\
+$90:DB3B AA          TAX                    ;} Execute [$DB49 + [projectile phase]]
+$90:DB3C FC 49 DB    JSR ($DB49,x)          ;/
+$90:DB3F A9 02 00    LDA #$0002             ;\
+$90:DB42 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 2
+$90:DB45 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:DB48 60          RTS
 
 $90:DB49             dw DB93, DBCF, DC30
+
+; Projectile clearing subroutines
 $90:DB4F             dw DB57, DB66, DB75, DB84
 }
 
 
-;;; $DB57:  ;;;
+;;; $DB57: Clear spazer SBA projectile pair - [X] = 0 ;;;
 {
-$90:DB57 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB5B A2 04 00    LDX #$0004
-$90:DB5E 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB62 A2 00 00    LDX #$0000
+$90:DB57 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:DB5B A2 04 00    LDX #$0004             ;\
+$90:DB5E 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 4
+$90:DB62 A2 00 00    LDX #$0000             ;/
 $90:DB65 60          RTS
 }
 
 
-;;; $DB66:  ;;;
+;;; $DB66: Clear spazer SBA projectile pair - [X] = 2 ;;;
 {
-$90:DB66 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB6A A2 06 00    LDX #$0006
-$90:DB6D 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB71 A2 02 00    LDX #$0002
+$90:DB66 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:DB6A A2 06 00    LDX #$0006             ;\
+$90:DB6D 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 6
+$90:DB71 A2 02 00    LDX #$0002             ;/
 $90:DB74 60          RTS
 }
 
 
-;;; $DB75:  ;;;
+;;; $DB75: Clear spazer SBA projectile pair - [X] = 4 ;;;
 {
-$90:DB75 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB79 A2 00 00    LDX #$0000
-$90:DB7C 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB80 A2 04 00    LDX #$0004
+$90:DB75 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:DB79 A2 00 00    LDX #$0000             ;\
+$90:DB7C 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 0
+$90:DB80 A2 04 00    LDX #$0004             ;/
 $90:DB83 60          RTS
 }
 
 
-;;; $DB84:  ;;;
+;;; $DB84: Clear spazer SBA projectile pair - [X] = 6 ;;;
 {
-$90:DB84 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB88 A2 02 00    LDX #$0002
-$90:DB8B 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DB8F A2 06 00    LDX #$0006
+$90:DB84 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:DB88 A2 02 00    LDX #$0002             ;\
+$90:DB8B 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ;} Clear projectile 2
+$90:DB8F A2 06 00    LDX #$0006             ;/
 $90:DB92 60          RTS
 }
 
 
-;;; $DB93:  ;;;
+;;; $DB93: Spazer SBA - phase 0: circling ;;;
 {
-$90:DB93 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:DB96 18          CLC
-$90:DB97 65 16       ADC $16    [$7E:0016]
-$90:DB99 99 78 0B    STA $0B78,y
-$90:DB9C B9 7C 0C    LDA $0C7C,y
-$90:DB9F 18          CLC
-$90:DBA0 79 F0 0B    ADC $0BF0,y
-$90:DBA3 29 FF 00    AND #$00FF
-$90:DBA6 99 7C 0C    STA $0C7C,y
-$90:DBA9 C9 80 00    CMP #$0080
-$90:DBAC D0 18       BNE $18    [$DBC6]
-$90:DBAE A9 A0 00    LDA #$00A0
-$90:DBB1 99 DC 0B    STA $0BDC,y
-$90:DBB4 B9 C7 DB    LDA $DBC7,y
-$90:DBB7 99 F0 0B    STA $0BF0,y
-$90:DBBA A9 00 00    LDA #$0000
-$90:DBBD 99 04 0C    STA $0C04,y
-$90:DBC0 A9 02 00    LDA #$0002
-$90:DBC3 99 A4 0C    STA $0CA4,y
+$90:DB93 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:DB96 18          CLC                    ;|
+$90:DB97 65 16       ADC $16    [$7E:0016]  ;} Projectile Y position = [Samus Y position] + [$16]
+$90:DB99 99 78 0B    STA $0B78,y            ;/
+$90:DB9C B9 7C 0C    LDA $0C7C,y            ;\
+$90:DB9F 18          CLC                    ;|
+$90:DBA0 79 F0 0B    ADC $0BF0,y            ;} Projectile angle = ([projectile angle] + [projectile angle delta]) % 100h
+$90:DBA3 29 FF 00    AND #$00FF             ;|
+$90:DBA6 99 7C 0C    STA $0C7C,y            ;/
+$90:DBA9 C9 80 00    CMP #$0080             ;\
+$90:DBAC D0 18       BNE $18    [$DBC6]     ;} If [projectile angle] = 80h:
+$90:DBAE A9 A0 00    LDA #$00A0             ;\
+$90:DBB1 99 DC 0B    STA $0BDC,y            ;} Projectile distance = A0h
+$90:DBB4 B9 C7 DB    LDA $DBC7,y            ;\
+$90:DBB7 99 F0 0B    STA $0BF0,y            ;} Projectile angle delta = [$DBC7 + [Y]]
+$90:DBBA A9 00 00    LDA #$0000             ;\
+$90:DBBD 99 04 0C    STA $0C04,y            ;} Projectile direction = 0 (up, facing right)
+$90:DBC0 A9 02 00    LDA #$0002             ;\
+$90:DBC3 99 A4 0C    STA $0CA4,y            ;} Projectile phase = 2
 
 $90:DBC6 60          RTS
 
@@ -12414,42 +12677,42 @@ $90:DBC7             dw 0002, FFFE, 0002, FFFE
 }
 
 
-;;; $DBCF:  ;;;
+;;; $DBCF: Spazer SBA - phase 2: flying up towards point ;;;
 {
-$90:DBCF AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:DBD2 38          SEC
-$90:DBD3 E9 72 00    SBC #$0072
-$90:DBD6 18          CLC
-$90:DBD7 65 16       ADC $16    [$7E:0016]
-$90:DBD9 99 78 0B    STA $0B78,y
-$90:DBDC 38          SEC
-$90:DBDD ED 15 09    SBC $0915  [$7E:0915]
-$90:DBE0 C9 10 00    CMP #$0010
-$90:DBE3 10 04       BPL $04    [$DBE9]
-$90:DBE5 20 67 DC    JSR $DC67  [$90:DC67]
-$90:DBE8 60          RTS
+$90:DBCF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:DBD2 38          SEC                    ;|
+$90:DBD3 E9 72 00    SBC #$0072             ;|
+$90:DBD6 18          CLC                    ;} Projectile Y position = [Samus Y position] - 72h + [$16]
+$90:DBD7 65 16       ADC $16    [$7E:0016]  ;|
+$90:DBD9 99 78 0B    STA $0B78,y            ;/
+$90:DBDC 38          SEC                    ;\
+$90:DBDD ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:DBE0 C9 10 00    CMP #$0010             ;} If [projectile Y position] - [layer 1 Y position] < 10h:
+$90:DBE3 10 04       BPL $04    [$DBE9]     ;/
+$90:DBE5 20 67 DC    JSR $DC67  [$90:DC67]  ; Fire end of spazer SBA
+$90:DBE8 60          RTS                    ; Return
 
-$90:DBE9 B9 7C 0C    LDA $0C7C,y
-$90:DBEC 18          CLC
-$90:DBED 79 F0 0B    ADC $0BF0,y
-$90:DBF0 29 FF 00    AND #$00FF
-$90:DBF3 99 7C 0C    STA $0C7C,y
-$90:DBF6 B9 DC 0B    LDA $0BDC,y
-$90:DBF9 38          SEC
-$90:DBFA E9 05 00    SBC #$0005
-$90:DBFD 99 DC 0B    STA $0BDC,y
-$90:DC00 D0 25       BNE $25    [$DC27]
-$90:DC02 B9 28 DC    LDA $DC28,y
-$90:DC05 99 F0 0B    STA $0BF0,y
-$90:DC08 B9 7C 0C    LDA $0C7C,y
-$90:DC0B 18          CLC
-$90:DC0C 69 80 00    ADC #$0080
-$90:DC0F 29 FF 00    AND #$00FF
-$90:DC12 99 7C 0C    STA $0C7C,y
-$90:DC15 A9 04 00    LDA #$0004
-$90:DC18 99 A4 0C    STA $0CA4,y
-$90:DC1B C0 00 00    CPY #$0000
-$90:DC1E D0 07       BNE $07    [$DC27]
+$90:DBE9 B9 7C 0C    LDA $0C7C,y            ;\
+$90:DBEC 18          CLC                    ;|
+$90:DBED 79 F0 0B    ADC $0BF0,y            ;} Projectile angle = ([projectile angle] + [projectile angle delta]) % 100h
+$90:DBF0 29 FF 00    AND #$00FF             ;|
+$90:DBF3 99 7C 0C    STA $0C7C,y            ;/
+$90:DBF6 B9 DC 0B    LDA $0BDC,y            ;\
+$90:DBF9 38          SEC                    ;|
+$90:DBFA E9 05 00    SBC #$0005             ;} Projectile distance -= 5
+$90:DBFD 99 DC 0B    STA $0BDC,y            ;/
+$90:DC00 D0 25       BNE $25    [$DC27]     ; If [projectile distance] = 0:
+$90:DC02 B9 28 DC    LDA $DC28,y            ;\
+$90:DC05 99 F0 0B    STA $0BF0,y            ;} Projectile angle delta = [$DC28 + [Y]]
+$90:DC08 B9 7C 0C    LDA $0C7C,y            ;\
+$90:DC0B 18          CLC                    ;|
+$90:DC0C 69 80 00    ADC #$0080             ;} Projectile angle = ([projectile angle] + 80h) % 100h
+$90:DC0F 29 FF 00    AND #$00FF             ;|
+$90:DC12 99 7C 0C    STA $0C7C,y            ;/
+$90:DC15 A9 04 00    LDA #$0004             ;\
+$90:DC18 99 A4 0C    STA $0CA4,y            ;} Projectile phase = 4
+$90:DC1B C0 00 00    CPY #$0000             ;\
+$90:DC1E D0 07       BNE $07    [$DC27]     ;} If [Y] = 0:
 $90:DC20 A9 26 00    LDA #$0026             ;\
 $90:DC23 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 26h, sound library 1, max queued sounds allowed = 6 (spazer SBA end)
 
@@ -12459,55 +12722,57 @@ $90:DC28             dw FFFE, 0002, FFFE, 0002
 }
 
 
-;;; $DC30:  ;;;
+;;; $DC30: Spazer SBA - phase 4: flying up away from point ;;;
 {
-$90:DC30 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$90:DC33 38          SEC
-$90:DC34 E9 72 00    SBC #$0072
-$90:DC37 18          CLC
-$90:DC38 65 16       ADC $16    [$7E:0016]
-$90:DC3A 99 78 0B    STA $0B78,y
-$90:DC3D 38          SEC
-$90:DC3E ED 15 09    SBC $0915  [$7E:0915]
-$90:DC41 C9 10 00    CMP #$0010
-$90:DC44 10 04       BPL $04    [$DC4A]
+$90:DC30 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$90:DC33 38          SEC                    ;|
+$90:DC34 E9 72 00    SBC #$0072             ;|
+$90:DC37 18          CLC                    ;} Projectile Y position = [Samus Y position] - 72h + [$16]
+$90:DC38 65 16       ADC $16    [$7E:0016]  ;|
+$90:DC3A 99 78 0B    STA $0B78,y            ;/
+$90:DC3D 38          SEC                    ;\
+$90:DC3E ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:DC41 C9 10 00    CMP #$0010             ;} If [projectile Y position] - [layer 1 Y position] >= 10h: BRANCH_ON_SCREEN
+$90:DC44 10 04       BPL $04    [$DC4A]     ;/
 
-$90:DC46 20 67 DC    JSR $DC67  [$90:DC67]
-$90:DC49 60          RTS
+; BRANCH_FIRE_SBA_END
+$90:DC46 20 67 DC    JSR $DC67  [$90:DC67]  ; Fire end of spazer SBA
+$90:DC49 60          RTS                    ; Return
 
-$90:DC4A B9 7C 0C    LDA $0C7C,y
-$90:DC4D 18          CLC
-$90:DC4E 79 F0 0B    ADC $0BF0,y
-$90:DC51 29 FF 00    AND #$00FF
-$90:DC54 99 7C 0C    STA $0C7C,y
-$90:DC57 B9 DC 0B    LDA $0BDC,y
-$90:DC5A 18          CLC
-$90:DC5B 69 05 00    ADC #$0005
-$90:DC5E 99 DC 0B    STA $0BDC,y
-$90:DC61 C9 60 00    CMP #$0060
-$90:DC64 10 E0       BPL $E0    [$DC46]
+; BRANCH_ON_SCREEN
+$90:DC4A B9 7C 0C    LDA $0C7C,y            ;\
+$90:DC4D 18          CLC                    ;|
+$90:DC4E 79 F0 0B    ADC $0BF0,y            ;} Projectile angle = ([projectile angle] + [projectile angle delta]) % 100h
+$90:DC51 29 FF 00    AND #$00FF             ;|
+$90:DC54 99 7C 0C    STA $0C7C,y            ;/
+$90:DC57 B9 DC 0B    LDA $0BDC,y            ;\
+$90:DC5A 18          CLC                    ;|
+$90:DC5B 69 05 00    ADC #$0005             ;} Projectile distance += 5
+$90:DC5E 99 DC 0B    STA $0BDC,y            ;/
+$90:DC61 C9 60 00    CMP #$0060             ;\
+$90:DC64 10 E0       BPL $E0    [$DC46]     ;} If [projectile distance] >= 60h: go to BRANCH_FIRE_SBA_END
 $90:DC66 60          RTS
 }
 
 
 ;;; $DC67: Fire end of spazer SBA ;;;
 {
-$90:DC67 B9 64 0B    LDA $0B64,y
-$90:DC6A 18          CLC
-$90:DC6B 79 94 DC    ADC $DC94,y
-$90:DC6E 99 64 0B    STA $0B64,y
-$90:DC71 A9 05 00    LDA #$0005
-$90:DC74 99 04 0C    STA $0C04,y
-$90:DC77 A9 04 00    LDA #$0004
-$90:DC7A 99 90 0C    STA $0C90,y
-$90:DC7D A9 9C DC    LDA #$DC9C
-$90:DC80 99 68 0C    STA $0C68,y
-$90:DC83 C0 04 00    CPY #$0004
-$90:DC86 10 0B       BPL $0B    [$DC93]
-$90:DC88 A9 24 80    LDA #$8024
-$90:DC8B 99 18 0C    STA $0C18,y
-$90:DC8E BB          TYX
-$90:DC8F 22 63 81 93 JSL $938163[$93:8163]
+$90:DC67 B9 64 0B    LDA $0B64,y            ;\
+$90:DC6A 18          CLC                    ;|
+$90:DC6B 79 94 DC    ADC $DC94,y            ;} Projectile X position += [$DC94 + [Y]]
+$90:DC6E 99 64 0B    STA $0B64,y            ;/
+$90:DC71 A9 05 00    LDA #$0005             ;\
+$90:DC74 99 04 0C    STA $0C04,y            ;} Projectile direction = 5 (down, facing left)
+$90:DC77 A9 04 00    LDA #$0004             ;\
+$90:DC7A 99 90 0C    STA $0C90,y            ;} Projectile trail timer = 4
+$90:DC7D A9 9C DC    LDA #$DC9C             ;\
+$90:DC80 99 68 0C    STA $0C68,y            ;} Projectile pre-instruction = $DC9C
+$90:DC83 C0 04 00    CPY #$0004             ;\
+$90:DC86 10 0B       BPL $0B    [$DC93]     ;} If [Y] < 4:
+$90:DC88 A9 24 80    LDA #$8024             ;\
+$90:DC8B 99 18 0C    STA $0C18,y            ;} Projectile type = 8024h
+$90:DC8E BB          TYX                    ; X = [Y]
+$90:DC8F 22 63 81 93 JSL $938163[$93:8163]  ; Initialise spazer SBA trail projectile
 
 $90:DC93 60          RTS
 
@@ -12517,33 +12782,33 @@ $90:DC94             dw 0010, 0010, FFF0, FFF0
 
 ;;; $DC9C: Projectile pre-instruction - end of spazer SBA ;;;
 {
-$90:DC9C BD 04 0C    LDA $0C04,x
-$90:DC9F 29 F0 00    AND #$00F0
-$90:DCA2 F0 05       BEQ $05    [$DCA9]
-$90:DCA4 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DCA8 60          RTS
+$90:DC9C BD 04 0C    LDA $0C04,x            ;\
+$90:DC9F 29 F0 00    AND #$00F0             ;} If projectile is deleted:
+$90:DCA2 F0 05       BEQ $05    [$DCA9]     ;/
+$90:DCA4 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:DCA8 60          RTS                    ; Return
 
-$90:DCA9 DE 90 0C    DEC $0C90,x
-$90:DCAC D0 0D       BNE $0D    [$DCBB]
-$90:DCAE A9 04 00    LDA #$0004
-$90:DCB1 9D 90 0C    STA $0C90,x
-$90:DCB4 22 57 B6 90 JSL $90B657[$90:B657]
+$90:DCA9 DE 90 0C    DEC $0C90,x            ; Decrement projectile trail timer
+$90:DCAC D0 0D       BNE $0D    [$DCBB]     ; If [projectile trail timer] = 0:
+$90:DCAE A9 04 00    LDA #$0004             ;\
+$90:DCB1 9D 90 0C    STA $0C90,x            ;} Projectile trail timer = 4
+$90:DCB4 22 57 B6 90 JSL $90B657[$90:B657]  ; Spawn projectile trail
 $90:DCB8 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 
-$90:DCBB BD 78 0B    LDA $0B78,x
-$90:DCBE 18          CLC
-$90:DCBF 69 08 00    ADC #$0008
-$90:DCC2 9D 78 0B    STA $0B78,x
-$90:DCC5 38          SEC
-$90:DCC6 ED 15 09    SBC $0915  [$7E:0915]
-$90:DCC9 C9 F8 00    CMP #$00F8
-$90:DCCC 30 05       BMI $05    [$DCD3]
-$90:DCCE 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$90:DCD2 60          RTS
+$90:DCBB BD 78 0B    LDA $0B78,x            ;\
+$90:DCBE 18          CLC                    ;|
+$90:DCBF 69 08 00    ADC #$0008             ;} Projectile Y position = [Samus Y position] + 8
+$90:DCC2 9D 78 0B    STA $0B78,x            ;/
+$90:DCC5 38          SEC                    ;\
+$90:DCC6 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$90:DCC9 C9 F8 00    CMP #$00F8             ;} If [projectile Y position] - [layer 1 Y position] >= F8h:
+$90:DCCC 30 05       BMI $05    [$DCD3]     ;/
+$90:DCCE 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$90:DCD2 60          RTS                    ; Return
 
-$90:DCD3 A9 02 00    LDA #$0002
-$90:DCD6 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$90:DCD9 9C D0 0C    STZ $0CD0  [$7E:0CD0]
+$90:DCD3 A9 02 00    LDA #$0002             ;\
+$90:DCD6 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 2
+$90:DCD9 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:DCDC 60          RTS
 }
 
@@ -12646,12 +12911,12 @@ $90:DD73 60          RTS
 ;;; $DD74: HUD selection handler - turning around ;;;
 {
 $90:DD74 AD 5E 0B    LDA $0B5E  [$7E:0B5E]  ;\
-$90:DD77 F0 04       BEQ $04    [$DD7D]     ;} If Samus has shot in the air:
+$90:DD77 F0 04       BEQ $04    [$DD7D]     ;} If [pose transition shot direction] != 0:
 $90:DD79 20 3D DD    JSR $DD3D  [$90:DD3D]  ; Standard HUD selection handler
-$90:DD7C 60          RTS
+$90:DD7C 60          RTS                    ; Return
 
 $90:DD7D AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
-$90:DD80 C9 F0 C4    CMP #$C4F0             ;} If Samus hasn't fired grapple beam: return
+$90:DD80 C9 F0 C4    CMP #$C4F0             ;} If [grapple beam function] != inactive:
 $90:DD83 F0 06       BEQ $06    [$DD8B]     ;/
 $90:DD85 A9 56 C8    LDA #$C856             ;\
 $90:DD88 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Cancel grapple beam
@@ -12731,8 +12996,11 @@ $90:DDE5 20 9D BF    JSR $BF9D  [$90:BF9D]  ; Else ([Samus pose] = DFh): HUD sel
 
 $90:DDE8 60          RTS
 }
+}
 
 
+;;; $DDE9..DF98: Knockback ;;;
+{
 ;;; $DDE9: Samus is hit interruption ;;;
 {
 $90:DDE9 08          PHP
@@ -12755,12 +13023,12 @@ $90:DE0E 29 FF 00    AND #$00FF             ;|
 $90:DE11 0A          ASL A                  ;} Execute [$DE82 + [Samus movement type]]
 $90:DE12 AA          TAX                    ;|
 $90:DE13 FC 82 DE    JSR ($DE82,x)[$90:DEFA];/
-$90:DE16 90 06       BCC $06    [$DE1E]     ; If carry clear: return
+$90:DE16 90 06       BCC $06    [$DE1E]     ; If carry set:
 $90:DE18 A9 01 00    LDA #$0001             ;\
 $90:DE1B 8D 30 0A    STA $0A30  [$7E:0A30]  ;} $0A30 = 1
 
 $90:DE1E 28          PLP
-$90:DE1F 60          RTS
+$90:DE1F 60          RTS                    ; Return
 
 ; BRANCH_KNOCKBACK_TIMER_ZERO
 $90:DE20 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
@@ -12775,7 +13043,7 @@ $90:DE36 D0 08       BNE $08    [$DE40]     ;/
 $90:DE38 A9 08 00    LDA #$0008             ;\
 $90:DE3B 8D 32 0A    STA $0A32  [$7E:0A32]  ;} $0A32 = 8
 $90:DE3E 28          PLP
-$90:DE3F 60          RTS
+$90:DE3F 60          RTS                    ; Return
 
 $90:DE40 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:DE43 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = [Samus pose]
@@ -12803,7 +13071,7 @@ $90:DE6D 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - falling
 $90:DE70 A9 01 00    LDA #$0001             ;\
 $90:DE73 8D 32 0A    STA $0A32  [$7E:0A32]  ;} $0A32 = 1
 $90:DE76 28          PLP
-$90:DE77 60          RTS
+$90:DE77 60          RTS                    ; Return
 
 ; BRANCH_0A52_IS_0
 $90:DE78 AD 56 0A    LDA $0A56  [$7E:0A56]  ;\
@@ -12844,107 +13112,142 @@ $90:DE82             dw DEFA, ; 0: Standing
 }
 
 
-;;; $DEBA:  ;;;
+;;; $DEBA: Knockback transition - set Samus drained hurt animation or ignore ;;;
 {
-$90:DEBA AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$90:DEBD C9 E8 00    CMP #$00E8
-$90:DEC0 F0 07       BEQ $07    [$DEC9]
-$90:DEC2 C9 E9 00    CMP #$00E9
-$90:DEC5 F0 02       BEQ $02    [$DEC9]
-$90:DEC7 80 0C       BRA $0C    [$DED5]
+; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 
-$90:DEC9 A9 11 00    LDA #$0011
-$90:DECC 8D 94 0A    STA $0A94  [$7E:0A94]
-$90:DECF A9 1A 00    LDA #$001A
-$90:DED2 8D 96 0A    STA $0A96  [$7E:0A96]
+; This routine checks for pose E8h, but the facing right version doesn't support these non-idle animations
+$90:DEBA AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$90:DEBD C9 E8 00    CMP #$00E8             ;|
+$90:DEC0 F0 07       BEQ $07    [$DEC9]     ;} If [Samus pose] != Samus drained - crouching/falling:
+$90:DEC2 C9 E9 00    CMP #$00E9             ;|
+$90:DEC5 F0 02       BEQ $02    [$DEC9]     ;/
+$90:DEC7 80 0C       BRA $0C    [$DED5]     ; Go to BRANCH_RETURN
 
+$90:DEC9 A9 11 00    LDA #$0011             ;\
+$90:DECC 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 11h
+$90:DECF A9 1A 00    LDA #$001A             ;\
+$90:DED2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 1Ah
+
+; BRANCH_RETURN
 $90:DED5 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
-$90:DED8 9C 52 0A    STZ $0A52  [$7E:0A52]
-$90:DEDB 18          CLC
-$90:DEDC 60          RTS
+$90:DED8 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = 0
+$90:DEDB 18          CLC                    ;\
+$90:DEDC 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DEDD:  ;;;
+;;; $DEDD: Knockback transition - ignore ;;;
 {
+; Ah: Knockback / crystal flash ending
+; 16h: Grappling
 $90:DEDD 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
-$90:DEE0 18          CLC
-$90:DEE1 60          RTS
+$90:DEE0 18          CLC                    ;\
+$90:DEE1 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DEE2:  ;;;
+;;; $DEE2: Knockback transition - ignore ;;;
 {
+; Bh: Unused
+; Ch: Unused
+; Eh: Turning around - on ground
+; Fh: Crouching/standing/morphing/unmorphing transition
+; 17h: Turning around - jumping
+; 18h: Turning around - falling
+; 19h: Damage boost
+; 1Ah: Grabbed by Draygon
+
 $90:DEE2 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
-$90:DEE5 9C 52 0A    STZ $0A52  [$7E:0A52]
-$90:DEE8 18          CLC
-$90:DEE9 60          RTS
+$90:DEE5 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = 0
+$90:DEE8 18          CLC                    ;\
+$90:DEE9 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DEEA:  ;;;
+;;; $DEEA: Knockback transition - normal ;;;
 {
-$90:DEEA AD 5A 0A    LDA $0A5A  [$7E:0A5A]
-$90:DEED C9 1B E4    CMP #$E41B
-$90:DEF0 D0 08       BNE $08    [$DEFA]
+; 6: Falling
+$90:DEEA AD 5A 0A    LDA $0A5A  [$7E:0A5A]  ;\
+$90:DEED C9 1B E4    CMP #$E41B             ;} If [timer / Samus hack handler] = $E41B (unused):
+$90:DEF0 D0 08       BNE $08    [$DEFA]     ;/
 $90:DEF2 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
-$90:DEF5 9C 52 0A    STZ $0A52  [$7E:0A52]
-$90:DEF8 18          CLC
-$90:DEF9 60          RTS
+$90:DEF5 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = 0
+$90:DEF8 18          CLC                    ;\
+$90:DEF9 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DEFA:  ;;;
+;;; $DEFA: Knockback transition - normal ;;;
 {
-$90:DEFA AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:DEFD 29 FF 00    AND #$00FF
-$90:DF00 C9 04 00    CMP #$0004
-$90:DF03 F0 08       BEQ $08    [$DF0D]
+; 0: Standing
+; 1: Running
+; 2: Normal jumping
+; 3: Spin jumping
+; 5: Crouching
+; Dh: Unused
+; 10h: Moonwalking
+; 14h: Wall jumping
+; 15h: Ran into a wall
+
+$90:DEFA AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:DEFD 29 FF 00    AND #$00FF             ;|
+$90:DF00 C9 04 00    CMP #$0004             ;} If facing right:
+$90:DF03 F0 08       BEQ $08    [$DF0D]     ;/
 $90:DF05 A9 53 00    LDA #$0053             ;\
 $90:DF08 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - knockback
 $90:DF0B 80 06       BRA $06    [$DF13]
 
-$90:DF0D A9 54 00    LDA #$0054             ;\
+$90:DF0D A9 54 00    LDA #$0054             ;\ Else (facing left):
 $90:DF10 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - knockback
 
-$90:DF13 38          SEC
-$90:DF14 60          RTS
+$90:DF13 38          SEC                    ;\
+$90:DF14 60          RTS                    ;} Return carry set
 }
 
 
-;;; $DF15:  ;;;
+;;; $DF15: Knockback transition - morphed ;;;
 {
+; 4: Morph ball - on ground
+; 8: Morph ball - falling
+; 9: Unused
+; 11h: Spring ball - on ground
+; 12h: Spring ball - in air
+; 13h: Spring ball - falling
+
 $90:DF15 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:DF18 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = [Samus pose]
-$90:DF1B 38          SEC
-$90:DF1C 60          RTS
+$90:DF1B 38          SEC                    ;\
+$90:DF1C 60          RTS                    ;} Return carry set
 }
 
 
-;;; $DF1D:  ;;;
+;;; $DF1D: Knockback transition - movement type 7 ;;;
 {
-$90:DF1D AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:DF20 29 FF 00    AND #$00FF
-$90:DF23 C9 04 00    CMP #$0004
-$90:DF26 F0 08       BEQ $08    [$DF30]
+; 7: Unused
+
+$90:DF1D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:DF20 29 FF 00    AND #$00FF             ;|
+$90:DF23 C9 04 00    CMP #$0004             ;} If facing right:
+$90:DF26 F0 08       BEQ $08    [$DF30]     ;/
 $90:DF28 A9 33 00    LDA #$0033             ;\
 $90:DF2B 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = 33h (unused)
 $90:DF2E 80 06       BRA $06    [$DF36]
 
-$90:DF30 A9 34 00    LDA #$0034             ;\
+$90:DF30 A9 34 00    LDA #$0034             ;\ Else (facing left):
 $90:DF33 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = 34h (unused)
 
-$90:DF36 38          SEC
-$90:DF37 60          RTS
+$90:DF36 38          SEC                    ;\
+$90:DF37 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $DF38: Samus movement handler - knockback ;;;
 {
-$90:DF38 AD 52 0A    LDA $0A52  [$7E:0A52]
-$90:DF3B 0A          ASL A
-$90:DF3C AA          TAX
-$90:DF3D FC 44 DF    JSR ($DF44,x)[$90:DF53]
+$90:DF38 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
+$90:DF3B 0A          ASL A                  ;|
+$90:DF3C AA          TAX                    ;} Execute [$DF44 + [knockback direction] * 2]
+$90:DF3D FC 44 DF    JSR ($DF44,x)[$90:DF53];/
 $90:DF40 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; $0DC6 = 0
 $90:DF43 60          RTS
 
@@ -12957,60 +13260,64 @@ $90:DF44             dw DF50, ; 0: Crashes
 }
 
 
-;;; $DF50:  ;;;
+;;; $DF50: Crash ;;;
 {
 $90:DF50 80 FE       BRA $FE    [$DF50]
 $90:DF52 60          RTS
 }
 
 
-;;; $DF53:  ;;;
+;;; $DF53: Knockback movement - up ;;;
 {
-$90:DF53 20 DF 8E    JSR $8EDF  [$90:8EDF]
+$90:DF53 20 DF 8E    JSR $8EDF  [$90:8EDF]  ; Move Samus horizontally - knockback or bomb jump
 $90:DF56 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
-$90:DF59 20 6E DF    JSR $DF6E  [$90:DF6E]
+$90:DF59 20 6E DF    JSR $DF6E  [$90:DF6E]  ; Handle knockback vertical collision
 $90:DF5C 60          RTS
 }
 
 
-;;; $DF5D:  ;;;
+;;; $DF5D: Knockback movement - straight up (unused) ;;;
 {
 $90:DF5D 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
-$90:DF60 20 6E DF    JSR $DF6E  [$90:DF6E]
+$90:DF60 20 6E DF    JSR $DF6E  [$90:DF6E]  ; Handle knockback vertical collision
 $90:DF63 60          RTS
 }
 
 
-;;; $DF64:  ;;;
+;;; $DF64: Knockback movement - down ;;;
 {
-$90:DF64 20 DF 8E    JSR $8EDF  [$90:8EDF]
+$90:DF64 20 DF 8E    JSR $8EDF  [$90:8EDF]  ; Move Samus horizontally - knockback or bomb jump
 $90:DF67 20 3F 92    JSR $923F  [$90:923F]  ; Samus Y movement - no speed calculations
-$90:DF6A 20 6E DF    JSR $DF6E  [$90:DF6E]
+$90:DF6A 20 6E DF    JSR $DF6E  [$90:DF6E]  ; Handle knockback vertical collision
 $90:DF6D 60          RTS
 }
 
 
-;;; $DF6E:  ;;;
+;;; $DF6E: Handle knockback vertical collision ;;;
 {
-$90:DF6E AD D0 0D    LDA $0DD0  [$7E:0DD0]
-$90:DF71 F0 25       BEQ $25    [$DF98]
+; Called by Ceres to end pushing
+$90:DF6E AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
+$90:DF71 F0 25       BEQ $25    [$DF98]     ;} If collision detected:
 $90:DF73 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
-$90:DF76 9C CE 0D    STZ $0DCE  [$7E:0DCE]
-$90:DF79 9C 22 0B    STZ $0B22  [$7E:0B22]
-$90:DF7C 9C 1A 0B    STZ $0B1A  [$7E:0B1A]
-$90:DF7F 9C 2A 0B    STZ $0B2A  [$7E:0B2A]
+$90:DF76 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed flag = 0
+$90:DF79 9C 22 0B    STZ $0B22  [$7E:0B22]  ; Samus is falling flag = 0
+$90:DF7C 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
+$90:DF7F 9C 2A 0B    STZ $0B2A  [$7E:0B2A]  ; $0B2A = 0
 $90:DF82 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:DF85 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:DF88 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
-$90:DF8B 9C 38 0B    STZ $0B38  [$7E:0B38]
+$90:DF8B 9C 38 0B    STZ $0B38  [$7E:0B38]  ; $0B38 = 0
 $90:DF8E 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:DF91 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:DF94 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
 
 $90:DF98 60          RTS
 }
+}
 
 
+;;; $DF99..E094: Bomb jump ;;;
+{
 ;;; $DF99: Set up bomb jump ;;;
 {
 $90:DF99 AD 56 0A    LDA $0A56  [$7E:0A56]  ;\
@@ -13122,66 +13429,70 @@ $90:E031 60          RTS
 
 ;;; $E032: Samus movement handler - bomb jump - main ;;;
 {
-$90:E032 AD 56 0A    LDA $0A56  [$7E:0A56]
-$90:E035 D0 04       BNE $04    [$E03B]
-$90:E037 20 7D E0    JSR $E07D  [$90:E07D]
-$90:E03A 60          RTS
+$90:E032 AD 56 0A    LDA $0A56  [$7E:0A56]  ;\
+$90:E035 D0 04       BNE $04    [$E03B]     ;} If [bomb jump direction] = none:
+$90:E037 20 7D E0    JSR $E07D  [$90:E07D]  ; End bomb jump
+$90:E03A 60          RTS                    ; Return
 
-$90:E03B 29 FF 00    AND #$00FF
-$90:E03E 0A          ASL A
-$90:E03F AA          TAX
-$90:E040 FC 44 E0    JSR ($E044,x)[$90:E066]
+$90:E03B 29 FF 00    AND #$00FF             ;\
+$90:E03E 0A          ASL A                  ;|
+$90:E03F AA          TAX                    ;} Execute [$E044 + [bomb jump direction] * 2]
+$90:E040 FC 44 E0    JSR ($E044,x)[$90:E066];/
 $90:E043 60          RTS
 
-$90:E044             dw DF50, E04C, E066, E04C
+$90:E044             dw DF50, ; 0: Crashes
+                        E04C, ; 1: Left
+                        E066, ; 2: Straight
+                        E04C  ; 3: Right
 }
 
 
-;;; $E04C: Horizontal bomb jump ;;;
+;;; $E04C: Samus movement handler - bomb jump - main - horizontal ;;;
 {
-$90:E04C 20 DF 8E    JSR $8EDF  [$90:8EDF]
-$90:E04F 20 1B 8F    JSR $8F1B  [$90:8F1B]
+$90:E04C 20 DF 8E    JSR $8EDF  [$90:8EDF]  ; Move Samus horizontally - knockback or bomb jump
+$90:E04F 20 1B 8F    JSR $8F1B  [$90:8F1B]  ; Handle end of bomb jump
 $90:E052 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $90:E055 C9 02 00    CMP #$0002             ;} If [Samus Y direction] != down:
 $90:E058 F0 08       BEQ $08    [$E062]     ;/
 $90:E05A 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
-$90:E05D AD D0 0D    LDA $0DD0  [$7E:0DD0]
-$90:E060 F0 03       BEQ $03    [$E065]
+$90:E05D AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
+$90:E060 F0 03       BEQ $03    [$E065]     ;} If collision not occurred: return
 
-$90:E062 20 7D E0    JSR $E07D  [$90:E07D]
+$90:E062 20 7D E0    JSR $E07D  [$90:E07D]  ; End bomb jump
 
 $90:E065 60          RTS
 }
 
 
-;;; $E066: Vertical bomb jump ;;;
+;;; $E066: Samus movement handler - bomb jump - main - straight ;;;
 {
-$90:E066 20 1B 8F    JSR $8F1B  [$90:8F1B]
+$90:E066 20 1B 8F    JSR $8F1B  [$90:8F1B]  ; Handle end of bomb jump
 $90:E069 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $90:E06C C9 02 00    CMP #$0002             ;} If [Samus Y direction] != down:
 $90:E06F F0 08       BEQ $08    [$E079]     ;/
 $90:E071 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
-$90:E074 AD D0 0D    LDA $0DD0  [$7E:0DD0]
-$90:E077 F0 03       BEQ $03    [$E07C]
+$90:E074 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
+$90:E077 F0 03       BEQ $03    [$E07C]     ;} If collision not occurred: return
 
-$90:E079 20 7D E0    JSR $E07D  [$90:E07D]
+$90:E079 20 7D E0    JSR $E07D  [$90:E07D]  ; End bomb jump
 
 $90:E07C 60          RTS
 }
 
 
-;;; $E07D:  ;;;
+;;; $E07D: End bomb jump ;;;
 {
 $90:E07D A9 37 A3    LDA #$A337             ;\
 $90:E080 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
-$90:E083 AD 60 0A    LDA $0A60  [$7E:0A60]
-$90:E086 C9 1D E9    CMP #$E91D
-$90:E089 F0 06       BEQ $06    [$E091]
-$90:E08B A9 13 E9    LDA #$E913
-$90:E08E 8D 60 0A    STA $0A60  [$7E:0A60]
+$90:E083 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
+$90:E086 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (demo):
+$90:E089 F0 06       BEQ $06    [$E091]     ;/
+$90:E08B A9 13 E9    LDA #$E913             ;\
+$90:E08E 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
 
-$90:E091 9C 56 0A    STZ $0A56  [$7E:0A56]
+$90:E091 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = none
 $90:E094 60          RTS
+}
 }
 
 
@@ -13191,9 +13502,11 @@ $90:E095             dw 003C
 }
 
 
-;;; $E097:  ;;;
+;;; $E097..E463: Timer / Samus hack handler ;;;
 {
-$90:E097 6C 5A 0A    JMP ($0A5A)[$90:E0E6]  ; Go to [$0A5A]
+;;; $E097: Timer / Samus hack handler ;;;
+{
+$90:E097 6C 5A 0A    JMP ($0A5A)[$90:E0E6]  ; Go to [timer / Samus hack handler]
 }
 
 
@@ -13203,7 +13516,7 @@ $90:E09A 60          RTS
 }
 
 
-;;; $E09B:  ;;;
+;;; $E09B: Timer / Samus hack handler - handle letting Samus up from being drained ;;;
 {
 $90:E09B AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:E09E C9 E9 00    CMP #$00E9             ;} If [Samus pose] != E9h (facing left - Samus drained - crouching): return
@@ -13219,13 +13532,13 @@ $90:E0B5 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $90:E0B8 A9 0D 00    LDA #$000D             ;\
 $90:E0BB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Dh
 $90:E0BE A9 0E E9    LDA #$E90E             ;\
-$90:E0C1 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = RTS
+$90:E0C1 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 
 $90:E0C4 60          RTS
 }
 
 
-;;; $E0C5:  ;;;
+;;; $E0C5: Timer / Samus hack handler - handle letting Samus fail to stand up from being drained ;;;
 {
 $90:E0C5 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:E0C8 C9 08 00    CMP #$0008             ;} If [Samus animation frame] < 8: return
@@ -13244,7 +13557,7 @@ $90:E0E5 60          RTS
 }
 
 
-;;; $E0E6:  ;;;
+;;; $E0E6: Timer / Samus hack handler - handle timer ;;;
 {
 $90:E0E6 22 E7 9D 80 JSL $809DE7[$80:9DE7]  ; Process timer
 $90:E0EA 90 1E       BCC $1E    [$E10A]     ; If timer hasn't reached zero: go to BRANCH_NOT_ZERO
@@ -13258,7 +13571,7 @@ $90:E0FC CA          DEX                    ;|
 $90:E0FD CA          DEX                    ;|
 $90:E0FE 10 F8       BPL $F8    [$E0F8]     ;/
 $90:E100 A9 14 E1    LDA #$E114             ;\
-$90:E103 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E114 (draw timer)
+$90:E103 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E114 (draw timer)
 $90:E106 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]  ; Disable palette FX objects
 
 ; BRANCH_NOT_ZERO
@@ -13270,7 +13583,7 @@ $90:E113 60          RTS
 }
 
 
-;;; $E114: Draw timer ;;;
+;;; $E114: Timer / Samus hack handler - draw timer ;;;
 {
 $90:E114 22 6C 9F 80 JSL $809F6C[$80:9F6C]  ; Draw timer
 $90:E118 60          RTS
@@ -13287,14 +13600,14 @@ $90:E11D C2 30       REP #$30
 $90:E11F A9 0E E9    LDA #$E90E             ;\
 $90:E122 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = RTS
 $90:E125 A9 2E E1    LDA #$E12E             ;\
-$90:E128 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E12E
+$90:E128 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E12E (push Samus out of Ceres Ridley's way)
 $90:E12B AB          PLB
 $90:E12C 28          PLP
 $90:E12D 6B          RTL
 }
 
 
-;;; $E12E: Push Samus out of Ceres Ridley's way ;;;
+;;; $E12E: Timer / Samus hack handler - push Samus out of Ceres Ridley's way ;;;
 {
 $90:E12E AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:E131 29 FF 00    AND #$00FF             ;|
@@ -13331,18 +13644,18 @@ $90:E17D ED 11 09    SBC $0911  [$7E:0911]  ;} If [Samus X position] - [layer 1 
 $90:E180 C9 80 00    CMP #$0080             ;|
 $90:E183 30 08       BMI $08    [$E18D]     ;/
 $90:E185 A9 02 00    LDA #$0002             ;\
-$90:E188 8D 62 0A    STA $0A62  [$7E:0A62]  ;} $0A62 = 2
+$90:E188 8D 62 0A    STA $0A62  [$7E:0A62]  ;} Samus push direction = right
 $90:E18B 80 06       BRA $06    [$E193]
 
 $90:E18D A9 01 00    LDA #$0001             ;\ Else ([Samus X position] - [layer 1 X position] < 80h):
-$90:E190 8D 62 0A    STA $0A62  [$7E:0A62]  ;} $0A62 = 1
+$90:E190 8D 62 0A    STA $0A62  [$7E:0A62]  ;} Samus push direction = left
 
 $90:E193 A9 05 00    LDA #$0005             ;\
 $90:E196 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;} Samus Y speed = 5.0
 $90:E199 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;/
 $90:E19C 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = none
 $90:E19F A9 C8 E1    LDA #$E1C8             ;\
-$90:E1A2 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E1C8
+$90:E1A2 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E1C8 (pushing Samus out of Ceres Ridley's way)
 $90:E1A5 A9 FF FF    LDA #$FFFF             ;\
 $90:E1A8 8D 28 0A    STA $0A28  [$7E:0A28]  ;} $0A28 = FFFFh
 $90:E1AB 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ; $0A2A = FFFFh
@@ -13359,7 +13672,7 @@ $90:E1C7 60          RTS
 }
 
 
-;;; $E1C8:  ;;;
+;;; $E1C8: Timer / Samus hack handler - pushing Samus out of Ceres Ridley's way ;;;
 {
 $90:E1C8 AD 28 0A    LDA $0A28  [$7E:0A28]  ;\
 $90:E1CB C9 4F 00    CMP #$004F             ;|
@@ -13373,8 +13686,8 @@ $90:E1DB 9C 2E 0A    STZ $0A2E  [$7E:0A2E]  ; $0A2E = 0
 
 ; BRANCH_NOT_DAMAGE_BOOST
 $90:E1DE AD 62 0A    LDA $0A62  [$7E:0A62]  ;\
-$90:E1E1 0A          ASL A                  ;\
-$90:E1E2 AA          TAX                    ;} Execute [$E1F7 + [$0A62] * 2]
+$90:E1E1 0A          ASL A                  ;|
+$90:E1E2 AA          TAX                    ;} Execute [$E1F7 + [Samus push direction] * 2]
 $90:E1E3 FC F7 E1    JSR ($E1F7,x)[$90:E1FD];/
 $90:E1E6 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; $0DC6 = 0
 $90:E1E9 22 E7 9D 80 JSL $809DE7[$80:9DE7]  ; Process timer
@@ -13388,67 +13701,70 @@ $90:E1F7             dw 0000, E1FD, E21C
 }
 
 
-;;; $E1FD:  ;;;
+;;; $E1FD: Pushing Samus out of Ceres Ridley's way - leftwards ;;;
 {
-$90:E1FD 20 5F 8F    JSR $8F5F  [$90:8F5F]
+$90:E1FD 20 5F 8F    JSR $8F5F  [$90:8F5F]  ; Move Samus horizontally - pushed by Ceres Ridley
 $90:E200 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
 $90:E203 F0 13       BEQ $13    [$E218]     ;} If collision occurred:
 $90:E205 A9 37 A3    LDA #$A337             ;\
 $90:E208 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E20B A9 E6 E0    LDA #$E0E6             ;\
-$90:E20E 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E0E6
-$90:E211 9C 62 0A    STZ $0A62  [$7E:0A62]  ; $0A62 = 0
-$90:E214 20 6E DF    JSR $DF6E  [$90:DF6E]
-$90:E217 60          RTS
+$90:E20E 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer)
+$90:E211 9C 62 0A    STZ $0A62  [$7E:0A62]  ; Samus push direction = none
+$90:E214 20 6E DF    JSR $DF6E  [$90:DF6E]  ; Handle knockback vertical collision
+$90:E217 60          RTS                    ; Return
 
-$90:E218 20 86 8F    JSR $8F86  [$90:8F86]
+$90:E218 20 86 8F    JSR $8F86  [$90:8F86]  ; Move Samus vertically - pushed by Ceres Ridley
 $90:E21B 60          RTS
 }
 
 
-;;; $E21C:  ;;;
+;;; $E21C: Pushing Samus out of Ceres Ridley's way - rightwards ;;;
 {
-$90:E21C 20 5F 8F    JSR $8F5F  [$90:8F5F]
+; Clone of $E1FD
+$90:E21C 20 5F 8F    JSR $8F5F  [$90:8F5F]  ; Move Samus horizontally - pushed by Ceres Ridley
 $90:E21F AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
 $90:E222 F0 13       BEQ $13    [$E237]     ;} If collision occurred:
 $90:E224 A9 37 A3    LDA #$A337             ;\
 $90:E227 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E22A A9 E6 E0    LDA #$E0E6             ;\
-$90:E22D 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E0E6
-$90:E230 9C 62 0A    STZ $0A62  [$7E:0A62]  ; $0A62 = 0
-$90:E233 20 6E DF    JSR $DF6E  [$90:DF6E]
-$90:E236 60          RTS
+$90:E22D 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer)
+$90:E230 9C 62 0A    STZ $0A62  [$7E:0A62]  ; Samus push direction = none
+$90:E233 20 6E DF    JSR $DF6E  [$90:DF6E]  ; Handle knockback vertical collision
+$90:E236 60          RTS                    ; Return
 
-$90:E237 20 86 8F    JSR $8F86  [$90:8F86]
+$90:E237 20 86 8F    JSR $8F86  [$90:8F86]  ; Move Samus vertically - pushed by Ceres Ridley
 $90:E23A 60          RTS
 }
 
 
 ;;; $E23B: Set Samus into the grabbed by Draygon pose ;;;
 {
+;; Parameters:
+;;     A: Draygon's direction when grabbing Samus. 0 = left, 1 = right
 $90:E23B 08          PHP
 $90:E23C 8B          PHB
-$90:E23D 4B          PHK
-$90:E23E AB          PLB
+$90:E23D 4B          PHK                    ;\
+$90:E23E AB          PLB                    ;} DB = $90
 $90:E23F C2 30       REP #$30
-$90:E241 89 01 00    BIT #$0001
-$90:E244 F0 08       BEQ $08    [$E24E]
-$90:E246 A9 EC 00    LDA #$00EC
-$90:E249 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$90:E241 89 01 00    BIT #$0001             ;\
+$90:E244 F0 08       BEQ $08    [$E24E]     ;} If [A] & 1 != 0:
+$90:E246 A9 EC 00    LDA #$00EC             ;\
+$90:E249 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - grabbed by Draygon - not moving - not aiming
 $90:E24C 80 06       BRA $06    [$E254]
 
-$90:E24E A9 BA 00    LDA #$00BA
-$90:E251 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$90:E24E A9 BA 00    LDA #$00BA             ;\ Else ([A] & 1 = 0):
+$90:E251 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - grabbed by Draygon - not moving - not aiming
 
-$90:E254 22 33 F4 91 JSL $91F433[$91:F433]
+$90:E254 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $90:E258 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:E25C A9 A1 E2    LDA #$E2A1             ;\
-$90:E25F 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E2A1
+$90:E25F 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E2A1 (grabbed by Draygon)
 $90:E262 A9 0E E9    LDA #$E90E             ;\
 $90:E265 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = RTS
-$90:E268 9C EC 0D    STZ $0DEC  [$7E:0DEC]
-$90:E26B 9C EE 0D    STZ $0DEE  [$7E:0DEE]
-$90:E26E 9C F0 0D    STZ $0DF0  [$7E:0DF0]
+$90:E268 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Draygon-escape button counter = 0
+$90:E26B 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; Draygon-escape previous d-pad input = 0
+$90:E26E 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ; $0DF0 = 0
 $90:E271 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $90:E274 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
 $90:E277 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
@@ -13470,7 +13786,7 @@ $90:E2A0 6B          RTL
 }
 
 
-;;; $E2A1:  ;;;
+;;; $E2A1: Timer / Samus hack handler - grabbed by Draygon ;;;
 {
 ; If grapple connected: prevent pose transition due to $0A28 (prevents Samus from aiming elsewhere).
 ; Handle Draygon-escape button counter and release Samus if reached 60.
@@ -13501,13 +13817,13 @@ $90:E2D3 60          RTS
 }
 
 
-;;; $E2D4:  ;;;
+;;; $E2D4: Release Samus from Draygon (external) ;;;
 {
 $90:E2D4 08          PHP
 $90:E2D5 8B          PHB
 $90:E2D6 4B          PHK
 $90:E2D7 AB          PLB
-$90:E2D8 20 DE E2    JSR $E2DE  [$90:E2DE]
+$90:E2D8 20 DE E2    JSR $E2DE  [$90:E2DE]  ; Release Samus from Draygon
 $90:E2DB AB          PLB
 $90:E2DC 28          PLP
 $90:E2DD 6B          RTL
@@ -13516,23 +13832,23 @@ $90:E2DD 6B          RTL
 
 ;;; $E2DE: Release Samus from Draygon ;;;
 {
-$90:E2DE AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:E2E1 29 FF 00    AND #$00FF
-$90:E2E4 C9 04 00    CMP #$0004
-$90:E2E7 F0 08       BEQ $08    [$E2F1]
-$90:E2E9 A9 01 00    LDA #$0001
-$90:E2EC 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$90:E2DE AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:E2E1 29 FF 00    AND #$00FF             ;|
+$90:E2E4 C9 04 00    CMP #$0004             ;} If facing right:
+$90:E2E7 F0 08       BEQ $08    [$E2F1]     ;/
+$90:E2E9 A9 01 00    LDA #$0001             ;\
+$90:E2EC 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - normal
 $90:E2EF 80 06       BRA $06    [$E2F7]
 
-$90:E2F1 A9 02 00    LDA #$0002
-$90:E2F4 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$90:E2F1 A9 02 00    LDA #$0002             ;\ Else (facing left):
+$90:E2F4 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - normal
 
-$90:E2F7 22 33 F4 91 JSL $91F433[$91:F433]
+$90:E2F7 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $90:E2FB 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:E2FF A9 37 A3    LDA #$A337             ;\
 $90:E302 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E305 A9 0E E9    LDA #$E90E             ;\
-$90:E308 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = RTS
+$90:E308 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 $90:E30B AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $90:E30E 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
 $90:E311 AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
@@ -13553,12 +13869,12 @@ $90:E33B 9C 32 0A    STZ $0A32  [$7E:0A32]  ; $0A32 = 0
 $90:E33E 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;\
 $90:E341 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;} Samus Y speed = 0.0
 $90:E344 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
-$90:E347 9C 20 0B    STZ $0B20  [$7E:0B20]
+$90:E347 9C 20 0B    STZ $0B20  [$7E:0B20]  ; $0B20 = 0
 $90:E34A 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
-$90:E34D AD 64 0A    LDA $0A64  [$7E:0A64]
-$90:E350 29 FD FF    AND #$FFFD
-$90:E353 09 02 00    ORA #$0002
-$90:E356 8D 64 0A    STA $0A64  [$7E:0A64]
+$90:E34D AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
+$90:E350 29 FD FF    AND #$FFFD             ;|
+$90:E353 09 02 00    ORA #$0002             ;} $0A64 |= 2
+$90:E356 8D 64 0A    STA $0A64  [$7E:0A64]  ;/
 $90:E359 60          RTS
 }
 
@@ -13576,7 +13892,7 @@ $90:E366 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
 $90:E369 A9 0E E9    LDA #$E90E             ;\
 $90:E36C 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = RTS
 $90:E36F A9 7E E3    LDA #$E37E             ;\
-$90:E372 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E37E
+$90:E372 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 $90:E375 A9 F2 EB    LDA #$EBF2             ;\
 $90:E378 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = RTS
 $90:E37B AB          PLB
@@ -13591,21 +13907,22 @@ $90:E37E 60          RTS
 }
 
 
-;;; $E37F: Unused. ;;;
+;;; $E37F: Unused. Push morph ball Samus out of Ceres Ridley's way ;;;
 {
-; Move Samus vertically at 3px/frame and morph on collision(???)
+; This might well be a different kind of unused Samus movement, perhaps an unused Draygon action,
+; the code is just quite similar to the Ceres Ridley stuff
 $90:E37F 08          PHP
 $90:E380 8B          PHB
-$90:E381 4B          PHK
-$90:E382 AB          PLB
+$90:E381 4B          PHK                    ;\
+$90:E382 AB          PLB                    ;} DB = $90
 $90:E383 C2 30       REP #$30
 $90:E385 A9 03 00    LDA #$0003             ;\
 $90:E388 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;} Samus Y speed = 3.0
 $90:E38B 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;/
 $90:E38E A9 01 00    LDA #$0001             ;\
-$90:E391 8D 62 0A    STA $0A62  [$7E:0A62]  ;} $0A62 = 1
+$90:E391 8D 62 0A    STA $0A62  [$7E:0A62]  ;} Samus push direction = left
 $90:E394 A9 A3 E3    LDA #$E3A3             ;\
-$90:E397 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E3A3
+$90:E397 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E3A3
 $90:E39A A9 52 EB    LDA #$EB52             ;\
 $90:E39D 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $90:E3A0 AB          PLB
@@ -13614,21 +13931,21 @@ $90:E3A2 6B          RTL
 }
 
 
-;;; $E3A3:  ;;;
+;;; $E3A3: Unused. Timer / Samus hack handler - pushing morph ball Samus out of Ceres Ridley's way ;;;
 {
-$90:E3A3 20 5F 8F    JSR $8F5F  [$90:8F5F]
+$90:E3A3 20 5F 8F    JSR $8F5F  [$90:8F5F]  ; Move Samus horizontally - pushed by Ceres Ridley
 $90:E3A6 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
 $90:E3A9 D0 08       BNE $08    [$E3B3]     ;} If collision did not occur:
-$90:E3AB 20 86 8F    JSR $8F86  [$90:8F86]
+$90:E3AB 20 86 8F    JSR $8F86  [$90:8F86]  ; Move Samus vertically - pushed by Ceres Ridley
 $90:E3AE AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
 $90:E3B1 F0 1B       BEQ $1B    [$E3CE]     ;} If collision did not occur: return
 
 $90:E3B3 A9 37 A3    LDA #$A337             ;\
 $90:E3B6 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E3B9 A9 0E E9    LDA #$E90E             ;\
-$90:E3BC 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = RTS
-$90:E3BF 9C 62 0A    STZ $0A62  [$7E:0A62]  ; $0A62 = 0
-$90:E3C2 20 6E DF    JSR $DF6E  [$90:DF6E]
+$90:E3BC 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
+$90:E3BF 9C 62 0A    STZ $0A62  [$7E:0A62]  ; Samus push direction = none
+$90:E3C2 20 6E DF    JSR $DF6E  [$90:DF6E]  ; Handle knockback vertical collision
 $90:E3C5 A9 41 00    LDA #$0041             ;\
 $90:E3C8 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - morph ball - no springball - on ground
 $90:E3CB 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
@@ -13637,17 +13954,17 @@ $90:E3CE 60          RTS
 }
 
 
-;;; $E3CF: Unused. ;;;
+;;; $E3CF: Unused. Set Samus special falling ;;;
 {
 $90:E3CF 08          PHP
 $90:E3D0 8B          PHB
 $90:E3D1 4B          PHK
 $90:E3D2 AB          PLB
 $90:E3D3 C2 30       REP #$30
-$90:E3D5 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$90:E3D8 29 FF 00    AND #$00FF
-$90:E3DB C9 04 00    CMP #$0004
-$90:E3DE F0 08       BEQ $08    [$E3E8]
+$90:E3D5 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$90:E3D8 29 FF 00    AND #$00FF             ;|
+$90:E3DB C9 04 00    CMP #$0004             ;} If facing right:
+$90:E3DE F0 08       BEQ $08    [$E3E8]     ;/
 $90:E3E0 A9 29 00    LDA #$0029             ;\
 $90:E3E3 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - falling
 $90:E3E6 80 06       BRA $06    [$E3EE]
@@ -13659,14 +13976,14 @@ $90:E3EE 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
 $90:E3F1 A9 0E E9    LDA #$E90E             ;\
 $90:E3F4 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = RTS
 $90:E3F7 A9 1B E4    LDA #$E41B             ;\
-$90:E3FA 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E41B
+$90:E3FA 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E41B
 $90:E3FD AB          PLB
 $90:E3FE 28          PLP
 $90:E3FF 6B          RTL
 }
 
 
-;;; $E400:  ;;;
+;;; $E400: Unused. Clear Samus special falling ;;;
 {
 $90:E400 08          PHP
 $90:E401 8B          PHB
@@ -13678,15 +13995,16 @@ $90:E409 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:E40C A9 37 A3    LDA #$A337             ;\
 $90:E40F 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E412 A9 0E E9    LDA #$E90E             ;\
-$90:E415 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = RTS
+$90:E415 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 $90:E418 AB          PLB
 $90:E419 28          PLP
 $90:E41A 6B          RTL
 }
 
 
-;;; $E41B:  ;;;
+;;; $E41B: Unused. Timer / Samus hack handler - special falling ;;;
 {
+; Accelerates Samus Y speed up to 5, then sets her animation frame to 4 (invisible) if she's falling
 $90:E41B AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
 $90:E41E C9 05 00    CMP #$0005             ;} If [Samus Y speed] < 5:
 $90:E421 10 13       BPL $13    [$E436]     ;/
@@ -13698,16 +14016,16 @@ $90:E42D AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;|
 $90:E430 6D 34 0B    ADC $0B34  [$7E:0B34]  ;|
 $90:E433 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;/
 
-$90:E436 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$90:E439 C9 29 00    CMP #$0029
-$90:E43C F0 11       BEQ $11    [$E44F]
-$90:E43E C9 2A 00    CMP #$002A
-$90:E441 F0 0C       BEQ $0C    [$E44F]
-$90:E443 C9 67 00    CMP #$0067
-$90:E446 F0 07       BEQ $07    [$E44F]
-$90:E448 C9 68 00    CMP #$0068
-$90:E44B F0 02       BEQ $02    [$E44F]
-$90:E44D 80 14       BRA $14    [$E463]
+$90:E436 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$90:E439 C9 29 00    CMP #$0029             ;|
+$90:E43C F0 11       BEQ $11    [$E44F]     ;} If [Samus pose] != falling:
+$90:E43E C9 2A 00    CMP #$002A             ;|
+$90:E441 F0 0C       BEQ $0C    [$E44F]     ;/
+$90:E443 C9 67 00    CMP #$0067             ;\
+$90:E446 F0 07       BEQ $07    [$E44F]     ;|
+$90:E448 C9 68 00    CMP #$0068             ;} If [Samus pose] != falling - gun extended:
+$90:E44B F0 02       BEQ $02    [$E44F]     ;/
+$90:E44D 80 14       BRA $14    [$E463]     ; Return
 
 $90:E44F AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
 $90:E452 C9 05 00    CMP #$0005             ;} If [Samus Y speed] >= 5:
@@ -13719,8 +14037,11 @@ $90:E460 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 4
 
 $90:E463 60          RTS
 }
+}
 
 
+;;; $E464..E691: Samus movement ;;;
+{
 ;;; $E464: Calculate Samus X displacement for moving left ;;;
 {
 ;; Parameters:
@@ -13996,11 +14317,11 @@ $90:E5D4 F0 28       BEQ $28    [$E5FE]     ;} If collision not detected: go to 
 $90:E5D6 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $90:E5D9 F0 08       BEQ $08    [$E5E3]     ;} If [collision direction] != left:
 $90:E5DB A9 08 00    LDA #$0008             ;\
-$90:E5DE 8D CE 0D    STA $0DCE  [$7E:0DCE]  ;} $0DCE = 8
+$90:E5DE 8D CE 0D    STA $0DCE  [$7E:0DCE]  ;} Samus X speed killed flag = 8
 $90:E5E1 80 06       BRA $06    [$E5E9]
 
 $90:E5E3 A9 04 00    LDA #$0004             ;\ Else ([collision direction] = left):
-$90:E5E6 8D CE 0D    STA $0DCE  [$7E:0DCE]  ;} $0DCE = 4
+$90:E5E6 8D CE 0D    STA $0DCE  [$7E:0DCE]  ;} Samus X speed killed flag = 4
 
 $90:E5E9 22 53 DE 91 JSL $91DE53[$91:DE53]  ; Cancel speed boosting
 $90:E5ED 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
@@ -14012,7 +14333,7 @@ $90:E5FC 80 06       BRA $06    [$E604]     ; Return
 
 ; BRANCH_NO_COLLISION
 $90:E5FE 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; $0DC6 = 0
-$90:E601 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; $0DCE = 0
+$90:E601 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed flag = 0
 
 $90:E604 28          PLP
 $90:E605 60          RTS
@@ -14024,12 +14345,12 @@ $90:E605 60          RTS
 $90:E606 08          PHP
 $90:E607 C2 30       REP #$30
 $90:E609 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E60C F0 08       BEQ $08    [$E616]     ;} If [$0DD0] != 0:
+$90:E60C F0 08       BEQ $08    [$E616]     ;} If collision detected:
 $90:E60E A9 04 00    LDA #$0004             ;\
-$90:E611 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} $0DC6 = 4
+$90:E611 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} $0DC6 = 4, $0DC7 = 0
 $90:E614 80 03       BRA $03    [$E619]     ; Return
 
-$90:E616 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; $0DC6 = 0
+$90:E616 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; $0DC6 = 0, $0DC7 = 0
 
 $90:E619 28          PLP
 $90:E61A 60          RTS
@@ -14041,7 +14362,7 @@ $90:E61A 60          RTS
 $90:E61B 08          PHP
 $90:E61C C2 30       REP #$30
 $90:E61E AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E621 F0 16       BEQ $16    [$E639]     ;} If [$0DD0] != 0:
+$90:E621 F0 16       BEQ $16    [$E639]     ;} If collision detected:
 $90:E623 A9 01 00    LDA #$0001             ;\
 $90:E626 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} $0DC6 = 1
 $90:E629 E2 30       SEP #$30               ;\
@@ -14126,8 +14447,11 @@ $90:E676             db 04, ; 0: Standing
                         04, ; 1Ah: Grabbed by Draygon
                         04  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 }
+}
 
 
+;;; $E692..E721: $0A42 handler ;;;
+{
 ;;; $E692:  ;;;
 {
 $90:E692 6C 42 0A    JMP ($0A42)[$90:E6C9]
@@ -14209,8 +14533,11 @@ $90:E71F AB          PLB
 $90:E720 28          PLP
 $90:E721 6B          RTL
 }
+}
 
 
+;;; $E722..E90D: $0A44 handler ;;;
+{
 ;;; $E722:  ;;;
 {
 $90:E722 6C 44 0A    JMP ($0A44)[$90:E833]
@@ -14230,7 +14557,7 @@ $90:E72B 20 2F F5    JSR $F52F  [$90:F52F]  ; RTS
 $90:E72E 9C 6E 0A    STZ $0A6E  [$7E:0A6E]  ; Samus contact damage index = normal
 $90:E731 20 4B E9    JSR $E94B  [$90:E94B]  ; Execute Samus movement handler
 $90:E734 22 1B A9 90 JSL $90A91B[$90:A91B]  ; Update mini-map
-$90:E738 20 97 E0    JSR $E097  [$90:E097]  ; Execute [$0A5A]
+$90:E738 20 97 E0    JSR $E097  [$90:E097]  ; Timer / Samus hack handler
 $90:E73B 20 00 80    JSR $8000  [$90:8000]  ; Animate Samus
 $90:E73E 20 E9 DD    JSR $DDE9  [$90:DDE9]  ; Samus is hit interruption
 $90:E741 22 B6 E8 91 JSL $91E8B6[$91:E8B6]
@@ -14241,7 +14568,7 @@ $90:E750 20 45 EA    JSR $EA45  [$90:EA45]  ; Pause check
 $90:E753 20 7F EA    JSR $EA7F  [$90:EA7F]  ; Low health check
 $90:E756 AB          PLB
 $90:E757 28          PLP
-$90:E758 6B          RTL
+$90:E758 6B          RTL                    ; Return
 
 ; Handle demo recorder
 $90:E759 AD E6 09    LDA $09E6  [$7E:09E6]  ;\
@@ -14258,9 +14585,9 @@ $90:E770 22 D5 84 91 JSL $9184D5[$91:84D5]  ; Pause/terminate/reset demo recorde
 $90:E774 22 55 E3 91 JSL $91E355[$91:E355]  ; Give ammo, all items and switch to next beam configuration if newly pressed B
 $90:E778 2C CF 05    BIT $05CF  [$7E:05CF]  ;\
 $90:E77B 10 03       BPL $03    [$E780]     ;} If weaponry is swapped:
-$90:E77D 20 26 ED    JSR $ED26  [$90:ED26]  ; Swapped ammunition routine
+$90:E77D 20 26 ED    JSR $ED26  [$90:ED26]  ; Display Samus position as ammo if morphed
 
-$90:E780 20 86 E7    JSR $E786  [$90:E786]  ; Execute subroutine $E786
+$90:E780 20 86 E7    JSR $E786  [$90:E786]  ; Execute $E786
 $90:E783 AB          PLB
 $90:E784 28          PLP
 $90:E785 6B          RTL
@@ -14430,9 +14757,9 @@ $90:E8AC 4B          PHK
 $90:E8AD AB          PLB
 $90:E8AE C2 30       REP #$30
 $90:E8B0 22 25 E7 90 JSL $90E725[$90:E725]
-$90:E8B4 AD 5A 0A    LDA $0A5A  [$7E:0A5A]
-$90:E8B7 C9 14 E1    CMP #$E114
-$90:E8BA D0 0E       BNE $0E    [$E8CA]
+$90:E8B4 AD 5A 0A    LDA $0A5A  [$7E:0A5A]  ;\
+$90:E8B7 C9 14 E1    CMP #$E114             ;} If [timer / Samus hack handler] = $E114 (draw timer):
+$90:E8BA D0 0E       BNE $0E    [$E8CA]     ;/
 $90:E8BC AD 98 09    LDA $0998  [$7E:0998]
 $90:E8BF C9 23 00    CMP #$0023
 $90:E8C2 F0 06       BEQ $06    [$E8CA]
@@ -14514,6 +14841,7 @@ $90:E90B AB          PLB
 $90:E90C 28          PLP
 $90:E90D 6B          RTL
 }
+}
 
 
 ;;; $E90E: RTS ;;;
@@ -14522,6 +14850,8 @@ $90:E90E 60          RTS
 }
 
 
+;;; $E90F..4A: $0A60 handler ;;;
+{
 ;;; $E90F:  ;;;
 {
 ; Gets controller input depending on $0A60. $0A60 is commonly #$E913, which just JSLs to 91:8000
@@ -14578,6 +14908,7 @@ $90:E942 85 8F       STA $8F    [$7E:008F]  ;} Pull into controller 1 input
 $90:E944 A9 13 E9    LDA #$E913             ;\
 $90:E947 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (auto-jump hack)
 $90:E94A 60          RTS
+}
 }
 
 
@@ -14859,6 +15190,8 @@ $90:EB34 60          RTS
 }
 
 
+;;; $EB35..EC21: Draw Samus ;;;
+{
 ;;; $EB35: Draw Samus and projectiles ;;;
 {
 $90:EB35 08          PHP
@@ -14931,7 +15264,7 @@ $90:EB8E AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
 $90:EB91 C9 03 C7    CMP #$C703             ;} If [grapple beam function] != firing:
 $90:EB94 F0 05       BEQ $05    [$EB9B]     ;/
 $90:EB96 C9 59 C7    CMP #$C759             ;\
-$90:EB99 D0 04       BNE $04    [$EB9F]     ;} If [grapple beam function] = $C759:
+$90:EB99 D0 04       BNE $04    [$EB9F]     ;} If [grapple beam function] != $C759 (unused):
 
 $90:EB9B 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]  ; Execute $9B:BF1B
 
@@ -14946,25 +15279,25 @@ $90:EBB3 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EBB6 20 63 C6    JSR $C663  [$90:C663]  ; Draw arm cannon
 $90:EBB9 22 A5 BF 9B JSL $9BBFA5[$9B:BFA5]  ; Update grapple beam tiles and increment flare counter
 $90:EBBD AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
-$90:EBC0 F0 2F       BEQ $2F    [$EBF1]     ;} If [$0CFE] != 0:
+$90:EBC0 F0 2F       BEQ $2F    [$EBF1]     ;} If [grapple beam length] != 0:
 $90:EBC2 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Handle grapple beam graphics
-$90:EBC6 60          RTS
+$90:EBC6 60          RTS                    ; Return
 
 $90:EBC7 20 4C 8A    JSR $8A4C  [$90:8A4C]  ; Handle atmospheric effects
 $90:EBCA 20 63 C6    JSR $C663  [$90:C663]  ; Draw arm cannon
 $90:EBCD 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EBD0 22 A5 BF 9B JSL $9BBFA5[$9B:BFA5]  ; Update grapple beam tiles and increment flare counter
 $90:EBD4 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
-$90:EBD7 F0 18       BEQ $18    [$EBF1]     ;} If [$0CFE] != 0:
+$90:EBD7 F0 18       BEQ $18    [$EBF1]     ;} If [grapple beam length] != 0:
 $90:EBD9 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Handle grapple beam graphics
-$90:EBDD 60          RTS
+$90:EBDD 60          RTS                    ; Return
 
 ; BRANCH_NO_ARM_CANNON
 $90:EBDE 20 4C 8A    JSR $8A4C  [$90:8A4C]  ; Handle atmospheric effects
 $90:EBE1 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EBE4 22 A5 BF 9B JSL $9BBFA5[$9B:BFA5]  ; Update grapple beam tiles and increment flare counter
 $90:EBE8 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
-$90:EBEB F0 04       BEQ $04    [$EBF1]     ;} If [$0CFE] != 0:
+$90:EBEB F0 04       BEQ $04    [$EBF1]     ;} If [grapple beam length] != 0:
 $90:EBED 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Handle grapple beam graphics
 
 $90:EBF1 60          RTS
@@ -14977,14 +15310,14 @@ $90:EBF2 60          RTS
 }
 
 
-;;; $EBF3: Samus display handler - end of shinespark ;;;
+;;; $EBF3: Samus display handler - shinespark crash echo circle ;;;
 {
 $90:EBF3 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EBF6 A2 02 00    LDX #$0002
 
-$90:EBF9 DA          PHX
-$90:EBFA 20 BA 88    JSR $88BA  [$90:88BA]
-$90:EBFD FA          PLX
+$90:EBF9 DA          PHX                    ;\
+$90:EBFA 20 BA 88    JSR $88BA  [$90:88BA]  ;} Draw shinespark crash echoes
+$90:EBFD FA          PLX                    ;/
 $90:EBFE CA          DEX
 $90:EBFF CA          DEX
 $90:EC00 10 F7       BPL $F7    [$EBF9]
@@ -14992,14 +15325,18 @@ $90:EC02 60          RTS
 }
 
 
-;;; $EC03:  ;;;
+;;; $EC03: Unused ;;;
 {
-$90:EC03 20 52 EB    JSR $EB52  [$90:EB52]
+; Looks like leftover code for a previous implementation of either the shinespark crash or some such
+; Note how this routine is similar to $EBF3, but also note that $87BD does the loop for both echoes itself,
+; so presumably $87BD used to be like $88BA and then things got refactored
+
+$90:EC03 20 52 EB    JSR $EB52  [$90:EB52]  ; Samus drawing handler - default
 $90:EC06 A2 02 00    LDX #$0002
 
-$90:EC09 DA          PHX
-$90:EC0A 20 BD 87    JSR $87BD  [$90:87BD]  ; Draw Samus echoes
-$90:EC0D FA          PLX
+$90:EC09 DA          PHX                    ;\
+$90:EC0A 20 BD 87    JSR $87BD  [$90:87BD]  ;} Draw Samus echoes
+$90:EC0D FA          PLX                    ;/
 $90:EC0E CA          DEX
 $90:EC0F CA          DEX
 $90:EC10 10 F7       BPL $F7    [$EC09]
@@ -15024,8 +15361,9 @@ $90:EC1C 60          RTS
 
 ;;; $EC1D: Samus display handler - Samus received fatal damage ;;;
 {
-$90:EC1D 22 00 8A 90 JSL $908A00[$90:8A00]
+$90:EC1D 22 00 8A 90 JSL $908A00[$90:8A00]  ; Draw inanimate Samus
 $90:EC21 60          RTS
+}
 }
 
 
@@ -15152,7 +15490,7 @@ $90:ECD4 60          RTS
 }
 
 
-;;; $ECD5: Move Samus with control pad ;;;
+;;; $ECD5: Demo recorder - move Samus with control pad ;;;
 {
 $90:ECD5 08          PHP
 $90:ECD6 C2 30       REP #$30
@@ -15209,7 +15547,7 @@ $90:ED25 60          RTS
 }
 
 
-;;; $ED26: Swapped ammunition routine ;;;
+;;; $ED26: Demo recorder - display Samus position as ammo if morphed ;;;
 {
 $90:ED26 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:ED29 29 FF 00    AND #$00FF             ;|
@@ -15280,6 +15618,8 @@ $90:ED87 60          RTS
 }
 
 
+;;; $ED88..EEE6: Footstep graphics ;;;
+{
 ;;; $ED88: Footstep graphics ;;;
 {
 ; Water splashing in Maridia and Crateria, dust if speedrunning.
@@ -15409,10 +15749,10 @@ $90:EE63 60          RTS
 
 ;;; $EE64: Footstep graphics - common ;;;
 {
-$90:EE64 AD 3E 0B    LDA $0B3E  [$7E:0B3E]
-$90:EE67 29 00 FF    AND #$FF00
-$90:EE6A C9 00 04    CMP #$0400
-$90:EE6D D0 77       BNE $77    [$EEE6]
+$90:EE64 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
+$90:EE67 29 00 FF    AND #$FF00             ;|
+$90:EE6A C9 00 04    CMP #$0400             ;} If not speed boosting: return
+$90:EE6D D0 77       BNE $77    [$EEE6]     ;/
 $90:EE6F 22 3E EC 90 JSL $90EC3E[$90:EC3E]  ; $12 = Samus bottom boundary
 $90:EE73 AD 5E 19    LDA $195E  [$7E:195E]  ;\
 $90:EE76 30 0E       BMI $0E    [$EE86]     ;} If [FX Y position] >= 0:
@@ -15467,13 +15807,14 @@ $90:EEE3 8D D6 0A    STA $0AD6  [$7E:0AD6]
 
 $90:EEE6 60          RTS
 }
+}
 
 
 ;;; $EEE7: Update speed echo position ;;;
 {
 $90:EEE7 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
 $90:EEEA 29 00 FF    AND #$FF00             ;|
-$90:EEED C9 00 04    CMP #$0400             ;} If [speed boost counter] != 4: return
+$90:EEED C9 00 04    CMP #$0400             ;} If not speed boosting: return
 $90:EEF0 D0 29       BNE $29    [$EF1B]     ;/
 $90:EEF2 AD AE 0A    LDA $0AAE  [$7E:0AAE]  ;\
 $90:EEF5 30 24       BMI $24    [$EF1B]     ;} If [speed echoes index] & 8000h != 0 (echoes are merging back into Samus): return
@@ -15497,9 +15838,16 @@ $90:EF1B 60          RTS
 }
 
 
-;;; $EF1C:  ;;;
+;;; $EF1C: Unused ;;;
 {
-$90:EF1C             dw 000C, 0010, 0010
+; My best guess is footstep graphic offsets from Samus' position
+$90:EF1C             dw 000C, 0010
+}
+
+
+;;; $EF20:  ;;;
+{
+$90:EF20             dw 0010
 }
 
 
@@ -15507,8 +15855,8 @@ $90:EF1C             dw 000C, 0010, 0010
 {
 $90:EF22 08          PHP
 $90:EF23 C2 30       REP #$30
-$90:EF25 22 C4 84 94 JSL $9484C4[$94:84C4]  ; Execute $94:84C4
-$90:EF29 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Execute $94:84CD
+$90:EF25 22 C4 84 94 JSL $9484C4[$94:84C4]  ; Post grapple collision handling - horizontal
+$90:EF29 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision handling - vertical
 $90:EF2D AD 0A 0E    LDA $0E0A  [$7E:0E0A]  ;\
 $90:EF30 F0 05       BEQ $05    [$EF37]     ;|
 $90:EF32 AD 08 0E    LDA $0E08  [$7E:0E08]  ;|
@@ -15523,7 +15871,7 @@ $90:EF43 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $90:EF46 AD 00 0B    LDA $0B00  [$7E:0B00]  ;\
 $90:EF49 C9 10 00    CMP #$0010             ;} If [Samus Y radius] < 10h: return
 $90:EF4C 30 0E       BMI $0E    [$EF5C]     ;/
-$90:EF4E 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Execute $94:84CD
+$90:EF4E 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision handling - vertical
 $90:EF52 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:EF55 38          SEC                    ;|
 $90:EF56 ED 08 0E    SBC $0E08  [$7E:0E08]  ;} Samus Y position -= [$0E08]
@@ -15534,7 +15882,9 @@ $90:EF5D 6B          RTL
 }
 
 
-;;; $EF5E: Unused. Fire unknown projectile 8027h ;;;
+;;; $EF5E..F083: Unused. Unknown projectile 27h ;;;
+{
+;;; $EF5E: Unused. Fire unknown projectile 27h ;;;
 {
 $90:EF5E A9 0E E9    LDA #$E90E             ;\
 $90:EF61 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = RTS
@@ -15567,7 +15917,7 @@ $90:EFAA AD FA 0A    LDA $0AFA  [$7E:0AFA]
 $90:EFAD 18          CLC
 $90:EFAE 7D CB EF    ADC $EFCB,x
 $90:EFB1 9D 78 0B    STA $0B78,x
-$90:EFB4 22 63 81 93 JSL $938163[$93:8163]
+$90:EFB4 22 63 81 93 JSL $938163[$93:8163]  ; Initialise shinespark echo or spazer SBA trail projectile
 $90:EFB8 CA          DEX
 $90:EFB9 CA          DEX
 $90:EFBA 10 C6       BPL $C6    [$EF82]
@@ -15580,7 +15930,7 @@ $90:EFCB             dw FF80, 0080, 0080, FF80
 }
 
 
-;;; $EFD3: Projectile pre-instruction - unknown projectile 8027h ;;;
+;;; $EFD3: Projectile pre-instruction - unknown projectile 27h ;;;
 {
 ; Shinespark beam code(?)
 $90:EFD3 BD 64 0B    LDA $0B64,x            ;\
@@ -15662,8 +16012,11 @@ $90:F080 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (n
 
 $90:F083 60          RTS
 }
+}
 
 
+;;; $F084..F506: $F084 scripts ;;;
+{
 ;;; $F084: Very general use routines ;;;
 {
 ; Depending on A. Can range from 0 to 1F
@@ -15873,7 +16226,7 @@ $90:F228 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Ceres elevator pad enemy pr
 $90:F22C A0 95 A3    LDY #$A395             ;\
 $90:F22F 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Ceres elevator platform enemy projectile
 $90:F233 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
-$90:F236 22 18 E1 82 JSL $82E118[$82:E118]  ; Play room music track after [A] frames
+$90:F236 22 18 E1 82 JSL $82E118[$82:E118]  ; Play room music track after [A] frames (A happens to be 20h here, index of the 2nd enemy projectile)
 $90:F23A 38          SEC                    ;\
 $90:F23B 60          RTS                    ;} Return carry set
 }
@@ -15929,7 +16282,7 @@ $90:F294 60          RTS
 
 ;;; $F295: $F084 - A = Bh ;;;
 {
-; Called by suit acquisition
+; Called by suit acquisition and elevators
 $90:F295 A9 52 EB    LDA #$EB52             ;\
 $90:F298 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $90:F29B 4C 17 F1    JMP $F117  [$90:F117]  ; $F084 - A = 1
@@ -15983,16 +16336,16 @@ $90:F2D7 60          RTS                    ;} Return carry set
 ;;; $F2D8: $F084 - A = Fh: enable timer handling ;;;
 {
 $90:F2D8 A9 E6 E0    LDA #$E0E6             ;\
-$90:F2DB 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E0E6
+$90:F2DB 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer)
 $90:F2DE 18          CLC                    ;\
 $90:F2DF 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F2E0: $F084 - A = 10h ;;;
+;;; $F2E0: $F084 - A = 10h: unlock Samus from reserve tank ;;;
 {
 $90:F2E0 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
-$90:F2E3 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] = $E8D9 (RTL):
+$90:F2E3 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] = $E8D9 (Samus is being drained by rainbow beam):
 $90:F2E6 D0 02       BNE $02    [$F2EA]     ;/
 $90:F2E8 38          SEC                    ;\
 $90:F2E9 60          RTS                    ;} Return carry set
@@ -16036,19 +16389,19 @@ $90:F31D 4C FC F2    JMP $F2FC  [$90:F2FC]  ; Go to $F2FC
 }
 
 
-;;; $F320: $F084 - A = 12h ;;;
+;;; $F320: $F084 - A = 12h: enable Samus blue flashing ;;;
 {
-$90:F320 A9 01 00    LDA #$0001
-$90:F323 8D 4A 0A    STA $0A4A  [$7E:0A4A]
+$90:F320 A9 01 00    LDA #$0001             ;\
+$90:F323 8D 4A 0A    STA $0A4A  [$7E:0A4A]  ;} Super special Samus palette flags = 1
 $90:F326 18          CLC
 $90:F327 60          RTS
 }
 
 
-;;; $F328: $F084 - A = 13h ;;;
+;;; $F328: $F084 - A = 13h: disable Samus blue flashing ;;;
 {
-$90:F328 9C 4A 0A    STZ $0A4A  [$7E:0A4A]
-$90:F32B 22 BA DE 91 JSL $91DEBA[$91:DEBA]
+$90:F328 9C 4A 0A    STZ $0A4A  [$7E:0A4A]  ; Super special Samus palette flags = 0
+$90:F32B 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $90:F32F 18          CLC
 $90:F330 60          RTS
 }
@@ -16108,7 +16461,7 @@ $90:F38D 60          RTS
 ;;; $F38E: $F084 - A = 5: set up Samus for being drained - able to stand ;;;
 {
 $90:F38E A9 9B E0    LDA #$E09B             ;\
-$90:F391 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E09B (handle letting Samus up from being drained)
+$90:F391 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E09B (handle letting Samus up from being drained)
 }
 
 
@@ -16135,7 +16488,7 @@ $90:F3BF 60          RTS
 ;;; $F3C0: $F084 - A = 18h: set up Samus for being drained - unable to stand ;;;
 {
 $90:F3C0 A9 C5 E0    LDA #$E0C5             ;\
-$90:F3C3 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} $0A5A = $E0C5 (handle letting Samus fail to stand up from being drained)
+$90:F3C3 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0C5 (handle letting Samus fail to stand up from being drained)
 $90:F3C6 4C 94 F3    JMP $F394  [$90:F394]  ; Go to $F394
 }
 
@@ -16189,11 +16542,10 @@ $90:F410 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F411: $F084 - A = 1Bh ;;;
+;;; $F411: $F084 - A = 1Bh: lock Samus for reserve tank ;;;
 {
-; Reserve tanks activated
 $90:F411 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
-$90:F414 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] != $E8D9 (RTL):
+$90:F414 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] != $E8D9 (Samus is being drained by rainbow beam):
 $90:F417 F0 03       BEQ $03    [$F41C]     ;/
 $90:F419 4C 09 F1    JMP $F109  [$90:F109]  ; Go to $F109 ($F084 - A = 0)
 
@@ -16306,34 +16658,35 @@ $90:F4CF 60          RTS
 }
 
 
-;;; $F4D0: $F084 - A = 1Fh ;;;
+;;; $F4D0: $F084 - A = 1Fh: kill grapple beam ;;;
 {
-$90:F4D0 AD 32 0D    LDA $0D32  [$7E:0D32]
-$90:F4D3 C9 F0 C4    CMP #$C4F0
-$90:F4D6 D0 02       BNE $02    [$F4DA]
-$90:F4D8 18          CLC
-$90:F4D9 60          RTS
+$90:F4D0 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
+$90:F4D3 C9 F0 C4    CMP #$C4F0             ;} If [grapple beam function] = inactive:
+$90:F4D6 D0 02       BNE $02    [$F4DA]     ;/
+$90:F4D8 18          CLC                    ;\
+$90:F4D9 60          RTS                    ;} Return carry clear
 
-$90:F4DA 9C 1E 0D    STZ $0D1E  [$7E:0D1E]
-$90:F4DD 9C 20 0D    STZ $0D20  [$7E:0D20]
-$90:F4E0 9C 34 0D    STZ $0D34  [$7E:0D34]
-$90:F4E3 9C 36 0D    STZ $0D36  [$7E:0D36]
-$90:F4E6 9C 9E 0A    STZ $0A9E  [$7E:0A9E]
-$90:F4E9 9C F8 0C    STZ $0CF8  [$7E:0CF8]
-$90:F4EC 9C F6 0C    STZ $0CF6  [$7E:0CF6]
-$90:F4EF 9C F4 0C    STZ $0CF4  [$7E:0CF4]
-$90:F4F2 AD A6 09    LDA $09A6  [$7E:09A6]
-$90:F4F5 22 F0 AC 90 JSL $90ACF0[$90:ACF0]
-$90:F4F9 A9 F0 C4    LDA #$C4F0
-$90:F4FC 8D 32 0D    STA $0D32  [$7E:0D32]
+$90:F4DA 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
+$90:F4DD 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
+$90:F4E0 9C 34 0D    STZ $0D34  [$7E:0D34]  ; Direction grapple is fired = 0
+$90:F4E3 9C 36 0D    STZ $0D36  [$7E:0D36]  ; $0D36 = 0
+$90:F4E6 9C 9E 0A    STZ $0A9E  [$7E:0A9E]  ; Grapple walljump timer = 0
+$90:F4E9 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
+$90:F4EC 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; $0CF6 = 0
+$90:F4EF 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
+$90:F4F2 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$90:F4F5 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ;} Load current beam palette
+$90:F4F9 A9 F0 C4    LDA #$C4F0             ;\
+$90:F4FC 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = inactive
 $90:F4FF A9 52 EB    LDA #$EB52             ;\
 $90:F502 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
-$90:F505 18          CLC
-$90:F506 60          RTS
+$90:F505 18          CLC                    ;\
+$90:F506 60          RTS                    ;} Return carry clear
+}
 }
 
 
-;;; $F507:  ;;;
+;;; $F507: Unused ;;;
 {
 $90:F507 AD 1F 0A    LDA $0A1F  [$7E:0A1F]
 $90:F50A 29 FF 00    AND #$00FF
@@ -16361,6 +16714,8 @@ $90:F52F 60          RTS
 }
 
 
+;;; $F530..F575: Unused. $0A5E handler ;;;
+{
 ;;; $F530: Unused. Go to [$0A5E] ;;;
 {
 $90:F530 6C 5E 0A    JMP ($0A5E)
@@ -16379,7 +16734,7 @@ $90:F534 60          RTS
 }
 
 
-;;; $F535: Unused.  ;;;
+;;; $F535: Debug. Give Samus a shinespark if Y is newly pressed ;;;
 {
 ; Gives Samus a shinespark
 $90:F535 A5 8F       LDA $8F    [$7E:008F]  ;\
@@ -16395,13 +16750,13 @@ $90:F54B 60          RTS
 }
 
 
-;;; $F54C: Unused.  ;;;
+;;; $F54C: Debug. Disable rainbow Samus and stand her up if controller 2 Y is newly pressed ;;;
 {
 $90:F54C A5 91       LDA $91    [$7E:0091]  ;\
 $90:F54E 89 00 40    BIT #$4000             ;} If not newly pressed controller 2 Y: return
 $90:F551 F0 0D       BEQ $0D    [$F560]     ;/
-$90:F553 A9 17 00    LDA #$0017             ; A = 17h (see $A9:CCC0, Shitroid in cutscene)
-$90:F556 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$90:F553 A9 17 00    LDA #$0017             ;\
+$90:F556 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable rainbow Samus and stand her up
 $90:F55A A9 34 F5    LDA #$F534             ;\
 $90:F55D 8D 5E 0A    STA $0A5E  [$7E:0A5E]  ;} $0A5E = RTS
 
@@ -16409,17 +16764,18 @@ $90:F560 60          RTS
 }
 
 
-;;; $F561: Unused.  ;;;
+;;; $F561: Debug. Release Samus from drained pose if Y newly pressed ;;;
 {
 $90:F561 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:F563 89 00 40    BIT #$4000             ;} If not newly pressed Y: return
 $90:F566 F0 0D       BEQ $0D    [$F575]     ;/
 $90:F568 A9 34 F5    LDA #$F534             ;\
 $90:F56B 8D 5E 0A    STA $0A5E  [$7E:0A5E]  ;} $0A5E = RTS
-$90:F56E A9 02 00    LDA #$0002             ; A = 2 (see $A9:F3A3, Shitroid)
-$90:F571 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ; Calculate Samus X displacement for moving right
+$90:F56E A9 02 00    LDA #$0002             ;\
+$90:F571 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Release Samus from drained pose
 
 $90:F575 60          RTS
+}
 }
 
 
@@ -16510,7 +16866,7 @@ $90:F619 A9 0E 00    LDA #$000E             ;\
 $90:F61C 22 33 82 80 JSL $808233[$80:8233]  ;} If Zebes timebomb set:
 $90:F620 90 16       BCC $16    [$F638]     ;/
 $90:F622 AD 5A 0A    LDA $0A5A  [$7E:0A5A]  ;\
-$90:F625 C9 14 E1    CMP #$E114             ;} If [$0A5A] = $E114:
+$90:F625 C9 14 E1    CMP #$E114             ;} If [timer / Samus hack handler] = $E114 (draw timer):
 $90:F628 D0 0E       BNE $0E    [$F638]     ;/
 $90:F62A AD 98 09    LDA $0998  [$7E:0998]  ;\
 $90:F62D C9 23 00    CMP #$0023             ;} If [game state] != 23h (time up):

@@ -565,10 +565,10 @@ $81:859F             dw 0570,0003, 0570,000C, 0570,0030, 0570,00C0, 0570,0300, 0
 ;;; $879F: Add spritemap to OAM ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $16     = palette bits of sprite (palette * 200h)
+;;     DB:Y: Address of spritemap
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+;;     $16: Palette bits of sprite (palette * 200h)
 
 ; Spritemap format is roughly:
 ;     nnnn         ; Number of entries (2 bytes)
@@ -602,10 +602,10 @@ $81:859F             dw 0570,0003, 0570,000C, 0570,0030, 0570,00C0, 0570,0300, 0
 $81:879F DA          PHX
 $81:87A0 B9 00 00    LDA $0000,y[$8C:80BB]  ;\
 $81:87A3 D0 05       BNE $05    [$87AA]     ;|
-$81:87A5 FA          PLX                    ;} If [[Y]] = 0: return
-$81:87A6 6B          RTL                    ;/
-
-$81:87A7 4C 4E 88    JMP $884E
+$81:87A5 FA          PLX                    ;|
+$81:87A6 6B          RTL                    ;} If [[Y]] = 0: return
+                                            ;|
+$81:87A7 4C 4E 88    JMP $884E              ;/
 
 $81:87AA 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:87AC C8          INY                    ;\
@@ -639,7 +639,7 @@ $81:87E7 92 1C       STA ($1C)  [$7E:0570]  ;/
 $81:87E9 80 13       BRA $13    [$87FE]     ; Go to BRANCH_MERGE
 
 ; BRANCH_X_HIGH_CLEAR
-$81:87EB B9 00 00    LDA $0000,y[$8C:80BD]  ;\ Else (X position & 100h = 0):
+$81:87EB B9 00 00    LDA $0000,y[$8C:80BD]  ;\
 $81:87EE 10 0E       BPL $0E    [$87FE]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:87F0 BF 9F 85 81 LDA $81859F,x[$81:859F];\
 $81:87F4 85 1C       STA $1C    [$7E:001C]  ;|
@@ -658,7 +658,7 @@ $81:880A C9 E0       CMP #$E0               ;} If [$12] + [[Y] + 2] (Y position)
 $81:880C 90 15       BCC $15    [$8823]     ;|
 $81:880E 80 0E       BRA $0E    [$881E]     ;/
 
-$81:8810 65 12       ADC $12    [$7E:0012]  ;\ Else (Y offset < 0):
+$81:8810 65 12       ADC $12    [$7E:0012]  ;\ Else ((Y offset) < 0):
 $81:8812 B0 06       BCS $06    [$881A]     ;|
 $81:8814 C9 E0       CMP #$E0               ;|
 $81:8816 B0 0B       BCS $0B    [$8823]     ;|
@@ -667,7 +667,7 @@ $81:8818 80 04       BRA $04    [$881E]     ;} If -20h <= (Y position) < E0h: go
 $81:881A C9 E0       CMP #$E0               ;|
 $81:881C 90 05       BCC $05    [$8823]     ;/
 
-$81:881E 20 07 89    JSR $8907  [$81:8907]  ; OAM entry X position = 80h, set OAM entry high X position bit
+$81:881E 20 07 89    JSR $8907  [$81:8907]  ; OAM entry X position = 180h
 $81:8821 A9 E0       LDA #$E0               ; Use E0h as Y position
 
 ; BRANCH_ON_SCREEN
@@ -691,7 +691,7 @@ $81:8846 4C B8 87    JMP $87B8  [$81:87B8]  ; Go to LOOP
 
 $81:8849 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 $81:884C FA          PLX
-$81:884D 6B          RTL
+$81:884D 6B          RTL                    ; Return
 
 $81:884E 8D 90 05    STA $0590  [$7E:0590]  ; OAM stack pointer = [A]
 $81:8851 FA          PLX
@@ -710,29 +710,31 @@ $81:8852 6B          RTL
 ; Called by:
 ;    $8B:9746: Draw opening sprites (including scrolled text)
 ;    $8B:9799: Draw ending and credits sprites
+
+; See $879F for spritemap format
 $81:8853 DA          PHX
 $81:8854 B9 00 00    LDA $0000,y[$8C:975E]  ;\
 $81:8857 D0 05       BNE $05    [$885E]     ;|
-$81:8859 FA          PLX                    ;} If [[Y]] = 0: return
-$81:885A 6B          RTL                    ;/
+$81:8859 FA          PLX                    ;|
+$81:885A 6B          RTL                    ;} If [[Y]] = 0: return
+                                            ;|
+$81:885B 4C 02 89    JMP $8902  [$88:8902]  ;/
 
-$81:885B 4C 02 89    JMP $8902  [$88:8902]
-
-$81:885E 85 18       STA $18    [$7E:0018]  ; $18 = [Y] (size)
+$81:885E 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:8860 C8          INY                    ;\
 $81:8861 C8          INY                    ;} Y += 2
 $81:8862 AD 90 05    LDA $0590  [$7E:0590]  ;\
-$81:8865 89 00 FE    BIT #$FE00             ;} If OAM data index >= 200h: return
+$81:8865 89 00 FE    BIT #$FE00             ;} If [OAM stack pointer] >= 200h: return
 $81:8868 D0 F1       BNE $F1    [$885B]     ;/
-$81:886A AA          TAX                    ; X = OAM data index
+$81:886A AA          TAX                    ; X = [OAM stack pointer]
 $81:886B 18          CLC
 
-; Loop
+; LOOP
 $81:886C B9 00 00    LDA $0000,y[$8C:9760]  ;\
-$81:886F 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:886F 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8871 9D 70 03    STA $0370,x[$7E:0438]  ;/
 $81:8874 29 00 01    AND #$0100             ;\
-$81:8877 F0 26       BEQ $26    [$889F]     ;} If [OAM data entry X position] & 100h != 0:
+$81:8877 F0 26       BEQ $26    [$889F]     ;} If [OAM entry X position] % 200h < 100h: BRANCH_X_HIGH_CLEAR
 $81:8879 B9 00 00    LDA $0000,y[$8C:B8DF]  ;\
 $81:887C 10 11       BPL $11    [$888F]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:887E BF 9F 85 81 LDA $81859F,x[$81:85AF];\
@@ -740,16 +742,17 @@ $81:8882 85 1C       STA $1C    [$7E:001C]  ;|
 $81:8884 B2 1C       LDA ($1C)  [$7E:0570]  ;} Set OAM entry high X position bit and size bit
 $81:8886 1F A1 85 81 ORA $8185A1,x[$81:85B1];|
 $81:888A 92 1C       STA ($1C)  [$7E:0570]  ;/
-$81:888C 4C B2 88    JMP $88B2  [$81:88B2]
+$81:888C 4C B2 88    JMP $88B2  [$81:88B2]  ; Go to BRANCH_MERGE
 
-$81:888F BF 9F 85 81 LDA $81859F,x[$81:869F];\ Else (size bit = 0):
+$81:888F BF 9F 85 81 LDA $81859F,x[$81:869F];\
 $81:8893 85 1C       STA $1C    [$7E:001C]  ;|
 $81:8895 B2 1C       LDA ($1C)  [$7E:0580]  ;} Set OAM entry high X position bit
 $81:8897 1F 9F 83 81 ORA $81839F,x[$81:849F];|
 $81:889B 92 1C       STA ($1C)  [$7E:0580]  ;/
-$81:889D 80 13       BRA $13    [$88B2]
+$81:889D 80 13       BRA $13    [$88B2]     ; Go to BRANCH_MERGE
 
-$81:889F B9 00 00    LDA $0000,y[$8C:9760]  ;\ Else (X position & 100h = 0):
+; BRANCH_X_HIGH_CLEAR
+$81:889F B9 00 00    LDA $0000,y[$8C:9760]  ;\
 $81:88A2 10 0E       BPL $0E    [$88B2]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:88A4 BF 9F 85 81 LDA $81859F,x[$81:85DB];\
 $81:88A8 85 1C       STA $1C    [$7E:001C]  ;|
@@ -757,13 +760,14 @@ $81:88AA B2 1C       LDA ($1C)  [$7E:0572]  ;} Set OAM entry size bit
 $81:88AC 1F A1 83 81 ORA $8183A1,x[$81:83DD];|
 $81:88B0 92 1C       STA ($1C)  [$7E:0572]  ;/
 
+; BRANCH_MERGE
 $81:88B2 E2 20       SEP #$20
 $81:88B4 B9 02 00    LDA $0002,y[$8C:9762]  ;\
 $81:88B7 18          CLC                    ;} If [[Y] + 2] (Y offset) >= 0:
 $81:88B8 30 0A       BMI $0A    [$88C4]     ;/
 $81:88BA 65 12       ADC $12    [$7E:0012]  ;\
 $81:88BC B0 19       BCS $19    [$88D7]     ;|
-$81:88BE C9 E0       CMP #$E0               ;} If [[Y] + 2] + [$12] (Y position) >= E0h: go to BRANCH_ALPHA
+$81:88BE C9 E0       CMP #$E0               ;} If [$12] + [[Y] + 2] (Y position) >= -20h: go to BRANCH_ON_SCREEN
 $81:88C0 B0 15       BCS $15    [$88D7]     ;|
 $81:88C2 80 0E       BRA $0E    [$88D2]     ;/
 
@@ -771,16 +775,16 @@ $81:88C4 65 12       ADC $12    [$7E:0012]  ;\ Else (Y offset < 0):
 $81:88C6 B0 06       BCS $06    [$88CE]     ;|
 $81:88C8 C9 E0       CMP #$E0               ;|
 $81:88CA 90 0B       BCC $0B    [$88D7]     ;|
-$81:88CC 80 04       BRA $04    [$88D2]     ;} If Y position < -20 or Y position > E0h: go to BRANCH_ALPHA
+$81:88CC 80 04       BRA $04    [$88D2]     ;} If -20 <= (Y position) < E0h: go to BRANCH_ON_SCREEN
                                             ;|
 $81:88CE C9 E0       CMP #$E0               ;|
 $81:88D0 B0 05       BCS $05    [$88D7]     ;/
 
-$81:88D2 20 07 89    JSR $8907  [$81:8907]  ; OAM entry X position = 80h, set OAM entry high X position bit
+$81:88D2 20 07 89    JSR $8907  [$81:8907]  ; OAM entry X position = 180h
 $81:88D5 A9 E0       LDA #$E0               ; Use E0h as Y position
 
-; BRANCH_ALPHA
-$81:88D7 9D 71 03    STA $0371,x[$7E:0439]  ; OAM entry Y position = Y position
+; BRANCH_ON_SCREEN
+$81:88D7 9D 71 03    STA $0371,x[$7E:0439]  ; OAM entry Y position = (Y position)
 $81:88DA C2 21       REP #$21
 $81:88DC B9 03 00    LDA $0003,y[$8C:9763]  ;\
 $81:88DF 29 FF F1    AND #$F1FF             ;|
@@ -788,27 +792,27 @@ $81:88E2 05 16       ORA $16    [$7E:0016]  ;} OAM entry tile number and attribu
 $81:88E4 9D 72 03    STA $0372,x[$7E:043A]  ;/
 $81:88E7 8A          TXA                    ;\
 $81:88E8 69 04 00    ADC #$0004             ;|
-$81:88EB 89 00 FE    BIT #$FE00             ;} If [X] + 4 >= 200h: OAM index = [X] + 4, return
+$81:88EB 89 00 FE    BIT #$FE00             ;} If [X] + 4 >= 200h: OAM stack pointer = [X] + 4, return
 $81:88EE D0 12       BNE $12    [$8902]     ;/
-$81:88F0 AA          TAX                    ; Next OAM index
+$81:88F0 AA          TAX                    ; X += 4 (next OAM entry)
 $81:88F1 98          TYA                    ;\
-$81:88F2 69 05 00    ADC #$0005             ;} Next sprite map entry
+$81:88F2 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:88F5 A8          TAY                    ;/
-$81:88F6 C6 18       DEC $18    [$7E:0018]  ;\
-$81:88F8 F0 03       BEQ $03    [$88FD]     ;} If not processed all sprite map entries:
-$81:88FA 4C 6C 88    JMP $886C  [$81:886C]  ; Next!
+$81:88F6 C6 18       DEC $18    [$7E:0018]  ; Decrement $18
+$81:88F8 F0 03       BEQ $03    [$88FD]     ; If [$18] != 0:
+$81:88FA 4C 6C 88    JMP $886C  [$81:886C]  ; Go to LOOP
 
-$81:88FD 8E 90 05    STX $0590  [$7E:0590]  ; OAM index = [X]
+$81:88FD 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 $81:8900 FA          PLX
-$81:8901 6B          RTL
+$81:8901 6B          RTL                    ; Return
 
-$81:8902 8D 90 05    STA $0590  [$7E:0590]  ; OAM index = [A]
+$81:8902 8D 90 05    STA $0590  [$7E:0590]  ; OAM stack pointer = [A]
 $81:8905 FA          PLX
 $81:8906 6B          RTL
 }
 
 
-;;; $8907: OAM entry X position = 80h, set OAM entry high X position bit ;;;
+;;; $8907: OAM entry X position = 180h ;;;
 {
 $81:8907 A9 80       LDA #$80               ;\
 $81:8909 9D 70 03    STA $0370,x[$7E:038C]  ;} $0370 + [X] = 80h
@@ -826,35 +830,36 @@ $81:891E 60          RTS
 ;;; $891F: Add spritemap from $82:C569 table to OAM ;;;
 {
 ;; Parameters:
-;;     A   = Index into $82:C569 table
-;;     Y   = Y position of spritemap centre
-;;     X   = X position of spritemap centre
-;;     $03 = palette bits of sprite (palette * 200h)
+;;     A: Index into $82:C569 table
+;;     X: X position of spritemap centre
+;;     Y: Y position of spritemap centre
+;;     $03: Palette bits of sprite (palette * 200h)
 
+; See $879F for spritemap format
 ; Used for general menu sprites I think
 $81:891F 8B          PHB
-$81:8920 F4 00 82    PEA $8200
-$81:8923 AB          PLB
-$81:8924 AB          PLB
-$81:8925 84 12       STY $12    [$7E:0012]  ; $12 = [Y] (Y position of spritemap centre)
-$81:8927 86 14       STX $14    [$7E:0014]  ; $14 = [X] (X position of spritemap centre)
+$81:8920 F4 00 82    PEA $8200              ;\
+$81:8923 AB          PLB                    ;} DB = $82
+$81:8924 AB          PLB                    ;/
+$81:8925 84 12       STY $12    [$7E:0012]  ; $12 = [Y]
+$81:8927 86 14       STX $14    [$7E:0014]  ; $14 = [X]
 $81:8929 0A          ASL A                  ;\
-$81:892A AA          TAX                    ;} Y = [$82:C569 + [A] * 2] (address of spritemap)
+$81:892A AA          TAX                    ;} Y = [$C569 + [A] * 2] (address of spritemap)
 $81:892B BC 69 C5    LDY $C569,x[$82:C5C1]  ;/
 $81:892E B9 00 00    LDA $0000,y[$82:CAE9]  ;\
 $81:8931 F0 79       BEQ $79    [$89AC]     ;} If [[Y]] = 0: return
 $81:8933 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:8935 C8          INY                    ;\
 $81:8936 C8          INY                    ;} Y += 2
-$81:8937 AE 90 05    LDX $0590  [$7E:0590]  ; X = OAM data index
+$81:8937 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:893A 18          CLC
 
-; Loop
+; LOOP
 $81:893B B9 00 00    LDA $0000,y[$82:CAEB]  ;\
-$81:893E 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:893E 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8940 9D 70 03    STA $0370,x[$7E:0370]  ;/
 $81:8943 29 00 01    AND #$0100             ;\
-$81:8946 F0 27       BEQ $27    [$896F]     ;} If [OAM data entry X position] & 100h:
+$81:8946 F0 27       BEQ $27    [$896F]     ;} If [OAM entry X position] % 200h < 100h: BRANCH_X_HIGH_CLEAR
 $81:8948 B9 00 00    LDA $0000,y[$82:C4F3]  ;\
 $81:894B 10 11       BPL $11    [$895E]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:894D BF 9F 85 81 LDA $81859F,x          ;\
@@ -862,16 +867,17 @@ $81:8951 85 16       STA $16    [$7E:0016]  ;|
 $81:8953 B2 16       LDA ($16)              ;} Set OAM entry high X position bit and size bit
 $81:8955 1F A1 85 81 ORA $8185A1,x          ;|
 $81:8959 92 16       STA ($16)              ;/
-$81:895B 4C 82 89    JMP $8982  [$A0:8982]
+$81:895B 4C 82 89    JMP $8982  [$A0:8982]  ; Go to BRANCH_MERGE
 
-$81:895E BF 9F 85 81 LDA $81859F,x[$81:85BF];\ Else (size bit = 0):
+$81:895E BF 9F 85 81 LDA $81859F,x[$81:85BF];\
 $81:8962 85 16       STA $16    [$7E:0016]  ;|
 $81:8964 B2 16       LDA ($16)  [$7E:0572]  ;} Set OAM entry high X position bit
 $81:8966 1F 9F 83 81 ORA $81839F,x[$81:83BF];|
 $81:896A 92 16       STA ($16)  [$7E:0572]  ;/
-$81:896C 4C 82 89    JMP $8982  [$81:8982]
+$81:896C 4C 82 89    JMP $8982  [$81:8982]  ; Go to BRANCH_MERGE
 
-$81:896F B9 00 00    LDA $0000,y[$82:CAEB]  ;\ Else (X position & 100h = 0):
+; BRANCH_X_HIGH_CLEAR
+$81:896F B9 00 00    LDA $0000,y[$82:CAEB]  ;\
 $81:8972 10 0E       BPL $0E    [$8982]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8974 BF 9F 85 81 LDA $81859F,x[$81:859F];\
 $81:8978 85 16       STA $16    [$7E:0016]  ;|
@@ -879,9 +885,10 @@ $81:897A B2 16       LDA ($16)  [$7E:0570]  ;} Set OAM entry size bit
 $81:897C 1F A1 83 81 ORA $8183A1,x[$81:83A1];|
 $81:8980 92 16       STA ($16)  [$7E:0570]  ;/
 
+; BRANCH_MERGE
 $81:8982 B9 02 00    LDA $0002,y[$82:CAED]  ;\
 $81:8985 18          CLC                    ;|
-$81:8986 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [[Y] + 2] + [$12] (Y position)
+$81:8986 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [$12] + [[Y] + 2] (Y position)
 $81:8988 9D 71 03    STA $0371,x[$7E:0371]  ;/
 $81:898B B9 03 00    LDA $0003,y[$82:CAEE]  ;\
 $81:898E 29 FF F1    AND #$F1FF             ;|
@@ -889,16 +896,16 @@ $81:8991 05 03       ORA $03    [$7E:0003]  ;} OAM entry tile number and attribu
 $81:8993 9D 72 03    STA $0372,x[$7E:0372]  ;/
 $81:8996 98          TYA                    ;\
 $81:8997 18          CLC                    ;|
-$81:8998 69 05 00    ADC #$0005             ;} Next sprite map entry
+$81:8998 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:899B A8          TAY                    ;/
 $81:899C 8A          TXA                    ;\
 $81:899D 18          CLC                    ;|
-$81:899E 69 04 00    ADC #$0004             ;} Next OAM index
+$81:899E 69 04 00    ADC #$0004             ;} X += 4 (next OAM entry)
 $81:89A1 29 FF 01    AND #$01FF             ;|
 $81:89A4 AA          TAX                    ;/
-$81:89A5 C6 18       DEC $18    [$7E:0018]  ;\
-$81:89A7 D0 92       BNE $92    [$893B]     ;} If not processed all sprite map entries: next!
-$81:89A9 8E 90 05    STX $0590  [$7E:0590]  ; OAM index = [X]
+$81:89A5 C6 18       DEC $18    [$7E:0018]  ; Decrement $18
+$81:89A7 D0 92       BNE $92    [$893B]     ; If [$18] != 0: go to LOOP
+$81:89A9 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 
 $81:89AC AB          PLB
 $81:89AD 6B          RTL
@@ -908,37 +915,38 @@ $81:89AD 6B          RTL
 ;;; $89AE: Add Samus spritemap to OAM ;;;
 {
 ;; Parameters:
-;;     A = Index into $92:808D table
-;;     Y = Y position of spritemap centre
-;;     X = X position of spritemap centre
+;;     A: Index into $92:808D table
+;;     X: X position of spritemap centre
+;;     Y: Y position of spritemap centre
 
 ; Actually uses the palette defined in the spritemap
+; See $8A5F for spritemap format
 ; Also called for some atmospheric graphics:
 ;     186h..18Eh: Bubbles
 ;     18Fh..197h: Diving splash
 $81:89AE 8B          PHB
-$81:89AF F4 00 92    PEA $9200
-$81:89B2 AB          PLB
-$81:89B3 AB          PLB
-$81:89B4 84 12       STY $12    [$7E:0012]  ; $12 = [Y] (Y position of spritemap centre)
-$81:89B6 86 14       STX $14    [$7E:0014]  ; $14 = [X] (X position of spritemap centre)
+$81:89AF F4 00 92    PEA $9200              ;\
+$81:89B2 AB          PLB                    ;} DB = $92
+$81:89B3 AB          PLB                    ;/
+$81:89B4 84 12       STY $12    [$7E:0012]  ; $12 = [Y]
+$81:89B6 86 14       STX $14    [$7E:0014]  ; $14 = [X]
 $81:89B8 0A          ASL A                  ;\
-$81:89B9 AA          TAX                    ;} Y = [$92:808D + [A] * 2] (address of spritemap)
+$81:89B9 AA          TAX                    ;} Y = [$808D + [A] * 2] (address of spritemap)
 $81:89BA BC 8D 80    LDY $808D,x[$92:83D3]  ;/
 $81:89BD B9 00 00    LDA $0000,y[$92:A0B4]  ;\
 $81:89C0 F0 73       BEQ $73    [$8A35]     ;} If [[Y]] = 0: return
 $81:89C2 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:89C4 C8          INY                    ;\
 $81:89C5 C8          INY                    ;} Y += 2
-$81:89C6 AE 90 05    LDX $0590  [$7E:0590]  ; X = OAM data index
+$81:89C6 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:89C9 18          CLC
 
-; Loop
+; LOOP
 $81:89CA B9 00 00    LDA $0000,y[$92:A0B6]  ;\
-$81:89CD 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:89CD 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:89CF 9D 70 03    STA $0370,x[$7E:0370]  ;/
 $81:89D2 29 00 01    AND #$0100             ;\
-$81:89D5 F0 27       BEQ $27    [$89FE]     ;} If [OAM data entry X position] & 100h:
+$81:89D5 F0 27       BEQ $27    [$89FE]     ;} If [OAM entry X position] % 200h < 100h: BRANCH_X_HIGH_CLEAR
 $81:89D7 B9 00 00    LDA $0000,y[$92:A0B6]  ;\
 $81:89DA 10 11       BPL $11    [$89ED]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:89DC BF 9F 85 81 LDA $81859F,x[$81:85BF];\
@@ -946,16 +954,17 @@ $81:89E0 85 16       STA $16    [$7E:0016]  ;|
 $81:89E2 B2 16       LDA ($16)  [$7E:0572]  ;} Set OAM entry high X position bit and size bit
 $81:89E4 1F A1 85 81 ORA $8185A1,x[$81:85C1];|
 $81:89E8 92 16       STA ($16)  [$7E:0572]  ;/
-$81:89EA 4C 11 8A    JMP $8A11  [$81:8A11]
-
-$81:89ED BF 9F 85 81 LDA $81859F,x[$81:85C7];\ Else (size bit = 0):
+$81:89EA 4C 11 8A    JMP $8A11  [$81:8A11]  ; Go to BRANCH_MERGE
+                                            
+$81:89ED BF 9F 85 81 LDA $81859F,x[$81:85C7];\
 $81:89F1 85 16       STA $16    [$7E:0016]  ;|
 $81:89F3 B2 16       LDA ($16)  [$7E:0572]  ;} Set OAM entry high X position bit
 $81:89F5 1F 9F 83 81 ORA $81839F,x[$81:83C7];|
 $81:89F9 92 16       STA ($16)  [$7E:0572]  ;/
-$81:89FB 4C 11 8A    JMP $8A11  [$81:8A11]
-
-$81:89FE B9 00 00    LDA $0000,y[$92:A0B6]  ;\ Else (X position & 100h = 0):
+$81:89FB 4C 11 8A    JMP $8A11  [$81:8A11]  ; Go to BRANCH_MERGE
+                                            
+; BRANCH_X_HIGH_CLEAR                       
+$81:89FE B9 00 00    LDA $0000,y[$92:A0B6]  ;\
 $81:8A01 10 0E       BPL $0E    [$8A11]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8A03 BF 9F 85 81 LDA $81859F,x[$81:859F];\
 $81:8A07 85 16       STA $16    [$7E:0016]  ;|
@@ -963,23 +972,24 @@ $81:8A09 B2 16       LDA ($16)  [$7E:0570]  ;} Set OAM entry size bit
 $81:8A0B 1F A1 83 81 ORA $8183A1,x[$81:83A1];|
 $81:8A0F 92 16       STA ($16)  [$7E:0570]  ;/
 
+; BRANCH_MERGE
 $81:8A11 B9 02 00    LDA $0002,y[$92:A0B8]  ;\
 $81:8A14 18          CLC                    ;|
-$81:8A15 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [[Y] + 2] + [$12] (Y position)
+$81:8A15 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [$12] + [[Y] + 2] (Y position)
 $81:8A17 9D 71 03    STA $0371,x[$7E:0371]  ;/
 $81:8A1A B9 03 00    LDA $0003,y[$92:A0B9]  ;\
 $81:8A1D 9D 72 03    STA $0372,x[$7E:0372]  ;} OAM entry tile number and attributes = [[Y] + 3]
 $81:8A20 98          TYA                    ;\
 $81:8A21 18          CLC                    ;|
-$81:8A22 69 05 00    ADC #$0005             ;} Next sprite map entry
+$81:8A22 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:8A25 A8          TAY                    ;/
 $81:8A26 8A          TXA                    ;\
 $81:8A27 69 04 00    ADC #$0004             ;|
-$81:8A2A 29 FF 01    AND #$01FF             ;} Next OAM index
+$81:8A2A 29 FF 01    AND #$01FF             ;} X += 4 (next OAM entry)
 $81:8A2D AA          TAX                    ;/
-$81:8A2E C6 18       DEC $18    [$7E:0018]  ;\
-$81:8A30 D0 98       BNE $98    [$89CA]     ;} If not processed all sprite map entries: next!
-$81:8A32 8E 90 05    STX $0590  [$7E:0590]  ; OAM index = [X]
+$81:8A2E C6 18       DEC $18    [$7E:0018]  ; Decrement $18
+$81:8A30 D0 98       BNE $98    [$89CA]     ; If [$18] != 0: go to LOOP
+$81:8A32 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 
 $81:8A35 AB          PLB
 $81:8A36 6B          RTL
@@ -988,18 +998,25 @@ $81:8A36 6B          RTL
 
 ;;; $8A37: Add spritemap from $93:A1A1 table to OAM ;;;
 {
+;; Parameters:
+;;     A: Index into $93:A1A1 table
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+
 ; Called by:
-;    $90:BBE1: Draw charge beam flare and sparks
+;    $90:BBE1: Draw flare animation component
 ;    $93:F5E2: Unused. Draw shinespark windup effect sprite
 ;    $9B:C036: Handle grapple beam flare
 
+; Actually uses the palette defined in the spritemap
+; See $8A5F for spritemap format
 ; Draws charge / grapple beam flare and charge sparks
 $81:8A37 8B          PHB
-$81:8A38 F4 00 93    PEA $9300
-$81:8A3B AB          PLB
-$81:8A3C AB          PLB
+$81:8A38 F4 00 93    PEA $9300              ;\
+$81:8A3B AB          PLB                    ;} DB = $93
+$81:8A3C AB          PLB                    ;/
 $81:8A3D 0A          ASL A                  ;\
-$81:8A3E AA          TAX                    ;} Y = [$93:A1A1 + [A] * 2]
+$81:8A3E AA          TAX                    ;} Y = [$A1A1 + [A] * 2]
 $81:8A3F BC A1 A1    LDY $A1A1,x[$93:A1A1]  ;/
 $81:8A42 B9 00 00    LDA $0000,y[$93:AB6C]  ;\
 $81:8A45 85 18       STA $18    [$7E:0018]  ;} $18 = [[Y]] (size)
@@ -1011,15 +1028,22 @@ $81:8A49 80 14       BRA $14    [$8A5F]     ; Go to $8A5F
 
 ;;; $8A4B: Add projectile spritemap to OAM ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+
+; Actually uses the palette defined in the spritemap
+; See $8A5F for spritemap format
 $81:8A4B 8B          PHB
-$81:8A4C F4 00 93    PEA $9300
-$81:8A4F AB          PLB
-$81:8A50 AB          PLB
-$81:8A51 BC B8 0C    LDY $0CB8,x[$7E:0CB8]  ; Y = projectile spritemap pointer
+$81:8A4C F4 00 93    PEA $9300              ;\
+$81:8A4F AB          PLB                    ;} DB = $93
+$81:8A50 AB          PLB                    ;/
+$81:8A51 BC B8 0C    LDY $0CB8,x[$7E:0CB8]  ; Y = [projectile spritemap pointer]
 $81:8A54 B9 00 00    LDA $0000,y[$93:AD61]  ;\
-$81:8A57 D0 02       BNE $02    [$8A5B]     ;|
-$81:8A59 AB          PLB                    ;} If [[Y]] = 0: return
-$81:8A5A 6B          RTL                    ;/
+$81:8A57 D0 02       BNE $02    [$8A5B]     ;} If [[Y]] = 0:
+$81:8A59 AB          PLB
+$81:8A5A 6B          RTL                    ; Return
 
 $81:8A5B 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:8A5D C8          INY                    ;\
@@ -1030,10 +1054,10 @@ $81:8A5E C8          INY                    ;} Y += 2
 ;;; $8A5F: Add spritemap to OAM ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of first entry in spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $18     = number of entries
+;;     DB:Y: Address of first entry in spritemap
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+;;     $18: Number of entries
 
 ; Spritemap format is roughly:
 ;     nnnn         ; Number of entries (2 bytes)
@@ -1064,10 +1088,10 @@ $81:8A62 18          CLC
 
 ; LOOP
 $81:8A63 B9 00 00    LDA $0000,y[$93:AD63]  ;\
-$81:8A66 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:8A66 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8A68 9D 70 03    STA $0370,x[$7E:0390]  ;/
 $81:8A6B 29 00 01    AND #$0100             ;\
-$81:8A6E F0 0E       BEQ $0E    [$8A7E]     ;} If [OAM data entry X position] & 100h:
+$81:8A6E F0 0E       BEQ $0E    [$8A7E]     ;} If [OAM entry X position] % 200h >= 100h:
 $81:8A70 BF 9F 85 81 LDA $81859F,x[$81:8607];\
 $81:8A74 85 16       STA $16    [$7E:0016]  ;|
 $81:8A76 B2 16       LDA ($16)  [$7E:0576]  ;} Set OAM entry high X position bit
@@ -1084,7 +1108,7 @@ $81:8A8F 92 16       STA ($16)  [$7E:0570]  ;/
 
 $81:8A91 B9 02 00    LDA $0002,y[$93:AD65]  ;\
 $81:8A94 18          CLC                    ;|
-$81:8A95 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [[Y] + 2] + [$12] (Y position)
+$81:8A95 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [$12] + [[Y] + 2] (Y position)
 $81:8A97 9D 71 03    STA $0371,x[$7E:0391]  ;/
 $81:8A9A B9 03 00    LDA $0003,y[$93:AD66]  ;\
 $81:8A9D 9D 72 03    STA $0372,x[$7E:0392]  ;} OAM entry tile number and attributes = [[Y] + 3]
@@ -1094,9 +1118,9 @@ $81:8AA2 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:8AA5 A8          TAY                    ;/
 $81:8AA6 8A          TXA                    ;\
 $81:8AA7 69 04 00    ADC #$0004             ;|
-$81:8AAA 29 FF 01    AND #$01FF             ;} X = ([X] + 4) % 200h (next OAM index)
+$81:8AAA 29 FF 01    AND #$01FF             ;} X += 4 (next OAM entry)
 $81:8AAD AA          TAX                    ;/
-$81:8AAE C6 18       DEC $18    [$7E:0018]  ; Decrement $18 (number of entries)
+$81:8AAE C6 18       DEC $18    [$7E:0018]  ; Decrement $18
 $81:8AB0 D0 B1       BNE $B1    [$8A63]     ; If [$18] != 0: go to LOOP
 $81:8AB2 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 $81:8AB5 AB          PLB
@@ -1113,15 +1137,17 @@ $81:8AB7 6B          RTL
 ;;; $8AB8: Add spritemap to OAM with base tile number ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $03     = palette bits of sprite (palette * 200h)
-;;     $00     = base tile number
+;;     DB:Y: Address of spritemap
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+;;     $03: Palette bits of sprite (palette * 200h)
+;;     $00: Base tile number
 
 ; Called by:
 ;    $A0:944A: Write enemy OAM (non multi-hitbox)
 ;    $B4:BD32: Draw sprite objects
+
+; See $879F for spritemap format
 $81:8AB8 5A          PHY
 $81:8AB9 B9 00 00    LDA $0000,y[$A6:F921]  ; $18 = [[Y]] (number of entries)
 $81:8ABC F0 61       BEQ $61    [$8B1F]     ; If [$18] = 0: return
@@ -1133,16 +1159,16 @@ $81:8AC5 18          CLC
 
 ; LOOP
 $81:8AC6 B9 00 00    LDA $0000,y[$A6:F923]  ;\
-$81:8AC9 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [[Y]] + [$14] (X position)
+$81:8AC9 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8ACB 9D 70 03    STA $0370,x[$7E:0370]  ;/
 $81:8ACE 29 00 01    AND #$0100             ;\
-$81:8AD1 F0 0E       BEQ $0E    [$8AE1]     ;} If [OAM entry X position] & 100h:
+$81:8AD1 F0 0E       BEQ $0E    [$8AE1]     ;} If [OAM entry X position] % 200h >= 100h:
 $81:8AD3 BF 9F 85 81 LDA $81859F,x[$81:85A7];\
 $81:8AD7 85 16       STA $16    [$7E:0016]  ;|
 $81:8AD9 B2 16       LDA ($16)  [$7E:0570]  ;} Set OAM entry high X position bit
 $81:8ADB 1F 9F 83 81 ORA $81839F,x[$81:83A7];|
 $81:8ADF 92 16       STA ($16)  [$7E:0570]  ;/
-
+                                            
 $81:8AE1 B9 00 00    LDA $0000,y[$A6:F923]  ;\
 $81:8AE4 10 0E       BPL $0E    [$8AF4]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8AE6 BF 9F 85 81 LDA $81859F,x[$81:859F];\
@@ -1154,7 +1180,7 @@ $81:8AF2 92 16       STA ($16)  [$7E:0570]  ;/
 $81:8AF4 E2 20       SEP #$20
 $81:8AF6 B9 02 00    LDA $0002,y[$A6:F925]  ;\
 $81:8AF9 18          CLC                    ;|
-$81:8AFA 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [[Y] + 2] + [$12] (Y position)
+$81:8AFA 65 12       ADC $12    [$7E:0012]  ;} OAM entry Y position = [$12] + [[Y] + 2] (Y position)
 $81:8AFC 9D 71 03    STA $0371,x[$7E:0371]  ;/
 $81:8AFF C2 21       REP #$21
 $81:8B01 B9 03 00    LDA $0003,y[$A6:F926]  ;\
@@ -1166,9 +1192,9 @@ $81:8B0C 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:8B0F A8          TAY                    ;/
 $81:8B10 8A          TXA                    ;\
 $81:8B11 69 04 00    ADC #$0004             ;|
-$81:8B14 29 FF 01    AND #$01FF             ;} X = ([X] + 4) % 200h (next OAM index)
+$81:8B14 29 FF 01    AND #$01FF             ;} X += 4 (next OAM entry)
 $81:8B17 AA          TAX                    ;/
-$81:8B18 C6 18       DEC $18    [$7E:0018]  ; Decrement $18 (number of entries)
+$81:8B18 C6 18       DEC $18    [$7E:0018]  ; Decrement $18
 $81:8B1A D0 AA       BNE $AA    [$8AC6]     ; If [$18] != 0: go to LOOP
 $81:8B1C 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 
@@ -1186,32 +1212,33 @@ $81:8B21 6B          RTL
 ;;; $8B22: Add spritemap to OAM with base tile number ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $03     = palette bits of sprite (palette * 200h)
-;;     $00     = base tile number
+;;     DB:Y: Address of spritemap
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+;;     $03: Palette bits of sprite (palette * 200h)
+;;     $00: Base tile number
 
 ; Called by:
 ;    $A0:944A: Write enemy OAM (multi-hitbox)
 
+; See $879F for spritemap format
 ; Bug: missing CLC before ADC when calclulating Y position, causes enemies straddling the left screen boundary to shift down a pixel
 
 $81:8B22 5A          PHY
-$81:8B23 B9 00 00    LDA $0000,y[$A6:ED29]  ;\
-$81:8B26 F0 6C       BEQ $6C    [$8B94]     ;} If [[Y]] = 0: return
+$81:8B23 B9 00 00    LDA $0000,y[$A6:ED29]  ; $18 = [[Y]] (number of entries)
+$81:8B26 F0 6C       BEQ $6C    [$8B94]     ; If [$18] = 0: return
 $81:8B28 C8          INY                    ;\
-$81:8B29 C8          INY                    ;} $18 = [[Y]] (size), Y += 2
-$81:8B2A 85 18       STA $18    [$7E:0018]  ;/
-$81:8B2C AE 90 05    LDX $0590  [$7E:0590]  ; X = OAM data index
+$81:8B29 C8          INY                    ;} Y += 2
+$81:8B2A 85 18       STA $18    [$7E:0018]  
+$81:8B2C AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:8B2F 18          CLC
 
-; Loop
+; LOOP
 $81:8B30 B9 00 00    LDA $0000,y[$A6:ED2B]  ;\
-$81:8B33 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:8B33 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8B35 9D 70 03    STA $0370,x[$7E:03A4]  ;/
 $81:8B38 29 00 01    AND #$0100             ;\
-$81:8B3B F0 0E       BEQ $0E    [$8B4B]     ;} If [OAM data entry X position] & 100h:
+$81:8B3B F0 0E       BEQ $0E    [$8B4B]     ;} If [OAM entry X position] % 200h >= 100h:
 $81:8B3D BF 9F 85 81 LDA $81859F,x[$81:85B7];\
 $81:8B41 85 16       STA $16    [$7E:0016]  ;|
 $81:8B43 B2 16       LDA ($16)  [$7E:0570]  ;} Set OAM entry high X position bit
@@ -1230,31 +1257,31 @@ $81:8B5E E2 20       SEP #$20
 $81:8B60 B9 02 00    LDA $0002,y[$A6:ED2D]  ;\
 $81:8B63 30 06       BMI $06    [$8B6B]     ;} If [[Y] + 2] (Y offset) >= 0:
 $81:8B65 65 12       ADC $12    [$7E:0012]  ;\
-$81:8B67 90 08       BCC $08    [$8B71]     ;} If [[Y] + 2] + [$12] (Y position) < 100h: go to BRANCH_ALPHA
+$81:8B67 90 08       BCC $08    [$8B71]     ;} If [$12] + [[Y] + 2] (Y position) < 100h: go to BRANCH_ON_SCREEN
 $81:8B69 B0 04       BCS $04    [$8B6F]
 
-$81:8B6B 65 12       ADC $12    [$7E:0012]  ;\ Else (Y offset < 0):
-$81:8B6D B0 02       BCS $02    [$8B71]     ;} If Y position >= 0: go to BRANCH_ALPHA
+$81:8B6B 65 12       ADC $12    [$7E:0012]  ;\ Else ((Y offset) < 0):
+$81:8B6D B0 02       BCS $02    [$8B71]     ;} If (Y position) >= 0: go to BRANCH_ON_SCREEN
 
 $81:8B6F A9 F0       LDA #$F0               ; Use F0h as Y position
 
-; BRANCH_ALPHA
-$81:8B71 9D 71 03    STA $0371,x[$7E:03A5]  ; OAM entry Y position = Y position
+; BRANCH_ON_SCREEN
+$81:8B71 9D 71 03    STA $0371,x[$7E:03A5]  ; OAM entry Y position = (Y position)
 $81:8B74 C2 21       REP #$21
 $81:8B76 B9 03 00    LDA $0003,y[$A6:ED2E]  ;\
 $81:8B79 65 00       ADC $00    [$7E:0000]  ;|
 $81:8B7B 05 03       ORA $03    [$7E:0003]  ;} OAM entry tile number and attributes = [[Y] + 3] + [$00] | [$03]
 $81:8B7D 9D 72 03    STA $0372,x[$7E:03A6]  ;/
 $81:8B80 98          TYA                    ;\
-$81:8B81 69 05 00    ADC #$0005             ;} Next sprite map entry
+$81:8B81 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:8B84 A8          TAY                    ;/
 $81:8B85 8A          TXA                    ;\
 $81:8B86 69 04 00    ADC #$0004             ;|
-$81:8B89 29 FF 01    AND #$01FF             ;} Next OAM index
+$81:8B89 29 FF 01    AND #$01FF             ;} X += 4 (next OAM entry)
 $81:8B8C AA          TAX                    ;/
-$81:8B8D C6 18       DEC $18    [$7E:0018]  ;\
-$81:8B8F D0 9F       BNE $9F    [$8B30]     ;} If not processed all sprite map entries: next!
-$81:8B91 8E 90 05    STX $0590  [$7E:0590]  ; OAM index = [X]
+$81:8B8D C6 18       DEC $18    [$7E:0018]  ; Decrement $18
+$81:8B8F D0 9F       BNE $9F    [$8B30]     ; If [$18] != 0: go to LOOP
+$81:8B91 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 
 $81:8B94 7A          PLY
 $81:8B95 6B          RTL
@@ -1264,35 +1291,37 @@ $81:8B95 6B          RTL
 ;;; $8B96: Add spritemap to OAM with base tile number off-screen ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $03     = palette bits of sprite (palette * 200h)
-;;     $00     = base tile number
+;;     DB:Y: Address of spritemap
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+;;     $03: Palette bits of sprite (palette * 200h)
+;;     $00: Base tile number
 
 ; Called by:
 ;    $A0:944A: Write enemy OAM
+
+; See $879F for spritemap format
 $81:8B96 5A          PHY
-$81:8B97 B9 00 00    LDA $0000,y[$A6:EC5B]  ;\
-$81:8B9A F0 6C       BEQ $6C    [$8C08]     ;} If [[Y]] = 0: return
+$81:8B97 B9 00 00    LDA $0000,y[$A6:EC5B]  ; $18 = [[Y]] (number of entries)
+$81:8B9A F0 6C       BEQ $6C    [$8C08]     ; If [$18] = 0: return
 $81:8B9C C8          INY                    ;\
-$81:8B9D C8          INY                    ;} $18 = [[Y]] (size), Y += 2
-$81:8B9E 85 18       STA $18    [$7E:0018]  ;/
-$81:8BA0 AE 90 05    LDX $0590  [$7E:0590]  ; X = OAM data index
+$81:8B9D C8          INY                    ;} Y += 2
+$81:8B9E 85 18       STA $18    [$7E:0018]  
+$81:8BA0 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:8BA3 18          CLC
 
-; Loop
+; LOOP
 $81:8BA4 B9 00 00    LDA $0000,y[$A6:EC5D]  ;\
-$81:8BA7 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:8BA7 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8BA9 9D 70 03    STA $0370,x[$7E:03D4]  ;/
 $81:8BAC 29 00 01    AND #$0100             ;\
-$81:8BAF F0 0E       BEQ $0E    [$8BBF]     ;} If [OAM data entry X position] & 100h:
+$81:8BAF F0 0E       BEQ $0E    [$8BBF]     ;} If [OAM entry X position] % 200h >= 100h:
 $81:8BB1 BF 9F 85 81 LDA $81859F,x[$81:85FB];\
 $81:8BB5 85 16       STA $16    [$7E:0016]  ;|
 $81:8BB7 B2 16       LDA ($16)  [$7E:0574]  ;} Set OAM entry high X position bit
 $81:8BB9 1F 9F 83 81 ORA $81839F,x[$81:83FB];|
 $81:8BBD 92 16       STA ($16)  [$7E:0574]  ;/
-
+                                            
 $81:8BBF B9 00 00    LDA $0000,y[$A6:EC5D]  ;\
 $81:8BC2 10 0E       BPL $0E    [$8BD2]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8BC4 BF 9F 85 81 LDA $81859F,x[$81:861F];\
@@ -1305,31 +1334,31 @@ $81:8BD2 E2 20       SEP #$20
 $81:8BD4 B9 02 00    LDA $0002,y[$A6:EC5F]  ;\
 $81:8BD7 30 06       BMI $06    [$8BDF]     ;} If [[Y] + 2] (Y offset) >= 0:
 $81:8BD9 65 12       ADC $12    [$7E:0012]  ;\
-$81:8BDB B0 08       BCS $08    [$8BE5]     ;} If [[Y] + 2] + [$12] (Y position) >= 100h: go to BRANCH_ALPHA
+$81:8BDB B0 08       BCS $08    [$8BE5]     ;} If [$12] + [[Y] + 2] (Y position) >= 0: go to BRANCH_ON_SCREEN
 $81:8BDD 90 04       BCC $04    [$8BE3]
 
-$81:8BDF 65 12       ADC $12    [$7E:0012]  ;\ Else (Y offset < 0):
-$81:8BE1 90 02       BCC $02    [$8BE5]     ;} If Y position < 0: go to BRANCH_ALPHA
+$81:8BDF 65 12       ADC $12    [$7E:0012]  ;\ Else ((Y offset) < 0):
+$81:8BE1 90 02       BCC $02    [$8BE5]     ;} If (Y position) < 100h: go to BRANCH_ON_SCREEN
 
 $81:8BE3 A9 F0       LDA #$F0               ; Use F0h as Y position
 
-; BRANCH_ALPHA
-$81:8BE5 9D 71 03    STA $0371,x[$7E:03D5]  ; OAM entry Y position = Y position
-$81:8BE8 C2 21       REP #$21
+; BRANCH_ON_SCREEN
+$81:8BE5 9D 71 03    STA $0371,x[$7E:03D5]  ; OAM entry Y position = (Y position)
+$81:8BE8 C2 21       REP #$21               
 $81:8BEA B9 03 00    LDA $0003,y[$A6:EC60]  ;\
 $81:8BED 65 00       ADC $00    [$7E:0000]  ;|
 $81:8BEF 05 03       ORA $03    [$7E:0003]  ;} OAM entry tile number and attributes = [[Y] + 3] + [$00] | [$03]
 $81:8BF1 9D 72 03    STA $0372,x[$7E:03D6]  ;/
 $81:8BF4 98          TYA                    ;\
-$81:8BF5 69 05 00    ADC #$0005             ;} Next sprite map entry
+$81:8BF5 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:8BF8 A8          TAY                    ;/
 $81:8BF9 8A          TXA                    ;\
 $81:8BFA 69 04 00    ADC #$0004             ;|
-$81:8BFD 29 FF 01    AND #$01FF             ;} Next OAM index
+$81:8BFD 29 FF 01    AND #$01FF             ;} X += 4 (next OAM entry)
 $81:8C00 AA          TAX                    ;/
-$81:8C01 C6 18       DEC $18    [$7E:0018]  ;\
-$81:8C03 D0 9F       BNE $9F    [$8BA4]     ;} If not processed all sprite map entries: next!
-$81:8C05 8E 90 05    STX $0590  [$7E:0590]  ; OAM index = [X]
+$81:8C01 C6 18       DEC $18    [$7E:0018]  ; Decrement $18
+$81:8C03 D0 9F       BNE $9F    [$8BA4]     ; If [$18] != 0: go to LOOP
+$81:8C05 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 
 $81:8C08 7A          PLY
 $81:8C09 6B          RTL
@@ -1339,14 +1368,16 @@ $81:8C09 6B          RTL
 ;;; $8C0A: Add spritemap to OAM with base tile number ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $1C     = palette bits of sprite (palette * 200h)
-;;     $1A     = base tile number
+;;     DB:Y: Address of spritemap
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+;;     $1A: Base tile number
+;;     $1C: Palette bits of sprite (palette * 200h)
 
 ; Called by:
 ;    $86:83D6: Draw enemy projectile
+
+; See $879F for spritemap format
 $81:8C0A B9 00 00    LDA $0000,y[$8D:B1BA]  ;\
 $81:8C0D D0 01       BNE $01    [$8C10]     ;} If [[Y]] = 0: return
 $81:8C0F 6B          RTL                    ;/
@@ -1354,16 +1385,16 @@ $81:8C0F 6B          RTL                    ;/
 $81:8C10 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:8C12 C8          INY                    ;\
 $81:8C13 C8          INY                    ;} Y += 2
-$81:8C14 AE 90 05    LDX $0590  [$7E:0590]  ; X = OAM data index
+$81:8C14 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:8C17 18          CLC
 
-; Loop
+; LOOP
 $81:8C18 B9 00 00    LDA $0000,y[$8D:B1BC]  ;\
 $81:8C1B 18          CLC                    ;|
-$81:8C1C 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:8C1C 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8C1E 9D 70 03    STA $0370,x[$7E:0370]  ;/
 $81:8C21 89 00 01    BIT #$0100             ;\
-$81:8C24 F0 0E       BEQ $0E    [$8C34]     ;} If [OAM data entry X position] & 100h:
+$81:8C24 F0 0E       BEQ $0E    [$8C34]     ;} If [OAM entry X position] % 200h >= 100h:
 $81:8C26 BF 9F 85 81 LDA $81859F,x[$81:85FB];\
 $81:8C2A 85 16       STA $16    [$7E:0016]  ;|
 $81:8C2C B2 16       LDA ($16)  [$7E:0574]  ;} Set OAM entry high X position bit
@@ -1375,15 +1406,16 @@ $81:8C36 18          CLC
 $81:8C37 B9 02 00    LDA $0002,y[$8D:B1BE]  ;\
 $81:8C3A 30 06       BMI $06    [$8C42]     ;} If [[Y] + 2] (Y offset) >= 0:
 $81:8C3C 65 12       ADC $12    [$7E:0012]  ;\
-$81:8C3E 90 08       BCC $08    [$8C48]     ;} If [[Y] + 2] + [$12] (Y position) < 100h: go to BRANCH_ALPHA
+$81:8C3E 90 08       BCC $08    [$8C48]     ;} If [$12] + [[Y] + 2] (Y position) < 100h: go to BRANCH_ON_SCREEN
 $81:8C40 B0 04       BCS $04    [$8C46]
 
-$81:8C42 65 12       ADC $12    [$7E:0012]  ;\ Else (Y offset < 0):
-$81:8C44 B0 02       BCS $02    [$8C48]     ;} If Y position >= 0: go to BRANCH_ALPHA
+$81:8C42 65 12       ADC $12    [$7E:0012]  ;\ Else ((Y offset) < 0):
+$81:8C44 B0 02       BCS $02    [$8C48]     ;} If (Y position) >= 0: go to BRANCH_ON_SCREEN
 
 $81:8C46 A9 F0       LDA #$F0               ; Use F0h as Y position
 
-$81:8C48 9D 71 03    STA $0371,x[$7E:0371]  ; OAM entry Y position = Y position
+; BRANCH_ON_SCREEN
+$81:8C48 9D 71 03    STA $0371,x[$7E:0371]  ; OAM entry Y position = (Y position)
 $81:8C4B C2 21       REP #$21
 $81:8C4D B9 00 00    LDA $0000,y[$8D:B1BC]  ;\
 $81:8C50 10 0E       BPL $0E    [$8C60]     ;} If [[Y]] & 8000h (size bit) != 0:
@@ -1399,14 +1431,14 @@ $81:8C65 05 1C       ORA $1C    [$7E:001C]  ;} OAM entry tile number and attribu
 $81:8C67 9D 72 03    STA $0372,x[$7E:0372]  ;/
 $81:8C6A 8A          TXA                    ;\
 $81:8C6B 69 04 00    ADC #$0004             ;|
-$81:8C6E 29 FF 01    AND #$01FF             ;} Next OAM index
+$81:8C6E 29 FF 01    AND #$01FF             ;} X += 4 (next OAM entry)
 $81:8C71 AA          TAX                    ;/
 $81:8C72 98          TYA                    ;\
-$81:8C73 69 05 00    ADC #$0005             ;} Next sprite map entry
+$81:8C73 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:8C76 A8          TAY                    ;/
-$81:8C77 C6 18       DEC $18    [$7E:0018]  ;\
-$81:8C79 D0 9D       BNE $9D    [$8C18]     ;} If not processed all sprite map entries: next!
-$81:8C7B 8E 90 05    STX $0590  [$7E:0590]  ; OAM index = [X]
+$81:8C77 C6 18       DEC $18    [$7E:0018]  ; Decrement $18
+$81:8C79 D0 9D       BNE $9D    [$8C18]     ; If [$18] != 0: go to LOOP
+$81:8C7B 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 $81:8C7E 6B          RTL
 }
 
@@ -1414,14 +1446,16 @@ $81:8C7E 6B          RTL
 ;;; $8C7F: Add spritemap to OAM with base tile number offscreen ;;;
 {
 ;; Parameters:
-;;     DB:YYYY = address of spritemap
-;;     $12     = Y position of spritemap centre
-;;     $14     = X position of spritemap centre
-;;     $1C     = palette bits of sprite (palette * 200h)
-;;     $1A     = base tile number
+;;     DB:Y: Address of spritemap
+;;     $12: Y position of spritemap centre
+;;     $14: X position of spritemap centre
+;;     $1A: Base tile number
+;;     $1C: Palette bits of sprite (palette * 200h)
 
 ; Called by:
 ;    $86:83D6: Draw enemy projectile
+
+; See $879F for spritemap format
 $81:8C7F B9 00 00    LDA $0000,y[$8D:B250]  ;\
 $81:8C82 D0 01       BNE $01    [$8C85]     ;} If [[Y]] = 0: return
 $81:8C84 6B          RTL                    ;/
@@ -1429,16 +1463,16 @@ $81:8C84 6B          RTL                    ;/
 $81:8C85 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:8C87 C8          INY                    ;\
 $81:8C88 C8          INY                    ;} Y += 2
-$81:8C89 AE 90 05    LDX $0590  [$7E:0590]  ; X = OAM data index
+$81:8C89 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $81:8C8C 18          CLC
 
-; Loop
+; LOOP
 $81:8C8D B9 00 00    LDA $0000,y[$8D:B252]  ;\
 $81:8C90 18          CLC                    ;|
-$81:8C91 65 14       ADC $14    [$7E:0014]  ;} OAM data entry X position = [[Y]] + [$14] (X position)
+$81:8C91 65 14       ADC $14    [$7E:0014]  ;} OAM entry X position = [$14] + [[Y]] (X position)
 $81:8C93 9D 70 03    STA $0370,x[$7E:03D4]  ;/
 $81:8C96 89 00 01    BIT #$0100             ;\
-$81:8C99 F0 0E       BEQ $0E    [$8CA9]     ;} If [OAM data entry X position] & 100h:
+$81:8C99 F0 0E       BEQ $0E    [$8CA9]     ;} If [OAM entry X position] % 200h >= 100h:
 $81:8C9B BF 9F 85 81 LDA $81859F,x[$81:859F];\
 $81:8C9F 85 16       STA $16    [$7E:0016]  ;|
 $81:8CA1 B2 16       LDA ($16)  [$7E:0570]  ;} Set OAM entry high X position bit
@@ -1450,16 +1484,17 @@ $81:8CAB 18          CLC
 $81:8CAC B9 02 00    LDA $0002,y[$8D:B254]  ;\
 $81:8CAF 30 06       BMI $06    [$8CB7]     ;} If [[Y] + 2] (Y offset) >= 0:
 $81:8CB1 65 12       ADC $12    [$7E:0012]  ;\
-$81:8CB3 B0 08       BCS $08    [$8CBD]     ;} If [[Y] + 2] + [$12] (Y position) >= 100h: go to BRANCH_ALPHA
+$81:8CB3 B0 08       BCS $08    [$8CBD]     ;} If [[Y] + 2] + [$12] (Y position) >= 0: go to BRANCH_ON_SCREEN
 $81:8CB5 90 04       BCC $04    [$8CBB]
 
-$81:8CB7 65 12       ADC $12    [$7E:0012]  ;\ Else (Y offset < 0):
-$81:8CB9 90 02       BCC $02    [$8CBD]     ;} If Y position < 0: go to BRANCH_ALPHA
+$81:8CB7 65 12       ADC $12    [$7E:0012]  ;\ Else ((Y offset) < 0):
+$81:8CB9 90 02       BCC $02    [$8CBD]     ;} If (Y position) < 100h: go to BRANCH_ON_SCREEN
 
 $81:8CBB A9 F0       LDA #$F0               ; Use F0h as Y position
 
-$81:8CBD 9D 71 03    STA $0371,x[$7E:03D5]  ; OAM entry Y position = Y position
-$81:8CC0 C2 21       REP #$21
+; BRANCH_ON_SCREEN
+$81:8CBD 9D 71 03    STA $0371,x[$7E:03D5]  ; OAM entry Y position = (Y position)
+$81:8CC0 C2 21       REP #$21               
 $81:8CC2 B9 00 00    LDA $0000,y[$8D:B252]  ;\
 $81:8CC5 10 0E       BPL $0E    [$8CD5]     ;} If [[Y]] & 8000h (size bit) != 0:
 $81:8CC7 BF 9F 85 81 LDA $81859F,x[$81:8603];\
@@ -1467,21 +1502,21 @@ $81:8CCB 85 16       STA $16    [$7E:0016]  ;|
 $81:8CCD B2 16       LDA ($16)  [$7E:0576]  ;} Set OAM entry size bit
 $81:8CCF 1F A1 83 81 ORA $8183A1,x[$81:8405];|
 $81:8CD3 92 16       STA ($16)  [$7E:0576]  ;/
-
+                                            
 $81:8CD5 B9 03 00    LDA $0003,y[$8D:B255]  ;\
 $81:8CD8 65 1A       ADC $1A    [$7E:001A]  ;|
 $81:8CDA 05 1C       ORA $1C    [$7E:001C]  ;} OAM entry tile number and attributes = [[Y] + 3] + [$1A] | [$1C]
 $81:8CDC 9D 72 03    STA $0372,x[$7E:03D6]  ;/
 $81:8CDF 8A          TXA                    ;\
 $81:8CE0 69 04 00    ADC #$0004             ;|
-$81:8CE3 29 FF 01    AND #$01FF             ;} Next OAM index
+$81:8CE3 29 FF 01    AND #$01FF             ;} X += 4 (next OAM entry)
 $81:8CE6 AA          TAX                    ;/
 $81:8CE7 98          TYA                    ;\
-$81:8CE8 69 05 00    ADC #$0005             ;} Next sprite map entry
+$81:8CE8 69 05 00    ADC #$0005             ;} Y += 5 (next sprite map entry)
 $81:8CEB A8          TAY                    ;/
-$81:8CEC C6 18       DEC $18    [$7E:0018]  ;\
-$81:8CEE D0 9D       BNE $9D    [$8C8D]     ;} If not processed all sprite map entries: next!
-$81:8CF0 8E 90 05    STX $0590  [$7E:0590]  ; OAM index = [X]
+$81:8CEC C6 18       DEC $18    [$7E:0018]  ; Decrement $18
+$81:8CEE D0 9D       BNE $9D    [$8C8D]     ; If [$18] != 0: go to LOOP
+$81:8CF0 8E 90 05    STX $0590  [$7E:0590]  ; OAM stack pointer = [X]
 $81:8CF3 6B          RTL
 }
 }
@@ -1556,7 +1591,7 @@ $81:8D6C 60          RTS
 {
 $81:8D6D C2 30       REP #$30
 $81:8D6F A9 00 00    LDA #$0000             ;\
-$81:8D72 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$81:8D72 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $81:8D76 A9 03 FF    LDA #$FF03             ;\
 $81:8D79 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue title sequence music data
 $81:8D7D E2 20       SEP #$20               ;\
@@ -1603,7 +1638,7 @@ $81:8DB9 60          RTS
 $81:8DBA E2 20       SEP #$20
 $81:8DBC 64 6B       STZ $6B    [$7E:006B]  ; Disable all subscreen layers
 $81:8DBE A9 03       LDA #$03               ;\
-$81:8DC0 85 52       STA $52    [$7E:0052]  ;} Sprite tiles base address = $6000
+$81:8DC0 85 52       STA $52    [$7E:0052]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $81:8DC2 A9 51       LDA #$51               ;\
 $81:8DC4 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $5000, size = 64x32
 $81:8DC6 A9 58       LDA #$58               ;\
@@ -1853,7 +1888,7 @@ $81:9082 8D 16 21    STA $2116  [$7E:2116]  ;|
 $81:9085 A9 40       LDA #$40               ;|
 $81:9087 8D 17 21    STA $2117  [$7E:2117]  ;|
 $81:908A A9 80       LDA #$80               ;|
-$81:908C 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..4FFF (BG3 tiles and BG2 tilemap) = [$9A:B200..D1FF]
+$81:908C 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $4000..4FFF (BG3 tiles and BG2 tilemap) = [$9A:B200..D1FF] (standard BG3 tiles, clear BG2)
 $81:908F 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $81:9093             dx 01,01,18,9AB200,2000;|
 $81:909B A9 02       LDA #$02               ;|
@@ -2007,7 +2042,7 @@ $81:91B2 A9 80       LDA #$80               ;|
 $81:91B4 85 76       STA $76    [$7E:0076]  ;/
 $81:91B6 C2 30       REP #$30
 $81:91B8 A9 00 00    LDA #$0000             ;\
-$81:91BB 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$81:91BB 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $81:91BF A9 03 FF    LDA #$FF03             ;\
 $81:91C2 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue title sequence music data
 $81:91C6 A9 01 00    LDA #$0001             ;\
@@ -2172,7 +2207,7 @@ $81:93A0             dw 0027,000F,0000,000F,000F,000F,000F,000F,000F,000F,000F,0
 {
 $81:93E8 C2 30       REP #$30
 $81:93EA 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
-$81:93EE B0 0A       BCS $0A    [$93FA]     ;} If music is queued:
+$81:93EE B0 0A       BCS $0A    [$93FA]     ;} If music is queued: return
 $81:93F0 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 3
 $81:93F3 A9 04 00    LDA #$0004             ;\
 $81:93F6 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue pre-statue hall music track
@@ -2203,7 +2238,7 @@ $81:940A             dw 944E, 9E93, 9ED6, A058, A1C2, 94EE, 9561, 9532, 96C2, 97
 }
 
 
-;;; $944E: File select menu - index 0: fade out and configure graphics for file select menu ;;;
+;;; $944E: File select menu - index 0: title sequence to main - fade out and configure graphics ;;;
 {
 $81:944E C2 30       REP #$30
 $81:9450 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
@@ -2217,7 +2252,7 @@ $81:9460 A9 01 00    LDA #$0001             ;\
 $81:9463 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 1, sound library 3, max queued sounds allowed = 6 (silence)
 $81:9467 22 93 82 88 JSL $888293[$88:8293]  ; Disable HDMA objects
 $81:946B 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
-$81:946F EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1
+$81:946F EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1 (load BG2)
 $81:9472 20 BA 8D    JSR $8DBA  [$81:8DBA]  ; Map VRAM for menu
 $81:9475 20 DB 8D    JSR $8DDB  [$81:8DDB]  ; Load initial menu tiles
 $81:9478 C2 30       REP #$30
@@ -2249,7 +2284,7 @@ $81:94A2 60          RTS
 }
 
 
-;;; $94A3: File select menu - index 20h: fade out to options menu ;;;
+;;; $94A3: File select menu - index 20h: main to options menu - fade out ;;;
 {
 $81:94A3 C2 30       REP #$30
 $81:94A5 22 6E BA 82 JSL $82BA6E[$82:BA6E]  ; Draw menu selection missile
@@ -2275,7 +2310,7 @@ $81:94D4 60          RTS
 }
 
 
-;;; $94D5: File select menu - index 21h: fade out to title sequence ;;;
+;;; $94D5: File select menu - index 21h: main to title sequence ;;;
 {
 $81:94D5 C2 30       REP #$30
 $81:94D7 22 35 BA 82 JSL $82BA35[$82:BA35]  ; Draw border around SAMUS DATA
@@ -2363,10 +2398,10 @@ $81:9560 60          RTS
 }
 
 
-;;; $9561: File select menu - index 6: file copy - initialise ;;;
+;;; $9561: File select menu - index 6: main to file copy - initialise ;;;
 {
 $81:9561 C2 30       REP #$30
-$81:9563 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 7
+$81:9563 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 7 (fade in)
 }
 
 
@@ -2591,7 +2626,7 @@ $81:9706 C2 30       REP #$30               ; >_<;
 ; BRANCH_B
 $81:9708 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:970B 18          CLC                    ;|
-$81:970C 69 07 00    ADC #$0007             ;} Menu index = Fh
+$81:970C 69 07 00    ADC #$0007             ;} Menu index = Fh (file copy to main)
 $81:970F 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:9712 A9 37 00    LDA #$0037             ;\
 $81:9715 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
@@ -2621,12 +2656,12 @@ $81:9741 AD B5 19    LDA $19B5  [$7E:19B5]  ;\
 $81:9744 C9 03 00    CMP #$0003             ;} If [file copy menu selection] != 3:
 $81:9747 F0 07       BEQ $07    [$9750]     ;/
 $81:9749 8D B7 19    STA $19B7  [$7E:19B7]  ; File copy source slot = [file copy menu selection]
-$81:974C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 9
+$81:974C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 9 (initialise select destination)
 $81:974F 60          RTS                    ; Return
 
 $81:9750 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:9753 18          CLC                    ;|
-$81:9754 69 07 00    ADC #$0007             ;} Menu index = Fh
+$81:9754 69 07 00    ADC #$0007             ;} Menu index = Fh (file copy to main)
 $81:9757 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:975A 60          RTS
 
@@ -2650,12 +2685,12 @@ $81:9772             dw 0048, 0068, 0088, 00D3
 }
 
 
-;;; $977A: File select menu - index 9: initialise select destination ;;;
+;;; $977A: File select menu - index 9: file copy - initialise select destination ;;;
 {
 $81:977A C2 30       REP #$30
 $81:977C 22 48 BA 82 JSL $82BA48[$82:BA48]  ; Draw border around DATA COPY MODE
 $81:9780 20 99 97    JSR $9799  [$81:9799]  ; Draw file copy select destination save file info
-$81:9783 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Ah
+$81:9783 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Ah (select destination)
 $81:9786 A9 00 00    LDA #$0000             ; A = 0
 
 ; LOOP
@@ -2714,7 +2749,7 @@ $81:97FE AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:9801 C9 02 00    CMP #$0002             ;} If [file copy source slot] != 2:
 $81:9804 F0 03       BEQ $03    [$9809]     ;/
 $81:9806 A2 00 00    LDX #$0000             ; X = 0 (palette 0)
-                                            
+
 $81:9809 8A          TXA                    ;\
 $81:980A 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = [X]
 $81:980D 20 6F 96    JSR $966F  [$81:966F]  ; Draw file copy save slot C info
@@ -2764,7 +2799,7 @@ $81:985E 60          RTS                    ; Return
 ; BRANCH_B
 $81:985F AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:9862 38          SEC                    ;|
-$81:9863 E9 02 00    SBC #$0002             ;} Menu index = 8
+$81:9863 E9 02 00    SBC #$0002             ;} Menu index = 8 (select source)
 $81:9866 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:9869 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:986C 8D B5 19    STA $19B5  [$7E:19B5]  ;} File copy menu selection = [file copy source slot]
@@ -2779,12 +2814,12 @@ $81:9880 AD B5 19    LDA $19B5  [$7E:19B5]  ;\
 $81:9883 C9 03 00    CMP #$0003             ;} If [file copy menu selection] != 3:
 $81:9886 F0 08       BEQ $08    [$9890]     ;/
 $81:9888 8D B9 19    STA $19B9  [$7E:19B9]  ; File copy destination slot = [file copy menu selection]
-$81:988B EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Bh
+$81:988B EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Bh (initialise confirmation)
 $81:988E 80 BD       BRA $BD    [$984D]     ; Go to BRANCH_SET_MISSILE_POSITION
-                                            
+
 $81:9890 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:9893 18          CLC                    ;|
-$81:9894 69 05 00    ADC #$0005             ;} Menu index = Fh
+$81:9894 69 05 00    ADC #$0005             ;} Menu index = Fh (file copy to main)
 $81:9897 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:989A 60          RTS                    ; Return
 
@@ -2820,7 +2855,7 @@ $81:98D5 18          CLC                    ;|
 $81:98D6 69 6A 20    ADC #$206A             ;} Menu tilemap tile (1Bh, 5) = 206Ah + [file copy destination slot] (tile A/B/C)
 $81:98D9 8F 76 37 7E STA $7E3776[$7E:3776]  ;/
 $81:98DD 20 ED 98    JSR $98ED  [$81:98ED]  ; Draw file copy confirmation
-$81:98E0 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Ch
+$81:98E0 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Ch (confirmation)
 $81:98E3 9C B5 19    STZ $19B5  [$7E:19B5]  ; File copy menu selection = 0
 $81:98E6 A9 08 00    LDA #$0008             ;\
 $81:98E9 8D 8F 19    STA $198F  [$7E:198F]  ;} File copy arrow palette timer = 8
@@ -2891,7 +2926,7 @@ $81:996F AD B9 19    LDA $19B9  [$7E:19B9]  ;\
 $81:9972 C9 02 00    CMP #$0002             ;} If [file copy destination slot] != 2:
 $81:9975 F0 03       BEQ $03    [$997A]     ;/
 $81:9977 A2 00 04    LDX #$0400             ; X = 400h (palette 2)
-                                            
+
 $81:997A 8A          TXA                    ;\
 $81:997B 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Enemy 0 palette index = [X]
 $81:997E 20 6F 96    JSR $966F  [$81:966F]  ; Draw file copy save slot C info
@@ -2918,14 +2953,14 @@ $81:99AB AD B5 19    LDA $19B5  [$7E:19B5]  ;\
 $81:99AE F0 25       BEQ $25    [$99D5]     ;} If [file copy menu selection] = 0: go to BRANCH_YES
 $81:99B0 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:99B3 38          SEC                    ;|
-$81:99B4 E9 04 00    SBC #$0004             ;} Menu index = 8
+$81:99B4 E9 04 00    SBC #$0004             ;} Menu index = 8 (select source)
 $81:99B7 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:99BA 4C 66 95    JMP $9566  [$81:9566]  ; Go to initialise file select menu file copy
 
 ; BRANCH_B
 $81:99BD AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:99C0 38          SEC                    ;|
-$81:99C1 E9 03 00    SBC #$0003             ;} Menu index = 9
+$81:99C1 E9 03 00    SBC #$0003             ;} Menu index = 9 (initialise select destination)
 $81:99C4 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:99C7 AD B9 19    LDA $19B9  [$7E:19B9]  ;\
 $81:99CA 8D B5 19    STA $19B5  [$7E:19B5]  ;} File copy menu selection = [file copy destination slot]
@@ -2934,7 +2969,7 @@ $81:99D0 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1,
 $81:99D4 60          RTS
 
 ; BRANCH_YES
-$81:99D5 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Dh
+$81:99D5 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Dh (do file copy)
 $81:99D8 60          RTS                    ; Return
 
 ; BRANCH_TOGGLE
@@ -3032,7 +3067,7 @@ $81:9A8E 68          PLA                    ; |
 $81:9A8F 9F F8 1F 70 STA $701FF8,x          ; /
 $81:9A93 68          PLA                    ;|
 $81:9A94 9F F0 1F 70 STA $701FF0,x          ;/
-$81:9A98 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Eh
+$81:9A98 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Eh (copy completed)
 $81:9A9B A2 00 05    LDX #$0500             ;\
 $81:9A9E A9 0F 00    LDA #$000F             ;|
                                             ;|
@@ -3089,7 +3124,7 @@ $81:9AFE A5 8F       LDA $8F    [$7E:008F]  ;\
 $81:9B00 F0 25       BEQ $25    [$9B27]     ;} If not newly pressed anything: return
 $81:9B02 A9 37 00    LDA #$0037             ;\
 $81:9B05 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$81:9B09 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Fh
+$81:9B09 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Fh (file copy to main)
 $81:9B0C AF EC 1F 70 LDA $701FEC[$70:1FEC]  ;\
 $81:9B10 C9 00 00    CMP #$0000             ;|
 $81:9B13 30 0C       BMI $0C    [$9B21]     ;} If 0 <= [SRAM save slot selected] < 3:
@@ -3098,31 +3133,31 @@ $81:9B18 10 07       BPL $07    [$9B21]     ;/
 $81:9B1A AA          TAX                    ; X = [SRAM save slot selected]
 $81:9B1B 2F EE 1F 70 AND $701FEE[$70:1FEE]  ;\
 $81:9B1F F0 03       BEQ $03    [$9B24]     ;} If [SRAM save slot selected] & [SRAM save slot selected complement] = 0: go to BRANCH_VALID_SAVE_SLOT
-                                            
+
 $81:9B21 A2 00 00    LDX #$0000             ; X = 0
-                                            
-; BRANCH_VALID_SAVE_SLOT                    
+
+; BRANCH_VALID_SAVE_SLOT
 $81:9B24 8E 52 09    STX $0952  [$7E:0952]  ; Save slot selected = [X]
 
 $81:9B27 60          RTS
 }
 
 
-;;; $9B28: File select menu - index 12h: menu index = 4 ;;;
+;;; $9B28: File select menu - index 12h: file copy to main - menu index = main ;;;
 {
 $81:9B28 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:9B2B 38          SEC                    ;|
-$81:9B2C E9 0E 00    SBC #$000E             ;} Menu index = 4
+$81:9B2C E9 0E 00    SBC #$000E             ;} Menu index = 4 (main)
 $81:9B2F 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:9B32 60          RTS
 }
 
 
-;;; $9B33: File select menu - index 14h: file clear - initialise ;;;
+;;; $9B33: File select menu - index 14h: main to file clear - initialise ;;;
 {
 $81:9B33 C2 30       REP #$30
 $81:9B35 22 5B BA 82 JSL $82BA5B[$82:BA5B]  ; Draw border around DATA CLEAR MODE
-$81:9B39 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 15h
+$81:9B39 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 15h (fade in)
 }
 
 
@@ -3171,7 +3206,7 @@ $81:9B91 E0 03       CPX #$03               ;\
 $81:9B93 F0 05       BEQ $05    [$9B9A]     ;} If [X] != 3:
 $81:9B95 3C EC 9B    BIT $9BEC,x            ;\
 $81:9B98 F0 F2       BEQ $F2    [$9B8C]     ;} If [non-empty save slots] & (1 << [X]) = 0 (save slot is empty): go to LOOP_DOWN
-                                            
+
 $81:9B9A 8E B5 19    STX $19B5  [$7E:19B5]  ; File clear menu selection = [X]
 $81:9B9D A9 37       LDA #$37               ;\
 $81:9B9F 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
@@ -3183,7 +3218,7 @@ $81:9BA7 A9 37 00    LDA #$0037             ;\
 $81:9BAA 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
 $81:9BAE AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:9BB1 18          CLC                    ;|
-$81:9BB2 69 05 00    ADC #$0005             ;} Menu index = 1Bh
+$81:9BB2 69 05 00    ADC #$0005             ;} Menu index = 1Bh (file clear to main)
 $81:9BB5 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:9BB8 60          RTS                    ; Return
 
@@ -3191,8 +3226,8 @@ $81:9BB8 60          RTS                    ; Return
 $81:9BB9 E2 30       SEP #$30
 $81:9BBB AD 54 09    LDA $0954  [$7E:0954]  ; A = [non-empty save slots]
 $81:9BBE AE B5 19    LDX $19B5  [$7E:19B5]  ; X = [file clear menu selection]
-                                            
-; LOOP_UP                                   
+
+; LOOP_UP
 $81:9BC1 CA          DEX                    ; Decrement X
 $81:9BC2 30 2B       BMI $2B    [$9BEF]     ; If [X] < 0: go to set file clear menu selection missile position
 $81:9BC4 3C EC 9B    BIT $9BEC,x            ;\
@@ -3210,7 +3245,7 @@ $81:9BDD AD B5 19    LDA $19B5  [$7E:19B5]  ;\
 $81:9BE0 C9 03 00    CMP #$0003             ;} If [file clear menu selection] = 3: go to BRANCH_EXIT
 $81:9BE3 F0 C0       BEQ $C0    [$9BA5]     ;/
 $81:9BE5 8D B7 19    STA $19B7  [$7E:19B7]  ; File clear slot = [file clear menu selection]
-$81:9BE8 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 17h
+$81:9BE8 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 17h (initialise confirmation)
 $81:9BEB 60          RTS
 
 $81:9BEC             db 01, 02, 04
@@ -3247,7 +3282,7 @@ $81:9C22 8F 6A 37 7E STA $7E376A[$7E:376A]  ;/
 $81:9C26 A9 03 00    LDA #$0003             ;\
 $81:9C29 8D B9 19    STA $19B9  [$7E:19B9]  ;} $19B9 = 3
 $81:9C2C 20 ED 98    JSR $98ED  [$81:98ED]  ; Draw file clear confirmation
-$81:9C2F EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 18h
+$81:9C2F EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 18h (confirmation)
 $81:9C32 9C B5 19    STZ $19B5  [$7E:19B5]  ; File clear menu selection = 0
 $81:9C35 60          RTS
 }
@@ -3272,7 +3307,7 @@ $81:9C59 F0 1A       BEQ $1A    [$9C75]     ;} If [file clear menu selection] = 
 ; BRANCH_B
 $81:9C5B AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:9C5E 38          SEC                    ;|
-$81:9C5F E9 02 00    SBC #$0002             ;} Menu index = 16h
+$81:9C5F E9 02 00    SBC #$0002             ;} Menu index = 16h (select slot)
 $81:9C62 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:9C65 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:9C68 8D B5 19    STA $19B5  [$7E:19B5]  ;} File clear menu selection = [file clear slot]
@@ -3281,7 +3316,7 @@ $81:9C6E 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1,
 $81:9C72 4C 3C 9B    JMP $9B3C  [$81:9B3C]  ; Go to initialise file select menu file clear
 
 ; BRANCH_YES
-$81:9C75 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 19h
+$81:9C75 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 19h (do file clear)
 $81:9C78 60          RTS                    ; Return
 
 ; BRANCH_TOGGLE
@@ -3296,8 +3331,8 @@ $81:9C89 A0 B8 00    LDY #$00B8             ; Menu selection missile Y position 
 $81:9C8C AD B5 19    LDA $19B5  [$7E:19B5]  ;\
 $81:9C8F F0 03       BEQ $03    [$9C94]     ;} If [file clear menu selection] != 0:
 $81:9C91 A0 D0 00    LDY #$00D0             ; Menu selection missile Y position = D0h
-                                            
-$81:9C94 8C AB 19    STY $19AB  [$7E:19AB]  
+
+$81:9C94 8C AB 19    STY $19AB  [$7E:19AB]
 $81:9C97 A9 5E 00    LDA #$005E             ;\
 $81:9C9A 8D A1 19    STA $19A1  [$7E:19A1]  ;} Menu selection missile X position = 5Eh
 $81:9C9D 60          RTS
@@ -3331,7 +3366,7 @@ $81:9CCB 9F 00 00 70 STA $700000,x[$7E:0000];/
 $81:9CCF 9F 08 00 70 STA $700008,x[$7E:0008]; $70:0008 + [file clear slot] * 2 = 0
 $81:9CD3 9F F0 1F 70 STA $701FF0,x[$7E:1FF0]; $70:1FF0 + [file clear slot] * 2 = 0
 $81:9CD7 9F F8 1F 70 STA $701FF8,x[$7E:1FF8]; $70:1FF8 + [file clear slot] * 2 = 0
-$81:9CDB EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1Ah
+$81:9CDB EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1Ah (clear completed)
 $81:9CDE 20 CB B2    JSR $B2CB  [$81:B2CB]  ; New save file <-- what?
 $81:9CE1 AD B7 19    LDA $19B7  [$7E:19B7]  ; A = [file clear slot]
 $81:9CE4 22 85 80 81 JSL $818085[$81:8085]  ; Load from SRAM <-- huh?
@@ -3369,7 +3404,7 @@ $81:9D2A A5 8F       LDA $8F    [$7E:008F]  ;\
 $81:9D2C F0 39       BEQ $39    [$9D67]     ;} If not newly pressed anything: return
 $81:9D2E A9 37 00    LDA #$0037             ;\
 $81:9D31 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$81:9D35 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1Bh
+$81:9D35 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1Bh (file clear to main)
 $81:9D38 A9 00 00    LDA #$0000             ;\
 $81:9D3B 22 85 80 81 JSL $818085[$81:8085]  ;} Load SRAM slot A
 $81:9D3F B0 07       BCS $07    [$9D48]     ; If corrupt: go to BRANCH_SLOT_A_CORRUPT
@@ -3397,18 +3432,18 @@ $81:9D67 60          RTS
 }
 
 
-;;; $9D68: File select menu - index 1Eh: menu index = 4 ;;;
+;;; $9D68: File select menu - index 1Eh: file clear to main - menu index = main ;;;
 {
 $81:9D68 22 35 BA 82 JSL $82BA35[$82:BA35]  ; Draw border around SAMUS DATA
 $81:9D6C AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:9D6F 38          SEC                    ;|
-$81:9D70 E9 1A 00    SBC #$001A             ;} Menu index = 4
+$81:9D70 E9 1A 00    SBC #$001A             ;} Menu index = 4 (main)
 $81:9D73 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:9D76 60          RTS
 }
 
 
-;;; $9D77: File select menu - index 1Fh: turn Samus helmet ;;;
+;;; $9D77: File select menu - index 1Fh: main to options menu - turn Samus helmet ;;;
 {
 $81:9D77 22 6E BA 82 JSL $82BA6E[$82:BA6E]  ; Draw menu selection missile
 $81:9D7B 22 35 BA 82 JSL $82BA35[$82:BA35]  ; Draw border around SAMUS DATA
@@ -3440,7 +3475,7 @@ $81:9DBA AD 95 19    LDA $1995  [$7E:1995]  ;\
 $81:9DBD D0 03       BNE $03    [$9DC2]     ;} If [slot C Samus helmet animation timer] != 0: return
 
 ; BRANCH_ADVANCE
-$81:9DBF EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 20h
+$81:9DBF EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 20h (fade out)
 
 $81:9DC2 60          RTS
 }
@@ -3527,22 +3562,22 @@ $81:9E4D             dw A32A, A37C, A546, A582, A5B3, A725, A800, AAAC, AC66, AD
 }
 
 
-;;; $9E7B: File select map - index 16h ;;;
+;;; $9E7B: File select map - index 16h: file clear - select slot ;;;
 {
-$81:9E7B 20 7E A9    JSR $A97E  [$81:A97E]
+$81:9E7B 20 7E A9    JSR $A97E  [$81:A97E]  ; Draw area select map labels
 $81:9E7E 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $81:9E82 A5 51       LDA $51    [$7E:0051]  ;\
 $81:9E84 29 0F 00    AND #$000F             ;} If not finished fading out: return
 $81:9E87 D0 09       BNE $09    [$9E92]     ;/
 $81:9E89 A9 02 00    LDA #$0002             ;\
 $81:9E8C 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 2 (game options menu)
-$81:9E8F 9C 27 07    STZ $0727  [$7E:0727]
+$81:9E8F 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = 0
 
 $81:9E92 60          RTS
 }
 
 
-;;; $9E93: File select menu - index 1: load file select menu BG2 ;;;
+;;; $9E93: File select menu - index 1: title sequence to main - load BG2 ;;;
 {
 $81:9E93 C2 30       REP #$30
 $81:9E95 A2 FE 07    LDX #$07FE             ;\
@@ -3568,7 +3603,7 @@ $81:9EC1 8A          TXA                    ;|
 $81:9EC2 18          CLC                    ;|
 $81:9EC3 69 07 00    ADC #$0007             ;|
 $81:9EC6 8D 30 03    STA $0330  [$7E:0330]  ;/
-$81:9EC9 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2
+$81:9EC9 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2 (initialise)
 $81:9ECC A9 01 00    LDA #$0001             ;\
 $81:9ECF 8D 8D 19    STA $198D  [$7E:198D]  ;} Menu selection missile animation timer = 1
 $81:9ED2 9C 97 19    STZ $1997  [$7E:1997]  ; Menu selection missile animation frame = 0
@@ -3576,7 +3611,7 @@ $81:9ED5 60          RTS
 }
 
 
-;;; $9ED6: File select menu - index 2: initialise main ;;;
+;;; $9ED6: File select menu - index 2: title sequence to main - initialise ;;;
 {
 $81:9ED6 C2 30       REP #$30
 $81:9ED8 AF EC 1F 70 LDA $701FEC[$7E:1FEC]  ;\
@@ -3733,7 +3768,7 @@ $81:A057 60          RTS
 }
 
 
-;;; $A058: File select menu - index 3: fade in to main ;;;
+;;; $A058: File select menu - index 3: title sequence to main - fade in ;;;
 {
 $81:A058 20 C3 9D    JSR $9DC3  [$81:9DC3]  ; Draw file select Samus helmets
 $81:A05B AD 52 09    LDA $0952  [$7E:0952]  ;\
@@ -3751,7 +3786,7 @@ $81:A079 A5 51       LDA $51    [$7E:0051]  ;\
 $81:A07B 29 0F 00    AND #$000F             ;|
 $81:A07E C9 0F 00    CMP #$000F             ;} If (brightness) = Fh:
 $81:A081 D0 03       BNE $03    [$A086]     ;/
-$81:A083 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4
+$81:A083 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4 (main)
 
 $81:A086 60          RTS
 }
@@ -3952,7 +3987,7 @@ $81:A1F5 F0 14       BEQ $14    [$A20B]     ;} If newly pressed B:
 $81:A1F7 A9 37 00    LDA #$0037             ;\
 $81:A1FA 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
 $81:A1FE A9 21 00    LDA #$0021             ;\
-$81:A201 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 21h
+$81:A201 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 21h (main to title sequence)
 $81:A204 A9 37 00    LDA #$0037             ;\
 $81:A207 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
 
@@ -3968,7 +4003,7 @@ $81:A219 A9 2A 00    LDA #$002A             ;\
 $81:A21C 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 2Ah, sound library 1, max queued sounds allowed = 6 (selected save file)
 $81:A220 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:A223 18          CLC                    ;|
-$81:A224 69 1B 00    ADC #$001B             ;} Menu index = 1Fh
+$81:A224 69 1B 00    ADC #$001B             ;} Menu index = 1Fh (main to options menu)
 $81:A227 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:A22A AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:A22D 18          CLC                    ;|
@@ -4056,7 +4091,7 @@ $81:A2CC C9 03 00    CMP #$0003             ;\
 $81:A2CF D0 15       BNE $15    [$A2E6]     ;} If [file select menu selection] = 3 (file copy):
 $81:A2D1 A9 37 00    LDA #$0037             ;\
 $81:A2D4 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$81:A2D8 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 5
+$81:A2D8 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 5 (main to file copy)
 $81:A2DB A5 57       LDA $57    [$7E:0057]  ;\
 $81:A2DD 29 0F FF    AND #$FF0F             ;|
 $81:A2E0 09 03 00    ORA #$0003             ;} Enable BG1/2 mosaic, block size = 0
@@ -4069,7 +4104,7 @@ $81:A2EB A9 37 00    LDA #$0037             ;\
 $81:A2EE 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
 $81:A2F2 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:A2F5 18          CLC                    ;|
-$81:A2F6 69 0F 00    ADC #$000F             ;} Menu index = 13h
+$81:A2F6 69 0F 00    ADC #$000F             ;} Menu index = 13h (main to file clear)
 $81:A2F9 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:A2FC A5 57       LDA $57    [$7E:0057]  ;\
 $81:A2FE 29 0F FF    AND #$FF0F             ;|
@@ -4079,7 +4114,7 @@ $81:A304 85 57       STA $57    [$7E:0057]  ;/
 $81:A306 C9 05 00    CMP #$0005             ;\
 $81:A309 D0 06       BNE $06    [$A311]     ;} If [file select menu selection] = 5 (exit):
 $81:A30B A9 21 00    LDA #$0021             ;\
-$81:A30E 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 21h
+$81:A30E 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 21h (main to title sequence)
 
 $81:A311 60          RTS
 }
@@ -4102,7 +4137,7 @@ $81:A312             dw 0030,000E, ; Slot A
 
 ;;; $A32A..B2CA: File select map ;;;
 {
-;;; $A32A: File select map - index 0: clear BG2 and set up fade out ;;;
+;;; $A32A: File select map - index 0: game options to area select map - clear BG2 and set up fade out ;;;
 {
 $81:A32A C2 30       REP #$30
 $81:A32C 20 A6 95    JSR $95A6  [$81:95A6]  ; Clear menu tilemap
@@ -4135,12 +4170,12 @@ $81:A36B 30 F1       BMI $F1    [$A35E]     ;/
 $81:A36D A9 00 00    LDA #$0000             ;\
 $81:A370 8F 1C C2 7E STA $7EC21C[$7E:C21C]  ;} Target BG1/2 palette 0 colour Eh = 0
 $81:A374 8F 3C C2 7E STA $7EC23C[$7E:C23C]  ; Target BG1/2 palette 1 colour Eh = 0
-$81:A378 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1
+$81:A378 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1 (fade out and load area palettes)
 $81:A37B 60          RTS
 }
 
 
-;;; $A37C: File select map - index 1: fade out and load area palettes ;;;
+;;; $A37C: File select map - index 1: game options to area select map - fade out and load area palettes ;;;
 {
 $81:A37C C2 30       REP #$30
 $81:A37E A2 00 00    LDX #$0000             ;\
@@ -4181,7 +4216,7 @@ $81:A3BD FA          PLX
 $81:A3BE E8          INX                    ; Increment X
 $81:A3BF E0 06 00    CPX #$0006             ;\
 $81:A3C2 30 EB       BMI $EB    [$A3AF]     ;} If [X] < 6: go to LOOP_AREA_COLOURS
-$81:A3C4 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2
+$81:A3C4 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 2 (load foreground tilemap)
 $81:A3C7 9C 87 07    STZ $0787  [$7E:0787]  ; $0787 = 0
 $81:A3CA E2 20       SEP #$20               ;\
 $81:A3CC A9 02       LDA #$02               ;} Main screen layers = BG2
@@ -4287,22 +4322,22 @@ $81:A4DA             dw 0030, 003A, 0040, 0046, 0054, 005A ; Inactive
 ;                       |    |
 $81:A4E6             dw 000C,00AC, ; Active - Crateria - orange
                         0016,00B6, ; Active - Crateria - yellow
-                        FFFF       
-                                   
+                        FFFF
+
 $81:A4F0             dw 0036,00D6, ; Active - Brinstar
-                        FFFF       
-                                   
+                        FFFF
+
 $81:A4F6             dw 002C,00CC, ; Active - Norfair
-                        FFFF       
-                                   
+                        FFFF
+
 $81:A4FC             dw 0002,00A2, ; Active - Wrecked Ship - part that overlaps with Crateria
                         0042,00E2, ; Active - Wrecked Ship - dark blue
                         0056,00F6, ; Active - Wrecked Ship - light blue
-                        FFFF       
-                                   
+                        FFFF
+
 $81:A50A             dw 0022,00C2, ; Active - Maridia
-                        FFFF       
-                                   
+                        FFFF
+
 $81:A510             dw 004C,00EC, ; Active - Tourian
                         FFFF
 
@@ -4351,24 +4386,24 @@ $81:A56A A5 51       LDA $51    [$7E:0051]  ;\
 $81:A56C 29 00 FF    AND #$FF00             ;|
 $81:A56F 09 0F 00    ORA #$000F             ;} Set max brightness
 $81:A572 85 51       STA $51    [$7E:0051]  ;/
-$81:A574 EE 27 07    INC $0727  [$7E:0727]  ; Increment menu index
+$81:A574 EE 27 07    INC $0727  [$7E:0727]  ; Increment menu index (load background tilemap)
 $81:A577 60          RTS
 }
 
 
-;;; $A578: File select map - index 12h ;;;
+;;; $A578: File select map - index 12h: room select map to area select map - load background tilemap ;;;
 {
 $81:A578 C2 30       REP #$30
-$81:A57A EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 13h
+$81:A57A EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 13h (prepare expanding/contracting square transition)
 $81:A57D AC 9F 07    LDY $079F  [$7E:079F]  ; Y = [area index]
 $81:A580 80 08       BRA $08    [$A58A]     ; Go to load area select background tilemap
 }
 
 
-;;; $A582: File select map - index 3: load area select background tilemap ;;;
+;;; $A582: File select map - index 3: game options to area select map - load background tilemap ;;;
 {
 $81:A582 C2 30       REP #$30
-$81:A584 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4
+$81:A584 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 4 (prepare expanding/contracting square transition)
 $81:A587 AC 9F 07    LDY $079F  [$7E:079F]  ; Y = [area index]
 }
 
@@ -4402,7 +4437,7 @@ $81:A5B2 60          RTS
 }
 
 
-;;; $A5B3: File select map - index 4/13h: set up expanding square transition ;;;
+;;; $A5B3: File select map - index 4/13h: prepare expanding/contracting square transition to area select map ;;;
 {
 $81:A5B3 E2 20       SEP #$20
 $81:A5B5 A9 04       LDA #$04               ;\
@@ -4430,7 +4465,7 @@ $81:A5E4 8D 0C 42    STA $420C  [$7E:420C]  ;/
 $81:A5E7 20 F6 A5    JSR $A5F6  [$81:A5F6]  ; Configure window 1 for expanding square transition
 $81:A5EA 9C B0 18    STZ $18B0  [$7E:18B0]  ;\
 $81:A5ED 9C B1 18    STZ $18B1  [$7E:18B1]  ;} Disable HDMA objects
-$81:A5F0 EE 27 07    INC $0727  [$7E:0727]  ; Increment menu index
+$81:A5F0 EE 27 07    INC $0727  [$7E:0727]  ; Increment menu index (expanding/contracting square transition)
 $81:A5F3 C2 30       REP #$30
 $81:A5F5 60          RTS
 }
@@ -4506,7 +4541,7 @@ $81:A696 8D 23 43    STA $4323  [$7E:4323]  ;|
 $81:A699 A9 7E       LDA #$7E               ;|
 $81:A69B 8D 24 43    STA $4324  [$7E:4324]  ;|
 $81:A69E 8D 27 43    STA $4327  [$7E:4327]  ;/
-$81:A6A1 9C 25 43    STZ $4325  [$7E:4325]  
+$81:A6A1 9C 25 43    STZ $4325  [$7E:4325]
 $81:A6A4 9C 26 43    STZ $4326  [$7E:4326]
 $81:A6A7 9C 28 43    STZ $4328  [$7E:4328]
 $81:A6AA 9C 29 43    STZ $4329  [$7E:4329]
@@ -4561,7 +4596,7 @@ $81:A724             db 04
 }
 
 
-;;; $A725: File select map - index 5: expanding square transition to area select map ;;;
+;;; $A725: File select map - index 5: game options to area select map - expanding square transition ;;;
 {
 ; Prepares the room select map when finished transition
 $81:A725 C2 30       REP #$30
@@ -4592,7 +4627,7 @@ $81:A76F 6D 24 A7    ADC $A724  [$81:A724]  ;} Expanding square right position +
 $81:A772 8F 36 9E 7E STA $7E9E36[$7E:9E36]  ;/
 $81:A776 60          RTS                    ; Return
 
-$81:A777 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 6
+$81:A777 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 6 (area select map)
 $81:A77A A5 69       LDA $69    [$7E:0069]  ;\
 $81:A77C 29 FD       AND #$FD               ;} Disable main screen layer BG2
 $81:A77E 85 69       STA $69    [$7E:0069]  ;/
@@ -4677,7 +4712,7 @@ $81:A81B 4C 70 A8    JMP $A870  [$81:A870]  ; Go to BRANCH_DEBUG_NEXT
 $81:A81E 89 00 80    BIT #$8000             ;\
 $81:A821 F0 09       BEQ $09    [$A82C]     ;} If newly pressing B:
 $81:A823 A9 16 00    LDA #$0016             ;\
-$81:A826 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 16h
+$81:A826 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 16h (area select map to game options)
 $81:A829 4C 7E A9    JMP $A97E  [$81:A97E]  ; Go to draw area select map labels
 
 $81:A82C 89 80 10    BIT #$1080             ;\
@@ -4755,7 +4790,7 @@ $81:A8A8 60          RTS
 
 ;;; $A8A9: Select file select map area ;;;
 {
-$81:A8A9 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 7
+$81:A8A9 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 7 (area select map to room select map)
 $81:A8AC AD D1 05    LDA $05D1  [$7E:05D1]  ;\
 $81:A8AF D0 11       BNE $11    [$A8C2]     ;} If debug mode not enabled:
 $81:A8B1 AF 18 D9 7E LDA $7ED918[$7E:D918]  ;\
@@ -5039,7 +5074,7 @@ $81:AAA0             dw 0000, ; Crateria
 }
 
 
-;;; $AAAC: File select map - index 7: prepare expanding square transition to room select map ;;;
+;;; $AAAC: File select map - index 7: area select map to room select map - prepare expanding square transition ;;;
 {
 $81:AAAC C2 30       REP #$30
 $81:AAAE 20 7E A9    JSR $A97E  [$81:A97E]  ; Draw area select map labels
@@ -5088,10 +5123,10 @@ $81:AB13 18          CLC                    ;|
 $81:AB14 69 07 00    ADC #$0007             ;|
 $81:AB17 8D 30 03    STA $0330  [$7E:0330]  ;/
 $81:AB1A AD 9F 07    LDA $079F  [$7E:079F]  ;\
-$81:AB1D 0A          ASL A                  ;} X = [area index] * 2
-$81:AB1E AA          TAX                    ;/
-$81:AB1F BD 94 AA    LDA $AA94,x[$81:AA94]  ;\
-$81:AB22 8F 50 9E 7E STA $7E9E50[$7E:9E50]  ;} Expanding square timer = [$AA94 + [X]]
+$81:AB1D 0A          ASL A                  ;|
+$81:AB1E AA          TAX                    ;} Expanding square timer = [$AA94 + [area index] * 2]
+$81:AB1F BD 94 AA    LDA $AA94,x[$81:AA94]  ;|
+$81:AB22 8F 50 9E 7E STA $7E9E50[$7E:9E50]  ;/
 $81:AB26 8A          TXA                    ;\
 $81:AB27 0A          ASL A                  ;} X = [area index] * 4
 $81:AB28 AA          TAX                    ;/
@@ -5127,19 +5162,19 @@ $81:AB83 8F 4C 9E 7E STA $7E9E4C[$7E:9E4C]  ;|
 $81:AB87 BD 42 AA    LDA $AA42,x[$81:AA42]  ;} Expanding square bottom position velocity = [$AA34 + [X] + Eh].[$AA34 + [X] + Ch]
 $81:AB8A 8F 4E 9E 7E STA $7E9E4E[$7E:9E4E]  ;/
 $81:AB8E E2 20       SEP #$20
-$81:AB90 20 A7 AB    JSR $ABA7  [$81:ABA7]  ; Set up room select map expanding square transition HDMA
+$81:AB90 20 A7 AB    JSR $ABA7  [$81:ABA7]  ; Set up file select map expanding square transition HDMA
 $81:AB93 A9 0C       LDA #$0C               ;\
 $81:AB95 85 85       STA $85    [$7E:0085]  ;} Enable HDMA channels 2/3
 $81:AB97 8D 0C 42    STA $420C  [$7E:420C]  ;/
 $81:AB9A C2 20       REP #$20
-$81:AB9C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 8
+$81:AB9C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 8 (expanding square transition)
 $81:AB9F A9 3B 00    LDA #$003B             ;\
 $81:ABA2 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 3Bh, sound library 1, max queued sounds allowed = 6 (hexagon map -> square map transition)
 $81:ABA6 60          RTS
 }
 
 
-;;; $ABA7: Set up room select map expanding square transition HDMA ;;;
+;;; $ABA7: Set up file select map expanding square transition HDMA ;;;
 {
 $81:ABA7 E2 20       SEP #$20
 $81:ABA9 A2 00 00    LDX #$0000             ; X = 0
@@ -5254,12 +5289,12 @@ $81:AC65 60          RTS
 }
 
 
-;;; $AC66: File select map - index 8: expanding square transition to room select map ;;;
+;;; $AC66: File select map - index 8: area select map to room select map - expanding square transition ;;;
 {
 $81:AC66 C2 30       REP #$30
 $81:AC68 20 84 AC    JSR $AC84  [$81:AC84]  ; Handle room select map expanding square transition
 $81:AC6B 10 11       BPL $11    [$AC7E]     ; If finished:
-$81:AC6D EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 9
+$81:AC6D EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 9 (initialise)
 $81:AC70 E2 20       SEP #$20
 $81:AC72 A9 02       LDA #$02               ;\
 $81:AC74 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG2
@@ -5322,7 +5357,7 @@ $81:ACFF 30 03       BMI $03    [$AD04]     ;|
 $81:AD01 A9 E0 00    LDA #$00E0             ;|
                                             ;|
 $81:AD04 8F 3E 9E 7E STA $7E9E3E[$7E:9E3E]  ;/
-$81:AD08 20 A7 AB    JSR $ABA7  [$81:ABA7]  ; Set up room select map expanding square transition HDMA
+$81:AD08 20 A7 AB    JSR $ABA7  [$81:ABA7]  ; Set up file select map expanding square transition HDMA
 $81:AD0B C2 20       REP #$20
 $81:AD0D AF 50 9E 7E LDA $7E9E50[$7E:9E50]  ;\
 $81:AD11 3A          DEC A                  ;} Decrement expanding square timer
@@ -5331,7 +5366,7 @@ $81:AD16 60          RTS
 }
 
 
-;;; $AD17: File select map - index 9: initialise room select map ;;;
+;;; $AD17: File select map - index 9: area select map to room select map - initialise ;;;
 {
 $81:AD17 C2 30       REP #$30
 $81:AD19 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
@@ -5366,7 +5401,7 @@ $81:AD63 85 B7       STA $B7    [$7E:00B7]  ;} BG2 Y scroll = 18h
 $81:AD65 A5 69       LDA $69    [$7E:0069]  ;\
 $81:AD67 29 FB FF    AND #$FFFB             ;} Disable BG3
 $81:AD6A 85 69       STA $69    [$7E:0069]  ;/
-$81:AD6C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Ah
+$81:AD6C EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Ah (room select map)
 $81:AD6F 9C FD 05    STZ $05FD  [$7E:05FD]  ; Map scrolling direction = none
 $81:AD72 9C FF 05    STZ $05FF  [$7E:05FF]  ; $05FF = 0
 $81:AD75 9C 76 07    STZ $0776  [$7E:0776]  ; Samus position indicator animation frame = 0
@@ -5394,7 +5429,7 @@ $81:AD9E 89 00 80    BIT #$8000             ;} If newly pressed B: go to BRANCH_
 $81:ADA1 D0 10       BNE $10    [$ADB3]     ;/
 $81:ADA3 89 80 10    BIT #$1080             ;\
 $81:ADA6 F0 0A       BEQ $0A    [$ADB2]     ;} If newly pressed A or start:
-$81:ADA8 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Bh
+$81:ADA8 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Bh (room select map to loading game data)
 $81:ADAB A9 38 00    LDA #$0038             ;\
 $81:ADAE 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 38h, sound library 1, max queued sounds allowed = 6 (menu option selected)
 
@@ -5403,7 +5438,7 @@ $81:ADB2 60          RTS                    ; Return
 ; BRANCH_EXIT
 $81:ADB3 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:ADB6 18          CLC                    ;|
-$81:ADB7 69 05 00    ADC #$0005             ;} Menu index = Fh
+$81:ADB7 69 05 00    ADC #$0005             ;} Menu index = Fh (room select map to area select map)
 $81:ADBA 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:ADBD A2 00 00    LDX #$0000             ; X = 0
 $81:ADC0 AD 9F 07    LDA $079F  [$7E:079F]  ; A = [area index]
@@ -5642,7 +5677,7 @@ $81:AF50             dw 0080,00A0,0007,0400,0004 ; Down
 }
 
 
-;;; $AF5A: File select map - index Bh/Ch ;;;
+;;; $AF5A: File select map - index Bh/Ch: room select map to loading game data - wait before fade out ;;;
 {
 $81:AF5A 22 DD B6 82 JSL $82B6DD[$82:B6DD]  ; Draw file select map icons
 $81:AF5E 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
@@ -5651,7 +5686,7 @@ $81:AF65 60          RTS
 }
 
 
-;;; $AF66: File select map - index Dh ;;;
+;;; $AF66: File select map - index Dh: room select map to loading game data - fade out ;;;
 {
 $81:AF66 22 DD B6 82 JSL $82B6DD[$82:B6DD]  ; Draw file select map icons
 $81:AF6A 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
@@ -5659,7 +5694,7 @@ $81:AF6E 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $81:AF72 A5 51       LDA $51    [$7E:0051]  ;\
 $81:AF74 29 0F 00    AND #$000F             ;} If (brightness) != 0: return
 $81:AF77 D0 09       BNE $09    [$AF82]     ;/
-$81:AF79 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Eh
+$81:AF79 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Eh (wait)
 $81:AF7C A9 20 00    LDA #$0020             ;\
 $81:AF7F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Enemy 0 X position = 20h
 
@@ -5667,199 +5702,200 @@ $81:AF82 60          RTS
 }
 
 
-;;; $AF83: File select map - index Eh ;;;
+;;; $AF83: File select map - index Eh: room select map to loading game data - wait ;;;
 {
-$81:AF83 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$81:AF86 3A          DEC A
-$81:AF87 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$81:AF8A D0 0A       BNE $0A    [$AF96]
+$81:AF83 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$81:AF86 3A          DEC A                  ;} Decrement enemy 0 X position
+$81:AF87 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$81:AF8A D0 0A       BNE $0A    [$AF96]     ; If [enemy 0 X position] != 0: return
 $81:AF8C 22 6F 83 80 JSL $80836F[$80:836F]  ; Set force blank and wait for NMI
 $81:AF90 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 6 (loading game data)
-$81:AF93 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = Fh
+$81:AF93 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = 0
 
 $81:AF96 60          RTS
 }
 
 
-;;; $AF97: File select map - index Fh ;;;
+;;; $AF97: File select map - index Fh: room select map to area select map - clear BG1 tilemap ;;;
 {
-$81:AF97 E2 20       SEP #$20
-$81:AF99 A9 12       LDA #$12
-$81:AF9B 85 69       STA $69    [$7E:0069]
-$81:AF9D C2 30       REP #$30
-$81:AF9F A9 0F 00    LDA #$000F
-$81:AFA2 A2 FE 07    LDX #$07FE
-
-$81:AFA5 9F 00 30 7E STA $7E3000,x
-$81:AFA9 CA          DEX
-$81:AFAA CA          DEX
-$81:AFAB 10 F8       BPL $F8    [$AFA5]
-$81:AFAD AE 30 03    LDX $0330  [$7E:0330]
-$81:AFB0 A9 00 08    LDA #$0800
-$81:AFB3 95 D0       STA $D0,x
-$81:AFB5 A9 00 30    LDA #$3000
-$81:AFB8 95 D2       STA $D2,x
-$81:AFBA A9 7E 00    LDA #$007E
-$81:AFBD 95 D4       STA $D4,x
-$81:AFBF A5 58       LDA $58    [$7E:0058]
-$81:AFC1 29 FC 00    AND #$00FC
-$81:AFC4 EB          XBA
-$81:AFC5 95 D5       STA $D5,x
-$81:AFC7 8A          TXA
-$81:AFC8 18          CLC
-$81:AFC9 69 07 00    ADC #$0007
-$81:AFCC 8D 30 03    STA $0330  [$7E:0330]
-$81:AFCF EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 10h
+$81:AF97 E2 20       SEP #$20               ;\
+$81:AF99 A9 12       LDA #$12               ;|
+$81:AF9B 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG2/sprites
+$81:AF9D C2 30       REP #$30               ;/
+$81:AF9F A9 0F 00    LDA #$000F             ;\
+$81:AFA2 A2 FE 07    LDX #$07FE             ;|
+                                            ;|
+$81:AFA5 9F 00 30 7E STA $7E3000,x          ;} $7E:3000..37FF = 000Fh
+$81:AFA9 CA          DEX                    ;|
+$81:AFAA CA          DEX                    ;|
+$81:AFAB 10 F8       BPL $F8    [$AFA5]     ;/
+$81:AFAD AE 30 03    LDX $0330  [$7E:0330]  ;\
+$81:AFB0 A9 00 08    LDA #$0800             ;|
+$81:AFB3 95 D0       STA $D0,x              ;|
+$81:AFB5 A9 00 30    LDA #$3000             ;|
+$81:AFB8 95 D2       STA $D2,x              ;|
+$81:AFBA A9 7E 00    LDA #$007E             ;|
+$81:AFBD 95 D4       STA $D4,x              ;|
+$81:AFBF A5 58       LDA $58    [$7E:0058]  ;} Queue transfer from $7E:3000..37FF to VRAM BG1 tilemap
+$81:AFC1 29 FC 00    AND #$00FC             ;|
+$81:AFC4 EB          XBA                    ;|
+$81:AFC5 95 D5       STA $D5,x              ;|
+$81:AFC7 8A          TXA                    ;|
+$81:AFC8 18          CLC                    ;|
+$81:AFC9 69 07 00    ADC #$0007             ;|
+$81:AFCC 8D 30 03    STA $0330  [$7E:0330]  ;/
+$81:AFCF EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 10h (load palettes)
 $81:AFD2 60          RTS
 }
 
 
-;;; $AFD3: File select map - index 10h ;;;
+;;; $AFD3: File select map - index 10h: room select map to area select map - load palettes ;;;
 {
 $81:AFD3 C2 30       REP #$30
 $81:AFD5 20 60 8E    JSR $8E60  [$81:8E60]  ; Load menu palettes
-$81:AFD8 A2 00 00    LDX #$0000
+$81:AFD8 A2 00 00    LDX #$0000             ; X = 0 (area index)
 
+; LOOP
 $81:AFDB DA          PHX
-$81:AFDC 20 DC A3    JSR $A3DC  [$81:A3DC]
+$81:AFDC 20 DC A3    JSR $A3DC  [$81:A3DC]  ; Load inactive area map foreground colours
 $81:AFDF FA          PLX
-$81:AFE0 E8          INX
-$81:AFE1 E0 06 00    CPX #$0006
-$81:AFE4 30 F5       BMI $F5    [$AFDB]
-$81:AFE6 AE 9F 07    LDX $079F  [$7E:079F]
-$81:AFE9 20 D3 A3    JSR $A3D3  [$81:A3D3]
-$81:AFEC AC 9F 07    LDY $079F  [$7E:079F]
-$81:AFEF 20 8A A5    JSR $A58A  [$81:A58A]
-$81:AFF2 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 11h
+$81:AFE0 E8          INX                    ; Increment X
+$81:AFE1 E0 06 00    CPX #$0006             ;\
+$81:AFE4 30 F5       BMI $F5    [$AFDB]     ;} If [X] < 6 (Ceres): go to LOOP
+$81:AFE6 AE 9F 07    LDX $079F  [$7E:079F]  ; X = [area index]
+$81:AFE9 20 D3 A3    JSR $A3D3  [$81:A3D3]  ; Load active area map foreground colours
+$81:AFEC AC 9F 07    LDY $079F  [$7E:079F]  ; Y = [area index]
+$81:AFEF 20 8A A5    JSR $A58A  [$81:A58A]  ; Go to load area select background tilemap
+$81:AFF2 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 11h (load foreground tilemap)
 $81:AFF5 60          RTS
 }
 
 
-;;; $AFF6: File select map - index 14h ;;;
+;;; $AFF6: File select map - index 14h: prepare contracting square transition to area select map ;;;
 {
 $81:AFF6 E2 20       SEP #$20
-$81:AFF8 A9 00       LDA #$00
-$81:AFFA 85 85       STA $85    [$7E:0085]
+$81:AFF8 A9 00       LDA #$00               ;\
+$81:AFFA 85 85       STA $85    [$7E:0085]  ;} Disable all HDMA channels
 $81:AFFC C2 30       REP #$30
 $81:AFFE A9 3C 00    LDA #$003C             ;\
 $81:B001 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 3Ch, sound library 1, max queued sounds allowed = 6 (square map -> hexagon map transition)
-$81:B005 AD 9F 07    LDA $079F  [$7E:079F]
-$81:B008 0A          ASL A
-$81:B009 AA          TAX
-$81:B00A BD 94 AA    LDA $AA94,x
-$81:B00D 38          SEC
-$81:B00E E9 0C 00    SBC #$000C
-$81:B011 8F 50 9E 7E STA $7E9E50[$7E:9E50]
-$81:B015 8A          TXA
-$81:B016 0A          ASL A
-$81:B017 0A          ASL A
-$81:B018 0A          ASL A
-$81:B019 AA          TAX
-$81:B01A BD 34 AA    LDA $AA34,x
-$81:B01D 8F 40 9E 7E STA $7E9E40[$7E:9E40]
-$81:B021 BD 36 AA    LDA $AA36,x
-$81:B024 8F 42 9E 7E STA $7E9E42[$7E:9E42]
-$81:B028 BD 38 AA    LDA $AA38,x
-$81:B02B 8F 44 9E 7E STA $7E9E44[$7E:9E44]
-$81:B02F BD 3A AA    LDA $AA3A,x
-$81:B032 8F 46 9E 7E STA $7E9E46[$7E:9E46]
-$81:B036 BD 3C AA    LDA $AA3C,x
-$81:B039 8F 48 9E 7E STA $7E9E48[$7E:9E48]
-$81:B03D BD 3E AA    LDA $AA3E,x
-$81:B040 8F 4A 9E 7E STA $7E9E4A[$7E:9E4A]
-$81:B044 BD 40 AA    LDA $AA40,x
-$81:B047 8F 4C 9E 7E STA $7E9E4C[$7E:9E4C]
-$81:B04B BD 42 AA    LDA $AA42,x
-$81:B04E 8F 4E 9E 7E STA $7E9E4E[$7E:9E4E]
-$81:B052 A9 08 00    LDA #$0008
-$81:B055 8F 32 9E 7E STA $7E9E32[$7E:9E32]
-$81:B059 A9 F8 00    LDA #$00F8
-$81:B05C 8F 36 9E 7E STA $7E9E36[$7E:9E36]
-$81:B060 A9 08 00    LDA #$0008
-$81:B063 8F 3A 9E 7E STA $7E9E3A[$7E:9E3A]
-$81:B067 A9 D8 00    LDA #$00D8
-$81:B06A 8F 3E 9E 7E STA $7E9E3E[$7E:9E3E]
-$81:B06E A9 00 00    LDA #$0000
-$81:B071 8F 30 9E 7E STA $7E9E30[$7E:9E30]
-$81:B075 8F 34 9E 7E STA $7E9E34[$7E:9E34]
-$81:B079 8F 38 9E 7E STA $7E9E38[$7E:9E38]
-$81:B07D 8F 3C 9E 7E STA $7E9E3C[$7E:9E3C]
-$81:B081 20 A7 AB    JSR $ABA7  [$81:ABA7]
-$81:B084 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 15h
+$81:B005 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$81:B008 0A          ASL A                  ;|
+$81:B009 AA          TAX                    ;|
+$81:B00A BD 94 AA    LDA $AA94,x            ;} Expanding square timer = [$AA94 + [area index] * 2]
+$81:B00D 38          SEC                    ;|
+$81:B00E E9 0C 00    SBC #$000C             ;|
+$81:B011 8F 50 9E 7E STA $7E9E50[$7E:9E50]  ;/
+$81:B015 8A          TXA                    ;\
+$81:B016 0A          ASL A                  ;|
+$81:B017 0A          ASL A                  ;} X = [area index] * 10h
+$81:B018 0A          ASL A                  ;|
+$81:B019 AA          TAX                    ;/
+$81:B01A BD 34 AA    LDA $AA34,x            ;\
+$81:B01D 8F 40 9E 7E STA $7E9E40[$7E:9E40]  ;|
+$81:B021 BD 36 AA    LDA $AA36,x            ;} Expanding square left position velocity = [$AA34 + [X] + 2].[$AA34 + [X]]
+$81:B024 8F 42 9E 7E STA $7E9E42[$7E:9E42]  ;/
+$81:B028 BD 38 AA    LDA $AA38,x            ;\
+$81:B02B 8F 44 9E 7E STA $7E9E44[$7E:9E44]  ;|
+$81:B02F BD 3A AA    LDA $AA3A,x            ;} Expanding square right position velocity = [$AA34 + [X] + 6].[$AA34 + [X] + 4]
+$81:B032 8F 46 9E 7E STA $7E9E46[$7E:9E46]  ;/
+$81:B036 BD 3C AA    LDA $AA3C,x            ;\
+$81:B039 8F 48 9E 7E STA $7E9E48[$7E:9E48]  ;|
+$81:B03D BD 3E AA    LDA $AA3E,x            ;} Expanding square top position velocity = [$AA34 + [X] + Ah].[$AA34 + [X] + 8]
+$81:B040 8F 4A 9E 7E STA $7E9E4A[$7E:9E4A]  ;/
+$81:B044 BD 40 AA    LDA $AA40,x            ;\
+$81:B047 8F 4C 9E 7E STA $7E9E4C[$7E:9E4C]  ;|
+$81:B04B BD 42 AA    LDA $AA42,x            ;} Expanding square bottom position velocity = [$AA34 + [X] + Eh].[$AA34 + [X] + Ch]
+$81:B04E 8F 4E 9E 7E STA $7E9E4E[$7E:9E4E]  ;/
+$81:B052 A9 08 00    LDA #$0008             ;\
+$81:B055 8F 32 9E 7E STA $7E9E32[$7E:9E32]  ;} Expanding square left position = 8
+$81:B059 A9 F8 00    LDA #$00F8             ;\
+$81:B05C 8F 36 9E 7E STA $7E9E36[$7E:9E36]  ;} Expanding square right position = -8
+$81:B060 A9 08 00    LDA #$0008             ;\
+$81:B063 8F 3A 9E 7E STA $7E9E3A[$7E:9E3A]  ;} Expanding square top position = 8
+$81:B067 A9 D8 00    LDA #$00D8             ;\
+$81:B06A 8F 3E 9E 7E STA $7E9E3E[$7E:9E3E]  ;} Expanding square bottom position = -28
+$81:B06E A9 00 00    LDA #$0000             ;\
+$81:B071 8F 30 9E 7E STA $7E9E30[$7E:9E30]  ;} Expanding square left subposition = 0
+$81:B075 8F 34 9E 7E STA $7E9E34[$7E:9E34]  ; Expanding square right subposition = 0
+$81:B079 8F 38 9E 7E STA $7E9E38[$7E:9E38]  ; Expanding square top subposition = 0
+$81:B07D 8F 3C 9E 7E STA $7E9E3C[$7E:9E3C]  ; Expanding square bottom subposition = 0
+$81:B081 20 A7 AB    JSR $ABA7  [$81:ABA7]  ; Set up file select map expanding square transition HDMA
+$81:B084 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 15h (contracting square transition)
 $81:B087 E2 20       SEP #$20
-$81:B089 A9 0C       LDA #$0C
-$81:B08B 85 85       STA $85    [$7E:0085]
-$81:B08D 8D 0C 42    STA $420C  [$7E:420C]
-$81:B090 A9 32       LDA #$32
-$81:B092 85 60       STA $60    [$7E:0060]
-$81:B094 8D 23 21    STA $2123  [$7E:2123]
-$81:B097 A9 02       LDA #$02
-$81:B099 85 61       STA $61    [$7E:0061]
-$81:B09B 8D 24 21    STA $2124  [$7E:2124]
-$81:B09E A9 30       LDA #$30
-$81:B0A0 85 5D       STA $5D    [$7E:005D]
-$81:B0A2 A9 22       LDA #$22
-$81:B0A4 85 62       STA $62    [$7E:0062]
-$81:B0A6 A9 00       LDA #$00
-$81:B0A8 8F 09 9E 7E STA $7E9E09[$7E:9E09]
-$81:B0AC 8F 19 9E 7E STA $7E9E19[$7E:9E19]
-$81:B0B0 A9 00       LDA #$00
-$81:B0B2 85 B3       STA $B3    [$7E:00B3]
-$81:B0B4 85 B4       STA $B4    [$7E:00B4]
-$81:B0B6 85 B1       STA $B1    [$7E:00B1]
-$81:B0B8 85 B2       STA $B2    [$7E:00B2]
+$81:B089 A9 0C       LDA #$0C               ;\
+$81:B08B 85 85       STA $85    [$7E:0085]  ;} Enable HDMA channels 2/3
+$81:B08D 8D 0C 42    STA $420C  [$7E:420C]  ;/
+$81:B090 A9 32       LDA #$32               ;\
+$81:B092 85 60       STA $60    [$7E:0060]  ;} Enable BG1 window 1 inclusive mask and BG2 window 1 exclusive mask
+$81:B094 8D 23 21    STA $2123  [$7E:2123]  ;/
+$81:B097 A9 02       LDA #$02               ;\
+$81:B099 85 61       STA $61    [$7E:0061]  ;} Enable BG3 window 1 inclusive mask
+$81:B09B 8D 24 21    STA $2124  [$7E:2124]  ;/
+$81:B09E A9 30       LDA #$30               ;\
+$81:B0A0 85 5D       STA $5D    [$7E:005D]  ;} BG1 tiles base address = $0000, BG2 tiles base address = $3000
+$81:B0A2 A9 22       LDA #$22               ;\
+$81:B0A4 85 62       STA $62    [$7E:0062]  ;} Enable sprite window 1 inclusive mask and colour math window 1 inclusive mask
+$81:B0A6 A9 00       LDA #$00               ; A = 0 (terminator)
+$81:B0A8 8F 09 9E 7E STA $7E9E09[$7E:9E09]  ; $7E:9E09 = [A]
+$81:B0AC 8F 19 9E 7E STA $7E9E19[$7E:9E19]  ; $7E:9E19 = [A]
+$81:B0B0 A9 00       LDA #$00               ;\
+$81:B0B2 85 B3       STA $B3    [$7E:00B3]  ;} BG1 Y scroll = 0
+$81:B0B4 85 B4       STA $B4    [$7E:00B4]  ;/
+$81:B0B6 85 B1       STA $B1    [$7E:00B1]  ;\
+$81:B0B8 85 B2       STA $B2    [$7E:00B2]  ;} BG1 X scroll = 0
 $81:B0BA 60          RTS
 }
 
 
-;;; $B0BB: File select map - index 15h ;;;
+;;; $B0BB: File select map - index 15h: room select map to area select map - contracting square transition ;;;
 {
 $81:B0BB C2 30       REP #$30
-$81:B0BD AF 30 9E 7E LDA $7E9E30[$7E:9E30]
-$81:B0C1 38          SEC
-$81:B0C2 EF 40 9E 7E SBC $7E9E40[$7E:9E40]
-$81:B0C6 8F 30 9E 7E STA $7E9E30[$7E:9E30]
-$81:B0CA AF 32 9E 7E LDA $7E9E32[$7E:9E32]
-$81:B0CE EF 42 9E 7E SBC $7E9E42[$7E:9E42]
-$81:B0D2 8F 32 9E 7E STA $7E9E32[$7E:9E32]
-$81:B0D6 AF 34 9E 7E LDA $7E9E34[$7E:9E34]
-$81:B0DA 38          SEC
-$81:B0DB EF 44 9E 7E SBC $7E9E44[$7E:9E44]
-$81:B0DF 8F 34 9E 7E STA $7E9E34[$7E:9E34]
-$81:B0E3 AF 36 9E 7E LDA $7E9E36[$7E:9E36]
-$81:B0E7 EF 46 9E 7E SBC $7E9E46[$7E:9E46]
-$81:B0EB 8F 36 9E 7E STA $7E9E36[$7E:9E36]
-$81:B0EF AF 38 9E 7E LDA $7E9E38[$7E:9E38]
-$81:B0F3 38          SEC
-$81:B0F4 EF 48 9E 7E SBC $7E9E48[$7E:9E48]
-$81:B0F8 8F 38 9E 7E STA $7E9E38[$7E:9E38]
-$81:B0FC AF 3A 9E 7E LDA $7E9E3A[$7E:9E3A]
-$81:B100 EF 4A 9E 7E SBC $7E9E4A[$7E:9E4A]
-$81:B104 8F 3A 9E 7E STA $7E9E3A[$7E:9E3A]
-$81:B108 AF 3C 9E 7E LDA $7E9E3C[$7E:9E3C]
-$81:B10C 38          SEC
-$81:B10D EF 4C 9E 7E SBC $7E9E4C[$7E:9E4C]
-$81:B111 8F 3C 9E 7E STA $7E9E3C[$7E:9E3C]
-$81:B115 AF 3E 9E 7E LDA $7E9E3E[$7E:9E3E]
-$81:B119 EF 4E 9E 7E SBC $7E9E4E[$7E:9E4E]
-$81:B11D 8F 3E 9E 7E STA $7E9E3E[$7E:9E3E]
-$81:B121 20 A7 AB    JSR $ABA7  [$81:ABA7]
+$81:B0BD AF 30 9E 7E LDA $7E9E30[$7E:9E30]  ;\
+$81:B0C1 38          SEC                    ;|
+$81:B0C2 EF 40 9E 7E SBC $7E9E40[$7E:9E40]  ;|
+$81:B0C6 8F 30 9E 7E STA $7E9E30[$7E:9E30]  ;} Expanding square left position -= [expanding square left velocity]
+$81:B0CA AF 32 9E 7E LDA $7E9E32[$7E:9E32]  ;|
+$81:B0CE EF 42 9E 7E SBC $7E9E42[$7E:9E42]  ;|
+$81:B0D2 8F 32 9E 7E STA $7E9E32[$7E:9E32]  ;/
+$81:B0D6 AF 34 9E 7E LDA $7E9E34[$7E:9E34]  ;\
+$81:B0DA 38          SEC                    ;|
+$81:B0DB EF 44 9E 7E SBC $7E9E44[$7E:9E44]  ;|
+$81:B0DF 8F 34 9E 7E STA $7E9E34[$7E:9E34]  ;} Expanding square right position -= [expanding square right velocity]
+$81:B0E3 AF 36 9E 7E LDA $7E9E36[$7E:9E36]  ;|
+$81:B0E7 EF 46 9E 7E SBC $7E9E46[$7E:9E46]  ;|
+$81:B0EB 8F 36 9E 7E STA $7E9E36[$7E:9E36]  ;/
+$81:B0EF AF 38 9E 7E LDA $7E9E38[$7E:9E38]  ;\
+$81:B0F3 38          SEC                    ;|
+$81:B0F4 EF 48 9E 7E SBC $7E9E48[$7E:9E48]  ;|
+$81:B0F8 8F 38 9E 7E STA $7E9E38[$7E:9E38]  ;} Expanding square top position -= [expanding square top velocity]
+$81:B0FC AF 3A 9E 7E LDA $7E9E3A[$7E:9E3A]  ;|
+$81:B100 EF 4A 9E 7E SBC $7E9E4A[$7E:9E4A]  ;|
+$81:B104 8F 3A 9E 7E STA $7E9E3A[$7E:9E3A]  ;/
+$81:B108 AF 3C 9E 7E LDA $7E9E3C[$7E:9E3C]  ;\
+$81:B10C 38          SEC                    ;|
+$81:B10D EF 4C 9E 7E SBC $7E9E4C[$7E:9E4C]  ;|
+$81:B111 8F 3C 9E 7E STA $7E9E3C[$7E:9E3C]  ;} Expanding square bottom position -= [expanding square bottom velocity]
+$81:B115 AF 3E 9E 7E LDA $7E9E3E[$7E:9E3E]  ;|
+$81:B119 EF 4E 9E 7E SBC $7E9E4E[$7E:9E4E]  ;|
+$81:B11D 8F 3E 9E 7E STA $7E9E3E[$7E:9E3E]  ;/
+$81:B121 20 A7 AB    JSR $ABA7  [$81:ABA7]  ; Set up file select map expanding square transition HDMA
 $81:B124 C2 20       REP #$20
-$81:B126 20 7E A9    JSR $A97E  [$81:A97E]
-$81:B129 AF 50 9E 7E LDA $7E9E50[$7E:9E50]
-$81:B12D 3A          DEC A
-$81:B12E 8F 50 9E 7E STA $7E9E50[$7E:9E50]
-$81:B132 10 16       BPL $16    [$B14A]
+$81:B126 20 7E A9    JSR $A97E  [$81:A97E]  ; Draw area select map labels
+$81:B129 AF 50 9E 7E LDA $7E9E50[$7E:9E50]  ;\
+$81:B12D 3A          DEC A                  ;} Decrement expanding square timer
+$81:B12E 8F 50 9E 7E STA $7E9E50[$7E:9E50]  ;/
+$81:B132 10 16       BPL $16    [$B14A]     ; If [expanding square timer] >= 0: return
 $81:B134 AD 27 07    LDA $0727  [$7E:0727]  ;\
 $81:B137 38          SEC                    ;|
-$81:B138 E9 0F 00    SBC #$000F             ;} Menu index = 6
+$81:B138 E9 0F 00    SBC #$000F             ;} Menu index = 6 (area select map)
 $81:B13B 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:B13E E2 20       SEP #$20
-$81:B140 A9 11       LDA #$11
-$81:B142 85 69       STA $69    [$7E:0069]
-$81:B144 A9 00       LDA #$00
-$81:B146 85 6C       STA $6C    [$7E:006C]
-$81:B148 85 6D       STA $6D    [$7E:006D]
+$81:B140 A9 11       LDA #$11               ;\
+$81:B142 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
+$81:B144 A9 00       LDA #$00               ;\
+$81:B146 85 6C       STA $6C    [$7E:006C]  ;} Enable all layers in window area
+$81:B148 85 6D       STA $6D    [$7E:006D]  ;/
 
 $81:B14A 60          RTS
 }

@@ -5014,19 +5014,19 @@ $8F:C972             dx  0F, 26, BA48
 }
 
 
-;;; $C976: Setup ASM: Ceres colour math HDMA setup ;;;
+;;; $C976: Setup ASM: Spawn haze ;;;
 {
 ; Room $DF45, state $DF57. Ceres elevator default
 ; Room $DF8D. Ceres pre elevator hall
 ; Room $DFD7. Ceres shaft
 ; Room $E021. Ceres baby Metroid hall
 ; Room $E06B. Pre Ceres Ridley hall
-$8F:C976 22 C7 DD 88 JSL $88DDC7[$88:DDC7]
+$8F:C976 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; FX type 2Ch: haze
 $8F:C97A 60          RTS
 }
 
 
-;;; $C97B: Setup ASM: Ceres colour math HDMA setup and BG char base setup ;;;
+;;; $C97B: Setup ASM: Set BG1/2 tiles base address and spawn haze ;;;
 {
 ; Room $E0B5. Ceres Ridley's room
 $8F:C97B 08          PHP
@@ -5034,7 +5034,7 @@ $8F:C97C E2 20       SEP #$20
 $8F:C97E A9 66       LDA #$66               ;\
 $8F:C980 85 5D       STA $5D    [$7E:005D]  ;} BG1 tiles base address = BG2 tiles base address = $6000
 $8F:C982 28          PLP
-$8F:C983 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; Ceres colour math HDMA set up
+$8F:C983 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; FX type 2Ch: haze
 $8F:C987 A9 09 00    LDA #$0009             ;\
 $8F:C98A 8D EB 07    STA $07EB  [$7E:07EB]  ;} $07EB = 9 (mode 1 with BG3 priority)
 $8F:C98D 60          RTS
@@ -6954,7 +6954,7 @@ $8F:E4DF 60          RTS
 $8F:E4E0 E2 20       SEP #$20
 $8F:E4E2 A9 07       LDA #$07               ;\
 $8F:E4E4 85 56       STA $56    [$7E:0056]  ;} Fake mode = 7
-$8F:E4E6 8D 05 21    STA $2105  [$7E:2105]  ; Set BG mode = 7
+$8F:E4E6 8D 05 21    STA $2105  [$7E:2105]  ; BG mode = 7
 $8F:E4E9 C2 20       REP #$20
 $8F:E4EB A9 00 01    LDA #$0100             ;\
 $8F:E4EE 85 78       STA $78    [$7E:0078]  ;|

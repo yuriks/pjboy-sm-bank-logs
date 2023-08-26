@@ -2143,7 +2143,7 @@ $A2:9B64 60          RTS
 $A2:9B65 DE AC 0F    DEC $0FAC,x[$7E:112C]  ; Decrement enemy hop cooldown timer
 $A2:9B68 10 16       BPL $16    [$9B80]     ; If [enemy hop cooldown timer] >= 0: return
 $A2:9B6A A9 81 9B    LDA #$9B81             ;\
-$A2:9B6D 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy function pointer = $9B81 (airborne)
+$A2:9B6D 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy function = $9B81 (airborne)
 $A2:9B70 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $A2:9B73 9D AC 0F    STA $0FAC,x[$7E:112C]  ;} Enemy hop cooldown timer = [enemy parameter 1]
 $A2:9B76 A9 01 00    LDA #$0001             ;\
@@ -2206,7 +2206,7 @@ $A2:9BE0 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy hopping animation flag = 0
 $A2:9BE4 80 0D       BRA $0D    [$9BF3]
 
 $A2:9BE6 A9 65 9B    LDA #$9B65             ;\ Else (enemy is falling):
-$A2:9BE9 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy function pointer = $9B65 (grounded)
+$A2:9BE9 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy function = $9B65 (grounded)
 $A2:9BEC A9 00 00    LDA #$0000             ;\
 $A2:9BEF 9F 02 78 7E STA $7E7802,x[$7E:7982];} Enemy hopping animation flag = 0
 
@@ -2432,7 +2432,7 @@ $A2:9D7B D0 1A       BNE $1A    [$9D97]     ;} If enemy hopping animation active
 $A2:9D7D A9 00 00    LDA #$0000             ;\
 $A2:9D80 9F 00 78 7E STA $7E7800,x          ;} Enemy hop type = 0 (normal)
 $A2:9D84 A9 65 9B    LDA #$9B65             ;\
-$A2:9D87 9D AE 0F    STA $0FAE,x            ;} Enemy function pointer = $9B65 (grounded)
+$A2:9D87 9D AE 0F    STA $0FAE,x            ;} Enemy function = $9B65 (grounded)
 
 $A2:9D8A A9 00 00    LDA #$0000             ;\
 $A2:9D8D 9F 02 78 7E STA $7E7802,x          ;} Enemy hopping animation flag = 0
@@ -2464,7 +2464,7 @@ $A2:9DBE 18          CLC                    ;} Enemy hop type = 5 + [$1C] % 2 (d
 $A2:9DBF 69 05 00    ADC #$0005             ;|
 $A2:9DC2 9F 00 78 7E STA $7E7800,x[$7E:7900];/
 $A2:9DC6 A9 65 9B    LDA #$9B65             ;\
-$A2:9DC9 9D AE 0F    STA $0FAE,x[$7E:10AE]  ;} Enemy function pointer = $9B65 (grounded)
+$A2:9DC9 9D AE 0F    STA $0FAE,x[$7E:10AE]  ;} Enemy function = $9B65 (grounded)
 
 $A2:9DCC 60          RTS
 }
@@ -2481,7 +2481,7 @@ $A2:9DDC 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy hopping animation flag = 0
 $A2:9DE0 A9 03 00    LDA #$0003             ;\
 $A2:9DE3 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy hop type = 3 (giant hop)
 $A2:9DE7 A9 65 9B    LDA #$9B65             ;\
-$A2:9DEA 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy function pointer = $9B65 (grounded)
+$A2:9DEA 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy function = $9B65 (grounded)
 $A2:9DED A9 D5 99    LDA #$99D5             ;\
 $A2:9DF0 20 6C 9A    JSR $9A6C  [$A2:9A6C]  ;} Set enemy instruction list to $99D5 (grounded/dropping - slow)
 
@@ -5287,8 +5287,8 @@ $A2:B984 85 12       STA $12    [$7E:0012]
 $A2:B986 BD 7E 0F    LDA $0F7E,x[$7E:10BE]
 $A2:B989 85 14       STA $14    [$7E:0014]
 $A2:B98B A0 09 E5    LDY #$E509
-$A2:B98E A9 03 00    LDA #$0003             ;\
-$A2:B991 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
+$A2:B98E A9 03 00    LDA #$0003             ; A = 3 (small explosion)
+$A2:B991 22 97 80 86 JSL $868097[$86:8097]  ; Spawn dust cloud / explosion enemy projectile
 $A2:B995 A9 44 B8    LDA #$B844
 $A2:B998 9D A8 0F    STA $0FA8,x[$7E:10E8]
 $A2:B99B A9 01 00    LDA #$0001

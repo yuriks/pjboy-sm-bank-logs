@@ -51,7 +51,7 @@ $92:8055 65 14       ADC $14    [$7E:0014]  ;|
 $92:8057 AA          TAX                    ;/
 $92:8058 BD 00 00    LDA $0000,x[$92:DB6E]  ;\
 $92:805B 29 FF 00    AND #$00FF             ;|
-$92:805E C9 FF 00    CMP #$00FF             ;} If [[X]] = FFh: return
+$92:805E C9 FF 00    CMP #$00FF             ;} If [[X]] = FFh (this never happens): return
 $92:8061 F0 27       BEQ $27    [$808A]     ;/
 $92:8063 0A          ASL A                  ;\
 $92:8064 A8          TAY                    ;|
@@ -487,6 +487,7 @@ $92:808D             dW 90ED ; 0000
 ; Samus tile viewer - grapple beam
                         9248 ; 0185
 
+; Bubbles
                         D7D3 ; 0186
                         D7DF ; 0187
                         D7F0 ; 0188
@@ -496,6 +497,8 @@ $92:808D             dW 90ED ; 0000
                         D834 ; 018C
                         D845 ; 018D
                         D851 ; 018E
+                        
+; Diving splash
                         D858 ; 018F
                         D869 ; 0190
                         D87A ; 0191
@@ -505,6 +508,7 @@ $92:808D             dW 90ED ; 0000
                         D8F0 ; 0195
                         D906 ; 0196
                         D912 ; 0197
+
                         9657 ; 0198
                         9657 ; 0199
 
@@ -2939,14 +2943,27 @@ $92:808D             dW 90ED ; 0000
 }
 
 
-;;; $90ED: Samus spritemaps ;;;
+;;; $90ED: Samus spritemaps - debug ;;;
 {
+; Unused. Samus spritemap 0
 $92:90ED             dx 0001, 01FC,FC,315A
+
+; Unused. Samus spritemap 1
 $92:90F4             dx 0019, 0039,E8,3136, 0031,E8,3144, 0029,E8,3131, 0021,E8,3134, 0019,E8,3133, 0010,08,314B, 0008,08,313D, 0000,08,313E, 01F8,08,3138, 01F0,08,3143, 01E8,08,313F, 01E0,08,313E, 0010,F8,314A, 0008,F8,313D, 0000,F8,313E, 01F8,F8,3138, 01F0,F8,3143, 01E8,F8,313F, 01E0,F8,313E, 0008,E8,313B, 0000,E8,3130, 01F8,E8,3144, 01F0,E8,3142, 01E8,E8,3138, 01E0,E8,3145
+
+; Unused
 $92:9173             dx 0001, 0000,00,3A5F
+
+; Samus tile viewer - Samus top half
 $92:917A             dx 0010, 0018,00,3817, 0010,00,3816, 0008,00,3815, 0000,00,3814, 01F8,00,3813, 01F0,00,3812, 01E8,00,3811, 01E0,00,3810, 0018,F8,3807, 0010,F8,3806, 0008,F8,3805, 0000,F8,3804, 01F8,F8,3803, 01F0,F8,3802, 01E8,F8,3801, 01E0,F8,3800
+
+; Samus tile viewer - Samus bottom half
 $92:91CC             dx 0010, 0018,00,381F, 0010,00,381E, 0008,00,381D, 0000,00,381C, 01F8,00,381B, 01F0,00,381A, 01E8,00,3819, 01E0,00,3818, 0018,F8,380F, 0010,F8,380E, 0008,F8,380D, 0000,F8,380C, 01F8,F8,380B, 01F0,F8,380A, 01E8,F8,3809, 01E0,F8,3808
+
+; Samus tile viewer - beam
 $92:921E             dx 0008, 0018,00,3C37, 0010,00,3C36, 0008,00,3C35, 0000,00,3C34, 01F8,00,3C33, 01F0,00,3C32, 01E8,00,3C31, 01E0,00,3C30
+
+; Samus tile viewer - grapple beam
 $92:9248             dx 0005, 0000,00,3A24, 01F8,00,3A23, 01F0,00,3A22, 01E8,00,3A21, 01E0,00,3A20
 }
 
@@ -3527,1893 +3544,3973 @@ $92:CBB5             dx 000B, 01FA,FC,6E95, 01F2,FC,6E96, 0002,F4,6E7C, 01F2,E4,
 ;     N: Part 2 size, N = 0 means no bytes are transferred
 
 
-;;; $CBEE: Samus top tiles - 0 ;;;
+;;; $CBEE: Samus top tiles - set 0 (general) ;;;
 {
-; 0: Facing forward - power suit
-; 1: Facing right - normal
-; 2: Facing left - normal
-; 9: Moving right - not aiming
-; 19h: Facing right - spin jump
-; 1Ah: Facing left - spin jump
-; 1Bh: Facing right - space jump
-; 1Ch: Facing left - space jump
-; 1Dh: Facing right - morph ball - no springball - on ground
-; 1Eh: Moving right - morph ball - no springball - on ground
-; 1Fh: Moving left - morph ball - no springball - on ground
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 27h: Facing right - crouching
-; 28h: Facing left - crouching
-; 29h: Facing right - falling
-; 2Ah: Facing left - falling
-; 31h: Facing right - morph ball - no springball - in air
-; 32h: Facing left - morph ball - no springball - in air
-; 33h: Unused
-; 34h: Unused
-; 39h: Unused
-; 3Ah: Unused
-; 3Fh: Unused
-; 40h: Unused
-; 41h: Facing left - morph ball - no springball - on ground
-; 42h: Unused
-; 47h: Unused
-; 48h: Unused
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; 67h: Facing right - falling - gun extended
-; 68h: Facing left - falling - gun extended
-; 79h: Facing right - morph ball - spring ball - on ground
-; 7Ah: Facing left - morph ball - spring ball - on ground
-; 7Bh: Moving right - morph ball - spring ball - on ground
-; 7Ch: Moving left - morph ball - spring ball - on ground
-; 7Dh: Facing right - morph ball - spring ball - falling
-; 7Eh: Facing left - morph ball - spring ball - falling
-; 7Fh: Facing right - morph ball - spring ball - in air
-; 80h: Facing left - morph ball - spring ball - in air
-; 81h: Facing right - screw attack
-; 82h: Facing left - screw attack
-; 83h: Facing right - wall jump
-; 84h: Facing left - wall jump
-; 89h: Facing right - ran into a wall
-; 8Ah: Facing left - ran into a wall
-; 9Bh: Facing forward - varia/gravity suit
-; A8h: Unused
-; A9h: Unused
-; B4h: Unused
-; B5h: Unused
-; C5h: Unused
-; C7h: Facing right - vertical shinespark windup
-; D3h: Facing right - crystal flash
-; D4h: Facing left - crystal flash
-; DFh: Unused
-; E8h: Facing right - Samus drained - crouching
-; E9h: Facing left - Samus drained - crouching
-; EAh: Facing right - Samus drained - standing
-; EBh: Facing left - Samus drained - standing
-; F0h: Facing right - grabbed by Draygon - moving
-$92:CBEE             dx 9E8000,0080,0080
+; Actually used by:
+;     9: Moving right - not aiming - frame 0
+;     9: Moving right - not aiming - frame 5
+;     4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 3
+;     C7h: Facing right - vertical shinespark windup - frame 3
+;     F0h: Facing right - grabbed by Draygon - moving - frame 2
+;     F0h: Facing right - grabbed by Draygon - moving - frame 5
 
-; 9: Moving right - not aiming
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; C7h: Facing right - vertical shinespark windup
-; F0h: Facing right - grabbed by Draygon - moving
-$92:CBF5             dx 9E8100,0080,0080
+; Meaninglessly used by:
+{
+;     0: Facing forward - power suit - frame 1
+;     1: Facing right - normal - frame 4
+;     2: Facing left  - normal - frame 4
+;     19h: Facing right - spin jump - frames 9..Ah
+;     1Ah: Facing left  - spin jump - frames 9..Ah
+;     1Bh: Facing right - space jump - frames 9..Ah
+;     1Ch: Facing left  - space jump - frames 9..Ah
+;     1Dh: Facing right - morph ball - no springball - on ground - frame 8
+;     1Eh: Moving right - morph ball - no springball - on ground - frame 8
+;     1Fh: Moving left  - morph ball - no springball - on ground - frame 8
+;     20h: Unused - frames 9..Ah
+;     21h: Unused - frames 9..Ah
+;     22h: Unused - frames 9..Ah
+;     23h: Unused - frames 9..Ah
+;     24h: Unused - frames 9..Ah
+;     27h: Facing right - crouching - frame 4
+;     28h: Facing left  - crouching - frame 4
+;     29h: Facing right - falling - frames 3..4
+;     2Ah: Facing left  - falling - frames 3..4
+;     31h: Facing right - morph ball - no springball - in air - frame 8
+;     32h: Facing left  - morph ball - no springball - in air - frame 8
+;     33h: Unused - frames 9..Ah
+;     34h: Unused - frames 9..Ah
+;     39h: Unused - frames 9..Ah
+;     3Ah: Unused - frames 9..Ah
+;     3Fh: Unused - frame 8
+;     40h: Unused - frame 8
+;     41h: Facing left  - morph ball - no springball - on ground - frame 8
+;     42h: Unused - frames 9..Ah
+;     47h: Unused - frame 4
+;     48h: Unused - frame 4
+;     67h: Facing right - falling - gun extended - frames 3..4
+;     68h: Facing left  - falling - gun extended - frames 3..4
+;     79h: Facing right - morph ball - spring ball - on ground - frame 8
+;     7Ah: Facing left  - morph ball - spring ball - on ground - frame 8
+;     7Bh: Moving right - morph ball - spring ball - on ground - frame 8
+;     7Ch: Moving left  - morph ball - spring ball - on ground - frame 8
+;     7Dh: Facing right - morph ball - spring ball - falling - frame 8
+;     7Eh: Facing left  - morph ball - spring ball - falling - frame 8
+;     7Fh: Facing right - morph ball - spring ball - in air - frame 8
+;     80h: Facing left  - morph ball - spring ball - in air - frame 8
+;     81h: Facing right - screw attack - frames 19h..1Ah
+;     82h: Facing left  - screw attack - frames 19h..1Ah
+;     83h: Facing right - wall jump - frame 2
+;     83h: Facing right - wall jump - frames Bh..Ch
+;     83h: Facing right - wall jump - frames 15h..16h
+;     84h: Facing left  - wall jump - frame 2
+;     84h: Facing left  - wall jump - frames Bh..Ch
+;     84h: Facing left  - wall jump - frames 15h..16h
+;     89h: Facing right - ran into a wall - frame 4
+;     8Ah: Facing left  - ran into a wall - frame 4
+;     9Bh: Facing forward - varia/gravity suit - frame 1
+;     A8h: Facing right - grappling - frame 4
+;     A9h: Facing left  - grappling - frame 4
+;     B4h: Facing right - grappling - crouching - frame 4
+;     B5h: Facing left  - grappling - crouching - frame 4
+;     C5h: Unused - frame 8
+;     D3h: Facing right - crystal flash - frames 4..5
+;     D3h: Facing right - crystal flash - frames Ah..Bh
+;     D4h: Facing left  - crystal flash - frames 4..5
+;     D4h: Facing left  - crystal flash - frames Ah..Bh
+;     DFh: Unused. Related to Draygon - frame 8
+;     E8h: Facing right - Samus drained - crouching/falling - frames Ch..Dh
+;     E9h: Facing left  - Samus drained - crouching/falling - frames Ch..Dh
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 11h..12h
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 18h..19h
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 1Bh..1Ch
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 1Eh..1Fh
+;     EAh: Facing right - Samus drained - standing - frame 4
+;     EBh: Facing left  - Samus drained - standing - frame 4
+}
+$92:CBEE             dx 9E8000, 0080, 0080
 
-; 9: Moving right - not aiming
-; F0h: Facing right - grabbed by Draygon - moving
-$92:CBFC             dx 9E8200,00A0,0080
+; 9: Moving right - not aiming - frame 4
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 4
+; C7h: Facing right - vertical shinespark windup - frame 4
+; F0h: Facing right - grabbed by Draygon - moving - frame 0
+$92:CBF5             dx 9E8100, 0080, 0080
 
-; 9: Moving right - not aiming
-$92:CC03             dx 9E8320,00A0,0080
+; 9: Moving right - not aiming - frame 2
+; F0h: Facing right - grabbed by Draygon - moving - frame 1
+$92:CBFC             dx 9E8200, 00A0, 0080
 
-; 9: Moving right - not aiming
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; C7h: Facing right - vertical shinespark windup
-; F0h: Facing right - grabbed by Draygon - moving
-$92:CC0A             dx 9E8440,0080,0080
-$92:CC11             dx 9E8540,00C0,00C0
+; 9: Moving right - not aiming - frame 3
+$92:CC03             dx 9E8320, 00A0, 0080
 
-; Ah: Moving left - not aiming
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; BEh: Facing left - grabbed by Draygon - moving
-; C8h: Facing left - vertical shinespark windup
-$92:CC18             dx 9E86C0,0080,0080
-$92:CC1F             dx 9E87C0,0080,0080
+; 9: Moving right - not aiming - frame 9
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 0
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 2
+; C7h: Facing right - vertical shinespark windup - frame 0
+; C7h: Facing right - vertical shinespark windup - frame 2
+; F0h: Facing right - grabbed by Draygon - moving - frame 3
+$92:CC0A             dx 9E8440, 0080, 0080
 
-; Ah: Moving left - not aiming
-; BEh: Facing left - grabbed by Draygon - moving
-$92:CC26             dx 9E88C0,00C0,00C0
+; 9: Moving right - not aiming - frame 7
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 1
+; C7h: Facing right - vertical shinespark windup - frame 1
+; F0h: Facing right - grabbed by Draygon - moving - frame 4
+$92:CC11             dx 9E8540, 00C0, 00C0
 
-; Ah: Moving left - not aiming
-$92:CC2D             dx 9E8A40,00C0,00C0
+; Ah: Moving left  - not aiming - frame 0
+; Ah: Moving left  - not aiming - frame 5
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 3
+; BEh: Facing left  - grabbed by Draygon - moving - frame 2
+; BEh: Facing left  - grabbed by Draygon - moving - frame 5
+; C8h: Facing left  - vertical shinespark windup - frame 3
+$92:CC18             dx 9E86C0, 0080, 0080
 
-; Ah: Moving left - not aiming
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; BEh: Facing left - grabbed by Draygon - moving
-; C8h: Facing left - vertical shinespark windup
-$92:CC34             dx 9E8BC0,0080,0080
-$92:CC3B             dx 9E8CC0,00A0,0080
+; Ah: Moving left  - not aiming - frame 4
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 4
+; BEh: Facing left  - grabbed by Draygon - moving - frame 0
+; C8h: Facing left  - vertical shinespark windup - frame 4
+$92:CC1F             dx 9E87C0, 0080, 0080
 
-; 11h: Moving right - aiming down-right
-; 17h: Facing right - normal jump - aiming down
-; 2Dh: Facing right - falling - aiming down
-; 6Bh: Facing right - normal jump - aiming down-right
-; 6Fh: Facing right - falling - aiming down-right
-; 78h: Facing right - moonwalk - aiming down-right
-; AEh: Unused
-; B0h: Unused
-; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right
-$92:CC42             dx 9E8DE0,00E0,0040
+; Ah: Moving left  - not aiming - frame 2
+; BEh: Facing left  - grabbed by Draygon - moving - frame 1
+$92:CC26             dx 9E88C0, 00C0, 00C0
 
-; 12h: Moving left - aiming down-left
-; 18h: Facing left - normal jump - aiming down
-; 2Eh: Facing left - falling - aiming down
-; 6Ch: Facing left - normal jump - aiming down-left
-; 70h: Facing left - falling - aiming down-left
-; 77h: Facing left - moonwalk - aiming down-left
-; AFh: Unused
-; B1h: Unused
-; BDh: Facing left - grabbed by Draygon - not moving - aiming down-left
-$92:CC49             dx 9E8F00,00E0,0040
+; Ah: Moving left  - not aiming - frame 3
+$92:CC2D             dx 9E8A40, 00C0, 00C0
 
-; 7: Facing right - aiming down-right
-; 59h: Facing right - normal jump transition - aiming down-right
-; 73h: Facing right - crouching - aiming down-right
-; AAh: Unused
-; B6h: Unused
-; D1h: Facing right - ran into a wall - aiming down-right
-; E4h: Facing right - landing from normal jump - aiming down-right
-; F5h: Facing right - crouching transition - aiming down-right
-; FBh: Facing right - standing transition - aiming down-right
-$92:CC50             dx 9E9020,00E0,0080
+; Ah: Moving left  - not aiming - frame 9
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 0
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 2
+; BEh: Facing left  - grabbed by Draygon - moving - frame 3
+; C8h: Facing left  - vertical shinespark windup - frame 0
+; C8h: Facing left  - vertical shinespark windup - frame 2
+$92:CC34             dx 9E8BC0, 0080, 0080
 
-; 8: Facing left - aiming down-left
-; 5Ah: Facing left - normal jump transition - aiming down-left
-; 74h: Facing left - crouching - aiming down-left
-; ABh: Unused
-; B7h: Unused
-; D2h: Facing left - ran into a wall - aiming down-left
-; E5h: Facing left - landing from normal jump - aiming down-left
-; F6h: Facing left - crouching transition - aiming down-left
-; FCh: Facing left - standing transition - aiming down-left
-$92:CC57             dx 9E9180,00E0,0080
+; Ah: Moving left  - not aiming - frame 7
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 1
+; BEh: Facing left  - grabbed by Draygon - moving - frame 4
+; C8h: Facing left  - vertical shinespark windup - frame 1
+$92:CC3B             dx 9E8CC0, 00A0, 0080
 
-; 13h: Facing right - normal jump - not aiming - not moving - gun extended
-; 35h: Facing right - crouching transition
-; 3Bh: Facing right - standing transition
-; 4Ah: Facing right - moonwalk
-; 51h: Facing right - normal jump - not aiming - moving forward
-; 67h: Facing right - falling - gun extended
-; ACh: Unused
-; D3h: Facing right - crystal flash
-; D5h: Facing right - x-ray - standing
-; D7h: Facing right - crystal flash ending
-; D9h: Facing right - x-ray - crouching
-; DBh: Unused
-; DDh: Unused
-; E6h: Facing right - landing from normal jump - firing
-; E8h: Facing right - Samus drained - crouching
-; EAh: Facing right - Samus drained - standing
-; EEh: Facing right - grabbed by Draygon - firing
-$92:CC5E             dx 9E92E0,00C0,0040
+; 11h: Moving right - aiming down-right - frames 0..1
+; 11h: Moving right - aiming down-right - frames 5..6
+; 17h: Facing right - normal jump - aiming down - frame 0
+; 2Dh: Facing right - falling - aiming down - frame 0
+; 6Bh: Facing right - normal jump - aiming down-right - frames 0..1
+; 6Fh: Facing right - falling - aiming down-right - frames 0..2
+; 78h: Facing right - moonwalk - aiming down-right - frame 0
+; 78h: Facing right - moonwalk - aiming down-right - frame 3
+; AEh: Unused. Facing right - grappling - in air - aiming down - frame 0
+; B0h: Unused. Facing right - grappling - in air - aiming down-right - frames 0..1
+; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right - frame 0
+$92:CC42             dx 9E8DE0, 00E0, 0040
 
-; 14h: Facing left - normal jump - not aiming - not moving - gun extended
-; 36h: Facing left - crouching transition
-; 3Ch: Facing left - standing transition
-; 49h: Facing left - moonwalk
-; 52h: Facing left - normal jump - not aiming - moving forward
-; 68h: Facing left - falling - gun extended
-; ADh: Unused
-; BCh: Facing left - grabbed by Draygon - firing
-; D4h: Facing left - crystal flash
-; D6h: Facing left - x-ray - standing
-; D8h: Facing left - crystal flash ending
-; DAh: Facing left - x-ray - crouching
-; DCh: Unused
-; DEh: Unused
-; E7h: Facing left - landing from normal jump - firing
-; EBh: Facing left - Samus drained - standing
-$92:CC65             dx 9E93E0,00C0,0040
+; 12h: Moving left  - aiming down-left - frames 0..1
+; 12h: Moving left  - aiming down-left - frames 5..6
+; 18h: Facing left  - normal jump - aiming down - frame 0
+; 2Eh: Facing left  - falling - aiming down - frame 0
+; 6Ch: Facing left  - normal jump - aiming down-left - frames 0..1
+; 70h: Facing left  - falling - aiming down-left - frames 0..2
+; 77h: Facing left  - moonwalk - aiming down-left - frame 0
+; 77h: Facing left  - moonwalk - aiming down-left - frame 3
+; AFh: Unused. Facing left  - grappling - in air - aiming down - frame 0
+; B1h: Unused. Facing left  - grappling - in air - aiming down-left - frames 0..1
+; BDh: Facing left  - grabbed by Draygon - not moving - aiming down-left - frame 0
+$92:CC49             dx 9E8F00, 00E0, 0040
 
-; 3: Facing right - aiming up
-; 5: Facing right - aiming up-right
-; 15h: Facing right - normal jump - aiming up
-; 2Bh: Facing right - falling - aiming up
-; 57h: Facing right - normal jump transition - aiming up-right
-; 71h: Facing right - crouching - aiming up-right
-; 85h: Facing right - crouching - aiming up
-; CFh: Facing right - ran into a wall - aiming up-right
-; E2h: Facing right - landing from normal jump - aiming up-right
-; F3h: Facing right - crouching transition - aiming up-right
-; F9h: Facing right - standing transition - aiming up-right
-$92:CC6C             dx 9E94E0,00C0,0080
+; 7: Facing right - aiming down-right - frame 0
+; 59h: Facing right - normal jump transition - aiming down-right - frame 0
+; 73h: Facing right - crouching - aiming down-right - frame 0
+; AAh: Facing right - grappling - aiming down-right - frame 0
+; B6h: Facing right - grappling - crouching - aiming down-right - frame 0
+; D1h: Facing right - ran into a wall - aiming down-right - frame 0
+; E4h: Facing right - landing from normal jump - aiming down-right - frames 0..1
+; F5h: Facing right - crouching transition - aiming down-right - frame 0
+; FBh: Facing right - standing transition - aiming down-right - frame 0
+$92:CC50             dx 9E9020, 00E0, 0080
 
-; 4: Facing left - aiming up
-; 6: Facing left - aiming up-left
-; 16h: Facing left - normal jump - aiming up
-; 2Ch: Facing left - falling - aiming up
-; 58h: Facing left - normal jump transition - aiming up-left
-; 72h: Facing left - crouching - aiming up-left
-; 86h: Facing left - crouching - aiming up
-; D0h: Facing left - ran into a wall - aiming up-left
-; E3h: Facing left - landing from normal jump - aiming up-left
-; F4h: Facing left - crouching transition - aiming up-left
-; FAh: Facing left - standing transition - aiming up-left
-$92:CC73             dx 9E9620,00C0,0080
+; 8: Facing left  - aiming down-left - frame 0
+; 5Ah: Facing left  - normal jump transition - aiming down-left - frame 0
+; 74h: Facing left  - crouching - aiming down-left - frame 0
+; ABh: Facing left  - grappling - aiming down-left - frame 0
+; B7h: Facing left  - grappling - crouching - aiming down-left - frame 0
+; D2h: Facing left  - ran into a wall - aiming down-left - frame 0
+; E5h: Facing left  - landing from normal jump - aiming down-left - frames 0..1
+; F6h: Facing left  - crouching transition - aiming down-left - frame 0
+; FCh: Facing left  - standing transition - aiming down-left - frame 0
+$92:CC57             dx 9E9180, 00E0, 0080
 
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; C7h: Facing right - vertical shinespark windup
-$92:CC7A             dx 9E9760,00A0,0080
+; 13h: Facing right - normal jump - not aiming - not moving - gun extended - frames 0..1
+; 35h: Facing right - crouching transition - frame 0
+; 3Bh: Facing right - standing transition - frame 0
+; 4Ah: Facing right - moonwalk - frame 0
+; 4Ah: Facing right - moonwalk - frame 3
+; 51h: Facing right - normal jump - not aiming - moving forward - frames 0..1
+; 67h: Facing right - falling - gun extended - frames 0..2
+; 67h: Facing right - falling - gun extended - frames 5..6
+; ACh: Unused. Facing right - grappling - in air - frames 0..1
+; D3h: Facing right - crystal flash - frame Eh
+; D5h: Facing right - x-ray - standing - frame 2
+; D7h: Facing right - crystal flash ending - frame 3
+; D9h: Facing right - x-ray - crouching - frame 2
+; DBh: Unused - frame 0
+; DDh: Unused - frame 2
+; E6h: Facing right - landing from normal jump - firing - frames 0..1
+; E8h: Facing right - Samus drained - crouching/falling - frame Eh
+; EAh: Facing right - Samus drained - standing - frame 5
+; EEh: Facing right - grabbed by Draygon - firing - frame 0
+$92:CC5E             dx 9E92E0, 00C0, 0040
 
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; C8h: Facing left - vertical shinespark windup
-$92:CC81             dx 9E9880,00C0,00C0
+; 14h: Facing left  - normal jump - not aiming - not moving - gun extended - frames 0..1
+; 36h: Facing left  - crouching transition - frame 0
+; 3Ch: Facing left  - standing transition - frame 0
+; 49h: Facing left  - moonwalk - frame 0
+; 49h: Facing left  - moonwalk - frame 3
+; 52h: Facing left  - normal jump - not aiming - moving forward - frames 0..1
+; 68h: Facing left  - falling - gun extended - frames 0..2
+; 68h: Facing left  - falling - gun extended - frames 5..6
+; ADh: Unused. Facing left  - grappling - in air - frames 0..1
+; BCh: Facing left  - grabbed by Draygon - firing - frame 0
+; D4h: Facing left  - crystal flash - frame Eh
+; D6h: Facing left  - x-ray - standing - frame 2
+; D8h: Facing left  - crystal flash ending - frame 3
+; DAh: Facing left  - x-ray - crouching - frame 2
+; DCh: Unused - frame 0
+; DEh: Unused - frame 2
+; E7h: Facing left  - landing from normal jump - firing - frames 0..1
+; EBh: Facing left  - Samus drained - standing - frame 5
+$92:CC65             dx 9E93E0, 00C0, 0040
 
-; 3: Facing right - aiming up
-; Dh: Moving right - aiming up (unused)
-; 15h: Facing right - normal jump - aiming up
-; 2Bh: Facing right - falling - aiming up
-; 55h: Facing right - normal jump transition - aiming up
-; 85h: Facing right - crouching - aiming up
-; E0h: Facing right - landing from normal jump - aiming up
-; F1h: Facing right - crouching transition - aiming up
-; F7h: Facing right - standing transition - aiming up
-$92:CC88             dx 9E9A00,00C0,0040
+; 3: Facing right - aiming up - frame 0
+; 5: Facing right - aiming up-right - frame 0
+; 15h: Facing right - normal jump - aiming up - frame 0
+; 2Bh: Facing right - falling - aiming up - frame 0
+; 57h: Facing right - normal jump transition - aiming up-right - frame 0
+; 71h: Facing right - crouching - aiming up-right - frame 0
+; 85h: Facing right - crouching - aiming up - frame 0
+; CFh: Facing right - ran into a wall - aiming up-right - frame 0
+; E2h: Facing right - landing from normal jump - aiming up-right - frames 0..1
+; F3h: Facing right - crouching transition - aiming up-right - frame 0
+; F9h: Facing right - standing transition - aiming up-right - frame 0
+$92:CC6C             dx 9E94E0, 00C0, 0080
 
-; 4: Facing left - aiming up
-; Eh: Moving left - aiming up (unused)
-; 16h: Facing left - normal jump - aiming up
-; 2Ch: Facing left - falling - aiming up
-; 56h: Facing left - normal jump transition - aiming up
-; 86h: Facing left - crouching - aiming up
-; E1h: Facing left - landing from normal jump - aiming up
-; F2h: Facing left - crouching transition - aiming up
-; F8h: Facing left - standing transition - aiming up
-$92:CC8F             dx 9E9B00,00C0,0040
+; 4: Facing left  - aiming up - frame 0
+; 6: Facing left  - aiming up-left - frame 0
+; 16h: Facing left  - normal jump - aiming up - frame 0
+; 2Ch: Facing left  - falling - aiming up - frame 0
+; 58h: Facing left  - normal jump transition - aiming up-left - frame 0
+; 72h: Facing left  - crouching - aiming up-left - frame 0
+; 86h: Facing left  - crouching - aiming up - frame 0
+; D0h: Facing left  - ran into a wall - aiming up-left - frame 0
+; E3h: Facing left  - landing from normal jump - aiming up-left - frames 0..1
+; F4h: Facing left  - crouching transition - aiming up-left - frame 0
+; FAh: Facing left  - standing transition - aiming up-left - frame 0
+$92:CC73             dx 9E9620, 00C0, 0080
 
-; 9: Moving right - not aiming
-$92:CC96             dx 9E9C00,00A0,0080
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 5
+; C7h: Facing right - vertical shinespark windup - frame 5
+$92:CC7A             dx 9E9760, 00A0, 0080
 
-; Ah: Moving left - not aiming
-$92:CC9D             dx 9E9D20,00A0,0080
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 5
+; C8h: Facing left  - vertical shinespark windup - frame 5
+$92:CC81             dx 9E9880, 00C0, 00C0
 
-; Fh: Moving right - aiming up-right
-; 69h: Facing right - normal jump - aiming up-right
-; 6Dh: Facing right - falling - aiming up-right
-; 76h: Facing right - moonwalk - aiming up-right
-; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right
-$92:CCA4             dx 9E9E40,00C0,0040
+; 3: Facing right - aiming up - frame 1
+; Dh: Moving right - aiming up (unused) - frames 0..1
+; Dh: Moving right - aiming up (unused) - frames 5..6
+; 15h: Facing right - normal jump - aiming up - frame 1
+; 2Bh: Facing right - falling - aiming up - frames 1..2
+; 55h: Facing right - normal jump transition - aiming up - frame 0
+; 85h: Facing right - crouching - aiming up - frame 1
+; E0h: Facing right - landing from normal jump - aiming up - frames 0..1
+; F1h: Facing right - crouching transition - aiming up - frame 0
+; F7h: Facing right - standing transition - aiming up - frame 0
+$92:CC88             dx 9E9A00, 00C0, 0040
 
-; 10h: Moving left - aiming up-left
-; 6Ah: Facing left - normal jump - aiming up-left
-; 6Eh: Facing left - falling - aiming up-left
-; 75h: Facing left - moonwalk - aiming up-left
-; BBh: Facing left - grabbed by Draygon - not moving - aiming up-left
-$92:CCAB             dx 9E9F40,00E0,0040
+; 4: Facing left  - aiming up - frame 1
+; Eh: Moving left  - aiming up (unused) - frames 0..1
+; Eh: Moving left  - aiming up (unused) - frames 5..6
+; 16h: Facing left  - normal jump - aiming up - frame 1
+; 2Ch: Facing left  - falling - aiming up - frames 1..2
+; 56h: Facing left  - normal jump transition - aiming up - frame 0
+; 86h: Facing left  - crouching - aiming up - frame 1
+; E1h: Facing left  - landing from normal jump - aiming up - frames 0..1
+; F2h: Facing left  - crouching transition - aiming up - frame 0
+; F8h: Facing left  - standing transition - aiming up - frame 0
+$92:CC8F             dx 9E9B00, 00C0, 0040
 
-; 54h: Facing left - knockback
-; D8h: Facing left - crystal flash ending
-; E9h: Facing left - Samus drained - crouching
-$92:CCB2             dx 9EA060,0100,00C0
+; 9: Moving right - not aiming - frame 8
+$92:CC96             dx 9E9C00, 00A0, 0080
 
-; 53h: Facing right - knockback
-; D7h: Facing right - crystal flash ending
-; E8h: Facing right - Samus drained - crouching
-$92:CCB9             dx 9EA220,0100,00C0
+; Ah: Moving left  - not aiming - frame 8
+$92:CC9D             dx 9E9D20, 00A0, 0080
+
+; Fh: Moving right - aiming up-right - frames 0..1
+; Fh: Moving right - aiming up-right - frames 5..6
+; 69h: Facing right - normal jump - aiming up-right - frames 0..1
+; 6Dh: Facing right - falling - aiming up-right - frames 0..2
+; 76h: Facing right - moonwalk - aiming up-right - frame 0
+; 76h: Facing right - moonwalk - aiming up-right - frame 3
+; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right - frame 0
+$92:CCA4             dx 9E9E40, 00C0, 0040
+
+; 10h: Moving left  - aiming up-left - frames 0..1
+; 10h: Moving left  - aiming up-left - frames 5..6
+; 6Ah: Facing left  - normal jump - aiming up-left - frames 0..1
+; 6Eh: Facing left  - falling - aiming up-left - frames 0..2
+; 75h: Facing left  - moonwalk - aiming up-left - frame 0
+; 75h: Facing left  - moonwalk - aiming up-left - frame 3
+; BBh: Facing left  - grabbed by Draygon - not moving - aiming up-left - frame 0
+$92:CCAB             dx 9E9F40, 00E0, 0040
+
+; 54h: Facing left  - knockback - frames 0..1
+; D8h: Facing left  - crystal flash ending - frames 4..5
+; E9h: Facing left  - Samus drained - crouching/falling - frames 2..6
+$92:CCB2             dx 9EA060, 0100, 00C0
+
+; 53h: Facing right - knockback - frames 0..1
+; D7h: Facing right - crystal flash ending - frames 4..5
+; E8h: Facing right - Samus drained - crouching/falling - frames 3..7
+$92:CCB9             dx 9EA220, 0100, 00C0
 
 ; Unused
-$92:CCC0             dx 9EA3E0,0100,0040
+$92:CCC0             dx 9EA3E0, 0100, 0040
 
 ; Unused
-$92:CCC7             dx 9EA520,0100,0040
+$92:CCC7             dx 9EA520, 0100, 0040
 }
 
 
-;;; $CCCE: Samus top tiles - 1 ;;;
+;;; $CCCE: Samus top tiles - set 1 (general) ;;;
 {
 ; Unused
-$92:CCCE             dx 9EA660,00C0,0080
+$92:CCCE             dx 9EA660, 00C0, 0080
 
 ; Unused
-$92:CCD5             dx 9EA7A0,00C0,0080
+$92:CCD5             dx 9EA7A0, 00C0, 0080
 
-; 8Bh: Facing right - turning - standing - aiming up
-; 8Ch: Facing left - turning - standing - aiming up
-; 8Fh: Facing right - turning - in air - aiming up
-; 90h: Facing left - turning - in air - aiming up
-; 93h: Facing right - turning - falling - aiming up
-; 94h: Facing left - turning - falling - aiming up
-; 97h: Facing right - turning - crouching - aiming up
-; 98h: Facing left - turning - crouching - aiming up
-; 9Ch: Facing right - turning - standing - aiming up-right
-; 9Dh: Facing left - turning - standing - aiming up-left
-; 9Eh: Facing right - turning - in air - aiming up-right
-; 9Fh: Facing left - turning - in air - aiming up-left
-; A0h: Facing right - turning - falling - aiming up-right
-; A1h: Facing left - turning - falling - aiming up-left
-; A2h: Facing right - turning - crouching - aiming up-right
-; A3h: Facing left - turning - crouching - aiming up-left
-; C1h: Facing right - moonwalking - turn/jump left - aiming up-right
-; C2h: Facing left - moonwalking - turn/jump right - aiming up-left
-$92:CCDC             dx 9EA8E0,00E0,00C0
+; 8Bh: Facing right - turning - standing - aiming up - frame 1
+; 8Ch: Facing left  - turning - standing - aiming up - frame 1
+; 8Fh: Facing right - turning - in air - aiming up - frame 1
+; 90h: Facing left  - turning - in air - aiming up - frame 1
+; 93h: Facing right - turning - falling - aiming up - frame 1
+; 94h: Facing left  - turning - falling - aiming up - frame 1
+; 97h: Facing right - turning - crouching - aiming up - frame 1
+; 98h: Facing left  - turning - crouching - aiming up - frame 1
+; 9Ch: Facing right - turning - standing - aiming up-right - frame 1
+; 9Dh: Facing left  - turning - standing - aiming up-left - frame 1
+; 9Eh: Facing right - turning - in air - aiming up-right - frame 1
+; 9Fh: Facing left  - turning - in air - aiming up-left - frame 1
+; A0h: Facing right - turning - falling - aiming up-right - frame 1
+; A1h: Facing left  - turning - falling - aiming up-left - frame 1
+; A2h: Facing right - turning - crouching - aiming up-right - frame 1
+; A3h: Facing left  - turning - crouching - aiming up-left - frame 1
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right - frame 1
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left - frame 1
+$92:CCDC             dx 9EA8E0, 00E0, 00C0
 
-; 8Dh: Facing right - turning - standing - aiming down-right
-; 8Eh: Facing left - turning - standing - aiming down-left
-; 91h: Facing right - turning - in air - aiming down/down-right
-; 92h: Facing left - turning - in air - aiming down/down-left
-; 95h: Facing right - turning - falling - aiming down/down-right
-; 96h: Facing left - turning - falling - aiming down/down-left
-; 99h: Facing right - turning - crouching - aiming down/down-right
-; 9Ah: Facing left - turning - crouching - aiming down/down-left
-; C3h: Facing right - moonwalking - turn/jump left - aiming down-right
-; C4h: Facing left - moonwalking - turn/jump right - aiming down-left
-$92:CCE3             dx 9EAA80,0100,00C0
-
-; Unused
-$92:CCEA             dx 9EAC40,0020,0000
-
-; 9Bh: Facing forward - varia/gravity suit
-$92:CCF1             dx 9EAC60,0040,0040
-
-; 25h: Facing right - turning - standing
-; 26h: Facing left - turning - standing
-; 2Fh: Facing right - turning - jumping
-; 30h: Facing left - turning - jumping
-; 43h: Facing right - turning - crouching
-; 44h: Facing left - turning - crouching
-; 87h: Facing right - turning - falling
-; 88h: Facing left - turning - falling
-; BFh: Facing right - moonwalking - turn/jump left
-; C0h: Facing left - moonwalking - turn/jump right
-; C6h: Unused
-$92:CCF8             dx 9EACE0,00C0,0080
-$92:CCFF             dx 9EAE20,00C0,0080
-
-; 8Bh: Facing right - turning - standing - aiming up
-; 8Ch: Facing left - turning - standing - aiming up
-; 8Fh: Facing right - turning - in air - aiming up
-; 90h: Facing left - turning - in air - aiming up
-; 93h: Facing right - turning - falling - aiming up
-; 94h: Facing left - turning - falling - aiming up
-; 97h: Facing right - turning - crouching - aiming up
-; 98h: Facing left - turning - crouching - aiming up
-; 9Ch: Facing right - turning - standing - aiming up-right
-; 9Dh: Facing left - turning - standing - aiming up-left
-; 9Eh: Facing right - turning - in air - aiming up-right
-; 9Fh: Facing left - turning - in air - aiming up-left
-; A0h: Facing right - turning - falling - aiming up-right
-; A1h: Facing left - turning - falling - aiming up-left
-; A2h: Facing right - turning - crouching - aiming up-right
-; A3h: Facing left - turning - crouching - aiming up-left
-; C1h: Facing right - moonwalking - turn/jump left - aiming up-right
-; C2h: Facing left - moonwalking - turn/jump right - aiming up-left
-$92:CD06             dx 9EAF60,00E0,0040
-$92:CD0D             dx 9EB080,00C0,0040
-
-; 25h: Facing right - turning - standing
-; 26h: Facing left - turning - standing
-; 2Fh: Facing right - turning - jumping
-; 30h: Facing left - turning - jumping
-; 43h: Facing right - turning - crouching
-; 44h: Facing left - turning - crouching
-; 87h: Facing right - turning - falling
-; 88h: Facing left - turning - falling
-; BFh: Facing right - moonwalking - turn/jump left
-; C0h: Facing left - moonwalking - turn/jump right
-; C6h: Unused
-$92:CD14             dx 9EB180,00E0,00C0
-
-; 5Ch: Unused
-; 64h: Unused
-; B9h: Facing right - grapple wall jump pose
-$92:CD1B             dx 9EB320,0100,0080
-
-; 45h: Unused
-; 46h: Unused
-; 5Bh: Unused
-; 63h: Unused
-; B8h: Facing left - grapple wall jump pose
-$92:CD22             dx 9EB4A0,0100,0080
-
-; 9: Moving right - not aiming
-$92:CD29             dx 9EB620,0080,0080
-$92:CD30             dx 9EB720,0080,0080
-
-; Ah: Moving left - not aiming
-$92:CD37             dx 9EB820,0080,0080
-$92:CD3E             dx 9EB920,0080,0080
-
-; 0: Facing forward - power suit
-$92:CD45             dx 9EBA20,0080,0080
-
-; 65h: Unused
-; 83h: Facing right - wall jump
-$92:CD4C             dx 9EBB20,0080,0080
-
-; 66h: Unused
-; 84h: Facing left - wall jump
-$92:CD53             dx 9EBC20,0080,0080
-
-; 63h: Unused
-; C9h: Facing right - shinespark - horizontal
-; CDh: Facing right - shinespark - diagonal
-$92:CD5A             dx 9EBD20,0100,00C0
-
-; 64h: Unused
-; CAh: Facing left - shinespark - horizontal
-; CEh: Facing left - shinespark - diagonal
-$92:CD61             dx 9EBEE0,0100,00C0
+; 8Dh: Facing right - turning - standing - aiming down-right - frame 1
+; 8Eh: Facing left  - turning - standing - aiming down-left - frame 1
+; 91h: Facing right - turning - in air - aiming down/down-right - frame 1
+; 92h: Facing left  - turning - in air - aiming down/down-left - frame 1
+; 95h: Facing right - turning - falling - aiming down/down-right - frame 1
+; 96h: Facing left  - turning - falling - aiming down/down-left - frame 1
+; 99h: Facing right - turning - crouching - aiming down/down-right - frame 1
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left - frame 1
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right - frame 1
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left - frame 1
+$92:CCE3             dx 9EAA80, 0100, 00C0
 
 ; Unused
-$92:CD68             dx 9EC0A0,0020,0000
+$92:CCEA             dx 9EAC40, 0020, 0000
+
+; 9Bh: Facing forward - varia/gravity suit - frame 0
+$92:CCF1             dx 9EAC60, 0040, 0040
+
+; 25h: Facing right - turning - standing - frame 2
+; 26h: Facing left  - turning - standing - frame 0
+; 2Fh: Facing right - turning - jumping - frame 2
+; 30h: Facing left  - turning - jumping - frame 0
+; 43h: Facing right - turning - crouching - frame 2
+; 44h: Facing left  - turning - crouching - frame 0
+; 87h: Facing right - turning - falling - frame 2
+; 88h: Facing left  - turning - falling - frame 0
+; BFh: Facing right - moonwalking - turn/jump left - frame 2
+; C0h: Facing left  - moonwalking - turn/jump right - frame 0
+; C6h: Unused - frame 2
+$92:CCF8             dx 9EACE0, 00C0, 0080
+
+; 25h: Facing right - turning - standing - frame 0
+; 26h: Facing left  - turning - standing - frame 2
+; 2Fh: Facing right - turning - jumping - frame 0
+; 30h: Facing left  - turning - jumping - frame 2
+; 43h: Facing right - turning - crouching - frame 0
+; 44h: Facing left  - turning - crouching - frame 2
+; 87h: Facing right - turning - falling - frame 0
+; 88h: Facing left  - turning - falling - frame 2
+; BFh: Facing right - moonwalking - turn/jump left - frame 0
+; C0h: Facing left  - moonwalking - turn/jump right - frame 2
+; C6h: Unused - frame 0
+$92:CCFF             dx 9EAE20, 00C0, 0080
+
+; 8Bh: Facing right - turning - standing - aiming up - frame 2
+; 8Ch: Facing left  - turning - standing - aiming up - frame 0
+; 8Fh: Facing right - turning - in air - aiming up - frame 2
+; 90h: Facing left  - turning - in air - aiming up - frame 0
+; 93h: Facing right - turning - falling - aiming up - frame 2
+; 94h: Facing left  - turning - falling - aiming up - frame 0
+; 97h: Facing right - turning - crouching - aiming up - frame 2
+; 98h: Facing left  - turning - crouching - aiming up - frame 0
+; 9Ch: Facing right - turning - standing - aiming up-right - frame 2
+; 9Dh: Facing left  - turning - standing - aiming up-left - frame 0
+; 9Eh: Facing right - turning - in air - aiming up-right - frame 2
+; 9Fh: Facing left  - turning - in air - aiming up-left - frame 0
+; A0h: Facing right - turning - falling - aiming up-right - frame 2
+; A1h: Facing left  - turning - falling - aiming up-left - frame 0
+; A2h: Facing right - turning - crouching - aiming up-right - frame 2
+; A3h: Facing left  - turning - crouching - aiming up-left - frame 0
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right - frame 2
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left - frame 0
+$92:CD06             dx 9EAF60, 00E0, 0040
+
+; 8Bh: Facing right - turning - standing - aiming up - frame 0
+; 8Ch: Facing left  - turning - standing - aiming up - frame 2
+; 8Fh: Facing right - turning - in air - aiming up - frame 0
+; 90h: Facing left  - turning - in air - aiming up - frame 2
+; 93h: Facing right - turning - falling - aiming up - frame 0
+; 94h: Facing left  - turning - falling - aiming up - frame 2
+; 97h: Facing right - turning - crouching - aiming up - frame 0
+; 98h: Facing left  - turning - crouching - aiming up - frame 2
+; 9Ch: Facing right - turning - standing - aiming up-right - frame 0
+; 9Dh: Facing left  - turning - standing - aiming up-left - frame 2
+; 9Eh: Facing right - turning - in air - aiming up-right - frame 0
+; 9Fh: Facing left  - turning - in air - aiming up-left - frame 2
+; A0h: Facing right - turning - falling - aiming up-right - frame 0
+; A1h: Facing left  - turning - falling - aiming up-left - frame 2
+; A2h: Facing right - turning - crouching - aiming up-right - frame 0
+; A3h: Facing left  - turning - crouching - aiming up-left - frame 2
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right - frame 0
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left - frame 2
+$92:CD0D             dx 9EB080, 00C0, 0040
+
+; 25h: Facing right - turning - standing - frame 1
+; 26h: Facing left  - turning - standing - frame 1
+; 2Fh: Facing right - turning - jumping - frame 1
+; 30h: Facing left  - turning - jumping - frame 1
+; 43h: Facing right - turning - crouching - frame 1
+; 44h: Facing left  - turning - crouching - frame 1
+; 87h: Facing right - turning - falling - frame 1
+; 88h: Facing left  - turning - falling - frame 1
+; BFh: Facing right - moonwalking - turn/jump left - frame 1
+; C0h: Facing left  - moonwalking - turn/jump right - frame 1
+; C6h: Unused - frame 1
+$92:CD14             dx 9EB180, 00E0, 00C0
+
+; 5Ch: Unused - frame 0
+; 64h: Unused. Related to movement type Dh - frame 1
+; B9h: Facing right - grapple wall jump pose - frame 0
+$92:CD1B             dx 9EB320, 0100, 0080
+
+; 45h: Unused - frame 0
+; 46h: Unused - frame 0
+; 5Bh: Unused - frame 0
+; 63h: Unused. Related to movement type Dh - frame 1
+; B8h: Facing left  - grapple wall jump pose - frame 0
+$92:CD22             dx 9EB4A0, 0100, 0080
+
+; 9: Moving right - not aiming - frame 1
+$92:CD29             dx 9EB620, 0080, 0080
+
+; 9: Moving right - not aiming - frame 6
+$92:CD30             dx 9EB720, 0080, 0080
+
+; Ah: Moving left  - not aiming - frame 1
+$92:CD37             dx 9EB820, 0080, 0080
+
+; Ah: Moving left  - not aiming - frame 6
+$92:CD3E             dx 9EB920, 0080, 0080
+
+; 0: Facing forward - power suit - frame 0
+$92:CD45             dx 9EBA20, 0080, 0080
+
+; 65h: Unused. Related to movement type Dh - frame 0
+; 83h: Facing right - wall jump - frame 0
+$92:CD4C             dx 9EBB20, 0080, 0080
+
+; 66h: Unused. Related to movement type Dh - frame 0
+; 84h: Facing left  - wall jump - frame 0
+$92:CD53             dx 9EBC20, 0080, 0080
+
+; 63h: Unused. Related to movement type Dh - frame 0
+; C9h: Facing right - shinespark - horizontal - frame 0
+; CDh: Facing right - shinespark - diagonal - frame 0
+$92:CD5A             dx 9EBD20, 0100, 00C0
+
+; 64h: Unused. Related to movement type Dh - frame 0
+; CAh: Facing left  - shinespark - horizontal - frame 0
+; CEh: Facing left  - shinespark - diagonal - frame 0
+$92:CD61             dx 9EBEE0, 0100, 00C0
 
 ; Unused
-$92:CD6F             dx 9EC0C0,0020,0000
+$92:CD68             dx 9EC0A0, 0020, 0000
 
-; 8Dh: Facing right - turning - standing - aiming down-right
-; 8Eh: Facing left - turning - standing - aiming down-left
-; 91h: Facing right - turning - in air - aiming down/down-right
-; 92h: Facing left - turning - in air - aiming down/down-left
-; 95h: Facing right - turning - falling - aiming down/down-right
-; 96h: Facing left - turning - falling - aiming down/down-left
-; 99h: Facing right - turning - crouching - aiming down/down-right
-; 9Ah: Facing left - turning - crouching - aiming down/down-left
-; C3h: Facing right - moonwalking - turn/jump left - aiming down-right
-; C4h: Facing left - moonwalking - turn/jump right - aiming down-left
-$92:CD76             dx 9EC0E0,00E0,0040
-$92:CD7D             dx 9EC200,00E0,0040
+; Unused
+$92:CD6F             dx 9EC0C0, 0020, 0000
 
-; 17h: Facing right - normal jump - aiming down
-; 2Dh: Facing right - falling - aiming down
-; AEh: Unused
-$92:CD84             dx 9EC320,00C0,0080
+; 8Dh: Facing right - turning - standing - aiming down-right - frame 2
+; 8Eh: Facing left  - turning - standing - aiming down-left - frame 0
+; 91h: Facing right - turning - in air - aiming down/down-right - frame 2
+; 92h: Facing left  - turning - in air - aiming down/down-left - frame 0
+; 95h: Facing right - turning - falling - aiming down/down-right - frame 2
+; 96h: Facing left  - turning - falling - aiming down/down-left - frame 0
+; 99h: Facing right - turning - crouching - aiming down/down-right - frame 2
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left - frame 0
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right - frame 2
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left - frame 0
+$92:CD76             dx 9EC0E0, 00E0, 0040
 
-; 18h: Facing left - normal jump - aiming down
-; 2Eh: Facing left - falling - aiming down
-; AFh: Unused
-$92:CD8B             dx 9EC460,00C0,0080
+; 8Dh: Facing right - turning - standing - aiming down-right - frame 0
+; 8Eh: Facing left  - turning - standing - aiming down-left - frame 2
+; 91h: Facing right - turning - in air - aiming down/down-right - frame 0
+; 92h: Facing left  - turning - in air - aiming down/down-left - frame 2
+; 95h: Facing right - turning - falling - aiming down/down-right - frame 0
+; 96h: Facing left  - turning - falling - aiming down/down-left - frame 2
+; 99h: Facing right - turning - crouching - aiming down/down-right - frame 0
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left - frame 2
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right - frame 0
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left - frame 2
+$92:CD7D             dx 9EC200, 00E0, 0040
 
-; 19h: Facing right - spin jump
-; 1Bh: Facing right - space jump
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 33h: Unused
-; 34h: Unused
-; 39h: Unused
-; 3Ah: Unused
-; 42h: Unused
-; 81h: Facing right - screw attack
-$92:CD92             dx 9EC5A0,00C0,0080
+; 17h: Facing right - normal jump - aiming down - frame 1
+; 2Dh: Facing right - falling - aiming down - frame 1
+; AEh: Unused. Facing right - grappling - in air - aiming down - frame 1
+$92:CD84             dx 9EC320, 00C0, 0080
 
-; 1Ah: Facing left - spin jump
-; 1Ch: Facing left - space jump
-; 82h: Facing left - screw attack
-$92:CD99             dx 9EC6E0,00C0,0080
+; 18h: Facing left  - normal jump - aiming down - frame 1
+; 2Eh: Facing left  - falling - aiming down - frame 1
+; AFh: Unused. Facing left  - grappling - in air - aiming down - frame 1
+$92:CD8B             dx 9EC460, 00C0, 0080
+
+; 19h: Facing right - spin jump - frame Bh
+; 1Bh: Facing right - space jump - frame Bh
+; 20h: Unused - frame Bh
+; 21h: Unused - frame Bh
+; 22h: Unused - frame Bh
+; 23h: Unused - frame Bh
+; 24h: Unused - frame Bh
+; 33h: Unused - frame Bh
+; 34h: Unused - frame Bh
+; 39h: Unused - frame Bh
+; 3Ah: Unused - frame Bh
+; 42h: Unused - frame Bh
+; 81h: Facing right - screw attack - frame 1Bh
+$92:CD92             dx 9EC5A0, 00C0, 0080
+
+; 1Ah: Facing left  - spin jump - frame Bh
+; 1Ch: Facing left  - space jump - frame Bh
+; 82h: Facing left  - screw attack - frame 1Bh
+$92:CD99             dx 9EC6E0, 00C0, 0080
 }
 
 
-;;; $CDA0: Samus top tiles - 2 ;;;
+;;; $CDA0: Samus top tiles - set 2 (general) ;;;
 {
-; 4Bh: Facing right - normal jump transition
-; A4h: Facing right - landing from normal jump
-; A6h: Facing right - landing from spin jump
-$92:CDA0             dx 9EC820,0080,0040
+; 4Bh: Facing right - normal jump transition - frame 0
+; A4h: Facing right - landing from normal jump - frame 0
+; A6h: Facing right - landing from spin jump - frame 1
+$92:CDA0             dx 9EC820, 0080, 0040
 
-; 4Ch: Facing left - normal jump transition
-; A5h: Facing left - landing from normal jump
-; A7h: Facing left - landing from spin jump
-$92:CDA7             dx 9EC8E0,0080,0080
+; 4Ch: Facing left  - normal jump transition - frame 0
+; A5h: Facing left  - landing from normal jump - frame 0
+; A7h: Facing left  - landing from spin jump - frame 1
+$92:CDA7             dx 9EC8E0, 0080, 0080
 
 ; Unused
-$92:CDAE             dx 9EC9E0,00C0,0080
+$92:CDAE             dx 9EC9E0, 00C0, 0080
 
-; E9h: Facing left - Samus drained - crouching
-$92:CDB5             dx 9ECB20,0080,0080
+; E9h: Facing left  - Samus drained - crouching/falling - frame 10h
+; E9h: Facing left  - Samus drained - crouching/falling - frame 15h
+$92:CDB5             dx 9ECB20, 0080, 0080
 
-; 19h: Facing right - spin jump
-; 1Bh: Facing right - space jump
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 29h: Facing right - falling
-; 33h: Unused
-; 34h: Unused
-; 39h: Unused
-; 3Ah: Unused
-; 42h: Unused
-; 50h: Facing right - damage boost
-; 81h: Facing right - screw attack
-; 83h: Facing right - wall jump
-; A4h: Facing right - landing from normal jump
-; A6h: Facing right - landing from spin jump
-; ECh: Facing right - grabbed by Draygon - not moving - not aiming
-$92:CDBC             dx 9ECC20,0080,0040
+; 19h: Facing right - spin jump - frame 0
+; 1Bh: Facing right - space jump - frame 0
+; 20h: Unused - frame 0
+; 21h: Unused - frame 0
+; 22h: Unused - frame 0
+; 23h: Unused - frame 0
+; 24h: Unused - frame 0
+; 29h: Facing right - falling - frame 0
+; 29h: Facing right - falling - frame 6
+; 33h: Unused - frame 0
+; 34h: Unused - frame 0
+; 39h: Unused - frame 0
+; 3Ah: Unused - frame 0
+; 42h: Unused - frame 0
+; 50h: Facing right - damage boost - frames 0..1
+; 81h: Facing right - screw attack - frame 0
+; 83h: Facing right - wall jump - frame 1
+; A4h: Facing right - landing from normal jump - frame 1
+; A6h: Facing right - landing from spin jump - frame 0
+; A6h: Facing right - landing from spin jump - frame 2
+; ECh: Facing right - grabbed by Draygon - not moving - not aiming - frame 0
+$92:CDBC             dx 9ECC20, 0080, 0040
 
-; 1Ah: Facing left - spin jump
-; 1Ch: Facing left - space jump
-; 2Ah: Facing left - falling
-; 4Fh: Facing left - damage boost
-; 82h: Facing left - screw attack
-; 84h: Facing left - wall jump
-; A5h: Facing left - landing from normal jump
-; A7h: Facing left - landing from spin jump
-; BAh: Facing left - grabbed by Draygon - not moving - not aiming
-$92:CDC3             dx 9ECCE0,0080,0080
+; 1Ah: Facing left  - spin jump - frame 0
+; 1Ch: Facing left  - space jump - frame 0
+; 2Ah: Facing left  - falling - frame 0
+; 2Ah: Facing left  - falling - frame 6
+; 4Fh: Facing left  - damage boost - frames 0..1
+; 82h: Facing left  - screw attack - frame 0
+; 84h: Facing left  - wall jump - frame 1
+; A5h: Facing left  - landing from normal jump - frame 1
+; A7h: Facing left  - landing from spin jump - frame 0
+; A7h: Facing left  - landing from spin jump - frame 2
+; BAh: Facing left  - grabbed by Draygon - not moving - not aiming - frame 0
+$92:CDC3             dx 9ECCE0, 0080, 0080
 
-; 11h: Moving right - aiming down-right
-; 78h: Facing right - moonwalk - aiming down-right
-$92:CDCA             dx 9ECDE0,00E0,0040
+; 11h: Moving right - aiming down-right - frame 2
+; 11h: Moving right - aiming down-right - frame 4
+; 11h: Moving right - aiming down-right - frame 7
+; 11h: Moving right - aiming down-right - frame 9
+; 78h: Facing right - moonwalk - aiming down-right - frames 1..2
+; 78h: Facing right - moonwalk - aiming down-right - frames 4..5
+$92:CDCA             dx 9ECDE0, 00E0, 0040
 
-; 12h: Moving left - aiming down-left
-; 77h: Facing left - moonwalk - aiming down-left
-$92:CDD1             dx 9ECF00,00E0,0040
+; 12h: Moving left  - aiming down-left - frame 2
+; 12h: Moving left  - aiming down-left - frame 4
+; 12h: Moving left  - aiming down-left - frame 7
+; 12h: Moving left  - aiming down-left - frame 9
+; 77h: Facing left  - moonwalk - aiming down-left - frames 1..2
+; 77h: Facing left  - moonwalk - aiming down-left - frames 4..5
+$92:CDD1             dx 9ECF00, 00E0, 0040
 
-; D5h: Facing right - x-ray - standing
-; D9h: Facing right - x-ray - crouching
-$92:CDD8             dx 9ED020,00C0,0040
-$92:CDDF             dx 9ED120,00C0,0040
-$92:CDE6             dx 9ED220,00C0,0040
-$92:CDED             dx 9ED320,00C0,0040
+; D5h: Facing right - x-ray - standing - frame 1
+; D9h: Facing right - x-ray - crouching - frame 1
+$92:CDD8             dx 9ED020, 00C0, 0040
 
-; D6h: Facing left - x-ray - standing
-; DAh: Facing left - x-ray - crouching
-$92:CDF4             dx 9ED420,00C0,0040
-$92:CDFB             dx 9ED520,00C0,0040
+; D5h: Facing right - x-ray - standing - frame 0
+; D9h: Facing right - x-ray - crouching - frame 0
+$92:CDDF             dx 9ED120, 00C0, 0040
 
-; Dh: Moving right - aiming up (unused)
-; D6h: Facing left - x-ray - standing
-; DAh: Facing left - x-ray - crouching
-$92:CE02             dx 9ED620,00C0,0040
+; D5h: Facing right - x-ray - standing - frame 3
+; D9h: Facing right - x-ray - crouching - frame 3
+$92:CDE6             dx 9ED220, 00C0, 0040
 
-; Eh: Moving left - aiming up (unused)
-; D6h: Facing left - x-ray - standing
-; DAh: Facing left - x-ray - crouching
-$92:CE09             dx 9ED720,00C0,0040
+; D5h: Facing right - x-ray - standing - frame 4
+; D9h: Facing right - x-ray - crouching - frame 4
+$92:CDED             dx 9ED320, 00C0, 0040
 
-; Fh: Moving right - aiming up-right
-; 76h: Facing right - moonwalk - aiming up-right
-$92:CE10             dx 9ED820,00C0,0040
+; D6h: Facing left  - x-ray - standing - frame 1
+; DAh: Facing left  - x-ray - crouching - frame 1
+$92:CDF4             dx 9ED420, 00C0, 0040
 
-; 10h: Moving left - aiming up-left
-; 75h: Facing left - moonwalk - aiming up-left
-$92:CE17             dx 9ED920,00E0,0040
+; D6h: Facing left  - x-ray - standing - frame 0
+; DAh: Facing left  - x-ray - crouching - frame 0
+$92:CDFB             dx 9ED520, 00C0, 0040
 
-; Unused
-$92:CE1E             dx 9EDA40,0100,0040
-$92:CE25             dx 9EDB80,0100,0040
-$92:CE2C             dx 9EDCC0,0100,0040
-$92:CE33             dx 9EDE00,0100,0040
+; Dh: Moving right - aiming up (unused) - frame 2
+; Dh: Moving right - aiming up (unused) - frame 4
+; Dh: Moving right - aiming up (unused) - frame 7
+; Dh: Moving right - aiming up (unused) - frame 9
+; D6h: Facing left  - x-ray - standing - frame 3
+; DAh: Facing left  - x-ray - crouching - frame 3
+$92:CE02             dx 9ED620, 00C0, 0040
 
-; Fh: Moving right - aiming up-right
-$92:CE3A             dx 9EDF40,00C0,0040
+; Eh: Moving left  - aiming up (unused) - frame 2
+; Eh: Moving left  - aiming up (unused) - frame 4
+; Eh: Moving left  - aiming up (unused) - frame 7
+; Eh: Moving left  - aiming up (unused) - frame 9
+; D6h: Facing left  - x-ray - standing - frame 4
+; DAh: Facing left  - x-ray - crouching - frame 4
+$92:CE09             dx 9ED720, 00C0, 0040
 
-; 10h: Moving left - aiming up-left
-$92:CE41             dx 9EE040,00E0,0040
+; Fh: Moving right - aiming up-right - frame 2
+; Fh: Moving right - aiming up-right - frame 4
+; Fh: Moving right - aiming up-right - frame 7
+; Fh: Moving right - aiming up-right - frame 9
+; 76h: Facing right - moonwalk - aiming up-right - frames 1..2
+; 76h: Facing right - moonwalk - aiming up-right - frames 4..5
+$92:CE10             dx 9ED820, 00C0, 0040
 
-; 11h: Moving right - aiming down-right
-$92:CE48             dx 9EE160,00E0,0040
-
-; 12h: Moving left - aiming down-left
-$92:CE4F             dx 9EE280,00E0,0040
-
-; 4Ah: Facing right - moonwalk
-$92:CE56             dx 9EE3A0,00C0,0040
-
-; 49h: Facing left - moonwalk
-$92:CE5D             dx 9EE4A0,00C0,0040
-
-; 29h: Facing right - falling
-$92:CE64             dx 9EE5A0,00E0,0040
-
-; 29h: Facing right - falling
-; 50h: Facing right - damage boost
-$92:CE6B             dx 9EE6C0,00C0,0040
-
-; Dh: Moving right - aiming up (unused)
-; 2Ah: Facing left - falling
-$92:CE72             dx 9EE7C0,00C0,0040
-
-; Eh: Moving left - aiming up (unused)
-; 2Ah: Facing left - falling
-; 4Fh: Facing left - damage boost
-$92:CE79             dx 9EE8C0,00C0,0040
-}
-
-
-;;; $CE80: Samus top tiles - 3 ;;;
-{
-; 5Dh: Unused
-; 5Eh: Unused
-; 5Fh: Unused
-; 60h: Unused
-; 61h: Unused
-; B2h: Facing clockwise - grapple
-$92:CE80             dx 9C9B00,00C0,0080
-$92:CE87             dx 9C9C40,00C0,0080
-$92:CE8E             dx 9C9D80,00C0,00C0
-$92:CE95             dx 9C9F00,00C0,00C0
-$92:CE9C             dx 9CA080,00C0,00C0
-$92:CEA3             dx 9CA200,00C0,00C0
-$92:CEAA             dx 9CA380,00C0,00C0
-$92:CEB1             dx 9CA500,00C0,0080
-$92:CEB8             dx 9CA640,00C0,0080
-$92:CEBF             dx 9CA780,00C0,0080
-$92:CEC6             dx 9CA8C0,00C0,00C0
-$92:CECD             dx 9CAA40,00C0,00C0
-$92:CED4             dx 9CABC0,00C0,00C0
-$92:CEDB             dx 9CAD40,00C0,00C0
-$92:CEE2             dx 9CAEC0,00C0,00C0
-$92:CEE9             dx 9CB040,00C0,0080
+; 10h: Moving left  - aiming up-left - frame 2
+; 10h: Moving left  - aiming up-left - frame 4
+; 10h: Moving left  - aiming up-left - frame 7
+; 10h: Moving left  - aiming up-left - frame 9
+; 75h: Facing left  - moonwalk - aiming up-left - frames 1..2
+; 75h: Facing left  - moonwalk - aiming up-left - frames 4..5
+$92:CE17             dx 9ED920, 00E0, 0040
 
 ; Unused
-$92:CEF0             dx 9CB180,00C0,0080
-}
-
-
-;;; $CEF7: Samus top tiles - 4 ;;;
-{
-; 62h: Unused
-; B3h: Facing anticlockwise - grapple
-$92:CEF7             dx 9CB2C0,0100,00C0
-$92:CEFE             dx 9CB480,0100,00C0
-$92:CF05             dx 9CB640,0100,0100
-$92:CF0C             dx 9CB840,0100,0100
-$92:CF13             dx 9CBA40,0100,00E0
-$92:CF1A             dx 9CBC20,0100,00E0
-$92:CF21             dx 9CBE00,0100,00E0
-$92:CF28             dx 9CBFE0,0100,00C0
-$92:CF2F             dx 9CC1A0,0100,00C0
-$92:CF36             dx 9CC360,0100,00C0
-$92:CF3D             dx 9CC520,0100,00E0
-$92:CF44             dx 9CC700,0100,0100
-$92:CF4B             dx 9CC900,0100,0100
-$92:CF52             dx 9CCB00,0100,0100
-$92:CF59             dx 9CCD00,0100,0100
-$92:CF60             dx 9CCF00,0100,00E0
+$92:CE1E             dx 9EDA40, 0100, 0040
 
 ; Unused
-$92:CF67             dx 9CD0E0,0100,00E0
-}
-
-
-;;; $CF6E: Samus top tiles - 5 ;;;
-{
-; 5Dh: Unused
-; 5Eh: Unused
-; 5Fh: Unused
-; 60h: Unused
-; 61h: Unused
-; B2h: Facing clockwise - grapple
-$92:CF6E             dx 9DC980,00C0,0080
-$92:CF75             dx 9DCAC0,00C0,0080
-$92:CF7C             dx 9DCC00,00C0,00C0
-$92:CF83             dx 9DCD80,00C0,00C0
-$92:CF8A             dx 9DCF00,00C0,00C0
-$92:CF91             dx 9DD080,00C0,00C0
-$92:CF98             dx 9DD200,00C0,00C0
-$92:CF9F             dx 9DD380,00C0,0080
-$92:CFA6             dx 9DD4C0,00C0,0080
-$92:CFAD             dx 9DD600,00C0,0080
-$92:CFB4             dx 9DD740,00C0,00C0
-$92:CFBB             dx 9DD8C0,00C0,00C0
-$92:CFC2             dx 9DDA40,00C0,00C0
-$92:CFC9             dx 9DDBC0,00C0,00C0
-$92:CFD0             dx 9DDD40,00C0,00C0
-$92:CFD7             dx 9DDEC0,00C0,0080
+$92:CE25             dx 9EDB80, 0100, 0040
 
 ; Unused
-$92:CFDE             dx 9DE000,00C0,0080
-}
-
-
-;;; $CFE5: Samus top tiles - 6 ;;;
-{
-; 62h: Unused
-; B3h: Facing anticlockwise - grapple
-$92:CFE5             dx 9DE140,0100,00C0
-$92:CFEC             dx 9DE300,0100,00C0
-$92:CFF3             dx 9DE4C0,0100,0100
-$92:CFFA             dx 9DE6C0,0100,0100
-$92:D001             dx 9DE8C0,0100,00E0
-$92:D008             dx 9DEAA0,0100,00E0
-$92:D00F             dx 9DEC80,0100,00E0
-$92:D016             dx 9DEE60,0100,00C0
-$92:D01D             dx 9DF020,0100,00C0
-$92:D024             dx 9DF1E0,0100,00C0
-$92:D02B             dx 9DF3A0,0100,00E0
-$92:D032             dx 9DF580,0100,0100
-$92:D039             dx 9FED80,0100,0100
-$92:D040             dx 9FEF80,0100,0100
-$92:D047             dx 9FF180,0100,0100
-$92:D04E             dx 9FF380,0100,00E0
+$92:CE2C             dx 9EDCC0, 0100, 0040
 
 ; Unused
-$92:D055             dx 9FF560,0100,00E0
+$92:CE33             dx 9EDE00, 0100, 0040
+
+; Fh: Moving right - aiming up-right - frame 3
+; Fh: Moving right - aiming up-right - frame 8
+$92:CE3A             dx 9EDF40, 00C0, 0040
+
+; 10h: Moving left  - aiming up-left - frame 3
+; 10h: Moving left  - aiming up-left - frame 8
+$92:CE41             dx 9EE040, 00E0, 0040
+
+; 11h: Moving right - aiming down-right - frame 3
+; 11h: Moving right - aiming down-right - frame 8
+$92:CE48             dx 9EE160, 00E0, 0040
+
+; 12h: Moving left  - aiming down-left - frame 3
+; 12h: Moving left  - aiming down-left - frame 8
+$92:CE4F             dx 9EE280, 00E0, 0040
+
+; 4Ah: Facing right - moonwalk - frames 1..2
+; 4Ah: Facing right - moonwalk - frames 4..5
+$92:CE56             dx 9EE3A0, 00C0, 0040
+
+; 49h: Facing left  - moonwalk - frames 1..2
+; 49h: Facing left  - moonwalk - frames 4..5
+$92:CE5D             dx 9EE4A0, 00C0, 0040
+
+; 29h: Facing right - falling - frame 1
+; 29h: Facing right - falling - frame 5
+$92:CE64             dx 9EE5A0, 00E0, 0040
+
+; 29h: Facing right - falling - frame 2
+; 50h: Facing right - damage boost - frame 9
+$92:CE6B             dx 9EE6C0, 00C0, 0040
+
+; Dh: Moving right - aiming up (unused) - frame 3
+; Dh: Moving right - aiming up (unused) - frame 8
+; 2Ah: Facing left  - falling - frame 1
+; 2Ah: Facing left  - falling - frame 5
+$92:CE72             dx 9EE7C0, 00C0, 0040
+
+; Eh: Moving left  - aiming up (unused) - frame 3
+; Eh: Moving left  - aiming up (unused) - frame 8
+; 2Ah: Facing left  - falling - frame 2
+; 4Fh: Facing left  - damage boost - frame 9
+$92:CE79             dx 9EE8C0, 00C0, 0040
 }
 
 
-;;; $D05C: Samus top tiles - 7 ;;;
+;;; $CE80: Samus top tiles - set 3 (facing clockwise - grappling - in air - upside up) ;;;
 {
-; E9h: Facing left - Samus drained - crouching
-$92:D05C             dx 9CD2C0,00E0,0040
-$92:D063             dx 9CD3E0,00E0,0040
-$92:D06A             dx 9CD500,00E0,0040
+; 5Dh: Unused - frame 18h
+; 5Dh: Unused - frame 38h
+; 5Eh: Unused - frame 18h
+; 5Eh: Unused - frame 38h
+; 5Fh: Unused - frame 18h
+; 5Fh: Unused - frame 38h
+; 60h: Unused - frame 18h
+; 60h: Unused - frame 38h
+; 61h: Unused - frame 18h
+; 61h: Unused - frame 38h
+; B2h: Facing clockwise     - grapple - in air - frame 18h
+; B2h: Facing clockwise     - grapple - in air - frame 38h
+$92:CE80             dx 9C9B00, 00C0, 0080
 
-; E8h: Facing right - Samus drained - crouching
-$92:D071             dx 9CD620,0100,0040
-$92:D078             dx 9CD760,0100,0040
-$92:D07F             dx 9CD8A0,0100,0040
+; 5Dh: Unused - frame 17h
+; 5Dh: Unused - frame 37h
+; 5Eh: Unused - frame 17h
+; 5Eh: Unused - frame 37h
+; 5Fh: Unused - frame 17h
+; 5Fh: Unused - frame 37h
+; 60h: Unused - frame 17h
+; 60h: Unused - frame 37h
+; 61h: Unused - frame 17h
+; 61h: Unused - frame 37h
+; B2h: Facing clockwise     - grapple - in air - frame 17h
+; B2h: Facing clockwise     - grapple - in air - frame 37h
+$92:CE87             dx 9C9C40, 00C0, 0080
 
-; EBh: Facing left - Samus drained - standing
-$92:D086             dx 9CD9E0,00E0,0040
+; 5Dh: Unused - frame 16h
+; 5Dh: Unused - frame 36h
+; 5Eh: Unused - frame 16h
+; 5Eh: Unused - frame 36h
+; 5Fh: Unused - frame 16h
+; 5Fh: Unused - frame 36h
+; 60h: Unused - frame 16h
+; 60h: Unused - frame 36h
+; 61h: Unused - frame 16h
+; 61h: Unused - frame 36h
+; B2h: Facing clockwise     - grapple - in air - frame 16h
+; B2h: Facing clockwise     - grapple - in air - frame 36h
+$92:CE8E             dx 9C9D80, 00C0, 00C0
 
-; E9h: Facing left - Samus drained - crouching
-; EBh: Facing left - Samus drained - standing
-$92:D08D             dx 9CDB00,00E0,0040
+; 5Dh: Unused - frame 15h
+; 5Dh: Unused - frame 35h
+; 5Eh: Unused - frame 15h
+; 5Eh: Unused - frame 35h
+; 5Fh: Unused - frame 15h
+; 5Fh: Unused - frame 35h
+; 60h: Unused - frame 15h
+; 60h: Unused - frame 35h
+; 61h: Unused - frame 15h
+; 61h: Unused - frame 35h
+; B2h: Facing clockwise     - grapple - in air - frame 15h
+; B2h: Facing clockwise     - grapple - in air - frame 35h
+$92:CE95             dx 9C9F00, 00C0, 00C0
 
-; EBh: Facing left - Samus drained - standing
-$92:D094             dx 9CDC20,00E0,0040
+; 5Dh: Unused - frame 14h
+; 5Dh: Unused - frame 34h
+; 5Eh: Unused - frame 14h
+; 5Eh: Unused - frame 34h
+; 5Fh: Unused - frame 14h
+; 5Fh: Unused - frame 34h
+; 60h: Unused - frame 14h
+; 60h: Unused - frame 34h
+; 61h: Unused - frame 14h
+; 61h: Unused - frame 34h
+; B2h: Facing clockwise     - grapple - in air - frame 14h
+; B2h: Facing clockwise     - grapple - in air - frame 34h
+$92:CE9C             dx 9CA080, 00C0, 00C0
 
-; EAh: Facing right - Samus drained - standing
-$92:D09B             dx 9CDD40,0100,0040
-$92:D0A2             dx 9CDE80,0100,0040
-$92:D0A9             dx 9CDFC0,0100,0040
+; 5Dh: Unused - frame 13h
+; 5Dh: Unused - frame 33h
+; 5Eh: Unused - frame 13h
+; 5Eh: Unused - frame 33h
+; 5Fh: Unused - frame 13h
+; 5Fh: Unused - frame 33h
+; 60h: Unused - frame 13h
+; 60h: Unused - frame 33h
+; 61h: Unused - frame 13h
+; 61h: Unused - frame 33h
+; B2h: Facing clockwise     - grapple - in air - frame 13h
+; B2h: Facing clockwise     - grapple - in air - frame 33h
+$92:CEA3             dx 9CA200, 00C0, 00C0
 
-; 1: Facing right - normal
-; 27h: Facing right - crouching
-; 47h: Unused
-; 89h: Facing right - ran into a wall
-; A8h: Unused
-; B4h: Unused
-$92:D0B0             dx 9CE100,00C0,0080
-$92:D0B7             dx 9CE240,00C0,0080
-$92:D0BE             dx 9CE380,00C0,0080
+; 5Dh: Unused - frame 12h
+; 5Dh: Unused - frame 32h
+; 5Eh: Unused - frame 12h
+; 5Eh: Unused - frame 32h
+; 5Fh: Unused - frame 12h
+; 5Fh: Unused - frame 32h
+; 60h: Unused - frame 12h
+; 60h: Unused - frame 32h
+; 61h: Unused - frame 12h
+; 61h: Unused - frame 32h
+; B2h: Facing clockwise     - grapple - in air - frame 12h
+; B2h: Facing clockwise     - grapple - in air - frame 32h
+$92:CEAA             dx 9CA380, 00C0, 00C0
 
-; 2: Facing left - normal
-; 28h: Facing left - crouching
-; 48h: Unused
-; 8Ah: Facing left - ran into a wall
-; A9h: Unused
-; B5h: Unused
-$92:D0C5             dx 9CE4C0,00C0,0080
-$92:D0CC             dx 9CE600,00C0,0080
-$92:D0D3             dx 9CE740,00C0,0080
+; 5Dh: Unused - frame 11h
+; 5Dh: Unused - frame 31h
+; 5Eh: Unused - frame 11h
+; 5Eh: Unused - frame 31h
+; 5Fh: Unused - frame 11h
+; 5Fh: Unused - frame 31h
+; 60h: Unused - frame 11h
+; 60h: Unused - frame 31h
+; 61h: Unused - frame 11h
+; 61h: Unused - frame 31h
+; B2h: Facing clockwise     - grapple - in air - frame 11h
+; B2h: Facing clockwise     - grapple - in air - frame 31h
+$92:CEB1             dx 9CA500, 00C0, 0080
 
-; 1: Facing right - normal
-; 27h: Facing right - crouching
-; 47h: Unused
-; 89h: Facing right - ran into a wall
-; A8h: Unused
-; B4h: Unused
-$92:D0DA             dx 9CE880,00C0,0040
+; 5Dh: Unused - frame 10h
+; 5Dh: Unused - frame 30h
+; 5Dh: Unused - frames 40h..41h
+; 5Eh: Unused - frame 10h
+; 5Eh: Unused - frame 30h
+; 5Eh: Unused - frames 40h..41h
+; 5Fh: Unused - frame 10h
+; 5Fh: Unused - frame 30h
+; 5Fh: Unused - frames 40h..41h
+; 60h: Unused - frame 10h
+; 60h: Unused - frame 30h
+; 60h: Unused - frames 40h..41h
+; 61h: Unused - frame 10h
+; 61h: Unused - frame 30h
+; 61h: Unused - frames 40h..41h
+; B2h: Facing clockwise     - grapple - in air - frame 10h
+; B2h: Facing clockwise     - grapple - in air - frame 30h
+; B2h: Facing clockwise     - grapple - in air - frames 40h..41h
+$92:CEB8             dx 9CA640, 00C0, 0080
 
-; 28h: Facing left - crouching
-; 2: Facing left - normal
-; 48h: Unused
-; 8Ah: Facing left - ran into a wall
-; A9h: Unused
-; B5h: Unused
-$92:D0E1             dx 9CE980,00C0,0040
-}
+; 5Dh: Unused - frame Fh
+; 5Dh: Unused - frame 2Fh
+; 5Eh: Unused - frame Fh
+; 5Eh: Unused - frame 2Fh
+; 5Fh: Unused - frame Fh
+; 5Fh: Unused - frame 2Fh
+; 60h: Unused - frame Fh
+; 60h: Unused - frame 2Fh
+; 61h: Unused - frame Fh
+; 61h: Unused - frame 2Fh
+; B2h: Facing clockwise     - grapple - in air - frame Fh
+; B2h: Facing clockwise     - grapple - in air - frame 2Fh
+$92:CEBF             dx 9CA780, 00C0, 0080
 
+; 5Dh: Unused - frame Eh
+; 5Dh: Unused - frame 2Eh
+; 5Eh: Unused - frame Eh
+; 5Eh: Unused - frame 2Eh
+; 5Fh: Unused - frame Eh
+; 5Fh: Unused - frame 2Eh
+; 60h: Unused - frame Eh
+; 60h: Unused - frame 2Eh
+; 61h: Unused - frame Eh
+; 61h: Unused - frame 2Eh
+; B2h: Facing clockwise     - grapple - in air - frame Eh
+; B2h: Facing clockwise     - grapple - in air - frame 2Eh
+$92:CEC6             dx 9CA8C0, 00C0, 00C0
 
-;;; $D0E8: Samus top tiles - 8 ;;;
-{
-; 0: Facing forward - power suit
-; 9Bh: Facing forward - varia/gravity suit
-$92:D0E8             dx 9BE000,0020,0000
+; 5Dh: Unused - frame Dh
+; 5Dh: Unused - frame 2Dh
+; 5Eh: Unused - frame Dh
+; 5Eh: Unused - frame 2Dh
+; 5Fh: Unused - frame Dh
+; 5Fh: Unused - frame 2Dh
+; 60h: Unused - frame Dh
+; 60h: Unused - frame 2Dh
+; 61h: Unused - frame Dh
+; 61h: Unused - frame 2Dh
+; B2h: Facing clockwise     - grapple - in air - frame Dh
+; B2h: Facing clockwise     - grapple - in air - frame 2Dh
+$92:CECD             dx 9CAA40, 00C0, 00C0
+
+; 5Dh: Unused - frame Ch
+; 5Dh: Unused - frame 2Ch
+; 5Eh: Unused - frame Ch
+; 5Eh: Unused - frame 2Ch
+; 5Fh: Unused - frame Ch
+; 5Fh: Unused - frame 2Ch
+; 60h: Unused - frame Ch
+; 60h: Unused - frame 2Ch
+; 61h: Unused - frame Ch
+; 61h: Unused - frame 2Ch
+; B2h: Facing clockwise     - grapple - in air - frame Ch
+; B2h: Facing clockwise     - grapple - in air - frame 2Ch
+$92:CED4             dx 9CABC0, 00C0, 00C0
+
+; 5Dh: Unused - frame Bh
+; 5Dh: Unused - frame 2Bh
+; 5Eh: Unused - frame Bh
+; 5Eh: Unused - frame 2Bh
+; 5Fh: Unused - frame Bh
+; 5Fh: Unused - frame 2Bh
+; 60h: Unused - frame Bh
+; 60h: Unused - frame 2Bh
+; 61h: Unused - frame Bh
+; 61h: Unused - frame 2Bh
+; B2h: Facing clockwise     - grapple - in air - frame Bh
+; B2h: Facing clockwise     - grapple - in air - frame 2Bh
+$92:CEDB             dx 9CAD40, 00C0, 00C0
+
+; 5Dh: Unused - frame Ah
+; 5Dh: Unused - frame 2Ah
+; 5Eh: Unused - frame Ah
+; 5Eh: Unused - frame 2Ah
+; 5Fh: Unused - frame Ah
+; 5Fh: Unused - frame 2Ah
+; 60h: Unused - frame Ah
+; 60h: Unused - frame 2Ah
+; 61h: Unused - frame Ah
+; 61h: Unused - frame 2Ah
+; B2h: Facing clockwise     - grapple - in air - frame Ah
+; B2h: Facing clockwise     - grapple - in air - frame 2Ah
+$92:CEE2             dx 9CAEC0, 00C0, 00C0
+
+; 5Dh: Unused - frame 9
+; 5Dh: Unused - frame 29h
+; 5Eh: Unused - frame 9
+; 5Eh: Unused - frame 29h
+; 5Fh: Unused - frame 9
+; 5Fh: Unused - frame 29h
+; 60h: Unused - frame 9
+; 60h: Unused - frame 29h
+; 61h: Unused - frame 9
+; 61h: Unused - frame 29h
+; B2h: Facing clockwise     - grapple - in air - frame 9
+; B2h: Facing clockwise     - grapple - in air - frame 29h
+$92:CEE9             dx 9CB040, 00C0, 0080
 
 ; Unused
-$92:D0EF             dx 9BE020,0020,0000
-
-; 0: Facing forward - power suit
-; 9Bh: Facing forward - varia/gravity suit
-$92:D0F6             dx 9BE040,0100,0020
-$92:D0FD             dx 9BE160,00E0,0000
-$92:D104             dx 9BE240,0100,0060
-$92:D10B             dx 9BE3A0,0100,00E0
-$92:D112             dx 9BE580,0100,0000
-$92:D119             dx 9BE680,0100,0040
-$92:D120             dx 9BE7C0,0100,0060
-$92:D127             dx 9BE920,00E0,0000
+$92:CEF0             dx 9CB180, 00C0, 0080
 }
 
 
-;;; $D12E: Samus top tiles - 9 ;;;
+;;; $CEF7: Samus top tiles - set 4 (facing anticlockwise - grappling - in air - upside up) ;;;
 {
-; Bh: Moving right - gun extended
-$92:D12E             dx 9BEE20,0080,0040
-$92:D135             dx 9BEEE0,0080,0040
-$92:D13C             dx 9BEFA0,00A0,0040
-$92:D143             dx 9BF080,00C0,0040
-$92:D14A             dx 9BF180,0080,0040
-$92:D151             dx 9BF240,00A0,0040
+; 62h: Unused - frame 8
+; 62h: Unused - frame 28h
+; B3h: Facing anticlockwise - grapple - in air - frame 8
+; B3h: Facing anticlockwise - grapple - in air - frame 28h
+$92:CEF7             dx 9CB2C0, 0100, 00C0
 
-; Ch: Moving left - gun extended
-$92:D158             dx 9BF320,00C0,0040
-$92:D15F             dx 9BF420,00C0,0040
-$92:D166             dx 9BF520,00E0,0040
-$92:D16D             dx 9BF640,00E0,0040
-$92:D174             dx 9BF760,00C0,0040
-$92:D17B             dx 9BF860,0100,0040
+; 62h: Unused - frame 9
+; 62h: Unused - frame 29h
+; B3h: Facing anticlockwise - grapple - in air - frame 9
+; B3h: Facing anticlockwise - grapple - in air - frame 29h
+$92:CEFE             dx 9CB480, 0100, 00C0
 
-; Bh: Moving right - gun extended
-$92:D182             dx 9BF9A0,00C0,0040
+; 62h: Unused - frame Ah
+; 62h: Unused - frame 2Ah
+; B3h: Facing anticlockwise - grapple - in air - frame Ah
+; B3h: Facing anticlockwise - grapple - in air - frame 2Ah
+$92:CF05             dx 9CB640, 0100, 0100
 
-; Ch: Moving left - gun extended
-$92:D189             dx 9BFAA0,0100,0040
+; 62h: Unused - frame Bh
+; 62h: Unused - frame 2Bh
+; B3h: Facing anticlockwise - grapple - in air - frame Bh
+; B3h: Facing anticlockwise - grapple - in air - frame 2Bh
+$92:CF0C             dx 9CB840, 0100, 0100
 
-; Bh: Moving right - gun extended
-$92:D190             dx 9BFBE0,0080,0040
+; 62h: Unused - frame Ch
+; 62h: Unused - frame 2Ch
+; B3h: Facing anticlockwise - grapple - in air - frame Ch
+; B3h: Facing anticlockwise - grapple - in air - frame 2Ch
+$92:CF13             dx 9CBA40, 0100, 00E0
 
-; Ch: Moving left - gun extended
-$92:D197             dx 9BFCA0,00C0,0040
-}
+; 62h: Unused - frame Dh
+; 62h: Unused - frame 2Dh
+; B3h: Facing anticlockwise - grapple - in air - frame Dh
+; B3h: Facing anticlockwise - grapple - in air - frame 2Dh
+$92:CF1A             dx 9CBC20, 0100, 00E0
 
+; 62h: Unused - frame Eh
+; 62h: Unused - frame 2Eh
+; B3h: Facing anticlockwise - grapple - in air - frame Eh
+; B3h: Facing anticlockwise - grapple - in air - frame 2Eh
+$92:CF21             dx 9CBE00, 0100, 00E0
 
-;;; $D19E: Samus bottom tiles - 0 ;;;
-{
-; 1Ah: Facing left - spin jump
-; 1Ch: Facing left - space jump
-; 82h: Facing left - screw attack
-$92:D19E             dx 9D8000,0080,0080
+; 62h: Unused - frame Fh
+; 62h: Unused - frame 2Fh
+; B3h: Facing anticlockwise - grapple - in air - frame Fh
+; B3h: Facing anticlockwise - grapple - in air - frame 2Fh
+$92:CF28             dx 9CBFE0, 0100, 00C0
 
-; 19h: Facing right - spin jump
-; 1Bh: Facing right - space jump
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 33h: Unused
-; 34h: Unused
-; 39h: Unused
-; 3Ah: Unused
-; 42h: Unused
-; 81h: Facing right - screw attack
-$92:D1A5             dx 9D8100,00E0,0080
+; 62h: Unused - frame 10h
+; 62h: Unused - frame 30h
+; 62h: Unused - frames 40h..41h
+; B3h: Facing anticlockwise - grapple - in air - frame 10h
+; B3h: Facing anticlockwise - grapple - in air - frame 30h
+; B3h: Facing anticlockwise - grapple - in air - frames 40h..41h
+$92:CF2F             dx 9CC1A0, 0100, 00C0
 
-; 2: Facing left - normal
-; 48h: Unused
-; 8Ah: Facing left - ran into a wall
-; A9h: Unused
-$92:D1AC             dx 9D8260,00E0,00C0
+; 62h: Unused - frame 11h
+; 62h: Unused - frame 31h
+; B3h: Facing anticlockwise - grapple - in air - frame 11h
+; B3h: Facing anticlockwise - grapple - in air - frame 31h
+$92:CF36             dx 9CC360, 0100, 00C0
 
-; CAh: Facing left - shinespark - horizontal
-; CEh: Facing left - shinespark - diagonal
-$92:D1B3             dx 9D8400,0080,0080
+; 62h: Unused - frame 12h
+; 62h: Unused - frame 32h
+; B3h: Facing anticlockwise - grapple - in air - frame 12h
+; B3h: Facing anticlockwise - grapple - in air - frame 32h
+$92:CF3D             dx 9CC520, 0100, 00E0
 
-; C9h: Facing right - shinespark - horizontal
-; CDh: Facing right - shinespark - diagonal
-$92:D1BA             dx 9D8500,0100,0080
+; 62h: Unused - frame 13h
+; 62h: Unused - frame 33h
+; B3h: Facing anticlockwise - grapple - in air - frame 13h
+; B3h: Facing anticlockwise - grapple - in air - frame 33h
+$92:CF44             dx 9CC700, 0100, 0100
 
-; 45h: Unused
-; 46h: Unused
-; 5Bh: Unused
-; 63h: Unused
-; B8h: Facing left - grapple wall jump pose
-$92:D1C1             dx 9D8680,00E0,00C0
+; 62h: Unused - frame 14h
+; 62h: Unused - frame 34h
+; B3h: Facing anticlockwise - grapple - in air - frame 14h
+; B3h: Facing anticlockwise - grapple - in air - frame 34h
+$92:CF4B             dx 9CC900, 0100, 0100
 
-; 5Ch: Unused
-; 64h: Unused
-; B9h: Facing right - grapple wall jump pose
-$92:D1C8             dx 9D8820,00C0,00C0
+; 62h: Unused - frame 15h
+; 62h: Unused - frame 35h
+; B3h: Facing anticlockwise - grapple - in air - frame 15h
+; B3h: Facing anticlockwise - grapple - in air - frame 35h
+$92:CF52             dx 9CCB00, 0100, 0100
 
-; 2Fh: Facing right - turning - jumping
-; 30h: Facing left - turning - jumping
-; 43h: Facing right - turning - crouching
-; 44h: Facing left - turning - crouching
-; 87h: Facing right - turning - falling
-; 88h: Facing left - turning - falling
-; 8Fh: Facing right - turning - in air - aiming up
-; 90h: Facing left - turning - in air - aiming up
-; 91h: Facing right - turning - in air - aiming down/down-right
-; 92h: Facing left - turning - in air - aiming down/down-left
-; 93h: Facing right - turning - falling - aiming up
-; 94h: Facing left - turning - falling - aiming up
-; 95h: Facing right - turning - falling - aiming down/down-right
-; 96h: Facing left - turning - falling - aiming down/down-left
-; 97h: Facing right - turning - crouching - aiming up
-; 98h: Facing left - turning - crouching - aiming up
-; 99h: Facing right - turning - crouching - aiming down/down-right
-; 9Ah: Facing left - turning - crouching - aiming down/down-left
-; 9Eh: Facing right - turning - in air - aiming up-right
-; 9Fh: Facing left - turning - in air - aiming up-left
-; A0h: Facing right - turning - falling - aiming up-right
-; A1h: Facing left - turning - falling - aiming up-left
-; A2h: Facing right - turning - crouching - aiming up-right
-; A3h: Facing left - turning - crouching - aiming up-left
-$92:D1CF             dx 9D89A0,0080,0080
-$92:D1D6             dx 9D8AA0,00C0,0080
+; 62h: Unused - frame 16h
+; 62h: Unused - frame 36h
+; B3h: Facing anticlockwise - grapple - in air - frame 16h
+; B3h: Facing anticlockwise - grapple - in air - frame 36h
+$92:CF59             dx 9CCD00, 0100, 0100
 
-; 25h: Facing right - turning - standing
-; 26h: Facing left - turning - standing
-; 8Bh: Facing right - turning - standing - aiming up
-; 8Ch: Facing left - turning - standing - aiming up
-; 8Dh: Facing right - turning - standing - aiming down-right
-; 8Eh: Facing left - turning - standing - aiming down-left
-; 9Ch: Facing right - turning - standing - aiming up-right
-; 9Dh: Facing left - turning - standing - aiming up-left
-; BFh: Facing right - moonwalking - turn/jump left
-; C0h: Facing left - moonwalking - turn/jump right
-; C1h: Facing right - moonwalking - turn/jump left - aiming up-right
-; C2h: Facing left - moonwalking - turn/jump right - aiming up-left
-; C3h: Facing right - moonwalking - turn/jump left - aiming down-right
-; C4h: Facing left - moonwalking - turn/jump right - aiming down-left
-; C6h: Unused
-$92:D1DD             dx 9D8BE0,0100,0080
-$92:D1E4             dx 9D8D60,00C0,0080
-
-; 16h: Facing left - normal jump - aiming up
-; 6Ah: Facing left - normal jump - aiming up-left
-$92:D1EB             dx 9D8EA0,0100,0080
-
-; 15h: Facing right - normal jump - aiming up
-; 69h: Facing right - normal jump - aiming up-right
-$92:D1F2             dx 9D9020,0100,00C0
-
-; 50h: Facing right - damage boost
-$92:D1F9             dx 9D91E0,0100,00C0
-
-; 4Fh: Facing left - damage boost
-$92:D200             dx 9D93A0,00C0,00C0
-
-; 2: Facing left - normal
-; 48h: Unused
-; 8Ah: Facing left - ran into a wall
-; A9h: Unused
-$92:D207             dx 9D9520,00C0,00C0
-
-; 1: Facing right - normal
-; 47h: Unused
-; 89h: Facing right - ran into a wall
-; A8h: Unused
-$92:D20E             dx 9D96A0,00C0,00C0
-$92:D215             dx 9D9820,00A0,0040
-
-; 9Bh: Facing forward - varia/gravity suit
-$92:D21C             dx 9D9900,00A0,0040
-
-; 0: Facing forward - power suit
-$92:D223             dx 9D99E0,00A0,0080
-
-; 9: Moving right - not aiming
-; Ah: Moving left - not aiming
-; Bh: Moving right - gun extended
-; Ch: Moving left - gun extended
-; Dh: Moving right - aiming up (unused)
-; Eh: Moving left - aiming up (unused)
-; Fh: Moving right - aiming up-right
-; 10h: Moving left - aiming up-left
-; 11h: Moving right - aiming down-right
-; 12h: Moving left - aiming down-left
-$92:D22A             dx 9D9B00,00A0,0080
-$92:D231             dx 9D9C20,00A0,0080
-$92:D238             dx 9D9D40,00A0,0080
-$92:D23F             dx 9D9E60,0080,0040
-
-; 27h: Facing right - crouching
-; 28h: Facing left - crouching
-; 71h: Facing right - crouching - aiming up-right
-; 72h: Facing left - crouching - aiming up-left
-; 73h: Facing right - crouching - aiming down-right
-; 74h: Facing left - crouching - aiming down-left
-; 85h: Facing right - crouching - aiming up
-; 86h: Facing left - crouching - aiming up
-; B4h: Unused
-; B5h: Unused
-; B6h: Unused
-; B7h: Unused
-; D9h: Facing right - x-ray - crouching
-; DAh: Facing left - x-ray - crouching
-$92:D246             dx 9D9F20,0080,0040
-
-; 1: Facing right - normal
-; 2: Facing left - normal
-; 47h: Unused
-; 48h: Unused
-; 89h: Facing right - ran into a wall
-; 8Ah: Facing left - ran into a wall
-; A4h: Facing right - landing from normal jump
-; A5h: Facing left - landing from normal jump
-; A6h: Facing right - landing from spin jump
-; A7h: Facing left - landing from spin jump
-; A8h: Unused
-; A9h: Unused
-; D5h: Facing right - x-ray - standing
-; D6h: Facing left - x-ray - standing
-; E0h: Facing right - landing from normal jump - aiming up
-; E1h: Facing left - landing from normal jump - aiming up
-; E2h: Facing right - landing from normal jump - aiming up-right
-; E3h: Facing left - landing from normal jump - aiming up-left
-; E4h: Facing right - landing from normal jump - aiming down-right
-; E5h: Facing left - landing from normal jump - aiming down-left
-; E6h: Facing right - landing from normal jump - firing
-; E7h: Facing left - landing from normal jump - firing
-$92:D24D             dx 9D9FE0,0080,0080
-
-; 9: Moving right - not aiming
-; Ah: Moving left - not aiming
-; Bh: Moving right - gun extended
-; Ch: Moving left - gun extended
-; Dh: Moving right - aiming up (unused)
-; Eh: Moving left - aiming up (unused)
-; Fh: Moving right - aiming up-right
-; 10h: Moving left - aiming up-left
-; 11h: Moving right - aiming down-right
-; 12h: Moving left - aiming down-left
-$92:D254             dx 9DA0E0,0080,0080
-$92:D25B             dx 9DA1E0,00C0,0080
-
-; 9: Moving right - not aiming
-; Ah: Moving left - not aiming
-; Bh: Moving right - gun extended
-; Ch: Moving left - gun extended
-; Dh: Moving right - aiming up (unused)
-; Eh: Moving left - aiming up (unused)
-; Fh: Moving right - aiming up-right
-; 10h: Moving left - aiming up-left
-; 11h: Moving right - aiming down-right
-; 12h: Moving left - aiming down-left
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; C7h: Facing right - vertical shinespark windup
-; C8h: Facing left - vertical shinespark windup
-$92:D262             dx 9DA320,00C0,0080
-
-; 9: Moving right - not aiming
-; Ah: Moving left - not aiming
-; Bh: Moving right - gun extended
-; Ch: Moving left - gun extended
-; Dh: Moving right - aiming up (unused)
-; Eh: Moving left - aiming up (unused)
-; Fh: Moving right - aiming up-right
-; 10h: Moving left - aiming up-left
-; 11h: Moving right - aiming down-right
-; 12h: Moving left - aiming down-left
-$92:D269             dx 9DA460,00C0,00C0
-$92:D270             dx 9DA5E0,0080,0080
-
-; 0: Facing forward - power suit
-; 1: Facing right - normal
-; 2: Facing left - normal
-; 9: Moving right - not aiming
-; Ah: Moving left - not aiming
-; Bh: Moving right - gun extended
-; Ch: Moving left - gun extended
-; Dh: Moving right - aiming up (unused)
-; Eh: Moving left - aiming up (unused)
-; Fh: Moving right - aiming up-right
-; 10h: Moving left - aiming up-left
-; 11h: Moving right - aiming down-right
-; 12h: Moving left - aiming down-left
-; 19h: Facing right - spin jump
-; 1Ah: Facing left - spin jump
-; 1Bh: Facing right - space jump
-; 1Ch: Facing left - space jump
-; 1Dh: Facing right - morph ball - no springball - on ground
-; 1Eh: Moving right - morph ball - no springball - on ground
-; 1Fh: Moving left - morph ball - no springball - on ground
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 27h: Facing right - crouching
-; 28h: Facing left - crouching
-; 29h: Facing right - falling
-; 2Ah: Facing left - falling
-; 31h: Facing right - morph ball - no springball - in air
-; 32h: Facing left - morph ball - no springball - in air
-; 33h: Unused
-; 34h: Unused
-; 37h: Facing right - morphing transition
-; 38h: Facing left - morphing transition
-; 39h: Unused
-; 3Ah: Unused
-; 3Dh: Facing right - unmorphing transition
-; 3Eh: Facing left - unmorphing transition
-; 3Fh: Unused
-; 40h: Unused
-; 41h: Facing left - morph ball - no springball - on ground
-; 42h: Unused
-; 47h: Unused
-; 48h: Unused
-; 4Fh: Facing left - damage boost
-; 50h: Facing right - damage boost
-; 65h: Unused
-; 66h: Unused
-; 67h: Facing right - falling - gun extended
-; 68h: Facing left - falling - gun extended
-; 79h: Facing right - morph ball - spring ball - on ground
-; 7Ah: Facing left - morph ball - spring ball - on ground
-; 7Bh: Moving right - morph ball - spring ball - on ground
-; 7Ch: Moving left - morph ball - spring ball - on ground
-; 7Dh: Facing right - morph ball - spring ball - falling
-; 7Eh: Facing left - morph ball - spring ball - falling
-; 7Fh: Facing right - morph ball - spring ball - in air
-; 80h: Facing left - morph ball - spring ball - in air
-; 81h: Facing right - screw attack
-; 82h: Facing left - screw attack
-; 83h: Facing right - wall jump
-; 84h: Facing left - wall jump
-; 89h: Facing right - ran into a wall
-; 8Ah: Facing left - ran into a wall
-; 9Bh: Facing forward - varia/gravity suit
-; A8h: Unused
-; A9h: Unused
-; B4h: Unused
-; B5h: Unused
-; C5h: Unused
-; CBh: Facing right - shinespark - vertical
-; CCh: Facing left - shinespark - vertical
-; D3h: Facing right - crystal flash
-; D4h: Facing left - crystal flash
-; DBh: Unused
-; DCh: Unused
-; DDh: Unused
-; DEh: Unused
-; DFh: Unused
-; E8h: Facing right - Samus drained - crouching
-; E9h: Facing left - Samus drained - crouching
-; EAh: Facing right - Samus drained - standing
-; EBh: Facing left - Samus drained - standing
-$92:D277             dx 9DA6E0,0080,0080
-}
-
-
-;;; $D27E: Samus bottom tiles - 1 ;;;
-{
-; 49h: Facing left - moonwalk
-; 4Ah: Facing right - moonwalk
-; 75h: Facing left - moonwalk - aiming up-left
-; 76h: Facing right - moonwalk - aiming up-right
-; 77h: Facing left - moonwalk - aiming down-left
-; 78h: Facing right - moonwalk - aiming down-right
-$92:D27E             dx 9DA7E0,00C0,0080
-
-; 25h: Facing right - turning - standing
-; 26h: Facing left - turning - standing
-; 8Bh: Facing right - turning - standing - aiming up
-; 8Ch: Facing left - turning - standing - aiming up
-; 8Dh: Facing right - turning - standing - aiming down-right
-; 8Eh: Facing left - turning - standing - aiming down-left
-; 9Ch: Facing right - turning - standing - aiming up-right
-; 9Dh: Facing left - turning - standing - aiming up-left
-; BFh: Facing right - moonwalking - turn/jump left
-; C0h: Facing left - moonwalking - turn/jump right
-; C1h: Facing right - moonwalking - turn/jump left - aiming up-right
-; C2h: Facing left - moonwalking - turn/jump right - aiming up-left
-; C3h: Facing right - moonwalking - turn/jump left - aiming down-right
-; C4h: Facing left - moonwalking - turn/jump right - aiming down-left
-; C6h: Unused
-$92:D285             dx 9DA920,0080,0080
-
-; 2Fh: Facing right - turning - jumping
-; 30h: Facing left - turning - jumping
-; 43h: Facing right - turning - crouching
-; 44h: Facing left - turning - crouching
-; 87h: Facing right - turning - falling
-; 88h: Facing left - turning - falling
-; 8Fh: Facing right - turning - in air - aiming up
-; 90h: Facing left - turning - in air - aiming up
-; 91h: Facing right - turning - in air - aiming down/down-right
-; 92h: Facing left - turning - in air - aiming down/down-left
-; 93h: Facing right - turning - falling - aiming up
-; 94h: Facing left - turning - falling - aiming up
-; 95h: Facing right - turning - falling - aiming down/down-right
-; 96h: Facing left - turning - falling - aiming down/down-left
-; 97h: Facing right - turning - crouching - aiming up
-; 98h: Facing left - turning - crouching - aiming up
-; 99h: Facing right - turning - crouching - aiming down/down-right
-; 9Ah: Facing left - turning - crouching - aiming down/down-left
-; 9Eh: Facing right - turning - in air - aiming up-right
-; 9Fh: Facing left - turning - in air - aiming up-left
-; A0h: Facing right - turning - falling - aiming up-right
-; A1h: Facing left - turning - falling - aiming up-left
-; A2h: Facing right - turning - crouching - aiming up-right
-; A3h: Facing left - turning - crouching - aiming up-left
-$92:D28C             dx 9DAA20,0040,0040
-
-; 49h: Facing left - moonwalk
-; 4Ah: Facing right - moonwalk
-; 75h: Facing left - moonwalk - aiming up-left
-; 76h: Facing right - moonwalk - aiming up-right
-; 77h: Facing left - moonwalk - aiming down-left
-; 78h: Facing right - moonwalk - aiming down-right
-$92:D293             dx 9DAAA0,00C0,0080
-$92:D29A             dx 9DABE0,0080,0080
-$92:D2A1             dx 9DACE0,0080,0080
-
-; 35h: Facing right - crouching transition
-; 3Bh: Facing right - standing transition
-; 4Bh: Facing right - normal jump transition
-; 55h: Facing right - normal jump transition - aiming up
-; 57h: Facing right - normal jump transition - aiming up-right
-; 59h: Facing right - normal jump transition - aiming down-right
-; A4h: Facing right - landing from normal jump
-; A6h: Facing right - landing from spin jump
-; D3h: Facing right - crystal flash
-; D7h: Facing right - crystal flash ending
-; D8h: Facing left - crystal flash ending
-; DBh: Unused
-; DCh: Unused
-; DDh: Unused
-; DEh: Unused
-; E0h: Facing right - landing from normal jump - aiming up
-; E2h: Facing right - landing from normal jump - aiming up-right
-; E4h: Facing right - landing from normal jump - aiming down-right
-; E6h: Facing right - landing from normal jump - firing
-; E8h: Facing right - Samus drained - crouching
-; E9h: Facing left - Samus drained - crouching
-; EAh: Facing right - Samus drained - standing
-; F1h: Facing right - crouching transition - aiming up
-; F3h: Facing right - crouching transition - aiming up-right
-; F5h: Facing right - crouching transition - aiming down-right
-; F7h: Facing right - standing transition - aiming up
-; F9h: Facing right - standing transition - aiming up-right
-; FBh: Facing right - standing transition - aiming down-right
-$92:D2A8             dx 9DADE0,00C0,0080
-
-; 36h: Facing left - crouching transition
-; 3Ch: Facing left - standing transition
-; 4Ch: Facing left - normal jump transition
-; 56h: Facing left - normal jump transition - aiming up
-; 58h: Facing left - normal jump transition - aiming up-left
-; 5Ah: Facing left - normal jump transition - aiming down-left
-; A5h: Facing left - landing from normal jump
-; A7h: Facing left - landing from spin jump
-; D4h: Facing left - crystal flash
-; D8h: Facing left - crystal flash ending
-; E1h: Facing left - landing from normal jump - aiming up
-; E3h: Facing left - landing from normal jump - aiming up-left
-; E5h: Facing left - landing from normal jump - aiming down-left
-; E7h: Facing left - landing from normal jump - firing
-; E9h: Facing left - Samus drained - crouching
-; EBh: Facing left - Samus drained - standing
-; F2h: Facing left - crouching transition - aiming up
-; F4h: Facing left - crouching transition - aiming up-left
-; F6h: Facing left - crouching transition - aiming down-left
-; F8h: Facing left - standing transition - aiming up
-; FAh: Facing left - standing transition - aiming up-left
-; FCh: Facing left - standing transition - aiming down-left
-$92:D2AF             dx 9DAF20,00C0,0080
-
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; C7h: Facing right - vertical shinespark windup
-; F0h: Facing right - grabbed by Draygon - moving
-$92:D2B6             dx 9DB060,00E0,0040
-
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; C8h: Facing left - vertical shinespark windup
-; BEh: Facing left - grabbed by Draygon - moving
-$92:D2BD             dx 9DB180,00E0,0040
-
-; 13h: Facing right - normal jump - not aiming - not moving - gun extended
-; 15h: Facing right - normal jump - aiming up
-; 17h: Facing right - normal jump - aiming down
-; 29h: Facing right - falling
-; 2Bh: Facing right - falling - aiming up
-; 2Dh: Facing right - falling - aiming down
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; 50h: Facing right - damage boost
-; 51h: Facing right - normal jump - not aiming - moving forward
-; 67h: Facing right - falling - gun extended
-; 69h: Facing right - normal jump - aiming up-right
-; 6Bh: Facing right - normal jump - aiming down-right
-; 6Dh: Facing right - falling - aiming up-right
-; 6Fh: Facing right - falling - aiming down-right
-; ACh: Unused
-; AEh: Unused
-; B0h: Unused
-; C7h: Facing right - vertical shinespark windup
-$92:D2C4             dx 9DB2A0,00A0,0080
-
-; 14h: Facing left - normal jump - not aiming - not moving - gun extended
-; 16h: Facing left - normal jump - aiming up
-; 18h: Facing left - normal jump - aiming down
-; 2Ah: Facing left - falling
-; 2Ch: Facing left - falling - aiming up
-; 2Eh: Facing left - falling - aiming down
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; 4Fh: Facing left - damage boost
-; 52h: Facing left - normal jump - not aiming - moving forward
-; 68h: Facing left - falling - gun extended
-; 6Ah: Facing left - normal jump - aiming up-left
-; 6Ch: Facing left - normal jump - aiming down-left
-; 6Eh: Facing left - falling - aiming up-left
-; 70h: Facing left - falling - aiming down-left
-; ADh: Unused
-; AFh: Unused
-; B1h: Unused
-; C8h: Facing left - vertical shinespark windup
-$92:D2CB             dx 9DB3C0,00A0,0080
-
-; 29h: Facing right - falling
-; 2Bh: Facing right - falling - aiming up
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; 53h: Facing right - knockback
-; 67h: Facing right - falling - gun extended
-; 6Dh: Facing right - falling - aiming up-right
-; 6Fh: Facing right - falling - aiming down-right
-; C7h: Facing right - vertical shinespark windup
-; D7h: Facing right - crystal flash ending
-; E8h: Facing right - Samus drained - crouching
-; F0h: Facing right - grabbed by Draygon - moving
-$92:D2D2             dx 9DB4E0,0080,0080
-
-; 2Ah: Facing left - falling
-; 2Ch: Facing left - falling - aiming up
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; 54h: Facing left - knockback
-; 68h: Facing left - falling - gun extended
-; 6Eh: Facing left - falling - aiming up-left
-; 70h: Facing left - falling - aiming down-left
-; BEh: Facing left - grabbed by Draygon - moving
-; C8h: Facing left - vertical shinespark windup
-; D8h: Facing left - crystal flash ending
-; E9h: Facing left - Samus drained - crouching
-$92:D2D9             dx 9DB5E0,0080,0080
-
-; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended
-; C7h: Facing right - vertical shinespark windup
-; F0h: Facing right - grabbed by Draygon - moving
-$92:D2E0             dx 9DB6E0,00C0,0040
-
-; 4Eh: Facing left - normal jump - not aiming - not moving - gun not extended
-; BEh: Facing left - grabbed by Draygon - moving
-; C8h: Facing left - vertical shinespark windup
-$92:D2E7             dx 9DB7E0,00C0,0040
+; 62h: Unused - frame 17h
+; 62h: Unused - frame 37h
+; B3h: Facing anticlockwise - grapple - in air - frame 17h
+; B3h: Facing anticlockwise - grapple - in air - frame 37h
+$92:CF60             dx 9CCF00, 0100, 00E0
 
 ; Unused
-$92:D2EE             dx 9DB8E0,0020,0000
+$92:CF67             dx 9CD0E0, 0100, 00E0
+}
 
-; 17h: Facing right - normal jump - aiming down
-; 2Dh: Facing right - falling - aiming down
-; AEh: Unused
-$92:D2F5             dx 9DB900,00E0,0040
 
-; 18h: Facing left - normal jump - aiming down
-; 2Eh: Facing left - falling - aiming down
-; AFh: Unused
-$92:D2FC             dx 9DBA20,00E0,0040
+;;; $CF6E: Samus top tiles - set 5 (facing clockwise - grappling - in air - upside down) ;;;
+{
+; 5Dh: Unused - frame 8
+; 5Dh: Unused - frame 28h
+; 5Eh: Unused - frame 8
+; 5Eh: Unused - frame 28h
+; 5Fh: Unused - frame 8
+; 5Fh: Unused - frame 28h
+; 60h: Unused - frame 8
+; 60h: Unused - frame 28h
+; 61h: Unused - frame 8
+; 61h: Unused - frame 28h
+; B2h: Facing clockwise     - grapple - in air - frame 8
+; B2h: Facing clockwise     - grapple - in air - frame 28h
+$92:CF6E             dx 9DC980, 00C0, 0080
 
-; 65h: Unused
-; 83h: Facing right - wall jump
-$92:D303             dx 9DBB40,0100,0040
+; 5Dh: Unused - frame 7
+; 5Dh: Unused - frame 27h
+; 5Eh: Unused - frame 7
+; 5Eh: Unused - frame 27h
+; 5Fh: Unused - frame 7
+; 5Fh: Unused - frame 27h
+; 60h: Unused - frame 7
+; 60h: Unused - frame 27h
+; 61h: Unused - frame 7
+; 61h: Unused - frame 27h
+; B2h: Facing clockwise     - grapple - in air - frame 7
+; B2h: Facing clockwise     - grapple - in air - frame 27h
+$92:CF75             dx 9DCAC0, 00C0, 0080
 
-; 66h: Unused
-; 84h: Facing left - wall jump
-$92:D30A             dx 9DBC80,00C0,0040
+; 5Dh: Unused - frame 6
+; 5Dh: Unused - frame 26h
+; 5Eh: Unused - frame 6
+; 5Eh: Unused - frame 26h
+; 5Fh: Unused - frame 6
+; 5Fh: Unused - frame 26h
+; 60h: Unused - frame 6
+; 60h: Unused - frame 26h
+; 61h: Unused - frame 6
+; 61h: Unused - frame 26h
+; B2h: Facing clockwise     - grapple - in air - frame 6
+; B2h: Facing clockwise     - grapple - in air - frame 26h
+$92:CF7C             dx 9DCC00, 00C0, 00C0
 
-; 49h: Facing left - moonwalk
-; 63h: Unused
-$92:D311             dx 9DBD80,00A0,0080
+; 5Dh: Unused - frame 5
+; 5Dh: Unused - frame 25h
+; 5Eh: Unused - frame 5
+; 5Eh: Unused - frame 25h
+; 5Fh: Unused - frame 5
+; 5Fh: Unused - frame 25h
+; 60h: Unused - frame 5
+; 60h: Unused - frame 25h
+; 61h: Unused - frame 5
+; 61h: Unused - frame 25h
+; B2h: Facing clockwise     - grapple - in air - frame 5
+; B2h: Facing clockwise     - grapple - in air - frame 25h
+$92:CF83             dx 9DCD80, 00C0, 00C0
 
-; 49h: Facing left - moonwalk
-; 64h: Unused
-$92:D318             dx 9DBEA0,00A0,0080
+; 5Dh: Unused - frame 4
+; 5Dh: Unused - frame 24h
+; 5Eh: Unused - frame 4
+; 5Eh: Unused - frame 24h
+; 5Fh: Unused - frame 4
+; 5Fh: Unused - frame 24h
+; 60h: Unused - frame 4
+; 60h: Unused - frame 24h
+; 61h: Unused - frame 4
+; 61h: Unused - frame 24h
+; B2h: Facing clockwise     - grapple - in air - frame 4
+; B2h: Facing clockwise     - grapple - in air - frame 24h
+$92:CF8A             dx 9DCF00, 00C0, 00C0
 
-; 4Ah: Facing right - moonwalk
-; 75h: Facing left - moonwalk - aiming up-left
-; 76h: Facing right - moonwalk - aiming up-right
-; 77h: Facing left - moonwalk - aiming down-left
-; 78h: Facing right - moonwalk - aiming down-right
-$92:D31F             dx 9DBFC0,00A0,0080
-$92:D326             dx 9DC0E0,00A0,0080
+; 5Dh: Unused - frame 3
+; 5Dh: Unused - frame 23h
+; 5Eh: Unused - frame 3
+; 5Eh: Unused - frame 23h
+; 5Fh: Unused - frame 3
+; 5Fh: Unused - frame 23h
+; 60h: Unused - frame 3
+; 60h: Unused - frame 23h
+; 61h: Unused - frame 3
+; 61h: Unused - frame 23h
+; B2h: Facing clockwise     - grapple - in air - frame 3
+; B2h: Facing clockwise     - grapple - in air - frame 23h
+$92:CF91             dx 9DD080, 00C0, 00C0
 
-; 13h: Facing right - normal jump - not aiming - not moving - gun extended
-; 19h: Facing right - spin jump
-; 1Bh: Facing right - space jump
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 29h: Facing right - falling
-; 2Bh: Facing right - falling - aiming up
-; 33h: Unused
-; 34h: Unused
-; 39h: Unused
-; 3Ah: Unused
-; 42h: Unused
-; 50h: Facing right - damage boost
-; 51h: Facing right - normal jump - not aiming - moving forward
-; 67h: Facing right - falling - gun extended
-; 6Bh: Facing right - normal jump - aiming down-right
-; 6Dh: Facing right - falling - aiming up-right
-; 6Fh: Facing right - falling - aiming down-right
-; 81h: Facing right - screw attack
-; 83h: Facing right - wall jump
-; A6h: Facing right - landing from spin jump
-; ACh: Unused
-; B0h: Unused
-; F0h: Facing right - grabbed by Draygon - moving
-$92:D32D             dx 9DC200,00E0,0080
+; 5Dh: Unused - frame 2
+; 5Dh: Unused - frame 22h
+; 5Eh: Unused - frame 2
+; 5Eh: Unused - frame 22h
+; 5Fh: Unused - frame 2
+; 5Fh: Unused - frame 22h
+; 60h: Unused - frame 2
+; 60h: Unused - frame 22h
+; 61h: Unused - frame 2
+; 61h: Unused - frame 22h
+; B2h: Facing clockwise     - grapple - in air - frame 2
+; B2h: Facing clockwise     - grapple - in air - frame 22h
+$92:CF98             dx 9DD200, 00C0, 00C0
 
-; 14h: Facing left - normal jump - not aiming - not moving - gun extended
-; 1Ah: Facing left - spin jump
-; 1Ch: Facing left - space jump
-; 2Ah: Facing left - falling
-; 2Ch: Facing left - falling - aiming up
-; 4Fh: Facing left - damage boost
-; 52h: Facing left - normal jump - not aiming - moving forward
-; 68h: Facing left - falling - gun extended
-; 6Ch: Facing left - normal jump - aiming down-left
-; 6Eh: Facing left - falling - aiming up-left
-; 70h: Facing left - falling - aiming down-left
-; 82h: Facing left - screw attack
-; 84h: Facing left - wall jump
-; A7h: Facing left - landing from spin jump
-; ADh: Unused
-; B1h: Unused
-; BEh: Facing left - grabbed by Draygon - moving
-; E9h: Facing left - Samus drained - crouching
-$92:D334             dx 9DC360,00E0,0080
+; 5Dh: Unused - frame 1
+; 5Dh: Unused - frame 21h
+; 5Eh: Unused - frame 1
+; 5Eh: Unused - frame 21h
+; 5Fh: Unused - frame 1
+; 5Fh: Unused - frame 21h
+; 60h: Unused - frame 1
+; 60h: Unused - frame 21h
+; 61h: Unused - frame 1
+; 61h: Unused - frame 21h
+; B2h: Facing clockwise     - grapple - in air - frame 1
+; B2h: Facing clockwise     - grapple - in air - frame 21h
+$92:CF9F             dx 9DD380, 00C0, 0080
 
-; 53h: Facing right - knockback
-; D7h: Facing right - crystal flash ending
-; ECh: Facing right - grabbed by Draygon - not moving - not aiming
-; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right
-; EEh: Facing right - grabbed by Draygon - firing
-; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right
-; F0h: Facing right - grabbed by Draygon - moving
-$92:D33B             dx 9DC4C0,00C0,0080
+; 5Dh: Unused - frame 0
+; 5Dh: Unused - frame 20h
+; 5Eh: Unused - frame 0
+; 5Eh: Unused - frame 20h
+; 5Fh: Unused - frame 0
+; 5Fh: Unused - frame 20h
+; 60h: Unused - frame 0
+; 60h: Unused - frame 20h
+; 61h: Unused - frame 0
+; 61h: Unused - frame 20h
+; B2h: Facing clockwise     - grapple - in air - frame 0
+; B2h: Facing clockwise     - grapple - in air - frame 20h
+$92:CFA6             dx 9DD4C0, 00C0, 0080
 
-; 54h: Facing left - knockback
-; BAh: Facing left - grabbed by Draygon - not moving - not aiming
-; BBh: Facing left - grabbed by Draygon - not moving - aiming up-left
-; BCh: Facing left - grabbed by Draygon - firing
-; BDh: Facing left - grabbed by Draygon - not moving - aiming down-left
-; BEh: Facing left - grabbed by Draygon - moving
-; D8h: Facing left - crystal flash ending
-$92:D342             dx 9DC600,00C0,0080
+; 5Dh: Unused - frame 1Fh
+; 5Dh: Unused - frame 3Fh
+; 5Eh: Unused - frame 1Fh
+; 5Eh: Unused - frame 3Fh
+; 5Fh: Unused - frame 1Fh
+; 5Fh: Unused - frame 3Fh
+; 60h: Unused - frame 1Fh
+; 60h: Unused - frame 3Fh
+; 61h: Unused - frame 1Fh
+; 61h: Unused - frame 3Fh
+; B2h: Facing clockwise     - grapple - in air - frame 1Fh
+; B2h: Facing clockwise     - grapple - in air - frame 3Fh
+$92:CFAD             dx 9DD600, 00C0, 0080
+
+; 5Dh: Unused - frame 1Eh
+; 5Dh: Unused - frame 3Eh
+; 5Eh: Unused - frame 1Eh
+; 5Eh: Unused - frame 3Eh
+; 5Fh: Unused - frame 1Eh
+; 5Fh: Unused - frame 3Eh
+; 60h: Unused - frame 1Eh
+; 60h: Unused - frame 3Eh
+; 61h: Unused - frame 1Eh
+; 61h: Unused - frame 3Eh
+; B2h: Facing clockwise     - grapple - in air - frame 1Eh
+; B2h: Facing clockwise     - grapple - in air - frame 3Eh
+$92:CFB4             dx 9DD740, 00C0, 00C0
+
+; 5Dh: Unused - frame 1Dh
+; 5Dh: Unused - frame 3Dh
+; 5Eh: Unused - frame 1Dh
+; 5Eh: Unused - frame 3Dh
+; 5Fh: Unused - frame 1Dh
+; 5Fh: Unused - frame 3Dh
+; 60h: Unused - frame 1Dh
+; 60h: Unused - frame 3Dh
+; 61h: Unused - frame 1Dh
+; 61h: Unused - frame 3Dh
+; B2h: Facing clockwise     - grapple - in air - frame 1Dh
+; B2h: Facing clockwise     - grapple - in air - frame 3Dh
+$92:CFBB             dx 9DD8C0, 00C0, 00C0
+
+; 5Dh: Unused - frame 1Ch
+; 5Dh: Unused - frame 3Ch
+; 5Eh: Unused - frame 1Ch
+; 5Eh: Unused - frame 3Ch
+; 5Fh: Unused - frame 1Ch
+; 5Fh: Unused - frame 3Ch
+; 60h: Unused - frame 1Ch
+; 60h: Unused - frame 3Ch
+; 61h: Unused - frame 1Ch
+; 61h: Unused - frame 3Ch
+; B2h: Facing clockwise     - grapple - in air - frame 1Ch
+; B2h: Facing clockwise     - grapple - in air - frame 3Ch
+$92:CFC2             dx 9DDA40, 00C0, 00C0
+
+; 5Dh: Unused - frame 1Bh
+; 5Dh: Unused - frame 3Bh
+; 5Eh: Unused - frame 1Bh
+; 5Eh: Unused - frame 3Bh
+; 5Fh: Unused - frame 1Bh
+; 5Fh: Unused - frame 3Bh
+; 60h: Unused - frame 1Bh
+; 60h: Unused - frame 3Bh
+; 61h: Unused - frame 1Bh
+; 61h: Unused - frame 3Bh
+; B2h: Facing clockwise     - grapple - in air - frame 1Bh
+; B2h: Facing clockwise     - grapple - in air - frame 3Bh
+$92:CFC9             dx 9DDBC0, 00C0, 00C0
+
+; 5Dh: Unused - frame 1Ah
+; 5Dh: Unused - frame 3Ah
+; 5Eh: Unused - frame 1Ah
+; 5Eh: Unused - frame 3Ah
+; 5Fh: Unused - frame 1Ah
+; 5Fh: Unused - frame 3Ah
+; 60h: Unused - frame 1Ah
+; 60h: Unused - frame 3Ah
+; 61h: Unused - frame 1Ah
+; 61h: Unused - frame 3Ah
+; B2h: Facing clockwise     - grapple - in air - frame 1Ah
+; B2h: Facing clockwise     - grapple - in air - frame 3Ah
+$92:CFD0             dx 9DDD40, 00C0, 00C0
+
+; 5Dh: Unused - frame 19h
+; 5Dh: Unused - frame 39h
+; 5Eh: Unused - frame 19h
+; 5Eh: Unused - frame 39h
+; 5Fh: Unused - frame 19h
+; 5Fh: Unused - frame 39h
+; 60h: Unused - frame 19h
+; 60h: Unused - frame 39h
+; 61h: Unused - frame 19h
+; 61h: Unused - frame 39h
+; B2h: Facing clockwise     - grapple - in air - frame 19h
+; B2h: Facing clockwise     - grapple - in air - frame 39h
+$92:CFD7             dx 9DDEC0, 00C0, 0080
 
 ; Unused
-$92:D349             dx 9DC740,0080,0080
-
-; E9h: Facing left - Samus drained - crouching
-; EBh: Facing left - Samus drained - standing
-$92:D350             dx 9DC840,0060,0040
-
-; E8h: Facing right - Samus drained - crouching
-; EAh: Facing right - Samus drained - standing
-$92:D357             dx 9DC8E0,0060,0040
+$92:CFDE             dx 9DE000, 00C0, 0080
 }
 
 
-;;; $D35E: Samus bottom tiles - 2 ;;;
+;;; $CFE5: Samus top tiles - set 6 (facing anticlockwise - grappling - in air - upside down) ;;;
 {
-; 5Dh: Unused
-; 5Eh: Unused
-; 5Fh: Unused
-; 60h: Unused
-; 61h: Unused
-; B2h: Facing clockwise - grapple
-$92:D35E             dx 9F8000,0080,0040
-$92:D365             dx 9F80C0,00E0,0040
-$92:D36C             dx 9F81E0,00A0,0080
-$92:D373             dx 9F8300,00A0,0040
-$92:D37A             dx 9F83E0,00C0,0040
-$92:D381             dx 9F84E0,00C0,0040
-$92:D388             dx 9F85E0,0080,0040
-$92:D38F             dx 9F86A0,00A0,0040
-$92:D396             dx 9F8780,00A0,0040
-$92:D39D             dx 9F8860,00C0,0040
+; 62h: Unused - frame 18h
+; 62h: Unused - frame 38h
+; B3h: Facing anticlockwise - grapple - in air - frame 18h
+; B3h: Facing anticlockwise - grapple - in air - frame 38h
+$92:CFE5             dx 9DE140, 0100, 00C0
+
+; 62h: Unused - frame 19h
+; 62h: Unused - frame 39h
+; B3h: Facing anticlockwise - grapple - in air - frame 19h
+; B3h: Facing anticlockwise - grapple - in air - frame 39h
+$92:CFEC             dx 9DE300, 0100, 00C0
+
+; 62h: Unused - frame 1Ah
+; 62h: Unused - frame 3Ah
+; B3h: Facing anticlockwise - grapple - in air - frame 1Ah
+; B3h: Facing anticlockwise - grapple - in air - frame 3Ah
+$92:CFF3             dx 9DE4C0, 0100, 0100
+
+; 62h: Unused - frame 1Bh
+; 62h: Unused - frame 3Bh
+; B3h: Facing anticlockwise - grapple - in air - frame 1Bh
+; B3h: Facing anticlockwise - grapple - in air - frame 3Bh
+$92:CFFA             dx 9DE6C0, 0100, 0100
+
+; 62h: Unused - frame 1Ch
+; 62h: Unused - frame 3Ch
+; B3h: Facing anticlockwise - grapple - in air - frame 1Ch
+; B3h: Facing anticlockwise - grapple - in air - frame 3Ch
+$92:D001             dx 9DE8C0, 0100, 00E0
+
+; 62h: Unused - frame 1Dh
+; 62h: Unused - frame 3Dh
+; B3h: Facing anticlockwise - grapple - in air - frame 1Dh
+; B3h: Facing anticlockwise - grapple - in air - frame 3Dh
+$92:D008             dx 9DEAA0, 0100, 00E0
+
+; 62h: Unused - frame 1Eh
+; 62h: Unused - frame 3Eh
+; B3h: Facing anticlockwise - grapple - in air - frame 1Eh
+; B3h: Facing anticlockwise - grapple - in air - frame 3Eh
+$92:D00F             dx 9DEC80, 0100, 00E0
+
+; 62h: Unused - frame 1Fh
+; 62h: Unused - frame 3Fh
+; B3h: Facing anticlockwise - grapple - in air - frame 1Fh
+; B3h: Facing anticlockwise - grapple - in air - frame 3Fh
+$92:D016             dx 9DEE60, 0100, 00C0
+
+; 62h: Unused - frame 0
+; 62h: Unused - frame 20h
+; B3h: Facing anticlockwise - grapple - in air - frame 0
+; B3h: Facing anticlockwise - grapple - in air - frame 20h
+$92:D01D             dx 9DF020, 0100, 00C0
+
+; 62h: Unused - frame 1
+; 62h: Unused - frame 21h
+; B3h: Facing anticlockwise - grapple - in air - frame 1
+; B3h: Facing anticlockwise - grapple - in air - frame 21h
+$92:D024             dx 9DF1E0, 0100, 00C0
+
+; 62h: Unused - frame 2
+; 62h: Unused - frame 22h
+; B3h: Facing anticlockwise - grapple - in air - frame 2
+; B3h: Facing anticlockwise - grapple - in air - frame 22h
+$92:D02B             dx 9DF3A0, 0100, 00E0
+
+; 62h: Unused - frame 3
+; 62h: Unused - frame 23h
+; B3h: Facing anticlockwise - grapple - in air - frame 3
+; B3h: Facing anticlockwise - grapple - in air - frame 23h
+$92:D032             dx 9DF580, 0100, 0100
+
+; 62h: Unused - frame 4
+; 62h: Unused - frame 24h
+; B3h: Facing anticlockwise - grapple - in air - frame 4
+; B3h: Facing anticlockwise - grapple - in air - frame 24h
+$92:D039             dx 9FED80, 0100, 0100
+
+; 62h: Unused - frame 5
+; 62h: Unused - frame 25h
+; B3h: Facing anticlockwise - grapple - in air - frame 5
+; B3h: Facing anticlockwise - grapple - in air - frame 25h
+$92:D040             dx 9FEF80, 0100, 0100
+
+; 62h: Unused - frame 6
+; 62h: Unused - frame 26h
+; B3h: Facing anticlockwise - grapple - in air - frame 6
+; B3h: Facing anticlockwise - grapple - in air - frame 26h
+$92:D047             dx 9FF180, 0100, 0100
+
+; 62h: Unused - frame 7
+; 62h: Unused - frame 27h
+; B3h: Facing anticlockwise - grapple - in air - frame 7
+; B3h: Facing anticlockwise - grapple - in air - frame 27h
+$92:D04E             dx 9FF380, 0100, 00E0
 
 ; Unused
-$92:D3A4             dx 9F8960,00A0,0080
+$92:D055             dx 9FF560, 0100, 00E0
+}
 
-; 5Dh: Unused
-; 5Eh: Unused
-; 5Fh: Unused
-; 60h: Unused
-; 61h: Unused
-; B2h: Facing clockwise - grapple
-$92:D3AB             dx 9F8A80,0080,0080
-$92:D3B2             dx 9F8B80,0080,0080
-$92:D3B9             dx 9F8C80,0080,0080
-$92:D3C0             dx 9F8D80,00A0,0040
-$92:D3C7             dx 9F8E60,0080,0080
-$92:D3CE             dx 9F8F60,0080,0080
-$92:D3D5             dx 9F9060,00A0,0040
-$92:D3DC             dx 9F9140,0080,0080
-$92:D3E3             dx 9F9240,0080,0080
-$92:D3EA             dx 9F9340,0080,0080
-$92:D3F1             dx 9F9440,00C0,0080
-$92:D3F8             dx 9F9580,0080,0080
+
+;;; $D05C: Samus top tiles - set 7 (standing, crouching, drained) ;;;
+{
+; E9h: Facing left  - Samus drained - crouching/falling - frame 8
+; E9h: Facing left  - Samus drained - crouching/falling - frame 1Ah
+; E9h: Facing left  - Samus drained - crouching/falling - frame 1Dh
+$92:D05C             dx 9CD2C0, 00E0, 0040
+
+; E9h: Facing left  - Samus drained - crouching/falling - frame 7
+; E9h: Facing left  - Samus drained - crouching/falling - frame 9
+; E9h: Facing left  - Samus drained - crouching/falling - frame Bh
+; E9h: Facing left  - Samus drained - crouching/falling - frame Eh
+; E9h: Facing left  - Samus drained - crouching/falling - frame 13h
+; E9h: Facing left  - Samus drained - crouching/falling - frame 17h
+$92:D063             dx 9CD3E0, 00E0, 0040
+
+; E9h: Facing left  - Samus drained - crouching/falling - frame Ah
+$92:D06A             dx 9CD500, 00E0, 0040
+
+; E8h: Facing right - Samus drained - crouching/falling - frame 8
+$92:D071             dx 9CD620, 0100, 0040
+
+; E8h: Facing right - Samus drained - crouching/falling - frame 9
+; E8h: Facing right - Samus drained - crouching/falling - frame Bh
+$92:D078             dx 9CD760, 0100, 0040
+
+; E8h: Facing right - Samus drained - crouching/falling - frame Ah
+$92:D07F             dx 9CD8A0, 0100, 0040
+
+; EBh: Facing left  - Samus drained - standing - frame 0
+$92:D086             dx 9CD9E0, 00E0, 0040
+
+; E9h: Facing left  - Samus drained - crouching/falling - frame Fh
+; E9h: Facing left  - Samus drained - crouching/falling - frame 14h
+; E9h: Facing left  - Samus drained - crouching/falling - frame 16h
+; EBh: Facing left  - Samus drained - standing - frame 1
+; EBh: Facing left  - Samus drained - standing - frame 3
+$92:D08D             dx 9CDB00, 00E0, 0040
+
+; EBh: Facing left  - Samus drained - standing - frame 2
+$92:D094             dx 9CDC20, 00E0, 0040
+
+; EAh: Facing right - Samus drained - standing - frame 0
+$92:D09B             dx 9CDD40, 0100, 0040
+
+; EAh: Facing right - Samus drained - standing - frame 1
+; EAh: Facing right - Samus drained - standing - frame 3
+$92:D0A2             dx 9CDE80, 0100, 0040
+
+; EAh: Facing right - Samus drained - standing - frame 2
+$92:D0A9             dx 9CDFC0, 0100, 0040
+
+; 1: Facing right - normal - frame 0
+; 1: Facing right - normal - frame 5
+; 27h: Facing right - crouching - frame 0
+; 27h: Facing right - crouching - frame 5
+; 47h: Unused - frame 0
+; 47h: Unused - frame 5
+; 89h: Facing right - ran into a wall - frame 0
+; 89h: Facing right - ran into a wall - frame 5
+; A8h: Facing right - grappling - frame 0
+; A8h: Facing right - grappling - frame 5
+; B4h: Facing right - grappling - crouching - frame 0
+; B4h: Facing right - grappling - crouching - frame 5
+$92:D0B0             dx 9CE100, 00C0, 0080
+
+; 1: Facing right - normal - frame 1
+; 1: Facing right - normal - frame 3
+; 1: Facing right - normal - frame 6
+; 1: Facing right - normal - frame 8
+; 27h: Facing right - crouching - frame 1
+; 27h: Facing right - crouching - frame 3
+; 27h: Facing right - crouching - frame 6
+; 27h: Facing right - crouching - frame 8
+; 47h: Unused - frame 1
+; 47h: Unused - frame 3
+; 47h: Unused - frame 6
+; 47h: Unused - frame 8
+; 89h: Facing right - ran into a wall - frame 1
+; 89h: Facing right - ran into a wall - frame 3
+; 89h: Facing right - ran into a wall - frame 6
+; 89h: Facing right - ran into a wall - frame 8
+; A8h: Facing right - grappling - frame 1
+; A8h: Facing right - grappling - frame 3
+; A8h: Facing right - grappling - frame 6
+; A8h: Facing right - grappling - frame 8
+; B4h: Facing right - grappling - crouching - frame 1
+; B4h: Facing right - grappling - crouching - frame 3
+; B4h: Facing right - grappling - crouching - frame 6
+; B4h: Facing right - grappling - crouching - frame 8
+$92:D0B7             dx 9CE240, 00C0, 0080
+
+; 1: Facing right - normal - frame 2
+; 27h: Facing right - crouching - frame 2
+; 47h: Unused - frame 2
+; 89h: Facing right - ran into a wall - frame 2
+; A8h: Facing right - grappling - frame 2
+; B4h: Facing right - grappling - crouching - frame 2
+$92:D0BE             dx 9CE380, 00C0, 0080
+
+; 2: Facing left  - normal - frame 0
+; 2: Facing left  - normal - frame 5
+; 28h: Facing left  - crouching - frame 0
+; 28h: Facing left  - crouching - frame 5
+; 48h: Unused - frame 0
+; 48h: Unused - frame 5
+; 8Ah: Facing left  - ran into a wall - frame 0
+; 8Ah: Facing left  - ran into a wall - frame 5
+; A9h: Facing left  - grappling - frame 0
+; A9h: Facing left  - grappling - frame 5
+; B5h: Facing left  - grappling - crouching - frame 0
+; B5h: Facing left  - grappling - crouching - frame 5
+$92:D0C5             dx 9CE4C0, 00C0, 0080
+
+; 2: Facing left  - normal - frame 1
+; 2: Facing left  - normal - frame 3
+; 2: Facing left  - normal - frame 6
+; 2: Facing left  - normal - frame 8
+; 28h: Facing left  - crouching - frame 1
+; 28h: Facing left  - crouching - frame 3
+; 28h: Facing left  - crouching - frame 6
+; 28h: Facing left  - crouching - frame 8
+; 48h: Unused - frame 1
+; 48h: Unused - frame 3
+; 48h: Unused - frame 6
+; 48h: Unused - frame 8
+; 8Ah: Facing left  - ran into a wall - frame 1
+; 8Ah: Facing left  - ran into a wall - frame 3
+; 8Ah: Facing left  - ran into a wall - frame 6
+; 8Ah: Facing left  - ran into a wall - frame 8
+; A9h: Facing left  - grappling - frame 1
+; A9h: Facing left  - grappling - frame 3
+; A9h: Facing left  - grappling - frame 6
+; A9h: Facing left  - grappling - frame 8
+; B5h: Facing left  - grappling - crouching - frame 1
+; B5h: Facing left  - grappling - crouching - frame 3
+; B5h: Facing left  - grappling - crouching - frame 6
+; B5h: Facing left  - grappling - crouching - frame 8
+$92:D0CC             dx 9CE600, 00C0, 0080
+
+; 2: Facing left  - normal - frame 2
+; 28h: Facing left  - crouching - frame 2
+; 48h: Unused - frame 2
+; 8Ah: Facing left  - ran into a wall - frame 2
+; A9h: Facing left  - grappling - frame 2
+; B5h: Facing left  - grappling - crouching - frame 2
+$92:D0D3             dx 9CE740, 00C0, 0080
+
+; 1: Facing right - normal - frame 7
+; 27h: Facing right - crouching - frame 7
+; 47h: Unused - frame 7
+; 89h: Facing right - ran into a wall - frame 7
+; A8h: Facing right - grappling - frame 7
+; B4h: Facing right - grappling - crouching - frame 7
+$92:D0DA             dx 9CE880, 00C0, 0040
+
+; 2: Facing left  - normal - frame 7
+; 28h: Facing left  - crouching - frame 7
+; 48h: Unused - frame 7
+; 8Ah: Facing left  - ran into a wall - frame 7
+; A9h: Facing left  - grappling - frame 7
+; B5h: Facing left  - grappling - crouching - frame 7
+$92:D0E1             dx 9CE980, 00C0, 0040
+}
+
+
+;;; $D0E8: Samus top tiles - set 8 (Samus appearance electricity) ;;;
+{
+; 0: Facing forward - power suit - frame 3
+; 0: Facing forward - power suit - frame 5
+; 0: Facing forward - power suit - frame 7
+; 0: Facing forward - power suit - frame 9
+; 0: Facing forward - power suit - frame Bh
+; 0: Facing forward - power suit - frame Dh
+; 0: Facing forward - power suit - frame Fh
+; 0: Facing forward - power suit - frame 11h
+; 0: Facing forward - power suit - frame 13h
+; 0: Facing forward - power suit - frame 15h
+; 0: Facing forward - power suit - frame 17h
+; 0: Facing forward - power suit - frame 19h
+; 0: Facing forward - power suit - frame 1Bh
+; 0: Facing forward - power suit - frame 1Dh
+; 0: Facing forward - power suit - frame 1Fh
+; 0: Facing forward - power suit - frame 21h
+; 0: Facing forward - power suit - frame 23h
+; 0: Facing forward - power suit - frame 25h
+; 0: Facing forward - power suit - frame 27h
+; 0: Facing forward - power suit - frame 29h
+; 0: Facing forward - power suit - frame 2Bh
+; 0: Facing forward - power suit - frame 2Dh
+; 0: Facing forward - power suit - frame 2Fh
+; 0: Facing forward - power suit - frame 31h
+; 0: Facing forward - power suit - frame 33h
+; 0: Facing forward - power suit - frame 35h
+; 0: Facing forward - power suit - frame 37h
+; 0: Facing forward - power suit - frame 39h
+; 0: Facing forward - power suit - frame 3Bh
+; 0: Facing forward - power suit - frame 3Dh
+; 0: Facing forward - power suit - frame 3Fh
+; 0: Facing forward - power suit - frame 41h
+; 0: Facing forward - power suit - frame 43h
+; 0: Facing forward - power suit - frame 45h
+; 0: Facing forward - power suit - frame 47h
+; 0: Facing forward - power suit - frame 49h
+; 0: Facing forward - power suit - frame 4Bh
+; 0: Facing forward - power suit - frame 4Dh
+; 0: Facing forward - power suit - frame 4Fh
+; 0: Facing forward - power suit - frame 51h
+; 0: Facing forward - power suit - frame 53h
+; 0: Facing forward - power suit - frame 55h
+; 0: Facing forward - power suit - frame 57h
+; 0: Facing forward - power suit - frame 59h
+; 0: Facing forward - power suit - frame 5Bh
+; 0: Facing forward - power suit - frame 5Dh
+; 0: Facing forward - power suit - frame 5Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 3
+; 9Bh: Facing forward - varia/gravity suit - frame 5
+; 9Bh: Facing forward - varia/gravity suit - frame 7
+; 9Bh: Facing forward - varia/gravity suit - frame 9
+; 9Bh: Facing forward - varia/gravity suit - frame Bh
+; 9Bh: Facing forward - varia/gravity suit - frame Dh
+; 9Bh: Facing forward - varia/gravity suit - frame Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 11h
+; 9Bh: Facing forward - varia/gravity suit - frame 13h
+; 9Bh: Facing forward - varia/gravity suit - frame 15h
+; 9Bh: Facing forward - varia/gravity suit - frame 17h
+; 9Bh: Facing forward - varia/gravity suit - frame 19h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 1Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 1Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 21h
+; 9Bh: Facing forward - varia/gravity suit - frame 23h
+; 9Bh: Facing forward - varia/gravity suit - frame 25h
+; 9Bh: Facing forward - varia/gravity suit - frame 27h
+; 9Bh: Facing forward - varia/gravity suit - frame 29h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 2Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 2Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 31h
+; 9Bh: Facing forward - varia/gravity suit - frame 33h
+; 9Bh: Facing forward - varia/gravity suit - frame 35h
+; 9Bh: Facing forward - varia/gravity suit - frame 37h
+; 9Bh: Facing forward - varia/gravity suit - frame 39h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 3Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 3Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 41h
+; 9Bh: Facing forward - varia/gravity suit - frame 43h
+; 9Bh: Facing forward - varia/gravity suit - frame 45h
+; 9Bh: Facing forward - varia/gravity suit - frame 47h
+; 9Bh: Facing forward - varia/gravity suit - frame 49h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 4Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 4Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 51h
+; 9Bh: Facing forward - varia/gravity suit - frame 53h
+; 9Bh: Facing forward - varia/gravity suit - frame 55h
+; 9Bh: Facing forward - varia/gravity suit - frame 57h
+; 9Bh: Facing forward - varia/gravity suit - frame 59h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 5Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 5Fh
+$92:D0E8             dx 9BE000, 0020, 0000
 
 ; Unused
-$92:D3FF             dx 9F9680,0080,0080
+$92:D0EF             dx 9BE020, 0020, 0000
+
+; 0: Facing forward - power suit - frame 2
+; 0: Facing forward - power suit - frame 8
+; 0: Facing forward - power suit - frame Eh
+; 0: Facing forward - power suit - frame 14h
+; 0: Facing forward - power suit - frame 1Ah
+; 0: Facing forward - power suit - frame 20h
+; 0: Facing forward - power suit - frame 26h
+; 0: Facing forward - power suit - frame 2Ch
+; 0: Facing forward - power suit - frame 32h
+; 0: Facing forward - power suit - frame 38h
+; 0: Facing forward - power suit - frame 3Eh
+; 0: Facing forward - power suit - frame 44h
+; 0: Facing forward - power suit - frame 4Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 2
+; 9Bh: Facing forward - varia/gravity suit - frame 8
+; 9Bh: Facing forward - varia/gravity suit - frame Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 14h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 20h
+; 9Bh: Facing forward - varia/gravity suit - frame 26h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 32h
+; 9Bh: Facing forward - varia/gravity suit - frame 38h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 44h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Ah
+$92:D0F6             dx 9BE040, 0100, 0020
+
+; 0: Facing forward - power suit - frame 4
+; 0: Facing forward - power suit - frame Ah
+; 0: Facing forward - power suit - frame 10h
+; 0: Facing forward - power suit - frame 16h
+; 0: Facing forward - power suit - frame 1Ch
+; 0: Facing forward - power suit - frame 22h
+; 0: Facing forward - power suit - frame 28h
+; 0: Facing forward - power suit - frame 2Eh
+; 0: Facing forward - power suit - frame 34h
+; 0: Facing forward - power suit - frame 3Ah
+; 0: Facing forward - power suit - frame 40h
+; 0: Facing forward - power suit - frame 46h
+; 0: Facing forward - power suit - frame 4Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 4
+; 9Bh: Facing forward - varia/gravity suit - frame Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 10h
+; 9Bh: Facing forward - varia/gravity suit - frame 16h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 22h
+; 9Bh: Facing forward - varia/gravity suit - frame 28h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 34h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 40h
+; 9Bh: Facing forward - varia/gravity suit - frame 46h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Ch
+$92:D0FD             dx 9BE160, 00E0, 0000
+
+; 0: Facing forward - power suit - frame 6
+; 0: Facing forward - power suit - frame Ch
+; 0: Facing forward - power suit - frame 12h
+; 0: Facing forward - power suit - frame 18h
+; 0: Facing forward - power suit - frame 1Eh
+; 0: Facing forward - power suit - frame 24h
+; 0: Facing forward - power suit - frame 2Ah
+; 0: Facing forward - power suit - frame 30h
+; 0: Facing forward - power suit - frame 36h
+; 0: Facing forward - power suit - frame 3Ch
+; 0: Facing forward - power suit - frame 42h
+; 0: Facing forward - power suit - frame 48h
+; 0: Facing forward - power suit - frame 4Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 6
+; 9Bh: Facing forward - varia/gravity suit - frame Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 12h
+; 9Bh: Facing forward - varia/gravity suit - frame 18h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 24h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 30h
+; 9Bh: Facing forward - varia/gravity suit - frame 36h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 42h
+; 9Bh: Facing forward - varia/gravity suit - frame 48h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Eh
+$92:D104             dx 9BE240, 0100, 0060
+
+; 0: Facing forward - power suit - frame 50h
+; 9Bh: Facing forward - varia/gravity suit - frame 50h
+$92:D10B             dx 9BE3A0, 0100, 00E0
+
+; 0: Facing forward - power suit - frame 52h
+; 9Bh: Facing forward - varia/gravity suit - frame 52h
+$92:D112             dx 9BE580, 0100, 0000
+
+; 0: Facing forward - power suit - frame 54h
+; 0: Facing forward - power suit - frame 5Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 54h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Ah
+$92:D119             dx 9BE680, 0100, 0040
+
+; 0: Facing forward - power suit - frame 56h
+; 0: Facing forward - power suit - frame 5Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 56h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Ch
+$92:D120             dx 9BE7C0, 0100, 0060
+
+; 0: Facing forward - power suit - frame 58h
+; 0: Facing forward - power suit - frame 5Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 58h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Eh
+$92:D127             dx 9BE920, 00E0, 0000
 }
 
 
-;;; $D406: Samus bottom tiles - 4 ;;;
+;;; $D12E: Samus top tiles - set 9 (moving - gun extended) ;;;
 {
-; 5Dh: Unused
-; 5Eh: Unused
-; 5Fh: Unused
-; 60h: Unused
-; 61h: Unused
-; B2h: Facing clockwise - grapple
-$92:D406             dx 9F9780,0080,0040
-$92:D40D             dx 9F9840,00E0,0040
-$92:D414             dx 9F9960,00A0,0080
-$92:D41B             dx 9F9A80,00A0,0040
-$92:D422             dx 9F9B60,00C0,0040
-$92:D429             dx 9F9C60,00C0,0040
-$92:D430             dx 9F9D60,0080,0040
-$92:D437             dx 9F9E20,00A0,0040
-$92:D43E             dx 9F9F00,00A0,0040
-$92:D445             dx 9F9FE0,00C0,0040
+; Bh: Moving right - gun extended - frame 0
+; Bh: Moving right - gun extended - frame 5
+$92:D12E             dx 9BEE20, 0080, 0040
+
+; Bh: Moving right - gun extended - frame 4
+$92:D135             dx 9BEEE0, 0080, 0040
+
+; Bh: Moving right - gun extended - frame 2
+$92:D13C             dx 9BEFA0, 00A0, 0040
+
+; Bh: Moving right - gun extended - frame 3
+$92:D143             dx 9BF080, 00C0, 0040
+
+; Bh: Moving right - gun extended - frame 6
+; Bh: Moving right - gun extended - frame 9
+$92:D14A             dx 9BF180, 0080, 0040
+
+; Bh: Moving right - gun extended - frame 7
+$92:D151             dx 9BF240, 00A0, 0040
+
+; Ch: Moving left  - gun extended - frame 0
+; Ch: Moving left  - gun extended - frame 5
+$92:D158             dx 9BF320, 00C0, 0040
+
+; Ch: Moving left  - gun extended - frame 4
+$92:D15F             dx 9BF420, 00C0, 0040
+
+; Ch: Moving left  - gun extended - frame 3
+$92:D166             dx 9BF520, 00E0, 0040
+
+; Ch: Moving left  - gun extended - frame 2
+$92:D16D             dx 9BF640, 00E0, 0040
+
+; Ch: Moving left  - gun extended - frame 6
+; Ch: Moving left  - gun extended - frame 9
+$92:D174             dx 9BF760, 00C0, 0040
+
+; Ch: Moving left  - gun extended - frame 8
+$92:D17B             dx 9BF860, 0100, 0040
+
+; Bh: Moving right - gun extended - frame 8
+$92:D182             dx 9BF9A0, 00C0, 0040
+
+; Ch: Moving left  - gun extended - frame 7
+$92:D189             dx 9BFAA0, 0100, 0040
+
+; Bh: Moving right - gun extended - frame 1
+$92:D190             dx 9BFBE0, 0080, 0040
+
+; Ch: Moving left  - gun extended - frame 1
+$92:D197             dx 9BFCA0, 00C0, 0040
+}
+
+
+;;; $D19E: Samus bottom tiles - set 0 (general) ;;;
+{
+; Actually used by:
+;     9: Moving right - not aiming - frame 0
+;     Ah: Moving left  - not aiming - frame 0
+;     Bh: Moving right - gun extended - frame 0
+;     Ch: Moving left  - gun extended - frame 0
+;     Dh: Moving right - aiming up (unused) - frame 0
+;     Eh: Moving left  - aiming up (unused) - frame 0
+;     Fh: Moving right - aiming up-right - frame 0
+;     10h: Moving left  - aiming up-left - frame 0
+;     11h: Moving right - aiming down-right - frame 0
+;     12h: Moving left  - aiming down-left - frame 0
+
+; Meaninglessly used by:
+{
+;     0: Facing forward - power suit - frame 1
+;     1: Facing right - normal - frame 4
+;     2: Facing left  - normal - frame 4
+;     19h: Facing right - spin jump - frames 1..Ah
+;     1Ah: Facing left  - spin jump - frames 1..Ah
+;     1Bh: Facing right - space jump - frames 9..Ah
+;     1Ch: Facing left  - space jump - frames 9..Ah
+;     1Dh: Facing right - morph ball - no springball - on ground - frames 0..9
+;     1Eh: Moving right - morph ball - no springball - on ground - frames 0..9
+;     1Fh: Moving left  - morph ball - no springball - on ground - frames 0..9
+;     20h: Unused - frames 1..Ah
+;     21h: Unused - frames 1..Ah
+;     22h: Unused - frames 1..Ah
+;     23h: Unused - frames 1..Ah
+;     24h: Unused - frames 1..Ah
+;     27h: Facing right - crouching - frame 4
+;     28h: Facing left  - crouching - frame 4
+;     29h: Facing right - falling - frames 3..4
+;     2Ah: Facing left  - falling - frames 3..4
+;     31h: Facing right - morph ball - no springball - in air - frames 0..9
+;     32h: Facing left  - morph ball - no springball - in air - frames 0..9
+;     33h: Unused - frames 1..Ah
+;     34h: Unused - frames 1..Ah
+;     37h: Facing right - morphing transition - frames 0..1
+;     38h: Facing left  - morphing transition - frames 0..1
+;     39h: Unused - frames 1..Ah
+;     3Ah: Unused - frames 1..Ah
+;     3Dh: Facing right - unmorphing transition - frames 0..1
+;     3Eh: Facing left  - unmorphing transition - frames 0..1
+;     3Fh: Unused - frames 0..9
+;     40h: Unused - frames 0..9
+;     41h: Facing left  - morph ball - no springball - on ground - frames 0..9
+;     42h: Unused - frames 1..Ah
+;     47h: Unused - frame 4
+;     48h: Unused - frame 4
+;     4Fh: Facing left  - damage boost - frames 2..8
+;     50h: Facing right - damage boost - frames 2..8
+;     65h: Unused. Related to movement type Dh - frames 1..8
+;     66h: Unused. Related to movement type Dh - frames 1..8
+;     67h: Facing right - falling - gun extended - frames 3..4
+;     68h: Facing left  - falling - gun extended - frames 3..4
+;     79h: Facing right - morph ball - spring ball - on ground - frames 0..9
+;     7Ah: Facing left  - morph ball - spring ball - on ground - frames 0..9
+;     7Bh: Moving right - morph ball - spring ball - on ground - frames 0..9
+;     7Ch: Moving left  - morph ball - spring ball - on ground - frames 0..9
+;     7Dh: Facing right - morph ball - spring ball - falling - frames 0..9
+;     7Eh: Facing left  - morph ball - spring ball - falling - frames 0..9
+;     7Fh: Facing right - morph ball - spring ball - in air - frames 0..9
+;     80h: Facing left  - morph ball - spring ball - in air - frames 0..9
+;     81h: Facing right - screw attack - frames 19h..1Ah
+;     82h: Facing left  - screw attack - frames 19h..1Ah
+;     83h: Facing right - wall jump - frames 2..Ch
+;     83h: Facing right - wall jump - frames 15h..16h
+;     84h: Facing left  - wall jump - frames 2..Ch
+;     84h: Facing left  - wall jump - frames 15h..16h
+;     89h: Facing right - ran into a wall - frame 4
+;     8Ah: Facing left  - ran into a wall - frame 4
+;     9Bh: Facing forward - varia/gravity suit - frame 1
+;     A8h: Facing right - grappling - frame 4
+;     A9h: Facing left  - grappling - frame 4
+;     B4h: Facing right - grappling - crouching - frame 4
+;     B5h: Facing left  - grappling - crouching - frame 4
+;     C5h: Unused - frames 0..9
+;     CBh: Facing right - shinespark - vertical - frame 0
+;     CCh: Facing left  - shinespark - vertical - frame 0
+;     D3h: Facing right - crystal flash - frames 4..5
+;     D3h: Facing right - crystal flash - frames Ah..Bh
+;     D4h: Facing left  - crystal flash - frames 4..5
+;     D4h: Facing left  - crystal flash - frames Ah..Bh
+;     DBh: Unused - frames 1..2
+;     DCh: Unused - frames 1..2
+;     DDh: Unused - frames 0..1
+;     DEh: Unused - frames 0..1
+;     DFh: Unused. Related to Draygon - frames 0..9
+;     E8h: Facing right - Samus drained - crouching/falling - frames Ch..Dh
+;     E9h: Facing left  - Samus drained - crouching/falling - frames Ch..Dh
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 11h..12h
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 18h..19h
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 1Bh..1Ch
+;     E9h: Facing left  - Samus drained - crouching/falling - frames 1Eh..1Fh
+;     EAh: Facing right - Samus drained - standing - frame 4
+;     EBh: Facing left  - Samus drained - standing - frame 4
+}
+$92:D19E             dx 9D8000, 0080, 0080
+
+; 9: Moving right - not aiming - frame 2
+; Ah: Moving left  - not aiming - frame 2
+; Bh: Moving right - gun extended - frame 2
+; Ch: Moving left  - gun extended - frame 2
+; Dh: Moving right - aiming up (unused) - frame 2
+; Eh: Moving left  - aiming up (unused) - frame 2
+; Fh: Moving right - aiming up-right - frame 2
+; 10h: Moving left  - aiming up-left - frame 2
+; 11h: Moving right - aiming down-right - frame 2
+; 12h: Moving left  - aiming down-left - frame 2
+$92:D1A5             dx 9D8100, 00E0, 0080
+
+; 9: Moving right - not aiming - frame 4
+; Ah: Moving left  - not aiming - frame 4
+; Bh: Moving right - gun extended - frame 4
+; Ch: Moving left  - gun extended - frame 4
+; Dh: Moving right - aiming up (unused) - frame 4
+; Eh: Moving left  - aiming up (unused) - frame 4
+; Fh: Moving right - aiming up-right - frame 4
+; 10h: Moving left  - aiming up-left - frame 4
+; 11h: Moving right - aiming down-right - frame 4
+; 12h: Moving left  - aiming down-left - frame 4
+$92:D1AC             dx 9D8260, 00E0, 00C0
+
+; 9: Moving right - not aiming - frame 5
+; Ah: Moving left  - not aiming - frame 5
+; Bh: Moving right - gun extended - frame 5
+; Ch: Moving left  - gun extended - frame 5
+; Dh: Moving right - aiming up (unused) - frame 5
+; Eh: Moving left  - aiming up (unused) - frame 5
+; Fh: Moving right - aiming up-right - frame 5
+; 10h: Moving left  - aiming up-left - frame 5
+; 11h: Moving right - aiming down-right - frame 5
+; 12h: Moving left  - aiming down-left - frame 5
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 0
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 0
+; C7h: Facing right - vertical shinespark windup - frame 0
+; C8h: Facing left  - vertical shinespark windup - frame 0
+$92:D1B3             dx 9D8400, 0080, 0080
+
+; 9: Moving right - not aiming - frame 7
+; Ah: Moving left  - not aiming - frame 7
+; Bh: Moving right - gun extended - frame 7
+; Ch: Moving left  - gun extended - frame 7
+; Dh: Moving right - aiming up (unused) - frame 7
+; Eh: Moving left  - aiming up (unused) - frame 7
+; Fh: Moving right - aiming up-right - frame 7
+; 10h: Moving left  - aiming up-left - frame 7
+; 11h: Moving right - aiming down-right - frame 7
+; 12h: Moving left  - aiming down-left - frame 7
+$92:D1BA             dx 9D8500, 0100, 0080
+
+; 9: Moving right - not aiming - frame 9
+; Ah: Moving left  - not aiming - frame 9
+; Bh: Moving right - gun extended - frame 9
+; Ch: Moving left  - gun extended - frame 9
+; Dh: Moving right - aiming up (unused) - frame 9
+; Eh: Moving left  - aiming up (unused) - frame 9
+; Fh: Moving right - aiming up-right - frame 9
+; 10h: Moving left  - aiming up-left - frame 9
+; 11h: Moving right - aiming down-right - frame 9
+; 12h: Moving left  - aiming down-left - frame 9
+$92:D1C1             dx 9D8680, 00E0, 00C0
+
+; 1: Facing right - normal - frame 0
+; 1: Facing right - normal - frame 5
+; 2: Facing left  - normal - frame 0
+; 2: Facing left  - normal - frame 5
+; 47h: Unused - frame 0
+; 47h: Unused - frame 5
+; 48h: Unused - frame 0
+; 48h: Unused - frame 5
+; 89h: Facing right - ran into a wall - frame 0
+; 89h: Facing right - ran into a wall - frame 5
+; 8Ah: Facing left  - ran into a wall - frame 0
+; 8Ah: Facing left  - ran into a wall - frame 5
+; A4h: Facing right - landing from normal jump - frame 1
+; A5h: Facing left  - landing from normal jump - frame 1
+; A6h: Facing right - landing from spin jump - frame 2
+; A7h: Facing left  - landing from spin jump - frame 2
+; A8h: Facing right - grappling - frame 0
+; A8h: Facing right - grappling - frame 5
+; A9h: Facing left  - grappling - frame 0
+; A9h: Facing left  - grappling - frame 5
+; D5h: Facing right - x-ray - standing - frames 0..4
+; D6h: Facing left  - x-ray - standing - frames 0..4
+; E0h: Facing right - landing from normal jump - aiming up - frame 1
+; E1h: Facing left  - landing from normal jump - aiming up - frame 1
+; E2h: Facing right - landing from normal jump - aiming up-right - frame 1
+; E3h: Facing left  - landing from normal jump - aiming up-left - frame 1
+; E4h: Facing right - landing from normal jump - aiming down-right - frame 1
+; E5h: Facing left  - landing from normal jump - aiming down-left - frame 1
+; E6h: Facing right - landing from normal jump - firing - frame 1
+; E7h: Facing left  - landing from normal jump - firing - frame 1
+$92:D1C8             dx 9D8820, 00C0, 00C0
+
+; 27h: Facing right - crouching - frames 0..3
+; 27h: Facing right - crouching - frames 5..8
+; 28h: Facing left  - crouching - frames 0..3
+; 28h: Facing left  - crouching - frames 5..8
+; 71h: Facing right - crouching - aiming up-right - frame 0
+; 72h: Facing left  - crouching - aiming up-left - frame 0
+; 73h: Facing right - crouching - aiming down-right - frame 0
+; 74h: Facing left  - crouching - aiming down-left - frame 0
+; 85h: Facing right - crouching - aiming up - frames 0..1
+; 86h: Facing left  - crouching - aiming up - frames 0..1
+; B4h: Facing right - grappling - crouching - frames 0..3
+; B4h: Facing right - grappling - crouching - frames 5..8
+; B5h: Facing left  - grappling - crouching - frames 0..3
+; B5h: Facing left  - grappling - crouching - frames 5..8
+; B6h: Facing right - grappling - crouching - aiming down-right - frame 0
+; B7h: Facing left  - grappling - crouching - aiming down-left - frame 0
+; D9h: Facing right - x-ray - crouching - frames 0..4
+; DAh: Facing left  - x-ray - crouching - frames 0..4
+$92:D1CF             dx 9D89A0, 0080, 0080
+
+; 9: Moving right - not aiming - frame 1
+; Ah: Moving left  - not aiming - frame 1
+; Bh: Moving right - gun extended - frame 1
+; Ch: Moving left  - gun extended - frame 1
+; Dh: Moving right - aiming up (unused) - frame 1
+; Eh: Moving left  - aiming up (unused) - frame 1
+; Fh: Moving right - aiming up-right - frame 1
+; 10h: Moving left  - aiming up-left - frame 1
+; 11h: Moving right - aiming down-right - frame 1
+; 12h: Moving left  - aiming down-left - frame 1
+$92:D1D6             dx 9D8AA0, 00C0, 0080
+
+; 9: Moving right - not aiming - frame 3
+; Ah: Moving left  - not aiming - frame 3
+; Bh: Moving right - gun extended - frame 3
+; Ch: Moving left  - gun extended - frame 3
+; Dh: Moving right - aiming up (unused) - frame 3
+; Eh: Moving left  - aiming up (unused) - frame 3
+; Fh: Moving right - aiming up-right - frame 3
+; 10h: Moving left  - aiming up-left - frame 3
+; 11h: Moving right - aiming down-right - frame 3
+; 12h: Moving left  - aiming down-left - frame 3
+$92:D1DD             dx 9D8BE0, 0100, 0080
+
+; 9: Moving right - not aiming - frame 6
+; Ah: Moving left  - not aiming - frame 6
+; Bh: Moving right - gun extended - frame 6
+; Ch: Moving left  - gun extended - frame 6
+; Dh: Moving right - aiming up (unused) - frame 6
+; Eh: Moving left  - aiming up (unused) - frame 6
+; Fh: Moving right - aiming up-right - frame 6
+; 10h: Moving left  - aiming up-left - frame 6
+; 11h: Moving right - aiming down-right - frame 6
+; 12h: Moving left  - aiming down-left - frame 6
+$92:D1E4             dx 9D8D60, 00C0, 0080
+
+; 9: Moving right - not aiming - frame 8
+; Ah: Moving left  - not aiming - frame 8
+; Bh: Moving right - gun extended - frame 8
+; Ch: Moving left  - gun extended - frame 8
+; Dh: Moving right - aiming up (unused) - frame 8
+; Eh: Moving left  - aiming up (unused) - frame 8
+; Fh: Moving right - aiming up-right - frame 8
+; 10h: Moving left  - aiming up-left - frame 8
+; 11h: Moving right - aiming down-right - frame 8
+; 12h: Moving left  - aiming down-left - frame 8
+$92:D1EB             dx 9D8EA0, 0100, 0080
+
+; 0: Facing forward - power suit - frame 0
+$92:D1F2             dx 9D9020, 0100, 00C0
+
+; 9Bh: Facing forward - varia/gravity suit - frame 0
+$92:D1F9             dx 9D91E0, 0100, 00C0
+
+; 1: Facing right - normal - frame 1
+; 1: Facing right - normal - frame 3
+; 1: Facing right - normal - frame 6
+; 1: Facing right - normal - frame 8
+; 47h: Unused - frame 1
+; 47h: Unused - frame 3
+; 47h: Unused - frame 6
+; 47h: Unused - frame 8
+; 89h: Facing right - ran into a wall - frame 1
+; 89h: Facing right - ran into a wall - frame 3
+; 89h: Facing right - ran into a wall - frame 6
+; 89h: Facing right - ran into a wall - frame 8
+; A8h: Facing right - grappling - frame 1
+; A8h: Facing right - grappling - frame 3
+; A8h: Facing right - grappling - frame 6
+; A8h: Facing right - grappling - frame 8
+$92:D200             dx 9D93A0, 00C0, 00C0
+
+; 1: Facing right - normal - frame 2
+; 1: Facing right - normal - frame 7
+; 47h: Unused - frame 2
+; 47h: Unused - frame 7
+; 89h: Facing right - ran into a wall - frame 2
+; 89h: Facing right - ran into a wall - frame 7
+; A8h: Facing right - grappling - frame 2
+; A8h: Facing right - grappling - frame 7
+$92:D207             dx 9D9520, 00C0, 00C0
+
+; 2: Facing left  - normal - frame 1
+; 2: Facing left  - normal - frame 3
+; 2: Facing left  - normal - frame 6
+; 2: Facing left  - normal - frame 8
+; 48h: Unused - frame 1
+; 48h: Unused - frame 3
+; 48h: Unused - frame 6
+; 48h: Unused - frame 8
+; 8Ah: Facing left  - ran into a wall - frame 1
+; 8Ah: Facing left  - ran into a wall - frame 3
+; 8Ah: Facing left  - ran into a wall - frame 6
+; 8Ah: Facing left  - ran into a wall - frame 8
+; A9h: Facing left  - grappling - frame 1
+; A9h: Facing left  - grappling - frame 3
+; A9h: Facing left  - grappling - frame 6
+; A9h: Facing left  - grappling - frame 8
+$92:D20E             dx 9D96A0, 00C0, 00C0
+
+; 4Fh: Facing left  - damage boost - frame 0
+$92:D215             dx 9D9820, 00A0, 0040
+
+; 50h: Facing right - damage boost - frame 0
+$92:D21C             dx 9D9900, 00A0, 0040
+
+; 15h: Facing right - normal jump - aiming up - frame 1
+; 69h: Facing right - normal jump - aiming up-right - frame 1
+$92:D223             dx 9D99E0, 00A0, 0080
+
+; 16h: Facing left  - normal jump - aiming up - frame 1
+; 6Ah: Facing left  - normal jump - aiming up-left - frame 1
+$92:D22A             dx 9D9B00, 00A0, 0080
+
+; 25h: Facing right - turning - standing - frame 2
+; 26h: Facing left  - turning - standing - frame 0
+; 8Bh: Facing right - turning - standing - aiming up - frame 2
+; 8Ch: Facing left  - turning - standing - aiming up - frame 0
+; 8Dh: Facing right - turning - standing - aiming down-right - frame 2
+; 8Eh: Facing left  - turning - standing - aiming down-left - frame 0
+; 9Ch: Facing right - turning - standing - aiming up-right - frame 2
+; 9Dh: Facing left  - turning - standing - aiming up-left - frame 0
+; BFh: Facing right - moonwalking - turn/jump left - frame 2
+; C0h: Facing left  - moonwalking - turn/jump right - frame 0
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right - frame 2
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left - frame 0
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right - frame 2
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left - frame 0
+; C6h: Unused - frame 2
+$92:D231             dx 9D9C20, 00A0, 0080
+
+; 25h: Facing right - turning - standing - frame 0
+; 26h: Facing left  - turning - standing - frame 2
+; 8Bh: Facing right - turning - standing - aiming up - frame 0
+; 8Ch: Facing left  - turning - standing - aiming up - frame 2
+; 8Dh: Facing right - turning - standing - aiming down-right - frame 0
+; 8Eh: Facing left  - turning - standing - aiming down-left - frame 2
+; 9Ch: Facing right - turning - standing - aiming up-right - frame 0
+; 9Dh: Facing left  - turning - standing - aiming up-left - frame 2
+; BFh: Facing right - moonwalking - turn/jump left - frame 0
+; C0h: Facing left  - moonwalking - turn/jump right - frame 2
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right - frame 0
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left - frame 2
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right - frame 0
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left - frame 2
+; C6h: Unused - frame 0
+$92:D238             dx 9D9D40, 00A0, 0080
+
+; 2Fh: Facing right - turning - jumping - frame 2
+; 30h: Facing left  - turning - jumping - frame 0
+; 43h: Facing right - turning - crouching - frame 2
+; 44h: Facing left  - turning - crouching - frame 0
+; 87h: Facing right - turning - falling - frame 2
+; 88h: Facing left  - turning - falling - frame 0
+; 8Fh: Facing right - turning - in air - aiming up - frame 2
+; 90h: Facing left  - turning - in air - aiming up - frame 0
+; 91h: Facing right - turning - in air - aiming down/down-right - frame 2
+; 92h: Facing left  - turning - in air - aiming down/down-left - frame 0
+; 93h: Facing right - turning - falling - aiming up - frame 2
+; 94h: Facing left  - turning - falling - aiming up - frame 0
+; 95h: Facing right - turning - falling - aiming down/down-right - frame 2
+; 96h: Facing left  - turning - falling - aiming down/down-left - frame 0
+; 97h: Facing right - turning - crouching - aiming up - frame 2
+; 98h: Facing left  - turning - crouching - aiming up - frame 0
+; 99h: Facing right - turning - crouching - aiming down/down-right - frame 2
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left - frame 0
+; 9Eh: Facing right - turning - in air - aiming up-right - frame 2
+; 9Fh: Facing left  - turning - in air - aiming up-left - frame 0
+; A0h: Facing right - turning - falling - aiming up-right - frame 2
+; A1h: Facing left  - turning - falling - aiming up-left - frame 0
+; A2h: Facing right - turning - crouching - aiming up-right - frame 2
+; A3h: Facing left  - turning - crouching - aiming up-left - frame 0
+$92:D23F             dx 9D9E60, 0080, 0040
+
+; 2Fh: Facing right - turning - jumping - frame 0
+; 30h: Facing left  - turning - jumping - frame 2
+; 43h: Facing right - turning - crouching - frame 0
+; 44h: Facing left  - turning - crouching - frame 2
+; 87h: Facing right - turning - falling - frame 0
+; 88h: Facing left  - turning - falling - frame 2
+; 8Fh: Facing right - turning - in air - aiming up - frame 0
+; 90h: Facing left  - turning - in air - aiming up - frame 2
+; 91h: Facing right - turning - in air - aiming down/down-right - frame 0
+; 92h: Facing left  - turning - in air - aiming down/down-left - frame 2
+; 93h: Facing right - turning - falling - aiming up - frame 0
+; 94h: Facing left  - turning - falling - aiming up - frame 2
+; 95h: Facing right - turning - falling - aiming down/down-right - frame 0
+; 96h: Facing left  - turning - falling - aiming down/down-left - frame 2
+; 97h: Facing right - turning - crouching - aiming up - frame 0
+; 98h: Facing left  - turning - crouching - aiming up - frame 2
+; 99h: Facing right - turning - crouching - aiming down/down-right - frame 0
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left - frame 2
+; 9Eh: Facing right - turning - in air - aiming up-right - frame 0
+; 9Fh: Facing left  - turning - in air - aiming up-left - frame 2
+; A0h: Facing right - turning - falling - aiming up-right - frame 0
+; A1h: Facing left  - turning - falling - aiming up-left - frame 2
+; A2h: Facing right - turning - crouching - aiming up-right - frame 0
+; A3h: Facing left  - turning - crouching - aiming up-left - frame 2
+$92:D246             dx 9D9F20, 0080, 0040
+
+; 5Ch: Unused - frame 0
+; 64h: Unused. Related to movement type Dh - frame 1
+; B9h: Facing right - grapple wall jump pose - frame 0
+$92:D24D             dx 9D9FE0, 0080, 0080
+
+; 45h: Unused - frame 0
+; 46h: Unused - frame 0
+; 5Bh: Unused - frame 0
+; 63h: Unused. Related to movement type Dh - frame 1
+; B8h: Facing left  - grapple wall jump pose - frame 0
+$92:D254             dx 9DA0E0, 0080, 0080
+
+; C9h: Facing right - shinespark - horizontal - frame 0
+; CDh: Facing right - shinespark - diagonal - frame 0
+$92:D25B             dx 9DA1E0, 00C0, 0080
+
+; CAh: Facing left  - shinespark - horizontal - frame 0
+; CEh: Facing left  - shinespark - diagonal - frame 0
+$92:D262             dx 9DA320, 00C0, 0080
+
+; 2: Facing left  - normal - frame 2
+; 2: Facing left  - normal - frame 7
+; 48h: Unused - frame 2
+; 48h: Unused - frame 7
+; 8Ah: Facing left  - ran into a wall - frame 2
+; 8Ah: Facing left  - ran into a wall - frame 7
+; A9h: Facing left  - grappling - frame 2
+; A9h: Facing left  - grappling - frame 7
+$92:D269             dx 9DA460, 00C0, 00C0
+
+; 19h: Facing right - spin jump - frame Bh
+; 1Bh: Facing right - space jump - frame Bh
+; 20h: Unused - frame Bh
+; 21h: Unused - frame Bh
+; 22h: Unused - frame Bh
+; 23h: Unused - frame Bh
+; 24h: Unused - frame Bh
+; 33h: Unused - frame Bh
+; 34h: Unused - frame Bh
+; 39h: Unused - frame Bh
+; 3Ah: Unused - frame Bh
+; 42h: Unused - frame Bh
+; 81h: Facing right - screw attack - frame 1Bh
+$92:D270             dx 9DA5E0, 0080, 0080
+
+; 1Ah: Facing left  - spin jump - frame Bh
+; 1Ch: Facing left  - space jump - frame Bh
+; 82h: Facing left  - screw attack - frame 1Bh
+$92:D277             dx 9DA6E0, 0080, 0080
+}
+
+
+;;; $D27E: Samus bottom tiles - set 1 (general) ;;;
+{
+; 49h: Facing left  - moonwalk - frame 3
+; 4Ah: Facing right - moonwalk - frame 3
+; 75h: Facing left  - moonwalk - aiming up-left - frame 3
+; 76h: Facing right - moonwalk - aiming up-right - frame 3
+; 77h: Facing left  - moonwalk - aiming down-left - frame 3
+; 78h: Facing right - moonwalk - aiming down-right - frame 3
+$92:D27E             dx 9DA7E0, 00C0, 0080
+
+; 25h: Facing right - turning - standing - frame 1
+; 26h: Facing left  - turning - standing - frame 1
+; 8Bh: Facing right - turning - standing - aiming up - frame 1
+; 8Ch: Facing left  - turning - standing - aiming up - frame 1
+; 8Dh: Facing right - turning - standing - aiming down-right - frame 1
+; 8Eh: Facing left  - turning - standing - aiming down-left - frame 1
+; 9Ch: Facing right - turning - standing - aiming up-right - frame 1
+; 9Dh: Facing left  - turning - standing - aiming up-left - frame 1
+; BFh: Facing right - moonwalking - turn/jump left - frame 1
+; C0h: Facing left  - moonwalking - turn/jump right - frame 1
+; C1h: Facing right - moonwalking - turn/jump left  - aiming up-right - frame 1
+; C2h: Facing left  - moonwalking - turn/jump right - aiming up-left - frame 1
+; C3h: Facing right - moonwalking - turn/jump left  - aiming down-right - frame 1
+; C4h: Facing left  - moonwalking - turn/jump right - aiming down-left - frame 1
+; C6h: Unused - frame 1
+$92:D285             dx 9DA920, 0080, 0080
+
+; 2Fh: Facing right - turning - jumping - frame 1
+; 30h: Facing left  - turning - jumping - frame 1
+; 43h: Facing right - turning - crouching - frame 1
+; 44h: Facing left  - turning - crouching - frame 1
+; 87h: Facing right - turning - falling - frame 1
+; 88h: Facing left  - turning - falling - frame 1
+; 8Fh: Facing right - turning - in air - aiming up - frame 1
+; 90h: Facing left  - turning - in air - aiming up - frame 1
+; 91h: Facing right - turning - in air - aiming down/down-right - frame 1
+; 92h: Facing left  - turning - in air - aiming down/down-left - frame 1
+; 93h: Facing right - turning - falling - aiming up - frame 1
+; 94h: Facing left  - turning - falling - aiming up - frame 1
+; 95h: Facing right - turning - falling - aiming down/down-right - frame 1
+; 96h: Facing left  - turning - falling - aiming down/down-left - frame 1
+; 97h: Facing right - turning - crouching - aiming up - frame 1
+; 98h: Facing left  - turning - crouching - aiming up - frame 1
+; 99h: Facing right - turning - crouching - aiming down/down-right - frame 1
+; 9Ah: Facing left  - turning - crouching - aiming down/down-left - frame 1
+; 9Eh: Facing right - turning - in air - aiming up-right - frame 1
+; 9Fh: Facing left  - turning - in air - aiming up-left - frame 1
+; A0h: Facing right - turning - falling - aiming up-right - frame 1
+; A1h: Facing left  - turning - falling - aiming up-left - frame 1
+; A2h: Facing right - turning - crouching - aiming up-right - frame 1
+; A3h: Facing left  - turning - crouching - aiming up-left - frame 1
+$92:D28C             dx 9DAA20, 0040, 0040
+
+; 49h: Facing left  - moonwalk - frame 0
+; 4Ah: Facing right - moonwalk - frame 0
+; 75h: Facing left  - moonwalk - aiming up-left - frame 0
+; 76h: Facing right - moonwalk - aiming up-right - frame 0
+; 77h: Facing left  - moonwalk - aiming down-left - frame 0
+; 78h: Facing right - moonwalk - aiming down-right - frame 0
+$92:D293             dx 9DAAA0, 00C0, 0080
+
+; 49h: Facing left  - moonwalk - frame 1
+; 4Ah: Facing right - moonwalk - frame 1
+; 75h: Facing left  - moonwalk - aiming up-left - frame 1
+; 76h: Facing right - moonwalk - aiming up-right - frame 1
+; 77h: Facing left  - moonwalk - aiming down-left - frame 1
+; 78h: Facing right - moonwalk - aiming down-right - frame 1
+$92:D29A             dx 9DABE0, 0080, 0080
+
+; 49h: Facing left  - moonwalk - frame 4
+; 4Ah: Facing right - moonwalk - frame 4
+; 75h: Facing left  - moonwalk - aiming up-left - frame 4
+; 76h: Facing right - moonwalk - aiming up-right - frame 4
+; 77h: Facing left  - moonwalk - aiming down-left - frame 4
+; 78h: Facing right - moonwalk - aiming down-right - frame 4
+$92:D2A1             dx 9DACE0, 0080, 0080
+
+; 35h: Facing right - crouching transition - frame 0
+; 3Bh: Facing right - standing transition - frame 0
+; 4Bh: Facing right - normal jump transition - frame 0
+; 55h: Facing right - normal jump transition - aiming up - frame 0
+; 57h: Facing right - normal jump transition - aiming up-right - frame 0
+; 59h: Facing right - normal jump transition - aiming down-right - frame 0
+; A4h: Facing right - landing from normal jump - frame 0
+; A6h: Facing right - landing from spin jump - frame 1
+; D3h: Facing right - crystal flash - frame Eh
+; D7h: Facing right - crystal flash ending - frames 0..3
+; D8h: Facing left  - crystal flash ending - frames 0..2
+; DBh: Unused - frame 0
+; DCh: Unused - frame 0
+; DDh: Unused - frame 2
+; DEh: Unused - frame 2
+; E0h: Facing right - landing from normal jump - aiming up - frame 0
+; E2h: Facing right - landing from normal jump - aiming up-right - frame 0
+; E4h: Facing right - landing from normal jump - aiming down-right - frame 0
+; E6h: Facing right - landing from normal jump - firing - frame 0
+; E8h: Facing right - Samus drained - crouching/falling - frames 0..2
+; E8h: Facing right - Samus drained - crouching/falling - frame Eh
+; E9h: Facing left  - Samus drained - crouching/falling - frames 0..1
+; EAh: Facing right - Samus drained - standing - frame 5
+; F1h: Facing right - crouching transition - aiming up - frame 0
+; F3h: Facing right - crouching transition - aiming up-right - frame 0
+; F5h: Facing right - crouching transition - aiming down-right - frame 0
+; F7h: Facing right - standing transition - aiming up - frame 0
+; F9h: Facing right - standing transition - aiming up-right - frame 0
+; FBh: Facing right - standing transition - aiming down-right - frame 0
+$92:D2A8             dx 9DADE0, 00C0, 0080
+
+; 36h: Facing left  - crouching transition - frame 0
+; 3Ch: Facing left  - standing transition - frame 0
+; 4Ch: Facing left  - normal jump transition - frame 0
+; 56h: Facing left  - normal jump transition - aiming up - frame 0
+; 58h: Facing left  - normal jump transition - aiming up-left - frame 0
+; 5Ah: Facing left  - normal jump transition - aiming down-left - frame 0
+; A5h: Facing left  - landing from normal jump - frame 0
+; A7h: Facing left  - landing from spin jump - frame 1
+; D4h: Facing left  - crystal flash - frame Eh
+; D8h: Facing left  - crystal flash ending - frame 3
+; E1h: Facing left  - landing from normal jump - aiming up - frame 0
+; E3h: Facing left  - landing from normal jump - aiming up-left - frame 0
+; E5h: Facing left  - landing from normal jump - aiming down-left - frame 0
+; E7h: Facing left  - landing from normal jump - firing - frame 0
+; E9h: Facing left  - Samus drained - crouching/falling - frame 7
+; E9h: Facing left  - Samus drained - crouching/falling - frame Fh
+; E9h: Facing left  - Samus drained - crouching/falling - frame 14h
+; E9h: Facing left  - Samus drained - crouching/falling - frame 16h
+; EBh: Facing left  - Samus drained - standing - frame 5
+; F2h: Facing left  - crouching transition - aiming up - frame 0
+; F4h: Facing left  - crouching transition - aiming up-left - frame 0
+; F6h: Facing left  - crouching transition - aiming down-left - frame 0
+; F8h: Facing left  - standing transition - aiming up - frame 0
+; FAh: Facing left  - standing transition - aiming up-left - frame 0
+; FCh: Facing left  - standing transition - aiming down-left - frame 0
+$92:D2AF             dx 9DAF20, 00C0, 0080
+
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frames 2..3
+; C7h: Facing right - vertical shinespark windup - frames 2..3
+; F0h: Facing right - grabbed by Draygon - moving - frame 5
+$92:D2B6             dx 9DB060, 00E0, 0040
+
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frames 2..3
+; BEh: Facing left  - grabbed by Draygon - moving - frame 5
+; C8h: Facing left  - vertical shinespark windup - frames 2..3
+$92:D2BD             dx 9DB180, 00E0, 0040
+
+; 13h: Facing right - normal jump - not aiming - not moving - gun extended - frame 0
+; 15h: Facing right - normal jump - aiming up - frame 0
+; 17h: Facing right - normal jump - aiming down - frame 0
+; 29h: Facing right - falling - frame 0
+; 29h: Facing right - falling - frame 5
+; 2Bh: Facing right - falling - aiming up - frame 0
+; 2Dh: Facing right - falling - aiming down - frame 0
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 4
+; 50h: Facing right - damage boost - frame 1
+; 51h: Facing right - normal jump - not aiming - moving forward - frame 0
+; 67h: Facing right - falling - gun extended - frame 0
+; 67h: Facing right - falling - gun extended - frame 5
+; 69h: Facing right - normal jump - aiming up-right - frame 0
+; 6Bh: Facing right - normal jump - aiming down-right - frame 0
+; 6Dh: Facing right - falling - aiming up-right - frame 0
+; 6Fh: Facing right - falling - aiming down-right - frame 0
+; ACh: Unused. Facing right - grappling - in air - frame 0
+; AEh: Unused. Facing right - grappling - in air - aiming down - frame 0
+; B0h: Unused. Facing right - grappling - in air - aiming down-right - frame 0
+; C7h: Facing right - vertical shinespark windup - frame 4
+$92:D2C4             dx 9DB2A0, 00A0, 0080
+
+; 14h: Facing left  - normal jump - not aiming - not moving - gun extended - frame 0
+; 16h: Facing left  - normal jump - aiming up - frame 0
+; 18h: Facing left  - normal jump - aiming down - frame 0
+; 2Ah: Facing left  - falling - frame 0
+; 2Ah: Facing left  - falling - frame 5
+; 2Ch: Facing left  - falling - aiming up - frame 0
+; 2Eh: Facing left  - falling - aiming down - frame 0
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 4
+; 4Fh: Facing left  - damage boost - frame 1
+; 52h: Facing left  - normal jump - not aiming - moving forward - frame 0
+; 68h: Facing left  - falling - gun extended - frame 0
+; 68h: Facing left  - falling - gun extended - frame 5
+; 6Ah: Facing left  - normal jump - aiming up-left - frame 0
+; 6Ch: Facing left  - normal jump - aiming down-left - frame 0
+; 6Eh: Facing left  - falling - aiming up-left - frame 0
+; 70h: Facing left  - falling - aiming down-left - frame 0
+; ADh: Unused. Facing left  - grappling - in air - frame 0
+; AFh: Unused. Facing left  - grappling - in air - aiming down - frame 0
+; B1h: Unused. Facing left  - grappling - in air - aiming down-left - frame 0
+; C8h: Facing left  - vertical shinespark windup - frame 4
+$92:D2CB             dx 9DB3C0, 00A0, 0080
+
+; 29h: Facing right - falling - frames 1..2
+; 2Bh: Facing right - falling - aiming up - frame 1
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 5
+; 53h: Facing right - knockback - frame 0
+; 67h: Facing right - falling - gun extended - frames 1..2
+; 6Dh: Facing right - falling - aiming up-right - frame 1
+; 6Fh: Facing right - falling - aiming down-right - frame 1
+; C7h: Facing right - vertical shinespark windup - frame 5
+; D7h: Facing right - crystal flash ending - frame 4
+; E8h: Facing right - Samus drained - crouching/falling - frames 3..7
+; F0h: Facing right - grabbed by Draygon - moving - frame 0
+; F0h: Facing right - grabbed by Draygon - moving - frame 3
+$92:D2D2             dx 9DB4E0, 0080, 0080
+
+; 2Ah: Facing left  - falling - frames 1..2
+; 2Ch: Facing left  - falling - aiming up - frame 1
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 5
+; 54h: Facing left  - knockback - frame 0
+; 68h: Facing left  - falling - gun extended - frames 1..2
+; 6Eh: Facing left  - falling - aiming up-left - frame 1
+; 70h: Facing left  - falling - aiming down-left - frame 1
+; BEh: Facing left  - grabbed by Draygon - moving - frame 0
+; BEh: Facing left  - grabbed by Draygon - moving - frame 3
+; C8h: Facing left  - vertical shinespark windup - frame 5
+; D8h: Facing left  - crystal flash ending - frame 4
+; E9h: Facing left  - Samus drained - crouching/falling - frames 2..6
+$92:D2D9             dx 9DB5E0, 0080, 0080
+
+; 4Dh: Facing right - normal jump - not aiming - not moving - gun not extended - frame 1
+; C7h: Facing right - vertical shinespark windup - frame 1
+; F0h: Facing right - grabbed by Draygon - moving - frame 4
+$92:D2E0             dx 9DB6E0, 00C0, 0040
+
+; 4Eh: Facing left  - normal jump - not aiming - not moving - gun not extended - frame 1
+; BEh: Facing left  - grabbed by Draygon - moving - frame 4
+; C8h: Facing left  - vertical shinespark windup - frame 1
+$92:D2E7             dx 9DB7E0, 00C0, 0040
 
 ; Unused
-$92:D44C             dx 9FA0E0,00A0,0080
-$92:D453             dx 9FA200,0080,0080
-$92:D45A             dx 9FA300,0080,0080
+$92:D2EE             dx 9DB8E0, 0020, 0000
 
-; 5Dh: Unused
-; 5Eh: Unused
-; 5Fh: Unused
-; 60h: Unused
-; 61h: Unused
-; B2h: Facing clockwise - grapple
-$92:D461             dx 9FA400,0080,0080
-$92:D468             dx 9FA500,00A0,0040
-$92:D46F             dx 9FA5E0,0080,0080
-$92:D476             dx 9FA6E0,0080,0080
-$92:D47D             dx 9FA7E0,00A0,0040
-$92:D484             dx 9FA8C0,0080,0080
-$92:D48B             dx 9FA9C0,0080,0080
-$92:D492             dx 9FAAC0,0080,0080
-$92:D499             dx 9FABC0,0080,0080
+; 17h: Facing right - normal jump - aiming down - frame 1
+; 2Dh: Facing right - falling - aiming down - frame 1
+; AEh: Unused. Facing right - grappling - in air - aiming down - frame 1
+$92:D2F5             dx 9DB900, 00E0, 0040
 
-; Unused
-$92:D4A0             dx 9FACC0,0080,0080
-}
+; 18h: Facing left  - normal jump - aiming down - frame 1
+; 2Eh: Facing left  - falling - aiming down - frame 1
+; AFh: Unused. Facing left  - grappling - in air - aiming down - frame 1
+$92:D2FC             dx 9DBA20, 00E0, 0040
 
+; 65h: Unused. Related to movement type Dh - frame 0
+; 83h: Facing right - wall jump - frame 0
+$92:D303             dx 9DBB40, 0100, 0040
 
-;;; $D4A7: Samus bottom tiles - 5 ;;;
-{
-; 62h: Unused
-; B3h: Facing anticlockwise - grapple
-$92:D4A7             dx 9FADC0,0080,0040
-$92:D4AE             dx 9FAE80,00E0,0040
-$92:D4B5             dx 9FAFA0,00A0,0080
-$92:D4BC             dx 9FB0C0,00A0,0040
-$92:D4C3             dx 9FB1A0,00C0,0040
-$92:D4CA             dx 9FB2A0,00C0,0040
-$92:D4D1             dx 9FB3A0,0080,0040
-$92:D4D8             dx 9FB460,00A0,0040
-$92:D4DF             dx 9FB540,00A0,0040
-$92:D4E6             dx 9FB620,00C0,0040
+; 66h: Unused. Related to movement type Dh - frame 0
+; 84h: Facing left  - wall jump - frame 0
+$92:D30A             dx 9DBC80, 00C0, 0040
 
-; Unused
-$92:D4ED             dx 9FB720,00A0,0080
+; 49h: Facing left  - moonwalk - frame 2
+; 63h: Unused. Related to movement type Dh - frame 0
+$92:D311             dx 9DBD80, 00A0, 0080
 
-; 62h: Unused
-; B3h: Facing anticlockwise - grapple
-$92:D4F4             dx 9FB840,0080,0080
-$92:D4FB             dx 9FB940,0080,0080
-$92:D502             dx 9FBA40,0080,0080
-$92:D509             dx 9FBB40,00A0,0040
-$92:D510             dx 9FBC20,0080,0080
-$92:D517             dx 9FBD20,0080,0080
-$92:D51E             dx 9FBE20,00A0,0040
-$92:D525             dx 9FBF00,0080,0080
-$92:D52C             dx 9FC000,0080,0080
-$92:D533             dx 9FC100,0080,0080
-$92:D53A             dx 9FC200,00C0,0080
-$92:D541             dx 9FC340,0080,0080
+; 49h: Facing left  - moonwalk - frame 5
+; 64h: Unused. Related to movement type Dh - frame 0
+$92:D318             dx 9DBEA0, 00A0, 0080
 
-; Unused
-$92:D548             dx 9FC440,0080,0080
-}
+; 4Ah: Facing right - moonwalk - frame 2
+; 75h: Facing left  - moonwalk - aiming up-left - frame 2
+; 76h: Facing right - moonwalk - aiming up-right - frame 2
+; 77h: Facing left  - moonwalk - aiming down-left - frame 2
+; 78h: Facing right - moonwalk - aiming down-right - frame 2
+$92:D31F             dx 9DBFC0, 00A0, 0080
 
+; 4Ah: Facing right - moonwalk - frame 5
+; 75h: Facing left  - moonwalk - aiming up-left - frame 5
+; 76h: Facing right - moonwalk - aiming up-right - frame 5
+; 77h: Facing left  - moonwalk - aiming down-left - frame 5
+; 78h: Facing right - moonwalk - aiming down-right - frame 5
+$92:D326             dx 9DC0E0, 00A0, 0080
 
-;;; $D54F: Samus bottom tiles - 6 ;;;
-{
-; 62h: Unused
-; B3h: Facing anticlockwise - grapple
-$92:D54F             dx 9FC540,0080,0040
-$92:D556             dx 9FC600,00E0,0040
-$92:D55D             dx 9FC720,00A0,0080
-$92:D564             dx 9FC840,00A0,0040
-$92:D56B             dx 9FC920,00C0,0040
-$92:D572             dx 9FCA20,00C0,0040
-$92:D579             dx 9FCB20,0080,0040
-$92:D580             dx 9FCBE0,00A0,0040
-$92:D587             dx 9FCCC0,00A0,0040
-$92:D58E             dx 9FCDA0,00C0,0040
+; 13h: Facing right - normal jump - not aiming - not moving - gun extended - frame 1
+; 19h: Facing right - spin jump - frame 0
+; 1Bh: Facing right - space jump - frame 0
+; 20h: Unused - frame 0
+; 21h: Unused - frame 0
+; 22h: Unused - frame 0
+; 23h: Unused - frame 0
+; 24h: Unused - frame 0
+; 29h: Facing right - falling - frame 6
+; 2Bh: Facing right - falling - aiming up - frame 2
+; 33h: Unused - frame 0
+; 34h: Unused - frame 0
+; 39h: Unused - frame 0
+; 3Ah: Unused - frame 0
+; 42h: Unused - frame 0
+; 50h: Facing right - damage boost - frame 9
+; 51h: Facing right - normal jump - not aiming - moving forward - frame 1
+; 67h: Facing right - falling - gun extended - frame 6
+; 6Bh: Facing right - normal jump - aiming down-right - frame 1
+; 6Dh: Facing right - falling - aiming up-right - frame 2
+; 6Fh: Facing right - falling - aiming down-right - frame 2
+; 81h: Facing right - screw attack - frame 0
+; 83h: Facing right - wall jump - frame 1
+; A6h: Facing right - landing from spin jump - frame 0
+; ACh: Unused. Facing right - grappling - in air - frame 1
+; B0h: Unused. Facing right - grappling - in air - aiming down-right - frame 1
+; F0h: Facing right - grabbed by Draygon - moving - frame 2
+$92:D32D             dx 9DC200, 00E0, 0080
 
-; Unused
-$92:D595             dx 9FCEA0,00A0,0080
-$92:D59C             dx 9FCFC0,0080,0080
-$92:D5A3             dx 9FD0C0,0080,0080
+; 14h: Facing left  - normal jump - not aiming - not moving - gun extended - frame 1
+; 1Ah: Facing left  - spin jump - frame 0
+; 1Ch: Facing left  - space jump - frame 0
+; 2Ah: Facing left  - falling - frame 6
+; 2Ch: Facing left  - falling - aiming up - frame 2
+; 4Fh: Facing left  - damage boost - frame 9
+; 52h: Facing left  - normal jump - not aiming - moving forward - frame 1
+; 68h: Facing left  - falling - gun extended - frame 6
+; 6Ch: Facing left  - normal jump - aiming down-left - frame 1
+; 6Eh: Facing left  - falling - aiming up-left - frame 2
+; 70h: Facing left  - falling - aiming down-left - frame 2
+; 82h: Facing left  - screw attack - frame 0
+; 84h: Facing left  - wall jump - frame 1
+; A7h: Facing left  - landing from spin jump - frame 0
+; ADh: Unused. Facing left  - grappling - in air - frame 1
+; B1h: Unused. Facing left  - grappling - in air - aiming down-left - frame 1
+; BEh: Facing left  - grabbed by Draygon - moving - frame 2
+; E9h: Facing left  - Samus drained - crouching/falling - frame Eh
+; E9h: Facing left  - Samus drained - crouching/falling - frame 13h
+; E9h: Facing left  - Samus drained - crouching/falling - frame 17h
+$92:D334             dx 9DC360, 00E0, 0080
 
-; 62h: Unused
-; B3h: Facing anticlockwise - grapple
-$92:D5AA             dx 9FD1C0,0080,0080
-$92:D5B1             dx 9FD2C0,00A0,0040
-$92:D5B8             dx 9FD3A0,0080,0080
-$92:D5BF             dx 9FD4A0,0080,0080
-$92:D5C6             dx 9FD5A0,00A0,0040
-$92:D5CD             dx 9FD680,0080,0080
-$92:D5D4             dx 9FD780,0080,0080
-$92:D5DB             dx 9FD880,0080,0080
-$92:D5E2             dx 9FD980,0080,0080
-$92:D5E9             dx 9FDA80,0080,0080
-}
+; 53h: Facing right - knockback - frame 1
+; D7h: Facing right - crystal flash ending - frame 5
+; ECh: Facing right - grabbed by Draygon - not moving - not aiming - frame 0
+; EDh: Facing right - grabbed by Draygon - not moving - aiming up-right - frame 0
+; EEh: Facing right - grabbed by Draygon - firing - frame 0
+; EFh: Facing right - grabbed by Draygon - not moving - aiming down-right - frame 0
+; F0h: Facing right - grabbed by Draygon - moving - frame 1
+$92:D33B             dx 9DC4C0, 00C0, 0080
 
-
-;;; $D5F0: Samus bottom tiles - 8 ;;;
-{
-; 0: Facing forward - power suit
-$92:D5F0             dx 9BEA00,0100,0100
-
-; 9Bh: Facing forward - varia/gravity suit
-$92:D5F7             dx 9BEC00,0100,0100
-
-; Unused
-$92:D5FE             dx 9BEE00,0020,0000
-}
-
-
-;;; $D605: Samus bottom tiles - Ah ;;;
-{
-; 3: Facing right - aiming up
-; 5: Facing right - aiming up-right
-; 7: Facing right - aiming down-right
-; AAh: Unused
-; CFh: Facing right - ran into a wall - aiming up-right
-; D1h: Facing right - ran into a wall - aiming down-right
-$92:D605             dx 9FEB00,00C0,0080
-
-; 4: Facing left - aiming up
-; 6: Facing left - aiming up-left
-; 8: Facing left - aiming down-left
-; ABh: Unused
-; D0h: Facing left - ran into a wall - aiming up-left
-; D2h: Facing left - ran into a wall - aiming down-left
-; E9h: Facing left - Samus drained - crouching
-$92:D60C             dx 9FEC40,00C0,0080
-}
-
-
-;;; $D613: Samus top tiles - Ah ;;;
-{
-; 1Dh: Facing right - morph ball - no springball - on ground
-; 1Eh: Moving right - morph ball - no springball - on ground
-; 1Fh: Moving left - morph ball - no springball - on ground
-; 31h: Facing right - morph ball - no springball - in air
-; 32h: Facing left - morph ball - no springball - in air
-; 3Fh: Unused
-; 40h: Unused
-; 41h: Facing left - morph ball - no springball - on ground
-; 79h: Facing right - morph ball - spring ball - on ground
-; 7Ah: Facing left - morph ball - spring ball - on ground
-; 7Bh: Moving right - morph ball - spring ball - on ground
-; 7Ch: Moving left - morph ball - spring ball - on ground
-; 7Dh: Facing right - morph ball - spring ball - falling
-; 7Eh: Facing left - morph ball - spring ball - falling
-; 7Fh: Facing right - morph ball - spring ball - in air
-; 80h: Facing left - morph ball - spring ball - in air
-; C5h: Unused
-; D7h: Facing right - crystal flash ending
-; DFh: Unused
-; E8h: Facing right - Samus drained - crouching
-$92:D613             dx 9C8000,0060,0040
-$92:D61A             dx 9C80A0,0060,0040
-$92:D621             dx 9C8140,0060,0040
-$92:D628             dx 9C81E0,0060,0040
-$92:D62F             dx 9C8280,00A0,0000
-$92:D636             dx 9C8320,0060,0040
-$92:D63D             dx 9C83C0,0060,0040
-$92:D644             dx 9C8460,0060,0040
-
-; 19h: Facing right - spin jump
-; 1Ah: Facing left - spin jump
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 33h: Unused
-; 34h: Unused
-; 39h: Unused
-; 3Ah: Unused
-; 42h: Unused
-; 83h: Facing right - wall jump
-; 84h: Facing left - wall jump
-$92:D64B             dx 9C8500,0080,0080
-
-; 19h: Facing right - spin jump
-; 1Ah: Facing left - spin jump
-; 20h: Unused
-; 21h: Unused
-; 22h: Unused
-; 23h: Unused
-; 24h: Unused
-; 33h: Unused
-; 34h: Unused
-; 39h: Unused
-; 3Ah: Unused
-; 42h: Unused
-; 4Fh: Facing left - damage boost
-; 50h: Facing right - damage boost
-; 83h: Facing right - wall jump
-; 84h: Facing left - wall jump
-$92:D652             dx 9C8600,0100,0100
-$92:D659             dx 9C8800,0080,0080
-$92:D660             dx 9C8900,0100,0100
-$92:D667             dx 9C8B00,0080,0080
-$92:D66E             dx 9C8C00,0100,0100
-$92:D675             dx 9C8E00,0080,0080
-$92:D67C             dx 9C8F00,0100,0100
-
-; 65h: Unused
-; 66h: Unused
-; 81h: Facing right - screw attack
-; 82h: Facing left - screw attack
-; 83h: Facing right - wall jump
-; 84h: Facing left - wall jump
-$92:D683             dx 9C9100,0100,0040
-$92:D68A             dx 9C9240,0100,0060
-$92:D691             dx 9C93A0,0100,0060
-$92:D698             dx 9C9500,0100,0000
-
-; 1Bh: Facing right - space jump
-; 1Ch: Facing left - space jump
-; 65h: Unused
-; 66h: Unused
-; 81h: Facing right - screw attack
-; 82h: Facing left - screw attack
-; 83h: Facing right - wall jump
-; 84h: Facing left - wall jump
-$92:D69F             dx 9C9600,0020,0000
-}
-
-
-;;; $D6A6: Samus top tiles - Bh ;;;
-{
-; 65h: Unused
-; 66h: Unused
-$92:D6A6             dx 9C9620,0020,0000
-
-; 1Dh: Facing right - morph ball - no springball - on ground
-; 1Eh: Moving right - morph ball - no springball - on ground
-; 1Fh: Moving left - morph ball - no springball - on ground
-; 31h: Facing right - morph ball - no springball - in air
-; 32h: Facing left - morph ball - no springball - in air
-; 3Fh: Unused
-; 40h: Unused
-; 41h: Facing left - morph ball - no springball - on ground
-; 65h: Unused
-; 66h: Unused
-; 79h: Facing right - morph ball - spring ball - on ground
-; 7Ah: Facing left - morph ball - spring ball - on ground
-; 7Bh: Moving right - morph ball - spring ball - on ground
-; 7Ch: Moving left - morph ball - spring ball - on ground
-; 7Dh: Facing right - morph ball - spring ball - falling
-; 7Eh: Facing left - morph ball - spring ball - falling
-; 7Fh: Facing right - morph ball - spring ball - in air
-; 80h: Facing left - morph ball - spring ball - in air
-; C5h: Unused
-; DFh: Unused
-$92:D6AD             dx 9C9640,0060,0040
-
-; 65h: Unused
-; 66h: Unused
-$92:D6B4             dx 9C96E0,0060,0040
-
-; 38h: Facing left - morphing transition
-; 3Eh: Facing left - unmorphing transition
-; D4h: Facing left - crystal flash
-; D8h: Facing left - crystal flash ending
-; DCh: Unused
-; DEh: Unused
-; E9h: Facing left - Samus drained - crouching
-$92:D6BB             dx 9C9780,0080,0040
-$92:D6C2             dx 9C9840,00C0,0040
-
-; 37h: Facing right - morphing transition
-; 3Dh: Facing right - unmorphing transition
-; D3h: Facing right - crystal flash
-; D7h: Facing right - crystal flash ending
-; DBh: Unused
-; DDh: Unused
-; E8h: Facing right - Samus drained - crouching
-$92:D6C9             dx 9C9940,0080,0040
-$92:D6D0             dx 9C9A00,00C0,0040
-}
-
-
-;;; $D6D7: Samus bottom tiles - 3 ;;;
-{
-; Unused
-$92:D6D7             dx 9EE9C0,0040,0040
-$92:D6DE             dx 9EEA40,0080,0080
-$92:D6E5             dx 9EEB40,0040,0040
-
-; D8h: Facing left - crystal flash ending
-$92:D6EC             dx 9EEBC0,0080,0080
+; 54h: Facing left  - knockback - frame 1
+; BAh: Facing left  - grabbed by Draygon - not moving - not aiming - frame 0
+; BBh: Facing left  - grabbed by Draygon - not moving - aiming up-left - frame 0
+; BCh: Facing left  - grabbed by Draygon - firing - frame 0
+; BDh: Facing left  - grabbed by Draygon - not moving - aiming down-left - frame 0
+; BEh: Facing left  - grabbed by Draygon - moving - frame 1
+; D8h: Facing left  - crystal flash ending - frame 5
+$92:D342             dx 9DC600, 00C0, 0080
 
 ; Unused
-$92:D6F3             dx 9EECC0,0040,0040
-$92:D6FA             dx 9EED40,0080,0080
-$92:D701             dx 9EEE40,0040,0040
-$92:D708             dx 9EEEC0,0080,0080
-$92:D70F             dx 9EEFC0,0040,0040
-$92:D716             dx 9EF040,0080,0080
-$92:D71D             dx 9EF140,0040,0040
-$92:D724             dx 9EF1C0,0080,0080
-$92:D72B             dx 9EF2C0,0040,0040
-$92:D732             dx 9EF340,0080,0080
-$92:D739             dx 9EF440,0040,0040
-$92:D740             dx 9EF4C0,0080,0080
-$92:D747             dx 9EF5C0,0080,0080
+$92:D349             dx 9DC740, 0080, 0080
+
+; E9h: Facing left  - Samus drained - crouching/falling - frames 8..Bh
+; E9h: Facing left  - Samus drained - crouching/falling - frame 1Ah
+; E9h: Facing left  - Samus drained - crouching/falling - frame 1Dh
+; EBh: Facing left  - Samus drained - standing - frames 0..3
+$92:D350             dx 9DC840, 0060, 0040
+
+; E8h: Facing right - Samus drained - crouching/falling - frames 8..Bh
+; EAh: Facing right - Samus drained - standing - frames 0..3
+$92:D357             dx 9DC8E0, 0060, 0040
 }
 
 
-;;; $D74E: Samus top tiles - Ch ;;;
+;;; $D35E: Samus bottom tiles - set 2 (facing clockwise - grappling - in air - upside up) ;;;
 {
-; CBh: Facing right - shinespark - vertical
-$92:D74E             dx 9FDB80,0100,00C0
+; 5Dh: Unused - frames 17h..19h
+; 5Eh: Unused - frames 17h..19h
+; 5Fh: Unused - frames 17h..19h
+; 60h: Unused - frames 17h..19h
+; 61h: Unused - frames 17h..19h
+; B2h: Facing clockwise     - grapple - in air - frames 17h..19h
+$92:D35E             dx 9F8000, 0080, 0040
 
-; CCh: Facing left - shinespark - vertical
-$92:D755             dx 9FDD40,0100,00C0
+; 5Dh: Unused - frames 15h..16h
+; 5Eh: Unused - frames 15h..16h
+; 5Fh: Unused - frames 15h..16h
+; 60h: Unused - frames 15h..16h
+; 61h: Unused - frames 15h..16h
+; B2h: Facing clockwise     - grapple - in air - frames 15h..16h
+$92:D365             dx 9F80C0, 00E0, 0040
 
-; D4h: Facing left - crystal flash
-$92:D75C             dx 9FDF00,0100,0040
-$92:D763             dx 9FE040,0100,0040
-$92:D76A             dx 9FE180,0100,0040
+; 5Dh: Unused - frames 13h..14h
+; 5Eh: Unused - frames 13h..14h
+; 5Fh: Unused - frames 13h..14h
+; 60h: Unused - frames 13h..14h
+; 61h: Unused - frames 13h..14h
+; B2h: Facing clockwise     - grapple - in air - frames 13h..14h
+$92:D36C             dx 9F81E0, 00A0, 0080
 
-; D3h: Facing right - crystal flash
-$92:D771             dx 9FE2C0,0100,0040
-$92:D778             dx 9FE400,0100,0040
-$92:D77F             dx 9FE540,0100,0040
+; 5Dh: Unused - frame 12h
+; 5Eh: Unused - frame 12h
+; 5Fh: Unused - frame 12h
+; 60h: Unused - frame 12h
+; 61h: Unused - frame 12h
+; B2h: Facing clockwise     - grapple - in air - frame 12h
+$92:D373             dx 9F8300, 00A0, 0040
+
+; 5Dh: Unused - frame 11h
+; 5Eh: Unused - frame 11h
+; 5Fh: Unused - frame 11h
+; 60h: Unused - frame 11h
+; 61h: Unused - frame 11h
+; B2h: Facing clockwise     - grapple - in air - frame 11h
+$92:D37A             dx 9F83E0, 00C0, 0040
+
+; 5Dh: Unused - frame 10h
+; 5Eh: Unused - frame 10h
+; 5Fh: Unused - frame 10h
+; 60h: Unused - frame 10h
+; 61h: Unused - frame 10h
+; B2h: Facing clockwise     - grapple - in air - frame 10h
+$92:D381             dx 9F84E0, 00C0, 0040
+
+; 5Dh: Unused - frame Fh
+; 5Eh: Unused - frame Fh
+; 5Fh: Unused - frame Fh
+; 60h: Unused - frame Fh
+; 61h: Unused - frame Fh
+; B2h: Facing clockwise     - grapple - in air - frame Fh
+$92:D388             dx 9F85E0, 0080, 0040
+
+; 5Dh: Unused - frame Eh
+; 5Eh: Unused - frame Eh
+; 5Fh: Unused - frame Eh
+; 60h: Unused - frame Eh
+; 61h: Unused - frame Eh
+; B2h: Facing clockwise     - grapple - in air - frame Eh
+$92:D38F             dx 9F86A0, 00A0, 0040
+
+; 5Dh: Unused - frames Ch..Dh
+; 5Eh: Unused - frames Ch..Dh
+; 5Fh: Unused - frames Ch..Dh
+; 60h: Unused - frames Ch..Dh
+; 61h: Unused - frames Ch..Dh
+; B2h: Facing clockwise     - grapple - in air - frames Ch..Dh
+$92:D396             dx 9F8780, 00A0, 0040
+
+; 5Dh: Unused - frames Ah..Bh
+; 5Eh: Unused - frames Ah..Bh
+; 5Fh: Unused - frames Ah..Bh
+; 60h: Unused - frames Ah..Bh
+; 61h: Unused - frames Ah..Bh
+; B2h: Facing clockwise     - grapple - in air - frames Ah..Bh
+$92:D39D             dx 9F8860, 00C0, 0040
+
+; Unused
+$92:D3A4             dx 9F8960, 00A0, 0080
+
+; 5Dh: Unused - frame 40h
+; 5Eh: Unused - frame 40h
+; 5Fh: Unused - frame 40h
+; 60h: Unused - frame 40h
+; 61h: Unused - frame 40h
+; B2h: Facing clockwise     - grapple - in air - frame 40h
+$92:D3AB             dx 9F8A80, 0080, 0080
+
+; 5Dh: Unused - frame 41h
+; 5Eh: Unused - frame 41h
+; 5Fh: Unused - frame 41h
+; 60h: Unused - frame 41h
+; 61h: Unused - frame 41h
+; B2h: Facing clockwise     - grapple - in air - frame 41h
+$92:D3B2             dx 9F8B80, 0080, 0080
+
+; 5Dh: Unused - frames 37h..39h
+; 5Eh: Unused - frames 37h..39h
+; 5Fh: Unused - frames 37h..39h
+; 60h: Unused - frames 37h..39h
+; 61h: Unused - frames 37h..39h
+; B2h: Facing clockwise     - grapple - in air - frames 37h..39h
+$92:D3B9             dx 9F8C80, 0080, 0080
+
+; 5Dh: Unused - frames 35h..36h
+; 5Eh: Unused - frames 35h..36h
+; 5Fh: Unused - frames 35h..36h
+; 60h: Unused - frames 35h..36h
+; 61h: Unused - frames 35h..36h
+; B2h: Facing clockwise     - grapple - in air - frames 35h..36h
+$92:D3C0             dx 9F8D80, 00A0, 0040
+
+; 5Dh: Unused - frames 33h..34h
+; 5Eh: Unused - frames 33h..34h
+; 5Fh: Unused - frames 33h..34h
+; 60h: Unused - frames 33h..34h
+; 61h: Unused - frames 33h..34h
+; B2h: Facing clockwise     - grapple - in air - frames 33h..34h
+$92:D3C7             dx 9F8E60, 0080, 0080
+
+; 5Dh: Unused - frame 32h
+; 5Eh: Unused - frame 32h
+; 5Fh: Unused - frame 32h
+; 60h: Unused - frame 32h
+; 61h: Unused - frame 32h
+; B2h: Facing clockwise     - grapple - in air - frame 32h
+$92:D3CE             dx 9F8F60, 0080, 0080
+
+; 5Dh: Unused - frame 31h
+; 5Eh: Unused - frame 31h
+; 5Fh: Unused - frame 31h
+; 60h: Unused - frame 31h
+; 61h: Unused - frame 31h
+; B2h: Facing clockwise     - grapple - in air - frame 31h
+$92:D3D5             dx 9F9060, 00A0, 0040
+
+; 5Dh: Unused - frame 30h
+; 5Eh: Unused - frame 30h
+; 5Fh: Unused - frame 30h
+; 60h: Unused - frame 30h
+; 61h: Unused - frame 30h
+; B2h: Facing clockwise     - grapple - in air - frame 30h
+$92:D3DC             dx 9F9140, 0080, 0080
+
+; 5Dh: Unused - frame 2Fh
+; 5Eh: Unused - frame 2Fh
+; 5Fh: Unused - frame 2Fh
+; 60h: Unused - frame 2Fh
+; 61h: Unused - frame 2Fh
+; B2h: Facing clockwise     - grapple - in air - frame 2Fh
+$92:D3E3             dx 9F9240, 0080, 0080
+
+; 5Dh: Unused - frame 2Eh
+; 5Eh: Unused - frame 2Eh
+; 5Fh: Unused - frame 2Eh
+; 60h: Unused - frame 2Eh
+; 61h: Unused - frame 2Eh
+; B2h: Facing clockwise     - grapple - in air - frame 2Eh
+$92:D3EA             dx 9F9340, 0080, 0080
+
+; 5Dh: Unused - frames 2Ch..2Dh
+; 5Eh: Unused - frames 2Ch..2Dh
+; 5Fh: Unused - frames 2Ch..2Dh
+; 60h: Unused - frames 2Ch..2Dh
+; 61h: Unused - frames 2Ch..2Dh
+; B2h: Facing clockwise     - grapple - in air - frames 2Ch..2Dh
+$92:D3F1             dx 9F9440, 00C0, 0080
+
+; 5Dh: Unused - frames 2Ah..2Bh
+; 5Eh: Unused - frames 2Ah..2Bh
+; 5Fh: Unused - frames 2Ah..2Bh
+; 60h: Unused - frames 2Ah..2Bh
+; 61h: Unused - frames 2Ah..2Bh
+; B2h: Facing clockwise     - grapple - in air - frames 2Ah..2Bh
+$92:D3F8             dx 9F9580, 0080, 0080
+
+; Unused
+$92:D3FF             dx 9F9680, 0080, 0080
 }
 
 
-;;; $D786: Samus bottom tiles - 7 ;;;
+;;; $D406: Samus bottom tiles - set 4 (facing clockwise - grappling - in air - upside down) ;;;
 {
-; D3h: Facing right - crystal flash
-; D4h: Facing left - crystal flash
-$92:D786             dx 9FE680,0040,0040
-$92:D78D             dx 9FE700,0100,0100
-$92:D794             dx 9FE900,0100,0100
+; 5Dh: Unused - frames 7..9
+; 5Eh: Unused - frames 7..9
+; 5Fh: Unused - frames 7..9
+; 60h: Unused - frames 7..9
+; 61h: Unused - frames 7..9
+; B2h: Facing clockwise     - grapple - in air - frames 7..9
+$92:D406             dx 9F9780, 0080, 0040
+
+; 5Dh: Unused - frames 5..6
+; 5Eh: Unused - frames 5..6
+; 5Fh: Unused - frames 5..6
+; 60h: Unused - frames 5..6
+; 61h: Unused - frames 5..6
+; B2h: Facing clockwise     - grapple - in air - frames 5..6
+$92:D40D             dx 9F9840, 00E0, 0040
+
+; 5Dh: Unused - frames 3..4
+; 5Eh: Unused - frames 3..4
+; 5Fh: Unused - frames 3..4
+; 60h: Unused - frames 3..4
+; 61h: Unused - frames 3..4
+; B2h: Facing clockwise     - grapple - in air - frames 3..4
+$92:D414             dx 9F9960, 00A0, 0080
+
+; 5Dh: Unused - frame 2
+; 5Eh: Unused - frame 2
+; 5Fh: Unused - frame 2
+; 60h: Unused - frame 2
+; 61h: Unused - frame 2
+; B2h: Facing clockwise     - grapple - in air - frame 2
+$92:D41B             dx 9F9A80, 00A0, 0040
+
+; 5Dh: Unused - frame 1
+; 5Eh: Unused - frame 1
+; 5Fh: Unused - frame 1
+; 60h: Unused - frame 1
+; 61h: Unused - frame 1
+; B2h: Facing clockwise     - grapple - in air - frame 1
+$92:D422             dx 9F9B60, 00C0, 0040
+
+; 5Dh: Unused - frame 0
+; 5Eh: Unused - frame 0
+; 5Fh: Unused - frame 0
+; 60h: Unused - frame 0
+; 61h: Unused - frame 0
+; B2h: Facing clockwise     - grapple - in air - frame 0
+$92:D429             dx 9F9C60, 00C0, 0040
+
+; 5Dh: Unused - frame 1Fh
+; 5Eh: Unused - frame 1Fh
+; 5Fh: Unused - frame 1Fh
+; 60h: Unused - frame 1Fh
+; 61h: Unused - frame 1Fh
+; B2h: Facing clockwise     - grapple - in air - frame 1Fh
+$92:D430             dx 9F9D60, 0080, 0040
+
+; 5Dh: Unused - frame 1Eh
+; 5Eh: Unused - frame 1Eh
+; 5Fh: Unused - frame 1Eh
+; 60h: Unused - frame 1Eh
+; 61h: Unused - frame 1Eh
+; B2h: Facing clockwise     - grapple - in air - frame 1Eh
+$92:D437             dx 9F9E20, 00A0, 0040
+
+; 5Dh: Unused - frames 1Ch..1Dh
+; 5Eh: Unused - frames 1Ch..1Dh
+; 5Fh: Unused - frames 1Ch..1Dh
+; 60h: Unused - frames 1Ch..1Dh
+; 61h: Unused - frames 1Ch..1Dh
+; B2h: Facing clockwise     - grapple - in air - frames 1Ch..1Dh
+$92:D43E             dx 9F9F00, 00A0, 0040
+
+; 5Dh: Unused - frames 1Ah..1Bh
+; 5Eh: Unused - frames 1Ah..1Bh
+; 5Fh: Unused - frames 1Ah..1Bh
+; 60h: Unused - frames 1Ah..1Bh
+; 61h: Unused - frames 1Ah..1Bh
+; B2h: Facing clockwise     - grapple - in air - frames 1Ah..1Bh
+$92:D445             dx 9F9FE0, 00C0, 0040
+
+; Unused
+$92:D44C             dx 9FA0E0, 00A0, 0080
+
+; Unused
+$92:D453             dx 9FA200, 0080, 0080
+
+; Unused
+$92:D45A             dx 9FA300, 0080, 0080
+
+; 5Dh: Unused - frames 27h..29h
+; 5Eh: Unused - frames 27h..29h
+; 5Fh: Unused - frames 27h..29h
+; 60h: Unused - frames 27h..29h
+; 61h: Unused - frames 27h..29h
+; B2h: Facing clockwise     - grapple - in air - frames 27h..29h
+$92:D461             dx 9FA400, 0080, 0080
+
+; 5Dh: Unused - frames 25h..26h
+; 5Eh: Unused - frames 25h..26h
+; 5Fh: Unused - frames 25h..26h
+; 60h: Unused - frames 25h..26h
+; 61h: Unused - frames 25h..26h
+; B2h: Facing clockwise     - grapple - in air - frames 25h..26h
+$92:D468             dx 9FA500, 00A0, 0040
+
+; 5Dh: Unused - frames 23h..24h
+; 5Eh: Unused - frames 23h..24h
+; 5Fh: Unused - frames 23h..24h
+; 60h: Unused - frames 23h..24h
+; 61h: Unused - frames 23h..24h
+; B2h: Facing clockwise     - grapple - in air - frames 23h..24h
+$92:D46F             dx 9FA5E0, 0080, 0080
+
+; 5Dh: Unused - frame 22h
+; 5Eh: Unused - frame 22h
+; 5Fh: Unused - frame 22h
+; 60h: Unused - frame 22h
+; 61h: Unused - frame 22h
+; B2h: Facing clockwise     - grapple - in air - frame 22h
+$92:D476             dx 9FA6E0, 0080, 0080
+
+; 5Dh: Unused - frame 21h
+; 5Eh: Unused - frame 21h
+; 5Fh: Unused - frame 21h
+; 60h: Unused - frame 21h
+; 61h: Unused - frame 21h
+; B2h: Facing clockwise     - grapple - in air - frame 21h
+$92:D47D             dx 9FA7E0, 00A0, 0040
+
+; 5Dh: Unused - frame 20h
+; 5Dh: Unused - frame 3Fh
+; 5Eh: Unused - frame 20h
+; 5Eh: Unused - frame 3Fh
+; 5Fh: Unused - frame 20h
+; 5Fh: Unused - frame 3Fh
+; 60h: Unused - frame 20h
+; 60h: Unused - frame 3Fh
+; 61h: Unused - frame 20h
+; 61h: Unused - frame 3Fh
+; B2h: Facing clockwise     - grapple - in air - frame 20h
+; B2h: Facing clockwise     - grapple - in air - frame 3Fh
+$92:D484             dx 9FA8C0, 0080, 0080
+
+; 5Dh: Unused - frame 3Eh
+; 5Eh: Unused - frame 3Eh
+; 5Fh: Unused - frame 3Eh
+; 60h: Unused - frame 3Eh
+; 61h: Unused - frame 3Eh
+; B2h: Facing clockwise     - grapple - in air - frame 3Eh
+$92:D48B             dx 9FA9C0, 0080, 0080
+
+; 5Dh: Unused - frames 3Ch..3Dh
+; 5Eh: Unused - frames 3Ch..3Dh
+; 5Fh: Unused - frames 3Ch..3Dh
+; 60h: Unused - frames 3Ch..3Dh
+; 61h: Unused - frames 3Ch..3Dh
+; B2h: Facing clockwise     - grapple - in air - frames 3Ch..3Dh
+$92:D492             dx 9FAAC0, 0080, 0080
+
+; 5Dh: Unused - frames 3Ah..3Bh
+; 5Eh: Unused - frames 3Ah..3Bh
+; 5Fh: Unused - frames 3Ah..3Bh
+; 60h: Unused - frames 3Ah..3Bh
+; 61h: Unused - frames 3Ah..3Bh
+; B2h: Facing clockwise     - grapple - in air - frames 3Ah..3Bh
+$92:D499             dx 9FABC0, 0080, 0080
+
+; Unused
+$92:D4A0             dx 9FACC0, 0080, 0080
 }
 
 
-;;; $D79B: Samus bottom tiles - 9 ;;;
+;;; $D4A7: Samus bottom tiles - set 5 (facing anticlockwise - grappling - in air - upside up) ;;;
 {
-; 1Bh: Facing right - space jump
-; 1Ch: Facing left - space jump
-; 81h: Facing right - screw attack
-; 82h: Facing left - screw attack
-; 83h: Facing right - wall jump
-; 84h: Facing left - wall jump
-$92:D79B             dx 9CEA80,0100,0100
-$92:D7A2             dx 9CEC80,0100,0100
-$92:D7A9             dx 9CEE80,0100,0100
-$92:D7B0             dx 9CF080,0100,0100
-$92:D7B7             dx 9CF280,0100,0100
-$92:D7BE             dx 9CF480,0100,0100
-$92:D7C5             dx 9CF680,0100,0100
-$92:D7CC             dx 9CF880,0100,0100
-}
+; 62h: Unused - frames 7..9
+; B3h: Facing anticlockwise - grapple - in air - frames 7..9
+$92:D4A7             dx 9FADC0, 0080, 0040
+
+; 62h: Unused - frames Ah..Bh
+; B3h: Facing anticlockwise - grapple - in air - frames Ah..Bh
+$92:D4AE             dx 9FAE80, 00E0, 0040
+
+; 62h: Unused - frames Ch..Dh
+; B3h: Facing anticlockwise - grapple - in air - frames Ch..Dh
+$92:D4B5             dx 9FAFA0, 00A0, 0080
+
+; 62h: Unused - frame Eh
+; B3h: Facing anticlockwise - grapple - in air - frame Eh
+$92:D4BC             dx 9FB0C0, 00A0, 0040
+
+; 62h: Unused - frame Fh
+; B3h: Facing anticlockwise - grapple - in air - frame Fh
+$92:D4C3             dx 9FB1A0, 00C0, 0040
+
+; 62h: Unused - frame 10h
+; B3h: Facing anticlockwise - grapple - in air - frame 10h
+$92:D4CA             dx 9FB2A0, 00C0, 0040
+
+; 62h: Unused - frame 11h
+; B3h: Facing anticlockwise - grapple - in air - frame 11h
+$92:D4D1             dx 9FB3A0, 0080, 0040
+
+; 62h: Unused - frame 12h
+; B3h: Facing anticlockwise - grapple - in air - frame 12h
+$92:D4D8             dx 9FB460, 00A0, 0040
+
+; 62h: Unused - frames 13h..14h
+; B3h: Facing anticlockwise - grapple - in air - frames 13h..14h
+$92:D4DF             dx 9FB540, 00A0, 0040
+
+; 62h: Unused - frames 15h..16h
+; B3h: Facing anticlockwise - grapple - in air - frames 15h..16h
+$92:D4E6             dx 9FB620, 00C0, 0040
+
+; Unused
+$92:D4ED             dx 9FB720, 00A0, 0080
+
+; 62h: Unused - frame 40h
+; B3h: Facing anticlockwise - grapple - in air - frame 40h
+$92:D4F4             dx 9FB840, 0080, 0080
+
+; 62h: Unused - frame 41h
+; B3h: Facing anticlockwise - grapple - in air - frame 41h
+$92:D4FB             dx 9FB940, 0080, 0080
+
+; 62h: Unused - frames 27h..29h
+; B3h: Facing anticlockwise - grapple - in air - frames 27h..29h
+$92:D502             dx 9FBA40, 0080, 0080
+
+; 62h: Unused - frames 2Ah..2Bh
+; B3h: Facing anticlockwise - grapple - in air - frames 2Ah..2Bh
+$92:D509             dx 9FBB40, 00A0, 0040
+
+; 62h: Unused - frames 2Ch..2Dh
+; B3h: Facing anticlockwise - grapple - in air - frames 2Ch..2Dh
+$92:D510             dx 9FBC20, 0080, 0080
+
+; 62h: Unused - frame 2Eh
+; B3h: Facing anticlockwise - grapple - in air - frame 2Eh
+$92:D517             dx 9FBD20, 0080, 0080
+
+; 62h: Unused - frame 2Fh
+; B3h: Facing anticlockwise - grapple - in air - frame 2Fh
+$92:D51E             dx 9FBE20, 00A0, 0040
+
+; 62h: Unused - frame 30h
+; B3h: Facing anticlockwise - grapple - in air - frame 30h
+$92:D525             dx 9FBF00, 0080, 0080
+
+; 62h: Unused - frame 31h
+; B3h: Facing anticlockwise - grapple - in air - frame 31h
+$92:D52C             dx 9FC000, 0080, 0080
+
+; 62h: Unused - frame 32h
+; B3h: Facing anticlockwise - grapple - in air - frame 32h
+$92:D533             dx 9FC100, 0080, 0080
+
+; 62h: Unused - frames 33h..34h
+; B3h: Facing anticlockwise - grapple - in air - frames 33h..34h
+$92:D53A             dx 9FC200, 00C0, 0080
+
+; 62h: Unused - frames 35h..36h
+; B3h: Facing anticlockwise - grapple - in air - frames 35h..36h
+$92:D541             dx 9FC340, 0080, 0080
+
+; Unused
+$92:D548             dx 9FC440, 0080, 0080
 }
 
 
-;;; $D7D3: Samus spritemaps ;;;
+;;; $D54F: Samus bottom tiles - set 6 (facing anticlockwise - grappling - in air - upside down) ;;;
 {
+; 62h: Unused - frames 17h..19h
+; B3h: Facing anticlockwise - grapple - in air - frames 17h..19h
+$92:D54F             dx 9FC540, 0080, 0040
+
+; 62h: Unused - frames 1Ah..1Bh
+; B3h: Facing anticlockwise - grapple - in air - frames 1Ah..1Bh
+$92:D556             dx 9FC600, 00E0, 0040
+
+; 62h: Unused - frames 1Ch..1Dh
+; B3h: Facing anticlockwise - grapple - in air - frames 1Ch..1Dh
+$92:D55D             dx 9FC720, 00A0, 0080
+
+; 62h: Unused - frame 1Eh
+; B3h: Facing anticlockwise - grapple - in air - frame 1Eh
+$92:D564             dx 9FC840, 00A0, 0040
+
+; 62h: Unused - frame 1Fh
+; B3h: Facing anticlockwise - grapple - in air - frame 1Fh
+$92:D56B             dx 9FC920, 00C0, 0040
+
+; 62h: Unused - frame 0
+; B3h: Facing anticlockwise - grapple - in air - frame 0
+$92:D572             dx 9FCA20, 00C0, 0040
+
+; 62h: Unused - frame 1
+; B3h: Facing anticlockwise - grapple - in air - frame 1
+$92:D579             dx 9FCB20, 0080, 0040
+
+; 62h: Unused - frame 2
+; B3h: Facing anticlockwise - grapple - in air - frame 2
+$92:D580             dx 9FCBE0, 00A0, 0040
+
+; 62h: Unused - frames 3..4
+; B3h: Facing anticlockwise - grapple - in air - frames 3..4
+$92:D587             dx 9FCCC0, 00A0, 0040
+
+; 62h: Unused - frames 5..6
+; B3h: Facing anticlockwise - grapple - in air - frames 5..6
+$92:D58E             dx 9FCDA0, 00C0, 0040
+
+; Unused
+$92:D595             dx 9FCEA0, 00A0, 0080
+
+; Unused
+$92:D59C             dx 9FCFC0, 0080, 0080
+
+; Unused
+$92:D5A3             dx 9FD0C0, 0080, 0080
+
+; 62h: Unused - frames 37h..39h
+; B3h: Facing anticlockwise - grapple - in air - frames 37h..39h
+$92:D5AA             dx 9FD1C0, 0080, 0080
+
+; 62h: Unused - frames 3Ah..3Bh
+; B3h: Facing anticlockwise - grapple - in air - frames 3Ah..3Bh
+$92:D5B1             dx 9FD2C0, 00A0, 0040
+
+; 62h: Unused - frames 3Ch..3Dh
+; B3h: Facing anticlockwise - grapple - in air - frames 3Ch..3Dh
+$92:D5B8             dx 9FD3A0, 0080, 0080
+
+; 62h: Unused - frame 3Eh
+; B3h: Facing anticlockwise - grapple - in air - frame 3Eh
+$92:D5BF             dx 9FD4A0, 0080, 0080
+
+; 62h: Unused - frame 3Fh
+; B3h: Facing anticlockwise - grapple - in air - frame 3Fh
+$92:D5C6             dx 9FD5A0, 00A0, 0040
+
+; 62h: Unused - frame 20h
+; B3h: Facing anticlockwise - grapple - in air - frame 20h
+$92:D5CD             dx 9FD680, 0080, 0080
+
+; 62h: Unused - frame 21h
+; B3h: Facing anticlockwise - grapple - in air - frame 21h
+$92:D5D4             dx 9FD780, 0080, 0080
+
+; 62h: Unused - frame 22h
+; B3h: Facing anticlockwise - grapple - in air - frame 22h
+$92:D5DB             dx 9FD880, 0080, 0080
+
+; 62h: Unused - frames 23h..24h
+; B3h: Facing anticlockwise - grapple - in air - frames 23h..24h
+$92:D5E2             dx 9FD980, 0080, 0080
+
+; 62h: Unused - frames 25h..26h
+; B3h: Facing anticlockwise - grapple - in air - frames 25h..26h
+$92:D5E9             dx 9FDA80, 0080, 0080
+}
+
+
+;;; $D5F0: Samus bottom tiles - set 8 (facing forward) ;;;
+{
+; 0: Facing forward - power suit - frames 2..5Fh
+$92:D5F0             dx 9BEA00, 0100, 0100
+
+; 9Bh: Facing forward - varia/gravity suit - frames 2..5Fh
+$92:D5F7             dx 9BEC00, 0100, 0100
+
+; Unused
+$92:D5FE             dx 9BEE00, 0020, 0000
+}
+
+
+;;; $D605: Samus bottom tiles - set Ah (general) ;;;
+{
+; 3: Facing right - aiming up - frames 0..1
+; 5: Facing right - aiming up-right - frame 0
+; 7: Facing right - aiming down-right - frame 0
+; AAh: Facing right - grappling - aiming down-right - frame 0
+; CFh: Facing right - ran into a wall - aiming up-right - frame 0
+; D1h: Facing right - ran into a wall - aiming down-right - frame 0
+$92:D605             dx 9FEB00, 00C0, 0080
+
+; 4: Facing left  - aiming up - frames 0..1
+; 6: Facing left  - aiming up-left - frame 0
+; 8: Facing left  - aiming down-left - frame 0
+; ABh: Facing left  - grappling - aiming down-left - frame 0
+; D0h: Facing left  - ran into a wall - aiming up-left - frame 0
+; D2h: Facing left  - ran into a wall - aiming down-left - frame 0
+; E9h: Facing left  - Samus drained - crouching/falling - frame 10h
+; E9h: Facing left  - Samus drained - crouching/falling - frame 15h
+$92:D60C             dx 9FEC40, 00C0, 0080
+}
+
+
+;;; $D613: Samus top tiles - set Ah (morph ball, spin jump, screw attack sparks) ;;;
+{
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 0
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 0
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 7
+; 31h: Facing right - morph ball - no springball - in air - frame 0
+; 32h: Facing left  - morph ball - no springball - in air - frame 0
+; 3Fh: Unused - frame 0
+; 40h: Unused - frame 0
+; 41h: Facing left  - morph ball - no springball - on ground - frame 7
+; 79h: Facing right - morph ball - spring ball - on ground - frame 0
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 7
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 0
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 7
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 0
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 7
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 0
+; 80h: Facing left  - morph ball - spring ball - in air - frame 7
+; C5h: Unused - frame 7
+; D7h: Facing right - crystal flash ending - frame 0
+; DFh: Unused. Related to Draygon - frame 7
+; E8h: Facing right - Samus drained - crouching/falling - frame 0
+$92:D613             dx 9C8000, 0060, 0040
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 2
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 2
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 5
+; 31h: Facing right - morph ball - no springball - in air - frame 2
+; 32h: Facing left  - morph ball - no springball - in air - frame 2
+; 3Fh: Unused - frame 2
+; 40h: Unused - frame 2
+; 41h: Facing left  - morph ball - no springball - on ground - frame 5
+; 79h: Facing right - morph ball - spring ball - on ground - frame 2
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 5
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 2
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 5
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 2
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 5
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 2
+; 80h: Facing left  - morph ball - spring ball - in air - frame 5
+; C5h: Unused - frame 5
+; DFh: Unused. Related to Draygon - frame 5
+$92:D61A             dx 9C80A0, 0060, 0040
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 4
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 4
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 3
+; 31h: Facing right - morph ball - no springball - in air - frame 4
+; 32h: Facing left  - morph ball - no springball - in air - frame 4
+; 3Fh: Unused - frame 4
+; 40h: Unused - frame 4
+; 41h: Facing left  - morph ball - no springball - on ground - frame 3
+; 79h: Facing right - morph ball - spring ball - on ground - frame 4
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 3
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 4
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 3
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 4
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 3
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 4
+; 80h: Facing left  - morph ball - spring ball - in air - frame 3
+; C5h: Unused - frame 3
+; DFh: Unused. Related to Draygon - frame 3
+$92:D621             dx 9C8140, 0060, 0040
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 6
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 6
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 1
+; 31h: Facing right - morph ball - no springball - in air - frame 6
+; 32h: Facing left  - morph ball - no springball - in air - frame 6
+; 3Fh: Unused - frame 6
+; 40h: Unused - frame 6
+; 41h: Facing left  - morph ball - no springball - on ground - frame 1
+; 79h: Facing right - morph ball - spring ball - on ground - frame 6
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 1
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 6
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 1
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 6
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 1
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 6
+; 80h: Facing left  - morph ball - spring ball - in air - frame 1
+; C5h: Unused - frame 1
+; DFh: Unused. Related to Draygon - frame 1
+$92:D628             dx 9C81E0, 0060, 0040
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 1
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 1
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 6
+; 31h: Facing right - morph ball - no springball - in air - frame 1
+; 32h: Facing left  - morph ball - no springball - in air - frame 1
+; 3Fh: Unused - frame 1
+; 40h: Unused - frame 1
+; 41h: Facing left  - morph ball - no springball - on ground - frame 6
+; 79h: Facing right - morph ball - spring ball - on ground - frame 1
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 6
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 1
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 6
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 1
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 6
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 1
+; 80h: Facing left  - morph ball - spring ball - in air - frame 6
+; C5h: Unused - frame 6
+; DFh: Unused. Related to Draygon - frame 6
+$92:D62F             dx 9C8280, 00A0, 0000
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 3
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 3
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 4
+; 31h: Facing right - morph ball - no springball - in air - frame 3
+; 32h: Facing left  - morph ball - no springball - in air - frame 3
+; 3Fh: Unused - frame 3
+; 40h: Unused - frame 3
+; 41h: Facing left  - morph ball - no springball - on ground - frame 4
+; 79h: Facing right - morph ball - spring ball - on ground - frame 3
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 4
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 3
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 4
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 3
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 4
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 3
+; 80h: Facing left  - morph ball - spring ball - in air - frame 4
+; C5h: Unused - frame 4
+; DFh: Unused. Related to Draygon - frame 4
+$92:D636             dx 9C8320, 0060, 0040
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 5
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 5
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 2
+; 31h: Facing right - morph ball - no springball - in air - frame 5
+; 32h: Facing left  - morph ball - no springball - in air - frame 5
+; 3Fh: Unused - frame 5
+; 40h: Unused - frame 5
+; 41h: Facing left  - morph ball - no springball - on ground - frame 2
+; 79h: Facing right - morph ball - spring ball - on ground - frame 5
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 2
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 5
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 2
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 5
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 2
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 5
+; 80h: Facing left  - morph ball - spring ball - in air - frame 2
+; C5h: Unused - frame 2
+; DFh: Unused. Related to Draygon - frame 2
+$92:D63D             dx 9C83C0, 0060, 0040
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 7
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 7
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 0
+; 31h: Facing right - morph ball - no springball - in air - frame 7
+; 32h: Facing left  - morph ball - no springball - in air - frame 7
+; 3Fh: Unused - frame 7
+; 40h: Unused - frame 7
+; 41h: Facing left  - morph ball - no springball - on ground - frame 0
+; 79h: Facing right - morph ball - spring ball - on ground - frame 7
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 0
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 7
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 0
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 7
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 0
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 7
+; 80h: Facing left  - morph ball - spring ball - in air - frame 0
+; C5h: Unused - frame 0
+; DFh: Unused. Related to Draygon - frame 0
+$92:D644             dx 9C8460, 0060, 0040
+
+; 19h: Facing right - spin jump - frame 1
+; 1Ah: Facing left  - spin jump - frame 1
+; 20h: Unused - frame 1
+; 21h: Unused - frame 1
+; 22h: Unused - frame 1
+; 23h: Unused - frame 1
+; 24h: Unused - frame 1
+; 33h: Unused - frame 1
+; 34h: Unused - frame 1
+; 39h: Unused - frame 1
+; 3Ah: Unused - frame 1
+; 42h: Unused - frame 1
+; 83h: Facing right - wall jump - frame 3
+; 84h: Facing left  - wall jump - frame 3
+$92:D64B             dx 9C8500, 0080, 0080
+
+; 19h: Facing right - spin jump - frame 2
+; 1Ah: Facing left  - spin jump - frame 2
+; 20h: Unused - frame 2
+; 21h: Unused - frame 2
+; 22h: Unused - frame 2
+; 23h: Unused - frame 2
+; 24h: Unused - frame 2
+; 33h: Unused - frame 2
+; 34h: Unused - frame 2
+; 39h: Unused - frame 2
+; 3Ah: Unused - frame 2
+; 42h: Unused - frame 2
+; 4Fh: Facing left  - damage boost - frame 8
+; 50h: Facing right - damage boost - frame 8
+; 83h: Facing right - wall jump - frame 4
+; 84h: Facing left  - wall jump - frame 4
+$92:D652             dx 9C8600, 0100, 0100
+
+; 19h: Facing right - spin jump - frame 3
+; 1Ah: Facing left  - spin jump - frame 3
+; 20h: Unused - frame 3
+; 21h: Unused - frame 3
+; 22h: Unused - frame 3
+; 23h: Unused - frame 3
+; 24h: Unused - frame 3
+; 33h: Unused - frame 3
+; 34h: Unused - frame 3
+; 39h: Unused - frame 3
+; 3Ah: Unused - frame 3
+; 42h: Unused - frame 3
+; 4Fh: Facing left  - damage boost - frame 7
+; 50h: Facing right - damage boost - frame 7
+; 83h: Facing right - wall jump - frame 5
+; 84h: Facing left  - wall jump - frame 5
+$92:D659             dx 9C8800, 0080, 0080
+
+; 19h: Facing right - spin jump - frame 4
+; 1Ah: Facing left  - spin jump - frame 4
+; 20h: Unused - frame 4
+; 21h: Unused - frame 4
+; 22h: Unused - frame 4
+; 23h: Unused - frame 4
+; 24h: Unused - frame 4
+; 33h: Unused - frame 4
+; 34h: Unused - frame 4
+; 39h: Unused - frame 4
+; 3Ah: Unused - frame 4
+; 42h: Unused - frame 4
+; 4Fh: Facing left  - damage boost - frame 6
+; 50h: Facing right - damage boost - frame 6
+; 83h: Facing right - wall jump - frame 6
+; 84h: Facing left  - wall jump - frame 6
+$92:D660             dx 9C8900, 0100, 0100
+
+; 19h: Facing right - spin jump - frame 5
+; 1Ah: Facing left  - spin jump - frame 5
+; 20h: Unused - frame 5
+; 21h: Unused - frame 5
+; 22h: Unused - frame 5
+; 23h: Unused - frame 5
+; 24h: Unused - frame 5
+; 33h: Unused - frame 5
+; 34h: Unused - frame 5
+; 39h: Unused - frame 5
+; 3Ah: Unused - frame 5
+; 42h: Unused - frame 5
+; 4Fh: Facing left  - damage boost - frame 5
+; 50h: Facing right - damage boost - frame 5
+; 83h: Facing right - wall jump - frame 7
+; 84h: Facing left  - wall jump - frame 7
+$92:D667             dx 9C8B00, 0080, 0080
+
+; 19h: Facing right - spin jump - frame 6
+; 1Ah: Facing left  - spin jump - frame 6
+; 20h: Unused - frame 6
+; 21h: Unused - frame 6
+; 22h: Unused - frame 6
+; 23h: Unused - frame 6
+; 24h: Unused - frame 6
+; 33h: Unused - frame 6
+; 34h: Unused - frame 6
+; 39h: Unused - frame 6
+; 3Ah: Unused - frame 6
+; 42h: Unused - frame 6
+; 4Fh: Facing left  - damage boost - frame 4
+; 50h: Facing right - damage boost - frame 4
+; 83h: Facing right - wall jump - frame 8
+; 84h: Facing left  - wall jump - frame 8
+$92:D66E             dx 9C8C00, 0100, 0100
+
+; 19h: Facing right - spin jump - frame 7
+; 1Ah: Facing left  - spin jump - frame 7
+; 20h: Unused - frame 7
+; 21h: Unused - frame 7
+; 22h: Unused - frame 7
+; 23h: Unused - frame 7
+; 24h: Unused - frame 7
+; 33h: Unused - frame 7
+; 34h: Unused - frame 7
+; 39h: Unused - frame 7
+; 3Ah: Unused - frame 7
+; 42h: Unused - frame 7
+; 4Fh: Facing left  - damage boost - frame 3
+; 50h: Facing right - damage boost - frame 3
+; 83h: Facing right - wall jump - frame 9
+; 84h: Facing left  - wall jump - frame 9
+$92:D675             dx 9C8E00, 0080, 0080
+
+; 19h: Facing right - spin jump - frame 8
+; 1Ah: Facing left  - spin jump - frame 8
+; 20h: Unused - frame 8
+; 21h: Unused - frame 8
+; 22h: Unused - frame 8
+; 23h: Unused - frame 8
+; 24h: Unused - frame 8
+; 33h: Unused - frame 8
+; 34h: Unused - frame 8
+; 39h: Unused - frame 8
+; 3Ah: Unused - frame 8
+; 42h: Unused - frame 8
+; 4Fh: Facing left  - damage boost - frame 2
+; 50h: Facing right - damage boost - frame 2
+; 83h: Facing right - wall jump - frame Ah
+; 84h: Facing left  - wall jump - frame Ah
+$92:D67C             dx 9C8F00, 0100, 0100
+
+; 65h: Unused. Related to movement type Dh - frame 1
+; 66h: Unused. Related to movement type Dh - frame 1
+; 81h: Facing right - screw attack - frames 1..3
+; 82h: Facing left  - screw attack - frames 1..3
+; 83h: Facing right - wall jump - frames 17h..19h
+; 84h: Facing left  - wall jump - frames 17h..19h
+$92:D683             dx 9C9100, 0100, 0040
+
+; 65h: Unused. Related to movement type Dh - frame 2
+; 66h: Unused. Related to movement type Dh - frame 2
+; 81h: Facing right - screw attack - frames 7..9
+; 82h: Facing left  - screw attack - frames 7..9
+; 83h: Facing right - wall jump - frames 1Dh..1Fh
+; 84h: Facing left  - wall jump - frames 1Dh..1Fh
+$92:D68A             dx 9C9240, 0100, 0060
+
+; 65h: Unused. Related to movement type Dh - frame 3
+; 66h: Unused. Related to movement type Dh - frame 3
+; 81h: Facing right - screw attack - frames Dh..Fh
+; 82h: Facing left  - screw attack - frames Dh..Fh
+; 83h: Facing right - wall jump - frames 23h..25h
+; 84h: Facing left  - wall jump - frames 23h..25h
+$92:D691             dx 9C93A0, 0100, 0060
+
+; 65h: Unused. Related to movement type Dh - frame 4
+; 66h: Unused. Related to movement type Dh - frame 4
+; 81h: Facing right - screw attack - frames 13h..15h
+; 82h: Facing left  - screw attack - frames 13h..15h
+; 83h: Facing right - wall jump - frames 29h..2Bh
+; 84h: Facing left  - wall jump - frames 29h..2Bh
+$92:D698             dx 9C9500, 0100, 0000
+
+; 1Bh: Facing right - space jump - frames 1..8
+; 1Ch: Facing left  - space jump - frames 1..8
+; 65h: Unused. Related to movement type Dh - frame 5
+; 66h: Unused. Related to movement type Dh - frame 5
+; 81h: Facing right - screw attack - frames 4..6
+; 81h: Facing right - screw attack - frames Ah..Ch
+; 81h: Facing right - screw attack - frames 10h..12h
+; 81h: Facing right - screw attack - frames 16h..18h
+; 82h: Facing left  - screw attack - frames 4..6
+; 82h: Facing left  - screw attack - frames Ah..Ch
+; 82h: Facing left  - screw attack - frames 10h..12h
+; 82h: Facing left  - screw attack - frames 16h..18h
+; 83h: Facing right - wall jump - frames Dh..14h
+; 83h: Facing right - wall jump - frames 1Ah..1Ch
+; 83h: Facing right - wall jump - frames 20h..22h
+; 83h: Facing right - wall jump - frames 26h..28h
+; 83h: Facing right - wall jump - frames 2Ch..2Eh
+; 84h: Facing left  - wall jump - frames Dh..14h
+; 84h: Facing left  - wall jump - frames 1Ah..1Ch
+; 84h: Facing left  - wall jump - frames 20h..22h
+; 84h: Facing left  - wall jump - frames 26h..28h
+; 84h: Facing left  - wall jump - frames 2Ch..2Eh
+$92:D69F             dx 9C9600, 0020, 0000
+}
+
+
+;;; $D6A6: Samus top tiles - set Bh (morphing transition, unused morph ball bounce) ;;;
+{
+; Unused
+$92:D6A6             dx 9C9620, 0020, 0000
+
+; 1Dh: Facing right - morph ball - no springball - on ground - frame 9
+; 1Eh: Moving right - morph ball - no springball - on ground - frame 9
+; 1Fh: Moving left  - morph ball - no springball - on ground - frame 9
+; 31h: Facing right - morph ball - no springball - in air - frame 9
+; 32h: Facing left  - morph ball - no springball - in air - frame 9
+; 3Fh: Unused - frame 9
+; 40h: Unused - frame 9
+; 41h: Facing left  - morph ball - no springball - on ground - frame 9
+; 79h: Facing right - morph ball - spring ball - on ground - frame 9
+; 7Ah: Facing left  - morph ball - spring ball - on ground - frame 9
+; 7Bh: Moving right - morph ball - spring ball - on ground - frame 9
+; 7Ch: Moving left  - morph ball - spring ball - on ground - frame 9
+; 7Dh: Facing right - morph ball - spring ball - falling - frame 9
+; 7Eh: Facing left  - morph ball - spring ball - falling - frame 9
+; 7Fh: Facing right - morph ball - spring ball - in air - frame 9
+; 80h: Facing left  - morph ball - spring ball - in air - frame 9
+; C5h: Unused - frame 9
+; DFh: Unused. Related to Draygon - frame 9
+$92:D6AD             dx 9C9640, 0060, 0040
+
+; Unused
+$92:D6B4             dx 9C96E0, 0060, 0040
+
+; 38h: Facing left  - morphing transition - frame 1
+; 3Eh: Facing left  - unmorphing transition - frame 0
+; D4h: Facing left  - crystal flash - frame 0
+; D8h: Facing left  - crystal flash ending - frame 1
+; DCh: Unused - frame 2
+; DEh: Unused - frame 0
+; E9h: Facing left  - Samus drained - crouching/falling - frame 0
+$92:D6BB             dx 9C9780, 0080, 0040
+
+; 38h: Facing left  - morphing transition - frame 0
+; 3Eh: Facing left  - unmorphing transition - frame 1
+; D4h: Facing left  - crystal flash - frame 1
+; D4h: Facing left  - crystal flash - frame 3
+; D4h: Facing left  - crystal flash - frames Ch..Dh
+; D8h: Facing left  - crystal flash ending - frame 2
+; DCh: Unused - frame 1
+; DEh: Unused - frame 1
+; E9h: Facing left  - Samus drained - crouching/falling - frame 1
+$92:D6C2             dx 9C9840, 00C0, 0040
+
+; 37h: Facing right - morphing transition - frame 1
+; 3Dh: Facing right - unmorphing transition - frame 0
+; D3h: Facing right - crystal flash - frame 0
+; D7h: Facing right - crystal flash ending - frame 1
+; DBh: Unused - frame 2
+; DDh: Unused - frame 0
+; E8h: Facing right - Samus drained - crouching/falling - frame 1
+$92:D6C9             dx 9C9940, 0080, 0040
+
+; 37h: Facing right - morphing transition - frame 0
+; 3Dh: Facing right - unmorphing transition - frame 1
+; D3h: Facing right - crystal flash - frame 1
+; D3h: Facing right - crystal flash - frame 3
+; D3h: Facing right - crystal flash - frames Ch..Dh
+; D7h: Facing right - crystal flash ending - frame 2
+; DBh: Unused - frame 1
+; DDh: Unused - frame 1
+; E8h: Facing right - Samus drained - crouching/falling - frame 2
+$92:D6D0             dx 9C9A00, 00C0, 0040
+}
+
+
+;;; $D6D7: Samus bottom tiles - set 3 (unused) ;;;
+{
+; Unused
+$92:D6D7             dx 9EE9C0, 0040, 0040
+
+; Unused
+$92:D6DE             dx 9EEA40, 0080, 0080
+
+; Unused
+$92:D6E5             dx 9EEB40, 0040, 0040
+
+; Unused
+$92:D6EC             dx 9EEBC0, 0080, 0080
+
+; Unused
+$92:D6F3             dx 9EECC0, 0040, 0040
+
+; Unused
+$92:D6FA             dx 9EED40, 0080, 0080
+
+; Unused
+$92:D701             dx 9EEE40, 0040, 0040
+
+; Unused
+$92:D708             dx 9EEEC0, 0080, 0080
+
+; Unused
+$92:D70F             dx 9EEFC0, 0040, 0040
+
+; Unused
+$92:D716             dx 9EF040, 0080, 0080
+
+; Unused
+$92:D71D             dx 9EF140, 0040, 0040
+
+; Unused
+$92:D724             dx 9EF1C0, 0080, 0080
+
+; Unused
+$92:D72B             dx 9EF2C0, 0040, 0040
+
+; Unused
+$92:D732             dx 9EF340, 0080, 0080
+
+; Unused
+$92:D739             dx 9EF440, 0040, 0040
+
+; Unused
+$92:D740             dx 9EF4C0, 0080, 0080
+
+; Unused
+$92:D747             dx 9EF5C0, 0080, 0080
+}
+
+
+;;; $D74E: Samus top tiles - set Ch (crystal flash, vertical shinespark) ;;;
+{
+; CBh: Facing right - shinespark - vertical - frame 0
+$92:D74E             dx 9FDB80, 0100, 00C0
+
+; CCh: Facing left  - shinespark - vertical - frame 0
+$92:D755             dx 9FDD40, 0100, 00C0
+
+; D4h: Facing left  - crystal flash - frame 2
+; D4h: Facing left  - crystal flash - frame 6
+$92:D75C             dx 9FDF00, 0100, 0040
+
+; D4h: Facing left  - crystal flash - frame 7
+; D4h: Facing left  - crystal flash - frame 9
+$92:D763             dx 9FE040, 0100, 0040
+
+; D4h: Facing left  - crystal flash - frame 8
+$92:D76A             dx 9FE180, 0100, 0040
+
+; D3h: Facing right - crystal flash - frame 2
+; D3h: Facing right - crystal flash - frame 6
+$92:D771             dx 9FE2C0, 0100, 0040
+
+; D3h: Facing right - crystal flash - frame 7
+; D3h: Facing right - crystal flash - frame 9
+$92:D778             dx 9FE400, 0100, 0040
+
+; D3h: Facing right - crystal flash - frame 8
+$92:D77F             dx 9FE540, 0100, 0040
+}
+
+
+;;; $D786: Samus bottom tiles - set 7 (crystal flash bubble) ;;;
+{
+; D3h: Facing right - crystal flash - frame 0
+; D3h: Facing right - crystal flash - frame Dh
+; D4h: Facing left  - crystal flash - frame 0
+; D4h: Facing left  - crystal flash - frame Dh
+$92:D786             dx 9FE680, 0040, 0040
+
+; D3h: Facing right - crystal flash - frame 1
+; D3h: Facing right - crystal flash - frame Ch
+; D4h: Facing left  - crystal flash - frame 1
+; D4h: Facing left  - crystal flash - frame Ch
+$92:D78D             dx 9FE700, 0100, 0100
+
+; D3h: Facing right - crystal flash - frames 2..3
+; D3h: Facing right - crystal flash - frames 6..9
+; D4h: Facing left  - crystal flash - frames 2..3
+; D4h: Facing left  - crystal flash - frames 6..9
+$92:D794             dx 9FE900, 0100, 0100
+}
+
+
+;;; $D79B: Samus bottom tiles - set 9 (space jump) ;;;
+{
+; 1Bh: Facing right - space jump - frame 1
+; 1Ch: Facing left  - space jump - frame 1
+; 81h: Facing right - screw attack - frame 1
+; 81h: Facing right - screw attack - frame 9
+; 81h: Facing right - screw attack - frame 11h
+; 82h: Facing left  - screw attack - frame 1
+; 82h: Facing left  - screw attack - frame 9
+; 82h: Facing left  - screw attack - frame 11h
+; 83h: Facing right - wall jump - frame Dh
+; 83h: Facing right - wall jump - frame 17h
+; 83h: Facing right - wall jump - frame 1Fh
+; 83h: Facing right - wall jump - frame 27h
+; 84h: Facing left  - wall jump - frame Dh
+; 84h: Facing left  - wall jump - frame 17h
+; 84h: Facing left  - wall jump - frame 1Fh
+; 84h: Facing left  - wall jump - frame 27h
+$92:D79B             dx 9CEA80, 0100, 0100
+
+; 1Bh: Facing right - space jump - frame 2
+; 1Ch: Facing left  - space jump - frame 2
+; 81h: Facing right - screw attack - frame 2
+; 81h: Facing right - screw attack - frame Ah
+; 81h: Facing right - screw attack - frame 12h
+; 82h: Facing left  - screw attack - frame 2
+; 82h: Facing left  - screw attack - frame Ah
+; 82h: Facing left  - screw attack - frame 12h
+; 83h: Facing right - wall jump - frame Eh
+; 83h: Facing right - wall jump - frame 18h
+; 83h: Facing right - wall jump - frame 20h
+; 83h: Facing right - wall jump - frame 28h
+; 84h: Facing left  - wall jump - frame Eh
+; 84h: Facing left  - wall jump - frame 18h
+; 84h: Facing left  - wall jump - frame 20h
+; 84h: Facing left  - wall jump - frame 28h
+$92:D7A2             dx 9CEC80, 0100, 0100
+
+; 1Bh: Facing right - space jump - frame 3
+; 1Ch: Facing left  - space jump - frame 3
+; 81h: Facing right - screw attack - frame 3
+; 81h: Facing right - screw attack - frame Bh
+; 81h: Facing right - screw attack - frame 13h
+; 82h: Facing left  - screw attack - frame 3
+; 82h: Facing left  - screw attack - frame Bh
+; 82h: Facing left  - screw attack - frame 13h
+; 83h: Facing right - wall jump - frame Fh
+; 83h: Facing right - wall jump - frame 19h
+; 83h: Facing right - wall jump - frame 21h
+; 83h: Facing right - wall jump - frame 29h
+; 84h: Facing left  - wall jump - frame Fh
+; 84h: Facing left  - wall jump - frame 19h
+; 84h: Facing left  - wall jump - frame 21h
+; 84h: Facing left  - wall jump - frame 29h
+$92:D7A9             dx 9CEE80, 0100, 0100
+
+; 1Bh: Facing right - space jump - frame 4
+; 1Ch: Facing left  - space jump - frame 4
+; 81h: Facing right - screw attack - frame 4
+; 81h: Facing right - screw attack - frame Ch
+; 81h: Facing right - screw attack - frame 14h
+; 82h: Facing left  - screw attack - frame 4
+; 82h: Facing left  - screw attack - frame Ch
+; 82h: Facing left  - screw attack - frame 14h
+; 83h: Facing right - wall jump - frame 10h
+; 83h: Facing right - wall jump - frame 1Ah
+; 83h: Facing right - wall jump - frame 22h
+; 83h: Facing right - wall jump - frame 2Ah
+; 84h: Facing left  - wall jump - frame 10h
+; 84h: Facing left  - wall jump - frame 1Ah
+; 84h: Facing left  - wall jump - frame 22h
+; 84h: Facing left  - wall jump - frame 2Ah
+$92:D7B0             dx 9CF080, 0100, 0100
+
+; 1Bh: Facing right - space jump - frame 5
+; 1Ch: Facing left  - space jump - frame 5
+; 81h: Facing right - screw attack - frame 5
+; 81h: Facing right - screw attack - frame Dh
+; 81h: Facing right - screw attack - frame 15h
+; 82h: Facing left  - screw attack - frame 5
+; 82h: Facing left  - screw attack - frame Dh
+; 82h: Facing left  - screw attack - frame 15h
+; 83h: Facing right - wall jump - frame 11h
+; 83h: Facing right - wall jump - frame 1Bh
+; 83h: Facing right - wall jump - frame 23h
+; 83h: Facing right - wall jump - frame 2Bh
+; 84h: Facing left  - wall jump - frame 11h
+; 84h: Facing left  - wall jump - frame 1Bh
+; 84h: Facing left  - wall jump - frame 23h
+; 84h: Facing left  - wall jump - frame 2Bh
+$92:D7B7             dx 9CF280, 0100, 0100
+
+; 1Bh: Facing right - space jump - frame 6
+; 1Ch: Facing left  - space jump - frame 6
+; 81h: Facing right - screw attack - frame 6
+; 81h: Facing right - screw attack - frame Eh
+; 81h: Facing right - screw attack - frame 16h
+; 82h: Facing left  - screw attack - frame 6
+; 82h: Facing left  - screw attack - frame Eh
+; 82h: Facing left  - screw attack - frame 16h
+; 83h: Facing right - wall jump - frame 12h
+; 83h: Facing right - wall jump - frame 1Ch
+; 83h: Facing right - wall jump - frame 24h
+; 83h: Facing right - wall jump - frame 2Ch
+; 84h: Facing left  - wall jump - frame 12h
+; 84h: Facing left  - wall jump - frame 1Ch
+; 84h: Facing left  - wall jump - frame 24h
+; 84h: Facing left  - wall jump - frame 2Ch
+$92:D7BE             dx 9CF480, 0100, 0100
+
+; 1Bh: Facing right - space jump - frame 7
+; 1Ch: Facing left  - space jump - frame 7
+; 81h: Facing right - screw attack - frame 7
+; 81h: Facing right - screw attack - frame Fh
+; 81h: Facing right - screw attack - frame 17h
+; 82h: Facing left  - screw attack - frame 7
+; 82h: Facing left  - screw attack - frame Fh
+; 82h: Facing left  - screw attack - frame 17h
+; 83h: Facing right - wall jump - frame 13h
+; 83h: Facing right - wall jump - frame 1Dh
+; 83h: Facing right - wall jump - frame 25h
+; 83h: Facing right - wall jump - frame 2Dh
+; 84h: Facing left  - wall jump - frame 13h
+; 84h: Facing left  - wall jump - frame 1Dh
+; 84h: Facing left  - wall jump - frame 25h
+; 84h: Facing left  - wall jump - frame 2Dh
+$92:D7C5             dx 9CF680, 0100, 0100
+
+; 1Bh: Facing right - space jump - frame 8
+; 1Ch: Facing left  - space jump - frame 8
+; 81h: Facing right - screw attack - frame 8
+; 81h: Facing right - screw attack - frame 10h
+; 81h: Facing right - screw attack - frame 18h
+; 82h: Facing left  - screw attack - frame 8
+; 82h: Facing left  - screw attack - frame 10h
+; 82h: Facing left  - screw attack - frame 18h
+; 83h: Facing right - wall jump - frame 14h
+; 83h: Facing right - wall jump - frame 1Eh
+; 83h: Facing right - wall jump - frame 26h
+; 83h: Facing right - wall jump - frame 2Eh
+; 84h: Facing left  - wall jump - frame 14h
+; 84h: Facing left  - wall jump - frame 1Eh
+; 84h: Facing left  - wall jump - frame 26h
+; 84h: Facing left  - wall jump - frame 2Eh
+$92:D7CC             dx 9CF880, 0100, 0100
+}
+}
+
+
+;;; $D7D3: Samus spritemaps - atmospheric graphics ;;;
+{
+; Bubbles
 $92:D7D3             dx 0002, 01FC,FE,3A25, 01FD,FC,3A43
 $92:D7DF             dx 0003, 01FF,FA,3A43, 01FB,F8,BA25, 01FC,FD,3A25
 $92:D7F0             dx 0003, 01FA,F6,3A43, 0000,F8,3A25, 01FD,FB,3A25
@@ -5423,6 +7520,8 @@ $92:D823             dx 0003, 0001,F1,3A40, 01FC,F6,3A40, 01FA,EF,3A40
 $92:D834             dx 0003, 0001,EF,7A40, 01FC,F4,3A40, 01F9,EC,3A40
 $92:D845             dx 0002, 0002,EC,7A40, 01FC,F0,3A40
 $92:D851             dx 0001, 01FC,EC,BA40
+
+; Diving splash
 $92:D858             dx 0003, C3F8,00,3A9A, 0004,F8,3A5E, 01F4,F8,3A5E
 $92:D869             dx 0003, C3F8,04,7A9A, 0002,F8,3ABA, 01F6,F8,3ABA
 $92:D87A             dx 0005, C3F8,04,BA9A, 0000,F4,3ABA, 01F8,F3,3ABA, 0000,F8,3ACA, 01F8,F8,3ACA
@@ -6143,13 +8242,13 @@ $92:EDCA C9 04 00    CMP #$0004             ;} If Samus is facing right:
 $92:EDCD F0 0B       BEQ $0B    [$EDDA]     ;/
 $92:EDCF A9 1C 08    LDA #$081C             ;\
 $92:EDD2 18          CLC                    ;|
-$92:EDD3 6D E4 0D    ADC $0DE4  [$7E:0DE4]  ;} $12 = 81Ch + [$0DE4]
+$92:EDD3 6D E4 0D    ADC $0DE4  [$7E:0DE4]  ;} $12 = 81Ch + [death animation index]
 $92:EDD6 85 12       STA $12    [$7E:0012]  ;/
 $92:EDD8 80 09       BRA $09    [$EDE3]
 
 $92:EDDA A9 25 08    LDA #$0825             ;\ Else (Samus is facing left):
 $92:EDDD 18          CLC                    ;|
-$92:EDDE 6D E4 0D    ADC $0DE4  [$7E:0DE4]  ;} $12 = 825h + [$0DE4]
+$92:EDDE 6D E4 0D    ADC $0DE4  [$7E:0DE4]  ;} $12 = 825h + [death animation index]
 $92:EDE1 85 12       STA $12    [$7E:0012]  ;/
 
 $92:EDE3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -6164,7 +8263,7 @@ $92:EDF3 6B          RTL
 }
 
 
-;;; $EDF3: Free space ;;;
+;;; $EDF4: Free space ;;;
 {
-$92:EDF3             fillto $938000, $FF
+$92:EDF4             fillto $938000, $FF
 }

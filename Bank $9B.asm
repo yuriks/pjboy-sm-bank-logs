@@ -451,147 +451,162 @@ $9B:A3C0             dw 3BE0,5FF0,7FFF, ; Using x-ray
 }
 
 
-;;; $A3CC:  ;;;
+;;; $A3CC: Set projectile trail position ;;;
 {
-; Something for projectile trails by the looks of it
+;; Parameters:
+;;     X: Projectile index
+;;     Y: Projectile trail index
 $9B:A3CC 08          PHP
 $9B:A3CD 8B          PHB
-$9B:A3CE 4B          PHK
-$9B:A3CF AB          PLB
+$9B:A3CE 4B          PHK                    ;\
+$9B:A3CF AB          PLB                    ;} DB = $9B
 $9B:A3D0 C2 30       REP #$30
-$9B:A3D2 22 D1 81 93 JSL $9381D1[$93:81D1]
-$9B:A3D6 AD 3F 09    LDA $093F  [$7E:093F]
-$9B:A3D9 10 18       BPL $18    [$A3F3]
+$9B:A3D2 22 D1 81 93 JSL $9381D1[$93:81D1]  ; $16 = projectile trail frame
+$9B:A3D6 AD 3F 09    LDA $093F  [$7E:093F]  ;\
+$9B:A3D9 10 18       BPL $18    [$A3F3]     ;} If Ceres elevator shaft is rotating:
 $9B:A3DB 22 D9 8A 8B JSL $8B8AD9[$8B:8AD9]  ; Calculate position of projectile explosion in rotating elevator room
-$9B:A3DF A5 12       LDA $12    [$7E:0012]
-$9B:A3E1 48          PHA
-$9B:A3E2 A5 14       LDA $14    [$7E:0014]
-$9B:A3E4 18          CLC
-$9B:A3E5 6D 11 09    ADC $0911  [$7E:0911]
-$9B:A3E8 85 12       STA $12    [$7E:0012]
-$9B:A3EA 68          PLA
-$9B:A3EB 18          CLC
-$9B:A3EC 6D 15 09    ADC $0915  [$7E:0915]
-$9B:A3EF 85 14       STA $14    [$7E:0014]
+$9B:A3DF A5 12       LDA $12    [$7E:0012]  ;\
+$9B:A3E1 48          PHA                    ;|
+$9B:A3E2 A5 14       LDA $14    [$7E:0014]  ;|
+$9B:A3E4 18          CLC                    ;|
+$9B:A3E5 6D 11 09    ADC $0911  [$7E:0911]  ;|
+$9B:A3E8 85 12       STA $12    [$7E:0012]  ;} ($12, $14) = ([layer 1 X position] + [$14], [layer 1 Y position] + [$12])
+$9B:A3EA 68          PLA                    ;|
+$9B:A3EB 18          CLC                    ;|
+$9B:A3EC 6D 15 09    ADC $0915  [$7E:0915]  ;|
+$9B:A3EF 85 14       STA $14    [$7E:0014]  ;/
 $9B:A3F1 80 0A       BRA $0A    [$A3FD]
 
-$9B:A3F3 BD 64 0B    LDA $0B64,x[$7E:0B64]
-$9B:A3F6 85 12       STA $12    [$7E:0012]
-$9B:A3F8 BD 78 0B    LDA $0B78,x[$7E:0B78]
-$9B:A3FB 85 14       STA $14    [$7E:0014]
+$9B:A3F3 BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\ Else (Ceres elevator shaft is not rotating):
+$9B:A3F6 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
+$9B:A3F8 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$9B:A3FB 85 14       STA $14    [$7E:0014]  ;} $14 = [projectile Y position]
 
 $9B:A3FD 5A          PHY
-$9B:A3FE BD 18 0C    LDA $0C18,x[$7E:0C18]
-$9B:A401 89 20 00    BIT #$0020
-$9B:A404 D0 29       BNE $29    [$A42F]
-$9B:A406 89 10 00    BIT #$0010
-$9B:A409 D0 12       BNE $12    [$A41D]
-$9B:A40B 29 0F 00    AND #$000F
-$9B:A40E 0A          ASL A
-$9B:A40F A8          TAY
-$9B:A410 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$9B:A413 29 0F 00    AND #$000F
-$9B:A416 0A          ASL A
-$9B:A417 18          CLC
-$9B:A418 79 B3 A4    ADC $A4B3,y[$9B:A4B3]
-$9B:A41B 80 22       BRA $22    [$A43F]
+$9B:A3FE BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$9B:A401 89 20 00    BIT #$0020             ;} If [projectile type] & 20h != 0: go to BRANCH_SPECIAL
+$9B:A404 D0 29       BNE $29    [$A42F]     ;/
+$9B:A406 89 10 00    BIT #$0010             ;\
+$9B:A409 D0 12       BNE $12    [$A41D]     ;} If projectile is not charged beam:
+$9B:A40B 29 0F 00    AND #$000F             ;\
+$9B:A40E 0A          ASL A                  ;|
+$9B:A40F A8          TAY                    ;|
+$9B:A410 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;|
+$9B:A413 29 0F 00    AND #$000F             ;} A = [$A4B3 + (beam type) * 2] + ([projectile direction] & Fh) * 2
+$9B:A416 0A          ASL A                  ;|
+$9B:A417 18          CLC                    ;|
+$9B:A418 79 B3 A4    ADC $A4B3,y[$9B:A4B3]  ;/
+$9B:A41B 80 22       BRA $22    [$A43F]     ; Go to BRANCH_MERGE
 
-$9B:A41D 29 0F 00    AND #$000F
-$9B:A420 0A          ASL A
-$9B:A421 A8          TAY
-$9B:A422 BD 04 0C    LDA $0C04,x[$7E:0C04]
-$9B:A425 29 0F 00    AND #$000F
-$9B:A428 0A          ASL A
-$9B:A429 18          CLC
-$9B:A42A 79 CB A4    ADC $A4CB,y[$9B:A4D3]
-$9B:A42D 80 10       BRA $10    [$A43F]
+$9B:A41D 29 0F 00    AND #$000F             ;\
+$9B:A420 0A          ASL A                  ;|
+$9B:A421 A8          TAY                    ;|
+$9B:A422 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;|
+$9B:A425 29 0F 00    AND #$000F             ;} A = [$A4CB + (beam type) * 2] + ([projectile direction] & Fh) * 2
+$9B:A428 0A          ASL A                  ;|
+$9B:A429 18          CLC                    ;|
+$9B:A42A 79 CB A4    ADC $A4CB,y[$9B:A4D3]  ;/
+$9B:A42D 80 10       BRA $10    [$A43F]     ; Go to BRANCH_MERGE
 
-$9B:A42F 29 0F 00    AND #$000F
-$9B:A432 0A          ASL A
-$9B:A433 A8          TAY
-$9B:A434 BD 04 0C    LDA $0C04,x
-$9B:A437 29 0F 00    AND #$000F
-$9B:A43A 0A          ASL A
-$9B:A43B 18          CLC
-$9B:A43C 79 E3 A4    ADC $A4E3,y
+; BRANCH_SPECIAL
+$9B:A42F 29 0F 00    AND #$000F             ;\
+$9B:A432 0A          ASL A                  ;|
+$9B:A433 A8          TAY                    ;|
+$9B:A434 BD 04 0C    LDA $0C04,x            ;|
+$9B:A437 29 0F 00    AND #$000F             ;} A = [$A4E3 + (beam type) * 2] + ([projectile direction] & Fh) * 2
+$9B:A43A 0A          ASL A                  ;|
+$9B:A43B 18          CLC                    ;|
+$9B:A43C 79 E3 A4    ADC $A4E3,y            ;/
 
-$9B:A43F A8          TAY
-$9B:A440 A5 16       LDA $16    [$7E:0016]
-$9B:A442 0A          ASL A
-$9B:A443 0A          ASL A
-$9B:A444 18          CLC
-$9B:A445 79 00 00    ADC $0000,y[$9B:A519]
-$9B:A448 A8          TAY
-$9B:A449 FA          PLX
-$9B:A44A B9 00 00    LDA $0000,y[$9B:A56F]
-$9B:A44D EB          XBA
-$9B:A44E 30 05       BMI $05    [$A455]
-$9B:A450 29 FF 00    AND #$00FF
-$9B:A453 80 03       BRA $03    [$A458]
-
-$9B:A455 09 00 FF    ORA #$FF00
-
-$9B:A458 18          CLC
-$9B:A459 65 14       ADC $14    [$7E:0014]
-$9B:A45B 38          SEC
-$9B:A45C E9 04 00    SBC #$0004
-$9B:A45F 9F 78 D7 7E STA $7ED778,x[$7E:D79A]
-$9B:A463 88          DEY
-$9B:A464 B9 00 00    LDA $0000,y[$9B:A56E]
-$9B:A467 EB          XBA
-$9B:A468 30 05       BMI $05    [$A46F]
-$9B:A46A 29 FF 00    AND #$00FF
-$9B:A46D 80 03       BRA $03    [$A472]
-
-$9B:A46F 09 00 FF    ORA #$FF00
-
-$9B:A472 18          CLC
-$9B:A473 65 12       ADC $12    [$7E:0012]
-$9B:A475 38          SEC
-$9B:A476 E9 04 00    SBC #$0004
-$9B:A479 9F 30 D7 7E STA $7ED730,x[$7E:D752]
-$9B:A47D C8          INY
-$9B:A47E B9 02 00    LDA $0002,y[$9B:A571]
-$9B:A481 EB          XBA
-$9B:A482 30 05       BMI $05    [$A489]
-$9B:A484 29 FF 00    AND #$00FF
-$9B:A487 80 03       BRA $03    [$A48C]
-
-$9B:A489 09 00 FF    ORA #$FF00
-
-$9B:A48C 18          CLC
-$9B:A48D 65 14       ADC $14    [$7E:0014]
-$9B:A48F 38          SEC
-$9B:A490 E9 04 00    SBC #$0004
-$9B:A493 9F 9C D7 7E STA $7ED79C,x[$7E:D7BE]
-$9B:A497 B9 01 00    LDA $0001,y[$9B:A570]
-$9B:A49A EB          XBA
-$9B:A49B 30 05       BMI $05    [$A4A2]
-$9B:A49D 29 FF 00    AND #$00FF
-$9B:A4A0 80 03       BRA $03    [$A4A5]
-
-$9B:A4A2 09 00 FF    ORA #$FF00
-
-$9B:A4A5 18          CLC
-$9B:A4A6 65 12       ADC $12    [$7E:0012]
-$9B:A4A8 38          SEC
-$9B:A4A9 E9 04 00    SBC #$0004
-$9B:A4AC 9F 54 D7 7E STA $7ED754,x[$7E:D776]
+; BRANCH_MERGE
+$9B:A43F A8          TAY                    ;\
+$9B:A440 A5 16       LDA $16    [$7E:0016]  ;|
+$9B:A442 0A          ASL A                  ;|
+$9B:A443 0A          ASL A                  ;} Y = [[A]] + [$16] * 4
+$9B:A444 18          CLC                    ;|
+$9B:A445 79 00 00    ADC $0000,y[$9B:A519]  ;|
+$9B:A448 A8          TAY                    ;/
+$9B:A449 FA          PLX                    ; X = (projectile trail index)
+$9B:A44A B9 00 00    LDA $0000,y[$9B:A56F]  ;\
+$9B:A44D EB          XBA                    ;|
+$9B:A44E 30 05       BMI $05    [$A455]     ;|
+$9B:A450 29 FF 00    AND #$00FF             ;|
+$9B:A453 80 03       BRA $03    [$A458]     ;|
+                                            ;|
+$9B:A455 09 00 FF    ORA #$FF00             ;} Projectile trail left Y position = [$14] - 4 + ±[[Y] + 1]
+                                            ;|
+$9B:A458 18          CLC                    ;|
+$9B:A459 65 14       ADC $14    [$7E:0014]  ;|
+$9B:A45B 38          SEC                    ;|
+$9B:A45C E9 04 00    SBC #$0004             ;|
+$9B:A45F 9F 78 D7 7E STA $7ED778,x[$7E:D79A];/
+$9B:A463 88          DEY                    ;\
+$9B:A464 B9 00 00    LDA $0000,y[$9B:A56E]  ;|
+$9B:A467 EB          XBA                    ;|
+$9B:A468 30 05       BMI $05    [$A46F]     ;|
+$9B:A46A 29 FF 00    AND #$00FF             ;|
+$9B:A46D 80 03       BRA $03    [$A472]     ;|
+                                            ;|
+$9B:A46F 09 00 FF    ORA #$FF00             ;} Projectile trail left X position = [$12] - 4 + ±[[Y]]
+                                            ;|
+$9B:A472 18          CLC                    ;|
+$9B:A473 65 12       ADC $12    [$7E:0012]  ;|
+$9B:A475 38          SEC                    ;|
+$9B:A476 E9 04 00    SBC #$0004             ;|
+$9B:A479 9F 30 D7 7E STA $7ED730,x[$7E:D752];/
+$9B:A47D C8          INY                    ;\
+$9B:A47E B9 02 00    LDA $0002,y[$9B:A571]  ;|
+$9B:A481 EB          XBA                    ;|
+$9B:A482 30 05       BMI $05    [$A489]     ;|
+$9B:A484 29 FF 00    AND #$00FF             ;|
+$9B:A487 80 03       BRA $03    [$A48C]     ;|
+                                            ;|
+$9B:A489 09 00 FF    ORA #$FF00             ;} Projectile trail right Y position = [$14] - 4 + ±[[Y] + 3]
+                                            ;|
+$9B:A48C 18          CLC                    ;|
+$9B:A48D 65 14       ADC $14    [$7E:0014]  ;|
+$9B:A48F 38          SEC                    ;|
+$9B:A490 E9 04 00    SBC #$0004             ;|
+$9B:A493 9F 9C D7 7E STA $7ED79C,x[$7E:D7BE];/
+$9B:A497 B9 01 00    LDA $0001,y[$9B:A570]  ;\
+$9B:A49A EB          XBA                    ;|
+$9B:A49B 30 05       BMI $05    [$A4A2]     ;|
+$9B:A49D 29 FF 00    AND #$00FF             ;|
+$9B:A4A0 80 03       BRA $03    [$A4A5]     ;|
+                                            ;|
+$9B:A4A2 09 00 FF    ORA #$FF00             ;} Projectile trail right X position = [$12] - 4 + ±[[Y] + 2]
+                                            ;|
+$9B:A4A5 18          CLC                    ;|
+$9B:A4A6 65 12       ADC $12    [$7E:0012]  ;|
+$9B:A4A8 38          SEC                    ;|
+$9B:A4A9 E9 04 00    SBC #$0004             ;|
+$9B:A4AC 9F 54 D7 7E STA $7ED754,x[$7E:D776];/
 $9B:A4B0 AB          PLB
 $9B:A4B1 28          PLP
 $9B:A4B2 6B          RTL
 }
 
 
-;;; $A4B3..B3A6: Beam trail data(?) ;;;
+;;; $A4B3..B3A6: Beam trail offsets ;;;
 {
 $9B:A4B3             dw A50B, A4F7, A50B, A4F7, A50B, A50B, A51F, A533, A50B, A50B, A547, A55B ; Uncharged beams
 $9B:A4CB             dw A98F, A9A3, A98F, A9A3, A98F, A98F, A9B7, A9CB, A98F, A98F, A9DF, A9F3 ; Charged beams
-$9B:A4E3             dw 0000, 0000, 0000, 0000, B37B, B327, B37B, 0000, 0000, 0000             ; SBAs?
+$9B:A4E3             dw 0000, 0000, 0000, 0000, B37B, B327, B37B, 0000, 0000, 0000             ; Spazer SBA
 
 
 ;;; $A4F7: Uncharged beams ;;;
 {
+;                        ________________________________________________ Up, facing right
+;                       |     ___________________________________________ Up-right
+;                       |    |     ______________________________________ Right
+;                       |    |    |     _________________________________ Down-right
+;                       |    |    |    |     ____________________________ Down, facing right
+;                       |    |    |    |    |     _______________________ Down, facing left
+;                       |    |    |    |    |    |     __________________ Down-left
+;                       |    |    |    |    |    |    |     _____________ Left
+;                       |    |    |    |    |    |    |    |     ________ Up-left
+;                       |    |    |    |    |    |    |    |    |     ___ Up, facing left
+;                       |    |    |    |    |    |    |    |    |    |
 $9B:A4F7             dw A58F,A60F,A5CF,A64F,A58F,A58F,A60F,A5CF,A64F,A58F ; Wave / wave ice
 $9B:A50B             dw A56F,A56F,A56F,A56F,A56F,A56F,A56F,A56F,A56F,A56F ; Default
 $9B:A51F             dw A68F,A6A7,A6B3,A6BF,A69B,A69B,A6CB,A6D7,A6E3,A68F ; Ice spazer
@@ -599,11 +614,25 @@ $9B:A533             dw A6EF,A717,A73F,A767,A78F,A78F,A7B7,A7DF,A807,A6EF ; Wave
 $9B:A547             dw A82F,A837,A83F,A847,A84F,A84F,A857,A85F,A867,A82F ; Ice plasma
 $9B:A55B             dw A86F,A893,A8B7,A8DB,A8FF,A8FF,A923,A947,A96B,A86F ; Wave ice plasma
 
+; Format:
+;     x,y,X,Y
+;     x: Left trail X offset
+;     y: Left trail Y offset
+;     X: Right trail X offset
+;     Y: Right trail Y offset
+
+; Indexed by [[projectile instruction pointer] - 2] * 4
+
+; Default
 $9B:A56F             db 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00
+
+; Wave / wave ice
 $9B:A58F             db 00,00,00,00, 08,00,00,00, 0C,00,00,00, 10,00,00,00, 14,00,00,00, 10,00,00,00, 0C,00,00,00, 08,00,00,00, 00,00,00,00, F8,00,00,00, F4,00,00,00, F0,00,00,00, EC,00,00,00, F0,00,00,00, F4,00,00,00, F8,00,00,00
 $9B:A5CF             db 00,00,00,00, 00,F8,00,00, 00,F4,00,00, 00,F0,00,00, 00,EC,00,00, 00,F0,00,00, 00,F4,00,00, 00,F8,00,00, 00,00,00,00, 00,08,00,00, 00,0C,00,00, 00,10,00,00, 00,14,00,00, 00,10,00,00, 00,0C,00,00, 00,08,00,00
 $9B:A60F             db 00,00,00,00, FC,FC,00,00, F8,F8,00,00, F6,F6,00,00, F4,F4,00,00, F6,F6,00,00, F8,F8,00,00, FC,FC,00,00, 00,00,00,00, 04,04,00,00, 08,08,00,00, 0A,0A,00,00, 0C,0C,00,00, 0A,0A,00,00, 08,08,00,00, 04,04,00,00
 $9B:A64F             db 00,00,00,00, 04,FC,00,00, 08,F8,00,00, 0A,F6,00,00, 0C,F4,00,00, 0A,F6,00,00, 08,F8,00,00, 04,FC,00,00, 00,00,00,00, FC,04,00,00, F8,08,00,00, F6,0A,00,00, F4,0C,00,00, F6,0A,00,00, F8,08,00,00, FC,04,00,00
+
+; Ice spazer
 $9B:A68F             db 00,00,00,00, F8,08,08,08, F0,08,10,08
 $9B:A69B             db 00,00,00,00, F8,F8,08,F8, F0,F8,10,F8
 $9B:A6A7             db F8,08,F8,08, F2,02,FE,0E, EC,FC,02,14
@@ -612,6 +641,8 @@ $9B:A6BF             db F8,F8,F8,F8, FE,F0,F0,FE, 04,EC,EC,04
 $9B:A6CB             db 08,F8,08,F8, 0E,FE,02,F2, 14,04,FE,EC
 $9B:A6D7             db 08,00,08,00, 08,08,08,F8, 08,10,08,F0
 $9B:A6E3             db 08,08,08,08, 02,10,10,02, FC,14,14,FC
+
+; Wave ice spazer
 $9B:A6EF             db 00,00,00,00, FC,08,04,08, F8,08,08,08, F4,08,0C,08, F0,08,10,08, F0,08,10,08, F0,08,10,08, F4,08,0C,08, F8,08,08,08, FC,08,04,08
 $9B:A717             db 00,00,00,00, F4,06,FA,0C, F2,02,FE,0E, F0,00,00,10, EE,FE,02,12, EC,FC,02,14, EE,FE,02,12, F0,00,00,10, F2,02,FE,0E, F4,06,FA,0C
 $9B:A73F             db 00,00,00,00, F8,FC,F8,04, F8,F8,F8,08, F8,F4,F8,0C, F8,F0,F8,10, F8,F0,F8,10, F8,F0,F8,10, F8,F4,F8,0C, F8,F8,F8,08, F8,FC,F8,04
@@ -620,6 +651,8 @@ $9B:A78F             db 00,00,00,00, FC,F8,04,F8, F8,F8,08,F8, F4,F8,0C,F8, F0,F
 $9B:A7B7             db 00,00,00,00, 02,F2,0E,FE, 00,F0,10,00, FE,EE,12,02, FE,EC,14,04, FE,EC,14,04, FE,EC,14,04, FE,EE,12,02, 00,F0,10,00, 02,F2,0E,FE
 $9B:A7DF             db 00,00,00,00, 08,FC,08,04, 08,F8,08,08, 08,F4,08,0C, 08,F0,08,10, 08,F0,08,10, 08,F0,08,10, 08,F4,08,0C, 08,F8,08,08, 08,FC,08,04
 $9B:A807             db 00,00,00,00, 06,0A,0A,06, 02,10,10,02, 00,10,10,00, FE,12,12,FE, FC,14,14,FC, FE,12,12,FE, 00,10,10,00, 02,10,10,02, 06,0A,0A,06
+
+; Ice plasma
 $9B:A82F             db 00,00,00,00, 00,10,00,10
 $9B:A837             db 00,00,00,00, F4,0C,F4,0C
 $9B:A83F             db 00,00,00,00, F0,00,F0,00
@@ -628,6 +661,8 @@ $9B:A84F             db 00,00,00,00, 00,F0,00,F0
 $9B:A857             db 00,00,00,00, 0C,F4,0C,F4
 $9B:A85F             db 00,00,00,00, 10,00,10,00
 $9B:A867             db 00,00,00,00, 0C,0C,0C,0C
+
+; Wave ice plasma
 $9B:A86F             db 00,00,00,00, 00,10,00,10, F8,10,08,10, F0,10,10,10, F0,10,10,10, F0,10,10,10, F0,10,10,10, F0,10,10,10, F8,10,08,10
 $9B:A893             db 00,00,00,00, F4,0C,F4,0C, EC,08,F8,12, E8,02,FE,14, E8,00,00,18, E8,00,00,18, E8,00,00,18, E8,02,FE,14, EC,08,F8,12
 $9B:A8B7             db 00,00,00,00, F0,00,F0,00, F0,F8,F0,08, F0,F4,F0,0C, F0,F0,F0,10, F0,F0,F0,10, F0,F0,F0,10, F0,F4,F0,0C, F0,F8,F0,08
@@ -641,6 +676,17 @@ $9B:A96B             db 00,00,00,00, 0C,0C,0C,0C, 12,06,06,12, 14,02,02,14, 18,0
 
 ;;; $A98F: Charged beams ;;;
 {
+;                        ________________________________________________ Up, facing right
+;                       |     ___________________________________________ Up-right
+;                       |    |     ______________________________________ Right
+;                       |    |    |     _________________________________ Down-right
+;                       |    |    |    |     ____________________________ Down, facing right
+;                       |    |    |    |    |     _______________________ Down, facing left
+;                       |    |    |    |    |    |     __________________ Down-left
+;                       |    |    |    |    |    |    |     _____________ Left
+;                       |    |    |    |    |    |    |    |     ________ Up-left
+;                       |    |    |    |    |    |    |    |    |     ___ Up, facing left
+;                       |    |    |    |    |    |    |    |    |    |
 $9B:A98F             dw AA07,AA07,AA07,AA07,AA07,AA07,AA07,AA07,AA07,AA07 ; Default
 $9B:A9A3             dw AA27,AAA7,AA67,AAE7,AA27,AA27,AAA7,AA67,AAE7,AA27 ; Wave / wave ice
 $9B:A9B7             dw AB27,AB4F,AB77,AB9F,ABC7,ABC7,ABEF,AC17,AC3F,AB27 ; Ice spazer
@@ -648,11 +694,25 @@ $9B:A9CB             dw AC67,ACC7,AD27,AD87,ADE7,ADE7,AE47,AEA7,AF07,AC67 ; Wave
 $9B:A9DF             dw AF67,AF87,AFA7,AFC7,AFE7,AFE7,B007,B027,B047,AF67 ; Ice plasma
 $9B:A9F3             dw B067,B0BF,B117,B16F,B1C7,B1C7,B21F,B277,B2CF,B067 ; Wave ice plasma
 
+; Format:
+;     x,y,X,Y
+;     x: Left trail X offset
+;     y: Left trail Y offset
+;     X: Right trail X offset
+;     Y: Right trail Y offset
+
+; Indexed by [[projectile instruction pointer] - 2] * 4
+
+; Default
 $9B:AA07             db 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00, 00,00,00,00
+
+; Wave / wave ice
 $9B:AA27             db 00,00,00,00, 00,00,00,00, F8,00,08,00, F8,00,08,00, F4,00,0C,00, F4,00,0C,00, F0,00,10,00, F0,00,10,00, F0,00,10,00, F0,00,10,00, F0,00,10,00, F0,00,10,00, F4,00,0C,00, F4,00,0C,00, F8,00,08,00, F8,00,08,00
 $9B:AA67             db 00,00,00,00, 00,00,00,00, 00,F8,00,08, 00,F8,00,08, 00,F4,00,0C, 00,F4,00,0C, 00,F0,00,10, 00,F0,00,10, 00,F0,00,10, 00,F0,00,10, 00,F0,00,10, 00,F0,00,10, 00,F4,00,0C, 00,F4,00,0C, 00,F8,00,08, 00,F8,00,08
 $9B:AAA7             db 00,00,00,00, 00,00,00,00, FC,FC,04,04, FC,FC,04,04, F8,F8,08,08, F8,F8,08,08, F8,F8,08,08, F8,F8,08,08, F6,F6,0A,0A, F6,F6,0A,0A, F8,F8,08,08, F8,F8,08,08, F8,F8,08,08, F8,F8,08,08, FC,FC,04,04, FC,FC,04,04
 $9B:AAE7             db 00,00,00,00, 00,00,00,00, FC,04,04,FC, FC,04,04,FC, F8,08,08,F8, F8,08,08,F8, F8,08,08,F8, F8,08,08,F8, F6,0A,0A,F6, F6,0A,0A,F6, F8,08,08,F8, F8,08,08,F8, F8,08,08,F8, F8,08,08,F8, FC,04,04,FC, FC,04,04,FC
+
+; Ice spazer
 $9B:AB27             db 00,00,00,00, 00,00,00,00, 00,08,00,08, 00,08,00,08, 00,10,00,10, 00,10,00,10, F8,10,08,10, F8,10,08,10, F0,10,10,10, F0,10,10,10
 $9B:AB4F             db 00,00,00,00, 00,00,00,00, F8,08,F8,08, F8,08,F8,08, F4,0C,F4,0C, F4,0C,F4,0C, F0,08,F8,10, F0,08,F8,10, E8,00,00,18, E8,00,00,18
 $9B:AB77             db 00,00,00,00, 00,00,00,00, F8,08,F8,08, F8,08,F8,08, F0,00,F0,00, F0,00,F0,00, F0,F8,F0,08, F0,F8,F0,08, F0,F0,F0,10, F0,F0,F0,10
@@ -661,6 +721,8 @@ $9B:ABC7             db 00,00,00,00, 00,00,00,00, 00,F8,00,F8, 00,F8,00,F8, 00,F
 $9B:ABEF             db 00,00,00,00, 00,00,00,00, 08,F8,08,F8, 08,F8,08,F8, 0C,F4,0C,F4, 0C,F4,0C,F4, 10,F8,08,F0, 10,F8,08,F0, 18,00,00,E8, 18,00,00,E8
 $9B:AC17             db 00,00,00,00, 00,00,00,00, 08,00,08,00, 08,00,08,00, 10,00,10,00, 10,00,10,00, 10,F8,10,08, 10,F8,10,08, 10,F0,10,10, 10,F0,10,10
 $9B:AC3F             db 00,00,00,00, 00,00,00,00, 08,08,08,08, 08,08,08,08, 0C,0C,0C,0C, 0C,0C,0C,0C, 10,08,08,10, 10,08,08,10, 18,00,00,18, 18,00,00,18
+
+; Wave ice spazer
 $9B:AC67             db 00,00,00,00, 00,00,00,00, 00,08,00,08, 00,08,00,08, 00,10,00,10, 00,10,00,10, FC,10,04,10, FC,10,04,10, F8,10,08,10, F8,10,08,10, F4,10,0C,10, F4,10,0C,10, F0,10,10,10, F0,10,10,10, F0,10,10,10, F0,10,10,10, F0,10,10,10, F0,10,10,10, F4,10,0C,10, F4,10,0C,10, F8,10,08,10, F8,10,08,10, FC,10,04,10, FC,10,04,10
 $9B:ACC7             db 00,00,00,00, 00,00,00,00, F8,08,F8,08, F8,08,F8,08, F4,0C,F4,0C, F4,0C,F4,0C, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10, E8,00,00,18, E8,00,00,18, E8,00,00,18, E8,00,00,18, E8,00,00,18, E8,00,00,18, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10, F0,08,F8,10
 $9B:AD27             db 00,00,00,00, 00,00,00,00, F8,00,F8,00, F8,00,F8,00, F0,00,F0,00, F0,00,F0,00, F0,FC,F0,04, F0,FC,F0,04, F0,F8,F0,08, F0,F8,F0,08, F0,F4,F0,0C, F0,F4,F0,0C, F0,F0,F0,10, F0,F0,F0,10, F0,F0,F0,10, F0,F0,F0,10, F0,F0,F0,10, F0,F0,F0,10, F0,F4,F0,0C, F0,F4,F0,0C, F0,F8,F0,08, F0,F8,F0,08, F0,FC,F0,04, F0,FC,F0,04
@@ -669,6 +731,8 @@ $9B:ADE7             db 00,00,00,00, 00,00,00,00, 00,F8,00,F8, 00,F8,00,F8, 00,F
 $9B:AE47             db 00,00,00,00, 00,00,00,00, 08,F8,08,F8, 08,F8,08,F8, 0C,F4,0C,F4, 0C,F4,0C,F4, 08,F0,10,F8, 08,F0,10,F8, 08,F0,10,F8, 08,F0,10,F8, 04,EC,14,FC, 04,EC,14,FC, 00,E8,18,00, 00,E8,18,00, 00,E8,18,00, 00,E8,18,00, 00,E8,18,00, 00,E8,18,00, 04,EC,14,FC, 04,EC,14,FC, 08,F0,10,F8, 08,F0,10,F8, 08,F0,10,F8, 08,F0,10,F8
 $9B:AEA7             db 00,00,00,00, 00,00,00,00, 08,00,08,00, 08,00,08,00, 10,00,10,00, 10,00,10,00, 10,FC,10,04, 10,FC,10,04, 10,F8,10,08, 10,F8,10,08, 10,F4,10,0C, 10,F4,10,0C, 10,F0,10,10, 10,F0,10,10, 10,F0,10,10, 10,F0,10,10, 10,F0,10,10, 10,F0,10,10, 10,F4,10,0C, 10,F4,10,0C, 10,F8,10,08, 10,F8,10,08, 10,FC,10,04, 10,FC,10,04
 $9B:AF07             db 00,00,00,00, 00,00,00,00, 08,08,08,08, 08,08,08,08, 0C,0C,0C,0C, 0C,0C,0C,0C, 08,10,10,08, 08,10,10,08, 08,10,10,08, 08,10,10,08, 04,14,14,04, 04,14,14,04, 00,18,18,00, 00,18,18,00, 00,18,18,00, 00,18,18,00, 00,18,18,00, 00,18,18,00, 04,14,14,04, 04,14,14,04, 08,10,10,08, 08,10,10,08, 08,10,10,08, 08,10,10,08
+
+; Ice plasma
 $9B:AF67             db 00,00,00,00, 00,00,00,00, 00,0C,00,0C, 00,0C,00,0C, 00,18,00,18, 00,18,00,18, 00,1C,00,1C, 00,1C,00,1C
 $9B:AF87             db 00,00,00,00, 00,00,00,00, F8,08,F8,08, F8,08,F8,08, F0,10,F0,10, F0,10,F0,10, E8,18,E8,18, E8,18,E8,18
 $9B:AFA7             db 00,00,00,00, 00,00,00,00, F4,00,F4,00, F4,00,F4,00, E8,00,E8,00, E8,00,E8,00, E4,00,E4,00, E4,00,E4,00
@@ -677,6 +741,8 @@ $9B:AFE7             db 00,00,00,00, 00,00,00,00, 00,F4,00,F4, 00,F4,00,F4, 00,E
 $9B:B007             db 00,00,00,00, 00,00,00,00, 08,F8,08,F8, 08,F8,08,F8, 10,F0,10,F0, 10,F0,10,F0, 18,E8,18,E8, 18,E8,18,E8
 $9B:B027             db 00,00,00,00, 00,00,00,00, 0C,00,0C,00, 0C,00,0C,00, 18,00,18,00, 18,00,18,00, 1C,00,1C,00, 1C,00,1C,00
 $9B:B047             db 00,00,00,00, 00,00,00,00, 08,08,08,08, 08,08,08,08, 10,10,10,10, 10,10,10,10, 18,18,18,18, 18,18,18,18
+
+; Wave ice plasma
 $9B:B067             db 00,00,00,00, 00,00,00,00, 00,0C,00,0C, 00,0C,00,0C, 00,18,00,18, 00,18,00,18, 00,1C,00,1C, 00,1C,00,1C, F8,1C,08,1C, F8,1C,08,1C, F4,1C,0C,1C, F4,1C,0C,1C, F0,1C,10,1C, F0,1C,10,1C, F0,1C,10,1C, F0,1C,10,1C, F0,1C,10,1C, F0,1C,10,1C, F4,1C,0C,1C, F4,1C,0C,1C, F8,1C,08,1C, F8,1C,08,1C
 $9B:B0BF             db 00,00,00,00, 00,00,00,00, F8,08,F8,08, F8,08,F8,08, F0,10,F0,10, F0,10,F0,10, EC,14,EC,14, EC,14,EC,14, E4,0C,F0,18, E4,0C,F0,18, E0,0C,F4,1C, E0,0C,F4,1C, E0,08,F8,20, E0,08,F8,20, E0,08,F8,20, E0,08,F8,20, E0,08,F8,20, E0,08,F8,20, E0,0C,F4,1C, E0,0C,F4,1C, E4,0C,F0,18, E4,0C,F0,18
 $9B:B117             db 00,00,00,00, 00,00,00,00, F4,00,F4,00, F4,00,F4,00, E8,00,E8,00, E8,00,E8,00, E4,00,E4,00, E4,00,E4,00, E4,F8,E4,08, E4,F8,E4,08, E4,F4,E4,0C, E4,F4,E4,0C, E4,F0,E4,10, E4,F0,E4,10, E4,F0,E4,10, E4,F0,E4,10, E4,F0,E4,10, E4,F0,E4,10, E4,F4,E4,0C, E4,F4,E4,0C, E4,F8,E4,08, E4,F8,E4,08
@@ -688,16 +754,36 @@ $9B:B2CF             db 00,00,00,00, 00,00,00,00, 08,08,08,08, 08,08,08,08, 10,1
 }
 
 
-;;; $B327: SBAs? ;;;
+;;; $B327: Spazer SBA ;;;
 {
-$9B:B327             dw B33B, B34B, B35B, B36B, B33B, B33B, B34B, B35B, B36B, B33B ; Wave spazer?
+;                        ________________________________________________ Up, facing right
+;                       |     ___________________________________________ Up-right
+;                       |    |     ______________________________________ Right
+;                       |    |    |     _________________________________ Down-right
+;                       |    |    |    |     ____________________________ Down, facing right
+;                       |    |    |    |    |     _______________________ Down, facing left
+;                       |    |    |    |    |    |     __________________ Down-left
+;                       |    |    |    |    |    |    |     _____________ Left
+;                       |    |    |    |    |    |    |    |     ________ Up-left
+;                       |    |    |    |    |    |    |    |    |     ___ Up, facing left
+;                       |    |    |    |    |    |    |    |    |    |
+$9B:B327             dw B33B,B34B,B35B,B36B,B33B,B33B,B34B,B35B,B36B,B33B ; Wave spazer?
+
+; Format:
+;     x,y,X,Y
+;     x: Left trail X offset
+;     y: Left trail Y offset
+;     X: Right trail X offset
+;     Y: Right trail Y offset
+
+; Indexed by [[projectile instruction pointer] - 2] * 4
 
 $9B:B33B             db 00,00,00,00, 10,00,F0,00, 00,00,00,00, F0,00,10,00
 $9B:B34B             db 00,00,00,00, F6,F6,0A,0A, 00,00,00,00, 0A,0A,F6,F6
 $9B:B35B             db 00,00,00,00, 00,F0,00,10, 00,00,00,00, 00,10,00,F0
 $9B:B36B             db 00,00,00,00, 0A,F6,F6,0A, 00,00,00,00, F6,0A,0A,F6
 
-$9B:B37B             dw B38F, B38F, B38F, B38F, B39B, B39B, B38F, B38F, B38F, B38F ; Spazer / ice spazer?
+$9B:B37B             dw B38F,B38F,B38F,B38F,B39B,B39B,B38F,B38F,B38F,B38F ; Spazer / ice spazer
 
 $9B:B38F             db 00,00,00,00, F8,08,08,08, F0,08,10,08
 $9B:B39B             db 00,00,00,00, F8,F8,08,F8, F0,F8,10,F8
@@ -705,38 +791,40 @@ $9B:B39B             db 00,00,00,00, F8,F8,08,F8, F0,F8,10,F8
 }
 
 
-;;; $B3A7:  ;;;
+;;; $B3A7..B860: Death sequence ;;;
+{
+;;; $B3A7: Set Samus death sequence pose ;;;
 {
 $9B:B3A7 08          PHP
 $9B:B3A8 8B          PHB
-$9B:B3A9 4B          PHK
-$9B:B3AA AB          PLB
+$9B:B3A9 4B          PHK                    ;\
+$9B:B3AA AB          PLB                    ;} DB = $9B
 $9B:B3AB C2 30       REP #$30
-$9B:B3AD AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$9B:B3B0 29 FF 00    AND #$00FF
-$9B:B3B3 48          PHA
-$9B:B3B4 C9 03 00    CMP #$0003
-$9B:B3B7 D0 07       BNE $07    [$B3C0]
+$9B:B3AD AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$9B:B3B0 29 FF 00    AND #$00FF             ;|
+$9B:B3B3 48          PHA                    ;} If [Samus movement type] = spin jumping:
+$9B:B3B4 C9 03 00    CMP #$0003             ;|
+$9B:B3B7 D0 07       BNE $07    [$B3C0]     ;/
 $9B:B3B9 A9 32 00    LDA #$0032             ;\
 $9B:B3BC 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 32h, sound library 1, max queued sounds allowed = 6 (spin jump end)
 
 $9B:B3C0 68          PLA
-$9B:B3C1 AA          TAX
-$9B:B3C2 BD 20 B4    LDA $B420,x[$9B:B42A]
-$9B:B3C5 29 FF 00    AND #$00FF
+$9B:B3C1 AA          TAX                    ;\
+$9B:B3C2 BD 20 B4    LDA $B420,x[$9B:B42A]  ;} A = [$B420 + [Samus movement type]]
+$9B:B3C5 29 FF 00    AND #$00FF             ;/
 $9B:B3C8 48          PHA
-$9B:B3C9 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$9B:B3CC 29 FF 00    AND #$00FF
-$9B:B3CF C9 04 00    CMP #$0004
-$9B:B3D2 F0 08       BEQ $08    [$B3DC]
-$9B:B3D4 A9 D7 00    LDA #$00D7
-$9B:B3D7 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$9B:B3C9 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$9B:B3CC 29 FF 00    AND #$00FF             ;|
+$9B:B3CF C9 04 00    CMP #$0004             ;} If Samus is facing right:
+$9B:B3D2 F0 08       BEQ $08    [$B3DC]     ;/
+$9B:B3D4 A9 D7 00    LDA #$00D7             ;\
+$9B:B3D7 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - crystal flash ending
 $9B:B3DA 80 06       BRA $06    [$B3E2]
 
-$9B:B3DC A9 D8 00    LDA #$00D8
-$9B:B3DF 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$9B:B3DC A9 D8 00    LDA #$00D8             ;\ Else (Samus is facing left):
+$9B:B3DF 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - crystal flash ending
 
-$9B:B3E2 22 33 F4 91 JSL $91F433[$91:F433]
+$9B:B3E2 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $9B:B3E6 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $9B:B3EA AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $9B:B3ED 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -746,21 +834,22 @@ $9B:B3F6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $9B:B3F9 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
 $9B:B3FC AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $9B:B3FF 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
-$9B:B402 9C 9A 0A    STZ $0A9A  [$7E:0A9A]
+$9B:B402 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
 $9B:B405 68          PLA
-$9B:B406 8D 96 0A    STA $0A96  [$7E:0A96]
-$9B:B409 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$9B:B40C 38          SEC
-$9B:B40D ED 11 09    SBC $0911  [$7E:0911]
-$9B:B410 8D F6 0A    STA $0AF6  [$7E:0AF6]
-$9B:B413 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$9B:B416 38          SEC
-$9B:B417 ED 15 09    SBC $0915  [$7E:0915]
-$9B:B41A 8D FA 0A    STA $0AFA  [$7E:0AFA]
+$9B:B406 8D 96 0A    STA $0A96  [$7E:0A96]  ; Samus animation frame = [A]
+$9B:B409 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$9B:B40C 38          SEC                    ;|
+$9B:B40D ED 11 09    SBC $0911  [$7E:0911]  ;} Samus X position -= [layer 1 X position]
+$9B:B410 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
+$9B:B413 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$9B:B416 38          SEC                    ;|
+$9B:B417 ED 15 09    SBC $0915  [$7E:0915]  ;} Samus Y position -= [layer 1 Y position]
+$9B:B41A 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $9B:B41D AB          PLB
 $9B:B41E 28          PLP
 $9B:B41F 6B          RTL
 
+; Samus animation frame. 5 if Samus is morphed, otherwise 1
 $9B:B420             db 05, ; 0: Standing
                         05, ; 1: Running
                         05, ; 2: Normal jumping
@@ -792,168 +881,172 @@ $9B:B420             db 05, ; 0: Standing
 }
 
 
-;;; $B43C:  ;;;
+;;; $B43C: Draw Samus starting death animation ;;;
 {
 $9B:B43C 22 76 89 90 JSL $908976[$90:8976]
 $9B:B440 6B          RTL
 }
 
 
-;;; $B441:  ;;;
+;;; $B441: Handle death animation flashing ;;;
 {
+;; Returns:
+;;     A: 1 if flashing has ended, 0 otherwise
 $9B:B441 08          PHP
 $9B:B442 8B          PHB
-$9B:B443 4B          PHK
-$9B:B444 AB          PLB
+$9B:B443 4B          PHK                    ;\
+$9B:B444 AB          PLB                    ;} DB = $9B
 $9B:B445 C2 30       REP #$30
-$9B:B447 AD E6 0D    LDA $0DE6  [$7E:0DE6]
-$9B:B44A C9 04 00    CMP #$0004
-$9B:B44D 10 05       BPL $05    [$B454]
-$9B:B44F 0A          ASL A
-$9B:B450 A8          TAY
-$9B:B451 20 D8 B6    JSR $B6D8  [$9B:B6D8]
+$9B:B447 AD E6 0D    LDA $0DE6  [$7E:0DE6]  ;\
+$9B:B44A C9 04 00    CMP #$0004             ;} If [death animation counter] < 4:
+$9B:B44D 10 05       BPL $05    [$B454]     ;/
+$9B:B44F 0A          ASL A                  ;\
+$9B:B450 A8          TAY                    ;} Y = [death animation counter] * 2
+$9B:B451 20 D8 B6    JSR $B6D8  [$9B:B6D8]  ; Queue transfer of segment of Samus death sequence to VRAM
 
-$9B:B454 AD E6 0D    LDA $0DE6  [$7E:0DE6]
-$9B:B457 1A          INC A
-$9B:B458 8D E6 0D    STA $0DE6  [$7E:0DE6]
-$9B:B45B C9 3C 00    CMP #$003C
-$9B:B45E 10 38       BPL $38    [$B498]
-$9B:B460 AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$9B:B463 3A          DEC A
-$9B:B464 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$9B:B467 F0 02       BEQ $02    [$B46B]
-$9B:B469 10 27       BPL $27    [$B492]
+$9B:B454 AD E6 0D    LDA $0DE6  [$7E:0DE6]  ;\
+$9B:B457 1A          INC A                  ;} Increment death animation counter
+$9B:B458 8D E6 0D    STA $0DE6  [$7E:0DE6]  ;/
+$9B:B45B C9 3C 00    CMP #$003C             ;\
+$9B:B45E 10 38       BPL $38    [$B498]     ;} If [death animation counter] >= 60: go to BRANCH_END
+$9B:B460 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$9B:B463 3A          DEC A                  ;} Decrement death animation timer
+$9B:B464 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;/
+$9B:B467 F0 02       BEQ $02    [$B46B]     ;\
+$9B:B469 10 27       BPL $27    [$B492]     ;} If [death animation timer] > 0: return A = 0
 
-$9B:B46B AD E4 0D    LDA $0DE4  [$7E:0DE4]
-$9B:B46E F0 0E       BEQ $0E    [$B47E]
-$9B:B470 A9 00 00    LDA #$0000
-$9B:B473 8D E4 0D    STA $0DE4  [$7E:0DE4]
-$9B:B476 A9 03 00    LDA #$0003
-$9B:B479 8D E2 0D    STA $0DE2  [$7E:0DE2]
+$9B:B46B AD E4 0D    LDA $0DE4  [$7E:0DE4]  ;\
+$9B:B46E F0 0E       BEQ $0E    [$B47E]     ;} If [death animation index] != 0:
+$9B:B470 A9 00 00    LDA #$0000             ;\
+$9B:B473 8D E4 0D    STA $0DE4  [$7E:0DE4]  ;} Death animation index = 0
+$9B:B476 A9 03 00    LDA #$0003             ;\
+$9B:B479 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Death animation timer = 3
 $9B:B47C 80 0C       BRA $0C    [$B48A]
 
-$9B:B47E A9 01 00    LDA #$0001
-$9B:B481 8D E4 0D    STA $0DE4  [$7E:0DE4]
-$9B:B484 A9 01 00    LDA #$0001
-$9B:B487 8D E2 0D    STA $0DE2  [$7E:0DE2]
+$9B:B47E A9 01 00    LDA #$0001             ;\ Else ([death animation index] = 0):
+$9B:B481 8D E4 0D    STA $0DE4  [$7E:0DE4]  ;} Death animation index = 1
+$9B:B484 A9 01 00    LDA #$0001             ;\
+$9B:B487 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Death animation timer = 1
 
-$9B:B48A AD E4 0D    LDA $0DE4  [$7E:0DE4]
-$9B:B48D 0A          ASL A
-$9B:B48E AA          TAX
-$9B:B48F 20 CE B5    JSR $B5CE  [$9B:B5CE]
+$9B:B48A AD E4 0D    LDA $0DE4  [$7E:0DE4]  ;\
+$9B:B48D 0A          ASL A                  ;} X = [death animation index] * 2
+$9B:B48E AA          TAX                    ;/
+$9B:B48F 20 CE B5    JSR $B5CE  [$9B:B5CE]  ; Write death animation palette
 
-$9B:B492 A9 00 00    LDA #$0000
-$9B:B495 AB          PLB
-$9B:B496 28          PLP
-$9B:B497 6B          RTL
+$9B:B492 A9 00 00    LDA #$0000             ;\
+$9B:B495 AB          PLB                    ;|
+$9B:B496 28          PLP                    ;} Return A = 0
+$9B:B497 6B          RTL                    ;/
 
-$9B:B498 20 B6 B4    JSR $B4B6  [$9B:B4B6]
-$9B:B49B A5 8D       LDA $8D    [$7E:008D]
-$9B:B49D 29 B0 00    AND #$00B0
-$9B:B4A0 C9 B0 00    CMP #$00B0
-$9B:B4A3 D0 08       BNE $08    [$B4AD]
-$9B:B4A5 A9 01 00    LDA #$0001
-$9B:B4A8 8D EC 0D    STA $0DEC  [$7E:0DEC]
+; BRANCH_END
+$9B:B498 20 B6 B4    JSR $B4B6  [$9B:B4B6]  ; Finish death animation flashing
+$9B:B49B A5 8D       LDA $8D    [$7E:008D]  ;\
+$9B:B49D 29 B0 00    AND #$00B0             ;|
+$9B:B4A0 C9 B0 00    CMP #$00B0             ;} If controller 2 pressing A + L + R:
+$9B:B4A3 D0 08       BNE $08    [$B4AD]     ;/
+$9B:B4A5 A9 01 00    LDA #$0001             ;\
+$9B:B4A8 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Debug death animation flag = 1
 $9B:B4AB 80 03       BRA $03    [$B4B0]
 
-$9B:B4AD 9C EC 0D    STZ $0DEC  [$7E:0DEC]
+                                            ; Else (controller 2 not pressing A + L + R):
+$9B:B4AD 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Debug death animation flag = 0
 
-$9B:B4B0 A9 01 00    LDA #$0001
-$9B:B4B3 AB          PLB
-$9B:B4B4 28          PLP
-$9B:B4B5 6B          RTL
+$9B:B4B0 A9 01 00    LDA #$0001             ;\
+$9B:B4B3 AB          PLB                    ;|
+$9B:B4B4 28          PLP                    ;} Return A = 1
+$9B:B4B5 6B          RTL                    ;/
 }
 
 
-;;; $B4B6:  ;;;
+;;; $B4B6: Finish death animation flashing ;;;
 {
 ; Writes the first frame of beam charging palette for Samus to end the last yellow frame, I guess(?)
 ; Also writes background colours (in preparation?) for the fade-to-white(?)
 $9B:B4B6 08          PHP
 $9B:B4B7 C2 30       REP #$30
-$9B:B4B9 AC 74 0A    LDY $0A74  [$7E:0A74]
-$9B:B4BC B9 C8 B5    LDA $B5C8,y[$9B:B5C8]
-$9B:B4BF AA          TAX
-$9B:B4C0 BD 00 00    LDA $0000,x[$9B:B7D3]
-$9B:B4C3 AA          TAX
+$9B:B4B9 AC 74 0A    LDY $0A74  [$7E:0A74]  ;\
+$9B:B4BC B9 C8 B5    LDA $B5C8,y[$9B:B5C8]  ;|
+$9B:B4BF AA          TAX                    ;} $14 = [[$B5C8 + [Samus suit palette index]]]
+$9B:B4C0 BD 00 00    LDA $0000,x[$9B:B7D3]  ;|
+$9B:B4C3 AA          TAX                    ;/
 $9B:B4C4 8B          PHB
-$9B:B4C5 F4 00 9B    PEA $9B00
-$9B:B4C8 AB          PLB
-$9B:B4C9 AB          PLB
-$9B:B4CA BD 00 00    LDA $0000,x[$9B:9820]
-$9B:B4CD 8F 80 C1 7E STA $7EC180[$7E:C180]
-$9B:B4D1 BD 02 00    LDA $0002,x[$9B:9822]
-$9B:B4D4 8F 82 C1 7E STA $7EC182[$7E:C182]
-$9B:B4D8 BD 04 00    LDA $0004,x[$9B:9824]
-$9B:B4DB 8F 84 C1 7E STA $7EC184[$7E:C184]
-$9B:B4DF BD 06 00    LDA $0006,x[$9B:9826]
-$9B:B4E2 8F 86 C1 7E STA $7EC186[$7E:C186]
-$9B:B4E6 BD 08 00    LDA $0008,x[$9B:9828]
-$9B:B4E9 8F 88 C1 7E STA $7EC188[$7E:C188]
-$9B:B4ED BD 0A 00    LDA $000A,x[$9B:982A]
-$9B:B4F0 8F 8A C1 7E STA $7EC18A[$7E:C18A]
-$9B:B4F4 BD 0C 00    LDA $000C,x[$9B:982C]
-$9B:B4F7 8F 8C C1 7E STA $7EC18C[$7E:C18C]
-$9B:B4FB BD 0E 00    LDA $000E,x[$9B:982E]
-$9B:B4FE 8F 8E C1 7E STA $7EC18E[$7E:C18E]
-$9B:B502 BD 10 00    LDA $0010,x[$9B:9830]
-$9B:B505 8F 90 C1 7E STA $7EC190[$7E:C190]
-$9B:B509 BD 12 00    LDA $0012,x[$9B:9832]
-$9B:B50C 8F 92 C1 7E STA $7EC192[$7E:C192]
-$9B:B510 BD 14 00    LDA $0014,x[$9B:9834]
-$9B:B513 8F 94 C1 7E STA $7EC194[$7E:C194]
-$9B:B517 BD 16 00    LDA $0016,x[$9B:9836]
-$9B:B51A 8F 96 C1 7E STA $7EC196[$7E:C196]
-$9B:B51E BD 18 00    LDA $0018,x[$9B:9838]
-$9B:B521 8F 98 C1 7E STA $7EC198[$7E:C198]
-$9B:B525 BD 1A 00    LDA $001A,x[$9B:983A]
-$9B:B528 8F 9A C1 7E STA $7EC19A[$7E:C19A]
-$9B:B52C BD 1C 00    LDA $001C,x[$9B:983C]
-$9B:B52F 8F 9C C1 7E STA $7EC19C[$7E:C19C]
-$9B:B533 BD 1E 00    LDA $001E,x[$9B:983E]
-$9B:B536 8F 9E C1 7E STA $7EC19E[$7E:C19E]
-$9B:B53A A2 20 A1    LDX #$A120
-$9B:B53D BD 00 00    LDA $0000,x[$9B:A120]
-$9B:B540 8F E0 C1 7E STA $7EC1E0[$7E:C1E0]
-$9B:B544 BD 02 00    LDA $0002,x[$9B:A122]
-$9B:B547 8F E2 C1 7E STA $7EC1E2[$7E:C1E2]
-$9B:B54B BD 04 00    LDA $0004,x[$9B:A124]
-$9B:B54E 8F E4 C1 7E STA $7EC1E4[$7E:C1E4]
-$9B:B552 BD 06 00    LDA $0006,x[$9B:A126]
-$9B:B555 8F E6 C1 7E STA $7EC1E6[$7E:C1E6]
-$9B:B559 BD 08 00    LDA $0008,x[$9B:A128]
-$9B:B55C 8F E8 C1 7E STA $7EC1E8[$7E:C1E8]
-$9B:B560 BD 0A 00    LDA $000A,x[$9B:A12A]
-$9B:B563 8F EA C1 7E STA $7EC1EA[$7E:C1EA]
-$9B:B567 BD 0C 00    LDA $000C,x[$9B:A12C]
-$9B:B56A 8F EC C1 7E STA $7EC1EC[$7E:C1EC]
-$9B:B56E BD 0E 00    LDA $000E,x[$9B:A12E]
-$9B:B571 8F EE C1 7E STA $7EC1EE[$7E:C1EE]
-$9B:B575 BD 10 00    LDA $0010,x[$9B:A130]
-$9B:B578 8F F0 C1 7E STA $7EC1F0[$7E:C1F0]
-$9B:B57C BD 12 00    LDA $0012,x[$9B:A132]
-$9B:B57F 8F F2 C1 7E STA $7EC1F2[$7E:C1F2]
-$9B:B583 BD 14 00    LDA $0014,x[$9B:A134]
-$9B:B586 8F F4 C1 7E STA $7EC1F4[$7E:C1F4]
-$9B:B58A BD 16 00    LDA $0016,x[$9B:A136]
-$9B:B58D 8F F6 C1 7E STA $7EC1F6[$7E:C1F6]
-$9B:B591 BD 18 00    LDA $0018,x[$9B:A138]
-$9B:B594 8F F8 C1 7E STA $7EC1F8[$7E:C1F8]
-$9B:B598 BD 1A 00    LDA $001A,x[$9B:A13A]
-$9B:B59B 8F FA C1 7E STA $7EC1FA[$7E:C1FA]
-$9B:B59F BD 1C 00    LDA $001C,x[$9B:A13C]
-$9B:B5A2 8F FC C1 7E STA $7EC1FC[$7E:C1FC]
-$9B:B5A6 BD 1E 00    LDA $001E,x[$9B:A13E]
-$9B:B5A9 8F FE C1 7E STA $7EC1FE[$7E:C1FE]
+$9B:B4C5 F4 00 9B    PEA $9B00              ;\
+$9B:B4C8 AB          PLB                    ;} DB = $9B
+$9B:B4C9 AB          PLB                    ;/
+$9B:B4CA BD 00 00    LDA $0000,x[$9B:9820]  ;\
+$9B:B4CD 8F 80 C1 7E STA $7EC180[$7E:C180]  ;|
+$9B:B4D1 BD 02 00    LDA $0002,x[$9B:9822]  ;|
+$9B:B4D4 8F 82 C1 7E STA $7EC182[$7E:C182]  ;|
+$9B:B4D8 BD 04 00    LDA $0004,x[$9B:9824]  ;|
+$9B:B4DB 8F 84 C1 7E STA $7EC184[$7E:C184]  ;|
+$9B:B4DF BD 06 00    LDA $0006,x[$9B:9826]  ;|
+$9B:B4E2 8F 86 C1 7E STA $7EC186[$7E:C186]  ;|
+$9B:B4E6 BD 08 00    LDA $0008,x[$9B:9828]  ;|
+$9B:B4E9 8F 88 C1 7E STA $7EC188[$7E:C188]  ;|
+$9B:B4ED BD 0A 00    LDA $000A,x[$9B:982A]  ;|
+$9B:B4F0 8F 8A C1 7E STA $7EC18A[$7E:C18A]  ;|
+$9B:B4F4 BD 0C 00    LDA $000C,x[$9B:982C]  ;|
+$9B:B4F7 8F 8C C1 7E STA $7EC18C[$7E:C18C]  ;|
+$9B:B4FB BD 0E 00    LDA $000E,x[$9B:982E]  ;|
+$9B:B4FE 8F 8E C1 7E STA $7EC18E[$7E:C18E]  ;|
+$9B:B502 BD 10 00    LDA $0010,x[$9B:9830]  ;} Sprite palette 4 = 20h bytes from [X]
+$9B:B505 8F 90 C1 7E STA $7EC190[$7E:C190]  ;|
+$9B:B509 BD 12 00    LDA $0012,x[$9B:9832]  ;|
+$9B:B50C 8F 92 C1 7E STA $7EC192[$7E:C192]  ;|
+$9B:B510 BD 14 00    LDA $0014,x[$9B:9834]  ;|
+$9B:B513 8F 94 C1 7E STA $7EC194[$7E:C194]  ;|
+$9B:B517 BD 16 00    LDA $0016,x[$9B:9836]  ;|
+$9B:B51A 8F 96 C1 7E STA $7EC196[$7E:C196]  ;|
+$9B:B51E BD 18 00    LDA $0018,x[$9B:9838]  ;|
+$9B:B521 8F 98 C1 7E STA $7EC198[$7E:C198]  ;|
+$9B:B525 BD 1A 00    LDA $001A,x[$9B:983A]  ;|
+$9B:B528 8F 9A C1 7E STA $7EC19A[$7E:C19A]  ;|
+$9B:B52C BD 1C 00    LDA $001C,x[$9B:983C]  ;|
+$9B:B52F 8F 9C C1 7E STA $7EC19C[$7E:C19C]  ;|
+$9B:B533 BD 1E 00    LDA $001E,x[$9B:983E]  ;|
+$9B:B536 8F 9E C1 7E STA $7EC19E[$7E:C19E]  ;/
+$9B:B53A A2 20 A1    LDX #$A120             ;\
+$9B:B53D BD 00 00    LDA $0000,x[$9B:A120]  ;|
+$9B:B540 8F E0 C1 7E STA $7EC1E0[$7E:C1E0]  ;|
+$9B:B544 BD 02 00    LDA $0002,x[$9B:A122]  ;|
+$9B:B547 8F E2 C1 7E STA $7EC1E2[$7E:C1E2]  ;|
+$9B:B54B BD 04 00    LDA $0004,x[$9B:A124]  ;|
+$9B:B54E 8F E4 C1 7E STA $7EC1E4[$7E:C1E4]  ;|
+$9B:B552 BD 06 00    LDA $0006,x[$9B:A126]  ;|
+$9B:B555 8F E6 C1 7E STA $7EC1E6[$7E:C1E6]  ;|
+$9B:B559 BD 08 00    LDA $0008,x[$9B:A128]  ;|
+$9B:B55C 8F E8 C1 7E STA $7EC1E8[$7E:C1E8]  ;|
+$9B:B560 BD 0A 00    LDA $000A,x[$9B:A12A]  ;|
+$9B:B563 8F EA C1 7E STA $7EC1EA[$7E:C1EA]  ;|
+$9B:B567 BD 0C 00    LDA $000C,x[$9B:A12C]  ;|
+$9B:B56A 8F EC C1 7E STA $7EC1EC[$7E:C1EC]  ;|
+$9B:B56E BD 0E 00    LDA $000E,x[$9B:A12E]  ;|
+$9B:B571 8F EE C1 7E STA $7EC1EE[$7E:C1EE]  ;} Sprite palette 7 = 20h bytes from $A120
+$9B:B575 BD 10 00    LDA $0010,x[$9B:A130]  ;|
+$9B:B578 8F F0 C1 7E STA $7EC1F0[$7E:C1F0]  ;|
+$9B:B57C BD 12 00    LDA $0012,x[$9B:A132]  ;|
+$9B:B57F 8F F2 C1 7E STA $7EC1F2[$7E:C1F2]  ;|
+$9B:B583 BD 14 00    LDA $0014,x[$9B:A134]  ;|
+$9B:B586 8F F4 C1 7E STA $7EC1F4[$7E:C1F4]  ;|
+$9B:B58A BD 16 00    LDA $0016,x[$9B:A136]  ;|
+$9B:B58D 8F F6 C1 7E STA $7EC1F6[$7E:C1F6]  ;|
+$9B:B591 BD 18 00    LDA $0018,x[$9B:A138]  ;|
+$9B:B594 8F F8 C1 7E STA $7EC1F8[$7E:C1F8]  ;|
+$9B:B598 BD 1A 00    LDA $001A,x[$9B:A13A]  ;|
+$9B:B59B 8F FA C1 7E STA $7EC1FA[$7E:C1FA]  ;|
+$9B:B59F BD 1C 00    LDA $001C,x[$9B:A13C]  ;|
+$9B:B5A2 8F FC C1 7E STA $7EC1FC[$7E:C1FC]  ;|
+$9B:B5A6 BD 1E 00    LDA $001E,x[$9B:A13E]  ;|
+$9B:B5A9 8F FE C1 7E STA $7EC1FE[$7E:C1FE]  ;/
 $9B:B5AD AB          PLB
-$9B:B5AE A0 08 00    LDY #$0008
-$9B:B5B1 20 D8 B6    JSR $B6D8  [$9B:B6D8]
-$9B:B5B4 AD 23 B8    LDA $B823  [$9B:B823]
-$9B:B5B7 29 FF 00    AND #$00FF
-$9B:B5BA 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$9B:B5BD 9C E4 0D    STZ $0DE4  [$7E:0DE4]
-$9B:B5C0 9C E6 0D    STZ $0DE6  [$7E:0DE6]
-$9B:B5C3 20 58 B7    JSR $B758  [$9B:B758]
+$9B:B5AE A0 08 00    LDY #$0008             ; Y = 6
+$9B:B5B1 20 D8 B6    JSR $B6D8  [$9B:B6D8]  ; Queue transfer of segment of Samus death sequence to VRAM
+$9B:B5B4 AD 23 B8    LDA $B823  [$9B:B823]  ;\
+$9B:B5B7 29 FF 00    AND #$00FF             ;} Death animation timer = 15h
+$9B:B5BA 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;/
+$9B:B5BD 9C E4 0D    STZ $0DE4  [$7E:0DE4]  ; Death animation index = 0
+$9B:B5C0 9C E6 0D    STZ $0DE6  [$7E:0DE6]  ; Death animation counter = 0
+$9B:B5C3 20 58 B7    JSR $B758  [$9B:B758]  ; Handle death sequence suit explosion
 $9B:B5C6 28          PLP
 $9B:B5C7 60          RTS
 
@@ -961,8 +1054,10 @@ $9B:B5C8             dw B7D3, B7E7, B7FB
 }
 
 
-;;; $B5CE:  ;;;
+;;; $B5CE: Write death animation sprite palettes ;;;
 {
+;; Parameters:
+;;     X: Death animation palette table index
 $9B:B5CE 08          PHP
 $9B:B5CF C2 30       REP #$30
 $9B:B5D1 AC 74 0A    LDY $0A74  [$7E:0A74]  ;\
@@ -977,74 +1072,74 @@ $9B:B5E2 AA          TAX                    ;} X = [[$14] + [X]]
 $9B:B5E3 BD 00 00    LDA $0000,x[$9B:B7D5]  ;|
 $9B:B5E6 AA          TAX                    ;/
 $9B:B5E7 8B          PHB
-$9B:B5E8 F4 00 9B    PEA $9B00
-$9B:B5EB AB          PLB
-$9B:B5EC AB          PLB
-$9B:B5ED BD 00 00    LDA $0000,x[$9B:9420]
-$9B:B5F0 8F 80 C1 7E STA $7EC180[$7E:C180]
-$9B:B5F4 BD 02 00    LDA $0002,x[$9B:9422]
-$9B:B5F7 8F 82 C1 7E STA $7EC182[$7E:C182]
-$9B:B5FB BD 04 00    LDA $0004,x[$9B:9424]
-$9B:B5FE 8F 84 C1 7E STA $7EC184[$7E:C184]
-$9B:B602 BD 06 00    LDA $0006,x[$9B:9426]
-$9B:B605 8F 86 C1 7E STA $7EC186[$7E:C186]
-$9B:B609 BD 08 00    LDA $0008,x[$9B:9428]
-$9B:B60C 8F 88 C1 7E STA $7EC188[$7E:C188]
-$9B:B610 BD 0A 00    LDA $000A,x[$9B:942A]
-$9B:B613 8F 8A C1 7E STA $7EC18A[$7E:C18A]
-$9B:B617 BD 0C 00    LDA $000C,x[$9B:942C]
-$9B:B61A 8F 8C C1 7E STA $7EC18C[$7E:C18C]
-$9B:B61E BD 0E 00    LDA $000E,x[$9B:942E]
-$9B:B621 8F 8E C1 7E STA $7EC18E[$7E:C18E]
-$9B:B625 BD 10 00    LDA $0010,x[$9B:9430]
-$9B:B628 8F 90 C1 7E STA $7EC190[$7E:C190]
-$9B:B62C BD 12 00    LDA $0012,x[$9B:9432]
-$9B:B62F 8F 92 C1 7E STA $7EC192[$7E:C192]
-$9B:B633 BD 14 00    LDA $0014,x[$9B:9434]
-$9B:B636 8F 94 C1 7E STA $7EC194[$7E:C194]
-$9B:B63A BD 16 00    LDA $0016,x[$9B:9436]
-$9B:B63D 8F 96 C1 7E STA $7EC196[$7E:C196]
-$9B:B641 BD 18 00    LDA $0018,x[$9B:9438]
-$9B:B644 8F 98 C1 7E STA $7EC198[$7E:C198]
-$9B:B648 BD 1A 00    LDA $001A,x[$9B:943A]
-$9B:B64B 8F 9A C1 7E STA $7EC19A[$7E:C19A]
-$9B:B64F BD 1C 00    LDA $001C,x[$9B:943C]
-$9B:B652 8F 9C C1 7E STA $7EC19C[$7E:C19C]
-$9B:B656 BD 1E 00    LDA $001E,x[$9B:943E]
-$9B:B659 8F 9E C1 7E STA $7EC19E[$7E:C19E]
-$9B:B65D A6 12       LDX $12    [$7E:0012]
-$9B:B65F BD 00 00    LDA $0000,x[$9B:A120]
-$9B:B662 8F E0 C1 7E STA $7EC1E0[$7E:C1E0]
-$9B:B666 BD 02 00    LDA $0002,x[$9B:A122]
-$9B:B669 8F E2 C1 7E STA $7EC1E2[$7E:C1E2]
-$9B:B66D BD 04 00    LDA $0004,x[$9B:A124]
-$9B:B670 8F E4 C1 7E STA $7EC1E4[$7E:C1E4]
-$9B:B674 BD 06 00    LDA $0006,x[$9B:A126]
-$9B:B677 8F E6 C1 7E STA $7EC1E6[$7E:C1E6]
-$9B:B67B BD 08 00    LDA $0008,x[$9B:A128]
-$9B:B67E 8F E8 C1 7E STA $7EC1E8[$7E:C1E8]
-$9B:B682 BD 0A 00    LDA $000A,x[$9B:A12A]
-$9B:B685 8F EA C1 7E STA $7EC1EA[$7E:C1EA]
-$9B:B689 BD 0C 00    LDA $000C,x[$9B:A12C]
-$9B:B68C 8F EC C1 7E STA $7EC1EC[$7E:C1EC]
-$9B:B690 BD 0E 00    LDA $000E,x[$9B:A12E]
-$9B:B693 8F EE C1 7E STA $7EC1EE[$7E:C1EE]
-$9B:B697 BD 10 00    LDA $0010,x[$9B:A130]
-$9B:B69A 8F F0 C1 7E STA $7EC1F0[$7E:C1F0]
-$9B:B69E BD 12 00    LDA $0012,x[$9B:A132]
-$9B:B6A1 8F F2 C1 7E STA $7EC1F2[$7E:C1F2]
-$9B:B6A5 BD 14 00    LDA $0014,x[$9B:A134]
-$9B:B6A8 8F F4 C1 7E STA $7EC1F4[$7E:C1F4]
-$9B:B6AC BD 16 00    LDA $0016,x[$9B:A136]
-$9B:B6AF 8F F6 C1 7E STA $7EC1F6[$7E:C1F6]
-$9B:B6B3 BD 18 00    LDA $0018,x[$9B:A138]
-$9B:B6B6 8F F8 C1 7E STA $7EC1F8[$7E:C1F8]
-$9B:B6BA BD 1A 00    LDA $001A,x[$9B:A13A]
-$9B:B6BD 8F FA C1 7E STA $7EC1FA[$7E:C1FA]
-$9B:B6C1 BD 1C 00    LDA $001C,x[$9B:A13C]
-$9B:B6C4 8F FC C1 7E STA $7EC1FC[$7E:C1FC]
-$9B:B6C8 BD 1E 00    LDA $001E,x[$9B:A13E]
-$9B:B6CB 8F FE C1 7E STA $7EC1FE[$7E:C1FE]
+$9B:B5E8 F4 00 9B    PEA $9B00              ;\
+$9B:B5EB AB          PLB                    ;} DB = $9B
+$9B:B5EC AB          PLB                    ;/
+$9B:B5ED BD 00 00    LDA $0000,x[$9B:9420]  ;\
+$9B:B5F0 8F 80 C1 7E STA $7EC180[$7E:C180]  ;|
+$9B:B5F4 BD 02 00    LDA $0002,x[$9B:9422]  ;|
+$9B:B5F7 8F 82 C1 7E STA $7EC182[$7E:C182]  ;|
+$9B:B5FB BD 04 00    LDA $0004,x[$9B:9424]  ;|
+$9B:B5FE 8F 84 C1 7E STA $7EC184[$7E:C184]  ;|
+$9B:B602 BD 06 00    LDA $0006,x[$9B:9426]  ;|
+$9B:B605 8F 86 C1 7E STA $7EC186[$7E:C186]  ;|
+$9B:B609 BD 08 00    LDA $0008,x[$9B:9428]  ;|
+$9B:B60C 8F 88 C1 7E STA $7EC188[$7E:C188]  ;|
+$9B:B610 BD 0A 00    LDA $000A,x[$9B:942A]  ;|
+$9B:B613 8F 8A C1 7E STA $7EC18A[$7E:C18A]  ;|
+$9B:B617 BD 0C 00    LDA $000C,x[$9B:942C]  ;|
+$9B:B61A 8F 8C C1 7E STA $7EC18C[$7E:C18C]  ;|
+$9B:B61E BD 0E 00    LDA $000E,x[$9B:942E]  ;|
+$9B:B621 8F 8E C1 7E STA $7EC18E[$7E:C18E]  ;|
+$9B:B625 BD 10 00    LDA $0010,x[$9B:9430]  ;} Sprite palette 4 = 20h bytes from [X]
+$9B:B628 8F 90 C1 7E STA $7EC190[$7E:C190]  ;|
+$9B:B62C BD 12 00    LDA $0012,x[$9B:9432]  ;|
+$9B:B62F 8F 92 C1 7E STA $7EC192[$7E:C192]  ;|
+$9B:B633 BD 14 00    LDA $0014,x[$9B:9434]  ;|
+$9B:B636 8F 94 C1 7E STA $7EC194[$7E:C194]  ;|
+$9B:B63A BD 16 00    LDA $0016,x[$9B:9436]  ;|
+$9B:B63D 8F 96 C1 7E STA $7EC196[$7E:C196]  ;|
+$9B:B641 BD 18 00    LDA $0018,x[$9B:9438]  ;|
+$9B:B644 8F 98 C1 7E STA $7EC198[$7E:C198]  ;|
+$9B:B648 BD 1A 00    LDA $001A,x[$9B:943A]  ;|
+$9B:B64B 8F 9A C1 7E STA $7EC19A[$7E:C19A]  ;|
+$9B:B64F BD 1C 00    LDA $001C,x[$9B:943C]  ;|
+$9B:B652 8F 9C C1 7E STA $7EC19C[$7E:C19C]  ;|
+$9B:B656 BD 1E 00    LDA $001E,x[$9B:943E]  ;|
+$9B:B659 8F 9E C1 7E STA $7EC19E[$7E:C19E]  ;/
+$9B:B65D A6 12       LDX $12    [$7E:0012]  ;\
+$9B:B65F BD 00 00    LDA $0000,x[$9B:A120]  ;|
+$9B:B662 8F E0 C1 7E STA $7EC1E0[$7E:C1E0]  ;|
+$9B:B666 BD 02 00    LDA $0002,x[$9B:A122]  ;|
+$9B:B669 8F E2 C1 7E STA $7EC1E2[$7E:C1E2]  ;|
+$9B:B66D BD 04 00    LDA $0004,x[$9B:A124]  ;|
+$9B:B670 8F E4 C1 7E STA $7EC1E4[$7E:C1E4]  ;|
+$9B:B674 BD 06 00    LDA $0006,x[$9B:A126]  ;|
+$9B:B677 8F E6 C1 7E STA $7EC1E6[$7E:C1E6]  ;|
+$9B:B67B BD 08 00    LDA $0008,x[$9B:A128]  ;|
+$9B:B67E 8F E8 C1 7E STA $7EC1E8[$7E:C1E8]  ;|
+$9B:B682 BD 0A 00    LDA $000A,x[$9B:A12A]  ;|
+$9B:B685 8F EA C1 7E STA $7EC1EA[$7E:C1EA]  ;|
+$9B:B689 BD 0C 00    LDA $000C,x[$9B:A12C]  ;|
+$9B:B68C 8F EC C1 7E STA $7EC1EC[$7E:C1EC]  ;|
+$9B:B690 BD 0E 00    LDA $000E,x[$9B:A12E]  ;|
+$9B:B693 8F EE C1 7E STA $7EC1EE[$7E:C1EE]  ;} Sprite palette 7 = 20h bytes from [$12]
+$9B:B697 BD 10 00    LDA $0010,x[$9B:A130]  ;|
+$9B:B69A 8F F0 C1 7E STA $7EC1F0[$7E:C1F0]  ;|
+$9B:B69E BD 12 00    LDA $0012,x[$9B:A132]  ;|
+$9B:B6A1 8F F2 C1 7E STA $7EC1F2[$7E:C1F2]  ;|
+$9B:B6A5 BD 14 00    LDA $0014,x[$9B:A134]  ;|
+$9B:B6A8 8F F4 C1 7E STA $7EC1F4[$7E:C1F4]  ;|
+$9B:B6AC BD 16 00    LDA $0016,x[$9B:A136]  ;|
+$9B:B6AF 8F F6 C1 7E STA $7EC1F6[$7E:C1F6]  ;|
+$9B:B6B3 BD 18 00    LDA $0018,x[$9B:A138]  ;|
+$9B:B6B6 8F F8 C1 7E STA $7EC1F8[$7E:C1F8]  ;|
+$9B:B6BA BD 1A 00    LDA $001A,x[$9B:A13A]  ;|
+$9B:B6BD 8F FA C1 7E STA $7EC1FA[$7E:C1FA]  ;|
+$9B:B6C1 BD 1C 00    LDA $001C,x[$9B:A13C]  ;|
+$9B:B6C4 8F FC C1 7E STA $7EC1FC[$7E:C1FC]  ;|
+$9B:B6C8 BD 1E 00    LDA $001E,x[$9B:A13E]  ;|
+$9B:B6CB 8F FE C1 7E STA $7EC1FE[$7E:C1FE]  ;/
 $9B:B6CF AB          PLB
 $9B:B6D0 28          PLP
 $9B:B6D1 60          RTS
@@ -1055,6 +1150,8 @@ $9B:B6D2             dw B7D3, B7E7, B7FB
 
 ;;; $B6D8: Queue transfer of segment of Samus death sequence to VRAM ;;;
 {
+;; Parameters:
+;;     Y: Samus death sequence segment index
 $9B:B6D8 08          PHP
 $9B:B6D9 C2 30       REP #$30
 $9B:B6DB AE 30 03    LDX $0330  [$7E:0330]  ;\
@@ -1081,111 +1178,116 @@ $9B:B700 60          RTS
 }
 
 
-;;; $B701:  ;;;
+;;; $B701: Handle death sequence suit explosion white out ;;;
 {
+;; Returns:
+;;     A: 1 if finished, 0 otherwise
 $9B:B701 08          PHP
 $9B:B702 8B          PHB
-$9B:B703 4B          PHK
-$9B:B704 AB          PLB
+$9B:B703 4B          PHK                    ;\
+$9B:B704 AB          PLB                    ;} DB = $9B
 $9B:B705 C2 30       REP #$30
-$9B:B707 20 10 B7    JSR $B710  [$9B:B710]
-$9B:B70A 20 58 B7    JSR $B758  [$9B:B758]
+$9B:B707 20 10 B7    JSR $B710  [$9B:B710]  ; Handle death sequence white out
+$9B:B70A 20 58 B7    JSR $B758  [$9B:B758]  ; Handle death sequence suit explosion
 $9B:B70D AB          PLB
 $9B:B70E 28          PLP
 $9B:B70F 6B          RTL
 }
 
 
-;;; $B710:  ;;;
+;;; $B710: Handle death sequence white out ;;;
 {
 $9B:B710 08          PHP
 $9B:B711 C2 30       REP #$30
-$9B:B713 A9 00 7E    LDA #$7E00
-$9B:B716 85 01       STA $01    [$7E:0001]
-$9B:B718 AD EC 0D    LDA $0DEC  [$7E:0DEC]
-$9B:B71B D0 39       BNE $39    [$B756]
-$9B:B71D AD E4 0D    LDA $0DE4  [$7E:0DE4]
-$9B:B720 F0 34       BEQ $34    [$B756]
-$9B:B722 AD E6 0D    LDA $0DE6  [$7E:0DE6]
-$9B:B725 0A          ASL A
-$9B:B726 AA          TAX
-$9B:B727 A9 00 C0    LDA #$C000
-$9B:B72A 85 00       STA $00    [$7E:0000]
-$9B:B72C A0 00 00    LDY #$0000
-
-$9B:B72F BD 35 B8    LDA $B835,x[$9B:B835]
-$9B:B732 97 00       STA [$00],y[$7E:C000]
-$9B:B734 C8          INY
-$9B:B735 C8          INY
-$9B:B736 C0 80 01    CPY #$0180
-$9B:B739 30 F4       BMI $F4    [$B72F]
-$9B:B73B A0 A0 01    LDY #$01A0
-
-$9B:B73E BD 35 B8    LDA $B835,x[$9B:B835]
-$9B:B741 97 00       STA [$00],y[$7E:C1A0]
-$9B:B743 C8          INY
-$9B:B744 C8          INY
-$9B:B745 C0 E0 01    CPY #$01E0
-$9B:B748 30 F4       BMI $F4    [$B73E]
-$9B:B74A AD E6 0D    LDA $0DE6  [$7E:0DE6]
-$9B:B74D C9 14 00    CMP #$0014
-$9B:B750 10 04       BPL $04    [$B756]
-$9B:B752 1A          INC A
-$9B:B753 8D E6 0D    STA $0DE6  [$7E:0DE6]
+$9B:B713 A9 00 7E    LDA #$7E00             ;\
+$9B:B716 85 01       STA $01    [$7E:0001]  ;} $02 = $7E
+$9B:B718 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
+$9B:B71B D0 39       BNE $39    [$B756]     ;} If debug death animation enabled: return
+$9B:B71D AD E4 0D    LDA $0DE4  [$7E:0DE4]  ;\
+$9B:B720 F0 34       BEQ $34    [$B756]     ;} If [death animation index] = 0: return
+$9B:B722 AD E6 0D    LDA $0DE6  [$7E:0DE6]  ;\
+$9B:B725 0A          ASL A                  ;} X = [death animation counter] * 2
+$9B:B726 AA          TAX                    ;/
+$9B:B727 A9 00 C0    LDA #$C000             ;\
+$9B:B72A 85 00       STA $00    [$7E:0000]  ;|
+$9B:B72C A0 00 00    LDY #$0000             ;|
+                                            ;|
+$9B:B72F BD 35 B8    LDA $B835,x[$9B:B835]  ;|
+$9B:B732 97 00       STA [$00],y[$7E:C000]  ;} BG1/2 palette 0..3 = [$B835 + [X]]
+$9B:B734 C8          INY                    ;|
+$9B:B735 C8          INY                    ;|
+$9B:B736 C0 80 01    CPY #$0180             ;|
+$9B:B739 30 F4       BMI $F4    [$B72F]     ;/
+$9B:B73B A0 A0 01    LDY #$01A0             ;\
+                                            ;|
+$9B:B73E BD 35 B8    LDA $B835,x[$9B:B835]  ;|
+$9B:B741 97 00       STA [$00],y[$7E:C1A0]  ;|
+$9B:B743 C8          INY                    ;} BG1/2 palette 5..6 = [$B835 + [X]]
+$9B:B744 C8          INY                    ;|
+$9B:B745 C0 E0 01    CPY #$01E0             ;|
+$9B:B748 30 F4       BMI $F4    [$B73E]     ;/
+$9B:B74A AD E6 0D    LDA $0DE6  [$7E:0DE6]  ;\
+$9B:B74D C9 14 00    CMP #$0014             ;|
+$9B:B750 10 04       BPL $04    [$B756]     ;} Death animation counter = min(14h, [death animation counter] + 1)
+$9B:B752 1A          INC A                  ;|
+$9B:B753 8D E6 0D    STA $0DE6  [$7E:0DE6]  ;/
 
 $9B:B756 28          PLP
 $9B:B757 60          RTS
 }
 
 
-;;; $B758:  ;;;
+;;; $B758: Handle death sequence suit explosion ;;;
 {
+;; Returns:
+;;     A: 1 if suit explosion has ended, 0 otherwise
 $9B:B758 08          PHP
 $9B:B759 C2 30       REP #$30
-$9B:B75B AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$9B:B75E 3A          DEC A
-$9B:B75F 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$9B:B762 F0 02       BEQ $02    [$B766]
-$9B:B764 10 50       BPL $50    [$B7B6]
+$9B:B75B AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$9B:B75E 3A          DEC A                  ;} Decrement death animation timer
+$9B:B75F 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;/
+$9B:B762 F0 02       BEQ $02    [$B766]     ;\
+$9B:B764 10 50       BPL $50    [$B7B6]     ;} If [death animation timer] > 0: go to BRANCH_NOT_FINISHED
 
-$9B:B766 AD E4 0D    LDA $0DE4  [$7E:0DE4]
-$9B:B769 1A          INC A
-$9B:B76A 8D E4 0D    STA $0DE4  [$7E:0DE4]
-$9B:B76D C9 09 00    CMP #$0009
-$9B:B770 30 11       BMI $11    [$B783]
-$9B:B772 A9 15 00    LDA #$0015
-$9B:B775 8D E6 0D    STA $0DE6  [$7E:0DE6]
-$9B:B778 20 10 B7    JSR $B710  [$9B:B710]
-$9B:B77B 9C EC 0D    STZ $0DEC  [$7E:0DEC]
-$9B:B77E A9 01 00    LDA #$0001
-$9B:B781 80 3A       BRA $3A    [$B7BD]
+$9B:B766 AD E4 0D    LDA $0DE4  [$7E:0DE4]  ;\
+$9B:B769 1A          INC A                  ;} Increment death animation index
+$9B:B76A 8D E4 0D    STA $0DE4  [$7E:0DE4]  ;/
+$9B:B76D C9 09 00    CMP #$0009             ;\
+$9B:B770 30 11       BMI $11    [$B783]     ;} If [death animation index] >= 9:
+$9B:B772 A9 15 00    LDA #$0015             ;\
+$9B:B775 8D E6 0D    STA $0DE6  [$7E:0DE6]  ;} Death animation counter = 15h
+$9B:B778 20 10 B7    JSR $B710  [$9B:B710]  ; Handle death sequence white out
+$9B:B77B 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0
+$9B:B77E A9 01 00    LDA #$0001             ;\
+$9B:B781 80 3A       BRA $3A    [$B7BD]     ;} Return A = 1
 
-$9B:B783 AD EC 0D    LDA $0DEC  [$7E:0DEC]
-$9B:B786 F0 15       BEQ $15    [$B79D]
-$9B:B788 AD E4 0D    LDA $0DE4  [$7E:0DE4]
-$9B:B78B C9 02 00    CMP #$0002
-$9B:B78E 30 0D       BMI $0D    [$B79D]
-$9B:B790 0A          ASL A
-$9B:B791 AA          TAX
-$9B:B792 BD 23 B8    LDA $B823,x
-$9B:B795 29 FF 00    AND #$00FF
-$9B:B798 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$9B:B79B 80 19       BRA $19    [$B7B6]
+$9B:B783 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
+$9B:B786 F0 15       BEQ $15    [$B79D]     ;} If debug death animation enabled:
+$9B:B788 AD E4 0D    LDA $0DE4  [$7E:0DE4]  ;\
+$9B:B78B C9 02 00    CMP #$0002             ;} If [death animation index] >= 2:
+$9B:B78E 30 0D       BMI $0D    [$B79D]     ;/
+$9B:B790 0A          ASL A                  ;\
+$9B:B791 AA          TAX                    ;|
+$9B:B792 BD 23 B8    LDA $B823,x            ;} Death animation timer = [$B823 + [death animation index] * 2]
+$9B:B795 29 FF 00    AND #$00FF             ;|
+$9B:B798 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;/
+$9B:B79B 80 19       BRA $19    [$B7B6]     ; Go to BRANCH_NOT_FINISHED
 
-$9B:B79D AD E4 0D    LDA $0DE4  [$7E:0DE4]
-$9B:B7A0 0A          ASL A
-$9B:B7A1 AA          TAX
-$9B:B7A2 BD 23 B8    LDA $B823,x[$9B:B825]
-$9B:B7A5 29 FF 00    AND #$00FF
-$9B:B7A8 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$9B:B7AB BD 24 B8    LDA $B824,x[$9B:B826]
-$9B:B7AE 29 FF 00    AND #$00FF
-$9B:B7B1 0A          ASL A
-$9B:B7B2 AA          TAX
-$9B:B7B3 20 CE B5    JSR $B5CE  [$9B:B5CE]
+$9B:B79D AD E4 0D    LDA $0DE4  [$7E:0DE4]  ;\
+$9B:B7A0 0A          ASL A                  ;|
+$9B:B7A1 AA          TAX                    ;|
+$9B:B7A2 BD 23 B8    LDA $B823,x[$9B:B825]  ;} Death animation timer = [$B823 + [death animation index] * 2]
+$9B:B7A5 29 FF 00    AND #$00FF             ;|
+$9B:B7A8 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;/
+$9B:B7AB BD 24 B8    LDA $B824,x[$9B:B826]  ;\
+$9B:B7AE 29 FF 00    AND #$00FF             ;|
+$9B:B7B1 0A          ASL A                  ;} X = [$B823 + [death animation index] * 2 + 1] * 2
+$9B:B7B2 AA          TAX                    ;/
+$9B:B7B3 20 CE B5    JSR $B5CE  [$9B:B5CE]  ; Write death animation palette
 
-$9B:B7B6 22 BE ED 92 JSL $92EDBE[$92:EDBE]
-$9B:B7BA A9 00 00    LDA #$0000
+; BRANCH_NOT_FINISHED
+$9B:B7B6 22 BE ED 92 JSL $92EDBE[$92:EDBE]  ; Draw Samus' suit exploding
+$9B:B7BA A9 00 00    LDA #$0000             ; Return A = 0
 
 $9B:B7BD 28          PLP
 $9B:B7BE 60          RTS
@@ -1218,9 +1320,22 @@ $9B:B80F             dw A120, A120, A140, A160, A180, A1A0, A1C0, A1E0, A200, A2
 }
 
 
-;;; $B823:  ;;;
+;;; $B823: Death sequence suit explosion palette index table ;;;
 {
-$9B:B823             db 15,00, 06,02, 03,03, 04,04, 05,05, 05,06, 06,07, 06,08, 50,09
+; Used by $B758
+
+;                        ____ Timer
+;                       |   _ Palette table index (for $B7D3 and $B80F)
+;                       |  |
+$9B:B823             db 15,00,
+                        06,02,
+                        03,03,
+                        04,04,
+                        05,05,
+                        05,06,
+                        06,07,
+                        06,08,
+                        50,09
 }
 
 
@@ -1229,8 +1344,11 @@ $9B:B823             db 15,00, 06,02, 03,03, 04,04, 05,05, 05,06, 06,07, 06,08, 
 $9B:B835             dw 0421, 0C63, 14A5, 1CE7, 2529, 2D6B, 35AD, 4210, 4A52, 4E73, 5294, 56B5, 5AD6, 5EF7, 6318, 6739,
                         6B5A, 6F7B, 739C, 77BD, 7BDE, 7FFF
 }
+}
 
 
+;;; $B861..CBFA: Grapple beam ;;;
+{
 ;;; $B861: Cancel grapple beam if in incompatible pose ;;;
 {
 $9B:B861 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
@@ -1277,34 +1395,34 @@ $9B:B8B4 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple function = fire / go to c
 $9B:B8B7 60          RTS
 
 ; Indexed by Samus movement type, 1 = cancel grapple beam
-$9B:B8B8             db 00, ; 0: Standing
-                        00, ; 1: Running
-                        00, ; 2: Normal jumping
-                        01, ; 3: Spin jumping
-                        01, ; 4: Morph ball - on ground
-                        00, ; 5: Crouching
-                        00, ; 6: Falling
-                        01, ; 7: Unused
-                        01, ; 8: Morph ball - falling
-                        01, ; 9: Unused
-                        01, ; Ah: Knockback / crystal flash ending
-                        00, ; Bh: Unused
-                        00, ; Ch: Unused
-                        01, ; Dh: Unused
-                        01, ; Eh: Turning around - on ground
-                        01, ; Fh: Crouching/standing/morphing/unmorphing transition
-                        00, ; 10h: Moonwalking
-                        01, ; 11h: Spring ball - on ground
-                        01, ; 12h: Spring ball - in air
-                        01, ; 13h: Spring ball - falling
-                        01, ; 14h: Wall jumping
-                        00, ; 15h: Ran into a wall
-                        00, ; 16h: Grappling
-                        01, ; 17h: Turning around - jumping
-                        01, ; 18h: Turning around - falling
-                        01, ; 19h: Damage boost
-                        00, ; 1Ah: Grabbed by Draygon
-                        01  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
+$9B:B8B8             db 00, ;  0: Standing
+                        00, ;  1: Running
+                        00, ;  2: Normal jumping
+                        01, ; *3: Spin jumping
+                        01, ; *4: Morph ball - on ground
+                        00, ;  5: Crouching
+                        00, ;  6: Falling
+                        01, ; *7: Unused
+                        01, ; *8: Morph ball - falling
+                        01, ; *9: Unused
+                        01, ; *Ah: Knockback / crystal flash ending
+                        00, ;  Bh: Unused
+                        00, ;  Ch: Unused
+                        01, ; *Dh: Unused
+                        01, ; *Eh: Turning around - on ground
+                        01, ; *Fh: Crouching/standing/morphing/unmorphing transition
+                        00, ;  10h: Moonwalking
+                        01, ; *11h: Spring ball - on ground
+                        01, ; *12h: Spring ball - in air
+                        01, ; *13h: Spring ball - falling
+                        01, ; *14h: Wall jumping
+                        00, ;  15h: Ran into a wall
+                        00, ;  16h: Grappling
+                        01, ; *17h: Turning around - jumping
+                        01, ; *18h: Turning around - falling
+                        01, ; *19h: Damage boost
+                        00, ;  1Ah: Grabbed by Draygon
+                        01  ; *1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 }
 
 
@@ -1335,6 +1453,8 @@ $9B:B8F0 60          RTS
 
 ;;; $B8F1: Check if grapple is connected to block ;;;
 {
+;; Returns:
+;;     Carry: Set if grapple is connected, clear otherwise
 $9B:B8F1 9C 22 0D    STZ $0D22  [$7E:0D22]  ; Grapple beam extension X velocity = 0
 $9B:B8F4 9C 24 0D    STZ $0D24  [$7E:0D24]  ; Grapple beam extension Y velocity = 0
 $9B:B8F7 22 1F A9 94 JSL $94A91F[$94:A91F]  ; Block grapple reaction
@@ -1349,6 +1469,8 @@ $9B:B906 60          RTS
 }
 
 
+;;; $B907..7B: Process enemy / grapple beam collision result ;;;
+{
 ;;; $B907: Process enemy / grapple beam collision result ;;;
 {
 ;; Parameters:
@@ -1460,18 +1582,21 @@ $9B:B977 A9 01 00    LDA #$0001             ; A = 1
 $9B:B97A 38          SEC                    ; Set carry
 $9B:B97B 60          RTS
 }
+}
 
 
+;;; $B97C..BAD4: Handle connecting grapple ;;;
+{
 ;;; $B97C: Handle connecting grapple ;;;
 {
 $9B:B97C AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $9B:B97F 29 FF 00    AND #$00FF             ;|
-$9B:B982 C9 1A 00    CMP #$001A             ;} If [Samus movement type] = grabbed by Draygon
+$9B:B982 C9 1A 00    CMP #$001A             ;} If [Samus movement type] = grabbed by Draygon:
 $9B:B985 D0 0A       BNE $0A    [$B991]     ;/
 $9B:B987 A9 7E C7    LDA #$C77E             ;\
 $9B:B98A 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = $C77E (connected - locked in place)
 $9B:B98D 9C 00 0D    STZ $0D00  [$7E:0D00]  ; $0D00 = 0
-$9B:B990 60          RTS
+$9B:B990 60          RTS                    ; Return
 
 $9B:B991 AD 34 0D    LDA $0D34  [$7E:0D34]  ;\
 $9B:B994 0A          ASL A                  ;|
@@ -1691,6 +1816,7 @@ $9B:BACD 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
 $9B:BAD0 22 11 AC 94 JSL $94AC11[$94:AC11]  ; Execute $94:AC11
 $9B:BAD4 60          RTS
 }
+}
 
 
 ;;; $BAD5: Handle special grapple beam angles ;;;
@@ -1779,7 +1905,7 @@ $9B:BB63 60          RTS                    ;} Return carry set
 }
 
 
-;;; $BB64:  ;;;
+;;; $BB64: Handle grapple d-pad input ;;;
 {
 $9B:BB64 A5 8F       LDA $8F    [$7E:008F]  ;\
 $9B:BB66 89 00 08    BIT #$0800             ;} If newly pressing up: go to BRANCH_INCREASE_LENGTH
@@ -1813,18 +1939,18 @@ $9B:BB96 8D 00 0D    STA $0D00  [$7E:0D00]  ;/
 ; BRANCH_ADJUST_LENGTH_END
 $9B:BB99 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BB9C 29 00 FF    AND #$FF00             ;|
-$9B:BB9F C9 00 40    CMP #$4000             ;} If not (-40h <= [grapple beam angle] < 40h): (Samus is below grapple point)
+$9B:BB9F C9 00 40    CMP #$4000             ;} If not -40h <= [grapple beam angle] < 40h: (Samus is below grapple point)
 $9B:BBA2 30 11       BMI $11    [$BBB5]     ;/
 $9B:BBA4 C9 00 C0    CMP #$C000             ;\
-$9B:BBA7 10 0C       BPL $0C    [$BBB5]     ;} If not (-40h <= [grapple beam angle] < 40h):
+$9B:BBA7 10 0C       BPL $0C    [$BBB5]     ;} If not -40h <= [grapple beam angle] < 40h: (>_<;)
 $9B:BBA9 A5 8B       LDA $8B    [$7E:008B]  ;\
 $9B:BBAB 89 00 02    BIT #$0200             ;} If pressing left: go to BRANCH_LEFT
 $9B:BBAE D0 40       BNE $40    [$BBF0]     ;/
 $9B:BBB0 89 00 01    BIT #$0100             ;\
 $9B:BBB3 D0 04       BNE $04    [$BBB9]     ;} If pressing right: go to BRANCH_RIGHT
 
-$9B:BBB5 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; $0D2A = 0
-$9B:BBB8 60          RTS
+$9B:BBB5 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; Grapple swing Samus acceleration due to button input = 0
+$9B:BBB8 60          RTS                    ; Return
 
 ; BRANCH_RIGHT
 $9B:BBB9 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
@@ -1832,9 +1958,9 @@ $9B:BBBC 29 00 FF    AND #$FF00             ;|
 $9B:BBBF C9 00 80    CMP #$8000             ;} If [grapple beam angle] = 80h
 $9B:BBC2 D0 0B       BNE $0B    [$BBCF]     ;/
 $9B:BBC4 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:BBC7 D0 06       BNE $06    [$BBCF]     ;} If [$0D26] = 0:
+$9B:BBC7 D0 06       BNE $06    [$BBCF]     ;} If [grapple swing Samus speed] = 0:
 $9B:BBC9 A9 00 FF    LDA #$FF00             ;\
-$9B:BBCC 8D 26 0D    STA $0D26  [$7E:0D26]  ;} $0D26 = FF00h
+$9B:BBCC 8D 26 0D    STA $0D26  [$7E:0D26]  ;} Grapple swing Samus speed = -100h
 
 $9B:BBCF AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BBD2 F0 11       BEQ $11    [$BBE5]     ;|
@@ -1842,16 +1968,16 @@ $9B:BBD4 89 01 00    BIT #$0001             ;} If grapple beam liquid physics:
 $9B:BBD7 F0 0C       BEQ $0C    [$BBE5]     ;/
 $9B:BBD9 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
 $9B:BBDC 4A          LSR A                  ;|
-$9B:BBDD 49 FF FF    EOR #$FFFF             ;} $0D2A = -[$C11A] / 2
+$9B:BBDD 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus acceleration due to button input = -6
 $9B:BBE0 1A          INC A                  ;|
 $9B:BBE1 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;/
-$9B:BBE4 60          RTS
+$9B:BBE4 60          RTS                    ; Return
 
 $9B:BBE5 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
 $9B:BBE8 49 FF FF    EOR #$FFFF             ;|
-$9B:BBEB 1A          INC A                  ;} $0D2A = -[$C11A]
+$9B:BBEB 1A          INC A                  ;} Grapple swing Samus acceleration due to button input = -Ch
 $9B:BBEC 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;/
-$9B:BBEF 60          RTS
+$9B:BBEF 60          RTS                    ; Return
 
 ; BRANCH_LEFT
 $9B:BBF0 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
@@ -1859,175 +1985,181 @@ $9B:BBF3 29 00 FF    AND #$FF00             ;|
 $9B:BBF6 C9 00 80    CMP #$8000             ;} If [grapple beam angle] = 80h
 $9B:BBF9 D0 0B       BNE $0B    [$BC06]     ;/
 $9B:BBFB AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:BBFE D0 06       BNE $06    [$BC06]     ;} If [$0D26] = 0:
+$9B:BBFE D0 06       BNE $06    [$BC06]     ;} If [grapple swing Samus speed] = 0:
 $9B:BC00 A9 00 01    LDA #$0100             ;\
-$9B:BC03 8D 26 0D    STA $0D26  [$7E:0D26]  ;} $0D26 = 100h
+$9B:BC03 8D 26 0D    STA $0D26  [$7E:0D26]  ;} Grapple swing Samus speed = 100h
 
 $9B:BC06 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BC09 F0 0D       BEQ $0D    [$BC18]     ;|
-$9B:BC0B 89 01 00    BIT #$0001             ;} If grapple beam liquid physics:
+$9B:BC0B 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
 $9B:BC0E F0 08       BEQ $08    [$BC18]     ;/
 $9B:BC10 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
-$9B:BC13 4A          LSR A                  ;} $0D2A = [$C11A] / 2
+$9B:BC13 4A          LSR A                  ;} Grapple swing Samus acceleration due to button input = 6
 $9B:BC14 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;/
 $9B:BC17 60          RTS
 
 $9B:BC18 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
-$9B:BC1B 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;} $0D2A = [$C11A]
+$9B:BC1B 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;} Grapple swing Samus acceleration due to button input = Ch
 $9B:BC1E 60          RTS
 }
 
 
-;;; $BC1F:  ;;;
+;;; $BC1F: Determine grapple swing Samus acceleration due to angle of swing ;;;
 {
-$9B:BC1F AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$9B:BC22 29 00 C0    AND #$C000
-$9B:BC25 C9 00 C0    CMP #$C000
-$9B:BC28 F0 2F       BEQ $2F    [$BC59]
-$9B:BC2A 89 00 80    BIT #$8000
-$9B:BC2D D0 4C       BNE $4C    [$BC7B]
-$9B:BC2F 89 00 40    BIT #$4000
-$9B:BC32 D0 28       BNE $28    [$BC5C]
-$9B:BC34 AD 1C C1    LDA $C11C  [$9B:C11C]
-$9B:BC37 4A          LSR A
-$9B:BC38 4A          LSR A
-$9B:BC39 8D 2C 0D    STA $0D2C  [$7E:0D2C]
-$9B:BC3C AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$9B:BC3F F0 0F       BEQ $0F    [$BC50]
-$9B:BC41 89 01 00    BIT #$0001
-$9B:BC44 F0 0A       BEQ $0A    [$BC50]
-$9B:BC46 AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BC49 4A          LSR A
-$9B:BC4A 4A          LSR A
-$9B:BC4B 4A          LSR A
-$9B:BC4C 8D 28 0D    STA $0D28  [$7E:0D28]
+$9B:BC1F AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$9B:BC22 29 00 C0    AND #$C000             ;|
+$9B:BC25 C9 00 C0    CMP #$C000             ;} If [grapple beam end angle] / 40h = 3: go to BRANCH_UP_LEFT
+$9B:BC28 F0 2F       BEQ $2F    [$BC59]     ;/
+$9B:BC2A 89 00 80    BIT #$8000             ;\
+$9B:BC2D D0 4C       BNE $4C    [$BC7B]     ;} If [grapple beam end angle] / 40h = 2: go to BRANCH_DOWN_LEFT
+$9B:BC2F 89 00 40    BIT #$4000             ;\
+$9B:BC32 D0 28       BNE $28    [$BC5C]     ;} If [grapple beam end angle] / 40h = 1: go to BRANCH_DOWN_RIGHT
+
+; Up right
+$9B:BC34 AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
+$9B:BC37 4A          LSR A                  ;|
+$9B:BC38 4A          LSR A                  ;} Grapple swing Samus deceleration = 1
+$9B:BC39 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;/
+$9B:BC3C AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$9B:BC3F F0 0F       BEQ $0F    [$BC50]     ;|
+$9B:BC41 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
+$9B:BC44 F0 0A       BEQ $0A    [$BC50]     ;/
+$9B:BC46 AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BC49 4A          LSR A                  ;|
+$9B:BC4A 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = 3
+$9B:BC4B 4A          LSR A                  ;|
+$9B:BC4C 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BC4F 60          RTS
 
-$9B:BC50 AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BC53 4A          LSR A
-$9B:BC54 4A          LSR A
-$9B:BC55 8D 28 0D    STA $0D28  [$7E:0D28]
+$9B:BC50 AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BC53 4A          LSR A                  ;|
+$9B:BC54 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = 6
+$9B:BC55 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BC58 60          RTS
 
 $9B:BC59 4C CE BC    JMP $BCCE  [$9B:BCCE]
 
-$9B:BC5C AD 1C C1    LDA $C11C  [$9B:C11C]
-$9B:BC5F 8D 2C 0D    STA $0D2C  [$7E:0D2C]
-$9B:BC62 AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$9B:BC65 F0 0D       BEQ $0D    [$BC74]
-$9B:BC67 89 01 00    BIT #$0001
-$9B:BC6A F0 08       BEQ $08    [$BC74]
-$9B:BC6C AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BC6F 4A          LSR A
-$9B:BC70 8D 28 0D    STA $0D28  [$7E:0D28]
+; BRANCH_DOWN_RIGHT
+$9B:BC5C AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
+$9B:BC5F 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;} Grapple swing Samus deceleration = 5
+$9B:BC62 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$9B:BC65 F0 0D       BEQ $0D    [$BC74]     ;|
+$9B:BC67 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
+$9B:BC6A F0 08       BEQ $08    [$BC74]     ;/
+$9B:BC6C AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BC6F 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = Ch
+$9B:BC70 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BC73 60          RTS
 
-$9B:BC74 AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BC77 8D 28 0D    STA $0D28  [$7E:0D28]
+$9B:BC74 AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BC77 8D 28 0D    STA $0D28  [$7E:0D28]  ;} Grapple swing Samus acceleration due to angle of swing = 18h
 $9B:BC7A 60          RTS
 
-$9B:BC7B AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$9B:BC7E 29 00 FF    AND #$FF00
-$9B:BC81 C9 00 80    CMP #$8000
-$9B:BC84 F0 2B       BEQ $2B    [$BCB1]
-$9B:BC86 AD 1C C1    LDA $C11C  [$9B:C11C]
-$9B:BC89 49 FF FF    EOR #$FFFF
-$9B:BC8C 1A          INC A
-$9B:BC8D 8D 2C 0D    STA $0D2C  [$7E:0D2C]
-$9B:BC90 AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$9B:BC93 F0 11       BEQ $11    [$BCA6]
-$9B:BC95 89 01 00    BIT #$0001
-$9B:BC98 F0 0C       BEQ $0C    [$BCA6]
-$9B:BC9A AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BC9D 4A          LSR A
-$9B:BC9E 49 FF FF    EOR #$FFFF
-$9B:BCA1 1A          INC A
-$9B:BCA2 8D 28 0D    STA $0D28  [$7E:0D28]
+; BRANCH_DOWN_LEFT
+$9B:BC7B AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$9B:BC7E 29 00 FF    AND #$FF00             ;|
+$9B:BC81 C9 00 80    CMP #$8000             ;} If [grapple beam end angle] = 80h: go to BRANCH_STRAIGHT_DOWN
+$9B:BC84 F0 2B       BEQ $2B    [$BCB1]     ;/
+$9B:BC86 AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
+$9B:BC89 49 FF FF    EOR #$FFFF             ;|
+$9B:BC8C 1A          INC A                  ;} Grapple swing Samus deceleration = -5
+$9B:BC8D 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;/
+$9B:BC90 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$9B:BC93 F0 11       BEQ $11    [$BCA6]     ;|
+$9B:BC95 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
+$9B:BC98 F0 0C       BEQ $0C    [$BCA6]     ;/
+$9B:BC9A AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BC9D 4A          LSR A                  ;|
+$9B:BC9E 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus acceleration due to angle of swing = -Ch
+$9B:BCA1 1A          INC A                  ;|
+$9B:BCA2 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BCA5 60          RTS
 
-$9B:BCA6 AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BCA9 49 FF FF    EOR #$FFFF
-$9B:BCAC 1A          INC A
-$9B:BCAD 8D 28 0D    STA $0D28  [$7E:0D28]
+$9B:BCA6 AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BCA9 49 FF FF    EOR #$FFFF             ;|
+$9B:BCAC 1A          INC A                  ;} Grapple swing Samus acceleration due to angle of swing = -18h
+$9B:BCAD 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BCB0 60          RTS
 
-$9B:BCB1 9C 28 0D    STZ $0D28  [$7E:0D28]
-$9B:BCB4 9C 2C 0D    STZ $0D2C  [$7E:0D2C]
-$9B:BCB7 AD 26 0D    LDA $0D26  [$7E:0D26]
-$9B:BCBA 10 04       BPL $04    [$BCC0]
-$9B:BCBC 3A          DEC A
-$9B:BCBD 49 FF FF    EOR #$FFFF
+; BRANCH_STRAIGHT_DOWN
+$9B:BCB1 9C 28 0D    STZ $0D28  [$7E:0D28]  ; Grapple swing Samus acceleration due to angle of swing = 0
+$9B:BCB4 9C 2C 0D    STZ $0D2C  [$7E:0D2C]  ; Grapple swing Samus deceleration = 0
+$9B:BCB7 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$9B:BCBA 10 04       BPL $04    [$BCC0]     ;|
+$9B:BCBC 3A          DEC A                  ;|
+$9B:BCBD 49 FF FF    EOR #$FFFF             ;|
+                                            ;} If |[grapple swing Samus speed]| / 100h >= 1:
+$9B:BCC0 EB          XBA                    ;|
+$9B:BCC1 29 FF 00    AND #$00FF             ;|
+$9B:BCC4 C9 01 00    CMP #$0001             ;|
+$9B:BCC7 30 01       BMI $01    [$BCCA]     ;/
+$9B:BCC9 60          RTS                    ; Return
 
-$9B:BCC0 EB          XBA
-$9B:BCC1 29 FF 00    AND #$00FF
-$9B:BCC4 C9 01 00    CMP #$0001
-$9B:BCC7 30 01       BMI $01    [$BCCA]
-$9B:BCC9 60          RTS
-
-$9B:BCCA 9C 26 0D    STZ $0D26  [$7E:0D26]
+$9B:BCCA 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing Samus speed = 0
 $9B:BCCD 60          RTS
 
-$9B:BCCE AD 1C C1    LDA $C11C  [$9B:C11C]
-$9B:BCD1 4A          LSR A
-$9B:BCD2 4A          LSR A
-$9B:BCD3 49 FF FF    EOR #$FFFF
-$9B:BCD6 1A          INC A
-$9B:BCD7 8D 2C 0D    STA $0D2C  [$7E:0D2C]
-$9B:BCDA AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$9B:BCDD F0 13       BEQ $13    [$BCF2]
-$9B:BCDF 89 01 00    BIT #$0001
-$9B:BCE2 F0 0E       BEQ $0E    [$BCF2]
-$9B:BCE4 AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BCE7 4A          LSR A
-$9B:BCE8 4A          LSR A
-$9B:BCE9 4A          LSR A
-$9B:BCEA 49 FF FF    EOR #$FFFF
-$9B:BCED 1A          INC A
-$9B:BCEE 8D 28 0D    STA $0D28  [$7E:0D28]
+; BRANCH_UP_LEFT
+$9B:BCCE AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
+$9B:BCD1 4A          LSR A                  ;|
+$9B:BCD2 4A          LSR A                  ;|
+$9B:BCD3 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus deceleration = -1
+$9B:BCD6 1A          INC A                  ;|
+$9B:BCD7 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;/
+$9B:BCDA AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$9B:BCDD F0 13       BEQ $13    [$BCF2]     ;|
+$9B:BCDF 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
+$9B:BCE2 F0 0E       BEQ $0E    [$BCF2]     ;/
+$9B:BCE4 AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BCE7 4A          LSR A                  ;|
+$9B:BCE8 4A          LSR A                  ;|
+$9B:BCE9 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = -3
+$9B:BCEA 49 FF FF    EOR #$FFFF             ;|
+$9B:BCED 1A          INC A                  ;|
+$9B:BCEE 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BCF1 60          RTS
 
-$9B:BCF2 AD 18 C1    LDA $C118  [$9B:C118]
-$9B:BCF5 4A          LSR A
-$9B:BCF6 4A          LSR A
-$9B:BCF7 49 FF FF    EOR #$FFFF
-$9B:BCFA 1A          INC A
-$9B:BCFB 8D 28 0D    STA $0D28  [$7E:0D28]
+$9B:BCF2 AD 18 C1    LDA $C118  [$9B:C118]  ;\
+$9B:BCF5 4A          LSR A                  ;|
+$9B:BCF6 4A          LSR A                  ;|
+$9B:BCF7 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus acceleration due to angle of swing = -6
+$9B:BCFA 1A          INC A                  ;|
+$9B:BCFB 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BCFE 60          RTS
 }
 
 
-;;; $BCFF:  ;;;
+;;; $BCFF: Update grapple swing Samus speed ;;;
 {
-$9B:BCFF AD 26 0D    LDA $0D26  [$7E:0D26]
-$9B:BD02 18          CLC
-$9B:BD03 6D 28 0D    ADC $0D28  [$7E:0D28]
-$9B:BD06 18          CLC
-$9B:BD07 6D 2A 0D    ADC $0D2A  [$7E:0D2A]
-$9B:BD0A 8D 26 0D    STA $0D26  [$7E:0D26]
-$9B:BD0D AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$9B:BD10 4D 26 0D    EOR $0D26  [$7E:0D26]
-$9B:BD13 10 0A       BPL $0A    [$BD1F]
-$9B:BD15 AD 26 0D    LDA $0D26  [$7E:0D26]
-$9B:BD18 18          CLC
-$9B:BD19 6D 2C 0D    ADC $0D2C  [$7E:0D2C]
-$9B:BD1C 8D 26 0D    STA $0D26  [$7E:0D26]
+$9B:BCFF AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$9B:BD02 18          CLC                    ;|
+$9B:BD03 6D 28 0D    ADC $0D28  [$7E:0D28]  ;|
+$9B:BD06 18          CLC                    ;} Grapple swing Samus speed += [grapple swing Samus acceleration due to angle of swing] + [grapple swing Samus acceleration due to button input]
+$9B:BD07 6D 2A 0D    ADC $0D2A  [$7E:0D2A]  ;|
+$9B:BD0A 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
+$9B:BD0D AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$9B:BD10 4D 26 0D    EOR $0D26  [$7E:0D26]  ;} If [grapple beam end angle] & 80h != [grapple swing Samus speed] & 80h (Samus is rising):
+$9B:BD13 10 0A       BPL $0A    [$BD1F]     ;/
+$9B:BD15 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$9B:BD18 18          CLC                    ;|
+$9B:BD19 6D 2C 0D    ADC $0D2C  [$7E:0D2C]  ;} Grapple swing Samus speed += [grapple swing Samus deceleration]
+$9B:BD1C 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
 
-$9B:BD1F AD 26 0D    LDA $0D26  [$7E:0D26]
-$9B:BD22 10 14       BPL $14    [$BD38]
-$9B:BD24 49 FF FF    EOR #$FFFF
-$9B:BD27 1A          INC A
-$9B:BD28 CD 1E C1    CMP $C11E  [$9B:C11E]
-$9B:BD2B 90 16       BCC $16    [$BD43]
-$9B:BD2D AD 1E C1    LDA $C11E  [$9B:C11E]
-$9B:BD30 49 FF FF    EOR #$FFFF
-$9B:BD33 1A          INC A
-$9B:BD34 8D 26 0D    STA $0D26  [$7E:0D26]
-$9B:BD37 60          RTS
+$9B:BD1F AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$9B:BD22 10 14       BPL $14    [$BD38]     ;} If [grapple swing Samus speed] < 0:
+$9B:BD24 49 FF FF    EOR #$FFFF             ;\
+$9B:BD27 1A          INC A                  ;|
+$9B:BD28 CD 1E C1    CMP $C11E  [$9B:C11E]  ;|
+$9B:BD2B 90 16       BCC $16    [$BD43]     ;|
+$9B:BD2D AD 1E C1    LDA $C11E  [$9B:C11E]  ;} Grapple swing Samus speed = max([grapple swing Samus speed], -480h)
+$9B:BD30 49 FF FF    EOR #$FFFF             ;|
+$9B:BD33 1A          INC A                  ;|
+$9B:BD34 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
+$9B:BD37 60          RTS                    ; Return
 
-$9B:BD38 CD 1E C1    CMP $C11E  [$9B:C11E]
-$9B:BD3B 90 06       BCC $06    [$BD43]
-$9B:BD3D AD 1E C1    LDA $C11E  [$9B:C11E]
-$9B:BD40 8D 26 0D    STA $0D26  [$7E:0D26]
+$9B:BD38 CD 1E C1    CMP $C11E  [$9B:C11E]  ;\
+$9B:BD3B 90 06       BCC $06    [$BD43]     ;|
+$9B:BD3D AD 1E C1    LDA $C11E  [$9B:C11E]  ;} Grapple swing Samus speed = min([grapple swing Samus speed], 480h)
+$9B:BD40 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
 
 $9B:BD43 60          RTS
 }
@@ -2035,46 +2167,46 @@ $9B:BD43 60          RTS
 
 ;;; $BD44:  ;;;
 {
-$9B:BD44 AD 30 0D    LDA $0D30  [$7E:0D30]
-$9B:BD47 F0 0F       BEQ $0F    [$BD58]
+$9B:BD44 AD 30 0D    LDA $0D30  [$7E:0D30]  ;\
+$9B:BD47 F0 0F       BEQ $0F    [$BD58]     ;} If [$0D30] = 0: return
 $9B:BD49 A5 8F       LDA $8F    [$7E:008F]  ;\
-$9B:BD4B 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If newly pressing jump:
+$9B:BD4B 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If not newly pressing jump: return
 $9B:BD4E F0 08       BEQ $08    [$BD58]     ;/
-$9B:BD50 AD 26 0D    LDA $0D26  [$7E:0D26]
-$9B:BD53 D0 04       BNE $04    [$BD59]
-$9B:BD55 9C 2E 0D    STZ $0D2E  [$7E:0D2E]
+$9B:BD50 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$9B:BD53 D0 04       BNE $04    [$BD59]     ;} If [grapple swing Samus speed] = 0:
+$9B:BD55 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; $0D2E = 0
+$9B:BD58 60          RTS                    ; Return
 
-$9B:BD58 60          RTS
+$9B:BD59 30 19       BMI $19    [$BD74]     ; If [grapple swing Samus speed] < 0: go to BRANCH_ANTICLOCKWISE
+$9B:BD5B AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$9B:BD5E F0 0D       BEQ $0D    [$BD6D]     ;|
+$9B:BD60 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
+$9B:BD63 F0 08       BEQ $08    [$BD6D]     ;/
+$9B:BD65 AD 20 C1    LDA $C120  [$9B:C120]  ;\
+$9B:BD68 4A          LSR A                  ;} $0D2E = 180h
+$9B:BD69 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
+$9B:BD6C 60          RTS                    ; Return
 
-$9B:BD59 30 19       BMI $19    [$BD74]
-$9B:BD5B AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$9B:BD5E F0 0D       BEQ $0D    [$BD6D]
-$9B:BD60 89 01 00    BIT #$0001
-$9B:BD63 F0 08       BEQ $08    [$BD6D]
-$9B:BD65 AD 20 C1    LDA $C120  [$9B:C120]
-$9B:BD68 4A          LSR A
-$9B:BD69 8D 2E 0D    STA $0D2E  [$7E:0D2E]
-$9B:BD6C 60          RTS
+$9B:BD6D AD 20 C1    LDA $C120  [$9B:C120]  ;\
+$9B:BD70 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;} $0D2E = 300h
+$9B:BD73 60          RTS                    ; Return
 
-$9B:BD6D AD 20 C1    LDA $C120  [$9B:C120]
-$9B:BD70 8D 2E 0D    STA $0D2E  [$7E:0D2E]
-$9B:BD73 60          RTS
+; BRANCH_ANTICLOCKWISE
+$9B:BD74 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$9B:BD77 F0 11       BEQ $11    [$BD8A]     ;|
+$9B:BD79 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
+$9B:BD7C F0 0C       BEQ $0C    [$BD8A]     ;/
+$9B:BD7E AD 20 C1    LDA $C120  [$9B:C120]  ;\
+$9B:BD81 4A          LSR A                  ;|
+$9B:BD82 49 FF FF    EOR #$FFFF             ;} $0D2E = -180h
+$9B:BD85 1A          INC A                  ;|
+$9B:BD86 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
+$9B:BD89 60          RTS                    ; Return
 
-$9B:BD74 AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$9B:BD77 F0 11       BEQ $11    [$BD8A]
-$9B:BD79 89 01 00    BIT #$0001
-$9B:BD7C F0 0C       BEQ $0C    [$BD8A]
-$9B:BD7E AD 20 C1    LDA $C120  [$9B:C120]
-$9B:BD81 4A          LSR A
-$9B:BD82 49 FF FF    EOR #$FFFF
-$9B:BD85 1A          INC A
-$9B:BD86 8D 2E 0D    STA $0D2E  [$7E:0D2E]
-$9B:BD89 60          RTS
-
-$9B:BD8A AD 20 C1    LDA $C120  [$9B:C120]
-$9B:BD8D 49 FF FF    EOR #$FFFF
-$9B:BD90 1A          INC A
-$9B:BD91 8D 2E 0D    STA $0D2E  [$7E:0D2E]
+$9B:BD8A AD 20 C1    LDA $C120  [$9B:C120]  ;\
+$9B:BD8D 49 FF FF    EOR #$FFFF             ;|
+$9B:BD90 1A          INC A                  ;} $0D2E = -300h
+$9B:BD91 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
 $9B:BD94 60          RTS
 }
 
@@ -2089,7 +2221,7 @@ $9B:BD99 C2 30       REP #$30
 $9B:BD9B AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:BD9E 10 04       BPL $04    [$BDA4]     ;|
 $9B:BDA0 49 FF FF    EOR #$FFFF             ;|
-$9B:BDA3 1A          INC A                  ;} If |[$0D26]| >= 40h:
+$9B:BDA3 1A          INC A                  ;} If |[grapple swing Samus speed]| >= 40h:
                                             ;|
 $9B:BDA4 C9 40 00    CMP #$0040             ;|
 $9B:BDA7 30 08       BMI $08    [$BDB1]     ;/
@@ -2552,14 +2684,14 @@ $9B:C0DA 6B          RTL
 $9B:C0DB             dw 0000,087C,0BF4,087C,0000,0000,F784,F40C,F784,0000 ; Grapple beam extension X velocity * 100h (must be multiple of 4)
 $9B:C0EF             dw F40C,F784,0000,087C,0BF4,0BF4,087C,0000,F784,F40C ; Grapple beam extension Y velocity * 100h (must be multiple of 4)
 
-$9B:C103             db 80
+$9B:C103             db 80 ; Unused?
 
 $9B:C104             dw 8000,A000,C000,E000,0000,0000,2000,4000,6000,8000 ; Initial grapple beam end angle * 100h
 
-$9B:C118             dw 0018
-$9B:C11A             dw 000C
-$9B:C11C             dw 0005
-$9B:C11E             dw 0480
+$9B:C118             dw 0018 ; Grapple swing Samus base acceleration due to angle of swing
+$9B:C11A             dw 000C ; Grapple swing Samus base acceleration due to button input
+$9B:C11C             dw 0005 ; Grapple swing Samus base deceleration
+$9B:C11E             dw 0480 ; Absolute grapple swing Samus speed
 $9B:C120             dw 0300
 
 $9B:C122             dw 0002,000A,0002,000A,0003,FFFC,FFF6,FFFE,FFF6,FFFE ; Initial grapple beam origin X offset - not running
@@ -2744,7 +2876,7 @@ $9B:C4DB 09 01 00    ORA #$0001             ;} Set grapple beam liquid physics
 $9B:C4DE 8D F4 0C    STA $0CF4  [$7E:0CF4]  ;/
 $9B:C4E1 AB          PLB
 $9B:C4E2 28          PLP
-$9B:C4E3 6B          RTL
+$9B:C4E3 6B          RTL                    ; Return
 
 $9B:C4E4 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:C4E7 29 FE FF    AND #$FFFE             ;} Clear grapple beam liquid physics
@@ -2778,6 +2910,8 @@ $9B:C51D 60          RTS
 }
 
 
+;;; $C51E..CBFA: Grapple beam functions ;;;
+{
 ;;; $C51E: Grapple beam function - fire / go to cancel ;;;
 {
 ; Act as if fire was just pressed. This is often used to *cancel* the beam during no-fire conditions
@@ -2899,12 +3033,12 @@ $9B:C612 9C 12 0D    STZ $0D12  [$7E:0D12]  ; Grapple beam end Y suboffset = 0
 $9B:C615 9C 14 0D    STZ $0D14  [$7E:0D14]  ; Grapple beam end Y offset = 0
 $9B:C618 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
 $9B:C61B A9 0C 00    LDA #$000C             ;\
-$9B:C61E 8D 00 0D    STA $0D00  [$7E:0D00]  ;} $0D00 = Ch
-$9B:C621 9C FE 0C    STZ $0CFE  [$7E:0CFE]  ; $0CFE = 0
-$9B:C624 9C 26 0D    STZ $0D26  [$7E:0D26]  ; $0D26 = 0
-$9B:C627 9C 28 0D    STZ $0D28  [$7E:0D28]  ; $0D28 = 0
-$9B:C62A 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; $0D2A = 0
-$9B:C62D 9C 2C 0D    STZ $0D2C  [$7E:0D2C]  ; $0D2C = 0
+$9B:C61E 8D 00 0D    STA $0D00  [$7E:0D00]  ;} Grapple beam length delta = Ch
+$9B:C621 9C FE 0C    STZ $0CFE  [$7E:0CFE]  ; Grapple beam length = 0
+$9B:C624 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing Samus speed = 0
+$9B:C627 9C 28 0D    STZ $0D28  [$7E:0D28]  ; Grapple swing Samus acceleration due to angle of swing = 0
+$9B:C62A 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; Grapple swing Samus acceleration due to button input = 0
+$9B:C62D 9C 2C 0D    STZ $0D2C  [$7E:0D2C]  ; Grapple swing Samus deceleration = 0
 $9B:C630 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; $0D2E = 0
 $9B:C633 9C 30 0D    STZ $0D30  [$7E:0D30]  ; $0D30 = 0
 $9B:C636 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
@@ -2913,9 +3047,9 @@ $9B:C63C A9 02 00    LDA #$0002             ;\
 $9B:C63F 8D 3A 0D    STA $0D3A  [$7E:0D3A]  ;} $0D3A = 2
 $9B:C642 9C 3C 0D    STZ $0D3C  [$7E:0D3C]  ; $0D3C = 0
 $9B:C645 A9 05 00    LDA #$0005             ;\
-$9B:C648 8D 3E 0D    STA $0D3E  [$7E:0D3E]  ;} $0D3E = 5
+$9B:C648 8D 3E 0D    STA $0D3E  [$7E:0D3E]  ;} Grapple point animation timer = 5
 $9B:C64B AD 42 C3    LDA $C342  [$9B:C342]  ;\
-$9B:C64E 8D 40 0D    STA $0D40  [$7E:0D40]  ;} $0D40 = $8200
+$9B:C64E 8D 40 0D    STA $0D40  [$7E:0D40]  ;} Grapple point animation pointer = $8200
 $9B:C651 9C 82 0D    STZ $0D82  [$7E:0D82]  ; $0D82 = 0
 $9B:C654 9C 84 0D    STZ $0D84  [$7E:0D84]  ; $0D84 = 0
 $9B:C657 9C 86 0D    STZ $0D86  [$7E:0D86]  ; $0D86 = 0
@@ -2941,7 +3075,7 @@ $9B:C693 A9 05 00    LDA #$0005             ;\
 $9B:C696 22 3F 90 80 JSL $80903F[$80:903F]  ;} Queue sound 5, sound library 1, max queued sounds allowed = 1 (grapple start)
 $9B:C69A A9 01 00    LDA #$0001             ;\
 $9B:C69D 8D D0 0C    STA $0CD0  [$7E:0CD0]  ;} Beam charge counter = 1
-$9B:C6A0 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0
+$9B:C6A0 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Clear flag to resume charging beam sound effect
 $9B:C6A3 AD 58 0A    LDA $0A58  [$7E:0A58]  ;\
 $9B:C6A6 C9 6E 94    CMP #$946E             ;} If [Samus movement handler] = $946E (released from grapple swing):
 $9B:C6A9 D0 06       BNE $06    [$C6B1]     ;/
@@ -3035,10 +3169,10 @@ $9B:C710 60          RTS
 $9B:C711 20 D4 B8    JSR $B8D4  [$9B:B8D4]  ; RTS
 $9B:C714 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $9B:C717 18          CLC                    ;|
-$9B:C718 6D 00 0D    ADC $0D00  [$7E:0D00]  ;} $0CFE += [$0D00]
+$9B:C718 6D 00 0D    ADC $0D00  [$7E:0D00]  ;} Grapple beam length += [grapple beam length delta]
 $9B:C71B 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
 $9B:C71E C9 80 00    CMP #$0080             ;\
-$9B:C721 30 02       BMI $02    [$C725]     ;} If [$0CFE] >= 80h:
+$9B:C721 30 02       BMI $02    [$C725]     ;} If [grapple beam length] >= 80h:
 $9B:C723 80 E5       BRA $E5    [$C70A]     ; Go to BRANCH_CANCEL
 
 $9B:C725 22 9A 9E A0 JSL $A09E9A[$A0:9E9A]  ; Enemy / grapple beam collision detection
@@ -3058,7 +3192,7 @@ $9B:C73E 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 6, sound library 1, m
 $9B:C742 20 7C B9    JSR $B97C  [$9B:B97C]  ; Handle connecting grapple
 $9B:C745 A9 08 00    LDA #$0008             ;\
 $9B:C748 49 FF FF    EOR #$FFFF             ;|
-$9B:C74B 1A          INC A                  ;} $0D00 = -8
+$9B:C74B 1A          INC A                  ;} Grapple beam length delta = -8
 $9B:C74C 8D 00 0D    STA $0D00  [$7E:0D00]  ;/
 $9B:C74F AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
 $9B:C752 09 01 00    ORA #$0001             ;} $0A64 |= 1
@@ -3068,7 +3202,7 @@ $9B:C758 60          RTS
 }
 
 
-;;; $C759: Unused. Grapple beam function ;;;
+;;; $C759: Unused. Grapple beam function - unfiring ;;;
 {
 $9B:C759 A5 8B       LDA $8B    [$7E:008B]  ;\
 $9B:C75B 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If pressing shoot: go to BRANCH_FIRING
@@ -3083,10 +3217,10 @@ $9B:C766 60          RTS
 $9B:C767 20 D4 B8    JSR $B8D4  [$9B:B8D4]  ; RTS
 $9B:C76A AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $9B:C76D 38          SEC                    ;|
-$9B:C76E ED 00 0D    SBC $0D00  [$7E:0D00]  ;} $0CFE -= [$0D00]
+$9B:C76E ED 00 0D    SBC $0D00  [$7E:0D00]  ;} Grapple beam length -= [grapple beam length delta]
 $9B:C771 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
 $9B:C774 C9 0D 00    CMP #$000D             ;\
-$9B:C777 30 E7       BMI $E7    [$C760]     ;} If [$0CFE] < Dh: go to BRANCH_CANCEL
+$9B:C777 30 E7       BMI $E7    [$C760]     ;} If [grapple beam length] < Dh: go to BRANCH_CANCEL
 $9B:C779 22 5B A8 94 JSL $94A85B[$94:A85B]
 $9B:C77D 60          RTS
 }
@@ -3123,12 +3257,12 @@ $9B:C7A2 D0 24       BNE $24    [$C7C8]     ;/
 
 ; BRANCH_CANCEL
 $9B:C7A4 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:C7A7 D0 0F       BNE $0F    [$C7B8]     ;} If [$0D26] = 0:
+$9B:C7A7 D0 0F       BNE $0F    [$C7B8]     ;} If [grapple swing Samus speed] = 0:
 $9B:C7A9 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:C7AC C9 00 80    CMP #$8000             ;} If [grapple beam end angle] = 80h (straight down):
 $9B:C7AF D0 07       BNE $07    [$C7B8]     ;/
 $9B:C7B1 A9 C5 C8    LDA #$C8C5             ;\
-$9B:C7B4 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = $C8C5
+$9B:C7B4 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = $C8C5 (dropped)
 $9B:C7B7 60          RTS
 
 $9B:C7B8 20 65 CA    JSR $CA65  [$9B:CA65]  ; Propel Samus from grapple swing
@@ -3139,13 +3273,13 @@ $9B:C7C4 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $946E (r
 $9B:C7C7 60          RTS
 
 ; BRANCH_FIRING
-$9B:C7C8 20 64 BB    JSR $BB64  [$9B:BB64]  ; Execute $BB64
+$9B:C7C8 20 64 BB    JSR $BB64  [$9B:BB64]  ; Handle grapple d-pad input
 $9B:C7CB AD 00 0D    LDA $0D00  [$7E:0D00]  ;\
 $9B:C7CE F0 04       BEQ $04    [$C7D4]     ;} If [grapple beam length delta] != 0:
 $9B:C7D0 22 31 AC 94 JSL $94AC31[$94:AC31]  ; Execute $94:AC31
 
-$9B:C7D4 20 1F BC    JSR $BC1F  [$9B:BC1F]  ; Execute $BC1F
-$9B:C7D7 20 FF BC    JSR $BCFF  [$9B:BCFF]  ; Execute $BCFF
+$9B:C7D4 20 1F BC    JSR $BC1F  [$9B:BC1F]  ; Determine grapple swing Samus acceleration due to angle of swing
+$9B:C7D7 20 FF BC    JSR $BCFF  [$9B:BCFF]  ; Update grapple swing Samus speed
 $9B:C7DA 20 44 BD    JSR $BD44  [$9B:BD44]  ; Execute $BD44
 $9B:C7DD 22 FE AC 94 JSL $94ACFE[$94:ACFE]  ; Execute $94:ACFE
 $9B:C7E1 AD 36 0D    LDA $0D36  [$7E:0D36]  ;\
@@ -3202,7 +3336,7 @@ $9B:C835 3A          DEC A                  ;} Decrement grapple walljump timer
 $9B:C836 8D 9E 0A    STA $0A9E  [$7E:0A9E]  ;/
 $9B:C839 10 07       BPL $07    [$C842]     ; If [grapple walljump timer] < 0:
 $9B:C83B A9 C5 C8    LDA #$C8C5             ;\
-$9B:C83E 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = $C8C5
+$9B:C83E 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = $C8C5 (dropped)
 $9B:C841 60          RTS
 
 $9B:C842 A9 10 00    LDA #$0010             ;\
@@ -3246,8 +3380,8 @@ $9B:C896 9C DA 0C    STZ $0CDA  [$7E:0CDA]  ;/
 $9B:C899 9C DC 0C    STZ $0CDC  [$7E:0CDC]  ;\
 $9B:C89C 9C DE 0C    STZ $0CDE  [$7E:0CDE]  ;} Charge beam animation delays = 0
 $9B:C89F 9C E0 0C    STZ $0CE0  [$7E:0CE0]  ;/
-$9B:C8A2 AD A6 09    LDA $09A6  [$7E:09A6]  ; A = [equipped beams]
-$9B:C8A5 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ; Load projectile palette
+$9B:C8A2 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$9B:C8A5 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ;} Load current beam palette
 $9B:C8A9 A9 F0 C4    LDA #$C4F0             ;\
 $9B:C8AC 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = inactive
 $9B:C8AF A9 52 EB    LDA #$EB52             ;\
@@ -3359,8 +3493,8 @@ $9B:C98B 9C DA 0C    STZ $0CDA  [$7E:0CDA]  ;/
 $9B:C98E 9C DC 0C    STZ $0CDC  [$7E:0CDC]  ;\
 $9B:C991 9C DE 0C    STZ $0CDE  [$7E:0CDE]  ;} Charge beam animation delays = 0
 $9B:C994 9C E0 0C    STZ $0CE0  [$7E:0CE0]  ;/
-$9B:C997 AD A6 09    LDA $09A6  [$7E:09A6]  ; A = [equipped beams]
-$9B:C99A 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ; Load projectile palette
+$9B:C997 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$9B:C99A 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ;} Load current beam palette
 $9B:C99E A9 F0 C4    LDA #$C4F0             ;\
 $9B:C9A1 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = inactive
 $9B:C9A4 A9 52 EB    LDA #$EB52             ;\
@@ -3397,8 +3531,8 @@ $9B:C9EB 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - wall jump
 $9B:C9EE A9 06 00    LDA #$0006             ;\
 $9B:C9F1 8D 32 0A    STA $0A32  [$7E:0A32]  ;} $0A32 = 6
 $9B:C9F4 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
-$9B:C9F7 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; $0DCE = 0
-$9B:C9FA 9C 22 0B    STZ $0B22  [$7E:0B22]  ; $0B22 = 0
+$9B:C9F7 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed flag = 0
+$9B:C9FA 9C 22 0B    STZ $0B22  [$7E:0B22]  ; Clear Samus is falling flag
 $9B:C9FD 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
 $9B:CA00 9C 2A 0B    STZ $0B2A  [$7E:0B2A]  ; $0B2A = 0
 $9B:CA03 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
@@ -3422,8 +3556,8 @@ $9B:CA36 9C DA 0C    STZ $0CDA  [$7E:0CDA]  ;/
 $9B:CA39 9C DC 0C    STZ $0CDC  [$7E:0CDC]  ;\
 $9B:CA3C 9C DE 0C    STZ $0CDE  [$7E:0CDE]  ;} Charge beam animation delays = 0
 $9B:CA3F 9C E0 0C    STZ $0CE0  [$7E:0CE0]  ;/
-$9B:CA42 AD A6 09    LDA $09A6  [$7E:09A6]  ; A = [equipped beams]
-$9B:CA45 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ; Load projectile palette
+$9B:CA42 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$9B:CA45 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ;} Load current beam palette
 $9B:CA49 A9 F0 C4    LDA #$C4F0             ;\
 $9B:CA4C 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = inactive
 $9B:CA4F A9 52 EB    LDA #$EB52             ;\
@@ -3441,12 +3575,12 @@ $9B:CA64 60          RTS
 ;;; $CA65: Propel Samus from grapple swing ;;;
 {
 $9B:CA65 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:CA68 30 03       BMI $03    [$CA6D]     ;} If [$0D26] >= 0:
+$9B:CA68 30 03       BMI $03    [$CA6D]     ;} If [grapple swing Samus speed] >= 0:
 $9B:CA6A 4C FE CA    JMP $CAFE  [$9B:CAFE]  ; Go to BRANCH_POSITIVE
 
 $9B:CA6D 49 FF FF    EOR #$FFFF             ;\
 $9B:CA70 1A          INC A                  ;|
-$9B:CA71 0A          ASL A                  ;} Y = -[$0D26] * 2
+$9B:CA71 0A          ASL A                  ;} Y = -[grapple swing Samus speed] * 2
 $9B:CA72 A8          TAY                    ;/
 $9B:CA73 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:CA76 EB          XBA                    ;|
@@ -3515,7 +3649,7 @@ $9B:CAFD 60          RTS
 
 ; BRANCH_POSITIVE
 $9B:CAFE 0A          ASL A                  ;\
-$9B:CAFF A8          TAY                    ;} Y = [$0D26] * 2
+$9B:CAFF A8          TAY                    ;} Y = [grapple swing Samus speed] * 2
 $9B:CB00 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:CB03 EB          XBA                    ;|
 $9B:CB04 29 FF 00    AND #$00FF             ;|
@@ -3588,12 +3722,12 @@ $9B:CB8A 60          RTS
 $9B:CB8B A9 07 00    LDA #$0007             ;\
 $9B:CB8E 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 7, sound library 1, max queued sounds allowed = 15 (grapple end)
 $9B:CB92 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:CB95 10 08       BPL $08    [$CB9F]     ;} If [$0D26] < 0:
+$9B:CB95 10 08       BPL $08    [$CB9F]     ;} If [grapple swing Samus speed] < 0:
 $9B:CB97 A9 51 00    LDA #$0051             ;\
 $9B:CB9A 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing right - normal jump - not aiming - moving forward
 $9B:CB9D 80 06       BRA $06    [$CBA5]
 
-$9B:CB9F A9 52 00    LDA #$0052             ;\ Else ([$0D26] >= 0):
+$9B:CB9F A9 52 00    LDA #$0052             ;\ Else ([grapple swing Samus speed] >= 0):
 $9B:CBA2 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - normal jump - not aiming - moving forward
 
 $9B:CBA5 A9 07 00    LDA #$0007             ;\
@@ -3613,8 +3747,8 @@ $9B:CBCC 9C DA 0C    STZ $0CDA  [$7E:0CDA]  ;/
 $9B:CBCF 9C DC 0C    STZ $0CDC  [$7E:0CDC]  ;\
 $9B:CBD2 9C DE 0C    STZ $0CDE  [$7E:0CDE]  ;} Charge beam animation delays = 0
 $9B:CBD5 9C E0 0C    STZ $0CE0  [$7E:0CE0]  ;/
-$9B:CBD8 AD A6 09    LDA $09A6  [$7E:09A6]  ; A = [equipped beams]
-$9B:CBDB 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ; Load projectile palette
+$9B:CBD8 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$9B:CBDB 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ;} Load current beam palette
 $9B:CBDF A9 F0 C4    LDA #$C4F0             ;\
 $9B:CBE2 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = inactive
 $9B:CBE5 A9 52 EB    LDA #$EB52             ;\
@@ -3627,6 +3761,8 @@ $9B:CBF7 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = 0
 
 $9B:CBFA 60          RTS
 }
+}
+}
 
 
 ;;; $CBFB: Free space ;;;
@@ -3635,98 +3771,478 @@ $9B:CBFB             fillto $9BE000, $FF
 }
 
 
-;;; $E000: Samus tiles ;;;
+;;; $E000..E9FF: Samus top tiles - set 8 (Samus appearance electricity) ;;;
 {
+;;; $E000: Samus top tiles - set 8 - entry 0 ;;;
+{
+; 0: Facing forward - power suit - frame 3
+; 0: Facing forward - power suit - frame 5
+; 0: Facing forward - power suit - frame 7
+; 0: Facing forward - power suit - frame 9
+; 0: Facing forward - power suit - frame Bh
+; 0: Facing forward - power suit - frame Dh
+; 0: Facing forward - power suit - frame Fh
+; 0: Facing forward - power suit - frame 11h
+; 0: Facing forward - power suit - frame 13h
+; 0: Facing forward - power suit - frame 15h
+; 0: Facing forward - power suit - frame 17h
+; 0: Facing forward - power suit - frame 19h
+; 0: Facing forward - power suit - frame 1Bh
+; 0: Facing forward - power suit - frame 1Dh
+; 0: Facing forward - power suit - frame 1Fh
+; 0: Facing forward - power suit - frame 21h
+; 0: Facing forward - power suit - frame 23h
+; 0: Facing forward - power suit - frame 25h
+; 0: Facing forward - power suit - frame 27h
+; 0: Facing forward - power suit - frame 29h
+; 0: Facing forward - power suit - frame 2Bh
+; 0: Facing forward - power suit - frame 2Dh
+; 0: Facing forward - power suit - frame 2Fh
+; 0: Facing forward - power suit - frame 31h
+; 0: Facing forward - power suit - frame 33h
+; 0: Facing forward - power suit - frame 35h
+; 0: Facing forward - power suit - frame 37h
+; 0: Facing forward - power suit - frame 39h
+; 0: Facing forward - power suit - frame 3Bh
+; 0: Facing forward - power suit - frame 3Dh
+; 0: Facing forward - power suit - frame 3Fh
+; 0: Facing forward - power suit - frame 41h
+; 0: Facing forward - power suit - frame 43h
+; 0: Facing forward - power suit - frame 45h
+; 0: Facing forward - power suit - frame 47h
+; 0: Facing forward - power suit - frame 49h
+; 0: Facing forward - power suit - frame 4Bh
+; 0: Facing forward - power suit - frame 4Dh
+; 0: Facing forward - power suit - frame 4Fh
+; 0: Facing forward - power suit - frame 51h
+; 0: Facing forward - power suit - frame 53h
+; 0: Facing forward - power suit - frame 55h
+; 0: Facing forward - power suit - frame 57h
+; 0: Facing forward - power suit - frame 59h
+; 0: Facing forward - power suit - frame 5Bh
+; 0: Facing forward - power suit - frame 5Dh
+; 0: Facing forward - power suit - frame 5Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 3
+; 9Bh: Facing forward - varia/gravity suit - frame 5
+; 9Bh: Facing forward - varia/gravity suit - frame 7
+; 9Bh: Facing forward - varia/gravity suit - frame 9
+; 9Bh: Facing forward - varia/gravity suit - frame Bh
+; 9Bh: Facing forward - varia/gravity suit - frame Dh
+; 9Bh: Facing forward - varia/gravity suit - frame Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 11h
+; 9Bh: Facing forward - varia/gravity suit - frame 13h
+; 9Bh: Facing forward - varia/gravity suit - frame 15h
+; 9Bh: Facing forward - varia/gravity suit - frame 17h
+; 9Bh: Facing forward - varia/gravity suit - frame 19h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 1Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 1Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 21h
+; 9Bh: Facing forward - varia/gravity suit - frame 23h
+; 9Bh: Facing forward - varia/gravity suit - frame 25h
+; 9Bh: Facing forward - varia/gravity suit - frame 27h
+; 9Bh: Facing forward - varia/gravity suit - frame 29h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 2Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 2Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 31h
+; 9Bh: Facing forward - varia/gravity suit - frame 33h
+; 9Bh: Facing forward - varia/gravity suit - frame 35h
+; 9Bh: Facing forward - varia/gravity suit - frame 37h
+; 9Bh: Facing forward - varia/gravity suit - frame 39h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 3Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 3Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 41h
+; 9Bh: Facing forward - varia/gravity suit - frame 43h
+; 9Bh: Facing forward - varia/gravity suit - frame 45h
+; 9Bh: Facing forward - varia/gravity suit - frame 47h
+; 9Bh: Facing forward - varia/gravity suit - frame 49h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 4Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 4Fh
+; 9Bh: Facing forward - varia/gravity suit - frame 51h
+; 9Bh: Facing forward - varia/gravity suit - frame 53h
+; 9Bh: Facing forward - varia/gravity suit - frame 55h
+; 9Bh: Facing forward - varia/gravity suit - frame 57h
+; 9Bh: Facing forward - varia/gravity suit - frame 59h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Bh
+; 9Bh: Facing forward - varia/gravity suit - frame 5Dh
+; 9Bh: Facing forward - varia/gravity suit - frame 5Fh
+; |--------|
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |--------|
+$9B:E000             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+}
+
+
+;;; $E020: Samus top tiles - set 8 - entry 1 ;;;
+{
+; Unused
+; |--------|
+; |        |
+; |    4444|
+; |   44   |
+; | 44     |
+; | 4      |
+; |  4     |
+; |  4     |
+; |  4     |
+; |--------|
+$9B:E020             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0F,00,18,00,60,00,40,00,20,00,20,00,20,00,
+}
+
+
+;;; $E040: Samus top tiles - set 8 - entry 2 ;;;
+{
+; 0: Facing forward - power suit - frame 2
+; 0: Facing forward - power suit - frame 8
+; 0: Facing forward - power suit - frame Eh
+; 0: Facing forward - power suit - frame 14h
+; 0: Facing forward - power suit - frame 1Ah
+; 0: Facing forward - power suit - frame 20h
+; 0: Facing forward - power suit - frame 26h
+; 0: Facing forward - power suit - frame 2Ch
+; 0: Facing forward - power suit - frame 32h
+; 0: Facing forward - power suit - frame 38h
+; 0: Facing forward - power suit - frame 3Eh
+; 0: Facing forward - power suit - frame 44h
+; 0: Facing forward - power suit - frame 4Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 2
+; 9Bh: Facing forward - varia/gravity suit - frame 8
+; 9Bh: Facing forward - varia/gravity suit - frame Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 14h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 20h
+; 9Bh: Facing forward - varia/gravity suit - frame 26h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 32h
+; 9Bh: Facing forward - varia/gravity suit - frame 38h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 44h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |        |    44  |444     |   44   |      4 |      4 |        |
-; |        |    4444|     4  |  4     |   4444 |      4 |      4 |        |
-; |        |   44   |     44 |  4     |   4444 |      4 |     4  |        |
-; |        | 44     |       4|  4     |   4444 |     4  |     4  |        |
-; |        | 4      |       4|  4     |      44|     44 |     4  |        |
-; |        |  4     |      4 |4 4     |       4|    444 |     4  |        |
-; |        |  4     |      4 | 4444   |        |    444 |     44 |        |
-; |        |  4     |        |    4   |        |   44  4|      4 |        |
+; |    44  |444     |   44   |      4 |      4 |        |        |  44    |
+; |     4  |  4     |   4444 |      4 |      4 |        |        |44 4    |
+; |     44 |  4     |   4444 |      4 |     4  |        |        |44 4    |
+; |       4|  4     |   4444 |     4  |     4  |        |        |44  44  |
+; |       4|  4     |      44|     44 |     4  |        |        |444  444|
+; |      4 |4 4     |       4|    444 |     4  |        |44444444|44444444|
+; |      4 | 4444   |        |    444 |     44 |        |44444444|      44|
+; |        |    4   |        |   44  4|      4 |        |    4444|        |
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |  44    |        |        |      44|    44  |        |        |
-; |        |44 4    |    4444|        |  444444|    44  |        |        |
-; |        |44 4    |   44   |        |44   44 |    44  |     44 |        |
-; |        |44  44  | 44     |        |     4  |    4444|    4   |        |
-; |        |444  444| 4      |        |444444  |    4444| 4444   |        |
-; |44444444|44444444|  4     |        | 44444  |        |4444    |      44|
-; |44444444|      44|  4     |        |   44   |        |44      |      44|
-; |    4444|        |  4     |        |        |        |4       |      44|
+; |        |
+; |    4444|
+; |   44   |
+; | 44     |
+; | 4      |
+; |  4     |
+; |  4     |
+; |  4     |
+; |--------|
+$9B:E040             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,04,00,06,00,01,00,01,00,02,00,02,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,E0,00,20,00,20,00,20,00,20,00,A0,00,78,00,08,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,1E,00,1E,00,1E,00,03,00,01,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,02,00,04,00,06,00,0E,00,0E,00,19,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,04,00,04,00,04,00,04,00,06,00,02,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,FF,00,FF,00,0F,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,30,00,D0,00,D0,00,CC,00,E7,00,FF,00,03,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0F,00,18,00,60,00,40,00,20,00,20,00,20,00,
+}
+
+
+;;; $E160: Samus top tiles - set 8 - entry 3 ;;;
+{
+; 0: Facing forward - power suit - frame 4
+; 0: Facing forward - power suit - frame Ah
+; 0: Facing forward - power suit - frame 10h
+; 0: Facing forward - power suit - frame 16h
+; 0: Facing forward - power suit - frame 1Ch
+; 0: Facing forward - power suit - frame 22h
+; 0: Facing forward - power suit - frame 28h
+; 0: Facing forward - power suit - frame 2Eh
+; 0: Facing forward - power suit - frame 34h
+; 0: Facing forward - power suit - frame 3Ah
+; 0: Facing forward - power suit - frame 40h
+; 0: Facing forward - power suit - frame 46h
+; 0: Facing forward - power suit - frame 4Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 4
+; 9Bh: Facing forward - varia/gravity suit - frame Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 10h
+; 9Bh: Facing forward - varia/gravity suit - frame 16h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 22h
+; 9Bh: Facing forward - varia/gravity suit - frame 28h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 34h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 40h
+; 9Bh: Facing forward - varia/gravity suit - frame 46h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Ch
+; |--------|--------|--------|--------|--------|--------|--------|
+; |        |      44|    44  |        |        |    4   |        |
+; |        |  444444|    44  |        |        |    4   |        |
+; |        |44   44 |    44  |     44 |        |    4   |        |
+; |        |     4  |    4444|    4   |        |    4   |44      |
+; |        |444444  |    4444| 4444   |        |    4   |4 4     |
+; |        | 44444  |        |4444    |      44|    4   |  4     |
+; |        |   44   |        |44      |      44|    4   | 4      |
+; |        |        |        |4       |      44|    4   | 444    |
+; |--------|--------|--------|--------|--------|--------|--------|
+$9B:E160             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,3F,00,C6,00,04,00,FC,00,7C,00,18,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,0C,00,0C,00,0F,00,0F,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,06,00,08,00,78,00,F0,00,C0,00,80,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,03,00,03,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,08,00,08,00,08,00,08,00,08,00,08,00,08,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,C0,00,A0,00,20,00,40,00,70,00,
+}
+
+
+;;; $E240: Samus top tiles - set 8 - entry 4 ;;;
+{
+; 0: Facing forward - power suit - frame 6
+; 0: Facing forward - power suit - frame Ch
+; 0: Facing forward - power suit - frame 12h
+; 0: Facing forward - power suit - frame 18h
+; 0: Facing forward - power suit - frame 1Eh
+; 0: Facing forward - power suit - frame 24h
+; 0: Facing forward - power suit - frame 2Ah
+; 0: Facing forward - power suit - frame 30h
+; 0: Facing forward - power suit - frame 36h
+; 0: Facing forward - power suit - frame 3Ch
+; 0: Facing forward - power suit - frame 42h
+; 0: Facing forward - power suit - frame 48h
+; 0: Facing forward - power suit - frame 4Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 6
+; 9Bh: Facing forward - varia/gravity suit - frame Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 12h
+; 9Bh: Facing forward - varia/gravity suit - frame 18h
+; 9Bh: Facing forward - varia/gravity suit - frame 1Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 24h
+; 9Bh: Facing forward - varia/gravity suit - frame 2Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 30h
+; 9Bh: Facing forward - varia/gravity suit - frame 36h
+; 9Bh: Facing forward - varia/gravity suit - frame 3Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 42h
+; 9Bh: Facing forward - varia/gravity suit - frame 48h
+; 9Bh: Facing forward - varia/gravity suit - frame 4Eh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |    4   |        |4444    | 4   4  |  444   |        |        |      44|
-; |    4   |        |44      | 4   444|  44    |        |        |      44|
-; |    4   |        |        |44      |   4    |        |4       |       4|
-; |    4   |44      |        |4       |   4    |        |4       |      44|
-; |    4   |4 4     |        |4       |   44   |        |        |  44 444|
-; |    4   |  4     |        |4444    |   444  |        |        |  4444  |
-; |    4   | 4      |        |    4   |  4444  |        |        |  444   |
-; |    4   | 444    |        |        | 4444   |  444   |        |  444   |
+; |4444    | 4   4  |  444   |        |        |      44|        |  44    |
+; |44      | 4   444|  44    |        |        |      44|        |   4444 |
+; |        |44      |   4    |        |4       |       4|        |    4 4 |
+; |        |4       |   4    |        |4       |      44|        |    4  4|
+; |        |4       |   44   |        |        |  44 444|        |    4  4|
+; |        |4444    |   444  |        |        |  4444  |        |     4 4|
+; |        |    4   |  4444  |        |        |  444   |        |     4 4|
+; |        |        | 4444   |  444   |        |  444   |        |      44|
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |  44    |   44   |    4   |        |    4   |        | 4      |
-; |        |   4444 |  44    |  44 4  |        |  444   |        | 4      |
-; |        |    4 4 |4444    | 4   4  |        |44 44   |        | 4      |
-; |        |    4  4|444     |44   44 |        |        |        | 44     |
-; |        |    4  4|444     |      4 |       4|        |        | 44     |
-; |        |     4 4|444     |        |      44|        |        |  4     |
-; |        |     4 4| 44     |        |     44 |        |        |   4    |
-; |        |      44|  4     |        |    44  |        |        |   44   |
+; |   44   |    4   |        |
+; |  44    |  44 4  |        |
+; |4444    | 4   4  |        |
+; |444     |44   44 |        |
+; |444     |      4 |       4|
+; |444     |        |      44|
+; | 44     |        |     44 |
+; |  4     |        |    44  |
+; |--------|--------|--------|
+$9B:E240             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,F0,00,C0,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,44,00,47,00,C0,00,80,00,80,00,F0,00,08,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,38,00,30,00,10,00,10,00,18,00,1C,00,3C,00,78,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,38,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,80,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,03,00,01,00,03,00,37,00,3C,00,38,00,38,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,30,00,1E,00,0A,00,09,00,09,00,05,00,05,00,03,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,30,00,F0,00,E0,00,E0,00,E0,00,60,00,20,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,34,00,44,00,C6,00,02,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,03,00,06,00,0C,00,
+}
+
+
+;;; $E3A0: Samus top tiles - set 8 - entry 5 ;;;
+{
+; 0: Facing forward - power suit - frame 50h
+; 9Bh: Facing forward - varia/gravity suit - frame 50h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; | 4      |    4   |        |4  44   |4       |       4|    44  |      4 |
-; | 44     |  44    |        | 44     |44      |       4|   44   |      4 |
-; |   4    | 44     |4       |  4     |  44    |        |  44    |      4 |
-; |        | 4      |44      |  4     |   4    |        | 4 4    |4    4  |
-; |        |        |  44    |  4     |    4   |        | 4 4    |4    4  |
-; |        |        |   4    |  4     |    4   |        |4  4    |4 4444  |
-; |        |        |  44    |  4     |    4   |        |4 4     | 4      |
-; |        |        | 4      | 4      |    4   |        |4 44    |4       |
+; |    4   |        | 4      | 4      |    4   |        |4  44   |4       |
+; |  444   |        | 4      | 44     |  44    |        | 44     |44      |
+; |44 44   |        | 4      |   4    | 44     |4       |  4     |  44    |
+; |        |        | 44     |        | 4      |44      |  4     |   4    |
+; |        |        | 44     |        |        |  44    |  4     |    4   |
+; |        |        |  4     |        |        |   4    |  4     |    4   |
+; |        |        |   4    |        |        |  44    |  4     |    4   |
+; |        |        |   44   |        |        | 4      | 4      |    4   |
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |      4 |        |        |        |        | 4      |        |    44  |
-; |      4 |        |        |        |        | 4      |        |     44 |
-; |      44|        |        |        |   44   |        |        |      4 |
-; |        |        |4       |      44|   444  |        |     4  |        |
-; |        |        |4       |        |   4    |        |     4  |        |
-; |        |        |4       |        |  44    |        |     4  |        |
-; |       4|      4 |        |       4| 4      |        |    44  |        |
-; |       4|     44 |        |       4|        |        |  444   |        |
+; |       4|    44  |      4 |      4 |        |        |        |
+; |       4|   44   |      4 |      4 |        |        |        |
+; |        |  44    |      4 |      44|        |        |        |
+; |        | 4 4    |4    4  |        |        |4       |      44|
+; |        | 4 4    |4    4  |        |        |4       |        |
+; |        |4  4    |4 4444  |        |        |4       |        |
+; |        |4 4     | 4      |       4|      4 |        |       4|
+; |        |4 44    |4       |       4|     44 |        |       4|
+; |--------|--------|--------|--------|--------|--------|--------|
+$9B:E3A0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,38,00,D8,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,40,00,40,00,60,00,60,00,20,00,10,00,18,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,60,00,10,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,30,00,60,00,40,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,C0,00,30,00,10,00,30,00,40,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,98,00,60,00,20,00,20,00,20,00,20,00,20,00,40,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,C0,00,30,00,10,00,08,00,08,00,08,00,08,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,18,00,30,00,50,00,50,00,90,00,A0,00,B0,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,02,00,84,00,84,00,BC,00,40,00,80,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,03,00,00,00,00,00,00,00,01,00,01,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,06,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,80,00,80,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,01,00,01,00,
+}
+
+
+;;; $E580: Samus top tiles - set 8 - entry 6 ;;;
+{
+; 0: Facing forward - power suit - frame 52h
+; 9Bh: Facing forward - varia/gravity suit - frame 52h
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |   4    |       4|        |        | 4     4| 4      |        |        |
-; |    4   |      4 |        |        |  4 4 4 | 4      |        |        |
-; |    4   |   444  |        |        |   4    | 4      |        |        |
-; |    444 |  44    |        |        |        |        |        |        |
-; |      4 |  4     |      4 |        |        |        |        |        |
-; |        |  4     |       4|        |        |        |        |44      |
-; |        |  44    |    444 |        |        |        |        | 4      |
-; |        |   44   |   44   |       4|        |        |        | 4      |
+; |        | 4      |        |    44  |   4    |       4|        |        |
+; |        | 4      |        |     44 |    4   |      4 |        |        |
+; |   44   |        |        |      4 |    4   |   444  |        |        |
+; |   444  |        |     4  |        |    444 |  44    |        |        |
+; |   4    |        |     4  |        |      4 |  4     |      4 |        |
+; |  44    |        |     4  |        |        |  4     |       4|        |
+; | 4      |        |    44  |        |        |  44    |    444 |        |
+; |        |        |  444   |        |        |   44   |   44   |       4|
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |     44 |        |     4  |        |        |      44|        |
-; |        |     4  |        |     4  |4       |       4|        |        |
-; |     4  |        |4       |     4 4| 4      |      4 |        |        |
-; |    44  |        |4       |     44 | 44     |        |        |  44    |
-; |    44  |        |4       |        |  4     |        |        |        |
-; |     4  |        |4       |        |  44 4  |        |        |   4    |
-; |     444|        |4       |        |   4444 |        |        |  4     |
-; |        |        |        |        |      4 |        |        | 4      |
+$9B:E580             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,1C,00,10,00,30,00,40,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,40,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,04,00,04,00,0C,00,38,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,06,00,02,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,08,00,08,00,0E,00,02,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,02,00,1C,00,30,00,20,00,20,00,30,00,18,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,01,00,0E,00,18,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,
+}
+
+
+;;; $E680: Samus top tiles - set 8 - entry 7 ;;;
+{
+; 0: Facing forward - power suit - frame 54h
+; 0: Facing forward - power suit - frame 5Ah
+; 9Bh: Facing forward - varia/gravity suit - frame 54h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Ah
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |    444 |        |        |        |    4 4 |        |        |
-; |        |       4|    4   |        |        |    444 |    4   |        |
-; |        |        |   4    |        |        |     44 | 44     |        |
-; |        |        |44 4    |        |     4  |        |     4  |        |
-; |        |        |  44    |        |        |        | 4   4  |        |
-; |        |    4   |        |        |   44   |        |        |        |
-; |        |     4  |        |        |   4    |        |4       |        |
-; |        |        |        |        |        |        |        |       4|
+; | 4     4| 4      |        |        |        |     44 |        |     4  |
+; |  4 4 4 | 4      |        |        |        |     4  |        |     4  |
+; |   4    | 4      |        |        |     4  |        |4       |     4 4|
+; |        |        |        |        |    44  |        |4       |     44 |
+; |        |        |        |        |    44  |        |4       |        |
+; |        |        |        |44      |     4  |        |4       |        |
+; |        |        |        | 4      |     444|        |4       |        |
+; |        |        |        | 4      |        |        |        |        |
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |  4     |    4   |        |        |        |        |        |
-; |        |   4    |        |        |        |        |        |   4 4  |
-; |        |        |        |        |        |        |        |   4    |
-; |        |    4   |        |        |      4 |        |        |  4     |
-; |        |   4    |        |        |     4  |        |        |        |
-; |        |        |        |        |    4 4 |44      |        |        |
-; | 4      |        |        |    4   |       4|4       |        |        |
-; | 444    |        |        |   4    |        |4       |      44|        |
+; |        |        |
+; |4       |       4|
+; | 4      |      4 |
+; | 44     |        |
+; |  4     |        |
+; |  44 4  |        |
+; |   4444 |        |
+; |      4 |        |
+; |--------|--------|
+$9B:E680             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,41,00,2A,00,10,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,40,00,40,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,C0,00,40,00,40,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,0C,00,0C,00,04,00,07,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,06,00,04,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,80,00,80,00,80,00,80,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,04,00,05,00,06,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,40,00,60,00,20,00,34,00,1E,00,02,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,02,00,00,00,00,00,00,00,00,00,00,00,
+}
+
+
+;;; $E7C0: Samus top tiles - set 8 - entry 8 ;;;
+{
+; 0: Facing forward - power suit - frame 56h
+; 0: Facing forward - power suit - frame 5Ch
+; 9Bh: Facing forward - varia/gravity suit - frame 56h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Ch
+; |--------|--------|--------|--------|--------|--------|--------|--------|
+; |      44|        |        |    444 |        |        |        |    4 4 |
+; |        |        |        |       4|    4   |        |        |    444 |
+; |        |        |        |        |   4    |        |        |     44 |
+; |        |  44    |        |        |44 4    |        |     4  |        |
+; |        |        |        |        |  44    |        |        |        |
+; |        |   4    |        |    4   |        |        |   44   |        |
+; |        |  4     |        |     4  |        |        |   4    |        |
+; |        | 4      |        |        |        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|--------|--------|
+; |        |        |        |
+; |    4   |        |        |
+; | 44     |        |        |
+; |     4  |        |        |
+; | 4   4  |        |        |
+; |        |        |        |
+; |4       |        | 4      |
+; |        |       4| 444    |
+; |--------|--------|--------|
+$9B:E7C0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,30,00,00,00,10,00,20,00,40,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0E,00,01,00,00,00,00,00,00,00,08,00,04,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,10,00,D0,00,30,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,00,00,18,00,10,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0A,00,0E,00,06,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,60,00,04,00,44,00,00,00,80,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,70,00,
+}
+
+
+;;; $E920: Samus top tiles - set 8 - entry 9 ;;;
+{
+; 0: Facing forward - power suit - frame 58h
+; 0: Facing forward - power suit - frame 5Eh
+; 9Bh: Facing forward - varia/gravity suit - frame 58h
+; 9Bh: Facing forward - varia/gravity suit - frame 5Eh
+; |--------|--------|--------|--------|--------|--------|--------|
+; |  4     |    4   |        |        |        |        |        |
+; |   4    |        |        |        |        |        |   4 4  |
+; |        |        |        |        |        |        |   4    |
+; |    4   |        |        |      4 |        |        |  4     |
+; |   4    |        |        |     4  |        |        |        |
+; |        |        |        |    4 4 |44      |        |        |
+; |        |        |    4   |       4|4       |        |        |
+; |        |        |   4    |        |4       |      44|        |
+; |--------|--------|--------|--------|--------|--------|--------|
+$9B:E920             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,20,00,10,00,00,00,08,00,10,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,10,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,04,00,0A,00,01,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,C0,00,80,00,80,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,14,00,10,00,20,00,00,00,00,00,00,00,00,00,
+}
+}
+
+
+;;; $EA00..EE1F: Samus bottom tiles - set 8 (facing forward) ;;;
+{
+;;; $EA00: Samus bottom tiles - set 8 - entry 0 ;;;
+{
+; 0: Facing forward - power suit - frames 2..5Fh
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |  3BBAB |        |     333|3B  31C1|11C13  3|333     |EEF     |        |
 ; |   BABAB|        |     D7D|73   11C|CC11   B|2AB     |E9EF    |        |
@@ -3746,6 +4262,29 @@ $9B:CBFB             fillto $9BE000, $FF
 ; |   3A3AA|AAAB    |        |  BAB33 |  33BAB |        |333C333A|2BB     |
 ; |   33333|3333    |        |  B2AB3 |  3BA2B |        |2C133  B|AB3     |
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
+$9B:EA00             db 3A,3E,15,1F,11,1F,10,1E,10,1E,0A,0E,0A,0E,0A,0A,00,1E,00,1F,00,1B,00,1A,00,1A,00,0A,00,0E,04,0E,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        07,07,07,02,01,00,05,04,03,02,07,02,06,06,06,02,00,00,07,05,01,07,05,02,03,04,07,00,02,01,06,01,
+                        CD,C8,C6,C0,EE,28,ED,2C,FE,3E,FF,3F,D7,5F,C3,59,02,42,81,01,C1,41,C2,42,C1,49,C0,5D,80,1C,84,14,
+                        D9,09,31,01,39,09,D8,18,BC,3C,7C,7C,75,7D,E1,4D,20,20,C0,C1,C0,C1,20,20,40,48,80,DC,80,9C,10,14,
+                        E0,E0,20,E0,20,E0,A0,E0,E0,E0,E0,E0,90,F0,10,F0,00,00,00,60,00,E0,00,C0,00,C0,00,00,00,F0,00,90,
+                        20,E0,50,B0,3B,FB,9F,57,14,9F,2F,2F,7C,7F,FC,7F,E0,E0,B0,F0,F0,70,70,DB,F8,9E,E8,3F,E0,46,D0,57,
+                        00,00,00,00,C0,C0,E0,E0,90,F0,D0,F0,70,F0,70,F0,00,00,00,00,00,00,00,C0,00,B0,00,F0,00,E0,00,C0,
+                        0E,0E,0E,0E,0F,0F,0E,0F,1D,1F,1E,1F,14,1F,1F,1F,00,0E,00,0E,00,04,00,02,00,16,00,18,00,0B,00,00,
+                        00,00,00,00,00,00,00,00,80,80,40,C0,10,F0,F0,F0,00,00,00,00,00,00,00,00,00,00,00,40,00,F0,00,00,
+                        07,07,06,02,07,07,06,02,03,03,00,00,00,00,00,00,00,00,06,01,00,00,06,05,00,00,00,00,00,00,00,00,
+                        C3,D9,D3,59,D7,DD,D6,56,DE,DE,1E,1E,2E,3E,26,3E,04,14,84,1C,00,1C,88,9C,00,1C,00,04,00,38,00,2C,
+                        E1,CD,64,4C,74,4C,34,24,3C,2C,3C,2C,3A,3E,32,3E,10,14,10,1C,00,0C,08,0C,00,0C,00,00,00,0E,00,1A,
+                        50,F0,80,E0,00,00,00,00,00,00,00,00,00,00,00,00,00,B0,00,60,00,00,00,00,00,00,00,00,00,00,00,00,
+                        ED,FF,77,BF,6F,EF,CF,CF,9F,DF,FF,F7,EE,EF,39,99,38,3F,B8,FA,FC,EC,F8,C9,F0,D1,C0,C1,10,11,40,41,
+                        F0,D0,D0,00,F0,F0,E0,E0,40,E0,40,E0,60,E0,60,E0,20,80,D0,B0,00,00,00,E0,00,E0,00,E0,00,60,00,C0,
+}
+
+
+;;; $EC00: Samus bottom tiles - set 8 - entry 1 ;;;
+{
+; 9Bh: Facing forward - varia/gravity suit - frames 2..5Fh
+; |--------|--------|--------|--------|--------|--------|--------|--------|
 ; |  3BBAB3|        |EEF     |        |     333|33  31C1|11C13  3|333A    |
 ; |  BBABAB|        |E9EF  3B|333B    |     D7D|7D 3311C|CC1133 B|B22A    |
 ; |  BB62AB|        |6EFF33B2|BBB2    |     88D|5D B3C1C|CC1C3B  |B22A    |
@@ -3764,264 +4303,6 @@ $9B:CBFB             fillto $9BE000, $FF
 ; |   3A3A2|22AB    |333C33 B|A22B    |        |  B6A3  |   3A6B |        |
 ; |   33333|3333    |6C133  B|A22B    |        | 3A2AB  |   BA2A3|        |
 ; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |     FFF|EE      |        |        |E33BABB3|7853    |     FFF|
-; |        |   FFFEF|69E     |D33     |3DDDDDD3|EF3BBB38|83BBB   |   FFFEF|
-; |        |  FEBBBB|BFEF    |53D3    |35555553|3F33B355|3BAABB  |  FFEEFF|
-; |        |  EBAAA2|A34F    |7383    |38888873|5FF33DD3|BA22AB3 |  FEBBBB|
-; |        | FBAA62B|2A44    |5353    |35555553|85FF333B|A2262AB3| FEBA6A2|
-; |        | FBA2B22|BA34    |D3D3    |3DDDDDD3|333F3333|BA222BB3| FBAA22B|
-; |        | FBA22B2|ABB3    |333     |33333333| 3331113|3BA22B33| FBA2B22|
-; |        |F3BAB2AB|B8D3    |        |        |  331C11|33BBB3AB|F3BA22BA|
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |EE      |        |        |E3BABAAB|B853    |        |FFFEE   |        |
-; |69E     |D33     |3DDDDDD3|EF3BABB3|783B3   |      FF|EEF69E  |D33     |
-; |EFEF    |53D3    |35555553|3F3BBB38|83AAB3  |    AFFE|EFFEFEF |53D3    |
-; |B34F    |7383    |38888873|5F333355|3A22AB3 |   B3FFB|BBBBF4F |7383    |
-; |A344    |5353    |35555553|85F33DD3|AA262AB3|  B3FFBA|6A2A344 |5353    |
-; |2A34    |D3D3    |3DDDDDD3|333F3333|BAA22AB3| B33FBAA|22B2A34 |D3D3    |
-; |BAB3    |333     |33333333| 3331113|3BA22B33|BB3F3BA2|A22BAB3 |333     |
-; |ABD3    |        |        |  331C11|33BBB3AB|BB3F3BA2|2B2ABD3 |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |        |B33E3BAA|2ABB85F |        |  FFFEE |        |        |
-; |3DDDDDD3|        |B33E33BA|BB3783BB|       F|FFFEF69E|D33     |3DDDDDD3|
-; |35555553|B       |333333BB|B388BAAB|     AFF|FEEFFEFE|53D3    |35555553|
-; |38888873|B3      |3B3D333B|355BA22A|    B3FF|EBBBBB34|7383    |38888873|
-; |35555553|AB3     | 338DF33|DD3A2262|   B3FF3|BA6A2A34|5353    |35555553|
-; |3DDDDDD3|AB3     |  333FF3|33BBA222|   33FFB|AA22B2A3|D3D3    |3DDDDDD3|
-; |33333333|B33     |   33111|133BBAAA|   B3F3B|A2B22BAB|333     |33333333|
-; |        |3AB     |    3311|C1333BBB|  3B3E3B|A22B2ABD|        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |3       |  3B3E3B|AB2ABB85|     FFF|EE      |        |        |
-; |        |BB      | B333EF3|BABB3783|   FFFEF|69E     |D33     |3DDDDDD3|
-; |F       |ABB     | B3B33F3|BBB3883A|  FEBBBB|BFEF    |53D3    |35555553|
-; |F       |2AB3    | 33B35F3|3B3553A2|  EBAAA2|A34F    |7383    |38888873|
-; |4       |62AB3   |  3B385F|33DD3BA2| FBAA62B|2A44    |5353    |35555553|
-; |4       |22AB3   |   33D3F|F3333BBA| FBA2B22|BA34    |D3D3    |3DDDDDD3|
-; |3       |22B33   |    3333|111133BB| FBA22B2|ABB3    |333     |33333333|
-; |3       |BB3AB   |     333|31C1133B|F3BAB2AB|B8D3    |        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |E33BABB3|7853    |     FFF|EE      |        |        |B2B     |E3BAB2AB|
-; |EF3BBB38|83BBB   |   FFFEF|69E     |D33     |3DDDDDD3|B2B     |EF3BABB3|
-; |3F33B355|3BAABB  |  FFEEFF|EFEF    |53D3    |35555553|BAB     |3F3BBB38|
-; |5FF33DD3|BA22AB3 |  FEBBBB|B34F    |7383    |38888873|BBB     |5F33B355|
-; |85FF333B|A2262AB3| FEBA2A2|A344    |5353    |35555553|33      |85F33DD3|
-; |333F3333|BA222BB3| FBAA62B|2A34B   |D3D3    |3DDDDDD3|        |333F3333|
-; | 3331113|3BA22B33| FBA2B22|BAB3B   |333     |33333333|        | 3331113|
-; |  331C11|33BBB3AB|F3BA22B2|ABD3B   |        |        |        |  331C11|
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |B853   B|      EE|FFF     |        |        |B3BBBB3 | B2A3ABB|    3E3B|
-; |783BB 3A|     EE9|6FEFF   |3DDDDDD3|D33     |AB3B333 | BAA3226|    EE3B|
-; |83AABB3A|    EFFE|EFFFFF  |35555553|53D3    |AA33BA3 |  BB3BAA|   3EFF3|
-; |3A22AB33|    F43F|F3333F  |38888873|7383    |BBB3BB  |   333BB|3333FF33|
-; |A2262AB3|    443F|3BBBB3F3|35555553|5353    |        |        |3AB33333|
-; |BA222AB3|    4383|BA6A2B33|3DDDDDD3|D3D3    |        |        |32AB331C|
-; |3BA22B33|    3533|AA2B2AB3|33333333|333     |        |        |32AB3333|
-; |33BBB3AB|    F33B|2B2B2AB3|        |        |        |        |3B333333|
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |ABABABB3|      EE|FFF     |        |        |BAB3    |  BAAA33|    3E33|
-; |BBB33333|     EE9|6FEFF   |3DDDDDD3|D33     |3B3     |   BAB3A|    EEF3|
-; |D5877853|    EFFE|EFFFFF  |35555553|53D3    |3       |    B3BB|   3EFF3|
-; |33333333|    F43F|F333FF  |38888873|7383    |        |        | BB33F33|
-; |3BA2ABB3|    443F|3BBB33F |35555553|5353    |        |        |A2A33333|
-; |33226AB3|    4383|3AA6AAB3|3DDDDDD3|D3D3    |        |        |BA3BB33B|
-; |33A22AB |    3533|B2A2B2A3|33333333|333     |        |        |33B2AB3A|
-; |B3BAAAB |    F333|A2B2B2AB|        |        |        |        |B3B26A3B|
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |AAB2BABB|      EE|FFF     |        |AB33    | 33333A2|        |        |
-; |BBBB333B|     EE9|6FEFF   |        |B33     |  3BA3BA|3DDDDDD3|D33     |
-; |D58785D3|    EFFE|EFFFFF  |       B|33      |   3B3BB|35555553|53D3    |
-; |33333D33|    F43F|F333333 |      AB|        |        |38888873|7383    |
-; |BA2B3338|    443F|3BBAABB3|      B3|        |        |35555553|5353    |
-; |A262B333|    4383|3A226ABB|      33|        |        |3DDDDDD3|D3D3    |
-; |222AB3  |    3533|A22AA2AB|       3|        |        |33333333|333     |
-; |A2AB3   |    F333|B2AB2AAB|        |        |        |        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |    3E33|BBB2ABAB|      EE|FFF     |    32B3|        |        |B3      |
-; |    EEF3|5BBABABB|     EE9|6FEFF   |   3AA33|3DDDDDD3|D33     |3       |
-; |AB  EFF3|D83BABBB|    EFFE|EFEEFF  |   3A3BA|35555553|53D3    |        |
-; |3B  3F33|3D733BB3|    F4FE|F3333F  |    B3A2|38888873|7383    |        |
-; |2AAB333B|B3D83333|    443F|33AA333 |     BBA|35555553|5353    |        |
-; |A22A33BA|AB33DD33|    4383|A226AB33|      3B|3DDDDDD3|D3D3    |        |
-; |BA2B33A2|6AB3333 |    3533|22AA6AB3|       B|33333333|333     |        |
-; |3BA33A22|2AB333  |    F33A|2AB26AB3|        |        |        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |333BAAAB|    3E3B|AB22BAB3|      EE|FFF     |        |        | 3B3BAB3|
-; | 3B333BB|3   EEF5|BBABABB3|     EE9|6FEFF   |3DDDDDD3|D33     |BBAB333B|
-; |  3AB333|B3  EF3D|83BABBB3|    EFFE|EFFFFF  |35555553|53D3    |A22A3B2A|
-; |        |AB3 FF33|D73BBB35|    F43F|33333FF |38888873|7383    |262A3BAB|
-; |        |2AB333B3|3D833338|    4433|BBABB33F|35555553|5353    |AAB33   |
-; |        |A2B33ABB|33355313|    433B|BA62AB33|3DDDDDD3|D3D3    |333     |
-; |        |AAB3B26A|B333333 |    353B|2A22BAB3|33333333|333     |        |
-; |        |BB3BA22A|AB33C1  |    F33B|22BAA333|        |        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |    3E3B|A2B335D3|FFF     |        |        |        |22AB    |
-; |       3|    EE3B|BAB87333|6FEFF   |        |3DDDDDD3|D33     |2AB3    |
-; |    333B|   3EFF3|B8733B33|EFFFFF  |        |35555553|53D3    |AB3     |
-; |   3B23A|3333FFF3|3533BAB3|33BB33F |        |38888873|7383    |B3      |
-; |   3AAA3|3AB33F33|33BB2AAB|BBBABB33|        |35555553|5353    |3       |
-; |   3BAB3|32AB3311|33BA226A|BA2A2BB3|        |3DDDDDD3|D3D3    |        |
-; |    333 |32ABB331|133BA22A|BA26BA33|        |33333333|333     |        |
-; |        |3AB33333|333BBAAB|A2B2A35D|3       |        |        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |     3BA|    3E3B|      EE|A2ABB8D3|B       |     FFF|EE      |        |
-; |    33A2|    EE33|     EE9|BABB733A|AB      |   FFFEF|69E     |D33     |
-; |    333B|   3EFF3|    EFFE|3B38D3A2|6AB     |  FFEEFF|EFEF    |53D3    |
-; |   32AB3|3333FFF3|    F43F|33DD3B22|22B     |  FEBBBB|B34F    |7383    |
-; |   BAAB3|3AB33F33|    443F|11333AA2|2A3B    | FEBA2A2|A344    |5353    |
-; |   3BBB3|32AB3331|    4383|C11333BA|A33A3   | FBAA62B|2A34    |D3D3    |
-; |    333 |32ABB333|    3533|31311B33|3B3B3   | FBA2B22|BAB3   B|333     |
-; |        |3AB3333 |    F33B|3333C13A|6AB33   |F3BA22B2|ABD3  3A|        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |BAB     |        |E3BAB2AB|B853  3A|FFF     |        |        |
-; |3DDDDDD3|BBB     |        |EF3BABB3|783BB3B3|6FEFF   |        |3DDDDDD3|
-; |35555553|33      |        |3F3BBB38|83AABBBB|EFFFFF  |        |35555553|
-; |38888873|3       |        |5F33B355|3A22AB3B|F333BBF |        |38888873|
-; |35555553|        |        |85F33DD3|A2262AB3|3BAA2BA3|        |35555553|
-; |3DDDDDD3|        |        |333F3333|BA222AB3|BB26B2BB|3       |3DDDDDD3|
-; |33333333|        |BAB     | 3331113|3BA22B33|BAA22BA3|3       |33333333|
-; |        |        |B2B     |  331C11|33BBB3AB|BA2BAA35|33      |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |A22AB   |       B|    3E33|      EE|BA2AB38D|3B3     |     FFF|
-; |D33     |3B2B3   |     333|    EEF3|     EE9|BBAB37D3|AAB3    |   FFFEF|
-; |53D3    |B3B3    |     B3A|   3EFF3|    EFFE|3BB58D3A|26AB    |  FEBBBB|
-; |7383    |AB3     |     AB2|3333FFF3|    F43F|333D3BA2|222A3   |  EBAAA2|
-; |5353    |AB      |      3B|3AB33F33|    443F|133333BA|2AB3A3  | FBAA62B|
-; |D3D3    |3       |       3|32AB3331|    4383|C313313B|B333B3  | FBA2B22|
-; |333     |        |        |32ABB333|    3533|13311133|3BAB33  | FBA22B2|
-; |        |        |        |3AB333  |    F333| 333C133|BA62A3  |F3BAB2AB|
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |EE      |        |        |E33BABB3|7853    |      EE|FFF     |        |
-; |69E     |D33     |3DDDDDD3|EF3BBB38|83BBB   |     EE9|6FEFF   |3DDDDDD3|
-; |BFEF    |53D3    |35555553|3F33B355|3BAABB  |    EFFE|EFFFFF  |35555553|
-; |A34F    |7383    |38888873|5FF33DD3|BA22AB3 |    F43F|F333FF  |38888873|
-; |2A44    |5353    |35555553|85FF333B|A2262AB3|    443F|3BBB33F |35555553|
-; |BA34    |D3D3    |3DDDDDD3|333F3333|BA222BB3|    4383|3AA6AAB3|3DDDDDD3|
-; |ABB3    |333     |33333333| 3331113|3BA22B33|    3533|B2A2B2A3|33333333|
-; |B8D3    |        |        |  331C11|33BBB3AB|    F333|A2B2B2AB|        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |        |BAB3    |  BAAA33|    3E33|AAB2BABB|
-; |D33     |3B3     |   BAB3A|    EEF3|BBBB333B|
-; |53D3    |3       |    B3BB|   3EFF3|D58785D3|
-; |7383    |        |        | BB33F33|33333D33|
-; |5353    |        |        |A2A33333|BA2B3338|
-; |D3D3    |        |        |BA3BB33B|A262B333|
-; |333     |        |        |33B2AB3A|222AB3  |
-; |        |        |        |B3B26A3B|A2AB3   |
-; |--------|--------|--------|--------|--------|
-
-$9B:E000             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-
-$9B:E020             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0F,00,18,00,60,00,40,00,20,00,20,00,20,00
-
-$9B:E040             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,04,00,06,00,01,00,01,00,02,00,02,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,E0,00,20,00,20,00,20,00,20,00,A0,00,78,00,08,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,1E,00,1E,00,1E,00,03,00,01,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,02,00,04,00,06,00,0E,00,0E,00,19,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,04,00,04,00,04,00,04,00,06,00,02,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,FF,00,FF,00,0F,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,30,00,D0,00,D0,00,CC,00,E7,00,FF,00,03,00,00,00
-
-$9B:E140             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0F,00,18,00,60,00,40,00,20,00,20,00,20,00
-
-$9B:E160             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,3F,00,C6,00,04,00,FC,00,7C,00,18,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,0C,00,0C,00,0F,00,0F,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,06,00,08,00,78,00,F0,00,C0,00,80,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,03,00,03,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,08,00,08,00,08,00,08,00,08,00,08,00,08,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,C0,00,A0,00,20,00,40,00,70,00
-
-$9B:E240             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,F0,00,C0,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,44,00,47,00,C0,00,80,00,80,00,F0,00,08,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,38,00,30,00,10,00,10,00,18,00,1C,00,3C,00,78,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,38,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,80,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,03,00,01,00,03,00,37,00,3C,00,38,00,38,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,30,00,1E,00,0A,00,09,00,09,00,05,00,05,00,03,00
-
-$9B:E340             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,30,00,F0,00,E0,00,E0,00,E0,00,60,00,20,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,34,00,44,00,C6,00,02,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,03,00,06,00,0C,00
-
-$9B:E3A0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,38,00,D8,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,40,00,40,00,60,00,60,00,20,00,10,00,18,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,60,00,10,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,30,00,60,00,40,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,C0,00,30,00,10,00,30,00,40,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,98,00,60,00,20,00,20,00,20,00,20,00,20,00,40,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,C0,00,30,00,10,00,08,00,08,00,08,00,08,00
-
-$9B:E4A0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,01,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,18,00,30,00,50,00,50,00,90,00,A0,00,B0,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,02,00,84,00,84,00,BC,00,40,00,80,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,02,00,03,00,00,00,00,00,00,00,01,00,01,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,06,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,80,00,80,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,01,00,01,00
-
-$9B:E580             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,18,00,1C,00,10,00,30,00,40,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,40,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,04,00,04,00,0C,00,38,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0C,00,06,00,02,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,08,00,08,00,0E,00,02,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,02,00,1C,00,30,00,20,00,20,00,30,00,18,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,01,00,0E,00,18,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00
-
-$9B:E680             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,41,00,2A,00,10,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,40,00,40,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,C0,00,40,00,40,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,0C,00,0C,00,04,00,07,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,06,00,04,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,80,00,80,00,80,00,80,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,04,00,05,00,06,00,00,00,00,00,00,00,00,00
-
-$9B:E780             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,40,00,60,00,20,00,34,00,1E,00,02,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,02,00,00,00,00,00,00,00,00,00,00,00
-
-$9B:E7C0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,30,00,00,00,10,00,20,00,40,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0E,00,01,00,00,00,00,00,00,00,08,00,04,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,10,00,D0,00,30,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,04,00,00,00,18,00,10,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,0A,00,0E,00,06,00,00,00,00,00,00,00,00,00,00,00
-
-$9B:E8C0             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,60,00,04,00,44,00,00,00,80,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,01,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,40,00,70,00
-
-$9B:E920             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,20,00,10,00,00,00,08,00,10,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,08,00,10,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,02,00,04,00,0A,00,01,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,C0,00,80,00,80,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,03,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,14,00,10,00,20,00,00,00,00,00,00,00,00,00
-
-$9B:EA00             db 3A,3E,15,1F,11,1F,10,1E,10,1E,0A,0E,0A,0E,0A,0A,00,1E,00,1F,00,1B,00,1A,00,1A,00,0A,00,0E,04,0E,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        07,07,07,02,01,00,05,04,03,02,07,02,06,06,06,02,00,00,07,05,01,07,05,02,03,04,07,00,02,01,06,01,
-                        CD,C8,C6,C0,EE,28,ED,2C,FE,3E,FF,3F,D7,5F,C3,59,02,42,81,01,C1,41,C2,42,C1,49,C0,5D,80,1C,84,14,
-                        D9,09,31,01,39,09,D8,18,BC,3C,7C,7C,75,7D,E1,4D,20,20,C0,C1,C0,C1,20,20,40,48,80,DC,80,9C,10,14,
-                        E0,E0,20,E0,20,E0,A0,E0,E0,E0,E0,E0,90,F0,10,F0,00,00,00,60,00,E0,00,C0,00,C0,00,00,00,F0,00,90,
-                        20,E0,50,B0,3B,FB,9F,57,14,9F,2F,2F,7C,7F,FC,7F,E0,E0,B0,F0,F0,70,70,DB,F8,9E,E8,3F,E0,46,D0,57,
-                        00,00,00,00,C0,C0,E0,E0,90,F0,D0,F0,70,F0,70,F0,00,00,00,00,00,00,00,C0,00,B0,00,F0,00,E0,00,C0
-
-$9B:EB00             db 0E,0E,0E,0E,0F,0F,0E,0F,1D,1F,1E,1F,14,1F,1F,1F,00,0E,00,0E,00,04,00,02,00,16,00,18,00,0B,00,00,
-                        00,00,00,00,00,00,00,00,80,80,40,C0,10,F0,F0,F0,00,00,00,00,00,00,00,00,00,00,00,40,00,F0,00,00,
-                        07,07,06,02,07,07,06,02,03,03,00,00,00,00,00,00,00,00,06,01,00,00,06,05,00,00,00,00,00,00,00,00,
-                        C3,D9,D3,59,D7,DD,D6,56,DE,DE,1E,1E,2E,3E,26,3E,04,14,84,1C,00,1C,88,9C,00,1C,00,04,00,38,00,2C,
-                        E1,CD,64,4C,74,4C,34,24,3C,2C,3C,2C,3A,3E,32,3E,10,14,10,1C,00,0C,08,0C,00,0C,00,00,00,0E,00,1A,
-                        50,F0,80,E0,00,00,00,00,00,00,00,00,00,00,00,00,00,B0,00,60,00,00,00,00,00,00,00,00,00,00,00,00,
-                        ED,FF,77,BF,6F,EF,CF,CF,9F,DF,FF,F7,EE,EF,39,99,38,3F,B8,FA,FC,EC,F8,C9,F0,D1,C0,C1,10,11,40,41,
-                        F0,D0,D0,00,F0,F0,E0,E0,40,E0,40,E0,60,E0,60,E0,20,80,D0,B0,00,00,00,E0,00,E0,00,E0,00,60,00,C0
-
 $9B:EC00             db 3B,3F,35,3F,31,3F,20,3F,11,1F,10,1E,10,1E,10,1E,00,1E,00,3F,08,33,00,11,00,18,00,1A,00,1A,00,1A,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
                         20,E0,53,B3,3E,FF,9E,57,14,9F,2D,2F,7E,7F,FE,7F,E0,E0,B0,F1,F0,72,70,DB,F8,9A,E8,3B,E0,43,D0,56,
@@ -4029,123 +4310,421 @@ $9B:EC00             db 3B,3F,35,3F,31,3F,20,3F,11,1F,10,1E,10,1E,10,1E,00,1E,00
                         07,07,07,02,01,00,05,04,03,02,07,02,06,06,06,02,00,00,07,05,01,07,05,02,03,04,07,00,02,01,06,01,
                         CD,C8,DE,98,DA,18,ED,3C,CE,3E,CE,7E,C9,7D,D1,7D,02,02,C1,41,C5,55,C2,7A,D1,6D,81,2D,82,2E,82,36,
                         D9,09,3D,0D,2C,0C,DA,1E,B9,3F,39,3F,49,5F,C5,5F,20,20,C0,C1,D0,D4,20,2E,44,5A,C0,D8,A0,BA,20,36,
-                        E0,F0,80,F0,80,F0,80,E0,C0,E0,E0,E0,80,F0,00,F0,00,10,00,90,00,90,00,C0,00,E0,00,00,00,90,00,90
-
-$9B:ED00             db 1A,1E,1B,1F,1E,1F,1C,1F,0D,1F,06,1F,14,1F,1F,1F,00,1E,00,0E,00,0C,00,0B,00,06,00,19,00,0A,00,00,
+                        E0,F0,80,F0,80,F0,80,E0,C0,E0,E0,E0,80,F0,00,F0,00,10,00,90,00,90,00,C0,00,E0,00,00,00,90,00,90,
+                        1A,1E,1B,1F,1E,1F,1C,1F,0D,1F,06,1F,14,1F,1F,1F,00,1E,00,0E,00,0C,00,0B,00,06,00,19,00,0A,00,00,
                         00,00,00,80,00,80,80,80,80,80,40,C0,10,F0,F0,F0,00,00,00,00,00,80,00,80,00,00,00,40,00,30,00,00,
                         F6,FF,A7,FF,EF,DC,FF,9F,BF,FF,FD,F5,ED,ED,39,99,38,3B,F8,E8,DB,FA,98,F8,F0,F1,C0,C1,10,11,C0,41,
                         78,F8,D8,C0,78,58,F0,F0,00,F0,00,F0,10,F0,10,F0,00,80,18,28,60,80,00,00,20,80,00,90,00,90,00,90,
                         07,07,06,02,07,07,06,02,03,03,00,00,00,00,00,00,00,00,06,01,00,00,06,05,00,00,00,00,00,00,00,00,
                         F1,FD,E1,79,E2,FA,E2,7A,FE,FA,2E,3E,24,3C,44,7C,02,36,86,2E,04,2C,84,BC,00,20,00,18,10,28,00,2C,
                         C7,DF,42,4E,22,2E,22,2E,3E,2E,3A,3E,12,1E,11,1F,20,36,30,3A,10,1A,10,1E,00,02,00,0C,04,0A,00,1A,
-                        40,F0,80,E0,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+                        40,F0,80,E0,00,00,00,00,00,00,00,00,00,00,00,00,00,10,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+}
 
-$9B:EE00             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 
+;;; $EE00: Samus bottom tiles - set 8 - entry 2 ;;;
+{
+; Unused
+; |--------|
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |        |
+; |--------|
+$9B:EE00             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+}
+}
+
+
+;;; $EE20..FD9F: Samus top tiles - set 9 (moving - gun extended) ;;;
+{
+;;; $EE20: Samus top tiles - set 9 - entry 0 ;;;
+{
+; Bh: Moving right - gun extended - frame 0
+; Bh: Moving right - gun extended - frame 5
+; |--------|--------|--------|--------|
+; |     FFF|EE      |        |        |
+; |   FFFEF|69E     |D33     |3DDDDDD3|
+; |  FEBBBB|BFEF    |53D3    |35555553|
+; |  EBAAA2|A34F    |7383    |38888873|
+; | FBAA62B|2A44    |5353    |35555553|
+; | FBA2B22|BA34    |D3D3    |3DDDDDD3|
+; | FBA22B2|ABB3    |333     |33333333|
+; |F3BAB2AB|B8D3    |        |        |
+; |--------|--------|--------|--------|
+; |E33BABB3|7853    |
+; |EF3BBB38|83BBB   |
+; |3F33B355|3BAABB  |
+; |5FF33DD3|BA22AB3 |
+; |85FF333B|A2262AB3|
+; |333F3333|BA222BB3|
+; | 3331113|3BA22B33|
+; |  331C11|33BBB3AB|
+; |--------|--------|
 $9B:EE20             db 07,07,1D,1F,2F,3F,10,3F,61,7F,64,7F,62,7F,E9,FF,07,07,1F,1F,30,3F,20,3E,44,79,40,74,40,72,80,BB,
                         00,C0,40,A0,D0,F0,50,D0,00,C0,A0,E0,70,F0,B0,90,C0,C0,A0,60,70,F0,30,90,30,40,10,C0,00,E0,20,E0,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
-                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00
+                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
+                        77,FF,7E,FE,FF,FC,FF,79,7F,3F,FF,FF,7F,71,3B,30,80,9E,C0,DD,43,48,E6,66,70,B1,10,10,00,00,04,04,
+                        B0,90,78,78,CC,FC,86,FE,03,FF,87,FF,C7,FF,FD,FF,A0,40,00,B8,00,7C,00,CC,10,86,00,C6,00,64,00,3B,
+}
 
-$9B:EEA0             db 77,FF,7E,FE,FF,FC,FF,79,7F,3F,FF,FF,7F,71,3B,30,80,9E,C0,DD,43,48,E6,66,70,B1,10,10,00,00,04,04,
-                        B0,90,78,78,CC,FC,86,FE,03,FF,87,FF,C7,FF,FD,FF,A0,40,00,B8,00,7C,00,CC,10,86,00,C6,00,64,00,3B
 
+;;; $EEE0: Samus top tiles - set 9 - entry 1 ;;;
+{
+; Bh: Moving right - gun extended - frame 4
+; |--------|--------|--------|--------|
+; |     FFF|EE      |        |        |
+; |   FFFEF|69E     |D33     |3DDDDDD3|
+; |  FFEEFF|EFEF    |53D3    |35555553|
+; |  FEBBBB|B34F    |7383    |38888873|
+; | FEBA6A2|A344    |5353    |35555553|
+; | FBAA22B|2A34    |D3D3    |3DDDDDD3|
+; | FBA2B22|BAB3    |333     |33333333|
+; |F3BA22BA|ABD3    |        |        |
+; |--------|--------|--------|--------|
+; |E3BABAAB|B853    |
+; |EF3BABB3|783B3   |
+; |3F3BBB38|83AAB3  |
+; |5F333355|3A22AB3 |
+; |85F33DD3|AA262AB3|
+; |333F3333|BAA22AB3|
+; | 3331113|3BA22B33|
+; |  331C11|33BBB3AB|
+; |--------|--------|
 $9B:EEE0             db 07,07,1D,1F,33,3F,2F,3F,50,7F,61,7F,64,7F,E2,FF,07,07,1F,1F,3F,3F,30,3F,64,7A,40,79,40,74,80,B3,
                         00,C0,40,A0,50,F0,D0,D0,40,C0,20,E0,B0,F0,70,D0,C0,C0,A0,60,F0,F0,30,90,30,80,10,40,00,E0,20,E0,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
-                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00
+                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
+                        69,FF,77,FF,FE,FE,FF,7C,7F,39,FF,FF,7F,71,3B,30,80,BF,C0,DE,40,5D,C3,40,66,A6,10,10,00,00,04,04,
+                        B0,90,B8,B8,4C,7C,86,FE,03,FF,83,FF,C7,FF,FD,FF,20,C0,80,50,00,B8,00,4C,10,C6,00,E6,00,64,00,3B,
+}
 
-$9B:EF60             db 69,FF,77,FF,FE,FE,FF,7C,7F,39,FF,FF,7F,71,3B,30,80,BF,C0,DE,40,5D,C3,40,66,A6,10,10,00,00,04,04,
-                        B0,90,B8,B8,4C,7C,86,FE,03,FF,83,FF,C7,FF,FD,FF,20,C0,80,50,00,B8,00,4C,10,C6,00,E6,00,64,00,3B
 
+;;; $EFA0: Samus top tiles - set 9 - entry 2 ;;;
+{
+; Bh: Moving right - gun extended - frame 2
+; |--------|--------|--------|--------|--------|
+; |        |FFFEE   |        |        |        |
+; |      FF|EEF69E  |D33     |3DDDDDD3|        |
+; |    AFFE|EFFEFEF |53D3    |35555553|B       |
+; |   B3FFB|BBBBF4F |7383    |38888873|B3      |
+; |  B3FFBA|6A2A344 |5353    |35555553|AB3     |
+; | B33FBAA|22B2A34 |D3D3    |3DDDDDD3|AB3     |
+; |BB3F3BA2|A22BAB3 |333     |33333333|B33     |
+; |BB3F3BA2|2B2ABD3 |        |        |3AB     |
+; |--------|--------|--------|--------|--------|
+; |B33E3BAA|2ABB85F |
+; |B33E33BA|BB3783BB|
+; |333333BB|B388BAAB|
+; |3B3D333B|355BA22A|
+; | 338DF33|DD3A2262|
+; |  333FF3|33BBA222|
+; |   33111|133BBAAA|
+; |    3311|C1333BBB|
+; |--------|--------|
 $9B:EFA0             db 00,00,03,03,06,0F,1F,1F,3E,3F,7C,7F,FC,FF,FC,FF,00,00,03,03,07,0F,06,17,0C,2F,08,4F,10,D6,10,D6,
                         E0,F8,28,F4,6A,FE,FA,FA,08,F8,24,FC,16,FE,4E,FA,F8,F8,F4,EC,FE,FE,0E,FA,86,50,02,28,00,9C,04,5C,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
-                        00,00,00,00,80,80,C0,C0,60,E0,60,E0,E0,E0,A0,E0,00,00,00,00,00,80,00,80,00,C0,00,C0,00,80,00,60
+                        00,00,00,00,80,80,C0,C0,60,E0,60,E0,E0,E0,A0,E0,00,00,00,00,00,80,00,80,00,C0,00,C0,00,80,00,60,
+                        EC,FF,EE,FF,FF,FF,FF,EF,6F,67,3F,3F,1F,18,0F,0C,10,97,10,93,00,03,10,51,0C,1C,06,06,00,00,00,00,
+                        36,F2,F7,F7,C9,CF,F0,9F,E0,3F,F0,FF,F8,7F,7F,3F,06,7A,10,CB,00,BF,60,19,C2,D0,00,38,00,1F,80,87,
+}
 
-$9B:F040             db EC,FF,EE,FF,FF,FF,FF,EF,6F,67,3F,3F,1F,18,0F,0C,10,97,10,93,00,03,10,51,0C,1C,06,06,00,00,00,00,
-                        36,F2,F7,F7,C9,CF,F0,9F,E0,3F,F0,FF,F8,7F,7F,3F,06,7A,10,CB,00,BF,60,19,C2,D0,00,38,00,1F,80,87
 
+;;; $F080: Samus top tiles - set 9 - entry 3 ;;;
+{
+; Bh: Moving right - gun extended - frame 3
+; |--------|--------|--------|--------|--------|--------|
+; |        |  FFFEE |        |        |        |3       |
+; |       F|FFFEF69E|D33     |3DDDDDD3|        |BB      |
+; |     AFF|FEEFFEFE|53D3    |35555553|F       |ABB     |
+; |    B3FF|EBBBBB34|7383    |38888873|F       |2AB3    |
+; |   B3FF3|BA6A2A34|5353    |35555553|4       |62AB3   |
+; |   33FFB|AA22B2A3|D3D3    |3DDDDDD3|4       |22AB3   |
+; |   B3F3B|A2B22BAB|333     |33333333|3       |22B33   |
+; |  3B3E3B|A22B2ABD|        |        |3       |BB3AB   |
+; |--------|--------|--------|--------|--------|--------|
+; |  3B3E3B|AB2ABB85|
+; | B333EF3|BABB3783|
+; | B3B33F3|BBB3883A|
+; | 33B35F3|3B3553A2|
+; |  3B385F|33DD3BA2|
+; |   33D3F|F3333BBA|
+; |    3333|111133BB|
+; |     333|31C1133B|
+; |--------|--------|
 $9B:F080             db 00,00,01,01,03,07,0F,0F,1F,1F,1F,1F,1F,1F,3B,3F,00,00,01,01,03,07,03,0B,06,16,06,07,04,15,04,15,
                         38,3E,EA,FD,9A,FF,7E,FE,82,FE,09,FF,25,FF,13,FE,3E,3E,FD,FB,FF,FF,81,FC,21,D4,00,CA,00,A7,01,97,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
                         00,00,00,00,80,80,80,80,00,00,00,00,80,80,80,80,00,00,00,00,80,80,80,80,80,00,80,00,00,00,00,00,
-                        80,80,C0,C0,60,E0,30,F0,18,F8,18,F8,38,F8,E8,F8,00,00,00,C0,00,E0,00,60,80,30,00,30,00,20,00,D8
+                        80,80,C0,C0,60,E0,30,F0,18,F8,18,F8,38,F8,E8,F8,00,00,00,C0,00,E0,00,60,80,30,00,30,00,20,00,D8,
+                        3B,3F,7B,7F,7F,7F,7F,7B,3B,39,1F,1B,0F,0F,07,07,04,15,06,46,02,52,06,12,03,15,05,05,00,00,00,00,
+                        4D,FC,BD,FD,F2,F3,FC,E7,FC,CF,FE,FF,FF,0F,DF,87,01,DE,04,F2,00,ED,18,42,30,36,80,87,00,03,20,21,
+}
 
-$9B:F140             db 3B,3F,7B,7F,7F,7F,7F,7B,3B,39,1F,1B,0F,0F,07,07,04,15,06,46,02,52,06,12,03,15,05,05,00,00,00,00,
-                        4D,FC,BD,FD,F2,F3,FC,E7,FC,CF,FE,FF,FF,0F,DF,87,01,DE,04,F2,00,ED,18,42,30,36,80,87,00,03,20,21
 
+;;; $F180: Samus top tiles - set 9 - entry 4 ;;;
+{
+; Bh: Moving right - gun extended - frame 6
+; Bh: Moving right - gun extended - frame 9
+; |--------|--------|--------|--------|
+; |     FFF|EE      |        |        |
+; |   FFFEF|69E     |D33     |3DDDDDD3|
+; |  FEBBBB|BFEF    |53D3    |35555553|
+; |  EBAAA2|A34F    |7383    |38888873|
+; | FBAA62B|2A44    |5353    |35555553|
+; | FBA2B22|BA34    |D3D3    |3DDDDDD3|
+; | FBA22B2|ABB3    |333     |33333333|
+; |F3BAB2AB|B8D3    |        |        |
+; |--------|--------|--------|--------|
+; |E33BABB3|7853    |
+; |EF3BBB38|83BBB   |
+; |3F33B355|3BAABB  |
+; |5FF33DD3|BA22AB3 |
+; |85FF333B|A2262AB3|
+; |333F3333|BA222BB3|
+; | 3331113|3BA22B33|
+; |  331C11|33BBB3AB|
+; |--------|--------|
 $9B:F180             db 07,07,1D,1F,2F,3F,10,3F,61,7F,64,7F,62,7F,E9,FF,07,07,1F,1F,30,3F,20,3E,44,79,40,74,40,72,80,BB,
                         00,C0,40,A0,D0,F0,50,D0,00,C0,A0,E0,70,F0,B0,90,C0,C0,A0,60,70,F0,30,90,30,40,10,C0,00,E0,20,E0,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
-                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00
+                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
+                        77,FF,7E,FE,FF,FC,FF,79,7F,3F,FF,FF,7F,71,3B,30,80,9E,C0,DD,43,48,E6,66,70,B1,10,10,00,00,04,04,
+                        B0,90,78,78,CC,FC,86,FE,03,FF,87,FF,C7,FF,FD,FF,A0,40,00,B8,00,7C,00,CC,10,86,00,C6,00,64,00,3B,
+}
 
-$9B:F200             db 77,FF,7E,FE,FF,FC,FF,79,7F,3F,FF,FF,7F,71,3B,30,80,9E,C0,DD,43,48,E6,66,70,B1,10,10,00,00,04,04,
-                        B0,90,78,78,CC,FC,86,FE,03,FF,87,FF,C7,FF,FD,FF,A0,40,00,B8,00,7C,00,CC,10,86,00,C6,00,64,00,3B
 
+;;; $F240: Samus top tiles - set 9 - entry 5 ;;;
+{
+; Bh: Moving right - gun extended - frame 7
+; |--------|--------|--------|--------|--------|
+; |     FFF|EE      |        |        |B2B     |
+; |   FFFEF|69E     |D33     |3DDDDDD3|B2B     |
+; |  FFEEFF|EFEF    |53D3    |35555553|BAB     |
+; |  FEBBBB|B34F    |7383    |38888873|BBB     |
+; | FEBA2A2|A344    |5353    |35555553|33      |
+; | FBAA62B|2A34B   |D3D3    |3DDDDDD3|        |
+; | FBA2B22|BAB3B   |333     |33333333|        |
+; |F3BA22B2|ABD3B   |        |        |        |
+; |--------|--------|--------|--------|--------|
+; |E3BAB2AB|B853   B|
+; |EF3BABB3|783BB 3A|
+; |3F3BBB38|83AABB3A|
+; |5F33B355|3A22AB33|
+; |85F33DD3|A2262AB3|
+; |333F3333|BA222AB3|
+; | 3331113|3BA22B33|
+; |  331C11|33BBB3AB|
+; |--------|--------|
 $9B:F240             db 07,07,1D,1F,33,3F,2F,3F,50,7F,61,7F,64,7F,E2,FF,07,07,1F,1F,3F,3F,30,3F,60,7A,44,79,40,74,80,B2,
                         00,C0,40,A0,50,F0,D0,D0,40,C0,28,E8,B8,F8,78,D8,C0,C0,A0,60,F0,F0,30,90,30,80,10,48,00,E8,20,E8,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
-                        A0,E0,A0,E0,A0,E0,E0,E0,C0,C0,00,00,00,00,00,00,00,A0,00,A0,00,E0,00,E0,00,00,00,00,00,00,00,00
+                        A0,E0,A0,E0,A0,E0,E0,E0,C0,C0,00,00,00,00,00,00,00,A0,00,A0,00,E0,00,E0,00,00,00,00,00,00,00,00,
+                        69,FF,77,FF,FE,FE,FF,7C,7F,39,FF,FF,7F,71,3B,30,80,BB,C0,DE,40,5D,C3,48,66,A6,10,10,00,00,04,04,
+                        B1,91,BA,BB,4E,7F,87,FF,03,FF,83,FF,C7,FF,FD,FF,20,C1,80,59,00,BD,00,4C,10,86,00,C6,00,64,00,3B,
+}
 
-$9B:F2E0             db 69,FF,77,FF,FE,FE,FF,7C,7F,39,FF,FF,7F,71,3B,30,80,BB,C0,DE,40,5D,C3,48,66,A6,10,10,00,00,04,04,
-                        B1,91,BA,BB,4E,7F,87,FF,03,FF,83,FF,C7,FF,FD,FF,20,C1,80,59,00,BD,00,4C,10,86,00,C6,00,64,00,3B
 
+;;; $F320: Samus top tiles - set 9 - entry 6 ;;;
+{
+; Ch: Moving left  - gun extended - frame 0
+; Ch: Moving left  - gun extended - frame 5
+; |--------|--------|--------|--------|--------|--------|
+; |      EE|FFF     |        |        |B3BBBB3 | B2A3ABB|
+; |     EE9|6FEFF   |3DDDDDD3|D33     |AB3B333 | BAA3226|
+; |    EFFE|EFFFFF  |35555553|53D3    |AA33BA3 |  BB3BAA|
+; |    F43F|F3333F  |38888873|7383    |BBB3BB  |   333BB|
+; |    443F|3BBBB3F3|35555553|5353    |        |        |
+; |    4383|BA6A2B33|3DDDDDD3|D3D3    |        |        |
+; |    3533|AA2B2AB3|33333333|333     |        |        |
+; |    F33B|2B2B2AB3|        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|
+; |    3E3B|ABABABB3|
+; |    EE3B|BBB33333|
+; |   3EFF3|D5877853|
+; |3333FF33|33333333|
+; |3AB33333|3BA2ABB3|
+; |32AB331C|33226AB3|
+; |32AB3333|33A22AB |
+; |3B333333|B3BAAAB |
+; |--------|--------|
 $9B:F320             db 00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,09,
                         E0,E0,58,F8,7C,FC,FC,FC,FF,FF,87,FF,13,FF,53,FF,E0,E0,F8,78,FC,FC,84,84,02,7A,20,D4,00,D6,00,56,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         FE,FE,7E,FE,3A,FE,FC,FC,00,00,00,00,00,00,00,00,00,BC,00,D0,00,CC,00,EC,00,00,00,00,00,00,00,00,
-                        4B,7F,48,7F,3C,3F,1F,1F,00,00,00,00,00,00,00,00,00,57,01,70,00,37,00,03,00,00,00,00,00,00,00,00
+                        4B,7F,48,7F,3C,3F,1F,1F,00,00,00,00,00,00,00,00,00,57,01,70,00,37,00,03,00,00,00,00,00,00,00,00,
+                        0B,0F,03,0F,17,1F,FF,FF,BF,FF,9E,FC,9F,FF,FF,FF,04,05,0C,0D,0E,0E,0C,0C,00,60,01,31,00,30,00,40,
+                        57,FF,FF,FF,DB,19,FF,FF,C7,FF,C3,FF,C2,FE,E2,FE,00,FE,00,E0,DA,A4,00,00,00,6E,08,06,00,26,00,BE,
+}
 
-$9B:F3E0             db 0B,0F,03,0F,17,1F,FF,FF,BF,FF,9E,FC,9F,FF,FF,FF,04,05,0C,0D,0E,0E,0C,0C,00,60,01,31,00,30,00,40,
-                        57,FF,FF,FF,DB,19,FF,FF,C7,FF,C3,FF,C2,FE,E2,FE,00,FE,00,E0,DA,A4,00,00,00,6E,08,06,00,26,00,BE
 
+;;; $F420: Samus top tiles - set 9 - entry 7 ;;;
+{
+; Ch: Moving left  - gun extended - frame 4
+; |--------|--------|--------|--------|--------|--------|
+; |      EE|FFF     |        |        |BAB3    |  BAAA33|
+; |     EE9|6FEFF   |3DDDDDD3|D33     |3B3     |   BAB3A|
+; |    EFFE|EFFFFF  |35555553|53D3    |3       |    B3BB|
+; |    F43F|F333FF  |38888873|7383    |        |        |
+; |    443F|3BBB33F |35555553|5353    |        |        |
+; |    4383|3AA6AAB3|3DDDDDD3|D3D3    |        |        |
+; |    3533|B2A2B2A3|33333333|333     |        |        |
+; |    F333|A2B2B2AB|        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|
+; |    3E33|AAB2BABB|
+; |    EEF3|BBBB333B|
+; |   3EFF3|D58785D3|
+; | BB33F33|33333D33|
+; |A2A33333|BA2B3338|
+; |BA3BB33B|A262B333|
+; |33B2AB3A|222AB3  |
+; |B3B26A3B|A2AB3   |
+; |--------|--------|
 $9B:F420             db 00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,08,
                         E0,E0,58,F8,7C,FC,FC,FC,FE,FE,83,FF,89,FF,29,FF,E0,E0,F8,78,FC,FC,8C,8C,02,72,10,6E,00,AA,00,AB,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         B0,F0,E0,E0,80,80,00,00,00,00,00,00,00,00,00,00,00,E0,00,40,00,00,00,00,00,00,00,00,00,00,00,00,
-                        23,3F,16,1F,0F,0F,00,00,00,00,00,00,00,00,00,00,00,3C,00,1D,00,0B,00,00,00,00,00,00,00,00,00,00
+                        23,3F,16,1F,0F,0F,00,00,00,00,00,00,00,00,00,00,00,3C,00,1D,00,0B,00,00,00,00,00,00,00,00,00,00,
+                        0B,0F,03,0F,17,1F,7F,7F,1F,FF,BF,FF,E6,FF,E3,FF,04,04,0E,0E,0E,0E,04,64,00,A0,00,D9,00,2D,08,A5,
+                        2B,FF,FF,FF,D7,11,FF,FB,9E,FE,0F,FF,0C,FC,18,F8,00,EF,00,F1,D6,AA,04,04,00,D1,20,88,00,18,00,B0,
+}
 
-$9B:F4E0             db 0B,0F,03,0F,17,1F,7F,7F,1F,FF,BF,FF,E6,FF,E3,FF,04,04,0E,0E,0E,0E,04,64,00,A0,00,D9,00,2D,08,A5,
-                        2B,FF,FF,FF,D7,11,FF,FB,9E,FE,0F,FF,0C,FC,18,F8,00,EF,00,F1,D6,AA,04,04,00,D1,20,88,00,18,00,B0
 
+;;; $F520: Samus top tiles - set 9 - entry 8 ;;;
+{
+; Ch: Moving left  - gun extended - frame 3
+; |--------|--------|--------|--------|--------|--------|--------|
+; |      EE|FFF     |        |AB33    | 33333A2|        |        |
+; |     EE9|6FEFF   |        |B33     |  3BA3BA|3DDDDDD3|D33     |
+; |    EFFE|EFFFFF  |       B|33      |   3B3BB|35555553|53D3    |
+; |    F43F|F333333 |      AB|        |        |38888873|7383    |
+; |    443F|3BBAABB3|      B3|        |        |35555553|5353    |
+; |    4383|3A226ABB|      33|        |        |3DDDDDD3|D3D3    |
+; |    3533|A22AA2AB|       3|        |        |33333333|333     |
+; |    F333|B2AB2AAB|        |        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|--------|
+; |    3E33|BBB2ABAB|
+; |    EEF3|5BBABABB|
+; |AB  EFF3|D83BABBB|
+; |3B  3F33|3D733BB3|
+; |2AAB333B|B3D83333|
+; |A22A33BA|AB33DD33|
+; |BA2B33A2|6AB3333 |
+; |3BA33A22|2AB333  |
+; |--------|--------|
 $9B:F520             db 00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,08,
                         E0,E0,58,F8,7C,FC,FE,FE,E7,FF,83,FF,01,FF,91,FF,E0,E0,F8,78,FC,FC,80,80,00,7E,08,47,00,9B,00,B7,
                         00,00,00,00,01,01,01,03,03,03,03,03,01,01,00,00,00,00,00,00,00,01,00,03,00,02,00,00,00,00,00,00,
                         70,F0,E0,E0,C0,C0,00,00,00,00,00,00,00,00,00,00,00,C0,00,80,00,00,00,00,00,00,00,00,00,00,00,00,
                         7C,7F,36,3F,1F,1F,00,00,00,00,00,00,00,00,00,00,00,02,00,1B,00,0B,00,00,00,00,00,00,00,00,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
-                        00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00
+                        00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
+                        0B,0F,03,0F,47,CF,CF,CF,1F,FF,0E,FF,9C,FF,D8,FF,04,04,0E,0E,0E,CE,04,44,00,71,00,93,00,D2,00,64,
+                        E5,FF,EB,7F,B7,3F,FF,BF,EF,CF,7F,F3,3E,FE,3C,FC,00,EF,80,7F,80,DF,60,46,20,B0,0C,CC,80,60,00,60,
+}
 
-$9B:F600             db 0B,0F,03,0F,47,CF,CF,CF,1F,FF,0E,FF,9C,FF,D8,FF,04,04,0E,0E,0E,CE,04,44,00,71,00,93,00,D2,00,64,
-                        E5,FF,EB,7F,B7,3F,FF,BF,EF,CF,7F,F3,3E,FE,3C,FC,00,EF,80,7F,80,DF,60,46,20,B0,0C,CC,80,60,00,60
 
+;;; $F640: Samus top tiles - set 9 - entry 9 ;;;
+{
+; Ch: Moving left  - gun extended - frame 2
+; |--------|--------|--------|--------|--------|--------|--------|
+; |      EE|FFF     |    32B3|        |        |B3      |333BAAAB|
+; |     EE9|6FEFF   |   3AA33|3DDDDDD3|D33     |3       | 3B333BB|
+; |    EFFE|EFEEFF  |   3A3BA|35555553|53D3    |        |  3AB333|
+; |    F4FE|F3333F  |    B3A2|38888873|7383    |        |        |
+; |    443F|33AA333 |     BBA|35555553|5353    |        |        |
+; |    4383|A226AB33|      3B|3DDDDDD3|D3D3    |        |        |
+; |    3533|22AA6AB3|       B|33333333|333     |        |        |
+; |    F33A|2AB26AB3|        |        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|--------|
+; |    3E3B|AB22BAB3|
+; |3   EEF5|BBABABB3|
+; |B3  EF3D|83BABBB3|
+; |AB3 FF33|D73BBB35|
+; |2AB333B3|3D833338|
+; |A2B33ABB|33355313|
+; |AAB3B26A|B333333 |
+; |BB3BA22A|AB33C1  |
+; |--------|--------|
 $9B:F640             db 00,03,01,06,06,0F,0A,0B,03,03,05,05,0F,0B,0E,0F,03,03,06,07,0F,0F,0F,0B,0D,01,08,02,04,00,08,09,
                         E0,E0,58,F8,4C,FC,FC,FC,CE,FE,07,FF,03,FF,23,FF,E0,E0,F8,78,FC,FC,84,84,00,30,10,8C,08,36,08,66,
                         0B,0F,13,1F,16,1F,0C,0F,06,07,03,03,01,01,00,00,00,02,00,0C,00,0B,00,0A,00,07,00,01,00,01,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         C0,C0,80,80,00,00,00,00,00,00,00,00,00,00,00,00,00,80,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        F1,FF,7F,7F,2F,3F,00,00,00,00,00,00,00,00,00,00,00,1F,00,23,00,18,00,00,00,00,00,00,00,00,00,00
+                        F1,FF,7F,7F,2F,3F,00,00,00,00,00,00,00,00,00,00,00,1F,00,23,00,18,00,00,00,00,00,00,00,00,00,00,
+                        0B,0F,83,8E,C7,CE,6F,EF,3F,FF,3B,FF,38,FF,F0,FF,04,05,0F,0E,0D,8D,0C,CC,00,62,00,A7,02,E9,00,D9,
+                        4B,FF,D7,FF,6F,7F,FF,7E,DE,9E,FF,E5,FE,FE,74,F0,00,CE,00,FE,00,BE,C1,9C,40,61,18,00,00,80,08,C8,
+}
 
-$9B:F720             db 0B,0F,83,8E,C7,CE,6F,EF,3F,FF,3B,FF,38,FF,F0,FF,04,05,0F,0E,0D,8D,0C,CC,00,62,00,A7,02,E9,00,D9,
-                        4B,FF,D7,FF,6F,7F,FF,7E,DE,9E,FF,E5,FE,FE,74,F0,00,CE,00,FE,00,BE,C1,9C,40,61,18,00,00,80,08,C8
 
+;;; $F760: Samus top tiles - set 9 - entry Ah ;;;
+{
+; Ch: Moving left  - gun extended - frame 6
+; Ch: Moving left  - gun extended - frame 9
+; |--------|--------|--------|--------|--------|--------|
+; |      EE|FFF     |        |        | 3B3BAB3|        |
+; |     EE9|6FEFF   |3DDDDDD3|D33     |BBAB333B|       3|
+; |    EFFE|EFFFFF  |35555553|53D3    |A22A3B2A|    333B|
+; |    F43F|33333FF |38888873|7383    |262A3BAB|   3B23A|
+; |    4433|BBABB33F|35555553|5353    |AAB33   |   3AAA3|
+; |    433B|BA62AB33|3DDDDDD3|D3D3    |333     |   3BAB3|
+; |    353B|2A22BAB3|33333333|333     |        |    333 |
+; |    F33B|22BAA333|        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|
+; |    3E3B|A2B335D3|
+; |    EE3B|BAB87333|
+; |   3EFF3|B8733B33|
+; |3333FFF3|3533BAB3|
+; |3AB33F33|33BB2AAB|
+; |32AB3311|33BA226A|
+; |32ABB331|133BA22A|
+; |3AB33333|333BBAAB|
+; |--------|--------|
 $9B:F760             db 00,03,01,06,06,0F,0B,0B,03,03,07,07,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0C,00,08,01,04,01,08,09,
                         E0,E0,58,F8,7C,FC,FE,FE,DF,FF,87,FF,0B,FF,27,FF,E0,E0,F8,78,FC,FC,06,06,01,F9,20,CC,00,4E,00,38,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         7B,7F,DF,FF,0C,FF,0D,FF,38,F8,E0,E0,00,00,00,00,00,2E,00,F1,00,95,40,17,00,E0,00,00,00,00,00,00,
-                        00,00,01,01,0F,0F,1A,1F,11,1F,1B,1F,0E,0E,00,00,00,00,00,00,00,01,00,09,00,0E,00,0E,00,00,00,00
+                        00,00,01,01,0F,0F,1A,1F,11,1F,1B,1F,0E,0E,00,00,00,00,00,00,00,01,00,09,00,0E,00,0E,00,00,00,00,
+                        0B,0F,03,0F,17,1F,FF,FF,BF,FF,9F,FC,9F,FE,BF,FF,04,05,0C,0D,0E,0E,0E,0E,04,64,00,30,00,38,00,60,
+                        3F,F9,AF,EF,BF,BF,FB,BF,F1,FF,E0,FF,F0,7F,F9,FF,06,A2,08,F0,20,C4,40,0E,00,37,02,31,00,19,00,1F,
+}
 
-$9B:F820             db 0B,0F,03,0F,17,1F,FF,FF,BF,FF,9F,FC,9F,FE,BF,FF,04,05,0C,0D,0E,0E,0E,0E,04,64,00,30,00,38,00,60,
-                        3F,F9,AF,EF,BF,BF,FB,BF,F1,FF,E0,FF,F0,7F,F9,FF,06,A2,08,F0,20,C4,40,0E,00,37,02,31,00,19,00,1F
 
+;;; $F860: Samus top tiles - set 9 - entry Bh ;;;
+{
+; Ch: Moving left  - gun extended - frame 8
+; |--------|--------|--------|--------|--------|--------|--------|--------|
+; |FFF     |        |        |        |22AB    |     3BA|    3E3B|      EE|
+; |6FEFF   |        |3DDDDDD3|D33     |2AB3    |    33A2|    EE33|     EE9|
+; |EFFFFF  |        |35555553|53D3    |AB3     |    333B|   3EFF3|    EFFE|
+; |33BB33F |        |38888873|7383    |B3      |   32AB3|3333FFF3|    F43F|
+; |BBBABB33|        |35555553|5353    |3       |   BAAB3|3AB33F33|    443F|
+; |BA2A2BB3|        |3DDDDDD3|D3D3    |        |   3BBB3|32AB3331|    4383|
+; |BA26BA33|        |33333333|333     |        |    333 |32ABB333|    3533|
+; |A2B2A35D|3       |        |        |        |        |3AB3333 |    F33B|
+; |--------|--------|--------|--------|--------|--------|--------|--------|
+; |A2ABB8D3|B       |
+; |BABB733A|AB      |
+; |3B38D3A2|6AB     |
+; |33DD3B22|22B     |
+; |11333AA2|2A3B    |
+; |C11333BA|A33A3   |
+; |31311B33|3B3B3   |
+; |3333C13A|6AB33   |
+; |--------|--------|
 $9B:F860             db E0,E0,58,F8,7C,FC,FE,FE,EF,FF,87,FF,8B,FF,27,FC,E0,E0,F8,78,FC,FC,02,32,00,FC,00,D6,10,CC,03,A9,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,80,80,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
@@ -4153,21 +4732,67 @@ $9B:F860             db E0,E0,58,F8,7C,FC,FE,FE,EF,FF,87,FF,8B,FF,27,FC,E0,E0,F8
                         10,F0,30,F0,60,E0,C0,C0,80,80,00,00,00,00,00,00,00,30,00,60,00,C0,00,80,00,00,00,00,00,00,00,00,
                         06,07,0C,0F,0F,0F,13,1F,13,1F,1F,1F,0E,0E,00,00,00,03,00,02,00,01,00,06,00,1E,00,0E,00,00,00,00,
                         0B,0F,03,0F,17,1F,FF,FF,BF,FF,9F,FE,9F,FF,BE,FE,04,05,0C,0C,0E,0E,0E,0E,04,64,00,30,00,38,00,60,
-                        00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,09
+                        00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,09,
+                        1B,F9,BE,FF,EC,E7,FC,CF,F8,3F,7E,1F,FF,A7,F6,F3,02,BE,08,F1,08,5A,30,34,00,06,80,83,00,04,08,09,
+                        80,80,40,C0,20,E0,20,E0,30,F0,68,F8,F8,F8,38,F8,00,80,00,C0,80,60,00,20,00,50,00,90,00,50,80,60,
+}
 
-$9B:F960             db 1B,F9,BE,FF,EC,E7,FC,CF,F8,3F,7E,1F,FF,A7,F6,F3,02,BE,08,F1,08,5A,30,34,00,06,80,83,00,04,08,09,
-                        80,80,40,C0,20,E0,20,E0,30,F0,68,F8,F8,F8,38,F8,00,80,00,C0,80,60,00,20,00,50,00,90,00,50,80,60
 
+;;; $F9A0: Samus top tiles - set 9 - entry Ch ;;;
+{
+; Bh: Moving right - gun extended - frame 8
+; |--------|--------|--------|--------|--------|--------|
+; |     FFF|EE      |        |        |BAB     |        |
+; |   FFFEF|69E     |D33     |3DDDDDD3|BBB     |        |
+; |  FFEEFF|EFEF    |53D3    |35555553|33      |        |
+; |  FEBBBB|B34F    |7383    |38888873|3       |        |
+; | FEBA2A2|A344    |5353    |35555553|        |        |
+; | FBAA62B|2A34    |D3D3    |3DDDDDD3|        |        |
+; | FBA2B22|BAB3   B|333     |33333333|        |BAB     |
+; |F3BA22B2|ABD3  3A|        |        |        |B2B     |
+; |--------|--------|--------|--------|--------|--------|
+; |E3BAB2AB|B853  3A|
+; |EF3BABB3|783BB3B3|
+; |3F3BBB38|83AABBBB|
+; |5F33B355|3A22AB3B|
+; |85F33DD3|A2262AB3|
+; |333F3333|BA222AB3|
+; | 3331113|3BA22B33|
+; |  331C11|33BBB3AB|
+; |--------|--------|
 $9B:F9A0             db 07,07,1D,1F,33,3F,2F,3F,50,7F,61,7F,64,7F,E2,FF,07,07,1F,1F,3F,3F,30,3F,60,7A,44,79,40,74,80,B2,
                         00,C0,40,A0,50,F0,D0,D0,40,C0,20,E0,B1,F1,72,D3,C0,C0,A0,60,F0,F0,30,90,30,80,10,40,00,E1,20,E1,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
                         A0,E0,E0,E0,C0,C0,80,80,00,00,00,00,00,00,00,00,00,E0,00,E0,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,A0,E0,A0,E0,00,00,00,00,00,00,00,00,00,00,00,00,00,E0,00,A0
+                        00,00,00,00,00,00,00,00,00,00,00,00,A0,E0,A0,E0,00,00,00,00,00,00,00,00,00,00,00,00,00,E0,00,A0,
+                        69,FF,77,FF,FE,FE,FF,7C,7F,39,FF,FF,7F,71,3B,30,80,BB,C0,DE,40,5D,C3,48,66,A6,10,10,00,00,04,04,
+                        B2,93,BF,BF,4F,7F,87,FF,03,FF,83,FF,C7,FF,FD,FF,20,C1,80,5A,00,BF,00,4D,10,86,00,C6,00,64,00,3B,
+}
 
-$9B:FA60             db 69,FF,77,FF,FE,FE,FF,7C,7F,39,FF,FF,7F,71,3B,30,80,BB,C0,DE,40,5D,C3,48,66,A6,10,10,00,00,04,04,
-                        B2,93,BF,BF,4F,7F,87,FF,03,FF,83,FF,C7,FF,FD,FF,20,C1,80,5A,00,BF,00,4D,10,86,00,C6,00,64,00,3B
 
+;;; $FAA0: Samus top tiles - set 9 - entry Dh ;;;
+{
+; Ch: Moving left  - gun extended - frame 7
+; |--------|--------|--------|--------|--------|--------|--------|--------|
+; |FFF     |        |        |        |A22AB   |       B|    3E33|      EE|
+; |6FEFF   |        |3DDDDDD3|D33     |3B2B3   |     333|    EEF3|     EE9|
+; |EFFFFF  |        |35555553|53D3    |B3B3    |     B3A|   3EFF3|    EFFE|
+; |F333BBF |        |38888873|7383    |AB3     |     AB2|3333FFF3|    F43F|
+; |3BAA2BA3|        |35555553|5353    |AB      |      3B|3AB33F33|    443F|
+; |BB26B2BB|3       |3DDDDDD3|D3D3    |3       |       3|32AB3331|    4383|
+; |BAA22BA3|3       |33333333|333     |        |        |32ABB333|    3533|
+; |BA2BAA35|33      |        |        |        |        |3AB333  |    F333|
+; |--------|--------|--------|--------|--------|--------|--------|--------|
+; |BA2AB38D|3B3     |
+; |BBAB37D3|AAB3    |
+; |3BB58D3A|26AB    |
+; |333D3BA2|222A3   |
+; |133333BA|2AB3A3  |
+; |C313313B|B333B3  |
+; |13311133|3BAB33  |
+; | 333C133|BA62A3  |
+; |--------|--------|
 $9B:FAA0             db E0,E0,58,F8,7C,FC,FE,FE,C5,FF,CB,FF,85,FF,93,FE,E0,E0,F8,78,FC,FC,82,8E,00,76,10,CB,00,E6,01,DC,
                         00,00,00,00,00,00,00,00,00,00,80,80,80,80,C0,C0,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
@@ -4175,28 +4800,74 @@ $9B:FAA0             db E0,E0,58,F8,7C,FC,FE,FE,C5,FF,CB,FF,85,FF,93,FE,E0,E0,F8
                         08,F8,D8,F8,F0,F0,60,E0,40,C0,80,80,00,00,00,00,00,98,00,50,00,A0,00,C0,00,C0,00,00,00,00,00,00,
                         01,01,07,07,06,07,02,07,03,03,01,01,00,00,00,00,00,01,00,00,00,05,00,06,00,01,00,00,00,00,00,00,
                         0B,0F,03,0F,17,1F,FF,FF,BF,FF,9F,FE,9F,FF,BC,FC,04,04,0E,0E,0E,0E,0E,0E,04,64,00,30,00,38,00,60,
-                        00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,08
+                        00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,08,
+                        8D,FC,DF,FD,F6,E3,FC,EF,FE,7F,7F,5B,FF,63,77,73,01,DB,06,F2,14,6D,10,16,00,03,80,81,00,00,08,08,
+                        E0,E0,30,F0,10,F0,08,F8,34,FC,FC,FC,DC,FC,84,FC,00,40,00,E0,40,30,00,10,00,68,00,88,00,70,20,C8,
+}
 
-$9B:FBA0             db 8D,FC,DF,FD,F6,E3,FC,EF,FE,7F,7F,5B,FF,63,77,73,01,DB,06,F2,14,6D,10,16,00,03,80,81,00,00,08,08,
-                        E0,E0,30,F0,10,F0,08,F8,34,FC,FC,FC,DC,FC,84,FC,00,40,00,E0,40,30,00,10,00,68,00,88,00,70,20,C8
 
+;;; $FBE0: Samus top tiles - set 9 - entry Eh ;;;
+{
+; Bh: Moving right - gun extended - frame 1
+; |--------|--------|--------|--------|
+; |     FFF|EE      |        |        |
+; |   FFFEF|69E     |D33     |3DDDDDD3|
+; |  FEBBBB|BFEF    |53D3    |35555553|
+; |  EBAAA2|A34F    |7383    |38888873|
+; | FBAA62B|2A44    |5353    |35555553|
+; | FBA2B22|BA34    |D3D3    |3DDDDDD3|
+; | FBA22B2|ABB3    |333     |33333333|
+; |F3BAB2AB|B8D3    |        |        |
+; |--------|--------|--------|--------|
+; |E33BABB3|7853    |
+; |EF3BBB38|83BBB   |
+; |3F33B355|3BAABB  |
+; |5FF33DD3|BA22AB3 |
+; |85FF333B|A2262AB3|
+; |333F3333|BA222BB3|
+; | 3331113|3BA22B33|
+; |  331C11|33BBB3AB|
+; |--------|--------|
 $9B:FBE0             db 07,07,1D,1F,2F,3F,10,3F,61,7F,64,7F,62,7F,E9,FF,07,07,1F,1F,30,3F,20,3E,44,79,40,74,40,72,80,BB,
                         00,C0,40,A0,D0,F0,50,D0,00,C0,A0,E0,70,F0,B0,90,C0,C0,A0,60,70,F0,30,90,30,40,10,C0,00,E0,20,E0,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
-                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00
+                        00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
+                        77,FF,7E,FE,FF,FC,FF,79,7F,3F,FF,FF,7F,71,3B,30,80,9E,C0,DD,43,48,E6,66,70,B1,10,10,00,00,04,04,
+                        B0,90,78,78,CC,FC,86,FE,03,FF,87,FF,C7,FF,FD,FF,A0,40,00,B8,00,7C,00,CC,10,86,00,C6,00,64,00,3B,
+}
 
-$9B:FC60             db 77,FF,7E,FE,FF,FC,FF,79,7F,3F,FF,FF,7F,71,3B,30,80,9E,C0,DD,43,48,E6,66,70,B1,10,10,00,00,04,04,
-                        B0,90,78,78,CC,FC,86,FE,03,FF,87,FF,C7,FF,FD,FF,A0,40,00,B8,00,7C,00,CC,10,86,00,C6,00,64,00,3B
 
+;;; $FCA0: Samus top tiles - set 9 - entry Fh ;;;
+{
+; Ch: Moving left  - gun extended - frame 1
+; |--------|--------|--------|--------|--------|--------|
+; |      EE|FFF     |        |        |BAB3    |  BAAA33|
+; |     EE9|6FEFF   |3DDDDDD3|D33     |3B3     |   BAB3A|
+; |    EFFE|EFFFFF  |35555553|53D3    |3       |    B3BB|
+; |    F43F|F333FF  |38888873|7383    |        |        |
+; |    443F|3BBB33F |35555553|5353    |        |        |
+; |    4383|3AA6AAB3|3DDDDDD3|D3D3    |        |        |
+; |    3533|B2A2B2A3|33333333|333     |        |        |
+; |    F333|A2B2B2AB|        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|
+; |    3E33|AAB2BABB|
+; |    EEF3|BBBB333B|
+; |   3EFF3|D58785D3|
+; | BB33F33|33333D33|
+; |A2A33333|BA2B3338|
+; |BA3BB33B|A262B333|
+; |33B2AB3A|222AB3  |
+; |B3B26A3B|A2AB3   |
+; |--------|--------|
 $9B:FCA0             db 00,03,01,06,06,0F,0B,0B,03,03,05,05,0F,0B,0F,0F,03,03,06,07,0F,0F,0D,09,0D,01,08,02,04,00,08,08,
                         E0,E0,58,F8,7C,FC,FC,FC,FE,FE,83,FF,89,FF,29,FF,E0,E0,F8,78,FC,FC,8C,8C,02,72,10,6E,00,AA,00,AB,
                         00,00,FF,81,FF,81,83,83,FF,81,FF,81,FF,FF,00,00,00,00,7E,7E,7E,00,02,7C,7E,00,7E,7E,00,00,00,00,
                         00,00,E0,60,F0,50,D0,D0,F0,50,F0,50,E0,E0,00,00,00,00,80,80,A0,20,80,20,A0,00,A0,A0,00,00,00,00,
                         B0,F0,E0,E0,80,80,00,00,00,00,00,00,00,00,00,00,00,E0,00,40,00,00,00,00,00,00,00,00,00,00,00,00,
-                        23,3F,16,1F,0F,0F,00,00,00,00,00,00,00,00,00,00,00,3C,00,1D,00,0B,00,00,00,00,00,00,00,00,00,00
-
-$9B:FD60             db 0B,0F,03,0F,17,1F,7F,7F,1F,FF,BF,FF,E6,FF,E3,FF,04,04,0E,0E,0E,0E,04,64,00,A0,00,D9,00,2D,08,A5,
-                        2B,FF,FF,FF,D7,11,FF,FB,9E,FE,0F,FF,0C,FC,18,F8,00,EF,00,F1,D6,AA,04,04,00,D1,20,88,00,18,00,B0
+                        23,3F,16,1F,0F,0F,00,00,00,00,00,00,00,00,00,00,00,3C,00,1D,00,0B,00,00,00,00,00,00,00,00,00,00,
+                        0B,0F,03,0F,17,1F,7F,7F,1F,FF,BF,FF,E6,FF,E3,FF,04,04,0E,0E,0E,0E,04,64,00,A0,00,D9,00,2D,08,A5,
+                        2B,FF,FF,FF,D7,11,FF,FB,9E,FE,0F,FF,0C,FC,18,F8,00,EF,00,F1,D6,AA,04,04,00,D1,20,88,00,18,00,B0,
+}
 }
 
 

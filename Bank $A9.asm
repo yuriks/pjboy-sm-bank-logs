@@ -28,7 +28,7 @@ $A9:86AD A9 00 00    LDA #$0000             ;\
 $A9:86B0 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Mother Brain's body palette index = 0
 $A9:86B3 A0 14 95    LDY #$9514             ;\
 $A9:86B6 A2 62 01    LDX #$0162             ;|
-$A9:86B9 A9 0F 00    LDA #$000F             ;} Sprite target palette 3 colours 1..Fh = [$9514..9531] (glass shards)
+$A9:86B9 A9 0F 00    LDA #$000F             ;} Sprite target palette 3 colours 1..Fh = [$9514..31] (glass shards)
 $A9:86BC 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A9:86C0 A0 F4 94    LDY #$94F4             ;\
 $A9:86C3 A2 E2 01    LDX #$01E2             ;|
@@ -261,7 +261,7 @@ $A9:884A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function time
 $A9:884D CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
 $A9:8850 10 5F       BPL $5F    [$88B1]     ; If [Mother Brain's body function timer] >= 0: return
 $A9:8852 A9 00 00    LDA #$0000             ;\
-$A9:8855 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$A9:8855 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A9:8859 A9 21 FF    LDA #$FF21             ;\
 $A9:885C 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue Mother Brain music data
 $A9:8860 A9 6C 88    LDA #$886C             ;\
@@ -355,11 +355,11 @@ $A9:8901 BD 29 89    LDA $8929,x[$A9:8945]  ;\
 $A9:8904 85 12       STA $12    [$7E:0012]  ;} $12 = [$8929 + [X]]
 $A9:8906 BD 2B 89    LDA $892B,x[$A9:8947]  ;\
 $A9:8909 85 14       STA $14    [$7E:0014]  ;} $14 = [$8929 + [X] + 2]
-$A9:890B A0 03 00    LDY #$0003             ; A = 3 (explosion)
+$A9:890B A0 03 00    LDY #$0003             ; A = 3 (small explosion)
 $A9:890E AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:8911 C9 00 40    CMP #$4000             ;} If [random number] < 4000h
 $A9:8914 B0 03       BCS $03    [$8919]     ;/
-$A9:8916 A0 0C 00    LDY #$000C             ; A = Ch (big explosion?)
+$A9:8916 A0 0C 00    LDY #$000C             ; A = Ch (smoke)
 
 $A9:8919 98          TYA
 $A9:891A A0 09 E5    LDY #$E509             ;\
@@ -720,7 +720,7 @@ $A9:8BAF BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
 $A9:8BB2 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A9:8BB4 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A9:8BB7 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
-$A9:8BB9 A9 03 00    LDA #$0003             ; A = 3
+$A9:8BB9 A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $A9:8BBC A0 09 E5    LDY #$E509             ;\
 $A9:8BBF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A9:8BC3 A9 24 00    LDA #$0024             ;\
@@ -1202,7 +1202,7 @@ $A9:8F5E 85 14       STA $14    [$7E:0014]  ;} $14 = D4h
 $A9:8F60 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:8F63 29 00 01    AND #$0100             ;|
 $A9:8F66 EB          XBA                    ;|
-$A9:8F67 AA          TAX                    ;} A = [$8F7D + ([random number] >> 8 & 1)]
+$A9:8F67 AA          TAX                    ;} A = [$8F7D + ([random number] >> 8) % 2]
 $A9:8F68 BD 7D 8F    LDA $8F7D,x[$A9:8F7D]  ;|
 $A9:8F6B 29 FF 00    AND #$00FF             ;/
 $A9:8F6E A0 09 E5    LDY #$E509             ;\
@@ -1688,7 +1688,7 @@ $A9:9397 29 06 00    AND #$0006             ;\
 $A9:939A AA          TAX                    ;} X = [A] & 6
 $A9:939B BD BB 93    LDA $93BB,x[$A9:93BB]  ;\
 $A9:939E 18          CLC                    ;|
-$A9:939F 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} $12 = [$93BB + [X]] + [Mother Brain brain X position]
+$A9:939F 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} $12 = [Mother Brain brain X position] + [$93BB + [X]] (shake X offset)
 $A9:93A2 85 12       STA $12    [$7E:0012]  ;/
 $A9:93A4 18          CLC                    ;\
 $A9:93A5 69 20 00    ADC #$0020             ;|
@@ -1697,7 +1697,7 @@ $A9:93A9 ED 11 09    SBC $0911  [$7E:0911]  ;|
 $A9:93AC 30 0C       BMI $0C    [$93BA]     ;/
 $A9:93AE BD C3 93    LDA $93C3,x[$A9:93C5]  ;\
 $A9:93B1 18          CLC                    ;|
-$A9:93B2 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} $14 = [$93C3 + [X]] + [Mother Brain brain Y position]
+$A9:93B2 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} $14 = [Mother Brain brain Y position] + [$93C3 + [X]] (shake Y offset)
 $A9:93B5 85 14       STA $14    [$7E:0014]  ;/
 $A9:93B7 4C EE 93    JMP $93EE  [$A9:93EE]  ; Go to add spritemap to OAM
 
@@ -1707,7 +1707,7 @@ $A9:93BA 60          RTS
 
 ;;; $93BB: Shaking offsets ;;;
 {
-; Used for Mother Brain's brain shaking and when Shitroid shakes on Samus
+; Used for Mother Brain's brain shaking and when Shitroid shakes
 $A9:93BB             dw 0000, FFFF, 0000, 0001  ; X offsets
 $A9:93C3             dw 0000, 0001, FFFF, 0001  ; Y offsets
 }
@@ -1723,11 +1723,11 @@ $A9:93CE 29 06 00    AND #$0006             ;} X = [Mother Brain brain invincibi
 $A9:93D1 AA          TAX                    ;/
 $A9:93D2 BD BB 93    LDA $93BB,x[$A9:93BB]  ;\
 $A9:93D5 18          CLC                    ;|
-$A9:93D6 65 12       ADC $12    [$7E:0012]  ;} $12 += [$93BB + [X]]
+$A9:93D6 65 12       ADC $12    [$7E:0012]  ;} $12 += [$93BB + [X]] (shake X offset)
 $A9:93D8 85 12       STA $12    [$7E:0012]  ;/
 $A9:93DA BD C3 93    LDA $93C3,x[$A9:93C3]  ;\
 $A9:93DD 18          CLC                    ;|
-$A9:93DE 65 14       ADC $14    [$7E:0014]  ;} $14 += [$93C3 + [X]]
+$A9:93DE 65 14       ADC $14    [$7E:0014]  ;} $14 += [$93C3 + [X]] (shake Y offset)
 $A9:93E0 85 14       STA $14    [$7E:0014]  ;/
 $A9:93E2 AF 18 78 7E LDA $7E7818[$7E:7818]  ;\
 $A9:93E6 85 16       STA $16    [$7E:0016]  ;} $16 = [Mother Brain's neck palette index]
@@ -3434,81 +3434,81 @@ $A9:A95E             dx 0004, 01FB,0E,2776, 81EB,0E,2786, 81FB,FE,2784, 81F3,FE,
 $A9:A974             dx 0004, 0010,00,2790, 0008,00,2780, 81F8,F8,278E, 81E8,F8,278C
 
 $A9:A98A             dx FFFE,
-                        2080,0004,2338,2338,31B7,31B8,
-                        20C0,0004,2338,31B9,31BA,31BB,
-                        2100,0004,2338,31BC,31BD,31BE,
-                        2140,000A,31BF,31C0,31C1,31C2,31C3,31C4,31C5,31C6,31C7,31C8,
-                        2180,000A,31CA,31CB,31CC,31CD,31CE,31CF,31D0,2338,2338,2338,
-                        21C0,000A,31D1,31D2,31D3,31D4,31D5,31D6,31D7,31D8,2338,2338,
-                        2200,000A,31D9,31DA,31DB,31DC,31DD,31DE,31DF,31E0,2338,2338,
-                        2240,000A,31E1,31E2,31E3,31E4,31E5,31E6,31E7,2338,2338,2338,
-                        2280,000A,2338,31E8,31E9,31EA,31EB,31EC,31ED,2338,2338,2338,
-                        22C0,0004,2338,2338,31EE,31EF,
+                        2080,0004, 2338,2338,31B7,31B8,
+                        20C0,0004, 2338,31B9,31BA,31BB,
+                        2100,0004, 2338,31BC,31BD,31BE,
+                        2140,000A, 31BF,31C0,31C1,31C2,31C3,31C4,31C5,31C6,31C7,31C8,
+                        2180,000A, 31CA,31CB,31CC,31CD,31CE,31CF,31D0,2338,2338,2338,
+                        21C0,000A, 31D1,31D2,31D3,31D4,31D5,31D6,31D7,31D8,2338,2338,
+                        2200,000A, 31D9,31DA,31DB,31DC,31DD,31DE,31DF,31E0,2338,2338,
+                        2240,000A, 31E1,31E2,31E3,31E4,31E5,31E6,31E7,2338,2338,2338,
+                        2280,000A, 2338,31E8,31E9,31EA,31EB,31EC,31ED,2338,2338,2338,
+                        22C0,0004, 2338,2338,31EE,31EF,
                         FFFF
 
 $A9:AA4E             dx FFFE,
-                        2084,0002,2338,2338,
-                        20C2,0003,2338,2338,2338,
-                        2102,0003,2338,2338,2338,
-                        2140,000A,2338,2338,2338,2338,2338,2338,2338,2338,2338,2338,
-                        2180,0007,2338,2338,2338,2338,2338,2338,2338,
-                        21C0,0008,2338,2338,2338,2338,2338,2338,2338,2338,
-                        2200,0008,2338,2338,2338,2338,2338,2338,2338,2338,
-                        2240,0007,2338,2338,2338,2338,2338,2338,2338,
-                        2282,0006,2338,2338,2338,2338,2338,2338,
-                        22C4,0002,2338,2338,
+                        2084,0002, 2338,2338,
+                        20C2,0003, 2338,2338,2338,
+                        2102,0003, 2338,2338,2338,
+                        2140,000A, 2338,2338,2338,2338,2338,2338,2338,2338,2338,2338,
+                        2180,0007, 2338,2338,2338,2338,2338,2338,2338,
+                        21C0,0008, 2338,2338,2338,2338,2338,2338,2338,2338,
+                        2200,0008, 2338,2338,2338,2338,2338,2338,2338,2338,
+                        2240,0007, 2338,2338,2338,2338,2338,2338,2338,
+                        2282,0006, 2338,2338,2338,2338,2338,2338,
+                        22C4,0002, 2338,2338,
                         FFFF
 
 $A9:AAEA             dx FFFE,
-                        2006,000B,2338,2338,3167,3168,3169,2338,2338,2338,2338,2338,2338,
-                        2046,000B,2338,316A,316B,316C,316D,316E,2338,2338,2338,2338,2338,
-                        2086,000B,31B8,316F,3170,3171,3172,3173,3174,3186,3187,2338,2338,
-                        20C6,000B,31BB,3177,3178,3179,317A,317B,317C,3188,3189,2338,2338,
-                        2106,000B,31BE,317F,3180,3181,3182,3183,3184,3185,2338,2338,2338,
+                        2006,000B, 2338,2338,3167,3168,3169,2338,2338,2338,2338,2338,2338,
+                        2046,000B, 2338,316A,316B,316C,316D,316E,2338,2338,2338,2338,2338,
+                        2086,000B, 31B8,316F,3170,3171,3172,3173,3174,3186,3187,2338,2338,
+                        20C6,000B, 31BB,3177,3178,3179,317A,317B,317C,3188,3189,2338,2338,
+                        2106,000B, 31BE,317F,3180,3181,3182,3183,3184,3185,2338,2338,2338,
                         FFFF
 
 $A9:AB70             dx FFFE,
-                        2006,000B,2338,2338,3167,3168,3169,2338,2338,2338,2338,2338,2338,
-                        2046,000B,2338,316A,316B,316C,316D,316E,2338,2338,2338,2338,2338,
-                        2086,000B,31B8,316F,3170,3171,3172,3173,3174,3175,3176,2338,2338,
-                        20C6,000B,31BB,3177,3178,3179,317A,317B,317C,317D,317E,2338,2338,
-                        2106,000B,31BE,317F,3180,3181,3182,3183,3184,3185,2338,2338,2338,
+                        2006,000B, 2338,2338,3167,3168,3169,2338,2338,2338,2338,2338,2338,
+                        2046,000B, 2338,316A,316B,316C,316D,316E,2338,2338,2338,2338,2338,
+                        2086,000B, 31B8,316F,3170,3171,3172,3173,3174,3175,3176,2338,2338,
+                        20C6,000B, 31BB,3177,3178,3179,317A,317B,317C,317D,317E,2338,2338,
+                        2106,000B, 31BE,317F,3180,3181,3182,3183,3184,3185,2338,2338,2338,
                         FFFF
 
 $A9:ABF6             dx FFFE,
-                        2006,0001,2338,
-                        200A,0002,318A,318B,
-                        2018,0002,2338,2338,
-                        2046,0001,2338,
-                        204A,0003,318C,318D,318E,
-                        2058,0002,2338,2338,
-                        2086,000B,31B8,318F,3190,3191,3192,3193,3194,2338,2338,2338,2338,
-                        20C6,000B,31BB,3195,3196,3197,3198,3199,319A,319B,2338,2338,2338,
-                        2106,0001,31BE,
-                        210C,0004,319C,319D,319E,319F,
-                        2118,0002,2338,2338,
+                        2006,0001, 2338,
+                        200A,0002, 318A,318B,
+                        2018,0002, 2338,2338,
+                        2046,0001, 2338,
+                        204A,0003, 318C,318D,318E,
+                        2058,0002, 2338,2338,
+                        2086,000B, 31B8,318F,3190,3191,3192,3193,3194,2338,2338,2338,2338,
+                        20C6,000B, 31BB,3195,3196,3197,3198,3199,319A,319B,2338,2338,2338,
+                        2106,0001, 31BE,
+                        210C,0004, 319C,319D,319E,319F,
+                        2118,0002, 2338,2338,
                         FFFF
 
 $A9:AC76             dx FFFE,
-                        200A,0003,3167,31A0,31A1,
-                        2046,0001,31B6,
-                        204A,0004,31A2,31A3,31A4,31A5,
-                        2056,0003,31A6,31A7,31A8,
-                        2088,000A,316F,31A9,31AA,31AB,31AC,31AD,31AE,31AF,31B0,31B1,
-                        20C8,0007,3177,3178,3178,31B2,31B3,31B4,31B5,
-                        2106,0001,31BE,
-                        210C,0004,319C,319D,319E,319F,
-                        2118,0002,2338,2338,
+                        200A,0003, 3167,31A0,31A1,
+                        2046,0001, 31B6,
+                        204A,0004, 31A2,31A3,31A4,31A5,
+                        2056,0003, 31A6,31A7,31A8,
+                        2088,000A, 316F,31A9,31AA,31AB,31AC,31AD,31AE,31AF,31B0,31B1,
+                        20C8,0007, 3177,3178,3178,31B2,31B3,31B4,31B5,
+                        2106,0001, 31BE,
+                        210C,0004, 319C,319D,319E,319F,
+                        2118,0002, 2338,2338,
                         FFFF
 
 $A9:ACE4             dx FFFE,
-                        200C,0002,3168,3169,
-                        2046,0001,2338,
-                        204A,0004,316B,316C,316D,316E,
-                        2056,0003,2338,2338,2338,
-                        208A,0009,3170,3171,3172,3173,3174,3186,3187,2338,2338,
-                        20CC,0006,3179,317A,317B,317C,3188,3189,
-                        210C,0004,3181,3182,3183,3184,
+                        200C,0002, 3168,3169,
+                        2046,0001, 2338,
+                        204A,0004, 316B,316C,316D,316E,
+                        2056,0003, 2338,2338,2338,
+                        208A,0009, 3170,3171,3172,3173,3174,3186,3187,2338,2338,
+                        20CC,0006, 3179,317A,317B,317C,3188,3189,
+                        210C,0004, 3181,3182,3183,3184,
                         FFFF
 
 $A9:AD3E             dx 0009, 8008,08,21E4, 81F8,08,21E2, 81E8,08,21E0, 8008,F8,21C4, 81F8,F8,21C2, 81E8,F8,21C0, 8008,E8,21A4, 81F8,E8,21A2, 81E8,E8,21A0
@@ -3914,7 +3914,7 @@ $A9:B1EE 29 FF DF    AND #$DFFF             ;} Set Mother Brain's brain as invis
 $A9:B1F1 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A9:B1F4 9C C8 0F    STZ $0FC8  [$7E:0FC8]  ; Mother Brain's brain extra properties = 0
 $A9:B1F7 A9 00 00    LDA #$0000             ;\
-$A9:B1FA 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$A9:B1FA 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A9:B1FE A9 24 FF    LDA #$FF24             ;\
 $A9:B201 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue boss fight 1 music data
 $A9:B205 A9 11 B2    LDA #$B211             ;\
@@ -4112,11 +4112,11 @@ $A9:B36A B9 93 B3    LDA $B393,y[$A9:B397]  ;\
 $A9:B36D 85 12       STA $12    [$7E:0012]  ;} $12 = [$B393 + [Y]]
 $A9:B36F B9 95 B3    LDA $B395,y[$A9:B399]  ;\
 $A9:B372 85 14       STA $14    [$7E:0014]  ;} $14 = [$B393 + [Y] + 2]
-$A9:B374 A0 03 00    LDY #$0003             ; A = 3
+$A9:B374 A0 03 00    LDY #$0003             ; A = 3 (small explosion)
 $A9:B377 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A9:B37B C9 00 40    CMP #$4000             ;\
 $A9:B37E B0 03       BCS $03    [$B383]     ;} If [random number] < 4000h:
-$A9:B380 A0 0C 00    LDY #$000C             ; A = Ch
+$A9:B380 A0 0C 00    LDY #$000C             ; A = Ch (smoke)
 
 $A9:B383 98          TYA
 $A9:B384 A0 09 E5    LDY #$E509             ;\
@@ -5184,8 +5184,8 @@ $A9:BAC3 60          RTS
 
 ;;; $BAC4: Mother Brain's body function - second phase - firing rainbow beam - let Samus fall ;;;
 {
-$A9:BAC4 A9 00 00    LDA #$0000             ; A = 0
-$A9:BAC7 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ; Execute $91:E4AD
+$A9:BAC4 A9 00 00    LDA #$0000             ;\
+$A9:BAC7 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Let drained Samus fall
 $A9:BACB A9 D1 BA    LDA #$BAD1             ;\
 $A9:BACE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BAD1
 }
@@ -6548,6 +6548,7 @@ $A9:C469 69 40 00    ADC #$0040
 
 ;;; $C46C: A = sin([A] * pi / 80h) * ±[Y] ;;;
 {
+; Uses the fast (signed) multiplication registers(!)
 $A9:C46C DA          PHX
 $A9:C46D 0A          ASL A
 $A9:C46E 29 FE 01    AND #$01FE
@@ -7013,7 +7014,7 @@ $A9:C722 A9 A2 CF    LDA #$CFA2             ;\
 $A9:C725 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $CFA2 (initial)
 $A9:C728 A9 01 00    LDA #$0001             ;\
 $A9:C72B 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
-$A9:C72E 9F 08 78 7E STA $7E7808,x[$7E:7888]; Enable cry sound effect
+$A9:C72E 9F 08 78 7E STA $7E7808,x[$7E:7888]; Enable Shitroid cry sound effect
 $A9:C732 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
 $A9:C735 A9 0A 00    LDA #$000A             ;\
 $A9:C738 9D B0 0F    STA $0FB0,x[$7E:1030]  ;} Enemy palette handler delay = Ah
@@ -7080,7 +7081,7 @@ $A9:C7B6 60          RTS
 $A9:C7B7 AF 28 78 7E LDA $7E7828[$7E:7828]  ;\
 $A9:C7BB F0 0E       BEQ $0E    [$C7CB]     ;} If [play Shitroid cry flag] = 0: return
 $A9:C7BD A9 00 00    LDA #$0000             ;\
-$A9:C7C0 8F 28 78 7E STA $7E7828[$7E:7828]  ;} Play Shitroid cry flag = 0
+$A9:C7C0 8F 28 78 7E STA $7E7828[$7E:7828]  ;} Disable Shitroid cry sound effect
 $A9:C7C4 A9 72 00    LDA #$0072             ;\
 $A9:C7C7 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 72h, sound library 2, max queued sounds allowed = 6 (Shitroid's cry)
 
@@ -7353,7 +7354,7 @@ $A9:C9C2 60          RTS
 {
 ; Is this used for the sidehopper attack too?! Note the enemy index being 80h instead of C0h
 $A9:C9C3 A9 00 00    LDA #$0000             ;\
-$A9:C9C6 9F 08 78 7E STA $7E7808,x[$7E:7888];} Disable cry sound effect
+$A9:C9C6 9F 08 78 7E STA $7E7808,x[$7E:7888];} Disable Shitroid cry sound effect
 $A9:C9CA 1A          INC A                  ;\
 $A9:C9CB 9F 12 78 7E STA $7E7812,x[$7E:7892];} Enable health based palette
 $A9:C9CF AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -7436,7 +7437,7 @@ $A9:CA77 4C 51 F4    JMP $F451  [$A9:F451]  ; Gradually accelerate towards point
 ;;; $CA7A: Shitroid function - heal Samus up to full health ;;;
 {
 $A9:CA7A A9 00 00    LDA #$0000             ;\
-$A9:CA7D 9F 08 78 7E STA $7E7808,x[$7E:7888];} Disable cry sound effect
+$A9:CA7D 9F 08 78 7E STA $7E7808,x[$7E:7888];} Disable Shitroid cry sound effect
 $A9:CA81 20 B7 C7    JSR $C7B7  [$A9:C7B7]  ; Handle playing Shitroid cry
 $A9:CA84 BD A4 0F    LDA $0FA4,x[$7E:1024]  ;\
 $A9:CA87 29 06 00    AND #$0006             ;} Y = [enemy frame counter] & 6
@@ -7498,7 +7499,7 @@ $A9:CAFC 9E AE 0F    STZ $0FAE,x[$7E:102E]  ; Enemy palette frame timer = enemy 
 $A9:CAFF A9 8F F6    LDA #$F68F             ;\
 $A9:CB02 9F 1E 78 7E STA $7E781E,x[$7E:789E];} Enemy palette function = $F68F (low health)
 $A9:CB06 A9 01 00    LDA #$0001             ;\
-$A9:CB09 9F 08 78 7E STA $7E7808,x[$7E:7888];} Enable cry sound effect
+$A9:CB09 9F 08 78 7E STA $7E7808,x[$7E:7888];} Enable Shitroid cry sound effect
 $A9:CB0D 3A          DEC A                  ;\
 $A9:CB0E 9F 12 78 7E STA $7E7812,x[$7E:7892];} Disable health based palette
 $A9:CB12 60          RTS
@@ -7638,7 +7639,7 @@ $A9:CC14 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy Y velocity = 0
 $A9:CC17 A9 8D C1    LDA #$C18D             ;\
 $A9:CC1A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = RTS
 $A9:CC1D A9 00 00    LDA #$0000             ;\
-$A9:CC20 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$A9:CC20 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A9:CC24 A9 3E CC    LDA #$CC3E             ;\
 $A9:CC27 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $CC3E
 $A9:CC2A A9 10 00    LDA #$0010             ;\
@@ -7887,7 +7888,7 @@ $A9:CDE1 B9 FE CD    LDA $CDFE,y[$A9:CE02]  ;\
 $A9:CDE4 18          CLC                    ;|
 $A9:CDE5 7D 7E 0F    ADC $0F7E,x[$7E:0FFE]  ;} $14 = [enemy Y position] + [$CDFC + [Y] + 2]
 $A9:CDE8 85 14       STA $14    [$7E:0014]  ;/
-$A9:CDEA A9 03 00    LDA #$0003             ; A = 3
+$A9:CDEA A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $A9:CDED A0 09 E5    LDY #$E509             ;\
 $A9:CDF0 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A9:CDF4 A9 13 00    LDA #$0013             ;\
@@ -11802,35 +11803,40 @@ $A9:EED0 60          RTS
 
 ;;; $EED1..FB6F: Shitroid ;;;
 {
-;;; $EED1:  ;;;
+;;; $EED1: Check for enemy collision with enemy ;;;
 {
-$A9:EED1 B9 82 0F    LDA $0F82,y[$7E:0FC2]
-$A9:EED4 18          CLC
-$A9:EED5 7D 82 0F    ADC $0F82,x[$7E:0F82]
-$A9:EED8 1A          INC A
-$A9:EED9 85 12       STA $12    [$7E:0012]
-$A9:EEDB B9 7A 0F    LDA $0F7A,y[$7E:0FBA]
-$A9:EEDE 38          SEC
-$A9:EEDF FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$A9:EEE2 10 04       BPL $04    [$EEE8]
-$A9:EEE4 49 FF FF    EOR #$FFFF
-$A9:EEE7 1A          INC A
-
-$A9:EEE8 C5 12       CMP $12    [$7E:0012]
-$A9:EEEA B0 19       BCS $19    [$EF05]
-$A9:EEEC B9 84 0F    LDA $0F84,y[$7E:0FC4]
-$A9:EEEF 18          CLC
-$A9:EEF0 7D 84 0F    ADC $0F84,x[$7E:0F84]
-$A9:EEF3 1A          INC A
-$A9:EEF4 85 12       STA $12    [$7E:0012]
-$A9:EEF6 B9 7E 0F    LDA $0F7E,y[$7E:0FBE]
-$A9:EEF9 38          SEC
-$A9:EEFA FD 7E 0F    SBC $0F7E,x[$7E:0F7E]
-$A9:EEFD 10 04       BPL $04    [$EF03]
-$A9:EEFF 49 FF FF    EOR #$FFFF
-$A9:EF02 1A          INC A
-
-$A9:EF03 C5 12       CMP $12    [$7E:0012]
+;; Parameters:
+;;     X: Enemy index
+;;     Y: Other enemy index
+;; Returns:
+;;    Carry: Clear if collision, set otherwise
+$A9:EED1 B9 82 0F    LDA $0F82,y[$7E:0FC2]  ;\
+$A9:EED4 18          CLC                    ;|
+$A9:EED5 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;|
+$A9:EED8 1A          INC A                  ;|
+$A9:EED9 85 12       STA $12    [$7E:0012]  ;|
+$A9:EEDB B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;|
+$A9:EEDE 38          SEC                    ;|
+$A9:EEDF FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;} If |[enemy [Y] X position] - [enemy [X] X position]| > [enemy [Y] X radius] + [enemy [X] X radius]: return carry set
+$A9:EEE2 10 04       BPL $04    [$EEE8]     ;|
+$A9:EEE4 49 FF FF    EOR #$FFFF             ;|
+$A9:EEE7 1A          INC A                  ;|
+                                            ;|
+$A9:EEE8 C5 12       CMP $12    [$7E:0012]  ;|
+$A9:EEEA B0 19       BCS $19    [$EF05]     ;/
+$A9:EEEC B9 84 0F    LDA $0F84,y[$7E:0FC4]  ;\
+$A9:EEEF 18          CLC                    ;|
+$A9:EEF0 7D 84 0F    ADC $0F84,x[$7E:0F84]  ;|
+$A9:EEF3 1A          INC A                  ;|
+$A9:EEF4 85 12       STA $12    [$7E:0012]  ;|
+$A9:EEF6 B9 7E 0F    LDA $0F7E,y[$7E:0FBE]  ;|
+$A9:EEF9 38          SEC                    ;} If |[enemy [Y] Y position] - [enemy [X] Y position]| > [enemy [Y] Y radius] + [enemy [X] Y radius]: return carry set
+$A9:EEFA FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;} Else: return carry clear
+$A9:EEFD 10 04       BPL $04    [$EF03]     ;|
+$A9:EEFF 49 FF FF    EOR #$FFFF             ;|
+$A9:EF02 1A          INC A                  ;|
+                                            ;|
+$A9:EF03 C5 12       CMP $12    [$7E:0012]  ;/
 
 $A9:EF05 6B          RTL
 }
@@ -11879,55 +11885,55 @@ $A9:EF36 6B          RTL
 
 ;;; $EF37: Initialisation AI - enemy $EEBF (Shitroid) ;;;
 {
-$A9:EF37 8B          PHB
-$A9:EF38 F4 7E 7E    PEA $7E7E
-$A9:EF3B AB          PLB
-$A9:EF3C AB          PLB
-$A9:EF3D A9 00 00    LDA #$0000
-$A9:EF40 A2 FE 0F    LDX #$0FFE
-
-$A9:EF43 9D 00 20    STA $2000,x[$7E:2FFE]
-$A9:EF46 CA          DEX
-$A9:EF47 CA          DEX
-$A9:EF48 10 F9       BPL $F9    [$EF43]
-$A9:EF4A AB          PLB
-$A9:EF4B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:EF4E BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A9:EF51 09 00 30    ORA #$3000
-$A9:EF54 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A9:EF57 A9 00 04    LDA #$0400
-$A9:EF5A 9D 96 0F    STA $0F96,x[$7E:0F96]
-$A9:EF5D A9 0E F9    LDA #$F90E
-$A9:EF60 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A9:EF63 A9 01 00    LDA #$0001
-$A9:EF66 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A9:EF69 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A9:EF6C A9 E6 EF    LDA #$EFE6
-$A9:EF6F 2C 11 09    BIT $0911  [$7E:0911]
-$A9:EF72 10 0C       BPL $0C    [$EF80]
-$A9:EF74 BD 86 0F    LDA $0F86,x
-$A9:EF77 09 00 05    ORA #$0500
-$A9:EF7A 9D 86 0F    STA $0F86,x
-$A9:EF7D A9 DF EF    LDA #$EFDF
+$A9:EF37 8B          PHB                    ;\
+$A9:EF38 F4 7E 7E    PEA $7E7E              ;|
+$A9:EF3B AB          PLB                    ;|
+$A9:EF3C AB          PLB                    ;|
+$A9:EF3D A9 00 00    LDA #$0000             ;|
+$A9:EF40 A2 FE 0F    LDX #$0FFE             ;|
+                                            ;} $7E:2000..2FFF = 0
+$A9:EF43 9D 00 20    STA $2000,x[$7E:2FFE]  ;|
+$A9:EF46 CA          DEX                    ;|
+$A9:EF47 CA          DEX                    ;|
+$A9:EF48 10 F9       BPL $F9    [$EF43]     ;|
+$A9:EF4A AB          PLB                    ;|
+$A9:EF4B AE 54 0E    LDX $0E54  [$7E:0E54]  ;/
+$A9:EF4E BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A9:EF51 09 00 30    ORA #$3000             ;} Set enemy to process instructions and block plasma beam
+$A9:EF54 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A9:EF57 A9 00 04    LDA #$0400             ;\
+$A9:EF5A 9D 96 0F    STA $0F96,x[$7E:0F96]  ;} Enemy palette index = 400h (palette 2)
+$A9:EF5D A9 0E F9    LDA #$F90E             ;\
+$A9:EF60 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $F90E (normal)
+$A9:EF63 A9 01 00    LDA #$0001             ;\
+$A9:EF66 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A9:EF69 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A9:EF6C A9 E6 EF    LDA #$EFE6             ; Enemy function = $EFE6
+$A9:EF6F 2C 11 09    BIT $0911  [$7E:0911]  ;\
+$A9:EF72 10 0C       BPL $0C    [$EF80]     ;} If [layer 1 X position] < 0 (door transition from the left):
+$A9:EF74 BD 86 0F    LDA $0F86,x            ;\
+$A9:EF77 09 00 05    ORA #$0500             ;} Set enemy as intangible and invisible
+$A9:EF7A 9D 86 0F    STA $0F86,x            ;/
+$A9:EF7D A9 DF EF    LDA #$EFDF             ; Enemy function = $EFDF (disappeared)
 
 $A9:EF80 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:EF83 9E AA 0F    STZ $0FAA,x[$7E:0FAA]
-$A9:EF86 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A9:EF89 A9 0A 00    LDA #$000A
-$A9:EF8C 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A9:EF8F 9E B6 0F    STZ $0FB6,x[$7E:0FB6]
-$A9:EF92 A0 C6 F8    LDY #$F8C6
-$A9:EF95 A2 20 01    LDX #$0120
-$A9:EF98 A9 10 00    LDA #$0010
-$A9:EF9B 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ; Copy 2*A bytes from Y to 7E:C200,X
-$A9:EF9F A0 E6 F8    LDY #$F8E6
-$A9:EFA2 A2 40 01    LDX #$0140
-$A9:EFA5 A9 10 00    LDA #$0010
-$A9:EFA8 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ; Copy 2*A bytes from Y to 7E:C200,X
-$A9:EFAC A0 A6 F8    LDY #$F8A6
-$A9:EFAF A2 E0 01    LDX #$01E0
-$A9:EFB2 A9 10 00    LDA #$0010
-$A9:EFB5 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ; Copy 2*A bytes from Y to 7E:C200,X
+$A9:EF83 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
+$A9:EF86 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y velocity = 0
+$A9:EF89 A9 0A 00    LDA #$000A             ;\
+$A9:EF8C 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy palette handler delay = Ah
+$A9:EF8F 9E B6 0F    STZ $0FB6,x[$7E:0FB6]  ; Disable Shitroid contact reaction
+$A9:EF92 A0 C6 F8    LDY #$F8C6             ;\
+$A9:EF95 A2 20 01    LDX #$0120             ;|
+$A9:EF98 A9 10 00    LDA #$0010             ;} Sprite target palette 1 = [$F8C6..E5] (sidehopper)
+$A9:EF9B 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
+$A9:EF9F A0 E6 F8    LDY #$F8E6             ;\
+$A9:EFA2 A2 40 01    LDX #$0140             ;|
+$A9:EFA5 A9 10 00    LDA #$0010             ;} Sprite target palette 2 = [$F8E6..F905] (Shitroid)
+$A9:EFA8 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
+$A9:EFAC A0 A6 F8    LDY #$F8A6             ;\
+$A9:EFAF A2 E0 01    LDX #$01E0             ;|
+$A9:EFB2 A9 10 00    LDA #$0010             ;} Sprite target palette 7 = [$F8A6..C5] (dead animals)
+$A9:EFB5 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A9:EFB9 6B          RTL
 }
 
@@ -11935,598 +11941,614 @@ $A9:EFB9 6B          RTL
 ;;; $EFBA: Power bomb reaction - enemy $EEBF (Shitroid) ;;;
 {
 $A9:EFBA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:EFBD BD B6 0F    LDA $0FB6,x
-$A9:EFC0 F0 03       BEQ $03    [$EFC5]
-$A9:EFC2 20 CB F3    JSR $F3CB  [$A9:F3CB]
+$A9:EFBD BD B6 0F    LDA $0FB6,x            ;\
+$A9:EFC0 F0 03       BEQ $03    [$EFC5]     ;} If contact reaction enabled:
+$A9:EFC2 20 CB F3    JSR $F3CB  [$A9:F3CB]  ; Signal Shitroid to leave
 }
 
 
 ;;; $EFC5: Main AI - enemy $EEBF (Shitroid) ;;;
 {
 $A9:EFC5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:EFC8 A9 FF 7F    LDA #$7FFF
-$A9:EFCB 9D 8C 0F    STA $0F8C,x[$7E:0F8C]
-$A9:EFCE FC A8 0F    JSR ($0FA8,x)[$A9:EFE6]
-$A9:EFD1 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]
-$A9:EFD5 AF 00 C4 7E LDA $7EC400[$7E:C400]
-$A9:EFD9 D0 03       BNE $03    [$EFDE]
-$A9:EFDB 20 77 F6    JSR $F677  [$A9:F677]
+$A9:EFC8 A9 FF 7F    LDA #$7FFF             ;\
+$A9:EFCB 9D 8C 0F    STA $0F8C,x[$7E:0F8C]  ;} Enemy health = 7FFFh
+$A9:EFCE FC A8 0F    JSR ($0FA8,x)[$A9:EFE6]; Execute [enemy function]
+$A9:EFD1 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]  ; Move enemy according to enemy velocity
+$A9:EFD5 AF 00 C4 7E LDA $7EC400[$7E:C400]  ;\
+$A9:EFD9 D0 03       BNE $03    [$EFDE]     ;} If [palette change numerator] = 0:
+$A9:EFDB 20 77 F6    JSR $F677  [$A9:F677]  ; Handle normal Shitroid palette
 
 $A9:EFDE 6B          RTL
 }
 
 
-;;; $EFDF:  ;;;
+;;; $EFDF: Shitroid function - disappeared ;;;
 {
-$A9:EFDF 9E AA 0F    STZ $0FAA,x[$7E:0FAA]
-$A9:EFE2 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
+$A9:EFDF 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
+$A9:EFE2 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y velocity = 0
 $A9:EFE5 60          RTS
 }
 
 
-;;; $EFE6:  ;;;
+;;; $EFE6: Shitroid function - wait for camera ;;;
 {
-$A9:EFE6 AD 11 09    LDA $0911  [$7E:0911]
-$A9:EFE9 C9 01 02    CMP #$0201
-$A9:EFEC 10 3C       BPL $3C    [$F02A]
-$A9:EFEE A9 00 02    LDA #$0200
-$A9:EFF1 8D 11 09    STA $0911  [$7E:0911]
-$A9:EFF4 AF 20 CD 7E LDA $7ECD20[$7E:CD20]
-$A9:EFF8 29 FF 00    AND #$00FF
-$A9:EFFB 8F 20 CD 7E STA $7ECD20[$7E:CD20]
-$A9:EFFF AF 22 CD 7E LDA $7ECD22[$7E:CD22]
-$A9:F003 29 FF 00    AND #$00FF
-$A9:F006 8F 22 CD 7E STA $7ECD22[$7E:CD22]
+$A9:EFE6 AD 11 09    LDA $0911  [$7E:0911]  ;\
+$A9:EFE9 C9 01 02    CMP #$0201             ;} If [layer 1 X position] <= 200h:
+$A9:EFEC 10 3C       BPL $3C    [$F02A]     ;/
+$A9:EFEE A9 00 02    LDA #$0200             ;\
+$A9:EFF1 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = 200h
+$A9:EFF4 AF 20 CD 7E LDA $7ECD20[$7E:CD20]  ;\
+$A9:EFF8 29 FF 00    AND #$00FF             ;} Scroll 1 = red
+$A9:EFFB 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;/
+$A9:EFFF AF 22 CD 7E LDA $7ECD22[$7E:CD22]  ;\
+$A9:F003 29 FF 00    AND #$00FF             ;} Scroll 3 = red
+$A9:F006 8F 22 CD 7E STA $7ECD22[$7E:CD22]  ;/
 $A9:F00A 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
-$A9:F00E             dx 30,03,B767          ;} Create Shitroid invisible wall
+$A9:F00E             dx 30,03,B767          ;} Create Shitroid invisible wall at block (30h, 3)
 $A9:F012 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
-$A9:F016             dx 1F,03,B767          ;} Create Shitroid invisible wall
+$A9:F016             dx 1F,03,B767          ;} Create Shitroid invisible wall at block (1Fh, 3)
 $A9:F01A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F01D A9 2B F0    LDA #$F02B
-$A9:F020 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F023 A9 01 00    LDA #$0001
-$A9:F026 9F 08 78 7E STA $7E7808,x[$7E:7808]
+$A9:F01D A9 2B F0    LDA #$F02B             ;\
+$A9:F020 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F02B
+$A9:F023 A9 01 00    LDA #$0001             ;\
+$A9:F026 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enable Shitroid cry sound effect
 
 $A9:F02A 60          RTS
 }
 
 
-;;; $F02B:  ;;;
+;;; $F02B: Shitroid function - let sidehopper live for a bit ;;;
 {
-$A9:F02B A9 37 F0    LDA #$F037
-$A9:F02E 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F031 A9 D0 01    LDA #$01D0
-$A9:F034 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A9:F02B A9 37 F0    LDA #$F037             ;\
+$A9:F02E 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F037
+$A9:F031 A9 D0 01    LDA #$01D0             ;\
+$A9:F034 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 1D0h
 }
 
 
-;;; $F037:  ;;;
+;;; $F037: Shitroid function - queue battle music ;;;
 {
-$A9:F037 DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F03A 10 30       BPL $30    [$F06C]
+$A9:F037 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F03A 10 30       BPL $30    [$F06C]     ; If [enemy function timer] < 0:
 $A9:F03C A9 05 00    LDA #$0005             ;\
 $A9:F03F 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 0 music track
-$A9:F043 A9 49 F0    LDA #$F049
-$A9:F046 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F043 A9 49 F0    LDA #$F049             ;\
+$A9:F046 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F049
 }
 
 
-;;; $F049:  ;;;
+;;; $F049: Shitroid function - rush to middle of room ;;;
 {
-$A9:F049 A9 48 02    LDA #$0248
-$A9:F04C 85 12       STA $12    [$7E:0012]
-$A9:F04E A9 4A 00    LDA #$004A
-$A9:F051 85 14       STA $14    [$7E:0014]
-$A9:F053 A0 0F 00    LDY #$000F
-$A9:F056 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F059 A9 01 00    LDA #$0001
-$A9:F05C 85 16       STA $16    [$7E:0016]
-$A9:F05E 85 18       STA $18    [$7E:0018]
-$A9:F060 22 06 EF A9 JSL $A9EF06[$A9:EF06]
-$A9:F064 B0 06       BCS $06    [$F06C]
-$A9:F066 A9 6D F0    LDA #$F06D
-$A9:F069 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F049 A9 48 02    LDA #$0248             ;\
+$A9:F04C 85 12       STA $12    [$7E:0012]  ;} $12 = 248h
+$A9:F04E A9 4A 00    LDA #$004A             ;\
+$A9:F051 85 14       STA $14    [$7E:0014]  ;} $14 = 4Ah
+$A9:F053 A0 0F 00    LDY #$000F             ; Y = Fh (fastest acceleration)
+$A9:F056 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F059 A9 01 00    LDA #$0001             ;\
+$A9:F05C 85 16       STA $16    [$7E:0016]  ;|
+$A9:F05E 85 18       STA $18    [$7E:0018]  ;} Check for enemy collision with 1x1 px^2 region around ([$12], [$14])
+$A9:F060 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ;/
+$A9:F064 B0 06       BCS $06    [$F06C]     ; If collision:
+$A9:F066 A9 6D F0    LDA #$F06D             ;\
+$A9:F069 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F06D
 
 $A9:F06C 60          RTS
 }
 
 
-;;; $F06D:  ;;;
+;;; $F06D: Shitroid function - rush to sidehopper ;;;
 {
-$A9:F06D BD BA 0F    LDA $0FBA,x[$7E:0FBA]
-$A9:F070 85 12       STA $12    [$7E:0012]
-$A9:F072 BD BE 0F    LDA $0FBE,x[$7E:0FBE]
-$A9:F075 18          CLC
-$A9:F076 69 E0 FF    ADC #$FFE0
-$A9:F079 85 14       STA $14    [$7E:0014]
-$A9:F07B A0 0F 00    LDY #$000F
-$A9:F07E 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F081 8A          TXA
-$A9:F082 18          CLC
-$A9:F083 69 40 00    ADC #$0040
-$A9:F086 A8          TAY
-$A9:F087 22 D1 EE A9 JSL $A9EED1[$A9:EED1]
-$A9:F08B B0 06       BCS $06    [$F093]
-$A9:F08D A9 94 F0    LDA #$F094
-$A9:F090 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F06D BD BA 0F    LDA $0FBA,x[$7E:0FBA]  ;\
+$A9:F070 85 12       STA $12    [$7E:0012]  ;} $12 = [sidehopper X position]
+$A9:F072 BD BE 0F    LDA $0FBE,x[$7E:0FBE]  ;\
+$A9:F075 18          CLC                    ;|
+$A9:F076 69 E0 FF    ADC #$FFE0             ;} $14 = [sidehopper Y position] - 20h
+$A9:F079 85 14       STA $14    [$7E:0014]  ;/
+$A9:F07B A0 0F 00    LDY #$000F             ; Y = Fh (fastest acceleration)
+$A9:F07E 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F081 8A          TXA                    ;\
+$A9:F082 18          CLC                    ;|
+$A9:F083 69 40 00    ADC #$0040             ;} Check for enemy collision with sidehopper
+$A9:F086 A8          TAY                    ;|
+$A9:F087 22 D1 EE A9 JSL $A9EED1[$A9:EED1]  ;/
+$A9:F08B B0 06       BCS $06    [$F093]     ; If collision:
+$A9:F08D A9 94 F0    LDA #$F094             ;\
+$A9:F090 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F094
 
 $A9:F093 60          RTS
 }
 
 
-;;; $F094:  ;;;
+;;; $F094: Shitroid function - latch onto sidehopper ;;;
 {
-$A9:F094 BD BA 0F    LDA $0FBA,x[$7E:0FBA]
-$A9:F097 85 12       STA $12    [$7E:0012]
-$A9:F099 BD BE 0F    LDA $0FBE,x[$7E:0FBE]
-$A9:F09C 18          CLC
-$A9:F09D 69 E0 FF    ADC #$FFE0
-$A9:F0A0 85 14       STA $14    [$7E:0014]
-$A9:F0A2 A9 00 02    LDA #$0200
-$A9:F0A5 20 A6 F5    JSR $F5A6  [$A9:F5A6]
-$A9:F0A8 B0 01       BCS $01    [$F0AB]
-$A9:F0AA 60          RTS
+$A9:F094 BD BA 0F    LDA $0FBA,x[$7E:0FBA]  ;\
+$A9:F097 85 12       STA $12    [$7E:0012]  ;} $12 = [sidehopper X position]
+$A9:F099 BD BE 0F    LDA $0FBE,x[$7E:0FBE]  ;\
+$A9:F09C 18          CLC                    ;|
+$A9:F09D 69 E0 FF    ADC #$FFE0             ;} $14 = [sidehopper Y position] - 20h
+$A9:F0A0 85 14       STA $14    [$7E:0014]  ;/
+$A9:F0A2 A9 00 02    LDA #$0200             ; A = 200h (acceleration)
+$A9:F0A5 20 A6 F5    JSR $F5A6  [$A9:F5A6]  ; Accelerate Shitroid towards ([$12], [$14])
+$A9:F0A8 B0 01       BCS $01    [$F0AB]     ; If not reached target:
+$A9:F0AA 60          RTS                    ; Return
 
-$A9:F0AB 9E AA 0F    STZ $0FAA,x[$7E:0FAA]
-$A9:F0AE 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A9:F0B1 BD BA 0F    LDA $0FBA,x[$7E:0FBA]
-$A9:F0B4 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A9:F0B7 BD BE 0F    LDA $0FBE,x[$7E:0FBE]
-$A9:F0BA 18          CLC
-$A9:F0BB 69 E0 FF    ADC #$FFE0
-$A9:F0BE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A9:F0C1 A9 24 F9    LDA #$F924
-$A9:F0C4 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A9:F0C7 A9 01 00    LDA #$0001
-$A9:F0CA 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A9:F0CD 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A9:F0D0 A9 E6 F0    LDA #$F0E6
-$A9:F0D3 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F0D6 A9 01 00    LDA #$0001
-$A9:F0D9 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A9:F0DC 9E B6 0F    STZ $0FB6,x[$7E:0FB6]
-$A9:F0DF A9 40 01    LDA #$0140
-$A9:F0E2 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A9:F0AB 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
+$A9:F0AE 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y velocity = 0
+$A9:F0B1 BD BA 0F    LDA $0FBA,x[$7E:0FBA]  ;\
+$A9:F0B4 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [side hopper X position]
+$A9:F0B7 BD BE 0F    LDA $0FBE,x[$7E:0FBE]  ;\
+$A9:F0BA 18          CLC                    ;|
+$A9:F0BB 69 E0 FF    ADC #$FFE0             ;} Enemy Y position = [side hopper Y position] - 20h
+$A9:F0BE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$A9:F0C1 A9 24 F9    LDA #$F924             ;\
+$A9:F0C4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $F924 (latched on)
+$A9:F0C7 A9 01 00    LDA #$0001             ;\
+$A9:F0CA 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A9:F0CD 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A9:F0D0 A9 E6 F0    LDA #$F0E6             ;\
+$A9:F0D3 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F0E6
+$A9:F0D6 A9 01 00    LDA #$0001             ;\
+$A9:F0D9 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy palette handler delay = 1
+$A9:F0DC 9E B6 0F    STZ $0FB6,x[$7E:0FB6]  ; Disable Shitroid contact reaction
+$A9:F0DF A9 40 01    LDA #$0140             ;\
+$A9:F0E2 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 140h
 $A9:F0E5 60          RTS
 }
 
 
-;;; $F0E6:  ;;;
+;;; $F0E6: Shitroid function - draining sidehopper ;;;
 {
-$A9:F0E6 BD A4 0F    LDA $0FA4,x[$7E:0FA4]
-$A9:F0E9 29 06 00    AND #$0006
-$A9:F0EC A8          TAY
-$A9:F0ED B9 BB 93    LDA $93BB,y[$A9:93BB]
-$A9:F0F0 7D BA 0F    ADC $0FBA,x[$7E:0FBA]
-$A9:F0F3 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A9:F0F6 B9 C3 93    LDA $93C3,y[$A9:93C3]
-$A9:F0F9 18          CLC
-$A9:F0FA 7D BE 0F    ADC $0FBE,x[$7E:0FBE]
-$A9:F0FD 18          CLC
-$A9:F0FE 69 E0 FF    ADC #$FFE0
-$A9:F101 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A9:F104 DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F107 D0 1B       BNE $1B    [$F124]
-$A9:F109 A9 25 F1    LDA #$F125
-$A9:F10C 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F10F A9 06 F9    LDA #$F906
-$A9:F112 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A9:F115 A9 01 00    LDA #$0001
-$A9:F118 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A9:F11B 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A9:F11E A9 0A 00    LDA #$000A
-$A9:F121 9D B0 0F    STA $0FB0,x[$7E:0FB0]
+$A9:F0E6 BD A4 0F    LDA $0FA4,x[$7E:0FA4]  ;\
+$A9:F0E9 29 06 00    AND #$0006             ;} Y = [enemy frame counter] / 2 % 4 * 2
+$A9:F0EC A8          TAY                    ;/
+$A9:F0ED B9 BB 93    LDA $93BB,y[$A9:93BB]  ;\
+$A9:F0F0 7D BA 0F    ADC $0FBA,x[$7E:0FBA]  ;} Enemy X position = [sidehopper X position] + [$93BB + [Y]] (shake X offset)
+$A9:F0F3 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$A9:F0F6 B9 C3 93    LDA $93C3,y[$A9:93C3]  ;\
+$A9:F0F9 18          CLC                    ;|
+$A9:F0FA 7D BE 0F    ADC $0FBE,x[$7E:0FBE]  ;|
+$A9:F0FD 18          CLC                    ;} Enemy Y position = [sidehopper Y position] + [$93C3 + [Y]] (shake Y offset)
+$A9:F0FE 69 E0 FF    ADC #$FFE0             ;|
+$A9:F101 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$A9:F104 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F107 D0 1B       BNE $1B    [$F124]     ; If [enemy function timer] = 0:
+$A9:F109 A9 25 F1    LDA #$F125             ;\
+$A9:F10C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F125
+$A9:F10F A9 06 F9    LDA #$F906             ;\
+$A9:F112 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $F906 (finish draining)
+$A9:F115 A9 01 00    LDA #$0001             ;\
+$A9:F118 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A9:F11B 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A9:F11E A9 0A 00    LDA #$000A             ;\
+$A9:F121 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy palette handler delay = Ah
 
 $A9:F124 60          RTS
 }
 
 
-;;; $F125:  ;;;
+;;; $F125: Shitroid function - make sidehopper rottable ;;;
 {
-$A9:F125 A9 01 00    LDA #$0001
-$A9:F128 8F 50 78 7E STA $7E7850[$7E:7850]
-$A9:F12C A9 38 F1    LDA #$F138
-$A9:F12F 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F132 A9 C0 00    LDA #$00C0
-$A9:F135 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A9:F125 A9 01 00    LDA #$0001             ;\
+$A9:F128 8F 50 78 7E STA $7E7850[$7E:7850]  ;} Sidehopper $7E:7810 = 1
+$A9:F12C A9 38 F1    LDA #$F138             ;\
+$A9:F12F 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F138
+$A9:F132 A9 C0 00    LDA #$00C0             ;\
+$A9:F135 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = C0h
 }
 
 
-;;; $F138:  ;;;
+;;; $F138: Shitroid function - move up and unlock camera ;;;
 {
-$A9:F138 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A9:F13B 85 12       STA $12    [$7E:0012]
-$A9:F13D A9 68 00    LDA #$0068
-$A9:F140 85 14       STA $14    [$7E:0014]
-$A9:F142 A0 00 00    LDY #$0000
-$A9:F145 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F148 DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F14B 10 32       BPL $32    [$F17F]
-$A9:F14D A9 80 F1    LDA #$F180
-$A9:F150 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F153 A9 01 00    LDA #$0001
-$A9:F156 9D B6 0F    STA $0FB6,x[$7E:0FB6]
-$A9:F159 AF 20 CD 7E LDA $7ECD20[$7E:CD20]
-$A9:F15D 09 00 01    ORA #$0100
-$A9:F160 8F 20 CD 7E STA $7ECD20[$7E:CD20]
-$A9:F164 AF 22 CD 7E LDA $7ECD22[$7E:CD22]
-$A9:F168 09 00 01    ORA #$0100
-$A9:F16B 8F 22 CD 7E STA $7ECD22[$7E:CD22]
+$A9:F138 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A9:F13B 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A9:F13D A9 68 00    LDA #$0068             ;\
+$A9:F140 85 14       STA $14    [$7E:0014]  ;} $14 = 68h
+$A9:F142 A0 00 00    LDY #$0000             ; Y = 0 (slowest acceleration)
+$A9:F145 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F148 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F14B 10 32       BPL $32    [$F17F]     ; If [enemy function timer] < 0:
+$A9:F14D A9 80 F1    LDA #$F180             ;\
+$A9:F150 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F180
+$A9:F153 A9 01 00    LDA #$0001             ;\
+$A9:F156 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;} Enable Shitroid contact reaction
+$A9:F159 AF 20 CD 7E LDA $7ECD20[$7E:CD20]  ;\
+$A9:F15D 09 00 01    ORA #$0100             ;} Scroll 1 = blue
+$A9:F160 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;/
+$A9:F164 AF 22 CD 7E LDA $7ECD22[$7E:CD22]  ;\
+$A9:F168 09 00 01    ORA #$0100             ;} Scroll 3 = blue
+$A9:F16B 8F 22 CD 7E STA $7ECD22[$7E:CD22]  ;/
 $A9:F16F 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
-$A9:F173             dx 30,03,B763          ;} Clear Shitroid invisible wall
-$A9:F177 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
-$A9:F17B             dx 1F,03,B763          ;} Clear Shitroid invisible wall
+$A9:F173             dx 30,03,B763          ;} Clear Shitroid invisible wall at block (30h, 3)
+$A9:F177 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\                              
+$A9:F17B             dx 1F,03,B763          ;} Clear Shitroid invisible wall at block (1Fh, 3)
 
 $A9:F17F 60          RTS
 }
 
 
-;;; $F180:  ;;;
+;;; $F180: Shitroid function - stare down Samus ;;;
 {
-$A9:F180 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A9:F183 38          SEC
-$A9:F184 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A9:F187 10 04       BPL $04    [$F18D]
-$A9:F189 49 FF FF    EOR #$FFFF
-$A9:F18C 1A          INC A
-
-$A9:F18D C9 08 00    CMP #$0008
-$A9:F190 B0 09       BCS $09    [$F19B]
-$A9:F192 BF 04 78 7E LDA $7E7804,x
-$A9:F196 69 02 00    ADC #$0002
+; Shitroid moves towards Samus' X position and usually Y position 50h
+; With a 0.78125% chance, Shitroid will move towards Samus' Y position instead for 20h frames
+; 0.78125% chance per frame ~= 37.5% chance per second
+; Shitroid will latch onto Samus when one of:
+;     their X positions have been close for a while
+;     they touch and Samus wasn't spin jumping (see enemy touch)
+;     Samus X position < 200h
+$A9:F180 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A9:F183 38          SEC                    ;|
+$A9:F184 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A9:F187 10 04       BPL $04    [$F18D]     ;|
+$A9:F189 49 FF FF    EOR #$FFFF             ;} If |[enemy X position] - [Samus X position]| < 8:
+$A9:F18C 1A          INC A                  ;|
+                                            ;|
+$A9:F18D C9 08 00    CMP #$0008             ;|
+$A9:F190 B0 09       BCS $09    [$F19B]     ;/
+$A9:F192 BF 04 78 7E LDA $7E7804,x          ;\
+$A9:F196 69 02 00    ADC #$0002             ;} Enemy proximity counter += 2
 $A9:F199 80 0F       BRA $0F    [$F1AA]
 
-$A9:F19B BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A9:F19F F0 09       BEQ $09    [$F1AA]
-$A9:F1A1 38          SEC
-$A9:F1A2 E9 01 00    SBC #$0001
-$A9:F1A5 10 03       BPL $03    [$F1AA]
-$A9:F1A7 A9 00 00    LDA #$0000
+$A9:F19B BF 04 78 7E LDA $7E7804,x[$7E:7804];\ Else (|[enemy X position] - [Samus X position]| >= 8):
+$A9:F19F F0 09       BEQ $09    [$F1AA]     ;|
+$A9:F1A1 38          SEC                    ;|
+$A9:F1A2 E9 01 00    SBC #$0001             ;} Enemy proximity counter = max(0, [enemy proximity counter] - 1)
+$A9:F1A5 10 03       BPL $03    [$F1AA]     ;|
+$A9:F1A7 A9 00 00    LDA #$0000             ;/
 
 $A9:F1AA 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A9:F1AE C9 00 01    CMP #$0100
-$A9:F1B1 B0 3D       BCS $3D    [$F1F0]
-$A9:F1B3 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F1B6 C9 00 02    CMP #$0200
-$A9:F1B9 30 35       BMI $35    [$F1F0]
-$A9:F1BB BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A9:F1BF F0 0A       BEQ $0A    [$F1CB]
-$A9:F1C1 3A          DEC A
-$A9:F1C2 9F 02 78 7E STA $7E7802,x
-$A9:F1C6 AC FA 0A    LDY $0AFA  [$7E:0AFA]
+$A9:F1AE C9 00 01    CMP #$0100             ;\
+$A9:F1B1 B0 3D       BCS $3D    [$F1F0]     ;} If [enemy proximity counter] >= 100h: go to BRANCH_DONE
+$A9:F1B3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F1B6 C9 00 02    CMP #$0200             ;} If [Samus X position] < 200h: go to BRANCH_DONE
+$A9:F1B9 30 35       BMI $35    [$F1F0]     ;/
+$A9:F1BB BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A9:F1BF F0 0A       BEQ $0A    [$F1CB]     ;} If [enemy aggro timer] != 0:
+$A9:F1C1 3A          DEC A                  ;\
+$A9:F1C2 9F 02 78 7E STA $7E7802,x          ;} Decrement enemy aggro timer
+$A9:F1C6 AC FA 0A    LDY $0AFA  [$7E:0AFA]  ; Y = [Samus Y position]
 $A9:F1C9 80 15       BRA $15    [$F1E0]
 
-$A9:F1CB A0 50 00    LDY #$0050
-$A9:F1CE AD E5 05    LDA $05E5  [$7E:05E5]
-$A9:F1D1 29 FF 0F    AND #$0FFF
-$A9:F1D4 C9 E0 0F    CMP #$0FE0
-$A9:F1D7 90 07       BCC $07    [$F1E0]
-$A9:F1D9 A9 20 00    LDA #$0020
-$A9:F1DC 9F 02 78 7E STA $7E7802,x
+                                            ; Else ([enemy aggro timer] = 0):
+$A9:F1CB A0 50 00    LDY #$0050             ; Y = 50h
+$A9:F1CE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A9:F1D1 29 FF 0F    AND #$0FFF             ;|
+$A9:F1D4 C9 E0 0F    CMP #$0FE0             ;} If [random number] & FFFh >= FE0h:
+$A9:F1D7 90 07       BCC $07    [$F1E0]     ;/
+$A9:F1D9 A9 20 00    LDA #$0020             ;\
+$A9:F1DC 9F 02 78 7E STA $7E7802,x          ;} Enemy aggro timer = 20h
 
-$A9:F1E0 84 14       STY $14    [$7E:0014]
-$A9:F1E2 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F1E5 85 12       STA $12    [$7E:0012]
+$A9:F1E0 84 14       STY $14    [$7E:0014]  ; $14 = [Y]
+$A9:F1E2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F1E5 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
 $A9:F1E7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F1EA A0 0A 00    LDY #$000A
-$A9:F1ED 4C 51 F4    JMP $F451  [$A9:F451]
+$A9:F1EA A0 0A 00    LDY #$000A             ; Y = Ah (fast acceleration)
+$A9:F1ED 4C 51 F4    JMP $F451  [$A9:F451]  ; Go to gradually accelerate towards point ([$12], [$14])
 
+; BRANCH_DONE
 $A9:F1F0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F1F3 A9 FA F1    LDA #$F1FA
-$A9:F1F6 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F1F3 A9 FA F1    LDA #$F1FA             ;\
+$A9:F1F6 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F1FA
 $A9:F1F9 60          RTS
 }
 
 
-;;; $F1FA:  ;;;
+;;; $F1FA: Shitroid function - latch onto Samus ;;;
 {
-$A9:F1FA AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F1FD 85 12       STA $12    [$7E:0012]
-$A9:F1FF AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A9:F202 38          SEC
-$A9:F203 E9 20 00    SBC #$0020
-$A9:F206 85 14       STA $14    [$7E:0014]
-$A9:F208 A0 0F 00    LDY #$000F
-$A9:F20B 4C 51 F4    JMP $F451  [$A9:F451]
+; See enemy touch
+$A9:F1FA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F1FD 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
+$A9:F1FF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A9:F202 38          SEC                    ;|
+$A9:F203 E9 20 00    SBC #$0020             ;} $14 = [Samus Y position] - 20h
+$A9:F206 85 14       STA $14    [$7E:0014]  ;/
+$A9:F208 A0 0F 00    LDY #$000F             ; Y = Fh (fastest acceleration)
+$A9:F20B 4C 51 F4    JMP $F451  [$A9:F451]  ; Go to gradually accelerate towards point ([$12], [$14])
 }
 
 
-;;; $F20E:  ;;;
+;;; $F20E: Shitroid function - start draining Samus ;;;
 {
-$A9:F20E A9 12 00    LDA #$0012
-$A9:F211 22 84 F0 90 JSL $90F084[$90:F084]
-$A9:F215 A9 1B F2    LDA #$F21B
-$A9:F218 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A9:F20E A9 12 00    LDA #$0012             ;\
+$A9:F211 22 84 F0 90 JSL $90F084[$90:F084]  ;} Enable Samus blue flashing
+$A9:F215 A9 1B F2    LDA #$F21B             ;\
+$A9:F218 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy function = $F21B
 }
 
 
-;;; $F21B:  ;;;
+;;; $F21B: Shitroid function - draining Samus ;;;
 {
-$A9:F21B AD C2 09    LDA $09C2  [$7E:09C2]
-$A9:F21E C9 02 00    CMP #$0002
-$A9:F221 90 43       BCC $43    [$F266]
-$A9:F223 A9 08 00    LDA #$0008
-$A9:F226 8D CC 0C    STA $0CCC  [$7E:0CCC]
-$A9:F229 A9 05 00    LDA #$0005
-$A9:F22C 8D D2 0C    STA $0CD2  [$7E:0CD2]
-$A9:F22F A9 02 00    LDA #$0002
-$A9:F232 8D 66 0A    STA $0A66  [$7E:0A66]
-$A9:F235 AD 2E 0B    LDA $0B2E  [$7E:0B2E]
-$A9:F238 C9 04 00    CMP #$0004
-$A9:F23B 30 06       BMI $06    [$F243]
+$A9:F21B AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$A9:F21E C9 02 00    CMP #$0002             ;} If [Samus health] < 2: go to BRANCH_DONE
+$A9:F221 90 43       BCC $43    [$F266]     ;/
+$A9:F223 A9 08 00    LDA #$0008             ;\
+$A9:F226 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 8
+$A9:F229 A9 05 00    LDA #$0005             ;\
+$A9:F22C 8D D2 0C    STA $0CD2  [$7E:0CD2]  ;} Bomb counter = 5
+$A9:F22F A9 02 00    LDA #$0002             ;\
+$A9:F232 8D 66 0A    STA $0A66  [$7E:0A66]  ;} Samus X speed divisor = 2
+$A9:F235 AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
+$A9:F238 C9 04 00    CMP #$0004             ;} If [Samus Y speed] >= 4:
+$A9:F23B 30 06       BMI $06    [$F243]     ;/
 $A9:F23D A9 02 00    LDA #$0002             ;\
 $A9:F240 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;} Samus Y speed = 2
 
-$A9:F243 BD A4 0F    LDA $0FA4,x[$7E:0FA4]
-$A9:F246 29 06 00    AND #$0006
-$A9:F249 A8          TAY
-$A9:F24A B9 BB 93    LDA $93BB,y[$A9:93BD]
-$A9:F24D 6D F6 0A    ADC $0AF6  [$7E:0AF6]
-$A9:F250 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A9:F253 B9 C3 93    LDA $93C3,y[$A9:93C5]
-$A9:F256 18          CLC
-$A9:F257 69 EC FF    ADC #$FFEC
-$A9:F25A 18          CLC
-$A9:F25B 6D FA 0A    ADC $0AFA  [$7E:0AFA]
-$A9:F25E 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A9:F261 22 60 C5 A9 JSL $A9C560[$A9:C560]
-$A9:F265 60          RTS
+$A9:F243 BD A4 0F    LDA $0FA4,x[$7E:0FA4]  ;\
+$A9:F246 29 06 00    AND #$0006             ;} Y = [enemy frame counter] / 2 % 3 * 2
+$A9:F249 A8          TAY                    ;/
+$A9:F24A B9 BB 93    LDA $93BB,y[$A9:93BD]  ;\
+$A9:F24D 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} Enemy X position = [Samus X position] + [$93BB + [Y]] (shake X offset)
+$A9:F250 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$A9:F253 B9 C3 93    LDA $93C3,y[$A9:93C5]  ;\
+$A9:F256 18          CLC                    ;|
+$A9:F257 69 EC FF    ADC #$FFEC             ;|
+$A9:F25A 18          CLC                    ;} Enemy Y position = [Samus Y position] - 14h + [$93C3 + [Y]] (shake Y offset)
+$A9:F25B 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;|
+$A9:F25E 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$A9:F261 22 60 C5 A9 JSL $A9C560[$A9:C560]  ; Damage Samus due to Shitroid
+$A9:F265 60          RTS                    ; Return
 
-$A9:F266 9C 66 0A    STZ $0A66  [$7E:0A66]
-$A9:F269 9C D2 0C    STZ $0CD2  [$7E:0CD2]
-$A9:F26C A9 A2 F2    LDA #$F2A2
-$A9:F26F 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F272 9E AA 0F    STZ $0FAA,x[$7E:0FAA]
-$A9:F275 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A9:F278 A9 06 F9    LDA #$F906
-$A9:F27B 22 53 C4 A9 JSL $A9C453[$A9:C453]
-$A9:F27F A9 0A 00    LDA #$000A
-$A9:F282 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A9:F285 A9 13 00    LDA #$0013
-$A9:F288 22 84 F0 90 JSL $90F084[$90:F084]
-$A9:F28C A9 00 00    LDA #$0000
-$A9:F28F 22 AD E4 91 JSL $91E4AD[$91:E4AD]
-$A9:F293 A9 00 00    LDA #$0000
-$A9:F296 9F 08 78 7E STA $7E7808,x[$7E:7808]
+; BRANCH_DONE
+$A9:F266 9C 66 0A    STZ $0A66  [$7E:0A66]  ; Samus X speed divisor = 0
+$A9:F269 9C D2 0C    STZ $0CD2  [$7E:0CD2]  ; Bomb counter = 0
+$A9:F26C A9 A2 F2    LDA #$F2A2             ;\
+$A9:F26F 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F2A2
+$A9:F272 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
+$A9:F275 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y velocity = 0
+$A9:F278 A9 06 F9    LDA #$F906             ;\
+$A9:F27B 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $F906 (finish draining)
+$A9:F27F A9 0A 00    LDA #$000A             ;\
+$A9:F282 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy palette handler delay = Ah
+$A9:F285 A9 13 00    LDA #$0013             ;\
+$A9:F288 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable Samus blue flashing
+$A9:F28C A9 00 00    LDA #$0000             ;\
+$A9:F28F 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Let drained Samus fall
+$A9:F293 A9 00 00    LDA #$0000             ;\
+$A9:F296 9F 08 78 7E STA $7E7808,x[$7E:7808];} Disable Shitroid cry sound effect
 $A9:F29A A9 07 00    LDA #$0007             ;\
 $A9:F29D 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 2 music track
 $A9:F2A1 60          RTS
 }
 
 
-;;; $F2A2:  ;;;
+;;; $F2A2: Shitroid function - start heel realisation ;;;
 {
-$A9:F2A2 A9 AE F2    LDA #$F2AE
-$A9:F2A5 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F2A8 A9 78 00    LDA #$0078
-$A9:F2AB 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A9:F2A2 A9 AE F2    LDA #$F2AE             ;\
+$A9:F2A5 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F2AE
+$A9:F2A8 A9 78 00    LDA #$0078             ;\
+$A9:F2AB 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 120
 }
 
 
-;;; $F2AE:  ;;;
+;;; $F2AE: Shitroid function - heel realisation ;;;
 {
-$A9:F2AE DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F2B1 30 01       BMI $01    [$F2B4]
-$A9:F2B3 60          RTS
+$A9:F2AE DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F2B1 30 01       BMI $01    [$F2B4]     ; If [enemy function timer] >= 0:
+$A9:F2B3 60          RTS                    ; Return
 
-$A9:F2B4 A9 C0 F2    LDA #$F2C0
-$A9:F2B7 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F2BA A9 C0 00    LDA #$00C0
-$A9:F2BD 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A9:F2B4 A9 C0 F2    LDA #$F2C0             ;\
+$A9:F2B7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F2C0
+$A9:F2BA A9 C0 00    LDA #$00C0             ;\
+$A9:F2BD 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = C0h
 }
 
 
-;;; $F2C0:  ;;;
+;;; $F2C0: Shitroid function - back off guiltily ;;;
 {
-$A9:F2C0 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F2C3 85 12       STA $12    [$7E:0012]
-$A9:F2C5 A9 68 00    LDA #$0068
-$A9:F2C8 85 14       STA $14    [$7E:0014]
+$A9:F2C0 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F2C3 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
+$A9:F2C5 A9 68 00    LDA #$0068             ;\
+$A9:F2C8 85 14       STA $14    [$7E:0014]  ;} $14 = 68h
 $A9:F2CA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F2CD A0 00 00    LDY #$0000
-$A9:F2D0 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F2D3 DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F2D6 30 01       BMI $01    [$F2D9]
-$A9:F2D8 60          RTS
+$A9:F2CD A0 00 00    LDY #$0000             ; Y = 0 (slowest acceleration)
+$A9:F2D0 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F2D3 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F2D6 30 01       BMI $01    [$F2D9]     ; If [enemy function timer] >= 0:
+$A9:F2D8 60          RTS                    ; Return 
 
 $A9:F2D9 A9 7D 00    LDA #$007D             ;\
 $A9:F2DC 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 7Dh, sound library 2, max queued sounds allowed = 6 (Shitroid feels guilty)
-$A9:F2E0 A9 FB F2    LDA #$F2FB
-$A9:F2E3 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F2E6 A9 58 00    LDA #$0058
-$A9:F2E9 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A9:F2EC A9 24 F9    LDA #$F924
-$A9:F2EF 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A9:F2F2 A9 01 00    LDA #$0001
-$A9:F2F5 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A9:F2F8 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A9:F2E0 A9 FB F2    LDA #$F2FB             ;\
+$A9:F2E3 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F2FB
+$A9:F2E6 A9 58 00    LDA #$0058             ;\
+$A9:F2E9 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 58h
+$A9:F2EC A9 24 F9    LDA #$F924             ;\
+$A9:F2EF 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $F924 (latched on)
+$A9:F2F2 A9 01 00    LDA #$0001             ;\
+$A9:F2F5 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A9:F2F8 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 }
 
 
-;;; $F2FB:  ;;;
+;;; $F2FB: Shitroid function - go left guiltily ;;;
 {
-$A9:F2FB AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F2FE 18          CLC
-$A9:F2FF 69 C0 FF    ADC #$FFC0
-$A9:F302 85 12       STA $12    [$7E:0012]
-$A9:F304 A9 64 00    LDA #$0064
-$A9:F307 85 14       STA $14    [$7E:0014]
+$A9:F2FB AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F2FE 18          CLC                    ;|
+$A9:F2FF 69 C0 FF    ADC #$FFC0             ;} $12 = [Samus X position] - 40h
+$A9:F302 85 12       STA $12    [$7E:0012]  ;/
+$A9:F304 A9 64 00    LDA #$0064             ;\
+$A9:F307 85 14       STA $14    [$7E:0014]  ;} $14 = 64h
 $A9:F309 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F30C A0 00 00    LDY #$0000
-$A9:F30F 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F312 DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F315 30 01       BMI $01    [$F318]
-$A9:F317 60          RTS
+$A9:F30C A0 00 00    LDY #$0000             ; Y = 0 (slowest acceleration)
+$A9:F30F 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F312 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F315 30 01       BMI $01    [$F318]     ; If [enemy function timer] >= 0:
+$A9:F317 60          RTS                    ; Return
 
-$A9:F318 A9 24 F3    LDA #$F324
-$A9:F31B 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F31E A9 58 00    LDA #$0058
-$A9:F321 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A9:F318 A9 24 F3    LDA #$F324             ;\
+$A9:F31B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F324
+$A9:F31E A9 58 00    LDA #$0058             ;\
+$A9:F321 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 58h
 }
 
 
-;;; $F324:  ;;;
+;;; $F324: Shitroid function - go right guiltily ;;;
 {
-$A9:F324 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F327 18          CLC
-$A9:F328 69 60 00    ADC #$0060
-$A9:F32B 85 12       STA $12    [$7E:0012]
-$A9:F32D A9 68 00    LDA #$0068
-$A9:F330 85 14       STA $14    [$7E:0014]
-$A9:F332 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F335 A0 00 00    LDY #$0000
-$A9:F338 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F33B DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F33E 30 01       BMI $01    [$F341]
-$A9:F340 60          RTS
+$A9:F324 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F327 18          CLC                    ;|
+$A9:F328 69 60 00    ADC #$0060             ;} $12 = [Samus X position] + 60h
+$A9:F32B 85 12       STA $12    [$7E:0012]  ;/
+$A9:F32D A9 68 00    LDA #$0068             ;\
+$A9:F330 85 14       STA $14    [$7E:0014]  ;} $14 = 68h
+$A9:F332 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A9:F335 A0 00 00    LDY #$0000             ; Y = 0 (slowest acceleration)
+$A9:F338 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F33B DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F33E 30 01       BMI $01    [$F341]     ; If [enemy function timer] >= 0:
+$A9:F340 60          RTS                    ; Return
 
 $A9:F341 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F344 A9 A3 F3    LDA #$F3A3
-$A9:F347 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F34A A9 00 01    LDA #$0100
-$A9:F34D 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A9:F350 A9 3A F9    LDA #$F93A
-$A9:F353 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A9:F356 A9 01 00    LDA #$0001
-$A9:F359 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A9:F35C 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A9:F344 A9 A3 F3    LDA #$F3A3             ;\
+$A9:F347 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F3A3
+$A9:F34A A9 00 01    LDA #$0100             ;\
+$A9:F34D 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function timer = 100h
+$A9:F350 A9 3A F9    LDA #$F93A             ;\
+$A9:F353 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $F93A (remorse)
+$A9:F356 A9 01 00    LDA #$0001             ;\
+$A9:F359 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A9:F35C 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A9:F35F 60          RTS
 }
 
 
-;;; $F360:  ;;;
+;;; $F360: Shitroid function - flee remorsefully ;;;
 {
 $A9:F360 A9 52 00    LDA #$0052             ;\
 $A9:F363 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 52h, sound library 2, max queued sounds allowed = 6 (Shitroid feels remorse)
-$A9:F367 A9 6D F3    LDA #$F36D
-$A9:F36A 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F367 A9 6D F3    LDA #$F36D             ;\
+$A9:F36A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F36D
 }
 
 
-;;; $F36D:  ;;;
+;;; $F36D: Shitroid function - fleeing ;;;
 {
-$A9:F36D A9 80 FF    LDA #$FF80
-$A9:F370 85 12       STA $12    [$7E:0012]
-$A9:F372 A9 40 00    LDA #$0040
-$A9:F375 85 14       STA $14    [$7E:0014]
-$A9:F377 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F37A A0 00 00    LDY #$0000
-$A9:F37D 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F380 A9 08 00    LDA #$0008
-$A9:F383 85 16       STA $16    [$7E:0016]
-$A9:F385 85 18       STA $18    [$7E:0018]
-$A9:F387 22 06 EF A9 JSL $A9EF06[$A9:EF06]
-$A9:F38B B0 15       BCS $15    [$F3A2]
-$A9:F38D 9E AA 0F    STZ $0FAA,x[$7E:0FAA]
-$A9:F390 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A9:F393 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A9:F396 29 FF DE    AND #$DEFF
-$A9:F399 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A9:F39C A9 DF EF    LDA #$EFDF
-$A9:F39F 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F36D A9 80 FF    LDA #$FF80             ;\
+$A9:F370 85 12       STA $12    [$7E:0012]  ;} $12 = -80h
+$A9:F372 A9 40 00    LDA #$0040             ;\
+$A9:F375 85 14       STA $14    [$7E:0014]  ;} $14 = 40h
+$A9:F377 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A9:F37A A0 00 00    LDY #$0000             ; Y = 0 (slowest acceleration)
+$A9:F37D 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F380 A9 08 00    LDA #$0008             ;\
+$A9:F383 85 16       STA $16    [$7E:0016]  ;|
+$A9:F385 85 18       STA $18    [$7E:0018]  ;} Check for enemy collision with 8x8 px^2 region around ([$12], [$14])
+$A9:F387 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ;/
+$A9:F38B B0 15       BCS $15    [$F3A2]     ; If collision:
+$A9:F38D 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
+$A9:F390 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y velocity = 0
+$A9:F393 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A9:F396 29 FF DE    AND #$DEFF             ;} Set enemy to not process instructions and visible
+$A9:F399 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A9:F39C A9 DF EF    LDA #$EFDF             ;\
+$A9:F39F 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EFDF (disappeared)
 
 $A9:F3A2 60          RTS
 }
 
 
-;;; $F3A3:  ;;;
+;;; $F3A3: Shitroid function - Samus recovering ;;;
 {
-$A9:F3A3 DE B2 0F    DEC $0FB2,x[$7E:0FB2]
-$A9:F3A6 30 03       BMI $03    [$F3AB]
-$A9:F3A8 4C D4 F3    JMP $F3D4  [$A9:F3D4]
+$A9:F3A3 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
+$A9:F3A6 30 03       BMI $03    [$F3AB]     ; If [enemy function timer] >= 0:
+$A9:F3A8 4C D4 F3    JMP $F3D4  [$A9:F3D4]  ; Go to $F3D4
 
-$A9:F3AB A9 02 00    LDA #$0002
-$A9:F3AE 22 AD E4 91 JSL $91E4AD[$91:E4AD]
-$A9:F3B2 A9 01 00    LDA #$0001
-$A9:F3B5 9D B6 0F    STA $0FB6,x[$7E:0FB6]
-$A9:F3B8 A9 BE F3    LDA #$F3BE
-$A9:F3BB 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F3AB A9 02 00    LDA #$0002             ;\
+$A9:F3AE 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Release Samus from drained pose
+$A9:F3B2 A9 01 00    LDA #$0001             ;\
+$A9:F3B5 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;} Enable Shitroid contact reaction
+$A9:F3B8 A9 BE F3    LDA #$F3BE             ;\
+$A9:F3BB 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F3BE
 }
 
 
-;;; $F3BE:  ;;;
+;;; $F3BE: Shitroid function - remorse ;;;
 {
-$A9:F3BE 20 D4 F3    JSR $F3D4  [$A9:F3D4]
-$A9:F3C1 B0 01       BCS $01    [$F3C4]
-$A9:F3C3 60          RTS
+$A9:F3BE 20 D4 F3    JSR $F3D4  [$A9:F3D4]  ; Gradually accelerate towards Samus
+$A9:F3C1 B0 01       BCS $01    [$F3C4]     ; If not ready to flee:
+$A9:F3C3 60          RTS                    ; Return
 }
 
 
-;;; $F3C4:  ;;;
+;;; $F3C4: Make Shitroid flee ;;;
 {
-$A9:F3C4 A9 60 F3    LDA #$F360
-$A9:F3C7 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A9:F3C4 A9 60 F3    LDA #$F360             ;\
+$A9:F3C7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F360
 $A9:F3CA 60          RTS
 }
 
 
-;;; $F3CB:  ;;;
+;;; $F3CB: Signal Shitroid to leave ;;;
 {
-$A9:F3CB BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A9:F3CE C9 BE F3    CMP #$F3BE
-$A9:F3D1 F0 F1       BEQ $F1    [$F3C4]
+$A9:F3CB BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A9:F3CE C9 BE F3    CMP #$F3BE             ;} If [Shitroid function] = $F3BE (remorse): go to make Shitroid flee
+$A9:F3D1 F0 F1       BEQ $F1    [$F3C4]     ;/
 $A9:F3D3 60          RTS
 }
 
 
-;;; $F3D4:  ;;;
+;;; $F3D4: Gradually accelerate towards Samus ;;;
 {
-$A9:F3D4 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A9:F3D7 38          SEC
-$A9:F3D8 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A9:F3DB 10 04       BPL $04    [$F3E1]
-$A9:F3DD 49 FF FF    EOR #$FFFF
-$A9:F3E0 1A          INC A
+;; Returns:
+;;     Carry: Set if ready to flee, clear otherwise
 
-$A9:F3E1 C9 02 00    CMP #$0002
-$A9:F3E4 B0 09       BCS $09    [$F3EF]
-$A9:F3E6 BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A9:F3EA 69 02 00    ADC #$0002
+; Similar to $F180
+$A9:F3D4 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A9:F3D7 38          SEC                    ;|
+$A9:F3D8 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A9:F3DB 10 04       BPL $04    [$F3E1]     ;|
+$A9:F3DD 49 FF FF    EOR #$FFFF             ;} If |[enemy X position] - [Samus X position]| < 2:
+$A9:F3E0 1A          INC A                  ;|
+                                            ;|
+$A9:F3E1 C9 02 00    CMP #$0002             ;|
+$A9:F3E4 B0 09       BCS $09    [$F3EF]     ;/
+$A9:F3E6 BF 04 78 7E LDA $7E7804,x[$7E:7804];\
+$A9:F3EA 69 02 00    ADC #$0002             ;} Enemy proximity counter += 2
 $A9:F3ED 80 0F       BRA $0F    [$F3FE]
 
-$A9:F3EF BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A9:F3F3 F0 09       BEQ $09    [$F3FE]
-$A9:F3F5 38          SEC
-$A9:F3F6 E9 01 00    SBC #$0001
-$A9:F3F9 10 03       BPL $03    [$F3FE]
-$A9:F3FB A9 00 00    LDA #$0000
+$A9:F3EF BF 04 78 7E LDA $7E7804,x[$7E:7804];\ Else (|[enemy X position] - [Samus X position]| >= 8):
+$A9:F3F3 F0 09       BEQ $09    [$F3FE]     ;|
+$A9:F3F5 38          SEC                    ;|
+$A9:F3F6 E9 01 00    SBC #$0001             ;} Enemy proximity counter = max(0, [enemy proximity counter] - 1)
+$A9:F3F9 10 03       BPL $03    [$F3FE]     ;|
+$A9:F3FB A9 00 00    LDA #$0000             ;/
 
 $A9:F3FE 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A9:F402 BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A9:F406 F0 0F       BEQ $0F    [$F417]
-$A9:F408 3A          DEC A
-$A9:F409 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A9:F40D AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A9:F410 18          CLC
-$A9:F411 69 EE FF    ADC #$FFEE
-$A9:F414 A8          TAY
+$A9:F402 BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A9:F406 F0 0F       BEQ $0F    [$F417]     ;} If [enemy aggro timer] != 0:
+$A9:F408 3A          DEC A                  ;\
+$A9:F409 9F 02 78 7E STA $7E7802,x[$7E:7802];} Decrement enemy aggro timer
+$A9:F40D AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A9:F410 18          CLC                    ;|
+$A9:F411 69 EE FF    ADC #$FFEE             ;} Y = [Samus Y position] - 12h
+$A9:F414 A8          TAY                    ;/
 $A9:F415 80 15       BRA $15    [$F42C]
 
-$A9:F417 A0 50 00    LDY #$0050
-$A9:F41A AD E5 05    LDA $05E5  [$7E:05E5]
-$A9:F41D 29 FF 0F    AND #$0FFF
-$A9:F420 C9 E0 0F    CMP #$0FE0
-$A9:F423 90 07       BCC $07    [$F42C]
-$A9:F425 A9 20 00    LDA #$0020
-$A9:F428 9F 02 78 7E STA $7E7802,x[$7E:7802]
+                                            ; Else ([enemy aggro timer] = 0):
+$A9:F417 A0 50 00    LDY #$0050             ; Y = 50h
+$A9:F41A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A9:F41D 29 FF 0F    AND #$0FFF             ;|
+$A9:F420 C9 E0 0F    CMP #$0FE0             ;} If [random number] & FFFh >= FE0h:
+$A9:F423 90 07       BCC $07    [$F42C]     ;/
+$A9:F425 A9 20 00    LDA #$0020             ;\
+$A9:F428 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy aggro timer = 20h
 
-$A9:F42C 84 14       STY $14    [$7E:0014]
-$A9:F42E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F431 85 12       STA $12    [$7E:0012]
+$A9:F42C 84 14       STY $14    [$7E:0014]  ; $14 = [Y]
+$A9:F42E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F431 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
 $A9:F433 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F436 A0 08 00    LDY #$0008
-$A9:F439 20 51 F4    JSR $F451  [$A9:F451]
-$A9:F43C BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A9:F440 C9 00 04    CMP #$0400
-$A9:F443 B0 0A       BCS $0A    [$F44F]
-$A9:F445 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F448 C9 80 00    CMP #$0080
-$A9:F44B 30 02       BMI $02    [$F44F]
-$A9:F44D 18          CLC
-$A9:F44E 60          RTS
+$A9:F436 A0 08 00    LDY #$0008             ; Y = 8 (medium acceleration)
+$A9:F439 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
+$A9:F43C BF 04 78 7E LDA $7E7804,x[$7E:7804];\
+$A9:F440 C9 00 04    CMP #$0400             ;} If [enemy proximity counter] >= 400h: return carry set
+$A9:F443 B0 0A       BCS $0A    [$F44F]     ;/
+$A9:F445 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F448 C9 80 00    CMP #$0080             ;} If [Samus X position] < 80h: return carry set
+$A9:F44B 30 02       BMI $02    [$F44F]     ;/
+$A9:F44D 18          CLC                    ;\
+$A9:F44E 60          RTS                    ;} Return carry clear
 
-$A9:F44F 38          SEC
-$A9:F450 60          RTS
+$A9:F44F 38          SEC                    ;\
+$A9:F450 60          RTS                    ;} Return carry set
 }
 
 
@@ -12927,7 +12949,7 @@ $A9:F677 A9 4A 01    LDA #$014A             ;\
 $A9:F67A 85 12       STA $12    [$7E:0012]  ;} $12 = 14Ah (sprite palette 2 colour 5)
 $A9:F67C A9 D1 F6    LDA #$F6D1             ;\
 $A9:F67F 85 16       STA $16    [$7E:0016]  ;} $16 = $F6D1
-$A9:F681 80 16       BRA $16    [$F699]
+$A9:F681 80 16       BRA $16    [$F699]     ; Go to handle Shitroid palette
 }
 
 
@@ -12937,7 +12959,7 @@ $A9:F683 A9 EA 01    LDA #$01EA             ;\
 $A9:F686 85 12       STA $12    [$7E:0012]  ;} $12 = 1EAh (sprite palette 7 colour 5)
 $A9:F688 A9 D1 F6    LDA #$F6D1             ;\
 $A9:F68B 85 16       STA $16    [$7E:0016]  ;} $16 = $F6D1
-$A9:F68D 80 0A       BRA $0A    [$F699]     ; Go to handle Shitroid in cutscene palette
+$A9:F68D 80 0A       BRA $0A    [$F699]     ; Go to handle Shitroid palette
 }
 
 
@@ -12950,11 +12972,13 @@ $A9:F697 85 16       STA $16    [$7E:0016]  ;} $16 = $F711
 }
 
 
-;;; $F699: Handle Shitroid in cutscene palette ;;;
+;;; $F699: Handle Shitroid palette ;;;
 {
 ;; Parameters:
 ;;     $12: Colour index
 ;;     $16: Colour table pointer
+
+; Also handles Shitroid cry sound effect
 $A9:F699 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:F69C E2 20       SEP #$20
 $A9:F69E BD AF 0F    LDA $0FAF,x[$7E:0FAF]  ;\
@@ -13013,6 +13037,8 @@ $A9:F711             dw 5990,3870,346D,3068,
 
 ;;; $F751: Handle Shitroid cry sound effect ;;;
 {
+;; Parameters:
+;;     A: Enemy palette frame timer
 $A9:F751 C9 05 00    CMP #$0005             ;\
 $A9:F754 F0 01       BEQ $01    [$F757]     ;} If [enemy palette frame timer] != 0:
 $A9:F756 60          RTS                    ; Return
@@ -13045,81 +13071,83 @@ $A9:F788 60          RTS
 ;;; $F789: Enemy touch - enemy $EEBF (Shitroid) ;;;
 {
 $A9:F789 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F78C BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A9:F78F F0 29       BEQ $29    [$F7BA]
-$A9:F791 20 CB F3    JSR $F3CB  [$A9:F3CB]
-$A9:F794 AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$A9:F797 29 FF 00    AND #$00FF
-$A9:F79A C9 03 00    CMP #$0003
-$A9:F79D D0 08       BNE $08    [$F7A7]
-$A9:F79F AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F7A2 C9 00 02    CMP #$0200
-$A9:F7A5 10 52       BPL $52    [$F7F9]
+$A9:F78C BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A9:F78F F0 29       BEQ $29    [$F7BA]     ;} If contact reaction disabled: return
+$A9:F791 20 CB F3    JSR $F3CB  [$A9:F3CB]  ; Signal Shitroid to leave
+$A9:F794 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$A9:F797 29 FF 00    AND #$00FF             ;|
+$A9:F79A C9 03 00    CMP #$0003             ;} If [Samus movement type] = spin jumping:
+$A9:F79D D0 08       BNE $08    [$F7A7]     ;/
+$A9:F79F AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F7A2 C9 00 02    CMP #$0200             ;} If [Samus X position] >= 200h: go to BRANCH_REPELLED
+$A9:F7A5 10 52       BPL $52    [$F7F9]     ;/
 
-$A9:F7A7 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A9:F7AA C9 FA F1    CMP #$F1FA
-$A9:F7AD F0 0C       BEQ $0C    [$F7BB]
-$A9:F7AF C9 80 F1    CMP #$F180
-$A9:F7B2 D0 06       BNE $06    [$F7BA]
-$A9:F7B4 A9 FA F1    LDA #$F1FA
-$A9:F7B7 9D A8 0F    STA $0FA8,x
+$A9:F7A7 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A9:F7AA C9 FA F1    CMP #$F1FA             ;} If [enemy function] = $F1FA (latch onto Samus): go to BRANCH_LATCH_ONTO_SAMUS
+$A9:F7AD F0 0C       BEQ $0C    [$F7BB]     ;/
+$A9:F7AF C9 80 F1    CMP #$F180             ;\
+$A9:F7B2 D0 06       BNE $06    [$F7BA]     ;} If [enemy function] = $F180 (stare down Samus):
+$A9:F7B4 A9 FA F1    LDA #$F1FA             ;\
+$A9:F7B7 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F1FA (latch onto Samus)
 
-$A9:F7BA 6B          RTL
+$A9:F7BA 6B          RTL                    ; Return
 
-$A9:F7BB AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F7BE 85 12       STA $12    [$7E:0012]
-$A9:F7C0 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A9:F7C3 38          SEC
-$A9:F7C4 E9 20 00    SBC #$0020
-$A9:F7C7 85 14       STA $14    [$7E:0014]
-$A9:F7C9 A9 00 02    LDA #$0200
-$A9:F7CC 20 A6 F5    JSR $F5A6  [$A9:F5A6]
-$A9:F7CF 90 E9       BCC $E9    [$F7BA]
+; BRANCH_LATCH_ONTO_SAMUS
+$A9:F7BB AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F7BE 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
+$A9:F7C0 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A9:F7C3 38          SEC                    ;|
+$A9:F7C4 E9 20 00    SBC #$0020             ;} $14 = [Samus Y position] - 20h
+$A9:F7C7 85 14       STA $14    [$7E:0014]  ;/
+$A9:F7C9 A9 00 02    LDA #$0200             ; A = 200h (acceleration)
+$A9:F7CC 20 A6 F5    JSR $F5A6  [$A9:F5A6]  ; Accelerate Shitroid towards ([$12], [$14])
+$A9:F7CF 90 E9       BCC $E9    [$F7BA]     ; If not reached target: return
 $A9:F7D1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F7D4 A9 24 F9    LDA #$F924
-$A9:F7D7 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A9:F7DA A9 01 00    LDA #$0001
-$A9:F7DD 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A9:F7E0 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A9:F7E3 A9 01 00    LDA #$0001
-$A9:F7E6 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A9:F7E9 9E B6 0F    STZ $0FB6,x[$7E:0FB6]
-$A9:F7EC 9E AA 0F    STZ $0FAA,x[$7E:0FAA]
-$A9:F7EF 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A9:F7F2 A9 0E F2    LDA #$F20E
-$A9:F7F5 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A9:F7F8 6B          RTL
+$A9:F7D4 A9 24 F9    LDA #$F924             ;\
+$A9:F7D7 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $F924 (latched on)
+$A9:F7DA A9 01 00    LDA #$0001             ;\
+$A9:F7DD 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A9:F7E0 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A9:F7E3 A9 01 00    LDA #$0001             ;\
+$A9:F7E6 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy palette handler delay = 1
+$A9:F7E9 9E B6 0F    STZ $0FB6,x[$7E:0FB6]  ; Disable Shitroid contact reaction
+$A9:F7EC 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
+$A9:F7EF 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y velocity = 0
+$A9:F7F2 A9 0E F2    LDA #$F20E             ;\
+$A9:F7F5 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F20E (start draining Samus)
+$A9:F7F8 6B          RTL                    ; Return
 
-$A9:F7F9 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:F7FC 38          SEC
-$A9:F7FD FD 7A 0F    SBC $0F7A,x
-$A9:F800 85 12       STA $12    [$7E:0012]
-$A9:F802 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A9:F805 38          SEC
-$A9:F806 FD 7E 0F    SBC $0F7E,x
-$A9:F809 85 14       STA $14    [$7E:0014]
-$A9:F80B 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A9:F80F 38          SEC
-$A9:F810 E9 80 00    SBC #$0080
-$A9:F813 49 FF FF    EOR #$FFFF
-$A9:F816 1A          INC A
-$A9:F817 18          CLC
-$A9:F818 69 80 00    ADC #$0080
-$A9:F81B 29 FF 00    AND #$00FF
-$A9:F81E 85 12       STA $12    [$7E:0012]
-$A9:F820 A9 40 00    LDA #$0040
-$A9:F823 48          PHA
-$A9:F824 22 6C C2 86 JSL $86C26C[$86:C26C]  ; A *= sin([$12] * pi / 80h)
-$A9:F828 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F82B 18          CLC
-$A9:F82C 7D AA 0F    ADC $0FAA,x
-$A9:F82F 9D AA 0F    STA $0FAA,x
-$A9:F832 68          PLA
-$A9:F833 22 72 C2 86 JSL $86C272[$86:C272]  ; A *= cos([$12] * pi / 80h)
-$A9:F837 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F83A 18          CLC
-$A9:F83B 7D AC 0F    ADC $0FAC,x
-$A9:F83E 9D AC 0F    STA $0FAC,x
+; BRANCH_REPELLED
+$A9:F7F9 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:F7FC 38          SEC                    ;|
+$A9:F7FD FD 7A 0F    SBC $0F7A,x            ;|
+$A9:F800 85 12       STA $12    [$7E:0012]  ;|
+$A9:F802 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = angle from enemy to Samus
+$A9:F805 38          SEC                    ;|
+$A9:F806 FD 7E 0F    SBC $0F7E,x            ;|
+$A9:F809 85 14       STA $14    [$7E:0014]  ;|
+$A9:F80B 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$A9:F80F 38          SEC                    ;\
+$A9:F810 E9 80 00    SBC #$0080             ;|
+$A9:F813 49 FF FF    EOR #$FFFF             ;|
+$A9:F816 1A          INC A                  ;|
+$A9:F817 18          CLC                    ;} $12 = -[A] & FFh (X flip of angle)
+$A9:F818 69 80 00    ADC #$0080             ;|
+$A9:F81B 29 FF 00    AND #$00FF             ;|
+$A9:F81E 85 12       STA $12    [$7E:0012]  ;/
+$A9:F820 A9 40 00    LDA #$0040             ;\
+$A9:F823 48          PHA                    ;|
+$A9:F824 22 6C C2 86 JSL $86C26C[$86:C26C]  ;|
+$A9:F828 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A9:F82B 18          CLC                    ;} Enemy X velocity += 40h * sin([$12] * pi / 80h)
+$A9:F82C 7D AA 0F    ADC $0FAA,x            ;|
+$A9:F82F 9D AA 0F    STA $0FAA,x            ;|
+$A9:F832 68          PLA                    ;/
+$A9:F833 22 72 C2 86 JSL $86C272[$86:C272]  ;\
+$A9:F837 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A9:F83A 18          CLC                    ;} Enemy Y velocity += 40h * cos([$12] * pi / 80h)
+$A9:F83B 7D AC 0F    ADC $0FAC,x            ;|
+$A9:F83E 9D AC 0F    STA $0FAC,x            ;/
 $A9:F841 6B          RTL
 }
 
@@ -13127,49 +13155,49 @@ $A9:F841 6B          RTL
 ;;; $F842: Enemy shot - enemy $EEBF (Shitroid) ;;;
 {
 $A9:F842 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F845 BD B6 0F    LDA $0FB6,x
-$A9:F848 F0 5B       BEQ $5B    [$F8A5]
-$A9:F84A 20 CB F3    JSR $F3CB  [$A9:F3CB]
-$A9:F84D AD 64 0B    LDA $0B64  [$7E:0B64]
-$A9:F850 38          SEC
-$A9:F851 FD 7A 0F    SBC $0F7A,x
-$A9:F854 85 12       STA $12    [$7E:0012]
-$A9:F856 AD 78 0B    LDA $0B78  [$7E:0B78]
-$A9:F859 38          SEC
-$A9:F85A FD 7E 0F    SBC $0F7E,x
-$A9:F85D 85 14       STA $14    [$7E:0014]
-$A9:F85F 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A9:F863 38          SEC
-$A9:F864 E9 80 00    SBC #$0080
-$A9:F867 49 FF FF    EOR #$FFFF
-$A9:F86A 1A          INC A
-$A9:F86B 18          CLC
-$A9:F86C 69 80 00    ADC #$0080
-$A9:F86F 29 FF 00    AND #$00FF
-$A9:F872 85 12       STA $12    [$7E:0012]
-$A9:F874 AD A6 18    LDA $18A6  [$7E:18A6]
-$A9:F877 0A          ASL A
-$A9:F878 AA          TAX
-$A9:F879 BD 2C 0C    LDA $0C2C,x
-$A9:F87C 0A          ASL A
-$A9:F87D 0A          ASL A
-$A9:F87E 0A          ASL A
-$A9:F87F C9 F0 00    CMP #$00F0
-$A9:F882 90 03       BCC $03    [$F887]
-$A9:F884 A9 F0 00    LDA #$00F0
+$A9:F845 BD B6 0F    LDA $0FB6,x            ;\
+$A9:F848 F0 5B       BEQ $5B    [$F8A5]     ;} If contact reaction disabled: return
+$A9:F84A 20 CB F3    JSR $F3CB  [$A9:F3CB]  ; Signal Shitroid to leave
+$A9:F84D AD 64 0B    LDA $0B64  [$7E:0B64]  ;\
+$A9:F850 38          SEC                    ;|
+$A9:F851 FD 7A 0F    SBC $0F7A,x            ;|
+$A9:F854 85 12       STA $12    [$7E:0012]  ;|
+$A9:F856 AD 78 0B    LDA $0B78  [$7E:0B78]  ;} A = angle from enemy to projectile 0
+$A9:F859 38          SEC                    ;|
+$A9:F85A FD 7E 0F    SBC $0F7E,x            ;|
+$A9:F85D 85 14       STA $14    [$7E:0014]  ;|
+$A9:F85F 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$A9:F863 38          SEC                    ;\
+$A9:F864 E9 80 00    SBC #$0080             ;|
+$A9:F867 49 FF FF    EOR #$FFFF             ;|
+$A9:F86A 1A          INC A                  ;|
+$A9:F86B 18          CLC                    ;} $12 = -[A] & FFh (X flip of angle)
+$A9:F86C 69 80 00    ADC #$0080             ;|
+$A9:F86F 29 FF 00    AND #$00FF             ;|
+$A9:F872 85 12       STA $12    [$7E:0012]  ;/
+$A9:F874 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A9:F877 0A          ASL A                  ;|
+$A9:F878 AA          TAX                    ;|
+$A9:F879 BD 2C 0C    LDA $0C2C,x            ;|
+$A9:F87C 0A          ASL A                  ;|
+$A9:F87D 0A          ASL A                  ;} A = min(F0h, [projectile damage] * 8)
+$A9:F87E 0A          ASL A                  ;|
+$A9:F87F C9 F0 00    CMP #$00F0             ;|
+$A9:F882 90 03       BCC $03    [$F887]     ;|
+$A9:F884 A9 F0 00    LDA #$00F0             ;/
 
-$A9:F887 48          PHA
-$A9:F888 22 6C C2 86 JSL $86C26C[$86:C26C]  ; A *= sin([$12] * pi / 80h)
-$A9:F88C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F88F 18          CLC
-$A9:F890 7D AA 0F    ADC $0FAA,x
-$A9:F893 9D AA 0F    STA $0FAA,x
-$A9:F896 68          PLA
-$A9:F897 22 72 C2 86 JSL $86C272[$86:C272]  ; A *= cos([$12] * pi / 80h)
-$A9:F89B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:F89E 18          CLC
-$A9:F89F 7D AC 0F    ADC $0FAC,x
-$A9:F8A2 9D AC 0F    STA $0FAC,x
+$A9:F887 48          PHA                    ;\
+$A9:F888 22 6C C2 86 JSL $86C26C[$86:C26C]  ;|
+$A9:F88C AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A9:F88F 18          CLC                    ;} Enemy X velocity += [A] * sin([$12] * pi / 80h)
+$A9:F890 7D AA 0F    ADC $0FAA,x            ;|
+$A9:F893 9D AA 0F    STA $0FAA,x            ;|
+$A9:F896 68          PLA                    ;/
+$A9:F897 22 72 C2 86 JSL $86C272[$86:C272]  ;|
+$A9:F89B AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A9:F89E 18          CLC                    ;} Enemy Y velocity += [A] * cos([$12] * pi / 80h)
+$A9:F89F 7D AC 0F    ADC $0FAC,x            ;|
+$A9:F8A2 9D AC 0F    STA $0FAC,x            ;/
 
 $A9:F8A5 6B          RTL
 }
@@ -13181,7 +13209,7 @@ $A9:F8A6             dw 3800, 57FF, 42F7, 0929, 00A5, 7FFF, 4231, 0043, 4B3F, 42
 }
 
 
-;;; $F8C6: Palette ;;;
+;;; $F8C6: Palette - Shitroid's sidehopper ;;;
 {
 $A9:F8C6             dw 3800, 7FFF, 56E0, 3180, 18C0, 6BC0, 5EC0, 4A20, 35A0, 7FFF, 039C, 0237, 00D1, 03FF, 0237, 00D1
 }
@@ -13193,10 +13221,15 @@ $A9:F8E6             dw 3800, 57B8, 0B11, 1646, 00E3, 72FF, 2CDF, 24B9, 1CAF, 18
 }
 
 
-;;; $F906: Instruction list - yyyy ;;;
+;;; $F906: Instruction list - finish draining ;;;
 {
 $A9:F906             dx 0080,FAD8,
                         0010,FA40
+}
+
+
+;;; $F90E: Instruction list - normal ;;;
+{
 $A9:F90E             dx 0010,F9A8,
                         0010,FA40,
                         0010,FAD8,
@@ -13212,7 +13245,7 @@ $A9:F923 6B          RTL
 }
 
 
-;;; $F924: Instruction list - yyyy ;;;
+;;; $F924: Instruction list - latched on ;;;
 {
 $A9:F924             dx 0008,F9A8,
                         0008,FA40,
@@ -13229,7 +13262,7 @@ $A9:F939 6B          RTL
 }
 
 
-;;; $F93A: Instruction list - yyyy ;;;
+;;; $F93A: Instruction list - remorse ;;;
 {
 $A9:F93A             dx 000A,F9A8,
                         000A,FA40,
@@ -13239,7 +13272,7 @@ $A9:F93A             dx 000A,F9A8,
                         000A,FA40,
                         000A,FAD8,
                         000A,FA40,
-                        F994,F93A,
+                        F994,F93A,  ; Go to $F93A or play Shitroid feels remorse sound effect
                         0006,F9A8,
                         0005,FA40,
                         0004,FAD8,
@@ -13263,18 +13296,18 @@ $A9:F993 6B          RTL
 }
 
 
-;;; $F994: Instruction ;;;
+;;; $F994: Instruction - go to [[Y]] or play Shitroid feels remorse sound effect ;;;
 {
-$A9:F994 AD E5 05    LDA $05E5  [$7E:05E5]
-$A9:F997 10 0A       BPL $0A    [$F9A3]
+$A9:F994 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A9:F997 10 0A       BPL $0A    [$F9A3]     ;} If [random number] & 8000h != 0:
 $A9:F999 A9 52 00    LDA #$0052             ;\
 $A9:F99C 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 52h, sound library 2, max queued sounds allowed = 6 (Shitroid feels remorse)
-$A9:F9A0 C8          INY
-$A9:F9A1 C8          INY
-$A9:F9A2 6B          RTL
+$A9:F9A0 C8          INY                    ;\
+$A9:F9A1 C8          INY                    ;} Y += 2
+$A9:F9A2 6B          RTL                    ; Return
 
-$A9:F9A3 B9 00 00    LDA $0000,y
-$A9:F9A6 A8          TAY
+$A9:F9A3 B9 00 00    LDA $0000,y            ;\
+$A9:F9A6 A8          TAY                    ;} Y = [[Y]]
 $A9:F9A7 6B          RTL
 }
 

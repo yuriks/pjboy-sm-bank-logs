@@ -247,6 +247,7 @@ $8D:89FA             dx 0001, 01FC,FC,7103
 $8D:8A01             dx 0001, 01FC,FC,7104
 $8D:8A08             dx 0001, 01FC,FC,7105
 
+; Unused. Instruction list $8C32
 $8D:8A0F             dx 0001, 81F8,F8,2164
 
 ; Enemy projectile $8E50 (Draygon's gunk)
@@ -454,7 +455,7 @@ $8D:906A             dx 0001, 01FC,FC,2A2C
 $8D:9071             dx 0001, 01FC,FC,2A2D
 $8D:9078             dx 0001, 01FC,FC,2A2E
 
-; unused
+; Unused
 $8D:907F             dx 0001, 01FC,FC,2A2F
 
 ; Enemy projectile $BA5C (Tourian statue unlocking particle water splash)
@@ -897,7 +898,9 @@ $8D:AC59             dx 0004, 0016,F9,7A28, 0010,0B,7A28, 01E2,F9,3A28, 01E8,0B,
 $8D:AC6F             dx 0004, 0017,03,7A28, 0011,11,7A28, 01E1,03,3A28, 01E7,11,3A28
 $8D:AC85             dx 0004, 0018,0A,7A28, 0012,18,7A28, 01E0,0A,3A28, 01E6,18,3A28
 
-; Enemy projectile $AF68 (Wrecked Ship chozo spike clearing footsteps) / enemy projectile $AF84 (Tourian statue dust clouds) / enemy projectile $E509/$E525 (dust cloud / explosion)
+; Enemy projectile $AF68 (Wrecked Ship chozo spike clearing footsteps)
+; Enemy projectile $AF84 (Tourian statue dust clouds)
+; Enemy projectile $E509/$E525 (dust cloud / explosion)
 $8D:AC9B             dx 0001, 01F7,F7,3A48
 $8D:ACA2             dx 0002, 0001,01,3A48, 81F3,F3,3A7C
 $8D:ACAE             dx 0003, 81FD,FD,3A7C, 01F7,01,3A48, 81F3,F3,3A7E
@@ -941,8 +944,6 @@ $8D:AEDE             dx 0003, 81F8,04,3ABE, 81F8,F8,3ABE, 81F8,EC,3ABE
 $8D:AEEF             dx 0003, 81F8,08,3ABE, 81F8,F8,3ABE, 81F8,E8,3ABE
 $8D:AF00             dx 0004, 81F8,0C,3ABE, 81F8,00,3ABE, 81F8,F0,3ABE, 81F8,E4,3ABE
 $8D:AF16             dx 0004, 81F8,10,3ABE, 81F8,00,3ABE, 81F8,F0,3ABE, 81F8,E0,3ABE
-
-; Enemy projectile $E509/$E525 (dust cloud / explosion)
 $8D:AF2C             dx 0001, 01FC,FC,3C53
 $8D:AF33             dx 0001, 01FC,FC,3C52
 $8D:AF3A             dx 0001, 01FC,FC,3C51
@@ -962,7 +963,12 @@ $8D:AFF0             dx 0003, 0002,06,BA5D, 01FC,F2,BA5D, 01F6,FE,BA5D
 $8D:B001             dx 0003, 01FC,F4,BA5D, 01F8,FC,BA5D, 0000,04,BA5D
 $8D:B012             dx 0003, 01FC,F6,BA5D, 01FA,FD,BA5D, 0000,02,BA5D
 
-; Enemy projectile $A9AF (Torizo death explosion) / enemy projectile $B4B1 (old Tourian escape shaft fake wall explosion) / enemy projectile $DE7A (spores) / enemy projectile $E509/$E525 (dust cloud / explosion) / enemy projectile $E517/$E525 (eye door smoke)
+; Small explosion.
+; Enemy projectile $A9AF (Torizo death explosion)
+; Enemy projectile $B4B1 (old Tourian escape shaft fake wall explosion)
+; Enemy projectile $DE7A (spores)
+; Enemy projectile $E509/$E525 (dust cloud / explosion)
+; Enemy projectile $E517/$E525 (eye door smoke)
 $8D:B023             dx 0001, 01FC,FC,3A5F
 $8D:B02A             dx 0004, 0000,00,FA8A, 01F8,00,BA8A, 0000,F8,7A8A, 01F8,F8,3A8A
 $8D:B040             dx 0004, 8000,00,FA90, 81F0,00,BA90, 8000,F0,7A90, 81F0,F0,3A90
@@ -1021,7 +1027,11 @@ $8D:B23B             dx 0001, 01FC,FC,3A2D
 $8D:B242             dx 0001, 01FC,FC,3A2E
 $8D:B249             dx 0001, 01FC,FC,3A2F
 
-; Enemy projectile $A9AF (Torizo death explosion) / enemy projectile $AB07 / enemy projectile $C18C (Mother Brain's room turret bullets) / enemy projectile $E509/$E525 (dust cloud / explosion)
+; Smoke
+; Enemy projectile $A9AF (Torizo death explosion)
+; Enemy projectile $AB07
+; Enemy projectile $C18C (Mother Brain's room turret bullets)
+; Enemy projectile $E509/$E525 (dust cloud / explosion)
 $8D:B250             dx 0001, 81F8,F6,3A76
 $8D:B257             dx 0001, 81F8,F4,3A78
 $8D:B25E             dx 0001, 81F8,F2,3A98
@@ -1074,6 +1084,7 @@ $8D:B3F8             dx 0001, 01FC,FC,3A3E
 ; Unused
 $8D:B3FF             dx 0001, 01FC,FC,3A3F
 
+; Big explosion
 ; Enemy projectile $AF76
 ; Enemy projectile $B31A (Golden Torizo super missile)
 ; Enemy projectile $CB4B (Mother Brain's blue ring lasers)
@@ -2354,7 +2365,7 @@ $8D:CB3C             dx C655,0002,  ; Palette FX object colour index = 0002h
 }
 
 
-;;; $CD62: Instruction list - palette FX object $E1CC (Zebes explotion finale) ;;;
+;;; $CD62: Instruction list - palette FX object $E1CC (Zebes explosion finale) ;;;
 {
 $8D:CD62             dx C655,0002,  ; Palette FX object colour index = 0002h
                         0002,
@@ -3014,7 +3025,7 @@ $8D:E1BC             dw E204,C9BA ; Old Mother Brain fight background lights
 $8D:E1C0             dw C685,CA4E ; Gunship glow
 $8D:E1C4             dw C685,CAAA ; Fade out zoomed out exploding Zebes
 $8D:E1C8             dw C685,CB3C ; Wide part of Zebes explosion - foreground
-$8D:E1CC             dw C685,CD62 ; Zebes explotion finale
+$8D:E1CC             dw C685,CD62 ; Zebes explosion finale
 $8D:E1D0             dw C685,D36A ; White out space during Zebes explosion
 $8D:E1D4             dw C685,D3CA ; Zebes explosion planet afterglow
 $8D:E1D8             dw C685,D44A ; Exploding Zebes lava

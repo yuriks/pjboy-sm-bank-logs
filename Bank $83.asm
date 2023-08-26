@@ -2823,6 +2823,7 @@ $83:ABE5             dx E82C,04,00,00,00,01,00,01,0000
 
 ;;; $ABF0: FX type tilemap pointers ;;;
 {
+; In bank $8A
 $83:ABF0             dw 0000, ; 0: None
                         8000, ; 2: Lava
                         8840, ; 4: Acid

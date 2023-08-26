@@ -267,7 +267,7 @@ $A6:88C1 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
 $A6:88C4 85 12       STA $12    [$7E:0012]
 $A6:88C6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
 $A6:88C9 85 14       STA $14    [$7E:0014]
-$A6:88CB A9 11 00    LDA #$0011
+$A6:88CB A9 11 00    LDA #$0011             ; A = 11h
 $A6:88CE A0 09 E5    LDY #$E509             ;\
 $A6:88D1 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:88D5 A9 43 00    LDA #$0043             ;\
@@ -373,7 +373,7 @@ $A6:89A2 BD 7A 0F    LDA $0F7A,x[$7E:113A]
 $A6:89A5 85 12       STA $12    [$7E:0012]
 $A6:89A7 BD 7E 0F    LDA $0F7E,x[$7E:113E]
 $A6:89AA 85 14       STA $14    [$7E:0014]
-$A6:89AC A9 11 00    LDA #$0011
+$A6:89AC A9 11 00    LDA #$0011             ; A = 11h
 $A6:89AF A0 09 E5    LDY #$E509             ;\
 $A6:89B2 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:89B6 A9 43 00    LDA #$0043             ;\
@@ -508,13 +508,13 @@ $A6:8B29             dx 0001,8CE5,
 }
 
 
-;;; $8B2F: Initialisation AI - enemy $DFFF (spikey platform) ;;;
+;;; $8B2F: Initialisation AI - enemy $DFFF (spikey platform top) ;;;
 {
 $A6:8B2F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8B32 A9 29 8B    LDA #$8B29             ;\
 $A6:8B35 9D 92 0F    STA $0F92,x[$7E:14D2]  ;} Enemy instruction list pointer = $8B29
 $A6:8B38 A9 B4 8B    LDA #$8BB4             ;\
-$A6:8B3B 9D A8 0F    STA $0FA8,x[$7E:14E8]  ;} Enemy function pointer = $8BB4
+$A6:8B3B 9D A8 0F    STA $0FA8,x[$7E:14E8]  ;} Enemy function = $8BB4
 $A6:8B3E BD B4 0F    LDA $0FB4,x[$7E:14F4]  ;\
 $A6:8B41 29 FF 00    AND #$00FF             ;|
 $A6:8B44 0A          ASL A                  ;|
@@ -547,7 +547,7 @@ $A6:8B84 6B          RTL
 }
 
 
-;;; $8B85: Initialisation AI - enemy $E03F (spikey platform, second enemy) ;;;
+;;; $8B85: Initialisation AI - enemy $E03F (spikey platform bottom) ;;;
 {
 $A6:8B85 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8B88 BD 3A 0F    LDA $0F3A,x[$7E:14BA]  ;\
@@ -560,7 +560,7 @@ $A6:8B98 6B          RTL
 }
 
 
-;;; $8B99: Main AI - enemy $E03F (spikey platform, second enemy) ;;;
+;;; $8B99: Main AI - enemy $E03F (spikey platform bottom) ;;;
 {
 $A6:8B99 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8B9C BD 3A 0F    LDA $0F3A,x[$7E:123A]  ;\
@@ -573,7 +573,7 @@ $A6:8BAC 6B          RTL
 }
 
 
-;;; $8BAD: Main AI - enemy $DFFF (spikey platform) ;;;
+;;; $8BAD: Main AI - enemy $DFFF (spikey platform top) ;;;
 {
 $A6:8BAD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8BB0 FC A8 0F    JSR ($0FA8,x)[$A6:8BB4]; Execute [enemy function]
@@ -739,7 +739,7 @@ $A6:8CE2 6B          RTL
 }
 
 
-;;; $8CE3:  ;;;
+;;; $8CE3: RTL ;;;
 {
 $A6:8CE3 6B          RTL
 }
@@ -2420,7 +2420,7 @@ $A6:A275 8F 00 88 7E STA $7E8800[$7E:8800]
 $A6:A279 A9 05 00    LDA #$0005
 $A6:A27C 8F 0E 78 7E STA $7E780E[$7E:780E]
 $A6:A280 A9 00 00    LDA #$0000             ;\
-$A6:A283 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$A6:A283 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A6:A287 6B          RTL
 }
 
@@ -2855,6 +2855,7 @@ $A6:A743             dw A782, A782, A782, A782, A83C, A83C, A83C, A83C, A83C, A7
 
 ;;; $A763:  ;;;
 {
+; Ceres Ridley attack cooldown; fly towards (C0h, 64h) (return carry set if reached, carry clear otherwise)
 $A6:A763 A2 C0 00    LDX #$00C0
 $A6:A766 A0 64 00    LDY #$0064
 $A6:A769 86 12       STX $12    [$7E:0012]
@@ -2872,6 +2873,7 @@ $A6:A781 60          RTS
 
 ;;; $A782: Ridley function ;;;
 {
+; Ceres Ridley fireballing
 $A6:A782 AD AC 0F    LDA $0FAC  [$7E:0FAC]
 $A6:A785 10 04       BPL $04    [$A78B]
 $A6:A787 49 FF FF    EOR #$FFFF
@@ -2958,6 +2960,7 @@ $A6:A83B 60          RTS
 
 ;;; $A83C: Ridley function ;;;
 {
+; Ceres Ridley start lunging
 $A6:A83C A9 48 E5    LDA #$E548
 $A6:A83F 20 67 D4    JSR $D467  [$A6:D467]
 $A6:A842 A9 4E A8    LDA #$A84E
@@ -3001,6 +3004,7 @@ $A6:A88C 60          RTS
 
 ;;; $A88D: Ridley function ;;;
 {
+; Ceres Ridley start swoop
 $A6:A88D A9 A4 A8    LDA #$A8A4
 $A6:A890 8D A8 0F    STA $0FA8  [$7E:0FA8]
 $A6:A893 A9 0A 00    LDA #$000A
@@ -3013,6 +3017,7 @@ $A6:A8A0 8F 02 20 7E STA $7E2002[$7E:2002]
 
 ;;; $A8A4: Ridley function ;;;
 {
+; Ceres Ridley fly towards (C0h, 50h) to swoop
 $A6:A8A4 A2 C0 00    LDX #$00C0
 $A6:A8A7 A0 50 00    LDY #$0050
 $A6:A8AA 86 12       STX $12    [$7E:0012]
@@ -3037,6 +3042,7 @@ $A6:A8D3 60          RTS
 
 ;;; $A8D4: Ridley function ;;;
 {
+; Ceres Ridley swoop
 $A6:A8D4 A9 E0 FF    LDA #$FFE0
 $A6:A8D7 85 12       STA $12    [$7E:0012]
 $A6:A8D9 A9 00 FC    LDA #$FC00
@@ -3121,6 +3127,7 @@ $A6:A970 60          RTS
 
 ;;; $A971: Ridley function ;;;
 {
+; Ceres Ridley flying away after Samus has low health or after he picks up baby metroid
 $A6:A971 A9 40 FF    LDA #$FF40
 $A6:A974 8F 00 80 7E STA $7E8000[$7E:8000]
 $A6:A978 A9 C0 00    LDA #$00C0
@@ -3223,15 +3230,15 @@ $A6:AA53 60          RTS
 ;;; $AA54:  ;;;
 {
 $A6:AA54 E2 20       SEP #$20
-$A6:AA56 A9 07       LDA #$07
-$A6:AA58 85 56       STA $56    [$7E:0056]
+$A6:AA56 A9 07       LDA #$07               ;\
+$A6:AA58 85 56       STA $56    [$7E:0056]  ;} Fake BG mode = 7
 $A6:AA5A C2 20       REP #$20
 $A6:AA5C A9 01 00    LDA #$0001
 $A6:AA5F 8D 83 07    STA $0783  [$7E:0783]
-$A6:AA62 E2 20       SEP #$20
-$A6:AA64 A9 80       LDA #$80
-$A6:AA66 85 5F       STA $5F    [$7E:005F]
-$A6:AA68 C2 20       REP #$20
+$A6:AA62 E2 20       SEP #$20               ;\
+$A6:AA64 A9 80       LDA #$80               ;|
+$A6:AA66 85 5F       STA $5F    [$7E:005F]  ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
+$A6:AA68 C2 20       REP #$20               ;/
 $A6:AA6A A9 00 01    LDA #$0100
 $A6:AA6D 85 78       STA $78    [$7E:0078]
 $A6:AA6F 85 7A       STA $7A    [$7E:007A]
@@ -3568,9 +3575,24 @@ $A6:ACD9 60          RTS
 
 $A6:ACDA             dw ACE2, ACF5, AD08, ACF5
 
-$A6:ACE2             dx 80,A6AD1B,0002,0504,00, 80,A6AD1D,0002,0584,00, 00
-$A6:ACF5             dx 80,A6AD1F,0002,0504,00, 80,A6AD21,0002,0584,00, 00
-$A6:AD08             dx 80,A6AD23,0002,0504,00, 80,A6AD25,0002,0584,00, 00
+;                        ______________________ Control. 80h = write to VRAM tilemap
+;                       |   ___________________ Source address
+;                       |  |       ____________ Size
+;                       |  |      |     _______ Destination address (VRAM)
+;                       |  |      |    |     __ VRAM address increment mode
+;                       |  |      |    |    |
+$A6:ACE2             dx 80,A6AD1B,0002,0504,00,
+                        80,A6AD1D,0002,0584,00,
+                        00
+                        
+$A6:ACF5             dx 80,A6AD1F,0002,0504,00,
+                        80,A6AD21,0002,0584,00,
+                        00
+                        
+$A6:AD08             dx 80,A6AD23,0002,0504,00,
+                        80,A6AD25,0002,0584,00,
+                        00
+                        
 
 $A6:AD1B             db 59,5A
 $A6:AD1D             db 69,6A
@@ -3599,6 +3621,12 @@ $A6:AD44 60          RTS
 
 $A6:AD45             dw AD49, AD80
 
+;                        ______________________ Control. 80h = write to VRAM tilemap
+;                       |   ___________________ Source address
+;                       |  |       ____________ Size
+;                       |  |      |     _______ Destination address (VRAM)
+;                       |  |      |    |     __ VRAM address increment mode
+;                       |  |      |    |    |
 $A6:AD49             dx 80,A6ADB7,0004,000B,00,
                         80,A6ADBF,000E,0080,00,
                         80,A6ADDB,000E,0100,00,
@@ -4364,7 +4392,7 @@ $A6:B738 AF A6 20 7E LDA $7E20A6[$7E:20A6]
 $A6:B73C 18          CLC
 $A6:B73D 69 0C 00    ADC #$000C
 $A6:B740 85 14       STA $14    [$7E:0014]
-$A6:B742 A9 09 00    LDA #$0009
+$A6:B742 A9 09 00    LDA #$0009             ; A = 9
 $A6:B745 A0 09 E5    LDY #$E509             ;\
 $A6:B748 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:B74C A9 76 00    LDA #$0076             ;\
@@ -5163,6 +5191,7 @@ $A6:BD99 60          RTS
 
 ;;; $BD9A: Ridley function ;;;
 {
+; Ceres Ridley initialise baby metroid drop
 $A6:BD9A A9 C0 00    LDA #$00C0
 $A6:BD9D 85 12       STA $12    [$7E:0012]
 $A6:BD9F A9 80 00    LDA #$0080
@@ -5182,6 +5211,7 @@ $A6:BDBB 60          RTS
 
 ;;; $BDBC: Ridley function ;;;
 {
+; Ceres Ridley baby metroid drop
 $A6:BDBC A9 40 FF    LDA #$FF40
 $A6:BDBF 8F 00 80 7E STA $7E8000[$7E:8000]
 $A6:BDC3 A9 C0 00    LDA #$00C0
@@ -5206,6 +5236,7 @@ $A6:BDF1 60          RTS
 
 ;;; $BDF2: Ridley function ;;;
 {
+; Ceres Ridley pickup baby metroid delay
 $A6:BDF2 CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:BDF5 10 4A       BPL $4A    [$BE41]
 $A6:BDF7 A9 58 E6    LDA #$E658
@@ -5217,6 +5248,7 @@ $A6:BE00 8D A8 0F    STA $0FA8  [$7E:0FA8]
 
 ;;; $BE03: Ridley function ;;;
 {
+; Ceres Ridley baby metroid pickup
 $A6:BE03 AF 04 88 7E LDA $7E8804[$7E:8804]
 $A6:BE07 18          CLC
 $A6:BE08 69 F6 FF    ADC #$FFF6
@@ -5332,11 +5364,18 @@ $A6:BEC9 60          RTS
 
 ;;; $BECA:  ;;;
 {
+; Initialise baby metroid falling to ground
 $A6:BECA A9 00 00    LDA #$0000
 $A6:BECD 8F 0A 88 7E STA $7E880A[$7E:880A]
 $A6:BED1 8F 0C 88 7E STA $7E880C[$7E:880C]
 $A6:BED5 A9 DC BE    LDA #$BEDC
 $A6:BED8 8F 00 88 7E STA $7E8800[$7E:8800]
+}
+
+
+;;; $BEDC:  ;;;
+{
+; Baby metroid falls to ground
 $A6:BEDC AF 0C 88 7E LDA $7E880C[$7E:880C]
 $A6:BEE0 18          CLC
 $A6:BEE1 69 08 00    ADC #$0008
@@ -5587,6 +5626,7 @@ $A6:C135 60          RTS
 
 ;;; $C136:  ;;;
 {
+; Display 'EMERGENCY' text
 $A6:C136 A2 5D C1    LDX #$C15D
 $A6:C139 AC 30 03    LDY $0330  [$7E:0330]
 $A6:C13C BD 00 00    LDA $0000,x[$A6:C15D]
@@ -6135,7 +6175,7 @@ $A6:C653 B9 70 C6    LDA $C670,y[$A6:C674]
 $A6:C656 18          CLC
 $A6:C657 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
 $A6:C65A 85 14       STA $14    [$7E:0014]
-$A6:C65C A9 03 00    LDA #$0003
+$A6:C65C A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $A6:C65F A0 09 E5    LDY #$E509             ;\
 $A6:C662 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:C666 A9 24 00    LDA #$0024             ;\
@@ -9502,18 +9542,18 @@ $A6:E125 60          RTS
 
 ;;; $E126:  ;;;
 {
-$A6:E126 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$A6:E129 85 12       STA $12    [$7E:0012]
-$A6:E12B B9 78 0B    LDA $0B78,y[$7E:0B78]
-$A6:E12E 85 14       STA $14    [$7E:0014]
+$A6:E126 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$A6:E129 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
+$A6:E12B B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$A6:E12E 85 14       STA $14    [$7E:0014]  ;} $14 = [projectile Y position]
 $A6:E130 B9 19 0C    LDA $0C19,y[$7E:0C19]
 $A6:E133 29 0F 00    AND #$000F
-$A6:E136 A0 0C 00    LDY #$000C
-$A6:E139 3A          DEC A
-$A6:E13A D0 0A       BNE $0A    [$E146]
+$A6:E136 A0 0C 00    LDY #$000C             ; A = Ch (smoke)
+$A6:E139 3A          DEC A                  ;\
+$A6:E13A D0 0A       BNE $0A    [$E146]     ;} If projectile is missile:
 $A6:E13C A9 3D 00    LDA #$003D             ;\
 $A6:E13F 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 3Dh, sound library 1, max queued sounds allowed = 6 (dud shot)
-$A6:E143 A0 06 00    LDY #$0006
+$A6:E143 A0 06 00    LDY #$0006             ; A = 6
 
 $A6:E146 98          TYA
 $A6:E147 A0 09 E5    LDY #$E509             ;\
@@ -10061,7 +10101,7 @@ $A6:E7B4             dx E4D2,E820,  ; ???
 }
 
 
-;;; $E828:  ;;;
+;;; $E828: Unused ;;;
 {
 $A6:E828 A9 00 00    LDA #$0000
 $A6:E82B 22 40 E8 A6 JSL $A6E840[$A6:E840]
@@ -10921,7 +10961,7 @@ $A6:F6E0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A6:F6E3 0A          ASL A                  ;} Y = [enemy parameter 1]
 $A6:F6E4 A8          TAY                    ;/
 $A6:F6E5 B9 2B F7    LDA $F72B,y[$A6:F72F]  ;\
-$A6:F6E8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function pointer = [$F72B + [Y]]
+$A6:F6E8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = [$F72B + [Y]]
 $A6:F6EB B9 2C F5    LDA $F52C,y[$A6:F530]  ;\
 $A6:F6EE 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Instruction pointer = [$F52C + [Y]]
 $A6:F6F1 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = 0
@@ -11091,11 +11131,11 @@ $A6:F818 B9 42 F8    LDA $F842,y[$A6:F84E]
 $A6:F81B 18          CLC
 $A6:F81C 7D 7E 0F    ADC $0F7E,x[$7E:0F7E]
 $A6:F81F 85 14       STA $14    [$7E:0014]
-$A6:F821 A0 03 00    LDY #$0003
+$A6:F821 A0 03 00    LDY #$0003             ; A = 3 (small explosion)
 $A6:F824 22 11 81 80 JSL $808111[$80:8111]
 $A6:F828 C9 00 40    CMP #$4000
 $A6:F82B B0 03       BCS $03    [$F830]
-$A6:F82D A0 0C 00    LDY #$000C
+$A6:F82D A0 0C 00    LDY #$000C             ; A = Ch (smoke)
 
 $A6:F830 98          TYA
 $A6:F831 A0 09 E5    LDY #$E509             ;\
@@ -11149,6 +11189,12 @@ $A6:F8FF 60          RTS
 
 $A6:F900             dw F904, F90E
 
+;                        ______________________ Control. 80h = write to VRAM tilemap
+;                       |   ___________________ Source address
+;                       |  |       ____________ Size
+;                       |  |      |     _______ Destination address (VRAM)
+;                       |  |      |    |     __ VRAM address increment mode
+;                       |  |      |    |    |
 $A6:F904             dx 80,A6F918,0004,060E,00, 00
 $A6:F90E             dx 80,A6F91C,0004,060E,00, 00
 

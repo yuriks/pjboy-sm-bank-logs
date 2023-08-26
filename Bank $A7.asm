@@ -2019,13 +2019,13 @@ $A7:B0CB BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
 $A7:B0CE 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
 $A7:B0D0 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
 $A7:B0D3 85 14       STA $14    [$7E:0014]  ;} $14 = [projectile Y position]
-$A7:B0D5 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
-$A7:B0D8 A0 1D 00    LDY #$001D             ;|
-$A7:B0DB 89 00 02    BIT #$0200             ;|
-$A7:B0DE D0 03       BNE $03    [$B0E3]     ;} If super missile, A = 1Dh, else A = 6 (stored to $1993)
-$A7:B0E0 A0 06 00    LDY #$0006             ;|
-                                            ;|
-$A7:B0E3 98          TYA                    ;/
+$A7:B0D5 BD 18 0C    LDA $0C18,x[$7E:0C18]
+$A7:B0D8 A0 1D 00    LDY #$001D             ; A = 1Dh (big explosion)
+$A7:B0DB 89 00 02    BIT #$0200             ;\
+$A7:B0DE D0 03       BNE $03    [$B0E3]     ;} If projectile is super missile:
+$A7:B0E0 A0 06 00    LDY #$0006             ; A = 6
+
+$A7:B0E3 98          TYA
 $A7:B0E4 A0 09 E5    LDY #$E509             ;\
 $A7:B0E7 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A7:B0EB A9 3D 00    LDA #$003D             ;\
@@ -4982,6 +4982,8 @@ $A7:CA00 60          RTS
 
 ;;; $CA01..E7FD: Phantoon ;;;
 {
+;;; $CA01..CDF2: Phantoon data ;;;
+{
 ;;; $CA01: Palette - enemy $E4BF/$E4FF/$E53F/$E57F (Phantoon) ;;;
 {
 $A7:CA01             dw 3800, 7FFF, 7EC0, 6DE0, 54E0, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
@@ -4990,9 +4992,13 @@ $A7:CA01             dw 3800, 7FFF, 7EC0, 6DE0, 54E0, 0000, 0000, 0000, 0000, 00
 
 ;;; $CA21: Palettes ;;;
 {
+; Unused. Clone of $CC21
 $A7:CA21             dw 0000,477B,2E52,00C6,0063,3AB5,2210,116B,0508,7FFF,36B5,19AD,0929,381D,1814,000A
+
+; Fade out target palette
 $A7:CA41             dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000
 
+; Wrecked Ship powered on BG1/2 target palettes 0..6 (same as SCE)
 $A7:CA61             dw 0000,02DF,01D7,00AC,5EBB,3DB3,292E,1486,0BB1,48FB,7FFF,0000,7FFF,44E5,7FFF,0000
                         2003,0BB1,1EA9,0145,5EBB,3DB3,292E,1486,6318,1CE7,1084,0000,7FFF,02DF,001F,0000
                         2003,72BC,48FB,1816,6318,6318,6318,6318,6318,6318,6318,6318,6318,6318,7FFF,0000
@@ -5041,8 +5047,8 @@ $A7:CC4D             dx 0001,DEF1,
 $A7:CC53             dx 000A,DF05,
                         000A,DF0F,
                         0001,DF19,
-                        808A,CEED,  ; Call function $CEED - play sound
-                        808A,D03F,  ; Call function $D03F - start tracking Samus w/ eye
+                        808A,CEED,  ; Play Phantoon materialisation sound effect
+                        808A,D03F,  ; Set up eye open Phantoon state
                         812F        ; Sleep
 }
 
@@ -5052,7 +5058,7 @@ $A7:CC53             dx 000A,DF05,
 $A7:CC69             dx 000A,DF05,
                         000A,DF0F,
                         0001,DF19,
-                        808A,CEED,  ; Call function $CEED - play sound
+                        808A,CEED,  ; Play Phantoon materialisation sound effect
                         812F        ; Sleep
 }
 
@@ -5068,8 +5074,8 @@ $A7:CC7B             dx 0001,DEFB,
 {
 $A7:CC81             dx 0001,DF19,
                         000A,DF0F,
-                        808A,D076,  ; Call function $D076 - pick pattern for round two
-                        80ED,CC7B   ; Go to $CC7B - close eye fully
+                        808A,D076,  ; Pick new Phantoon pattern
+                        80ED,CC7B   ; Go to $CC7B (eye - closed)
 }
 
 
@@ -5077,14 +5083,14 @@ $A7:CC81             dx 0001,DF19,
 {
 $A7:CC91             dx 0001,DF19,
                         000A,DF0F,
-                        80ED,CC7B   ; Go to $CC7B - close eye fully
+                        80ED,CC7B   ; Go to $CC7B (eye - closed)
 }
 
 
 ;;; $CC9D: Instruction list - eyeball - centred ;;;
 {
 $A7:CC9D             dx 0001,DF23,
-                        808A,CEED,  ; Call function $CEED - play sound
+                        808A,CEED,  ; Play Phantoon materialisation sound effect
                         812F        ; Sleep
 }
 
@@ -5159,7 +5165,7 @@ $A7:CCD7             dx 0008,DFB3,
 {
 $A7:CCEB             dx 0005,DFFD,
                         0005,DFF3,
-                        808A,CF5E   ; Call function $CF5E
+                        808A,CF5E   ; Spawn casual flame
 }
 
 
@@ -5171,20 +5177,23 @@ $A7:CCF7             dx 0001,DFE9,
 }
 
 
-;;; $CCFD:  ;;;
+;;; $CCFD: Casual flame timers ;;;
 {
+; List of pattern pointers
 $A7:CCFD             dw CD05, CD13, CD1D, CD2F
 
-$A7:CD05             dw 0005, 00B4, 0020,0020,0020,0020,0020
-$A7:CD13             dw 0003, 00B4, 0010,0010,0010
-$A7:CD1D             dw 0007, 00B4, 0030,0030,0030,0030,0030,0030,0030
-$A7:CD2F             dw 0007, 00B4, 0010,0040,0020,0040,0020,0010,0020
+;                        _______ Number of flames (length of pattern)
+;                       |      _ Timers. List is read backwards
+;                       |     |
+$A7:CD05             dw 0005, 00B4,0020,0020,0020,0020,0020
+$A7:CD13             dw 0003, 00B4,0010,0010,0010
+$A7:CD1D             dw 0007, 00B4,0030,0030,0030,0030,0030,0030,0030
+$A7:CD2F             dw 0007, 00B4,0010,0040,0020,0040,0020,0010,0020
 }
 
 
-;;; $CD41: Timer values for Phantoon eye close ;;;
+;;; $CD41: Phantoon figure-8 vulnerable window timers ;;;
 {
-;                       60    30    15   30     60    30    15    60
 $A7:CD41             dw 003C, 001E, 000F, 001E, 003C, 001E, 000F, 003C
 }
 
@@ -5195,94 +5204,103 @@ $A7:CD51             db 00,00
 }
 
 
-;;; $CD53: Timer values for Phantoon eye open ;;;
+;;; $CD53: Phantoon eye closed timers ;;;
 {
-;                       720   60    360   720   360   60    360   720
 $A7:CD53             dw 02D0, 003C, 0168, 02D0, 0168, 003C, 0168, 02D0
 }
 
 
-;;; $CD63: Timer values for Phantoon fade-out during fireball rain ;;;
+;;; $CD63: Flame rain Phantoon hiding timers ;;;
 {
-;                       60    120   30    60    30    60    30    30
 $A7:CD63             dw 003C, 0078, 001E, 003C, 001E, 003C, 001E, 001E
 }
 
 
-;;; $CD73:  ;;;
+;;; $CD73: Figure-8 Phantoon acceleration ;;;
 {
-$A7:CD73             dw 0600, 0000, 1000, 0000
+;                        _________ Subacceleration
+;                       |      ___ Acceleration
+;                       |     |
+$A7:CD73             dw 0600, 0000 ; Slow stage
+$A7:CD77             dw 1000, 0000 ; Fast stages
 }
 
 
-;;; $CD7B:  ;;;
+;;; $CD7B: Figure-8 speed caps ;;;
 {
-$A7:CD7B             dw 0002
-$A7:CD7D             dw 0007
-$A7:CD7F             dw 0000
+$A7:CD7B             dw 0002 ; Movement stage 0 max speed
+$A7:CD7D             dw 0007 ; Movement stage 1 max speed
+$A7:CD7F             dw 0000 ; Movement stage 2 min speed
 }
 
 
-;;; $CD81:  ;;;
+;;; $CD81: Reverse figure-8 Phantoon acceleration ;;;
 {
-$A7:CD81             dw 0600, 0000, 1000, 0000
+; Clone of $CD73
+
+;                        _________ Subacceleration
+;                       |      ___ Acceleration
+;                       |     |
+$A7:CD81             dw 0600, 0000 ; Slow stage
+$A7:CD85             dw 1000, 0000 ; Fast stages
 }
 
 
-;;; $CD89:  ;;;
+;;; $CD89: Reverse figure-8 speed caps ;;;
 {
-$A7:CD89             dw FFFE
-$A7:CD8B             dw FFF9
-$A7:CD8D             dw 0000
+$A7:CD89             dw FFFE ; Movement stage 0 max speed
+$A7:CD8B             dw FFF9 ; Movement stage 1 max speed
+$A7:CD8D             dw 0000 ; Movement stage 2 min speed
 }
 
 
-;;; $CD8F:  ;;;
+;;; $CD8F: Unused ;;;
 {
-$A7:CD8F             dw 8000, 0000, 000B, 8000, 0000, FFF5
+$A7:CD8F             dw 8000, 0000, 000B,
+                        8000, 0000, FFF5
 }
 
 
-;;; $CD9B: Lookup table used by $D54A (wavy fade-in) ;;;
+;;; $CD9B: Wavy Phantoon constants ;;;
 {
-$A7:CD9B             dw 0040
-$A7:CD9D             dw 0C00
-$A7:CD9F             dw 0100
-$A7:CDA1             dw F000
-$A7:CDA3             dw 0008
+$A7:CD9B             dw 0040 ; Amplitude delta - intro wavy Phantoon
+$A7:CD9D             dw 0C00 ; Max amplitude - intro wavy Phantoon
+$A7:CD9F             dw 0100 ; Amplitude delta - dying wavy Phantoon
+$A7:CDA1             dw F000 ; Max amplitude - dying wavy Phantoon
+$A7:CDA3             dw 0008 ; Wavy Phantoon phase delta
 }
 
 
-;;; $CDA5: Lookup table used by $DD9B (Phantoon shot) when eye stays open to set $0FEA ;;;
+;;; $CDA5: Values for $0FEA ;;;
 {
+; Unknown purpose, $0FEA is never read, written by Phantoon enemy shot
 $A7:CDA5             db 06, 06, 08, 08, 06, 08, 06, 08
 }
 
 
-;;; $CDAD: Phantoon movement table when raining fireballs ;;;
+;;; $CDAD: Phantoon position table for flame rain ;;;
 {
-;                        ________________ Index into Phantoon figure-8 movement table
-;                       |     ___________ Initial x coordinate
-;                       |    |     ______ Initial y coordinate
-;                       |    |    |     _ Always zero
-;                       |    |    |    |
-;                       CDAD CDAF CDB1 xxxx
-$A7:CDAD             dw 0001,0080,0060,0000,
-                        0047,00A8,0040,0000,
-                        0088,00D0,0060,0000,
-                        00C9,00A8,0080,0000,
-                        0001,0080,0060,0000,
-                        014E,0058,0040,0000,
-                        018F,0030,0060,0000,
-                        01D1,0058,0080,0000
+;                        _____________________ Phantoon figure-8 movement index
+;                       |      _______________ X position
+;                       |     |      _________ Y position
+;                       |     |     |
+$A7:CDAD             dw 0001, 0080, 0060, 0000,
+                        0047, 00A8, 0040, 0000,
+                        0088, 00D0, 0060, 0000,
+                        00C9, 00A8, 0080, 0000,
+                        0001, 0080, 0060, 0000,
+                        014E, 0058, 0040, 0000,
+                        018F, 0030, 0060, 0000,
+                        01D1, 0058, 0080, 0000
 }
 
 
-;;; $CDED: Sound effects ;;;
+;;; $CDED: Materialisation sound effects ;;;
 {
 ; Sound library 2
 ; Indexed by [$7E:9032] * 2
 $A7:CDED             dw 0079, 007A, 007B
+}
 }
 
 
@@ -5316,7 +5334,7 @@ $A7:CE28 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $A7:CE2B A9 78 00    LDA #$0078             ;\
 $A7:CE2E 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy function timer = 78h
 $A7:CE31 9E A8 0F    STZ $0FA8,x[$7E:0FA8]  ; Phantoon flame counter = 0
-$A7:CE34 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = 0
+$A7:CE34 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Phantoon starting flames activation flag = 0
 $A7:CE37 A9 00 00    LDA #$0000             ;\
 $A7:CE3A 8F 32 90 7E STA $7E9032[$7E:9032]  ;} >_<;
 $A7:CE3E 9C F4 0F    STZ $0FF4  [$7E:0FF4]  ;\
@@ -5349,9 +5367,9 @@ $A7:CE78 B9 8E CE    LDA $CE8E,y[$A7:CE8E]  ;|
 $A7:CE7B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
 $A7:CE7E A9 A9 D4    LDA #$D4A9             ;\
 $A7:CE81 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D4A9 (presumably only matters for enemy 0)
-$A7:CE84 9C 74 10    STZ $1074  [$7E:1074]  ; Phantoon mouth $0FB4 = 0
+$A7:CE84 9C 74 10    STZ $1074  [$7E:1074]  ; Phantoon semi-transparency HDMA object control = 0 (BG2 disabled)
 $A7:CE87 A9 FF FF    LDA #$FFFF             ;\
-$A7:CE8A 8D 6C 10    STA $106C  [$7E:106C]  ;} Phantoon mouth $0FAC = FFFFh
+$A7:CE8A 8D 6C 10    STA $106C  [$7E:106C]  ;} Phantoon casual flame pattern index = -1
 $A7:CE8D 6B          RTL
 
 ; Instruction list pointers
@@ -5362,7 +5380,7 @@ $A7:CE8E             dw CC41, ; Body
 }
 
 
-;;; $CE96: HDMA object instruction list ;;;
+;;; $CE96: HDMA object instruction list - Phantoon semi-transparency ;;;
 {
 $A7:CE96             dx 8655,A7,    ; HDMA table bank = $A7
                         0001,CD51,
@@ -5378,7 +5396,7 @@ $A7:CE96             dx 8655,A7,    ; HDMA table bank = $A7
 ; and these routines are only called for enemy 0 in the first place >_<;
 
 $A7:CEA6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A7:CEA9 20 0C CF    JSR $CF0C  [$A7:CF0C]  ; Execute $CF0C
+$A7:CEA9 20 0C CF    JSR $CF0C  [$A7:CF0C]  ; Broken nothingness
 $A7:CEAC F4 B1 CE    PEA $CEB1              ;\
 $A7:CEAF 7C B2 0F    JMP ($0FB2,x)[$A7:D4A9];} Execute [Phantoon function]
 
@@ -5393,8 +5411,7 @@ $A7:CEC4 9D BE 0F    STA $0FBE,x[$7E:0FBE]  ;|
 $A7:CEC7 9D FE 0F    STA $0FFE,x[$7E:0FFE]  ;} Phantoon Y positions = [Phantoon body Y position]
 $A7:CECA 9D 3E 10    STA $103E,x[$7E:103E]  ;/
 $A7:CECD AD F4 0F    LDA $0FF4  [$7E:0FF4]  ;\
-$A7:CED0 D0 1A       BNE $1A    [$CEEC]     ;} If [Phantoon eye parameter 1] != 0: return
-
+$A7:CED0 D0 1A       BNE $1A    [$CEEC]     ;} If wavy Phantoon is disabled:
 $A7:CED2 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A7:CED5 38          SEC                    ;|
 $A7:CED6 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;|
@@ -5403,7 +5420,7 @@ $A7:CEDA E9 D8 FF    SBC #$FFD8             ;|
 $A7:CEDD 85 B5       STA $B5    [$7E:00B5]  ;/
 $A7:CEDF AD 15 09    LDA $0915  [$7E:0915]  ;\
 $A7:CEE2 38          SEC                    ;|
-$A7:CEE3 FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;} BG2 Y scroll - [layer 1 Y position] - [Phantoon Y position] + 28h
+$A7:CEE3 FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;} BG2 Y scroll = [layer 1 Y position] - [Phantoon Y position] + 28h
 $A7:CEE6 38          SEC                    ;|
 $A7:CEE7 E9 D8 FF    SBC #$FFD8             ;|
 $A7:CEEA 85 B7       STA $B7    [$7E:00B7]  ;/
@@ -5412,27 +5429,27 @@ $A7:CEEC 6B          RTL
 }
 
 
-;;; $CEED:  ;;;
+;;; $CEED: Play Phantoon materialisation sound effect ;;;
 {
 $A7:CEED AF 32 90 7E LDA $7E9032[$7E:9032]  ;\
 $A7:CEF1 0A          ASL A                  ;|
-$A7:CEF2 A8          TAY                    ;} Queue sound [$CDED + [$7E:9032] * 2], sound library 2, max queued sounds allowed = 6
+$A7:CEF2 A8          TAY                    ;} Queue sound [$CDED + [Phantoon materialisation sound effect index] * 2], sound library 2, max queued sounds allowed = 6
 $A7:CEF3 B9 ED CD    LDA $CDED,y[$A7:CDED]  ;|
 $A7:CEF6 22 CB 90 80 JSL $8090CB[$80:90CB]  ;/
-$A7:CEFA AF 32 90 7E LDA $7E9032[$7E:9032]
-$A7:CEFE 1A          INC A
-$A7:CEFF C9 03 00    CMP #$0003
-$A7:CF02 30 03       BMI $03    [$CF07]
-$A7:CF04 A9 00 00    LDA #$0000
-
-$A7:CF07 8F 32 90 7E STA $7E9032[$7E:9032]
+$A7:CEFA AF 32 90 7E LDA $7E9032[$7E:9032]  ;\
+$A7:CEFE 1A          INC A                  ;|
+$A7:CEFF C9 03 00    CMP #$0003             ;|
+$A7:CF02 30 03       BMI $03    [$CF07]     ;} Phantoon materialisation sound effect index = ([Phantoon materialisation sound effect index] + 1) % 3
+$A7:CF04 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A7:CF07 8F 32 90 7E STA $7E9032[$7E:9032]  ;/
 $A7:CF0B 60          RTS
 }
 
 
-;;; $CF0C:  ;;;
+;;; $CF0C: Broken nothingness ;;;
 {
-; This code doesn't do anything about it tries to modify $7E:9030 and forgot the $7E bit...
+; This code doesn't do anything, it tries to modify $7E:9030 and forgot the $7E bit... and $7E:9030 is never read anywhere anyway
 $A7:CF0C 8A          TXA                    ;\
 $A7:CF0D D0 17       BNE $17    [$CF26]     ;} >_<;
 $A7:CF0F A5 8F       LDA $8F    [$7E:008F]  ;\
@@ -5450,43 +5467,48 @@ $A7:CF26 60          RTS
 }
 
 
-;;; $CF27:  ;;;
+;;; $CF27: Grow/shrink Phantoon wave amplitude ;;;
 {
-$A7:CF27 AD 70 10    LDA $1070  [$7E:1070]
-$A7:CF2A D0 20       BNE $20    [$CF4C]
+;; Parameters:
+;;     $12: Amplitude delta
+;;     $14: Max amplitude
+;; Returns:
+;;     Carry: Set if completed wave cycle (amplitude has decreased below 0)
+$A7:CF27 AD 70 10    LDA $1070  [$7E:1070]  ;\
+$A7:CF2A D0 20       BNE $20    [$CF4C]     ;} If [wavy Phantoon phase delta direction] = growing:
 $A7:CF2C A5 14       LDA $14    [$7E:0014]
 $A7:CF2E 29 00 FF    AND #$FF00
 $A7:CF31 EB          XBA
 $A7:CF32 85 16       STA $16    [$7E:0016]
-$A7:CF34 AD 6E 10    LDA $106E  [$7E:106E]
-$A7:CF37 18          CLC
-$A7:CF38 65 12       ADC $12    [$7E:0012]
-$A7:CF3A 8D 6E 10    STA $106E  [$7E:106E]
-$A7:CF3D 29 00 FF    AND #$FF00
-$A7:CF40 EB          XBA
-$A7:CF41 C5 16       CMP $16    [$7E:0016]
-$A7:CF43 30 17       BMI $17    [$CF5C]
-$A7:CF45 A5 14       LDA $14    [$7E:0014]
-$A7:CF47 8D 6E 10    STA $106E  [$7E:106E]
-$A7:CF4A 80 10       BRA $10    [$CF5C]
+$A7:CF34 AD 6E 10    LDA $106E  [$7E:106E]  ;\
+$A7:CF37 18          CLC                    ;|
+$A7:CF38 65 12       ADC $12    [$7E:0012]  ;} Wavy Phantoon amplitude += [$12]
+$A7:CF3A 8D 6E 10    STA $106E  [$7E:106E]  ;/
+$A7:CF3D 29 00 FF    AND #$FF00             ;\
+$A7:CF40 EB          XBA                    ;|
+$A7:CF41 C5 16       CMP $16    [$7E:0016]  ;} If [wavy Phantoon amplitude] / 100h < [$14] / 100h: return carry clear
+$A7:CF43 30 17       BMI $17    [$CF5C]     ;/
+$A7:CF45 A5 14       LDA $14    [$7E:0014]  ;\
+$A7:CF47 8D 6E 10    STA $106E  [$7E:106E]  ;} Wavy Phantoon amplitude = [$14]
+$A7:CF4A 80 10       BRA $10    [$CF5C]     ; Return carry clear
 
-$A7:CF4C AD 6E 10    LDA $106E  [$7E:106E]
-$A7:CF4F 38          SEC
-$A7:CF50 E5 12       SBC $12    [$7E:0012]
-$A7:CF52 8D 6E 10    STA $106E  [$7E:106E]
-$A7:CF55 B0 05       BCS $05    [$CF5C]
-$A7:CF57 9C 6E 10    STZ $106E  [$7E:106E]
-$A7:CF5A 38          SEC
-$A7:CF5B 60          RTS
+$A7:CF4C AD 6E 10    LDA $106E  [$7E:106E]  ;\
+$A7:CF4F 38          SEC                    ;|
+$A7:CF50 E5 12       SBC $12    [$7E:0012]  ;} Wavy Phantoon amplitude -= [$12]
+$A7:CF52 8D 6E 10    STA $106E  [$7E:106E]  ;/
+$A7:CF55 B0 05       BCS $05    [$CF5C]     ; If [wavy Phantoon amplitude] >= 0: return carry clear
+$A7:CF57 9C 6E 10    STZ $106E  [$7E:106E]  ; Wavy Phantoon amplitude = 0
+$A7:CF5A 38          SEC                    ;\
+$A7:CF5B 60          RTS                    ;} Return carry set
 
 $A7:CF5C 18          CLC
 $A7:CF5D 60          RTS
 }
 
 
-;;; $CF5E:  ;;;
+;;; $CF5E: Spawn casual flame ;;;
 {
-$A7:CF5E A9 00 00    LDA #$0000
+$A7:CF5E A9 00 00    LDA #$0000             ; A = 0
 $A7:CF61 A0 29 9C    LDY #$9C29             ;\
 $A7:CF64 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon destroyable flames enemy projectile
 $A7:CF68 A9 1D 00    LDA #$001D             ;\
@@ -5495,21 +5517,19 @@ $A7:CF6F 60          RTS
 }
 
 
-;;; $CF70: Spawn 8 fireballs when Phantoon's eye opens after figure-8 movement ;;;
+;;; $CF70: Phantoon materialisation flame spiral ;;;
 {
-; Called by:
-;     $D5E7:
 $A7:CF70 A0 07 00    LDY #$0007             ; Y = 8
 
 ; LOOP
 $A7:CF73 5A          PHY                    ;\
 $A7:CF74 98          TYA                    ;|
-$A7:CF75 09 00 06    ORA #$0600             ;} Spawn Phantoon destroyable flames enemy projectile
-$A7:CF78 A0 29 9C    LDY #$9C29             ;|
+$A7:CF75 09 00 06    ORA #$0600             ;|
+$A7:CF78 A0 29 9C    LDY #$9C29             ;} Spawn Phantoon destroyable flames enemy projectile with parameter 600h | [Y]
 $A7:CF7B 22 27 80 86 JSL $868027[$86:8027]  ;|
 $A7:CF7F 7A          PLY                    ;/
-$A7:CF80 88          DEY                    ; Y -= 1
-$A7:CF81 10 F0       BPL $F0    [$CF73]     ; If [Y] >= 0 go to LOOP
+$A7:CF80 88          DEY                    ; Decrement Y
+$A7:CF81 10 F0       BPL $F0    [$CF73]     ; If [Y] >= 0: go to LOOP
 
 $A7:CF83 A9 28 00    LDA #$0028             ;\
 $A7:CF86 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 28h, sound library 3, max queued sounds allowed = 6 (Phantoon materialises attack)
@@ -5517,14 +5537,10 @@ $A7:CF8A 60          RTS
 }
 
 
-;;; $CF8B: Rain fireballs ;;;
+;;; $CF8B: Spawn flame rain enemy projectiles ;;;
 {
 ;; Parameter:
-;;     [A] A number 0-7 indicating where to leave a gap
-
-; Called by:
-;     $D82A:
-;     $D7F7:
+;;     A: Pattern index. Range 0..7. Decides the placement of the first flame
 
 ; Uses a lookup table ($CFC2) to determine where to leave a gap.
 ;
@@ -5541,88 +5557,89 @@ $A7:CF8A 60          RTS
 ; 6   | 1     | @@.@@@@@@
 ; 7   | 3     | @@@@.@@@@
 ;
-$A7:CF8B A8          TAY
-$A7:CF8C B9 C2 CF    LDA $CFC2,y[$A7:CFC4]
-$A7:CF8F 29 FF 00    AND #$00FF
-$A7:CF92 A8          TAY
+$A7:CF8B A8          TAY                    ;\
+$A7:CF8C B9 C2 CF    LDA $CFC2,y[$A7:CFC4]  ;|
+$A7:CF8F 29 FF 00    AND #$00FF             ;} Y = [$CFC2 + [A]] (position)
+$A7:CF92 A8          TAY                    ;/
 $A7:CF93 A9 07 00    LDA #$0007             ;\
-$A7:CF96 85 12       STA $12    [$7E:0012]  ;} $12 = 7 (number of fireballs to spawn, minus one)
+$A7:CF96 85 12       STA $12    [$7E:0012]  ;} $12 = 7 (loop counter)
 $A7:CF98 A9 10 00    LDA #$0010             ;\
-$A7:CF9B 85 14       STA $14    [$7E:0014]  ;} $14 = 16 (x pos of next fireball)
+$A7:CF9B 85 14       STA $14    [$7E:0014]  ;} $14 = 10h (fall time / 8 << 4)
 
 ; LOOP
 $A7:CF9D 98          TYA                    ;\
 $A7:CF9E 09 00 04    ORA #$0400             ;|
-$A7:CFA1 05 14       ORA $14    [$7E:0014]  ;} A = Y | 0400h | $14
+$A7:CFA1 05 14       ORA $14    [$7E:0014]  ;} A = 400h | [$14] | [Y]
 $A7:CFA3 5A          PHY                    ;\
 $A7:CFA4 A0 29 9C    LDY #$9C29             ;|
 $A7:CFA7 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon destroyable flames enemy projectile
 $A7:CFAB 7A          PLY                    ;/
-$A7:CFAC C8          INY                    ; Y += 1
-$A7:CFAD C0 09 00    CPY #$0009             ;\
-$A7:CFB0 30 03       BMI $03    [$CFB5]     ;|
-$A7:CFB2 A0 00 00    LDY #$0000             ;} If [Y] >= 9 then Y = 0
+$A7:CFAC C8          INY                    ;\
+$A7:CFAD C0 09 00    CPY #$0009             ;|
+$A7:CFB0 30 03       BMI $03    [$CFB5]     ;} Y = ([Y] + 1) % 9:
+$A7:CFB2 A0 00 00    LDY #$0000             ;/
 
 $A7:CFB5 A5 14       LDA $14    [$7E:0014]  ;\
 $A7:CFB7 18          CLC                    ;|
-$A7:CFB8 69 10 00    ADC #$0010             ;|
-$A7:CFBB 85 14       STA $14    [$7E:0014]  ;} $14 += 16
-$A7:CFBD C6 12       DEC $12    [$7E:0012]  ; $12 -= 1
-$A7:CFBF 10 DC       BPL $DC    [$CF9D]     ; If $12 > 0 go to LOOP
+$A7:CFB8 69 10 00    ADC #$0010             ;} $14 += 10h
+$A7:CFBB 85 14       STA $14    [$7E:0014]  ;/
+$A7:CFBD C6 12       DEC $12    [$7E:0012]  ; Decrement $12
+$A7:CFBF 10 DC       BPL $DC    [$CF9D]     ; If [$12] > 0: go to LOOP
 $A7:CFC1 60          RTS
 
+; Position of first flame
 $A7:CFC2             db 05, 07, 00, 07, 05, 03, 01, 03
 }
 
 
-;;; $CFCA:  ;;;
+;;; $CFCA: Handle casual flames ;;;
 {
-$A7:CFCA DE 6A 10    DEC $106A,x[$7E:106A]  ; Decrement enemy ([X] + 3) $0FAA
+$A7:CFCA DE 6A 10    DEC $106A,x[$7E:106A]  ; Decrement Phantoon casual flame timer
 $A7:CFCD F0 02       BEQ $02    [$CFD1]     ;\
-$A7:CFCF 10 6D       BPL $6D    [$D03E]     ;} If [enemy ([X] + 3) $0FAA] > 0: return
+$A7:CFCF 10 6D       BPL $6D    [$D03E]     ;} If [Phantoon casual flame timer] > 0: return
 
 $A7:CFD1 BD 6C 10    LDA $106C,x[$7E:106C]  ;\
-$A7:CFD4 10 26       BPL $26    [$CFFC]     ;} If [enemy ([X] + 3) $0FAC] < 0:
+$A7:CFD4 10 26       BPL $26    [$CFFC]     ;} If [Phantoon casual flame pattern index] < 0:
 $A7:CFD6 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:CFDA 29 03 00    AND #$0003             ;\
-$A7:CFDD 9D 68 10    STA $1068,x[$7E:1068]  ;} A = enemy ([X] + 3) $0FA8 = [random number] % 4
+$A7:CFDD 9D 68 10    STA $1068,x[$7E:1068]  ;} Phantoon casual flame pattern = [random number] % 4
 $A7:CFE0 0A          ASL A                  ;\
 $A7:CFE1 A8          TAY                    ;|
-$A7:CFE2 B9 FD CC    LDA $CCFD,y[$A7:CD03]  ;} Y = [$CCFD + [A] * 2]
-$A7:CFE5 A8          TAY                    ;/
-$A7:CFE6 B9 00 00    LDA $0000,y[$A7:CD2F]  ;\
-$A7:CFE9 9D 6C 10    STA $106C,x[$7E:106C]  ;} Enemy ([X] + 3) $0FAC = [[Y]]
+$A7:CFE2 B9 FD CC    LDA $CCFD,y[$A7:CD03]  ;|
+$A7:CFE5 A8          TAY                    ;} Phantoon casual flame pattern index = [[$CCFD + [Phantoon casual flame pattern] * 2]]
+$A7:CFE6 B9 00 00    LDA $0000,y[$A7:CD2F]  ;|
+$A7:CFE9 9D 6C 10    STA $106C,x[$7E:106C]  ;/
 $A7:CFEC 0A          ASL A                  ;\
 $A7:CFED 85 12       STA $12    [$7E:0012]  ;|
 $A7:CFEF 98          TYA                    ;|
 $A7:CFF0 18          CLC                    ;|
-$A7:CFF1 65 12       ADC $12    [$7E:0012]  ;} Enemy ([X] + 3) $0FAA = [[Y] + [[Y]] * 2 + 2]
+$A7:CFF1 65 12       ADC $12    [$7E:0012]  ;} Phantoon casual flame timer = [[$CCFD + [Phantoon casual flame pattern] * 2] + 2 + [Phantoon casual flame pattern index] * 2]
 $A7:CFF3 A8          TAY                    ;|
 $A7:CFF4 B9 02 00    LDA $0002,y[$A7:CD3F]  ;|
 $A7:CFF7 9D 6A 10    STA $106A,x[$7E:106A]  ;/
 $A7:CFFA 80 42       BRA $42    [$D03E]     ; Return
 
-$A7:CFFC DE 6C 10    DEC $106C,x[$7E:106C]  ; Decrement enemy ([X] + 3) $0FAC
+$A7:CFFC DE 6C 10    DEC $106C,x[$7E:106C]  ; Decrement Phantoon casual flame pattern index
 $A7:CFFF F0 02       BEQ $02    [$D003]     ;\
-$A7:D001 10 17       BPL $17    [$D01A]     ;} If [enemy ([X] + 3) $0FAA] <= 0:
+$A7:D001 10 17       BPL $17    [$D01A]     ;} If [Phantoon casual flame pattern index] <= 0:
 $A7:D003 A9 FF FF    LDA #$FFFF             ;\
-$A7:D006 9D 6C 10    STA $106C,x[$7E:106C]  ;} Enemy ([X] + 3) $0FAC = FFFFh
+$A7:D006 9D 6C 10    STA $106C,x[$7E:106C]  ;} Phantoon casual flame pattern index = FFFFh
 $A7:D009 BD 68 10    LDA $1068,x[$7E:1068]  ;\
 $A7:D00C 0A          ASL A                  ;|
 $A7:D00D A8          TAY                    ;|
-$A7:D00E B9 FD CC    LDA $CCFD,y[$A7:CD03]  ;} Enemy ([X] + 3) $0FAA = [[$CCFD + [enemy ([X] + 3) $0FA8] * 2] + 2]
+$A7:D00E B9 FD CC    LDA $CCFD,y[$A7:CD03]  ;} Phantoon casual flame timer = [[$CCFD + [Phantoon casual flame pattern] * 2] + 2]
 $A7:D011 A8          TAY                    ;|
 $A7:D012 B9 02 00    LDA $0002,y[$A7:CD31]  ;|
 $A7:D015 9D 6A 10    STA $106A,x[$7E:106A]  ;/
 $A7:D018 80 18       BRA $18    [$D032]
 
-$A7:D01A BD 6C 10    LDA $106C,x[$7E:106C]  ;\ Else ([enemy ([X] + 3) $0FAA] > 0):
+$A7:D01A BD 6C 10    LDA $106C,x[$7E:106C]  ;\ Else ([Phantoon casual flame pattern index] > 0):
 $A7:D01D 0A          ASL A                  ;|
 $A7:D01E 85 12       STA $12    [$7E:0012]  ;|
 $A7:D020 BD 68 10    LDA $1068,x[$7E:1068]  ;|
 $A7:D023 0A          ASL A                  ;|
 $A7:D024 A8          TAY                    ;|
-$A7:D025 B9 FD CC    LDA $CCFD,y[$A7:CD03]  ;} Enemy ([X] + 3) $0FAA = [[$CCFD + [enemy ([X] + 3) $0FA8] * 2] + [enemy ([X] + 3) $0FAC] + 2]
+$A7:D025 B9 FD CC    LDA $CCFD,y[$A7:CD03]  ;} Phantoon casual flame timer = [[$CCFD + [Phantoon casual flame pattern] * 2] + 2 + [Phantoon casual flame pattern index] * 2]
 $A7:D028 18          CLC                    ;|
 $A7:D029 65 12       ADC $12    [$7E:0012]  ;|
 $A7:D02B A8          TAY                    ;|
@@ -5630,538 +5647,525 @@ $A7:D02C B9 02 00    LDA $0002,y[$A7:CD3D]  ;|
 $A7:D02F 9D 6A 10    STA $106A,x[$7E:106A]  ;/
 
 $A7:D032 A9 01 00    LDA #$0001             ;\
-$A7:D035 9D 54 10    STA $1054,x[$7E:1054]  ;} Enemy ([X] + 3) instruction timer = 1
+$A7:D035 9D 54 10    STA $1054,x[$7E:1054]  ;} Phantoon mouth instruction timer = 1
 $A7:D038 A9 EB CC    LDA #$CCEB             ;\
-$A7:D03B 9D 52 10    STA $1052,x[$7E:1052]  ;} Enemy ([X] + 3) instruction list pointer = $CCEB
+$A7:D03B 9D 52 10    STA $1052,x[$7E:1052]  ;} Phantoon mouth instruction list pointer = $CCEB (spawn flame)
 
 $A7:D03E 60          RTS
 }
 
 
-;;; $D03F: Start tracking Samus w/ eye and initialize timer to close eye ;;;
+;;; $D03F: Set up eye open Phantoon state ;;;
 {
-; Called by:
-;     Instruction list $CC53:
 $A7:D03F 9C 28 10    STZ $1028  [$7E:1028]  ; Clear swooping flag
 $A7:D042 A9 01 00    LDA #$0001             ;\
-$A7:D045 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy instruction timer = 1
+$A7:D045 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:D048 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phantoon eye instruction timer = 1
 $A7:D04B A9 4D CC    LDA #$CC4D             ;
-$A7:D04E 8D 92 0F    STA $0F92  [$7E:0F92]  ; Enemy instruction = $CC4D (make eye vulnerable)
+$A7:D04E 8D 92 0F    STA $0F92  [$7E:0F92]  ; Phantoon body instruction list pointer = $CC4D (eye hitbox only)
 $A7:D051 A9 9D CC    LDA #$CC9D             ;\
-$A7:D054 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction = $CC9D (open eye and play sound)
+$A7:D054 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC9D (eyeball - centred)
 $A7:D057 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A7:D05A 29 FF FB    AND #$FBFF             ;|
-$A7:D05D 8D 86 0F    STA $0F86  [$7E:0F86]  ;} Start tracking Samus
-$A7:D060 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number (0-7)
+$A7:D05A 29 FF FB    AND #$FBFF             ;} Set Phantoon body as tangible
+$A7:D05D 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A7:D060 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:D064 29 07 00    AND #$0007             ;\
 $A7:D067 0A          ASL A                  ;|
-$A7:D068 A8          TAY                    ;|
+$A7:D068 A8          TAY                    ;} Phantoon function timer = [$CD41 + [random number] % 8 * 2]
 $A7:D069 B9 41 CD    LDA $CD41,y[$A7:CD4F]  ;|
-$A7:D06C 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} State timer $0FB0 = [$CD41 + [random number] * 2]
+$A7:D06C 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
 $A7:D06F A9 0D D6    LDA #$D60D             ;\
-$A7:D072 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Next state is $D60D
+$A7:D072 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Phantoon function = $D60D (figure-8 - vulnerable window)
 $A7:D075 60          RTS
 }
 
 
-;;; $D076: Pick new pattern for round two or later ;;;
+;;; $D076: Pick new Phantoon pattern ;;;
 {
-; Called by:
-;     Instruction list $CC81: close eye incrementally and pick new pattern
-;     State $D6E2: pick new pattern after phantoon is shot
-;     State $D73F: phantoon is visible and raining fireballs
+; When called by $D6E2 (hiding before figure-8 - place Phantoon), the Phantoon function set here is ignored,
+; it is only used by the call from the Phantoon eye instruction list $CC81 (close and pick new pattern)
 $A7:D076 A9 3C 00    LDA #$003C             ;\
-$A7:D079 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} State timer $0FB0 = 60
+$A7:D079 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Phantoon function timer = 60
 $A7:D07C 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:D080 29 07 00    AND #$0007             ;\
 $A7:D083 0A          ASL A                  ;|
-$A7:D084 A8          TAY                    ;} Eye timer $0FE8 = [$CD53 + [random number] * 2]
+$A7:D084 A8          TAY                    ;} Phantoon eye timer = [$CD53 + [random number] % 8 * 2]
 $A7:D085 B9 53 CD    LDA $CD53,y[$A7:CD5B]  ;|
 $A7:D088 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;/ 
 $A7:D08B AD B6 05    LDA $05B6  [$7E:05B6]  ;\
-$A7:D08E 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0 go to BRANCH_FRAME_COUNTER_IS_ODD
+$A7:D08E 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0: go to BRANCH_REVERSED
 $A7:D091 D0 25       BNE $25    [$D0B8]     ;/
-
-; BRANCH_FRAME_COUNTER_IS_EVEN
 $A7:D093 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
-$A7:D096 F0 0F       BEQ $0F    [$D0A7]     ;|
-$A7:D098 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;|
-$A7:D09B 1A          INC A                  ;} Reverse direction if current direction is
-$A7:D09C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} not right-side-clockwise
-$A7:D09F C9 16 02    CMP #$0216             ;|
+$A7:D096 F0 0F       BEQ $0F    [$D0A7]     ;} If Phantoon movement is reversed:
+$A7:D098 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A7:D09B 1A          INC A                  ;|
+$A7:D09C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;|
+$A7:D09F C9 16 02    CMP #$0216             ;} Phantoon movement index = ([Phantoon movement index] + 1) % 216h
 $A7:D0A2 30 03       BMI $03    [$D0A7]     ;|
 $A7:D0A4 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ;/
 
 $A7:D0A7 A9 01 00    LDA #$0001             ;\
-$A7:D0AA 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;|
-$A7:D0AD 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;} Initialize movement cycle in right-side-clockwise direction
-$A7:D0B0 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ;|
-$A7:D0B3 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ;/
-$A7:D0B6 80 23       BRA $23    [$D0DB]     ; Go to BRANCH_NEXT_STATE
+$A7:D0AA 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = 1.0
+$A7:D0AD 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D0B0 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; Phantoon movement stage = 0
+$A7:D0B3 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ; Phantoon reversed movement flag = 0
+$A7:D0B6 80 23       BRA $23    [$D0DB]     ; Go to BRANCH_MERGE
 
-; BRANCH_FRAME_COUNTER_IS_ODD
+; BRANCH_REVERSED
 $A7:D0B8 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
-$A7:D0BB D0 0F       BNE $0F    [$D0CC]     ;|
-$A7:D0BD AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;|
-$A7:D0C0 3A          DEC A                  ;} Reverse direction if current direction is
-$A7:D0C1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} not left-side-clockwise
-$A7:D0C4 10 06       BPL $06    [$D0CC]     ;|
+$A7:D0BB D0 0F       BNE $0F    [$D0CC]     ;} If Phantoon movement is not reversed:
+$A7:D0BD AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A7:D0C0 3A          DEC A                  ;|
+$A7:D0C1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;|
+$A7:D0C4 10 06       BPL $06    [$D0CC]     ;} Phantoon movement index = ([Phantoon movement index] - 1) % 216h
 $A7:D0C6 A9 15 02    LDA #$0215             ;|
 $A7:D0C9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;/
 
 $A7:D0CC 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ;\
-$A7:D0CF 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;|
-$A7:D0D2 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ;} Initialize movement cycle in left-side-clockwise direction
-$A7:D0D5 A9 01 00    LDA #$0001             ;|
-$A7:D0D8 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;/
+$A7:D0CF 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;} Phantoon speed = 0.0
+$A7:D0D2 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; Phantoon movement stage = 0
+$A7:D0D5 A9 01 00    LDA #$0001             ;\
+$A7:D0D8 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Phantoon reversed movement flag = 1
 
-; BRANCH_NEXT_STATE
+; BRANCH_MERGE
 $A7:D0DB AD B6 0F    LDA $0FB6  [$7E:0FB6]  ;\
-$A7:D0DE D0 07       BNE $07    [$D0E7]     ;} If Phantoon is invisible go to BRANCH_INVISIBLE
-
-; BRANCH_VISIBLE
+$A7:D0DE D0 07       BNE $07    [$D0E7]     ;} If flame rain now triggered:
 $A7:D0E0 A9 E7 D5    LDA #$D5E7             ;\
-$A7:D0E3 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Next state is $D5E7
-$A7:D0E6 60          RTS
+$A7:D0E3 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Phantoon function = $D5E7 (figure-8)
+$A7:D0E6 60          RTS                    ; Return
 
-; BRANCH_INVISIBLE
-$A7:D0E7 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Set Phantoon fade complete flag to 0
+$A7:D0E7 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:D0EA A9 2A D8    LDA #$D82A             ;\
-$A7:D0ED 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Next state is $D82A
+$A7:D0ED 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Phantoon function = $D82A (flame rain)
 $A7:D0F0 60          RTS
 }
 
 
 ;;; $D0F1: Adjust speed and move Phantoon in figure-8 ;;;
 {
-; Called by:
-;     State $D5E7: Figure-8 then open eye
-;     State $D82A: Open eye after being invisible
 $A7:D0F1 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
-$A7:D0F4 D0 0F       BNE $0F    [$D105]     ;} If direction is right-side-clockwise go to BRANCH_RIGHT_SIDE_CLOCKWISE
+$A7:D0F4 D0 0F       BNE $0F    [$D105]     ;} If Phantoon movement is not reversed:
+$A7:D0F6 20 14 D1    JSR $D114  [$A7:D114]  ; Update figure-8 Phantoon speed
+$A7:D0F9 A0 D2 E3    LDY #$E3D2             ;\
+$A7:D0FC A9 16 02    LDA #$0216             ;|
+$A7:D0FF 85 14       STA $14    [$7E:0014]  ;} Move Phantoon in figure-8
+$A7:D101 20 15 D2    JSR $D215  [$A7:D215]  ;/
+$A7:D104 60          RTS                    ; Return
 
-; BRANCH_LEFT_SIDE_CLOCKWISE
-$A7:D0F6 20 14 D1    JSR $D114  [$A7:D114]  ; Adjust phantoon speed (left-side-clockwise direction)
-$A7:D0F9 A0 D2 E3    LDY #$E3D2             ; Y = address of Phantoon movement data
-$A7:D0FC A9 16 02    LDA #$0216             ;\
-$A7:D0FF 85 14       STA $14    [$7E:0014]  ;} $14 = 216h
-$A7:D101 20 15 D2    JSR $D215  [$A7:D215]  ; Move phantoon in figure-8 (left-side-clockwise direction)
-$A7:D104 60          RTS
-
-; BRANCH_RIGHT_SIDE_CLOCKWISE
-$A7:D105 20 93 D1    JSR $D193  [$A7:D193]  ; Adjust phantoon speed (right-side-clockwise direction)
-$A7:D108 A0 D2 E3    LDY #$E3D2             ; Y = address of Phantoon movement data
-$A7:D10B A9 15 02    LDA #$0215             ;\
-$A7:D10E 85 14       STA $14    [$7E:0014]  ;} $14 = 215h
-$A7:D110 20 71 D2    JSR $D271  [$A7:D271]  ; Move phantoon in figure-8 (right-side-clockwise direction)
+$A7:D105 20 93 D1    JSR $D193  [$A7:D193]  ; Update reversed figure-8 Phantoon speed
+$A7:D108 A0 D2 E3    LDY #$E3D2             ;\
+$A7:D10B A9 15 02    LDA #$0215             ;|
+$A7:D10E 85 14       STA $14    [$7E:0014]  ;} Move Phantoon in reverse figure-8
+$A7:D110 20 71 D2    JSR $D271  [$A7:D271]  ;/
 $A7:D113 60          RTS
 }
 
 
-;;; $D114: Adjust Phantoon speed (left-side-clockwise direction) ;;;
+;;; $D114: Update figure-8 Phantoon speed ;;;
 {
-; Called by:
-;     $D0F1: Adjust speed and move Phantoon in figure-8
-$A7:D114 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A7:D117 F0 07       BEQ $07    [$D120]
-$A7:D119 89 01 00    BIT #$0001
-$A7:D11C D0 28       BNE $28    [$D146]
-$A7:D11E 80 4B       BRA $4B    [$D16B]
+$A7:D114 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A7:D117 F0 07       BEQ $07    [$D120]     ;} If [Phantoon movement stage] = 0: go to BRANCH_0
+$A7:D119 89 01 00    BIT #$0001             ;\
+$A7:D11C D0 28       BNE $28    [$D146]     ;} If [Phantoon movement stage] & 1 != 0: go to BRANCH_1
+$A7:D11E 80 4B       BRA $4B    [$D16B]     ; Go to BRANCH_2
 
-$A7:D120 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A7:D123 18          CLC
-$A7:D124 6D 73 CD    ADC $CD73  [$A7:CD73]
-$A7:D127 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A7:D12A AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D12D 6D 75 CD    ADC $CD75  [$A7:CD75]
-$A7:D130 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D133 CD 7B CD    CMP $CD7B  [$A7:CD7B]
-$A7:D136 30 0D       BMI $0D    [$D145]
-$A7:D138 AD 7B CD    LDA $CD7B  [$A7:CD7B]
-$A7:D13B 3A          DEC A
-$A7:D13C 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D13F 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A7:D142 EE AE 0F    INC $0FAE  [$7E:0FAE]
+; BRANCH_0
+$A7:D120 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A7:D123 18          CLC                    ;|
+$A7:D124 6D 73 CD    ADC $CD73  [$A7:CD73]  ;|
+$A7:D127 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Phantoon speed += 0.0600h
+$A7:D12A AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A7:D12D 6D 75 CD    ADC $CD75  [$A7:CD75]  ;|
+$A7:D130 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A7:D133 CD 7B CD    CMP $CD7B  [$A7:CD7B]  ;\
+$A7:D136 30 0D       BMI $0D    [$D145]     ;} If [Phantoon speed] >= 2:
+$A7:D138 AD 7B CD    LDA $CD7B  [$A7:CD7B]  ;\
+$A7:D13B 3A          DEC A                  ;|
+$A7:D13C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = 1.0
+$A7:D13F 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D142 EE AE 0F    INC $0FAE  [$7E:0FAE]  ; Increment Phantoon movement stage
 
-$A7:D145 60          RTS
+$A7:D145 60          RTS                    ; Return
 
-$A7:D146 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A7:D149 18          CLC
-$A7:D14A 6D 77 CD    ADC $CD77  [$A7:CD77]
-$A7:D14D 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A7:D150 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D153 6D 79 CD    ADC $CD79  [$A7:CD79]
-$A7:D156 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D159 CD 7D CD    CMP $CD7D  [$A7:CD7D]
-$A7:D15C 30 0C       BMI $0C    [$D16A]
-$A7:D15E AD 7D CD    LDA $CD7D  [$A7:CD7D]
-$A7:D161 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D164 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A7:D167 EE AE 0F    INC $0FAE  [$7E:0FAE]
+; BRANCH_1
+$A7:D146 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A7:D149 18          CLC                    ;|
+$A7:D14A 6D 77 CD    ADC $CD77  [$A7:CD77]  ;|
+$A7:D14D 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Phantoon speed += 0.1000h
+$A7:D150 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A7:D153 6D 79 CD    ADC $CD79  [$A7:CD79]  ;|
+$A7:D156 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A7:D159 CD 7D CD    CMP $CD7D  [$A7:CD7D]  ;\
+$A7:D15C 30 0C       BMI $0C    [$D16A]     ;} If [Phantoon speed] >= 7:
+$A7:D15E AD 7D CD    LDA $CD7D  [$A7:CD7D]  ;\
+$A7:D161 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = 7.0
+$A7:D164 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D167 EE AE 0F    INC $0FAE  [$7E:0FAE]  ; Increment Phantoon movement stage
 
-$A7:D16A 60          RTS
+$A7:D16A 60          RTS                    ; Return
 
-$A7:D16B AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A7:D16E 38          SEC
-$A7:D16F ED 77 CD    SBC $CD77  [$A7:CD77]
-$A7:D172 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A7:D175 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D178 ED 79 CD    SBC $CD79  [$A7:CD79]
-$A7:D17B 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D17E CD 7F CD    CMP $CD7F  [$A7:CD7F]
-$A7:D181 F0 02       BEQ $02    [$D185]
-$A7:D183 10 0D       BPL $0D    [$D192]
+; BRANCH_2
+$A7:D16B AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A7:D16E 38          SEC                    ;|
+$A7:D16F ED 77 CD    SBC $CD77  [$A7:CD77]  ;|
+$A7:D172 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Phantoon speed -= 0.1000h
+$A7:D175 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A7:D178 ED 79 CD    SBC $CD79  [$A7:CD79]  ;|
+$A7:D17B 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A7:D17E CD 7F CD    CMP $CD7F  [$A7:CD7F]  ;\
+$A7:D181 F0 02       BEQ $02    [$D185]     ;} If [Phantoon speed] > 0: return
+$A7:D183 10 0D       BPL $0D    [$D192]     ;/
 
-$A7:D185 AD 7F CD    LDA $CD7F  [$A7:CD7F]
-$A7:D188 1A          INC A
-$A7:D189 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D18C 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A7:D18F 9C AE 0F    STZ $0FAE  [$7E:0FAE]
+$A7:D185 AD 7F CD    LDA $CD7F  [$A7:CD7F]  ;\
+$A7:D188 1A          INC A                  ;|
+$A7:D189 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = 1.0
+$A7:D18C 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D18F 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; Phantoon movement stage = 0
 
 $A7:D192 60          RTS
 }
 
 
-;;; $D193: Adjust Phantoon speed (right-side-clockwise direction) ;;;
+;;; $D193: Update reversed figure-8 Phantoon speed ;;;
 {
-; Called by:
-;     $D0F1: Adjust speed and move Phantoon in figure-8
-$A7:D193 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A7:D196 F0 07       BEQ $07    [$D19F]
-$A7:D198 89 01 00    BIT #$0001
-$A7:D19B D0 2B       BNE $2B    [$D1C8]
-$A7:D19D 80 51       BRA $51    [$D1F0]
+$A7:D193 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A7:D196 F0 07       BEQ $07    [$D19F]     ;} If [Phantoon movement stage] = 0: go to BRANCH_0
+$A7:D198 89 01 00    BIT #$0001             ;\
+$A7:D19B D0 2B       BNE $2B    [$D1C8]     ;} If [Phantoon movement stage] & 1 != 0: go to BRANCH_1
+$A7:D19D 80 51       BRA $51    [$D1F0]     ; Go to BRANCH_2
 
-$A7:D19F AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A7:D1A2 38          SEC
-$A7:D1A3 ED 81 CD    SBC $CD81  [$A7:CD81]
-$A7:D1A6 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A7:D1A9 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D1AC ED 83 CD    SBC $CD83  [$A7:CD83]
-$A7:D1AF 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D1B2 CD 89 CD    CMP $CD89  [$A7:CD89]
-$A7:D1B5 F0 02       BEQ $02    [$D1B9]
-$A7:D1B7 10 0E       BPL $0E    [$D1C7]
+; BRANCH_0
+$A7:D19F AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A7:D1A2 38          SEC                    ;|
+$A7:D1A3 ED 81 CD    SBC $CD81  [$A7:CD81]  ;|
+$A7:D1A6 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Phantoon speed -= 0.0600h
+$A7:D1A9 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A7:D1AC ED 83 CD    SBC $CD83  [$A7:CD83]  ;|
+$A7:D1AF 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A7:D1B2 CD 89 CD    CMP $CD89  [$A7:CD89]  ;\
+$A7:D1B5 F0 02       BEQ $02    [$D1B9]     ;} If [Phantoon speed] > -2: return
+$A7:D1B7 10 0E       BPL $0E    [$D1C7]     ;/
 
-$A7:D1B9 AD 89 CD    LDA $CD89  [$A7:CD89]
-$A7:D1BC 1A          INC A
-$A7:D1BD 1A          INC A
-$A7:D1BE 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D1C1 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A7:D1C4 EE AE 0F    INC $0FAE  [$7E:0FAE]
+$A7:D1B9 AD 89 CD    LDA $CD89  [$A7:CD89]  ;\
+$A7:D1BC 1A          INC A                  ;|
+$A7:D1BD 1A          INC A                  ;} Phantoon speed = 0.0
+$A7:D1BE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;|
+$A7:D1C1 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D1C4 EE AE 0F    INC $0FAE  [$7E:0FAE]  ; Increment Phantoon movement stage
+                                            
+$A7:D1C7 60          RTS                    ; Return
 
-$A7:D1C7 60          RTS
+; BRANCH_1
+$A7:D1C8 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A7:D1CB 38          SEC                    ;|
+$A7:D1CC ED 85 CD    SBC $CD85  [$A7:CD85]  ;|
+$A7:D1CF 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Phantoon speed -= 0.1000h
+$A7:D1D2 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A7:D1D5 ED 87 CD    SBC $CD87  [$A7:CD87]  ;|
+$A7:D1D8 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A7:D1DB CD 8B CD    CMP $CD8B  [$A7:CD8B]  ;\
+$A7:D1DE F0 02       BEQ $02    [$D1E2]     ;} If [Phantoon speed] > -7: return
+$A7:D1E0 10 0D       BPL $0D    [$D1EF]     ;/
 
-$A7:D1C8 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A7:D1CB 38          SEC
-$A7:D1CC ED 85 CD    SBC $CD85  [$A7:CD85]
-$A7:D1CF 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A7:D1D2 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D1D5 ED 87 CD    SBC $CD87  [$A7:CD87]
-$A7:D1D8 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D1DB CD 8B CD    CMP $CD8B  [$A7:CD8B]
-$A7:D1DE F0 02       BEQ $02    [$D1E2]
-$A7:D1E0 10 0D       BPL $0D    [$D1EF]
+$A7:D1E2 AD 8B CD    LDA $CD8B  [$A7:CD8B]  ;\
+$A7:D1E5 1A          INC A                  ;|
+$A7:D1E6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = -6.0
+$A7:D1E9 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D1EC EE AE 0F    INC $0FAE  [$7E:0FAE]  ; Increment Phantoon movement stage
 
-$A7:D1E2 AD 8B CD    LDA $CD8B  [$A7:CD8B]
-$A7:D1E5 1A          INC A
-$A7:D1E6 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D1E9 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A7:D1EC EE AE 0F    INC $0FAE  [$7E:0FAE]
+$A7:D1EF 60          RTS                    ; Return
 
-$A7:D1EF 60          RTS
-
-$A7:D1F0 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A7:D1F3 18          CLC
-$A7:D1F4 6D 85 CD    ADC $CD85  [$A7:CD85]
-$A7:D1F7 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A7:D1FA AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D1FD 6D 87 CD    ADC $CD87  [$A7:CD87]
-$A7:D200 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D203 CD 8D CD    CMP $CD8D  [$A7:CD8D]
-$A7:D206 30 0C       BMI $0C    [$D214]
-$A7:D208 AD 8D CD    LDA $CD8D  [$A7:CD8D]
-$A7:D20B 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A7:D20E 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A7:D211 9C AE 0F    STZ $0FAE  [$7E:0FAE]
+; BRANCH_2
+$A7:D1F0 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A7:D1F3 18          CLC                    ;|
+$A7:D1F4 6D 85 CD    ADC $CD85  [$A7:CD85]  ;|
+$A7:D1F7 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Phantoon speed += 0.1000h
+$A7:D1FA AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A7:D1FD 6D 87 CD    ADC $CD87  [$A7:CD87]  ;|
+$A7:D200 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A7:D203 CD 8D CD    CMP $CD8D  [$A7:CD8D]  ;\
+$A7:D206 30 0C       BMI $0C    [$D214]     ;} If [Phantoon speed] >= 0:
+$A7:D208 AD 8D CD    LDA $CD8D  [$A7:CD8D]  ;\
+$A7:D20B 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = 0.0
+$A7:D20E 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D211 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; Phantoon movement stage = 0
 
 $A7:D214 60          RTS
 }
 
 
-;;; $D215: Move Phantoon in figure-8 (left-side-clockwise direction) ;;;
+;;; $D215: Move Phantoon in figure-8 ;;;
 {
-; Called by:
-;     $D0F1: Adjust speed and move Phantoon in figure-8
-$A7:D215 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D218 85 16       STA $16    [$7E:0016]
-$A7:D21A D0 01       BNE $01    [$D21D]
-$A7:D21C 60          RTS
+;; Parameters:
+;;     Y: $E3D2 (Phantoon movement data)
+;;     $14: 216h (size of Phantoon movement data)
+$A7:D215 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A7:D218 85 16       STA $16    [$7E:0016]  ;} $16 = [Phantoon speed]
+$A7:D21A D0 01       BNE $01    [$D21D]     ; If [Phantoon speed] = 0:
+$A7:D21C 60          RTS                    ; Return
 
+; LOOP
 $A7:D21D 5A          PHY
-$A7:D21E AD A8 0F    LDA $0FA8  [$7E:0FA8]
-$A7:D221 0A          ASL A
-$A7:D222 85 12       STA $12    [$7E:0012]
-$A7:D224 98          TYA
-$A7:D225 18          CLC
-$A7:D226 65 12       ADC $12    [$7E:0012]
-$A7:D228 A8          TAY
-$A7:D229 B9 00 00    LDA $0000,y[$A7:E4BE]
-$A7:D22C 29 FF 00    AND #$00FF
-$A7:D22F 89 80 00    BIT #$0080
-$A7:D232 F0 03       BEQ $03    [$D237]
-$A7:D234 09 00 FF    ORA #$FF00
-
-$A7:D237 85 12       STA $12    [$7E:0012]
-$A7:D239 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A7:D23C 18          CLC
-$A7:D23D 65 12       ADC $12    [$7E:0012]
-$A7:D23F 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A7:D242 B9 01 00    LDA $0001,y[$A7:E4BF]
-$A7:D245 29 FF 00    AND #$00FF
-$A7:D248 89 80 00    BIT #$0080
-$A7:D24B F0 03       BEQ $03    [$D250]
-$A7:D24D 09 00 FF    ORA #$FF00
-
-$A7:D250 85 12       STA $12    [$7E:0012]
-$A7:D252 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A7:D255 18          CLC
-$A7:D256 65 12       ADC $12    [$7E:0012]
-$A7:D258 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A7:D25B AD A8 0F    LDA $0FA8  [$7E:0FA8]
-$A7:D25E 1A          INC A
-$A7:D25F 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A7:D262 C5 14       CMP $14    [$7E:0014]
-$A7:D264 30 03       BMI $03    [$D269]
-$A7:D266 9C A8 0F    STZ $0FA8  [$7E:0FA8]
+$A7:D21E AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A7:D221 0A          ASL A                  ;|
+$A7:D222 85 12       STA $12    [$7E:0012]  ;|
+$A7:D224 98          TYA                    ;|
+$A7:D225 18          CLC                    ;|
+$A7:D226 65 12       ADC $12    [$7E:0012]  ;|
+$A7:D228 A8          TAY                    ;|
+$A7:D229 B9 00 00    LDA $0000,y[$A7:E4BE]  ;|
+$A7:D22C 29 FF 00    AND #$00FF             ;|
+$A7:D22F 89 80 00    BIT #$0080             ;} Phantoon body X position += ±[[Y] + [Phantoon movement data index] * 2]
+$A7:D232 F0 03       BEQ $03    [$D237]     ;|
+$A7:D234 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$A7:D237 85 12       STA $12    [$7E:0012]  ;|
+$A7:D239 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A7:D23C 18          CLC                    ;|
+$A7:D23D 65 12       ADC $12    [$7E:0012]  ;|
+$A7:D23F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A7:D242 B9 01 00    LDA $0001,y[$A7:E4BF]  ;\
+$A7:D245 29 FF 00    AND #$00FF             ;|
+$A7:D248 89 80 00    BIT #$0080             ;|
+$A7:D24B F0 03       BEQ $03    [$D250]     ;|
+$A7:D24D 09 00 FF    ORA #$FF00             ;|
+                                            ;} Phantoon body Y position += ±[[Y] + [Phantoon movement data index] * 2 + 1]
+$A7:D250 85 12       STA $12    [$7E:0012]  ;|
+$A7:D252 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A7:D255 18          CLC                    ;|
+$A7:D256 65 12       ADC $12    [$7E:0012]  ;|
+$A7:D258 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A7:D25B AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A7:D25E 1A          INC A                  ;} Increment Phantoon movement data index
+$A7:D25F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;/
+$A7:D262 C5 14       CMP $14    [$7E:0014]  ;\
+$A7:D264 30 03       BMI $03    [$D269]     ;} If [Phantoon movement data index] >= [$14]:
+$A7:D266 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ; Phantoon movement data index = 0
 
 $A7:D269 7A          PLY
-$A7:D26A C6 16       DEC $16    [$7E:0016]
-$A7:D26C F0 02       BEQ $02    [$D270]
-$A7:D26E 80 AD       BRA $AD    [$D21D]
+$A7:D26A C6 16       DEC $16    [$7E:0016]  ; Decrement $16
+$A7:D26C F0 02       BEQ $02    [$D270]     ; If [$16] != 0:
+$A7:D26E 80 AD       BRA $AD    [$D21D]     ; Go to LOOP
 
 $A7:D270 60          RTS
 }
 
 
-;;; $D271: Move Phantoon in figure-8 (right-side-clockwise direction) ;;;
+;;; $D271: Move Phantoon in reverse figure-8 ;;;
 {
-; Called by:
-;     $D0F1: Adjust speed and move Phantoon in figure-8
-$A7:D271 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A7:D274 49 FF FF    EOR #$FFFF
-$A7:D277 1A          INC A
-$A7:D278 85 16       STA $16    [$7E:0016]
-$A7:D27A D0 01       BNE $01    [$D27D]
-$A7:D27C 60          RTS
+;; Parameters:
+;;     Y: $E3D2 (Phantoon movement data)
+;;     $14: 215h (last index of Phantoon movement data)
+$A7:D271 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A7:D274 49 FF FF    EOR #$FFFF             ;|
+$A7:D277 1A          INC A                  ;} $16 = -[Phantoon speed]
+$A7:D278 85 16       STA $16    [$7E:0016]  ;/
+$A7:D27A D0 01       BNE $01    [$D27D]     ; If [Phantoon speed] = 0:
+$A7:D27C 60          RTS                    ; Return
 
+; LOOP
 $A7:D27D 5A          PHY
-$A7:D27E AD A8 0F    LDA $0FA8  [$7E:0FA8]
-$A7:D281 0A          ASL A
-$A7:D282 85 12       STA $12    [$7E:0012]
-$A7:D284 98          TYA
-$A7:D285 18          CLC
-$A7:D286 65 12       ADC $12    [$7E:0012]
-$A7:D288 A8          TAY
-$A7:D289 B9 00 00    LDA $0000,y[$A7:E7FC]
-$A7:D28C 29 FF 00    AND #$00FF
-$A7:D28F 89 80 00    BIT #$0080
-$A7:D292 F0 03       BEQ $03    [$D297]
-$A7:D294 09 00 FF    ORA #$FF00
-
-$A7:D297 85 12       STA $12    [$7E:0012]
-$A7:D299 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A7:D29C 38          SEC
-$A7:D29D E5 12       SBC $12    [$7E:0012]
-$A7:D29F 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A7:D2A2 B9 01 00    LDA $0001,y[$A7:E7FD]
-$A7:D2A5 29 FF 00    AND #$00FF
-$A7:D2A8 89 80 00    BIT #$0080
-$A7:D2AB F0 03       BEQ $03    [$D2B0]
-$A7:D2AD 09 00 FF    ORA #$FF00
-
-$A7:D2B0 85 12       STA $12    [$7E:0012]
-$A7:D2B2 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A7:D2B5 38          SEC
-$A7:D2B6 E5 12       SBC $12    [$7E:0012]
-$A7:D2B8 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A7:D2BB AD A8 0F    LDA $0FA8  [$7E:0FA8]
-$A7:D2BE 3A          DEC A
-$A7:D2BF 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A7:D2C2 10 05       BPL $05    [$D2C9]
-$A7:D2C4 A5 14       LDA $14    [$7E:0014]
-$A7:D2C6 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A7:D27E AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A7:D281 0A          ASL A                  ;|
+$A7:D282 85 12       STA $12    [$7E:0012]  ;|
+$A7:D284 98          TYA                    ;|
+$A7:D285 18          CLC                    ;|
+$A7:D286 65 12       ADC $12    [$7E:0012]  ;|
+$A7:D288 A8          TAY                    ;|
+$A7:D289 B9 00 00    LDA $0000,y[$A7:E7FC]  ;|
+$A7:D28C 29 FF 00    AND #$00FF             ;|
+$A7:D28F 89 80 00    BIT #$0080             ;} Phantoon body X position -= ±[[Y] + [Phantoon movement data index] * 2]
+$A7:D292 F0 03       BEQ $03    [$D297]     ;|
+$A7:D294 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$A7:D297 85 12       STA $12    [$7E:0012]  ;|
+$A7:D299 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A7:D29C 38          SEC                    ;|
+$A7:D29D E5 12       SBC $12    [$7E:0012]  ;|
+$A7:D29F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A7:D2A2 B9 01 00    LDA $0001,y[$A7:E7FD]  ;\
+$A7:D2A5 29 FF 00    AND #$00FF             ;|
+$A7:D2A8 89 80 00    BIT #$0080             ;|
+$A7:D2AB F0 03       BEQ $03    [$D2B0]     ;|
+$A7:D2AD 09 00 FF    ORA #$FF00             ;|
+                                            ;} Phantoon body Y position -= ±[[Y] + [Phantoon movement data index] * 2 + 1]
+$A7:D2B0 85 12       STA $12    [$7E:0012]  ;|
+$A7:D2B2 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A7:D2B5 38          SEC                    ;|
+$A7:D2B6 E5 12       SBC $12    [$7E:0012]  ;|
+$A7:D2B8 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A7:D2BB AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A7:D2BE 3A          DEC A                  ;} Decrement Phantoon movement data index
+$A7:D2BF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;/
+$A7:D2C2 10 05       BPL $05    [$D2C9]     ; If [Phantoon movement data index] >= 0:
+$A7:D2C4 A5 14       LDA $14    [$7E:0014]  ;\
+$A7:D2C6 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Phantoon movement data index = [$14]
 
 $A7:D2C9 7A          PLY
-$A7:D2CA C6 16       DEC $16    [$7E:0016]
-$A7:D2CC F0 02       BEQ $02    [$D2D0]
-$A7:D2CE 80 AD       BRA $AD    [$D27D]
+$A7:D2CA C6 16       DEC $16    [$7E:0016]  ; Decrement $16
+$A7:D2CC F0 02       BEQ $02    [$D2D0]     ; If [$16] != 0:
+$A7:D2CE 80 AD       BRA $AD    [$D27D]     ; Go to LOOP
 
 $A7:D2D0 60          RTS
 }
 
 
-;;; $D2D1: Move Phantoon in a swooping pattern ;;;
+;;; $D2D1: Move Phantoon in swooping pattern ;;;
 {
-; Called by:
-;     State $D678: Phantoon is swooping
-;     State $D6B9: Fade out with a swoop
-;     State $D92E: Complete a swoop after fatal shot
-$A7:D2D1 AD 30 10    LDA $1030  [$7E:1030]
-$A7:D2D4 30 17       BMI $17    [$D2ED]
-$A7:D2D6 18          CLC
-$A7:D2D7 69 02 00    ADC #$0002
-$A7:D2DA 8D 30 10    STA $1030  [$7E:1030]
-$A7:D2DD C9 00 01    CMP #$0100
-$A7:D2E0 30 1F       BMI $1F    [$D301]
-$A7:D2E2 09 00 80    ORA #$8000
-$A7:D2E5 8D 30 10    STA $1030  [$7E:1030]
-$A7:D2E8 29 FF 7F    AND #$7FFF
-$A7:D2EB 80 14       BRA $14    [$D301]
+$A7:D2D1 AD 30 10    LDA $1030  [$7E:1030]  ;\
+$A7:D2D4 30 17       BMI $17    [$D2ED]     ;} If [Phantoon target X position] & 8000h = 0:
+$A7:D2D6 18          CLC                    ;\
+$A7:D2D7 69 02 00    ADC #$0002             ;} Phantoon target X position += 2
+$A7:D2DA 8D 30 10    STA $1030  [$7E:1030]  ;/
+$A7:D2DD C9 00 01    CMP #$0100             ;\
+$A7:D2E0 30 1F       BMI $1F    [$D301]     ;} If [Phantoon target X position] < 100h: go to BRANCH_TARGET_CALCULATED
+$A7:D2E2 09 00 80    ORA #$8000             ;\
+$A7:D2E5 8D 30 10    STA $1030  [$7E:1030]  ;} Phantoon target X position |= 8000h
+$A7:D2E8 29 FF 7F    AND #$7FFF             ; A = [Phantoon target X position] & ~8000h
+$A7:D2EB 80 14       BRA $14    [$D301]     ; Go to BRANCH_TARGET_CALCULATED
 
-$A7:D2ED 38          SEC
-$A7:D2EE E9 02 00    SBC #$0002
-$A7:D2F1 8D 30 10    STA $1030  [$7E:1030]
-$A7:D2F4 29 FF 7F    AND #$7FFF
-$A7:D2F7 F0 02       BEQ $02    [$D2FB]
-$A7:D2F9 10 06       BPL $06    [$D301]
+$A7:D2ED 38          SEC                    ;\
+$A7:D2EE E9 02 00    SBC #$0002             ;} Phantoon target X position -= 2
+$A7:D2F1 8D 30 10    STA $1030  [$7E:1030]  ;/
+$A7:D2F4 29 FF 7F    AND #$7FFF             ; A = [Phantoon target X position] & ~8000h
+$A7:D2F7 F0 02       BEQ $02    [$D2FB]     ;\
+$A7:D2F9 10 06       BPL $06    [$D301]     ;} If [A] > 0: go to BRANCH_TARGET_CALCULATED
 
-$A7:D2FB A9 00 00    LDA #$0000
-$A7:D2FE 8D 30 10    STA $1030  [$7E:1030]
+$A7:D2FB A9 00 00    LDA #$0000             ; A = 0
+$A7:D2FE 8D 30 10    STA $1030  [$7E:1030]  ; Phantoon target X position = 0
 
-$A7:D301 CD 7A 0F    CMP $0F7A  [$7E:0F7A]
-$A7:D304 30 11       BMI $11    [$D317]
-$A7:D306 AD 2C 10    LDA $102C  [$7E:102C]
-$A7:D309 C9 00 08    CMP #$0800
-$A7:D30C 10 18       BPL $18    [$D326]
-$A7:D30E 18          CLC
-$A7:D30F 69 20 00    ADC #$0020
-$A7:D312 8D 2C 10    STA $102C  [$7E:102C]
+; BRANCH_TARGET_CALCULATED
+$A7:D301 CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;\
+$A7:D304 30 11       BMI $11    [$D317]     ;} If [A] >= [Phantoon X position]:
+$A7:D306 AD 2C 10    LDA $102C  [$7E:102C]  ;\
+$A7:D309 C9 00 08    CMP #$0800             ;} If [Phantoon X velocity] < 800h:
+$A7:D30C 10 18       BPL $18    [$D326]     ;/
+$A7:D30E 18          CLC                    ;\
+$A7:D30F 69 20 00    ADC #$0020             ;} Phantoon X velocity += 20h
+$A7:D312 8D 2C 10    STA $102C  [$7E:102C]  ;/
 $A7:D315 80 0F       BRA $0F    [$D326]
 
-$A7:D317 AD 2C 10    LDA $102C  [$7E:102C]
-$A7:D31A C9 01 F8    CMP #$F801
-$A7:D31D 30 07       BMI $07    [$D326]
-$A7:D31F 38          SEC
-$A7:D320 E9 20 00    SBC #$0020
-$A7:D323 8D 2C 10    STA $102C  [$7E:102C]
+$A7:D317 AD 2C 10    LDA $102C  [$7E:102C]  ;\ Else ([A] < [Phantoon X position]):
+$A7:D31A C9 01 F8    CMP #$F801             ;} If [Phantoon X velocity] > -800h:
+$A7:D31D 30 07       BMI $07    [$D326]     ;/
+$A7:D31F 38          SEC                    ;\
+$A7:D320 E9 20 00    SBC #$0020             ;} Phantoon X velocity -= 20h
+$A7:D323 8D 2C 10    STA $102C  [$7E:102C]  ;/
 
-$A7:D326 AD 2C 10    LDA $102C  [$7E:102C]
-$A7:D329 EB          XBA
-$A7:D32A 48          PHA
-$A7:D32B 29 00 FF    AND #$FF00
-$A7:D32E 85 14       STA $14    [$7E:0014]
-$A7:D330 68          PLA
-$A7:D331 29 FF 00    AND #$00FF
-$A7:D334 89 80 00    BIT #$0080
-$A7:D337 F0 03       BEQ $03    [$D33C]
-$A7:D339 09 00 FF    ORA #$FF00
-
-$A7:D33C 85 12       STA $12    [$7E:0012]
-$A7:D33E AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A7:D341 18          CLC
-$A7:D342 65 14       ADC $14    [$7E:0014]
-$A7:D344 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A7:D347 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A7:D34A 65 12       ADC $12    [$7E:0012]
-$A7:D34C 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A7:D34F C9 C0 FF    CMP #$FFC0
-$A7:D352 10 08       BPL $08    [$D35C]
-$A7:D354 A9 C0 FF    LDA #$FFC0
-$A7:D357 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A7:D35A 80 0B       BRA $0B    [$D367]
-
-$A7:D35C C9 C0 01    CMP #$01C0
-$A7:D35F 30 06       BMI $06    [$D367]
-$A7:D361 A9 C0 01    LDA #$01C0
-$A7:D364 8D 7A 0F    STA $0F7A  [$7E:0F7A]
+$A7:D326 AD 2C 10    LDA $102C  [$7E:102C]  ; >_<;
+$A7:D329 EB          XBA                    ;\
+$A7:D32A 48          PHA                    ;|
+$A7:D32B 29 00 FF    AND #$FF00             ;|
+$A7:D32E 85 14       STA $14    [$7E:0014]  ;|
+$A7:D330 68          PLA                    ;|
+$A7:D331 29 FF 00    AND #$00FF             ;|
+$A7:D334 89 80 00    BIT #$0080             ;|
+$A7:D337 F0 03       BEQ $03    [$D33C]     ;|
+$A7:D339 09 00 FF    ORA #$FF00             ;|
+                                            ;} Phantoon X position += ±[Phantoon X velocity] / 100h
+$A7:D33C 85 12       STA $12    [$7E:0012]  ;|
+$A7:D33E AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;|
+$A7:D341 18          CLC                    ;|
+$A7:D342 65 14       ADC $14    [$7E:0014]  ;|
+$A7:D344 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;|
+$A7:D347 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A7:D34A 65 12       ADC $12    [$7E:0012]  ;|
+$A7:D34C 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A7:D34F C9 C0 FF    CMP #$FFC0             ;\
+$A7:D352 10 08       BPL $08    [$D35C]     ;|
+$A7:D354 A9 C0 FF    LDA #$FFC0             ;|
+$A7:D357 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;|
+$A7:D35A 80 0B       BRA $0B    [$D367]     ;|
+                                            ;} Phantoon X position = clamp([Phantoon X position], -1C0h, 1C0h)
+$A7:D35C C9 C0 01    CMP #$01C0             ;|
+$A7:D35F 30 06       BMI $06    [$D367]     ;|
+$A7:D361 A9 C0 01    LDA #$01C0             ;|
+$A7:D364 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 
 $A7:D367 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
-$A7:D36A C9 2E D9    CMP #$D92E             ;|
-$A7:D36D D0 05       BNE $05    [$D374]     ;} If state is $D92E go to BRANCH_PHANTOON_DYING
+$A7:D36A C9 2E D9    CMP #$D92E             ;} If [Phantoon function] = $D92E:
+$A7:D36D D0 05       BNE $05    [$D374]     ;/
 $A7:D36F A9 70 00    LDA #$0070             ; A = 70h
-$A7:D372 80 07       BRA $07    [$D37B]     ; Go to BRANCH_PHANTOON
+$A7:D372 80 07       BRA $07    [$D37B]
 
-; BRANCH_PHANTOON_DYING
-$A7:D374 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A7:D377 38          SEC
-$A7:D378 E9 30 00    SBC #$0030
+$A7:D374 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\ Else ([Phantoon function] != $D92E):
+$A7:D377 38          SEC                    ;} A = [Samus Y position] - 30h
+$A7:D378 E9 30 00    SBC #$0030             ;/
 
-$A7:D37B CD 7E 0F    CMP $0F7E  [$7E:0F7E]
-$A7:D37E 30 11       BMI $11    [$D391]
-$A7:D380 AD 2E 10    LDA $102E  [$7E:102E]
-$A7:D383 C9 00 06    CMP #$0600
-$A7:D386 10 18       BPL $18    [$D3A0]
-$A7:D388 18          CLC
-$A7:D389 69 40 00    ADC #$0040
-$A7:D38C 8D 2E 10    STA $102E  [$7E:102E]
+$A7:D37B CD 7E 0F    CMP $0F7E  [$7E:0F7E]  ;\
+$A7:D37E 30 11       BMI $11    [$D391]     ;} If [A] >= [Phantoon Y position]:
+$A7:D380 AD 2E 10    LDA $102E  [$7E:102E]  ;\
+$A7:D383 C9 00 06    CMP #$0600             ;} If [Phantoon Y velocity] < 600h:
+$A7:D386 10 18       BPL $18    [$D3A0]     ;/
+$A7:D388 18          CLC                    ;\
+$A7:D389 69 40 00    ADC #$0040             ;} Phantoon Y velocity += 40h
+$A7:D38C 8D 2E 10    STA $102E  [$7E:102E]  ;/
 $A7:D38F 80 0F       BRA $0F    [$D3A0]
 
-$A7:D391 AD 2E 10    LDA $102E  [$7E:102E]
-$A7:D394 C9 01 FA    CMP #$FA01
-$A7:D397 30 07       BMI $07    [$D3A0]
-$A7:D399 38          SEC
-$A7:D39A E9 40 00    SBC #$0040
-$A7:D39D 8D 2E 10    STA $102E  [$7E:102E]
+$A7:D391 AD 2E 10    LDA $102E  [$7E:102E]  ;\ Else ([A] < [Phantoon Y position]):
+$A7:D394 C9 01 FA    CMP #$FA01             ;} If [Phantoon Y velocity] > -600h:
+$A7:D397 30 07       BMI $07    [$D3A0]     ;/
+$A7:D399 38          SEC                    ;\
+$A7:D39A E9 40 00    SBC #$0040             ;} Phantoon Y velocity -= 40h
+$A7:D39D 8D 2E 10    STA $102E  [$7E:102E]  ;/
 
-$A7:D3A0 AD 2E 10    LDA $102E  [$7E:102E]
-$A7:D3A3 EB          XBA
-$A7:D3A4 48          PHA
-$A7:D3A5 29 00 FF    AND #$FF00
-$A7:D3A8 85 14       STA $14    [$7E:0014]
-$A7:D3AA 68          PLA
-$A7:D3AB 29 FF 00    AND #$00FF
-$A7:D3AE 89 80 00    BIT #$0080
-$A7:D3B1 F0 03       BEQ $03    [$D3B6]
-$A7:D3B3 09 00 FF    ORA #$FF00
-
-$A7:D3B6 85 12       STA $12    [$7E:0012]
-$A7:D3B8 AD 80 0F    LDA $0F80  [$7E:0F80]
-$A7:D3BB 18          CLC
-$A7:D3BC 65 14       ADC $14    [$7E:0014]
-$A7:D3BE 8D 80 0F    STA $0F80  [$7E:0F80]
-$A7:D3C1 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A7:D3C4 65 12       ADC $12    [$7E:0012]
-$A7:D3C6 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A7:D3C9 C9 40 00    CMP #$0040
-$A7:D3CC 10 07       BPL $07    [$D3D5]
-$A7:D3CE A9 40 00    LDA #$0040
-$A7:D3D1 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A7:D3D4 60          RTS
-
-$A7:D3D5 C9 D8 00    CMP #$00D8
-$A7:D3D8 30 06       BMI $06    [$D3E0]
-$A7:D3DA A9 D8 00    LDA #$00D8
-$A7:D3DD 8D 7E 0F    STA $0F7E  [$7E:0F7E]
+$A7:D3A0 AD 2E 10    LDA $102E  [$7E:102E]  ; >_<;
+$A7:D3A3 EB          XBA                    ;\
+$A7:D3A4 48          PHA                    ;|
+$A7:D3A5 29 00 FF    AND #$FF00             ;|
+$A7:D3A8 85 14       STA $14    [$7E:0014]  ;|
+$A7:D3AA 68          PLA                    ;|
+$A7:D3AB 29 FF 00    AND #$00FF             ;|
+$A7:D3AE 89 80 00    BIT #$0080             ;|
+$A7:D3B1 F0 03       BEQ $03    [$D3B6]     ;|
+$A7:D3B3 09 00 FF    ORA #$FF00             ;|
+                                            ;} Phantoon Y position += ±[Phantoon Y velocity] / 100h
+$A7:D3B6 85 12       STA $12    [$7E:0012]  ;|
+$A7:D3B8 AD 80 0F    LDA $0F80  [$7E:0F80]  ;|
+$A7:D3BB 18          CLC                    ;|
+$A7:D3BC 65 14       ADC $14    [$7E:0014]  ;|
+$A7:D3BE 8D 80 0F    STA $0F80  [$7E:0F80]  ;|
+$A7:D3C1 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A7:D3C4 65 12       ADC $12    [$7E:0012]  ;|
+$A7:D3C6 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A7:D3C9 C9 40 00    CMP #$0040             ;\
+$A7:D3CC 10 07       BPL $07    [$D3D5]     ;|
+$A7:D3CE A9 40 00    LDA #$0040             ;|
+$A7:D3D1 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;|
+$A7:D3D4 60          RTS                    ;|
+                                            ;} Phantoon Y position = clamp([Phantoon Y position], 40h, D8h)
+$A7:D3D5 C9 D8 00    CMP #$00D8             ;|
+$A7:D3D8 30 06       BMI $06    [$D3E0]     ;|
+$A7:D3DA A9 D8 00    LDA #$00D8             ;|
+$A7:D3DD 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
 
 $A7:D3E0 60          RTS
 }
 
 
-;;; $D3E1: Begin Phantoon swooping pattern ;;;
+;;; $D3E1: Start Phantoon swooping pattern ;;;
 {
-$A7:D3E1 A9 00 04    LDA #$0400
-$A7:D3E4 8D 2C 10    STA $102C  [$7E:102C]
-$A7:D3E7 8D 2E 10    STA $102E  [$7E:102E]
-$A7:D3EA 9C 30 10    STZ $1030  [$7E:1030]
+$A7:D3E1 A9 00 04    LDA #$0400             ;\
+$A7:D3E4 8D 2C 10    STA $102C  [$7E:102C]  ;} Phantoon X velocity = 400h
+$A7:D3E7 8D 2E 10    STA $102E  [$7E:102E]  ; Phantoon Y velocity = 400h
+$A7:D3EA 9C 30 10    STZ $1030  [$7E:1030]  ; Phantoon target X position = 0
 $A7:D3ED A9 78 D6    LDA #$D678             ;\
-$A7:D3F0 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D678
+$A7:D3F0 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D678
 $A7:D3F3 A9 68 01    LDA #$0168             ;\
-$A7:D3F6 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Set state timer to 360
+$A7:D3F6 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 360
 $A7:D3F9 60          RTS
 }
 
 
-;;; $D3FA: Change Phantoon's eye sprite based on Samus's direction from Phantoon ;;;
+;;; $D3FA: Make Phantoon look towards Samus ;;;
 {
 $A7:D3FA 22 29 AE A0 JSL $A0AE29[$A0:AE29]  ; Determine direction of Samus from enemy
-$A7:D3FE 0A          ASL A
-$A7:D3FF A8          TAY
+$A7:D3FE 0A          ASL A                  ;\
+$A7:D3FF A8          TAY                    ;} Y = [A] * 2
 $A7:D400 A9 01 00    LDA #$0001             ;\
 $A7:D403 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Phantoon eye instruction timer = 1
 $A7:D406 B9 0D D4    LDA $D40D,y[$A7:D413]  ;\
-$A7:D409 8D D2 0F    STA $0FD2  [$7E:0FD2]  ; Phantoon eye instruction = [$D40D + Y]
+$A7:D409 8D D2 0F    STA $0FD2  [$7E:0FD2]  ; Phantoon eye instruction list pointer = [$D40D + [Y]]
 $A7:D40C 60          RTS
 
 $A7:D40D             dw CCA7, ; Up
@@ -6180,80 +6184,78 @@ $A7:D40D             dw CCA7, ; Up
 ;;; $D421: Start Phantoon death sequence ;;;
 {
 $A7:D421 DA          PHX
-$A7:D422 BD B2 0F    LDA $0FB2,x[$7E:0FB2]    ;\
-$A7:D425 C9 78 D6    CMP #$D678               ;|
-$A7:D428 F0 0D       BEQ $0D    [$D437]       ;} If Phantoon is swooping (state is D678 or D6B9),
-$A7:D42A C9 B9 D6    CMP #$D6B9               ;} go to BRANCH_PHANTOON_SWOOPING
-$A7:D42D F0 08       BEQ $08    [$D437]       ;/
+$A7:D422 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A7:D425 C9 78 D6    CMP #$D678             ;} If [Phantoon function] != $D678 (swooping - opaque):
+$A7:D428 F0 0D       BEQ $0D    [$D437]     ;/
+$A7:D42A C9 B9 D6    CMP #$D6B9             ;\
+$A7:D42D F0 08       BEQ $08    [$D437]     ;} If [Phantoon function] != $D6B9 (swooping - fading out):
+$A7:D42F A9 48 D9    LDA #$D948             ;\
+$A7:D432 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D948 (death sequence)
+$A7:D435 80 06       BRA $06    [$D43D]
 
-; BRANCH_PHANTOON_NOT_SWOOPING
-$A7:D42F A9 48 D9    LDA #$D948               ;\
-$A7:D432 9D B2 0F    STA $0FB2,x[$7E:0FB2]    ;} Next state is $D948
-$A7:D435 80 06       BRA $06    [$D43D]       ; Go to BRANCH_FINISH
+$A7:D437 A9 2E D9    LDA #$D92E             ;\ Else ([Phantoon function] = $D678/$D6B9):
+$A7:D43A 9D B2 0F    STA $0FB2,x            ;} Phantoon function = $D92E (swooping - fatal damage)
 
-; BRANCH_PHANTOON_SWOOPING
-$A7:D437 A9 2E D9    LDA #$D92E               ;\
-$A7:D43A 9D B2 0F    STA $0FB2,x              ;} Next state is $D92E
-
-; BRANCH_FINISH
-$A7:D43D 9C EC 0F    STZ $0FEC  [$7E:0FEC]    ; Set movement direction to right-side-clockwise
-$A7:D440 9C F2 0F    STZ $0FF2  [$7E:0FF2]    ; Clear fade complete flag
-$A7:D443 20 FA D3    JSR $D3FA  [$A7:D3FA]    ; Change eye sprite based on direction to Samus
-$A7:D446 A2 FE 01    LDX #$01FE               ;\
-$A7:D449 A5 B5       LDA $B5    [$7E:00B5]    ;|
-$A7:D44B 9F 00 91 7E STA $7E9100,x[$7E:92FE]  ;|
-$A7:D44F CA          DEX                      ;} Set 7E:9100 through 7E:92FE to B5h
-$A7:D450 CA          DEX                      ;|
-$A7:D451 10 F8       BPL $F8    [$D44B]       ;/
-$A7:D453 AD 88 19    LDA $1988  [$7E:1988]    ;\
-$A7:D456 09 00 40    ORA #$4000               ;|
-$A7:D459 8D 88 19    STA $1988  [$7E:1988]    ;} Make Phantoon transparent
-$A7:D45C A9 01 00    LDA #$0001
-$A7:D45F 8D 76 10    STA $1076  [$7E:1076]
+$A7:D43D 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ; Phantoon fade counter = 0
+$A7:D440 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
+$A7:D443 20 FA D3    JSR $D3FA  [$A7:D3FA]  ; Make Phantoon look towards Samus
+$A7:D446 A2 FE 01    LDX #$01FE             ;\
+$A7:D449 A5 B5       LDA $B5    [$7E:00B5]  ;|
+$A7:D44B 9F 00 91 7E STA $7E9100,x[$7E:92FE];|
+$A7:D44F CA          DEX                    ;} $9100..92FF = [BG2 X scroll]
+$A7:D450 CA          DEX                    ;|
+$A7:D451 10 F8       BPL $F8    [$D44B]     ;/
+$A7:D453 AD 88 19    LDA $1988  [$7E:1988]  ;\
+$A7:D456 09 00 40    ORA #$4000             ;} Make Phantoon semi-transparent
+$A7:D459 8D 88 19    STA $1988  [$7E:1988]  ;/
+$A7:D45C A9 01 00    LDA #$0001             ;\
+$A7:D45F 8D 76 10    STA $1076  [$7E:1076]  ;} $1076 = 1
 $A7:D462 FA          PLX
 $A7:D463 60          RTS
 }
 
 
-;;; $D464: Phantoon fade out ;;;
+;;; $D464: Advance Phantoon fade out ;;;
 {
+;; Parameters:
+;;     A: Palette change denominator
 $A7:D464 DA          PHX
 $A7:D465 85 12       STA $12    [$7E:0012]
 $A7:D467 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $A7:D46A 89 01 00    BIT #$0001             ;|
-$A7:D46D D0 15       BNE $15    [$D484]     ;} If frame counter is not even go to BRANCH_RETURN
+$A7:D46D D0 15       BNE $15    [$D484]     ;} If [frame counter] % 2 != 0: return
 $A7:D46F AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D472 D0 10       BNE $10    [$D484]     ;} If fade complete flag is set go to BRANCH_RETURN
-$A7:D474 A5 12       LDA $12    [$7E:0012]  ;
-$A7:D476 8D EE 0F    STA $0FEE  [$7E:0FEE]  ;
-$A7:D479 20 9A DB    JSR $DB9A  [$A7:DB9A]  ;
-$A7:D47C 90 06       BCC $06    [$D484]     ;
+$A7:D472 D0 10       BNE $10    [$D484]     ;} If [Phantoon fade complete flag] != 0: return
+$A7:D474 A5 12       LDA $12    [$7E:0012]  ;\
+$A7:D476 8D EE 0F    STA $0FEE  [$7E:0FEE]  ;} Palette change denominator = [A]
+$A7:D479 20 9A DB    JSR $DB9A  [$A7:DB9A]  ; Advance Phantoon fade out
+$A7:D47C 90 06       BCC $06    [$D484]     ; If reached target palette:
 $A7:D47E A9 01 00    LDA #$0001             ;\
-$A7:D481 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Set fade complete flag
+$A7:D481 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Phantoon fade complete flag = 1
 
-; BRANCH_RETURN
 $A7:D484 FA          PLX
 $A7:D485 60          RTS
 }
 
 
-;;; $D486: Phantoon fade in ;;;
+;;; $D486: Advance Phantoon fade in ;;;
 {
+;; Parameters:
+;;     A: Palette change denominator
 $A7:D486 DA          PHX
 $A7:D487 85 12       STA $12    [$7E:0012]
 $A7:D489 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
-$A7:D48C 89 01 00    BIT #$0001             ;|
-$A7:D48F D0 15       BNE $15    [$D4A6]     ;} If frame counter is not even go to BRANCH_RETURN
+$A7:D48C 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0: return
+$A7:D48F D0 15       BNE $15    [$D4A6]     ;/
 $A7:D491 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D494 D0 10       BNE $10    [$D4A6]     ;} If fade complete flag is set go to BRANCH_RETURN
+$A7:D494 D0 10       BNE $10    [$D4A6]     ;} If [Phantoon fade complete flag] != 0: return
 $A7:D496 A5 12       LDA $12    [$7E:0012]
-$A7:D498 8D EE 0F    STA $0FEE  [$7E:0FEE]
-$A7:D49B 20 D5 DB    JSR $DBD5  [$A7:DBD5]
-$A7:D49E 90 06       BCC $06    [$D4A6]
+$A7:D498 8D EE 0F    STA $0FEE  [$7E:0FEE]  ; Palette change denominator = [A]
+$A7:D49B 20 D5 DB    JSR $DBD5  [$A7:DBD5]  ; Advance Phantoon fade in
+$A7:D49E 90 06       BCC $06    [$D4A6]     ; If carry set:
 $A7:D4A0 A9 01 00    LDA #$0001             ;\
-$A7:D4A3 8D F2 0F    STA $0FF2  [$7E:0FF2]  ; Set fade complete flag
+$A7:D4A3 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Phantoon fade complete flag = 1
 
-; BRANCH_RETURN
 $A7:D4A6 FA          PLX
 $A7:D4A7 60          RTS
 }
@@ -6261,25 +6263,19 @@ $A7:D4A7 60          RTS
 
 ;;; $D4A8: RTS ;;;
 {
-; Called by:
-;     State D5E7:
-;     State D60D:
-
-; This is a "dummy state" used when state transition is done via an instruction
-; list rather than directly setting $0FB2:
-;   State $D5E7 uses this to transition to state $D60D via instruction list $CC53.
-;   State $D60D uses this to transition to state $D82A via instruction list $CC81.
 $A7:D4A8 60          RTS
 }
 
 
+;;; $D4A9..D5E6: Phantoon function - fight intro ;;;
+{
 ;;; $D4A9: Phantoon function - fight intro - spawn circle of flames ;;;
 {
 $A7:D4A9 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D4AC F0 02       BEQ $02    [$D4B0]     ;\
 $A7:D4AE 10 3D       BPL $3D    [$D4ED]     ;} If [Phantoon function timer] > 0: return
 
-$A7:D4B0 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ; Enemy projectile initialisation parameter = [Phantoon flame counter]
+$A7:D4B0 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ; A = [Phantoon flame counter]
 $A7:D4B3 A0 37 9C    LDY #$9C37             ;\
 $A7:D4B6 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon starting flames enemy projectile
 $A7:D4BA A9 1D 00    LDA #$001D             ;\
@@ -6292,7 +6288,7 @@ $A7:D4CB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;/
 $A7:D4CE C9 08 00    CMP #$0008             ;\
 $A7:D4D1 30 1A       BMI $1A    [$D4ED]     ;} If [Phantoon flame counter] < 8: return
 $A7:D4D3 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ; Phantoon flame counter = 0
-$A7:D4D6 9E 2A 10    STZ $102A,x[$7E:102A]  ; $102A = 0
+$A7:D4D6 9E 2A 10    STZ $102A,x[$7E:102A]  ; Phantoon round damage = 0
 $A7:D4D9 A9 EE D4    LDA #$D4EE             ;\
 $A7:D4DC 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D4EE
 $A7:D4DF A9 1E 00    LDA #$001E             ;\
@@ -6313,7 +6309,7 @@ $A7:D4F3 10 12       BPL $12    [$D507]     ;} If [Phantoon function timer] > 0:
 $A7:D4F5 A9 F0 00    LDA #$00F0             ;\
 $A7:D4F8 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = F0h
 $A7:D4FB A9 01 00    LDA #$0001             ;\
-$A7:D4FE 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} $0FAA = 1
+$A7:D4FE 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Phantoon starting flames activation flag = 1
 $A7:D501 A9 08 D5    LDA #$D508             ;\
 $A7:D504 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D508
 
@@ -6321,29 +6317,29 @@ $A7:D507 60          RTS
 }
 
 
-;;; $D508: Phantoon function - fight intro - fade out Phantoon ;;;
+;;; $D508: Phantoon function - fight intro - start wavy fade in ;;;
 {
 $A7:D508 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D50B F0 02       BEQ $02    [$D50F]     ;\
 $A7:D50D 10 3A       BPL $3A    [$D549]     ;} If [Phantoon function timer] > 0: return
 
-$A7:D50F 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; $0FAA = 0
+$A7:D50F 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Phantoon starting flames activation flag = 0
 $A7:D512 AD 88 19    LDA $1988  [$7E:1988]  ;\
-$A7:D515 09 00 40    ORA #$4000             ;|
-$A7:D518 8D 88 19    STA $1988  [$7E:1988]  ;} Make Phantoon transparent
+$A7:D515 09 00 40    ORA #$4000             ;} Make Phantoon semi-transparent
+$A7:D518 8D 88 19    STA $1988  [$7E:1988]  ;/
 $A7:D51B A9 4A D5    LDA #$D54A             ;\
 $A7:D51E 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D54A
-$A7:D521 A9 01 80    LDA #$8001
-$A7:D524 8D 74 10    STA $1074  [$7E:1074]
+$A7:D521 A9 01 80    LDA #$8001             ;\
+$A7:D524 8D 74 10    STA $1074  [$7E:1074]  ;} Phantoon semi-transparency HDMA object control = 8001h (normal)
 $A7:D527 A9 78 00    LDA #$0078             ;\
 $A7:D52A 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 78h
-$A7:D52D AD A3 CD    LDA $CDA3  [$A7:CDA3]
-$A7:D530 85 16       STA $16    [$7E:0016]
-$A7:D532 A9 02 00    LDA #$0002
-$A7:D535 22 87 E4 88 JSL $88E487[$88:E487]
-$A7:D539 AD 9D CD    LDA $CD9D  [$A7:CD9D]
-$A7:D53C 8D 6E 10    STA $106E  [$7E:106E]
-$A7:D53F 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Set Phantoon fade complete flag to 0
+$A7:D52D AD A3 CD    LDA $CDA3  [$A7:CDA3]  ;\
+$A7:D530 85 16       STA $16    [$7E:0016]  ;} Wavy Phantoon phase delta = 8
+$A7:D532 A9 02 00    LDA #$0002             ; Next wavy Phantoon mode = 2 (normal)
+$A7:D535 22 87 E4 88 JSL $88E487[$88:E487]  ; Spawn wavy Phantoon HDMA object
+$A7:D539 AD 9D CD    LDA $CD9D  [$A7:CD9D]  ;\
+$A7:D53C 8D 6E 10    STA $106E  [$7E:106E]  ;} Wavy Phantoon amplitude = C00h
+$A7:D53F 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:D542 A9 05 00    LDA #$0005             ;\
 $A7:D545 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 0 music track
 
@@ -6351,957 +6347,940 @@ $A7:D549 60          RTS
 }
 
 
-;;; $D54A: Phantoon function - fight intro - Phantoon wavy fade-in ;;;
+;;; $D54A: Phantoon function - fight intro - wavy fade-in ;;;
 {
 $A7:D54A A9 0C 00    LDA #$000C             ;\
-$A7:D54D 20 86 D4    JSR $D486  [$A7:D486]  ;} Fade-in
-$A7:D550 AD 9B CD    LDA $CD9B  [$A7:CD9B]
-$A7:D553 85 12       STA $12    [$7E:0012]
-$A7:D555 AD 9D CD    LDA $CD9D  [$A7:CD9D]
-$A7:D558 85 14       STA $14    [$7E:0014]
-$A7:D55A 20 27 CF    JSR $CF27  [$A7:CF27]
-$A7:D55D B0 0F       BCS $0F    [$D56E]
-$A7:D55F DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state timer
+$A7:D54D 20 86 D4    JSR $D486  [$A7:D486]  ;} Advance Phantoon fade in
+$A7:D550 AD 9B CD    LDA $CD9B  [$A7:CD9B]  ;\
+$A7:D553 85 12       STA $12    [$7E:0012]  ;} $12 = 40h (amplitude delta)
+$A7:D555 AD 9D CD    LDA $CD9D  [$A7:CD9D]  ;\
+$A7:D558 85 14       STA $14    [$7E:0014]  ;} $14 = C00h (max amplitude)
+$A7:D55A 20 27 CF    JSR $CF27  [$A7:CF27]  ; Grow/shrink Phantoon wave amplitude
+$A7:D55D B0 0F       BCS $0F    [$D56E]     ; If completed wave cycle: go to BRANCH_DONE
+$A7:D55F DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D562 F0 02       BEQ $02    [$D566]     ;\
-$A7:D564 10 1A       BPL $1A    [$D580]     ;} If state timer >= 0 go to BRANCH_WAITING
+$A7:D564 10 1A       BPL $1A    [$D580]     ;} If [Phantoon function timer] > 0: return
 
-$A7:D566 A9 01 00    LDA #$0001
-$A7:D569 8D 70 10    STA $1070  [$7E:1070]
-$A7:D56C 80 12       BRA $12    [$D580]
+$A7:D566 A9 01 00    LDA #$0001             ;\
+$A7:D569 8D 70 10    STA $1070  [$7E:1070]  ;} Wavy Phantoon phase delta direction = shrinking
+$A7:D56C 80 12       BRA $12    [$D580]     ; Return
 
+; BRANCH_DONE
 $A7:D56E A9 96 D5    LDA #$D596             ;\
-$A7:D571 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D596
-$A7:D574 A9 01 00    LDA #$0001
-$A7:D577 8D 74 10    STA $1074  [$7E:1074]
+$A7:D571 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D596
+$A7:D574 A9 01 00    LDA #$0001             ;\
+$A7:D577 8D 74 10    STA $1074  [$7E:1074]  ;} Phantoon semi-transparency HDMA object control = 1 (normal)
 $A7:D57A A9 1E 00    LDA #$001E             ;\
-$A7:D57D 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Set state timer to 30
+$A7:D57D 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 1Eh
 
-; BRANCH_WAITING
 $A7:D580 60          RTS
 }
 
 
 ;;; $D581: Unused ;;;
 {
-; AFAICT this subroutine is unused, but is similar to $D421.
-$A7:D581 A2 FE 01    LDX #$01FE
-$A7:D584 A9 00 00    LDA #$0000
-
-$A7:D587 9F 00 91 7E STA $7E9100,x       ;\
-$A7:D58B CA          DEX                 ;|
-$A7:D58C CA          DEX                 ;} Zero-out memory between $9100 and $92FE
-$A7:D58D 10 F8       BPL $F8    [$D587]  ;/
-$A7:D58F A9 96 D5    LDA #$D596          ;\
-$A7:D592 9D B2 0F    STA $0FB2,x         ;} Next state is $D596
+$A7:D581 A2 FE 01    LDX #$01FE         ;\
+$A7:D584 A9 00 00    LDA #$0000         ;|
+                                        ;|
+$A7:D587 9F 00 91 7E STA $7E9100,x      ;} $7E:9100..92FF = 0
+$A7:D58B CA          DEX                ;|
+$A7:D58C CA          DEX                ;|
+$A7:D58D 10 F8       BPL $F8    [$D587] ;/
+$A7:D58F A9 96 D5    LDA #$D596         ;\
+$A7:D592 9D B2 0F    STA $0FB2,x        ;} Phantoon function = $D596
 $A7:D595 60          RTS
 }
 
 
-;;; $D596: Pick pattern for Phantoon round one ;;;
+;;; $D596: Phantoon function - fight intro - pick first pattern ;;;
 {
-$A7:D596 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state timer
+$A7:D596 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D599 F0 02       BEQ $02    [$D59D]     ;\
-$A7:D59B 10 49       BPL $49    [$D5E6]     ;} If state timer >= 0 go to BRANCH_WAITING
+$A7:D59B 10 49       BPL $49    [$D5E6]     ;} If [Phantoon function timer] > 0: return
 
-$A7:D59D 9C F4 0F    STZ $0FF4  [$7E:0FF4]
+$A7:D59D 9C F4 0F    STZ $0FF4  [$7E:0FF4]  ; Disable wavy Phantoon
 $A7:D5A0 A9 E7 D5    LDA #$D5E7             ;\
-$A7:D5A3 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D5E7
+$A7:D5A3 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D5E7
 $A7:D5A6 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $A7:D5A9 4A          LSR A                  ;|
-$A7:D5AA 29 03 00    AND #$0003             ;} Y = ([frame counter] >> 1) & 3h) << 1
-$A7:D5AD 0A          ASL A                  ;|
-$A7:D5AE A8          TAY                    ;/
-$A7:D5AF B9 53 CD    LDA $CD53,y[$A7:CD59]  ;\
-$A7:D5B2 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} [eye timer] = [$CD53 + Y]
+$A7:D5AA 29 03 00    AND #$0003             ;|
+$A7:D5AD 0A          ASL A                  ;} Phantoon eye timer = [$CD53 + [frame counter] / 2 % 4 * 2]
+$A7:D5AE A8          TAY                    ;|
+$A7:D5AF B9 53 CD    LDA $CD53,y[$A7:CD59]  ;|
+$A7:D5B2 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;/
 $A7:D5B5 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:D5B9 89 01 00    BIT #$0001             ;\
-$A7:D5BC D0 13       BNE $13    [$D5D1]     ;} If [random number] was odd go to BRANCH_RANDOM_NUMBER_ODD
-
-; BRANCH_RANDOM_NUMBER_EVEN
+$A7:D5BC D0 13       BNE $13    [$D5D1]     ;} If [random number] % 2 = 0:
 $A7:D5BE A9 01 00    LDA #$0001             ;\
-$A7:D5C1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;|
-$A7:D5C4 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;} Initialize movement cycle in right-side-clockwise direction
-$A7:D5C7 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ;} Speed ramp cycle phase ($0FAE) is set to 0
-$A7:D5CA 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ;|
-$A7:D5CD 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ;/
-$A7:D5D0 60          RTS
+$A7:D5C1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = 1.0
+$A7:D5C4 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
+$A7:D5C7 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; Phantoon movement stage = 0
+$A7:D5CA 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ; Phantoon reversed movement flag = 0
+$A7:D5CD 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ; Phantoon movement index = 0
+$A7:D5D0 60          RTS                    ; Return
 
-; BRANCH_RANDOM_NUMBER_ODD
 $A7:D5D1 9C AC 0F    STZ $0FAC  [$7E:0FAC]  ;\
-$A7:D5D4 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;|
-$A7:D5D7 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ;} Initialize movement cycle in left-side-clockwise direction
-$A7:D5DA A9 01 00    LDA #$0001             ;} Speed ramp cycle phase ($0FAE) is set to 0
-$A7:D5DD 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;|
-$A7:D5E0 A9 15 02    LDA #$0215             ;|
-$A7:D5E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;/
+$A7:D5D4 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;} Phantoon speed = 0.0
+$A7:D5D7 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; Phantoon movement stage = 0
+$A7:D5DA A9 01 00    LDA #$0001             ;\
+$A7:D5DD 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Phantoon reversed movement flag = 1
+$A7:D5E0 A9 15 02    LDA #$0215             ;\
+$A7:D5E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Phantoon movement index = 215h
 
-; BRANCH_WAITING
 $A7:D5E6 60          RTS
+}
 }
 
 
-;;; $D5E7: Move Phantoon in figure-8 pattern then open eye ;;;
+;;; $D5E7..D677: Phantoon function - figure-8 ;;;
+{
+;;; $D5E7: Phantoon function - figure-8 - moving ;;;
 {
 $A7:D5E7 20 F1 D0    JSR $D0F1  [$A7:D0F1]  ; Adjust speed and move Phantoon in figure-8
-$A7:D5EA 20 CA CF    JSR $CFCA  [$A7:CFCA]
-$A7:D5ED CE E8 0F    DEC $0FE8  [$7E:0FE8]  ; Decrement eye timer
+$A7:D5EA 20 CA CF    JSR $CFCA  [$A7:CFCA]  ; Handle casual flames
+$A7:D5ED CE E8 0F    DEC $0FE8  [$7E:0FE8]  ; Decrement Phantoon eye timer
 $A7:D5F0 F0 02       BEQ $02    [$D5F4]     ;\
-$A7:D5F2 10 18       BPL $18    [$D60C]     ;} If eye timer >= 0 go to BRANCH_WAITING
+$A7:D5F2 10 18       BPL $18    [$D60C]     ;} If [Phantoon eye timer] >= 0: return
 
 $A7:D5F4 A9 A8 D4    LDA #$D4A8             ;\
-$A7:D5F7 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D4A8
+$A7:D5F7 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = RTS
 $A7:D5FA A9 01 00    LDA #$0001             ;\
 $A7:D5FD 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Phantoon eye instruction timer = 1
-$A7:D600 A9 53 CC    LDA #$CC53             ;\ 
-$A7:D603 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction = open eye
-$A7:D606 9C B6 0F    STZ $0FB6  [$7E:0FB6]  ; Reset Phantoon invisibility flag
-$A7:D609 20 70 CF    JSR $CF70  [$A7:CF70]  ; Spawn 8 fireballs
+$A7:D600 A9 53 CC    LDA #$CC53             ;\
+$A7:D603 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC53 (open)
+$A7:D606 9C B6 0F    STZ $0FB6  [$7E:0FB6]  ; Phantoon flame rain flag triggered flag = 0
+$A7:D609 20 70 CF    JSR $CF70  [$A7:CF70]  ; Phantoon materialisation flame spiral
 
-; BRANCH_WAITING
 $A7:D60C 60          RTS
 }
 
 
-;;; $D60D: Eye follows Samus until timer runs out ;;;
+;;; $D60D: Phantoon function - figure-8 - vulnerable window ;;;
 {
-$A7:D60D DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state timer
+$A7:D60D DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D610 F0 02       BEQ $02    [$D614]     ;\
-$A7:D612 10 44       BPL $44    [$D658]     ;} If state timer >= 0 go to BRANCH_WAITING
+$A7:D612 10 44       BPL $44    [$D658]     ;} If [Phantoon function timer] > 0: go to BRANCH_WAITING
 
-$A7:D614 9E 2A 10    STZ $102A,x[$7E:102A]
+$A7:D614 9E 2A 10    STZ $102A,x[$7E:102A]  ; Phantoon round damage = 0
 $A7:D617 AD 28 10    LDA $1028  [$7E:1028]  ;\
-$A7:D61A F0 11       BEQ $11    [$D62D]     ;} If swooping flag is set go to BRANCH_SWOOPING
-
-; BRANCH_NOT_SWOOPING
-$A7:D61C 9C 28 10    STZ $1028  [$7E:1028]  ; Clear swooping flag
+$A7:D61A F0 11       BEQ $11    [$D62D]     ;} If swooping triggered:
+$A7:D61C 9C 28 10    STZ $1028  [$7E:1028]  ; Clear Phantoon swooping triggered flag
 $A7:D61F A9 3C 00    LDA #$003C             ;\
-$A7:D622 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Set state timer to 60
+$A7:D622 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 60
 $A7:D625 A9 5C D6    LDA #$D65C             ;\
-$A7:D628 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D65C
-$A7:D62B 80 2B       BRA $2B    [$D658]
+$A7:D628 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D65C
+$A7:D62B 80 2B       BRA $2B    [$D658]     ; Go to BRANCH_WAITING
 
-; BRANCH_SWOOPING
-$A7:D62D A9 A8 D4    LDA #$D4A8
-$A7:D630 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A7:D62D A9 A8 D4    LDA #$D4A8             ;\
+$A7:D630 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = RTS
 $A7:D633 A9 01 00    LDA #$0001             ;\
-$A7:D636 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy instruction timer = 1
+$A7:D636 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:D639 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phanyoon eye instruction timer = 1
 $A7:D63C A9 41 CC    LDA #$CC41             ;\
-$A7:D63F 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Enemy instruction = $CC41 (make body vulnerable)
+$A7:D63F 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC41 (invulnerable)
 $A7:D642 A9 81 CC    LDA #$CC81             ;\
-$A7:D645 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction = $CC81 (close eye incrementally and pick new pattern)
+$A7:D645 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC81 (close and pick new pattern)
 $A7:D648 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A7:D64B 09 00 04    ORA #$0400             ;|
-$A7:D64E 8D 86 0F    STA $0F86  [$7E:0F86]  ;} Stop tracking Samus
+$A7:D64B 09 00 04    ORA #$0400             ;} Set Phantoon body as intangible
+$A7:D64E 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A7:D651 A9 01 00    LDA #$0001             ;\
-$A7:D654 8D B6 0F    STA $0FB6  [$7E:0FB6]  ;} Set Phantoon invisibility flag
-$A7:D657 60          RTS
+$A7:D654 8D B6 0F    STA $0FB6  [$7E:0FB6]  ;} Phantoon flame rain flag triggered flag = 1
+$A7:D657 60          RTS                    ; Return
 
 ; BRANCH_WAITING
-$A7:D658 20 FA D3    JSR $D3FA  [$A7:D3FA]
+$A7:D658 20 FA D3    JSR $D3FA  [$A7:D3FA]  ; Make Phantoon look towards Samus
 $A7:D65B 60          RTS
 }
 
 
-;;; $D65C: Phantoon becomes solid and full body becomes vulnerable ;;;
+;;; $D65C: Phantoon function - figure-8 - swooping triggered ;;;
 {
-$A7:D65C 20 FA D3    JSR $D3FA  [$A7:D3FA]  ; Change eye sprite based on direction to Samus
+$A7:D65C 20 FA D3    JSR $D3FA  [$A7:D3FA]  ; Make Phantoon look towards Samus
 $A7:D65F AD 88 19    LDA $1988  [$7E:1988]  ;\
-$A7:D662 29 FF BF    AND #$BFFF             ;|
-$A7:D665 8D 88 19    STA $1988  [$7E:1988]  ;} Make Phantoon opaque
-$A7:D668 20 E1 D3    JSR $D3E1  [$A7:D3E1]  ; Begin Phantoon swooping pattern
+$A7:D662 29 FF BF    AND #$BFFF             ;} Make Phantoon opaque
+$A7:D665 8D 88 19    STA $1988  [$7E:1988]  ;/
+$A7:D668 20 E1 D3    JSR $D3E1  [$A7:D3E1]  ; Start Phantoon swooping pattern
 $A7:D66B A9 01 00    LDA #$0001             ;\
-$A7:D66E 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy instruction timer = 1
+$A7:D66E 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:D671 A9 47 CC    LDA #$CC47             ;\
-$A7:D674 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Enemy instruction = $CC47 (make body vulnerable)
+$A7:D674 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC47 (full hitbox)
 $A7:D677 60          RTS
+}
 }
 
 
-;;; $D678: Phantoon is swooping ;;;
+;;; $D678..D3: Phantoon function - swooping ;;;
 {
-$A7:D678 20 FA D3    JSR $D3FA  [$A7:D3FA]  ; Change eye sprite based on direction to Samus
-$A7:D67B 20 D1 D2    JSR $D2D1  [$A7:D2D1]  ; Move in a swooping pattern
-$A7:D67E DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state timer
+;;; $D678: Phantoon function - swooping - opaque ;;;
+{
+$A7:D678 20 FA D3    JSR $D3FA  [$A7:D3FA]  ; Make Phantoon look towards Samus
+$A7:D67B 20 D1 D2    JSR $D2D1  [$A7:D2D1]  ; Move Phantoon in swooping pattern
+$A7:D67E DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D681 F0 02       BEQ $02    [$D685]     ;\
-$A7:D683 10 33       BPL $33    [$D6B8]     ;} If state timer >= 0 go to BRANCH_WAITING
+$A7:D683 10 33       BPL $33    [$D6B8]     ;} If [Phantoon function timer] > 0: return
 
-$A7:D685 A9 B9 D6    LDA #$D6B9             ;
-$A7:D688 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D6B9
+$A7:D685 A9 B9 D6    LDA #$D6B9             ;\
+$A7:D688 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D6B9
 $A7:D68B AD 88 19    LDA $1988  [$7E:1988]  ;\
-$A7:D68E 09 00 40    ORA #$4000             ;|
-$A7:D691 8D 88 19    STA $1988  [$7E:1988]  ;} Make Phantoon transparent
+$A7:D68E 09 00 40    ORA #$4000             ;} Make Phantoon semi-transparent
+$A7:D691 8D 88 19    STA $1988  [$7E:1988]  ;/
 $A7:D694 A9 01 00    LDA #$0001             ;\
-$A7:D697 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy instruction timer = 1
+$A7:D697 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:D69A 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phantoon eye instruction timer = 1
 $A7:D69D A9 41 CC    LDA #$CC41             ;\
-$A7:D6A0 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Enemy instruction = $CC41 (make body invulnerable)
+$A7:D6A0 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC41 (invulnerable)
 $A7:D6A3 A9 91 CC    LDA #$CC91             ;\
-$A7:D6A6 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction = $CC91 (close eye incrementally)
+$A7:D6A6 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC91 (close)
 $A7:D6A9 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A7:D6AC 09 00 04    ORA #$0400             ;|
-$A7:D6AF 8D 86 0F    STA $0F86  [$7E:0F86]  ;} Stop tracking Samus
-$A7:D6B2 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Set Phantoon fade complete flag to 0
-$A7:D6B5 9E 2A 10    STZ $102A,x[$7E:102A]
+$A7:D6AC 09 00 04    ORA #$0400             ;} Set Phantoon body as intangible
+$A7:D6AF 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A7:D6B2 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
+$A7:D6B5 9E 2A 10    STZ $102A,x[$7E:102A]  ; Phantoon round damage = 0
 
-; BRANCH_WAITING
 $A7:D6B8 60          RTS
 }
 
 
-;;; $D6B9: Fade out Phantoon with a swoop ;;;
+;;; $D6B9: Phantoon function - swooping - fading out ;;;
 {
-$A7:D6B9 20 D1 D2    JSR $D2D1  [$A7:D2D1]  ; Move in a swooping pattern
+$A7:D6B9 20 D1 D2    JSR $D2D1  [$A7:D2D1]  ; Move Phantoon in swooping pattern
 $A7:D6BC A9 0C 00    LDA #$000C             ;\
-$A7:D6BF 20 64 D4    JSR $D464  [$A7:D464]  ;} Fade out
+$A7:D6BF 20 64 D4    JSR $D464  [$A7:D464]  ;} Advance Phantoon fade out
 
 $A7:D6C2 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D6C5 F0 0C       BEQ $0C    [$D6D3]     ;} If fade complete flag is set:
+$A7:D6C5 F0 0C       BEQ $0C    [$D6D3]     ;} If fade complete:
 $A7:D6C7 A9 D4 D6    LDA #$D6D4             ;\
-$A7:D6CA 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D6D4
+$A7:D6CA 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D6D4
 $A7:D6CD A9 78 00    LDA #$0078             ;\
-$A7:D6D0 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Set state timer to 120
+$A7:D6D0 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 120
 
 $A7:D6D3 60          RTS
 }
+}
 
 
-;;; $D6D4: Wait after Phantoon fading out ;;;
+;;; $D6D4..D73E: Phantoon function - hiding before figure-8 ;;;
 {
-$A7:D6D4 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state timer
+;;; $D6D4: Phantoon function - hiding before figure-8 - hiding ;;;
+{
+$A7:D6D4 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D6D7 F0 02       BEQ $02    [$D6DB]     ;\
-$A7:D6D9 10 06       BPL $06    [$D6E1]     ;} If state timer is >= 0 go to BRANCH_WAITING
+$A7:D6D9 10 06       BPL $06    [$D6E1]     ;} If [Phantoon function timer] > 0: return
 
 $A7:D6DB A9 E2 D6    LDA #$D6E2             ;\
-$A7:D6DE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D6E2
+$A7:D6DE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D6E2
 
-; BRANCH_WAITING
 $A7:D6E1 60          RTS
 }
 
 
-;;; $D6E2: Move Phantoon to the left or right side and pick new eye opening pattern ;;;
+;;; $D6E2: Phantoon function - hiding before figure-8 - place Phantoon ;;;
 {
 $A7:D6E2 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:D6E6 89 01 00    BIT #$0001             ;\
-$A7:D6E9 F0 14       BEQ $14    [$D6FF]     ;} If [random number] was even go to BRANCH_RANDOM_NUMBER_EVEN
-
-; BRANCH_RANDOM_NUMBER_ODD
+$A7:D6E9 F0 14       BEQ $14    [$D6FF]     ;} If [random number] % 2 != 0:
 $A7:D6EB A9 88 00    LDA #$0088             ;\
-$A7:D6EE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;|
-$A7:D6F1 A9 D0 00    LDA #$00D0             ;|
-$A7:D6F4 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Set Phantoon pos to (208,96)
-$A7:D6F7 A9 60 00    LDA #$0060             ;|
-$A7:D6FA 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
-$A7:D6FD 80 12       BRA $12    [$D711]     ; Go to BRANCH_INITIALIZE_MOVEMENT
+$A7:D6EE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Phantoon movement index = 88h
+$A7:D6F1 A9 D0 00    LDA #$00D0             ;\
+$A7:D6F4 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Phantoon X position = D0h
+$A7:D6F7 A9 60 00    LDA #$0060             ;\
+$A7:D6FA 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Phantoon Y position = 60h
+$A7:D6FD 80 12       BRA $12    [$D711]
 
-; BRANCH_RANDOM_NUMBER_EVEN
-$A7:D6FF A9 8F 01    LDA #$018F             ;\
-$A7:D702 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;|
-$A7:D705 A9 30 00    LDA #$0030             ;|
-$A7:D708 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Set Phantoon pos to (48,96)
-$A7:D70B A9 60 00    LDA #$0060             ;|
-$A7:D70E 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A7:D6FF A9 8F 01    LDA #$018F             ;\ Else ([random number] % 2 = 0):
+$A7:D702 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Phantoon movement index = 18Fh
+$A7:D705 A9 30 00    LDA #$0030             ;\
+$A7:D708 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Phantoon X position = 30h
+$A7:D70B A9 60 00    LDA #$0060             ;\
+$A7:D70E 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Phantoon Y position = 60h
 
-; BRANCH_INITIALIZE_MOVEMENT
-$A7:D711 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ;\
-$A7:D714 A9 01 00    LDA #$0001             ;} Initialize movement cycle in left-side-clockwise direction
-$A7:D717 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Speed ramp cycle phase ($0FAE) is unchanged
+$A7:D711 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ; Phantoon reversed movement flag = 0
+$A7:D714 A9 01 00    LDA #$0001             ;\
+$A7:D717 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Phantoon speed = 1.0
 $A7:D71A 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ;/
-$A7:D71D 9C B6 0F    STZ $0FB6  [$7E:0FB6]  ; Clear Phantoon invisibility flag
-$A7:D720 20 76 D0    JSR $D076  [$A7:D076]  ; Pick new Pattern
+$A7:D71D 9C B6 0F    STZ $0FB6  [$7E:0FB6]  ; Phantoon flame rain flag triggered flag = 0
+$A7:D720 20 76 D0    JSR $D076  [$A7:D076]  ; Pick new Phantoon pattern
 $A7:D723 A9 2D D7    LDA #$D72D             ;\
-$A7:D726 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D72D
-$A7:D729 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Set Phantoon fade complete flag to 0
+$A7:D726 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D72D
+$A7:D729 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:D72C 60          RTS
 }
 
 
-;;; $D72D: Phantoon fade-in before figure-8 movement ;;;
+;;; $D72D: Phantoon function - hiding before figure-8 - fading in ;;;
 {
 $A7:D72D A9 0C 00    LDA #$000C             ;\
-$A7:D730 20 86 D4    JSR $D486  [$A7:D486]  ;} Fade-in
+$A7:D730 20 86 D4    JSR $D486  [$A7:D486]  ;} Advance Phantoon fade in
 $A7:D733 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D736 F0 06       BEQ $06    [$D73E]     ;} If fade complete flag is set go to BRANCH_WAITING
+$A7:D736 F0 06       BEQ $06    [$D73E]     ;} If fade complete:
 $A7:D738 A9 E7 D5    LDA #$D5E7             ;\
-$A7:D73B 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Next state is $D5E7
+$A7:D73B 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Phantoon function = $D5E7 (figure-8)
 
-; BRANCH_WAITING
 $A7:D73E 60          RTS
+}
 }
 
 
-;;; $D73F: Phantoon becomes solid and vulnerable after raining fireballs ;;;
+;;; $D73F..D85B: Phantoon function - flame rain ;;;
 {
-$A7:D73F 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Clear fade complete flag
+;;; $D73F: Phantoon function - flame rain - show Phantoon ;;;
+{
+$A7:D73F 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:D742 AD 88 19    LDA $1988  [$7E:1988]  ;\
 $A7:D745 29 FF BF    AND #$BFFF             ;} Make Phantoon opaque
 $A7:D748 8D 88 19    STA $1988  [$7E:1988]  ;/
 $A7:D74B A9 01 00    LDA #$0001             ;\
-$A7:D74E 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy instruction timer = 1
+$A7:D74E 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:D751 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phantoon eye instruction timer = 1
 $A7:D754 A9 47 CC    LDA #$CC47             ;\
-$A7:D757 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Enemy instruction = $CC47 (make body vulnerable)
+$A7:D757 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC47 (full hitbox)
 $A7:D75A A9 9D CC    LDA #$CC9D             ;\
-$A7:D75D 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction = $CC9D (open eye and play sound)
+$A7:D75D 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC9D (eyeball - centred)
 $A7:D760 A9 67 D7    LDA #$D767             ;\
-$A7:D763 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is D767
+$A7:D763 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D767
 $A7:D766 60          RTS
 }
 
 
-;;; $D767: Phantoon fade-in during fireball rain ;;;
+;;; $D767: Phantoon function - flame rain - make Phantoon vulnerable ;;;
 {
 $A7:D767 A9 01 00    LDA #$0001             ;\
-$A7:D76A 20 86 D4    JSR $D486  [$A7:D486]  ;| Fade-in
+$A7:D76A 20 86 D4    JSR $D486  [$A7:D486]  ;| Advance Phantoon fade in
 $A7:D76D AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D770 F0 15       BEQ $15    [$D787]     ;} If fade complete flag is not set go to BRANCH_WAITING
+$A7:D770 F0 15       BEQ $15    [$D787]     ;} If fade complete:
 $A7:D772 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A7:D775 29 FF FB    AND #$FBFF             ;} Start tracking Samus
+$A7:D775 29 FF FB    AND #$FBFF             ;} Set Phantoon body as tangible
 $A7:D778 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A7:D77B A9 88 D7    LDA #$D788             ;\
-$A7:D77E 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D788
+$A7:D77E 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D788
 $A7:D781 A9 5A 00    LDA #$005A             ;\
-$A7:D784 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Set state timer to 90
+$A7:D784 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Phantoon function timer = 90
 
 ; BRANCH_WAITING
 $A7:D787 60          RTS
 }
 
 
-;;; $D788: Follow Samus w/ eye during fireball rain ;;;
+;;; $D788: Phantoon function - flame rain - vulnerable window ;;;
 {
-$A7:D788 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state timer
+$A7:D788 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D78B F0 02       BEQ $02    [$D78F]     ;\
-$A7:D78D 10 45       BPL $45    [$D7D4]     ;} If state timer >= 0 go to BRANCH_WAITING
+$A7:D78D 10 45       BPL $45    [$D7D4]     ;} If [Phantoon function timer] > 0: return
 
-$A7:D78F 9E 2A 10    STZ $102A,x[$7E:102A]
+$A7:D78F 9E 2A 10    STZ $102A,x[$7E:102A]  ; Phantoon round damage = 0
 $A7:D792 AD 28 10    LDA $1028  [$7E:1028]  ;\
-$A7:D795 F0 0D       BEQ $0D    [$D7A4]     ;} If swooping flag is not set go to BRANCH_NOT_SWOOPING
+$A7:D795 F0 0D       BEQ $0D    [$D7A4]     ;} If swooping triggered:
+$A7:D797 9C 28 10    STZ $1028  [$7E:1028]  ; Phantoon swooping triggered flag = 0
+$A7:D79A A9 01 00    LDA #$0001             ;\
+$A7:D79D 8D B6 0F    STA $0FB6  [$7E:0FB6]  ;} Phantoon flame rain flag triggered flag = 1
+$A7:D7A0 20 E1 D3    JSR $D3E1  [$A7:D3E1]  ; Start Phantoon swooping pattern
+$A7:D7A3 60          RTS                    ; Return
 
-; BRANCH_SWOOPING
-$A7:D797 9C 28 10    STZ $1028  [$7E:1028]  ; Clear swooping flag
-$A7:D79A A9 01 00    LDA #$0001
-$A7:D79D 8D B6 0F    STA $0FB6  [$7E:0FB6]  ; Set Phantoon invisibility flag
-$A7:D7A0 20 E1 D3    JSR $D3E1  [$A7:D3E1]  ; Begin Phantoon swooping pattern
-$A7:D7A3 60          RTS
-
-; BRANCH_NOT_SWOOPING
 $A7:D7A4 A9 D5 D7    LDA #$D7D5             ;\
-$A7:D7A7 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $0FB2
-$A7:D7AA 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Set fade complete flag to 0
+$A7:D7A7 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D7D5
+$A7:D7AA 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:D7AD A9 01 00    LDA #$0001             ;\
-$A7:D7B0 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy instruction timer = 1
+$A7:D7B0 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:D7B3 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phantoon eye instruction timer = 1
 $A7:D7B6 A9 41 CC    LDA #$CC41             ;\
-$A7:D7B9 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Enemy instruction = $CC41 (make body invulnerable)
+$A7:D7B9 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC41 (invulnerable)
 $A7:D7BC A9 91 CC    LDA #$CC91             ;\
-$A7:D7BF 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction = $CC91 (close eye incrementally)
+$A7:D7BF 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC91 (close)
 $A7:D7C2 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A7:D7C5 09 00 04    ORA #$0400             ;} Stop tracking Samus
+$A7:D7C5 09 00 04    ORA #$0400             ;} Set Phantoon body as intangible
 $A7:D7C8 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A7:D7CB AD 88 19    LDA $1988  [$7E:1988]  ;\
-$A7:D7CE 09 00 40    ORA #$4000             ;} Make Phantoon transparent
+$A7:D7CE 09 00 40    ORA #$4000             ;} Make Phantoon semi-transparent
 $A7:D7D1 8D 88 19    STA $1988  [$7E:1988]  ;/
 
-; BRANCH_WAITING
 $A7:D7D4 60          RTS
 }
 
 
-;;; $D7D5: Phantoon fade-out during fireball rain ;;;
+;;; $D7D5: Phantoon function - flame rain - fading out ;;;
 {
 $A7:D7D5 A9 0C 00    LDA #$000C             ;\
-$A7:D7D8 20 64 D4    JSR $D464  [$A7:D464]  ;} Fade-out
+$A7:D7D8 20 64 D4    JSR $D464  [$A7:D464]  ;} Advance Phantoon fade out
 $A7:D7DB AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D7DE D0 01       BNE $01    [$D7E1]     ;} If fade-out complete flag is not set:
+$A7:D7DE D0 01       BNE $01    [$D7E1]     ;} If fade complete not complete:
 $A7:D7E0 60          RTS                    ; Return
 
 $A7:D7E1 A9 F7 D7    LDA #$D7F7             ;\
-$A7:D7E4 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D7F7
+$A7:D7E4 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D7F7
 $A7:D7E7 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:D7EB 29 07 00    AND #$0007             ;\
 $A7:D7EE 0A          ASL A                  ;|
-$A7:D7EF A8          TAY                    ;} State machine timer = [$CD63 + [random number] * 2]
+$A7:D7EF A8          TAY                    ;} Phantoon function timer = [$CD63 + [random number] % 8 * 2]
 $A7:D7F0 B9 63 CD    LDA $CD63,y[$A7:CD6B]  ;|
 $A7:D7F3 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 $A7:D7F6 60          RTS
 }
 
 
-;;; $D7F7: Spawn raining fireballs ;;;
+;;; $D7F7: Phantoon function - flame rain - subsequent flame rain ;;;
 {
-$A7:D7F7 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state machine timer
+$A7:D7F7 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D7FA F0 02       BEQ $02    [$D7FE]     ;\
-$A7:D7FC 10 2B       BPL $2B    [$D829]     ;} If state machine timer >= 0 go to BRANCH_WAITING
+$A7:D7FC 10 2B       BPL $2B    [$D829]     ;} If [Phantoon function timer] > 0: return
 
 $A7:D7FE 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A7:D802 29 07 00    AND #$0007             ;\
 $A7:D805 48          PHA                    ;|
-$A7:D806 0A          ASL A                  ;} Y = ([random number] & 7h) * 8
+$A7:D806 0A          ASL A                  ;} Y = [random number] % 8 * 8
 $A7:D807 0A          ASL A                  ;|
 $A7:D808 0A          ASL A                  ;|
 $A7:D809 A8          TAY                    ;/
 $A7:D80A B9 AD CD    LDA $CDAD,y[$A7:CDE5]  ;\
-$A7:D80D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Use lookup table at $CDAD to set figure-8 movement
-$A7:D810 B9 AF CD    LDA $CDAF,y[$A7:CDE7]  ;} index ($0FA8), initial x pos ($0F7A), and initial
-$A7:D813 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} y pos ($0F7E)
-$A7:D816 B9 B1 CD    LDA $CDB1,y[$A7:CDE9]  ;|
-$A7:D819 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
-$A7:D81C 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ; Set direction to right-side clockwise
+$A7:D80D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Phantoon movement index = [$CDAD + [Y]]
+$A7:D810 B9 AF CD    LDA $CDAF,y[$A7:CDE7]  ;\
+$A7:D813 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Phantoon X position = [$CDAD + [Y] + 2]
+$A7:D816 B9 B1 CD    LDA $CDB1,y[$A7:CDE9]  ;\
+$A7:D819 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Phantoon Y position = [$CDAD + [Y] + 4]
+$A7:D81C 9C EC 0F    STZ $0FEC  [$7E:0FEC]  ; Phantoon reversed movement flag = 0
 $A7:D81F A9 3F D7    LDA #$D73F             ;\
-$A7:D822 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D73F
-$A7:D825 68          PLA                    ;\ Spawn 8 raining fireballs with a gap at the same x pos as
-$A7:D826 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} phantoon (using [random number] & 7h in [A] to indicate pos)
+$A7:D822 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D73F
+$A7:D825 68          PLA                    ;\
+$A7:D826 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} Spawn flame rain enemy projectiles with pattern [random number] % 8
 
-; BRANCH_WAITING
 $A7:D829 60          RTS
 }
 
 
-;;; $D82A: Fade-out before first fireball rain ;;;
+;;; $D82A: Phantoon function - flame rain - initial flame rain ;;;
 {
 $A7:D82A A9 0C 00    LDA #$000C             ;\
-$A7:D82D 20 64 D4    JSR $D464  [$A7:D464]  ;} Fade-out
+$A7:D82D 20 64 D4    JSR $D464  [$A7:D464]  ;} Advance Phantoon fade out
 $A7:D830 20 F1 D0    JSR $D0F1  [$A7:D0F1]  ; Adjust Phantoon speed and move Phantoon in figure-8
-$A7:D833 20 CA CF    JSR $CFCA  [$A7:CFCA]
-$A7:D836 CE E8 0F    DEC $0FE8  [$7E:0FE8]  ; Decrement eye timer
+$A7:D833 20 CA CF    JSR $CFCA  [$A7:CFCA]  ; Handle casual flames
+$A7:D836 CE E8 0F    DEC $0FE8  [$7E:0FE8]  ; Decrement Phantoon eye timer
 $A7:D839 F0 02       BEQ $02    [$D83D]     ;\
-$A7:D83B 10 1E       BPL $1E    [$D85B]     ;} If eye timer >= 0 go to BRANCH_WAITING
+$A7:D83B 10 1E       BPL $1E    [$D85B]     ;} If [Phantoon eye timer] >= 0: return
 
-$A7:D83D 9C 28 10    STZ $1028  [$7E:1028]  ; Clear swooping flag
+$A7:D83D 9C 28 10    STZ $1028  [$7E:1028]  ; Phantoon swooping triggered flag = 0
 $A7:D840 A9 3F D7    LDA #$D73F             ;\
-$A7:D843 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D73F
+$A7:D843 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D73F
 $A7:D846 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A7:D849 C9 80 00    CMP #$0080             ;|
-$A7:D84C 30 07       BMI $07    [$D855]     ;} If Phantoon x pos < 128 go to BRANCH_RIGHT_SIDE
-
-; BRANCH_LEFT_SIDE
+$A7:D849 C9 80 00    CMP #$0080             ;} If [Phantoon X position] >= 80h:
+$A7:D84C 30 07       BMI $07    [$D855]     ;/
 $A7:D84E A9 02 00    LDA #$0002             ;\
-$A7:D851 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} Rain fireballs
+$A7:D851 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} Spawn flame rain enemy projectiles with pattern 2
 $A7:D854 60          RTS
 
-; BRANCH_RIGHT_SIDE
-$A7:D855 A9 00 00    LDA #$0000             ;\
-$A7:D858 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} Rain fireballs
+$A7:D855 A9 00 00    LDA #$0000             ;\ Else ([Phantoon X position] < 80h):
+$A7:D858 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} Spawn flame rain enemy projectiles with pattern 0
 
-; BRANCH_WAITING
 $A7:D85B 60          RTS
+}
 }
 
 
-;;; $D85C: Phantoon fade-out before enrage ;;;
+;;; $D85C..D92D: Phantoon function - enraged ;;;
+{
+;;; $D85C: Phantoon function - enraged - fading out before rage ;;;
 {
 $A7:D85C A9 0C 00    LDA #$000C             ;\
-$A7:D85F 20 64 D4    JSR $D464  [$A7:D464]  ;} Fade-out
+$A7:D85F 20 64 D4    JSR $D464  [$A7:D464]  ;} Advance Phantoon fade out
 $A7:D862 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D865 F0 0C       BEQ $0C    [$D873]     ;} If fade complete flag is not set go to BRANCH_WAITING
+$A7:D865 F0 0C       BEQ $0C    [$D873]     ;} If fade complete:
 $A7:D867 A9 74 D8    LDA #$D874             ;\
-$A7:D86A 9D B2 0F    STA $0FB2,x            ;} Next state is $0FB2
+$A7:D86A 9D B2 0F    STA $0FB2,x            ;} Phantoon function = $D874
 $A7:D86D A9 78 00    LDA #$0078             ;\
-$A7:D870 9D B0 0F    STA $0FB0,x            ;} Set state timer to 120
+$A7:D870 9D B0 0F    STA $0FB0,x            ;} Phantoon function timer = 120
 
-; BRANCH_WAITING
 $A7:D873 60          RTS
 }
 
 
-;;; $D874: Move enraged Phantoon to top center ;;;
+;;; $D874: Phantoon function - enraged - hiding ;;;
 {
-$A7:D874 DE B0 0F    DEC $0FB0,x           ; Decrement state timer
+$A7:D874 DE B0 0F    DEC $0FB0,x           ; Decrement Phantoon function timer
 $A7:D877 F0 02       BEQ $02    [$D87B]    ;\
-$A7:D879 10 15       BPL $15    [$D890]    ;} If state timer >= 0 go to BRANCH_WAITING
+$A7:D879 10 15       BPL $15    [$D890]    ;} If [Phantoon function timer] > 0: return
 
 $A7:D87B A9 91 D8    LDA #$D891            ;\
-$A7:D87E 9D B2 0F    STA $0FB2,x           ;} Next state is $D891
+$A7:D87E 9D B2 0F    STA $0FB2,x           ;} Phantoon function = $D891
 $A7:D881 A9 80 00    LDA #$0080            ;\
-$A7:D884 8D 7A 0F    STA $0F7A  [$7E:0F7A] ;} Set Phantoon y pos to 128
+$A7:D884 8D 7A 0F    STA $0F7A  [$7E:0F7A] ;} Phantoon X position = 80h
 $A7:D887 A9 20 00    LDA #$0020            ;\
-$A7:D88A 8D 7E 0F    STA $0F7E  [$7E:0F7E] ;} Set Phantoon x pos to 32
-$A7:D88D 9C F2 0F    STZ $0FF2  [$7E:0FF2] ; Clear fade complete flag
+$A7:D88A 8D 7E 0F    STA $0F7E  [$7E:0F7E] ;} Phantoon Y position = 20h
+$A7:D88D 9C F2 0F    STZ $0FF2  [$7E:0FF2] ; Phantoon fade complete flag = 0
 
-; BRANCH_WAITING
 $A7:D890 60          RTS
 }
 
 
-;;; $D891: Fade-in enraged Phantoon ;;;
+;;; $D891: Phantoon function - enraged - fading in ;;;
 {
 $A7:D891 A9 0C 00    LDA #$000C             ;\
-$A7:D894 20 86 D4    JSR $D486  [$A7:D486]  ;} Fade-in
+$A7:D894 20 86 D4    JSR $D486  [$A7:D486]  ;} Advance Phantoon fade in
 $A7:D897 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D89A F0 0F       BEQ $0F    [$D8AB]     ;} If fade complete flag is not set go to BRANCH_WAITING
+$A7:D89A F0 0F       BEQ $0F    [$D8AB]     ;} If fade complete:
 $A7:D89C A9 AC D8    LDA #$D8AC             ;\
-$A7:D89F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Next state is $D8AC
+$A7:D89F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Phantoon function = $D8AC
 $A7:D8A2 A9 04 00    LDA #$0004             ;\
-$A7:D8A5 9D B0 0F    STA $0FB0,x            ; Set state timer to 4
-$A7:D8A8 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Clear fade complete flag (used as a counter for fireball waves)
+$A7:D8A5 9D B0 0F    STA $0FB0,x            ; Phantoon function timer = 4
+$A7:D8A8 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon rage round counter = 0
 
-; BRANCH_WAITING
 $A7:D8AB 60          RTS
 }
 
 
-;;; $D8AC: Enraged Phantoon ;;;
+;;; $D8AC: Phantoon function - enraged - rage ;;;
 {
-$A7:D8AC DE B0 0F    DEC $0FB0,x            ; Decrement state timer
+$A7:D8AC DE B0 0F    DEC $0FB0,x            ; Decrement Phantoon function timer
 $A7:D8AF F0 02       BEQ $02    [$D8B3]     ;\
-$A7:D8B1 10 62       BPL $62    [$D915]     ;} If state timer >= 0 go to BRANCH_WAITING
+$A7:D8B1 10 62       BPL $62    [$D915]     ;} If [Phantoon function timer] > 0: return
 
 $A7:D8B3 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D8B6 89 01 00    BIT #$0001             ;|
-$A7:D8B9 D0 15       BNE $15    [$D8D0]     ;} If this is wave 1, 3, 5, or 7 go to BRANCH_ODD_WAVE
+$A7:D8B6 89 01 00    BIT #$0001             ;} If [Phantoon rage round counter] & 1 != 0: go to BRANCH_ODD_WAVE
+$A7:D8B9 D0 15       BNE $15    [$D8D0]     ;/
+$A7:D8BB A0 06 00    LDY #$0006             ; Y = 6
 
-; BRANCH_EVEN_WAVE
-$A7:D8BB A0 06 00    LDY #$0006
-
-; BRANCH_EVEN_WAVE_LOOP
+; LOOP_EVEN_WAVE
 $A7:D8BE 5A          PHY                    ;\
 $A7:D8BF 98          TYA                    ;|
 $A7:D8C0 09 00 02    ORA #$0200             ;|
-$A7:D8C3 A0 29 9C    LDY #$9C29             ;|
-$A7:D8C6 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon destroyable flames enemy projectile
+$A7:D8C3 A0 29 9C    LDY #$9C29             ;} Spawn Phantoon destroyable flames enemy projectile with parameter 200h | [Y]
+$A7:D8C6 22 27 80 86 JSL $868027[$86:8027]  ;|
 $A7:D8CA 7A          PLY                    ;/
 $A7:D8CB 88          DEY                    ; Decrement Y
-$A7:D8CC 10 F0       BPL $F0    [$D8BE]     ; If Y >= 0 go to BRANCH_EVEN_WAVE_LOOP
-$A7:D8CE 80 16       BRA $16    [$D8E6]     ; Go to BRANCH_NEXT_WAVE
+$A7:D8CC 10 F0       BPL $F0    [$D8BE]     ; If [Y] >= 0: go to LOOP_EVEN_WAVE
+$A7:D8CE 80 16       BRA $16    [$D8E6]     ; Go to BRANCH_MERGE
 
 ; BRANCH_ODD_WAVE
-$A7:D8D0 A0 0F 00    LDY #$000F
+$A7:D8D0 A0 0F 00    LDY #$000F             ; Y = Fh
 
-; BRANCH_ODD_WAVE_LOOP
+; LOOP_ODD_WAVE
 $A7:D8D3 5A          PHY                    ;\
 $A7:D8D4 98          TYA                    ;|
 $A7:D8D5 09 00 02    ORA #$0200             ;|
 $A7:D8D8 A0 29 9C    LDY #$9C29             ;|
-$A7:D8DB 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon destroyable flames enemy projectile
+$A7:D8DB 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon destroyable flames enemy projectile with parameter 200h | [Y]
 $A7:D8DF 7A          PLY                    ;/
 $A7:D8E0 88          DEY                    ; Decrement Y
 $A7:D8E1 C0 08 00    CPY #$0008             ;
-$A7:D8E4 10 ED       BPL $ED    [$D8D3]     ; If Y >= 8 go to BRANCH_ODD_WAVE_LOOP
+$A7:D8E4 10 ED       BPL $ED    [$D8D3]     ; If [Y] >= 8 go to LOOP_ODD_WAVE
 
-; BRANCH_NEXT_WAVE
+; BRANCH_MERGE
 $A7:D8E6 A9 29 00    LDA #$0029             ;\
 $A7:D8E9 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 29h, sound library 3, max queued sounds allowed = 6 (Phantoon's super missiled attack)
 $A7:D8ED AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D8F0 1A          INC A                  ;} Increment enraged wave number (same memory address as fade complete flag)
+$A7:D8F0 1A          INC A                  ;} Increment Phantoon rage round counter
 $A7:D8F1 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;/
 $A7:D8F4 C9 08 00    CMP #$0008             ;\
-$A7:D8F7 10 07       BPL $07    [$D900]     ;} If wave number >= 8 go to BRANCH_ENRAGE_FINISHED
+$A7:D8F7 10 07       BPL $07    [$D900]     ;} If [Phantoon rage round counter] < 8:
 $A7:D8F9 A9 80 00    LDA #$0080             ;\
-$A7:D8FC 9D B0 0F    STA $0FB0,x            ;} Set state timer to 128
-$A7:D8FF 60          RTS
+$A7:D8FC 9D B0 0F    STA $0FB0,x            ;} Phantoon function timer = 80h
+$A7:D8FF 60          RTS                    ; Return
 
-; BRANCH_ENRAGE_FINISHED
 $A7:D900 A9 01 00    LDA #$0001             ;\
-$A7:D903 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Set Phantoon eye instruction timer to 1
+$A7:D903 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Phantoon eye instruction timer = 1
 $A7:D906 A9 91 CC    LDA #$CC91             ;\
-$A7:D909 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Set Phantoon eye instruction to CC91 (close eye incrementally)
-$A7:D90C 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Clear fade complete flag
+$A7:D909 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC91 (close)
+$A7:D90C 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:D90F A9 16 D9    LDA #$D916             ;\
-$A7:D912 9D B2 0F    STA $0FB2,x            ;} Next state is $D916
+$A7:D912 9D B2 0F    STA $0FB2,x            ;} Phantoon function = $D916
 
-; BRANCH_WAITING
 $A7:D915 60          RTS
 }
 
 
-;;; $D916: Fade out after enrage ;;;
+;;; $D916: Phantoon function - enraged - fading out after rage ;;;
 {
 $A7:D916 A9 0C 00    LDA #$000C             ;\
-$A7:D919 20 64 D4    JSR $D464  [$A7:D464]  ;} Fade-out
+$A7:D919 20 64 D4    JSR $D464  [$A7:D464]  ;} Advance Phantoon fade out
 $A7:D91C AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
-$A7:D91F F0 0C       BEQ $0C    [$D92D]     ;}If fade complete flag is not set go to BRANCH_WAITING
+$A7:D91F F0 0C       BEQ $0C    [$D92D]     ;} If fade complete:
 $A7:D921 A9 D4 D6    LDA #$D6D4             ;\
-$A7:D924 9D B2 0F    STA $0FB2,x            ;} Next state is $D6D4
+$A7:D924 9D B2 0F    STA $0FB2,x            ;} Phantoon function = $D6D4 (hiding before figure-8)
 $A7:D927 A9 78 00    LDA #$0078             ;\
-$A7:D92A 9D B0 0F    STA $0FB0,x            ;} Set state timer to 120
+$A7:D92A 9D B0 0F    STA $0FB0,x            ;} Phantoon function timer = 120
 
 $A7:D92D 60          RTS
 }
+}
 
 
-;;; $D92E: Complete a swoop after fatal shot ;;;
+;;; $D92E: Phantoon function - swooping - fatal damage ;;;
 {
-$A7:D92E 20 FA D3    JSR $D3FA  [$A7:D3FA]
-$A7:D931 20 D1 D2    JSR $D2D1  [$A7:D2D1]  ; Move in a swooping pattern
-$A7:D934 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A7:D937 C9 60 00    CMP #$0060
-$A7:D93A 30 0B       BMI $0B    [$D947]
-$A7:D93C C9 A0 00    CMP #$00A0
-$A7:D93F 10 06       BPL $06    [$D947]
-$A7:D941 A9 48 D9    LDA #$D948
-$A7:D944 9D B2 0F    STA $0FB2,x
+$A7:D92E 20 FA D3    JSR $D3FA  [$A7:D3FA]  ; Make Phantoon look towards Samus
+$A7:D931 20 D1 D2    JSR $D2D1  [$A7:D2D1]  ; Move Phantoon in swooping pattern
+$A7:D934 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A7:D937 C9 60 00    CMP #$0060             ;|
+$A7:D93A 30 0B       BMI $0B    [$D947]     ;} If 60h <= [Phantoon X position] < A0h:
+$A7:D93C C9 A0 00    CMP #$00A0             ;|
+$A7:D93F 10 06       BPL $06    [$D947]     ;/
+$A7:D941 A9 48 D9    LDA #$D948             ;\
+$A7:D944 9D B2 0F    STA $0FB2,x            ;} Phantoon function = $D948 (death sequence)
 
 $A7:D947 60          RTS
 }
 
 
-;;; $D948: Dying phantoon fade in and out ;;;
+;;; $D948..DB99: Phantoon function - death sequence - fading in and out ;;;
 {
-$A7:D948 EA          NOP
-$A7:D949 AD EC 0F    LDA $0FEC  [$7E:0FEC] ;\
-$A7:D94C 89 01 00    BIT #$0001            ;|
-$A7:D94F D0 0D       BNE $0D    [$D95E]    ;} If figure-8 direction is right-side-clockwise go to BRANCH_RIGHT_SIDE_CLOCKWISE
+;;; $D948: Phantoon function - death sequence - fading in and out ;;;
+{
+$A7:D948 EA          NOP                    ; Woah, wild NOP appeared!
+$A7:D949 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
+$A7:D94C 89 01 00    BIT #$0001             ;} If [Phantoon fade counter] % 2 = 0:
+$A7:D94F D0 0D       BNE $0D    [$D95E]     ;/
+$A7:D951 A9 0C 00    LDA #$000C             ;\
+$A7:D954 20 64 D4    JSR $D464  [$A7:D464]  ;} Advance Phantoon fade out
+$A7:D957 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
+$A7:D95A D0 0D       BNE $0D    [$D969]     ;} If fade not complete:
+$A7:D95C 80 2C       BRA $2C    [$D98A]     ; Return
 
-; BRANCH_LEFT_SIDE_CLOCKWISE
-$A7:D951 A9 0C 00    LDA #$000C            ;\
-$A7:D954 20 64 D4    JSR $D464  [$A7:D464] ;} Fade-out
-$A7:D957 AD F2 0F    LDA $0FF2  [$7E:0FF2] ;\
-$A7:D95A D0 0D       BNE $0D    [$D969]    ;} If fade complete flag is set go to BRANCH_FADE_OUT_COMPLETE
-$A7:D95C 80 2C       BRA $2C    [$D98A]    ; Go to BRANCH_RETURN
+$A7:D95E A9 0C 00    LDA #$000C             ;\ Else ([Phantoon fade counter] % 2 != 0):
+$A7:D961 20 86 D4    JSR $D486  [$A7:D486]  ;} Advance Phantoon fade in
+$A7:D964 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
+$A7:D967 F0 21       BEQ $21    [$D98A]     ;} If fade not complete: return
 
-; BRANCH_LEFT_SIDE_CLOCKWISE
-$A7:D95E A9 0C 00    LDA #$000C            ;\
-$A7:D961 20 86 D4    JSR $D486  [$A7:D486] ;} Fade-in
-$A7:D964 AD F2 0F    LDA $0FF2  [$7E:0FF2] ;\
-$A7:D967 F0 21       BEQ $21    [$D98A]    ;}If fade complete flag is set go to BRANCH_RETURN
+$A7:D969 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
+$A7:D96C AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
+$A7:D96F 1A          INC A                  ;} Increment Phantoon fade counter
+$A7:D970 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;/
+$A7:D973 C9 0A 00    CMP #$000A             ;\
+$A7:D976 30 12       BMI $12    [$D98A]     ; If [Phantoon fade counter] >= Ah:
+$A7:D978 A9 8B D9    LDA #$D98B             ;\
+$A7:D97B 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D98B
+$A7:D97E A9 0F 00    LDA #$000F             ;\
+$A7:D981 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 15
+$A7:D984 9C 32 10    STZ $1032  [$7E:1032]  ; Phantoon explosion index = 0
+$A7:D987 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ; Phantoon explosion loop counter = 0
 
-; BRANCH_FADE_OUT_COMPLETE
-$A7:D969 9C F2 0F    STZ $0FF2  [$7E:0FF2] ; Clear fade complete flag
-$A7:D96C AD EC 0F    LDA $0FEC  [$7E:0FEC] ;\
-$A7:D96F 1A          INC A                 ;} Increment $0FEC (usually used to indicate figure-8 movement direction, but used for something else here)
-$A7:D970 8D EC 0F    STA $0FEC  [$7E:0FEC] ;/
-$A7:D973 C9 0A 00    CMP #$000A            ;\
-$A7:D976 30 12       BMI $12    [$D98A]    ; If $0FEC < Ah go to BRANCH_RETURN
-$A7:D978 A9 8B D9    LDA #$D98B            ;\
-$A7:D97B 9D B2 0F    STA $0FB2,x[$7E:0FB2] ;} Next state is $D98B
-$A7:D97E A9 0F 00    LDA #$000F            ;\
-$A7:D981 9D B0 0F    STA $0FB0,x[$7E:0FB0] ;} Set state timer to 15
-$A7:D984 9C 32 10    STZ $1032  [$7E:1032]
-$A7:D987 9C A8 0F    STZ $0FA8  [$7E:0FA8]
-
-; BRANCH_RETURN
 $A7:D98A 60          RTS
 }
 
 
-;;; $D98B: Dying Phantoon explosions ;;;
+;;; $D98B: Phantoon function - death sequence - exploding ;;;
 {
-$A7:D98B DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement state counter
+$A7:D98B DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:D98E F0 03       BEQ $03    [$D993]     ;\
-$A7:D990 30 01       BMI $01    [$D993]     ;} If state counter <= 0 go to BRANCH_DONE_WAITING
+$A7:D990 30 01       BMI $01    [$D993]     ;} If [Phantoon function timer] > 0:
+$A7:D992 60          RTS                    ; Return
 
-; BRANCH_WAITING
-$A7:D992 60          RTS
-
-; BRANCH_DONE_WAITING
-$A7:D993 AD 32 10    LDA $1032  [$7E:1032]
-$A7:D996 0A          ASL A
-$A7:D997 0A          ASL A
-$A7:D998 A8          TAY
-$A7:D999 B9 1D DA    LDA $DA1D,y[$A7:DA1D]
-$A7:D99C 29 FF 00    AND #$00FF
-$A7:D99F 89 80 00    BIT #$0080
-$A7:D9A2 F0 03       BEQ $03    [$D9A7]
-$A7:D9A4 09 00 FF    ORA #$FF00
-
-$A7:D9A7 85 12       STA $12    [$7E:0012]
-$A7:D9A9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A7:D9AC 18          CLC
-$A7:D9AD 65 12       ADC $12    [$7E:0012]
-$A7:D9AF 85 12       STA $12    [$7E:0012]
-$A7:D9B1 B9 1E DA    LDA $DA1E,y[$A7:DA1E]
-$A7:D9B4 29 FF 00    AND #$00FF
-$A7:D9B7 89 80 00    BIT #$0080
-$A7:D9BA F0 03       BEQ $03    [$D9BF]
-$A7:D9BC 09 00 FF    ORA #$FF00
-
-$A7:D9BF 85 14       STA $14    [$7E:0014]
-$A7:D9C1 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A7:D9C4 18          CLC
-$A7:D9C5 65 14       ADC $14    [$7E:0014]
-$A7:D9C7 85 14       STA $14    [$7E:0014]
+$A7:D993 AD 32 10    LDA $1032  [$7E:1032]  ;\
+$A7:D996 0A          ASL A                  ;|
+$A7:D997 0A          ASL A                  ;} Y = [Phantoon explosion index] * 4
+$A7:D998 A8          TAY                    ;/
+$A7:D999 B9 1D DA    LDA $DA1D,y[$A7:DA1D]  ;\
+$A7:D99C 29 FF 00    AND #$00FF             ;|
+$A7:D99F 89 80 00    BIT #$0080             ;|
+$A7:D9A2 F0 03       BEQ $03    [$D9A7]     ;|
+$A7:D9A4 09 00 FF    ORA #$FF00             ;|
+                                            ;} $12 = [Phantoon X position] + ±[$DA1D + [Y]]
+$A7:D9A7 85 12       STA $12    [$7E:0012]  ;|
+$A7:D9A9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A7:D9AC 18          CLC                    ;|
+$A7:D9AD 65 12       ADC $12    [$7E:0012]  ;|
+$A7:D9AF 85 12       STA $12    [$7E:0012]  ;/
+$A7:D9B1 B9 1E DA    LDA $DA1E,y[$A7:DA1E]  ;\
+$A7:D9B4 29 FF 00    AND #$00FF             ;|
+$A7:D9B7 89 80 00    BIT #$0080             ;|
+$A7:D9BA F0 03       BEQ $03    [$D9BF]     ;|
+$A7:D9BC 09 00 FF    ORA #$FF00             ;|
+                                            ;} $14 = [Phantoon Y position] + ±[$DA1D + 1 + [Y]]
+$A7:D9BF 85 14       STA $14    [$7E:0014]  ;|
+$A7:D9C1 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A7:D9C4 18          CLC                    ;|
+$A7:D9C5 65 14       ADC $14    [$7E:0014]  ;|
+$A7:D9C7 85 14       STA $14    [$7E:0014]  ;/
 $A7:D9C9 5A          PHY
-$A7:D9CA B9 1F DA    LDA $DA1F,y[$A7:DA1F]
-$A7:D9CD 29 FF 00    AND #$00FF
+$A7:D9CA B9 1F DA    LDA $DA1F,y[$A7:DA1F]  ;\
+$A7:D9CD 29 FF 00    AND #$00FF             ;} A = [$DA1D + 2 + [Y]]
 $A7:D9D0 48          PHA
 $A7:D9D1 A0 09 E5    LDY #$E509             ;\
 $A7:D9D4 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A7:D9D8 68          PLA
-$A7:D9D9 C9 1D 00    CMP #$001D
-$A7:D9DC D0 09       BNE $09    [$D9E7]
+$A7:D9D9 C9 1D 00    CMP #$001D             ;\
+$A7:D9DC D0 09       BNE $09    [$D9E7]     ;} If [A] = 1Dh:
 $A7:D9DE A9 24 00    LDA #$0024             ;\
 $A7:D9E1 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 24h, sound library 2, max queued sounds allowed = 6 (small explosion)
 $A7:D9E5 80 07       BRA $07    [$D9EE]
 
-$A7:D9E7 A9 2B 00    LDA #$002B             ;\
+$A7:D9E7 A9 2B 00    LDA #$002B             ;\ Else ([A] != 1Dh):
 $A7:D9EA 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 2Bh, sound library 2, max queued sounds allowed = 6 (Phantoon exploding)
 
 $A7:D9EE 7A          PLY
 $A7:D9EF B9 20 DA    LDA $DA20,y[$A7:DA20]  ;\
 $A7:D9F2 29 FF 00    AND #$00FF             ;|
-$A7:D9F5 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Set state timer to [$DA20 + Y] & FFh
-$A7:D9F8 AD 32 10    LDA $1032  [$7E:1032]
-$A7:D9FB 1A          INC A
-$A7:D9FC 8D 32 10    STA $1032  [$7E:1032]
-$A7:D9FF C9 0D 00    CMP #$000D
-$A7:DA02 30 18       BMI $18    [$DA1C]
-$A7:DA04 A9 05 00    LDA #$0005
-$A7:DA07 8D 32 10    STA $1032  [$7E:1032]
-$A7:DA0A AD A8 0F    LDA $0FA8  [$7E:0FA8]
-$A7:DA0D 1A          INC A
-$A7:DA0E 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A7:DA11 C9 03 00    CMP #$0003
-$A7:DA14 30 06       BMI $06    [$DA1C]
+$A7:D9F5 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = [$DA1D + 3 + [Y]]
+$A7:D9F8 AD 32 10    LDA $1032  [$7E:1032]  ;\
+$A7:D9FB 1A          INC A                  ;} Increment Phantoon explosion index
+$A7:D9FC 8D 32 10    STA $1032  [$7E:1032]  ;/
+$A7:D9FF C9 0D 00    CMP #$000D             ;\
+$A7:DA02 30 18       BMI $18    [$DA1C]     ;} If [Phantoon explosion index] >= Dh:
+$A7:DA04 A9 05 00    LDA #$0005             ;\
+$A7:DA07 8D 32 10    STA $1032  [$7E:1032]  ;} Phantoon explosion index = 5
+$A7:DA0A AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A7:DA0D 1A          INC A                  ;} Increment Phantoon explosion loop counter
+$A7:DA0E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;/
+$A7:DA11 C9 03 00    CMP #$0003             ;\
+$A7:DA14 30 06       BMI $06    [$DA1C]     ;} If [Phantoon explosion loop counter] >= 3:
 $A7:DA16 A9 51 DA    LDA #$DA51             ;\
-$A7:DA19 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $DA51
+$A7:DA19 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $DA51
 
 $A7:DA1C 60          RTS
 
-;                        ____________ (DA1D)
-;                       |   _________ (DA1E)
-;                       |  |  _______ (DA1F)
-;                       |  |  |   ___ (DA20) state timer
+;                        ____________ X offset
+;                       |   _________ Y offset
+;                       |  |  _______ Explosion type. 3 = small, 1Dh = big
+;                       |  |  |   ___ Timer
 ;                       |  |  |  |
-$A7:DA1D             db 00,00,1D,10,
-                        20,E0,1D,10,
-                        E0,20,1D,10,
-                        E0,E0,1D,10,
-                        20,20,1D,20,
-                        E0,F8,1D,08,
-                        00,00,03,08,
-                        20,F8,1D,08,
-                        00,00,03,08,
-                        00,18,03,08,
-                        00,30,1D,08,
-                        E8,18,03,08,
-                        18,18,03,08
+$A7:DA1D             db 00,00,1D,10, ;\
+                        20,E0,1D,10, ;|
+                        E0,20,1D,10, ;} Once
+                        E0,E0,1D,10, ;|
+                        20,20,1D,20, ;/
+                        E0,F8,1D,08, ;\
+                        00,00,03,08, ;|
+                        20,F8,1D,08, ;|
+                        00,00,03,08, ;|
+                        00,18,03,08, ;} 3 times
+                        00,30,1D,08, ;|
+                        E8,18,03,08, ;|
+                        18,18,03,08  ;/
 }
 
 
-;;; $DA51: Wavy dying Phantoon and dying cry ;;;
+;;; $DA51: Phantoon function - death sequence - set up wavy mosaic Phantoon ;;;
 {
-$A7:DA51 AD A3 CD    LDA $CDA3  [$A7:CDA3]
-$A7:DA54 85 16       STA $16    [$7E:0016]
-$A7:DA56 A9 01 00    LDA #$0001
-$A7:DA59 22 87 E4 88 JSL $88E487[$88:E487]
-$A7:DA5D 9C 6E 10    STZ $106E  [$7E:106E]
+$A7:DA51 AD A3 CD    LDA $CDA3  [$A7:CDA3]  ;\
+$A7:DA54 85 16       STA $16    [$7E:0016]  ;} Wavy Phantoon phase delta = 8
+$A7:DA56 A9 01 00    LDA #$0001             ; Next wavy Phantoon mode = 1 (doubled wavelength)
+$A7:DA59 22 87 E4 88 JSL $88E487[$88:E487]  ; Spawn wavy Phantoon HDMA object
+$A7:DA5D 9C 6E 10    STZ $106E  [$7E:106E]  ; Wavy Phantoon amplitude = 0
 $A7:DA60 A9 86 DA    LDA #$DA86             ;\
-$A7:DA63 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $DA86
-$A7:DA66 A9 02 00    LDA #$0002
-$A7:DA69 8D EC 0F    STA $0FEC  [$7E:0FEC]
-$A7:DA6C AD 86 0F    LDA $0F86  [$7E:0F86]
-$A7:DA6F 29 FF DF    AND #$DFFF
-$A7:DA72 09 00 05    ORA #$0500
-$A7:DA75 8D C6 0F    STA $0FC6  [$7E:0FC6]
-$A7:DA78 8D 06 10    STA $1006  [$7E:1006]
-$A7:DA7B 8D 46 10    STA $1046  [$7E:1046]
+$A7:DA63 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $DA86
+$A7:DA66 A9 02 00    LDA #$0002             ;\
+$A7:DA69 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Phantoon mosaic options = 2 (BG2 enabled, block size 1x1)
+$A7:DA6C AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A7:DA6F 29 FF DF    AND #$DFFF             ;|
+$A7:DA72 09 00 05    ORA #$0500             ;|
+$A7:DA75 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;} Set Phantoon eye/tentacles/mouth to not process instructions, be intangible and invisible
+$A7:DA78 8D 06 10    STA $1006  [$7E:1006]  ;|
+$A7:DA7B 8D 46 10    STA $1046  [$7E:1046]  ;/
 $A7:DA7E A9 7E 00    LDA #$007E             ;\
 $A7:DA81 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 7Eh, sound library 2, max queued sounds allowed = 6 (Phantoon's dying cry)
 $A7:DA85 60          RTS
 }
 
 
-;;; $DA86: Dying Phantoon fade out ;;;
+;;; $DA86: Phantoon function - death sequence - wavy mosaic Phantoon ;;;
 {
-$A7:DA86 AD 9F CD    LDA $CD9F  [$A7:CD9F]
-$A7:DA89 85 12       STA $12    [$7E:0012]
-$A7:DA8B AD A1 CD    LDA $CDA1  [$A7:CDA1]
-$A7:DA8E 85 14       STA $14    [$7E:0014]
-$A7:DA90 20 27 CF    JSR $CF27  [$A7:CF27]
-$A7:DA93 AD EC 0F    LDA $0FEC  [$7E:0FEC]
-$A7:DA96 C9 FF FF    CMP #$FFFF
-$A7:DA99 F0 2A       BEQ $2A    [$DAC5]
-$A7:DA9B AD B6 05    LDA $05B6  [$7E:05B6]
-$A7:DA9E 89 0F 00    BIT #$000F
-$A7:DAA1 D0 33       BNE $33    [$DAD6]
+$A7:DA86 AD 9F CD    LDA $CD9F  [$A7:CD9F]  ;\
+$A7:DA89 85 12       STA $12    [$7E:0012]  ;} $12 = 100h (amplitude delta)
+$A7:DA8B AD A1 CD    LDA $CDA1  [$A7:CDA1]  ;\
+$A7:DA8E 85 14       STA $14    [$7E:0014]  ;} $14 = F000h (max amplitude)
+$A7:DA90 20 27 CF    JSR $CF27  [$A7:CF27]  ; Grow/shrink Phantoon wave amplitude
+$A7:DA93 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
+$A7:DA96 C9 FF FF    CMP #$FFFF             ;} If [Phantoon mosaic options] = FFFFh: go to BRANCH_DONE_MOSAIC
+$A7:DA99 F0 2A       BEQ $2A    [$DAC5]     ;/
+$A7:DA9B AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$A7:DA9E 89 0F 00    BIT #$000F             ;} If [frame counter] % 10h != 0: return
+$A7:DAA1 D0 33       BNE $33    [$DAD6]     ;/
 $A7:DAA3 E2 20       SEP #$20
-$A7:DAA5 AD EC 0F    LDA $0FEC  [$7E:0FEC]
-$A7:DAA8 C9 F2       CMP #$F2
-$A7:DAAA F0 0C       BEQ $0C    [$DAB8]
-$A7:DAAC 18          CLC
-$A7:DAAD 69 10       ADC #$10
-$A7:DAAF 8D EC 0F    STA $0FEC  [$7E:0FEC]
-$A7:DAB2 85 57       STA $57    [$7E:0057]
+$A7:DAA5 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
+$A7:DAA8 C9 F2       CMP #$F2               ;} If [Phantoon mosaic options] & FFh != F2h:
+$A7:DAAA F0 0C       BEQ $0C    [$DAB8]     ;/
+$A7:DAAC 18          CLC                    ;\
+$A7:DAAD 69 10       ADC #$10               ;} Phantoon mosaic options += 1 << 4
+$A7:DAAF 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;/
+$A7:DAB2 85 57       STA $57    [$7E:0057]  ; Mosaic size and enable = [Phantoon mosaic options]
 $A7:DAB4 C2 20       REP #$20
 $A7:DAB6 80 1E       BRA $1E    [$DAD6]
 
 $A7:DAB8 C2 20       REP #$20
-$A7:DABA A9 FF FF    LDA #$FFFF
-$A7:DABD 8D EC 0F    STA $0FEC  [$7E:0FEC]
-$A7:DAC0 9C F2 0F    STZ $0FF2  [$7E:0FF2]
-$A7:DAC3 80 11       BRA $11    [$DAD6]
+$A7:DABA A9 FF FF    LDA #$FFFF             ;\ Else ([Phantoon mosaic options] & FFh = F2h):
+$A7:DABD 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Phantoon mosaic options = FFFFh
+$A7:DAC0 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
+$A7:DAC3 80 11       BRA $11    [$DAD6]     ; Return
 
-$A7:DAC5 A9 0C 00    LDA #$000C
-$A7:DAC8 20 64 D4    JSR $D464  [$A7:D464]
-$A7:DACB AD F2 0F    LDA $0FF2  [$7E:0FF2]
-$A7:DACE F0 06       BEQ $06    [$DAD6]
+; BRANCH_DONE_MOSAIC
+$A7:DAC5 A9 0C 00    LDA #$000C             ;\
+$A7:DAC8 20 64 D4    JSR $D464  [$A7:D464]  ;} Advance Phantoon fade out
+$A7:DACB AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
+$A7:DACE F0 06       BEQ $06    [$DAD6]     ;} If fade complete:
 $A7:DAD0 A9 D7 DA    LDA #$DAD7             ;\
-$A7:DAD3 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $DAD7
+$A7:DAD3 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $DAD7
 
 $A7:DAD6 60          RTS
 }
 
 
-;;; $DAD7: Phantoon almost dead ;;;
+;;; $DAD7: Phantoon function - death sequence - clear graphics ;;;
 {
-$A7:DAD7 E2 20       SEP #$20
-$A7:DAD9 64 57       STZ $57    [$7E:0057]
-$A7:DADB C2 20       REP #$20
-$A7:DADD 9C F4 0F    STZ $0FF4  [$7E:0FF4]
+$A7:DAD7 E2 20       SEP #$20               ;\
+$A7:DAD9 64 57       STZ $57    [$7E:0057]  ;} Disable mosaic
+$A7:DADB C2 20       REP #$20               ;/
+$A7:DADD 9C F4 0F    STZ $0FF4  [$7E:0FF4]  ; Disable wavy Phantoon
 $A7:DAE0 AD 88 19    LDA $1988  [$7E:1988]  ;\
 $A7:DAE3 29 FF BF    AND #$BFFF             ;} Make Phantoon opaque
 $A7:DAE6 8D 88 19    STA $1988  [$7E:1988]  ;/
-$A7:DAE9 A9 FF FF    LDA #$FFFF
-$A7:DAEC 8D 74 10    STA $1074  [$7E:1074]
+$A7:DAE9 A9 FF FF    LDA #$FFFF             ;\
+$A7:DAEC 8D 74 10    STA $1074  [$7E:1074]  ;} Phantoon semi-transparency HDMA object control = FFFFh (delete Phantoon semi-transparency HDMA object)
 $A7:DAEF A9 3D DB    LDA #$DB3D             ;\
-$A7:DAF2 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $DAD7
-$A7:DAF5 A9 3C 00    LDA #$003C
-$A7:DAF8 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A7:DAFB 9C F2 0F    STZ $0FF2  [$7E:0FF2]
+$A7:DAF2 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $DB3D
+$A7:DAF5 A9 3C 00    LDA #$003C             ;\
+$A7:DAF8 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 60
+$A7:DAFB 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:DAFE A9 80 01    LDA #$0180             ;\
-$A7:DB01 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Set X pos to 384
+$A7:DB01 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Phantoon X position = 180h (not sure why position matters here)
 $A7:DB04 A9 80 00    LDA #$0080             ;\
-$A7:DB07 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Set Y pos to 128
-$A7:DB0A A2 FE 03    LDX #$03FE
-$A7:DB0D A9 38 03    LDA #$0338
-
-$A7:DB10 9F 00 20 7E STA $7E2000,x[$7E:23FE]
-$A7:DB14 CA          DEX
-$A7:DB15 CA          DEX
-$A7:DB16 10 F8       BPL $F8    [$DB10]
-$A7:DB18 AE 30 03    LDX $0330  [$7E:0330]
-$A7:DB1B A9 00 04    LDA #$0400
-$A7:DB1E 95 D0       STA $D0,x  [$7E:00D0]
-$A7:DB20 E8          INX
-$A7:DB21 E8          INX
-$A7:DB22 A9 00 20    LDA #$2000
-$A7:DB25 95 D0       STA $D0,x  [$7E:00D2]
-$A7:DB27 E8          INX
-$A7:DB28 E8          INX
-$A7:DB29 E2 20       SEP #$20
-$A7:DB2B A9 7E       LDA #$7E
-$A7:DB2D 95 D0       STA $D0,x  [$7E:00D4]
-$A7:DB2F C2 20       REP #$20
-$A7:DB31 E8          INX
-$A7:DB32 A9 00 48    LDA #$4800
-$A7:DB35 95 D0       STA $D0,x  [$7E:00D5]
-$A7:DB37 E8          INX
-$A7:DB38 E8          INX
-$A7:DB39 8E 30 03    STX $0330  [$7E:0330]
+$A7:DB07 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Phantoon Y position = 80h
+$A7:DB0A A2 FE 03    LDX #$03FE             ;\
+$A7:DB0D A9 38 03    LDA #$0338             ;|
+                                            ;|
+$A7:DB10 9F 00 20 7E STA $7E2000,x[$7E:23FE];} $7E:2000..23FF = 0338h
+$A7:DB14 CA          DEX                    ;|
+$A7:DB15 CA          DEX                    ;|
+$A7:DB16 10 F8       BPL $F8    [$DB10]     ;/
+$A7:DB18 AE 30 03    LDX $0330  [$7E:0330]  ;\
+$A7:DB1B A9 00 04    LDA #$0400             ;|
+$A7:DB1E 95 D0       STA $D0,x  [$7E:00D0]  ;|
+$A7:DB20 E8          INX                    ;|
+$A7:DB21 E8          INX                    ;|
+$A7:DB22 A9 00 20    LDA #$2000             ;|
+$A7:DB25 95 D0       STA $D0,x  [$7E:00D2]  ;|
+$A7:DB27 E8          INX                    ;|
+$A7:DB28 E8          INX                    ;|
+$A7:DB29 E2 20       SEP #$20               ;} Queue transfer of 400h bytes from $7E:2000 to VRAM $4800 (BG2 tilemap)
+$A7:DB2B A9 7E       LDA #$7E               ;|
+$A7:DB2D 95 D0       STA $D0,x  [$7E:00D4]  ;|
+$A7:DB2F C2 20       REP #$20               ;|
+$A7:DB31 E8          INX                    ;|
+$A7:DB32 A9 00 48    LDA #$4800             ;|
+$A7:DB35 95 D0       STA $D0,x  [$7E:00D5]  ;|
+$A7:DB37 E8          INX                    ;|
+$A7:DB38 E8          INX                    ;|
+$A7:DB39 8E 30 03    STX $0330  [$7E:0330]  ;/
 $A7:DB3C 60          RTS
 }
 
 
-;;; $DB3D: Phantoon dead ;;;
+;;; $DB3D: Phantoon function - death sequence - activate Wrecked Ship ;;;
 {
 $A7:DB3D DA          PHX
-$A7:DB3E BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A7:DB41 F0 05       BEQ $05    [$DB48]
-$A7:DB43 DE B0 0F    DEC $0FB0,x[$7E:0FB0]
+$A7:DB3E BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A7:DB41 F0 05       BEQ $05    [$DB48]     ;} If [Phantoon function timer] != 0:
+$A7:DB43 DE B0 0F    DEC $0FB0,x[$7E:0FB0]  ; Decrement Phantoon function timer
 $A7:DB46 FA          PLX
-$A7:DB47 60          RTS
+$A7:DB47 60          RTS                    ; Return
 
-$A7:DB48 AD B6 05    LDA $05B6  [$7E:05B6]
-$A7:DB4B 89 03 00    BIT #$0003
-$A7:DB4E D0 48       BNE $48    [$DB98]
-$A7:DB50 A9 0C 00    LDA #$000C
-$A7:DB53 8D EE 0F    STA $0FEE  [$7E:0FEE]
-$A7:DB56 20 5A DC    JSR $DC5A  [$A7:DC5A]
-$A7:DB59 90 3D       BCC $3D    [$DB98]
-$A7:DB5B E2 20       SEP #$20
-$A7:DB5D A5 69       LDA $69    [$7E:0069]
-$A7:DB5F 09 02       ORA #$02
-$A7:DB61 85 69       STA $69    [$7E:0069]
-$A7:DB63 C2 20       REP #$20
-$A7:DB65 22 0B BA A0 JSL $A0BA0B[$A0:BA0B]
-$A7:DB69 AD 86 0F    LDA $0F86  [$7E:0F86]
-$A7:DB6C 09 00 02    ORA #$0200
-$A7:DB6F 8D 86 0F    STA $0F86  [$7E:0F86]
-$A7:DB72 8D C6 0F    STA $0FC6  [$7E:0FC6]
-$A7:DB75 8D 06 10    STA $1006  [$7E:1006]
-$A7:DB78 8D 46 10    STA $1046  [$7E:1046]
-$A7:DB7B AE 9F 07    LDX $079F  [$7E:079F]
-$A7:DB7E BF 28 D8 7E LDA $7ED828,x[$7E:D82B]
-$A7:DB82 09 01 00    ORA #$0001
-$A7:DB85 9F 28 D8 7E STA $7ED828,x[$7E:D82B]
-$A7:DB89 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A7:DB8D             dx 00, 06, B78B
+$A7:DB48 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$A7:DB4B 89 03 00    BIT #$0003             ;} If [frame counter] % 4 != 0: return
+$A7:DB4E D0 48       BNE $48    [$DB98]     ;/
+$A7:DB50 A9 0C 00    LDA #$000C             ;\
+$A7:DB53 8D EE 0F    STA $0FEE  [$7E:0FEE]  ;} Palette change denominator = Ch
+$A7:DB56 20 5A DC    JSR $DC5A  [$A7:DC5A]  ; Advance Wrecked Ship power on palette transition
+$A7:DB59 90 3D       BCC $3D    [$DB98]     ; If fade not complete: return
+$A7:DB5B E2 20       SEP #$20               ;\
+$A7:DB5D A5 69       LDA $69    [$7E:0069]  ;|
+$A7:DB5F 09 02       ORA #$02               ;} Enable main screen BG2
+$A7:DB61 85 69       STA $69    [$7E:0069]  ;|
+$A7:DB63 C2 20       REP #$20               ;/
+$A7:DB65 22 0B BA A0 JSL $A0BA0B[$A0:BA0B]  ; Phantoon death item drop routine
+$A7:DB69 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A7:DB6C 09 00 02    ORA #$0200             ;} Flag Phantoon body for deletion
+$A7:DB6F 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A7:DB72 8D C6 0F    STA $0FC6  [$7E:0FC6]  ; Flag Phantoon eye for deletion
+$A7:DB75 8D 06 10    STA $1006  [$7E:1006]  ; Flag Phantoon tentacles for deletion
+$A7:DB78 8D 46 10    STA $1046  [$7E:1046]  ; Flag Phantoon mouth for deletion
+$A7:DB7B AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$A7:DB7E BF 28 D8 7E LDA $7ED828,x[$7E:D82B];|
+$A7:DB82 09 01 00    ORA #$0001             ;} Set area boss as dead
+$A7:DB85 9F 28 D8 7E STA $7ED828,x[$7E:D82B];/
+$A7:DB89 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A7:DB8D             dx 00, 06, B78B        ;} Spawn PLM to restore Phantoon's door after boss fight
 $A7:DB91 A9 03 00    LDA #$0003             ;\
 $A7:DB94 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 
 $A7:DB98 FA          PLX
 $A7:DB99 60          RTS
 }
-
-
-;;; $DB9A:  ;;;
-{
-; Called by:
-;     $D464: Phantoon fade out
-$A7:DB9A C2 30       REP #$30
-$A7:DB9C AD EE 0F    LDA $0FEE  [$7E:0FEE]
-$A7:DB9F 1A          INC A
-$A7:DBA0 CD F0 0F    CMP $0FF0  [$7E:0FF0]
-$A7:DBA3 B0 08       BCS $08    [$DBAD]
-$A7:DBA5 A9 00 00    LDA #$0000
-$A7:DBA8 8D F0 0F    STA $0FF0  [$7E:0FF0]
-$A7:DBAB 38          SEC
-$A7:DBAC 60          RTS
-
-$A7:DBAD A2 00 00    LDX #$0000
-
-$A7:DBB0 DA          PHX
-$A7:DBB1 BD 41 CA    LDA $CA41,x[$A7:CA41]
-$A7:DBB4 A8          TAY
-$A7:DBB5 BF E0 C0 7E LDA $7EC0E0,x[$7E:C0E0]
-$A7:DBB9 AA          TAX
-$A7:DBBA AD F0 0F    LDA $0FF0  [$7E:0FF0]
-$A7:DBBD 20 95 DC    JSR $DC95  [$A7:DC95]
-$A7:DBC0 FA          PLX
-$A7:DBC1 9F E0 C0 7E STA $7EC0E0,x[$7E:C0E0]
-$A7:DBC5 E8          INX
-$A7:DBC6 E8          INX
-$A7:DBC7 E0 20 00    CPX #$0020
-$A7:DBCA 90 E4       BCC $E4    [$DBB0]
-$A7:DBCC AD F0 0F    LDA $0FF0  [$7E:0FF0]
-$A7:DBCF 1A          INC A
-$A7:DBD0 8D F0 0F    STA $0FF0  [$7E:0FF0]
-$A7:DBD3 18          CLC
-$A7:DBD4 60          RTS
 }
 
 
-;;; $DBD5: Set Phantoon's color based on HP ;;;
+;;; $DB9A: Advance Phantoon fade out ;;;
 {
-; Called by:
-;     $D485: Phantoon fade in
+;; Returns:
+;;     Carry: Set if reached target colour, clear otherwise
+$A7:DB9A C2 30       REP #$30
+$A7:DB9C AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
+$A7:DB9F 1A          INC A                  ;|
+$A7:DBA0 CD F0 0F    CMP $0FF0  [$7E:0FF0]  ;} If [Phantoon palette change numerator] > [Phantoon palette change denominator] + 1:
+$A7:DBA3 B0 08       BCS $08    [$DBAD]     ;/
+$A7:DBA5 A9 00 00    LDA #$0000             ;\
+$A7:DBA8 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Phantoon palette change numerator = 0
+$A7:DBAB 38          SEC                    ;\
+$A7:DBAC 60          RTS                    ;} Return carry set
+                                            
+$A7:DBAD A2 00 00    LDX #$0000             ; X = 0
+
+; LOOP
+$A7:DBB0 DA          PHX
+$A7:DBB1 BD 41 CA    LDA $CA41,x[$A7:CA41]  ;\
+$A7:DBB4 A8          TAY                    ;|
+$A7:DBB5 BF E0 C0 7E LDA $7EC0E0,x[$7E:C0E0];|
+$A7:DBB9 AA          TAX                    ;|
+$A7:DBBA AD F0 0F    LDA $0FF0  [$7E:0FF0]  ;} $7E:C0E0 + [X] = the [Phantoon palette change numerator]th transitional colour from [$7E:C0E0 + [X]] to 0
+$A7:DBBD 20 95 DC    JSR $DC95  [$A7:DC95]  ;|
+$A7:DBC0 FA          PLX                    ;|
+$A7:DBC1 9F E0 C0 7E STA $7EC0E0,x[$7E:C0E0];/
+$A7:DBC5 E8          INX                    ;\
+$A7:DBC6 E8          INX                    ;} X += 2
+$A7:DBC7 E0 20 00    CPX #$0020             ;\
+$A7:DBCA 90 E4       BCC $E4    [$DBB0]     ;} If [X] < 20h: go to LOOP
+$A7:DBCC AD F0 0F    LDA $0FF0  [$7E:0FF0]  ;\
+$A7:DBCF 1A          INC A                  ;} Increment Phantoon palette change numerator
+$A7:DBD0 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;/
+$A7:DBD3 18          CLC                    ;\
+$A7:DBD4 60          RTS                    ;} Return carry clear
+}
+
+
+;;; $DBD5: Advance Phantoon fade in ;;;
+{
+;; Returns:
+;;     Carry: Set if reached target colour, clear otherwise
 $A7:DBD5 C2 30       REP #$30
-$A7:DBD7 AD EE 0F    LDA $0FEE  [$7E:0FEE]
-$A7:DBDA 1A          INC A
-$A7:DBDB CD F0 0F    CMP $0FF0  [$7E:0FF0]
-$A7:DBDE B0 08       BCS $08    [$DBE8]
-$A7:DBE0 A9 00 00    LDA #$0000
-$A7:DBE3 8D F0 0F    STA $0FF0  [$7E:0FF0]
-$A7:DBE6 38          SEC
-$A7:DBE7 60          RTS
+$A7:DBD7 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
+$A7:DBDA 1A          INC A                  ;|
+$A7:DBDB CD F0 0F    CMP $0FF0  [$7E:0FF0]  ;} If [Phantoon palette change numerator] > [Phantoon palette change denominator] + 1:
+$A7:DBDE B0 08       BCS $08    [$DBE8]     ;/
+$A7:DBE0 A9 00 00    LDA #$0000             ;\
+$A7:DBE3 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Phantoon palette change numerator = 0
+$A7:DBE6 38          SEC                    ;\
+$A7:DBE7 60          RTS                    ;} Return carry set
 
-$A7:DBE8 A2 00 00    LDX #$0000
+$A7:DBE8 A2 00 00    LDX #$0000             ; X = 0
 
+; LOOP
 $A7:DBEB DA          PHX
-$A7:DBEC 20 0F DC    JSR $DC0F  [$A7:DC0F]    ; Find palette for current Phantoon HP
-$A7:DBEF BF E0 C0 7E LDA $7EC0E0,x[$7E:C0E0]
-$A7:DBF3 AA          TAX
-$A7:DBF4 AD F0 0F    LDA $0FF0  [$7E:0FF0]
-$A7:DBF7 20 95 DC    JSR $DC95  [$A7:DC95]
-$A7:DBFA FA          PLX
-$A7:DBFB 9F E0 C0 7E STA $7EC0E0,x[$7E:C0E0]
-$A7:DBFF E8          INX
-$A7:DC00 E8          INX
-$A7:DC01 E0 20 00    CPX #$0020
-$A7:DC04 90 E5       BCC $E5    [$DBEB]
-$A7:DC06 AD F0 0F    LDA $0FF0  [$7E:0FF0]
-$A7:DC09 1A          INC A
-$A7:DC0A 8D F0 0F    STA $0FF0  [$7E:0FF0]
-$A7:DC0D 18          CLC
-$A7:DC0E 60          RTS
+$A7:DBEC 20 0F DC    JSR $DC0F  [$A7:DC0F]  ; Y = Phantoon health-based palette colour [X] / 2
+$A7:DBEF BF E0 C0 7E LDA $7EC0E0,x[$7E:C0E0];\
+$A7:DBF3 AA          TAX                    ;|
+$A7:DBF4 AD F0 0F    LDA $0FF0  [$7E:0FF0]  ;|
+$A7:DBF7 20 95 DC    JSR $DC95  [$A7:DC95]  ;} $7E:C0E0 + [X] = the [Phantoon palette change numerator]th transitional colour from [$7E:C0E0 + [X]] to [Y]
+$A7:DBFA FA          PLX                    ;|
+$A7:DBFB 9F E0 C0 7E STA $7EC0E0,x[$7E:C0E0];/
+$A7:DBFF E8          INX                    ;\
+$A7:DC00 E8          INX                    ;} X += 2
+$A7:DC01 E0 20 00    CPX #$0020             ;\
+$A7:DC04 90 E5       BCC $E5    [$DBEB]     ;} If [X] < 20h: go to LOOP
+$A7:DC06 AD F0 0F    LDA $0FF0  [$7E:0FF0]  ;\
+$A7:DC09 1A          INC A                  ;} Increment Phantoon palette change numerator
+$A7:DC0A 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;/
+$A7:DC0D 18          CLC                    ;\
+$A7:DC0E 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $DC0F: Get Phantoon health-based palette colour [X] / 2 ;;;
 {
-; Y = [$CB41 + clamp(([enemy health] - 1) / 312, 0, 7) * 20h + [X]]
+;; Returns:
+;;     Y: [$CB41 + clamp(([enemy health] - 1) / 312, 0, 7) * 20h + [X]]
 
 $A7:DC0F 86 18       STX $18    [$7E:0018]  ; $18 = [X]
 $A7:DC11 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -7343,46 +7322,50 @@ $A7:DC4A             dw CB41, CB61, CB81, CBA1, CBC1, CBE1, CC01, CC21
 }
 
 
-;;; $DC5A:  ;;;
+;;; $DC5A: Advance Wrecked Ship power on palette transition ;;;
 {
-; Called by:
-;     $DB3D: Phantoon dead
+;; Returns:
+;;     Carry: Set if reached target colour, clear otherwise
 $A7:DC5A C2 30       REP #$30
-$A7:DC5C AD EE 0F    LDA $0FEE  [$7E:0FEE]
-$A7:DC5F 1A          INC A
-$A7:DC60 CD F0 0F    CMP $0FF0  [$7E:0FF0]
-$A7:DC63 B0 08       BCS $08    [$DC6D]
-$A7:DC65 A9 00 00    LDA #$0000
-$A7:DC68 8D F0 0F    STA $0FF0  [$7E:0FF0]
-$A7:DC6B 38          SEC
-$A7:DC6C 60          RTS
+$A7:DC5C AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
+$A7:DC5F 1A          INC A                  ;|
+$A7:DC60 CD F0 0F    CMP $0FF0  [$7E:0FF0]  ;} If [Phantoon palette change numerator] > [Phantoon palette change denominator] + 1:
+$A7:DC63 B0 08       BCS $08    [$DC6D]     ;/
+$A7:DC65 A9 00 00    LDA #$0000             ;\
+$A7:DC68 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Phantoon palette change numerator = 0
+$A7:DC6B 38          SEC                    ;\
+$A7:DC6C 60          RTS                    ;} Return carry set
+                                            
+$A7:DC6D A2 00 00    LDX #$0000             ; X = 0
 
-$A7:DC6D A2 00 00    LDX #$0000
-
+; LOOP
 $A7:DC70 DA          PHX
-$A7:DC71 BD 61 CA    LDA $CA61,x[$A7:CA61]
-$A7:DC74 A8          TAY
-$A7:DC75 BF 00 C0 7E LDA $7EC000,x[$7E:C000]
-$A7:DC79 AA          TAX
-$A7:DC7A AD F0 0F    LDA $0FF0  [$7E:0FF0]
-$A7:DC7D 20 95 DC    JSR $DC95  [$A7:DC95]
-$A7:DC80 FA          PLX
-$A7:DC81 9F 00 C0 7E STA $7EC000,x[$7E:C000]
-$A7:DC85 E8          INX
-$A7:DC86 E8          INX
-$A7:DC87 E0 E0 00    CPX #$00E0
-$A7:DC8A 90 E4       BCC $E4    [$DC70]
-$A7:DC8C AD F0 0F    LDA $0FF0  [$7E:0FF0]
-$A7:DC8F 1A          INC A
-$A7:DC90 8D F0 0F    STA $0FF0  [$7E:0FF0]
-$A7:DC93 18          CLC
-$A7:DC94 60          RTS
+$A7:DC71 BD 61 CA    LDA $CA61,x[$A7:CA61]  ;\
+$A7:DC74 A8          TAY                    ;} Y = 
+$A7:DC75 BF 00 C0 7E LDA $7EC000,x[$7E:C000];\
+$A7:DC79 AA          TAX                    ;|
+$A7:DC7A AD F0 0F    LDA $0FF0  [$7E:0FF0]  ;|
+$A7:DC7D 20 95 DC    JSR $DC95  [$A7:DC95]  ;} $7E:C000 + [X] = the [Phantoon palette change numerator]th transitional colour from [$7E:C000 + [X]] to [Y]
+$A7:DC80 FA          PLX                    ;|
+$A7:DC81 9F 00 C0 7E STA $7EC000,x[$7E:C000];/
+$A7:DC85 E8          INX                    ;\
+$A7:DC86 E8          INX                    ;} X += 2
+$A7:DC87 E0 E0 00    CPX #$00E0             ;\
+$A7:DC8A 90 E4       BCC $E4    [$DC70]     ;} If [X] < E0h: go to LOOP
+$A7:DC8C AD F0 0F    LDA $0FF0  [$7E:0FF0]  ;\
+$A7:DC8F 1A          INC A                  ;} Increment Phantoon palette change numerator
+$A7:DC90 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;/
+$A7:DC93 18          CLC                    ;\
+$A7:DC94 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DC95:  ;;;
+;;; $DC95: Calculate the [A]th transitional colour from [X] to [Y] ;;;
 {
-; TODO: check if this is a clone of $82:DA4A
+;; Returns:
+;;     A: Result colour
+
+; Same as $82:DAA6, except palette change denominator is $0FEE instead of $C402
 $A7:DC95 48          PHA
 $A7:DC96 48          PHA
 $A7:DC97 DA          PHX
@@ -7446,8 +7429,17 @@ $A7:DCF0 60          RTS
 }
 
 
-;;; $DCF1:  ;;;
+;;; $DCF1: Calculate the [A]th transitional colour component from [X] to [Y] ;;;
 {
+;; Returns:
+;;     If [A] = 0:
+;;         A = [X]
+;;     If [A] = [Phantoon palette change denominator] + 1:
+;;         A = [Y]
+;;     Otherwise:
+;;         A = [X] + ([Y] - [X]) / ([Phantoon palette change denominator] + 1 - [A])
+
+; Same as $82:DAA6, except palette change denominator is $0FEE instead of $C402
 $A7:DCF1 C9 00 00    CMP #$0000
 $A7:DCF4 D0 02       BNE $02    [$DCF8]
 $A7:DCF6 8A          TXA
@@ -7564,7 +7556,7 @@ $A7:DD9A 6B          RTL
 {
 $A7:DD9B 8B          PHB
 $A7:DD9C AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
-$A7:DD9F C9 48 D9    CMP #$D948             ;} If [Phantoon function] >= $D948 (dying):
+$A7:DD9F C9 48 D9    CMP #$D948             ;} If [Phantoon function] >= $D948 (death sequence):
 $A7:DDA2 30 02       BMI $02    [$DDA6]     ;/
 $A7:DDA4 AB          PLB
 $A7:DDA5 6B          RTL                    ; Return
@@ -7574,13 +7566,13 @@ $A7:DDA9 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ; A = [enemy health]
 $A7:DDAC 48          PHA                    ;\
 $A7:DDAD 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ;} Normal enemy shot AI, but skips hit-projectile and death animation
 $A7:DDB1 68          PLA                    ;/
-$A7:DDB2 85 12       STA $12    [$7E:0012]  ; $12 = [A]
+$A7:DDB2 85 12       STA $12    [$7E:0012]  ; $12 = [A] (old enemy health)
 $A7:DDB4 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $A7:DDB7 D0 1B       BNE $1B    [$DDD4]     ;} If [enemy health] != 0: go to BRANCH_ALIVE
 $A7:DDB9 A9 73 00    LDA #$0073             ;\
 $A7:DDBC 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 73h, sound library 2, max queued sounds allowed = 6 (Phantoon's cry)
 $A7:DDC0 A9 01 00    LDA #$0001             ;\
-$A7:DDC3 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 1
+$A7:DDC3 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 1, Phantoon hurt flash palette loaded flag = 0
 $A7:DDC6 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A7:DDC9 09 00 04    ORA #$0400             ;} Set Phantoon body as intangible
 $A7:DDCC 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
@@ -7596,120 +7588,118 @@ $A7:DDDA F0 F6       BEQ $F6    [$DDD2]     ;/
 $A7:DDDC A9 73 00    LDA #$0073             ;\
 $A7:DDDF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 73h, sound library 2, max queued sounds allowed = 6 (Phantoon's cry)
 $A7:DDE3 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
-$A7:DDE6 C9 0D D6    CMP #$D60D             ;|
-$A7:DDE9 F0 43       BEQ $43    [$DE2E]     ;} If state is $D60D or $D788 go to BRANCH_EYE_FOLLOWING_SAMUS
-$A7:DDEB C9 88 D7    CMP #$D788             ;|
-$A7:DDEE F0 3E       BEQ $3E    [$DE2E]     ;/
+$A7:DDE6 C9 0D D6    CMP #$D60D             ;} If [Phantoon function] = $D60D (figure-8 - vulnerable window): go to BRANCH_VULNERABLE_WINDOW
+$A7:DDE9 F0 43       BEQ $43    [$DE2E]     ;/
+$A7:DDEB C9 88 D7    CMP #$D788             ;\
+$A7:DDEE F0 3E       BEQ $3E    [$DE2E]     ;} If [Phantoon function] = $D788 (flame rain - vulnerable window): go to BRANCH_VULNERABLE_WINDOW
 $A7:DDF0 C9 78 D6    CMP #$D678             ;\
-$A7:DDF3 F0 03       BEQ $03    [$DDF8]     ;} If state is $D678 go to BRANCH_SWOOPING
+$A7:DDF3 F0 03       BEQ $03    [$DDF8]     ;} If [Phantoon function] = $D678 (swooping - opaque): go to BRANCH_SWOOPING
 $A7:DDF5 4C 92 DE    JMP $DE92  [$A7:DE92]  ; Go to BRANCH_RETURN
 
 ; BRANCH_SWOOPING
 $A7:DDF8 A5 12       LDA $12    [$7E:0012]  ;\
 $A7:DDFA 38          SEC                    ;|
-$A7:DDFB FD 8C 0F    SBC $0F8C,x[$7E:0F8C]  ;} damage dealt this shot ($12) = enemy HP before shot ($12) - enemy HP after shot ($0F8C)
+$A7:DDFB FD 8C 0F    SBC $0F8C,x[$7E:0F8C]  ;} $12 (shot damage) = (old enemy health) - [enemy health]
 $A7:DDFE 85 12       STA $12    [$7E:0012]  ;/
 $A7:DE00 C9 2C 01    CMP #$012C             ;\
-$A7:DE03 30 13       BMI $13    [$DE18]     ;} If damage dealt this shot < 300 go to BRANCH_SWOOPING_AND_NOT_ENRAGED
+$A7:DE03 30 13       BMI $13    [$DE18]     ;} If (shot damage) >= 300: (just in case a super does less than 300 damage? >_<;)
 $A7:DE05 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A7:DE08 0A          ASL A                  ;|
 $A7:DE09 A8          TAY                    ;|
-$A7:DE0A B9 18 0C    LDA $0C18,y            ;} If projectile was not a super, go to BRANCH_SWOOPING_AND_NOT_ENRAGED
+$A7:DE0A B9 18 0C    LDA $0C18,y            ;} If projectile is super missile:
 $A7:DE0D 29 00 0F    AND #$0F00             ;|
 $A7:DE10 C9 00 02    CMP #$0200             ;|
 $A7:DE13 D0 03       BNE $03    [$DE18]     ;/
 $A7:DE15 4C D5 DE    JMP $DED5  [$A7:DED5]  ; Go to BRANCH_ENRAGED
 
-; BRANCH_SWOOPING_AND_NOT_ENRAGED
 $A7:DE18 BD 2A 10    LDA $102A,x[$7E:102A]  ;\
 $A7:DE1B 18          CLC                    ;|
-$A7:DE1C 65 12       ADC $12    [$7E:0012]  ;} damage dealt this volley ($102A) += damage this shot ($12)
+$A7:DE1C 65 12       ADC $12    [$7E:0012]  ;} Phantoon round damage += (shot damage)
 $A7:DE1E 9D 2A 10    STA $102A,x[$7E:102A]  ;/
 $A7:DE21 C9 2C 01    CMP #$012C             ;\
-$A7:DE24 30 6C       BMI $6C    [$DE92]     ;} If damage dealt this volley < 300 go to BRANCH_RETURN
+$A7:DE24 30 6C       BMI $6C    [$DE92]     ;} If [Phantoon round damage] < 300: go to BRANCH_RETURN
 $A7:DE26 A9 01 00    LDA #$0001             ;\
-$A7:DE29 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} state timer = 1
-$A7:DE2C 80 64       BRA $64    [$DE92]     ; go to BRANCH_RETURN
+$A7:DE29 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Phantoon function timer = 1
+$A7:DE2C 80 64       BRA $64    [$DE92]     ; Go to BRANCH_RETURN
 
-; BRANCH_EYE_FOLLOWING_SAMUS
+; BRANCH_VULNERABLE_WINDOW
 $A7:DE2E A5 12       LDA $12    [$7E:0012]  ;\
 $A7:DE30 38          SEC                    ;|
-$A7:DE31 FD 8C 0F    SBC $0F8C,x[$7E:0F8C]  ;} damage dealt this shot ($12) = enemy HP before shot ($12) - enemy HP after shot ($0F8C)
+$A7:DE31 FD 8C 0F    SBC $0F8C,x[$7E:0F8C]  ;} $12 (shot damage) = (old enemy health) - [enemy health]
 $A7:DE34 85 12       STA $12    [$7E:0012]  ;/
 $A7:DE36 C9 2C 01    CMP #$012C             ;\
-$A7:DE39 30 13       BMI $13    [$DE4E]     ;} If damage dealt this shot < 300 go to BRANCH_EYE_FOLLOWING_SAMUS_AND_NOT_ENRAGED
+$A7:DE39 30 13       BMI $13    [$DE4E]     ;} If (shot damage) >= 300: (just in case a super does less than 300 damage? >_<;)
 $A7:DE3B AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A7:DE3E 0A          ASL A                  ;|
 $A7:DE3F A8          TAY                    ;|
-$A7:DE40 B9 18 0C    LDA $0C18,y            ;} If projectile was not a super, go to BRANCH_EYE_FOLLOWING_SAMUS_AND_NOT_ENRAGED
+$A7:DE40 B9 18 0C    LDA $0C18,y            ;} If projectile is super missile:
 $A7:DE43 29 00 0F    AND #$0F00             ;|
 $A7:DE46 C9 00 02    CMP #$0200             ;|
 $A7:DE49 D0 03       BNE $03    [$DE4E]     ;/
 $A7:DE4B 4C D5 DE    JMP $DED5  [$A7:DED5]  ; Go to BRANCH_ENRAGED
 
-; BRANCH_EYE_FOLLOWING_SAMUS_AND_NOT_ENRAGED
 $A7:DE4E BD 2A 10    LDA $102A,x[$7E:102A]  ;\
 $A7:DE51 18          CLC                    ;|
-$A7:DE52 65 12       ADC $12    [$7E:0012]  ;} damage dealt this volley ($102A) += damage dealt this shot ($12)
+$A7:DE52 65 12       ADC $12    [$7E:0012]  ;} Phantoon round damage += (shot damage)
 $A7:DE54 9D 2A 10    STA $102A,x[$7E:102A]  ;/
 $A7:DE57 C9 2C 01    CMP #$012C             ;\
-$A7:DE5A 10 3E       BPL $3E    [$DE9A]     ;} If damage dealt this volley >= 300 go to BRANCH_NEXT_ROUND
-$A7:DE5C 22 11 81 80 JSL $808111[$80:8111]  ; Random number generator
-$A7:DE60 29 07 00    AND #$0007
-$A7:DE63 A8          TAY
-$A7:DE64 B9 A5 CD    LDA $CDA5,y[$A7:CDA5]
-$A7:DE67 29 FF 00    AND #$00FF
-$A7:DE6A 8D EA 0F    STA $0FEA  [$7E:0FEA]
-$A7:DE6D 98          TYA
-$A7:DE6E 8D 76 10    STA $1076  [$7E:1076]
-$A7:DE71 A9 01 00    LDA #$0001
-$A7:DE74 8D 36 10    STA $1036  [$7E:1036]
+$A7:DE5A 10 3E       BPL $3E    [$DE9A]     ;} If [Phantoon round damage] >= 300: go to BRANCH_NEXT_ROUND
+$A7:DE5C 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A7:DE60 29 07 00    AND #$0007             ;\
+$A7:DE63 A8          TAY                    ;} Y = [random number] % 8
+$A7:DE64 B9 A5 CD    LDA $CDA5,y[$A7:CDA5]  ;\
+$A7:DE67 29 FF 00    AND #$00FF             ;} $0FEA = [$CDA5 + [Y]]
+$A7:DE6A 8D EA 0F    STA $0FEA  [$7E:0FEA]  ;/
+$A7:DE6D 98          TYA                    ;\
+$A7:DE6E 8D 76 10    STA $1076  [$7E:1076]  ;} $1076 = [Y]
+$A7:DE71 A9 01 00    LDA #$0001             ;\
+$A7:DE74 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 1, Phantoon hurt flash palette loaded flag = 0
 $A7:DE77 AD 28 10    LDA $1028  [$7E:1028]  ;\
 $A7:DE7A D0 14       BNE $14    [$DE90]     ;} If swooping flag is not set:
 $A7:DE7C A9 01 00    LDA #$0001             ;\
 $A7:DE7F 8D 28 10    STA $1028  [$7E:1028]  ;} Set swooping flag
 $A7:DE82 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A7:DE85 C9 10 00    CMP #$0010             ;|
-$A7:DE88 30 06       BMI $06    [$DE90]     ;} If state timer >= 16:
-$A7:DE8A A9 10 00    LDA #$0010             ;\
-$A7:DE8D 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} state timer = 16
+$A7:DE88 30 06       BMI $06    [$DE90]     ;} Phantoon function timer = min(10h, [Phantoon function timer])
+$A7:DE8A A9 10 00    LDA #$0010             ;|
+$A7:DE8D 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 
 $A7:DE90 AB          PLB
-$A7:DE91 6B          RTL
+$A7:DE91 6B          RTL                    ; Return
 
 ; BRANCH_RETURN
-$A7:DE92 A9 02 00    LDA #$0002
-$A7:DE95 8D 36 10    STA $1036  [$7E:1036]
+$A7:DE92 A9 02 00    LDA #$0002             ;\
+$A7:DE95 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 2, Phantoon hurt flash palette loaded flag = 0
 $A7:DE98 AB          PLB
 $A7:DE99 6B          RTL
 
 ; BRANCH_NEXT_ROUND
 $A7:DE9A A9 B9 D6    LDA #$D6B9             ;\
-$A7:DE9D 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Next state is $D6B9
+$A7:DE9D 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = $D6B9 (swooping - fading out)
 
 ; BRANCH_NEXT_ROUND_OR_ENRAGED
-$A7:DEA0 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Set state timer to 0
+$A7:DEA0 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Phantoon function timer = 0
 $A7:DEA3 9C 28 10    STZ $1028  [$7E:1028]  ; Clear swooping flag
-$A7:DEA6 9E 2A 10    STZ $102A,x[$7E:102A]
+$A7:DEA6 9E 2A 10    STZ $102A,x[$7E:102A]  ; Phantoon round damage = 0
 $A7:DEA9 AD 88 19    LDA $1988  [$7E:1988]  ;\
-$A7:DEAC 09 00 40    ORA #$4000             ;} Make phantoon transparent
+$A7:DEAC 09 00 40    ORA #$4000             ;} Make Phantoon semi-transparent
 $A7:DEAF 8D 88 19    STA $1988  [$7E:1988]  ;/
 $A7:DEB2 A9 01 00    LDA #$0001             ;\
-$A7:DEB5 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Enemy instruction timer = 1
+$A7:DEB5 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:DEB8 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phantoon eye instruction timer = 1
 $A7:DEBB A9 41 CC    LDA #$CC41             ;\
-$A7:DEBE 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Enemy instruction = $CC41 (make Phantoon invulnerable)
+$A7:DEBE 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC41 (invulnerable)
 $A7:DEC1 A9 91 CC    LDA #$CC91             ;\
-$A7:DEC4 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction = $CC91 (close eye incrementally)
+$A7:DEC4 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC91 (close)
 $A7:DEC7 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A7:DECA 09 00 04    ORA #$0400             ;} Stop tracking Samus
+$A7:DECA 09 00 04    ORA #$0400             ;} Set Phantoon body as intangible
 $A7:DECD 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
-$A7:DED0 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Set Phantoon fade complete flag to 0
+$A7:DED0 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Phantoon fade complete flag = 0
 $A7:DED3 80 BD       BRA $BD    [$DE92]     ; Go to BRANCH_RETURN
 
 ; BRANCH_ENRAGED
 $A7:DED5 A9 5C D8    LDA #$D85C             ;\
-$A7:DED8 9D B2 0F    STA $0FB2,x            ;} Next state is $D85C
+$A7:DED8 9D B2 0F    STA $0FB2,x            ;} Phantoon function = $D85C (enraged)
 $A7:DEDB 80 C3       BRA $C3    [$DEA0]     ; Go to BRANCH_NEXT_ROUND_OR_ENRAGED
 }
 
@@ -7739,17 +7729,17 @@ $A7:DF69             dx 0001, 0000,0000,E2F6,E020 ; Looking up-left
 $A7:DF73             dx 0001, 0000,0000,E30A,E020 ; Looking up-right
 
 ; Tentacles
-$A7:DF7D             dx 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020 ; Unused
-$A7:DF8F             dx 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020 ; Unused
-$A7:DFA1             dx 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020 ; Unused
-$A7:DFB3             dx 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020
-$A7:DFC5             dx 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020
-$A7:DFD7             dx 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020
+$A7:DF7D             dx 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020 ;\
+$A7:DF8F             dx 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020 ;} Unused clone of below
+$A7:DFA1             dx 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020 ;/
+$A7:DFB3             dx 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020 ;\
+$A7:DFC5             dx 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020 ;} Normal
+$A7:DFD7             dx 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020 ;/
 
 ; Mouth
-$A7:DFE9             dx 0001, 0000,0000,E37E,E020
-$A7:DFF3             dx 0001, 0000,0000,E39A,E020
-$A7:DFFD             dx 0001, 0000,0000,E3B6,E020
+$A7:DFE9             dx 0001, 0000,0000,E37E,E020 ; Normal
+$A7:DFF3             dx 0001, 0000,0000,E39A,E020 ;\
+$A7:DFFD             dx 0001, 0000,0000,E3B6,E020 ;} Spawning flame
 $A7:E007             dx 0001, 0000,0000,E37E,E020 ; Unused
 }
 
@@ -7762,19 +7752,16 @@ $A7:E011 6B          RTL
 
 ;;; $E012: Hitboxes ;;;
 {
-$A7:E012             dx 0001, FFF7,FFF0,0008,0010,DD95,DD9B   ;  -8 -15   8 16 (?)
-$A7:E020             dx 0001, 0000,0000,0000,0000,804C,804C   ;   0   0   0  0 (nothing)
-$A7:E02E             dx 0005, FFDF,FFD8,0020,0038,DD95,DD9B,  ; -33 -39  32 56 (body)
-                              FFF7,0016,0008,0027,DD95,DD9B,  ;  -8  22   8 39 (eye)
-                              FFE9,0034,FFF0,0047,DD95,DD9B,  ; -22  52 -15 71 (tentacle)
-                              000F,0035,0016,0046,DD95,DD9B,  ;  15  53  22 70 (tentacle)
-                              FFF4,0035,000B,0045,DD95,DD9B   ; -11  53  11 69 (tentacle)
-$A7:E06C             dx 0001, FFF7,0016,0008,0027,DD95,DD9B   ;  -8  22   8 69 (eye)
+$A7:E012             dx 0001, FFF7,FFF0,0008,0010,DD95,DD9B ; Unused
+$A7:E020             dx 0001, 0000,0000,0000,0000,804C,804C
+$A7:E02E             dx 0005, FFDF,FFD8,0020,0038,DD95,DD9B, FFF7,0016,0008,0027,DD95,DD9B, FFE9,0034,FFF0,0047,DD95,DD9B, 000F,0035,0016,0046,DD95,DD9B, FFF4,0035,000B,0045,DD95,DD9B
+$A7:E06C             dx 0001, FFF7,0016,0008,0027,DD95,DD9B
 }
 
 
 ;;; $E07A: Spritemaps / extended tilemaps ;;;
 {
+; Unused flame spritemaps
 $A7:E07A             dx 0002, 81F8,00,2106, 81F8,F0,2100
 $A7:E086             dx 0002, 81F8,00,2108, 81F8,F0,2102
 $A7:E092             dx 0002, 81F8,00,210A, 81F8,F0,2104
@@ -7916,6 +7903,8 @@ $A7:E3B6             dx FFFE,
 
 ;;; $E3D2: Phantoon movement data ;;;
 {
+; List of (signed) X/Y offset pairs, 216h total
+; Indexed by $0FA8
 $A7:E3D2             db 00,FF, 01,00, 00,FF, 01,00, 00,FF, 01,FF, 00,FF, 01,00,
                         00,FF, 01,00, 00,FF, 00,FF, 01,00, 00,FF, 01,00, 00,FF,
                         01,00, 00,FF, 00,FF, 01,00, 00,FF, 01,00, 00,FF, 01,00,
@@ -8006,8 +7995,8 @@ $A7:E81E             dx 0005,EFFF,
 
 ;;; $E824: Instruction list - yyyy ;;;
 {
-$A7:E824             dx 0001,F024,
-                        0005,EEED,
+$A7:E824             dx 0001,F024
+$A7:E828             dx 0005,EEED,
                         0005,EEFE,
                         0005,EF0A,
                         0005,EEFE,
@@ -8017,8 +8006,8 @@ $A7:E824             dx 0001,F024,
 
 ;;; $E83C: Instruction list - yyyy ;;;
 {
-$A7:E83C             dx 0008,EF5A,
-                        0003,EF16,
+$A7:E83C             dx 0008,EF5A
+$A7:E840             dx 0003,EF16,
                         0003,EF27,
                         0003,EF38,
                         0003,EF49,
@@ -8060,8 +8049,8 @@ $A7:E876             dx 0005,F1E5,
 
 ;;; $E87C: Instruction list - yyyy ;;;
 {
-$A7:E87C             dx 0001,F1C0,
-                        0005,F089,
+$A7:E87C             dx 0001,F1C0
+$A7:E880             dx 0005,F089,
                         0005,F09A,
                         0005,F0A6,
                         0005,F09A,
@@ -8071,8 +8060,8 @@ $A7:E87C             dx 0001,F1C0,
 
 ;;; $E894: Instruction list - yyyy ;;;
 {
-$A7:E894             dx 0008,F0F6,
-                        0003,F0B2,
+$A7:E894             dx 0008,F0F6
+$A7:E898             dx 0003,F0B2,
                         0003,F0C3,
                         0003,F0D4,
                         0003,F0E5,
@@ -8114,8 +8103,8 @@ $A7:E8CE             dx 0008,F107,
 
 ;;; $E8D6: Instruction list - yyyy ;;;
 {
-$A7:E8D6             dx 8123,0004,  ; Timer = 0004h
-                        0008,F107,
+$A7:E8D6             dx 8123,0004   ; Timer = 4
+$A7:E8DA             dx 0008,F107,
                         0008,F12C,
                         0008,F151,
                         0008,F176,

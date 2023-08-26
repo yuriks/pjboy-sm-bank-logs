@@ -12,9 +12,6 @@ $80:8008             dw 0000 ; Disable audio ($80:8024)
 {
 ;; Parameter:
 ;;     [[S] + 1] + 1: APU data pointer ($CF:8000)
-
-; Called by:
-;     $841C with parameter $CF:8000: Boot
 $80:800A A3 02       LDA $02,s  [$7E:1FFE]  ;\
 $80:800C 85 04       STA $04    [$7E:0004]  ;|
 $80:800E A3 01       LDA $01,s  [$7E:1FFD]  ;} $03 = return address
@@ -35,9 +32,6 @@ $80:8022 85 01       STA $01    [$7E:0001]  ;/
 {
 ;; Parameter
 ;;     $00: APU data pointer
-
-; Called by:
-;     $8F0C: Handle music queue
 $80:8024 20 28 80    JSR $8028  [$80:8028]
 $80:8027 6B          RTL
 
@@ -73,9 +67,6 @@ $80:8058 60          RTS
 ;; Parameters:
 ;;     Y: Address of data
 ;;     DB: Bank of data
-
-; Called by:
-;     $8024: Upload to APU (from [$00])
 
 ; Data format:
 ;     ssss dddd [xx xx...] (data block 0)
@@ -204,9 +195,6 @@ $80:80FF 60          RTS
 
 ;;; $8100: Increment Y twice, bank overflow check ;;;
 {
-; Called by:
-;     $8059: Send APU data
-
 ; Only increments Y once if overflows bank first time (which is a bug scenario)
 $80:8100 C8          INY
 $80:8101 F0 04       BEQ $04    [$8107]
@@ -215,8 +203,6 @@ $80:8101 F0 04       BEQ $04    [$8107]
 
 ;;; $8103: Increment Y, bank overflow check ;;;
 {
-; Called by:
-;     $8059: Send APU data
 $80:8103 C8          INY
 $80:8104 F0 01       BEQ $01    [$8107]
 $80:8106 60          RTS
@@ -235,7 +221,6 @@ $80:8110 60          RTS
 ;; Returns
 ;;     A: New random number
 
-; Called mostly by enemies (TODO)
 ; r(t+1) = r(t) * 5 + 0x111 (roughly; if the adding of x * 100h causes overflow, then a further 1 is added)
 $80:8111 E2 20       SEP #$20
 $80:8113 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -271,7 +256,7 @@ $80:8145 6B          RTL
 ;;     A: Timed held input timer reset value ("timed held input" is input held for [A] + 1 frames)
 
 ; Called by:
-;     $90E8: Game state Fh (paused, map and item screens) with A = 3
+;     $82:90E8: Game state Fh (paused, map and item screens) with A = 3
 
 ; Held input is [$8B] & ![$8F]: the input pressed, but not newly
 $80:8146 08          PHP
@@ -354,14 +339,6 @@ $80:81A5 6B          RTL
 ;;         2: Area mini-boss (Spore Spawn, Botwoon, Crocomire, Mother Brain)
 ;;         4: Area torizo (Bomb Torizo, Golden Torizo)
 
-; Called by:
-;     $84:8821: Unused. Instruction - set the boss bits [[Y]] (PLM instruction)
-;     $87:8133: Unused. Instruction - set the boss bits [[Y]] (animated tiles instruction)
-;     $A6:C117 with A = 1 (Ceres Ridley)
-;     $A6:C5DA with A = 1 (Norfair Ridley)
-;     $A9:B2F9 with A = 2 (Mother Brain)
-;     $AA:B24D with A = 4 (Torizos)
-;     $B3:9AF9 with A = 2 (Botwoon)
 $80:81A6 DA          PHX
 $80:81A7 5A          PHY
 $80:81A8 08          PHP
@@ -412,23 +389,6 @@ $80:81DB 6B          RTL
 ;; Returns:
 ;;     A/carry: Set if there's a match
 
-; Called by:
-;     $84:880E: Instruction - go to [[Y] + 1] if any of the boss bits [[Y]] are set (PLM instruction)
-;     $84:BDD4 with A = 1: Pre-instruction - go to link instruction if area boss is dead else play dud sound (PLM instruction)
-;     $84:BDE3 with A = 2: Pre-instruction - go to link instruction if area mini-boss is dead else play dud sound (PLM instruction)
-;     $84:BDF2 with A = 4: Pre-instruction - go to link instruction if area torizo is dead else play dud sound (PLM instruction)
-;     $84:D606 with A = 4: Setup - PLM $D6EA (Bomb Torizo's crumbling chozo) (PLM instruction)
-;     $84:D620 with A = 1: Setup - PLM $D6F2 (collision reaction, special, BTS Wrecked Ship 80h. Wrecked Ship chozo hand trigger) (PLM instruction)
-;     $87:8120: Unused. Instruction - go to [[Y] + 1] if any of the boss bits [[Y]] are set (animated tiles instruction)
-;     $87:81BA: Instruction - wait until area boss is dead (animated tiles instruction)
-;     $88:DDC7 with A = 1: FX type 2Ch: haze
-;     $8D:EB2A with A = 1 (unused palette FX instruction)
-;     $8F:E5FF with A = 1: Room state check: main area boss is dead
-;     $8F:E629: Room state check: boss is dead
-;     $94:8E83 with A = 1: Block collision reaction - spike block - BTS 0 (generic spike)
-;     $94:98EA with A = 1: Block inside reaction - special air - BTS 8 (Phantoon disabled rightwards treadmill)
-;     $94:9910 with A = 1: Block inside reaction - special air - BTS 9 (Phantoon disabled leftwards treadmill)
-;     $AA:C87F with A = 4: Initialisation AI - enemy $EEFF/$EF3F/$EF7F/$EFBF (Torizos)
 $80:81DC DA          PHX
 $80:81DD 5A          PHY
 $80:81DE 08          PHP
@@ -481,22 +441,6 @@ $80:81F9 6B          RTL
 ;;         15h - outran speed booster lavaquake
        }
 
-; Called by:
-;     $84:883E: Instruction - set the event [[Y]] (PLM instruction)
-;     $84:B846 with A = 15h: Pre-instruction - advance lava as Samus moves left, set speed booster lavaquake event when done
-;     $84:B8B0 with A = Dh: Pre-instruction - Shaktool's room
-;     $84:B9B9 with A = Fh: Instruction - set critters escaped event (PLM instruction)
-;     $84:BE01 with A = 0: Pre-instruction - go to link instruction and set grey door event if enemy death quota is met else play dud sound
-;     $84:D18F with A = Ch: Setup - PLM $D6DA (collision reaction, special, BTS Norfair 83h. Lower Norfair chozo hand trigger)
-;     $84:DADE with A = 10h: Pre-instruction - set Metroids cleared state when required - room argument = 12h
-;     $84:DAEE with A = 11h: Pre-instruction - set Metroids cleared state when required - room argument = 14h
-;     $84:DAFE with A = 12h: Pre-instruction - set Metroids cleared state when required - room argument = 16h
-;     $84:DB0E with A = 13h: Pre-instruction - set Metroids cleared state when required - room argument = 18h
-;     $87:8150: Instruction - set event [[Y]] (animated tiles instruction)
-;     $88:DC69 with A = Ah (Tourian entrance statue)
-;     $8F:C91F with A = Eh: Setup ASM: set Zebes timebomb event and set light horizontal room shaking
-;     $A6:FCCB (Zebetites)
-;     $A9:B2F9 with A = Eh (Mother Brain)
 $80:81FA DA          PHX
 $80:81FB 5A          PHY
 $80:81FC 08          PHP
@@ -544,28 +488,6 @@ $80:8232 6B          RTL
 ;; Returns:
 ;;     Carry: Set if the event is marked
 
-; Called by:
-;     $82:8431 with A = Eh: Game state 24h (whiting out from time up)
-;     $84:882D: Instruction - go to [[Y] + 2] if the event [[Y]] is set
-;     $84:B89C with A = 15h: Setup - PLM $B8AC (speed booster escape)
-;     $84:BB09 with A = Fh: Setup - PLM $BB30 (Crateria mainstreet escape)
-;     $84:BE30 with A = Fh: Pre-instruction - go to link instruction if critters escaped else play dud sound
-;     $87:8144: Instruction - go to [[Y] + 2] if the event [[Y]] is set
-;     $88:DB8A with A = Ah: FX type 26h: Tourian entrance statue
-;     $88:DBD7 with A = 6..9 (Tourian entrance statue)
-;     $88:DCCB with A = Ah (Tourian entrance statue)
-;     $8B:DD42 with A = Fh
-;     $8F:E612: Room state check: event has been set
-;     $90:F576 with A = Eh:
-;     $A2:AAA2 with A = Eh (gunship)
-;     $A6:FB72 with A = 3..5: Initialisation AI - enemy $E27F (zebetites)
-;     $A9:87E1 with A = 2 (Mother Brain)
-;     $B3:E670 with A = Fh (escape etecoon)
-;     $B3:E680 with A = Fh (escape etecoon)
-;     $B3:E6CB with A = Fh: Initialisation AI - enemy $F2D3 (escape etecoon)
-;     $B3:EAB8 with A = Fh (escape dachora)
-;     $B3:EAE5 with A = Fh: Initialisation AI - enemy $F313 (escape dachora)
-
 ; Note that Tourian entrance statue FX routine $88:DCCB assumes this routine returns A = 0 when carry clear is returned
 $80:8233 DA          PHX
 $80:8234 5A          PHY
@@ -610,8 +532,6 @@ $80:8260 6B          RTL
 
 ;;; $8261: Check for non-corrupt SRAM ;;;
 {
-; Called by:
-;     $8482: Common boot section
 $80:8261 DA          PHX
 $80:8262 A9 03 00    LDA #$0003             ;\
 $80:8265 8D 59 1F    STA $1F59  [$7E:1F59]  ;} Number of demo sets = 3
@@ -657,9 +577,6 @@ $80:82B9             db 73, 75, 70, 65, 72, 6D, 65, 74, 72, 6F, 69, 64 ; superme
 
 ;;; $82C5: Wait until the end of a v-blank ;;;
 {
-; Called by:
-;     $82:DF69: Wait until the end of a v-blank and enable interrupts
-;     $88:829E: Wait until the end of a v-blank and clear (H)DMA enable flags
 $80:82C5 48          PHA
 $80:82C6 08          PHP
 $80:82C7 E2 20       SEP #$20
@@ -749,20 +666,6 @@ $80:8337 6B          RTL
 
 ;;; $8338: Wait for NMI ;;;
 {
-; Called by:
-;     $836F: Set force blank and wait for NMI
-;     $8382: Clear force blank and wait for NMI
-;     $8577: Unused. Wait [A] frames
-;     $A12B: Play 14h frames of music
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
-;     $82:852D: Game state 29h (transition to demo)
-;     $82:8548: Game state 2Ah (playing demo)
-;     $82:893D: Main game loop
-;     $82:E4A9: Handles door transitions - load sprites, background, PLMs, audio; execute custom door and room ASM; and wait for scrolling to end
-;     $8B:9146: Initialise IO registers and display Nintendo logo
-;     $8B:C11B
-;     $8B:D480
-;     $A7:C2A0: Unpause hook - Kraid is sinking
 $80:8338 08          PHP
 $80:8339 8B          PHB
 $80:833A 4B          PHK
@@ -781,39 +684,6 @@ $80:834A 6B          RTL
 
 ;;; $834B: Enable NMI ;;;
 {
-; Called by:
-;     $8482: Common boot section
-;     $A07B: Start gameplay
-;     $A12B: Play 14h frames of music
-;     $A149: Resume gameplay
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
-;     $82:8388: Game state 21h (blackout from Ceres)
-;     $82:8431: Game state 24h (whiting out from time up)
-;     $82:84BD: Game state 26h (Samus escapes from Zebes)
-;     $82:8593: Game state 2Bh (transition from demo)
-;     $82:8CCF: Game state Ch (pausing, normal gameplay but darkening)
-;     $82:9156: Pause index 2 - map screen to equipment screen - fading out
-;     $82:9186: Pause index 5 - equipment screen to map screen - fading out
-;     $82:9324: Game state 10h (unpausing, loading normal gameplay)
-;     $82:DDC7: Game state 19h (Samus ran out of health, black out)
-;     $82:EBDB: Game state 2 (game options menu) - [$0DE2] = 0
-;     $82:EE6A:
-;     $82:EE92: Game state 2 (game options menu) - [$0DE2] = Ch (fading out options screen to start game)
-;     $82:EF18: Game state 2 (game options menu) - [$0DE2] = 5 (dissolve out screen)
-;     $8B:9146: Initialise IO registers and display Nintendo logo
-;     $8B:9B87: Load title sequence graphics
-;     $8B:9F52
-;     $8B:9FAE (sets up demo)
-;     $8B:A395
-;     $8B:B72F
-;     $8B:BCA0
-;     $8B:C0C5
-;     $8B:C11B
-;     $8B:C627
-;     $8B:C699
-;     $8B:D480
-;     $8B:DE64
-;     $8B:DE80
 $80:834B 08          PHP
 $80:834C 8B          PHB
 $80:834D 4B          PHK
@@ -831,10 +701,6 @@ $80:835C 6B          RTL
 
 ;;; $835D: Disable NMI ;;;
 {
-; Called by:
-;     $A07B: Start gameplay
-;     $A12B: Play 14h frames of music
-;     $A149: Resume gameplay
 $80:835D 08          PHP
 $80:835E 8B          PHB
 $80:835F 4B          PHK
@@ -1078,9 +944,9 @@ $80:8460 80 20       BRA $20    [$8482]     ; Go to common boot section
 {
 ; Called by:
 ;     $9459: Read controller input. Also a debug branch
-;     $81:9003
-;     $81:90FE
-;     $81:94D5
+;     $81:9003: Debug game over menu - index 3: main
+;     $81:90FE: Game over menu - index 7: fade out into soft reset
+;     $81:94D5: File select menu - index 21h: fade out to title sequence
 
 ; Compared to boot ($841C), doesn't display Nintendo logo or upload SPC engine
 $80:8462 78          SEI                    ; Disable IRQ
@@ -1199,7 +1065,7 @@ $80:8562 C2 30       REP #$30
 $80:8564 22 61 82 80 JSL $808261[$80:8261]  ; Check for non-corrupt SRAM
 $80:8568 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $80:856B 9C 86 06    STZ $0686  [$7E:0686]  ; Sound handler downtime = 0
-$80:856E 5C 3D 89 82 JML $82893D[$82:893D]  ; Main game loop
+$80:856E 5C 3D 89 82 JML $82893D[$82:893D]  ; Go to main game loop
 }
 
 
@@ -1243,12 +1109,6 @@ $80:858B 6B          RTL
 
 ;;; $858C: Load mirror of current area's map explored ;;;
 {
-; Called by:
-;     $81:9C9E
-;     $81:A1C2
-;     $81:AD17
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
-;     $82:DFB6: Load map explored if elevator
 $80:858C 08          PHP
 $80:858D C2 30       REP #$30
 $80:858F AD 9F 07    LDA $079F  [$7E:079F]
@@ -1312,9 +1172,6 @@ $80:85F5 6B          RTL
 
 ;;; $85F6: NTSC/PAL and SRAM mapping check ;;;
 {
-; Called by:
-;     $8482: Common boot section
-
 ; Checks that the SNES PPU's region matches up with the game header's region
 ; and that the SRAM regions $70:0000..1FFF and $70:2000..3FFF are mirrors
 $80:85F6 08          PHP
@@ -1468,8 +1325,6 @@ $80:875B 80 FE       BRA $FE    [$875B]     ; Crash
 
 ;;; $875D: Initialise CPU IO registers ;;;
 {
-; Called by:
-;     $8482: Common boot section
 $80:875D A9 01       LDA #$01               ;\
 $80:875F 8D 00 42    STA $4200  [$7E:4200]  ;} Enable auto-joypad read
 $80:8762 85 84       STA $84    [$7E:0084]  ;/
@@ -1495,8 +1350,6 @@ $80:8791 60          RTS
 
 ;;; $8792: Initialise PPU registers ;;;
 {
-; Called by:
-;     $8482: Common boot section
 $80:8792 A9 8F       LDA #$8F               ;\
 $80:8794 8D 00 21    STA $2100  [$7E:2100]  ;} Enable forced blank
 $80:8797 85 51       STA $51    [$7E:0051]  ;/
@@ -1511,7 +1364,7 @@ $80:87AA 85 54       STA $54    [$7E:0054]  ;/
 $80:87AC 9C 04 21    STZ $2104  [$7E:2104]  ;\
 $80:87AF 9C 04 21    STZ $2104  [$7E:2104]  ;} OAM $0000 = 0
 $80:87B2 A9 09       LDA #$09               ;\
-$80:87B4 8D 05 21    STA $2105  [$7E:2105]  ;} Set BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$80:87B4 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $80:87B7 85 55       STA $55    [$7E:0055]  ;/
 $80:87B9 9C 06 21    STZ $2106  [$7E:2106]  ;\
 $80:87BC 64 57       STZ $57    [$7E:0057]  ;} Disable mosaic
@@ -1704,31 +1557,6 @@ $80:8923 6B          RTL
 
 ;;; $8924: Handle fading out ;;;
 {
-; Called by:
-;     $81:8D0F
-;     $81:90E7
-;     $81:90FE
-;     $81:944E
-;     $81:94A3
-;     $81:94D5
-;     $81:94EE
-;     $81:AF66
-;     $82:8388: Game state 21h (blackout from Ceres)
-;     $82:8431: Game state 24h (whiting out from time up)
-;     $82:84BD: Game state 26h (Samus escapes from Zebes)
-;     $82:8CCF: Game state Ch (pausing, normal gameplay but darkening)
-;     $82:9156: Pause index 2 - map screen to equipment screen - fading out
-;     $82:9186: Pause index 5 - equipment screen to map screen - fading out
-;     $82:9324: Game state 10h (unpausing, loading normal gameplay)
-;     $82:DDC7: Game state 19h (Samus ran out of health, black out)
-;     $82:EBDB: Game state 2 (game options menu) - [$0DE2] = 0
-;     $82:EE6A
-;     $82:EE92: Game state 2 (game options menu) - [$0DE2] = Ch (fading out options screen to start game)
-;     $82:EF18: Game state 2 (game options menu) - [$0DE2] = 5 (dissolve out screen)
-;     $8B:B72F
-;     $8B:C0C5
-;     $8B:C627
-
 ; When the screen has finished fading out, [$51] = 80h.
 ; Easiest way to check is:
 ;     LDA $51 : BMI BRANCH_FINISHED ; If PSR.M = 1
@@ -1762,22 +1590,6 @@ $80:894C 6B          RTL
 
 ;;; $894D: Handle fading in ;;;
 {
-; Called by:
-;     $81:8DA6
-;     $81:90CD
-;     $81:951E
-;     $81:A058
-;     $82:8B20: Game state 7 (setting game up after loading the game)
-;     $82:90C8: Game state Eh (paused, loading pause screen)
-;     $82:9200: Pause index 7 - equipment screen to map screen - fading in
-;     $82:9231: Pause index 4 - map screen to equipment screen - fading in
-;     $82:93A1: Game state 12h (unpausing, normal gameplay but brightening)
-;     $82:ECE4: Game state 2 (game options menu) - [$0DE2] = 2 (fading in options screen)
-;     $82:EFDB: Game state 2 (game options menu) - [$0DE2] = 6 (dissolve in screen)
-;     $8B:C2F1
-;     $8B:C79C
-;     $8B:E110
-
 ; When the screen has finished fading in, [$51] = Fh.
 ; Easiest way to check is:
 ;     LDA $51 : CMP #$0F : BEQ BRANCH_FINISHED         ; If PSR.M = 1
@@ -1807,11 +1619,6 @@ $80:896D 6B          RTL
 
 ;;; $896E: Finalise OAM ;;;
 {
-; Called by:
-;     $8482: Common boot section
-;     $82:893D: Main game loop
-;     $8B:9146: Initialise IO registers and display Nintendo logo
-
 ; Move unused sprites to Y = F0h and reset OAM stack pointer
 ; Uses one hell of an unrolled loop
 $80:896E 08          PHP
@@ -1971,10 +1778,6 @@ $80:8B19 6B          RTL
 
 ;;; $8B1A: Clear high OAM ;;;
 {
-; Called by:
-;     $8482: Common boot section
-;     $82:893D: Main game loop
-;     $8B:9146: Initialise IO registers and display Nintendo logo
 $80:8B1A 08          PHP
 $80:8B1B C2 30       REP #$30
 $80:8B1D 9C 70 05    STZ $0570  [$7E:0570]
@@ -2004,9 +1807,9 @@ $80:8B4E 6B          RTL
 ;;     DB:X: Pointer to mode 7 transfers data (see $8BD3)
 
 ; Called by:
-;     $8B:9537: Process mode 7 object instruction list
-;     $8B:BDF9 with DB:X = $8B:BE74
-;     $8B:C345 with DB:X = $8B:C3E6/C3F0
+;     $8B:9537: Process mode 7 object instruction list (used only by baby metroid in title sequence)
+;     $8B:BDF9 with DB:X = $8B:BE74 (back of gunship going to Ceres)
+;     $8B:C345 with DB:X = $8B:C3E6 (front of gunship leaving Ceres) / $8B:C3F0/C3FA (clear Ceres tilemap)
 ;     $A6:ACBC (Ceres Ridley)
 ;     $A6:AD27 (Ceres Ridley)
 ;     $A6:F8F1 (Ceres door)
@@ -2088,8 +1891,6 @@ $80:8BB8 80 9B       BRA $9B    [$8B55]     ; Go to LOOP
 
 ;;; $8BBA: Handle mode 7 transfers ;;;
 {
-; Called by:
-;     $9583: NMI
 $80:8BBA 08          PHP
 $80:8BBB C2 10       REP #$10
 $80:8BBD AE 34 03    LDX $0334  [$7E:0334]  ;\
@@ -2109,9 +1910,6 @@ $80:8BD2 6B          RTL
 {
 ;; Parameter:
 ;;     X: Pointer to mode 7 transfers data
-
-; Called by:
-;     $8BBA: Handle mode 7 transfers
 
 ; CGRAM transfers are never queued, so $8BE0..8C10 is dead code
 $80:8BD3 08          PHP
@@ -2202,9 +2000,6 @@ $80:8C80 4C D4 8B    JMP $8BD4  [$80:8BD4]  ; Go to LOOP
 
 ;;; $8C83: Handle VRAM write table and scrolling DMAs ;;;
 {
-; Called by:
-;     $9583: NMI
-;     $A176: Display the viewable part of the room
 $80:8C83 08          PHP
 $80:8C84 C2 30       REP #$30
 $80:8C86 AE 30 03    LDX $0330  [$7E:0330]  ;\
@@ -2252,8 +2047,6 @@ $80:8CD7 6B          RTL
 
 ;;; $8CD8: Execute horizontal scrolling DMAs ;;;
 {
-; Called by:
-;     $8C83: Handle VRAM write table and scrolling DMAs
 $80:8CD8 A9 81       LDA #$81               ;\
 $80:8CDA 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access, 20h-byte increment
 $80:8CDD AD 62 09    LDA $0962  [$7E:0962]  ;\
@@ -2340,8 +2133,6 @@ $80:8DAB 60          RTS
 
 ;;; $8DAC: Execute vertical scrolling DMAs ;;;
 {
-; Called by:
-;     $8C83: Handle VRAM write table and scrolling DMAs
 $80:8DAC A9 80       LDA #$80               ;\
 $80:8DAE 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
 $80:8DB1 AD 70 09    LDA $0970  [$7E:0970]  ;\
@@ -2445,9 +2236,6 @@ $80:8EA1 60          RTS
 
 ;;; $8EA2: Handle VRAM read table ;;;
 {
-; Called by:
-;     $9583: NMI
-
 ; Buggy? This routine stores a 1-byte zero-terminator but checks for a 2-byte zero terminator as the loop condition.
 ; I think this only works because only one entry can ever be set up in any given frame
 $80:8EA2 08          PHP
@@ -2499,17 +2287,6 @@ $80:8EF3 6B          RTL
 ;; Returns:
 ;;     Carry: set if there's a non-zero music queue timer, clear otherwise
 
-; Called by:
-;     $81:93E8
-;     $82:DD71: Game state 15h (Samus ran out of health, black out surroundings)
-;     $82:E664: Handles door transitions - wait for music queue to clear and possibly load new music
-;     $8B:A5A7: Cinematic function - intro - wait for music queue and fade in
-;     $8B:A639: Cinematic function - intro - wait for music queue and wait 240 frames
-;     $8B:A82B: Cinematic function - intro - wait for music queue, fade in and spawn intro text page 1
-;     $8B:BDE4
-;     $8B:C2E4
-;     $8B:D6D7
-;     $8B:DBC4
 $80:8EF4 08          PHP
 $80:8EF5 C2 30       REP #$30
 $80:8EF7 DA          PHX
@@ -2534,20 +2311,6 @@ $80:8F0B 6B          RTL
 
 ;;; $8F0C: Handle music queue ;;;
 {
-; Called by:
-;     $A12B: Play 14h frames of music
-;     $82:E675 (unused room transition code)
-;     $85:8119: Play A0h lag frames of music and sound effects
-;     $85:8143: Initialise PPU for message boxes
-;     $85:81F3: Clear message box BG3 tilemap
-;     $85:82B8: Write message tilemap
-;     $85:831E: Set up PPU for active message box
-;     $85:846D: Handle message box interaction
-;     $85:8507: Toggle save confirmation selection
-;     $85:8574: Play 2 lag frames of music and sound effects
-;     $85:859B: Write message box BG3 Y scroll HDMA data table
-;     $88:84B9: HDMA object handler (also handle music queue)
-
 ; Decrement music timer
 ; If [music timer] > 0:
 ;     Return
@@ -2562,27 +2325,30 @@ $80:8F0B 6B          RTL
 ;     Music timer = 0 (try again next loop)
 ; Else:
 ;     Load music entry and music timer from first entry in queue
+
+; Note that $064C (current music track) is never read anywhere, $07F5 is used instead (music track index)
+
 $80:8F0C 08          PHP
 $80:8F0D C2 20       REP #$20
 $80:8F0F CE 3F 06    DEC $063F  [$7E:063F]  ; Decrement music timer
 $80:8F12 30 33       BMI $33    [$8F47]     ; If [music timer] < 0: go to BRANCH_NEGATIVE
-$80:8F14 F0 02       BEQ $02    [$8F18]     ; If [music timer] != 0: return
+$80:8F14 F0 02       BEQ $02    [$8F18]     ; If [music timer] != 0:
 $80:8F16 28          PLP
-$80:8F17 6B          RTL
+$80:8F17 6B          RTL                    ; Return
 
 $80:8F18 AD 3D 06    LDA $063D  [$7E:063D]  ;\
 $80:8F1B 30 45       BMI $45    [$8F62]     ;} If [music entry] & 8000h: go to BRANCH_MUSIC_DATA
 $80:8F1D E2 20       SEP #$20
 $80:8F1F 29 7F       AND #$7F               ;\
-$80:8F21 8D F5 07    STA $07F5  [$7E:07F5]  ;} Music track = [music entry] & 7Fh
+$80:8F21 8D F5 07    STA $07F5  [$7E:07F5]  ;} Music track index = [music entry] & 7Fh
 $80:8F24 9C F6 07    STZ $07F6  [$7E:07F6]  ;/
-$80:8F27 8D 40 21    STA $2140  [$7E:2140]  ; APU IO 0 = [music track]
-$80:8F2A 8D 4C 06    STA $064C  [$7E:064C]  ; Current music track = [music track]
+$80:8F27 8D 40 21    STA $2140  [$7E:2140]  ; APU IO 0 = [music track index]
+$80:8F2A 8D 4C 06    STA $064C  [$7E:064C]  ; Current music track = [music track index]
 $80:8F2D C2 20       REP #$20
 $80:8F2F A9 08 00    LDA #$0008             ;\
 $80:8F32 8D 86 06    STA $0686  [$7E:0686]  ;} Sound handler downtime = 8
 $80:8F35 AE 3B 06    LDX $063B  [$7E:063B]  ;\
-$80:8F38 9E 19 06    STZ $0619,x[$7E:061B]  ;} Music queue + [music queue start index] = 0
+$80:8F38 9E 19 06    STZ $0619,x[$7E:061B]  ;} Music queue entries + [music queue start index] = 0
 $80:8F3B 9E 29 06    STZ $0629,x[$7E:062B]  ; Music queue timer + [music queue start index] = 0
 $80:8F3E E8          INX                    ;\
 $80:8F3F E8          INX                    ;|
@@ -2595,34 +2361,34 @@ $80:8F47 AE 3B 06    LDX $063B  [$7E:063B]  ;\
 $80:8F4A EC 39 06    CPX $0639  [$7E:0639]  ;} If [music queue start index] != [music queue next index]:
 $80:8F4D F0 0E       BEQ $0E    [$8F5D]     ;/
 $80:8F4F BD 19 06    LDA $0619,x[$7E:0619]  ;\
-$80:8F52 8D 3D 06    STA $063D  [$7E:063D]  ;} Music entry = [music queue + [music queue start index]]
+$80:8F52 8D 3D 06    STA $063D  [$7E:063D]  ;} Music entry = [music queue entries + [music queue start index]]
 $80:8F55 BD 29 06    LDA $0629,x[$7E:0629]  ;\
 $80:8F58 8D 3F 06    STA $063F  [$7E:063F]  ;} Music timer = [music queue timers + [music queue start index]]
 $80:8F5B 28          PLP
-$80:8F5C 6B          RTL
+$80:8F5C 6B          RTL                    ; Return
 
 $80:8F5D 9C 3F 06    STZ $063F  [$7E:063F]  ; Music timer = 0
 $80:8F60 28          PLP
-$80:8F61 6B          RTL
+$80:8F61 6B          RTL                    ; Return
 
 ; BRANCH_MUSIC_DATA
 $80:8F62 29 FF 00    AND #$00FF             ;\
-$80:8F65 8D F3 07    STA $07F3  [$7E:07F3]  ;} Music data = [music entry] & FFh
-$80:8F68 AA          TAX                    ; X = [music data]
+$80:8F65 8D F3 07    STA $07F3  [$7E:07F3]  ;} Music data index = [music entry] & FFh
+$80:8F68 AA          TAX                    ; X = [music data index]
 $80:8F69 E2 20       SEP #$20               ;\
 $80:8F6B A9 FF       LDA #$FF               ;|
 $80:8F6D 8D 4C 06    STA $064C  [$7E:064C]  ;} Current music track = FFh
 $80:8F70 C2 20       REP #$20               ;/
 $80:8F72 BF E1 E7 8F LDA $8FE7E1,x[$8F:E7E4];\
 $80:8F76 85 00       STA $00    [$7E:0000]  ;|
-$80:8F78 BF E2 E7 8F LDA $8FE7E2,x[$8F:E7E5];} $00 = [$8F:E7E1 + [music data]]
+$80:8F78 BF E2 E7 8F LDA $8FE7E2,x[$8F:E7E5];} $00 = [$8F:E7E1 + [music data index]]
 $80:8F7C 85 01       STA $01    [$7E:0001]  ;/
 $80:8F7E 22 24 80 80 JSL $808024[$80:8024]  ; Upload to APU
 $80:8F82 E2 20       SEP #$20
 $80:8F84 9C 4C 06    STZ $064C  [$7E:064C]  ; Current music track = 0
 $80:8F87 C2 20       REP #$20
 $80:8F89 AE 3B 06    LDX $063B  [$7E:063B]  ;\
-$80:8F8C 9E 19 06    STZ $0619,x[$7E:0619]  ;} Music queue + [music queue start index] = 0
+$80:8F8C 9E 19 06    STZ $0619,x[$7E:0619]  ;} Music queue entries + [music queue start index] = 0
 $80:8F8F 9E 29 06    STZ $0629,x[$7E:0629]  ; Music queue timer + [music queue start index] = 0
 $80:8F92 E8          INX                    ;\
 $80:8F93 E8          INX                    ;|
@@ -2667,7 +2433,6 @@ $80:8FC0 6B          RTL
 ;; Parameter:
 ;;     A: Music data / music track
 
-; Called by lots of places (TODO)
 ; If [A] is negative, the low byte is a music data index, otherwise [A] is a music track
 $80:8FC1 08          PHP
 $80:8FC2 C2 30       REP #$30
@@ -2686,7 +2451,7 @@ $80:8FD8 68          PLA                    ;|
 $80:8FD9 EC 3B 06    CPX $063B  [$7E:063B]  ;|
 $80:8FDC F0 15       BEQ $15    [$8FF3]     ;/
 $80:8FDE AE 39 06    LDX $0639  [$7E:0639]  ;\
-$80:8FE1 9D 19 06    STA $0619,x[$7E:0619]  ;} Music queue + [music queue next index] = [A]
+$80:8FE1 9D 19 06    STA $0619,x[$7E:0619]  ;} Music queue entries + [music queue next index] = [A]
 $80:8FE4 A9 08 00    LDA #$0008             ;\
 $80:8FE7 9D 29 06    STA $0629,x[$7E:0629]  ;} Music queue timers + [music queue next index] = 8
 $80:8FEA E8          INX                    ;\
@@ -2709,7 +2474,7 @@ $80:8FF6 6B          RTL
 ;;     Y: Delay
 
 ; Called by:
-;     $82:DCE0 with A = 5, Y = 14: Game state 14h (Samus ran out of health, black out surroundings)
+;     $82:DCE0 with A = 5, Y = 14: Game state 14h (death sequence, black out surroundings)
 ;     $82:E0D5 with Y = 6: Load new music track if changed
 ;     $82:E118 with A = 0: Play room music track after [A] frames
 ;     $8B:A613 with A = 5, Y = 14: Cinematic function - intro - queue "the galaxy is at peace" music
@@ -3106,7 +2871,6 @@ $80:91A8 60          RTS
 ;;     [[S] + 1] + 4: Source address (24-bit)
 ;;     [[S] + 1] + 7: Size (in bytes)
 
-; Called by lots of places (TODO)
 $80:91A9 08          PHP
 $80:91AA 8B          PHB
 $80:91AB C2 30       REP #$30
@@ -3144,8 +2908,6 @@ $80:91E6             db 00, 10, 20, 30, 40, 50, 60, 70
 
 ;;; $91EE: Update IO registers ;;;
 {
-; Called by:
-;     $9583: NMI
 $80:91EE A6 84       LDX $84    [$7E:0084]  ;\
 $80:91F0 8E 00 42    STX $4200  [$7E:4200]  ;} Interrupt and auto-joypad enable
 $80:91F3 A6 51       LDX $51    [$7E:0051]  ;\
@@ -3287,13 +3049,11 @@ $80:9339 60          RTS
 
 ;;; $933A: Update OAM & CGRAM ;;;
 {
-; Called by:
-;     $9583: NMI
 $80:933A A9 00 04    LDA #$0400             ;\
 $80:933D 8D 00 43    STA $4300  [$7E:4300]  ;|
 $80:9340 A9 70 03    LDA #$0370             ;|
 $80:9343 8D 02 43    STA $4302  [$7E:4302]  ;|
-$80:9346 A2 00       LDX #$00               ;} OAM = [$0370..$058F]
+$80:9346 A2 00       LDX #$00               ;} Set up DMA 0 for OAM = [$0370..$058F]
 $80:9348 8E 04 43    STX $4304  [$7E:4304]  ;|
 $80:934B A9 20 02    LDA #$0220             ;|
 $80:934E 8D 05 43    STA $4305  [$7E:4305]  ;|
@@ -3303,22 +3063,19 @@ $80:9357 8D 10 43    STA $4310  [$7E:4310]  ;|
 $80:935A A9 00 C0    LDA #$C000             ;|
 $80:935D 8D 12 43    STA $4312  [$7E:4312]  ;|
 $80:9360 A2 7E       LDX #$7E               ;|
-$80:9362 8E 14 43    STX $4314  [$7E:4314]  ;} CGRAM = [$7E:C000..$C1FF]
+$80:9362 8E 14 43    STX $4314  [$7E:4314]  ;} Set up DMA 1 for CGRAM = [$7E:C000..$C1FF]
 $80:9365 A9 00 02    LDA #$0200             ;|
 $80:9368 8D 15 43    STA $4315  [$7E:4315]  ;|
 $80:936B A2 00       LDX #$00               ;|
 $80:936D 8E 21 21    STX $2121  [$7E:2121]  ;/
 $80:9370 A2 03       LDX #$03               ;\
-$80:9372 8E 0B 42    STX $420B  [$7E:420B]  ;} Enable the DMAs
+$80:9372 8E 0B 42    STX $420B  [$7E:420B]  ;} Execute DMA 0 and 1
 $80:9375 60          RTS
 }
 
 
 ;;; $9376: Transfer Samus tiles to VRAM ;;;
 {
-; Called by:
-;     $9583: NMI
-
 ; Samus tiles definition format:
 ;     aaaaaa nnnn NNNN
 ; where:
@@ -3403,8 +3160,6 @@ $80:9415 60          RTS
 
 ;;; $9416: Process animated tiles object VRAM transfers ;;;
 {
-; Called by:
-;     $9583: NMI
 $80:9416 8B          PHB
 $80:9417 A2 87       LDX #$87               ;\
 $80:9419 DA          PHX                    ;} DB = $87
@@ -3444,10 +3199,6 @@ $80:9458 60          RTS
 
 ;;; $9459: Read controller input. Also a debug branch ;;;
 {
-; Called by:
-;     $9583: NMI
-;     $85:846D: Handle message box interaction
-
 ; This is executed at the end of NMI because auto-joypad read is only guaranteed to be executed at some point in the middle of the first scanline of v-blank,
 ; and then we need to wait ~3 scanlines for the joypad to finish reading
 $80:9459 08          PHP
@@ -3707,9 +3458,9 @@ $80:9654 8E 15 43    STX $4315  [$7E:4315]  ;} DMA 1 size = [door transition VRA
 $80:9657 A9 80       LDA #$80               ;\
 $80:9659 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM address increment mode = 16-bit access
 $80:965C A9 02       LDA #$02               ;\
-$80:965E 8D 0B 42    STA $420B  [$7E:420B]  ;} Enable DMA 1
+$80:965E 8D 0B 42    STA $420B  [$7E:420B]  ;} Execute DMA 1
 $80:9661 A9 80       LDA #$80               ;\
-$80:9663 1C BD 05    TRB $05BD  [$7E:05BD]  ;} VRAM update flag = 0
+$80:9663 1C BD 05    TRB $05BD  [$7E:05BD]  ;} Door transition VRAM update flag = 0
 $80:9666 A9 0F       LDA #$0F               ;\
 $80:9668 8D 00 21    STA $2100  [$7E:2100]  ;} Disable forced blank
 $80:966B C2 20       REP #$20
@@ -3726,8 +3477,6 @@ $80:966D 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:966E A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
 $80:9670 F0 04       BEQ $04    [$9676]
 $80:9672 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
@@ -3748,8 +3497,6 @@ $80:967F 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:9680 A9 30 00    LDA #$0030             ;\
 $80:9683 14 84       TRB $84    [$7E:0084]  ;} Disable h/v-counter interrupts
 $80:9685 A9 00 00    LDA #$0000             ; Interrupt command = 0
@@ -3766,8 +3513,6 @@ $80:968A 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:968B E2 20       SEP #$20
 $80:968D A9 5A       LDA #$5A               ;\
 $80:968F 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address = $5800, size = 32x64
@@ -3790,8 +3535,6 @@ $80:96A8 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:96A9 E2 20       SEP #$20
 $80:96AB A5 70       LDA $70    [$7E:0070]  ;\
 $80:96AD 8D 30 21    STA $2130  [$7E:2130]  ;} Colour math control register A = [gameplay colour math control register A]
@@ -3802,8 +3545,8 @@ $80:96B7 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address and size
 $80:96BA A5 6A       LDA $6A    [$7E:006A]  ;\
 $80:96BC 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = [gameplay main screen layers]
 $80:96BF C2 20       REP #$20
-$80:96C1 A5 A7       LDA $A7    [$7E:00A7]  ;\
-$80:96C3 F0 04       BEQ $04    [$96C9]     ;} If [next interrupt command] != 0:
+$80:96C1 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
+$80:96C3 F0 04       BEQ $04    [$96C9]     ; If [next interrupt command] != 0:
 $80:96C5 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
 $80:96C7 80 03       BRA $03    [$96CC]
                                             ; Else ([next interrupt command] = 0):
@@ -3822,8 +3565,6 @@ $80:96D2 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:96D3 E2 20       SEP #$20
 $80:96D5 A9 5A       LDA #$5A               ;\
 $80:96D7 8D 09 21    STA $2109  [$7E:2109]  ;} BG3 tilemap base address = $5800, size = 32x64
@@ -3846,8 +3587,6 @@ $80:96F0 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:96F1 E2 20       SEP #$20
 $80:96F3 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $80:96F6 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
@@ -3861,8 +3600,8 @@ $80:9701 A9 11       LDA #$11               ; Main screen layers = BG1/sprites
 
 $80:9703 8D 2C 21    STA $212C  [$7E:212C]
 $80:9706 C2 20       REP #$20
-$80:9708 A5 A7       LDA $A7    [$7E:00A7]  ;\
-$80:970A F0 04       BEQ $04    [$9710]     ;} If [next interrupt command] != 0:
+$80:9708 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
+$80:970A F0 04       BEQ $04    [$9710]     ; If [next interrupt command] != 0:
 $80:970C 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
 $80:970E 80 03       BRA $03    [$9713]
                                             ; Else ([next interrupt command] = 0):
@@ -3880,9 +3619,6 @@ $80:9719 60          RTS
 ;;     A: Interrupt command
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
-
-; Called by:
-;     $986A: IRQ
 
 ; Compared to interrupt command 4, this one doesn't set BG3 tilemap base address and size
 $80:971A E2 20       SEP #$20
@@ -3905,9 +3641,6 @@ $80:9732 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
-
 ; Compared to interrupt command 6, this one doesn't set the main screen layers
 $80:9733 E2 20       SEP #$20
 $80:9735 A5 5B       LDA $5B    [$7E:005B]  ;\
@@ -3917,8 +3650,8 @@ $80:973C 8D 30 21    STA $2130  [$7E:2130]  ;} Colour math control register A = 
 $80:973F A5 73       LDA $73    [$7E:0073]  ;\
 $80:9741 8D 31 21    STA $2131  [$7E:2131]  ;} Colour math control register B = [gameplay colour math control register B]
 $80:9744 C2 20       REP #$20
-$80:9746 A5 A7       LDA $A7    [$7E:00A7]  ;\
-$80:9748 F0 04       BEQ $04    [$974E]     ;} If [next interrupt command] != 0:
+$80:9746 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
+$80:9748 F0 04       BEQ $04    [$974E]     ; If [next interrupt command] != 0:
 $80:974A 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
 $80:974C 80 03       BRA $03    [$9751]
                                             ; Else ([next interrupt command] = 0):
@@ -3937,8 +3670,6 @@ $80:9757 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:9758 E2 20       SEP #$20
 $80:975A A9 04       LDA #$04               ;\
 $80:975C 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
@@ -3959,8 +3690,6 @@ $80:9770 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:9771 E2 20       SEP #$20
 $80:9773 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $80:9776 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
@@ -3998,10 +3727,8 @@ $80:97A8 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
-$80:97A9 A5 A7       LDA $A7    [$7E:00A7]  ;\
-$80:97AB F0 04       BEQ $04    [$97B1]     ;} If [next interrupt command] != 0:
+$80:97A9 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
+$80:97AB F0 04       BEQ $04    [$97B1]     ; If [next interrupt command] != 0:
 $80:97AD 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
 $80:97AF 80 03       BRA $03    [$97B4]
                                             ; Else ([next interrupt command] = 0):
@@ -4010,7 +3737,7 @@ $80:97B1 A9 10 00    LDA #$0010             ; Interrupt command = 10h
 $80:97B4 A0 00 00    LDY #$0000             ; IRQ v-counter target = 0
 $80:97B7 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:97BA 9C B4 05    STZ $05B4  [$7E:05B4]  ;\
-$80:97BD EE B4 05    INC $05B4  [$7E:05B4]  ;} NMI request flag = 1
+$80:97BD EE B4 05    INC $05B4  [$7E:05B4]  ;} NMI request flag = 1, 8-bit frame counter = 0
 $80:97C0 60          RTS
 }
 
@@ -4022,8 +3749,6 @@ $80:97C0 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:97C1 E2 20       SEP #$20
 $80:97C3 A9 04       LDA #$04               ;\
 $80:97C5 8D 2C 21    STA $212C  [$7E:212C]  ;} Main screen layers = BG3
@@ -4044,8 +3769,6 @@ $80:97D9 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:97DA E2 20       SEP #$20
 $80:97DC AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $80:97DF 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
@@ -4079,14 +3802,12 @@ $80:9809 60          RTS
 ;;     X: IRQ h-counter target
 ;;     Y: IRQ v-counter target
 
-; Called by:
-;     $986A: IRQ
 $80:980A AE BC 05    LDX $05BC  [$7E:05BC]  ;\
 $80:980D 10 03       BPL $03    [$9812]     ;} If door transition VRAM update:
 $80:980F 20 32 96    JSR $9632  [$80:9632]  ; Execute door transition VRAM update
 
-$80:9812 A5 A7       LDA $A7    [$7E:00A7]  ;\
-$80:9814 F0 04       BEQ $04    [$981A]     ;} If [next interrupt command] != 0:
+$80:9812 A5 A7       LDA $A7    [$7E:00A7]  ; Interrupt command = [next interrupt command]
+$80:9814 F0 04       BEQ $04    [$981A]     ; If [next interrupt command] != 0:
 $80:9816 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
 $80:9818 80 03       BRA $03    [$981D]
                                             ; Else ([next interrupt command] = 0):
@@ -4095,7 +3816,7 @@ $80:981A A9 16 00    LDA #$0016             ; Interrupt command = 16h
 $80:981D A0 00 00    LDY #$0000             ; IRQ v-counter target = 0
 $80:9820 A2 98 00    LDX #$0098             ; IRQ h-counter target = 98h
 $80:9823 9C B4 05    STZ $05B4  [$7E:05B4]  ;\
-$80:9826 EE B4 05    INC $05B4  [$7E:05B4]  ;} NMI request flag = 1
+$80:9826 EE B4 05    INC $05B4  [$7E:05B4]  ;} NMI request flag = 1, 8-bit frame counter = 0
 $80:9829 60          RTS
 }
 }
@@ -4103,10 +3824,6 @@ $80:9829 60          RTS
 
 ;;; $982A: Enable h/v-counter interrupts ;;;
 {
-; Called by:
-;     $A07B: Start gameplay
-;     $A149: Resume gameplay
-;     $82:DF80: Much ado about nothing
 $80:982A 08          PHP
 $80:982B C2 30       REP #$30
 $80:982D A9 00 00    LDA #$0000             ;\
@@ -4123,8 +3840,6 @@ $80:9840 6B          RTL
 
 ;;; $9841: Enable h/v-counter interrupts now ;;;
 {
-; Called by:
-;     $82:DF69: Wait until the end of a v-blank and enable h/v-counter interrupts
 $80:9841 08          PHP
 $80:9842 C2 30       REP #$30
 $80:9844 A9 00 00    LDA #$0000             ;\
@@ -4144,15 +3859,6 @@ $80:985E 6B          RTL
 
 ;;; $985F: Disable h/v-counter interrupts ;;;
 {
-; Called by:
-;     $A07B: Start gameplay
-;     $A149: Resume gameplay
-;     $82:8388: Game state 21h (blackout from Ceres)
-;     $82:8431: Game state 24h (whiting out from time up)
-;     $82:84BD: Game state 26h (Samus escapes from Zebes)
-;     $82:8593: Game state 2Bh (transition from demo)
-;     $82:DCE0: Game state 14h (Samus ran out of health, black out surroundings)
-;     $82:DF80: Much ado about nothing
 $80:985F 08          PHP
 $80:9860 C2 30       REP #$30
 $80:9862 A9 30 00    LDA #$0030             ;\
@@ -4165,6 +3871,10 @@ $80:9869 6B          RTL
 
 ;;; $986A: IRQ ;;;
 {
+; The first instruction of the routine called by the JSR (e.g. $966E) is executed 79 dots later than the IRQ h-counter target
+; All of the (non-trivial) interrupt commands set IRQ h-counter = 98h, so that's 98h + 79 = 231 dots into the drawing period of the current scanline
+; Also note that the IRQ timing is a bit loose, for the h-counter target 98h,
+; I've seen the IRQ fire at all different points in the range 95h..A3h on different frames (according to Mesen-S event viewer)
 $80:986A C2 30       REP #$30
 $80:986C 5C 70 98 80 JML $809870[$80:9870]  ; Execute in bank $80 (FastROM)
 $80:9870 8B          PHB
@@ -4345,12 +4055,6 @@ $80:9A49 A2 2E 00    LDX #$002E         ; X = x-ray HUD tilemap destination offs
 ;; Parameters:
 ;;     X: HUD tilemap index
 ;;     Y: Source address
-
-; Called by:
-;     $9A0E with X = 1Ch, Y = $99AF: Add super missiles to HUD tilemap
-;     $9A1E with X = 22h, Y = $99B7: Add power bombs to HUD tilemap
-;     $9A2E with X = 28h, Y = $99BF: Add grapple to HUD tilemap
-;     $9A3E with X = 2Eh, Y = $99C7: Add x-ray to HUD tilemap
 $80:9A4C BF 08 C6 7E LDA $7EC608,x[$7E:C624];\
 $80:9A50 29 FF 03    AND #$03FF             ;|
 $80:9A53 C9 0F 00    CMP #$000F             ;} If the tilemap is blank:
@@ -4374,8 +4078,6 @@ $80:9A78 6B          RTL
 
 ;;; $9A79: Initialise HUD (HUD routine when game is loading) ;;;
 {
-; Called by:
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
 $80:9A79 08          PHP
 $80:9A7A 8B          PHB
 $80:9A7B 4B          PHK                    ;\
@@ -4464,10 +4166,6 @@ $80:9B43 6B          RTL
 
 ;;; $9B44: Handle HUD tilemap (HUD routine when game is paused/running) ;;;
 {
-; Called by:
-;     $9A79: Initialise HUD
-;     $82:8B44: Game state 8 (main gameplay)
-;     $82:90E8: Game state Fh (paused, map and item screens)
 $80:9B44 08          PHP
 $80:9B45 8B          PHB
 $80:9B46 4B          PHK                    ;\
@@ -4550,7 +4248,7 @@ $80:9BEC 30 E1       BMI $E1    [$9BCF]     ;} If [Y] < 1Ch: go to LOOP_ETANKS
 
 ; BRANCH_ETANKS_END
 $80:9BEE A9 BF 9D    LDA #$9DBF             ;\
-$80:9BF1 85 00       STA $00    [$7E:0000]  ;} $00 = pointer to other (identical) digit tiles
+$80:9BF1 85 00       STA $00    [$7E:0000]  ;} $00 = pointer to digit tiles
 $80:9BF3 A2 8C 00    LDX #$008C             ; X = sub-tank health HUD tilemap destination offset
 $80:9BF6 A5 12       LDA $12    [$7E:0012]  ; A = sub-tank health
 $80:9BF8 20 98 9D    JSR $9D98  [$80:9D98]  ; Draw two HUD digits
@@ -4558,7 +4256,7 @@ $80:9BF8 20 98 9D    JSR $9D98  [$80:9D98]  ; Draw two HUD digits
 ; BRANCH_HEALTH_END
 ; Handle Samus missiles
 $80:9BFB A9 D3 9D    LDA #$9DD3             ;\
-$80:9BFE 85 00       STA $00    [$7E:0000]  ;} $00 = pointer to digit tiles
+$80:9BFE 85 00       STA $00    [$7E:0000]  ;} $00 = pointer to other (identical) digit tiles
 $80:9C00 AD C8 09    LDA $09C8  [$7E:09C8]  ;\
 $80:9C03 F0 11       BEQ $11    [$9C16]     ;} If [Samus max missiles] != 0:
 $80:9C05 AD C6 09    LDA $09C6  [$7E:09C6]  ;\
@@ -4623,9 +4321,11 @@ $80:9C8F A9 39 00    LDA #$0039             ;\
 $80:9C92 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 39h, sound library 1, max queued sounds allowed = 6 (switch HUD item)
 
 ; Handle auto-cancel highlighter flash
+; Note that the 8-bit frame counter used here is set to 0 by door transition,
+; which usually causes the flash cycle to reset
 $80:9C96 A2 00 14    LDX #$1400             ; X = 1400h (non highlight palette)
 $80:9C99 AD B5 05    LDA $05B5  [$7E:05B5]  ;\
-$80:9C9C 89 10 00    BIT #$0010             ;} If [frame counter] % 20h >= 10h:
+$80:9C9C 89 10 00    BIT #$0010             ;} If [8-bit frame counter] % 20h >= 10h:
 $80:9C9F F0 03       BEQ $03    [$9CA4]     ;/
 $80:9CA1 A2 00 10    LDX #$1000             ; X = 1000h (highlight palette)
 
@@ -4663,10 +4363,6 @@ $80:9CDC             dw 0002, 0004, 0006, 0008, 000A, 000C, 000E; Top (second) r
 ;; Parameters:
 ;;     A: HUD item index
 ;;     X: Tilemap palette bits (palette index * 400h)
-
-; Called by:
-;     $9A79: Initialise HUD
-;     $9B44: Handle HUD tilemap
 
 ; Palette 4 (X = 1000h) is used for the highlighted palette, otherwise palette 5 (X = 1400h) is used
 ; This routine assumes missiles are 3 tiles wide and all other icons are 2 tiles wide
@@ -4740,9 +4436,6 @@ $80:9D6E             dw 0014, ; Missiles
 ;;     X: HUD tilemap index
 ;;     $00: Long pointer to digits tilemap
 
-; Called by:
-;     $9A79: Initialise HUD
-;     $9B44: Handle HUD tilemap
 $80:9D78 8D 04 42    STA $4204  [$7E:4204]  ;\
 $80:9D7B E2 20       SEP #$20               ;|
 $80:9D7D A9 64       LDA #$64               ;|
@@ -4770,10 +4463,6 @@ $80:9D95 AD 16 42    LDA $4216  [$7E:4216]  ; A = [A] % 100
 ;;     X: HUD tilemap index
 ;;     $00: Long pointer to digits tilemap
 
-; Called by:
-;     $9A79: Initialise HUD
-;     $9B44: Handle HUD tilemap
-;     $9D78: Draw three HUD digits
 $80:9D98 8D 04 42    STA $4204  [$7E:4204]  ;\
 $80:9D9B E2 20       SEP #$20               ;|
 $80:9D9D A9 0A       LDA #$0A               ;|
@@ -4842,8 +4531,6 @@ $80:9DFB             dw 9E1A, 9E09, 9E1C, 9E2F, 9E41, 9E58, 9E89
 
 ;;; $9E09: Process timer - Ceres start ;;;
 {
-; Called by:
-;     $9DE7: Process timer
 $80:9E09 22 93 9E 80 JSL $809E93[$80:9E93]  ; Clear timer RAM
 $80:9E0D A9 00 01    LDA #$0100             ;\
 $80:9E10 22 8C 9E 80 JSL $809E8C[$80:9E8C]  ;} Timer = 1 minute, 0 seconds
@@ -4854,8 +4541,6 @@ $80:9E17 8D 43 09    STA $0943  [$7E:0943]  ;} Timer status = initial delay
 
 ;;; $9E1A: Clear carry. Process timer - inactive ;;;
 {
-; Called by:
-;     $9DE7: Process timer
 $80:9E1A 18          CLC
 $80:9E1B 60          RTS
 }
@@ -4863,8 +4548,6 @@ $80:9E1B 60          RTS
 
 ;;; $9E1C: Process timer - Mother Brain start ;;;
 {
-; Called by:
-;     $9DE7: Process timer
 $80:9E1C 22 93 9E 80 JSL $809E93[$80:9E93]  ; Clear timer RAM
 $80:9E20 A9 00 03    LDA #$0300             ;\
 $80:9E23 22 8C 9E 80 JSL $809E8C[$80:9E8C]  ;} Timer = 3 minutes, 0 seconds
@@ -4877,8 +4560,6 @@ $80:9E2E 60          RTS
 
 ;;; $9E2F: Process timer - initial delay ;;;
 {
-; Called by:
-;     $9DE7: Process timer
 $80:9E2F E2 20       SEP #$20
 $80:9E31 EE 48 09    INC $0948  [$7E:0948]  ; Increment timer status counter
 $80:9E34 AD 48 09    LDA $0948  [$7E:0948]  ;\
@@ -4893,8 +4574,6 @@ $80:9E40 60          RTS
 
 ;;; $9E41: Process timer - timer running, movement delayed ;;;
 {
-; Called by:
-;     $9DE7: Process timer
 $80:9E41 E2 20       SEP #$20
 $80:9E43 EE 48 09    INC $0948  [$7E:0948]  ; Increment timer status counter
 $80:9E46 AD 48 09    LDA $0948  [$7E:0948]  ;\
@@ -4910,8 +4589,6 @@ $80:9E55 4C A9 9E    JMP $9EA9  [$80:9EA9]  ; Go to decrement timer
 
 ;;; $9E58: Process timer - timer running, moving into place ;;;
 {
-; Called by:
-;     $9DE7: Process timer
 $80:9E58 A0 00 00    LDY #$0000             ; Y = 0
 $80:9E5B A9 E0 00    LDA #$00E0             ;\
 $80:9E5E 18          CLC                    ;} Timer X position = min(DCh, [timer X position] + 0.E0h)
@@ -4939,9 +4616,6 @@ $80:9E86 EE 43 09    INC $0943  [$7E:0943]  ; Timer status = timer running, move
 
 ;;; $9E89: Process timer - timer running, moved into place ;;;
 {
-; Called by:
-;     $9DE7: Process timer
-;     $9E58: Process timer - timer running, moving into place
 $80:9E89 4C A9 9E    JMP $9EA9  [$80:9EA9]  ; Go to decrement timer
 }
 
@@ -4959,10 +4633,6 @@ $80:9E92 6B          RTL
 
 ;;; $9E93: Clear timer RAM ;;;
 {
-; Called by:
-;     $9E09: Process timer - Ceres start
-;     $9E1C: Process timer - Mother Brain start
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
 $80:9E93 A9 00 80    LDA #$8000             ;\
 $80:9E96 8D 48 09    STA $0948  [$7E:0948]  ;|
 $80:9E99 A9 00 80    LDA #$8000             ;} Position timer off-screen
@@ -4979,9 +4649,6 @@ $80:9EA8 6B          RTL
 ;; Returns:
 ;;     Carry: Set if timer has reached zero, otherwise clear
 
-; Called by:
-;     $9E41: Process timer - timer running, movement delayed
-;     $9E89: Process timer - timer running, moved into place
 $80:9EA9 E2 39       SEP #$39               ; Set carry and decimal
 $80:9EAB AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $80:9EAE 29 7F       AND #$7F               ;|
@@ -5060,8 +4727,6 @@ $80:9F94 6B          RTL
 ;;     A:  Timer value
 ;;     X:  X position offset
 
-; Called by:
-;     $9F6C: Draw timer
 $80:9F95 DA          PHX
 $80:9F96 48          PHA
 $80:9F97 29 F0 00    AND #$00F0             ;\
@@ -5088,9 +4753,6 @@ $80:9FB0 69 08 00    ADC #$0008             ;} A = [X] + 8
 ;;     A:    X position offset
 ;;     DB:Y: Spritemap pointer
 
-; Called by:
-;     $9F6C: Draw timer
-;     $9F95: Draw two timer digits
 $80:9FB3 85 14       STA $14    [$7E:0014]  ;\
 $80:9FB5 AD 48 09    LDA $0948  [$7E:0948]  ;|
 $80:9FB8 EB          XBA                    ;|
@@ -5144,8 +4806,8 @@ $80:A07F C2 30       REP #$30
 $80:A081 78          SEI                    ; Disable IRQ
 $80:A082 9C 0B 42    STZ $420B  [$7E:420B]  ; Clear (H)DMA enable flags
 $80:A085 9C E9 07    STZ $07E9  [$7E:07E9]  ; Scrolling finished hook = 0
-$80:A088 9C F3 07    STZ $07F3  [$7E:07F3]  ; Clear music data index
-$80:A08B 9C F5 07    STZ $07F5  [$7E:07F5]  ; Clear music track index
+$80:A088 9C F3 07    STZ $07F3  [$7E:07F3]  ; Music data index = 0
+$80:A08B 9C F5 07    STZ $07F5  [$7E:07F5]  ; Music track index = 0
 $80:A08E 9C 43 09    STZ $0943  [$7E:0943]  ; Timer status = inactive
 $80:A091 22 9A 8A 82 JSL $828A9A[$82:8A9A]  ; Reset sound queues
 $80:A095 A9 FF FF    LDA #$FFFF             ;\
@@ -5153,7 +4815,7 @@ $80:A098 8D F5 05    STA $05F5  [$7E:05F5]  ;} Disable sounds
 $80:A09B 22 5D 83 80 JSL $80835D[$80:835D]  ; Disable NMI
 $80:A09F 22 5F 98 80 JSL $80985F[$80:985F]  ; Disable h/v-counter interrupts
 $80:A0A3 22 6B E7 82 JSL $82E76B[$82:E76B]  ; Load destination room CRE bitset, door/room/state headers, CRE tiles, tileset tiles and tileset palette
-$80:A0A7 20 2B A1    JSR $A12B  [$80:A12B]  ; Play 14h frames of music
+$80:A0A7 20 2B A1    JSR $A12B  [$80:A12B]  ; Handle music queue for 20 frames
 $80:A0AA 22 16 80 87 JSL $878016[$87:8016]  ; Clear animated tile objects
 $80:A0AE 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
 $80:A0B2 22 C1 82 88 JSL $8882C1[$88:82C1]  ; Initialise special effects for new room
@@ -5163,8 +4825,8 @@ $80:A0BE 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
 $80:A0C2 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam tiles and palette
 $80:A0C6 22 39 E1 82 JSL $82E139[$82:E139]  ; Load target colours for common sprites, beams and flashing enemies
 $80:A0CA 22 1E 8A A0 JSL $A08A1E[$A0:8A1E]  ; Load enemies
-$80:A0CE 22 71 E0 82 JSL $82E071[$82:E071]  ; Load room music
-$80:A0D2 20 2B A1    JSR $A12B  [$80:A12B]  ; Play 14h frames of music
+$80:A0CE 22 71 E0 82 JSL $82E071[$82:E071]  ; Queue room music data
+$80:A0D2 20 2B A1    JSR $A12B  [$80:A12B]  ; Handle music queue for 20 frames
 $80:A0D5 22 9B E0 82 JSL $82E09B[$82:E09B]  ; Update music track index
 $80:A0D9 22 13 E1 82 JSL $82E113[$82:E113]  ; RTL
 $80:A0DD 22 3F A2 80 JSL $80A23F[$80:A23F]  ; Clear BG2 tilemap
@@ -5181,12 +4843,12 @@ $80:A0FF 20 7B A3    JSR $A37B  [$80:A37B]  ; Calculate BG scrolls
 $80:A102 22 76 A1 80 JSL $80A176[$80:A176]  ; Display the viewable part of the room
 $80:A106 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $80:A10A A5 A9       LDA $A9    [$7E:00A9]  ; A = [room loading interrupt command]
-$80:A10C D0 03       BNE $03    [$A111]     ;} If [A] = 0:
+$80:A10C D0 03       BNE $03    [$A111]     ; If [A] = 0:
 $80:A10E A9 04 00    LDA #$0004             ; A = 4 (main gameplay)
 
 $80:A111 85 A7       STA $A7    [$7E:00A7]  ; Next interrupt command = [A]
 $80:A113 22 2A 98 80 JSL $80982A[$80:982A]  ; Enable h/v-counter interrupts
-$80:A117 20 2B A1    JSR $A12B  [$80:A12B]  ; Play 14h frames of music
+$80:A117 20 2B A1    JSR $A12B  [$80:A12B]  ; Handle music queue for 20 frames
 $80:A11A 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $80:A11E             dx  08, 08, B7EB       ;} Enable sounds in 20h frames, or F0h frames if on Ceres
 $80:A122 A9 37 E7    LDA #$E737             ;\
@@ -5197,14 +4859,14 @@ $80:A12A 6B          RTL
 }
 
 
-;;; $A12B: Play 14h frames of music ;;;
+;;; $A12B: Handle music queue for 20 frames ;;;
 {
 ; Called by:
 ;     $A07B: Start gameplay
 $80:A12B 08          PHP
 $80:A12C E2 30       SEP #$30
 $80:A12E 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
-$80:A132 A2 14       LDX #$14               ; X = 14h
+$80:A132 A2 14       LDX #$14               ; X = 20
 
 ; LOOP
 $80:A134 DA          PHX
@@ -5460,8 +5122,8 @@ $80:A2F7             db 4E, 18
 ;;; $A2F9: Calculate layer 2 X position ;;;
 {
 ;; Returns:
-;;     Carry: Clear if BG2 needs to be scrolled
 ;;     A:     [Layer 2 X position]
+;;     Carry: Clear if BG2 needs to be scrolled
 
 ; Called by:
 ;     $A07B: Start gameplay
@@ -5769,7 +5431,7 @@ $80:A4BA 6B          RTL
 ; Called by:
 ;     $A176: Display the viewable part of the room
 ;     $A3DF: Update BG graphics when scrolling
-;     $AD1D: Run to 'Fix' doors moving up; redraws top row of blocks
+;     $AD1D: Draw top row of screen for upwards door transition
 ;     $AD4A: Door transition scrolling setup - right
 ;     $AD74: Door transition scrolling setup - left
 ;     $AD9E: Door transition scrolling setup - down
@@ -5859,7 +5521,7 @@ $80:A527 60          RTS
 ; If layer 1 position + 1/2 scroll down's scroll = red:
 ; {
 ;     $0933 = position of right scroll boundary
-;     $0939 += [X distance Samus moved + 1] + 2
+;     $0939 = [layer 1 X position] + [X distance Samus moved + 1] + 2
 ;     Layer 1 X position = min([$0939], [$0933])
 ;     If [$0939] < (position of right scroll boundary) and layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 ;         Round layer 1 X position to left scroll boundary
@@ -6451,8 +6113,6 @@ $80:A9AB 6B          RTL
 
 ;;; $A9AC: Debug scroll position save/loading ;;;
 {
-; Called by:
-;     $82:8B44: Game state 8 (main gameplay)
 $80:A9AC A5 91       LDA $91    [$00:0091]  ;\
 $80:A9AE 29 40 00    AND #$0040             ;} If controller 2 newly pressed X:
 $80:A9B1 F0 03       BEQ $03    [$A9B6]     ;/
@@ -6937,16 +6597,18 @@ $80:AD1C 60          RTS
 }
 
 
-;;; $AD1D: Run to 'Fix' doors moving up; redraws top row of blocks ;;;
+;;; $AD1D: Draw top row of screen for upwards door transition ;;;
 {
 ; Called by:
 ;     $82:E353: Handles door transitions - fix doors moving up
-$80:AD1D 9C 25 09    STZ $0925  [$7E:0925]  ; Clear number of times screen has scrolled
+
+; See $AF89
+$80:AD1D 9C 25 09    STZ $0925  [$7E:0925]  ; Door transition frame counter = 0
 $80:AD20 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position blocks
 $80:AD23 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
 $80:AD26 EE 01 09    INC $0901  [$7E:0901]  ; Increment previous layer 1 Y block
 $80:AD29 EE 05 09    INC $0905  [$7E:0905]  ; Increment previous layer 2 Y block
-$80:AD2C 20 89 AF    JSR $AF89  [$80:AF89]  ; Redraw top row of blocks
+$80:AD2C 20 89 AF    JSR $AF89  [$80:AF89]  ; Door transition - up
 $80:AD2F 6B          RTL
 }
 
@@ -6957,12 +6619,12 @@ $80:AD2F 6B          RTL
 ;     $82:E38E: Handles door transitions - set up scrolling
 $80:AD30 C2 30       REP #$30
 $80:AD32 AD 27 09    LDA $0927  [$7E:0927]  ;\
-$80:AD35 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X = X position of door destination
+$80:AD35 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = [door destination X position]
 $80:AD38 AD 29 09    LDA $0929  [$7E:0929]  ;\
-$80:AD3B 8D 15 09    STA $0915  [$7E:0915]  ;} Layer 1 Y = Y position of door destination
+$80:AD3B 8D 15 09    STA $0915  [$7E:0915]  ;} Layer 1 Y position = [door destination Y position]
 $80:AD3E AD 91 07    LDA $0791  [$7E:0791]  ;\
 $80:AD41 29 03 00    AND #$0003             ;|
-$80:AD44 0A          ASL A                  ;} Branch to door direction dependant code
+$80:AD44 0A          ASL A                  ;} Go to [$AE08 + ([door direction] & 3) * 2]
 $80:AD45 AA          TAX                    ;|
 $80:AD46 FC 08 AE    JSR ($AE08,x)[$80:AD4A];/
 $80:AD49 6B          RTL
@@ -6971,8 +6633,6 @@ $80:AD49 6B          RTL
 
 ;;; $AD4A: Door transition scrolling setup - right ;;;
 {
-; Called by:
-;     $AD30: Door transition scrolling setup
 $80:AD4A 20 F9 A2    JSR $A2F9  [$80:A2F9]  ; Calculate layer 2 X position
 $80:AD4D 38          SEC                    ;\
 $80:AD4E E9 00 01    SBC #$0100             ;} Layer 2 X position -= 100h
@@ -6994,8 +6654,6 @@ $80:AD73 60          RTS
 
 ;;; $AD74: Door transition scrolling setup - left ;;;
 {
-; Called by:
-;     $AD30: Door transition scrolling setup
 $80:AD74 20 F9 A2    JSR $A2F9  [$80:A2F9]  ; Calculate layer 2 X position
 $80:AD77 18          CLC                    ;\
 $80:AD78 69 00 01    ADC #$0100             ;} Layer 2 X position += 100h
@@ -7017,8 +6675,6 @@ $80:AD9D 60          RTS
 
 ;;; $AD9E: Door transition scrolling setup - down ;;;
 {
-; Called by:
-;     $AD30: Door transition scrolling setup
 $80:AD9E 20 F9 A2    JSR $A2F9  [$80:A2F9]  ; Calculate layer 2 X position
 $80:ADA1 20 3A A3    JSR $A33A  [$80:A33A]  ; Calculate layer 2 Y position
 $80:ADA4 38          SEC                    ;\
@@ -7040,8 +6696,6 @@ $80:ADC7 60          RTS
 
 ;;; $ADC8: Door transition scrolling setup - up ;;;
 {
-; Called by:
-;     $AD30: Door transition scrolling setup
 $80:ADC8 20 F9 A2    JSR $A2F9  [$80:A2F9]  ; Calculate layer 2 X position
 $80:ADCB AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:ADCE 48          PHA                    ;|
@@ -7118,19 +6772,19 @@ $80:AE4D 60          RTS
 {
 $80:AE4E 08          PHP
 $80:AE4F 8B          PHB
-$80:AE50 4B          PHK
-$80:AE51 AB          PLB
+$80:AE50 4B          PHK                    ;\
+$80:AE51 AB          PLB                    ;} DB = $80
 $80:AE52 C2 30       REP #$30
 $80:AE54 AD 91 07    LDA $0791  [$7E:0791]  ;\
 $80:AE57 29 03 00    AND #$0003             ;|
-$80:AE5A 0A          ASL A                  ;} Branch to door transition dependant code
+$80:AE5A 0A          ASL A                  ;} Execute [$AE08 + ([door direction] & 3) * 2]
 $80:AE5B AA          TAX                    ;|
 $80:AE5C FC 76 AE    JSR ($AE76,x)[$80:AE7E];/
 $80:AE5F 90 12       BCC $12    [$AE73]     ; If carry set:
 $80:AE61 AD 27 09    LDA $0927  [$7E:0927]  ;\
-$80:AE64 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = X position of door destination
-$80:AE67 AD 29 09    LDA $0929  [$7E:0929]  ;\
-$80:AE6A 8D 15 09    STA $0915  [$7E:0915]  ;} Layer 1 Y position = Y position of door destination
+$80:AE64 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = [door destination X position]
+$80:AE67 AD 29 09    LDA $0929  [$7E:0929]  ;\                      
+$80:AE6A 8D 15 09    STA $0915  [$7E:0915]  ;} Layer 1 Y position = [door destination Y position]
 $80:AE6D A9 00 80    LDA #$8000             ;\
 $80:AE70 0C 31 09    TSB $0931  [$7E:0931]  ;} Door transition finished scrolling flag = 8000h
 
@@ -7144,14 +6798,14 @@ $80:AE76             dw AE7E, AEC2, AF02, AF89
 
 ;;; $AE7E: Door transition - right ;;;
 {
-$80:AE7E AE 25 09    LDX $0925  [$7E:0925]  ;\
-$80:AE81 DA          PHX                    ;} Save door transition frame counter
+$80:AE7E AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
+$80:AE81 DA          PHX                    
 $80:AE82 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $80:AE85 18          CLC                    ;|
-$80:AE86 6D 2B 09    ADC $092B  [$7E:092B]  ;} Samus X subposition += [Samus subspeed during door transition]
-$80:AE89 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;/
-$80:AE8C AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$80:AE8F 6D 2D 09    ADC $092D  [$7E:092D]  ;} Samus X position += [Samus speed during door transition]
+$80:AE86 6D 2B 09    ADC $092B  [$7E:092B]  ;|
+$80:AE89 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;} Samus X position += [Samus speed during door transition]
+$80:AE8C AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
+$80:AE8F 6D 2D 09    ADC $092D  [$7E:092D]  ;|
 $80:AE92 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
 $80:AE95 8D 10 0B    STA $0B10  [$7E:0B10]  ; Samus previous X position = [Samus X position]
 $80:AE98 AD 11 09    LDA $0911  [$7E:0911]  ;\
@@ -7169,26 +6823,26 @@ $80:AEB2 8E 25 09    STX $0925  [$7E:0925]  ;/
 $80:AEB5 E0 40 00    CPX #$0040             ;\
 $80:AEB8 D0 06       BNE $06    [$AEC0]     ;} If [door transition frame counter] = 40h:
 $80:AEBA 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Calculate BG positions and update BG graphics when scrolling
-$80:AEBE 38          SEC                    ; Return carry set
-$80:AEBF 60          RTS
-
-$80:AEC0 18          CLC                    ; Else: return carry clear
-$80:AEC1 60          RTS
+$80:AEBE 38          SEC                    ;\
+$80:AEBF 60          RTS                    ;} Return carry set
+                                            
+$80:AEC0 18          CLC                    ;\
+$80:AEC1 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $AEC2: Door transition - left ;;;
 {
-$80:AEC2 AE 25 09    LDX $0925  [$7E:0925]  ;\
-$80:AEC5 DA          PHX                    ;} Save number of times screen has scrolled
+$80:AEC2 AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
+$80:AEC5 DA          PHX                    
 $80:AEC6 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $80:AEC9 38          SEC                    ;|
-$80:AECA ED 2B 09    SBC $092B  [$7E:092B]  ;} Samus X sub-position -= door transition sub-speed
-$80:AECD 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;/
-$80:AED0 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$80:AED3 ED 2D 09    SBC $092D  [$7E:092D]  ;} Samus X position -= door transition speed
+$80:AECA ED 2B 09    SBC $092B  [$7E:092B]  ;|
+$80:AECD 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;} Samus X position -= [Samus speed during door transition]
+$80:AED0 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
+$80:AED3 ED 2D 09    SBC $092D  [$7E:092D]  ;|
 $80:AED6 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
-$80:AED9 8D 10 0B    STA $0B10  [$7E:0B10]  ; Samus previous X position = Samus X position
+$80:AED9 8D 10 0B    STA $0B10  [$7E:0B10]  ; Samus previous X position = [Samus X position]
 $80:AEDC AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:AEDF 38          SEC                    ;|
 $80:AEE0 E9 04 00    SBC #$0004             ;} Layer 1 X position -= 4
@@ -7199,23 +6853,34 @@ $80:AEEA E9 04 00    SBC #$0004             ;} Layer 2 X position -= 4
 $80:AEED 8D 17 09    STA $0917  [$7E:0917]  ;/
 $80:AEF0 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Calculate BG positions and update BG graphics when scrolling
 $80:AEF4 FA          PLX                    ;\
-$80:AEF5 E8          INX                    ;} Increment number of times screen has scrolled
+$80:AEF5 E8          INX                    ;} Increment door transition frame counter
 $80:AEF6 8E 25 09    STX $0925  [$7E:0925]  ;/
 $80:AEF9 E0 40 00    CPX #$0040             ;\
-$80:AEFC D0 02       BNE $02    [$AF00]     ;} If number of times screen has scrolled = 40h:
-$80:AEFE 38          SEC                    ; Return carry set
-$80:AEFF 60          RTS
-
-$80:AF00 18          CLC                    ; Else: return carry clear
-$80:AF01 60          RTS
+$80:AEFC D0 02       BNE $02    [$AF00]     ;} If [door transition frame counter] = 40h:
+$80:AEFE 38          SEC                    ;\
+$80:AEFF 60          RTS                    ;} Return carry set
+                                            
+$80:AF00 18          CLC                    ;\
+$80:AF01 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $AF02: Door transition - down ;;;
 {
-$80:AF02 AE 25 09    LDX $0925  [$7E:0925]  ;\
-$80:AF05 DA          PHX                    ;} Save number of times screen has scrolled
-$80:AF06 D0 3C       BNE $3C    [$AF44]     ; If number of times screen has scrolled = 0:
+; Spends 1 frame drawing the top row of the new room
+; Then spends 38h frames doing the scrolling (38h frames * 4px/frame = 224px)
+
+; The reason the top row of the new room isn't drawn by scrolling is that vertical scrolling loads one row ahead below the screen
+; In other words, there's always a tilemap row loaded that's fully off-screen below the visible tilemap
+; So prior to the door transition when the camera is scrolled to the edge of a scroll,
+; it has already loaded the row below the door into the tilemap (which is garbage if the door was at a room boundary)
+; Any further scrolling would work on the assumption that row has been loaded already, and that row is the top row of the destination room
+
+; tldr: need to redraw the top row to replace the garbage
+
+$80:AF02 AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
+$80:AF05 DA          PHX                    
+$80:AF06 D0 3C       BNE $3C    [$AF44]     ; If [door transition frame counter] = 0:
 $80:AF08 A5 B3       LDA $B3    [$7E:00B3]  ;\
 $80:AF0A 48          PHA                    ;} Save BG1 Y scroll
 $80:AF0B A5 B7       LDA $B7    [$7E:00B7]  ;\
@@ -7223,12 +6888,12 @@ $80:AF0D 48          PHA                    ;} Save BG2 Y scroll
 $80:AF0E AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:AF11 48          PHA                    ;} Save layer 1 Y position
 $80:AF12 38          SEC                    ;\
-$80:AF13 E9 0F 00    SBC #$000F             ;} Use (layer 1 Y position -= 0Fh) for below calculations
+$80:AF13 E9 0F 00    SBC #$000F             ;} Layer 1 Y position -= Fh
 $80:AF16 8D 15 09    STA $0915  [$7E:0915]  ;/
 $80:AF19 AD 19 09    LDA $0919  [$7E:0919]  ;\
 $80:AF1C 48          PHA                    ;} Save layer 2 Y position
 $80:AF1D 38          SEC                    ;\
-$80:AF1E E9 0F 00    SBC #$000F             ;} Use (layer 2 Y position -= 0Fh) for below calculations
+$80:AF1E E9 0F 00    SBC #$000F             ;} Layer 2 Y position -= Fh
 $80:AF21 8D 19 09    STA $0919  [$7E:0919]  ;/
 $80:AF24 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position blocks
 $80:AF27 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
@@ -7245,16 +6910,16 @@ $80:AF3F 68          PLA                    ;\
 $80:AF40 85 B3       STA $B3    [$7E:00B3]  ;} Restore BG1 Y scroll
 $80:AF42 80 33       BRA $33    [$AF77]
 
-$80:AF44 E0 39 00    CPX #$0039             ;\
-$80:AF47 B0 2E       BCS $2E    [$AF77]     ;} Else if number of times screen has scrolled < 39h
+$80:AF44 E0 39 00    CPX #$0039             ;\ Else ([door transition frame counter] != 0):
+$80:AF47 B0 2E       BCS $2E    [$AF77]     ;} If [door transition frame counter] < 39h:
 $80:AF49 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $80:AF4C 18          CLC                    ;|
-$80:AF4D 6D 2B 09    ADC $092B  [$7E:092B]  ;} Samus Y sub-position += door transition sub-speed
-$80:AF50 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;/
-$80:AF53 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$80:AF56 6D 2D 09    ADC $092D  [$7E:092D]  ;} Samus Y position += door transition speed
+$80:AF4D 6D 2B 09    ADC $092B  [$7E:092B]  ;|
+$80:AF50 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;} Samus Y position += [Samus speed during door transition]
+$80:AF53 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$80:AF56 6D 2D 09    ADC $092D  [$7E:092D]  ;|
 $80:AF59 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
-$80:AF5C 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = Samus Y position
+$80:AF5C 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = [Samus Y position]
 $80:AF5F AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:AF62 18          CLC                    ;|
 $80:AF63 69 04 00    ADC #$0004             ;} Layer 1 Y position += 4
@@ -7266,24 +6931,34 @@ $80:AF70 8D 19 09    STA $0919  [$7E:0919]  ;/
 $80:AF73 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Calculate BG positions and update BG graphics when scrolling
 
 $80:AF77 FA          PLX                    ;\
-$80:AF78 E8          INX                    ;} Increment number of times screen has scrolled
+$80:AF78 E8          INX                    ;} Increment door transition frame counter
 $80:AF79 8E 25 09    STX $0925  [$7E:0925]  ;/
 $80:AF7C E0 39 00    CPX #$0039             ;\
-$80:AF7F 90 06       BCC $06    [$AF87]     ;} If number of times screen has scrolled >= 39h:
+$80:AF7F 90 06       BCC $06    [$AF87]     ;} If [door transition frame counter] >= 39h:
 $80:AF81 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Calculate BG positions and update BG graphics when scrolling
-$80:AF85 38          SEC                    ; Return carry set
-$80:AF86 60          RTS
-
-$80:AF87 18          CLC                    ; Else: return carry clear
-$80:AF88 60          RTS
+$80:AF85 38          SEC                    ;\
+$80:AF86 60          RTS                    ;} Return carry set
+                                            
+$80:AF87 18          CLC                    ;\
+$80:AF88 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $AF89: Door transition - up ;;;
 {
-$80:AF89 AE 25 09    LDX $0925  [$7E:0925]  ;\
-$80:AF8C DA          PHX                    ;} Save number of times screen has scrolled
-$80:AF8D D0 3C       BNE $3C    [$AFCB]     ; If number of times screen has scrolled = 0:
+; This routine - unlike the other three door transition directions - is called once prior to the destination room being loaded (via $AD1D)
+; The reason for this is to load the tilemap for the top row of the scroll, which hasn't yet been loaded by the scrolling routine
+; After the destination room has been loaded and the screen starts scrolling, on frames 1..4 don't call the scrolling routine,
+; as that would load the tilemap according to the destination room, which would be the row below the scroll you're going to (likely garbage)
+; Of course there doesn't need to be any updates due to scrolling because the row was already loaded manually on frame 0
+; Then scrolling as per usual for the remaining 34h frames (38h frames * 4px/frame = 224px)
+
+; tldr: need to load top row and not overwrite that row in the next room
+; I'm fairly sure all of this could have been avoided if the vertical scrolling tilemap did updates to rows 0..Fh instead of 1..Fh (see $80:A45E)
+
+$80:AF89 AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
+$80:AF8C DA          PHX
+$80:AF8D D0 3C       BNE $3C    [$AFCB]     ; If [door transition frame counter] = 0:
 $80:AF8F A5 B3       LDA $B3    [$7E:00B3]  ;\
 $80:AF91 48          PHA                    ;} Save BG1 Y scroll
 $80:AF92 A5 B7       LDA $B7    [$7E:00B7]  ;\
@@ -7291,12 +6966,12 @@ $80:AF94 48          PHA                    ;} Save BG2 Y scroll
 $80:AF95 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:AF98 48          PHA                    ;} Save layer 1 Y position
 $80:AF99 38          SEC                    ;\
-$80:AF9A E9 10 00    SBC #$0010             ;} Use (layer 1 Y position -= 10h) for below calculations
+$80:AF9A E9 10 00    SBC #$0010             ;} Layer 1 Y position -= 10h
 $80:AF9D 8D 15 09    STA $0915  [$7E:0915]  ;/
 $80:AFA0 AD 19 09    LDA $0919  [$7E:0919]  ;\
 $80:AFA3 48          PHA                    ;} Save layer 2 Y position
 $80:AFA4 38          SEC                    ;\
-$80:AFA5 E9 10 00    SBC #$0010             ;} Use (layer 2 Y position -= 10h) for below calculations
+$80:AFA5 E9 10 00    SBC #$0010             ;} Layer 2 Y position -= 10h
 $80:AFA8 8D 19 09    STA $0919  [$7E:0919]  ;/
 $80:AFAB 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position blocks
 $80:AFAE 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
@@ -7311,16 +6986,16 @@ $80:AFC3 68          PLA                    ;\
 $80:AFC4 85 B7       STA $B7    [$7E:00B7]  ;} Restore BG2 Y scroll
 $80:AFC6 68          PLA                    ;\
 $80:AFC7 85 B3       STA $B3    [$7E:00B3]  ;} Restore BG1 Y scroll
-$80:AFC9 80 59       BRA $59    [$B024]
+$80:AFC9 80 59       BRA $59    [$B024]     ; Go to BRANCH_DONE
 
 $80:AFCB AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $80:AFCE 38          SEC                    ;|
-$80:AFCF ED 2B 09    SBC $092B  [$7E:092B]  ;} Samus Y sub-position -= door transition sub-speed
-$80:AFD2 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;/
-$80:AFD5 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$80:AFD8 ED 2D 09    SBC $092D  [$7E:092D]  ;} Samus Y position -= door transition speed
+$80:AFCF ED 2B 09    SBC $092B  [$7E:092B]  ;|
+$80:AFD2 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;} Samus Y position -= [Samus speed during door transition]
+$80:AFD5 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$80:AFD8 ED 2D 09    SBC $092D  [$7E:092D]  ;|
 $80:AFDB 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
-$80:AFDE 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = Samus Y position
+$80:AFDE 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = [Samus Y position]
 $80:AFE1 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:AFE4 38          SEC                    ;|
 $80:AFE5 E9 04 00    SBC #$0004             ;} Layer 1 Y position -= 4
@@ -7330,7 +7005,7 @@ $80:AFEE 38          SEC                    ;|
 $80:AFEF E9 04 00    SBC #$0004             ;} Layer 2 Y position -= 4
 $80:AFF2 8D 19 09    STA $0919  [$7E:0919]  ;/
 $80:AFF5 E0 05 00    CPX #$0005             ;\
-$80:AFF8 B0 26       BCS $26    [$B020]     ;} If number of times screen has scrolled < 5:
+$80:AFF8 B0 26       BCS $26    [$B020]     ;} If [door transition frame counter] <= 4:
 $80:AFFA AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:AFFD 18          CLC                    ;|
 $80:AFFE 6D 1D 09    ADC $091D  [$7E:091D]  ;} BG1 X scroll = [layer 1 X position] + [BG1 X scroll offset]
@@ -7347,20 +7022,21 @@ $80:B015 AD 19 09    LDA $0919  [$7E:0919]  ;\
 $80:B018 18          CLC                    ;|
 $80:B019 6D 23 09    ADC $0923  [$7E:0923]  ;} BG2 Y scroll = [layer 2 Y position] + [BG2 Y scroll offset]
 $80:B01C 85 B7       STA $B7    [$7E:00B7]  ;/
-$80:B01E 80 04       BRA $04    [$B024]
+$80:B01E 80 04       BRA $04    [$B024]     ; Go to BRANCH_DONE
 
-$80:B020 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Else: calculate BG positions and update BG graphics when scrolling
+$80:B020 22 A0 A3 80 JSL $80A3A0[$80:A3A0]  ; Calculate BG positions and update BG graphics when scrolling
 
+; BRANCH_DONE
 $80:B024 FA          PLX                    ;\
-$80:B025 E8          INX                    ;} Increment number of times screen has scrolled
+$80:B025 E8          INX                    ;} Increment door transition frame counter
 $80:B026 8E 25 09    STX $0925  [$7E:0925]  ;/
 $80:B029 E0 39 00    CPX #$0039             ;\
-$80:B02C D0 02       BNE $02    [$B030]     ;} If number of times screen has scrolled = 39h:
-$80:B02E 38          SEC                    ; Return carry set
-$80:B02F 60          RTS
+$80:B02C D0 02       BNE $02    [$B030]     ;} If [door transition frame counter] = 39h:
+$80:B02E 38          SEC                    ;\
+$80:B02F 60          RTS                    ;} Return carry set
 
-$80:B030 18          CLC                    ; Else: return carry clear
-$80:B031 60          RTS
+$80:B030 18          CLC                    ;\
+$80:B031 60          RTS                    ;} Return carry clear
 }
 
 
@@ -7420,7 +7096,7 @@ $80:B09A E2 20       SEP #$20               ;|
 $80:B09C E0 00 04    CPX #$0400             ;|
 $80:B09F D0 DF       BNE $DF    [$B080]     ;/
 $80:B0A1 A9 07       LDA #$07               ;\
-$80:B0A3 85 55       STA $55    [$7E:0055]  ;} Screen brightness = ~50%
+$80:B0A3 85 55       STA $55    [$7E:0055]  ;} BG mode = 7
 $80:B0A5 C2 20       REP #$20
 $80:B0A7 A9 00 01    LDA #$0100             ;\
 $80:B0AA 85 78       STA $78    [$7E:0078]  ;|
@@ -7471,7 +7147,7 @@ $80:B0FE 6B          RTL
 }
 
 
-;;; $B0FF: Decompression ;;;
+;;; $B0FF: Decompression - hardcoded destination ;;;
 {
 ;; Parameters:
 ;;     [[S] + 1]: Destination address (3 bytes)
@@ -7494,7 +7170,7 @@ $80:B117 85 4D       STA $4D    [$7E:004D]  ;/
 }
 
 
-;;; $B119: Decompression ;;;
+;;; $B119: Decompression - variable destination ;;;
 {
 ;; Parameters:
 ;;     $47: Source address (3 bytes)
@@ -8072,7 +7748,7 @@ $80:B435 80 9C       BRA $9C    [$B3D3]     ; Go to LOOP_DICTIONARY_COPY
 }
 
 
-;;; $B437: Tilemap for failed NTSC/PAL check ;;;
+;;; $B437: Tilemap - failed NTSC/PAL check ;;;
 {
 $80:B437             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
                         000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
@@ -8109,7 +7785,7 @@ $80:B437             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 00
 }
 
 
-;;; $BC37: Tilemap for failed SRAM mapping check ;;;
+;;; $BC37: Tilemap - failed SRAM mapping check ;;;
 {
 $80:BC37             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
                         000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
@@ -8214,10 +7890,10 @@ $80:C4B4 6B          RTL
 $80:C4B5             dw C4C5, C5CF, C6D9, C81B, C917, CA2F, CB2B, CC19
 
 ; Load station lists are indexed by $078B
-; Indices 0..7 are the only ones that can be used by save stations
+; Indices 0..7 are the only ones that can be used by save stations (gunship save station uses 0)
 ; Indices 8..Fh are elevators, selectable by the debug file select map if they've been used before
 ; Indices 10h+ are debug load points, except for Crateria's index 12h, which is used for the gunship landing sequence,
-; these dbeug load points are unconditionally selectable in the debug file select map
+; these debug load points are unconditionally selectable in the debug file select map
 
 ;                        _______________________________ Room pointer
 ;                       |     __________________________ Door pointer
@@ -8228,74 +7904,74 @@ $80:C4B5             dw C4C5, C5CF, C6D9, C81B, C917, CA2F, CB2B, CC19
 ;                       |    |    |    |    |    |     _ Samus X offset (relative to screen centre)
 ;                       |    |    |    |    |    |    |
 ; Crateria load stations
-$80:C4C5             dw 91F8,896A,0000,0400,0400,0040,0000, ; 0: Landing site from Crateria mainstreet
-                        93D5,899A,0000,0000,0000,0098,FFE0, ; 1: Crateria save station from Crateria mainstreet
+$80:C4C5             dw 91F8,896A,0000,0400,0400,0040,0000, ; 0: Landing site (from Crateria mainstreet)
+                        93D5,899A,0000,0000,0000,0098,FFE0, ; 1: Crateria save station (from Crateria mainstreet)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        94CC,8ABA,0000,0000,0000,00A8,0000, ; 8: Crateria -> Maridia elevator from Post Crateria maze yellow door
-                        962A,8A42,0000,0000,0000,00A8,0000, ; 9: Crateria -> Red Brinstar elevator from Pre moat room
-                        97B5,8B86,0000,0000,0000,0088,0000, ; Ah: Crateria -> Blue Brinstar elevator from Old Mother Brain room
-                        9938,8C22,0000,0000,0000,0088,0000, ; Bh: Crateria -> Green Brinstar elevator from West Crateria kago hall
-                        A66A,91F2,0000,0000,0100,0098,0000, ; Ch: Tourian entrance from Pre Tourian hall
+                        94CC,8ABA,0000,0000,0000,00A8,0000, ; 8: Crateria -> Maridia elevator (from Post Crateria maze yellow door)
+                        962A,8A42,0000,0000,0000,00A8,0000, ; 9: Crateria -> Red Brinstar elevator (from Pre moat room)
+                        97B5,8B86,0000,0000,0000,0088,0000, ; Ah: Crateria -> Blue Brinstar elevator (from Old Mother Brain room)
+                        9938,8C22,0000,0000,0000,0088,0000, ; Bh: Crateria -> Green Brinstar elevator (from West Crateria kago hall)
+                        A66A,91F2,0000,0000,0100,0098,0000, ; Ch: Tourian entrance (from Pre Tourian hall)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        91F8,896A,0000,0400,0400,0040,0000, ; 10h: Landing site from Crateria mainstreet
-                        94FD,8A7E,0000,0000,0400,0095,0000, ; 11h: Wrecked Ship back door from East Crateria kago shaft
-                        91F8,88FE,0000,0400,0000,0080,0000  ; 12h: Gunship landing sequence (Landing site from Landing site)
+                        91F8,896A,0000,0400,0400,0040,0000, ; 10h: Landing site (from Crateria mainstreet)
+                        94FD,8A7E,0000,0000,0400,0095,0000, ; 11h: Wrecked Ship back door (from East Crateria kago shaft)
+                        91F8,88FE,0000,0400,0000,0080,0000  ; 12h: Gunship landing sequence (landing site from landing site)
 
 ; Brinstar load stations
-$80:C5CF             dw A184,8DF6,0000,0000,0000,0098,FFE0, ; 0: Pre Spore Spawn save station from Charge beam room
-                        A201,8D12,0000,0000,0000,0098,FFE0, ; 1: Green Brinstar mainstreet save station from Green Brinstar mainstreet
-                        A22A,8F52,0000,0000,0000,0098,FFE0, ; 2: Brinstar false floor save station from Brinstar false floor spike hall
-                        A70B,9186,0000,0000,0000,0098,0000, ; 3: Kraid save station from Kraid keyhunter hall
-                        A734,90D2,0000,0000,0000,0098,0000, ; 4: Red Brinstar save station from Red Brinstar -> Crateria elevator
+$80:C5CF             dw A184,8DF6,0000,0000,0000,0098,FFE0, ; 0: Pre Spore Spawn save station (from Charge beam room)
+                        A201,8D12,0000,0000,0000,0098,FFE0, ; 1: Green Brinstar mainstreet save station (from Green Brinstar mainstreet)
+                        A22A,8F52,0000,0000,0000,0098,FFE0, ; 2: Brinstar false floor save station (from Brinstar false floor spike hall)
+                        A70B,9186,0000,0000,0000,0098,0000, ; 3: Kraid save station (from Kraid keyhunter hall)
+                        A734,90D2,0000,0000,0000,0098,0000, ; 4: Red Brinstar save station (from Red Brinstar -> Crateria elevator)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        9AD9,8D42,0001,0000,0200,00A8,0000, ; 8: Green Brinstar mainstreet from Pre Brinstar map room hall
-                        9E9F,8E86,0000,0500,0200,00A8,0000, ; 9: Morph ball room from Brinstar diagonal room
-                        A322,908A,0000,0000,0200,00A8,0000, ; Ah: Red Brinstar -> Crateria elevator from Red Brinstar damage boost hall
-                        A6A1,A384,0000,0000,0000,0088,0000, ; Bh: Kraid's lair entrance from n00b tube east
+                        9AD9,8D42,0001,0000,0200,00A8,0000, ; 8: Green Brinstar mainstreet (from Pre Brinstar map room hall)
+                        9E9F,8E86,0000,0500,0200,00A8,0000, ; 9: Morph ball room (from Brinstar diagonal room)
+                        A322,908A,0000,0000,0200,00A8,0000, ; Ah: Red Brinstar -> Crateria elevator (from Red Brinstar damage boost hall)
+                        A6A1,A384,0000,0000,0000,0088,0000, ; Bh: Kraid's lair entrance (from n00b tube east)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        9AD9,8D42,0001,0000,0200,00A8,0000, ; 10h: Green Brinstar mainstreet from Pre Brinstar map room hall
-                        A56B,91CE,0000,0000,0100,0080,0000, ; 11h: Pre Kraid room from Kraid
-                        9D19,8E62,0000,0300,0000,0080,0000  ; 12h: Charge beam room from Brinstar false wall super-sidehopper power bomb room
+                        9AD9,8D42,0001,0000,0200,00A8,0000, ; 10h: Green Brinstar mainstreet (from Pre Brinstar map room hall)
+                        A56B,91CE,0000,0000,0100,0080,0000, ; 11h: Pre Kraid room (from Kraid)
+                        9D19,8E62,0000,0300,0000,0080,0000  ; 12h: Charge beam room (from Brinstar false wall super-sidehopper power bomb room)
 
 ; Norfair load stations
-$80:C6D9             dw AAB5,9456,0000,0000,0000,0098,0000, ; 0: Post Crocomire save station from Post Crocomire room
-                        B0DD,959A,0000,0000,0000,0098,FFE0, ; 1: Bubble Norfair save station from Bubble Norfair mainstreet
-                        B167,97DA,0000,0000,0000,0098,0000, ; 2: Rock Norfair save station from Norfair speed blockade hall
-                        B192,93BA,0000,0000,0000,0098,0000, ; 3: Pre Crocomire save station from Norfair slope
-                        B1BB,9702,0000,0000,0000,0098,FFE0, ; 4: Pre Lower Norfair save station from Norfair -> Lower Norfair elevator
-                        B741,9A0E,0000,0000,0000,0098,0000, ; 5: Lower Norfair save station from Lower Norfair kihunter shaft
+$80:C6D9             dw AAB5,9456,0000,0000,0000,0098,0000, ; 0: Post Crocomire save station (from Post Crocomire room)
+                        B0DD,959A,0000,0000,0000,0098,FFE0, ; 1: Bubble Norfair save station (from Bubble Norfair mainstreet)
+                        B167,97DA,0000,0000,0000,0098,0000, ; 2: Rock Norfair save station (from Norfair speed blockade hall)
+                        B192,93BA,0000,0000,0000,0098,0000, ; 3: Pre Crocomire save station (from Norfair slope)
+                        B1BB,9702,0000,0000,0000,0098,FFE0, ; 4: Pre Lower Norfair save station (from Norfair -> Lower Norfair elevator)
+                        B741,9A0E,0000,0000,0000,0098,0000, ; 5: Lower Norfair save station (from Lower Norfair kihunter shaft)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        A7DE,92A6,0000,0000,0200,00A8,0000, ; 8: Norfair mainstreet from first hot room
-                        AF3F,96DE,0000,0000,0000,0088,0000, ; 9: Norfair -> Lower Norfair elevator from Lower Norfair entrance
-                        B236,9846,0000,0400,0200,0088,0000, ; Ah: Lower Norfair mainstreet from Golden chozo statue lava lake
+                        A7DE,92A6,0000,0000,0200,00A8,0000, ; 8: Norfair mainstreet (from first hot room)
+                        AF3F,96DE,0000,0000,0000,0088,0000, ; 9: Norfair -> Lower Norfair elevator (from Lower Norfair entrance)
+                        B236,9846,0000,0400,0200,0088,0000, ; Ah: Lower Norfair mainstreet (from Golden chozo statue lava lake)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        A7DE,932A,0002,0000,0200,00A8,0000, ; 10h: Norfair mainstreet from Ice beam mockball hall
-                        A923,93EA,0001,0C00,0200,00A0,0000, ; 11h: Norfair slope from Crocomire
-                        B37A,995A,0000,0000,0000,00A0,0000, ; 12h: Pre Ridley hall from Lower Norfair holtz room
-                        AA82,946E,0000,0000,0000,00B5,0000, ; 13h: Post Crocomire room from Post Crocomire power bombs room
-                        B236,9846,0001,0500,0200,0035,0000, ; 14h: Lower Norfair mainstreet from Golden chozo statue lava lake
-                        B283,98A6,0000,0200,0200,0000,0000, ; 15h: Golden Torizo from Lower Norfair energy station
-                        B283,983A,0000,0000,0000,0080,0000  ; 16h: Golden Torizo from Golden chozo statue lava lake
+                        A7DE,932A,0002,0000,0200,00A8,0000, ; 10h: Norfair mainstreet (from Ice beam mockball hall)
+                        A923,93EA,0001,0C00,0200,00A0,0000, ; 11h: Norfair slope (from Crocomire)
+                        B37A,995A,0000,0000,0000,00A0,0000, ; 12h: Pre Ridley hall (from Lower Norfair holtz room)
+                        AA82,946E,0000,0000,0000,00B5,0000, ; 13h: Post Crocomire room (from Post Crocomire power bombs room)
+                        B236,9846,0001,0500,0200,0035,0000, ; 14h: Lower Norfair mainstreet (from Golden chozo statue lava lake)
+                        B283,98A6,0000,0200,0200,0000,0000, ; 15h: Golden Torizo (from Lower Norfair energy station)
+                        B283,983A,0000,0000,0000,0080,0000  ; 16h: Golden Torizo (from Golden chozo statue lava lake)
 
 ; Wrecked Ship load stations
-$80:C81B             dw CE8A,A240,0000,0000,0000,0098,0000, ; 0: Wrecked Ship save station from Wrecked Ship mainstreet
+$80:C81B             dw CE8A,A240,0000,0000,0000,0098,0000, ; 0: Wrecked Ship save station (from Wrecked Ship mainstreet)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
@@ -8311,19 +7987,19 @@ $80:C81B             dw CE8A,A240,0000,0000,0000,0098,0000, ; 0: Wrecked Ship sa
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        CA08,A1F8,0001,0000,0000,0080,0000, ; 10h: Wrecked Ship entrance treadmill from Wrecked Ship mainstreet
-                        CC6F,A2B8,0000,0400,0000,0080,0000  ; 11h: Pre Phantoon hall from Wrecked Ship map station
+                        CA08,A1F8,0001,0000,0000,0080,0000, ; 10h: Wrecked Ship entrance treadmill (from Wrecked Ship mainstreet)
+                        CC6F,A2B8,0000,0400,0000,0080,0000  ; 11h: Pre Phantoon hall (from Wrecked Ship map station)
 
 ; Maridia load stations
-$80:C917             dw CED2,A354,0000,0000,0000,0098,0000, ; 0: n00b tube save station from n00b tube
-                        D3DF,A588,0000,0000,0000,0098,0000, ; 1: Maridia save station from Maridia -> Crateria elevator
-                        D765,A744,0000,0000,0000,0098,FFE0, ; 2: Snail room save station from Snail room
-                        D81A,A7EC,0000,0000,0000,0098,0000, ; 3: Draygon save station from Maridia grapple room
+$80:C917             dw CED2,A354,0000,0000,0000,0098,0000, ; 0: n00b tube save station (from n00b tube)
+                        D3DF,A588,0000,0000,0000,0098,0000, ; 1: Maridia save station (from Maridia -> Crateria elevator)
+                        D765,A744,0000,0000,0000,0098,FFE0, ; 2: Snail room save station (from Snail room)
+                        D81A,A7EC,0000,0000,0000,0098,0000, ; 3: Draygon save station (from Maridia grapple room)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        D30B,A570,0000,0000,0200,00A8,0000, ; 8: Maridia -> Crateria elevator from Sandy Maridia thin platform hall
+                        D30B,A570,0000,0000,0200,00A8,0000, ; 8: Maridia -> Crateria elevator (from Sandy Maridia thin platform hall)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
@@ -8331,21 +8007,21 @@ $80:C917             dw CED2,A354,0000,0000,0000,0098,0000, ; 0: n00b tube save 
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        D1DD,A4A4,0001,0000,0000,00D0,0000, ; 10h: Sandy Maridia unused passage to Sandy Maridia mainstreet from Sandy Maridia memu room
-                        D78F,A81C,0000,0000,0200,0080,0000, ; 11h: Pre Draygon room from ?
-                        D617,A72C,0000,0300,0000,0080,0000, ; 12h: Mochtroid room from Snail room
-                        D48E,A648,0000,0000,0100,0080,0000  ; 13h: Elevatube south from Sand falls west
+                        D1DD,A4A4,0001,0000,0000,00D0,0000, ; 10h: Sandy Maridia unused passage to Sandy Maridia mainstreet (from Sandy Maridia memu room)
+                        D78F,A81C,0000,0000,0200,0080,0000, ; 11h: Pre Draygon room (from ?)
+                        D617,A72C,0000,0300,0000,0080,0000, ; 12h: Mochtroid room (from Snail room)
+                        D48E,A648,0000,0000,0100,0080,0000  ; 13h: Elevatube south (from Sand falls west)
 
 ; Tourian load stations
-$80:CA2F             dw DE23,AABC,0000,0000,0000,0098,FFE0, ; 0: Pre Mother Brain save station trap from Pre Mother Brain shaft
-                        DF1B,A99C,0000,0000,0000,0098,0000, ; 1: Tourian save station from Tourian -> Crateria elevator
+$80:CA2F             dw DE23,AABC,0000,0000,0000,0098,FFE0, ; 0: Pre Mother Brain save station trap (from Pre Mother Brain shaft)
+                        DF1B,A99C,0000,0000,0000,0098,0000, ; 1: Tourian save station (from Tourian -> Crateria elevator)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        DAAE,A9A8,0000,0000,0200,00A8,0000, ; 8: Tourian -> Crateria elevator from Metroid room 1
+                        DAAE,A9A8,0000,0000,0200,00A8,0000, ; 8: Tourian -> Crateria elevator (from Metroid room 1)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
@@ -8353,11 +8029,11 @@ $80:CA2F             dw DE23,AABC,0000,0000,0000,0098,FFE0, ; 0: Pre Mother Brai
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        DDF3,AAA4,0000,0000,0200,0080,0000, ; 10h: Mother Brain shaft from Tourian eye-door room
-                        DDF3,AA38,0000,0000,0000,0080,0000  ; 11h: Mother Brain shaft from Shitroid room
+                        DDF3,AAA4,0000,0000,0200,0080,0000, ; 10h: Mother Brain shaft (from Tourian eye-door room)
+                        DDF3,AA38,0000,0000,0000,0080,0000  ; 11h: Mother Brain shaft (from Shitroid room)
 
 ; Ceres load stations
-$80:CB2B             dw DF45,AB58,0000,0000,0000,0048,0000, ; Ceres elevator shaft from Ceres pre elevator hall
+$80:CB2B             dw DF45,AB58,0000,0000,0000,0048,0000, ; Ceres elevator shaft (from Ceres pre elevator hall)
                         DF45,AB58,0000,0000,0000,0040,0000,
                         DF45,AB58,0000,0000,0000,0040,0000,
                         DF45,AB58,0000,0000,0000,0040,0000,
@@ -8376,7 +8052,7 @@ $80:CB2B             dw DF45,AB58,0000,0000,0000,0048,0000, ; Ceres elevator sha
                         DF45,AB58,0000,0000,0000,0040,0000
 
 ; Debug load stations
-$80:CC19             dw E82C,ABC4,0000,0000,0000,00B0,0000, ; Debug room from ?
+$80:CC19             dw E82C,ABC4,0000,0000,0000,00B0,0000, ; Debug room (from ?)
                         E82C,ABC4,0000,0000,0000,00B0,0000,
                         E82C,ABC4,0000,0000,0000,00B0,0000,
                         E82C,ABC4,0000,0000,0000,00B0,0000,

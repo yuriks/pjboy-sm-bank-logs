@@ -5711,6 +5711,8 @@ $8C:D7F7             dx 88B7,08,02,21BA,21BB,21B3,21BA,21BC,20E0,20E1,21B3,20E2,
 
 ;;; $D81B: Initial intro Japanese text tilemap ;;;
 {
+; ? This might even be used for all of the Japanese text, in the intro at least
+
 ; 最後のメトロイドが 獲えられ (the last metroid was captured)
 ; 銀河宇宙に平和が訪れた... (peace came to the Milky Way...)
 $8C:D81B             dw 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 105A, 105B, 105C, 105D, 105E, 105F, 1070, 1071, 1072, 002F, 1073, 1074, 1075, 1076, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F,
@@ -5945,7 +5947,7 @@ $8C:DC73             dx 0000,1FC0,
                         9A17,0023   ; Timer = 23h
 $8C:DC8F             dx 0000,1FC0,
                         9A0D,DC8F,  ; Decrement timer and go to $DC8F if non-zero
-                        F6FE        ; ???
+                        F6FE        ; End credits
                         99FE        ; Delete
 }
 
@@ -6236,7 +6238,7 @@ $8C:EDE9             dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0
 }
 
 
-;;; $EFE9: Palettes - ending screw attack symbol glare ;;;
+;;; $EFE9: Palettes - ending Super Metroid icon glare ;;;
 {
 $8C:EFE9             dw 0000,013F,0030,0005,025F,00F2,0029,035F,0192,0089,7BE0,7980,4400,43FF,03FF,1C84,
                         0000,011D,002F,0004,021D,00D0,0028,031D,0170,0068,73A0,7160,3C00,3FBD,03BD,1863,
@@ -6257,7 +6259,7 @@ $8C:EFE9             dw 0000,013F,0030,0005,025F,00F2,0029,035F,0192,0089,7BE0,7
 }
 
 
-;;; $F1E9: Palettes - ending screw attack symbol fading to grey ;;;
+;;; $F1E9: Palettes - ending Super Metroid icon fading to grey ;;;
 {
 $8C:F1E9             dw 0000,6B5A,5EF7,5294,4631,35AD,294A,1CE7,1084,0000,0000,0000,0000,0000,0000,0000,
                         0000,6318,56B5,4A52,3DEF,318C,2529,18C6,0C63,0000,0000,0000,0000,0000,0000,0000,

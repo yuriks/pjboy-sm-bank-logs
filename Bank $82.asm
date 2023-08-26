@@ -101,7 +101,7 @@ $82:80ED 88          DEY                    ;|
 $82:80EE D0 F2       BNE $F2    [$80E2]     ;|
 $82:80F0 28          PLP                    ;/
 $82:80F1 28          PLP
-$82:80F2 60          RTS
+$82:80F2 60          RTS                    ; Return
 
 ; BRANCH_NOT_ZEBES_LANDING
 $82:80F3 A9 06 00    LDA #$0006             ;\
@@ -132,15 +132,15 @@ $82:8128 C9 1F 00    CMP #$001F             ;} If starting at Ceres:
 $82:812B D0 10       BNE $10    [$813D]     ;/
 $82:812D A9 00 00    LDA #$0000             ;\
 $82:8130 8F BE C1 7E STA $7EC1BE[$7E:C1BE]  ;} Sprite palette 5, colour Fh = 0
-$82:8134 A9 08 00    LDA #$0008             ; A = 8
-$82:8137 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$82:8134 A9 08 00    LDA #$0008             ;\
+$82:8137 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for Ceres start
 $82:813B 28          PLP
-$82:813C 60          RTS
+$82:813C 60          RTS                    ; Return
 
-$82:813D A9 09 00    LDA #$0009             ; A = 9
-$82:8140 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$82:813D A9 09 00    LDA #$0009             ;\
+$82:8140 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for Zebes start
 $82:8144 28          PLP
-$82:8145 60          RTS
+$82:8145 60          RTS                    ; Return
 
 ; BRANCH_DEMO
 $82:8146 A9 06 00    LDA #$0006             ;\
@@ -220,14 +220,14 @@ $82:81CC 9C 0B 42    STZ $420B  [$7E:420B]  ; Disable DMAs
 $82:81CF 9C 0C 42    STZ $420C  [$7E:420C]  ;\
 $82:81D2 64 85       STZ $85    [$7E:0085]  ;} Disable HDMAs
 $82:81D4 A9 01       LDA #$01               ;\
-$82:81D6 8D 0D 42    STA $420D  [$7E:420D]  ;} Set fast rom
+$82:81D6 8D 0D 42    STA $420D  [$7E:420D]  ;} Set fast ROM
 $82:81D9 85 86       STA $86    [$7E:0086]  ;/
 $82:81DB 28          PLP
 $82:81DC 60          RTS
 }
 
 
-;;; $81DD: Initialise PPU registers for gameplay ;;;
+;;; $81DD: Set up PPU for gameplay ;;;
 {
 $82:81DD 08          PHP
 $82:81DE E2 30       SEP #$30
@@ -245,7 +245,7 @@ $82:81F8 85 54       STA $54    [$7E:0054]  ;/
 $82:81FA 9C 04 21    STZ $2104  [$7E:2104]  ;\
 $82:81FD 9C 04 21    STZ $2104  [$7E:2104]  ;} OAM write address = $0000
 $82:8200 A9 09       LDA #$09               ;\
-$82:8202 8D 05 21    STA $2105  [$7E:2105]  ;} Set BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$82:8202 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $82:8205 85 55       STA $55    [$7E:0055]  ;/
 $82:8207 9C 06 21    STZ $2106  [$7E:2106]  ;\
 $82:820A 64 57       STZ $57    [$7E:0057]  ;} Disable mosaic
@@ -291,12 +291,12 @@ $82:8269 A9 17       LDA #$17               ;\
 $82:826B 8D 2C 21    STA $212C  [$7E:212C]  ;} Enable BG1/2/3 and sprites
 $82:826E 85 69       STA $69    [$7E:0069]  ;/
 $82:8270 9C 2E 21    STZ $212E  [$7E:212E]  ;\
-$82:8273 64 6C       STZ $6C    [$7E:006C]  ;} Don't disable any layers in window
+$82:8273 64 6C       STZ $6C    [$7E:006C]  ;} Enable all layers in window area main screen
 $82:8275 A9 00       LDA #$00               ;\
 $82:8277 8D 2D 21    STA $212D  [$7E:212D]  ;} Disable all subscreen layers
 $82:827A 85 6B       STA $6B    [$7E:006B]  ;/
 $82:827C 9C 2F 21    STZ $212F  [$7E:212F]  ;\
-$82:827F 64 6D       STZ $6D    [$7E:006D]  ;} Don't disable any layers in window on subscreen
+$82:827F 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area subscreen
 $82:8281 9C 30 21    STZ $2130  [$7E:2130]  ;\
 $82:8284 64 6E       STZ $6E    [$7E:006E]  ;|
 $82:8286 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
@@ -434,7 +434,7 @@ $82:839B E2 20       SEP #$20
 $82:839D A5 51       LDA $51    [$7E:0051]  ;\
 $82:839F C9 80       CMP #$80               ;} If not finished fading out:
 $82:83A1 F0 04       BEQ $04    [$83A7]     ;/
-$82:83A3 C2 20       REP #$20
+$82:83A3 C2 20       REP #$20               ; >_<;
 $82:83A5 28          PLP
 $82:83A6 60          RTS                    ; Return
 
@@ -443,7 +443,7 @@ $82:83AB C2 20       REP #$20
 $82:83AD 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA queue
 $82:83B1 22 5F 98 80 JSL $80985F[$80:985F]  ; Disable h/v-counter interrupts
 $82:83B5 9C 82 19    STZ $1982  [$7E:1982]  ; Default layer blending configuration = 0
-$82:83B8 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = 0 (set to [$A7])
+$82:83B8 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = 0
 $82:83BA E2 20       SEP #$20
 $82:83BC 64 6E       STZ $6E    [$7E:006E]  ;\
 $82:83BE 64 71       STZ $71    [$7E:0071]  ;} Disable colour math
@@ -467,7 +467,7 @@ $82:83EA 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C11B
 $82:83ED 9C 3F 09    STZ $093F  [$7E:093F]  ; Ceres status = 0
 $82:83F0 9C 43 09    STZ $0943  [$7E:0943]  ; Timer status = inactive
 $82:83F3 A9 00 00    LDA #$0000             ;\
-$82:83F6 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$82:83F6 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:83FA A9 02 00    LDA #$0002             ;\
 $82:83FD 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 $82:8401 A9 71 00    LDA #$0071             ;\
@@ -516,12 +516,12 @@ $82:8448 C2 20       REP #$20
 $82:844A 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
 $82:844E 22 5F 98 80 JSL $80985F[$80:985F]  ; Disable h/v-counter interrupts
 $82:8452 9C 82 19    STZ $1982  [$7E:1982]  ; Default layer blending configuration = 0
-$82:8455 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = 0 (set to [$A7])
+$82:8455 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = 0
 $82:8457 E2 20       SEP #$20
 $82:8459 64 6E       STZ $6E    [$7E:006E]  ;\
 $82:845B 64 71       STZ $71    [$7E:0071]  ;} Disable colour math
 $82:845D A9 10       LDA #$10
-$82:845F 85 69       STA $69    [$7E:0069]  ; Main screen layers = sprites (disable BG layers)
+$82:845F 85 69       STA $69    [$7E:0069]  ; Main screen layers = sprites
 $82:8461 64 6B       STZ $6B    [$7E:006B]  ; Disable subscreen layers
 $82:8463 64 6C       STZ $6C    [$7E:006C]  ;\
 $82:8465 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area
@@ -541,7 +541,7 @@ $82:848A 22 25 91 80 JSL $809125[$80:9125]  ;} Queue sound 1, sound library 3, m
 $82:848E A9 0E 00    LDA #$000E             ;\
 $82:8491 22 33 82 80 JSL $808233[$80:8233]  ;} If Zebes timebomb not set: go to BRANCH_NOT_ZEBES_TIMEBOMB
 $82:8495 90 18       BCC $18    [$84AF]     ;/
-$82:8497 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options screen index = 0
+$82:8497 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options menu index = 0
 $82:849A 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = 0
 $82:849D A2 FE 00    LDX #$00FE             ;\
                                             ;|
@@ -550,7 +550,7 @@ $82:84A3 CA          DEX                    ;} $1A8D..1B8C = 00FEh
 $82:84A4 CA          DEX                    ;|
 $82:84A5 10 F9       BPL $F9    [$84A0]     ;/
 $82:84A7 A9 19 00    LDA #$0019             ;\
-$82:84AA 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 19h (Samus ran out of health, black out)
+$82:84AA 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 19h (death sequence, black out)
 $82:84AD 28          PLP
 $82:84AE 60          RTS                    ; Return
 
@@ -574,7 +574,7 @@ $82:84C7 E2 20       SEP #$20
 $82:84C9 A5 51       LDA $51    [$7E:0051]  ;\
 $82:84CB C9 80       CMP #$80               ;} If not finished fading out:
 $82:84CD F0 04       BEQ $04    [$84D3]     ;/
-$82:84CF C2 20       REP #$20
+$82:84CF C2 20       REP #$20               ; >_<;
 $82:84D1 28          PLP
 $82:84D2 60          RTS                    ; Return
 
@@ -602,7 +602,7 @@ $82:8506 A9 80 D4    LDA #$D480             ;\
 $82:8509 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $D480
 $82:850C 9C 43 09    STZ $0943  [$7E:0943]  ; Timer status = inactive
 $82:850F A9 00 00    LDA #$0000             ;\
-$82:8512 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$82:8512 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:8516 A9 02 00    LDA #$0002             ;\
 $82:8519 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 $82:851D A9 71 00    LDA #$0071             ;\
@@ -614,6 +614,8 @@ $82:852C 60          RTS
 }
 
 
+;;; $852D..893C: Demos ;;;
+{
 ;;; $852D: Game state 29h (transition to demo) ;;;
 {
 $82:852D 08          PHP
@@ -661,7 +663,7 @@ $82:8574 A9 01 00    LDA #$0001             ;\
 $82:8577 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} $0DEC = 1
 
 ; BRANCH_END_DEMOS
-$82:857A EE 98 09    INC $0998  [$7E:0998]  ; Game state = 2Bh (transition from demo)
+$82:857A EE 98 09    INC $0998  [$7E:0998]  ; Game state = 2Bh (unload game data)
 $82:857D 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $82:8580 E2 20       SEP #$20               ;\
 $82:8582 A9 80       LDA #$80               ;|
@@ -676,7 +678,7 @@ $82:8592 60          RTS
 }
 
 
-;;; $8593: Game state 2Bh (transition from demo) ;;;
+;;; $8593: Game state 2Bh (unload game data) ;;;
 {
 $82:8593 08          PHP
 $82:8594 C2 30       REP #$30
@@ -701,7 +703,7 @@ $82:85C8 3A          DEC A                  ;|
 $82:85C9 3A          DEC A                  ;|
 $82:85CA 38          SEC                    ;|
 $82:85CB E9 8D 19    SBC #$198D             ;|
-$82:85CE AA          TAX                    ;} Clear enemy projectile data
+$82:85CE AA          TAX                    ;} Clear $198D..1C1E (non-gameplay RAM)
                                             ;|
 $82:85CF 9E 8D 19    STZ $198D,x[$7E:1C1D]  ;|
 $82:85D2 CA          DEX                    ;|
@@ -712,7 +714,7 @@ $82:85D9 3A          DEC A                  ;|
 $82:85DA 3A          DEC A                  ;|
 $82:85DB 38          SEC                    ;|
 $82:85DC E9 7C 07    SBC #$077C             ;|
-$82:85DF AA          TAX                    ;} Clear $077C..0997 (lots of things)
+$82:85DF AA          TAX                    ;} Clear $077C..0997 (main gameplay RAM)
                                             ;|
 $82:85E0 9E 7C 07    STZ $077C,x[$7E:0996]  ;|
 $82:85E3 CA          DEX                    ;|
@@ -726,7 +728,7 @@ $82:85EF 85 69       STA $69    [$7E:0069]  ;} Main screen layers = sprites
 $82:85F1 64 6B       STZ $6B    [$7E:006B]  ; Disable subscreen layers
 $82:85F3 64 6C       STZ $6C    [$7E:006C]  ;\
 $82:85F5 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area
-$82:85F7 C2 20       REP #$20
+$82:85F7 C2 20       REP #$20               ; >_<;
 $82:85F9 28          PLP
 $82:85FA 60          RTS
 }
@@ -742,18 +744,18 @@ $82:8604 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
 $82:8607 30 26       BMI $26    [$862F]     ;} If [$0DEC] & 8000h != 0: go to BRANCH_NEXT_DEMO_SCENE
 $82:8609 D0 12       BNE $12    [$861D]     ; If [$0DEC] = 0:
 $82:860B A9 00 00    LDA #$0000             ;\
-$82:860E 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$82:860E 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:8612 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $82:8615 A9 68 9B    LDA #$9B68             ;\
-$82:8618 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68
+$82:8618 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (title sequence)
 $82:861B 28          PLP
 $82:861C 60          RTS                    ; Return
 
 $82:861D 22 87 9B 8B JSL $8B9B87[$8B:9B87]  ; Load title sequence graphics
 $82:8621 A9 02 00    LDA #$0002             ;\
-$82:8624 8D 53 1A    STA $1A53  [$7E:1A53]  ;} $1A53 = 2
+$82:8624 8D 53 1A    STA $1A53  [$7E:1A53]  ;} Demo timer = 2
 $82:8627 A9 47 9A    LDA #$9A47             ;\
-$82:862A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9A47
+$82:862A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 $82:862D 28          PLP
 $82:862E 60          RTS                    ; Return
 
@@ -992,6 +994,7 @@ $82:8936 8F 29 D8 7E STA $7ED829[$7E:D829]
 $82:893A C2 20       REP #$20
 $82:893C 60          RTS
 }
+}
 
 
 ;;; $893D: Main game loop ;;;
@@ -1059,6 +1062,8 @@ $82:89EE 60          RTS
 }
 
 
+;;; $89EF..8AAF: Handle sounds ;;;
+{
 ;;; $89EF: Handle sounds ;;;
 {
 $82:89EF 08          PHP
@@ -1203,6 +1208,7 @@ $82:8AAB 9C 4B 06    STZ $064B  [$7E:064B]
 $82:8AAE 28          PLP
 $82:8AAF 6B          RTL
 }
+}
 
 
 ;;; $8AB0: Show spare CPU (debug) and update previous controller 1 input ;;;
@@ -1279,7 +1285,6 @@ $82:8B12 60          RTS
 
 ;;; $8B13: Game state 27h (ending and credits) ;;;
 {
-; Ending and credits
 $82:8B13 22 43 D4 8B JSL $8BD443[$8B:D443]
 $82:8B17 60          RTS
 }
@@ -1367,61 +1372,69 @@ $82:8BB8 60          RTS
 }
 
 
-;;; $8BB9:  ;;;
+;;; $8BB9..8CCE: Game options menu objects ;;;
 {
-; Presumably deletes all options menu objects
+;;; $8BB9: Delete game options menu objects ;;;
+{
 $82:8BB9 08          PHP
 $82:8BBA C2 30       REP #$30
-$82:8BBC A2 0E 00    LDX #$000E
+$82:8BBC A2 0E 00    LDX #$000E             ; X = Eh
 
-$82:8BBF 9E 9D 1A    STZ $1A9D,x[$7E:1AAB]
-$82:8BC2 9E FD 1A    STZ $1AFD,x[$7E:1B0B]
-$82:8BC5 CA          DEX
-$82:8BC6 CA          DEX
-$82:8BC7 10 F6       BPL $F6    [$8BBF]
+; LOOP
+$82:8BBF 9E 9D 1A    STZ $1A9D,x[$7E:1AAB]  ; Game options menu object spritemap pointer = 0
+$82:8BC2 9E FD 1A    STZ $1AFD,x[$7E:1B0B]  ; Game options menu object instruction list pointer = 0
+$82:8BC5 CA          DEX                    ;\
+$82:8BC6 CA          DEX                    ;} X -= 2
+$82:8BC7 10 F6       BPL $F6    [$8BBF]     ; If [X] >= 0: go to LOOP
 $82:8BC9 28          PLP
 $82:8BCA 60          RTS
 }
 
 
-;;; $8BCB:  ;;;
+;;; $8BCB: Spawn game options menu object ;;;
 {
-; Pretty sure this creates the object, options menu object?
+;; Parameters:
+;;     A: Game options menu object initialisation parameter
+;;     Y: Game options menu object ID
+;; Returns:
+;;     Carry: Set if enemy projectile could not be spawned
+
 $82:8BCB 08          PHP
 $82:8BCC C2 30       REP #$30
 $82:8BCE DA          PHX
-$82:8BCF 8D 93 1A    STA $1A93  [$7E:1A93]
-$82:8BD2 BB          TYX
-$82:8BD3 A0 0E 00    LDY #$000E
+$82:8BCF 8D 93 1A    STA $1A93  [$7E:1A93]  ; Game options menu object initialisation parameter = [A]
+$82:8BD2 BB          TYX                    ; X = [Y]
+$82:8BD3 A0 0E 00    LDY #$000E             ; Y = Eh
 
-$82:8BD6 B9 FD 1A    LDA $1AFD,y[$7E:1B0B]
-$82:8BD9 F0 08       BEQ $08    [$8BE3]
-$82:8BDB 88          DEY
-$82:8BDC 88          DEY
-$82:8BDD 10 F7       BPL $F7    [$8BD6]
+; LOOP
+$82:8BD6 B9 FD 1A    LDA $1AFD,y[$7E:1B0B]  ;\
+$82:8BD9 F0 08       BEQ $08    [$8BE3]     ;} If [game options menu object instruction list pointer] != 0:
+$82:8BDB 88          DEY                    ;\
+$82:8BDC 88          DEY                    ;} Y -= 2
+$82:8BDD 10 F7       BPL $F7    [$8BD6]     ; If [Y] >= 0: go to LOOP
 $82:8BDF FA          PLX
 $82:8BE0 28          PLP
-$82:8BE1 38          SEC
-$82:8BE2 60          RTS
+$82:8BE1 38          SEC                    ;\
+$82:8BE2 60          RTS                    ;} Return carry set
 
 $82:8BE3 C2 30       REP #$30
-$82:8BE5 BD 02 00    LDA $0002,x[$82:F4BA]
-$82:8BE8 99 0D 1B    STA $1B0D,y[$7E:1B1B]
-$82:8BEB BD 04 00    LDA $0004,x[$82:F4BC]
-$82:8BEE 99 FD 1A    STA $1AFD,y[$7E:1B0B]
-$82:8BF1 A9 01 00    LDA #$0001
-$82:8BF4 99 1D 1B    STA $1B1D,y[$7E:1B2B]
-$82:8BF7 A9 00 00    LDA #$0000
-$82:8BFA 99 9D 1A    STA $1A9D,y[$7E:1AAB]
+$82:8BE5 BD 02 00    LDA $0002,x[$82:F4BA]  ;\
+$82:8BE8 99 0D 1B    STA $1B0D,y[$7E:1B1B]  ;} Game options menu object pre-instruction = [[X] + 2]
+$82:8BEB BD 04 00    LDA $0004,x[$82:F4BC]  ;\
+$82:8BEE 99 FD 1A    STA $1AFD,y[$7E:1B0B]  ;} Game options menu object instruction list pointer = [[X] + 4]
+$82:8BF1 A9 01 00    LDA #$0001             ;\
+$82:8BF4 99 1D 1B    STA $1B1D,y[$7E:1B2B]  ;} Game options menu object instruction timer = 1
+$82:8BF7 A9 00 00    LDA #$0000             ;\
+$82:8BFA 99 9D 1A    STA $1A9D,y[$7E:1AAB]  ;} Game options menu object spritemap pointer = 0
 $82:8BFD A9 00 00    LDA #$0000
-$82:8C00 99 2D 1B    STA $1B2D,y[$7E:1B3B]
-$82:8C03 99 DD 1A    STA $1ADD,y[$7E:1AEB]
-$82:8C06 99 ED 1A    STA $1AED,y[$7E:1AFB]
-$82:8C09 FC 00 00    JSR ($0000,x)[$82:F296]
+$82:8C00 99 2D 1B    STA $1B2D,y[$7E:1B3B]  ; Game options menu object timer = 0
+$82:8C03 99 DD 1A    STA $1ADD,y[$7E:1AEB]  ; Game options menu object $1ADD = 0
+$82:8C06 99 ED 1A    STA $1AED,y[$7E:1AFB]  ; Game options menu object $1AED = 0
+$82:8C09 FC 00 00    JSR ($0000,x)[$82:F296]; Execute [[X]]
 $82:8C0C FA          PLX
 $82:8C0D 28          PLP
-$82:8C0E 18          CLC
-$82:8C0F 60          RTS
+$82:8C0E 18          CLC                    ;\
+$82:8C0F 60          RTS                    ;} Return carry set
 }
 
 
@@ -1431,78 +1444,81 @@ $82:8C10 60          RTS
 }
 
 
-;;; $8C11:  ;;;
+;;; $8C11: Game options menu object handler ;;;
 {
 $82:8C11 08          PHP
 $82:8C12 C2 30       REP #$30
-$82:8C14 A2 0E 00    LDX #$000E
+$82:8C14 A2 0E 00    LDX #$000E             ; X = Eh
 
-$82:8C17 8E 8F 1A    STX $1A8F  [$7E:1A8F]
-$82:8C1A BD FD 1A    LDA $1AFD,x[$7E:1B0B]
-$82:8C1D F0 06       BEQ $06    [$8C25]
-$82:8C1F 20 2B 8C    JSR $8C2B  [$82:8C2B]
-$82:8C22 AE 8F 1A    LDX $1A8F  [$7E:1A8F]
+; LOOP
+$82:8C17 8E 8F 1A    STX $1A8F  [$7E:1A8F]  ; Game options menu object index = [X]
+$82:8C1A BD FD 1A    LDA $1AFD,x[$7E:1B0B]  ;\
+$82:8C1D F0 06       BEQ $06    [$8C25]     ;} If [] != 0:
+$82:8C1F 20 2B 8C    JSR $8C2B  [$82:8C2B]  ; Process game options menu object
+$82:8C22 AE 8F 1A    LDX $1A8F  [$7E:1A8F]  ; X = [game options menu object index]
 
-$82:8C25 CA          DEX
-$82:8C26 CA          DEX
-$82:8C27 10 EE       BPL $EE    [$8C17]
+$82:8C25 CA          DEX                    ;\
+$82:8C26 CA          DEX                    ;} X -= 2
+$82:8C27 10 EE       BPL $EE    [$8C17]     ; If [X] >= 0: go to LOOP
 $82:8C29 28          PLP
 $82:8C2A 60          RTS
 }
 
 
-;;; $8C2B:  ;;;
+;;; $8C2B: Process game options menu object ;;;
 {
-; Processes some kind of object instruction list
-$82:8C2B FC 0D 1B    JSR ($1B0D,x)[$82:F2A9]
+;; Parameter:
+;;     X: Game options menu object index
+$82:8C2B FC 0D 1B    JSR ($1B0D,x)[$82:F2A9]; Execute [game options menu object pre-instruction]
 $82:8C2E AE 8F 1A    LDX $1A8F  [$7E:1A8F]
-$82:8C31 DE 1D 1B    DEC $1B1D,x[$7E:1B2B]
-$82:8C34 D0 23       BNE $23    [$8C59]
-$82:8C36 BC FD 1A    LDY $1AFD,x[$7E:1B0B]
+$82:8C31 DE 1D 1B    DEC $1B1D,x[$7E:1B2B]  ; Decrement game options menu object instruction timer
+$82:8C34 D0 23       BNE $23    [$8C59]     ; If [game options menu object instruction timer] != 0: return
+$82:8C36 BC FD 1A    LDY $1AFD,x[$7E:1B0B]  ; Y = [game options menu object instruction list pointer]
 
-$82:8C39 B9 00 00    LDA $0000,y[$82:F442]
-$82:8C3C 10 0A       BPL $0A    [$8C48]
-$82:8C3E 85 12       STA $12    [$7E:0012]
-$82:8C40 C8          INY
-$82:8C41 C8          INY
-$82:8C42 F4 38 8C    PEA $8C38
-$82:8C45 6C 12 00    JMP ($0012)[$82:8C6E]
+; LOOP
+$82:8C39 B9 00 00    LDA $0000,y[$82:F442]  ;\
+$82:8C3C 10 0A       BPL $0A    [$8C48]     ;} If [[Y]] is negative:
+$82:8C3E 85 12       STA $12    [$7E:0012]  ; $12 = [[Y]] (ASM instruction pointer)
+$82:8C40 C8          INY                    ;\
+$82:8C41 C8          INY                    ;} Y += 2
+$82:8C42 F4 38 8C    PEA $8C38              ; Return to LOOP
+$82:8C45 6C 12 00    JMP ($0012)[$82:8C6E]  ; Execute ASM instruction
 
-$82:8C48 9D 1D 1B    STA $1B1D,x[$7E:1B2B]
-$82:8C4B B9 02 00    LDA $0002,y[$82:F444]
-$82:8C4E 9D 9D 1A    STA $1A9D,x[$7E:1AAB]
-$82:8C51 98          TYA
-$82:8C52 18          CLC
-$82:8C53 69 04 00    ADC #$0004
-$82:8C56 9D FD 1A    STA $1AFD,x[$7E:1B0B]
+$82:8C48 9D 1D 1B    STA $1B1D,x[$7E:1B2B]  ; Game options menu object instruction timer = [[Y]] (spritemap timer)
+$82:8C4B B9 02 00    LDA $0002,y[$82:F444]  ;\
+$82:8C4E 9D 9D 1A    STA $1A9D,x[$7E:1AAB]  ;} Game options menu object spritemap pointer = [[Y] + 2]
+$82:8C51 98          TYA                    ;\
+$82:8C52 18          CLC                    ;|
+$82:8C53 69 04 00    ADC #$0004             ;} Game options menu object instruction list pointer = [Y] + 4
+$82:8C56 9D FD 1A    STA $1AFD,x[$7E:1B0B]  ;/
 
 $82:8C59 60          RTS
 }
 
 
-;;; $8C5A: Instruction - delete? ;;;
+;;; $8C5A: Instruction - delete ;;;
 {
 $82:8C5A C2 30       REP #$30
-$82:8C5C 9E 9D 1A    STZ $1A9D,x[$7E:1AA9]
-$82:8C5F 9E FD 1A    STZ $1AFD,x[$7E:1B09]
-$82:8C62 68          PLA
+$82:8C5C 9E 9D 1A    STZ $1A9D,x[$7E:1AA9]  ; Game options menu object spritemap pointer = 0
+$82:8C5F 9E FD 1A    STZ $1AFD,x[$7E:1B09]  ; Game options menu object instruction list pointer = 0
+$82:8C62 68          PLA                    ; Terminate processing game options menu object
 $82:8C63 60          RTS
 }
 
 
-;;; $8C64: Instruction - sleep? ;;;
+;;; $8C64: Instruction - sleep ;;;
 {
 $82:8C64 C2 30       REP #$30
-$82:8C66 88          DEY
-$82:8C67 88          DEY
-$82:8C68 98          TYA
-$82:8C69 9D FD 1A    STA $1AFD,x
-$82:8C6C 68          PLA
+$82:8C66 88          DEY                    ;\
+$82:8C67 88          DEY                    ;|
+$82:8C68 98          TYA                    ;} Game options menu object instruction list pointer = [Y] - 2
+$82:8C69 9D FD 1A    STA $1AFD,x            ;/
+$82:8C6C 68          PLA                    ; Terminate processing game options menu object
 $82:8C6D 60          RTS
 }
 
 
-;;; $8C6E: Instruction - pre-instruction = [[Y]]? ;;;
+;;; $8C6E: Instruction - pre-instruction = [[Y]] ;;;
 {
 $82:8C6E C2 30       REP #$30
 $82:8C70 B9 00 00    LDA $0000,y[$82:F484]
@@ -1513,11 +1529,11 @@ $82:8C78 60          RTS
 }
 
 
-;;; $8C79: Instruction - clear pre-instruction? ;;;
+;;; $8C79: Instruction - clear pre-instruction ;;;
 {
 $82:8C79 C2 30       REP #$30
-$82:8C7B A9 81 8C    LDA #$8C81
-$82:8C7E 9D 0D 1B    STA $1B0D,x
+$82:8C7B A9 81 8C    LDA #$8C81             ;\
+$82:8C7E 9D 0D 1B    STA $1B0D,x            ;} Game options menu object pre-instruction = RTS
 $82:8C81 60          RTS
 }
 
@@ -1531,7 +1547,7 @@ $82:8C88 60          RTS
 }
 
 
-;;; $8C89: Instruction - decrement counter and go to [[Y]] if non-zero ;;;
+;;; $8C89: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
 $82:8C89 C2 30       REP #$30
 $82:8C8B DE 2D 1B    DEC $1B2D,x
@@ -1560,36 +1576,40 @@ $82:8CA0 60          RTS
 }
 
 
-;;; $8CA1: Draw options menu spritemaps ;;;
+;;; $8CA1: Draw game options menu spritemaps ;;;
 {
 $82:8CA1 08          PHP
 $82:8CA2 C2 30       REP #$30
 $82:8CA4 8B          PHB
-$82:8CA5 A2 0E 00    LDX #$000E
+$82:8CA5 A2 0E 00    LDX #$000E             ; X = Eh
 
-$82:8CA8 BD 9D 1A    LDA $1A9D,x[$7E:1AAB]
-$82:8CAB F0 1B       BEQ $1B    [$8CC8]
-$82:8CAD F4 00 82    PEA $8200
-$82:8CB0 AB          PLB
-$82:8CB1 AB          PLB
-$82:8CB2 BC 9D 1A    LDY $1A9D,x[$7E:1AAB]
-$82:8CB5 BD CD 1A    LDA $1ACD,x[$7E:1ADB]
-$82:8CB8 85 16       STA $16    [$7E:0016]
-$82:8CBA BD AD 1A    LDA $1AAD,x[$7E:1ABB]
-$82:8CBD 85 14       STA $14    [$7E:0014]
-$82:8CBF BD BD 1A    LDA $1ABD,x[$7E:1ACB]
-$82:8CC2 85 12       STA $12    [$7E:0012]
+; LOOP
+$82:8CA8 BD 9D 1A    LDA $1A9D,x[$7E:1AAB]  ;\
+$82:8CAB F0 1B       BEQ $1B    [$8CC8]     ;} If [game options menu object spritemap pointer] != 0:
+$82:8CAD F4 00 82    PEA $8200              ;\
+$82:8CB0 AB          PLB                    ;} DB = $82
+$82:8CB1 AB          PLB                    ;/
+$82:8CB2 BC 9D 1A    LDY $1A9D,x[$7E:1AAB]  ; Y = [game options menu object spritemap pointer]
+$82:8CB5 BD CD 1A    LDA $1ACD,x[$7E:1ADB]  ;\
+$82:8CB8 85 16       STA $16    [$7E:0016]  ;} $16 = [game options menu object palette index]
+$82:8CBA BD AD 1A    LDA $1AAD,x[$7E:1ABB]  ;\
+$82:8CBD 85 14       STA $14    [$7E:0014]  ;} $14 = [game options menu object X position]
+$82:8CBF BD BD 1A    LDA $1ABD,x[$7E:1ACB]  ;\
+$82:8CC2 85 12       STA $12    [$7E:0012]  ;} $12 = [game options menu object Y position]
 $82:8CC4 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM
 
-$82:8CC8 CA          DEX
-$82:8CC9 CA          DEX
-$82:8CCA 10 DC       BPL $DC    [$8CA8]
+$82:8CC8 CA          DEX                    ;\
+$82:8CC9 CA          DEX                    ;} X -= 2
+$82:8CCA 10 DC       BPL $DC    [$8CA8]     ; If [X] >= 0: go to LOOP
 $82:8CCC AB          PLB
 $82:8CCD 28          PLP
 $82:8CCE 60          RTS
 }
+}
 
 
+;;; $8CCF..BA34: Pause menu ;;;
+{
 ;;; $8CCF: Game state Ch (pausing, normal gameplay but darkening) ;;;
 {
 $82:8CCF 08          PHP
@@ -1941,7 +1961,7 @@ $82:8FA6 8D 06 42    STA $4206  [$7E:4206]  ;|
 $82:8FA9 C2 20       REP #$20               ;|
 $82:8FAB EA          NOP                    ;|
 $82:8FAC EA          NOP                    ;|
-$82:8FAD EA          NOP                    ;} $7E:3B14 = 4 + [Samus reserve health] % 10
+$82:8FAD EA          NOP                    ;} Equipment screen BG1 tilemap tile (Ah, Ch) = 4 + [Samus reserve health] % 10
 $82:8FAE EA          NOP                    ;|
 $82:8FAF EA          NOP                    ;|
 $82:8FB0 EA          NOP                    ;|
@@ -1952,11 +1972,11 @@ $82:8FB6 69 04 08    ADC #$0804             ;|
 $82:8FB9 8F 14 3B 7E STA $7E3B14[$7E:3B14]  ;/
 $82:8FBD AD 14 42    LDA $4214  [$7E:4214]  ;\
 $82:8FC0 18          CLC                    ;|
-$82:8FC1 69 04 08    ADC #$0804             ;} $7E:3B12 = 4 + [Samus reserve health] % 100 / 10
+$82:8FC1 69 04 08    ADC #$0804             ;} Equipment screen BG1 tilemap tile (9, Ch) = 4 + [Samus reserve health] % 100 / 10
 $82:8FC4 8F 12 3B 7E STA $7E3B12[$7E:3B12]  ;/
 $82:8FC8 A5 2A       LDA $2A    [$7E:002A]  ;\
 $82:8FCA 18          CLC                    ;|
-$82:8FCB 69 04 08    ADC #$0804             ;} $7E:3B10 = 4 + [Samus reserve health] / 100
+$82:8FCB 69 04 08    ADC #$0804             ;} Equipment screen BG1 tilemap tile (8, Ch) = 4 + [Samus reserve health] / 100
 $82:8FCE 8F 10 3B 7E STA $7E3B10[$7E:3B10]  ;/
 
 $82:8FD2 28          PLP
@@ -2147,6 +2167,8 @@ $82:90FE 60          RTS
 }
 
 
+;;; $90FF..925C: Main pause routine ;;;
+{
 ;;; $90FF: Main pause routine ;;;
 {
 $82:90FF 08          PHP
@@ -2272,7 +2294,7 @@ $82:91F0 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $82:91F3 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $82:91F6 A9 00 00    LDA #$0000             ;\
 $82:91F9 8D 63 07    STA $0763  [$7E:0763]  ;} Pause screen mode = map screen
-$82:91FC EE 27 07    INC $0727  [$7E:0727]  ; Menu index = equipment screen to map screen - fading in
+$82:91FC EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 7 (equipment screen to map screen - fading in)
 $82:91FF 60          RTS
 }
 
@@ -2324,8 +2346,11 @@ $82:9259 8D 27 07    STA $0727  [$7E:0727]  ;/
 
 $82:925C 60          RTS
 }
+}
 
 
+;;; $925D..9323: Map scrolling ;;;
+{
 ;;; $925D: Map scrolling ;;;
 {
 $82:925D 08          PHP
@@ -2348,7 +2373,7 @@ $82:926E             dw 9278, 928E, 92BD, 92CA, 92D7
 ;;; $9278: Map scrolling - none ;;;
 {
 $82:9278 A9 04 00    LDA #$0004             ;\
-$82:927B 8D FB 05    STA $05FB  [$7E:05FB]  ;} $05FB = 4
+$82:927B 8D FB 05    STA $05FB  [$7E:05FB]  ;} Map scrolling gear switch timer = 4
 $82:927E 60          RTS
 }
 
@@ -2434,6 +2459,7 @@ $82:92E2 80 B5       BRA $B5    [$9299]     ; Go to map scrolling - common
 ; Some (very uninteresting) map scrolling data
 $82:92E4             dw 0000, 0000, 0000, 0008, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 $82:9304             dw 0000, 0000, 0000, 0008, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
+}
 }
 
 
@@ -2525,6 +2551,8 @@ $82:93C2 60          RTS
 }
 
 
+;;; $93C3..A099: Pause menu / room select map ;;;
+{
 ;;; $93C3: Load pause menu map tilemap and area label ;;;
 {
 $82:93C3 08          PHP
@@ -2661,7 +2689,7 @@ $82:94C3 E6 06       INC $06    [$7E:0006]  ;\
 $82:94C5 E6 06       INC $06    [$7E:0006]  ;} $06 += 2
 $82:94C7 A9 00 00    LDA #$0000             ;\
 $82:94CA 85 0B       STA $0B    [$7E:000B]  ;|
-$82:94CC A9 F7 07    LDA #$07F7             ;} $09 = $00:07F7
+$82:94CC A9 F7 07    LDA #$07F7             ;} $09 = $00:07F7 (map tiles explored)
 $82:94CF 85 09       STA $09    [$7E:0009]  ;/
 $82:94D1 A7 09       LDA [$09]  [$7E:07F7]  ;\
 $82:94D3 EB          XBA                    ;} $28 = [[$09]] << 8 | [[$09] + 1]
@@ -2674,13 +2702,13 @@ $82:94DD A2 10 00    LDX #$0010             ; X = 10h
 ; LOOP_WITH_MAP_DATA
 $82:94E0 B7 00       LDA [$00],y[$B5:9000]  ; A = [[$00] + [Y]]
 $82:94E2 06 28       ASL $28    [$7E:0028]  ;\
-$82:94E4 90 07       BCC $07    [$94ED]     ;} If [$28] & 1 << [X]-1 != 0:
+$82:94E4 90 07       BCC $07    [$94ED]     ;} If [$28] & (1 << [X]-1) != 0:
 $82:94E6 29 FF FB    AND #$FBFF             ; A &= ~400h
 $82:94E9 06 26       ASL $26    [$7E:0026]
 $82:94EB 80 07       BRA $07    [$94F4]
 
-$82:94ED 06 26       ASL $26    [$7E:0026]  ;\ Else ([$28] & 1 << [X]-1 = 0):
-$82:94EF B0 03       BCS $03    [$94F4]     ;} If [$26] & 1 << [X]-1 = 0:
+$82:94ED 06 26       ASL $26    [$7E:0026]  ;\ Else ([$28] & (1 << [X]-1) = 0):
+$82:94EF B0 03       BCS $03    [$94F4]     ;} If [$26] & (1 << [X]-1) = 0:
 $82:94F1 A9 1F 00    LDA #$001F             ; A = 001Fh
 
 $82:94F4 97 03       STA [$03],y[$7E:4000]  ; [$03] + [Y] = [A]
@@ -2795,7 +2823,7 @@ $82:95B1 E6 06       INC $06    [$7E:0006]  ;\
 $82:95B3 E6 06       INC $06    [$7E:0006]  ;} $06 += 2
 $82:95B5 A9 00 00    LDA #$0000             ;\
 $82:95B8 85 0B       STA $0B    [$7E:000B]  ;|
-$82:95BA A9 F7 07    LDA #$07F7             ;} $09 = $00:07F7
+$82:95BA A9 F7 07    LDA #$07F7             ;} $09 = $00:07F7 (map tiles explored)
 $82:95BD 85 09       STA $09    [$7E:0009]  ;/
 $82:95BF A7 09       LDA [$09]              ;\
 $82:95C1 EB          XBA                    ;} $28 = [[$09]] << 8 | [[$09] + 1]
@@ -2808,13 +2836,13 @@ $82:95CB A2 10 00    LDX #$0010             ; X = 10h
 ; LOOP_WITH_MAP_DATA                        
 $82:95CE B7 00       LDA [$00],y            ; A = [[$00] + [Y]]
 $82:95D0 06 28       ASL $28    [$7E:0028]  ;\
-$82:95D2 90 07       BCC $07    [$95DB]     ;} If [$28] & 1 << [X]-1 != 0:
+$82:95D2 90 07       BCC $07    [$95DB]     ;} If [$28] & (1 << [X]-1) != 0:
 $82:95D4 29 FF FB    AND #$FBFF             ; A &= ~400h
 $82:95D7 06 26       ASL $26    [$7E:0026]  
 $82:95D9 80 07       BRA $07    [$95E2]     
                                             
-$82:95DB 06 26       ASL $26    [$7E:0026]  ;\ Else ([$28] & 1 << [X]-1 = 0):
-$82:95DD B0 03       BCS $03    [$95E2]     ;} If [$26] & 1 << [X]-1 = 0:
+$82:95DB 06 26       ASL $26    [$7E:0026]  ;\ Else ([$28] & (1 << [X]-1) = 0):
+$82:95DD B0 03       BCS $03    [$95E2]     ;} If [$26] & (1 << [X]-1) = 0:
 $82:95DF A9 1F 00    LDA #$001F             ; A = 001Fh
                                             
 $82:95E2 97 03       STA [$03],y            ; [$03] + [Y] = [A]
@@ -3505,7 +3533,7 @@ $82:9EC3 60          RTS
 $82:9EC4 08          PHP
 $82:9EC5 8B          PHB
 $82:9EC6 AD 89 07    LDA $0789  [$7E:0789]  ;\
-$82:9EC9 F0 15       BEQ $15    [$9EE0]     ;} If [$0789] != 0:
+$82:9EC9 F0 15       BEQ $15    [$9EE0]     ;} If area map has been collected:
 $82:9ECB A9 82 00    LDA #$0082             ;\
 $82:9ECE 85 08       STA $08    [$7E:0008]  ;} $08 = $82
 $82:9ED0 A9 17 97    LDA #$9717             ;\
@@ -3517,7 +3545,7 @@ $82:9EDA B7 06       LDA [$06],y[$82:9717]  ;|
 $82:9EDC 85 06       STA $06    [$7E:0006]  ;/
 $82:9EDE 80 0A       BRA $0A    [$9EEA]
 
-$82:9EE0 A9 00 00    LDA #$0000             ;\ Else ([$0789] = 0):
+$82:9EE0 A9 00 00    LDA #$0000             ;\ Else (area map has not been collected):
 $82:9EE3 85 08       STA $08    [$7E:0008]  ;|
 $82:9EE5 A9 F7 07    LDA #$07F7             ;} $06 = $00:07F7 (map tiles explored)
 $82:9EE8 85 06       STA $06    [$7E:0006]  ;/
@@ -3801,6 +3829,7 @@ $82:A095 A2 0B 00    LDX #$000B             ; X = Bh
 $82:A098 28          PLP
 $82:A099 60          RTS
 }
+}
 
 
 ;;; $A09A: Set up PPU for pause menu ;;;
@@ -3810,7 +3839,7 @@ $82:A09C A9 01       LDA #$01               ;\
 $82:A09E 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $2000, sprite sizes = 8x8 / 16x16
 $82:A0A1 85 52       STA $52    [$7E:0052]  ;/
 $82:A0A3 A9 09       LDA #$09               ;\
-$82:A0A5 8D 05 21    STA $2105  [$7E:2105]  ;} Set BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$82:A0A5 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $82:A0A8 85 55       STA $55    [$7E:0055]  ;/
 $82:A0AA 64 5D       STZ $5D    [$7E:005D]  ;\
 $82:A0AC 9C 0B 21    STZ $210B  [$7E:210B]  ;} BG1/2 tiles base address = $0000
@@ -3885,7 +3914,7 @@ $82:A135 A9 68 C0    LDA #$C068             ;|
 $82:A138 85 03       STA $03    [$7E:0003]  ;|
 $82:A13A A9 82 00    LDA #$0082             ;|
 $82:A13D 85 05       STA $05    [$7E:0005]  ;|
-$82:A13F B7 03       LDA [$03],y[$82:C068]  ;} $7E:3A88..95 = [$BF06..13] (equipment tilemap - tanks - mode)
+$82:A13F B7 03       LDA [$03],y[$82:C068]  ;} Equipment screen BG1 tilemap tile (4..Ah, Ah) = [$BF06..13] (equipment tilemap - tanks - mode)
 $82:A141 85 00       STA $00    [$7E:0000]  ;|
 $82:A143 AE 88 C0    LDX $C088  [$82:C088]  ;|
 $82:A146 A9 0E 00    LDA #$000E             ;|
@@ -3896,7 +3925,7 @@ $82:A151 A9 68 C0    LDA #$C068             ;|
 $82:A154 85 03       STA $03    [$7E:0003]  ;|
 $82:A156 A9 82 00    LDA #$0082             ;|
 $82:A159 85 05       STA $05    [$7E:0005]  ;|
-$82:A15B B7 03       LDA [$03],y[$82:C06A]  ;} $7E:3AC8..D5 = [$BF14..21] (equipment tilemap - tanks - reserve tank)
+$82:A15B B7 03       LDA [$03],y[$82:C06A]  ;} Equipment screen BG1 tilemap tile (4..Ah, Bh) = [$BF14..21] (equipment tilemap - tanks - reserve tank)
 $82:A15D 85 00       STA $00    [$7E:0000]  ;|
 $82:A15F AE 8A C0    LDX $C08A  [$82:C08A]  ;|
 $82:A162 A9 0E 00    LDA #$000E             ;|
@@ -4144,7 +4173,7 @@ $82:A316 A9 03       LDA #$03               ;\
 $82:A318 8D 01 21    STA $2101  [$7E:2101]  ;} Sprite tiles base address = $6000, sprite sizes = 8x8 / 16x16
 $82:A31B 85 52       STA $52    [$7E:0052]  ;/
 $82:A31D A9 09       LDA #$09               ;\
-$82:A31F 8D 05 21    STA $2105  [$7E:2105]  ;} Set BG mode = 1 with BG3 priority, BG tile sizes = 8x8
+$82:A31F 8D 05 21    STA $2105  [$7E:2105]  ;} BG mode = 1 with BG3 priority, BG tile sizes = 8x8
 $82:A322 85 55       STA $55    [$7E:0055]  ;/
 $82:A324 64 5D       STZ $5D    [$7E:005D]  ;\
 $82:A326 9C 0B 21    STZ $210B  [$7E:210B]  ;|
@@ -4241,15 +4270,16 @@ $82:A3D8 60          RTS
 }
 
 
-;;; $A3D9: Unused ;;;
+;;; $A3D9: Unused. Change pose due to equipment change ;;;
 {
+; Looks like maybe it was a hook on leaving the equipment screen if liquid physics apply
 $82:A3D9 08          PHP
 $82:A3DA C2 30       REP #$30
-$82:A3DC AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$82:A3DF 29 FF 00    AND #$00FF
-$82:A3E2 0A          ASL A
-$82:A3E3 AA          TAX
-$82:A3E4 FC ED A3    JSR ($A3ED,x)
+$82:A3DC AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$82:A3DF 29 FF 00    AND #$00FF             ;|
+$82:A3E2 0A          ASL A                  ;} Execute [$A3ED + [Samus movement type] * 2]
+$82:A3E3 AA          TAX                    ;|
+$82:A3E4 FC ED A3    JSR ($A3ED,x)          ;/
 $82:A3E7 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $82:A3EB 28          PLP
 $82:A3EC 60          RTS
@@ -4261,13 +4291,13 @@ $82:A3ED             dw A425,  ; 0: Standing
                         A4A9, ; 4: Morph ball - on ground
                         A425,  ; 5: Crouching
                         A425,  ; 6: Falling
-                        A47B, ; 7: Unused. Glitchy morph ball / spin jump
+                        A47B, ; 7: Unused
                         A4A9, ; 8: Morph ball - falling
-                        A47B, ; 9: Unused. Glitchy morph ball
+                        A47B, ; 9: Unused
                         A425,  ; Ah: Knockback / crystal flash ending
-                        A425,  ; Bh: Unused. Can fire grapple beam, not moving
-                        A425,  ; Ch: Unused. Can fire grapple beam and charge pose. No pose definitions correspond to this
-                        A425,  ; Dh: Unused. Can change pose, no firing...
+                        A425,  ; Bh: Unused
+                        A425,  ; Ch: Unused
+                        A425,  ; Dh: Unused
                         A425,  ; Eh: Turning around - on ground
                         A425,  ; Fh: Crouching/standing/morphing/unmorphing transition
                         A425,  ; 10h: Moonwalking
@@ -4294,42 +4324,45 @@ $82:A429 60          RTS
 }
 
 
-;;; $A42A:  ;;;
+;;; $A42A: Change pose due to equipment change - spin jumping ;;;
 {
 $82:A42A 08          PHP
 $82:A42B C2 30       REP #$30
-$82:A42D AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$82:A430 C9 81 00    CMP #$0081
-$82:A433 F0 1B       BEQ $1B    [$A450]
-$82:A435 C9 82 00    CMP #$0082
-$82:A438 F0 16       BEQ $16    [$A450]
-$82:A43A C9 1B 00    CMP #$001B
-$82:A43D F0 07       BEQ $07    [$A446]
-$82:A43F C9 1C 00    CMP #$001C
-$82:A442 F0 02       BEQ $02    [$A446]
-$82:A444 80 33       BRA $33    [$A479]
+$82:A42D AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$82:A430 C9 81 00    CMP #$0081             ;|
+$82:A433 F0 1B       BEQ $1B    [$A450]     ;} If [Samus pose] = screw attack: go to BRANCH_SCREW_ATTACK
+$82:A435 C9 82 00    CMP #$0082             ;|
+$82:A438 F0 16       BEQ $16    [$A450]     ;/
+$82:A43A C9 1B 00    CMP #$001B             ;\
+$82:A43D F0 07       BEQ $07    [$A446]     ;|
+$82:A43F C9 1C 00    CMP #$001C             ;} If [Samus pose] = space jump: go to BRANCH_SPACE_JUMP
+$82:A442 F0 02       BEQ $02    [$A446]     ;/
+$82:A444 80 33       BRA $33    [$A479]     ; Return
 
-$82:A446 AD A2 09    LDA $09A2  [$7E:09A2]
-$82:A449 89 20 00    BIT #$0020
-$82:A44C D0 2B       BNE $2B    [$A479]
-$82:A44E 80 08       BRA $08    [$A458]
+; BRANCH_SPACE_JUMP
+$82:A446 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$82:A449 89 20 00    BIT #$0020             ;} If gravity suit equipped: return
+$82:A44C D0 2B       BNE $2B    [$A479]     ;/
+$82:A44E 80 08       BRA $08    [$A458]     ; Go to BRANCH_MERGE
 
-$82:A450 AD A2 09    LDA $09A2  [$7E:09A2]
-$82:A453 89 08 00    BIT #$0008
-$82:A456 D0 21       BNE $21    [$A479]
+; BRANCH_SCREW_ATTACK
+$82:A450 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$82:A453 89 08 00    BIT #$0008             ;} If screw attack equipped: return
+$82:A456 D0 21       BNE $21    [$A479]     ;/
 
-$82:A458 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$82:A45B 29 FF 00    AND #$00FF
-$82:A45E C9 04 00    CMP #$0004
-$82:A461 F0 08       BEQ $08    [$A46B]
-$82:A463 A9 19 00    LDA #$0019
-$82:A466 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+; BRANCH_MERGE
+$82:A458 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$82:A45B 29 FF 00    AND #$00FF             ;|
+$82:A45E C9 04 00    CMP #$0004             ;} If facing right:
+$82:A461 F0 08       BEQ $08    [$A46B]     ;/
+$82:A463 A9 19 00    LDA #$0019             ;\
+$82:A466 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - spin jump
 $82:A469 80 06       BRA $06    [$A471]
 
-$82:A46B A9 1A 00    LDA #$001A
-$82:A46E 8D 1C 0A    STA $0A1C  [$7E:0A1C]
+$82:A46B A9 1A 00    LDA #$001A             ;\ Else (facing left):
+$82:A46E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - spin jump
 
-$82:A471 22 33 F4 91 JSL $91F433[$91:F433]
+$82:A471 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $82:A475 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A479 28          PLP
@@ -4337,25 +4370,26 @@ $82:A47A 60          RTS
 }
 
 
-;;; $A47B:  ;;;
+;;; $A47B: Change pose due to equipment change - movement types 7/9 ;;;
 {
+; Unused movement types
 $82:A47B 08          PHP
 $82:A47C C2 30       REP #$30
-$82:A47E AD A2 09    LDA $09A2  [$7E:09A2]
-$82:A481 89 04 00    BIT #$0004
-$82:A484 D0 21       BNE $21    [$A4A7]
-$82:A486 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$82:A489 29 FF 00    AND #$00FF
-$82:A48C C9 04 00    CMP #$0004
-$82:A48F F0 08       BEQ $08    [$A499]
-$82:A491 A9 1D 00    LDA #$001D
-$82:A494 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$82:A497 80 06       BRA $06    [$A49F]
+$82:A47E AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$82:A481 89 04 00    BIT #$0004             ;} If morph ball equipped: return
+$82:A484 D0 21       BNE $21    [$A4A7]     ;/
+$82:A486 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$82:A489 29 FF 00    AND #$00FF             ;|
+$82:A48C C9 04 00    CMP #$0004             ;} If facing right:
+$82:A48F F0 08       BEQ $08    [$A499]     ;/
+$82:A491 A9 1D 00    LDA #$001D             ;\
+$82:A494 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - morph ball - no springball - on ground
+$82:A497 80 06       BRA $06    [$A49F]     
+                                            
+$82:A499 A9 41 00    LDA #$0041             ;\ Else (facing left):
+$82:A49C 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - no springball - on ground
 
-$82:A499 A9 41 00    LDA #$0041
-$82:A49C 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-
-$82:A49F 22 33 F4 91 JSL $91F433[$91:F433]
+$82:A49F 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $82:A4A3 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A4A7 28          PLP
@@ -4363,25 +4397,25 @@ $82:A4A8 60          RTS
 }
 
 
-;;; $A4A9:  ;;;
+;;; $A4A9: Change pose due to equipment change - morph ball ;;;
 {
 $82:A4A9 08          PHP
 $82:A4AA C2 30       REP #$30
-$82:A4AC AD A2 09    LDA $09A2  [$7E:09A2]
-$82:A4AF 89 02 00    BIT #$0002
-$82:A4B2 F0 21       BEQ $21    [$A4D5]
-$82:A4B4 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$82:A4B7 29 FF 00    AND #$00FF
-$82:A4BA C9 04 00    CMP #$0004
-$82:A4BD F0 08       BEQ $08    [$A4C7]
-$82:A4BF A9 79 00    LDA #$0079
-$82:A4C2 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$82:A4C5 80 06       BRA $06    [$A4CD]
+$82:A4AC AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$82:A4AF 89 02 00    BIT #$0002             ;} If spring ball not equipped: return
+$82:A4B2 F0 21       BEQ $21    [$A4D5]     ;/
+$82:A4B4 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$82:A4B7 29 FF 00    AND #$00FF             ;|
+$82:A4BA C9 04 00    CMP #$0004             ;} If facing right:
+$82:A4BD F0 08       BEQ $08    [$A4C7]     ;/
+$82:A4BF A9 79 00    LDA #$0079             ;\
+$82:A4C2 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - morph ball - spring ball - on ground
+$82:A4C5 80 06       BRA $06    [$A4CD]     
+                                            
+$82:A4C7 A9 7A 00    LDA #$007A             ;\ Else (facing left):
+$82:A4CA 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - spring ball - on ground
 
-$82:A4C7 A9 7A 00    LDA #$007A
-$82:A4CA 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-
-$82:A4CD 22 33 F4 91 JSL $91F433[$91:F433]
+$82:A4CD 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $82:A4D1 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A4D5 28          PLP
@@ -4389,25 +4423,25 @@ $82:A4D6 60          RTS
 }
 
 
-;;; $A4D7:  ;;;
+;;; $A4D7: Change pose due to equipment change - spring ball ;;;
 {
 $82:A4D7 08          PHP
 $82:A4D8 C2 30       REP #$30
-$82:A4DA AD A2 09    LDA $09A2  [$7E:09A2]
-$82:A4DD 89 02 00    BIT #$0002
-$82:A4E0 D0 21       BNE $21    [$A503]
-$82:A4E2 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$82:A4E5 29 FF 00    AND #$00FF
-$82:A4E8 C9 04 00    CMP #$0004
-$82:A4EB F0 08       BEQ $08    [$A4F5]
-$82:A4ED A9 1D 00    LDA #$001D
-$82:A4F0 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$82:A4F3 80 06       BRA $06    [$A4FB]
+$82:A4DA AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$82:A4DD 89 02 00    BIT #$0002             ;} If spring ball equipped: return
+$82:A4E0 D0 21       BNE $21    [$A503]     ;/
+$82:A4E2 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$82:A4E5 29 FF 00    AND #$00FF             ;|
+$82:A4E8 C9 04 00    CMP #$0004             ;} If facing right:
+$82:A4EB F0 08       BEQ $08    [$A4F5]     ;/
+$82:A4ED A9 1D 00    LDA #$001D             ;\
+$82:A4F0 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - morph ball - no springball - on ground
+$82:A4F3 80 06       BRA $06    [$A4FB]     
+                                            
+$82:A4F5 A9 41 00    LDA #$0041             ;\ Else (facing left):
+$82:A4F8 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - no springball - on ground
 
-$82:A4F5 A9 41 00    LDA #$0041
-$82:A4F8 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-
-$82:A4FB 22 33 F4 91 JSL $91F433[$91:F433]
+$82:A4FB 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
 $82:A4FF 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A503 28          PLP
@@ -4415,6 +4449,8 @@ $82:A504 60          RTS
 }
 
 
+;;; $A505..AB46: Pause screen ;;;
+{
 ;;; $A505: Handle pause screen L/R ;;;
 {
 $82:A505 20 0C A5    JSR $A50C  [$82:A50C]  ; Handle pause screen L/R input
@@ -4599,7 +4635,7 @@ $82:A630 A2 00 00    LDX #$0000             ;|
 $82:A633 BF 4A 36 7E LDA $7E364A,x[$7E:364A];|
 $82:A637 29 FF E3    AND #$E3FF             ;|
 $82:A63A 09 00 08    ORA #$0800             ;|
-$82:A63D 9F 4A 36 7E STA $7E364A,x[$7E:364A];} Set tilemap palette indices at $7E:364A..53 to 2 (top of MAP)
+$82:A63D 9F 4A 36 7E STA $7E364A,x[$7E:364A];} Set tilemap palette indices at pause menu map tilemap tile (5..9, 19h) to 2 (top of MAP)
 $82:A641 E8          INX                    ;|
 $82:A642 E8          INX                    ;|
 $82:A643 88          DEY                    ;|
@@ -4614,7 +4650,7 @@ $82:A64E A2 00 00    LDX #$0000             ;|
 $82:A651 BF 8A 36 7E LDA $7E368A,x[$7E:368A];|
 $82:A655 29 FF E3    AND #$E3FF             ;|
 $82:A658 09 00 08    ORA #$0800             ;|
-$82:A65B 9F 8A 36 7E STA $7E368A,x[$7E:368A];} Set tilemap palette indices at $7E:368A..93 to 2 (bottom of MAP)
+$82:A65B 9F 8A 36 7E STA $7E368A,x[$7E:368A];} Set tilemap palette indices at pause menu map tilemap tile (5..9, 1Ah) to 2 (bottom of MAP)
 $82:A65F E8          INX                    ;|
 $82:A660 E8          INX                    ;|
 $82:A661 88          DEY                    ;|
@@ -4629,7 +4665,7 @@ $82:A66C A2 00 00    LDX #$0000             ;|
 $82:A66F BF 58 36 7E LDA $7E3658,x[$7E:3658];|
 $82:A673 29 FF E3    AND #$E3FF             ;|
 $82:A676 09 00 08    ORA #$0800             ;|
-$82:A679 9F 58 36 7E STA $7E3658,x[$7E:3658];} Set tilemap palette indices at $7E:3658..5F to 2 (top of EXIT)
+$82:A679 9F 58 36 7E STA $7E3658,x[$7E:3658];} Set tilemap palette indices at pause menu map tilemap tile (Ch..Fh, 19h) to 2 (top of EXIT)
 $82:A67D E8          INX                    ;|
 $82:A67E E8          INX                    ;|
 $82:A67F 88          DEY                    ;|
@@ -4644,7 +4680,7 @@ $82:A68A A2 00 00    LDX #$0000             ;|
 $82:A68D BF 98 36 7E LDA $7E3698,x[$7E:3698];|
 $82:A691 29 FF E3    AND #$E3FF             ;|
 $82:A694 09 00 08    ORA #$0800             ;|
-$82:A697 9F 98 36 7E STA $7E3698,x[$7E:3698];} Set tilemap palette indices at $7E:3698..9F to 2 (bottom of EXIT)
+$82:A697 9F 98 36 7E STA $7E3698,x[$7E:3698];} Set tilemap palette indices at pause menu map tilemap tile (Ch..Fh, 1Ah) to 2 (bottom of EXIT)
 $82:A69B E8          INX                    ;|
 $82:A69C E8          INX                    ;|
 $82:A69D 88          DEY                    ;|
@@ -4659,7 +4695,7 @@ $82:A6A8 A2 00 00    LDX #$0000             ;|
 $82:A6AB BF 6C 36 7E LDA $7E366C,x[$7E:366C];|
 $82:A6AF 29 FF E3    AND #$E3FF             ;|
 $82:A6B2 09 00 14    ORA #$1400             ;|
-$82:A6B5 9F 6C 36 7E STA $7E366C,x[$7E:366C];} Set tilemap palette indices at $7E:366C..75 to 5 (top of SAMUS)
+$82:A6B5 9F 6C 36 7E STA $7E366C,x[$7E:366C];} Set tilemap palette indices at pause menu map tilemap tile (16h..1Ah, 19h) to 5 (top of SAMUS)
 $82:A6B9 E8          INX                    ;|
 $82:A6BA E8          INX                    ;|
 $82:A6BB 88          DEY                    ;|
@@ -4674,7 +4710,7 @@ $82:A6C6 A2 00 00    LDX #$0000             ;|
 $82:A6C9 BF AC 36 7E LDA $7E36AC,x[$7E:36AC];|
 $82:A6CD 29 FF E3    AND #$E3FF             ;|
 $82:A6D0 09 00 14    ORA #$1400             ;|
-$82:A6D3 9F AC 36 7E STA $7E36AC,x[$7E:36AC];} Set tilemap palette indices at $7E:36AC..B5 to 5 (bottom of SAMUS)
+$82:A6D3 9F AC 36 7E STA $7E36AC,x[$7E:36AC];} Set tilemap palette indices at pause menu map tilemap tile (16h..1Ah, 1Ah) to 5 (bottom of SAMUS)
 $82:A6D7 E8          INX                    ;|
 $82:A6D8 E8          INX                    ;|
 $82:A6D9 88          DEY                    ;|
@@ -4696,7 +4732,7 @@ $82:A6E7 A2 00 00    LDX #$0000             ;|
 $82:A6EA BF 58 36 7E LDA $7E3658,x[$7E:3658];|
 $82:A6EE 29 FF E3    AND #$E3FF             ;|
 $82:A6F1 09 00 08    ORA #$0800             ;|
-$82:A6F4 9F 58 36 7E STA $7E3658,x[$7E:3658];} Set tilemap palette indices at $7E:3658..5F to 2 (top of EXIT)
+$82:A6F4 9F 58 36 7E STA $7E3658,x[$7E:3658];} Set tilemap palette indices at pause menu map tilemap tile (Ch..Fh, 19h) to 2 (top of EXIT)
 $82:A6F8 E8          INX                    ;|
 $82:A6F9 E8          INX                    ;|
 $82:A6FA 88          DEY                    ;|
@@ -4711,7 +4747,7 @@ $82:A705 A2 00 00    LDX #$0000             ;|
 $82:A708 BF 98 36 7E LDA $7E3698,x[$7E:3698];|
 $82:A70C 29 FF E3    AND #$E3FF             ;|
 $82:A70F 09 00 08    ORA #$0800             ;|
-$82:A712 9F 98 36 7E STA $7E3698,x[$7E:3698];} Set tilemap palette indices at $7E:3698..9F to 2 (bottom of EXIT)
+$82:A712 9F 98 36 7E STA $7E3698,x[$7E:3698];} Set tilemap palette indices at pause menu map tilemap tile (Ch..Fh, 1Ah) to 2 (bottom of EXIT)
 $82:A716 E8          INX                    ;|
 $82:A717 E8          INX                    ;|
 $82:A718 88          DEY                    ;|
@@ -4726,7 +4762,7 @@ $82:A723 A2 00 00    LDX #$0000             ;|
 $82:A726 BF 4A 36 7E LDA $7E364A,x[$7E:364A];|
 $82:A72A 29 FF E3    AND #$E3FF             ;|
 $82:A72D 09 00 14    ORA #$1400             ;|
-$82:A730 9F 4A 36 7E STA $7E364A,x[$7E:364A];} Set tilemap palette indices at $7E:364A..53 to 5 (top of MAP)
+$82:A730 9F 4A 36 7E STA $7E364A,x[$7E:364A];} Set tilemap palette indices at pause menu map tilemap tile (5..9, 19h) to 5 (top of MAP)
 $82:A734 E8          INX                    ;|
 $82:A735 E8          INX                    ;|
 $82:A736 88          DEY                    ;|
@@ -4741,7 +4777,7 @@ $82:A741 A2 00 00    LDX #$0000             ;|
 $82:A744 BF 8A 36 7E LDA $7E368A,x[$7E:368A];|
 $82:A748 29 FF E3    AND #$E3FF             ;|
 $82:A74B 09 00 14    ORA #$1400             ;|
-$82:A74E 9F 8A 36 7E STA $7E368A,x[$7E:368A];} Set tilemap palette indices at $7E:368A..93 to 5 (bottom of MAP)
+$82:A74E 9F 8A 36 7E STA $7E368A,x[$7E:368A];} Set tilemap palette indices at pause menu map tilemap tile (5..9, 1Ah) to 5 (bottom of MAP)
 $82:A752 E8          INX                    ;|
 $82:A753 E8          INX                    ;|
 $82:A754 88          DEY                    ;|
@@ -4756,7 +4792,7 @@ $82:A75F A2 00 00    LDX #$0000             ;|
 $82:A762 BF 6C 36 7E LDA $7E366C,x[$7E:366C];|
 $82:A766 29 FF E3    AND #$E3FF             ;|
 $82:A769 09 00 14    ORA #$1400             ;|
-$82:A76C 9F 6C 36 7E STA $7E366C,x[$7E:366C];} Set tilemap palette indices at $7E:366C..75 to 5 (top of SAMUS)
+$82:A76C 9F 6C 36 7E STA $7E366C,x[$7E:366C];} Set tilemap palette indices at pause menu map tilemap tile (16h..1Ah, 19h) to 5 (top of SAMUS)
 $82:A770 E8          INX                    ;|
 $82:A771 E8          INX                    ;|
 $82:A772 88          DEY                    ;|
@@ -4771,7 +4807,7 @@ $82:A77D A2 00 00    LDX #$0000             ;|
 $82:A780 BF AC 36 7E LDA $7E36AC,x[$7E:36AC];|
 $82:A784 29 FF E3    AND #$E3FF             ;|
 $82:A787 09 00 14    ORA #$1400             ;|
-$82:A78A 9F AC 36 7E STA $7E36AC,x[$7E:36AC];} Set tilemap palette indices at $7E:36AC..B5 to 5 (bottom of SAMUS)
+$82:A78A 9F AC 36 7E STA $7E36AC,x[$7E:36AC];} Set tilemap palette indices at pause menu map tilemap tile (16h..1Ah, 1Ah) to 5 (bottom of SAMUS)
 $82:A78E E8          INX                    ;|
 $82:A78F E8          INX                    ;|
 $82:A790 88          DEY                    ;|
@@ -4793,7 +4829,7 @@ $82:A79E A2 00 00    LDX #$0000             ;|
 $82:A7A1 BF 6C 36 7E LDA $7E366C,x[$7E:366C];|
 $82:A7A5 29 FF E3    AND #$E3FF             ;|
 $82:A7A8 09 00 08    ORA #$0800             ;|
-$82:A7AB 9F 6C 36 7E STA $7E366C,x[$7E:366C];} Set tilemap palette indices at $7E:366C..75 to 2 (top of SAMUS)
+$82:A7AB 9F 6C 36 7E STA $7E366C,x[$7E:366C];} Set tilemap palette indices at pause menu map tilemap tile (16h..1Ah, 19h) to 2 (top of SAMUS)
 $82:A7AF E8          INX                    ;|
 $82:A7B0 E8          INX                    ;|
 $82:A7B1 88          DEY                    ;|
@@ -4808,7 +4844,7 @@ $82:A7BC A2 00 00    LDX #$0000             ;|
 $82:A7BF BF AC 36 7E LDA $7E36AC,x[$7E:36AC];|
 $82:A7C3 29 FF E3    AND #$E3FF             ;|
 $82:A7C6 09 00 08    ORA #$0800             ;|
-$82:A7C9 9F AC 36 7E STA $7E36AC,x[$7E:36AC];} Set tilemap palette indices at $7E:36AC..B5 to 2 (bottom of SAMUS)
+$82:A7C9 9F AC 36 7E STA $7E36AC,x[$7E:36AC];} Set tilemap palette indices at pause menu map tilemap tile (16h..1Ah, 1Ah) to 2 (bottom of SAMUS)
 $82:A7CD E8          INX                    ;|
 $82:A7CE E8          INX                    ;|
 $82:A7CF 88          DEY                    ;|
@@ -4823,7 +4859,7 @@ $82:A7DA A2 00 00    LDX #$0000             ;|
 $82:A7DD BF 58 36 7E LDA $7E3658,x[$7E:3658];|
 $82:A7E1 29 FF E3    AND #$E3FF             ;|
 $82:A7E4 09 00 08    ORA #$0800             ;|
-$82:A7E7 9F 58 36 7E STA $7E3658,x[$7E:3658];} Set tilemap palette indices at $7E:3658..5F to 2 (top of EXIT)
+$82:A7E7 9F 58 36 7E STA $7E3658,x[$7E:3658];} Set tilemap palette indices at pause menu map tilemap tile (Ch..Fh, 19h) to 2 (top of EXIT)
 $82:A7EB E8          INX                    ;|
 $82:A7EC E8          INX                    ;|
 $82:A7ED 88          DEY                    ;|
@@ -4838,7 +4874,7 @@ $82:A7F8 A2 00 00    LDX #$0000             ;|
 $82:A7FB BF 98 36 7E LDA $7E3698,x[$7E:3698];|
 $82:A7FF 29 FF E3    AND #$E3FF             ;|
 $82:A802 09 00 08    ORA #$0800             ;|
-$82:A805 9F 98 36 7E STA $7E3698,x[$7E:3698];} Set tilemap palette indices at $7E:3698..9F to 2 (bottom of EXIT)
+$82:A805 9F 98 36 7E STA $7E3698,x[$7E:3698];} Set tilemap palette indices at pause menu map tilemap tile (Ch..Fh, 1Ah) to 2 (bottom of EXIT)
 $82:A809 E8          INX                    ;|
 $82:A80A E8          INX                    ;|
 $82:A80B 88          DEY                    ;|
@@ -4853,7 +4889,7 @@ $82:A816 A2 00 00    LDX #$0000             ;|
 $82:A819 BF 4A 36 7E LDA $7E364A,x[$7E:364A];|
 $82:A81D 29 FF E3    AND #$E3FF             ;|
 $82:A820 09 00 14    ORA #$1400             ;|
-$82:A823 9F 4A 36 7E STA $7E364A,x[$7E:364A];} Set tilemap palette indices at $7E:364A..53 to 5 (top of MAP)
+$82:A823 9F 4A 36 7E STA $7E364A,x[$7E:364A];} Set tilemap palette indices at pause menu map tilemap tile (5..9, 19h) to 5 (top of MAP)
 $82:A827 E8          INX                    ;|
 $82:A828 E8          INX                    ;|
 $82:A829 88          DEY                    ;|
@@ -4868,7 +4904,7 @@ $82:A834 A2 00 00    LDX #$0000             ;|
 $82:A837 BF 8A 36 7E LDA $7E368A,x[$7E:368A];|
 $82:A83B 29 FF E3    AND #$E3FF             ;|
 $82:A83E 09 00 14    ORA #$1400             ;|
-$82:A841 9F 8A 36 7E STA $7E368A,x[$7E:368A];} Set tilemap palette indices at $7E:368A..93 to 5 (bottom of MAP)
+$82:A841 9F 8A 36 7E STA $7E368A,x[$7E:368A];} Set tilemap palette indices at pause menu map tilemap tile (5..9, 1Ah) to 5 (bottom of MAP)
 $82:A845 E8          INX                    ;|
 $82:A846 E8          INX                    ;|
 $82:A847 88          DEY                    ;|
@@ -4894,7 +4930,7 @@ $82:A85F E8          INX                    ;|
 $82:A860 E8          INX                    ;|
 $82:A861 E2 20       SEP #$20               ;|
 $82:A863 A9 7E       LDA #$7E               ;|
-$82:A865 95 D0       STA $D0,x  [$7E:00D4]  ;} Queue transfer of $7E:3640..BF to VRAM BG2 tilemap base + 320h
+$82:A865 95 D0       STA $D0,x  [$7E:00D4]  ;} Queue transfer of pause menu map tilemap rows 19h..1Ah to VRAM BG2 tilemap rows 19h..1Ah
 $82:A867 C2 20       REP #$20               ;|
 $82:A869 E8          INX                    ;|
 $82:A86A A5 59       LDA $59    [$7E:0059]  ;|
@@ -5099,8 +5135,11 @@ $82:A987             dw 0000,7E7F,015F,7C14,7FFF,4E73,0000,318C,0070,2870,318C,0
                         0000,61BA,00F9,6810,6B5A,56B5,012A,2530,004C,34B4,294B,012A,18C6,2108,0000,25B0,
                         0000,6E1C,011B,7412,739C,5294,00A6,294D,004E,3092,294B,00A6,1084,294A,0000,298E
 }
+}
 
 
+;;; $AB47..B5E7: Equipment screen ;;;
+{
 ;;; $AB47: Equipment screen - set up reserve mode and determine initial selection ;;;
 {
 $82:AB47 08          PHP
@@ -5131,7 +5170,7 @@ $82:AB7D A0 00 00    LDY #$0000             ;|
                                             ;|
 $82:AB80 BF 8E 3A 7E LDA $7E3A8E,x[$7E:3A8E];|
 $82:AB84 29 00 FC    AND #$FC00             ;|
-$82:AB87 17 00       ORA [$00],y[$82:BF2A]  ;} $7E:3A8E..95 = [$7E:3A8E..95] & FC00h | [[$00] .. [$00]+7]
+$82:AB87 17 00       ORA [$00],y[$82:BF2A]  ;} Equipment screen BG1 tilemap (7..Ah, Ah) = [equipment screen BG1 tilemap (7..Ah, Ah)] & ~3FFh | [[$00] .. [$00]+7]
 $82:AB89 9F 8E 3A 7E STA $7E3A8E,x[$7E:3A8E];} (Copy 4 tile numbers from [$00])
 $82:AB8D C8          INY                    ;|
 $82:AB8E C8          INY                    ;|
@@ -5294,7 +5333,7 @@ $82:AC87             dw AE8B, AF4F
 $82:AC8B 08          PHP
 $82:AC8C C2 30       REP #$30
 $82:AC8E AD 55 07    LDA $0755  [$7E:0755]  ;\
-$82:AC91 85 12       STA $12    [$7E:0012]  ;} $12 = [equipment screen category index / item index]
+$82:AC91 85 12       STA $12    [$7E:0012]  ;} $12 = [equipment screen indices]
 $82:AC93 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:AC95 89 00 01    BIT #$0100             ;} If not newly pressed right: go to BRANCH_NOT_RIGHT
 $82:AC98 F0 18       BEQ $18    [$ACB2]     ;/
@@ -5540,7 +5579,7 @@ $82:AEB8 A2 00 00    LDX #$0000             ;|
 $82:AEBB BF 8E 3A 7E LDA $7E3A8E,x          ;|
 $82:AEBF 29 00 FC    AND #$FC00             ;|
 $82:AEC2 1F 22 BF 82 ORA $82BF22,x          ;|
-$82:AEC6 9F 8E 3A 7E STA $7E3A8E,x          ;} $7E:3A8E..95 = [$7E:3A8E..95] & FC00h | [$82:BF22..29] ([MANUAL] tile numbers)
+$82:AEC6 9F 8E 3A 7E STA $7E3A8E,x          ;} Equipment screen BG1 tilemap (7..Ah, Ah) = [equipment screen BG1 tilemap (7..Ah, Ah)] & ~3FFh | [$82:BF22..29] ([MANUAL] tile numbers)
 $82:AECA E8          INX                    ;|
 $82:AECB E8          INX                    ;|
 $82:AECC 88          DEY                    ;|
@@ -5561,7 +5600,7 @@ $82:AEE2 A2 00 00    LDX #$0000             ;|
 $82:AEE5 BF 8E 3A 7E LDA $7E3A8E,x          ;|
 $82:AEE9 29 00 FC    AND #$FC00             ;|
 $82:AEEC 1F 2A BF 82 ORA $82BF2A,x          ;|
-$82:AEF0 9F 8E 3A 7E STA $7E3A8E,x          ;} $7E:3A8E..95 = [$7E:3A8E..95] & FC00h | [$82:BF2A..31] ([ AUTO ] tile numbers)
+$82:AEF0 9F 8E 3A 7E STA $7E3A8E,x          ;} Equipment screen BG1 tilemap (7..Ah, Ah) = [equipment screen BG1 tilemap (7..Ah, Ah)] & ~3FFh | [$82:BF2A..31] ([ AUTO ] tile numbers)
 $82:AEF4 E8          INX                    ;|
 $82:AEF5 E8          INX                    ;|
 $82:AEF6 88          DEY                    ;|
@@ -5679,87 +5718,87 @@ $82:AFBD 60          RTS
 {
 $82:AFBE 08          PHP
 $82:AFBF C2 30       REP #$30
-$82:AFC1 20 DB AF    JSR $AFDB  [$82:AFDB]
-$82:AFC4 AD A6 09    LDA $09A6  [$7E:09A6]
-$82:AFC7 85 24       STA $24    [$7E:0024]
-$82:AFC9 AD A8 09    LDA $09A8  [$7E:09A8]
-$82:AFCC F0 0B       BEQ $0B    [$AFD9]
-$82:AFCE A9 0A 00    LDA #$000A
-$82:AFD1 85 18       STA $18    [$7E:0018]
-$82:AFD3 20 68 B5    JSR $B568  [$82:B568]
-$82:AFD6 20 68 B0    JSR $B068  [$82:B068]
+$82:AFC1 20 DB AF    JSR $AFDB  [$82:AFDB]  ; Move response
+$82:AFC4 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$82:AFC7 85 24       STA $24    [$7E:0024]  ;} $24 = [equipped beams] (previously equipped beams for the plasma-spazer check)
+$82:AFC9 AD A8 09    LDA $09A8  [$7E:09A8]  ;\
+$82:AFCC F0 0B       BEQ $0B    [$AFD9]     ;} If [collected beams] != 0:
+$82:AFCE A9 0A 00    LDA #$000A             ;\
+$82:AFD1 85 18       STA $18    [$7E:0018]  ;} $18 = Ah (weapon tilemap size in bytes)
+$82:AFD3 20 68 B5    JSR $B568  [$82:B568]  ; Button response
+$82:AFD6 20 68 B0    JSR $B068  [$82:B068]  ; Plasma-spazer check
 
 $82:AFD9 28          PLP
 $82:AFDA 60          RTS
 }
 
 
-;;; $AFDB: Equipment screen - main - weapons - move buttons ;;;
+;;; $AFDB: Equipment screen - main - weapons - move response ;;;
 {
 $82:AFDB 08          PHP
 $82:AFDC C2 30       REP #$30
-$82:AFDE AD 55 07    LDA $0755  [$7E:0755]
-$82:AFE1 85 12       STA $12    [$7E:0012]
+$82:AFDE AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:AFE1 85 12       STA $12    [$7E:0012]  ;} $12 = [equipment screen indices]
 $82:AFE3 A5 8F       LDA $8F    [$7E:008F]  ;\
-$82:AFE5 89 00 01    BIT #$0100             ;} If not newly pressed right: go to BRANCH_B00A
+$82:AFE5 89 00 01    BIT #$0100             ;} If not newly pressed right: go to BRANCH_RIGHT_END
 $82:AFE8 F0 20       BEQ $20    [$B00A]     ;/
 $82:AFEA 89 00 08    BIT #$0800             ;\
 $82:AFED D0 13       BNE $13    [$B002]     ;} If not newly pressed up:
-$82:AFEF A2 04 00    LDX #$0004
-$82:AFF2 20 B7 B4    JSR $B4B7  [$82:B4B7]
-$82:AFF5 C9 00 00    CMP #$0000
-$82:AFF8 F0 6C       BEQ $6C    [$B066]
-$82:AFFA A2 00 00    LDX #$0000
-$82:AFFD 20 11 B5    JSR $B511  [$82:B511]
-$82:B000 80 64       BRA $64    [$B066]
+$82:AFEF A2 04 00    LDX #$0004             ;\
+$82:AFF2 20 B7 B4    JSR $B4B7  [$82:B4B7]  ;} Move to suits/misc. morph ball or lower
+$82:AFF5 C9 00 00    CMP #$0000             ;\
+$82:AFF8 F0 6C       BEQ $6C    [$B066]     ;} If moved: return
+$82:AFFA A2 00 00    LDX #$0000             ;\
+$82:AFFD 20 11 B5    JSR $B511  [$82:B511]  ;} Move to top of boots
+$82:B000 80 64       BRA $64    [$B066]     ; Return
 
-$82:B002 A2 00 00    LDX #$0000
-$82:B005 20 B7 B4    JSR $B4B7  [$82:B4B7]
-$82:B008 80 5C       BRA $5C    [$B066]
+$82:B002 A2 00 00    LDX #$0000             ;\
+$82:B005 20 B7 B4    JSR $B4B7  [$82:B4B7]  ;} Move to top of suits/misc.
+$82:B008 80 5C       BRA $5C    [$B066]     ; Return
 
-; BRANCH_B00A
+; BRANCH_RIGHT_END
 $82:B00A 89 00 04    BIT #$0400             ;\
-$82:B00D D0 37       BNE $37    [$B046]     ;} If newly pressed down: go to BRANCH_B046
+$82:B00D D0 37       BNE $37    [$B046]     ;} If newly pressed down: go to BRANCH_DOWN
 $82:B00F 89 00 08    BIT #$0800             ;\
 $82:B012 F0 52       BEQ $52    [$B066]     ;} If not newly pressed up: return
-$82:B014 AD 55 07    LDA $0755  [$7E:0755]
-$82:B017 29 00 FF    AND #$FF00
-$82:B01A F0 18       BEQ $18    [$B034]
-$82:B01C AD 55 07    LDA $0755  [$7E:0755]
-$82:B01F 38          SEC
-$82:B020 E9 00 01    SBC #$0100
-$82:B023 8D 55 07    STA $0755  [$7E:0755]
-$82:B026 EB          XBA
-$82:B027 29 FF 00    AND #$00FF
-$82:B02A 0A          ASL A
-$82:B02B AA          TAX
-$82:B02C 20 89 B4    JSR $B489  [$82:B489]
-$82:B02F C9 FF FF    CMP #$FFFF
-$82:B032 D0 32       BNE $32    [$B066]
+$82:B014 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B017 29 00 FF    AND #$FF00             ;} If [equipment screen item index] != charge:
+$82:B01A F0 18       BEQ $18    [$B034]     ;/
+$82:B01C AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B01F 38          SEC                    ;|
+$82:B020 E9 00 01    SBC #$0100             ;} Decrement equipment screen item index
+$82:B023 8D 55 07    STA $0755  [$7E:0755]  ;/
+$82:B026 EB          XBA                    ;\
+$82:B027 29 FF 00    AND #$00FF             ;|
+$82:B02A 0A          ASL A                  ;} X = [equipment screen item index] * 2
+$82:B02B AA          TAX                    ;/
+$82:B02C 20 89 B4    JSR $B489  [$82:B489]  ; Move higher on beams
+$82:B02F C9 FF FF    CMP #$FFFF             ;\
+$82:B032 D0 32       BNE $32    [$B066]     ;} If moved: return
 
-$82:B034 A2 00 00    LDX #$0000
-$82:B037 20 3F B4    JSR $B43F  [$82:B43F]
-$82:B03A C9 00 00    CMP #$0000
-$82:B03D D0 27       BNE $27    [$B066]
-$82:B03F A5 12       LDA $12    [$7E:0012]
-$82:B041 8D 55 07    STA $0755  [$7E:0755]
-$82:B044 80 20       BRA $20    [$B066]
+$82:B034 A2 00 00    LDX #$0000             ;\
+$82:B037 20 3F B4    JSR $B43F  [$82:B43F]  ;} Move to reserve tanks
+$82:B03A C9 00 00    CMP #$0000             ;\
+$82:B03D D0 27       BNE $27    [$B066]     ;} If moved: return
+$82:B03F A5 12       LDA $12    [$7E:0012]  ;\
+$82:B041 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen indices = [$12]
+$82:B044 80 20       BRA $20    [$B066]     ; Return
 
-; BRANCH_B046
-$82:B046 AD 76 0A    LDA $0A76  [$7E:0A76]
-$82:B049 D0 1B       BNE $1B    [$B066]
-$82:B04B AD 55 07    LDA $0755  [$7E:0755]
-$82:B04E C9 01 04    CMP #$0401
-$82:B051 F0 13       BEQ $13    [$B066]
-$82:B053 AD 55 07    LDA $0755  [$7E:0755]
-$82:B056 18          CLC
-$82:B057 69 00 01    ADC #$0100
-$82:B05A 8D 55 07    STA $0755  [$7E:0755]
-$82:B05D EB          XBA
-$82:B05E 29 FF 00    AND #$00FF
-$82:B061 0A          ASL A
-$82:B062 AA          TAX
-$82:B063 20 56 B4    JSR $B456  [$82:B456]
+; BRANCH_DOWN
+$82:B046 AD 76 0A    LDA $0A76  [$7E:0A76]  ;\
+$82:B049 D0 1B       BNE $1B    [$B066]     ;} If hyper beam: return
+$82:B04B AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B04E C9 01 04    CMP #$0401             ;} If [equipment screen item index] = plasma: return
+$82:B051 F0 13       BEQ $13    [$B066]     ;/
+$82:B053 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B056 18          CLC                    ;|
+$82:B057 69 00 01    ADC #$0100             ;} Increment equipment screen item index
+$82:B05A 8D 55 07    STA $0755  [$7E:0755]  ;/
+$82:B05D EB          XBA                    ;\
+$82:B05E 29 FF 00    AND #$00FF             ;|
+$82:B061 0A          ASL A                  ;} X = [equipment screen item index] * 2
+$82:B062 AA          TAX                    ;/
+$82:B063 20 56 B4    JSR $B456  [$82:B456]  ; Move lower on beams
 
 $82:B066 28          PLP
 $82:B067 60          RTS
@@ -5768,44 +5807,48 @@ $82:B067 60          RTS
 
 ;;; $B068: Equipment screen - main - weapons - plasma-spazer check ;;;
 {
+;; Parameters:
+;;     $24: Previously equipped beams
 $82:B068 08          PHP
 $82:B069 C2 30       REP #$30
-$82:B06B A5 24       LDA $24    [$7E:0024]
-$82:B06D 49 FF FF    EOR #$FFFF
-$82:B070 2D A6 09    AND $09A6  [$7E:09A6]
-$82:B073 89 04 00    BIT #$0004
-$82:B076 D0 21       BNE $21    [$B099]
-$82:B078 89 08 00    BIT #$0008
-$82:B07B F0 43       BEQ $43    [$B0C0]
+$82:B06B A5 24       LDA $24    [$7E:0024]  ;\
+$82:B06D 49 FF FF    EOR #$FFFF             ;|
+$82:B070 2D A6 09    AND $09A6  [$7E:09A6]  ;} If spazer was toggled: go to BRANCH_SPAZER_TOGGLED
+$82:B073 89 04 00    BIT #$0004             ;|
+$82:B076 D0 21       BNE $21    [$B099]     ;/
+$82:B078 89 08 00    BIT #$0008             ;\
+$82:B07B F0 43       BEQ $43    [$B0C0]     ;} If plasma was not toggled: return
 
-$82:B07D A5 24       LDA $24    [$7E:0024]
-$82:B07F 89 08 00    BIT #$0008
-$82:B082 D0 3C       BNE $3C    [$B0C0]
-$82:B084 AD A6 09    LDA $09A6  [$7E:09A6]
-$82:B087 89 04 00    BIT #$0004
-$82:B08A F0 34       BEQ $34    [$B0C0]
-$82:B08C 29 FB FF    AND #$FFFB
-$82:B08F 8D A6 09    STA $09A6  [$7E:09A6]
-$82:B092 AD 72 C0    LDA $C072  [$82:C072]
-$82:B095 85 00       STA $00    [$7E:0000]
-$82:B097 80 1A       BRA $1A    [$B0B3]
+$82:B07D A5 24       LDA $24    [$7E:0024]  ;\
+$82:B07F 89 08 00    BIT #$0008             ;} If plasma was previously equipped: return
+$82:B082 D0 3C       BNE $3C    [$B0C0]     ;/
+$82:B084 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$82:B087 89 04 00    BIT #$0004             ;} If spazer not equipped: return
+$82:B08A F0 34       BEQ $34    [$B0C0]     ;/
+$82:B08C 29 FB FF    AND #$FFFB             ;\
+$82:B08F 8D A6 09    STA $09A6  [$7E:09A6]  ;} Unequip spazer beam
+$82:B092 AD 72 C0    LDA $C072  [$82:C072]  ;\
+$82:B095 85 00       STA $00    [$7E:0000]  ;} $00 = $3CC8 (spazer)
+$82:B097 80 1A       BRA $1A    [$B0B3]     ; Go to BRANCH_MERGE
 
-$82:B099 A5 24       LDA $24    [$7E:0024]
-$82:B09B 89 04 00    BIT #$0004
-$82:B09E D0 20       BNE $20    [$B0C0]
-$82:B0A0 AD A6 09    LDA $09A6  [$7E:09A6]
-$82:B0A3 89 08 00    BIT #$0008
-$82:B0A6 F0 18       BEQ $18    [$B0C0]
-$82:B0A8 29 F7 FF    AND #$FFF7
-$82:B0AB 8D A6 09    STA $09A6  [$7E:09A6]
-$82:B0AE AD 74 C0    LDA $C074  [$82:C074]
-$82:B0B1 85 00       STA $00    [$7E:0000]
+; BRANCH_SPAZER_TOGGLED
+$82:B099 A5 24       LDA $24    [$7E:0024]  ;\
+$82:B09B 89 04 00    BIT #$0004             ;} If spazer was previously equipped: return
+$82:B09E D0 20       BNE $20    [$B0C0]     ;/
+$82:B0A0 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$82:B0A3 89 08 00    BIT #$0008             ;} If plasma not equipped: return
+$82:B0A6 F0 18       BEQ $18    [$B0C0]     ;/
+$82:B0A8 29 F7 FF    AND #$FFF7             ;\
+$82:B0AB 8D A6 09    STA $09A6  [$7E:09A6]  ;} Unequip plasma beam
+$82:B0AE AD 74 C0    LDA $C074  [$82:C074]  ;\
+$82:B0B1 85 00       STA $00    [$7E:0000]  ;} $00 = $3D08 (plasma)
 
-$82:B0B3 A9 00 0C    LDA #$0C00
-$82:B0B6 85 12       STA $12    [$7E:0012]
-$82:B0B8 A9 0A 00    LDA #$000A
-$82:B0BB 85 16       STA $16    [$7E:0016]
-$82:B0BD 20 9D A2    JSR $A29D  [$82:A29D]
+; BRANCH_MERGE
+$82:B0B3 A9 00 0C    LDA #$0C00             ;\
+$82:B0B6 85 12       STA $12    [$7E:0012]  ;} $12 = C00h (palette 6)
+$82:B0B8 A9 0A 00    LDA #$000A             ;\
+$82:B0BB 85 16       STA $16    [$7E:0016]  ;} $16 = Ah
+$82:B0BD 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette of [$16] bytes of $7E:[$00] to [$12]
 
 $82:B0C0 28          PLP
 $82:B0C1 60          RTS
@@ -5816,75 +5859,75 @@ $82:B0C1 60          RTS
 {
 $82:B0C2 08          PHP
 $82:B0C3 C2 30       REP #$30
-$82:B0C5 20 D2 B0    JSR $B0D2  [$82:B0D2]
-$82:B0C8 A9 12 00    LDA #$0012
-$82:B0CB 85 18       STA $18    [$7E:0018]
-$82:B0CD 20 68 B5    JSR $B568  [$82:B568]
+$82:B0C5 20 D2 B0    JSR $B0D2  [$82:B0D2]  ; Move response
+$82:B0C8 A9 12 00    LDA #$0012             ;\
+$82:B0CB 85 18       STA $18    [$7E:0018]  ;} $18 = 12h (suit/misc. tilemap size in bytes)
+$82:B0CD 20 68 B5    JSR $B568  [$82:B568]  ; Button response
 $82:B0D0 28          PLP
 $82:B0D1 60          RTS
 }
 
 
-;;; $B0D2: Equipment screen - misc. - move response ;;;
+;;; $B0D2: Equipment screen - suit/misc. - move response ;;;
 {
 $82:B0D2 08          PHP
 $82:B0D3 C2 30       REP #$30
-$82:B0D5 AD 55 07    LDA $0755  [$7E:0755]
-$82:B0D8 85 12       STA $12    [$7E:0012]
+$82:B0D5 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B0D8 85 12       STA $12    [$7E:0012]  ;} $12 = [equipment screen indices]
 $82:B0DA A5 8F       LDA $8F    [$7E:008F]  ;\
-$82:B0DC 89 00 02    BIT #$0200             ;} If not newly pressed left: go to BRANCH_B0FE
+$82:B0DC 89 00 02    BIT #$0200             ;} If not newly pressed left: go to BRANCH_LEFT_END
 $82:B0DF F0 1D       BEQ $1D    [$B0FE]     ;/
 $82:B0E1 89 00 04    BIT #$0400             ;\
 $82:B0E4 D0 10       BNE $10    [$B0F6]     ;} If not newly pressed down:
-$82:B0E6 A2 00 00    LDX #$0000
-$82:B0E9 20 3F B4    JSR $B43F  [$82:B43F]
-$82:B0EC C9 00 00    CMP #$0000
-$82:B0EF D0 5D       BNE $5D    [$B14E]
-$82:B0F1 A5 12       LDA $12    [$7E:0012]
-$82:B0F3 8D 55 07    STA $0755  [$7E:0755]
+$82:B0E6 A2 00 00    LDX #$0000             ;\
+$82:B0E9 20 3F B4    JSR $B43F  [$82:B43F]  ;} Move to reserve tanks
+$82:B0EC C9 00 00    CMP #$0000             ;\
+$82:B0EF D0 5D       BNE $5D    [$B14E]     ;} If moved: return
+$82:B0F1 A5 12       LDA $12    [$7E:0012]  ;\
+$82:B0F3 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen indices = [$12]
 
-$82:B0F6 A2 00 00    LDX #$0000
-$82:B0F9 20 56 B4    JSR $B456  [$82:B456]
-$82:B0FC 80 50       BRA $50    [$B14E]
+$82:B0F6 A2 00 00    LDX #$0000             ;\
+$82:B0F9 20 56 B4    JSR $B456  [$82:B456]  ;} Move to top of beams
+$82:B0FC 80 50       BRA $50    [$B14E]     ; Return
 
-; BRANCH_B0FE
+; BRANCH_LEFT_END
 $82:B0FE 89 00 08    BIT #$0800             ;\
-$82:B101 D0 30       BNE $30    [$B133]     ;} If newly pressed up: go to BRANCH_B133
+$82:B101 D0 30       BNE $30    [$B133]     ;} If newly pressed up: go to BRANCH_UP
 $82:B103 89 00 04    BIT #$0400             ;\
 $82:B106 F0 46       BEQ $46    [$B14E]     ;} If not newly pressed down: return
-$82:B108 AD 55 07    LDA $0755  [$7E:0755]
-$82:B10B 29 00 FF    AND #$FF00
-$82:B10E C9 00 05    CMP #$0500
-$82:B111 F0 18       BEQ $18    [$B12B]
-$82:B113 AD 55 07    LDA $0755  [$7E:0755]
-$82:B116 18          CLC
-$82:B117 69 00 01    ADC #$0100
-$82:B11A 8D 55 07    STA $0755  [$7E:0755]
-$82:B11D EB          XBA
-$82:B11E 29 FF 00    AND #$00FF
-$82:B121 0A          ASL A
-$82:B122 AA          TAX
-$82:B123 20 B7 B4    JSR $B4B7  [$82:B4B7]
-$82:B126 C9 FF FF    CMP #$FFFF
-$82:B129 D0 23       BNE $23    [$B14E]
+$82:B108 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B10B 29 00 FF    AND #$FF00             ;|
+$82:B10E C9 00 05    CMP #$0500             ;} If [equipment screen item index] != screw attack:
+$82:B111 F0 18       BEQ $18    [$B12B]     ;/
+$82:B113 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B116 18          CLC                    ;|
+$82:B117 69 00 01    ADC #$0100             ;} Increment equipment screen item index
+$82:B11A 8D 55 07    STA $0755  [$7E:0755]  ;/
+$82:B11D EB          XBA                    ;\
+$82:B11E 29 FF 00    AND #$00FF             ;|
+$82:B121 0A          ASL A                  ;} X = [equipment screen item index] * 2
+$82:B122 AA          TAX                    ;/
+$82:B123 20 B7 B4    JSR $B4B7  [$82:B4B7]  ; Move lower on suits/misc.
+$82:B126 C9 FF FF    CMP #$FFFF             ;\
+$82:B129 D0 23       BNE $23    [$B14E]     ;} If moved: return
 
-$82:B12B A2 00 00    LDX #$0000
-$82:B12E 20 11 B5    JSR $B511  [$82:B511]
-$82:B131 80 1B       BRA $1B    [$B14E]
+$82:B12B A2 00 00    LDX #$0000             ;\
+$82:B12E 20 11 B5    JSR $B511  [$82:B511]  ;} Move to boots
+$82:B131 80 1B       BRA $1B    [$B14E]     ; Return
 
-; BRANCH_B133
-$82:B133 AD 55 07    LDA $0755  [$7E:0755]
-$82:B136 29 00 FF    AND #$FF00
-$82:B139 F0 13       BEQ $13    [$B14E]
-$82:B13B AD 55 07    LDA $0755  [$7E:0755]
-$82:B13E 38          SEC
-$82:B13F E9 00 01    SBC #$0100
-$82:B142 8D 55 07    STA $0755  [$7E:0755]
-$82:B145 EB          XBA
-$82:B146 29 FF 00    AND #$00FF
-$82:B149 0A          ASL A
-$82:B14A AA          TAX
-$82:B14B 20 E6 B4    JSR $B4E6  [$82:B4E6]
+; BRANCH_UP
+$82:B133 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B136 29 00 FF    AND #$FF00             ;} If [equipment screen item index] != varia suit:
+$82:B139 F0 13       BEQ $13    [$B14E]     ;/
+$82:B13B AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B13E 38          SEC                    ;|
+$82:B13F E9 00 01    SBC #$0100             ;} Decrement equipment screen item index
+$82:B142 8D 55 07    STA $0755  [$7E:0755]  ;/
+$82:B145 EB          XBA                    ;\
+$82:B146 29 FF 00    AND #$00FF             ;|
+$82:B149 0A          ASL A                  ;} X = [equipment screen item index] * 2
+$82:B14A AA          TAX                    ;/
+$82:B14B 20 E6 B4    JSR $B4E6  [$82:B4E6]  ; Move higher on suits/misc.
 
 $82:B14E 28          PLP
 $82:B14F 60          RTS
@@ -5895,76 +5938,76 @@ $82:B14F 60          RTS
 {
 $82:B150 08          PHP
 $82:B151 C2 30       REP #$30
-$82:B153 20 60 B1    JSR $B160  [$82:B160]
-$82:B156 A9 12 00    LDA #$0012
-$82:B159 85 18       STA $18    [$7E:0018]
-$82:B15B 20 68 B5    JSR $B568  [$82:B568]
+$82:B153 20 60 B1    JSR $B160  [$82:B160]  ; Move response
+$82:B156 A9 12 00    LDA #$0012             ;\
+$82:B159 85 18       STA $18    [$7E:0018]  ;} $18 = 12h (boots tilemap size in bytes)
+$82:B15B 20 68 B5    JSR $B568  [$82:B568]  ; Button response
 $82:B15E 28          PLP
 $82:B15F 60          RTS
 }
 
 
-;;; $B160:  ;;;
+;;; $B160: Equipment screen - main - boots - move response ;;;
 {
 $82:B160 08          PHP
 $82:B161 C2 30       REP #$30
-$82:B163 AD 55 07    LDA $0755  [$7E:0755]
-$82:B166 85 12       STA $12    [$7E:0012]
+$82:B163 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B166 85 12       STA $12    [$7E:0012]  ;} $12 = [equipment screen indices]
 $82:B168 A5 8F       LDA $8F    [$7E:008F]  ;\
-$82:B16A 89 00 02    BIT #$0200             ;} If not newly pressed left: go to BRANCH_B191
+$82:B16A 89 00 02    BIT #$0200             ;} If not newly pressed left: go to BRANCH_LEFT_END
 $82:B16D F0 22       BEQ $22    [$B191]     ;/
 $82:B16F 89 00 08    BIT #$0800             ;\
 $82:B172 D0 0B       BNE $0B    [$B17F]     ;} If not newly pressed up:
-$82:B174 A2 08 00    LDX #$0008
-$82:B177 20 89 B4    JSR $B489  [$82:B489]
-$82:B17A C9 FF FF    CMP #$FFFF
-$82:B17D D0 5F       BNE $5F    [$B1DE]
+$82:B174 A2 08 00    LDX #$0008             ;\
+$82:B177 20 89 B4    JSR $B489  [$82:B489]  ;} Move to bottom of beams
+$82:B17A C9 FF FF    CMP #$FFFF             ;\
+$82:B17D D0 5F       BNE $5F    [$B1DE]     ;} If moved: return
 
-$82:B17F A2 00 00    LDX #$0000
-$82:B182 20 3F B4    JSR $B43F  [$82:B43F]
-$82:B185 C9 00 00    CMP #$0000
-$82:B188 D0 54       BNE $54    [$B1DE]
-$82:B18A A5 12       LDA $12    [$7E:0012]
-$82:B18C 8D 55 07    STA $0755  [$7E:0755]
-$82:B18F 80 4D       BRA $4D    [$B1DE]
+$82:B17F A2 00 00    LDX #$0000             ;\
+$82:B182 20 3F B4    JSR $B43F  [$82:B43F]  ;} Move to reserve tanks
+$82:B185 C9 00 00    CMP #$0000             ;\
+$82:B188 D0 54       BNE $54    [$B1DE]     ;} If moved: return
+$82:B18A A5 12       LDA $12    [$7E:0012]  ;\
+$82:B18C 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen indices = [$12]
+$82:B18F 80 4D       BRA $4D    [$B1DE]     ; Return
 
-; BRANCH_B191
+; BRANCH_LEFT_END
 $82:B191 89 00 04    BIT #$0400             ;\
-$82:B194 D0 2D       BNE $2D    [$B1C3]     ;} If newly pressed up: go to BRANCH_B1C3
+$82:B194 D0 2D       BNE $2D    [$B1C3]     ;} If newly pressed up: go to BRANCH_UP
 $82:B196 89 00 08    BIT #$0800             ;\
 $82:B199 F0 43       BEQ $43    [$B1DE]     ;} If not newly pressed down: return
-$82:B19B AD 55 07    LDA $0755  [$7E:0755]
-$82:B19E 29 00 FF    AND #$FF00
-$82:B1A1 F0 18       BEQ $18    [$B1BB]
-$82:B1A3 AD 55 07    LDA $0755  [$7E:0755]
-$82:B1A6 38          SEC
-$82:B1A7 E9 00 01    SBC #$0100
-$82:B1AA 8D 55 07    STA $0755  [$7E:0755]
-$82:B1AD EB          XBA
-$82:B1AE 29 FF 00    AND #$00FF
-$82:B1B1 0A          ASL A
-$82:B1B2 AA          TAX
-$82:B1B3 20 3F B5    JSR $B53F  [$82:B53F]
-$82:B1B6 C9 FF FF    CMP #$FFFF
-$82:B1B9 D0 23       BNE $23    [$B1DE]
+$82:B19B AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B19E 29 00 FF    AND #$FF00             ;} If [equipment screen item index] != hi-jump boots:
+$82:B1A1 F0 18       BEQ $18    [$B1BB]     ;/
+$82:B1A3 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B1A6 38          SEC                    ;|
+$82:B1A7 E9 00 01    SBC #$0100             ;} Decrement equipment screen item index
+$82:B1AA 8D 55 07    STA $0755  [$7E:0755]  ;/
+$82:B1AD EB          XBA                    ;\
+$82:B1AE 29 FF 00    AND #$00FF             ;|
+$82:B1B1 0A          ASL A                  ;} X = [equipment screen item index] * 2
+$82:B1B2 AA          TAX                    ;/
+$82:B1B3 20 3F B5    JSR $B53F  [$82:B53F]  ; Move higher on boots
+$82:B1B6 C9 FF FF    CMP #$FFFF             ;\
+$82:B1B9 D0 23       BNE $23    [$B1DE]     ;} If moved: return
 
-$82:B1BB A2 0A 00    LDX #$000A
-$82:B1BE 20 E6 B4    JSR $B4E6  [$82:B4E6]
-$82:B1C1 80 1B       BRA $1B    [$B1DE]
+$82:B1BB A2 0A 00    LDX #$000A             ;\
+$82:B1BE 20 E6 B4    JSR $B4E6  [$82:B4E6]  ;} Move to suits/misc.
+$82:B1C1 80 1B       BRA $1B    [$B1DE]     ; Return
 
-; BRANCH_B1C3
-$82:B1C3 AD 55 07    LDA $0755  [$7E:0755]
-$82:B1C6 C9 03 02    CMP #$0203
-$82:B1C9 F0 13       BEQ $13    [$B1DE]
-$82:B1CB AD 55 07    LDA $0755  [$7E:0755]
-$82:B1CE 18          CLC
-$82:B1CF 69 00 01    ADC #$0100
-$82:B1D2 8D 55 07    STA $0755  [$7E:0755]
-$82:B1D5 EB          XBA
-$82:B1D6 29 FF 00    AND #$00FF
-$82:B1D9 0A          ASL A
-$82:B1DA AA          TAX
-$82:B1DB 20 11 B5    JSR $B511  [$82:B511]
+; BRANCH_UP
+$82:B1C3 AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B1C6 C9 03 02    CMP #$0203             ;} If [equipment screen item index] = speed booster: return
+$82:B1C9 F0 13       BEQ $13    [$B1DE]     ;/
+$82:B1CB AD 55 07    LDA $0755  [$7E:0755]  ;\
+$82:B1CE 18          CLC                    ;|
+$82:B1CF 69 00 01    ADC #$0100             ;} Increment equipment screen item index
+$82:B1D2 8D 55 07    STA $0755  [$7E:0755]  ;/
+$82:B1D5 EB          XBA                    ;\
+$82:B1D6 29 FF 00    AND #$00FF             ;|
+$82:B1D9 0A          ASL A                  ;} X = [equipment screen item index] * 2
+$82:B1DA AA          TAX                    ;/
+$82:B1DB 20 11 B5    JSR $B511  [$82:B511]  ; Move lower on boots
 
 $82:B1DE 28          PLP
 $82:B1DF 60          RTS
@@ -6249,7 +6292,7 @@ $82:B3A9 A9 0A       LDA #$0A               ;|
 $82:B3AB 8D 06 42    STA $4206  [$7E:4206]  ;|
 $82:B3AE C2 20       REP #$20               ;|
 $82:B3B0 EA          NOP                    ;|
-$82:B3B1 EA          NOP                    ;} $7E:3B14 = 804h + (sub-tank reserve health) % 10
+$82:B3B1 EA          NOP                    ;} Equipment screen BG1 tilemap (Ah, Ch) = 804h + (sub-tank reserve health) % 10
 $82:B3B2 EA          NOP                    ;|
 $82:B3B3 EA          NOP                    ;|
 $82:B3B4 EA          NOP                    ;|
@@ -6261,11 +6304,11 @@ $82:B3BB 69 04 08    ADC #$0804             ;|
 $82:B3BE 8F 14 3B 7E STA $7E3B14[$7E:3B14]  ;/
 $82:B3C2 AD 14 42    LDA $4214  [$7E:4214]  ;\
 $82:B3C5 18          CLC                    ;|
-$82:B3C6 69 04 08    ADC #$0804             ;} $7E:3B12 = 804h + (sub-tank reserve health) / 10
+$82:B3C6 69 04 08    ADC #$0804             ;} Equipment screen BG1 tilemap (9, Ch) = 804h + (sub-tank reserve health) / 10
 $82:B3C9 8F 12 3B 7E STA $7E3B12[$7E:3B12]  ;/
 $82:B3CD A5 2A       LDA $2A    [$7E:002A]  ;\
 $82:B3CF 18          CLC                    ;|
-$82:B3D0 69 04 08    ADC #$0804             ;} $7E:3B10 = 804h + (number of full reserve tanks)
+$82:B3D0 69 04 08    ADC #$0804             ;} Equipment screen BG1 tilemap (8, Ch) = 804h + (number of full reserve tanks)
 $82:B3D3 8F 10 3B 7E STA $7E3B10[$7E:3B10]  ;/
 $82:B3D7 28          PLP
 $82:B3D8 60          RTS
@@ -6322,45 +6365,53 @@ $82:B43E 60          RTS
 
 ;;; $B43F: Equipment screen - move to reserve tanks ;;;
 {
+;; Returns:
+;;     A: 1 if moved cursor, 0 otherwise
 $82:B43F 08          PHP
 $82:B440 C2 30       REP #$30
-$82:B442 AD D4 09    LDA $09D4  [$7E:09D4]
-$82:B445 F0 0D       BEQ $0D    [$B454]
-$82:B447 9C 55 07    STZ $0755  [$7E:0755]
+$82:B442 AD D4 09    LDA $09D4  [$7E:09D4]  ;\
+$82:B445 F0 0D       BEQ $0D    [$B454]     ;} If [Samus max reserve health] = 0: return A = 0
+$82:B447 9C 55 07    STZ $0755  [$7E:0755]  ; Equipment screen category index = tanks, item index = mode
 $82:B44A A9 37 00    LDA #$0037             ;\
 $82:B44D 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:B451 A9 01 00    LDA #$0001
+$82:B451 A9 01 00    LDA #$0001             ; Return A = 1
 
 $82:B454 28          PLP
 $82:B455 60          RTS
 }
 
 
-;;; $B456: Equipment screen - move to beams ;;;
+;;; $B456: Equipment screen - move lower on beams ;;;
 {
+;; Parameters:
+;;     X: Equipment screen item index to start search from
+;;     $12: Equipment screen indices
 $82:B456 08          PHP
 $82:B457 C2 30       REP #$30
-$82:B459 AD 76 0A    LDA $0A76  [$7E:0A76]
-$82:B45C D0 0F       BNE $0F    [$B46D]
+$82:B459 AD 76 0A    LDA $0A76  [$7E:0A76]  ;\
+$82:B45C D0 0F       BNE $0F    [$B46D]     ;} If hyper beam: go to BRANCH_CANCEL
 
-$82:B45E AD A8 09    LDA $09A8  [$7E:09A8]
-$82:B461 3C 4C C0    BIT $C04C,x[$82:C04C]
-$82:B464 D0 0E       BNE $0E    [$B474]
-$82:B466 E8          INX
-$82:B467 E8          INX
-$82:B468 E0 0A 00    CPX #$000A
-$82:B46B 30 F1       BMI $F1    [$B45E]
+; LOOP
+$82:B45E AD A8 09    LDA $09A8  [$7E:09A8]  ;\
+$82:B461 3C 4C C0    BIT $C04C,x[$82:C04C]  ;} If [collected beams] & [$C04C + [X]] != 0: go to BRANCH_FOUND
+$82:B464 D0 0E       BNE $0E    [$B474]     ;/
+$82:B466 E8          INX                    ;\
+$82:B467 E8          INX                    ;} X += 2
+$82:B468 E0 0A 00    CPX #$000A             ;\
+$82:B46B 30 F1       BMI $F1    [$B45E]     ;} If [X] < Ah: go to LOOP
 
-$82:B46D A5 12       LDA $12    [$7E:0012]
-$82:B46F 8D 55 07    STA $0755  [$7E:0755]
-$82:B472 80 13       BRA $13    [$B487]
+; BRANCH_CANCEL
+$82:B46D A5 12       LDA $12    [$7E:0012]  ;\
+$82:B46F 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen indices = [$12]
+$82:B472 80 13       BRA $13    [$B487]     ; Return
 
-$82:B474 8A          TXA
-$82:B475 4A          LSR A
-$82:B476 EB          XBA
-$82:B477 29 00 FF    AND #$FF00
-$82:B47A 09 01 00    ORA #$0001
-$82:B47D 8D 55 07    STA $0755  [$7E:0755]
+; BRANCH_FOUND
+$82:B474 8A          TXA                    ;\
+$82:B475 4A          LSR A                  ;|
+$82:B476 EB          XBA                    ;} Equipment screen category index = weapons
+$82:B477 29 00 FF    AND #$FF00             ;} Equipment screen item index = [X] / 2
+$82:B47A 09 01 00    ORA #$0001             ;|
+$82:B47D 8D 55 07    STA $0755  [$7E:0755]  ;/
 $82:B480 A9 37 00    LDA #$0037             ;\
 $82:B483 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
 
@@ -6369,31 +6420,39 @@ $82:B488 60          RTS
 }
 
 
-;;; $B489: Equipment screen - move to bottom of beams ;;;
+;;; $B489: Equipment screen - move higher on beams ;;;
 {
+;; Parameters:
+;;     X: Equipment screen item index to start search from
+;; Returns:
+;;     A: FFFFh if not moved cursor
+
 $82:B489 08          PHP
 $82:B48A C2 30       REP #$30
-$82:B48C AD 76 0A    LDA $0A76  [$7E:0A76]
-$82:B48F D0 0C       BNE $0C    [$B49D]
+$82:B48C AD 76 0A    LDA $0A76  [$7E:0A76]  ;\
+$82:B48F D0 0C       BNE $0C    [$B49D]     ;} If hyper beam: go to BRANCH_CANCEL
 
-$82:B491 AD A8 09    LDA $09A8  [$7E:09A8]
-$82:B494 3C 4C C0    BIT $C04C,x[$82:C04E]
-$82:B497 D0 09       BNE $09    [$B4A2]
-$82:B499 CA          DEX
-$82:B49A CA          DEX
-$82:B49B 10 F4       BPL $F4    [$B491]
+; LOOP
+$82:B491 AD A8 09    LDA $09A8  [$7E:09A8]  ;\
+$82:B494 3C 4C C0    BIT $C04C,x[$82:C04E]  ;} If [collected beams] & [$C04C + [X]] != 0: go to BRANCH_FOUND
+$82:B497 D0 09       BNE $09    [$B4A2]     ;/
+$82:B499 CA          DEX                    ;\
+$82:B49A CA          DEX                    ;} X -= 2
+$82:B49B 10 F4       BPL $F4    [$B491]     ; If [X] >= 0: go to LOOP
 
-$82:B49D A9 FF FF    LDA #$FFFF
-$82:B4A0 80 13       BRA $13    [$B4B5]
+; BRANCH_CANCEL
+$82:B49D A9 FF FF    LDA #$FFFF             ;\
+$82:B4A0 80 13       BRA $13    [$B4B5]     ;} Return A = FFFFh
 
+; BRANCH_FOUND
 $82:B4A2 A9 37 00    LDA #$0037             ;\
 $82:B4A5 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:B4A9 8A          TXA
-$82:B4AA 4A          LSR A
-$82:B4AB EB          XBA
-$82:B4AC 29 00 FF    AND #$FF00
-$82:B4AF 09 01 00    ORA #$0001
-$82:B4B2 8D 55 07    STA $0755  [$7E:0755]
+$82:B4A9 8A          TXA                    ;\
+$82:B4AA 4A          LSR A                  ;|
+$82:B4AB EB          XBA                    ;} Equipment screen category index = weapons
+$82:B4AC 29 00 FF    AND #$FF00             ;} Equipment screen item index = [X] / 2
+$82:B4AF 09 01 00    ORA #$0001             ;|
+$82:B4B2 8D 55 07    STA $0755  [$7E:0755]  ;/
 
 $82:B4B5 28          PLP
 $82:B4B6 60          RTS
@@ -6419,8 +6478,8 @@ $82:B4C2 E8          INX                    ;\
 $82:B4C3 E8          INX                    ;} X += 2
 $82:B4C4 E0 0A 00    CPX #$000A             ;\
 $82:B4C7 30 F1       BMI $F1    [$B4BA]     ;} If [X] < Ah: go to LOOP
-$82:B4C9 A9 FF FF    LDA #$FFFF             ; A = FFFFh
-$82:B4CC 80 16       BRA $16    [$B4E4]     ; Return
+$82:B4C9 A9 FF FF    LDA #$FFFF             ;\
+$82:B4CC 80 16       BRA $16    [$B4E4]     ;} Return A = FFFFh
 
 $82:B4CE A9 37 00    LDA #$0037             ;\
 $82:B4D1 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
@@ -6430,104 +6489,115 @@ $82:B4D7 EB          XBA                    ;} Equipment screen category index =
 $82:B4D8 29 00 FF    AND #$FF00             ;} Equipment screen item index = [X] / 2
 $82:B4DB 09 02 00    ORA #$0002             ;|
 $82:B4DE 8D 55 07    STA $0755  [$7E:0755]  ;/
-$82:B4E1 A9 00 00    LDA #$0000             ; A = 0
+$82:B4E1 A9 00 00    LDA #$0000             ; Return A = 0
 
 $82:B4E4 28          PLP
 $82:B4E5 60          RTS
 }
 
 
-;;; $B4E6: Equipment screen - boots - move to screw attack or higher on suits/misc. ;;;
+;;; $B4E6: Equipment screen - move higher on suits/misc. ;;;
 {
 ;; Parameters:
 ;;     X: Equipment screen item index to start search from
-;;     $12: Original equipment screen category index / item index
+;;     $12: Equipment screen indices
 $82:B4E6 08          PHP
 $82:B4E7 C2 30       REP #$30
 
-$82:B4E9 AD A4 09    LDA $09A4  [$7E:09A4]
-$82:B4EC 3C 56 C0    BIT $C056,x
-$82:B4EF D0 0B       BNE $0B    [$B4FC]
-$82:B4F1 CA          DEX
-$82:B4F2 CA          DEX
-$82:B4F3 10 F4       BPL $F4    [$B4E9]
-$82:B4F5 A5 12       LDA $12    [$7E:0012]
-$82:B4F7 8D 55 07    STA $0755  [$7E:0755]
-$82:B4FA 80 13       BRA $13    [$B50F]
+; LOOP
+$82:B4E9 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$82:B4EC 3C 56 C0    BIT $C056,x            ;} If [collected items] & [$C056 + [X]] = 0:
+$82:B4EF D0 0B       BNE $0B    [$B4FC]     ;/
+$82:B4F1 CA          DEX                    ;\
+$82:B4F2 CA          DEX                    ;} X -= 2
+$82:B4F3 10 F4       BPL $F4    [$B4E9]     ; If [X] >= 0: go to LOOP
+$82:B4F5 A5 12       LDA $12    [$7E:0012]  ;\
+$82:B4F7 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen indices = [$12]
+$82:B4FA 80 13       BRA $13    [$B50F]     ; Return
 
 $82:B4FC A9 37 00    LDA #$0037             ;\
 $82:B4FF 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:B503 8A          TXA
-$82:B504 4A          LSR A
-$82:B505 EB          XBA
-$82:B506 29 00 FF    AND #$FF00
-$82:B509 09 02 00    ORA #$0002
-$82:B50C 8D 55 07    STA $0755  [$7E:0755]
+$82:B503 8A          TXA                    ;\
+$82:B504 4A          LSR A                  ;|
+$82:B505 EB          XBA                    ;} Equipment screen category index = suit/misc
+$82:B506 29 00 FF    AND #$FF00             ;} Equipment screen item index = [X] / 2
+$82:B509 09 02 00    ORA #$0002             ;|
+$82:B50C 8D 55 07    STA $0755  [$7E:0755]  ;/
 
 $82:B50F 28          PLP
 $82:B510 60          RTS
 }
 
 
-;;; $B511: Equipment screen - move to high jump or lower in boots ;;;
+;;; $B511: Equipment screen - move lower on boots ;;;
 {
+;; Parameters:
+;;     X: Equipment screen item index to start search from
+;;     $12: Equipment screen indices
 $82:B511 08          PHP
 $82:B512 C2 30       REP #$30
 
-$82:B514 AD A4 09    LDA $09A4  [$7E:09A4]
-$82:B517 3C 62 C0    BIT $C062,x[$82:C062]
-$82:B51A D0 0E       BNE $0E    [$B52A]
-$82:B51C E8          INX
-$82:B51D E8          INX
-$82:B51E E0 06 00    CPX #$0006
-$82:B521 30 F1       BMI $F1    [$B514]
-$82:B523 A5 12       LDA $12    [$7E:0012]
-$82:B525 8D 55 07    STA $0755  [$7E:0755]
-$82:B528 80 13       BRA $13    [$B53D]
+; LOOP
+$82:B514 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$82:B517 3C 62 C0    BIT $C062,x[$82:C062]  ;} If [collected items] & [$C062 + [X]] = 0:
+$82:B51A D0 0E       BNE $0E    [$B52A]     ;/
+$82:B51C E8          INX                    ;\
+$82:B51D E8          INX                    ;} X += 2
+$82:B51E E0 06 00    CPX #$0006             ;\
+$82:B521 30 F1       BMI $F1    [$B514]     ;} If [X] < 6: go to LOOP
+$82:B523 A5 12       LDA $12    [$7E:0012]  ;\
+$82:B525 8D 55 07    STA $0755  [$7E:0755]  ;} Equipment screen indices = [$12]
+$82:B528 80 13       BRA $13    [$B53D]     ; Return
 
 $82:B52A A9 37 00    LDA #$0037             ;\
 $82:B52D 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:B531 8A          TXA
-$82:B532 4A          LSR A
-$82:B533 EB          XBA
-$82:B534 29 00 FF    AND #$FF00
-$82:B537 09 03 00    ORA #$0003
-$82:B53A 8D 55 07    STA $0755  [$7E:0755]
+$82:B531 8A          TXA                    ;\
+$82:B532 4A          LSR A                  ;|
+$82:B533 EB          XBA                    ;} Equipment screen category index = boots
+$82:B534 29 00 FF    AND #$FF00             ;} Equipment screen item index = [X] / 2
+$82:B537 09 03 00    ORA #$0003             ;|
+$82:B53A 8D 55 07    STA $0755  [$7E:0755]  ;/
 
 $82:B53D 28          PLP
 $82:B53E 60          RTS
 }
 
 
-;;; $B53F: Equipment screen - boots - move up in boots ;;;
+;;; $B53F: Equipment screen - move higher on boots ;;;
 {
+;; Parameters:
+;;     X: Equipment screen item index to start search from
+;; Returns:
+;;     A: FFFFh if not moved cursor
+
 $82:B53F 08          PHP
 $82:B540 C2 30       REP #$30
 
-$82:B542 AD A4 09    LDA $09A4  [$7E:09A4]
-$82:B545 3C 62 C0    BIT $C062,x[$82:C064]
-$82:B548 D0 09       BNE $09    [$B553]
-$82:B54A CA          DEX
-$82:B54B CA          DEX
-$82:B54C 10 F4       BPL $F4    [$B542]
-$82:B54E A9 FF FF    LDA #$FFFF
-$82:B551 80 13       BRA $13    [$B566]
+; LOOP
+$82:B542 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$82:B545 3C 62 C0    BIT $C062,x[$82:C064]  ;} If [collected items] & [$C062 + [X]] = 0:
+$82:B548 D0 09       BNE $09    [$B553]     ;/
+$82:B54A CA          DEX                    ;\
+$82:B54B CA          DEX                    ;} X -= 2
+$82:B54C 10 F4       BPL $F4    [$B542]     ; If [X] >= 0: go to LOOP
+$82:B54E A9 FF FF    LDA #$FFFF             ;\
+$82:B551 80 13       BRA $13    [$B566]     ;} Return A = FFFFh
 
 $82:B553 A9 37 00    LDA #$0037             ;\
 $82:B556 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:B55A 8A          TXA
-$82:B55B 4A          LSR A
-$82:B55C EB          XBA
-$82:B55D 29 00 FF    AND #$FF00
-$82:B560 09 03 00    ORA #$0003
-$82:B563 8D 55 07    STA $0755  [$7E:0755]
+$82:B55A 8A          TXA                    ;\
+$82:B55B 4A          LSR A                  ;|
+$82:B55C EB          XBA                    ;} Equipment screen category index = boots
+$82:B55D 29 00 FF    AND #$FF00             ;} Equipment screen item index = [X] / 2
+$82:B560 09 03 00    ORA #$0003             ;|
+$82:B563 8D 55 07    STA $0755  [$7E:0755]  ;/
 
 $82:B566 28          PLP
 $82:B567 60          RTS
 }
 
 
-;;; $B568: Equipment screen - main - weapons - button response ;;;
+;;; $B568: Equipment screen - main - button response ;;;
 {
 ;; Parameters:
 ;;     $18: Tilemap size in bytes
@@ -6595,10 +6665,19 @@ $82:B5E3 20 9D A2    JSR $A29D  [$82:A29D]  ; Set the palette of [$16] bytes of 
 $82:B5E6 28          PLP
 $82:B5E7 60          RTS
 }
+}
 
 
-;;; $B5E8:  ;;;
+;;; $B5E8: Unused. Convert [A] to three decimal digits ;;;
 {
+;; Parameters:
+;;     A: Value
+;; Returns:
+;;     $12: Units digit
+;;     $14: Tens digit
+;;     $16: Hundreds digit
+
+; Does slow division... please avoid
 $82:B5E8 08          PHP
 $82:B5E9 C2 30       REP #$30
 $82:B5EB 85 18       STA $18    [$7E:0018]
@@ -6652,7 +6731,7 @@ $82:B62E AB          PLB                    ;} DB = $82
 $82:B62F C2 30       REP #$30
 $82:B631 AD 53 07    LDA $0753  [$7E:0753]  ; >_<;
 $82:B634 AD 27 07    LDA $0727  [$7E:0727]  ;\
-$82:B637 F0 09       BEQ $09    [$B642]     ;} If [menu index] != 0:
+$82:B637 F0 09       BEQ $09    [$B642]     ;} If [menu index] != map screen:
 $82:B639 20 67 B2    JSR $B267  [$82:B267]  ; Equipment screen - draw item selector
 $82:B63C 20 A2 B2    JSR $B2A2  [$82:B2A2]  ; Equipment screen - display reserve tank amount
 $82:B63F AB          PLB
@@ -6668,20 +6747,21 @@ $82:B64F 6B          RTL
 }
 
 
-;;; $B650:  ;;;
+;;; $B650: Unused ;;;
 {
+; Almost clone of $B62B
 $82:B650 08          PHP
 $82:B651 8B          PHB
-$82:B652 4B          PHK
-$82:B653 AB          PLB
+$82:B652 4B          PHK                    ;\
+$82:B653 AB          PLB                    ;} DB = $82
 $82:B654 C2 30       REP #$30
-$82:B656 AD 53 07    LDA $0753  [$7E:0753]
-$82:B659 D0 09       BNE $09    [$B664]
-$82:B65B 20 67 B2    JSR $B267  [$82:B267]
-$82:B65E 20 A2 B2    JSR $B2A2  [$82:B2A2]
-$82:B661 AB          PLB
-$82:B662 28          PLP
-$82:B663 6B          RTL
+$82:B656 AD 53 07    LDA $0753  [$7E:0753]  ;\
+$82:B659 D0 09       BNE $09    [$B664]     ;} If [pause screen button label mode] = map screen:
+$82:B65B 20 67 B2    JSR $B267  [$82:B267]  ; Equipment screen - draw item selector
+$82:B65E 20 A2 B2    JSR $B2A2  [$82:B2A2]  ; Equipment screen - display reserve tank amount
+$82:B661 AB          PLB                    
+$82:B662 28          PLP                    
+$82:B663 6B          RTL                    ; Return
 
 $82:B664 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
 $82:B668 20 C8 B9    JSR $B9C8  [$82:B9C8]  ; Map screen - draw Samus position indicator
@@ -6692,6 +6772,8 @@ $82:B671 6B          RTL
 }
 
 
+;;; $B672..BA34: Map sprites ;;;
+{
 ;;; $B672: Draw map icons ;;;
 {
 $82:B672 8B          PHB
@@ -7278,6 +7360,8 @@ $82:BA24 60          RTS
 $82:BA25             dw 0008, 0004, 0008, 0004 ; Delays
 $82:BA2D             dw 005F, 0060, 0061, 0060 ; Spritemap IDs (into $82:C569 table)
 }
+}
+}
 
 
 ;;; $BA35: Draw border around SAMUS DATA ;;;
@@ -7456,6 +7540,8 @@ $82:BB74 6B          RTL
 }
 
 
+;;; $BB75..BE16: Game over baby metroid ;;;
+{
 ;;; $BB75: Handle game over baby metroid ;;;
 {
 $82:BB75 8B          PHB
@@ -7655,6 +7741,7 @@ $82:BDB7             dw 3800,6BF5,06E1,0641,05A1,5E5F,183F,1014,080A,0404,4F9F,3
 $82:BDD7             dw 3800,77F8,1344,12A4,1204,6ABF,249F,1C77,146D,1067,5BFF,4B38,3A72,7BD3,7FFF,6B43
 $82:BDF7             dw 3800,7FFB,1FA7,1F07,1E67,771F,30FF,28DA,20D0,1CCA,67FF,579B,46D5,7BD6,7FFF,77A6
 }
+}
 
 
 ;;; $BE17: Cancel sound effects ;;;
@@ -7693,7 +7780,7 @@ $82:BE59 6B          RTL
 }
 
 
-;;; $BE5A:  ;;;
+;;; $BE5A: Unused ;;;
 {
 ; So... this routine does some stuff and then crashes?
 $82:BE5A C2 30       REP #$30
@@ -7743,7 +7830,7 @@ $82:BEA1 80 D0       BRA $D0    [$BE73]     ;/
 }
 
 
-;;; $BEA3:  ;;;
+;;; $BEA3: Unused ;;;
 {
 ; So... this routine does some stuff and then crashes as well? Great!
 $82:BEA3 C2 30       REP #$30
@@ -8276,13 +8363,13 @@ $82:C639             dw 0000,0000,0000,25B3,65B3,0000,0000,0000,
 }
 
 
-;;; $C749:  ;;;
+;;; $C749: Area select spritemap base index ;;;
 {
 $82:C749             dw 0038
 }
 
 
-;;; $C74B:  ;;;
+;;; $C74B: Unused. D-pad icon spritemap index? ;;;
 {
 $82:C74B             dw 0044
 }
@@ -8563,16 +8650,16 @@ $82:CB8B             dx 0006, 0000,FE,3EEA, 01F8,FE,3EE9, C3FC,F4,3ED7, C3F4,F4,
 ; Spritemap 33h: file select menu Samus helmet (frame 7)
 $82:CBAB             dx 0006, 0000,FE,3EEC, 01F8,FE,3EEB, C3FC,F4,3ED7, C3F4,F4,3ED6, C3F4,FC,3EE6, C3FC,FC,3EE7
 
-; Spritemap 34h: menu selection missile (frame 3)
+; Spritemap 34h: menu selection missile (frame 0)
 $82:CBCB             dx 0002, 0000,FC,3EEF, 01F8,FC,3EDF
 
-; Spritemap 35h: menu selection missile (frame 2)
+; Spritemap 35h: menu selection missile (frame 1)
 $82:CBD7             dx 0002, 0000,FC,3EFF, 01F8,FC,3EEE
 
-; Spritemap 36h: menu selection missile (frame 1)
+; Spritemap 36h: menu selection missile (frame 2)
 $82:CBE3             dx 0002, 0000,FC,3ECC, 01F8,FC,3EFE
 
-; Spritemap 37h: menu selection missile (frame 0)
+; Spritemap 37h: menu selection missile (frame 3)
 $82:CBEF             dx 0002, 01F8,FC,3EC8, 0000,FC,3EFF
 
 ; Spritemap 38h: area select - planet Zebes
@@ -8611,10 +8698,10 @@ $82:CE5D             dx 0016, 01FA,08,32BD, 01F2,08,32BC, 01FA,00,32BD, 01F2,00,
 ; Spritemap 43h: file copy arrow - two slots up
 $82:CECD             dx 0016, 01FA,F0,B2BD, 01F2,F0,B2BC, 01FA,F8,B2BD, 01F2,F8,B2BC, 01FA,00,B2BD, 01F2,00,B2BC, 01FA,08,B2BD, 01F2,08,B2BC, 01F2,E0,B2B8, 01F2,E8,B2BC, 01FA,E8,B2BD, 01FA,D8,B2C9, 01FA,E0,B2B9, 0002,18,B2CF, 01FA,18,B2CE, 0002,20,B2BF, 01FA,20,B2BE, 01F2,18,B2CD, 01FA,10,B2BD, 01F2,10,B2BC, 0002,D8,B2CB, 0002,E0,B2BB
 
-; Spritemap 44h
+; Spritemap 44h: 
 $82:CF3D             dx 0004, 01FF,FF,F0B3, 01F8,FF,B0B3, 01FF,F8,70B3, 01F8,F8,30B3
 
-; Spritemap 45h
+; Spritemap 45h: 
 $82:CF53             dx 0002, C3F4,F8,3095, C3FC,F8,3096
 
 ; Spritemap 46h
@@ -8670,7 +8757,7 @@ $82:D41B             dx 0034, 01E8,08,3EFA, 01F0,08,3EFA, 0008,08,3EFA, 0000,08,
 }
 
 
-;;; $D521: Samus wireframe tilemaps ;;;
+;;; $D521..D960: Samus wireframe tilemaps ;;;
 {
 ;;; $D521: Power suit ;;;
 {
@@ -8761,6 +8848,8 @@ $82:D851             dw 0000,0000,0000,25B3,65B3,0000,0000,0000,
 }
 
 
+;;; $D961..DB68: Gradual colour change ;;;
+{
 ;;; $D961: Advance gradual colour change of all palettes - denominator = Ch ;;;
 {
 ;; Returns:
@@ -8791,9 +8880,9 @@ $82:D983 38          SEC                    ;\
 $82:D984 6B          RTL                    ;} Return carry set
 
 $82:D985 8B          PHB
-$82:D986 F4 7E 7E    PEA $7E7E
-$82:D989 AB          PLB
-$82:D98A AB          PLB
+$82:D986 F4 7E 7E    PEA $7E7E              ;\
+$82:D989 AB          PLB                    ;} DB = $7E
+$82:D98A AB          PLB                    ;/
 $82:D98B A2 C0 00    LDX #$00C0             ; X = C0h
 
 ; LOOP
@@ -8836,9 +8925,9 @@ $82:D9CF 6B          RTL                    ;\
                                             ;} Return carry set
 $82:D9D0 84 22       STY $22    [$7E:0022]  ; $22 = [Y]
 $82:D9D2 8B          PHB
-$82:D9D3 F4 7E 7E    PEA $7E7E
-$82:D9D6 AB          PLB
-$82:D9D7 AB          PLB
+$82:D9D3 F4 7E 7E    PEA $7E7E              ;\
+$82:D9D6 AB          PLB                    ;} DB = $7E
+$82:D9D7 AB          PLB                    ;/
 
 ; LOOP
 $82:D9D8 DA          PHX                    
@@ -8872,7 +8961,7 @@ $82:DA01 6B          RTL                    ;} Return carry clear
 $82:DA02 C2 30       REP #$30
 $82:DA04 AF 02 C4 7E LDA $7EC402[$7E:C402]  ;\
 $82:DA08 1A          INC A                  ;|
-$82:DA09 CF 00 C4 7E CMP $7EC400[$7E:C400]  ;} If [palette change denominator] + 1 < [palette change numerator]:
+$82:DA09 CF 00 C4 7E CMP $7EC400[$7E:C400]  ;} If [palette change numerator] > [palette change denominator] + 1:
 $82:DA0D B0 09       BCS $09    [$DA18]     ;/
 $82:DA0F A9 00 00    LDA #$0000             ;\
 $82:DA12 8F 00 C4 7E STA $7EC400[$7E:C400]  ;} Palette change numerator = 0
@@ -8911,6 +9000,9 @@ $82:DA49 60          RTS                    ;} Return carry clear
 
 ;;; $DA4A: Calculate the [A]th transitional colour from [X] to [Y] ;;;
 {
+;; Returns:
+;;     A: Result colour
+
 ; The transition curve is an X-flipped reciprocal function (1/d, 1/(d-1), 1/(d-2), ..., 1/3, 1/2, 1)
 
 ; After pushes, we have:
@@ -9002,6 +9094,7 @@ $82:DAA5 60          RTS
 ; Solving this recurrence relation actually gives you:
 ;     x_t = x_0 + t (y - x_0) / d
 ; which is precisely what you would expect for a linear interpolation
+
 $82:DAA6 C9 00 00    CMP #$0000             ;\
 $82:DAA9 D0 02       BNE $02    [$DAAD]     ;} If [A] = 0:
 $82:DAAB 8A          TXA                    ; A = [X]
@@ -9054,17 +9147,41 @@ $82:DAF6 60          RTS
 }
 
 
-;;; $DAF7:  ;;;
+;;; $DAF7: Advance gradual colour change of palettes in [A] - denominator = Ch ;;;
 {
+;; Parameters:
+;;     A: Bitset of palettes to advance
+{
+;;         1: BG palette 0
+;;         2: BG palette 1
+;;         4: BG palette 2
+;;         8: BG palette 3
+;;         10h: BG palette 4
+;;         20h: BG palette 5
+;;         40h: BG palette 6
+;;         80h: BG palette 7
+;;         100h: Sprite palette 0
+;;         200h: Sprite palette 1
+;;         400h: Sprite palette 2
+;;         800h: Sprite palette 3
+;;         1000h: Sprite palette 4
+;;         2000h: Sprite palette 5
+;;         4000h: Sprite palette 6
+;;         8000h: Sprite palette 7
+}
+;; Returns:
+;;     Carry: Set if reached target colour, clear otherwise
+
+; Used by Torizo with sprite palettes 1 and 2
 $82:DAF7 DA          PHX
 $82:DAF8 5A          PHY
 $82:DAF9 8B          PHB
-$82:DAFA F4 7E 7E    PEA $7E7E
-$82:DAFD AB          PLB
-$82:DAFE AB          PLB
-$82:DAFF A2 0C 00    LDX #$000C
-$82:DB02 8E 02 C4    STX $C402  [$7E:C402]
-$82:DB05 20 0C DB    JSR $DB0C  [$82:DB0C]
+$82:DAFA F4 7E 7E    PEA $7E7E              ;\
+$82:DAFD AB          PLB                    ;} DB = $7E
+$82:DAFE AB          PLB                    ;/
+$82:DAFF A2 0C 00    LDX #$000C             ;\
+$82:DB02 8E 02 C4    STX $C402  [$7E:C402]  ;} Palette change denominator = Ch
+$82:DB05 20 0C DB    JSR $DB0C  [$82:DB0C]  ; Advance gradual colour change of palettes in [A]
 $82:DB08 AB          PLB
 $82:DB09 7A          PLY
 $82:DB0A FA          PLX
@@ -9072,64 +9189,94 @@ $82:DB0B 6B          RTL
 }
 
 
-;;; $DB0C:  ;;;
+;;; $DB0C: Advance gradual colour change of palettes in [A] ;;;
 {
+;; Parameters:
+;;     A: Bitset of palettes to advance
+{
+;;         1: BG palette 0
+;;         2: BG palette 1
+;;         4: BG palette 2
+;;         8: BG palette 3
+;;         10h: BG palette 4
+;;         20h: BG palette 5
+;;         40h: BG palette 6
+;;         80h: BG palette 7
+;;         100h: Sprite palette 0
+;;         200h: Sprite palette 1
+;;         400h: Sprite palette 2
+;;         800h: Sprite palette 3
+;;         1000h: Sprite palette 4
+;;         2000h: Sprite palette 5
+;;         4000h: Sprite palette 6
+;;         8000h: Sprite palette 7
+}
+;; Returns:
+;;     Carry: Set if reached target colour, clear otherwise
+
+; DB must be set to $7E
 $82:DB0C C2 30       REP #$30
 $82:DB0E 48          PHA
-$82:DB0F AD 02 C4    LDA $C402  [$7E:C402]
-$82:DB12 1A          INC A
-$82:DB13 CD 00 C4    CMP $C400  [$7E:C400]
-$82:DB16 B0 09       BCS $09    [$DB21]
-$82:DB18 A9 00 00    LDA #$0000
-$82:DB1B 8D 00 C4    STA $C400  [$7E:C400]
+$82:DB0F AD 02 C4    LDA $C402  [$7E:C402]  ;\
+$82:DB12 1A          INC A                  ;|
+$82:DB13 CD 00 C4    CMP $C400  [$7E:C400]  ;} If [palette change numerator] > [palette change denominator] + 1:
+$82:DB16 B0 09       BCS $09    [$DB21]     ;/
+$82:DB18 A9 00 00    LDA #$0000             ;\
+$82:DB1B 8D 00 C4    STA $C400  [$7E:C400]  ;} Palette change numerator = 0
 $82:DB1E 68          PLA
-$82:DB1F 38          SEC
-$82:DB20 60          RTS
+$82:DB1F 38          SEC                    ;\
+$82:DB20 60          RTS                    ;} Return carry set
 
 $82:DB21 9C 04 C4    STZ $C404  [$7E:C404]
 
+; LOOP
 $82:DB24 68          PLA
-$82:DB25 F0 15       BEQ $15    [$DB3C]
-$82:DB27 4A          LSR A
+$82:DB25 F0 15       BEQ $15    [$DB3C]     ; If [A] = 0: go to BRANCH_RETURN
+$82:DB27 4A          LSR A                  ; A >>= 1
 $82:DB28 48          PHA
-$82:DB29 B0 0B       BCS $0B    [$DB36]
-$82:DB2B AD 04 C4    LDA $C404  [$7E:C404]
-$82:DB2E 69 20 00    ADC #$0020
-$82:DB31 8D 04 C4    STA $C404  [$7E:C404]
-$82:DB34 80 EE       BRA $EE    [$DB24]
+$82:DB29 B0 0B       BCS $0B    [$DB36]     ; If carry clear:
+$82:DB2B AD 04 C4    LDA $C404  [$7E:C404]  ;\
+$82:DB2E 69 20 00    ADC #$0020             ;} Colour index += 20h
+$82:DB31 8D 04 C4    STA $C404  [$7E:C404]  ;/
+$82:DB34 80 EE       BRA $EE    [$DB24]     ; Go to LOOP
 
-$82:DB36 20 41 DB    JSR $DB41  [$82:DB41]
-$82:DB39 80 E9       BRA $E9    [$DB24]
-$82:DB3B 68          PLA                    ; Nothing points here
+$82:DB36 20 41 DB    JSR $DB41  [$82:DB41]  ; Advance gradual colour change of palette [X] / 20h
+$82:DB39 80 E9       BRA $E9    [$DB24]     ; Go to LOOP
 
-$82:DB3C EE 00 C4    INC $C400  [$7E:C400]
-$82:DB3F 18          CLC
-$82:DB40 60          RTS
+; Nothing points here
+$82:DB3B 68          PLA
+
+; BRANCH_RETURN
+$82:DB3C EE 00 C4    INC $C400  [$7E:C400]  ; Increment palette change numerator
+$82:DB3F 18          CLC                    ;\
+$82:DB40 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DB41:  ;;;
+;;; $DB41: Advance gradual colour change of palette [X] / 20h ;;;
 {
-$82:DB41 AE 04 C4    LDX $C404  [$7E:C404]
+$82:DB41 AE 04 C4    LDX $C404  [$7E:C404]  ; X = [colour index]
 
-$82:DB44 BD 00 C2    LDA $C200,x[$7E:C320]
-$82:DB47 DD 00 C0    CMP $C000,x[$7E:C120]
-$82:DB4A F0 11       BEQ $11    [$DB5D]
-$82:DB4C A8          TAY
-$82:DB4D BD 00 C0    LDA $C000,x[$7E:C122]
-$82:DB50 AA          TAX
-$82:DB51 AD 00 C4    LDA $C400  [$7E:C400]
-$82:DB54 20 4A DA    JSR $DA4A  [$82:DA4A]
-$82:DB57 AE 04 C4    LDX $C404  [$7E:C404]
-$82:DB5A 9D 00 C0    STA $C000,x[$7E:C122]
+; LOOP
+$82:DB44 BD 00 C2    LDA $C200,x[$7E:C320]  ;\
+$82:DB47 DD 00 C0    CMP $C000,x[$7E:C120]  ;} If [palette colour] != [target palette colour]:
+$82:DB4A F0 11       BEQ $11    [$DB5D]     ;/
+$82:DB4C A8          TAY                    ;\
+$82:DB4D BD 00 C0    LDA $C000,x[$7E:C122]  ;|
+$82:DB50 AA          TAX                    ;|
+$82:DB51 AD 00 C4    LDA $C400  [$7E:C400]  ;} Palette colour = the [palette change numerator]th transitional colour from [palette colour] to [target palette colour]
+$82:DB54 20 4A DA    JSR $DA4A  [$82:DA4A]  ;|
+$82:DB57 AE 04 C4    LDX $C404  [$7E:C404]  ;|
+$82:DB5A 9D 00 C0    STA $C000,x[$7E:C122]  ;/
 
-$82:DB5D E8          INX
-$82:DB5E E8          INX
-$82:DB5F 8E 04 C4    STX $C404  [$7E:C404]
-$82:DB62 8A          TXA
-$82:DB63 29 1F 00    AND #$001F
-$82:DB66 D0 DC       BNE $DC    [$DB44]
+$82:DB5D E8          INX                    ;\
+$82:DB5E E8          INX                    ;} X += 2 (next palette colour)
+$82:DB5F 8E 04 C4    STX $C404  [$7E:C404]  ; Colour index = [X]
+$82:DB62 8A          TXA                    ;\
+$82:DB63 29 1F 00    AND #$001F             ;} If [X] % 20h != 0: go to LOOP
+$82:DB66 D0 DC       BNE $DC    [$DB44]     ;/
 $82:DB68 60          RTS
+}
 }
 
 
@@ -9151,22 +9298,22 @@ $82:DB80 A9 00 80    LDA #$8000             ;\
 $82:DB83 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Freeze time
 $82:DB86 A9 1B 00    LDA #$001B             ;\
 $82:DB89 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 1Bh (reserve tanks auto)
-$82:DB8C A9 1B 00    LDA #$001B             ; A = 1Bh
-$82:DB8F 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$82:DB8C A9 1B 00    LDA #$001B             ;\
+$82:DB8F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus for reserve tank
 $82:DB93 80 1D       BRA $1D    [$DBB2]     ; Go to BRANCH_TICK_GAME_TIME
 
 $82:DB95 AD 98 09    LDA $0998  [$7E:0998]  ;\
 $82:DB98 C9 08 00    CMP #$0008             ;} If [game state] != main gameplay:
 $82:DB9B F0 02       BEQ $02    [$DB9F]     ;/
-$82:DB9D 28          PLP                    ;\
-$82:DB9E 60          RTS                    ;} Return
+$82:DB9D 28          PLP
+$82:DB9E 60          RTS                    ; Return
 
 $82:DB9F A9 00 80    LDA #$8000             ;\
 $82:DBA2 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Freeze time
-$82:DBA5 A9 11 00    LDA #$0011             ; A = 11h
-$82:DBA8 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$82:DBA5 A9 11 00    LDA #$0011             ;\
+$82:DBA8 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for death sequence
 $82:DBAC A9 13 00    LDA #$0013             ;\
-$82:DBAF 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 13h (Samus ran out of health)
+$82:DBAF 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 13h (death sequence, start)
 
 ; BRANCH_TICK_GAME_TIME
 $82:DBB2 AD DA 09    LDA $09DA  [$7E:09DA]  ;\
@@ -9198,8 +9345,8 @@ $82:DBEF 8D E0 09    STA $09E0  [$7E:09E0]  ;/
 $82:DBF2 AD E0 09    LDA $09E0  [$7E:09E0]  ;\
 $82:DBF5 C9 64 00    CMP #$0064             ;} If [game time hours] < 100:
 $82:DBF8 10 02       BPL $02    [$DBFC]     ;/
-$82:DBFA 28          PLP                    ;\
-$82:DBFB 60          RTS                    ;} Return
+$82:DBFA 28          PLP
+$82:DBFB 60          RTS                    ; Return
 
 $82:DBFC A9 3B 00    LDA #$003B             ;\
 $82:DBFF 8D DA 09    STA $09DA  [$7E:09DA]  ;|
@@ -9216,156 +9363,159 @@ $82:DC0F 60          RTS
 {
 $82:DC10 08          PHP
 $82:DC11 C2 30       REP #$30
-$82:DC13 20 31 DC    JSR $DC31  [$82:DC31]
-$82:DC16 90 10       BCC $10    [$DC28]
-$82:DC18 9C 78 0A    STZ $0A78  [$7E:0A78]
+$82:DC13 20 31 DC    JSR $DC31  [$82:DC31]  ; Reserve tank auto refill
+$82:DC16 90 10       BCC $10    [$DC28]     ; If finished refill:
+$82:DC18 9C 78 0A    STZ $0A78  [$7E:0A78]  ; Unfreeze time
 $82:DC1B A9 08 00    LDA #$0008             ;\
 $82:DC1E 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 8 (main gameplay)
-$82:DC21 A9 10 00    LDA #$0010
-$82:DC24 22 84 F0 90 JSL $90F084[$90:F084]
+$82:DC21 A9 10 00    LDA #$0010             ;\
+$82:DC24 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus from reserve tank
 
-$82:DC28 20 44 8B    JSR $8B44  [$82:8B44]
-$82:DC2B 22 AB EA 90 JSL $90EAAB[$90:EAAB]
+$82:DC28 20 44 8B    JSR $8B44  [$82:8B44]  ; Main gameplay
+$82:DC2B 22 AB EA 90 JSL $90EAAB[$90:EAAB]  ; Low health check
 $82:DC2F 28          PLP
 $82:DC30 60          RTS
 }
 
 
-;;; $DC31:  ;;;
+;;; $DC31: Reserve tank auto refill ;;;
 {
-$82:DC31 AD D6 09    LDA $09D6  [$7E:09D6]
-$82:DC34 F0 41       BEQ $41    [$DC77]
-$82:DC36 AD B6 05    LDA $05B6  [$7E:05B6]
-$82:DC39 89 07 00    BIT #$0007
-$82:DC3C D0 07       BNE $07    [$DC45]
+;; Returns:
+;;     Carry: Set if finished refill (i.e. reserve health has been depleted)
+$82:DC31 AD D6 09    LDA $09D6  [$7E:09D6]  ;\
+$82:DC34 F0 41       BEQ $41    [$DC77]     ;} If [Samus reserve health] = 0: go to BRANCH_RETURN
+$82:DC36 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$82:DC39 89 07 00    BIT #$0007             ;} If [frame counter] % 8 = 0:
+$82:DC3C D0 07       BNE $07    [$DC45]     ;/
 $82:DC3E A9 2D 00    LDA #$002D             ;\
 $82:DC41 22 39 91 80 JSL $809139[$80:9139]  ;} Queue sound 2Dh, sound library 3, max queued sounds allowed = 3 (gaining/losing incremental health)
 
-$82:DC45 AD C2 09    LDA $09C2  [$7E:09C2]
-$82:DC48 18          CLC
-$82:DC49 69 01 00    ADC #$0001
-$82:DC4C 8D C2 09    STA $09C2  [$7E:09C2]
-$82:DC4F CD C4 09    CMP $09C4  [$7E:09C4]
-$82:DC52 30 08       BMI $08    [$DC5C]
-$82:DC54 AD C4 09    LDA $09C4  [$7E:09C4]
-$82:DC57 8D C2 09    STA $09C2  [$7E:09C2]
+$82:DC45 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$82:DC48 18          CLC                    ;|
+$82:DC49 69 01 00    ADC #$0001             ;} Samus health += 1
+$82:DC4C 8D C2 09    STA $09C2  [$7E:09C2]  ;/
+$82:DC4F CD C4 09    CMP $09C4  [$7E:09C4]  ;\
+$82:DC52 30 08       BMI $08    [$DC5C]     ;} If [Samus health] >= [Samus max health]:
+$82:DC54 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
+$82:DC57 8D C2 09    STA $09C2  [$7E:09C2]  ;} Samus health = [Samus max health]
 $82:DC5A 80 18       BRA $18    [$DC74]
 
-$82:DC5C AD D6 09    LDA $09D6  [$7E:09D6]
-$82:DC5F 38          SEC
-$82:DC60 E9 01 00    SBC #$0001
-$82:DC63 8D D6 09    STA $09D6  [$7E:09D6]
-$82:DC66 F0 0C       BEQ $0C    [$DC74]
-$82:DC68 10 0D       BPL $0D    [$DC77]
-$82:DC6A AD C2 09    LDA $09C2  [$7E:09C2]
-$82:DC6D 18          CLC
-$82:DC6E 6D D6 09    ADC $09D6  [$7E:09D6]
-$82:DC71 8D C2 09    STA $09C2  [$7E:09C2]
+$82:DC5C AD D6 09    LDA $09D6  [$7E:09D6]  ;\ Else ([Samus health] < [Samus max health]):
+$82:DC5F 38          SEC                    ;|
+$82:DC60 E9 01 00    SBC #$0001             ;} Samus reserve health -= 1
+$82:DC63 8D D6 09    STA $09D6  [$7E:09D6]  ;/
+$82:DC66 F0 0C       BEQ $0C    [$DC74]     ; If [Samus reserve health] != 0:
+$82:DC68 10 0D       BPL $0D    [$DC77]     ; If [Samus reserve health] > 0: go to BRANCH_RETURN
+$82:DC6A AD C2 09    LDA $09C2  [$7E:09C2]  ;\
+$82:DC6D 18          CLC                    ;|
+$82:DC6E 6D D6 09    ADC $09D6  [$7E:09D6]  ;} Samus health += [Samus reserve health] <-- this is dead code
+$82:DC71 8D C2 09    STA $09C2  [$7E:09C2]  ;/
 
-$82:DC74 9C D6 09    STZ $09D6  [$7E:09D6]
+$82:DC74 9C D6 09    STZ $09D6  [$7E:09D6]  ; Samus reserve health = 0
 
-$82:DC77 AD D6 09    LDA $09D6  [$7E:09D6]
-$82:DC7A D0 02       BNE $02    [$DC7E]
-$82:DC7C 38          SEC
-$82:DC7D 60          RTS
+; BRANCH_RETURN
+$82:DC77 AD D6 09    LDA $09D6  [$7E:09D6]  ;\
+$82:DC7A D0 02       BNE $02    [$DC7E]     ;} If [Samus reserve health] = 0:
+$82:DC7C 38          SEC                    ;\
+$82:DC7D 60          RTS                    ;} Return carry set
 
-$82:DC7E 18          CLC
-$82:DC7F 60          RTS
+$82:DC7E 18          CLC                    ;\
+$82:DC7F 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $DC80: Game state 13h (Samus ran out of health) ;;;
+;;; $DC80: Game state 13h (death sequence, start) ;;;
 {
 $82:DC80 08          PHP
 $82:DC81 C2 30       REP #$30
-$82:DC83 20 44 8B    JSR $8B44  [$82:8B44]
-$82:DC86 A2 FE 01    LDX #$01FE
-
-$82:DC89 BF 00 C0 7E LDA $7EC000,x[$7E:C1FE]
-$82:DC8D 9F 00 33 7E STA $7E3300,x[$7E:34FE]
-$82:DC91 CA          DEX
-$82:DC92 CA          DEX
-$82:DC93 10 F4       BPL $F4    [$DC89]
-$82:DC95 A2 7E 01    LDX #$017E
-$82:DC98 A9 00 00    LDA #$0000
-
-$82:DC9B 9F 00 C2 7E STA $7EC200,x[$7E:C37E]
-$82:DC9F CA          DEX
-$82:DCA0 CA          DEX
-$82:DCA1 10 F8       BPL $F8    [$DC9B]
-$82:DCA3 A2 5E 00    LDX #$005E
-$82:DCA6 A9 00 00    LDA #$0000
-
-$82:DCA9 9F A0 C3 7E STA $7EC3A0,x[$7E:C3FE]
-$82:DCAD CA          DEX
-$82:DCAE CA          DEX
-$82:DCAF 10 F8       BPL $F8    [$DCA9]
-$82:DCB1 A2 1E 00    LDX #$001E
-
-$82:DCB4 BF 80 C1 7E LDA $7EC180,x[$7E:C19E]
-$82:DCB8 9F 80 C3 7E STA $7EC380,x[$7E:C39E]
-$82:DCBC CA          DEX
-$82:DCBD CA          DEX
-$82:DCBE 10 F4       BPL $F4    [$DCB4]
+$82:DC83 20 44 8B    JSR $8B44  [$82:8B44]  ; Main gameplay
+$82:DC86 A2 FE 01    LDX #$01FE             ;\
+                                            ;|
+$82:DC89 BF 00 C0 7E LDA $7EC000,x[$7E:C1FE];|
+$82:DC8D 9F 00 33 7E STA $7E3300,x[$7E:34FE];} $7E:3300..34FF = [palettes]
+$82:DC91 CA          DEX                    ;|
+$82:DC92 CA          DEX                    ;|
+$82:DC93 10 F4       BPL $F4    [$DC89]     ;/
+$82:DC95 A2 7E 01    LDX #$017E             ;\
+$82:DC98 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$82:DC9B 9F 00 C2 7E STA $7EC200,x[$7E:C37E];|
+$82:DC9F CA          DEX                    ;|
+$82:DCA0 CA          DEX                    ;|
+$82:DCA1 10 F8       BPL $F8    [$DC9B]     ;|
+$82:DCA3 A2 5E 00    LDX #$005E             ;} Target palettes = 0
+$82:DCA6 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$82:DCA9 9F A0 C3 7E STA $7EC3A0,x[$7E:C3FE];|
+$82:DCAD CA          DEX                    ;|
+$82:DCAE CA          DEX                    ;|
+$82:DCAF 10 F8       BPL $F8    [$DCA9]     ;/
+$82:DCB1 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$82:DCB4 BF 80 C1 7E LDA $7EC180,x[$7E:C19E];|
+$82:DCB8 9F 80 C3 7E STA $7EC380,x[$7E:C39E];} Target sprite palette 4 = [sprite palette 4]
+$82:DCBC CA          DEX                    ;|
+$82:DCBD CA          DEX                    ;|
+$82:DCBE 10 F4       BPL $F4    [$DCB4]     ;/
 $82:DCC0 A9 03 00    LDA #$0003
 $82:DCC3 8D E2 0D    STA $0DE2  [$7E:0DE2]
 $82:DCC6 9C E4 0D    STZ $0DE4  [$7E:0DE4]
 $82:DCC9 9C E6 0D    STZ $0DE6  [$7E:0DE6]
 $82:DCCC 9C E8 0D    STZ $0DE8  [$7E:0DE8]
-$82:DCCF 9C D2 09    STZ $09D2  [$7E:09D2]
-$82:DCD2 9C 04 0A    STZ $0A04  [$7E:0A04]
-$82:DCD5 9C A8 18    STZ $18A8  [$7E:18A8]
-$82:DCD8 9C AA 18    STZ $18AA  [$7E:18AA]
-$82:DCDB EE 98 09    INC $0998  [$7E:0998]  ; Game state = 14h (Samus ran out of health, black out surroundings)
+$82:DCCF 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
+$82:DCD2 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = nothing
+$82:DCD5 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
+$82:DCD8 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knockback timer = 0
+$82:DCDB EE 98 09    INC $0998  [$7E:0998]  ; Game state = 14h (death sequence, black out surroundings)
 $82:DCDE 28          PLP
 $82:DCDF 60          RTS
 }
 
 
-;;; $DCE0: Game state 14h (Samus ran out of health, black out surroundings) ;;;
+;;; $DCE0: Game state 14h (death sequence, black out surroundings) ;;;
 {
 $82:DCE0 08          PHP
 $82:DCE1 C2 30       REP #$30
-$82:DCE3 20 44 8B    JSR $8B44  [$82:8B44]
-$82:DCE6 A9 06 00    LDA #$0006
-$82:DCE9 8F 02 C4 7E STA $7EC402[$7E:C402]
+$82:DCE3 20 44 8B    JSR $8B44  [$82:8B44]  ; Main gameplay
+$82:DCE6 A9 06 00    LDA #$0006             ;\
+$82:DCE9 8F 02 C4 7E STA $7EC402[$7E:C402]  ;} Palette change denominator = 6
 $82:DCED 20 02 DA    JSR $DA02  [$82:DA02]  ; Advance gradual colour change of all palettes
-$82:DCF0 B0 02       BCS $02    [$DCF4]
+$82:DCF0 B0 02       BCS $02    [$DCF4]     ; If not reached target colour:
 $82:DCF2 28          PLP
-$82:DCF3 60          RTS
+$82:DCF3 60          RTS                    ; Return
 
-$82:DCF4 22 9E 82 88 JSL $88829E[$88:829E]
+$82:DCF4 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
 $82:DCF8 22 5F 98 80 JSL $80985F[$80:985F]  ; Disable h/v-counter interrupts
-$82:DCFC 9C 82 19    STZ $1982  [$7E:1982]
-$82:DCFF 64 AB       STZ $AB    [$7E:00AB]
+$82:DCFC 9C 82 19    STZ $1982  [$7E:1982]  ; Default layer blending configuration = 0
+$82:DCFF 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = nothing
 $82:DD01 E2 20       SEP #$20
 $82:DD03 64 6E       STZ $6E    [$7E:006E]  ;\
 $82:DD05 64 71       STZ $71    [$7E:0071]  ;} Disable colour math
-$82:DD07 A9 10       LDA #$10
-$82:DD09 85 69       STA $69    [$7E:0069]
-$82:DD0B 64 6B       STZ $6B    [$7E:006B]
-$82:DD0D 64 6C       STZ $6C    [$7E:006C]
-$82:DD0F 64 6D       STZ $6D    [$7E:006D]
-$82:DD11 A9 09       LDA #$09
-$82:DD13 85 55       STA $55    [$7E:0055]
+$82:DD07 A9 10       LDA #$10               ;\
+$82:DD09 85 69       STA $69    [$7E:0069]  ;} Main screen layers = sprites
+$82:DD0B 64 6B       STZ $6B    [$7E:006B]  ; Disable subscreen layers
+$82:DD0D 64 6C       STZ $6C    [$7E:006C]  ;\
+$82:DD0F 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area
+$82:DD11 A9 09       LDA #$09               ;\
+$82:DD13 85 55       STA $55    [$7E:0055]  ;} Use mode 1 with BG3 priority and 8x8 tile sizes
 $82:DD15 C2 20       REP #$20
-$82:DD17 9C E2 0D    STZ $0DE2  [$7E:0DE2]
-$82:DD1A 9C 23 07    STZ $0723  [$7E:0723]
-$82:DD1D 9C 25 07    STZ $0725  [$7E:0725]
-$82:DD20 A2 FE 00    LDX #$00FE
-
-$82:DD23 9E 8D 1A    STZ $1A8D,x[$7E:1B8B]
-$82:DD26 CA          DEX
-$82:DD27 CA          DEX
-$82:DD28 10 F9       BPL $F9    [$DD23]
-$82:DD2A A9 10 00    LDA #$0010
-$82:DD2D 8D E8 0D    STA $0DE8  [$7E:0DE8]
-$82:DD30 A9 03 00    LDA #$0003
-$82:DD33 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$82:DD36 9C E4 0D    STZ $0DE4  [$7E:0DE4]
-$82:DD39 9C E6 0D    STZ $0DE6  [$7E:0DE6]
-$82:DD3C EE 98 09    INC $0998  [$7E:0998]  ; Game state = 15h (Samus ran out of health, black out surroundings)
-$82:DD3F 9C 92 05    STZ $0592  [$7E:0592]
+$82:DD17 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; >_<;
+$82:DD1A 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:DD1D 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$82:DD20 A2 FE 00    LDX #$00FE             ;\
+                                            ;|
+$82:DD23 9E 8D 1A    STZ $1A8D,x[$7E:1B8B]  ;|
+$82:DD26 CA          DEX                    ;} $1A8D..1B8C = 0
+$82:DD27 CA          DEX                    ;|
+$82:DD28 10 F9       BPL $F9    [$DD23]     ;/
+$82:DD2A A9 10 00    LDA #$0010             ;\
+$82:DD2D 8D E8 0D    STA $0DE8  [$7E:0DE8]  ;} Death animation pre-flashing timer = 10h
+$82:DD30 A9 03 00    LDA #$0003             ;\
+$82:DD33 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Death animation timer = 3
+$82:DD36 9C E4 0D    STZ $0DE4  [$7E:0DE4]  ; Death animation index = 0
+$82:DD39 9C E6 0D    STZ $0DE6  [$7E:0DE6]  ; Death animation counter = 0
+$82:DD3C EE 98 09    INC $0998  [$7E:0998]  ; Game state = 15h (death sequence, wait for music)
+$82:DD3F 9C 92 05    STZ $0592  [$7E:0592]  ; Power bomb explosion status = 0
 $82:DD42 A9 02 00    LDA #$0002             ;\
 $82:DD45 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 $82:DD49 A9 71 00    LDA #$0071             ;\
@@ -9373,7 +9523,7 @@ $82:DD4C 22 A3 90 80 JSL $8090A3[$80:90A3]  ;} Queue sound 71h, sound library 2,
 $82:DD50 A9 01 00    LDA #$0001             ;\
 $82:DD53 22 25 91 80 JSL $809125[$80:9125]  ;} Queue sound 1, sound library 3, max queued sounds allowed = 15 (silence)
 $82:DD57 A9 00 00    LDA #$0000             ;\
-$82:DD5A 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$82:DD5A 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:DD5E A9 39 FF    LDA #$FF39             ;\
 $82:DD61 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue death music data
 $82:DD65 A9 05 00    LDA #$0005             ;\
@@ -9384,74 +9534,75 @@ $82:DD70 60          RTS
 }
 
 
-;;; $DD71: Game state 15h (Samus ran out of health, black out surroundings) ;;;
+;;; $DD71: Game state 15h (death sequence, wait for music) ;;;
 {
 $82:DD71 08          PHP
 $82:DD72 C2 30       REP #$30
-$82:DD74 22 00 8A 90 JSL $908A00[$90:8A00]
-$82:DD78 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ; Check if music is queued
-$82:DD7C B0 07       BCS $07    [$DD85]
-$82:DD7E 22 A7 B3 9B JSL $9BB3A7[$9B:B3A7]
-$82:DD82 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 16h (Samus ran out of health, starting death animation)
+$82:DD74 22 00 8A 90 JSL $908A00[$90:8A00]  ; Draw inanimate Samus
+$82:DD78 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
+$82:DD7C B0 07       BCS $07    [$DD85]     ;} If music is queued: return
+$82:DD7E 22 A7 B3 9B JSL $9BB3A7[$9B:B3A7]  ; Set Samus death sequence pose
+$82:DD82 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 16h (death sequence, pre-flashing)
 
 $82:DD85 28          PLP
 $82:DD86 60          RTS
 }
 
 
-;;; $DD87: Game state 16h (Samus ran out of health, starting death animation) ;;;
+;;; $DD87: Game state 16h (death sequence, pre-flashing) ;;;
 {
+; Death animation pre-flashing timer is initialised to 10h by $DCE0
 $82:DD87 08          PHP
 $82:DD88 C2 30       REP #$30
-$82:DD8A 22 3C B4 9B JSL $9BB43C[$9B:B43C]
-$82:DD8E CE E8 0D    DEC $0DE8  [$7E:0DE8]
-$82:DD91 F0 02       BEQ $02    [$DD95]
-$82:DD93 10 03       BPL $03    [$DD98]
+$82:DD8A 22 3C B4 9B JSL $9BB43C[$9B:B43C]  ; Draw Samus starting death animation
+$82:DD8E CE E8 0D    DEC $0DE8  [$7E:0DE8]  ; Decrement death animation pre-flashing timer
+$82:DD91 F0 02       BEQ $02    [$DD95]     ;\
+$82:DD93 10 03       BPL $03    [$DD98]     ;} If [death animation pre-flashing timer] > 0: return
 
-$82:DD95 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 17h (Samus ran out of health, flashing)
+$82:DD95 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 17h (death sequence, flashing)
 
 $82:DD98 28          PLP
 $82:DD99 60          RTS
 }
 
 
-;;; $DD9A: Game state 17h (Samus ran out of health, flashing) ;;;
+;;; $DD9A: Game state 17h (death sequence, flashing) ;;;
 {
 $82:DD9A 08          PHP
 $82:DD9B C2 30       REP #$30
-$82:DD9D 22 41 B4 9B JSL $9BB441[$9B:B441]
-$82:DDA1 AA          TAX
-$82:DDA2 F0 05       BEQ $05    [$DDA9]
-$82:DDA4 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 18h (Samus ran out of health, explosion)
-$82:DDA7 80 04       BRA $04    [$DDAD]
+$82:DD9D 22 41 B4 9B JSL $9BB441[$9B:B441]  ; Handle death animation flashing
+$82:DDA1 AA          TAX                    ;\
+$82:DDA2 F0 05       BEQ $05    [$DDA9]     ;} If flashing has ended:
+$82:DDA4 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 18h (death sequence, explosion white out)
+$82:DDA7 80 04       BRA $04    [$DDAD]     ; Return
 
-$82:DDA9 22 98 89 90 JSL $908998[$90:8998]
+$82:DDA9 22 98 89 90 JSL $908998[$90:8998]  ; Draw Samus during death animation
 
 $82:DDAD 28          PLP
 $82:DDAE 60          RTS
 }
 
 
-;;; $DDAF: Game state 18h (Samus ran out of health, explosion) ;;;
+;;; $DDAF: Game state 18h (death sequence, explosion white out) ;;;
 {
 $82:DDAF 08          PHP
 $82:DDB0 C2 30       REP #$30
-$82:DDB2 22 01 B7 9B JSL $9BB701[$9B:B701]
-$82:DDB6 AA          TAX
-$82:DDB7 F0 0C       BEQ $0C    [$DDC5]
-$82:DDB9 A9 01 00    LDA #$0001
-$82:DDBC 8D 23 07    STA $0723  [$7E:0723]
-$82:DDBF 8D 25 07    STA $0725  [$7E:0725]
-$82:DDC2 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 19h (Samus ran out of health, black out)
+$82:DDB2 22 01 B7 9B JSL $9BB701[$9B:B701]  ; Handle death sequence suit explosion white out
+$82:DDB6 AA          TAX                    ;\
+$82:DDB7 F0 0C       BEQ $0C    [$DDC5]     ;} If finished:
+$82:DDB9 A9 01 00    LDA #$0001             ;\
+$82:DDBC 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
+$82:DDBF 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
+$82:DDC2 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 19h (death sequence, black out)
 
 $82:DDC5 28          PLP
 $82:DDC6 60          RTS
 }
 
 
-;;; $DDC7: Game state 19h (Samus ran out of health, black out) ;;;
+;;; $DDC7: Game state 19h (death sequence, black out) ;;;
 {
-; Samus ran out of health, black out (also cut to by timeup death)
+; Also cut to by timeup death
 $82:DDC7 08          PHP
 $82:DDC8 C2 30       REP #$30
 $82:DDCA 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
@@ -9461,20 +9612,22 @@ $82:DDD2 C9 80       CMP #$80               ;} If not finished fading out: retur
 $82:DDD4 D0 17       BNE $17    [$DDED]     ;/
 $82:DDD6 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:DDDA C2 20       REP #$20
-$82:DDDC 9C 23 07    STZ $0723  [$7E:0723]
-$82:DDDF 9C 25 07    STZ $0725  [$7E:0725]
+$82:DDDC 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:DDDF 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:DDE2 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 1Ah (game over screen)
 $82:DDE5 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = 0
-$82:DDE8 9C F5 05    STZ $05F5  [$7E:05F5]
+$82:DDE8 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $82:DDEB 28          PLP
-$82:DDEC 60          RTS
+$82:DDEC 60          RTS                    ; Return
 
-$82:DDED C2 20       REP #$20
+$82:DDED C2 20       REP #$20               ; >_<;
 $82:DDEF 28          PLP
 $82:DDF0 60          RTS
 }
 
 
+;;; $DDF1..E97B: Door transition ;;;
+{
 ;;; $DDF1: Load destination room CRE bitset ;;;
 {
 $82:DDF1 8B          PHB
@@ -9483,7 +9636,7 @@ $82:DDF3 F4 00 8F    PEA $8F00              ;\
 $82:DDF6 AB          PLB                    ;} DB = $8F
 $82:DDF7 AB          PLB                    ;/
 $82:DDF8 AE 8D 07    LDX $078D  [$7E:078D]  ;\
-$82:DDFB BF 00 00 83 LDA $830000,x[$83:AB58];} X = destination room pointer
+$82:DDFB BF 00 00 83 LDA $830000,x[$83:AB58];} X = (destination room pointer)
 $82:DDFF AA          TAX                    ;/
 $82:DE00 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $82:DE03 8D B1 07    STA $07B1  [$7E:07B1]  ;} Previous CRE bitset = [CRE bitset]
@@ -9498,6 +9651,9 @@ $82:DE11 60          RTS
 
 ;;; $DE12: Load door header ;;;
 {
+; Regarding door transition speed.
+; For speed s, the distance Samus is moved is 40h * s and 38h * s pixels total for horizontal and vertical transitions respectively
+; With the default speeds of 0.C8h and 1.80h, that's 32h and 54h pixels distance respectively
 $82:DE12 F4 00 83    PEA $8300              ;\
 $82:DE15 AB          PLB                    ;} DB = $83
 $82:DE16 AB          PLB                    ;/
@@ -9521,21 +9677,21 @@ $82:DE45 EB          XBA                    ;} Door destination Y position = [[X
 $82:DE46 8D 29 09    STA $0929  [$7E:0929]  ;/
 $82:DE49 64 12       STZ $12    [$7E:0012]
 $82:DE4B 64 14       STZ $14    [$7E:0014]
-$82:DE4D BD 08 00    LDA $0008,x[$83:AB60]  ;\
-$82:DE50 10 10       BPL $10    [$DE62]     ;} If [[X] + 8] >= 0: go to BRANCH_POSITIVE
+$82:DE4D BD 08 00    LDA $0008,x[$83:AB60]  ; A = [[X] + 8]
+$82:DE50 10 10       BPL $10    [$DE62]     ; If [A] >= 0: go to BRANCH_POSITIVE
 $82:DE52 AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:DE55 89 02 00    BIT #$0002             ;} If door orientation is horizontal:
 $82:DE58 D0 05       BNE $05    [$DE5F]     ;/
-$82:DE5A A9 C8 00    LDA #$00C8             ;\
-$82:DE5D 80 03       BRA $03    [$DE62]     ;} Door transition speed = 0.C800h
+$82:DE5A A9 C8 00    LDA #$00C8             ; A = C8h
+$82:DE5D 80 03       BRA $03    [$DE62]
 
-                                            ; Else (door orientation is not horizontal):
-$82:DE5F A9 80 01    LDA #$0180             ; Door transition speed = 1.8000h
+                                            ; Else (door orientation is vertical):
+$82:DE5F A9 80 01    LDA #$0180             ; A = 180h
 
 ; BRANCH_POSITIVE
 $82:DE62 85 13       STA $13    [$7E:0013]  ;\
 $82:DE64 A5 12       LDA $12    [$7E:0012]  ;|
-$82:DE66 8D 2B 09    STA $092B  [$7E:092B]  ;} Door transition speed = [[X] + 8] / 100h
+$82:DE66 8D 2B 09    STA $092B  [$7E:092B]  ;} Door transition speed = [A] / 100h
 $82:DE69 A5 14       LDA $14    [$7E:0014]  ;|
 $82:DE6B 8D 2D 09    STA $092D  [$7E:092D]  ;/
 $82:DE6E 60          RTS
@@ -9547,51 +9703,51 @@ $82:DE6E 60          RTS
 $82:DE6F F4 00 8F    PEA $8F00              ;\
 $82:DE72 AB          PLB                    ;} DB = $8F
 $82:DE73 AB          PLB                    ;/
-$82:DE74 AE 9B 07    LDX $079B  [$7E:079B]  ; X = room header pointer
+$82:DE74 AE 9B 07    LDX $079B  [$7E:079B]  ; X = [room pointer]
 $82:DE77 BD 00 00    LDA $0000,x[$8F:DF45]  ;\
-$82:DE7A 29 FF 00    AND #$00FF             ;} Room index
+$82:DE7A 29 FF 00    AND #$00FF             ;} Room index = [[X]]
 $82:DE7D 8D 9D 07    STA $079D  [$7E:079D]  ;/
 $82:DE80 BD 01 00    LDA $0001,x[$8F:DF46]  ;\
-$82:DE83 29 FF 00    AND #$00FF             ;} Area
+$82:DE83 29 FF 00    AND #$00FF             ;} Area index = [[X] + 1]
 $82:DE86 8D 9F 07    STA $079F  [$7E:079F]  ;/
 $82:DE89 BD 02 00    LDA $0002,x[$8F:DF47]  ;\
-$82:DE8C 29 FF 00    AND #$00FF             ;} X
+$82:DE8C 29 FF 00    AND #$00FF             ;} Room X co-ordinate = [[X] + 2]
 $82:DE8F 8D A1 07    STA $07A1  [$7E:07A1]  ;/
 $82:DE92 BD 03 00    LDA $0003,x[$8F:DF48]  ;\
-$82:DE95 29 FF 00    AND #$00FF             ;} Y
+$82:DE95 29 FF 00    AND #$00FF             ;} Room Y co-ordinate = [[X] + 3]
 $82:DE98 8D A3 07    STA $07A3  [$7E:07A3]  ;/
 $82:DE9B BD 04 00    LDA $0004,x[$8F:DF49]  ;\
-$82:DE9E 29 FF 00    AND #$00FF             ;} Width in screens
+$82:DE9E 29 FF 00    AND #$00FF             ;} Room width in scrolls = [[X] + 4]
 $82:DEA1 8D A9 07    STA $07A9  [$7E:07A9]  ;/
 $82:DEA4 0A          ASL A                  ;\
 $82:DEA5 0A          ASL A                  ;|
-$82:DEA6 0A          ASL A                  ;} Width in blocks
+$82:DEA6 0A          ASL A                  ;} Room width in blocks = [[X] + 4] * 10h
 $82:DEA7 0A          ASL A                  ;|
 $82:DEA8 8D A5 07    STA $07A5  [$7E:07A5]  ;/
 $82:DEAB BD 05 00    LDA $0005,x[$8F:DF4A]  ;\
-$82:DEAE 29 FF 00    AND #$00FF             ;} Height in screens
+$82:DEAE 29 FF 00    AND #$00FF             ;} Room height in scrolls = [[X] + 5]
 $82:DEB1 8D AB 07    STA $07AB  [$7E:07AB]  ;/
 $82:DEB4 0A          ASL A                  ;\
 $82:DEB5 0A          ASL A                  ;|
-$82:DEB6 0A          ASL A                  ;} Height in blocks
+$82:DEB6 0A          ASL A                  ;} Room height in blocks = [[X] + ] * 10h
 $82:DEB7 0A          ASL A                  ;|
 $82:DEB8 8D A7 07    STA $07A7  [$7E:07A7]  ;/
 $82:DEBB BD 06 00    LDA $0006,x[$8F:DF4B]  ;\
-$82:DEBE 29 FF 00    AND #$00FF             ;} Up scroller
+$82:DEBE 29 FF 00    AND #$00FF             ;} Up scroller = [[X] + 6]
 $82:DEC1 8D AD 07    STA $07AD  [$7E:07AD]  ;/
 $82:DEC4 BD 07 00    LDA $0007,x[$8F:DF4C]  ;\
-$82:DEC7 29 FF 00    AND #$00FF             ;} Down scroller
+$82:DEC7 29 FF 00    AND #$00FF             ;} Down scroller = [[X] + 7]
 $82:DECA 8D AF 07    STA $07AF  [$7E:07AF]  ;/
 $82:DECD BD 09 00    LDA $0009,x[$8F:DF4E]  ;\
-$82:DED0 8D B5 07    STA $07B5  [$7E:07B5]  ;} Door out pointer
-$82:DED3 22 D2 E5 8F JSL $8FE5D2[$8F:E5D2]  ; Determine state header
+$82:DED0 8D B5 07    STA $07B5  [$7E:07B5]  ;} Door list pointer = [[X] + 9]
+$82:DED3 22 D2 E5 8F JSL $8FE5D2[$8F:E5D2]  ; Room state checking handler
 $82:DED7 E2 20       SEP #$20               ;\
 $82:DED9 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $82:DEDC 8D 02 42    STA $4202  [$7E:4202]  ;|
 $82:DEDF AD A7 07    LDA $07A7  [$7E:07A7]  ;|
 $82:DEE2 8D 03 42    STA $4203  [$7E:4203]  ;|
 $82:DEE5 C2 20       REP #$20               ;|
-$82:DEE7 EA          NOP                    ;} Size of level data
+$82:DEE7 EA          NOP                    ;} Level data size = [room width in blocks] * [room height in blocks] * 2
 $82:DEE8 EA          NOP                    ;|
 $82:DEE9 EA          NOP                    ;|
 $82:DEEA AD 16 42    LDA $4216  [$7E:4216]  ;|
@@ -9660,7 +9816,7 @@ $82:DF74 C9 30       CMP #$30               ;} If h/v-counter interrupts are not
 $82:DF76 F0 04       BEQ $04    [$DF7C]     ;/
 $82:DF78 22 41 98 80 JSL $809841[$80:9841]  ; Enable h/v-counter interrupts now
 
-$82:DF7C C2 20       REP #$20
+$82:DF7C C2 20       REP #$20               ; >_<;
 $82:DF7E 28          PLP
 $82:DF7F 60          RTS
 }
@@ -9690,13 +9846,13 @@ $82:DF98 60          RTS
 ;;; $DF99: Save map explored if elevator ;;;
 {
 $82:DF99 AD 93 07    LDA $0793  [$7E:0793]  ;\
-$82:DF9C 29 0F 00    AND #$000F             ;} If door bitflags & Fh:
-$82:DF9F F0 04       BEQ $04    [$DFA5]     ;/
+$82:DF9C 29 0F 00    AND #$000F             ;} A = [elevator door properties] & Fh (elevator index to mark as used)
+$82:DF9F F0 04       BEQ $04    [$DFA5]     ; If [A] != 0:
 $82:DFA1 22 07 CD 80 JSL $80CD07[$80:CD07]  ; Set elevators as used
 
 $82:DFA5 AE 8D 07    LDX $078D  [$7E:078D]  ;\
 $82:DFA8 BF 02 00 83 LDA $830002,x[$83:AB4E];|
-$82:DFAC 89 40 00    BIT #$0040             ;} If door bitflags & 40h:
+$82:DFAC 89 40 00    BIT #$0040             ;} If [elevator door properties] & 40h != 0:
 $82:DFAF F0 04       BEQ $04    [$DFB5]     ;/
 $82:DFB1 22 C6 85 80 JSL $8085C6[$80:85C6]  ; Mirror current area's map explored
 
@@ -9708,7 +9864,7 @@ $82:DFB5 60          RTS
 {
 $82:DFB6 AE 8D 07    LDX $078D  [$7E:078D]  ;\
 $82:DFB9 BF 02 00 83 LDA $830002,x[$83:AB4E];|
-$82:DFBD 89 40 00    BIT #$0040             ;} If door bitflags & 40h:
+$82:DFBD 89 40 00    BIT #$0040             ;} If [elevator door properties] & 40h != 0:
 $82:DFC0 F0 04       BEQ $04    [$DFC6]     ;/
 $82:DFC2 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
 
@@ -9716,11 +9872,12 @@ $82:DFC6 60          RTS
 }
 
 
-;;; $DFC7: Ensures that Samus is drawn every frame? ;;;
+;;; $DFC7: Draw inanimate Samus ;;;
 {
+; Elevator drawing of Samus is done by $90:EC14
 $82:DFC7 AD 16 0E    LDA $0E16  [$7E:0E16]  ;\
 $82:DFCA D0 04       BNE $04    [$DFD0]     ;} If door is an elevator: return
-$82:DFCC 22 00 8A 90 JSL $908A00[$90:8A00]  ; Execute $90:8A00
+$82:DFCC 22 00 8A 90 JSL $908A00[$90:8A00]  ; Draw inanimate Samus
 
 $82:DFD0 60          RTS
 }
@@ -9736,93 +9893,93 @@ $82:DFDB 9B          TXY
 
 ; LOOP
 $82:DFDC BF 00 00 B4 LDA $B40000,x[$B4:9226];\
-$82:DFE0 C9 FF FF    CMP #$FFFF             ;} If enemy ID = $FFFF: return
+$82:DFE0 C9 FF FF    CMP #$FFFF             ;} If (enemy ID) = $FFFF: return
 $82:DFE3 F0 53       BEQ $53    [$E038]     ;/
 $82:DFE5 AA          TAX                    ;\
 $82:DFE6 BF 36 00 A0 LDA $A00036,x[$A0:E275];|
-$82:DFEA 8D C0 05    STA $05C0  [$7E:05C0]  ;} Door transition VRAM update source = enemy tile data pointer
+$82:DFEA 8D C0 05    STA $05C0  [$7E:05C0]  ;} Door transition VRAM update source = (enemy tile data pointer)
 $82:DFED BF 37 00 A0 LDA $A00037,x[$A0:E276];|
 $82:DFF1 8D C1 05    STA $05C1  [$7E:05C1]  ;/
 $82:DFF4 BF 00 00 A0 LDA $A00000,x[$A0:E23F];\
-$82:DFF8 30 14       BMI $14    [$E00E]     ;} If enemy tile data size & 8000h = 0:
-$82:DFFA 8D C3 05    STA $05C3  [$7E:05C3]  ; Door transition VRAM update size = enemy tile data size
+$82:DFF8 30 14       BMI $14    [$E00E]     ;} If (enemy tile data size) & 8000h = 0:
+$82:DFFA 8D C3 05    STA $05C3  [$7E:05C3]  ; Door transition VRAM update size = (enemy tile data size)
 $82:DFFD A5 12       LDA $12    [$7E:0012]  ;\
-$82:DFFF 8D BE 05    STA $05BE  [$7E:05BE]  ;} Door transition VRAM update destination = tile data VRAM destination
+$82:DFFF 8D BE 05    STA $05BE  [$7E:05BE]  ;} Door transition VRAM update destination = [$12]
 $82:E002 BF 00 00 A0 LDA $A00000,x[$A0:E13F];\
 $82:E006 4A          LSR A                  ;|
-$82:E007 18          CLC                    ;} Tile data VRAM destination += enemy tile data size / 2
+$82:E007 18          CLC                    ;} $12 += (enemy tile data size) / 2
 $82:E008 65 12       ADC $12    [$7E:0012]  ;|
 $82:E00A 85 12       STA $12    [$7E:0012]  ;/
 $82:E00C 80 18       BRA $18    [$E026]
 
-$82:E00E 29 FF 7F    AND #$7FFF             ;\ Else (enemy tile data size & 8000h != 0):
-$82:E011 8D C3 05    STA $05C3  [$7E:05C3]  ;} Door transition VRAM update size = enemy tile data size & ~8000h
+$82:E00E 29 FF 7F    AND #$7FFF             ;\ Else ((enemy tile data size) & 8000h != 0):
+$82:E011 8D C3 05    STA $05C3  [$7E:05C3]  ;} Door transition VRAM update size = (enemy tile data size) & ~8000h
 $82:E014 BB          TYX                    ;\
 $82:E015 BF 02 00 B4 LDA $B40002,x[$B4:9228];|
 $82:E019 29 00 F0    AND #$F000             ;|
 $82:E01C 4A          LSR A                  ;|
-$82:E01D 4A          LSR A                  ;} Door transition VRAM update destination = $6000 | enemy palette index >> 4 & F00h
+$82:E01D 4A          LSR A                  ;} Door transition VRAM update destination = $6000 | (enemy palette index) >> 4 & F00h
 $82:E01E 4A          LSR A                  ;|
 $82:E01F 4A          LSR A                  ;|
 $82:E020 09 00 60    ORA #$6000             ;|
 $82:E023 8D BE 05    STA $05BE  [$7E:05BE]  ;/
 
 $82:E026 A9 00 80    LDA #$8000             ;\
-$82:E029 0C BC 05    TSB $05BC  [$7E:05BC]  ;} Door transition VRAM update request flag |= 8000h
+$82:E029 0C BC 05    TSB $05BC  [$7E:05BC]  ;} Flag door transition VRAM update
 
 $82:E02C AD BC 05    LDA $05BC  [$7E:05BC]  ;\
-$82:E02F 30 FB       BMI $FB    [$E02C]     ;} Wait for VRAM update (triggered by IRQ)
+$82:E02F 30 FB       BMI $FB    [$E02C]     ;} Wait for door transition VRAM update
 $82:E031 C8          INY                    ;\
 $82:E032 C8          INY                    ;|
 $82:E033 C8          INY                    ;} X += 4 (next enemy)
 $82:E034 C8          INY                    ;|
 $82:E035 BB          TYX                    ;/
-$82:E036 80 A4       BRA $A4    [$DFDC]     ; Go to loop
+$82:E036 80 A4       BRA $A4    [$DFDC]     ; Go to LOOP
 
 $82:E038 60          RTS
 }
 
 
-;;; $E039: Sets up DMA transfer to VRAM ;;;
+;;; $E039: Perform door transition VRAM update ;;;
 {
 ; 7 bytes after the JSR are used as arguments:
 ;  Source address (3 bytes),
 ;  VRAM address (2 bytes),
 ;  size (2 bytes).
 ; Waits for an IRQ to DMA - ONLY during door transitions.
-$82:E039 A3 01       LDA $01,s  [$7E:1FF7]
-$82:E03B 1A          INC A
-$82:E03C 85 AD       STA $AD    [$7E:00AD]
+$82:E039 A3 01       LDA $01,s  [$7E:1FF7]  ;\
+$82:E03B 1A          INC A                  ;} $AD = (return address) + 1
+$82:E03C 85 AD       STA $AD    [$7E:00AD]  ;/
 $82:E03E 8B          PHB
-$82:E03F 4B          PHK
-$82:E040 AB          PLB
-$82:E041 B2 AD       LDA ($AD)  [$82:E449]
-$82:E043 8D C0 05    STA $05C0  [$7E:05C0]
-$82:E046 E6 AD       INC $AD    [$7E:00AD]
-$82:E048 B2 AD       LDA ($AD)  [$82:E44A]
-$82:E04A 8D C1 05    STA $05C1  [$7E:05C1]
-$82:E04D E6 AD       INC $AD    [$7E:00AD]
-$82:E04F E6 AD       INC $AD    [$7E:00AD]
-$82:E051 B2 AD       LDA ($AD)  [$82:E44C]
-$82:E053 8D BE 05    STA $05BE  [$7E:05BE]
-$82:E056 E6 AD       INC $AD    [$7E:00AD]
-$82:E058 E6 AD       INC $AD    [$7E:00AD]
-$82:E05A B2 AD       LDA ($AD)  [$82:E44E]
-$82:E05C 8D C3 05    STA $05C3  [$7E:05C3]
+$82:E03F 4B          PHK                    ;\
+$82:E040 AB          PLB                    ;} DB = $82
+$82:E041 B2 AD       LDA ($AD)  [$82:E449]  ;\
+$82:E043 8D C0 05    STA $05C0  [$7E:05C0]  ;|
+$82:E046 E6 AD       INC $AD    [$7E:00AD]  ;} Door transition VRAM update source = [[$AD]]
+$82:E048 B2 AD       LDA ($AD)  [$82:E44A]  ;|
+$82:E04A 8D C1 05    STA $05C1  [$7E:05C1]  ;/
+$82:E04D E6 AD       INC $AD    [$7E:00AD]  ;\
+$82:E04F E6 AD       INC $AD    [$7E:00AD]  ;|
+$82:E051 B2 AD       LDA ($AD)  [$82:E44C]  ;} Door transition VRAM update destination = [[$AD] + 3]
+$82:E053 8D BE 05    STA $05BE  [$7E:05BE]  ;/
+$82:E056 E6 AD       INC $AD    [$7E:00AD]  ;\
+$82:E058 E6 AD       INC $AD    [$7E:00AD]  ;|
+$82:E05A B2 AD       LDA ($AD)  [$82:E44E]  ;} Door transition VRAM update size = [[$AD] + 5]
+$82:E05C 8D C3 05    STA $05C3  [$7E:05C3]  ;/
 $82:E05F AB          PLB
-$82:E060 A5 AD       LDA $AD    [$7E:00AD]
-$82:E062 1A          INC A
-$82:E063 83 01       STA $01,s  [$7E:1FF7]
-$82:E065 A9 00 80    LDA #$8000
-$82:E068 0C BC 05    TSB $05BC  [$7E:05BC]
+$82:E060 A5 AD       LDA $AD    [$7E:00AD]  ;\
+$82:E062 1A          INC A                  ;} (Return address) = [$AD] + 7 - 1
+$82:E063 83 01       STA $01,s  [$7E:1FF7]  ;/
+$82:E065 A9 00 80    LDA #$8000             ;\
+$82:E068 0C BC 05    TSB $05BC  [$7E:05BC]  ;} Flag door transition VRAM update
 
-$82:E06B AD BC 05    LDA $05BC  [$7E:05BC]
-$82:E06E 30 FB       BMI $FB    [$E06B]
+$82:E06B AD BC 05    LDA $05BC  [$7E:05BC]  ;\
+$82:E06E 30 FB       BMI $FB    [$E06B]     ;} Wait for door transition VRAM update
 $82:E070 60          RTS
 }
 
 
-;;; $E071: Load room music ;;;
+;;; $E071: Queue room music data ;;;
 {
 $82:E071 08          PHP
 $82:E072 8B          PHB
@@ -9835,7 +9992,7 @@ $82:E080 F0 16       BEQ $16    [$E098]     ;} If [room music data index] = 0: r
 $82:E082 CD F3 07    CMP $07F3  [$7E:07F3]  ;\
 $82:E085 F0 11       BEQ $11    [$E098]     ;} If [room music data index] = [music data index]: return
 $82:E087 A9 00 00    LDA #$0000             ;\
-$82:E08A 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track 0
+$82:E08A 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:E08E AD CB 07    LDA $07CB  [$7E:07CB]  ;\
 $82:E091 09 00 FF    ORA #$FF00             ;} Queue room music data
 $82:E094 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;/
@@ -9848,6 +10005,8 @@ $82:E09A 6B          RTL
 
 ;;; $E09B: Update music track index ;;;
 {
+; $E0AC..CB can be omitted >_<;
+; Called only by $80:A07B (start gameplay) to set the music track to play when Samus fanfare finishes
 $82:E09B 08          PHP
 $82:E09C 8B          PHB
 $82:E09D C2 30       REP #$30
@@ -9931,9 +10090,9 @@ $82:E11E AD 98 09    LDA $0998  [$7E:0998]  ;\
 $82:E121 C9 28 00    CMP #$0028             ;} If in demo: return
 $82:E124 B0 0E       BCS $0E    [$E134]     ;/
 $82:E126 A9 00 00    LDA #$0000             ;\
-$82:E129 22 F7 8F 80 JSL $808FF7[$80:8FF7]  ;} Queue music track 0, [Y] frame delay
+$82:E129 22 F7 8F 80 JSL $808FF7[$80:8FF7]  ;} Queue music stop, [Y] frame delay
 $82:E12D AD F5 07    LDA $07F5  [$7E:07F5]  ;\
-$82:E130 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track [$07F5]
+$82:E130 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music track [music track index]
 
 $82:E134 7A          PLY
 $82:E135 AB          PLB
@@ -9951,27 +10110,27 @@ $82:E138 6B          RTL
 ;;; $E139: Load target colours for common sprites, beams and flashing enemies ;;;
 {
 $82:E139 C2 30       REP #$30
-$82:E13B A2 1E 00    LDX #$001E
-
-$82:E13E BF A0 81 9A LDA $9A81A0,x[$9A:81BE]
-$82:E142 9F A0 C3 7E STA $7EC3A0,x[$7E:C3BE]
-$82:E146 CA          DEX
-$82:E147 CA          DEX
-$82:E148 10 F4       BPL $F4    [$E13E]
-$82:E14A A2 1E 00    LDX #$001E
-
-$82:E14D BF C0 C1 7E LDA $7EC1C0,x[$7E:C1DE]
-$82:E151 9F C0 C3 7E STA $7EC3C0,x[$7E:C3DE]
-$82:E155 CA          DEX
-$82:E156 CA          DEX
-$82:E157 10 F4       BPL $F4    [$E14D]
-$82:E159 A2 1E 00    LDX #$001E
-
-$82:E15C BF 00 FC 9A LDA $9AFC00,x[$9A:FC1E]
-$82:E160 9F 00 C3 7E STA $7EC300,x[$7E:C31E]
-$82:E164 CA          DEX
-$82:E165 CA          DEX
-$82:E166 10 F4       BPL $F4    [$E15C]
+$82:E13B A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$82:E13E BF A0 81 9A LDA $9A81A0,x[$9A:81BE];|
+$82:E142 9F A0 C3 7E STA $7EC3A0,x[$7E:C3BE];} Target sprite palette 5 = [$9A:81BE..DD]
+$82:E146 CA          DEX                    ;|
+$82:E147 CA          DEX                    ;|
+$82:E148 10 F4       BPL $F4    [$E13E]     ;/
+$82:E14A A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$82:E14D BF C0 C1 7E LDA $7EC1C0,x[$7E:C1DE];|
+$82:E151 9F C0 C3 7E STA $7EC3C0,x[$7E:C3DE];} Target sprite palette 6 = [sprite palette 6]
+$82:E155 CA          DEX                    ;|
+$82:E156 CA          DEX                    ;|
+$82:E157 10 F4       BPL $F4    [$E14D]     ;/
+$82:E159 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$82:E15C BF 00 FC 9A LDA $9AFC00,x[$9A:FC1E];|
+$82:E160 9F 00 C3 7E STA $7EC300,x[$7E:C31E];} Target sprite palette 0 = [$9A:FC00..1F]
+$82:E164 CA          DEX                    ;|
+$82:E165 CA          DEX                    ;|
+$82:E166 10 F4       BPL $F4    [$E15C]     ;/
 $82:E168 6B          RTL
 }
 
@@ -9980,16 +10139,15 @@ $82:E168 6B          RTL
 {
 $82:E169 08          PHP
 $82:E16A C2 30       REP #$30
-$82:E16C F4 71 E1    PEA $E171
-$82:E16F 6C 9C 09    JMP ($099C)[$82:E17D]
-
-$82:E172 B0 02       BCS $02    [$E176]
+$82:E16C F4 71 E1    PEA $E171              ;\
+$82:E16F 6C 9C 09    JMP ($099C)[$82:E17D]  ;} Execute [door transition function]
+$82:E172 B0 02       BCS $02    [$E176]     ; If carry clear:
 $82:E174 28          PLP
-$82:E175 60          RTS
+$82:E175 60          RTS                    ; Return
 
 $82:E176 EE 98 09    INC $0998  [$7E:0998]  ; Game state = Ah (loading next room)
 $82:E179 28          PLP
-$82:E17A 4C B7 E1    JMP $E1B7  [$82:E1B7]
+$82:E17A 4C B7 E1    JMP $E1B7  [$82:E1B7]  ; Go to game state Ah
 }
 
 
@@ -9998,14 +10156,14 @@ $82:E17A 4C B7 E1    JMP $E1B7  [$82:E1B7]
 $82:E17D AD 16 0E    LDA $0E16  [$7E:0E16]  ;\
 $82:E180 F0 1B       BEQ $1B    [$E19D]     ;} If door is not an elevator: return carry set
 $82:E182 A9 00 00    LDA #$0000             ;\
-$82:E185 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable Samus controls?
+$82:E185 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
 $82:E189 AD 99 07    LDA $0799  [$7E:0799]  ;\
 $82:E18C 30 0F       BMI $0F    [$E19D]     ;} If elevator is going up: return carry set
 $82:E18E A9 30 00    LDA #$0030             ;\
 $82:E191 8D 2F 09    STA $092F  [$7E:092F]  ;} Downwards elevator delay timer = 30h
 $82:E194 A9 9F E1    LDA #$E19F             ;\
-$82:E197 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E19F
-$82:E19A 4C 9F E1    JMP $E19F  [$82:E19F]  ; Go to $E19F
+$82:E197 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = wait 48 frames for down elevator
+$82:E19A 4C 9F E1    JMP $E19F  [$82:E19F]  ; Go to wait 48 frames for down elevator
 
 $82:E19D 38          SEC
 $82:E19E 60          RTS
@@ -10019,9 +10177,9 @@ $82:E1A2 30 11       BMI $11    [$E1B5]     ; If [downwards elevator delay timer
 $82:E1A4 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
 $82:E1A8 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
 $82:E1AC 22 4D 88 A0 JSL $A0884D[$A0:884D]  ; Draw Samus, projectiles, enemies and enemy projectiles
-$82:E1B0 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Ensures that Samus is drawn every frame?
-$82:E1B3 18          CLC
-$82:E1B4 60          RTS
+$82:E1B0 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Draw inanimate Samus
+$82:E1B3 18          CLC                    ;\
+$82:E1B4 60          RTS                    ;} Return carry clear
 
 $82:E1B5 38          SEC
 $82:E1B6 60          RTS
@@ -10041,7 +10199,7 @@ $82:E1C7 9C 75 1E    STZ $1E75  [$7E:1E75]  ; Clear save station used flag
 $82:E1CA 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
 $82:E1CE 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
 $82:E1D2 22 4D 88 A0 JSL $A0884D[$A0:884D]  ; Draw Samus, projectiles, enemies and enemy projectiles
-$82:E1D6 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Ensures that Samus is drawn every frame?
+$82:E1D6 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Draw inanimate Samus
 $82:E1D9 20 F1 DD    JSR $DDF1  [$82:DDF1]  ; Load destination room CRE bitset
 $82:E1DC F4 00 7E    PEA $7E00              ;\
 $82:E1DF AB          PLB                    ;} DB = $7E
@@ -10055,19 +10213,19 @@ $82:E1ED CA          DEX                    ;|
 $82:E1EE CA          DEX                    ;|
 $82:E1EF 10 F6       BPL $F6    [$E1E7]     ;/
 $82:E1F1 AD 12 C0    LDA $C012  [$7E:C012]  ;\
-$82:E1F4 8D 12 C2    STA $C212  [$7E:C212]  ;} Target BG3 palette 2 colour 1 = [BG3 palette 2 colour 1]
-$82:E1F7 AD 14 C0    LDA $C014  [$7E:C014]  ;\
-$82:E1FA 8D 14 C2    STA $C214  [$7E:C214]  ;} Target BG3 palette 2 colour 2 = [BG3 palette 2 colour 2]
+$82:E1F4 8D 12 C2    STA $C212  [$7E:C212]  ;|
+$82:E1F7 AD 14 C0    LDA $C014  [$7E:C014]  ;} Target BG3 palette 2 colour 1..2 = [BG3 palette 2 colour 1..2]
+$82:E1FA 8D 14 C2    STA $C214  [$7E:C214]  ;/
 $82:E1FD AD 1A C0    LDA $C01A  [$7E:C01A]  ;\
-$82:E200 8D 1A C2    STA $C21A  [$7E:C21A]  ;} Target BG3 palette 3 colour 1 = [BG3 palette 3 colour 1]
-$82:E203 AD 1C C0    LDA $C01C  [$7E:C01C]  ;\                                  
-$82:E206 8D 1C C2    STA $C21C  [$7E:C21C]  ;} Target BG3 palette 3 colour 2 = [BG3 palette 3 colour 2]
+$82:E200 8D 1A C2    STA $C21A  [$7E:C21A]  ;|
+$82:E203 AD 1C C0    LDA $C01C  [$7E:C01C]  ;} Target BG3 palette 3 colour 1..2 = [BG3 palette 3 colour 1..2]                                  
+$82:E206 8D 1C C2    STA $C21C  [$7E:C21C]  ;/
 $82:E209 AD 22 C0    LDA $C022  [$7E:C022]  ;\
-$82:E20C 8D 22 C2    STA $C222  [$7E:C222]  ;} Target BG3 palette 4 colour 1 = [BG3 palette 4 colour 1]
-$82:E20F AD 24 C0    LDA $C024  [$7E:C024]  ;\                                  
-$82:E212 8D 24 C2    STA $C224  [$7E:C224]  ;} Target BG3 palette 4 colour 2 = [BG3 palette 4 colour 2]
-$82:E215 AD 26 C0    LDA $C026  [$7E:C026]  ;\                                  
-$82:E218 8D 26 C2    STA $C226  [$7E:C226]  ;} Target BG3 palette 4 colour 3 = [BG3 palette 4 colour 3]
+$82:E20C 8D 22 C2    STA $C222  [$7E:C222]  ;|
+$82:E20F AD 24 C0    LDA $C024  [$7E:C024]  ;|
+$82:E212 8D 24 C2    STA $C224  [$7E:C224]  ;} Target BG3 palette 4 colour 1..3 = [BG3 palette 4 colour 1..3]
+$82:E215 AD 26 C0    LDA $C026  [$7E:C026]  ;|
+$82:E218 8D 26 C2    STA $C226  [$7E:C226]  ;/
 $82:E21B AD 3A C0    LDA $C03A  [$7E:C03A]  ;\
 $82:E21E 8D 3A C2    STA $C23A  [$7E:C23A]  ;} Target BG3 palette 7 colour 1 = [BG3 palette 7 colour 1]
 $82:E221 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
@@ -10112,14 +10270,13 @@ $82:E287 60          RTS
 
 ;;; $E288: Game state Bh (loading next room) ;;;
 {
-; Loading next room
 $82:E288 08          PHP
 $82:E289 8B          PHB
 $82:E28A C2 30       REP #$30
-$82:E28C F4 91 E2    PEA $E291
-$82:E28F 6C 9C 09    JMP ($099C)[$82:E29E]
-$82:E292 AD 43 09    LDA $0943  [$7E:0943]
-$82:E295 F0 04       BEQ $04    [$E29B]
+$82:E28C F4 91 E2    PEA $E291              ;\
+$82:E28F 6C 9C 09    JMP ($099C)[$82:E29E]  ;} Execute [door transition function]
+$82:E292 AD 43 09    LDA $0943  [$7E:0943]  ;\
+$82:E295 F0 04       BEQ $04    [$E29B]     ;} If [timer status] != inactive:
 $82:E297 22 6C 9F 80 JSL $809F6C[$80:9F6C]  ; Draw timer
 
 $82:E29B AB          PLB
@@ -10134,7 +10291,7 @@ $82:E29E 08          PHP
 $82:E29F 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
 $82:E2A3 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
 $82:E2A7 22 4D 88 A0 JSL $A0884D[$A0:884D]  ; Draw Samus, projectiles, enemies and enemy projectiles
-$82:E2AB 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Ensures that Samus is drawn every frame?
+$82:E2AB 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Draw inanimate Samus
 $82:E2AE E2 20       SEP #$20
 $82:E2B0 AD 46 06    LDA $0646  [$7E:0646]  ;\
 $82:E2B3 38          SEC                    ;|
@@ -10163,15 +10320,15 @@ $82:E2DA 60          RTS
 ;;; $E2DB: Handles door transitions - fade out the screen ;;;
 {
 $82:E2DB 20 61 D9    JSR $D961  [$82:D961]  ; Advance gradual colour change of all palettes - denominator = Ch
-$82:E2DE B0 10       BCS $10    [$E2F0]
+$82:E2DE B0 10       BCS $10    [$E2F0]     ; If not reached target colour:
 $82:E2E0 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
 $82:E2E4 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
 $82:E2E8 22 4D 88 A0 JSL $A0884D[$A0:884D]  ; Draw Samus, projectiles, enemies and enemy projectiles
-$82:E2EC 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Ensures that Samus is drawn every frame?
-$82:E2EF 60          RTS
+$82:E2EC 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Draw inanimate Samus
+$82:E2EF 60          RTS                    ; Return
 
-$82:E2F0 A9 F7 E2    LDA #$E2F7
-$82:E2F3 8D 9C 09    STA $099C  [$7E:099C]
+$82:E2F0 A9 F7 E2    LDA #$E2F7             ;\
+$82:E2F3 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E2F7
 $82:E2F6 60          RTS
 }
 
@@ -10184,17 +10341,17 @@ $82:E2FE A9 00 80    LDA #$8000             ;\
 $82:E301 1C B0 18    TRB $18B0  [$7E:18B0]  ;} Clear HDMA flag
 $82:E304 A9 08 00    LDA #$0008             ;\
 $82:E307 85 A7       STA $A7    [$7E:00A7]  ;} Set interrupt command 8 (start of door transition)
-$82:E309 A9 10 E3    LDA #$E310
-$82:E30C 8D 9C 09    STA $099C  [$7E:099C]
+$82:E309 A9 10 E3    LDA #$E310             ;\
+$82:E30C 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E310
 $82:E30F 60          RTS
 }
 
 
 ;;; $E310: Handles door transitions - scroll screen to alignment ;;;
 {
-$82:E310 F4 00 8F    PEA $8F00
-$82:E313 AB          PLB
-$82:E314 AB          PLB
+$82:E310 F4 00 8F    PEA $8F00              ;\
+$82:E313 AB          PLB                    ;} DB = $8F
+$82:E314 AB          PLB                    ;/
 $82:E315 AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:E318 89 02 00    BIT #$0002             ;} If [door direction] is vertical: go to BRANCH_VERTICAL
 $82:E31B D0 14       BNE $14    [$E331]     ;/
@@ -10224,25 +10381,26 @@ $82:E347 60          RTS
 
 ; BRANCH_NEXT
 $82:E348 22 AB A3 80 JSL $80A3AB[$80:A3AB]  ; Calculate layer 2 position and BG scrolls and update BG graphics when scrolling
-$82:E34C A9 53 E3    LDA #$E353
-$82:E34F 8D 9C 09    STA $099C  [$7E:099C]
+$82:E34C A9 53 E3    LDA #$E353             ;\
+$82:E34F 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E353
 $82:E352 60          RTS
 }
 
 
 ;;; $E353: Handles door transitions - fix doors moving up ;;;
 {
-$82:E353 F4 00 8F    PEA $8F00
-$82:E356 AB          PLB
-$82:E357 AB          PLB
+; See $80:AF89
+$82:E353 F4 00 8F    PEA $8F00              ;\
+$82:E356 AB          PLB                    ;} DB = $8F
+$82:E357 AB          PLB                    ;/
 $82:E358 AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:E35B 29 03 00    AND #$0003             ;|
 $82:E35E C9 03 00    CMP #$0003             ;} If door direction is up:
 $82:E361 D0 04       BNE $04    [$E367]     ;/
-$82:E363 22 1D AD 80 JSL $80AD1D[$80:AD1D]  ; Run to 'Fix' doors moving up; redraws top row of blocks
+$82:E363 22 1D AD 80 JSL $80AD1D[$80:AD1D]  ; Draw top row of screen for upwards door transition
 
-$82:E367 A9 6E E3    LDA #$E36E
-$82:E36A 8D 9C 09    STA $099C  [$7E:099C]
+$82:E367 A9 6E E3    LDA #$E36E             ;\
+$82:E36A 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E36E
 $82:E36D 60          RTS
 }
 
@@ -10255,34 +10413,34 @@ $82:E36D 60          RTS
 ; Cleans up Layer 3 stuff.
 ; Clears old room tiles, then decompresses new tiles to 7F ram, then copy bts and background to where they go.
 ; Decompresses 07C0 to 7E:A800, sets default scrolling, then *finally* done.
-$82:E36E F4 00 8F    PEA $8F00
-$82:E371 AB          PLB
-$82:E372 AB          PLB
+$82:E36E F4 00 8F    PEA $8F00              ;\
+$82:E371 AB          PLB                    ;} DB = $8F
+$82:E372 AB          PLB                    ;/
 $82:E373 20 99 DF    JSR $DF99  [$82:DF99]  ; Save map explored if elevator
 $82:E376 20 6F DE    JSR $DE6F  [$82:DE6F]  ; Load room header
 $82:E379 20 F2 DE    JSR $DEF2  [$82:DEF2]  ; Load state header
 $82:E37C 20 B6 DF    JSR $DFB6  [$82:DFB6]  ; Load map explored if elevator
 $82:E37F 22 C1 82 88 JSL $8882C1[$88:82C1]  ; Initialise special effects for new room
 $82:E383 22 73 EA 82 JSL $82EA73[$82:EA73]  ; Load level, scroll and CRE data
-$82:E387 A9 8E E3    LDA #$E38E
-$82:E38A 8D 9C 09    STA $099C  [$7E:099C]
+$82:E387 A9 8E E3    LDA #$E38E             ;\
+$82:E38A 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E38E
 $82:E38D 60          RTS
 }
 
 
 ;;; $E38E: Handles door transitions - set up scrolling ;;;
 {
-$82:E38E F4 00 8F    PEA $8F00
-$82:E391 AB          PLB
-$82:E392 AB          PLB
-$82:E393 64 B5       STZ $B5    [$7E:00B5]  ; BG2 scroll X = 0
-$82:E395 64 B7       STZ $B7    [$7E:00B7]  ; BG2 scroll Y = 0
+$82:E38E F4 00 8F    PEA $8F00              ;\
+$82:E391 AB          PLB                    ;} DB = $8F
+$82:E392 AB          PLB                    ;/
+$82:E393 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
+$82:E395 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
 $82:E397 9C E9 07    STZ $07E9  [$7E:07E9]  ; Scrolling finished hook = 0
 $82:E39A AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:E39D 29 03 00    AND #$0003             ;|
 $82:E3A0 C9 02 00    CMP #$0002             ;} If door direction is down:
 $82:E3A3 D0 02       BNE $02    [$E3A7]     ;/
-$82:E3A5 E6 B3       INC $B3    [$7E:00B3]  ; Increment BG1 scroll Y
+$82:E3A5 E6 B3       INC $B3    [$7E:00B3]  ; Increment BG1 Y scroll
 
 $82:E3A7 AD 91 07    LDA $0791  [$7E:0791]  ;\
 $82:E3AA 29 03 00    AND #$0003             ;|
@@ -10304,9 +10462,9 @@ $82:E3BF 60          RTS
 ; wait for vblank to end,
 ; then reload CRE if needed,
 ; load room tiles from 07C3 (3 byte pointer)
-$82:E3C0 F4 00 8F    PEA $8F00
-$82:E3C3 AB          PLB
-$82:E3C4 AB          PLB
+$82:E3C0 F4 00 8F    PEA $8F00              ;\
+$82:E3C3 AB          PLB                    ;} DB = $8F
+$82:E3C4 AB          PLB                    ;/
 $82:E3C5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $82:E3C8 29 FF 00    AND #$00FF             ;|
 $82:E3CB 18          CLC                    ;} Samus X = [layer 1 X] + [Samus X] & FFh
@@ -10384,8 +10542,8 @@ $82:E49B D0 05       BNE $05    [$E4A2]     ;/
 $82:E49D A9 10 00    LDA #$0010             ;\
 $82:E4A0 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = 10h. Vertical door transition
 
-$82:E4A2 A9 A9 E4    LDA #$E4A9
-$82:E4A5 8D 9C 09    STA $099C  [$7E:099C]
+$82:E4A2 A9 A9 E4    LDA #$E4A9             ;\
+$82:E4A5 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E4A9
 $82:E4A8 60          RTS
 }
 
@@ -10394,7 +10552,7 @@ $82:E4A8 60          RTS
 {
 $82:E4A9 08          PHP
 $82:E4AA 20 D1 DF    JSR $DFD1  [$82:DFD1]  ; Load enemy GFX to VRAM
-$82:E4AD 22 71 E0 82 JSL $82E071[$82:E071]  ; Load room music
+$82:E4AD 22 71 E0 82 JSL $82E071[$82:E071]  ; Queue room music data
 $82:E4B1 22 16 80 86 JSL $868016[$86:8016]  ; Clear enemy projectiles
 $82:E4B5 22 16 80 87 JSL $878016[$87:8016]  ; Clear animated tiles objects
 $82:E4B9 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
@@ -10413,20 +10571,20 @@ $82:E4E5 F4 00 8F    PEA $8F00              ;\
 $82:E4E8 AB          PLB                    ;} DB = $8F
 $82:E4E9 AB          PLB                    ;/
 $82:E4EA 20 66 E5    JSR $E566  [$82:E566]  ; Clear FX tilemap
-$82:E4ED A9 00 8A    LDA #$8A00             ;\
-$82:E4F0 8D C1 05    STA $05C1  [$7E:05C1]  ;|
-$82:E4F3 AD 64 19    LDA $1964  [$7E:1964]  ;|
-$82:E4F6 F0 1A       BEQ $1A    [$E512]     ;|
-$82:E4F8 8D C0 05    STA $05C0  [$7E:05C0]  ;|
-$82:E4FB A9 E0 5B    LDA #$5BE0             ;|
-$82:E4FE 8D BE 05    STA $05BE  [$7E:05BE]  ;} If [FX tilemap pointer] != 0:
-$82:E501 A9 40 08    LDA #$0840             ;} Transfer 840h bytes from $8A:0000 + [FX tilemap pointer] to VRAM $5BE0
-$82:E504 8D C3 05    STA $05C3  [$7E:05C3]  ;|
-$82:E507 A9 00 80    LDA #$8000             ;|
-$82:E50A 0C BC 05    TSB $05BC  [$7E:05BC]  ;|
-                                            ;|
-$82:E50D 2C BC 05    BIT $05BC  [$7E:05BC]  ;|
-$82:E510 30 FB       BMI $FB    [$E50D]     ;/
+$82:E4ED A9 00 8A    LDA #$8A00
+$82:E4F0 8D C1 05    STA $05C1  [$7E:05C1]
+$82:E4F3 AD 64 19    LDA $1964  [$7E:1964]  ;\
+$82:E4F6 F0 1A       BEQ $1A    [$E512]     ;} If [FX tilemap pointer] != 0:
+$82:E4F8 8D C0 05    STA $05C0  [$7E:05C0]  ; Door transition VRAM update source = $8A:0000 + [FX tilemap pointer]
+$82:E4FB A9 E0 5B    LDA #$5BE0             ;\
+$82:E4FE 8D BE 05    STA $05BE  [$7E:05BE]  ;} Door transition VRAM update destination = $5BE0
+$82:E501 A9 40 08    LDA #$0840             ;\
+$82:E504 8D C3 05    STA $05C3  [$7E:05C3]  ;} Door transition VRAM update size = 840h
+$82:E507 A9 00 80    LDA #$8000             ;\
+$82:E50A 0C BC 05    TSB $05BC  [$7E:05BC]  ;} Flag door transition VRAM update
+
+$82:E50D 2C BC 05    BIT $05BC  [$7E:05BC]  ;\
+$82:E510 30 FB       BMI $FB    [$E50D]     ;} Wait for door transition VRAM update
 
 $82:E512 AE BB 07    LDX $07BB  [$7E:07BB]  ;\
 $82:E515 BC 16 00    LDY $0016,x[$8F:DFB5]  ;} Y = (room library background pointer)
@@ -10566,7 +10724,7 @@ $82:E603 A9 00 80    LDA #$8000             ;\
 $82:E606 0C BC 05    TSB $05BC  [$7E:05BC]  ;} Flag door transition VRAM update
 
 $82:E609 2C BC 05    BIT $05BC  [$7E:05BC]  ;\
-$82:E60C 30 FB       BMI $FB    [$E609]     ;} Wait for VRAM update
+$82:E60C 30 FB       BMI $FB    [$E609]     ;} Wait for door transition VRAM update
 $82:E60E 98          TYA                    ;\
 $82:E60F 18          CLC                    ;|
 $82:E610 69 07 00    ADC #$0007             ;} Y += 7
@@ -10651,18 +10809,18 @@ $82:E658 60          RTS                    ;} Return carry clear
 ;;; $E659: Handles door transitions - handle animated tiles ;;;
 {
 $82:E659 22 64 80 87 JSL $878064[$87:8064]  ; Animated tiles handler
-$82:E65D A9 64 E6    LDA #$E664
-$82:E660 8D 9C 09    STA $099C  [$7E:099C]
+$82:E65D A9 64 E6    LDA #$E664             ;\
+$82:E660 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E664
 $82:E663 60          RTS
 }
 
 
 ;;; $E664: Handles door transitions - wait for music queue to clear and possibly load new music ;;;
 {
-$82:E664 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ; Check if music is queued
-$82:E668 B0 0A       BCS $0A    [$E674]
-$82:E66A A9 A2 E6    LDA #$E6A2
-$82:E66D 8D 9C 09    STA $099C  [$7E:099C]
+$82:E664 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
+$82:E668 B0 0A       BCS $0A    [$E674]     ;} If music is queued: return
+$82:E66A A9 A2 E6    LDA #$E6A2             ;\
+$82:E66D 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E6A2
 $82:E670 22 D5 E0 82 JSL $82E0D5[$82:E0D5]  ; Load new music track if changed
 
 $82:E674 60          RTS
@@ -10679,7 +10837,7 @@ $82:E680 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
 $82:E684 EE 95 07    INC $0795  [$7E:0795]  ; Door transition flag = 1
 $82:E687 22 4D 88 A0 JSL $A0884D[$A0:884D]  ; Draw Samus, projectiles, enemies and enemy projectiles
 $82:E68B 22 EC 94 90 JSL $9094EC[$90:94EC]  ; Main scrolling routine
-$82:E68F 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Execute $DFC7
+$82:E68F 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Draw inanimate Samus
 $82:E692 22 AB A3 80 JSL $80A3AB[$80:A3AB]  ; Calculate layer 2 position and BG scrolls and update BG graphics when scrolling
 $82:E696 CE 2F 09    DEC $092F  [$7E:092F]  ; Decrement downwards elevator delay timer
 $82:E699 10 06       BPL $06    [$E6A1]     ; If [downwards elevator delay timer] >= 0: return
@@ -10690,95 +10848,99 @@ $82:E6A1 60          RTS
 }
 
 
-;;; $E6A2: Handles door transitions -  ;;;
+;;; $E6A2: Handles door transitions - nudge Samus if she's intercepting the door ;;;
 {
-; Positions Samus to avoid collision with the door (kinda useless), and enables some Layer 2 and Layer 3 stuff
-$82:E6A2 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$82:E6A5 29 F0 00    AND #$00F0
-$82:E6A8 C9 10 00    CMP #$0010
-$82:E6AB D0 0F       BNE $0F    [$E6BC]
-$82:E6AD AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$82:E6B0 09 0F 00    ORA #$000F
-$82:E6B3 18          CLC
-$82:E6B4 69 08 00    ADC #$0008
-$82:E6B7 8D F6 0A    STA $0AF6  [$7E:0AF6]
+; Positions Samus to avoid collision with the door (not enough to prevent door clip though) and enables normal IRQ command
+; Neither of the calls to $90:F084 are needed (they've both already been done elsewhere, and there's no reason to do only one of the two anyway...)
+; tldr, ignore the elevator specific code.
+; The clearing of $7E:9C00..9FFF I don't think is needed, that RAM AFAIK is only used for HDMA tables (other RAM is used for HDMA tables too...)
+$82:E6A2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$82:E6A5 29 F0 00    AND #$00F0             ;|
+$82:E6A8 C9 10 00    CMP #$0010             ;} If (Samus X block) % 10h = 1:
+$82:E6AB D0 0F       BNE $0F    [$E6BC]     ;/
+$82:E6AD AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$82:E6B0 09 0F 00    ORA #$000F             ;|
+$82:E6B3 18          CLC                    ;} Samus X position = ((Samus X block) + 1) * 10h + 7 (middle of block to the right)
+$82:E6B4 69 08 00    ADC #$0008             ;|
+$82:E6B7 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
 $82:E6BA 80 12       BRA $12    [$E6CE]
 
-$82:E6BC C9 E0 00    CMP #$00E0
-$82:E6BF D0 0D       BNE $0D    [$E6CE]
-$82:E6C1 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$82:E6C4 29 F0 FF    AND #$FFF0
-$82:E6C7 38          SEC
-$82:E6C8 E9 08 00    SBC #$0008
-$82:E6CB 8D F6 0A    STA $0AF6  [$7E:0AF6]
+$82:E6BC C9 E0 00    CMP #$00E0             ;\ Else ((Samus X block) % 10h != 1):
+$82:E6BF D0 0D       BNE $0D    [$E6CE]     ;} If (Samus X block) % 10h = Eh:
+$82:E6C1 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$82:E6C4 29 F0 FF    AND #$FFF0             ;|
+$82:E6C7 38          SEC                    ;} Samus X position = ((Samus X block) - 1) * 10h + 8 (middle of block to the left)
+$82:E6C8 E9 08 00    SBC #$0008             ;|
+$82:E6CB 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
 
-$82:E6CE AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$82:E6D1 29 F0 00    AND #$00F0
-$82:E6D4 C9 10 00    CMP #$0010
-$82:E6D7 D0 0F       BNE $0F    [$E6E8]
-$82:E6D9 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$82:E6DC 09 0F 00    ORA #$000F
-$82:E6DF 18          CLC
-$82:E6E0 69 08 00    ADC #$0008
-$82:E6E3 8D FA 0A    STA $0AFA  [$7E:0AFA]
+$82:E6CE AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$82:E6D1 29 F0 00    AND #$00F0             ;|
+$82:E6D4 C9 10 00    CMP #$0010             ;} If (Samus Y block) % 10h = 1:
+$82:E6D7 D0 0F       BNE $0F    [$E6E8]     ;/
+$82:E6D9 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$82:E6DC 09 0F 00    ORA #$000F             ;|
+$82:E6DF 18          CLC                    ;} Samus Y position = ((Samus Y block) + 1) * 10h + 7 (middle of block below)
+$82:E6E0 69 08 00    ADC #$0008             ;|
+$82:E6E3 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $82:E6E6 80 03       BRA $03    [$E6EB]
 
-$82:E6E8 C9 E0 00    CMP #$00E0
+$82:E6E8 C9 E0 00    CMP #$00E0             ; Uhh, I'll finish writing this routine tomorrow... >_<;
 
-$82:E6EB 8B          PHB
-$82:E6EC F4 00 7E    PEA $7E00
-$82:E6EF AB          PLB
-$82:E6F0 AB          PLB
-$82:E6F1 A2 FE 01    LDX #$01FE
+$82:E6EB 8B          PHB                    ;\
+$82:E6EC F4 00 7E    PEA $7E00              ;|
+$82:E6EF AB          PLB                    ;|
+$82:E6F0 AB          PLB                    ;|
+$82:E6F1 A2 FE 01    LDX #$01FE             ;|
+                                            ;|
+$82:E6F4 9E 00 9C    STZ $9C00,x[$7E:9DFE]  ;} $7E:9C00..9FFF = 0
+$82:E6F7 9E 00 9E    STZ $9E00,x[$7E:9FFE]  ;|
+$82:E6FA CA          DEX                    ;|
+$82:E6FB CA          DEX                    ;|
+$82:E6FC 10 F6       BPL $F6    [$E6F4]     ;|
+$82:E6FE AB          PLB                    ;/
+$82:E6FF A5 A9       LDA $A9    [$7E:00A9]  ; A = [room loading interrupt command]
+$82:E701 D0 03       BNE $03    [$E706]     ; If [A] = 0:
+$82:E703 A9 04 00    LDA #$0004             ; A = 4 (main gameplay - begin HUD drawing)
 
-$82:E6F4 9E 00 9C    STZ $9C00,x[$7E:9DFE]
-$82:E6F7 9E 00 9E    STZ $9E00,x[$7E:9FFE]
-$82:E6FA CA          DEX
-$82:E6FB CA          DEX
-$82:E6FC 10 F6       BPL $F6    [$E6F4]
-$82:E6FE AB          PLB
-$82:E6FF A5 A9       LDA $A9    [$7E:00A9]
-$82:E701 D0 03       BNE $03    [$E706]
-$82:E703 A9 04 00    LDA #$0004
-
-$82:E706 85 A7       STA $A7    [$7E:00A7]
-$82:E708 20 80 DF    JSR $DF80  [$82:DF80]
-$82:E70B AD 16 0E    LDA $0E16  [$7E:0E16]
-$82:E70E F0 15       BEQ $15    [$E725]
-$82:E710 2C 99 07    BIT $0799  [$7E:0799]
-$82:E713 10 09       BPL $09    [$E71E]
-$82:E715 A9 00 00    LDA #$0000
-$82:E718 22 84 F0 90 JSL $90F084[$90:F084]
+$82:E706 85 A7       STA $A7    [$7E:00A7]  ; Next interrupt command = [A]
+$82:E708 20 80 DF    JSR $DF80  [$82:DF80]  ; Ignore this
+$82:E70B AD 16 0E    LDA $0E16  [$7E:0E16]  ;\
+$82:E70E F0 15       BEQ $15    [$E725]     ;} If door is not an elevator: go to BRANCH_NOT_ELEVATOR
+$82:E710 2C 99 07    BIT $0799  [$7E:0799]  ;\
+$82:E713 10 09       BPL $09    [$E71E]     ;} If elevator direction is up:
+$82:E715 A9 00 00    LDA #$0000             ;\
+$82:E718 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
 $82:E71C 80 07       BRA $07    [$E725]
 
-$82:E71E A9 07 00    LDA #$0007
-$82:E721 22 84 F0 90 JSL $90F084[$90:F084]
+$82:E71E A9 07 00    LDA #$0007             ;\ Else (elevator direction is down):
+$82:E721 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for elevator
 
+; BRANCH_NOT_ELEVATOR
 $82:E725 22 0F 8E 90 JSL $908E0F[$90:8E0F]  ; Set liquid physics type
-$82:E729 A9 37 E7    LDA #$E737
-$82:E72C 8D 9C 09    STA $099C  [$7E:099C]
-$82:E72F A5 51       LDA $51    [$7E:0051]
-$82:E731 09 1F 00    ORA #$001F
-$82:E734 85 51       STA $51    [$7E:0051]
+$82:E729 A9 37 E7    LDA #$E737             ;\
+$82:E72C 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E737
+$82:E72F A5 51       LDA $51    [$7E:0051]  ;\
+$82:E731 09 1F 00    ORA #$001F             ;} Set full brightness (and set unused bit >_<;)
+$82:E734 85 51       STA $51    [$7E:0051]  ;/
 $82:E736 60          RTS
 }
 
 
 ;;; $E737: Handles door transitions - fade in the screen and run enemies; finish door transition ;;;
 {
-$82:E737 22 64 80 87 JSL $878064[$87:8064]
+$82:E737 22 64 80 87 JSL $878064[$87:8064]  ; Animated tiles objects handler
 $82:E73B 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
 $82:E73F 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
-$82:E743 22 04 81 86 JSL $868104[$86:8104]
+$82:E743 22 04 81 86 JSL $868104[$86:8104]  ; Enemy projectile handler
 $82:E747 22 4D 88 A0 JSL $A0884D[$A0:884D]  ; Draw Samus, projectiles, enemies and enemy projectiles
-$82:E74B 20 C7 DF    JSR $DFC7  [$82:DFC7]
+$82:E74B 20 C7 DF    JSR $DFC7  [$82:DFC7]  ; Draw inanimate Samus
 $82:E74E 22 26 97 A0 JSL $A09726[$A0:9726]  ; Handle queuing enemy BG2 tilemap VRAM transfer
 $82:E752 20 61 D9    JSR $D961  [$82:D961]  ; Advance gradual colour change of all palettes - denominator = Ch
-$82:E755 90 13       BCC $13    [$E76A]
-$82:E757 9C F5 05    STZ $05F5  [$7E:05F5]
+$82:E755 90 13       BCC $13    [$E76A]     ; If reached target colour:
+$82:E757 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $82:E75A 22 70 82 84 JSL $848270[$84:8270]  ; Play spin jump sound if spin jumping
-$82:E75E 9C 95 07    STZ $0795  [$7E:0795]
-$82:E761 9C 97 07    STZ $0797  [$7E:0797]
+$82:E75E 9C 95 07    STZ $0795  [$7E:0795]  ;\
+$82:E761 9C 97 07    STZ $0797  [$7E:0797]  ;} Door transition flags = 0
 $82:E764 A9 08 00    LDA #$0008             ;\
 $82:E767 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 8 (main gameplay)
 
@@ -10791,9 +10953,9 @@ $82:E76A 60          RTS
 $82:E76B 08          PHP
 $82:E76C 8B          PHB
 $82:E76D C2 30       REP #$30
-$82:E76F F4 00 8F    PEA $8F00
-$82:E772 AB          PLB
-$82:E773 AB          PLB
+$82:E76F F4 00 8F    PEA $8F00              ;\
+$82:E772 AB          PLB                    ;} DB = $8F
+$82:E773 AB          PLB                    ;/
 $82:E774 20 F1 DD    JSR $DDF1  [$82:DDF1]  ; Load destination room CRE bitset
 $82:E777 20 12 DE    JSR $DE12  [$82:DE12]  ; Load door header
 $82:E77A 20 6F DE    JSR $DE6F  [$82:DE6F]  ; Load room header
@@ -10807,9 +10969,9 @@ $82:E780 4C 8C E7    JMP $E78C  [$82:E78C]  ; Load CRE tiles, tileset tiles and 
 $82:E783 08          PHP
 $82:E784 8B          PHB
 $82:E785 C2 30       REP #$30
-$82:E787 F4 00 8F    PEA $8F00
-$82:E78A AB          PLB
-$82:E78B AB          PLB
+$82:E787 F4 00 8F    PEA $8F00              ;\
+$82:E78A AB          PLB                    ;} DB = $8F
+$82:E78B AB          PLB                    ;/
 }
 
 
@@ -10865,9 +11027,9 @@ $82:E7D2 6B          RTL
 $82:E7D3 08          PHP
 $82:E7D4 8B          PHB
 $82:E7D5 C2 30       REP #$30
-$82:E7D7 F4 00 8F    PEA $8F00
-$82:E7DA AB          PLB
-$82:E7DB AB          PLB
+$82:E7D7 F4 00 8F    PEA $8F00              ;\
+$82:E7DA AB          PLB                    ;} DB = $8F
+$82:E7DB AB          PLB                    ;/
 $82:E7DC A2 FE 63    LDX #$63FE             ;\
 $82:E7DF A9 00 80    LDA #$8000             ;|
                                             ;|
@@ -10942,7 +11104,7 @@ $82:E869 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:E86D             dl 7EA000              ;/
 
 $82:E870 AE BB 07    LDX $07BB  [$7E:07BB]  ;\
-$82:E873 BC 0E 00    LDY $000E,x[$8F:DF65]  ;} Y = scroll pointer
+$82:E873 BC 0E 00    LDY $000E,x[$8F:DF65]  ;} Y = (scroll pointer)
 $82:E876 10 15       BPL $15    [$E88D]     ; If [Y] & 8000h = 0: go to BRANCH_PRESET_SCROLLS
 $82:E878 A2 00 00    LDX #$0000             ;\
                                             ;|
@@ -10957,7 +11119,7 @@ $82:E889 D0 F0       BNE $F0    [$E87B]     ;/
 $82:E88B 80 2C       BRA $2C    [$E8B9]     ; Go to BRANCH_SCROLLS_END
 
 ; BRANCH_PRESET_SCROLLS
-$82:E88D 84 12       STY $12    [$7E:0012]  ; $12 = scroll pointer
+$82:E88D 84 12       STY $12    [$7E:0012]  ; $12 = (scroll pointer)
 $82:E88F E2 30       SEP #$30
 $82:E891 AD AB 07    LDA $07AB  [$7E:07AB]  ;\
 $82:E894 3A          DEC A                  ;} $14 = [room height in scrolls] - 1
@@ -10968,9 +11130,9 @@ $82:E89B A0 00       LDY #$00               ; Y = 0 (scroll row)
 
 ; LOOP
 $82:E89D C4 14       CPY $14    [$7E:0014]  ;\
-$82:E89F D0 03       BNE $03    [$E8A4]     ;} If scroll row = [$14] (bottom row):
+$82:E89F D0 03       BNE $03    [$E8A4]     ;} If (scroll row) = [$14] (bottom row):
 $82:E8A1 A5 12       LDA $12    [$7E:0012]  ;\
-$82:E8A3 1A          INC A                  ;} A = scroll pointer + 1
+$82:E8A3 1A          INC A                  ;} A = (scroll pointer) + 1
 
 $82:E8A4 5A          PHY
 $82:E8A5 A0 00       LDY #$00               ;\
@@ -10981,9 +11143,9 @@ $82:E8AC C8          INY                    ;|
 $82:E8AD CC A9 07    CPY $07A9  [$7E:07A9]  ;|
 $82:E8B0 D0 F5       BNE $F5    [$E8A7]     ;/
 $82:E8B2 7A          PLY
-$82:E8B3 C8          INY                    ; Increment scroll row
+$82:E8B3 C8          INY                    ; Increment (scroll row)
 $82:E8B4 CC AB 07    CPY $07AB  [$7E:07AB]  ;\
-$82:E8B7 D0 E4       BNE $E4    [$E89D]     ;} If scroll row != [room height in scrolls]: go to LOOP
+$82:E8B7 D0 E4       BNE $E4    [$E89D]     ;} If (scroll row) != [room height in scrolls]: go to LOOP
 
 ; BRANCH_SCROLLS_END
 $82:E8B9 C2 30       REP #$30
@@ -11034,7 +11196,7 @@ $82:E902 BD 00 00    LDA $0000,x[$8F:E68A]  ;/
 $82:E905 F0 12       BEQ $12    [$E919]     ; If [$12] = 0 (door has no cap): return
 $82:E907 85 12       STA $12    [$7E:0012]
 $82:E909 AE 8D 07    LDX $078D  [$7E:078D]  ;\
-$82:E90C BF 04 00 83 LDA $830004,x[$83:891A];} $14 = [$83:0004 + [door pointer]] (X and Y positions)
+$82:E90C BF 04 00 83 LDA $830004,x[$83:891A];} $14 = [$83:0000 + [door pointer] + 4] (X and Y positions)
 $82:E910 85 14       STA $14    [$7E:0014]  ;/
 $82:E912 A2 12 00    LDX #$0012             ; X = $12
 $82:E915 22 6A 84 84 JSL $84846A[$84:846A]  ; Spawn room PLM
@@ -11057,7 +11219,7 @@ $82:E926 8D 02 42    STA $4202  [$7E:4202]  ;|
 $82:E929 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $82:E92C 8D 03 42    STA $4203  [$7E:4203]  ;|
 $82:E92F BF 04 00 83 LDA $830004,x[$83:AB50];|
-$82:E933 C2 20       REP #$20               ;} A = [$83:0005 + [X]] * [room width] + [$83:8004 + [X]]
+$82:E933 C2 20       REP #$20               ;} A = [$83:0000 + [X] + 5] * [room width] + [$83:8000 + [X] + 4]
 $82:E935 29 FF 00    AND #$00FF             ;|
 $82:E938 18          CLC                    ;|
 $82:E939 6D 16 42    ADC $4216  [$7E:4216]  ;|
@@ -11073,8 +11235,8 @@ $82:E947 CA          DEX                    ;} X -= 2
 $82:E948 10 F7       BPL $F7    [$E941]     ; If [X] >= 0: go to LOOP
 
 ; BRANCH_NO_COLOURED_DOOR
-$82:E94A 18          CLC
-$82:E94B 60          RTS
+$82:E94A 18          CLC                    ;\
+$82:E94B 60          RTS                    ;} Return carry clear
 
 ; BRANCH_FOUND
 $82:E94C BD 37 1C    LDA $1C37,x[$7E:1C83]  ;\
@@ -11094,13 +11256,16 @@ $82:E96C 9B          TXY
 $82:E96D BD 37 1C    LDA $1C37,x[$7E:1C7F]  ;\
 $82:E970 F0 D8       BEQ $D8    [$E94A]     ;} If [PLM ID] = 0: go to BRANCH_NO_COLOURED_DOOR
 $82:E972 AA          TAX                    ;\
-$82:E973 BF 04 00 84 LDA $840004,x[$84:C84C];} PLM instruction list pointer = [$84:0004 + [PLM ID]] (the third PLM header pointer!)
+$82:E973 BF 04 00 84 LDA $840004,x[$84:C84C];} PLM instruction list pointer = [$84:0000 + [PLM ID] + 4] (the third PLM header pointer!)
 $82:E977 99 27 1D    STA $1D27,y[$7E:1D6F]  ;/
-$82:E97A 38          SEC
-$82:E97B 60          RTS
+$82:E97A 38          SEC                    ;\
+$82:E97B 60          RTS                    ;} Return carry set
+}
 }
 
 
+;;; $E97C..EA72: Load library background ;;;
+{
 ;;; $E97C: Load library background ;;;
 {
 ; Called when loading game or unpausing. For door transitions, see $E512
@@ -11281,6 +11446,7 @@ $82:EA6F C2 20       REP #$20               ;/
 $82:EA71 18          CLC                    ;\
 $82:EA72 60          RTS                    ;} Return carry clear
 }
+}
 
 
 ;;; $EA73: Load level, scroll and CRE data ;;;
@@ -11296,9 +11462,9 @@ $82:EA72 60          RTS                    ;} Return carry clear
 ;     BTS:        $7F:0002 + [$7F:0000]         to $7F:0002 + [$7F:0000] / 2 * 3
 ;     Background: $7F:0002 + [$7F:0000] / 2 * 3 to $7F:0002 + [$7F:0000] / 2 * 5
 
-$82:EA73 F4 00 8F    PEA $8F00
-$82:EA76 AB          PLB
-$82:EA77 AB          PLB
+$82:EA73 F4 00 8F    PEA $8F00              ;\
+$82:EA76 AB          PLB                    ;} DB = $8F
+$82:EA77 AB          PLB                    ;/
 $82:EA78 A2 FE 18    LDX #$18FE             ;\
 $82:EA7B A9 00 80    LDA #$8000             ;|
                                             ;|
@@ -11380,7 +11546,7 @@ $82:EB19 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:EB1D             dl 7EA000              ;/
 
 $82:EB20 AE BB 07    LDX $07BB  [$7E:07BB]  ;\
-$82:EB23 BC 0E 00    LDY $000E,x[$8F:DFAD]  ;} Y = scroll pointer
+$82:EB23 BC 0E 00    LDY $000E,x[$8F:DFAD]  ;} Y = (scroll pointer)
 $82:EB26 10 15       BPL $15    [$EB3D]     ; If [Y] & 8000h = 0: go to BRANCH_PRESET_SCROLLS
 $82:EB28 A2 00 00    LDX #$0000             ;\
                                             ;|
@@ -11395,7 +11561,7 @@ $82:EB39 D0 F0       BNE $F0    [$EB2B]     ;/
 $82:EB3B 80 2C       BRA $2C    [$EB69]     ; Return
 
 ; BRANCH_PRESET_SCROLLS
-$82:EB3D 84 12       STY $12    [$7E:0012]  ; $12 = scroll pointer
+$82:EB3D 84 12       STY $12    [$7E:0012]  ; $12 = (scroll pointer)
 $82:EB3F E2 30       SEP #$30
 $82:EB41 AD AB 07    LDA $07AB  [$7E:07AB]  ;\
 $82:EB44 3A          DEC A                  ;} $14 = [room height in scrolls] - 1
@@ -11406,9 +11572,9 @@ $82:EB4B A0 00       LDY #$00               ; Y = 0 (scroll row)
 
 ; LOOP
 $82:EB4D C4 14       CPY $14    [$7E:0014]  ;\
-$82:EB4F D0 03       BNE $03    [$EB54]     ;} If scroll row = [$14] (bottom row):
+$82:EB4F D0 03       BNE $03    [$EB54]     ;} If (scroll row) = [$14] (bottom row):
 $82:EB51 A5 12       LDA $12    [$7E:0012]  ;\
-$82:EB53 1A          INC A                  ;} A = scroll pointer + 1
+$82:EB53 1A          INC A                  ;} A = (scroll pointer) + 1
 
 $82:EB54 5A          PHY
 $82:EB55 A0 00       LDY #$00               ;\
@@ -11419,9 +11585,9 @@ $82:EB5C C8          INY                    ;|
 $82:EB5D CC A9 07    CPY $07A9  [$7E:07A9]  ;|
 $82:EB60 D0 F5       BNE $F5    [$EB57]     ;/
 $82:EB62 7A          PLY
-$82:EB63 C8          INY                    ; Increment scroll row
+$82:EB63 C8          INY                    ; Increment (scroll row)
 $82:EB64 CC AB 07    CPY $07AB  [$7E:07AB]  ;\
-$82:EB67 D0 E4       BNE $E4    [$EB4D]     ;} If scroll row != [room height in scrolls]: go to LOOP
+$82:EB67 D0 E4       BNE $E4    [$EB4D]     ;} If (scroll row) != [room height in scrolls]: go to LOOP
 
 $82:EB69 C2 30       REP #$30
 $82:EB6B 6B          RTL
@@ -11430,23 +11596,25 @@ $82:EB6B 6B          RTL
 
 ;;; $EB6C: Create PLMs, execute door ASM, room setup ASM and set elevator status ;;;
 {
-$82:EB6C F4 00 8F    PEA $8F00
-$82:EB6F AB          PLB
-$82:EB70 AB          PLB
+$82:EB6C F4 00 8F    PEA $8F00              ;\
+$82:EB6F AB          PLB                    ;} DB = $8F
+$82:EB70 AB          PLB                    ;/
 $82:EB71 AE BB 07    LDX $07BB  [$7E:07BB]  ;\
-$82:EB74 BD 14 00    LDA $0014,x[$8F:DFB3]  ;} If PLM pointer:
+$82:EB74 BD 14 00    LDA $0014,x[$8F:DFB3]  ;} If (PLM pointer) = 0: go to BRANCH_NO_PLMS
 $82:EB77 F0 12       BEQ $12    [$EB8B]     ;/
-$82:EB79 AA          TAX                    ;\
-                                            ;|
-$82:EB7A BD 00 00    LDA $0000,x[$8F:C8BD]  ;|
-$82:EB7D F0 0C       BEQ $0C    [$EB8B]     ;|
-$82:EB7F 22 6A 84 84 JSL $84846A[$84:846A]  ;|
-$82:EB83 8A          TXA                    ;} Create the PLMs
-$82:EB84 18          CLC                    ;|
-$82:EB85 69 06 00    ADC #$0006             ;|
-$82:EB88 AA          TAX                    ;|
-$82:EB89 80 EF       BRA $EF    [$EB7A]     ;/
+$82:EB79 AA          TAX                    ; X = (PLM pointer)
 
+; LOOP
+$82:EB7A BD 00 00    LDA $0000,x[$8F:C8BD]  ;\
+$82:EB7D F0 0C       BEQ $0C    [$EB8B]     ;} If [[X]] != 0:
+$82:EB7F 22 6A 84 84 JSL $84846A[$84:846A]  ; Spawn room PLM
+$82:EB83 8A          TXA                    ;\
+$82:EB84 18          CLC                    ;|
+$82:EB85 69 06 00    ADC #$0006             ;} X += 5
+$82:EB88 AA          TAX                    ;/
+$82:EB89 80 EF       BRA $EF    [$EB7A]     ; Go to LOOP
+
+; BRANCH_NO_PLMS
 $82:EB8B 22 A3 E8 8F JSL $8FE8A3[$8F:E8A3]  ; Execute door ASM
 $82:EB8F 22 8F E8 8F JSL $8FE88F[$8F:E88F]  ; Execute room setup ASM
 $82:EB93 AD 16 0E    LDA $0E16  [$7E:0E16]  ;\
@@ -11458,32 +11626,34 @@ $82:EB9E 6B          RTL
 }
 
 
+;;; $EB9F..F70D: Game options menu ;;;
+{
 ;;; $EB9F: Game state 2 (game options menu) ;;;
 {
 $82:EB9F 08          PHP
 $82:EBA0 8B          PHB
-$82:EBA1 4B          PHK
-$82:EBA2 AB          PLB
+$82:EBA1 4B          PHK                    ;\
+$82:EBA2 AB          PLB                    ;} DB = $82
 $82:EBA3 C2 30       REP #$30
-$82:EBA5 AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$82:EBA8 0A          ASL A
-$82:EBA9 AA          TAX
-$82:EBAA FC C1 EB    JSR ($EBC1,x)[$82:EBDB]
-$82:EBAD 20 11 8C    JSR $8C11  [$82:8C11]
-$82:EBB0 20 A1 8C    JSR $8CA1  [$82:8CA1]  ; Draw options menu spritemaps
-$82:EBB3 AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$82:EBB6 C9 02 00    CMP #$0002
-$82:EBB9 30 03       BMI $03    [$EBBE]
-$82:EBBB 20 FF EC    JSR $ECFF  [$82:ECFF]
+$82:EBA5 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$82:EBA8 0A          ASL A                  ;|
+$82:EBA9 AA          TAX                    ;} Execute [$EBC1 + [game options menu index] * 2]
+$82:EBAA FC C1 EB    JSR ($EBC1,x)[$82:EBDB];/
+$82:EBAD 20 11 8C    JSR $8C11  [$82:8C11]  ; Game options menu object handler
+$82:EBB0 20 A1 8C    JSR $8CA1  [$82:8CA1]  ; Draw game options menu spritemaps
+$82:EBB3 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$82:EBB6 C9 02 00    CMP #$0002             ;} If [game options menu index] > loading options menu:
+$82:EBB9 30 03       BMI $03    [$EBBE]     ;/
+$82:EBBB 20 FF EC    JSR $ECFF  [$82:ECFF]  ; Draw game options menu BG1
 
 $82:EBBE AB          PLB
 $82:EBBF 28          PLP
 $82:EBC0 60          RTS
 
-$82:EBC1             dw EBDB, ; 0:
-                        EC11, ; 1: Loading options screen
-                        ECE4, ; 2: Fading in options screen
-                        ED42, ; 3: Options screen
+$82:EBC1             dw EBDB, ; 0: Finish fading out
+                        EC11, ; 1: Loading options menu
+                        ECE4, ; 2: Fading in options menu
+                        ED42, ; 3: Options menu
                         EEB4, ; 4: Start game
                         EF18, ; 5: Dissolve out screen
                         EFDB, ; 6: Dissolve in screen
@@ -11492,11 +11662,11 @@ $82:EBC1             dw EBDB, ; 0:
                         F271, ; 9: Scroll controller settings down
                         F285, ; Ah: Scroll controller settings up
                         EE6A, ; Bh: Transition back to file select
-                        EE92  ; Ch: Fading out options screen to start game
+                        EE92  ; Ch: Fading out options menu to start game
 }
 
 
-;;; $EBDB: Game state 2 (game options menu) - [$0DE2] = 0 ;;;
+;;; $EBDB: Game state 2 (game options menu) - [$0DE2] = 0 (finish fading out) ;;;
 {
 $82:EBDB 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EBDF E2 20       SEP #$20
@@ -11505,21 +11675,21 @@ $82:EBE3 C9 80       CMP #$80               ;} If finished fading out:
 $82:EBE5 D0 10       BNE $10    [$EBF7]     ;/
 $82:EBE7 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:EBEB C2 20       REP #$20
-$82:EBED 9C 23 07    STZ $0723  [$7E:0723]
-$82:EBF0 9C 25 07    STZ $0725  [$7E:0725]
-$82:EBF3 EE E2 0D    INC $0DE2  [$7E:0DE2]
-$82:EBF6 60          RTS
+$82:EBED 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:EBF0 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$82:EBF3 EE E2 0D    INC $0DE2  [$7E:0DE2]  ; Game options menu index = 1
+$82:EBF6 60          RTS                    ; Return
 
 $82:EBF7 E2 20       SEP #$20
-$82:EBF9 A5 51       LDA $51    [$7E:0051]
-$82:EBFB C9 0E       CMP #$0E
-$82:EBFD D0 0F       BNE $0F    [$EC0E]
-$82:EBFF A5 6B       LDA $6B    [$7E:006B]
-$82:EC01 89 04       BIT #$04
-$82:EC03 D0 09       BNE $09    [$EC0E]
+$82:EBF9 A5 51       LDA $51    [$7E:0051]  ;\
+$82:EBFB C9 0E       CMP #$0E               ;} If [brightness] = Eh:
+$82:EBFD D0 0F       BNE $0F    [$EC0E]     ;/
+$82:EBFF A5 6B       LDA $6B    [$7E:006B]  ;\
+$82:EC01 89 04       BIT #$04               ;} If BG3 disabled:
+$82:EC03 D0 09       BNE $09    [$EC0E]     ;/
 $82:EC05 C2 20       REP #$20
-$82:EC07 A0 D6 F4    LDY #$F4D6
-$82:EC0A 20 CB 8B    JSR $8BCB  [$82:8BCB]
+$82:EC07 A0 D6 F4    LDY #$F4D6             ;\
+$82:EC0A 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around SAMUS DATA
 $82:EC0D 60          RTS
 
 $82:EC0E C2 20       REP #$20
@@ -11527,37 +11697,38 @@ $82:EC10 60          RTS
 }
 
 
-;;; $EC11: Game state 2 (game options menu) - [$0DE2] = 1 (loading options screen) ;;;
+;;; $EC11: Game state 2 (game options menu) - [$0DE2] = 1 (loading options menu) ;;;
 {
+; Assumes forced blank
 $82:EC11 08          PHP
 $82:EC12 E2 30       SEP #$30
-$82:EC14 A9 00       LDA #$00
-$82:EC16 85 5D       STA $5D    [$7E:005D]
-$82:EC18 A9 13       LDA #$13
-$82:EC1A 85 69       STA $69    [$7E:0069]
-$82:EC1C 64 6B       STZ $6B    [$7E:006B]
-$82:EC1E 64 6C       STZ $6C    [$7E:006C]
-$82:EC20 64 6D       STZ $6D    [$7E:006D]
+$82:EC14 A9 00       LDA #$00               ;\
+$82:EC16 85 5D       STA $5D    [$7E:005D]  ;} BG1/2 tiles base address = $0000
+$82:EC18 A9 13       LDA #$13               ;\
+$82:EC1A 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/BG2/sprites
+$82:EC1C 64 6B       STZ $6B    [$7E:006B]  ; Disable all subscreen layers
+$82:EC1E 64 6C       STZ $6C    [$7E:006C]  ;\
+$82:EC20 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area
 $82:EC22 64 6E       STZ $6E    [$7E:006E]  ;\
-$82:EC24 64 71       STZ $71    [$7E:0071]  ;} Disable colour math
-$82:EC26 64 6F       STZ $6F    [$7E:006F]
-$82:EC28 64 72       STZ $72    [$7E:0072]
-$82:EC2A A9 00       LDA #$00
-$82:EC2C 8D 16 21    STA $2116  [$7E:2116]
-$82:EC2F A9 58       LDA #$58
-$82:EC31 8D 17 21    STA $2117  [$7E:2117]
-$82:EC34 A9 80       LDA #$80
-$82:EC36 8D 15 21    STA $2115  [$7E:2115]
-$82:EC39 22 A9 91 80 JSL $8091A9[$80:91A9]  ; Set up a (H)DMA transfer
-$82:EC3D             dx 01,01,18,8EDC00,0800
-$82:EC45 A9 02       LDA #$02
-$82:EC47 8D 0B 42    STA $420B  [$7E:420B]
+$82:EC24 64 71       STZ $71    [$7E:0071]  ;|
+$82:EC26 64 6F       STZ $6F    [$7E:006F]  ;} Disable colour math
+$82:EC28 64 72       STZ $72    [$7E:0072]  ;/
+$82:EC2A A9 00       LDA #$00               ;\
+$82:EC2C 8D 16 21    STA $2116  [$7E:2116]  ;|
+$82:EC2F A9 58       LDA #$58               ;|
+$82:EC31 8D 17 21    STA $2117  [$7E:2117]  ;|
+$82:EC34 A9 80       LDA #$80               ;|
+$82:EC36 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5800..5BFF = [$8E:DC00..E3FF] (Zebes and stars tilemap)
+$82:EC39 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$82:EC3D             dx 01,01,18,8EDC00,0800;|
+$82:EC45 A9 02       LDA #$02               ;|
+$82:EC47 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $82:EC4A C2 30       REP #$30
-$82:EC4C 64 B1       STZ $B1    [$7E:00B1]
-$82:EC4E 64 B3       STZ $B3    [$7E:00B3]
-$82:EC50 64 B5       STZ $B5    [$7E:00B5]
-$82:EC52 64 B7       STZ $B7    [$7E:00B7]
-$82:EC54 9C E0 0D    STZ $0DE0  [$7E:0DE0]
+$82:EC4C 64 B1       STZ $B1    [$7E:00B1]  ; BG1 X scroll = 0
+$82:EC4E 64 B3       STZ $B3    [$7E:00B3]  ; BG1 Y scroll = 0
+$82:EC50 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
+$82:EC52 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
+$82:EC54 9C E0 0D    STZ $0DE0  [$7E:0DE0]  ; Disable debug invincibility
 $82:EC57 A2 FE 01    LDX #$01FE             ;\
                                             ;|
 $82:EC5A BF 00 E4 8E LDA $8EE400,x[$8E:E5FE];|
@@ -11568,54 +11739,54 @@ $82:EC64 10 F4       BPL $F4    [$EC5A]     ;/
 $82:EC66 A9 00 97    LDA #$9700             ;\
 $82:EC69 85 48       STA $48    [$7E:0048]  ;|
 $82:EC6B A9 F4 8D    LDA #$8DF4             ;|
-$82:EC6E 85 47       STA $47    [$7E:0047]  ;} Decompress $97:8DF4 to $7F:C000
+$82:EC6E 85 47       STA $47    [$7E:0047]  ;} Decompress $97:8DF4 to $7F:C000 (tilemap - game options menu - options screen)
 $82:EC70 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:EC74             dl 7FC000              ;/
 $82:EC77 A9 00 97    LDA #$9700             ;\
 $82:EC7A 85 48       STA $48    [$7E:0048]  ;|
 $82:EC7C A9 CD 8F    LDA #$8FCD             ;|
-$82:EC7F 85 47       STA $47    [$7E:0047]  ;} Decompress $97:8FCD to $7F:C800
+$82:EC7F 85 47       STA $47    [$7E:0047]  ;} Decompress $97:8FCD to $7F:C800 (tilemap - game options menu - controller settings - English)
 $82:EC81 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:EC85             dl 7FC800              ;/
 $82:EC88 A9 00 97    LDA #$9700             ;\
 $82:EC8B 85 48       STA $48    [$7E:0048]  ;|
 $82:EC8D A9 C4 91    LDA #$91C4             ;|
-$82:EC90 85 47       STA $47    [$7E:0047]  ;} Decompress $97:91C4 to $7F:D000
+$82:EC90 85 47       STA $47    [$7E:0047]  ;} Decompress $97:91C4 to $7F:D000 (tilemap - game options menu - controller settings - Japanese)
 $82:EC92 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:EC96             dl 7FD000              ;/
 $82:EC99 A9 00 97    LDA #$9700             ;\
 $82:EC9C 85 48       STA $48    [$7E:0048]  ;|
 $82:EC9E A9 8D 93    LDA #$938D             ;|
-$82:ECA1 85 47       STA $47    [$7E:0047]  ;} Decompress $97:938D to $7F:D800
+$82:ECA1 85 47       STA $47    [$7E:0047]  ;} Decompress $97:938D to $7F:D800 (tilemap - game options menu - special settings - English)
 $82:ECA3 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:ECA7             dl 7FD800              ;/
 $82:ECAA A9 00 97    LDA #$9700             ;\
 $82:ECAD 85 48       STA $48    [$7E:0048]  ;|
 $82:ECAF A9 3A 95    LDA #$953A             ;|
-$82:ECB2 85 47       STA $47    [$7E:0047]  ;} Decompress $97:953A to $7F:E000
+$82:ECB2 85 47       STA $47    [$7E:0047]  ;} Decompress $97:953A to $7F:E000 (tilemap - game options menu - special settings - Japanese)
 $82:ECB4 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:ECB8             dl 7FE000              ;/
-$82:ECBB A2 FE 07    LDX #$07FE
-
-$82:ECBE BF 00 C0 7F LDA $7FC000,x[$7F:C7FE]
-$82:ECC2 9F 00 30 7E STA $7E3000,x[$7E:37FE]
-$82:ECC6 CA          DEX
-$82:ECC7 CA          DEX
-$82:ECC8 10 F4       BPL $F4    [$ECBE]
-$82:ECCA 9C 9E 09    STZ $099E  [$7E:099E]
-$82:ECCD 20 B9 8B    JSR $8BB9  [$82:8BB9]
-$82:ECD0 A0 B8 F4    LDY #$F4B8
-$82:ECD3 20 CB 8B    JSR $8BCB  [$82:8BCB]
-$82:ECD6 A0 C4 F4    LDY #$F4C4
-$82:ECD9 20 CB 8B    JSR $8BCB  [$82:8BCB]
-$82:ECDC EE E2 0D    INC $0DE2  [$7E:0DE2]
-$82:ECDF 20 ED ED    JSR $EDED  [$82:EDED]
+$82:ECBB A2 FE 07    LDX #$07FE             ;\
+                                            ;|
+$82:ECBE BF 00 C0 7F LDA $7FC000,x[$7F:C7FE];|
+$82:ECC2 9F 00 30 7E STA $7E3000,x[$7E:37FE];} Game options menu tilemap = [$7F:C000..C7FF] (tilemap - game options menu - options screen)
+$82:ECC6 CA          DEX                    ;|
+$82:ECC7 CA          DEX                    ;|
+$82:ECC8 10 F4       BPL $F4    [$ECBE]     ;/
+$82:ECCA 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
+$82:ECCD 20 B9 8B    JSR $8BB9  [$82:8BB9]  ; Delete game options menu objects
+$82:ECD0 A0 B8 F4    LDY #$F4B8             ;\
+$82:ECD3 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn menu selection missile
+$82:ECD6 A0 C4 F4    LDY #$F4C4             ;\
+$82:ECD9 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around OPTIONS MODE
+$82:ECDC EE E2 0D    INC $0DE2  [$7E:0DE2]  ; Game options menu index = 2
+$82:ECDF 20 ED ED    JSR $EDED  [$82:EDED]  ; Set language text option highlight
 $82:ECE2 28          PLP
 $82:ECE3 60          RTS
 }
 
 
-;;; $ECE4: Game state 2 (game options menu) - [$0DE2] = 2 (fading in options screen) ;;;
+;;; $ECE4: Game state 2 (game options menu) - [$0DE2] = 2 (fading in options menu) ;;;
 {
 $82:ECE4 22 4D 89 80 JSL $80894D[$80:894D]  ; Handle fading in
 $82:ECE8 E2 20       SEP #$20
@@ -11623,21 +11794,22 @@ $82:ECEA A5 51       LDA $51    [$7E:0051]  ;\
 $82:ECEC C9 0F       CMP #$0F               ;} If not finished fading in: return
 $82:ECEE D0 0C       BNE $0C    [$ECFC]     ;/
 $82:ECF0 C2 20       REP #$20
-$82:ECF2 9C 23 07    STZ $0723  [$7E:0723]
-$82:ECF5 9C 25 07    STZ $0725  [$7E:0725]
-$82:ECF8 EE E2 0D    INC $0DE2  [$7E:0DE2]
-$82:ECFB 60          RTS
+$82:ECF2 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:ECF5 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$82:ECF8 EE E2 0D    INC $0DE2  [$7E:0DE2]  ; Game options menu index = 3
+$82:ECFB 60          RTS                    ; Return
 
 $82:ECFC C2 20       REP #$20
 $82:ECFE 60          RTS
 }
 
 
-;;; $ECFF:  ;;;
+;;; $ECFF: Draw game options menu BG1 ;;;
 {
+; Queue transfer of $7E:3000..37FF to VRAM $5000..53FF
 $82:ECFF 08          PHP
 $82:ED00 C2 30       REP #$30
-$82:ED02 AE 30 03    LDX $0330  [$7E:0330]
+$82:ED02 AE 30 03    LDX $0330  [$7E:0330]  
 $82:ED05 A9 00 08    LDA #$0800
 $82:ED08 95 D0       STA $D0,x  [$7E:00D0]
 $82:ED0A E8          INX
@@ -11661,8 +11833,12 @@ $82:ED27 60          RTS
 }
 
 
-;;; $ED28:  ;;;
+;;; $ED28: Set game options menu tile palettes ;;;
 {
+;; Parameters:
+;;     A: Palette index (multiple of 200h)
+;;     X: Tilemap index (multiple of 2)
+;;     Y: Size (multiple of 2)
 $82:ED28 08          PHP
 $82:ED29 C2 30       REP #$30
 $82:ED2B 85 12       STA $12    [$7E:0012]
@@ -11681,7 +11857,7 @@ $82:ED41 60          RTS
 }
 
 
-;;; $ED42: Game state 2 (game options menu) - [$0DE2] = 3 (options screen) ;;;
+;;; $ED42: Game state 2 (game options menu) - [$0DE2] = 3 (options menu) ;;;
 {
 $82:ED42 08          PHP
 $82:ED43 C2 30       REP #$30
@@ -11720,7 +11896,7 @@ $82:ED8E A9 38 00    LDA #$0038             ;\
 $82:ED91 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 38h, sound library 1, max queued sounds allowed = 6 (menu option selected)
 $82:ED95 AD 9E 09    LDA $099E  [$7E:099E]  ;\
 $82:ED98 0A          ASL A                  ;|
-$82:ED99 AA          TAX                    ;} Execute [$EDA7 + [menu option index]]
+$82:ED99 AA          TAX                    ;} Execute [$EDA7 + [menu option index] * 2]
 $82:ED9A FC A7 ED    JSR ($EDA7,x)[$82:EE55];/
 
 $82:ED9D 28          PLP
@@ -11728,7 +11904,7 @@ $82:ED9E 60          RTS
 
 ; BRANCH_CANCEL
 $82:ED9F A9 0B 00    LDA #$000B             ;\
-$82:EDA2 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} $0DE2 = Bh (transition back to file select)
+$82:EDA2 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = Bh (transition back to file select)
 $82:EDA5 28          PLP
 $82:EDA6 60          RTS
 
@@ -11740,7 +11916,7 @@ $82:EDA7             dw EDB1, ; Start game
 }
 
 
-;;; $EDB1:  ;;;
+;;; $EDB1: Game options menu - options menu - start game ;;;
 {
 $82:EDB1 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
 $82:EDB4 F0 07       BEQ $07    [$EDBD]     ;} If debug mode enabled:
@@ -11749,24 +11925,24 @@ $82:EDB8 89 20 00    BIT #$0020             ;} If not pressing L: go to BRANCH_S
 $82:EDBB F0 09       BEQ $09    [$EDC6]     ;/
 
 $82:EDBD AF 14 D9 7E LDA $7ED914[$7E:D914]  ;\
-$82:EDC1 C9 05 00    CMP #$0005             ;} If [$7E:D914] != 5 (main): go to BRANCH_FADE_SCREEN
+$82:EDC1 C9 05 00    CMP #$0005             ;} If [loading game state] != main: go to BRANCH_FADE_SCREEN
 $82:EDC4 D0 07       BNE $07    [$EDCD]     ;/
 
 ; BRANCH_START_GAME
 $82:EDC6 A9 04 00    LDA #$0004             ;\
-$82:EDC9 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} $0DE2 = 4 (start game)
-$82:EDCC 60          RTS
+$82:EDC9 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 4 (start game)
+$82:EDCC 60          RTS                    ; Return
 
 ; BRANCH_FADE_SCREEN
 $82:EDCD 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:EDD0 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:EDD3 A9 0C 00    LDA #$000C             ;\
-$82:EDD6 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} $0DE2 = Ch (fading out options screen to start game)
+$82:EDD6 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = Ch (fading out options menu to start game)
 $82:EDD9 60          RTS
 }
 
 
-;;; $EDDA: Toggle Japanese text ;;;
+;;; $EDDA: Game options menu - options menu - toggle language text ;;;
 {
 $82:EDDA 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
 $82:EDDD AD E2 09    LDA $09E2  [$7E:09E2]  ;\
@@ -11779,86 +11955,86 @@ $82:EDEA 8D E2 09    STA $09E2  [$7E:09E2]  ;} Enable Japanese text
 }
 
 
-;;; $EDED:  ;;;
+;;; $EDED: Set language text option highlight ;;;
 {
-$82:EDED AD E2 09    LDA $09E2  [$7E:09E2]
-$82:EDF0 D0 32       BNE $32    [$EE24]
-$82:EDF2 A2 88 02    LDX #$0288
-$82:EDF5 A0 18 00    LDY #$0018
-$82:EDF8 A9 00 00    LDA #$0000
-$82:EDFB 20 28 ED    JSR $ED28  [$82:ED28]
-$82:EDFE A2 C8 02    LDX #$02C8
-$82:EE01 A0 18 00    LDY #$0018
-$82:EE04 A9 00 00    LDA #$0000
-$82:EE07 20 28 ED    JSR $ED28  [$82:ED28]
-$82:EE0A A2 48 03    LDX #$0348
-$82:EE0D A0 32 00    LDY #$0032
-$82:EE10 A9 00 04    LDA #$0400
-$82:EE13 20 28 ED    JSR $ED28  [$82:ED28]
-$82:EE16 A2 88 03    LDX #$0388
-$82:EE19 A0 32 00    LDY #$0032
-$82:EE1C A9 00 04    LDA #$0400
-$82:EE1F 20 28 ED    JSR $ED28  [$82:ED28]
+$82:EDED AD E2 09    LDA $09E2  [$7E:09E2]  ;\
+$82:EDF0 D0 32       BNE $32    [$EE24]     ;} If Japanese text disabled:
+$82:EDF2 A2 88 02    LDX #$0288             ;\
+$82:EDF5 A0 18 00    LDY #$0018             ;|
+$82:EDF8 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Ah) to palette 0
+$82:EDFB 20 28 ED    JSR $ED28  [$82:ED28]  ;/
+$82:EDFE A2 C8 02    LDX #$02C8             ;\
+$82:EE01 A0 18 00    LDY #$0018             ;|
+$82:EE04 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Bh) to palette 0
+$82:EE07 20 28 ED    JSR $ED28  [$82:ED28]  ;/
+$82:EE0A A2 48 03    LDX #$0348             ;\
+$82:EE0D A0 32 00    LDY #$0032             ;|
+$82:EE10 A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Dh) to palette 2
+$82:EE13 20 28 ED    JSR $ED28  [$82:ED28]  ;/
+$82:EE16 A2 88 03    LDX #$0388             ;\
+$82:EE19 A0 32 00    LDY #$0032             ;|
+$82:EE1C A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Eh) to palette 2
+$82:EE1F 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:EE22 80 30       BRA $30    [$EE54]
 
-$82:EE24 A2 88 02    LDX #$0288
-$82:EE27 A0 18 00    LDY #$0018
-$82:EE2A A9 00 04    LDA #$0400
-$82:EE2D 20 28 ED    JSR $ED28  [$82:ED28]
-$82:EE30 A2 C8 02    LDX #$02C8
-$82:EE33 A0 18 00    LDY #$0018
-$82:EE36 A9 00 04    LDA #$0400
-$82:EE39 20 28 ED    JSR $ED28  [$82:ED28]
-$82:EE3C A2 48 03    LDX #$0348
-$82:EE3F A0 32 00    LDY #$0032
-$82:EE42 A9 00 00    LDA #$0000
-$82:EE45 20 28 ED    JSR $ED28  [$82:ED28]
-$82:EE48 A2 88 03    LDX #$0388
-$82:EE4B A0 32 00    LDY #$0032
-$82:EE4E A9 00 00    LDA #$0000
-$82:EE51 20 28 ED    JSR $ED28  [$82:ED28]
+$82:EE24 A2 88 02    LDX #$0288             ;\ Else (Japanese text enabled):
+$82:EE27 A0 18 00    LDY #$0018             ;|
+$82:EE2A A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Ah) to palette 2
+$82:EE2D 20 28 ED    JSR $ED28  [$82:ED28]  ;/
+$82:EE30 A2 C8 02    LDX #$02C8             ;\
+$82:EE33 A0 18 00    LDY #$0018             ;|
+$82:EE36 A9 00 04    LDA #$0400             ;} Set game options menu tiles (4..Bh, Bh) to palette 2
+$82:EE39 20 28 ED    JSR $ED28  [$82:ED28]  ;/
+$82:EE3C A2 48 03    LDX #$0348             ;\
+$82:EE3F A0 32 00    LDY #$0032             ;|
+$82:EE42 A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Dh) to palette 0
+$82:EE45 20 28 ED    JSR $ED28  [$82:ED28]  ;/
+$82:EE48 A2 88 03    LDX #$0388             ;\
+$82:EE4B A0 32 00    LDY #$0032             ;|
+$82:EE4E A9 00 00    LDA #$0000             ;} Set game options menu tiles (4..Bh, Eh) to palette 0
+$82:EE51 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 
 $82:EE54 60          RTS
 }
 
 
-;;; $EE55:  ;;;
+;;; $EE55: Start game options menu dissolve transition ;;;
 {
-$82:EE55 E2 20       SEP #$20
-$82:EE57 A9 03       LDA #$03
-$82:EE59 85 57       STA $57    [$7E:0057]
-$82:EE5B C2 20       REP #$20
-$82:EE5D 9C 23 07    STZ $0723  [$7E:0723]
-$82:EE60 9C 25 07    STZ $0725  [$7E:0725]
-$82:EE63 A9 05 00    LDA #$0005
-$82:EE66 8D E2 0D    STA $0DE2  [$7E:0DE2]
+$82:EE55 E2 20       SEP #$20               ;\
+$82:EE57 A9 03       LDA #$03               ;|
+$82:EE59 85 57       STA $57    [$7E:0057]  ;} Enable BG1/2 mosaic, block size = 0
+$82:EE5B C2 20       REP #$20               ;/
+$82:EE5D 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:EE60 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$82:EE63 A9 05 00    LDA #$0005             ;\
+$82:EE66 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 5 (dissolve out screen)
 $82:EE69 60          RTS
 }
 
 
-;;; $EE6A:  ;;;
+;;; $EE6A: Game state 2 (game options menu) - [$0DE2] = Bh (transition back to file select) ;;;
 {
 $82:EE6A 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EE6E E2 20       SEP #$20
 $82:EE70 A5 51       LDA $51    [$7E:0051]  ;\
 $82:EE72 C9 80       CMP #$80               ;} If not finished fading out: return
 $82:EE74 D0 19       BNE $19    [$EE8F]     ;/
-$82:EE76 22 4B 83 80 JSL $80834B[$80:834B]
+$82:EE76 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:EE7A C2 20       REP #$20
-$82:EE7C 9C 23 07    STZ $0723  [$7E:0723]
-$82:EE7F 9C 25 07    STZ $0725  [$7E:0725]
+$82:EE7C 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:EE7F 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:EE82 A9 04 00    LDA #$0004             ;\
 $82:EE85 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 4 (file select menus)
 $82:EE88 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = 0
-$82:EE8B 9C E2 0D    STZ $0DE2  [$7E:0DE2]
-$82:EE8E 60          RTS
+$82:EE8B 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options menu index = 0
+$82:EE8E 60          RTS                    ; Return
 
 $82:EE8F C2 20       REP #$20
 $82:EE91 60          RTS
 }
 
 
-;;; $EE92: Game state 2 (game options menu) - [$0DE2] = Ch (fading out options screen to start game) ;;;
+;;; $EE92: Game state 2 (game options menu) - [$0DE2] = Ch (fading out options menu to start game) ;;;
 {
 $82:EE92 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EE96 E2 20       SEP #$20
@@ -11870,8 +12046,8 @@ $82:EEA2 C2 20       REP #$20
 $82:EEA4 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:EEA7 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:EEAA A9 04 00    LDA #$0004             ;\
-$82:EEAD 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} $0DE2 = 4 (start game)
-$82:EEB0 60          RTS
+$82:EEAD 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 4 (start game)
+$82:EEB0 60          RTS                    ; Return
 
 $82:EEB1 C2 20       REP #$20
 $82:EEB3 60          RTS
@@ -11880,7 +12056,7 @@ $82:EEB3 60          RTS
 
 ;;; $EEB4: Game state 2 (game options menu) - [$0DE2] = 4 (start game) ;;;
 {
-$82:EEB4 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options screen index = 0
+$82:EEB4 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options menu index = 0
 $82:EEB7 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
 $82:EEBA F0 07       BEQ $07    [$EEC3]     ;} If debug mode enabled:
 $82:EEBC A5 8B       LDA $8B    [$7E:008B]  ;\
@@ -11903,11 +12079,11 @@ $82:EEE2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A395
 $82:EEE5 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
 $82:EEE8 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:EEEB 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
-$82:EEEE 60          RTS
+$82:EEEE 60          RTS                    ; Return
 
 $82:EEEF 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
-$82:EEF2 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options screen index = 0
-$82:EEF5 60          RTS
+$82:EEF2 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options menu index = 0
+$82:EEF5 60          RTS                    ; Return
 
 ; BRANCH_DEBUG
 $82:EEF6 AF 14 D9 7E LDA $7ED914[$7E:D914]  ;\
@@ -11918,7 +12094,7 @@ $82:EF02 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (loading game map 
 $82:EF05 8F 14 D9 7E STA $7ED914[$7E:D914]  ; Loading game state = 5 (main)
 $82:EF09 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $82:EF0C 22 00 80 81 JSL $818000[$81:8000]  ;} Save current save slot to SRAM
-$82:EF10 60          RTS
+$82:EF10 60          RTS                    ; Return
 
 $82:EF11 A9 05 00    LDA #$0005             ;\
 $82:EF14 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (loading game map view)
@@ -11930,12 +12106,12 @@ $82:EF17 60          RTS
 {
 $82:EF18 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EF1C E2 20       SEP #$20
-$82:EF1E A5 57       LDA $57    [$7E:0057]
-$82:EF20 C9 F3       CMP #$F3
-$82:EF22 F0 05       BEQ $05    [$EF29]
-$82:EF24 18          CLC
-$82:EF25 69 10       ADC #$10
-$82:EF27 85 57       STA $57    [$7E:0057]
+$82:EF1E A5 57       LDA $57    [$7E:0057]  ;\
+$82:EF20 C9 F3       CMP #$F3               ;|
+$82:EF22 F0 05       BEQ $05    [$EF29]     ;|
+$82:EF24 18          CLC                    ;} (Mosaic block size) = min(Fh, (mosaic block size))
+$82:EF25 69 10       ADC #$10               ;|
+$82:EF27 85 57       STA $57    [$7E:0057]  ;/
 
 $82:EF29 A5 51       LDA $51    [$7E:0051]  ;\
 $82:EF2B C9 80       CMP #$80               ;} If not finished fading out:
@@ -11945,81 +12121,83 @@ $82:EF31 60          RTS                    ; Return
 
 $82:EF32 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:EF36 C2 20       REP #$20
-$82:EF38 9C 23 07    STZ $0723  [$7E:0723]
-$82:EF3B 9C 25 07    STZ $0725  [$7E:0725]
-$82:EF3E 64 B3       STZ $B3    [$7E:00B3]
-$82:EF40 EE E2 0D    INC $0DE2  [$7E:0DE2]
-$82:EF43 AD 9E 09    LDA $099E  [$7E:099E]
-$82:EF46 F0 37       BEQ $37    [$EF7F]
-$82:EF48 89 04 00    BIT #$0004
-$82:EF4B D0 34       BNE $34    [$EF81]
-$82:EF4D AD E2 09    LDA $09E2  [$7E:09E2]
-$82:EF50 D0 11       BNE $11    [$EF63]
-$82:EF52 A2 FE 07    LDX #$07FE
-
-$82:EF55 BF 00 C8 7F LDA $7FC800,x
-$82:EF59 9F 00 30 7E STA $7E3000,x
-$82:EF5D CA          DEX
-$82:EF5E CA          DEX
-$82:EF5F 10 F4       BPL $F4    [$EF55]
+$82:EF38 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:EF3B 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$82:EF3E 64 B3       STZ $B3    [$7E:00B3]  ; BG1 Y scroll = 0
+$82:EF40 EE E2 0D    INC $0DE2  [$7E:0DE2]  ; Game options menu index = 6 (dissolve in screen)
+$82:EF43 AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:EF46 F0 37       BEQ $37    [$EF7F]     ;} If [menu option index] = 0: go to BRANCH_OPTIONS_MENU
+$82:EF48 89 04 00    BIT #$0004             ;\
+$82:EF4B D0 34       BNE $34    [$EF81]     ;} If [menu option index] & 4 != 0: go to BRANCH_SPECIAL_SUBMENU
+$82:EF4D AD E2 09    LDA $09E2  [$7E:09E2]  ;\
+$82:EF50 D0 11       BNE $11    [$EF63]     ;} If Japanese text disabled:
+$82:EF52 A2 FE 07    LDX #$07FE             ;\
+                                            ;|
+$82:EF55 BF 00 C8 7F LDA $7FC800,x          ;|
+$82:EF59 9F 00 30 7E STA $7E3000,x          ;} Game options menu tilemap = [$7F:C800..CFFF] (game options menu tilemap - controller settings - English)
+$82:EF5D CA          DEX                    ;|
+$82:EF5E CA          DEX                    ;|
+$82:EF5F 10 F4       BPL $F4    [$EF55]     ;/
 $82:EF61 80 0F       BRA $0F    [$EF72]
 
-$82:EF63 A2 FE 07    LDX #$07FE
+$82:EF63 A2 FE 07    LDX #$07FE             ;\ Else (Japanese text enabled):
+                                            ;|
+$82:EF66 BF 00 D0 7F LDA $7FD000,x          ;|
+$82:EF6A 9F 00 30 7E STA $7E3000,x          ;} Game options menu tilemap = [$7F:D000..D7FF] (game options menu tilemap - controller settings - Japanese)
+$82:EF6E CA          DEX                    ;|
+$82:EF6F CA          DEX                    ;|
+$82:EF70 10 F4       BPL $F4    [$EF66]     ;/
 
-$82:EF66 BF 00 D0 7F LDA $7FD000,x
-$82:EF6A 9F 00 30 7E STA $7E3000,x
-$82:EF6E CA          DEX
-$82:EF6F CA          DEX
-$82:EF70 10 F4       BPL $F4    [$EF66]
-
-$82:EF72 A0 CA F4    LDY #$F4CA
-$82:EF75 20 CB 8B    JSR $8BCB  [$82:8BCB]
-$82:EF78 20 DC F4    JSR $F4DC  [$82:F4DC]
-$82:EF7B 20 87 F5    JSR $F587  [$82:F587]
-$82:EF7E 60          RTS
+$82:EF72 A0 CA F4    LDY #$F4CA             ;\
+$82:EF75 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around CONTROLLER SETTING MODE
+$82:EF78 20 DC F4    JSR $F4DC  [$82:F4DC]  ; Load game options menu controller bindings
+$82:EF7B 20 87 F5    JSR $F587  [$82:F587]  ; Draw game options menu controller bindings
+$82:EF7E 60          RTS                    ; Return
 
 $82:EF7F 80 41       BRA $41    [$EFC2]
 
-$82:EF81 AD E2 09    LDA $09E2  [$7E:09E2]
-$82:EF84 D0 11       BNE $11    [$EF97]
-$82:EF86 A2 FE 07    LDX #$07FE
+; BRANCH_SPECIAL_SUBMENU
+$82:EF81 AD E2 09    LDA $09E2  [$7E:09E2]  ;\
+$82:EF84 D0 11       BNE $11    [$EF97]     ;} If Japanese text disabled:
+$82:EF86 A2 FE 07    LDX #$07FE             ;\
+                                            ;|
+$82:EF89 BF 00 D8 7F LDA $7FD800,x[$7F:DFFE];|
+$82:EF8D 9F 00 30 7E STA $7E3000,x[$7E:37FE];} Game options menu tilemap = [$7F:D800..DFFF] (game options menu tilemap - special settings - English)
+$82:EF91 CA          DEX                    ;|
+$82:EF92 CA          DEX                    ;|
+$82:EF93 10 F4       BPL $F4    [$EF89]     ;/
+$82:EF95 80 0F       BRA $0F    [$EFA6]     
+                                            
+$82:EF97 A2 FE 07    LDX #$07FE             ;\ Else (Japanese text enabled):
+                                            ;|
+$82:EF9A BF 00 E0 7F LDA $7FE000,x          ;|
+$82:EF9E 9F 00 30 7E STA $7E3000,x          ;} Game options menu tilemap = [$7F:E000..E7FF] (game options menu tilemap - special settings - Japanese)
+$82:EFA2 CA          DEX                    ;|
+$82:EFA3 CA          DEX                    ;|
+$82:EFA4 10 F4       BPL $F4    [$EF9A]     ;/
 
-$82:EF89 BF 00 D8 7F LDA $7FD800,x[$7F:DFFE]
-$82:EF8D 9F 00 30 7E STA $7E3000,x[$7E:37FE]
-$82:EF91 CA          DEX
-$82:EF92 CA          DEX
-$82:EF93 10 F4       BPL $F4    [$EF89]
-$82:EF95 80 0F       BRA $0F    [$EFA6]
+$82:EFA6 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0 (icon cancel)
+$82:EFA9 20 B9 F0    JSR $F0B9  [$82:F0B9]  ; Set special setting highlights
+$82:EFAC A9 01 00    LDA #$0001             ;\
+$82:EFAF 8D 9E 09    STA $099E  [$7E:099E]  ;} Menu option index = 1 (moonwalk)
+$82:EFB2 20 B9 F0    JSR $F0B9  [$82:F0B9]  ; Set special setting highlights
+$82:EFB5 A9 04 00    LDA #$0004             ;\
+$82:EFB8 8D 9E 09    STA $099E  [$7E:099E]  ;} Menu option index = 4
+$82:EFBB A0 D0 F4    LDY #$F4D0             ;\
+$82:EFBE 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around SPECIAL SETTING MODE
+$82:EFC1 60          RTS                    ; Return
 
-$82:EF97 A2 FE 07    LDX #$07FE
-
-$82:EF9A BF 00 E0 7F LDA $7FE000,x
-$82:EF9E 9F 00 30 7E STA $7E3000,x
-$82:EFA2 CA          DEX
-$82:EFA3 CA          DEX
-$82:EFA4 10 F4       BPL $F4    [$EF9A]
-
-$82:EFA6 9C 9E 09    STZ $099E  [$7E:099E]
-$82:EFA9 20 B9 F0    JSR $F0B9  [$82:F0B9]
-$82:EFAC A9 01 00    LDA #$0001
-$82:EFAF 8D 9E 09    STA $099E  [$7E:099E]
-$82:EFB2 20 B9 F0    JSR $F0B9  [$82:F0B9]
-$82:EFB5 A9 04 00    LDA #$0004
-$82:EFB8 8D 9E 09    STA $099E  [$7E:099E]
-$82:EFBB A0 D0 F4    LDY #$F4D0
-$82:EFBE 20 CB 8B    JSR $8BCB  [$82:8BCB]
-$82:EFC1 60          RTS
-
-$82:EFC2 A2 FE 07    LDX #$07FE
-
-$82:EFC5 BF 00 C0 7F LDA $7FC000,x[$7F:C7FE]
-$82:EFC9 9F 00 30 7E STA $7E3000,x[$7E:37FE]
-$82:EFCD CA          DEX
-$82:EFCE CA          DEX
-$82:EFCF 10 F4       BPL $F4    [$EFC5]
-$82:EFD1 20 ED ED    JSR $EDED  [$82:EDED]
-$82:EFD4 A0 C4 F4    LDY #$F4C4
-$82:EFD7 20 CB 8B    JSR $8BCB  [$82:8BCB]
+; BRANCH_OPTIONS_MENU
+$82:EFC2 A2 FE 07    LDX #$07FE             ;\
+                                            ;|
+$82:EFC5 BF 00 C0 7F LDA $7FC000,x[$7F:C7FE];|
+$82:EFC9 9F 00 30 7E STA $7E3000,x[$7E:37FE];} Game options menu tilemap = [$7F:C000..C7FF] (game options menu tilemap - options screen)
+$82:EFCD CA          DEX                    ;|
+$82:EFCE CA          DEX                    ;|
+$82:EFCF 10 F4       BPL $F4    [$EFC5]     ;/
+$82:EFD1 20 ED ED    JSR $EDED  [$82:EDED]  ; Set language text option highlight
+$82:EFD4 A0 C4 F4    LDY #$F4C4             ;\
+$82:EFD7 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around OPTIONS MODE
 $82:EFDA 60          RTS
 }
 
@@ -12028,43 +12206,47 @@ $82:EFDA 60          RTS
 {
 $82:EFDB 22 4D 89 80 JSL $80894D[$80:894D]  ; Handle fading in
 $82:EFDF E2 20       SEP #$20
-$82:EFE1 A5 57       LDA $57    [$7E:0057]
-$82:EFE3 C9 03       CMP #$03
-$82:EFE5 F0 05       BEQ $05    [$EFEC]
-$82:EFE7 38          SEC
-$82:EFE8 E9 10       SBC #$10
-$82:EFEA 85 57       STA $57    [$7E:0057]
+$82:EFE1 A5 57       LDA $57    [$7E:0057]  ;\
+$82:EFE3 C9 03       CMP #$03               ;|
+$82:EFE5 F0 05       BEQ $05    [$EFEC]     ;|
+$82:EFE7 38          SEC                    ;} (Mosaic block size) = max(0, (mosaic block size))
+$82:EFE8 E9 10       SBC #$10               ;|
+$82:EFEA 85 57       STA $57    [$7E:0057]  ;/
 
-$82:EFEC A5 51       LDA $51    [$7E:0051]
-$82:EFEE C9 0F       CMP #$0F
-$82:EFF0 D0 2F       BNE $2F    [$F021]
-$82:EFF2 64 57       STZ $57    [$7E:0057]
+$82:EFEC A5 51       LDA $51    [$7E:0051]  ;\
+$82:EFEE C9 0F       CMP #$0F               ;} If not finished fading in: return
+$82:EFF0 D0 2F       BNE $2F    [$F021]     ;/
+$82:EFF2 64 57       STZ $57    [$7E:0057]  ; Disable mosaic
 $82:EFF4 C2 20       REP #$20
-$82:EFF6 9C 23 07    STZ $0723  [$7E:0723]
-$82:EFF9 9C 25 07    STZ $0725  [$7E:0725]
-$82:EFFC AD 9E 09    LDA $099E  [$7E:099E]
-$82:EFFF F0 19       BEQ $19    [$F01A]
-$82:F001 89 04 00    BIT #$0004
-$82:F004 D0 0A       BNE $0A    [$F010]
-$82:F006 A9 07 00    LDA #$0007
-$82:F009 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$82:F00C 9C 9E 09    STZ $099E  [$7E:099E]
-$82:F00F 60          RTS
+$82:EFF6 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$82:EFF9 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$82:EFFC AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:EFFF F0 19       BEQ $19    [$F01A]     ;} If [menu option index] = 0: go to BRANCH_OPTIONS_MENU
+$82:F001 89 04 00    BIT #$0004             ;\
+$82:F004 D0 0A       BNE $0A    [$F010]     ;} If [menu option index] & 4 != 0: go to BRANCH_SPECIAL_SUBMENU
+$82:F006 A9 07 00    LDA #$0007             ;\
+$82:F009 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 7 (controller settings)
+$82:F00C 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
+$82:F00F 60          RTS                    ; Return
 
-$82:F010 A9 08 00    LDA #$0008
-$82:F013 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$82:F016 9C 9E 09    STZ $099E  [$7E:099E]
-$82:F019 60          RTS
+; BRANCH_SPECIAL_SUBMENU
+$82:F010 A9 08 00    LDA #$0008             ;\
+$82:F013 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 8 (special settings)
+$82:F016 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
+$82:F019 60          RTS                    ; Return
 
-$82:F01A A9 03 00    LDA #$0003
-$82:F01D 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$82:F020 60          RTS
+; BRANCH_OPTIONS_MENU
+$82:F01A A9 03 00    LDA #$0003             ;\
+$82:F01D 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 3 (options menu)
+$82:F020 60          RTS                    l Return
 
 $82:F021 C2 20       REP #$20
 $82:F023 60          RTS
 }
 
 
+;;; $F024..F158: Special settings ;;;
+{
 ;;; $F024: Game state 2 (game options menu) - [$0DE2] = 8 (special settings) ;;;
 {
 $82:F024 A5 8F       LDA $8F    [$7E:008F]  ;\
@@ -12072,10 +12254,10 @@ $82:F026 29 00 08    AND #$0800             ;} If newly pressed up:
 $82:F029 F0 14       BEQ $14    [$F03F]     ;/
 $82:F02B A9 37 00    LDA #$0037             ;\
 $82:F02E 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:F032 CE 9E 09    DEC $099E  [$7E:099E]
-$82:F035 10 25       BPL $25    [$F05C]
-$82:F037 A9 02 00    LDA #$0002
-$82:F03A 8D 9E 09    STA $099E  [$7E:099E]
+$82:F032 CE 9E 09    DEC $099E  [$7E:099E]  ;\
+$82:F035 10 25       BPL $25    [$F05C]     ;|
+$82:F037 A9 02 00    LDA #$0002             ;} Menu option index = ([menu option index] - 1) % 3
+$82:F03A 8D 9E 09    STA $099E  [$7E:099E]  ;/
 $82:F03D 80 1D       BRA $1D    [$F05C]
 
 $82:F03F A5 8F       LDA $8F    [$7E:008F]  ;\ Else (not newly pressed up):
@@ -12083,31 +12265,31 @@ $82:F041 29 00 04    AND #$0400             ;} If newly pressed down:
 $82:F044 F0 16       BEQ $16    [$F05C]     ;/
 $82:F046 A9 37 00    LDA #$0037             ;\
 $82:F049 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:F04D AD 9E 09    LDA $099E  [$7E:099E]
-$82:F050 1A          INC A
-$82:F051 8D 9E 09    STA $099E  [$7E:099E]
-$82:F054 C9 03 00    CMP #$0003
-$82:F057 D0 03       BNE $03    [$F05C]
-$82:F059 9C 9E 09    STZ $099E  [$7E:099E]
+$82:F04D AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F050 1A          INC A                  ;|
+$82:F051 8D 9E 09    STA $099E  [$7E:099E]  ;|
+$82:F054 C9 03 00    CMP #$0003             ;} Menu option index = ([menu option index] + 1) % 3
+$82:F057 D0 03       BNE $03    [$F05C]     ;|
+$82:F059 9C 9E 09    STZ $099E  [$7E:099E]  ;/
 
 $82:F05C A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F05E 89 00 80    BIT #$8000             ;} If newly pressed B:
 $82:F061 F0 0E       BEQ $0E    [$F071]     ;/
 $82:F063 A9 38 00    LDA #$0038             ;\
 $82:F066 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 38h, sound library 1, max queued sounds allowed = 6 (menu option selected)
-$82:F06A 9C 9E 09    STZ $099E  [$7E:099E]
-$82:F06D 20 55 EE    JSR $EE55  [$82:EE55]
-$82:F070 60          RTS
+$82:F06A 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
+$82:F06D 20 55 EE    JSR $EE55  [$82:EE55]  ; Start game options menu dissolve transition
+$82:F070 60          RTS                    ; Return
 
 $82:F071 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F073 89 80 13    BIT #$1380             ;} If newly pressed A, left, right or start:
 $82:F076 F0 0F       BEQ $0F    [$F087]     ;/
 $82:F078 A9 38 00    LDA #$0038             ;\
 $82:F07B 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 38h, sound library 1, max queued sounds allowed = 6 (menu option selected)
-$82:F07F AD 9E 09    LDA $099E  [$7E:099E]
-$82:F082 0A          ASL A
-$82:F083 AA          TAX
-$82:F084 FC 88 F0    JSR ($F088,x)[$82:F08E]
+$82:F07F AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F082 0A          ASL A                  ;|
+$82:F083 AA          TAX                    ;} Execute [$F088 + [menu option index] * 2]
+$82:F084 FC 88 F0    JSR ($F088,x)[$82:F08E];/
 
 $82:F087 60          RTS
 
@@ -12115,195 +12297,210 @@ $82:F088             dw F08E, F08E, F0B2
 }
 
 
-;;; $F08E:  ;;;
+;;; $F08E: Game options - special settings - toggle setting ;;;
 {
-$82:F08E AD 9E 09    LDA $099E  [$7E:099E]
-$82:F091 0A          ASL A
-$82:F092 AA          TAX
-$82:F093 BD AE F0    LDA $F0AE,x[$82:F0B0]
-$82:F096 AA          TAX
-$82:F097 BD 00 00    LDA $0000,x[$7E:09E4]
-$82:F09A F0 08       BEQ $08    [$F0A4]
-$82:F09C A9 00 00    LDA #$0000
-$82:F09F 9D 00 00    STA $0000,x
+$82:F08E AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F091 0A          ASL A                  ;|
+$82:F092 AA          TAX                    ;} X = [$F0AE + [menu option index] * 2] (special setting RAM address)
+$82:F093 BD AE F0    LDA $F0AE,x[$82:F0B0]  ;|
+$82:F096 AA          TAX                    ;/
+$82:F097 BD 00 00    LDA $0000,x[$7E:09E4]  ;\
+$82:F09A F0 08       BEQ $08    [$F0A4]     ;} If [[X]] != 0:
+$82:F09C A9 00 00    LDA #$0000             ;\
+$82:F09F 9D 00 00    STA $0000,x            ;} [X] = 0
 $82:F0A2 80 06       BRA $06    [$F0AA]
 
-$82:F0A4 A9 01 00    LDA #$0001
-$82:F0A7 9D 00 00    STA $0000,x[$7E:09E4]
+$82:F0A4 A9 01 00    LDA #$0001             ;\ Else ([[X]] = 0)L
+$82:F0A7 9D 00 00    STA $0000,x[$7E:09E4]  ;} [X] = 1
 
-$82:F0AA 20 B9 F0    JSR $F0B9  [$82:F0B9]
+$82:F0AA 20 B9 F0    JSR $F0B9  [$82:F0B9]  ; Set special setting highlights
 $82:F0AD 60          RTS
-
-$82:F0AE             dw 09EA, 09E4
 }
 
 
-;;; $F0B2:  ;;;
+;;; $F0AE: Special setting RAM addresses ;;;
 {
-$82:F0B2 9C 9E 09    STZ $099E  [$7E:099E]
-$82:F0B5 20 55 EE    JSR $EE55  [$82:EE55]
+$82:F0AE             dw 09EA, ; Icon cancel flag
+                        09E4  ; Moonwalk flag
+}
+
+
+;;; $F0B2: Game options - special settings - end ;;;
+{
+$82:F0B2 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
+$82:F0B5 20 55 EE    JSR $EE55  [$82:EE55]  ; Start game options menu dissolve transition
 $82:F0B8 60          RTS
 }
 
 
-;;; $F0B9:  ;;;
+;;; $F0B9: Set special setting highlights ;;;
 {
-$82:F0B9 AD 9E 09    LDA $099E  [$7E:099E]
-$82:F0BC 0A          ASL A
-$82:F0BD AA          TAX
-$82:F0BE BD AE F0    LDA $F0AE,x[$82:F0AE]
-$82:F0C1 AA          TAX
-$82:F0C2 BD 00 00    LDA $0000,x[$7E:09EA]
-$82:F0C5 D0 41       BNE $41    [$F108]
-$82:F0C7 AD 9E 09    LDA $099E  [$7E:099E]
-$82:F0CA 0A          ASL A
-$82:F0CB 0A          ASL A
-$82:F0CC AA          TAX
-$82:F0CD DA          PHX
-$82:F0CE BD 49 F1    LDA $F149,x[$82:F149]
-$82:F0D1 AA          TAX
-$82:F0D2 A0 0C 00    LDY #$000C
-$82:F0D5 A9 00 04    LDA #$0400
-$82:F0D8 20 28 ED    JSR $ED28  [$82:ED28]
-$82:F0DB FA          PLX
-$82:F0DC DA          PHX
-$82:F0DD BD 4B F1    LDA $F14B,x[$82:F14B]
-$82:F0E0 AA          TAX
-$82:F0E1 A0 0C 00    LDY #$000C
-$82:F0E4 A9 00 04    LDA #$0400
-$82:F0E7 20 28 ED    JSR $ED28  [$82:ED28]
-$82:F0EA FA          PLX
-$82:F0EB DA          PHX
-$82:F0EC BD 51 F1    LDA $F151,x[$82:F151]
-$82:F0EF AA          TAX
-$82:F0F0 A0 0C 00    LDY #$000C
-$82:F0F3 A9 00 00    LDA #$0000
-$82:F0F6 20 28 ED    JSR $ED28  [$82:ED28]
-$82:F0F9 FA          PLX
-$82:F0FA BD 53 F1    LDA $F153,x[$82:F153]
-$82:F0FD AA          TAX
-$82:F0FE A0 0C 00    LDY #$000C
-$82:F101 A9 00 00    LDA #$0000
-$82:F104 20 28 ED    JSR $ED28  [$82:ED28]
+$82:F0B9 AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F0BC 0A          ASL A                  ;|
+$82:F0BD AA          TAX                    ;|
+$82:F0BE BD AE F0    LDA $F0AE,x[$82:F0AE]  ;} If [[$F0AE + [menu option index] * 2]] = 0 (setting is off):
+$82:F0C1 AA          TAX                    ;|
+$82:F0C2 BD 00 00    LDA $0000,x[$7E:09EA]  ;|
+$82:F0C5 D0 41       BNE $41    [$F108]     ;/
+$82:F0C7 AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F0CA 0A          ASL A                  ;|
+$82:F0CB 0A          ASL A                  ;} X = [menu option index] * 8
+$82:F0CC AA          TAX                    ;/
+$82:F0CD DA          PHX                    ;\
+$82:F0CE BD 49 F1    LDA $F149,x[$82:F149]  ;|
+$82:F0D1 AA          TAX                    ;|
+$82:F0D2 A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (10h, 7 + [menu option index] * 6) to palette 2
+$82:F0D5 A9 00 04    LDA #$0400             ;|
+$82:F0D8 20 28 ED    JSR $ED28  [$82:ED28]  ;|
+$82:F0DB FA          PLX                    ;/
+$82:F0DC DA          PHX                    ;\
+$82:F0DD BD 4B F1    LDA $F14B,x[$82:F14B]  ;|
+$82:F0E0 AA          TAX                    ;|
+$82:F0E1 A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (10h, 8 + [menu option index] * 6) to palette 2
+$82:F0E4 A9 00 04    LDA #$0400             ;|
+$82:F0E7 20 28 ED    JSR $ED28  [$82:ED28]  ;|
+$82:F0EA FA          PLX                    ;/
+$82:F0EB DA          PHX                    ;\
+$82:F0EC BD 51 F1    LDA $F151,x[$82:F151]  ;|
+$82:F0EF AA          TAX                    ;|
+$82:F0F0 A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (17h, 7 + [menu option index] * 6) to palette 0
+$82:F0F3 A9 00 00    LDA #$0000             ;|
+$82:F0F6 20 28 ED    JSR $ED28  [$82:ED28]  ;|
+$82:F0F9 FA          PLX                    ;/
+$82:F0FA BD 53 F1    LDA $F153,x[$82:F153]  ;\
+$82:F0FD AA          TAX                    ;|
+$82:F0FE A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (17h, 8 + [menu option index] * 6) to palette 0
+$82:F101 A9 00 00    LDA #$0000             ;|
+$82:F104 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:F107 60          RTS
 
-$82:F108 AD 9E 09    LDA $099E  [$7E:099E]
-$82:F10B 0A          ASL A
-$82:F10C 0A          ASL A
-$82:F10D AA          TAX
-$82:F10E DA          PHX
-$82:F10F BD 49 F1    LDA $F149,x[$82:F14D]
-$82:F112 AA          TAX
-$82:F113 A0 0C 00    LDY #$000C
-$82:F116 A9 00 00    LDA #$0000
-$82:F119 20 28 ED    JSR $ED28  [$82:ED28]
-$82:F11C FA          PLX
-$82:F11D DA          PHX
-$82:F11E BD 4B F1    LDA $F14B,x[$82:F14F]
-$82:F121 AA          TAX
-$82:F122 A0 0C 00    LDY #$000C
-$82:F125 A9 00 00    LDA #$0000
-$82:F128 20 28 ED    JSR $ED28  [$82:ED28]
-$82:F12B FA          PLX
-$82:F12C DA          PHX
-$82:F12D BD 51 F1    LDA $F151,x[$82:F155]
-$82:F130 AA          TAX
-$82:F131 A0 0C 00    LDY #$000C
-$82:F134 A9 00 04    LDA #$0400
-$82:F137 20 28 ED    JSR $ED28  [$82:ED28]
-$82:F13A FA          PLX
-$82:F13B BD 53 F1    LDA $F153,x[$82:F157]
-$82:F13E AA          TAX
-$82:F13F A0 0C 00    LDY #$000C
-$82:F142 A9 00 04    LDA #$0400
-$82:F145 20 28 ED    JSR $ED28  [$82:ED28]
+$82:F108 AD 9E 09    LDA $099E  [$7E:099E]  ; Else (setting is on):
+$82:F10B 0A          ASL A                  ;
+$82:F10C 0A          ASL A                  ;
+$82:F10D AA          TAX                    ;
+$82:F10E DA          PHX                    ;\
+$82:F10F BD 49 F1    LDA $F149,x[$82:F14D]  ;|
+$82:F112 AA          TAX                    ;|
+$82:F113 A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (10h, 7 + [menu option index] * 6) to palette 0
+$82:F116 A9 00 00    LDA #$0000             ;|
+$82:F119 20 28 ED    JSR $ED28  [$82:ED28]  ;|
+$82:F11C FA          PLX                    ;/
+$82:F11D DA          PHX                    ;\
+$82:F11E BD 4B F1    LDA $F14B,x[$82:F14F]  ;|
+$82:F121 AA          TAX                    ;|
+$82:F122 A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (10h, 8 + [menu option index] * 6) to palette 0
+$82:F125 A9 00 00    LDA #$0000             ;|
+$82:F128 20 28 ED    JSR $ED28  [$82:ED28]  ;|
+$82:F12B FA          PLX                    ;/
+$82:F12C DA          PHX                    ;\
+$82:F12D BD 51 F1    LDA $F151,x[$82:F155]  ;|
+$82:F130 AA          TAX                    ;|
+$82:F131 A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (17h, 7 + [menu option index] * 6) to palette 2
+$82:F134 A9 00 04    LDA #$0400             ;|
+$82:F137 20 28 ED    JSR $ED28  [$82:ED28]  ;|
+$82:F13A FA          PLX                    ;/
+$82:F13B BD 53 F1    LDA $F153,x[$82:F157]  ;\
+$82:F13E AA          TAX                    ;|
+$82:F13F A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (17h, 8 + [menu option index] * 6) to palette 2
+$82:F142 A9 00 04    LDA #$0400             ;|
+$82:F145 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:F148 60          RTS
 
-$82:F149             dw 01E0, 0220, 0360, 03A0, 01EE, 022E, 036E, 03AE
+;                        ___________________ Icon cancel row 0
+;                       |     ______________ Icon cancel row 1
+;                       |    |      ________ Moonwalk row 0
+;                       |    |     |     ___ Moonwalk row 1
+;                       |    |     |    |
+$82:F149             dw 01E0,0220, 0360,03A0 ; Left option tilemap indices
+$82:F151             dw 01EE,022E, 036E,03AE ; Right option tilemap indices
+}
 }
 
 
-;;; $F159:  ;;;
+;;; $F159..F295: Controller settings ;;;
 {
-; Controller settings presumably
+;;; $F159: Game state 2 (game options menu) - [$0DE2] = 7 (controller settings) ;;;
+{
 $82:F159 A5 8F       LDA $8F    [$7E:008F]  ;\
-$82:F15B 29 00 08    AND #$0800             ;} If not newly pressed up: go to BRANCH_F17F
+$82:F15B 29 00 08    AND #$0800             ;} If not newly pressed up: go to BRANCH_UP_END
 $82:F15E F0 1F       BEQ $1F    [$F17F]     ;/
 $82:F160 A9 37 00    LDA #$0037             ;\
 $82:F163 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:F167 AD 9E 09    LDA $099E  [$7E:099E]
-$82:F16A 3A          DEC A
-$82:F16B 8D 9E 09    STA $099E  [$7E:099E]
-$82:F16E 30 06       BMI $06    [$F176]
-$82:F170 C9 06 00    CMP #$0006
-$82:F173 F0 35       BEQ $35    [$F1AA]
-$82:F175 60          RTS
+$82:F167 AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F16A 3A          DEC A                  ;} Decrement menu option index
+$82:F16B 8D 9E 09    STA $099E  [$7E:099E]  ;/
+$82:F16E 30 06       BMI $06    [$F176]     ; If [menu option index] >= 0:
+$82:F170 C9 06 00    CMP #$0006             ;\
+$82:F173 F0 35       BEQ $35    [$F1AA]     ;} If [menu option index] = 6 (angle down): go to BRANCH_SCROLL_UP
+$82:F175 60          RTS                    ; Return
 
-$82:F176 A9 08 00    LDA #$0008
-$82:F179 8D 9E 09    STA $099E  [$7E:099E]
-$82:F17C 80 25       BRA $25    [$F1A3]
+$82:F176 A9 08 00    LDA #$0008             ;\
+$82:F179 8D 9E 09    STA $099E  [$7E:099E]  ;} Menu option index = 8
+$82:F17C 80 25       BRA $25    [$F1A3]     ; Go to BRANCH_SCROLL_DOWN
 
 $82:F17E 60          RTS
 
-; BRANCH_F17F
+; BRANCH_UP_END
 $82:F17F A5 8F       LDA $8F    [$7E:008F]  ;\
-$82:F181 29 00 04    AND #$0400             ;} If not newly pressed down: go to BRANCH_F1B1
+$82:F181 29 00 04    AND #$0400             ;} If not newly pressed down: go to BRANCH_DOWN_END
 $82:F184 F0 2B       BEQ $2B    [$F1B1]     ;/
 $82:F186 A9 37 00    LDA #$0037             ;\
 $82:F189 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$82:F18D AD 9E 09    LDA $099E  [$7E:099E]
-$82:F190 1A          INC A
-$82:F191 8D 9E 09    STA $099E  [$7E:099E]
-$82:F194 C9 07 00    CMP #$0007
-$82:F197 F0 0A       BEQ $0A    [$F1A3]
-$82:F199 C9 09 00    CMP #$0009
-$82:F19C D0 E0       BNE $E0    [$F17E]
-$82:F19E 9C 9E 09    STZ $099E  [$7E:099E]
-$82:F1A1 80 07       BRA $07    [$F1AA]
+$82:F18D AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F190 1A          INC A                  ;} Increment menu option index
+$82:F191 8D 9E 09    STA $099E  [$7E:099E]  ;/
+$82:F194 C9 07 00    CMP #$0007             ;\
+$82:F197 F0 0A       BEQ $0A    [$F1A3]     ;} If [menu option index] = 7 (end): go to BRANCH_SCROLL_DOWN
+$82:F199 C9 09 00    CMP #$0009             ;\
+$82:F19C D0 E0       BNE $E0    [$F17E]     ;} If [menu option index] != 9: return
+$82:F19E 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
+$82:F1A1 80 07       BRA $07    [$F1AA]     ; Go to BRANCH_SCROLL_UP
 
-$82:F1A3 A9 09 00    LDA #$0009
-$82:F1A6 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$82:F1A9 60          RTS
+; BRANCH_SCROLL_DOWN
+$82:F1A3 A9 09 00    LDA #$0009             ;\
+$82:F1A6 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 9 (scroll controller settings down)
+$82:F1A9 60          RTS                    ; Return
 
-$82:F1AA A9 0A 00    LDA #$000A
-$82:F1AD 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$82:F1B0 60          RTS
+; BRANCH_SCROLL_UP
+$82:F1AA A9 0A 00    LDA #$000A             ;\
+$82:F1AD 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = Ah (scroll controller settings up)
+$82:F1B0 60          RTS                    ; Return
 
-; BRANCH_F1B1
+; BRANCH_DOWN_END
 $82:F1B1 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F1B3 F0 10       BEQ $10    [$F1C5]     ;} If pressed anything:
 $82:F1B5 A9 38 00    LDA #$0038             ;\
 $82:F1B8 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 38h, sound library 1, max queued sounds allowed = 6 (menu option selected)
-$82:F1BC AD 9E 09    LDA $099E  [$7E:099E]
-$82:F1BF 0A          ASL A
-$82:F1C0 AA          TAX
-$82:F1C1 FC C9 F1    JSR ($F1C9,x)
-$82:F1C4 60          RTS
+$82:F1BC AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F1BF 0A          ASL A                  ;|
+$82:F1C0 AA          TAX                    ;} Execute [$F1C9 + [menu option index] * 2]
+$82:F1C1 FC C9 F1    JSR ($F1C9,x)          ;/
+$82:F1C4 60          RTS                    ; Return
 
 $82:F1C5 A5 91       LDA $91    [$7E:0091]
-$82:F1C7 80 12       BRA $12    [$F1DB]
+$82:F1C7 80 12       BRA $12    [$F1DB]     ; Wild BRA appeared!
 
 $82:F1C9             dw F6B9, F6B9, F6B9, F6B9, F6B9, F6B9, F6B9, F25D, F224
 
-$82:F1DB A8          TAY
-$82:F1DC F0 25       BEQ $25    [$F203]
-$82:F1DE AD 9E 09    LDA $099E  [$7E:099E]
-$82:F1E1 C9 08 00    CMP #$0008
-$82:F1E4 D0 1D       BNE $1D    [$F203]
-$82:F1E6 AD E0 0D    LDA $0DE0  [$7E:0DE0]
-$82:F1E9 C9 10 00    CMP #$0010
-$82:F1EC 10 15       BPL $15    [$F203]
-$82:F1EE AD E0 0D    LDA $0DE0  [$7E:0DE0]
-$82:F1F1 0A          ASL A
-$82:F1F2 AA          TAX
-$82:F1F3 98          TYA
-$82:F1F4 3D 04 F2    AND $F204,x
-$82:F1F7 DD 04 F2    CMP $F204,x
-$82:F1FA D0 04       BNE $04    [$F200]
-$82:F1FC EE E0 0D    INC $0DE0  [$7E:0DE0]
-$82:F1FF 60          RTS
+$82:F1DB A8          TAY                    ; Y = [newly pressed controller 2 input]
+$82:F1DC F0 25       BEQ $25    [$F203]     ; If controller 2 not newly pressed anything: return
+$82:F1DE AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F1E1 C9 08 00    CMP #$0008             ;} If [menu option index] != 8 (reset to default): return
+$82:F1E4 D0 1D       BNE $1D    [$F203]     ;/
+$82:F1E6 AD E0 0D    LDA $0DE0  [$7E:0DE0]  ;\
+$82:F1E9 C9 10 00    CMP #$0010             ;} If [debug invincibility] >= 10h: return
+$82:F1EC 10 15       BPL $15    [$F203]     ;/
+$82:F1EE AD E0 0D    LDA $0DE0  [$7E:0DE0]  ;\
+$82:F1F1 0A          ASL A                  ;|
+$82:F1F2 AA          TAX                    ;|
+$82:F1F3 98          TYA                    ;} If controller 2 newly pressed [$F204 + [debug invincibility] * 2]:
+$82:F1F4 3D 04 F2    AND $F204,x            ;|
+$82:F1F7 DD 04 F2    CMP $F204,x            ;|
+$82:F1FA D0 04       BNE $04    [$F200]     ;/
+$82:F1FC EE E0 0D    INC $0DE0  [$7E:0DE0]  ; Increment debug invincibility
+$82:F1FF 60          RTS                    ; Return
 
-$82:F200 9C E0 0D    STZ $0DE0  [$7E:0DE0]
+$82:F200 9C E0 0D    STZ $0DE0  [$7E:0DE0]  ; Debug invincibility = 0
 
 $82:F203 60          RTS
 
@@ -12315,7 +12512,7 @@ $82:F204             dw 0020, 0020, 0020, 0020, ; L
 }
 
 
-;;; $F224:  ;;;
+;;; $F224: Game options - controller settings - reset to default ;;;
 {
 $82:F224 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F226 89 80 10    BIT #$1080             ;} If not newly pressing start or A:
@@ -12336,290 +12533,325 @@ $82:F24A A9 10 00    LDA #$0010             ;\
 $82:F24D 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up binding = R
 $82:F250 A9 20 00    LDA #$0020             ;\
 $82:F253 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down binding = L
-$82:F256 20 DC F4    JSR $F4DC  [$82:F4DC]  ; Execute $F4DC
-$82:F259 20 87 F5    JSR $F587  [$82:F587]  ; Execute $F587
+$82:F256 20 DC F4    JSR $F4DC  [$82:F4DC]  ; Load game options menu controller bindings
+$82:F259 20 87 F5    JSR $F587  [$82:F587]  ; Draw game options menu controller bindings
 $82:F25C 60          RTS
 }
 
 
-;;; $F25D:  ;;;
+;;; $F25D: Game options - controller settings - end ;;;
 {
 $82:F25D A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F25F 89 80 10    BIT #$1080             ;} If not newly pressing start or A:
 $82:F262 D0 01       BNE $01    [$F265]     ;/
 $82:F264 60          RTS                    ; Return
 
-$82:F265 20 58 F5    JSR $F558  [$82:F558]
-$82:F268 B0 06       BCS $06    [$F270]
-$82:F26A 9C 9E 09    STZ $099E  [$7E:099E]
-$82:F26D 20 55 EE    JSR $EE55  [$82:EE55]
+$82:F265 20 58 F5    JSR $F558  [$82:F558]  ; Save game options menu controller bindings
+$82:F268 B0 06       BCS $06    [$F270]     ; (Carry is always clear)
+$82:F26A 9C 9E 09    STZ $099E  [$7E:099E]  ; Menu option index = 0
+$82:F26D 20 55 EE    JSR $EE55  [$82:EE55]  ; Start game options menu dissolve transition
 
 $82:F270 60          RTS
 }
 
 
-;;; $F271:  ;;;
+;;; $F271: Game state 2 (game options menu) - [$0DE2] = 9 (scroll controller settings down) ;;;
 {
-$82:F271 A5 B3       LDA $B3    [$7E:00B3]
-$82:F273 18          CLC
-$82:F274 69 02 00    ADC #$0002
-$82:F277 85 B3       STA $B3    [$7E:00B3]
-$82:F279 C9 20 00    CMP #$0020
-$82:F27C D0 06       BNE $06    [$F284]
-$82:F27E A9 07 00    LDA #$0007
-$82:F281 8D E2 0D    STA $0DE2  [$7E:0DE2]
+$82:F271 A5 B3       LDA $B3    [$7E:00B3]  ;\
+$82:F273 18          CLC                    ;|
+$82:F274 69 02 00    ADC #$0002             ;} BG1 Y scroll += 2
+$82:F277 85 B3       STA $B3    [$7E:00B3]  ;/
+$82:F279 C9 20 00    CMP #$0020             ;\
+$82:F27C D0 06       BNE $06    [$F284]     ;} If [BG1 Y scroll] = 20h:
+$82:F27E A9 07 00    LDA #$0007             ;\
+$82:F281 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 7 (controller settings)
 
 $82:F284 60          RTS
 }
 
 
-;;; $F285:  ;;;
+;;; $F285: Game state 2 (game options menu) - [$0DE2] = Ah (scroll controller settings up) ;;;
 {
-$82:F285 A5 B3       LDA $B3    [$7E:00B3]
-$82:F287 38          SEC
-$82:F288 E9 02 00    SBC #$0002
-$82:F28B 85 B3       STA $B3    [$7E:00B3]
-$82:F28D D0 06       BNE $06    [$F295]
-$82:F28F A9 07 00    LDA #$0007
-$82:F292 8D E2 0D    STA $0DE2  [$7E:0DE2]
+$82:F285 A5 B3       LDA $B3    [$7E:00B3]  ;\
+$82:F287 38          SEC                    ;|
+$82:F288 E9 02 00    SBC #$0002             ;} BG1 Y scroll -= 2
+$82:F28B 85 B3       STA $B3    [$7E:00B3]  ;/
+$82:F28D D0 06       BNE $06    [$F295]     ; If [BG1 Y scroll] = 0:
+$82:F28F A9 07 00    LDA #$0007             ;\
+$82:F292 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 7 (controller settings)
 
 $82:F295 60          RTS
 }
+}
 
 
-;;; $F296:  ;;;
+;;; $F296..F4DB: Game options menu objects ;;;
 {
-$82:F296 A9 18 00    LDA #$0018
-$82:F299 99 AD 1A    STA $1AAD,y[$7E:1ABB]
-$82:F29C A9 38 00    LDA #$0038
-$82:F29F 99 BD 1A    STA $1ABD,y[$7E:1ACB]
-$82:F2A2 A9 00 0E    LDA #$0E00
-$82:F2A5 99 CD 1A    STA $1ACD,y[$7E:1ADB]
+;;; $F296: Setup - menu selection missile ;;;
+{
+$82:F296 A9 18 00    LDA #$0018             ;\
+$82:F299 99 AD 1A    STA $1AAD,y[$7E:1ABB]  ;} Game options menu object X position = 18h
+$82:F29C A9 38 00    LDA #$0038             ;\
+$82:F29F 99 BD 1A    STA $1ABD,y[$7E:1ACB]  ;} Game options menu object Y position = 38h
+$82:F2A2 A9 00 0E    LDA #$0E00             ;\
+$82:F2A5 99 CD 1A    STA $1ACD,y[$7E:1ADB]  ;} Game options menu object palette index = E00h (palette 7)
 $82:F2A8 60          RTS
 }
 
 
-;;; $F2A9:  ;;;
+;;; $F2A9: Pre-instruction - menu selection missile ;;;
 {
-$82:F2A9 AD 98 09    LDA $0998  [$7E:0998]
-$82:F2AC C9 02 00    CMP #$0002
-$82:F2AF F0 0D       BEQ $0D    [$F2BE]
-$82:F2B1 A9 01 00    LDA #$0001
-$82:F2B4 9D 1D 1B    STA $1B1D,x[$7E:1B2B]
-$82:F2B7 A9 B6 F4    LDA #$F4B6
-$82:F2BA 9D FD 1A    STA $1AFD,x[$7E:1B0B]
-$82:F2BD 60          RTS
+$82:F2A9 AD 98 09    LDA $0998  [$7E:0998]  ;\
+$82:F2AC C9 02 00    CMP #$0002             ;} If [game state] != game options menu:
+$82:F2AF F0 0D       BEQ $0D    [$F2BE]     ;/
+$82:F2B1 A9 01 00    LDA #$0001             ;\
+$82:F2B4 9D 1D 1B    STA $1B1D,x[$7E:1B2B]  ;} Game options menu object instruction timer = 1
+$82:F2B7 A9 B6 F4    LDA #$F4B6             ;\
+$82:F2BA 9D FD 1A    STA $1AFD,x[$7E:1B0B]  ;} Game options menu object instruction list pointer = $F4B6 (delete)
+$82:F2BD 60          RTS                    ; Return
 
-$82:F2BE AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$82:F2C1 0A          ASL A
-$82:F2C2 A8          TAY
-$82:F2C3 B9 ED F2    LDA $F2ED,y[$82:F2F1]
-$82:F2C6 F0 18       BEQ $18    [$F2E0]
-$82:F2C8 85 12       STA $12    [$7E:0012]
-$82:F2CA AD 9E 09    LDA $099E  [$7E:099E]
-$82:F2CD 0A          ASL A
-$82:F2CE 0A          ASL A
-$82:F2CF 18          CLC
-$82:F2D0 65 12       ADC $12    [$7E:0012]
-$82:F2D2 A8          TAY
-$82:F2D3 B9 00 00    LDA $0000,y[$82:F307]
-$82:F2D6 9D AD 1A    STA $1AAD,x[$7E:1ABB]
-$82:F2D9 B9 02 00    LDA $0002,y[$82:F309]
-$82:F2DC 9D BD 1A    STA $1ABD,x[$7E:1ACB]
-$82:F2DF 60          RTS
+$82:F2BE AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$82:F2C1 0A          ASL A                  ;|
+$82:F2C2 A8          TAY                    ;} If [$F2ED + [game options menu index] * 2] != 0:
+$82:F2C3 B9 ED F2    LDA $F2ED,y[$82:F2F1]  ;|
+$82:F2C6 F0 18       BEQ $18    [$F2E0]     ;/
+$82:F2C8 85 12       STA $12    [$7E:0012]  ;\
+$82:F2CA AD 9E 09    LDA $099E  [$7E:099E]  ;|
+$82:F2CD 0A          ASL A                  ;|
+$82:F2CE 0A          ASL A                  ;} Y = [$F2ED + [game options menu index] * 2] + [menu option index] * 4
+$82:F2CF 18          CLC                    ;|
+$82:F2D0 65 12       ADC $12    [$7E:0012]  ;|
+$82:F2D2 A8          TAY                    ;/
+$82:F2D3 B9 00 00    LDA $0000,y[$82:F307]  ;\
+$82:F2D6 9D AD 1A    STA $1AAD,x[$7E:1ABB]  ;} Game options menu object X position = [[Y]]
+$82:F2D9 B9 02 00    LDA $0002,y[$82:F309]  ;\
+$82:F2DC 9D BD 1A    STA $1ABD,x[$7E:1ACB]  ;} Game options menu object Y position = [[Y] + 2]
+$82:F2DF 60          RTS                    ; Return
 
-$82:F2E0 A9 80 01    LDA #$0180
-$82:F2E3 9D AD 1A    STA $1AAD,x[$7E:1ABB]
-$82:F2E6 A9 10 00    LDA #$0010
-$82:F2E9 9D BD 1A    STA $1ABD,x[$7E:1ACB]
+$82:F2E0 A9 80 01    LDA #$0180             ;\
+$82:F2E3 9D AD 1A    STA $1AAD,x[$7E:1ABB]  ;} Game options menu object X position = 180h
+$82:F2E6 A9 10 00    LDA #$0010             ;\
+$82:F2E9 9D BD 1A    STA $1ABD,x[$7E:1ACB]  ;} Game options menu object Y position = 10h
 $82:F2EC 60          RTS
 
-$82:F2ED             dw 0000, 0000, F307, F307, 0000, 0000, 0000, F31B, F33F, 0000, 0000, F307, 0000
+$82:F2ED             dw 0000, ; 0: Finish fading out
+                        0000, ; 1: Loading options menu
+                        F307, ; 2: Fading in options menu
+                        F307, ; 3: Options menu
+                        0000, ; 4: Start game
+                        0000, ; 5: Dissolve out screen
+                        0000, ; 6: Dissolve in screen
+                        F31B, ; 7: Controller settings
+                        F33F, ; 8: Special settings
+                        0000, ; 9: Scroll controller settings down
+                        0000, ; Ah: Scroll controller settings up
+                        F307, ; Bh: Transition back to file selection
+                        0000  ; Ch: Fading out options menu to start game
 
-$82:F307             dw 0018,0038, 0018,0058, 0018,0070, 0018,0090, 0018,00B0
-$82:F31B             dw 0028,0030, 0028,0048, 0028,0060, 0028,0078, 0028,0090, 0028,00A8, 0028,00C0, 0028,00B8, 0028,00D0
-$82:F33F             dw 0010,0040, 0010,0070, 0010,00A0
+; Options menu
+$82:F307             dw 0018,0038, ; 0: Start game
+                        0018,0058, ; 1: English text
+                        0018,0070, ; 2: Japanese text
+                        0018,0090, ; 3: Controller setting mode
+                        0018,00B0  ; 4: Special setting mode
+
+; Controller settings
+$82:F31B             dw 0028,0030, ; 0: Shot
+                        0028,0048, ; 1: Jump
+                        0028,0060, ; 2: Dash
+                        0028,0078, ; 3: Item select
+                        0028,0090, ; 4: Item cancel
+                        0028,00A8, ; 5: Angle up
+                        0028,00C0, ; 6: Angle down
+                        0028,00B8, ; 7: End
+                        0028,00D0  ; 8: Reset to default
+
+; Special settings
+$82:F33F             dw 0010,0040, ; 0: Icon cancel
+                        0010,0070, ; 1: Moonwalk
+                        0010,00A0  ; 2: End
 }
 
 
-;;; $F34B:  ;;;
+;;; $F34B: Setup - border around OPTION MODE ;;;
 {
-$82:F34B A9 7C 00    LDA #$007C
-$82:F34E 99 AD 1A    STA $1AAD,y[$7E:1AB9]
-$82:F351 80 16       BRA $16    [$F369]
+$82:F34B A9 7C 00    LDA #$007C             ;\
+$82:F34E 99 AD 1A    STA $1AAD,y[$7E:1AB9]  ;} Game options menu object X position = 7Ch
+$82:F351 80 16       BRA $16    [$F369]     ; Go to common border setup
 }
 
 
-;;; $F353:  ;;;
+;;; $F353: Setup - border around CONTROLLER SETTING MODE ;;;
 {
-$82:F353 A9 84 00    LDA #$0084
-$82:F356 99 AD 1A    STA $1AAD,y
-$82:F359 80 0E       BRA $0E    [$F369]
+$82:F353 A9 84 00    LDA #$0084             ;\
+$82:F356 99 AD 1A    STA $1AAD,y            ;} Game options menu object X position = 84h
+$82:F359 80 0E       BRA $0E    [$F369]     ; Go to common border setup
 }
 
 
-;;; $F35B:  ;;;
+;;; $F35B: Setup - border around SPECIAL SETTING MODE ;;;
 {
-$82:F35B A9 80 00    LDA #$0080
-$82:F35E 99 AD 1A    STA $1AAD,y[$7E:1AB7]
-$82:F361 80 06       BRA $06    [$F369]
+$82:F35B A9 80 00    LDA #$0080             ;\
+$82:F35E 99 AD 1A    STA $1AAD,y[$7E:1AB7]  ;} Game options menu object X position = 80h
+$82:F361 80 06       BRA $06    [$F369]     ; Go to common border setup
 }
 
 
-;;; $F363:  ;;;
+;;; $F363: Setup - border around SAMUS DATA ;;;
 {
-$82:F363 A9 80 00    LDA #$0080
-$82:F366 99 AD 1A    STA $1AAD,y
+$82:F363 A9 80 00    LDA #$0080             ;\
+$82:F366 99 AD 1A    STA $1AAD,y            ;} Game options menu object X position = 80h
 }
 
 
-;;; $F369:  ;;;
+;;; $F369: Common border setup ;;;
 {
-$82:F369 A9 10 00    LDA #$0010
-$82:F36C 99 BD 1A    STA $1ABD,y[$7E:1AC9]
-$82:F36F A9 00 0E    LDA #$0E00
-$82:F372 99 CD 1A    STA $1ACD,y[$7E:1AD9]
+$82:F369 A9 10 00    LDA #$0010             ;\
+$82:F36C 99 BD 1A    STA $1ABD,y[$7E:1AC9]  ;} Game options menu object Y position = 10h
+$82:F36F A9 00 0E    LDA #$0E00             ;\
+$82:F372 99 CD 1A    STA $1ACD,y[$7E:1AD9]  ;} Game options menu object palette index = E00h (palette 7)
 $82:F375 60          RTS
 }
 
 
-;;; $F376:  ;;;
+;;; $F376: Pre-instruction - border around OPTIONS MODE ;;;
 {
-$82:F376 AD 98 09    LDA $0998  [$7E:0998]
-$82:F379 C9 02 00    CMP #$0002
-$82:F37C D0 13       BNE $13    [$F391]
-$82:F37E AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$82:F381 C9 06 00    CMP #$0006
-$82:F384 D0 19       BNE $19    [$F39F]
+$82:F376 AD 98 09    LDA $0998  [$7E:0998]  ;\
+$82:F379 C9 02 00    CMP #$0002             ;} If [game state] = game options menu:
+$82:F37C D0 13       BNE $13    [$F391]     ;/
+$82:F37E AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$82:F381 C9 06 00    CMP #$0006             ;} If [game options menu index] != 6 (dissolve in screen): return
+$82:F384 D0 19       BNE $19    [$F39F]     ;/
 $82:F386 E2 20       SEP #$20
-$82:F388 A5 51       LDA $51    [$7E:0051]
-$82:F38A C9 80       CMP #$80
-$82:F38C F0 03       BEQ $03    [$F391]
+$82:F388 A5 51       LDA $51    [$7E:0051]  ;\
+$82:F38A C9 80       CMP #$80               ;} If started fading in:
+$82:F38C F0 03       BEQ $03    [$F391]     ;/
 $82:F38E C2 20       REP #$20
-$82:F390 60          RTS
+$82:F390 60          RTS                    ; Return
 
 $82:F391 C2 20       REP #$20
-$82:F393 A9 01 00    LDA #$0001
-$82:F396 9D 1D 1B    STA $1B1D,x[$7E:1B29]
-$82:F399 A9 B6 F4    LDA #$F4B6
-$82:F39C 9D FD 1A    STA $1AFD,x[$7E:1B09]
+$82:F393 A9 01 00    LDA #$0001             ;\
+$82:F396 9D 1D 1B    STA $1B1D,x[$7E:1B29]  ;} Game options menu object instruction timer = 1
+$82:F399 A9 B6 F4    LDA #$F4B6             ;\
+$82:F39C 9D FD 1A    STA $1AFD,x[$7E:1B09]  ;} Game options menu object instruction list pointer = $F4B6 (delete)
 
 $82:F39F 60          RTS
 }
 
 
-;;; $F3A0:  ;;;
+;;; $F3A0: Pre-instruction - border around CONTROLLER SETTING MODE ;;;
 {
-$82:F3A0 AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$82:F3A3 C9 06 00    CMP #$0006
-$82:F3A6 D0 1A       BNE $1A    [$F3C2]
+$82:F3A0 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$82:F3A3 C9 06 00    CMP #$0006             ;} If [game options menu index] != 6 (dissolve in screen): go to BRANCH_DISSOLVE_IN_END
+$82:F3A6 D0 1A       BNE $1A    [$F3C2]     ;/
 $82:F3A8 E2 20       SEP #$20
-$82:F3AA A5 51       LDA $51    [$7E:0051]
-$82:F3AC C9 80       CMP #$80
-$82:F3AE F0 03       BEQ $03    [$F3B3]
-$82:F3B0 C2 20       REP #$20
-$82:F3B2 60          RTS
+$82:F3AA A5 51       LDA $51    [$7E:0051]  ;\
+$82:F3AC C9 80       CMP #$80               ;} If started fading in:
+$82:F3AE F0 03       BEQ $03    [$F3B3]     ;/
+$82:F3B0 C2 20       REP #$20               
+$82:F3B2 60          RTS                    ; Return
 
 $82:F3B3 C2 20       REP #$20
-$82:F3B5 A9 01 00    LDA #$0001
-$82:F3B8 9D 1D 1B    STA $1B1D,x
-$82:F3BB A9 B6 F4    LDA #$F4B6
-$82:F3BE 9D FD 1A    STA $1AFD,x
-$82:F3C1 60          RTS
+$82:F3B5 A9 01 00    LDA #$0001             ;\
+$82:F3B8 9D 1D 1B    STA $1B1D,x            ;} Game options menu object instruction timer = 1
+$82:F3BB A9 B6 F4    LDA #$F4B6             ;\
+$82:F3BE 9D FD 1A    STA $1AFD,x            ;} Game options menu object instruction list pointer = $F4B6 (delete)
+$82:F3C1 60          RTS                    ; Return
 
-$82:F3C2 C9 09 00    CMP #$0009
-$82:F3C5 D0 0B       BNE $0B    [$F3D2]
-$82:F3C7 BD BD 1A    LDA $1ABD,x
-$82:F3CA 38          SEC
-$82:F3CB E9 02 00    SBC #$0002
-$82:F3CE 9D BD 1A    STA $1ABD,x
-$82:F3D1 60          RTS
+; BRANCH_DISSOLVE_IN_END
+$82:F3C2 C9 09 00    CMP #$0009             ;\
+$82:F3C5 D0 0B       BNE $0B    [$F3D2]     ;} If [game options menu index] != 6 (scroll controller settings down):
+$82:F3C7 BD BD 1A    LDA $1ABD,x            ;\
+$82:F3CA 38          SEC                    ;|
+$82:F3CB E9 02 00    SBC #$0002             ;} Game options menu object Y position -= 2
+$82:F3CE 9D BD 1A    STA $1ABD,x            ;/
+$82:F3D1 60          RTS                    ; Return
 
-$82:F3D2 C9 0A 00    CMP #$000A
-$82:F3D5 D0 0A       BNE $0A    [$F3E1]
-$82:F3D7 BD BD 1A    LDA $1ABD,x
-$82:F3DA 18          CLC
-$82:F3DB 69 02 00    ADC #$0002
-$82:F3DE 9D BD 1A    STA $1ABD,x
+$82:F3D2 C9 0A 00    CMP #$000A             ;\
+$82:F3D5 D0 0A       BNE $0A    [$F3E1]     ;} If [game options menu index] != Ah (scroll controller settings up):
+$82:F3D7 BD BD 1A    LDA $1ABD,x            ;\
+$82:F3DA 18          CLC                    ;|
+$82:F3DB 69 02 00    ADC #$0002             ;} Game options menu object Y position += 2
+$82:F3DE 9D BD 1A    STA $1ABD,x            ;/
 
 $82:F3E1 60          RTS
 }
 
 
-;;; $F3E2:  ;;;
+;;; $F3E2: Pre-instruction - border around SPECIAL SETTING MODE ;;;
 {
-$82:F3E2 AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$82:F3E5 C9 06 00    CMP #$0006
-$82:F3E8 D0 19       BNE $19    [$F403]
-$82:F3EA E2 20       SEP #$20
-$82:F3EC A5 51       LDA $51    [$7E:0051]
-$82:F3EE C9 80       CMP #$80
-$82:F3F0 F0 03       BEQ $03    [$F3F5]
-$82:F3F2 C2 20       REP #$20
-$82:F3F4 60          RTS
+$82:F3E2 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$82:F3E5 C9 06 00    CMP #$0006             ;} If [game options menu index] != 6 (dissolve in screen): return
+$82:F3E8 D0 19       BNE $19    [$F403]     ;/
+$82:F3EA E2 20       SEP #$20               
+$82:F3EC A5 51       LDA $51    [$7E:0051]  ;\
+$82:F3EE C9 80       CMP #$80               ;} If started fading in:
+$82:F3F0 F0 03       BEQ $03    [$F3F5]     ;/
+$82:F3F2 C2 20       REP #$20               
+$82:F3F4 60          RTS                    ; Return
 
 $82:F3F5 C2 20       REP #$20
-$82:F3F7 A9 01 00    LDA #$0001
-$82:F3FA 9D 1D 1B    STA $1B1D,x[$7E:1B27]
-$82:F3FD A9 B6 F4    LDA #$F4B6
-$82:F400 9D FD 1A    STA $1AFD,x[$7E:1B07]
+$82:F3F7 A9 01 00    LDA #$0001             ;\
+$82:F3FA 9D 1D 1B    STA $1B1D,x[$7E:1B27]  ;} Game options menu object instruction timer = 1
+$82:F3FD A9 B6 F4    LDA #$F4B6             ;\
+$82:F400 9D FD 1A    STA $1AFD,x[$7E:1B07]  ;} Game options menu object instruction list pointer = $F4B6 (delete)
 
 $82:F403 60          RTS
 }
 
 
-;;; $F404:  ;;;
+;;; $F404: Unused. Pre-instruction ;;;
 {
-$82:F404 AD E2 0D    LDA $0DE2  [$7E:0DE2]
-$82:F407 C9 01 00    CMP #$0001
-$82:F40A D0 0C       BNE $0C    [$F418]
-$82:F40C A9 01 00    LDA #$0001
-$82:F40F 9D 1D 1B    STA $1B1D,x
-$82:F412 A9 B6 F4    LDA #$F4B6
-$82:F415 9D FD 1A    STA $1AFD,x
+$82:F404 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
+$82:F407 C9 01 00    CMP #$0001             ;} If [game options menu index] = 1 (loading options menu):
+$82:F40A D0 0C       BNE $0C    [$F418]     ;/
+$82:F40C A9 01 00    LDA #$0001             ;\
+$82:F40F 9D 1D 1B    STA $1B1D,x            ;} Game options menu object instruction timer = 1
+$82:F412 A9 B6 F4    LDA #$F4B6             ;\
+$82:F415 9D FD 1A    STA $1AFD,x            ;} Game options menu object instruction list pointer = $F4B6 (delete)
 
 $82:F418 60          RTS
 }
 
 
-;;; $F419:  ;;;
+;;; $F419: Setup - file select menu Samus helmet ;;;
 {
-$82:F419 A9 D8 00    LDA #$00D8
-$82:F41C 99 AD 1A    STA $1AAD,y
-$82:F41F A9 10 00    LDA #$0010
-$82:F422 99 BD 1A    STA $1ABD,y
-$82:F425 A9 00 0E    LDA #$0E00
-$82:F428 99 CD 1A    STA $1ACD,y
+$82:F419 A9 D8 00    LDA #$00D8             ;\
+$82:F41C 99 AD 1A    STA $1AAD,y            ;} Game options menu object X position = D8h
+$82:F41F A9 10 00    LDA #$0010             ;\
+$82:F422 99 BD 1A    STA $1ABD,y            ;} Game options menu object Y position = 10h
+$82:F425 A9 00 0E    LDA #$0E00             ;\
+$82:F428 99 CD 1A    STA $1ACD,y            ;} Game options menu object palette index = E00h (palette 7)
 $82:F42B 60          RTS
 }
 
 
-;;; $F42C:  ;;;
+;;; $F42C: Pre-instruction - file select menu Samus helmet ;;;
 {
-$82:F42C AD 98 09    LDA $0998  [$7E:0998]
-$82:F42F C9 02 00    CMP #$0002
-$82:F432 F0 0D       BEQ $0D    [$F441]
-$82:F434 A9 01 00    LDA #$0001
-$82:F437 9D 1D 1B    STA $1B1D,x
-$82:F43A A9 B6 F4    LDA #$F4B6
-$82:F43D 9D FD 1A    STA $1AFD,x
+$82:F42C AD 98 09    LDA $0998  [$7E:0998]  ;\
+$82:F42F C9 02 00    CMP #$0002             ;} If [game state] != game options menu:
+$82:F432 F0 0D       BEQ $0D    [$F441]     ;/
+$82:F434 A9 01 00    LDA #$0001             ;\
+$82:F437 9D 1D 1B    STA $1B1D,x            ;} Game options menu object instruction timer = 1
+$82:F43A A9 B6 F4    LDA #$F4B6             ;\
+$82:F43D 9D FD 1A    STA $1AFD,x            ;} Game options menu object instruction list pointer = $F4B6 (delete)
 $82:F440 60          RTS
 
 $82:F441 60          RTS
 }
 
 
-;;; $F442: Instruction list - yyyy ;;;
+;;; $F442: Instruction list - menu selection missile ;;;
 {
 $82:F442             dx 0008,CBCB,
                         0008,CBD7,
                         0008,CBE3,
                         0008,CBEF,
-                        8C82,F442,  ; Go to $F442
+                        8C82,F442   ; Go to $F442
 }
 
 
-;;; $F456: Instruction list - yyyy ;;;
+;;; $F456: Instruction list - file select menu Samus helmet ;;;
 {
 $82:F456             dx 0090,CAE9,
                         0006,CAFF,
@@ -12630,141 +12862,166 @@ $82:F456             dx 0090,CAE9,
                         0002,CB8B,
                         0001,CBAB,
                         009F,CB15,
-                        8C82,F456,  ; Go to $F456
+                        8C82,F456   ; Go to $F456
 }
 
 
-;;; $F47E: Instruction list - yyyy ;;;
+;;; $F47E: Instruction list - border around OPTIONS MODE ;;;
 {
 $82:F47E             dx 0002,D24B,
-                        8C6E,F376,  ; Pre-instruction = $F376?
-                        0090,D24B,
-                        8C82,F486,  ; Go to $F486
+                        8C6E,F376   ; Pre-instruction = $F376
+$82:F486             dx 0090,D24B,
+                        8C82,F486   ; Go to $F486
 }
 
 
-;;; $F48E: Instruction list - yyyy ;;;
+;;; $F48E: Instruction list - border around CONTROLLER SETTING MODE ;;;
 {
 $82:F48E             dx 0002,D2F7,
-                        8C6E,F3A0,  ; Pre-instruction = $F3A0?
-                        0090,D2F7,
-                        8C82,F496,  ; Go to $F496
+                        8C6E,F3A0   ; Pre-instruction = $F3A0
+$82:F496             dx 0090,D2F7,
+                        8C82,F496   ; Go to $F496
 }
 
 
-;;; $F49E: Instruction list - yyyy ;;;
+;;; $F49E: Instruction list - border around SPECIAL SETTING MODE ;;;
 {
 $82:F49E             dx 0002,D41B,
-                        8C6E,F3E2,  ; Pre-instruction = $F3E2?
-                        0090,D41B,
-                        8C82,F4A6,  ; Go to $F4A6
+                        8C6E,F3E2   ; Pre-instruction = $F3E2
+$82:F4A6             dx 0090,D41B,
+                        8C82,F4A6   ; Go to $F4A6
 }
 
 
-;;; $F4AE: Instruction list - yyyy ;;;
+;;; $F4AE: Instruction list - border around SAMUS DATA ;;;
 {
 $82:F4AE             dx 0090,D00B,
-                        8C82,F4AE,  ; Go to $F4AE
+                        8C82,F4AE   ; Go to $F4AE
 }
 
 
-;;; $F4B6: Instruction list - yyyy ;;;
+;;; $F4B6: Instruction list - delete ;;;
 {
-$82:F4B6             dx 8C5A        ; Delete?
+$82:F4B6             dx 8C5A        ; Delete
 }
 
 
-;;; $F4B8: Options menu objects ;;;
+;;; $F4B8: Game options menu objects ;;;
 {
-$82:F4B8             dw F296,F2A9,F442
-$82:F4BE             dw F419,F42C,F456
-$82:F4C4             dw F34B,8C10,F47E
-$82:F4CA             dw F353,8C10,F48E
-$82:F4D0             dw F35B,8C10,F49E
-$82:F4D6             dw F363,8C10,F4AE
+;                        _____________ Setup
+;                       |     ________ Pre-instruction
+;                       |    |     ___ Instruction list
+;                       |    |    |
+$82:F4B8             dw F296,F2A9,F442 ; Menu selection missile
+$82:F4BE             dw F419,F42C,F456 ; Unused. File select menu Samus helmet
+$82:F4C4             dw F34B,8C10,F47E ; Border around OPTION MODE
+$82:F4CA             dw F353,8C10,F48E ; Border around CONTROLLER SETTING MODE
+$82:F4D0             dw F35B,8C10,F49E ; Border around SPECIAL SETTING MODE
+$82:F4D6             dw F363,8C10,F4AE ; Border around SAMUS DATA
+}
 }
 
 
-;;; $F4DC:  ;;;
+;;; $F4DC..F70D: Game options menu controller bindings ;;;
 {
-; Load controller options from controller bindings
-$82:F4DC A2 00 00    LDX #$0000
+;;; $F4DC: Load game options menu controller bindings ;;;
+{
+$82:F4DC A2 00 00    LDX #$0000             ; X = 0 (game options menu controller binding index)
 
-$82:F4DF BD 4A F5    LDA $F54A,x
-$82:F4E2 A8          TAY
-$82:F4E3 B9 00 00    LDA $0000,y
-$82:F4E6 89 40 00    BIT #$0040
-$82:F4E9 D0 1E       BNE $1E    [$F509]
-$82:F4EB 89 80 00    BIT #$0080
-$82:F4EE D0 21       BNE $21    [$F511]
-$82:F4F0 89 00 80    BIT #$8000
-$82:F4F3 D0 24       BNE $24    [$F519]
-$82:F4F5 89 00 20    BIT #$2000
-$82:F4F8 D0 27       BNE $27    [$F521]
-$82:F4FA 89 00 40    BIT #$4000
-$82:F4FD D0 2A       BNE $2A    [$F529]
-$82:F4FF 89 20 00    BIT #$0020
-$82:F502 D0 2D       BNE $2D    [$F531]
-$82:F504 89 10 00    BIT #$0010
-$82:F507 D0 30       BNE $30    [$F539]
+; LOOP
+$82:F4DF BD 4A F5    LDA $F54A,x            ;\
+$82:F4E2 A8          TAY                    ;} Y = [$F54A + [X]] (button binding RAM address)
+$82:F4E3 B9 00 00    LDA $0000,y            ;\
+$82:F4E6 89 40 00    BIT #$0040             ;} If [[Y]] & 40h != 0: go to BRANCH_X
+$82:F4E9 D0 1E       BNE $1E    [$F509]     ;/
+$82:F4EB 89 80 00    BIT #$0080             ;\
+$82:F4EE D0 21       BNE $21    [$F511]     ;} If [[Y]] & 80h != 0: go to BRANCH_A
+$82:F4F0 89 00 80    BIT #$8000             ;\
+$82:F4F3 D0 24       BNE $24    [$F519]     ;} If [[Y]] & 8000h != 0: go to BRANCH_B
+$82:F4F5 89 00 20    BIT #$2000             ;\
+$82:F4F8 D0 27       BNE $27    [$F521]     ;} If [[Y]] & 2000h != 0: go to BRANCH_SELECT
+$82:F4FA 89 00 40    BIT #$4000             ;\
+$82:F4FD D0 2A       BNE $2A    [$F529]     ;} If [[Y]] & 4000h != 0: go to BRANCH_Y
+$82:F4FF 89 20 00    BIT #$0020             ;\
+$82:F502 D0 2D       BNE $2D    [$F531]     ;} If [[Y]] & 20h != 0: go to BRANCH_L
+$82:F504 89 10 00    BIT #$0010             ;\
+$82:F507 D0 30       BNE $30    [$F539]     ;} If [[Y]] & 10h != 0: go to BRANCH_R
 
-$82:F509 A9 00 00    LDA #$0000
-$82:F50C 9D 3D 1B    STA $1B3D,x
-$82:F50F 80 2E       BRA $2E    [$F53F]
+; BRANCH_X
+$82:F509 A9 00 00    LDA #$0000             ;\
+$82:F50C 9D 3D 1B    STA $1B3D,x            ;} Game options menu controller binding = 0
+$82:F50F 80 2E       BRA $2E    [$F53F]     ; Go to BRANCH_NEXT
 
-$82:F511 A9 01 00    LDA #$0001
-$82:F514 9D 3D 1B    STA $1B3D,x
-$82:F517 80 26       BRA $26    [$F53F]
+; BRANCH_A
+$82:F511 A9 01 00    LDA #$0001             ;\
+$82:F514 9D 3D 1B    STA $1B3D,x            ;} Game options menu controller binding = 1
+$82:F517 80 26       BRA $26    [$F53F]     ; Go to BRANCH_NEXT
 
-$82:F519 A9 02 00    LDA #$0002
-$82:F51C 9D 3D 1B    STA $1B3D,x
-$82:F51F 80 1E       BRA $1E    [$F53F]
+; BRANCH_B
+$82:F519 A9 02 00    LDA #$0002             ;\
+$82:F51C 9D 3D 1B    STA $1B3D,x            ;} Game options menu controller binding = 2
+$82:F51F 80 1E       BRA $1E    [$F53F]     ; Go to BRANCH_NEXT
 
-$82:F521 A9 03 00    LDA #$0003
-$82:F524 9D 3D 1B    STA $1B3D,x
-$82:F527 80 16       BRA $16    [$F53F]
+; BRANCH_SELECT
+$82:F521 A9 03 00    LDA #$0003             ;\
+$82:F524 9D 3D 1B    STA $1B3D,x            ;} Game options menu controller binding = 3
+$82:F527 80 16       BRA $16    [$F53F]     ; Go to BRANCH_NEXT
 
-$82:F529 A9 04 00    LDA #$0004
-$82:F52C 9D 3D 1B    STA $1B3D,x
-$82:F52F 80 0E       BRA $0E    [$F53F]
+; BRANCH_Y
+$82:F529 A9 04 00    LDA #$0004             ;\
+$82:F52C 9D 3D 1B    STA $1B3D,x            ;} Game options menu controller binding = 4
+$82:F52F 80 0E       BRA $0E    [$F53F]     ; Go to BRANCH_NEXT
 
-$82:F531 A9 05 00    LDA #$0005
-$82:F534 9D 3D 1B    STA $1B3D,x
-$82:F537 80 06       BRA $06    [$F53F]
+; BRANCH_L
+$82:F531 A9 05 00    LDA #$0005             ;\
+$82:F534 9D 3D 1B    STA $1B3D,x            ;} Game options menu controller binding = 5
+$82:F537 80 06       BRA $06    [$F53F]     ; Go to BRANCH_NEXT
 
-$82:F539 A9 06 00    LDA #$0006
-$82:F53C 9D 3D 1B    STA $1B3D,x
+; BRANCH_R
+$82:F539 A9 06 00    LDA #$0006             ;\
+$82:F53C 9D 3D 1B    STA $1B3D,x            ;} Game options menu controller binding = 6
 
-$82:F53F E8          INX
-$82:F540 E8          INX
-$82:F541 E0 0E 00    CPX #$000E
-$82:F544 10 03       BPL $03    [$F549]
-$82:F546 4C DF F4    JMP $F4DF  [$82:F4DF]
+; BRANCH_NEXT
+$82:F53F E8          INX                    ;\
+$82:F540 E8          INX                    ;} X += 2
+$82:F541 E0 0E 00    CPX #$000E             ;\
+$82:F544 10 03       BPL $03    [$F549]     ;} If [X] < Eh:
+$82:F546 4C DF F4    JMP $F4DF  [$82:F4DF]  ; Go to LOOP
 
 $82:F549 60          RTS
-
-$82:F54A             dw 09B2, 09B4, 09B6, 09BA, 09B8, 09BE, 09BC
 }
 
 
-;;; $F558:  ;;;
+;;; $F54A: Configurable controller binding RAM addresses ;;;
 {
-; Write controller bindings from controller options
-$82:F558 A2 00 00    LDX #$0000
+$82:F54A             dw 09B2, ; Shoot binding
+                        09B4, ; Jump binding
+                        09B6, ; Run binding
+                        09BA, ; Item switch binding
+                        09B8, ; Item cancel binding
+                        09BE, ; Aim up binding
+                        09BC  ; Aim down binding
+}
 
+
+;;; $F558: Save game options menu controller bindings ;;;
+{
+$82:F558 A2 00 00    LDX #$0000             ; X = 0 (game options menu controller binding index)
+
+; LOOP
 $82:F55B DA          PHX
-$82:F55C BD 4A F5    LDA $F54A,x
-$82:F55F A8          TAY
-$82:F560 BD 3D 1B    LDA $1B3D,x
-$82:F563 0A          ASL A
-$82:F564 AA          TAX
-$82:F565 BD 75 F5    LDA $F575,x
-$82:F568 99 00 00    STA $0000,y
+$82:F55C BD 4A F5    LDA $F54A,x            ;\
+$82:F55F A8          TAY                    ;|
+$82:F560 BD 3D 1B    LDA $1B3D,x            ;|
+$82:F563 0A          ASL A                  ;} [$F54A + [X]] = [$F575 + [game options menu controller binding] * 2]
+$82:F564 AA          TAX                    ;|
+$82:F565 BD 75 F5    LDA $F575,x            ;|
+$82:F568 99 00 00    STA $0000,y            ;/
 $82:F56B FA          PLX
-$82:F56C E8          INX
-$82:F56D E8          INX
-$82:F56E E0 0E 00    CPX #$000E
-$82:F571 30 E8       BMI $E8    [$F55B]
+$82:F56C E8          INX                    ;\
+$82:F56D E8          INX                    ;} X += 2
+$82:F56E E0 0E 00    CPX #$000E             ;\
+$82:F571 30 E8       BMI $E8    [$F55B]     ;} If [X] < Eh: go to LOOP
 $82:F573 18          CLC
 $82:F574 60          RTS
 }
@@ -12784,154 +13041,170 @@ $82:F575             dw 0040, ; X
 }
 
 
-;;; $F587:  ;;;
+;;; $F587: Draw game options menu controller bindings ;;;
 {
-$82:F587 A2 00 00    LDX #$0000
+$82:F587 A2 00 00    LDX #$0000             ; X = 0 (game options menu controller binding index)
 
-$82:F58A DA          PHX
-$82:F58B BD 3D 1B    LDA $1B3D,x
-$82:F58E 0A          ASL A
-$82:F58F A8          TAY
-$82:F590 BD 39 F6    LDA $F639,x
-$82:F593 AA          TAX
-$82:F594 B9 47 F6    LDA $F647,y
-$82:F597 A8          TAY
-$82:F598 B9 00 00    LDA $0000,y
-$82:F59B 9F 00 30 7E STA $7E3000,x
-$82:F59F B9 02 00    LDA $0002,y
-$82:F5A2 9F 02 30 7E STA $7E3002,x
-$82:F5A6 B9 04 00    LDA $0004,y
-$82:F5A9 9F 04 30 7E STA $7E3004,x
-$82:F5AD B9 06 00    LDA $0006,y
-$82:F5B0 9F 40 30 7E STA $7E3040,x
-$82:F5B4 B9 08 00    LDA $0008,y
-$82:F5B7 9F 42 30 7E STA $7E3042,x
-$82:F5BB B9 0A 00    LDA $000A,y
-$82:F5BE 9F 44 30 7E STA $7E3044,x
-$82:F5C2 FA          PLX
-$82:F5C3 E8          INX
-$82:F5C4 E8          INX
-$82:F5C5 E0 0E 00    CPX #$000E
-$82:F5C8 30 C0       BMI $C0    [$F58A]
-$82:F5CA AD 47 1B    LDA $1B47  [$7E:1B47]
-$82:F5CD C9 05 00    CMP #$0005
-$82:F5D0 F0 2F       BEQ $2F    [$F601]
-$82:F5D2 C9 06 00    CMP #$0006
-$82:F5D5 F0 2A       BEQ $2A    [$F601]
-$82:F5D7 AD AD F6    LDA $F6AD  [$82:F6AD]
-$82:F5DA 8F 2E 35 7E STA $7E352E[$7E:352E]
-$82:F5DE AD AF F6    LDA $F6AF  [$82:F6AF]
-$82:F5E1 8F 30 35 7E STA $7E3530[$7E:3530]
-$82:F5E5 AD B1 F6    LDA $F6B1  [$82:F6B1]
-$82:F5E8 8F 32 35 7E STA $7E3532[$7E:3532]
-$82:F5EC AD B3 F6    LDA $F6B3  [$82:F6B3]
-$82:F5EF 8F 6E 35 7E STA $7E356E[$7E:356E]
-$82:F5F3 AD B5 F6    LDA $F6B5  [$82:F6B5]
-$82:F5F6 8F 70 35 7E STA $7E3570[$7E:3570]
-$82:F5FA AD B7 F6    LDA $F6B7  [$82:F6B7]
-$82:F5FD 8F 72 35 7E STA $7E3572[$7E:3572]
+; LOOP
+$82:F58A DA          PHX                    ;\
+$82:F58B BD 3D 1B    LDA $1B3D,x            ;|
+$82:F58E 0A          ASL A                  ;|
+$82:F58F A8          TAY                    ;|
+$82:F590 BD 39 F6    LDA $F639,x            ;|
+$82:F593 AA          TAX                    ;|
+$82:F594 B9 47 F6    LDA $F647,y            ;|
+$82:F597 A8          TAY                    ;|
+$82:F598 B9 00 00    LDA $0000,y            ;|
+$82:F59B 9F 00 30 7E STA $7E3000,x          ;|
+$82:F59F B9 02 00    LDA $0002,y            ;} Copy button tilemap from [$F647 + [game options menu controller binding] * 2] to the 3x2 tile region of game options menu tilemap starting (17h, 5 + [X] * 3)
+$82:F5A2 9F 02 30 7E STA $7E3002,x          ;|
+$82:F5A6 B9 04 00    LDA $0004,y            ;|
+$82:F5A9 9F 04 30 7E STA $7E3004,x          ;|
+$82:F5AD B9 06 00    LDA $0006,y            ;|
+$82:F5B0 9F 40 30 7E STA $7E3040,x          ;|
+$82:F5B4 B9 08 00    LDA $0008,y            ;|
+$82:F5B7 9F 42 30 7E STA $7E3042,x          ;|
+$82:F5BB B9 0A 00    LDA $000A,y            ;|
+$82:F5BE 9F 44 30 7E STA $7E3044,x          ;|
+$82:F5C2 FA          PLX                    ;/
+$82:F5C3 E8          INX                    ;\
+$82:F5C4 E8          INX                    ;} X += 2
+$82:F5C5 E0 0E 00    CPX #$000E             ;\
+$82:F5C8 30 C0       BMI $C0    [$F58A]     ;} If [X] < Eh: go to LOOP
+$82:F5CA AD 47 1B    LDA $1B47  [$7E:1B47]  ;\
+$82:F5CD C9 05 00    CMP #$0005             ;} If [game options menu controller aim up binding] != L:
+$82:F5D0 F0 2F       BEQ $2F    [$F601]     ;/
+$82:F5D2 C9 06 00    CMP #$0006             ;\
+$82:F5D5 F0 2A       BEQ $2A    [$F601]     ;} If [game options menu controller aim up binding] != R:
+$82:F5D7 AD AD F6    LDA $F6AD  [$82:F6AD]  ;\
+$82:F5DA 8F 2E 35 7E STA $7E352E[$7E:352E]  ;|
+$82:F5DE AD AF F6    LDA $F6AF  [$82:F6AF]  ;|
+$82:F5E1 8F 30 35 7E STA $7E3530[$7E:3530]  ;|
+$82:F5E5 AD B1 F6    LDA $F6B1  [$82:F6B1]  ;|
+$82:F5E8 8F 32 35 7E STA $7E3532[$7E:3532]  ;|
+$82:F5EC AD B3 F6    LDA $F6B3  [$82:F6B3]  ;} Game options menu tilemap tiles (17h..19h, 14h..15h) = [$F6AD..B8] (OFF tilemap)
+$82:F5EF 8F 6E 35 7E STA $7E356E[$7E:356E]  ;|
+$82:F5F3 AD B5 F6    LDA $F6B5  [$82:F6B5]  ;|
+$82:F5F6 8F 70 35 7E STA $7E3570[$7E:3570]  ;|
+$82:F5FA AD B7 F6    LDA $F6B7  [$82:F6B7]  ;|
+$82:F5FD 8F 72 35 7E STA $7E3572[$7E:3572]  ;/
 
-$82:F601 AD 49 1B    LDA $1B49  [$7E:1B49]
-$82:F604 C9 05 00    CMP #$0005
-$82:F607 F0 2F       BEQ $2F    [$F638]
-$82:F609 C9 06 00    CMP #$0006
-$82:F60C F0 2A       BEQ $2A    [$F638]
-$82:F60E AD AD F6    LDA $F6AD  [$82:F6AD]
-$82:F611 8F EE 35 7E STA $7E35EE[$7E:35EE]
-$82:F615 AD AF F6    LDA $F6AF  [$82:F6AF]
-$82:F618 8F F0 35 7E STA $7E35F0[$7E:35F0]
-$82:F61C AD B1 F6    LDA $F6B1  [$82:F6B1]
-$82:F61F 8F F2 35 7E STA $7E35F2[$7E:35F2]
-$82:F623 AD B3 F6    LDA $F6B3  [$82:F6B3]
-$82:F626 8F 2E 36 7E STA $7E362E[$7E:362E]
-$82:F62A AD B5 F6    LDA $F6B5  [$82:F6B5]
-$82:F62D 8F 30 36 7E STA $7E3630[$7E:3630]
-$82:F631 AD B7 F6    LDA $F6B7  [$82:F6B7]
-$82:F634 8F 32 36 7E STA $7E3632[$7E:3632]
+$82:F601 AD 49 1B    LDA $1B49  [$7E:1B49]  ;\
+$82:F604 C9 05 00    CMP #$0005             ;} If [game options menu controller aim down binding] != L:
+$82:F607 F0 2F       BEQ $2F    [$F638]     ;/
+$82:F609 C9 06 00    CMP #$0006             ;\
+$82:F60C F0 2A       BEQ $2A    [$F638]     ;} If [game options menu controller aim down binding] != R:
+$82:F60E AD AD F6    LDA $F6AD  [$82:F6AD]  ;\
+$82:F611 8F EE 35 7E STA $7E35EE[$7E:35EE]  ;|
+$82:F615 AD AF F6    LDA $F6AF  [$82:F6AF]  ;|
+$82:F618 8F F0 35 7E STA $7E35F0[$7E:35F0]  ;|
+$82:F61C AD B1 F6    LDA $F6B1  [$82:F6B1]  ;|
+$82:F61F 8F F2 35 7E STA $7E35F2[$7E:35F2]  ;|
+$82:F623 AD B3 F6    LDA $F6B3  [$82:F6B3]  ;} Game options menu tilemap tiles (17h..19h, 17h..18h) = [$F6AD..B8] (OFF tilemap)
+$82:F626 8F 2E 36 7E STA $7E362E[$7E:362E]  ;|
+$82:F62A AD B5 F6    LDA $F6B5  [$82:F6B5]  ;|
+$82:F62D 8F 30 36 7E STA $7E3630[$7E:3630]  ;|
+$82:F631 AD B7 F6    LDA $F6B7  [$82:F6B7]  ;|
+$82:F634 8F 32 36 7E STA $7E3632[$7E:3632]  ;/
 
 $82:F638 60          RTS
 
+; Game options menu tilemap offsets
 $82:F639             dw 016E, 022E, 02EE, 03AE, 046E, 052E, 05EE
+
+; Controller button tilemap pointers
 $82:F647             dw F659, F665, F671, F67D, F689, F695, F6A1, F6AD, F6AD
 
+; X button tilemap
 $82:F659             dw 0093,C0A3,000F,
                         00A3,C093,000F
 
+; A button tilemap
 $82:F665             dw 0090,4090,000F,
                         00A0,40A0,000F
 
+; B button tilemap
 $82:F671             dw 0091,0092,000F,
                         00A1,00A2,000F
 
+; Select button tilemap
 $82:F67D             dw 0095,0096,0097,
                         00A5,00A6,00A7
 
+; Y button tilemap
 $82:F689             dw 0094,4094,000F,
                         00A4,40A4,000F
 
+; L button tilemap
 $82:F695             dw 009A,009B,409A,
                         809A,00AB,C09A
 
+; R button tilemap
 $82:F6A1             dw 009A,009C,409A,
                         809A,00AC,C09A
 
+; OFF tilemap
 $82:F6AD             dw 0000,000E,000E,
                         0010,001F,001F
 }
 
 
-;;; $F6B9:  ;;;
+;;; $F6B9: Game options - controller settings - set binding ;;;
 {
 $82:F6B9 A2 0C 00    LDX #$000C             ; X = Ch
 $82:F6BC A5 8F       LDA $8F    [$7E:008F]
 
-; LOOP_F6BE
+; LOOP_INPUT
 $82:F6BE 3C 75 F5    BIT $F575,x            ;\
-$82:F6C1 D0 05       BNE $05    [$F6C8]     ;} If not pressing button [$F575 + [X]]:
+$82:F6C1 D0 05       BNE $05    [$F6C8]     ;} If not newly pressed [$F575 + [X]]:
 $82:F6C3 CA          DEX                    ;\
 $82:F6C4 CA          DEX                    ;} X -= 2
-$82:F6C5 10 F7       BPL $F7    [$F6BE]     ; If [X] >= 0: go to LOOP_F6BE
+$82:F6C5 10 F7       BPL $F7    [$F6BE]     ; If [X] >= 0: go to LOOP_INPUT
 $82:F6C7 60          RTS                    ; Return
 
-$82:F6C8 8A          TXA
-$82:F6C9 4A          LSR A
-$82:F6CA 85 12       STA $12    [$7E:0012]
-$82:F6CC AD 9E 09    LDA $099E  [$7E:099E]
-$82:F6CF 0A          ASL A
-$82:F6D0 18          CLC
-$82:F6D1 69 02 00    ADC #$0002
-$82:F6D4 C9 0E 00    CMP #$000E
-$82:F6D7 30 03       BMI $03    [$F6DC]
-$82:F6D9 A9 00 00    LDA #$0000
+$82:F6C8 8A          TXA                    ;\
+$82:F6C9 4A          LSR A                  ;} $12 = [X] / 2 (new value for game options menu controller binding)
+$82:F6CA 85 12       STA $12    [$7E:0012]  ;/
+$82:F6CC AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F6CF 0A          ASL A                  ;|
+$82:F6D0 18          CLC                    ;|
+$82:F6D1 69 02 00    ADC #$0002             ;|
+$82:F6D4 C9 0E 00    CMP #$000E             ;} Y = ([menu option index] * 2 + 2) % Eh
+$82:F6D7 30 03       BMI $03    [$F6DC]     ;|
+$82:F6D9 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$82:F6DC A8          TAY                    ;/
+$82:F6DD A2 05 00    LDX #$0005             ; X = 5
 
-$82:F6DC A8          TAY
-$82:F6DD A2 05 00    LDX #$0005
+; LOOP_FIND_EXISTING
+$82:F6E0 B9 3D 1B    LDA $1B3D,y            ;\
+$82:F6E3 C5 12       CMP $12    [$7E:0012]  ;} If [$1B3D + [Y]] = [$12]: go to BRANCH_FOUND
+$82:F6E5 F0 0D       BEQ $0D    [$F6F4]     ;/
+$82:F6E7 C8          INY                    ;\
+$82:F6E8 C8          INY                    ;|
+$82:F6E9 C0 0E 00    CPY #$000E             ;} Y = ([Y] + 2) % Eh
+$82:F6EC 30 03       BMI $03    [$F6F1]     ;|
+$82:F6EE A0 00 00    LDY #$0000             ;/
 
-$82:F6E0 B9 3D 1B    LDA $1B3D,y
-$82:F6E3 C5 12       CMP $12    [$7E:0012]
-$82:F6E5 F0 0D       BEQ $0D    [$F6F4]
-$82:F6E7 C8          INY
-$82:F6E8 C8          INY
-$82:F6E9 C0 0E 00    CPY #$000E
-$82:F6EC 30 03       BMI $03    [$F6F1]
-$82:F6EE A0 00 00    LDY #$0000
+$82:F6F1 CA          DEX                    ; Decrement X
+$82:F6F2 10 EC       BPL $EC    [$F6E0]     ; If [X] >= 0: go to LOOP_FIND_EXISTING
 
-$82:F6F1 CA          DEX
-$82:F6F2 10 EC       BPL $EC    [$F6E0]
-
+; BRANCH_FOUND
 $82:F6F4 5A          PHY
-$82:F6F5 AD 9E 09    LDA $099E  [$7E:099E]
-$82:F6F8 0A          ASL A
-$82:F6F9 A8          TAY
-$82:F6FA B9 3D 1B    LDA $1B3D,y
-$82:F6FD 85 14       STA $14    [$7E:0014]
-$82:F6FF A5 12       LDA $12    [$7E:0012]
-$82:F701 99 3D 1B    STA $1B3D,y
+$82:F6F5 AD 9E 09    LDA $099E  [$7E:099E]  ;\
+$82:F6F8 0A          ASL A                  ;|
+$82:F6F9 A8          TAY                    ;} $14 = [game options menu controller binding]
+$82:F6FA B9 3D 1B    LDA $1B3D,y            ;|
+$82:F6FD 85 14       STA $14    [$7E:0014]  ;/
+$82:F6FF A5 12       LDA $12    [$7E:0012]  ;\
+$82:F701 99 3D 1B    STA $1B3D,y            ;} Game options menu controller binding = [$12]
 $82:F704 7A          PLY
-$82:F705 A5 14       LDA $14    [$7E:0014]
-$82:F707 99 3D 1B    STA $1B3D,y
-$82:F70A 20 87 F5    JSR $F587  [$82:F587]
+$82:F705 A5 14       LDA $14    [$7E:0014]  ;\
+$82:F707 99 3D 1B    STA $1B3D,y            ;} Game options menu controller binding [Y] = [$14]
+$82:F70A 20 87 F5    JSR $F587  [$82:F587]  ; Draw game options menu controller bindings
 $82:F70D 60          RTS
+}
+}
 }
 
 

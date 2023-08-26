@@ -6,8 +6,12 @@
 
 ;;; $8687..E358: Draygon ;;;
 {
-;;; $8687: Initialisation AI - enemy $DE3F (Draygon) ;;;
+;;; $8687: Initialisation AI - enemy $DE3F (Draygon body) ;;;
 {
+; Draygon's making the error of trying to set the instruction list pointer of enemies that haven't yet spawned
+; When an enemy spawns, its RAM gets cleared or initialised from enemy header, so these stores have no effect
+; The enemies set their own instruction list pointers in their init AI, which match up except for the arms, which use $97E7 instead of $9813
+
 $A5:8687 A2 30 00    LDX #$0030             ;\
                                             ;|
 $A5:868A BD 17 A2    LDA $A217,x[$A5:A247]  ;|
@@ -33,146 +37,151 @@ $A5:86B6 8D 8C 17    STA $178C  [$7E:178C]  ;/
 $A5:86B9 A9 FF FF    LDA #$FFFF             ;\
 $A5:86BC 8D 3C 18    STA $183C  [$7E:183C]  ;} Process off-screen enemies
 $A5:86BF A9 89 98    LDA #$9889             ;\
-$A5:86C2 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon instruction list pointer = $9889
+$A5:86C2 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $9889
 $A5:86C5 A9 44 99    LDA #$9944             ;\
-$A5:86C8 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Draygon's eye instruction list pointer = $9944
+$A5:86C8 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Draygon eye instruction list pointer = $9944 >_<;
 $A5:86CB A9 FC 99    LDA #$99FC             ;\
-$A5:86CE 8D 12 10    STA $1012  [$7E:1012]  ;} Draygon's tail instruction list pointer = $99FC
+$A5:86CE 8D 12 10    STA $1012  [$7E:1012]  ;} Draygon tail instruction list pointer = $99FC >_<;
 $A5:86D1 A9 13 98    LDA #$9813             ;\
-$A5:86D4 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon's arms instruction list pointer = $9813
+$A5:86D4 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $9813 >_<;
 $A5:86D7 A9 00 04    LDA #$0400             ;\
 $A5:86DA 8D 9A 17    STA $179A  [$7E:179A]  ;} Enemy BG2 tilemap size = 400h
 $A5:86DD A9 1B 87    LDA #$871B             ;\
-$A5:86E0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = $871B
-$A5:86E3 22 34 DF 88 JSL $88DF34[$88:DF34]  ; Spawn HDMA object for main screen layers with instruction list $DF4F
+$A5:86E0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $871B
+$A5:86E3 22 34 DF 88 JSL $88DF34[$88:DF34]  ; Spawn Draygon main screen layers HDMA object
 $A5:86E7 A9 0C 00    LDA #$000C             ;\
 $A5:86EA 85 A9       STA $A9    [$7E:00A9]  ;} Room loading interrupt command = Draygon's room - begin HUD drawing
 $A5:86EC 22 65 D8 88 JSL $88D865[$88:D865]  ; Spawn BG3 scroll HDMA object
 $A5:86F0 A9 01 00    LDA #$0001             ;\
-$A5:86F3 8F 0A 88 7E STA $7E880A[$7E:880A]  ;} $7E:880A = 1 (likely turret related)
+$A5:86F3 8F 0A 88 7E STA $7E880A[$7E:880A]  ;} Set "turret 5" as destroyed
 $A5:86F7 22 E2 A7 90 JSL $90A7E2[$90:A7E2]  ; Disable mini-map and mark boss room map tiles as explored
 $A5:86FB 6B          RTL
 }
 
 
-;;; $86FC: Main AI - enemy $DE3F (Draygon) ;;;
+;;; $86FC: Main AI - enemy $DE3F (Draygon body) ;;;
 {
 $A5:86FC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:86FF FC A8 0F    JSR ($0FA8,x)[$A5:871B]
-}
-
-
-;;; $8702:  ;;;
-{
-$A5:8702 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8705 8D BA 0F    STA $0FBA  [$7E:0FBA]
-$A5:8708 8D FA 0F    STA $0FFA  [$7E:0FFA]
-$A5:870B 8D 3A 10    STA $103A  [$7E:103A]
-$A5:870E AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:8711 8D BE 0F    STA $0FBE  [$7E:0FBE]
-$A5:8714 8D FE 0F    STA $0FFE  [$7E:0FFE]
-$A5:8717 8D 3E 10    STA $103E  [$7E:103E]
+$A5:86FF FC A8 0F    JSR ($0FA8,x)[$A5:871B]; Execute [enemy function]
+$A5:8702 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:8705 8D BA 0F    STA $0FBA  [$7E:0FBA]  ;|
+$A5:8708 8D FA 0F    STA $0FFA  [$7E:0FFA]  ;} Draygon X positions = [Draygon body X position]
+$A5:870B 8D 3A 10    STA $103A  [$7E:103A]  ;/
+$A5:870E AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:8711 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;|
+$A5:8714 8D FE 0F    STA $0FFE  [$7E:0FFE]  ;} Draygon Y positions = [Draygon body Y position]
+$A5:8717 8D 3E 10    STA $103E  [$7E:103E]  ;/
 $A5:871A 6B          RTL
 }
 
 
-;;; $871B:  ;;;
+;;; $871B: Draygon body function -  ;;;
 {
-$A5:871B 20 AA 87    JSR $87AA  [$A5:87AA]
+$A5:871B 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:871E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:8721 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A5:8724 C9 00 01    CMP #$0100
-$A5:8727 10 2D       BPL $2D    [$8756]
-$A5:8729 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A5:872C D0 24       BNE $24    [$8752]
-$A5:872E AE 30 03    LDX $0330  [$7E:0330]
-$A5:8731 A9 00 06    LDA #$0600
-$A5:8734 95 D0       STA $D0,x  [$7E:00D0]
-$A5:8736 A9 00 94    LDA #$9400
-$A5:8739 95 D2       STA $D2,x  [$7E:00D2]
-$A5:873B A9 B1 00    LDA #$00B1
-$A5:873E 95 D4       STA $D4,x  [$7E:00D4]
-$A5:8740 A9 00 6D    LDA #$6D00
-$A5:8743 95 D5       STA $D5,x  [$7E:00D5]
-$A5:8745 AD 30 03    LDA $0330  [$7E:0330]
-$A5:8748 18          CLC
-$A5:8749 69 07 00    ADC #$0007
-$A5:874C 8D 30 03    STA $0330  [$7E:0330]
-$A5:874F 20 D9 A0    JSR $A0D9  [$A5:A0D9]
+$A5:8721 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A5:8724 C9 00 01    CMP #$0100             ;} If [$0FAA] >= 100h: go to BRANCH_DONE
+$A5:8727 10 2D       BPL $2D    [$8756]     ;/
+$A5:8729 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
+$A5:872C D0 24       BNE $24    [$8752]     ; If [$0FAA] = 0:
+$A5:872E AE 30 03    LDX $0330  [$7E:0330]  ;\
+$A5:8731 A9 00 06    LDA #$0600             ;|
+$A5:8734 95 D0       STA $D0,x  [$7E:00D0]  ;|
+$A5:8736 A9 00 94    LDA #$9400             ;|
+$A5:8739 95 D2       STA $D2,x  [$7E:00D2]  ;|
+$A5:873B A9 B1 00    LDA #$00B1             ;|
+$A5:873E 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of $B1:9400..99FF to VRAM $6D00..6FFF (mini-Draygon tiles)
+$A5:8740 A9 00 6D    LDA #$6D00             ;|
+$A5:8743 95 D5       STA $D5,x  [$7E:00D5]  ;|
+$A5:8745 AD 30 03    LDA $0330  [$7E:0330]  ;|
+$A5:8748 18          CLC                    ;|
+$A5:8749 69 07 00    ADC #$0007             ;|
+$A5:874C 8D 30 03    STA $0330  [$7E:0330]  ;/
+$A5:874F 20 D9 A0    JSR $A0D9  [$A5:A0D9]  ; Spawn fight intro mini-Draygon sprite objects
 
-$A5:8752 EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:8755 60          RTS
+$A5:8752 EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment $0FAA
+$A5:8755 60          RTS                    ; Return
 
-$A5:8756 A9 8B 87    LDA #$878B
-$A5:8759 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:875C 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A5:875F AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8762 8F 00 78 7E STA $7E7800[$7E:7800]
-$A5:8766 18          CLC
-$A5:8767 69 A0 02    ADC #$02A0
-$A5:876A 8F 04 78 7E STA $7E7804[$7E:7804]
-$A5:876E AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:8771 8F 02 78 7E STA $7E7802[$7E:7802]
-$A5:8775 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A5:8779 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:877C AF 02 78 7E LDA $7E7802[$7E:7802]
-$A5:8780 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8783 A9 18 00    LDA #$0018
-$A5:8786 8F 1E 78 7E STA $7E781E[$7E:781E]
+; BRANCH_DONE
+$A5:8756 A9 8B 87    LDA #$878B             ;\
+$A5:8759 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon function = $878B
+$A5:875C 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; $0FAA = 0
+$A5:875F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:8762 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = [Draygon body X position]
+$A5:8766 18          CLC                    ;\
+$A5:8767 69 A0 02    ADC #$02A0             ;} $7E:7804 = [Draygon body X position] + 2A0h
+$A5:876A 8F 04 78 7E STA $7E7804[$7E:7804]  ;/
+$A5:876E AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:8771 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = [Draygon body Y position]
+$A5:8775 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A5:8779 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;|
+$A5:877C AF 02 78 7E LDA $7E7802[$7E:7802]  ;} >_<;
+$A5:8780 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A5:8783 A9 18 00    LDA #$0018             ;\
+$A5:8786 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} $7E:781E = 18h
 $A5:878A 60          RTS
 }
 
 
-;;; $878B:  ;;;
+;;; $878B: Draygon body function -  ;;;
 {
-$A5:878B 20 AA 87    JSR $87AA  [$A5:87AA]
+; things to do pre-fight
+$A5:878B 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:878E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:8791 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A5:8794 C9 D0 04    CMP #$04D0
-$A5:8797 10 07       BPL $07    [$87A0]
-$A5:8799 20 3E A1    JSR $A13E  [$A5:A13E]
-$A5:879C EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:879F 60          RTS
+$A5:8791 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A5:8794 C9 D0 04    CMP #$04D0             ;} If [$0FAA] < 4D0h:
+$A5:8797 10 07       BPL $07    [$87A0]     ;/
+$A5:8799 20 3E A1    JSR $A13E  [$A5:A13E]  ; Handle Drayogn fight intro movement
+$A5:879C EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment $0FAA
+$A5:879F 60          RTS                    ; Return
 
-$A5:87A0 A9 F4 87    LDA #$87F4
-$A5:87A3 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:87A6 9C AA 0F    STZ $0FAA  [$7E:0FAA]
+$A5:87A0 A9 F4 87    LDA #$87F4             ;\
+$A5:87A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon function = $87F4
+$A5:87A6 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; $0FAA = 0
 $A5:87A9 60          RTS
 }
 
 
-;;; $87AA:  ;;;
+;;; $87AA: Handle firing wall turret ;;;
 {
-$A5:87AA AD B6 05    LDA $05B6  [$7E:05B6]
-$A5:87AD 29 3F 00    AND #$003F
-$A5:87B0 D0 29       BNE $29    [$87DB]
-$A5:87B2 22 11 81 80 JSL $808111[$80:8111]
-$A5:87B6 29 03 00    AND #$0003
-$A5:87B9 18          CLC
-$A5:87BA 69 02 00    ADC #$0002
-$A5:87BD 0A          ASL A
-$A5:87BE AA          TAX
-$A5:87BF 0A          ASL A
-$A5:87C0 A8          TAY
-$A5:87C1 BF 00 88 7E LDA $7E8800,x[$7E:8808]
-$A5:87C5 D0 14       BNE $14    [$87DB]
-$A5:87C7 B9 DC 87    LDA $87DC,y[$A5:87EC]
-$A5:87CA 85 12       STA $12    [$7E:0012]
-$A5:87CC B9 DE 87    LDA $87DE,y[$A5:87EE]
-$A5:87CF 85 14       STA $14    [$7E:0014]
+$A5:87AA AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$A5:87AD 29 3F 00    AND #$003F             ;} If [frame counter] % 40h != 0: return
+$A5:87B0 D0 29       BNE $29    [$87DB]     ;/
+$A5:87B2 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A5:87B6 29 03 00    AND #$0003             ;\
+$A5:87B9 18          CLC                    ;|
+$A5:87BA 69 02 00    ADC #$0002             ;} X = (2 + [random number] % 4) * 2
+$A5:87BD 0A          ASL A                  ;|
+$A5:87BE AA          TAX                    ;/
+$A5:87BF 0A          ASL A                  ;\
+$A5:87C0 A8          TAY                    ;} Y = [X] * 2
+$A5:87C1 BF 00 88 7E LDA $7E8800,x[$7E:8808];\
+$A5:87C5 D0 14       BNE $14    [$87DB]     ;} If [$7E:8800 + [X]] != 0 (turret destroyed): return
+$A5:87C7 B9 DC 87    LDA $87DC,y[$A5:87EC]  ;\
+$A5:87CA 85 12       STA $12    [$7E:0012]  ;} $12 = [$87DC + [Y]] (X position)
+$A5:87CC B9 DE 87    LDA $87DE,y[$A5:87EE]  ;\
+$A5:87CF 85 14       STA $14    [$7E:0014]  ;} $14 = [$87DC + [Y] + 2] (Y position)
 $A5:87D1 A0 5E 8E    LDY #$8E5E             ;\
-$A5:87D4 A9 03 00    LDA #$0003             ;} Spawn Draygon's wall turret projectile enemy projectile
+$A5:87D4 A9 03 00    LDA #$0003             ;} Spawn Draygon's wall turret projectile enemy projectile with speed 3px/frame
 $A5:87D7 22 27 80 86 JSL $868027[$86:8027]  ;/
 
 $A5:87DB 60          RTS
 
-$A5:87DC             dw 0040,0060, 0038,00C0, 0034,012F, 01CC,0101, 01CC,015E, 01BC,0188
+; X/Y positions to spawn turret projectiles. First two entries are unused... and last entry is made unused by init AI
+$A5:87DC             dw 0040,0060,
+                        0038,00C0,
+                        0034,012F, ; Left turret
+                        01CC,0101, ; Top right turret
+                        01CC,015E, ; Bottom right turret
+                        01BC,0188
 }
 
 
-;;; $87F4:  ;;;
+;;; $87F4: Draygon body function -  ;;;
 {
-$A5:87F4 20 AA 87    JSR $87AA  [$A5:87AA]
+; Set Draygon for left to right swoop attack
+; start swoop (facing right)
+$A5:87F4 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:87F7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:87FA 20 17 88    JSR $8817  [$A5:8817]
 $A5:87FD A9 B1 88    LDA #$88B1
@@ -189,74 +198,76 @@ $A5:8816 60          RTS
 
 ;;; $8817:  ;;;
 {
-$A5:8817 A9 80 01    LDA #$0180
-$A5:881A 8D 28 0E    STA $0E28  [$7E:0E28]
-$A5:881D AD 28 0E    LDA $0E28  [$7E:0E28]
-$A5:8820 8D 24 0E    STA $0E24  [$7E:0E24]
-$A5:8823 9C 22 0E    STZ $0E22  [$7E:0E22]
-$A5:8826 9C 26 0E    STZ $0E26  [$7E:0E26]
+$A5:8817 A9 80 01    LDA #$0180             ;\
+$A5:881A 8D 28 0E    STA $0E28  [$7E:0E28]  ;} $0E28 = 180h
+$A5:881D AD 28 0E    LDA $0E28  [$7E:0E28]  ; >_<;
+$A5:8820 8D 24 0E    STA $0E24  [$7E:0E24]  ; $0E24 = 180h
+$A5:8823 9C 22 0E    STZ $0E22  [$7E:0E22]  ; $0E22 = 0
+$A5:8826 9C 26 0E    STZ $0E26  [$7E:0E26]  ; $0E26 = 0
 
-$A5:8829 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:882C AF 1E 78 7E LDA $7E781E[$7E:781E]
-$A5:8830 18          CLC
-$A5:8831 6D 22 0E    ADC $0E22  [$7E:0E22]
-$A5:8834 8D 22 0E    STA $0E22  [$7E:0E22]
-$A5:8837 EB          XBA
-$A5:8838 29 FF 00    AND #$00FF
-$A5:883B 49 FF FF    EOR #$FFFF
-$A5:883E 1A          INC A
-$A5:883F 18          CLC
-$A5:8840 6D 24 0E    ADC $0E24  [$7E:0E24]
-$A5:8843 CF 02 78 7E CMP $7E7802[$7E:7802]
-$A5:8847 30 20       BMI $20    [$8869]
-$A5:8849 8D 24 0E    STA $0E24  [$7E:0E24]
-$A5:884C AE 26 0E    LDX $0E26  [$7E:0E26]
-$A5:884F 9F 02 90 7E STA $7E9002,x[$7E:9002]
-$A5:8853 EE 26 0E    INC $0E26  [$7E:0E26]
-$A5:8856 EE 26 0E    INC $0E26  [$7E:0E26]
-$A5:8859 EE 26 0E    INC $0E26  [$7E:0E26]
-$A5:885C EE 26 0E    INC $0E26  [$7E:0E26]
-$A5:885F AD 26 0E    LDA $0E26  [$7E:0E26]
-$A5:8862 C9 00 08    CMP #$0800
-$A5:8865 30 C2       BMI $C2    [$8829]
-$A5:8867 80 FE       BRA $FE    [$8867]
+; LOOP
+$A5:8829 AE 54 0E    LDX $0E54  [$7E:0E54]  ; >_<;
+$A5:882C AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
+$A5:8830 18          CLC                    ;|
+$A5:8831 6D 22 0E    ADC $0E22  [$7E:0E22]  ;} $0E22 += [$7E:781E]
+$A5:8834 8D 22 0E    STA $0E22  [$7E:0E22]  ;/
+$A5:8837 EB          XBA                    ;\
+$A5:8838 29 FF 00    AND #$00FF             ;|
+$A5:883B 49 FF FF    EOR #$FFFF             ;|
+$A5:883E 1A          INC A                  ;} A = [$0E24] - [$0E22] / 100h
+$A5:883F 18          CLC                    ;|
+$A5:8840 6D 24 0E    ADC $0E24  [$7E:0E24]  ;/
+$A5:8843 CF 02 78 7E CMP $7E7802[$7E:7802]  ;\
+$A5:8847 30 20       BMI $20    [$8869]     ;} If [A] >= [$7E:7802]:
+$A5:8849 8D 24 0E    STA $0E24  [$7E:0E24]  ; $0E24 = [A]
+$A5:884C AE 26 0E    LDX $0E26  [$7E:0E26]  ;\
+$A5:884F 9F 02 90 7E STA $7E9002,x[$7E:9002];} $7E:9002 + [$0E26] = [A]
+$A5:8853 EE 26 0E    INC $0E26  [$7E:0E26]  ;\
+$A5:8856 EE 26 0E    INC $0E26  [$7E:0E26]  ;|
+$A5:8859 EE 26 0E    INC $0E26  [$7E:0E26]  ;} $0E26 += 4
+$A5:885C EE 26 0E    INC $0E26  [$7E:0E26]  ;/
+$A5:885F AD 26 0E    LDA $0E26  [$7E:0E26]  ;\
+$A5:8862 C9 00 08    CMP #$0800             ;} If [$0E26] < 800h: go to LOOP
+$A5:8865 30 C2       BMI $C2    [$8829]     ;/
+$A5:8867 80 FE       BRA $FE    [$8867]     ; Crash
 
-$A5:8869 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A5:886D 30 0A       BMI $0A    [$8879]
-$A5:886F 38          SEC
-$A5:8870 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A5:8873 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A5:8869 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A5:886D 30 0A       BMI $0A    [$8879]     ;} If [$7E:7800] >= 0:
+$A5:886F 38          SEC                    ;\
+$A5:8870 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [$7E:7800]|
+$A5:8873 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;/
 $A5:8877 80 0C       BRA $0C    [$8885]
 
-$A5:8879 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:887D 18          CLC
-$A5:887E 6D F6 0A    ADC $0AF6  [$7E:0AF6]
-$A5:8881 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A5:8879 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;\ Else ([$7E:7800] < 0): (>_<;)
+$A5:887D 18          CLC                    ;|
+$A5:887E 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [$7E:7800]|
+$A5:8881 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;/
 
 $A5:8885 85 2C       STA $2C    [$7E:002C]
-$A5:8887 64 2A       STZ $2A    [$7E:002A]
-$A5:8889 AD 26 0E    LDA $0E26  [$7E:0E26]
-$A5:888C 4A          LSR A
-$A5:888D 4A          LSR A
-$A5:888E 85 2E       STA $2E    [$7E:002E]
-$A5:8890 64 30       STZ $30    [$7E:0030]
-$A5:8892 22 61 B7 A0 JSL $A0B761[$A0:B761]
-$A5:8896 A5 2C       LDA $2C    [$7E:002C]
-$A5:8898 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A5:889B A5 2A       LDA $2A    [$7E:002A]
-$A5:889D 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A5:88A0 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:88A3 AE 26 0E    LDX $0E26  [$7E:0E26]
-$A5:88A6 9F 02 90 7E STA $7E9002,x[$7E:91A2]
-$A5:88AA 8E AA 0F    STX $0FAA  [$7E:0FAA]
-$A5:88AD 8E AC 0F    STX $0FAC  [$7E:0FAC]
+$A5:8887 64 2A       STZ $2A    [$7E:002A]  ;\
+$A5:8889 AD 26 0E    LDA $0E26  [$7E:0E26]  ;|
+$A5:888C 4A          LSR A                  ;|
+$A5:888D 4A          LSR A                  ;|
+$A5:888E 85 2E       STA $2E    [$7E:002E]  ;|
+$A5:8890 64 30       STZ $30    [$7E:0030]  ;} $0FAE.$0FB0 = [$2C] / ([$0E26] / 4)
+$A5:8892 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;|
+$A5:8896 A5 2C       LDA $2C    [$7E:002C]  ;|
+$A5:8898 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;|
+$A5:889B A5 2A       LDA $2A    [$7E:002A]  ;|
+$A5:889D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
+$A5:88A0 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:88A3 AE 26 0E    LDX $0E26  [$7E:0E26]  ;} $7E:9002 + [$0E26] = [Draygon Y position]
+$A5:88A6 9F 02 90 7E STA $7E9002,x[$7E:91A2];/
+$A5:88AA 8E AA 0F    STX $0FAA  [$7E:0FAA]  ; $0FAA = [$0E26]
+$A5:88AD 8E AC 0F    STX $0FAC  [$7E:0FAC]  ; $0FAC = [$0E26]
 $A5:88B0 60          RTS
 }
 
 
-;;; $88B1:  ;;;
+;;; $88B1: Draygon body function -  ;;;
 {
-$A5:88B1 20 AA 87    JSR $87AA  [$A5:87AA]
+; swoop right - descending
+$A5:88B1 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:88B4 20 1C 93    JSR $931C  [$A5:931C]
 $A5:88B7 AC 54 0E    LDY $0E54  [$7E:0E54]
 $A5:88BA AE AA 0F    LDX $0FAA  [$7E:0FAA]
@@ -309,9 +320,9 @@ $A5:8921 60          RTS
 }
 
 
-;;; $8922:  ;;;
+;;; $8922: Draygon body function -  ;;;
 {
-$A5:8922 20 AA 87    JSR $87AA  [$A5:87AA]
+$A5:8922 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8925 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:8928 A9 A0 02    LDA #$02A0
 $A5:892B 38          SEC
@@ -334,9 +345,10 @@ $A5:8950 60          RTS
 }
 
 
-;;; $8951:  ;;;
+;;; $8951: Draygon body function -  ;;;
 {
-$A5:8951 20 AA 87    JSR $87AA  [$A5:87AA]
+; swoop right - ascending
+$A5:8951 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8954 AC 54 0E    LDY $0E54  [$7E:0E54]
 $A5:8957 AE AA 0F    LDX $0FAA  [$7E:0FAA]
 $A5:895A E0 68 00    CPX #$0068
@@ -378,9 +390,9 @@ $A5:89B2 60          RTS
 }
 
 
-;;; $89B3:  ;;;
+;;; $89B3: Draygon body function -  ;;;
 {
-$A5:89B3 20 AA 87    JSR $87AA  [$A5:87AA]
+$A5:89B3 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:89B6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:89B9 AF 04 78 7E LDA $7E7804[$7E:7804]
 $A5:89BD 38          SEC
@@ -412,9 +424,10 @@ $A5:89FF 60          RTS
 }
 
 
-;;; $8A00:  ;;;
+;;; $8A00: Draygon body function -  ;;;
 {
-$A5:8A00 20 AA 87    JSR $87AA  [$A5:87AA]
+; swoop left - descending
+$A5:8A00 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8A03 20 1C 93    JSR $931C  [$A5:931C]
 $A5:8A06 AC 54 0E    LDY $0E54  [$7E:0E54]
 $A5:8A09 AE AA 0F    LDX $0FAA  [$7E:0FAA]
@@ -448,9 +461,10 @@ $A5:8A4F 60          RTS
 }
 
 
-;;; $8A50:  ;;;
+;;; $8A50: Draygon body function -  ;;;
 {
-$A5:8A50 20 AA 87    JSR $87AA  [$A5:87AA]
+; swoop left - ascending
+$A5:8A50 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8A53 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:8A56 AF 00 78 7E LDA $7E7800[$7E:7800]
 $A5:8A5A 30 0A       BMI $0A    [$8A66]
@@ -482,9 +496,9 @@ $A5:8A8F 60          RTS
 }
 
 
-;;; $8A90:  ;;;
+;;; $8A90: Draygon body function -  ;;;
 {
-$A5:8A90 20 AA 87    JSR $87AA  [$A5:87AA]
+$A5:8A90 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8A93 20 1C 93    JSR $931C  [$A5:931C]
 $A5:8A96 AC 54 0E    LDY $0E54  [$7E:0E54]
 $A5:8A99 AE AA 0F    LDX $0FAA  [$7E:0FAA]
@@ -533,9 +547,9 @@ $A5:8B09 60          RTS
 }
 
 
-;;; $8B0A:  ;;;
+;;; $8B0A: Draygon body function -  ;;;
 {
-$A5:8B0A 20 AA 87    JSR $87AA  [$A5:87AA]
+$A5:8B0A 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8B0D A9 B0 FF    LDA #$FFB0
 $A5:8B10 8D 7A 0F    STA $0F7A  [$7E:0F7A]
 $A5:8B13 A9 80 01    LDA #$0180
@@ -562,9 +576,10 @@ $A5:8B51 60          RTS
 }
 
 
-;;; $8B52:  ;;;
+;;; $8B52: Draygon body function -  ;;;
 {
-$A5:8B52 20 AA 87    JSR $87AA  [$A5:87AA]
+; move right before gooping
+$A5:8B52 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8B55 20 1C 93    JSR $931C  [$A5:931C]
 $A5:8B58 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
 $A5:8B5B 38          SEC
@@ -601,9 +616,10 @@ $A5:8BAD 60          RTS
 }
 
 
-;;; $8BAE:  ;;;
+;;; $8BAE: Draygon body function -  ;;;
 {
-$A5:8BAE 20 AA 87    JSR $87AA  [$A5:87AA]
+; goop right
+$A5:8BAE 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8BB1 AD 66 0A    LDA $0A66  [$7E:0A66]
 $A5:8BB4 D0 63       BNE $63    [$8C19]
 $A5:8BB6 AD E5 05    LDA $05E5  [$7E:05E5]
@@ -660,8 +676,9 @@ $A5:8C32 60          RTS
 }
 
 
-;;; $8C33:  ;;;
+;;; $8C33: Draygon body function -  ;;;
 {
+; move right after gooping
 $A5:8C33 20 1C 93    JSR $931C  [$A5:931C]
 $A5:8C36 A9 20 00    LDA #$0020
 $A5:8C39 8D 32 0E    STA $0E32  [$7E:0E32]
@@ -700,7 +717,7 @@ $A5:8C8D 60          RTS
 }
 
 
-;;; $8C8E:  ;;;
+;;; $8C8E: Draygon body function -  ;;;
 {
 $A5:8C8E AF 04 78 7E LDA $7E7804[$7E:7804]
 $A5:8C92 8D 7A 0F    STA $0F7A  [$7E:0F7A]
@@ -728,9 +745,10 @@ $A5:8CD3 60          RTS
 }
 
 
-;;; $8CD4:  ;;;
+;;; $8CD4: Draygon body function -  ;;;
 {
-$A5:8CD4 20 AA 87    JSR $87AA  [$A5:87AA]
+; move left before gooping
+$A5:8CD4 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8CD7 20 1C 93    JSR $931C  [$A5:931C]
 $A5:8CDA AD 7A 0F    LDA $0F7A  [$7E:0F7A]
 $A5:8CDD 38          SEC
@@ -767,8 +785,9 @@ $A5:8D2F 60          RTS
 }
 
 
-;;; $8D30:  ;;;
+;;; $8D30: Draygon body function -  ;;;
 {
+; goop left
 $A5:8D30 AD 66 0A    LDA $0A66  [$7E:0A66]
 $A5:8D33 D0 63       BNE $63    [$8D98]
 $A5:8D35 AD E5 05    LDA $05E5  [$7E:05E5]
@@ -825,8 +844,9 @@ $A5:8DB1 60          RTS
 }
 
 
-;;; $8DB2:  ;;;
+;;; $8DB2: Draygon body function -  ;;;
 {
+; move left after gooping
 $A5:8DB2 20 1C 93    JSR $931C  [$A5:931C]
 $A5:8DB5 AD 66 0A    LDA $0A66  [$7E:0A66]
 $A5:8DB8 D0 3F       BNE $3F    [$8DF9]
@@ -871,9 +891,10 @@ $A5:8E18 60          RTS
 }
 
 
-;;; $8E19:  ;;;
+;;; $8E19: Draygon body function -  ;;;
 {
-$A5:8E19 20 AA 87    JSR $87AA  [$A5:87AA]
+; attempt to grab Samus
+$A5:8E19 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8E1C AD 66 0A    LDA $0A66  [$7E:0A66]
 $A5:8E1F D0 07       BNE $07    [$8E28]
 $A5:8E21 A9 54 91    LDA #$9154
@@ -952,7 +973,7 @@ $A5:8ED1 F0 03       BEQ $03    [$8ED6]
 $A5:8ED3 A0 01 00    LDY #$0001
 
 $A5:8ED6 98          TYA
-$A5:8ED7 22 3B E2 90 JSL $90E23B[$90:E23B]
+$A5:8ED7 22 3B E2 90 JSL $90E23B[$90:E23B]  ; Set Samus into the grabbed by Draygon pose
 $A5:8EDB A9 00 01    LDA #$0100
 $A5:8EDE 8F 0C 78 7E STA $7E780C[$7E:780C]
 $A5:8EE2 A9 80 01    LDA #$0180
@@ -974,7 +995,7 @@ $A5:8F0F 60          RTS
 }
 
 
-;;; $8F10:  ;;;
+;;; $8F10: Draygon body function -  ;;;
 {
 $A5:8F10 A9 C5 C8    LDA #$C8C5
 $A5:8F13 8D 32 0D    STA $0D32  [$7E:0D32]
@@ -990,7 +1011,7 @@ $A5:8F1D 60          RTS
 }
 
 
-;;; $8F1E:  ;;;
+;;; $8F1E: Draygon body function -  ;;;
 {
 $A5:8F1E AD 64 0A    LDA $0A64  [$7E:0A64]
 $A5:8F21 89 01 00    BIT #$0001
@@ -1071,8 +1092,9 @@ $A5:8FD5 60          RTS
 }
 
 
-;;; $8FD6:  ;;;
+;;; $8FD6: Draygon body function -  ;;;
 {
+; hold samus
 $A5:8FD6 AD 64 0A    LDA $0A64  [$7E:0A64]
 $A5:8FD9 89 01 00    BIT #$0001
 $A5:8FDC F0 1D       BEQ $1D    [$8FFB]
@@ -1174,8 +1196,9 @@ $A5:90D3 60          RTS
 }
 
 
-;;; $90D4:  ;;;
+;;; $90D4: Draygon body function -  ;;;
 {
+; stab Samus with tail
 $A5:90D4 20 A9 94    JSR $94A9  [$A5:94A9]
 $A5:90D7 AF 18 78 7E LDA $7E7818[$7E:7818]
 $A5:90DB 3A          DEC A
@@ -1201,8 +1224,9 @@ $A5:9104 60          RTS
 }
 
 
-;;; $9105:  ;;;
+;;; $9105: Draygon body function -  ;;;
 {
+; final tailstabs brfore releasing Samus
 $A5:9105 20 A9 94    JSR $94A9  [$A5:94A9]
 $A5:9108 A0 68 9A    LDY #$9A68
 $A5:910B BF 00 80 7E LDA $7E8000,x
@@ -1218,16 +1242,16 @@ $A5:9123 60          RTS
 }
 
 
-;;; $9124:  ;;;
+;;; $9124: Draygon body function -  ;;;
 {
 $A5:9124 20 A9 94    JSR $94A9  [$A5:94A9]
 $A5:9127 60          RTS
 }
 
 
-;;; $9128:  ;;;
+;;; $9128: Draygon body function -  ;;;
 {
-$A5:9128 22 D4 E2 90 JSL $90E2D4[$90:E2D4]
+$A5:9128 22 D4 E2 90 JSL $90E2D4[$90:E2D4]  ; Release Samus from Draygon
 $A5:912C 9C 64 0A    STZ $0A64  [$7E:0A64]
 $A5:912F A9 54 91    LDA #$9154
 $A5:9132 8D A8 0F    STA $0FA8  [$7E:0FA8]
@@ -1246,9 +1270,10 @@ $A5:9153 60          RTS
 }
 
 
-;;; $9154:  ;;;
+;;; $9154: Draygon body function -  ;;;
 {
-$A5:9154 20 AA 87    JSR $87AA  [$A5:87AA]
+; fly straight up
+$A5:9154 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:9157 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
 $A5:915A 38          SEC
 $A5:915B E9 04 00    SBC #$0004
@@ -1270,8 +1295,9 @@ $A5:9184 60          RTS
 }
 
 
-;;; $9185:  ;;;
+;;; $9185: Draygon body function -  ;;;
 {
+; move to death spot
 $A5:9185 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:9188 BD A4 0F    LDA $0FA4,x[$7E:0FA4]
 $A5:918B 29 0F 00    AND #$000F
@@ -1387,8 +1413,9 @@ $A5:9293 60          RTS
 }
 
 
-;;; $9294:  ;;;
+;;; $9294: Draygon body function -  ;;;
 {
+; laying on floor
 $A5:9294 20 EA 92    JSR $92EA  [$A5:92EA]
 $A5:9297 CE AA 0F    DEC $0FAA  [$7E:0FAA]
 $A5:929A AD AA 0F    LDA $0FAA  [$7E:0FAA]
@@ -1403,8 +1430,9 @@ $A5:92AA 60          RTS
 }
 
 
-;;; $92AB:  ;;;
+;;; $92AB: Draygon body function -  ;;;
 {
+; carried by evirs
 $A5:92AB 20 EA 92    JSR $92EA  [$A5:92EA]
 $A5:92AE 20 E0 9F    JSR $9FE0  [$A5:9FE0]
 $A5:92B1 EE 7E 0F    INC $0F7E  [$7E:0F7E]
@@ -1432,6 +1460,7 @@ $A5:92E9 60          RTS
 
 ;;; $92EA:  ;;;
 {
+; spawn death dust cloud
 $A5:92EA 5A          PHY
 $A5:92EB DA          PHX
 $A5:92EC AD B6 05    LDA $05B6  [$7E:05B6]
@@ -1487,7 +1516,7 @@ $A5:9342 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A5:9345 38          SEC                    ;|
 $A5:9346 ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
 $A5:9349 38          SEC                    ;|
-$A5:934A E9 C2 01    SBC #$01C2             ;} BG2 X scroll = [layer 1 X position] - [Draygon X position] - 450 + [$7E:883C]
+$A5:934A E9 C2 01    SBC #$01C2             ;} BG2 X scroll = [layer 1 X position] - [Draygon X position] - 1C2h + [$7E:883C]
 $A5:934D 18          CLC                    ;|
 $A5:934E 6F 3C 88 7E ADC $7E883C[$7E:883C]  ;|
 $A5:9352 85 B5       STA $B5    [$7E:00B5]  ;/
@@ -1495,7 +1524,7 @@ $A5:9354 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $A5:9357 38          SEC                    ;|
 $A5:9358 ED 7E 0F    SBC $0F7E  [$7E:0F7E]  ;|
 $A5:935B 38          SEC                    ;|
-$A5:935C E9 C0 00    SBC #$00C0             ;} BG2 Y scroll = [layer 1 X position] - [Draygon Y position] - 192 + [$7E:883E]
+$A5:935C E9 C0 00    SBC #$00C0             ;} BG2 Y scroll = [layer 1 X position] - [Draygon Y position] - C0h + [$7E:883E]
 $A5:935F 18          CLC                    ;|
 $A5:9360 6F 3E 88 7E ADC $7E883E[$7E:883E]  ;|
 $A5:9364 85 B7       STA $B7    [$7E:00B7]  ;/
@@ -1524,9 +1553,9 @@ $A5:9388 BF 00 80 7E LDA $7E8000,x          ;\
 $A5:938C F0 03       BEQ $03    [$9391]     ;} If [$7E:8000] != 0:
 $A5:938E A0 90 9C    LDY #$9C90             ; Y = $9C90
 
-$A5:9391 8C 92 0F    STY $0F92  [$7E:0F92]  ; Draygon instruction list pointer = [Y]
+$A5:9391 8C 92 0F    STY $0F92  [$7E:0F92]  ; Draygon body instruction list pointer = [Y]
 $A5:9394 A9 01 00    LDA #$0001             ;\
-$A5:9397 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon instruction timer = 1
+$A5:9397 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 $A5:939A 80 3D       BRA $3D    [$93D9]     ; Return
 
 ; BRANCH_FIRE_GUNK_END
@@ -1537,9 +1566,9 @@ $A5:93A4 BF 00 80 7E LDA $7E8000,x          ;\
 $A5:93A8 F0 03       BEQ $03    [$93AD]     ;} If [$7E:8000] != 0:
 $A5:93AA A0 9E 9D    LDY #$9D9E             ; Y = $9D9E
 
-$A5:93AD 8C 12 10    STY $1012  [$7E:1012]  ; Draygon's tail instruction list pointer = [Y]
+$A5:93AD 8C 12 10    STY $1012  [$7E:1012]  ; Draygon tail instruction list pointer = [Y]
 $A5:93B0 A9 01 00    LDA #$0001             ;\
-$A5:93B3 8D 14 10    STA $1014  [$7E:1014]  ;} Draygon's tail instruction timer = 1
+$A5:93B3 8D 14 10    STA $1014  [$7E:1014]  ;} Draygon tail instruction timer = 1
 $A5:93B6 80 21       BRA $21    [$93D9]     ; Return
 
 ; BRANCH_WHIP_TAIL_END
@@ -1550,9 +1579,9 @@ $A5:93C0 BF 00 80 7E LDA $7E8000,x          ;\
 $A5:93C4 F0 03       BEQ $03    [$93C9]     ;} If [$7E:8000] != 0:
 $A5:93C6 A0 18 9C    LDY #$9C18             ; Y = $9C18
                                             
-$A5:93C9 8C 52 10    STY $1052  [$7E:1052]  ; Draygon's arms instruction list pointer = [Y]
+$A5:93C9 8C 52 10    STY $1052  [$7E:1052]  ; Draygon arms instruction list pointer = [Y]
 $A5:93CC A9 01 00    LDA #$0001             ;\
-$A5:93CF 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon's arms instruction timer = 1
+$A5:93CF 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
 $A5:93D2 80 05       BRA $05    [$93D9]     ; Return
 
 ; BRANCH_BIG_HUG_END
@@ -1697,18 +1726,18 @@ $A5:94DC 60          RTS
 {
 $A5:94DD 5A          PHY
 $A5:94DE B9 00 00    LDA $0000,y[$A5:97D3]  ;\
-$A5:94E1 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon instruction list pointer = [[Y]]
+$A5:94E1 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = [[Y]]
 $A5:94E4 B9 02 00    LDA $0002,y[$A5:97D5]  ;\
-$A5:94E7 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Draygon's eye instruction list pointer = [[Y] + 2]
+$A5:94E7 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Draygon eye instruction list pointer = [[Y] + 2]
 $A5:94EA B9 04 00    LDA $0004,y[$A5:97D7]  ;\
-$A5:94ED 8D 12 10    STA $1012  [$7E:1012]  ;} Draygon's tail instruction list pointer = [[Y] + 4]
+$A5:94ED 8D 12 10    STA $1012  [$7E:1012]  ;} Draygon tail instruction list pointer = [[Y] + 4]
 $A5:94F0 B9 06 00    LDA $0006,y[$A5:97D9]  ;\
-$A5:94F3 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon's arms instruction list pointer = [[Y] + 6]
+$A5:94F3 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = [[Y] + 6]
 $A5:94F6 A9 01 00    LDA #$0001             ;\
-$A5:94F9 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon instruction timer = 1
-$A5:94FC 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Draygon's eye instruction timer = 1
-$A5:94FF 8D 14 10    STA $1014  [$7E:1014]  ; Draygon's tail instruction timer = 1
-$A5:9502 8D 54 10    STA $1054  [$7E:1054]  ; Draygon's arms instruction timer = 1
+$A5:94F9 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
+$A5:94FC 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Draygon eye instruction timer = 1
+$A5:94FF 8D 14 10    STA $1014  [$7E:1014]  ; Draygon tail instruction timer = 1
+$A5:9502 8D 54 10    STA $1054  [$7E:1054]  ; Draygon arms instruction timer = 1
 $A5:9505 7A          PLY
 $A5:9506 98          TYA                    ;\
 $A5:9507 18          CLC                    ;|
@@ -1862,7 +1891,7 @@ $A5:9648 A9 4B 80    LDA #$804B
 $A5:964B 8D E8 0F    STA $0FE8  [$7E:0FE8]
 $A5:964E A9 85 91    LDA #$9185
 $A5:9651 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:9654 22 D4 E2 90 JSL $90E2D4[$90:E2D4]
+$A5:9654 22 D4 E2 90 JSL $90E2D4[$90:E2D4]  ; Release Samus from Draygon
 $A5:9658 9C 64 0A    STZ $0A64  [$7E:0A64]
 $A5:965B A9 00 01    LDA #$0100
 $A5:965E 38          SEC
@@ -1915,6 +1944,7 @@ $A5:96AF             dw 0319,0254,018F,00CA,
 
 ;;; $96EF:  ;;;
 {
+; Draygon health-based palette thresholds
 $A5:96EF             dw 1482, 1194, 0EA6, 0BB8, 08CA, 05DC, 02EE, 0000, FFFF
 }
 
@@ -1955,7 +1985,7 @@ $A5:9735 60          RTS
 
 ;;; $9736..9FDF: Instruction lists and instructions ;;;
 {
-;;; $9736: Instruction ;;;
+;;; $9736: Instruction - enemy function = [[Y]] ;;;
 {
 $A5:9736 B9 00 00    LDA $0000,y
 $A5:9739 9D A8 0F    STA $0FA8,x
@@ -2478,8 +2508,9 @@ $A5:9B5A             dx 0002,A42F,
 }
 
 
-;;; $9B9A: Instruction ;;;
+;;; $9B9A: Instruction -  ;;;
 {
+; hurt samus from tailstab
 $A5:9B9A DA          PHX
 $A5:9B9B 5A          PHY
 $A5:9B9C A9 18 00    LDA #$0018
@@ -2890,7 +2921,7 @@ $A5:9F55             dx 812F        ; Sleep
 }
 
 
-;;; $9F57: Instruction ;;;
+;;; $9F57: Instruction - Draygon body function = [[Y]] ;;;
 {
 $A5:9F57 B9 00 00    LDA $0000,y
 $A5:9F5A 8D A8 0F    STA $0FA8  [$7E:0FA8]
@@ -2985,6 +3016,7 @@ $A5:9FDF 6B          RTL
 
 ;;; $9FE0:  ;;;
 {
+; move death evirs
 $A5:9FE0 5A          PHY
 $A5:9FE1 A2 3E 00    LDX #$003E
 $A5:9FE4 A0 14 00    LDY #$0014
@@ -3101,6 +3133,7 @@ $A5:A0C5 60          RTS
 
 ;;; $A0C6:  ;;;
 {
+; delete death evirs
 $A5:A0C6 DA          PHX
 $A5:A0C7 5A          PHY
 $A5:A0C8 A2 3E 00    LDX #$003E
@@ -3116,53 +3149,53 @@ $A5:A0D8 60          RTS
 }
 
 
-;;; $A0D9:  ;;;
+;;; $A0D9: Spawn fight intro mini-Draygon sprite objects ;;;
 {
 $A5:A0D9 DA          PHX
 $A5:A0DA 5A          PHY
-$A5:A0DB A9 10 00    LDA #$0010
-$A5:A0DE 85 12       STA $12    [$7E:0012]
-$A5:A0E0 A9 80 01    LDA #$0180
-$A5:A0E3 85 14       STA $14    [$7E:0014]
-$A5:A0E5 A9 3B 00    LDA #$003B
-$A5:A0E8 85 16       STA $16    [$7E:0016]
-$A5:A0EA A9 00 0E    LDA #$0E00
-$A5:A0ED 85 18       STA $18    [$7E:0018]
-$A5:A0EF 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A5:A0F3 A9 10 00    LDA #$0010
-$A5:A0F6 85 12       STA $12    [$7E:0012]
-$A5:A0F8 A9 80 01    LDA #$0180
-$A5:A0FB 85 14       STA $14    [$7E:0014]
-$A5:A0FD A9 3B 00    LDA #$003B
-$A5:A100 85 16       STA $16    [$7E:0016]
-$A5:A102 A9 00 0E    LDA #$0E00
-$A5:A105 85 18       STA $18    [$7E:0018]
-$A5:A107 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A5:A10B A9 10 00    LDA #$0010
-$A5:A10E 85 12       STA $12    [$7E:0012]
-$A5:A110 A9 80 01    LDA #$0180
-$A5:A113 85 14       STA $14    [$7E:0014]
-$A5:A115 A9 3B 00    LDA #$003B
-$A5:A118 85 16       STA $16    [$7E:0016]
-$A5:A11A A9 00 0E    LDA #$0E00
-$A5:A11D 85 18       STA $18    [$7E:0018]
-$A5:A11F 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A5:A123 A9 10 00    LDA #$0010
-$A5:A126 85 12       STA $12    [$7E:0012]
-$A5:A128 A9 80 01    LDA #$0180
-$A5:A12B 85 14       STA $14    [$7E:0014]
-$A5:A12D A9 3B 00    LDA #$003B
-$A5:A130 85 16       STA $16    [$7E:0016]
-$A5:A132 A9 00 0E    LDA #$0E00
-$A5:A135 85 18       STA $18    [$7E:0018]
-$A5:A137 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:A0DB A9 10 00    LDA #$0010             ;\
+$A5:A0DE 85 12       STA $12    [$7E:0012]  ;|
+$A5:A0E0 A9 80 01    LDA #$0180             ;|
+$A5:A0E3 85 14       STA $14    [$7E:0014]  ;|
+$A5:A0E5 A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A0E8 85 16       STA $16    [$7E:0016]  ;|
+$A5:A0EA A9 00 0E    LDA #$0E00             ;|
+$A5:A0ED 85 18       STA $18    [$7E:0018]  ;|
+$A5:A0EF 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
+$A5:A0F3 A9 10 00    LDA #$0010             ;\
+$A5:A0F6 85 12       STA $12    [$7E:0012]  ;|
+$A5:A0F8 A9 80 01    LDA #$0180             ;|
+$A5:A0FB 85 14       STA $14    [$7E:0014]  ;|
+$A5:A0FD A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A100 85 16       STA $16    [$7E:0016]  ;|
+$A5:A102 A9 00 0E    LDA #$0E00             ;|
+$A5:A105 85 18       STA $18    [$7E:0018]  ;|
+$A5:A107 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
+$A5:A10B A9 10 00    LDA #$0010             ;\
+$A5:A10E 85 12       STA $12    [$7E:0012]  ;|
+$A5:A110 A9 80 01    LDA #$0180             ;|
+$A5:A113 85 14       STA $14    [$7E:0014]  ;|
+$A5:A115 A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A118 85 16       STA $16    [$7E:0016]  ;|
+$A5:A11A A9 00 0E    LDA #$0E00             ;|
+$A5:A11D 85 18       STA $18    [$7E:0018]  ;|
+$A5:A11F 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
+$A5:A123 A9 10 00    LDA #$0010             ;\
+$A5:A126 85 12       STA $12    [$7E:0012]  ;|
+$A5:A128 A9 80 01    LDA #$0180             ;|
+$A5:A12B 85 14       STA $14    [$7E:0014]  ;|
+$A5:A12D A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A130 85 16       STA $16    [$7E:0016]  ;|
+$A5:A132 A9 00 0E    LDA #$0E00             ;|
+$A5:A135 85 18       STA $18    [$7E:0018]  ;|
+$A5:A137 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:A13B 7A          PLY
 $A5:A13C FA          PLX
 $A5:A13D 60          RTS
 }
 
 
-;;; $A13E:  ;;;
+;;; $A13E: Handle Drayogn fight intro movement ;;;
 {
 $A5:A13E 5A          PHY
 $A5:A13F A2 3E 00    LDX #$003E             ; X = 3Eh (sprite object index)
@@ -3172,11 +3205,11 @@ $A5:A142 8A          TXA                    ;\
 $A5:A143 38          SEC                    ;|
 $A5:A144 E9 38 00    SBC #$0038             ;|
 $A5:A147 A8          TAY                    ;|
-$A5:A148 B9 9F A1    LDA $A19F,y[$A5:A1A5]  ;} If [$A19F + [X] - 38h] + [$7E:880C] < 0: go to BRANCH_NEXT
+$A5:A148 B9 9F A1    LDA $A19F,y[$A5:A1A5]  ;} If [$A19F + [X] - 38h] + [Draygon fight intro movement index] < 0: go to BRANCH_NEXT
 $A5:A14B 18          CLC                    ;|
 $A5:A14C 6F 0C 88 7E ADC $7E880C[$7E:880C]  ;|
 $A5:A150 30 2F       BMI $2F    [$A181]     ;/
-$A5:A152 A8          TAY                    ; Y = [$A19F + [X] - 38h] + [$7E:880C]
+$A5:A152 A8          TAY                    ; Y = [$A19F + [X] - 38h] + [Draygon fight intro movement index]
 $A5:A153 B9 07 CE    LDA $CE07,y[$A5:CE07]  ;\
 $A5:A156 C9 80 80    CMP #$8080             ;} If [$CE07 + [Y]] = 80h,80h: go to BRANCH_DELETE_SPRITE_OBJECT
 $A5:A159 F0 3B       BEQ $3B    [$A196]     ;/
@@ -3201,18 +3234,18 @@ $A5:A186 10 BA       BPL $BA    [$A142]     ;} If [X] >= 38h: go to LOOP
 $A5:A188 AF 0C 88 7E LDA $7E880C[$7E:880C]  ;\
 $A5:A18C 1A          INC A                  ;|
 $A5:A18D 1A          INC A                  ;|
-$A5:A18E 1A          INC A                  ;} $7E:880C += 4
+$A5:A18E 1A          INC A                  ;} Draygon fight intro movement index += 4
 $A5:A18F 1A          INC A                  ;|
 $A5:A190 8F 0C 88 7E STA $7E880C[$7E:880C]  ;/
 $A5:A194 7A          PLY
-$A5:A195 60          RTS
+$A5:A195 60          RTS                    ; Return
 
 ; BRANCH_DELETE_SPRITE_OBJECT
 $A5:A196 A9 00 00    LDA #$0000             ;\
 $A5:A199 9F 78 EF 7E STA $7EEF78,x[$7E:EFB6];} Sprite object [X] instruction list pointer = 0
 $A5:A19D 80 E2       BRA $E2    [$A181]     ; Go to BRANCH_NEXT
 
-; Movement latency for each evir sprite object (each evir moves 80h frames later in the movement table than the next)
+; Movement latency for each mini-Draygon sprite object (each mini-Draygon moves 80h frames later in the movement table than the next)
 $A5:A19F             dw FC80, FD00, FD80, FE00, FE80, FF00, FF80, 0000
 }
 
@@ -3225,7 +3258,7 @@ $A5:A1DF             dw 0068,0000, 0058,0000, 0048,0000, 0038,0000, 0028,0000, 0
 }
 
 
-;;; $A1F7: Palette - enemy $DE3F/$DEBF/$DEFF (Draygon / Draygon's tail / Draygon's arms) ;;;
+;;; $A1F7: Palette - enemy $DE3F/$DEBF/$DEFF (Draygon body/tail/arms) ;;;
 {
 $A5:A1F7             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 0319, 0254, 018F, 00CA, 581B, 1892, 0145
 }
@@ -3423,173 +3456,173 @@ $A5:B041             dx 0014, 81F8,F9,272E, 01E8,09,274C, 81F0,01,273D, 81FC,F4,
 $A5:B0A7             dx 0013, 81BB,E5,271C, 81B3,ED,272B, 81C3,DD,270D, 01CA,CF,2750, 81D2,C7,2741, 81CA,D7,2760, 800E,05,2768, 800E,FD,2758, 8012,F5,2709, 800A,F5,2708, 81F7,F0,2738, 81FF,E8,2729, 8002,E3,2756, 81FA,DB,2745, 81D8,ED,272E, 01C8,FD,274C, 81D0,F5,273D, 81DC,E8,2762, 81DC,D8,2743
 
 $A5:B108             dx FFFE,
-                        2316,0002,159F,15A0,
-                        2356,0002,15AC,15AD,
-                        2394,0003,15B9,15BA,15BB,
-                        23D4,0003,15C8,15C9,15CA,
-                        2414,0003,15D7,15D8,15D9,
-                        2454,0003,15DF,15E0,1547,
-                        2496,0002,1547,1547,
+                        2316,0002, 159F,15A0,
+                        2356,0002, 15AC,15AD,
+                        2394,0003, 15B9,15BA,15BB,
+                        23D4,0003, 15C8,15C9,15CA,
+                        2414,0003, 15D7,15D8,15D9,
+                        2454,0003, 15DF,15E0,1547,
+                        2496,0002, 1547,1547,
                         FFFF
 
 $A5:B14C             dx FFFE,
-                        2316,0002,1559,155A,
-                        2356,0002,1569,156A,
-                        2394,0003,1576,1577,1578,
-                        23D2,0004,1585,1586,1587,1588,
-                        2412,0004,1592,1593,1594,1595,
-                        2452,0004,15A1,15A2,15A3,0147,
-                        2496,0002,0147,0147,
+                        2316,0002, 1559,155A,
+                        2356,0002, 1569,156A,
+                        2394,0003, 1576,1577,1578,
+                        23D2,0004, 1585,1586,1587,1588,
+                        2412,0004, 1592,1593,1594,1595,
+                        2452,0004, 15A1,15A2,15A3,0147,
+                        2496,0002, 0147,0147,
                         FFFF
 
 $A5:B196             dx FFFE,
-                        2316,0002,1596,1597,
-                        2356,0002,15A4,15A5,
-                        2390,0005,15AE,15AF,15B0,15B1,15B2,
-                        23CE,0006,15BC,15BD,15BE,15BF,15C0,15C1,
-                        240E,0006,15CB,15CC,15CD,15CE,15CF,15D0,
-                        2452,0003,0147,0147,0147,
+                        2316,0002, 1596,1597,
+                        2356,0002, 15A4,15A5,
+                        2390,0005, 15AE,15AF,15B0,15B1,15B2,
+                        23CE,0006, 15BC,15BD,15BE,15BF,15C0,15C1,
+                        240E,0006, 15CB,15CC,15CD,15CE,15CF,15D0,
+                        2452,0003, 0147,0147,0147,
                         FFFF
 
 $A5:B1E2             dx FFFE,
-                        230A,0003,15DA,15DB,1547,
-                        2316,0002,15DC,15DD,
-                        234C,0003,15E1,15E2,15E3,
-                        2354,0003,15AE,15E4,15E5,
-                        238C,0007,15E9,15EA,15EB,15EC,15ED,15EE,15EF,
-                        23CC,0007,15F3,15F4,15F5,15F6,15F7,15F8,15F9,
-                        240E,0005,1600,1601,1602,1603,1604,
+                        230A,0003, 15DA,15DB,1547,
+                        2316,0002, 15DC,15DD,
+                        234C,0003, 15E1,15E2,15E3,
+                        2354,0003, 15AE,15E4,15E5,
+                        238C,0007, 15E9,15EA,15EB,15EC,15ED,15EE,15EF,
+                        23CC,0007, 15F3,15F4,15F5,15F6,15F7,15F8,15F9,
+                        240E,0005, 1600,1601,1602,1603,1604,
                         FFFF
 
 $A5:B23E             dx FFFE,
-                        230A,0003,0147,0147,0147,
-                        2316,0002,1596,1597,
-                        234C,0003,0147,0147,0147,
-                        2354,0003,0147,15A4,15A5,
-                        238C,0007,0147,0147,15AE,15AF,15B0,15B1,15B2,
-                        23CC,0007,0147,15BC,15BD,15BE,15BF,15C0,15C1,
-                        240E,0005,15CB,15CC,15CD,15CE,15CF,
+                        230A,0003, 0147,0147,0147,
+                        2316,0002, 1596,1597,
+                        234C,0003, 0147,0147,0147,
+                        2354,0003, 0147,15A4,15A5,
+                        238C,0007, 0147,0147,15AE,15AF,15B0,15B1,15B2,
+                        23CC,0007, 0147,15BC,15BD,15BE,15BF,15C0,15C1,
+                        240E,0005, 15CB,15CC,15CD,15CE,15CF,
                         FFFF
 
 $A5:B29A             dx FFFE,
-                        2316,0002,1559,155A,
-                        2356,0002,1569,156A,
-                        2390,0005,0147,0147,1576,1577,1578,
-                        23CE,0006,0147,0147,1585,1586,1587,1588,
-                        240E,0006,0147,0147,1592,1593,1594,1595,
-                        2452,0003,15A1,15A2,15A3,
+                        2316,0002, 1559,155A,
+                        2356,0002, 1569,156A,
+                        2390,0005, 0147,0147,1576,1577,1578,
+                        23CE,0006, 0147,0147,1585,1586,1587,1588,
+                        240E,0006, 0147,0147,1592,1593,1594,1595,
+                        2452,0003, 15A1,15A2,15A3,
                         FFFF
 
 $A5:B2E6             dx FFFE,
-                        2316,0002,159F,15A0,
-                        2356,0002,15AC,15AD,
-                        2394,0003,15B9,15BA,15BB,
-                        23D2,0004,0147,15C8,15C9,15CA,
-                        2412,0004,0147,15D7,15D8,15D9,
-                        2452,0004,0147,15DF,15E0,1547,
-                        2496,0002,1547,1547,
+                        2316,0002, 159F,15A0,
+                        2356,0002, 15AC,15AD,
+                        2394,0003, 15B9,15BA,15BB,
+                        23D2,0004, 0147,15C8,15C9,15CA,
+                        2412,0004, 0147,15D7,15D8,15D9,
+                        2452,0004, 0147,15DF,15E0,1547,
+                        2496,0002, 1547,1547,
                         FFFF
 
 $A5:B330             dx FFFE,
-                        2148,0002,1554,1555,
-                        2188,0002,1564,1565,
+                        2148,0002, 1554,1555,
+                        2188,0002, 1564,1565,
                         FFFF
 
 $A5:B344             dx FFFE,
-                        2148,0002,1580,1581,
-                        2188,0002,1590,1591,
+                        2148,0002, 1580,1581,
+                        2188,0002, 1590,1591,
                         FFFF
 
 $A5:B358             dx FFFE,
-                        2148,0002,1582,1583,
-                        2188,0002,1592,1593,
+                        2148,0002, 1582,1583,
+                        2188,0002, 1592,1593,
                         FFFF
 
 $A5:B36C             dx FFFE,
-                        2148,0002,1562,1563,
-                        2188,0002,1572,1573,
+                        2148,0002, 1562,1563,
+                        2188,0002, 1572,1573,
                         FFFF
 
 $A5:B380             dx FFFE,
-                        220C,0003,1586,159E,159F,
-                        224C,0003,1596,1597,1598,
-                        228C,0003,15A6,15A7,15A8,
+                        220C,0003, 1586,159E,159F,
+                        224C,0003, 1596,1597,1598,
+                        228C,0003, 15A6,15A7,15A8,
                         FFFF
 
 $A5:B3A2             dx FFFE,
-                        220C,0001,159D,
-                        224C,0003,15AD,15AE,15AF,
-                        228C,0003,15BD,15BE,15BF,
+                        220C,0001, 159D,
+                        224C,0003, 15AD,15AE,15AF,
+                        228C,0003, 15BD,15BE,15BF,
                         FFFF
 
 $A5:B3C0             dx FFFE,
-                        220C,0003,15A0,15A1,15A2,
-                        224C,0003,15B0,15B1,15B2,
-                        228C,0003,15B4,15B5,15B6,
+                        220C,0003, 15A0,15A1,15A2,
+                        224C,0003, 15B0,15B1,15B2,
+                        228C,0003, 15B4,15B5,15B6,
                         FFFF
 
 $A5:B3E2             dx FFFE,
-                        220C,0003,15A3,1584,1585,
-                        224C,0003,15B3,1594,1595,
-                        228C,0003,1574,15A4,15A5,
+                        220C,0003, 15A3,1584,1585,
+                        224C,0003, 15B3,1594,1595,
+                        228C,0003, 1574,15A4,15A5,
                         FFFF
 
 $A5:B404             dx FFFE,
-                        20C8,0002,1540,1541,
-                        2108,0002,1550,1551,
+                        20C8,0002, 1540,1541,
+                        2108,0002, 1550,1551,
                         FFFF
 
 $A5:B418             dx FFFE,
-                        20C8,0002,1560,1561,
-                        2108,0002,1570,1571,
+                        20C8,0002, 1560,1561,
+                        2108,0002, 1570,1571,
                         FFFF
 
 $A5:B42C             dx FFFE,
-                        20C8,0002,150A,150B,
-                        2108,0002,151A,151B,
+                        20C8,0002, 150A,150B,
+                        2108,0002, 151A,151B,
                         FFFF
 
 $A5:B440             dx FFFE,
-                        20C8,0002,150C,150D,
-                        2108,0002,151C,151D,
+                        20C8,0002, 150C,150D,
+                        2108,0002, 151C,151D,
                         FFFF
 
 $A5:B454             dx FFFE,
-                        20C8,0002,1534,1535,
-                        2108,0002,1544,1545,
+                        20C8,0002, 1534,1535,
+                        2108,0002, 1544,1545,
                         FFFF
 
 $A5:B468             dx FFFE,
-                        20C8,0002,150E,150F,
-                        2108,0002,151E,151F,
+                        20C8,0002, 150E,150F,
+                        2108,0002, 151E,151F,
                         FFFF
 
 $A5:B47C             dx FFFE,
-                        20C8,0002,152C,152D,
-                        2108,0002,153C,153D,
+                        20C8,0002, 152C,152D,
+                        2108,0002, 153C,153D,
                         FFFF
 
 $A5:B490             dx FFFE,
-                        20C8,0002,152E,152F,
-                        2108,0002,153E,153F,
+                        20C8,0002, 152E,152F,
+                        2108,0002, 153E,153F,
                         FFFF
 
 $A5:B4A4             dx FFFE,
-                        2000,0010,1500,1501,1502,1503,1504,1505,1506,1507,0338,0338,0338,0338,0338,0338,0338,0338,
-                        2040,0010,1510,1511,1512,1513,1514,1515,1516,1517,1518,0338,0338,0338,0338,0338,0338,0338,
-                        2080,0010,1520,1521,1522,1523,1524,1525,1526,1527,1528,1529,0338,0338,0338,0338,0338,0338,
-                        20C0,0010,1530,1531,1532,1533,02FF,02FF,1536,1537,1538,1539,153A,0338,0338,0338,0338,0338,
-                        2100,0010,0338,0338,1542,1543,02FF,02FF,1546,1547,1548,1549,154A,154B,154C,154D,154E,1738,
-                        2140,0010,0338,0338,0338,1553,1554,1555,1556,1557,1558,1559,155A,155B,155C,155D,155E,155F,
-                        2180,0010,0338,0338,0338,0338,1564,1565,1566,1567,1568,1569,156A,156B,156C,156D,156E,156F,
-                        21C0,0010,0338,0338,0338,0338,0338,1575,1576,1577,1578,1579,157A,157B,157C,157D,157E,157F,
-                        2200,0010,0338,0338,0338,0338,0338,0338,1586,159E,159F,1589,158A,158B,158C,158D,158E,158F,
-                        2240,0010,0338,0338,0338,0338,0338,0338,1596,1597,1598,1599,159A,159B,159C,0338,0338,0338,
-                        2280,0010,0338,0338,0338,0338,0338,0338,15A6,15A7,15A8,15A9,15AA,15AB,15AC,0338,0338,0338,
-                        22C0,0010,0338,0338,0338,0338,0338,0338,0338,15B7,15B8,15B9,15BA,15BB,15BC,0338,0338,0338,
-                        2300,0010,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,1508,1509,8338,8338,8338,
-                        2340,0010,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,153B,1519,8338,8338,8338,
-                        2380,0010,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,152A,152B,8338,8338,8338,
+                        2000,0010, 1500,1501,1502,1503,1504,1505,1506,1507,0338,0338,0338,0338,0338,0338,0338,0338,
+                        2040,0010, 1510,1511,1512,1513,1514,1515,1516,1517,1518,0338,0338,0338,0338,0338,0338,0338,
+                        2080,0010, 1520,1521,1522,1523,1524,1525,1526,1527,1528,1529,0338,0338,0338,0338,0338,0338,
+                        20C0,0010, 1530,1531,1532,1533,02FF,02FF,1536,1537,1538,1539,153A,0338,0338,0338,0338,0338,
+                        2100,0010, 0338,0338,1542,1543,02FF,02FF,1546,1547,1548,1549,154A,154B,154C,154D,154E,1738,
+                        2140,0010, 0338,0338,0338,1553,1554,1555,1556,1557,1558,1559,155A,155B,155C,155D,155E,155F,
+                        2180,0010, 0338,0338,0338,0338,1564,1565,1566,1567,1568,1569,156A,156B,156C,156D,156E,156F,
+                        21C0,0010, 0338,0338,0338,0338,0338,1575,1576,1577,1578,1579,157A,157B,157C,157D,157E,157F,
+                        2200,0010, 0338,0338,0338,0338,0338,0338,1586,159E,159F,1589,158A,158B,158C,158D,158E,158F,
+                        2240,0010, 0338,0338,0338,0338,0338,0338,1596,1597,1598,1599,159A,159B,159C,0338,0338,0338,
+                        2280,0010, 0338,0338,0338,0338,0338,0338,15A6,15A7,15A8,15A9,15AA,15AB,15AC,0338,0338,0338,
+                        22C0,0010, 0338,0338,0338,0338,0338,0338,0338,15B7,15B8,15B9,15BA,15BB,15BC,0338,0338,0338,
+                        2300,0010, 8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,1508,1509,8338,8338,8338,
+                        2340,0010, 8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,153B,1519,8338,8338,8338,
+                        2380,0010, 8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,8338,152A,152B,8338,8338,8338,
                         FFFF
 
 $A5:B6C4             dx 0003, 01F8,F8,27BD, 01F8,F0,27AD, 81F8,00,27A9
@@ -3648,173 +3681,173 @@ $A5:BCB8             dx 0014, 81F8,F9,672E, 0010,09,674C, 8000,01,673D, 81F4,F4,
 $A5:BD1E             dx 0013, 8035,E5,671C, 803D,ED,672B, 802D,DD,670D, 002E,CF,6750, 801E,C7,6741, 8026,D7,6760, 81E2,05,6768, 81E2,FD,6758, 81DE,F5,6709, 81E6,F5,6708, 81F9,F0,6738, 81F1,E8,6729, 81EE,E3,6756, 81F6,DB,6745, 8018,ED,672E, 0030,FD,674C, 8020,F5,673D, 8014,E8,6762, 8014,D8,6743
 
 $A5:BD7F             dx FFFE,
-                        2316,0002,159F,15A0,
-                        2356,0002,15AC,15AD,
-                        2394,0003,15B9,15BA,15BB,
-                        23D4,0003,15C8,15C9,15CA,
-                        2414,0003,15D7,15D8,15D9,
-                        2454,0003,15DF,15E0,1547,
-                        2496,0002,1547,1547,
+                        2316,0002, 159F,15A0,
+                        2356,0002, 15AC,15AD,
+                        2394,0003, 15B9,15BA,15BB,
+                        23D4,0003, 15C8,15C9,15CA,
+                        2414,0003, 15D7,15D8,15D9,
+                        2454,0003, 15DF,15E0,1547,
+                        2496,0002, 1547,1547,
                         FFFF
 
 $A5:BDC3             dx FFFE,
-                        2316,0002,1559,155A,
-                        2356,0002,1569,156A,
-                        2394,0003,1576,1577,1578,
-                        23D2,0004,1585,1586,1587,1588,
-                        2412,0004,1592,1593,1594,1595,
-                        2452,0004,15A1,15A2,15A3,0147,
-                        2496,0002,0147,0147,
+                        2316,0002, 1559,155A,
+                        2356,0002, 1569,156A,
+                        2394,0003, 1576,1577,1578,
+                        23D2,0004, 1585,1586,1587,1588,
+                        2412,0004, 1592,1593,1594,1595,
+                        2452,0004, 15A1,15A2,15A3,0147,
+                        2496,0002, 0147,0147,
                         FFFF
 
 $A5:BE0D             dx FFFE,
-                        2316,0002,1596,1597,
-                        2356,0002,15A4,15A5,
-                        2390,0005,15AE,15AF,15B0,15B1,15B2,
-                        23CE,0006,15BC,15BD,15BE,15BF,15C0,15C1,
-                        240E,0006,15CB,15CC,15CD,15CE,15CF,15D0,
-                        2452,0003,0147,0147,0147,
+                        2316,0002, 1596,1597,
+                        2356,0002, 15A4,15A5,
+                        2390,0005, 15AE,15AF,15B0,15B1,15B2,
+                        23CE,0006, 15BC,15BD,15BE,15BF,15C0,15C1,
+                        240E,0006, 15CB,15CC,15CD,15CE,15CF,15D0,
+                        2452,0003, 0147,0147,0147,
                         FFFF
 
 $A5:BE59             dx FFFE,
-                        230A,0003,15DA,15DB,1547,
-                        2316,0002,15DC,15DD,
-                        234C,0003,15E1,15E2,15E3,
-                        2354,0003,15AE,15E4,15E5,
-                        238C,0007,15E9,15EA,15EB,15EC,15ED,15EE,15EF,
-                        23CC,0007,15F3,15F4,15F5,15F6,15F7,15F8,15F9,
-                        240E,0005,1600,1601,1602,1603,1604,
+                        230A,0003, 15DA,15DB,1547,
+                        2316,0002, 15DC,15DD,
+                        234C,0003, 15E1,15E2,15E3,
+                        2354,0003, 15AE,15E4,15E5,
+                        238C,0007, 15E9,15EA,15EB,15EC,15ED,15EE,15EF,
+                        23CC,0007, 15F3,15F4,15F5,15F6,15F7,15F8,15F9,
+                        240E,0005, 1600,1601,1602,1603,1604,
                         FFFF
 
 $A5:BEB5             dx FFFE,
-                        230A,0003,0147,0147,0147,
-                        2316,0002,1596,1597,
-                        234C,0003,0147,0147,0147,
-                        2354,0003,0147,15A4,15A5,
-                        238C,0007,0147,0147,15AE,15AF,15B0,15B1,15B2,
-                        23CC,0007,0147,15BC,15BD,15BE,15BF,15C0,15C1,
-                        240E,0005,15CB,15CC,15CD,15CE,15CF,
+                        230A,0003, 0147,0147,0147,
+                        2316,0002, 1596,1597,
+                        234C,0003, 0147,0147,0147,
+                        2354,0003, 0147,15A4,15A5,
+                        238C,0007, 0147,0147,15AE,15AF,15B0,15B1,15B2,
+                        23CC,0007, 0147,15BC,15BD,15BE,15BF,15C0,15C1,
+                        240E,0005, 15CB,15CC,15CD,15CE,15CF,
                         FFFF
 
 $A5:BF11             dx FFFE,
-                        2316,0002,1559,155A,
-                        2356,0002,1569,156A,
-                        2390,0005,0147,0147,1576,1577,1578,
-                        23CE,0006,0147,0147,1585,1586,1587,1588,
-                        240E,0006,0147,0147,1592,1593,1594,1595,
-                        2452,0003,15A1,15A2,15A3,
+                        2316,0002, 1559,155A,
+                        2356,0002, 1569,156A,
+                        2390,0005, 0147,0147,1576,1577,1578,
+                        23CE,0006, 0147,0147,1585,1586,1587,1588,
+                        240E,0006, 0147,0147,1592,1593,1594,1595,
+                        2452,0003, 15A1,15A2,15A3,
                         FFFF
 
 $A5:BF5D             dx FFFE,
-                        2316,0002,159F,15A0,
-                        2356,0002,15AC,15AD,
-                        2394,0003,15B9,15BA,15BB,
-                        23D2,0004,0147,15C8,15C9,15CA,
-                        2412,0004,0147,15D7,15D8,15D9,
-                        2452,0004,0147,15DF,15E0,1547,
-                        2496,0002,1547,1547,
+                        2316,0002, 159F,15A0,
+                        2356,0002, 15AC,15AD,
+                        2394,0003, 15B9,15BA,15BB,
+                        23D2,0004, 0147,15C8,15C9,15CA,
+                        2412,0004, 0147,15D7,15D8,15D9,
+                        2452,0004, 0147,15DF,15E0,1547,
+                        2496,0002, 1547,1547,
                         FFFF
 
 $A5:BFA7             dx FFFE,
-                        2154,0002,5555,5554,
-                        2194,0002,5565,5564,
+                        2154,0002, 5555,5554,
+                        2194,0002, 5565,5564,
                         FFFF
 
 $A5:BFBB             dx FFFE,
-                        2154,0002,5581,5580,
-                        2194,0002,5591,5590,
+                        2154,0002, 5581,5580,
+                        2194,0002, 5591,5590,
                         FFFF
 
 $A5:BFCF             dx FFFE,
-                        2154,0002,5583,5582,
-                        2194,0002,5593,5592,
+                        2154,0002, 5583,5582,
+                        2194,0002, 5593,5592,
                         FFFF
 
 $A5:BFE3             dx FFFE,
-                        2154,0002,5563,5562,
-                        2194,0002,5573,5572,
+                        2154,0002, 5563,5562,
+                        2194,0002, 5573,5572,
                         FFFF
 
 $A5:BFF7             dx FFFE,
-                        220E,0003,559F,559E,5586,
-                        224E,0003,5598,5597,5596,
-                        228E,0003,55A8,55A7,55A6,
+                        220E,0003, 559F,559E,5586,
+                        224E,0003, 5598,5597,5596,
+                        228E,0003, 55A8,55A7,55A6,
                         FFFF
 
 $A5:C019             dx FFFE,
-                        2212,0001,559D,
-                        224E,0003,55AF,55AE,55AD,
-                        228E,0003,55BF,55BE,55BD,
+                        2212,0001, 559D,
+                        224E,0003, 55AF,55AE,55AD,
+                        228E,0003, 55BF,55BE,55BD,
                         FFFF
 
 $A5:C037             dx FFFE,
-                        220E,0003,55A2,55A1,55A0,
-                        224E,0003,55B2,55B1,55B0,
-                        228E,0003,55B6,55B5,55B4,
+                        220E,0003, 55A2,55A1,55A0,
+                        224E,0003, 55B2,55B1,55B0,
+                        228E,0003, 55B6,55B5,55B4,
                         FFFF
 
 $A5:C059             dx FFFE,
-                        220E,0003,5585,5584,55A3,
-                        224E,0003,5595,5594,55B3,
-                        228E,0003,55A5,55A4,5574,
+                        220E,0003, 5585,5584,55A3,
+                        224E,0003, 5595,5594,55B3,
+                        228E,0003, 55A5,55A4,5574,
                         FFFF
 
 $A5:C07B             dx FFFE,
-                        20D4,0002,5541,5540,
-                        2114,0002,5551,5550,
+                        20D4,0002, 5541,5540,
+                        2114,0002, 5551,5550,
                         FFFF
 
 $A5:C08F             dx FFFE,
-                        20D4,0002,5561,5560,
-                        2114,0002,5571,5570,
+                        20D4,0002, 5561,5560,
+                        2114,0002, 5571,5570,
                         FFFF
 
 $A5:C0A3             dx FFFE,
-                        20D4,0002,550B,550A,
-                        2114,0002,551B,551A,
+                        20D4,0002, 550B,550A,
+                        2114,0002, 551B,551A,
                         FFFF
 
 $A5:C0B7             dx FFFE,
-                        20D4,0002,550D,550C,
-                        2114,0002,551D,551C,
+                        20D4,0002, 550D,550C,
+                        2114,0002, 551D,551C,
                         FFFF
 
 $A5:C0CB             dx FFFE,
-                        20D4,0002,5535,5534,
-                        2114,0002,5545,5544,
+                        20D4,0002, 5535,5534,
+                        2114,0002, 5545,5544,
                         FFFF
 
 $A5:C0DF             dx FFFE,
-                        20D4,0002,550F,550E,
-                        2114,0002,551F,551E,
+                        20D4,0002, 550F,550E,
+                        2114,0002, 551F,551E,
                         FFFF
 
 $A5:C0F3             dx FFFE,
-                        20D4,0002,552D,552C,
-                        2114,0002,553D,553C,
+                        20D4,0002, 552D,552C,
+                        2114,0002, 553D,553C,
                         FFFF
 
 $A5:C107             dx FFFE,
-                        20D4,0002,552F,552E,
-                        2114,0002,553F,553E,
+                        20D4,0002, 552F,552E,
+                        2114,0002, 553F,553E,
                         FFFF
 
 $A5:C11B             dx FFFE,
-                        2000,0010,4338,4338,4338,4338,4338,4338,4338,4338,5507,5506,5505,5504,5503,5502,5501,5500,
-                        2040,0010,4338,4338,4338,4338,4338,4338,4338,5518,5517,5516,5515,5514,5513,5512,5511,5510,
-                        2080,0010,4338,4338,4338,4338,4338,4338,5529,5528,5527,5526,5525,5524,5523,5522,5521,5520,
-                        20C0,0010,4338,4338,4338,4338,4338,553A,5539,5538,5537,5536,02FF,02FF,5533,5532,5531,5530,
-                        2100,0010,5738,554E,554D,554C,554B,554A,5549,5548,5547,5546,02FF,02FF,5543,5542,4338,4338,
-                        2140,0010,555F,555E,555D,555C,555B,555A,5559,5558,5557,5556,5555,5554,5553,4338,4338,4338,
-                        2180,0010,556F,556E,556D,556C,556B,556A,5569,5568,5567,5566,5565,5564,4338,4338,4338,4338,
-                        21C0,0010,557F,557E,557D,557C,557B,557A,5579,5578,5577,5576,5575,4338,4338,4338,4338,4338,
-                        2200,0010,558F,558E,558D,558C,558B,558A,5589,559F,559E,5586,4338,4338,4338,4338,4338,4338,
-                        2240,0010,4338,4338,4338,559C,559B,559A,5599,5598,5597,5596,4338,4338,4338,4338,4338,4338,
-                        2280,0010,4338,4338,4338,55AC,55AB,55AA,55A9,55A8,55A7,55A6,4338,4338,4338,4338,4338,4338,
-                        22C0,0010,4338,4338,4338,55BC,55BB,55BA,55B9,55B8,55B7,4338,4338,4338,4338,4338,4338,4338,
-                        2300,0010,C338,C338,C338,5509,5508,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,
-                        2340,0010,C338,C338,C338,5519,553B,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,
-                        2380,0010,C338,C338,C338,552B,552A,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,
+                        2000,0010, 4338,4338,4338,4338,4338,4338,4338,4338,5507,5506,5505,5504,5503,5502,5501,5500,
+                        2040,0010, 4338,4338,4338,4338,4338,4338,4338,5518,5517,5516,5515,5514,5513,5512,5511,5510,
+                        2080,0010, 4338,4338,4338,4338,4338,4338,5529,5528,5527,5526,5525,5524,5523,5522,5521,5520,
+                        20C0,0010, 4338,4338,4338,4338,4338,553A,5539,5538,5537,5536,02FF,02FF,5533,5532,5531,5530,
+                        2100,0010, 5738,554E,554D,554C,554B,554A,5549,5548,5547,5546,02FF,02FF,5543,5542,4338,4338,
+                        2140,0010, 555F,555E,555D,555C,555B,555A,5559,5558,5557,5556,5555,5554,5553,4338,4338,4338,
+                        2180,0010, 556F,556E,556D,556C,556B,556A,5569,5568,5567,5566,5565,5564,4338,4338,4338,4338,
+                        21C0,0010, 557F,557E,557D,557C,557B,557A,5579,5578,5577,5576,5575,4338,4338,4338,4338,4338,
+                        2200,0010, 558F,558E,558D,558C,558B,558A,5589,559F,559E,5586,4338,4338,4338,4338,4338,4338,
+                        2240,0010, 4338,4338,4338,559C,559B,559A,5599,5598,5597,5596,4338,4338,4338,4338,4338,4338,
+                        2280,0010, 4338,4338,4338,55AC,55AB,55AA,55A9,55A8,55A7,55A6,4338,4338,4338,4338,4338,4338,
+                        22C0,0010, 4338,4338,4338,55BC,55BB,55BA,55B9,55B8,55B7,4338,4338,4338,4338,4338,4338,4338,
+                        2300,0010, C338,C338,C338,5509,5508,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,
+                        2340,0010, C338,C338,C338,5519,553B,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,
+                        2380,0010, C338,C338,C338,552B,552A,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,C338,
                         FFFF
 
 $A5:C33B             dx 0003, 0000,F8,67BD, 0000,F0,67AD, 81F8,00,67A9
@@ -3842,13 +3875,13 @@ $A5:C464             dx 0001, 81F8,F8,2780
 }
 
 
-;;; $C46B: Initialisation AI - enemy $DE7F (Draygon's eye) ;;;
+;;; $C46B: Initialisation AI - enemy $DE7F (Draygon eye) ;;;
 {
 $A5:C46B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:C46E A9 44 99    LDA #$9944
-$A5:C471 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A5:C474 A9 4B 80    LDA #$804B
-$A5:C477 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$A5:C46E A9 44 99    LDA #$9944             ;\
+$A5:C471 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $9944
+$A5:C474 A9 4B 80    LDA #$804B             ;\
+$A5:C477 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = RTS
 $A5:C47A 6B          RTL
 }
 
@@ -3865,10 +3898,10 @@ $A5:C485 6B          RTL
 }
 
 
-;;; $C486: Main AI - enemy $DE7F (Draygon's eye) ;;;
+;;; $C486: Main AI - enemy $DE7F (Draygon eye) ;;;
 {
 $A5:C486 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:C489 FC A8 0F    JSR ($0FA8,x)[$A5:C48D]
+$A5:C489 FC A8 0F    JSR ($0FA8,x)[$A5:C48D]; Execute [enemy function]
 $A5:C48C 6B          RTL
 }
 
@@ -3886,7 +3919,7 @@ $A5:C49E AD BE 0F    LDA $0FBE  [$7E:0FBE]
 $A5:C4A1 38          SEC
 $A5:C4A2 E9 20 00    SBC #$0020
 $A5:C4A5 85 14       STA $14    [$7E:0014]
-$A5:C4A7 A9 18 00    LDA #$0018
+$A5:C4A7 A9 18 00    LDA #$0018             ; A = 18h
 $A5:C4AA A0 09 E5    LDY #$E509             ;\
 $A5:C4AD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -3948,7 +3981,7 @@ $A5:C524 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
 $A5:C527 38          SEC
 $A5:C528 E9 20 00    SBC #$0020
 $A5:C52B 85 14       STA $14    [$7E:0014]
-$A5:C52D A9 18 00    LDA #$0018
+$A5:C52D A9 18 00    LDA #$0018             ; A = 18h
 $A5:C530 A0 09 E5    LDY #$E509             ;\
 $A5:C533 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -3997,19 +4030,19 @@ $A5:C598 60          RTS
 }
 
 
-;;; $C599: Initialisation AI - enemy $DEBF (Draygon's tail) ;;;
+;;; $C599: Initialisation AI - enemy $DEBF (Draygon tail) ;;;
 {
 $A5:C599 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:C59C A9 FC 99    LDA #$99FC
-$A5:C59F 9D 92 0F    STA $0F92,x[$7E:1012]
-$A5:C5A2 A9 00 07    LDA #$0700
-$A5:C5A5 0A          ASL A
-$A5:C5A6 9D 96 0F    STA $0F96,x[$7E:1016]
+$A5:C59C A9 FC 99    LDA #$99FC             ;\
+$A5:C59F 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $99FC
+$A5:C5A2 A9 00 07    LDA #$0700             ;\
+$A5:C5A5 0A          ASL A                  ;} Enemy palette index = E00h (palette 7)
+$A5:C5A6 9D 96 0F    STA $0F96,x[$7E:1016]  ;/
 $A5:C5A9 6B          RTL
 }
 
 
-;;; $C5AA: Main AI - enemy $DEBF (Draygon's tail) ;;;
+;;; $C5AA: Main AI - enemy $DEBF (Draygon tail) ;;;
 {
 $A5:C5AA 6B          RTL
 }
@@ -4027,21 +4060,21 @@ $A5:C5AC 6B          RTL
 }
 
 
-;;; $C5AD: Initialisation AI - enemy $DEFF (Draygon's arms) ;;;
+;;; $C5AD: Initialisation AI - enemy $DEFF (Draygon arms) ;;;
 {
 $A5:C5AD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:C5B0 A9 E7 97    LDA #$97E7
-$A5:C5B3 9D 92 0F    STA $0F92,x[$7E:1052]
-$A5:C5B6 A9 00 07    LDA #$0700
-$A5:C5B9 0A          ASL A
-$A5:C5BA 9D 96 0F    STA $0F96,x[$7E:1056]
-$A5:C5BD A9 02 00    LDA #$0002
-$A5:C5C0 9D 9A 0F    STA $0F9A,x[$7E:105A]
+$A5:C5B0 A9 E7 97    LDA #$97E7             ;\
+$A5:C5B3 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $97E7
+$A5:C5B6 A9 00 07    LDA #$0700             ;\
+$A5:C5B9 0A          ASL A                  ;} Enemy palette index = E00h (palette 7)
+$A5:C5BA 9D 96 0F    STA $0F96,x[$7E:1056]  ;/
+$A5:C5BD A9 02 00    LDA #$0002             ;\
+$A5:C5C0 9D 9A 0F    STA $0F9A,x[$7E:105A]  ;} Enemy layer = 2
 $A5:C5C3 6B          RTL
 }
 
 
-;;; $C5C4: Main AI - enemy $DEFF (Draygon's arms) ;;;
+;;; $C5C4: Main AI - enemy $DEFF (Draygon arms) ;;;
 {
 $A5:C5C4 6B          RTL
 }
@@ -4196,7 +4229,7 @@ $A5:C5C7             db 01,FF, 01,00, 00,FF, 01,00, 01,FF, 01,00, 00,FF, 01,00,
 }
 
 
-;;; $CE07: Evir movement data ;;;
+;;; $CE07: Draygon fight intro movement data ;;;
 {
 $A5:CE07             db 03,00, 03,00, 03,00, 02,FF, 03,00, 03,FF, 03,00, 02,FF,
                         03,FF, 02,FE, 02,FF, 02,FE, 02,FE, 02,FD, 02,FE, 01,FD,
@@ -5010,7 +5043,7 @@ $A5:E995 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
 $A5:E998 18          CLC
 $A5:E999 65 14       ADC $14    [$7E:0014]
 $A5:E99B 85 14       STA $14    [$7E:0014]
-$A5:E99D A9 15 00    LDA #$0015
+$A5:E99D A9 15 00    LDA #$0015             ; A = 15h
 $A5:E9A0 A0 09 E5    LDY #$E509             ;\
 $A5:E9A3 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A5:E9A7 A9 29 00    LDA #$0029             ;\

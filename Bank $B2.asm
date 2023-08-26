@@ -46,7 +46,7 @@ $B2:8747             dw 3800, 6BFF, 4ED6, 14A4, 0420, 5B7B, 3E52, 31CD, 2149, 5E
 }
 
 
-;;; $8767: Hurt AI - enemy $F353/$F4D3/$F513/$F553/$F593/$F5D3/$F613/$F653/$F693/$F6D3/$F713/$F753/$F793 (Old Tourian grey wall space pirate / ninja space pirates / walking space pirates) ;;;
+;;; $8767: Power bomb reaction - enemy $F353/$F4D3/$F513/$F553/$F593/$F5D3/$F613/$F653/$F693/$F6D3/$F713/$F753/$F793 (Old Tourian grey wall space pirate / ninja space pirates / walking space pirates) ;;;
 {
 $B2:8767 22 97 A5 A0 JSL $A0A597[$A0:A597]  ; Normal enemy power bomb AI
 $B2:876B 6B          RTL
@@ -64,7 +64,7 @@ $B2:8778 6B          RTL
 }
 
 
-;;; $8779: Enemy shot - enemy $F353/$F393/$F3D3/$F413/$F453/$F493/$F4D3/$F513/$F553/$F593/$F5D3/$F613/$F653/$F693/$F6D3/$F713/$F753/$F793 (space pirates) ;;;
+;;; $8779: Enemy shot - space pirate - normal ;;;
 {
 $B2:8779 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:877C BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\
@@ -75,7 +75,7 @@ $B2:8788 6B          RTL
 }
 
 
-;;; $8789: Space pirate shot - normal ;;;
+;;; $8789: Normal pirate shot ;;;
 {
 $B2:8789 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:878C BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
@@ -109,7 +109,7 @@ $B2:87C8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:87CB BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
 $B2:87CE C9 93 F5    CMP #$F593             ;} If not Lower Norfair pirate:
 $B2:87D1 F0 03       BEQ $03    [$87D6]     ;/
-$B2:87D3 4C 89 87    JMP $8789  [$B2:8789]  ; Go to space pirate shot - normal
+$B2:87D3 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
 $B2:87D6 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $B2:87D9 0A          ASL A                  ;} Collided projectile index
@@ -143,14 +143,14 @@ $B2:8812 F0 2A       BEQ $2A    [$883E]     ;/
 $B2:8814 C9 0F 00    CMP #$000F             ;\
 $B2:8817 F0 25       BEQ $25    [$883E]     ;} If [$B4:0000 + [$14] + (beam type)] & Fh = Fh: go to $883E (freeze)
 
-$B2:8819 4C 89 87    JMP $8789  [$B2:8789]  ; Go to space pirate shot - normal
+$B2:8819 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
 ; BRANCH_NOT_BEAM
 $B2:881C 29 00 0F    AND #$0F00             ;\
 $B2:881F C9 00 01    CMP #$0100             ;} If projectile is not missile:
 $B2:8822 F0 05       BEQ $05    [$8829]     ;/
 $B2:8824 C9 00 02    CMP #$0200             ;\
-$B2:8827 D0 F0       BNE $F0    [$8819]     ;} If projectile is not super missile: go to space pirate shot - normal
+$B2:8827 D0 F0       BNE $F0    [$8819]     ;} If projectile is not super missile: go to normal pirate shot
 
 $B2:8829 EB          XBA                    ;\
 $B2:882A 18          CLC                    ;|
@@ -161,7 +161,7 @@ $B2:8832 29 0F 00    AND #$000F             ;|
 $B2:8835 F0 07       BEQ $07    [$883E]     ;/
 $B2:8837 C9 0F 00    CMP #$000F             ;\
 $B2:883A F0 02       BEQ $02    [$883E]     ;} If [$B4:000B + [$14] + (projectile type)] & Fh = 0: go to $883E (freeze???)
-$B2:883C 80 DB       BRA $DB    [$8819]     ; Go to space pirate shot - normal
+$B2:883C 80 DB       BRA $DB    [$8819]     ; Go to normal pirate shot
 }
 
 
@@ -171,7 +171,7 @@ $B2:883E AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:8841 BD 78 0F    LDA $0F78,x[$7E:0F78]  ;\
 $B2:8844 C9 93 F5    CMP #$F593             ;} If not Lower Norfair pirate:
 $B2:8847 F0 03       BEQ $03    [$884C]     ;/
-$B2:8849 4C 89 87    JMP $8789  [$B2:8789]  ; Go to space pirate shot - normal
+$B2:8849 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
 $B2:884C AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:884F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
@@ -222,6 +222,7 @@ $B2:889F 6B          RTL
 {
 ; [n entries] [[X offset] [Y offset] [p spritemap] [p hitbox]]...
 
+; Wall pirates
 $B2:88A0             dx 0002, 0000,0000,AAB6,970E, 0000,0000,A8E2,9690
 $B2:88B2             dx 0002, 0000,0000,AA78,9700, 0000,0000,A90C,969E
 $B2:88C4             dx 0002, 0000,0000,AA3A,96F2, 0000,0000,A93B,96AC
@@ -240,6 +241,7 @@ $B2:898C             dx 0002, 0000,0000,AE9B,97EE, 0000,0002,AD79,97A8
 $B2:899E             dx 0002, 0000,0000,AEDE,97FC, 0000,0002,AD79,97A8
 $B2:89B0             dx 0001, 0000,0000,AF26,980A
 $B2:89BA             dx 0001, 0000,0000,AF8C,9818
+
 $B2:89C4             dx 0002, FFFB,0003,B918,9B60, 0000,0000,AFDE,9826
 $B2:89D6             dx 0002, FFFB,0003,B947,9B7C, 0000,0000,B012,9834
 $B2:89E8             dx 0002, FFFB,0003,B976,9B8A, 0000,0000,B04B,9842

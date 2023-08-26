@@ -450,7 +450,7 @@ $AA:B1C7 6B          RTL
 }
 
 
-;;; $B1C8: Instruction list - Bomb Torizo death sequence ;;;
+;;; $B1C8: Instruction list - Torizo death sequence ;;;
 {
 $AA:B1C8             dx B09C,C6AB,  ; Enemy $0FB0 = $C6AB
                         C2C9,       ; Enemy $7E:7808 = 7777h
@@ -545,8 +545,8 @@ $AA:B270 6B          RTL
 
 ;;; $B271: Instruction ;;;
 {
-$AA:B271 A9 00 06    LDA #$0600
-$AA:B274 22 F7 DA 82 JSL $82DAF7[$82:DAF7]
+$AA:B271 A9 00 06    LDA #$0600             ;\
+$AA:B274 22 F7 DA 82 JSL $82DAF7[$82:DAF7]  ;} Advance gradual colour change of sprite palettes 1/2 - denominator = Ch
 $AA:B278 6B          RTL
 }
 
@@ -2173,9 +2173,9 @@ $AA:C6AB 60          RTS
 ;;; $C6AC:  ;;;
 {
 $AA:C6AC 20 43 C6    JSR $C643  [$AA:C643]
-$AA:C6AF A9 00 06    LDA #$0600
-$AA:C6B2 22 F7 DA 82 JSL $82DAF7[$82:DAF7]
-$AA:C6B6 B0 06       BCS $06    [$C6BE]
+$AA:C6AF A9 00 06    LDA #$0600             ;\
+$AA:C6B2 22 F7 DA 82 JSL $82DAF7[$82:DAF7]  ;} Advance gradual colour change of sprite palettes 1/2 - denominator = Ch
+$AA:C6B6 B0 06       BCS $06    [$C6BE]     ; If not reached target colour:
 $AA:C6B8 A9 AB C6    LDA #$C6AB
 $AA:C6BB 9D B0 0F    STA $0FB0,x
 
@@ -3901,7 +3901,11 @@ $AA:D6CA 09 00 04    ORA #$0400
 $AA:D6CD 9D 86 0F    STA $0F86,x[$7E:0F86]
 
 $AA:D6D0 6B          RTL
+}
 
+
+;;; $D6D1:  ;;;
+{
 $AA:D6D1 B9 04 0C    LDA $0C04,y
 $AA:D6D4 29 EF FF    AND #$FFEF
 $AA:D6D7 99 04 0C    STA $0C04,y
@@ -3918,7 +3922,11 @@ $AA:D6F0 A9 AD D2    LDA #$D2AD
 
 $AA:D6F3 9D 92 0F    STA $0F92,x
 $AA:D6F6 6B          RTL
+}
 
+
+;;; $D6F7:  ;;;
+{
 $AA:D6F7 20 A7 D3    JSR $D3A7  [$AA:D3A7]
 $AA:D6FA 10 03       BPL $03    [$D6FF]
 $AA:D6FC 4C A6 D6    JMP $D6A6  [$AA:D6A6]

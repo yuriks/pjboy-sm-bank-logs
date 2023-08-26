@@ -1944,7 +1944,7 @@ $96:FC04             db 2A, 03, 00, 3F, 62, 00, 05, 18, 80, 66, 67, 10, 74, 2A, 
 ;;; $96:FE69: Tilemap - gunship/Ceres (mode 7) ;;;
 {
 ; Decompressed to $7F:4000..4FFF around $8B:BCDE/C176/D59E, then transfered to VRAM $0000..02FF through $2118
-; Two frames of 300h bytes for the gunship during the distress signal, reused for the gunship flying to Zebes
+; Two frames of 300h bytes for the gunship during the distress signal, reused for the gunship flying to Zebes, first frame is used when flying from Zebes too
 ; One frame of 600h bytes for Ceres blowing up and the gunship flying to Zebes
 $96:FE69             db 22, 8C, 67, 01, E4, 76, 8C, 69, 10, E4, 73, 8C, 65, 0A, 67, 20, E4, 71, 8C, 65, 1A, 67, 30, E4, 72, 8C, 67, 28, 63, 40, E4, 74, 8C, 66, 39, 62, 50, E4, 76, 8C, 67, 45, E4, 76, 8C, 69, 54, E4, 73, 8C, 01, 4E, 4F, 6B, 60, E4, 71, 8C, 01, 5E, 5F, 6B, 70, E4, 73, 8C, 05, 00, 09, 38, 44, 4D, 53, 63, 6C, E4, 76, 8C, 04, 80, 81, 7F, 82, 83, 62, 7C, E4, 78, 8C, 66, 85, E4, 77, 8C, 67, 94, E4, 76, 8C, 62, 8D, 66, A0, E4, 74, 8C, 63, 9C, 66, B0, E4, 73, 8C, 68, A7, 63, C0, E4, 72, 8C, 68, B7, 63, D0, E4, 72, 8C, 6B, C4, 00, 90, E4, 72, 8C, 6B, D4, E4, 73, 8C, 6A, E0, E4, 74, 8C, 6A, F0, E4, 75, 8C, 64, EB, 03, FB, FC, 91, 92, E4, 78, 8C, 62, FD, 01, 93, 84, E7, FF, 8C, E4, 77, 8C, FF
 }

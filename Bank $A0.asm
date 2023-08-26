@@ -134,7 +134,6 @@ $A0:8036 6B          RTL
 
 ;;; $8037: Normal enemy power bomb AI ;;;
 {
-; Used by Metroid
 $A0:8037 22 97 A5 A0 JSL $A0A597[$A0:A597]
 $A0:803B 6B          RTL
 }
@@ -1266,7 +1265,7 @@ $A0:8D2A 8A          TXA                    ;|
 $A0:8D2B 18          CLC                    ;|
 $A0:8D2C 69 07 00    ADC #$0007             ;|
 $A0:8D2F 8D 30 03    STA $0330  [$7E:0330]  ;/
-$A0:8D32 6B          RTL
+$A0:8D32 6B          RTL                    ; Return
 
 $A0:8D33 A9 FE FF    LDA #$FFFE             ;\
 $A0:8D36 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;} $0E7C = FFFEh
@@ -2297,7 +2296,7 @@ $A0:94E7 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = 1
 $A0:94EB BC 8E 0F    LDY $0F8E,x[$7E:0F8E]  ; Y = [enemy spritemap pointer]
 $A0:94EE 22 B8 8A 81 JSL $818AB8[$81:8AB8]  ; Add spritemap to OAM with base tile number
 $A0:94F2 AB          PLB
-$A0:94F3 60          RTS
+$A0:94F3 60          RTS                    ; Return
 
 $A0:94F4 BD 8E 0F    LDA $0F8E,x[$7E:0F8E]  ;\ Else (enemy is multi hitbox):
 $A0:94F7 C9 00 80    CMP #$8000             ;|
@@ -2619,7 +2618,7 @@ $A0:9739 95 D0       STA $D0,x  [$7E:00D0]  ;|
 $A0:973B A9 00 20    LDA #$2000             ;|
 $A0:973E 95 D2       STA $D2,x  [$7E:00D2]  ;|
 $A0:9740 A9 7E 00    LDA #$007E             ;|
-$A0:9743 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of [enemy BG2 tilemap size] bytes from $7E:2000 to VRAM BG2 tilemap
+$A0:9743 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of [enemy BG2 tilemap size] bytes from $7E:2000 to VRAM $4800 (BG2 tilemap)
 $A0:9745 A9 00 48    LDA #$4800             ;|
 $A0:9748 95 D5       STA $D5,x  [$7E:00D5]  ;|
 $A0:974A AD 30 03    LDA $0330  [$7E:0330]  ;|
@@ -2906,7 +2905,7 @@ $A0:993C A9 01 00    LDA #$0001             ;\
 $A0:993F 99 8F 1B    STA $1B8F,y[$7E:1BB1]  ;} Enemy projectile instruction delay = 1
 
 $A0:9942 BB          TYX                    ;\
-$A0:9943 3C D7 1B    BIT $1BD7,x[$7E:1BF9]  ;} If enemy projectile is deleted on contact:
+$A0:9943 3C D7 1B    BIT $1BD7,x[$7E:1BF9]  ;} If enemy projectile dies on contact:
 $A0:9946 70 03       BVS $03    [$994B]     ;/
 $A0:9948 9E 97 19    STZ $1997,x[$7E:19B7]  ; Delete enemy projectile
 
@@ -2955,7 +2954,7 @@ $A0:9997 A0 00 00    LDY #$0000             ; Y = 0 (projectile index)
 
 ; LOOP_PROJECTILE
 $A0:999A BF 80 F3 7E LDA $7EF380,x[$7E:F3A2];\
-$A0:999E C9 02 00    CMP #$0002             ;} If [enemy projectile $F380] = 2: go to BRANCH_NEXT_ENEMY_PROJECTILE
+$A0:999E C9 02 00    CMP #$0002             ;} If [enemy projectile $7E:F380] = 2: go to BRANCH_NEXT_ENEMY_PROJECTILE
 $A0:99A1 F0 45       BEQ $45    [$99E8]     ;/
 $A0:99A3 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:99A6 F0 39       BEQ $39    [$99E1]     ;} If [projectile type] = 0: go to BRANCH_NEXT_PROJECTILE
@@ -2965,7 +2964,7 @@ $A0:99AE F0 31       BEQ $31    [$99E1]     ;/
 $A0:99B0 C9 00 05    CMP #$0500             ;\
 $A0:99B3 F0 2C       BEQ $2C    [$99E1]     ;} If bomb: go to BRANCH_NEXT_PROJECTILE
 $A0:99B5 C9 00 07    CMP #$0700             ;\
-$A0:99B8 10 27       BPL $27    [$99E1]     ;} If dead projectile: go to BRANCH_NEXT_PROJECTILE
+$A0:99B8 10 27       BPL $27    [$99E1]     ;} If projectile explosion: go to BRANCH_NEXT_PROJECTILE
 $A0:99BA B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $A0:99BD 29 E0 FF    AND #$FFE0             ;|
 $A0:99C0 85 12       STA $12    [$7E:0012]  ;|
@@ -3036,7 +3035,7 @@ $A0:9A34 29 FF 0F    AND #$0FFF             ;} Enemy projectile properties &= FF
 $A0:9A37 99 D7 1B    STA $1BD7,y[$7E:1BED]  ;/
 $A0:9A3A BB          TYX
 $A0:9A3B 7A          PLY
-$A0:9A3C 60          RTS
+$A0:9A3C 60          RTS                    ; Return
 
 $A0:9A3D BD 64 0B    LDA $0B64,x[$7E:0B86]  ;\
 $A0:9A40 85 12       STA $12    [$7E:0012]  ;|
@@ -3071,7 +3070,7 @@ $A0:9A75 F0 12       BEQ $12    [$9A89]     ;/
 $A0:9A77 BD 78 0F    LDA $0F78,x[$7E:0F78]  ;\
 $A0:9A7A AA          TAX                    ;|
 $A0:9A7B BF 30 00 A0 LDA $A00030,x[$A0:E16F];|
-$A0:9A7F C9 4C 80    CMP #$804C             ;} If [enemy touch] = $804B/$804C:
+$A0:9A7F C9 4C 80    CMP #$804C             ;} If (enemy touch) = $804B/$804C:
 $A0:9A82 F0 05       BEQ $05    [$9A89]     ;|
 $A0:9A84 C9 4B 80    CMP #$804B             ;|
 $A0:9A87 D0 02       BNE $02    [$9A8B]     ;/
@@ -3139,22 +3138,22 @@ $A0:9B07 8E 78 18    STX $1878  [$7E:1878]  ;/
 $A0:9B0A AE 78 18    LDX $1878  [$7E:1878]  ;\
 $A0:9B0D AD 7A 18    LDA $187A  [$7E:187A]  ;|
 $A0:9B10 18          CLC                    ;|
-$A0:9B11 7D 00 00    ADC $0000,x[$A6:EB31]  ;} If [enemy spritemap entry X position] + [enemy hitbox entry left offset] >= [Samus right border]: go to BRANCH_NEXT_HITBOX_ENTRY
+$A0:9B11 7D 00 00    ADC $0000,x[$A6:EB31]  ;} If [enemy spritemap entry X position] + [enemy hitbox entry left offset] >= [Samus right boundary]: go to BRANCH_NEXT_HITBOX_ENTRY
 $A0:9B14 CD 7E 18    CMP $187E  [$7E:187E]  ;|
 $A0:9B17 10 36       BPL $36    [$9B4F]     ;/
 $A0:9B19 AD 7A 18    LDA $187A  [$7E:187A]  ;\
 $A0:9B1C 18          CLC                    ;|
-$A0:9B1D 7D 04 00    ADC $0004,x[$A6:EB35]  ;} If [enemy spritemap entry X position] + [enemy hitbox entry right offset] < [Samus right border]: go to BRANCH_NEXT_HITBOX_ENTRY
+$A0:9B1D 7D 04 00    ADC $0004,x[$A6:EB35]  ;} If [enemy spritemap entry X position] + [enemy hitbox entry right offset] < [Samus right boundary]: go to BRANCH_NEXT_HITBOX_ENTRY
 $A0:9B20 CD 80 18    CMP $1880  [$7E:1880]  ;|
 $A0:9B23 30 2A       BMI $2A    [$9B4F]     ;/
 $A0:9B25 AD 7C 18    LDA $187C  [$7E:187C]  ;\
 $A0:9B28 18          CLC                    ;|
-$A0:9B29 7D 02 00    ADC $0002,x[$A6:F298]  ;} If [enemy spritemap entry Y position] + [enemy hitbox entry top offset] >= [Samus bottom border]: go to BRANCH_NEXT_HITBOX_ENTRY
+$A0:9B29 7D 02 00    ADC $0002,x[$A6:F298]  ;} If [enemy spritemap entry Y position] + [enemy hitbox entry top offset] >= [Samus bottom boundary]: go to BRANCH_NEXT_HITBOX_ENTRY
 $A0:9B2C CD 82 18    CMP $1882  [$7E:1882]  ;|
 $A0:9B2F 10 1E       BPL $1E    [$9B4F]     ;/
 $A0:9B31 AD 7C 18    LDA $187C  [$7E:187C]  ;\
 $A0:9B34 18          CLC                    ;|
-$A0:9B35 7D 06 00    ADC $0006,x[$A6:F29C]  ;} If [enemy spritemap entry Y position] + [enemy hitbox entry bottom offset] < [Samus top border]: go to BRANCH_NEXT_HITBOX_ENTRY
+$A0:9B35 7D 06 00    ADC $0006,x[$A6:F29C]  ;} If [enemy spritemap entry Y position] + [enemy hitbox entry bottom offset] < [Samus top boundary]: go to BRANCH_NEXT_HITBOX_ENTRY
 $A0:9B38 CD 84 18    CMP $1884  [$7E:1884]  ;|
 $A0:9B3B 30 12       BMI $12    [$9B4F]     ;/
 $A0:9B3D 22 43 9B A0 JSL $A09B43[$A0:9B43]  ; Execute [enemy hitbox entry Samus collision pointer]
@@ -3249,7 +3248,7 @@ $A0:9BEC F0 0A       BEQ $0A    [$9BF8]     ;/
 $A0:9BEE C9 00 05    CMP #$0500             ;\
 $A0:9BF1 F0 05       BEQ $05    [$9BF8]     ;} If bomb: go to BRANCH_NEXT_PROJECTILE
 $A0:9BF3 C9 00 07    CMP #$0700             ;\
-$A0:9BF6 30 03       BMI $03    [$9BFB]     ;} If dead projectile:
+$A0:9BF6 30 03       BMI $03    [$9BFB]     ;} If projectile explosion: Go to BRANCH_NEXT_PROJECTILE
 
 $A0:9BF8 4C 07 9D    JMP $9D07  [$A0:9D07]  ; Go to BRANCH_NEXT_PROJECTILE
 
@@ -3295,40 +3294,40 @@ $A0:9C49 0A          ASL A                  ;} Y = [projectile index] * 2
 $A0:9C4A A8          TAY                    ;/
 $A0:9C4B BD 00 00    LDA $0000,x[$B2:9D8A]  ;\
 $A0:9C4E 18          CLC                    ;|
-$A0:9C4F 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy left border = [enemy spritemap entry X position] + [enemy hitbox entry left offset]
+$A0:9C4F 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy left boundary = [enemy spritemap entry X position] + [enemy hitbox entry left offset]
 $A0:9C52 8D 70 18    STA $1870  [$7E:1870]  ;/
 $A0:9C55 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $A0:9C58 18          CLC                    ;|
-$A0:9C59 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;} If [projectile X position] + [projectile X radius] < [enemy left border]:
+$A0:9C59 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;} If [projectile X position] + [projectile X radius] < [enemy left boundary]:
 $A0:9C5C CD 70 18    CMP $1870  [$7E:1870]  ;|
 $A0:9C5F 10 03       BPL $03    [$9C64]     ;/
 $A0:9C61 4C DF 9C    JMP $9CDF  [$A0:9CDF]  ; Go to BRANCH_NEXT_HITBOX
 
 $A0:9C64 BD 04 00    LDA $0004,x[$B2:9D8E]  ;\
 $A0:9C67 18          CLC                    ;|
-$A0:9C68 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy right border = [enemy spritemap entry X position] + [enemy hitbox entry right offset]
+$A0:9C68 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy right boundary = [enemy spritemap entry X position] + [enemy hitbox entry right offset]
 $A0:9C6B 8D 74 18    STA $1874  [$7E:1874]  ;/
 $A0:9C6E B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $A0:9C71 38          SEC                    ;|
-$A0:9C72 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} If [projectile X position] - [projectile X radius] >= [enemy right border]:
+$A0:9C72 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} If [projectile X position] - [projectile X radius] >= [enemy right boundary]:
 $A0:9C75 CD 74 18    CMP $1874  [$7E:1874]  ;|
 $A0:9C78 10 65       BPL $65    [$9CDF]     ;/
 $A0:9C7A BD 02 00    LDA $0002,x[$B2:97C8]  ;\
 $A0:9C7D 18          CLC                    ;|
-$A0:9C7E 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy bottom border = [enemy spritemap entry Y position] + [enemy hitbox entry bottom offset]
+$A0:9C7E 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy bottom boundary = [enemy spritemap entry Y position] + [enemy hitbox entry bottom offset]
 $A0:9C81 8D 72 18    STA $1872  [$7E:1872]  ;/
 $A0:9C84 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
 $A0:9C87 18          CLC                    ;|
-$A0:9C88 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;} If [projectile Y position] + [projectile Y radius] < [enemy bottom border]:
+$A0:9C88 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;} If [projectile Y position] + [projectile Y radius] < [enemy bottom boundary]:
 $A0:9C8B CD 72 18    CMP $1872  [$7E:1872]  ;|
 $A0:9C8E 30 4F       BMI $4F    [$9CDF]     ;/
 $A0:9C90 BD 06 00    LDA $0006,x[$B2:97CC]  ;\
 $A0:9C93 18          CLC                    ;|
-$A0:9C94 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy top border = [enemy spritemap entry Y position] + [enemy hitbox entry top offset]
+$A0:9C94 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy top boundary = [enemy spritemap entry Y position] + [enemy hitbox entry top offset]
 $A0:9C97 8D 76 18    STA $1876  [$7E:1876]  ;/
 $A0:9C9A B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
 $A0:9C9D 38          SEC                    ;|
-$A0:9C9E F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;} If [projectile Y position] - [projectile Y radius] < [enemy top border]:
+$A0:9C9E F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;} If [projectile Y position] - [projectile Y radius] < [enemy top boundary]:
 $A0:9CA1 CD 76 18    CMP $1876  [$7E:1876]  ;|
 $A0:9CA4 10 39       BPL $39    [$9CDF]     ;/
 $A0:9CA6 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
@@ -3492,40 +3491,40 @@ $A0:9DE4 0A          ASL A                  ;} Y = [projectile index] * 2
 $A0:9DE5 A8          TAY                    ;/
 $A0:9DE6 BD 00 00    LDA $0000,x[$B2:96BC]  ;\
 $A0:9DE9 18          CLC                    ;|
-$A0:9DEA 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy left border = [enemy spritemap entry X position] + [enemy hitbox entry left offset]
+$A0:9DEA 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy left boundary = [enemy spritemap entry X position] + [enemy hitbox entry left offset]
 $A0:9DED 8D 70 18    STA $1870  [$7E:1870]  ;/
 $A0:9DF0 B9 64 0B    LDA $0B64,y[$7E:0B6E]  ;\
 $A0:9DF3 18          CLC                    ;|
-$A0:9DF4 79 B4 0B    ADC $0BB4,y[$7E:0BBE]  ;} If [projectile X position] + [projectile X radius] < [enemy left border]:
+$A0:9DF4 79 B4 0B    ADC $0BB4,y[$7E:0BBE]  ;} If [projectile X position] + [projectile X radius] < [enemy left boundary]:
 $A0:9DF7 CD 70 18    CMP $1870  [$7E:1870]  ;|
 $A0:9DFA 10 03       BPL $03    [$9DFF]     ;/
 $A0:9DFC 4C 50 9E    JMP $9E50  [$A0:9E50]  ; Go to BRANCH_NEXT_HITBOX
 
 $A0:9DFF BD 04 00    LDA $0004,x[$B2:96C0]  ;\
 $A0:9E02 18          CLC                    ;|
-$A0:9E03 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy right border = [enemy spritemap entry X position] + [enemy hitbox entry right offset]
+$A0:9E03 6D 7A 18    ADC $187A  [$7E:187A]  ;} Enemy right boundary = [enemy spritemap entry X position] + [enemy hitbox entry right offset]
 $A0:9E06 8D 74 18    STA $1874  [$7E:1874]  ;/
 $A0:9E09 B9 64 0B    LDA $0B64,y[$7E:0B6E]  ;\
 $A0:9E0C 38          SEC                    ;|
-$A0:9E0D F9 B4 0B    SBC $0BB4,y[$7E:0BBE]  ;} If [projectile X position] - [projectile X radius] >= [enemy right border]:
+$A0:9E0D F9 B4 0B    SBC $0BB4,y[$7E:0BBE]  ;} If [projectile X position] - [projectile X radius] >= [enemy right boundary]:
 $A0:9E10 CD 74 18    CMP $1874  [$7E:1874]  ;|
 $A0:9E13 10 3B       BPL $3B    [$9E50]     ;/
 $A0:9E15 BD 02 00    LDA $0002,x            ;\
 $A0:9E18 18          CLC                    ;|
-$A0:9E19 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy bottom border = [enemy spritemap entry Y position] + [enemy hitbox entry bottom offset]
+$A0:9E19 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy bottom boundary = [enemy spritemap entry Y position] + [enemy hitbox entry bottom offset]
 $A0:9E1C 8D 72 18    STA $1872  [$7E:1872]  ;/
 $A0:9E1F B9 78 0B    LDA $0B78,y            ;\
 $A0:9E22 18          CLC                    ;|
-$A0:9E23 79 C8 0B    ADC $0BC8,y            ;} If [projectile Y position] + [projectile Y radius] < [enemy bottom border]:
+$A0:9E23 79 C8 0B    ADC $0BC8,y            ;} If [projectile Y position] + [projectile Y radius] < [enemy bottom boundary]:
 $A0:9E26 CD 72 18    CMP $1872  [$7E:1872]  ;|
 $A0:9E29 30 25       BMI $25    [$9E50]     ;/
 $A0:9E2B BD 06 00    LDA $0006,x            ;\
 $A0:9E2E 18          CLC                    ;|
-$A0:9E2F 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy top border = [enemy spritemap entry Y position] + [enemy hitbox entry top offset]
+$A0:9E2F 6D 7C 18    ADC $187C  [$7E:187C]  ;} Enemy top boundary = [enemy spritemap entry Y position] + [enemy hitbox entry top offset]
 $A0:9E32 8D 76 18    STA $1876  [$7E:1876]  ;/
 $A0:9E35 B9 78 0B    LDA $0B78,y            ;\
 $A0:9E38 38          SEC                    ;|
-$A0:9E39 F9 C8 0B    SBC $0BC8,y            ;} If [projectile Y position] - [projectile Y radius] < [enemy top border]:
+$A0:9E39 F9 C8 0B    SBC $0BC8,y            ;} If [projectile Y position] - [projectile Y radius] < [enemy top boundary]:
 $A0:9E3C CD 76 18    CMP $1876  [$7E:1876]  ;|
 $A0:9E3F 10 0F       BPL $0F    [$9E50]     ;/
 $A0:9E41 B9 04 0C    LDA $0C04,y            ;\
@@ -6358,11 +6357,10 @@ $A0:B5C3             dw FF00, FF01, FF01, FF01, FF02, FF02, FF03, FF04, FF05, FF
 }
 
 
-;;; $B643: ($18.$16, $1C.$1A) = co-ordinates of point on quarter circle of radius [$14] at angle [$12] * pi / 80h radians ;;;
+;;; $B643: ($16.$18, $1A.$1C) = ([$14] * |cos([$12] * pi / 80h)|, [$14] * |sin([$12] * pi / 80h)|) ;;;
 {
-; Approximately:
-; $1A.$1C = [$14] * (1 - ([$12] / 40h - 1)^2)
-; $16.$18 = [$14] * (1 - (([$12] + 40h) % 80h / 40h - 1)^2)
+; All arithmetic done here is unsigned, so [$14] should be positive
+; Uses the common maths convention for angle(!)
 $A0:B643 8B          PHB
 $A0:B644 DA          PHX
 $A0:B645 F4 00 A0    PEA $A000              ;\
@@ -6374,14 +6372,14 @@ $A0:B64E 18          CLC                    ;|
 $A0:B64F 69 80 00    ADC #$0080             ;|
 $A0:B652 29 7F 00    AND #$007F             ;|
 $A0:B655 0A          ASL A                  ;|
-$A0:B656 AA          TAX                    ;} $2A = [$B7EE + ([$12] & 7Fh)] * [$14]
+$A0:B656 AA          TAX                    ;} $2A = [$B7EE + [$12] % 80h] * [$14]
 $A0:B657 BF EE B7 A0 LDA $A0B7EE,x[$A0:B842];|
 $A0:B65B 85 26       STA $26    [$7E:0026]  ;|
 $A0:B65D A5 14       LDA $14    [$7E:0014]  ;|
 $A0:B65F 85 28       STA $28    [$7E:0028]  ;|
 $A0:B661 22 FF B6 A0 JSL $A0B6FF[$A0:B6FF]  ;/
 $A0:B665 A5 2C       LDA $2C    [$7E:002C]  ;\
-$A0:B667 85 1A       STA $1A    [$7E:001A]  ;} $1A = [$2A} / 10000h
+$A0:B667 85 1A       STA $1A    [$7E:001A]  ;} $1A = [$2A] / 10000h
 $A0:B669 A5 2A       LDA $2A    [$7E:002A]  ;\
 $A0:B66B 85 1C       STA $1C    [$7E:001C]  ;} $1C = [$2A] & FFFFh
 $A0:B66D A5 12       LDA $12    [$7E:0012]  ;\
@@ -6389,7 +6387,7 @@ $A0:B66F 18          CLC                    ;|
 $A0:B670 69 40 00    ADC #$0040             ;|
 $A0:B673 29 7F 00    AND #$007F             ;|
 $A0:B676 0A          ASL A                  ;|
-$A0:B677 AA          TAX                    ;} $2A = [$B7EE + ([$12] + 40h & 7Fh)] * [$14]
+$A0:B677 AA          TAX                    ;} $2A = [$B7EE + ([$12] + 40h) % 80h] * [$14]
 $A0:B678 BF EE B7 A0 LDA $A0B7EE,x[$A0:B8C2];|
 $A0:B67C 85 26       STA $26    [$7E:0026]  ;|
 $A0:B67E A5 14       LDA $14    [$7E:0014]  ;|
@@ -6405,53 +6403,57 @@ $A0:B690 6B          RTL
 }
 
 
-;;; $B691:  ;;;
+;;; $B691: Move enemy according to angle and X/Y speeds ;;;
 {
+;; Parameters:
+;;     $0E20: Angle
+;;     $0E24.$0E26: X speed
+;;     $0E28.$0E2A: Y speed
 $A0:B691 DA          PHX
-$A0:B692 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:B695 AD 20 0E    LDA $0E20  [$7E:0E20]
-$A0:B698 18          CLC
-$A0:B699 69 40 00    ADC #$0040
-$A0:B69C 89 80 00    BIT #$0080
-$A0:B69F D0 15       BNE $15    [$B6B6]
-$A0:B6A1 BD 7C 0F    LDA $0F7C,x[$7E:0FFC]
-$A0:B6A4 18          CLC
-$A0:B6A5 6D 26 0E    ADC $0E26  [$7E:0E26]
-$A0:B6A8 9D 7C 0F    STA $0F7C,x[$7E:0FFC]
-$A0:B6AB BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A0:B6AE 6D 24 0E    ADC $0E24  [$7E:0E24]
-$A0:B6B1 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
+$A0:B692 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$A0:B695 AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
+$A0:B698 18          CLC                    ;|
+$A0:B699 69 40 00    ADC #$0040             ;} If ([$0E20] + 40h) % 100h < 80h:
+$A0:B69C 89 80 00    BIT #$0080             ;|
+$A0:B69F D0 15       BNE $15    [$B6B6]     ;/
+$A0:B6A1 BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;\
+$A0:B6A4 18          CLC                    ;|
+$A0:B6A5 6D 26 0E    ADC $0E26  [$7E:0E26]  ;|
+$A0:B6A8 9D 7C 0F    STA $0F7C,x[$7E:0FFC]  ;} Enemy X position += [$0E24].[$0E26]
+$A0:B6AB BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;|
+$A0:B6AE 6D 24 0E    ADC $0E24  [$7E:0E24]  ;|
+$A0:B6B1 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
 $A0:B6B4 80 13       BRA $13    [$B6C9]
 
-$A0:B6B6 BD 7C 0F    LDA $0F7C,x[$7E:0F7C]
-$A0:B6B9 38          SEC
-$A0:B6BA ED 26 0E    SBC $0E26  [$7E:0E26]
-$A0:B6BD 9D 7C 0F    STA $0F7C,x[$7E:0F7C]
-$A0:B6C0 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A0:B6C3 ED 24 0E    SBC $0E24  [$7E:0E24]
-$A0:B6C6 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
+$A0:B6B6 BD 7C 0F    LDA $0F7C,x[$7E:0F7C]  ;\ Else (([$0E20] + 40h) % 100h >= 80h):
+$A0:B6B9 38          SEC                    ;|
+$A0:B6BA ED 26 0E    SBC $0E26  [$7E:0E26]  ;|
+$A0:B6BD 9D 7C 0F    STA $0F7C,x[$7E:0F7C]  ;} Enemy X position -= [$0E24].[$0E26]
+$A0:B6C0 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
+$A0:B6C3 ED 24 0E    SBC $0E24  [$7E:0E24]  ;|
+$A0:B6C6 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
 
-$A0:B6C9 AD 20 0E    LDA $0E20  [$7E:0E20]
-$A0:B6CC 18          CLC
-$A0:B6CD 69 80 00    ADC #$0080
-$A0:B6D0 89 80 00    BIT #$0080
-$A0:B6D3 D0 15       BNE $15    [$B6EA]
-$A0:B6D5 BD 80 0F    LDA $0F80,x[$7E:0F80]
-$A0:B6D8 18          CLC
-$A0:B6D9 6D 2A 0E    ADC $0E2A  [$7E:0E2A]
-$A0:B6DC 9D 80 0F    STA $0F80,x[$7E:0F80]
-$A0:B6DF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A0:B6E2 6D 28 0E    ADC $0E28  [$7E:0E28]
-$A0:B6E5 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A0:B6E8 80 13       BRA $13    [$B6FD]
-
-$A0:B6EA BD 80 0F    LDA $0F80,x[$7E:1040]
-$A0:B6ED 38          SEC
-$A0:B6EE ED 2A 0E    SBC $0E2A  [$7E:0E2A]
-$A0:B6F1 9D 80 0F    STA $0F80,x[$7E:1040]
-$A0:B6F4 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A0:B6F7 ED 28 0E    SBC $0E28  [$7E:0E28]
-$A0:B6FA 9D 7E 0F    STA $0F7E,x[$7E:103E]
+$A0:B6C9 AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
+$A0:B6CC 18          CLC                    ;|
+$A0:B6CD 69 80 00    ADC #$0080             ;} If [$0E20] % 100h >= 80h:
+$A0:B6D0 89 80 00    BIT #$0080             ;|
+$A0:B6D3 D0 15       BNE $15    [$B6EA]     ;/
+$A0:B6D5 BD 80 0F    LDA $0F80,x[$7E:0F80]  ;\
+$A0:B6D8 18          CLC                    ;|
+$A0:B6D9 6D 2A 0E    ADC $0E2A  [$7E:0E2A]  ;|
+$A0:B6DC 9D 80 0F    STA $0F80,x[$7E:0F80]  ;} Enemy Y position += [$0E28].[$0E2A]
+$A0:B6DF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
+$A0:B6E2 6D 28 0E    ADC $0E28  [$7E:0E28]  ;|
+$A0:B6E5 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$A0:B6E8 80 13       BRA $13    [$B6FD]     
+                                            
+$A0:B6EA BD 80 0F    LDA $0F80,x[$7E:1040]  ;\ Else ([$0E20] % 100h < 80h):
+$A0:B6ED 38          SEC                    ;|
+$A0:B6EE ED 2A 0E    SBC $0E2A  [$7E:0E2A]  ;|
+$A0:B6F1 9D 80 0F    STA $0F80,x[$7E:1040]  ;} Enemy Y position -= [$0E28].[$0E2A]
+$A0:B6F4 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;|
+$A0:B6F7 ED 28 0E    SBC $0E28  [$7E:0E28]  ;|
+$A0:B6FA 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;/
 
 $A0:B6FD FA          PLX
 $A0:B6FE 6B          RTL
@@ -6518,45 +6520,58 @@ $A0:B760 6B          RTL
 }
 
 
-;;; $B761:  ;;;
+;;; $B761: 32-bit unsigned division ;;;
 {
+;; Parameters:
+;;     $2A..2D: Dividend
+;;     $2E..31: Divisor
+;; Returns:
+;;     $26..29: Remainder
+;;     $2A..2D: Quotient
+
 ; Called by Draygon
+; Very slow. When profiled on a Draygon fight, I got:
+;     Minimum: ~14.5k master cycles (10.6 scanlines)
+;     Average: ~16.2k master cycles (11.9 scanlines)
+;     Maximum: ~17.3k master cycles (12.7 scanlines)
+
 $A0:B761 08          PHP
 $A0:B762 8B          PHB
-$A0:B763 4B          PHK
-$A0:B764 AB          PLB
+$A0:B763 4B          PHK                    ;\
+$A0:B764 AB          PLB                    ;} DB = $A0
 $A0:B765 C2 30       REP #$30
-$A0:B767 64 28       STZ $28    [$7E:0028]
-$A0:B769 64 26       STZ $26    [$7E:0026]
-$A0:B76B A5 30       LDA $30    [$7E:0030]
-$A0:B76D 05 2E       ORA $2E    [$7E:002E]
-$A0:B76F D0 06       BNE $06    [$B777]
-$A0:B771 64 2C       STZ $2C    [$7E:002C]
-$A0:B773 64 2A       STZ $2A    [$7E:002A]
-$A0:B775 80 27       BRA $27    [$B79E]
+$A0:B767 64 28       STZ $28    [$7E:0028]  ;\
+$A0:B769 64 26       STZ $26    [$7E:0026]  ;} $26 = 0 (remainder)
+$A0:B76B A5 30       LDA $30    [$7E:0030]  ;\
+$A0:B76D 05 2E       ORA $2E    [$7E:002E]  ;} If [$2E] = 0:
+$A0:B76F D0 06       BNE $06    [$B777]     ;/
+$A0:B771 64 2C       STZ $2C    [$7E:002C]  ;\
+$A0:B773 64 2A       STZ $2A    [$7E:002A]  ;} $2A = 0 (quotient)
+$A0:B775 80 27       BRA $27    [$B79E]     ; Return
 
-$A0:B777 A2 21 00    LDX #$0021
-$A0:B77A 18          CLC
+$A0:B777 A2 21 00    LDX #$0021             ; X = 21h (loop counter)
+$A0:B77A 18          CLC                    ; Clear carry
 
-$A0:B77B 26 2A       ROL $2A    [$7E:002A]
-$A0:B77D 26 2C       ROL $2C    [$7E:002C]
-$A0:B77F CA          DEX
-$A0:B780 F0 1C       BEQ $1C    [$B79E]
-$A0:B782 26 26       ROL $26    [$7E:0026]
-$A0:B784 26 28       ROL $28    [$7E:0028]
-$A0:B786 A5 28       LDA $28    [$7E:0028]
-$A0:B788 05 26       ORA $26    [$7E:0026]
-$A0:B78A F0 EF       BEQ $EF    [$B77B]
-$A0:B78C A5 26       LDA $26    [$7E:0026]
-$A0:B78E 38          SEC
-$A0:B78F E5 2E       SBC $2E    [$7E:002E]
-$A0:B791 A8          TAY
-$A0:B792 A5 28       LDA $28    [$7E:0028]
-$A0:B794 E5 30       SBC $30    [$7E:0030]
-$A0:B796 90 E3       BCC $E3    [$B77B]
-$A0:B798 85 28       STA $28    [$7E:0028]
-$A0:B79A 84 26       STY $26    [$7E:0026]
-$A0:B79C 80 DD       BRA $DD    [$B77B]
+; LOOP
+$A0:B77B 26 2A       ROL $2A    [$7E:002A]  ;\
+$A0:B77D 26 2C       ROL $2C    [$7E:002C]  ;} $2A = [$2A] * 2 + carry
+$A0:B77F CA          DEX                    ; Decrement X
+$A0:B780 F0 1C       BEQ $1C    [$B79E]     ; If [X] = 0: return
+$A0:B782 26 26       ROL $26    [$7E:0026]  ;\
+$A0:B784 26 28       ROL $28    [$7E:0028]  ;} $26 *= 2
+$A0:B786 A5 28       LDA $28    [$7E:0028]  ;\
+$A0:B788 05 26       ORA $26    [$7E:0026]  ;} If [$26] = 0: go to LOOP
+$A0:B78A F0 EF       BEQ $EF    [$B77B]     ;/
+$A0:B78C A5 26       LDA $26    [$7E:0026]  ;\
+$A0:B78E 38          SEC                    ;|
+$A0:B78F E5 2E       SBC $2E    [$7E:002E]  ;} YA = [$26] - [$2E]
+$A0:B791 A8          TAY                    ;} Carry = [YA] >= 0
+$A0:B792 A5 28       LDA $28    [$7E:0028]  ;|
+$A0:B794 E5 30       SBC $30    [$7E:0030]  ;/
+$A0:B796 90 E3       BCC $E3    [$B77B]     ; If [YA] < 0: go to LOOP
+$A0:B798 85 28       STA $28    [$7E:0028]  ;\
+$A0:B79A 84 26       STY $26    [$7E:0026]  ;} $26 = [YA]
+$A0:B79C 80 DD       BRA $DD    [$B77B]     ; Go to LOOP
 
 $A0:B79E AB          PLB
 $A0:B79F 28          PLP
@@ -6569,39 +6584,40 @@ $A0:B7A0 6B          RTL
 ; Called by Draygon and yapping maw
 $A0:B7A1 DA          PHX
 $A0:B7A2 5A          PHY
-$A0:B7A3 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A0:B7A6 38          SEC
-$A0:B7A7 ED 14 0B    SBC $0B14  [$7E:0B14]
-$A0:B7AA 85 12       STA $12    [$7E:0012]
-$A0:B7AC 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A0:B7B0 C9 0C 00    CMP #$000C
-$A0:B7B3 30 12       BMI $12    [$B7C7]
-$A0:B7B5 A0 F4 FF    LDY #$FFF4
-$A0:B7B8 A5 12       LDA $12    [$7E:0012]
-$A0:B7BA 30 03       BMI $03    [$B7BF]
-$A0:B7BC A0 0C 00    LDY #$000C
+$A0:B7A3 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A0:B7A6 38          SEC                    ;|
+$A0:B7A7 ED 14 0B    SBC $0B14  [$7E:0B14]  ;} $12 = [Samus Y position] - [Samus previous Y position]
+$A0:B7AA 85 12       STA $12    [$7E:0012]  ;/
+$A0:B7AC 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;\
+$A0:B7B0 C9 0C 00    CMP #$000C             ;} If |[$12]| < Ch: go to BRANCH_Y_POSITION_END
+$A0:B7B3 30 12       BMI $12    [$B7C7]     ;/
+$A0:B7B5 A0 F4 FF    LDY #$FFF4             ; Y = -Ch
+$A0:B7B8 A5 12       LDA $12    [$7E:0012]  ;\
+$A0:B7BA 30 03       BMI $03    [$B7BF]     ;} If [$12] >= 0:
+$A0:B7BC A0 0C 00    LDY #$000C             ; Y = Ch
 
-$A0:B7BF 98          TYA
-$A0:B7C0 18          CLC
-$A0:B7C1 6D FA 0A    ADC $0AFA  [$7E:0AFA]
-$A0:B7C4 8D 14 0B    STA $0B14  [$7E:0B14]
+$A0:B7BF 98          TYA                    ;\
+$A0:B7C0 18          CLC                    ;|
+$A0:B7C1 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;} Samus previous Y position = [Samus Y position] + [Y]
+$A0:B7C4 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
 
-$A0:B7C7 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A0:B7CA 38          SEC
-$A0:B7CB ED 10 0B    SBC $0B10  [$7E:0B10]
-$A0:B7CE 85 12       STA $12    [$7E:0012]
-$A0:B7D0 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A0:B7D4 C9 0C 00    CMP #$000C
-$A0:B7D7 30 12       BMI $12    [$B7EB]
-$A0:B7D9 A0 F4 FF    LDY #$FFF4
-$A0:B7DC A5 12       LDA $12    [$7E:0012]
-$A0:B7DE 30 03       BMI $03    [$B7E3]
-$A0:B7E0 A0 0C 00    LDY #$000C
-
-$A0:B7E3 98          TYA
-$A0:B7E4 18          CLC
-$A0:B7E5 6D F6 0A    ADC $0AF6  [$7E:0AF6]
-$A0:B7E8 8D 10 0B    STA $0B10  [$7E:0B10]
+; BRANCH_Y_POSITION_END
+$A0:B7C7 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A0:B7CA 38          SEC                    ;|
+$A0:B7CB ED 10 0B    SBC $0B10  [$7E:0B10]  ;} $12 = [Samus X position] - [Samus previous X position]
+$A0:B7CE 85 12       STA $12    [$7E:0012]  ;/
+$A0:B7D0 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;\
+$A0:B7D4 C9 0C 00    CMP #$000C             ;} If |[$12]| < Ch: return
+$A0:B7D7 30 12       BMI $12    [$B7EB]     ;/
+$A0:B7D9 A0 F4 FF    LDY #$FFF4             ; Y = -Ch
+$A0:B7DC A5 12       LDA $12    [$7E:0012]  ;\
+$A0:B7DE 30 03       BMI $03    [$B7E3]     ;} If [$12] >= 0:
+$A0:B7E0 A0 0C 00    LDY #$000C             ; Y = Ch
+                                            
+$A0:B7E3 98          TYA                    ;\
+$A0:B7E4 18          CLC                    ;|
+$A0:B7E5 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} Samus previous X position = [Samus X position] + [Y]
+$A0:B7E8 8D 10 0B    STA $0B10  [$7E:0B10]  ;/
 
 $A0:B7EB 7A          PLY
 $A0:B7EC FA          PLX
@@ -6609,9 +6625,9 @@ $A0:B7ED 6B          RTL
 }
 
 
-;;; $B7EE: Parametric equation of quarter circle ;;;
+;;; $B7EE: Unsigned sine table ;;;
 {
-; Approximately: 10000h (1 - (t/40h - 1)^2) = 10000h - 10h (t - 40h)^2
+; sin(t * pi / 80h) * FFFFh
 $A0:B7EE             dw 0000, 0648, 0C8F, 12D5, 1917, 1F56, 258F, 2BC3, 31F1, 3816, 3E33, 4447, 4A4F, 504D, 563E, 5C21,
                         61F7, 67BD, 6D73, 7319, 78AC, 7E2E, 839B, 88F5, 8E39, 9367, 987F, 9D7F, A266, A735, ABEA, B085,
                         B504, B967, BDAE, C1D7, C5E3, C9D0, CD9E, D14C, D4DA, D847, DB93, DEBD, E1C4, E4A9, E76A, EA08,
@@ -6881,8 +6897,9 @@ $A0:BAA4 DA          PHX
 $A0:BAA5 5A          PHY
 $A0:BAA6 08          PHP
 $A0:BAA7 A9 10 00    LDA #$0010             ;\
-$A0:BAAA 8D 0B 06    STA $060B  [$7E:060B]  ;} Number of item drops
+$A0:BAAA 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h
 
+; LOOP
 $A0:BAAD 22 11 81 80 JSL $808111[$80:8111]  ;\
 $A0:BAB1 29 7F 00    AND #$007F             ;|
 $A0:BAB4 18          CLC                    ;} Item drop X position = 40h..BFh randomly
@@ -6896,8 +6913,8 @@ $A0:BAC2 69 60 00    ADC #$0060             ;|
 $A0:BAC5 85 14       STA $14    [$7E:0014]  ;/
 $A0:BAC7 A9 FF EE    LDA #$EEFF             ;\
 $A0:BACA 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Bomb Torizo's drop chances
-$A0:BACE CE 0B 06    DEC $060B  [$7E:060B]  ;\
-$A0:BAD1 D0 DA       BNE $DA    [$BAAD]     ;} Next!
+$A0:BACE CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BAD1 D0 DA       BNE $DA    [$BAAD]     ; If [$060B] != 0: go to LOOP
 $A0:BAD3 28          PLP
 $A0:BAD4 7A          PLY
 $A0:BAD5 FA          PLX
@@ -6911,8 +6928,9 @@ $A0:BAD7 DA          PHX
 $A0:BAD8 5A          PHY
 $A0:BAD9 08          PHP
 $A0:BADA A9 10 00    LDA #$0010             ;\
-$A0:BADD 8D 0B 06    STA $060B  [$7E:060B]  ;} Number of item drops
+$A0:BADD 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h
 
+; LOOP
 $A0:BAE0 22 11 81 80 JSL $808111[$80:8111]  ;\
 $A0:BAE4 29 FF 00    AND #$00FF             ;|
 $A0:BAE7 18          CLC                    ;} Item drop X position = 80h..17Fh randomly
@@ -6926,8 +6944,8 @@ $A0:BAF5 69 20 01    ADC #$0120             ;|
 $A0:BAF8 85 14       STA $14    [$7E:0014]  ;/
 $A0:BAFA A9 FF EE    LDA #$EEFF             ;\
 $A0:BAFD 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Bomb Torizo's drop chances
-$A0:BB01 CE 0B 06    DEC $060B  [$7E:060B]  ;\
-$A0:BB04 D0 DA       BNE $DA    [$BAE0]     ;} Next!
+$A0:BB01 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BB04 D0 DA       BNE $DA    [$BAE0]     ; If [$060B] != 0: go to LOOP
 $A0:BB06 28          PLP
 $A0:BB07 7A          PLY
 $A0:BB08 FA          PLX
@@ -8121,52 +8139,55 @@ $A0:C18D 60          RTS
 }
 
 
-;;; $C18E:  ;;;
+;;; $C18E: Check if enemy is horizontally off-screen ;;;
 {
-; Determines if enemy is leaving screen
-$A0:C18E BD 7A 0F    LDA $0F7A,x[$7E:11BA]
-$A0:C191 30 19       BMI $19    [$C1AC]
-$A0:C193 18          CLC
-$A0:C194 7D 82 0F    ADC $0F82,x[$7E:11C2]
-$A0:C197 38          SEC
-$A0:C198 ED 11 09    SBC $0911  [$7E:0911]
-$A0:C19B 30 0F       BMI $0F    [$C1AC]
-$A0:C19D 38          SEC
-$A0:C19E E9 00 01    SBC #$0100
-$A0:C1A1 38          SEC
-$A0:C1A2 FD 82 0F    SBC $0F82,x[$7E:11C2]
-$A0:C1A5 10 05       BPL $05    [$C1AC]
-$A0:C1A7 A9 00 00    LDA #$0000
-$A0:C1AA 18          CLC
-$A0:C1AB 6B          RTL
+;; Returns:
+;;     A/carry: Set if off-screen, clear otherwise
+$A0:C18E BD 7A 0F    LDA $0F7A,x[$7E:11BA]  ;\
+$A0:C191 30 19       BMI $19    [$C1AC]     ;} If [enemy X position] >= 0:
+$A0:C193 18          CLC                    ;\
+$A0:C194 7D 82 0F    ADC $0F82,x[$7E:11C2]  ;|
+$A0:C197 38          SEC                    ;} If [enemy X position] + [enemy X radius] >= [layer 1 X position]:
+$A0:C198 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$A0:C19B 30 0F       BMI $0F    [$C1AC]     ;/
+$A0:C19D 38          SEC                    ;\
+$A0:C19E E9 00 01    SBC #$0100             ;|
+$A0:C1A1 38          SEC                    ;} If [enemy X position] < [layer 1 X position] + 100h:
+$A0:C1A2 FD 82 0F    SBC $0F82,x[$7E:11C2]  ;|
+$A0:C1A5 10 05       BPL $05    [$C1AC]     ;/
+$A0:C1A7 A9 00 00    LDA #$0000             ; A = 0
+$A0:C1AA 18          CLC                    ;\
+$A0:C1AB 6B          RTL                    ;} Return carry clear
 
-$A0:C1AC A9 01 00    LDA #$0001
-$A0:C1AF 38          SEC
-$A0:C1B0 6B          RTL
+$A0:C1AC A9 01 00    LDA #$0001             ; A = 1
+$A0:C1AF 38          SEC                    ;\
+$A0:C1B0 6B          RTL                    ;} Return carry set
 }
 
 
-;;; $C1B1: Unused ;;;
+;;; $C1B1: Unused. Check if enemy is vertically off-screen ;;;
 {
-$A0:C1B1 BD 7E 0F    LDA $0F7E,x
-$A0:C1B4 30 19       BMI $19    [$C1CF]
-$A0:C1B6 18          CLC
-$A0:C1B7 7D 84 0F    ADC $0F84,x
-$A0:C1BA 38          SEC
-$A0:C1BB ED 15 09    SBC $0915  [$7E:0915]
-$A0:C1BE 30 0F       BMI $0F    [$C1CF]
-$A0:C1C0 38          SEC
-$A0:C1C1 E9 00 01    SBC #$0100
-$A0:C1C4 38          SEC
-$A0:C1C5 FD 84 0F    SBC $0F84,x
-$A0:C1C8 10 05       BPL $05    [$C1CF]
-$A0:C1CA A9 00 00    LDA #$0000
-$A0:C1CD 18          CLC
-$A0:C1CE 6B          RTL
-
-$A0:C1CF A9 01 00    LDA #$0001
-$A0:C1D2 38          SEC
-$A0:C1D3 6B          RTL
+;; Returns:
+;;     A/carry: Set if off-screen, clear otherwise
+$A0:C1B1 BD 7E 0F    LDA $0F7E,x            ;\
+$A0:C1B4 30 19       BMI $19    [$C1CF]     ;} If [enemy Y position] >= 0:
+$A0:C1B6 18          CLC                    ;\
+$A0:C1B7 7D 84 0F    ADC $0F84,x            ;|
+$A0:C1BA 38          SEC                    ;} If [enemy Y position] + [enemy Y radius] >= [layer 1 Y position]:
+$A0:C1BB ED 15 09    SBC $0915  [$7E:0915]  ;|
+$A0:C1BE 30 0F       BMI $0F    [$C1CF]     ;/
+$A0:C1C0 38          SEC                    ;\
+$A0:C1C1 E9 00 01    SBC #$0100             ;|
+$A0:C1C4 38          SEC                    ;} If [enemy Y position] < [layer 1 Y position] + 100h:
+$A0:C1C5 FD 84 0F    SBC $0F84,x            ;|
+$A0:C1C8 10 05       BPL $05    [$C1CF]     ;/
+$A0:C1CA A9 00 00    LDA #$0000             ; A = 0
+$A0:C1CD 18          CLC                    ;\
+$A0:C1CE 6B          RTL                    ;} Return carry clear
+                                            
+$A0:C1CF A9 01 00    LDA #$0001             ; A = 1
+$A0:C1D2 38          SEC                    ;\
+$A0:C1D3 6B          RTL                    ;} Return carry set
 }
 
 
@@ -8892,7 +8913,7 @@ $A0:C6C0 85 1C       STA $1C    [$7E:001C]  ;|
 $A0:C6C2 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
 $A0:C6C5 18          CLC                    ;|
 $A0:C6C6 7D 84 0F    ADC $0F84,x[$7E:0F84]  ;|
-$A0:C6C9 3A          DEC A                  ;} $1C = (enemy bottom border) / 10h - (enemy top border) / 10h (number of blocks left to check)
+$A0:C6C9 3A          DEC A                  ;} $1C = (enemy bottom boundary) / 10h - (enemy top boundary) / 10h (number of blocks left to check)
 $A0:C6CA 38          SEC                    ;|
 $A0:C6CB E5 1C       SBC $1C    [$7E:001C]  ;|
 $A0:C6CD 4A          LSR A                  ;|
@@ -8906,7 +8927,7 @@ $A0:C6D8 38          SEC                    ;|
 $A0:C6D9 FD 84 0F    SBC $0F84,x[$7E:0F84]  ;|
 $A0:C6DC 4A          LSR A                  ;|
 $A0:C6DD 4A          LSR A                  ;|
-$A0:C6DE 4A          LSR A                  ;} Calculate (enemy top border) / 10h * [room width in blocks] (target row block index)
+$A0:C6DE 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
 $A0:C6DF 4A          LSR A                  ;|
 $A0:C6E0 E2 20       SEP #$20               ;|
 $A0:C6E2 8D 02 42    STA $4202  [$7E:4202]  ;|
@@ -8916,26 +8937,26 @@ $A0:C6EB C2 20       REP #$20               ;/
 $A0:C6ED BD 7C 0F    LDA $0F7C,x[$7E:0F7C]  ;\
 $A0:C6F0 18          CLC                    ;|
 $A0:C6F1 65 12       ADC $12    [$7E:0012]  ;|
-$A0:C6F3 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy X position] + [$14].[$12]
+$A0:C6F3 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy X position] + [$14].[$12] (target X position)
 $A0:C6F5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
 $A0:C6F8 65 14       ADC $14    [$7E:0014]  ;|
 $A0:C6FA 85 18       STA $18    [$7E:0018]  ;/
 $A0:C6FC 24 14       BIT $14    [$7E:0014]  ;\
 $A0:C6FE 30 07       BMI $07    [$C707]     ;} If [$14] >= 0:
 $A0:C700 18          CLC                    ;\
-$A0:C701 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;} $1A = [$18] + [enemy X radius] (target front border)
+$A0:C701 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;} $1A = (target right boundary)
 $A0:C704 3A          DEC A                  ;/
 $A0:C705 80 04       BRA $04    [$C70B]
 
 $A0:C707 38          SEC                    ;\ Else ([$14] < 0):
-$A0:C708 FD 82 0F    SBC $0F82,x[$7E:1002]  ;} $1A = [$18] - [enemy X radius] (target front border)
+$A0:C708 FD 82 0F    SBC $0F82,x[$7E:1002]  ;} $1A = (target left boundary)
 
 $A0:C70B 85 1A       STA $1A    [$7E:001A]
 $A0:C70D 4A          LSR A                  ;\
 $A0:C70E 4A          LSR A                  ;|
 $A0:C70F 4A          LSR A                  ;|
 $A0:C710 4A          LSR A                  ;|
-$A0:C711 18          CLC                    ;} X = ((target row block index) + (target front border) / 10h) * 2 (index of top block to check)
+$A0:C711 18          CLC                    ;} X = ((target row block index) + [$1A] / 10h) * 2 (index of top block to check)
 $A0:C712 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $A0:C715 0A          ASL A                  ;|
 $A0:C716 AA          TAX                    ;/
@@ -8975,7 +8996,7 @@ $A0:C749 30 17       BMI $17    [$C762]     ;} If [$14] < 0: go to BRANCH_MOVING
 $A0:C74B 29 F0 FF    AND #$FFF0             ;\
 $A0:C74E 38          SEC                    ;|
 $A0:C74F FD 82 0F    SBC $0F82,x[$7E:0FC2]  ;|
-$A0:C752 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;} Enemy X position = max([enemy X position], (target front border) / 10h * 10h - [enemy X radius])
+$A0:C752 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;} Enemy X position = max([enemy X position], (target front boundary) / 10h * 10h - [enemy X radius])
 $A0:C755 90 03       BCC $03    [$C75A]     ;|
 $A0:C757 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 
@@ -8989,7 +9010,7 @@ $A0:C762 09 0F 00    ORA #$000F             ;\
 $A0:C765 38          SEC                    ;|
 $A0:C766 7D 82 0F    ADC $0F82,x[$7E:0FC2]  ;|
 $A0:C769 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;|
-$A0:C76C F0 02       BEQ $02    [$C770]     ;} Enemy X position = min([enemy X position], (target front border) / 10h * 10h + 10h + [enemy X radius])
+$A0:C76C F0 02       BEQ $02    [$C770]     ;} Enemy X position = min([enemy X position], (target front boundary) / 10h * 10h + 10h + [enemy X radius])
 $A0:C76E B0 03       BCS $03    [$C773]     ;|
                                             ;|
 $A0:C770 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/

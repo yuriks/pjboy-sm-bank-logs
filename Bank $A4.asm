@@ -598,12 +598,12 @@ $A4:8AEA AD 86 0F    LDA $0F86  [$7E:0F86]
 $A4:8AED 09 00 04    ORA #$0400
 $A4:8AF0 29 FF 7F    AND #$7FFF
 $A4:8AF3 8D 86 0F    STA $0F86  [$7E:0F86]
-$A4:8AF6 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8AFA             dx 20,03,B753
-$A4:8AFE 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8B02             dx 1E,03,B753
-$A4:8B06 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8B0A             dx 61,0B,B747
+$A4:8AF6 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8AFA             dx 20,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (20h, 3)
+$A4:8AFE 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8B02             dx 1E,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (1Eh, 3)
+$A4:8B06 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8B0A             dx 61,0B,B747          ;} Spawn PLM to clear Crocomire's bridge
 $A4:8B0E A9 54 00    LDA #$0054
 $A4:8B11 8D A8 0F    STA $0FA8  [$7E:0FA8]
 $A4:8B14 A9 CC E1    LDA #$E1CC
@@ -910,7 +910,7 @@ $A4:8D79 A9 00 06    LDA #$0600
 $A4:8D7C 85 12       STA $12    [$7E:0012]
 $A4:8D7E A9 B0 00    LDA #$00B0
 $A4:8D81 85 14       STA $14    [$7E:0014]
-$A4:8D83 A9 15 00    LDA #$0015
+$A4:8D83 A9 15 00    LDA #$0015             ; A = 15h
 $A4:8D86 A0 09 E5    LDY #$E509             ;\
 $A4:8D89 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -940,7 +940,7 @@ $A4:8DC6 A9 20 06    LDA #$0620
 $A4:8DC9 85 12       STA $12    [$7E:0012]
 $A4:8DCB A9 B0 00    LDA #$00B0
 $A4:8DCE 85 14       STA $14    [$7E:0014]
-$A4:8DD0 A9 15 00    LDA #$0015
+$A4:8DD0 A9 15 00    LDA #$0015             ; A = 15h
 $A4:8DD3 A0 09 E5    LDY #$E509             ;\
 $A4:8DD6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -971,7 +971,7 @@ $A4:8E17 A9 30 06    LDA #$0630
 $A4:8E1A 85 12       STA $12    [$7E:0012]
 $A4:8E1C A9 B0 00    LDA #$00B0
 $A4:8E1F 85 14       STA $14    [$7E:0014]
-$A4:8E21 A9 15 00    LDA #$0015
+$A4:8E21 A9 15 00    LDA #$0015             ; A = 15h
 $A4:8E24 A0 09 E5    LDY #$E509             ;\
 $A4:8E27 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -1068,49 +1068,49 @@ $A4:8F35 A9 00 06    LDA #$0600
 $A4:8F38 85 12       STA $12    [$7E:0012]
 $A4:8F3A A9 B0 00    LDA #$00B0
 $A4:8F3D 85 14       STA $14    [$7E:0014]
-$A4:8F3F A9 15 00    LDA #$0015
+$A4:8F3F A9 15 00    LDA #$0015             ; A = 15h
 $A4:8F42 A0 09 E5    LDY #$E509             ;\
 $A4:8F45 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F49 A9 10 06    LDA #$0610
 $A4:8F4C 85 12       STA $12    [$7E:0012]
 $A4:8F4E A9 C0 00    LDA #$00C0
 $A4:8F51 85 14       STA $14    [$7E:0014]
-$A4:8F53 A9 15 00    LDA #$0015
+$A4:8F53 A9 15 00    LDA #$0015             ; A = 15h
 $A4:8F56 A0 09 E5    LDY #$E509             ;\
 $A4:8F59 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F5D A9 20 06    LDA #$0620
 $A4:8F60 85 12       STA $12    [$7E:0012]
 $A4:8F62 A9 B0 00    LDA #$00B0
 $A4:8F65 85 14       STA $14    [$7E:0014]
-$A4:8F67 A9 15 00    LDA #$0015
+$A4:8F67 A9 15 00    LDA #$0015             ; A = 15h
 $A4:8F6A A0 09 E5    LDY #$E509             ;\
 $A4:8F6D 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F71 A9 30 06    LDA #$0630
 $A4:8F74 85 12       STA $12    [$7E:0012]
 $A4:8F76 A9 C0 00    LDA #$00C0
 $A4:8F79 85 14       STA $14    [$7E:0014]
-$A4:8F7B A9 15 00    LDA #$0015
+$A4:8F7B A9 15 00    LDA #$0015             ; A = 15h
 $A4:8F7E A0 09 E5    LDY #$E509             ;\
 $A4:8F81 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F85 A9 40 06    LDA #$0640
 $A4:8F88 85 12       STA $12    [$7E:0012]
 $A4:8F8A A9 C0 00    LDA #$00C0
 $A4:8F8D 85 14       STA $14    [$7E:0014]
-$A4:8F8F A9 15 00    LDA #$0015
+$A4:8F8F A9 15 00    LDA #$0015             ; A = 15h
 $A4:8F92 A0 09 E5    LDY #$E509             ;\
 $A4:8F95 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F99 A9 50 06    LDA #$0650
 $A4:8F9C 85 12       STA $12    [$7E:0012]
 $A4:8F9E A9 C0 00    LDA #$00C0
 $A4:8FA1 85 14       STA $14    [$7E:0014]
-$A4:8FA3 A9 15 00    LDA #$0015
+$A4:8FA3 A9 15 00    LDA #$0015             ; A = 15h
 $A4:8FA6 A0 09 E5    LDY #$E509             ;\
 $A4:8FA9 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8FAD A9 60 06    LDA #$0660
 $A4:8FB0 85 12       STA $12    [$7E:0012]
 $A4:8FB2 A9 C0 00    LDA #$00C0
 $A4:8FB5 85 14       STA $14    [$7E:0014]
-$A4:8FB7 A9 15 00    LDA #$0015
+$A4:8FB7 A9 15 00    LDA #$0015             ; A = 15h
 $A4:8FBA A0 09 E5    LDY #$E509             ;\
 $A4:8FBD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8FC1 60          RTS
@@ -2356,12 +2356,12 @@ $A4:995E A9 50 00    LDA #$0050
 $A4:9961 8D 2E 10    STA $102E  [$7E:102E]
 $A4:9964 9C B0 0F    STZ $0FB0  [$7E:0FB0]
 $A4:9967 9C B2 0F    STZ $0FB2  [$7E:0FB2]
-$A4:996A 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:996E             dx 20,03,B753
-$A4:9972 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:9976             dx 1E,03,B757
-$A4:997A 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:997E             dx 70,0B,B747
+$A4:996A 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:996E             dx 20,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (20h, 3)
+$A4:9972 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:9976             dx 1E,03,B757          ;} Spawn PLM to clear Crocomire invisible wall at (1Eh, 3)
+$A4:997A 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:997E             dx 70,0B,B747          ;} Spawn PLM to clear Crocomire's bridge at (70h, Bh) <-- ok but the bridge is Fh blocks to the left... so this does nothing
 $A4:9982 A9 29 00    LDA #$0029             ;\
 $A4:9985 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 29h, sound library 2, max queued sounds allowed = 6 (Crocomire's wall explodes)
 $A4:9989 A9 58 E1    LDA #$E158
@@ -2391,7 +2391,8 @@ $A4:99C3 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 30h, sound library 2,
 $A4:99C7 4C B3 9B    JMP $9BB3  [$A4:9BB3]
 $A4:99CA 60          RTS
 
-$A4:99CB             dw 1600, 1700, 1800, 1900, 1E00, 1F00, FFFF, A600, A800, AA00, AC00, AE00, B000
+$A4:99CB             dw 1600, 1700, 1800, 1900, 1E00, 1F00, FFFF
+$A4:99D9             dw A600, A800, AA00, AC00, AE00, B000
 }
 
 
@@ -2584,7 +2585,7 @@ $A4:9AF0 6D 84 0F    ADC $0F84  [$7E:0F84]
 $A4:9AF3 38          SEC
 $A4:9AF4 E9 10 00    SBC #$0010
 $A4:9AF7 85 14       STA $14    [$7E:0014]
-$A4:9AF9 A9 15 00    LDA #$0015
+$A4:9AF9 A9 15 00    LDA #$0015             ; A = 15h
 $A4:9AFC A0 09 E5    LDY #$E509             ;\
 $A4:9AFF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:9B03 7A          PLY
@@ -3148,18 +3149,18 @@ $A4:B967 6B          RTL
 {
 $A4:B968 DA          PHX
 $A4:B969 5A          PHY
-$A4:B96A AD A6 18    LDA $18A6  [$7E:18A6]
-$A4:B96D 0A          ASL A
-$A4:B96E AA          TAX
-$A4:B96F BD 64 0B    LDA $0B64,x[$7E:0B64]
-$A4:B972 85 12       STA $12    [$7E:0012]
-$A4:B974 BD 78 0B    LDA $0B78,x[$7E:0B78]
-$A4:B977 85 14       STA $14    [$7E:0014]
+$A4:B96A AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A4:B96D 0A          ASL A                  ;} X = [projectile index] * 2
+$A4:B96E AA          TAX                    ;/
+$A4:B96F BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
+$A4:B972 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
+$A4:B974 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$A4:B977 85 14       STA $14    [$7E:0014]  ;} $14 = [projectile Y position]
 $A4:B979 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$A4:B97C A0 1D 00    LDY #$001D
-$A4:B97F 89 00 02    BIT #$0200
-$A4:B982 D0 03       BNE $03    [$B987]
-$A4:B984 A0 06 00    LDY #$0006
+$A4:B97C A0 1D 00    LDY #$001D             ; A = 1Dh (big explosion)
+$A4:B97F 89 00 02    BIT #$0200             ;\
+$A4:B982 D0 03       BNE $03    [$B987]     ;} If [projectile type] & 200h = 0 (beam or missile or bomb):
+$A4:B984 A0 06 00    LDY #$0006             ; A = 6
 
 $A4:B987 98          TYA
 $A4:B988 A0 09 E5    LDY #$E509             ;\
@@ -3308,22 +3309,23 @@ $A4:BAB3 6B          RTL
 
 ;;; $BAB4:  ;;;
 {
+; Clone of $B968
 $A4:BAB4 DA          PHX
 $A4:BAB5 5A          PHY
-$A4:BAB6 AD A6 18    LDA $18A6  [$7E:18A6]
-$A4:BAB9 0A          ASL A
-$A4:BABA AA          TAX
-$A4:BABB BD 64 0B    LDA $0B64,x[$7E:0B64]
-$A4:BABE 85 12       STA $12    [$7E:0012]
-$A4:BAC0 BD 78 0B    LDA $0B78,x[$7E:0B78]
-$A4:BAC3 85 14       STA $14    [$7E:0014]
-$A4:BAC5 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$A4:BAC8 A0 1D 00    LDY #$001D
-$A4:BACB 89 00 02    BIT #$0200
-$A4:BACE D0 03       BNE $03    [$BAD3]
-$A4:BAD0 A0 06 00    LDY #$0006
-
-$A4:BAD3 98          TYA
+$A4:BAB6 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A4:BAB9 0A          ASL A                  ;} X = [projectile index] * 2
+$A4:BABA AA          TAX                    ;/
+$A4:BABB BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
+$A4:BABE 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
+$A4:BAC0 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$A4:BAC3 85 14       STA $14    [$7E:0014]  ;} $14 = [projectile Y position]
+$A4:BAC5 BD 18 0C    LDA $0C18,x[$7E:0C18]  
+$A4:BAC8 A0 1D 00    LDY #$001D             ; A = 1Dh (big explosion)
+$A4:BACB 89 00 02    BIT #$0200             ;\
+$A4:BACE D0 03       BNE $03    [$BAD3]     ;} If [projectile type] & 200h = 0 (beam or missile or bomb):
+$A4:BAD0 A0 06 00    LDY #$0006             ; A = 6
+                                            
+$A4:BAD3 98          TYA                    
 $A4:BAD4 A0 09 E5    LDY #$E509             ;\
 $A4:BAD7 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:BADB 7A          PLY
@@ -3541,8 +3543,13 @@ $A4:BC30             dx 0002,C5AE,
                         0005,C542,
                         8D07,
                         9AA5,
-                        86A6,
-                        0030,C574,
+                        86A6
+}
+
+
+;;; $BD2A: Instruction list ;;;
+{
+$A4:BD2A             dx 0030,C574,
                         8CFB,
                         0005,C5AE,
                         0002,C5E8,
@@ -4027,100 +4034,100 @@ $A4:D509             dx 0002, 8000,F0,31E2, 81F0,F0,31EA
 $A4:D515             dx 0001, 8000,F0,31E4
 
 $A4:D51C             dx FFFE,
-                        2000,000C,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,
-                        2040,000C,0338,0338,3CA2,3CA3,3CA4,3CA5,3CA6,3CA7,3CA8,3CA9,3CAA,0338,
-                        2080,000C,3CB0,3CB1,3CB2,3CB3,3CB4,3CB5,3CB6,3CB7,3CB8,3CB9,3CBA,3CBB,
-                        20C0,000C,3CAC,3CAD,3CAE,3CAF,3CC0,3CC1,3CC2,3CC3,3CC4,3CC5,3CC6,3CC7,
-                        2100,000C,3CBC,3CBD,3CBE,3CBF,3CD0,3CD1,3CD2,3CD3,3CD4,3CD5,3CD6,3CD7,
-                        2140,000C,0338,0338,0338,0338,3CCA,3CCB,3CCC,3CCD,3CCE,3CCF,3C8B,3C8C,
-                        2180,000C,0338,0338,3CD8,3CD9,3CDA,3CDB,3CDC,3CDD,3CDE,3CDF,3C9B,3C9C,
-                        21C0,000C,0338,0338,3C43,3C44,3C45,3C46,3C8D,3C8E,3C8F,3C9D,3C9E,3C9F,
+                        2000,000C, 0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,
+                        2040,000C, 0338,0338,3CA2,3CA3,3CA4,3CA5,3CA6,3CA7,3CA8,3CA9,3CAA,0338,
+                        2080,000C, 3CB0,3CB1,3CB2,3CB3,3CB4,3CB5,3CB6,3CB7,3CB8,3CB9,3CBA,3CBB,
+                        20C0,000C, 3CAC,3CAD,3CAE,3CAF,3CC0,3CC1,3CC2,3CC3,3CC4,3CC5,3CC6,3CC7,
+                        2100,000C, 3CBC,3CBD,3CBE,3CBF,3CD0,3CD1,3CD2,3CD3,3CD4,3CD5,3CD6,3CD7,
+                        2140,000C, 0338,0338,0338,0338,3CCA,3CCB,3CCC,3CCD,3CCE,3CCF,3C8B,3C8C,
+                        2180,000C, 0338,0338,3CD8,3CD9,3CDA,3CDB,3CDC,3CDD,3CDE,3CDF,3C9B,3C9C,
+                        21C0,000C, 0338,0338,3C43,3C44,3C45,3C46,3C8D,3C8E,3C8F,3C9D,3C9E,3C9F,
                         FFFF
 
 $A4:D600             dx FFFE,
-                        2000,0008,0338,3CE0,3CE1,3CE2,3CE3,3CE4,3CE5,3CE6,
-                        2040,000B,0338,3CF0,3CF1,3CF2,3CF3,3CF4,3CF5,3CF6,3CF7,3CF8,0338,
-                        2080,000C,0338,0338,3CE9,3CEA,3CEB,3CEC,3CED,3CEE,3CEF,3D00,3D01,0338,
-                        20C0,000C,0338,0338,0338,3CFA,3CFB,3CFC,3CFD,3CFE,3CFF,3D10,3D11,3D12,
-                        2100,000C,0338,0338,0338,0338,3D03,3D04,3D05,3D06,3D07,3D08,3D09,3D0A,
-                        2140,000C,0338,0338,0338,0338,0338,3D14,3D15,3D16,3D17,3D18,3D19,3D1A,
-                        2180,000C,0338,0338,3D0C,3D0D,3D0E,3D0F,3D20,3D21,3D22,3D23,3D24,3D25,
-                        21C0,000C,0338,0338,3D1C,3D1D,3D1E,3D1F,3D30,3D31,3D32,3D33,3D34,3D35,
+                        2000,0008, 0338,3CE0,3CE1,3CE2,3CE3,3CE4,3CE5,3CE6,
+                        2040,000B, 0338,3CF0,3CF1,3CF2,3CF3,3CF4,3CF5,3CF6,3CF7,3CF8,0338,
+                        2080,000C, 0338,0338,3CE9,3CEA,3CEB,3CEC,3CED,3CEE,3CEF,3D00,3D01,0338,
+                        20C0,000C, 0338,0338,0338,3CFA,3CFB,3CFC,3CFD,3CFE,3CFF,3D10,3D11,3D12,
+                        2100,000C, 0338,0338,0338,0338,3D03,3D04,3D05,3D06,3D07,3D08,3D09,3D0A,
+                        2140,000C, 0338,0338,0338,0338,0338,3D14,3D15,3D16,3D17,3D18,3D19,3D1A,
+                        2180,000C, 0338,0338,3D0C,3D0D,3D0E,3D0F,3D20,3D21,3D22,3D23,3D24,3D25,
+                        21C0,000C, 0338,0338,3D1C,3D1D,3D1E,3D1F,3D30,3D31,3D32,3D33,3D34,3D35,
                         FFFF
 
 $A4:D6DA             dx FFFE,
-                        2000,0008,0338,0338,0338,0338,0338,0338,0338,0338,
-                        2040,000B,0338,0338,0338,0338,0338,3C02,3C03,3C04,3C05,3C06,3C07,
-                        2080,000C,0338,0338,0338,3C10,3C11,3C12,3C13,3C14,3C15,3C16,3C17,3C18,
-                        20C0,000C,0338,3C0A,3C0B,3C0C,3C0D,3C0E,3C0F,3C20,3C21,3C22,3C23,3C24,
-                        2100,000C,3C19,3C1A,3C1B,3C1C,3C1D,3C1E,3C1F,3C30,3C31,3C32,3C33,3C34,
-                        2140,000C,3C25,3C26,3C27,3C28,3C29,3C2A,3C2B,3C2C,3C2D,3C2E,3C2F,3C40,
-                        2180,000C,3C35,3C36,3C37,3C38,3C39,3C3A,3C3B,3C3C,3C3D,3C3E,3C3F,3C50,
-                        21C0,0001,3C00,
-                        21C4,000A,3C43,3C44,3C45,3C46,3C47,3C48,3C49,3C4A,3C4B,3C4C,
+                        2000,0008, 0338,0338,0338,0338,0338,0338,0338,0338,
+                        2040,000B, 0338,0338,0338,0338,0338,3C02,3C03,3C04,3C05,3C06,3C07,
+                        2080,000C, 0338,0338,0338,3C10,3C11,3C12,3C13,3C14,3C15,3C16,3C17,3C18,
+                        20C0,000C, 0338,3C0A,3C0B,3C0C,3C0D,3C0E,3C0F,3C20,3C21,3C22,3C23,3C24,
+                        2100,000C, 3C19,3C1A,3C1B,3C1C,3C1D,3C1E,3C1F,3C30,3C31,3C32,3C33,3C34,
+                        2140,000C, 3C25,3C26,3C27,3C28,3C29,3C2A,3C2B,3C2C,3C2D,3C2E,3C2F,3C40,
+                        2180,000C, 3C35,3C36,3C37,3C38,3C39,3C3A,3C3B,3C3C,3C3D,3C3E,3C3F,3C50,
+                        21C0,0001, 3C00,
+                        21C4,000A, 3C43,3C44,3C45,3C46,3C47,3C48,3C49,3C4A,3C4B,3C4C,
                         FFFF
 
 $A4:D7B6             dx FFFE,
-                        2246,0004,3C4F,3C60,3C61,3C62,
-                        2286,0004,3C5F,3C70,3C71,3C72,
-                        22C6,0004,3C6A,3C6B,3C6C,3C6D,
-                        2306,0004,3C7A,3C7B,3C7C,3C7D,
+                        2246,0004, 3C4F,3C60,3C61,3C62,
+                        2286,0004, 3C5F,3C70,3C71,3C72,
+                        22C6,0004, 3C6A,3C6B,3C6C,3C6D,
+                        2306,0004, 3C7A,3C7B,3C7C,3C7D,
                         FFFF
 
 $A4:D7EA             dx FFFE,
-                        2246,0004,3D46,3D47,3D48,3D49,
-                        2286,0004,3D56,3D57,3D58,3D59,
-                        22C6,0004,3D4A,3D4B,3D4C,3D4D,
-                        2306,0004,3D5A,3D5B,3D5C,3D5D,
+                        2246,0004, 3D46,3D47,3D48,3D49,
+                        2286,0004, 3D56,3D57,3D58,3D59,
+                        22C6,0004, 3D4A,3D4B,3D4C,3D4D,
+                        2306,0004, 3D5A,3D5B,3D5C,3D5D,
                         FFFF
 
 $A4:D81E             dx FFFE,
-                        2246,0004,3D4E,3D4F,3D02,3D0B,
-                        2286,0004,3D13,3D1B,3C42,3C51,
-                        22C6,0004,3CA0,3CA1,3CAB,3CF9,
-                        2306,0004,3C01,3C08,3C09,3C41,
+                        2246,0004, 3D4E,3D4F,3D02,3D0B,
+                        2286,0004, 3D13,3D1B,3C42,3C51,
+                        22C6,0004, 3CA0,3CA1,3CAB,3CF9,
+                        2306,0004, 3C01,3C08,3C09,3C41,
                         FFFF
 
 $A4:D852             dx FFFE,
-                        2354,0006,3D40,3D41,3D42,3D43,3D44,3D45,
-                        2394,0006,3D50,3D51,3D52,3D53,3D54,3D55,
+                        2354,0006, 3D40,3D41,3D42,3D43,3D44,3D45,
+                        2394,0006, 3D50,3D51,3D52,3D53,3D54,3D55,
                         FFFF
 
 $A4:D876             dx FFFE,
-                        2354,0006,3D26,3D27,3D28,3D29,3D2A,3D2B,
-                        2394,0006,3D36,3D37,3D38,3D39,3D3A,3D3B,
+                        2354,0006, 3D26,3D27,3D28,3D29,3D2A,3D2B,
+                        2394,0006, 3D36,3D37,3D38,3D39,3D3A,3D3B,
                         FFFF
 
 $A4:D89A             dx FFFE,
-                        2354,0006,3D2C,3D2D,3D2E,3D2F,3CC8,3CC9,
-                        2394,0006,3D3C,3D3D,3D3E,3D3F,3CE7,3CE8,
+                        2354,0006, 3D2C,3D2D,3D2E,3D2F,3CC8,3CC9,
+                        2394,0006, 3D3C,3D3D,3D3E,3D3F,3CE7,3CE8,
                         FFFF
 
 $A4:D8BE             dx FFFE,
-                        2040,000C,0338,0338,0338,0338,0338,3C02,3C03,3C04,3C05,3C06,3C07,0338,
-                        2080,000C,0338,0338,0338,3C10,3C11,3C12,3C13,3C14,3C15,3C16,3C17,3C18,
-                        20C0,000C,0338,3C0A,3C0B,3C0C,3C0D,3C0E,3C0F,3C20,3C21,3C22,3C23,3C24,
-                        2100,000C,3C19,3C1A,3C1B,3C1C,3C1D,3C1E,3C1F,3C30,3C31,3C32,3C33,3C34,
-                        2140,000C,3C25,3C26,3C27,3C28,3C29,3C2A,3C2B,3C2C,3C2D,3C2E,3C2F,3C40,
-                        2180,000C,3C35,3C36,3C37,3C38,3C39,3C3A,3C3B,3C3C,3C3D,3C3E,3C3F,3C50,
-                        21C0,000C,3C00,0338,3C43,3C44,3C45,3C46,3C47,3C48,3C49,3C4A,3C4B,3C4C,
-                        2200,000C,0338,0338,3C53,3C54,3C55,3C56,3C57,3C58,3C59,3C5A,3C5B,3C5C,
-                        2240,000C,0338,3C4D,3C4E,3C4F,3C60,3C61,3C62,3C63,3C64,3C65,3C66,3C67,
-                        2280,000C,0338,3C5D,3C5E,3C5F,3C70,3C71,3C72,3C73,3C74,3C75,3C76,3C77,
-                        22C0,000C,0338,3C68,3C69,3C6A,3C6B,3C6C,3C6D,3C6E,3C6F,3C80,3C81,0338,
-                        2300,000C,0338,3C78,3C79,3C7A,3C7B,3C7C,3C7D,3C7E,3C7F,3C90,3C91,0338,
-                        2340,000C,0338,3C82,3C83,3C84,3C85,3C86,3C87,3C88,3C89,3C8A,3D40,3D41,
-                        2380,000C,0338,0338,3C93,3C94,3C95,3C96,3C97,3C98,3C99,3C9A,3D50,3D51,
+                        2040,000C, 0338,0338,0338,0338,0338,3C02,3C03,3C04,3C05,3C06,3C07,0338,
+                        2080,000C, 0338,0338,0338,3C10,3C11,3C12,3C13,3C14,3C15,3C16,3C17,3C18,
+                        20C0,000C, 0338,3C0A,3C0B,3C0C,3C0D,3C0E,3C0F,3C20,3C21,3C22,3C23,3C24,
+                        2100,000C, 3C19,3C1A,3C1B,3C1C,3C1D,3C1E,3C1F,3C30,3C31,3C32,3C33,3C34,
+                        2140,000C, 3C25,3C26,3C27,3C28,3C29,3C2A,3C2B,3C2C,3C2D,3C2E,3C2F,3C40,
+                        2180,000C, 3C35,3C36,3C37,3C38,3C39,3C3A,3C3B,3C3C,3C3D,3C3E,3C3F,3C50,
+                        21C0,000C, 3C00,0338,3C43,3C44,3C45,3C46,3C47,3C48,3C49,3C4A,3C4B,3C4C,
+                        2200,000C, 0338,0338,3C53,3C54,3C55,3C56,3C57,3C58,3C59,3C5A,3C5B,3C5C,
+                        2240,000C, 0338,3C4D,3C4E,3C4F,3C60,3C61,3C62,3C63,3C64,3C65,3C66,3C67,
+                        2280,000C, 0338,3C5D,3C5E,3C5F,3C70,3C71,3C72,3C73,3C74,3C75,3C76,3C77,
+                        22C0,000C, 0338,3C68,3C69,3C6A,3C6B,3C6C,3C6D,3C6E,3C6F,3C80,3C81,0338,
+                        2300,000C, 0338,3C78,3C79,3C7A,3C7B,3C7C,3C7D,3C7E,3C7F,3C90,3C91,0338,
+                        2340,000C, 0338,3C82,3C83,3C84,3C85,3C86,3C87,3C88,3C89,3C8A,3D40,3D41,
+                        2380,000C, 0338,0338,3C93,3C94,3C95,3C96,3C97,3C98,3C99,3C9A,3D50,3D51,
                         FFFF
 
 $A4:DA4A             dx FFFE,
-                        2202,000B,0338,3C53,3C54,3C55,3C56,3C57,3C58,3C59,3C5A,3C5B,3C5C,
-                        2242,000B,3C4D,3C4E,3C4F,3C60,3C61,3C62,3C63,3C64,3C65,3C66,3C67,
-                        2282,000B,3C5D,3C5E,3C5F,3C70,3C71,3C72,3C73,3C74,3C75,3C76,3C77,
-                        22C2,000B,3C68,3C69,3C6A,3C6B,3C6C,3C6D,3C6E,3C6F,3C80,3C81,0338,
-                        2302,000B,3C78,3C79,3C7A,3C7B,3C7C,3C7D,3C7E,3C7F,3C90,3C91,0338,
-                        2342,000B,3C82,3C83,3C84,3C85,3C86,3C87,3C88,3C89,3C8A,3D40,3D41,
-                        2382,000B,0338,3C93,3C94,3C95,3C96,3C97,3C98,3C99,3C9A,3D50,3D51,
+                        2202,000B, 0338,3C53,3C54,3C55,3C56,3C57,3C58,3C59,3C5A,3C5B,3C5C,
+                        2242,000B, 3C4D,3C4E,3C4F,3C60,3C61,3C62,3C63,3C64,3C65,3C66,3C67,
+                        2282,000B, 3C5D,3C5E,3C5F,3C70,3C71,3C72,3C73,3C74,3C75,3C76,3C77,
+                        22C2,000B, 3C68,3C69,3C6A,3C6B,3C6C,3C6D,3C6E,3C6F,3C80,3C81,0338,
+                        2302,000B, 3C78,3C79,3C7A,3C7B,3C7C,3C7D,3C7E,3C7F,3C90,3C91,0338,
+                        2342,000B, 3C82,3C83,3C84,3C85,3C86,3C87,3C88,3C89,3C8A,3D40,3D41,
+                        2382,000B, 0338,3C93,3C94,3C95,3C96,3C97,3C98,3C99,3C9A,3D50,3D51,
                         FFFF
 
 $A4:DB04             dx 0017, 01D8,D8,2F77, 01E8,E8,2F66, 01F0,E8,2F65, 0000,D0,2F76, 01F8,D0,2F75, 01F0,D0,2F74, 01F0,C8,2F64, C3E0,C8,2F62, C3D0,C8,2F60, C3E8,D8,2F68, 01E0,E0,2F77, 01E0,D8,2F67, C218,D8,2F6E, C208,D8,2F6C, C3F8,D8,2F6A, C218,E8,2F84, C208,E8,2F82, C3F8,E8,2F80, C218,F8,2F8E, C208,F8,2F8C, C3F8,F8,2F8A, C3E8,F8,2F88, C3D8,F8,2F86

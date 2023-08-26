@@ -67,11 +67,9 @@ $93:8070 6B          RTL
 }
 
 
-;;; $8071:  ;;;
+;;; $8071: Initialise super missile link ;;;
 {
-; Run for super missiles
-; Initialises super missile link, I think
-; Damage is 300 (same as super missile), instruction list is $9F7B (loop of single instruction with 8x8 radius and dummy empty spritemap)
+; Instruction list is $9F7B (loop of single instruction with 8x8 radius and dummy empty spritemap)
 $93:8071 08          PHP
 $93:8072 8B          PHB
 $93:8073 4B          PHK                    ;\
@@ -104,8 +102,8 @@ $93:809F 6B          RTL
 {
 $93:80A0 08          PHP
 $93:80A1 8B          PHB
-$93:80A2 4B          PHK
-$93:80A3 AB          PLB
+$93:80A2 4B          PHK                    ;\
+$93:80A3 AB          PLB                    ;} DB = $93
 $93:80A4 C2 30       REP #$30
 $93:80A6 BD 19 0C    LDA $0C19,x[$7E:0C23]  ;\
 $93:80A9 29 0F 00    AND #$000F             ;|
@@ -136,18 +134,18 @@ $93:80CE 6B          RTL
 ; Called by $90:AE06 (kill projectile)
 $93:80CF 08          PHP
 $93:80D0 8B          PHB
-$93:80D1 4B          PHK
-$93:80D2 AB          PLB
+$93:80D1 4B          PHK                    ;\
+$93:80D2 AB          PLB                    ;} DB = $93
 $93:80D3 C2 30       REP #$30
 $93:80D5 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $93:80D8 89 00 0F    BIT #$0F00             ;} If beam: 
 $93:80DB D0 1B       BNE $1B    [$80F8]     ;/
 $93:80DD BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $93:80E0 29 FF F0    AND #$F0FF             ;|
-$93:80E3 09 00 07    ORA #$0700             ;} Set dead beam
+$93:80E3 09 00 07    ORA #$0700             ;} Projectile type = beam explosion
 $93:80E6 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $93:80E9 AD 7B 86    LDA $867B  [$93:867B]  ;\
-$93:80EC 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A007
+$93:80EC 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A007 (beam explosion)
 $93:80EF A9 0C 00    LDA #$000C             ;\
 $93:80F2 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound Ch, sound library 2, max queued sounds allowed = 6 (beam hit wall)
 $93:80F6 80 47       BRA $47    [$813F]     ; Go to BRANCH_RETURN
@@ -159,18 +157,18 @@ $93:8100 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 7, sound library 2, m
 
 $93:8104 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $93:8107 48          PHA                    ;|
-$93:8108 29 FF F0    AND #$F0FF             ;} Set dead (super) missile
+$93:8108 29 FF F0    AND #$F0FF             ;} Projectile type = (super) missile explosion
 $93:810B 09 00 08    ORA #$0800             ;|
 $93:810E 9D 18 0C    STA $0C18,x[$7E:0C18]  ;/
 $93:8111 68          PLA                    ;\
 $93:8112 89 00 02    BIT #$0200             ;} If not super missile:
 $93:8115 D0 08       BNE $08    [$811F]     ;/
 $93:8117 AD 7F 86    LDA $867F  [$93:867F]  ;\
-$93:811A 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A039
+$93:811A 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A039 (missile explosion)
 $93:811D 80 12       BRA $12    [$8131]
 
 $93:811F AD 93 86    LDA $8693  [$93:8693]  ;\ Else (super missile):
-$93:8122 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A0C1
+$93:8122 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A0C1 (super missile explosion)
 $93:8125 A9 14 00    LDA #$0014             ;\
 $93:8128 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 1 pixel displacement, diagonal shaking
 $93:812B A9 1E 00    LDA #$001E             ;\
@@ -197,8 +195,8 @@ $93:814D 6B          RTL
 {
 $93:814E 08          PHP
 $93:814F 8B          PHB
-$93:8150 4B          PHK
-$93:8151 AB          PLB
+$93:8150 4B          PHK                    ;\
+$93:8151 AB          PLB                    ;} DB = $93
 $93:8152 C2 30       REP #$30
 $93:8154 AD 83 86    LDA $8683  [$93:8683]  ;\
 $93:8157 9D 40 0C    STA $0C40,x[$7E:0C4A]  ;} Projectile instruction pointer = $A06B
@@ -210,16 +208,16 @@ $93:8162 6B          RTL
 }
 
 
-;;; $8163: Initialise shinespark echo or spazer SBA projectile ;;;
+;;; $8163: Initialise shinespark echo or spazer SBA trail projectile ;;;
 {
 $93:8163 08          PHP
 $93:8164 8B          PHB
-$93:8165 4B          PHK
-$93:8166 AB          PLB
+$93:8165 4B          PHK                    ;\
+$93:8166 AB          PLB                    ;} DB = $93
 $93:8167 C2 30       REP #$30
 $93:8169 BD 04 0C    LDA $0C04,x[$7E:0C0A]  ;\
 $93:816C 29 0F 00    AND #$000F             ;|
-$93:816F 0A          ASL A                  ;} $12 = projectile direction * 2
+$93:816F 0A          ASL A                  ;} $12 = (projectile direction) * 2
 $93:8170 85 12       STA $12    [$7E:0012]  ;/
 $93:8172 BD 18 0C    LDA $0C18,x[$7E:0C1E]  ;\
 $93:8175 29 FF 00    AND #$00FF             ;|
@@ -255,14 +253,14 @@ $93:81A3 6B          RTL
 ; Excluding ice SBA, which is run as a regular projectile
 $93:81A4 08          PHP
 $93:81A5 8B          PHB
-$93:81A6 4B          PHK
-$93:81A7 AB          PLB
+$93:81A6 4B          PHK                    ;\
+$93:81A7 AB          PLB                    ;} DB = $93
 $93:81A8 C2 30       REP #$30
 $93:81AA BD 18 0C    LDA $0C18,x[$7E:0C1E]  ;\
 $93:81AD 29 0F 00    AND #$000F             ;|
 $93:81B0 0A          ASL A                  ;|
 $93:81B1 A8          TAY                    ;|
-$93:81B2 B9 13 84    LDA $8413,y[$93:8423]  ;} Projectile damage = [[$8413 + beam type * 2]]
+$93:81B2 B9 13 84    LDA $8413,y[$93:8423]  ;} Projectile damage = [[$8413 + (beam type) * 2]]
 $93:81B5 A8          TAY                    ;|
 $93:81B6 B9 00 00    LDA $0000,y[$93:8685]  ;|
 $93:81B9 9D 2C 0C    STA $0C2C,x[$7E:0C32]  ;/
@@ -270,7 +268,7 @@ $93:81BC 10 04       BPL $04    [$81C2]     ; If [projectile damage] < 0:
 $93:81BE 5C 73 85 80 JML $808573[$80:8573]  ; Crash
 
 $93:81C2 B9 02 00    LDA $0002,y[$93:8687]  ;\
-$93:81C5 9D 40 0C    STA $0C40,x[$7E:0C46]  ;} Projectile instruction = [[$8413 + beam type * 2] + 2]
+$93:81C5 9D 40 0C    STA $0C40,x[$7E:0C46]  ;} Projectile instruction = [[$8413 + (beam type) * 2] + 2]
 $93:81C8 A9 01 00    LDA #$0001             ;\
 $93:81CB 9D 54 0C    STA $0C54,x[$7E:0C5A]  ;} Projectile instruction timer = 1
 $93:81CE AB          PLB
@@ -279,20 +277,20 @@ $93:81D0 6B          RTL
 }
 
 
-;;; $81D1: $16 = [[projectile instruction pointer] - 2] ;;;
+;;; $81D1: $16 = projectile trail frame ;;;
 {
 $93:81D1 08          PHP
 $93:81D2 8B          PHB
-$93:81D3 4B          PHK
-$93:81D4 AB          PLB
+$93:81D3 4B          PHK                    ;\
+$93:81D4 AB          PLB                    ;} DB = $93
 $93:81D5 C2 30       REP #$30
 $93:81D7 5A          PHY
-$93:81D8 BD 40 0C    LDA $0C40,x[$7E:0C40]
-$93:81DB 38          SEC
-$93:81DC E9 08 00    SBC #$0008
-$93:81DF A8          TAY
-$93:81E0 B9 06 00    LDA $0006,y[$93:9F09]
-$93:81E3 85 16       STA $16    [$7E:0016]
+$93:81D8 BD 40 0C    LDA $0C40,x[$7E:0C40]  ;\
+$93:81DB 38          SEC                    ;|
+$93:81DC E9 08 00    SBC #$0008             ;|
+$93:81DF A8          TAY                    ;} $16 = [[projectile instruction pointer] - 2]
+$93:81E0 B9 06 00    LDA $0006,y[$93:9F09]  ;|
+$93:81E3 85 16       STA $16    [$7E:0016]  ;/
 $93:81E5 7A          PLY
 $93:81E6 AB          PLB
 $93:81E7 28          PLP
@@ -346,8 +344,8 @@ $93:822E 6B          RTL
 ;;; $822F: Instruction - delete ;;;
 {
 $93:822F C2 30       REP #$30
-$93:8231 22 B7 AD 90 JSL $90ADB7[$90:ADB7]
-$93:8235 68          PLA
+$93:8231 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
+$93:8235 68          PLA                    ; Terminate projectile handling
 $93:8236 AB          PLB
 $93:8237 28          PLP
 $93:8238 6B          RTL
@@ -363,7 +361,7 @@ $93:823F 60          RTS
 }
 
 
-;;; $8240: Instruction - go to [[Y] + 2] if [bomb timer] <= [[Y]] else go to [[Y] + 4] ;;;
+;;; $8240: Unused. Instruction - go to [[Y] + 2] if [bomb timer] <= [[Y]] else go to [[Y] + 4] ;;;
 {
 $93:8240 C2 30       REP #$30
 $93:8242 B9 00 00    LDA $0000,y
@@ -533,7 +531,7 @@ $93:8356 BD 40 0C    LDA $0C40,x[$7E:0C52]  ;\
 $93:8359 F0 5B       BEQ $5B    [$83B6]     ;} If [projectile instruction] = 0: go to BRANCH_NEXT
 $93:835B BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $93:835E 29 00 0F    AND #$0F00             ;|
-$93:8361 C9 00 03    CMP #$0300             ;} If projectile is not a (power) bomb nor dead projectile: go to BRANCH_NEXT
+$93:8361 C9 00 03    CMP #$0300             ;} If projectile is beam or (super) missile: go to BRANCH_NEXT
 $93:8364 30 50       BMI $50    [$83B6]     ;/
 $93:8366 F0 12       BEQ $12    [$837A]     ; If projectile is not a power bomb:
 $93:8368 C9 00 05    CMP #$0500             ;\
@@ -591,22 +589,22 @@ $93:83BF             dw 03E8
 
 ;;; $83C1: Projectile data pointers ;;;
 {
-; Uncharged beams
+; Uncharged beams. Indexed by beam type
 $93:83C1             dw 8431, 84B5, 849F, 84E1, 8447, 84F7, 845D, 8473, 84CB, 850D, 8523, 8489
 
-; Charged beams
+; Charged beams. Indexed by beam type
 $93:83D9             dw 8539, 85D3, 85A7, 85E9, 854F, 85FF, 8565, 857B, 85BD, 862B, 8615, 8591
 
-; Non-beam projectiles
+; Non-beam projectiles. Indexed by projectile type
 $93:83F1             dw 8641, 8641, 8657, 8671, 8641, 8675, 8641, 8679, 867D
 
-; Shinespark echo and spazer SBA projectile
+; Shinespark echo and spazer SBA trail projectile. Indexed by projectile type - 22h
 $93:8403             dw 0000, 0000, 86AB, 8695, 86AB, 86D7, 0000, 86C1
 
-; SBA projectiles
+; SBA projectiles. Indexed by beam type
 $93:8413             dw 0000, 8689, 0000, 0000, 868D, 868D, 0000, 0000, 8685, 8685, 0000, 0000
 
-; Something for super missiles
+; Super missile link. Indexed by projectile type (always 2)
 $93:842B             dw 0000, 0000, 866D
 }
 
@@ -654,26 +652,26 @@ $93:8615             dw 0258,9ADB,9B1F,9B63,9BA7,9ADB,9ADB,9B1F,9B63,9BA7,9ADB ;
 $93:862B             dw 02EE,9BEB,9C9F,9D53,9E07,9BEB,9BEB,9C9F,9D53,9E07,9BEB ; Plasma + wave
 
 ; Non-beam projectiles
-$93:8641             dw 0064,9EBB,9EC7,9ED3,9EDF,9EEB,9EEB,9EF7,9F03,9F0F,9EBB ; Missiles
+$93:8641             dw 0064,9EBB,9EC7,9ED3,9EDF,9EEB,9EEB,9EF7,9F03,9F0F,9EBB ; Missile
 $93:8657             dw 012C,9F1B,9F27,9F33,9F3F,9F4B,9F4B,9F57,9F63,9F6F,9F1B ; Super missile
-$93:866D             dw 012C,9F7B ; Super missile related
+$93:866D             dw 012C,9F7B ; Super missile link
 $93:8671             dw 00C8,9F87 ; Power bomb
 $93:8675             dw 001E,9FBF ; Bomb
-$93:8679             dw 0008,A007 ; Dead beam
-$93:867D             dw 0008,A039 ; Dead (super) missile
-$93:8681             dw 0000,A06B
+$93:8679             dw 0008,A007 ; Beam explosion
+$93:867D             dw 0008,A039 ; (Super) missile explosion
+$93:8681             dw 0000,A06B ; Unused. Bomb explosion
 $93:8685             dw 012C,A095 ; Plasma SBA
 $93:8689             dw 012C,A159 ; Wave SBA
-$93:868D             dw 012C,8977
-$93:8691             dw 0008,A0C1
-$93:8695             dw F000,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3
-$93:86AB             dw 012C,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D ; Spazer SBA
+$93:868D             dw 012C,8977 ; Spazer SBA
+$93:8691             dw 0008,A0C1 ; Unused. Super missile explosion
+$93:8695             dw F000,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3,A0F3 ; Unused projectile 25h
+$93:86AB             dw 012C,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D,A13D ; Spazer SBA trail
 $93:86C1             dw 1000,A119,A119,A119,A119,A119,A119,A119,A119,A119,A119 ; Shinespark echo
-$93:86D7             dw 0000,A16D ; Unused shinespark beam?
+$93:86D7             dw 0000,A16D ; Unused projectile 27h (unused shinespark beam?)
 }
 
 
-;;; $86DB: Instruction lists ;;;
+;;; $86DB..A1A0: Instruction lists ;;;
 {
 ;;; $86DB: Instruction list - power - up ;;;
 {
@@ -1988,7 +1986,7 @@ $93:9F6F             dx 000F,ADE1,08,08,0000,
 }
 
 
-;;; $9F7B: Instruction list -  ;;;
+;;; $9F7B: Instruction list - super missile link ;;;
 {
 $93:9F7B             dx 000F,A117,08,08,0000,
                         8239,9F7B             ; Go to $9F7B
@@ -2004,7 +2002,7 @@ $93:9F87             dx 0005,AB97,04,04,0000,
 }
 
 
-;;; $9FA3: Instruction list -  ;;;
+;;; $9FA3: Unused. Instruction list - fast power bomb ;;;
 {
 $93:9FA3             dx 0001,AB97,04,04,0000,
                         0001,AB9E,04,04,0000,
@@ -2023,7 +2021,7 @@ $93:9FBF             dx 0005,AD45,04,04,0000,
 }
 
 
-;;; $9FE3: Instruction list -  ;;;
+;;; $9FE3: Unused. Instruction list - fast bomb ;;;
 {
 $93:9FE3             dx 0001,AD45,04,04,0000,
                         0001,AD4C,04,04,0000,
@@ -2033,7 +2031,7 @@ $93:9FE3             dx 0001,AD45,04,04,0000,
 }
 
 
-;;; $A007: Instruction list - dead beam ;;;
+;;; $A007: Instruction list - beam explosion ;;;
 {
 $93:A007             dx 0003,ABB3,00,00,0000,
                         0003,ABBA,00,00,0000,
@@ -2045,7 +2043,7 @@ $93:A007             dx 0003,ABB3,00,00,0000,
 }
 
 
-;;; $A039: Instruction list - dead (super) missile ;;;
+;;; $A039: Instruction list - missile explosion ;;;
 {
 $93:A039             dx 0003,A7C9,08,08,0000,
                         0003,A7D0,08,08,0000,
@@ -2057,7 +2055,7 @@ $93:A039             dx 0003,A7C9,08,08,0000,
 }
 
 
-;;; $A06B: Instruction list -  ;;;
+;;; $A06B: Instruction list - bomb explosion ;;;
 {
 $93:A06B             dx 0002,A83E,08,08,0000,
                         0002,A854,0C,0C,0000,
@@ -2079,7 +2077,7 @@ $93:A095             dx 0002,A83E,08,08,0000,
 }
 
 
-;;; $A0C1: Instruction list -  ;;;
+;;; $A0C1: Instruction list - super missile explosion ;;;
 {
 $93:A0C1             dx 0005,AA84,08,08,0000,
                         0005,AA9A,0C,0C,0000,
@@ -2091,7 +2089,7 @@ $93:A0C1             dx 0005,AA84,08,08,0000,
 }
 
 
-;;; $A0F3: Instruction list -  ;;;
+;;; $A0F3: Instruction list - unused projectile 25h ;;;
 {
 $93:A0F3             dx 0002,A117,10,20,0000,
                         0002,A117,10,20,0001,
@@ -2117,7 +2115,7 @@ $93:A119             dx 0002,A117,20,20,0000,
 }
 
 
-;;; $A13D: Instruction list - spazer SBA ;;;
+;;; $A13D: Instruction list - spazer SBA trail ;;;
 {
 $93:A13D             dx 0002,A117,04,08,0000,
                         0002,A117,0C,08,0001,
@@ -2134,7 +2132,7 @@ $93:A159             dx 0008,AF4C,04,04,0000,
 }
 
 
-;;; $A16D: Instruction list -  ;;;
+;;; $A16D: Instruction list - unused shinespark beam (projectile 27h) ;;;
 {
 $93:A16D             dx 0003,ABB3,00,00,0000,
                         0003,ABBA,00,00,0000,
@@ -2147,38 +2145,39 @@ $93:A16D             dx 0003,ABB3,00,00,0000,
 }
 
 
-;;; $A1A1: Spritemap pointers ;;;
+;;; $A1A1: Flare spritemap pointers ;;;
 {
-; Charge / grapple beam flare and charge sparks
-; 3Eh is used for a shinespark windup effect by unused function $F5E2
+; Index 3Eh is used for a shinespark windup effect by unused function $F5E2
 $93:A1A1             dw AB6C, AB73, AB6C, AB73, AB6C, AB73, AB6C, AB73, AB7A, AB73, AB7A, AB73, AB7A, AB73, AB7A, AB73,
-                        AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81,
-                        A6FD, A70E, A71F, A730, A741, A752,
-                        A763, A774, A785, A796, A7A7, A7B8,
-                        A8DE, A8EF, A900, A911, A922, A933,
-                        A944, A955, A966, A977, A988, A999,
-                        ABB3, ABBA, ABC1, ABD7, ABED, AC03,
-                        A83E, A854, A86A, A880, A896, A8AC
+                        AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81, AB7A, AB81, ; 0..1Dh: Flare (charge beam / hyper beam / grapple beam)
+                        A6FD, A70E, A71F, A730, A741, A752, ; 1Eh..23h: Flare slow sparks (charge beam / hyper beam) - facing right
+                        A763, A774, A785, A796, A7A7, A7B8, ; 24h..29h: Flare fast sparks (charge beam / hyper beam) - facing right
+                        A8DE, A8EF, A900, A911, A922, A933, ; 2Ah..2Fh: Flare slow sparks (charge beam / hyper beam) - facing left
+                        A944, A955, A966, A977, A988, A999, ; 30h..35h: Flare fast sparks (charge beam / hyper beam) - facing left
+                        ABB3, ABBA, ABC1, ABD7, ABED, AC03, ; 36h..3Bh: Unused
+                        A83E, A854, A86A, A880, A896, A8AC  ; 3Ch..41h: Unused
 }
 
 
-;;; $A225: Flare / charge beam sparks spritemap table index offsets ;;;
+;;; $A225: Flare spritemap table index offsets ;;;
 {
-;                        _______________ Charge / grapple beam flare
-;                       |      _________ Charge beam sparks (3 outer sparks)
-;                       |     |      ___ Charge beam sparks (other 3 outer sparks)
+;                        _______________ Flare (charge beam / hyper beam / grapple beam)
+;                       |      _________ Flare slow sparks (charge beam / hyper beam)
+;                       |     |      ___ Flare fast sparks (charge beam / hyper beam)
 ;                       |     |     |
 $93:A225             dw 0000, 001E, 0024 ; Facing right
 $93:A22B             dw 0000, 002A, 0030 ; Facing left
 }
 
 
-;;; $A231: Projectile spritemaps ;;;
+;;; $A231: Projectile / flare spritemaps ;;;
 {
 $93:A231             dx 0001, 01FC,FC,3A2B ; Unused
 $93:A238             dx 0001, 01FC,FC,3A2A ; Unused
 $93:A23F             dx 0001, 01FC,FC,3A29 ; Unused
 $93:A246             dx 0001, 01FC,FC,3A28 ; Unused
+
+; Power
 $93:A24D             dx 0001, 01FC,FC,2C30
 $93:A254             dx 0001, 01FC,FC,2C31
 $93:A25B             dx 0001, 01FC,FC,2C32
@@ -2187,6 +2186,7 @@ $93:A269             dx 0001, 01FC,FC,EC30
 $93:A270             dx 0001, 01FC,FC,EC31
 $93:A277             dx 0001, 01FC,FC,AC32
 $93:A27E             dx 0001, 01FC,FC,AC31
+
 $93:A285             dx 0001, 01FC,FC,2C30 ; Unused
 $93:A28C             dx 0001, 01FC,FC,2C31 ; Unused
 $93:A293             dx 0001, 01FC,FC,2C32 ; Unused
@@ -2211,10 +2211,13 @@ $93:A361             dx 0001, 01FC,FC,2C38 ; Unused
 $93:A368             dx 0001, 01FC,FC,2C39 ; Unused
 $93:A36F             dx 0001, 01FC,FC,2C3A ; Unused
 $93:A376             dx 0001, 01FC,FC,2C3B ; Unused
+
+; Plasma / plasma + ice
 $93:A37D             dx 0004, 0008,FC,2C30, 01F0,FC,2C30, 0000,FC,2C30, 01F8,FC,2C30
 $93:A393             dx 0006, 0008,04,2C32, 0000,04,2C31, 0000,FC,2C32, 01F8,FC,2C31, 01F8,F4,2C32, 01F0,F4,2C31
 $93:A3B3             dx 0004, 01FC,08,2C33, 01FC,00,2C33, 01FC,F8,2C33, 01FC,F0,2C33
 $93:A3C9             dx 0006, 01F0,04,6C32, 01F8,04,6C31, 01F8,FC,6C32, 0000,FC,6C31, 0000,F4,6C32, 0008,F4,6C31
+
 $93:A3E9             dx 0004, 0008,FC,2C30, 01F0,FC,2C30, 0000,FC,2C30, 01F8,FC,2C30 ; Unused
 $93:A3FF             dx 0006, 000A,04,2C32, 0002,04,2C31, 0002,FC,2C32, 01FA,FC,2C31, 01FA,F4,2C32, 01F2,F4,2C31 ; Unused
 $93:A41F             dx 0004, 01FC,08,2C33, 01FC,F0,2C33, 01FC,00,2C33, 01FC,F8,2C33 ; Unused
@@ -2244,46 +2247,60 @@ $93:A6D2             dx 0001, 01FC,FC,3C53 ; Unused
 $93:A6D9             dx 0001, 01FC,FC,3C52 ; Unused
 $93:A6E0             dx 0001, 01FC,FC,3C51 ; Unused
 $93:A6E7             dx 0004, 01F8,00,BC50, 0000,00,FC50, 0000,F8,7C50, 01F8,F8,3C50 ; Unused
+
+; Flare slow sparks (charge beam / hyper beam) - facing right. Uses palette 5(!)
 $93:A6FD             dx 0003, 0000,0C,2A5B, 0008,EC,2A5B, 01F0,F4,2A5B
 $93:A70E             dx 0003, 01FD,0A,2A5C, 0006,EE,2A5C, 01F2,F6,2A5C
 $93:A71F             dx 0003, 01FC,08,2A5C, 0004,F0,2A5C, 01F4,F8,2A5C
 $93:A730             dx 0003, 0002,F2,2A5D, 01FB,06,2A5D, 01F6,FA,2A5D
 $93:A741             dx 0003, 01FB,04,2A5D, 01F8,FB,2A5D, 0000,F4,2A5D
 $93:A752             dx 0003, 01FB,02,2A5D, 01FA,FA,2A5D, 0000,F6,2A5D
+
+; Flare fast sparks (charge beam / hyper beam) - facing right. Uses palette 5(!)
 $93:A763             dx 0003, 0000,EC,AA5B, 0008,0C,AA5B, 01F0,04,AA5B
 $93:A774             dx 0003, 01FE,EE,AA5C, 0006,0A,AA5C, 01F2,02,AA5C
 $93:A785             dx 0003, 0004,08,AA5C, 01F4,00,AA5C, 01FD,F0,AA5C
 $93:A796             dx 0003, 0002,06,AA5D, 01FC,F2,AA5D, 01F6,FE,AA5D
 $93:A7A7             dx 0003, 01FC,F4,AA5D, 01F8,FC,AA5D, 0000,04,AA5D
 $93:A7B8             dx 0003, 01FC,F6,AA5D, 01FA,FD,AA5D, 0000,02,AA5D
+
+; Missile explosion
 $93:A7C9             dx 0001, 01FC,FC,3A5F
 $93:A7D0             dx 0004, 0000,00,FA8A, 01F8,00,BA8A, 0000,F8,7A8A, 01F8,F8,3A8A
 $93:A7E6             dx 0004, C200,00,FA90, C3F0,00,BA90, C200,F0,7A90, C3F0,F0,3A90
 $93:A7FC             dx 0004, C200,00,FA92, C3F0,00,BA92, C200,F0,7A92, C3F0,F0,3A92
 $93:A812             dx 0004, C200,00,FA94, C3F0,00,BA94, C200,F0,7A94, C3F0,F0,3A94
 $93:A828             dx 0004, C200,00,FA96, C3F0,00,BA96, C200,F0,7A96, C3F0,F0,3A96
+
+; Bomb explosion / plasma SBA / unused flare spritemaps 3Ch..41h
 $93:A83E             dx 0004, 0000,00,FA8B, 01F8,00,BA8B, 0000,F8,7A8B, 01F8,F8,3A8B
 $93:A854             dx 0004, 0000,00,FA7A, 01F8,00,BA7A, 0000,F8,7A7A, 01F8,F8,3A7A
 $93:A86A             dx 0004, C200,00,FA70, C3F0,00,BA70, C200,F0,7A70, C3F0,F0,3A70
 $93:A880             dx 0004, C200,00,FA72, C3F0,00,BA72, C200,F0,7A72, C3F0,F0,3A72
 $93:A896             dx 0004, C200,00,FA74, C3F0,00,BA74, C200,F0,7A74, C3F0,F0,3A74
-$93:A8AC             dx 0004, 01F8,00,3A5E, 0000,00,3A5E, 0000,F8,3A5E, 01F8,F8,3A5E
+$93:A8AC             dx 0004, 01F8,00,3A5E, 0000,00,3A5E, 0000,F8,3A5E, 01F8,F8,3A5E ; Flare spritemap 41h only (not part of bomb explosion / plasma SBA)
+
 $93:A8C2             dx 0001, 01FC,FC,3C38 ; Unused
 $93:A8C9             dx 0001, 01FC,FC,3C39 ; Unused
 $93:A8D0             dx 0001, 01FC,FC,3C3A ; Unused
 $93:A8D7             dx 0001, 01FC,FC,3C3B ; Unused
+
+; Flare slow sparks (charge beam / hyper beam) - facing left
 $93:A8DE             dx 0003, 01F8,0C,6C5B, 01F0,EC,6C5B, 0008,F4,6C5B
 $93:A8EF             dx 0003, 01FB,0A,6C5C, 01F2,EE,6C5C, 0006,F6,6C5C
 $93:A900             dx 0003, 01FC,08,6C5C, 01F4,F0,6C5C, 0004,F8,6C5C
 $93:A911             dx 0003, 01F6,F2,6C5D, 01FD,06,6C5D, 0002,FA,6C5D
 $93:A922             dx 0003, 01FD,04,6C5D, 0000,FB,6C5D, 01F8,F4,6C5D
 $93:A933             dx 0003, 01FD,02,6C5D, 01FE,FA,6C5D, 01F8,F6,6C5D
+
+; Flare fast sparks (charge beam / hyper beam) - facing left
 $93:A944             dx 0003, 01F8,EC,EC5B, 01F0,0C,EC5B, 0008,04,EC5B
 $93:A955             dx 0003, 01FA,EE,EC5C, 01F2,0A,EC5C, 0006,02,EC5C
 $93:A966             dx 0003, 01F4,08,EC5C, 0004,00,EC5C, 01FB,F0,EC5C
 $93:A977             dx 0003, 01F6,06,EC5D, 01FC,F2,EC5D, 0002,FE,EC5D
 $93:A988             dx 0003, 01FC,F4,EC5D, 0000,FC,EC5D, 01F8,04,EC5D
 $93:A999             dx 0003, 01FC,F6,EC5D, 01FE,FD,EC5D, 01F8,02,EC5D
+
 $93:A9AA             dx 0001, 01F7,F7,3A48 ; Unused
 $93:A9B1             dx 0002, 0001,01,3A48, C3F3,F3,3A7C ; Unused
 $93:A9BD             dx 0003, C3FD,FD,3A7C, 01F7,01,3A48, C3F3,F3,3A7E ; Unused
@@ -2298,26 +2315,36 @@ $93:AA2C             dx 0004, 0000,00,FC60, 0000,F8,7C60, 01F8,00,BC60, 01F8,F8,
 $93:AA42             dx 0004, 0000,00,FC61, 0000,F8,7C61, 01F8,00,BC61, 01F8,F8,3C61 ; Unused
 $93:AA58             dx 0004, 0000,00,FC62, 0000,F8,7C62, 01F8,00,BC62, 01F8,F8,3C62 ; Unused
 $93:AA6E             dx 0004, 0000,00,FC63, 0000,F8,7C63, 01F8,00,BC63, 01F8,F8,3C63 ; Unused
+
+; Super missile explosion
 $93:AA84             dx 0004, 0000,00,FA8A, 01F8,00,BA8A, 0000,F8,7A8A, 01F8,F8,3A8A
 $93:AA9A             dx 0004, C200,00,FA90, C200,F0,7A90, C3F0,00,BA90, C3F0,F0,3A90
 $93:AAB0             dx 0004, C200,00,FA92, C3F0,00,BA92, C200,F0,7A92, C3F0,F0,3A92
 $93:AAC6             dx 000C, 0010,00,FAC2, 0010,F8,7AC2, 0000,10,FAB2, 01F8,10,BAB2, 01E8,00,BAC2, 01E8,F8,3AC2, 0000,E8,7AB2, 01F8,E8,3AB2, C200,00,FAB0, C200,F0,7AB0, C3F0,00,BAB0, C3F0,F0,3AB0
 $93:AB04             dx 0008, C208,00,FAB5, C200,08,FAB3, C3E8,00,BAB5, C3F0,08,BAB3, C208,F0,7AB5, C200,E8,7AB3, C3E8,F0,3AB5, C3F0,E8,3AB3
 $93:AB2E             dx 000C, 0000,10,FABB, 01F8,10,BABB, 0000,E8,7ABB, 01F8,E8,3ABB, 0010,00,FAB7, 0010,F8,7AB7, 01E8,00,BAB7, 01E8,F8,3AB7, C208,08,FAB8, C3E8,08,BAB8, C208,E8,7AB8, C3E8,E8,3AB8
+
+; Flare (charge beam / hyper beam / grapple beam)
 $93:AB6C             dx 0001, 01FC,FC,2C53
 $93:AB73             dx 0001, 01FC,FC,2C52
 $93:AB7A             dx 0001, 01FC,FC,2C51
 $93:AB81             dx 0004, 01F8,00,AC50, 0000,00,EC50, 0000,F8,6C50, 01F8,F8,2C50
+
+; Power bomb
 $93:AB97             dx 0001, 01FC,FC,3A26
 $93:AB9E             dx 0001, 01FC,FC,3A27
 $93:ABA5             dx 0001, 01FC,FC,3A7B
+
 $93:ABAC             dx 0001, 01FC,FC,3A5F ; Unused
+
+; Beam explosion / unused flare spritemaps 36h..3Bh / unused shinespark beam
 $93:ABB3             dx 0001, 01FC,FC,3C53
 $93:ABBA             dx 0001, 01FC,FC,3C51
 $93:ABC1             dx 0004, 0000,00,FC60, 0000,F8,7C60, 01F8,00,BC60, 01F8,F8,3C60
 $93:ABD7             dx 0004, 0000,00,FC61, 0000,F8,7C61, 01F8,00,BC61, 01F8,F8,3C61
 $93:ABED             dx 0004, 0000,00,FC62, 0000,F8,7C62, 01F8,00,BC62, 01F8,F8,3C62
 $93:AC03             dx 0004, 0000,00,FC63, 0000,F8,7C63, 01F8,00,BC63, 01F8,F8,3C63
+
 $93:AC19             dx 0004, 01F2,FC,7A6C, 0006,FC,7A6C, 0000,FC,7A6C, 01F8,FC,3A6C ; Unused
 $93:AC2F             dx 0004, 0000,FC,7A6E, 0008,FC,7A6D, 01F8,FC,3A6E, 01F0,FC,3A6D ; Unused
 $93:AC45             dx 0004, 01F0,FE,3A6F, 0008,FE,3A6F, 0000,FE,3A6F, 01F8,FE,3A6F ; Unused
@@ -2348,10 +2375,14 @@ $93:ACFC             dx 0004, 0000,00,FA44, 01F8,00,BA44, 0000,F8,7A44, 01F8,F8,
 $93:AD12             dx 0004, 0000,00,FA45, 0000,F8,7A45, 01F8,00,BA45, 01F8,F8,3A45 ; Unused
 $93:AD28             dx 0004, 01F8,00,BA46, 0000,00,FA46, 0000,F8,7A46, 01F8,F8,3A46 ; Unused
 $93:AD3E             dx 0001, 01FC,FC,3A42 ; Unused
+
+; Bomb
 $93:AD45             dx 0001, 01FC,FC,3A4C
 $93:AD4C             dx 0001, 01FC,FC,3A4D
 $93:AD53             dx 0001, 01FC,FC,3A4E
 $93:AD5A             dx 0001, 01FC,FC,3A4F
+
+; Missile
 $93:AD61             dx 0002, 01FF,FC,2A55, 01F7,FC,2A54
 $93:AD6D             dx 0003, 01F8,F5,2A56, 0000,FD,2A58, 01F8,FD,2A57
 $93:AD7E             dx 0002, 01FC,F7,2A59, 01FC,FF,2A5A
@@ -2359,7 +2390,9 @@ $93:AD8A             dx 0003, 0000,F5,6A56, 01F8,FD,6A58, 0000,FD,6A57
 $93:AD9B             dx 0002, 01F9,FC,6A55, 0001,FC,6A54
 $93:ADA7             dx 0003, 0000,03,EA56, 01F8,FB,EA58, 0000,FB,EA57
 $93:ADB8             dx 0002, 01FD,01,AA59, 01FD,F9,AA5A
-$93:ADC4             dx 0003, 01F8,03,AA56, 0000,FB,AA58, 01F8,FB,AA57 ; Unused
+$93:ADC4             dx 0003, 01F8,03,AA56, 0000,FB,AA58, 01F8,FB,AA57
+
+; Super missile
 $93:ADD5             dx 0002, 0000,FC,2A65, 01F8,FC,2A64
 $93:ADE1             dx 0003, 0002,FE,2A68, 01FA,FE,2A67, 01FA,F6,2A66
 $93:ADF2             dx 0002, 01FC,F8,2A69, 01FC,00,2A6A
@@ -2368,10 +2401,13 @@ $93:AE0F             dx 0002, 01F8,FC,6A65, 0000,FC,6A64
 $93:AE1B             dx 0003, 01F6,FA,EA68, 01FE,FA,EA67, 01FE,02,EA66
 $93:AE2C             dx 0002, 01FC,00,AA69, 01FC,F8,AA6A
 $93:AE38             dx 0003, 0002,FA,AA68, 01FA,FA,AA67, 01FA,02,AA66
+
 $93:AE49             dx 0001, 01FC,FC,3A3C ; Unused
 $93:AE50             dx 0001, 01FC,FC,3A3D ; Unused
 $93:AE57             dx 0001, 01FC,FC,3A3E ; Unused
 $93:AE5E             dx 0001, 01FC,FC,3A3F ; Unused
+
+; Wave / ice + wave
 $93:AE65             dx 0001, 01FC,FC,2C30
 $93:AE6C             dx 0001, 01FC,F4,2C30
 $93:AE73             dx 0001, 01FC,EF,2C31
@@ -2405,6 +2441,8 @@ $93:AF30             dx 0001, 0002,02,2C30
 $93:AF37             dx 0001, 0005,05,2C31
 $93:AF3E             dx 0001, 0007,07,2C31
 $93:AF45             dx 0001, 0008,08,2C32
+
+; Charged wave / wave SBA
 $93:AF4C             dx 0004, 0000,00,EC34, 01F8,00,AC34, 0000,F8,6C34, 01F8,F8,2C34
 $93:AF62             dx 0004, 0000,00,EC33, 01F8,00,AC33, 0000,F8,6C33, 01F8,F8,2C33
 $93:AF78             dx 0008, 0000,08,EC33, 01F8,08,AC33, 0000,00,6C33, 01F8,00,2C33, 0000,F8,EC34, 01F8,F8,AC34, 0000,F0,6C34, 01F8,F0,2C34
@@ -2441,6 +2479,7 @@ $93:B43C             dx 0008, 01F1,F8,6C34, 01F1,00,EC34, 01E9,00,AC34, 01E9,F8,
 $93:B466             dx 0008, 01F1,F8,6C33, 01F1,00,EC33, 01E9,00,AC33, 01E9,F8,2C33, 000F,00,EC34, 0007,00,AC34, 000F,F8,6C34, 0007,F8,2C34
 $93:B490             dx 0008, 01F0,F8,6C34, 01F0,00,EC34, 01E8,00,AC34, 01E8,F8,2C34, 0010,00,EC33, 0008,00,AC33, 0010,F8,6C33, 0008,F8,2C33
 $93:B4BA             dx 0008, 01F0,F8,6C33, 01F0,00,EC33, 01E8,00,AC33, 01E8,F8,2C33, 0010,00,EC34, 0008,00,AC34, 0010,F8,6C34, 0008,F8,2C34
+
 $93:B4E4             dx 0001, 01FC,FC,2C30 ; Unused
 $93:B4EB             dx 0002, 01FC,04,2C37, 01FC,F4,2C30 ; Unused
 $93:B4F7             dx 0002, 01FC,09,2C36, 01FC,EF,2C31 ; Unused
@@ -2475,6 +2514,8 @@ $93:B647             dx 0002, 01F3,F3,2C36, 0005,05,2C31 ; Unused
 $93:B653             dx 0002, 01F1,F1,2C35, 0007,07,2C32 ; Unused
 $93:B65F             dx 0002, 01F0,F0,2C37, 0008,08,2C30 ; Unused
 $93:B66B             dx 0001, 01FC,FC,2C30 ; Unused
+
+; Charged ice + wave
 $93:B672             dx 0004, 0000,00,EC34, 01F8,00,AC34, 0000,F8,6C34, 01F8,F8,2C34
 $93:B688             dx 0004, 0000,00,EC33, 01F8,00,AC33, 0000,F8,6C33, 01F8,F8,2C33
 $93:B69E             dx 0008, 0000,08,EC33, 01F8,08,AC33, 0000,00,6C33, 01F8,00,2C33, 0000,F8,EC34, 01F8,F8,AC34, 0000,F0,6C34, 01F8,F0,2C34
@@ -2511,6 +2552,8 @@ $93:BB62             dx 0008, 01F1,F8,6C34, 01F1,00,EC34, 01E9,00,AC34, 01E9,F8,
 $93:BB8C             dx 0008, 01F1,F8,6C33, 01F1,00,EC33, 01E9,00,AC33, 01E9,F8,2C33, 000F,00,EC34, 0007,00,AC34, 000F,F8,6C34, 0007,F8,2C34
 $93:BBB6             dx 0008, 01F0,F8,6C34, 01F0,00,EC34, 01E8,00,AC34, 01E8,F8,2C34, 0010,00,EC33, 0008,00,AC33, 0010,F8,6C33, 0008,F8,2C33
 $93:BBE0             dx 0008, 01F0,F8,6C33, 01F0,00,EC33, 01E8,00,AC33, 01E8,F8,2C33, 0010,00,EC34, 0008,00,AC34, 0010,F8,6C34, 0008,F8,2C34
+
+; (Charged) plasma + wave / plasma + ice + wave
 $93:BC0A             dx 0004, 0008,FC,2C30, 0000,FC,2C30, 01F8,FC,2C30, 01F0,FC,2C30
 $93:BC20             dx 0008, 0008,04,2C30, 0000,04,2C30, 01F8,04,2C30, 01F0,04,2C30, 0008,F4,2C30, 0000,F4,2C30, 01F8,F4,2C30, 01F0,F4,2C30
 $93:BC4A             dx 0008, 0008,09,2C30, 0000,09,2C30, 01F8,09,2C30, 01F0,09,2C30, 0008,EF,2C30, 0000,EF,2C30, 01F8,EF,2C30, 01F0,EF,2C30
@@ -2591,6 +2634,8 @@ $93:CF76             dx 0014, 0001,E6,6C32, 0009,E6,6C31, 000E,F2,6C32, 0016,F2,
 $93:CFDC             dx 0014, 01FE,E3,6C32, 0006,E3,6C31, 01DE,03,6C32, 01E6,03,6C31, 0011,F5,6C32, 0019,F5,6C31, 01F1,15,6C32, 01F9,15,6C31, 01E6,FB,6C32, 01EE,FB,6C31, 01F6,EB,6C32, 01FE,EB,6C31, 01EE,F3,6C32, 01F6,F3,6C31, 01F9,0D,6C32, 0001,0D,6C31, 0009,FD,6C32, 0011,FD,6C31, 0001,05,6C32, 0009,05,6C31
 $93:D042             dx 0014, 0013,F7,6C32, 001B,F7,6C31, 01FC,E1,6C32, 0004,E1,6C31, 01F3,17,6C32, 01FB,17,6C31, 01DD,00,6C32, 01E5,00,6C31, 01E4,F9,6C32, 01EC,F9,6C31, 01F4,E9,6C32, 01FC,E9,6C31, 01EC,F1,6C32, 01F4,F1,6C31, 01FB,0F,6C32, 0003,0F,6C31, 000B,FF,6C32, 0013,FF,6C31, 0003,07,6C32, 000B,07,6C31
 $93:D0A8             dx 0014, 0014,F8,6C32, 001C,F8,6C31, 01FB,E0,6C32, 0003,E0,6C31, 01F4,18,6C32, 01FC,18,6C31, 01DB,00,6C32, 01E3,00,6C31, 01E3,F8,6C32, 01EB,F8,6C31, 01F3,E8,6C32, 01FB,E8,6C31, 01EB,F0,6C32, 01F3,F0,6C31, 01FC,10,6C32, 0004,10,6C31, 000C,00,6C32, 0014,00,6C31, 0004,08,6C32, 000C,08,6C31
+
+; Spazer / spazer + ice / spazer + wave / spazer + ice + wave
 $93:D10E             dx 0004, 01F2,00,6C32, 01FA,00,6C31, 01FA,F8,6C32, 0002,F8,6C31
 $93:D124             dx 000C, 01F2,00,6C32, 01FA,00,6C31, 01FA,F8,6C32, 0002,F8,6C31, 01EC,FA,6C32, 01F4,FA,6C31, 01F4,F2,6C32, 01FC,F2,6C31, 01F8,06,6C32, 0000,06,6C31, 0000,FE,6C32, 0008,FE,6C31
 $93:D162             dx 000C, 01F2,00,6C32, 01FA,00,6C31, 01FA,F8,6C32, 0002,F8,6C31, 01E9,F7,6C32, 01F1,F7,6C31, 01F1,EF,6C32, 01F9,EF,6C31, 01FB,09,6C32, 0003,09,6C31, 0003,01,6C32, 000B,01,6C31
@@ -2639,6 +2684,8 @@ $93:D86E             dx 0006, 01F8,F4,6C30, 01F8,FC,6C30, 01F8,04,6C30, 0000,04,
 $93:D88E             dx 0006, 01F8,EF,6C30, 01F8,FC,6C30, 01F8,09,6C30, 0000,09,6C30, 0000,FC,6C30, 0000,EF,6C30
 $93:D8AE             dx 0006, 01F8,ED,6C30, 01F8,FC,6C30, 01F8,0B,6C30, 0000,0B,6C30, 0000,FC,6C30, 0000,ED,6C30
 $93:D8CE             dx 0006, 01F8,EC,6C30, 01F8,FC,6C30, 01F8,0C,6C30, 0000,0C,6C30, 0000,FC,6C30, 0000,EC,6C30
+
+; Charged spazer / spazer + ice / spazer + wave / spazer + ice + wave
 $93:D8EE             dx 0004, 0008,FC,2C34, 0000,FC,2C34, 01F8,FC,2C34, 01F0,FC,2C34
 $93:D904             dx 000C, 0008,FC,2C34, 0000,FC,2C34, 01F8,FC,2C34, 01F0,FC,2C34, 0008,00,2C34, 0000,00,2C34, 01F8,00,2C34, 01F0,00,2C34, 0008,F8,2C34, 0000,F8,2C34, 01F8,F8,2C34, 01F0,F8,2C34
 $93:D942             dx 000C, 0008,04,2C34, 0000,04,2C34, 01F8,04,2C34, 01F0,04,2C34, 0008,FC,2C34, 0000,FC,2C34, 01F8,FC,2C34, 01F0,FC,2C34, 0008,F4,2C34, 0000,F4,2C34, 01F8,F4,2C34, 01F0,F4,2C34
@@ -2711,6 +2758,8 @@ $93:EB46             dx 000C, 01F0,04,6C30, 01F0,FC,6C30, 01F0,F4,6C30, 0008,04,
 $93:EB84             dx 000C, 01F0,09,6C30, 01F0,FC,6C30, 01F0,EF,6C30, 0008,09,6C30, 0008,FC,6C30, 0008,EF,6C30, 01F8,EF,6C30, 01F8,FC,6C30, 01F8,09,6C30, 0000,09,6C30, 0000,FC,6C30, 0000,EF,6C30
 $93:EBC2             dx 000C, 01F0,0B,6C30, 01F0,FC,6C30, 01F0,ED,6C30, 0008,0B,6C30, 0008,FC,6C30, 0008,ED,6C30, 01F8,ED,6C30, 01F8,FC,6C30, 01F8,0B,6C30, 0000,0B,6C30, 0000,FC,6C30, 0000,ED,6C30
 $93:EC00             dx 000C, 01F0,0C,6C30, 01F0,FC,6C30, 01F0,EC,6C30, 0008,0C,6C30, 0008,FC,6C30, 0008,EC,6C30, 01F8,EC,6C30, 01F8,FC,6C30, 01F8,0C,6C30, 0000,0C,6C30, 0000,FC,6C30, 0000,EC,6C30
+
+; Charged power
 $93:EC3E             dx 0004, 0000,F8,6C33, 0000,00,EC33, 01F8,00,AC33, 01F8,F8,2C33
 $93:EC54             dx 0004, 0000,00,EC33, 0000,F8,6C33, 01F8,00,AC33, 01F8,F8,2C33
 $93:EC6A             dx 0004, 0000,00,EC33, 0000,F8,6C33, 01F8,00,AC33, 01F8,F8,2C33
@@ -2727,14 +2776,20 @@ $93:ED46             dx 0004, 0000,00,EC34, 0000,F8,6C34, 01F8,00,AC34, 01F8,F8,
 $93:ED5C             dx 0004, 0000,00,EC34, 0000,F8,6C34, 01F8,00,AC34, 01F8,F8,2C34
 $93:ED72             dx 0004, 0000,00,EC34, 0000,F8,6C34, 01F8,00,AC34, 01F8,F8,2C34
 $93:ED88             dx 0004, 0000,00,EC34, 0000,F8,6C34, 01F8,00,AC34, 01F8,F8,2C34
+
+; Charged ice
 $93:ED9E             dx 0004, 0000,00,EC33, 01F8,00,AC33, 0000,F8,6C33, 01F8,F8,2C33
 $93:EDB4             dx 0004, 0000,00,EC34, 01F8,00,AC34, 0000,F8,6C34, 01F8,F8,2C34
 $93:EDCA             dx 0004, 0000,00,EC33, 01F8,00,AC33, 0000,F8,6C33, 01F8,F8,2C33
 $93:EDE0             dx 0004, 0000,00,EC34, 01F8,00,AC34, 0000,F8,6C34, 01F8,F8,2C34
+
+; Ice
 $93:EDF6             dx 0001, 01FC,FC,2C30
 $93:EDFD             dx 0001, 01FC,FC,2C31
 $93:EE04             dx 0001, 01FC,FC,2C32
 $93:EE0B             dx 0001, 01FC,FC,6C31
+
+; Charged spazer / spazer + ice / spazer + wave / spazer + ice + wave
 $93:EE12             dx 0001, 01FC,FC,2C30
 $93:EE19             dx 0002, 01F8,FC,2C30, 0000,FC,2C30
 $93:EE25             dx 0003, 01F4,FC,2C30, 01FC,FC,2C30, 0004,FC,2C30 ; Unused
@@ -2777,6 +2832,8 @@ $93:F0A2             dx 0004, 01FC,08,2C37, 01FC,00,2C37, 01FC,F8,2C37, 01FC,F0,
 $93:F0B8             dx 0002, 01FC,F8,6C36, 01FC,00,AC36
 $93:F0C4             dx 0004, 01F8,FC,AC35, 01F8,04,AC36, 0000,F4,6C36, 0000,FC,6C35
 $93:F0DA             dx 0006, 01F4,08,AC36, 0004,F0,6C36, 01F4,00,AC35, 01FC,00,6C35, 01FC,F8,AC35, 0004,F8,6C35 ; Unused
+
+; Charged plasma / plasma + ice / plasma + wave / plasma + ice + wave
 $93:F0FA             dx 0001, 01FC,FC,2C30
 $93:F101             dx 0002, 01F8,FC,2C30, 0000,FC,2C30 ; Unused
 $93:F10D             dx 0003, 01F4,FC,2C30, 01FC,FC,2C30, 0004,FC,2C30
@@ -2832,8 +2889,8 @@ $93:F5AE             dx 000A, 01EC,10,AC36, 000C,E8,6C36, 01EC,08,AC35, 01F4,00,
 {
 $93:F5E2 08          PHP
 $93:F5E3 8B          PHB
-$93:F5E4 4B          PHK
-$93:F5E5 AB          PLB
+$93:F5E4 4B          PHK                    ;\
+$93:F5E5 AB          PLB                    ;} DB = $93
 $93:F5E6 C2 30       REP #$30
 $93:F5E8 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $93:F5EB C9 C7 00    CMP #$00C7             ;|
