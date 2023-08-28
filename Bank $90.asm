@@ -3459,7 +3459,7 @@ $90:9594 60          RTS
 }
 
 
-;;; $9595: Unused ;;;
+;;; $9595: Unused. Camera X speed = 0.0 ;;;
 {
 $90:9595 08          PHP
 $90:9596 C2 30       REP #$30
@@ -3531,7 +3531,7 @@ $90:960B 30 19       BMI $19    [$9626]     ; If [ideal layer 1 X position] >= [
 $90:960D AD 0F 09    LDA $090F  [$7E:090F]  ;\
 $90:9610 18          CLC                    ;|
 $90:9611 6D A4 0D    ADC $0DA4  [$7E:0DA4]  ;|
-$90:9614 8D 0F 09    STA $090F  [$7E:090F]  ;} Layer 1 X position += [X distance Samus moved + 1]
+$90:9614 8D 0F 09    STA $090F  [$7E:090F]  ;} Layer 1 X position += [camera X speed]
 $90:9617 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $90:961A 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;|
 $90:961D 8D 11 09    STA $0911  [$7E:0911]  ;/
@@ -3541,7 +3541,7 @@ $90:9624 80 17       BRA $17    [$963D]
 $90:9626 AD 0F 09    LDA $090F  [$7E:090F]  ;\ Else ([ideal layer 1 X position] >= [layer 1 X position]):
 $90:9629 38          SEC                    ;|
 $90:962A ED A4 0D    SBC $0DA4  [$7E:0DA4]  ;|
-$90:962D 8D 0F 09    STA $090F  [$7E:090F]  ;} Layer 1 X position -= [X distance Samus moved + 1]
+$90:962D 8D 0F 09    STA $090F  [$7E:090F]  ;} Layer 1 X position -= [camera X speed]
 $90:9630 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $90:9633 ED A2 0D    SBC $0DA2  [$7E:0DA2]  ;|
 $90:9636 8D 11 09    STA $0911  [$7E:0911]  ;/
@@ -3592,7 +3592,7 @@ $90:968C 30 19       BMI $19    [$96A7]     ; If ideal layer 1 Y position > laye
 $90:968E AD 13 09    LDA $0913  [$7E:0913]  ;\
 $90:9691 18          CLC                    ;|
 $90:9692 6D A8 0D    ADC $0DA8  [$7E:0DA8]  ;|
-$90:9695 8D 13 09    STA $0913  [$7E:0913]  ;} Layer 1 Y position += Y distance Samus moved last frame
+$90:9695 8D 13 09    STA $0913  [$7E:0913]  ;} Layer 1 Y position += [camera Y speed]
 $90:9698 AD 15 09    LDA $0915  [$7E:0915]  ;|
 $90:969B 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;|
 $90:969E 8D 15 09    STA $0915  [$7E:0915]  ;/
@@ -3602,7 +3602,7 @@ $90:96A5 80 17       BRA $17    [$96BE]
 $90:96A7 AD 13 09    LDA $0913  [$7E:0913]  ;\ Else (ideal layer 1 Y position < layer 1 Y position):
 $90:96AA 38          SEC                    ;|
 $90:96AB ED A8 0D    SBC $0DA8  [$7E:0DA8]  ;|
-$90:96AE 8D 13 09    STA $0913  [$7E:0913]  ;} Layer 1 Y position -= Y distance Samus moved last frame
+$90:96AE 8D 13 09    STA $0913  [$7E:0913]  ;} Layer 1 Y position -= [camera Y speed]
 $90:96B1 AD 15 09    LDA $0915  [$7E:0915]  ;|
 $90:96B4 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
 $90:96B7 8D 15 09    STA $0915  [$7E:0915]  ;/
@@ -3613,7 +3613,7 @@ $90:96BF 60          RTS
 }
 
 
-;;; $96C0: Calculate the horizontal distance Samus has moved last frame + 1 ;;;
+;;; $96C0: Calculate camera X speed ;;;
 {
 ; This check to go to BRANCH_RIGHT doesn't include the subpixel position,
 ; so that branch may be taken even if Samus moved left, so long as she hasn't reached the next pixel
@@ -3631,7 +3631,7 @@ $90:96CD AD 12 0B    LDA $0B12  [$7E:0B12]  ;\
 $90:96D0 38          SEC                    ;|
 $90:96D1 ED F8 0A    SBC $0AF8  [$7E:0AF8]  ;|
 $90:96D4 8D A4 0D    STA $0DA4  [$7E:0DA4]  ;|
-$90:96D7 AD 10 0B    LDA $0B10  [$7E:0B10]  ;} Absolute X distance Samus moved last frame + 1 = [Samus previous X position] - [Samus X position] + 1.0
+$90:96D7 AD 10 0B    LDA $0B10  [$7E:0B10]  ;} Camera X speed = [Samus previous X position] - [Samus X position] + 1.0
 $90:96DA ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
 $90:96DD 18          CLC                    ;|
 $90:96DE 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|
@@ -3643,7 +3643,7 @@ $90:96E6 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $90:96E9 38          SEC                    ;|
 $90:96EA ED 12 0B    SBC $0B12  [$7E:0B12]  ;|
 $90:96ED 8D A4 0D    STA $0DA4  [$7E:0DA4]  ;|
-$90:96F0 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} Absolute X distance Samus moved last frame + 1 = [Samus X position] - [Samus previous X position] + 1.0
+$90:96F0 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} Camera X speed = [Samus X position] - [Samus previous X position] + 1.0
 $90:96F3 ED 10 0B    SBC $0B10  [$7E:0B10]  ;|
 $90:96F6 18          CLC                    ;|
 $90:96F7 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|
@@ -3668,7 +3668,7 @@ $90:970C AD 16 0B    LDA $0B16  [$7E:0B16]  ;\
 $90:970F 38          SEC                    ;|
 $90:9710 ED FC 0A    SBC $0AFC  [$7E:0AFC]  ;|
 $90:9713 8D A8 0D    STA $0DA8  [$7E:0DA8]  ;|
-$90:9716 AD 14 0B    LDA $0B14  [$7E:0B14]  ;} Absolute Y distance Samus moved last frame + 1 = [Samus previous Y position] - [Samus Y position] + 1.0
+$90:9716 AD 14 0B    LDA $0B14  [$7E:0B14]  ;} Camera Y speed = [Samus previous Y position] - [Samus Y position] + 1.0
 $90:9719 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
 $90:971C 18          CLC                    ;|
 $90:971D 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|
@@ -3680,7 +3680,7 @@ $90:9725 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $90:9728 38          SEC                    ;|
 $90:9729 ED 16 0B    SBC $0B16  [$7E:0B16]  ;|
 $90:972C 8D A8 0D    STA $0DA8  [$7E:0DA8]  ;|
-$90:972F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} Absolute Y distance Samus moved last frame + 1 = [Samus Y position] - [Samus previous Y position] + 1.0
+$90:972F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} Camera Y speed = [Samus Y position] - [Samus previous Y position] + 1.0
 $90:9732 ED 14 0B    SBC $0B14  [$7E:0B14]  ;|
 $90:9735 18          CLC                    ;|
 $90:9736 6D AD 9E    ADC $9EAD  [$90:9EAD]  ;|

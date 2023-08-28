@@ -5521,7 +5521,7 @@ $80:A527 60          RTS
 ; If layer 1 position + 1/2 scroll down's scroll = red:
 ; {
 ;     $0933 = position of right scroll boundary
-;     $0939 = [layer 1 X position] + [X distance Samus moved + 1] + 2
+;     $0939 = [layer 1 X position] + [camera X speed] + 2
 ;     Layer 1 X position = min([$0939], [$0933])
 ;     If [$0939] < (position of right scroll boundary) and layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 ;         Round layer 1 X position to left scroll boundary
@@ -5529,7 +5529,7 @@ $80:A527 60          RTS
 ; Else if layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 ; {
 ;     $0933 = position of left scroll boundary
-;     $0939 -= [X distance Samus moved + 1] - 2
+;     $0939 -= [camera X speed] - 2
 ;     Layer 1 X position = max([$0939], [$0933])
 ;     If [$0939] >= (position of left scroll boundary) and layer 1 position + 1/2 scroll down's scroll = red:
 ;         Layer 1 X position = [$0939] rounded to right scroll boundary
@@ -5584,10 +5584,10 @@ $80:A588 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A58B AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A58E 18          CLC                    ;|
 $80:A58F 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;|
-$80:A592 69 02 00    ADC #$0002             ;} If [$0939] + [X distance Samus moved + 1] + 2 >= (position of right scroll boundary): go to BRANCH_REACHED_RIGHT_SCROLL_BOUNDARY
+$80:A592 69 02 00    ADC #$0002             ;} If [$0939] + [camera X speed] + 2 >= (position of right scroll boundary): go to BRANCH_REACHED_RIGHT_SCROLL_BOUNDARY
 $80:A595 CD 33 09    CMP $0933  [$7E:0933]  ;|
 $80:A598 B0 3A       BCS $3A    [$A5D4]     ;/
-$80:A59A 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [X distance Samus moved + 1] + 2
+$80:A59A 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [camera X speed] + 2
 $80:A59D AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A5A0 18          CLC                    ;|
 $80:A5A1 69 80 00    ADC #$0080             ;|
@@ -5628,10 +5628,10 @@ $80:A5E9 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A5EC AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A5EF 38          SEC                    ;|
 $80:A5F0 ED A2 0D    SBC $0DA2  [$7E:0DA2]  ;|
-$80:A5F3 E9 02 00    SBC #$0002             ;} If [$0939] - [X distance Samus moved + 1] - 2 < (position of left scroll boundary): go to BRANCH_REACHED_LEFT_SCROLL_BOUNDARY
+$80:A5F3 E9 02 00    SBC #$0002             ;} If [$0939] - [camera X speed] - 2 < (position of left scroll boundary): go to BRANCH_REACHED_LEFT_SCROLL_BOUNDARY
 $80:A5F6 CD 33 09    CMP $0933  [$7E:0933]  ;|
 $80:A5F9 30 3D       BMI $3D    [$A638]     ;/
-$80:A5FB 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [X distance Samus moved + 1] - 2
+$80:A5FB 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera X speed] - 2
 $80:A5FE AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A601 18          CLC                    ;|
 $80:A602 69 80 00    ADC #$0080             ;|
@@ -5721,7 +5721,7 @@ $80:A6A3 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A6A6 38          SEC                    ;|
 $80:A6A7 ED A2 0D    SBC $0DA2  [$7E:0DA2]  ;|
 $80:A6AA E9 02 00    SBC #$0002             ;|
-$80:A6AD CD 33 09    CMP $0933  [$7E:0933]  ;} Layer 1 X position = max([$0933], [$0939] - [X distance Samus moved + 1] - 2)
+$80:A6AD CD 33 09    CMP $0933  [$7E:0933]  ;} Layer 1 X position = max([$0933], [$0939] - [camera X speed] - 2)
 $80:A6B0 10 03       BPL $03    [$A6B5]     ;|
 $80:A6B2 AD 33 09    LDA $0933  [$7E:0933]  ;|
                                             ;|
@@ -5781,7 +5781,7 @@ $80:A713 69 00 01    ADC #$0100             ;|
 $80:A716 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A719 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A71C 18          CLC                    ;|
-$80:A71D 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;} A = [$0939] + absolute distance moved X + 3
+$80:A71D 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;} A = [$0939] + [camera X speed] + 2
 $80:A720 69 02 00    ADC #$0002             ;/
 $80:A723 CD 33 09    CMP $0933  [$7E:0933]  ;\
 $80:A726 90 03       BCC $03    [$A72B]     ;} If A >= [$0933]:
@@ -5874,10 +5874,10 @@ $80:A7CC 8D 35 09    STA $0935  [$7E:0935]  ;/
 $80:A7CF AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A7D2 18          CLC                    ;|
 $80:A7D3 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;|
-$80:A7D6 69 02 00    ADC #$0002             ;} If [$0939] + [Y distance Samus moved + 1] + 2 >= (position of bottom scroll boundary): go to BRANCH_REACHED_BOTTOM_SCROLL_BOUNDARY
+$80:A7D6 69 02 00    ADC #$0002             ;} If [$0939] + [camera Y speed] + 2 >= (position of bottom scroll boundary): go to BRANCH_REACHED_BOTTOM_SCROLL_BOUNDARY
 $80:A7D9 CD 35 09    CMP $0935  [$7E:0935]  ;|
 $80:A7DC B0 3A       BCS $3A    [$A818]     ;/
-$80:A7DE 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [Y distance Samus moved + 1] + 2
+$80:A7DE 8D 39 09    STA $0939  [$7E:0939]  ; $0939 += [camera Y speed] + 2
 $80:A7E1 E2 20       SEP #$20               ;\
 $80:A7E3 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A7E6 1A          INC A                  ;|
@@ -5925,10 +5925,10 @@ $80:A83C B0 52       BCS $52    [$A890]     ;} If [$0937] >= [layer 1 Y position
 $80:A83E AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A841 38          SEC                    ;|
 $80:A842 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
-$80:A845 E9 02 00    SBC #$0002             ;} If [$0939] - [Y distance Samus moved + 1] - 2 < [$0937]: go to BRANCH_REACHED_TOP_SCROLL_BOUNDARY
+$80:A845 E9 02 00    SBC #$0002             ;} If [$0939] - [camera Y speed] - 2 < [$0937]: go to BRANCH_REACHED_TOP_SCROLL_BOUNDARY
 $80:A848 CD 37 09    CMP $0937  [$7E:0937]  ;|
 $80:A84B 30 3D       BMI $3D    [$A88A]     ;/
-$80:A84D 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [Y distance Samus moved + 1] - 2
+$80:A84D 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera Y speed] - 2
 $80:A850 E2 20       SEP #$20               ;\
 $80:A852 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A855 8D 02 42    STA $4202  [$7E:4202]  ;|
@@ -6035,7 +6035,7 @@ $80:A91C B0 15       BCS $15    [$A933]     ;} If [$0937] >= [layer 1 Y position
 ; BRANCH_A91E
 $80:A91E AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A921 38          SEC                    ;|
-$80:A922 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;} A = [$0939] - absolute distance moved Y - 3
+$80:A922 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;} A = [$0939] - [camera Y speed] - 2
 $80:A925 E9 02 00    SBC #$0002             ;/
 $80:A928 CD 37 09    CMP $0937  [$7E:0937]  ;\
 $80:A92B 10 03       BPL $03    [$A930]     ;} If A < [$0937]:
@@ -6097,7 +6097,7 @@ $80:A98E 69 00 01    ADC #$0100             ;|
 $80:A991 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A994 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A997 18          CLC                    ;|
-$80:A998 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;} A = [$0939] + absolute distance moved X + 3
+$80:A998 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;} A = [$0939] + [camera Y speed] + 2
 $80:A99B 69 02 00    ADC #$0002             ;/
 $80:A99E CD 33 09    CMP $0933  [$7E:0933]  ;\
 $80:A9A1 90 03       BCC $03    [$A9A6]     ;} If A >= [$0933]:

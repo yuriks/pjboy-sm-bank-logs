@@ -131,7 +131,7 @@ $A5:878E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:8791 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A5:8794 C9 D0 04    CMP #$04D0             ;} If [$0FAA] < 4D0h:
 $A5:8797 10 07       BPL $07    [$87A0]     ;/
-$A5:8799 20 3E A1    JSR $A13E  [$A5:A13E]  ; Handle Drayogn fight intro movement
+$A5:8799 20 3E A1    JSR $A13E  [$A5:A13E]  ; Handle Draygon fight intro movement
 $A5:879C EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment $0FAA
 $A5:879F 60          RTS                    ; Return
 
@@ -232,27 +232,27 @@ $A5:8865 30 C2       BMI $C2    [$8829]     ;/
 $A5:8867 80 FE       BRA $FE    [$8867]     ; Crash
 
 $A5:8869 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
-$A5:886D 30 0A       BMI $0A    [$8879]     ;} If [$7E:7800] >= 0:
-$A5:886F 38          SEC                    ;\
-$A5:8870 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [$7E:7800]|
-$A5:8873 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;/
-$A5:8877 80 0C       BRA $0C    [$8885]
-
-$A5:8879 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;\ Else ([$7E:7800] < 0): (>_<;)
+$A5:886D 30 0A       BMI $0A    [$8879]     ;|
+$A5:886F 38          SEC                    ;|
+$A5:8870 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A5:8873 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
+$A5:8877 80 0C       BRA $0C    [$8885]     ;} $2C = |[Samus X position] - |[$7E:7800]||
+                                            ;|
+$A5:8879 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
 $A5:887D 18          CLC                    ;|
-$A5:887E 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [$7E:7800]|
+$A5:887E 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;|
 $A5:8881 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;/
 
 $A5:8885 85 2C       STA $2C    [$7E:002C]
 $A5:8887 64 2A       STZ $2A    [$7E:002A]  ;\
 $A5:8889 AD 26 0E    LDA $0E26  [$7E:0E26]  ;|
-$A5:888C 4A          LSR A                  ;|
+$A5:888C 4A          LSR A                  ;} $2E = [$0E26] / 4
 $A5:888D 4A          LSR A                  ;|
-$A5:888E 85 2E       STA $2E    [$7E:002E]  ;|
-$A5:8890 64 30       STZ $30    [$7E:0030]  ;} $0FAE.$0FB0 = [$2C] / ([$0E26] / 4)
+$A5:888E 85 2E       STA $2E    [$7E:002E]  ;/
+$A5:8890 64 30       STZ $30    [$7E:0030]  ;\
 $A5:8892 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;|
 $A5:8896 A5 2C       LDA $2C    [$7E:002C]  ;|
-$A5:8898 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;|
+$A5:8898 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE.$0FB0 = [$2C] / [$2E]
 $A5:889B A5 2A       LDA $2A    [$7E:002A]  ;|
 $A5:889D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
 $A5:88A0 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\

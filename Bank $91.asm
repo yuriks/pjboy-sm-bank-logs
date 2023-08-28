@@ -9186,13 +9186,13 @@ $91:E0DE 8D 46 0A    STA $0A46  [$7E:0A46]  ;} $0A46 = 3
 $91:E0E1 9C 48 0A    STZ $0A48  [$7E:0A48]  ; Samus hurt flash counter = 0
 $91:E0E4 9C 4A 0A    STZ $0A4A  [$7E:0A4A]  ; $0A4A = 0
 $91:E0E7 AF AF 9E 90 LDA $909EAF[$90:9EAF]  ;\
-$91:E0EB 8D A4 0D    STA $0DA4  [$7E:0DA4]  ;} $0DA4 = 0
-$91:E0EE AF AD 9E 90 LDA $909EAD[$90:9EAD]  ;\
-$91:E0F2 8D A2 0D    STA $0DA2  [$7E:0DA2]  ;} $0DA2 = 1
+$91:E0EB 8D A4 0D    STA $0DA4  [$7E:0DA4]  ;|
+$91:E0EE AF AD 9E 90 LDA $909EAD[$90:9EAD]  ;} Camera X speed = 1.0
+$91:E0F2 8D A2 0D    STA $0DA2  [$7E:0DA2]  ;/
 $91:E0F5 AF B3 9E 90 LDA $909EB3[$90:9EB3]  ;\
-$91:E0F9 8D A8 0D    STA $0DA8  [$7E:0DA8]  ;} $0DA8 = 0
-$91:E0FC AF B1 9E 90 LDA $909EB1[$90:9EB1]  ;\
-$91:E100 8D A6 0D    STA $0DA6  [$7E:0DA6]  ;} $0DA6 = 1
+$91:E0F9 8D A8 0D    STA $0DA8  [$7E:0DA8]  ;|
+$91:E0FC AF B1 9E 90 LDA $909EB1[$90:9EB1]  ;} Camera Y speed = 1.0
+$91:E100 8D A6 0D    STA $0DA6  [$7E:0DA6]  ;/
 $91:E103 A2 FE 01    LDX #$01FE             ;\
 $91:E106 A9 FF 00    LDA #$00FF             ;|
                                             ;|
