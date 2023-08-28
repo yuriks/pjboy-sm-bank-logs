@@ -25,4 +25,4 @@ jobs:
         with:
           commit_message: Update logs from website
           file_pattern: '*.asm'
-          commit_author: Yuri Kunde Schlesner <yuriks@users.noreply.github.com>
+          commit_author: PJBoy <gcupcakekid@gmail.com>
