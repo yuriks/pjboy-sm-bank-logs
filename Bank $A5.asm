@@ -214,14 +214,14 @@ $A5:8834 8D 22 0E    STA $0E22  [$7E:0E22]  ;/
 $A5:8837 EB          XBA                    ;\
 $A5:8838 29 FF 00    AND #$00FF             ;|
 $A5:883B 49 FF FF    EOR #$FFFF             ;|
-$A5:883E 1A          INC A                  ;} A = [$0E24] - [$0E22] / 100h
-$A5:883F 18          CLC                    ;|
-$A5:8840 6D 24 0E    ADC $0E24  [$7E:0E24]  ;/
-$A5:8843 CF 02 78 7E CMP $7E7802[$7E:7802]  ;\
-$A5:8847 30 20       BMI $20    [$8869]     ;} If [A] >= [$7E:7802]:
-$A5:8849 8D 24 0E    STA $0E24  [$7E:0E24]  ; $0E24 = [A]
+$A5:883E 1A          INC A                  ;|
+$A5:883F 18          CLC                    ;} If [$0E24] - [$0E22] / 100h >= [Draygon reset Y position]:
+$A5:8840 6D 24 0E    ADC $0E24  [$7E:0E24]  ;|
+$A5:8843 CF 02 78 7E CMP $7E7802[$7E:7802]  ;|
+$A5:8847 30 20       BMI $20    [$8869]     ;/
+$A5:8849 8D 24 0E    STA $0E24  [$7E:0E24]  ; $0E24 -= [$0E22] / 100h
 $A5:884C AE 26 0E    LDX $0E26  [$7E:0E26]  ;\
-$A5:884F 9F 02 90 7E STA $7E9002,x[$7E:9002];} $7E:9002 + [$0E26] = [A]
+$A5:884F 9F 02 90 7E STA $7E9002,x[$7E:9002];} $7E:9002 + [$0E26] = [$0E24]
 $A5:8853 EE 26 0E    INC $0E26  [$7E:0E26]  ;\
 $A5:8856 EE 26 0E    INC $0E26  [$7E:0E26]  ;|
 $A5:8859 EE 26 0E    INC $0E26  [$7E:0E26]  ;} $0E26 += 4
@@ -232,15 +232,15 @@ $A5:8865 30 C2       BMI $C2    [$8829]     ;/
 $A5:8867 80 FE       BRA $FE    [$8867]     ; Crash
 
 $A5:8869 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
-$A5:886D 30 0A       BMI $0A    [$8879]     ;|
-$A5:886F 38          SEC                    ;|
-$A5:8870 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
-$A5:8873 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
-$A5:8877 80 0C       BRA $0C    [$8885]     ;} $2C = |[Samus X position] - |[$7E:7800]||
-                                            ;|
-$A5:8879 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
+$A5:886D 30 0A       BMI $0A    [$8879]     ;} If [Draygon left side reset X position] >= 0: (this condition is always false... and the code of the two branches is equivalent anyway)
+$A5:886F 38          SEC                    ;\
+$A5:8870 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [Draygon left side reset X position]|
+$A5:8873 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;/
+$A5:8877 80 0C       BRA $0C    [$8885]
+
+$A5:8879 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;\ Else ([Draygon left side reset X position] < 0):
 $A5:887D 18          CLC                    ;|
-$A5:887E 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;|
+$A5:887E 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [Draygon left side reset X position]|
 $A5:8881 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;/
 
 $A5:8885 85 2C       STA $2C    [$7E:002C]
@@ -252,7 +252,7 @@ $A5:888E 85 2E       STA $2E    [$7E:002E]  ;/
 $A5:8890 64 30       STZ $30    [$7E:0030]  ;\
 $A5:8892 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;|
 $A5:8896 A5 2C       LDA $2C    [$7E:002C]  ;|
-$A5:8898 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE.$0FB0 = [$2C] / [$2E]
+$A5:8898 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Draygon X speed = [$2C] / [$2E]
 $A5:889B A5 2A       LDA $2A    [$7E:002A]  ;|
 $A5:889D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
 $A5:88A0 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
@@ -1843,21 +1843,21 @@ $A5:95EE 80 1D       BRA $1D    [$960D]
 
 ;;; $95F0: Enemy shot - enemy $DE7F (Draygon) ;;;
 {
-$A5:95F0 AF 1E 78 7E LDA $7E781E[$7E:781E]
-$A5:95F4 18          CLC
-$A5:95F5 69 08 00    ADC #$0008
-$A5:95F8 C9 A0 00    CMP #$00A0
-$A5:95FB 10 04       BPL $04    [$9601]
-$A5:95FD 8F 1E 78 7E STA $7E781E[$7E:781E]
+$A5:95F0 AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
+$A5:95F4 18          CLC                    ;|
+$A5:95F5 69 08 00    ADC #$0008             ;|
+$A5:95F8 C9 A0 00    CMP #$00A0             ;} $7E:781E = min(98h, [$7E:781E] + 8)
+$A5:95FB 10 04       BPL $04    [$9601]     ;|
+$A5:95FD 8F 1E 78 7E STA $7E781E[$7E:781E]  ;/
 
-$A5:9601 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
-$A5:9605 80 06       BRA $06    [$960D]
+$A5:9601 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI, but skips hit-projectile and death animation
+$A5:9605 80 06       BRA $06    [$960D]     ; Go to Draygon reaction
 }
 
 
 ;;; $9607: Power bomb reaction - enemy $DE3F (Draygon) ;;;
 {
-$A5:9607 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]
+$A5:9607 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI, but skips death animation
 $A5:960B 80 00       BRA $00    [$960D]
 }
 
