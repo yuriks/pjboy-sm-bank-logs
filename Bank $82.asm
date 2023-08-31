@@ -10550,6 +10550,14 @@ $82:E4A8 60          RTS
 
 ;;; $E4A9: Handles door transitions - load sprites, background, PLMs, audio; execute custom door and room ASM; and wait for scrolling to end ;;;
 {
+; In this routine, after all of the loading is done, we sit on this busy loop at $E526 waiting for door transition scrolling to finish
+; During this busy loop, door transition scrolling updates are happening due to the IRQ handler ($80:979B),
+; which will eventually set $0931 when scrolling has finished, freeing us from the busy loop
+; On the frame of the last door transition scrolling update, this routine decides to run the PLM handler before waiting for the next frame
+; Because scrolling updates take precedence over PLM draw updates, and because the scrolling updates were carried out prior to any PLM level data modifications,
+; PLM draw updates that affect the top row of (the visible part of) the room for upwards doors or the bottom row of the room for downwards doors aren't visible
+; This is the cause of the "red and green doors appear blue in the Crateria -> Red Brinstar room" bug
+
 $82:E4A9 08          PHP
 $82:E4AA 20 D1 DF    JSR $DFD1  [$82:DFD1]  ; Load enemy GFX to VRAM
 $82:E4AD 22 71 E0 82 JSL $82E071[$82:E071]  ; Queue room music data
