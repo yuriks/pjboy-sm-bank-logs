@@ -1428,7 +1428,7 @@ $A7:AC4A 6C A8 0F    JMP ($0FA8)[$A7:C865]  ; Execute Kraid function
 $A7:AC4D AD B6 05    LDA $06B6  [$7E:05B6]  ;\
 $A7:AC50 29 07 00    AND #$0007             ;} If [frame counter] % 8 = 0:
 $A7:AC53 D0 03       BNE $03    [$AC58]     ;/
-$A7:AC55 20 95 C9    JSR $C995  [$7E:C995]  ; Spawn random earthquake projectile
+$A7:AC55 20 95 C9    JSR $C995  [$A7:C995]  ; Spawn random earthquake projectile
 
 $A7:AC58 A0 01 00    LDY #$0001             ; Y = 1
 $A7:AC5B AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
@@ -2065,25 +2065,25 @@ $A7:B122 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
 $A7:B125 38          SEC                    ;} If Samus right boundary <= [Kraid X position] + [$B163 + [X]]: return
 $A7:B126 E5 12       SBC $12    [$7E:0012]  ;|
 $A7:B128 10 36       BPL $36    [$B160]     ;/
-$A7:B12A AD F6 0A    LDA $0AF6  [$82:0AF6]  ;\
+$A7:B12A AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A7:B12D C9 28 00    CMP #$0028             ;} If [Samus X position] >= 28h:
 $A7:B130 30 0A       BMI $0A    [$B13C]     ;/
 $A7:B132 38          SEC                    ;\
 $A7:B133 E9 08 00    SBC #$0008             ;} Samus X position -= 8
-$A7:B136 8D F6 0A    STA $0AF6  [$82:0AF6]  ;/
-$A7:B139 8D 10 0B    STA $0B10  [$82:0B10]  ; Previous Samus X position = [Samus X position]
+$A7:B136 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
+$A7:B139 8D 10 0B    STA $0B10  [$7E:0B10]  ; Previous Samus X position = [Samus X position]
 
-$A7:B13C AD FA 0A    LDA $0AFA  [$82:0AFA]  ;\
+$A7:B13C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A7:B13F 38          SEC                    ;|
 $A7:B140 E9 08 00    SBC #$0008             ;|
 $A7:B143 CF 08 78 7E CMP $7E7808[$7E:7808]  ;} A = max([$7E:7808], [Samus Y position] - 8)
 $A7:B147 10 04       BPL $04    [$B14D]     ;|
 $A7:B149 AF 08 78 7E LDA $7E7808[$7E:7808]  ;/
 
-$A7:B14D 8D FA 0A    STA $0AFA  [$82:0AFA]  ;\
-$A7:B150 8D 14 0B    STA $0B14  [$82:0B14]  ;} Samus Y position = previous Samus Y position = [A]
-$A7:B153 20 A4 94    JSR $94A4  [$81:94A4]  ; Knock Samus back
-$A7:B156 AD A8 18    LDA $18A8  [$82:18A8]  ;\
+$A7:B14D 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;\
+$A7:B150 8D 14 0B    STA $0B14  [$7E:0B14]  ;} Samus Y position = previous Samus Y position = [A]
+$A7:B153 20 A4 94    JSR $94A4  [$A7:94A4]  ; Knock Samus back
+$A7:B156 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
 $A7:B159 D0 05       BNE $05    [$B160]     ;} If [Samus invincibility timer] = 0:
 $A7:B15B 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 
@@ -4720,12 +4720,12 @@ $A7:C842 6B          RTL
 ;;; $C843: Kraid function - fade in regular background - set enemy properties to dead - Kraid was alive ;;;
 {
 ; Not entirely sure why this function exists
-$A7:C843 20 2C A9    JSR $A92C  [$80:A92C]  ;\
+$A7:C843 20 2C A9    JSR $A92C  [$A7:A92C]  ;\
 $A7:C846 F0 05       BEQ $05    [$C84D]     ;} If Kraid is dead:
 $A7:C848 AD 11 09    LDA $0911  [$80:0911]  ;\
 $A7:C84B F0 03       BEQ $03    [$C850]     ;} If [layer 1 X position] = 0: return
 
-$A7:C84D 20 43 A9    JSR $A943  [$80:A943]  ; Set enemy properties to dead
+$A7:C84D 20 43 A9    JSR $A943  [$A7:A943]  ; Set enemy properties to dead
 
 $A7:C850 6B          RTL
 }
@@ -4734,12 +4734,12 @@ $A7:C850 6B          RTL
 ;;; $C851: Kraid function - fade in regular background - set enemy properties to dead - Kraid was dead ;;;
 {
 ; Not entirely sure why this function exists
-$A7:C851 20 2C A9    JSR $A92C  [$80:A92C]  ;\
+$A7:C851 20 2C A9    JSR $A92C  [$A7:A92C]  ;\
 $A7:C854 F0 05       BEQ $05    [$C85B]     ;} If Kraid is dead:
 $A7:C856 AD 11 09    LDA $0911  [$80:0911]  ;\
 $A7:C859 F0 03       BEQ $03    [$C85E]     ;} If [layer 1 X position] = 0: go to BRANCH_RETURN
 
-$A7:C85B 20 43 A9    JSR $A943  [$80:A943]  ; Set enemy properties to dead
+$A7:C85B 20 43 A9    JSR $A943  [$A7:A943]  ; Set enemy properties to dead
 
 ; BRANCH_RETURN
 $A7:C85E A9 FF FF    LDA #$FFFF             ;\
@@ -4848,7 +4848,7 @@ $A7:C901 6B          RTL
 
 ;;; $C902: Kraid function - raise Kraid through floor - spawn random earthquake projectiles every 8 frames ;;;
 {
-$A7:C902 20 EE C9    JSR $C9EE  [$81:C9EE]  ; Restrict Samus X position to first screen
+$A7:C902 20 EE C9    JSR $C9EE  [$A7:C9EE]  ; Restrict Samus X position to first screen
 $A7:C905 AD B2 0F    LDA $0FB2  [$82:0FB2]  ;\
 $A7:C908 3A          DEC A                  ;} Decrement Kraid function timer
 $A7:C909 8D B2 0F    STA $0FB2  [$82:0FB2]  ;/
@@ -4861,7 +4861,7 @@ $A7:C91A 6B          RTL
 
 $A7:C91B 29 07 00    AND #$0007             ;\ Else ([Kraid function timer] != 0):
 $A7:C91E D0 03       BNE $03    [$C923]     ;} If [Kraid function timer] is a multiple of 8
-$A7:C920 20 95 C9    JSR $C995  [$81:C995]  ; Spawn random earthquake projectile
+$A7:C920 20 95 C9    JSR $C995  [$A7:C995]  ; Spawn random earthquake projectile
 
 $A7:C923 6B          RTL
 }
@@ -4869,11 +4869,11 @@ $A7:C923 6B          RTL
 
 ;;; $C924: Kraid function - raise Kraid through floor - raise Kraid ;;;
 {
-$A7:C924 20 EE C9    JSR $C9EE  [$81:C9EE]  ; Restrict Samus X position to first screen
+$A7:C924 20 EE C9    JSR $C9EE  [$A7:C9EE]  ; Restrict Samus X position to first screen
 $A7:C927 AD 40 18    LDA $1840  [$82:1840]  ;\
 $A7:C92A 89 05 00    BIT #$0005             ;} If [screen shaking timer] % 8 = 0 or 2:
 $A7:C92D D0 03       BNE $03    [$C932]     ;/
-$A7:C92F 20 95 C9    JSR $C995  [$81:C995]  ; Spawn random earthquake projectile
+$A7:C92F 20 95 C9    JSR $C995  [$A7:C995]  ; Spawn random earthquake projectile
 
 $A7:C932 A0 01 00    LDY #$0001             ; Y = 1
 $A7:C935 AD 7E 0F    LDA $0F7E  [$82:0F7E]  ;\
@@ -4906,7 +4906,7 @@ $A7:C978 A9 2D BF    LDA #$BF2D             ;\
 $A7:C97B 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = first phase - prepare to lunge forward
 $A7:C97F A9 DA 96    LDA #$96DA             ;\
 $A7:C982 8D AA 0F    STA $0FAA  [$82:0FAA]  ;} Kraid instruction list pointer = $96DA
-$A7:C985 20 E9 AD    JSR $ADE9  [$81:ADE9]  ; Set up Kraid main loop - thinking
+$A7:C985 20 E9 AD    JSR $ADE9  [$A7:ADE9]  ; Set up Kraid main loop - thinking
 $A7:C988 A9 F3 89    LDA #$89F3             ;\
 $A7:C98B 8D D2 0F    STA $0FD2  [$82:0FD2]  ;} Kraid arm instruction = $89F3
 $A7:C98E A9 01 00    LDA #$0001             ;\

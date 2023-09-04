@@ -1434,7 +1434,7 @@ $82:8C09 FC 00 00    JSR ($0000,x)[$82:F296]; Execute [[X]]
 $82:8C0C FA          PLX
 $82:8C0D 28          PLP
 $82:8C0E 18          CLC                    ;\
-$82:8C0F 60          RTS                    ;} Return carry set
+$82:8C0F 60          RTS                    ;} Return carry clear
 }
 
 
@@ -1453,7 +1453,7 @@ $82:8C14 A2 0E 00    LDX #$000E             ; X = Eh
 ; LOOP
 $82:8C17 8E 8F 1A    STX $1A8F  [$7E:1A8F]  ; Game options menu object index = [X]
 $82:8C1A BD FD 1A    LDA $1AFD,x[$7E:1B0B]  ;\
-$82:8C1D F0 06       BEQ $06    [$8C25]     ;} If [] != 0:
+$82:8C1D F0 06       BEQ $06    [$8C25]     ;} If [game options menu object instruction list pointer] != 0:
 $82:8C1F 20 2B 8C    JSR $8C2B  [$82:8C2B]  ; Process game options menu object
 $82:8C22 AE 8F 1A    LDX $1A8F  [$7E:1A8F]  ; X = [game options menu object index]
 
