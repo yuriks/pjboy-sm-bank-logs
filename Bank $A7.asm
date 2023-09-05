@@ -3989,7 +3989,7 @@ $A7:C23A 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $A7:C23E             dx 01,01,18,9AB200,0800;|
 $A7:C246 A9 02       LDA #$02               ;|
 $A7:C248 8D 0B 42    STA $420B  [$7E:420B]  ;/
-$A7:C24B 4C 78 C2    JMP $C278  [$80:C278]  ; Go to transfer Kraid top half tilemap to VRAM
+$A7:C24B 4C 78 C2    JMP $C278  [$A7:C278]  ; Go to transfer Kraid top half tilemap to VRAM
 }
 
 

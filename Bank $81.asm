@@ -50,7 +50,7 @@ $81:8050 A0 C0 D7    LDY #$D7C0             ; Y = $D7C0
 
 ; LOOP
 $81:8053 B9 00 00    LDA $0000,y[$7E:D7C0]  ;\
-$81:8056 9F 00 00 70 STA $700000,x[$7E:0010];} $70:0000 + [X] = [[Y]]
+$81:8056 9F 00 00 70 STA $700000,x[$70:0010];} $70:0000 + [X] = [[Y]]
 $81:805A 18          CLC                    ;\
 $81:805B 65 14       ADC $14    [$7E:0014]  ;} $14 += [[Y]]
 $81:805D 85 14       STA $14    [$7E:0014]  ;/
@@ -62,11 +62,11 @@ $81:8063 C0 1C DE    CPY #$DE1C             ;\
 $81:8066 D0 EB       BNE $EB    [$8053]     ;} If [Y] != $DE1C: go to LOOP
 $81:8068 A6 12       LDX $12    [$7E:0012]  ;\
 $81:806A A5 14       LDA $14    [$7E:0014]  ;|
-$81:806C 9F 00 00 70 STA $700000,x[$7E:0000];} $70:0000 + [$12] = $70:1FF0 + [$12] = [$14] (checksums)
-$81:8070 9F F0 1F 70 STA $701FF0,x[$7E:1FF0];/
+$81:806C 9F 00 00 70 STA $700000,x[$70:0000];} $70:0000 + [$12] = $70:1FF0 + [$12] = [$14] (checksums)
+$81:8070 9F F0 1F 70 STA $701FF0,x[$70:1FF0];/
 $81:8074 49 FF FF    EOR #$FFFF             ;\
-$81:8077 9F 08 00 70 STA $700008,x[$7E:0008];} $70:0008 + [$12] = $70:1FF8 + [$12] = ~[$14] (checksum complements)
-$81:807B 9F F8 1F 70 STA $701FF8,x[$7E:1FF8];/
+$81:8077 9F 08 00 70 STA $700008,x[$70:0008];} $70:0008 + [$12] = $70:1FF8 + [$12] = ~[$14] (checksum complements)
+$81:807B 9F F8 1F 70 STA $701FF8,x[$70:1FF8];/
 $81:807F 7A          PLY
 $81:8080 FA          PLX
 $81:8081 18          CLC                    ; >_<
@@ -99,7 +99,7 @@ $81:809C AA          TAX                    ;/
 $81:809D A0 C0 D7    LDY #$D7C0             ; Y = $D7C0 (save data)
 
 ; LOOP
-$81:80A0 BF 00 00 70 LDA $700000,x[$7E:0010];\
+$81:80A0 BF 00 00 70 LDA $700000,x[$70:0010];\
 $81:80A4 99 00 00    STA $0000,y[$7E:D7C0]  ;} [Y] = [$70:0000 + [X]]
 $81:80A7 18          CLC                    ;\
 $81:80A8 65 14       ADC $14    [$7E:0014]  ;} $14 += [Y]
@@ -112,19 +112,19 @@ $81:80B0 C0 1C DE    CPY #$DE1C             ;\
 $81:80B3 D0 EB       BNE $EB    [$80A0]     ;} If [Y] != $DE1C: go to LOOP
 $81:80B5 A6 12       LDX $12    [$7E:0012]  ;\
 $81:80B7 A5 14       LDA $14    [$7E:0014]  ;|
-$81:80B9 DF 00 00 70 CMP $700000,x[$7E:0000];} If [$14] != [$70:0000 + [$12]]: go to BRANCH_DOUBLE_CHECK
+$81:80B9 DF 00 00 70 CMP $700000,x[$70:0000];} If [$14] != [$70:0000 + [$12]]: go to BRANCH_DOUBLE_CHECK
 $81:80BD D0 0B       BNE $0B    [$80CA]     ;/
 $81:80BF 49 FF FF    EOR #$FFFF             ;\
-$81:80C2 DF 08 00 70 CMP $700008,x[$7E:0008];} If ~[$14] != [$70:0008 + [$12]]: go to BRANCH_DOUBLE_CHECK
+$81:80C2 DF 08 00 70 CMP $700008,x[$70:0008];} If ~[$14] != [$70:0008 + [$12]]: go to BRANCH_DOUBLE_CHECK
 $81:80C6 D0 02       BNE $02    [$80CA]     ;/
 $81:80C8 80 11       BRA $11    [$80DB]     ; Go to BRANCH_SUCCESS
 
 ; BRANCH_DOUBLE_CHECK
 $81:80CA A5 14       LDA $14    [$7E:0014]  ;\
-$81:80CC DF F0 1F 70 CMP $701FF0,x[$7E:1FF2];} If [$14] != [$70:1FF0 + [$12]]: go to BRANCH_CORRUPT
+$81:80CC DF F0 1F 70 CMP $701FF0,x[$70:1FF2];} If [$14] != [$70:1FF0 + [$12]]: go to BRANCH_CORRUPT
 $81:80D0 D0 2A       BNE $2A    [$80FC]     ;/
 $81:80D2 49 FF FF    EOR #$FFFF             ;\
-$81:80D5 DF F8 1F 70 CMP $701FF8,x[$7E:1FF8];} If ~[$14] != [$70:1FF8 + [$12]]: go to BRANCH_CORRUPT
+$81:80D5 DF F8 1F 70 CMP $701FF8,x[$70:1FF8];} If ~[$14] != [$70:1FF8 + [$12]]: go to BRANCH_CORRUPT
 $81:80D9 D0 21       BNE $21    [$80FC]     ;/
 
 ; BRANCH_SUCCESS
@@ -154,7 +154,7 @@ $81:8104 AA          TAX                    ;/
 $81:8105 A0 C0 D7    LDY #$D7C0             ;\
 $81:8108 A9 00 00    LDA #$0000             ;|
                                             ;|
-$81:810B 9F 00 00 70 STA $700000,x[$7E:066C];|
+$81:810B 9F 00 00 70 STA $700000,x[$70:066C];|
 $81:810F 18          CLC                    ;|
 $81:8110 65 14       ADC $14    [$7E:0014]  ;|
 $81:8112 85 14       STA $14    [$7E:0014]  ;} Clear 65Ch bytes at $70:0000 + [X]
@@ -718,7 +718,7 @@ $81:8857 D0 05       BNE $05    [$885E]     ;|
 $81:8859 FA          PLX                    ;|
 $81:885A 6B          RTL                    ;} If [[Y]] = 0: return
                                             ;|
-$81:885B 4C 02 89    JMP $8902  [$88:8902]  ;/
+$81:885B 4C 02 89    JMP $8902  [$81:8902]  ;/
 
 $81:885E 85 18       STA $18    [$7E:0018]  ; $18 = [[Y]] (size)
 $81:8860 C8          INY                    ;\
@@ -867,7 +867,7 @@ $81:8951 85 16       STA $16    [$7E:0016]  ;|
 $81:8953 B2 16       LDA ($16)              ;} Set OAM entry high X position bit and size bit
 $81:8955 1F A1 85 81 ORA $8185A1,x          ;|
 $81:8959 92 16       STA ($16)              ;/
-$81:895B 4C 82 89    JMP $8982  [$A0:8982]  ; Go to BRANCH_MERGE
+$81:895B 4C 82 89    JMP $8982  [$81:8982]  ; Go to BRANCH_MERGE
 
 $81:895E BF 9F 85 81 LDA $81859F,x[$81:85BF];\
 $81:8962 85 16       STA $16    [$7E:0016]  ;|
@@ -3362,10 +3362,10 @@ $81:9CC3 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:9CC6 0A          ASL A                  ;|
 $81:9CC7 AA          TAX                    ;} $70:0000 + [file clear slot] * 2 = 0
 $81:9CC8 A9 00 00    LDA #$0000             ;|
-$81:9CCB 9F 00 00 70 STA $700000,x[$7E:0000];/
-$81:9CCF 9F 08 00 70 STA $700008,x[$7E:0008]; $70:0008 + [file clear slot] * 2 = 0
-$81:9CD3 9F F0 1F 70 STA $701FF0,x[$7E:1FF0]; $70:1FF0 + [file clear slot] * 2 = 0
-$81:9CD7 9F F8 1F 70 STA $701FF8,x[$7E:1FF8]; $70:1FF8 + [file clear slot] * 2 = 0
+$81:9CCB 9F 00 00 70 STA $700000,x[$70:0000];/
+$81:9CCF 9F 08 00 70 STA $700008,x[$70:0008]; $70:0008 + [file clear slot] * 2 = 0
+$81:9CD3 9F F0 1F 70 STA $701FF0,x[$70:1FF0]; $70:1FF0 + [file clear slot] * 2 = 0
+$81:9CD7 9F F8 1F 70 STA $701FF8,x[$70:1FF8]; $70:1FF8 + [file clear slot] * 2 = 0
 $81:9CDB EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1Ah (clear completed)
 $81:9CDE 20 CB B2    JSR $B2CB  [$81:B2CB]  ; New save file <-- what?
 $81:9CE1 AD B7 19    LDA $19B7  [$7E:19B7]  ; A = [file clear slot]
@@ -3614,13 +3614,13 @@ $81:9ED5 60          RTS
 ;;; $9ED6: File select menu - index 2: title sequence to main - initialise ;;;
 {
 $81:9ED6 C2 30       REP #$30
-$81:9ED8 AF EC 1F 70 LDA $701FEC[$7E:1FEC]  ;\
+$81:9ED8 AF EC 1F 70 LDA $701FEC[$70:1FEC]  ;\
 $81:9EDC C9 00 00    CMP #$0000             ;|
 $81:9EDF 30 0C       BMI $0C    [$9EED]     ;} If 0 <= [SRAM save slot selected] < 3:
 $81:9EE1 C9 03 00    CMP #$0003             ;|
 $81:9EE4 10 07       BPL $07    [$9EED]     ;/
 $81:9EE6 AA          TAX                    ; X = [SRAM save slot selected]
-$81:9EE7 2F EE 1F 70 AND $701FEE[$7E:1FEE]  ;\
+$81:9EE7 2F EE 1F 70 AND $701FEE[$70:1FEE]  ;\
 $81:9EEB F0 03       BEQ $03    [$9EF0]     ;} If [SRAM save slot selected] & [SRAM save slot selected complement] = 0: go to BRANCH_VALID_SAVE_SLOT
 
 $81:9EED A2 00 00    LDX #$0000             ; X = 0
@@ -4013,9 +4013,9 @@ $81:A232 AA          TAX                    ;/
 $81:A233 A9 01 00    LDA #$0001             ;\
 $81:A236 9D 8D 19    STA $198D,x[$7E:1991]  ;} Slot Samus helmet animation timer = 1 (trigger animation)
 $81:A239 AD 52 09    LDA $0952  [$7E:0952]  ;\
-$81:A23C 8F EC 1F 70 STA $701FEC[$7E:1FEC]  ;} SRAM save slot selected = [file select menu selection]
+$81:A23C 8F EC 1F 70 STA $701FEC[$70:1FEC]  ;} SRAM save slot selected = [file select menu selection]
 $81:A240 49 FF FF    EOR #$FFFF             ;\
-$81:A243 8F EE 1F 70 STA $701FEE[$7E:1FEE]  ;} SRAM save slot selected complement = ~[SRAM save slot selected]
+$81:A243 8F EE 1F 70 STA $701FEE[$70:1FEE]  ;} SRAM save slot selected complement = ~[SRAM save slot selected]
 $81:A247 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:A24A 22 85 80 81 JSL $818085[$81:8085]  ;} Load current save slot from SRAM
 $81:A24E B0 06       BCS $06    [$A256]     ; If not corrupt:

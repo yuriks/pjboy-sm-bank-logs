@@ -521,7 +521,7 @@ $80:824F DA          PHX
 $80:8250 A2 0A 00    LDX #$000A
 
 $80:8253 BF B9 82 80 LDA $8082B9,x[$80:82C3]
-$80:8257 9F E0 1F 70 STA $701FE0,x[$7E:1FEA]
+$80:8257 9F E0 1F 70 STA $701FE0,x[$70:1FEA]
 $80:825B CA          DEX
 $80:825C CA          DEX
 $80:825D 10 F4       BPL $F4    [$8253]
@@ -557,7 +557,7 @@ $80:8293 6B          RTL
 ; BRANCH_NON_CORRUPT
 $80:8294 A2 0A 00    LDX #$000A             ;\
                                             ;|
-$80:8297 BF E0 1F 70 LDA $701FE0,x[$7E:1FEA];|
+$80:8297 BF E0 1F 70 LDA $701FE0,x[$70:1FEA];|
 $80:829B DF B9 82 80 CMP $8082B9,x[$80:82C3];|
 $80:829F D0 0A       BNE $0A    [$82AB]     ;} If $70:1FE0..1FEB = 'supermetroid':
                                             ;|
@@ -800,7 +800,7 @@ $80:83C0 AB          PLB
 $80:83C1 E2 20       SEP #$20
 $80:83C3 C2 10       REP #$10
 
-$80:83C5 9F 00 00 00 STA $000000,x[$00:11ED]
+$80:83C5 9F 00 00 00 STA $000000,x
 $80:83C9 E8          INX
 $80:83CA 88          DEY
 $80:83CB D0 F8       BNE $F8    [$83C5]
@@ -818,7 +818,7 @@ $80:83D2 4B          PHK
 $80:83D3 AB          PLB
 $80:83D4 C2 30       REP #$30
 
-$80:83D6 9F 00 00 00 STA $000000,x[$00:11ED]
+$80:83D6 9F 00 00 00 STA $000000,x
 $80:83DA E8          INX
 $80:83DB E8          INX
 $80:83DC 88          DEY
@@ -839,7 +839,7 @@ $80:83E6 AB          PLB
 $80:83E7 E2 20       SEP #$20
 $80:83E9 C2 10       REP #$10
 
-$80:83EB 9F 00 00 7E STA $7E0000,x[$7E:11ED]
+$80:83EB 9F 00 00 7E STA $7E0000,x
 $80:83EF E8          INX
 $80:83F0 88          DEY
 $80:83F1 D0 F8       BNE $F8    [$83EB]
@@ -1238,7 +1238,7 @@ $80:8691 80 FE       BRA $FE    [$8691]     ; Crash
 $80:8693 C2 30       REP #$30
 $80:8695 A2 FE 1F    LDX #$1FFE             ;\
                                             ;|
-$80:8698 BF 00 00 70 LDA $700000,x[$7E:1FFE];|
+$80:8698 BF 00 00 70 LDA $700000,x[$70:1FFE];|
 $80:869C 9F 00 00 7F STA $7F0000,x[$7F:1FFE];} $7F:0000..1FFF = [$70:0000..1FFF]
 $80:86A0 CA          DEX                    ;|
 $80:86A1 CA          DEX                    ;|
@@ -1246,14 +1246,14 @@ $80:86A2 10 F4       BPL $F4    [$8698]     ;/
 $80:86A4 A9 00 00    LDA #$0000             ;\
 $80:86A7 A2 FE 1F    LDX #$1FFE             ;|
                                             ;|
-$80:86AA 9F 00 00 70 STA $700000,x[$7E:1FFE];} Clear $70:0000..1FFF
+$80:86AA 9F 00 00 70 STA $700000,x[$70:1FFE];} Clear $70:0000..1FFF
 $80:86AE CA          DEX                    ;|
 $80:86AF CA          DEX                    ;|
 $80:86B0 10 F8       BPL $F8    [$86AA]     ;/
 $80:86B2 A9 00 00    LDA #$0000             ;\
 $80:86B5 A2 FE 1F    LDX #$1FFE             ;|
                                             ;|
-$80:86B8 9F 00 20 70 STA $702000,x[$7E:3FFE];|
+$80:86B8 9F 00 20 70 STA $702000,x[$70:3FFE];|
 $80:86BC 1A          INC A                  ;} $70:2000..3FFF = 0..FFFh
 $80:86BD CA          DEX                    ;|
 $80:86BE CA          DEX                    ;|
@@ -1261,7 +1261,7 @@ $80:86BF 10 F7       BPL $F7    [$86B8]     ;/
 $80:86C1 A9 00 00    LDA #$0000             ;\
 $80:86C4 A2 FE 1F    LDX #$1FFE             ;|
                                             ;|
-$80:86C7 DF 00 00 70 CMP $700000,x[$7E:1FFE];|
+$80:86C7 DF 00 00 70 CMP $700000,x[$70:1FFE];|
 $80:86CB D0 16       BNE $16    [$86E3]     ;} If [$70:0000..1FFF] != 0..FFFh: go to BRANCH_FAILED_SRAM_CHECK
 $80:86CD 1A          INC A                  ;|
 $80:86CE CA          DEX                    ;|
@@ -1270,7 +1270,7 @@ $80:86D0 10 F5       BPL $F5    [$86C7]     ;/
 $80:86D2 A2 FE 1F    LDX #$1FFE             ;\
                                             ;|
 $80:86D5 BF 00 00 7F LDA $7F0000,x[$7F:1FFE];|
-$80:86D9 9F 00 00 70 STA $700000,x[$7E:1FFE];} $70:0000..1FFF = [$7F:0000..1FFF]
+$80:86D9 9F 00 00 70 STA $700000,x[$70:1FFE];} $70:0000..1FFF = [$7F:0000..1FFF]
 $80:86DD CA          DEX                    ;|
 $80:86DE CA          DEX                    ;|
 $80:86DF 10 F4       BPL $F4    [$86D5]     ;/
@@ -6113,24 +6113,24 @@ $80:A9AB 6B          RTL
 
 ;;; $A9AC: Debug scroll position save/loading ;;;
 {
-$80:A9AC A5 91       LDA $91    [$00:0091]  ;\
+$80:A9AC A5 91       LDA $91    [$7E:0091]  ;\
 $80:A9AE 29 40 00    AND #$0040             ;} If controller 2 newly pressed X:
 $80:A9B1 F0 03       BEQ $03    [$A9B6]     ;/
-$80:A9B3 EE D3 05    INC $05D3  [$82:05D3]  ; Toggle debug saved scroll flag
+$80:A9B3 EE D3 05    INC $05D3  [$7E:05D3]  ; Toggle debug saved scroll flag
 
-$80:A9B6 AD D3 05    LDA $05D3  [$82:05D3]  ;\
+$80:A9B6 AD D3 05    LDA $05D3  [$7E:05D3]  ;\
 $80:A9B9 4A          LSR A                  ;} If [debug saved scroll flag] set:
 $80:A9BA 90 0D       BCC $0D    [$A9C9]     ;/
-$80:A9BC AD D5 05    LDA $05D5  [$82:05D5]  ;\
-$80:A9BF 8D 11 09    STA $0911  [$82:0911]  ;} Restore X-Scroll position
-$80:A9C2 AD D7 05    LDA $05D7  [$82:05D7]  ;\
-$80:A9C5 8D 15 09    STA $0915  [$82:0915]  ;} Restore Y-Scroll position
+$80:A9BC AD D5 05    LDA $05D5  [$7E:05D5]  ;\
+$80:A9BF 8D 11 09    STA $0911  [$7E:0911]  ;} Restore X-Scroll position
+$80:A9C2 AD D7 05    LDA $05D7  [$7E:05D7]  ;\
+$80:A9C5 8D 15 09    STA $0915  [$7E:0915]  ;} Restore Y-Scroll position
 $80:A9C8 6B          RTL
 
-$80:A9C9 AD 11 09    LDA $0911  [$82:0911]  ;\ Else ([debug saved scroll flag] clear):
-$80:A9CC 8D D5 05    STA $05D5  [$82:05D5]  ;} Save X-Scroll position
-$80:A9CF AD 15 09    LDA $0915  [$82:0915]  ;\
-$80:A9D2 8D D7 05    STA $05D7  [$82:05D7]  ;} Save Y-Scroll position
+$80:A9C9 AD 11 09    LDA $0911  [$7E:0911]  ;\ Else ([debug saved scroll flag] clear):
+$80:A9CC 8D D5 05    STA $05D5  [$7E:05D5]  ;} Save X-Scroll position
+$80:A9CF AD 15 09    LDA $0915  [$7E:0915]  ;\
+$80:A9D2 8D D7 05    STA $05D7  [$7E:05D7]  ;} Save Y-Scroll position
 $80:A9D5 6B          RTL
 }
 
