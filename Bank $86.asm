@@ -13525,7 +13525,7 @@ $86:E392             dx 0001,AD57,
 }
 
 
-;;; $E3A0: Instruction list ;;;
+;;; $E3A0: Instruction list - long Draygon breath bubbles ;;;
 {
 $86:E3A0             dx 0008,AD83,
                         0008,AD8A,

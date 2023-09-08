@@ -919,6 +919,9 @@ $8D:AD35             dx 0003, 01F4,FC,3A6C, 0004,FC,3A6C, 01FC,FC,3A6C
 $8D:AD46             dx 0003, 0004,FC,3A6B, 01F4,FC,3A6B, 01FC,FC,3A6B
 $8D:AD57             dx 0004, 0008,FC,3A6C, 0000,FC,3A6C, 01F8,FC,3A6C, 01F0,FC,3A6C
 $8D:AD6D             dx 0004, 0008,FC,3A6B, 0000,FC,3A6B, 01F8,FC,3A6B, 01F0,FC,3A6B
+
+; Long Draygon breath bubbles
+; Enemy projectile $E509/$E525 (dust cloud / explosion)
 $8D:AD83             dx 0001, 01FC,FC,3A25
 $8D:AD8A             dx 0003, 0000,F8,3A25, 01FA,F6,3A25, 01FC,FB,3A25
 $8D:AD9B             dx 0003, 0001,F7,3A25, 01F9,F4,3A25, 01FB,FA,3A25
@@ -928,6 +931,8 @@ $8D:ADCE             dx 0003, 0000,F0,3A40, 01FC,F4,3A40, 01FA,ED,3A40
 $8D:ADDF             dx 0003, 0000,EE,3A40, 01FC,F2,3A40, 01FA,EC,3A40
 $8D:ADF0             dx 0002, 0000,EC,3A40, 01FC,F0,3A40
 $8D:ADFC             dx 0001, 01FC,EE,3A40
+
+; Enemy projectile $E509/$E525 (dust cloud / explosion)
 $8D:AE03             dx 0004, 0008,E0,3A6F, 0000,E0,3A6F, 01F8,E0,3A6F, 01F0,E0,3A6F
 $8D:AE19             dx 0004, 0008,E8,3A6F, 0000,E8,3A6F, 01F8,E8,3A6F, 01F0,E8,3A6F
 $8D:AE2F             dx 0004, 0008,F0,3A6F, 0000,F0,3A6F, 01F8,F0,3A6F, 01F0,F0,3A6F
@@ -963,7 +968,7 @@ $8D:AFF0             dx 0003, 0002,06,BA5D, 01FC,F2,BA5D, 01F6,FE,BA5D
 $8D:B001             dx 0003, 01FC,F4,BA5D, 01F8,FC,BA5D, 0000,04,BA5D
 $8D:B012             dx 0003, 01FC,F6,BA5D, 01FA,FD,BA5D, 0000,02,BA5D
 
-; Small explosion.
+; Small explosion
 ; Enemy projectile $A9AF (Torizo death explosion)
 ; Enemy projectile $B4B1 (old Tourian escape shaft fake wall explosion)
 ; Enemy projectile $DE7A (spores)
