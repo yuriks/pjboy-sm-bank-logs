@@ -75,15 +75,15 @@ $A5:871A 6B          RTL
 }
 
 
-;;; $871B: Draygon body function -  ;;;
+;;; $871B: Draygon body function - fight intro - initial delay ;;;
 {
 $A5:871B 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:871E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:8721 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A5:8724 C9 00 01    CMP #$0100             ;} If [$0FAA] >= 100h: go to BRANCH_DONE
+$A5:8724 C9 00 01    CMP #$0100             ;} If [Draygon body function timer] >= 100h: go to BRANCH_DONE
 $A5:8727 10 2D       BPL $2D    [$8756]     ;/
 $A5:8729 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
-$A5:872C D0 24       BNE $24    [$8752]     ; If [$0FAA] = 0:
+$A5:872C D0 24       BNE $24    [$8752]     ; If [Draygon body function timer] = 0:
 $A5:872E AE 30 03    LDX $0330  [$7E:0330]  ;\
 $A5:8731 A9 00 06    LDA #$0600             ;|
 $A5:8734 95 D0       STA $D0,x  [$7E:00D0]  ;|
@@ -99,45 +99,44 @@ $A5:8749 69 07 00    ADC #$0007             ;|
 $A5:874C 8D 30 03    STA $0330  [$7E:0330]  ;/
 $A5:874F 20 D9 A0    JSR $A0D9  [$A5:A0D9]  ; Spawn fight intro mini-Draygon sprite objects
 
-$A5:8752 EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment $0FAA
+$A5:8752 EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment Draygon body function timer
 $A5:8755 60          RTS                    ; Return
 
 ; BRANCH_DONE
 $A5:8756 A9 8B 87    LDA #$878B             ;\
-$A5:8759 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon function = $878B
-$A5:875C 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; $0FAA = 0
+$A5:8759 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $878B
+$A5:875C 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Draygon body function timer = 0
 $A5:875F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A5:8762 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = [Draygon body X position]
+$A5:8762 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Draygon left side reset X position = [Draygon body X position]
 $A5:8766 18          CLC                    ;\
-$A5:8767 69 A0 02    ADC #$02A0             ;} $7E:7804 = [Draygon body X position] + 2A0h
+$A5:8767 69 A0 02    ADC #$02A0             ;} Draygon right side reset X position = [Draygon body X position] + 2A0h
 $A5:876A 8F 04 78 7E STA $7E7804[$7E:7804]  ;/
 $A5:876E AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
-$A5:8771 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = [Draygon body Y position]
+$A5:8771 8F 02 78 7E STA $7E7802[$7E:7802]  ;} Draygon reset Y position = [Draygon body Y position]
 $A5:8775 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
 $A5:8779 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;|
 $A5:877C AF 02 78 7E LDA $7E7802[$7E:7802]  ;} >_<;
 $A5:8780 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
 $A5:8783 A9 18 00    LDA #$0018             ;\
-$A5:8786 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} $7E:781E = 18h
+$A5:8786 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} Draygon swoop Y acceleration = 18h
 $A5:878A 60          RTS
 }
 
 
-;;; $878B: Draygon body function -  ;;;
+;;; $878B: Draygon body function - fight intro - dance ;;;
 {
-; things to do pre-fight
 $A5:878B 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:878E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:8791 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A5:8794 C9 D0 04    CMP #$04D0             ;} If [$0FAA] < 4D0h:
+$A5:8794 C9 D0 04    CMP #$04D0             ;} If [Draygon body function timer] < 4D0h:
 $A5:8797 10 07       BPL $07    [$87A0]     ;/
-$A5:8799 20 3E A1    JSR $A13E  [$A5:A13E]  ; Handle Draygon fight intro movement
-$A5:879C EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment $0FAA
+$A5:8799 20 3E A1    JSR $A13E  [$A5:A13E]  ; Handle Draygon fight intro dance
+$A5:879C EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment Draygon body function timer
 $A5:879F 60          RTS                    ; Return
 
 $A5:87A0 A9 F4 87    LDA #$87F4             ;\
-$A5:87A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon function = $87F4
-$A5:87A6 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; $0FAA = 0
+$A5:87A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $87F4 (swoop right)
+$A5:87A6 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Draygon body function timer = 0
 $A5:87A9 60          RTS
 }
 
@@ -177,21 +176,19 @@ $A5:87DC             dw 0040,0060,
 }
 
 
-;;; $87F4: Draygon body function -  ;;;
+;;; $87F4: Draygon body function - swoop right - setup ;;;
 {
-; Set Draygon for left to right swoop attack
-; start swoop (facing right)
 $A5:87F4 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:87F7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:87FA 20 17 88    JSR $8817  [$A5:8817]  ; Calculate Draygon swoop Y positions
 $A5:87FD A9 B1 88    LDA #$88B1             ;\
 $A5:8800 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $88B1
 $A5:8803 A9 D1 97    LDA #$97D1             ;\
-$A5:8806 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon instruction list pointer = $97D1
+$A5:8806 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $97D1
 $A5:8809 A9 01 00    LDA #$0001             ;\
-$A5:880C 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon instruction timer = 1
+$A5:880C 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 $A5:880F A9 01 00    LDA #$0001             ;\
-$A5:8812 8F 00 80 7E STA $7E8000[$7E:8000]  ;} $7E:8000 = 1
+$A5:8812 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = right
 $A5:8816 60          RTS
 }
 
@@ -244,10 +241,10 @@ $A5:887E 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [Dray
 $A5:8881 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;/
 
 $A5:8885 85 2C       STA $2C    [$7E:002C]
-$A5:8887 64 2A       STZ $2A    [$7E:002A]  ;\
-$A5:8889 AD 26 0E    LDA $0E26  [$7E:0E26]  ;|
-$A5:888C 4A          LSR A                  ;} $2E = (swoop Y position index) / 4 (swoop duration)
-$A5:888D 4A          LSR A                  ;|
+$A5:8887 64 2A       STZ $2A    [$7E:002A]
+$A5:8889 AD 26 0E    LDA $0E26  [$7E:0E26]  ;\
+$A5:888C 4A          LSR A                  ;|
+$A5:888D 4A          LSR A                  ;} $2E = (swoop Y position index) / 4 (swoop duration)
 $A5:888E 85 2E       STA $2E    [$7E:002E]  ;/
 $A5:8890 64 30       STZ $30    [$7E:0030]  ;\
 $A5:8892 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;|
@@ -258,15 +255,14 @@ $A5:889D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
 $A5:88A0 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A5:88A3 AE 26 0E    LDX $0E26  [$7E:0E26]  ;} $7E:9002 + (swoop Y position index) = [Draygon Y position]
 $A5:88A6 9F 02 90 7E STA $7E9002,x[$7E:91A2];/
-$A5:88AA 8E AA 0F    STX $0FAA  [$7E:0FAA]  ; $0FAA = (swoop Y position index)
-$A5:88AD 8E AC 0F    STX $0FAC  [$7E:0FAC]  ; $0FAC = (swoop Y position index)
+$A5:88AA 8E AA 0F    STX $0FAA  [$7E:0FAA]  ; Draygon swoop Y position index = (swoop Y position index)
+$A5:88AD 8E AC 0F    STX $0FAC  [$7E:0FAC]  ; Draygon swoop duration * 4 = (swoop Y position index)
 $A5:88B0 60          RTS
 }
 
 
-;;; $88B1: Draygon body function -  ;;;
+;;; $88B1: Draygon body function - swoop right - descending ;;;
 {
-; swoop right - descending
 $A5:88B1 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:88B4 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubbles
 $A5:88B7 AC 54 0E    LDY $0E54  [$7E:0E54]
@@ -303,14 +299,14 @@ $A5:8900 60          RTS
 
 ;;; $8901: Unused.  ;;;
 {
-; Set goop instruction list?
+; Fire goop?
 $A5:8901 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $A5:8904 29 0F 00    AND #$000F             ;} If [frame counter] % 10h != 0: return
 $A5:8907 D0 18       BNE $18    [$8921]     ;/
 $A5:8909 A9 FE 98    LDA #$98FE             ;\
 $A5:890C 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $98FE
 $A5:890F AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
-$A5:8913 F0 06       BEQ $06    [$891B]     ;} If [$7E:8000] != 0:
+$A5:8913 F0 06       BEQ $06    [$891B]     ;} If [Draygon facing direction] != left:
 $A5:8915 A9 90 9C    LDA #$9C90             ;\
 $A5:8918 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $9C90
 
@@ -321,573 +317,576 @@ $A5:8921 60          RTS
 }
 
 
-;;; $8922: Draygon body function -  ;;;
+;;; $8922: Draygon body function - swoop right - apex ;;;
 {
 $A5:8922 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8925 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:8928 A9 A0 02    LDA #$02A0             ;
-$A5:892B 38          SEC                    ;
-$A5:892C ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;
-$A5:892F 85 2C       STA $2C    [$7E:002C]  ;
-$A5:8931 64 2A       STZ $2A    [$7E:002A]  ;
-$A5:8933 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;
-$A5:8936 4A          LSR A                  ;
-$A5:8937 4A          LSR A                  ;
-$A5:8938 85 2E       STA $2E    [$7E:002E]  ;
-$A5:893A 64 30       STZ $30    [$7E:0030]  ;
-$A5:893C 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;
-$A5:8940 A5 2C       LDA $2C    [$7E:002C]  ;
-$A5:8942 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;
-$A5:8945 A5 2A       LDA $2A    [$7E:002A]  ;
-$A5:8947 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;
-$A5:894A A9 51 89    LDA #$8951             ;
-$A5:894D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;
+$A5:8928 A9 A0 02    LDA #$02A0             ;\
+$A5:892B 38          SEC                    ;|
+$A5:892C ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
+$A5:892F 85 2C       STA $2C    [$7E:002C]  ;|
+$A5:8931 64 2A       STZ $2A    [$7E:002A]  ;|
+$A5:8933 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A5:8936 4A          LSR A                  ;|
+$A5:8937 4A          LSR A                  ;} Draygon X speed = (2A0h - [Draygon X position]) / (Draygon swoop duration)
+$A5:8938 85 2E       STA $2E    [$7E:002E]  ;|
+$A5:893A 64 30       STZ $30    [$7E:0030]  ;|
+$A5:893C 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;|
+$A5:8940 A5 2C       LDA $2C    [$7E:002C]  ;|
+$A5:8942 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;|
+$A5:8945 A5 2A       LDA $2A    [$7E:002A]  ;|
+$A5:8947 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
+$A5:894A A9 51 89    LDA #$8951             ;\
+$A5:894D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8951
 $A5:8950 60          RTS
 }
 
 
-;;; $8951: Draygon body function -  ;;;
+;;; $8951: Draygon body function - swoop right - ascending ;;;
 {
-; swoop right - ascending
+; [random number] % 2: 0 = goop, 1 = swoop
 $A5:8951 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8954 AC 54 0E    LDY $0E54  [$7E:0E54]
-$A5:8957 AE AA 0F    LDX $0FAA  [$7E:0FAA]
-$A5:895A E0 68 00    CPX #$0068
-$A5:895D D0 0C       BNE $0C    [$896B]
-$A5:895F A9 DA 9B    LDA #$9BDA
-$A5:8962 8D 52 10    STA $1052  [$7E:1052]
-$A5:8965 A9 01 00    LDA #$0001
-$A5:8968 8D 54 10    STA $1054  [$7E:1054]
+$A5:8957 AE AA 0F    LDX $0FAA  [$7E:0FAA]  ;\
+$A5:895A E0 68 00    CPX #$0068             ;} If [Draygon swoop Y position index] = 68h:
+$A5:895D D0 0C       BNE $0C    [$896B]     ;/
+$A5:895F A9 DA 9B    LDA #$9BDA             ;\
+$A5:8962 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $9BDA
+$A5:8965 A9 01 00    LDA #$0001             ;\
+$A5:8968 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+                                            
+$A5:896B BF 02 90 7E LDA $7E9002,x[$7E:9002];\
+$A5:896F 99 7E 0F    STA $0F7E,y[$7E:0F7E]  ;} Draygon Y position = [$7E:9002 + [Draygon swoop Y position index]]
+$A5:8972 EE AA 0F    INC $0FAA  [$7E:0FAA]  ;\
+$A5:8975 EE AA 0F    INC $0FAA  [$7E:0FAA]  ;|
+$A5:8978 EE AA 0F    INC $0FAA  [$7E:0FAA]  ;} Draygon swoop Y position index += 4
+$A5:897B EE AA 0F    INC $0FAA  [$7E:0FAA]  ;/
+$A5:897E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A5:8981 CD AC 0F    CMP $0FAC  [$7E:0FAC]  ;} If [Draygon swoop Y position index] != [Draygon swoop duration * 4]:
+$A5:8984 F0 14       BEQ $14    [$899A]     ;/
+$A5:8986 AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8989 18          CLC                    ;|
+$A5:898A 6D B0 0F    ADC $0FB0  [$7E:0FB0]  ;|
+$A5:898D 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position += [Draygon X speed]
+$A5:8990 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8993 6D AE 0F    ADC $0FAE  [$7E:0FAE]  ;|
+$A5:8996 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A5:8999 60          RTS                    ; Return
 
-$A5:896B BF 02 90 7E LDA $7E9002,x[$7E:9002]
-$A5:896F 99 7E 0F    STA $0F7E,y[$7E:0F7E]
-$A5:8972 EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:8975 EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:8978 EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:897B EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:897E AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A5:8981 CD AC 0F    CMP $0FAC  [$7E:0FAC]
-$A5:8984 F0 14       BEQ $14    [$899A]
-$A5:8986 AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8989 18          CLC
-$A5:898A 6D B0 0F    ADC $0FB0  [$7E:0FB0]
-$A5:898D 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8990 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8993 6D AE 0F    ADC $0FAE  [$7E:0FAE]
-$A5:8996 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8999 60          RTS
+$A5:899A 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Draygon swoop Y position index = 0
+$A5:899D AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:89A0 29 01 00    AND #$0001             ;} If [random number] % 2 != 0:
+$A5:89A3 F0 07       BEQ $07    [$89AC]     ;/
+$A5:89A5 A9 B3 89    LDA #$89B3             ;\
+$A5:89A8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $89B3 (swoop left)
+$A5:89AB 60          RTS                    ; Return
 
-$A5:899A 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A5:899D AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:89A0 29 01 00    AND #$0001
-$A5:89A3 F0 07       BEQ $07    [$89AC]     ; 0 = goop, 1 = swoop
-$A5:89A5 A9 B3 89    LDA #$89B3
-$A5:89A8 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:89AB 60          RTS
-
-$A5:89AC A9 8E 8C    LDA #$8C8E
-$A5:89AF 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:89AC A9 8E 8C    LDA #$8C8E             ;\
+$A5:89AF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8C8E
 $A5:89B2 60          RTS
 }
 
 
-;;; $89B3: Draygon body function -  ;;;
+;;; $89B3: Draygon body function - swoop left - setup ;;;
 {
+; Uses $0E26(!) which was calculated as part of:
+;     $8817: Calculate Draygon swoop Y positions
+; $0FAC contains the same value and is part of enemy RAM instead of a random temporary >_<;
 $A5:89B3 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:89B6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:89B9 AF 04 78 7E LDA $7E7804[$7E:7804]
-$A5:89BD 38          SEC
-$A5:89BE ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A5:89C1 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:89C5 85 2C       STA $2C    [$7E:002C]
+$A5:89B9 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
+$A5:89BD 38          SEC                    ;|
+$A5:89BE ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $2C = |[Samus X position] - [Draygon right side reset X position]| (X distance to Samus)
+$A5:89C1 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
+$A5:89C5 85 2C       STA $2C    [$7E:002C]  ;/
 $A5:89C7 64 2A       STZ $2A    [$7E:002A]
-$A5:89C9 AD 26 0E    LDA $0E26  [$7E:0E26]
-$A5:89CC 4A          LSR A
-$A5:89CD 4A          LSR A
-$A5:89CE 85 2E       STA $2E    [$7E:002E]
-$A5:89D0 64 30       STZ $30    [$7E:0030]
-$A5:89D2 22 61 B7 A0 JSL $A0B761[$A0:B761]
-$A5:89D6 A5 2C       LDA $2C    [$7E:002C]
-$A5:89D8 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A5:89DB A5 2A       LDA $2A    [$7E:002A]
-$A5:89DD 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A5:89E0 A9 00 8A    LDA #$8A00
-$A5:89E3 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:89E6 A9 BB 97    LDA #$97BB
-$A5:89E9 8D 92 0F    STA $0F92  [$7E:0F92]
-$A5:89EC A9 01 00    LDA #$0001
-$A5:89EF 8D 94 0F    STA $0F94  [$7E:0F94]
-$A5:89F2 A9 00 00    LDA #$0000
-$A5:89F5 8F 00 80 7E STA $7E8000[$7E:8000]
-$A5:89F9 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A5:89FC 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A5:89C9 AD 26 0E    LDA $0E26  [$7E:0E26]  ;\
+$A5:89CC 4A          LSR A                  ;|
+$A5:89CD 4A          LSR A                  ;} $2E = (swoop Y position index) / 4 (swoop duration)
+$A5:89CE 85 2E       STA $2E    [$7E:002E]  ;/
+$A5:89D0 64 30       STZ $30    [$7E:0030]  ;\
+$A5:89D2 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;|
+$A5:89D6 A5 2C       LDA $2C    [$7E:002C]  ;|
+$A5:89D8 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Draygon X speed = (X distance to Samus) / (swoop duration)
+$A5:89DB A5 2A       LDA $2A    [$7E:002A]  ;|
+$A5:89DD 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
+$A5:89E0 A9 00 8A    LDA #$8A00             ;\
+$A5:89E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8A00
+$A5:89E6 A9 BB 97    LDA #$97BB             ;\
+$A5:89E9 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $97BB
+$A5:89EC A9 01 00    LDA #$0001             ;\
+$A5:89EF 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
+$A5:89F2 A9 00 00    LDA #$0000             ;\
+$A5:89F5 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = left
+$A5:89F9 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A5:89FC 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Draygon swoop Y position index = [Draygon swoop duration * 4]
 $A5:89FF 60          RTS
 }
 
 
-;;; $8A00: Draygon body function -  ;;;
+;;; $8A00: Draygon body function - swoop left - descending ;;;
 {
-; swoop left - descending
 $A5:8A00 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8A03 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubbles
 $A5:8A06 AC 54 0E    LDY $0E54  [$7E:0E54]
-$A5:8A09 AE AA 0F    LDX $0FAA  [$7E:0FAA]
-$A5:8A0C E0 68 00    CPX #$0068
-$A5:8A0F D0 0C       BNE $0C    [$8A1D]
-$A5:8A11 A9 13 98    LDA #$9813
-$A5:8A14 8D 52 10    STA $1052  [$7E:1052]
-$A5:8A17 A9 01 00    LDA #$0001
-$A5:8A1A 8D 54 10    STA $1054  [$7E:1054]
-
-$A5:8A1D BF 02 90 7E LDA $7E9002,x[$7E:91A2]
-$A5:8A21 99 7E 0F    STA $0F7E,y[$7E:0F7E]
-$A5:8A24 CE AA 0F    DEC $0FAA  [$7E:0FAA]
-$A5:8A27 CE AA 0F    DEC $0FAA  [$7E:0FAA]
-$A5:8A2A CE AA 0F    DEC $0FAA  [$7E:0FAA]
-$A5:8A2D CE AA 0F    DEC $0FAA  [$7E:0FAA]
-$A5:8A30 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A5:8A33 F0 14       BEQ $14    [$8A49]
-$A5:8A35 AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8A38 38          SEC
-$A5:8A39 ED B0 0F    SBC $0FB0  [$7E:0FB0]
-$A5:8A3C 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8A3F AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8A42 ED AE 0F    SBC $0FAE  [$7E:0FAE]
-$A5:8A45 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8A48 60          RTS
-
-$A5:8A49 A9 50 8A    LDA #$8A50
-$A5:8A4C 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:8A09 AE AA 0F    LDX $0FAA  [$7E:0FAA]  ;\
+$A5:8A0C E0 68 00    CPX #$0068             ;} If [Draygon swoop Y position index] = 68h:
+$A5:8A0F D0 0C       BNE $0C    [$8A1D]     ;/
+$A5:8A11 A9 13 98    LDA #$9813             ;\
+$A5:8A14 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $9813
+$A5:8A17 A9 01 00    LDA #$0001             ;\
+$A5:8A1A 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+                                            
+$A5:8A1D BF 02 90 7E LDA $7E9002,x[$7E:91A2];\
+$A5:8A21 99 7E 0F    STA $0F7E,y[$7E:0F7E]  ;} Draygon Y position = [$7E:9002 + [Draygon swoop Y position index]]
+$A5:8A24 CE AA 0F    DEC $0FAA  [$7E:0FAA]  ;\
+$A5:8A27 CE AA 0F    DEC $0FAA  [$7E:0FAA]  ;|
+$A5:8A2A CE AA 0F    DEC $0FAA  [$7E:0FAA]  ;} Draygon swoop Y position index -= 4
+$A5:8A2D CE AA 0F    DEC $0FAA  [$7E:0FAA]  ;/
+$A5:8A30 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A5:8A33 F0 14       BEQ $14    [$8A49]     ;} If [Draygon swoop Y position index] != 0:
+$A5:8A35 AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8A38 38          SEC                    ;|
+$A5:8A39 ED B0 0F    SBC $0FB0  [$7E:0FB0]  ;|
+$A5:8A3C 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position -= [Draygon X speed]
+$A5:8A3F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8A42 ED AE 0F    SBC $0FAE  [$7E:0FAE]  ;|
+$A5:8A45 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A5:8A48 60          RTS                    ; Return
+                                            
+$A5:8A49 A9 50 8A    LDA #$8A50             ;\
+$A5:8A4C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8A50
 $A5:8A4F 60          RTS
 }
 
 
-;;; $8A50: Draygon body function -  ;;;
+;;; $8A50: Draygon body function - swoop left - apex ;;;
 {
-; swoop left - ascending
 $A5:8A50 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8A53 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:8A56 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A5:8A5A 30 0A       BMI $0A    [$8A66]
-$A5:8A5C AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8A5F 38          SEC
-$A5:8A60 EF 00 78 7E SBC $7E7800[$7E:7800]
-$A5:8A64 80 08       BRA $08    [$8A6E]
-
-$A5:8A66 49 FF FF    EOR #$FFFF
-$A5:8A69 1A          INC A
-$A5:8A6A 18          CLC
-$A5:8A6B 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-
-$A5:8A6E 85 2C       STA $2C    [$7E:002C]
-$A5:8A70 64 2A       STZ $2A    [$7E:002A]
-$A5:8A72 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A5:8A75 4A          LSR A
-$A5:8A76 4A          LSR A
-$A5:8A77 85 2E       STA $2E    [$7E:002E]
-$A5:8A79 64 30       STZ $30    [$7E:0030]
-$A5:8A7B 22 61 B7 A0 JSL $A0B761[$A0:B761]
-$A5:8A7F A5 2C       LDA $2C    [$7E:002C]
-$A5:8A81 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A5:8A84 A5 2A       LDA $2A    [$7E:002A]
-$A5:8A86 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A5:8A89 A9 90 8A    LDA #$8A90
-$A5:8A8C 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:8A56 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A5:8A5A 30 0A       BMI $0A    [$8A66]     ;} If [Draygon left side reset X position] >= 0: (this condition is always false... and the code of the two branches is equivalent anyway)
+$A5:8A5C AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:8A5F 38          SEC                    ;} $2C = |[Samus X position] - [Draygon left side reset X position]| (X distance to Samus)
+$A5:8A60 EF 00 78 7E SBC $7E7800[$7E:7800]  ;/
+$A5:8A64 80 08       BRA $08    [$8A6E]     
+                                            
+$A5:8A66 49 FF FF    EOR #$FFFF             ;\ Else ([Draygon left side reset X position] < 0):
+$A5:8A69 1A          INC A                  ;|
+$A5:8A6A 18          CLC                    ;} $2C = |[Samus X position] - [Draygon left side reset X position]| (X distance to Samus)
+$A5:8A6B 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;/
+                                            
+$A5:8A6E 85 2C       STA $2C    [$7E:002C]  
+$A5:8A70 64 2A       STZ $2A    [$7E:002A]  
+$A5:8A72 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A5:8A75 4A          LSR A                  ;|
+$A5:8A76 4A          LSR A                  ;} $2E = (Draygon swoop duration)
+$A5:8A77 85 2E       STA $2E    [$7E:002E]  ;/
+$A5:8A79 64 30       STZ $30    [$7E:0030]  ;\
+$A5:8A7B 22 61 B7 A0 JSL $A0B761[$A0:B761]  ;|
+$A5:8A7F A5 2C       LDA $2C    [$7E:002C]  ;|
+$A5:8A81 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Draygon X speed = (X distance to Samus) / (swoop duration)
+$A5:8A84 A5 2A       LDA $2A    [$7E:002A]  ;|
+$A5:8A86 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;/
+$A5:8A89 A9 90 8A    LDA #$8A90             ;\
+$A5:8A8C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8A90
 $A5:8A8F 60          RTS
 }
 
 
-;;; $8A90: Draygon body function -  ;;;
+;;; $8A90: Draygon body function - swoop left - ascending ;;;
 {
+; [random number] % 2: 0 = goop, 1 = swoop
 $A5:8A90 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8A93 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubbles
 $A5:8A96 AC 54 0E    LDY $0E54  [$7E:0E54]
-$A5:8A99 AE AA 0F    LDX $0FAA  [$7E:0FAA]
-$A5:8A9C E0 68 00    CPX #$0068
-$A5:8A9F D0 0C       BNE $0C    [$8AAD]
-$A5:8AA1 A9 E7 97    LDA #$97E7
-$A5:8AA4 8D 52 10    STA $1052  [$7E:1052]
-$A5:8AA7 A9 01 00    LDA #$0001
-$A5:8AAA 8D 54 10    STA $1054  [$7E:1054]
-
-$A5:8AAD BF 02 90 7E LDA $7E9002,x[$7E:9002]
-$A5:8AB1 99 7E 0F    STA $0F7E,y[$7E:0F7E]
-$A5:8AB4 EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:8AB7 EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:8ABA EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:8ABD EE AA 0F    INC $0FAA  [$7E:0FAA]
-$A5:8AC0 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A5:8AC3 CD AC 0F    CMP $0FAC  [$7E:0FAC]
-$A5:8AC6 F0 14       BEQ $14    [$8ADC]
-$A5:8AC8 AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8ACB 38          SEC
-$A5:8ACC ED B0 0F    SBC $0FB0  [$7E:0FB0]
-$A5:8ACF 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8AD2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8AD5 ED AE 0F    SBC $0FAE  [$7E:0FAE]
-$A5:8AD8 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8ADB 60          RTS
-
+$A5:8A99 AE AA 0F    LDX $0FAA  [$7E:0FAA]  ;\
+$A5:8A9C E0 68 00    CPX #$0068             ;} If [Draygon swoop Y position index] = 68h:
+$A5:8A9F D0 0C       BNE $0C    [$8AAD]     ;/
+$A5:8AA1 A9 E7 97    LDA #$97E7             ;\
+$A5:8AA4 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $97E7
+$A5:8AA7 A9 01 00    LDA #$0001             ;\
+$A5:8AAA 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+                                            
+$A5:8AAD BF 02 90 7E LDA $7E9002,x[$7E:9002];\
+$A5:8AB1 99 7E 0F    STA $0F7E,y[$7E:0F7E]  ;} Draygon Y position = [$7E:9002 + [Draygon swoop Y position index]]
+$A5:8AB4 EE AA 0F    INC $0FAA  [$7E:0FAA]  ;\
+$A5:8AB7 EE AA 0F    INC $0FAA  [$7E:0FAA]  ;|
+$A5:8ABA EE AA 0F    INC $0FAA  [$7E:0FAA]  ;} Draygon swoop Y position index += 4
+$A5:8ABD EE AA 0F    INC $0FAA  [$7E:0FAA]  ;/
+$A5:8AC0 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A5:8AC3 CD AC 0F    CMP $0FAC  [$7E:0FAC]  ;} If [Draygon swoop Y position index] != [Draygon swoop duration * 4]:
+$A5:8AC6 F0 14       BEQ $14    [$8ADC]     ;/
+$A5:8AC8 AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8ACB 38          SEC                    ;|
+$A5:8ACC ED B0 0F    SBC $0FB0  [$7E:0FB0]  ;|
+$A5:8ACF 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position -= [Draygon X speed]
+$A5:8AD2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8AD5 ED AE 0F    SBC $0FAE  [$7E:0FAE]  ;|
+$A5:8AD8 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A5:8ADB 60          RTS                    ; Return
+                                            
 $A5:8ADC AD E5 05    LDA $05E5  [$7E:05E5]  ;\
-$A5:8ADF 29 01 00    AND #$0001             ;} If [random number] % 2 != 0: (swoop (else goop))
+$A5:8ADF 29 01 00    AND #$0001             ;} If [random number] % 2 != 0:
 $A5:8AE2 F0 18       BEQ $18    [$8AFC]     ;/
-$A5:8AE4 A9 F4 87    LDA #$87F4
-$A5:8AE7 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8AEA 9C AA 0F    STZ $0FAA  [$7E:0FAA]
-$A5:8AED AF 00 78 7E LDA $7E7800[$7E:7800]
-$A5:8AF1 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8AF4 AF 02 78 7E LDA $7E7802[$7E:7802]
-$A5:8AF8 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8AFB 60          RTS
+$A5:8AE4 A9 F4 87    LDA #$87F4             ;\
+$A5:8AE7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $87F4 (swoop right)
+$A5:8AEA 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Draygon swoop Y position index = 0
+$A5:8AED AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A5:8AF1 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Draygon X position = [Draygon left side reset X position]
+$A5:8AF4 AF 02 78 7E LDA $7E7802[$7E:7802]  ;\
+$A5:8AF8 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Draygon Y position = [Draygon reset Y position]
+$A5:8AFB 60          RTS                    ; Return
 
-$A5:8AFC A9 0A 8B    LDA #$8B0A
-$A5:8AFF 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8B02 AF 00 78 7E LDA $7E7800[$7E:7800]
-$A5:8B06 8D 7A 0F    STA $0F7A  [$7E:0F7A]
+$A5:8AFC A9 0A 8B    LDA #$8B0A             ;\
+$A5:8AFF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8B0A
+$A5:8B02 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A5:8B06 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Draygon X position = [Draygon left side reset X position]
 $A5:8B09 60          RTS
 }
 
 
-;;; $8B0A: Draygon body function -  ;;;
+;;; $8B0A: Draygon body function - goop right - setup ;;;
 {
 $A5:8B0A 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
-$A5:8B0D A9 B0 FF    LDA #$FFB0
-$A5:8B10 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8B13 A9 80 01    LDA #$0180
-$A5:8B16 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8B19 A9 00 00    LDA #$0000
-$A5:8B1C 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A5:8B1F A9 01 00    LDA #$0001
-$A5:8B22 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A5:8B25 A9 00 00    LDA #$0000
-$A5:8B28 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8B2C A9 06 9C    LDA #$9C06
-$A5:8B2F 8D 52 10    STA $1052  [$7E:1052]
-$A5:8B32 A9 01 00    LDA #$0001
-$A5:8B35 8D 54 10    STA $1054  [$7E:1054]
-$A5:8B38 A9 52 8B    LDA #$8B52
-$A5:8B3B 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8B3E A9 D1 97    LDA #$97D1
-$A5:8B41 8D 92 0F    STA $0F92  [$7E:0F92]
-$A5:8B44 A9 01 00    LDA #$0001
-$A5:8B47 8D 94 0F    STA $0F94  [$7E:0F94]
-$A5:8B4A A9 01 00    LDA #$0001
-$A5:8B4D 8F 00 80 7E STA $7E8000[$7E:8000]
+$A5:8B0D A9 B0 FF    LDA #$FFB0             ;\
+$A5:8B10 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Draygon X position = -50h
+$A5:8B13 A9 80 01    LDA #$0180             ;\
+$A5:8B16 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Draygon Y position = 180h
+$A5:8B19 A9 00 00    LDA #$0000             ;\
+$A5:8B1C 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;|
+$A5:8B1F A9 01 00    LDA #$0001             ;} Draygon X speed = 1.0
+$A5:8B22 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
+$A5:8B25 A9 00 00    LDA #$0000             ;\
+$A5:8B28 8F 1A 78 7E STA $7E781A[$7E:781A]  ;} Draygon goop Y oscillation angle = 0
+$A5:8B2C A9 06 9C    LDA #$9C06             ;\
+$A5:8B2F 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $9C06
+$A5:8B32 A9 01 00    LDA #$0001             ;\
+$A5:8B35 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+$A5:8B38 A9 52 8B    LDA #$8B52             ;\
+$A5:8B3B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8B52
+$A5:8B3E A9 D1 97    LDA #$97D1             ;\
+$A5:8B41 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $97D1
+$A5:8B44 A9 01 00    LDA #$0001             ;\
+$A5:8B47 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
+$A5:8B4A A9 01 00    LDA #$0001             ;\
+$A5:8B4D 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = right
 $A5:8B51 60          RTS
 }
 
 
-;;; $8B52: Draygon body function -  ;;;
+;;; $8B52: Draygon body function - goop right - move until Samus in range ;;;
 {
-; move right before gooping
 $A5:8B52 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8B55 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubbles
-$A5:8B58 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8B5B 38          SEC
-$A5:8B5C ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A5:8B5F 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:8B63 C9 D0 00    CMP #$00D0
-$A5:8B66 10 0E       BPL $0E    [$8B76]
-$A5:8B68 A9 AE 8B    LDA #$8BAE
-$A5:8B6B 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8B6E A9 10 00    LDA #$0010
-$A5:8B71 8F 06 78 7E STA $7E7806[$7E:7806]
-$A5:8B75 60          RTS
+$A5:8B58 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:8B5B 38          SEC                    ;|
+$A5:8B5C ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A5:8B5F 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[Draygon X position] - [Samus X position]| < D0h:
+$A5:8B63 C9 D0 00    CMP #$00D0             ;|
+$A5:8B66 10 0E       BPL $0E    [$8B76]     ;/
+$A5:8B68 A9 AE 8B    LDA #$8BAE             ;\
+$A5:8B6B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8BAE
+$A5:8B6E A9 10 00    LDA #$0010             ;\
+$A5:8B71 8F 06 78 7E STA $7E7806[$7E:7806]  ;} Draygon goop counter = 10h
+$A5:8B75 60          RTS                    ; Return
 
-$A5:8B76 A9 20 00    LDA #$0020
-$A5:8B79 8D 32 0E    STA $0E32  [$7E:0E32]
-$A5:8B7C AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8B80 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A5:8B84 18          CLC
-$A5:8B85 69 80 01    ADC #$0180
-$A5:8B88 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8B8B AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8B8F 18          CLC
-$A5:8B90 69 01 00    ADC #$0001
-$A5:8B93 29 FF 00    AND #$00FF
-$A5:8B96 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8B9A AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8B9D 18          CLC
-$A5:8B9E 6D B0 0F    ADC $0FB0  [$7E:0FB0]
-$A5:8BA1 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8BA4 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8BA7 6D AE 0F    ADC $0FAE  [$7E:0FAE]
-$A5:8BAA 8D 7A 0F    STA $0F7A  [$7E:0F7A]
+$A5:8B76 A9 20 00    LDA #$0020             ;\
+$A5:8B79 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A5:8B7C AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
+$A5:8B80 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8B84 18          CLC                    ;|
+$A5:8B85 69 80 01    ADC #$0180             ;|
+$A5:8B88 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A5:8B8B AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A5:8B8F 18          CLC                    ;|
+$A5:8B90 69 01 00    ADC #$0001             ;} Draygon goop Y oscillation angle = ([Draygon goop Y oscillation angle] + 1) % 100h
+$A5:8B93 29 FF 00    AND #$00FF             ;|
+$A5:8B96 8F 1A 78 7E STA $7E781A[$7E:781A]  ;/
+$A5:8B9A AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8B9D 18          CLC                    ;|
+$A5:8B9E 6D B0 0F    ADC $0FB0  [$7E:0FB0]  ;|
+$A5:8BA1 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position += [Draygon X speed]
+$A5:8BA4 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8BA7 6D AE 0F    ADC $0FAE  [$7E:0FAE]  ;|
+$A5:8BAA 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A5:8BAD 60          RTS
 }
 
 
-;;; $8BAE: Draygon body function -  ;;;
+;;; $8BAE: Draygon body function - goop right - firing goops ;;;
 {
-; goop right
 $A5:8BAE 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
-$A5:8BB1 AD 66 0A    LDA $0A66  [$7E:0A66]
-$A5:8BB4 D0 63       BNE $63    [$8C19]
-$A5:8BB6 AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:8BB9 29 0F 00    AND #$000F
-$A5:8BBC D0 17       BNE $17    [$8BD5]
-$A5:8BBE AF 06 78 7E LDA $7E7806[$7E:7806]
-$A5:8BC2 3A          DEC A
-$A5:8BC3 8F 06 78 7E STA $7E7806[$7E:7806]
-$A5:8BC7 F0 4B       BEQ $4B    [$8C14]
-$A5:8BC9 A0 90 9C    LDY #$9C90
-$A5:8BCC 8C 92 0F    STY $0F92  [$7E:0F92]
-$A5:8BCF A9 01 00    LDA #$0001
-$A5:8BD2 8D 94 0F    STA $0F94  [$7E:0F94]
+$A5:8BB1 AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
+$A5:8BB4 D0 63       BNE $63    [$8C19]     ;} If [Samus X speed divisor] != 0: go to BRANCH_SAMUS_GOOPED
+$A5:8BB6 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:8BB9 29 0F 00    AND #$000F             ;} If [random number] % 10h = 0:
+$A5:8BBC D0 17       BNE $17    [$8BD5]     ;/
+$A5:8BBE AF 06 78 7E LDA $7E7806[$7E:7806]  ;\
+$A5:8BC2 3A          DEC A                  ;} Decrement Draygon goop counter
+$A5:8BC3 8F 06 78 7E STA $7E7806[$7E:7806]  ;/
+$A5:8BC7 F0 4B       BEQ $4B    [$8C14]     ; If [Draygon goop counter] = 0: go to BRANCH_DONE
+$A5:8BC9 A0 90 9C    LDY #$9C90             ;\
+$A5:8BCC 8C 92 0F    STY $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $9C90 <-- ok sure, we'll use the Y register this time
+$A5:8BCF A9 01 00    LDA #$0001             ;\
+$A5:8BD2 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 
-$A5:8BD5 A9 20 00    LDA #$0020
-$A5:8BD8 8D 32 0E    STA $0E32  [$7E:0E32]
-$A5:8BDB AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8BDF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A5:8BE3 18          CLC
-$A5:8BE4 69 80 01    ADC #$0180
-$A5:8BE7 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8BEA AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8BEE 18          CLC
-$A5:8BEF 69 01 00    ADC #$0001
-$A5:8BF2 29 FF 00    AND #$00FF
-$A5:8BF5 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8BF9 AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8BFC 18          CLC
-$A5:8BFD 6D B0 0F    ADC $0FB0  [$7E:0FB0]
-$A5:8C00 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8C03 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8C06 6D AE 0F    ADC $0FAE  [$7E:0FAE]
-$A5:8C09 8D 7A 0F    STA $0F7A  [$7E:0F7A]
+$A5:8BD5 A9 20 00    LDA #$0020             ;\
+$A5:8BD8 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A5:8BDB AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
+$A5:8BDF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8BE3 18          CLC                    ;|
+$A5:8BE4 69 80 01    ADC #$0180             ;|
+$A5:8BE7 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A5:8BEA AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A5:8BEE 18          CLC                    ;|
+$A5:8BEF 69 01 00    ADC #$0001             ;} Draygon goop Y oscillation angle = ([Draygon goop Y oscillation angle] + 1) % 100h
+$A5:8BF2 29 FF 00    AND #$00FF             ;|
+$A5:8BF5 8F 1A 78 7E STA $7E781A[$7E:781A]  ;/
+$A5:8BF9 AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8BFC 18          CLC                    ;|
+$A5:8BFD 6D B0 0F    ADC $0FB0  [$7E:0FB0]  ;|
+$A5:8C00 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position += [Draygon X speed]
+$A5:8C03 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8C06 6D AE 0F    ADC $0FAE  [$7E:0FAE]  ;|
+$A5:8C09 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A5:8C0C 30 05       BMI $05    [$8C13]
-$A5:8C0E C9 A0 02    CMP #$02A0
-$A5:8C11 10 01       BPL $01    [$8C14]
+$A5:8C0E C9 A0 02    CMP #$02A0             ;\
+$A5:8C11 10 01       BPL $01    [$8C14]     ;} If [Draygon X position] >= 2A0h: go to BRANCH_DONE
 
-$A5:8C13 60          RTS
+$A5:8C13 60          RTS                    ; Return
 
 $A5:8C14 AD 66 0A    LDA $0A66  [$7E:0A66]
 $A5:8C17 F0 07       BEQ $07    [$8C20]
 
-$A5:8C19 A9 19 8E    LDA #$8E19
-$A5:8C1C 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8C1F 60          RTS
+; BRANCH_SAMUS_GOOPED
+$A5:8C19 A9 19 8E    LDA #$8E19             ;\
+$A5:8C1C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8E19
+$A5:8C1F 60          RTS                    ; Return
 
-$A5:8C20 A9 DA 9B    LDA #$9BDA
-$A5:8C23 8D 52 10    STA $1052  [$7E:1052]
-$A5:8C26 A9 01 00    LDA #$0001
-$A5:8C29 8D 54 10    STA $1054  [$7E:1054]
-$A5:8C2C A9 33 8C    LDA #$8C33
-$A5:8C2F 8D A8 0F    STA $0FA8  [$7E:0FA8]
+; BRANCH_DONE
+$A5:8C20 A9 DA 9B    LDA #$9BDA             ;\
+$A5:8C23 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $9BDA
+$A5:8C26 A9 01 00    LDA #$0001             ;\
+$A5:8C29 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+$A5:8C2C A9 33 8C    LDA #$8C33             ;\
+$A5:8C2F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8C33
 $A5:8C32 60          RTS
 }
 
 
-;;; $8C33: Draygon body function -  ;;;
+;;; $8C33: Draygon body function - goop right - move until off-screen ;;;
 {
-; move right after gooping
 $A5:8C33 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubbles
-$A5:8C36 A9 20 00    LDA #$0020
-$A5:8C39 8D 32 0E    STA $0E32  [$7E:0E32]
-$A5:8C3C AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8C40 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A5:8C44 18          CLC
-$A5:8C45 69 80 01    ADC #$0180
-$A5:8C48 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8C4B AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8C4F 18          CLC
-$A5:8C50 69 01 00    ADC #$0001
-$A5:8C53 29 FF 00    AND #$00FF
-$A5:8C56 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8C5A AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8C5D 18          CLC
-$A5:8C5E 6D B0 0F    ADC $0FB0  [$7E:0FB0]
-$A5:8C61 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8C64 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8C67 6D AE 0F    ADC $0FAE  [$7E:0FAE]
-$A5:8C6A 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8C6D 30 05       BMI $05    [$8C74]
-$A5:8C6F C9 A0 02    CMP #$02A0
-$A5:8C72 10 01       BPL $01    [$8C75]
+$A5:8C36 A9 20 00    LDA #$0020             ;\
+$A5:8C39 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A5:8C3C AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
+$A5:8C40 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8C44 18          CLC                    ;|
+$A5:8C45 69 80 01    ADC #$0180             ;|
+$A5:8C48 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A5:8C4B AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A5:8C4F 18          CLC                    ;|
+$A5:8C50 69 01 00    ADC #$0001             ;} Draygon goop Y oscillation angle = ([Draygon goop Y oscillation angle] + 1) % 100h
+$A5:8C53 29 FF 00    AND #$00FF             ;|
+$A5:8C56 8F 1A 78 7E STA $7E781A[$7E:781A]  ;/
+$A5:8C5A AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8C5D 18          CLC                    ;|
+$A5:8C5E 6D B0 0F    ADC $0FB0  [$7E:0FB0]  ;|
+$A5:8C61 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position += [Draygon X speed]
+$A5:8C64 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8C67 6D AE 0F    ADC $0FAE  [$7E:0FAE]  ;|
+$A5:8C6A 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A5:8C6D 30 05       BMI $05    [$8C74]     
+$A5:8C6F C9 A0 02    CMP #$02A0             ;\
+$A5:8C72 10 01       BPL $01    [$8C75]     ;} If [Draygon X position] >= 2A0h: go to BRANCH_DONE
 
-$A5:8C74 60          RTS
+$A5:8C74 60          RTS                    ; Return
 
-$A5:8C75 A9 B3 89    LDA #$89B3
-$A5:8C78 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8C7B A9 50 02    LDA #$0250
-$A5:8C7E 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8C81 A9 B0 FF    LDA #$FFB0
-$A5:8C84 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8C87 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A5:8C8A 8D AA 0F    STA $0FAA  [$7E:0FAA]
+; BRANCH_DONE
+$A5:8C75 A9 B3 89    LDA #$89B3             ;\
+$A5:8C78 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $89B3 (swoop left)
+$A5:8C7B A9 50 02    LDA #$0250             ;\
+$A5:8C7E 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Draygon X position = 250h
+$A5:8C81 A9 B0 FF    LDA #$FFB0             ;\
+$A5:8C84 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Draygon Y position = -50h
+$A5:8C87 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A5:8C8A 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Draygon swoop Y position index = [Draygon swoop duration * 4]
 $A5:8C8D 60          RTS
 }
 
 
-;;; $8C8E: Draygon body function -  ;;;
+;;; $8C8E: Draygon body function - goop left - setup ;;;
 {
-$A5:8C8E AF 04 78 7E LDA $7E7804[$7E:7804]
-$A5:8C92 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8C95 A9 80 01    LDA #$0180
-$A5:8C98 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8C9B A9 00 00    LDA #$0000
-$A5:8C9E 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A5:8CA1 A9 01 00    LDA #$0001
-$A5:8CA4 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A5:8CA7 A9 00 00    LDA #$0000
-$A5:8CAA 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8CAE A9 06 9C    LDA #$9C06
-$A5:8CB1 8D 52 10    STA $1052  [$7E:1052]
-$A5:8CB4 A9 01 00    LDA #$0001
-$A5:8CB7 8D 54 10    STA $1054  [$7E:1054]
-$A5:8CBA A9 D4 8C    LDA #$8CD4
-$A5:8CBD 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8CC0 A9 BB 97    LDA #$97BB
-$A5:8CC3 8D 92 0F    STA $0F92  [$7E:0F92]
-$A5:8CC6 A9 01 00    LDA #$0001
-$A5:8CC9 8D 94 0F    STA $0F94  [$7E:0F94]
-$A5:8CCC A9 00 00    LDA #$0000
-$A5:8CCF 8F 00 80 7E STA $7E8000[$7E:8000]
+$A5:8C8E AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
+$A5:8C92 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Draygon X position = [Draygon right side reset X position]
+$A5:8C95 A9 80 01    LDA #$0180             ;\
+$A5:8C98 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Draygon Y position = 180h
+$A5:8C9B A9 00 00    LDA #$0000             ;\
+$A5:8C9E 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;|
+$A5:8CA1 A9 01 00    LDA #$0001             ;} Draygon X speed = 1.0
+$A5:8CA4 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
+$A5:8CA7 A9 00 00    LDA #$0000             ;\
+$A5:8CAA 8F 1A 78 7E STA $7E781A[$7E:781A]  ;} Draygon goop Y oscillation angle = 0
+$A5:8CAE A9 06 9C    LDA #$9C06             ;\
+$A5:8CB1 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $9C06
+$A5:8CB4 A9 01 00    LDA #$0001             ;\
+$A5:8CB7 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+$A5:8CBA A9 D4 8C    LDA #$8CD4             ;\
+$A5:8CBD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8CD4
+$A5:8CC0 A9 BB 97    LDA #$97BB             ;\
+$A5:8CC3 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $97BB
+$A5:8CC6 A9 01 00    LDA #$0001             ;\
+$A5:8CC9 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
+$A5:8CCC A9 00 00    LDA #$0000             ;\
+$A5:8CCF 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = left
 $A5:8CD3 60          RTS
 }
 
 
-;;; $8CD4: Draygon body function -  ;;;
+;;; $8CD4: Draygon body function - goop left - move until Samus in range ;;;
 {
-; move left before gooping
 $A5:8CD4 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8CD7 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubbles
-$A5:8CDA AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8CDD 38          SEC
-$A5:8CDE ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A5:8CE1 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:8CE5 C9 D0 00    CMP #$00D0
-$A5:8CE8 10 0E       BPL $0E    [$8CF8]
-$A5:8CEA A9 30 8D    LDA #$8D30
-$A5:8CED 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8CF0 A9 10 00    LDA #$0010
-$A5:8CF3 8F 06 78 7E STA $7E7806[$7E:7806]
-$A5:8CF7 60          RTS
-
-$A5:8CF8 A9 20 00    LDA #$0020
-$A5:8CFB 8D 32 0E    STA $0E32  [$7E:0E32]
-$A5:8CFE AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8D02 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A5:8D06 18          CLC
-$A5:8D07 69 80 01    ADC #$0180
-$A5:8D0A 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8D0D AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8D11 18          CLC
-$A5:8D12 69 01 00    ADC #$0001
-$A5:8D15 29 FF 00    AND #$00FF
-$A5:8D18 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8D1C AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8D1F 38          SEC
-$A5:8D20 ED B0 0F    SBC $0FB0  [$7E:0FB0]
-$A5:8D23 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8D26 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8D29 ED AE 0F    SBC $0FAE  [$7E:0FAE]
-$A5:8D2C 8D 7A 0F    STA $0F7A  [$7E:0F7A]
+$A5:8CDA AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:8CDD 38          SEC                    ;|
+$A5:8CDE ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A5:8CE1 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[Draygon X position] - [Samus X position]| < D0h:
+$A5:8CE5 C9 D0 00    CMP #$00D0             ;|
+$A5:8CE8 10 0E       BPL $0E    [$8CF8]     ;/
+$A5:8CEA A9 30 8D    LDA #$8D30             ;\
+$A5:8CED 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8D30
+$A5:8CF0 A9 10 00    LDA #$0010             ;\
+$A5:8CF3 8F 06 78 7E STA $7E7806[$7E:7806]  ;} Draygon goop counter = 10h
+$A5:8CF7 60          RTS                    ; Return
+                                            
+$A5:8CF8 A9 20 00    LDA #$0020             ;\
+$A5:8CFB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A5:8CFE AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
+$A5:8D02 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8D06 18          CLC                    ;|
+$A5:8D07 69 80 01    ADC #$0180             ;|
+$A5:8D0A 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A5:8D0D AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A5:8D11 18          CLC                    ;|
+$A5:8D12 69 01 00    ADC #$0001             ;} Draygon goop Y oscillation angle = ([Draygon goop Y oscillation angle] + 1) % 100h
+$A5:8D15 29 FF 00    AND #$00FF             ;|
+$A5:8D18 8F 1A 78 7E STA $7E781A[$7E:781A]  ;/
+$A5:8D1C AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8D1F 38          SEC                    ;|
+$A5:8D20 ED B0 0F    SBC $0FB0  [$7E:0FB0]  ;|
+$A5:8D23 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position -= [Draygon X speed]
+$A5:8D26 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8D29 ED AE 0F    SBC $0FAE  [$7E:0FAE]  ;|
+$A5:8D2C 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A5:8D2F 60          RTS
 }
 
 
-;;; $8D30: Draygon body function -  ;;;
+;;; $8D30: Draygon body function - goop left - firing goops ;;;
 {
-; goop left
-$A5:8D30 AD 66 0A    LDA $0A66  [$7E:0A66]
-$A5:8D33 D0 63       BNE $63    [$8D98]
-$A5:8D35 AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:8D38 29 0F 00    AND #$000F
-$A5:8D3B D0 17       BNE $17    [$8D54]
-$A5:8D3D AF 06 78 7E LDA $7E7806[$7E:7806]
-$A5:8D41 3A          DEC A
-$A5:8D42 8F 06 78 7E STA $7E7806[$7E:7806]
-$A5:8D46 F0 4B       BEQ $4B    [$8D93]
-$A5:8D48 A0 FE 98    LDY #$98FE
-$A5:8D4B 8C 92 0F    STY $0F92  [$7E:0F92]
-$A5:8D4E A9 01 00    LDA #$0001
-$A5:8D51 8D 94 0F    STA $0F94  [$7E:0F94]
-
-$A5:8D54 A9 20 00    LDA #$0020
-$A5:8D57 8D 32 0E    STA $0E32  [$7E:0E32]
-$A5:8D5A AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8D5E 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A5:8D62 18          CLC
-$A5:8D63 69 80 01    ADC #$0180
-$A5:8D66 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8D69 AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8D6D 18          CLC
-$A5:8D6E 69 01 00    ADC #$0001
-$A5:8D71 29 FF 00    AND #$00FF
-$A5:8D74 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8D78 AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8D7B 38          SEC
-$A5:8D7C ED B0 0F    SBC $0FB0  [$7E:0FB0]
-$A5:8D7F 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8D82 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8D85 ED AE 0F    SBC $0FAE  [$7E:0FAE]
-$A5:8D88 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8D8B 10 05       BPL $05    [$8D92]
-$A5:8D8D C9 B0 FF    CMP #$FFB0
-$A5:8D90 30 01       BMI $01    [$8D93]
-
-$A5:8D92 60          RTS
-
-$A5:8D93 AD 66 0A    LDA $0A66  [$7E:0A66]
-$A5:8D96 F0 07       BEQ $07    [$8D9F]
-
-$A5:8D98 A9 19 8E    LDA #$8E19
-$A5:8D9B 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8D9E 60          RTS
-
-$A5:8D9F A9 E7 97    LDA #$97E7
-$A5:8DA2 8D 52 10    STA $1052  [$7E:1052]
-$A5:8DA5 A9 01 00    LDA #$0001
-$A5:8DA8 8D 54 10    STA $1054  [$7E:1054]
-$A5:8DAB A9 B2 8D    LDA #$8DB2
-$A5:8DAE 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:8D30 AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
+$A5:8D33 D0 63       BNE $63    [$8D98]     ;} If [Samus X speed divisor] != 0: go to BRANCH_SAMUS_GOOPED
+$A5:8D35 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:8D38 29 0F 00    AND #$000F             ;} If [random number] % 10h = 0:
+$A5:8D3B D0 17       BNE $17    [$8D54]     ;/
+$A5:8D3D AF 06 78 7E LDA $7E7806[$7E:7806]  ;\
+$A5:8D41 3A          DEC A                  ;} Decrement Draygon goop counter
+$A5:8D42 8F 06 78 7E STA $7E7806[$7E:7806]  ;/
+$A5:8D46 F0 4B       BEQ $4B    [$8D93]     ; If [Draygon goop counter] = 0: go to BRANCH_DONE
+$A5:8D48 A0 FE 98    LDY #$98FE             ;\
+$A5:8D4B 8C 92 0F    STY $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $98FE <-- ok sure, we'll use the Y register this time
+$A5:8D4E A9 01 00    LDA #$0001             ;\
+$A5:8D51 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
+                                            
+$A5:8D54 A9 20 00    LDA #$0020             ;\
+$A5:8D57 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A5:8D5A AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
+$A5:8D5E 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8D62 18          CLC                    ;|
+$A5:8D63 69 80 01    ADC #$0180             ;|
+$A5:8D66 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A5:8D69 AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A5:8D6D 18          CLC                    ;|
+$A5:8D6E 69 01 00    ADC #$0001             ;} Draygon goop Y oscillation angle = ([Draygon goop Y oscillation angle] + 1) % 100h
+$A5:8D71 29 FF 00    AND #$00FF             ;|
+$A5:8D74 8F 1A 78 7E STA $7E781A[$7E:781A]  ;/
+$A5:8D78 AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8D7B 38          SEC                    ;|
+$A5:8D7C ED B0 0F    SBC $0FB0  [$7E:0FB0]  ;|
+$A5:8D7F 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position -= [Draygon X speed]
+$A5:8D82 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8D85 ED AE 0F    SBC $0FAE  [$7E:0FAE]  ;|
+$A5:8D88 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A5:8D8B 10 05       BPL $05    [$8D92]     
+$A5:8D8D C9 B0 FF    CMP #$FFB0             ;\
+$A5:8D90 30 01       BMI $01    [$8D93]     ;} If [Draygon X position] < -50h: go to BRANCH_DONE
+                                            
+$A5:8D92 60          RTS                    ; Return
+                                            
+$A5:8D93 AD 66 0A    LDA $0A66  [$7E:0A66]  
+$A5:8D96 F0 07       BEQ $07    [$8D9F]     
+                                            
+; BRANCH_SAMUS_GOOPED                       
+$A5:8D98 A9 19 8E    LDA #$8E19             ;\
+$A5:8D9B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8E19
+$A5:8D9E 60          RTS                    ; Return
+                                            
+; BRANCH_DONE                               
+$A5:8D9F A9 E7 97    LDA #$97E7             ;\
+$A5:8DA2 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $97E7
+$A5:8DA5 A9 01 00    LDA #$0001             ;\
+$A5:8DA8 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+$A5:8DAB A9 B2 8D    LDA #$8DB2             ;\
+$A5:8DAE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8DB2
 $A5:8DB1 60          RTS
 }
 
 
-;;; $8DB2: Draygon body function -  ;;;
+;;; $8DB2: Draygon body function - goop left - move until off-screen ;;;
 {
-; move left after gooping
 $A5:8DB2 20 1C 93    JSR $931C  [$A5:931C]  ; Handle short Draygon breath bubbles
-$A5:8DB5 AD 66 0A    LDA $0A66  [$7E:0A66]
-$A5:8DB8 D0 3F       BNE $3F    [$8DF9]
-$A5:8DBA A9 20 00    LDA #$0020
-$A5:8DBD 8D 32 0E    STA $0E32  [$7E:0E32]
-$A5:8DC0 AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8DC4 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A5:8DC8 18          CLC
-$A5:8DC9 69 80 01    ADC #$0180
-$A5:8DCC 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8DCF AF 1A 78 7E LDA $7E781A[$7E:781A]
-$A5:8DD3 18          CLC
-$A5:8DD4 69 01 00    ADC #$0001
-$A5:8DD7 29 FF 00    AND #$00FF
-$A5:8DDA 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A5:8DDE AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A5:8DE1 38          SEC
-$A5:8DE2 ED B0 0F    SBC $0FB0  [$7E:0FB0]
-$A5:8DE5 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A5:8DE8 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8DEB ED AE 0F    SBC $0FAE  [$7E:0FAE]
-$A5:8DEE 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8DF1 10 05       BPL $05    [$8DF8]
-$A5:8DF3 C9 B0 FF    CMP #$FFB0
-$A5:8DF6 30 08       BMI $08    [$8E00]
+$A5:8DB5 AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
+$A5:8DB8 D0 3F       BNE $3F    [$8DF9]     ;} If [Samus X speed divisor] != 0: go to BRANCH_SAMUS_GOOPED
+$A5:8DBA A9 20 00    LDA #$0020             ;\
+$A5:8DBD 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A5:8DC0 AF 1A 78 7E LDA $7E781A[$7E:781A]  ;|
+$A5:8DC4 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Draygon Y position = 180h + 20h * cos([Draygon goop Y oscillation angle] * pi / 80h) * FFh / 100h
+$A5:8DC8 18          CLC                    ;|
+$A5:8DC9 69 80 01    ADC #$0180             ;|
+$A5:8DCC 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A5:8DCF AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
+$A5:8DD3 18          CLC                    ;|
+$A5:8DD4 69 01 00    ADC #$0001             ;} Draygon goop Y oscillation angle = ([Draygon goop Y oscillation angle] + 1) % 100h
+$A5:8DD7 29 FF 00    AND #$00FF             ;|
+$A5:8DDA 8F 1A 78 7E STA $7E781A[$7E:781A]  ;/
+$A5:8DDE AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A5:8DE1 38          SEC                    ;|
+$A5:8DE2 ED B0 0F    SBC $0FB0  [$7E:0FB0]  ;|
+$A5:8DE5 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Draygon X position -= [Draygon X speed]
+$A5:8DE8 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:8DEB ED AE 0F    SBC $0FAE  [$7E:0FAE]  ;|
+$A5:8DEE 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A5:8DF1 10 05       BPL $05    [$8DF8]     
+$A5:8DF3 C9 B0 FF    CMP #$FFB0             ;\
+$A5:8DF6 30 08       BMI $08    [$8E00]     ;} If [Draygon X position] < -50h: go to BRANCH_DONE
 
-$A5:8DF8 60          RTS
+$A5:8DF8 60          RTS                    ; Return
 
-$A5:8DF9 A9 19 8E    LDA #$8E19
-$A5:8DFC 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8DFF 60          RTS
+; BRANCH_SAMUS_GOOPED
+$A5:8DF9 A9 19 8E    LDA #$8E19             ;\
+$A5:8DFC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8E19
+$A5:8DFF 60          RTS                    ; Return
 
-$A5:8E00 A9 F4 87    LDA #$87F4
-$A5:8E03 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8E06 A9 B0 FF    LDA #$FFB0
-$A5:8E09 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:8E0C A9 B0 FF    LDA #$FFB0
-$A5:8E0F 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:8E12 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A5:8E15 8D AA 0F    STA $0FAA  [$7E:0FAA]
+; BRANCH_DONE
+$A5:8E00 A9 F4 87    LDA #$87F4             ;\
+$A5:8E03 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $87F4 (swoop right)
+$A5:8E06 A9 B0 FF    LDA #$FFB0             ;\
+$A5:8E09 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Draygon X position = -50h
+$A5:8E0C A9 B0 FF    LDA #$FFB0             ;\
+$A5:8E0F 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Draygon Y position = -50h
+$A5:8E12 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A5:8E15 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Draygon swoop Y position index = [Draygon swoop duration * 4]
 $A5:8E18 60          RTS
 }
 
@@ -896,117 +895,119 @@ $A5:8E18 60          RTS
 {
 ; attempt to grab Samus
 $A5:8E19 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
-$A5:8E1C AD 66 0A    LDA $0A66  [$7E:0A66]
-$A5:8E1F D0 07       BNE $07    [$8E28]
-$A5:8E21 A9 54 91    LDA #$9154
-$A5:8E24 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8E27 60          RTS
+$A5:8E1C AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
+$A5:8E1F D0 07       BNE $07    [$8E28]     ;} If [Samus X speed divisor] = 0:
+$A5:8E21 A9 54 91    LDA #$9154             ;\
+$A5:8E24 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $9154
+$A5:8E27 60          RTS                    ; Return
 
-$A5:8E28 AD 86 0F    LDA $0F86  [$7E:0F86]
-$A5:8E2B 09 00 04    ORA #$0400
-$A5:8E2E 8D 86 0F    STA $0F86  [$7E:0F86]
-$A5:8E31 A0 08 00    LDY #$0008
-$A5:8E34 AF 00 80 7E LDA $7E8000[$7E:8000]
-$A5:8E38 D0 03       BNE $03    [$8E3D]
-$A5:8E3A A0 F8 FF    LDY #$FFF8
+$A5:8E28 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A5:8E2B 09 00 04    ORA #$0400             ;} Set Draygon body as intangible
+$A5:8E2E 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A5:8E31 A0 08 00    LDY #$0008             ; Y = 8
+$A5:8E34 AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
+$A5:8E38 D0 03       BNE $03    [$8E3D]     ;} If [Draygon facing direction] = left:
+$A5:8E3A A0 F8 FF    LDY #$FFF8             ; Y = -8
 
-$A5:8E3D 98          TYA
-$A5:8E3E 18          CLC
-$A5:8E3F 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A5:8E42 38          SEC
-$A5:8E43 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A5:8E46 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:8E4A C9 08 00    CMP #$0008
-$A5:8E4D 10 12       BPL $12    [$8E61]
-$A5:8E4F AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:8E52 38          SEC
-$A5:8E53 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$A5:8E56 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:8E5A C9 08 00    CMP #$0008
-$A5:8E5D 10 02       BPL $02    [$8E61]
-$A5:8E5F 80 48       BRA $48    [$8EA9]
+$A5:8E3D 98          TYA                    ;\
+$A5:8E3E 18          CLC                    ;|
+$A5:8E3F 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
+$A5:8E42 38          SEC                    ;|
+$A5:8E43 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If |[Draygon X position] + [Y] - [Samus X position]| < 8:
+$A5:8E46 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
+$A5:8E4A C9 08 00    CMP #$0008             ;|
+$A5:8E4D 10 12       BPL $12    [$8E61]     ;/
+$A5:8E4F AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:8E52 38          SEC                    ;|
+$A5:8E53 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
+$A5:8E56 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[Draygon Y position] - [Samus Y position]| < 8:
+$A5:8E5A C9 08 00    CMP #$0008             ;|
+$A5:8E5D 10 02       BPL $02    [$8E61]     ;/
+$A5:8E5F 80 48       BRA $48    [$8EA9]     ; Go to BRANCH_GRAB
 
-$A5:8E61 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A5:8E64 38          SEC
-$A5:8E65 ED 7A 0F    SBC $0F7A  [$7E:0F7A]
-$A5:8E68 85 12       STA $12    [$7E:0012]
-$A5:8E6A AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A5:8E6D 38          SEC
-$A5:8E6E ED 7E 0F    SBC $0F7E  [$7E:0F7E]
-$A5:8E71 85 14       STA $14    [$7E:0014]
-$A5:8E73 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A5:8E77 49 FF 00    EOR #$00FF
-$A5:8E7A 1A          INC A
-$A5:8E7B 18          CLC
-$A5:8E7C 69 40 00    ADC #$0040
-$A5:8E7F 29 FF 00    AND #$00FF
-$A5:8E82 8D 20 0E    STA $0E20  [$7E:0E20]
-$A5:8E85 85 12       STA $12    [$7E:0012]
-$A5:8E87 A9 02 00    LDA #$0002
-$A5:8E8A 85 14       STA $14    [$7E:0014]
-$A5:8E8C 22 43 B6 A0 JSL $A0B643[$A0:B643]
-$A5:8E90 A5 16       LDA $16    [$7E:0016]
-$A5:8E92 8D 24 0E    STA $0E24  [$7E:0E24]
-$A5:8E95 A5 18       LDA $18    [$7E:0018]
-$A5:8E97 8D 26 0E    STA $0E26  [$7E:0E26]
-$A5:8E9A A5 1A       LDA $1A    [$7E:001A]
-$A5:8E9C 8D 28 0E    STA $0E28  [$7E:0E28]
-$A5:8E9F A5 1C       LDA $1C    [$7E:001C]
-$A5:8EA1 8D 2A 0E    STA $0E2A  [$7E:0E2A]
-$A5:8EA4 22 91 B6 A0 JSL $A0B691[$A0:B691]
-$A5:8EA8 60          RTS
+$A5:8E61 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A5:8E64 38          SEC                    ;|
+$A5:8E65 ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
+$A5:8E68 85 12       STA $12    [$7E:0012]  ;|
+$A5:8E6A AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = angle from Draygon position to Samus position
+$A5:8E6D 38          SEC                    ;|
+$A5:8E6E ED 7E 0F    SBC $0F7E  [$7E:0F7E]  ;|
+$A5:8E71 85 14       STA $14    [$7E:0014]  ;|
+$A5:8E73 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$A5:8E77 49 FF 00    EOR #$00FF             ;\
+$A5:8E7A 1A          INC A                  ;|
+$A5:8E7B 18          CLC                    ;|
+$A5:8E7C 69 40 00    ADC #$0040             ;} $0E20 = (40h - [A]) % 100h (angle using the common maths convention)
+$A5:8E7F 29 FF 00    AND #$00FF             ;|
+$A5:8E82 8D 20 0E    STA $0E20  [$7E:0E20]  ;/
+$A5:8E85 85 12       STA $12    [$7E:0012]  ;\
+$A5:8E87 A9 02 00    LDA #$0002             ;|
+$A5:8E8A 85 14       STA $14    [$7E:0014]  ;} ($16.$18, $1A.$1C) = (2 * |cos([$0E20] * pi / 80h)|, 2 * |sin([$0E20] * pi / 80h)|)
+$A5:8E8C 22 43 B6 A0 JSL $A0B643[$A0:B643]  ;/
+$A5:8E90 A5 16       LDA $16    [$7E:0016]  ;\
+$A5:8E92 8D 24 0E    STA $0E24  [$7E:0E24]  ;|
+$A5:8E95 A5 18       LDA $18    [$7E:0018]  ;} $0E24.$0E26 = [$16].[$18] (X speed)
+$A5:8E97 8D 26 0E    STA $0E26  [$7E:0E26]  ;/
+$A5:8E9A A5 1A       LDA $1A    [$7E:001A]  ;\
+$A5:8E9C 8D 28 0E    STA $0E28  [$7E:0E28]  ;|
+$A5:8E9F A5 1C       LDA $1C    [$7E:001C]  ;} $0E28.$0E2A = [$1A].[$1C] (Y speed)
+$A5:8EA1 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;/
+$A5:8EA4 22 91 B6 A0 JSL $A0B691[$A0:B691]  ; Move enemy according to angle and X/Y speeds
+$A5:8EA8 60          RTS                    ; Return
 
-$A5:8EA9 A0 45 98    LDY #$9845
-$A5:8EAC AF 00 80 7E LDA $7E8000[$7E:8000]
-$A5:8EB0 F0 03       BEQ $03    [$8EB5]
-$A5:8EB2 A0 38 9C    LDY #$9C38
+; BRANCH_GRAB
+$A5:8EA9 A0 45 98    LDY #$9845             ; Draygon arms instruction list pointer = $9845
+$A5:8EAC AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
+$A5:8EB0 F0 03       BEQ $03    [$8EB5]     ;} If [Draygon facing direction] != left:
+$A5:8EB2 A0 38 9C    LDY #$9C38             ; Draygon arms instruction list pointer = $9C38
 
 $A5:8EB5 8C 52 10    STY $1052  [$7E:1052]
-$A5:8EB8 A9 01 00    LDA #$0001
-$A5:8EBB 8D 54 10    STA $1054  [$7E:1054]
-$A5:8EBE A9 0D 00    LDA #$000D
-$A5:8EC1 22 84 F0 90 JSL $90F084[$90:F084]
-$A5:8EC5 29 FF FF    AND #$FFFF
-$A5:8EC8 D0 3F       BNE $3F    [$8F09]
-$A5:8ECA A0 00 00    LDY #$0000
-$A5:8ECD AF 00 80 7E LDA $7E8000[$7E:8000]
-$A5:8ED1 F0 03       BEQ $03    [$8ED6]
-$A5:8ED3 A0 01 00    LDY #$0001
-
-$A5:8ED6 98          TYA
+$A5:8EB8 A9 01 00    LDA #$0001             ;\
+$A5:8EBB 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
+$A5:8EBE A9 0D 00    LDA #$000D             ;\
+$A5:8EC1 22 84 F0 90 JSL $90F084[$90:F084]  ;|
+$A5:8EC5 29 FF FF    AND #$FFFF             ;} If grapple beam is active: go to BRANCH_RETREAT
+$A5:8EC8 D0 3F       BNE $3F    [$8F09]     ;/
+$A5:8ECA A0 00 00    LDY #$0000             ;\
+$A5:8ECD AF 00 80 7E LDA $7E8000[$7E:8000]  ;|
+$A5:8ED1 F0 03       BEQ $03    [$8ED6]     ;|
+$A5:8ED3 A0 01 00    LDY #$0001             ;} A = [Draygon facing direction]
+                                            ;|
+$A5:8ED6 98          TYA                    ;/
 $A5:8ED7 22 3B E2 90 JSL $90E23B[$90:E23B]  ; Set Samus into the grabbed by Draygon pose
-$A5:8EDB A9 00 01    LDA #$0100
-$A5:8EDE 8F 0C 78 7E STA $7E780C[$7E:780C]
-$A5:8EE2 A9 80 01    LDA #$0180
-$A5:8EE5 8F 0E 78 7E STA $7E780E[$7E:780E]
-$A5:8EE9 A9 00 00    LDA #$0000
-$A5:8EEC 8F 0A 78 7E STA $7E780A[$7E:780A]
-$A5:8EF0 8F 12 78 7E STA $7E7812[$7E:7812]
-$A5:8EF4 A9 C0 00    LDA #$00C0
-$A5:8EF7 8F 10 78 7E STA $7E7810[$7E:7810]
-$A5:8EFB A9 00 08    LDA #$0800
-$A5:8EFE 8F 16 78 7E STA $7E7816[$7E:7816]
-$A5:8F02 A9 1E 8F    LDA #$8F1E
-$A5:8F05 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8F08 60          RTS
+$A5:8EDB A9 00 01    LDA #$0100             ;\
+$A5:8EDE 8F 0C 78 7E STA $7E780C[$7E:780C]  ;} $7E:780C = 100h
+$A5:8EE2 A9 80 01    LDA #$0180             ;\         
+$A5:8EE5 8F 0E 78 7E STA $7E780E[$7E:780E]  ;} $7E:780E = 180h
+$A5:8EE9 A9 00 00    LDA #$0000             ;\         
+$A5:8EEC 8F 0A 78 7E STA $7E780A[$7E:780A]  ;} $7E:780A = 0
+$A5:8EF0 8F 12 78 7E STA $7E7812[$7E:7812]  ; $7E:7812 = 0
+$A5:8EF4 A9 C0 00    LDA #$00C0             ;\         
+$A5:8EF7 8F 10 78 7E STA $7E7810[$7E:7810]  ;} $7E:7810 = C0h
+$A5:8EFB A9 00 08    LDA #$0800             ;\         
+$A5:8EFE 8F 16 78 7E STA $7E7816[$7E:7816]  ;} $7E:7816 = 800h
+$A5:8F02 A9 1E 8F    LDA #$8F1E             ;\
+$A5:8F05 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8F1E
+$A5:8F08 60          RTS                    ; Return
 
-$A5:8F09 A9 10 8F    LDA #$8F10
-$A5:8F0C 8D A8 0F    STA $0FA8  [$7E:0FA8]
+; BRANCH_RETREAT
+$A5:8F09 A9 10 8F    LDA #$8F10             ;\
+$A5:8F0C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8F10
 $A5:8F0F 60          RTS
 }
 
 
 ;;; $8F10: Draygon body function -  ;;;
 {
-$A5:8F10 A9 C5 C8    LDA #$C8C5
-$A5:8F13 8D 32 0D    STA $0D32  [$7E:0D32]
-$A5:8F16 A9 28 91    LDA #$9128
-$A5:8F19 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:8F10 A9 C5 C8    LDA #$C8C5             ;\
+$A5:8F13 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = dropped
+$A5:8F16 A9 28 91    LDA #$9128             ;\
+$A5:8F19 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $9128
 $A5:8F1C 60          RTS
 }
 
 
-;;; $8F1D: RTS ;;;
+;;; $8F1D: Unused. RTS ;;;
 {
 $A5:8F1D 60          RTS
 }
@@ -1549,12 +1550,12 @@ $A5:937B A2 00 00    LDX #$0000
 $A5:937E A5 91       LDA $91    [$7E:0091]  ;\
 $A5:9380 89 00 40    BIT #$4000             ;} If controller 2 not newly pressed Y: go to BRANCH_FIRE_GUNK_END
 $A5:9383 F0 17       BEQ $17    [$939C]     ;/
-$A5:9385 A0 FE 98    LDY #$98FE             ; Y = $98FE
+$A5:9385 A0 FE 98    LDY #$98FE             ; Draygon body instruction list pointer = $98FE
 $A5:9388 BF 00 80 7E LDA $7E8000,x          ;\
-$A5:938C F0 03       BEQ $03    [$9391]     ;} If [$7E:8000] != 0:
-$A5:938E A0 90 9C    LDY #$9C90             ; Y = $9C90
+$A5:938C F0 03       BEQ $03    [$9391]     ;} If [Draygon facing direction] != left:
+$A5:938E A0 90 9C    LDY #$9C90             ; Draygon body instruction list pointer = $9C90
 
-$A5:9391 8C 92 0F    STY $0F92  [$7E:0F92]  ; Draygon body instruction list pointer = [Y]
+$A5:9391 8C 92 0F    STY $0F92  [$7E:0F92]
 $A5:9394 A9 01 00    LDA #$0001             ;\
 $A5:9397 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 $A5:939A 80 3D       BRA $3D    [$93D9]     ; Return
@@ -1562,12 +1563,12 @@ $A5:939A 80 3D       BRA $3D    [$93D9]     ; Return
 ; BRANCH_FIRE_GUNK_END
 $A5:939C 89 00 80    BIT #$8000             ;\
 $A5:939F F0 17       BEQ $17    [$93B8]     ;} If controller 2 not newly pressed B: go to BRANCH_WHIP_TAIL_END
-$A5:93A1 A0 FC 99    LDY #$99FC             ; Y = $99FC
+$A5:93A1 A0 FC 99    LDY #$99FC             ; Draygon tail instruction list pointer = $99FC
 $A5:93A4 BF 00 80 7E LDA $7E8000,x          ;\
-$A5:93A8 F0 03       BEQ $03    [$93AD]     ;} If [$7E:8000] != 0:
-$A5:93AA A0 9E 9D    LDY #$9D9E             ; Y = $9D9E
+$A5:93A8 F0 03       BEQ $03    [$93AD]     ;} If [Draygon facing direction] != left:
+$A5:93AA A0 9E 9D    LDY #$9D9E             ; Draygon tail instruction list pointer = $9D9E
 
-$A5:93AD 8C 12 10    STY $1012  [$7E:1012]  ; Draygon tail instruction list pointer = [Y]
+$A5:93AD 8C 12 10    STY $1012  [$7E:1012]
 $A5:93B0 A9 01 00    LDA #$0001             ;\
 $A5:93B3 8D 14 10    STA $1014  [$7E:1014]  ;} Draygon tail instruction timer = 1
 $A5:93B6 80 21       BRA $21    [$93D9]     ; Return
@@ -1575,12 +1576,12 @@ $A5:93B6 80 21       BRA $21    [$93D9]     ; Return
 ; BRANCH_WHIP_TAIL_END
 $A5:93B8 89 80 00    BIT #$0080             ;\
 $A5:93BB F0 17       BEQ $17    [$93D4]     ;} If controller 2 not newly pressed A: go to BRANCH_BIG_HUG_END
-$A5:93BD A0 25 98    LDY #$9825             ; Y = $9825
+$A5:93BD A0 25 98    LDY #$9825             ; Draygon arms instruction list pointer = $9825
 $A5:93C0 BF 00 80 7E LDA $7E8000,x          ;\
-$A5:93C4 F0 03       BEQ $03    [$93C9]     ;} If [$7E:8000] != 0:
-$A5:93C6 A0 18 9C    LDY #$9C18             ; Y = $9C18
+$A5:93C4 F0 03       BEQ $03    [$93C9]     ;} If [Draygon facing direction] != left:
+$A5:93C6 A0 18 9C    LDY #$9C18             ; Draygon arms instruction list pointer = $9C18
                                             
-$A5:93C9 8C 52 10    STY $1052  [$7E:1052]  ; Draygon arms instruction list pointer = [Y]
+$A5:93C9 8C 52 10    STY $1052  [$7E:1052]
 $A5:93CC A9 01 00    LDA #$0001             ;\
 $A5:93CF 8D 54 10    STA $1054  [$7E:1054]  ;} Draygon arms instruction timer = 1
 $A5:93D2 80 05       BRA $05    [$93D9]     ; Return
@@ -1604,7 +1605,7 @@ $A5:93E7 F0 0F       BEQ $0F    [$93F8]     ;} If [controller 2 input] != [previ
 $A5:93E9 8D 66 18    STA $1866  [$7E:1866]  ; Previous controller 2 input = [controller 2 input]
 $A5:93EC A0 BB 97    LDY #$97BB             ; Y = $97BB
 $A5:93EF A9 00 00    LDA #$0000             ;\
-$A5:93F2 8F 00 80 7E STA $7E8000[$7E:8000]  ;} $7E:8000 = 0
+$A5:93F2 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = left
 $A5:93F6 80 1A       BRA $1A    [$9412]     ; Go to BRANCH_SET_NEXT_INSTRUCTION
 
 $A5:93F8 89 00 01    BIT #$0100             ;\
@@ -1615,12 +1616,12 @@ $A5:9403 F0 16       BEQ $16    [$941B]     ;} If [controller 2 input] = [previo
 $A5:9405 8D 66 18    STA $1866  [$7E:1866]  ; Previous controller 2 input = [controller 2 input]
 $A5:9408 A0 D1 97    LDY #$97D1             ; Y = $97D1
 $A5:940B A9 01 00    LDA #$0001             ;\
-$A5:940E 8F 00 80 7E STA $7E8000[$7E:8000]  ;} $7E:8000 = 1
+$A5:940E 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = right
 
 ; BRANCH_SET_NEXT_INSTRUCTION
-$A5:9412 8C 92 0F    STY $0F92  [$7E:0F92]  ; Draygon instruction list pointer = [Y]
+$A5:9412 8C 92 0F    STY $0F92  [$7E:0F92]  ; Draygon body instruction list pointer = [Y]
 $A5:9415 A9 01 00    LDA #$0001             ;\
-$A5:9418 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon instruction timer = 1
+$A5:9418 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 
 ; BRANCH_DONT_SET_NEXT_INSTRUCTION
 $A5:941B A5 8D       LDA $8D    [$7E:008D]  ;\
@@ -1652,7 +1653,7 @@ $A5:9446 F0 0F       BEQ $0F    [$9457]     ;/
 $A5:9448 8D 66 18    STA $1866  [$7E:1866]  ; Previous controller 2 input = [controller 2 input]
 $A5:944B A0 BB 97    LDY #$97BB             ; Y = $97BB
 $A5:944E A9 00 00    LDA #$0000             ;\
-$A5:9451 8F 00 80 7E STA $7E8000[$7E:8000]  ;} $7E:8000 = 0
+$A5:9451 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = left
 $A5:9455 80 23       BRA $23    [$947A]     ; Go to BRANCH_SET_NEXT_INSTRUCTION
 
 $A5:9457 89 00 01    BIT #$0100             ;\
@@ -1667,12 +1668,12 @@ $A5:946B F0 16       BEQ $16    [$9483]     ;/
 $A5:946D 8D 66 18    STA $1866  [$7E:1866]  ; Previous controller 2 input = [controller 2 input]
 $A5:9470 A0 D1 97    LDY #$97D1             ; Y = $97D1
 $A5:9473 A9 01 00    LDA #$0001             ;\
-$A5:9476 8F 00 80 7E STA $7E8000[$7E:8000]  ;} $7E:8000 = 1
+$A5:9476 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Draygon facing direction = right
 
 ; BRANCH_SET_NEXT_INSTRUCTION
-$A5:947A 8C 92 0F    STY $0F92  [$7E:0F92]  ; Draygon instruction list pointer = [Y]
+$A5:947A 8C 92 0F    STY $0F92  [$7E:0F92]  ; Draygon body instruction list pointer = [Y]
 $A5:947D A9 01 00    LDA #$0001             ;\
-$A5:9480 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon instruction timer = 1
+$A5:9480 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 
 ; BRANCH_DONT_SET_NEXT_INSTRUCTION
 $A5:9483 A5 8D       LDA $8D    [$7E:008D]  ;\
@@ -3196,7 +3197,7 @@ $A5:A13D 60          RTS
 }
 
 
-;;; $A13E: Handle Draygon fight intro movement ;;;
+;;; $A13E: Handle Draygon fight intro dance ;;;
 {
 $A5:A13E 5A          PHY
 $A5:A13F A2 3E 00    LDX #$003E             ; X = 3Eh (sprite object index)
@@ -3206,11 +3207,11 @@ $A5:A142 8A          TXA                    ;\
 $A5:A143 38          SEC                    ;|
 $A5:A144 E9 38 00    SBC #$0038             ;|
 $A5:A147 A8          TAY                    ;|
-$A5:A148 B9 9F A1    LDA $A19F,y[$A5:A1A5]  ;} If [$A19F + [X] - 38h] + [Draygon fight intro movement index] < 0: go to BRANCH_NEXT
+$A5:A148 B9 9F A1    LDA $A19F,y[$A5:A1A5]  ;} If [$A19F + [X] - 38h] + [Draygon fight intro dance index] < 0: go to BRANCH_NEXT
 $A5:A14B 18          CLC                    ;|
 $A5:A14C 6F 0C 88 7E ADC $7E880C[$7E:880C]  ;|
 $A5:A150 30 2F       BMI $2F    [$A181]     ;/
-$A5:A152 A8          TAY                    ; Y = [$A19F + [X] - 38h] + [Draygon fight intro movement index]
+$A5:A152 A8          TAY                    ; Y = [$A19F + [X] - 38h] + [Draygon fight intro dance index]
 $A5:A153 B9 07 CE    LDA $CE07,y[$A5:CE07]  ;\
 $A5:A156 C9 80 80    CMP #$8080             ;} If [$CE07 + [Y]] = 80h,80h: go to BRANCH_DELETE_SPRITE_OBJECT
 $A5:A159 F0 3B       BEQ $3B    [$A196]     ;/
@@ -3235,7 +3236,7 @@ $A5:A186 10 BA       BPL $BA    [$A142]     ;} If [X] >= 38h: go to LOOP
 $A5:A188 AF 0C 88 7E LDA $7E880C[$7E:880C]  ;\
 $A5:A18C 1A          INC A                  ;|
 $A5:A18D 1A          INC A                  ;|
-$A5:A18E 1A          INC A                  ;} Draygon fight intro movement index += 4
+$A5:A18E 1A          INC A                  ;} Draygon fight intro dance index += 4
 $A5:A18F 1A          INC A                  ;|
 $A5:A190 8F 0C 88 7E STA $7E880C[$7E:880C]  ;/
 $A5:A194 7A          PLY
@@ -4230,7 +4231,7 @@ $A5:C5C7             db 01,FF, 01,00, 00,FF, 01,00, 01,FF, 01,00, 00,FF, 01,00,
 }
 
 
-;;; $CE07: Draygon fight intro movement data ;;;
+;;; $CE07: Draygon fight intro dance data ;;;
 {
 $A5:CE07             db 03,00, 03,00, 03,00, 02,FF, 03,00, 03,FF, 03,00, 02,FF,
                         03,FF, 02,FE, 02,FF, 02,FE, 02,FE, 02,FD, 02,FE, 01,FD,

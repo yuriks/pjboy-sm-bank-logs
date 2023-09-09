@@ -6219,7 +6219,7 @@ $A0:B0B1 6B          RTL
 {
 ; $0E36.$0E38 = cos([A] * pi / 80h) * FFh * [$0E32] / 100h
 
-; Bug. Only accurate for angles in the range C0h..3Fh
+; Bug. Only accurate for angles in the range C0h..3Fh (see $B0DA)
 
 $A0:B0B2 18          CLC
 $A0:B0B3 69 40 00    ADC #$0040
@@ -6240,7 +6240,7 @@ $A0:B0C5 6B          RTL
 {
 ; $0E36.$0E38 = -sin([A] * pi / 80h) * FFh * [$0E32] / 100h
 
-; Bug. Only accurate for angles in the range 80h..FFh
+; Bug. Only accurate for angles in the range 80h..FFh (see $B0DA)
 
 $A0:B0C6 18          CLC
 $A0:B0C7 69 80 00    ADC #$0080
