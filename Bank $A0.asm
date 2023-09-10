@@ -6579,7 +6579,7 @@ $A0:B7A0 6B          RTL
 }
 
 
-;;; $B7A1:  ;;;
+;;; $B7A1: Cap scrolling speed ;;;
 {
 ; Called by Draygon and yapping maw
 $A0:B7A1 DA          PHX

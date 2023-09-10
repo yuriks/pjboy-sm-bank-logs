@@ -1461,11 +1461,11 @@ $9B:B8F7 22 1F A9 94 JSL $94A91F[$94:A91F]  ; Block grapple reaction
 $9B:B8FB 90 08       BCC $08    [$B905]     ; If carry set:
 $9B:B8FD A9 01 00    LDA #$0001             ;\
 $9B:B900 8D 64 0A    STA $0A64  [$7E:0A64]  ;} Set grapple connected flag
-$9B:B903 38          SEC
-$9B:B904 60          RTS
+$9B:B903 38          SEC                    ;\
+$9B:B904 60          RTS                    ;} Return carry set
 
-$9B:B905 18          CLC
-$9B:B906 60          RTS
+$9B:B905 18          CLC                    ;\
+$9B:B906 60          RTS                    ;} Return carry clear
 }
 
 

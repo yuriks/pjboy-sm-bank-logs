@@ -893,7 +893,7 @@ $A5:8E18 60          RTS
 
 ;;; $8E19: Draygon body function -  ;;;
 {
-; attempt to grab Samus
+; Hone in on Samus to grab her
 $A5:8E19 20 AA 87    JSR $87AA  [$A5:87AA]  ; Handle firing wall turret
 $A5:8E1C AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
 $A5:8E1F D0 07       BNE $07    [$8E28]     ;} If [Samus X speed divisor] = 0:
@@ -1015,112 +1015,114 @@ $A5:8F1D 60          RTS
 
 ;;; $8F1E: Draygon body function -  ;;;
 {
-$A5:8F1E AD 64 0A    LDA $0A64  [$7E:0A64]
-$A5:8F21 89 01 00    BIT #$0001
-$A5:8F24 F0 1D       BEQ $1D    [$8F43]
+; Grabbed Samus, moving to target position
+$A5:8F1E AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
+$A5:8F21 89 01 00    BIT #$0001             ;} If grapple connected with block:
+$A5:8F24 F0 1D       BEQ $1D    [$8F43]     ;/
 $A5:8F26 DA          PHX
-$A5:8F27 AE 78 0F    LDX $0F78  [$7E:0F78]
-$A5:8F2A BF 0D 00 A0 LDA $A0000D,x
-$A5:8F2E 29 FF 00    AND #$00FF
-$A5:8F31 18          CLC
-$A5:8F32 69 08 00    ADC #$0008
-$A5:8F35 8D 9C 0F    STA $0F9C  [$7E:0F9C]
+$A5:8F27 AE 78 0F    LDX $0F78  [$7E:0F78]  ;\
+$A5:8F2A BF 0D 00 A0 LDA $A0000D,x          ;|
+$A5:8F2E 29 FF 00    AND #$00FF             ;|
+$A5:8F31 18          CLC                    ;} Draygon body flash timer = (Draygon body hurt AI time) + 8
+$A5:8F32 69 08 00    ADC #$0008             ;|
+$A5:8F35 8D 9C 0F    STA $0F9C  [$7E:0F9C]  ;/
 $A5:8F38 FA          PLX
-$A5:8F39 AD 8A 0F    LDA $0F8A  [$7E:0F8A]
-$A5:8F3C 09 02 00    ORA #$0002
-$A5:8F3F 8D 8A 0F    STA $0F8A  [$7E:0F8A]
-$A5:8F42 60          RTS
+$A5:8F39 AD 8A 0F    LDA $0F8A  [$7E:0F8A]  ;\
+$A5:8F3C 09 02 00    ORA #$0002             ;} Draygon body AI handler |= hurt AI
+$A5:8F3F 8D 8A 0F    STA $0F8A  [$7E:0F8A]  ;/
+$A5:8F42 60          RTS                    ; Return
 
-$A5:8F43 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:8F46 38          SEC
-$A5:8F47 E9 00 01    SBC #$0100
-$A5:8F4A 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:8F4E C9 02 00    CMP #$0002
-$A5:8F51 10 12       BPL $12    [$8F65]
-$A5:8F53 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:8F56 38          SEC
-$A5:8F57 E9 80 01    SBC #$0180
-$A5:8F5A 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:8F5E C9 02 00    CMP #$0002
-$A5:8F61 10 02       BPL $02    [$8F65]
-$A5:8F63 80 4B       BRA $4B    [$8FB0]
+$A5:8F43 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:8F46 38          SEC                    ;|
+$A5:8F47 E9 00 01    SBC #$0100             ;|
+$A5:8F4A 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[Draygon X position] - 100h| < 2:
+$A5:8F4E C9 02 00    CMP #$0002             ;|
+$A5:8F51 10 12       BPL $12    [$8F65]     ;/
+$A5:8F53 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:8F56 38          SEC                    ;|
+$A5:8F57 E9 80 01    SBC #$0180             ;|
+$A5:8F5A 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[Draygon Y position] - 180h| < 2:
+$A5:8F5E C9 02 00    CMP #$0002             ;|
+$A5:8F61 10 02       BPL $02    [$8F65]     ;/
+$A5:8F63 80 4B       BRA $4B    [$8FB0]     ; Go to BRANCH_REACHED_TARGET_POSITION
 
-$A5:8F65 A9 00 01    LDA #$0100
-$A5:8F68 38          SEC
-$A5:8F69 ED 7A 0F    SBC $0F7A  [$7E:0F7A]
-$A5:8F6C 85 12       STA $12    [$7E:0012]
-$A5:8F6E A9 80 01    LDA #$0180
-$A5:8F71 38          SEC
-$A5:8F72 ED 7E 0F    SBC $0F7E  [$7E:0F7E]
-$A5:8F75 85 14       STA $14    [$7E:0014]
-$A5:8F77 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A5:8F7B 49 FF 00    EOR #$00FF
-$A5:8F7E 1A          INC A
-$A5:8F7F 18          CLC
-$A5:8F80 69 40 00    ADC #$0040
-$A5:8F83 29 FF 00    AND #$00FF
-$A5:8F86 8D 20 0E    STA $0E20  [$7E:0E20]
-$A5:8F89 85 12       STA $12    [$7E:0012]
-$A5:8F8B A9 02 00    LDA #$0002
-$A5:8F8E 85 14       STA $14    [$7E:0014]
-$A5:8F90 22 43 B6 A0 JSL $A0B643[$A0:B643]
-$A5:8F94 A5 16       LDA $16    [$7E:0016]
-$A5:8F96 8D 24 0E    STA $0E24  [$7E:0E24]
-$A5:8F99 A5 18       LDA $18    [$7E:0018]
-$A5:8F9B 8D 26 0E    STA $0E26  [$7E:0E26]
-$A5:8F9E A5 1A       LDA $1A    [$7E:001A]
-$A5:8FA0 8D 28 0E    STA $0E28  [$7E:0E28]
-$A5:8FA3 A5 1C       LDA $1C    [$7E:001C]
-$A5:8FA5 8D 2A 0E    STA $0E2A  [$7E:0E2A]
-$A5:8FA8 22 91 B6 A0 JSL $A0B691[$A0:B691]
-$A5:8FAC 20 A9 94    JSR $94A9  [$A5:94A9]
-$A5:8FAF 60          RTS
+$A5:8F65 A9 00 01    LDA #$0100             ;\
+$A5:8F68 38          SEC                    ;|
+$A5:8F69 ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
+$A5:8F6C 85 12       STA $12    [$7E:0012]  ;|
+$A5:8F6E A9 80 01    LDA #$0180             ;} A = angle from Draygon position to (100h, 180h)
+$A5:8F71 38          SEC                    ;|
+$A5:8F72 ED 7E 0F    SBC $0F7E  [$7E:0F7E]  ;|
+$A5:8F75 85 14       STA $14    [$7E:0014]  ;|
+$A5:8F77 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$A5:8F7B 49 FF 00    EOR #$00FF             ;\
+$A5:8F7E 1A          INC A                  ;|
+$A5:8F7F 18          CLC                    ;|
+$A5:8F80 69 40 00    ADC #$0040             ;} $0E20 = (40h - [A]) % 100h (angle using the common maths convention)
+$A5:8F83 29 FF 00    AND #$00FF             ;|
+$A5:8F86 8D 20 0E    STA $0E20  [$7E:0E20]  ;/
+$A5:8F89 85 12       STA $12    [$7E:0012]  ;\
+$A5:8F8B A9 02 00    LDA #$0002             ;|
+$A5:8F8E 85 14       STA $14    [$7E:0014]  ;} ($16.$18, $1A.$1C) = (2 * |cos([$0E20] * pi / 80h)|, 2 * |sin([$0E20] * pi / 80h)|)
+$A5:8F90 22 43 B6 A0 JSL $A0B643[$A0:B643]  ;/
+$A5:8F94 A5 16       LDA $16    [$7E:0016]  ;\
+$A5:8F96 8D 24 0E    STA $0E24  [$7E:0E24]  ;|
+$A5:8F99 A5 18       LDA $18    [$7E:0018]  ;} $0E24.$0E26 = [$16].[$18] (X speed)
+$A5:8F9B 8D 26 0E    STA $0E26  [$7E:0E26]  ;/
+$A5:8F9E A5 1A       LDA $1A    [$7E:001A]  ;\
+$A5:8FA0 8D 28 0E    STA $0E28  [$7E:0E28]  ;|
+$A5:8FA3 A5 1C       LDA $1C    [$7E:001C]  ;} $0E28.$0E2A = [$1A].[$1C] (Y speed)
+$A5:8FA5 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;/
+$A5:8FA8 22 91 B6 A0 JSL $A0B691[$A0:B691]  ; Move enemy according to angle and X/Y speeds
+$A5:8FAC 20 A9 94    JSR $94A9  [$A5:94A9]  ; Move Samus with Draygon
+$A5:8FAF 60          RTS                    ; Return
 
-$A5:8FB0 A9 D6 8F    LDA #$8FD6
-$A5:8FB3 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:8FB6 A0 22 99    LDY #$9922
-$A5:8FB9 AF 00 80 7E LDA $7E8000[$7E:8000]
-$A5:8FBD F0 03       BEQ $03    [$8FC2]
-$A5:8FBF A0 B4 9C    LDY #$9CB4
+; BRANCH_REACHED_TARGET_POSITION
+$A5:8FB0 A9 D6 8F    LDA #$8FD6             ;\
+$A5:8FB3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $8FD6
+$A5:8FB6 A0 22 99    LDY #$9922             ; Draygon body instruction list pointer = $9922
+$A5:8FB9 AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
+$A5:8FBD F0 03       BEQ $03    [$8FC2]     ;} If [Draygon facing direction] != left:
+$A5:8FBF A0 B4 9C    LDY #$9CB4             ; Draygon body instruction list pointer = $9CB4
 
 $A5:8FC2 98          TYA
 $A5:8FC3 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A5:8FC6 A9 01 00    LDA #$0001
-$A5:8FC9 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A5:8FCC AD 86 0F    LDA $0F86  [$7E:0F86]
-$A5:8FCF 09 00 04    ORA #$0400
-$A5:8FD2 8D 86 0F    STA $0F86  [$7E:0F86]
+$A5:8FC6 A9 01 00    LDA #$0001             ;\
+$A5:8FC9 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Draygon body instruction timer = 1
+$A5:8FCC AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A5:8FCF 09 00 04    ORA #$0400             ;} Set Draygon body as intangible
+$A5:8FD2 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A5:8FD5 60          RTS
 }
 
 
 ;;; $8FD6: Draygon body function -  ;;;
 {
-; hold samus
-$A5:8FD6 AD 64 0A    LDA $0A64  [$7E:0A64]
-$A5:8FD9 89 01 00    BIT #$0001
-$A5:8FDC F0 1D       BEQ $1D    [$8FFB]
-$A5:8FDE DA          PHX
-$A5:8FDF AE 78 0F    LDX $0F78  [$7E:0F78]
-$A5:8FE2 BF 0D 00 A0 LDA $A0000D,x
-$A5:8FE6 29 FF 00    AND #$00FF
-$A5:8FE9 18          CLC
-$A5:8FEA 69 08 00    ADC #$0008
-$A5:8FED 8D 9C 0F    STA $0F9C  [$7E:0F9C]
-$A5:8FF0 FA          PLX
-$A5:8FF1 AD 8A 0F    LDA $0F8A  [$7E:0F8A]
-$A5:8FF4 09 02 00    ORA #$0002
-$A5:8FF7 8D 8A 0F    STA $0F8A  [$7E:0F8A]
-$A5:8FFA 60          RTS
+; Grabbed Samus, do rising circle(/spiral?) movement
+$A5:8FD6 AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
+$A5:8FD9 89 01 00    BIT #$0001             ;} If grapple connected with block:
+$A5:8FDC F0 1D       BEQ $1D    [$8FFB]     ;/
+$A5:8FDE DA          PHX                    
+$A5:8FDF AE 78 0F    LDX $0F78  [$7E:0F78]  ;\
+$A5:8FE2 BF 0D 00 A0 LDA $A0000D,x          ;|
+$A5:8FE6 29 FF 00    AND #$00FF             ;|
+$A5:8FE9 18          CLC                    ;} Draygon body flash timer = (Draygon body hurt AI time) + 8
+$A5:8FEA 69 08 00    ADC #$0008             ;|
+$A5:8FED 8D 9C 0F    STA $0F9C  [$7E:0F9C]  ;/
+$A5:8FF0 FA          PLX                    
+$A5:8FF1 AD 8A 0F    LDA $0F8A  [$7E:0F8A]  ;\
+$A5:8FF4 09 02 00    ORA #$0002             ;} Draygon body AI handler |= hurt AI
+$A5:8FF7 8D 8A 0F    STA $0F8A  [$7E:0F8A]  ;/
+$A5:8FFA 60          RTS                    ; Return
 
-$A5:8FFB AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:8FFE 29 FF 00    AND #$00FF
-$A5:9001 D0 0E       BNE $0E    [$9011]
-$A5:9003 A9 40 00    LDA #$0040
-$A5:9006 8F 18 78 7E STA $7E7818[$7E:7818]
-$A5:900A A9 D4 90    LDA #$90D4
-$A5:900D 8D A8 0F    STA $0FA8  [$7E:0FA8]
-$A5:9010 60          RTS
+$A5:8FFB AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:8FFE 29 FF 00    AND #$00FF             ;} If [random number] % 100h = 0:
+$A5:9001 D0 0E       BNE $0E    [$9011]     ;/
+$A5:9003 A9 40 00    LDA #$0040             ;\
+$A5:9006 8F 18 78 7E STA $7E7818[$7E:7818]  ;} $7E:7818 = 40h
+$A5:900A A9 D4 90    LDA #$90D4             ;\
+$A5:900D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $90D4
+$A5:9010 60          RTS                    ; Return
 
 $A5:9011 AF 0A 78 7E LDA $7E780A[$7E:780A]
 $A5:9015 8D 32 0E    STA $0E32  [$7E:0E32]
@@ -1697,28 +1699,28 @@ $A5:94A8 6B          RTL
 }
 
 
-;;; $94A9:  ;;;
+;;; $94A9: Move Samus with Draygon ;;;
 {
-$A5:94A9 A0 08 00    LDY #$0008
-$A5:94AC BF 00 80 7E LDA $7E8000,x[$7E:8000]
-$A5:94B0 D0 03       BNE $03    [$94B5]
-$A5:94B2 A0 F8 FF    LDY #$FFF8
+$A5:94A9 A0 08 00    LDY #$0008             ; Y = 8
+$A5:94AC BF 00 80 7E LDA $7E8000,x[$7E:8000];\
+$A5:94B0 D0 03       BNE $03    [$94B5]     ;} If [Draygon facing direction] = left:
+$A5:94B2 A0 F8 FF    LDY #$FFF8             ; Y = -8
 
-$A5:94B5 98          TYA
-$A5:94B6 18          CLC
-$A5:94B7 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A5:94BA 8D F6 0A    STA $0AF6  [$7E:0AF6]
-$A5:94BD AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:94C0 18          CLC
-$A5:94C1 69 28 00    ADC #$0028
-$A5:94C4 8D FA 0A    STA $0AFA  [$7E:0AFA]
-$A5:94C7 22 A1 B7 A0 JSL $A0B7A1[$A0:B7A1]
-$A5:94CB AD 64 0A    LDA $0A64  [$7E:0A64]
-$A5:94CE 89 02 00    BIT #$0002
-$A5:94D1 F0 09       BEQ $09    [$94DC]
-$A5:94D3 9C 64 0A    STZ $0A64  [$7E:0A64]
-$A5:94D6 A9 54 91    LDA #$9154
-$A5:94D9 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:94B5 98          TYA                    ;\
+$A5:94B6 18          CLC                    ;|
+$A5:94B7 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Samus X position = [Draygon X position] + [Y]
+$A5:94BA 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
+$A5:94BD AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:94C0 18          CLC                    ;|
+$A5:94C1 69 28 00    ADC #$0028             ;} Samus Y position = [Draygon Y position] + 28h
+$A5:94C4 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
+$A5:94C7 22 A1 B7 A0 JSL $A0B7A1[$A0:B7A1]  ; Cap scrolling speed
+$A5:94CB AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
+$A5:94CE 89 02 00    BIT #$0002             ;} If Samus released from Draygon:
+$A5:94D1 F0 09       BEQ $09    [$94DC]     ;/
+$A5:94D3 9C 64 0A    STZ $0A64  [$7E:0A64]  ; Grapple connected flags = 0
+$A5:94D6 A9 54 91    LDA #$9154             ;\
+$A5:94D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $9154
 
 $A5:94DC 60          RTS
 }
