@@ -7492,7 +7492,7 @@ $84:B8AB 60          RTS
 
 ;;; $B8AC: PLM entry - speed booster escape ;;;
 {
-$84:B8AC             dW B89C,B88A
+$84:B8AC             dw B89C,B88A
 }
 
 
