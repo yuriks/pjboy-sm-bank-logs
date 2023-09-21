@@ -1291,7 +1291,7 @@ $A5:9164 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A5:9167 29 FF FB    AND #$FBFF             ;} Set Draygon body as tangible
 $A5:916A 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A5:916D A9 F4 87    LDA #$87F4             ;\
-$A5:9170 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $87F4
+$A5:9170 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $87F4 (swoop right)
 $A5:9173 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Draygon swoop Y position index = 0
 $A5:9176 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
 $A5:917A 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Draygon X position = [Draygon left side reset X position]
@@ -1301,9 +1301,8 @@ $A5:9184 60          RTS
 }
 
 
-;;; $9185: Draygon body function -  ;;;
+;;; $9185: Draygon body function - death sequence - drift to death spot ;;;
 {
-; move to death spot
 $A5:9185 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:9188 BD A4 0F    LDA $0FA4,x[$7E:0FA4]  ;\
 $A5:918B 29 0F 00    AND #$000F             ;} If [Draygon body frame counter] % 10h != 0: go to BRANCH_NO_FOAM
@@ -1421,9 +1420,8 @@ $A5:9293 60          RTS
 }
 
 
-;;; $9294: Draygon body function -  ;;;
+;;; $9294: Draygon body function - death sequence - wait for mini-Draygons ;;;
 {
-; laying on floor
 $A5:9294 20 EA 92    JSR $92EA  [$A5:92EA]  ; Handle dying Draygon smoke
 $A5:9297 CE AA 0F    DEC $0FAA  [$7E:0FAA]  ; Decrement Draygon body function timer
 $A5:929A AD AA 0F    LDA $0FAA  [$7E:0FAA]
@@ -1438,9 +1436,8 @@ $A5:92AA 60          RTS
 }
 
 
-;;; $92AB: Draygon body function -  ;;;
+;;; $92AB: Draygon body function - death sequence - buried by mini-Draygons ;;;
 {
-; carried by evirs
 $A5:92AB 20 EA 92    JSR $92EA  [$A5:92EA]  ; Handle dying Draygon smoke
 $A5:92AE 20 E0 9F    JSR $9FE0  [$A5:9FE0]  ; Handle death sequence mini-Draygon movement
 $A5:92B1 EE 7E 0F    INC $0F7E  [$7E:0F7E]  ; Draygon Y position += 1
@@ -1448,7 +1445,7 @@ $A5:92B4 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A5:92B7 C9 40 02    CMP #$0240             ;} If [Draygon Y position] >= 240h:
 $A5:92BA 30 2D       BMI $2D    [$92E9]     ;/
 $A5:92BC A9 ED 98    LDA #$98ED             ;\
-$A5:92BF 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $98ED
+$A5:92BF 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $98ED (delete)
 $A5:92C2 A9 01 00    LDA #$0001             ;\
 $A5:92C5 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 $A5:92C8 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
@@ -1872,65 +1869,67 @@ $A5:960B 80 00       BRA $00    [$960D]
 
 ;;; $960D: Draygon reaction ;;;
 {
+; The calculations for the X/Y speed for drifting to the death point are copy+pasted from Spore Spawn code,
+; the results ($7E:8010..17) aren't actually used by Draygon, instead they're recalculated every frame by $9185 >_<;
 $A5:960D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:9610 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $A5:9613 F0 03       BEQ $03    [$9618]     ;} If [enemy health] != 0:
 $A5:9615 4C AB 96    JMP $96AB  [$A5:96AB]  ; Go to BRANCH_NOT_DEAD
 
-$A5:9618 A9 C5 C8    LDA #$C8C5
-$A5:961B 8D 32 0D    STA $0D32  [$7E:0D32]
-$A5:961E A0 67 98    LDY #$9867
-$A5:9621 AF 00 80 7E LDA $7E8000[$7E:8000]
-$A5:9625 F0 03       BEQ $03    [$962A]
-$A5:9627 A0 5A 9C    LDY #$9C5A
+$A5:9618 A9 C5 C8    LDA #$C8C5             ;\
+$A5:961B 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = dropped
+$A5:961E A0 67 98    LDY #$9867             ; Draygon body instruction list pointer = $9867
+$A5:9621 AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
+$A5:9625 F0 03       BEQ $03    [$962A]     ;} If [Draygon facing direction] != left:
+$A5:9627 A0 5A 9C    LDY #$9C5A             ; Draygon body instruction list pointer = $9C5A
 
 $A5:962A 8C 92 0F    STY $0F92  [$7E:0F92]
-$A5:962D A9 01 00    LDA #$0001
-$A5:9630 8D 94 0F    STA $0F94  [$7E:0F94]
-$A5:9633 A0 7A 99    LDY #$997A
-$A5:9636 AF 00 80 7E LDA $7E8000[$7E:8000]
-$A5:963A F0 03       BEQ $03    [$963F]
-$A5:963C A0 1C 9D    LDY #$9D1C
+$A5:962D A9 01 00    LDA #$0001             ;\
+$A5:9630 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
+$A5:9633 A0 7A 99    LDY #$997A             ; Draygon eye instruction list pointer = $997A
+$A5:9636 AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
+$A5:963A F0 03       BEQ $03    [$963F]     ;} If [Draygon facing direction] != left:
+$A5:963C A0 1C 9D    LDY #$9D1C             ; Draygon eye instruction list pointer = $9D1C
 
 $A5:963F 8C D2 0F    STY $0FD2  [$7E:0FD2]
-$A5:9642 A9 01 00    LDA #$0001
-$A5:9645 8D D4 0F    STA $0FD4  [$7E:0FD4]
-$A5:9648 A9 4B 80    LDA #$804B
-$A5:964B 8D E8 0F    STA $0FE8  [$7E:0FE8]
-$A5:964E A9 85 91    LDA #$9185
-$A5:9651 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:9642 A9 01 00    LDA #$0001             ;\
+$A5:9645 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Draygon eye instruction timer = 1
+$A5:9648 A9 4B 80    LDA #$804B             ;\
+$A5:964B 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Draygon eye function = RTS
+$A5:964E A9 85 91    LDA #$9185             ;\
+$A5:9651 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $9185 (death sequence)
 $A5:9654 22 D4 E2 90 JSL $90E2D4[$90:E2D4]  ; Release Samus from Draygon
-$A5:9658 9C 64 0A    STZ $0A64  [$7E:0A64]
-$A5:965B A9 00 01    LDA #$0100
-$A5:965E 38          SEC
-$A5:965F ED 7A 0F    SBC $0F7A  [$7E:0F7A]
-$A5:9662 85 12       STA $12    [$7E:0012]
-$A5:9664 A9 E0 01    LDA #$01E0
-$A5:9667 38          SEC
-$A5:9668 ED 7E 0F    SBC $0F7E  [$7E:0F7E]
-$A5:966B 85 14       STA $14    [$7E:0014]
-$A5:966D 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A5:9671 38          SEC
-$A5:9672 E9 40 00    SBC #$0040
-$A5:9675 49 FF FF    EOR #$FFFF
-$A5:9678 1A          INC A
-$A5:9679 29 FF 00    AND #$00FF
-$A5:967C 8F 06 88 7E STA $7E8806[$7E:8806]
-$A5:9680 A9 01 00    LDA #$0001
-$A5:9683 85 14       STA $14    [$7E:0014]
-$A5:9685 AF 06 88 7E LDA $7E8806[$7E:8806]
-$A5:9689 29 FF 00    AND #$00FF
-$A5:968C 85 12       STA $12    [$7E:0012]
-$A5:968E 22 43 B6 A0 JSL $A0B643[$A0:B643]
-$A5:9692 A5 16       LDA $16    [$7E:0016]
-$A5:9694 8F 10 80 7E STA $7E8010[$7E:8010]
-$A5:9698 A5 18       LDA $18    [$7E:0018]
-$A5:969A 8F 12 80 7E STA $7E8012[$7E:8012]
-$A5:969E A5 1A       LDA $1A    [$7E:001A]
-$A5:96A0 8F 14 80 7E STA $7E8014[$7E:8014]
-$A5:96A4 A5 1C       LDA $1C    [$7E:001C]
-$A5:96A6 8F 16 80 7E STA $7E8016[$7E:8016]
-$A5:96AA 6B          RTL
+$A5:9658 9C 64 0A    STZ $0A64  [$7E:0A64]  ; Grapple connected flags = 0
+$A5:965B A9 00 01    LDA #$0100             ;\
+$A5:965E 38          SEC                    ;|
+$A5:965F ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
+$A5:9662 85 12       STA $12    [$7E:0012]  ;|
+$A5:9664 A9 E0 01    LDA #$01E0             ;} A = angle from Draygon position to (100h, 1E0h)
+$A5:9667 38          SEC                    ;|
+$A5:9668 ED 7E 0F    SBC $0F7E  [$7E:0F7E]  ;|
+$A5:966B 85 14       STA $14    [$7E:0014]  ;|
+$A5:966D 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$A5:9671 38          SEC                    ;\
+$A5:9672 E9 40 00    SBC #$0040             ;|
+$A5:9675 49 FF FF    EOR #$FFFF             ;|
+$A5:9678 1A          INC A                  ;} $7E:8806 = (40h - [A]) % 100h (angle using the common maths convention)
+$A5:9679 29 FF 00    AND #$00FF             ;|
+$A5:967C 8F 06 88 7E STA $7E8806[$7E:8806]  ;/
+$A5:9680 A9 01 00    LDA #$0001             ;\
+$A5:9683 85 14       STA $14    [$7E:0014]  ;|
+$A5:9685 AF 06 88 7E LDA $7E8806[$7E:8806]  ;|
+$A5:9689 29 FF 00    AND #$00FF             ;} ($16.$18, $1A.$1C) = (|cos([$7E:8806] * pi / 80h)|, |sin([$7E:8806] * pi / 80h)|)
+$A5:968C 85 12       STA $12    [$7E:0012]  ;|
+$A5:968E 22 43 B6 A0 JSL $A0B643[$A0:B643]  ;/
+$A5:9692 A5 16       LDA $16    [$7E:0016]  ;\
+$A5:9694 8F 10 80 7E STA $7E8010[$7E:8010]  ;|
+$A5:9698 A5 18       LDA $18    [$7E:0018]  ;} Draygon death drift X speed = [$16].[$18] (X speed, never read)
+$A5:969A 8F 12 80 7E STA $7E8012[$7E:8012]  ;/
+$A5:969E A5 1A       LDA $1A    [$7E:001A]  ;\
+$A5:96A0 8F 14 80 7E STA $7E8014[$7E:8014]  ;|
+$A5:96A4 A5 1C       LDA $1C    [$7E:001C]  ;} Draygon death drift Y speed = [$1A].[$1C] (Y speed, never read)
+$A5:96A6 8F 16 80 7E STA $7E8016[$7E:8016]  ;/
+$A5:96AA 6B          RTL                    ; Return
 
 ; BRANCH_NOT_DEAD
 $A5:96AB 20 01 97    JSR $9701  [$A5:9701]  ; Draygon health-based palette handling
@@ -2265,7 +2264,7 @@ $A5:98EC 6B          RTL
 }
 
 
-;;; $98ED: Instruction list -  ;;;
+;;; $98ED: Instruction list - delete ;;;
 {
 $A5:98ED             dx 807C        ; Delete
 }
@@ -5309,35 +5308,35 @@ $A5:EB9A 60          RTS
 ;;; $EB9B: Spore Spawn function - set up death ;;;
 {
 $A5:EB9B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:EB9E A9 80 00    LDA #$0080
-$A5:EBA1 38          SEC
-$A5:EBA2 ED 7A 0F    SBC $0F7A  [$7E:0F7A]
-$A5:EBA5 85 12       STA $12    [$7E:0012]
-$A5:EBA7 A9 70 02    LDA #$0270
-$A5:EBAA 38          SEC
-$A5:EBAB ED 7E 0F    SBC $0F7E  [$7E:0F7E]
-$A5:EBAE 85 14       STA $14    [$7E:0014]
-$A5:EBB0 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A5:EBB4 38          SEC
-$A5:EBB5 E9 40 00    SBC #$0040
-$A5:EBB8 49 FF FF    EOR #$FFFF
-$A5:EBBB 1A          INC A
-$A5:EBBC 29 FF 00    AND #$00FF
-$A5:EBBF 8F 06 88 7E STA $7E8806[$7E:8806]
-$A5:EBC3 A9 01 00    LDA #$0001
-$A5:EBC6 85 14       STA $14    [$7E:0014]
-$A5:EBC8 AF 06 88 7E LDA $7E8806[$7E:8806]
-$A5:EBCC 29 FF 00    AND #$00FF
-$A5:EBCF 85 12       STA $12    [$7E:0012]
-$A5:EBD1 22 43 B6 A0 JSL $A0B643[$A0:B643]
-$A5:EBD5 A5 16       LDA $16    [$7E:0016]
-$A5:EBD7 9F 10 80 7E STA $7E8010,x[$7E:8010]
-$A5:EBDB A5 18       LDA $18    [$7E:0018]
-$A5:EBDD 9F 12 80 7E STA $7E8012,x[$7E:8012]
-$A5:EBE1 A5 1A       LDA $1A    [$7E:001A]
-$A5:EBE3 9F 14 80 7E STA $7E8014,x[$7E:8014]
-$A5:EBE7 A5 1C       LDA $1C    [$7E:001C]
-$A5:EBE9 9F 16 80 7E STA $7E8016,x[$7E:8016]
+$A5:EB9E A9 80 00    LDA #$0080             ;\
+$A5:EBA1 38          SEC                    ;|
+$A5:EBA2 ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
+$A5:EBA5 85 12       STA $12    [$7E:0012]  ;|
+$A5:EBA7 A9 70 02    LDA #$0270             ;} A = angle from Spore Spawn position to (80h, 270h)
+$A5:EBAA 38          SEC                    ;|
+$A5:EBAB ED 7E 0F    SBC $0F7E  [$7E:0F7E]  ;|
+$A5:EBAE 85 14       STA $14    [$7E:0014]  ;|
+$A5:EBB0 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$A5:EBB4 38          SEC                    ;\
+$A5:EBB5 E9 40 00    SBC #$0040             ;|
+$A5:EBB8 49 FF FF    EOR #$FFFF             ;|
+$A5:EBBB 1A          INC A                  ;} $7E:8806 = (40h - [A]) % 100h (angle using the common maths convention)
+$A5:EBBC 29 FF 00    AND #$00FF             ;|
+$A5:EBBF 8F 06 88 7E STA $7E8806[$7E:8806]  ;/
+$A5:EBC3 A9 01 00    LDA #$0001             ;\
+$A5:EBC6 85 14       STA $14    [$7E:0014]  ;|
+$A5:EBC8 AF 06 88 7E LDA $7E8806[$7E:8806]  ;|
+$A5:EBCC 29 FF 00    AND #$00FF             ;} ($16.$18, $1A.$1C) = (|cos([$7E:8806] * pi / 80h)|, |sin([$7E:8806] * pi / 80h)|)
+$A5:EBCF 85 12       STA $12    [$7E:0012]  ;|
+$A5:EBD1 22 43 B6 A0 JSL $A0B643[$A0:B643]  ;/
+$A5:EBD5 A5 16       LDA $16    [$7E:0016]  ;\
+$A5:EBD7 9F 10 80 7E STA $7E8010,x[$7E:8010];|
+$A5:EBDB A5 18       LDA $18    [$7E:0018]  ;} $7E:8010.$7E:8012 = [$16].[$18] (X speed)
+$A5:EBDD 9F 12 80 7E STA $7E8012,x[$7E:8012];/
+$A5:EBE1 A5 1A       LDA $1A    [$7E:001A]  ;\
+$A5:EBE3 9F 14 80 7E STA $7E8014,x[$7E:8014];|
+$A5:EBE7 A5 1C       LDA $1C    [$7E:001C]  ;} $7E:8014.$7E:8016 = [$1A].[$1C] (Y speed)
+$A5:EBE9 9F 16 80 7E STA $7E8016,x[$7E:8016];/
 $A5:EBED 60          RTS
 }
 
