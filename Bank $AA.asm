@@ -2120,10 +2120,10 @@ $AA:C661 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
 $AA:C664 30 17       BMI $17    [$C67D]
 $AA:C666 C9 00 01    CMP #$0100
 $AA:C669 F0 12       BEQ $12    [$C67D]
-$AA:C66B A9 04 00    LDA #$0004
-$AA:C66E 8D 3E 18    STA $183E  [$7E:183E]
-$AA:C671 A9 20 00    LDA #$0020
-$AA:C674 8D 40 18    STA $1840  [$7E:1840]
+$AA:C66B A9 04 00    LDA #$0004             ;\
+$AA:C66E 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
+$AA:C671 A9 20 00    LDA #$0020             ;\
+$AA:C674 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 20h
 $AA:C677 A9 00 01    LDA #$0100
 $AA:C67A 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
@@ -2407,10 +2407,10 @@ $AA:C866 A9 01 00    LDA #$0001
 $AA:C869 9D 94 0F    STA $0F94,x[$7E:0F94]
 $AA:C86C A9 00 01    LDA #$0100
 $AA:C86F 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$AA:C872 A9 04 00    LDA #$0004
-$AA:C875 8D 3E 18    STA $183E  [$7E:183E]
-$AA:C878 A9 20 00    LDA #$0020
-$AA:C87B 8D 40 18    STA $1840  [$7E:1840]
+$AA:C872 A9 04 00    LDA #$0004             ;\
+$AA:C875 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
+$AA:C878 A9 20 00    LDA #$0020             ;\
+$AA:C87B 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 20h
 $AA:C87E 60          RTS
 }
 

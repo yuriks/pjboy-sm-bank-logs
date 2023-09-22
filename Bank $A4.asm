@@ -1135,10 +1135,10 @@ $A4:8FC6 6B          RTL
 {
 $A4:8FC7 DA          PHX
 $A4:8FC8 5A          PHY
-$A4:8FC9 A9 04 00    LDA #$0004
-$A4:8FCC 8D 3E 18    STA $183E  [$7E:183E]
-$A4:8FCF A9 05 00    LDA #$0005
-$A4:8FD2 8D 40 18    STA $1840  [$7E:1840]
+$A4:8FC9 A9 04 00    LDA #$0004             ;\
+$A4:8FCC 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
+$A4:8FCF A9 05 00    LDA #$0005             ;\
+$A4:8FD2 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 5
 $A4:8FD5 A9 76 00    LDA #$0076             ;\
 $A4:8FD8 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 76h, sound library 2, max queued sounds allowed = 6 (quake)
 $A4:8FDC 7A          PLY

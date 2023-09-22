@@ -1220,7 +1220,7 @@ $A7:AA8A CA          DEX                    ;|
 $A7:AA8B CA          DEX                    ;|
 $A7:AA8C 10 F8       BPL $F8    [$AA86]     ;/
 $A7:AA8E A9 05 00    LDA #$0005             ;\
-$A7:AA91 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, diagonal shaking
+$A7:AA91 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, diagonal
 $A7:AA94 A2 00 00    LDX #$0000             ;\
                                             ;|
 $A7:AA97 BD A6 AA    LDA $AAA6,x[$A7:AAA6]  ;|
@@ -2486,7 +2486,7 @@ $A7:B63B 6B          RTL
 $A7:B63C DA          PHX
 $A7:B63D EE 7E 0F    INC $0F7E  [$7E:0F7E]  ; Increment Kraid Y position
 $A7:B640 A9 01 00    LDA #$0001             ;\
-$A7:B643 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, vertical shaking
+$A7:B643 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, vertical
 $A7:B646 A9 0A 00    LDA #$000A             ;\
 $A7:B649 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10
 $A7:B64C FA          PLX
@@ -2569,7 +2569,7 @@ $A7:B6A9 FA          PLX
 $A7:B6AA 6B          RTL
 
 $A7:B6AB A9 00 00    LDA #$0000             ;\ Else (collided with wall):
-$A7:B6AE 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, horizontal shaking
+$A7:B6AE 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, horizontal
 $A7:B6B1 A9 07 00    LDA #$0007             ;\
 $A7:B6B4 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 7
 $A7:B6B7 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
@@ -3796,7 +3796,7 @@ $A7:C049 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A7:C04C B9 D2 96    LDA $96D2,y[$A7:96F4]  ;\
 $A7:C04F 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = [$96D2 + [Y]]
 $A7:C052 A9 04 00    LDA #$0004             ;\
-$A7:C055 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical shaking
+$A7:C055 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
 $A7:C058 A9 54 01    LDA #$0154             ;\
 $A7:C05B 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 154h
 $A7:C05E A9 E7 86    LDA #$86E7             ;\
@@ -4326,7 +4326,7 @@ $A7:C4E7 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A7:C4EA 09 00 80    ORA #$8000             ;} Set Kraid to not hitbox solid to Samus
 $A7:C4ED 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A7:C4F0 A9 01 00    LDA #$0001             ;\
-$A7:C4F3 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, vertical shaking
+$A7:C4F3 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, vertical
 $A7:C4F6 A9 00 01    LDA #$0100             ;\
 $A7:C4F9 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 100h
 $A7:C4FC A9 A4 8A    LDA #$8AA4             ;\

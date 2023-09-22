@@ -170,7 +170,7 @@ $93:811D 80 12       BRA $12    [$8131]
 $93:811F AD 93 86    LDA $8693  [$93:8693]  ;\ Else (super missile):
 $93:8122 9D 40 0C    STA $0C40,x[$7E:0C40]  ;} Projectile instruction pointer = $A0C1 (super missile explosion)
 $93:8125 A9 14 00    LDA #$0014             ;\
-$93:8128 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 1 pixel displacement, diagonal shaking
+$93:8128 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, diagonal
 $93:812B A9 1E 00    LDA #$001E             ;\
 $93:812E 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 30
 

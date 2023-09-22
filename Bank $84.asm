@@ -9490,22 +9490,22 @@ $84:C72A             dw 0000, C047, 0000, C049, 0000, C04B, 0000, C04D  ; Block 
 ;;; $C73A: Setup - PLM $C83A (upwards gate shotblock) ;;;
 {
 $84:C73A BE C7 1D    LDX $1DC7,y            ;\
-$84:C73D BD 64 C7    LDA $C764,x            ;} PLM instruction list pointer = [$C70A + [PLM room argument]]
+$84:C73D BD 64 C7    LDA $C764,x            ;} PLM instruction list pointer = [$C764 + [PLM room argument]]
 $84:C740 99 27 1D    STA $1D27,y            ;/
 $84:C743 BE C7 1D    LDX $1DC7,y            ;\
-$84:C746 BD 74 C7    LDA $C774,x            ;} If [$C71A + [PLM room argument]] != 0:
+$84:C746 BD 74 C7    LDA $C774,x            ;} If [$C774 + [PLM room argument]] != 0:
 $84:C749 F0 08       BEQ $08    [$C753]     ;/
 $84:C74B BE 87 1C    LDX $1C87,y            ;\
 $84:C74E CA          DEX                    ;|
-$84:C74F CA          DEX                    ;} Block to the left's block type / BTS = [$C71A + [PLM room argument]]
+$84:C74F CA          DEX                    ;} Block to the left's block type / BTS = [$C774 + [PLM room argument]]
 $84:C750 20 B4 82    JSR $82B4  [$84:82B4]  ;/
 
 $84:C753 BE C7 1D    LDX $1DC7,y            ;\
-$84:C756 BD 84 C7    LDA $C784,x            ;} If [$C72A + [PLM room argument]] != 0:
+$84:C756 BD 84 C7    LDA $C784,x            ;} If [$C784 + [PLM room argument]] != 0:
 $84:C759 F0 08       BEQ $08    [$C763]     ;/
 $84:C75B BE 87 1C    LDX $1C87,y            ;\
 $84:C75E E8          INX                    ;|
-$84:C75F E8          INX                    ;} Block to the right's block type / BTS = [$C72A + [PLM room argument]]
+$84:C75F E8          INX                    ;} Block to the right's block type / BTS = [$C784 + [PLM room argument]]
 $84:C760 20 B4 82    JSR $82B4  [$84:82B4]  ;/
 
 $84:C763 60          RTS
@@ -11268,7 +11268,7 @@ $84:D4F2             dx 86CA,           ; Clear pre-instruction
                         0001,99E5,
                         8C10,1A,        ; Queue sound 1Ah, sound library 2, max queued sounds allowed = 6 (n00b tube shattering)
                         D543,           ; Spawn ten n00b tube shards and six n00b tube released air bubbles
-                        D536,           ; 40h-frame 1-pixel BG1/BG2 diagonal earthquake
+                        D536,           ; Trigger n00b tube earthquake
                         0060,98DD,
                         883E,000B,      ; Set the event Bh
                         D525,           ; Enable water physics
@@ -11298,12 +11298,12 @@ $84:D535 60          RTS
 }
 
 
-;;; $D536: Instruction - 40h-frame 1-pixel BG1/BG2 diagonal earthquake ;;;
+;;; $D536: Instruction - trigger n00b tube earthquake ;;;
 {
-$84:D536 A9 0B 00    LDA #$000B
-$84:D539 8D 3E 18    STA $183E  [$7E:183E]
-$84:D53C A9 40 00    LDA #$0040
-$84:D53F 8D 40 18    STA $1840  [$7E:1840]
+$84:D536 A9 0B 00    LDA #$000B             ;\
+$84:D539 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 and BG2, 1 pixel displacement, diagonal
+$84:D53C A9 40 00    LDA #$0040             ;\
+$84:D53F 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 40h
 $84:D542 60          RTS
 }
 

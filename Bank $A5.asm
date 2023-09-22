@@ -1398,7 +1398,7 @@ $A5:9256 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 $A5:925A A9 A0 01    LDA #$01A0             ;\
 $A5:925D 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Draygon body function timer = 1A0h
 $A5:9260 A9 B9 97    LDA #$97B9             ;\
-$A5:9263 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $97B9
+$A5:9263 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $97B9 (sleep)
 $A5:9266 A9 01 00    LDA #$0001             ;\
 $A5:9269 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Draygon body instruction timer = 1
 $A5:926C AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
@@ -1465,7 +1465,6 @@ $A5:92E9 60          RTS
 
 ;;; $92EA: Handle dying Draygon smoke ;;;
 {
-; spawn death dust cloud
 $A5:92EA 5A          PHY
 $A5:92EB DA          PHX
 $A5:92EC AD B6 05    LDA $05B6  [$7E:05B6]  ;\
@@ -1474,12 +1473,12 @@ $A5:92F2 D0 25       BNE $25    [$9319]     ;/
 $A5:92F4 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A5:92F8 29 7F 00    AND #$007F             ;\
 $A5:92FB 18          CLC                    ;|
-$A5:92FC 69 C0 00    ADC #$00C0             ;} $12 = C0h + [random number] % 80h
+$A5:92FC 69 C0 00    ADC #$00C0             ;} $12 = 100h + [random number] % 80h - 40h
 $A5:92FF 85 12       STA $12    [$7E:0012]  ;/
 $A5:9301 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A5:9304 29 00 3F    AND #$3F00             ;|
 $A5:9307 EB          XBA                    ;|
-$A5:9308 18          CLC                    ;} $14 = 190h + ([random number] >> 8) % 40h
+$A5:9308 18          CLC                    ;} $14 = 1B0h + ([random number] >> 8) % 40h - 20h
 $A5:9309 69 90 01    ADC #$0190             ;|
 $A5:930C 85 14       STA $14    [$7E:0014]  ;/
 $A5:930E A9 15 00    LDA #$0015             ;\
@@ -1521,7 +1520,7 @@ $A5:9342 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A5:9345 38          SEC                    ;|
 $A5:9346 ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
 $A5:9349 38          SEC                    ;|
-$A5:934A E9 C2 01    SBC #$01C2             ;} BG2 X scroll = [layer 1 X position] - [Draygon X position] - 1C2h + [$7E:883C]
+$A5:934A E9 C2 01    SBC #$01C2             ;} BG2 X scroll = [layer 1 X position] - [Draygon X position] - 1C2h + [Draygon body graphics X displacement]
 $A5:934D 18          CLC                    ;|
 $A5:934E 6F 3C 88 7E ADC $7E883C[$7E:883C]  ;|
 $A5:9352 85 B5       STA $B5    [$7E:00B5]  ;/
@@ -1529,7 +1528,7 @@ $A5:9354 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $A5:9357 38          SEC                    ;|
 $A5:9358 ED 7E 0F    SBC $0F7E  [$7E:0F7E]  ;|
 $A5:935B 38          SEC                    ;|
-$A5:935C E9 C0 00    SBC #$00C0             ;} BG2 Y scroll = [layer 1 X position] - [Draygon Y position] - C0h + [$7E:883E]
+$A5:935C E9 C0 00    SBC #$00C0             ;} BG2 Y scroll = [layer 1 X position] - [Draygon Y position] - C0h + [Draygon body graphics Y displacement]
 $A5:935F 18          CLC                    ;|
 $A5:9360 6F 3E 88 7E ADC $7E883E[$7E:883E]  ;|
 $A5:9364 85 B7       STA $B7    [$7E:00B7]  ;/
@@ -2011,113 +2010,113 @@ $A5:973E 6B          RTL
 }
 
 
-;;; $973F: Instruction ;;;
+;;; $973F: Instruction - spawn dying Draygon sprite object - smoke ;;;
 {
 $A5:973F 5A          PHY
 $A5:9740 DA          PHX
-$A5:9741 20 8B 97    JSR $978B  [$A5:978B]
-$A5:9744 A9 15 00    LDA #$0015
-$A5:9747 85 16       STA $16    [$7E:0016]
-$A5:9749 64 18       STZ $18    [$7E:0018]
-$A5:974B 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:9741 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
+$A5:9744 A9 15 00    LDA #$0015             ;\
+$A5:9747 85 16       STA $16    [$7E:0016]  ;|
+$A5:9749 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14]) with palette 0
+$A5:974B 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:974F FA          PLX
 $A5:9750 7A          PLY
 $A5:9751 6B          RTL
 }
 
 
-;;; $9752: Instruction ;;;
+;;; $9752: Instruction - spawn dying Draygon sprite object - small explosion ;;;
 {
 $A5:9752 5A          PHY
 $A5:9753 DA          PHX
-$A5:9754 20 8B 97    JSR $978B  [$A5:978B]
-$A5:9757 A9 03 00    LDA #$0003
-$A5:975A 85 16       STA $16    [$7E:0016]
-$A5:975C 64 18       STZ $18    [$7E:0018]
-$A5:975E 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:9754 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
+$A5:9757 A9 03 00    LDA #$0003             ;\
+$A5:975A 85 16       STA $16    [$7E:0016]  ;|
+$A5:975C 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3 (small explosion) at position ([$12], [$14]) with palette 0
+$A5:975E 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9762 FA          PLX
 $A5:9763 7A          PLY
 $A5:9764 6B          RTL
 }
 
 
-;;; $9765: Instruction ;;;
+;;; $9765: Instruction - spawn dying Draygon sprite object - big explosion ;;;
 {
 $A5:9765 5A          PHY
 $A5:9766 DA          PHX
-$A5:9767 20 8B 97    JSR $978B  [$A5:978B]
-$A5:976A A9 1D 00    LDA #$001D
-$A5:976D 85 16       STA $16    [$7E:0016]
-$A5:976F 64 18       STZ $18    [$7E:0018]
-$A5:9771 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:9767 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
+$A5:976A A9 1D 00    LDA #$001D             ;\
+$A5:976D 85 16       STA $16    [$7E:0016]  ;|
+$A5:976F 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 1Dh (big explosion) at position ([$12], [$14]) with palette 0
+$A5:9771 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9775 FA          PLX
 $A5:9776 7A          PLY
 $A5:9777 6B          RTL
 }
 
 
-;;; $9778: Instruction ;;;
+;;; $9778: Instruction - spawn dying Draygon sprite object - breath bubbles ;;;
 {
 $A5:9778 5A          PHY
 $A5:9779 DA          PHX
-$A5:977A 20 8B 97    JSR $978B  [$A5:978B]
-$A5:977D A9 18 00    LDA #$0018
-$A5:9780 85 16       STA $16    [$7E:0016]
-$A5:9782 64 18       STZ $18    [$7E:0018]
-$A5:9784 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:977A 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
+$A5:977D A9 18 00    LDA #$0018             ;\
+$A5:9780 85 16       STA $16    [$7E:0016]  ;|
+$A5:9782 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 18h (short Draygon breath bubbles) at position ([$12], [$14]) with palette 0
+$A5:9784 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9788 FA          PLX
 $A5:9789 7A          PLY
 $A5:978A 6B          RTL
 }
 
 
-;;; $978B:  ;;;
+;;; $978B: Generate random dying Draygon sprite object position ;;;
 {
-$A5:978B 22 11 81 80 JSL $808111[$80:8111]
-$A5:978F AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:9792 29 7F 00    AND #$007F
-$A5:9795 38          SEC
-$A5:9796 E9 40 00    SBC #$0040
-$A5:9799 85 12       STA $12    [$7E:0012]
-$A5:979B AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:979E 18          CLC
-$A5:979F 65 12       ADC $12    [$7E:0012]
-$A5:97A1 85 12       STA $12    [$7E:0012]
-$A5:97A3 AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:97A6 29 00 7F    AND #$7F00
-$A5:97A9 EB          XBA
-$A5:97AA 38          SEC
-$A5:97AB E9 40 00    SBC #$0040
-$A5:97AE 85 14       STA $14    [$7E:0014]
-$A5:97B0 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:97B3 18          CLC
-$A5:97B4 65 14       ADC $14    [$7E:0014]
-$A5:97B6 85 14       STA $14    [$7E:0014]
+$A5:978B 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A5:978F AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:9792 29 7F 00    AND #$007F             ;|
+$A5:9795 38          SEC                    ;|
+$A5:9796 E9 40 00    SBC #$0040             ;|
+$A5:9799 85 12       STA $12    [$7E:0012]  ;} $12 = [Draygon X position] + [random number] % 80h - 40h
+$A5:979B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:979E 18          CLC                    ;|
+$A5:979F 65 12       ADC $12    [$7E:0012]  ;|
+$A5:97A1 85 12       STA $12    [$7E:0012]  ;/
+$A5:97A3 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:97A6 29 00 7F    AND #$7F00             ;|
+$A5:97A9 EB          XBA                    ;|
+$A5:97AA 38          SEC                    ;|
+$A5:97AB E9 40 00    SBC #$0040             ;| 
+$A5:97AE 85 14       STA $14    [$7E:0014]  ;} $14 = [Draygon Y position] + ([random number] >> 8) % 80h - 40h
+$A5:97B0 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A5:97B3 18          CLC                    ;|
+$A5:97B4 65 14       ADC $14    [$7E:0014]  ;|
+$A5:97B6 85 14       STA $14    [$7E:0014]  ;/
 $A5:97B8 60          RTS
 }
 
 
-;;; $97B9: Instruction list -  ;;;
+;;; $97B9: Instruction list - sleep ;;;
 {
 $A5:97B9             dx 812F        ; Sleep
 }
 
 
-;;; $97BB: Instruction list -  ;;;
+;;; $97BB: Instruction list - Draygon body -  ;;;
 {
 $A5:97BB             dx 94DD,9889,9944,99C6,97E7,   ; Draygon instructions lists = $9889, $9944, $99C6, $97E7
                         9895,                       ; Room loading interrupt command = Draygon's room - begin HUD drawing
-                        C47B,C48D,                  ; ???
+                        C47B,C48D,                  ; Draygon eye function = $C48D
                         0001,A3BB,
                         812F                        ; Sleep
 }
 
 
-;;; $97D1: Instruction list -  ;;;
+;;; $97D1: Instruction list - Draygon body -  ;;;
 {
 $A5:97D1             dx 94DD,9C7E,9CD6,9D68,9BDA,   ; Draygon instructions lists = $9C7E, $9CD6, $9D68, $9BDA
                         9895,                       ; Room loading interrupt command = Draygon's room - begin HUD drawing
-                        C47B,C513,                  ; ???
+                        C47B,C513,                  ; Draygon eye function = $C513
                         0001,A6E3,
                         812F                        ; Sleep
 }
@@ -2132,16 +2131,11 @@ $A5:97E7             dx 0005,A2DF,
                         0005,A307,
                         0005,A311,
                         80ED,97E7   ; Go to $97E7
-}
-
-
-;;; $9803: Instruction list -  ;;;
-{
 $A5:9803             dx 812F        ; Sleep
 }
 
 
-;;; $9805: Instruction list -  ;;;
+;;; $9805: Unused. Instruction list - Draygon arms ;;;
 {
 $A5:9805             dx 0001,A3D9,
                         0001,A3CF,
@@ -2150,7 +2144,7 @@ $A5:9805             dx 0001,A3D9,
 }
 
 
-;;; $9813: Instruction list -  ;;;
+;;; $9813: Instruction list - Draygon arms -  ;;;
 {
 $A5:9813             dx 0001,A3C5,
                         0001,A3CF,
@@ -2160,7 +2154,7 @@ $A5:9813             dx 0001,A3C5,
 }
 
 
-;;; $9825: Instruction list -  ;;;
+;;; $9825: Instruction list - Draygon arms -  ;;;
 {
 $A5:9825             dx 0001,A3C5,
                         0001,A3CF,
@@ -2173,7 +2167,7 @@ $A5:9825             dx 0001,A3C5,
 }
 
 
-;;; $9845: Instruction list -  ;;;
+;;; $9845: Instruction list - Draygon arms -  ;;;
 {
 $A5:9845             dx 0001,A3C5,
                         0001,A3CF,
@@ -2187,7 +2181,7 @@ $A5:9845             dx 0001,A3C5,
 }
 
 
-;;; $9867: Instruction list -  ;;;
+;;; $9867: Instruction list - Draygon body -  ;;;
 {
 $A5:9867             dx 0005,A31B,
                         0005,A325,
@@ -2197,7 +2191,7 @@ $A5:9867             dx 0005,A31B,
 }
 
 
-;;; $987B: Instruction list -  ;;;
+;;; $987B: Unused. Instruction list - Draygon body ;;;
 {
 $A5:987B             dx 0005,A32F,
                         0005,A325,
@@ -2209,7 +2203,7 @@ $A5:987B             dx 0005,A32F,
 ;;; $9889: Instruction list - Draygon body -  ;;;
 {
 $A5:9889             dx 9895,       ; Room loading interrupt command = Draygon's room - begin HUD drawing
-                        C47B,C48D,  ; ???
+                        C47B,C48D,  ; Draygon eye function = $C48D
                         0001,A3BB,
                         812F        ; Sleep
 }
@@ -2223,41 +2217,41 @@ $A5:989A 6B          RTL
 }
 
 
-;;; $989B: Instruction list -  ;;;
+;;; $989B: Instruction list - Draygon body -  ;;;
 {
-$A5:989B             dx 9F6E,001B,  ; Queue sound 001Bh, sound library 3, max queued sounds allowed = 6
-                        98EF,       ; Set enemy as intangible
-                        8123,0008,  ; Timer = 0008h
-                        813A,000C,  ; Wait 000Ch frames
-                        9765,       ; ???
-                        9752,       ; ???
-                        973F,       ; ???
-                        9778,       ; ???
-                        9F60,0025,  ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+$A5:989B             dx 9F6E,001B,  ; Queue sound 1Bh, sound library 3, max queued sounds allowed = 6
+                        98EF,       ; Set Draygon body as intangible
+                        8123,0008   ; Timer = 8
+$A5:98A5             dx 813A,000C,  ; Wait Ch frames
+                        9765,       ; Spawn dying Draygon sprite object - big explosion
+                        9752,       ; Spawn dying Draygon sprite object - small explosion
+                        973F,       ; Spawn dying Draygon sprite object - smoke
+                        9778,       ; Spawn dying Draygon sprite object - breath bubbles
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         8110,98A5,  ; Decrement timer and go to $98A5 if non-zero
-                        813A,0001,  ; Wait 0001h frames
-                        98D3,       ; ???
-                        813A,0010,  ; Wait 0010h frames
-                        9765,       ; ???
-                        9752,       ; ???
-                        973F,       ; ???
-                        9778,       ; ???
-                        9F60,0025,  ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+                        813A,0001,  ; Wait 1 frame
+                        98D3        ; Paralyse Draygon tail and arms
+$A5:98BF             dx 813A,0010,  ; Wait 10h frames
+                        9765,       ; Spawn dying Draygon sprite object - big explosion
+                        9752,       ; Spawn dying Draygon sprite object - small explosion
+                        973F,       ; Spawn dying Draygon sprite object - smoke
+                        9778,       ; Spawn dying Draygon sprite object - breath bubbles
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         80ED,98BF   ; Go to $98BF
 }
 
 
-;;; $98D3: Instruction ;;;
+;;; $98D3: Instruction - paralyse Draygon tail and arms ;;;
 {
 $A5:98D3 DA          PHX
 $A5:98D4 5A          PHY
-$A5:98D5 A9 01 00    LDA #$0001
-$A5:98D8 8D 14 10    STA $1014  [$7E:1014]
-$A5:98DB 8D 54 10    STA $1054  [$7E:1054]
-$A5:98DE A9 B9 97    LDA #$97B9
-$A5:98E1 8D 12 10    STA $1012  [$7E:1012]
-$A5:98E4 A9 B9 97    LDA #$97B9
-$A5:98E7 8D 52 10    STA $1052  [$7E:1052]
+$A5:98D5 A9 01 00    LDA #$0001             ;\
+$A5:98D8 8D 14 10    STA $1014  [$7E:1014]  ;} Draygon tail instruction timer = 1
+$A5:98DB 8D 54 10    STA $1054  [$7E:1054]  ; Draygon arms instruction timer = 1
+$A5:98DE A9 B9 97    LDA #$97B9             ;\
+$A5:98E1 8D 12 10    STA $1012  [$7E:1012]  ;} Draygon tail instruction list pointer = $97B9 (sleep)
+$A5:98E4 A9 B9 97    LDA #$97B9             ;\
+$A5:98E7 8D 52 10    STA $1052  [$7E:1052]  ;} Draygon arms instruction list pointer = $97B9 (sleep)
 $A5:98EA 7A          PLY
 $A5:98EB FA          PLX
 $A5:98EC 6B          RTL
@@ -2270,7 +2264,7 @@ $A5:98ED             dx 807C        ; Delete
 }
 
 
-;;; $98EF: Instruction - set enemy as intangible ;;;
+;;; $98EF: Instruction - set Draygon body as intangible ;;;
 {
 $A5:98EF DA          PHX
 $A5:98F0 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2282,13 +2276,13 @@ $A5:98FD 6B          RTL
 }
 
 
-;;; $98FE: Instruction list -  ;;;
+;;; $98FE: Instruction list - Draygon body -  ;;;
 {
 $A5:98FE             dx 0001,A343,
                         0002,A34D,
                         0003,A357,
-                        9F7C,       ; ???
-                        9F60,004C,  ; Queue sound 004Ch, sound library 2, max queued sounds allowed = 6
+                        9F7C,       ; Spawn Draygon gunk - leftwards
+                        9F60,004C,  ; Queue sound 4Ch, sound library 2, max queued sounds allowed = 6
                         0003,A361,
                         0002,A357,
                         0002,A34D,
@@ -2297,9 +2291,9 @@ $A5:98FE             dx 0001,A343,
 }
 
 
-;;; $9922: Instruction list -  ;;;
+;;; $9922: Instruction list - Draygon body -  ;;;
 {
-$A5:9922             dx 9F60,0073,  ; Queue sound 0073h, sound library 2, max queued sounds allowed = 6
+$A5:9922             dx 9F60,0073,  ; Queue sound 73h, sound library 2, max queued sounds allowed = 6
                         0006,A343,
                         0006,A34D,
                         0006,A357,
@@ -2330,10 +2324,10 @@ $A5:9944             dx 0015,A36B,
 }
 
 
-;;; $997A: Instruction list -  ;;;
+;;; $997A: Instruction list - Draygon eye -  ;;;
 {
-$A5:997A             dx 8123,0004,  ; Timer = 0004h
-                        0004,A393,
+$A5:997A             dx 8123,0004   ; Timer = 4
+$A5:997E             dx 0004,A393,
                         0004,A3A7,
                         0004,A39D,
                         0004,A3B1,
@@ -2344,7 +2338,7 @@ $A5:997A             dx 8123,0004,  ; Timer = 0004h
 }
 
 
-;;; $999C: Instruction list -  ;;;
+;;; $999C: Instruction list - Draygon eye -  ;;;
 {
 $A5:999C             dx 0020,A389,
                         0020,A37F,
@@ -2397,32 +2391,27 @@ $A5:99C6             dx 0008,A40B,
                         0006,A42F,
                         0007,A41D,
                         80ED,99C6   ; Go to $99C6
-}
-
-
-;;; $99FA: Instruction list -  ;;;
-{
 $A5:99FA             dx 812F        ; Sleep
 }
 
 
-;;; $99FC: Instruction list -  ;;;
+;;; $99FC: Instruction list - Draygon tail -  ;;;
 {
-$A5:99FC             dx 9E0A,FFFF,FFFF, ; ???
+$A5:99FC             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px right, 1px up
                         0010,A42F,
-                        9E0A,FFFE,FFFE, ; ???
+                        9E0A,FFFE,FFFE, ; Displace Draygon body graphics 2px right, 2px up
                         0006,A489,
-                        9E0A,FFFD,FFFD, ; ???
+                        9E0A,FFFD,FFFD, ; Displace Draygon body graphics 3px right, 3px up
                         0005,A4A3,
-                        9E0A,FFFC,FFFC, ; ???
+                        9E0A,FFFC,FFFC, ; Displace Draygon body graphics 4px right, 4px up
                         0004,A4C5,
-                        9E0A,FFFB,FFFB, ; ???
+                        9E0A,FFFB,FFFB, ; Displace Draygon body graphics 5px right, 5px up
                         0003,A4EF,
-                        9E0A,FFFA,FFFA, ; ???
+                        9E0A,FFFA,FFFA, ; Displace Draygon body graphics 6px right, 6px up
                         0002,A521,
-                        9E0A,FFF8,FFF8, ; ???
+                        9E0A,FFF8,FFF8, ; Displace Draygon body graphics 8px right, 8px up
                         0001,A55B,
-                        9E0A,0000,0000, ; ???
+                        9E0A,0000,0000, ; Displace Draygon body graphics 0px right, 0px up
                         0010,A59D,
                         0001,A55B,
                         0002,A521,
@@ -2434,26 +2423,26 @@ $A5:99FC             dx 9E0A,FFFF,FFFF, ; ???
 }
 
 
-;;; $9A68: Instruction list -  ;;;
+;;; $9A68: Instruction list - Draygon tail -  ;;;
 {
-$A5:9A68             dx 8123,0004       ; Timer = 0004h
-$A5:9A6C             dx 9E0A,FFFF,FFFF, ; ???
-                        0002,A42F,
-                        9E0A,FFFE,FFFE, ; ???
-                        0006,A489,
-                        9E0A,FFFD,FFFD, ; ???
-                        0005,A4A3,
-                        9E0A,FFFC,FFFC, ; ???
-                        0004,A4C5,
-                        9E0A,FFFB,FFFB, ; ???
-                        0003,A4EF,
-                        9E0A,FFFA,FFFA, ; ???
-                        0002,A521,
-                        9E0A,FFF8,FFF8, ; ???
+$A5:9A68             dx 8123,0004       ; Timer = 4
+$A5:9A6C             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px right, 1px up
+                        0002,A42F,                                       
+                        9E0A,FFFE,FFFE, ; Displace Draygon body graphics 2px right, 2px up
+                        0006,A489,                                       
+                        9E0A,FFFD,FFFD, ; Displace Draygon body graphics 3px right, 3px up
+                        0005,A4A3,                                       
+                        9E0A,FFFC,FFFC, ; Displace Draygon body graphics 4px right, 4px up
+                        0004,A4C5,                                       
+                        9E0A,FFFB,FFFB, ; Displace Draygon body graphics 5px right, 5px up
+                        0003,A4EF,                                       
+                        9E0A,FFFA,FFFA, ; Displace Draygon body graphics 6px right, 6px up
+                        0002,A521,                                       
+                        9E0A,FFF8,FFF8, ; Displace Draygon body graphics 8px right, 8px up
                         0001,A55B,
-                        9E0A,0000,0000, ; ???
-                        9B9A,           ; ???
-                        9F60,0025,      ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+                        9E0A,0000,0000, ; Displace Draygon body graphics 0px right, 0px up
+                        9B9A,           ; Draygon tail whip hit
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         0003,A59D,
                         0001,A55B,
                         0002,A521,
@@ -2462,36 +2451,31 @@ $A5:9A6C             dx 9E0A,FFFF,FFFF, ; ???
                         0005,A4A3,
                         0006,A489,
                         8110,9A6C,      ; Decrement timer and go to $9A6C if non-zero
-                        9F57,9128,      ; ???
+                        9F57,9128,      ; Draygon body function = $9128
                         80ED,99C6       ; Go to $99C6
+$A5:9AE6             dx 812F            ; Sleep
 }
 
 
-;;; $9AE6: Instruction list -  ;;;
+;;; $9AE8: Instruction list - Draygon tail -  ;;;
 {
-$A5:9AE6             dx 812F        ; Sleep
-}
-
-
-;;; $9AE8: Instruction list -  ;;;
-{
-$A5:9AE8             dx 9E0A,FFFF,FFFF, ; ???
-                        0002,A42F,
-                        9E0A,FFFE,FFFE, ; ???
-                        0006,A489,
-                        9E0A,FFFD,FFFD, ; ???
-                        0005,A4A3,
-                        9E0A,FFFC,FFFC, ; ???
-                        0004,A4C5,
-                        9E0A,FFFB,FFFB, ; ???
-                        0003,A4EF,
-                        9E0A,FFFA,FFFA, ; ???
-                        0002,A521,
-                        9E0A,FFF8,FFF8, ; ???
+$A5:9AE8             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px right, 1px up
+                        0002,A42F,                                       
+                        9E0A,FFFE,FFFE, ; Displace Draygon body graphics 2px right, 2px up
+                        0006,A489,                                       
+                        9E0A,FFFD,FFFD, ; Displace Draygon body graphics 3px right, 3px up
+                        0005,A4A3,                                       
+                        9E0A,FFFC,FFFC, ; Displace Draygon body graphics 4px right, 4px up
+                        0004,A4C5,                                       
+                        9E0A,FFFB,FFFB, ; Displace Draygon body graphics 5px right, 5px up
+                        0003,A4EF,                                       
+                        9E0A,FFFA,FFFA, ; Displace Draygon body graphics 6px right, 6px up
+                        0002,A521,                                       
+                        9E0A,FFF8,FFF8, ; Displace Draygon body graphics 8px right, 8px up
                         0001,A55B,
-                        9E0A,0000,0000, ; ???
-                        9B9A,           ; ???
-                        9F60,0025,      ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+                        9E0A,0000,0000, ; Displace Draygon body graphics 0px right, 0px up
+                        9B9A,           ; Draygon tail whip hit
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         0003,A59D,
                         0001,A55B,
                         0002,A521,
@@ -2503,7 +2487,7 @@ $A5:9AE8             dx 9E0A,FFFF,FFFF, ; ???
 }
 
 
-;;; $9B5A: Instruction list -  ;;;
+;;; $9B5A: Instruction list - Draygon tail -  ;;;
 {
 $A5:9B5A             dx 0002,A42F,
                         0006,A489,
@@ -2512,7 +2496,7 @@ $A5:9B5A             dx 0002,A42F,
                         0003,A4EF,
                         0002,A521,
                         0001,A55B,
-                        9F60,0025,  ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         0003,A59D,
                         0001,A55B,
                         0002,A521,
@@ -2524,38 +2508,38 @@ $A5:9B5A             dx 0002,A42F,
 }
 
 
-;;; $9B9A: Instruction -  ;;;
+;;; $9B9A: Instruction - Draygon tail whip hit ;;;
 {
-; hurt samus from tailstab
+; Uses the damage from the Draygon body enemy and not the Draygon tail enemy :(
 $A5:9B9A DA          PHX
 $A5:9B9B 5A          PHY
-$A5:9B9C A9 18 00    LDA #$0018
-$A5:9B9F 8F 1E 78 7E STA $7E781E[$7E:781E]
-$A5:9BA3 AE 78 0F    LDX $0F78  [$7E:0F78]
-$A5:9BA6 BF 06 00 A0 LDA $A00006,x[$A0:DE45]
-$A5:9BAA 22 5E A4 A0 JSL $A0A45E[$A0:A45E]
-$A5:9BAE 22 51 DF 91 JSL $91DF51[$91:DF51]
-$A5:9BB2 A9 20 00    LDA #$0020
-$A5:9BB5 8D 40 18    STA $1840  [$7E:1840]
-$A5:9BB8 A9 07 00    LDA #$0007
-$A5:9BBB 8D 3E 18    STA $183E  [$7E:183E]
-$A5:9BBE AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A5:9BC1 85 12       STA $12    [$7E:0012]
-$A5:9BC3 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A5:9BC6 18          CLC
-$A5:9BC7 69 10 00    ADC #$0010
-$A5:9BCA 85 14       STA $14    [$7E:0014]
-$A5:9BCC A9 15 00    LDA #$0015
-$A5:9BCF 85 16       STA $16    [$7E:0016]
-$A5:9BD1 64 18       STZ $18    [$7E:0018]
-$A5:9BD3 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:9B9C A9 18 00    LDA #$0018             ;\
+$A5:9B9F 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} Draygon swoop Y acceleration = 18h (reset to initial value)
+$A5:9BA3 AE 78 0F    LDX $0F78  [$7E:0F78]  ;\
+$A5:9BA6 BF 06 00 A0 LDA $A00006,x[$A0:DE45];|
+$A5:9BAA 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;} Deal suit-adjusted Draygon body enemy damage to Samus
+$A5:9BAE 22 51 DF 91 JSL $91DF51[$91:DF51]  ;/
+$A5:9BB2 A9 20 00    LDA #$0020             ;\
+$A5:9BB5 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 20h
+$A5:9BB8 A9 07 00    LDA #$0007             ;\
+$A5:9BBB 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 3 pixel displacement, vertical
+$A5:9BBE AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A5:9BC1 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus X position]
+$A5:9BC3 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A5:9BC6 18          CLC                    ;|
+$A5:9BC7 69 10 00    ADC #$0010             ;} $14 = [Samus Y position] + 10h
+$A5:9BCA 85 14       STA $14    [$7E:0014]  ;/
+$A5:9BCC A9 15 00    LDA #$0015             ;\
+$A5:9BCF 85 16       STA $16    [$7E:0016]  ;|
+$A5:9BD1 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14]) with palette 0
+$A5:9BD3 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9BD7 7A          PLY
 $A5:9BD8 FA          PLX
 $A5:9BD9 6B          RTL
 }
 
 
-;;; $9BDA: Instruction list - Draygon arms ;;;
+;;; $9BDA: Instruction list - Draygon arms -  ;;;
 {
 $A5:9BDA             dx 0005,A607,
                         0005,A611,
@@ -2564,16 +2548,11 @@ $A5:9BDA             dx 0005,A607,
                         0005,A62F,
                         0005,A639,
                         80ED,9BDA   ; Go to $9BDA
-}
-
-
-;;; $9BF6: Instruction list -  ;;;
-{
 $A5:9BF6             dx 812F        ; Sleep
 }
 
 
-;;; $9BF8: Instruction list -  ;;;
+;;; $9BF8: Unused. Instruction list - Draygon arms ;;;
 {
 $A5:9BF8             dx 0001,A701,
                         0001,A6F7,
@@ -2582,7 +2561,7 @@ $A5:9BF8             dx 0001,A701,
 }
 
 
-;;; $9C06: Instruction list -  ;;;
+;;; $9C06: Instruction list - Draygon arms -  ;;;
 {
 $A5:9C06             dx 0001,A6ED,
                         0001,A6F7,
@@ -2592,7 +2571,7 @@ $A5:9C06             dx 0001,A6ED,
 }
 
 
-;;; $9C18: Instruction list -  ;;;
+;;; $9C18: Instruction list - Draygon arms -  ;;;
 {
 $A5:9C18             dx 0001,A6ED,
                         0001,A6F7,
@@ -2605,7 +2584,7 @@ $A5:9C18             dx 0001,A6ED,
 }
 
 
-;;; $9C38: Instruction list -  ;;;
+;;; $9C38: Instruction list - Draygon arms -  ;;;
 {
 $A5:9C38             dx 0001,A6ED,
                         0001,A6F7,
@@ -2619,23 +2598,18 @@ $A5:9C38             dx 0001,A6ED,
 }
 
 
-;;; $9C5A: Instruction list -  ;;;
+;;; $9C5A: Instruction list - Draygon body -  ;;;
 {
 $A5:9C5A             dx 0005,A643,
                         0005,A64D,
                         0005,A657,
                         0005,A661,
                         80ED,989B   ; Go to $989B
-}
-
-
-;;; $9C6E: Instruction list -  ;;;
-{
 $A5:9C6E             dx 812F        ; Sleep
 }
 
 
-;;; $9C70: Instruction list -  ;;;
+;;; $9C70: Unused. Instruction list - Draygon body ;;;
 {
 $A5:9C70             dx 0005,A657,
                         0005,A64D,
@@ -2647,7 +2621,7 @@ $A5:9C70             dx 0005,A657,
 ;;; $9C7E: Instruction list - Draygon body -  ;;;
 {
 $A5:9C7E             dx 9C8A,       ; Room loading interrupt command = Draygon's room - begin HUD drawing
-                        C47B,C513,  ; ???
+                        C47B,C513,  ; Draygon eye function = $C513
                         0001,A6E3,
                         812F        ; Sleep
 }
@@ -2661,13 +2635,13 @@ $A5:9C8F 6B          RTL
 }
 
 
-;;; $9C90: Instruction list -  ;;;
+;;; $9C90: Instruction list - Draygon body -  ;;;
 {
 $A5:9C90             dx 0001,A66B,
                         0002,A675,
                         0003,A67F,
-                        9FAE,       ; ???
-                        9F60,004C,  ; Queue sound 004Ch, sound library 2, max queued sounds allowed = 6
+                        9FAE,       ; Spawn Draygon gunk - rightwards
+                        9F60,004C,  ; Queue sound 4Ch, sound library 2, max queued sounds allowed = 6
                         0003,A689,
                         0002,A67F,
                         0002,A675,
@@ -2676,9 +2650,9 @@ $A5:9C90             dx 0001,A66B,
 }
 
 
-;;; $9CB4: Instruction list -  ;;;
+;;; $9CB4: Instruction list - Draygon body -  ;;;
 {
-$A5:9CB4             dx 9F60,0073,  ; Queue sound 0073h, sound library 2, max queued sounds allowed = 6
+$A5:9CB4             dx 9F60,0073,  ; Queue sound 73h, sound library 2, max queued sounds allowed = 6
                         0006,A66B,
                         0006,A675,
                         0006,A67F,
@@ -2704,19 +2678,19 @@ $A5:9CD6             dx 0015,A693,
                         0005,A6A7,
                         0005,A69D,
                         0005,A693,
-                        9736,C48D,  ; ???
+                        9736,C48D,  ; Enemy function = $C48D
                         812F        ; Sleep
 }
 
 
-;;; $9D0C: Instruction list -  ;;;
+;;; $9D0C: Unused. Instruction list - Draygon eye -  ;;;
 {
 $A5:9D0C             dx 0015,A693,
                         0005,A69D,
                         0005,A6A7,
                         000A,A6B1,
-                        8123,0004,  ; Timer = 0004h
-                        0004,A6BB,
+                        8123,0004   ; Timer = 4
+$A5:9D20             dx 0004,A6BB,
                         0004,A6CF,
                         0004,A6C5,
                         0004,A6D9,
@@ -2727,7 +2701,7 @@ $A5:9D0C             dx 0015,A693,
 }
 
 
-;;; $9D3E: Instruction list -  ;;;
+;;; $9D3E: Instruction list - Draygon eye -  ;;;
 {
 $A5:9D3E             dx 0020,A6B1,
                         0020,A6A7,
@@ -2780,32 +2754,27 @@ $A5:9D68             dx 0008,A779,
                         0006,A79D,
                         0007,A78B,
                         80ED,9D68   ; Go to $9D68
-}
-
-
-;;; $9D9C: Instruction list -  ;;;
-{
 $A5:9D9C             dx 812F        ; Sleep
 }
 
 
-;;; $9D9E: Instruction list -  ;;;
+;;; $9D9E: Instruction list - Draygon tail -  ;;;
 {
-$A5:9D9E             dx 9E0A,0001,FFFF, ; ???
+$A5:9D9E             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px left, 1px up
                         0010,A79D,
-                        9E0A,0002,FFFE, ; ???
+                        9E0A,0002,FFFE, ; Displace Draygon body graphics 2px left, 2px up
                         0006,A7F7,
-                        9E0A,0003,FFFD, ; ???
+                        9E0A,0003,FFFD, ; Displace Draygon body graphics 3px left, 3px up
                         0005,A811,
-                        9E0A,0004,FFFC, ; ???
+                        9E0A,0004,FFFC, ; Displace Draygon body graphics 4px left, 4px up
                         0004,A833,
-                        9E0A,0005,FFFB, ; ???
+                        9E0A,0005,FFFB, ; Displace Draygon body graphics 5px left, 5px up
                         0003,A85D,
-                        9E0A,0006,FFFA, ; ???
+                        9E0A,0006,FFFA, ; Displace Draygon body graphics 6px left, 6px up
                         0002,A88F,
-                        9E0A,0008,FFF9, ; ???
+                        9E0A,0008,FFF9, ; Displace Draygon body graphics 8px left, 7px up
                         0001,A8C9,
-                        9E0A,0000,0000, ; ???
+                        9E0A,0000,0000, ; Displace Draygon body graphics 0px left, 0px down
                         0010,A90B,
                         0001,A8C9,
                         0002,A88F,
@@ -2817,7 +2786,7 @@ $A5:9D9E             dx 9E0A,0001,FFFF, ; ???
 }
 
 
-;;; $9E0A: Instruction ;;;
+;;; $9E0A: Instruction - displace Draygon body graphics [[Y]] px left, [[Y] + 2] px down ;;;
 {
 $A5:9E0A DA          PHX
 $A5:9E0B 5A          PHY
@@ -2835,26 +2804,26 @@ $A5:9E20 6B          RTL
 }
 
 
-;;; $9E21: Instruction list -  ;;;
+;;; $9E21: Instruction list - Draygon tail -  ;;;
 {
-$A5:9E21             dx 8123,0004       ; Timer = 0004h
-$A5:9E25             dx 9E0A,0001,FFFF, ; ???
-                        0002,A79D,
-                        9E0A,0002,FFFE, ; ???
-                        0006,A7F7,
-                        9E0A,0003,FFFD, ; ???
-                        0005,A811,
-                        9E0A,0004,FFFC, ; ???
-                        0004,A833,
-                        9E0A,0005,FFFB, ; ???
-                        0003,A85D,
-                        9E0A,0006,FFFA, ; ???
-                        0002,A88F,
-                        9E0A,0008,FFF8, ; ???
-                        0001,A8C9,
-                        9E0A,0000,0000, ; ???
-                        9B9A,           ; ???
-                        9F60,0025,      ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+$A5:9E21             dx 8123,0004       ; Timer = 4
+$A5:9E25             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px left, 1px up
+                        0002,A79D,                                       
+                        9E0A,0002,FFFE, ; Displace Draygon body graphics 2px left, 2px up
+                        0006,A7F7,                                       
+                        9E0A,0003,FFFD, ; Displace Draygon body graphics 3px left, 3px up
+                        0005,A811,                                       
+                        9E0A,0004,FFFC, ; Displace Draygon body graphics 4px left, 4px up
+                        0004,A833,                                       
+                        9E0A,0005,FFFB, ; Displace Draygon body graphics 5px left, 5px up
+                        0003,A85D,                                       
+                        9E0A,0006,FFFA, ; Displace Draygon body graphics 6px left, 6px up
+                        0002,A88F,                                       
+                        9E0A,0008,FFF8, ; Displace Draygon body graphics 8px left, 8px up
+                        0001,A8C9,                                       
+                        9E0A,0000,0000, ; Displace Draygon body graphics 0px left, 0px down
+                        9B9A,           ; Draygon tail whip hit
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         0003,A90B,
                         0001,A8C9,
                         0002,A88F,
@@ -2863,36 +2832,31 @@ $A5:9E25             dx 9E0A,0001,FFFF, ; ???
                         0005,A811,
                         0006,A7F7,
                         8110,9E25,      ; Decrement timer and go to $9E25 if non-zero
-                        9F57,9128,      ; ???
+                        9F57,9128,      ; Draygon body function = $9128
                         80ED,9D68       ; Go to $9D68
+$A5:9E9F             dx 812F            ; Sleep
 }
 
 
-;;; $9E9F: Instruction list -  ;;;
+;;; $9EA1: Instruction list - Draygon tail -  ;;;
 {
-$A5:9E9F             dx 812F        ; Sleep
-}
-
-
-;;; $9EA1: Instruction list -  ;;;
-{
-$A5:9EA1             dx 9E0A,0001,FFFF, ; ???
-                        0002,A79D,
-                        9E0A,0002,FFFE, ; ???
-                        0006,A7F7,
-                        9E0A,0003,FFFD, ; ???
-                        0005,A811,
-                        9E0A,0004,FFFC, ; ???
-                        0004,A833,
-                        9E0A,0005,FFFB, ; ???
-                        0003,A85D,
-                        9E0A,0006,FFFA, ; ???
-                        0002,A88F,
-                        9E0A,0008,FFF8, ; ???
-                        0001,A8C9,
-                        9E0A,0000,0000, ; ???
-                        9B9A,           ; ???
-                        9F60,0025,      ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+$A5:9EA1             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px left, 1px up
+                        0002,A79D,                                       
+                        9E0A,0002,FFFE, ; Displace Draygon body graphics 2px left, 2px up
+                        0006,A7F7,                                       
+                        9E0A,0003,FFFD, ; Displace Draygon body graphics 3px left, 3px up
+                        0005,A811,                                       
+                        9E0A,0004,FFFC, ; Displace Draygon body graphics 4px left, 4px up
+                        0004,A833,                                       
+                        9E0A,0005,FFFB, ; Displace Draygon body graphics 5px left, 5px up
+                        0003,A85D,                                       
+                        9E0A,0006,FFFA, ; Displace Draygon body graphics 6px left, 6px up
+                        0002,A88F,                                       
+                        9E0A,0008,FFF8, ; Displace Draygon body graphics 8px left, 8px up
+                        0001,A8C9,                                       
+                        9E0A,0000,0000, ; Displace Draygon body graphics 0px left, 0px down
+                        9B9A,           ; Draygon tail whip hit
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         0003,A90B,
                         0001,A8C9,
                         0002,A88F,
@@ -2901,16 +2865,11 @@ $A5:9EA1             dx 9E0A,0001,FFFF, ; ???
                         0005,A811,
                         0006,A7F7,
                         80ED,9D68       ; Go to $9D68
+$A5:9F13             dx 812F            ; Sleep
 }
 
 
-;;; $9F13: Instruction list -  ;;;
-{
-$A5:9F13             dx 812F        ; Sleep
-}
-
-
-;;; $9F15: Instruction list -  ;;;
+;;; $9F15: Instruction list - Draygon tail -  ;;;
 {
 $A5:9F15             dx 0002,A79D,
                         0006,A7F7,
@@ -2919,7 +2878,7 @@ $A5:9F15             dx 0002,A79D,
                         0003,A85D,
                         0002,A88F,
                         0001,A8C9,
-                        9F60,0025,  ; Queue sound 0025h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         0003,A90B,
                         0001,A8C9,
                         0002,A88F,
@@ -2928,11 +2887,6 @@ $A5:9F15             dx 0002,A79D,
                         0005,A811,
                         0006,A7F7,
                         80ED,9D68   ; Go to $9D68
-}
-
-
-;;; $9F55: Instruction list -  ;;;
-{
 $A5:9F55             dx 812F        ; Sleep
 }
 
@@ -2975,24 +2929,25 @@ $A5:9F7B 6B          RTL
 }
 
 
-;;; $9F7C: Instruction ;;;
+;;; $9F7C: Instruction - spawn Draygon gunk - leftwards ;;;
 {
+; Doesn't set enemy projectile initialisation parameter 0 (speed) :/
 $A5:9F7C DA          PHX
 $A5:9F7D 5A          PHY
 $A5:9F7E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:9F81 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:9F84 18          CLC
-$A5:9F85 69 E4 FF    ADC #$FFE4
-$A5:9F88 85 12       STA $12    [$7E:0012]
-$A5:9F8A AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:9F8D 18          CLC
-$A5:9F8E 69 F0 FF    ADC #$FFF0
-$A5:9F91 85 14       STA $14    [$7E:0014]
-$A5:9F93 22 11 81 80 JSL $808111[$80:8111]
-$A5:9F97 29 3F 00    AND #$003F
-$A5:9F9A 18          CLC
-$A5:9F9B 69 80 00    ADC #$0080
-$A5:9F9E 8D 95 19    STA $1995  [$7E:1995]
+$A5:9F81 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:9F84 18          CLC                    ;|
+$A5:9F85 69 E4 FF    ADC #$FFE4             ;} $12 = [Draygon X position] - 1Ch
+$A5:9F88 85 12       STA $12    [$7E:0012]  ;/
+$A5:9F8A AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:9F8D 18          CLC                    ;|
+$A5:9F8E 69 F0 FF    ADC #$FFF0             ;} $14 = [Draygon Y position] - 10h
+$A5:9F91 85 14       STA $14    [$7E:0014]  ;/
+$A5:9F93 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A5:9F97 29 3F 00    AND #$003F             ;\
+$A5:9F9A 18          CLC                    ;|
+$A5:9F9B 69 80 00    ADC #$0080             ;} Enemy projectile initialisation parameter 1 (angle) = A0h + [random number] % 40h - 20h
+$A5:9F9E 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A5:9FA1 A0 50 8E    LDY #$8E50             ;\
 $A5:9FA4 A9 02 00    LDA #$0002             ;} Spawn Draygon's gunk enemy projectile
 $A5:9FA7 22 27 80 86 JSL $868027[$86:8027]  ;/
@@ -3002,24 +2957,25 @@ $A5:9FAD 6B          RTL
 }
 
 
-;;; $9FAE: Instruction ;;;
+;;; $9FAE: Instruction - spawn Draygon gunk - rightwards ;;;
 {
+; Doesn't set enemy projectile initialisation parameter 0 (speed) :/
 $A5:9FAE DA          PHX
 $A5:9FAF 5A          PHY
 $A5:9FB0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:9FB3 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:9FB6 18          CLC
-$A5:9FB7 69 18 00    ADC #$0018
-$A5:9FBA 85 12       STA $12    [$7E:0012]
-$A5:9FBC AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:9FBF 18          CLC
-$A5:9FC0 69 F0 FF    ADC #$FFF0
-$A5:9FC3 85 14       STA $14    [$7E:0014]
-$A5:9FC5 22 11 81 80 JSL $808111[$80:8111]
-$A5:9FC9 29 3F 00    AND #$003F
-$A5:9FCC 18          CLC
-$A5:9FCD 69 C0 00    ADC #$00C0
-$A5:9FD0 8D 95 19    STA $1995  [$7E:1995]
+$A5:9FB3 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:9FB6 18          CLC                    ;|
+$A5:9FB7 69 18 00    ADC #$0018             ;} $12 = [Draygon X position] + 18h
+$A5:9FBA 85 12       STA $12    [$7E:0012]  ;/
+$A5:9FBC AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:9FBF 18          CLC                    ;|
+$A5:9FC0 69 F0 FF    ADC #$FFF0             ;} $14 = [Draygon Y position] - 10h
+$A5:9FC3 85 14       STA $14    [$7E:0014]  ;/
+$A5:9FC5 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A5:9FC9 29 3F 00    AND #$003F             ;\
+$A5:9FCC 18          CLC                    ;|
+$A5:9FCD 69 C0 00    ADC #$00C0             ;} Enemy projectile initialisation parameter 1 (angle) = E0h + [random number] % 40h - 20h
+$A5:9FD0 8D 95 19    STA $1995  [$7E:1995]  ;/
 $A5:9FD3 A0 50 8E    LDY #$8E50             ;\
 $A5:9FD6 A9 02 00    LDA #$0002             ;} Spawn Draygon's gunk enemy projectile
 $A5:9FD9 22 27 80 86 JSL $868027[$86:8027]  ;/
@@ -3907,7 +3863,7 @@ $A5:C47A 6B          RTL
 }
 
 
-;;; $C47B: Instruction ;;;
+;;; $C47B: Instruction - Draygon eye function = [[Y]] ;;;
 {
 $A5:C47B 5A          PHY
 $A5:C47C B9 00 00    LDA $0000,y[$A5:988D]
@@ -5052,26 +5008,26 @@ $A5:E96D 6B          RTL
 {
 $A5:E96E 5A          PHY
 $A5:E96F DA          PHX
-$A5:E970 22 11 81 80 JSL $808111[$80:8111]
-$A5:E974 AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:E977 29 7F 00    AND #$007F
-$A5:E97A 38          SEC
-$A5:E97B E9 40 00    SBC #$0040
-$A5:E97E 85 12       STA $12    [$7E:0012]
-$A5:E980 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:E983 18          CLC
-$A5:E984 65 12       ADC $12    [$7E:0012]
-$A5:E986 85 12       STA $12    [$7E:0012]
-$A5:E988 AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:E98B 29 00 7F    AND #$7F00
-$A5:E98E EB          XBA
-$A5:E98F 38          SEC
-$A5:E990 E9 40 00    SBC #$0040
-$A5:E993 85 14       STA $14    [$7E:0014]
-$A5:E995 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:E998 18          CLC
-$A5:E999 65 14       ADC $14    [$7E:0014]
-$A5:E99B 85 14       STA $14    [$7E:0014]
+$A5:E970 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A5:E974 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:E977 29 7F 00    AND #$007F             ;|
+$A5:E97A 38          SEC                    ;|
+$A5:E97B E9 40 00    SBC #$0040             ;|
+$A5:E97E 85 12       STA $12    [$7E:0012]  ;} $12 = [Spore Spawn X position] + [random number low] % 80h - 40h
+$A5:E980 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:E983 18          CLC                    ;|
+$A5:E984 65 12       ADC $12    [$7E:0012]  ;|
+$A5:E986 85 12       STA $12    [$7E:0012]  ;/
+$A5:E988 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:E98B 29 00 7F    AND #$7F00             ;|
+$A5:E98E EB          XBA                    ;|
+$A5:E98F 38          SEC                    ;|
+$A5:E990 E9 40 00    SBC #$0040             ;| 
+$A5:E993 85 14       STA $14    [$7E:0014]  ;} $14 = [Spore Spawn Y position] + [random number high] % 80h - 40h
+$A5:E995 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A5:E998 18          CLC                    ;|
+$A5:E999 65 14       ADC $14    [$7E:0014]  ;|
+$A5:E99B 85 14       STA $14    [$7E:0014]  ;/
 $A5:E99D A9 15 00    LDA #$0015             ; A = 15h
 $A5:E9A0 A0 09 E5    LDY #$E509             ;\
 $A5:E9A3 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
@@ -5087,30 +5043,30 @@ $A5:E9B0 6B          RTL
 {
 $A5:E9B1 5A          PHY
 $A5:E9B2 DA          PHX
-$A5:E9B3 22 11 81 80 JSL $808111[$80:8111]
-$A5:E9B7 AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:E9BA 29 7F 00    AND #$007F
-$A5:E9BD 38          SEC
-$A5:E9BE E9 40 00    SBC #$0040
-$A5:E9C1 85 12       STA $12    [$7E:0012]
-$A5:E9C3 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:E9C6 18          CLC
-$A5:E9C7 65 12       ADC $12    [$7E:0012]
-$A5:E9C9 85 12       STA $12    [$7E:0012]
-$A5:E9CB AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:E9CE 29 00 3F    AND #$3F00
-$A5:E9D1 EB          XBA
-$A5:E9D2 38          SEC
-$A5:E9D3 E9 20 00    SBC #$0020
-$A5:E9D6 85 14       STA $14    [$7E:0014]
-$A5:E9D8 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:E9DB 18          CLC
-$A5:E9DC 65 14       ADC $14    [$7E:0014]
-$A5:E9DE 85 14       STA $14    [$7E:0014]
-$A5:E9E0 A9 03 00    LDA #$0003
-$A5:E9E3 85 16       STA $16    [$7E:0016]
-$A5:E9E5 64 18       STZ $18    [$7E:0018]
-$A5:E9E7 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:E9B3 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A5:E9B7 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:E9BA 29 7F 00    AND #$007F             ;|
+$A5:E9BD 38          SEC                    ;|
+$A5:E9BE E9 40 00    SBC #$0040             ;|
+$A5:E9C1 85 12       STA $12    [$7E:0012]  ;} $12 = [Spore Spawn X position] + [random number low] % 80h - 40h
+$A5:E9C3 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A5:E9C6 18          CLC                    ;|
+$A5:E9C7 65 12       ADC $12    [$7E:0012]  ;|
+$A5:E9C9 85 12       STA $12    [$7E:0012]  ;/
+$A5:E9CB AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:E9CE 29 00 3F    AND #$3F00             ;|
+$A5:E9D1 EB          XBA                    ;|
+$A5:E9D2 38          SEC                    ;|
+$A5:E9D3 E9 20 00    SBC #$0020             ;| 
+$A5:E9D6 85 14       STA $14    [$7E:0014]  ;} $14 = [Spore Spawn Y position] + [random number high] % 40h - 20h
+$A5:E9D8 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A5:E9DB 18          CLC                    ;|
+$A5:E9DC 65 14       ADC $14    [$7E:0014]  ;|
+$A5:E9DE 85 14       STA $14    [$7E:0014]  ;/
+$A5:E9E0 A9 03 00    LDA #$0003             ;\
+$A5:E9E3 85 16       STA $16    [$7E:0016]  ;|
+$A5:E9E5 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3 (small explosion) at position ([$12], [$14]) with palette 0
+$A5:E9E7 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:E9EB A9 25 00    LDA #$0025             ;\
 $A5:E9EE 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
 $A5:E9F2 FA          PLX

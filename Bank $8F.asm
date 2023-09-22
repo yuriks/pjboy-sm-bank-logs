@@ -548,7 +548,7 @@ $8F:918C             dx B76F,07,0B,0005, 0000
 $8F:9194 22 D7 83 84 JSL $8483D7[$84:83D7]
 $8F:9198             dx  3D, 0B, BB30
 $8F:919C A9 18 00    LDA #$0018             ;\
-$8F:919F 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 3 pixel displacement, horizontal
+$8F:919F 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 3 pixel displacement, horizontal
 $8F:91A2 A9 FF FF    LDA #$FFFF
 $8F:91A5 8D 40 18    STA $1840  [$7E:1840]
 $8F:91A8 60          RTS
@@ -597,7 +597,7 @@ $8F:91BC 60          RTS
 {
 ; Room $91F8, state $9261. Landing site, Zebes timebomb set
 $8F:91BD A9 06 00    LDA #$0006             ;\
-$8F:91C0 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only; 3 pixel displacement, horizontal
+$8F:91C0 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 3 pixel displacement, horizontal
 $8F:91C3 A9 FF FF    LDA #$FFFF
 $8F:91C6 8D 40 18    STA $1840  [$7E:1840]
 }
@@ -4960,7 +4960,7 @@ $8F:C91E 60          RTS
 $8F:C91F A9 0E 00    LDA #$000E
 $8F:C922 22 FA 81 80 JSL $8081FA[$80:81FA]
 $8F:C926 A9 12 00    LDA #$0012             ;\
-$8F:C929 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 1 pixel displacement, horizontal
+$8F:C929 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
 $8F:C92C A9 FF FF    LDA #$FFFF
 $8F:C92F 8D 40 18    STA $1840  [$7E:1840]
 $8F:C932 60          RTS
@@ -4971,7 +4971,7 @@ $8F:C932 60          RTS
 {
 ; Room $DE7A. Escape room 2
 $8F:C933 A9 12 00    LDA #$0012             ;\
-$8F:C936 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 1 pixel displacement, horizontal
+$8F:C936 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
 $8F:C939 8D E3 07    STA $07E3  [$7E:07E3]
 $8F:C93C 9C E1 07    STZ $07E1  [$7E:07E1]
 $8F:C93F A9 FF FF    LDA #$FFFF
@@ -4984,7 +4984,7 @@ $8F:C945 60          RTS
 {
 ; Room $DEA7. Escape room 3
 $8F:C946 A9 15 00    LDA #$0015             ;\
-$8F:C949 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 2 pixel displacement, horizontal
+$8F:C949 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
 $8F:C94C A9 FF FF    LDA #$FFFF
 $8F:C94F 8D 40 18    STA $1840  [$7E:1840]
 $8F:C952 60          RTS
@@ -4997,7 +4997,7 @@ $8F:C952 60          RTS
 $8F:C953 22 D7 83 84 JSL $8483D7[$84:83D7]
 $8F:C957             dx  10, 10, B968
 $8F:C95B A9 15 00    LDA #$0015             ;\
-$8F:C95E 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 2 pixel displacement, horizontal
+$8F:C95E 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
 $8F:C961 8D E3 07    STA $07E3  [$7E:07E3]
 $8F:C964 9C E1 07    STZ $07E1  [$7E:07E1]
 $8F:C967 A9 FF FF    LDA #$FFFF
@@ -7056,14 +7056,14 @@ $8F:E57F F0 0A       BEQ $0A    [$E58B]     ;} If [main ASM timer] != 0:
 $8F:E581 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer
 $8F:E584 D0 1A       BNE $1A    [$E5A0]     ; If [main ASM timer] = 0:
 $8F:E586 A9 12 00    LDA #$0012             ;\
-$8F:E589 80 12       BRA $12    [$E59D]     ;} Earthquake type = BG1, BG2 and enemies; 1 pixel displacement, horizontal
+$8F:E589 80 12       BRA $12    [$E59D]     ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
 
 $8F:E58B 22 11 81 80 JSL $808111[$80:8111]  ;\ Else ([main ASM timer] != 0):
 $8F:E58F C9 00 02    CMP #$0200             ;} If [random number] < 200h
 $8F:E592 B0 0C       BCS $0C    [$E5A0]     ;/
 $8F:E594 A9 2A 00    LDA #$002A             ;\
 $8F:E597 8D E1 07    STA $07E1  [$7E:07E1]  ;} Main ASM timer = 2Ah
-$8F:E59A A9 17 00    LDA #$0017             ; Earthquake type = BG1, BG2 and enemies; 2 pixel displacement, diagonal
+$8F:E59A A9 17 00    LDA #$0017             ; Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, diagonal
 
 $8F:E59D 8D 3E 18    STA $183E  [$7E:183E]
 }
@@ -7087,14 +7087,14 @@ $8F:E5A7 F0 0A       BEQ $0A    [$E5B3]     ;} If [main ASM timer] != 0:
 $8F:E5A9 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer
 $8F:E5AC D0 1A       BNE $1A    [$E5C8]     ; If [main ASM timer] = 0:
 $8F:E5AE A9 15 00    LDA #$0015             ;\
-$8F:E5B1 80 12       BRA $12    [$E5C5]     ;} Earthquake type = BG1, BG2 and enemies; 2 pixel displacement, horizontal
+$8F:E5B1 80 12       BRA $12    [$E5C5]     ;} Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
 
 $8F:E5B3 22 11 81 80 JSL $808111[$80:8111]  ;\ Else ([main ASM timer] != 0):
 $8F:E5B7 C9 80 01    CMP #$0180             ;} If [random number] < 200h
 $8F:E5BA B0 0C       BCS $0C    [$E5C8]     ;/
 $8F:E5BC A9 2A 00    LDA #$002A             ;\
 $8F:E5BF 8D E1 07    STA $07E1  [$7E:07E1]  ;} Main ASM timer = 2Ah
-$8F:E5C2 A9 1A 00    LDA #$001A             ; Earthquake type = BG1, BG2 and enemies; 3 pixel displacement, diagonal
+$8F:E5C2 A9 1A 00    LDA #$001A             ; Earthquake type = BG1, BG2 and enemies, 3 pixel displacement, diagonal
 
 $8F:E5C5 8D E3 07    STA $07E3  [$7E:07E3]
 

@@ -1195,10 +1195,10 @@ $A2:9061 BF 04 78 7E LDA $7E7804,x[$7E:7804];\
 $A2:9065 69 00 00    ADC #$0000             ;|
 $A2:9068 49 FF FF    EOR #$FFFF             ;} Enemy $7E:7804 = carry - [enemy $7E:7804]
 $A2:906B 9F 04 78 7E STA $7E7804,x[$7E:7804];/
-$A2:906F A9 00 00    LDA #$0000
-$A2:9072 8D 3E 18    STA $183E  [$7E:183E]
-$A2:9075 A9 10 00    LDA #$0010
-$A2:9078 8D 40 18    STA $1840  [$7E:1840]
+$A2:906F A9 00 00    LDA #$0000             ;\
+$A2:9072 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, horizontal
+$A2:9075 A9 10 00    LDA #$0010             ;\
+$A2:9078 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10h
 $A2:907B A9 1B 00    LDA #$001B             ;\
 $A2:907E 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Bh, sound library 2, max queued sounds allowed = 6 (Maridia beyblade turtle hits wall)
 $A2:9082 6B          RTL

@@ -9059,10 +9059,10 @@ $88:DC22 6B          RTL
 ;;; $DC23:  ;;;
 {
 $88:DC23 20 1D B2    JSR $B21D  [$88:B21D]
-$88:DC26 A9 0D 00    LDA #$000D
-$88:DC29 8D 3E 18    STA $183E  [$7E:183E]
-$88:DC2C A9 20 00    LDA #$0020
-$88:DC2F 0C 40 18    TSB $1840  [$7E:1840]
+$88:DC26 A9 0D 00    LDA #$000D             ;\
+$88:DC29 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 and BG2, 2 pixel displacement, vertical
+$88:DC2C A9 20 00    LDA #$0020             ;\
+$88:DC2F 0C 40 18    TSB $1840  [$7E:1840]  ;} Earthquake timer = 20h+
 $88:DC32 DE 2C 19    DEC $192C,x[$7E:192E]
 $88:DC35 10 2E       BPL $2E    [$DC65]
 $88:DC37 C2 30       REP #$30
@@ -9089,10 +9089,10 @@ $88:DC68 6B          RTL
 ;;; $DC69:  ;;;
 {
 $88:DC69 20 1D B2    JSR $B21D  [$88:B21D]
-$88:DC6C A9 0D 00    LDA #$000D
-$88:DC6F 8D 3E 18    STA $183E  [$7E:183E]
-$88:DC72 A9 20 00    LDA #$0020
-$88:DC75 0C 40 18    TSB $1840  [$7E:1840]
+$88:DC6C A9 0D 00    LDA #$000D             ;\
+$88:DC6F 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 and BG2, 2 pixel displacement, vertical
+$88:DC72 A9 20 00    LDA #$0020             ;\
+$88:DC75 0C 40 18    TSB $1840  [$7E:1840]  ;} Earthquake timer = 20h+
 $88:DC78 AD 78 0A    LDA $0A78  [$7E:0A78]
 $88:DC7B D0 3C       BNE $3C    [$DCB9]
 $88:DC7D BD 14 19    LDA $1914,x[$7E:1916]

@@ -3189,10 +3189,10 @@ $A8:AB82 6B          RTL
 $A8:AB83 DA          PHX
 $A8:AB84 5A          PHY
 $A8:AB85 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
-$A8:AB89 A9 02 00    LDA #$0002
-$A8:AB8C 8D 3E 18    STA $183E  [$7E:183E]
-$A8:AB8F A9 10 00    LDA #$0010
-$A8:AB92 8D 40 18    STA $1840  [$7E:1840]
+$A8:AB89 A9 02 00    LDA #$0002             ;\
+$A8:AB8C 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, diagonal
+$A8:AB8F A9 10 00    LDA #$0010             ;\
+$A8:AB92 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10h
 $A8:AB95 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AB98 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
 $A8:AB9B D0 12       BNE $12    [$ABAF]

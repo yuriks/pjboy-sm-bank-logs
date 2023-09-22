@@ -2315,8 +2315,8 @@ $A6:A142 8D 88 0F    STA $0F88  [$7E:0F88]
 $A6:A145 A9 00 00    LDA #$0000
 $A6:A148 8F 02 78 7E STA $7E7802[$7E:7802]
 $A6:A14C 8F 1A 78 7E STA $7E781A[$7E:781A]
-$A6:A150 9C 3E 18    STZ $183E  [$7E:183E]
-$A6:A153 9C 40 18    STZ $1840  [$7E:1840]
+$A6:A150 9C 3E 18    STZ $183E  [$7E:183E]  ; Earthquake type = 0
+$A6:A153 9C 40 18    STZ $1840  [$7E:1840]  ; Earthquake timer = 0
 $A6:A156 20 D6 D2    JSR $D2D6  [$A6:D2D6]
 $A6:A159 20 FD D9    JSR $D9FD  [$A6:D9FD]
 $A6:A15C AD 9F 07    LDA $079F  [$7E:079F]
@@ -3295,10 +3295,10 @@ $A6:AAD0 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 4Eh, sound library 2,
 $A6:AAD4 E0 D0 00    CPX #$00D0
 $A6:AAD7 D0 10       BNE $10    [$AAE9]
 $A6:AAD9 22 19 E1 90 JSL $90E119[$90:E119]
-$A6:AADD A9 23 00    LDA #$0023
-$A6:AAE0 8D 3E 18    STA $183E  [$7E:183E]
-$A6:AAE3 A9 40 00    LDA #$0040
-$A6:AAE6 8D 40 18    STA $1840  [$7E:1840]
+$A6:AADD A9 23 00    LDA #$0023             ;\
+$A6:AAE0 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG2 only and enemies, 3 pixel displacement, diagonal
+$A6:AAE3 A9 40 00    LDA #$0040             ;\
+$A6:AAE6 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 40h
 
 $A6:AAE9 BD 4D AE    LDA $AE4D,x[$A6:AE4D]
 $A6:AAEC C9 FF FF    CMP #$FFFF
@@ -4397,10 +4397,10 @@ $A6:B745 A0 09 E5    LDY #$E509             ;\
 $A6:B748 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:B74C A9 76 00    LDA #$0076             ;\
 $A6:B74F 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 76h, sound library 2, max queued sounds allowed = 6 (quake)
-$A6:B753 A9 0D 00    LDA #$000D
-$A6:B756 8D 3E 18    STA $183E  [$7E:183E]
-$A6:B759 A9 04 00    LDA #$0004
-$A6:B75C 8D 40 18    STA $1840  [$7E:1840]
+$A6:B753 A9 0D 00    LDA #$000D             ;\
+$A6:B756 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 and BG2, 2 pixel displacement, vertical
+$A6:B759 A9 04 00    LDA #$0004             ;\
+$A6:B75C 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 4
 $A6:B75F 20 A9 B8    JSR $B8A9  [$A6:B8A9]
 $A6:B762 20 0F B9    JSR $B90F  [$A6:B90F]
 $A6:B765 A2 7C D3    LDX #$D37C
@@ -8674,14 +8674,14 @@ $A6:D939 90 19       BCC $19    [$D954]
 $A6:D93B AD 9F 07    LDA $079F  [$7E:079F]
 $A6:D93E C9 02 00    CMP #$0002
 $A6:D941 F0 05       BEQ $05    [$D948]
-$A6:D943 A9 21 00    LDA #$0021
+$A6:D943 A9 21 00    LDA #$0021             ; Earthquake type = BG2 only and enemies, 3 pixel displacement, horizontal
 $A6:D946 80 03       BRA $03    [$D94B]
 
-$A6:D948 A9 18 00    LDA #$0018
+$A6:D948 A9 18 00    LDA #$0018             ; Earthquake type = BG1, BG2 and enemies, 3 pixel displacement, horizontal
 
 $A6:D94B 8D 3E 18    STA $183E  [$7E:183E]
-$A6:D94E A9 0C 00    LDA #$000C
-$A6:D951 8D 40 18    STA $1840  [$7E:1840]
+$A6:D94E A9 0C 00    LDA #$000C             ;\
+$A6:D951 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = Ch
 
 $A6:D954 60          RTS
 }
@@ -11050,18 +11050,18 @@ $A6:F780 AD E5 05    LDA $05E5  [$7E:05E5]
 $A6:F783 29 FF 0F    AND #$0FFF
 $A6:F786 C9 80 00    CMP #$0080
 $A6:F789 90 0B       BCC $0B    [$F796]
-$A6:F78B A9 02 00    LDA #$0002
-$A6:F78E 8D 40 18    STA $1840  [$7E:1840]
-$A6:F791 98          TYA
-$A6:F792 8D 3E 18    STA $183E  [$7E:183E]
-$A6:F795 6B          RTL
+$A6:F78B A9 02 00    LDA #$0002             ;\
+$A6:F78E 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake type = BG1 only, 1 pixel displacement, diagonal
+$A6:F791 98          TYA                    ;\
+$A6:F792 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake timer = [Y]
+$A6:F795 6B          RTL                    ; Return
 
-$A6:F796 A9 04 00    LDA #$0004
-$A6:F799 8D 40 18    STA $1840  [$7E:1840]
-$A6:F79C 98          TYA
-$A6:F79D 18          CLC
-$A6:F79E 69 06 00    ADC #$0006
-$A6:F7A1 8D 3E 18    STA $183E  [$7E:183E]
+$A6:F796 A9 04 00    LDA #$0004             ;\
+$A6:F799 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
+$A6:F79C 98          TYA                    ;\
+$A6:F79D 18          CLC                    ;|
+$A6:F79E 69 06 00    ADC #$0006             ;} Earthquake timer = [Y] + 6
+$A6:F7A1 8D 3E 18    STA $183E  [$7E:183E]  ;/
 
 $A6:F7A4 6B          RTL
 }

@@ -3337,7 +3337,7 @@ $A0:9CAF D0 0C       BNE $0C    [$9CBD]     ;/
 $A0:9CB1 A9 1E 00    LDA #$001E             ;\
 $A0:9CB4 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 30
 $A0:9CB7 A9 12 00    LDA #$0012             ;\
-$A0:9CBA 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies; 1 pixel displacement, horizontal shaking
+$A0:9CBA 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
 
 $A0:9CBD AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9CC0 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;|

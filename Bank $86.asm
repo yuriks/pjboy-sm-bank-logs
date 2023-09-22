@@ -2075,6 +2075,12 @@ $86:8D03 60          RTS
 
 ;;; $8D04: Initialisation AI - enemy projectile $8E50 (Draygon's gunk) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $12: X position
+;;     $14: Y position
+;;     $1993: Speed
+;;     $1995: Angle (using common maths convention)
 $86:8D04 5A          PHY
 $86:8D05 DA          PHX
 $86:8D06 BB          TYX
@@ -7765,10 +7771,10 @@ $86:B7F4 60          RTS
 
 ;;; $B7F5: Instruction ;;;
 {
-$86:B7F5 A9 01 00    LDA #$0001
-$86:B7F8 8D 3E 18    STA $183E  [$7E:183E]
-$86:B7FB A9 20 00    LDA #$0020
-$86:B7FE 0C 40 18    TSB $1840  [$7E:1840]
+$86:B7F5 A9 01 00    LDA #$0001             ;\
+$86:B7F8 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, vertical
+$86:B7FB A9 20 00    LDA #$0020             ;\
+$86:B7FE 0C 40 18    TSB $1840  [$7E:1840]  ;} Earthquake timer = 20h+
 $86:B801 60          RTS
 }
 
