@@ -1971,13 +1971,13 @@ $86:8C32             dw 0010,8A0F,
 }
 
 
-;;; $8C38: Touch instruction list - enemy projectile $8E50 (Draygon's gunk) ;;;
+;;; $8C38: Touch instruction list - enemy projectile $8E50 (Draygon goop) ;;;
 {
 $86:8C38             dw 8D99
 }
 
 
-;;; $8C3A: Instruction list - enemy projectile $8E50 (Draygon's gunk) ;;;
+;;; $8C3A: Instruction list - enemy projectile $8E50 (Draygon goop) ;;;
 {
 $86:8C3A             dw 000A,8A16,
                         000A,8A1D,
@@ -1990,7 +1990,7 @@ $86:8C3A             dw 000A,8A16,
 }
 
 
-;;; $8C58: Shot instruction list - enemy projectile $8E50 (Draygon's gunk) ;;;
+;;; $8C58: Shot instruction list - enemy projectile $8E50 (Draygon goop) ;;;
 {
 $86:8C58             dx 0008,8A8D,
                         0008,8A94,
@@ -2073,7 +2073,7 @@ $86:8D03 60          RTS
 }
 
 
-;;; $8D04: Initialisation AI - enemy projectile $8E50 (Draygon's gunk) ;;;
+;;; $8D04: Initialisation AI - enemy projectile $8E50 (Draygon goop) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -2250,7 +2250,7 @@ $86:8E0E 60          RTS
 }
 
 
-;;; $8E0F: Pre-instruction - enemy projectile $8E50 (Draygon's gunk) ;;;
+;;; $8E0F: Pre-instruction - enemy projectile $8E50 (Draygon goop) ;;;
 {
 $86:8E0F 20 5C 8D    JSR $8D5C  [$86:8D5C]
 $86:8E12 20 3E E7    JSR $E73E  [$86:E73E]
@@ -2298,7 +2298,7 @@ $86:8E4F 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:8E50             dx 8D04,8E0F,8C3A,08,08,D000,8C38,8C58 ; Draygon's gunk
+$86:8E50             dx 8D04,8E0F,8C3A,08,08,D000,8C38,8C58 ; Draygon goop
 $86:8E5E             dx 8D40,8DFF,8CA4,08,08,1080,0000,E138 ; Draygon's wall turret projectile
 $86:8E6C             dx 8E7A,8E99,8CA4,08,08,7000,0000,E138 ; Unused
 }

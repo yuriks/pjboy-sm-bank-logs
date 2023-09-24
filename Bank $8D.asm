@@ -250,7 +250,7 @@ $8D:8A08             dx 0001, 01FC,FC,7105
 ; Unused. Instruction list $8C32
 $8D:8A0F             dx 0001, 81F8,F8,2164
 
-; Enemy projectile $8E50 (Draygon's gunk)
+; Enemy projectile $8E50 (Draygon goop)
 $8D:8A16             dx 0001, 81F8,F8,116A
 $8D:8A1D             dx 0001, 81F8,F8,115E
 $8D:8A24             dx 0001, 81F8,F8,115C
@@ -275,7 +275,7 @@ $8D:8A78             dx 0001, 01FC,FC,3B7D
 $8D:8A7F             dx 0001, 01FC,FC,3B7C
 $8D:8A86             dx 0001, 81F8,F8,3B8A
 
-; Enemy projectile $8E50 (Draygon's gunk)
+; Enemy projectile $8E50 (Draygon goop)
 $8D:8A8D             dx 0001, 81F8,F8,338C
 $8D:8A94             dx 0004, 0002,02,339F, 01F6,02,339E, 0002,F6,338F, 01F6,F6,338E
 

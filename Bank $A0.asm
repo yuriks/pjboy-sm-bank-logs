@@ -1948,7 +1948,7 @@ $A0:922A 6B          RTL
 
 ;;; $922B: Delete enemy and any connected enemies ;;;
 {
-; This is called by rinkas in some specific circumstance (Rinka with enemy Speed != 0 and Mother Brain first form killed?). See $A2:B844
+; This is called by rinkas in some specific circumstance (rinka with enemy speed != 0 and Mother Brain first form killed?). See $A2:B844
 $A0:922B 8B          PHB
 $A0:922C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:922F DA          PHX
