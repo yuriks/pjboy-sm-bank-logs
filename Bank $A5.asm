@@ -12,17 +12,17 @@
 ; When an enemy spawns, its RAM gets cleared or initialised from enemy header, so these stores have no effect
 ; The enemies set their own instruction list pointers in their init AI, which match up except for the arms, which use $97E7 instead of $9813
 
-$A5:8687 A2 30 00    LDX #$0030             ;\
+$A5:8687 A2 30 00    LDX #$0030             ;\ <-- Looks like this was supposed to be 60h to load all 3 sprite palettes >_<;
                                             ;|
 $A5:868A BD 17 A2    LDA $A217,x[$A5:A247]  ;|
-$A5:868D 9F 20 C3 7E STA $7EC320,x[$7E:C350];} Target sprite palette 1..3 = [$A217..46]
-$A5:8691 CA          DEX                    ;|
+$A5:868D 9F 20 C3 7E STA $7EC320,x[$7E:C350];} Target sprite palette 1 = [$A217..36]
+$A5:8691 CA          DEX                    ;} Target sprite palette 2 colours 0..7 = [$A237..46]
 $A5:8692 CA          DEX                    ;|
 $A5:8693 10 F5       BPL $F5    [$868A]     ;/
 $A5:8695 A2 FE 0F    LDX #$0FFE             ;\
 $A5:8698 A9 38 03    LDA #$0338             ;|
                                             ;|
-$A5:869B 9F 00 20 7E STA $7E2000,x[$7E:2FFE];} $7E:2000..2FFF = 0338h
+$A5:869B 9F 00 20 7E STA $7E2000,x[$7E:2FFE];} $7E:2000..2FFF = 0338h (BG2 tilemap)
 $A5:869F CA          DEX                    ;|
 $A5:86A0 CA          DEX                    ;|
 $A5:86A1 10 F8       BPL $F8    [$869B]     ;/
@@ -1157,7 +1157,7 @@ $A5:9065 E9 10 00    SBC #$0010             ;} $14 = [Draygon Y position] - 10h
 $A5:9068 85 14       STA $14    [$7E:0014]  ;/
 $A5:906A A9 3D 00    LDA #$003D             ;\
 $A5:906D 85 16       STA $16    [$7E:0016]  ;|
-$A5:906F 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3Dh (Draygon foaming at the mouth) at position ([$12], [$14]) with palette 0
+$A5:906F 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3Dh (Draygon foaming at the mouth) at position ([$12], [$14])
 $A5:9071 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 ; BRANCH_NO_FOAM
@@ -1319,7 +1319,7 @@ $A5:91AC E9 10 00    SBC #$0010             ;} $14 = [Draygon Y position] - 10h
 $A5:91AF 85 14       STA $14    [$7E:0014]  ;/
 $A5:91B1 A9 3D 00    LDA #$003D             ;\
 $A5:91B4 85 16       STA $16    [$7E:0016]  ;|
-$A5:91B6 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3Dh (Draygon foaming at the mouth) at position ([$12], [$14]) with palette 0
+$A5:91B6 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3Dh (Draygon foaming at the mouth) at position ([$12], [$14])
 $A5:91B8 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 ; BRANCH_NO_FOAM
@@ -1478,7 +1478,7 @@ $A5:9309 69 90 01    ADC #$0190             ;|
 $A5:930C 85 14       STA $14    [$7E:0014]  ;/
 $A5:930E A9 15 00    LDA #$0015             ;\
 $A5:9311 85 16       STA $16    [$7E:0016]  ;|
-$A5:9313 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14]) with palette 0
+$A5:9313 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
 $A5:9315 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A5:9319 FA          PLX
@@ -1502,7 +1502,7 @@ $A5:9331 69 F0 FF    ADC #$FFF0             ;} $14 = [Draygon Y position] - 10h
 $A5:9334 85 14       STA $14    [$7E:0014]  ;/
 $A5:9336 A9 18 00    LDA #$0018             ;\
 $A5:9339 85 16       STA $16    [$7E:0016]  ;|
-$A5:933B 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 18h (short Draygon breath bubbles) at position ([$12], [$14]) with palette 0
+$A5:933B 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 18h (short Draygon breath bubbles) at position ([$12], [$14])
 $A5:933D 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A5:9341 60          RTS
@@ -2013,7 +2013,7 @@ $A5:9740 DA          PHX
 $A5:9741 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
 $A5:9744 A9 15 00    LDA #$0015             ;\
 $A5:9747 85 16       STA $16    [$7E:0016]  ;|
-$A5:9749 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14]) with palette 0
+$A5:9749 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
 $A5:974B 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:974F FA          PLX
 $A5:9750 7A          PLY
@@ -2028,7 +2028,7 @@ $A5:9753 DA          PHX
 $A5:9754 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
 $A5:9757 A9 03 00    LDA #$0003             ;\
 $A5:975A 85 16       STA $16    [$7E:0016]  ;|
-$A5:975C 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3 (small explosion) at position ([$12], [$14]) with palette 0
+$A5:975C 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3 (small explosion) at position ([$12], [$14])
 $A5:975E 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9762 FA          PLX
 $A5:9763 7A          PLY
@@ -2043,7 +2043,7 @@ $A5:9766 DA          PHX
 $A5:9767 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
 $A5:976A A9 1D 00    LDA #$001D             ;\
 $A5:976D 85 16       STA $16    [$7E:0016]  ;|
-$A5:976F 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 1Dh (big explosion) at position ([$12], [$14]) with palette 0
+$A5:976F 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 1Dh (big explosion) at position ([$12], [$14])
 $A5:9771 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9775 FA          PLX
 $A5:9776 7A          PLY
@@ -2058,7 +2058,7 @@ $A5:9779 DA          PHX
 $A5:977A 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
 $A5:977D A9 18 00    LDA #$0018             ;\
 $A5:9780 85 16       STA $16    [$7E:0016]  ;|
-$A5:9782 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 18h (short Draygon breath bubbles) at position ([$12], [$14]) with palette 0
+$A5:9782 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 18h (short Draygon breath bubbles) at position ([$12], [$14])
 $A5:9784 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9788 FA          PLX
 $A5:9789 7A          PLY
@@ -2530,7 +2530,7 @@ $A5:9BC7 69 10 00    ADC #$0010             ;} $14 = [Samus Y position] + 10h
 $A5:9BCA 85 14       STA $14    [$7E:0014]  ;/
 $A5:9BCC A9 15 00    LDA #$0015             ;\
 $A5:9BCF 85 16       STA $16    [$7E:0016]  ;|
-$A5:9BD1 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14]) with palette 0
+$A5:9BD1 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
 $A5:9BD3 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9BD7 7A          PLY
 $A5:9BD8 FA          PLX
@@ -5106,7 +5106,7 @@ $A5:E9DC 65 14       ADC $14    [$7E:0014]  ;|
 $A5:E9DE 85 14       STA $14    [$7E:0014]  ;/
 $A5:E9E0 A9 03 00    LDA #$0003             ;\
 $A5:E9E3 85 16       STA $16    [$7E:0016]  ;|
-$A5:E9E5 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3 (small explosion) at position ([$12], [$14]) with palette 0
+$A5:E9E5 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 3 (small explosion) at position ([$12], [$14])
 $A5:E9E7 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:E9EB A9 25 00    LDA #$0025             ;\
 $A5:E9EE 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)

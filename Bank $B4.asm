@@ -2514,6 +2514,8 @@ $B4:92C5             db 00
 }
 
 
+;;; $92C6..A200: Debug handler ;;;
+{
 ;;; $92C6: Debug handler - [debug index] = 7: enemy debugger - enemy spawn data editor ;;;
 {
 ;; Returns:
@@ -4281,6 +4283,7 @@ $B4:A101             dw 0000,0000,0000,0000,0000,0000,0000,0000,
                         001C,001C,001C,001C,001C,001C,001C,001C,
                         001E,001E,001E,001E,001E,001E,001E,001E
 }
+}
 
 
 ;;; $A201: Debug spritemap addresses ;;;
@@ -4703,6 +4706,8 @@ $B4:BC0B             dx 0005, 0000,E0,30D2, 01F8,E0,30C0, 01F0,E0,30B1, 01E8,E0,
 }
 
 
+;;; $BC26..DD88: Sprite objects ;;;
+{
 ;;; $BC26: Create sprite object ;;;
 {
 ;; Parameters:
@@ -4768,9 +4773,9 @@ $B4:BC82 DA          PHX
 $B4:BC83 5A          PHY
 $B4:BC84 08          PHP
 $B4:BC85 8B          PHB
-$B4:BC86 F4 00 B4    PEA $B400
-$B4:BC89 AB          PLB
-$B4:BC8A AB          PLB
+$B4:BC86 F4 00 B4    PEA $B400              ;\
+$B4:BC89 AB          PLB                    ;} DB = $B4
+$B4:BC8A AB          PLB                    ;/
 $B4:BC8B C2 30       REP #$30
 $B4:BC8D AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $B4:BC90 0D 5E 18    ORA $185E  [$7E:185E]  ;} If time is frozen or enemy time is frozen != 0: return
@@ -4783,7 +4788,7 @@ $B4:BC9B AE 44 18    LDX $1844  [$7E:1844]  ;\
 $B4:BC9E BF 78 EF 7E LDA $7EEF78,x[$7E:EFB6];} If [sprite object instruction list pointer] = 0: go to BRANCH_NEXT
 $B4:BCA2 F0 33       BEQ $33    [$BCD7]     ;/
 $B4:BCA4 BF F8 F2 7E LDA $7EF2F8,x[$7E:F336];\
-$B4:BCA8 89 01 00    BIT #$0001             ;} If [sprite object $7E:F2F8] & 1: return
+$B4:BCA8 89 01 00    BIT #$0001             ;} If [sprite object $7E:F2F8] & 1 != 0: return
 $B4:BCAB D0 2A       BNE $2A    [$BCD7]     ;/
 $B4:BCAD BF F8 EF 7E LDA $7EEFF8,x[$7E:F036];\
 $B4:BCB1 30 30       BMI $30    [$BCE3]     ;} If [sprite object instruction/timer] & 8000h: go to BRANCH_ASM_INSTRUCTION
@@ -4870,9 +4875,9 @@ $B4:BD32 DA          PHX
 $B4:BD33 5A          PHY
 $B4:BD34 08          PHP
 $B4:BD35 8B          PHB
-$B4:BD36 F4 00 B4    PEA $B400
-$B4:BD39 AB          PLB
-$B4:BD3A AB          PLB
+$B4:BD36 F4 00 B4    PEA $B400              ;\
+$B4:BD39 AB          PLB                    ;} DB = $B4
+$B4:BD3A AB          PLB                    ;/
 $B4:BD3B C2 30       REP #$30
 $B4:BD3D A2 3E 00    LDX #$003E             ; X = 3Eh (sprite object index)
 
@@ -4951,100 +4956,902 @@ $B4:BDA8             dw BE5A, BE6C, BE86, BEA4, BEBE, BED4, BEEA, BF04, BF12, BF
 }
 
 
-;;; $BE24: Sprite object instruction lists ;;;
+;;; $BE24..C62F: Sprite object instruction lists ;;;
 {
-$B4:BE24             dw 0006,DD51, 0006,DD58, 0007,DD5F, 0007,DD66, 0008,DD6D, 0008,DD74, 0009,DD7B, 0009,DD82, BD07
-$B4:BE46             dw 0005,DD3C, 0005,DD43, 0005,DD4A, BD07 ; Unused
-$B4:BE54             dw 0001,D594, BCF0
-$B4:BE5A             dw 0003,CAC9, 0003,CAD0, 0003,CAD7, 0003,CADE, BD07
-$B4:BE6C             dw 0005,CAF4, 0004,CB05, 0003,CB16, 0003,CB27, 0003,CB38, 0003,CB49, BD07
-$B4:BE86             dw 0004,CB5A, 0003,CB6B, 0002,CB7C, 0002,CB8D, 0002,CB9E, 0002,CBAF, 000C,CBC0, BD07
-$B4:BEA4             dw 0004,CBC0, 0006,CBC7, 0005,CBDD, 0005,CBF3, 0005,CC09, 0006,CC1F, BD07
-$B4:BEBE             dw 0003,CC35, 0003,CC4B, 0004,CC61, 0004,CC77, 0004,CC8D, BD07
-$B4:BED4             dw 0008,CCB9, 0008,CCC0, 0008,CCC7, 0008,CCCE, 0018,CB8D, BD07
-$B4:BEEA             dw 0004,CCF1, 0004,CCF8, 0004,CCFF, 0004,CD15, 0004,CD2B, 0004,CD41, BD07
-$B4:BF04             dw 0005,CCD5, 0005,CCDC, 0005,CCE3, BD07
-$B4:BF12             dw 0001,CD57, 0001,CD6D, BD07
-$B4:BF1C             dw 0005,CDB5, 0005,CD99, 0005,CDA0, 0005,CDA7, 0005,CDAE, BD07
-$B4:BF32             dw 0003,CDB5, 0003,CDBC, 0003,CDC3, 0003,CDCA, BD07
-$B4:BF44             dw 0005,CDD1, 0005,CDD8, 0005,CDDF, 0005,CDE6, BD07
-$B4:BF56             dw 0008,CDED, 0008,CDF4, 0008,CDFB, 0008,CE02, BD07
-$B4:BF68             dw 0001,CD57, 0001,CD6D, BD12,BF68
-$B4:BF74             dw 0005,CFA3, 0005,CFB9, 0005,CFCF, 0005,CFE5, 0005,D023, 0005,D04D, BD07
-$B4:BF8E             dw 0008,CE1E, 0008,CE25, 0008,CE2C, 0008,CE33, BD07
-$B4:BFA0             dw 0008,CE3A, 0008,CE50, 0008,CE66, 0008,CE7C, BD07
-$B4:BFB2             dw 0005,CE83, 0005,CE8A, 0005,CE91, 0005,CE98, BD07
-$B4:BFC4             dw 0010,CF87, 0010,CF8E, 0010,CF95, BD07
-$B4:BFD2             dw 0002,C6D8, 0002,C6EE, 0002,C704, 0002,C71A, 0002,C730, 0002,C746, 0002,C75C, 0002,C772, 0002,C788, 0002,C79E, 0002,C7B4, 0002,C7CA, 0002,C7E0, 0002,C7F6, 0002,C80C, 0002,C822, BD07
-$B4:C014             dw 0002,C838, 0002,C83F, 0002,C84B, 0002,C85C, BD07
-$B4:C026             dw 0003,C872, 0003,C888, 0003,C899, 0003,C8A5, 0003,C8AC, 0005,C8B3, BD07
-$B4:C040             dw 0003,C872, 0003,C888, 0003,C899, 0003,C8A5, 0003,C8AC, 0003,C8B3, 0003,C8BA, BD07
-$B4:C05E             dw 0005,C838, 0005,C83F, 0005,C84B, 0005,C85C, 0005,C872, 0005,C888, 0005,C899, 0005,C8A5, BD07
-$B4:C080             dw 0001,C8AC, 0001,C8B3, 0001,C8BA, 0001,C8C6, 0001,C8D2, 0001,C8E3, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, 0001,C90A, 0001,C8F4, BD07
-$B4:C0FE             dw 0001,C8F4, 0001,C90A, 0001,C8F4, BD07
-$B4:C10C             dw 0003,C920, 0003,C927, 0003,C938, 0003,C949, 0003,C95A, 0003,C96B, 0003,C97C, 0003,C98D, 0003,C999, BD07
-$B4:C132             dw 0001,C9A0, 0001,C9B6, 0001,C9CC, 0001,C9E2, 0001,C9F8, 0001,CA0E, 0001,CA24, 0001,CA3A, BD07
-$B4:C154             dw 0010,CA50, 0010,CA5C, 0010,CA63, 0010,CA6F, 0010,CA7B, 0010,CA8C, 0010,CA9D, 0010,CAB3, BD07
-$B4:C176             dw 0004,CAB3, 0004,CA9D, 0004,CA8C, 0004,CA7B, 0004,CA6F, 0004,CA63, 0004,CA5C, 0004,CA50, BD07
-$B4:C198             dw 0005,C630, 0005,C637, 0005,C630, 0005,C63E, BD12,C198
-$B4:C1AC             dw 0005,C645, 0005,C64C, 0005,C645, 0005,C653, BD12,C1AC
-$B4:C1C0             dw 0005,C65A, 0005,C661, 0005,C65A, 0005,C668, BD12,C1C0
-$B4:C1D4             dw 0005,C66F, 0005,C676, 0005,C66F, 0005,C67D, BD12,C1D4
-$B4:C1E8             dw 0005,C684, 0005,C68B, 0005,C684, 0005,C692, BD12,C1E8
-$B4:C1FC             dw 0005,C699, 0005,C6A0, 0005,C699, 0005,C6A7, BD12,C1FC
-$B4:C210             dw 0005,C6AE, 0005,C6B5, 0005,C6AE, 0005,C6BC, BD12,C210
-$B4:C224             dw 0005,C6C3, 0005,C6CA, 0005,C6C3, 0005,C6D1, BD12,C224
-$B4:C238             dw 000A,D08B, 000A,D08B, 000A,D0BA, 000A,D0E9, 000A,D118, 000A,D147, 000A,D176, BD12,C238
-$B4:C258             dw 000A,D1D4, 000A,D1EF, 000A,D20A, 000A,D225, 000A,D1D4, 000A,D1EF, 000A,D20A, 000A,D225, 000A,D1D4, 000A,D1EF, 000A,D20A, 000A,D225, 000A,D1D4, 000A,D1EF, 000A,D20A, 000A,D225, 0030,D245, BD12,C258
-$B4:C2A0             dw 000A,D2B3, 000A,D2E2, 000A,D311, 000A,D340, 000A,D36F, 000A,D39E, BD12,C2A0
-$B4:C2BC             dw 000A,D3FC, 000A,D417, 000A,D432, 000A,D44D, 000A,D3FC, 000A,D417, 000A,D432, 000A,D44D, 000A,D3FC, 000A,D417, 000A,D432, 000A,D44D, 000A,D3FC, 000A,D417, 000A,D432, 000A,D44D, 0030,D46D, BD12,C2BC
-$B4:C304             dw 0001,D2AC, BCF0
-$B4:C30A             dw 0003,D4BE, 0003,D4C5, 0003,D4DA, 0003,D4CC, 0003,D4D3, 0003,D4E1, 0003,D4BE, 0003,D4C5, 0003,D4E8, 0003,D4CC, 0003,D4D3, 0003,D4EF, BD12,C30A
-$B4:C33E             dw 0002,D4F6, 0002,D4FD, 0002,D504, 0002,D50B, 0002,D512, 0002,D519, 0002,D520, BD07
-$B4:C35C             dw 0002,D527, 0002,D52E, 0002,D535, 0002,D53C, 0002,D543, 0002,D54A, 0002,D551, BD07
-$B4:C37A             dw 0002,D558, 0002,D558, 0002,D564, 0002,D570, 0002,D588, BD07
-$B4:C390             dw 0003,D59B, 0003,D5A2, 0003,D5A9, 0003,D5B0, BD07
-$B4:C3A2             dw 0010,D653, 0010,D67D, 0006,D69D, 000A,D6C7, 0010,D67D, BD12,C3A2
-$B4:C3BA             dw 0002,D6F1, 0003,D702, 0002,D713, 0001,D6F1, 0003,D713, 0004,BDA6, 0004,D724, 0005,D73A, 0002,D750, 0001,D73A, 0004,BDA6, 0002,D7DB, 0003,D7E7, 0004,D7EE, 0007,BDA6, 0003,D799, 0002,D7AF, 0001,D7C5, 0002,D7AF, 0003,D7C5, 0004,BDA6, 0004,D7FA, 0002,D806, 0002,D812, 0003,D7FA, 0001,BDA6, 0004,D81E, 0003,D82A, 0003,D836, 0002,D82A, 0007,BDA6
-$B4:C436             dw 0002,D766, 0003,D777, 0004,D788, 0002,D766, 0001,D788, 0003,BDA6, 0002,D842, 0003,D849, 0004,D850, 0001,D842, 0003,BDA6, 0003,D766, 0004,D788, 0020,BDA6, 0002,D6F1, 0001,D702, 0002,D713, 0001,D6F1, 0004,BDA6, 0003,D7FA, 0004,D806, 0005,D812, 0004,BDA6, 0002,D799, 0001,D7AF, 0003,D7C5, 0001,D799, 0006,BDA6, 0003,D724, 0004,D73A, 0002,D750, BD12,C436
-$B4:C4B6             dw 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5EB, 0001,BDA6, 0001,D5B7, 0001,BDA6
-$B4:C536             dw 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D5B7, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, 0001,D61F, 0001,BDA6, BD12,C536
-$B4:C5B2             dw 0010,D5B7, 0010,D5EB, 0010,D5B7, 0010,D61F, BD12,C5B2
-$B4:C5C6             dw 0002,D857, 0002,D86D, 0002,D883, 0002,D899, BD07
-$B4:C5D8             dw 0001,D8AF, BCF0
-$B4:C5DE             dw 0001,D8B6, BCF0
-$B4:C5E4             dw 000A,D8BD, 000A,D905, 000A,D957, 000A,D9A9, 000A,D9FB, 000A,DA48, 000A,DA90, 000A,DAD8, BD12,C5E4
-$B4:C608             dw 000A,DB42, 000A,DB80, 000A,DBBE, 000A,DBFC, BD12,C608
-$B4:C61C             dw 000A,DC3F, 000A,DC7D, 000A,DCBB, 000A,DCF9, BD12,C61C
+;;; $BE24: Instruction list - sprite object 3Dh (Draygon foaming at the mouth) ;;;
+{
+$B4:BE24             dx 0006,DD51,
+                        0006,DD58,
+                        0007,DD5F,
+                        0007,DD66,
+                        0008,DD6D,
+                        0008,DD74,
+                        0009,DD7B,
+                        0009,DD82,
+                        BD07        ; Delete
+}
+
+
+;;; $BE46: Unused. Instruction list ;;;
+{
+$B4:BE46             dx 0005,DD3C,
+                        0005,DD43,
+                        0005,DD4A,
+                        BD07        ; Delete
+}
+
+
+;;; $BE54: Instruction list - sprite object 2Fh ;;;
+{
+$B4:BE54             dx 0001,D594,
+                        BCF0        ; Go back 4 bytes
+}
+
+
+;;; $BE5A: Instruction list - sprite object 0 ;;;
+{
+$B4:BE5A             dx 0003,CAC9,
+                        0003,CAD0,
+                        0003,CAD7,
+                        0003,CADE,
+                        BD07        ; Delete
+}
+
+
+;;; $BE6C: Instruction list - sprite object 1 ;;;
+{
+$B4:BE6C             dx 0005,CAF4,
+                        0004,CB05,
+                        0003,CB16,
+                        0003,CB27,
+                        0003,CB38,
+                        0003,CB49,
+                        BD07        ; Delete
+}
+
+
+;;; $BE86: Instruction list - sprite object 2 ;;;
+{
+$B4:BE86             dx 0004,CB5A,
+                        0003,CB6B,
+                        0002,CB7C,
+                        0002,CB8D,
+                        0002,CB9E,
+                        0002,CBAF,
+                        000C,CBC0,
+                        BD07        ; Delete
+}
+
+
+;;; $BEA4: Instruction list - sprite object 3 (small explosion) ;;;
+{
+$B4:BEA4             dx 0004,CBC0,
+                        0006,CBC7,
+                        0005,CBDD,
+                        0005,CBF3,
+                        0005,CC09,
+                        0006,CC1F,
+                        BD07        ; Delete
+}
+
+
+;;; $BEBE: Instruction list - sprite object 4 ;;;
+{
+$B4:BEBE             dx 0003,CC35,
+                        0003,CC4B,
+                        0004,CC61,
+                        0004,CC77,
+                        0004,CC8D,
+                        BD07        ; Delete
+}
+
+
+;;; $BED4: Instruction list - sprite object 5 ;;;
+{
+$B4:BED4             dx 0008,CCB9,
+                        0008,CCC0,
+                        0008,CCC7,
+                        0008,CCCE,
+                        0018,CB8D,
+                        BD07        ; Delete
+}
+
+
+;;; $BEEA: Instruction list - sprite object 6 (dud shot) ;;;
+{
+$B4:BEEA             dx 0004,CCF1,
+                        0004,CCF8,
+                        0004,CCFF,
+                        0004,CD15,
+                        0004,CD2B,
+                        0004,CD41,
+                        BD07        ; Delete
+}
+
+
+;;; $BF04: Instruction list - sprite object 7 ;;;
+{
+$B4:BF04             dx 0005,CCD5,
+                        0005,CCDC,
+                        0005,CCE3,
+                        BD07        ; Delete
+}
+
+
+;;; $BF12: Instruction list - sprite object 8 ;;;
+{
+$B4:BF12             dx 0001,CD57,
+                        0001,CD6D,
+                        BD07        ; Delete
+}
+
+
+;;; $BF1C: Instruction list - sprite object 9 (smoke) ;;;
+{
+$B4:BF1C             dx 0005,CDB5,
+                        0005,CD99,
+                        0005,CDA0,
+                        0005,CDA7,
+                        0005,CDAE,
+                        BD07        ; Delete
+}
+
+
+;;; $BF32: Instruction list - sprite object Ah ;;;
+{
+$B4:BF32             dx 0003,CDB5,
+                        0003,CDBC,
+                        0003,CDC3,
+                        0003,CDCA,
+                        BD07        ; Delete
+}
+
+
+;;; $BF44: Instruction list - sprite object Bh ;;;
+{
+$B4:BF44             dx 0005,CDD1,
+                        0005,CDD8,
+                        0005,CDDF,
+                        0005,CDE6,
+                        BD07        ; Delete
+}
+
+
+;;; $BF56: Instruction list - sprite object Ch (yellow smoke) ;;;
+{
+$B4:BF56             dx 0008,CDED,
+                        0008,CDF4,
+                        0008,CDFB,
+                        0008,CE02,
+                        BD07        ; Delete
+}
+
+
+;;; $BF68: Instruction list - sprite object 1Ch ;;;
+{
+$B4:BF68             dx 0001,CD57,
+                        0001,CD6D,
+                        BD12,BF68   ; Go to $BF68
+}
+
+
+;;; $BF74: Instruction list - sprite object 1Dh (big explosion) ;;;
+{
+$B4:BF74             dx 0005,CFA3,
+                        0005,CFB9,
+                        0005,CFCF,
+                        0005,CFE5,
+                        0005,D023,
+                        0005,D04D,
+                        BD07        ; Delete
+}
+
+
+;;; $BF8E: Instruction list - sprite object Dh ;;;
+{
+$B4:BF8E             dx 0008,CE1E,
+                        0008,CE25,
+                        0008,CE2C,
+                        0008,CE33,
+                        BD07        ; Delete
+}
+
+
+;;; $BFA0: Instruction list - sprite object Eh ;;;
+{
+$B4:BFA0             dx 0008,CE3A,
+                        0008,CE50,
+                        0008,CE66,
+                        0008,CE7C,
+                        BD07        ; Delete
+}
+
+
+;;; $BFB2: Instruction list - sprite object Fh ;;;
+{
+$B4:BFB2             dx 0005,CE83,
+                        0005,CE8A,
+                        0005,CE91,
+                        0005,CE98,
+                        BD07        ; Delete
+}
+
+
+;;; $BFC4: Instruction list - sprite object 10h ;;;
+{
+$B4:BFC4             dx 0010,CF87,
+                        0010,CF8E,
+                        0010,CF95,
+                        BD07        ; Delete
+}
+
+
+;;; $BFD2: Instruction list - sprite object 11h ;;;
+{
+$B4:BFD2             dx 0002,C6D8,
+                        0002,C6EE,
+                        0002,C704,
+                        0002,C71A,
+                        0002,C730,
+                        0002,C746,
+                        0002,C75C,
+                        0002,C772,
+                        0002,C788,
+                        0002,C79E,
+                        0002,C7B4,
+                        0002,C7CA,
+                        0002,C7E0,
+                        0002,C7F6,
+                        0002,C80C,
+                        0002,C822,
+                        BD07        ; Delete
+}
+
+
+;;; $C014: Instruction list - sprite object 12h (smoke) ;;;
+{
+$B4:C014             dx 0002,C838,
+                        0002,C83F,
+                        0002,C84B,
+                        0002,C85C,
+                        BD07        ; Delete
+}
+
+
+;;; $C026: Instruction list - sprite object 13h ;;;
+{
+$B4:C026             dx 0003,C872,
+                        0003,C888,
+                        0003,C899,
+                        0003,C8A5,
+                        0003,C8AC,
+                        0005,C8B3,
+                        BD07        ; Delete
+}
+
+
+;;; $C040: Instruction list - sprite object 14h ;;;
+{
+$B4:C040             dx 0003,C872,
+                        0003,C888,
+                        0003,C899,
+                        0003,C8A5,
+                        0003,C8AC,
+                        0003,C8B3,
+                        0003,C8BA,
+                        BD07        ; Delete
+}
+
+
+;;; $C05E: Instruction list - sprite object 15h (smoke) ;;;
+{
+$B4:C05E             dx 0005,C838,
+                        0005,C83F,
+                        0005,C84B,
+                        0005,C85C,
+                        0005,C872,
+                        0005,C888,
+                        0005,C899,
+                        0005,C8A5,
+                        BD07        ; Delete
+}
+
+
+;;; $C080: Instruction list - sprite object 16h ;;;
+{
+$B4:C080             dx 0001,C8AC,
+                        0001,C8B3,
+                        0001,C8BA,
+                        0001,C8C6,
+                        0001,C8D2,
+                        0001,C8E3,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        BD07        ; Delete
+}
+
+
+;;; $C0FE: Instruction list - sprite object 17h ;;;
+{
+$B4:C0FE             dx 0001,C8F4,
+                        0001,C90A,
+                        0001,C8F4,
+                        BD07        ; Delete
+}
+
+
+;;; $C10C: Instruction list - sprite object 18h (short Draygon breath bubbles) ;;;
+{
+$B4:C10C             dx 0003,C920,
+                        0003,C927,
+                        0003,C938,
+                        0003,C949,
+                        0003,C95A,
+                        0003,C96B,
+                        0003,C97C,
+                        0003,C98D,
+                        0003,C999,
+                        BD07        ; Delete
+}
+
+
+;;; $C132: Instruction list - sprite object 19h ;;;
+{
+$B4:C132             dx 0001,C9A0,
+                        0001,C9B6,
+                        0001,C9CC,
+                        0001,C9E2,
+                        0001,C9F8,
+                        0001,CA0E,
+                        0001,CA24,
+                        0001,CA3A,
+                        BD07        ; Delete
+}
+
+
+;;; $C154: Instruction list - sprite object 1Ah ;;;
+{
+$B4:C154             dx 0010,CA50,
+                        0010,CA5C,
+                        0010,CA63,
+                        0010,CA6F,
+                        0010,CA7B,
+                        0010,CA8C,
+                        0010,CA9D,
+                        0010,CAB3,
+                        BD07        ; Delete
+}
+
+
+;;; $C176: Instruction list - sprite object 1Bh ;;;
+{
+$B4:C176             dx 0004,CAB3,
+                        0004,CA9D,
+                        0004,CA8C,
+                        0004,CA7B,
+                        0004,CA6F,
+                        0004,CA63,
+                        0004,CA5C,
+                        0004,CA50,
+                        BD07        ; Delete
+}
+
+
+;;; $C198: Instruction list - sprite object 1Eh ;;;
+{
+$B4:C198             dx 0005,C630,
+                        0005,C637,
+                        0005,C630,
+                        0005,C63E,
+                        BD12,C198   ; Go to $C198
+}
+
+
+;;; $C1AC: Instruction list - sprite object 1Fh ;;;
+{
+$B4:C1AC             dx 0005,C645,
+                        0005,C64C,
+                        0005,C645,
+                        0005,C653,
+                        BD12,C1AC   ; Go to $C1AC
+}
+
+
+;;; $C1C0: Instruction list - sprite object 20h ;;;
+{
+$B4:C1C0             dx 0005,C65A,
+                        0005,C661,
+                        0005,C65A,
+                        0005,C668,
+                        BD12,C1C0   ; Go to $C1C0
+}
+
+
+;;; $C1D4: Instruction list - sprite object 21h ;;;
+{
+$B4:C1D4             dx 0005,C66F,
+                        0005,C676,
+                        0005,C66F,
+                        0005,C67D,
+                        BD12,C1D4   ; Go to $C1D4
+}
+
+
+;;; $C1E8: Instruction list - sprite object 22h ;;;
+{
+$B4:C1E8             dx 0005,C684,
+                        0005,C68B,
+                        0005,C684,
+                        0005,C692,
+                        BD12,C1E8   ; Go to $C1E8
+}
+
+
+;;; $C1FC: Instruction list - sprite object 23h ;;;
+{
+$B4:C1FC             dx 0005,C699,
+                        0005,C6A0,
+                        0005,C699,
+                        0005,C6A7,
+                        BD12,C1FC   ; Go to $C1FC
+}
+
+
+;;; $C210: Instruction list - sprite object 24h ;;;
+{
+$B4:C210             dx 0005,C6AE,
+                        0005,C6B5,
+                        0005,C6AE,
+                        0005,C6BC,
+                        BD12,C210   ; Go to $C210
+}
+
+
+;;; $C224: Instruction list - sprite object 25h ;;;
+{
+$B4:C224             dx 0005,C6C3,
+                        0005,C6CA,
+                        0005,C6C3,
+                        0005,C6D1,
+                        BD12,C224   ; Go to $C224
+}
+
+
+;;; $C238: Instruction list - sprite object 26h ;;;
+{
+$B4:C238             dx 000A,D08B,
+                        000A,D08B,
+                        000A,D0BA,
+                        000A,D0E9,
+                        000A,D118,
+                        000A,D147,
+                        000A,D176,
+                        BD12,C238   ; Go to $C238
+}
+
+
+;;; $C258: Instruction list - sprite object 27h ;;;
+{
+$B4:C258             dx 000A,D1D4,
+                        000A,D1EF,
+                        000A,D20A,
+                        000A,D225,
+                        000A,D1D4,
+                        000A,D1EF,
+                        000A,D20A,
+                        000A,D225,
+                        000A,D1D4,
+                        000A,D1EF,
+                        000A,D20A,
+                        000A,D225,
+                        000A,D1D4,
+                        000A,D1EF,
+                        000A,D20A,
+                        000A,D225,
+                        0030,D245,
+                        BD12,C258   ; Go to $C258
+}
+
+
+;;; $C2A0: Instruction list - sprite object 28h ;;;
+{
+$B4:C2A0             dx 000A,D2B3,
+                        000A,D2E2,
+                        000A,D311,
+                        000A,D340,
+                        000A,D36F,
+                        000A,D39E,
+                        BD12,C2A0   ; Go to $C2A0
+}
+
+
+;;; $C2BC: Instruction list - sprite object 29h ;;;
+{
+$B4:C2BC             dx 000A,D3FC,
+                        000A,D417,
+                        000A,D432,
+                        000A,D44D,
+                        000A,D3FC,
+                        000A,D417,
+                        000A,D432,
+                        000A,D44D,
+                        000A,D3FC,
+                        000A,D417,
+                        000A,D432,
+                        000A,D44D,
+                        000A,D3FC,
+                        000A,D417,
+                        000A,D432,
+                        000A,D44D,
+                        0030,D46D,
+                        BD12,C2BC   ; Go to $C2BC
+}
+
+
+;;; $C304: Instruction list - sprite object 2Ah ;;;
+{
+$B4:C304             dx 0001,D2AC,
+                        BCF0        ; Go back 4 bytes
+}
+
+
+;;; $C30A: Instruction list - sprite object 2Bh ;;;
+{
+$B4:C30A             dx 0003,D4BE,
+                        0003,D4C5,
+                        0003,D4DA,
+                        0003,D4CC,
+                        0003,D4D3,
+                        0003,D4E1,
+                        0003,D4BE,
+                        0003,D4C5,
+                        0003,D4E8,
+                        0003,D4CC,
+                        0003,D4D3,
+                        0003,D4EF,
+                        BD12,C30A   ; Go to $C30A
+}
+
+
+;;; $C33E: Instruction list - sprite object 2Ch ;;;
+{
+$B4:C33E             dx 0002,D4F6,
+                        0002,D4FD,
+                        0002,D504,
+                        0002,D50B,
+                        0002,D512,
+                        0002,D519,
+                        0002,D520,
+                        BD07        ; Delete
+}
+
+
+;;; $C35C: Instruction list - sprite object 2Dh ;;;
+{
+$B4:C35C             dx 0002,D527,
+                        0002,D52E,
+                        0002,D535,
+                        0002,D53C,
+                        0002,D543,
+                        0002,D54A,
+                        0002,D551,
+                        BD07        ; Delete
+}
+
+
+;;; $C37A: Instruction list - sprite object 2Eh ;;;
+{
+$B4:C37A             dx 0002,D558,
+                        0002,D558,
+                        0002,D564,
+                        0002,D570,
+                        0002,D588,
+                        BD07        ; Delete
+}
+
+
+;;; $C390: Instruction list - sprite object 30h ;;;
+{
+$B4:C390             dx 0003,D59B,
+                        0003,D5A2,
+                        0003,D5A9,
+                        0003,D5B0,
+                        BD07        ; Delete
+}
+
+
+;;; $C3A2: Instruction list - sprite object 31h ;;;
+{
+$B4:C3A2             dx 0010,D653,
+                        0010,D67D,
+                        0006,D69D,
+                        000A,D6C7,
+                        0010,D67D,
+                        BD12,C3A2   ; Go to $C3A2
+}
+
+
+;;; $C3BA: Instruction list - sprite object 32h (metroid electricity) ;;;
+{
+$B4:C3BA             dx 0002,D6F1,
+                        0003,D702,
+                        0002,D713,
+                        0001,D6F1,
+                        0003,D713,
+                        0004,BDA6,
+                        0004,D724,
+                        0005,D73A,
+                        0002,D750,
+                        0001,D73A,
+                        0004,BDA6,
+                        0002,D7DB,
+                        0003,D7E7,
+                        0004,D7EE,
+                        0007,BDA6,
+                        0003,D799,
+                        0002,D7AF,
+                        0001,D7C5,
+                        0002,D7AF,
+                        0003,D7C5,
+                        0004,BDA6,
+                        0004,D7FA,
+                        0002,D806,
+                        0002,D812,
+                        0003,D7FA,
+                        0001,BDA6,
+                        0004,D81E,
+                        0003,D82A,
+                        0003,D836,
+                        0002,D82A,
+                        0007,BDA6
+}
+
+
+;;; $C436: Instruction list - sprite object 33h ;;;
+{
+$B4:C436             dx 0002,D766,
+                        0003,D777,
+                        0004,D788,
+                        0002,D766,
+                        0001,D788,
+                        0003,BDA6,
+                        0002,D842,
+                        0003,D849,
+                        0004,D850,
+                        0001,D842,
+                        0003,BDA6,
+                        0003,D766,
+                        0004,D788,
+                        0020,BDA6,
+                        0002,D6F1,
+                        0001,D702,
+                        0002,D713,
+                        0001,D6F1,
+                        0004,BDA6,
+                        0003,D7FA,
+                        0004,D806,
+                        0005,D812,
+                        0004,BDA6,
+                        0002,D799,
+                        0001,D7AF,
+                        0003,D7C5,
+                        0001,D799,
+                        0006,BDA6,
+                        0003,D724,
+                        0004,D73A,
+                        0002,D750,
+                        BD12,C436   ; Go to $C436
+}
+
+
+;;; $C4B6: Instruction list - sprite object 34h (metroid shell) ;;;
+{
+$B4:C4B6             dx 0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5EB,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6
+}
+
+
+;;; $C536: Instruction list - sprite object 35h ;;;
+{
+$B4:C536             dx 0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D5B7,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        0001,D61F,
+                        0001,BDA6,
+                        BD12,C536   ; Go to $C536
+}
+
+
+;;; $C5B2: Instruction list - sprite object 36h ;;;
+{
+$B4:C5B2             dx 0010,D5B7,
+                        0010,D5EB,
+                        0010,D5B7,
+                        0010,D61F,
+                        BD12,C5B2   ; Go to $C5B2
+}
+
+
+;;; $C5C6: Instruction list - sprite object 37h (enemy shot) ;;;
+{
+$B4:C5C6             dx 0002,D857,
+                        0002,D86D,
+                        0002,D883,
+                        0002,D899,
+                        BD07        ; Delete
+}
+
+
+;;; $C5D8: Instruction list - sprite object 38h (yapping maw base - facing down) ;;;
+{
+$B4:C5D8             dx 0001,D8AF,
+                        BCF0        ; Go back 4 bytes
+}
+
+
+;;; $C5DE: Instruction list - sprite object 39h (yapping maw base - facing up) ;;;
+{
+$B4:C5DE             dx 0001,D8B6,
+                        BCF0        ; Go back 4 bytes
+}
+
+
+;;; $C5E4: Instruction list - sprite object 3Ah ;;;
+{
+$B4:C5E4             dx 000A,D8BD,
+                        000A,D905,
+                        000A,D957,
+                        000A,D9A9,
+                        000A,D9FB,
+                        000A,DA48,
+                        000A,DA90,
+                        000A,DAD8,
+                        BD12,C5E4   ; Go to $C5E4
+}
+
+
+;;; $C608: Instruction list - sprite object 3Bh (mini-Draygon facing left) ;;;
+{
+$B4:C608             dx 000A,DB42,
+                        000A,DB80,
+                        000A,DBBE,
+                        000A,DBFC,
+                        BD12,C608   ; Go to $C608
+}
+
+
+;;; $C61C: Instruction list - sprite object 3Ch (mini-Draygon facing right) ;;;
+{
+$B4:C61C             dx 000A,DC3F,
+                        000A,DC7D,
+                        000A,DCBB,
+                        000A,DCF9,
+                        BD12,C61C   ; Go to $C61C
+}
 }
 
 
 ;;; $C630: Sprite object spritemaps ;;;
 {
+; Sprite object 1Eh
 $B4:C630             dx 0001, 01FC,FC,0100
 $B4:C637             dx 0001, 01FC,FC,0101
 $B4:C63E             dx 0001, 01FC,FC,0102
+
+; Sprite object 1Fh
 $B4:C645             dx 0001, 01FC,FC,0103
 $B4:C64C             dx 0001, 01FC,FC,0104
 $B4:C653             dx 0001, 01FC,FC,0105
+
+; Sprite object 20h
 $B4:C65A             dx 0001, 01FC,FC,0106
 $B4:C661             dx 0001, 01FC,FC,0107
 $B4:C668             dx 0001, 01FC,FC,0108
+
+; Sprite object 21h
 $B4:C66F             dx 0001, 01FC,FC,8103
 $B4:C676             dx 0001, 01FC,FC,8104
 $B4:C67D             dx 0001, 01FC,FC,8105
+
+; Sprite object 22h
 $B4:C684             dx 0001, 01FC,FC,8100
 $B4:C68B             dx 0001, 01FC,FC,8101
 $B4:C692             dx 0001, 01FC,FC,8102
+
+; Sprite object 23h
 $B4:C699             dx 0001, 01FC,FC,C103
 $B4:C6A0             dx 0001, 01FC,FC,C104
 $B4:C6A7             dx 0001, 01FC,FC,C105
+
+; Sprite object 24h
 $B4:C6AE             dx 0001, 01FC,FC,4106
 $B4:C6B5             dx 0001, 01FC,FC,4107
 $B4:C6BC             dx 0001, 01FC,FC,4108
+
+; Sprite object 25h
 $B4:C6C3             dx 0001, 01FC,FC,4103
 $B4:C6CA             dx 0001, 01FC,FC,4104
 $B4:C6D1             dx 0001, 01FC,FC,4105
+
+; Sprite object 11h
 $B4:C6D8             dx 0004, 0000,F8,7A2B, 0000,00,7A2B, 01F8,00,3A2B, 01F8,F8,3A2B
 $B4:C6EE             dx 0004, 0002,F3,7A2B, 0001,FF,7A2B, 01F7,FF,3A2B, 01F6,F3,3A2B
 $B4:C704             dx 0004, 0005,EE,7A2B, 0003,FD,7A2B, 01F5,FD,3A2B, 01F3,EE,3A2B
@@ -5061,22 +5868,26 @@ $B4:C7E0             dx 0004, 0015,F5,7A28, 000F,07,7A28, 01E3,F5,3A28, 01E9,07,
 $B4:C7F6             dx 0004, 0016,F9,7A28, 0010,0B,7A28, 01E2,F9,3A28, 01E8,0B,3A28
 $B4:C80C             dx 0004, 0017,03,7A28, 0011,11,7A28, 01E1,03,3A28, 01E7,11,3A28
 $B4:C822             dx 0004, 0018,0A,7A28, 0012,18,7A28, 01E0,0A,3A28, 01E6,18,3A28
-$B4:C838             dx 0001, 01F7,F7,3A48
-$B4:C83F             dx 0002, 0001,01,3A48, 81F3,F3,3A7C
-$B4:C84B             dx 0003, 81FD,FD,3A7C, 01F7,01,3A48, 81F3,F3,3A7E
-$B4:C85C             dx 0004, 0001,F7,3A48, 81FD,FD,3A7E, 81F3,FD,3A7C, 81F3,F3,3A9A
-$B4:C872             dx 0004, 81FD,F3,3A7C, 81FD,FD,3A9A, 81F3,FD,3A7E, 81F3,F3,3A9C
-$B4:C888             dx 0003, 81FD,F3,3A7E, 81FD,FD,3A9C, 81F3,FD,3A9A
-$B4:C899             dx 0002, 81FD,F3,3A9A, 81F3,FD,3A9C
-$B4:C8A5             dx 0001, 81FD,F3,3A9C
-$B4:C8AC             dx 0001, 01FC,FC,3A6B
-$B4:C8B3             dx 0001, 01FC,FC,3A6C
-$B4:C8BA             dx 0002, 01F8,FC,3A6B, 0000,FC,3A6B
-$B4:C8C6             dx 0002, 01F8,FC,3A6C, 0000,FC,3A6C
-$B4:C8D2             dx 0003, 01F4,FC,3A6C, 0004,FC,3A6C, 01FC,FC,3A6C
-$B4:C8E3             dx 0003, 0004,FC,3A6B, 01F4,FC,3A6B, 01FC,FC,3A6B
-$B4:C8F4             dx 0004, 0008,FC,3A6C, 0000,FC,3A6C, 01F8,FC,3A6C, 01F0,FC,3A6C
-$B4:C90A             dx 0004, 0008,FC,3A6B, 0000,FC,3A6B, 01F8,FC,3A6B, 01F0,FC,3A6B
+
+; Sprite object 12h/13h/14h/15h/16h/17h (smoke)
+$B4:C838             dx 0001, 01F7,F7,3A48                                           ; Sprite object 12h/        15h
+$B4:C83F             dx 0002, 0001,01,3A48, 81F3,F3,3A7C                             ; Sprite object 12h/        15h
+$B4:C84B             dx 0003, 81FD,FD,3A7C, 01F7,01,3A48, 81F3,F3,3A7E               ; Sprite object 12h/        15h
+$B4:C85C             dx 0004, 0001,F7,3A48, 81FD,FD,3A7E, 81F3,FD,3A7C, 81F3,F3,3A9A ; Sprite object 12h/        15h
+$B4:C872             dx 0004, 81FD,F3,3A7C, 81FD,FD,3A9A, 81F3,FD,3A7E, 81F3,F3,3A9C ; Sprite object     13h/14h/15h
+$B4:C888             dx 0003, 81FD,F3,3A7E, 81FD,FD,3A9C, 81F3,FD,3A9A               ; Sprite object     13h/14h/15h
+$B4:C899             dx 0002, 81FD,F3,3A9A, 81F3,FD,3A9C                             ; Sprite object     13h/14h/15h
+$B4:C8A5             dx 0001, 81FD,F3,3A9C                                           ; Sprite object     13h/14h/15h
+$B4:C8AC             dx 0001, 01FC,FC,3A6B                                           ; Sprite object     13h/14h/    16h
+$B4:C8B3             dx 0001, 01FC,FC,3A6C                                           ; Sprite object     13h/14h/    16h
+$B4:C8BA             dx 0002, 01F8,FC,3A6B, 0000,FC,3A6B                             ; Sprite object         14h/    16h
+$B4:C8C6             dx 0002, 01F8,FC,3A6C, 0000,FC,3A6C                             ; Sprite object                 16h
+$B4:C8D2             dx 0003, 01F4,FC,3A6C, 0004,FC,3A6C, 01FC,FC,3A6C               ; Sprite object                 16h
+$B4:C8E3             dx 0003, 0004,FC,3A6B, 01F4,FC,3A6B, 01FC,FC,3A6B               ; Sprite object                 16h
+$B4:C8F4             dx 0004, 0008,FC,3A6C, 0000,FC,3A6C, 01F8,FC,3A6C, 01F0,FC,3A6C ; Sprite object                 16h/17h
+$B4:C90A             dx 0004, 0008,FC,3A6B, 0000,FC,3A6B, 01F8,FC,3A6B, 01F0,FC,3A6B ; Sprite object                 16h/17h
+
+; Sprite object 18h (short Draygon breath bubbles)
 $B4:C920             dx 0001, 01FC,FC,3A25
 $B4:C927             dx 0003, 0000,F8,3A25, 01FA,F6,3A25, 01FC,FB,3A25
 $B4:C938             dx 0003, 0001,F7,3A25, 01F9,F4,3A25, 01FB,FA,3A25
@@ -5086,6 +5897,8 @@ $B4:C96B             dx 0003, 0000,F0,3A40, 01FC,F4,3A40, 01FA,ED,3A40
 $B4:C97C             dx 0003, 0000,EE,3A40, 01FC,F2,3A40, 01FA,EC,3A40
 $B4:C98D             dx 0002, 0000,EC,3A40, 01FC,F0,3A40
 $B4:C999             dx 0001, 01FC,EE,3A40
+
+; Sprite object 19h
 $B4:C9A0             dx 0004, 0008,E0,3A6F, 0000,E0,3A6F, 01F8,E0,3A6F, 01F0,E0,3A6F
 $B4:C9B6             dx 0004, 0008,E8,3A6F, 0000,E8,3A6F, 01F8,E8,3A6F, 01F0,E8,3A6F
 $B4:C9CC             dx 0004, 0008,F0,3A6F, 0000,F0,3A6F, 01F8,F0,3A6F, 01F0,F0,3A6F
@@ -5094,6 +5907,8 @@ $B4:C9F8             dx 0004, 0008,00,3A6F, 0000,00,3A6F, 01F8,00,3A6F, 01F0,00,
 $B4:CA0E             dx 0004, 0008,08,3A6F, 0000,08,3A6F, 01F8,08,3A6F, 01F0,08,3A6F
 $B4:CA24             dx 0004, 0008,10,3A6F, 0000,10,3A6F, 01F8,10,3A6F, 01F0,10,3A6F
 $B4:CA3A             dx 0004, 0008,18,3A6F, 0000,18,3A6F, 01F8,18,3A6F, 01F0,18,3A6F
+
+; Sprite object 1Ah/1Bh
 $B4:CA50             dx 0002, 0000,FC,3ABF, 01F8,FC,3ABE
 $B4:CA5C             dx 0001, 81F8,F8,3ABE
 $B4:CA63             dx 0002, 81F8,FC,3ABE, 81F8,F4,3ABE
@@ -5102,82 +5917,124 @@ $B4:CA7B             dx 0003, 81F8,04,3ABE, 81F8,F8,3ABE, 81F8,EC,3ABE
 $B4:CA8C             dx 0003, 81F8,08,3ABE, 81F8,F8,3ABE, 81F8,E8,3ABE
 $B4:CA9D             dx 0004, 81F8,0C,3ABE, 81F8,00,3ABE, 81F8,F0,3ABE, 81F8,E4,3ABE
 $B4:CAB3             dx 0004, 81F8,10,3ABE, 81F8,00,3ABE, 81F8,F0,3ABE, 81F8,E0,3ABE
+
+; Sprite object 0
 $B4:CAC9             dx 0001, 01FC,FC,3C53
 $B4:CAD0             dx 0001, 01FC,FC,3C52
 $B4:CAD7             dx 0001, 01FC,FC,3C51
 $B4:CADE             dx 0004, 01F8,00,BC50, 0000,00,FC50, 0000,F8,7C50, 01F8,F8,3C50
+
+; Sprite object 1
 $B4:CAF4             dx 0003, 0000,0C,3A5B, 0008,EC,3A5B, 01F0,F4,3A5B
 $B4:CB05             dx 0003, 01FD,0A,3A5C, 0006,EE,3A5C, 01F2,F6,3A5C
 $B4:CB16             dx 0003, 01FC,08,3A5C, 0004,F0,3A5C, 01F4,F8,3A5C
 $B4:CB27             dx 0003, 0002,F2,3A5D, 01FB,06,3A5D, 01F6,FA,3A5D
 $B4:CB38             dx 0003, 01FB,04,3A5D, 01F8,FB,3A5D, 0000,F4,3A5D
 $B4:CB49             dx 0003, 01FB,02,3A5D, 01FA,FA,3A5D, 0000,F6,3A5D
+
+; Sprite object 2
 $B4:CB5A             dx 0003, 0000,EC,BA5B, 0008,0C,BA5B, 01F0,04,BA5B
 $B4:CB6B             dx 0003, 01FE,EE,BA5C, 0006,0A,BA5C, 01F2,02,BA5C
 $B4:CB7C             dx 0003, 0004,08,BA5C, 01F4,00,BA5C, 01FD,F0,BA5C
-$B4:CB8D             dx 0003, 0002,06,BA5D, 01FC,F2,BA5D, 01F6,FE,BA5D
+$B4:CB8D             dx 0003, 0002,06,BA5D, 01FC,F2,BA5D, 01F6,FE,BA5D ; Used by sprite object 5
 $B4:CB9E             dx 0003, 01FC,F4,BA5D, 01F8,FC,BA5D, 0000,04,BA5D
 $B4:CBAF             dx 0003, 01FC,F6,BA5D, 01FA,FD,BA5D, 0000,02,BA5D
-$B4:CBC0             dx 0001, 01FC,FC,3A5F
+$B4:CBC0             dx 0001, 01FC,FC,3A5F ; Used by sprite object 3
+
+; Sprite object 3 (small explosion)
 $B4:CBC7             dx 0004, 0000,00,FA8A, 01F8,00,BA8A, 0000,F8,7A8A, 01F8,F8,3A8A
 $B4:CBDD             dx 0004, 8000,00,FA90, 81F0,00,BA90, 8000,F0,7A90, 81F0,F0,3A90
 $B4:CBF3             dx 0004, 8000,00,FA92, 81F0,00,BA92, 8000,F0,7A92, 81F0,F0,3A92
 $B4:CC09             dx 0004, 8000,00,FA94, 81F0,00,BA94, 8000,F0,7A94, 81F0,F0,3A94
 $B4:CC1F             dx 0004, 8000,00,FA96, 81F0,00,BA96, 8000,F0,7A96, 81F0,F0,3A96
+
+; Sprite object 4
 $B4:CC35             dx 0004, 0000,00,FA8B, 01F8,00,BA8B, 0000,F8,7A8B, 01F8,F8,3A8B
 $B4:CC4B             dx 0004, 0000,00,FA7A, 01F8,00,BA7A, 0000,F8,7A7A, 01F8,F8,3A7A
 $B4:CC61             dx 0004, 8000,00,FA70, 81F0,00,BA70, 8000,F0,7A70, 81F0,F0,3A70
 $B4:CC77             dx 0004, 8000,00,FA72, 81F0,00,BA72, 8000,F0,7A72, 81F0,F0,3A72
 $B4:CC8D             dx 0004, 8000,00,FA74, 81F0,00,BA74, 8000,F0,7A74, 81F0,F0,3A74
+
+; Unused
 $B4:CCA3             dx 0004, 01F8,00,3A5E, 0000,00,3A5E, 0000,F8,3A5E, 01F8,F8,3A5E
+
+; Sprite object 5
 $B4:CCB9             dx 0001, 01FC,FC,3C38
 $B4:CCC0             dx 0001, 01FC,FC,3C39
 $B4:CCC7             dx 0001, 01FC,FC,3C3A
 $B4:CCCE             dx 0001, 01FC,FC,3C3B
+
+; Sprite object 7
 $B4:CCD5             dx 0001, 01FC,FC,3A26
 $B4:CCDC             dx 0001, 01FC,FC,3A27
 $B4:CCE3             dx 0001, 01FC,FC,3A7B
+
+; Unused
 $B4:CCEA             dx 0001, 01FC,FC,3A5F
+
+; Sprite object 6 (dud shot)
 $B4:CCF1             dx 0001, 01FC,FC,3A53
 $B4:CCF8             dx 0001, 01FC,FC,3A51
 $B4:CCFF             dx 0004, 0000,00,FA60, 0000,F8,7A60, 01F8,00,BA60, 01F8,F8,3A60
 $B4:CD15             dx 0004, 0000,00,FA61, 0000,F8,7A61, 01F8,00,BA61, 01F8,F8,3A61
 $B4:CD2B             dx 0004, 0000,00,FA62, 0000,F8,7A62, 01F8,00,BA62, 01F8,F8,3A62
 $B4:CD41             dx 0004, 0000,00,FA63, 0000,F8,7A63, 01F8,00,BA63, 01F8,F8,3A63
+
+; Sprite object 8/1Ch
 $B4:CD57             dx 0004, 01F2,FC,7A6C, 0006,FC,7A6C, 0000,FC,7A6C, 01F8,FC,3A6C
 $B4:CD6D             dx 0004, 0000,FC,7A6E, 0008,FC,7A6D, 01F8,FC,3A6E, 01F0,FC,3A6D
+
+; Unused
 $B4:CD83             dx 0004, 01F0,FE,3A6F, 0008,FE,3A6F, 0000,FE,3A6F, 01F8,FE,3A6F
+
+; Sprite object 9 (smoke)
 $B4:CD99             dx 0001, 81F8,F8,3A7C
 $B4:CDA0             dx 0001, 81F8,F6,3A7E
 $B4:CDA7             dx 0001, 81F8,F4,3A9A
 $B4:CDAE             dx 0001, 81F8,F2,3A9C
-$B4:CDB5             dx 0001, 01FC,FC,3A48
+
+; Sprite object Ah
+$B4:CDB5             dx 0001, 01FC,FC,3A48 ; Used by sprite object 9
 $B4:CDBC             dx 0001, 01FC,FA,3A49
 $B4:CDC3             dx 0001, 01FC,F8,3A4A
 $B4:CDCA             dx 0001, 01FC,F6,3A4B
+
+; Sprite object Bh
 $B4:CDD1             dx 0001, 01FC,FC,3A2C
 $B4:CDD8             dx 0001, 01FC,FC,3A2D
 $B4:CDDF             dx 0001, 01FC,FC,3A2E
 $B4:CDE6             dx 0001, 01FC,FC,3A2F
+
+; Sprite object Ch (yellow smoke)
 $B4:CDED             dx 0001, 81F8,F6,3A76
 $B4:CDF4             dx 0001, 81F8,F4,3A78
 $B4:CDFB             dx 0001, 81F8,F2,3A98
 $B4:CE02             dx 0001, 81F8,F0,3A9E
+
+; Unused
 $B4:CE09             dx 0001, 01FC,FC,3A25
 $B4:CE10             dx 0001, 01FC,FC,3A43
 $B4:CE17             dx 0001, 01FC,FC,3A40
+
+; Sprite object Dh
 $B4:CE1E             dx 0001, 01FC,FC,3A3E
 $B4:CE25             dx 0001, 01FC,FC,3A3D
 $B4:CE2C             dx 0001, 01FC,FC,3A41
 $B4:CE33             dx 0001, 01FC,FC,3A42
+
+; Sprite object Eh
 $B4:CE3A             dx 0004, 0000,00,FA44, 01F8,00,BA44, 0000,F8,7A44, 01F8,F8,3A44
 $B4:CE50             dx 0004, 0000,00,FA45, 0000,F8,7A45, 01F8,00,BA45, 01F8,F8,3A45
 $B4:CE66             dx 0004, 01F8,00,BA46, 0000,00,FA46, 0000,F8,7A46, 01F8,F8,3A46
 $B4:CE7C             dx 0001, 01FC,FC,3A42
+
+; Sprite object Fh
 $B4:CE83             dx 0001, 01FC,FC,3A4C
 $B4:CE8A             dx 0001, 01FC,FC,3A4D
 $B4:CE91             dx 0001, 01FC,FC,3A4E
 $B4:CE98             dx 0001, 01FC,FC,3A4F
+
+; Unused
 $B4:CE9F             dx 0002, 01FF,FC,3A55, 01F7,FC,3A54
 $B4:CEAB             dx 0003, 01FA,F5,3A56, 0002,FD,3A58, 01FA,FD,3A57
 $B4:CEBC             dx 0002, 01FD,F7,3A59, 01FD,FF,3A5A
@@ -5194,46 +6051,72 @@ $B4:CF4D             dx 0002, 01F8,FC,7A65, 0000,FC,7A64
 $B4:CF59             dx 0003, 01F6,FA,FA68, 01FE,FA,FA67, 01FE,02,FA66
 $B4:CF6A             dx 0002, 01FC,00,BA69, 01FC,F8,BA6A
 $B4:CF76             dx 0003, 0002,FA,BA68, 01FA,FA,BA67, 01FA,02,BA66
+
+; Sprite object 10h
 $B4:CF87             dx 0001, 01FC,FC,3A3C
 $B4:CF8E             dx 0001, 01FC,FC,3A3D
 $B4:CF95             dx 0001, 01FC,FC,3A3E
+
+; Unused
 $B4:CF9C             dx 0001, 01FC,FC,3A3F
+
+; Sprite object 1Dh (big explosion)
 $B4:CFA3             dx 0004, 0000,00,FA8A, 01F8,00,BA8A, 0000,F8,7A8A, 01F8,F8,3A8A
 $B4:CFB9             dx 0004, C200,00,FA90, C200,F0,7A90, C3F0,00,BA90, C3F0,F0,3A90
 $B4:CFCF             dx 0004, C200,00,FA92, C3F0,00,BA92, C200,F0,7A92, C3F0,F0,3A92
 $B4:CFE5             dx 000C, 0010,00,FAC2, 0010,F8,7AC2, 0000,10,FAB2, 01F8,10,BAB2, 01E8,00,BAC2, 01E8,F8,3AC2, 0000,E8,7AB2, 01F8,E8,3AB2, C200,00,FAB0, C200,F0,7AB0, C3F0,00,BAB0, C3F0,F0,3AB0
 $B4:D023             dx 0008, C208,00,FAB5, C200,08,FAB3, C3E8,00,BAB5, C3F0,08,BAB3, C208,F0,7AB5, C200,E8,7AB3, C3E8,F0,3AB5, C3F0,E8,3AB3
 $B4:D04D             dx 000C, 0000,10,FABB, 01F8,10,BABB, 0000,E8,7ABB, 01F8,E8,3ABB, 0010,00,FAB7, 0010,F8,7AB7, 01E8,00,BAB7, 01E8,F8,3AB7, C208,08,FAB8, C3E8,08,BAB8, C208,E8,7AB8, C3E8,E8,3AB8
+
+; Sprite object 26h
 $B4:D08B             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20D8, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
 $B4:D0BA             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FC,20D8, 8001,02,20D8, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
 $B4:D0E9             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FD,20D8, 8001,03,20D8, 81FF,08,20DC, 01FE,11,20F6, 01FE,09,20F5
 $B4:D118             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FD,20D8, 8001,04,20D8, 81FF,09,20DC, 01FE,12,20F6, 01FE,0A,20F5
 $B4:D147             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FD,20D8, 8001,04,20D8, 81FF,0A,20DC, 01FE,11,20F6, 01FE,09,20F5
 $B4:D176             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FC,20D8, 8001,03,20D8, 81FF,09,20DC, 01FE,10,20F6, 01FE,08,20F5
+
+; Unused
 $B4:D1A5             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20D8, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
+
+; Sprite object 27h
 $B4:D1D4             dx 0005, 0000,F8,20F3, 01F8,F8,20F2, 0002,FC,20F4, 01FE,F4,20F1, 01F6,F4,20F0
 $B4:D1EF             dx 0005, 01FE,F4,20F3, 01F6,F4,20F2, 0000,F8,20F4, 0002,FC,20F3, 01FA,FC,20F2
 $B4:D20A             dx 0005, 01FE,F4,20F4, 01F8,F8,20F2, 0000,F8,20F3, 0002,FC,20F1, 01FA,FC,20F0
 $B4:D225             dx 0006, 01FE,F4,20F3, 01F6,F4,20F2, 01F8,F8,20F0, 0000,F8,20F1, 0002,FC,20F3, 01FA,FC,20F2
 $B4:D245             dx 0003, 01FE,F4,20F4, 0000,F8,20F4, 0002,FC,20F4
+
+; Unused
 $B4:D256             dx 0006, 01FE,F4,20F3, 01F6,F4,20F2, 01F8,F8,20F2, 0000,F8,20F3, 0002,FC,20F3, 01FA,FC,20F2
 $B4:D276             dx 0006, 01FE,F4,20F1, 01F6,F4,20F0, 0000,F8,20F1, 01F8,F8,20F0, 0002,FC,20F1, 01FA,FC,20F0
 $B4:D296             dx 0004, 0000,00,A0F8, 01F8,00,A0F7, 0000,F8,20F8, 01F8,F8,20F7
+
+; Sprite object 2Ah
 $B4:D2AC             dx 0001, 81F8,F8,20DE
+
+; Sprite object 28h
 $B4:D2B3             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FB,60D8, 81EF,01,60D8, 81F1,07,60DC, 01FA,10,60F6, 01FA,08,60F5
 $B4:D2E2             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FC,60D8, 81EF,02,60D8, 81F1,07,60DC, 01FA,10,60F6, 01FA,08,60F5
 $B4:D311             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FD,60D8, 81EF,03,60D8, 81F1,08,60DC, 01FA,11,60F6, 01FA,09,60F5
 $B4:D340             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FD,60D8, 81EF,04,60D8, 81F1,09,60DC, 01FA,12,60F6, 01FA,0A,60F5
 $B4:D36F             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FD,60D8, 81EF,04,60D8, 81F1,0A,60DC, 01FA,11,60F6, 01FA,09,60F5
 $B4:D39E             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FC,60D8, 81EF,03,60D8, 81F1,09,60DC, 01FA,10,60F6, 01FA,08,60F5
+
+; Unused
 $B4:D3CD             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FB,60D8, 81EF,01,60D8, 81F1,07,60DC, 01FA,10,60F6, 01FA,08,60F5
+
+; Sprite object 29h
 $B4:D3FC             dx 0005, 01F8,F8,60F3, 0000,F8,60F2, 01FA,F4,60F1, 0002,F4,60F0, 01F6,FC,60F4
 $B4:D417             dx 0005, 01FA,F4,60F3, 0002,F4,60F2, 01F8,F8,60F4, 01F6,FC,60F3, 01FE,FC,60F2
 $B4:D432             dx 0005, 01FA,F4,60F4, 01F8,F8,60F3, 0000,F8,60F2, 01F6,FC,60F1, 01FE,FC,60F0
 $B4:D44D             dx 0006, 01FA,F4,60F3, 0002,F4,60F2, 0000,F8,60F0, 01F8,F8,60F1, 01F6,FC,60F3, 01FE,FC,60F2
 $B4:D46D             dx 0003, 01F6,FC,60F4, 01F8,F8,60F4, 01FA,F4,60F4
+
+; Unused
 $B4:D47E             dx 0006, 01FA,F4,60F3, 0002,F4,60F2, 01F8,F8,60F3, 0000,F8,60F2, 01F6,FC,60F3, 01FE,FC,60F2
 $B4:D49E             dx 0006, 01FA,F4,60F1, 0002,F4,60F0, 0000,F8,60F0, 01F8,F8,60F1, 01F6,FC,60F1, 01FE,FC,60F0
+
+; Sprite object 2Bh
 $B4:D4BE             dx 0001, 81F9,F8,230A
 $B4:D4C5             dx 0001, 81F9,F8,2308
 $B4:D4CC             dx 0001, 81F8,F8,E30A
@@ -5242,6 +6125,8 @@ $B4:D4DA             dx 0001, 81F9,F8,2306
 $B4:D4E1             dx 0001, 81F9,F8,2322
 $B4:D4E8             dx 0001, 81F8,F8,E306
 $B4:D4EF             dx 0001, 81F8,F8,E322
+
+; Sprite object 2Ch
 $B4:D4F6             dx 0001, 81F9,F9,230E
 $B4:D4FD             dx 0001, 81FD,F5,2320
 $B4:D504             dx 0001, 8003,EE,2304
@@ -5249,6 +6134,8 @@ $B4:D50B             dx 0001, 8005,EC,2308
 $B4:D512             dx 0001, 8005,EC,230C
 $B4:D519             dx 0001, 8005,EC,2326
 $B4:D520             dx 0001, 8005,EC,232E
+
+; Sprite object 2Dh
 $B4:D527             dx 0001, 81F8,F9,630E
 $B4:D52E             dx 0001, 81F4,F5,6320
 $B4:D535             dx 0001, 81EE,EE,6304
@@ -5256,23 +6143,35 @@ $B4:D53C             dx 0001, 81EC,EC,6308
 $B4:D543             dx 0001, 81EC,EC,630C
 $B4:D54A             dx 0001, 81EC,EC,6326
 $B4:D551             dx 0001, 81EB,EC,232E
+
+; Sprite object 2Eh
 $B4:D558             dx 0002, 01F1,F8,6334, 0008,F8,2334
 $B4:D564             dx 0002, 01F1,F8,6324, 0008,F8,2324
 $B4:D570             dx 0002, 81E9,F0,6328, 8008,F0,2328
 $B4:D57C             dx 0002, 81E9,F0,632C, 8008,F0,232C
 $B4:D588             dx 0002, 81E8,F0,632A, 8009,F0,232A
+
+; Sprite object 2Fh
 $B4:D594             dx 0001, 81F8,F8,3340
+
+; Sprite object 30h
 $B4:D59B             dx 0001, 01FC,FC,2107
 $B4:D5A2             dx 0001, 01FC,FC,2108
 $B4:D5A9             dx 0001, 01FC,FC,2109
 $B4:D5B0             dx 0001, 01FC,FC,210A
+
+; Sprite object 34h/35h/36h (metroid shell)
 $B4:D5B7             dx 000A, 0010,04,6130, 0010,FC,6120, 0010,F4,6110, 01E8,04,2130, 01E8,FC,2120, 01E8,F4,2110, 8000,FC,6121, 8000,EC,2103, 81F0,FC,2121, 81F0,EC,2101
-$B4:D5EB             dx 000A, 0010,FC,612A, 0010,04,613A, 0010,F4,211F, 01E8,04,213A, 01E8,FC,212A, 01E8,F4,211A, 8000,EC,210D, 8000,FC,612B, 81F0,FC,212B, 81F0,EC,210B
+$B4:D5EB             dx 000A, 0010,FC,612A, 0010,04,613A, 0010,F4,211F, 01E8,04,213A, 01E8,FC,212A, 01E8,F4,211A, 8000,EC,210D, 8000,FC,612B, 81F0,FC,212B, 81F0,EC,210B ; Sprite object 34h/36h only
 $B4:D61F             dx 000A, 01E8,FC,2125, 0010,04,6135, 0010,FC,6125, 0010,F4,6115, 01E8,04,2135, 01E8,F4,2115, 8000,FC,6126, 8000,EC,2108, 81F0,FC,2126, 81F0,EC,2106
+
+; Sprite object 31h
 $B4:D653             dx 0008, 0010,00,6160, 0010,F8,6150, 01E8,00,2160, 01E8,F8,2150, 8000,00,6161, 8000,F0,6141, 81F0,00,2161, 81F0,F0,2141
 $B4:D67D             dx 0006, 0010,00,6163, 01E8,00,2163, 8000,00,6164, 8000,F0,6144, 81F0,00,2164, 81F0,F0,2144
 $B4:D69D             dx 0008, 0010,00,6166, 0010,F8,6156, 01E8,00,2166, 01E8,F8,2156, 8000,00,6167, 8000,F0,6147, 81F0,00,2167, 81F0,F0,2147
 $B4:D6C7             dx 0008, 0010,00,6169, 0010,F8,6159, 01E8,00,2169, 01E8,F8,2159, 8000,00,616A, 8000,F0,614A, 81F0,00,216A, 81F0,F0,214A
+
+; Sprite object 32h/33h (metroid electricity)
 $B4:D6F1             dx 0003, 0000,EC,217C, 01F8,FC,214D, 01F0,FC,214C
 $B4:D702             dx 0003, 0000,EC,217D, 01F8,FC,215D, 01F0,FC,215C
 $B4:D713             dx 0003, 0000,EC,217E, 01F8,FC,216D, 01F0,FC,216C
@@ -5285,24 +6184,32 @@ $B4:D788             dx 0003, 0008,FC,216D, 0000,FC,216C, 01F8,EC,617E
 $B4:D799             dx 0004, 01F8,FC,214F, 01F0,FC,214E, 0000,F4,613D, 0000,EC,612D
 $B4:D7AF             dx 0004, 01F8,FC,216F, 01F0,FC,216E, 0000,F4,613E, 0000,EC,612E
 $B4:D7C5             dx 0004, 01F8,FC,215F, 01F0,FC,215E, 0000,F4,613F, 0000,EC,612F
-$B4:D7DB             dx 0002, 01F8,FC,214D, 01F0,FC,214C
-$B4:D7E7             dx 0001, 01F0,FC,215C
-$B4:D7EE             dx 0002, 01F8,FC,216D, 01F0,FC,216C
+$B4:D7DB             dx 0002, 01F8,FC,214D, 01F0,FC,214C ; Sprite object 32h only
+$B4:D7E7             dx 0001, 01F0,FC,215C               ; Sprite object 32h only
+$B4:D7EE             dx 0002, 01F8,FC,216D, 01F0,FC,216C ; Sprite object 32h only
 $B4:D7FA             dx 0002, 01F8,F4,213D, 01F8,EC,212D
 $B4:D806             dx 0002, 01F8,F4,213E, 01F8,EC,212E
 $B4:D812             dx 0002, 01F8,F4,213F, 01F8,EC,212F
-$B4:D81E             dx 0002, 0008,FC,214D, 0000,FC,214C
-$B4:D82A             dx 0002, 0008,FC,215D, 0000,FC,215C
-$B4:D836             dx 0002, 0008,FC,216D, 0000,FC,216C
+$B4:D81E             dx 0002, 0008,FC,214D, 0000,FC,214C ; Sprite object 32h only
+$B4:D82A             dx 0002, 0008,FC,215D, 0000,FC,215C ; Sprite object 32h only
+$B4:D836             dx 0002, 0008,FC,216D, 0000,FC,216C ; Sprite object 32h only
 $B4:D842             dx 0001, 0000,EC,217C
 $B4:D849             dx 0001, 0000,EC,217D
 $B4:D850             dx 0001, 0000,EC,217E
+
+; Sprite object 37h (enemy shot)
 $B4:D857             dx 0004, 0002,02,ECBC, 01F6,02,ACBC, 0002,F6,6CBC, 01F6,F6,2CBC
 $B4:D86D             dx 0004, 0004,04,ECBD, 01F4,04,ACBD, 0004,F4,6CBD, 01F4,F4,2CBD
 $B4:D883             dx 0004, 0007,07,ECCB, 0007,F1,6CCB, 01F1,07,ACCB, 01F1,F1,2CCB
 $B4:D899             dx 0004, 000B,0B,ECCC, 01ED,0B,ACCC, 000B,ED,6CCC, 01ED,ED,2CCC
+
+; Sprite object 38h (yapping maw base - facing down)
 $B4:D8AF             dx 0001, 81F8,F8,210A
+
+; Sprite object 39h (yapping maw base - facing up)
 $B4:D8B6             dx 0001, 81F8,F8,A10A
+
+; Sprite object 3Ah
 $B4:D8BD             dx 000E, 01FB,00,20F3, 01F3,00,20F2, 01FD,04,20F4, 01F9,FD,20F1, 01F1,FD,20F0, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20DA, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
 $B4:D905             dx 0010, 01F9,FC,20F3, 01F1,FC,20F2, 01FB,00,20F4, 01FD,04,20F3, 01F5,04,20F2, 01EE,FB,20F9, 01F6,F3,20FC, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FC,20D8, 8001,02,20DA, 81FF,07,20DC, 01FE,11,20F6, 01FE,09,20F5
 $B4:D957             dx 0010, 01FC,04,20F1, 01FC,00,20F3, 01F4,04,20F0, 01F4,00,20F2, 01F8,FC,20F4, 01EE,FB,20FA, 01F6,F3,20FB, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FD,20D8, 8001,03,20DA, 81FF,08,20DC, 01FE,12,20F6, 01FE,0A,20F5
@@ -5311,19 +6218,29 @@ $B4:D9FB             dx 000F, 01FC,00,20F3, 01F4,00,20F2, 01FE,04,20F4, 01FA,FD,
 $B4:DA48             dx 000E, 01FC,00,20F4, 01FE,04,20F3, 01FA,FB,20F3, 01F2,FB,20F2, 01F6,04,20F2, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FC,20D8, 8001,03,20DA, 81FF,0A,20DC, 01FE,11,20F6, 01FE,09,20F5
 $B4:DA90             dx 000E, 01FE,04,20F1, 01F6,04,20F0, 01FA,FC,20F4, 01F4,00,20F2, 01FC,00,20F3, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20DA, 81FF,08,20DC, 01FE,10,20F6, 01FE,08,20F5
 $B4:DAD8             dx 000F, 01FE,04,20F3, 01F6,04,20F2, 01FC,01,20F1, 01F4,01,20F0, 01FA,FC,20F3, 01F2,FC,20F2, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20DA, 81FF,07,20DC, 01FE,0F,20F6, 01FE,07,20F5
+
+; Unused
 $B4:DB25             dx 0004, 0000,00,A0F8, 01F8,00,A0F7, 0000,F8,20F8, 01F8,F8,20F7
 $B4:DB3B             dx 0001, 81F8,F8,20DE
+
+; Sprite object 3Bh (mini-Draygon facing left)
 $B4:DB42             dx 000C, 0000,02,20F3, 01F8,02,20F2, 01FC,FC,20F1, 01F4,FC,20F0, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FB,20D8, 8002,02,20DC, 0000,0F,20F6, 0000,07,20F5
 $B4:DB80             dx 000C, 01F8,F4,20FC, 0000,02,20F4, 01FC,FC,20F3, 01F4,FC,20F2, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FC,20D8, 8002,03,20DC, 0000,0E,20F6, 0000,06,20F5
 $B4:DBBE             dx 000C, 01F8,F4,20FB, 0000,02,20F3, 01F8,02,20F2, 01FA,FC,20F4, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FD,20D8, 8002,03,20DC, 0000,0D,20F6, 0000,05,20F5
 $B4:DBFC             dx 000D, 01FC,FC,20F3, 01F4,FC,20F2, 01F0,FC,20F9, 0000,02,20F1, 01F8,02,20F0, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FD,20D8, 8002,04,20DC, 0000,0E,20F6, 0000,06,20F5
+
+; Sprite object 3Ch (mini-Draygon facing right)
 $B4:DC3F             dx 000C, 01F8,02,60F3, 0000,02,60F2, 01FC,FC,60F1, 0004,FC,60F0, 81F0,FC,60D6, 8000,FC,60D4, 81F0,EC,60D2, 8000,EC,60D0, 81EC,FB,60D8, 81EE,02,60DC, 01F8,0F,60F6, 01F8,07,60F5
 $B4:DC7D             dx 000C, 0000,F4,60FC, 01F8,02,60F4, 01FC,FC,60F3, 0004,FC,60F2, 81F0,FC,60D6, 8000,FC,60D4, 81F0,EC,60D2, 8000,EC,60D0, 81EC,FC,60D8, 81EE,03,60DC, 01F8,0E,60F6, 01F8,06,60F5
 $B4:DCBB             dx 000C, 0000,F4,60FB, 01F8,02,60F3, 0000,02,60F2, 01FE,FC,60F4, 81F0,FC,60D6, 8000,FC,60D4, 81F0,EC,60D2, 8000,EC,60D0, 81EC,FD,60D8, 81EE,03,60DC, 01F8,0D,60F6, 01F8,05,60F5
 $B4:DCF9             dx 000D, 01FC,FC,60F3, 0004,FC,60F2, 0008,FC,60F9, 01F8,02,60F1, 0000,02,60F0, 81F0,FC,60D6, 8000,FC,60D4, 81F0,EC,60D2, 8000,EC,60D0, 81EC,FD,60D8, 81EE,04,60DC, 01F8,0E,60F6, 01F8,06,60F5
+
+; Unused instruction list $BE46
 $B4:DD3C             dx 0001, 81F8,F8,3BCA
 $B4:DD43             dx 0001, 81F8,F8,3BCC
 $B4:DD4A             dx 0001, 81F8,F8,3BCE
+
+; Sprite object 3Dh (Draygon foaming at the mouth)
 $B4:DD51             dx 0001, 81F8,F8,35E0
 $B4:DD58             dx 0001, 81F8,F4,35E2
 $B4:DD5F             dx 0001, 81F8,F0,35E4
@@ -5332,6 +6249,7 @@ $B4:DD6D             dx 0001, 81F8,E8,35E8
 $B4:DD74             dx 0001, 81F8,E4,35EA
 $B4:DD7B             dx 0001, 81F8,E0,35EC
 $B4:DD82             dx 0001, 81F8,DC,35EE
+}
 }
 
 
@@ -6016,7 +6934,7 @@ $B4:F47C             db 00,00,00,FF,00,00 ;                      100.0%         
 $B4:F482             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E5BF/$F2D3
 $B4:F488             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E1FF/$E5FF/$F313
 $B4:F48E             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D1FF
-$B4:F494             db 00,00,00,FF,00,00 ;                      100.0%              
+$B4:F494             db 00,00,00,FF,00,00 ;                      100.0%
 $B4:F49A             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EC3F
 $B4:F4A0             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D4FF/$D53F/$D57F/$D5BF/$D5FF/$ECBF/$ED3F
 $B4:F4A6             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F493
