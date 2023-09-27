@@ -3276,14 +3276,9 @@ $A5:A1DF             dw 0068,0000,
 }
 
 
-;;; $A1F7: Palette - enemy $DE3F/$DEBF/$DEFF (Draygon body/tail/arms) ;;;
+;;; $A1F7: Draygon palettes ;;;
 {
 $A5:A1F7             dw 3800,3F57,2E4D,00E2,0060,3AB0,220B,1166,0924,0319,0254,018F,00CA,581B,1892,0145 ; Sprite palette 7
-}
-
-
-;;; $A217: Draygon palettes ;;;
-{
 $A5:A217             dw 3800,3F57,2E4D,00E2,0060,3AB0,220B,1166,0924,0319,0254,018F,00CA,581B,1892,0145 ; Sprite palette 1
 $A5:A237             dw 3800,6B5A,5652,28E7,1863,62B5,4A10,396B,3129,43FF,0113,000F,175C,0299,01D6,03E0 ; Sprite palette 2
 $A5:A257             dw 3800,4B9C,3694,0929,0042,42F7,2A52,19AD,116B,1420,1420,1420,1420,1420,1420,1420 ; Sprite palette 3
@@ -4609,22 +4604,22 @@ $A5:DF47             db 01,02, 02,02, 02,01, 01,02, 02,02, 02,01, 02,02, 02,01,
 {
 ;;; $E359: Palette - enemy $DF3F/$DF7F (Spore Spawn) ;;;
 {
-; Used for spores
-$A5:E359             dw 0000, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 57FF, 3AB5, 1DCE, 00E7, 03FF, 0216, 00B0
+; Sprite palette 7. Spores
+$A5:E359             dw 0000,3F57,2E4D,00E2,0060,3AB0,220B,1166,0924,57FF,3AB5,1DCE,00E7,03FF,0216,00B0
 }
 
 
-;;; $E379: Spore Spawn palettes ;;;
+;;; $E379: Spore Spawn health-based palettes ;;;
 {
 ; Sprite palette 1. Spore Spawn and spore spawner
-$A5:E379             dw 0000,3F57,2E4D,00E2,0060,3AB0,220B,1166,0924,57FF,3AB5,1DCE,00E7,03FF,0216,00B0
-$A5:E399             dw 3800,2A92,21CC,00C4,0062,260E,15AA,0D27,04E5,475A,2E52,198C,00C6,033F,01B6,008F
-$A5:E3B9             dw 3800,15EF,156B,00A5,0063,15AC,0D49,0907,04C6,36D6,21D0,114B,00A6,025F,0137,008D
-$A5:E3D9             dw 3800,094A,0908,0463,0000,0929,04C6,04A5,0484,2631,156D,0D09,0085,019F,00D7,006C
+$A5:E379             dw 0000,3F57,2E4D,00E2,0060,3AB0,220B,1166,0924,57FF,3AB5,1DCE,00E7,03FF,0216,00B0 ; Health >= 770
+$A5:E399             dw 3800,2A92,21CC,00C4,0062,260E,15AA,0D27,04E5,475A,2E52,198C,00C6,033F,01B6,008F ; Health < 770
+$A5:E3B9             dw 3800,15EF,156B,00A5,0063,15AC,0D49,0907,04C6,36D6,21D0,114B,00A6,025F,0137,008D ; Health < 410
+$A5:E3D9             dw 3800,094A,0908,0463,0000,0929,04C6,04A5,0484,2631,156D,0D09,0085,019F,00D7,006C ; Health < 70
 }
 
 
-;;; $E3F9: Spore Spawn palettes ;;;
+;;; $E3F9: Spore Spawn death sequence palettes ;;;
 {
 ; Sprite palette 1. Spore Spawn and spore spawner
 $A5:E3F9             dw 3800,094A,0908,0463,0000,0929,04C6,04A5,0484,2631,156D,0D09,0085,019F,00D7,006C
@@ -4679,6 +4674,11 @@ $A5:E6C7             dx 0100,EE6F,
 $A5:E6D5             dw E82D,0040,0001, ; Spore Spawn speed = 40h, angle delta = 1
                         E8BA,EB52,      ; Enemy function = $EB52 (moving)
                         0300,EE6F
+}
+
+
+;;; $E6E3: Instruction list - open and stop ;;;
+{
 $A5:E6E3             dw E872,0001,      ; Disable spore generation
                         E895,002C,      ; Queue sound 2Ch, sound library 2, max queued sounds allowed = 6 (Spore Spawn opens up)
                         0001,EE6F,
@@ -4697,6 +4697,11 @@ $A5:E715             dw 0008,EF3D,
                         0008,EF61,
                         0008,EF4F,
                         8110,E715       ; Decrement timer and go to $E715 if non-zero
+}
+
+
+;;; $E729: Instruction list - close and move ;;;
+{
 $A5:E729             dw 0008,EED3,
                         0008,EEC1,
                         0008,EEAF,
@@ -4941,50 +4946,49 @@ $A5:E8C9 6B          RTL
 }
 
 
-;;; $E8CA: Instruction ;;;
+;;; $E8CA: Instruction - load death sequence palette, palette data offset [[Y]] ;;;
 {
-; Changes spore colours during Spore Spawn fight
 $A5:E8CA 5A          PHY
 $A5:E8CB DA          PHX
-$A5:E8CC 84 12       STY $12    [$7E:0012]
-$A5:E8CE B9 00 00    LDA $0000,y[$A5:E7C9]
-$A5:E8D1 A8          TAY
-$A5:E8D2 A2 00 00    LDX #$0000
-
-$A5:E8D5 B9 F9 E3    LDA $E3F9,y[$A5:E3F9]
-$A5:E8D8 9F 20 C1 7E STA $7EC120,x[$7E:C120]
-$A5:E8DC C8          INY
-$A5:E8DD C8          INY
-$A5:E8DE E8          INX
-$A5:E8DF E8          INX
-$A5:E8E0 E0 20 00    CPX #$0020
-$A5:E8E3 D0 F0       BNE $F0    [$E8D5]
-$A5:E8E5 A4 12       LDY $12    [$7E:0012]
-$A5:E8E7 B9 00 00    LDA $0000,y[$A5:E7C9]
-$A5:E8EA A8          TAY
-$A5:E8EB A2 00 00    LDX #$0000
-
-$A5:E8EE B9 F9 E4    LDA $E4F9,y[$A5:E4F9]
-$A5:E8F1 9F 80 C0 7E STA $7EC080,x[$7E:C080]
-$A5:E8F5 C8          INY
-$A5:E8F6 C8          INY
-$A5:E8F7 E8          INX
-$A5:E8F8 E8          INX
-$A5:E8F9 E0 20 00    CPX #$0020
-$A5:E8FC D0 F0       BNE $F0    [$E8EE]
-$A5:E8FE A4 12       LDY $12    [$7E:0012]
-$A5:E900 B9 00 00    LDA $0000,y[$A5:E7C9]
-$A5:E903 A8          TAY
-$A5:E904 A2 00 00    LDX #$0000
-
-$A5:E907 B9 D9 E5    LDA $E5D9,y[$A5:E5D9]
-$A5:E90A 9F E0 C0 7E STA $7EC0E0,x[$7E:C0E0]
-$A5:E90E C8          INY
-$A5:E90F C8          INY
-$A5:E910 E8          INX
-$A5:E911 E8          INX
-$A5:E912 E0 20 00    CPX #$0020
-$A5:E915 D0 F0       BNE $F0    [$E907]
+$A5:E8CC 84 12       STY $12    [$7E:0012]  ;\
+$A5:E8CE B9 00 00    LDA $0000,y[$A5:E7C9]  ;|
+$A5:E8D1 A8          TAY                    ;|
+$A5:E8D2 A2 00 00    LDX #$0000             ;|
+                                            ;|
+$A5:E8D5 B9 F9 E3    LDA $E3F9,y[$A5:E3F9]  ;|
+$A5:E8D8 9F 20 C1 7E STA $7EC120,x[$7E:C120];|
+$A5:E8DC C8          INY                    ;} Sprite palette 1 = 20h bytes from $E3F9 + [[Y]]
+$A5:E8DD C8          INY                    ;|
+$A5:E8DE E8          INX                    ;|
+$A5:E8DF E8          INX                    ;|
+$A5:E8E0 E0 20 00    CPX #$0020             ;|
+$A5:E8E3 D0 F0       BNE $F0    [$E8D5]     ;|
+$A5:E8E5 A4 12       LDY $12    [$7E:0012]  ;/
+$A5:E8E7 B9 00 00    LDA $0000,y[$A5:E7C9]  ;\
+$A5:E8EA A8          TAY                    ;|
+$A5:E8EB A2 00 00    LDX #$0000             ;|
+                                            ;|
+$A5:E8EE B9 F9 E4    LDA $E4F9,y[$A5:E4F9]  ;|
+$A5:E8F1 9F 80 C0 7E STA $7EC080,x[$7E:C080];|
+$A5:E8F5 C8          INY                    ;} BG1/2 palette 4 = 20h bytes from $E4F9 + [[Y]]
+$A5:E8F6 C8          INY                    ;|
+$A5:E8F7 E8          INX                    ;|
+$A5:E8F8 E8          INX                    ;|
+$A5:E8F9 E0 20 00    CPX #$0020             ;|
+$A5:E8FC D0 F0       BNE $F0    [$E8EE]     ;|
+$A5:E8FE A4 12       LDY $12    [$7E:0012]  ;/
+$A5:E900 B9 00 00    LDA $0000,y[$A5:E7C9]  ;\
+$A5:E903 A8          TAY                    ;|
+$A5:E904 A2 00 00    LDX #$0000             ;|
+                                            ;|
+$A5:E907 B9 D9 E5    LDA $E5D9,y[$A5:E5D9]  ;|
+$A5:E90A 9F E0 C0 7E STA $7EC0E0,x[$7E:C0E0];|
+$A5:E90E C8          INY                    ;} BG1/2 palette 7 = 20h bytes from $E5D9 + [[Y]]
+$A5:E90F C8          INY                    ;|
+$A5:E910 E8          INX                    ;|
+$A5:E911 E8          INX                    ;|
+$A5:E912 E0 20 00    CPX #$0020             ;|
+$A5:E915 D0 F0       BNE $F0    [$E907]     ;/
 $A5:E917 FA          PLX
 $A5:E918 7A          PLY
 $A5:E919 C8          INY
@@ -4993,7 +4997,7 @@ $A5:E91B 6B          RTL
 }
 
 
-;;; $E91C: Instruction ;;;
+;;; $E91C: Instruction - load death sequence target palette, palette data offset [[Y]] ;;;
 {
 ; Similar to $E8CA, but writing to target palette colours instead (called before fade-in)
 $A5:E91C 5A          PHY
@@ -5005,7 +5009,7 @@ $A5:E924 A2 00 00    LDX #$0000             ;|
                                             ;|
 $A5:E927 B9 F9 E3    LDA $E3F9,y            ;|
 $A5:E92A 9F 20 C3 7E STA $7EC320,x          ;|
-$A5:E92E C8          INY                    ;} Target sprite palette 1 = 20h bytes from $E3F9 + [Y]
+$A5:E92E C8          INY                    ;} Target sprite palette 1 = 20h bytes from $E3F9 + [[Y]]
 $A5:E92F C8          INY                    ;|
 $A5:E930 E8          INX                    ;|
 $A5:E931 E8          INX                    ;|
@@ -5018,7 +5022,7 @@ $A5:E93D A2 00 00    LDX #$0000             ;|
                                             ;|
 $A5:E940 B9 F9 E4    LDA $E4F9,y            ;|
 $A5:E943 9F 80 C2 7E STA $7EC280,x          ;|
-$A5:E947 C8          INY                    ;} Target BG1/2 palette 4 = 20h bytes from $E4F9 + [Y]
+$A5:E947 C8          INY                    ;} Target BG1/2 palette 4 = 20h bytes from $E4F9 + [[Y]]
 $A5:E948 C8          INY                    ;|
 $A5:E949 E8          INX                    ;|
 $A5:E94A E8          INX                    ;|
@@ -5031,7 +5035,7 @@ $A5:E956 A2 00 00    LDX #$0000             ;|
                                             ;|
 $A5:E959 B9 D9 E5    LDA $E5D9,y            ;|
 $A5:E95C 9F E0 C2 7E STA $7EC2E0,x          ;|
-$A5:E960 C8          INY                    ;} Target BG1/2 palette 7 = 20h bytes from $E5D9 + [Y]
+$A5:E960 C8          INY                    ;} Target BG1/2 palette 7 = 20h bytes from $E5D9 + [[Y]]
 $A5:E961 C8          INY                    ;|
 $A5:E962 E8          INX                    ;|
 $A5:E963 E8          INX                    ;|
@@ -5199,7 +5203,7 @@ $A5:EAB0 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment p
 $A5:EAB3 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A5:EAB7             dx  07, 1E, B793       ;} Spawn PLM to clear Spore Spawn ceiling
 $A5:EABB 9C E9 07    STZ $07E9  [$7E:07E9]  ; Scrolling finished hook = 0
-$A5:EABE 6B          RTL
+$A5:EABE 6B          RTL                    ; Return
 
 $A5:EABF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:EAC2 A9 C7 E6    LDA #$E6C7             ;\
@@ -5496,66 +5500,67 @@ $A5:ED59 60          RTS
 }
 
 
-;;; $ED5A:  ;;;
+;;; $ED5A: Enemy shot - Spore Spawn - vulnerable ;;;
 {
-$A5:ED5A AD A6 18    LDA $18A6  [$7E:18A6]
-$A5:ED5D 0A          ASL A
-$A5:ED5E AA          TAX
-$A5:ED5F BD 18 0C    LDA $0C18,x[$7E:0C18]
-$A5:ED62 89 00 07    BIT #$0700
-$A5:ED65 D0 06       BNE $06    [$ED6D]
-$A5:ED67 89 10 00    BIT #$0010
-$A5:ED6A D0 01       BNE $01    [$ED6D]
-$A5:ED6C 6B          RTL
+$A5:ED5A AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A5:ED5D 0A          ASL A                  ;|
+$A5:ED5E AA          TAX                    ;|
+$A5:ED5F BD 18 0C    LDA $0C18,x[$7E:0C18]  ;} If (projectile type) = beam:
+$A5:ED62 89 00 07    BIT #$0700             ;|
+$A5:ED65 D0 06       BNE $06    [$ED6D]     ;/
+$A5:ED67 89 10 00    BIT #$0010             ;\
+$A5:ED6A D0 01       BNE $01    [$ED6D]     ;} If projectile is not charged:
+$A5:ED6C 6B          RTL                    ; Return
 
-$A5:ED6D 22 B4 A6 A0 JSL $A0A6B4[$A0:A6B4]
-$A5:ED71 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]
-$A5:ED74 F0 74       BEQ $74    [$EDEA]
-$A5:ED76 A9 52 EB    LDA #$EB52
-$A5:ED79 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A5:ED7C A0 02 00    LDY #$0002
-$A5:ED7F BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$A5:ED82 C9 90 01    CMP #$0190
-$A5:ED85 10 11       BPL $11    [$ED98]
-$A5:ED87 AF 18 78 7E LDA $7E7818[$7E:7818]
-$A5:ED8B 10 06       BPL $06    [$ED93]
-$A5:ED8D 98          TYA
-$A5:ED8E 49 FF FF    EOR #$FFFF
-$A5:ED91 1A          INC A
-$A5:ED92 A8          TAY
+$A5:ED6D 22 B4 A6 A0 JSL $A0A6B4[$A0:A6B4]  ; Normal enemy shot AI, but skips death animation
+$A5:ED71 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
+$A5:ED74 F0 74       BEQ $74    [$EDEA]     ;} If [enemy flash timer] = 0: go to Spore Spawn reaction
+$A5:ED76 A9 52 EB    LDA #$EB52             ;\
+$A5:ED79 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EB52 (moving)
+$A5:ED7C A0 02 00    LDY #$0002             ; Y = 2
+$A5:ED7F BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$A5:ED82 C9 90 01    CMP #$0190             ;} If [enemy health] >= 400: go to BRANCH_NO_SPEED_UP
+$A5:ED85 10 11       BPL $11    [$ED98]     ;/
+$A5:ED87 AF 18 78 7E LDA $7E7818[$7E:7818]  ;\
+$A5:ED8B 10 06       BPL $06    [$ED93]     ;} If [Spore Spawn angle delta] < 0:
+$A5:ED8D 98          TYA                    ;\
+$A5:ED8E 49 FF FF    EOR #$FFFF             ;|
+$A5:ED91 1A          INC A                  ;} Y = -2
+$A5:ED92 A8          TAY                    ;/
 
-$A5:ED93 98          TYA
-$A5:ED94 8F 18 78 7E STA $7E7818[$7E:7818]
+$A5:ED93 98          TYA                    ;\
+$A5:ED94 8F 18 78 7E STA $7E7818[$7E:7818]  ;} Spore Spawn angle delta = [Y]
 
-$A5:ED98 AF 1E 80 7E LDA $7E801E[$7E:801E]
-$A5:ED9C D0 4C       BNE $4C    [$EDEA]
-$A5:ED9E AF 18 78 7E LDA $7E7818[$7E:7818]
-$A5:EDA2 49 FF FF    EOR #$FFFF
-$A5:EDA5 1A          INC A
-$A5:EDA6 8F 18 78 7E STA $7E7818[$7E:7818]
-$A5:EDAA A9 01 00    LDA #$0001
-$A5:EDAD 8F 1E 80 7E STA $7E801E[$7E:801E]
-$A5:EDB1 A9 29 E7    LDA #$E729
-$A5:EDB4 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A5:EDB7 A9 01 00    LDA #$0001
-$A5:EDBA 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A5:EDBD A0 60 00    LDY #$0060
-$A5:EDC0 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$A5:EDC3 C9 46 00    CMP #$0046
-$A5:EDC6 30 13       BMI $13    [$EDDB]
-$A5:EDC8 A0 40 00    LDY #$0040
-$A5:EDCB C9 9A 01    CMP #$019A
-$A5:EDCE 30 0B       BMI $0B    [$EDDB]
-$A5:EDD0 A0 20 00    LDY #$0020
-$A5:EDD3 C9 02 03    CMP #$0302
-$A5:EDD6 30 03       BMI $03    [$EDDB]
-$A5:EDD8 A0 00 00    LDY #$0000
+; BRANCH_NO_SPEED_UP
+$A5:ED98 AF 1E 80 7E LDA $7E801E[$7E:801E]  ;\
+$A5:ED9C D0 4C       BNE $4C    [$EDEA]     ;} If [$7E:801E] != 0: go to Spore Spawn reaction
+$A5:ED9E AF 18 78 7E LDA $7E7818[$7E:7818]  ;\
+$A5:EDA2 49 FF FF    EOR #$FFFF             ;|
+$A5:EDA5 1A          INC A                  ;} Negate Spore Spawn angle delta
+$A5:EDA6 8F 18 78 7E STA $7E7818[$7E:7818]  ;/
+$A5:EDAA A9 01 00    LDA #$0001             ;\
+$A5:EDAD 8F 1E 80 7E STA $7E801E[$7E:801E]  ;} $7E:801E = 1
+$A5:EDB1 A9 29 E7    LDA #$E729             ;\
+$A5:EDB4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E729 (close and move)
+$A5:EDB7 A9 01 00    LDA #$0001             ;\
+$A5:EDBA 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A5:EDBD A0 60 00    LDY #$0060             ; Y = 60h
+$A5:EDC0 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$A5:EDC3 C9 46 00    CMP #$0046             ;} If [enemy health] >= 70:
+$A5:EDC6 30 13       BMI $13    [$EDDB]     ;/
+$A5:EDC8 A0 40 00    LDY #$0040             ; Y = 40h
+$A5:EDCB C9 9A 01    CMP #$019A             ;\
+$A5:EDCE 30 0B       BMI $0B    [$EDDB]     ;} If [enemy health] >= 410:
+$A5:EDD0 A0 20 00    LDY #$0020             ; Y = 20h
+$A5:EDD3 C9 02 03    CMP #$0302             ;\
+$A5:EDD6 30 03       BMI $03    [$EDDB]     ;} If [enemy health] >= 770:
+$A5:EDD8 A0 00 00    LDY #$0000             ; Y = 0
 
-$A5:EDDB CF 00 88 7E CMP $7E8800[$7E:8800]
-$A5:EDDF F0 09       BEQ $09    [$EDEA]
-$A5:EDE1 8F 00 88 7E STA $7E8800[$7E:8800]
-$A5:EDE5 98          TYA
-$A5:EDE6 22 4A EE A5 JSL $A5EE4A[$A5:EE4A]
+$A5:EDDB CF 00 88 7E CMP $7E8800[$7E:8800]  ;\
+$A5:EDDF F0 09       BEQ $09    [$EDEA]     ;} If [Spore Spawn previous health] != [enemy health]:
+$A5:EDE1 8F 00 88 7E STA $7E8800[$7E:8800]  ; Spore Spawn previous health = [enemy health]
+$A5:EDE5 98          TYA                    ; A = [Y]
+$A5:EDE6 22 4A EE A5 JSL $A5EE4A[$A5:EE4A]  ; Load Spore Spawn health-based palette
 }
 
 
@@ -5581,56 +5586,61 @@ $A5:EDF2 6B          RTL
 ;;; $EDF3: Spore Spawn reaction ;;;
 {
 $A5:EDF3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:EDF6 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$A5:EDF9 D0 4E       BNE $4E    [$EE49]
+$A5:EDF6 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$A5:EDF9 D0 4E       BNE $4E    [$EE49]     ;} If [enemy health] != 0: return
 $A5:EDFB AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:EDFE A9 00 00    LDA #$0000
-$A5:EE01 8F 1C 78 7E STA $7E781C[$7E:781C]
-$A5:EE05 9E A0 0F    STZ $0FA0,x[$7E:0FA0]
-$A5:EE08 9E 9C 0F    STZ $0F9C,x[$7E:0F9C]
-$A5:EE0B 9E 8A 0F    STZ $0F8A,x[$7E:0F8A]
-$A5:EE0E BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A5:EE11 09 00 04    ORA #$0400
-$A5:EE14 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A5:EE17 A0 1A 00    LDY #$001A
-$A5:EE1A A9 00 00    LDA #$0000
-
-$A5:EE1D 99 97 19    STA $1997,y[$7E:19B1]
-$A5:EE20 88          DEY
-$A5:EE21 88          DEY
-$A5:EE22 10 F9       BPL $F9    [$EE1D]
-$A5:EE24 A9 7D E7    LDA #$E77D
-$A5:EE27 8D 92 0F    STA $0F92  [$7E:0F92]
-$A5:EE2A A9 01 00    LDA #$0001
-$A5:EE2D 8D 94 0F    STA $0F94  [$7E:0F94]
-$A5:EE30 AE 9F 07    LDX $079F  [$7E:079F]
-$A5:EE33 BF 28 D8 7E LDA $7ED828,x[$7E:D829]
-$A5:EE37 09 02 00    ORA #$0002
-$A5:EE3A 9F 28 D8 7E STA $7ED828,x[$7E:D829]
+$A5:EDFE A9 00 00    LDA #$0000             ;\
+$A5:EE01 8F 1C 78 7E STA $7E781C[$7E:781C]  ;} $7E:781C = 0
+$A5:EE05 9E A0 0F    STZ $0FA0,x[$7E:0FA0]  ; Enemy invincibility timer = 0
+$A5:EE08 9E 9C 0F    STZ $0F9C,x[$7E:0F9C]  ; Enemy flash timer = 0
+$A5:EE0B 9E 8A 0F    STZ $0F8A,x[$7E:0F8A]  ; Enemy AI handler = main AI
+$A5:EE0E BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A5:EE11 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$A5:EE14 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A5:EE17 A0 1A 00    LDY #$001A             ;\
+$A5:EE1A A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A5:EE1D 99 97 19    STA $1997,y[$7E:19B1]  ;} Clear enemy projectiles 0..Dh
+$A5:EE20 88          DEY                    ;|
+$A5:EE21 88          DEY                    ;|
+$A5:EE22 10 F9       BPL $F9    [$EE1D]     ;/
+$A5:EE24 A9 7D E7    LDA #$E77D             ;\
+$A5:EE27 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Spore Spawn instruction list pointer = $E77D
+$A5:EE2A A9 01 00    LDA #$0001             ;\
+$A5:EE2D 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Spore Spawn instruction timer = 1
+$A5:EE30 AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$A5:EE33 BF 28 D8 7E LDA $7ED828,x[$7E:D829];|
+$A5:EE37 09 02 00    ORA #$0002             ;} Set area mini-boss as dead
+$A5:EE3A 9F 28 D8 7E STA $7ED828,x[$7E:D829];/
 $A5:EE3E 9C E9 07    STZ $07E9  [$7E:07E9]  ; Scrolling finished hook = 0
-$A5:EE41 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A5:EE45             dx 07, 1E, B78F
+$A5:EE41 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A5:EE45             dx 07, 1E, B78F        ;} Spawn PLM to crumble Spore Spawn ceiling
 
 $A5:EE49 6B          RTL
 }
 
 
-;;; $EE4A:  ;;;
+;;; $EE4A: Load Spore Spawn health-based palette ;;;
 {
+;; Parameters:
+;;     A: Palette data offset
+
+; Rather unfortunate that this routine is only called from one place, and that place does a TYA to get the argument in A,
+; only for this routine to put it *back* into Y anyway and needlessly preserve Y on the stack
 $A5:EE4A 5A          PHY
 $A5:EE4B DA          PHX
-$A5:EE4C 85 12       STA $12    [$7E:0012]
-$A5:EE4E A8          TAY
-$A5:EE4F A2 00 00    LDX #$0000
-
-$A5:EE52 B9 79 E3    LDA $E379,y
-$A5:EE55 9F 20 C1 7E STA $7EC120,x
-$A5:EE59 C8          INY
-$A5:EE5A C8          INY
-$A5:EE5B E8          INX
-$A5:EE5C E8          INX
-$A5:EE5D E0 20 00    CPX #$0020
-$A5:EE60 D0 F0       BNE $F0    [$EE52]
+$A5:EE4C 85 12       STA $12    [$7E:0012]  ; $12 = [A] <-- never read. Probably a holdover of a copy+paste from $A5:E8CA
+$A5:EE4E A8          TAY                    ;\
+$A5:EE4F A2 00 00    LDX #$0000             ;|
+                                            ;|
+$A5:EE52 B9 79 E3    LDA $E379,y            ;|
+$A5:EE55 9F 20 C1 7E STA $7EC120,x          ;|
+$A5:EE59 C8          INY                    ;} Sprite palette 1 = 20h bytes from [$E379 + [A]]
+$A5:EE5A C8          INY                    ;|
+$A5:EE5B E8          INX                    ;|
+$A5:EE5C E8          INX                    ;|
+$A5:EE5D E0 20 00    CPX #$0020             ;|
+$A5:EE60 D0 F0       BNE $F0    [$EE52]     ;/
 $A5:EE62 FA          PLX
 $A5:EE63 7A          PLY
 $A5:EE64 6B          RTL

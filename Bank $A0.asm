@@ -4635,14 +4635,14 @@ $A0:A646 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A649 AD 2E 0E    LDA $0E2E  [$7E:0E2E]  ;\
 $A0:A64C F0 18       BEQ $18    [$A666]     ;} If enemy hit:
 $A0:A64E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A651 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$A0:A654 85 12       STA $12    [$7E:0012]
-$A0:A656 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A0:A659 85 14       STA $14    [$7E:0014]
-$A0:A65B A9 37 00    LDA #$0037
-$A0:A65E 85 16       STA $16    [$7E:0016]
-$A0:A660 64 18       STZ $18    [$7E:0018]
-$A0:A662 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A0:A651 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$A0:A654 85 12       STA $12    [$7E:0012]  ;|
+$A0:A656 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;|
+$A0:A659 85 14       STA $14    [$7E:0014]  ;|
+$A0:A65B A9 37 00    LDA #$0037             ;} Create sprite object 37h (enemy shot) at enemy position
+$A0:A65E 85 16       STA $16    [$7E:0016]  ;|
+$A0:A660 64 18       STZ $18    [$7E:0018]  ;|
+$A0:A662 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A0:A666 BD 8C 0F    LDA $0F8C,x[$7E:0FCC]  ;\
 $A0:A669 D0 38       BNE $38    [$A6A3]     ;} If no enemy health:
@@ -4672,7 +4672,7 @@ $A0:A69B 30 01       BMI $01    [$A69E]
 $A0:A69D A8          TAY
 
 $A0:A69E 98          TYA
-$A0:A69F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]
+$A0:A69F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
 
 $A0:A6A3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6A6 6B          RTL
@@ -4689,23 +4689,23 @@ $A0:A6B3 6B          RTL
 }
 
 
-;;; $A6B4:  ;;;
+;;; $A6B4: Normal enemy shot AI, but skips death animation ;;;
 {
 ; Used by Spore Spawn
 $A0:A6B4 9C 2E 0E    STZ $0E2E  [$7E:0E2E]
 $A0:A6B7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6BA 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Handles beam damage, freezing, and sound
-$A0:A6BD AD 2E 0E    LDA $0E2E  [$7E:0E2E]
-$A0:A6C0 F0 18       BEQ $18    [$A6DA]
-$A0:A6C2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A6C5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A0:A6C8 85 12       STA $12    [$7E:0012]
-$A0:A6CA BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A0:A6CD 85 14       STA $14    [$7E:0014]
-$A0:A6CF A9 37 00    LDA #$0037
-$A0:A6D2 85 16       STA $16    [$7E:0016]
-$A0:A6D4 64 18       STZ $18    [$7E:0018]
-$A0:A6D6 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A0:A6BD AD 2E 0E    LDA $0E2E  [$7E:0E2E]  ;\
+$A0:A6C0 F0 18       BEQ $18    [$A6DA]     ;} If enemy hit:
+$A0:A6C2 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A0:A6C5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A0:A6C8 85 12       STA $12    [$7E:0012]  ;|
+$A0:A6CA BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
+$A0:A6CD 85 14       STA $14    [$7E:0014]  ;|
+$A0:A6CF A9 37 00    LDA #$0037             ;} Create sprite object 37h (enemy shot) at enemy position
+$A0:A6D2 85 16       STA $16    [$7E:0016]  ;|
+$A0:A6D4 64 18       STZ $18    [$7E:0018]  ;|
+$A0:A6D6 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A0:A6DA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6DD 6B          RTL
