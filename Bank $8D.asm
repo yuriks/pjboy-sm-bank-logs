@@ -898,6 +898,7 @@ $8D:AC59             dx 0004, 0016,F9,7A28, 0010,0B,7A28, 01E2,F9,3A28, 01E8,0B,
 $8D:AC6F             dx 0004, 0017,03,7A28, 0011,11,7A28, 01E1,03,3A28, 01E7,11,3A28
 $8D:AC85             dx 0004, 0018,0A,7A28, 0012,18,7A28, 01E0,0A,3A28, 01E6,18,3A28
 
+; Big dust cloud
 ; Enemy projectile $AF68 (Wrecked Ship chozo spike clearing footsteps)
 ; Enemy projectile $AF84 (Tourian statue dust clouds)
 ; Enemy projectile $E509/$E525 (dust cloud / explosion)

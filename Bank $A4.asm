@@ -910,7 +910,7 @@ $A4:8D79 A9 00 06    LDA #$0600
 $A4:8D7C 85 12       STA $12    [$7E:0012]
 $A4:8D7E A9 B0 00    LDA #$00B0
 $A4:8D81 85 14       STA $14    [$7E:0014]
-$A4:8D83 A9 15 00    LDA #$0015             ; A = 15h
+$A4:8D83 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8D86 A0 09 E5    LDY #$E509             ;\
 $A4:8D89 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -940,7 +940,7 @@ $A4:8DC6 A9 20 06    LDA #$0620
 $A4:8DC9 85 12       STA $12    [$7E:0012]
 $A4:8DCB A9 B0 00    LDA #$00B0
 $A4:8DCE 85 14       STA $14    [$7E:0014]
-$A4:8DD0 A9 15 00    LDA #$0015             ; A = 15h
+$A4:8DD0 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8DD3 A0 09 E5    LDY #$E509             ;\
 $A4:8DD6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -971,7 +971,7 @@ $A4:8E17 A9 30 06    LDA #$0630
 $A4:8E1A 85 12       STA $12    [$7E:0012]
 $A4:8E1C A9 B0 00    LDA #$00B0
 $A4:8E1F 85 14       STA $14    [$7E:0014]
-$A4:8E21 A9 15 00    LDA #$0015             ; A = 15h
+$A4:8E21 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8E24 A0 09 E5    LDY #$E509             ;\
 $A4:8E27 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
@@ -1068,49 +1068,49 @@ $A4:8F35 A9 00 06    LDA #$0600
 $A4:8F38 85 12       STA $12    [$7E:0012]
 $A4:8F3A A9 B0 00    LDA #$00B0
 $A4:8F3D 85 14       STA $14    [$7E:0014]
-$A4:8F3F A9 15 00    LDA #$0015             ; A = 15h
+$A4:8F3F A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F42 A0 09 E5    LDY #$E509             ;\
 $A4:8F45 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F49 A9 10 06    LDA #$0610
 $A4:8F4C 85 12       STA $12    [$7E:0012]
 $A4:8F4E A9 C0 00    LDA #$00C0
 $A4:8F51 85 14       STA $14    [$7E:0014]
-$A4:8F53 A9 15 00    LDA #$0015             ; A = 15h
+$A4:8F53 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F56 A0 09 E5    LDY #$E509             ;\
 $A4:8F59 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F5D A9 20 06    LDA #$0620
 $A4:8F60 85 12       STA $12    [$7E:0012]
 $A4:8F62 A9 B0 00    LDA #$00B0
 $A4:8F65 85 14       STA $14    [$7E:0014]
-$A4:8F67 A9 15 00    LDA #$0015             ; A = 15h
+$A4:8F67 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F6A A0 09 E5    LDY #$E509             ;\
 $A4:8F6D 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F71 A9 30 06    LDA #$0630
 $A4:8F74 85 12       STA $12    [$7E:0012]
 $A4:8F76 A9 C0 00    LDA #$00C0
 $A4:8F79 85 14       STA $14    [$7E:0014]
-$A4:8F7B A9 15 00    LDA #$0015             ; A = 15h
+$A4:8F7B A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F7E A0 09 E5    LDY #$E509             ;\
 $A4:8F81 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F85 A9 40 06    LDA #$0640
 $A4:8F88 85 12       STA $12    [$7E:0012]
 $A4:8F8A A9 C0 00    LDA #$00C0
 $A4:8F8D 85 14       STA $14    [$7E:0014]
-$A4:8F8F A9 15 00    LDA #$0015             ; A = 15h
+$A4:8F8F A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F92 A0 09 E5    LDY #$E509             ;\
 $A4:8F95 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8F99 A9 50 06    LDA #$0650
 $A4:8F9C 85 12       STA $12    [$7E:0012]
 $A4:8F9E A9 C0 00    LDA #$00C0
 $A4:8FA1 85 14       STA $14    [$7E:0014]
-$A4:8FA3 A9 15 00    LDA #$0015             ; A = 15h
+$A4:8FA3 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8FA6 A0 09 E5    LDY #$E509             ;\
 $A4:8FA9 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8FAD A9 60 06    LDA #$0660
 $A4:8FB0 85 12       STA $12    [$7E:0012]
 $A4:8FB2 A9 C0 00    LDA #$00C0
 $A4:8FB5 85 14       STA $14    [$7E:0014]
-$A4:8FB7 A9 15 00    LDA #$0015             ; A = 15h
+$A4:8FB7 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8FBA A0 09 E5    LDY #$E509             ;\
 $A4:8FBD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:8FC1 60          RTS
@@ -2585,7 +2585,7 @@ $A4:9AF0 6D 84 0F    ADC $0F84  [$7E:0F84]
 $A4:9AF3 38          SEC
 $A4:9AF4 E9 10 00    SBC #$0010
 $A4:9AF7 85 14       STA $14    [$7E:0014]
-$A4:9AF9 A9 15 00    LDA #$0015             ; A = 15h
+$A4:9AF9 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:9AFC A0 09 E5    LDY #$E509             ;\
 $A4:9AFF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:9B03 7A          PLY

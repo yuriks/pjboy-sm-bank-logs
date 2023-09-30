@@ -4651,9 +4651,11 @@ $A5:E699             dw 3800,19B2,0D0D,0089,19B2,0D0D,0089,0002,04CB,04CB,092E,0
 }
 
 
+;;; $E6B9..E9F4: Instruction lists and instructions ;;;
+{
 ;;; $E6B9: Instruction list - initial - Spore Spawn is dead ;;;
 {
-$A5:E6B9             dx E91C,00C0,  ; ???
+$A5:E6B9             dx E91C,00C0,  ; Load Spore Spawn death sequence target palette, palette data offset C0h
                         E8BA,EB1A,  ; Enemy function = RTS
                         0001,EE65,
                         812F        ; Sleep
@@ -4671,7 +4673,7 @@ $A5:E6C7             dx 0100,EE6F,
 
 ;;; $E6D5: Instruction list - fight has started ;;;
 {
-$A5:E6D5             dw E82D,0040,0001, ; Spore Spawn speed = 40h, angle delta = 1
+$A5:E6D5             dw E82D,0040,0001, ; Spore Spawn max X radius = 40h, angle delta = 1
                         E8BA,EB52,      ; Enemy function = $EB52 (moving)
                         0300,EE6F
 }
@@ -4689,7 +4691,7 @@ $A5:E6E3             dw E872,0001,      ; Disable spore generation
                         0007,EEC1,
                         0006,EED3,
                         0001,EEE5,
-                        E771,           ; ???
+                        E771,           ; Clear Spore Spawn damaged flag
                         E8BA,EB1A,      ; Enemy function = RTS
                         8123,0005       ; Timer = 5
 $A5:E715             dw 0008,EF3D,
@@ -4711,7 +4713,7 @@ $A5:E729             dw 0008,EED3,
                         0001,EE6F,
                         E8BA,EB52,      ; Enemy function = $EB52 (moving)
                         E872,0000,      ; Enable spore generation
-                        E75F,           ; ???
+                        E75F,           ; Increase Spore Spawn max X radius
                         0200,EE6F,
                         E872,0001,      ; Disable spore generation
                         00D0,EE6F,
@@ -4719,23 +4721,22 @@ $A5:E729             dw 0008,EED3,
 }
 
 
-;;; $E75F: Instruction ;;;
+;;; $E75F: Instruction - increase Spore Spawn max X radius ;;;
 {
-; This function has no effect, Spore Spawn speed is always 30h or 40h
+; This function has no effect, Spore Spawn max X radius is always 30h or 40h
 $A5:E75F AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
 $A5:E763 18          CLC                    ;|
-$A5:E764 69 08 00    ADC #$0008             ;} If [Spore Spawn speed] < 28h:
+$A5:E764 69 08 00    ADC #$0008             ;} If [Spore Spawn max X radius] < 28h:
 $A5:E767 C9 30 00    CMP #$0030             ;|
 $A5:E76A 10 04       BPL $04    [$E770]     ;/
-$A5:E76C 8F 16 78 7E STA $7E7816[$7E:7816]  ; Spore Spawn speed += 8
+$A5:E76C 8F 16 78 7E STA $7E7816[$7E:7816]  ; Spore Spawn max X radius += 8
 
 $A5:E770 6B          RTL
 }
 
 
-;;; $E771: Instruction ;;;
+;;; $E771: Instruction - clear Spore Spawn damaged flag ;;;
 {
-; Somehow stops Spore Spawn from moving when shot until it starts closes up, or something like that
 $A5:E771 DA          PHX
 $A5:E772 5A          PHY
 $A5:E773 A9 00 00    LDA #$0000
@@ -4748,12 +4749,12 @@ $A5:E77C 6B          RTL
 
 ;;; $E77D: Instruction list - death sequence ;;;
 {
-$A5:E77D             dx E8BA,EB9B,  ; Enemy function = $EB9B
+$A5:E77D             dx E8BA,EB9B,  ; Enemy function = $EB9B (set up death)
                         0001,EED3,
-                        E8BA,EBEE,  ; Enemy function = $EBEE
+                        E8BA,EBEE,  ; Enemy function = $EBEE (dying)
                         8123,000A   ; Timer = Ah
 $A5:E78D             dx 0001,EED3,
-                        E9B1,       ; ???
+                        E9B1,       ; Spawn Spore Spawn dying explosion
                         813A,0008,  ; Wait 8 frames
                         8110,E78D,  ; Decrement timer and go to $E78D if non-zero
                         0008,EED3,
@@ -4763,38 +4764,38 @@ $A5:E78D             dx 0001,EED3,
                         0008,EE8B,
                         0008,EE79,
                         0001,EE65,
-                        E87C,       ; ???
+                        E87C,       ; Spore Spawn harden
                         8123,000A   ; Timer = Ah
-$A5:E7BD             dx E96E,       ; ???
+$A5:E7BD             dx E96E,       ; Spawn Spore Spawn hardening dust cloud
                         813A,0008,  ; Wait 8 frames
                         8110,E7BD,  ; Decrement timer and go to $E7BD if non-zero
-                        E8CA,0000,  ; ???
-                        E96E,       ; ???
+                        E8CA,0000,  ; Load Spore Spawn death sequence palette, palette data offset 0
+                        E96E,       ; Spawn Spore Spawn hardening dust cloud
                         0010,EE65,
-                        E8CA,0020,  ; ???
-                        E96E,       ; ???
+                        E8CA,0020,  ; Load Spore Spawn death sequence palette, palette data offset 20h
+                        E96E,       ; Spawn Spore Spawn hardening dust cloud
                         0010,EE65,
-                        E8CA,0040,  ; ???
-                        E96E,       ; ???
+                        E8CA,0040,  ; Load Spore Spawn death sequence palette, palette data offset 40h
+                        E96E,       ; Spawn Spore Spawn hardening dust cloud
                         0010,EE65,
-                        E8CA,0060,  ; ???
-                        E96E,       ; ???
+                        E8CA,0060,  ; Load Spore Spawn death sequence palette, palette data offset 60h
+                        E96E,       ; Spawn Spore Spawn hardening dust cloud
                         0010,EE65,
-                        E8CA,0080,  ; ???
-                        E96E,       ; ???
+                        E8CA,0080,  ; Load Spore Spawn death sequence palette, palette data offset 80h
+                        E96E,       ; Spawn Spore Spawn hardening dust cloud
                         0010,EE65,
-                        E8CA,00A0,  ; ???
-                        E96E,       ; ???
+                        E8CA,00A0,  ; Load Spore Spawn death sequence palette, palette data offset A0h
+                        E96E,       ; Spawn Spore Spawn hardening dust cloud
                         0010,EE65,
-                        E8CA,00C0,  ; ???
-                        E96E,       ; ???
+                        E8CA,00C0,  ; Load Spore Spawn death sequence palette, palette data offset C0h
+                        E96E,       ; Spawn Spore Spawn hardening dust cloud
                         0010,EE65,
                         E8B1,       ; Call Spore Spawn death item drop routine
                         812F        ; Sleep
 }
 
 
-;;; $E811: Unused. Instruction - Spore Spawn speed = [[Y]], angle delta = [[Y] + 2], angle = [[Y] + 4] ;;;
+;;; $E811: Unused. Instruction - Spore Spawn max X radius = [[Y]], angle delta = [[Y] + 2], angle = [[Y] + 4] ;;;
 {
 $A5:E811 B9 00 00    LDA $0000,y
 $A5:E814 8F 16 78 7E STA $7E7816[$7E:7816]
@@ -4810,7 +4811,7 @@ $A5:E82C 6B          RTL
 }
 
 
-;;; $E82D: Instruction - Spore Spawn speed = [[Y]], angle delta = [[Y] + 2] ;;;
+;;; $E82D: Instruction - Spore Spawn max X radius = [[Y]], angle delta = [[Y] + 2] ;;;
 {
 $A5:E82D B9 00 00    LDA $0000,y[$A5:E6D7]
 $A5:E830 8F 16 78 7E STA $7E7816[$7E:7816]
@@ -4824,7 +4825,7 @@ $A5:E83F 6B          RTL
 }
 
 
-;;; $E840: Unused. Instruction - Spore Spawn speed = [[Y]] ;;;
+;;; $E840: Unused. Instruction - Spore Spawn max X radius = [[Y]] ;;;
 {
 $A5:E840 B9 00 00    LDA $0000,y
 $A5:E843 8F 16 78 7E STA $7E7816[$7E:7816]
@@ -4844,7 +4845,7 @@ $A5:E853 6B          RTL
 }
 
 
-;;; $E854: Unused. Instruction - Spore Spawn speed += [[Y]] ;;;
+;;; $E854: Unused. Instruction - Spore Spawn max X radius += [[Y]] ;;;
 {
 $A5:E854 AF 16 78 7E LDA $7E7816[$7E:7816]
 $A5:E858 18          CLC
@@ -4878,16 +4879,16 @@ $A5:E87B 6B          RTL
 }
 
 
-;;; $E87C: Instruction ;;;
+;;; $E87C: Instruction - Spore Spawn harden ;;;
 {
-$A5:E87C A9 80 00    LDA #$0080
-$A5:E87F 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A5:E882 A9 70 02    LDA #$0270
-$A5:E885 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A5:E888 AD 86 0F    LDA $0F86  [$7E:0F86]
-$A5:E88B 09 00 A0    ORA #$A000
-$A5:E88E 29 FF FB    AND #$FBFF
-$A5:E891 8D 86 0F    STA $0F86  [$7E:0F86]
+$A5:E87C A9 80 00    LDA #$0080             ;\
+$A5:E87F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Spore Spawn X position = 80h
+$A5:E882 A9 70 02    LDA #$0270             ;\
+$A5:E885 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Spore Spawn Y position = 270h
+$A5:E888 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A5:E88B 09 00 A0    ORA #$A000             ;|
+$A5:E88E 29 FF FB    AND #$FBFF             ;} Set Spore Spawn hitbox solid to Samus, process instructions, tangible
+$A5:E891 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A5:E894 6B          RTL
 }
 
@@ -4946,7 +4947,7 @@ $A5:E8C9 6B          RTL
 }
 
 
-;;; $E8CA: Instruction - load death sequence palette, palette data offset [[Y]] ;;;
+;;; $E8CA: Instruction - load Spore Spawn death sequence palette, palette data offset [[Y]] ;;;
 {
 $A5:E8CA 5A          PHY
 $A5:E8CB DA          PHX
@@ -4997,7 +4998,7 @@ $A5:E91B 6B          RTL
 }
 
 
-;;; $E91C: Instruction - load death sequence target palette, palette data offset [[Y]] ;;;
+;;; $E91C: Instruction - load Spore Spawn death sequence target palette, palette data offset [[Y]] ;;;
 {
 ; Similar to $E8CA, but writing to target palette colours instead (called before fade-in)
 $A5:E91C 5A          PHY
@@ -5049,7 +5050,7 @@ $A5:E96D 6B          RTL
 }
 
 
-;;; $E96E: Instruction ;;;
+;;; $E96E: Instruction - spawn Spore Spawn hardening dust cloud ;;;
 {
 $A5:E96E 5A          PHY
 $A5:E96F DA          PHX
@@ -5073,7 +5074,7 @@ $A5:E995 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
 $A5:E998 18          CLC                    ;|
 $A5:E999 65 14       ADC $14    [$7E:0014]  ;|
 $A5:E99B 85 14       STA $14    [$7E:0014]  ;/
-$A5:E99D A9 15 00    LDA #$0015             ; A = 15h
+$A5:E99D A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A5:E9A0 A0 09 E5    LDY #$E509             ;\
 $A5:E9A3 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A5:E9A7 A9 29 00    LDA #$0029             ;\
@@ -5084,7 +5085,7 @@ $A5:E9B0 6B          RTL
 }
 
 
-;;; $E9B1: Instruction ;;;
+;;; $E9B1: Instruction - spawn Spore Spawn dying explosion ;;;
 {
 $A5:E9B1 5A          PHY
 $A5:E9B2 DA          PHX
@@ -5093,7 +5094,7 @@ $A5:E9B7 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A5:E9BA 29 7F 00    AND #$007F             ;|
 $A5:E9BD 38          SEC                    ;|
 $A5:E9BE E9 40 00    SBC #$0040             ;|
-$A5:E9C1 85 12       STA $12    [$7E:0012]  ;} $12 = [Spore Spawn X position] + [random number low] % 80h - 40h
+$A5:E9C1 85 12       STA $12    [$7E:0012]  ;} $12 = [Spore Spawn X position] + [random number] % 80h - 40h
 $A5:E9C3 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
 $A5:E9C6 18          CLC                    ;|
 $A5:E9C7 65 12       ADC $12    [$7E:0012]  ;|
@@ -5103,7 +5104,7 @@ $A5:E9CE 29 00 3F    AND #$3F00             ;|
 $A5:E9D1 EB          XBA                    ;|
 $A5:E9D2 38          SEC                    ;|
 $A5:E9D3 E9 20 00    SBC #$0020             ;| 
-$A5:E9D6 85 14       STA $14    [$7E:0014]  ;} $14 = [Spore Spawn Y position] + [random number high] % 40h - 20h
+$A5:E9D6 85 14       STA $14    [$7E:0014]  ;} $14 = [Spore Spawn Y position] + ([random number] >> 8) % 40h - 20h
 $A5:E9D8 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
 $A5:E9DB 18          CLC                    ;|
 $A5:E9DC 65 14       ADC $14    [$7E:0014]  ;|
@@ -5118,31 +5119,32 @@ $A5:E9F2 FA          PLX
 $A5:E9F3 7A          PLY
 $A5:E9F4 6B          RTL
 }
+}
 
 
-;;; $E9F5: Spawn random Spore Spawn death explosion ;;;
+;;; $E9F5: Spawn Spore Spawn ceiling smoke ;;;
 {
 $A5:E9F5 5A          PHY
 $A5:E9F6 DA          PHX
-$A5:E9F7 AD B6 05    LDA $05B6  [$7E:05B6]
-$A5:E9FA 29 0F 00    AND #$000F
-$A5:E9FD D0 28       BNE $28    [$EA27]
-$A5:E9FF 22 11 81 80 JSL $808111[$80:8111]
-$A5:EA03 AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:EA06 29 3F 00    AND #$003F
-$A5:EA09 18          CLC
-$A5:EA0A 69 60 00    ADC #$0060
-$A5:EA0D 85 12       STA $12    [$7E:0012]
-$A5:EA0F AD E5 05    LDA $05E5  [$7E:05E5]
-$A5:EA12 29 00 0F    AND #$0F00
-$A5:EA15 EB          XBA
-$A5:EA16 18          CLC
-$A5:EA17 69 E0 01    ADC #$01E0
-$A5:EA1A 85 14       STA $14    [$7E:0014]
-$A5:EA1C A9 15 00    LDA #$0015
-$A5:EA1F 85 16       STA $16    [$7E:0016]
-$A5:EA21 64 18       STZ $18    [$7E:0018]
-$A5:EA23 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A5:E9F7 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$A5:E9FA 29 0F 00    AND #$000F             ;} If [frame counter] % 10h = 0:
+$A5:E9FD D0 28       BNE $28    [$EA27]     ;/
+$A5:E9FF 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A5:EA03 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:EA06 29 3F 00    AND #$003F             ;|
+$A5:EA09 18          CLC                    ;} $12 = 80h + [random number] % 40h - 20h
+$A5:EA0A 69 60 00    ADC #$0060             ;|
+$A5:EA0D 85 12       STA $12    [$7E:0012]  ;/
+$A5:EA0F AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A5:EA12 29 00 0F    AND #$0F00             ;|
+$A5:EA15 EB          XBA                    ;|
+$A5:EA16 18          CLC                    ;} $14 = 1E8h + ([random number] >> 8) % 10h - 8
+$A5:EA17 69 E0 01    ADC #$01E0             ;|
+$A5:EA1A 85 14       STA $14    [$7E:0014]  ;/
+$A5:EA1C A9 15 00    LDA #$0015             ;\
+$A5:EA1F 85 16       STA $16    [$7E:0016]  ;|
+$A5:EA21 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
+$A5:EA23 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A5:EA27 FA          PLX
 $A5:EA28 7A          PLY
@@ -5187,13 +5189,13 @@ $A5:EA80 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A5:EA83 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy X origin = [enemy X position]
 $A5:EA86 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A5:EA89 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy Y origin = [enemy Y position]
-$A5:EA8C 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy $0FB2 = 0
+$A5:EA8C 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy $0FB2 = 0 (unused)
 $A5:EA8F AE 9F 07    LDX $079F  [$7E:079F]  ;\
 $A5:EA92 BF 28 D8 7E LDA $7ED828,x[$7E:D829];|
 $A5:EA96 29 02 00    AND #$0002             ;} If area mini-boss is dead:
 $A5:EA99 F0 24       BEQ $24    [$EABF]     ;/
 $A5:EA9B A9 B9 E6    LDA #$E6B9             ;\
-$A5:EA9E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Spore Spawn instruction list pointer = $E6B9
+$A5:EA9E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Spore Spawn instruction list pointer = $E6B9 (initial - Spore Spawn is dead)
 $A5:EAA1 A9 1A EB    LDA #$EB1A             ;\
 $A5:EAA4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Spore Spawn function = RTS
 $A5:EAA7 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
@@ -5207,7 +5209,7 @@ $A5:EABE 6B          RTL                    ; Return
 
 $A5:EABF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:EAC2 A9 C7 E6    LDA #$E6C7             ;\
-$A5:EAC5 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Spore Spawn instruction list pointer = $E6C7
+$A5:EAC5 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Spore Spawn instruction list pointer = $E6C7 (initial - Spore Spawn is alive)
 $A5:EAC8 A9 FF FF    LDA #$FFFF             ;\
 $A5:EACB 8D 3C 18    STA $183C  [$7E:183C]  ;} Enable global off-screen enemy processing
 $A5:EACE AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -5261,12 +5263,12 @@ $A5:EB28 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A5:EB2B C9 70 02    CMP #$0270             ;\
 $A5:EB2E 30 0C       BMI $0C    [$EB3C]     ;} If [enemy Y position] >= 270h:
 $A5:EB30 A9 D5 E6    LDA #$E6D5             ;\
-$A5:EB33 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E6D5
+$A5:EB33 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E6D5 (fight has started)
 $A5:EB36 A9 01 00    LDA #$0001             ;\
 $A5:EB39 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 
 $A5:EB3C A9 30 00    LDA #$0030             ;\
-$A5:EB3F 8F 16 78 7E STA $7E7816[$7E:7816]  ;} Spore Spawn speed = 30h
+$A5:EB3F 8F 16 78 7E STA $7E7816[$7E:7816]  ;} Spore Spawn max X radius = 30h
 $A5:EB43 A9 01 00    LDA #$0001             ;\
 $A5:EB46 8F 18 78 7E STA $7E7818[$7E:7818]  ;} Spore Spawn angle delta = 1
 $A5:EB4A A9 C0 00    LDA #$00C0             ;\
@@ -5281,7 +5283,7 @@ $A5:EB52 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment p
 $A5:EB55 AF 16 78 7E LDA $7E7816[$7E:7816]  ;\
 $A5:EB59 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:EB5C AF 14 78 7E LDA $7E7814[$7E:7814]  ;|
-$A5:EB60 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy X origin] + [Spore Spawn speed] * cos([Spore Spawn angle] * pi / 80h) * FFh / 100h
+$A5:EB60 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy X origin] + [Spore Spawn max X radius] * cos([Spore Spawn angle] * pi / 80h) * FFh / 100h
 $A5:EB64 18          CLC                    ;|
 $A5:EB65 7D AC 0F    ADC $0FAC,x[$7E:0FAC]  ;|
 $A5:EB68 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
@@ -5290,7 +5292,7 @@ $A5:EB6F 38          SEC                    ;|
 $A5:EB70 E9 10 00    SBC #$0010             ;|
 $A5:EB73 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:EB76 AF 14 78 7E LDA $7E7814[$7E:7814]  ;|
-$A5:EB7A 38          SEC                    ;} Enemy Y position = [enemy Y origin] + ([Spore Spawn speed] - 10h) * sin([Spore Spawn angle] * 2 * pi / 80h) * FFh / 100h
+$A5:EB7A 38          SEC                    ;} Enemy Y position = [enemy Y origin] + ([Spore Spawn max X radius] - 10h) * sin([Spore Spawn angle] * 2 * pi / 80h) * FFh / 100h
 $A5:EB7B E9 40 00    SBC #$0040             ;|
 $A5:EB7E 0A          ASL A                  ;|
 $A5:EB7F 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
@@ -5321,22 +5323,22 @@ $A5:EBB0 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
 $A5:EBB4 38          SEC                    ;\
 $A5:EBB5 E9 40 00    SBC #$0040             ;|
 $A5:EBB8 49 FF FF    EOR #$FFFF             ;|
-$A5:EBBB 1A          INC A                  ;} $7E:8806 = (40h - [A]) % 100h (angle using the common maths convention)
+$A5:EBBB 1A          INC A                  ;} A = Spore Spawn death drift angle = (40h - [A]) % 100h (angle using the common maths convention)
 $A5:EBBC 29 FF 00    AND #$00FF             ;|
 $A5:EBBF 8F 06 88 7E STA $7E8806[$7E:8806]  ;/
 $A5:EBC3 A9 01 00    LDA #$0001             ;\
 $A5:EBC6 85 14       STA $14    [$7E:0014]  ;|
 $A5:EBC8 AF 06 88 7E LDA $7E8806[$7E:8806]  ;|
-$A5:EBCC 29 FF 00    AND #$00FF             ;} ($16.$18, $1A.$1C) = (|cos([$7E:8806] * pi / 80h)|, |sin([$7E:8806] * pi / 80h)|)
+$A5:EBCC 29 FF 00    AND #$00FF             ;} ($16.$18, $1A.$1C) = (|cos([A] * pi / 80h)|, |sin([A] * pi / 80h)|)
 $A5:EBCF 85 12       STA $12    [$7E:0012]  ;|
 $A5:EBD1 22 43 B6 A0 JSL $A0B643[$A0:B643]  ;/
 $A5:EBD5 A5 16       LDA $16    [$7E:0016]  ;\
 $A5:EBD7 9F 10 80 7E STA $7E8010,x[$7E:8010];|
-$A5:EBDB A5 18       LDA $18    [$7E:0018]  ;} $7E:8010.$7E:8012 = [$16].[$18] (X speed)
+$A5:EBDB A5 18       LDA $18    [$7E:0018]  ;} Spore Spawn death drift X speed = [$16].[$18]
 $A5:EBDD 9F 12 80 7E STA $7E8012,x[$7E:8012];/
 $A5:EBE1 A5 1A       LDA $1A    [$7E:001A]  ;\
 $A5:EBE3 9F 14 80 7E STA $7E8014,x[$7E:8014];|
-$A5:EBE7 A5 1C       LDA $1C    [$7E:001C]  ;} $7E:8014.$7E:8016 = [$1A].[$1C] (Y speed)
+$A5:EBE7 A5 1C       LDA $1C    [$7E:001C]  ;} Spore Spawn death drift Y speed = [$1A].[$1C]
 $A5:EBE9 9F 16 80 7E STA $7E8016,x[$7E:8016];/
 $A5:EBED 60          RTS
 }
@@ -5345,35 +5347,35 @@ $A5:EBED 60          RTS
 ;;; $EBEE: Spore Spawn function - dying ;;;
 {
 $A5:EBEE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A5:EBF1 BF 10 80 7E LDA $7E8010,x[$7E:8010]
-$A5:EBF5 8D 24 0E    STA $0E24  [$7E:0E24]
-$A5:EBF8 BF 12 80 7E LDA $7E8012,x[$7E:8012]
-$A5:EBFC 8D 26 0E    STA $0E26  [$7E:0E26]
-$A5:EBFF BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A5:EC03 8D 28 0E    STA $0E28  [$7E:0E28]
-$A5:EC06 BF 16 80 7E LDA $7E8016,x[$7E:8016]
-$A5:EC0A 8D 2A 0E    STA $0E2A  [$7E:0E2A]
-$A5:EC0D AF 06 88 7E LDA $7E8806[$7E:8806]
-$A5:EC11 29 FF 00    AND #$00FF
-$A5:EC14 8D 20 0E    STA $0E20  [$7E:0E20]
-$A5:EC17 22 91 B6 A0 JSL $A0B691[$A0:B691]
-$A5:EC1B AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A5:EC1E 38          SEC
-$A5:EC1F E9 80 00    SBC #$0080
-$A5:EC22 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:EC26 C9 08 00    CMP #$0008
-$A5:EC29 10 16       BPL $16    [$EC41]
-$A5:EC2B AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A5:EC2E 38          SEC
-$A5:EC2F E9 70 02    SBC #$0270
-$A5:EC32 22 67 B0 A0 JSL $A0B067[$A0:B067]
-$A5:EC36 C9 08 00    CMP #$0008
-$A5:EC39 10 06       BPL $06    [$EC41]
-$A5:EC3B A9 1A EB    LDA #$EB1A
-$A5:EC3E 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A5:EBF1 BF 10 80 7E LDA $7E8010,x[$7E:8010];\
+$A5:EBF5 8D 24 0E    STA $0E24  [$7E:0E24]  ;|
+$A5:EBF8 BF 12 80 7E LDA $7E8012,x[$7E:8012];} $0E24.$0E26 = [Spore Spawn death drift X speed]
+$A5:EBFC 8D 26 0E    STA $0E26  [$7E:0E26]  ;/
+$A5:EBFF BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$A5:EC03 8D 28 0E    STA $0E28  [$7E:0E28]  ;|
+$A5:EC06 BF 16 80 7E LDA $7E8016,x[$7E:8016];} $0E28.$0E2A = [Spore Spawn death drift Y speed]
+$A5:EC0A 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;/
+$A5:EC0D AF 06 88 7E LDA $7E8806[$7E:8806]  ;\
+$A5:EC11 29 FF 00    AND #$00FF             ;} $0E20 = [Spore Spawn death drift angle]
+$A5:EC14 8D 20 0E    STA $0E20  [$7E:0E20]  ;/
+$A5:EC17 22 91 B6 A0 JSL $A0B691[$A0:B691]  ; Move enemy according to angle and X/Y speeds
+$A5:EC1B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A5:EC1E 38          SEC                    ;|
+$A5:EC1F E9 80 00    SBC #$0080             ;|
+$A5:EC22 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[Spore Spawn X position] - 80h| < 8:
+$A5:EC26 C9 08 00    CMP #$0008             ;|
+$A5:EC29 10 16       BPL $16    [$EC41]     ;/
+$A5:EC2B AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A5:EC2E 38          SEC                    ;|
+$A5:EC2F E9 70 02    SBC #$0270             ;|
+$A5:EC32 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[Spore Spawn Y position] - 270h| < 8:
+$A5:EC36 C9 08 00    CMP #$0008             ;|
+$A5:EC39 10 06       BPL $06    [$EC41]     ;/
+$A5:EC3B A9 1A EB    LDA #$EB1A             ;\
+$A5:EC3E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Spore Spawn function = RTS
 
 $A5:EC41 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment positions
-$A5:EC44 22 F5 E9 A5 JSL $A5E9F5[$A5:E9F5]  ; Spawn random Spore Spawn death explosion
+$A5:EC44 22 F5 E9 A5 JSL $A5E9F5[$A5:E9F5]  ; Spawn Spore Spawn ceiling smoke
 $A5:EC48 60          RTS
 }
 
@@ -5533,13 +5535,13 @@ $A5:ED94 8F 18 78 7E STA $7E7818[$7E:7818]  ;} Spore Spawn angle delta = [Y]
 
 ; BRANCH_NO_SPEED_UP
 $A5:ED98 AF 1E 80 7E LDA $7E801E[$7E:801E]  ;\
-$A5:ED9C D0 4C       BNE $4C    [$EDEA]     ;} If [$7E:801E] != 0: go to Spore Spawn reaction
+$A5:ED9C D0 4C       BNE $4C    [$EDEA]     ;} If [Spore Spawn damaged flag] != 0: go to Spore Spawn reaction
 $A5:ED9E AF 18 78 7E LDA $7E7818[$7E:7818]  ;\
 $A5:EDA2 49 FF FF    EOR #$FFFF             ;|
 $A5:EDA5 1A          INC A                  ;} Negate Spore Spawn angle delta
 $A5:EDA6 8F 18 78 7E STA $7E7818[$7E:7818]  ;/
 $A5:EDAA A9 01 00    LDA #$0001             ;\
-$A5:EDAD 8F 1E 80 7E STA $7E801E[$7E:801E]  ;} $7E:801E = 1
+$A5:EDAD 8F 1E 80 7E STA $7E801E[$7E:801E]  ;} Spore Spawn damaged flag = 1
 $A5:EDB1 A9 29 E7    LDA #$E729             ;\
 $A5:EDB4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E729 (close and move)
 $A5:EDB7 A9 01 00    LDA #$0001             ;\
@@ -5590,7 +5592,7 @@ $A5:EDF6 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $A5:EDF9 D0 4E       BNE $4E    [$EE49]     ;} If [enemy health] != 0: return
 $A5:EDFB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:EDFE A9 00 00    LDA #$0000             ;\
-$A5:EE01 8F 1C 78 7E STA $7E781C[$7E:781C]  ;} $7E:781C = 0
+$A5:EE01 8F 1C 78 7E STA $7E781C[$7E:781C]  ;} $7E:781C = 0 (unused)
 $A5:EE05 9E A0 0F    STZ $0FA0,x[$7E:0FA0]  ; Enemy invincibility timer = 0
 $A5:EE08 9E 9C 0F    STZ $0F9C,x[$7E:0F9C]  ; Enemy flash timer = 0
 $A5:EE0B 9E 8A 0F    STZ $0F8A,x[$7E:0F8A]  ; Enemy AI handler = main AI
@@ -5605,7 +5607,7 @@ $A5:EE20 88          DEY                    ;|
 $A5:EE21 88          DEY                    ;|
 $A5:EE22 10 F9       BPL $F9    [$EE1D]     ;/
 $A5:EE24 A9 7D E7    LDA #$E77D             ;\
-$A5:EE27 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Spore Spawn instruction list pointer = $E77D
+$A5:EE27 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Spore Spawn instruction list pointer = $E77D (death sequence)
 $A5:EE2A A9 01 00    LDA #$0001             ;\
 $A5:EE2D 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Spore Spawn instruction timer = 1
 $A5:EE30 AE 9F 07    LDX $079F  [$7E:079F]  ;\

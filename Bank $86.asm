@@ -2714,7 +2714,7 @@ $86:91A7 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
 $86:91AA 85 12       STA $12    [$7E:0012]
 $86:91AC BD 93 1A    LDA $1A93,x[$7E:1AB5]
 $86:91AF 85 14       STA $14    [$7E:0014]
-$86:91B1 A9 15 00    LDA #$0015             ; A = 15h
+$86:91B1 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $86:91B4 A0 09 E5    LDY #$E509             ;\
 $86:91B7 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:91BB A9 25 00    LDA #$0025             ;\
@@ -13471,7 +13471,7 @@ $86:E2D4             dx 0003,ACD5,
 }
 
 
-;;; $E2F2: Instruction list ;;;
+;;; $E2F2: Instruction list - big dust cloud ;;;
 {
 $86:E2F2             dx 0005,AC9B,
                         0005,ACA2,
