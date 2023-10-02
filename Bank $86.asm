@@ -14591,7 +14591,7 @@ $86:EB01 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = dying
 $86:EB04 FE FF 1A    INC $1AFF,x[$7E:1B21]  ; Increment enemy projectile $1AFF
 $86:EB07 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:EB0A C9 00 01    CMP #$0100             ;} If [enemy projectile $1AFF] >= 100h:
-$86:EB0D 30 06       BMI $06    [$EB15]     ;
+$86:EB0D 30 06       BMI $06    [$EB15]     ;/
 $86:EB0F A9 1F EB    LDA #$EB1F             ;\
 $86:EB12 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = dying - falling
 

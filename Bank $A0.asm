@@ -3926,7 +3926,7 @@ $A0:A102 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A105 BD 8E 0F    LDA $0F8E,x[$7E:0F8E]  ;\
 $A0:A108 0A          ASL A                  ;} $14 = [enemy spritemap pointer] * 2 (???)
 $A0:A109 85 14       STA $14    [$7E:0014]  ;/
-$A0:A10B AE 54 0E    LDX $0E54  [$7E:0E54]  ;
+$A0:A10B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A10E BD 78 0F    LDA $0F78,x[$7E:0F78]  ;\
 $A0:A111 C9 FF DA    CMP #$DAFF             ;} If [enemy ID] != respawning enemy placeholder: (always true)
 $A0:A114 F0 0A       BEQ $0A    [$A120]     ;/

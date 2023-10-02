@@ -5661,8 +5661,8 @@ $A7:D03F 9C 28 10    STZ $1028  [$7E:1028]  ; Clear swooping flag
 $A7:D042 A9 01 00    LDA #$0001             ;\
 $A7:D045 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
 $A7:D048 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phantoon eye instruction timer = 1
-$A7:D04B A9 4D CC    LDA #$CC4D             ;
-$A7:D04E 8D 92 0F    STA $0F92  [$7E:0F92]  ; Phantoon body instruction list pointer = $CC4D (eye hitbox only)
+$A7:D04B A9 4D CC    LDA #$CC4D             ;\
+$A7:D04E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC4D (eye hitbox only)
 $A7:D051 A9 9D CC    LDA #$CC9D             ;\
 $A7:D054 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Phantoon eye instruction list pointer = $CC9D (eyeball - centred)
 $A7:D057 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
@@ -6858,8 +6858,8 @@ $A7:D8D8 A0 29 9C    LDY #$9C29             ;|
 $A7:D8DB 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Phantoon destroyable flames enemy projectile with parameter 200h | [Y]
 $A7:D8DF 7A          PLY                    ;/
 $A7:D8E0 88          DEY                    ; Decrement Y
-$A7:D8E1 C0 08 00    CPY #$0008             ;
-$A7:D8E4 10 ED       BPL $ED    [$D8D3]     ; If [Y] >= 8 go to LOOP_ODD_WAVE
+$A7:D8E1 C0 08 00    CPY #$0008             ;\
+$A7:D8E4 10 ED       BPL $ED    [$D8D3]     ;} If [Y] >= 8: go to LOOP_ODD_WAVE
 
 ; BRANCH_MERGE
 $A7:D8E6 A9 29 00    LDA #$0029             ;\

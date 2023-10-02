@@ -13322,7 +13322,7 @@ $8B:EBD7             dx 0008,AB6B,
                         0008,B2FD,
                         000F,B3C7,
                         F3CE        ; Spawn clear time cinematic sprite object
-$8B:EB2D             dx 0008,B3C7,
+$8B:EC2D             dx 0008,B3C7,
                         94BC,EC2D   ; Go to $EC2D
 }
 

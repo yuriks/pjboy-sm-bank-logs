@@ -3073,7 +3073,7 @@ $88:91BB AB          PLB                    ;} DB = $88
 $88:91BC AB          PLB                    ;/
 $88:91BD AC F2 0C    LDY $0CF2  [$7E:0CF2]  ; Y = [pre-scaled power bomb explosion shape definition pointer]
 $88:91C0 A2 00 00    LDX #$0000             ; X = 0
-$88:91C3 E2 20       SEP #$20               ;
+$88:91C3 E2 20       SEP #$20
 $88:91C5 F4 DA 91    PEA $91DA              ; Push RETURN - 1
 $88:91C8 AD E7 0C    LDA $0CE7  [$7E:0CE7]  ;\
 $88:91CB 29 FF       AND #$FF               ;} If [$0CE6] < 100h: go to BRANCH_OFFSCREEN_LEFT
@@ -4331,9 +4331,9 @@ $88:AE0C AD 15 09    LDA $0915  [$7E:0915]  ;\
 $88:AE0F 18          CLC                    ;|
 $88:AE10 69 20 00    ADC #$0020             ;} $12 = [layer 1 Y position] + 20h (first line after HUD, used as current line)
 $88:AE13 85 12       STA $12    [$7E:0012]  ;/
-$88:AE15 18          CLC                    ;
-$88:AE16 69 C0 00    ADC #$00C0             ;\
-$88:AE19 85 14       STA $14    [$7E:0014]  ;} $14 = [layer 1 Y position] + E0h (last line)
+$88:AE15 18          CLC                    ;\
+$88:AE16 69 C0 00    ADC #$00C0             ;} $14 = [layer 1 Y position] + E0h (last line)
+$88:AE19 85 14       STA $14    [$7E:0014]  ;/
 $88:AE1B A0 00 00    LDY #$0000             ; Y = 0 (scrolling sky table index)
 $88:AE1E A2 03 00    LDX #$0003             ; X = 3 (indirect HDMA table index)
 

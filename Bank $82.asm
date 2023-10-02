@@ -8918,11 +8918,11 @@ $82:D9BA A9 0F 00    LDA #$000F             ;\
 $82:D9BD 8F 02 C4 7E STA $7EC402[$7E:C402]  ;} Palette change denominator = Fh
 $82:D9C1 CF 00 C4 7E CMP $7EC400[$7E:C400]  ;\
 $82:D9C5 10 09       BPL $09    [$D9D0]     ;} If [palette change numerator] > Fh:
-$82:D9C7 A9 00 00    LDA #$0000             ;
-$82:D9CA 8F 00 C4 7E STA $7EC400[$7E:C400]  ;\
-$82:D9CE 38          SEC                    ;} Palette change numerator = 0
-$82:D9CF 6B          RTL                    ;\
-                                            ;} Return carry set
+$82:D9C7 A9 00 00    LDA #$0000             ;\
+$82:D9CA 8F 00 C4 7E STA $7EC400[$7E:C400]  ;} Palette change numerator = 0
+$82:D9CE 38          SEC                    ;\
+$82:D9CF 6B          RTL                    ;} Return carry set
+
 $82:D9D0 84 22       STY $22    [$7E:0022]  ; $22 = [Y]
 $82:D9D2 8B          PHB
 $82:D9D3 F4 7E 7E    PEA $7E7E              ;\
@@ -12246,7 +12246,7 @@ $82:F019 60          RTS                    ; Return
 ; BRANCH_OPTIONS_MENU
 $82:F01A A9 03 00    LDA #$0003             ;\
 $82:F01D 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Game options menu index = 3 (options menu)
-$82:F020 60          RTS                    l Return
+$82:F020 60          RTS                    ; Return
 
 $82:F021 C2 20       REP #$20
 $82:F023 60          RTS
@@ -12382,10 +12382,10 @@ $82:F101 A9 00 00    LDA #$0000             ;|
 $82:F104 20 28 ED    JSR $ED28  [$82:ED28]  ;/
 $82:F107 60          RTS
 
-$82:F108 AD 9E 09    LDA $099E  [$7E:099E]  ; Else (setting is on):
-$82:F10B 0A          ASL A                  ;
-$82:F10C 0A          ASL A                  ;
-$82:F10D AA          TAX                    ;
+$82:F108 AD 9E 09    LDA $099E  [$7E:099E]  ;\ Else (setting is on):
+$82:F10B 0A          ASL A                  ;|
+$82:F10C 0A          ASL A                  ;} X = [menu option index] * 8
+$82:F10D AA          TAX                    ;/
 $82:F10E DA          PHX                    ;\
 $82:F10F BD 49 F1    LDA $F149,x[$82:F14D]  ;|
 $82:F112 AA          TAX                    ;|
