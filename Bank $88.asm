@@ -10292,8 +10292,8 @@ $88:E491 9C 6E 10    STZ $106E  [$7E:106E]  ; Wavy Phantoon amplitude = 0
 $88:E494 9C 70 10    STZ $1070  [$7E:1070]  ; Wavy Phantoon phase delta direction = growing
 $88:E497 A5 16       LDA $16    [$7E:0016]  ;\
 $88:E499 8D 72 10    STA $1072  [$7E:1072]  ;} Wavy Phantoon phase delta = [$16]
-$88:E4A0             dx 42, 0F, E4A8        ;\
-$88:E49C 22 35 84 88 JSL $888435[$88:8435]  ;} Spawn indirect HDMA object for BG2 X scroll with instruction list $E4A8
+$88:E49C 22 35 84 88 JSL $888435[$88:8435]  ;\
+$88:E4A0             dx 42, 0F, E4A8        ;} Spawn indirect HDMA object for BG2 X scroll with instruction list $E4A8
 $88:E4A4 FA          PLX
 $88:E4A5 AB          PLB
 $88:E4A6 28          PLP
