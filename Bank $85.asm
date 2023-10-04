@@ -179,7 +179,7 @@ $85:81B5 C2 20       REP #$20
 $85:81B7 A9 80 58    LDA #$5880             ;\
 $85:81BA 8D 16 21    STA $2116  [$7E:2116]  ;|
 $85:81BD AD 39 21    LDA $2139  [$7E:2139]  ;|
-$85:81C0 A9 81 39    LDA #$3981             ;| (8-bit transfer looks wrong, unsure of what the VRAM is anyway, bug?)
+$85:81C0 A9 81 39    LDA #$3981             ;| (8-bit transfer looks wrong, bug?)
 $85:81C3 8D 10 43    STA $4310  [$7E:4310]  ;|
 $85:81C6 A9 00 41    LDA #$4100             ;|
 $85:81C9 8D 12 43    STA $4312  [$7E:4312]  ;|

@@ -1,4 +1,4 @@
-;;; $8000: FX layer 3 tilemaps ;;;
+;;; $8000..B17F: FX layer 3 tilemaps ;;;
 {
 ;;; $8000: Lava tilemap ;;;
 {

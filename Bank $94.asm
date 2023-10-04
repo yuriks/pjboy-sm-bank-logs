@@ -2189,74 +2189,68 @@ $94:936B             dw D098, D09C, D0A0, D0A4, D0A8, D0AC, D0B0, D0B4, B62F, B6
 
 ;;; $938B: Samus block collision reaction - horizontal - door ;;;
 {
-; Store #$E17D to $099C, store BTS to $078F,
-; lookup (2*(BTS AND #$7F) + DoorOut), check to see if elevator or door.
-; Set $078D and $0998 if door, else some elevator code, I think
 $94:938B A9 7D E1    LDA #$E17D             ;\
-$94:938E 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E17D
+$94:938E 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E17D (handle elevator)
 $94:9391 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9394 BF 01 64 7F LDA $7F6401,x[$7F:6680];|
-$94:9398 29 00 FF    AND #$FF00             ;} Set door transition BTS
+$94:9398 29 00 FF    AND #$FF00             ;} Door BTS = [block BTS]
 $94:939B EB          XBA                    ;|
 $94:939C 8D 8F 07    STA $078F  [$7E:078F]  ;/
 $94:939F 29 7F 00    AND #$007F             ;\
 $94:93A2 0A          ASL A                  ;|
 $94:93A3 6D B5 07    ADC $07B5  [$7E:07B5]  ;|
-$94:93A6 AA          TAX                    ;|
-$94:93A7 BF 00 00 8F LDA $8F0000,x[$8F:DF8B];} If (door header pointer) >= $8000:
-$94:93AB AA          TAX                    ;|
-$94:93AC BF 00 00 83 LDA $830000,x[$83:AB4C];|
-$94:93B0 10 0B       BPL $0B    [$93BD]     ;/
-$94:93B2 8E 8D 07    STX $078D  [$7E:078D]  ; Set door transition door header pointer
+$94:93A6 AA          TAX                    ;} X = [$8F:0000 + [door list pointer] + ([door BTS] & 7Fh) * 2]
+$94:93A7 BF 00 00 8F LDA $8F0000,x[$8F:DF8B];|
+$94:93AB AA          TAX                    ;/
+$94:93AC BF 00 00 83 LDA $830000,x[$83:AB4C];\
+$94:93B0 10 0B       BPL $0B    [$93BD]     ;} If [$83:0000 + [X]] (destination room header pointer) >= $8000:
+$94:93B2 8E 8D 07    STX $078D  [$7E:078D]  ; Door pointer = [X]
 $94:93B5 A9 09 00    LDA #$0009             ;\
 $94:93B8 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 9 (hit a door block)
 $94:93BB 18          CLC                    ;\
 $94:93BC 60          RTS                    ;} Return carry clear
 
 $94:93BD AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$94:93C0 C9 09 00    CMP #$0009             ;} If standing still:
+$94:93C0 C9 09 00    CMP #$0009             ;} If [Samus pose] = standing still:
 $94:93C3 B0 06       BCS $06    [$93CB]     ;/
 $94:93C5 A9 01 00    LDA #$0001             ;\
 $94:93C8 8D 16 0E    STA $0E16  [$7E:0E16]  ;} Elevator properties = standing on elevator
 
-$94:93CB 4C 49 8F    JMP $8F49  [$94:8F49]  ; Collision horizontal reaction - solid/shot/grapple block
+$94:93CB 4C 49 8F    JMP $8F49  [$94:8F49]  ; Samus block collision reaction - horizontal - solid/shootable/grapple block
 }
 
 
 ;;; $93CE: Samus block collision reaction - vertical - door ;;;
 {
-; Store #$E17D to $099C, store BTS to $078F,
-; lookup (2*(BTS AND #$7F) + DoorOut), check to see if elevator or door.
-; Set $078D and $0998 if door, else some elevator code, I think
 $94:93CE A9 7D E1    LDA #$E17D             ;\
-$94:93D1 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E17D
+$94:93D1 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E17D (handle elevator)
 $94:93D4 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:93D7 BF 01 64 7F LDA $7F6401,x[$7F:7CCA];|
-$94:93DB 29 00 FF    AND #$FF00             ;} Set door transition BTS
+$94:93DB 29 00 FF    AND #$FF00             ;} Door BTS = [block BTS]
 $94:93DE EB          XBA                    ;|
 $94:93DF 8D 8F 07    STA $078F  [$7E:078F]  ;/
 $94:93E2 29 7F 00    AND #$007F             ;\
 $94:93E5 0A          ASL A                  ;|
 $94:93E6 6D B5 07    ADC $07B5  [$7E:07B5]  ;|
-$94:93E9 AA          TAX                    ;|
-$94:93EA BF 00 00 8F LDA $8F0000,x[$8F:936A];} If (door header pointer) >= $8000:
-$94:93EE AA          TAX                    ;|
-$94:93EF BF 00 00 83 LDA $830000,x[$83:898E];|
-$94:93F3 10 0B       BPL $0B    [$9400]     ;/
-$94:93F5 8E 8D 07    STX $078D  [$7E:078D]  ; Set door transition door header pointer
+$94:93E9 AA          TAX                    ;} X = [$8F:0000 + [door list pointer] + ([door BTS] & 7Fh) * 2]
+$94:93EA BF 00 00 8F LDA $8F0000,x[$8F:936A];|
+$94:93EE AA          TAX                    ;/
+$94:93EF BF 00 00 83 LDA $830000,x[$83:898E];\
+$94:93F3 10 0B       BPL $0B    [$9400]     ;} If [$83:0000 + [X]] (destination room header pointer) >= $8000:
+$94:93F5 8E 8D 07    STX $078D  [$7E:078D]  ; Door pointer = [X]
 $94:93F8 A9 09 00    LDA #$0009             ;\
 $94:93FB 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 9 (hit a door block)
 $94:93FE 18          CLC                    ;\
 $94:93FF 60          RTS                    ;} Return carry clear
 
 $94:9400 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
-$94:9403 C9 09 00    CMP #$0009             ;} If standing still:
+$94:9403 C9 09 00    CMP #$0009             ;} If [Samus pose] = standing still:
 $94:9406 B0 06       BCS $06    [$940E]     ;/
 $94:9408 A9 01 00    LDA #$0001             ;\
 $94:940B 8D 16 0E    STA $0E16  [$7E:0E16]  ;} Elevator properties = standing on elevator
 
 
-$94:940E 4C 82 8F    JMP $8F82  [$94:8F82]  ; Collision vertical reaction - solid/shot/grapple block
+$94:940E 4C 82 8F    JMP $8F82  [$94:8F82]  ; Samus block collision reaction - vertical - solid/shootable/grapple block
 }
 
 

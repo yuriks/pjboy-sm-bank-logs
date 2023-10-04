@@ -846,7 +846,7 @@ $8F:91F7 60          RTS
 }
 
 
-;;; $91F8: Room headers, scroll data, doorout data ;;;
+;;; $91F8: Room headers, scroll data, door lists ;;;
 {
 ; Room $91F8: Header
 $8F:91F8             dx 00, 00, 17, 00, 09, 05, 70, A0, 00, 927B, E612,0E,9261, E669,9247, E612,00,922D, E5E6
@@ -7353,7 +7353,7 @@ $8F:E7E1             dl CF8000, ; 0   - SPC engine
 }
 
 
-;;; $E82C: Debug room and unknown ;;;
+;;; $E82C: Debug room ;;;
 {
 ; Room $E82C: Header
 $8F:E82C             dx 00, 07, 00, 00, 06, 02, 70, A0, 00, E853, E5E6
@@ -7364,20 +7364,14 @@ $8F:E839             dx CEAE3E, 0B, 00, 00, A188, EBCE, 92C3, C1C1, 0001, 0000, 
 ; Room $E82C: Door list
 $8F:E853             dw ABC4, ABCF, ABDA, ABE5
 
-; Unused PLM scroll data
-$8F:E85B             db 02,00, 80
-
-; Unknown
-$8F:E85E             db 90, 8A, 80, 58, 00, 0F
-
-; Unused Library background
-; The same as the Library background for rooms:
-; 792FD. Crateria mainstreet
-; 793AA. Landing site power bomb room
-; 7948C. Pre moat room
-; 7957D. East Crateria maze
-; 795FF. Moat
-$8F:E864             dx 0004,BA8437,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
+; Unused library background. Same as the library background $B8B4 used by rooms:
+;     $92FD: Crateria mainstreet
+;     $93AA: Landing site power bomb room
+;     $948C: Pre moat room
+;     $957D: East Crateria maze
+;     $95FF: Moat
+; Except that this one additionally (incorrectly) loads the water FX tilemap
+$8F:E85B             dx 0002,8A9080,5880,0F00, 0004,BA8437,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C00,0800, 0000
 
 ; Room $E82C, state $E839: PLM
 $8F:E87F             dx 0000

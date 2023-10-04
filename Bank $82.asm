@@ -593,7 +593,7 @@ $82:84F0 64 6C       STZ $6C    [$7E:006C]  ;\
 $82:84F2 64 6D       STZ $6D    [$7E:006D]  ;} Enable all layers in window area
 $82:84F4 A9 09       LDA #$09               ;\
 $82:84F6 85 55       STA $55    [$7E:0055]  ;} Use mode 1 with BG3 priority and 8x8 tile sizes
-$82:84F8 C2 20       REP #$20               
+$82:84F8 C2 20       REP #$20
 $82:84FA 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $82:84FD 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:8500 A9 27 00    LDA #$0027             ;\
@@ -2754,8 +2754,8 @@ $82:952D AD 9F 07    LDA $079F  [$7E:079F]  ; $12 = [area index]
 $82:9530 C9 07 00    CMP #$0007             ;\
 $82:9533 30 03       BMI $03    [$9538]     ;} If [area index] >= debug:
 $82:9535 A9 00 00    LDA #$0000             ; $12 = 0
-                                            
-$82:9538 85 12       STA $12    [$7E:0012]  
+
+$82:9538 85 12       STA $12    [$7E:0012]
 $82:953A 0A          ASL A                  ;\
 $82:953B 18          CLC                    ;|
 $82:953C 65 12       ADC $12    [$7E:0012]  ;|
@@ -2779,7 +2779,7 @@ $82:9562 AE 9F 07    LDX $079F  [$7E:079F]  ;\
 $82:9565 BF 08 D9 7E LDA $7ED908,x[$7E:D908];|
 $82:9569 29 FF 00    AND #$00FF             ;} If area map collected: go to BRANCH_MAP_COLLECTED
 $82:956C D0 3C       BNE $3C    [$95AA]     ;/
-$82:956E E2 20       SEP #$20               
+$82:956E E2 20       SEP #$20
 $82:9570 A0 00 00    LDY #$0000             ; Y = 0 (tilemap index)
 $82:9573 A2 00 00    LDX #$0000             ; X = 0 (map data byte index)
 $82:9576 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (map data bit subindex)
@@ -2788,7 +2788,7 @@ $82:9578 18          CLC
 ; LOOP_WITHOUT_MAP_DATA
 $82:9579 3E F7 07    ROL $07F7,x[$7E:07F7]  ;\
 $82:957C B0 1E       BCS $1E    [$959C]     ;} If [$07F7 + [X]] & 80h >> [$12] != 0: go to BRANCH_EXPLORED_MAP_TILE
-$82:957E C2 20       REP #$20               
+$82:957E C2 20       REP #$20
 $82:9580 A9 0F 00    LDA #$000F             ;\
 $82:9583 97 03       STA [$03],y[$7E:3000]  ;} [$03] + [Y] = 000Fh (blank tile)
 
@@ -2832,19 +2832,19 @@ $82:95C4 E6 09       INC $09    [$7E:0009]  ;\
 $82:95C6 E6 09       INC $09    [$7E:0009]  ;} $09 += 2
 $82:95C8 A0 00 00    LDY #$0000             ; Y = 0 (tilemap index)
 $82:95CB A2 10 00    LDX #$0010             ; X = 10h
-                                            
-; LOOP_WITH_MAP_DATA                        
+
+; LOOP_WITH_MAP_DATA
 $82:95CE B7 00       LDA [$00],y            ; A = [[$00] + [Y]]
 $82:95D0 06 28       ASL $28    [$7E:0028]  ;\
 $82:95D2 90 07       BCC $07    [$95DB]     ;} If [$28] & (1 << [X]-1) != 0:
 $82:95D4 29 FF FB    AND #$FBFF             ; A &= ~400h
-$82:95D7 06 26       ASL $26    [$7E:0026]  
-$82:95D9 80 07       BRA $07    [$95E2]     
-                                            
+$82:95D7 06 26       ASL $26    [$7E:0026]
+$82:95D9 80 07       BRA $07    [$95E2]
+
 $82:95DB 06 26       ASL $26    [$7E:0026]  ;\ Else ([$28] & (1 << [X]-1) = 0):
 $82:95DD B0 03       BCS $03    [$95E2]     ;} If [$26] & (1 << [X]-1) = 0:
 $82:95DF A9 1F 00    LDA #$001F             ; A = 001Fh
-                                            
+
 $82:95E2 97 03       STA [$03],y            ; [$03] + [Y] = [A]
 $82:95E4 CA          DEX                    ; Decrement X
 $82:95E5 D0 15       BNE $15    [$95FC]     ; If [X] = 0:
@@ -2859,7 +2859,7 @@ $82:95F5 EB          XBA                    ;} $28 = [[$09]] << 8 | [[$09] + 1]
 $82:95F6 85 28       STA $28    [$7E:0028]  ;/
 $82:95F8 E6 09       INC $09    [$7E:0009]  ;\
 $82:95FA E6 09       INC $09    [$7E:0009]  ;} $09 += 2
-                                            
+
 $82:95FC C8          INY                    ;\
 $82:95FD C8          INY                    ;} Y += 2
 $82:95FE C0 00 10    CPY #$1000             ;\
@@ -3797,7 +3797,7 @@ $82:A058 18          CLC                    ;|
 $82:A059 69 80 00    ADC #$0080             ;} $03 = [$00] + 80h (pointer to right map page)
 $82:A05C 85 03       STA $03    [$7E:0003]  ;/
 $82:A05E A9 00 00    LDA #$0000             ; >_<;
-$82:A061 E2 20       SEP #$20               
+$82:A061 E2 20       SEP #$20
 $82:A063 A5 02       LDA $02    [$7E:0002]  ;\
 $82:A065 85 05       STA $05    [$7E:0005]  ;} $05 = [$02]
 $82:A067 A2 1F 00    LDX #$001F             ; X = 1Fh (map row)
@@ -3812,7 +3812,7 @@ $82:A075 C8          INY                    ; Increment Y
 $82:A076 C0 04 00    CPY #$0004             ;\
 $82:A079 30 F2       BMI $F2    [$A06D]     ;} If [Y] < 4: go to LOOP
 $82:A07B A0 00 00    LDY #$0000             ; Y = 0
-$82:A07E C2 20       REP #$20               
+$82:A07E C2 20       REP #$20
 $82:A080 A5 00       LDA $00    [$7E:0000]  ;\
 $82:A082 38          SEC                    ;|
 $82:A083 E9 04 00    SBC #$0004             ;} $00 -= 4 (previous row)
@@ -3821,7 +3821,7 @@ $82:A088 A5 03       LDA $03    [$7E:0003]  ;\
 $82:A08A 38          SEC                    ;|
 $82:A08B E9 04 00    SBC #$0004             ;} $03 -= 4 (previous row)
 $82:A08E 85 03       STA $03    [$7E:0003]  ;/
-$82:A090 E2 20       SEP #$20               
+$82:A090 E2 20       SEP #$20
 $82:A092 CA          DEX                    ; Decrement X
 $82:A093 D0 D8       BNE $D8    [$A06D]     ; If [X] != 0: go to LOOP
 $82:A095 A2 0B 00    LDX #$000B             ; X = Bh
@@ -4005,8 +4005,8 @@ $82:A1F4 A2 1A C0    LDX #$C01A             ;\
 $82:A1F7 A9 12 00    LDA #$0012             ;|
 $82:A1FA 85 16       STA $16    [$7E:0016]  ;} Copy 12h bytes from $C01A to [$00] (blank placeholder)
 $82:A1FC 20 7E A2    JSR $A27E  [$82:A27E]  ;/
-$82:A1FF 80 20       BRA $20    [$A221]     
-                                            
+$82:A1FF 80 20       BRA $20    [$A221]
+
 $82:A201 BE 96 C0    LDX $C096,y[$82:C09A]  ;\ Else ([collected items] & [$C056 + [Y]] != 0):
 $82:A204 A9 12 00    LDA #$0012             ;|
 $82:A207 85 16       STA $16    [$7E:0016]  ;} Copy 12h bytes from [$C096 + [Y]] to [$00] (weapons tilemap)
@@ -4019,7 +4019,7 @@ $82:A217 85 12       STA $12    [$7E:0012]  ;|
 $82:A219 A9 12 00    LDA #$0012             ;} Set 12h bytes of [$00] to palette 6
 $82:A21C 85 16       STA $16    [$7E:0016]  ;|
 $82:A21E 20 9D A2    JSR $A29D  [$82:A29D]  ;/
-                                            
+
 $82:A221 C8          INY                    ;\
 $82:A222 C8          INY                    ;} Y += 2
 $82:A223 B7 03       LDA [$03],y[$82:C078]  ;\
@@ -4033,7 +4033,7 @@ $82:A234 A9 82 00    LDA #$0082             ;} $03 = $82:C082 (RAM tilemap offse
 $82:A237 85 05       STA $05    [$7E:0005]  ;/
 $82:A239 B7 03       LDA [$03],y[$82:C082]  ;\
 $82:A23B 85 00       STA $00    [$7E:0000]  ;} $00 = [$82:C082] (RAM tilemap offset)
-                                            
+
 ; LOOP_BOOTS
 $82:A23D B9 62 C0    LDA $C062,y[$82:C062]  ;\
 $82:A240 2C A4 09    BIT $09A4  [$7E:09A4]  ;} If [collected items] & [$C062 + [Y]] = 0:
@@ -4042,8 +4042,8 @@ $82:A245 A2 1A C0    LDX #$C01A             ;\
 $82:A248 A9 12 00    LDA #$0012             ;|
 $82:A24B 85 16       STA $16    [$7E:0016]  ;} Copy 12h bytes from $C01A to [$00] (blank placeholder)
 $82:A24D 20 7E A2    JSR $A27E  [$82:A27E]  ;/
-$82:A250 80 20       BRA $20    [$A272]     
-                                            
+$82:A250 80 20       BRA $20    [$A272]
+
 $82:A252 A9 12 00    LDA #$0012             ;\ Else ([collected items] & [$C062 + [Y]] != 0):
 $82:A255 85 16       STA $16    [$7E:0016]  ;|
 $82:A257 BE A2 C0    LDX $C0A2,y[$82:C0A2]  ;} Copy 12h bytes from [$C0A2 + [Y]] to [$00] (weapons tilemap)
@@ -4056,7 +4056,7 @@ $82:A268 85 12       STA $12    [$7E:0012]  ;|
 $82:A26A A9 12 00    LDA #$0012             ;} Set 12h bytes of [$00] to palette 6
 $82:A26D 85 16       STA $16    [$7E:0016]  ;|
 $82:A26F 20 9D A2    JSR $A29D  [$82:A29D]  ;/
-                                            
+
 $82:A272 C8          INY                    ;\
 $82:A273 C8          INY                    ;} Y += 2
 $82:A274 B7 03       LDA [$03],y[$82:C084]  ;\
@@ -4384,8 +4384,8 @@ $82:A48C C9 04 00    CMP #$0004             ;} If facing right:
 $82:A48F F0 08       BEQ $08    [$A499]     ;/
 $82:A491 A9 1D 00    LDA #$001D             ;\
 $82:A494 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - morph ball - no springball - on ground
-$82:A497 80 06       BRA $06    [$A49F]     
-                                            
+$82:A497 80 06       BRA $06    [$A49F]
+
 $82:A499 A9 41 00    LDA #$0041             ;\ Else (facing left):
 $82:A49C 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - no springball - on ground
 
@@ -4410,8 +4410,8 @@ $82:A4BA C9 04 00    CMP #$0004             ;} If facing right:
 $82:A4BD F0 08       BEQ $08    [$A4C7]     ;/
 $82:A4BF A9 79 00    LDA #$0079             ;\
 $82:A4C2 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - morph ball - spring ball - on ground
-$82:A4C5 80 06       BRA $06    [$A4CD]     
-                                            
+$82:A4C5 80 06       BRA $06    [$A4CD]
+
 $82:A4C7 A9 7A 00    LDA #$007A             ;\ Else (facing left):
 $82:A4CA 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - spring ball - on ground
 
@@ -4436,8 +4436,8 @@ $82:A4E8 C9 04 00    CMP #$0004             ;} If facing right:
 $82:A4EB F0 08       BEQ $08    [$A4F5]     ;/
 $82:A4ED A9 1D 00    LDA #$001D             ;\
 $82:A4F0 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - morph ball - no springball - on ground
-$82:A4F3 80 06       BRA $06    [$A4FB]     
-                                            
+$82:A4F3 80 06       BRA $06    [$A4FB]
+
 $82:A4F5 A9 41 00    LDA #$0041             ;\ Else (facing left):
 $82:A4F8 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - no springball - on ground
 
@@ -6759,8 +6759,8 @@ $82:B656 AD 53 07    LDA $0753  [$7E:0753]  ;\
 $82:B659 D0 09       BNE $09    [$B664]     ;} If [pause screen button label mode] = map screen:
 $82:B65B 20 67 B2    JSR $B267  [$82:B267]  ; Equipment screen - draw item selector
 $82:B65E 20 A2 B2    JSR $B2A2  [$82:B2A2]  ; Equipment screen - display reserve tank amount
-$82:B661 AB          PLB                    
-$82:B662 28          PLP                    
+$82:B661 AB          PLB
+$82:B662 28          PLP
 $82:B663 6B          RTL                    ; Return
 
 $82:B664 22 30 BB 82 JSL $82BB30[$82:BB30]  ; Display map elevator destinations
@@ -7252,7 +7252,7 @@ $82:B95B C5 B1       CMP $B1    [$7E:00B1]  ;|
 $82:B95D 30 07       BMI $07    [$B966]     ;/
 $82:B95F A2 AA B9    LDX #$B9AA             ; X = $B9AA (right map scroll arrow data)
 $82:B962 22 0A B9 82 JSL $82B90A[$82:B90A]  ; Draw map scroll arrow and check to scroll in that direction
-                                            
+
 $82:B966 AD B0 05    LDA $05B0  [$7E:05B0]  ;\
 $82:B969 38          SEC                    ;|
 $82:B96A E9 38 00    SBC #$0038             ;} If [map min Y scroll] - 38h < [BG1 Y scroll]:
@@ -7260,7 +7260,7 @@ $82:B96D C5 B3       CMP $B3    [$7E:00B3]  ;|
 $82:B96F 10 07       BPL $07    [$B978]     ;/
 $82:B971 A2 B4 B9    LDX #$B9B4             ; X = $B9B4 (up map scroll arrow data)
 $82:B974 22 0A B9 82 JSL $82B90A[$82:B90A]  ; Draw map scroll arrow and check to scroll in that direction
-                                            
+
 $82:B978 AD B2 05    LDA $05B2  [$7E:05B2]  ;\
 $82:B97B 38          SEC                    ;|
 $82:B97C E9 B1 00    SBC #$00B1             ;} If [map max Y scroll] - B1h < [BG1 Y scroll]: go to BRANCH_CANCEL_SCROLL_DOWN
@@ -8698,10 +8698,10 @@ $82:CE5D             dx 0016, 01FA,08,32BD, 01F2,08,32BC, 01FA,00,32BD, 01F2,00,
 ; Spritemap 43h: file copy arrow - two slots up
 $82:CECD             dx 0016, 01FA,F0,B2BD, 01F2,F0,B2BC, 01FA,F8,B2BD, 01F2,F8,B2BC, 01FA,00,B2BD, 01F2,00,B2BC, 01FA,08,B2BD, 01F2,08,B2BC, 01F2,E0,B2B8, 01F2,E8,B2BC, 01FA,E8,B2BD, 01FA,D8,B2C9, 01FA,E0,B2B9, 0002,18,B2CF, 01FA,18,B2CE, 0002,20,B2BF, 01FA,20,B2BE, 01F2,18,B2CD, 01FA,10,B2BD, 01F2,10,B2BC, 0002,D8,B2CB, 0002,E0,B2BB
 
-; Spritemap 44h: 
+; Spritemap 44h:
 $82:CF3D             dx 0004, 01FF,FF,F0B3, 01F8,FF,B0B3, 01FF,F8,70B3, 01F8,F8,30B3
 
-; Spritemap 45h: 
+; Spritemap 45h:
 $82:CF53             dx 0002, C3F4,F8,3095, C3FC,F8,3096
 
 ; Spritemap 46h
@@ -8930,7 +8930,7 @@ $82:D9D6 AB          PLB                    ;} DB = $7E
 $82:D9D7 AB          PLB                    ;/
 
 ; LOOP
-$82:D9D8 DA          PHX                    
+$82:D9D8 DA          PHX
 $82:D9D9 BF 00 C2 7E LDA $7EC200,x[$7E:C200];\
 $82:D9DD A8          TAY                    ;|
 $82:D9DE BF 00 C0 7E LDA $7EC000,x[$7E:C000];|
@@ -8944,7 +8944,7 @@ $82:D9F0 E8          INX                    ;\
 $82:D9F1 E8          INX                    ;} X += 2
 $82:D9F2 E4 22       CPX $22    [$7E:0022]  ;\
 $82:D9F4 90 E2       BCC $E2    [$D9D8]     ;} If [X] < [$22]: go to LOOP
-$82:D9F6 AB          PLB                    
+$82:D9F6 AB          PLB
 $82:D9F7 AF 00 C4 7E LDA $7EC400[$7E:C400]  ;\
 $82:D9FB 1A          INC A                  ;} Increment palette change numerator
 $82:D9FC 8F 00 C4 7E STA $7EC400[$7E:C400]  ;/
@@ -10218,7 +10218,7 @@ $82:E1F7 AD 14 C0    LDA $C014  [$7E:C014]  ;} Target BG3 palette 2 colour 1..2 
 $82:E1FA 8D 14 C2    STA $C214  [$7E:C214]  ;/
 $82:E1FD AD 1A C0    LDA $C01A  [$7E:C01A]  ;\
 $82:E200 8D 1A C2    STA $C21A  [$7E:C21A]  ;|
-$82:E203 AD 1C C0    LDA $C01C  [$7E:C01C]  ;} Target BG3 palette 3 colour 1..2 = [BG3 palette 3 colour 1..2]                                  
+$82:E203 AD 1C C0    LDA $C01C  [$7E:C01C]  ;} Target BG3 palette 3 colour 1..2 = [BG3 palette 3 colour 1..2]
 $82:E206 8D 1C C2    STA $C21C  [$7E:C21C]  ;/
 $82:E209 AD 22 C0    LDA $C022  [$7E:C022]  ;\
 $82:E20C 8D 22 C2    STA $C222  [$7E:C222]  ;|
@@ -10338,9 +10338,9 @@ $82:E2F6 60          RTS
 $82:E2F7 20 12 DE    JSR $DE12  [$82:DE12]  ; Load door header
 $82:E2FA 22 AC 82 88 JSL $8882AC[$88:82AC]  ; Delete HDMA objects
 $82:E2FE A9 00 80    LDA #$8000             ;\
-$82:E301 1C B0 18    TRB $18B0  [$7E:18B0]  ;} Clear HDMA flag
+$82:E301 1C B0 18    TRB $18B0  [$7E:18B0]  ;} Disable HDMA objects
 $82:E304 A9 08 00    LDA #$0008             ;\
-$82:E307 85 A7       STA $A7    [$7E:00A7]  ;} Set interrupt command 8 (start of door transition)
+$82:E307 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = 8 (start of door transition)
 $82:E309 A9 10 E3    LDA #$E310             ;\
 $82:E30C 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E310
 $82:E30F 60          RTS
@@ -10353,12 +10353,12 @@ $82:E310 F4 00 8F    PEA $8F00              ;\
 $82:E313 AB          PLB                    ;} DB = $8F
 $82:E314 AB          PLB                    ;/
 $82:E315 AD 91 07    LDA $0791  [$7E:0791]  ;\
-$82:E318 89 02 00    BIT #$0002             ;} If [door direction] is vertical: go to BRANCH_VERTICAL
+$82:E318 89 02 00    BIT #$0002             ;} If door direction is vertical: go to BRANCH_VERTICAL
 $82:E31B D0 14       BNE $14    [$E331]     ;/
 $82:E31D AD 14 09    LDA $0914  [$7E:0914]  ;\
-$82:E320 89 00 FF    BIT #$FF00             ;} If [layer 1 Y position] & FFh = 0: go to BRANCH_NEXT
+$82:E320 89 00 FF    BIT #$FF00             ;} If [layer 1 Y position] % 100h = 0: go to BRANCH_DONE
 $82:E323 F0 23       BEQ $23    [$E348]     ;/
-$82:E325 30 05       BMI $05    [$E32C]     ; If [layer 1 Y position] & FFh < 80h:
+$82:E325 30 05       BMI $05    [$E32C]     ; If [layer 1 Y position] % 100h < 80h:
 $82:E327 CE 15 09    DEC $0915  [$7E:0915]  ; Decrement layer 1 Y position
 $82:E32A 80 17       BRA $17    [$E343]     ; Go to BRANCH_RETURN
 
@@ -10367,9 +10367,9 @@ $82:E32F 80 12       BRA $12    [$E343]     ; Go to BRANCH_RETURN
 
 ; BRANCH_VERTICAL
 $82:E331 AD 10 09    LDA $0910  [$7E:0910]  ;\
-$82:E334 89 00 FF    BIT #$FF00             ;} If [layer 1 X position] & FFh = 0: go to BRANCH_NEXT
+$82:E334 89 00 FF    BIT #$FF00             ;} If [layer 1 X position] % 100h = 0: go to BRANCH_DONE
 $82:E337 F0 0F       BEQ $0F    [$E348]     ;/
-$82:E339 30 05       BMI $05    [$E340]     ; If [layer 1 X position] & FFh < 80h:
+$82:E339 30 05       BMI $05    [$E340]     ; If [layer 1 X position] % 100h < 80h:
 $82:E33B CE 11 09    DEC $0911  [$7E:0911]  ; Decrement layer 1 X position
 $82:E33E 80 03       BRA $03    [$E343]     ; Go to BRANCH_RETURN
 
@@ -10377,9 +10377,9 @@ $82:E340 EE 11 09    INC $0911  [$7E:0911]  ; Increment layer 1 X position
 
 ; BRANCH_RETURN
 $82:E343 22 AB A3 80 JSL $80A3AB[$80:A3AB]  ; Calculate layer 2 position and BG scrolls and update BG graphics when scrolling
-$82:E347 60          RTS
+$82:E347 60          RTS                    ; Return
 
-; BRANCH_NEXT
+; BRANCH_DONE
 $82:E348 22 AB A3 80 JSL $80A3AB[$80:A3AB]  ; Calculate layer 2 position and BG scrolls and update BG graphics when scrolling
 $82:E34C A9 53 E3    LDA #$E353             ;\
 $82:E34F 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E353
@@ -10407,12 +10407,6 @@ $82:E36D 60          RTS
 
 ;;; $E36E: Handles door transitions - load room header; set up map; decompress level, scroll, and CRE data ;;;
 {
-; Set elevator bit used if an elevator, then load new room's MDB into ram, test for roomstates, and set calculate room size.
-; Load roomstate's values.
-; Load new map and map-station byte if a region transition.
-; Cleans up Layer 3 stuff.
-; Clears old room tiles, then decompresses new tiles to 7F ram, then copy bts and background to where they go.
-; Decompresses 07C0 to 7E:A800, sets default scrolling, then *finally* done.
 $82:E36E F4 00 8F    PEA $8F00              ;\
 $82:E371 AB          PLB                    ;} DB = $8F
 $82:E372 AB          PLB                    ;/
@@ -10457,26 +10451,21 @@ $82:E3BF 60          RTS
 
 ;;; $E3C0: Handles door transitions - place Samus, load tiles ;;;
 {
-; Set Samus inside the new room,
-; set next IRQ to index 16 (10 if moving vertically),
-; wait for vblank to end,
-; then reload CRE if needed,
-; load room tiles from 07C3 (3 byte pointer)
 $82:E3C0 F4 00 8F    PEA $8F00              ;\
 $82:E3C3 AB          PLB                    ;} DB = $8F
 $82:E3C4 AB          PLB                    ;/
 $82:E3C5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $82:E3C8 29 FF 00    AND #$00FF             ;|
-$82:E3CB 18          CLC                    ;} Samus X = [layer 1 X] + [Samus X] & FFh
+$82:E3CB 18          CLC                    ;} Samus X position = [layer 1 X position] + [Samus X position] % 100h
 $82:E3CC 6D 11 09    ADC $0911  [$7E:0911]  ;|
 $82:E3CF 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
-$82:E3D2 8D 10 0B    STA $0B10  [$7E:0B10]  ; Previous Samus X = [Samus X]
+$82:E3D2 8D 10 0B    STA $0B10  [$7E:0B10]  ; Samus previous X position = [Samus X position]
 $82:E3D5 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $82:E3D8 29 FF 00    AND #$00FF             ;|
-$82:E3DB 18          CLC                    ;} Samus Y = [layer 1 Y] + [Samus Y] & FFh
+$82:E3DB 18          CLC                    ;} Samus Y position = [layer 1 Y position] + [Samus Y position] % 100h
 $82:E3DC 6D 15 09    ADC $0915  [$7E:0915]  ;|
 $82:E3DF 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
-$82:E3E2 8D 14 0B    STA $0B14  [$7E:0B14]  ; Previous Samus Y = [Samus Y]
+$82:E3E2 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = [Samus Y position]
 $82:E3E5 9C 31 09    STZ $0931  [$7E:0931]  ; Door transition finished scrolling flag = 0
 $82:E3E8 9C BC 05    STZ $05BC  [$7E:05BC]  ; Door transition VRAM update flag = 0
 $82:E3EB AD 91 07    LDA $0791  [$7E:0791]  ;\
@@ -10484,18 +10473,18 @@ $82:E3EE 29 03 00    AND #$0003             ;|
 $82:E3F1 C9 02 00    CMP #$0002             ;} If door direction is down:
 $82:E3F4 D0 05       BNE $05    [$E3FB]     ;/
 $82:E3F6 A9 10 00    LDA #$0010             ;\
-$82:E3F9 80 03       BRA $03    [$E3FE]     ;} Next interrupt command = 10h. Vertical door transition
+$82:E3F9 80 03       BRA $03    [$E3FE]     ;} Next interrupt command = 10h (vertical room transition)
 
                                             ; Else (door direction is not down):
-$82:E3FB A9 16 00    LDA #$0016             ; Next interrupt command = 16h. Horizontal door transition
+$82:E3FB A9 16 00    LDA #$0016             ; Next interrupt command = 16h (horizontal room transition)
 
 $82:E3FE 85 A7       STA $A7    [$7E:00A7]
 $82:E400 20 69 DF    JSR $DF69  [$82:DF69]  ; Wait until the end of a v-blank and enable h/v-counter interrupts
 $82:E403 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
-$82:E406 89 02 00    BIT #$0002             ;|
-$82:E409 F0 19       BEQ $19    [$E424]     ;|
-$82:E40B AD 8D 07    LDA $078D  [$7E:078D]  ;} If [CRE bitset] & 2 != 0 and [door pointer] != $947A (room $AB07 (post Crocomire shaft), door list index 0):
-$82:E40E C9 7A 94    CMP #$947A             ;|
+$82:E406 89 02 00    BIT #$0002             ;} If [CRE bitset] & 2 != 0 (reload CRE):
+$82:E409 F0 19       BEQ $19    [$E424]     ;/
+$82:E40B AD 8D 07    LDA $078D  [$7E:078D]  ;\
+$82:E40E C9 7A 94    CMP #$947A             ;} If [door pointer] != $947A (room $AB07 (post Crocomire shaft), door list index 0):
 $82:E411 F0 11       BEQ $11    [$E424]     ;/
 $82:E413 A9 00 B9    LDA #$B900             ;\
 $82:E416 85 48       STA $48    [$7E:0048]  ;|
@@ -10507,30 +10496,30 @@ $82:E421             dl 7E7000              ;/
 $82:E424 AD C4 07    LDA $07C4  [$7E:07C4]  ;\
 $82:E427 85 48       STA $48    [$7E:0048]  ;|
 $82:E429 AD C3 07    LDA $07C3  [$7E:07C3]  ;|
-$82:E42C 85 47       STA $47    [$7E:0047]  ;} Decompress room tiles to $7E:2000 (may overwrite CRE)
+$82:E42C 85 47       STA $47    [$7E:0047]  ;} Decompress tileset tiles to $7E:2000 (may overwrite CRE)
 $82:E42E 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:E432             dl 7E2000              ;/
 $82:E435 AD C7 07    LDA $07C7  [$7E:07C7]  ;\
 $82:E438 85 48       STA $48    [$7E:0048]  ;|
 $82:E43A AD C6 07    LDA $07C6  [$7E:07C6]  ;|
-$82:E43D 85 47       STA $47    [$7E:0047]  ;} Decompress room palettes to target palettes
+$82:E43D 85 47       STA $47    [$7E:0047]  ;} Decompress tileset palettes to target palettes
 $82:E43F 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $82:E443             dl 7EC200              ;/
 $82:E446 20 39 E0    JSR $E039  [$82:E039]  ;\
 $82:E449             dx 7E2000, 0000, 2000  ;|
 $82:E450 20 39 E0    JSR $E039  [$82:E039]  ;|
-$82:E453             dx 7E4000, 1000, 2000  ;} VRAM $0000..27FF = [$7E:2000..6FFF] (room tiles)
+$82:E453             dx 7E4000, 1000, 2000  ;} VRAM $0000..27FF = [$7E:2000..6FFF] (tileset tiles)
 $82:E45A 20 39 E0    JSR $E039  [$82:E039]  ;|
 $82:E45D             dx 7E6000, 2000, 1000  ;/
 $82:E464 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
-$82:E467 89 06 00    BIT #$0006             ;|
-$82:E46A F0 26       BEQ $26    [$E492]     ;|
-$82:E46C AD 8D 07    LDA $078D  [$7E:078D]  ;} If [CRE bitset] & 6 != 0 and [door pointer] != $947A (room $AB07 (post Crocomire shaft), door list index 0):
-$82:E46F C9 7A 94    CMP #$947A             ;|
+$82:E467 89 06 00    BIT #$0006             ;} If [CRE bitset] & 6 != 0 (reload CRE or load extra large tileset):
+$82:E46A F0 26       BEQ $26    [$E492]     ;/
+$82:E46C AD 8D 07    LDA $078D  [$7E:078D]  ;\
+$82:E46F C9 7A 94    CMP #$947A             ;} If [door pointer] != $947A (room $AB07 (post Crocomire shaft), door list index 0):
 $82:E472 F0 1E       BEQ $1E    [$E492]     ;/
 $82:E474 20 39 E0    JSR $E039  [$82:E039]  ;\
 $82:E477             dx 7E7000, 2800, 1000  ;|
-$82:E47E 20 39 E0    JSR $E039  [$82:E039]  ;} VRAM $2800..3FFF = [$7E:7000..9FFF] (CRE or extended part of room tiles)
+$82:E47E 20 39 E0    JSR $E039  [$82:E039]  ;} VRAM $2800..3FFF = [$7E:7000..9FFF] (CRE or extended part of tileset tiles)
 $82:E481             dx 7E8000, 3000, 2000  ;/
 $82:E488 20 39 E0    JSR $E039  [$82:E039]  ;\
 $82:E48B             dx 9AB200, 4000, 1000  ;} VRAM $4000..47FF = [$9A:B200..C1FF] (standard BG3 tiles)
@@ -10540,7 +10529,7 @@ $82:E495 29 03 00    AND #$0003             ;|
 $82:E498 C9 03 00    CMP #$0003             ;} If door direction is up:
 $82:E49B D0 05       BNE $05    [$E4A2]     ;/
 $82:E49D A9 10 00    LDA #$0010             ;\
-$82:E4A0 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = 10h. Vertical door transition
+$82:E4A0 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = 10h (vertical room transition)
 
 $82:E4A2 A9 A9 E4    LDA #$E4A9             ;\
 $82:E4A5 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E4A9
@@ -10639,7 +10628,7 @@ $82:E565 60          RTS
 {
 ;;; $E566: Clear FX tilemap ;;;
 {
-$82:E566 A2 7E 07    LDX #$077E             ;\            
+$82:E566 A2 7E 07    LDX #$077E             ;\
 $82:E569 A9 4E 18    LDA #$184E             ;|
                                             ;|
 $82:E56C 9F 00 40 7E STA $7E4000,x[$7E:477E];|
@@ -10655,7 +10644,7 @@ $82:E582 60          RTS
 
 ;;; $E583: Clear BG2 tilemap ;;;
 {
-$82:E583 A2 FE 07    LDX #$07FE             ;\            
+$82:E583 A2 FE 07    LDX #$07FE             ;\
 $82:E586 A9 38 03    LDA #$0338             ;|
                                             ;|
 $82:E589 9F 00 40 7E STA $7E4000,x[$7E:47FE];|
@@ -10671,7 +10660,7 @@ $82:E59F 60          RTS
 
 ;;; $E5A0: Clear Kraid's BG2 tilemap ;;;
 {
-$82:E5A0 A2 FE 07    LDX #$07FE             ;\            
+$82:E5A0 A2 FE 07    LDX #$07FE             ;\
 $82:E5A3 A9 38 03    LDA #$0338             ;|
                                             ;|
 $82:E5A6 9F 00 40 7E STA $7E4000,x[$7E:47FE];|
@@ -10712,7 +10701,7 @@ $82:E5E3 69 09 00    ADC #$0009             ;} Y += 9
 $82:E5E6 A8          TAY                    ;/
 $82:E5E7 18          CLC                    ;\
 $82:E5E8 60          RTS                    ;} Return carry clear
-                                            
+
 $82:E5E9 C8          INY                    ;\
 $82:E5EA C8          INY                    ;} Y += 2
 }
@@ -10768,7 +10757,7 @@ $82:E636 60          RTS                    ;} Return carry clear
 ; Command 6 is unused
 $82:E637 5A          PHY
 $82:E638 20 66 E5    JSR $E566  [$82:E566]  ; Clear FX tilemap
-$82:E63B 7A          PLY                    
+$82:E63B 7A          PLY
 $82:E63C 18          CLC                    ;\
 $82:E63D 60          RTS                    ;} Return carry clear
 }
@@ -10795,7 +10784,7 @@ $82:E64A 60          RTS                    ;} Return carry clear
 ;     Room $DF45: Ceres elevator
 $82:E64B 5A          PHY
 $82:E64C 20 83 E5    JSR $E583  [$82:E583]  ; Clear BG2 tilemap
-$82:E64F 7A          PLY                    
+$82:E64F 7A          PLY
 $82:E650 18          CLC                    ;\
 $82:E651 60          RTS                    ;} Return carry clear
 }
@@ -10807,7 +10796,7 @@ $82:E651 60          RTS                    ;} Return carry clear
 ;     Room $A59F, state $A5CB: Kraid's room, Kraid is dead
 $82:E652 5A          PHY
 $82:E653 20 A0 E5    JSR $E5A0  [$82:E5A0]  ; Clear Kraid's BG2 tilemap
-$82:E656 7A          PLY                    
+$82:E656 7A          PLY
 $82:E657 18          CLC                    ;\
 $82:E658 60          RTS                    ;} Return carry clear
 }
@@ -11817,7 +11806,7 @@ $82:ECFE 60          RTS
 ; Queue transfer of $7E:3000..37FF to VRAM $5000..53FF
 $82:ECFF 08          PHP
 $82:ED00 C2 30       REP #$30
-$82:ED02 AE 30 03    LDX $0330  [$7E:0330]  
+$82:ED02 AE 30 03    LDX $0330  [$7E:0330]
 $82:ED05 A9 00 08    LDA #$0800
 $82:ED08 95 D0       STA $D0,x  [$7E:00D0]
 $82:ED0A E8          INX
@@ -12174,8 +12163,8 @@ $82:EF8D 9F 00 30 7E STA $7E3000,x[$7E:37FE];} Game options menu tilemap = [$7F:
 $82:EF91 CA          DEX                    ;|
 $82:EF92 CA          DEX                    ;|
 $82:EF93 10 F4       BPL $F4    [$EF89]     ;/
-$82:EF95 80 0F       BRA $0F    [$EFA6]     
-                                            
+$82:EF95 80 0F       BRA $0F    [$EFA6]
+
 $82:EF97 A2 FE 07    LDX #$07FE             ;\ Else (Japanese text enabled):
                                             ;|
 $82:EF9A BF 00 E0 7F LDA $7FE000,x          ;|
@@ -12756,7 +12745,7 @@ $82:F3A8 E2 20       SEP #$20
 $82:F3AA A5 51       LDA $51    [$7E:0051]  ;\
 $82:F3AC C9 80       CMP #$80               ;} If started fading in:
 $82:F3AE F0 03       BEQ $03    [$F3B3]     ;/
-$82:F3B0 C2 20       REP #$20               
+$82:F3B0 C2 20       REP #$20
 $82:F3B2 60          RTS                    ; Return
 
 $82:F3B3 C2 20       REP #$20
@@ -12791,11 +12780,11 @@ $82:F3E1 60          RTS
 $82:F3E2 AD E2 0D    LDA $0DE2  [$7E:0DE2]  ;\
 $82:F3E5 C9 06 00    CMP #$0006             ;} If [game options menu index] != 6 (dissolve in screen): return
 $82:F3E8 D0 19       BNE $19    [$F403]     ;/
-$82:F3EA E2 20       SEP #$20               
+$82:F3EA E2 20       SEP #$20
 $82:F3EC A5 51       LDA $51    [$7E:0051]  ;\
 $82:F3EE C9 80       CMP #$80               ;} If started fading in:
 $82:F3F0 F0 03       BEQ $03    [$F3F5]     ;/
-$82:F3F2 C2 20       REP #$20               
+$82:F3F2 C2 20       REP #$20
 $82:F3F4 60          RTS                    ; Return
 
 $82:F3F5 C2 20       REP #$20
