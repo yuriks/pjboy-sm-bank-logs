@@ -5082,7 +5082,7 @@ $86:A378 60          RTS
 }
 
 
-;;; $A387: Enemy projectiles - gunship liftoff dust clouds / Ceres elevator ;;;
+;;; $A379: Enemy projectiles - gunship liftoff dust clouds / Ceres elevator ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Pre-instruction
@@ -5102,7 +5102,7 @@ $86:A395             dx A31B,A364,A299,01,01,3000,0000,A299 ; Ceres elevator pla
 
 ;;; $A3A3..BD: Pre-Phantoon room ;;;
 {
-;;; $A3A3: Initialisation AI / pre-instruction - enemy projectile $A3B2 (pre-Phantoon room) ;;;
+;;; $A3A3: Initialisation AI / pre-instruction - enemy projectile $A3B0 (pre-Phantoon room) ;;;
 {
 $86:A3A3 A9 00 00    LDA #$0000             ;\
 $86:A3A6 8D 23 09    STA $0923  [$7E:0923]  ;} BG2 Y scroll offset = 0
@@ -5110,14 +5110,14 @@ $86:A3A9 60          RTS
 }
 
 
-;;; $A3AA: Instruction list - enemy projectile $A3B2 (pre-Phantoon room) ;;;
+;;; $A3AA: Instruction list - enemy projectile $A3B0 (pre-Phantoon room) ;;;
 {
 $86:A3AA             dw 0020,8000,
                         8154        ; Delete
 }
 
 
-;;; $A3B0: Enemy projectile $A3B2 - pre-Phantoon room ;;;
+;;; $A3B0: Enemy projectile - pre-Phantoon room ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Pre-instruction

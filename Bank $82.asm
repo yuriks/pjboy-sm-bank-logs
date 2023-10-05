@@ -8574,7 +8574,7 @@ $82:CA33             dw 0090,0028, 0148,0050, 00B8,0048, 00B0,0088, FFFF
 }
 
 
-;;; $CA49: Tourian map icon data ;;;
+;;; $CA45: Tourian map icon data ;;;
 {
 ; (Boss icons)
 $82:CA45             dw FFFF

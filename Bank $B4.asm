@@ -6361,7 +6361,7 @@ $B4:E2E5             dx 52,4F,42,4F,32,20,20,20,20,20, EC09, 0062 ; "ROBO2     "
 }
 
 
-;;; $E2F6: Debug enemy population data ;;;
+;;; $E2F3: Debug enemy population data ;;;
 {
 ;  ____________________________________ Enemy ID
 ; |     _______________________________ X position
