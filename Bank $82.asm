@@ -10607,7 +10607,7 @@ $82:E539 0C B0 18    TSB $18B0  [$7E:18B0]  ;} Set HDMA flag
 $82:E53C 22 B4 85 84 JSL $8485B4[$84:85B4]  ; PLM handler
 $82:E540 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
 $82:E544 AD 91 07    LDA $0791  [$7E:0791]  ;\
-$82:E547 89 02 00    BIT #$0002             ;} If door direction is horizontal:
+$82:E547 89 02 00    BIT #$0002             ;} If door direction is vertical: go to BRANCH_RETURN
 $82:E54A D0 13       BNE $13    [$E55F]     ;/
 $82:E54C 29 03 00    AND #$0003             ;\
 $82:E54F F0 08       BEQ $08    [$E559]     ;} If door direction is left:
@@ -10618,6 +10618,7 @@ $82:E557 80 06       BRA $06    [$E55F]
 $82:E559 A9 07 00    LDA #$0007             ;\ Else (door direction is right):
 $82:E55C 0C F6 0A    TSB $0AF6  [$7E:0AF6]  ;} Samus X |= 7
 
+; BRANCH_RETURN
 $82:E55F A9 59 E6    LDA #$E659             ;\
 $82:E562 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E659
 $82:E565 60          RTS
