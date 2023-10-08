@@ -1011,6 +1011,7 @@ $88:84B8 6B          RTL                    ;} Return carry clear
 {
 ; Also spawns power bombs that were set as pending due to Samus dying(?) or auto reserve tanks activating
 ; Also calls the layer blending handler
+; Seriously, why is the music queue handler called here... >_<;
 $88:84B9 08          PHP
 $88:84BA 8B          PHB
 $88:84BB C2 30       REP #$30

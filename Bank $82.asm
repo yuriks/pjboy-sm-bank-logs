@@ -10285,7 +10285,7 @@ $82:E29D 60          RTS
 }
 
 
-;;; $E29E: Handles door transitions - wait for sounds to finish ;;;
+;;; $E29E: Door transition function - wait for sounds to finish ;;;
 {
 $82:E29E 08          PHP
 $82:E29F 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
@@ -10317,7 +10317,7 @@ $82:E2DA 60          RTS
 }
 
 
-;;; $E2DB: Handles door transitions - fade out the screen ;;;
+;;; $E2DB: Door transition function - fade out the screen ;;;
 {
 $82:E2DB 20 61 D9    JSR $D961  [$82:D961]  ; Advance gradual colour change of all palettes - denominator = Ch
 $82:E2DE B0 10       BCS $10    [$E2F0]     ; If not reached target colour:
@@ -10333,7 +10333,7 @@ $82:E2F6 60          RTS
 }
 
 
-;;; $E2F7: Handles door transitions - load door header, delete HDMA objects, and set interrupt command ;;;
+;;; $E2F7: Door transition function - load door header, delete HDMA objects, and set interrupt command ;;;
 {
 $82:E2F7 20 12 DE    JSR $DE12  [$82:DE12]  ; Load door header
 $82:E2FA 22 AC 82 88 JSL $8882AC[$88:82AC]  ; Delete HDMA objects
@@ -10347,7 +10347,7 @@ $82:E30F 60          RTS
 }
 
 
-;;; $E310: Handles door transitions - scroll screen to alignment ;;;
+;;; $E310: Door transition function - scroll screen to alignment ;;;
 {
 $82:E310 F4 00 8F    PEA $8F00              ;\
 $82:E313 AB          PLB                    ;} DB = $8F
@@ -10387,7 +10387,7 @@ $82:E352 60          RTS
 }
 
 
-;;; $E353: Handles door transitions - fix doors moving up ;;;
+;;; $E353: Door transition function - fix doors moving up ;;;
 {
 ; See $80:AF89
 $82:E353 F4 00 8F    PEA $8F00              ;\
@@ -10405,7 +10405,7 @@ $82:E36D 60          RTS
 }
 
 
-;;; $E36E: Handles door transitions - load room header; set up map; decompress level, scroll, and CRE data ;;;
+;;; $E36E: Door transition function - load room header; set up map; decompress level, scroll, and CRE data ;;;
 {
 $82:E36E F4 00 8F    PEA $8F00              ;\
 $82:E371 AB          PLB                    ;} DB = $8F
@@ -10422,7 +10422,7 @@ $82:E38D 60          RTS
 }
 
 
-;;; $E38E: Handles door transitions - set up scrolling ;;;
+;;; $E38E: Door transition function - set up scrolling ;;;
 {
 $82:E38E F4 00 8F    PEA $8F00              ;\
 $82:E391 AB          PLB                    ;} DB = $8F
@@ -10449,7 +10449,7 @@ $82:E3BF 60          RTS
 }
 
 
-;;; $E3C0: Handles door transitions - place Samus, load tiles ;;;
+;;; $E3C0: Door transition function - place Samus, load tiles ;;;
 {
 $82:E3C0 F4 00 8F    PEA $8F00              ;\
 $82:E3C3 AB          PLB                    ;} DB = $8F
@@ -10537,7 +10537,7 @@ $82:E4A8 60          RTS
 }
 
 
-;;; $E4A9: Handles door transitions - load sprites, background, PLMs, audio; execute custom door and room ASM; and wait for scrolling to end ;;;
+;;; $E4A9: Door transition function - load sprites, background, PLMs, audio; execute custom door and room ASM; and wait for scrolling to end ;;;
 {
 ; In this routine, after all of the loading is done, we sit on this busy loop at $E526 waiting for door transition scrolling to finish
 ; During this busy loop, door transition scrolling updates are happening due to the IRQ handler ($80:979B),
@@ -10558,7 +10558,7 @@ $82:E4C1 22 6C EB 82 JSL $82EB6C[$82:EB6C]  ; Create PLMs, execute door ASM, roo
 $82:E4C5 22 82 AB 89 JSL $89AB82[$89:AB82]  ; Load FX header
 $82:E4C9 20 EB E8    JSR $E8EB  [$82:E8EB]  ; Spawn door closing PLM
 $82:E4CC 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam graphics
-$82:E4D0 22 39 E1 82 JSL $82E139[$82:E139]  ; Load target colours for common sprites, beams and slashing enemies / pickups
+$82:E4D0 22 39 E1 82 JSL $82E139[$82:E139]  ; Load target colours for common sprites, beams and flashing enemies / pickups
 $82:E4D4 22 1E 8A A0 JSL $A08A1E[$A0:8A1E]  ; Load enemies
 $82:E4D8 22 9E 8A A0 JSL $A08A9E[$A0:8A9E]  ; Initialise enemies
 $82:E4DC 22 22 AD 90 JSL $90AD22[$90:AD22]  ; Reset projectile data
@@ -10600,7 +10600,7 @@ $82:E524 C2 30       REP #$30
 $82:E526 AD 31 09    LDA $0931  [$7E:0931]  ;\
 $82:E529 10 FB       BPL $FB    [$E526]     ;} Wait until door transition has finished scrolling
 $82:E52B A9 E0 3B    LDA #$3BE0             ;\
-$82:E52E 8F 88 C1 7E STA $7EC188[$7E:C188]  ;} Sprite palette 4 colour 4 = (0, 1Fh, Eh)
+$82:E52E 8F 88 C1 7E STA $7EC188[$7E:C188]  ;} Sprite palette 4 colour 4 (Samus visor) = (0, 1Fh, Eh)
 $82:E532 22 65 D8 88 JSL $88D865[$88:D865]  ; Spawn HUD BG3 scroll HDMA object
 $82:E536 A9 00 80    LDA #$8000             ;\
 $82:E539 0C B0 18    TSB $18B0  [$7E:18B0]  ;} Set HDMA flag
@@ -10804,7 +10804,7 @@ $82:E658 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $E659: Handles door transitions - handle animated tiles ;;;
+;;; $E659: Door transition function - handle animated tiles ;;;
 {
 $82:E659 22 64 80 87 JSL $878064[$87:8064]  ; Animated tiles handler
 $82:E65D A9 64 E6    LDA #$E664             ;\
@@ -10813,7 +10813,7 @@ $82:E663 60          RTS
 }
 
 
-;;; $E664: Handles door transitions - wait for music queue to clear and possibly load new music ;;;
+;;; $E664: Door transition function - wait for music queue to clear and possibly load new music ;;;
 {
 $82:E664 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $82:E668 B0 0A       BCS $0A    [$E674]     ;} If music is queued: return
@@ -10825,9 +10825,16 @@ $82:E674 60          RTS
 }
 
 
-;;; $E675:  ;;;
+;;; $E675: Unused. Door transition function ;;;
 {
-; Unused door transition code?
+; The fact that it sets the door transition function to $E6A2 would indicate that this would have been executed on the emerging side of the door transition
+; There's a call to the music queue handler here, which is normally called by the NMI routine,
+; indicating that NMI is expected to be disabled (unlikely IMO due to the scrolling), or this code is quite old in its abandonment (more likely)
+; $092F may not be the "downwards elevator" delay timer in this code,
+; a fun guess would be that this function was used for the scrolling part of a NEStroid-esque door transition where enemies are still active throughout
+; A more boring guess would be that this was an old version of $E19F (wait 48 frames for down elevator) before it got moved to game state 9
+; and the door transition function is simply set wrong
+; Yet another guess is that there was an expedited version of an elevator door transition used for elevators that don't actually change room
 $82:E675 22 0C 8F 80 JSL $808F0C[$80:8F0C]  ; Handle music queue
 $82:E679 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process
 $82:E67D 9C 95 07    STZ $0795  [$7E:0795]  ; Door transition flag = 0
@@ -10846,7 +10853,7 @@ $82:E6A1 60          RTS
 }
 
 
-;;; $E6A2: Handles door transitions - nudge Samus if she's intercepting the door ;;;
+;;; $E6A2: Door transition function - nudge Samus if she's intercepting the door ;;;
 {
 ; Positions Samus to avoid collision with the door (not enough to prevent door clip though) and enables normal IRQ command
 ; Neither of the calls to $90:F084 are needed (they've both already been done elsewhere, and there's no reason to do only one of the two anyway...)
@@ -10924,7 +10931,7 @@ $82:E736 60          RTS
 }
 
 
-;;; $E737: Handles door transitions - fade in the screen and run enemies; finish door transition ;;;
+;;; $E737: Door transition function - fade in the screen and run enemies; finish door transition ;;;
 {
 $82:E737 22 64 80 87 JSL $878064[$87:8064]  ; Animated tiles objects handler
 $82:E73B 22 B6 8E A0 JSL $A08EB6[$A0:8EB6]  ; Determine which enemies to process

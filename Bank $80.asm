@@ -2337,7 +2337,7 @@ $80:8F16 28          PLP
 $80:8F17 6B          RTL                    ; Return
 
 $80:8F18 AD 3D 06    LDA $063D  [$7E:063D]  ;\
-$80:8F1B 30 45       BMI $45    [$8F62]     ;} If [music entry] & 8000h: go to BRANCH_MUSIC_DATA
+$80:8F1B 30 45       BMI $45    [$8F62]     ;} If [music entry] & 8000h != 0: go to BRANCH_MUSIC_DATA
 $80:8F1D E2 20       SEP #$20
 $80:8F1F 29 7F       AND #$7F               ;\
 $80:8F21 8D F5 07    STA $07F5  [$7E:07F5]  ;} Music track index = [music entry] & 7Fh
