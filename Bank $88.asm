@@ -724,7 +724,7 @@ $88:82ED A9 FF FF    LDA #$FFFF             ;\
 $88:82F0 8D 09 06    STA $0609  [$7E:0609]  ;} Earthquake sound effect timer = FFFFh
 
 ; BRANCH_NO_EARTHQUAKE
-$88:82F3 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable automap
+$88:82F3 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
 $88:82F6 E2 30       SEP #$30
 $88:82F8 A2 20       LDX #$20               ;\
                                             ;|
@@ -792,7 +792,7 @@ $88:83A4 8D 04 06    STA $0604  [$7E:0604]  ;/
 $88:83A7 E2 20       SEP #$20               ;\
 $88:83A9 A9 F0       LDA #$F0               ;|
 $88:83AB 8D 81 21    STA $2181  [$7E:2181]  ;|
-$88:83AE A9 FF       LDA #$FF               ;} WRAM address = $7F:FFF0
+$88:83AE A9 FF       LDA #$FF               ;} WRAM address = $7F:FFF0 (?!)
 $88:83B0 8D 82 21    STA $2182  [$7E:2182]  ;|
 $88:83B3 A9 01       LDA #$01               ;|
 $88:83B5 8D 83 21    STA $2183  [$7E:2183]  ;/
@@ -6684,7 +6684,7 @@ $88:C4C7 F0 02       BEQ $02    [$C4CB]     ;} If [FX Y position] - [layer 1 Y p
 $88:C4C9 10 0B       BPL $0B    [$C4D6]     ;/
 
 $88:C4CB 49 1F 00    EOR #$001F             ;\
-$88:C4CE 29 1F 00    AND #$001F             ;} A = [FX Y position] - [layer 1 Y position] & 1Fh ^ 1Fh | 100h
+$88:C4CE 29 1F 00    AND #$001F             ;} A = 11Fh - ([FX Y position] - [layer 1 Y position] & 1Fh)
 $88:C4D1 09 00 01    ORA #$0100             ;/
 $88:C4D4 80 10       BRA $10    [$C4E6]     ; Go to BRANCH_MERGE
 
@@ -6698,7 +6698,7 @@ $88:C4DE 80 06       BRA $06    [$C4E6]     ; Go to BRANCH_MERGE
 
 ; BRANCH_ON_SCREEN
 $88:C4E0 49 FF 00    EOR #$00FF             ;\
-$88:C4E3 29 FF 00    AND #$00FF             ;} A = [FX Y position] - [layer 1 Y position] & FFh ^ FFh
+$88:C4E3 29 FF 00    AND #$00FF             ;} A = FFh - ([FX Y position] - [layer 1 Y position] & FFh)
 
 ; BRANCH_MERGE
 $88:C4E6 8F DE CA 7E STA $7ECADE[$7E:CADE]  ; BG3 Y position = [A]

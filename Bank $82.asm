@@ -10214,34 +10214,34 @@ $82:E1EE CA          DEX                    ;|
 $82:E1EF 10 F6       BPL $F6    [$E1E7]     ;/
 $82:E1F1 AD 12 C0    LDA $C012  [$7E:C012]  ;\
 $82:E1F4 8D 12 C2    STA $C212  [$7E:C212]  ;|
-$82:E1F7 AD 14 C0    LDA $C014  [$7E:C014]  ;} Target BG3 palette 2 colour 1..2 = [BG3 palette 2 colour 1..2]
+$82:E1F7 AD 14 C0    LDA $C014  [$7E:C014]  ;} Target BG3 palette 2 colour 1..2 = [BG3 palette 2 colour 1..2] (mini-map explored room / non-empty energy tank)
 $82:E1FA 8D 14 C2    STA $C214  [$7E:C214]  ;/
 $82:E1FD AD 1A C0    LDA $C01A  [$7E:C01A]  ;\
 $82:E200 8D 1A C2    STA $C21A  [$7E:C21A]  ;|
-$82:E203 AD 1C C0    LDA $C01C  [$7E:C01C]  ;} Target BG3 palette 3 colour 1..2 = [BG3 palette 3 colour 1..2]
+$82:E203 AD 1C C0    LDA $C01C  [$7E:C01C]  ;} Target BG3 palette 3 colour 1..2 = [BG3 palette 3 colour 1..2] (mini-map unexplored room / HUD text / mini-map grid / empty reserve auto icon)
 $82:E206 8D 1C C2    STA $C21C  [$7E:C21C]  ;/
 $82:E209 AD 22 C0    LDA $C022  [$7E:C022]  ;\
 $82:E20C 8D 22 C2    STA $C222  [$7E:C222]  ;|
 $82:E20F AD 24 C0    LDA $C024  [$7E:C024]  ;|
-$82:E212 8D 24 C2    STA $C224  [$7E:C224]  ;} Target BG3 palette 4 colour 1..3 = [BG3 palette 4 colour 1..3]
+$82:E212 8D 24 C2    STA $C224  [$7E:C224]  ;} Target BG3 palette 4 colour 1..3 = [BG3 palette 4 colour 1..3] (highlighted HUD item)
 $82:E215 AD 26 C0    LDA $C026  [$7E:C026]  ;|
 $82:E218 8D 26 C2    STA $C226  [$7E:C226]  ;/
 $82:E21B AD 3A C0    LDA $C03A  [$7E:C03A]  ;\
-$82:E21E 8D 3A C2    STA $C23A  [$7E:C23A]  ;} Target BG3 palette 7 colour 1 = [BG3 palette 7 colour 1]
+$82:E21E 8D 3A C2    STA $C23A  [$7E:C23A]  ;} Target BG3 palette 7 colour 1 = [BG3 palette 7 colour 1] (mini-map room highlight / non-empty reserve auto icon)
 $82:E221 AD B3 07    LDA $07B3  [$7E:07B3]  ;\
 $82:E224 0D B1 07    ORA $07B1  [$7E:07B1]  ;|
-$82:E227 89 01 00    BIT #$0001             ;} If [CRE bitset] | [previous CRE bitset] & 1 = 0:
+$82:E227 89 01 00    BIT #$0001             ;} If [CRE bitset] | [previous CRE bitset] & 1 = 0 (enable BG1 during door transitions):
 $82:E22A D0 3F       BNE $3F    [$E26B]     ;/
 $82:E22C AD 28 C0    LDA $C028  [$7E:C028]  ;\
 $82:E22F 8D 28 C2    STA $C228  [$7E:C228]  ;|
 $82:E232 AD 2A C0    LDA $C02A  [$7E:C02A]  ;|
 $82:E235 8D 2A C2    STA $C22A  [$7E:C22A]  ;|
-$82:E238 AD 2C C0    LDA $C02C  [$7E:C02C]  ;} Target BG3 palette 5 = [BG3 palette 5]
+$82:E238 AD 2C C0    LDA $C02C  [$7E:C02C]  ;} Target BG3 palette 5 = [BG3 palette 5] (HUD item / empty energy tank)
 $82:E23B 8D 2C C2    STA $C22C  [$7E:C22C]  ;|
 $82:E23E AD 2E C0    LDA $C02E  [$7E:C02E]  ;|
 $82:E241 8D 2E C2    STA $C22E  [$7E:C22E]  ;/
 $82:E244 AD 38 C0    LDA $C038  [$7E:C038]  ;\
-$82:E247 8D 38 C2    STA $C238  [$7E:C238]  ;} Target BG3 palette 7 colour 0 = [BG3 palette 7 colour 0]
+$82:E247 8D 38 C2    STA $C238  [$7E:C238]  ;} Target BG3 palette 7 colour 0 = [BG3 palette 7 colour 0] (a white that I guess is used by CRE?)
 $82:E24A AD 43 09    LDA $0943  [$7E:0943]  ;\
 $82:E24D F0 1C       BEQ $1C    [$E26B]     ;} If timer is active:
 $82:E24F AD A2 C1    LDA $C1A2  [$7E:C1A2]  ;\
