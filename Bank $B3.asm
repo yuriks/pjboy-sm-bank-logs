@@ -3671,7 +3671,7 @@ $B3:E717 6B          RTL
 
 ; Indexed by [enemy parameter 1]
 $B3:E718             dw 0080, 00A0, 00E8 ; X position
-$B3:E71E             dw 00C8, 00C8, 00C8 ; Y posotion
+$B3:E71E             dw 00C8, 00C8, 00C8 ; Y position
 $B3:E724             dw E680, E680, E670 ; Function
 $B3:E72A             dw E556, E582, E5C6 ; Instruction list pointer
 $B3:E730             dw FE00, 0280, 0000 ; X velocity

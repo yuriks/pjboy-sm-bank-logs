@@ -718,7 +718,7 @@ $A7:96D2             dw 000A,97C8,9788,FFFF
 $A7:96DA             dw 000A,9AC8,9790,97B0
 $A7:96E2             dw 000A,9DC8,9798,97B8
 $A7:96EA             dw AF94                 ; Play Kraid roar sound effect
-$A7:96EC             dw 0040,A0C8,97A0,97C0  ; <-- Mouth is wide open
+$A7:96EC             dw 0040,A0C8,97A0,97C0  ; <-- Mouth is fully open
 $A7:96F4             dw 000A,9DC8,9798,97B8
 $A7:96FC             dw 000A,9AC8,9790,97B0
 $A7:9704             dw 000A,97C8,9788,FFFF
@@ -1878,10 +1878,10 @@ $A7:AFA8 80 DE       BRA $DE    [$AF88]     ; Go to execute next Kraid instructi
 $A7:AFAA C2 30       REP #$30
 $A7:AFAC DA          PHX
 $A7:AFAD AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
-$A7:AFB0 C9 37 C5    CMP #$C537             ;} If [Kraid function] >= $C537 (dying): return
+$A7:AFB0 C9 37 C5    CMP #$C537             ;} If [Kraid function] >= $C537 (dying):
 $A7:AFB3 30 02       BMI $02    [$AFB7]     ;/
 $A7:AFB5 FA          PLX
-$A7:AFB6 60          RTS
+$A7:AFB6 60          RTS                    ; Return
 
 $A7:AFB7 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A7:AFBA 38          SEC                    ;|
@@ -3257,12 +3257,12 @@ $A7:BBF0 F0 31       BEQ $31    [$BC23]     ;} If [A] = FFFFh: go to BRANCH_FINI
 $A7:BBF2 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A7:BBF5 38          SEC                    ;|
 $A7:BBF6 E9 08 00    SBC #$0008             ;|
-$A7:BBF9 AA          TAX                    ;} If [[Kraid instruction list pointer] - 6] != $A0C8: return
+$A7:BBF9 AA          TAX                    ;} If [[Kraid instruction list pointer] - 6] = $A0C8 (mouth fully open):
 $A7:BBFA BD 02 00    LDA $0002,x[$A7:96D4]  ;|
 $A7:BBFD C9 C8 A0    CMP #$A0C8             ;|
 $A7:BC00 D0 20       BNE $20    [$BC22]     ;/
 $A7:BC02 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
-$A7:BC05 29 0F 00    AND #$000F             ;} If [Kraid instruction timer] is not multiple of 10h: return
+$A7:BC05 29 0F 00    AND #$000F             ;} If [Kraid instruction timer] % 10h = 0:
 $A7:BC08 D0 18       BNE $18    [$BC22]     ;/
 $A7:BC0A A0 45 9C    LDY #$9C45             ;\
 $A7:BC0D AD E5 05    LDA $05E5  [$7E:05E5]  ;|
@@ -3273,7 +3273,7 @@ $A7:BC17 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A7:BC1B A9 1E 00    LDA #$001E             ;\
 $A7:BC1E 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 1Eh, sound library 3, max queued sounds allowed = 6 (Kraid's earthquake)
 
-$A7:BC22 6B          RTL
+$A7:BC22 6B          RTL                    ; Return
 
 ; BRANCH_FINISHED_INSTRUCTIONS
 $A7:BC23 20 E9 AD    JSR $ADE9  [$A7:ADE9]  ; Set up Kraid main loop - thinking
