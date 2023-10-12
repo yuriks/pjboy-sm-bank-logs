@@ -44,7 +44,7 @@ $A7:86ED             dx 7FFF,8CE3,
 
 ;;; $86F3: Instruction list - Kraid foot - Kraid is big - walking forwards ;;;
 {
-$A7:86F3             dx B633,       ; NOP
+$A7:86F3             dw B633,       ; NOP
                         0004,8CE3,
                         0004,8CF5,
                         0004,8D07,
@@ -107,15 +107,15 @@ $A7:86F3             dx B633,       ; NOP
                         0001,8EFF,
                         B65A,       ; Kraid X position -= 3
                         0001,8F11,
-                        0001,8CE3,
-                        812F,       ; Sleep
+                        0001,8CE3
+$A7:87BB             dw 812F        ; Sleep
 }
 
 
 ;;; $87BD: Instruction list - Kraid foot - lunge forward ;;;
 {
 ; This is just $86F3 but faster
-$A7:87BD             dx B633,       ; NOP
+$A7:87BD             dw B633,       ; NOP
                         0001,8CE3,
                         0001,8CF5,
                         0001,8D07,
@@ -178,14 +178,14 @@ $A7:87BD             dx B633,       ; NOP
                         0001,8EFF,
                         0001,8F11,
                         B667,       ; Kraid X position -= 3
-                        0001,8CE3,
-                        812F,       ; Sleep
+                        0001,8CE3
+$A7:8885             dw 812F        ; Sleep
 }
 
 
 ;;; $8887: Instruction list - Kraid foot - Kraid is big - walking backwards ;;;
 {
-$A7:8887             dx B633,       ; NOP
+$A7:8887             dw B633,       ; NOP
                         B674,       ; Kraid X position += 3
                         0004,8F47,
                         B674,       ; Kraid X position += 3
@@ -241,8 +241,8 @@ $A7:8887             dx B633,       ; NOP
                         0001,8D2B,
                         0001,8D19,
                         0001,8D07,
-                        0001,8CF5,
-                        80ED,8887,  ; Go to $8887
+                        0001,8CF5 
+$A7:8939             dw 80ED,8887   ; Go to $8887
 }
 
 
@@ -311,7 +311,7 @@ $A7:893D             dx B633,       ; NOP
 
 ;;; $89F3: Instruction list - Kraid arm - normal ;;;
 {
-$A7:89F3             dx 0006,8F59,
+$A7:89F3             dw 0006,8F59,
                         0006,8F83,
                         0006,8FAD,
                         0006,8FD7,
@@ -327,10 +327,10 @@ $A7:89F3             dx 0006,8F59,
                         0006,9001,
                         0006,8FD7,
                         0006,8FAD,
-                        0006,8F83,
-                        0020,8F59,
+                        0006,8F83
+$A7:8A37             dw 0020,8F59,
                         8A8F,       ; Slow Kraid arm if Kraid has less than half health
-                        80ED,89F3,  ; Go to $89F3
+                        80ED,89F3   ; Go to $89F3
 }
 
 
@@ -365,7 +365,7 @@ $A7:8A8F AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
 $A7:8A92 CF 12 78 7E CMP $7E7812[$7E:7812]  ;} If [Kraid's HP] < [1/2 Kraid health]:
 $A7:8A96 10 0B       BPL $0B    [$8AA3]     ;/
 $A7:8A98 AD D2 0F    LDA $0FD2  [$7E:0FD2]  ;\
-$A7:8A9B C9 41 8A    CMP #$8A41             ;} If [Kraid arm instruction list pointer] < $8A41:
+$A7:8A9B C9 41 8A    CMP #$8A41             ;} If [Kraid arm instruction list pointer] < $8A41 (normal):
 $A7:8A9E 10 03       BPL $03    [$8AA3]     ;/
 $A7:8AA0 A0 41 8A    LDY #$8A41             ; Y = Kraid arm - slow
 
@@ -373,8 +373,9 @@ $A7:8AA3 6B          RTL
 }
 
 
-;;; $8AA4: Instruction list - Kraid arm - initial ;;;
+;;; $8AA4: Instruction list - Kraid arm - rising/sinking ;;;
 {
+; Same as $89F3 (normal), but the spritemaps all have lower priority sprites
 $A7:8AA4             dx 0006,90FD,
                         0006,9127,
                         0006,9151,
@@ -420,9 +421,9 @@ $A7:8B04             dx 7FFF,8C6C,
 }
 
 
-;;; $8B0A: Instruction list - good fingernail ;;;
+;;; $8B0A: Instruction list - fingernail ;;;
 {
-$A7:8B0A             dx 0003,A617,
+$A7:8B0A             dw 0003,A617,
                         0003,A623,
                         0003,A639,
                         0003,A645,
@@ -430,7 +431,7 @@ $A7:8B0A             dx 0003,A617,
                         0003,A667,
                         0003,A67D,
                         0003,A689,
-                        80ED,8B0A,  ; Go to $8B0A
+                        80ED,8B0A   ; Go to $8B0A
 }
 
 
@@ -529,7 +530,7 @@ $A7:907F             dw 0005, FFD9,000A,950E,933B, FFDA,0000,9540,9399, 0000,000
 $A7:90A9             dw 0005, FFD9,000A,951A,9349, FFDA,0000,9540,9399, 0000,0000,9579,9411, FFD5,0009,950E,933B, FFD7,FFFE,9540,9399
 $A7:90D3             dw 0005, FFD9,000A,951A,9349, FFDA,0000,9540,9399, 0000,0000,9579,9411, FFD6,0009,951A,9349, FFD6,FFFE,9540,9399
 
-; Initial
+; Rising/sinking
 $A7:90FD             dw 0005, FFDC,FFDF,A47C,92D1, FFE4,FFE8,A4DB,93F7, 0000,0000,A53B,9439, FFDC,FFD8,A47C,92D1, FFE4,FFE1,A4DB,93F7
 $A7:9127             dw 0005, FFDA,FFDF,A483,92EB, FFE2,FFE6,A4DB,93F7, 0000,0000,A53B,9439, FFDC,FFD8,A47C,92D1, FFE4,FFE1,A4DB,93F7
 $A7:9151             dw 0005, FFD0,FFF3,A48F,92F9, FFDA,FFF3,A4BC,9371, 0000,0000,A511,941F, FFD3,FFE5,A483,92EB, FFDB,FFED,A4DB,93F7
@@ -861,7 +862,7 @@ $A7:A46A             dw 0002, 0000,000B,A4B5,9349, 0000,0000,A4CF,9399
 }
 
 
-;;; $A47C: Spritemaps - Kraid arm - initial ;;;
+;;; $A47C: Spritemaps - Kraid arm - rising/sinking ;;;
 {
 $A7:A47C             dx 0001, 81F2,F4,2126
 $A7:A483             dx 0002, 01F9,FB,2129, 01F1,FB,2128
@@ -886,7 +887,7 @@ $A7:A4F6             dw 0001, 0000,0000,A500,9411
 }
 
 
-;;; $A500: Spritemaps - Kraid arm - initial ;;;
+;;; $A500: Spritemaps - Kraid arm - rising/sinking ;;;
 {
 $A7:A500             dx 0003, 81F4,F8,2104, 81E4,F8,2102, 81D4,F8,2100
 $A7:A511             dx 0008, 01EC,00,211C, 01FC,F0,210F, 01F4,F0,210E, 01E4,E8,210D, 01DC,F8,210C, 81F4,F8,210A, 81E4,F0,2108, 81D4,E8,2106
@@ -1298,7 +1299,7 @@ $A7:AB4B 8D D6 0F    STA $0FD6  [$7E:0FD6]  ;} Kraid arm palette = [Kraid palett
 $A7:AB4E A9 2D BA    LDA #$BA2D             ;\
 $A7:AB51 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Kraid arm function = RTL
 $A7:AB54 A9 A4 8A    LDA #$8AA4             ;\
-$A7:AB57 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction = $8AA4
+$A7:AB57 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $8AA4 (rising/sinking)
 $A7:AB5A A9 01 00    LDA #$0001             ;\
 $A7:AB5D 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction timer = 1
 $A7:AB60 9C EA 0F    STZ $0FEA  [$7E:0FEA]  ; Kraid arm $0FAA = 0
@@ -1316,9 +1317,9 @@ $A7:AB6B D0 2B       BNE $2B    [$AB98]     ;} If Kraid not dead:
 $A7:AB6D AD 96 0F    LDA $0F96  [$7E:0F96]  ;\
 $A7:AB70 8D 16 10    STA $1016  [$7E:1016]  ;} Kraid top lint palette = [Kraid palette]
 $A7:AB73 A9 FF 7F    LDA #$7FFF             ;\
-$A7:AB76 8D 14 10    STA $1014  [$7E:1014]  ;} Kraid top lint instruction delay = 7FFFh
+$A7:AB76 8D 14 10    STA $1014  [$7E:1014]  ;} Kraid top lint instruction timer = 7FFFh
 $A7:AB79 A9 FE 8A    LDA #$8AFE             ;\
-$A7:AB7C 8D 12 10    STA $1012  [$7E:1012]  ;} Kraid top lint instruction = $8AFE
+$A7:AB7C 8D 12 10    STA $1012  [$7E:1012]  ;} Kraid top lint instruction list pointer = $8AFE (initial)
 $A7:AB7F A9 DF A5    LDA #$A5DF             ;\
 $A7:AB82 8D 0E 10    STA $100E  [$7E:100E]  ;} Kraid top lint spritemap pointer = $A5DF
 $A7:AB85 A9 31 B8    LDA #$B831             ;\
@@ -1341,9 +1342,9 @@ $A7:AB9F D0 25       BNE $25    [$ABC6]     ;} If Kraid not dead:
 $A7:ABA1 AD 96 0F    LDA $0F96  [$7E:0F96]  ;\
 $A7:ABA4 8D 56 10    STA $1056  [$7E:1056]  ;} Kraid middle lint palette = [Kraid palette]
 $A7:ABA7 A9 FF 7F    LDA #$7FFF             ;\
-$A7:ABAA 8D 54 10    STA $1054  [$7E:1054]  ;} Kraid middle lint instruction delay = 7FFFh
+$A7:ABAA 8D 54 10    STA $1054  [$7E:1054]  ;} Kraid middle lint instruction timer = 7FFFh
 $A7:ABAD A9 FE 8A    LDA #$8AFE             ;\
-$A7:ABB0 8D 52 10    STA $1052  [$7E:1052]  ;} Kraid middle lint instruction = $8AFE
+$A7:ABB0 8D 52 10    STA $1052  [$7E:1052]  ;} Kraid middle lint instruction list pointer = $8AFE (initial)
 $A7:ABB3 A9 DF A5    LDA #$A5DF             ;\
 $A7:ABB6 8D 4E 10    STA $104E  [$7E:104E]  ;} Kraid middle lint spritemap pointer = $A5DF
 $A7:ABB9 A9 31 B8    LDA #$B831             ;\
@@ -1364,9 +1365,9 @@ $A7:ABCD D0 25       BNE $25    [$ABF4]     ;} If Kraid not dead:
 $A7:ABCF AD 96 0F    LDA $0F96  [$7E:0F96]  ;\
 $A7:ABD2 8D 96 10    STA $1096  [$7E:1096]  ;} Kraid bottom lint palette = [Kraid palette]
 $A7:ABD5 A9 FF 7F    LDA #$7FFF             ;\
-$A7:ABD8 8D 94 10    STA $1094  [$7E:1094]  ;} Kraid bottom lint instruction delay = 7FFFh
+$A7:ABD8 8D 94 10    STA $1094  [$7E:1094]  ;} Kraid bottom lint instruction timer = 7FFFh
 $A7:ABDB A9 FE 8A    LDA #$8AFE             ;\
-$A7:ABDE 8D 92 10    STA $1092  [$7E:1092]  ;} Kraid bottom lint instruction = $8AFE
+$A7:ABDE 8D 92 10    STA $1092  [$7E:1092]  ;} Kraid bottom lint instruction list pointer = $8AFE (initial)
 $A7:ABE1 A9 DF A5    LDA #$A5DF             ;\
 $A7:ABE4 8D 8E 10    STA $108E  [$7E:108E]  ;} Kraid bottom lint spritemap pointer = $A5DF
 $A7:ABE7 A9 31 B8    LDA #$B831             ;\
@@ -1387,7 +1388,7 @@ $A7:ABFB D0 20       BNE $20    [$AC1D]     ;} If Kraid not dead:
 $A7:ABFD AD 96 0F    LDA $0F96  [$7E:0F96]  ;\
 $A7:AC00 8D D6 10    STA $10D6  [$7E:10D6]  ;} Kraid foot palette = [Kraid palette]
 $A7:AC03 A9 E7 86    LDA #$86E7             ;\
-$A7:AC06 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86E7
+$A7:AC06 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86E7 (initial)
 $A7:AC09 A9 01 00    LDA #$0001             ;\
 $A7:AC0C 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:AC0F A9 2D BA    LDA #$BA2D             ;\
@@ -1538,12 +1539,12 @@ $A7:AD5E 4C 74 C8    JMP $C874  [$A7:C874]  ; Go to update BG2 tilemap top half
 $A7:AD61 A9 8E AD    LDA #$AD8E             ;\
 $A7:AD64 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = draw room background
 $A7:AD67 A9 01 00    LDA #$0001             ;\
-$A7:AD6A 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:AD6A 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:AD6D A9 ED 86    LDA #$86ED             ;\
-$A7:AD70 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86ED
+$A7:AD70 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86ED (Kraid is big - neutral)
 $A7:AD73 A9 04 8B    LDA #$8B04             ;\
 $A7:AD76 8D 12 10    STA $1012  [$7E:1012]  ;|
-$A7:AD79 8D 52 10    STA $1052  [$7E:1052]  ;} Kraid lints instruction = $8B04
+$A7:AD79 8D 52 10    STA $1052  [$7E:1052]  ;} Kraid lints instruction list pointer = $8B04 (Kraid is big)
 $A7:AD7C 8D 92 10    STA $1092  [$7E:1092]  ;/
 $A7:AD7F A9 6C 8C    LDA #$8C6C             ;\
 $A7:AD82 8D 0E 10    STA $100E  [$7E:100E]  ;|
@@ -1677,15 +1678,15 @@ $A7:AE67 8D 72 11    STA $1172  [$7E:1172]  ;} Kraid bad fingernail function tim
 $A7:AE6A A9 01 00    LDA #$0001             ;\
 $A7:AE6D 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Kraid arm instruction timer = 1
 $A7:AE70 A9 DA 96    LDA #$96DA             ;\
-$A7:AE73 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $96DA
+$A7:AE73 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $96D2 + 8 (roar)
 $A7:AE76 A9 20 01    LDA #$0120             ;\
 $A7:AE79 8F 1E 78 7E STA $7E781E[$7E:781E]  ;} Kraid target X position = 120h
 $A7:AE7D A9 6E BB    LDA #$BB6E             ;\
 $A7:AE80 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = second phase setup
 $A7:AE83 A9 01 00    LDA #$0001             ;\
-$A7:AE86 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:AE86 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:AE89 A9 87 88    LDA #$8887             ;\
-$A7:AE8C 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $8887
+$A7:AE8C 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $8887 (Kraid is big - walking backwards)
 $A7:AE8F 6B          RTL
 }
 
@@ -1697,7 +1698,7 @@ $A7:AE93 A9 23 B9    LDA #$B923             ;\
 $A7:AE96 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Kraid enemy function = horizontally align enemy to Kraid
 $A7:AE99 A9 32 B8    LDA #$B832             ;\
 $A7:AE9C 9F 00 78 7E STA $7E7800,x[$7E:7880];} Kraid enemy next function = produce lint
-$A7:AEA0 9E AA 0F    STZ $0FAA,x[$7E:102A]  ; Kraid enemy instruction list pointer = 0
+$A7:AEA0 9E AA 0F    STZ $0FAA,x[$7E:102A]  ; Kraid enemy spawning X speed = 0
 $A7:AEA3 60          RTS
 }
 
@@ -1713,7 +1714,7 @@ $A7:AEAF D0 12       BNE $12    [$AEC3]     ; If [Kraid thinking timer] != 0: re
 $A7:AEB1 A9 EA BB    LDA #$BBEA             ;\
 $A7:AEB4 8D A8 0F    STA $0FA8  [$A7:0FA8]  ;} Kraid function = attacking with mouth open
 $A7:AEB7 A9 DA 96    LDA #$96DA             ;\
-$A7:AEBA 8D AA 0F    STA $0FAA  [$A7:0FAA]  ;} Kraid instruction list pointer = $96DA
+$A7:AEBA 8D AA 0F    STA $0FAA  [$A7:0FAA]  ;} Kraid instruction list pointer = $96D2 + 8 (roar)
 $A7:AEBD AD D2 96    LDA $96D2  [$A7:96D2]  ;\
 $A7:AEC0 8D AC 0F    STA $0FAC  [$A7:0FAC]  ;} Kraid instruction timer = 10
 
@@ -1731,7 +1732,7 @@ $A7:AECF D0 12       BNE $12    [$AEE3]     ; If [Kraid thinking timer] != 0: re
 $A7:AED1 A9 E4 AE    LDA #$AEE4             ;\
 $A7:AED4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = Kraid shot - Kraid's mouth is open
 $A7:AED7 A9 DA 96    LDA #$96DA             ;\
-$A7:AEDA 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $96DA
+$A7:AEDA 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $96D2 + 8 (roar)
 $A7:AEDD AD D2 96    LDA $96D2  [$A7:96D2]  ;\
 $A7:AEE0 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 10
 
@@ -1801,7 +1802,7 @@ $A7:AF3C 60          RTS
 
 $A7:AF3D AE AA 0F    LDX $0FAA  [$7E:0FAA]  ;\
 $A7:AF40 BD 00 00    LDA $0000,x[$A7:9752]  ;|
-$A7:AF43 C9 FF FF    CMP #$FFFF             ;} If [[Kraid instruction list pointer]] = FFFFh: return FFFFh
+$A7:AF43 C9 FF FF    CMP #$FFFF             ;} If [[Kraid instruction list pointer]] = FFFFh: return A = FFFFh
 $A7:AF46 F0 3A       BEQ $3A    [$AF82]     ;/
 $A7:AF48 30 39       BMI $39    [$AF83]     ; If [[Kraid instruction list pointer]] >= 7FFFh: go to BRANCH_ASM_INSTRUCTION
 $A7:AF4A 8D AC 0F    STA $0FAC  [$7E:0FAC]  ; Kraid instruction timer = [[Kraid instruction list pointer]]
@@ -2003,10 +2004,10 @@ $A7:B0B5 AA          TAX                    ;|
 $A7:B0B6 E0 80 01    CPX #$0180             ;|
 $A7:B0B9 30 EC       BMI $EC    [$B0A7]     ;/
 $A7:B0BB AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A7:B0BE C9 0E 97    CMP #$970E             ;} If [Kraid instruction list pointer] < $970E:
+$A7:B0BE C9 0E 97    CMP #$970E             ;} If [Kraid instruction list pointer] < $970E (roar):
 $A7:B0C1 10 07       BPL $07    [$B0CA]     ;/
 $A7:B0C3 18          CLC                    ;\
-$A7:B0C4 69 3C 00    ADC #$003C             ;} Kraid instruction list pointer += 3Ch
+$A7:B0C4 69 3C 00    ADC #$003C             ;} Kraid instruction list pointer += $970E (roar) - $96D2 (dying roar)
 $A7:B0C7 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 
 $A7:B0CA 60          RTS
@@ -2585,7 +2586,7 @@ $A7:B6C2 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} >_<;
 $A7:B6C5 A9 D7 B6    LDA #$B6D7             ;\
 $A7:B6C8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = Kraid shot - glow Kraid's eye
 $A7:B6CB A9 52 97    LDA #$9752             ;\
-$A7:B6CE 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $9752
+$A7:B6CE 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $974A + 8 (eye glowing)
 $A7:B6D1 AD 4A 97    LDA $974A  [$A7:974A]  ;\
 $A7:B6D4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 5
 }
@@ -2705,7 +2706,7 @@ $A7:B7A6 D0 12       BNE $12    [$B7BA]     ;} If [$14] = 0:
 $A7:B7A8 A9 E4 AE    LDA #$AEE4             ;\
 $A7:B7AB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = Kraid's mouth is open
 $A7:B7AE A9 DA 96    LDA #$96DA             ;\
-$A7:B7B1 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $96DA
+$A7:B7B1 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $96D2 + 8 (roar)
 $A7:B7B4 AD D2 96    LDA $96D2  [$A7:96D2]  ;\
 $A7:B7B7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = Ah
 
@@ -2743,7 +2744,7 @@ $A7:B7F0 AF 0A 78 7E LDA $7E780A[$7E:780A]  ;\
 $A7:B7F4 89 00 FF    BIT #$FF00             ;} If [Kraid mouth reopen counter] != 0: (if shot with charge beam)
 $A7:B7F7 F0 07       BEQ $07    [$B800]     ;/
 $A7:B7F9 AD D4 0F    LDA $0FD4  [$82:0FD4]  ;\
-$A7:B7FC 1A          INC A                  ;} Increment Kraid arm instruction delay (freeze arm)
+$A7:B7FC 1A          INC A                  ;} Increment Kraid arm instruction timer (freeze arm)
 $A7:B7FD 8D D4 0F    STA $0FD4  [$82:0FD4]  ;/
 
 $A7:B800 6B          RTL
@@ -2754,7 +2755,7 @@ $A7:B800 6B          RTL
 {
 $A7:B801 A2 80 00    LDX #$0080             ; X = Kraid top lint enemy index
 $A7:B804 A9 FF 7F    LDA #$7FFF             ;\
-$A7:B807 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Kraid top lint instruction delay = 7FFFh
+$A7:B807 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Kraid top lint instruction timer = 7FFFh
 $A7:B80A 4C 22 B8    JMP $B822  [$A7:B822]  ; Kraid lint main AI
 }
 
@@ -2763,7 +2764,7 @@ $A7:B80A 4C 22 B8    JMP $B822  [$A7:B822]  ; Kraid lint main AI
 {
 $A7:B80D A2 C0 00    LDX #$00C0             ; X = Kraid middle lint enemy index
 $A7:B810 A9 FF 7F    LDA #$7FFF             ;\
-$A7:B813 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Kraid top lint instruction delay = 7FFFh
+$A7:B813 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Kraid top lint instruction timer = 7FFFh
 $A7:B816 4C 22 B8    JMP $B822  [$A7:B822]  ; Kraid lint main AI
 }
 
@@ -2772,7 +2773,7 @@ $A7:B816 4C 22 B8    JMP $B822  [$A7:B822]  ; Kraid lint main AI
 {
 $A7:B819 A2 00 01    LDX #$0100             ; X = Kraid bottom lint enemy index
 $A7:B81C A9 FF 7F    LDA #$7FFF             ;\
-$A7:B81F 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Kraid top lint instruction delay = 7FFFh
+$A7:B81F 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Kraid top lint instruction timer = 7FFFh
 }
 
 
@@ -2940,9 +2941,9 @@ $A7:B94A D0 13       BNE $13    [$B95F]     ; If [enemy function] = 0:
 $A7:B94C BF 00 78 7E LDA $7E7800,x[$7E:7940];\
 $A7:B950 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = [next enemy function]
 $A7:B953 A9 87 88    LDA #$8887             ;\
-$A7:B956 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction = $8887
+$A7:B956 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $8887 (Kraid is big - walking backwards)
 $A7:B959 A9 01 00    LDA #$0001             ;\
-$A7:B95C 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction delay = 1
+$A7:B95C 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 
 $A7:B95F 6B          RTL
 }
@@ -3141,9 +3142,9 @@ $A7:BB12 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot thinking timer = [Y]
 $A7:BB16 A9 45 BB    LDA #$BB45             ;\
 $A7:BB19 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = second phase
 $A7:BB1C A9 01 00    LDA #$0001             ;\
-$A7:BB1F 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BB1F 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BB22 A9 87 88    LDA #$8887             ;\
-$A7:BB25 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $8887
+$A7:BB25 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $8887 (Kraid is big - walking backwards)
 $A7:BB28 60          RTS
 }
 
@@ -3156,9 +3157,9 @@ $A7:BB2E 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot thinking timer = [Y]
 $A7:BB32 A9 AE BB    LDA #$BBAE             ;\
 $A7:BB35 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = $BBAE
 $A7:BB38 A9 01 00    LDA #$0001             ;\
-$A7:BB3B 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BB3B 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BB3E A9 F3 86    LDA #$86F3             ;\
-$A7:BB41 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86F3
+$A7:BB41 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86F3 (Kraid is big - walking forwards)
 $A7:BB44 60          RTS
 }
 
@@ -3172,14 +3173,14 @@ $A7:BB4E 10 1D       BPL $1D    [$BB6D]     ;/
 $A7:BB50 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ; Kraid X position = [Kraid target X position]
 
 $A7:BB53 AD D2 10    LDA $10D2  [$7E:10D2]  ;\
-$A7:BB56 C9 39 89    CMP #$8939             ;} If [Kraid foot instruction] >= $8939:
+$A7:BB56 C9 39 89    CMP #$8939             ;} If [Kraid foot instruction list pointer] >= $8939 (last frame of walking backwards animation):
 $A7:BB59 30 12       BMI $12    [$BB6D]     ;/
 $A7:BB5B A9 2E BA    LDA #$BA2E             ;\
 $A7:BB5E 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = thinking
 $A7:BB61 A9 01 00    LDA #$0001             ;\
-$A7:BB64 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BB64 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BB67 A9 ED 86    LDA #$86ED             ;\
-$A7:BB6A 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86ED
+$A7:BB6A 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86ED (Kraid is big - neutral)
 
 $A7:BB6D 6B          RTL
 }
@@ -3194,7 +3195,7 @@ $A7:BB77 10 2A       BPL $2A    [$BBA3]     ;/
 $A7:BB79 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ; Kraid X position = [Kraid target X position]
 
 $A7:BB7C AD D2 10    LDA $10D2  [$7E:10D2]  ;\
-$A7:BB7F C9 39 89    CMP #$8939             ;} If [Kraid foot instruction] >= $8939:
+$A7:BB7F C9 39 89    CMP #$8939             ;} If [Kraid foot instruction list pointer] >= $8939 (last frame of walking backwards animation):
 $A7:BB82 30 1F       BMI $1F    [$BBA3]     ;/
 $A7:BB84 A9 2D B9    LDA #$B92D             ;\
 $A7:BB87 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = decrement enemy function timer
@@ -3203,9 +3204,9 @@ $A7:BB8D 8D F2 10    STA $10F2  [$7E:10F2]  ;} Kraid foot function timer = 180
 $A7:BB90 A9 A4 BB    LDA #$BBA4             ;\
 $A7:BB93 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = initialise second phase
 $A7:BB97 A9 01 00    LDA #$0001             ;\
-$A7:BB9A 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BB9A 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BB9D A9 ED 86    LDA #$86ED             ;\
-$A7:BBA0 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86ED
+$A7:BBA0 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86ED (Kraid is big - neutral)
 
 $A7:BBA3 6B          RTL
 }
@@ -3223,28 +3224,29 @@ $A7:BBAD 6B          RTL
 ;;; $BBAE: Kraid foot function - second phase - walking forwards ;;;
 {
 $A7:BBAE AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
-$A7:BBB2 CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;} If [Kraid target X position] < [Kraid X position]:
+$A7:BBB2 CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;} If [Kraid target X position] < [Kraid X position]: go to BRANCH_FORWARDS
 $A7:BBB5 30 1E       BMI $1E    [$BBD5]     ;/
 $A7:BBB7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ; Kraid X position = [Kraid target X position]
 $A7:BBBA AD D2 10    LDA $10D2  [$7E:10D2]  ;\
-$A7:BBBD C9 BB 87    CMP #$87BB             ;} If [Kraid foot instruction] = $8939:
+$A7:BBBD C9 BB 87    CMP #$87BB             ;} If [Kraid foot instruction list pointer] = $87BB (last frame of walking forwards animation):
 $A7:BBC0 D0 12       BNE $12    [$BBD4]     ;/
 $A7:BBC2 A9 2E BA    LDA #$BA2E             ;\
 $A7:BBC5 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = thinking
 $A7:BBC8 A9 01 00    LDA #$0001             ;\
-$A7:BBCB 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BBCB 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BBCE A9 ED 86    LDA #$86ED             ;\
-$A7:BBD1 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86ED
+$A7:BBD1 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86ED (Kraid is big - neutral)
 
-$A7:BBD4 6B          RTL
+$A7:BBD4 6B          RTL                    ; Return
 
-$A7:BBD5 AD D2 10    LDA $10D2  [$7E:10D2]  ;\ Else ([Kraid target X position] >= Kraid X position):
-$A7:BBD8 C9 BB 87    CMP #$87BB             ;} If [Kraid foot instruction] = $87BB:
+; BRANCH_FORWARDS
+$A7:BBD5 AD D2 10    LDA $10D2  [$7E:10D2]  ;\
+$A7:BBD8 C9 BB 87    CMP #$87BB             ;} If [Kraid foot instruction list pointer] = $87BB (last frame of walking forwards animation):
 $A7:BBDB D0 F7       BNE $F7    [$BBD4]     ;/
 $A7:BBDD A9 F3 86    LDA #$86F3             ;\
-$A7:BBE0 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86F3
+$A7:BBE0 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86F3 (Kraid is big - walking forwards)
 $A7:BBE3 A9 01 00    LDA #$0001             ;\
-$A7:BBE6 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BBE6 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BBE9 6B          RTL
 }
 
@@ -3400,9 +3402,9 @@ $A7:BCFE BD 86 0F    LDA $0F86,x[$7E:1106]  ;\
 $A7:BD01 09 00 01    ORA #$0100             ;} Set enemy invisible
 $A7:BD04 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
 $A7:BD07 A9 FF 7F    LDA #$7FFF             ;\
-$A7:BD0A 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction delay = 7FFFh
+$A7:BD0A 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 7FFFh
 $A7:BD0D A9 0A 8B    LDA #$8B0A             ;\
-$A7:BD10 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction = $8B0A
+$A7:BD10 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = $8B0A (fingernail)
 $A7:BD13 AD 0C 8B    LDA $8B0C  [$A7:8B0C]  ;\
 $A7:BD16 9D 8E 0F    STA $0F8E,x[$7E:110E]  ;} Enemy spritemap pointer = $A617
 $A7:BD19 A9 60 BD    LDA #$BD60             ;\
@@ -3465,11 +3467,10 @@ $A7:BD72 AD 70 11    LDA $1170  [$7E:1170]  ;} If [Kraid fingernail Y velocity] 
                                             ;|
 $A7:BD75 C9 00 00    CMP #$0000             ;|
 $A7:BD78 10 05       BPL $05    [$BD7F]     ;/
-$A7:BD7A B9 3E BE    LDA $BE3E,y[$A7:BE42]  ;\
-$A7:BD7D 80 03       BRA $03    [$BD82]     ;} A = [$BE3E + [Y]]
+$A7:BD7A B9 3E BE    LDA $BE3E,y[$A7:BE42]  ; A = [$BE3E + [Y]]
+$A7:BD7D 80 03       BRA $03    [$BD82]
 
                                             ; Else ([Kraid fingernail Y velocity] >= 0):
-
 $A7:BD7F B9 46 BE    LDA $BE46,y[$A7:BE4A]  ; A = [$BE46 + [Y]]
 
 $A7:BD82 A8          TAY                    ; Y = [A]
@@ -3488,9 +3489,9 @@ $A7:BDA4 29 FF FE    AND #$FEFF             ;|
 $A7:BDA7 29 FF FB    AND #$FBFF             ;} Set enemy as tangible and visible
 $A7:BDAA 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
 $A7:BDAD A9 01 00    LDA #$0001             ;\
-$A7:BDB0 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction delay = 1
+$A7:BDB0 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
 $A7:BDB3 A9 0A 8B    LDA #$8B0A             ;\
-$A7:BDB6 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction = $8B0A
+$A7:BDB6 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = $8B0A (fingernail)
 $A7:BDB9 A9 8E BE    LDA #$BE8E             ;\
 $A7:BDBC 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Kraid enemy function = (fire fingernail)
 $A7:BDBF AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -3651,16 +3652,16 @@ $A7:BF1D             dw FFC0,0010,
 {
 $A7:BF2D 20 05 C0    JSR $C005  [$A7:C005]  ; Handle Kraid's first phase
 $A7:BF30 AD D2 0F    LDA $0FD2  [$7E:0FD2]  ;\
-$A7:BF33 C9 37 8A    CMP #$8A37             ;} If [Kraid arm instruction] >= $8A37:
+$A7:BF33 C9 37 8A    CMP #$8A37             ;} If [Kraid arm instruction list pointer] >= $8A37 (penultimate animation frame of normal animation):
 $A7:BF36 30 24       BMI $24    [$BF5C]     ;/
 $A7:BF38 A9 F0 8A    LDA #$8AF0             ;\
-$A7:BF3B 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction = $8AF0
+$A7:BF3B 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $8AF0 (dying / preparing to lunge forward)
 $A7:BF3E A9 01 00    LDA #$0001             ;\
-$A7:BF41 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction delay = 1
+$A7:BF41 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction timer = 1
 $A7:BF44 A9 01 00    LDA #$0001             ;\
-$A7:BF47 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BF47 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BF4A A9 BD 87    LDA #$87BD             ;\
-$A7:BF4D 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $87BD
+$A7:BF4D 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $87BD (lunge forward)
 $A7:BF50 A9 5D BF    LDA #$BF5D             ;\
 $A7:BF53 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = $BF5D (lunge forward)
 $A7:BF56 A9 00 00    LDA #$0000             ;\
@@ -3680,27 +3681,27 @@ $A7:BF68 A9 5C 00    LDA #$005C             ;|
 $A7:BF6B 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 
 $A7:BF6E AD D2 10    LDA $10D2  [$7E:10D2]  ;\
-$A7:BF71 C9 85 88    CMP #$8885             ;} If [Kraid foot instruction] != $8885: return
+$A7:BF71 C9 85 88    CMP #$8885             ;} If [Kraid foot instruction list pointer] != $8885 (last frame of lunge forward): return
 $A7:BF74 D0 34       BNE $34    [$BFAA]     ;/
 $A7:BF76 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:BF79 C9 5C 00    CMP #$005C             ;} If [Kraid X position] != 5Ch:
 $A7:BF7C F0 0D       BEQ $0D    [$BF8B]     ;/
 $A7:BF7E A9 01 00    LDA #$0001             ;\
-$A7:BF81 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BF81 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BF84 A9 BD 87    LDA #$87BD             ;\
-$A7:BF87 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $87BD
+$A7:BF87 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $87BD (lunge forward)
 $A7:BF8A 6B          RTL
 
 $A7:BF8B A9 AB BF    LDA #$BFAB             ;\ Else ([Kraid X position] = 5Ch):
 $A7:BF8E 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = retreat from lunge
 $A7:BF92 A9 3F B9    LDA #$B93F             ;\
-$A7:BF95 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = decrement enemy function timer; set enemy instruction list to $8887
+$A7:BF95 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = decrement enemy function timer; set enemy instruction list to Kraid is big - walking backwards
 $A7:BF98 A9 01 00    LDA #$0001             ;\
 $A7:BF9B 8D F2 10    STA $10F2  [$7E:10F2]  ;} Kraid foot function delay = 1
 $A7:BF9E A9 01 00    LDA #$0001             ;\
-$A7:BFA1 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BFA1 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BFA4 A9 ED 86    LDA #$86ED             ;\
-$A7:BFA7 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86ED
+$A7:BFA7 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86ED (Kraid is big - neutral)
 
 $A7:BFAA 6B          RTL
 }
@@ -3716,25 +3717,25 @@ $A7:BFB6 A9 B0 00    LDA #$00B0             ;|
 $A7:BFB9 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 
 $A7:BFBC AD D2 10    LDA $10D2  [$7E:10D2]  ;\
-$A7:BFBF C9 39 89    CMP #$8939             ;} If [Kraid foot instruction] < $8939: return
+$A7:BFBF C9 39 89    CMP #$8939             ;} If [Kraid foot instruction list pointer] < $8939 (last frame of walking backwards animation): return
 $A7:BFC2 30 40       BMI $40    [$C004]     ;/
 $A7:BFC4 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:BFC7 C9 B0 00    CMP #$00B0             ;} If [Kraid X position] != B0h:
 $A7:BFCA F0 0D       BEQ $0D    [$BFD9]     ;/
 $A7:BFCC A9 87 88    LDA #$8887             ;\
-$A7:BFCF 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction = $8887
+$A7:BFCF 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $8887 (Kraid is big - walking backwards)
 $A7:BFD2 A9 01 00    LDA #$0001             ;\
-$A7:BFD5 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction delay = 1
+$A7:BFD5 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 $A7:BFD8 6B          RTL
 
 $A7:BFD9 A9 F3 89    LDA #$89F3             ;\ Else (Kraid X position = B0h):
-$A7:BFDC 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction = $89F3
+$A7:BFDC 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $89F3 (normal)
 $A7:BFDF A9 01 00    LDA #$0001             ;\
-$A7:BFE2 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction delay = 1
+$A7:BFE2 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction timer = 1
 $A7:BFE5 A9 01 00    LDA #$0001             ;\
-$A7:BFE8 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:BFE8 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BFEB A9 ED 86    LDA #$86ED             ;\
-$A7:BFEE 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86ED
+$A7:BFEE 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86ED (Kraid is big - neutral)
 $A7:BFF1 A9 60 B9    LDA #$B960             ;\
 $A7:BFF4 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = thinking
 $A7:BFF7 A9 2C 01    LDA #$012C             ;\
@@ -3791,24 +3792,24 @@ $A7:C041 A0 1A 00    LDY #$001A             ; Else: Y = 1Ah
 
 $A7:C044 98          TYA                    ;\
 $A7:C045 18          CLC                    ;|
-$A7:C046 69 DA 96    ADC #$96DA             ;} Kraid instruction list pointer = $96DA + [Y]
+$A7:C046 69 DA 96    ADC #$96DA             ;} Kraid instruction list pointer = $96D2 + 8 (roar) + [Y]
 $A7:C049 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A7:C04C B9 D2 96    LDA $96D2,y[$A7:96F4]  ;\
 $A7:C04F 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = [$96D2 + [Y]]
 $A7:C052 A9 04 00    LDA #$0004             ;\
 $A7:C055 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
 $A7:C058 A9 54 01    LDA #$0154             ;\
-$A7:C05B 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 154h
+$A7:C05B 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 340
 $A7:C05E A9 E7 86    LDA #$86E7             ;\
-$A7:C061 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86E7
+$A7:C061 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86E7 (initial)
 $A7:C064 A9 01 00    LDA #$0001             ;\
-$A7:C067 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:C067 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:C06A A9 2D BA    LDA #$BA2D             ;\
 $A7:C06D 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = RTS
 $A7:C070 A9 F3 89    LDA #$89F3             ;\
-$A7:C073 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction = $89F3
+$A7:C073 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $89F3 (normal)
 $A7:C076 A9 01 00    LDA #$0001             ;\
-$A7:C079 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction delay = 1
+$A7:C079 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction timer = 1
 $A7:C07C AD 06 10    LDA $1006  [$7E:1006]  ;\
 $A7:C07F 09 00 01    ORA #$0100             ;|
 $A7:C082 8D 06 10    STA $1006  [$7E:1006]  ;|
@@ -4158,13 +4159,13 @@ $A7:C382 CA          DEX                    ;|
 $A7:C383 CA          DEX                    ;|
 $A7:C384 10 F5       BPL $F5    [$C37B]     ;/
 $A7:C386 A9 F0 8A    LDA #$8AF0             ;\
-$A7:C389 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction = $8AF0
+$A7:C389 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $8AF0 (dying / preparing to lunge forward)
 $A7:C38C A9 01 00    LDA #$0001             ;\
-$A7:C38F 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction delay = 1
+$A7:C38F 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction timer = 1
 $A7:C392 A9 F9 C3    LDA #$C3F9             ;\
 $A7:C395 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = fade out background
 $A7:C398 A9 6C 97    LDA #$976C             ;\
-$A7:C39B 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $976C
+$A7:C39B 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $9764 + 8 (dying)
 $A7:C39E AD 64 97    LDA $9764  [$A7:9764]  ;\
 $A7:C3A1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 25
 $A7:C3A4 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4330,13 +4331,13 @@ $A7:C4F3 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pix
 $A7:C4F6 A9 00 01    LDA #$0100             ;\
 $A7:C4F9 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 100h
 $A7:C4FC A9 A4 8A    LDA #$8AA4             ;\
-$A7:C4FF 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction = $8AA4
+$A7:C4FF 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $8AA4 (rising/sinking)
 $A7:C502 A9 01 00    LDA #$0001             ;\
-$A7:C505 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction delay = 1
+$A7:C505 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction timer = 1
 $A7:C508 A9 E7 86    LDA #$86E7             ;\
-$A7:C50B 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction = $86E7
+$A7:C50B 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $86E7 (initial)
 $A7:C50E A9 01 00    LDA #$0001             ;\
-$A7:C511 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction delay = 1
+$A7:C511 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:C514 A9 2D BA    LDA #$BA2D             ;\
 $A7:C517 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = RTL
 $A7:C51A 4C B6 C8    JMP $C8B6  [$A7:C8B6]  ; Update BG2 tilemap bottom half
@@ -4905,12 +4906,12 @@ $A7:C975 8D F2 10    STA $10F2  [$82:10F2]  ;} Kraid foot function timer = 300
 $A7:C978 A9 2D BF    LDA #$BF2D             ;\
 $A7:C97B 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = first phase - prepare to lunge forward
 $A7:C97F A9 DA 96    LDA #$96DA             ;\
-$A7:C982 8D AA 0F    STA $0FAA  [$82:0FAA]  ;} Kraid instruction list pointer = $96DA
+$A7:C982 8D AA 0F    STA $0FAA  [$82:0FAA]  ;} Kraid instruction list pointer = $96D2 + 8 (roar)
 $A7:C985 20 E9 AD    JSR $ADE9  [$A7:ADE9]  ; Set up Kraid main loop - thinking
 $A7:C988 A9 F3 89    LDA #$89F3             ;\
-$A7:C98B 8D D2 0F    STA $0FD2  [$82:0FD2]  ;} Kraid arm instruction = $89F3
+$A7:C98B 8D D2 0F    STA $0FD2  [$82:0FD2]  ;} Kraid arm instruction list pointer = $89F3 (normal)
 $A7:C98E A9 01 00    LDA #$0001             ;\
-$A7:C991 8D D4 0F    STA $0FD4  [$82:0FD4]  ;} Kraid arm instruction delay = 1
+$A7:C991 8D D4 0F    STA $0FD4  [$82:0FD4]  ;} Kraid arm instruction timer = 1
 
 $A7:C994 6B          RTL
 }
