@@ -6476,7 +6476,7 @@ $A7:D62D A9 A8 D4    LDA #$D4A8             ;\
 $A7:D630 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Phantoon function = RTS
 $A7:D633 A9 01 00    LDA #$0001             ;\
 $A7:D636 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Phantoon body instruction timer = 1
-$A7:D639 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phanyoon eye instruction timer = 1
+$A7:D639 8D D4 0F    STA $0FD4  [$7E:0FD4]  ; Phantoon eye instruction timer = 1
 $A7:D63C A9 41 CC    LDA #$CC41             ;\
 $A7:D63F 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Phantoon body instruction list pointer = $CC41 (invulnerable)
 $A7:D642 A9 81 CC    LDA #$CC81             ;\
