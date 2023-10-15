@@ -1338,7 +1338,6 @@ $90:878F 60          RTS                    ;} Return carry clear
 
 ;;; $8790: Determine if Samus bottom half is drawn - shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
 {
-; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 $90:8790 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:8793 C9 CF 00    CMP #$00CF             ;} If [Samus pose] = shinespark:
 $90:8796 10 0C       BPL $0C    [$87A4]     ;/
@@ -2265,6 +2264,11 @@ $90:8D80             db F8,00, ; Facing right - crouching transition
 
 ;;; $8D98: Calculate Samus spritemap position - shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
 {
+;; Parameters:
+;;     Y: Samus pose * 2
+;; Returns:
+;;     X: Samus spritemap X position
+;;     Y: Samus spritemap Y position
 $90:8D98 8B          PHB
 $90:8D99 4B          PHK                    ;\
 $90:8D9A AB          PLB                    ;} DB = $90
@@ -4553,8 +4557,8 @@ $90:9D24 A5 16       LDA $16    [$7E:0016]  ;\
 $90:9D26 8D 1C 0E    STA $0E1C  [$7E:0E1C]  ;} Enemy index to shake = [$16]
 $90:9D29 AB          PLB
 $90:9D2A 28          PLP
-$90:9D2B 38          SEC
-$90:9D2C 6B          RTL
+$90:9D2B 38          SEC                    ;\
+$90:9D2C 6B          RTL                    ;} Return carry set
 
 $90:9D2D AB          PLB
 $90:9D2E 28          PLP
@@ -4812,11 +4816,11 @@ $90:9F0D             dw 0007,0004,0004, 0000,0000,0000 ; With speed booster
 $90:9F19             dw 0002,0001,0000, 0000,0000,0000 ; Without speed booster
 
 ;                        ______________________________ X acceleration
-;                       |     _________________________ X acceleration
+;                       |     _________________________ X subacceleration
 ;                       |    |      ___________________ Max X speed
 ;                       |    |     |     ______________ Max X subspeed
 ;                       |    |     |    |      ________ X deceleration
-;                       |    |     |    |     |     ___ X deceleration
+;                       |    |     |    |     |     ___ X subdeceleration
 ;                       |    |     |    |     |    |
 $90:9F25             dw 0000,3000, 0003,0000, 0000,0800 ; During diagonal bomb jump
 $90:9F31             dw 0000,3000, 000F,0000, 0000,1000 ; When disconnecting grapple beam in air
@@ -8777,7 +8781,7 @@ $90:BBAB E0 06 00    CPX #$0006             ;\
 $90:BBAE 30 9A       BMI $9A    [$BB4A]     ;} If [X] < 6: go to LOOP_CHARGE_BEAM
 
 $90:BBB0 28          PLP
-$90:BBB1 60          RTS
+$90:BBB1 60          RTS                    ; Return
 
 ; BRANCH_HYPER_BEAM
 $90:BBB2 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\

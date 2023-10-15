@@ -16,6 +16,7 @@ $A7:8687             dw 3800, 559D, 1816, 100D, 4B9F, 3F37, 36D0, 2E69, 2608, 1D
 
 ;;; $86A7: Unused. Palette ;;;
 {
+; Clone of $8687
 $A7:86A7             dw 3800, 559D, 1816, 100D, 4B9F, 3F37, 36D0, 2E69, 2608, 1DA6, 1125, 08C5, 0003, 6318, 7FFF, 0000
 }
 
@@ -336,7 +337,7 @@ $A7:8A37             dw 0020,8F59,
 
 ;;; $8A41: Instruction list - Kraid arm - slow ;;;
 {
-$A7:8A41             dx 0008,8F59,
+$A7:8A41             dw 0008,8F59,
                         0008,8F83,
                         0008,8FAD,
                         0008,8FD7,
@@ -354,12 +355,12 @@ $A7:8A41             dx 0008,8F59,
                         0008,8FAD,
                         0008,8F83,
                         0030,8F59,
-                        8A8F,       ; Slow Kraid arm if Kraid has less than half health
-                        80ED,8A41,  ; Go to $8A41
+                        8A8F,       ; Slow Kraid arm if Kraid has less than half health (effectively just "go to $8A41")
+                        80ED,8A41   ; Go to $8A41
 }
 
 
-;;; $8A8F: Enemy instruction - slow Kraid arm if Kraid has less than half health ;;;
+;;; $8A8F: Instruction - slow Kraid arm if Kraid has less than half health ;;;
 {
 $A7:8A8F AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
 $A7:8A92 CF 12 78 7E CMP $7E7812[$7E:7812]  ;} If [Kraid's HP] < [1/2 Kraid health]:
@@ -608,8 +609,8 @@ $A7:948F 6B          RTL
 ;;; $9490: Enemy touch - enemy $E2FF (Kraid arm) ;;;
 {
 $A7:9490 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
-$A7:9493 F0 01       BEQ $01    [$9496]     ;} If [Samus invincibility timer] != 0: return
-$A7:9495 6B          RTL
+$A7:9493 F0 01       BEQ $01    [$9496]     ;} If [Samus invincibility timer] != 0:
+$A7:9495 6B          RTL                    ; Return
 
 $A7:9496 20 A4 94    JSR $94A4  [$A7:94A4]  ; Knock Samus back
 $A7:9499 A9 9B B8    LDA #$B89B             ;\
@@ -2007,7 +2008,7 @@ $A7:B0BB AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A7:B0BE C9 0E 97    CMP #$970E             ;} If [Kraid instruction list pointer] < $970E (roar):
 $A7:B0C1 10 07       BPL $07    [$B0CA]     ;/
 $A7:B0C3 18          CLC                    ;\
-$A7:B0C4 69 3C 00    ADC #$003C             ;} Kraid instruction list pointer += $970E (roar) - $96D2 (dying roar)
+$A7:B0C4 69 3C 00    ADC #$003C             ;} Kraid instruction list pointer += $970E (dying roar) - $96D2 (roar)
 $A7:B0C7 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 
 $A7:B0CA 60          RTS
