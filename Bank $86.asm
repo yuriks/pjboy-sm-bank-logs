@@ -9108,6 +9108,8 @@ $86:C1B7 60          RTS
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
+; Used only by Mother Brain's bomb / bomb collision detection
+
 $86:C1B8 AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
 $86:C1BB D0 02       BNE $02    [$C1BF]     ;} If [bomb counter] = 0:
 $86:C1BD 18          CLC                    ;\

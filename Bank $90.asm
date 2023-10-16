@@ -7137,6 +7137,7 @@ $90:B074 60          RTS
 
 ;;; $B075: Projectile pre-instruction - super missile link ;;;
 {
+; If super missile link is flagged for deletion, clear *all* super missile projectiles
 $90:B075 BD 04 0C    LDA $0C04,x[$7E:0C06]  ;\
 $90:B078 29 F0 00    AND #$00F0             ;} If projectile is not deleted: return
 $90:B07B F0 1B       BEQ $1B    [$B098]     ;/
@@ -7602,7 +7603,7 @@ $90:B30A 9D 7C 0C    STA $0C7C,x[$7E:0C7C]  ;/
 $90:B30D 29 00 FF    AND #$FF00             ;\
 $90:B310 F0 50       BEQ $50    [$B362]     ;} >_<;
 $90:B312 BD 7C 0C    LDA $0C7C,x[$7E:0C7C]  ;\
-$90:B315 85 16       STA $16    [$7E:0016]  ;} $16 = 100h (base speed)
+$90:B315 85 16       STA $16    [$7E:0016]  ;} $16 = 100h + [projectile extra base speed] (base speed)
 $90:B317 86 12       STX $12    [$7E:0012]  ; $12 = [projectile index]
 $90:B319 20 F3 B1    JSR $B1F3  [$90:B1F3]  ; Initialise projectile velocities
 $90:B31C BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
@@ -9166,7 +9167,7 @@ $90:BE2F 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:BE33 A9 68 AF    LDA #$AF68             ;\
 $90:BE36 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $AF68
 $90:BE39 A9 F0 00    LDA #$00F0             ;\
-$90:BE3C 9D 7C 0C    STA $0C7C,x            ;} Projectile variable = F0h
+$90:BE3C 9D 7C 0C    STA $0C7C,x            ;} Projectile extra base speed = F0h
 $90:BE3F 80 1D       BRA $1D    [$BE5E]     ; Return
 
 ; BRANCH_SUPER
@@ -9180,7 +9181,7 @@ $90:BE4E 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:BE52 A9 E5 AF    LDA #$AFE5             ;\
 $90:BE55 9D 68 0C    STA $0C68,x            ;} Projectile pre-instruction = $AFE5
 $90:BE58 A9 F0 00    LDA #$00F0             ;\
-$90:BE5B 9D 7C 0C    STA $0C7C,x            ;} Projectile variable = F0h
+$90:BE5B 9D 7C 0C    STA $0C7C,x            ;} Projectile extra base speed = F0h
 
 $90:BE5E FA          PLX
 $90:BE5F AB          PLB
@@ -10010,7 +10011,7 @@ $90:C51E D0 11       BNE $11    [$C531]     ;/
 $90:C520 AD AA 0A    LDA $0AAA  [$7E:0AAA]  ;\
 $90:C523 1A          INC A                  ;|
 $90:C524 C9 03 00    CMP #$0003             ;|
-$90:C527 30 03       BMI $03    [$C52C]     ;} $0AAA = min(2, [$0AAA] + 1)
+$90:C527 30 03       BMI $03    [$C52C]     ;} Arm cannon toggle flag = min(2, [arm cannon toggle flag] + 1)
 $90:C529 A9 02 00    LDA #$0002             ;|
                                             ;|
 $90:C52C 8D AA 0A    STA $0AAA  [$7E:0AAA]  ;/
@@ -10018,7 +10019,7 @@ $90:C52F 80 06       BRA $06    [$C537]     ; Return
 
 ; BRANCH_ITEM_CHANGED
 $90:C531 A9 01 00    LDA #$0001             ;\
-$90:C534 8D AA 0A    STA $0AAA  [$7E:0AAA]  ;} $0AAA = 1
+$90:C534 8D AA 0A    STA $0AAA  [$7E:0AAA]  ;} Arm cannon toggle flag = 1
 
 $90:C537 28          PLP
 $90:C538 60          RTS
@@ -10155,7 +10156,7 @@ $90:C5EA 60          RTS
 ;;; $C5EB: Update arm cannon is open flag ;;;
 {
 $90:C5EB AD AA 0A    LDA $0AAA  [$7E:0AAA]  ;\
-$90:C5EE C9 02 00    CMP #$0002             ;} If HUD item changed this frame: return carry clear
+$90:C5EE C9 02 00    CMP #$0002             ;} If arm cannon not toggled: return carry clear
 $90:C5F1 30 32       BMI $32    [$C625]     ;/
 $90:C5F3 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
 $90:C5F6 AA          TAX                    ;|
@@ -11983,21 +11984,21 @@ $90:D645 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} Crystal flash raise Samus timer =
 $90:D648 9C EA 0D    STZ $0DEA  [$7E:0DEA]  ; Crystal flash ammo decrementing index = missiles
 $90:D64B A9 0A 00    LDA #$000A             ;\
 $90:D64E 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Crystal flash ammo decrementing timer = 10
-$90:D651 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; $0DEE = 0
-$90:D654 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ; $0DF0 = 0
-$90:D657 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ; $0DF2 = 0
+$90:D651 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; $0DEE = 0 (unused)
+$90:D654 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ; $0DF0 = 0 (pointless zeroing)
+$90:D657 9C F2 0D    STZ $0DF2  [$7E:0DF2]
 $90:D65A A9 07 00    LDA #$0007             ;\
-$90:D65D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 7
+$90:D65D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 7 (crystal flash)
 $90:D660 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; $0ACE = 0
 $90:D663 A9 01 00    LDA #$0001             ;\
 $90:D666 8D 68 0A    STA $0A68  [$7E:0A68]  ;} $0A68 = 1
-$90:D669 8D F2 0D    STA $0DF2  [$7E:0DF2]  ; $0DF2 = 1
+$90:D669 8D F2 0D    STA $0DF2  [$7E:0DF2]  ; $0DF2 = 1 (unused)
 $90:D66C 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $90:D66F 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
 $90:D672 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = none
 $90:D675 28          PLP
-$90:D676 18          CLC
-$90:D677 6B          RTL
+$90:D676 18          CLC                    ;\
+$90:D677 6B          RTL                    ;} Return carry clear
 }
 
 
@@ -12125,13 +12126,13 @@ $90:D75A 60          RTS
 ;;; $D75B: Samus movement handler - crystal flash - finish ;;;
 {
 $90:D75B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D75E CD F0 0D    CMP $0DF0  [$7E:0DF0]  ;} If Samus Y position != [$0DF0]:
+$90:D75E CD F0 0D    CMP $0DF0  [$7E:0DF0]  ;} If [Samus Y position] != [$0DF0]:
 $90:D761 F0 04       BEQ $04    [$D767]     ;/
 $90:D763 1A          INC A                  ;\
 $90:D764 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;} Samus Y position += 1
 
 $90:D767 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
-$90:D76A 29 FF 00    AND #$00FF             ;} If Samus movement type != 0: return
+$90:D76A 29 FF 00    AND #$00FF             ;} If [Samus movement type] != standing: return
 $90:D76D D0 23       BNE $23    [$D792]     ;/
 $90:D76F 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag = 0
 $90:D772 A9 FF FF    LDA #$FFFF             ;\
@@ -12139,10 +12140,10 @@ $90:D775 8D 68 0A    STA $0A68  [$7E:0A68]  ;} $0A68 = FFFFh
 $90:D778 A9 37 A3    LDA #$A337             ;\
 $90:D77B 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:D77E AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:D781 C9 1D E9    CMP #$E91D             ;} If controller input handler function = $E91D: return
+$90:D781 C9 1D E9    CMP #$E91D             ;} If [$0A60] = $E91D (demo): return
 $90:D784 F0 0C       BEQ $0C    [$D792]     ;/
 $90:D786 A9 13 E9    LDA #$E913             ;\
-$90:D789 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Controller input handler function = $E913
+$90:D789 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
 $90:D78C 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $90:D78F 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
 

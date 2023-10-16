@@ -175,7 +175,7 @@ $B2:8849 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
 $B2:884C AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:884F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$B2:8852 0A          ASL A                  ;} Collided projectile index
+$B2:8852 0A          ASL A                  ;} Y = (collided projectile index)
 $B2:8853 A8          TAY                    ;/
 $B2:8854 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $B2:8857 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile type]
@@ -184,11 +184,11 @@ $B2:885C C9 00 02    CMP #$0200             ;} If projectile is super missile: g
 $B2:885F F0 06       BEQ $06    [$8867]     ;/
 $B2:8861 C9 00 03    CMP #$0300             ;\
 $B2:8864 30 06       BMI $06    [$886C]     ;} If projectile is beam or missile: go to BRANCH_REFLECT
-$B2:8866 6B          RTL
+$B2:8866 6B          RTL                    ; Return
 
 ; BRANCH_SUPER
 $B2:8867 B9 7C 0C    LDA $0C7C,y            ;\
-$B2:886A F0 33       BEQ $33    [$889F]     ;} If [projectile $0C7C] = 0: return
+$B2:886A F0 33       BEQ $33    [$889F]     ;} If super missile link: return
 
 ; BRANCH_REFLECT
 $B2:886C A9 0A 00    LDA #$000A             ;\
