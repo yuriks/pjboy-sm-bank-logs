@@ -3638,14 +3638,16 @@ $91:B53C             db 06, 06, 06, 06, 06, 06, FF
 $91:B543             db 08, FF
 
 ; D3h: Facing right - crystal flash
-$91:B545             db 03, 03,
+$91:B545             db 03, 03, ; Raise Samus and generate bubble
                         01, 01, FE,02,
-                        0C, 0C, 0C, 0C, FE,04, 03, 03, 03, FD,01
+                        0C, 0C, 0C, 0C, FE,04, ; Main
+                        03, 03, 03, FD,01 ; Finish
 
 ; D4h: Facing left  - crystal flash
-$91:B556             db 03, 03,
+$91:B556             db 03, 03, ; Raise Samus and generate bubble
                         01, 01, FE,02,
-                        0C, 0C, 0C, 0C, FE,04, 03, 03, 03, FD,02
+                        0C, 0C, 0C, 0C, FE,04, ; Main
+                        03, 03, 03, FD,02 ; Finish
 
 ; D7h: Facing right - crystal flash ending
 ; D8h: Facing left  - crystal flash ending
@@ -7954,7 +7956,7 @@ $91:D708 20 43 D7    JSR $D743  [$91:D743]  ; Handle beam charge palettes
 $91:D70B B0 0A       BCS $0A    [$D717]     ; If carry clear:
 $91:D70D AD CC 0A    LDA $0ACC  [$7E:0ACC]  ;\
 $91:D710 0A          ASL A                  ;|
-$91:D711 AA          TAX                    ;} Execute [$D72D + [$0ACC] * 2]
+$91:D711 AA          TAX                    ;} Execute [$D72D + [special Samus palette type] * 2]
 $91:D712 FC 2D D7    JSR ($D72D,x)[$91:D9B2];/
 $91:D715 B0 0A       BCS $0A    [$D721]     ; If carry set: go to BRANCH_RETURN
 
@@ -8097,7 +8099,6 @@ $91:D829             dw 0000, A360, A340, A320, A300, A2E0, A2C0, A2A0, A280, A2
 $91:D83F AD CC 0A    LDA $0ACC  [$7E:0ACC]
 $91:D842 C9 08 00    CMP #$0008
 $91:D845 D0 02       BNE $02    [$D849]
-
 $91:D847 18          CLC
 $91:D848 60          RTS
 
@@ -8264,12 +8265,12 @@ $91:D973 A8          TAY                    ;|
 $91:D974 B9 9E D9    LDA $D99E,y[$91:D99E]  ;} Samus palette = 20h bytes from $9B:0000 + [$D99E + [Samus' charge palette index] * 2]
 $91:D977 AA          TAX                    ;|
 $91:D978 20 5B DD    JSR $DD5B  [$91:DD5B]  ;/
-$91:D97B CE D0 0A    DEC $0AD0  [$7E:0AD0]  ; Decrement special Samus palette timer
+$91:D97B CE D0 0A    DEC $0AD0  [$7E:0AD0]  ; Decrement $0AD0
 $91:D97E F0 02       BEQ $02    [$D982]     ;\
-$91:D980 10 15       BPL $15    [$D997]     ;} If [special Samus palette timer] > 0: return
+$91:D980 10 15       BPL $15    [$D997]     ;} If [$0AD0] > 0: return
 
 $91:D982 AD CE 0A    LDA $0ACE  [$7E:0ACE]  ;\
-$91:D985 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} Special Samus palette timer = [special Samus palette delay]
+$91:D985 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} $0AD0 = [special Samus palette delay]
 $91:D988 AD 62 0B    LDA $0B62  [$7E:0B62]  ;\
 $91:D98B 1A          INC A                  ;|
 $91:D98C 8D 62 0B    STA $0B62  [$7E:0B62]  ;|
@@ -8823,7 +8824,7 @@ $91:DE5C F0 2F       BEQ $2F    [$DE8D]     ;} If [Samus running momentum flag] 
 $91:DE5E 9C 3C 0B    STZ $0B3C  [$7E:0B3C]  ; Samus running momentum flag = 0
 $91:DE61 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost counter / timer = 0
 $91:DE64 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
-$91:DE67 9C D0 0A    STZ $0AD0  [$7E:0AD0]  ; Special Samus palette timer = 0
+$91:DE67 9C D0 0A    STZ $0AD0  [$7E:0AD0]  ; $0AD0 = 0
 $91:DE6A AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $91:DE6D 89 20 00    BIT #$0020             ;} If gravity suit equipped: go to BRANCH_GRAVITY
 $91:DE70 D0 15       BNE $15    [$DE87]     ;/
@@ -11095,11 +11096,11 @@ $91:EF01 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $E94F (x
 $91:EF04 A9 18 E9    LDA #$E918             ;\
 $91:EF07 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E918 (x-ray)
 $91:EF0A A9 08 00    LDA #$0008             ;\
-$91:EF0D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 8
+$91:EF0D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 8 (x-ray)
 $91:EF10 A9 01 00    LDA #$0001             ;\
-$91:EF13 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} Special Samus palette timer = 0
+$91:EF13 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} X-ray palette timer = 1
 $91:EF16 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; X-ray visor palette index = 0
-$91:EF19 9C 68 0A    STZ $0A68  [$7E:0A68]  ; $0A68 = 0
+$91:EF19 9C 68 0A    STZ $0A68  [$7E:0A68]  ; Special Samus palette timer = 0
 $91:EF1C 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Beam charge counter = 0
 $91:EF1F 9C D6 0C    STZ $0CD6  [$7E:0CD6]  ;\
 $91:EF22 9C D8 0C    STZ $0CD8  [$7E:0CD8]  ;} Charge beam animation frames = 0
@@ -12127,14 +12128,14 @@ $91:F562 D0 36       BNE $36    [$F59A]     ;} If [Samus pose] != facing right -
 
 ; BRANCH_SHINESPARK_FACING_RIGHT
 $91:F564 AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
-$91:F567 F0 31       BEQ $31    [$F59A]     ;} If [Samus shine timer] = 0: go to BRANCH_NOT_SHINESPARK
+$91:F567 F0 31       BEQ $31    [$F59A]     ;} If [special Samus palette timer] = 0: go to BRANCH_NOT_SHINESPARK
 $91:F569 A9 C7 00    LDA #$00C7             ;\
 $91:F56C 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - vertical shinespark windup
 $91:F56F 80 0B       BRA $0B    [$F57C]     ; Go to BRANCH_SHINESPARK_MERGE
 
 ; BRANCH_SHINESPARK_FACING_LEFT
 $91:F571 AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
-$91:F574 F0 24       BEQ $24    [$F59A]     ;} If [Samus shine timer] = 0: go to BRANCH_NOT_SHINESPARK
+$91:F574 F0 24       BEQ $24    [$F59A]     ;} If [special Samus palette timer] = 0: go to BRANCH_NOT_SHINESPARK
 $91:F576 A9 C8 00    LDA #$00C8             ;\
 $91:F579 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - vertical shinespark windup
 
@@ -12442,9 +12443,9 @@ $91:F7B3 29 00 FF    AND #$FF00             ;|
 $91:F7B6 C9 00 04    CMP #$0400             ;} If speed boosting:
 $91:F7B9 30 0F       BMI $0F    [$F7CA]     ;/
 $91:F7BB A9 B4 00    LDA #$00B4             ;\
-$91:F7BE 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = B4h
+$91:F7BE 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = B4h
 $91:F7C1 A9 01 00    LDA #$0001             ;\
-$91:F7C4 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 1 (speed booster shine)
+$91:F7C4 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 1 (speed booster shine)
 $91:F7C7 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; $0ACE = 0
 
 $91:F7CA 18          CLC

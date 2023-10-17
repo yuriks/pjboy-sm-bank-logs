@@ -1042,7 +1042,7 @@ $90:85EF D0 15       BNE $15    [$8606]     ;} If [Samus knockback timer] = 0:
 $90:85F1 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
 $90:85F4 F0 10       BEQ $10    [$8606]     ;} If [Samus invincibility timer] != 0:
 $90:85F6 AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
-$90:85F9 D0 0B       BNE $0B    [$8606]     ;} If [Samus shine timer] = 0:
+$90:85F9 D0 0B       BNE $0B    [$8606]     ;} If [special Samus palette timer] = 0:
 $90:85FB AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $90:85FE 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0:
 $90:8601 F0 03       BEQ $03    [$8606]     ;/
@@ -3749,7 +3749,7 @@ $90:9791 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
 $90:9794 D0 13       BNE $13    [$97A9]     ;} If [Samus running momentum flag] = 0:
 $90:9796 A9 01 00    LDA #$0001             ;\
 $90:9799 8D 3C 0B    STA $0B3C  [$7E:0B3C]  ;} Samus running momentum flag = 1
-$90:979C 8D D0 0A    STA $0AD0  [$7E:0AD0]  ; Special Samus palette timer = 1
+$90:979C 8D D0 0A    STA $0AD0  [$7E:0AD0]  ; $0AD0 = 1
 $90:979F 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 $90:97A2 AF 1F B6 91 LDA $91B61F[$91:B61F]  ;\
 $90:97A6 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;} Speed boost timer = 1, speed booster counter = 0
@@ -5079,7 +5079,7 @@ $90:A407 D0 19       BNE $19    [$A422]     ;} If [cinematic function] != 0: ret
 $90:A409 AD 9C 17    LDA $179C  [$7E:179C]  ;\
 $90:A40C D0 14       BNE $14    [$A422]     ;} If [boss ID] != 0: return
 $90:A40E AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
-$90:A411 D0 0F       BNE $0F    [$A422]     ;} If [Samus shine timer] != 0: return
+$90:A411 D0 0F       BNE $0F    [$A422]     ;} If [special Samus palette timer] != 0: return
 $90:A413 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
 $90:A416 89 00 04    BIT #$0400             ;} If speed boosting: return
 $90:A419 D0 07       BNE $07    [$A422]     ;/
@@ -6464,7 +6464,7 @@ $90:AC59 60          RTS                    ;} Return carry clear
 ;;; $AC5A: Check if Samus can fire (super) missile ;;;
 {
 ;; Returns
-;;     C: Set if Samus can fire (super) missile
+;;     Carry: Set if Samus can fire (super) missile
 
 ; Increments projectile counter(!)
 $90:AC5A AD D2 09    LDA $09D2  [$7E:09D2]  ;\
@@ -11227,9 +11227,9 @@ $90:D033 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ; Cooldown timer = 0
 $90:D036 A9 1E 00    LDA #$001E             ;\
 $90:D039 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} Shinespark windup timer = 30
 $90:D03C A9 3C 00    LDA #$003C             ;\
-$90:D03F 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = 60
+$90:D03F 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = 60
 $90:D042 A9 06 00    LDA #$0006             ;\
-$90:D045 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 6
+$90:D045 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 6 (shinesparking)
 $90:D048 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 $90:D04B 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = none
 $90:D04E AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
@@ -11351,7 +11351,7 @@ $90:D131 60          RTS
 ;;; $D132: Shinespark horizontal movement ;;;
 {
 $90:D132 A9 0F 00    LDA #$000F             ;\
-$90:D135 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
+$90:D135 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = Fh
 $90:D138 AD 44 0B    LDA $0B44  [$7E:0B44]  ;\
 $90:D13B 18          CLC                    ;|
 $90:D13C 6D 32 0B    ADC $0B32  [$7E:0B32]  ;|
@@ -11452,7 +11452,7 @@ $90:D1FE 60          RTS
 ;;; $D1FF: Shinespark vertical movement ;;;
 {
 $90:D1FF A9 0F 00    LDA #$000F             ;\
-$90:D202 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
+$90:D202 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = Fh
 $90:D205 AD EE 0D    LDA $0DEE  [$7E:0DEE]  ;\
 $90:D208 18          CLC                    ;|
 $90:D209 6D 32 0B    ADC $0B32  [$7E:0B32]  ;|
@@ -11603,7 +11603,7 @@ $90:D345 60          RTS                    ;} Return carry set
 ;;; $D346: Samus movement handler - shinespark crash - echoes circle Samus ;;;
 {
 $90:D346 A9 0F 00    LDA #$000F             ;\
-$90:D349 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
+$90:D349 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = Fh
 $90:D34C AD AF 0A    LDA $0AAF  [$7E:0AAF]  ;\
 $90:D34F 29 FF 00    AND #$00FF             ;|
 $90:D352 0A          ASL A                  ;} Execute [$D37D + [shinespark crash echo circle phase] * 2]
@@ -11699,7 +11699,7 @@ $90:D3F2 60          RTS
 ;;; $D3F3: Samus movement handler - shinespark crash - echoes finished circling Samus ;;;
 {
 $90:D3F3 A9 0F 00    LDA #$000F             ;\
-$90:D3F6 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = Fh
+$90:D3F6 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = Fh
 $90:D3F9 CE A2 0A    DEC $0AA2  [$7E:0AA2]  ; Decrement shinespark crash timer
 $90:D3FC F0 02       BEQ $02    [$D400]     ;\
 $90:D3FE 10 0C       BPL $0C    [$D40C]     ;} If [shinespark crash timer] > 0: return
@@ -11770,7 +11770,7 @@ $90:D494 9C E4 0B    STZ $0BE4  [$7E:0BE4]  ; Projectile 4 distance from Samus =
 ; BRANCH_DONT_FIRE
 $90:D497 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ; Cooldown timer = 0
 $90:D49A A9 01 00    LDA #$0001             ;\
-$90:D49D 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shine timer = 1
+$90:D49D 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = 1
 $90:D4A0 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:D4A3 29 FF 00    AND #$00FF             ;\
 $90:D4A6 C9 04 00    CMP #$0004             ;} If facing right:
@@ -11984,14 +11984,14 @@ $90:D645 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} Crystal flash raise Samus timer =
 $90:D648 9C EA 0D    STZ $0DEA  [$7E:0DEA]  ; Crystal flash ammo decrementing index = missiles
 $90:D64B A9 0A 00    LDA #$000A             ;\
 $90:D64E 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Crystal flash ammo decrementing timer = 10
-$90:D651 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; $0DEE = 0 (unused)
-$90:D654 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ; $0DF0 = 0 (pointless zeroing)
-$90:D657 9C F2 0D    STZ $0DF2  [$7E:0DF2]
+$90:D651 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ;\
+$90:D654 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ;} Pointless writes
+$90:D657 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ;/
 $90:D65A A9 07 00    LDA #$0007             ;\
-$90:D65D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 7 (crystal flash)
+$90:D65D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 7 (crystal flash)
 $90:D660 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; $0ACE = 0
 $90:D663 A9 01 00    LDA #$0001             ;\
-$90:D666 8D 68 0A    STA $0A68  [$7E:0A68]  ;} $0A68 = 1
+$90:D666 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = 1
 $90:D669 8D F2 0D    STA $0DF2  [$7E:0DF2]  ; $0DF2 = 1 (unused)
 $90:D66C 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $90:D66F 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
@@ -12050,8 +12050,8 @@ $90:D6CE AD EA 0D    LDA $0DEA  [$7E:0DEA]  ;\
 $90:D6D1 0A          ASL A                  ;|
 $90:D6D2 AA          TAX                    ;} Execute [$D6DD + [crystal flash ammo decrementing index] * 2]
 $90:D6D3 FC DD D6    JSR ($D6DD,x)          ;/
-$90:D6D6 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
-$90:D6D9 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
+$90:D6D6 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0 (!)
+$90:D6D9 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knockback timer = 0
 $90:D6DC 60          RTS
 
 $90:D6DD             dw D6E3, D706, D729
@@ -12061,14 +12061,14 @@ $90:D6DD             dw D6E3, D706, D729
 ;;; $D6E3: Crystal flash - decrement missiles ;;;
 {
 $90:D6E3 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
-$90:D6E6 89 07 00    BIT #$0007             ;} If frame counter not a multiple of 8: return
+$90:D6E6 89 07 00    BIT #$0007             ;} If [frame counter] % 8 != 0: return
 $90:D6E9 D0 1A       BNE $1A    [$D705]     ;/
 $90:D6EB CE C6 09    DEC $09C6  [$7E:09C6]  ; Decrement Samus missiles
 $90:D6EE A9 32 00    LDA #$0032             ;\
 $90:D6F1 22 12 DF 91 JSL $91DF12[$91:DF12]  ;} Give Samus 50 health
 $90:D6F5 CE EC 0D    DEC $0DEC  [$7E:0DEC]  ; Decrement crystal flash ammo decrementing timer
 $90:D6F8 F0 02       BEQ $02    [$D6FC]     ;\
-$90:D6FA 10 09       BPL $09    [$D705]     ;} If crystal flash ammo decrementing timer > 0: return
+$90:D6FA 10 09       BPL $09    [$D705]     ;} If [crystal flash ammo decrementing timer] > 0: return
 
 $90:D6FC A9 0A 00    LDA #$000A             ;\
 $90:D6FF 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Crystal flash ammo decrementing timer = 10
@@ -12081,14 +12081,14 @@ $90:D705 60          RTS
 ;;; $D706: Crystal flash - decrement super missiles ;;;
 {
 $90:D706 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
-$90:D709 89 07 00    BIT #$0007             ;} If frame counter not a multiple of 8: return
+$90:D709 89 07 00    BIT #$0007             ;} If [frame counter] % 8 != 0: return
 $90:D70C D0 1A       BNE $1A    [$D728]     ;/
 $90:D70E CE CA 09    DEC $09CA  [$7E:09CA]  ; Decrement Samus super missiles
 $90:D711 A9 32 00    LDA #$0032             ;\
 $90:D714 22 12 DF 91 JSL $91DF12[$91:DF12]  ;} Give Samus 50 health
 $90:D718 CE EC 0D    DEC $0DEC  [$7E:0DEC]  ; Decrement crystal flash ammo decrementing timer
 $90:D71B F0 02       BEQ $02    [$D71F]     ;\
-$90:D71D 10 09       BPL $09    [$D728]     ;} If crystal flash ammo decrementing timer > 0: return
+$90:D71D 10 09       BPL $09    [$D728]     ;} If [crystal flash ammo decrementing timer] > 0: return
 
 $90:D71F A9 0A 00    LDA #$000A             ;\
 $90:D722 8D EC 0D    STA $0DEC  [$7E:0DEC]  ;} Crystal flash ammo decrementing timer = 10
@@ -12101,23 +12101,23 @@ $90:D728 60          RTS
 ;;; $D729: Crystal flash - decrement power bombs ;;;
 {
 $90:D729 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
-$90:D72C 89 07 00    BIT #$0007             ;} If frame counter not a multiple of 8: return
+$90:D72C 89 07 00    BIT #$0007             ;} If [frame counter] % 8 != 0: return
 $90:D72F D0 29       BNE $29    [$D75A]     ;/
 $90:D731 CE CE 09    DEC $09CE  [$7E:09CE]  ; Decrement Samus power bombs
 $90:D734 A9 32 00    LDA #$0032             ;\
 $90:D737 22 12 DF 91 JSL $91DF12[$91:DF12]  ;} Give Samus 50 health
 $90:D73B CE EC 0D    DEC $0DEC  [$7E:0DEC]  ; Decrement crystal flash ammo decrementing timer
 $90:D73E F0 02       BEQ $02    [$D742]     ;\
-$90:D740 10 18       BPL $18    [$D75A]     ;} If crystal flash ammo decrementing timer > 0: return
+$90:D740 10 18       BPL $18    [$D75A]     ;} If [crystal flash ammo decrementing timer] > 0: return
 
 $90:D742 A9 5B D7    LDA #$D75B             ;\
 $90:D745 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D75B (crystal flash - finish)
 $90:D748 A9 52 EB    LDA #$EB52             ;\
-$90:D74B 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} $0A5C = default
+$90:D74B 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = $EB52 (default)
 $90:D74E A9 03 00    LDA #$0003             ;\
 $90:D751 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3
 $90:D754 A9 0C 00    LDA #$000C             ;\
-$90:D757 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 12
+$90:D757 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Ch
 
 $90:D75A 60          RTS
 }
@@ -12136,7 +12136,7 @@ $90:D76A 29 FF 00    AND #$00FF             ;} If [Samus movement type] != stand
 $90:D76D D0 23       BNE $23    [$D792]     ;/
 $90:D76F 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag = 0
 $90:D772 A9 FF FF    LDA #$FFFF             ;\
-$90:D775 8D 68 0A    STA $0A68  [$7E:0A68]  ;} $0A68 = FFFFh
+$90:D775 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = FFFFh
 $90:D778 A9 37 A3    LDA #$A337             ;\
 $90:D77B 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:D77E AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
@@ -15961,10 +15961,10 @@ $90:F003 60          RTS
 
 ; BRANCH_0C7C_NOT_1
 $90:F004 FE 7C 0C    INC $0C7C,x
-$90:F007 A9 B4 00    LDA #$00B4
-$90:F00A 8D 68 0A    STA $0A68  [$7E:0A68]
+$90:F007 A9 B4 00    LDA #$00B4             ;\
+$90:F00A 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = B4h
 $90:F00D A9 01 00    LDA #$0001             ;\
-$90:F010 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 1
+$90:F010 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 1 (speed booster shine)
 $90:F013 9C CE 0A    STZ $0ACE  [$7E:0ACE]
 $90:F016 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $90:F019 18          CLC
@@ -15995,7 +15995,7 @@ $90:F056 A9 01 00    LDA #$0001
 $90:F059 8D D0 0A    STA $0AD0  [$7E:0AD0]
 $90:F05C 8D 80 0A    STA $0A80  [$7E:0A80]
 $90:F05F A9 0A 00    LDA #$000A             ;\
-$90:F062 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = Ah
+$90:F062 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = Ah
 $90:F065 A9 78 00    LDA #$0078
 $90:F068 8D 68 0A    STA $0A68  [$7E:0A68]
 $90:F06B A9 72 F0    LDA #$F072             ;\
@@ -16741,14 +16741,13 @@ $90:F534 60          RTS
 
 ;;; $F535: Debug. Give Samus a shinespark if Y is newly pressed ;;;
 {
-; Gives Samus a shinespark
 $90:F535 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:F537 89 00 40    BIT #$4000             ;} If not newly pressed Y: return
 $90:F53A F0 0F       BEQ $0F    [$F54B]     ;/
 $90:F53C A9 B4 00    LDA #$00B4             ;\
-$90:F53F 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Samus shinespark / crystal flash timer = B4h
+$90:F53F 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = B4h
 $90:F542 A9 01 00    LDA #$0001             ;\
-$90:F545 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} $0ACC = 1
+$90:F545 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 1 (speed booster shine)
 $90:F548 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; $0ACE = 0
 
 $90:F54B 60          RTS

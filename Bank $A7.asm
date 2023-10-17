@@ -3524,7 +3524,7 @@ $A7:BDF3 AF CE 79 7E LDA $7E79CE[$7E:79CE]  ; A = [Kraid bad fingernail orientat
 $A7:BDF7 C9 01 00    CMP #$0001             ;\
 $A7:BDFA F0 CB       BEQ $CB    [$BDC7]     ;} If [A] = horizontal: go to BRANCH_DIAGONAL
 $A7:BDFC A9 01 00    LDA #$0001             ;\
-$A7:BDFF 9F 0E 78 7E STA $7E780E,x[$7E:798E];} EnemyKraid fingernail orientation = horizontal
+$A7:BDFF 9F 0E 78 7E STA $7E780E,x[$7E:798E];} Kraid fingernail orientation = horizontal
 $A7:BE03 A9 32 00    LDA #$0032             ;\
 $A7:BE06 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = 32h
 $A7:BE09 A9 F0 00    LDA #$00F0             ;\

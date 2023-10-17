@@ -9457,11 +9457,11 @@ $82:DCB8 9F 80 C3 7E STA $7EC380,x[$7E:C39E];} Target sprite palette 4 = [sprite
 $82:DCBC CA          DEX                    ;|
 $82:DCBD CA          DEX                    ;|
 $82:DCBE 10 F4       BPL $F4    [$DCB4]     ;/
-$82:DCC0 A9 03 00    LDA #$0003
-$82:DCC3 8D E2 0D    STA $0DE2  [$7E:0DE2]
-$82:DCC6 9C E4 0D    STZ $0DE4  [$7E:0DE4]
-$82:DCC9 9C E6 0D    STZ $0DE6  [$7E:0DE6]
-$82:DCCC 9C E8 0D    STZ $0DE8  [$7E:0DE8]
+$82:DCC0 A9 03 00    LDA #$0003             ;\
+$82:DCC3 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;|
+$82:DCC6 9C E4 0D    STZ $0DE4  [$7E:0DE4]  ;} Pointless writes
+$82:DCC9 9C E6 0D    STZ $0DE6  [$7E:0DE6]  ;|
+$82:DCCC 9C E8 0D    STZ $0DE8  [$7E:0DE8]  ;/
 $82:DCCF 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
 $82:DCD2 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancel HUD item index = nothing
 $82:DCD5 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
