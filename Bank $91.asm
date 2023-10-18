@@ -7953,7 +7953,7 @@ $91:D706 28          PLP
 $91:D707 6B          RTL                    ; Return
 
 $91:D708 20 43 D7    JSR $D743  [$91:D743]  ; Handle beam charge palettes
-$91:D70B B0 0A       BCS $0A    [$D717]     ; If carry clear:
+$91:D70B B0 0A       BCS $0A    [$D717]     ; If carry clear (glow has not ended):
 $91:D70D AD CC 0A    LDA $0ACC  [$7E:0ACC]  ;\
 $91:D710 0A          ASL A                  ;|
 $91:D711 AA          TAX                    ;} Execute [$D72D + [special Samus palette type] * 2]
@@ -7992,6 +7992,9 @@ $91:D72D             dw D9B2, ; 0: Screw attacking / speed boosting
 
 ;;; $D743: Handle beam charge palettes ;;;
 {
+;; Returns:
+;;     Carry: Set if glow has ended, clear otherwise
+
 ; Including beam charging, charged shot / grapple glow, pseudo screw attack, also calls visor palette handler
 $91:D743 AD 18 0B    LDA $0B18  [$7E:0B18]  ;\
 $91:D746 D0 4C       BNE $4C    [$D794]     ;} If [charged shot glow timer] != 0: go to BRANCH_CHARGED_SHOT_GLOW
@@ -8029,8 +8032,8 @@ $91:D78A 30 03       BMI $03    [$D78F]     ;} Samus charge palette index = ([Sa
 $91:D78C A9 00 00    LDA #$0000             ;|
                                             ;|
 $91:D78F 8D 62 0B    STA $0B62  [$7E:0B62]  ;/
-$91:D792 18          CLC
-$91:D793 60          RTS
+$91:D792 18          CLC                    ;\
+$91:D793 60          RTS                    ;} Return carry clear
 
 ; BRANCH_CHARGED_SHOT_GLOW
 $91:D794 AD 76 0A    LDA $0A76  [$7E:0A76]  ;\
@@ -8044,15 +8047,15 @@ $91:D7A4 9F 82 C1 7E STA $7EC182,x[$7E:C19E];} Samus palette colours 1..Fh = (31
 $91:D7A8 CA          DEX                    ;|
 $91:D7A9 CA          DEX                    ;|
 $91:D7AA 10 F8       BPL $F8    [$D7A4]     ;/
-$91:D7AC 18          CLC
-$91:D7AD 60          RTS
+$91:D7AC 18          CLC                    ;\
+$91:D7AD 60          RTS                    ;} Return carry clear
 
 $91:D7AE 38          SEC
 $91:D7AF 60          RTS
 
 ; BRANCH_NO_CHARGE_GLOW
 $91:D7B0 9C 62 0B    STZ $0B62  [$7E:0B62]  ; Samus charge palette index = 0
-$91:D7B3 4C 3F D8    JMP $D83F  [$91:D83F]  ; Go to handle visor palette
+$91:D7B3 4C 3F D8    JMP $D83F  [$91:D83F]  ; Go to handle visor palette (returns carry clear)
 
 ; BRANCH_HYPER_BEAM
 $91:D7B6 AD 18 0B    LDA $0B18  [$7E:0B18]  ;\
@@ -8066,13 +8069,13 @@ $91:D7C7 AA          TAX                    ;} Samus palette = 20h bytes from $9
 $91:D7C8 20 5B DD    JSR $DD5B  [$91:DD5B]  ;/
 
 $91:D7CB CE 18 0B    DEC $0B18  [$7E:0B18]  ; Decrement charged shot glow timer
-$91:D7CE 18          CLC
-$91:D7CF 60          RTS
+$91:D7CE 18          CLC                    ;\
+$91:D7CF 60          RTS                    ;} Return carry clear
 
 ; BRANCH_END_GLOW
 $91:D7D0 9C 18 0B    STZ $0B18  [$7E:0B18]  ; Charged shot glow timer = 0
-$91:D7D3 38          SEC
-$91:D7D4 60          RTS
+$91:D7D3 38          SEC                    ;\
+$91:D7D4 60          RTS                    ;} Return carry set
 
 ; Samus palette table. Beam charge
 $91:D7D5             dw D7DB, D7E7, D7F3
@@ -8095,6 +8098,9 @@ $91:D829             dw 0000, A360, A340, A320, A300, A2E0, A2C0, A2A0, A280, A2
 
 ;;; $D83F: Handle visor palette ;;;
 {
+;; Returns:
+;;     Carry: Clear
+
 ; For colour math backdrop rooms. Does not handle x-ray
 $91:D83F AD CC 0A    LDA $0ACC  [$7E:0ACC]
 $91:D842 C9 08 00    CMP #$0008
