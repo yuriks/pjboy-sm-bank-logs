@@ -7993,7 +7993,7 @@ $91:D72D             dw D9B2, ; 0: Screw attacking / speed boosting
 ;;; $D743: Handle beam charge palettes ;;;
 {
 ;; Returns:
-;;     Carry: Set if glow has ended, clear otherwise
+;;     Carry: Set if charged shot glow has ended, clear otherwise
 
 ; Including beam charging, charged shot / grapple glow, pseudo screw attack, also calls visor palette handler
 $91:D743 AD 18 0B    LDA $0B18  [$7E:0B18]  ;\
@@ -8059,10 +8059,10 @@ $91:D7B3 4C 3F D8    JMP $D83F  [$91:D83F]  ; Go to handle visor palette (return
 
 ; BRANCH_HYPER_BEAM
 $91:D7B6 AD 18 0B    LDA $0B18  [$7E:0B18]  ;\
-$91:D7B9 89 01 00    BIT #$0001             ;} If [charged shot glow timer] & 1 = 0:
+$91:D7B9 89 01 00    BIT #$0001             ;} If [charged shot glow timer] % 2 = 0:
 $91:D7BC D0 0D       BNE $0D    [$D7CB]     ;/
 $91:D7BE 29 1E 00    AND #$001E             ;\
-$91:D7C1 F0 0D       BEQ $0D    [$D7D0]     ;} If [charged shot glow timer] = 0: go to BRANCH_END_GLOW
+$91:D7C1 F0 0D       BEQ $0D    [$D7D0]     ;} If [charged shot glow timer] % 20h = 0: go to BRANCH_END_GLOW
 $91:D7C3 A8          TAY                    ;\
 $91:D7C4 B9 29 D8    LDA $D829,y[$91:D83D]  ;|
 $91:D7C7 AA          TAX                    ;} Samus palette = 20h bytes from $9B:0000 + [$D829 + [charged shot glow timer]]
@@ -8102,57 +8102,58 @@ $91:D829             dw 0000, A360, A340, A320, A300, A2E0, A2C0, A2A0, A280, A2
 ;;     Carry: Clear
 
 ; For colour math backdrop rooms. Does not handle x-ray
-$91:D83F AD CC 0A    LDA $0ACC  [$7E:0ACC]
-$91:D842 C9 08 00    CMP #$0008
-$91:D845 D0 02       BNE $02    [$D849]
-$91:D847 18          CLC
-$91:D848 60          RTS
+$91:D83F AD CC 0A    LDA $0ACC  [$7E:0ACC]  ;\
+$91:D842 C9 08 00    CMP #$0008             ;} If [special Samus palette type] = x-ray:
+$91:D845 D0 02       BNE $02    [$D849]     ;/
+$91:D847 18          CLC                    ;\
+$91:D848 60          RTS                    ;} Return carry clear
 
-$91:D849 AD 82 19    LDA $1982  [$7E:1982]
-$91:D84C C9 28 00    CMP #$0028
-$91:D84F F0 05       BEQ $05    [$D856]
-$91:D851 C9 2A 00    CMP #$002A
-$91:D854 D0 47       BNE $47    [$D89D]
+$91:D849 AD 82 19    LDA $1982  [$7E:1982]  ;\
+$91:D84C C9 28 00    CMP #$0028             ;} If [default layer blending configuration] != 28h:
+$91:D84F F0 05       BEQ $05    [$D856]     ;/
+$91:D851 C9 2A 00    CMP #$002A             ;\
+$91:D854 D0 47       BNE $47    [$D89D]     ;} If [default layer blending configuration] != 2Ah: go to BRANCH_NORMAL
 
-$91:D856 AD 72 0A    LDA $0A72  [$7E:0A72]
-$91:D859 3A          DEC A
-$91:D85A 8D 72 0A    STA $0A72  [$7E:0A72]
-$91:D85D 89 FF 00    BIT #$00FF
-$91:D860 F0 02       BEQ $02    [$D864]
-$91:D862 D0 E3       BNE $E3    [$D847]
+$91:D856 AD 72 0A    LDA $0A72  [$7E:0A72]  ;\
+$91:D859 3A          DEC A                  ;} Decrement Samus visor palette timer
+$91:D85A 8D 72 0A    STA $0A72  [$7E:0A72]  ;/
+$91:D85D 89 FF 00    BIT #$00FF             ;\
+$91:D860 F0 02       BEQ $02    [$D864]     ;} If [Samus visor palette timer] != 0:
+$91:D862 D0 E3       BNE $E3    [$D847]     ; Return carry clear
 
-$91:D864 09 05 00    ORA #$0005
-$91:D867 8D 72 0A    STA $0A72  [$7E:0A72]
-$91:D86A EB          XBA
-$91:D86B 29 FF 00    AND #$00FF
-$91:D86E AA          TAX
-$91:D86F BF C0 A3 9B LDA $9BA3C0,x[$9B:A3C6]
-$91:D873 8F 88 C1 7E STA $7EC188[$7E:C188]
-$91:D877 8A          TXA
-$91:D878 1A          INC A
-$91:D879 1A          INC A
-$91:D87A C9 0C 00    CMP #$000C
-$91:D87D 30 0E       BMI $0E    [$D88D]
-$91:D87F AD 72 0A    LDA $0A72  [$7E:0A72]
-$91:D882 29 FF 00    AND #$00FF
-$91:D885 09 00 06    ORA #$0600
-$91:D888 8D 72 0A    STA $0A72  [$7E:0A72]
-$91:D88B 18          CLC
-$91:D88C 60          RTS
+$91:D864 09 05 00    ORA #$0005             ;\
+$91:D867 8D 72 0A    STA $0A72  [$7E:0A72]  ;} Samus visor palette timer = 5
+$91:D86A EB          XBA                    ;\
+$91:D86B 29 FF 00    AND #$00FF             ;|
+$91:D86E AA          TAX                    ;} Sprite palette 4 colour 4 (Samus visor) = [$9B:A3C0 + [Samus visor palette index]]
+$91:D86F BF C0 A3 9B LDA $9BA3C0,x[$9B:A3C6];|
+$91:D873 8F 88 C1 7E STA $7EC188[$7E:C188]  ;/
+$91:D877 8A          TXA                    ;\
+$91:D878 1A          INC A                  ;|
+$91:D879 1A          INC A                  ;} If [Samus visor palette index] >= Ah:
+$91:D87A C9 0C 00    CMP #$000C             ;|
+$91:D87D 30 0E       BMI $0E    [$D88D]     ;/
+$91:D87F AD 72 0A    LDA $0A72  [$7E:0A72]  ;\
+$91:D882 29 FF 00    AND #$00FF             ;|
+$91:D885 09 00 06    ORA #$0600             ;} Samus visor palette index = 6
+$91:D888 8D 72 0A    STA $0A72  [$7E:0A72]  ;/
+$91:D88B 18          CLC                    ;\
+$91:D88C 60          RTS                    ;} Return carry clear
 
-$91:D88D EB          XBA
-$91:D88E 85 12       STA $12    [$7E:0012]
-$91:D890 AD 72 0A    LDA $0A72  [$7E:0A72]
-$91:D893 29 FF 00    AND #$00FF
-$91:D896 05 12       ORA $12    [$7E:0012]
-$91:D898 8D 72 0A    STA $0A72  [$7E:0A72]
-$91:D89B 18          CLC
-$91:D89C 60          RTS
-
-$91:D89D A9 01 06    LDA #$0601
-$91:D8A0 8D 72 0A    STA $0A72  [$7E:0A72]
-$91:D8A3 18          CLC
-$91:D8A4 60          RTS
+$91:D88D EB          XBA                    ;\
+$91:D88E 85 12       STA $12    [$7E:0012]  ;|
+$91:D890 AD 72 0A    LDA $0A72  [$7E:0A72]  ;|
+$91:D893 29 FF 00    AND #$00FF             ;} Samus visor palette index += 2
+$91:D896 05 12       ORA $12    [$7E:0012]  ;|
+$91:D898 8D 72 0A    STA $0A72  [$7E:0A72]  ;/
+$91:D89B 18          CLC                    ;\
+$91:D89C 60          RTS                    ;} Return carry clear
+ 
+; BRANCH_NORMAL
+$91:D89D A9 01 06    LDA #$0601             ;\
+$91:D8A0 8D 72 0A    STA $0A72  [$7E:0A72]  ;} Samus visor palette timer = 1, Samus visor palette index = 6
+$91:D8A3 18          CLC                    ;\
+$91:D8A4 60          RTS                    ;} Return carry clear
 }
 
 
@@ -8298,9 +8299,9 @@ $91:D99E             dw A360, A340, A320, A300, A2E0, A2C0, A2A0, A280, A260, A2
 
 ;;; $D9B2: Handle screw attacking / speed boosting palette ;;;
 {
-$91:D9B2 AD 74 0A    LDA $0A74  [$7E:0A74]
-$91:D9B5 89 04 00    BIT #$0004
-$91:D9B8 D0 20       BNE $20    [$D9DA]
+$91:D9B2 AD 74 0A    LDA $0A74  [$7E:0A74]  ;\
+$91:D9B5 89 04 00    BIT #$0004             ;} If [Samus suit palette index] = gravity suit: go to BRANCH_NON_LIQUID_PHYSICS
+$91:D9B8 D0 20       BNE $20    [$D9DA]     ;/
 $91:D9BA 22 58 EC 90 JSL $90EC58[$90:EC58]  ; $14 = Samus top boundary
 $91:D9BE AD 5E 19    LDA $195E  [$7E:195E]  ;\
 $91:D9C1 30 0E       BMI $0E    [$D9D1]     ;} If [FX Y position] >= 0:
@@ -8317,80 +8318,86 @@ $91:D9D6 C5 14       CMP $14    [$7E:0014]  ;\
 $91:D9D8 30 1B       BMI $1B    [$D9F5]     ;} If [lava/acid Y position] < (Samus top boundary): return carry set
 
 ; BRANCH_NON_LIQUID_PHYSICS
-$91:D9DA AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$91:D9DD 29 FF 00    AND #$00FF
-$91:D9E0 C9 03 00    CMP #$0003
-$91:D9E3 F0 12       BEQ $12    [$D9F7]
-$91:D9E5 C9 14 00    CMP #$0014
-$91:D9E8 F0 21       BEQ $21    [$DA0B]
+$91:D9DA AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$91:D9DD 29 FF 00    AND #$00FF             ;|
+$91:D9E0 C9 03 00    CMP #$0003             ;} If [Samus movement type] = spin jumping: go to BRANCH_SPIN_JUMPING
+$91:D9E3 F0 12       BEQ $12    [$D9F7]     ;/
+$91:D9E5 C9 14 00    CMP #$0014             ;\
+$91:D9E8 F0 21       BEQ $21    [$DA0B]     ;} If [Samus movement type] = wall jumping: go to BRANCH_WALL_JUMPING
 
+; BRANCH_NOT_SCREW_ATTACKING
 $91:D9EA AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
 $91:D9ED 29 00 FF    AND #$FF00             ;|
 $91:D9F0 C9 00 04    CMP #$0400             ;} If speed boosting: go to BRANCH_SPEED_BOOSTING
 $91:D9F3 F0 7F       BEQ $7F    [$DA74]     ;/
 
-$91:D9F5 38          SEC
-$91:D9F6 60          RTS
+$91:D9F5 38          SEC                    ;\
+$91:D9F6 60          RTS                    ;} Return carry set
 
-$91:D9F7 AD A2 09    LDA $09A2  [$7E:09A2]
-$91:D9FA 89 08 00    BIT #$0008
-$91:D9FD F0 EB       BEQ $EB    [$D9EA]
-$91:D9FF AD 96 0A    LDA $0A96  [$7E:0A96]
-$91:DA02 F0 3F       BEQ $3F    [$DA43]
-$91:DA04 C9 1B 00    CMP #$001B
-$91:DA07 10 3F       BPL $3F    [$DA48]
-$91:DA09 80 10       BRA $10    [$DA1B]
+; BRANCH_SPIN_JUMPING
+$91:D9F7 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$91:D9FA 89 08 00    BIT #$0008             ;} If screw attack not equipped: go to BRANCH_NOT_SCREW_ATTACKING
+$91:D9FD F0 EB       BEQ $EB    [$D9EA]     ;/
+$91:D9FF AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
+$91:DA02 F0 3F       BEQ $3F    [$DA43]     ;} If [Samus animation frame] = 0: go to BRANCH_DA43
+$91:DA04 C9 1B 00    CMP #$001B             ;\
+$91:DA07 10 3F       BPL $3F    [$DA48]     ;} If [Samus animation frame] >= 1Bh (wall jump eligible): return carry clear
+$91:DA09 80 10       BRA $10    [$DA1B]     ; Go to BRANCH_MERGE
 
-$91:DA0B AD A2 09    LDA $09A2  [$7E:09A2]
-$91:DA0E 89 08 00    BIT #$0008
-$91:DA11 F0 33       BEQ $33    [$DA46]
-$91:DA13 AD 96 0A    LDA $0A96  [$7E:0A96]
-$91:DA16 C9 03 00    CMP #$0003
-$91:DA19 30 28       BMI $28    [$DA43]
+; BRANCH_WALL_JUMPING
+$91:DA0B AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$91:DA0E 89 08 00    BIT #$0008             ;} If screw attack not equipped: return carry set
+$91:DA11 F0 33       BEQ $33    [$DA46]     ;/
+$91:DA13 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
+$91:DA16 C9 03 00    CMP #$0003             ;} If [Samus animation frame] < 3: go to BRANCH_DA43
+$91:DA19 30 28       BMI $28    [$DA43]     ;/
 
+; BRANCH_MERGE
 $91:DA1B AE 74 0A    LDX $0A74  [$7E:0A74]  ;\
 $91:DA1E BD 4A DA    LDA $DA4A,x[$91:DA4E]  ;|
 $91:DA21 85 24       STA $24    [$7E:0024]  ;|
 $91:DA23 AD CE 0A    LDA $0ACE  [$7E:0ACE]  ;|
 $91:DA26 18          CLC                    ;|
-$91:DA27 65 24       ADC $24    [$7E:0024]  ;} Samus palette = 20h bytes from $9B:0000 + [$DA4A + [Samus suit palette index]] + [special Samus palette frame]
+$91:DA27 65 24       ADC $24    [$7E:0024]  ;} Samus palette = 20h bytes from $9B:0000 + [[$DA4A + [Samus suit palette index]] + [special Samus palette frame]]
 $91:DA29 AA          TAX                    ;|
 $91:DA2A BD 00 00    LDA $0000,x[$91:DA68]  ;|
 $91:DA2D AA          TAX                    ;|
 $91:DA2E 20 5B DD    JSR $DD5B  [$91:DD5B]  ;/
-$91:DA31 AD CE 0A    LDA $0ACE  [$7E:0ACE]
-$91:DA34 1A          INC A
-$91:DA35 1A          INC A
-$91:DA36 C9 0C 00    CMP #$000C
-$91:DA39 30 03       BMI $03    [$DA3E]
-$91:DA3B A9 00 00    LDA #$0000
+$91:DA31 AD CE 0A    LDA $0ACE  [$7E:0ACE]  ;\
+$91:DA34 1A          INC A                  ;|
+$91:DA35 1A          INC A                  ;|
+$91:DA36 C9 0C 00    CMP #$000C             ;|
+$91:DA39 30 03       BMI $03    [$DA3E]     ;} Special Samus palette frame = ([Special Samus palette frame] + 2) % Ch
+$91:DA3B A9 00 00    LDA #$0000             ;|
+                                            ;|
+$91:DA3E 8D CE 0A    STA $0ACE  [$7E:0ACE]  ;/
+$91:DA41 38          SEC                    ;\
+$91:DA42 60          RTS                    ;} Return carry set
 
-$91:DA3E 8D CE 0A    STA $0ACE  [$7E:0ACE]
-$91:DA41 38          SEC
-$91:DA42 60          RTS
+; BRANCH_DA43
+$91:DA43 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 
-$91:DA43 9C CE 0A    STZ $0ACE  [$7E:0ACE]
-
-$91:DA46 38          SEC
-$91:DA47 60          RTS
+$91:DA46 38          SEC                    ;\
+$91:DA47 60          RTS                    ;} Return carry set
 
 $91:DA48 18          CLC
 $91:DA49 60          RTS
 
-; Samus palette table. Screw attack
+; Screw attack Samus palette table. Indexed by [Samus suit palette index]
 $91:DA4A             dw DA50, DA5C, DA68
 
-$91:DA50             dw 9CA0,9CC0,9CE0,9D00,9CE0,9CC0   ; No suit
-$91:DA5C             dw 9EA0,9EC0,9EE0,9F00,9EE0,9EC0   ; Varia suit
-$91:DA68             dw A0A0,A0C0,A0E0,A100,A0E0,A0C0   ; Gravity suit
+; Pointers to bank $9B. Indexed by [special Samus palette frame]
+$91:DA50             dw 9CA0,9CC0,9CE0,9D00,9CE0,9CC0 ; No suit
+$91:DA5C             dw 9EA0,9EC0,9EE0,9F00,9EE0,9EC0 ; Varia suit
+$91:DA68             dw A0A0,A0C0,A0E0,A100,A0E0,A0C0 ; Gravity suit
 
 ; BRANCH_SPEED_BOOSTING
-$91:DA74 CE D0 0A    DEC $0AD0  [$7E:0AD0]
-$91:DA77 F0 02       BEQ $02    [$DA7B]
-$91:DA79 10 2C       BPL $2C    [$DAA7]
+$91:DA74 CE D0 0A    DEC $0AD0  [$7E:0AD0]  ; Decrement speed boosting palette timer
+$91:DA77 F0 02       BEQ $02    [$DA7B]     ;\
+$91:DA79 10 2C       BPL $2C    [$DAA7]     ;} If [speed boosting palette timer] > 0: return carry set
 
-$91:DA7B A9 04 00    LDA #$0004
-$91:DA7E 8D D0 0A    STA $0AD0  [$7E:0AD0]
+$91:DA7B A9 04 00    LDA #$0004             ;\
+$91:DA7E 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} Speed boosting palette timer = 4
 $91:DA81 AE 74 0A    LDX $0A74  [$7E:0A74]  ;\
 $91:DA84 BD A9 DA    LDA $DAA9,x[$91:DAAB]  ;|
 $91:DA87 85 24       STA $24    [$7E:0024]  ;|
@@ -8401,17 +8408,17 @@ $91:DA8F AA          TAX                    ;|
 $91:DA90 BD 00 00    LDA $0000,x[$91:DAB7]  ;|
 $91:DA93 AA          TAX                    ;|
 $91:DA94 20 5B DD    JSR $DD5B  [$91:DD5B]  ;/
-$91:DA97 AD CE 0A    LDA $0ACE  [$7E:0ACE]
-$91:DA9A 1A          INC A
-$91:DA9B 1A          INC A
-$91:DA9C C9 08 00    CMP #$0008
-$91:DA9F 30 03       BMI $03    [$DAA4]
-$91:DAA1 A9 06 00    LDA #$0006
+$91:DA97 AD CE 0A    LDA $0ACE  [$7E:0ACE]  ;\
+$91:DA9A 1A          INC A                  ;|
+$91:DA9B 1A          INC A                  ;|
+$91:DA9C C9 08 00    CMP #$0008             ;|
+$91:DA9F 30 03       BMI $03    [$DAA4]     ;} Special Samus palette frame = min(6, [Special Samus palette frame] + 2)
+$91:DAA1 A9 06 00    LDA #$0006             ;|
+                                            ;|
+$91:DAA4 8D CE 0A    STA $0ACE  [$7E:0ACE]  ;/
 
-$91:DAA4 8D CE 0A    STA $0ACE  [$7E:0ACE]
-
-$91:DAA7 38          SEC
-$91:DAA8 60          RTS
+$91:DAA7 38          SEC                    ;\
+$91:DAA8 60          RTS                    ;} Return carry set
 
 ; Samus palette table. Speed boosting
 $91:DAA9             dw DAAF, DAB7, DABF
@@ -9177,7 +9184,7 @@ $91:E0B6 8D 5E 0A    STA $0A5E  [$7E:0A5E]  ;} $0A5E = RTS
 $91:E0B9 A9 32 00    LDA #$0032             ;\
 $91:E0BC 8D 12 0A    STA $0A12  [$7E:0A12]  ;} Samus health mirror = 50
 $91:E0BF A9 01 06    LDA #$0601             ;\
-$91:E0C2 8D 72 0A    STA $0A72  [$7E:0A72]  ;} Samus visor palette timer = 601h
+$91:E0C2 8D 72 0A    STA $0A72  [$7E:0A72]  ;} Samus visor palette timer = 1, Samus visor palette index = 6
 $91:E0C5 A2 00 00    LDX #$0000             ;\
 $91:E0C8 A9 69 B1    LDA #$B169             ;|
                                             ;|
