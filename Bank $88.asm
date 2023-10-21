@@ -1901,11 +1901,11 @@ $88:8A42 A9 01 00    LDA #$0001             ;\
 $88:8A45 8D 88 0A    STA $0A88  [$7E:0A88]  ;|
 $88:8A48 A9 00 98    LDA #$9800             ;|
 $88:8A4B 8D 89 0A    STA $0A89  [$7E:0A89]  ;|
-$88:8A4E 9C 8B 0A    STZ $0A8B  [$7E:0A8B]  ;} $0A88..91 = 01,$9800, 00,00...
+$88:8A4E 9C 8B 0A    STZ $0A8B  [$7E:0A8B]  ;} $0A88..91 = 1,$9800, 0,0... (x-ray indirect HDMA table)
 $88:8A51 9C 8C 0A    STZ $0A8C  [$7E:0A8C]  ;|
 $88:8A54 9C 8E 0A    STZ $0A8E  [$7E:0A8E]  ;|
 $88:8A57 9C 90 0A    STZ $0A90  [$7E:0A90]  ;/
-$88:8A5A 22 AD E2 91 JSL $91E2AD[$91:E2AD]  ; Execute $91:E2AD (responsible for the x-ray stand-up glitch)
+$88:8A5A 22 AD E2 91 JSL $91E2AD[$91:E2AD]  ; Set non x-ray Samus pose
 $88:8A5E AE B2 18    LDX $18B2  [$7E:18B2]  ;\
 $88:8A61 9E B4 18    STZ $18B4,x[$7E:18B8]  ;} HDMA object channel = 0
 $88:8A64 A9 0A 00    LDA #$000A             ;\
@@ -1927,7 +1927,7 @@ $88:8A84 C2 20       REP #$20               ;|
 $88:8A86 A9 00 98    LDA #$9800             ;|
 $88:8A89 85 00       STA $00    [$7E:0000]  ;|
 $88:8A8B A0 FE 01    LDY #$01FE             ;|
-$88:8A8E A9 FF 00    LDA #$00FF             ;} $7E:9800..99FF = FFh,00h
+$88:8A8E A9 FF 00    LDA #$00FF             ;} $7E:9800..99FF = FFh,00h (x-ray HDMA data table for window 2)
                                             ;|
 $88:8A91 97 00       STA [$00],y[$7E:99FE]  ;|
 $88:8A93 88          DEY                    ;|

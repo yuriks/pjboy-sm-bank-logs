@@ -14587,9 +14587,9 @@ $90:E76A F0 08       BEQ $08    [$E774]     ;} If demo recorder enabled:
 $90:E76C 22 64 84 91 JSL $918464[$91:8464]  ; Record demo input frame
 $90:E770 22 D5 84 91 JSL $9184D5[$91:84D5]  ; Pause/terminate/reset demo recorder
 
-$90:E774 22 55 E3 91 JSL $91E355[$91:E355]  ; Give ammo, all items and switch to next beam configuration if newly pressed B
+$90:E774 22 55 E3 91 JSL $91E355[$91:E355]  ; Handle debug mode select + L + B
 $90:E778 2C CF 05    BIT $05CF  [$7E:05CF]  ;\
-$90:E77B 10 03       BPL $03    [$E780]     ;} If weaponry is swapped:
+$90:E77B 10 03       BPL $03    [$E780]     ;} If ammo is swapped:
 $90:E77D 20 26 ED    JSR $ED26  [$90:ED26]  ; Display Samus position as ammo if morphed
 
 $90:E780 20 86 E7    JSR $E786  [$90:E786]  ; Execute $E786
@@ -14624,7 +14624,7 @@ $90:E7B1 D0 1D       BNE $1D    [$E7D0]     ;} If [$09E6] = 0:
 $90:E7B3 A5 91       LDA $91    [$7E:0091]  ;\
 $90:E7B5 89 80 00    BIT #$0080             ;} If controller 2 newly pressed A:
 $90:E7B8 F0 16       BEQ $16    [$E7D0]     ;/
-$90:E7BA 22 0B 80 86 JSL $86800B[$86:800B]  ; Disable ER projectiles
+$90:E7BA 22 0B 80 86 JSL $86800B[$86:800B]  ; Disable enemy projectiles
 $90:E7BE A9 01 00    LDA #$0001             ;\
 $90:E7C1 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Freeze time
 $90:E7C4 A9 CD E8    LDA #$E8CD             ;\
