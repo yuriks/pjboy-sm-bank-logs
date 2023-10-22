@@ -3474,7 +3474,7 @@ $9B:C952 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - crouching
 ; BRANCH_MERGE
 $9B:C955 9C 32 0A    STZ $0A32  [$7E:0A32]  ; $0A32 = 0
 $9B:C958 A9 01 00    LDA #$0001             ;\
-$9B:C95B 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} $0DC6 = 1, $0DC7 = 0
+$9B:C95B 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} Samus solid collision result = landed, Samus downwards movement solid collision result = grounded
 $9B:C95E 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $9B:C961 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $9B:C964 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
