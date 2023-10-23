@@ -1,5 +1,6 @@
 ;;; $8000:  ;;;
 {
+; Called by $0A60 handlers other than x-ray (which uses $91:FCAF instead)
 ; Checks movement type, and goes to 91:(8014,X), X being 2x movement type
 $91:8000 08          PHP
 $91:8001 8B          PHB
@@ -448,6 +449,12 @@ $91:81A8 60          RTS
 ;     n is the required newly pressed input
 ;     p is the pose to transition to (if not currently already in that pose)
 
+; Iterate through transition table entry for current pose, if transition found with the required inputs being pressed:
+;     If transition pose is the current pose, return carry clear
+;     Else, set prospective pose and return carry set
+; If not pressing nothing and transition table entry is empty, return carry clear
+; Else, execute $91:82D9 and return carry clear
+
 ; $12: The controller 1 input bits *not* newly pressed (not including start/select)
 ; $14: The controller 1 input bits *not* pressed (not including start/select)
 ; [[Y]]: Required newly pressed input
@@ -459,7 +466,7 @@ $91:81AB F0 2E       BEQ $2E    [$81DB]     ;} If pressing nothing: go to BRANCH
 $91:81AD 20 F4 81    JSR $81F4  [$91:81F4]  ; Translate custom controller bindings to default bindings
 $91:81B0 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:81B3 0A          ASL A                  ;|
-$91:81B4 AA          TAX                    ;} Y = [$9EE2 + [Samus pose] * 2]
+$91:81B4 AA          TAX                    ;} Y = [$9EE2 + [Samus pose] * 2] (transition table entry pointer)
 $91:81B5 BD E2 9E    LDA $9EE2,x[$91:9EE6]  ;|
 $91:81B8 A8          TAY                    ;/
 $91:81B9 B9 00 00    LDA $0000,y[$91:A172]  ;\
@@ -468,12 +475,12 @@ $91:81BD F0 23       BEQ $23    [$81E2]     ;/
 
 ; LOOP
 $91:81BF 3A          DEC A                  ;\
-$91:81C0 F0 04       BEQ $04    [$81C6]     ;} If [[Y]] != 0:
+$91:81C0 F0 04       BEQ $04    [$81C6]     ;} If [[Y]] != 0 (required newly pressed input):
 $91:81C2 25 12       AND $12    [$7E:0012]  ;\
 $91:81C4 D0 09       BNE $09    [$81CF]     ;} If [[Y]] & [$12] != 0: go to BRANCH_NEXT
 
 $91:81C6 B9 02 00    LDA $0002,y[$91:A1A4]  ;\
-$91:81C9 F0 19       BEQ $19    [$81E4]     ;} If [[Y] + 2] = 0: go to BRANCH_FOUND_TRANSITION
+$91:81C9 F0 19       BEQ $19    [$81E4]     ;} If [[Y] + 2] = 0 (required input): go to BRANCH_FOUND_TRANSITION
 $91:81CB 25 14       AND $14    [$7E:0014]  ;\
 $91:81CD F0 15       BEQ $15    [$81E4]     ;} If [[Y] + 2] & [$14] = 0: go to BRANCH_FOUND_TRANSITION
 
@@ -719,47 +726,48 @@ $91:8332             db 02, ; 0: Standing
 
 ;;; $834E..9EE1: Demo ;;;
 {
-;;; $834E:  ;;;
+;;; $834E: Enable demo input ;;;
 {
 $91:834E 08          PHP
 $91:834F C2 30       REP #$30
-$91:8351 A9 1D E9    LDA #$E91D
-$91:8354 8D 60 0A    STA $0A60  [$7E:0A60]
-$91:8357 A9 00 80    LDA #$8000
-$91:835A 0C 88 0A    TSB $0A88  [$7E:0A88]
+$91:8351 A9 1D E9    LDA #$E91D             ;\
+$91:8354 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E91D (demo)
+$91:8357 A9 00 80    LDA #$8000             ;\
+$91:835A 0C 88 0A    TSB $0A88  [$7E:0A88]  ;} Enable demo input
 $91:835D 28          PLP
 $91:835E 6B          RTL
 }
 
 
-;;; $835F:  ;;;
+;;; $835F: Disable demo input ;;;
 {
 $91:835F 08          PHP
 $91:8360 C2 30       REP #$30
-$91:8362 A9 13 E9    LDA #$E913
-$91:8365 8D 60 0A    STA $0A60  [$7E:0A60]
-$91:8368 A9 00 80    LDA #$8000
-$91:836B 1C 88 0A    TRB $0A88  [$7E:0A88]
+$91:8362 A9 13 E9    LDA #$E913             ;\
+$91:8365 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$91:8368 A9 00 80    LDA #$8000             ;\
+$91:836B 1C 88 0A    TRB $0A88  [$7E:0A88]  ;} Disable demo input
 $91:836E 28          PLP
 $91:836F 6B          RTL
 }
 
 
-;;; $8370:  ;;;
+;;; $8370: Clear demo input RAM ;;;
 {
+; Called before calling $834E
 $91:8370 08          PHP
 $91:8371 C2 30       REP #$30
 $91:8373 DA          PHX
-$91:8374 9C 7A 0A    STZ $0A7A  [$7E:0A7A]
-$91:8377 9C 7C 0A    STZ $0A7C  [$7E:0A7C]
-$91:837A 9C 7E 0A    STZ $0A7E  [$7E:0A7E]
-$91:837D 9C 80 0A    STZ $0A80  [$7E:0A80]
-$91:8380 9C 82 0A    STZ $0A82  [$7E:0A82]
-$91:8383 9C 84 0A    STZ $0A84  [$7E:0A84]
-$91:8386 9C 86 0A    STZ $0A86  [$7E:0A86]
-$91:8389 9C 8C 0A    STZ $0A8C  [$7E:0A8C]
-$91:838C 9C 8E 0A    STZ $0A8E  [$7E:0A8E]
-$91:838F 9C 88 0A    STZ $0A88  [$7E:0A88]
+$91:8374 9C 7A 0A    STZ $0A7A  [$7E:0A7A]  ; Demo input pre-instruction = 0
+$91:8377 9C 7C 0A    STZ $0A7C  [$7E:0A7C]  ; Demo input instruction timer = 0
+$91:837A 9C 7E 0A    STZ $0A7E  [$7E:0A7E]  ; Demo input instruction list pointer = 0
+$91:837D 9C 80 0A    STZ $0A80  [$7E:0A80]  ; $0A80 = 0
+$91:8380 9C 82 0A    STZ $0A82  [$7E:0A82]  ; $0A82 = 0
+$91:8383 9C 84 0A    STZ $0A84  [$7E:0A84]  ; Demo input = 0
+$91:8386 9C 86 0A    STZ $0A86  [$7E:0A86]  ; Demo newly pressed input = 0
+$91:8389 9C 8C 0A    STZ $0A8C  [$7E:0A8C]  ; Previous demo input = 0
+$91:838C 9C 8E 0A    STZ $0A8E  [$7E:0A8E]  ; Previous demo newly pressed input = 0
+$91:838F 9C 88 0A    STZ $0A88  [$7E:0A88]  ; Disable demo input
 $91:8392 FA          PLX
 $91:8393 28          PLP
 $91:8394 6B          RTL
@@ -1113,7 +1121,7 @@ $91:85FC A9 95 E6    LDA #$E695             ;\
 $91:85FF 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
 $91:8602 A9 25 E7    LDA #$E725             ;\
 $91:8605 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
-$91:8608 22 5F 83 91 JSL $91835F[$91:835F]
+$91:8608 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
 $91:860C 60          RTS
 }
 
@@ -1171,7 +1179,7 @@ $91:8683 5A          PHY
 $91:8684 A9 CD E8    LDA #$E8CD             ;\
 $91:8687 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = RTL
 $91:868A 8D 44 0A    STA $0A44  [$7E:0A44]  ; $0A44 = RTL
-$91:868D 22 5F 83 91 JSL $91835F[$91:835F]
+$91:868D 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
 $91:8691 7A          PLY
 $91:8692 FA          PLX
 $91:8693 60          RTS
@@ -1206,7 +1214,7 @@ $91:8720 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
 $91:8723 8D 20 0A    STA $0A20  [$7E:0A20]
 $91:8726 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
 $91:8729 8D 22 0A    STA $0A22  [$7E:0A22]
-$91:872C 22 5F 83 91 JSL $91835F[$91:835F]
+$91:872C 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
 $91:8730 A9 0E E9    LDA #$E90E
 $91:8733 8D 60 0A    STA $0A60  [$7E:0A60]
 $91:8736 7A          PLY
@@ -1233,7 +1241,7 @@ $91:875B AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:875E 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
 $91:8761 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:8764 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
-$91:8767 22 5F 83 91 JSL $91835F[$91:835F]
+$91:8767 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
 $91:876B A9 0E E9    LDA #$E90E
 $91:876E 8D 60 0A    STA $0A60  [$7E:0A60]
 $91:8771 7A          PLY
@@ -1298,8 +1306,8 @@ $91:87D8 BD 0C 00    LDA $000C,x[$91:8899]  ;\
 $91:87DB 8D A6 09    STA $09A6  [$7E:09A6]  ;} Equipped beams = [[X] + Ch]
 $91:87DE 9C D6 09    STZ $09D6  [$7E:09D6]  ; Samus reserve health = 0
 $91:87E1 DA          PHX
-$91:87E2 22 70 83 91 JSL $918370[$91:8370]  ; Execute $91:8370
-$91:87E6 22 4E 83 91 JSL $91834E[$91:834E]  ; Execute $91:834E
+$91:87E2 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
+$91:87E6 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
 $91:87EA FA          PLX
 $91:87EB BD 0E 00    LDA $000E,x[$91:889B]  ;\
 $91:87EE A8          TAY                    ;} Y = A = [[X] + Eh]
@@ -1352,7 +1360,7 @@ $91:8869 A9 20 00    LDA #$0020             ;\
 $91:886C 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down binding = L
 $91:886F A9 01 00    LDA #$0001             ;\
 $91:8872 8D E8 09    STA $09E8  [$7E:09E8]  ;} $09E8 = 1
-$91:8875 8D E6 09    STA $09E6  [$7E:09E6]  ; $09E6 = 1
+$91:8875 8D E6 09    STA $09E6  [$7E:09E6]  ; Disable Samus placement mode
 $91:8878 9C E4 09    STZ $09E4  [$7E:09E4]  ; Disable moonwalk
 $91:887B 9C F8 0D    STZ $0DF8  [$7E:0DF8]  ; $0DF8 = 0
 $91:887E 9C FA 0D    STZ $0DFA  [$7E:0DFA]  ; $0DFA = 0
@@ -10214,9 +10222,9 @@ $91:E8B5 60          RTS
 }
 
 
-;;; $E8B6..EADD: Set prospective Samus pose according to solid collision result ;;;
+;;; $E8B6..EADD: Set prospective Samus pose according to solid vertical collision result ;;;
 {
-;;; $E8B6: Set prospective Samus pose according to solid collision result ;;;
+;;; $E8B6: Set prospective Samus pose according to solid vertical collision result ;;;
 {
 ; Called by "active" $0A44 handlers (where active = normal or title/intro demo)
 $91:E8B6 08          PHP
@@ -10225,10 +10233,10 @@ $91:E8B8 4B          PHK                    ;\
 $91:E8B9 AB          PLB                    ;} DB = $91
 $91:E8BA C2 30       REP #$30
 $91:E8BC AD C6 0D    LDA $0DC6  [$7E:0DC6]  ;\
-$91:E8BF F0 08       BEQ $08    [$E8C9]     ;} If [Samus solid collision result] != no change:
+$91:E8BF F0 08       BEQ $08    [$E8C9]     ;} If [Samus solid vertical collision result] != no change:
 $91:E8C1 29 FF 00    AND #$00FF             ;\
 $91:E8C4 0A          ASL A                  ;|
-$91:E8C5 AA          TAX                    ;} Execute [$E8CC + [Samus solid collision result] * 2]
+$91:E8C5 AA          TAX                    ;} Execute [$E8CC + [Samus solid vertical collision result] * 2]
 $91:E8C6 FC CC E8    JSR ($E8CC,x)[$91:E931];/
 
 $91:E8C9 AB          PLB
@@ -10239,7 +10247,7 @@ $91:E8CC             dw EFC3, E931, E8F2, E8D8, E8E5, EABE
 }
 
 
-;;; $E8D8: Set prospective Samus pose according to solid collision result - unused ;;;
+;;; $E8D8: Set prospective Samus pose according to solid vertical collision result - unused ;;;
 {
 ; Set pose for unwritten Samus movement
 ; Clone of $E8E5
@@ -10251,7 +10259,7 @@ $91:E8E4 60          RTS
 }
 
 
-;;; $E8E5: Set prospective Samus pose according to solid collision result - hit ceiling ;;;
+;;; $E8E5: Set prospective Samus pose according to solid vertical collision result - hit ceiling ;;;
 {
 ; Set pose for Samus upward movement after collision with block or solid enemy
 $91:E8E5 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -10262,7 +10270,7 @@ $91:E8F1 60          RTS
 }
 
 
-;;; $E8F2: Set prospective Samus pose according to solid collision result - falling ;;;
+;;; $E8F2: Set prospective Samus pose according to solid vertical collision result - falling ;;;
 {
 $91:E8F2 AD C7 0D    LDA $0DC7  [$7E:0DC7]  ;\
 $91:E8F5 29 FF 00    AND #$00FF             ;|
@@ -10298,7 +10306,7 @@ $91:E921             dw 0029,002A, ; Falling
 }
 
 
-;;; $E931: Set prospective Samus pose according to solid collision result - landed ;;;
+;;; $E931: Set prospective Samus pose according to solid vertical collision result - landed ;;;
 {
 $91:E931 AD C7 0D    LDA $0DC7  [$7E:0DC7]  ;\
 $91:E934 29 FF 00    AND #$00FF             ;|
@@ -10321,7 +10329,7 @@ $91:E951             dw E95D, EA07, EA48, EA63, EFC3, EAB6
 }
 
 
-;;; $E95D: Set prospective Samus pose according to solid collision result - landed - grounded ;;;
+;;; $E95D: Set prospective Samus pose according to solid vertical collision result - landed - grounded ;;;
 {
 ;; Returns:
 ;;     Carry: clear
@@ -10419,7 +10427,7 @@ $91:E9F3             dw 00E0, ; 0: Up, facing right:   Facing right - landing fr
 }
 
 
-;;; $EA07: Set prospective Samus pose according to solid collision result - landed - morph ball grounded ;;;
+;;; $EA07: Set prospective Samus pose according to solid vertical collision result - landed - morph ball grounded ;;;
 {
 ;; Returns:
 ;;     Carry: clear
@@ -10435,7 +10443,7 @@ $91:EA0F             dw EA15, EA25, EA2D
 }
 
 
-;;; $EA15: Set prospective Samus pose according to solid collision result - landed - morph ball grounded - not bouncing ;;;
+;;; $EA15: Set prospective Samus pose according to solid vertical collision result - landed - morph ball grounded - not bouncing ;;;
 {
 $91:EA15 AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
 $91:EA18 C9 03 00    CMP #$0003             ;} If [Samus Y speed] < 3: go to second bounce
@@ -10447,7 +10455,7 @@ $91:EA24 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EA25: Set prospective Samus pose according to solid collision result - landed - morph ball grounded - first bounce ;;;
+;;; $EA25: Set prospective Samus pose according to solid vertical collision result - landed - morph ball grounded - first bounce ;;;
 {
 $91:EA25 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:EA28 8D 28 0A    STA $0A28  [$7E:0A28]  ;} $0A28 = [Samus pose]
@@ -10456,7 +10464,7 @@ $91:EA2C 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EA2D: Set prospective Samus pose according to solid collision result - landed - morph ball grounded - second bounce ;;;
+;;; $EA2D: Set prospective Samus pose according to solid vertical collision result - landed - morph ball grounded - second bounce ;;;
 {
 $91:EA2D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:EA30 29 FF 00    AND #$00FF             ;|
@@ -10474,7 +10482,7 @@ $91:EA47 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EA48: Set prospective Samus pose according to solid collision result - landed - unused ;;;
+;;; $EA48: Set prospective Samus pose according to solid vertical collision result - landed - unused ;;;
 {
 $91:EA48 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:EA4B 29 FF 00    AND #$00FF             ;|
@@ -10492,7 +10500,7 @@ $91:EA62 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EA63: Set prospective Samus pose according to solid collision result - landed - spring ball grounded ;;;
+;;; $EA63: Set prospective Samus pose according to solid vertical collision result - landed - spring ball grounded ;;;
 {
 ;; Returns:
 ;;     Carry: clear
@@ -10515,7 +10523,7 @@ $91:EA7D             dw EA83, EA93, EA9B
 }
 
 
-;;; $EA83: Set prospective Samus pose according to solid collision result - landed - spring ball grounded - not bouncing ;;;
+;;; $EA83: Set prospective Samus pose according to solid vertical collision result - landed - spring ball grounded - not bouncing ;;;
 {
 $91:EA83 AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
 $91:EA86 C9 03 00    CMP #$0003             ;} If [Samus Y speed] < 3: go to second bounce
@@ -10527,7 +10535,7 @@ $91:EA92 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EA93: Set prospective Samus pose according to solid collision result - landed - spring ball grounded - first bounce ;;;
+;;; $EA93: Set prospective Samus pose according to solid vertical collision result - landed - spring ball grounded - first bounce ;;;
 {
 $91:EA93 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:EA96 8D 28 0A    STA $0A28  [$7E:0A28]  ;} $0A28 = [Samus pose]
@@ -10536,7 +10544,7 @@ $91:EA9A 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EA9B: Set prospective Samus pose according to solid collision result - landed - spring ball grounded - second bounce ;;;
+;;; $EA9B: Set prospective Samus pose according to solid vertical collision result - landed - spring ball grounded - second bounce ;;;
 {
 $91:EA9B AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:EA9E 29 FF 00    AND #$00FF             ;|
@@ -10554,7 +10562,7 @@ $91:EAB5 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EAB6: Set prospective Samus pose according to solid collision result - landed - [$0DC7] = 5 ;;;
+;;; $EAB6: Set prospective Samus pose according to solid vertical collision result - landed - [$0DC7] = 5 ;;;
 {
 ; AFAIK, $0DC7 is never 5
 $91:EAB6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -10564,7 +10572,7 @@ $91:EABD 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $EABE: Set prospective Samus pose according to solid collision result - wall jump triggered ;;;
+;;; $EABE: Set prospective Samus pose according to solid vertical collision result - wall jump triggered ;;;
 {
 $91:EABE AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:EAC1 29 FF 00    AND #$00FF             ;|
@@ -10584,88 +10592,111 @@ $91:EADD 60          RTS
 }
 
 
-;;; $EADE:  ;;;
+;;; $EADE: Check if prospective pose runs into a wall ;;;
 {
-; Check to see if Samus walked/ran into something.
-; If so, change to the appropriate pose; 91:EB74,X, X = 2*(aiming direction).
-; Contains arm pump bug
+; Check if Samus ran into a wall this frame, set the prospective pose to ran into a wall with the corresponding arm cannon aim
+; Otherwise, if prospective pose is running:
+;     Check if Samus can move one pixel horizontally forward,
+;     if she would collide with a solid enemy, set the prospective pose to ran into a wall with the corresponding arm cannon aim
+;     Otherwise, *move* Samus one pixel horizontally forward,
+;     if she collided with a solid block, set the prospective pose to ran into a wall with the corresponding arm cannon aim
+; Returned carry is ignored by caller
+
+; This code is responsible for the arm pump bug
+; If Samus pose changes from a running pose to another running pose (changing arm cannon aim),
+; Samus is moved one pixel horizontally forwards,
+; the fact that it's pure horizontal movement causes Samus to sometimes lose contact with downwards slopes
+
 $91:EADE AD CE 0D    LDA $0DCE  [$7E:0DCE]  ;\
-$91:EAE1 F0 0B       BEQ $0B    [$EAEE]     ;} If Samus X speed killed:
+$91:EAE1 F0 0B       BEQ $0B    [$EAEE]     ;} If Samus X speed killed due to solid collision:
 $91:EAE3 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $91:EAE6 29 FF 00    AND #$00FF             ;|
-$91:EAE9 C9 01 00    CMP #$0001             ;} If [Samus movement type] = running: go to BRANCH_EB53
+$91:EAE9 C9 01 00    CMP #$0001             ;} If [Samus movement type] = running: go to BRANCH_RAN_INTO_WALL
 $91:EAEC F0 65       BEQ $65    [$EB53]     ;/
 
-$91:EAEE AD 28 0A    LDA $0A28  [$7E:0A28]
-$91:EAF1 C9 FF FF    CMP #$FFFF
-$91:EAF4 F0 74       BEQ $74    [$EB6A]
-$91:EAF6 0A          ASL A
-$91:EAF7 0A          ASL A
-$91:EAF8 0A          ASL A
-$91:EAF9 AA          TAX
-$91:EAFA BD 2A B6    LDA $B62A,x[$91:B63A]
-$91:EAFD 29 FF 00    AND #$00FF
-$91:EB00 C9 01 00    CMP #$0001
-$91:EB03 D0 65       BNE $65    [$EB6A]
-$91:EB05 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$91:EB08 29 FF 00    AND #$00FF
-$91:EB0B C9 04 00    CMP #$0004
-$91:EB0E F0 1D       BEQ $1D    [$EB2D]
-$91:EB10 A9 01 00    LDA #$0001
-$91:EB13 85 12       STA $12    [$7E:0012]
-$91:EB15 8D 02 0B    STA $0B02  [$7E:0B02]
-$91:EB18 64 14       STZ $14    [$7E:0014]
+$91:EAEE AD 28 0A    LDA $0A28  [$7E:0A28]  ;\
+$91:EAF1 C9 FF FF    CMP #$FFFF             ;} If [$0A28] = FFFFh: go to BRANCH_RETURN_POSE_UNCHANGED
+$91:EAF4 F0 74       BEQ $74    [$EB6A]     ;/
+$91:EAF6 0A          ASL A                  ;\
+$91:EAF7 0A          ASL A                  ;|
+$91:EAF8 0A          ASL A                  ;|
+$91:EAF9 AA          TAX                    ;|
+$91:EAFA BD 2A B6    LDA $B62A,x[$91:B63A]  ;} If (pose [$0A28] movement type) != running: go to BRANCH_RETURN_POSE_UNCHANGED
+$91:EAFD 29 FF 00    AND #$00FF             ;|
+$91:EB00 C9 01 00    CMP #$0001             ;|
+$91:EB03 D0 65       BNE $65    [$EB6A]     ;/
+$91:EB05 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$91:EB08 29 FF 00    AND #$00FF             ;|
+$91:EB0B C9 04 00    CMP #$0004             ;} If facing right:
+$91:EB0E F0 1D       BEQ $1D    [$EB2D]     ;/
+$91:EB10 A9 01 00    LDA #$0001             ;\
+$91:EB13 85 12       STA $12    [$7E:0012]  ;|
+$91:EB15 8D 02 0B    STA $0B02  [$7E:0B02]  ;} $12.$14 = 1.0, collision direction = right
+$91:EB18 64 14       STZ $14    [$7E:0014]  ;/
 $91:EB1A 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:EB1E AA          TAX
-$91:EB1F D0 2D       BNE $2D    [$EB4E]
-$91:EB21 A9 01 00    LDA #$0001
-$91:EB24 85 12       STA $12    [$7E:0012]
-$91:EB26 8D 02 0B    STA $0B02  [$7E:0B02]
-$91:EB29 64 14       STZ $14    [$7E:0014]
+$91:EB1E AA          TAX                    ;\
+$91:EB1F D0 2D       BNE $2D    [$EB4E]     ;} If collision detected: go to BRANCH_PROSPECTIVE_POSE_RAN_INTO_WALL
+$91:EB21 A9 01 00    LDA #$0001             ;\
+$91:EB24 85 12       STA $12    [$7E:0012]  ;|
+$91:EB26 8D 02 0B    STA $0B02  [$7E:0B02]  ;} $12.$14 = 1.0, collision direction = right
+$91:EB29 64 14       STZ $14    [$7E:0014]  ;/
 $91:EB2B 80 1B       BRA $1B    [$EB48]
 
-$91:EB2D A9 01 00    LDA #$0001
-$91:EB30 85 12       STA $12    [$7E:0012]
-$91:EB32 64 14       STZ $14    [$7E:0014]
-$91:EB34 9C 02 0B    STZ $0B02  [$7E:0B02]
+$91:EB2D A9 01 00    LDA #$0001             ;\ Else (facing left):
+$91:EB30 85 12       STA $12    [$7E:0012]  ;} $12.$14 = 1.0
+$91:EB32 64 14       STZ $14    [$7E:0014]  ;/
+$91:EB34 9C 02 0B    STZ $0B02  [$7E:0B02]  ; Collision direction = left
 $91:EB37 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:EB3B AA          TAX
-$91:EB3C D0 10       BNE $10    [$EB4E]
-$91:EB3E A9 FF FF    LDA #$FFFF
-$91:EB41 85 12       STA $12    [$7E:0012]
-$91:EB43 64 14       STZ $14    [$7E:0014]
-$91:EB45 9C 02 0B    STZ $0B02  [$7E:0B02]
+$91:EB3B AA          TAX                    ;\
+$91:EB3C D0 10       BNE $10    [$EB4E]     ;} If collision detected: go to BRANCH_PROSPECTIVE_POSE_RAN_INTO_WALL
+$91:EB3E A9 FF FF    LDA #$FFFF             ;\
+$91:EB41 85 12       STA $12    [$7E:0012]  ;|
+$91:EB43 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = -1.0, collision direction = right
+$91:EB45 9C 02 0B    STZ $0B02  [$7E:0B02]  ;/
 
 $91:EB48 22 1E 97 94 JSL $94971E[$94:971E]  ; Move Samus right by [$12].[$14], no solid enemy collision
-$91:EB4C 90 1C       BCC $1C    [$EB6A]
+$91:EB4C 90 1C       BCC $1C    [$EB6A]     ; If no collision: go to BRANCH_RETURN_POSE_UNCHANGED
 
-$91:EB4E AD 28 0A    LDA $0A28  [$7E:0A28]
-$91:EB51 80 03       BRA $03    [$EB56]
+; BRANCH_PROSPECTIVE_POSE_RAN_INTO_WALL
+$91:EB4E AD 28 0A    LDA $0A28  [$7E:0A28]  ; A = [$0A28]
+$91:EB51 80 03       BRA $03    [$EB56]     ; Go to BRANCH_SET_RAN_INTO_WALL_POSE
 
-; BRANCH_EB53
-$91:EB53 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
+; BRANCH_RAN_INTO_WALL
+$91:EB53 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ; A = [Samus pose]
 
-$91:EB56 0A          ASL A
-$91:EB57 0A          ASL A
-$91:EB58 0A          ASL A
-$91:EB59 AA          TAX
-$91:EB5A BD 2C B6    LDA $B62C,x[$91:B674]
-$91:EB5D 29 FF 00    AND #$00FF
-$91:EB60 0A          ASL A
-$91:EB61 AA          TAX
-$91:EB62 BD 74 EB    LDA $EB74,x[$91:EB78]
-$91:EB65 8D 28 0A    STA $0A28  [$7E:0A28]
-$91:EB68 80 05       BRA $05    [$EB6F]
+; BRANCH_SET_RAN_INTO_WALL_POSE
+$91:EB56 0A          ASL A                  ;\
+$91:EB57 0A          ASL A                  ;|
+$91:EB58 0A          ASL A                  ;|
+$91:EB59 AA          TAX                    ;|
+$91:EB5A BD 2C B6    LDA $B62C,x[$91:B674]  ;|
+$91:EB5D 29 FF 00    AND #$00FF             ;} $0A28 = [$EB74 + (pose [A] direction shots are fired) * 2]
+$91:EB60 0A          ASL A                  ;|
+$91:EB61 AA          TAX                    ;|
+$91:EB62 BD 74 EB    LDA $EB74,x[$91:EB78]  ;|
+$91:EB65 8D 28 0A    STA $0A28  [$7E:0A28]  ;/
+$91:EB68 80 05       BRA $05    [$EB6F]     ; Go to BRANCH_RETURN_POSE_CHANGED
 
-$91:EB6A 9C CE 0D    STZ $0DCE  [$7E:0DCE]
-$91:EB6D 18          CLC
-$91:EB6E 60          RTS
+; BRANCH_RETURN_POSE_UNCHANGED
+$91:EB6A 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed due to solid collision flag = 0
+$91:EB6D 18          CLC                    ;\
+$91:EB6E 60          RTS                    ;} Return carry clear
 
-$91:EB6F 9C CE 0D    STZ $0DCE  [$7E:0DCE]
-$91:EB72 38          SEC
-$91:EB73 60          RTS
+; BRANCH_RETURN_POSE_CHANGED
+$91:EB6F 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed due to solid collision flag = 0
+$91:EB72 38          SEC                    ;\
+$91:EB73 60          RTS                    ;} Return carry set
 
-$91:EB74             dw 0003, 00CF, 0089, 00D1, 0089, 008A, 00D2, 008A, 00D0, 0004
+$91:EB74             dw 0003, ; 0: Up, facing right:   Facing right - aiming up
+                        00CF, ; 1: Up-right:           Facing right - ran into a wall - aiming up-right
+                        0089, ; 2: Right:              Facing right - ran into a wall
+                        00D1, ; 3: Down-right:         Facing right - ran into a wall - aiming down-right
+                        0089, ; 4: Down, facing right: Facing right - ran into a wall
+                        008A, ; 5: Down, facing left:  Facing left  - ran into a wall
+                        00D2, ; 6: Down-left:          Facing left  - ran into a wall - aiming down-left
+                        008A, ; 7: Left:               Facing left  - ran into a wall
+                        00D0, ; 8: Up-left:            Facing left  - ran into a wall - aiming up-left
+                        0004  ; 9: Up, facing left:    Facing left  - aiming up
 }
 
 
@@ -10717,7 +10748,7 @@ $91:EBC3 80 33       BRA $33    [$EBF8]     ; Go to BRANCH_POSE_CHANGED
 ; BRANCH_NOT_0A2C
 $91:EBC5 AD 2A 0A    LDA $0A2A  [$7E:0A2A]  ;\
 $91:EBC8 10 0A       BPL $0A    [$EBD4]     ;} If [$0A2A] & 8000h = 0: go to BRANCH_0A2A
-$91:EBCA 20 DE EA    JSR $EADE  [$91:EADE]  ; Execute $EADE
+$91:EBCA 20 DE EA    JSR $EADE  [$91:EADE]  ; Check if prospective pose runs into a wall
 $91:EBCD AD 28 0A    LDA $0A28  [$7E:0A28]  ;\
 $91:EBD0 30 3E       BMI $3E    [$EC10]     ;} If [$0A28] & 8000h != 0: go to BRANCH_RETURN
 $91:EBD2 80 13       BRA $13    [$EBE7]     ; Go to BRANCH_0A28
@@ -10752,7 +10783,7 @@ $91:EC0A AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:EC0D 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
 
 ; BRANCH_RETURN
-$91:EC10 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; Samus solid collision result = no change
+$91:EC10 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; Samus solid vertical collision result = no change
 $91:EC13 AB          PLB
 $91:EC14 28          PLP
 $91:EC15 6B          RTL
@@ -11303,7 +11334,7 @@ $91:EFC3 60          RTS
 {
 $91:EFC4 AD C6 0D    LDA $0DC6  [$7E:0DC6]  ;\
 $91:EFC7 29 FF 00    AND #$00FF             ;|
-$91:EFCA 0A          ASL A                  ;} Execute [$EFD0 + [Samus solid collision result] * 2]
+$91:EFCA 0A          ASL A                  ;} Execute [$EFD0 + [Samus solid vertical collision result] * 2]
 $91:EFCB AA          TAX                    ;|
 $91:EFCC FC D0 EF    JSR ($EFD0,x)[$91:EFEF];/
 $91:EFCF 60          RTS

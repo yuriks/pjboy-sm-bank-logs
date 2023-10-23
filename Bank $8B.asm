@@ -6131,8 +6131,8 @@ $8B:AF47 A9 C9 E6    LDA #$E6C9             ;\
 $8B:AF4A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E6C9 (demo)
 $8B:AF4D A9 33 E8    LDA #$E833             ;\
 $8B:AF50 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E833 (intro demo)
-$8B:AF53 22 70 83 91 JSL $918370[$91:8370]  ; Execute $91:8370
-$8B:AF57 22 4E 83 91 JSL $91834E[$91:834E]  ; Execute $91:834E
+$8B:AF53 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
+$8B:AF57 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
 $8B:AF5B A0 84 87    LDY #$8784             ; Y = $8784
 $8B:AF5E 22 95 83 91 JSL $918395[$91:8395]  ; Execute $91:8395
 $8B:AF62 A9 FF FF    LDA #$FFFF             ;\
@@ -6206,8 +6206,8 @@ $8B:AFF4 A9 C9 E6    LDA #$E6C9             ;\
 $8B:AFF7 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E6C9 (demo)
 $8B:AFFA A9 33 E8    LDA #$E833             ;\
 $8B:AFFD 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E833 (intro demo)
-$8B:B000 22 70 83 91 JSL $918370[$91:8370]  ; Execute $91:8370
-$8B:B004 22 4E 83 91 JSL $91834E[$91:834E]  ; Execute $91:834E
+$8B:B000 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
+$8B:B004 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
 $8B:B008 A0 7E 87    LDY #$877E             ; Y = $877E
 $8B:B00B 22 95 83 91 JSL $918395[$91:8395]  ; Execute $91:8395
 $8B:B00F A9 01 00    LDA #$0001             ;\
