@@ -9186,7 +9186,7 @@ $A7:F52D 6B          RTL
 }
 
 
-;;; $F52E: Initialisation AI - enemy $E5FF (dachora) ;;;
+;;; $F52E: Main AI - enemy $E5FF (dachora) ;;;
 {
 $A7:F52E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A7:F531 7C B2 0F    JMP ($0FB2,x)[$A7:F570]

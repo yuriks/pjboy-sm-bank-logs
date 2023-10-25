@@ -11365,7 +11365,7 @@ $91:EFEE 60          RTS
 $91:EFEF AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $91:EFF2 C9 01 00    CMP #$0001             ;} If [Samus Y direction] != up:
 $91:EFF5 F0 15       BEQ $15    [$F00C]     ;/
-$91:EFF7 9C 20 0B    STZ $0B20  [$7E:0B20]  ; $0B20 = 0
+$91:EFF7 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not bouncing
 $91:EFFA 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $91:EFFD 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $91:F000 A9 01 00    LDA #$0001             ;\
