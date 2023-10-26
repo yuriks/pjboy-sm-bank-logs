@@ -6085,7 +6085,7 @@ $8B:AECB 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $5000,
 $8B:AECD C2 20       REP #$20
 $8B:AECF A9 02 00    LDA #$0002             ;\
 $8B:AED2 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
-$8B:AED5 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$8B:AED5 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $8B:AED9 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $8B:AEDD AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $8B:AEE0 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -6169,7 +6169,7 @@ $8B:AF89 A9 10 00    LDA #$0010             ;\
 $8B:AF8C 8D A7 07    STA $07A7  [$7E:07A7]  ;} Room height = 10h blocks
 $8B:AF8F A9 02 00    LDA #$0002             ;\
 $8B:AF92 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
-$8B:AF95 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$8B:AF95 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $8B:AF99 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $8B:AF9D AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $8B:AFA0 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]

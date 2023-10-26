@@ -11957,7 +11957,7 @@ $90:D5FB 80 03       BRA $03    [$D600]
 $90:D5FD A9 D4 00    LDA #$00D4             ; Samus pose = D4h (facing left  - crystal flash)
 
 $90:D600 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$90:D603 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:D603 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:D607 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:D60B AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:D60E 29 FF 00    AND #$00FF             ;|
@@ -13626,7 +13626,7 @@ $90:E13F 80 06       BRA $06    [$E147]
 $90:E141 A9 54 00    LDA #$0054             ;\ Else (facing left):
 $90:E144 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - knockback
 
-$90:E147 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:E147 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:E14B 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:E14F AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $90:E152 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -13762,7 +13762,7 @@ $90:E24C 80 06       BRA $06    [$E254]
 $90:E24E A9 BA 00    LDA #$00BA             ;\ Else ([A] & 1 = 0):
 $90:E251 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - grabbed by Draygon - not moving - not aiming
 
-$90:E254 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:E254 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:E258 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:E25C A9 A1 E2    LDA #$E2A1             ;\
 $90:E25F 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E2A1 (grabbed by Draygon)
@@ -13849,7 +13849,7 @@ $90:E2EF 80 06       BRA $06    [$E2F7]
 $90:E2F1 A9 02 00    LDA #$0002             ;\ Else (facing left):
 $90:E2F4 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - normal
 
-$90:E2F7 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:E2F7 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:E2FB 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:E2FF A9 37 A3    LDA #$A337             ;\
 $90:E302 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
@@ -14567,7 +14567,7 @@ $90:E738 20 97 E0    JSR $E097  [$90:E097]  ; Timer / Samus hack handler
 $90:E73B 20 00 80    JSR $8000  [$90:8000]  ; Animate Samus
 $90:E73E 20 E9 DD    JSR $DDE9  [$90:DDE9]  ; Samus is hit interruption
 $90:E741 22 B6 E8 91 JSL $91E8B6[$91:E8B6]  ; Set prospective Samus pose according to solid vertical collision result
-$90:E745 22 88 EB 91 JSL $91EB88[$91:EB88]  ; Execute $91:EB88
+$90:E745 22 88 EB 91 JSL $91EB88[$91:EB88]  ; Update Samus pose
 $90:E749 22 F7 D6 91 JSL $91D6F7[$91:D6F7]  ; Handle Samus palette
 $90:E74D 20 CE E9    JSR $E9CE  [$90:E9CE]  ; Handle periodic damage to Samus
 $90:E750 20 45 EA    JSR $EA45  [$90:EA45]  ; Pause check
@@ -14674,7 +14674,7 @@ $90:E801 22 1B A9 90 JSL $90A91B[$90:A91B]  ; Update mini-map
 $90:E805 20 00 80    JSR $8000  [$90:8000]  ; Animate Samus
 $90:E808 20 E9 DD    JSR $DDE9  [$90:DDE9]  ; Samus is hit interruption
 $90:E80B 22 B6 E8 91 JSL $91E8B6[$91:E8B6]  ; Set prospective Samus pose according to solid vertical collision result
-$90:E80F 22 88 EB 91 JSL $91EB88[$91:EB88]  ; Execute $91:EB88
+$90:E80F 22 88 EB 91 JSL $91EB88[$91:EB88]  ; Update Samus pose
 $90:E813 22 F7 D6 91 JSL $91D6F7[$91:D6F7]  ; Handle Samus palette
 $90:E817 20 2F F5    JSR $F52F  [$90:F52F]  ; Debug command handler
 $90:E81A AD 14 0A    LDA $0A14  [$7E:0A14]  ;\
@@ -14703,7 +14703,7 @@ $90:E83C 20 4B E9    JSR $E94B  [$90:E94B]  ; Execute Samus movement handler
 $90:E83F 20 00 80    JSR $8000  [$90:8000]  ; Animate Samus
 $90:E842 20 E9 DD    JSR $DDE9  [$90:DDE9]  ; Samus is hit interruption
 $90:E845 22 B6 E8 91 JSL $91E8B6[$91:E8B6]  ; Set prospective Samus pose according to solid vertical collision result
-$90:E849 22 88 EB 91 JSL $91EB88[$91:EB88]  ; Execute $91:EB88
+$90:E849 22 88 EB 91 JSL $91EB88[$91:EB88]  ; Update Samus pose
 $90:E84D 22 F7 D6 91 JSL $91D6F7[$91:D6F7]  ; Handle Samus palette
 $90:E851 AD 14 0A    LDA $0A14  [$7E:0A14]  ;\
 $90:E854 85 8B       STA $8B    [$7E:008B]  ;} Controller 1 input = [demo backup of controller 1 input]
@@ -16118,7 +16118,7 @@ $90:F138 A9 02 00    LDA #$0002             ;\ Else (Samus is facing left):
 $90:F13B 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
 
 $90:F13E 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
-$90:F141 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:F141 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F145 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F149 A9 3C 00    LDA #$003C             ;\
 $90:F14C 8D A0 0A    STA $0AA0  [$7E:0AA0]  ;} Reached Ceres elevator fade timer = 60
@@ -16156,7 +16156,7 @@ $90:F185 A9 02 00    LDA #$0002             ;\ Else (Samus is facing left):
 $90:F188 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
 
 $90:F18B 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
-$90:F18E 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:F18E 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F192 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F196 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
 $90:F199 38          SEC                    ;\
@@ -16219,7 +16219,7 @@ $90:F1F2 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8DC (Samus is locked)
 $90:F1F5 A9 00 00    LDA #$0000             ;\
 $90:F1F8 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - power suit
 $90:F1FB 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
-$90:F1FE 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:F1FE 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F202 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F206 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $90:F20A A9 52 EB    LDA #$EB52             ;\
@@ -16270,7 +16270,7 @@ $90:F271 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - var
 
 ; BRANCH_MERGE
 $90:F274 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
-$90:F278 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:F278 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F27C A9 03 00    LDA #$0003             ;\
 $90:F27F 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3
 $90:F282 A9 02 00    LDA #$0002             ;\
@@ -16481,7 +16481,7 @@ $90:F391 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E09
 $90:F394 A9 54 00    LDA #$0054             ;\
 $90:F397 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - knockback
 $90:F39A 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
-$90:F39D 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$90:F39D 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F3A1 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F3A5 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
 $90:F3A8 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0

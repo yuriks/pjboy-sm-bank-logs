@@ -4362,7 +4362,7 @@ $82:A469 80 06       BRA $06    [$A471]
 $82:A46B A9 1A 00    LDA #$001A             ;\ Else (facing left):
 $82:A46E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - spin jump
 
-$82:A471 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$82:A471 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $82:A475 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A479 28          PLP
@@ -4389,7 +4389,7 @@ $82:A497 80 06       BRA $06    [$A49F]
 $82:A499 A9 41 00    LDA #$0041             ;\ Else (facing left):
 $82:A49C 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - no springball - on ground
 
-$82:A49F 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$82:A49F 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $82:A4A3 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A4A7 28          PLP
@@ -4415,7 +4415,7 @@ $82:A4C5 80 06       BRA $06    [$A4CD]
 $82:A4C7 A9 7A 00    LDA #$007A             ;\ Else (facing left):
 $82:A4CA 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - spring ball - on ground
 
-$82:A4CD 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$82:A4CD 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $82:A4D1 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A4D5 28          PLP
@@ -4441,7 +4441,7 @@ $82:A4F3 80 06       BRA $06    [$A4FB]
 $82:A4F5 A9 41 00    LDA #$0041             ;\ Else (facing left):
 $82:A4F8 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - no springball - on ground
 
-$82:A4FB 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$82:A4FB 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $82:A4FF 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 $82:A503 28          PLP

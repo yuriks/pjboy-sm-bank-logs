@@ -4788,7 +4788,6 @@ $8F:C8C7 60          RTS
 ;;; $C8C8: Setup ASM: spawn pre Phantoon room enemy projectile ;;;
 {
 ; Room $CC6F. Pre Phantoon room
-; Spawns an enemy projectile... have not determined what it does... clears $0923
 $8F:C8C8 A0 B0 A3    LDY #$A3B0             ;\
 $8F:C8CB 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn pre-Phantoon room enemy projectile
 $8F:C8CF 60          RTS

@@ -825,7 +825,7 @@ $9B:B3DA 80 06       BRA $06    [$B3E2]
 $9B:B3DC A9 D8 00    LDA #$00D8             ;\ Else (Samus is facing left):
 $9B:B3DF 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - crystal flash ending
 
-$9B:B3E2 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$9B:B3E2 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $9B:B3E6 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $9B:B3EA AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $9B:B3ED 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]

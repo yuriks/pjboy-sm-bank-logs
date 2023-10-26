@@ -10152,7 +10152,7 @@ $88:E32C 09 01 00    ORA #$0001             ;} Collect varia suit
 $88:E32F 8D A4 09    STA $09A4  [$7E:09A4]  ;/
 $88:E332 A9 9B 00    LDA #$009B             ;\
 $88:E335 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - varia/gravity suit
-$88:E338 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$88:E338 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $88:E33C 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $88:E340 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $88:E343 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -10180,7 +10180,7 @@ $88:E36D 09 20 00    ORA #$0020             ;} Collect gravity suit
 $88:E370 8D A4 09    STA $09A4  [$7E:09A4]  ;/
 $88:E373 A9 9B 00    LDA #$009B             ;\
 $88:E376 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - varia/gravity suit
-$88:E379 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$88:E379 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $88:E37D 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $88:E381 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $88:E384 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]

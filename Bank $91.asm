@@ -1204,7 +1204,7 @@ $91:8700 A9 13 E7    LDA #$E713             ;\
 $91:8703 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
 $91:8706 A9 02 00    LDA #$0002
 $91:8709 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:870C 22 33 F4 91 JSL $91F433[$91:F433]
+$91:870C 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:8710 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:8714 AD 20 0A    LDA $0A20  [$7E:0A20]
 $91:8717 8D 24 0A    STA $0A24  [$7E:0A24]
@@ -1231,7 +1231,7 @@ $91:873B A9 13 E7    LDA #$E713             ;\
 $91:873E 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
 $91:8741 A9 02 00    LDA #$0002
 $91:8744 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:8747 22 33 F4 91 JSL $91F433[$91:F433]
+$91:8747 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:874B 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:874F AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:8752 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -1467,8 +1467,8 @@ $91:8A53 A9 01 00    LDA #$0001             ; Initialise Samus with pose = facin
 
 ;;; $8A56: Initialise Samus with pose = [A] ;;;
 {
-$91:8A56 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:8A59 22 33 F4 91 JSL $91F433[$91:F433]
+$91:8A56 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ; Samus pose = [A]
+$91:8A59 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:8A5D 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:8A61 A9 52 EB    LDA #$EB52             ;\
 $91:8A64 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
@@ -1481,9 +1481,9 @@ $91:8A67 60          RTS
 $91:8A68 A9 52 EB    LDA #$EB52             ;\
 $91:8A6B 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $91:8A6E 22 FA CF 90 JSL $90CFFA[$90:CFFA]  ; Trigger shinespark windup
-$91:8A72 A9 CD 00    LDA #$00CD
-$91:8A75 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:8A78 22 33 F4 91 JSL $91F433[$91:F433]
+$91:8A72 A9 CD 00    LDA #$00CD             ;\
+$91:8A75 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing right - shinespark - diagonal
+$91:8A78 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:8A7C 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:8A80 60          RTS
 }
@@ -1494,9 +1494,9 @@ $91:8A80 60          RTS
 $91:8A81 A9 52 EB    LDA #$EB52             ;\
 $91:8A84 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $91:8A87 22 FA CF 90 JSL $90CFFA[$90:CFFA]  ; Trigger shinespark windup
-$91:8A8B A9 CA 00    LDA #$00CA
-$91:8A8E 8D 1C 0A    STA $0A1C  [$7E:0A1C]
-$91:8A91 22 33 F4 91 JSL $91F433[$91:F433]
+$91:8A8B A9 CA 00    LDA #$00CA             ;\
+$91:8A8E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - shinespark - horizontal
+$91:8A91 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:8A95 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:8A99 60          RTS
 }
@@ -7772,7 +7772,7 @@ $91:D55F 80 06       BRA $06    [$D567]
 $91:D561 A9 9B 00    LDA #$009B             ;\ Else (gravity suit equipped):
 $91:D564 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - varia/gravity suit
 
-$91:D567 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:D567 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:D56B 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:D56F A9 15 00    LDA #$0015             ; A = 15h
 $91:D572 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
@@ -7867,7 +7867,7 @@ $91:D637 80 06       BRA $06    [$D63F]
 $91:D639 A9 9B 00    LDA #$009B             ;\ Else (gravity suit equipped):
 $91:D63C 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - varia/gravity suit
                                             
-$91:D63F 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:D63F 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:D643 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:D647 A9 15 00    LDA #$0015             ; A = 15h
 $91:D64A 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
@@ -9493,7 +9493,7 @@ $91:E2E9 A9 28 00    LDA #$0028             ;\
 $91:E2EC 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - crouching
 
 ; BRANCH_MERGE
-$91:E2EF 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:E2EF 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E2F3 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E2F7 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:E2FA 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -9625,7 +9625,7 @@ $91:E410 80 06       BRA $06    [$E418]
 $91:E412 A9 9B 00    LDA #$009B             ;\ Else (varia/gravity suit equipped):
 $91:E415 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - varia/gravity suit
 
-$91:E418 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:E418 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E41C 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E420 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:E423 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -9753,7 +9753,7 @@ $91:E523 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - Samus 
 
 $91:E526 A9 02 00    LDA #$0002             ;\
 $91:E529 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 2
-$91:E52C 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:E52C 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E530 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E534 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:E537 0A          ASL A                  ;|
@@ -10047,7 +10047,7 @@ $91:E764 A9 00 00    LDA #$0000             ;\
 $91:E767 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - power suit
 
 ; BRANCH_POSE_CHANGED
-$91:E76A 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:E76A 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E76E 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E772 20 19 E7    JSR $E719  [$91:E719]  ; Update Samus previous pose
 
@@ -10133,7 +10133,7 @@ $91:E80F A9 1A 00    LDA #$001A             ;\ Else (facing left):
 $91:E812 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - spin jump
 
 ; BRANCH_MERGE
-$91:E815 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:E815 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E819 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E81D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:E820 29 FF 00    AND #$00FF             ;|
@@ -10167,7 +10167,7 @@ $91:E853 80 06       BRA $06    [$E85B]
 $91:E855 A9 7A 00    LDA #$007A             ;\ Else (facing left):
 $91:E858 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - spring ball - on ground
 
-$91:E85B 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:E85B 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E85F 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E863 20 19 E7    JSR $E719  [$91:E719]  ; Update Samus previous pose
 
@@ -10191,7 +10191,7 @@ $91:E880 80 06       BRA $06    [$E888]
 $91:E882 A9 41 00    LDA #$0041             ;\ Else (facing left):
 $91:E885 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left  - morph ball - no springball - on ground
                                             
-$91:E888 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:E888 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E88C 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E890 20 19 E7    JSR $E719  [$91:E719]  ; Update Samus previous pose
 
@@ -10700,7 +10700,7 @@ $91:EB74             dw 0003, ; 0: Up, facing right:   Facing right - aiming up
 }
 
 
-;;; $EB88:  ;;;
+;;; $EB88: Update Samus pose ;;;
 {
 ; Handles ALL transitions? Doesn't handle space jumping, but everything else with 0A1C?
 ; 0A2C takes priority (unless dead), then 0A2A, then 0A28. I think. Assuming that.
@@ -10735,7 +10735,7 @@ $91:EBAD 80 16       BRA $16    [$EBC5]     ; Go to BRANCH_NOT_0A2C
 ; BRANCH_0A2C
 $91:EBAF 68          PLA
 $91:EBB0 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ; Samus pose = [$0A2C]
-$91:EBB3 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:EBB3 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:EBB7 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 
 ; BRANCH_0A32_1
@@ -10755,7 +10755,7 @@ $91:EBD2 80 13       BRA $13    [$EBE7]     ; Go to BRANCH_0A28
 
 ; BRANCH_0A2A
 $91:EBD4 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ; Samus pose = [$0A2A]
-$91:EBD7 22 04 F4 91 JSL $91F404[$91:F404]  ; Execute $91:F404
+$91:EBD7 22 04 F4 91 JSL $91F404[$91:F404]  ; Handle Samus pose change
 $91:EBDB B0 1B       BCS $1B    [$EBF8]     ; If carry set: go to BRANCH_POSE_CHANGED
 $91:EBDD AD 30 0A    LDA $0A30  [$7E:0A30]  ;\
 $91:EBE0 0A          ASL A                  ;|
@@ -10765,7 +10765,7 @@ $91:EBE5 80 11       BRA $11    [$EBF8]     ; Go to BRANCH_POSE_CHANGED
 
 ; BRANCH_0A28
 $91:EBE7 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ; Samus pose = [$0A28]
-$91:EBEA 22 04 F4 91 JSL $91F404[$91:F404]  ; Execute $91:F404
+$91:EBEA 22 04 F4 91 JSL $91F404[$91:F404]  ; Handle Samus pose change
 $91:EBEE B0 08       BCS $08    [$EBF8]     ; If carry set: go to BRANCH_POSE_CHANGED
 $91:EBF0 AD 2E 0A    LDA $0A2E  [$7E:0A2E]  ;\
 $91:EBF3 0A          ASL A                  ;|
@@ -12010,14 +12010,10 @@ $91:F403 60          RTS
 }
 
 
-;;; $F404:  ;;;
+;;; $F404: Handle Samus pose change ;;;
 {
-; If 0A1C isn't new, CLC and RTL.
-; If it is, JSR $FDAE (check pose size),
-; JSL 91:F433(check pose changes),
-; JSL 91:FBBB(check movement type changes),
-; JSL 91:FB08(handle animation frame),
-; STZ $0A9A. If 0A1C changed, SEC, else CLC
+;; Returns:
+;;     Carry: Set if pose changed, clear otherwise
 $91:F404 08          PHP
 $91:F405 8B          PHB
 $91:F406 4B          PHK                    ;\
@@ -12028,7 +12024,7 @@ $91:F40D 48          PHA                    ;} A = [Samus pose]
 $91:F40E CD 20 0A    CMP $0A20  [$7E:0A20]  ;\
 $91:F411 F0 12       BEQ $12    [$F425]     ;} If [Samus pose] = [Samus previous pose]: return carry clear
 $91:F413 20 AE FD    JSR $FDAE  [$91:FDAE]  ; Handle collision due to change of pose
-$91:F416 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:F416 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:F41A 22 BB FB 91 JSL $91FBBB[$91:FBBB]  ; Handle jump transition
 $91:F41E 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:F422 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; $0A9A = 0
@@ -12048,9 +12044,8 @@ $91:F432 6B          RTL
 }
 
 
-;;; $F433:  ;;;
+;;; $F433: Initialise Samus pose (1/2) ;;;
 {
-; Handle change of pose I guess, or initialise new pose?
 $91:F433 08          PHP
 $91:F434 8B          PHB
 $91:F435 4B          PHK                    ;\
@@ -12082,7 +12077,7 @@ $91:F467 6B          RTL
 }
 
 
-;;; $F468:  ;;;
+;;; $F468: Initialise Samus pose (2/2) ;;;
 {
 $91:F468 08          PHP
 $91:F469 C2 30       REP #$30
@@ -12117,34 +12112,34 @@ $91:F49D 8D 1E 0A    STA $0A1E  [$7E:0A1E]  ;/
 $91:F4A0 28          PLP
 $91:F4A1 60          RTS
 
-$91:F4A2             dw F4DC, ; 0: Standing
-                        F50C, ; 1: Running
-                        F543, ; 2: Normal jumping
-                        F624, ; 3: Spin jumping
-                        F9F4, ; 4: Morph ball - on ground
-                        F5EB, ; 5: Crouching
-                        F60D, ; 6: Falling
-                        F4DA, ; *7: Unused
-                        F9F4, ; 8: Morph ball - falling
-                        F4DA, ; *9: Unused
-                        F4DA, ; *Ah: Knockback / crystal flash ending
-                        F4DA, ; *Bh: Unused
-                        F4DA, ; *Ch: Unused
-                        F4DA, ; *Dh: Unused
-                        F8D3, ; Eh: Turning around - on ground
-                        F758, ; Fh: Crouching/standing/morphing/unmorphing transition
-                        F88C, ; 10h: Moonwalking
-                        FA56, ; 11h: Spring ball - on ground
-                        FA56, ; 12h: Spring ball - in air
-                        FA56, ; 13h: Spring ball - falling
-                        FA76, ; 14h: Wall jumping
-                        F4DA, ; *15h: Ran into a wall
-                        F4DA, ; *16h: Grappling
-                        F952, ; 17h: Turning around - jumping
-                        F98A, ; 18h: Turning around - falling
-                        F8AE, ; 19h: Damage boost
-                        F4DA, ; *1Ah: Grabbed by Draygon
-                        FACA  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
+$91:F4A2             dw F4DC, ; *0: Standing
+                        F50C, ; *1: Running
+                        F543, ; *2: Normal jumping
+                        F624, ; *3: Spin jumping
+                        F9F4, ; *4: Morph ball - on ground
+                        F5EB, ; *5: Crouching
+                        F60D, ; *6: Falling
+                        F4DA, ;  7: Unused
+                        F9F4, ; *8: Morph ball - falling
+                        F4DA, ;  9: Unused
+                        F4DA, ;  Ah: Knockback / crystal flash ending
+                        F4DA, ;  Bh: Unused
+                        F4DA, ;  Ch: Unused
+                        F4DA, ;  Dh: Unused
+                        F8D3, ; *Eh: Turning around - on ground
+                        F758, ; *Fh: Crouching/standing/morphing/unmorphing transition
+                        F88C, ; *10h: Moonwalking
+                        FA56, ; *11h: Spring ball - on ground
+                        FA56, ; *12h: Spring ball - in air
+                        FA56, ; *13h: Spring ball - falling
+                        FA76, ; *14h: Wall jumping
+                        F4DA, ;  15h: Ran into a wall
+                        F4DA, ;  16h: Grappling
+                        F952, ; *17h: Turning around - jumping
+                        F98A, ; *18h: Turning around - falling
+                        F8AE, ; *19h: Damage boost
+                        F4DA, ;  1Ah: Grabbed by Draygon
+                        FACA  ; *1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 }
 
 
@@ -12155,7 +12150,7 @@ $91:F4DB 60          RTS
 }
 
 
-;;; $F4DC:  ;;;
+;;; $F4DC: Initialise Samus pose - standing ;;;
 {
 ; Sets 0A9A to 1 if Samus was aiming up, and still is aiming up
 $91:F4DC AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -12163,7 +12158,7 @@ $91:F4DF 0A          ASL A                  ;|
 $91:F4E0 0A          ASL A                  ;|
 $91:F4E1 0A          ASL A                  ;|
 $91:F4E2 AA          TAX                    ;|
-$91:F4E3 BD 2C B6    LDA $B62C,x[$91:B63C]  ;} If direction shots are fired != up: return
+$91:F4E3 BD 2C B6    LDA $B62C,x[$91:B63C]  ;} If direction shots are fired != up: return carry clear
 $91:F4E6 29 FF 00    AND #$00FF             ;|
 $91:F4E9 F0 05       BEQ $05    [$F4F0]     ;|
 $91:F4EB C9 09 00    CMP #$0009             ;|
@@ -12174,21 +12169,21 @@ $91:F4F3 0A          ASL A                  ;|
 $91:F4F4 0A          ASL A                  ;|
 $91:F4F5 0A          ASL A                  ;|
 $91:F4F6 AA          TAX                    ;|
-$91:F4F7 BD 2C B6    LDA $B62C,x[$91:B634]  ;} If previous direction shots are fired != up: return
+$91:F4F7 BD 2C B6    LDA $B62C,x[$91:B634]  ;} If previous direction shots are fired != up: return carry clear
 $91:F4FA 29 FF 00    AND #$00FF             ;|
 $91:F4FD F0 05       BEQ $05    [$F504]     ;|
 $91:F4FF C9 09 00    CMP #$0009             ;|
 $91:F502 D0 06       BNE $06    [$F50A]     ;/
 
 $91:F504 A9 01 00    LDA #$0001             ;\
-$91:F507 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} $0A9A = 1
+$91:F507 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 1
 
 $91:F50A 18          CLC                    ;\
 $91:F50B 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F50C:  ;;;
+;;; $F50C: Initialise Samus pose - running ;;;
 {
 ; Sets 0A9A to 8000 if Samus was already running. Also some unused code for unused ram and unused poses
 $91:F50C AD 23 0A    LDA $0A23  [$7E:0A23]  ;\
@@ -12224,7 +12219,7 @@ $91:F542 60          RTS
 }
 
 
-;;; $F543:  ;;;
+;;; $F543: Initialise Samus pose - normal jumping ;;;
 {
 ; The $F5CF section seems kinda pointless(?)
 ; NOPing it causes fire to be required to be held for more than 1 frame to fire from a spin-jump,
@@ -12319,7 +12314,7 @@ $91:F5EA 60          RTS
 }
 
 
-;;; $F5EB:  ;;;
+;;; $F5EB: Initialise Samus pose - crouching ;;;
 {
 $91:F5EB AD 1C 0A    LDA $0A1C  [$7E:0A1C]
 $91:F5EE C9 85 00    CMP #$0085
@@ -12338,6 +12333,11 @@ $91:F608 8D 9A 0A    STA $0A9A  [$7E:0A9A]
 
 $91:F60B 18          CLC
 $91:F60C 60          RTS
+}
+
+
+;;; $F60D: Initialise Samus pose - falling ;;;
+{
 $91:F60D AD 42 0B    LDA $0B42  [$7E:0B42]  ;\
 $91:F610 D0 0A       BNE $0A    [$F61C]     ;|
 $91:F612 AD 44 0B    LDA $0B44  [$7E:0B44]  ;} If [Samus X extra run speed] = 0.0:
@@ -12353,7 +12353,7 @@ $91:F623 60          RTS
 }
 
 
-;;; $F624:  ;;;
+;;; $F624: Initialise Samus pose - spin jumping ;;;
 {
 ; If Samus turned around, add current speed to momentum,
 ; cleanup blue suit, set horizontal speed to 0, and 0B4A to 1.
@@ -12504,7 +12504,7 @@ $91:F757 60          RTS
 }
 
 
-;;; $F758:  ;;;
+;;; $F758: Initialise Samus pose - crouching/standing/morphing/unmorphing transition ;;;
 {
 $91:F758 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
 $91:F75B C9 F1 00    CMP #$00F1
@@ -12686,7 +12686,7 @@ $91:F88B 60          RTS
 }
 
 
-;;; $F88C:  ;;;
+;;; $F88C: Initialise Samus pose - moonwalking ;;;
 {
 $91:F88C AD E4 09    LDA $09E4  [$7E:09E4]
 $91:F88F F0 02       BEQ $02    [$F893]
@@ -12709,7 +12709,7 @@ $91:F8AD 60          RTS
 }
 
 
-;;; $F8AE:  ;;;
+;;; $F8AE: Initialise Samus pose - damage boost ;;;
 {
 $91:F8AE 80 1B       BRA $1B    [$F8CB]
 }
@@ -12742,7 +12742,7 @@ $91:F8D2 60          RTS
 }
 
 
-;;; $F8D3:  ;;;
+;;; $F8D3: Initialise Samus pose - turning around - on ground ;;;
 {
 $91:F8D3 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:F8D6 F0 59       BEQ $59    [$F931]     ;|
@@ -12807,7 +12807,7 @@ $91:F951 60          RTS
 }
 
 
-;;; $F952:  ;;;
+;;; $F952: Initialise Samus pose - turning around - jumping ;;;
 {
 $91:F952 AD 20 0A    LDA $0A20  [$7E:0A20]
 $91:F955 0A          ASL A
@@ -12836,7 +12836,7 @@ $91:F989 60          RTS
 }
 
 
-;;; $F98A:  ;;;
+;;; $F98A: Initialise Samus pose - turning around - falling ;;;
 {
 $91:F98A AD 20 0A    LDA $0A20  [$7E:0A20]
 $91:F98D 0A          ASL A
@@ -12886,7 +12886,7 @@ $91:F9EA             db C1, C1, BF, C3, 8D, 8E, C4, C0, C2, C2 ; Moonwalk
 }
 
 
-;;; $F9F4:  ;;;
+;;; $F9F4: Initialise Samus pose - morph ball ;;;
 {
 $91:F9F4 AD 23 0A    LDA $0A23  [$7E:0A23]
 $91:F9F7 29 FF 00    AND #$00FF
@@ -12938,7 +12938,7 @@ $91:FA55 60          RTS
 }
 
 
-;;; $FA56:  ;;;
+;;; $FA56: Initialise Samus pose - spring ball ;;;
 {
 $91:FA56 AD 23 0A    LDA $0A23  [$7E:0A23]
 $91:FA59 29 FF 00    AND #$00FF
@@ -12958,7 +12958,7 @@ $91:FA75 60          RTS
 }
 
 
-;;; $FA76:  ;;;
+;;; $FA76: Initialise Samus pose - wall jumping ;;;
 {
 $91:FA76 22 3E EC 90 JSL $90EC3E[$90:EC3E]  ; $12 = Samus bottom boundary
 $91:FA7A AD 5E 19    LDA $195E  [$7E:195E]  ;\
@@ -13003,7 +13003,7 @@ $91:FAC9 60          RTS
 }
 
 
-;;; $FACA:  ;;;
+;;; $FACA: Initialise Samus pose - shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
 {
 ; If $0A1C is below #$00CF, find appropriate value for $0A58 from $FAFC,X, set $0A60 to #$E90E (RTS).
 ; Clear some echoes stuff and play a sound
@@ -13361,7 +13361,7 @@ $91:FD1B A9 44 00    LDA #$0044             ;\ Else ([Samus movement type] = cro
 $91:FD1E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - turning - crouching
 
 ; BRANCH_NOT_TURNING_MERGE
-$91:FD21 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:FD21 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:FD25 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:FD29 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:FD2C 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
@@ -13409,7 +13409,7 @@ $91:FD86 A9 DA 00    LDA #$00DA             ;\
 $91:FD89 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - x-ray - crouching
 
 ; BRANCH_TURNING_MERGE
-$91:FD8C 22 33 F4 91 JSL $91F433[$91:F433]  ; Execute $91:F433
+$91:FD8C 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:FD90 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:FD94 AD 20 0A    LDA $0A20  [$7E:0A20]  ;\
 $91:FD97 8D 24 0A    STA $0A24  [$7E:0A24]  ;} Samus last different pose = [Samus previous pose]
