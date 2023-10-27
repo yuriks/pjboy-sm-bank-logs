@@ -1639,7 +1639,7 @@ $80:898A 6C 12 00    JMP ($0012)[$80:8992]  ; Go to [$12]
 
 $80:898D 9C 90 05    STZ $0590  [$7E:0590]  ; Clear OAM stack pointer = 0
 $80:8990 28          PLP
-$80:8991 6B          RTL
+$80:8991 6B          RTL                    ; Return
 
 $80:8992 8D 71 03    STA $0371  [$7E:0371]  ; Sprite 0 Y position = F0h
 $80:8995 8D 75 03    STA $0375  [$7E:0375]  ; Sprite 1 Y position = F0h
