@@ -111,7 +111,7 @@ $A0:8027 6B          RTL
 }
 
 
-;;; $8028: Normal touch AI, but skips death animation ;;;
+;;; $8028: Normal touch AI - no death check ;;;
 {
 $A0:8028 22 97 A4 A0 JSL $A0A497[$A0:A497]
 $A0:802C 6B          RTL
@@ -125,7 +125,7 @@ $A0:8031 6B          RTL
 }
 
 
-;;; $8032: Normal enemy shot AI, but skips hit-projectile and death animation ;;;
+;;; $8032: Normal enemy shot AI - no death check, no enemy shot graphic ;;;
 {
 $A0:8032 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
 $A0:8036 6B          RTL
@@ -139,7 +139,7 @@ $A0:803B 6B          RTL
 }
 
 
-;;; $803C: Normal enemy power bomb AI, but skips death animation ;;;
+;;; $803C: Normal enemy power bomb AI - no death check ;;;
 {
 ; Kraid's power bomb AI
 $A0:803C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]
@@ -1643,7 +1643,7 @@ $A0:8FD3 6B          RTL
 ;         If enemy AI is disabled:
 ;             If [enemy flash timer] = 1 or [enemy frozen timer] = 1:
 ;                 Enemy $7E:7002 = 0
-;                 Death animation
+;                 Enemy death
 ;
 ;         If (enemy is on-screen or enemy uses extended spritemap format) and enemy is not deleted and enemy is not invisible and enemy drawing is enabled:
 ;             Add enemy to drawing queue
@@ -1796,7 +1796,7 @@ $A0:90DF D0 0E       BNE $0E    [$90EF]     ;/
 $A0:90E1 A9 00 00    LDA #$0000             ;\
 $A0:90E4 9F 02 70 7E STA $7E7002,x[$7E:7002];} Enemy $7E:7002 = 0
 $A0:90E8 A9 00 00    LDA #$0000             ; A = 0
-$A0:90EB 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
+$A0:90EB 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 ; BRANCH_KILL_ENEMY_END
 $A0:90EF AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
@@ -3755,7 +3755,7 @@ $A0:9FC7 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} >_<;
 $A0:9FCA A9 04 00    LDA #$0004             ;\
 $A0:9FCD 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 4
 $A0:9FD1 A9 00 00    LDA #$0000             ; A = 0
-$A0:9FD4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
+$A0:9FD4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A0:9FD8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9FDB 9E 8A 0F    STZ $0F8A,x[$7E:10CA]  ; Set main AI
 $A0:9FDE 6B          RTL
@@ -3852,7 +3852,7 @@ $A0:A079 6B          RTL
 ;;; $A07A: Enemy / Samus collision handler ;;;
 {
 ; $A091 is the cause of screw attack cancelling invincibility (need to check $9A8B too)
-; Not the cause of crystal flash insta-death
+; Not the cause of crystal flash insta-death, that would be $90:D6D6
 $A0:A07A 8B          PHB
 $A0:A07B C2 30       REP #$30
 $A0:A07D F4 00 A0    PEA $A000              ;\
@@ -3879,8 +3879,8 @@ $A0:A0AF F0 05       BEQ $05    [$A0B6]     ;} If [enemy $7E:7000] != 0:
 $A0:A0B1 C9 08 00    CMP #$0008             ;\
 $A0:A0B4 D0 02       BNE $02    [$A0B8]     ;} If [enemy $7E:7000] != 8: go to BRANCH_TANGIBLE
 
-$A0:A0B6 AB          PLB                    ;\
-$A0:A0B7 60          RTS                    ;} Return
+$A0:A0B6 AB          PLB
+$A0:A0B7 60          RTS                    ; Return
 
 ; BRANCH_TANGIBLE
 $A0:A0B8 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3890,8 +3890,8 @@ $A0:A0C1 C9 4C 80    CMP #$804C             ;|
 $A0:A0C4 F0 05       BEQ $05    [$A0CB]     ;} If (enemy touch) = $804B/$804C:
 $A0:A0C6 C9 4B 80    CMP #$804B             ;|
 $A0:A0C9 D0 02       BNE $02    [$A0CD]     ;/
-$A0:A0CB AB          PLB                    ;\
-$A0:A0CC 60          RTS                    ;} Return
+$A0:A0CB AB          PLB
+$A0:A0CC 60          RTS                    ; Return
 
 $A0:A0CD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A0D0 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -3919,8 +3919,8 @@ $A0:A0F6 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
 $A0:A0F9 90 07       BCC $07    [$A102]     ;|
 $A0:A0FB DD 84 0F    CMP $0F84,x[$7E:0FC4]  ;|
 $A0:A0FE 90 02       BCC $02    [$A102]     ;/
-$A0:A100 AB          PLB                    ;\
-$A0:A101 60          RTS                    ;} Return
+$A0:A100 AB          PLB
+$A0:A101 60          RTS                    ; Return
 
 $A0:A102 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A105 BD 8E 0F    LDA $0F8E,x[$7E:0F8E]  ;\
@@ -3933,12 +3933,12 @@ $A0:A114 F0 0A       BEQ $0A    [$A120]     ;/
 $A0:A116 AC 54 0E    LDY $0E54  [$7E:0E54]
 $A0:A119 B9 9E 0F    LDA $0F9E,y[$7E:0F9E]  ;\
 $A0:A11C F0 02       BEQ $02    [$A120]     ;} If [enemy frozen timer] != 0:
-$A0:A11E AB          PLB                    ;\
-$A0:A11F 60          RTS                    ;} Return
+$A0:A11E AB          PLB
+$A0:A11F 60          RTS                    ; Return
 
 $A0:A120 22 26 A1 A0 JSL $A0A126[$A0:A126]  ; Execute enemy touch
 $A0:A124 AB          PLB
-$A0:A125 60          RTS
+$A0:A125 60          RTS                    ; Return
 
 ; Execute enemy touch
 $A0:A126 AC 54 0E    LDY $0E54  [$7E:0E54]
@@ -4188,8 +4188,8 @@ $A0:A303 DC 84 17    JML [$1784][$A2:F0A2]
 {
 ; This routine is relying on $12 and $14 (the calculated power bomb explosion radius) not being modified over the course of the loop(!)
 ; This is naive as hell obviously, and actually doesn't hold true if an enemy is killed by the power bomb (see e.g. $A3E6).
-; For respawning enemies, $12 = 4000h in their death animation, making power bombs effectively infinite wide for the remaining enemies that frame.
-; For non-respawning enemies, $12 = 0 in their death animation, making power bombs effectively zero sized for the remaining enemies that frame.
+; For respawning enemies, $12 = 4000h in their enemy death, making power bombs effectively infinite wide for the remaining enemies that frame.
+; For non-respawning enemies, $12 = 0 in their enemy death, making power bombs effectively zero sized for the remaining enemies that frame.
 $A0:A306 8B          PHB
 $A0:A307 A9 05 00    LDA #$0005             ;\
 $A0:A30A 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Stage of enemy processing = 5
@@ -4277,7 +4277,7 @@ $A0:A3AC DC 84 17    JML [$1784][$A2:8037]
 }
 
 
-;;; $A3AF: Death animation ;;;
+;;; $A3AF: Enemy death ;;;
 {
 ;; Parameter:
 ;;     A: Death animation
@@ -4331,7 +4331,7 @@ $A0:A40F 6B          RTL
 }
 
 
-;;; $A410: Rinka's death animation ;;;
+;;; $A410: Rinka death ;;;
 {
 $A0:A410 08          PHP
 $A0:A411 8B          PHB
@@ -4399,21 +4399,21 @@ $A0:A476 6B          RTL
 ;;; $A477: Normal enemy touch AI ;;;
 {
 $A0:A477 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A47A 20 A1 A4    JSR $A4A1  [$A0:A4A1]
+$A0:A47A 20 A1 A4    JSR $A4A1  [$A0:A4A1]  ; Normal touch AI - no death check
 $A0:A47D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A480 BD 8C 0F    LDA $0F8C,x[$7E:108C]
-$A0:A483 D0 0E       BNE $0E    [$A493]
-$A0:A485 A9 06 00    LDA #$0006
-$A0:A488 9F 02 70 7E STA $7E7002,x[$7E:7142]
-$A0:A48C A9 01 00    LDA #$0001
-$A0:A48F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]
+$A0:A480 BD 8C 0F    LDA $0F8C,x[$7E:108C]  ;\
+$A0:A483 D0 0E       BNE $0E    [$A493]     ;} If [enemy health] = 0:
+$A0:A485 A9 06 00    LDA #$0006             ;\
+$A0:A488 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 6
+$A0:A48C A9 01 00    LDA #$0001             ; A = 1
+$A0:A48F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 $A0:A493 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A496 6B          RTL
 }
 
 
-;;; $A497: Normal touch AI, but skips death animation ;;;
+;;; $A497: Normal touch AI - no death check (external) ;;;
 {
 $A0:A497 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A49A 20 A1 A4    JSR $A4A1  [$A0:A4A1]
@@ -4422,7 +4422,7 @@ $A0:A4A0 6B          RTL
 }
 
 
-;;; $A4A1: Normal touch AI, but skips death animation ;;;
+;;; $A4A1: Normal touch AI - no death check ;;;
 {
 ; Damage values:
 ;     Speed boosting:      $A4AF
@@ -4542,21 +4542,21 @@ $A0:A596 60          RTS
 {
 ; Used by Metroid and space pirates
 $A0:A597 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A59A 20 C1 A5    JSR $A5C1  [$A0:A5C1]  ; Normal enemy power bomb AI, but skips death animation
+$A0:A59A 20 C1 A5    JSR $A5C1  [$A0:A5C1]  ; Normal enemy power bomb AI - no death check
 $A0:A59D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A5A0 BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
 $A0:A5A3 D0 0E       BNE $0E    [$A5B3]     ;} If [enemy health] = 0:
 $A0:A5A5 A9 03 00    LDA #$0003             ;\
 $A0:A5A8 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 3
 $A0:A5AC A9 00 00    LDA #$0000             ; A = 0
-$A0:A5AF 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
+$A0:A5AF 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 $A0:A5B3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A5B6 6B          RTL
 }
 
 
-;;; $A5B7: Normal enemy power bomb AI, but skips death animation ;;;
+;;; $A5B7: Normal enemy power bomb AI - no death check ;;;
 {
 ; Kraid's power bomb AI
 $A0:A5B7 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4566,7 +4566,7 @@ $A0:A5C0 6B          RTL
 }
 
 
-;;; $A5C1: Normal enemy power bomb AI, but skips death animation ;;;
+;;; $A5C1: Normal enemy power bomb AI - no death check ;;;
 {
 $A0:A5C1 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:A5C4 BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;|
@@ -4625,12 +4625,9 @@ $A0:A63C 60          RTS
 
 ;;; $A63D: Normal enemy shot AI ;;;
 {
-; JSR $A6DE, display the 'hit' graphic if applicable.
-; If enemy is at 0 health, set 7E:7002,X to the projectile type ($0C18,Y, AND #$0F00),
-; and play the death animation (JSL $A0A3AF)
 $A0:A63D 9C 2E 0E    STZ $0E2E  [$7E:0E2E]  ; Clear enemy hit flag
 $A0:A640 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A643 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Handles beam damage, freezing, and sound
+$A0:A643 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A0:A646 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A649 AD 2E 0E    LDA $0E2E  [$7E:0E2E]  ;\
 $A0:A64C F0 18       BEQ $18    [$A666]     ;} If enemy hit:
@@ -4646,55 +4643,55 @@ $A0:A662 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A0:A666 BD 8C 0F    LDA $0F8C,x[$7E:0FCC]  ;\
 $A0:A669 D0 38       BNE $38    [$A6A3]     ;} If no enemy health:
-$A0:A66B AD A6 18    LDA $18A6  [$7E:18A6]
-$A0:A66E 0A          ASL A
-$A0:A66F A8          TAY
-$A0:A670 B9 18 0C    LDA $0C18,y[$7E:0C18]
-$A0:A673 EB          XBA
-$A0:A674 29 0F 00    AND #$000F
-$A0:A677 9F 02 70 7E STA $7E7002,x[$7E:7042]
-$A0:A67B A0 02 00    LDY #$0002
-$A0:A67E C9 02 00    CMP #$0002
-$A0:A681 F0 0D       BEQ $0D    [$A690]
-$A0:A683 BD 78 0F    LDA $0F78,x[$7E:0FB8]
-$A0:A686 AA          TAX
-$A0:A687 BF 22 00 A0 LDA $A00022,x[$A0:F375]
-$A0:A68B F0 00       BEQ $00    [$A68D]
-
-$A0:A68D A8          TAY
+$A0:A66B AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A0:A66E 0A          ASL A                  ;|
+$A0:A66F A8          TAY                    ;|
+$A0:A670 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} Enemy $7E:7002 = (projectile type)
+$A0:A673 EB          XBA                    ;|
+$A0:A674 29 0F 00    AND #$000F             ;|
+$A0:A677 9F 02 70 7E STA $7E7002,x[$7E:7042];/
+$A0:A67B A0 02 00    LDY #$0002             ; Y = 2
+$A0:A67E C9 02 00    CMP #$0002             ;\
+$A0:A681 F0 0D       BEQ $0D    [$A690]     ;} If (projectile type) != super missile:
+$A0:A683 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\
+$A0:A686 AA          TAX                    ;|
+$A0:A687 BF 22 00 A0 LDA $A00022,x[$A0:F375];|
+$A0:A68B F0 00       BEQ $00    [$A68D]     ;} Y = (enemy death animation)
+                                            ;|
+$A0:A68D A8          TAY                    ;/
 $A0:A68E 80 0E       BRA $0E    [$A69E]
 
-$A0:A690 BD 78 0F    LDA $0F78,x[$7E:0FB8]
-$A0:A693 AA          TAX
-$A0:A694 BF 22 00 A0 LDA $A00022,x[$A0:D061]
-$A0:A698 C9 03 00    CMP #$0003
-$A0:A69B 30 01       BMI $01    [$A69E]
-$A0:A69D A8          TAY
+$A0:A690 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\ Else ((projectile type) = super missile):
+$A0:A693 AA          TAX                    ;|
+$A0:A694 BF 22 00 A0 LDA $A00022,x[$A0:D061];} If (enemy death animation) >= 3:
+$A0:A698 C9 03 00    CMP #$0003             ;|
+$A0:A69B 30 01       BMI $01    [$A69E]     ;/
+$A0:A69D A8          TAY                    ; Y = (enemy death animation)
 
-$A0:A69E 98          TYA
-$A0:A69F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
+$A0:A69E 98          TYA                    ; A = [Y]
+$A0:A69F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 $A0:A6A3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6A6 6B          RTL
 }
 
 
-;;; $A6A7: Normal enemy shot AI, but skips hit-projectile and death animation ;;;
+;;; $A6A7: Normal enemy shot AI - no death check, no enemy shot graphic (external) ;;;
 {
 $A0:A6A7 9C 2E 0E    STZ $0E2E  [$7E:0E2E]  ; Clear enemy hit flag
 $A0:A6AA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A6AD 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Handles beam damage, freezing, and sound
+$A0:A6AD 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A0:A6B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6B3 6B          RTL
 }
 
 
-;;; $A6B4: Normal enemy shot AI, but skips death animation ;;;
+;;; $A6B4: Normal enemy shot AI - no death check ;;;
 {
 ; Used by Spore Spawn
 $A0:A6B4 9C 2E 0E    STZ $0E2E  [$7E:0E2E]
 $A0:A6B7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A6BA 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Handles beam damage, freezing, and sound
+$A0:A6BA 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A0:A6BD AD 2E 0E    LDA $0E2E  [$7E:0E2E]  ;\
 $A0:A6C0 F0 18       BEQ $18    [$A6DA]     ;} If enemy hit:
 $A0:A6C2 AE 54 0E    LDX $0E54  [$7E:0E54]  
@@ -4712,14 +4709,14 @@ $A0:A6DD 6B          RTL
 }
 
 
-;;; $A6DE: Handles beam damage, freezing, and sound ;;;
+;;; $A6DE: Normal enemy shot AI - no death check, no enemy shot graphic ;;;
 {
 ; Vulnerability format:
-;     v = fddddddd
+;     v = f000dddd
 ;     If v = FFh:
 ;         Freeze, no damage
 ;     Else:
-;         d: Damage multiplier * 2. If charged beam, damage multiplier * 2 = d & Fh (why?)
+;         d: Damage multiplier * 2
 ;         f: Does not freeze
 $A0:A6DE 8B          PHB
 $A0:A6DF AD A6 18    LDA $18A6  [$7E:18A6]  ;\
@@ -4732,7 +4729,7 @@ $A0:A6ED 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile type]
 $A0:A6EF DA          PHX                    ; <-- This is never meaningfully pulled >_<
 $A0:A6F0 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:A6F3 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;|
-$A0:A6F6 AA          TAX                    ;} $14 = enemy vulnerabilities
+$A0:A6F6 AA          TAX                    ;} $14 = (enemy vulnerabilities)
 $A0:A6F7 BF 3C 00 A0 LDA $A0003C,x[$A0:F38F];/
 $A0:A6FB D0 03       BNE $03    [$A700]     ; If [$14] = 0:
 $A0:A6FD A9 1C EC    LDA #$EC1C             ; $14 = $EC1C
@@ -4745,63 +4742,63 @@ $A0:A709 A5 12       LDA $12    [$7E:0012]  ;\
 $A0:A70B 29 0F 00    AND #$000F             ;|
 $A0:A70E 18          CLC                    ;|
 $A0:A70F 65 14       ADC $14    [$7E:0014]  ;|
-$A0:A711 AA          TAX                    ;} $0E40 = [$B4:0000 + [$14] + beam type]
+$A0:A711 AA          TAX                    ;} Enemy beam vulnerability = [$B4:0000 + [$14] + (beam type)]
 $A0:A712 BF 00 00 B4 LDA $B40000,x[$B4:ECCC];|
 $A0:A716 29 FF 00    AND #$00FF             ;|
 $A0:A719 8D 40 0E    STA $0E40  [$7E:0E40]  ;/
 $A0:A71C 29 7F 00    AND #$007F             ;\
-$A0:A71F 8D 32 0E    STA $0E32  [$7E:0E32]  ;} $0E32 = [$0E40] & 7Fh
+$A0:A71F 8D 32 0E    STA $0E32  [$7E:0E32]  ;} Enemy damage multiplier = [enemy beam vulnerability] & 7Fh
 $A0:A722 AD 40 0E    LDA $0E40  [$7E:0E40]  ;\
-$A0:A725 C9 FF 00    CMP #$00FF             ;} If [$0E40] = FFh:
+$A0:A725 C9 FF 00    CMP #$00FF             ;} If [enemy beam vulnerability] = FFh:
 $A0:A728 D0 03       BNE $03    [$A72D]     ;/
 $A0:A72A 4C D5 A7    JMP $A7D5  [$A0:A7D5]  ; Go to BRANCH_FREEZE
 
 $A0:A72D A5 12       LDA $12    [$7E:0012]  ;\
-$A0:A72F 89 10 00    BIT #$0010             ;} If charged:
+$A0:A72F 89 10 00    BIT #$0010             ;} If beam is charged:
 $A0:A732 F0 16       BEQ $16    [$A74A]     ;/
 $A0:A734 A6 14       LDX $14    [$7E:0014]  ;\
-$A0:A736 BF 13 00 B4 LDA $B40013,x[$B4:ED79];|
-$A0:A73A 29 FF 00    AND #$00FF             ;} If [$B4:0000 + [$14] + 13h] = FFh: go to BRANCH_NO_DAMAGE
-$A0:A73D C9 FF 00    CMP #$00FF             ;|
-$A0:A740 F0 66       BEQ $66    [$A7A8]     ;/
+$A0:A736 BF 13 00 B4 LDA $B40013,x[$B4:ED79];} A = [$B4:0000 + [$14] + 13h] (charged beam vulnerability)
+$A0:A73A 29 FF 00    AND #$00FF             ;/
+$A0:A73D C9 FF 00    CMP #$00FF             ;\
+$A0:A740 F0 66       BEQ $66    [$A7A8]     ;} If (charged beam vulnerability) = FFh: go to BRANCH_NO_DAMAGE
 $A0:A742 29 0F 00    AND #$000F             ;\
-$A0:A745 F0 61       BEQ $61    [$A7A8]     ;} If [$B4:0000 + [$14] + 13h] & Fh = 0: go to BRANCH_NO_DAMAGE
-$A0:A747 8D 32 0E    STA $0E32  [$7E:0E32]  ; $0E32 = [$B4:0000 + [$14] + 13h] & Fh
+$A0:A745 F0 61       BEQ $61    [$A7A8]     ;} If (charged beam vulnerability) & Fh = 0: go to BRANCH_NO_DAMAGE
+$A0:A747 8D 32 0E    STA $0E32  [$7E:0E32]  ; Enemy damage multiplier = (charged beam vulnerability) & Fh
 
 ; BRANCH_CALCULATE_DAMAGE
 $A0:A74A AD 7A 18    LDA $187A  [$7E:187A]  ;\
 $A0:A74D 4A          LSR A                  ;|
 $A0:A74E 85 26       STA $26    [$7E:0026]  ;|
 $A0:A750 AD 32 0E    LDA $0E32  [$7E:0E32]  ;|
-$A0:A753 85 28       STA $28    [$7E:0028]  ;} If [projectile damage] * [$0E32] / 2 = 0: go to BRANCH_NO_DAMAGE
+$A0:A753 85 28       STA $28    [$7E:0028]  ;} If [projectile damage] * [enemy damage multiplier] / 2 = 0: go to BRANCH_NO_DAMAGE
 $A0:A755 22 FF B6 A0 JSL $A0B6FF[$A0:B6FF]  ;|
 $A0:A759 A5 2A       LDA $2A    [$7E:002A]  ;|
 $A0:A75B F0 4B       BEQ $4B    [$A7A8]     ;/
-$A0:A75D 8D 7A 18    STA $187A  [$7E:187A]  ; $187A = [projectile damage] * [$0E32] / 2
+$A0:A75D 8D 7A 18    STA $187A  [$7E:187A]  ; $187A = [projectile damage] * [enemy damage multiplier] / 2
 $A0:A760 4C 08 A8    JMP $A808  [$A0:A808]  ; Go to BRANCH_DAMAGE
 
 ; BRANCH_NOT_BEAM
 $A0:A763 29 00 0F    AND #$0F00             ;\
 $A0:A766 C9 00 01    CMP #$0100             ;|
-$A0:A769 F0 05       BEQ $05    [$A770]     ;} If not (super) missile: go to BRANCH_MISSILE_END
+$A0:A769 F0 05       BEQ $05    [$A770]     ;} If not (super) missile: go to BRANCH_NOT_MISSILE
 $A0:A76B C9 00 02    CMP #$0200             ;|
 $A0:A76E D0 11       BNE $11    [$A781]     ;/
 
 $A0:A770 EB          XBA                    ;\
 $A0:A771 18          CLC                    ;|
 $A0:A772 65 14       ADC $14    [$7E:0014]  ;|
-$A0:A774 AA          TAX                    ;} $0E32 = [$B4:0000 + [$14] + Bh + missile type] & 7Fh
+$A0:A774 AA          TAX                    ;} Enemy damage multiplier = [$B4:0000 + [$14] + Bh + (missile type)] & 7Fh
 $A0:A775 BF 0B 00 B4 LDA $B4000B,x[$B4:F0CC];|
 $A0:A779 29 7F 00    AND #$007F             ;|
 $A0:A77C 8D 32 0E    STA $0E32  [$7E:0E32]  ;/
 $A0:A77F 80 C9       BRA $C9    [$A74A]     ; Go to BRANCH_CALCULATE_DAMAGE
 
-; BRANCH_MISSILE_END
+; BRANCH_NOT_MISSILE
 $A0:A781 C9 00 05    CMP #$0500             ;\
 $A0:A784 D0 0E       BNE $0E    [$A794]     ;} If bomb:
 $A0:A786 A6 14       LDX $14    [$7E:0014]  ;\
 $A0:A788 BF 0E 00 B4 LDA $B4000E,x[$B4:EF84];|
-$A0:A78C 29 7F 00    AND #$007F             ;} $0E32 = [$B4:0000 + [$14] + Eh] & 7Fh
+$A0:A78C 29 7F 00    AND #$007F             ;} Enemy damage multiplier = [$B4:0000 + [$14] + Eh] & 7Fh
 $A0:A78F 8D 32 0E    STA $0E32  [$7E:0E32]  ;/
 $A0:A792 80 B6       BRA $B6    [$A74A]     ; Go to BRANCH_CALCULATE_DAMAGE
 
@@ -4809,7 +4806,7 @@ $A0:A794 C9 00 03    CMP #$0300             ;\
 $A0:A797 D0 0F       BNE $0F    [$A7A8]     ;} If power bomb:
 $A0:A799 A6 14       LDX $14    [$7E:0014]  ;\
 $A0:A79B BF 0F 00 B4 LDA $B4000F,x          ;|
-$A0:A79F 29 7F 00    AND #$007F             ;} $0E32 = [$B4:0000 + [$14] + Fh] & 7Fh
+$A0:A79F 29 7F 00    AND #$007F             ;} Enemy damage multiplier = [$B4:0000 + [$14] + Fh] & 7Fh
 $A0:A7A2 8D 32 0E    STA $0E32  [$7E:0E32]  ;/
 $A0:A7A5 4C 4A A7    JMP $A74A  [$A0:A74A]  ; Go to BRANCH_CALCULATE_DAMAGE
 
@@ -4824,7 +4821,7 @@ $A0:A7B6 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;\
 $A0:A7B9 85 12       STA $12    [$7E:0012]  ;|
 $A0:A7BB BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;|
 $A0:A7BE 85 14       STA $14    [$7E:0014]  ;|
-$A0:A7C0 A9 06 00    LDA #$0006             ;} Create sprite object 6 at projectile position
+$A0:A7C0 A9 06 00    LDA #$0006             ;} Create sprite object 6 (dud shot) at projectile position
 $A0:A7C3 85 16       STA $16    [$7E:0016]  ;|
 $A0:A7C5 64 18       STZ $18    [$7E:0018]  ;|
 $A0:A7C7 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
@@ -4832,7 +4829,7 @@ $A0:A7CB A9 3D 00    LDA #$003D             ;\
 $A0:A7CE 22 35 90 80 JSL $809035[$80:9035]  ;} Queue sound 3Dh, sound library 1, max queued sounds allowed = 3 (dud shot)
 $A0:A7D2 FA          PLX
 $A0:A7D3 AB          PLB
-$A0:A7D4 60          RTS
+$A0:A7D4 60          RTS                    ; Return
 
 ; BRANCH_FREEZE
 $A0:A7D5 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
@@ -4841,22 +4838,22 @@ $A0:A7DB D0 07       BNE $07    [$A7E4]     ;/
 $A0:A7DD A9 0A 00    LDA #$000A             ;\
 $A0:A7E0 22 39 91 80 JSL $809139[$80:9139]  ;} Queue sound Ah, sound library 3, max queued sounds allowed = 3 (enemy frozen)
 
-$A0:A7E4 A0 90 01    LDY #$0190             ; Y = 190h
+$A0:A7E4 A0 90 01    LDY #$0190             ; Enemy freeze timer = 400
 $A0:A7E7 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $A0:A7EA C9 02 00    CMP #$0002             ;} If [area index] = Norfair:
 $A0:A7ED D0 03       BNE $03    [$A7F2]     ;/
-$A0:A7EF A0 2C 01    LDY #$012C             ; Y = 12Ch
+$A0:A7EF A0 2C 01    LDY #$012C             ; Enemy freeze timer = 300
 
-$A0:A7F2 98          TYA                    ;\
-$A0:A7F3 9D 9E 0F    STA $0F9E,x[$7E:105E]  ;} Enemy freeze timer = [Y]
+$A0:A7F2 98          TYA
+$A0:A7F3 9D 9E 0F    STA $0F9E,x[$7E:105E]
 $A0:A7F6 BD 8A 0F    LDA $0F8A,x[$7E:104A]  ;\
-$A0:A7F9 09 04 00    ORA #$0004             ;} Set frozen AI
+$A0:A7F9 09 04 00    ORA #$0004             ;} Enemy AI handler = frozen AI
 $A0:A7FC 9D 8A 0F    STA $0F8A,x[$7E:104A]  ;/
 $A0:A7FF A9 0A 00    LDA #$000A             ;\
 $A0:A802 9D A0 0F    STA $0FA0,x[$7E:1060]  ;} Enemy invincibility timer = Ah
 $A0:A805 FA          PLX
 $A0:A806 AB          PLB
-$A0:A807 60          RTS
+$A0:A807 60          RTS                    ; Return
 
 ; BRANCH_DAMAGE
 $A0:A808 FA          PLX                    ;\
@@ -4874,35 +4871,35 @@ $A0:A820 69 08 00    ADC #$0008             ;|
 $A0:A823 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Enemy flash timer = [A] + 8
 $A0:A826 9D 9C 0F    STA $0F9C,x[$7E:0FDC]  ;/
 $A0:A829 BD 8A 0F    LDA $0F8A,x[$7E:0FCA]  ;\
-$A0:A82C 09 02 00    ORA #$0002             ;} Set hurt AI
+$A0:A82C 09 02 00    ORA #$0002             ;} Enemy AI handler = hurt AI
 $A0:A82F 9D 8A 0F    STA $0F8A,x[$7E:0FCA]  ;/
 $A0:A832 BD 9E 0F    LDA $0F9E,x[$7E:0FDE]  ;\
-$A0:A835 D0 15       BNE $15    [$A84C]     ;} If [enemy frozen timer] != 0: go to BRANCH_SET_ENEMY_HIT_END
+$A0:A835 D0 15       BNE $15    [$A84C]     ;} If [enemy frozen timer] != 0: go to BRANCH_NO_FLASH_NO_CRY
 $A0:A837 DA          PHX
 $A0:A838 5A          PHY
 $A0:A839 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\
 $A0:A83C AA          TAX                    ;|
-$A0:A83D BF 0E 00 A0 LDA $A0000E,x[$A0:F361];} If enemy cry != 0:
+$A0:A83D BF 0E 00 A0 LDA $A0000E,x[$A0:F361];} If (enemy cry) != 0:
 $A0:A841 F0 04       BEQ $04    [$A847]     ;/
-$A0:A843 22 B7 90 80 JSL $8090B7[$80:90B7]  ; Queue enemy cry, sound library 2, max queued sounds allowed = 3
+$A0:A843 22 B7 90 80 JSL $8090B7[$80:90B7]  ; Queue (enemy cry), sound library 2, max queued sounds allowed = 3
 
 $A0:A847 7A          PLY                    ;\
 $A0:A848 FA          PLX                    ;} Yeah great, glad these were pushed...
 $A0:A849 EE 2E 0E    INC $0E2E  [$7E:0E2E]  ; $0E2E = 1
 
-; BRANCH_SET_ENEMY_HIT_END
+; BRANCH_NO_FLASH_NO_CRY
 $A0:A84C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A84F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A0:A852 0A          ASL A                  ;|
 $A0:A853 A8          TAY                    ;|
-$A0:A854 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If plasma:
+$A0:A854 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If projectile is a plasma beam:
 $A0:A857 89 08 00    BIT #$0008             ;|
 $A0:A85A F0 06       BEQ $06    [$A862]     ;/
 $A0:A85C A9 10 00    LDA #$0010             ;\
 $A0:A85F 9D A0 0F    STA $0FA0,x[$7E:0FA0]  ;} Enemy invincibility timer = 10h
 
 $A0:A862 BD 8C 0F    LDA $0F8C,x[$7E:0FCC]  ;\
-$A0:A865 38          SEC                    ;} A = [enemy health] - [projectile damage] * [$0E32] / 2
+$A0:A865 38          SEC                    ;} A = [enemy health] - [projectile damage] * [enemy damage multiplier] / 2
 $A0:A866 ED 7A 18    SBC $187A  [$7E:187A]  ;/
 $A0:A869 F0 02       BEQ $02    [$A86D]     ;\
 $A0:A86B B0 4A       BCS $4A    [$A8B7]     ;} If [A] > 0: go to BRANCH_RETURN
@@ -4910,35 +4907,35 @@ $A0:A86B B0 4A       BCS $4A    [$A8B7]     ;} If [A] > 0: go to BRANCH_RETURN
 $A0:A86D AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A0:A870 0A          ASL A                  ;|
 $A0:A871 A8          TAY                    ;|
-$A0:A872 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If not ice: go to BRANCH_ENEMY_HEALTH_ZERO
+$A0:A872 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If projectile is not an ice beam: go to BRANCH_ENEMY_HEALTH_ZERO
 $A0:A875 29 02 00    AND #$0002             ;|
 $A0:A878 F0 3A       BEQ $3A    [$A8B4]     ;/
 $A0:A87A AD 40 0E    LDA $0E40  [$7E:0E40]  ;\
 $A0:A87D 29 F0 00    AND #$00F0             ;|
-$A0:A880 C9 80 00    CMP #$0080             ;} If [$B4:0000 + [$14] + beam type] & F0h = 80h: go to BRANCH_ENEMY_HEALTH_ZERO
+$A0:A880 C9 80 00    CMP #$0080             ;} If [enemy beam vulnerability] & F0h = 80h: go to BRANCH_ENEMY_HEALTH_ZERO
 $A0:A883 F0 2F       BEQ $2F    [$A8B4]     ;/
 $A0:A885 BD 9E 0F    LDA $0F9E,x[$7E:0FDE]  ;\
 $A0:A888 D0 2A       BNE $2A    [$A8B4]     ;} If [enemy frozen timer] != 0: go to BRANCH_ENEMY_HEALTH_ZERO
-$A0:A88A A0 90 01    LDY #$0190             ; Y = 190h
+$A0:A88A A0 90 01    LDY #$0190             ; Enemy freeze timer = 400
 $A0:A88D AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $A0:A890 C9 02 00    CMP #$0002             ;} If [area index] = Norfair:
 $A0:A893 D0 03       BNE $03    [$A898]     ;/
-$A0:A895 A0 2C 01    LDY #$012C             ; Y = 12Ch
+$A0:A895 A0 2C 01    LDY #$012C             ; Enemy freeze timer = 300
 
-$A0:A898 98          TYA                    ;\
-$A0:A899 9D 9E 0F    STA $0F9E,x[$7E:0FDE]  ;} Enemy freeze timer = [Y]
+$A0:A898 98          TYA
+$A0:A899 9D 9E 0F    STA $0F9E,x[$7E:0FDE]
 $A0:A89C BD 8A 0F    LDA $0F8A,x[$7E:0FCA]  ;\
-$A0:A89F 09 04 00    ORA #$0004             ;} Set frozen AI
+$A0:A89F 09 04 00    ORA #$0004             ;} Enemy AI handler = frozen AI
 $A0:A8A2 9D 8A 0F    STA $0F8A,x[$7E:0FCA]  ;/
 $A0:A8A5 A9 0A 00    LDA #$000A             ;\
 $A0:A8A8 9D A0 0F    STA $0FA0,x[$7E:0FE0]  ;} Enemy invincibility timer = Ah
 $A0:A8AB A9 0A 00    LDA #$000A             ;\
 $A0:A8AE 22 39 91 80 JSL $809139[$80:9139]  ;} Queue sound Ah, sound library 3, max queued sounds allowed = 3 (enemy frozen)
 $A0:A8B2 AB          PLB
-$A0:A8B3 60          RTS
+$A0:A8B3 60          RTS                    ; Return
 
 ; BRANCH_ENEMY_HEALTH_ZERO
-$A0:A8B4 A9 00 00    LDA #$0000
+$A0:A8B4 A9 00 00    LDA #$0000             ; A = 0
 
 ; BRANCH_RETURN
 $A0:A8B7 9D 8C 0F    STA $0F8C,x[$7E:0FCC]  ; Enemy health = [A]

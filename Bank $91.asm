@@ -10718,14 +10718,14 @@ $91:EB8E AD 2C 0A    LDA $0A2C  [$7E:0A2C]  ;\
 $91:EB91 30 32       BMI $32    [$EBC5]     ;} If [$0A2C] & 8000h != 0: go to BRANCH_NOT_0A2C
 $91:EB93 48          PHA
 $91:EB94 AD 32 0A    LDA $0A32  [$7E:0A32]  ;\
-$91:EB97 C9 03 00    CMP #$0003             ;} If [$0A32] = 3: go to BRANCH_0A32_3
+$91:EB97 C9 03 00    CMP #$0003             ;} If [$0A32] = 3: go to BRANCH_ANIMATION_FINISHED
 $91:EB9A F0 08       BEQ $08    [$EBA4]     ;/
 $91:EB9C C9 01 00    CMP #$0001             ;\
 $91:EB9F D0 0E       BNE $0E    [$EBAF]     ;} If [$0A32] != 1: go to BRANCH_0A2C
 $91:EBA1 68          PLA
 $91:EBA2 80 17       BRA $17    [$EBBB]     ; Go to BRANCH_0A32_1
 
-; BRANCH_0A32_3
+; BRANCH_ANIMATION_FINISHED
 $91:EBA4 AD 30 0A    LDA $0A30  [$7E:0A30]  ;\
 $91:EBA7 C9 09 00    CMP #$0009             ;} If [$0A30] = 9:
 $91:EBAA D0 03       BNE $03    [$EBAF]     ;/

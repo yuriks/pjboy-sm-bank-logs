@@ -6711,11 +6711,11 @@ $B4:EC09             dx E93F, 0050, 00B0, 0000, A800, 0000, 0001, 0000,
 ;;; $EC1C: Enemy vulnerabilities ;;;
 {
 ; Vulnerability format:
-;     v = fddddddd
-;     If v = FFh (or lower norfair space pirate and v & Fh = Fh(?)):
+;     v = f000dddd
+;     If v = FFh:
 ;         Freeze, no damage
 ;     Else:
-;         d: Damage multiplier * 2. If charged beam, damage multiplier * 2 = d & Fh (why?)
+;         d: Damage multiplier * 2
 ;         f: Does not freeze
 
 ;                        _________________________________________________________________ 0: Power
