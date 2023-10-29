@@ -13026,7 +13026,7 @@ $90:DE06 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
 $90:DE09 D0 13       BNE $13    [$DE1E]     ;} If [knockback direction] != 0: return
 $90:DE0B AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:DE0E 29 FF 00    AND #$00FF             ;|
-$90:DE11 0A          ASL A                  ;} Execute [$DE82 + [Samus movement type]]
+$90:DE11 0A          ASL A                  ;} Execute [$DE82 + [Samus movement type] * 2]
 $90:DE12 AA          TAX                    ;|
 $90:DE13 FC 82 DE    JSR ($DE82,x)[$90:DEFA];/
 $90:DE16 90 06       BCC $06    [$DE1E]     ; If carry set:

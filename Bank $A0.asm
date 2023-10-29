@@ -4430,101 +4430,104 @@ $A0:A4A0 6B          RTL
 ;     Screw attack:        $A4C2
 ;     Pseudo screw attack: $A4CC
 
-$A0:A4A1 AD 6E 0A    LDA $0A6E  [$7E:0A6E]
-$A0:A4A4 D0 03       BNE $03    [$A4A9]
-$A0:A4A6 4C 62 A5    JMP $A562  [$A0:A562]
+$A0:A4A1 AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
+$A0:A4A4 D0 03       BNE $03    [$A4A9]     ;} If [Samus contact damage index] = normal:
+$A0:A4A6 4C 62 A5    JMP $A562  [$A0:A562]  ; Go to BRANCH_NORMAL_SAMUS
 
-$A0:A4A9 18          CLC
-$A0:A4AA 69 0F 00    ADC #$000F
-$A0:A4AD 85 14       STA $14    [$7E:0014]
-$A0:A4AF A0 F4 01    LDY #$01F4
-$A0:A4B2 AD 6E 0A    LDA $0A6E  [$7E:0A6E]
-$A0:A4B5 C9 01 00    CMP #$0001
-$A0:A4B8 F0 26       BEQ $26    [$A4E0]
-$A0:A4BA A0 2C 01    LDY #$012C
-$A0:A4BD C9 02 00    CMP #$0002
-$A0:A4C0 F0 1E       BEQ $1E    [$A4E0]
-$A0:A4C2 A0 D0 07    LDY #$07D0
-$A0:A4C5 C9 03 00    CMP #$0003
-$A0:A4C8 F0 16       BEQ $16    [$A4E0]
-$A0:A4CA E6 14       INC $14    [$7E:0014]
-$A0:A4CC A0 C8 00    LDY #$00C8
-$A0:A4CF C9 04 00    CMP #$0004
-$A0:A4D2 D0 09       BNE $09    [$A4DD]
-$A0:A4D4 A9 04 00    LDA #$0004
-$A0:A4D7 22 84 F0 90 JSL $90F084[$90:F084]
-$A0:A4DB 80 03       BRA $03    [$A4E0]
+$A0:A4A9 18          CLC                    ;\
+$A0:A4AA 69 0F 00    ADC #$000F             ;} $14 = 10h + [Samus contact damage index] - 1 (vulnerabilities index)
+$A0:A4AD 85 14       STA $14    [$7E:0014]  ;/
+$A0:A4AF A0 F4 01    LDY #$01F4             ; $16 = 500 (damage)
+$A0:A4B2 AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
+$A0:A4B5 C9 01 00    CMP #$0001             ;} If [Samus contact damage index] = speed boosting: go to BRANCH_DAMAGE_CALCULATED
+$A0:A4B8 F0 26       BEQ $26    [$A4E0]     ;/
+$A0:A4BA A0 2C 01    LDY #$012C             ; $16 = 300 (damage)
+$A0:A4BD C9 02 00    CMP #$0002             ;\
+$A0:A4C0 F0 1E       BEQ $1E    [$A4E0]     ;} If [Samus contact damage index] = shinesparking: go to BRANCH_DAMAGE_CALCULATED
+$A0:A4C2 A0 D0 07    LDY #$07D0             ; $16 = 2000 (damage)
+$A0:A4C5 C9 03 00    CMP #$0003             ;\
+$A0:A4C8 F0 16       BEQ $16    [$A4E0]     ;} If [Samus contact damage index] = screw attacking: go to BRANCH_DAMAGE_CALCULATED
+$A0:A4CA E6 14       INC $14    [$7E:0014]  ;
+$A0:A4CC A0 C8 00    LDY #$00C8             ; $16 = 200 (damage)
+$A0:A4CF C9 04 00    CMP #$0004             ;\
+$A0:A4D2 D0 09       BNE $09    [$A4DD]     ;} If [Samus contact damage index] = pseudo screw attacking:
+$A0:A4D4 A9 04 00    LDA #$0004             ;\
+$A0:A4D7 22 84 F0 90 JSL $90F084[$90:F084]  ;} 
+$A0:A4DB 80 03       BRA $03    [$A4E0]     ; Go to BRANCH_DAMAGE_CALCULATED
 
-$A0:A4DD A0 C8 00    LDY #$00C8
+$A0:A4DD A0 C8 00    LDY #$00C8             ; $16 = 200 <-- a default damage value(!) Never used in vanilla
 
+; BRANCH_DAMAGE_CALCULATED
 $A0:A4E0 84 16       STY $16    [$7E:0016]
-$A0:A4E2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A4E5 BD 78 0F    LDA $0F78,x[$7E:10B8]
-$A0:A4E8 AA          TAX
-$A0:A4E9 BF 3C 00 A0 LDA $A0003C,x[$A0:E8BB]
-$A0:A4ED D0 03       BNE $03    [$A4F2]
-$A0:A4EF A9 1C EC    LDA #$EC1C
+$A0:A4E2 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A0:A4E5 BD 78 0F    LDA $0F78,x[$7E:10B8]  ;|
+$A0:A4E8 AA          TAX                    ;} A = (enemy vulnerabilities)
+$A0:A4E9 BF 3C 00 A0 LDA $A0003C,x[$A0:E8BB];/
+$A0:A4ED D0 03       BNE $03    [$A4F2]     ; If [A] = 0
+$A0:A4EF A9 1C EC    LDA #$EC1C             ; A = $EC1C
 
-$A0:A4F2 18          CLC
-$A0:A4F3 65 14       ADC $14    [$7E:0014]
-$A0:A4F5 AA          TAX
-$A0:A4F6 BF 00 00 B4 LDA $B40000,x[$B4:EF9C]
-$A0:A4FA 8D 40 0E    STA $0E40  [$7E:0E40]
-$A0:A4FD 29 7F 00    AND #$007F
-$A0:A500 8D 32 0E    STA $0E32  [$7E:0E32]
-$A0:A503 F0 1B       BEQ $1B    [$A520]
-$A0:A505 C9 FF 00    CMP #$00FF
-$A0:A508 F0 16       BEQ $16    [$A520]
-$A0:A50A AD 32 0E    LDA $0E32  [$7E:0E32]
-$A0:A50D 85 28       STA $28    [$7E:0028]
-$A0:A50F A5 16       LDA $16    [$7E:0016]
-$A0:A511 4A          LSR A
-$A0:A512 85 26       STA $26    [$7E:0026]
-$A0:A514 22 FF B6 A0 JSL $A0B6FF[$A0:B6FF]
-$A0:A518 A5 2A       LDA $2A    [$7E:002A]
-$A0:A51A F0 04       BEQ $04    [$A520]
-$A0:A51C 85 12       STA $12    [$7E:0012]
-$A0:A51E 80 01       BRA $01    [$A521]
+$A0:A4F2 18          CLC                    ;\
+$A0:A4F3 65 14       ADC $14    [$7E:0014]  ;|
+$A0:A4F5 AA          TAX                    ;} Enemy contact vulnerability = [$B4:0000 + [A] + 10h + [Samus contact damage index] - 1]
+$A0:A4F6 BF 00 00 B4 LDA $B40000,x[$B4:EF9C];|
+$A0:A4FA 8D 40 0E    STA $0E40  [$7E:0E40]  ;/
+$A0:A4FD 29 7F 00    AND #$007F             ;\
+$A0:A500 8D 32 0E    STA $0E32  [$7E:0E32]  ;} Enemy damage multiplier = [enemy contact vulnerability] & 7Fh
+$A0:A503 F0 1B       BEQ $1B    [$A520]     ; If [enemy damage multiplier] = 0: return
+$A0:A505 C9 FF 00    CMP #$00FF             ;\
+$A0:A508 F0 16       BEQ $16    [$A520]     ;} >_<;
+$A0:A50A AD 32 0E    LDA $0E32  [$7E:0E32]  ;/
+$A0:A50D 85 28       STA $28    [$7E:0028]  ;\
+$A0:A50F A5 16       LDA $16    [$7E:0016]  ;|
+$A0:A511 4A          LSR A                  ;|
+$A0:A512 85 26       STA $26    [$7E:0026]  ;} If (damage) * [enemy damage multiplier] / 2 = 0: return
+$A0:A514 22 FF B6 A0 JSL $A0B6FF[$A0:B6FF]  ;|
+$A0:A518 A5 2A       LDA $2A    [$7E:002A]  ;|
+$A0:A51A F0 04       BEQ $04    [$A520]     ;/
+$A0:A51C 85 12       STA $12    [$7E:0012]  ; $12 = (damage) * [enemy damage multiplier] / 2
+$A0:A51E 80 01       BRA $01    [$A521]     ; Go to BRANCH_DAMAGE
 
 $A0:A520 60          RTS
 
-$A0:A521 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A524 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A527 BD 78 0F    LDA $0F78,x[$7E:10B8]
-$A0:A52A AA          TAX
-$A0:A52B BF 0D 00 A0 LDA $A0000D,x[$A0:E88C]
-$A0:A52F 29 FF 00    AND #$00FF
-$A0:A532 D0 03       BNE $03    [$A537]
-$A0:A534 A9 04 00    LDA #$0004
+; BRANCH_DAMAGE
+$A0:A521 AE 54 0E    LDX $0E54  [$7E:0E54]  ; Argh >_<;
+$A0:A524 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A0:A527 BD 78 0F    LDA $0F78,x[$7E:10B8]  ;|
+$A0:A52A AA          TAX                    ;} Enemy flash timer = [enemy hurt AI time]
+$A0:A52B BF 0D 00 A0 LDA $A0000D,x[$A0:E88C];|
+$A0:A52F 29 FF 00    AND #$00FF             ;/
+$A0:A532 D0 03       BNE $03    [$A537]     ; If [enemy hurt AI time] = 0:
+$A0:A534 A9 04 00    LDA #$0004             ; Enemy flash timer = 4
 
 $A0:A537 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A53A 9D 9C 0F    STA $0F9C,x[$7E:10DC]
 $A0:A53D BD 8A 0F    LDA $0F8A,x[$7E:10CA]  ;\
-$A0:A540 09 02 00    ORA #$0002             ;} Set hurt AI
+$A0:A540 09 02 00    ORA #$0002             ;} Enemy AI handler = hurt AI
 $A0:A543 9D 8A 0F    STA $0F8A,x[$7E:10CA]  ;/
-$A0:A546 9C A8 18    STZ $18A8  [$7E:18A8]
-$A0:A549 9C AA 18    STZ $18AA  [$7E:18AA]
-$A0:A54C BD 8C 0F    LDA $0F8C,x[$7E:10CC]
-$A0:A54F 38          SEC
-$A0:A550 E5 12       SBC $12    [$7E:0012]
-$A0:A552 10 03       BPL $03    [$A557]
-$A0:A554 A9 00 00    LDA #$0000
-
-$A0:A557 9D 8C 0F    STA $0F8C,x[$7E:10CC]
+$A0:A546 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
+$A0:A549 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knockback timer = 0
+$A0:A54C BD 8C 0F    LDA $0F8C,x[$7E:10CC]  ;\
+$A0:A54F 38          SEC                    ;|
+$A0:A550 E5 12       SBC $12    [$7E:0012]  ;|
+$A0:A552 10 03       BPL $03    [$A557]     ;} Enemy health = max(0, [enemy health] - [$12])
+$A0:A554 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A0:A557 9D 8C 0F    STA $0F8C,x[$7E:10CC]  ;/
 $A0:A55A A9 0B 00    LDA #$000B             ;\
 $A0:A55D 22 C1 90 80 JSL $8090C1[$80:90C1]  ;} Queue sound Bh, sound library 2, max queued sounds allowed = 1 (enemy killed by contact damage)
-$A0:A561 60          RTS
+$A0:A561 60          RTS                    ; Return
 
+; BRANCH_NORMAL_SAMUS
 $A0:A562 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A565 BD 78 0F    LDA $0F78,x[$7E:1078]
-$A0:A568 AA          TAX
-$A0:A569 BF 06 00 A0 LDA $A00006,x[$A0:E205]
-$A0:A56D 22 5E A4 A0 JSL $A0A45E[$A0:A45E]
-$A0:A571 22 51 DF 91 JSL $91DF51[$91:DF51]
-$A0:A575 A9 60 00    LDA #$0060
-$A0:A578 8D A8 18    STA $18A8  [$7E:18A8]
-$A0:A57B A9 05 00    LDA #$0005
-$A0:A57E 8D AA 18    STA $18AA  [$7E:18AA]
+$A0:A565 BD 78 0F    LDA $0F78,x[$7E:1078]  ;\
+$A0:A568 AA          TAX                    ;|
+$A0:A569 BF 06 00 A0 LDA $A00006,x[$A0:E205];} Deal suit-adjusted enemy damage to Samus
+$A0:A56D 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;|
+$A0:A571 22 51 DF 91 JSL $91DF51[$91:DF51]  ;/
+$A0:A575 A9 60 00    LDA #$0060             ;\
+$A0:A578 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60h
+$A0:A57B A9 05 00    LDA #$0005             ;\
+$A0:A57E 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = 5
 $A0:A581 A0 00 00    LDY #$0000             ; Knockback X direction = left
 $A0:A584 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:A587 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
@@ -4556,7 +4559,7 @@ $A0:A5B6 6B          RTL
 }
 
 
-;;; $A5B7: Normal enemy power bomb AI - no death check ;;;
+;;; $A5B7: Normal enemy power bomb AI - no death check (external) ;;;
 {
 ; Kraid's power bomb AI
 $A0:A5B7 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4570,51 +4573,52 @@ $A0:A5C0 6B          RTL
 {
 $A0:A5C1 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:A5C4 BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;|
-$A0:A5C7 AA          TAX                    ;|
-$A0:A5C8 BF 3C 00 A0 LDA $A0003C,x[$A0:CEFB];|
-$A0:A5CC D0 03       BNE $03    [$A5D1]     ;|
-$A0:A5CE A9 1C EC    LDA #$EC1C             ;|
-                                            ;} If (power bomb vulnerability) = FFh (freeze but not kill): return
-$A0:A5D1 AA          TAX                    ;|
-$A0:A5D2 BF 0F 00 B4 LDA $B4000F,x[$B4:EDB7];|
+$A0:A5C7 AA          TAX                    ;} X = (enemy vulnerabilities)
+$A0:A5C8 BF 3C 00 A0 LDA $A0003C,x[$A0:CEFB];/
+$A0:A5CC D0 03       BNE $03    [$A5D1]     ; If [X] = 0:
+$A0:A5CE A9 1C EC    LDA #$EC1C             ; X = $EC1C
+
+$A0:A5D1 AA          TAX
+$A0:A5D2 BF 0F 00 B4 LDA $B4000F,x[$B4:EDB7];\
 $A0:A5D6 29 FF 00    AND #$00FF             ;|
-$A0:A5D9 C9 FF 00    CMP #$00FF             ;|
+$A0:A5D9 C9 FF 00    CMP #$00FF             ;} If [$B4:0000 + [X] + Fh] (enemy power bomb vulnerability)
 $A0:A5DC F0 5E       BEQ $5E    [$A63C]     ;/
 $A0:A5DE 29 7F 00    AND #$007F             ;\
-$A0:A5E1 8D 32 0E    STA $0E32  [$7E:0E32]  ;} Write enemy damage multiplier
-$A0:A5E4 F0 56       BEQ $56    [$A63C]     ; If zero: return
+$A0:A5E1 8D 32 0E    STA $0E32  [$7E:0E32]  ;} Enemy damage multiplier = (enemy power bomb vulnerability) & 7Fh
+$A0:A5E4 F0 56       BEQ $56    [$A63C]     ; If [enemy damage multiplier] = 0: return
 $A0:A5E6 A9 C8 00    LDA #$00C8             ;\
 $A0:A5E9 4A          LSR A                  ;|
 $A0:A5EA 85 26       STA $26    [$7E:0026]  ;|
 $A0:A5EC AD 32 0E    LDA $0E32  [$7E:0E32]  ;|
-$A0:A5EF 85 28       STA $28    [$7E:0028]  ;} Calculate power bomb damage
+$A0:A5EF 85 28       STA $28    [$7E:0028]  ;} $187A = 200 * [enemy damage multiplier] / 2 (damage)
 $A0:A5F1 22 FF B6 A0 JSL $A0B6FF[$A0:B6FF]  ;|
 $A0:A5F5 A5 2A       LDA $2A    [$7E:002A]  ;|
 $A0:A5F7 8D 7A 18    STA $187A  [$7E:187A]  ;/
-$A0:A5FA F0 40       BEQ $40    [$A63C]     ; If damage is zero: return
+$A0:A5FA F0 40       BEQ $40    [$A63C]     ; >_<;
 $A0:A5FC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A5FF A9 30 00    LDA #$0030             ;\
 $A0:A602 9D A0 0F    STA $0FA0,x[$7E:1020]  ;} Enemy invincibility timer = 30h
 $A0:A605 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A608 BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
 $A0:A60B AA          TAX                    ;|
-$A0:A60C BF 0D 00 A0 LDA $A0000D,x[$A0:CECC];|
-$A0:A610 29 FF 00    AND #$00FF             ;|
-$A0:A613 D0 03       BNE $03    [$A618]     ;|
-$A0:A615 A9 04 00    LDA #$0004             ;} Set hurt AI time
-                                            ;|
-$A0:A618 18          CLC                    ;|
+$A0:A60C BF 0D 00 A0 LDA $A0000D,x[$A0:CECC];} A = [enemy hurt AI time]
+$A0:A610 29 FF 00    AND #$00FF             ;/
+$A0:A613 D0 03       BNE $03    [$A618]     ; If [A] = 0:
+$A0:A615 A9 04 00    LDA #$0004             ; A = 4
+
+$A0:A618 18          CLC                    ;\
 $A0:A619 69 08 00    ADC #$0008             ;|
-$A0:A61C AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A0:A61C AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Enemy flash timer = [A] + 8
 $A0:A61F 9D 9C 0F    STA $0F9C,x[$7E:101C]  ;/
 $A0:A622 BD 8A 0F    LDA $0F8A,x[$7E:100A]  ;\
-$A0:A625 09 02 00    ORA #$0002             ;} Set hurt AI
+$A0:A625 09 02 00    ORA #$0002             ;} Enemy AI handler = hurt AI
 $A0:A628 9D 8A 0F    STA $0F8A,x[$7E:100A]  ;/
 $A0:A62B BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
 $A0:A62E 38          SEC                    ;|
 $A0:A62F ED 7A 18    SBC $187A  [$7E:187A]  ;|
 $A0:A632 F0 02       BEQ $02    [$A636]     ;|
-$A0:A634 B0 03       BCS $03    [$A639]     ;} Subtract damage from enemy health
+$A0:A634 B0 03       BCS $03    [$A639]     ;} Enemy health = max(0, [enemy health] - (damage))
+                                            ;|
 $A0:A636 A9 00 00    LDA #$0000             ;|
                                             ;|
 $A0:A639 9D 8C 0F    STA $0F8C,x[$7E:100C]  ;/
