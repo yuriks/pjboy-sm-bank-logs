@@ -13009,6 +13009,9 @@ $90:DDE8 60          RTS
 ;;; $DDE9: Samus is hit interruption ;;;
 {
 ; Called by "active" $0A44 handlers (where active = normal or title/intro demo)
+; Checks for knockback start, knockback finish, and bomb jump
+; The pose written to $0A2C is ignored, it just needs to be a positive value (per $0A32 = 1 branch of $91:EB88)
+; This is why Samus can land immediately when knockback finishes and not need to fall for a frame first
 $90:DDE9 08          PHP
 $90:DDEA C2 30       REP #$30
 $90:DDEC AD AA 18    LDA $18AA  [$7E:18AA]  ;\
@@ -13023,7 +13026,7 @@ $90:DDFF 80 1D       BRA $1D    [$DE1E]     ; Return
 $90:DE01 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $90:DE04 D0 18       BNE $18    [$DE1E]     ;} If time is frozen: return
 $90:DE06 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
-$90:DE09 D0 13       BNE $13    [$DE1E]     ;} If [knockback direction] != 0: return
+$90:DE09 D0 13       BNE $13    [$DE1E]     ;} If [knockback direction] != none: return
 $90:DE0B AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:DE0E 29 FF 00    AND #$00FF             ;|
 $90:DE11 0A          ASL A                  ;} Execute [$DE82 + [Samus movement type] * 2]
@@ -13038,7 +13041,7 @@ $90:DE1F 60          RTS                    ; Return
 
 ; BRANCH_KNOCKBACK_TIMER_ZERO
 $90:DE20 AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
-$90:DE23 F0 53       BEQ $53    [$DE78]     ;} If [knockback direction] = 0: go to BRANCH_0A52_IS_0
+$90:DE23 F0 53       BEQ $53    [$DE78]     ;} If [knockback direction] = none: go to BRANCH_NO_KNOCKBACK
 $90:DE25 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:DE28 29 FF 00    AND #$00FF             ;|
 $90:DE2B C9 0A 00    CMP #$000A             ;} If [Samus movement type] = knockback / crystal flash ending: go to BRANCH_KNOCKBACK_MOVEMENT
@@ -13079,7 +13082,7 @@ $90:DE73 8D 32 0A    STA $0A32  [$7E:0A32]  ;} $0A32 = 1
 $90:DE76 28          PLP
 $90:DE77 60          RTS                    ; Return
 
-; BRANCH_0A52_IS_0
+; BRANCH_NO_KNOCKBACK
 $90:DE78 AD 56 0A    LDA $0A56  [$7E:0A56]  ;\
 $90:DE7B F0 03       BEQ $03    [$DE80]     ;} If [bomb jump direction] != 0:
 $90:DE7D 20 99 DF    JSR $DF99  [$90:DF99]  ; Set up bomb jump
@@ -13165,7 +13168,7 @@ $90:DEE1 60          RTS                    ;} Return carry clear
 ; 1Ah: Grabbed by Draygon
 
 $90:DEE2 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
-$90:DEE5 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = 0
+$90:DEE5 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = none
 $90:DEE8 18          CLC                    ;\
 $90:DEE9 60          RTS                    ;} Return carry clear
 }

@@ -10702,13 +10702,8 @@ $91:EB74             dw 0003, ; 0: Up, facing right:   Facing right - aiming up
 
 ;;; $EB88: Update Samus pose ;;;
 {
-; Handles ALL transitions? Doesn't handle space jumping, but everything else with 0A1C?
-; 0A2C takes priority (unless dead), then 0A2A, then 0A28. I think. Assuming that.
-; If 0A2C is used, JSL 91:F433 and 91:FB08, and JSR $EC3E,X (X = 0A32).
-; If 0A2A is used, JSL 91:F404, then if CLC, JSR $EC28,X (X = 0A30).
-; If neither are used, JSR $EADE
-; If 0A28 is used, JSL 91:F404, then if CLC, JSR $EC16,X (X = 0A28).
-; If any are used, update 7E:0A20 - 7E:0A27
+; See also "Samus.asm"
+; "(Cause of Yapping Maw Super Jump crash. I think. (918304 --> 91EBEE --> ...)"
 $91:EB88 08          PHP
 $91:EB89 8B          PHB
 $91:EB8A 4B          PHK                    ;\
@@ -10884,9 +10879,9 @@ $91:ECD9 60          RTS
 
 ;;; $ECDA:  ;;;
 {
-; Run during start of transitions.
+; Run during start of transition animations.
 ; Corrects Samus height so crouching/morphing ends on ground instead of in the air
-; Doesn't kill Samus' X speed or cancel speed boosting (because animation transitions are a hack)
+; Doesn't kill Samus' X speed or cancel speed boosting (because transition animations are a hack)
 $91:ECDA AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:ECDD C9 DB 00    CMP #$00DB             ;} If [Samus pose] >= DBh: go to BRANCH_AIMING
 $91:ECE0 10 41       BPL $41    [$ED23]     ;/
@@ -10917,13 +10912,13 @@ $91:ED09 65 12       ADC $12    [$7E:0012]  ;} Samus Y position += [$12]
 $91:ED0B 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $91:ED0E 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = [Samus Y position]
 $91:ED11 AD 20 0B    LDA $0B20  [$7E:0B20]  ;\
-$91:ED14 F0 0C       BEQ $0C    [$ED22]     ;} If [$0B20] != 0:
-$91:ED16 9C 20 0B    STZ $0B20  [$7E:0B20]  ; $0B20 = 0
+$91:ED14 F0 0C       BEQ $0C    [$ED22]     ;} If [morph ball bounce state] != not bouncing:
+$91:ED16 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not bouncing
 $91:ED19 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $91:ED1C 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $91:ED1F 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = 0
 
-$91:ED22 60          RTS
+$91:ED22 60          RTS                    ; Return
 
 ; BRANCH_AIMING
 $91:ED23 C9 F1 00    CMP #$00F1             ;\
@@ -11959,6 +11954,7 @@ $91:F3A9 60          RTS
 ;;; $F3AA:  ;;;
 {
 ; $0A32 = 7
+; This just clamps scrolling speed, why is this done via $0A32 handler instead of in $9B:CB8B?
 $91:F3AA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $91:F3AD 38          SEC                    ;|
 $91:F3AE ED 10 0B    SBC $0B10  [$7E:0B10]  ;} If [Samus X position] >= [Samus previous X position]:
@@ -12506,49 +12502,52 @@ $91:F757 60          RTS
 
 ;;; $F758: Initialise Samus pose - crouching/standing/morphing/unmorphing transition ;;;
 {
-$91:F758 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$91:F75B C9 F1 00    CMP #$00F1
-$91:F75E 10 1F       BPL $1F    [$F77F]
-$91:F760 C9 DB 00    CMP #$00DB
-$91:F763 10 10       BPL $10    [$F775]
-$91:F765 38          SEC
-$91:F766 E9 35 00    SBC #$0035
-$91:F769 0A          ASL A
-$91:F76A AA          TAX
+$91:F758 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$91:F75B C9 F1 00    CMP #$00F1             ;} If [Samus pose] >= F1h: go to BRANCH_AIMING
+$91:F75E 10 1F       BPL $1F    [$F77F]     ;/
+$91:F760 C9 DB 00    CMP #$00DB             ;\
+$91:F763 10 10       BPL $10    [$F775]     ;} If [Samus pose] >= DBh: go to BRANCH_UNUSED
+$91:F765 38          SEC                    ;\
+$91:F766 E9 35 00    SBC #$0035             ;|
+$91:F769 0A          ASL A                  ;} X = ([Samus pose] - 35h) * 2
+$91:F76A AA          TAX                    ;/
 
 $91:F76B A9 07 00    LDA #$0007             ;\
 $91:F76E 8D 2E 0A    STA $0A2E  [$7E:0A2E]  ;} $0A2E = 7
-$91:F771 FC 90 F7    JSR ($F790,x)[$91:F7B0]
-$91:F774 60          RTS
+$91:F771 FC 90 F7    JSR ($F790,x)[$91:F7B0]; Execute [$F790 + [X]]
+$91:F774 60          RTS                    ; Return
 
-$91:F775 38          SEC
-$91:F776 E9 DB 00    SBC #$00DB
-$91:F779 0A          ASL A
-$91:F77A AA          TAX
-$91:F77B FC A8 F7    JSR ($F7A8,x)
-$91:F77E 60          RTS
+; BRANCH_UNUSED
+$91:F775 38          SEC                    ;\
+$91:F776 E9 DB 00    SBC #$00DB             ;|
+$91:F779 0A          ASL A                  ;} Execute [$F7A8 + ([Samus pose] - DBh) * 2]
+$91:F77A AA          TAX                    ;|
+$91:F77B FC A8 F7    JSR ($F7A8,x)          ;/
+$91:F77E 60          RTS                    ; Return
 
-$91:F77F C9 F7 00    CMP #$00F7
-$91:F782 10 05       BPL $05    [$F789]
-$91:F784 A2 00 00    LDX #$0000
-$91:F787 80 E2       BRA $E2    [$F76B]
+; BRANCH_AIMING
+$91:F77F C9 F7 00    CMP #$00F7             ;\
+$91:F782 10 05       BPL $05    [$F789]     ;} If [Samus pose] = crouching transition - aiming:
+$91:F784 A2 00 00    LDX #$0000             ;\
+$91:F787 80 E2       BRA $E2    [$F76B]     ;} Execute $F7B0
 
+; BRANCH_AIMING_STANDING
 $91:F789 A9 07 00    LDA #$0007             ;\
 $91:F78C 8D 2E 0A    STA $0A2E  [$7E:0A2E]  ;} $0A2E = 7
 $91:F78F 60          RTS
 
-$91:F790             dw F7B0, ; Facing right - crouching transition / crouching transition - aiming
-                        F7B0, ; Facing left  - crouching transition
-                        F7CE, ; Facing right - morphing transition
-                        F7CE, ; Facing left  - morphing transition
-                        F7F4, ; Unused
-                        F840, ; Unused
-                        F7CC, ; Facing right - standing transition
-                        F7CC, ; Facing left  - standing transition
-                        F7CC, ; Facing right - unmorphing transition
-                        F7CC, ; Facing left  - unmorphing transition
-                        F7CC, ; Unused
-                        F7CC  ; Unused
+$91:F790             dw F7B0, ; 35h: Facing right - crouching transition / crouching transition - aiming
+                        F7B0, ; 36h: Facing left  - crouching transition
+                        F7CE, ; 37h: Facing right - morphing transition
+                        F7CE, ; 38h: Facing left  - morphing transition
+                        F7F4, ; 39h: Unused
+                        F840, ; 3Ah: Unused
+                        F7CC, ; 3Bh: Facing right - standing transition
+                        F7CC, ; 3Ch: Facing left  - standing transition
+                        F7CC, ; 3Dh: Facing right - unmorphing transition
+                        F7CC, ; 3Eh: Facing left  - unmorphing transition
+                        F7CC, ; 3Fh: Unused
+                        F7CC  ; 40h: Unused
 
 ; Unused poses DBh..DEh
 $91:F7A8             dw F7CE, F7CE, F7CC, F7CC
