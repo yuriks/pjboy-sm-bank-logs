@@ -1636,7 +1636,7 @@ $9B:B9D6 6C 82 0D    JMP ($0D82)[$9B:B9D9]  ;/
 ;;; $B9D9: Handle connecting grapple - swinging clockwise ;;;
 {
 $9B:B9D9 A9 B2 00    LDA #$00B2             ;\
-$9B:B9DC 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing clockwise - grapple - in air
+$9B:B9DC 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing clockwise - grapple - in air
 $9B:B9DF 4C 61 BA    JMP $BA61  [$9B:BA61]
 }
 
@@ -1644,7 +1644,7 @@ $9B:B9DF 4C 61 BA    JMP $BA61  [$9B:BA61]
 ;;; $B9E2: Handle connecting grapple - swinging anticlockwise ;;;
 {
 $9B:B9E2 A9 B3 00    LDA #$00B3             ;\
-$9B:B9E5 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing anticlockwise - grapple - in air
+$9B:B9E5 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing anticlockwise - grapple - in air
 $9B:B9E8 80 77       BRA $77    [$BA61]
 }
 
@@ -1652,7 +1652,7 @@ $9B:B9E8 80 77       BRA $77    [$BA61]
 ;;; $B9EA: Handle connecting grapple - standing - aiming right ;;;
 {
 $9B:B9EA A9 A8 00    LDA #$00A8             ;\
-$9B:B9ED 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - grappling
+$9B:B9ED 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing right - grappling
 $9B:B9F0 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 }
 
@@ -1660,7 +1660,7 @@ $9B:B9F0 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 ;;; $B9F3: Handle connecting grapple - standing - aiming down-right ;;;
 {
 $9B:B9F3 A9 AA 00    LDA #$00AA             ;\
-$9B:B9F6 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - grappling - aiming down-right
+$9B:B9F6 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing right - grappling - aiming down-right
 $9B:B9F9 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 }
 
@@ -1668,7 +1668,7 @@ $9B:B9F9 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 ;;; $B9FC: Handle connecting grapple - standing - aiming down-left ;;;
 {
 $9B:B9FC A9 AB 00    LDA #$00AB             ;\
-$9B:B9FF 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - grappling - aiming down-right
+$9B:B9FF 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing left - grappling - aiming down-right
 $9B:BA02 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 }
 
@@ -1676,7 +1676,7 @@ $9B:BA02 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 ;;; $BA05: Handle connecting grapple - standing - aiming left ;;;
 {
 $9B:BA05 A9 A9 00    LDA #$00A9             ;\
-$9B:BA08 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - grappling
+$9B:BA08 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing left - grappling
 $9B:BA0B 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 }
 
@@ -1684,7 +1684,7 @@ $9B:BA0B 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 ;;; $BA0E: Handle connecting grapple - crouching - aiming right ;;;
 {
 $9B:BA0E A9 B4 00    LDA #$00B4             ;\
-$9B:BA11 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - grappling - crouching
+$9B:BA11 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing right - grappling - crouching
 $9B:BA14 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 }
 
@@ -1692,7 +1692,7 @@ $9B:BA14 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 ;;; $BA17: Handle connecting grapple - crouching - aiming down-right ;;;
 {
 $9B:BA17 A9 B6 00    LDA #$00B6             ;\
-$9B:BA1A 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - grappling - crouching - aiming down-right
+$9B:BA1A 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing right - grappling - crouching - aiming down-right
 $9B:BA1D 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 }
 
@@ -1700,7 +1700,7 @@ $9B:BA1D 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 ;;; $BA20: Handle connecting grapple - crouching - aiming down-left ;;;
 {
 $9B:BA20 A9 B7 00    LDA #$00B7             ;\
-$9B:BA23 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - grappling - crouching - aiming down-right
+$9B:BA23 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing left - grappling - crouching - aiming down-right
 $9B:BA26 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 }
 
@@ -1708,7 +1708,7 @@ $9B:BA26 4C 9B BA    JMP $BA9B  [$9B:BA9B]
 ;;; $BA29: Handle connecting grapple - crouching - aiming left ;;;
 {
 $9B:BA29 A9 B5 00    LDA #$00B5             ;\
-$9B:BA2C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - grappling - crouching
+$9B:BA2C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing left - grappling - crouching
 $9B:BA2F 80 6A       BRA $6A    [$BA9B]
 }
 
@@ -1716,7 +1716,7 @@ $9B:BA2F 80 6A       BRA $6A    [$BA9B]
 ;;; $BA31: Unused. Handle connecting grapple - in air - aiming right ;;;
 {
 $9B:BA31 A9 AC 00    LDA #$00AC             ;\
-$9B:BA34 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - grappling - in air
+$9B:BA34 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing right - grappling - in air
 $9B:BA37 80 62       BRA $62    [$BA9B]
 }
 
@@ -1724,7 +1724,7 @@ $9B:BA37 80 62       BRA $62    [$BA9B]
 ;;; $BA39: Unused. Handle connecting grapple - in air - aiming down-right ;;;
 {
 $9B:BA39 A9 B0 00    LDA #$00B0             ;\
-$9B:BA3C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - grappling - in air - aiming down-right
+$9B:BA3C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing right - grappling - in air - aiming down-right
 $9B:BA3F 80 5A       BRA $5A    [$BA9B]
 }
 
@@ -1732,7 +1732,7 @@ $9B:BA3F 80 5A       BRA $5A    [$BA9B]
 ;;; $BA41: Unused. Handle connecting grapple - in air - aiming down, facing right ;;;
 {
 $9B:BA41 A9 AE 00    LDA #$00AE             ;\
-$9B:BA44 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing right - grappling - in air - aiming down
+$9B:BA44 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing right - grappling - in air - aiming down
 $9B:BA47 80 52       BRA $52    [$BA9B]
 }
 
@@ -1740,7 +1740,7 @@ $9B:BA47 80 52       BRA $52    [$BA9B]
 ;;; $BA49: Unused. Handle connecting grapple - in air - aiming down, facing left ;;;
 {
 $9B:BA49 A9 AF 00    LDA #$00AF             ;\
-$9B:BA4C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - grappling - in air - aiming down
+$9B:BA4C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing left - grappling - in air - aiming down
 $9B:BA4F 80 4A       BRA $4A    [$BA9B]
 }
 
@@ -1748,7 +1748,7 @@ $9B:BA4F 80 4A       BRA $4A    [$BA9B]
 ;;; $BA51: Unused. Handle connecting grapple - in air - aiming down-left ;;;
 {
 $9B:BA51 A9 B1 00    LDA #$00B1             ;\
-$9B:BA54 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - grappling - in air - aiming down-right
+$9B:BA54 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing left - grappling - in air - aiming down-right
 $9B:BA57 80 42       BRA $42    [$BA9B]
 }
 
@@ -1756,7 +1756,7 @@ $9B:BA57 80 42       BRA $42    [$BA9B]
 ;;; $BA59: Unused. Handle connecting grapple - in air - aiming left ;;;
 {
 $9B:BA59 A9 AD 00    LDA #$00AD             ;\
-$9B:BA5C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = facing left - grappling - in air (unused)
+$9B:BA5C 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing left - grappling - in air (unused)
 $9B:BA5F 80 3A       BRA $3A    [$BA9B]
 }
 
@@ -1764,7 +1764,7 @@ $9B:BA5F 80 3A       BRA $3A    [$BA9B]
 ;;; $BA61: Handle connecting grapple - swinging ;;;
 {
 $9B:BA61 A9 09 00    LDA #$0009             ;\
-$9B:BA64 8D 30 0A    STA $0A30  [$7E:0A30]  ;} $0A30 = 9
+$9B:BA64 8D 30 0A    STA $0A30  [$7E:0A30]  ;} Special prospective pose change command = connecting grapple - swinging
 $9B:BA67 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $9B:BA6A 38          SEC                    ;|
 $9B:BA6B ED 08 0D    SBC $0D08  [$7E:0D08]  ;|
@@ -1793,7 +1793,7 @@ $9B:BA9A 60          RTS
 ;;; $BA9B: Handle connecting grapple - stuck in place ;;;
 {
 $9B:BA9B A9 0A 00    LDA #$000A             ;\
-$9B:BA9E 8D 30 0A    STA $0A30  [$7E:0A30]  ;} $0A30 = Ah
+$9B:BA9E 8D 30 0A    STA $0A30  [$7E:0A30]  ;} Special prospective pose change command = connecting grapple - stuck in place
 $9B:BAA1 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $9B:BAA4 38          SEC                    ;|
 $9B:BAA5 ED 08 0D    SBC $0D08  [$7E:0D08]  ;|
@@ -1850,7 +1850,7 @@ $9B:BAE8 18          CLC                    ;\
 $9B:BAE9 60          RTS                    ;} Return carry clear
 
 $9B:BAEA BD 40 C4    LDA $C440,x            ;\
-$9B:BAED 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} $0A2A = [$C43E + [X] + 2]
+$9B:BAED 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = [$C43E + [X] + 2]
 $9B:BAF0 BD 42 C4    LDA $C442,x            ;\
 $9B:BAF3 18          CLC                    ;|
 $9B:BAF4 6D 08 0D    ADC $0D08  [$7E:0D08]  ;} Samus X position = [grapple beam end X position] + [$C43E + [X] + 4]
@@ -1861,7 +1861,7 @@ $9B:BAFE 6D 0C 0D    ADC $0D0C  [$7E:0D0C]  ;} Samus Y position = [grapple beam 
 $9B:BB01 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $9B:BB04 BD 46 C4    LDA $C446,x            ;\
 $9B:BB07 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = [$C43E + [X] + 8]
-$9B:BB0A 9C 30 0A    STZ $0A30  [$7E:0A30]  ; $0A30 = 0
+$9B:BB0A 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change command = none
 $9B:BB0D 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
 $9B:BB10 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $9B:BB13 38          SEC                    ;|
@@ -2214,6 +2214,7 @@ $9B:BD94 60          RTS
 
 ;;; $BD95:  ;;;
 {
+; Something for connecting grapple - swinging
 $9B:BD95 08          PHP
 $9B:BD96 8B          PHB
 $9B:BD97 4B          PHK                    ;\
@@ -2388,6 +2389,7 @@ $9B:BEEA 60          RTS
 
 ;;; $BEEB:  ;;;
 {
+; Something for connecting grapple - stuck in place
 $9B:BEEB 08          PHP
 $9B:BEEC 8B          PHB
 $9B:BEED 4B          PHK
@@ -3418,12 +3420,12 @@ $9B:C8E4 F0 08       BEQ $08    [$C8EE]     ;/
 
 ; BRANCH_CLOCKWISE
 $9B:C8E6 A9 01 00    LDA #$0001             ;\
-$9B:C8E9 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing right - normal
+$9B:C8E9 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing right - normal
 $9B:C8EC 80 67       BRA $67    [$C955]     ; Go to BRANCH_MERGE
 
 ; BRANCH_ANTICLOCKWISE
 $9B:C8EE A9 02 00    LDA #$0002             ;\
-$9B:C8F1 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - normal
+$9B:C8F1 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing left - normal
 $9B:C8F4 80 5F       BRA $5F    [$C955]     ; Go to BRANCH_MERGE
 
 ; BRANCH_NOT_SWINGING
@@ -3441,7 +3443,7 @@ $9B:C90C AA          TAX                    ;/
 $9B:C90D 89 F0 00    BIT #$00F0             ;\
 $9B:C910 D0 C9       BNE $C9    [$C8DB]     ;} If direction shots are fired & F0h != 0: go to BRANCH_CANCEL
 $9B:C912 BD BA C9    LDA $C9BA,x[$9B:C9C3]  ;\
-$9B:C915 29 FF 00    AND #$00FF             ;} $0A2C = [$C9BA + [X]]
+$9B:C915 29 FF 00    AND #$00FF             ;} Super special prospective pose = [$C9BA + [X]]
 $9B:C918 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;/
 $9B:C91B 80 38       BRA $38    [$C955]     ; Go to BRANCH_MERGE
 
@@ -3456,7 +3458,7 @@ $9B:C92B AA          TAX                    ;/
 $9B:C92C 89 F0 00    BIT #$00F0             ;\
 $9B:C92F D0 0B       BNE $0B    [$C93C]     ;} If direction shots are fired & F0h = 0:
 $9B:C931 BD C4 C9    LDA $C9C4,x            ;\
-$9B:C934 29 FF 00    AND #$00FF             ;} $0A2C = [$C9C4 + [X]]
+$9B:C934 29 FF 00    AND #$00FF             ;} Super special prospective pose = [$C9C4 + [X]]
 $9B:C937 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;/
 $9B:C93A 80 19       BRA $19    [$C955]     ; Go to BRANCH_MERGE
 
@@ -3465,14 +3467,14 @@ $9B:C93F 29 FF 00    AND #$00FF             ;|
 $9B:C942 C9 04 00    CMP #$0004             ;} If [Samus pose X direction] = right:
 $9B:C945 F0 08       BEQ $08    [$C94F]     ;/
 $9B:C947 A9 27 00    LDA #$0027             ;\
-$9B:C94A 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing right - crouching
+$9B:C94A 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing right - crouching
 $9B:C94D 80 06       BRA $06    [$C955]     ; Go to BRANCH_MERGE
 
 $9B:C94F A9 28 00    LDA #$0028             ;\
-$9B:C952 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - crouching
+$9B:C952 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing left - crouching
 
 ; BRANCH_MERGE
-$9B:C955 9C 32 0A    STZ $0A32  [$7E:0A32]  ; $0A32 = 0
+$9B:C955 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Super special prospective pose change command = none
 $9B:C958 A9 01 00    LDA #$0001             ;\
 $9B:C95B 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} Samus solid vertical collision result = landed, Samus downwards movement solid collision result = grounded
 $9B:C95E 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
@@ -3523,14 +3525,14 @@ $9B:C9D8 29 FF 00    AND #$00FF             ;|
 $9B:C9DB C9 08 00    CMP #$0008             ;} If [Samus pose X direction] = left:
 $9B:C9DE F0 08       BEQ $08    [$C9E8]     ;/
 $9B:C9E0 A9 83 00    LDA #$0083             ;\
-$9B:C9E3 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing right - wall jump
+$9B:C9E3 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing right - wall jump
 $9B:C9E6 80 06       BRA $06    [$C9EE]
 
 $9B:C9E8 A9 84 00    LDA #$0084             ;\ Else ([Samus pose X direction] = right):
-$9B:C9EB 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - wall jump
+$9B:C9EB 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing left - wall jump
 
 $9B:C9EE A9 06 00    LDA #$0006             ;\
-$9B:C9F1 8D 32 0A    STA $0A32  [$7E:0A32]  ;} $0A32 = 6
+$9B:C9F1 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose change command = start grapple wall-jump
 $9B:C9F4 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $9B:C9F7 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed flag = 0
 $9B:C9FA 9C 22 0B    STZ $0B22  [$7E:0B22]  ; Clear Samus is falling flag
@@ -3725,14 +3727,14 @@ $9B:CB8E 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 7, sound library 1, m
 $9B:CB92 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:CB95 10 08       BPL $08    [$CB9F]     ;} If [grapple swing Samus speed] < 0:
 $9B:CB97 A9 51 00    LDA #$0051             ;\
-$9B:CB9A 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing right - normal jump - not aiming - moving forward
+$9B:CB9A 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing right - normal jump - not aiming - moving forward
 $9B:CB9D 80 06       BRA $06    [$CBA5]
 
 $9B:CB9F A9 52 00    LDA #$0052             ;\ Else ([grapple swing Samus speed] >= 0):
-$9B:CBA2 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} $0A2C = facing left - normal jump - not aiming - moving forward
+$9B:CBA2 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing left - normal jump - not aiming - moving forward
 
 $9B:CBA5 A9 07 00    LDA #$0007             ;\
-$9B:CBA8 8D 32 0A    STA $0A32  [$7E:0A32]  ;} $0A32 = 7
+$9B:CBA8 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose change command = start release from grapple swing
 $9B:CBAB 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
 $9B:CBAE 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
 $9B:CBB1 9C 34 0D    STZ $0D34  [$7E:0D34]  ; Direction grapple is fired = 0
