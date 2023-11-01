@@ -5412,7 +5412,7 @@ $90:A646 D0 0C       BNE $0C    [$A654]     ;/
 $90:A648 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:A64B 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:A64E 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
-$90:A651 9C 20 0B    STZ $0B20  [$7E:0B20]  ; $0B20 = 0
+$90:A651 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not bouncing
 
 $90:A654 9C C6 0D    STZ $0DC6  [$7E:0DC6]  ; Samus solid vertical collision result = no change
 $90:A657 28          PLP
@@ -11270,10 +11270,10 @@ $90:D08B 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D0AB (v
 $90:D08E A9 0E E9    LDA #$E90E             ;\
 $90:D091 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
 $90:D094 9C AE 0A    STZ $0AAE  [$7E:0AAE]  ; Speed echoes index = 0
-$90:D097 9C C0 0A    STZ $0AC0  [$7E:0AC0]  ; Speed echo 0 X speed = 0
-$90:D09A 9C C2 0A    STZ $0AC2  [$7E:0AC2]  ; Speed echo 1 X speed = 0
-$90:D09D 9C B0 0A    STZ $0AB0  [$7E:0AB0]  ; Speed echo 0 X position = 0
-$90:D0A0 9C B2 0A    STZ $0AB2  [$7E:0AB2]  ; Speed echo 1 X position = 0
+$90:D097 9C C0 0A    STZ $0AC0  [$7E:0AC0]  ;\
+$90:D09A 9C C2 0A    STZ $0AC2  [$7E:0AC2]  ;} Speed echo X speeds = 0
+$90:D09D 9C B0 0A    STZ $0AB0  [$7E:0AB0]  ;\
+$90:D0A0 9C B2 0A    STZ $0AB2  [$7E:0AB2]  ;} Speed echo X positions = 0
 $90:D0A3 A9 0F 00    LDA #$000F             ;\
 $90:D0A6 22 2F 91 80 JSL $80912F[$80:912F]  ;} Queue sound Fh, sound library 3, max queued sounds allowed = 9 (shinespark)
 
@@ -13878,7 +13878,7 @@ $90:E33B 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Special Super special pose change 
 $90:E33E 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;\
 $90:E341 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;} Samus Y speed = 0.0
 $90:E344 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
-$90:E347 9C 20 0B    STZ $0B20  [$7E:0B20]  ; $0B20 = 0
+$90:E347 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not bouncing
 $90:E34A 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $90:E34D AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
 $90:E350 29 FD FF    AND #$FFFD             ;|
