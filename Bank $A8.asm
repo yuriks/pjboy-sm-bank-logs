@@ -2780,6 +2780,18 @@ $A8:A689 60          RTS
 
 ;;; $A68A: Yapping maw function - cooldown ;;;
 {
+; BUG: Yapping maw shinespark crash crash is an eventual consequence of the *reckless* setting of Samus pose input handler to $E913 (normal)
+;      During shinespark, Samus pose input handler is supposed to be an RTS to disable transition table lookup
+;      With transition table lookup allowed, and because the entries for shinespark poses are empty, if no buttons are being pressed,
+;      then $91:8304 is executed, which sets prospective pose change command = stop
+;      Hence, When $91:EB88 (update Samus pose) is called, $91:ECD0 (prospective pose change command 2 - stop) is executed,
+;      which calls $91:DE53 (cancel speed boosting), which sets $0AAF = FFh with the intention of flagging the echoes to merge back into Samus
+;      However, during shinespark crash, $0AAF is used as "shinespark crash echo circle phase",
+;      which is a jump table index in $90:D346 (Samus movement handler - shinespark crash - echoes circle Samus),
+;      which is only 3 entries long
+;      The resulting jump pointer is loaded from $90:D57B, which happens to be $FEAD, which is in the free space of bank $90
+;      Eventually, the PC lands on $0001 and starts executing from WRAM where a crash is inevitable
+
 $A8:A68A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A68D BF 20 80 7E LDA $7E8020,x[$7E:8060]
 $A8:A691 F0 03       BEQ $03    [$A696]
@@ -2787,11 +2799,11 @@ $A8:A693 20 65 A6    JSR $A665  [$A8:A665]
 
 $A8:A696 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
 $A8:A699 10 28       BPL $28    [$A6C3]
-$A8:A69B AD 60 0A    LDA $0A60  [$7E:0A60]
-$A8:A69E C9 1D E9    CMP #$E91D
-$A8:A6A1 F0 20       BEQ $20    [$A6C3]
-$A8:A6A3 A9 13 E9    LDA #$E913
-$A8:A6A6 8D 60 0A    STA $0A60  [$7E:0A60]
+$A8:A69B AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
+$A8:A69E C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] = $E91D (demo): return
+$A8:A6A1 F0 20       BEQ $20    [$A6C3]     ;/
+$A8:A6A3 A9 13 E9    LDA #$E913             ;\
+$A8:A6A6 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $A8:A6A9 A9 00 00    LDA #$0000
 $A8:A6AC 9F 20 80 7E STA $7E8020,x[$7E:80A0]
 $A8:A6B0 A9 30 00    LDA #$0030
@@ -2939,7 +2951,7 @@ $A8:A7AB 9F 2A 80 7E STA $7E802A,x[$7E:806A];} Enemy $7E:802A = 0
 $A8:A7AF A9 01 00    LDA #$0001             ;\
 $A8:A7B2 9F 20 80 7E STA $7E8020,x[$7E:8060];} Enemy $7E:8020 = 1
 $A8:A7B6 A9 0E E9    LDA #$E90E             ;\
-$A8:A7B9 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
+$A8:A7B9 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 
 $A8:A7BC 6B          RTL
 }
@@ -2947,6 +2959,7 @@ $A8:A7BC 6B          RTL
 
 ;;; $A7BD: Enemy shot - enemy $E7BF (yapping maw) ;;;
 {
+; BUG: Yapping maw shinespark crash crash applies here too if a yapping maw is frozen or killed, see $A68A
 $A8:A7BD 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A8:A7C1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A7C4 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
@@ -2974,10 +2987,10 @@ $A8:A7FB A9 00 00    LDA #$0000             ;} Enemy base sprite object instruct
 $A8:A7FE 9F 78 EF 7E STA $7EEF78,x          ;|
 $A8:A802 FA          PLX                    ;/
 $A8:A803 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$A8:A806 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (demo):
+$A8:A806 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $A8:A809 F0 06       BEQ $06    [$A811]     ;/
 $A8:A80B A9 13 E9    LDA #$E913             ;\
-$A8:A80E 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$A8:A80E 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 
 $A8:A811 A9 00 00    LDA #$0000             ;\
 $A8:A814 9F 20 80 7E STA $7E8020,x          ;} Enemy $7E:8020 = 0
@@ -2987,10 +3000,10 @@ $A8:A818 80 1A       BRA $1A    [$A834]     ; Return
 $A8:A81A BD 9E 0F    LDA $0F9E,x[$7E:0F9E]  ;\
 $A8:A81D F0 15       BEQ $15    [$A834]     ;} If [enemy frozen timer] = 0: return
 $A8:A81F AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$A8:A822 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (demo):
+$A8:A822 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $A8:A825 F0 06       BEQ $06    [$A82D]     ;/
 $A8:A827 A9 13 E9    LDA #$E913             ;\
-$A8:A82A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$A8:A82A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 
 $A8:A82D A9 00 00    LDA #$0000             ;\
 $A8:A830 9F 20 80 7E STA $7E8020,x[$7E:8020];} Enemy $7E:8020 = 0

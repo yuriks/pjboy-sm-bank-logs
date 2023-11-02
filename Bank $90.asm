@@ -553,7 +553,7 @@ $90:836F 60          RTS                    ;} Return carry set
 ;         1Ah: Facing left  - spin jump
 
 $90:8370 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:8373 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D: (not demo)
+$90:8373 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D: (not demo)
 $90:8376 F0 1D       BEQ $1D    [$8395]     ;/
 $90:8378 AD 28 0A    LDA $0A28  [$7E:0A28]  ;\
 $90:837B C9 4B 00    CMP #$004B             ;|
@@ -565,7 +565,7 @@ $90:8388 F0 0E       BEQ $0E    [$8398]     ;|
 $90:838A C9 1A 00    CMP #$001A             ;} If [prospective pose] = spin jump: return
 $90:838D F0 09       BEQ $09    [$8398]     ;/
 $90:838F A9 26 E9    LDA #$E926             ;\
-$90:8392 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E926 (auto-jump hack)
+$90:8392 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E926 (auto-jump hack)
 
 $90:8395 4C B6 84    JMP $84B6  [$90:84B6]  ; Go to animation delay instruction Dh
 
@@ -2527,10 +2527,10 @@ $90:8F29 30 15       BMI $15    [$8F40]     ;} If [Samus Y speed] >= 0:
 $90:8F2B C9 01 00    CMP #$0001             ;\
 $90:8F2E 10 2D       BPL $2D    [$8F5D]     ;} If [Samus Y speed] >= 1: return
 $90:8F30 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:8F33 C9 1D E9    CMP #$E91D             ;} If [$0A60] = $E91D (demo): return
+$90:8F33 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] = $E91D (demo): return
 $90:8F36 F0 25       BEQ $25    [$8F5D]     ;/
 $90:8F38 A9 13 E9    LDA #$E913             ;\
-$90:8F3B 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$90:8F3B 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $90:8F3E 80 1D       BRA $1D    [$8F5D]     ; Return
 
 $90:8F40 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
@@ -11268,7 +11268,7 @@ $90:D085 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ;} Special prospective pose = facing
 $90:D088 A9 AB D0    LDA #$D0AB             ;\
 $90:D08B 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D0AB (vertical shinespark)
 $90:D08E A9 0E E9    LDA #$E90E             ;\
-$90:D091 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
+$90:D091 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 $90:D094 9C AE 0A    STZ $0AAE  [$7E:0AAE]  ; Speed echoes index = 0
 $90:D097 9C C0 0A    STZ $0AC0  [$7E:0AC0]  ;\
 $90:D09A 9C C2 0A    STZ $0AC2  [$7E:0AC2]  ;} Speed echo X speeds = 0
@@ -11974,10 +11974,10 @@ $90:D62B 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction /
 $90:D62E A9 78 D6    LDA #$D678             ;\
 $90:D631 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $D678 (crystal flash - start)
 $90:D634 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:D637 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (demo):
+$90:D637 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $90:D63A F0 06       BEQ $06    [$D642]     ;/
 $90:D63C A9 0E E9    LDA #$E90E             ;\
-$90:D63F 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
+$90:D63F 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 
 $90:D642 A9 09 00    LDA #$0009             ;\
 $90:D645 8D A2 0A    STA $0AA2  [$7E:0AA2]  ;} Crystal flash raise Samus timer = 9
@@ -12140,10 +12140,10 @@ $90:D775 8D 68 0A    STA $0A68  [$7E:0A68]  ;} Special Samus palette timer = FFF
 $90:D778 A9 37 A3    LDA #$A337             ;\
 $90:D77B 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:D77E AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:D781 C9 1D E9    CMP #$E91D             ;} If [$0A60] = $E91D (demo): return
+$90:D781 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] = $E91D (demo): return
 $90:D784 F0 0C       BEQ $0C    [$D792]     ;/
 $90:D786 A9 13 E9    LDA #$E913             ;\
-$90:D789 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$90:D789 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $90:D78C 9C A8 18    STZ $18A8  [$7E:18A8]  ; Samus invincibility timer = 0
 $90:D78F 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knock back timer = 0
 
@@ -13414,7 +13414,7 @@ $90:E019 60          RTS                    ;} Return carry set
 ;;; $E01A: Set up bomb jump - jumping / turning around / damage boost / crouching/standing/morphing/unmorphing transition ;;;
 {
 $90:E01A A9 13 E9    LDA #$E913             ;\
-$90:E01D 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$90:E01D 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 }
 
 
@@ -13494,10 +13494,10 @@ $90:E07C 60          RTS
 $90:E07D A9 37 A3    LDA #$A337             ;\
 $90:E080 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E083 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$90:E086 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (demo):
+$90:E086 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $90:E089 F0 06       BEQ $06    [$E091]     ;/
 $90:E08B A9 13 E9    LDA #$E913             ;\
-$90:E08E 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$90:E08E 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 
 $90:E091 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = none
 $90:E094 60          RTS
@@ -14482,7 +14482,7 @@ $90:E6A7 9C 2E 0A    STZ $0A2E  [$7E:0A2E]  ; Prospective pose change command = 
 $90:E6AA 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change command = none
 $90:E6AD 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Special Super special pose change command = none
 $90:E6B0 20 22 EC    JSR $EC22  [$90:EC22]  ; Set Samus radius
-$90:E6B3 20 0F E9    JSR $E90F  [$90:E90F]  ; Execute [$0A60]
+$90:E6B3 20 0F E9    JSR $E90F  [$90:E90F]  ; Execute [Samus pose input handler]
 $90:E6B6 20 B6 EC    JSR $ECB6  [$90:ECB6]  ; Determine Samus suit palette index
 $90:E6B9 20 5B 9C    JSR $9C5B  [$90:9C5B]  ; Determine Samus Y acceleration
 $90:E6BC 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside detection
@@ -14518,7 +14518,7 @@ $90:E6F4 AD 00 0E    LDA $0E00  [$7E:0E00]  ;\
 $90:E6F7 8D 92 0A    STA $0A92  [$7E:0A92]  ;} $0A92 = [previous newly pressed controller 1 input]
 $90:E6FA 20 22 EC    JSR $EC22  [$90:EC22]  ; Set Samus radius
 $90:E6FD 20 B6 EC    JSR $ECB6  [$90:ECB6]  ; Determine Samus suit palette index
-$90:E700 20 0F E9    JSR $E90F  [$90:E90F]  ; Execute [$0A60]
+$90:E700 20 0F E9    JSR $E90F  [$90:E90F]  ; Execute [Samus pose input handler]
 $90:E703 20 5B 9C    JSR $9C5B  [$90:9C5B]  ; Determine Samus Y acceleration
 $90:E706 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside detection
 $90:E70A 20 DD DC    JSR $DCDD  [$90:DCDD]  ; Handle HUD specific behaviour and projectiles
@@ -14859,11 +14859,11 @@ $90:E90E 60          RTS
 }
 
 
-;;; $E90F..4A: $0A60 handler ;;;
+;;; $E90F..4A: Samus pose input handler ;;;
 {
-;;; $E90F: $0A60 handler ;;;
+;;; $E90F: Samus pose input handler ;;;
 {
-$90:E90F 6C 60 0A    JMP ($0A60)[$90:E91D]
+$90:E90F 6C 60 0A    JMP ($0A60)[$90:E91D]  ; Go to [Samus pose input]
 }
 
 
@@ -14873,21 +14873,21 @@ $90:E912 60          RTS
 }
 
 
-;;; $E913: $0A60 handler - normal ;;;
+;;; $E913: Samus pose input handler - normal ;;;
 {
-$90:E913 22 00 80 91 JSL $918000[$91:8000]  ; Execute $91:8000
+$90:E913 22 00 80 91 JSL $918000[$91:8000]  ; Normal Samus pose input handler
 $90:E917 60          RTS
 }
 
 
-;;; $E918: $0A60 handler - x-ray ;;;
+;;; $E918: Samus pose input handler - x-ray ;;;
 {
-$90:E918 22 AF FC 91 JSL $91FCAF[$91:FCAF]  ; Execute $91:FCAF
+$90:E918 22 AF FC 91 JSL $91FCAF[$91:FCAF]  ; X-ray Samus pose input handler
 $90:E91C 60          RTS
 }
 
 
-;;; $E91D: $0A60 handler - demo ;;;
+;;; $E91D: Samus pose input handler - demo ;;;
 {
 $90:E91D 22 C0 83 91 JSL $9183C0[$91:83C0]  ; Demo input object handler
 $90:E921 22 00 80 91 JSL $918000[$91:8000]  ; Execute $91:8000
@@ -14895,7 +14895,7 @@ $90:E925 60          RTS
 }
 
 
-;;; $E926: $0A60 handler - auto-jump hack ;;;
+;;; $E926: Samus pose input handler - auto-jump hack ;;;
 {
 $90:E926 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:E928 48          PHA                    ;} Push controller 1 input
@@ -14912,7 +14912,7 @@ $90:E93D 22 00 80 91 JSL $918000[$91:8000]  ; Execute $91:8000
 $90:E941 68          PLA                    ;\
 $90:E942 85 8F       STA $8F    [$7E:008F]  ;} Pull into controller 1 input
 $90:E944 A9 13 E9    LDA #$E913             ;\
-$90:E947 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (auto-jump hack)
+$90:E947 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (auto-jump hack)
 $90:E94A 60          RTS
 }
 }
@@ -16206,7 +16206,7 @@ $90:F1D5 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (n
 $90:F1D8 A9 14 EC    LDA #$EC14             ;\
 $90:F1DB 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = using elevator
 $90:F1DE A9 13 E9    LDA #$E913             ;\
-$90:F1E1 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$90:F1E1 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $90:F1E4 9C 56 0A    STZ $0A56  [$7E:0A56]  ; Bomb jump direction = 0
 $90:F1E7 38          SEC                    ;\
 $90:F1E8 60          RTS                    ;} Return carry set

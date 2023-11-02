@@ -1,17 +1,18 @@
-;;; $8000:  ;;;
+;;; $8000..834D: Normal Samus pose input handler ;;;
 {
-; Called by $0A60 handlers other than x-ray (which uses $91:FCAF instead)
-; Checks movement type, and goes to 91:(8014,X), X being 2x movement type
+;;; $8000: Normal Samus pose input handler ;;;
+{
+; Called by Samus pose input handlers other than x-ray (which uses $91:FCAF instead)
 $91:8000 08          PHP
 $91:8001 8B          PHB
-$91:8002 4B          PHK
-$91:8003 AB          PLB
+$91:8002 4B          PHK                    ;\
+$91:8003 AB          PLB                    ;} DB = $91
 $91:8004 C2 30       REP #$30
-$91:8006 AD 1F 0A    LDA $0A1F  [$7E:0A1F]
-$91:8009 29 FF 00    AND #$00FF
-$91:800C 0A          ASL A
-$91:800D AA          TAX
-$91:800E FC 14 80    JSR ($8014,x)[$91:804D]
+$91:8006 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
+$91:8009 29 FF 00    AND #$00FF             ;|
+$91:800C 0A          ASL A                  ;} Execute [$8014 + [Samus movement type] * 2]
+$91:800D AA          TAX                    ;|
+$91:800E FC 14 80    JSR ($8014,x)[$91:804D];/
 $91:8011 AB          PLB
 $91:8012 28          PLP
 $91:8013 6B          RTL
@@ -53,10 +54,8 @@ $91:804C 60          RTS
 }
 
 
-;;; $804D:  ;;;
+;;; $804D: Normal Samus pose input handler - [Samus movement type] = standing ;;;
 {
-; Standing
-; If Samus is facing forward (0A1C = 00 or 9B) and on a moving elevator, RTS. Else JSR to 81A9
 $91:804D 08          PHP
 $91:804E C2 30       REP #$30
 $91:8050 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -69,68 +68,61 @@ $91:805C AD 18 0E    LDA $0E18  [$7E:0E18]  ;\
 $91:805F D0 03       BNE $03    [$8064]     ;} If [elevator status] != inactive: return
 
 ; NOT_FACING_FORWARD
-$91:8061 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:8061 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 
 $91:8064 28          PLP
 $91:8065 60          RTS
 }
 
 
-;;; $8066:  ;;;
+;;; $8066: Normal Samus pose input handler - [Samus movement type] = running ;;;
 {
-; Running
 $91:8066 08          PHP
 $91:8067 C2 30       REP #$30
-$91:8069 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:8069 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:806C 28          PLP
 $91:806D 60          RTS
 }
 
 
-;;; $806E:  ;;;
+;;; $806E: Normal Samus pose input handler - [Samus movement type] = normal jumping ;;;
 {
-; Normal jumping
 $91:806E 08          PHP
 $91:806F C2 30       REP #$30
-$91:8071 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:8071 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8074 28          PLP
 $91:8075 60          RTS
 }
 
 
-;;; $8076:  ;;;
+;;; $8076: Normal Samus pose input handler - [Samus movement type] = spin jumping ;;;
 {
-; Spin jumping
 $91:8076 08          PHP
 $91:8077 C2 30       REP #$30
-$91:8079 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:8079 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:807C 28          PLP
 $91:807D 60          RTS
 }
 
 
-;;; $807E:  ;;;
+;;; $807E: Normal Samus pose input handler - [Samus movement type] = morph ball - on ground ;;;
 {
-; Morph ball - on ground
 $91:807E 08          PHP
 $91:807F C2 30       REP #$30
-$91:8081 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:8081 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8084 28          PLP
 $91:8085 60          RTS
 }
 
 
-;;; $8086: RTS ;;;
+;;; $8086: RTS. Normal Samus pose input handler - [Samus movement type] = 7 ;;;
 {
-; Unused. Glitchy morph ball / spin jump
 $91:8086 60          RTS
 }
 
 
-;;; $8087:  ;;;
+;;; $8087: Normal Samus pose input handler - [Samus movement type] = crouching ;;;
 {
-; Crouching
-
 ; Note that this routine is not called when time is frozen ([$0A42] = $E713 during reserve tanks, [$0A60] = $E918 during x-ray),
 ; so the call to $91:FCAF (x-ray) is dead code.
 ; I also don't think there's any way to transition directly from crouching to standing, (actually: check x-ray stand up)
@@ -140,7 +132,7 @@ $91:8087 08          PHP
 $91:8088 C2 30       REP #$30
 $91:808A AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $91:808D D0 21       BNE $21    [$80B0]     ;} If time is not frozen:
-$91:808F 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:808F 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8092 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $91:8095 29 FF 00    AND #$00FF             ;} If [Samus movement type] != standing: return
 $91:8098 D0 1A       BNE $1A    [$80B4]     ;/
@@ -153,7 +145,6 @@ $91:80A7 38          SEC                    ;|
 $91:80A8 E9 05 00    SBC #$0005             ;} Samus previous Y position -= 5
 $91:80AB 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
 $91:80AE 80 04       BRA $04    [$80B4]
-
                                             ; Else (time is frozen):
 $91:80B0 22 AF FC 91 JSL $91FCAF[$91:FCAF]  ; Execute $91:FCAF
 
@@ -162,12 +153,11 @@ $91:80B5 60          RTS
 }
 
 
-;;; $80B6:  ;;;
+;;; $80B6: Normal Samus pose input handler - [Samus movement type] = falling ;;;
 {
-; Falling
 $91:80B6 08          PHP
 $91:80B7 C2 30       REP #$30
-$91:80B9 20 A9 81    JSR $81A9  [$91:81A9]
+$91:80B9 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:80BC 28          PLP
 $91:80BD 60          RTS
 }
@@ -214,32 +204,29 @@ $91:8109 60          RTS
 }
 
 
-;;; $810A:  ;;;
+;;; $810A: Normal Samus pose input handler - [Samus movement type] = morph ball - falling ;;;
 {
-; Morph ball - falling
 $91:810A 08          PHP
 $91:810B C2 30       REP #$30
-$91:810D 20 A9 81    JSR $81A9  [$91:81A9]
+$91:810D 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8110 28          PLP
 $91:8111 60          RTS
 }
 
 
-;;; $8112: RTS ;;;
+;;; $8112: RTS. Normal Samus pose input handler - [Samus movement type] = 9 ;;;
 {
-; Unused. Glitchy morph ball
 $91:8112 60          RTS
 }
 
 
-;;; $8113:  ;;;
+;;; $8113: Normal Samus pose input handler - [Samus movement type] = knockback / crystal flash ending ;;;
 {
-; Knockback / crystal flash ending
 ; Only processes knockback in practice as [$0A60] = RTS during crystal flash, so this function never gets called.
-; I don't know if Samus movement type can be changed via $81A9, but if it happened then Samus would jump(???).
+; Samus movement type cannot be changed via $81A9... but if it did then Samus would jump(?!).
 $91:8113 08          PHP
 $91:8114 C2 30       REP #$30
-$91:8116 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:8116 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8119 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $91:811C 29 FF 00    AND #$00FF             ;|
 $91:811F C9 0A 00    CMP #$000A             ;} If [Samus movement type] != knockback / crystal flash ending:
@@ -252,9 +239,8 @@ $91:812C 60          RTS
 }
 
 
-;;; $812D:  ;;;
+;;; $812D: RTS. Normal Samus pose input handler - [Samus movement type] = Bh ;;;
 {
-; Unused. Can fire grapple beam, not moving
 $91:812D 08          PHP
 $91:812E C2 30       REP #$30
 $91:8130 28          PLP
@@ -262,111 +248,100 @@ $91:8131 60          RTS
 }
 
 
-;;; $8132:  ;;;
+;;; $8132: Normal Samus pose input handler - [Samus movement type] = Ch ;;;
 {
-; Unused. Can fire grapple beam and charge pose
 $91:8132 08          PHP
 $91:8133 C2 30       REP #$30
-$91:8135 20 A9 81    JSR $81A9  [$91:81A9]
+$91:8135 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8138 28          PLP
 $91:8139 60          RTS
 }
 
 
-;;; $813A:  ;;;
+;;; $813A: Normal Samus pose input handler - [Samus movement type] = Dh ;;;
 {
-; . Can change pose, no firing...
 $91:813A 08          PHP
 $91:813B C2 30       REP #$30
-$91:813D 20 A9 81    JSR $81A9  [$91:81A9]
+$91:813D 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8140 28          PLP
 $91:8141 60          RTS
 }
 
 
-;;; $8142:  ;;;
+;;; $8142: Normal Samus pose input handler - [Samus movement type] = turning around - on ground ;;;
 {
-; Turning around - on ground
-$91:8142 20 A9 81    JSR $81A9  [$91:81A9]
+$91:8142 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8145 60          RTS
 }
 
 
-;;; $8146: RTS ;;;
+;;; $8146: RTS. Normal Samus pose input handler - [Samus movement type] = crouching/standing/morphing/unmorphing transition ;;;
 {
-; Crouching/standing/morphing/unmorphing transition
+; 
 $91:8146 60          RTS
 }
 
 
-;;; $8147:  ;;;
+;;; $8147: Normal Samus pose input handler - [Samus movement type] = moonwalking ;;;
 {
-; Moonwalking
 $91:8147 08          PHP
 $91:8148 C2 30       REP #$30
-$91:814A 20 A9 81    JSR $81A9  [$91:81A9]
+$91:814A 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:814D 28          PLP
 $91:814E 60          RTS
 }
 
 
-;;; $814F:  ;;;
+;;; $814F: Normal Samus pose input handler - [Samus movement type] = spring ball - on ground ;;;
 {
-; Sping ball - on ground
 $91:814F 08          PHP
 $91:8150 C2 30       REP #$30
-$91:8152 20 A9 81    JSR $81A9  [$91:81A9]
+$91:8152 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8155 28          PLP
 $91:8156 60          RTS
 }
 
 
-;;; $8157:  ;;;
+;;; $8157: Normal Samus pose input handler - [Samus movement type] = spring ball - in air ;;;
 {
-; Sping ball - in air
 $91:8157 08          PHP
 $91:8158 C2 30       REP #$30
-$91:815A 20 A9 81    JSR $81A9  [$91:81A9]
+$91:815A 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:815D 28          PLP
 $91:815E 60          RTS
 }
 
 
-;;; $815F:  ;;;
+;;; $815F: Normal Samus pose input handler - [Samus movement type] = spring ball - falling ;;;
 {
-; Sping ball - falling
 $91:815F 08          PHP
 $91:8160 C2 30       REP #$30
-$91:8162 20 A9 81    JSR $81A9  [$91:81A9]
+$91:8162 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8165 28          PLP
 $91:8166 60          RTS
 }
 
 
-;;; $8167:  ;;;
+;;; $8167: Normal Samus pose input handler - [Samus movement type] = wall jumping ;;;
 {
-; Wall jumping
 $91:8167 08          PHP
 $91:8168 C2 30       REP #$30
-$91:816A 20 A9 81    JSR $81A9  [$91:81A9]
+$91:816A 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:816D 28          PLP
 $91:816E 60          RTS
 }
 
 
-;;; $816F:  ;;;
+;;; $816F: Normal Samus pose input handler - [Samus movement type] = ran into a wall ;;;
 {
-; Ran into a wall
-
 ; Note that this routine is not called when time is frozen ([$0A42] = $E713 during reserve tanks, [$0A60] = $E918 during x-ray),
 ; so the broken call to $91:FCAF (x-ray) is dead code.
 $91:816F 08          PHP
 $91:8170 C2 30       REP #$30
 $91:8172 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $91:8175 D0 05       BNE $05    [$817C]     ;} If time is not frozen:
-$91:8177 20 A9 81    JSR $81A9  [$91:81A9]  ; Execute $81A9
+$91:8177 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:817A 80 03       BRA $03    [$817F]
-
                                             ; Else (time is frozen):
 $91:817C 20 AF FC    JSR $FCAF  [$91:FCAF]  ; Execute $FCAF (bug, should be JSL)
 
@@ -375,67 +350,61 @@ $91:8180 60          RTS
 }
 
 
-;;; $8181:  ;;;
+;;; $8181: Normal Samus pose input handler - [Samus movement type] = grappling ;;;
 {
-; Grappling
 $91:8181 08          PHP
 $91:8182 C2 30       REP #$30
-$91:8184 20 A9 81    JSR $81A9  [$91:81A9]
+$91:8184 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8187 28          PLP
 $91:8188 60          RTS
 }
 
 
-;;; $8189:  ;;;
+;;; $8189: Normal Samus pose input handler - [Samus movement type] = turning around - jumping ;;;
 {
-; Turning around - jumping
-$91:8189 20 A9 81    JSR $81A9  [$91:81A9]
+$91:8189 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:818C 60          RTS
 }
 
 
-;;; $818D:  ;;;
+;;; $818D: Normal Samus pose input handler - [Samus movement type] = turning around - falling ;;;
 {
-; Turning around - falling
-$91:818D 20 A9 81    JSR $81A9  [$91:81A9]
+$91:818D 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8190 60          RTS
 }
 
 
-;;; $8191:  ;;;
+;;; $8191: Normal Samus pose input handler - [Samus movement type] = damage boost ;;;
 {
-; Damage boost
 $91:8191 08          PHP
 $91:8192 C2 30       REP #$30
-$91:8194 20 A9 81    JSR $81A9  [$91:81A9]
+$91:8194 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:8197 28          PLP
 $91:8198 60          RTS
 }
 
 
-;;; $8199:  ;;;
+;;; $8199: Normal Samus pose input handler - [Samus movement type] = grabbed by Draygon ;;;
 {
-; Grabbed by Draygon
 $91:8199 08          PHP
 $91:819A C2 30       REP #$30
-$91:819C 20 A9 81    JSR $81A9  [$91:81A9]
+$91:819C 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:819F 28          PLP
 $91:81A0 60          RTS
 }
 
 
-;;; $81A1:  ;;;
+;;; $81A1: Normal Samus pose input handler - [Samus movement type] = shinespark / crystal flash / drained by metroid / damaged by MB's attacks ;;;
 {
-; Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 $91:81A1 08          PHP
 $91:81A2 C2 30       REP #$30
-$91:81A4 20 A9 81    JSR $81A9  [$91:81A9]
+$91:81A4 20 A9 81    JSR $81A9  [$91:81A9]  ; Determine prospective pose from transition table
 $91:81A7 28          PLP
 $91:81A8 60          RTS
 }
 
 
-;;; $81A9: (looks up transition table) ;;;
+;;; $81A9: Determine prospective pose from transition table ;;;
 {
 ;; Returns:
 ;;     Carry: Set if pose was found, clear otherwise
@@ -496,7 +465,7 @@ $91:81D9 D0 E4       BNE $E4    [$81BF]     ;/
 
 ; BRANCH_NO_INPUT
 $91:81DB 9C 18 0A    STZ $0A18  [$7E:0A18]  ; $0A18 = 0
-$91:81DE 22 D9 82 91 JSL $9182D9[$91:82D9]  ; Execute $91:82D9
+$91:81DE 22 D9 82 91 JSL $9182D9[$91:82D9]  ; Handle transition table lookup failure
 
 $91:81E2 18          CLC                    ;\
 $91:81E3 60          RTS                    ;} Return carry clear
@@ -633,32 +602,32 @@ $91:82D8 60          RTS
 }
 
 
-;;; $82D9:  ;;;
+;;; $82D9: Handle transition table lookup failure ;;;
 {
 $91:82D9 08          PHP
 $91:82DA 8B          PHB
 $91:82DB 4B          PHK                    ;\
 $91:82DC AB          PLB                    ;} DB = $91
 $91:82DD C2 30       REP #$30
-$91:82DF 20 04 83    JSR $8304  [$91:8304]  ; Execute $8304
-$91:82E2 90 08       BCC $08    [$82EC]     ; If carry clear: go to BRANCH_82EC
+$91:82DF 20 04 83    JSR $8304  [$91:8304]  ; Set prospective pose change command
+$91:82E2 90 08       BCC $08    [$82EC]     ; If not retaining current pose: go to BRANCH_CONSULT_POSE_DEFINITION
 
-; BRANCH_82E4
+; BRANCH_RETAIN_CURRENT_POSE
 $91:82E4 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:82E7 8D 28 0A    STA $0A28  [$7E:0A28]  ;} Prospective pose = [Samus pose]
 $91:82EA 80 15       BRA $15    [$8301]     ; Return
 
-; BRANCH_82EC
+; BRANCH_CONSULT_POSE_DEFINITION
 $91:82EC AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:82EF 0A          ASL A                  ;|
 $91:82F0 0A          ASL A                  ;|
-$91:82F1 0A          ASL A                  ;|
-$91:82F2 AA          TAX                    ;} If [$B62B + [Samus pose] * 8] = FFh: go to BRANCH_82E4
+$91:82F1 0A          ASL A                  ;} A = [$B62B + [Samus pose] * 8] (new pose if not affected by buttons)
+$91:82F2 AA          TAX                    ;|
 $91:82F3 BD 2B B6    LDA $B62B,x[$91:B63B]  ;|
-$91:82F6 29 FF 00    AND #$00FF             ;|
-$91:82F9 C9 FF 00    CMP #$00FF             ;|
-$91:82FC F0 E6       BEQ $E6    [$82E4]     ;/
-$91:82FE 8D 28 0A    STA $0A28  [$7E:0A28]  ; Prospective pose = [$B62B + [Samus pose] * 8]
+$91:82F6 29 FF 00    AND #$00FF             ;/
+$91:82F9 C9 FF 00    CMP #$00FF             ;\
+$91:82FC F0 E6       BEQ $E6    [$82E4]     ;} If [A] = FFh: go to BRANCH_RETAIN_CURRENT_POSE
+$91:82FE 8D 28 0A    STA $0A28  [$7E:0A28]  ; Prospective pose = [A]
 
 $91:8301 AB          PLB
 $91:8302 28          PLP
@@ -666,8 +635,10 @@ $91:8303 6B          RTL
 }
 
 
-;;; $8304:  ;;;
+;;; $8304: Set prospective pose change command ;;;
 {
+;; Returns:
+;;     Carry: Set if retaining current pose (i.e. command = decelerate), clear otherwise
 $91:8304 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $91:8307 29 FF 00    AND #$00FF             ;|
 $91:830A AA          TAX                    ;|
@@ -723,6 +694,7 @@ $91:8332             db 02, ; 0: Standing
                         02, ; 1Ah: Grabbed by Draygon
                         02  ; 1Bh: Shinespark / crystal flash / drained by metroid / damaged by MB's attacks
 }
+}
 
 
 ;;; $834E..9EE1: Demo ;;;
@@ -732,7 +704,7 @@ $91:8332             db 02, ; 0: Standing
 $91:834E 08          PHP
 $91:834F C2 30       REP #$30
 $91:8351 A9 1D E9    LDA #$E91D             ;\
-$91:8354 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E91D (demo)
+$91:8354 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E91D (demo)
 $91:8357 A9 00 80    LDA #$8000             ;\
 $91:835A 0C 88 0A    TSB $0A88  [$7E:0A88]  ;} Enable demo input
 $91:835D 28          PLP
@@ -745,7 +717,7 @@ $91:835E 6B          RTL
 $91:835F 08          PHP
 $91:8360 C2 30       REP #$30
 $91:8362 A9 13 E9    LDA #$E913             ;\
-$91:8365 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$91:8365 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $91:8368 A9 00 80    LDA #$8000             ;\
 $91:836B 1C 88 0A    TRB $0A88  [$7E:0A88]  ;} Disable demo input
 $91:836E 28          PLP
@@ -1216,8 +1188,8 @@ $91:8723 8D 20 0A    STA $0A20  [$7E:0A20]
 $91:8726 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
 $91:8729 8D 22 0A    STA $0A22  [$7E:0A22]
 $91:872C 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
-$91:8730 A9 0E E9    LDA #$E90E
-$91:8733 8D 60 0A    STA $0A60  [$7E:0A60]
+$91:8730 A9 0E E9    LDA #$E90E             ;\
+$91:8733 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 $91:8736 7A          PLY
 $91:8737 FA          PLX
 $91:8738 60          RTS
@@ -1243,8 +1215,8 @@ $91:875E 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose
 $91:8761 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:8764 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
 $91:8767 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
-$91:876B A9 0E E9    LDA #$E90E
-$91:876E 8D 60 0A    STA $0A60  [$7E:0A60]
+$91:876B A9 0E E9    LDA #$E90E             ;\
+$91:876E 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 $91:8771 7A          PLY
 $91:8772 FA          PLX
 $91:8773 60          RTS
@@ -3672,7 +3644,7 @@ $91:B56F             db 08, FF
 }
 
 
-;;; $B571:  ;;;
+;;; $B571: Unused animation delay table ;;;
 {
 $91:B571             db 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
                         03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
@@ -8868,7 +8840,6 @@ $91:DE52 60          RTS
 
 ;;; $DE53: Cancel speed boosting ;;;
 {
-; Cleanup for speed counter/blue suit/speedechoes because Samus was stopped for some reason
 $91:DE53 08          PHP
 $91:DE54 8B          PHB
 $91:DE55 4B          PHK                    ;\
@@ -9189,7 +9160,7 @@ $91:E053 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change co
 $91:E056 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Special Super special pose change command = none
 $91:E059 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $91:E05D A9 13 E9    LDA #$E913             ;\
-$91:E060 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$91:E060 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $91:E063 80 26       BRA $26    [$E08B]
 
 $91:E065 A9 CD E8    LDA #$E8CD             ;\ Else (not landing on Zebes):
@@ -9202,7 +9173,7 @@ $91:E077 9C 2E 0A    STZ $0A2E  [$7E:0A2E]  ; Prospective pose change command = 
 $91:E07A 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change command = none
 $91:E07D 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Special Super special pose change command = none
 $91:E080 A9 13 E9    LDA #$E913             ;\
-$91:E083 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$91:E083 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $91:E086 A5 12       LDA $12    [$7E:0012]  ;\
 $91:E088 8D E0 0D    STA $0DE0  [$7E:0DE0]  ;} >_<
 
@@ -9507,7 +9478,7 @@ $91:E30C 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction /
 $91:E30F A9 37 A3    LDA #$A337             ;\
 $91:E312 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $91:E315 A9 13 E9    LDA #$E913             ;\
-$91:E318 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$91:E318 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $91:E31B A9 FF FF    LDA #$FFFF             ;\
 $91:E31E 8D 80 0A    STA $0A80  [$7E:0A80]  ;} $0A80 = FFFFh
 $91:E321 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -10704,7 +10675,6 @@ $91:EB74             dw 0003, ; 0: Up, facing right:   Facing right - aiming up
 ;;; $EB88: Update Samus pose ;;;
 {
 ; See also "Samus.asm"
-; "(Cause of Yapping Maw Super Jump crash. I think. (918304 --> 91EBEE --> ...)"
 $91:EB88 08          PHP
 $91:EB89 8B          PHB
 $91:EB8A 4B          PHK                    ;\
@@ -11154,10 +11124,10 @@ $91:EE89 8D 56 0A    STA $0A56  [$7E:0A56]  ;/
 $91:EE8C A9 25 E0    LDA #$E025             ;\
 $91:EE8F 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $E025 (bomb jump - start)
 $91:EE92 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$91:EE95 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (game controlled):
+$91:EE95 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (game controlled):
 $91:EE98 F0 06       BEQ $06    [$EEA0]     ;/
 $91:EE9A A9 0E E9    LDA #$E90E             ;\
-$91:EE9D 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
+$91:EE9D 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 
 $91:EEA0 60          RTS
 }
@@ -11215,7 +11185,7 @@ $91:EEFB 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3Fh
 $91:EEFE A9 4F E9    LDA #$E94F             ;\
 $91:EF01 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $E94F (x-ray)
 $91:EF04 A9 18 E9    LDA #$E918             ;\
-$91:EF07 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E918 (x-ray)
+$91:EF07 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E918 (x-ray)
 $91:EF0A A9 08 00    LDA #$0008             ;\
 $91:EF0D 8D CC 0A    STA $0ACC  [$7E:0ACC]  ;} Special Samus palette type = 8 (x-ray)
 $91:EF10 A9 01 00    LDA #$0001             ;\
@@ -11673,10 +11643,10 @@ $91:F1EB 60          RTS
 ;;; $F1EC: Solid vertical collision - landed - [Samus downwards movement solid collision result] = grounded ;;;
 {
 $91:F1EC AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$91:F1EF C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (demo):
+$91:F1EF C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $91:F1F2 F0 06       BEQ $06    [$F1FA]     ;/
 $91:F1F4 A9 26 E9    LDA #$E926             ;\
-$91:F1F7 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E926 (auto-jump hack)
+$91:F1F7 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E926 (auto-jump hack)
 
 $91:F1FA 18          CLC                    ;\
 $91:F1FB 60          RTS                    ;} Return carry clear
@@ -11878,10 +11848,10 @@ $91:F335 A9 02 00    LDA #$0002             ;\
 $91:F338 8D 36 0B    STA $0B36  [$7E:0B36]  ;} Samus Y direction = down
 $91:F33B 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
 $91:F33F AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$91:F342 C9 1D E9    CMP #$E91D             ;} If [$0A60] != $E91D (game controlled):
+$91:F342 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (game controlled):
 $91:F345 F0 06       BEQ $06    [$F34D]     ;/
 $91:F347 A9 13 E9    LDA #$E913             ;\
-$91:F34A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$91:F34A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 
 $91:F34D 60          RTS
 }
@@ -11896,11 +11866,11 @@ $91:F358 AD 98 09    LDA $0998  [$7E:0998]  ;\
 $91:F35B C9 2A 00    CMP #$002A             ;} If [game state] != playing demo:
 $91:F35E F0 07       BEQ $07    [$F367]     ;/
 $91:F360 A9 13 E9    LDA #$E913             ;\
-$91:F363 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E913 (normal)
+$91:F363 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $91:F366 60          RTS
 
 $91:F367 A9 1D E9    LDA #$E91D             ;\ Else ([game state] = playing demo):
-$91:F36A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = $E91D (demo)
+$91:F36A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E91D (demo)
 $91:F36D 60          RTS
 }
 
@@ -13013,7 +12983,7 @@ $91:FAD7 AA          TAX                    ;} Samus movement handler = [$FAFC +
 $91:FAD8 BD FC FA    LDA $FAFC,x[$91:FAFC]  ;|
 $91:FADB 8D 58 0A    STA $0A58  [$7E:0A58]  ;/
 $91:FADE A9 0E E9    LDA #$E90E             ;\
-$91:FAE1 8D 60 0A    STA $0A60  [$7E:0A60]  ;} $0A60 = RTS
+$91:FAE1 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 $91:FAE4 9C AE 0A    STZ $0AAE  [$7E:0AAE]  ; Speed echoes index = 0
 $91:FAE7 9C C0 0A    STZ $0AC0  [$7E:0AC0]  ;\
 $91:FAEA 9C C2 0A    STZ $0AC2  [$7E:0AC2]  ;} Speed echo X speeds = 0
@@ -13303,9 +13273,8 @@ $91:FCAE 60          RTS
 }
 
 
-;;; $FCAF:  ;;;
+;;; $FCAF: X-ray Samus pose input handler ;;;
 {
-; X-ray $0A60 handler
 $91:FCAF 08          PHP
 $91:FCB0 C2 30       REP #$30
 $91:FCB2 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
@@ -13369,7 +13338,7 @@ $91:FD3B AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:FD3E 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
 
 $91:FD41 28          PLP
-$91:FD42 6B          RTL
+$91:FD42 6B          RTL                    ; Return
 
 ; BRANCH_TURNING_ON_GROUND
 $91:FD43 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
