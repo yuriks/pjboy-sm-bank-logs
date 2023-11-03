@@ -9003,8 +9003,6 @@ $82:DA49 60          RTS                    ;} Return carry clear
 ;; Returns:
 ;;     A: Result colour
 
-; The transition curve is an X-flipped reciprocal function (1/d, 1/(d-1), 1/(d-2), ..., 1/3, 1/2, 1)
-
 ; After pushes, we have:
 ;     $01 + [S]: Target colour
 ;     $03 + [S]: Source colour
@@ -9093,7 +9091,7 @@ $82:DAA5 60          RTS
 ;      d = [palette change denominator]
 ; Solving this recurrence relation actually gives you:
 ;     x_t = x_0 + t (y - x_0) / d
-; which is precisely what you would expect for a linear interpolation
+; which is linear interpolation
 
 $82:DAA6 C9 00 00    CMP #$0000             ;\
 $82:DAA9 D0 02       BNE $02    [$DAAD]     ;} If [A] = 0:

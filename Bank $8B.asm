@@ -6133,8 +6133,8 @@ $8B:AF4D A9 33 E8    LDA #$E833             ;\
 $8B:AF50 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E833 (intro demo)
 $8B:AF53 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
 $8B:AF57 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
-$8B:AF5B A0 84 87    LDY #$8784             ; Y = $8784
-$8B:AF5E 22 95 83 91 JSL $918395[$91:8395]  ; Execute $91:8395
+$8B:AF5B A0 84 87    LDY #$8784             ;\
+$8B:AF5E 22 95 83 91 JSL $918395[$91:8395]  ;} Load demo input object $8784
 $8B:AF62 A9 FF FF    LDA #$FFFF             ;\
 $8B:AF65 8D 57 1A    STA $1A57  [$7E:1A57]  ;} Set Samus to be displayed over cinematic sprite objects
 $8B:AF68 4C 18 B0    JMP $B018  [$8B:B018]  ; Go to set up intro crossfade into Samus gameplay
@@ -6147,7 +6147,7 @@ $8B:AF6B 60          RTS
 }
 
 
-;;; $AF6C: Cinematic function - intro - wait for input and set up Baby Metroid discovery ;;;
+;;; $AF6C: Cinematic function - intro - wait for input and set up baby metroid discovery ;;;
 {
 $8B:AF6C AD A3 1B    LDA $1BA3  [$7E:1BA3]  ;\
 $8B:AF6F F0 05       BEQ $05    [$AF76]     ;} If [intro Japanese text timer] != 0:
@@ -6208,8 +6208,8 @@ $8B:AFFA A9 33 E8    LDA #$E833             ;\
 $8B:AFFD 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E833 (intro demo)
 $8B:B000 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
 $8B:B004 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
-$8B:B008 A0 7E 87    LDY #$877E             ; Y = $877E
-$8B:B00B 22 95 83 91 JSL $918395[$91:8395]  ; Execute $91:8395
+$8B:B008 A0 7E 87    LDY #$877E             ;\
+$8B:B00B 22 95 83 91 JSL $918395[$91:8395]  ;} Load demo input object $877E
 $8B:B00F A9 01 00    LDA #$0001             ;\
 $8B:B012 8D 57 1A    STA $1A57  [$7E:1A57]  ;} Set Samus to be displayed under cinematic sprite objects
 $8B:B015 80 01       BRA $01    [$B018]     ; Go to set up intro crossfade into Samus gameplay

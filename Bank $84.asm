@@ -708,34 +708,34 @@ $84:85D9 6B          RTL
 {
 ;; Parameter:
 ;;     X: PLM index
-$84:85DA FC D7 1C    JSR ($1CD7,x)[$84:B7DD]    ; Execute PLM pre-instruction
-$84:85DD AE 27 1C    LDX $1C27  [$7E:1C27]      ; X = [PLM index]
-$84:85E0 BF 1C DE 7E LDA $7EDE1C,x[$7E:DE6A]    ;\
-$84:85E4 3A          DEC A                      ;} Decrement PLM instruction timer
-$84:85E5 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A]    ;/
-$84:85E9 D0 32       BNE $32    [$861D]         ; If [PLM instruction timer] != 0: return
-$84:85EB BC 27 1D    LDY $1D27,x[$7E:1D75]      ; Y = [PLM instruction list pointer]
+$84:85DA FC D7 1C    JSR ($1CD7,x)[$84:B7DD]; Execute PLM pre-instruction
+$84:85DD AE 27 1C    LDX $1C27  [$7E:1C27]  ; X = [PLM index]
+$84:85E0 BF 1C DE 7E LDA $7EDE1C,x[$7E:DE6A];\
+$84:85E4 3A          DEC A                  ;} Decrement PLM instruction timer
+$84:85E5 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];/
+$84:85E9 D0 32       BNE $32    [$861D]     ; If [PLM instruction timer] != 0: return
+$84:85EB BC 27 1D    LDY $1D27,x[$7E:1D75]  ; Y = [PLM instruction list pointer]
 
 ; LOOP
-$84:85EE B9 00 00    LDA $0000,y[$84:B7E9]      ;\
-$84:85F1 10 0A       BPL $0A    [$85FD]         ;} If [[Y]] is negative:
-$84:85F3 85 12       STA $12    [$7E:0012]      ; $12 = [[Y]] (ASM instruction pointer)
-$84:85F5 C8          INY                        ;\
-$84:85F6 C8          INY                        ;} Y += 2
-$84:85F7 F4 ED 85    PEA $85ED                  ; Return to LOOP
-$84:85FA 6C 12 00    JMP ($0012)[$84:86B4]      ; Execute ASM instruction
+$84:85EE B9 00 00    LDA $0000,y[$84:B7E9]  ;\
+$84:85F1 10 0A       BPL $0A    [$85FD]     ;} If [[Y]] is negative:
+$84:85F3 85 12       STA $12    [$7E:0012]  ; $12 = [[Y]] (ASM instruction pointer)
+$84:85F5 C8          INY                    ;\
+$84:85F6 C8          INY                    ;} Y += 2
+$84:85F7 F4 ED 85    PEA $85ED              ; Return to LOOP
+$84:85FA 6C 12 00    JMP ($0012)[$84:86B4]  ; Execute ASM instruction
 
-$84:85FD 9F 1C DE 7E STA $7EDE1C,x[$7E:DE68]    ; PLM instruction timer = [[Y]] (draw timer)
-$84:8601 B9 02 00    LDA $0002,y[$84:C1AA]      ;\
-$84:8604 9F 6C DE 7E STA $7EDE6C,x[$7E:DEB8]    ;} PLM draw instruction pointer = [[Y] + 2]
-$84:8608 98          TYA                        ;\
-$84:8609 18          CLC                        ;|
-$84:860A 69 04 00    ADC #$0004                 ;} PLM instruction list pointer = [Y] + 4
-$84:860D 9D 27 1D    STA $1D27,x[$7E:1D73]      ;/
-$84:8610 20 1E 86    JSR $861E  [$84:861E]      ; Process PLM draw instruction
-$84:8613 AE 27 1C    LDX $1C27  [$7E:1C27]      ; X = [PLM index]
-$84:8616 22 90 82 84 JSL $848290[$84:8290]      ; Calculate PLM block co-ordinates
-$84:861A 20 AA 8D    JSR $8DAA  [$84:8DAA]      ; Draw PLM
+$84:85FD 9F 1C DE 7E STA $7EDE1C,x[$7E:DE68]; PLM instruction timer = [[Y]] (draw timer)
+$84:8601 B9 02 00    LDA $0002,y[$84:C1AA]  ;\
+$84:8604 9F 6C DE 7E STA $7EDE6C,x[$7E:DEB8];} PLM draw instruction pointer = [[Y] + 2]
+$84:8608 98          TYA                    ;\
+$84:8609 18          CLC                    ;|
+$84:860A 69 04 00    ADC #$0004             ;} PLM instruction list pointer = [Y] + 4
+$84:860D 9D 27 1D    STA $1D27,x[$7E:1D73]  ;/
+$84:8610 20 1E 86    JSR $861E  [$84:861E]  ; Process PLM draw instruction
+$84:8613 AE 27 1C    LDX $1C27  [$7E:1C27]  ; X = [PLM index]
+$84:8616 22 90 82 84 JSL $848290[$84:8290]  ; Calculate PLM block co-ordinates
+$84:861A 20 AA 8D    JSR $8DAA  [$84:8DAA]  ; Draw PLM
 
 $84:861D 60          RTS
 }
@@ -745,101 +745,101 @@ $84:861D 60          RTS
 {
 ;; Parameter:
 ;;     X: PLM index
-$84:861E BF 6C DE 7E LDA $7EDE6C,x[$7E:DEB8]    ;\
-$84:8622 A8          TAY                        ;} Y = [PLM draw instruction pointer]
-$84:8623 BD 87 1C    LDA $1C87,x[$7E:1CD3]      ;\
-$84:8626 85 12       STA $12    [$7E:0012]      ;} X = $12 = [PLM block index]
-$84:8628 AA          TAX                        ;/
+$84:861E BF 6C DE 7E LDA $7EDE6C,x[$7E:DEB8];\
+$84:8622 A8          TAY                    ;} Y = [PLM draw instruction pointer]
+$84:8623 BD 87 1C    LDA $1C87,x[$7E:1CD3]  ;\
+$84:8626 85 12       STA $12    [$7E:0012]  ;} X = $12 = [PLM block index]
+$84:8628 AA          TAX                    ;/
 
 ; LOOP_DRAW_ENTRY
-$84:8629 B9 00 00    LDA $0000,y[$84:A827]      ;\
-$84:862C 30 19       BMI $19    [$8647]         ;} If [[Y]] & 8000h: go to BRANCH_COLUMN
-$84:862E 29 FF 00    AND #$00FF                 ;\
-$84:8631 85 16       STA $16    [$7E:0016]      ;} $16 = [[Y]] & FFh (number of tiles)
-$84:8633 C8          INY                        ;\
-$84:8634 C8          INY                        ;} Y += 2
+$84:8629 B9 00 00    LDA $0000,y[$84:A827]  ;\
+$84:862C 30 19       BMI $19    [$8647]     ;} If [[Y]] & 8000h: go to BRANCH_COLUMN
+$84:862E 29 FF 00    AND #$00FF             ;\
+$84:8631 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]] & FFh (number of tiles)
+$84:8633 C8          INY                    ;\
+$84:8634 C8          INY                    ;} Y += 2
 
 ; LOOP_ROW
-$84:8635 B9 00 00    LDA $0000,y[$84:AA39]      ;\
-$84:8638 9F 02 00 7F STA $7F0002,x[$7F:304E]    ;} $7F:0002 + [X] = [[Y]] (write level data)
-$84:863C C8          INY                        ;\
-$84:863D C8          INY                        ;} Y += 2
-$84:863E E8          INX                        ;\
-$84:863F E8          INX                        ;} X += 2
-$84:8640 C6 16       DEC $16    [$7E:0016]      ; Decrement $16
-$84:8642 D0 F1       BNE $F1    [$8635]         ; If [$16] != 0: go to LOOP_ROW
-$84:8644 4C 64 86    JMP $8664  [$84:8664]      ; Go to BRANCH_NEXT
+$84:8635 B9 00 00    LDA $0000,y[$84:AA39]  ;\
+$84:8638 9F 02 00 7F STA $7F0002,x[$7F:304E];} $7F:0002 + [X] = [[Y]] (write level data)
+$84:863C C8          INY                    ;\
+$84:863D C8          INY                    ;} Y += 2
+$84:863E E8          INX                    ;\
+$84:863F E8          INX                    ;} X += 2
+$84:8640 C6 16       DEC $16    [$7E:0016]  ; Decrement $16
+$84:8642 D0 F1       BNE $F1    [$8635]     ; If [$16] != 0: go to LOOP_ROW
+$84:8644 4C 64 86    JMP $8664  [$84:8664]  ; Go to BRANCH_NEXT
 
 ; BRANCH_COLUMN
-$84:8647 29 FF 00    AND #$00FF                 ;\
-$84:864A 85 16       STA $16    [$7E:0016]      ;} $16 = [[Y]] & FFh (number of tiles)
-$84:864C C8          INY                        ;\
-$84:864D C8          INY                        ;} Y += 2
+$84:8647 29 FF 00    AND #$00FF             ;\
+$84:864A 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]] & FFh (number of tiles)
+$84:864C C8          INY                    ;\
+$84:864D C8          INY                    ;} Y += 2
 
 ; LOOP_COLUMN
-$84:864E B9 00 00    LDA $0000,y[$84:A829]      ;\
-$84:8651 9F 02 00 7F STA $7F0002,x[$7F:4FDE]    ;} $7F:0002 + [X] = [[Y]] (write level data)
-$84:8655 C8          INY                        ;\
-$84:8656 C8          INY                        ;} Y += 2
-$84:8657 8A          TXA                        ;\
-$84:8658 18          CLC                        ;|
-$84:8659 6D A5 07    ADC $07A5  [$7E:07A5]      ;} X += [room width] * 2
-$84:865C 6D A5 07    ADC $07A5  [$7E:07A5]      ;|
-$84:865F AA          TAX                        ;/
-$84:8660 C6 16       DEC $16    [$7E:0016]      ; Decrement $16
-$84:8662 D0 EA       BNE $EA    [$864E]         ; If [$16] != 0: go to LOOP_COLUMN
+$84:864E B9 00 00    LDA $0000,y[$84:A829]  ;\
+$84:8651 9F 02 00 7F STA $7F0002,x[$7F:4FDE];} $7F:0002 + [X] = [[Y]] (write level data)
+$84:8655 C8          INY                    ;\
+$84:8656 C8          INY                    ;} Y += 2
+$84:8657 8A          TXA                    ;\
+$84:8658 18          CLC                    ;|
+$84:8659 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width] * 2
+$84:865C 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$84:865F AA          TAX                    ;/
+$84:8660 C6 16       DEC $16    [$7E:0016]  ; Decrement $16
+$84:8662 D0 EA       BNE $EA    [$864E]     ; If [$16] != 0: go to LOOP_COLUMN
 
 ; BRANCH_NEXT
-$84:8664 B9 00 00    LDA $0000,y[$84:A831]      ;\
-$84:8667 D0 01       BNE $01    [$866A]         ;} If [[Y]] = 0: return
-$84:8669 60          RTS                        ;/
+$84:8664 B9 00 00    LDA $0000,y[$84:A831]  ;\
+$84:8667 D0 01       BNE $01    [$866A]     ;} If [[Y]] = 0: return
+$84:8669 60          RTS                    ;/
 
-$84:866A 88          DEY                        ; --Y
-$84:866B B9 00 00    LDA $0000,y[$84:9F28]      ;\
-$84:866E EB          XBA                        ;|
-$84:866F 10 05       BPL $05    [$8676]         ;|
-$84:8671 09 00 FF    ORA #$FF00                 ;|
-$84:8674 80 03       BRA $03    [$8679]         ;|
-                                                ;|
-$84:8676 29 FF 00    AND #$00FF                 ;} $14 = [PLM block index] + ±[[Y] + 1] * 2
-                                                ;|
-$84:8679 0A          ASL A                      ;|
-$84:867A 18          CLC                        ;|
-$84:867B 65 12       ADC $12    [$7E:0012]      ;|
-$84:867D 85 14       STA $14    [$7E:0014]      ;/
-$84:867F B9 01 00    LDA $0001,y[$84:9F29]      ;\
-$84:8682 EB          XBA                        ;|
-$84:8683 10 14       BPL $14    [$8699]         ;|
-$84:8685 09 00 FF    ORA #$FF00                 ;|
-$84:8688 49 FF FF    EOR #$FFFF                 ;|
-$84:868B 1A          INC A                      ;|
-$84:868C AA          TAX                        ;|
-$84:868D A9 00 00    LDA #$0000                 ;|
-                                                ;|
-$84:8690 38          SEC                        ;|
-$84:8691 ED A5 07    SBC $07A5  [$7E:07A5]      ;|
-$84:8694 CA          DEX                        ;|
-$84:8695 D0 F9       BNE $F9    [$8690]         ;|
-$84:8697 80 10       BRA $10    [$86A9]         ;|
-                                                ;} $14 += ±[[Y] + 2] * [room width] * 2
-$84:8699 29 FF 00    AND #$00FF                 ;|
-$84:869C F0 0B       BEQ $0B    [$86A9]         ;|
-$84:869E AA          TAX                        ;|
-$84:869F A9 00 00    LDA #$0000                 ;|
-                                                ;|
-$84:86A2 18          CLC                        ;|
-$84:86A3 6D A5 07    ADC $07A5  [$7E:07A5]      ;|
-$84:86A6 CA          DEX                        ;|
-$84:86A7 D0 F9       BNE $F9    [$86A2]         ;|
-                                                ;|
-$84:86A9 0A          ASL A                      ;|
-$84:86AA 18          CLC                        ;|
-$84:86AB 65 14       ADC $14    [$7E:0014]      ;/
-$84:86AD AA          TAX                        ; X = [$14]
-$84:86AE C8          INY                        ;\
-$84:86AF C8          INY                        ;} Y += 3
-$84:86B0 C8          INY                        ;/
-$84:86B1 4C 29 86    JMP $8629  [$84:8629]      ; Go to LOOP_DRAW_ENTRY
+$84:866A 88          DEY                    ; --Y
+$84:866B B9 00 00    LDA $0000,y[$84:9F28]  ;\
+$84:866E EB          XBA                    ;|
+$84:866F 10 05       BPL $05    [$8676]     ;|
+$84:8671 09 00 FF    ORA #$FF00             ;|
+$84:8674 80 03       BRA $03    [$8679]     ;|
+                                            ;|
+$84:8676 29 FF 00    AND #$00FF             ;} $14 = [PLM block index] + ±[[Y] + 1] * 2
+                                            ;|
+$84:8679 0A          ASL A                  ;|
+$84:867A 18          CLC                    ;|
+$84:867B 65 12       ADC $12    [$7E:0012]  ;|
+$84:867D 85 14       STA $14    [$7E:0014]  ;/
+$84:867F B9 01 00    LDA $0001,y[$84:9F29]  ;\
+$84:8682 EB          XBA                    ;|
+$84:8683 10 14       BPL $14    [$8699]     ;|
+$84:8685 09 00 FF    ORA #$FF00             ;|
+$84:8688 49 FF FF    EOR #$FFFF             ;|
+$84:868B 1A          INC A                  ;|
+$84:868C AA          TAX                    ;|
+$84:868D A9 00 00    LDA #$0000             ;|
+                                            ;|
+$84:8690 38          SEC                    ;|
+$84:8691 ED A5 07    SBC $07A5  [$7E:07A5]  ;|
+$84:8694 CA          DEX                    ;|
+$84:8695 D0 F9       BNE $F9    [$8690]     ;|
+$84:8697 80 10       BRA $10    [$86A9]     ;|
+                                            ;} $14 += ±[[Y] + 2] * [room width] * 2
+$84:8699 29 FF 00    AND #$00FF             ;|
+$84:869C F0 0B       BEQ $0B    [$86A9]     ;|
+$84:869E AA          TAX                    ;|
+$84:869F A9 00 00    LDA #$0000             ;|
+                                            ;|
+$84:86A2 18          CLC                    ;|
+$84:86A3 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$84:86A6 CA          DEX                    ;|
+$84:86A7 D0 F9       BNE $F9    [$86A2]     ;|
+                                            ;|
+$84:86A9 0A          ASL A                  ;|
+$84:86AA 18          CLC                    ;|
+$84:86AB 65 14       ADC $14    [$7E:0014]  ;/
+$84:86AD AA          TAX                    ; X = [$14]
+$84:86AE C8          INY                    ;\
+$84:86AF C8          INY                    ;} Y += 3
+$84:86B0 C8          INY                    ;/
+$84:86B1 4C 29 86    JMP $8629  [$84:8629]  ; Go to LOOP_DRAW_ENTRY
 }
 }
 
@@ -11275,7 +11275,7 @@ $84:D4F2             dx 86CA,           ; Clear pre-instruction
                         D5EE,           ; Enable Samus controls
                         86BC            ; Delete
 $84:D519             dx 0001,98E3,
-                        0001,9953 
+                        0001,9953
 $84:D521             dx D525,           ; Enable water physics
                         86BC            ; Delete
 }
@@ -14090,8 +14090,8 @@ $84:EEB0 BB          TYX                    ;\
 $84:EEB1 BD 87 1C    LDA $1C87,x[$7E:1CC9]  ;} A = [PLM block index]
 $84:EEB4 9E 87 1C    STZ $1C87,x[$7E:1CC9]  ; PLM block index = 0
 $84:EEB7 A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
-                                            
-; LOOP                                      
+
+; LOOP
 $84:EEBA DD 87 1C    CMP $1C87,x[$7E:1CD5]  ;\
 $84:EEBD F0 05       BEQ $05    [$EEC4]     ;} If [PLM [X] block index] = [A]: go to BRANCH_FOUND
 $84:EEBF CA          DEX                    ;\
@@ -14101,7 +14101,7 @@ $84:EEC3 00          BRK                    ; Crash
 
 ; BRANCH_FOUND
 $84:EEC4 A9 FF 00    LDA #$00FF             ;\
-$84:EEC7 9D 77 1D    STA $1D77,x[$7E:1DBB]  ;} Trigger PLM [X] 
+$84:EEC7 9D 77 1D    STA $1D77,x[$7E:1DBB]  ;} Trigger PLM [X]
 $84:EECA 18          CLC
 $84:EECB 60          RTS
 

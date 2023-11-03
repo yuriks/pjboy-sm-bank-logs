@@ -734,8 +734,8 @@ $91:8373 DA          PHX
 $91:8374 9C 7A 0A    STZ $0A7A  [$7E:0A7A]  ; Demo input pre-instruction = 0
 $91:8377 9C 7C 0A    STZ $0A7C  [$7E:0A7C]  ; Demo input instruction timer = 0
 $91:837A 9C 7E 0A    STZ $0A7E  [$7E:0A7E]  ; Demo input instruction list pointer = 0
-$91:837D 9C 80 0A    STZ $0A80  [$7E:0A80]  ; $0A80 = 0
-$91:8380 9C 82 0A    STZ $0A82  [$7E:0A82]  ; $0A82 = 0
+$91:837D 9C 80 0A    STZ $0A80  [$7E:0A80]  ; Demo input timer = 0
+$91:8380 9C 82 0A    STZ $0A82  [$7E:0A82]  ; Demo input initialisation parameter = 0
 $91:8383 9C 84 0A    STZ $0A84  [$7E:0A84]  ; Demo input = 0
 $91:8386 9C 86 0A    STZ $0A86  [$7E:0A86]  ; Demo newly pressed input = 0
 $91:8389 9C 8C 0A    STZ $0A8C  [$7E:0A8C]  ; Previous demo input = 0
@@ -750,7 +750,8 @@ $91:8394 6B          RTL
 ;;; $8395: Load demo input object ;;;
 {
 ;; Parameters:
-;;     A/Y: Pointer to demo input object
+;;     A: Initialisation parameter
+;;     Y: Pointer to demo input object
 $91:8395 08          PHP
 $91:8396 8B          PHB
 $91:8397 4B          PHK                    ;\
@@ -766,7 +767,7 @@ $91:83A9 8D 7E 0A    STA $0A7E  [$7E:0A7E]  ;} Demo input instruction list point
 $91:83AC A9 01 00    LDA #$0001             ;\
 $91:83AF 8D 7C 0A    STA $0A7C  [$7E:0A7C]  ;} Demo input instruction timer = 1
 $91:83B2 A9 00 00    LDA #$0000             ;\
-$91:83B5 8D 80 0A    STA $0A80  [$7E:0A80]  ;} $0A80 = 0
+$91:83B5 8D 80 0A    STA $0A80  [$7E:0A80]  ;} Demo input timer = 0
 $91:83B8 FC 00 00    JSR ($0000,x)[$91:83BF]; Execute [[X]] (RTS)
 $91:83BB FA          PLX
 $91:83BC AB          PLB
@@ -791,18 +792,18 @@ $91:83C4 C2 30       REP #$30
 $91:83C6 2C 88 0A    BIT $0A88  [$7E:0A88]  ;\
 $91:83C9 10 24       BPL $24    [$83EF]     ;} If demo input not enabled: return
 $91:83CB AD 7E 0A    LDA $0A7E  [$7E:0A7E]  ;\
-$91:83CE F0 1F       BEQ $1F    [$83EF]     ;} If [game controlled input instruction list pointer] = 0: return
+$91:83CE F0 1F       BEQ $1F    [$83EF]     ;} If [demo input instruction list pointer] = 0: return
 $91:83D0 20 F2 83    JSR $83F2  [$91:83F2]  ; Process demo input object
 $91:83D3 AD 8C 0A    LDA $0A8C  [$7E:0A8C]  ;\
-$91:83D6 8D FE 0D    STA $0DFE  [$7E:0DFE]  ;} Previous controller 1 input = [previous game controlled input]
+$91:83D6 8D FE 0D    STA $0DFE  [$7E:0DFE]  ;} Previous controller 1 input = [previous demo input]
 $91:83D9 AD 8E 0A    LDA $0A8E  [$7E:0A8E]  ;\
-$91:83DC 8D 00 0E    STA $0E00  [$7E:0E00]  ;} Previous newly pressed controller 1 input = [previous game controlled newly pressed input]
+$91:83DC 8D 00 0E    STA $0E00  [$7E:0E00]  ;} Previous newly pressed controller 1 input = [previous demo newly pressed input]
 $91:83DF AD 84 0A    LDA $0A84  [$7E:0A84]  ;\
-$91:83E2 85 8B       STA $8B    [$7E:008B]  ;} Controller 1 input = [game controlled input]
-$91:83E4 8D 8C 0A    STA $0A8C  [$7E:0A8C]  ; Previous game controlled input = [game controlled input]
+$91:83E2 85 8B       STA $8B    [$7E:008B]  ;} Controller 1 input = [demo input]
+$91:83E4 8D 8C 0A    STA $0A8C  [$7E:0A8C]  ; Previous demo input = [demo input]
 $91:83E7 AD 86 0A    LDA $0A86  [$7E:0A86]  ;\
-$91:83EA 85 8F       STA $8F    [$7E:008F]  ;} Newly pressed controller 1 input = [game controlled newly pressed input]
-$91:83EC 8D 8E 0A    STA $0A8E  [$7E:0A8E]  ; Previous game controlled newly pressed input = [game controlled newly pressed input]
+$91:83EA 85 8F       STA $8F    [$7E:008F]  ;} Newly pressed controller 1 input = [demo newly pressed input]
+$91:83EC 8D 8E 0A    STA $0A8E  [$7E:0A8E]  ; Previous demo newly pressed input = [demo newly pressed input]
 
 $91:83EF AB          PLB
 $91:83F0 28          PLP
@@ -812,46 +813,47 @@ $91:83F1 6B          RTL
 
 ;;; $83F2: Process demo input object ;;;
 {
-$91:83F2 A2 00 00    LDX #$0000
-$91:83F5 FC 7A 0A    JSR ($0A7A,x)[$91:83BF]
-$91:83F8 CE 7C 0A    DEC $0A7C  [$7E:0A7C]
-$91:83FB D0 29       BNE $29    [$8426]
-$91:83FD AC 7E 0A    LDY $0A7E  [$7E:0A7E]
+$91:83F2 A2 00 00    LDX #$0000             ;\
+$91:83F5 FC 7A 0A    JSR ($0A7A,x)[$91:83BF];} Execute [demo input pre-instruction]
+$91:83F8 CE 7C 0A    DEC $0A7C  [$7E:0A7C]  ; Decrement demo input instruction timer
+$91:83FB D0 29       BNE $29    [$8426]     ; If [demo input instruction timer] != 0: return
+$91:83FD AC 7E 0A    LDY $0A7E  [$7E:0A7E]  ; Y = [demo input instruction list pointer]
 
-$91:8400 B9 00 00    LDA $0000,y[$91:8694]
-$91:8403 10 0A       BPL $0A    [$840F]
-$91:8405 85 12       STA $12    [$7E:0012]
-$91:8407 C8          INY
-$91:8408 C8          INY
-$91:8409 F4 FF 83    PEA $83FF
-$91:840C 6C 12 00    JMP ($0012)[$91:8739]
+; LOOP
+$91:8400 B9 00 00    LDA $0000,y[$91:8694]  ;\
+$91:8403 10 0A       BPL $0A    [$840F]     ;} If [[Y]] & 8000h != 0:
+$91:8405 85 12       STA $12    [$7E:0012]  ; $12 = [[Y]]
+$91:8407 C8          INY                    ;\
+$91:8408 C8          INY                    ;} Y += 2
+$91:8409 F4 FF 83    PEA $83FF              ; Return to LOOP
+$91:840C 6C 12 00    JMP ($0012)[$91:8739]  ; Go to [$12]
 
-$91:840F 8D 7C 0A    STA $0A7C  [$7E:0A7C]
-$91:8412 B9 02 00    LDA $0002,y[$91:8696]
-$91:8415 8D 84 0A    STA $0A84  [$7E:0A84]
-$91:8418 B9 04 00    LDA $0004,y[$91:8698]
-$91:841B 8D 86 0A    STA $0A86  [$7E:0A86]
-$91:841E 98          TYA
-$91:841F 18          CLC
-$91:8420 69 06 00    ADC #$0006
-$91:8423 8D 7E 0A    STA $0A7E  [$7E:0A7E]
+$91:840F 8D 7C 0A    STA $0A7C  [$7E:0A7C]  ; Demo input instruction timer = [[Y]]
+$91:8412 B9 02 00    LDA $0002,y[$91:8696]  ;\
+$91:8415 8D 84 0A    STA $0A84  [$7E:0A84]  ;} Demo input [[Y] + 2]
+$91:8418 B9 04 00    LDA $0004,y[$91:8698]  ;\
+$91:841B 8D 86 0A    STA $0A86  [$7E:0A86]  ;} Demo newly pressed input [[Y] + 4]
+$91:841E 98          TYA                    ;\
+$91:841F 18          CLC                    ;|
+$91:8420 69 06 00    ADC #$0006             ;} Demo input instruction list pointer = [Y] + 6
+$91:8423 8D 7E 0A    STA $0A7E  [$7E:0A7E]  ;/
 
 $91:8426 60          RTS
 }
 
 
-;;; $8427:  ;;;
+;;; $8427: Instruction - delete ;;;
 {
 $91:8427 C2 30       REP #$30
-$91:8429 9C 7E 0A    STZ $0A7E  [$7E:0A7E]
-$91:842C 9C 84 0A    STZ $0A84  [$7E:0A84]
-$91:842F 9C 86 0A    STZ $0A86  [$7E:0A86]
-$91:8432 68          PLA
+$91:8429 9C 7E 0A    STZ $0A7E  [$7E:0A7E]  ; Demo input instruction list pointer = 0
+$91:842C 9C 84 0A    STZ $0A84  [$7E:0A84]  ; Demo input = 0
+$91:842F 9C 86 0A    STZ $0A86  [$7E:0A86]  ; Demo newly pressed input = 0
+$91:8432 68          PLA                    ; Terminate processing demo input object
 $91:8433 60          RTS
 }
 
 
-;;; $8434:  ;;;
+;;; $8434: Instruction - pre-instruction = [[Y]] ;;;
 {
 $91:8434 C2 30       REP #$30
 $91:8436 B9 00 00    LDA $0000,y
@@ -862,7 +864,7 @@ $91:843E 60          RTS
 }
 
 
-;;; $843F:  ;;;
+;;; $843F: Instruction - clear pre-instruction ;;;
 {
 $91:843F C2 30       REP #$30
 $91:8441 A9 47 84    LDA #$8447
@@ -871,7 +873,7 @@ $91:8447 60          RTS
 }
 
 
-;;; $8448:  ;;;
+;;; $8448: Instruction - go to [[Y]] ;;;
 {
 $91:8448 C2 30       REP #$30
 $91:844A B9 00 00    LDA $0000,y[$91:8621]
@@ -880,7 +882,7 @@ $91:844E 60          RTS
 }
 
 
-;;; $844F:  ;;;
+;;; $844F: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
 $91:844F C2 30       REP #$30
 $91:8451 CE 80 0A    DEC $0A80  [$7E:0A80]
@@ -891,7 +893,7 @@ $91:8458 60          RTS
 }
 
 
-;;; $8459:  ;;;
+;;; $8459: Instruction - timer = [[Y]] ;;;
 {
 $91:8459 C2 30       REP #$30
 $91:845B B9 00 00    LDA $0000,y
@@ -911,43 +913,43 @@ $91:8466 4B          PHK                    ;\
 $91:8467 AB          PLB                    ;} DB = $91
 $91:8468 C2 30       REP #$30
 $91:846A AD 8A 0A    LDA $0A8A  [$7E:0A8A]  ;\
-$91:846D 29 FF 7F    AND #$7FFF             ;} $0E24 = [$0A8A] (frames of saved demo input)
+$91:846D 29 FF 7F    AND #$7FFF             ;} $0E24 = [recorded demo duration] & 7FFFh
 $91:8470 8D 24 0E    STA $0E24  [$7E:0E24]  ;/
 $91:8473 A9 E0 00    LDA #$00E0             ;\
 $91:8476 8D 20 0E    STA $0E20  [$7E:0E20]  ;} $0E20 = E0h (X position)
 $91:8479 A9 38 00    LDA #$0038             ;\
 $91:847C 8D 22 0E    STA $0E22  [$7E:0E22]  ;} $0E22 = 38h (Y position)
-$91:847F 20 2F 85    JSR $852F  [$91:852F]  ; Draw demo recorder frame counter
+$91:847F 20 2F 85    JSR $852F  [$91:852F]  ; Draw recorded demo duration
 $91:8482 AD 8A 0A    LDA $0A8A  [$7E:0A8A]  ;\
-$91:8485 30 4B       BMI $4B    [$84D2]     ;} If termination flag set: return
-$91:8487 D0 07       BNE $07    [$8490]     ;\
-$91:8489 A5 91       LDA $91    [$7E:0091]  ;|
-$91:848B 89 00 40    BIT #$4000             ;} If [$0A8A] = 0 and controller 2 not newly pressed Y: return
+$91:8485 30 4B       BMI $4B    [$84D2]     ;} If demo is not being recorded: return
+$91:8487 D0 07       BNE $07    [$8490]     ; If [recorded demo duration] = 0:
+$91:8489 A5 91       LDA $91    [$7E:0091]  ;\
+$91:848B 89 00 40    BIT #$4000             ;} If controller 2 not newly pressed Y: return
 $91:848E F0 42       BEQ $42    [$84D2]     ;/
 
 $91:8490 AD 8A 0A    LDA $0A8A  [$7E:0A8A]  ;\
 $91:8493 0A          ASL A                  ;|
 $91:8494 0A          ASL A                  ;|
-$91:8495 85 12       STA $12    [$7E:0012]  ;} X = [$0A8A] * 0Ch
+$91:8495 85 12       STA $12    [$7E:0012]  ;} X = [recorded demo duration] * Ch
 $91:8497 0A          ASL A                  ;|
 $91:8498 65 12       ADC $12    [$7E:0012]  ;|
 $91:849A AA          TAX                    ;/
 $91:849B A5 8B       LDA $8B    [$7E:008B]  ;\
 $91:849D 9F 00 80 B8 STA $B88000,x          ;} $B8:8000 + [X] = [controller 1 input]
 $91:84A1 A5 8F       LDA $8F    [$7E:008F]  ;\
-$91:84A3 9F 02 80 B8 STA $B88002,x          ;} $B8:8002 + [X] = [newly pressed controller 1 input]
+$91:84A3 9F 02 80 B8 STA $B88002,x          ;} $B8:8000 + [X] + 2 = [newly pressed controller 1 input]
 $91:84A7 AD 11 09    LDA $0911  [$7E:0911]  ;\
-$91:84AA 9F 04 80 B8 STA $B88004,x          ;} $B8:8004 + [X] = [layer 1 X position]
+$91:84AA 9F 04 80 B8 STA $B88004,x          ;} $B8:8000 + [X] + 4 = [layer 1 X position]
 $91:84AE AD 15 09    LDA $0915  [$7E:0915]  ;\
-$91:84B1 9F 06 80 B8 STA $B88006,x          ;} $B8:8006 + [X] = [layer 1 X position]
+$91:84B1 9F 06 80 B8 STA $B88006,x          ;} $B8:8000 + [X] + 6 = [layer 1 X position]
 $91:84B5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$91:84B8 9F 08 80 B8 STA $B88008,x          ;} $B8:8008 + [X] = [Samus X position]
+$91:84B8 9F 08 80 B8 STA $B88008,x          ;} $B8:8000 + [X] + 8 = [Samus X position]
 $91:84BC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$91:84BF 9F 0A 80 B8 STA $B8800A,x          ;} $B8:800A + [X] = [Samus Y position]
+$91:84BF 9F 0A 80 B8 STA $B8800A,x          ;} $B8:8000 + [X] + Ah = [Samus Y position]
 $91:84C3 AD 8A 0A    LDA $0A8A  [$7E:0A8A]  ;\
 $91:84C6 1A          INC A                  ;|
 $91:84C7 C9 00 0A    CMP #$0A00             ;|
-$91:84CA D0 03       BNE $03    [$84CF]     ;} $0A8A = ([$0A8A] + 1) % A00h
+$91:84CA D0 03       BNE $03    [$84CF]     ;} Recorded demo duration = ([recorded demo duration] + 1) % A00h
 $91:84CC A9 00 00    LDA #$0000             ;|
                                             ;|
 $91:84CF 8D 8A 0A    STA $0A8A  [$7E:0A8A]  ;/
@@ -973,14 +975,14 @@ $91:84E0 F0 3D       BEQ $3D    [$851F]     ;/
 $91:84E2 AD 8A 0A    LDA $0A8A  [$7E:0A8A]  ;\
 $91:84E5 0A          ASL A                  ;|
 $91:84E6 0A          ASL A                  ;|
-$91:84E7 85 12       STA $12    [$7E:0012]  ;} X = [$0A8A] * 0Ch
+$91:84E7 85 12       STA $12    [$7E:0012]  ;} X = [recorded demo duration] * Ch
 $91:84E9 0A          ASL A                  ;|
 $91:84EA 65 12       ADC $12    [$7E:0012]  ;|
 $91:84EC AA          TAX                    ;/
 $91:84ED A9 FF FF    LDA #$FFFF             ;\
 $91:84F0 9F 00 80 B8 STA $B88000,x          ;|
 $91:84F4 9F 02 80 B8 STA $B88002,x          ;|
-$91:84F8 9F 04 80 B8 STA $B88004,x          ;} ($B8:8000 + [X]) .. ($B8:800B + [X]) = FFFFh
+$91:84F8 9F 04 80 B8 STA $B88004,x          ;} Write Ch bytes of FFFFh to $B8:8000 + [X]
 $91:84FC 9F 06 80 B8 STA $B88006,x          ;|
 $91:8500 9F 08 80 B8 STA $B88008,x          ;|
 $91:8504 9F 0A 80 B8 STA $B8800A,x          ;/
@@ -989,14 +991,14 @@ $91:850B 8F 00 FF B8 STA $B8FF00[$B8:FF00]  ;} $B8:FF00 = [door BTS]
 $91:850F AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $91:8512 8F 02 FF B8 STA $B8FF02[$B8:FF02]  ;} $B8:FF02 = [area index]
 $91:8516 AD 8A 0A    LDA $0A8A  [$7E:0A8A]  ;\
-$91:8519 09 00 80    ORA #$8000             ;} Set termination flag
+$91:8519 09 00 80    ORA #$8000             ;} Set demo as not being recorded
 $91:851C 8D 8A 0A    STA $0A8A  [$7E:0A8A]  ;/
 
 $91:851F A5 91       LDA $91    [$7E:0091]  ;\
 $91:8521 89 80 00    BIT #$0080             ;} If controller 2 newly pressed A:
 $91:8524 F0 06       BEQ $06    [$852C]     ;/
 $91:8526 A9 00 00    LDA #$0000             ;\
-$91:8529 8D 8A 0A    STA $0A8A  [$7E:0A8A]  ;} $0A8A = 0
+$91:8529 8D 8A 0A    STA $0A8A  [$7E:0A8A]  ;} Recorded demo duration = 0
 
 $91:852C AB          PLB
 $91:852D 28          PLP
@@ -1004,78 +1006,82 @@ $91:852E 6B          RTL
 }
 
 
-;;; $852F: Draw demo recorder frame counter ;;;
+;;; $852F: Draw recorded demo duration ;;;
 {
+;; Parameters:
+;;     $0E20: X position
+;;     $0E22: Y position
+;;     $0E24: Recorded demo duration
 $91:852F AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
 $91:8532 18          CLC                    ;|
-$91:8533 69 00 00    ADC #$0000             ;} $14 = [$0E20]
+$91:8533 69 00 00    ADC #$0000             ;} $14 = [$0E20] (X position)
 $91:8536 85 14       STA $14    [$7E:0014]  ;/
 $91:8538 AD 22 0E    LDA $0E22  [$7E:0E22]  ;\
 $91:853B 18          CLC                    ;|
-$91:853C 69 00 00    ADC #$0000             ;} $12 = [$0E22]
+$91:853C 69 00 00    ADC #$0000             ;} $12 = [$0E22] (Y position)
 $91:853F 85 12       STA $12    [$7E:0012]  ;/
 $91:8541 A9 00 0A    LDA #$0A00             ;\
-$91:8544 85 26       STA $26    [$7E:0026]  ;} $26 = A00h
+$91:8544 85 26       STA $26    [$7E:0026]  ;} $26 = 00h (palette 5)
 $91:8546 AD 24 0E    LDA $0E24  [$7E:0E24]  ;\
 $91:8549 29 00 F0    AND #$F000             ;|
 $91:854C EB          XBA                    ;|
 $91:854D 4A          LSR A                  ;|
-$91:854E 4A          LSR A                  ;} A = [$0E24] first digit + 4
+$91:854E 4A          LSR A                  ;} A = 4 + [$0E24] / 1000h (first digit)
 $91:854F 4A          LSR A                  ;|
 $91:8550 4A          LSR A                  ;|
 $91:8551 18          CLC                    ;|
 $91:8552 69 04 00    ADC #$0004             ;/
-$91:8555 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Graphics
+$91:8555 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Add debug spritemap to OAM
 $91:8559 AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
 $91:855C 18          CLC                    ;|
-$91:855D 69 08 00    ADC #$0008             ;} $14 = [$0E20] + 8
+$91:855D 69 08 00    ADC #$0008             ;} $14 = [$0E20] + 8 (X position)
 $91:8560 85 14       STA $14    [$7E:0014]  ;/
 $91:8562 AD 22 0E    LDA $0E22  [$7E:0E22]  ;\
 $91:8565 18          CLC                    ;|
-$91:8566 69 00 00    ADC #$0000             ;} $12 = [$0E22]
+$91:8566 69 00 00    ADC #$0000             ;} $12 = [$0E22] (Y position)
 $91:8569 85 12       STA $12    [$7E:0012]  ;/
 $91:856B A9 00 0A    LDA #$0A00             ;\
-$91:856E 85 26       STA $26    [$7E:0026]  ;} $26 = 0A00h
+$91:856E 85 26       STA $26    [$7E:0026]  ;} $26 = A00h (palette 5)
 $91:8570 AD 24 0E    LDA $0E24  [$7E:0E24]  ;\
 $91:8573 29 00 0F    AND #$0F00             ;|
-$91:8576 EB          XBA                    ;} A = [$0E24] second digit + 4
+$91:8576 EB          XBA                    ;} A = 4 + [$0E24] / 10h % Fh (second digit)
 $91:8577 18          CLC                    ;|
 $91:8578 69 04 00    ADC #$0004             ;/
-$91:857B 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Graphics
+$91:857B 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Add debug spritemap to OAM
 $91:857F AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
 $91:8582 18          CLC                    ;|
-$91:8583 69 10 00    ADC #$0010             ;} $14 = [$0E20] + 10h
+$91:8583 69 10 00    ADC #$0010             ;} $14 = [$0E20] + 100h (X position)
 $91:8586 85 14       STA $14    [$7E:0014]  ;/
 $91:8588 AD 22 0E    LDA $0E22  [$7E:0E22]  ;\
 $91:858B 18          CLC                    ;|
-$91:858C 69 00 00    ADC #$0000             ;} $12 = [$0E22]
+$91:858C 69 00 00    ADC #$0000             ;} $12 = [$0E22] (Y position)
 $91:858F 85 12       STA $12    [$7E:0012]  ;/
 $91:8591 A9 00 0A    LDA #$0A00             ;\
-$91:8594 85 26       STA $26    [$7E:0026]  ;} $26 = 0A00h
+$91:8594 85 26       STA $26    [$7E:0026]  ;} $26 = A00h (palette 5)
 $91:8596 AD 24 0E    LDA $0E24  [$7E:0E24]  ;\
 $91:8599 29 F0 00    AND #$00F0             ;|
 $91:859C 4A          LSR A                  ;|
 $91:859D 4A          LSR A                  ;|
-$91:859E 4A          LSR A                  ;} A = [$0E24] third digit + 4
+$91:859E 4A          LSR A                  ;} A = 4 + [$0E24] / 10h % Fh (third digit)
 $91:859F 4A          LSR A                  ;|
 $91:85A0 18          CLC                    ;|
 $91:85A1 69 04 00    ADC #$0004             ;/
-$91:85A4 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Graphics
+$91:85A4 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Add debug spritemap to OAM
 $91:85A8 AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
 $91:85AB 18          CLC                    ;|
-$91:85AC 69 18 00    ADC #$0018             ;} $14 = [$0E20] + 18h
+$91:85AC 69 18 00    ADC #$0018             ;} $14 = [$0E20] + 18h (X position)
 $91:85AF 85 14       STA $14    [$7E:0014]  ;/
 $91:85B1 A9 00 0A    LDA #$0A00             ;\
 $91:85B4 85 26       STA $26    [$7E:0026]  ;|
-$91:85B6 AD 22 0E    LDA $0E22  [$7E:0E22]  ;} $12 = [$0E22]
+$91:85B6 AD 22 0E    LDA $0E22  [$7E:0E22]  ;} $12 = [$0E22] (Y position)
 $91:85B9 18          CLC                    ;/
 $91:85BA 69 00 00    ADC #$0000             ;\
-$91:85BD 85 12       STA $12    [$7E:0012]  ;} $26 = 0A00h
+$91:85BD 85 12       STA $12    [$7E:0012]  ;} $26 = A00h (palette 5)
 $91:85BF AD 24 0E    LDA $0E24  [$7E:0E24]  ;\
 $91:85C2 29 0F 00    AND #$000F             ;|
-$91:85C5 18          CLC                    ;} A = [$0E24] fourth digit + 4
+$91:85C5 18          CLC                    ;} A = 4 + [$0E24] % Fh (fourth digit)
 $91:85C6 69 04 00    ADC #$0004             ;/
-$91:85C9 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Graphics
+$91:85C9 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ; Add debug spritemap to OAM
 $91:85CD 60          RTS
 }
 
@@ -1088,7 +1094,7 @@ $91:85CE             dw 001E,0000,0000, 0001,0200,0200, 001A,0200,0000, 0001,028
 }
 
 
-;;; $85FC:  ;;;
+;;; $85FC: Instruction ;;;
 {
 $91:85FC A9 95 E6    LDA #$E695             ;\
 $91:85FF 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
@@ -1237,8 +1243,8 @@ $91:8776             dw 8427
 ;                       |    |     ___ Pointer to input instruction list
 ;                       |    |    |
 $91:8778             dw 83BF,83BF,85CE
-$91:877E             dw 83BF,864F,860D
-$91:8784             dw 83BF,83BF,8694
+$91:877E             dw 83BF,864F,860D ; Baby metroid discovery
+$91:8784             dw 83BF,83BF,8694 ; Old Mother Brain fight
 $91:878A             dw 83BF,83BF,86B8
 }
 
@@ -1283,8 +1289,8 @@ $91:87E2 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
 $91:87E6 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
 $91:87EA FA          PLX
 $91:87EB BD 0E 00    LDA $000E,x[$91:889B]  ;\
-$91:87EE A8          TAY                    ;} Y = A = [[X] + Eh]
-$91:87EF 22 95 83 91 JSL $918395[$91:8395]  ; Load demo input object
+$91:87EE A8          TAY                    ;} Load demo input object [[X] + Eh]
+$91:87EF 22 95 83 91 JSL $918395[$91:8395]  ;/
 $91:87F3 AD 57 1F    LDA $1F57  [$7E:1F57]  ;\
 $91:87F6 0A          ASL A                  ;|
 $91:87F7 85 12       STA $12    [$7E:0012]  ;|
@@ -11124,7 +11130,7 @@ $91:EE89 8D 56 0A    STA $0A56  [$7E:0A56]  ;/
 $91:EE8C A9 25 E0    LDA #$E025             ;\
 $91:EE8F 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $E025 (bomb jump - start)
 $91:EE92 AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$91:EE95 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (game controlled):
+$91:EE95 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $91:EE98 F0 06       BEQ $06    [$EEA0]     ;/
 $91:EE9A A9 0E E9    LDA #$E90E             ;\
 $91:EE9D 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
@@ -11848,7 +11854,7 @@ $91:F335 A9 02 00    LDA #$0002             ;\
 $91:F338 8D 36 0B    STA $0B36  [$7E:0B36]  ;} Samus Y direction = down
 $91:F33B 22 7E EC 90 JSL $90EC7E[$90:EC7E]  ; Align Samus bottom position with previous pose
 $91:F33F AD 60 0A    LDA $0A60  [$7E:0A60]  ;\
-$91:F342 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (game controlled):
+$91:F342 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != $E91D (demo):
 $91:F345 F0 06       BEQ $06    [$F34D]     ;/
 $91:F347 A9 13 E9    LDA #$E913             ;\
 $91:F34A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
