@@ -11258,16 +11258,16 @@ $88:EC13             db 17,02, ; Enable colour math on BG2
 {
 $88:EC1D 08          PHP
 $88:EC1E C2 30       REP #$30
-$88:EC20 AD 4B 1A    LDA $1A4B  [$7E:1A4B]
-$88:EC23 C9 01 00    CMP #$0001
-$88:EC26 D0 11       BNE $11    [$EC39]
+$88:EC20 AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
+$88:EC23 C9 01 00    CMP #$0001             ;} If [$1A4B] = 1:
+$88:EC26 D0 11       BNE $11    [$EC39]     ;/
 $88:EC28 AE B2 18    LDX $18B2  [$7E:18B2]
-$88:EC2B BD CC 18    LDA $18CC,x[$7E:18CC]
-$88:EC2E 1A          INC A
-$88:EC2F 1A          INC A
-$88:EC30 9D CC 18    STA $18CC,x[$7E:18CC]
-$88:EC33 A9 01 00    LDA #$0001
-$88:EC36 9D E4 18    STA $18E4,x[$7E:18E4]
+$88:EC2B BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
+$88:EC2E 1A          INC A                  ;|
+$88:EC2F 1A          INC A                  ;} HDMA object instruction list pointer += 2
+$88:EC30 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
+$88:EC33 A9 01 00    LDA #$0001             ;\
+$88:EC36 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
 
 $88:EC39 28          PLP
 $88:EC3A 6B          RTL

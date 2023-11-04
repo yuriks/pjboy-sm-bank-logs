@@ -2553,8 +2553,8 @@ $A3:A314 60          RTS
 ;;; $A315:  ;;;
 {
 $A3:A315 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:A318 A9 0B 00    LDA #$000B
-$A3:A31B 8D E5 05    STA $05E5  [$7E:05E5]
+$A3:A318 A9 0B 00    LDA #$000B             ;\
+$A3:A31B 8D E5 05    STA $05E5  [$7E:05E5]  ;} Random number = Bh
 $A3:A31E A9 F0 A4    LDA #$A4F0
 $A3:A321 9D AA 0F    STA $0FAA,x
 $A3:A324 60          RTS
@@ -2566,8 +2566,8 @@ $A3:A324 60          RTS
 $A3:A325 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A328 A9 00 02    LDA #$0200
 $A3:A32B 9D A8 0F    STA $0FA8,x
-$A3:A32E A9 0B 00    LDA #$000B
-$A3:A331 8D E5 05    STA $05E5  [$7E:05E5]
+$A3:A32E A9 0B 00    LDA #$000B             ;\
+$A3:A331 8D E5 05    STA $05E5  [$7E:05E5]  ;} Random number = Bh
 $A3:A334 A9 B6 A4    LDA #$A4B6
 $A3:A337 9D AA 0F    STA $0FAA,x
 $A3:A33A 60          RTS
