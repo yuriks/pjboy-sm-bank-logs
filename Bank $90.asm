@@ -924,9 +924,9 @@ $90:852B 60          RTS
 ;     Else:
 ;         Decrement speed boost timer
 ;         If [speed boost timer] = 0:
-;             If [speed booster counter] != 4:
-;                 Increment speed booster counter
-;                 If [speed booster counter] = 4:
+;             If [speed boost counter] != 4:
+;                 Increment speed boost counter
+;                 If [speed boost counter] = 4:
 ;                     Play speed echo sound effect
 ;                     BUG: This overwrites A with the number of sounds queued if the queue is not full
 ;                          Causing the index for the $91:B61F table to be 5 sometimes, which greater than the table size,
@@ -3752,7 +3752,7 @@ $90:9799 8D 3C 0B    STA $0B3C  [$7E:0B3C]  ;} Samus running momentum flag = 1
 $90:979C 8D D0 0A    STA $0AD0  [$7E:0AD0]  ; $0AD0 = 1
 $90:979F 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Special Samus palette frame = 0
 $90:97A2 AF 1F B6 91 LDA $91B61F[$91:B61F]  ;\
-$90:97A6 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;} Speed boost timer = 1, speed booster counter = 0
+$90:97A6 8D 3E 0B    STA $0B3E  [$7E:0B3E]  ;} Speed boost timer = 1, speed boost counter = 0
 
 $90:97A9 AD 42 0B    LDA $0B42  [$7E:0B42]  ;\
 $90:97AC DD 0D 9F    CMP $9F0D,x[$90:9F0D]  ;|
@@ -3771,7 +3771,7 @@ $90:97C7 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
 $90:97CA D0 09       BNE $09    [$97D5]     ;} If [Samus running momentum flag] = 0:
 $90:97CC A9 01 00    LDA #$0001             ;\
 $90:97CF 8D 3C 0B    STA $0B3C  [$7E:0B3C]  ;} Samus running momentum flag = 1
-$90:97D2 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost timer = 0, speed booster counter = 0
+$90:97D2 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost timer = 0, speed boost counter = 0
 
 $90:97D5 AD 42 0B    LDA $0B42  [$7E:0B42]  ;\
 $90:97D8 DD 19 9F    CMP $9F19,x[$90:9F19]  ;|
@@ -3804,7 +3804,7 @@ $90:9810 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
 ; BRANCH_DONE
 $90:9813 AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
 $90:9816 29 00 FF    AND #$FF00             ;|
-$90:9819 C9 00 04    CMP #$0400             ;} If [speed booster counter] = 4:
+$90:9819 C9 00 04    CMP #$0400             ;} If [speed boost counter] = 4:
 $90:981C D0 06       BNE $06    [$9824]     ;/
 $90:981E A9 01 00    LDA #$0001             ;\
 $90:9821 8D 6E 0A    STA $0A6E  [$7E:0A6E]  ;} Samus contact damage index = speed boosting
@@ -11575,7 +11575,7 @@ $90:D2FA 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:D2FD 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:D300 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
 $90:D303 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
-$90:D306 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed booster counter = 0, speed boost timer = 0
+$90:D306 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; speed boost counter = 0, speed boost timer = 0
 $90:D309 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
 $90:D30C 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
 $90:D30F A9 46 D3    LDA #$D346             ;\

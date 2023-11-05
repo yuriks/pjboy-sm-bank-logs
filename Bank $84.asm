@@ -237,7 +237,7 @@ $84:8319 60          RTS
 }
 
 
-;;; $831A: Load x-ray blocks ;;;
+;;; $831A: Load item x-ray blocks (also load room special x-ray blocks) ;;;
 {
 ; Note that any new PLMs created in the free space in this bank will be considered to be an "item PLM",
 ; meaning the PLM argument specified in the PLM populations will be used as a unique ID in the picked up items table ($7E:D870)
@@ -250,9 +250,9 @@ $84:831B 8B          PHB
 $84:831C C2 30       REP #$30
 $84:831E DA          PHX
 $84:831F 5A          PHY
-$84:8320 4B          PHK
-$84:8321 AB          PLB
-$84:8322 A2 4E 00    LDX #$004E             ; X = 4Eh
+$84:8320 4B          PHK                    ;\
+$84:8321 AB          PLB                    ;} DB = $84
+$84:8322 A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
 ; LOOP_PLM
 $84:8325 BD 37 1C    LDA $1C37,x[$7E:1C85]  ;\
@@ -274,7 +274,7 @@ $84:834B BE 9D 83    LDX $839D,y[$84:83A7]  ;} A = [[$839D + [PLM item GFX index
 $84:834E BD 02 00    LDA $0002,x[$84:A2F3]  ;|
 $84:8351 29 FF 0F    AND #$0FFF             ;/
 $84:8354 AE 29 1C    LDX $1C29  [$7E:1C29]  ;\
-$84:8357 AC 2B 1C    LDY $1C2B  [$7E:1C2B]  ;} Load block [A] to x-ray tilemap at ([PLM X block], [PLM Y block])
+$84:8357 AC 2B 1C    LDY $1C2B  [$7E:1C2B]  ;} Load block [A] to x-ray BG2 tilemap at ([PLM X block], [PLM Y block])
 $84:835A 22 4C D0 91 JSL $91D04C[$91:D04C]  ;/
 $84:835E FA          PLX
 
@@ -298,7 +298,7 @@ $84:837F 85 14       STA $14    [$7E:0014]  ;/
 $84:8381 DA          PHX
 $84:8382 BF 02 00 8F LDA $8F0002,x          ; A = [$8F:0000 + [X] + 2]
 $84:8386 A6 12       LDX $12    [$7E:0012]  ;\
-$84:8388 A4 14       LDY $14    [$7E:0014]  ;} Load block [A] to x-ray tilemap at ([$12], [$14])
+$84:8388 A4 14       LDY $14    [$7E:0014]  ;} Load block [A] to x-ray BG2 tilemap at ([$12], [$14])
 $84:838A 22 4C D0 91 JSL $91D04C[$91:D04C]  ;/
 $84:838E FA          PLX
 $84:838F 8A          TXA                    ;\

@@ -146,7 +146,7 @@ $91:80A8 E9 05 00    SBC #$0005             ;} Samus previous Y position -= 5
 $91:80AB 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
 $91:80AE 80 04       BRA $04    [$80B4]
                                             ; Else (time is frozen):
-$91:80B0 22 AF FC 91 JSL $91FCAF[$91:FCAF]  ; Execute $91:FCAF
+$91:80B0 22 AF FC 91 JSL $91FCAF[$91:FCAF]  ; X-ray Samus pose input handler
 
 $91:80B4 28          PLP
 $91:80B5 60          RTS
@@ -1021,7 +1021,7 @@ $91:853B 18          CLC                    ;|
 $91:853C 69 00 00    ADC #$0000             ;} $12 = [$0E22] (Y position)
 $91:853F 85 12       STA $12    [$7E:0012]  ;/
 $91:8541 A9 00 0A    LDA #$0A00             ;\
-$91:8544 85 26       STA $26    [$7E:0026]  ;} $26 = 00h (palette 5)
+$91:8544 85 26       STA $26    [$7E:0026]  ;} $26 = A00h (palette 5)
 $91:8546 AD 24 0E    LDA $0E24  [$7E:0E24]  ;\
 $91:8549 29 00 F0    AND #$F000             ;|
 $91:854C EB          XBA                    ;|
@@ -1234,7 +1234,7 @@ $91:8726 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:8729 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
 $91:872C 22 5F 83 91 JSL $91835F[$91:835F]  ; Disable demo input
 $91:8730 A9 0E E9    LDA #$E90E             ;\
-$91:8733 
+$91:8733 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = RTS
 $91:8736 7A          PLY
 $91:8737 FA          PLX
 $91:8738 60          RTS
@@ -7232,14 +7232,14 @@ $91:CAFC A9 01       LDA #$01               ;\
 $91:CAFE 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Time is frozen flag = x-ray is active
 $91:CB01 A5 B5       LDA $B5    [$7E:00B5]  ;\
 $91:CB03 9D 14 19    STA $1914,x[$7E:1918]  ;|
-$91:CB06 A5 B6       LDA $B6    [$7E:00B6]  ;} Backup BG2 X scroll
+$91:CB06 A5 B6       LDA $B6    [$7E:00B6]  ;} HDMA object backup BG2 X scroll = [BG2 X scroll]
 $91:CB08 9D 15 19    STA $1915,x[$7E:1919]  ;/
 $91:CB0B A5 B7       LDA $B7    [$7E:00B7]  ;\
 $91:CB0D 9D 20 19    STA $1920,x[$7E:1924]  ;|
-$91:CB10 A5 B8       LDA $B8    [$7E:00B8]  ;} Backup BG2 Y scroll
+$91:CB10 A5 B8       LDA $B8    [$7E:00B8]  ;} HDMA object backup BG2 Y scroll = [BG2 Y scroll]
 $91:CB12 9D 21 19    STA $1921,x[$7E:1925]  ;/
 $91:CB15 A5 59       LDA $59    [$7E:0059]  ;\
-$91:CB17 9D 2C 19    STA $192C,x[$7E:1930]  ;} Backup BG2 address/size
+$91:CB17 9D 2C 19    STA $192C,x[$7E:1930]  ;} HDMA object backup BG2 tilemap base address and size = [BG2 tilemap base address and size]
 $91:CB1A 28          PLP
 $91:CB1B 6B          RTL
 }
@@ -7305,7 +7305,7 @@ $91:CB8D 6B          RTL
 }
 
 
-;;; $CB8E: X-ray setup stage 4 ;;;
+;;; $CB8E: X-ray setup stage 4 - build x-ray BG2 tilemap, read BG2 tilemap - 1st screen ;;;
 {
 ; Calls the $84 X-ray block graphics lookup
 $91:CB8E 08          PHP
@@ -7323,7 +7323,7 @@ $91:CBA3 6D 11 09    ADC $0911  [$7E:0911]  ;|
 $91:CBA6 29 F0 00    AND #$00F0             ;|
 $91:CBA9 4A          LSR A                  ;} $18 (BG1 row origin block index) =
 $91:CBAA 4A          LSR A                  ;}       (([BG1 Y offset] + [layer 1 Y position]) / 8 & 1Eh) * 20h (20h tiles per tilemap row, rounded down to top-left of 16x16 block)
-$91:CBAB 4A          LSR A                  ;}     + ([BG1 X offset] + [layer 1 X position]) / 8 & 1Eh         (1 byte per tilemap column, rounded down to top-left of 16x16 block)
+$91:CBAB 4A          LSR A                  ;}     + (([BG1 X offset] + [layer 1 X position]) / 8 & 1Eh)       (1 byte per tilemap column, rounded down to top-left of 16x16 block)
 $91:CBAC 18          CLC                    ;}     + ([BG1 X offset] + [layer 1 X position]) / 100h % 2 * 400h (400h tiles per tilemap screen)
 $91:CBAD 65 18       ADC $18    [$7E:0018]  ;|
 $91:CBAF 85 18       STA $18    [$7E:0018]  ;|
@@ -7336,13 +7336,13 @@ $91:CBBC 0A          ASL A                  ;|
 $91:CBBD 18          CLC                    ;|
 $91:CBBE 65 18       ADC $18    [$7E:0018]  ;|
 $91:CBC0 85 18       STA $18    [$7E:0018]  ;/
-$91:CBC2 64 16       STZ $16    [$7E:0016]  ; $16 = 0
+$91:CBC2 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (x-ray BG2 tilemap index)
 $91:CBC4 A9 10 00    LDA #$0010             ;\
-$91:CBC7 85 14       STA $14    [$7E:0014]  ;} $14 = 10h
+$91:CBC7 85 14       STA $14    [$7E:0014]  ;} $14 = 10h (row loop counter)
 
-; LOOP_CBC9
+; LOOP_COPY_BG1_ROW
 $91:CBC9 A9 10 00    LDA #$0010             ;\
-$91:CBCC 85 12       STA $12    [$7E:0012]  ;} $12 = 10h
+$91:CBCC 85 12       STA $12    [$7E:0012]  ;} $12 = 10h (column loop counter)
 $91:CBCE A5 18       LDA $18    [$7E:0018]  ;\
 $91:CBD0 29 E0 07    AND #$07E0             ;} $1A = [BG1 row origin block index] & 7E0h (BG1 row origin block row index)
 $91:CBD3 85 1A       STA $1A    [$7E:001A]  ;/
@@ -7351,10 +7351,10 @@ $91:CBD7 29 1F 00    AND #$001F             ;} $1C = [BG1 row origin block index
 $91:CBDA 85 1C       STA $1C    [$7E:001C]  ;/
 $91:CBDC 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0 (BG1 block X offset)
 
-; LOOP_CBDE
+; LOOP_COPY_BG1_COLUMN
 $91:CBDE A5 1C       LDA $1C    [$7E:001C]  ;\
 $91:CBE0 18          CLC                    ;|
-$91:CBE1 65 1E       ADC $1E    [$7E:001E]  ;} If [BG1 row origin block column index] + [BG1 block offset] >= 20h:
+$91:CBE1 65 1E       ADC $1E    [$7E:001E]  ;} If [BG1 row origin block column index] + [BG1 block X offset] >= 20h (reached end of tilemap screen):
 $91:CBE3 C9 20 00    CMP #$0020             ;|
 $91:CBE6 30 12       BMI $12    [$CBFA]     ;/
 $91:CBE8 A5 1A       LDA $1A    [$7E:001A]  ;\
@@ -7373,47 +7373,47 @@ $91:CBFF 65 1E       ADC $1E    [$7E:001E]  ;} X = ([BG1 row origin block row in
 $91:CC01 0A          ASL A                  ;|
 $91:CC02 AA          TAX                    ;/
 $91:CC03 BF 00 60 7E LDA $7E6000,x[$7E:650C];\
-$91:CC07 48          PHA                    ;} $7E:4000 + [$16] = [$7E:6000 + [X]]
+$91:CC07 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] = [$7E:6000 + [X]]
 $91:CC08 BF 02 60 7E LDA $7E6002,x[$7E:650E]; \
-$91:CC0C 48          PHA                    ; } $7E:4000 + [$16] + 2 = [$7E:6000 + [X] + 2]
+$91:CC0C 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 2 = [$7E:6000 + [X] + 2]
 $91:CC0D BF 40 60 7E LDA $7E6040,x[$7E:654C];  \
-$91:CC11 48          PHA                    ;  } $7E:4000 + [$16] + 40h = [$7E:6000 + [X] + 40h]
+$91:CC11 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] + 40h = [$7E:6000 + [X] + 40h]
 $91:CC12 BF 42 60 7E LDA $7E6042,x[$7E:654E];   \
-$91:CC16 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [$16] + 42h = [$7E:6000 + [X] + 42h]
+$91:CC16 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + 42h = [$7E:6000 + [X] + 42h]
 $91:CC18 9F 42 40 7E STA $7E4042,x[$7E:4042];   /
 $91:CC1C 68          PLA                    ;  |
-$91:CC1D 9F 40 40 7E STA $7E4040,x[$7E:4040]; /
+$91:CC1D 9F 40 40 7E STA $7E4040,x[$7E:4040];  /
 $91:CC21 68          PLA                    ; |
 $91:CC22 9F 02 40 7E STA $7E4002,x[$7E:4002]; /
 $91:CC26 68          PLA                    ;|
 $91:CC27 9F 00 40 7E STA $7E4000,x[$7E:4000];/
 $91:CC2B A5 16       LDA $16    [$7E:0016]  ;\
 $91:CC2D 18          CLC                    ;|
-$91:CC2E 69 04 00    ADC #$0004             ;} $16 += 4
+$91:CC2E 69 04 00    ADC #$0004             ;} X-ray BG2 tilemap index += 4 (move right two tilemap columns)
 $91:CC31 85 16       STA $16    [$7E:0016]  ;/
 $91:CC33 A5 1E       LDA $1E    [$7E:001E]  ;\
-$91:CC35 69 02 00    ADC #$0002             ;} BG1 block X offset += 2
+$91:CC35 69 02 00    ADC #$0002             ;} BG1 block X offset += 2 (move right two tilemap columns)
 $91:CC38 85 1E       STA $1E    [$7E:001E]  ;/
 $91:CC3A C6 12       DEC $12    [$7E:0012]  ; Decrement $12
-$91:CC3C D0 A0       BNE $A0    [$CBDE]     ; If [$12] != 0: go to LOOP_CBDE
-$91:CC3E 20 F1 CC    JSR $CCF1  [$91:CCF1]  ; Execute $CCF1
+$91:CC3C D0 A0       BNE $A0    [$CBDE]     ; If [$12] != 0: go to LOOP_COPY_BG1_COLUMN
+$91:CC3E 20 F1 CC    JSR $CCF1  [$91:CCF1]  ; Copy last BG1 block of row to x-ray BG2 tilemap
 $91:CC41 A5 18       LDA $18    [$7E:0018]  ;\
 $91:CC43 29 00 04    AND #$0400             ;|
 $91:CC46 85 20       STA $20    [$7E:0020]  ;|
 $91:CC48 A5 18       LDA $18    [$7E:0018]  ;|
 $91:CC4A 18          CLC                    ;} BG1 row origin block index = ([BG1 row origin block index] & 400h)
-$91:CC4B 69 40 00    ADC #$0040             ;}                            + ([BG1 row origin block index] + 40h & 3FFh)
+$91:CC4B 69 40 00    ADC #$0040             ;}                            + ([BG1 row origin block index] + 40h & 3FFh) (move down two tilemap rows)
 $91:CC4E 29 FF 03    AND #$03FF             ;|
 $91:CC51 18          CLC                    ;|
 $91:CC52 65 20       ADC $20    [$7E:0020]  ;|
 $91:CC54 85 18       STA $18    [$7E:0018]  ;/
 $91:CC56 A5 16       LDA $16    [$7E:0016]  ;\
 $91:CC58 18          CLC                    ;|
-$91:CC59 69 40 00    ADC #$0040             ;} $16 += 40h
+$91:CC59 69 40 00    ADC #$0040             ;} X-ray BG2 tilemap index += 40h (move down two tilemap rows)
 $91:CC5C 85 16       STA $16    [$7E:0016]  ;/
 $91:CC5E C6 14       DEC $14    [$7E:0014]  ; Decrement $14
 $91:CC60 F0 03       BEQ $03    [$CC65]     ; If [$14] != 0:
-$91:CC62 4C C9 CB    JMP $CBC9  [$91:CBC9]  ; Go to LOOP_CBC9
+$91:CC62 4C C9 CB    JMP $CBC9  [$91:CBC9]  ; Go to LOOP_COPY_BG1_ROW
 
 $91:CC65 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $91:CC68 4A          LSR A                  ;|
@@ -7423,7 +7423,7 @@ $91:CC6B 4A          LSR A                  ;|
 $91:CC6C EB          XBA                    ;|
 $91:CC6D 0D A5 07    ORA $07A5  [$7E:07A5]  ;|
 $91:CC70 8D 02 42    STA $4202  [$7E:4202]  ;|
-$91:CC73 AD 11 09    LDA $0911  [$7E:0911]  ;} $22 = [layer 1 Y position] / 10h * [room width in blocks] + [layer 1 X position] / 10h
+$91:CC73 AD 11 09    LDA $0911  [$7E:0911]  ;} $22 = [layer 1 Y position] / 10h * [room width in blocks] + [layer 1 X position] / 10h (block index)
 $91:CC76 4A          LSR A                  ;|
 $91:CC77 4A          LSR A                  ;|
 $91:CC78 4A          LSR A                  ;|
@@ -7431,38 +7431,38 @@ $91:CC79 4A          LSR A                  ;|
 $91:CC7A 18          CLC                    ;|
 $91:CC7B 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $91:CC7E 85 22       STA $22    [$7E:0022]  ;/
-$91:CC80 64 16       STZ $16    [$7E:0016]  ; $16 = 0
+$91:CC80 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (x-ray BG2 tilemap index)
 $91:CC82 A9 10 00    LDA #$0010             ;\
-$91:CC85 85 14       STA $14    [$7E:0014]  ;} $14 = 10h
+$91:CC85 85 14       STA $14    [$7E:0014]  ;} $14 = 10h (row loop counter)
 
-; LOOP_CC87
-$91:CC87 20 42 CD    JSR $CD42  [$91:CD42]  ; Execute $CD42
+; LOOP_REVEALED_ROW
+$91:CC87 20 42 CD    JSR $CD42  [$91:CD42]  ; Load right half of revealed 2xN block
 $91:CC8A A9 10 00    LDA #$0010             ;\
-$91:CC8D 85 12       STA $12    [$7E:0012]  ;} $12 = 0
+$91:CC8D 85 12       STA $12    [$7E:0012]  ;} $12 = 10h (column loop counter)
 $91:CC8F A5 22       LDA $22    [$7E:0022]  ;\
-$91:CC91 85 24       STA $24    [$7E:0024]  ;} $24 = [$12]
+$91:CC91 85 24       STA $24    [$7E:0024]  ;} $24 = (block index)
 
-; LOOP_CC93
-$91:CC93 20 BE CD    JSR $CDBE  [$91:CDBE]  ; Execute $CDBE
+; LOOP_REVEALED_COLUMN
+$91:CC93 20 BE CD    JSR $CDBE  [$91:CDBE]  ; Load revealed block
 $91:CC96 C6 12       DEC $12    [$7E:0012]  ; Decrement $12
-$91:CC98 D0 F9       BNE $F9    [$CC93]     ; If [$12] != 0: go to LOOP_CC93
+$91:CC98 D0 F9       BNE $F9    [$CC93]     ; If [$12] != 0: go to LOOP_REVEALED_COLUMN
 $91:CC9A A5 16       LDA $16    [$7E:0016]  ;\
 $91:CC9C 48          PHA                    ;} A = [$16]
 $91:CC9D 18          CLC                    ;\
 $91:CC9E 69 C0 07    ADC #$07C0             ;} $16 += 7C0h
 $91:CCA1 85 16       STA $16    [$7E:0016]  ;/
-$91:CCA3 20 BE CD    JSR $CDBE  [$91:CDBE]  ; Execute $CDBE
+$91:CCA3 20 BE CD    JSR $CDBE  [$91:CDBE]  ; Load revealed block
 $91:CCA6 68          PLA                    ;\
 $91:CCA7 18          CLC                    ;|
 $91:CCA8 69 40 00    ADC #$0040             ;} $16 = [A] + 40h
 $91:CCAB 85 16       STA $16    [$7E:0016]  ;/
 $91:CCAD A5 22       LDA $22    [$7E:0022]  ;\
 $91:CCAF 18          CLC                    ;|
-$91:CCB0 6D A5 07    ADC $07A5  [$7E:07A5]  ;} $22 += [room width]
+$91:CCB0 6D A5 07    ADC $07A5  [$7E:07A5]  ;} (Block index) += [room width]
 $91:CCB3 85 22       STA $22    [$7E:0022]  ;/
 $91:CCB5 C6 14       DEC $14    [$7E:0014]  ; Decrement $14
-$91:CCB7 D0 CE       BNE $CE    [$CC87]     ; If [$14] != 0: go to LOOP_CC87
-$91:CCB9 22 1A 83 84 JSL $84831A[$84:831A]  ; Load x-ray blocks
+$91:CCB7 D0 CE       BNE $CE    [$CC87]     ; If [$14] != 0: go to LOOP_REVEALED_ROW
+$91:CCB9 22 1A 83 84 JSL $84831A[$84:831A]  ; Load item x-ray blocks
 $91:CCBD AE 60 03    LDX $0360  [$7E:0360]  ;\
 $91:CCC0 A5 59       LDA $59    [$7E:0059]  ;|
 $91:CCC2 29 FC 00    AND #$00FC             ;|
@@ -7487,192 +7487,231 @@ $91:CCF0 6B          RTL
 }
 
 
-;;; $CCF1:  ;;;
+;;; $CCF1: Copy last BG1 block of row to x-ray BG2 tilemap ;;;
 {
-$91:CCF1 A5 1A       LDA $1A    [$7E:001A]
-$91:CCF3 85 20       STA $20    [$7E:0020]
-$91:CCF5 A5 1C       LDA $1C    [$7E:001C]
-$91:CCF7 18          CLC
-$91:CCF8 65 1E       ADC $1E    [$7E:001E]
-$91:CCFA C9 20 00    CMP #$0020
-$91:CCFD 30 0E       BMI $0E    [$CD0D]
-$91:CCFF A5 20       LDA $20    [$7E:0020]
-$91:CD01 18          CLC
-$91:CD02 69 00 04    ADC #$0400
-$91:CD05 29 E0 07    AND #$07E0
-$91:CD08 85 20       STA $20    [$7E:0020]
-$91:CD0A A9 00 00    LDA #$0000
+;; Parameters:
+;;     $16: X-ray BG2 tilemap index
+;;     $1A: BG1 row origin block row index
+;;     $1C: BG1 row origin block column index
+;;     $1E: BG1 block X offset
 
-$91:CD0D 18          CLC
-$91:CD0E 65 20       ADC $20    [$7E:0020]
-$91:CD10 0A          ASL A
-$91:CD11 AA          TAX
-$91:CD12 BF 00 60 7E LDA $7E6000,x[$7E:6D0C]
-$91:CD16 48          PHA
-$91:CD17 BF 02 60 7E LDA $7E6002,x[$7E:6D0E]
-$91:CD1B 48          PHA
-$91:CD1C BF 40 60 7E LDA $7E6040,x[$7E:6D4C]
-$91:CD20 48          PHA
-$91:CD21 BF 42 60 7E LDA $7E6042,x[$7E:6D4E]
-$91:CD25 48          PHA
-$91:CD26 A5 16       LDA $16    [$7E:0016]
-$91:CD28 18          CLC
-$91:CD29 69 C0 07    ADC #$07C0
-$91:CD2C AA          TAX
-$91:CD2D 68          PLA
-$91:CD2E 9F 42 40 7E STA $7E4042,x[$7E:4842]
-$91:CD32 68          PLA
-$91:CD33 9F 40 40 7E STA $7E4040,x[$7E:4840]
-$91:CD37 68          PLA
-$91:CD38 9F 02 40 7E STA $7E4002,x[$7E:4802]
-$91:CD3C 68          PLA
-$91:CD3D 9F 00 40 7E STA $7E4000,x[$7E:4800]
+; The last BG1 column is written to the first column of the second screen of BG2
+
+$91:CCF1 A5 1A       LDA $1A    [$7E:001A]  ;\
+$91:CCF3 85 20       STA $20    [$7E:0020]  ;} $20 = [BG1 row origin block row index]
+$91:CCF5 A5 1C       LDA $1C    [$7E:001C]  ;\
+$91:CCF7 18          CLC                    ;} A = [BG1 row origin block column index] + [BG1 block X offset]
+$91:CCF8 65 1E       ADC $1E    [$7E:001E]  ;/
+$91:CCFA C9 20 00    CMP #$0020             ;\
+$91:CCFD 30 0E       BMI $0E    [$CD0D]     ;} If [A] >= 20h (reached end of tilemap screen):
+$91:CCFF A5 20       LDA $20    [$7E:0020]  ;\
+$91:CD01 18          CLC                    ;|
+$91:CD02 69 00 04    ADC #$0400             ;} $20 = [BG1 row origin block row index] + 400h & 7E0h (switch tilemap screens)
+$91:CD05 29 E0 07    AND #$07E0             ;|
+$91:CD08 85 20       STA $20    [$7E:0020]  ;/
+$91:CD0A A9 00 00    LDA #$0000             ; A = 0
+
+$91:CD0D 18          CLC                    ;\
+$91:CD0E 65 20       ADC $20    [$7E:0020]  ;|
+$91:CD10 0A          ASL A                  ;} X = ([$20] + [A]) * 2
+$91:CD11 AA          TAX                    ;/
+$91:CD12 BF 00 60 7E LDA $7E6000,x[$7E:6D0C];\
+$91:CD16 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] - 40h + 800h = [$7E:6000 + [X]]
+$91:CD17 BF 02 60 7E LDA $7E6002,x[$7E:6D0E]; \
+$91:CD1B 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] - 40h + 800h + 2 = [$7E:6000 + [X] + 2]
+$91:CD1C BF 40 60 7E LDA $7E6040,x[$7E:6D4C];  \
+$91:CD20 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] - 40h + 800h + 40h = [$7E:6000 + [X] + 40h]
+$91:CD21 BF 42 60 7E LDA $7E6042,x[$7E:6D4E];   \
+$91:CD25 48          PHA                    ;   } $7E:4000 + [x-ray BG2 tilemap index] - 40h + 800h + 42h = [$7E:6000 + [X] + 42h]
+$91:CD26 A5 16       LDA $16    [$7E:0016]  ;   |
+$91:CD28 18          CLC                    ;   |
+$91:CD29 69 C0 07    ADC #$07C0             ;   |
+$91:CD2C AA          TAX                    ;   |
+$91:CD2D 68          PLA                    ;   |
+$91:CD2E 9F 42 40 7E STA $7E4042,x[$7E:4842];   /
+$91:CD32 68          PLA                    ;  |
+$91:CD33 9F 40 40 7E STA $7E4040,x[$7E:4840];  /
+$91:CD37 68          PLA                    ; |
+$91:CD38 9F 02 40 7E STA $7E4002,x[$7E:4802]; /
+$91:CD3C 68          PLA                    ;|
+$91:CD3D 9F 00 40 7E STA $7E4000,x[$7E:4800];/
 $91:CD41 60          RTS
 }
 
 
-;;; $CD42:  ;;;
+;;; $CD42: Load right half of revealed 2xN block ;;;
 {
-$91:CD42 A6 22       LDX $22    [$7E:0022]
-$91:CD44 CA          DEX
-$91:CD45 20 D6 CD    JSR $CDD6  [$91:CDD6]
-$91:CD48 C9 4E CF    CMP #$CF4E
-$91:CD4B F0 3C       BEQ $3C    [$CD89]
-$91:CD4D C9 6F CF    CMP #$CF6F
-$91:CD50 F0 01       BEQ $01    [$CD53]
-$91:CD52 60          RTS
+;; Parameters:
+;;     $16: X-ray BG2 tilemap index
+;;     $22: Block index
+$91:CD42 A6 22       LDX $22    [$7E:0022]  ;\
+$91:CD44 CA          DEX                    ;} X = [$22] - 1
+$91:CD45 20 D6 CD    JSR $CDD6  [$91:CDD6]  ; Load revealed block command (sets A, Y and $03)
+$91:CD48 C9 4E CF    CMP #$CF4E             ;\
+$91:CD4B F0 3C       BEQ $3C    [$CD89]     ;} If [A] = $CF4E: go to BRANCH_2x1
+$91:CD4D C9 6F CF    CMP #$CF6F             ;\
+$91:CD50 F0 01       BEQ $01    [$CD53]     ;} If [A] = $CF6F: go to BRANCH_2x2
+$91:CD52 60          RTS                    ; Return
 
+; BRANCH_2x2
 $91:CD53 5A          PHY
-$91:CD54 98          TYA
-$91:CD55 18          CLC
-$91:CD56 69 08 00    ADC #$0008
-$91:CD59 A8          TAY
-$91:CD5A B1 03       LDA ($03),y
-$91:CD5C 0A          ASL A
-$91:CD5D 0A          ASL A
-$91:CD5E 0A          ASL A
-$91:CD5F AA          TAX
-$91:CD60 BF 00 A0 7E LDA $7EA000,x
-$91:CD64 48          PHA
-$91:CD65 BF 02 A0 7E LDA $7EA002,x
-$91:CD69 48          PHA
-$91:CD6A BF 04 A0 7E LDA $7EA004,x
-$91:CD6E 48          PHA
-$91:CD6F BF 06 A0 7E LDA $7EA006,x
-$91:CD73 A6 16       LDX $16    [$7E:0016]
-$91:CD75 9F C2 40 7E STA $7E40C2,x
-$91:CD79 68          PLA
-$91:CD7A 9F C0 40 7E STA $7E40C0,x
-$91:CD7E 68          PLA
-$91:CD7F 9F 82 40 7E STA $7E4082,x
-$91:CD83 68          PLA
-$91:CD84 9F 80 40 7E STA $7E4080,x
+$91:CD54 98          TYA                    ;\
+$91:CD55 18          CLC                    ;|
+$91:CD56 69 08 00    ADC #$0008             ;|
+$91:CD59 A8          TAY                    ;|
+$91:CD5A B1 03       LDA ($03),y            ;} X = [[$03] + 8] * 8 (fourth argument)
+$91:CD5C 0A          ASL A                  ;|
+$91:CD5D 0A          ASL A                  ;|
+$91:CD5E 0A          ASL A                  ;|
+$91:CD5F AA          TAX                    ;/
+$91:CD60 BF 00 A0 7E LDA $7EA000,x          ;\
+$91:CD64 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] + 80h = [$7E:A000 + [X]]
+$91:CD65 BF 02 A0 7E LDA $7EA002,x          ; \
+$91:CD69 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 82h = [$7E:A000 + [X] + 2]
+$91:CD6A BF 04 A0 7E LDA $7EA004,x          ;  \
+$91:CD6E 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] + C0h = [$7E:A000 + [X] + 4]
+$91:CD6F BF 06 A0 7E LDA $7EA006,x          ;   \
+$91:CD73 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + C2h = [$7E:A000 + [X] + 8]
+$91:CD75 9F C2 40 7E STA $7E40C2,x          ;   /
+$91:CD79 68          PLA                    ;  |
+$91:CD7A 9F C0 40 7E STA $7E40C0,x          ;  /
+$91:CD7E 68          PLA                    ; |
+$91:CD7F 9F 82 40 7E STA $7E4082,x          ; /
+$91:CD83 68          PLA                    ;|
+$91:CD84 9F 80 40 7E STA $7E4080,x          ;/
 $91:CD88 7A          PLY
 
-$91:CD89 98          TYA
-$91:CD8A 18          CLC
-$91:CD8B 69 04 00    ADC #$0004
-$91:CD8E A8          TAY
-$91:CD8F B1 03       LDA ($03),y
-$91:CD91 0A          ASL A
-$91:CD92 0A          ASL A
-$91:CD93 0A          ASL A
-$91:CD94 AA          TAX
-$91:CD95 BF 00 A0 7E LDA $7EA000,x
-$91:CD99 48          PHA
-$91:CD9A BF 02 A0 7E LDA $7EA002,x
-$91:CD9E 48          PHA
-$91:CD9F BF 04 A0 7E LDA $7EA004,x
-$91:CDA3 48          PHA
-$91:CDA4 BF 06 A0 7E LDA $7EA006,x
-$91:CDA8 A6 16       LDX $16    [$7E:0016]
-$91:CDAA 9F 42 40 7E STA $7E4042,x
-$91:CDAE 68          PLA
-$91:CDAF 9F 40 40 7E STA $7E4040,x
-$91:CDB3 68          PLA
-$91:CDB4 9F 02 40 7E STA $7E4002,x
-$91:CDB8 68          PLA
-$91:CDB9 9F 00 40 7E STA $7E4000,x
+; BRANCH_2x1
+$91:CD89 98          TYA                    ;\
+$91:CD8A 18          CLC                    ;|
+$91:CD8B 69 04 00    ADC #$0004             ;|
+$91:CD8E A8          TAY                    ;|
+$91:CD8F B1 03       LDA ($03),y            ;} X = [[$03] + 4] * 8 (second argument)
+$91:CD91 0A          ASL A                  ;|
+$91:CD92 0A          ASL A                  ;|
+$91:CD93 0A          ASL A                  ;|
+$91:CD94 AA          TAX                    ;/
+$91:CD95 BF 00 A0 7E LDA $7EA000,x          ;\
+$91:CD99 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] + 0 = [$7E:A000 + [X]]
+$91:CD9A BF 02 A0 7E LDA $7EA002,x          ; \
+$91:CD9E 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 2 = [$7E:A000 + [X] + 2]
+$91:CD9F BF 04 A0 7E LDA $7EA004,x          ;  \
+$91:CDA3 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] + 40h = [$7E:A000 + [X] + 4]
+$91:CDA4 BF 06 A0 7E LDA $7EA006,x          ;   \
+$91:CDA8 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + 42h = [$7E:A000 + [X] + 8]
+$91:CDAA 9F 42 40 7E STA $7E4042,x          ;   /
+$91:CDAE 68          PLA                    ;  |
+$91:CDAF 9F 40 40 7E STA $7E4040,x          ;  /
+$91:CDB3 68          PLA                    ; |
+$91:CDB4 9F 02 40 7E STA $7E4002,x          ; /
+$91:CDB8 68          PLA                    ;|
+$91:CDB9 9F 00 40 7E STA $7E4000,x          ;/
 $91:CDBD 60          RTS
 }
 
 
-;;; $CDBE:  ;;;
+;;; $CDBE: Load revealed block ;;;
 {
-$91:CDBE A6 24       LDX $24    [$7E:0024]
-$91:CDC0 20 D6 CD    JSR $CDD6  [$91:CDD6]
-$91:CDC3 C9 FF FF    CMP #$FFFF
-$91:CDC6 F0 03       BEQ $03    [$CDCB]
-$91:CDC8 6C 00 00    JMP ($0000)[$91:CF36]
+;; Parameters:
+;;     $12: Tilemap column loop counter
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+$91:CDBE A6 24       LDX $24    [$7E:0024]  ; X = [block index]
+$91:CDC0 20 D6 CD    JSR $CDD6  [$91:CDD6]  ; Load revealed block command (sets A, Y, $03, $26, $28)
+$91:CDC3 C9 FF FF    CMP #$FFFF             ;\
+$91:CDC6 F0 03       BEQ $03    [$CDCB]     ;} If [A] = FFFFh: go to load revealed block - done
+$91:CDC8 6C 00 00    JMP ($0000)[$91:CF36]  ; Go to [[$00]]
 }
 
 
-;;; $CDCB:  ;;;
+;;; $CDCB: Load revealed block - done ;;;
 {
-$91:CDCB A5 16       LDA $16    [$7E:0016]
-$91:CDCD 18          CLC
-$91:CDCE 69 04 00    ADC #$0004
-$91:CDD1 85 16       STA $16    [$7E:0016]
-$91:CDD3 E6 24       INC $24    [$7E:0024]
+;; Parameters:
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+$91:CDCB A5 16       LDA $16    [$7E:0016]  ;\
+$91:CDCD 18          CLC                    ;|
+$91:CDCE 69 04 00    ADC #$0004             ;} X-ray BG2 tilemap index += 4
+$91:CDD1 85 16       STA $16    [$7E:0016]  ;/
+$91:CDD3 E6 24       INC $24    [$7E:0024]  ; Increment block index
 $91:CDD5 60          RTS
 }
 
 
-;;; $CDD6: Handle x-rayed block ;;;
+;;; $CDD6: Load revealed block command ;;;
 {
-$91:CDD6 BF 02 64 7F LDA $7F6402,x[$7F:7104]
-$91:CDDA 29 FF 00    AND #$00FF
-$91:CDDD 85 26       STA $26    [$7E:0026]
-$91:CDDF 8A          TXA
-$91:CDE0 0A          ASL A
-$91:CDE1 AA          TAX
-$91:CDE2 BF 02 00 7F LDA $7F0002,x[$7F:1A06]
-$91:CDE6 29 00 F0    AND #$F000
-$91:CDE9 85 28       STA $28    [$7E:0028]
-$91:CDEB A2 00 00    LDX #$0000
+;; Parameters:
+;;     X: Block index
+;; Returns:
+;;     A/$00: Revealed block command or FFFFh if there is no block to reveal
+;;     Y: 0 if [A] != FFFFh
+;;     $03: Revealed block command pointer if [A] != FFFFh
+;;     $26: Block BTS
+;;     $28: Block type
 
-$91:CDEE BD D6 D2    LDA $D2D6,x[$91:D2D6]
-$91:CDF1 C9 FF FF    CMP #$FFFF
-$91:CDF4 F0 35       BEQ $35    [$CE2B]
-$91:CDF6 C5 28       CMP $28    [$7E:0028]
-$91:CDF8 F0 06       BEQ $06    [$CE00]
-$91:CDFA E8          INX
-$91:CDFB E8          INX
-$91:CDFC E8          INX
-$91:CDFD E8          INX
-$91:CDFE 80 EE       BRA $EE    [$CDEE]
+$91:CDD6 BF 02 64 7F LDA $7F6402,x[$7F:7104];\
+$91:CDDA 29 FF 00    AND #$00FF             ;} $26 = (block BTS)
+$91:CDDD 85 26       STA $26    [$7E:0026]  ;/
+$91:CDDF 8A          TXA                    ;\
+$91:CDE0 0A          ASL A                  ;|
+$91:CDE1 AA          TAX                    ;|
+$91:CDE2 BF 02 00 7F LDA $7F0002,x[$7F:1A06];} $28 = (block type)
+$91:CDE6 29 00 F0    AND #$F000             ;|
+$91:CDE9 85 28       STA $28    [$7E:0028]  ;/
+$91:CDEB A2 00 00    LDX #$0000             ; X = 0
 
-$91:CE00 BD D8 D2    LDA $D2D8,x[$91:D2D8]
-$91:CE03 85 00       STA $00    [$7E:0000]
-$91:CE05 A0 00 00    LDY #$0000
+; LOOP_BLOCK_TYPE
+$91:CDEE BD D6 D2    LDA $D2D6,x[$91:D2D6]  ;\
+$91:CDF1 C9 FF FF    CMP #$FFFF             ;} If [$D2D6 + [X]] = FFFFh: return
+$91:CDF4 F0 35       BEQ $35    [$CE2B]     ;/
+$91:CDF6 C5 28       CMP $28    [$7E:0028]  ;\
+$91:CDF8 F0 06       BEQ $06    [$CE00]     ;} If [$D2D6 + [X]] != (block type):
+$91:CDFA E8          INX                    ;\
+$91:CDFB E8          INX                    ;|
+$91:CDFC E8          INX                    ;} X += 4
+$91:CDFD E8          INX                    ;/
+$91:CDFE 80 EE       BRA $EE    [$CDEE]     ; Go to LOOP_BLOCK_TYPE
 
-$91:CE08 B1 00       LDA ($00),y[$91:D2FC]
-$91:CE0A C9 FF FF    CMP #$FFFF
-$91:CE0D F0 1C       BEQ $1C    [$CE2B]
-$91:CE0F C9 00 FF    CMP #$FF00
-$91:CE12 F0 0A       BEQ $0A    [$CE1E]
-$91:CE14 C5 26       CMP $26    [$7E:0026]
-$91:CE16 F0 06       BEQ $06    [$CE1E]
-$91:CE18 C8          INY
-$91:CE19 C8          INY
-$91:CE1A C8          INY
-$91:CE1B C8          INY
-$91:CE1C 80 EA       BRA $EA    [$CE08]
+$91:CE00 BD D8 D2    LDA $D2D8,x[$91:D2D8]  ;\
+$91:CE03 85 00       STA $00    [$7E:0000]  ;} $00 = [$D2D6 + [X] + 2] (revealed block table pointer)
+$91:CE05 A0 00 00    LDY #$0000             ; Y = 0
 
-$91:CE1E C8          INY
-$91:CE1F C8          INY
-$91:CE20 B1 00       LDA ($00),y[$91:D2FE]
-$91:CE22 85 03       STA $03    [$7E:0003]
-$91:CE24 A0 00 00    LDY #$0000
-$91:CE27 B1 03       LDA ($03),y[$91:D302]
-$91:CE29 85 00       STA $00    [$7E:0000]
+; LOOP_BTS
+$91:CE08 B1 00       LDA ($00),y[$91:D2FC]  ;\
+$91:CE0A C9 FF FF    CMP #$FFFF             ;} If [[$00] + [Y]] = FFFFh: return
+$91:CE0D F0 1C       BEQ $1C    [$CE2B]     ;/
+$91:CE0F C9 00 FF    CMP #$FF00             ;\
+$91:CE12 F0 0A       BEQ $0A    [$CE1E]     ;} If [[$00] + [Y]] != FF00h:
+$91:CE14 C5 26       CMP $26    [$7E:0026]  ;\
+$91:CE16 F0 06       BEQ $06    [$CE1E]     ;} If [[$00] + [Y]] != (block BTS):
+$91:CE18 C8          INY                    ;\
+$91:CE19 C8          INY                    ;|
+$91:CE1A C8          INY                    ;} Y += 4
+$91:CE1B C8          INY                    ;/
+$91:CE1C 80 EA       BRA $EA    [$CE08]     ; Go to LOOP_BTS
+
+$91:CE1E C8          INY                    ;\
+$91:CE1F C8          INY                    ;|
+$91:CE20 B1 00       LDA ($00),y[$91:D2FE]  ;} $03 = [[$00] + [Y] + 2] (revealed block command pointer)
+$91:CE22 85 03       STA $03    [$7E:0003]  ;/
+$91:CE24 A0 00 00    LDY #$0000             ;\
+$91:CE27 B1 03       LDA ($03),y[$91:D302]  ;} A = $00 = [[$03]] (revealed block command)
+$91:CE29 85 00       STA $00    [$7E:0000]  ;/
 
 $91:CE2B 60          RTS
 }
 
 
-;;; $CE2C:  ;;;
+;;; $CE2C: Calculate block co-ordinates ;;;
 {
+;; Parameters:
+;;     $24: Block index
+;; Returns:
+;;     $2A: X block co-ordinate
+;;     $2C: Y block co-ordinate
+ 
+; $2C = [$24] / [room width in blocks]
+; $2A = [$24] % [room width in blocks]
 $91:CE2C E2 20       SEP #$20
 $91:CE2E A5 24       LDA $24    [$7E:0024]
 $91:CE30 8D 04 42    STA $4204  [$7E:4204]
@@ -7695,384 +7734,469 @@ $91:CE50 60          RTS
 }
 
 
-;;; $CE51:  ;;;
+;;; $CE51: Get block type and BTS ;;;
 {
-$91:CE51 A5 2C       LDA $2C    [$7E:002C]
-$91:CE53 EB          XBA
-$91:CE54 0D A5 07    ORA $07A5  [$7E:07A5]
-$91:CE57 8D 02 42    STA $4202  [$7E:4202]
-$91:CE5A EA          NOP
-$91:CE5B EA          NOP
-$91:CE5C A5 2A       LDA $2A    [$7E:002A]
-$91:CE5E 18          CLC
-$91:CE5F 6D 16 42    ADC $4216  [$7E:4216]
-$91:CE62 AA          TAX
-$91:CE63 BF 02 64 7F LDA $7F6402,x[$7F:6671]
-$91:CE67 29 FF 00    AND #$00FF
-$91:CE6A 85 2E       STA $2E    [$7E:002E]
-$91:CE6C 8A          TXA
-$91:CE6D 0A          ASL A
-$91:CE6E AA          TAX
-$91:CE6F BF 02 00 7F LDA $7F0002,x[$7F:04E0]
-$91:CE73 29 00 F0    AND #$F000
-$91:CE76 85 30       STA $30    [$7E:0030]
+;; Parameters:
+;;     $2A: X block co-ordinate
+;;     $2C: Y block co-ordinate
+;; Returns:
+;;     A/$30: Block type
+;;     $2E: Block BTS
+$91:CE51 A5 2C       LDA $2C    [$7E:002C]  ;\
+$91:CE53 EB          XBA                    ;|
+$91:CE54 0D A5 07    ORA $07A5  [$7E:07A5]  ;|
+$91:CE57 8D 02 42    STA $4202  [$7E:4202]  ;|
+$91:CE5A EA          NOP                    ;|
+$91:CE5B EA          NOP                    ;} X = [$2A] + [$2C] * [room width in blocks] (block index)
+$91:CE5C A5 2A       LDA $2A    [$7E:002A]  ;|
+$91:CE5E 18          CLC                    ;|
+$91:CE5F 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$91:CE62 AA          TAX                    ;/
+$91:CE63 BF 02 64 7F LDA $7F6402,x[$7F:6671];\
+$91:CE67 29 FF 00    AND #$00FF             ;} $2E = (block BTS)
+$91:CE6A 85 2E       STA $2E    [$7E:002E]  ;/
+$91:CE6C 8A          TXA                    ;\
+$91:CE6D 0A          ASL A                  ;|
+$91:CE6E AA          TAX                    ;|
+$91:CE6F BF 02 00 7F LDA $7F0002,x[$7F:04E0];} $30 = (block type)
+$91:CE73 29 00 F0    AND #$F000             ;|
+$91:CE76 85 30       STA $30    [$7E:0030]  ;/
 $91:CE78 60          RTS
 }
 
 
-;;; $CE79:  ;;;
+;;; $CE79: Revealed block command - vertical extension ;;;
 {
-$91:CE79 20 2C CE    JSR $CE2C  [$91:CE2C]
-$91:CE7C A5 28       LDA $28    [$7E:0028]
-$91:CE7E 85 30       STA $30    [$7E:0030]
-$91:CE80 A5 26       LDA $26    [$7E:0026]
-$91:CE82 F0 79       BEQ $79    [$CEFD]
-$91:CE84 89 80 00    BIT #$0080
-$91:CE87 F0 03       BEQ $03    [$CE8C]
-$91:CE89 09 00 FF    ORA #$FF00
-
-$91:CE8C 85 2E       STA $2E    [$7E:002E]
+;; Parameters:
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+;;     $26: Block BTS
+;;     $28: Block type
+$91:CE79 20 2C CE    JSR $CE2C  [$91:CE2C]  ; Calculate block co-ordinates
+$91:CE7C A5 28       LDA $28    [$7E:0028]  ;\
+$91:CE7E 85 30       STA $30    [$7E:0030]  ;} $30 = [block type]
+$91:CE80 A5 26       LDA $26    [$7E:0026]  ;\
+$91:CE82 F0 79       BEQ $79    [$CEFD]     ;} If [block BTS] = 0: go to copy 1x1 block to x-ray BG2 tilemap if scroll PLM trigger
+$91:CE84 89 80 00    BIT #$0080             ;\
+$91:CE87 F0 03       BEQ $03    [$CE8C]     ;|
+$91:CE89 09 00 FF    ORA #$FF00             ;} $2E = ±[block BTS]
+                                            ;|
+$91:CE8C 85 2E       STA $2E    [$7E:002E]  ;/
 }
 
 
-;;; $CE8E:  ;;;
+;;; $CE8E: Revealed block extension loop - vertical ;;;
 {
-$91:CE8E A5 2C       LDA $2C    [$7E:002C]
-$91:CE90 18          CLC
-$91:CE91 65 2E       ADC $2E    [$7E:002E]
-$91:CE93 10 09       BPL $09    [$CE9E]
-$91:CE95 A9 FF 00    LDA #$00FF
-$91:CE98 20 C1 CF    JSR $CFC1  [$91:CFC1]
-$91:CE9B 4C CB CD    JMP $CDCB  [$91:CDCB]
+;; Parameters:
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+;;     $2A: X block co-ordinate
+;;     $2C: Y block co-ordinate
+;;     $2E: Block BTS (signed extended)
 
-$91:CE9E 85 2C       STA $2C    [$7E:002C]
-$91:CEA0 20 51 CE    JSR $CE51  [$91:CE51]
-$91:CEA3 C9 00 D0    CMP #$D000
-$91:CEA6 F0 E6       BEQ $E6    [$CE8E]
-$91:CEA8 C9 00 50    CMP #$5000
-$91:CEAB D0 50       BNE $50    [$CEFD]
-$91:CEAD A5 2E       LDA $2E    [$7E:002E]
-$91:CEAF 89 80 00    BIT #$0080
-$91:CEB2 F0 DA       BEQ $DA    [$CE8E]
-$91:CEB4 49 00 FF    EOR #$FF00
-$91:CEB7 85 2E       STA $2E    [$7E:002E]
-$91:CEB9 80 15       BRA $15    [$CED0]
+; LOOP
+$91:CE8E A5 2C       LDA $2C    [$7E:002C]  ;\
+$91:CE90 18          CLC                    ;|
+$91:CE91 65 2E       ADC $2E    [$7E:002E]  ;} If [Y block co-ordinate] + [block BTS] < 0:
+$91:CE93 10 09       BPL $09    [$CE9E]     ;/
+$91:CE95 A9 FF 00    LDA #$00FF             ; A = FFh (blank tile)
+$91:CE98 20 C1 CF    JSR $CFC1  [$91:CFC1]  ; Copy block to x-ray BG2 tilemap
+$91:CE9B 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
+
+$91:CE9E 85 2C       STA $2C    [$7E:002C]  ; Y block co-ordinate += [block BTS]
+$91:CEA0 20 51 CE    JSR $CE51  [$91:CE51]  ; Get block type and BTS
+$91:CEA3 C9 00 D0    CMP #$D000             ;\
+$91:CEA6 F0 E6       BEQ $E6    [$CE8E]     ;} If (block type) = vertical extension: go to LOOP
+$91:CEA8 C9 00 50    CMP #$5000             ;\
+$91:CEAB D0 50       BNE $50    [$CEFD]     ;} If (block type) != horizontal extension: go to copy 1x1 block to x-ray BG2 tilemap if scroll PLM trigger
+$91:CEAD A5 2E       LDA $2E    [$7E:002E]  ;\
+$91:CEAF 89 80 00    BIT #$0080             ;} If [block BTS] >= 0: go to LOOP <-- uh
+$91:CEB2 F0 DA       BEQ $DA    [$CE8E]     ;/
+$91:CEB4 49 00 FF    EOR #$FF00             ;\
+$91:CEB7 85 2E       STA $2E    [$7E:002E]  ;} Block BTS = ±[block BTS]
+$91:CEB9 80 15       BRA $15    [$CED0]     ; Go to revealed block extension loop - horizontal
 }
 
 
-;;; $CEBB:  ;;;
+;;; $CEBB: Revealed block command - horizontal extension ;;;
 {
-$91:CEBB 20 2C CE    JSR $CE2C  [$91:CE2C]
-$91:CEBE A5 28       LDA $28    [$7E:0028]
-$91:CEC0 85 30       STA $30    [$7E:0030]
-$91:CEC2 A5 26       LDA $26    [$7E:0026]
-$91:CEC4 F0 37       BEQ $37    [$CEFD]
-$91:CEC6 89 80 00    BIT #$0080
-$91:CEC9 F0 03       BEQ $03    [$CECE]
-$91:CECB 09 00 FF    ORA #$FF00
-
-$91:CECE 85 2E       STA $2E    [$7E:002E]
+;; Parameters:
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+;;     $26: Block BTS
+;;     $28: Block type
+$91:CEBB 20 2C CE    JSR $CE2C  [$91:CE2C]  ; Calculate block co-ordinates
+$91:CEBE A5 28       LDA $28    [$7E:0028]  ;\
+$91:CEC0 85 30       STA $30    [$7E:0030]  ;} $30 = [block type]
+$91:CEC2 A5 26       LDA $26    [$7E:0026]  ;\
+$91:CEC4 F0 37       BEQ $37    [$CEFD]     ;} If [block BTS] = 0: go to copy 1x1 block to x-ray BG2 tilemap if scroll PLM trigger
+$91:CEC6 89 80 00    BIT #$0080             ;\
+$91:CEC9 F0 03       BEQ $03    [$CECE]     ;|
+$91:CECB 09 00 FF    ORA #$FF00             ;} $2E = ±[block BTS]
+                                            ;|
+$91:CECE 85 2E       STA $2E    [$7E:002E]  ;/
 }
 
 
-;;; $CED0:  ;;;
+;;; $CED0: Revealed block extension loop - horizontal ;;;
 {
-$91:CED0 A5 2A       LDA $2A    [$7E:002A]
-$91:CED2 18          CLC
-$91:CED3 65 2E       ADC $2E    [$7E:002E]
-$91:CED5 10 09       BPL $09    [$CEE0]
-$91:CED7 A9 FF 00    LDA #$00FF
-$91:CEDA 20 C1 CF    JSR $CFC1  [$91:CFC1]
-$91:CEDD 4C CB CD    JMP $CDCB  [$91:CDCB]
+;; Parameters:
+;;     $16: X-ray BG2 tilemap index
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+;;     $24: Block index
+;;     $2A: X block co-ordinate
+;;     $2C: Y block co-ordinate
+;;     $2E: Block BTS (signed extended)
 
-$91:CEE0 85 2A       STA $2A    [$7E:002A]
-$91:CEE2 20 51 CE    JSR $CE51  [$91:CE51]
-$91:CEE5 C9 00 D0    CMP #$D000
-$91:CEE8 F0 A4       BEQ $A4    [$CE8E]
-$91:CEEA C9 00 50    CMP #$5000
-$91:CEED D0 0E       BNE $0E    [$CEFD]
-$91:CEEF A5 2E       LDA $2E    [$7E:002E]
-$91:CEF1 89 80 00    BIT #$0080
-$91:CEF4 F0 DA       BEQ $DA    [$CED0]
-$91:CEF6 49 00 FF    EOR #$FF00
-$91:CEF9 85 2E       STA $2E    [$7E:002E]
-$91:CEFB 80 D3       BRA $D3    [$CED0]
+; LOOP
+$91:CED0 A5 2A       LDA $2A    [$7E:002A]  ;\
+$91:CED2 18          CLC                    ;|
+$91:CED3 65 2E       ADC $2E    [$7E:002E]  ;} If [X block co-ordinate] + [block BTS] < 0:
+$91:CED5 10 09       BPL $09    [$CEE0]     ;/
+$91:CED7 A9 FF 00    LDA #$00FF             ; A = FFh (blank tile)
+$91:CEDA 20 C1 CF    JSR $CFC1  [$91:CFC1]  ; Copy block to x-ray BG2 tilemap
+$91:CEDD 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
+
+$91:CEE0 85 2A       STA $2A    [$7E:002A]  ; X block co-ordinate += [block BTS]
+$91:CEE2 20 51 CE    JSR $CE51  [$91:CE51]  ; Get block type and BTS
+$91:CEE5 C9 00 D0    CMP #$D000             ;\
+$91:CEE8 F0 A4       BEQ $A4    [$CE8E]     ;} If (block type) = vertical extension: go to revealed block extension loop - vertical
+$91:CEEA C9 00 50    CMP #$5000             ;\
+$91:CEED D0 0E       BNE $0E    [$CEFD]     ;} If (block type) != horizontal extension: go to copy 1x1 block to x-ray BG2 tilemap if scroll PLM trigger
+$91:CEEF A5 2E       LDA $2E    [$7E:002E]  ;\
+$91:CEF1 89 80 00    BIT #$0080             ;} If (block BTS) >= 0: go to LOOP
+$91:CEF4 F0 DA       BEQ $DA    [$CED0]     ;/
+$91:CEF6 49 00 FF    EOR #$FF00             ;\
+$91:CEF9 85 2E       STA $2E    [$7E:002E]  ;} $2E = ±(block BTS)
+$91:CEFB 80 D3       BRA $D3    [$CED0]     ; Go to LOOP
 }
 
 
-;;; $CEFD:  ;;;
+;;; $CEFD: Copy 1x1 block to x-ray BG2 tilemap if scroll PLM trigger ;;;
 {
-$91:CEFD AD DA D2    LDA $D2DA  [$91:D2DA]
-$91:CF00 C5 30       CMP $30    [$7E:0030]
-$91:CF02 D0 2F       BNE $2F    [$CF33]
-$91:CF04 AD DC D2    LDA $D2DC  [$91:D2DC]
-$91:CF07 85 00       STA $00    [$7E:0000]
-$91:CF09 A0 00 00    LDY #$0000
+;; Parameters:
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+;;     $2E: Block BTS
+;;     $30: Block type
+$91:CEFD AD DA D2    LDA $D2DA  [$91:D2DA]  ;\
+$91:CF00 C5 30       CMP $30    [$7E:0030]  ;} If [block type] != special air: go to load revealed block - done
+$91:CF02 D0 2F       BNE $2F    [$CF33]     ;/
+$91:CF04 AD DC D2    LDA $D2DC  [$91:D2DC]  ;\
+$91:CF07 85 00       STA $00    [$7E:0000]  ;} $00 = $D306 (revealed block table - special air)
+$91:CF09 A0 00 00    LDY #$0000             ; Y = 0
 
-$91:CF0C B1 00       LDA ($00),y
-$91:CF0E C9 FF FF    CMP #$FFFF
-$91:CF11 F0 20       BEQ $20    [$CF33]
-$91:CF13 C9 00 FF    CMP #$FF00
-$91:CF16 F0 0A       BEQ $0A    [$CF22]
-$91:CF18 C5 2E       CMP $2E    [$7E:002E]
-$91:CF1A F0 06       BEQ $06    [$CF22]
-$91:CF1C C8          INY
-$91:CF1D C8          INY
-$91:CF1E C8          INY
-$91:CF1F C8          INY
-$91:CF20 80 EA       BRA $EA    [$CF0C]
+; LOOP
+$91:CF0C B1 00       LDA ($00),y            ;\
+$91:CF0E C9 FF FF    CMP #$FFFF             ;} If [$D306 + [Y]] = FFFFh: go to load revealed block - done
+$91:CF11 F0 20       BEQ $20    [$CF33]     ;/
+$91:CF13 C9 00 FF    CMP #$FF00             ;\
+$91:CF16 F0 0A       BEQ $0A    [$CF22]     ;} If [$D306 + [Y]] != FF00h:
+$91:CF18 C5 2E       CMP $2E    [$7E:002E]  ;\
+$91:CF1A F0 06       BEQ $06    [$CF22]     ;} If [$D306 + [Y]] != (block BTS):
+$91:CF1C C8          INY                    ;\
+$91:CF1D C8          INY                    ;|
+$91:CF1E C8          INY                    ;} Y += 4
+$91:CF1F C8          INY                    ;/
+$91:CF20 80 EA       BRA $EA    [$CF0C]     ; Go to LOOP
 
-$91:CF22 C8          INY
-$91:CF23 C8          INY
-$91:CF24 B1 00       LDA ($00),y
-$91:CF26 1A          INC A
-$91:CF27 1A          INC A
-$91:CF28 85 03       STA $03    [$7E:0003]
-$91:CF2A A0 00 00    LDY #$0000
-$91:CF2D 20 BF CF    JSR $CFBF  [$91:CFBF]
-$91:CF30 4C CB CD    JMP $CDCB  [$91:CDCB]
+$91:CF22 C8          INY                    ;\
+$91:CF23 C8          INY                    ;|
+$91:CF24 B1 00       LDA ($00),y            ;|
+$91:CF26 1A          INC A                  ;} $03 = [$D306 + [Y] + 2] + 2 (revealed block command argument pointer)
+$91:CF27 1A          INC A                  ;|
+$91:CF28 85 03       STA $03    [$7E:0003]  ;/
+$91:CF2A A0 00 00    LDY #$0000             ; Y = 0
+$91:CF2D 20 BF CF    JSR $CFBF  [$91:CFBF]  ; Copy revealed block command argument to x-ray BG2 tilemap
+$91:CF30 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
 
 $91:CF33 4C CB CD    JMP $CDCB  [$91:CDCB]
 }
 
 
-;;; $CF36:  ;;;
+;;; $CF36: Revealed block command - copy 1x1 block to x-ray BG2 tilemap ;;;
 {
-$91:CF36 C8          INY
-$91:CF37 C8          INY
-$91:CF38 20 BF CF    JSR $CFBF  [$91:CFBF]
-$91:CF3B 4C CB CD    JMP $CDCB  [$91:CDCB]
+;; Parameters:
+;;     Y: 0
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+$91:CF36 C8          INY                    ;\
+$91:CF37 C8          INY                    ;} Y = 2
+$91:CF38 20 BF CF    JSR $CFBF  [$91:CFBF]  ; Copy revealed block command argument to x-ray BG2 tilemap
+$91:CF3B 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
 }
 
 
-;;; $CF3E:  ;;;
+;;; $CF3E: Revealed block command - copy 1x1 block to x-ray BG2 tilemap if in Brinstar ;;;
 {
-$91:CF3E C8          INY
-$91:CF3F C8          INY
-$91:CF40 AD 9F 07    LDA $079F  [$7E:079F]
-$91:CF43 C9 01 00    CMP #$0001
-$91:CF46 D0 03       BNE $03    [$CF4B]
-$91:CF48 20 BF CF    JSR $CFBF  [$91:CFBF]
+;; Parameters:
+;;     Y: 0
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+$91:CF3E C8          INY                    ;\
+$91:CF3F C8          INY                    ;} Y = 2
+$91:CF40 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$91:CF43 C9 01 00    CMP #$0001             ;} If [area index] = Brinstar:
+$91:CF46 D0 03       BNE $03    [$CF4B]     ;/
+$91:CF48 20 BF CF    JSR $CFBF  [$91:CFBF]  ; Copy revealed block command argument to x-ray BG2 tilemap
 
-$91:CF4B 4C CB CD    JMP $CDCB  [$91:CDCB]
+$91:CF4B 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
 }
 
 
-;;; $CF4E:  ;;;
+;;; $CF4E: Revealed block command - copy 2x1 block to x-ray BG2 tilemap ;;;
 {
-$91:CF4E C8          INY
-$91:CF4F C8          INY
-$91:CF50 20 BF CF    JSR $CFBF  [$91:CFBF]
-$91:CF53 A5 12       LDA $12    [$7E:0012]
-$91:CF55 C9 01 00    CMP #$0001
-$91:CF58 F0 05       BEQ $05    [$CF5F]
-$91:CF5A C8          INY
-$91:CF5B C8          INY
-$91:CF5C 20 EE CF    JSR $CFEE  [$91:CFEE]
+;; Parameters:
+;;     Y: 0
+;;     $03: Revealed block command pointer
+;;     $12: Tilemap column loop counter
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+$91:CF4E C8          INY                    ;\
+$91:CF4F C8          INY                    ;} Y = 2
+$91:CF50 20 BF CF    JSR $CFBF  [$91:CFBF]  ; Copy revealed block command argument to x-ray BG2 tilemap
+$91:CF53 A5 12       LDA $12    [$7E:0012]  ;\
+$91:CF55 C9 01 00    CMP #$0001             ;} If [$12] != 1 (if not last column):
+$91:CF58 F0 05       BEQ $05    [$CF5F]     ;/
+$91:CF5A C8          INY                    ;\
+$91:CF5B C8          INY                    ;} Y += 2
+$91:CF5C 20 EE CF    JSR $CFEE  [$91:CFEE]  ; Copy revealed block command argument to x-ray BG2 tilemap one block right
 
-$91:CF5F 4C CB CD    JMP $CDCB  [$91:CDCB]
+$91:CF5F 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
 }
 
 
-;;; $CF62:  ;;;
+;;; $CF62: Revealed block command - copy 1x2 block to x-ray BG2 tilemap ;;;
 {
-$91:CF62 C8          INY
-$91:CF63 C8          INY
-$91:CF64 20 BF CF    JSR $CFBF  [$91:CFBF]
-$91:CF67 C8          INY
-$91:CF68 C8          INY
-$91:CF69 20 1D D0    JSR $D01D  [$91:D01D]
-$91:CF6C 4C CB CD    JMP $CDCB  [$91:CDCB]
+;; Parameters:
+;;     Y: 0
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+$91:CF62 C8          INY                    ;\
+$91:CF63 C8          INY                    ;} Y = 2
+$91:CF64 20 BF CF    JSR $CFBF  [$91:CFBF]  ; Copy revealed block command argument to x-ray BG2 tilemap
+$91:CF67 C8          INY                    ;\
+$91:CF68 C8          INY                    ;} Y += 2
+$91:CF69 20 1D D0    JSR $D01D  [$91:D01D]  ; Copy revealed block command argument to x-ray BG2 tilemap one block down
+$91:CF6C 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
 }
 
 
-;;; $CF6F:  ;;;
+;;; $CF6F: Revealed block command - copy 2x2 block to x-ray BG2 tilemap ;;;
 {
-$91:CF6F C8          INY
-$91:CF70 C8          INY
-$91:CF71 20 BF CF    JSR $CFBF  [$91:CFBF]
-$91:CF74 C8          INY
-$91:CF75 C8          INY
-$91:CF76 A5 12       LDA $12    [$7E:0012]
-$91:CF78 C9 01 00    CMP #$0001
-$91:CF7B F0 03       BEQ $03    [$CF80]
-$91:CF7D 20 EE CF    JSR $CFEE  [$91:CFEE]
+;; Parameters:
+;;     Y: 0
+;;     $03: Revealed block command pointer
+;;     $12: Tilemap column loop counter
+;;     $16: X-ray BG2 tilemap index
+;;     $24: Block index
+$91:CF6F C8          INY                    ;\
+$91:CF70 C8          INY                    ;} Y = 2
+$91:CF71 20 BF CF    JSR $CFBF  [$91:CFBF]  ; Copy revealed block command argument to x-ray BG2 tilemap
+$91:CF74 C8          INY                    ;\
+$91:CF75 C8          INY                    ;} Y += 2
+$91:CF76 A5 12       LDA $12    [$7E:0012]  ;\
+$91:CF78 C9 01 00    CMP #$0001             ;} If [$12] != 1 (if not last column):
+$91:CF7B F0 03       BEQ $03    [$CF80]     ;/
+$91:CF7D 20 EE CF    JSR $CFEE  [$91:CFEE]  ; Copy revealed block command argument to x-ray BG2 tilemap one block right
 
-$91:CF80 C8          INY
-$91:CF81 C8          INY
-$91:CF82 20 1D D0    JSR $D01D  [$91:D01D]
-$91:CF85 C8          INY
-$91:CF86 C8          INY
-$91:CF87 A5 12       LDA $12    [$7E:0012]
-$91:CF89 C9 01 00    CMP #$0001
-$91:CF8C F0 2E       BEQ $2E    [$CFBC]
-$91:CF8E B1 03       LDA ($03),y
-$91:CF90 0A          ASL A
-$91:CF91 0A          ASL A
-$91:CF92 0A          ASL A
-$91:CF93 AA          TAX
-$91:CF94 BF 00 A0 7E LDA $7EA000,x
-$91:CF98 48          PHA
-$91:CF99 BF 02 A0 7E LDA $7EA002,x
-$91:CF9D 48          PHA
-$91:CF9E BF 04 A0 7E LDA $7EA004,x
-$91:CFA2 48          PHA
-$91:CFA3 BF 06 A0 7E LDA $7EA006,x
-$91:CFA7 A6 16       LDX $16    [$7E:0016]
-$91:CFA9 9F C6 40 7E STA $7E40C6,x
-$91:CFAD 68          PLA
-$91:CFAE 9F C4 40 7E STA $7E40C4,x
-$91:CFB2 68          PLA
-$91:CFB3 9F 86 40 7E STA $7E4086,x
-$91:CFB7 68          PLA
-$91:CFB8 9F 84 40 7E STA $7E4084,x
+$91:CF80 C8          INY                    ;\
+$91:CF81 C8          INY                    ;} Y += 2
+$91:CF82 20 1D D0    JSR $D01D  [$91:D01D]  ; Copy revealed block command argument to x-ray BG2 tilemap one block down
+$91:CF85 C8          INY                    ;\
+$91:CF86 C8          INY                    ;} Y += 2
+$91:CF87 A5 12       LDA $12    [$7E:0012]  ;\
+$91:CF89 C9 01 00    CMP #$0001             ;} If [$12] != 1 (if not last column):
+$91:CF8C F0 2E       BEQ $2E    [$CFBC]     ;/
+$91:CF8E B1 03       LDA ($03),y            ;\
+$91:CF90 0A          ASL A                  ;|
+$91:CF91 0A          ASL A                  ;} X = [[$03] + [Y]] * 8
+$91:CF92 0A          ASL A                  ;|
+$91:CF93 AA          TAX                    ;/
+$91:CF94 BF 00 A0 7E LDA $7EA000,x          ;\
+$91:CF98 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] + 84h = [$7E:A000 + [X]]
+$91:CF99 BF 02 A0 7E LDA $7EA002,x          ; \
+$91:CF9D 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 86h = [$7E:A000 + [X] + 2]
+$91:CF9E BF 04 A0 7E LDA $7EA004,x          ;  \
+$91:CFA2 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] + C4h = [$7E:A000 + [X] + 4]
+$91:CFA3 BF 06 A0 7E LDA $7EA006,x          ;   \
+$91:CFA7 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + C6h = [$7E:A000 + [X] + 6]
+$91:CFA9 9F C6 40 7E STA $7E40C6,x          ;   /
+$91:CFAD 68          PLA                    ;  |
+$91:CFAE 9F C4 40 7E STA $7E40C4,x          ;  /
+$91:CFB2 68          PLA                    ; |
+$91:CFB3 9F 86 40 7E STA $7E4086,x          ; /
+$91:CFB7 68          PLA                    ;|
+$91:CFB8 9F 84 40 7E STA $7E4084,x          ;/
 
-$91:CFBC 4C CB CD    JMP $CDCB  [$91:CDCB]
+$91:CFBC 4C CB CD    JMP $CDCB  [$91:CDCB]  ; Go to load revealed block - done
 }
 
 
-;;; $CFBF:  ;;;
+;;; $CFBF: Copy revealed block command argument to x-ray BG2 tilemap ;;;
 {
-$91:CFBF B1 03       LDA ($03),y[$91:D304]
+;; Parameters:
+;;     Y: Revealed block command argument offset
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+$91:CFBF B1 03       LDA ($03),y[$91:D304]  ; A = [[$03] + [Y]]
 }
 
 
-;;; $CFC1:  ;;;
+;;; $CFC1: Copy block to x-ray BG2 tilemap ;;;
 {
-$91:CFC1 0A          ASL A
-$91:CFC2 0A          ASL A
-$91:CFC3 0A          ASL A
-$91:CFC4 AA          TAX
-$91:CFC5 BF 00 A0 7E LDA $7EA000,x[$7E:A7F8]
-$91:CFC9 48          PHA
-$91:CFCA BF 02 A0 7E LDA $7EA002,x[$7E:A7FA]
-$91:CFCE 48          PHA
-$91:CFCF BF 04 A0 7E LDA $7EA004,x[$7E:A7FC]
-$91:CFD3 48          PHA
-$91:CFD4 BF 06 A0 7E LDA $7EA006,x[$7E:A7FE]
-$91:CFD8 A6 16       LDX $16    [$7E:0016]
-$91:CFDA 9F 42 40 7E STA $7E4042,x[$7E:4042]
-$91:CFDE 68          PLA
-$91:CFDF 9F 40 40 7E STA $7E4040,x[$7E:4040]
-$91:CFE3 68          PLA
-$91:CFE4 9F 02 40 7E STA $7E4002,x[$7E:4002]
-$91:CFE8 68          PLA
-$91:CFE9 9F 00 40 7E STA $7E4000,x[$7E:4000]
+;; Parameters:
+;;     A: Tile table index
+;;     $16: X-ray BG2 tilemap index
+$91:CFC1 0A          ASL A                  ;\
+$91:CFC2 0A          ASL A                  ;|
+$91:CFC3 0A          ASL A                  ;} X = (tile table index) * 8
+$91:CFC4 AA          TAX                    ;/
+$91:CFC5 BF 00 A0 7E LDA $7EA000,x[$7E:A7F8];\
+$91:CFC9 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] = [$7E:A000 + [X]]
+$91:CFCA BF 02 A0 7E LDA $7EA002,x[$7E:A7FA]; \
+$91:CFCE 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 2 = [$7E:A000 + [X] + 2]
+$91:CFCF BF 04 A0 7E LDA $7EA004,x[$7E:A7FC];  \
+$91:CFD3 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] + 40h = [$7E:A000 + [X] + 4]
+$91:CFD4 BF 06 A0 7E LDA $7EA006,x[$7E:A7FE];   \
+$91:CFD8 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + 42h = [$7E:A000 + [X] + 6]
+$91:CFDA 9F 42 40 7E STA $7E4042,x[$7E:4042];   /
+$91:CFDE 68          PLA                    ;  |
+$91:CFDF 9F 40 40 7E STA $7E4040,x[$7E:4040];  /
+$91:CFE3 68          PLA                    ; |
+$91:CFE4 9F 02 40 7E STA $7E4002,x[$7E:4002]; /
+$91:CFE8 68          PLA                    ;|
+$91:CFE9 9F 00 40 7E STA $7E4000,x[$7E:4000];/
 $91:CFED 60          RTS
 }
 
 
-;;; $CFEE:  ;;;
+;;; $CFEE: Copy revealed block command argument to x-ray BG2 tilemap one block right ;;;
 {
-$91:CFEE B1 03       LDA ($03),y[$91:D4AE]
-$91:CFF0 0A          ASL A
-$91:CFF1 0A          ASL A
-$91:CFF2 0A          ASL A
-$91:CFF3 AA          TAX
-$91:CFF4 BF 00 A0 7E LDA $7EA000,x[$7E:A2C0]
-$91:CFF8 48          PHA
-$91:CFF9 BF 02 A0 7E LDA $7EA002,x[$7E:A2C2]
-$91:CFFD 48          PHA
-$91:CFFE BF 04 A0 7E LDA $7EA004,x[$7E:A2C4]
-$91:D002 48          PHA
-$91:D003 BF 06 A0 7E LDA $7EA006,x[$7E:A2C6]
-$91:D007 A6 16       LDX $16    [$7E:0016]
-$91:D009 9F 46 40 7E STA $7E4046,x[$7E:4F46]
-$91:D00D 68          PLA
-$91:D00E 9F 44 40 7E STA $7E4044,x[$7E:4F44]
-$91:D012 68          PLA
-$91:D013 9F 06 40 7E STA $7E4006,x[$7E:4F06]
-$91:D017 68          PLA
-$91:D018 9F 04 40 7E STA $7E4004,x[$7E:4F04]
+;; Parameters:
+;;     Y: Revealed block command argument offset
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+$91:CFEE B1 03       LDA ($03),y[$91:D4AE]  ;\
+$91:CFF0 0A          ASL A                  ;|
+$91:CFF1 0A          ASL A                  ;} X = [[$03] + [Y]] * 8
+$91:CFF2 0A          ASL A                  ;|
+$91:CFF3 AA          TAX                    ;/
+$91:CFF4 BF 00 A0 7E LDA $7EA000,x[$7E:A2C0];\
+$91:CFF8 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] + 4 = [$7E:A000 + [X]]
+$91:CFF9 BF 02 A0 7E LDA $7EA002,x[$7E:A2C2]; \
+$91:CFFD 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 6 = [$7E:A000 + [X] + 2]
+$91:CFFE BF 04 A0 7E LDA $7EA004,x[$7E:A2C4];  \
+$91:D002 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] + 44h = [$7E:A000 + [X] + 4]
+$91:D003 BF 06 A0 7E LDA $7EA006,x[$7E:A2C6];   \
+$91:D007 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + 46h = [$7E:A000 + [X] + 6]
+$91:D009 9F 46 40 7E STA $7E4046,x[$7E:4F46];   /
+$91:D00D 68          PLA                    ;  |
+$91:D00E 9F 44 40 7E STA $7E4044,x[$7E:4F44];  /
+$91:D012 68          PLA                    ; |
+$91:D013 9F 06 40 7E STA $7E4006,x[$7E:4F06]; /
+$91:D017 68          PLA                    ;|
+$91:D018 9F 04 40 7E STA $7E4004,x[$7E:4F04];/
 $91:D01C 60          RTS
 }
 
 
-;;; $D01D:  ;;;
+;;; $D01D: Copy revealed block command argument to x-ray BG2 tilemap one block down ;;;
 {
-$91:D01D B1 03       LDA ($03),y[$91:D382]
-$91:D01F 0A          ASL A
-$91:D020 0A          ASL A
-$91:D021 0A          ASL A
-$91:D022 AA          TAX
-$91:D023 BF 00 A0 7E LDA $7EA000,x[$7E:A5E0]
-$91:D027 48          PHA
-$91:D028 BF 02 A0 7E LDA $7EA002,x[$7E:A5E2]
-$91:D02C 48          PHA
-$91:D02D BF 04 A0 7E LDA $7EA004,x[$7E:A5E4]
-$91:D031 48          PHA
-$91:D032 BF 06 A0 7E LDA $7EA006,x[$7E:A5E6]
-$91:D036 A6 16       LDX $16    [$7E:0016]
-$91:D038 9F C2 40 7E STA $7E40C2,x[$7E:4C42]
-$91:D03C 68          PLA
-$91:D03D 9F C0 40 7E STA $7E40C0,x[$7E:4C40]
-$91:D041 68          PLA
-$91:D042 9F 82 40 7E STA $7E4082,x[$7E:4C02]
-$91:D046 68          PLA
-$91:D047 9F 80 40 7E STA $7E4080,x[$7E:4C00]
+;; Parameters:
+;;     Y: Revealed block command argument offset
+;;     $03: Revealed block command pointer
+;;     $16: X-ray BG2 tilemap index
+$91:D01D B1 03       LDA ($03),y[$91:D382]  ;\
+$91:D01F 0A          ASL A                  ;|
+$91:D020 0A          ASL A                  ;} X = [[$03] + [Y]] * 8
+$91:D021 0A          ASL A                  ;|
+$91:D022 AA          TAX                    ;/
+$91:D023 BF 00 A0 7E LDA $7EA000,x[$7E:A5E0];\
+$91:D027 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] + 80h = [$7E:A000 + [X]]
+$91:D028 BF 02 A0 7E LDA $7EA002,x[$7E:A5E2]; \
+$91:D02C 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 82h = [$7E:A000 + [X] + 2]
+$91:D02D BF 04 A0 7E LDA $7EA004,x[$7E:A5E4];  \
+$91:D031 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] + C0h = [$7E:A000 + [X] + 4]
+$91:D032 BF 06 A0 7E LDA $7EA006,x[$7E:A5E6];   \
+$91:D036 A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + C2h = [$7E:A000 + [X] + 6]
+$91:D038 9F C2 40 7E STA $7E40C2,x[$7E:4C42];   /
+$91:D03C 68          PLA                    ;  |
+$91:D03D 9F C0 40 7E STA $7E40C0,x[$7E:4C40];  /
+$91:D041 68          PLA                    ; |
+$91:D042 9F 82 40 7E STA $7E4082,x[$7E:4C02]; /
+$91:D046 68          PLA                    ;|
+$91:D047 9F 80 40 7E STA $7E4080,x[$7E:4C00];/
 $91:D04B 60          RTS
 }
 
 
-;;; $D04C: Load block to x-ray tilemap ;;;
+;;; $D04C: Load block to x-ray BG2 tilemap ;;;
 {
 ;; Parameters:
-;;     A: Level data block (clipdata ignored)
+;;     A: Level data block (block type ignored)
 ;;     X: X block
 ;;     Y: Y block
+
+; Called by $84:831A (load item x-ray blocks)
+; Doesn't support X flipped blocks
 $91:D04C 08          PHP
 $91:D04D DA          PHX
 $91:D04E 5A          PHY
 $91:D04F C2 30       REP #$30
-$91:D051 85 28       STA $28    [$7E:0028]
+$91:D051 85 28       STA $28    [$7E:0028]  ; $28 = (level data block)
 $91:D053 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $91:D056 4A          LSR A                  ;|
 $91:D057 4A          LSR A                  ;|
 $91:D058 4A          LSR A                  ;|
 $91:D059 4A          LSR A                  ;|
-$91:D05A 85 18       STA $18    [$7E:0018]  ;} If X block < layer 1 X block: return
+$91:D05A 85 18       STA $18    [$7E:0018]  ;} If (X block) < (layer 1 X block): return
 $91:D05C 8A          TXA                    ;|
 $91:D05D 38          SEC                    ;|
 $91:D05E E5 18       SBC $18    [$7E:0018]  ;|
 $91:D060 30 40       BMI $40    [$D0A2]     ;/
-$91:D062 85 18       STA $18    [$7E:0018]  ; $18 = X block on screen
+$91:D062 85 18       STA $18    [$7E:0018]  ; $18 = (block X offset)
 $91:D064 E9 10 00    SBC #$0010             ;\
-$91:D067 10 39       BPL $39    [$D0A2]     ;} If X block on screen >= 10h: return
+$91:D067 10 39       BPL $39    [$D0A2]     ;} If (block X offset) >= 10h: return
 $91:D069 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $91:D06C 4A          LSR A                  ;|
 $91:D06D 4A          LSR A                  ;|
 $91:D06E 4A          LSR A                  ;|
 $91:D06F 4A          LSR A                  ;|
-$91:D070 85 1A       STA $1A    [$7E:001A]  ;} If Y block < layer 1 Y block: return
+$91:D070 85 1A       STA $1A    [$7E:001A]  ;} If (Y block) < (layer 1 Y block): return
 $91:D072 98          TYA                    ;|
 $91:D073 38          SEC                    ;|
 $91:D074 E5 1A       SBC $1A    [$7E:001A]  ;|
 $91:D076 30 2A       BMI $2A    [$D0A2]     ;/
-$91:D078 85 1A       STA $1A    [$7E:001A]  ; $1A = Y block on screen
+$91:D078 85 1A       STA $1A    [$7E:001A]  ; $1A = (block Y offset)
 $91:D07A E9 10 00    SBC #$0010             ;\
-$91:D07D 10 23       BPL $23    [$D0A2]     ;} If Y block on screen >= 10h: return
+$91:D07D 10 23       BPL $23    [$D0A2]     ;} If (block Y offset) >= 10h: return
 $91:D07F A5 1A       LDA $1A    [$7E:001A]  ;\
 $91:D081 0A          ASL A                  ;|
 $91:D082 0A          ASL A                  ;|
 $91:D083 0A          ASL A                  ;|
 $91:D084 0A          ASL A                  ;|
-$91:D085 0A          ASL A                  ;} $16 = ((Y block on screen) * 20h + (X block on screen)) * 4
+$91:D085 0A          ASL A                  ;} $16 = ((block Y offset) * 20h + (block X offset)) * 4
 $91:D086 18          CLC                    ;|
 $91:D087 65 18       ADC $18    [$7E:0018]  ;|
 $91:D089 0A          ASL A                  ;|
 $91:D08A 0A          ASL A                  ;|
 $91:D08B 85 16       STA $16    [$7E:0016]  ;/
 $91:D08D A5 28       LDA $28    [$7E:0028]  ;\
-$91:D08F 89 00 08    BIT #$0800             ;} If block is not flipped vertically:
+$91:D08F 89 00 08    BIT #$0800             ;} If block is not Y flipped:
 $91:D092 D0 08       BNE $08    [$D09C]     ;/
-$91:D094 29 FF 03    AND #$03FF             ; A &= 3FFh
-$91:D097 20 C1 CF    JSR $CFC1  [$91:CFC1]  ; Execute subroutine $CFC1
+$91:D094 29 FF 03    AND #$03FF             ; A = (level data block) & 3FFh
+$91:D097 20 C1 CF    JSR $CFC1  [$91:CFC1]  ; Copy block to x-ray BG1 tilemap
 $91:D09A 80 06       BRA $06    [$D0A2]
-
-                                            ; Else (block is flipped vertically):
-
-$91:D09C 29 FF 03    AND #$03FF             ; A &= 3FFh
-$91:D09F 20 A6 D0    JSR $D0A6  [$91:D0A6]  ; Execute subroutine $D0A6
+                                            ; Else (block is Y flipped):
+$91:D09C 29 FF 03    AND #$03FF             ; A = (level data block) & 3FFh
+$91:D09F 20 A6 D0    JSR $D0A6  [$91:D0A6]  ; Copy Y flipped block to x-ray BG1 tilemap
 
 $91:D0A2 7A          PLY
 $91:D0A3 FA          PLX
@@ -8081,32 +8205,35 @@ $91:D0A5 6B          RTL
 }
 
 
-;;; $D0A6:  ;;;
+;;; $D0A6: Copy Y flipped block to x-ray BG2 tilemap ;;;
 {
-$91:D0A6 0A          ASL A
-$91:D0A7 0A          ASL A
-$91:D0A8 0A          ASL A
-$91:D0A9 AA          TAX
-$91:D0AA BF 00 A0 7E LDA $7EA000,x
-$91:D0AE 48          PHA
-$91:D0AF BF 02 A0 7E LDA $7EA002,x
-$91:D0B3 48          PHA
-$91:D0B4 BF 04 A0 7E LDA $7EA004,x
-$91:D0B8 48          PHA
-$91:D0B9 BF 06 A0 7E LDA $7EA006,x
-$91:D0BD A6 16       LDX $16    [$7E:0016]
-$91:D0BF 9F 02 40 7E STA $7E4002,x
-$91:D0C3 68          PLA
-$91:D0C4 9F 00 40 7E STA $7E4000,x
-$91:D0C8 68          PLA
-$91:D0C9 9F 42 40 7E STA $7E4042,x
-$91:D0CD 68          PLA
-$91:D0CE 9F 40 40 7E STA $7E4040,x
+;; Parameters:
+;;     A: Tile table index
+;;     $16: X-ray BG2 tilemap index
+$91:D0A6 0A          ASL A                  ;\
+$91:D0A7 0A          ASL A                  ;|
+$91:D0A8 0A          ASL A                  ;} X = (tile table index) * 8
+$91:D0A9 AA          TAX                    ;/
+$91:D0AA BF 00 A0 7E LDA $7EA000,x          ;\
+$91:D0AE 48          PHA                    ;} $7E:4000 + [x-ray BG2 tilemap index] + 40h = [$7E:A000 + [X]]
+$91:D0AF BF 02 A0 7E LDA $7EA002,x          ; \
+$91:D0B3 48          PHA                    ; } $7E:4000 + [x-ray BG2 tilemap index] + 42h = [$7E:A000 + [X] + 2]
+$91:D0B4 BF 04 A0 7E LDA $7EA004,x          ;  \
+$91:D0B8 48          PHA                    ;  } $7E:4000 + [x-ray BG2 tilemap index] = [$7E:A000 + [X] + 4]
+$91:D0B9 BF 06 A0 7E LDA $7EA006,x          ;   \
+$91:D0BD A6 16       LDX $16    [$7E:0016]  ;   } $7E:4000 + [x-ray BG2 tilemap index] + 2 = [$7E:A000 + [X] + 6]
+$91:D0BF 9F 02 40 7E STA $7E4002,x          ;   /
+$91:D0C3 68          PLA                    ;  |
+$91:D0C4 9F 00 40 7E STA $7E4000,x          ;  /
+$91:D0C8 68          PLA                    ; |
+$91:D0C9 9F 42 40 7E STA $7E4042,x          ; /
+$91:D0CD 68          PLA                    ;|
+$91:D0CE 9F 40 40 7E STA $7E4040,x          ;/
 $91:D0D2 60          RTS
 }
 
 
-;;; $D0D3: X-ray setup stage 5 ;;;
+;;; $D0D3: X-ray setup stage 5 - read BG2 tilemap - 2nd screen ;;;
 {
 $91:D0D3 08          PHP
 $91:D0D4 C2 30       REP #$30
@@ -8124,10 +8251,10 @@ $91:D0EE 6D 15 09    ADC $0915  [$7E:0915]  ;} BG1 Y scroll = [layer 1 Y positio
 $91:D0F1 85 B3       STA $B3    [$7E:00B3]  ;/
 
 $91:D0F3 A5 B1       LDA $B1    [$7E:00B1]  ;\
-$91:D0F5 29 0F 00    AND #$000F             ;} BG2 X scroll = [BG1 X scroll] & Fh
+$91:D0F5 29 0F 00    AND #$000F             ;} BG2 X scroll = [BG1 X scroll] % 10h
 $91:D0F8 85 B5       STA $B5    [$7E:00B5]  ;/
 $91:D0FA A5 B3       LDA $B3    [$7E:00B3]  ;\
-$91:D0FC 29 0F 00    AND #$000F             ;} BG2 Y scroll = [BG1 Y scroll] & Fh
+$91:D0FC 29 0F 00    AND #$000F             ;} BG2 Y scroll = [BG1 Y scroll] % 10h
 $91:D0FF 85 B7       STA $B7    [$7E:00B7]  ;/
 $91:D101 E2 20       SEP #$20
 $91:D103 A9 49       LDA #$49               ;\
@@ -8193,7 +8320,7 @@ $91:D172 6B          RTL
 }
 
 
-;;; $D173: X-ray setup stage 6 ;;;
+;;; $D173: X-ray setup stage 6 - transfer x-ray tilemap - 1st screen ;;;
 {
 $91:D173 08          PHP
 $91:D174 C2 30       REP #$30
@@ -8220,7 +8347,7 @@ $91:D19F 6B          RTL
 }
 
 
-;;; $D1A0: X-ray setup stage 7 ;;;
+;;; $D1A0: X-ray setup stage 7 - initialise x-ray beam, transfer x-ray tilemap - 2nd screen ;;;
 {
 $91:D1A0 08          PHP
 $91:D1A1 C2 30       REP #$30
@@ -8250,19 +8377,19 @@ $91:D1D5 A9 00 98    LDA #$9800             ;|
 $91:D1D8 8D 89 0A    STA $0A89  [$7E:0A89]  ;|
 $91:D1DB A9 E4 00    LDA #$00E4             ;|
 $91:D1DE 8D 8B 0A    STA $0A8B  [$7E:0A8B]  ;|
-$91:D1E1 A9 C8 98    LDA #$98C8             ;} $0A88..92 = E4h,$9800, E4h,$98C8, 98h,$9990, 00,00
+$91:D1E1 A9 C8 98    LDA #$98C8             ;} $0A88..92 = E4h,$9800, E4h,$98C8, 98h,$9990, 0,0
 $91:D1E4 8D 8C 0A    STA $0A8C  [$7E:0A8C]  ;|
 $91:D1E7 A9 98 00    LDA #$0098             ;|
 $91:D1EA 8D 8E 0A    STA $0A8E  [$7E:0A8E]  ;|
 $91:D1ED A9 90 99    LDA #$9990             ;|
 $91:D1F0 8D 8F 0A    STA $0A8F  [$7E:0A8F]  ;|
 $91:D1F3 9C 91 0A    STZ $0A91  [$7E:0A91]  ;/
-$91:D1F6 9C 7A 0A    STZ $0A7A  [$7E:0A7A]  ; $0A7A = 0
-$91:D1F9 9C 7C 0A    STZ $0A7C  [$7E:0A7C]  ; $0A7C = 0
-$91:D1FC 9C 7E 0A    STZ $0A7E  [$7E:0A7E]  ; $0A7E = 0
+$91:D1F6 9C 7A 0A    STZ $0A7A  [$7E:0A7A]  ; X-ray state = no beam
+$91:D1F9 9C 7C 0A    STZ $0A7C  [$7E:0A7C]  ;\
+$91:D1FC 9C 7E 0A    STZ $0A7E  [$7E:0A7E]  ;} X-ray angular width delta = 0.0
 $91:D1FF A9 00 00    LDA #$0000             ;\
-$91:D202 8D 84 0A    STA $0A84  [$7E:0A84]  ;} $0A84 = 0
-$91:D205 9C 86 0A    STZ $0A86  [$7E:0A86]  ; $0A86 = 0
+$91:D202 8D 84 0A    STA $0A84  [$7E:0A84]  ;} X-ray angular width = 0.0
+$91:D205 9C 86 0A    STZ $0A86  [$7E:0A86]  ;/
 $91:D208 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:D20B 29 FF 00    AND #$00FF             ;|
 $91:D20E C9 04 00    CMP #$0004             ;} If Samus is facing right:
@@ -8332,7 +8459,7 @@ $91:D2A9 8A          TXA                    ;\
 $91:D2AA 0C 86 19    TSB $1986  [$7E:1986]  ;} Layer blending window 2 configuration |= [X] >> 8
 $91:D2AD FA          PLX
 $91:D2AE 28          PLP
-$91:D2AF 6B          RTL
+$91:D2AF 6B          RTL                    ; Return
 
 ; BRANCH_FIREFLEA
 $91:D2B0 A5 74       LDA $74    [$7E:0074]  ;\
@@ -8369,12 +8496,12 @@ $91:D2D5 60          RTS
 }
 
 
-;;; $D2D6..D4D9: X-ray block data ;;;
+;;; $D2D6..D4D9: Revealed block data ;;;
 {
-;;; $D2D6:  ;;;
+;;; $D2D6: Revealed block table pointers ;;;
 {
-$91:D2D6             dw 0000,D2FC, ; Air
-                        3000,D306, ; Special air
+$91:D2D6             dw 0000,D2FC  ; Air
+$91:D2DA             dw 3000,D306, ; Special air
                         5000,D310, ; Horizontal extension
                         A000,D318, ; Spike block
                         B000,D322, ; Special block
@@ -8386,87 +8513,87 @@ $91:D2D6             dw 0000,D2FC, ; Air
 }
 
 
-;;; $D2FC: Block type 0 - air ;;;
+;;; $D2FC: Revealed block table - air ;;;
 {
-$91:D2FC             dw FF00,D302,
+$91:D2FC             dw FF00,D302, ; Any BTS
                         FFFF
 
-$91:D302             dw CF36,00FF
+$91:D302             dw CF36, 00FF ; Copy 1x1 block to x-ray BG2 tilemap
 }
 
 
-;;; $D306: Block type 3 - special air ;;;
+;;; $D306: Revealed block table - special air ;;;
 {
-$91:D306             dw 0046,D30C,  ; Scroll PLM trigger
+$91:D306             dw 0046,D30C, ; Scroll PLM trigger
                         FFFF
 
-$91:D30C             dw CF36,00FF
+$91:D30C             dw CF36, 00FF ; Copy 1x1 block to x-ray BG2 tilemap
 }
 
 
-;;; $D310: Block type 5 - horizontal extension ;;;
+;;; $D310: Revealed block table - horizontal extension ;;;
 {
-$91:D310             dw FF00,D316,
+$91:D310             dw FF00,D316, ; Any BTS
                         FFFF
 
-$91:D316             dw CEBB
+$91:D316             dw CEBB ; Horizontal extension
 }
 
 
-;;; $D318: Block type Ah - spike block ;;;
+;;; $D318: Revealed block table - spike block ;;;
 {
-$91:D318             dw 000E,D31E,  ; X-rayable block
+$91:D318             dw 000E,D31E, ; X-rayable block
                         FFFF
 
-$91:D31E             dw CF36,005F
+$91:D31E             dw CF36, 005F ; Copy 1x1 block to x-ray BG2 tilemap
 }
 
 
-;;; $D322: Block type Bh - special block ;;;
+;;; $D322: Revealed block table - special block ;;;
 {
-$91:D322             dw 0000,D374,; 1x1 respawning crumble block
-                        0001,D378,; 2x1 respawning crumble block
-                        0002,D37E,; 1x2 respawning crumble block
-                        0003,D384,; 2x2 respawning crumble block
-                        0004,D38E,; 1x1 crumble block
-                        0005,D392,; 2x1 crumble block
-                        0006,D398,; 1x2 crumble block
-                        0007,D39E,; 2x2 crumble block
-                        0008,D3A8,; Unused air
-                        0009,D3AC,; Unused air
-                        000A,D3B0,; Unused air
-                        000B,D3B4,; Unused air
-                        000C,D3B8,; Unused air
-                        000D,D3BC,; Unused air
-                        000E,D3C0,; Respawning speed boost block
-                        000F,D3C4,; Speed boost block
-                        0082,D3C8,; Brinstar only. Respawning speed block, slower crumble animation
-                        0083,D3C8,; Brinstar only. Speed block, slower crumble animation
-                        0084,D3C8,; Brinstar only. Respawning speed block (used by dachora pit)
-                        0085,D3C8,; Brinstar only. Speed boost block
+$91:D322             dw 0000,D374, ; 1x1 respawning crumble block
+                        0001,D378, ; 2x1 respawning crumble block
+                        0002,D37E, ; 1x2 respawning crumble block
+                        0003,D384, ; 2x2 respawning crumble block
+                        0004,D38E, ; 1x1 crumble block
+                        0005,D392, ; 2x1 crumble block
+                        0006,D398, ; 1x2 crumble block
+                        0007,D39E, ; 2x2 crumble block
+                        0008,D3A8, ; Unused air
+                        0009,D3AC, ; Unused air
+                        000A,D3B0, ; Unused air
+                        000B,D3B4, ; Unused air
+                        000C,D3B8, ; Unused air
+                        000D,D3BC, ; Unused air
+                        000E,D3C0, ; Respawning speed boost block
+                        000F,D3C4, ; Speed boost block
+                        0082,D3C8, ; Brinstar only. Respawning speed block, slower crumble animation
+                        0083,D3C8, ; Brinstar only. Speed block, slower crumble animation
+                        0084,D3C8, ; Brinstar only. Respawning speed block (used by dachora pit)
+                        0085,D3C8, ; Brinstar only. Speed boost block
                         FFFF
 
-$91:D374             dw CF36, 00BC
-$91:D378             dw CF4E, 00BC, 00BC
-$91:D37E             dw CF62, 00BC, 00BC
-$91:D384             dw CF6F, 00BC, 00BC, 00BC, 00BC
-$91:D38E             dw CF36, 00BC
-$91:D392             dw CF4E, 00BC, 00BC
-$91:D398             dw CF62, 00BC, 00BC
-$91:D39E             dw CF6F, 00BC, 00BC, 00BC, 00BC
-$91:D3A8             dw CF36, 00BC
-$91:D3AC             dw CF36, 00BC
-$91:D3B0             dw CF36, 00BC
-$91:D3B4             dw CF36, 00BC
-$91:D3B8             dw CF36, 00BC
-$91:D3BC             dw CF36, 00BC
-$91:D3C0             dw CF36, 00B6
-$91:D3C4             dw CF36, 00B6
-$91:D3C8             dw CF3E, 00B6
+$91:D374             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D378             dw CF4E, 00BC, 00BC             ; Copy 2x1 block to x-ray BG2 tilemap
+$91:D37E             dw CF62, 00BC, 00BC             ; Copy 1x2 block to x-ray BG2 tilemap
+$91:D384             dw CF6F, 00BC, 00BC, 00BC, 00BC ; Copy 2x2 block to x-ray BG2 tilemap
+$91:D38E             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D392             dw CF4E, 00BC, 00BC             ; Copy 2x1 block to x-ray BG2 tilemap
+$91:D398             dw CF62, 00BC, 00BC             ; Copy 1x2 block to x-ray BG2 tilemap
+$91:D39E             dw CF6F, 00BC, 00BC, 00BC, 00BC ; Copy 2x2 block to x-ray BG2 tilemap
+$91:D3A8             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3AC             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3B0             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3B4             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3B8             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3BC             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3C0             dw CF36, 00B6                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3C4             dw CF36, 00B6                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D3C8             dw CF3E, 00B6                   ; Copy 1x1 block to x-ray BG2 tilemap if in Brinstar
 }
 
 
-;;; $D3CC: Block type Ch - shootable block ;;;
+;;; $D3CC: Revealed block table - shootable block ;;;
 {
 $91:D3CC             dw 0000,D40E, ; 1x1 respawning shot block
                         0001,D412, ; 2x1 respawning shot block
@@ -8486,48 +8613,48 @@ $91:D3CC             dw 0000,D40E, ; 1x1 respawning shot block
                         000F,D45E, ; Fake super missile block
                         FFFF
 
-$91:D40E             dw CF36, 0052
-$91:D412             dw CF4E, 0096, 0097
-$91:D418             dw CF62, 0098, 00B8
-$91:D41E             dw CF6F, 0099, 009A, 00B9, 00BA
-$91:D428             dw CF36, 0052
-$91:D42C             dw CF4E, 0096, 0097
-$91:D432             dw CF62, 0098, 00B8
-$91:D438             dw CF6F, 0099, 009A, 00B9, 00BA
-$91:D442             dw CF36, 0057
-$91:D446             dw CF36, 0057
-$91:D44A             dw CF36, 009F
-$91:D44E             dw CF36, 009F
-$91:D452             dw CF36, 009F
-$91:D456             dw CF36, 009F
-$91:D45A             dw CF36, 009F
-$91:D45E             dw CF36, 009F
+$91:D40E             dw CF36, 0052                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D412             dw CF4E, 0096, 0097             ; Copy 2x1 block to x-ray BG2 tilemap
+$91:D418             dw CF62, 0098, 00B8             ; Copy 1x2 block to x-ray BG2 tilemap
+$91:D41E             dw CF6F, 0099, 009A, 00B9, 00BA ; Copy 2x2 block to x-ray BG2 tilemap
+$91:D428             dw CF36, 0052                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D42C             dw CF4E, 0096, 0097             ; Copy 2x1 block to x-ray BG2 tilemap
+$91:D432             dw CF62, 0098, 00B8             ; Copy 1x2 block to x-ray BG2 tilemap
+$91:D438             dw CF6F, 0099, 009A, 00B9, 00BA ; Copy 2x2 block to x-ray BG2 tilemap
+$91:D442             dw CF36, 0057                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D446             dw CF36, 0057                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D44A             dw CF36, 009F                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D44E             dw CF36, 009F                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D452             dw CF36, 009F                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D456             dw CF36, 009F                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D45A             dw CF36, 009F                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D45E             dw CF36, 009F                   ; Copy 1x1 block to x-ray BG2 tilemap
 }
 
 
-;;; $D462: Block type Dh - vertical extension ;;;
+;;; $D462: Revealed block table - vertical extension ;;;
 {
-$91:D462             dw FF00,D468,
+$91:D462             dw FF00,D468, ; Any BTS
                         FFFF
 
-$91:D468             dw CE79
+$91:D468             dw CE79 ; Vertical extension
 }
 
 
-;;; $D46A: Block type Eh - grapple block ;;;
+;;; $D46A: Revealed block table - grapple block ;;;
 {
 $91:D46A             dw 0000,D478, ; Generic grapple block
                         0001,D47C, ; Respawning crumbling grapple block
                         0002,D480, ; Non-respawning crumbling grapple block
                         FFFF
 
-$91:D478             dw CF36,009B,
-$91:D47C             dw CF36,00B7,
-$91:D480             dw CF36,00B7
+$91:D478             dw CF36, 009B ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D47C             dw CF36, 00B7 ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D480             dw CF36, 00B7 ; Copy 1x1 block to x-ray BG2 tilemap
 }
 
 
-;;; $D484: Block type Fh - bombable block ;;;
+;;; $D484: Revealed block table - bombable block ;;;
 {
 $91:D484             dw 0000,D4A6, ; 1x1 respawning bomb block
                         0001,D4AA, ; 2x1 respawning bomb block
@@ -8539,14 +8666,14 @@ $91:D484             dw 0000,D4A6, ; 1x1 respawning bomb block
                         0007,D4D0, ; 2x2 bomb block
                         FFFF
 
-$91:D4A6             dw CF36, 0058
-$91:D4AA             dw CF4E, 0058, 0058
-$91:D4B0             dw CF62, 0058, 0058
-$91:D4B6             dw CF6F, 0058, 0058, 0058, 0058
-$91:D4C0             dw CF36, 0058
-$91:D4C4             dw CF4E, 0058, 0058
-$91:D4CA             dw CF62, 0058, 0058
-$91:D4D0             dw CF6F, 0058, 0058, 0058, 0058
+$91:D4A6             dw CF36, 0058                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D4AA             dw CF4E, 0058, 0058             ; Copy 2x1 block to x-ray BG2 tilemap
+$91:D4B0             dw CF62, 0058, 0058             ; Copy 1x2 block to x-ray BG2 tilemap
+$91:D4B6             dw CF6F, 0058, 0058, 0058, 0058 ; Copy 2x2 block to x-ray BG2 tilemap
+$91:D4C0             dw CF36, 0058                   ; Copy 1x1 block to x-ray BG2 tilemap
+$91:D4C4             dw CF4E, 0058, 0058             ; Copy 2x1 block to x-ray BG2 tilemap
+$91:D4CA             dw CF62, 0058, 0058             ; Copy 1x2 block to x-ray BG2 tilemap
+$91:D4D0             dw CF6F, 0058, 0058, 0058, 0058 ; Copy 2x2 block to x-ray BG2 tilemap
 }
 }
 }
@@ -8814,6 +8941,8 @@ $91:D6F6 6B          RTL
 }
 
 
+;;; $D6F7..DE52: Samus palette handling ;;;
+{
 ;;; $D6F7: Handle Samus palette ;;;
 {
 ; Also handles super jump timer
@@ -9115,7 +9244,7 @@ $91:D931 A5 8B       LDA $8B    [$7E:008B]  ;\
 $91:D933 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: return
 $91:D936 F0 D8       BEQ $D8    [$D910]     ;/
 $91:D938 A9 01 00    LDA #$0001             ;\
-$91:D93B 8D C0 0D    STA $0DC0  [$7E:0DC0]  ;} $0DC0 = 1
+$91:D93B 8D C0 0D    STA $0DC0  [$7E:0DC0]  ;} Flag to resume charging beam sound effect
 $91:D93E 60          RTS                    ; Return
 
 $91:D93F C9 56 C8    CMP #$C856             ;\
@@ -9249,7 +9378,7 @@ $91:DA31 AD CE 0A    LDA $0ACE  [$7E:0ACE]  ;\
 $91:DA34 1A          INC A                  ;|
 $91:DA35 1A          INC A                  ;|
 $91:DA36 C9 0C 00    CMP #$000C             ;|
-$91:DA39 30 03       BMI $03    [$DA3E]     ;} Special Samus palette frame = ([Special Samus palette frame] + 2) % Ch
+$91:DA39 30 03       BMI $03    [$DA3E]     ;} Special Samus palette frame = ([special Samus palette frame] + 2) % Ch
 $91:DA3B A9 00 00    LDA #$0000             ;|
                                             ;|
 $91:DA3E 8D CE 0A    STA $0ACE  [$7E:0ACE]  ;/
@@ -9294,7 +9423,7 @@ $91:DA97 AD CE 0A    LDA $0ACE  [$7E:0ACE]  ;\
 $91:DA9A 1A          INC A                  ;|
 $91:DA9B 1A          INC A                  ;|
 $91:DA9C C9 08 00    CMP #$0008             ;|
-$91:DA9F 30 03       BMI $03    [$DAA4]     ;} Special Samus palette frame = min(6, [Special Samus palette frame] + 2)
+$91:DA9F 30 03       BMI $03    [$DAA4]     ;} Special Samus palette frame = min(6, [special Samus palette frame] + 2)
 $91:DAA1 A9 06 00    LDA #$0006             ;|
                                             ;|
 $91:DAA4 8D CE 0A    STA $0ACE  [$7E:0ACE]  ;/
@@ -9541,7 +9670,7 @@ $91:DCB3 60          RTS
 ;;     Carry: Clear to use normal suit palette, set otherwise
 $91:DCB4 AD 80 0A    LDA $0A80  [$7E:0A80]  ;\
 $91:DCB7 30 6A       BMI $6A    [$DD23]     ;} If [$0A80] < 0: go to BRANCH_FINISH
-$91:DCB9 D0 3E       BNE $3E    [$DCF9]     ; If [$0A80] != 0: go to BRANCH_DCF9
+$91:DCB9 D0 3E       BNE $3E    [$DCF9]     ; If [$0A80] != 0: go to BRANCH_PALETTE_SET
 $91:DCBB AD 7A 0A    LDA $0A7A  [$7E:0A7A]  ;\
 $91:DCBE C9 02 00    CMP #$0002             ;} If [x-ray state] >= 2: go to BRANCH_NOT_WIDENING
 $91:DCC1 10 27       BPL $27    [$DCEA]     ;/
@@ -9571,7 +9700,7 @@ $91:DCF0 A9 01 00    LDA #$0001             ;\
 $91:DCF3 8D D0 0A    STA $0AD0  [$7E:0AD0]  ;} X-ray palette timer = 1
 $91:DCF6 8D 80 0A    STA $0A80  [$7E:0A80]  ; $0A80 = 1
 
-; BRANCH_DCF9
+; BRANCH_PALETTE_SET
 $91:DCF9 CE D0 0A    DEC $0AD0  [$7E:0AD0]  ; Decrement x-ray palette timer
 $91:DCFC F0 02       BEQ $02    [$DD00]     ;\
 $91:DCFE 10 E8       BPL $E8    [$DCE8]     ;} If [x-ray palette timer] > 0: return set
@@ -9722,6 +9851,7 @@ $91:DE4C 8F 9E C3 7E STA $7EC39E[$7E:C39E]
 $91:DE50 AB          PLB
 $91:DE51 28          PLP
 $91:DE52 60          RTS
+}
 }
 
 
@@ -10082,7 +10212,7 @@ $91:E0AA 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 $91:E0AD A9 37 A3    LDA #$A337             ;\
 $91:E0B0 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $91:E0B3 A9 34 F5    LDA #$F534             ;\
-$91:E0B6 8D 5E 0A    STA $0A5E  [$7E:0A5E]  ;} $0A5E = RTS
+$91:E0B6 8D 5E 0A    STA $0A5E  [$7E:0A5E]  ;} Debug command handler = RTS
 $91:E0B9 A9 32 00    LDA #$0032             ;\
 $91:E0BC 8D 12 0A    STA $0A12  [$7E:0A12]  ;} Samus health mirror = 50
 $91:E0BF A9 01 06    LDA #$0601             ;\
@@ -10540,6 +10670,8 @@ $91:E4AC 6B          RTL
 }
 
 
+;;; $E4AD..E632: Drained Samus controller ;;;
+{
 ;;; $E4AD: Drained Samus controller ;;;
 {
 ;; Parameters:
@@ -10744,6 +10876,7 @@ $91:E62E 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - Samus 
 $91:E631 38          SEC                    ;\
 $91:E632 60          RTS                    ;} Return carry set
 }
+}
 
 
 ;;; $E633: Update Samus pose due to change of equipment ;;;
@@ -10876,6 +11009,8 @@ $91:E732 60          RTS
 }
 
 
+;;; $E733..E8B5: Update Samus pose due to change of equipment ;;;
+{
 ;;; $E733: Update Samus pose due to change of equipment - standing ;;;
 {
 $91:E733 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -11078,6 +11213,7 @@ $91:E8AE 60          RTS                    ; Return
 $91:E8AF A9 17 00    LDA #$0017             ;\
 $91:E8B2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 17h
 $91:E8B5 60          RTS
+}
 }
 
 
@@ -11652,6 +11788,8 @@ $91:EC3E             dw EFC3, F31D, F34E, F36E, F37C, F397, F3A5, F3AA, F3FD
 }
 
 
+;;; $EC50..ED4D: Prospective pose change commands ;;;
+{
 ;;; $EC50: Prospective pose change command 1 - decelerate ;;;
 {
 ; Running / normal jumping / morph ball in air and [Samus X base speed] != 0.0
@@ -11806,8 +11944,11 @@ $91:ED36             dw 0005, ; *35h: Facing right - crouching transition
                         0000, ;  3Fh: Unused
                         0000  ;  40h: Unused
 }
+}
 
 
+;;; $ED4E..EFC2: Special prospective pose change commands ;;;
+{
 ;;; $ED4E: Special prospective pose change command 1 - start knockback ;;;
 {
 $91:ED4E AD 23 0A    LDA $0A23  [$7E:0A23]  ;\
@@ -12180,6 +12321,7 @@ $91:EFBB 60          RTS
 $91:EFBC 22 EB BE 9B JSL $9BBEEB[$9B:BEEB]  ; Execute $9B:BEEB
 $91:EFC0 4C 53 EF    JMP $EF53  [$91:EF53]  ; Go to connecting grapple - kill speed and clamp scrolling speed
 }
+}
 
 
 ;;; $EFC3: RTS ;;;
@@ -12188,6 +12330,8 @@ $91:EFC3 60          RTS
 }
 
 
+;;; $EFC4..F31C: Solid vertical collision ;;;
+{
 ;;; $EFC4: Prospective pose change command 5 - solid vertical collision ;;;
 {
 $91:EFC4 AD C6 0D    LDA $0DC6  [$7E:0DC6]  ;\
@@ -12236,6 +12380,8 @@ $91:F00F 60          RTS
 }
 
 
+;;; $F010..F2D2: Landing ;;;
+{
 ;;; $F010: Solid vertical collision - [Samus solid vertical collision result] = landed ;;;
 {
 $91:F010 20 46 F0    JSR $F046  [$91:F046]  ; Handle landing sound effects and graphics
@@ -12317,10 +12463,10 @@ $91:F0A4 60          RTS
 
 ;;; $F0A5: Handle landing graphics ;;;
 {
-$91:F0A5 AD 9F 07    LDA $079F  [$7E:079F]
-$91:F0A8 0A          ASL A
-$91:F0A9 AA          TAX
-$91:F0AA FC AE F0    JSR ($F0AE,x)[$91:F0C5]
+$91:F0A5 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$91:F0A8 0A          ASL A                  ;|
+$91:F0A9 AA          TAX                    ;} Execute [$F0AE + [area index] * 2]
+$91:F0AA FC AE F0    JSR ($F0AE,x)[$91:F0C5];/
 $91:F0AD 60          RTS
 
 $91:F0AE             dw F0C5, ; Crateria
@@ -12677,6 +12823,7 @@ $91:F2CE 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not boun
 $91:F2D1 18          CLC                    ;\
 $91:F2D2 60          RTS                    ;} Return carry clear
 }
+}
 
 
 ;;; $F2D3: Solid vertical collision - [Samus solid vertical collision result] = wall jump triggered ;;;
@@ -12719,8 +12866,11 @@ $91:F318 60          RTS
 $91:F319 9C 18 0A    STZ $0A18  [$7E:0A18]  ; $0A18 = 0
 $91:F31C 60          RTS
 }
+}
 
 
+;;; $F31D..F403: Super special prospective pose change commands ;;;
+{
 ;;; $F31D: Super special prospective pose change command 1 - knockback finished ;;;
 {
 $91:F31D 9C 52 0A    STZ $0A52  [$7E:0A52]  ; Knockback direction = none
@@ -12858,6 +13008,7 @@ $91:F3FD 20 1D F3    JSR $F31D  [$91:F31D]  ; Super special prospective pose cha
 $91:F400 20 6E F3    JSR $F36E  [$91:F36E]  ; Super special prospective pose change command 3 - transition animation finished
 $91:F403 60          RTS
 }
+}
 
 
 ;;; $F404: Handle Samus pose change ;;;
@@ -12894,6 +13045,8 @@ $91:F432 6B          RTL
 }
 
 
+;;; $F433..FB07: Initialise Samus pose ;;;
+{
 ;;; $F433: Initialise Samus pose (1/2) ;;;
 {
 $91:F433 08          PHP
@@ -13889,6 +14042,7 @@ $91:FAFC             dw D106, ; C9h: Facing right - shinespark - horizontal
                         D0D7, ; CDh: Facing right - shinespark - diagonal
                         D0D7  ; CEh: Facing left  - shinespark - diagonal
 }
+}
 
 
 ;;; $FB08: Set Samus animation frame if pose changed ;;;
@@ -13999,6 +14153,8 @@ $91:FBBA 6B          RTL
 }
 
 
+;;; $FBBB..FCAE: Handle jump transition ;;;
+{
 ;;; $FBBB: Handle jump transition ;;;
 {
 $91:FBBB 08          PHP
@@ -14158,6 +14314,7 @@ $91:FCAD 60          RTS
 {
 $91:FCAE 60          RTS
 }
+}
 
 
 ;;; $FCAF: X-ray Samus pose input handler ;;;
@@ -14277,6 +14434,8 @@ $91:FDAD 6B          RTL
 }
 
 
+;;; $FDAE..FFED: Handle collision due to change of pose ;;;
+{
 ;;; $FDAE: Handle collision due to change of pose ;;;
 {
 ; Does nothing if facing forward.
@@ -14632,6 +14791,7 @@ $91:FFE9 8D 14 0B    STA $0B14  [$7E:0B14]  ; Samus previous Y position = [Samus
 
 $91:FFEC 18          CLC                    ;\
 $91:FFED 60          RTS                    ;} Return carry clear
+}
 }
 
 
