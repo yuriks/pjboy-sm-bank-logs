@@ -660,7 +660,7 @@ $8F:91D3 60          RTS
 ; Room $99BD. Crateria space pirate shaft
 ; Room $99F9. Old Tourian escape shaft parallel
 ; Room $9A44. Crateria bomb hall
-; Room $9A90. Cratera missile room
+; Room $9A90. Crateria missile room
 $8F:91D4 60          RTS
 }
 

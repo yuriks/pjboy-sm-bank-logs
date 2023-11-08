@@ -500,7 +500,7 @@ $8D:9192             dx 0017, C3E5,18,2344, C3E5,08,232C, C3F5,18,2346, 000D,20,
 ; Enemy projectile $BAB0 (Tourian statue - Phantoon)
 $8D:9207             dx 0013, 0008,1C,2587, 0000,1C,2586, 01F8,1C,2585, 01F0,1C,2584, 0000,04,2583, 0000,FC,2581, 01F8,04,2582, 01F8,FC,2580, C208,EC,2561, C3E8,EC,254D, C208,FC,2565, C208,0C,256B, C3F8,0C,2569, C3E8,0C,2567, C3E8,FC,2563, C200,EC,2560, C3F0,EC,254E, C200,DC,254B, C3F0,DC,2549
 
-; Unused
+; Enemy projectile $BB50 (unused)
 $8D:9268             dx 0001, 81F9,F9,230E
 $8D:926F             dx 0001, 81FD,F5,2320
 $8D:9276             dx 0001, 8003,EE,2304
@@ -518,7 +518,7 @@ $8D:92C3             dx 0001, 81EB,EC,232E
 $8D:92CA             dx 0002, 01F1,F8,6334, 0008,F8,2334
 $8D:92D6             dx 0002, 01F1,F8,6324, 0008,F8,2324
 $8D:92E2             dx 0002, 81E9,F0,6328, 8008,F0,2328
-$8D:92EE             dx 0002, 81E9,F0,632C, 8008,F0,232C
+$8D:92EE             dx 0002, 81E9,F0,632C, 8008,F0,232C ; Unused
 $8D:92FA             dx 0002, 81E8,F0,632A, 8009,F0,232A
 
 ; Enemy projectile $BBC7 (Nuclear waffle body)

@@ -219,7 +219,7 @@ $86:8130 BC 47 1B    LDY $1B47,x[$7E:1B69]  ; Y = [enemy projectile instruction 
 
 ; LOOP
 $86:8133 B9 00 00    LDA $0000,y[$86:A28D]  ;\
-$86:8136 10 0A       BPL $0A    [$8142]     ;} If [[Y]] is negative:
+$86:8136 10 0A       BPL $0A    [$8142]     ;} If [[Y]] & 8000h != 0:
 $86:8138 85 12       STA $12    [$7E:0012]  ; $12 = [[Y]] (ASM instruction pointer)
 $86:813A C8          INY                    ;\
 $86:813B C8          INY                    ;} Y += 2
@@ -4309,6 +4309,15 @@ $86:9DAF 60          RTS
 {
 ;;; $9DB0: Enemy projectiles - mini Kraid ;;;
 {
+;                        __________________________________ Initialisation AI
+;                       |     _____________________________ Pre-instruction
+;                       |    |     ________________________ Instruction list
+;                       |    |    |     ___________________ X radius
+;                       |    |    |    |   ________________ Y radius
+;                       |    |    |    |  |   _____________ Properties
+;                       |    |    |    |  |  |     ________ Hit instruction list
+;                       |    |    |    |  |  |    |     ___ Shot instruction list
+;                       |    |    |    |  |  |    |    |
 $86:9DB0             dx 9DEC,9E1E,9DDA,04,04,0014,0000,84FC ; Mini Kraid spit
 $86:9DBE             dx 9E46,9E83,9DE0,04,02,0006,0000,84FC ; Mini Kraid spikes - left
 $86:9DCC             dx 9E4B,9E83,9DE6,04,02,0006,0000,84FC ; Mini Kraid spikes - right
@@ -5909,46 +5918,48 @@ $86:AA8B 60          RTS
 
 ;;; $AA8C: Pre-instruction - enemy projectile $AB07 ;;;
 {
-$86:AA8C 64 12       STZ $12    [$7E:0012]
-$86:AA8E 64 14       STZ $14    [$7E:0014]
-$86:AA90 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$86:AA93 38          SEC
-$86:AA94 FD 4B 1A    SBC $1A4B,x
-$86:AA97 0A          ASL A
-$86:AA98 0A          ASL A
-$86:AA99 0A          ASL A
-$86:AA9A 10 02       BPL $02    [$AA9E]
-$86:AA9C C6 14       DEC $14    [$7E:0014]
-
-$86:AA9E 85 13       STA $13    [$7E:0013]
-$86:AAA0 A5 12       LDA $12    [$7E:0012]
-$86:AAA2 18          CLC
-$86:AAA3 7D 27 1A    ADC $1A27,x
-$86:AAA6 9D 27 1A    STA $1A27,x
-$86:AAA9 A5 14       LDA $14    [$7E:0014]
-$86:AAAB 7D 4B 1A    ADC $1A4B,x
-$86:AAAE 9D 4B 1A    STA $1A4B,x
-$86:AAB1 64 12       STZ $12    [$7E:0012]
-$86:AAB3 64 14       STZ $14    [$7E:0014]
-$86:AAB5 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$86:AAB8 38          SEC
-$86:AAB9 E9 24 00    SBC #$0024
-$86:AABC 38          SEC
-$86:AABD FD 93 1A    SBC $1A93,x
-$86:AAC0 0A          ASL A
-$86:AAC1 0A          ASL A
-$86:AAC2 0A          ASL A
-$86:AAC3 10 02       BPL $02    [$AAC7]
-$86:AAC5 C6 14       DEC $14    [$7E:0014]
-
-$86:AAC7 85 13       STA $13    [$7E:0013]
-$86:AAC9 A5 12       LDA $12    [$7E:0012]
-$86:AACB 18          CLC
-$86:AACC 7D 6F 1A    ADC $1A6F,x
-$86:AACF 9D 6F 1A    STA $1A6F,x
-$86:AAD2 A5 14       LDA $14    [$7E:0014]
-$86:AAD4 7D 93 1A    ADC $1A93,x
-$86:AAD7 9D 93 1A    STA $1A93,x
+; The `BPL + : DEC $14 : +` should really be done *before* the `ASL #3` >_<;
+; Oh well
+$86:AA8C 64 12       STZ $12    [$7E:0012]  ;\
+$86:AA8E 64 14       STZ $14    [$7E:0014]  ;|
+$86:AA90 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
+$86:AA93 38          SEC                    ;|
+$86:AA94 FD 4B 1A    SBC $1A4B,x            ;|
+$86:AA97 0A          ASL A                  ;|
+$86:AA98 0A          ASL A                  ;|
+$86:AA99 0A          ASL A                  ;|
+$86:AA9A 10 02       BPL $02    [$AA9E]     ;|
+$86:AA9C C6 14       DEC $14    [$7E:0014]  ;} Enemy projectile X position += ([Samus X position] - [enemy projectile X position]) / 20h
+                                            ;|
+$86:AA9E 85 13       STA $13    [$7E:0013]  ;|
+$86:AAA0 A5 12       LDA $12    [$7E:0012]  ;|
+$86:AAA2 18          CLC                    ;|
+$86:AAA3 7D 27 1A    ADC $1A27,x            ;|
+$86:AAA6 9D 27 1A    STA $1A27,x            ;|
+$86:AAA9 A5 14       LDA $14    [$7E:0014]  ;|
+$86:AAAB 7D 4B 1A    ADC $1A4B,x            ;|
+$86:AAAE 9D 4B 1A    STA $1A4B,x            ;/
+$86:AAB1 64 12       STZ $12    [$7E:0012]  ;\
+$86:AAB3 64 14       STZ $14    [$7E:0014]  ;|
+$86:AAB5 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$86:AAB8 38          SEC                    ;|
+$86:AAB9 E9 24 00    SBC #$0024             ;|
+$86:AABC 38          SEC                    ;|
+$86:AABD FD 93 1A    SBC $1A93,x            ;|
+$86:AAC0 0A          ASL A                  ;|
+$86:AAC1 0A          ASL A                  ;|
+$86:AAC2 0A          ASL A                  ;|
+$86:AAC3 10 02       BPL $02    [$AAC7]     ;} Enemy projectile Y position += ([Samus Y position] - 24h - [enemy projectile Y position]) / 20h
+$86:AAC5 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$86:AAC7 85 13       STA $13    [$7E:0013]  ;|
+$86:AAC9 A5 12       LDA $12    [$7E:0012]  ;|
+$86:AACB 18          CLC                    ;|
+$86:AACC 7D 6F 1A    ADC $1A6F,x            ;|
+$86:AACF 9D 6F 1A    STA $1A6F,x            ;|
+$86:AAD2 A5 14       LDA $14    [$7E:0014]  ;|
+$86:AAD4 7D 93 1A    ADC $1A93,x            ;|
+$86:AAD7 9D 93 1A    STA $1A93,x            ;/
 $86:AADA 60          RTS
 }
 
@@ -7234,6 +7245,15 @@ $86:B410             dx 0001,8DE5,
 
 ;;; $B428: Enemy projectile - Golden Torizo eye beam ;;;
 {
+;                        __________________________________ Initialisation AI
+;                       |     _____________________________ Pre-instruction
+;                       |    |     ________________________ Instruction list
+;                       |    |    |     ___________________ X radius
+;                       |    |    |    |   ________________ Y radius
+;                       |    |    |    |  |   _____________ Properties
+;                       |    |    |    |  |  |     ________ Hit instruction list
+;                       |    |    |    |  |  |    |     ___ Shot instruction list
+;                       |    |    |    |  |  |    |    |
 $86:B428             dx B328,B38A,B410,03,03,700A,0000,84FC ; Golden Torizo eye beam
 }
 }
@@ -8145,7 +8165,7 @@ $86:BABE             dx B93E,BA42,B85A,00,00,2000,0000,84FC ; Tourian statue - b
 
 ;;; $BACC..BB5D: Enemy projectile $BB50 ;;;
 {
-;;; $BACC: Instruction list - enemy projectile $BB50 ;;;
+;;; $BACC: Instruction list - enemy projectile $BB50 - parameter 0 ;;;
 {
 $86:BACC             dx 0002,9268,
                         0002,926F,
@@ -8158,7 +8178,7 @@ $86:BACC             dx 0002,9268,
 }
 
 
-;;; $BAEA: Instruction list ;;;
+;;; $BAEA: Instruction list - enemy projectile $BB50 - parameter 1 ;;;
 {
 $86:BAEA             dx 0002,9299,
                         0002,92A0,
@@ -8171,7 +8191,7 @@ $86:BAEA             dx 0002,9299,
 }
 
 
-;;; $BB08: Instruction list ;;;
+;;; $BB08: Instruction list - enemy projectile $BB50 - parameter 2 ;;;
 {
 $86:BB08             dx 0002,92CA,
                         0002,92CA,
@@ -8188,8 +8208,9 @@ $86:BB1E             dw BACC, BAEA, BB08
 }
 
 
-;;; $BB24: Unused. Spawn  ;;;
+;;; $BB24: Unused. Random buggy code ;;;
 {
+; This code makes no sense
 $86:BB24 5A          PHY
 $86:BB25 AC 50 BB    LDY $BB50  [$86:BB50]
 $86:BB28 A9 00 00    LDA #$0000
@@ -8201,18 +8222,20 @@ $86:BB2F 60          RTS
 
 ;;; $BB30: Initialisation AI - enemy projectile $BB50 ;;;
 {
-$86:BB30 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:BB33 BF 22 80 7E LDA $7E8022,x
-$86:BB37 99 4B 1A    STA $1A4B,y
-$86:BB3A BF 24 80 7E LDA $7E8024,x
-$86:BB3E 99 93 1A    STA $1A93,y
-$86:BB41 5A          PHY
-$86:BB42 AD 93 19    LDA $1993  [$7E:1993]
-$86:BB45 0A          ASL A
-$86:BB46 A8          TAY
-$86:BB47 B9 1E BB    LDA $BB1E,y
-$86:BB4A 7A          PLY
-$86:BB4B 99 47 1B    STA $1B47,y
+; Ceres Ridley is the only enemy that uses both $7E:8022 and $7E:8024, but it uses them as flags
+; So there's no way of knowing what enemy was supposed to spawn this projectile (if any)
+$86:BB30 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:BB33 BF 22 80 7E LDA $7E8022,x          ;\
+$86:BB37 99 4B 1A    STA $1A4B,y            ;} Enemy projectile X position = [enemy $7E:8022]
+$86:BB3A BF 24 80 7E LDA $7E8024,x          ;\
+$86:BB3E 99 93 1A    STA $1A93,y            ;} Enemy projectile Y position = [enemy $7E:8024]
+$86:BB41 5A          PHY                    ;\
+$86:BB42 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$86:BB45 0A          ASL A                  ;|
+$86:BB46 A8          TAY                    ;} Enemy projectile instruction list pointer = [$BB1E + [enemy projectile initialisation parameter] * 2]
+$86:BB47 B9 1E BB    LDA $BB1E,y            ;|
+$86:BB4A 7A          PLY                    ;|
+$86:BB4B 99 47 1B    STA $1B47,y            ;/
 $86:BB4E 60          RTS
 }
 
@@ -8293,6 +8316,15 @@ $86:BBC6 60          RTS
 
 ;;; $BBC7: Enemy projectile - nuclear waffle body ;;;
 {
+;                        __________________________________ Initialisation AI
+;                       |     _____________________________ Pre-instruction
+;                       |    |     ________________________ Instruction list
+;                       |    |    |     ___________________ X radius
+;                       |    |    |    |   ________________ Y radius
+;                       |    |    |    |  |   _____________ Properties
+;                       |    |    |    |  |  |     ________ Hit instruction list
+;                       |    |    |    |  |  |    |     ___ Shot instruction list
+;                       |    |    |    |  |  |    |    |
 $86:BBC7             dx BB92,BBC6,BB5E,08,08,C040,0000,84FC ; Nuclear waffle body
 }
 }
@@ -10381,7 +10413,7 @@ $86:CAF5 60          RTS
 }
 
 
-;;; $CAF6..CB12: Initialisation AI - enemy projectile $CBBB (time bomb set Japanese text) ;;;
+;;; $CAF6..CB12: Enemy projectile $CBBB (time bomb set Japanese text) ;;;
 {
 ;;; $CAF6: Initialisation AI - enemy projectile $CBBB (time bomb set Japanese text) ;;;
 {
@@ -10845,6 +10877,15 @@ $86:CF0A             dx CE6D,84FB,CDB3,00,00,3000,0000,84FC ; Mother Brain's gla
 {
 ;;; $CF18: Enemy projectiles - ki hunter acid spit ;;;
 {
+;                        __________________________________ Initialisation AI
+;                       |     _____________________________ Pre-instruction
+;                       |    |     ________________________ Instruction list
+;                       |    |    |     ___________________ X radius
+;                       |    |    |    |   ________________ Y radius
+;                       |    |    |    |  |   _____________ Properties
+;                       |    |    |    |  |  |     ________ Hit instruction list
+;                       |    |    |    |  |  |    |     ___ Shot instruction list
+;                       |    |    |    |  |  |    |    |
 $86:CF18             dx CF90,CFF7,CF34,02,08,0014,0000,84FC ; Ki hunter acid spit - left
 $86:CF26             dx CFA6,CFF7,CF6E,02,08,0014,0000,84FC ; Ki hunter acid spit - right
 }
@@ -11392,6 +11433,15 @@ $86:D298             dx D23A,D263,D208,04,04,0014,0000,D218 ; Maridia floater's 
 {
 ;;; $D2A6: Enemy projectiles - Wrecked Ship robot laser ;;;
 {
+;                        __________________________________ Initialisation AI
+;                       |     _____________________________ Pre-instruction
+;                       |    |     ________________________ Instruction list
+;                       |    |    |     ___________________ X radius
+;                       |    |    |    |   ________________ Y radius
+;                       |    |    |    |  |   _____________ Properties
+;                       |    |    |    |  |  |     ________ Hit instruction list
+;                       |    |    |    |  |  |    |     ___ Shot instruction list
+;                       |    |    |    |  |  |    |    |
 $86:D2A6             dx D341,D3BF,D2EC,0C,0C,0004,0000,84FC ; Wrecked Ship robot laser - up-left
 $86:D2B4             dx D32E,D3BF,D2EC,0F,02,0014,0000,84FC ; Wrecked Ship robot laser - horizontal
 $86:D2C2             dx D30C,D3BF,D2EC,0C,0C,0004,0000,84FC ; Wrecked Ship robot laser - down-left
@@ -12472,38 +12522,38 @@ $86:DB0C             dx 0010,A94E,
 
 ;;; $DB18: Initialisation AI - enemy projectile $DBF2 ;;;
 {
-$86:DB18 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:DB1B A9 0C DB    LDA #$DB0C
-$86:DB1E 99 47 1B    STA $1B47,y
-$86:DB21 A9 62 DB    LDA #$DB62
-$86:DB24 99 FF 1A    STA $1AFF,y
-$86:DB27 AD 93 19    LDA $1993  [$7E:1993]
-$86:DB2A F0 06       BEQ $06    [$DB32]
-$86:DB2C A9 8C DB    LDA #$DB8C
-$86:DB2F 99 FF 1A    STA $1AFF,y
+$86:DB18 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:DB1B A9 0C DB    LDA #$DB0C             ;\
+$86:DB1E 99 47 1B    STA $1B47,y            ;} Enemy projectile instruction list pointer = $DB0C
+$86:DB21 A9 62 DB    LDA #$DB62             ;\
+$86:DB24 99 FF 1A    STA $1AFF,y            ;} Enemy projectile function = $DB62
+$86:DB27 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:DB2A F0 06       BEQ $06    [$DB32]     ;} If [enemy projectile initialisation parameter] != 0:
+$86:DB2C A9 8C DB    LDA #$DB8C             ;\
+$86:DB2F 99 FF 1A    STA $1AFF,y            ;} Enemy projectile function = $DB8C
 
-$86:DB32 BD 7A 0F    LDA $0F7A,x
-$86:DB35 99 4B 1A    STA $1A4B,y
-$86:DB38 BD 7C 0F    LDA $0F7C,x
-$86:DB3B 99 27 1A    STA $1A27,y
-$86:DB3E BD 7E 0F    LDA $0F7E,x
-$86:DB41 18          CLC
-$86:DB42 69 02 00    ADC #$0002
-$86:DB45 99 93 1A    STA $1A93,y
-$86:DB48 BD 80 0F    LDA $0F80,x
-$86:DB4B 99 6F 1A    STA $1A6F,y
-$86:DB4E A9 00 FF    LDA #$FF00
-$86:DB51 99 DB 1A    STA $1ADB,y
-$86:DB54 A9 00 01    LDA #$0100
-$86:DB57 99 B7 1A    STA $1AB7,y
+$86:DB32 BD 7A 0F    LDA $0F7A,x            ;\
+$86:DB35 99 4B 1A    STA $1A4B,y            ;|
+$86:DB38 BD 7C 0F    LDA $0F7C,x            ;} Enemy projectile X position = [enemy X position]
+$86:DB3B 99 27 1A    STA $1A27,y            ;/
+$86:DB3E BD 7E 0F    LDA $0F7E,x            ;\
+$86:DB41 18          CLC                    ;|
+$86:DB42 69 02 00    ADC #$0002             ;|
+$86:DB45 99 93 1A    STA $1A93,y            ;} Enemy projectile Y position = [enemy Y position] + 2.0
+$86:DB48 BD 80 0F    LDA $0F80,x            ;|
+$86:DB4B 99 6F 1A    STA $1A6F,y            ;/
+$86:DB4E A9 00 FF    LDA #$FF00             ;\
+$86:DB51 99 DB 1A    STA $1ADB,y            ;} Enemy projectile Y velocity = -100h
+$86:DB54 A9 00 01    LDA #$0100             ;\
+$86:DB57 99 B7 1A    STA $1AB7,y            ;} Enemy projectile X velocity = 100h
 $86:DB5A 60          RTS
 }
 
 
 ;;; $DB5B: Pre-instruction - enemy projectile $DBF2 ;;;
 {
-$86:DB5B FC FF 1A    JSR ($1AFF,x)
-$86:DB5E 20 B6 DB    JSR $DBB6  [$86:DBB6]
+$86:DB5B FC FF 1A    JSR ($1AFF,x)          ; Execute [enemy projectile function]
+$86:DB5E 20 B6 DB    JSR $DBB6  [$86:DBB6]  ; Execute $DBB6
 $86:DB61 60          RTS
 }
 
@@ -12558,43 +12608,54 @@ $86:DBB5 60          RTS
 
 ;;; $DBB6:  ;;;
 {
-$86:DBB6 20 C2 DB    JSR $DBC2  [$86:DBC2]
-$86:DBB9 F0 06       BEQ $06    [$DBC1]
-$86:DBBB A9 00 00    LDA #$0000
-$86:DBBE 9D 97 19    STA $1997,x
+$86:DBB6 20 C2 DB    JSR $DBC2  [$86:DBC2]  ;\
+$86:DBB9 F0 06       BEQ $06    [$DBC1]     ;} If enemy projectile is off screen:
+$86:DBBB A9 00 00    LDA #$0000             ;\
+$86:DBBE 9D 97 19    STA $1997,x            ;} Enemy projectile ID = 0
 
 $86:DBC1 60          RTS
 }
 
 
-;;; $DBC2:  ;;;
+;;; $DBC2: Check if enemy projectile is off screen ;;;
 {
-$86:DBC2 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:DBC5 CD 11 09    CMP $0911  [$7E:0911]
-$86:DBC8 30 24       BMI $24    [$DBEE]
-$86:DBCA AD 11 09    LDA $0911  [$7E:0911]
-$86:DBCD 18          CLC
-$86:DBCE 69 00 01    ADC #$0100
-$86:DBD1 DD 4B 1A    CMP $1A4B,x[$7E:1A6D]
-$86:DBD4 30 18       BMI $18    [$DBEE]
-$86:DBD6 BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:DBD9 CD 15 09    CMP $0915  [$7E:0915]
-$86:DBDC 30 10       BMI $10    [$DBEE]
-$86:DBDE AD 15 09    LDA $0915  [$7E:0915]
-$86:DBE1 18          CLC
-$86:DBE2 69 00 01    ADC #$0100
-$86:DBE5 DD 93 1A    CMP $1A93,x[$7E:1AB5]
-$86:DBE8 30 04       BMI $04    [$DBEE]
-$86:DBEA A9 00 00    LDA #$0000
-$86:DBED 60          RTS
+;; Returns:
+;;     A: 1 if off-screen, 0 otherwise
+$86:DBC2 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
+$86:DBC5 CD 11 09    CMP $0911  [$7E:0911]  ;|
+$86:DBC8 30 24       BMI $24    [$DBEE]     ;|
+$86:DBCA AD 11 09    LDA $0911  [$7E:0911]  ;|
+$86:DBCD 18          CLC                    ;} If 0 <= [enemy projectile X position] - [layer 1 X position] <= 100h:
+$86:DBCE 69 00 01    ADC #$0100             ;|
+$86:DBD1 DD 4B 1A    CMP $1A4B,x[$7E:1A6D]  ;|
+$86:DBD4 30 18       BMI $18    [$DBEE]     ;/
+$86:DBD6 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
+$86:DBD9 CD 15 09    CMP $0915  [$7E:0915]  ;|
+$86:DBDC 30 10       BMI $10    [$DBEE]     ;|
+$86:DBDE AD 15 09    LDA $0915  [$7E:0915]  ;|
+$86:DBE1 18          CLC                    ;} If 0 <= [enemy projectile Y position] - [layer 1 Y position] <= 100h:
+$86:DBE2 69 00 01    ADC #$0100             ;|
+$86:DBE5 DD 93 1A    CMP $1A93,x[$7E:1AB5]  ;|
+$86:DBE8 30 04       BMI $04    [$DBEE]     ;/
+$86:DBEA A9 00 00    LDA #$0000             ;\
+$86:DBED 60          RTS                    ;} Return A = 0
 
-$86:DBEE A9 01 00    LDA #$0001
-$86:DBF1 60          RTS
+$86:DBEE A9 01 00    LDA #$0001             ;\
+$86:DBF1 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DBF2: Enemy projectile ;;;
+;;; $DBF2: Enemy projectile $DBF2 ;;;
 {
+;                        __________________________________ Initialisation AI
+;                       |     _____________________________ Pre-instruction
+;                       |    |     ________________________ Instruction list
+;                       |    |    |     ___________________ X radius
+;                       |    |    |    |   ________________ Y radius
+;                       |    |    |    |  |   _____________ Properties
+;                       |    |    |    |  |  |     ________ Hit instruction list
+;                       |    |    |    |  |  |    |     ___ Shot instruction list
+;                       |    |    |    |  |  |    |    |
 $86:DBF2             dx DB18,DB5B,DB0C,02,02,0005,0000,84FC
 }
 }
@@ -15953,6 +16014,15 @@ $86:F497 60          RTS
 
 ;;; $F498: Enemy projectile - sparks ;;;
 {
+;                        __________________________________ Initialisation AI
+;                       |     _____________________________ Pre-instruction
+;                       |    |     ________________________ Instruction list
+;                       |    |    |     ___________________ X radius
+;                       |    |    |    |   ________________ Y radius
+;                       |    |    |    |  |   _____________ Properties
+;                       |    |    |    |  |  |     ________ Hit instruction list
+;                       |    |    |    |  |  |    |     ___ Shot instruction list
+;                       |    |    |    |  |  |    |    |
 $86:F498             dx F391,F3F0,F353,04,04,0005,0000,84FC ; Sparks
 }
 }
