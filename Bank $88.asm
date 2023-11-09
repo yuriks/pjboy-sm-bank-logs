@@ -3785,7 +3785,7 @@ $88:A657 A9 EE A8    LDA #$A8EE             ;\
 $88:A65A 85 09       STA $09    [$7E:0009]  ;} $09 = $A8EE
 $88:A65C A9 4E 00    LDA #$004E             ;\
 $88:A65F 85 18       STA $18    [$7E:0018]  ;} $18 = 4Eh
-$88:A661 20 1C A8    JSR $A81C  [$88:A81C]  ; Execute subroutine $A81C
+$88:A661 20 1C A8    JSR $A81C  [$88:A81C]  ; Execute $A81C
 $88:A664 A9 00 00    LDA #$0000             ;\
 $88:A667 9F 00 9C 7E STA $7E9C00,x          ;} $7E:9C00 + [X] = 0
 $88:A66B 6B          RTL

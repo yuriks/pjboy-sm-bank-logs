@@ -1717,7 +1717,7 @@ $86:8A38 60          RTS
 }
 
 
-;;; $8A39..BC: Enemy projectile $8AAF ;;;
+;;; $8A39..BC: Enemy projectile $8AAF (unused, incomplete) ;;;
 {
 ;;; $8A39: Initialisation AI - enemy projectile $8AAF ;;;
 {
@@ -5846,7 +5846,7 @@ $86:A9AF             dx A871,84FB,A3FA,04,10,3000,0000,84FC ; Torizo death explo
 }
 
 
-;;; $A9BD..AB14: Enemy projectile $AB07 ;;;
+;;; $A9BD..AB14: Enemy projectile $AB07 (question mark) ;;;
 {
 ;;; $A9BD: Tiles ;;;
 {
@@ -8163,7 +8163,7 @@ $86:BABE             dx B93E,BA42,B85A,00,00,2000,0000,84FC ; Tourian statue - b
 }
 
 
-;;; $BACC..BB5D: Enemy projectile $BB50 ;;;
+;;; $BACC..BB5D: Enemy projectile $BB50 (unused) ;;;
 {
 ;;; $BACC: Instruction list - enemy projectile $BB50 - parameter 0 ;;;
 {
@@ -12510,9 +12510,9 @@ $86:DAFE             dx D992,D9DB,D92E,02,02,0005,0000,84FC ; Spike shooting pla
 }
 
 
-;;; $DB0C..FF: Enemy projectile $DBF2 ;;;
+;;; $DB0C..FF: Mini-Crocomire projectile ;;;
 {
-;;; $DB0C: Instruction list - enemy projectile $DBF2 ;;;
+;;; $DB0C: Instruction list - mini-Crocomire projectile ;;;
 {
 $86:DB0C             dx 0010,A94E,
                         0010,A955,
@@ -12520,17 +12520,17 @@ $86:DB0C             dx 0010,A94E,
 }
 
 
-;;; $DB18: Initialisation AI - enemy projectile $DBF2 ;;;
+;;; $DB18: Initialisation AI - mini-Crocomire projectile ;;;
 {
 $86:DB18 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:DB1B A9 0C DB    LDA #$DB0C             ;\
 $86:DB1E 99 47 1B    STA $1B47,y            ;} Enemy projectile instruction list pointer = $DB0C
 $86:DB21 A9 62 DB    LDA #$DB62             ;\
-$86:DB24 99 FF 1A    STA $1AFF,y            ;} Enemy projectile function = $DB62
+$86:DB24 99 FF 1A    STA $1AFF,y            ;} Enemy projectile function = $DB62 (move left)
 $86:DB27 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:DB2A F0 06       BEQ $06    [$DB32]     ;} If [enemy projectile initialisation parameter] != 0:
 $86:DB2C A9 8C DB    LDA #$DB8C             ;\
-$86:DB2F 99 FF 1A    STA $1AFF,y            ;} Enemy projectile function = $DB8C
+$86:DB2F 99 FF 1A    STA $1AFF,y            ;} Enemy projectile function = $DB8C (move right)
 
 $86:DB32 BD 7A 0F    LDA $0F7A,x            ;\
 $86:DB35 99 4B 1A    STA $1A4B,y            ;|
@@ -12543,70 +12543,70 @@ $86:DB45 99 93 1A    STA $1A93,y            ;} Enemy projectile Y position = [en
 $86:DB48 BD 80 0F    LDA $0F80,x            ;|
 $86:DB4B 99 6F 1A    STA $1A6F,y            ;/
 $86:DB4E A9 00 FF    LDA #$FF00             ;\
-$86:DB51 99 DB 1A    STA $1ADB,y            ;} Enemy projectile Y velocity = -100h
+$86:DB51 99 DB 1A    STA $1ADB,y            ;} Enemy projectile left X velocity = -100h
 $86:DB54 A9 00 01    LDA #$0100             ;\
-$86:DB57 99 B7 1A    STA $1AB7,y            ;} Enemy projectile X velocity = 100h
+$86:DB57 99 B7 1A    STA $1AB7,y            ;} Enemy projectile right X velocity = 100h
 $86:DB5A 60          RTS
 }
 
 
-;;; $DB5B: Pre-instruction - enemy projectile $DBF2 ;;;
+;;; $DB5B: Pre-instruction - mini-Crocomire projectile ;;;
 {
 $86:DB5B FC FF 1A    JSR ($1AFF,x)          ; Execute [enemy projectile function]
-$86:DB5E 20 B6 DB    JSR $DBB6  [$86:DBB6]  ; Execute $DBB6
+$86:DB5E 20 B6 DB    JSR $DBB6  [$86:DBB6]  ; Delete enemy projectile if off screen
 $86:DB61 60          RTS
 }
 
 
-;;; $DB62:  ;;;
+;;; $DB62: Mini-Crocomire projectile function - move left ;;;
 {
-$86:DB62 BD DB 1A    LDA $1ADB,x
-$86:DB65 29 00 FF    AND #$FF00
-$86:DB68 EB          XBA
-$86:DB69 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
-$86:DB6D 18          CLC
-$86:DB6E 7D 4B 1A    ADC $1A4B,x
-$86:DB71 9D 4B 1A    STA $1A4B,x
-$86:DB74 BD DB 1A    LDA $1ADB,x
-$86:DB77 29 FF 00    AND #$00FF
-$86:DB7A EB          XBA
-$86:DB7B 18          CLC
-$86:DB7C 7D 27 1A    ADC $1A27,x
-$86:DB7F 9D 27 1A    STA $1A27,x
-$86:DB82 90 07       BCC $07    [$DB8B]
-$86:DB84 BD 4B 1A    LDA $1A4B,x
-$86:DB87 1A          INC A
-$86:DB88 9D 4B 1A    STA $1A4B,x
+$86:DB62 BD DB 1A    LDA $1ADB,x            ;\
+$86:DB65 29 00 FF    AND #$FF00             ;|
+$86:DB68 EB          XBA                    ;|
+$86:DB69 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DB6D 18          CLC                    ;|
+$86:DB6E 7D 4B 1A    ADC $1A4B,x            ;|
+$86:DB71 9D 4B 1A    STA $1A4B,x            ;|
+$86:DB74 BD DB 1A    LDA $1ADB,x            ;|
+$86:DB77 29 FF 00    AND #$00FF             ;} Enemy projectile X position += [enemy projectile left X velocity] / 100h
+$86:DB7A EB          XBA                    ;|
+$86:DB7B 18          CLC                    ;|
+$86:DB7C 7D 27 1A    ADC $1A27,x            ;|
+$86:DB7F 9D 27 1A    STA $1A27,x            ;|
+$86:DB82 90 07       BCC $07    [$DB8B]     ;|
+$86:DB84 BD 4B 1A    LDA $1A4B,x            ;|
+$86:DB87 1A          INC A                  ;|
+$86:DB88 9D 4B 1A    STA $1A4B,x            ;/
 
 $86:DB8B 60          RTS
 }
 
 
-;;; $DB8C:  ;;;
+;;; $DB8C: Mini-Crocomire projectile function - move right ;;;
 {
-$86:DB8C BD B7 1A    LDA $1AB7,x
-$86:DB8F 29 00 FF    AND #$FF00
-$86:DB92 EB          XBA
-$86:DB93 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
-$86:DB97 18          CLC
-$86:DB98 7D 4B 1A    ADC $1A4B,x
-$86:DB9B 9D 4B 1A    STA $1A4B,x
-$86:DB9E BD B7 1A    LDA $1AB7,x
-$86:DBA1 29 FF 00    AND #$00FF
-$86:DBA4 EB          XBA
-$86:DBA5 18          CLC
-$86:DBA6 7D 27 1A    ADC $1A27,x
-$86:DBA9 9D 27 1A    STA $1A27,x
-$86:DBAC 90 07       BCC $07    [$DBB5]
-$86:DBAE BD 4B 1A    LDA $1A4B,x
-$86:DBB1 1A          INC A
-$86:DBB2 9D 4B 1A    STA $1A4B,x
+$86:DB8C BD B7 1A    LDA $1AB7,x            ;\
+$86:DB8F 29 00 FF    AND #$FF00             ;|
+$86:DB92 EB          XBA                    ;|
+$86:DB93 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DB97 18          CLC                    ;|
+$86:DB98 7D 4B 1A    ADC $1A4B,x            ;|
+$86:DB9B 9D 4B 1A    STA $1A4B,x            ;|
+$86:DB9E BD B7 1A    LDA $1AB7,x            ;|
+$86:DBA1 29 FF 00    AND #$00FF             ;} Enemy projectile X position += [enemy projectile right X velocity] / 100h
+$86:DBA4 EB          XBA                    ;|
+$86:DBA5 18          CLC                    ;|
+$86:DBA6 7D 27 1A    ADC $1A27,x            ;|
+$86:DBA9 9D 27 1A    STA $1A27,x            ;|
+$86:DBAC 90 07       BCC $07    [$DBB5]     ;|
+$86:DBAE BD 4B 1A    LDA $1A4B,x            ;|
+$86:DBB1 1A          INC A                  ;|
+$86:DBB2 9D 4B 1A    STA $1A4B,x            ;/
 
 $86:DBB5 60          RTS
 }
 
 
-;;; $DBB6:  ;;;
+;;; $DBB6: Delete enemy projectile if off screen ;;;
 {
 $86:DBB6 20 C2 DB    JSR $DBC2  [$86:DBC2]  ;\
 $86:DBB9 F0 06       BEQ $06    [$DBC1]     ;} If enemy projectile is off screen:
@@ -12645,7 +12645,7 @@ $86:DBF1 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DBF2: Enemy projectile $DBF2 ;;;
+;;; $DBF2: Enemy projectile - mini-Crocomire projectile ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Pre-instruction
