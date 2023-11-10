@@ -4024,28 +4024,30 @@ $88:A81B 6B          RTL
 ;;     $03: $A8EA
 ;;     $06: $A8EC
 ;;     $09: $A8EE
-;;     $18: 4Eh
+;;     $18: 4Eh. Table size (13 entries of 6 bytes)
+;; Returns:
+;;     X: HDMA table index
 
 $88:A81C 8B          PHB
 $88:A81D 4B          PHK                    ;\
 $88:A81E AB          PLB                    ;} DB = $88
 $88:A81F A9 20 00    LDA #$0020             ;\
-$88:A822 8D 98 05    STA $0598  [$7E:0598]  ;} $0598 = 20h
+$88:A822 8D 98 05    STA $0598  [$7E:0598]  ;} $0598 = 20h (Y position on screen)
 $88:A825 3A          DEC A                  ;\
 $88:A826 8F 00 9C 7E STA $7E9C00[$7E:9C00]  ;|
-$88:A82A A9 00 00    LDA #$0000             ;} $7E:9C00 = 1Fh,0000h
+$88:A82A A9 00 00    LDA #$0000             ;} $7E:9C00 = 1Fh,0000h (HDMA table HUD scanlines)
 $88:A82D 8F 01 9C 7E STA $7E9C01[$7E:9C01]  ;/
-$88:A831 A2 03 00    LDX #$0003             ; X = 3
+$88:A831 A2 03 00    LDX #$0003             ; X = 3 (HDMA table index)
 $88:A834 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $88:A837 18          CLC                    ;|
-$88:A838 6D 98 05    ADC $0598  [$7E:0598]  ;} $12 = [layer 1 Y position] + [$0598]
+$88:A838 6D 98 05    ADC $0598  [$7E:0598]  ;} $12 = [layer 1 Y position] + (Y position on screen) (Y position)
 $88:A83B 85 12       STA $12    [$7E:0012]  ;/
 $88:A83D A0 00 00    LDY #$0000             ; Y = 0
 
 ; LOOP_A840
 $88:A840 D1 00       CMP ($00),y            ;\
 $88:A842 30 04       BMI $04    [$A848]     ;|
-$88:A844 D1 09       CMP ($09),y            ;} If [[$00] + [Y]] <= [$12] < [[$09] + [Y]]: go to BRANCH_A854
+$88:A844 D1 09       CMP ($09),y            ;} If [$A8E8 + [Y]] <= (Y position) < [$A8E8 + [Y] + 6]: go to BRANCH_FOUND_A854
 $88:A846 30 0C       BMI $0C    [$A854]     ;/
 
 $88:A848 C8          INY                    ;\
@@ -4059,25 +4061,24 @@ $88:A850 30 EE       BMI $EE    [$A840]     ;} If [Y] < [$18]: go to LOOP_A840
 $88:A852 AB          PLB
 $88:A853 60          RTS                    ; Return
 
-; BRANCH_A854
+; BRANCH_FOUND_A854
 $88:A854 A5 12       LDA $12    [$7E:0012]  ;\
-$88:A856 C9 E0 04    CMP #$04E0             ;} If [$12] >= 4E0h:
+$88:A856 C9 E0 04    CMP #$04E0             ;} If (Y position) >= 4E0h:
 $88:A859 30 05       BMI $05    [$A860]     ;/
-$88:A85B 29 1F 00    AND #$001F             ; $16 = [$12] & 1Fh
+$88:A85B 29 1F 00    AND #$001F             ; A = (Y position) % 20h
 $88:A85E 80 03       BRA $03    [$A863]
+                                            ; Else ((Y position) < 4E0h):
+$88:A860 29 0F 00    AND #$000F             ; A = (Y position) % 10h
 
-                                            ; Else ([$12] < 4E0h):
-$88:A860 29 0F 00    AND #$000F             ; $16 = [$12] & Fh
-
-$88:A863 85 16       STA $16    [$7E:0016]
+$88:A863 85 16       STA $16    [$7E:0016]  ; $16 = [A] (position into the strip)
 $88:A865 B1 03       LDA ($03),y            ;\
 $88:A867 38          SEC                    ;|
-$88:A868 E5 16       SBC $16    [$7E:0016]  ;} $7E:9C00 + [X] = [[$03] + [Y]] - [$16]
+$88:A868 E5 16       SBC $16    [$7E:0016]  ;} $7E:9C00 + [X] = [$A8E8 + [Y] + 2] - [$16]
 $88:A86A 9F 00 9C 7E STA $7E9C00,x          ;/
 $88:A86E B1 06       LDA ($06),y            ;\
 $88:A870 18          CLC                    ;|
 $88:A871 65 16       ADC $16    [$7E:0016]  ;|
-$88:A873 38          SEC                    ;} $7E:9C00 + [X] + 1 = [[$06] + [Y]] + [$16] - [$0598]
+$88:A873 38          SEC                    ;} $7E:9C00 + [X] + 1 = [$A8E8 + [Y] + 4] + [$16] - (Y position on screen)
 $88:A874 ED 98 05    SBC $0598  [$7E:0598]  ;|
 $88:A877 9F 01 9C 7E STA $7E9C01,x          ;/
 $88:A87B 80 26       BRA $26    [$A8A3]     ; Go to BRANCH_A8A3
@@ -4088,7 +4089,7 @@ $88:A87D A5 12       LDA $12    [$7E:0012]
 ; LOOP_A87F
 $88:A87F D1 00       CMP ($00),y            ;\
 $88:A881 30 04       BMI $04    [$A887]     ;|
-$88:A883 D1 09       CMP ($09),y            ;} If [[$00] + [Y]] <= [$12] < [[$09] + [Y]]: go to BRANCH_A893
+$88:A883 D1 09       CMP ($09),y            ;} If [$A8E8 + [Y]] <= (Y position) < [$A8E8 + [Y] + 6]: go to BRANCH_A893
 $88:A885 30 0C       BMI $0C    [$A893]     ;/
 
 $88:A887 C8          INY                    ;\
@@ -4103,10 +4104,10 @@ $88:A891 AB          PLB
 $88:A892 60          RTS                    ; Return
 
 $88:A893 B1 03       LDA ($03),y            ;\
-$88:A895 9F 00 9C 7E STA $7E9C00,x          ;} $7E:9C00 = [[$03] + [Y]]
+$88:A895 9F 00 9C 7E STA $7E9C00,x          ;} $7E:9C00 = [$A8E8 + [Y] + 2]
 $88:A899 B1 06       LDA ($06),y            ;\
 $88:A89B 38          SEC                    ;|
-$88:A89C ED 98 05    SBC $0598  [$7E:0598]  ;} $7E:9C00 + 1 = [[$06] + [Y]] - [$0598]
+$88:A89C ED 98 05    SBC $0598  [$7E:0598]  ;} $7E:9C00 + 1 = [$A8E8 + [Y] + 4] - (Y position on screen)
 $88:A89F 9F 01 9C 7E STA $7E9C01,x          ;/
 
 ; BRANCH_A8A3
@@ -4121,10 +4122,10 @@ $88:A8B2 E8          INX                    ;} X += 3
 $88:A8B3 E8          INX                    ;/
 $88:A8B4 A5 14       LDA $14    [$7E:0014]  ;\
 $88:A8B6 18          CLC                    ;|
-$88:A8B7 6D 98 05    ADC $0598  [$7E:0598]  ;} $0598 += [$14]
+$88:A8B7 6D 98 05    ADC $0598  [$7E:0598]  ;} (Y position on screen) += [$14]
 $88:A8BA 8D 98 05    STA $0598  [$7E:0598]  ;/
 $88:A8BD C9 E0 00    CMP #$00E0             ;\
-$88:A8C0 30 BB       BMI $BB    [$A87D]     ;} If [$0598] < E0h: go to LOOP_A87D
+$88:A8C0 30 BB       BMI $BB    [$A87D]     ;} If (Y position on screen) < E0h: go to LOOP_A87D
 $88:A8C2 AB          PLB
 $88:A8C3 60          RTS
 }
@@ -4154,6 +4155,10 @@ $88:A8DA             dw 0000,0010,0020,0020,0010,0030,0040
 
 ;;; $A8E8:  ;;;
 {
+;                        _____________ Strip top position
+;                       |     ________ Strip height
+;                       |    |     ___ 
+;                       |    |    |
 $88:A8E8             dw 0000,0010,0020,
                         0030,0010,0030,
                         0040,0010,0040,
