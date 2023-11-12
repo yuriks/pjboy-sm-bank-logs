@@ -3776,18 +3776,18 @@ $88:A642 28          PLP
 $88:A643 C2 30       REP #$30
 $88:A645 20 C4 A8    JSR $A8C4  [$88:A8C4]  ; Damage Samus if she is in the top row
 $88:A648 A9 E8 A8    LDA #$A8E8             ;\
-$88:A64B 85 00       STA $00    [$7E:0000]  ;} $00 = $A8E8
-$88:A64D A9 EA A8    LDA #$A8EA             ;\
-$88:A650 85 03       STA $03    [$7E:0003]  ;} $03 = $A8EA
-$88:A652 A9 EC A8    LDA #$A8EC             ;\
-$88:A655 85 06       STA $06    [$7E:0006]  ;} $06 = $A8EC
-$88:A657 A9 EE A8    LDA #$A8EE             ;\
-$88:A65A 85 09       STA $09    [$7E:0009]  ;} $09 = $A8EE
-$88:A65C A9 4E 00    LDA #$004E             ;\
-$88:A65F 85 18       STA $18    [$7E:0018]  ;} $18 = 4Eh
-$88:A661 20 1C A8    JSR $A81C  [$88:A81C]  ; Execute $A81C
+$88:A64B 85 00       STA $00    [$7E:0000]  ;|
+$88:A64D A9 EA A8    LDA #$A8EA             ;|
+$88:A650 85 03       STA $03    [$7E:0003]  ;|
+$88:A652 A9 EC A8    LDA #$A8EC             ;|
+$88:A655 85 06       STA $06    [$7E:0006]  ;} Calculate FX type 22h BG3 Y scroll HDMA table
+$88:A657 A9 EE A8    LDA #$A8EE             ;|
+$88:A65A 85 09       STA $09    [$7E:0009]  ;|
+$88:A65C A9 4E 00    LDA #$004E             ;|
+$88:A65F 85 18       STA $18    [$7E:0018]  ;|
+$88:A661 20 1C A8    JSR $A81C  [$88:A81C]  ;/
 $88:A664 A9 00 00    LDA #$0000             ;\
-$88:A667 9F 00 9C 7E STA $7E9C00,x          ;} $7E:9C00 + [X] = 0
+$88:A667 9F 00 9C 7E STA $7E9C00,x          ;} $7E:9C00 + [X] = 0,0
 $88:A66B 6B          RTL
 }
 
@@ -3807,17 +3807,17 @@ $88:A674 C2 30       REP #$30
 $88:A676 8B          PHB
 $88:A677 DA          PHX
 $88:A678 5A          PHY
-$88:A679 AD 15 09    LDA $0915  [$7E:0915]
-$88:A67C C9 00 04    CMP #$0400
-$88:A67F 10 2B       BPL $2B    [$A6AC]
-$88:A681 AD B5 05    LDA $05B5  [$7E:05B5]
-$88:A684 29 01 00    AND #$0001
-$88:A687 D0 0B       BNE $0B    [$A694]
-$88:A689 AD 96 05    LDA $0596  [$7E:0596]
-$88:A68C 1A          INC A
-$88:A68D 1A          INC A
-$88:A68E 29 1E 00    AND #$001E
-$88:A691 8D 96 05    STA $0596  [$7E:0596]
+$88:A679 AD 15 09    LDA $0915  [$7E:0915]  ;\
+$88:A67C C9 00 04    CMP #$0400             ;} If [layer 1 Y position] >= 400h: go to BRANCH_A6AC
+$88:A67F 10 2B       BPL $2B    [$A6AC]     ;/
+$88:A681 AD B5 05    LDA $05B5  [$7E:05B5]  ;
+$88:A684 29 01 00    AND #$0001             ;
+$88:A687 D0 0B       BNE $0B    [$A694]     ;
+$88:A689 AD 96 05    LDA $0596  [$7E:0596]  ;
+$88:A68C 1A          INC A                  ;
+$88:A68D 1A          INC A                  ;
+$88:A68E 29 1E 00    AND #$001E             ;
+$88:A691 8D 96 05    STA $0596  [$7E:0596]  ;
 
 $88:A694 AC 96 05    LDY $0596  [$7E:0596]
 $88:A697 A2 00 00    LDX #$0000
@@ -3832,6 +3832,7 @@ $88:A6A5 C0 20 00    CPY #$0020
 $88:A6A8 30 F0       BMI $F0    [$A69A]
 $88:A6AA 80 32       BRA $32    [$A6DE]
 
+; BRANCH_A6AC
 $88:A6AC DE 20 19    DEC $1920,x
 $88:A6AF D0 11       BNE $11    [$A6C2]
 $88:A6B1 A9 06 00    LDA #$0006
@@ -4017,13 +4018,13 @@ $88:A81B 6B          RTL
 }
 
 
-;;; $A81C:  ;;;
+;;; $A81C: Calculate FX type 22h BG3 Y scroll HDMA table ;;;
 {
 ;; Parameters:
-;;     $00: $A8E8
-;;     $03: $A8EA
-;;     $06: $A8EC
-;;     $09: $A8EE
+;;     $00: $A8E8. Base address of section top positions
+;;     $03: $A8EA. Base address of strip heights
+;;     $06: $A8EC. Base address of BG3 tilemap Y positions
+;;     $09: $A8EE. Base address of section bottom positions
 ;;     $18: 4Eh. Table size (13 entries of 6 bytes)
 ;; Returns:
 ;;     X: HDMA table index
@@ -4044,10 +4045,10 @@ $88:A838 6D 98 05    ADC $0598  [$7E:0598]  ;} $12 = [layer 1 Y position] + (Y p
 $88:A83B 85 12       STA $12    [$7E:0012]  ;/
 $88:A83D A0 00 00    LDY #$0000             ; Y = 0
 
-; LOOP_A840
+; LOOP_FIRST_STRIP
 $88:A840 D1 00       CMP ($00),y            ;\
 $88:A842 30 04       BMI $04    [$A848]     ;|
-$88:A844 D1 09       CMP ($09),y            ;} If [$A8E8 + [Y]] <= (Y position) < [$A8E8 + [Y] + 6]: go to BRANCH_FOUND_A854
+$88:A844 D1 09       CMP ($09),y            ;} If [$A8E8 + [Y]] <= (Y position) < [$A8E8 + [Y] + 6]: go to BRANCH_FOUND_FIRST_STRIP
 $88:A846 30 0C       BMI $0C    [$A854]     ;/
 
 $88:A848 C8          INY                    ;\
@@ -4057,11 +4058,11 @@ $88:A84B C8          INY                    ;} Y += 6
 $88:A84C C8          INY                    ;|
 $88:A84D C8          INY                    ;/
 $88:A84E C4 18       CPY $18    [$7E:0018]  ;\
-$88:A850 30 EE       BMI $EE    [$A840]     ;} If [Y] < [$18]: go to LOOP_A840
+$88:A850 30 EE       BMI $EE    [$A840]     ;} If [Y] < 4Eh: go to LOOP_FIRST_STRIP
 $88:A852 AB          PLB
 $88:A853 60          RTS                    ; Return
 
-; BRANCH_FOUND_A854
+; BRANCH_FOUND_FIRST_STRIP
 $88:A854 A5 12       LDA $12    [$7E:0012]  ;\
 $88:A856 C9 E0 04    CMP #$04E0             ;} If (Y position) >= 4E0h:
 $88:A859 30 05       BMI $05    [$A860]     ;/
@@ -4070,26 +4071,26 @@ $88:A85E 80 03       BRA $03    [$A863]
                                             ; Else ((Y position) < 4E0h):
 $88:A860 29 0F 00    AND #$000F             ; A = (Y position) % 10h
 
-$88:A863 85 16       STA $16    [$7E:0016]  ; $16 = [A] (position into the strip)
+$88:A863 85 16       STA $16    [$7E:0016]  ; $16 = [A] (offset into the strip)
 $88:A865 B1 03       LDA ($03),y            ;\
 $88:A867 38          SEC                    ;|
-$88:A868 E5 16       SBC $16    [$7E:0016]  ;} $7E:9C00 + [X] = [$A8E8 + [Y] + 2] - [$16]
+$88:A868 E5 16       SBC $16    [$7E:0016]  ;} $7E:9C00 + [X] = [$A8E8 + [Y] + 2] - (offset into the strip)
 $88:A86A 9F 00 9C 7E STA $7E9C00,x          ;/
 $88:A86E B1 06       LDA ($06),y            ;\
 $88:A870 18          CLC                    ;|
 $88:A871 65 16       ADC $16    [$7E:0016]  ;|
-$88:A873 38          SEC                    ;} $7E:9C00 + [X] + 1 = [$A8E8 + [Y] + 4] + [$16] - (Y position on screen)
+$88:A873 38          SEC                    ;} $7E:9C00 + [X] + 1 = [$A8E8 + [Y] + 4] + (offset into the strip) - (Y position on screen)
 $88:A874 ED 98 05    SBC $0598  [$7E:0598]  ;|
 $88:A877 9F 01 9C 7E STA $7E9C01,x          ;/
-$88:A87B 80 26       BRA $26    [$A8A3]     ; Go to BRANCH_A8A3
+$88:A87B 80 26       BRA $26    [$A8A3]     ; Go to BRANCH_NEXT
 
-; LOOP_A87D
+; LOOP_HDMA_TABLE
 $88:A87D A5 12       LDA $12    [$7E:0012]
 
-; LOOP_A87F
+; LOOP_STRIP
 $88:A87F D1 00       CMP ($00),y            ;\
 $88:A881 30 04       BMI $04    [$A887]     ;|
-$88:A883 D1 09       CMP ($09),y            ;} If [$A8E8 + [Y]] <= (Y position) < [$A8E8 + [Y] + 6]: go to BRANCH_A893
+$88:A883 D1 09       CMP ($09),y            ;} If [$A8E8 + [Y]] <= (Y position) < [$A8E8 + [Y] + 6]: go to BRANCH_FOUND_STRIP
 $88:A885 30 0C       BMI $0C    [$A893]     ;/
 
 $88:A887 C8          INY                    ;\
@@ -4099,33 +4100,34 @@ $88:A88A C8          INY                    ;} Y += 6
 $88:A88B C8          INY                    ;|
 $88:A88C C8          INY                    ;/
 $88:A88D C4 18       CPY $18    [$7E:0018]  ;\
-$88:A88F 30 EE       BMI $EE    [$A87F]     ;} If [Y] < [$18]: go to LOOP_A87F
+$88:A88F 30 EE       BMI $EE    [$A87F]     ;} If [Y] < 4Eh: go to LOOP_STRIP
 $88:A891 AB          PLB
 $88:A892 60          RTS                    ; Return
 
+; BRANCH_FOUND_STRIP
 $88:A893 B1 03       LDA ($03),y            ;\
-$88:A895 9F 00 9C 7E STA $7E9C00,x          ;} $7E:9C00 = [$A8E8 + [Y] + 2]
+$88:A895 9F 00 9C 7E STA $7E9C00,x          ;} $7E:9C00 + [X] = [$A8E8 + [Y] + 2]
 $88:A899 B1 06       LDA ($06),y            ;\
 $88:A89B 38          SEC                    ;|
-$88:A89C ED 98 05    SBC $0598  [$7E:0598]  ;} $7E:9C00 + 1 = [$A8E8 + [Y] + 4] - (Y position on screen)
+$88:A89C ED 98 05    SBC $0598  [$7E:0598]  ;} $7E:9C00 + [X] + 1 = [$A8E8 + [Y] + 4] - (Y position on screen)
 $88:A89F 9F 01 9C 7E STA $7E9C01,x          ;/
 
-; BRANCH_A8A3
+; BRANCH_NEXT
 $88:A8A3 BF 00 9C 7E LDA $7E9C00,x          ;\
 $88:A8A7 29 FF 00    AND #$00FF             ;} $14 = [$7E:9C00 + [X]]
 $88:A8AA 85 14       STA $14    [$7E:0014]  ;/
 $88:A8AC 18          CLC                    ;\
-$88:A8AD 65 12       ADC $12    [$7E:0012]  ;} $12 += [$14]
+$88:A8AD 65 12       ADC $12    [$7E:0012]  ;} (Y position) += [$14]
 $88:A8AF 85 12       STA $12    [$7E:0012]  ;/
 $88:A8B1 E8          INX                    ;\
-$88:A8B2 E8          INX                    ;} X += 3
+$88:A8B2 E8          INX                    ;} X += 3 (next HDMA table index)
 $88:A8B3 E8          INX                    ;/
 $88:A8B4 A5 14       LDA $14    [$7E:0014]  ;\
 $88:A8B6 18          CLC                    ;|
 $88:A8B7 6D 98 05    ADC $0598  [$7E:0598]  ;} (Y position on screen) += [$14]
 $88:A8BA 8D 98 05    STA $0598  [$7E:0598]  ;/
 $88:A8BD C9 E0 00    CMP #$00E0             ;\
-$88:A8C0 30 BB       BMI $BB    [$A87D]     ;} If (Y position on screen) < E0h: go to LOOP_A87D
+$88:A8C0 30 BB       BMI $BB    [$A87D]     ;} If (Y position on screen) < E0h: go to LOOP_HDMA_TABLE
 $88:A8C2 AB          PLB
 $88:A8C3 60          RTS
 }
@@ -4136,10 +4138,10 @@ $88:A8C3 60          RTS
 $88:A8C4 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $88:A8C7 38          SEC                    ;|
 $88:A8C8 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$88:A8CB 30 06       BMI $06    [$A8D3]     ;} If Samus top position > 10h: return
+$88:A8CB 30 06       BMI $06    [$A8D3]     ;} If (Samus top boundary) > 10h:
 $88:A8CD C9 11 00    CMP #$0011             ;|
 $88:A8D0 30 01       BMI $01    [$A8D3]     ;/
-$88:A8D2 60          RTS
+$88:A8D2 60          RTS                    ; Return
 
 $88:A8D3 A9 08 00    LDA #$0008             ;\
 $88:A8D6 8D 50 0A    STA $0A50  [$7E:0A50]  ;} Deal 8 damage to Samus
@@ -4153,11 +4155,13 @@ $88:A8DA             dw 0000,0010,0020,0020,0010,0030,0040
 }
 
 
-;;; $A8E8:  ;;;
+;;; $A8E8: FX type 22h repeating BG3 strips table ;;;
 {
-;                        _____________ Strip top position
+; This table defines sections of repeating strips of BG3
+
+;                        _____________ Section top position
 ;                       |     ________ Strip height
-;                       |    |     ___ 
+;                       |    |     ___ BG3 tilemap Y position
 ;                       |    |    |
 $88:A8E8             dw 0000,0010,0020,
                         0030,0010,0030,

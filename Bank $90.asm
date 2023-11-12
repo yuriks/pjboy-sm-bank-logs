@@ -5503,7 +5503,7 @@ $90:A6D6 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
 $90:A6D9 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:A6DC 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:A6DF 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
-$90:A6E2 80 0B       BRA $0B    [$A6EF]
+$90:A6E2 80 0B       BRA $0B    [$A6EF]     ; Return
 
 ; BRANCH_DECELERATING
 $90:A6E4 20 64 8E    JSR $8E64  [$90:8E64]  ; Samus X movement
