@@ -3810,120 +3810,123 @@ $88:A678 5A          PHY
 $88:A679 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $88:A67C C9 00 04    CMP #$0400             ;} If [layer 1 Y position] >= 400h: go to BRANCH_A6AC
 $88:A67F 10 2B       BPL $2B    [$A6AC]     ;/
-$88:A681 AD B5 05    LDA $05B5  [$7E:05B5]  ;
-$88:A684 29 01 00    AND #$0001             ;
-$88:A687 D0 0B       BNE $0B    [$A694]     ;
-$88:A689 AD 96 05    LDA $0596  [$7E:0596]  ;
-$88:A68C 1A          INC A                  ;
-$88:A68D 1A          INC A                  ;
-$88:A68E 29 1E 00    AND #$001E             ;
-$88:A691 8D 96 05    STA $0596  [$7E:0596]  ;
+$88:A681 AD B5 05    LDA $05B5  [$7E:05B5]  ;\
+$88:A684 29 01 00    AND #$0001             ;} If [8-bit frame counter] % 2 = 0:
+$88:A687 D0 0B       BNE $0B    [$A694]     ;/
+$88:A689 AD 96 05    LDA $0596  [$7E:0596]  ;\
+$88:A68C 1A          INC A                  ;|
+$88:A68D 1A          INC A                  ;} $0596 = ([$0596] + 2) % 20h
+$88:A68E 29 1E 00    AND #$001E             ;|
+$88:A691 8D 96 05    STA $0596  [$7E:0596]  ;/
 
-$88:A694 AC 96 05    LDY $0596  [$7E:0596]
-$88:A697 A2 00 00    LDX #$0000
-
-$88:A69A B9 38 A9    LDA $A938,y
-$88:A69D 9F 80 9E 7E STA $7E9E80,x
-$88:A6A1 E8          INX
-$88:A6A2 E8          INX
-$88:A6A3 C8          INY
-$88:A6A4 C8          INY
-$88:A6A5 C0 20 00    CPY #$0020
-$88:A6A8 30 F0       BMI $F0    [$A69A]
-$88:A6AA 80 32       BRA $32    [$A6DE]
+$88:A694 AC 96 05    LDY $0596  [$7E:0596]  ;\
+$88:A697 A2 00 00    LDX #$0000             ;|
+                                            ;|
+$88:A69A B9 38 A9    LDA $A938,y            ;|
+$88:A69D 9F 80 9E 7E STA $7E9E80,x          ;|
+$88:A6A1 E8          INX                    ;} $7E:9E80..9F = 20h bytes from [$A938 + [$0596]]
+$88:A6A2 E8          INX                    ;|
+$88:A6A3 C8          INY                    ;|
+$88:A6A4 C8          INY                    ;|
+$88:A6A5 C0 20 00    CPY #$0020             ;|
+$88:A6A8 30 F0       BMI $F0    [$A69A]     ;/
+$88:A6AA 80 32       BRA $32    [$A6DE]     ; Go to BRANCH_A6DE
 
 ; BRANCH_A6AC
-$88:A6AC DE 20 19    DEC $1920,x
-$88:A6AF D0 11       BNE $11    [$A6C2]
-$88:A6B1 A9 06 00    LDA #$0006
-$88:A6B4 9D 20 19    STA $1920,x
-$88:A6B7 BD 14 19    LDA $1914,x
-$88:A6BA 1A          INC A
-$88:A6BB 1A          INC A
-$88:A6BC 29 1F 00    AND #$001F
-$88:A6BF 9D 14 19    STA $1914,x
+$88:A6AC DE 20 19    DEC $1920,x            ; Decrement HDMA object $1920
+$88:A6AF D0 11       BNE $11    [$A6C2]     ; If [HDMA object $1920] = 0:
+$88:A6B1 A9 06 00    LDA #$0006             ;\
+$88:A6B4 9D 20 19    STA $1920,x            ;} HDMA object $1920 = 6
+$88:A6B7 BD 14 19    LDA $1914,x            ;\
+$88:A6BA 1A          INC A                  ;|
+$88:A6BB 1A          INC A                  ;} HDMA object $1914 = ([HDMA object $1914] + 2) % 20h
+$88:A6BC 29 1F 00    AND #$001F             ;|
+$88:A6BF 9D 14 19    STA $1914,x            ;/
 
-$88:A6C2 BD 14 19    LDA $1914,x
-$88:A6C5 AA          TAX
-$88:A6C6 A0 1E 00    LDY #$001E
+$88:A6C2 BD 14 19    LDA $1914,x            ;\
+$88:A6C5 AA          TAX                    ;} X = [HDMA object $1914]
+$88:A6C6 A0 1E 00    LDY #$001E             ; Y = 1Eh
 
-$88:A6C9 A5 B1       LDA $B1    [$7E:00B1]
-$88:A6CB 18          CLC
-$88:A6CC 79 6E C4    ADC $C46E,y
-$88:A6CF 9F 80 9E 7E STA $7E9E80,x
-$88:A6D3 8A          TXA
-$88:A6D4 3A          DEC A
-$88:A6D5 3A          DEC A
-$88:A6D6 29 1F 00    AND #$001F
-$88:A6D9 AA          TAX
-$88:A6DA 88          DEY
-$88:A6DB 88          DEY
-$88:A6DC 10 EB       BPL $EB    [$A6C9]
+; LOOP_A6C9
+$88:A6C9 A5 B1       LDA $B1    [$7E:00B1]  ;\
+$88:A6CB 18          CLC                    ;|
+$88:A6CC 79 6E C4    ADC $C46E,y            ;} $7E:9E80 + [X] = [BG1 X scroll] + [$C46E + [Y]]
+$88:A6CF 9F 80 9E 7E STA $7E9E80,x          ;/
+$88:A6D3 8A          TXA                    ;\
+$88:A6D4 3A          DEC A                  ;|
+$88:A6D5 3A          DEC A                  ;} X = ([X] - 2) % 20h
+$88:A6D6 29 1F 00    AND #$001F             ;|
+$88:A6D9 AA          TAX                    ;/
+$88:A6DA 88          DEY                    ;\
+$88:A6DB 88          DEY                    ;} Y -= 2
+$88:A6DC 10 EB       BPL $EB    [$A6C9]     ; If [Y] >= 0: go to LOOP_A6C9
 
-$88:A6DE A9 00 00    LDA #$0000
-$88:A6E1 8F 00 9E 7E STA $7E9E00[$7E:9E00]
-$88:A6E5 8F 00 9F 7E STA $7E9F00[$7E:9F00]
-$88:A6E9 A9 1F 00    LDA #$001F
-$88:A6EC 8F 02 9E 7E STA $7E9E02[$7E:9E02]
-$88:A6F0 8F 02 9F 7E STA $7E9F02[$7E:9F02]
-$88:A6F4 85 12       STA $12    [$7E:0012]
-$88:A6F6 A9 00 9E    LDA #$9E00
-$88:A6F9 8F 03 9E 7E STA $7E9E03[$7E:9E03]
-$88:A6FD 8F 03 9F 7E STA $7E9F03[$7E:9F03]
-$88:A701 AD 15 09    LDA $0915  [$7E:0915]
-$88:A704 C9 00 04    CMP #$0400
-$88:A707 30 0F       BMI $0F    [$A718]
-$88:A709 A9 B1 00    LDA #$00B1
-$88:A70C 85 14       STA $14    [$7E:0014]
-$88:A70E 64 16       STZ $16    [$7E:0016]
-$88:A710 A2 05 01    LDX #$0105
-$88:A713 20 86 A7    JSR $A786  [$88:A786]
+; BRANCH_A6DE
+$88:A6DE A9 00 00    LDA #$0000             ;\
+$88:A6E1 8F 00 9E 7E STA $7E9E00[$7E:9E00]  ;} $7E:9E00 = $7E:9F00 = 0
+$88:A6E5 8F 00 9F 7E STA $7E9F00[$7E:9F00]  ;/
+$88:A6E9 A9 1F 00    LDA #$001F             ;\
+$88:A6EC 8F 02 9E 7E STA $7E9E02[$7E:9E02]  ;|
+$88:A6F0 8F 02 9F 7E STA $7E9F02[$7E:9F02]  ;|
+$88:A6F4 85 12       STA $12    [$7E:0012]  ;} $7E:9E02 = $7E:9F02 = 1Fh,$9E00
+$88:A6F6 A9 00 9E    LDA #$9E00             ;} $12 = 1Fh (Y position on screen)
+$88:A6F9 8F 03 9E 7E STA $7E9E03[$7E:9E03]  ;|
+$88:A6FD 8F 03 9F 7E STA $7E9F03[$7E:9F03]  ;/
+$88:A701 AD 15 09    LDA $0915  [$7E:0915]  ;\
+$88:A704 C9 00 04    CMP #$0400             ;} If [layer 1 Y position] >= 400h:
+$88:A707 30 0F       BMI $0F    [$A718]     ;/
+$88:A709 A9 B1 00    LDA #$00B1             ;\
+$88:A70C 85 14       STA $14    [$7E:0014]  ;} $14 = B1h
+$88:A70E 64 16       STZ $16    [$7E:0016]  ; $16 = 0
+$88:A710 A2 05 01    LDX #$0105             ; X = 105h
+$88:A713 20 86 A7    JSR $A786  [$88:A786]  ; Execute $A786
 $88:A716 80 07       BRA $07    [$A71F]
 
-$88:A718 A9 00 00    LDA #$0000
-$88:A71B 8F 02 9F 7E STA $7E9F02[$7E:9F02]
+$88:A718 A9 00 00    LDA #$0000             ;\ Else ([layer 1 Y position] < 400h):
+$88:A71B 8F 02 9F 7E STA $7E9F02[$7E:9F02]  ;} $7E:9F02 = 0,0
 
-$88:A71F A2 05 00    LDX #$0005
-$88:A722 A9 80 9E    LDA #$9E80
-$88:A725 85 14       STA $14    [$7E:0014]
-$88:A727 A9 80 00    LDA #$0080
-$88:A72A 85 16       STA $16    [$7E:0016]
-$88:A72C 20 86 A7    JSR $A786  [$88:A786]
-$88:A72F A9 E0 00    LDA #$00E0
-$88:A732 38          SEC
-$88:A733 E5 12       SBC $12    [$7E:0012]
-$88:A735 A8          TAY
+$88:A71F A2 05 00    LDX #$0005             ; X = 5 (HDMA table index)
+$88:A722 A9 80 9E    LDA #$9E80             ;\
+$88:A725 85 14       STA $14    [$7E:0014]  ;} $14 = $9E80
+$88:A727 A9 80 00    LDA #$0080             ;\
+$88:A72A 85 16       STA $16    [$7E:0016]  ;} $16 = 80h
+$88:A72C 20 86 A7    JSR $A786  [$88:A786]  ; Execute $A786
+$88:A72F A9 E0 00    LDA #$00E0             ;\
+$88:A732 38          SEC                    ;|
+$88:A733 E5 12       SBC $12    [$7E:0012]  ;} Y = E0h - [$12]
+$88:A735 A8          TAY                    ;/
 
-$88:A736 98          TYA
-$88:A737 38          SEC
-$88:A738 E9 10 00    SBC #$0010
-$88:A73B 30 1C       BMI $1C    [$A759]
-$88:A73D A8          TAY
-$88:A73E A9 90 00    LDA #$0090
-$88:A741 9F 00 9E 7E STA $7E9E00,x
-$88:A745 9F 00 9F 7E STA $7E9F00,x
-$88:A749 A9 80 9E    LDA #$9E80
-$88:A74C 9F 01 9E 7E STA $7E9E01,x
-$88:A750 9F 01 9F 7E STA $7E9F01,x
-$88:A754 E8          INX
-$88:A755 E8          INX
-$88:A756 E8          INX
-$88:A757 80 DD       BRA $DD    [$A736]
+; LOOP_A736
+$88:A736 98          TYA                    ;\
+$88:A737 38          SEC                    ;|
+$88:A738 E9 10 00    SBC #$0010             ;} If [Y] >= 10h:
+$88:A73B 30 1C       BMI $1C    [$A759]     ;/
+$88:A73D A8          TAY                    ; Y -= 10h
+$88:A73E A9 90 00    LDA #$0090             ;\
+$88:A741 9F 00 9E 7E STA $7E9E00,x          ;|
+$88:A745 9F 00 9F 7E STA $7E9F00,x          ;|
+$88:A749 A9 80 9E    LDA #$9E80             ;} $7E:9E00 + [X] = $7E:9F00 + [X] = 90h,$9E80
+$88:A74C 9F 01 9E 7E STA $7E9E01,x          ;|
+$88:A750 9F 01 9F 7E STA $7E9F01,x          ;/
+$88:A754 E8          INX                    ;\
+$88:A755 E8          INX                    ;} X += 3 (next HDMA table entry)
+$88:A756 E8          INX                    ;/
+$88:A757 80 DD       BRA $DD    [$A736]     ; Go to LOOP_A736
 
-$88:A759 98          TYA
-$88:A75A C9 00 00    CMP #$0000
-$88:A75D F0 04       BEQ $04    [$A763]
-$88:A75F 18          CLC
-$88:A760 69 80 00    ADC #$0080
+$88:A759 98          TYA                    ; A = [Y]
+$88:A75A C9 00 00    CMP #$0000             ;\
+$88:A75D F0 04       BEQ $04    [$A763]     ;} If [A] != 0:
+$88:A75F 18          CLC                    ;\
+$88:A760 69 80 00    ADC #$0080             ;} A += 80h
 
-$88:A763 9F 00 9E 7E STA $7E9E00,x
-$88:A767 9F 00 9F 7E STA $7E9F00,x
-$88:A76B A9 80 9E    LDA #$9E80
-$88:A76E 9F 01 9E 7E STA $7E9E01,x
-$88:A772 9F 01 9F 7E STA $7E9F01,x
-$88:A776 A9 00 00    LDA #$0000
-$88:A779 9F 03 9E 7E STA $7E9E03,x
-$88:A77D 9F 03 9F 7E STA $7E9F03,x
+$88:A763 9F 00 9E 7E STA $7E9E00,x          ;\
+$88:A767 9F 00 9F 7E STA $7E9F00,x          ;|
+$88:A76B A9 80 9E    LDA #$9E80             ;} $7E:9E00 + [X] = $7E:9F00 + [X] = [A],$9E80
+$88:A76E 9F 01 9E 7E STA $7E9E01,x          ;|
+$88:A772 9F 01 9F 7E STA $7E9F01,x          ;/
+$88:A776 A9 00 00    LDA #$0000             ;\
+$88:A779 9F 03 9E 7E STA $7E9E03,x          ;} $7E:9E00 + [X] + 3 = $7E:9F00 + [X] + 3 = 0,0
+$88:A77D 9F 03 9F 7E STA $7E9F03,x          ;/
 $88:A781 7A          PLY
 $88:A782 FA          PLX
 $88:A783 AB          PLB
