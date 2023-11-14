@@ -3802,6 +3802,8 @@ $88:A672 60          RTS
 
 ;;; $A673: Pre-instruction - FX type 22h BG3 X scroll ;;;
 {
+; This code is making my eyes heavy...
+
 $88:A673 08          PHP
 $88:A674 C2 30       REP #$30
 $88:A676 8B          PHB
@@ -3876,7 +3878,7 @@ $88:A701 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $88:A704 C9 00 04    CMP #$0400             ;} If [layer 1 Y position] >= 400h:
 $88:A707 30 0F       BMI $0F    [$A718]     ;/
 $88:A709 A9 B1 00    LDA #$00B1             ;\
-$88:A70C 85 14       STA $14    [$7E:0014]  ;} $14 = B1h
+$88:A70C 85 14       STA $14    [$7E:0014]  ;} $14 = BG1 X scroll
 $88:A70E 64 16       STZ $16    [$7E:0016]  ; $16 = 0
 $88:A710 A2 05 01    LDX #$0105             ; X = 105h
 $88:A713 20 86 A7    JSR $A786  [$88:A786]  ; Execute $A786
@@ -3937,47 +3939,59 @@ $88:A785 6B          RTL
 
 ;;; $A786:  ;;;
 {
-$88:A786 A9 C0 04    LDA #$04C0
-$88:A789 38          SEC
-$88:A78A ED 15 09    SBC $0915  [$7E:0915]
-$88:A78D 85 18       STA $18    [$7E:0018]
-$88:A78F 30 46       BMI $46    [$A7D7]
-$88:A791 F0 44       BEQ $44    [$A7D7]
-$88:A793 C9 80 00    CMP #$0080
-$88:A796 30 2C       BMI $2C    [$A7C4]
+;; Parameters:
+;;     X: HDMA table index
+;;     $12: Y position on screen
+;;     $14: HDMA data pointer
+;;     $16: HDMA consecutive data flag. If 0, $14 points to one value used for many scanlines. If 80h, $14 points to consecutive values used for consecutive scanlines
+;; Returns:
+;;     X: HDMA table index
+;;     $12: Y position on screen
+
+$88:A786 A9 C0 04    LDA #$04C0             ;\
+$88:A789 38          SEC                    ;|
+$88:A78A ED 15 09    SBC $0915  [$7E:0915]  ;} $18 = 4C0h - [layer 1 Y position]
+$88:A78D 85 18       STA $18    [$7E:0018]  ;/
+$88:A78F 30 46       BMI $46    [$A7D7]     ;\
+$88:A791 F0 44       BEQ $44    [$A7D7]     ;} If [layer 1 Y position] >= 4C0h: return
+$88:A793 C9 80 00    CMP #$0080             ;\
+$88:A796 30 2C       BMI $2C    [$A7C4]     ;} If [layer 1 Y position] > 440h: go to BRANCH_A7C4
 $88:A798 85 12       STA $12    [$7E:0012]
-$88:A79A C9 C1 00    CMP #$00C1
-$88:A79D 30 03       BMI $03    [$A7A2]
-$88:A79F A9 C1 00    LDA #$00C1
+$88:A79A C9 C1 00    CMP #$00C1             ;\
+$88:A79D 30 03       BMI $03    [$A7A2]     ;|
+$88:A79F A9 C1 00    LDA #$00C1             ;|
+                                            ;} $18 = $12 = min(C1h, 4C0h - [layer 1 Y position])
+$88:A7A2 85 12       STA $12    [$7E:0012]  ;|
+$88:A7A4 85 18       STA $18    [$7E:0018]  ;/
 
-$88:A7A2 85 12       STA $12    [$7E:0012]
-$88:A7A4 85 18       STA $18    [$7E:0018]
-
-$88:A7A6 38          SEC
-$88:A7A7 E9 10 00    SBC #$0010
-$88:A7AA 30 1A       BMI $1A    [$A7C6]
-$88:A7AC 85 18       STA $18    [$7E:0018]
-$88:A7AE A9 10 00    LDA #$0010
-$88:A7B1 05 16       ORA $16    [$7E:0016]
-$88:A7B3 9F 00 9E 7E STA $7E9E00,x
-$88:A7B7 A5 14       LDA $14    [$7E:0014]
-$88:A7B9 9F 01 9E 7E STA $7E9E01,x
+; LOOP
+$88:A7A6 38          SEC                    ;\
+$88:A7A7 E9 10 00    SBC #$0010             ;} If [$18] < 10h: go to BRANCH_DONE
+$88:A7AA 30 1A       BMI $1A    [$A7C6]     ;/
+$88:A7AC 85 18       STA $18    [$7E:0018]  ; $18 -= 10h
+$88:A7AE A9 10 00    LDA #$0010             ;\
+$88:A7B1 05 16       ORA $16    [$7E:0016]  ;|
+$88:A7B3 9F 00 9E 7E STA $7E9E00,x          ;} $7E:9E00 + [X] = 10h | [$16], [$14]
+$88:A7B7 A5 14       LDA $14    [$7E:0014]  ;|
+$88:A7B9 9F 01 9E 7E STA $7E9E01,x          ;/
 $88:A7BD A5 18       LDA $18    [$7E:0018]
-$88:A7BF E8          INX
-$88:A7C0 E8          INX
-$88:A7C1 E8          INX
-$88:A7C2 80 E2       BRA $E2    [$A7A6]
+$88:A7BF E8          INX                    ;\
+$88:A7C0 E8          INX                    ;} X += 3 (next HDMA table entry)
+$88:A7C1 E8          INX                    ;/
+$88:A7C2 80 E2       BRA $E2    [$A7A6]     ; Go to LOOP
 
-$88:A7C4 85 12       STA $12    [$7E:0012]
+; BRANCH_A7C4
+$88:A7C4 85 12       STA $12    [$7E:0012]  ; $12 = 4C0h - [layer 1 Y position]
 
-$88:A7C6 A5 18       LDA $18    [$7E:0018]
-$88:A7C8 05 16       ORA $16    [$7E:0016]
-$88:A7CA 9F 00 9E 7E STA $7E9E00,x
-$88:A7CE A5 14       LDA $14    [$7E:0014]
-$88:A7D0 9F 01 9E 7E STA $7E9E01,x
-$88:A7D4 E8          INX
-$88:A7D5 E8          INX
-$88:A7D6 E8          INX
+; BRANCH_DONE
+$88:A7C6 A5 18       LDA $18    [$7E:0018]  ;\
+$88:A7C8 05 16       ORA $16    [$7E:0016]  ;|
+$88:A7CA 9F 00 9E 7E STA $7E9E00,x          ;} $7E:9E00 + [X] = [$18] | [$16], [$14]
+$88:A7CE A5 14       LDA $14    [$7E:0014]  ;|
+$88:A7D0 9F 01 9E 7E STA $7E9E01,x          ;/
+$88:A7D4 E8          INX                    ;\
+$88:A7D5 E8          INX                    ;} X += 3 (next HDMA table entry)
+$88:A7D6 E8          INX                    ;/
 
 $88:A7D7 60          RTS
 }
@@ -4152,9 +4166,13 @@ $88:A8D9 60          RTS
 }
 
 
-;;; $A8DA:  ;;;
+;;; $A8DA: Unused table ;;;
 {
-$88:A8DA             dw 0000,0010,0020,0020,0010,0030,0040
+; Looks like the format of the $A8E8 table
+
+$88:A8DA             dw 0000,0010,0020,
+                        0020,0010,0030,
+                        0040
 }
 
 
@@ -4185,7 +4203,7 @@ $88:A8E8             dw 0000,0010,0020,
 
 ;;; $A938:  ;;;
 {
-; Looks like only the first line is used
+; Looks like only the first two lines are used
 $88:A938             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
 $88:A958             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
 $88:A978             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000

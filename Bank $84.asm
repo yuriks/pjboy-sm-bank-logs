@@ -393,8 +393,8 @@ $84:83EE 83 06       STA $06,s              ;/
 $84:83F0 FA          PLX
 $84:83F1 7A          PLY
 $84:83F2 AB          PLB
-$84:83F3 38          SEC
-$84:83F4 6B          RTL
+$84:83F3 38          SEC                    ;\
+$84:83F4 6B          RTL                    ;} Return carry set
 
 ; BRANCH_FOUND
 $84:83F5 E2 20       SEP #$20
@@ -431,7 +431,7 @@ $84:8431 BB          TYX
 $84:8432 A8          TAY
 $84:8433 A9 00 00    LDA #$0000
 $84:8436 9D C7 1D    STA $1DC7,x[$7E:1E15]  ; PLM room argument = 0
-$84:8439 9F 0C DF 7E STA $7EDF0C,x[$7E:DF5A]; PLM $DF0C = 0
+$84:8439 9F 0C DF 7E STA $7EDF0C,x[$7E:DF5A]; PLM $7E:DF0C = 0
 $84:843D A9 69 84    LDA #$8469             ;\
 $84:8440 9D D7 1C    STA $1CD7,x[$7E:1D25]  ;} PLM pre-instruction = RTS
 $84:8443 B9 02 00    LDA $0002,y[$84:B7ED]  ;\
@@ -448,8 +448,8 @@ $84:8461 FC 00 00    JSR ($0000,x)[$84:B7C3]; Execute [[PLM ID]] (PLM setup)
 $84:8464 FA          PLX
 $84:8465 7A          PLY
 $84:8466 AB          PLB
-$84:8467 18          CLC
-$84:8468 6B          RTL
+$84:8467 18          CLC                    ;\
+$84:8468 6B          RTL                    ;} Return carry clear
 }
 
 
@@ -487,8 +487,8 @@ $84:847C FA          PLX
 $84:847D 7A          PLY
 $84:847E AB          PLB
 $84:847F 28          PLP
-$84:8480 38          SEC
-$84:8481 6B          RTL
+$84:8480 38          SEC                    ;\
+$84:8481 6B          RTL                    ;} Return carry set
 
 ; BRANCH_FOUND
 $84:8482 E2 20       SEP #$20
@@ -510,7 +510,7 @@ $84:84AD 99 37 1C    STA $1C37,y[$7E:1C85]  ;} PLM ID = [$8F:0000 + [X]]
 $84:84B0 BB          TYX
 $84:84B1 A8          TAY
 $84:84B2 A9 00 00    LDA #$0000             ;\
-$84:84B5 9F 0C DF 7E STA $7EDF0C,x[$7E:DF5A];} PLM $DF0C = 0
+$84:84B5 9F 0C DF 7E STA $7EDF0C,x[$7E:DF5A];} PLM $7E:DF0C = 0
 $84:84B9 A9 E6 84    LDA #$84E6             ;\
 $84:84BC 9D D7 1C    STA $1CD7,x[$7E:1D25]  ;} PLM pre-instruction = RTS
 $84:84BF B9 02 00    LDA $0002,y[$84:B705]  ;\
@@ -528,8 +528,8 @@ $84:84E0 FA          PLX
 $84:84E1 7A          PLY
 $84:84E2 AB          PLB
 $84:84E3 28          PLP
-$84:84E4 18          CLC
-$84:84E5 6B          RTL
+$84:84E4 18          CLC                    ;\
+$84:84E5 6B          RTL                    ;} Return carry clear
 }
 
 
@@ -543,6 +543,8 @@ $84:84E6 60          RTS
 {
 ;; Parameter:
 ;;     A: PLM ID
+;; Returns:
+;;     Carry: If PLM is not spawned, carry is unchanged. Otherwise set according to PLM setup, or clear if PLM setup doesn't change the carry (thanks to the lucky ASL at $8500)
 $84:84E7 8B          PHB
 $84:84E8 5A          PHY
 $84:84E9 DA          PHX
@@ -560,7 +562,7 @@ $84:84F7 10 F7       BPL $F7    [$84F0]     ; If [X] >= 0: go to LOOP
 $84:84F9 FA          PLX
 $84:84FA 7A          PLY
 $84:84FB AB          PLB
-$84:84FC 6B          RTL
+$84:84FC 6B          RTL                    ; Return
 
 ; BRANCH_FOUND
 $84:84FD AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
@@ -579,7 +581,7 @@ $84:851E 9F 6C DE 7E STA $7EDE6C,x[$7E:DEB4];} PLM draw instruction pointer = $8
 $84:8522 A9 00 00    LDA #$0000
 $84:8525 9D 77 1D    STA $1D77,x[$7E:1DBF]  ; PLM $1D77 = 0
 $84:8528 9D C7 1D    STA $1DC7,x[$7E:1E0F]  ; PLM room argument = 0
-$84:852B 9F 0C DF 7E STA $7EDF0C,x[$7E:DF54]; PLM $DF0C = 0
+$84:852B 9F 0C DF 7E STA $7EDF0C,x[$7E:DF54]; PLM $7E:DF0C = 0
 $84:852F 8E 27 1C    STX $1C27  [$7E:1C27]  ;\
 $84:8532 BB          TYX                    ;} PLM index = [Y]
 $84:8533 AC 27 1C    LDY $1C27  [$7E:1C27]  ;/
@@ -621,7 +623,7 @@ $84:8551 68          PLA
 $84:8552 FA          PLX
 $84:8553 7A          PLY
 $84:8554 AB          PLB
-$84:8555 6B          RTL
+$84:8555 6B          RTL                    ; Return
 
 ; BRANCH_FOUND
 $84:8556 B9 7E 0F    LDA $0F7E,y            ;\
@@ -657,7 +659,7 @@ $84:8594 9F 6C DE 7E STA $7EDE6C,x          ;} PLM draw instruction pointer = $8
 $84:8598 A9 00 00    LDA #$0000
 $84:859B 9D 77 1D    STA $1D77,x            ; PLM $1D77 = 0
 $84:859E 9D C7 1D    STA $1DC7,x            ; PLM room argument = 0
-$84:85A1 9F 0C DF 7E STA $7EDF0C,x          ; PLM $DF0C = 0
+$84:85A1 9F 0C DF 7E STA $7EDF0C,x          ; PLM $7E:DF0C = 0
 $84:85A5 8E 27 1C    STX $1C27  [$7E:1C27]  ;\
 $84:85A8 BB          TYX                    ;} PLM index = [Y]
 $84:85A9 AC 27 1C    LDY $1C27  [$7E:1C27]  ;/
