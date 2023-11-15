@@ -16646,7 +16646,7 @@ $90:F4A1 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F4A2: $F084 - A = 1Eh ;;;
+;;; $F4A2: $F084 - A = 1Eh: resume sounds after power bomb explosion ;;;
 {
 $90:F4A2 AD 98 09    LDA $0998  [$7E:0998]  ;\
 $90:F4A5 C9 08 00    CMP #$0008             ;} If [game state] != main gameplay: return carry clear

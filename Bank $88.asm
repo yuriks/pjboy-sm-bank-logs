@@ -682,17 +682,17 @@ $88:82AB 28          PLP
 ;;; $82AC: Delete HDMA objects ;;;
 {
 $88:82AC 08          PHP
-$88:82AD E2 20       SEP #$20
-$88:82AF 64 85       STZ $85    [$7E:0085]  ; Clear HDMA channels to enable
-$88:82B1 C2 30       REP #$30
-$88:82B3 DA          PHX
-$88:82B4 A2 0A 00    LDX #$000A             ;\
+$88:82AD E2 20       SEP #$20               ;\
+$88:82AF 64 85       STZ $85    [$7E:0085]  ;} Clear HDMA channels to enable
+$88:82B1 C2 30       REP #$30               ;/
+$88:82B3 DA          PHX                    ;\
+$88:82B4 A2 0A 00    LDX #$000A             ;|
                                             ;|
 $88:82B7 9E B4 18    STZ $18B4,x[$7E:18BE]  ;|
 $88:82BA CA          DEX                    ;} Delete HDMA objects
 $88:82BB CA          DEX                    ;|
-$88:82BC 10 F9       BPL $F9    [$82B7]     ;/
-$88:82BE FA          PLX
+$88:82BC 10 F9       BPL $F9    [$82B7]     ;|
+$88:82BE FA          PLX                    ;/
 $88:82BF 28          PLP
 $88:82C0 6B          RTL
 }
@@ -700,30 +700,31 @@ $88:82C0 6B          RTL
 
 ;;; $82C1: Initialise special effects for new room ;;;
 {
+; This initial bit regarding earthquake sound effects is strictly for rising acid/lava rooms
 $88:82C1 08          PHP
 $88:82C2 C2 20       REP #$20
 $88:82C4 9C 07 06    STZ $0607  [$7E:0607]  ; Earthquake sound effect index = 0
-$88:82C7 9C 09 06    STZ $0609  [$7E:0609]  ; Earthquake sound effect timer = 0
+$88:82C7 9C 09 06    STZ $0609  [$7E:0609]  ; Earthquake sound effect timer = 0 (enable)
 $88:82CA AD 9B 07    LDA $079B  [$7E:079B]  ;\
-$88:82CD C9 04 98    CMP #$9804             ;} If [room pointer] = $9804 (Bomb Torizo): go to BRANCH_EARTHQUAKE
+$88:82CD C9 04 98    CMP #$9804             ;} If [room pointer] = $9804 (Bomb Torizo): go to BRANCH_NO_EARTHQUAKE_SFX
 $88:82D0 F0 1B       BEQ $1B    [$82ED]     ;/
 $88:82D2 C9 BA 96    CMP #$96BA             ;\
-$88:82D5 F0 16       BEQ $16    [$82ED]     ;} If [room pointer] = $96BA (old Tourian escape shaft): go to BRANCH_EARTHQUAKE
+$88:82D5 F0 16       BEQ $16    [$82ED]     ;} If [room pointer] = $96BA (old Tourian escape shaft): go to BRANCH_NO_EARTHQUAKE_SFX
 $88:82D7 C9 2E B3    CMP #$B32E             ;\
-$88:82DA F0 11       BEQ $11    [$82ED]     ;} If [room pointer] = $B32E (Ridley): go to BRANCH_EARTHQUAKE
+$88:82DA F0 11       BEQ $11    [$82ED]     ;} If [room pointer] = $B32E (Ridley): go to BRANCH_NO_EARTHQUAKE_SFX
 $88:82DC C9 57 B4    CMP #$B457             ;\
-$88:82DF F0 0C       BEQ $0C    [$82ED]     ;} If [room pointer] = $B457 (Lower Norfair breakable pillars hall): go to BRANCH_EARTHQUAKE
+$88:82DF F0 0C       BEQ $0C    [$82ED]     ;} If [room pointer] = $B457 (Lower Norfair breakable pillars hall): go to BRANCH_NO_EARTHQUAKE_SFX
 $88:82E1 C9 58 DD    CMP #$DD58             ;\
-$88:82E4 F0 07       BEQ $07    [$82ED]     ;} If [room pointer] = $DD58 (Mother Brain): go to BRANCH_EARTHQUAKE
+$88:82E4 F0 07       BEQ $07    [$82ED]     ;} If [room pointer] = $DD58 (Mother Brain): go to BRANCH_NO_EARTHQUAKE_SFX
 $88:82E6 C9 DE DE    CMP #$DEDE             ;\
-$88:82E9 F0 02       BEQ $02    [$82ED]     ;} If [room pointer] = $DEDE (escape room 4): go to BRANCH_EARTHQUAKE
-$88:82EB 80 06       BRA $06    [$82F3]     ; Go to BRANCH_NO_EARTHQUAKE
+$88:82E9 F0 02       BEQ $02    [$82ED]     ;} If [room pointer] = $DEDE (escape room 4): go to BRANCH_NO_EARTHQUAKE_SFX
+$88:82EB 80 06       BRA $06    [$82F3]     ; Go to BRANCH_EARTHQUAKE_SFX
 
-; BRANCH_EARTHQUAKE
+; BRANCH_NO_EARTHQUAKE_SFX
 $88:82ED A9 FF FF    LDA #$FFFF             ;\
-$88:82F0 8D 09 06    STA $0609  [$7E:0609]  ;} Earthquake sound effect timer = FFFFh
+$88:82F0 8D 09 06    STA $0609  [$7E:0609]  ;} Earthquake sound effect timer = FFFFh (disable)
 
-; BRANCH_NO_EARTHQUAKE
+; BRANCH_EARTHQUAKE_SFX
 $88:82F3 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
 $88:82F6 E2 30       SEP #$30
 $88:82F8 A2 20       LDX #$20               ;\
@@ -735,7 +736,7 @@ $88:8302 9E 02 43    STZ $4302,x[$7E:4322]  ;|
 $88:8305 9E 03 43    STZ $4303,x[$7E:4323]  ;|
 $88:8308 9E 04 43    STZ $4304,x[$7E:4324]  ;|
 $88:830B 9E 05 43    STZ $4305,x[$7E:4325]  ;|
-$88:830E 9E 06 43    STZ $4306,x[$7E:4326]  ;} Clear (H)DMA registers
+$88:830E 9E 06 43    STZ $4306,x[$7E:4326]  ;} Clear (H)DMA registers. Sets PPU addresses to $2113 (BG4 X scroll) for no particular reason
 $88:8311 9E 08 43    STZ $4308,x[$7E:4328]  ;|
 $88:8314 9E 09 43    STZ $4309,x[$7E:4329]  ;|
 $88:8317 8A          TXA                    ;|
@@ -746,10 +747,10 @@ $88:831C E0 80       CPX #$80               ;|
 $88:831E D0 DA       BNE $DA    [$82FA]     ;/
 $88:8320 C2 30       REP #$30
 $88:8322 A9 FF FF    LDA #$FFFF
-$88:8325 9C 5C 19    STZ $195C  [$7E:195C]  ; FX Y subposition = 0
-$88:8328 8D 5E 19    STA $195E  [$7E:195E]  ; FX Y position = FFFFh
+$88:8325 9C 5C 19    STZ $195C  [$7E:195C]  ;\ FX Y subposition = 0
+$88:8328 8D 5E 19    STA $195E  [$7E:195E]  ;} FX Y position = FFFFh (disabled)
 $88:832B 9C 60 19    STZ $1960  [$7E:1960]  ; Lava/acid Y subposition = 0
-$88:832E 8D 62 19    STA $1962  [$7E:1962]  ; Lava/acid Y position = FFFFh
+$88:832E 8D 62 19    STA $1962  [$7E:1962]  ; Lava/acid Y position = FFFFh (disabled)
 $88:8331 A9 00 00    LDA #$0000             ;\
 $88:8334 8F D8 CA 7E STA $7ECAD8[$7E:CAD8]  ;} HUD BG3 X position = 0
 $88:8338 8F DA CA 7E STA $7ECADA[$7E:CADA]  ; HUD BG3 Y position = 0
@@ -764,20 +765,20 @@ $88:8353 9C 88 19    STZ $1988  [$7E:1988]  ; Phantoon semi-transparency flag = 
 $88:8356 9C 92 05    STZ $0592  [$7E:0592]  ; Power bomb explosion status = 0
 $88:8359 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag = 0
 $88:835C 9C EA 0C    STZ $0CEA  [$7E:0CEA]  ; Power bomb radius = 0
-$88:835F 9C 64 19    STZ $1964  [$7E:1964]  ; FX layer 3 tilemap address = 0
-$88:8362 9C 6E 19    STZ $196E  [$7E:196E]  ; FX type = 0
+$88:835F 9C 64 19    STZ $1964  [$7E:1964]  ; FX tilemap address = 0
+$88:8362 9C 6E 19    STZ $196E  [$7E:196E]  ; FX type = none
 $88:8365 A9 00 80    LDA #$8000             ;\
-$88:8368 8D 76 19    STA $1976  [$7E:1976]  ;} FX base Y subposition = 8000h
-$88:836B 9C 78 19    STZ $1978  [$7E:1978]  ; FX base Y position = 0
+$88:8368 8D 76 19    STA $1976  [$7E:1976]  ;} FX base Y position = 0.8000h
+$88:836B 9C 78 19    STZ $1978  [$7E:1978]  ;/
 $88:836E 9C 7A 19    STZ $197A  [$7E:197A]  ; FX target Y position = 0
 $88:8371 9C 7C 19    STZ $197C  [$7E:197C]  ; FX Y velocity = 0
 $88:8374 9C 7E 19    STZ $197E  [$7E:197E]  ; FX liquid options = 0
 $88:8377 9C 80 19    STZ $1980  [$7E:1980]  ; FX timer = 0
 $88:837A 9C 74 19    STZ $1974  [$7E:1974]  ; Tide phase = 0
-$88:837D 9C 70 19    STZ $1970  [$7E:1970]  ; FX Y suboffset = 0
-$88:8380 9C 72 19    STZ $1972  [$7E:1972]  ; FX Y offset = 0
+$88:837D 9C 70 19    STZ $1970  [$7E:1970]  ;\
+$88:8380 9C 72 19    STZ $1972  [$7E:1972]  ;} FX Y offset = 0.0
 $88:8383 A9 02 00    LDA #$0002             ;\
-$88:8386 8D 82 19    STA $1982  [$7E:1982]  ;} Default layer blending configuration = 0
+$88:8386 8D 82 19    STA $1982  [$7E:1982]  ;} Default layer blending configuration = 2 (normal)
 $88:8389 64 B9       STZ $B9    [$7E:00B9]  ; BG3 X scroll = 0
 $88:838B 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
 $88:838D 9C 17 09    STZ $0917  [$7E:0917]  ; Layer 2 X position = 0
@@ -786,13 +787,13 @@ $88:8393 64 A9       STZ $A9    [$7E:00A9]  ; Room loading interrupt command = 0
 $88:8395 A9 00 88    LDA #$8800             ;\
 $88:8398 8D 02 06    STA $0602  [$7E:0602]  ;|
 $88:839B 8D 05 06    STA $0605  [$7E:0605]  ;|
-$88:839E A9 E1 83    LDA #$83E1             ;} Pause function = unpause function = $88:83E1 (RTL)
+$88:839E A9 E1 83    LDA #$83E1             ;} Pause hook = unpause hook = $88:83E1 (RTL)
 $88:83A1 8D 01 06    STA $0601  [$7E:0601]  ;|
 $88:83A4 8D 04 06    STA $0604  [$7E:0604]  ;/
 $88:83A7 E2 20       SEP #$20               ;\
 $88:83A9 A9 F0       LDA #$F0               ;|
 $88:83AB 8D 81 21    STA $2181  [$7E:2181]  ;|
-$88:83AE A9 FF       LDA #$FF               ;} WRAM address = $7F:FFF0 (?!)
+$88:83AE A9 FF       LDA #$FF               ;} WRAM address = $7F:FFF0 (for no particular reason)
 $88:83B0 8D 82 21    STA $2182  [$7E:2182]  ;|
 $88:83B3 A9 01       LDA #$01               ;|
 $88:83B5 8D 83 21    STA $2183  [$7E:2183]  ;/
@@ -812,7 +813,7 @@ $88:83D0 64 5D       STZ $5D    [$7E:005D]  ; BG1/BG2 tiles base address = $0000
 $88:83D2 A9 04       LDA #$04               ;\
 $88:83D4 85 5E       STA $5E    [$7E:005E]  ;} BG3 tiles base address = $4000
 $88:83D6 A9 49       LDA #$49               ;\
-$88:83D8 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $5800, size = 64x32
+$88:83D8 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $4800, size = 64x32
 $88:83DA A9 5A       LDA #$5A               ;\
 $88:83DC 85 5A       STA $5A    [$7E:005A]  ;} BG3 tilemap base address = $5800, size = 32x64
 $88:83DE 85 5B       STA $5B    [$7E:005B]  ;/
@@ -918,7 +919,7 @@ $88:8432 4C 77 84    JMP $8477  [$88:8477]  ; Spawn HDMA object to slot [X]
 ;;     [[S] + 1] + 3: HDMA object instruction list pointer
 
 ;; Returns:
-;;     Carry: Clear is HDMA object was spawned. Set if HDMA array full
+;;     Carry: Clear if HDMA object was spawned. Set if HDMA array full
 ;;     A: HDMA object index (80h if HDMA array full)
 
 $88:8435 08          PHP
@@ -947,7 +948,7 @@ $88:8458 A2 00 00    LDX #$0000             ; X = 0 (HDMA object index)
 $88:845B BD B4 18    LDA $18B4,x[$7E:18B4]  ;\
 $88:845E F0 17       BEQ $17    [$8477]     ;} If [HDMA object channel] = 0: go to spawn HDMA object to slot [X]
 $88:8460 06 12       ASL $12    [$7E:0012]  ; $13 <<= 1
-$88:8462 B0 0F       BCS $0F    [$8473]     ; If $13 didn't shift out:
+$88:8462 B0 0F       BCS $0F    [$8473]     ; If $13 MSb was clear:
 $88:8464 A5 14       LDA $14    [$7E:0014]  ;\
 $88:8466 18          CLC                    ;|
 $88:8467 69 10 00    ADC #$0010             ;} $14 += 10h
@@ -967,6 +968,7 @@ $88:8476 6B          RTL                    ;} Return carry set
 ;;; $8477: Spawn HDMA object to slot [X] (variable parameters) ;;;
 {
 ;; Parameters:
+;;     X: HDMA object index
 ;;     Y: Return address + 1
 ;;     [Y] + 0: HDMA control
 ;;     [Y] + 1: HDMA target
@@ -974,6 +976,9 @@ $88:8476 6B          RTL                    ;} Return carry set
 ;;     $13: HDMA object channel
 ;;     $14: HDMA object channel index
 ;;     $19: HDMA object bank
+;; Returns:
+;;     Carry: Clear
+;;     A: HDMA object index
 
 ; Must have DB and P pushed
 $88:8477 A9 B8 84    LDA #$84B8             ;\
@@ -983,12 +988,12 @@ $88:8480 9D FC 18    STA $18FC,x[$7E:18FC]  ;/
 $88:8483 B9 02 00    LDA $0002,y[$88:EB65]  ;\
 $88:8486 9D CC 18    STA $18CC,x[$7E:18CC]  ;} HDMA object instruction list pointer = [return address + 3]
 $88:8489 A9 01 00    LDA #$0001             ;\
-$88:848C 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction delay = 1
-$88:848F 9E 08 19    STZ $1908,x[$7E:1908]  ;\
-$88:8492 9E 14 19    STZ $1914,x[$7E:1914]  ;|
-$88:8495 9E 20 19    STZ $1920,x[$7E:1920]  ;} Clear some unknowns
-$88:8498 9E 2C 19    STZ $192C,x[$7E:192C]  ;|
-$88:849B 9E 38 19    STZ $1938,x[$7E:1938]  ;/
+$88:848C 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
+$88:848F 9E 08 19    STZ $1908,x[$7E:1908]  ; HDMA object timer = 0
+$88:8492 9E 14 19    STZ $1914,x[$7E:1914]  ; HDMA object $1914 = 0
+$88:8495 9E 20 19    STZ $1920,x[$7E:1920]  ; HDMA object $1920 = 0
+$88:8498 9E 2C 19    STZ $192C,x[$7E:192C]  ; HDMA object $192C = 0
+$88:849B 9E 38 19    STZ $1938,x[$7E:1938]  ; HDMA object $1938 = 0
 $88:849E A5 12       LDA $12    [$7E:0012]  ;\
 $88:84A0 EB          XBA                    ;} HDMA object channel = [$13]
 $88:84A1 9D B4 18    STA $18B4,x[$7E:18B4]  ;/
@@ -1055,7 +1060,7 @@ $88:850F D0 E8       BNE $E8    [$84F9]     ;} If [X] != Ch: go to LOOP
 $88:8511 20 00 80    JSR $8000  [$88:8000]  ; Layer blending handler
 $88:8514 AB          PLB
 $88:8515 28          PLP
-$88:8516 6B          RTL
+$88:8516 6B          RTL                    ; Return
 
 ; Nothing points here, devs might have misplaced their destination label for the HDMA objects disabled branch ($84EE)
 $88:8517 64 85       STZ $85    [$7E:0085]  ; HDMA channels to enable = 0
@@ -1072,7 +1077,7 @@ $88:851C C2 20       REP #$20
 $88:851E BD F0 18    LDA $18F0,x[$7E:18F0]  ;\
 $88:8521 85 12       STA $12    [$7E:0012]  ;|
 $88:8523 BD FC 18    LDA $18FC,x[$7E:18FC]  ;|
-$88:8526 85 14       STA $14    [$7E:0014]  ;} Execute HDMA object pre-instruction
+$88:8526 85 14       STA $14    [$7E:0014]  ;} Execute [HDMA object pre-instruction]
 $88:8528 4B          PHK                    ;|
 $88:8529 F4 2E 85    PEA $852E              ;|
 $88:852C DC 12 00    JML [$0012][$88:84B8]  ;/
@@ -1080,8 +1085,8 @@ $88:852C DC 12 00    JML [$0012][$88:84B8]  ;/
 $88:852F E2 10       SEP #$10
 $88:8531 C2 20       REP #$20
 $88:8533 AE B2 18    LDX $18B2  [$7E:18B2]  ; X = [HDMA object index]
-$88:8536 DE E4 18    DEC $18E4,x[$7E:18E4]  ; Decrement HDMA object instruction delay
-$88:8539 D0 2B       BNE $2B    [$8566]     ; If [HDMA object instruction delay] != 0: return
+$88:8536 DE E4 18    DEC $18E4,x[$7E:18E4]  ; Decrement HDMA object instruction timer
+$88:8539 D0 2B       BNE $2B    [$8566]     ; If [HDMA object instruction timer] != 0: return
 $88:853B BC C1 18    LDY $18C1,x[$7E:18C1]  ;\
 $88:853E 5A          PHY                    ;} DB = [HDMA object bank]
 $88:853F AB          PLB                    ;/
@@ -1099,7 +1104,7 @@ $88:854F F4 45 85    PEA $8545              ;\
 $88:8552 6C 12 00    JMP ($0012)[$88:8655]  ;} Execute [$12] and go to LOOP
 
                                             ; Else ([[Y]] & 8000h = 0):
-$88:8555 9D E4 18    STA $18E4,x[$7E:18E4]  ; HDMA object instruction delay = [[Y]]
+$88:8555 9D E4 18    STA $18E4,x[$7E:18E4]  ; HDMA object instruction timer = [[Y]]
 $88:8558 98          TYA                    ;\
 $88:8559 18          CLC                    ;|
 $88:855A 69 04 00    ADC #$0004             ;} HDMA object instruction list pointer = [Y] + 4
@@ -1552,7 +1557,7 @@ $88:87B5 20 C5 87    JSR $87C5  [$88:87C5]  ; Handle moving x-ray up/down
 $88:87B8 20 96 88    JSR $8896  [$88:8896]  ; Calculate x-ray HDMA data table
 $88:87BB 20 53 87    JSR $8753  [$88:8753]  ; NOP
 $88:87BE 28          PLP
-$88:87BF 60          RTS
+$88:87BF 60          RTS                    ; Return
 
 $88:87C0 EE 7A 0A    INC $0A7A  [$7E:0A7A]  ; X-ray state = 3
 $88:87C3 28          PLP
@@ -1749,12 +1754,12 @@ $88:8916 80 06       BRA $06    [$891E]     ; Go to BRANCH_ON_SCREEN_FROM_OFF_SC
 ; BRANCH_ON_SCREEN
 $88:8918 22 4B C5 91 JSL $91C54B[$91:C54B]  ; Calculate x-ray HDMA data table - x-ray origin is on screen
 $88:891C 28          PLP
-$88:891D 60          RTS
+$88:891D 60          RTS                    ; Return
 
 ; BRANCH_ON_SCREEN_FROM_OFF_SCREEN
 $88:891E 22 11 BE 91 JSL $91BE11[$91:BE11]  ; Calculate x-ray HDMA data table - x-ray origin is off screen
 $88:8922 28          PLP
-$88:8923 60          RTS
+$88:8923 60          RTS                    ; Return
 
 ; BRANCH_OFF_SCREEN
 $88:8924 A2 FE 01    LDX #$01FE             ;\
@@ -1777,12 +1782,12 @@ $88:8937 A9 01 00    LDA #$0001             ;\
 $88:893A 8D 88 0A    STA $0A88  [$7E:0A88]  ;|
 $88:893D A9 00 98    LDA #$9800             ;|
 $88:8940 8D 89 0A    STA $0A89  [$7E:0A89]  ;|
-$88:8943 9C 8B 0A    STZ $0A8B  [$7E:0A8B]  ;} $0A88..91 = 01,$9800, 00,00...
+$88:8943 9C 8B 0A    STZ $0A8B  [$7E:0A8B]  ;} $0A88..91 = 1,$9800, 0,0...
 $88:8946 9C 8C 0A    STZ $0A8C  [$7E:0A8C]  ;|
 $88:8949 9C 8E 0A    STZ $0A8E  [$7E:0A8E]  ;|
 $88:894C 9C 90 0A    STZ $0A90  [$7E:0A90]  ;/
 $88:894F A9 FF 00    LDA #$00FF             ;\
-$88:8952 8F 00 98 7E STA $7E9800[$7E:9800]  ;} $7E:9800 = FFh,00h
+$88:8952 8F 00 98 7E STA $7E9800[$7E:9800]  ;} $7E:9800 = FFh,0
 $88:8956 A2 00 10    LDX #$1000             ; X = 1000h
 $88:8959 AD 6E 19    LDA $196E  [$7E:196E]  ;\
 $88:895C C9 24 00    CMP #$0024             ;} If [FX type] != fireflea:
@@ -1958,7 +1963,7 @@ $88:8AB6 22 35 84 88 JSL $888435[$88:8435]  ;\
 $88:8ABA             dx 40, 28, 8ACE        ;} Spawn indirect HDMA object for window 2 left position with instruction list $8ACE
 $88:8ABE 22 35 84 88 JSL $888435[$88:8435]  ;\
 $88:8AC2             dx 40, 29, 8B80        ;} Spawn indirect HDMA object for window 2 right position with instruction list $8B80
-$88:8AC6 6B          RTL
+$88:8AC6 6B          RTL                    ; Return
 
 $88:8AC7 A9 00 40    LDA #$4000             ;\
 $88:8ACA 8D 92 05    STA $0592  [$7E:0592]  ;} Power bomb explosion status = power bomb explosion is pending
@@ -2053,8 +2058,8 @@ $88:8B6C 9E B4 18    STZ $18B4,x[$7E:18B4]  ;\
 $88:8B6F 9E B6 18    STZ $18B6,x[$7E:18B6]  ;} Delete HDMA objects [X] and [X] + 2
 $88:8B72 9C EC 0C    STZ $0CEC  [$7E:0CEC]  ; Power bomb pre-explosion radius = 0
 $88:8B75 9C EA 0C    STZ $0CEA  [$7E:0CEA]  ; Power bomb explosion radius = 0
-$88:8B78 A9 1E 00    LDA #$001E             ; A = 1Eh
-$88:8B7B 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute subroutine $90:F084
+$88:8B78 A9 1E 00    LDA #$001E             ;\
+$88:8B7B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Resume sounds after power bomb explosion
 $88:8B7F 6B          RTL
 }
 
@@ -2093,69 +2098,73 @@ $88:8B9D 6B          RTL                    ; Return
 $88:8B9E DE 08 19    DEC $1908,x[$7E:1908]  ; Decrement HDMA object timer
 $88:8BA1 10 37       BPL $37    [$8BDA]     ; If [HDMA object timer] >= 0: return
 $88:8BA3 E2 20       SEP #$20
-$88:8BA5 DE 38 19    DEC $1938,x[$7E:1938]  ; Decrement HDMA object $1938
-$88:8BA8 F0 31       BEQ $31    [$8BDB]     ; If [HDMA object $1938] = 0: go to BRANCH_WAKE
+$88:8BA5 DE 38 19    DEC $1938,x[$7E:1938]  ; Decrement HDMA object after-glow animation frame
+$88:8BA8 F0 31       BEQ $31    [$8BDB]     ; If [HDMA object after-glow animation frame] = 0: go to BRANCH_WAKE
 $88:8BAA AD 74 00    LDA $0074  [$7E:0074]  ;\
-$88:8BAD 29 1F       AND #$1F               ;} If red component of colour math subscreen backdrop colour != 0:
+$88:8BAD 29 1F       AND #$1F               ;} If (red component of colour math subscreen backdrop colour) != 0:
 $88:8BAF F0 06       BEQ $06    [$8BB7]     ;/
 $88:8BB1 3A          DEC A                  ;\
-$88:8BB2 09 20       ORA #$20               ;} Decrement red component of colour math subscreen backdrop colour
+$88:8BB2 09 20       ORA #$20               ;} Decrement (red component of colour math subscreen backdrop colour)
 $88:8BB4 8D 74 00    STA $0074  [$7E:0074]  ;/
 
 $88:8BB7 AD 75 00    LDA $0075  [$7E:0075]  ;\
-$88:8BBA 29 1F       AND #$1F               ;} If green component of colour math subscreen backdrop colour != 0:
+$88:8BBA 29 1F       AND #$1F               ;} If (green component of colour math subscreen backdrop colour) != 0:
 $88:8BBC F0 06       BEQ $06    [$8BC4]     ;/
 $88:8BBE 3A          DEC A                  ;\
-$88:8BBF 09 40       ORA #$40               ;} Decrement green component of colour math subscreen backdrop colour
+$88:8BBF 09 40       ORA #$40               ;} Decrement (green component of colour math subscreen backdrop colour)
 $88:8BC1 8D 75 00    STA $0075  [$7E:0075]  ;/
 
 $88:8BC4 AD 76 00    LDA $0076  [$7E:0076]  ;\
-$88:8BC7 29 1F       AND #$1F               ;} If blue component of colour math subscreen backdrop colour != 0:
+$88:8BC7 29 1F       AND #$1F               ;} If (blue component of colour math subscreen backdrop colour) != 0:
 $88:8BC9 F0 06       BEQ $06    [$8BD1]     ;/
 $88:8BCB 3A          DEC A                  ;\
-$88:8BCC 09 80       ORA #$80               ;} Decrement blue component of colour math subscreen backdrop colour
+$88:8BCC 09 80       ORA #$80               ;} Decrement (blue component of colour math subscreen backdrop colour)
 $88:8BCE 8D 76 00    STA $0076  [$7E:0076]  ;/
 
 $88:8BD1 AF 96 8B 88 LDA $888B96[$88:8B96]  ;\
 $88:8BD5 9D 08 19    STA $1908,x[$7E:1908]  ;} HDMA object timer = 3
 $88:8BD8 C2 20       REP #$20
 
-$88:8BDA 6B          RTL
+$88:8BDA 6B          RTL                    ; Return
 
 ; BRANCH_WAKE
 $88:8BDB C2 20       REP #$20
 $88:8BDD A9 01 00    LDA #$0001             ;\
-$88:8BE0 9D E4 18    STA $18E4,x[$7E:18E4]  ;|
-$88:8BE3 FE CC 18    INC $18CC,x[$7E:18CC]  ;} Wake HDMA object
-$88:8BE6 FE CC 18    INC $18CC,x[$7E:18CC]  ;/
+$88:8BE0 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
+$88:8BE3 FE CC 18    INC $18CC,x[$7E:18CC]  ;\
+$88:8BE6 FE CC 18    INC $18CC,x[$7E:18CC]  ;} HDMA object instruction list pointer += 2
 $88:8BE9 6B          RTL
 }
 
 
 ;;; $8BEA: Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is left of screen ;;;
 {
+;; Parameters:
+;;     X: 0. Power bomb explosion HDMA data table index
+;;     Y: Pre-scaled power bomb explosion shape definition pointer
+
 ; Called by:
-;     $8EB2 with X = 0, Y = [$0CF2]: Pre-instruction - power bomb explosion - stage 4 - explosion - white
-;     $91A8 with X = 0, Y = [$0CF2]: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
+;     $8EB2: Pre-instruction - power bomb explosion - stage 4 - explosion - white
+;     $91A8: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
 
 ; LOOP
 $88:8BEA AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8BED 18          CLC                    ;|
-$88:8BEE 79 00 00    ADC $0000,y[$88:9E46]  ;} If [$0CE6] + [[Y]] < 100h:
+$88:8BEE 79 00 00    ADC $0000,y[$88:9E46]  ;} If (X position of power bomb on screen) + [[Y]] < 0:
 $88:8BF1 B0 0D       BCS $0D    [$8C00]     ;/
 $88:8BF3 A9 00       LDA #$00               ;\
-$88:8BF5 9F 06 C5 7E STA $7EC506,x[$7E:C5C5];} $7E:C506 + [X] = 0
+$88:8BF5 9F 06 C5 7E STA $7EC506,x[$7E:C5C5];} Power bomb explosion right HDMA data table entry = 0
 $88:8BF9 1A          INC A                  ;\
-$88:8BFA 9F 06 C4 7E STA $7EC406,x[$7E:C4C5];} $7E:C406 + [X] = 1
+$88:8BFA 9F 06 C4 7E STA $7EC406,x[$7E:C4C5];} Power bomb explosion left HDMA data table entry = 1
 $88:8BFE 80 0A       BRA $0A    [$8C0A]
 
-                                            ; Else ([$0CE6] + [[Y]] >= 100h):
-$88:8C00 9F 06 C5 7E STA $7EC506,x[$7E:C506]; $7E:C506 + [X] = [$0CE6] + [[Y]] & FFh
+                                            ; Else ((X position of power bomb on screen) + [[Y]] >= 0):
+$88:8C00 9F 06 C5 7E STA $7EC506,x[$7E:C506]; Power bomb explosion right HDMA data table entry = (X position of power bomb on screen) + [[Y]]
 $88:8C04 A9 00       LDA #$00               ;\
-$88:8C06 9F 06 C4 7E STA $7EC406,x[$7E:C406];} $7E:C406 + [X] = 0
+$88:8C06 9F 06 C4 7E STA $7EC406,x[$7E:C406];} Power bomb explosion left HDMA data table entry = 0
 
-$88:8C0A C8          INY                    ; Increment Y
-$88:8C0B E8          INX                    ; Increment X
+$88:8C0A C8          INY                    ; Increment Y (next shape definition)
+$88:8C0B E8          INX                    ; Increment X (next data table entry)
 $88:8C0C E0 C0 00    CPX #$00C0             ;\
 $88:8C0F D0 D9       BNE $D9    [$8BEA]     ;} If [X] != C0h: go to LOOP
 $88:8C11 60          RTS
@@ -2673,7 +2682,7 @@ $88:8F2D FE CC 18    INC $18CC,x[$7E:18CC]  ;} Wake HDMA object
 $88:8F30 FE CC 18    INC $18CC,x[$7E:18CC]  ;|
 $88:8F33 9E 08 19    STZ $1908,x[$7E:1908]  ;/
 $88:8F36 A9 20 00    LDA #$0020             ;\
-$88:8F39 9D 38 19    STA $1938,x[$7E:1938]  ;} HDMA object $1938 = 20h
+$88:8F39 9D 38 19    STA $1938,x[$7E:1938]  ;} HDMA object after-glow animation frame = 20h
 
 $88:8F3C AD EA 0C    LDA $0CEA  [$7E:0CEA]  ;\
 $88:8F3F 18          CLC                    ;|
@@ -3826,13 +3835,13 @@ $88:A697 A2 00 00    LDX #$0000             ;|
                                             ;|
 $88:A69A B9 38 A9    LDA $A938,y            ;|
 $88:A69D 9F 80 9E 7E STA $7E9E80,x          ;|
-$88:A6A1 E8          INX                    ;} $7E:9E80..9F = 20h bytes from [$A938 + [$0596]]
+$88:A6A1 E8          INX                    ;} Copy 20h - [$0596] bytes from [$A938 + [$0596]] to $7E:9E80
 $88:A6A2 E8          INX                    ;|
 $88:A6A3 C8          INY                    ;|
 $88:A6A4 C8          INY                    ;|
 $88:A6A5 C0 20 00    CPY #$0020             ;|
 $88:A6A8 30 F0       BMI $F0    [$A69A]     ;/
-$88:A6AA 80 32       BRA $32    [$A6DE]     ; Go to BRANCH_A6DE
+$88:A6AA 80 32       BRA $32    [$A6DE]     ; Go to BRANCH_MERGE
 
 ; BRANCH_A6AC
 $88:A6AC DE 20 19    DEC $1920,x            ; Decrement HDMA object $1920
@@ -3863,7 +3872,7 @@ $88:A6DA 88          DEY                    ;\
 $88:A6DB 88          DEY                    ;} Y -= 2
 $88:A6DC 10 EB       BPL $EB    [$A6C9]     ; If [Y] >= 0: go to LOOP_A6C9
 
-; BRANCH_A6DE
+; BRANCH_MERGE
 $88:A6DE A9 00 00    LDA #$0000             ;\
 $88:A6E1 8F 00 9E 7E STA $7E9E00[$7E:9E00]  ;} $7E:9E00 = $7E:9F00 = 0
 $88:A6E5 8F 00 9F 7E STA $7E9F00[$7E:9F00]  ;/
@@ -4203,7 +4212,7 @@ $88:A8E8             dw 0000,0010,0020,
 
 ;;; $A938:  ;;;
 {
-; Looks like only the first two lines are used
+; Looks like only the first line is used
 $88:A938             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
 $88:A958             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
 $88:A978             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
@@ -4869,34 +4878,45 @@ $88:B21D DA          PHX
 $88:B21E 5A          PHY
 $88:B21F 08          PHP
 $88:B220 C2 30       REP #$30
-$88:B222 AD 09 06    LDA $0609  [$7E:0609]
-$88:B225 30 2B       BMI $2B    [$B252]
-$88:B227 3A          DEC A
-$88:B228 8D 09 06    STA $0609  [$7E:0609]
-$88:B22B 10 25       BPL $25    [$B252]
-$88:B22D AE 07 06    LDX $0607  [$7E:0607]
-$88:B230 BD 56 B2    LDA $B256,x[$88:B256]
-$88:B233 10 06       BPL $06    [$B23B]
-$88:B235 A2 00 00    LDX #$0000
+$88:B222 AD 09 06    LDA $0609  [$7E:0609]  ;\
+$88:B225 30 2B       BMI $2B    [$B252]     ;} If [earthquake sound effect timer] < 0: return
+$88:B227 3A          DEC A                  ;\
+$88:B228 8D 09 06    STA $0609  [$7E:0609]  ;} Decrement earthquake sound effect timer
+$88:B22B 10 25       BPL $25    [$B252]     ; If [earthquake sound effect timer] >= 0: return
+$88:B22D AE 07 06    LDX $0607  [$7E:0607]  ; X = [earthquake sound effect index]
+$88:B230 BD 56 B2    LDA $B256,x[$88:B256]  ;\
+$88:B233 10 06       BPL $06    [$B23B]     ;} If [$B256 + [X]] & 8000h != 0:
+$88:B235 A2 00 00    LDX #$0000             ; X = 0
 $88:B238 BD 56 B2    LDA $B256,x[$88:B256]
 
 $88:B23B 22 CB 90 80 JSL $8090CB[$80:90CB]  ; Queue sound 46h, sound library 2, max queued sounds allowed = 6 (lavaquake)
-$88:B23F AD E5 05    LDA $05E5  [$7E:05E5]
-$88:B242 29 03 00    AND #$0003
-$88:B245 7D 58 B2    ADC $B258,x[$88:B258]
-$88:B248 8D 09 06    STA $0609  [$7E:0609]
-$88:B24B E8          INX
-$88:B24C E8          INX
-$88:B24D E8          INX
-$88:B24E E8          INX
-$88:B24F 8E 07 06    STX $0607  [$7E:0607]
+$88:B23F AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$88:B242 29 03 00    AND #$0003             ;|
+$88:B245 7D 58 B2    ADC $B258,x[$88:B258]  ;} Earthquake sound effect timer = [$B256 + [X] + 2] + [random number] % 4
+$88:B248 8D 09 06    STA $0609  [$7E:0609]  ;/
+$88:B24B E8          INX                    ;\
+$88:B24C E8          INX                    ;|
+$88:B24D E8          INX                    ;} Earthquake sound effect index = [X] + 4
+$88:B24E E8          INX                    ;|
+$88:B24F 8E 07 06    STX $0607  [$7E:0607]  ;/
 
 $88:B252 28          PLP
 $88:B253 7A          PLY
 $88:B254 FA          PLX
 $88:B255 60          RTS
 
-$88:B256             dw 0046,0001, 0046,0003, 0046,0002, 0046,0001, 0046,0001, 0046,0002, 0046,0002, 0046,0001, 8000
+;                        ________ Sound index (sound library 2)
+;                       |     ___ Base timer
+;                       |    |
+$88:B256             dw 0046,0001,
+                        0046,0003, 
+                        0046,0002, 
+                        0046,0001, 
+                        0046,0001, 
+                        0046,0002, 
+                        0046,0002, 
+                        0046,0001, 
+                        8000
 }
 
 
@@ -6876,6 +6896,8 @@ $88:C5E3 6B          RTL
 
 ;;; $C5E4:  ;;;
 {
+; Take a look at $A673 after commenting this routine
+
 $88:C5E4 DE 20 19    DEC $1920,x[$7E:1922]
 $88:C5E7 D0 11       BNE $11    [$C5FA]
 $88:C5E9 A9 06 00    LDA #$0006
@@ -9746,6 +9768,8 @@ $88:E01F             dx 40,0000,
 }
 
 
+;;; $E026..E448: Suit pickup ;;;
+{
 ;;; $E026: Pre-instruction - varia suit pickup ;;;
 {
 $88:E026 08          PHP
@@ -10265,6 +10289,7 @@ $88:E3C9             db 01, 02, 03, 04, 05, 06, 07, 07, 08, 08, 09, 09, 0A, 0A, 
                         16, 16, 16, 16, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
                         17, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18,
                         18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18
+}
 }
 
 
@@ -11245,9 +11270,9 @@ $88:EBEF 6B          RTL
 }
 
 
-;;; $EBF0..EC3A: Intro cutscene crossfade ;;;
+;;; $EBF0..EC3A: Intro cutscene cross-fade ;;;
 {
-;;; $EBF0: Spawn intro cutscene crossfade HDMA object ;;;
+;;; $EBF0: Spawn intro cutscene cross-fade HDMA object ;;;
 {
 $88:EBF0 08          PHP
 $88:EBF1 8B          PHB
@@ -11264,7 +11289,7 @@ $88:EC02 6B          RTL
 }
 
 
-;;; $EC03: Instruction list - intro cutscene crossfade ;;;
+;;; $EC03: Instruction list - intro cutscene cross-fade ;;;
 {
 $88:EC03             dx 8655,88,    ; HDMA table bank = $88
                         8570,88EC1D,; Pre-instruction = $88:EC1D
@@ -11274,7 +11299,7 @@ $88:EC03             dx 8655,88,    ; HDMA table bank = $88
 }
 
 
-;;; $EC13: HDMA table - intro cutscene crossfade colour math control register B ;;;
+;;; $EC13: HDMA table - intro cutscene cross-fade colour math control register B ;;;
 {
 $88:EC13             db 17,02, ; Enable colour math on BG2
                         60,06, ; Enable colour math on BG2/BG3
@@ -11284,7 +11309,7 @@ $88:EC13             db 17,02, ; Enable colour math on BG2
 }
 
 
-;;; $EC1D: Pre-instruction - intro cutscene crossfade ;;;
+;;; $EC1D: Pre-instruction - intro cutscene cross-fade ;;;
 {
 $88:EC1D 08          PHP
 $88:EC1E C2 30       REP #$30
@@ -11305,7 +11330,9 @@ $88:EC3A 6B          RTL
 }
 
 
-;;; $EC3B:  ;;;
+;;; $EC3B..EE31: Wavy Samus ;;;
+{
+;;; $EC3B: Spawn wavy Samus HDMA object ;;;
 {
 $88:EC3B 08          PHP
 $88:EC3C 8B          PHB
@@ -11342,7 +11369,7 @@ $88:EC89 6B          RTL
 }
 
 
-;;; $EC8A: Instruction list -  ;;;
+;;; $EC8A: Instruction list - wavy Samus ;;;
 {
 $88:EC8A             dx 866A,7E,    ; Indirect HDMA data bank = $7E
                         8655,00,    ; HDMA table bank = $00
@@ -11369,7 +11396,7 @@ $88:ECB5 60          RTS
 }
 
 
-;;; $ECB6: Pre-instruction ;;;
+;;; $ECB6: Pre-instruction - wavy Samus ;;;
 {
 ; Looks similar to $E567: Pre-instruction - wavy Phantoon
 $88:ECB6 08          PHP
@@ -11562,6 +11589,7 @@ $88:EE2D 10 EE       BPL $EE    [$EE1D]
 $88:EE2F FA          PLX
 $88:EE30 28          PLP
 $88:EE31 6B          RTL
+}
 }
 
 

@@ -6137,7 +6137,7 @@ $8B:AF5B A0 84 87    LDY #$8784             ;\
 $8B:AF5E 22 95 83 91 JSL $918395[$91:8395]  ;} Load demo input object $8784
 $8B:AF62 A9 FF FF    LDA #$FFFF             ;\
 $8B:AF65 8D 57 1A    STA $1A57  [$7E:1A57]  ;} Set Samus to be displayed over cinematic sprite objects
-$8B:AF68 4C 18 B0    JMP $B018  [$8B:B018]  ; Go to set up intro crossfade into Samus gameplay
+$8B:AF68 4C 18 B0    JMP $B018  [$8B:B018]  ; Go to set up intro cross-fade into Samus gameplay
 }
 
 
@@ -6212,12 +6212,12 @@ $8B:B008 A0 7E 87    LDY #$877E             ;\
 $8B:B00B 22 95 83 91 JSL $918395[$91:8395]  ;} Load demo input object $877E
 $8B:B00F A9 01 00    LDA #$0001             ;\
 $8B:B012 8D 57 1A    STA $1A57  [$7E:1A57]  ;} Set Samus to be displayed under cinematic sprite objects
-$8B:B015 80 01       BRA $01    [$B018]     ; Go to set up intro crossfade into Samus gameplay
+$8B:B015 80 01       BRA $01    [$B018]     ; Go to set up intro cross-fade into Samus gameplay
 $8B:B017 60          RTS
 }
 
 
-;;; $B018: Set up intro crossfade into Samus gameplay ;;;
+;;; $B018: Set up intro cross-fade into Samus gameplay ;;;
 {
 $8B:B018 E2 20       SEP #$20
 $8B:B01A A9 06       LDA #$06               ;\
@@ -6227,7 +6227,7 @@ $8B:B020 85 6B       STA $6B    [$7E:006B]  ;} Subscreen layers = BG1/sprites
 $8B:B022 A9 02       LDA #$02               ;\
 $8B:B024 85 6F       STA $6F    [$7E:006F]  ;} Enable subscreen layers
 $8B:B026 64 72       STZ $72    [$7E:0072]  ; Disable colour math on all layers
-$8B:B028 22 F0 EB 88 JSL $88EBF0[$88:EBF0]  ; Spawn intro cutscene crossfade HDMA object
+$8B:B028 22 F0 EB 88 JSL $88EBF0[$88:EBF0]  ; Spawn intro cutscene cross-fade HDMA object
 $8B:B02C C2 20       REP #$20
 $8B:B02E 20 E1 AD    JSR $ADE1  [$8B:ADE1]  ; Execute $ADE1 (set sprite object Fh position)
 $8B:B031 A9 50 B2    LDA #$B250             ;\
@@ -6554,7 +6554,7 @@ $8B:B24F 60          RTS
 }
 
 
-;;; $B250: Cinematic function - intro - crossfade to Samus gameplay and sleep ;;;
+;;; $B250: Cinematic function - intro - cross-fade to Samus gameplay and sleep ;;;
 {
 ; Cinematic function timer for this routine is set all the way up at $A6F0
 $8B:B250 AD 49 1A    LDA $1A49  [$7E:1A49]  ;\
@@ -6611,7 +6611,7 @@ $8B:B2D1 60          RTS
 }
 
 
-;;; $B2D2: Cinematic function - intro - crossfade to scientist cutscene and sleep ;;;
+;;; $B2D2: Cinematic function - intro - cross-fade to scientist cutscene and sleep ;;;
 {
 $8B:B2D2 AD 49 1A    LDA $1A49  [$7E:1A49]  ;\
 $8B:B2D5 89 03 00    BIT #$0003             ;} If [cinematic function timer] % 4 = 0:
