@@ -874,7 +874,7 @@ $89:9100             fillto $899800, $00
 }
 
 
-;;; $9800: Indirect HDMA table - power bomb explosion left ;;;
+;;; $9800: Indirect HDMA table - power bomb explosion window 2 left ;;;
 {
 ; Power bomb explosion origin is 200h pixels below the screen
 $89:9800             dx 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606,
@@ -933,7 +933,7 @@ $89:9800             dx 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81,C606, 81
 }
 
 
-;;; $A101: Indirect HDMA table - power bomb explosion right ;;;
+;;; $A101: Indirect HDMA table - power bomb explosion window 2 right ;;;
 {
 ; Power bomb explosion origin is 200h pixels below the screen
 $89:A101             dx 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607, 81,C607,

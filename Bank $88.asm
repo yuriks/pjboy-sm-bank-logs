@@ -747,8 +747,8 @@ $88:831C E0 80       CPX #$80               ;|
 $88:831E D0 DA       BNE $DA    [$82FA]     ;/
 $88:8320 C2 30       REP #$30
 $88:8322 A9 FF FF    LDA #$FFFF
-$88:8325 9C 5C 19    STZ $195C  [$7E:195C]  ;\ FX Y subposition = 0
-$88:8328 8D 5E 19    STA $195E  [$7E:195E]  ;} FX Y position = FFFFh (disabled)
+$88:8325 9C 5C 19    STZ $195C  [$7E:195C]  ; FX Y subposition = 0
+$88:8328 8D 5E 19    STA $195E  [$7E:195E]  ; FX Y position = FFFFh (disabled)
 $88:832B 9C 60 19    STZ $1960  [$7E:1960]  ; Lava/acid Y subposition = 0
 $88:832E 8D 62 19    STA $1962  [$7E:1962]  ; Lava/acid Y position = FFFFh (disabled)
 $88:8331 A9 00 00    LDA #$0000             ;\
@@ -2153,15 +2153,14 @@ $88:8BED 18          CLC                    ;|
 $88:8BEE 79 00 00    ADC $0000,y[$88:9E46]  ;} If (X position of power bomb on screen) + [[Y]] < 0:
 $88:8BF1 B0 0D       BCS $0D    [$8C00]     ;/
 $88:8BF3 A9 00       LDA #$00               ;\
-$88:8BF5 9F 06 C5 7E STA $7EC506,x[$7E:C5C5];} Power bomb explosion right HDMA data table entry = 0
+$88:8BF5 9F 06 C5 7E STA $7EC506,x[$7E:C5C5];} Power bomb explosion window 2 right HDMA data table entry = 0
 $88:8BF9 1A          INC A                  ;\
-$88:8BFA 9F 06 C4 7E STA $7EC406,x[$7E:C4C5];} Power bomb explosion left HDMA data table entry = 1
+$88:8BFA 9F 06 C4 7E STA $7EC406,x[$7E:C4C5];} Power bomb explosion window 2 left HDMA data table entry = 1
 $88:8BFE 80 0A       BRA $0A    [$8C0A]
-
                                             ; Else ((X position of power bomb on screen) + [[Y]] >= 0):
-$88:8C00 9F 06 C5 7E STA $7EC506,x[$7E:C506]; Power bomb explosion right HDMA data table entry = (X position of power bomb on screen) + [[Y]]
+$88:8C00 9F 06 C5 7E STA $7EC506,x[$7E:C506]; Power bomb explosion window 2 right HDMA data table entry = (X position of power bomb on screen) + [[Y]]
 $88:8C04 A9 00       LDA #$00               ;\
-$88:8C06 9F 06 C4 7E STA $7EC406,x[$7E:C406];} Power bomb explosion left HDMA data table entry = 0
+$88:8C06 9F 06 C4 7E STA $7EC406,x[$7E:C406];} Power bomb explosion window 2 left HDMA data table entry = 0
 
 $88:8C0A C8          INY                    ; Increment Y (next shape definition)
 $88:8C0B E8          INX                    ; Increment X (next data table entry)
@@ -2173,9 +2172,13 @@ $88:8C11 60          RTS
 
 ;;; $8C12: Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is on screen ;;;
 {
+;; Parameters:
+;;     X: 0. Power bomb explosion HDMA data table index
+;;     Y: Pre-scaled power bomb explosion shape definition pointer
+
 ; Called by:
-;     $8EB2 with X = 0, Y = [$0CF2]: Pre-instruction - power bomb explosion - stage 4 - explosion - white
-;     $91A8 with X = 0, Y = [$0CF2]: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
+;     $8EB2: Pre-instruction - power bomb explosion - stage 4 - explosion - white
+;     $91A8: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
 
 ; LOOP
 $88:8C12 B9 00 00    LDA $0000,y[$88:9F06]  ;\
@@ -2183,18 +2186,18 @@ $88:8C15 F0 22       BEQ $22    [$8C39]     ;} If [[Y]] = 0: return
 $88:8C17 18          CLC                    ;\
 $88:8C18 6D E6 0C    ADC $0CE6  [$7E:0CE6]  ;|
 $88:8C1B 90 02       BCC $02    [$8C1F]     ;|
-$88:8C1D A9 FF       LDA #$FF               ;} $7E:C506 + [X] = min(FFh, (power bomb X position on screen) + [[Y]])
+$88:8C1D A9 FF       LDA #$FF               ;} Power bomb explosion window 2 right HDMA data table entry = min(FFh, (power bomb X position on screen) + [[Y]])
                                             ;|
 $88:8C1F 9F 06 C5 7E STA $7EC506,x[$7E:C506];/
 $88:8C23 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8C26 38          SEC                    ;|
 $88:8C27 F9 00 00    SBC $0000,y[$88:9F06]  ;|
-$88:8C2A B0 02       BCS $02    [$8C2E]     ;} $7E:C406 + [X] = max(0, (power bomb X position on screen) - [[Y]])
+$88:8C2A B0 02       BCS $02    [$8C2E]     ;} Power bomb explosion window 2 left HDMA data table entry = max(0, (power bomb X position on screen) - [[Y]])
 $88:8C2C A9 00       LDA #$00               ;|
                                             ;|
 $88:8C2E 9F 06 C4 7E STA $7EC406,x[$7E:C406];/
-$88:8C32 C8          INY                    ; Increment Y
-$88:8C33 E8          INX                    ; Increment X
+$88:8C32 C8          INY                    ; Increment Y (next shape definition)
+$88:8C33 E8          INX                    ; Increment X (next data table entry)
 $88:8C34 E0 C0 00    CPX #$00C0             ;\
 $88:8C37 D0 D9       BNE $D9    [$8C12]     ;} If [X] != C0h: go to LOOP
 
@@ -2204,28 +2207,31 @@ $88:8C39 60          RTS
 
 ;;; $8C3A: Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is right of screen ;;;
 {
+;; Parameters:
+;;     X: 0. Power bomb explosion HDMA data table index
+;;     Y: Pre-scaled power bomb explosion shape definition pointer
+
 ; Called by:
-;     $8EB2 with X = 0, Y = [$0CF2]: Pre-instruction - power bomb explosion - stage 4 - explosion - white
-;     $91A8 with X = 0, Y = [$0CF2]: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
+;     $8EB2: Pre-instruction - power bomb explosion - stage 4 - explosion - white
+;     $91A8: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
 
 ; LOOP
 $88:8C3A AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8C3D 38          SEC                    ;|
-$88:8C3E F9 00 00    SBC $0000,y[$88:9D86]  ;} If [$0CE6] % 0x100 - [[Y]] >= 0:
+$88:8C3E F9 00 00    SBC $0000,y[$88:9D86]  ;} If (X position of power bomb on screen) - [[Y]] >= 100h:
 $88:8C41 90 0D       BCC $0D    [$8C50]     ;/
 $88:8C43 A9 FF       LDA #$FF               ;\
-$88:8C45 9F 06 C4 7E STA $7EC406,x[$7E:C4C3];} $7E:C406 + [X] = FFh
+$88:8C45 9F 06 C4 7E STA $7EC406,x[$7E:C4C3];} Power bomb explosion window 2 left HDMA data table entry + [X] = FFh
 $88:8C49 3A          DEC A                  ;\
-$88:8C4A 9F 06 C5 7E STA $7EC506,x[$7E:C5C3];} $7E:C506 + [X] = FEh
+$88:8C4A 9F 06 C5 7E STA $7EC506,x[$7E:C5C3];} Power bomb explosion window 2 right HDMA data table entry = FEh
 $88:8C4E 80 0A       BRA $0A    [$8C5A]
-
-                                            ; Else ([$0CE6] % 0x100 < [[Y]]):
-$88:8C50 9F 06 C4 7E STA $7EC406,x[$7E:C406]; $7E:C406 + [X] = [$0CE6] % 0x100 - [[Y]]
+                                            ; Else ((X position of power bomb on screen) - [[Y]] < 100h):
+$88:8C50 9F 06 C4 7E STA $7EC406,x[$7E:C406]; Power bomb explosion window 2 left HDMA data table entry = (X position of power bomb on screen) - [[Y]]
 $88:8C54 A9 FF       LDA #$FF               ;\
-$88:8C56 9F 06 C5 7E STA $7EC506,x[$7E:C506];} $7E:C506 + [X] = FFh
+$88:8C56 9F 06 C5 7E STA $7EC506,x[$7E:C506];} Power bomb explosion window 2 right HDMA data table entry = FFh
 
-$88:8C5A C8          INY                    ; Increment Y
-$88:8C5B E8          INX                    ; Increment X
+$88:8C5A C8          INY                    ; Increment Y (next shape definition)
+$88:8C5B E8          INX                    ; Increment X (next data table entry)
 $88:8C5C E0 C0 00    CPX #$00C0             ;\
 $88:8C5F D0 D9       BNE $D9    [$8C3A]     ;} If [X] != C0h: go to LOOP
 $88:8C61 60          RTS
@@ -2245,19 +2251,19 @@ $88:8C68 AD E2 0C    LDA $0CE2  [$7E:0CE2]  ;\
 $88:8C6B 38          SEC                    ;|
 $88:8C6C ED 11 09    SBC $0911  [$7E:0911]  ;|
 $88:8C6F 18          CLC                    ;|
-$88:8C70 69 00 01    ADC #$0100             ;} If not 0 <= [power bomb explosion X position] - [layer 1 X position] + 100h < 300h: go to BRANCH_OFFSCREEN
+$88:8C70 69 00 01    ADC #$0100             ;} If not -100h <= [power bomb explosion X position] - [layer 1 X position] < 200h: go to BRANCH_OFFSCREEN
 $88:8C73 C9 00 03    CMP #$0300             ;|
 $88:8C76 90 02       BCC $02    [$8C7A]     ;|
 $88:8C78 80 13       BRA $13    [$8C8D]     ;/
 
-$88:8C7A 8D E6 0C    STA $0CE6  [$7E:0CE6]  ; $0CE6 = [power bomb explosion X position] - [layer 1 X position] + 100h
+$88:8C7A 8D E6 0C    STA $0CE6  [$7E:0CE6]  ; $0CE6 = 100h + [power bomb explosion X position] - [layer 1 X position]
 $88:8C7D AD E4 0C    LDA $0CE4  [$7E:0CE4]  ;\
 $88:8C80 38          SEC                    ;|
-$88:8C81 ED 15 09    SBC $0915  [$7E:0915]  ;} A = [power bomb explosion Y position] - [layer 1 Y position] + 100h
+$88:8C81 ED 15 09    SBC $0915  [$7E:0915]  ;} A = 100h + [power bomb explosion Y position] - [layer 1 Y position]
 $88:8C84 18          CLC                    ;|
 $88:8C85 69 00 01    ADC #$0100             ;/
 $88:8C88 C9 00 03    CMP #$0300             ;\
-$88:8C8B 90 03       BCC $03    [$8C90]     ;} If 0 <= [A] < 300h: go to BRANCH_ON_SCREEN
+$88:8C8B 90 03       BCC $03    [$8C90]     ;} If -100h <= [power bomb explosion Y position] - [layer 1 Y position] < 200h: go to BRANCH_ON_SCREEN
 
 ; BRANCH_OFF_SCREEN
 $88:8C8D A9 00 00    LDA #$0000             ; A = 0
@@ -2265,26 +2271,26 @@ $88:8C8D A9 00 00    LDA #$0000             ; A = 0
 ; BRANCH_ON_SCREEN
 $88:8C90 49 FF 03    EOR #$03FF             ;\
 $88:8C93 38          SEC                    ;|
-$88:8C94 E9 00 01    SBC #$0100             ;} $0CE8 = 2FFh - [A]
+$88:8C94 E9 00 01    SBC #$0100             ;} Power bomb explosion HDMA table index = 2FFh - [A]
 $88:8C97 8D E8 0C    STA $0CE8  [$7E:0CE8]  ;/
 $88:8C9A AD EA 0C    LDA $0CEA  [$7E:0CEA]  ;\
-$88:8C9D 29 00 FF    AND #$FF00             ;} If [power bomb explosion radius] < 100h:
+$88:8C9D 29 00 FF    AND #$FF00             ;} If [power bomb explosion radius] / 100h < 1:
 $88:8CA0 D0 03       BNE $03    [$8CA5]     ;/
-$88:8CA2 9C E8 0C    STZ $0CE8  [$7E:0CE8]  ; $0CE8 = 0
+$88:8CA2 9C E8 0C    STZ $0CE8  [$7E:0CE8]  ; Power bomb explosion HDMA table index = 0
 
 $88:8CA5 BD C0 18    LDA $18C0,x[$7E:18C0]  ;\
-$88:8CA8 29 FF 00    AND #$00FF             ;} >_<
+$88:8CA8 29 FF 00    AND #$00FF             ;} >_<;
 $88:8CAB A8          TAY                    ;/
 $88:8CAC AD E8 0C    LDA $0CE8  [$7E:0CE8]  ;\
 $88:8CAF 0A          ASL A                  ;|
 $88:8CB0 18          CLC                    ;|
-$88:8CB1 6D E8 0C    ADC $0CE8  [$7E:0CE8]  ;} Window 2 left position HDMA object table pointer = $9800 + [$0CE8] * 3
+$88:8CB1 6D E8 0C    ADC $0CE8  [$7E:0CE8]  ;} Power bomb explosion window 2 left HDMA object table pointer = $9800 + [power bomb explosion HDMA table index] * 3
 $88:8CB4 85 16       STA $16    [$7E:0016]  ;|
 $88:8CB6 69 00 98    ADC #$9800             ;|
 $88:8CB9 9D D8 18    STA $18D8,x[$7E:18D8]  ;/
 $88:8CBC A5 16       LDA $16    [$7E:0016]  ;\
 $88:8CBE 18          CLC                    ;|
-$88:8CBF 69 01 A1    ADC #$A101             ;} Window 2 right position HDMA object table pointer = $A101 + [$0CE8] * 3
+$88:8CBF 69 01 A1    ADC #$A101             ;} Power bomb explosion window 2 right HDMA object table pointer = $A101 + [power bomb explosion HDMA table index] * 3
 $88:8CC2 9D DA 18    STA $18DA,x[$7E:18DA]  ;/
 $88:8CC5 6B          RTL
 }
