@@ -415,8 +415,8 @@ $91:81A8 60          RTS
 ;     ...
 ;     FFFF
 ; where:
-;     c is the required held input, c = FFFF terminates the table entry
-;     n is the required newly pressed input
+;     n is the required newly pressed input, n = FFFF terminates the table entry
+;     c is the required held input
 ;     p is the pose to transition to (if not currently already in that pose)
 
 ; Iterate through transition table entry for current pose, if transition found with the required inputs being pressed:
@@ -2589,8 +2589,8 @@ $91:9EDC             dw 83BF,8A9B,9DAE ; Crystal flash
 ;     nnnn cccc pppp
 ;     FFFF
 ; where:
-;     c is the currently held input, c = FFFF terminates the table entry
-;     n is the newly pressed input
+;     n is the required newly pressed input, n = FFFF terminates the table entry
+;     c is the required held input
 ;     p is the pose to transition to (if not currently already in that pose)
 
 ; Note that all of the buttons in c and n must be part of the respective input.

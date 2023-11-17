@@ -1464,7 +1464,7 @@ $A0:8ECA AD 3C 18    LDA $183C  [$7E:183C]  ;\
 $A0:8ECD F0 03       BEQ $03    [$8ED2]     ;} If process all enemies regardless of on-screen or not: go to LOOP_PROCESS_OFFSCREEN
 $A0:8ECF 4C 77 8F    JMP $8F77  [$A0:8F77]  ;/
 
-$A0:8ED2 A2 00 00    LDX #$0000             ; >_<
+$A0:8ED2 A2 00 00    LDX #$0000             ; >_<;
 $A0:8ED5 A0 00 00    LDY #$0000             ; Y = 0
 
 ; LOOP

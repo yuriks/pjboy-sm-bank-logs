@@ -2243,6 +2243,12 @@ $88:8C61 60          RTS
 ; Called by:
 ;     $8DE9: Pre-instruction - power bomb explosion - stage 3
 ;     $8EB2: Pre-instruction - power bomb explosion - stage 4
+
+; For on-screen power bomb explosions,
+; the calculation 2FFh - [A] at $8C90 is equivalent to 1FFh + (Y position of screen on power bomb)
+; (1FFh is enough space for a full screen of no-explosion, followed by a screen containing the upper half of the explosion,
+; 2FFh is the table size)
+
 $88:8C62 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:8C65 30 01       BMI $01    [$8C68]     ;} If power bomb is not exploding:
 $88:8C67 6B          RTL                    ; Return
@@ -2298,155 +2304,153 @@ $88:8CC5 6B          RTL
 
 ;;; $8CC6: Calculate power bomb explosion HDMA data tables - scaled - power bomb is left of screen ;;;
 {
+;; Parameters:
+;;     X: Power bomb (pre-)explosion Y radius in pixels / power bomb explosion HDMA data table end index
+;;     Y: 60h. Unscaled power bomb explosion shape definition table index + 60h
+;;     $4202: Power bomb (pre-)explosion X radius in pixels
+
 ; Called by:
-;     $8DE9: Pre-instruction - power bomb explosion - stage 3
-;     $90DF: Pre-instruction - power bomb explosion - stage 1
+;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
+;     $90DF: Pre-instruction - power bomb explosion - stage 1 - pre-explosion - white
 
-; Expects:
-;     $4202 = power bomb (pre-)explosion X radius in pixels
-;     X = power bomb (pre-)explosion Y radius in pixels
-;     Y = 60h
-
-; LOOP_ALPHA
+; LOOP_SHAPE_DEFINITION_TABLE
 $88:8CC6 B9 26 A2    LDA $A226,y            ;\
 $88:8CC9 8D 03 42    STA $4203  [$7E:4203]  ;|
 $88:8CCC EA          NOP                    ;|
-$88:8CCD EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h
+$88:8CCD EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h (shape top offset, shape definition top offset scaled by explosion X radius)
 $88:8CCE EA          NOP                    ;|
 $88:8CCF AD 17 42    LDA $4217  [$7E:4217]  ;|
 $88:8CD2 85 14       STA $14    [$7E:0014]  ;/
 $88:8CD4 B9 06 A2    LDA $A206,y            ;\
-$88:8CD7 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:8CDA EA          NOP                    ;|
-$88:8CDB AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;} If [$0CE6] + [$4202] * [$A266 + [Y] - 60h] / 100h < 100h:
+$88:8CD7 8D 03 42    STA $4203  [$7E:4203]  ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
+$88:8CDA EA          NOP                    ;/
+$88:8CDB AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8CDE 18          CLC                    ;|
-$88:8CDF 6D 17 42    ADC $4217  [$7E:4217]  ;|
+$88:8CDF 6D 17 42    ADC $4217  [$7E:4217]  ;} If (X position of power bomb on screen) + (shape width) < 0:
 $88:8CE2 B0 07       BCS $07    [$8CEB]     ;/
 $88:8CE4 A9 00       LDA #$00               ;\
 $88:8CE6 EB          XBA                    ;} A high = 0
 $88:8CE7 A9 FF       LDA #$FF               ; A low = FFh
 $88:8CE9 80 03       BRA $03    [$8CEE]
-
-                                            ; Else ([$0CE6] + [$4202] * [$A266 + [Y] - 60h] / 100h >= 100h):
-$88:8CEB EB          XBA                    ; A high = [$0CE6] + [$4202] * [$A266 + [Y] - 60h] / 100h
+                                            ; Else ((X position of power bomb on screen) + (shape width) >= 0):
+$88:8CEB EB          XBA                    ; A high = (X position of power bomb on screen) + (shape width)
 $88:8CEC A9 00       LDA #$00               ; A low = 0
 
-; LOOP_BETA
-$88:8CEE 9F 06 C4 7E STA $7EC406,x          ; $7E:C406 + [X] = [A low]
+; LOOP_DATA_TABLE
+$88:8CEE 9F 06 C4 7E STA $7EC406,x          ; Power bomb explosion window 2 left HDMA data table entry = [A low]
 $88:8CF2 EB          XBA                    ;\
-$88:8CF3 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = [A high]
+$88:8CF3 9F 06 C5 7E STA $7EC506,x          ;} Power bomb explosion window 2 right HDMA data table entry = [A high]
 $88:8CF7 EB          XBA                    ;/
 $88:8CF8 E4 14       CPX $14    [$7E:0014]  ;\
-$88:8CFA F0 04       BEQ $04    [$8D00]     ;} If [X] != [$14]:
-$88:8CFC CA          DEX                    ; Decrement X
-$88:8CFD 4C EE 8C    JMP $8CEE  [$88:8CEE]  ; Go to LOOP_BETA
+$88:8CFA F0 04       BEQ $04    [$8D00]     ;} If [X] != (shape top offset):
+$88:8CFC CA          DEX                    ; Decrement X (previous data table entry)
+$88:8CFD 4C EE 8C    JMP $8CEE  [$88:8CEE]  ; Go to LOOP_DATA_TABLE
 
-$88:8D00 C8          INY                    ; Increment Y
-$88:8D01 10 C3       BPL $C3    [$8CC6]     ; If [Y] < 80h: go to LOOP_ALPHA
+$88:8D00 C8          INY                    ; Increment Y (next shape definition)
+$88:8D01 10 C3       BPL $C3    [$8CC6]     ; If [Y] < 80h: go to LOOP_SHAPE_DEFINITION_TABLE
 $88:8D03 60          RTS
 }
 
 
 ;;; $8D04: Calculate power bomb explosion HDMA data tables - scaled - power bomb is on screen ;;;
 {
+;; Parameters:
+;;     X: Power bomb (pre-)explosion Y radius in pixels / power bomb explosion HDMA data table end index
+;;     Y: 60h. Unscaled power bomb explosion shape definition table index + 60h
+;;     $4202: Power bomb (pre-)explosion X radius in pixels
+
 ; Called by:
 ;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
 ;     $90DF: Pre-instruction - power bomb explosion - stage 1 - pre-explosion - white
 
-; Expects:
-;     $4202 = power bomb (pre-)explosion X radius in pixels
-;     X = power bomb (pre-)explosion Y radius in pixels
-;     Y = 60h
-
-; LOOP_STRIPS
+; LOOP_SHAPE_DEFINITION_TABLE
 $88:8D04 B9 26 A2    LDA $A226,y[$88:A286]  ;\
 $88:8D07 8D 03 42    STA $4203  [$7E:4203]  ;|
 $88:8D0A EA          NOP                    ;|
-$88:8D0B EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h (top scanline of current strip)
+$88:8D0B EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h (shape top offset, shape definition top offset scaled by explosion X radius)
 $88:8D0C EA          NOP                    ;|
 $88:8D0D AD 17 42    LDA $4217  [$7E:4217]  ;|
 $88:8D10 85 14       STA $14    [$7E:0014]  ;/
 $88:8D12 B9 06 A2    LDA $A206,y[$88:A266]  ;\
-$88:8D15 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:8D18 EA          NOP                    ;|
-$88:8D19 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;|
+$88:8D15 8D 03 42    STA $4203  [$7E:4203]  ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
+$88:8D18 EA          NOP                    ;/
+$88:8D19 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8D1C 18          CLC                    ;|
-$88:8D1D 6D 17 42    ADC $4217  [$7E:4217]  ;} A high = min(FFh, (power bomb X position on screen) + [$4202] * [$A266 + [Y] - 60h] / 100h)
-$88:8D20 90 02       BCC $02    [$8D24]     ;|
+$88:8D1D 6D 17 42    ADC $4217  [$7E:4217]  ;|
+$88:8D20 90 02       BCC $02    [$8D24]     ;} A high = min(FFh, (power bomb X position on screen) + (shape width))
 $88:8D22 A9 FF       LDA #$FF               ;|
                                             ;|
 $88:8D24 EB          XBA                    ;/
 $88:8D25 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8D28 38          SEC                    ;|
-$88:8D29 ED 17 42    SBC $4217  [$7E:4217]  ;} A low = max(0, (power bomb X position on screen) - [$4202] * [$A266 + [Y] - 60h] / 100h)
+$88:8D29 ED 17 42    SBC $4217  [$7E:4217]  ;} A low = max(0, (power bomb X position on screen) - (shape width))
 $88:8D2C B0 02       BCS $02    [$8D30]     ;|
 $88:8D2E A9 00       LDA #$00               ;/
 
-; LOOP_SCANLINES
-$88:8D30 9F 06 C4 7E STA $7EC406,x[$7E:C408]; $7E:C406 + [X] = [A low]
+; LOOP_DATA_TABLE
+$88:8D30 9F 06 C4 7E STA $7EC406,x[$7E:C408]; Power bomb explosion window 2 left HDMA data table entry = [A low]
 $88:8D34 EB          XBA                    ;\
-$88:8D35 9F 06 C5 7E STA $7EC506,x[$7E:C508];} $7E:C506 + [X] = [A high]
+$88:8D35 9F 06 C5 7E STA $7EC506,x[$7E:C508];} Power bomb explosion window 2 right HDMA data table entry = [A high]
 $88:8D39 EB          XBA                    ;/
 $88:8D3A E4 14       CPX $14    [$7E:0014]  ;\
 $88:8D3C F0 04       BEQ $04    [$8D42]     ;} If [X] != [$14]:
 $88:8D3E CA          DEX                    ; Decrement X
-$88:8D3F 4C 30 8D    JMP $8D30  [$88:8D30]  ; Go to LOOP_SCANLINE
+$88:8D3F 4C 30 8D    JMP $8D30  [$88:8D30]  ; Go to LOOP_DATA_TABLE
 
 $88:8D42 C8          INY                    ; Increment Y
-$88:8D43 10 BF       BPL $BF    [$8D04]     ; If [Y] < 80h: go to LOOP_STRIPS
+$88:8D43 10 BF       BPL $BF    [$8D04]     ; If [Y] < 80h: go to LOOP_SHAPE_DEFINITION_TABLE
 $88:8D45 60          RTS
 }
 
 
 ;;; $8D46: Calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen ;;;
 {
+;; Parameters:
+;;     X: Power bomb (pre-)explosion Y radius in pixels / power bomb explosion HDMA data table end index
+;;     Y: 60h. Unscaled power bomb explosion shape definition table index + 60h
+;;     $4202: Power bomb (pre-)explosion X radius in pixels
+
 ; Called by:
-;     $8DE9: Pre-instruction - power bomb explosion - stage 3
-;     $90DF: Pre-instruction - power bomb explosion - stage 1
+;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
+;     $90DF: Pre-instruction - power bomb explosion - stage 1 - pre-explosion - white
 
-; Expects:
-;     $4202 = [power bomb (pre-)explosion radius] / 100h
-;     X = [power bomb (pre-)explosion radius] * BFh / 10000h
-;     Y = 60h
-
-; LOOP_ALPHA
+; LOOP_SHAPE_DEFINITION_TABLE
 $88:8D46 B9 26 A2    LDA $A226,y[$88:A286]  ;\
 $88:8D49 8D 03 42    STA $4203  [$7E:4203]  ;|
 $88:8D4C EA          NOP                    ;|
-$88:8D4D EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h
+$88:8D4D EA          NOP                    ;} $14 = [$4202] * [$A286 + [Y] - 60h] / 100h (shape top offset, shape definition top offset scaled by explosion X radius)
 $88:8D4E EA          NOP                    ;|
 $88:8D4F AD 17 42    LDA $4217  [$7E:4217]  ;|
 $88:8D52 85 14       STA $14    [$7E:0014]  ;/
 $88:8D54 B9 06 A2    LDA $A206,y[$88:A266]  ;\
-$88:8D57 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:8D5A EA          NOP                    ;|
-$88:8D5B AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;} If [$0CE6] % 0x100 - [$4202] * [$A266 + [Y] - 60h] / 100h >= 0:
+$88:8D57 8D 03 42    STA $4203  [$7E:4203]  ;} Calculate [$4202] * [$A266 + [Y] - 60h] / 100h (shape width, shape definition width scaled by explosion X radius)
+$88:8D5A EA          NOP                    ;/
+$88:8D5B AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
 $88:8D5E 38          SEC                    ;|
-$88:8D5F ED 17 42    SBC $4217  [$7E:4217]  ;|
+$88:8D5F ED 17 42    SBC $4217  [$7E:4217]  ;} If (X position of power bomb on screen) - (shape width) >= 100h:
 $88:8D62 90 07       BCC $07    [$8D6B]     ;/
 $88:8D64 A9 FF       LDA #$FF               ;\
 $88:8D66 EB          XBA                    ;} A low = FFh
 $88:8D67 A9 00       LDA #$00               ; A high = 0
 $88:8D69 80 03       BRA $03    [$8D6E]
-
-                                            ; Else ([$0CE6] % 0x100 - [$4202] * [$A266 + [Y] - 60h] / 100h < 0):
-$88:8D6B EB          XBA                    ; A low = [$0CE6] % 0x100 - [$4202] * [$A266 + [Y] - 60h] / 100h
+                                            ; Else ((X position of power bomb on screen) - (shape width) < 100h):
+$88:8D6B EB          XBA                    ; A low = (X position of power bomb on screen) - (shape width)
 $88:8D6C A9 FF       LDA #$FF               ; A high = FFh
 
 $88:8D6E EB          XBA
 
-; LOOP_BETA
-$88:8D6F 9F 06 C4 7E STA $7EC406,x[$7E:C409]; $7E:C406 + [X] = [A low]
+; LOOP_DATA_TABLE
+$88:8D6F 9F 06 C4 7E STA $7EC406,x[$7E:C409]; Power bomb explosion window 2 left HDMA data table entry = [A low]
 $88:8D73 EB          XBA                    ;\
-$88:8D74 9F 06 C5 7E STA $7EC506,x[$7E:C509];} $7E:C506 + [X] = [A high]
+$88:8D74 9F 06 C5 7E STA $7EC506,x[$7E:C509];} Power bomb explosion window 2 right HDMA data table entry = [A high]
 $88:8D78 EB          XBA                    ;/
 $88:8D79 E4 14       CPX $14    [$7E:0014]  ;\
-$88:8D7B F0 04       BEQ $04    [$8D81]     ;} If [X] != [$14]:
-$88:8D7D CA          DEX                    ; Decrement X
-$88:8D7E 4C 6F 8D    JMP $8D6F  [$88:8D6F]  ; Go to LOOP_BETA
+$88:8D7B F0 04       BEQ $04    [$8D81]     ;} If [X] != (shape top offset):
+$88:8D7D CA          DEX                    ; Decrement X (previous data table entry)
+$88:8D7E 4C 6F 8D    JMP $8D6F  [$88:8D6F]  ; Go to LOOP_DATA_TABLE
 
-$88:8D81 C8          INY                    ; Increment Y
-$88:8D82 10 C2       BPL $C2    [$8D46]     ; If [Y] >= 0: go to LOOP_ALPHA
+$88:8D81 C8          INY                    ; Increment Y (next shape definition)
+$88:8D82 10 C2       BPL $C2    [$8D46]     ; If [Y] >= 0: go to LOOP_SHAPE_DEFINITION_TABLE
 $88:8D84 60          RTS
 }
 
@@ -2454,6 +2458,7 @@ $88:8D84 60          RTS
 ;;; $8D85: Power bomb explosion colours ;;;
 {
 ; Indexed by [power bomb explosion radius] / 800h
+; Red, green, blue. Range 0..1Fh
 
 ; Yellow section
 $88:8D85             db 0E,0E,0A,
