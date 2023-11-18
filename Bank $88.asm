@@ -2308,6 +2308,8 @@ $88:8CC5 6B          RTL
 ;;     X: Power bomb (pre-)explosion Y radius in pixels / power bomb explosion HDMA data table end index
 ;;     Y: 60h. Unscaled power bomb explosion shape definition table index + 60h
 ;;     $4202: Power bomb (pre-)explosion X radius in pixels
+;; Returns:
+;;     X: Power bomb explosion HDMA data table index of last padding entry
 
 ; Called by:
 ;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
@@ -2358,6 +2360,8 @@ $88:8D03 60          RTS
 ;;     X: Power bomb (pre-)explosion Y radius in pixels / power bomb explosion HDMA data table end index
 ;;     Y: 60h. Unscaled power bomb explosion shape definition table index + 60h
 ;;     $4202: Power bomb (pre-)explosion X radius in pixels
+;; Returns:
+;;     X: Power bomb explosion HDMA data table index of last padding entry
 
 ; Called by:
 ;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
@@ -2406,9 +2410,11 @@ $88:8D45 60          RTS
 ;;; $8D46: Calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen ;;;
 {
 ;; Parameters:
-;;     X: Power bomb (pre-)explosion Y radius in pixels / power bomb explosion HDMA data table end index
+;;     X: Power bomb (pre-)explosion Y radius in pixels / power bomb explosion HDMA data table index of last entry
 ;;     Y: 60h. Unscaled power bomb explosion shape definition table index + 60h
 ;;     $4202: Power bomb (pre-)explosion X radius in pixels
+;; Returns:
+;;     X: Power bomb explosion HDMA data table index of last padding entry
 
 ; Called by:
 ;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
@@ -2538,13 +2544,13 @@ $88:8E12 EA          NOP                    ;|
 $88:8E13 EA          NOP                    ;|
 $88:8E14 AD 17 42    LDA $4217  [$7E:4217]  ;|
 $88:8E17 85 12       STA $12    [$7E:0012]  ;/
-$88:8E19 AA          TAX                    ; X = power bomb explosion Y radius in pixels
+$88:8E19 AA          TAX                    ; X = (power bomb explosion Y radius in pixels)
 $88:8E1A F4 2F 8E    PEA $8E2F              ; Push RETURN - 1
 $88:8E1D AD E7 0C    LDA $0CE7  [$7E:0CE7]  ;\
-$88:8E20 29 FF       AND #$FF               ;} If [$0CE6] < 100h: go to BRANCH_OFFSCREEN_LEFT
+$88:8E20 29 FF       AND #$FF               ;} If (X position of power bomb on screen) < 0: go to BRANCH_OFFSCREEN_LEFT
 $88:8E22 F0 09       BEQ $09    [$8E2D]     ;/
 $88:8E24 3A          DEC A                  ;\
-$88:8E25 F0 03       BEQ $03    [$8E2A]     ;} If [$0CE6] < 200h: go to BRANCH_ONSCREEN
+$88:8E25 F0 03       BEQ $03    [$8E2A]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
 $88:8E27 4C 46 8D    JMP $8D46  [$88:8D46]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
@@ -2555,24 +2561,24 @@ $88:8E2D 4C C6 8C    JMP $8CC6  [$88:8CC6]  ; Calculate power bomb explosion HDM
 
 ; RETURN
 ; LOOP_PAD_DATA_TABLE_BEGIN
-$88:8E30 9F 06 C4 7E STA $7EC406,x[$7E:C406]; $7E:C406 + [X] = [A low]
+$88:8E30 9F 06 C4 7E STA $7EC406,x[$7E:C406]; Power bomb explosion window 2 left HDMA data table entry = [A low]
 $88:8E34 EB          XBA                    ;\
-$88:8E35 9F 06 C5 7E STA $7EC506,x[$7E:C506];} $7E:C506 + [X] = [A high]
+$88:8E35 9F 06 C5 7E STA $7EC506,x[$7E:C506];} Power bomb explosion window 2 right HDMA data table entry = [A high]
 $88:8E39 EB          XBA                    ;/
-$88:8E3A CA          DEX                    ; Decrement X
+$88:8E3A CA          DEX                    ; Decrement X (previous data table entry)
 $88:8E3B 10 F3       BPL $F3    [$8E30]     ; If [X] >= 0: go to LOOP_PAD_DATA_TABLE_BEGIN
 $88:8E3D A6 12       LDX $12    [$7E:0012]  ;\
-$88:8E3F E8          INX                    ;} X = power bomb explosion Y radius in pixels + 1
+$88:8E3F E8          INX                    ;} X = (power bomb explosion Y radius in pixels) + 1
 $88:8E40 E0 C0       CPX #$C0               ;\
 $88:8E42 F0 11       BEQ $11    [$8E55]     ;} If [X] = C0h: go to BRANCH_FINISHED_TABLE
 $88:8E44 A9 FF       LDA #$FF               ; A = FFh
 
 ; LOOP_PAD_DATA_TABLE_END
-$88:8E46 9F 06 C4 7E STA $7EC406,x[$7E:C409]; $7E:C406 + [X] = FFh
+$88:8E46 9F 06 C4 7E STA $7EC406,x[$7E:C409]; Power bomb explosion window 2 left HDMA data table entry = FFh
 $88:8E4A 1A          INC A                  ;\
-$88:8E4B 9F 06 C5 7E STA $7EC506,x[$7E:C509];} $7E:C506 + [X] = 0
+$88:8E4B 9F 06 C5 7E STA $7EC506,x[$7E:C509];} Power bomb explosion window 2 right HDMA data table entry = 0
 $88:8E4F 3A          DEC A                  ;/
-$88:8E50 E8          INX                    ; Increment X
+$88:8E50 E8          INX                    ; Increment X (next data table entry)
 $88:8E51 E0 C0       CPX #$C0               ;\
 $88:8E53 D0 F1       BNE $F1    [$8E46]     ;} If [X] != C0h: go to LOOP_PAD_DATA_TABLE_END
 
