@@ -2241,8 +2241,8 @@ $88:8C61 60          RTS
 ;;; $8C62: Calculate power bomb explosion HDMA object table pointers ;;;
 {
 ; Called by:
-;     $8DE9: Pre-instruction - power bomb explosion - stage 3
-;     $8EB2: Pre-instruction - power bomb explosion - stage 4
+;     $8DE9: Pre-instruction - power bomb explosion - stage 3 - explosion - yellow
+;     $8EB2: Pre-instruction - power bomb explosion - stage 4 - explosion - white
 
 ; For on-screen power bomb explosions,
 ; the calculation 2FFh - [A] at $8C90 is equivalent to 1FFh + (Y position of screen on power bomb)
@@ -2645,14 +2645,14 @@ $88:8EC2 F4 00 88    PEA $8800              ;\
 $88:8EC5 AB          PLB                    ;} DB = $88
 $88:8EC6 AB          PLB                    ;/
 $88:8EC7 AC F2 0C    LDY $0CF2  [$7E:0CF2]  ; Y = [pre-scaled power bomb explosion shape definition pointer]
-$88:8ECA A2 00 00    LDX #$0000             ; X = 0
+$88:8ECA A2 00 00    LDX #$0000             ; X = 0 (power bomb explosion HDMA data table index)
 $88:8ECD E2 20       SEP #$20
 $88:8ECF F4 E4 8E    PEA $8EE4              ; Push RETURN - 1
 $88:8ED2 AD E7 0C    LDA $0CE7  [$7E:0CE7]  ;\
-$88:8ED5 29 FF       AND #$FF               ;} If [$0CE6] < 100h: go to BRANCH_OFFSCREEN_LEFT
+$88:8ED5 29 FF       AND #$FF               ;} If (X position of power bomb on screen) < 0: go to BRANCH_OFFSCREEN_LEFT
 $88:8ED7 F0 09       BEQ $09    [$8EE2]     ;/
 $88:8ED9 3A          DEC A                  ;\
-$88:8EDA F0 03       BEQ $03    [$8EDF]     ;} If [$0CE6] < 200h: go to BRANCH_ONSCREEN
+$88:8EDA F0 03       BEQ $03    [$8EDF]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
 $88:8EDC 4C 3A 8C    JMP $8C3A  [$88:8C3A]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
@@ -2692,7 +2692,7 @@ $88:8F1B 18          CLC                    ;|
 $88:8F1C 69 C0 00    ADC #$00C0             ;} Pre-scaled power bomb explosion shape definition pointer += C0h
 $88:8F1F 8D F2 0C    STA $0CF2  [$7E:0CF2]  ;/
 $88:8F22 C9 06 9F    CMP #$9F06             ;\
-$88:8F25 D0 15       BNE $15    [$8F3C]     ;} If [pre-scaled power bomb explosion shape definition pointer] = 9F06h:
+$88:8F25 D0 15       BNE $15    [$8F3C]     ;} If [pre-scaled power bomb explosion shape definition pointer] = $9F06:
 $88:8F27 A9 01 00    LDA #$0001             ;\
 $88:8F2A 9D E4 18    STA $18E4,x[$7E:18E4]  ;|
 $88:8F2D FE CC 18    INC $18CC,x[$7E:18CC]  ;} Wake HDMA object
@@ -2719,6 +2719,15 @@ $88:8F55 6B          RTL
 
 ;;; $8F56: Calculate power bomb pre-explosion HDMA object table pointers ;;;
 {
+; Called by:
+;     $90DF: Pre-instruction - power bomb explosion - stage 1 - pre-explosion - white
+;     $91A8: Pre-instruction - power bomb explosion - stage 2 - pre-explosion - yellow
+
+; For on-screen power bomb explosions,
+; the calculation 2FFh - [A] at $8C90 is equivalent to 1FFh + (Y position of screen on power bomb)
+; (1FFh is enough space for a full screen of no-explosion, followed by a screen containing the upper half of the explosion,
+; 2FFh is the table size)
+
 $88:8F56 AD 92 05    LDA $0592  [$7E:0592]  ;\
 $88:8F59 30 01       BMI $01    [$8F5C]     ;} If power bomb is not exploding:
 $88:8F5B 6B          RTL                    ; Return
@@ -2727,45 +2736,46 @@ $88:8F5C AD E2 0C    LDA $0CE2  [$7E:0CE2]  ;\
 $88:8F5F 38          SEC                    ;|
 $88:8F60 ED 11 09    SBC $0911  [$7E:0911]  ;|
 $88:8F63 18          CLC                    ;|
-$88:8F64 69 00 01    ADC #$0100             ;} If [power bomb explosion X position] - [layer 1 X position] + 100h >= 300h: go to BRANCH_OFFSCREEN
+$88:8F64 69 00 01    ADC #$0100             ;} If not -100h <= [power bomb explosion X position] - [layer 1 X position] < 200h: go to BRANCH_OFFSCREEN
 $88:8F67 C9 00 03    CMP #$0300             ;|
 $88:8F6A 90 02       BCC $02    [$8F6E]     ;|
 $88:8F6C 80 13       BRA $13    [$8F81]     ;/
 
-$88:8F6E 8D E6 0C    STA $0CE6  [$7E:0CE6]  ; $0CE6 = [power bomb explosion X position] - [layer 1 X position] + 100h
+$88:8F6E 8D E6 0C    STA $0CE6  [$7E:0CE6]  ; $0CE6 = 100h + [power bomb explosion X position] - [layer 1 X position]
 $88:8F71 AD E4 0C    LDA $0CE4  [$7E:0CE4]  ;\
 $88:8F74 38          SEC                    ;|
-$88:8F75 ED 15 09    SBC $0915  [$7E:0915]  ;} A = [power bomb explosion Y position] - [layer 1 Y position] + 100h
+$88:8F75 ED 15 09    SBC $0915  [$7E:0915]  ;} A = 100h + [power bomb explosion Y position] - [layer 1 Y position]
 $88:8F78 18          CLC                    ;|
 $88:8F79 69 00 01    ADC #$0100             ;/
 $88:8F7C C9 00 03    CMP #$0300             ;\
-$88:8F7F 90 03       BCC $03    [$8F84]     ;} If [A] >= 300h:
+$88:8F7F 90 03       BCC $03    [$8F84]     ;} If -100h <= [power bomb explosion Y position] - [layer 1 Y position] < 200h: go to BRANCH_ON_SCREEN
 
 ; BRANCH_OFFSCREEN
 $88:8F81 A9 00 00    LDA #$0000             ; A = 0
 
+; BRANCH_ON_SCREEN
 $88:8F84 49 FF 03    EOR #$03FF             ;\
 $88:8F87 38          SEC                    ;|
-$88:8F88 E9 00 01    SBC #$0100             ;} $0CE8 = 2FFh - [A]
+$88:8F88 E9 00 01    SBC #$0100             ;} Power bomb explosion HDMA table index = 2FFh - [A]
 $88:8F8B 8D E8 0C    STA $0CE8  [$7E:0CE8]  ;/
 $88:8F8E AD EC 0C    LDA $0CEC  [$7E:0CEC]  ;\
-$88:8F91 29 00 FF    AND #$FF00             ;} If [power bomb pre-explosion radius] < 100h:
+$88:8F91 29 00 FF    AND #$FF00             ;} If [power bomb explosion radius] / 100h < 1:
 $88:8F94 D0 03       BNE $03    [$8F99]     ;/
-$88:8F96 9C E8 0C    STZ $0CE8  [$7E:0CE8]  ; $0CE8 = 0
+$88:8F96 9C E8 0C    STZ $0CE8  [$7E:0CE8]  ; Power bomb explosion HDMA table index = 0
 
 $88:8F99 BD C0 18    LDA $18C0,x[$7E:18C0]  ;\
-$88:8F9C 29 FF 00    AND #$00FF             ;} >_<
+$88:8F9C 29 FF 00    AND #$00FF             ;} >_<;
 $88:8F9F A8          TAY                    ;/
 $88:8FA0 AD E8 0C    LDA $0CE8  [$7E:0CE8]  ;\
 $88:8FA3 0A          ASL A                  ;|
 $88:8FA4 18          CLC                    ;|
-$88:8FA5 6D E8 0C    ADC $0CE8  [$7E:0CE8]  ;} Window 2 left position HDMA object table pointer = $9800 + [$0CE8] * 3
+$88:8FA5 6D E8 0C    ADC $0CE8  [$7E:0CE8]  ;} Power bomb explosion window 2 left HDMA object table pointer = $9800 + [power bomb explosion HDMA table index] * 3
 $88:8FA8 85 16       STA $16    [$7E:0016]  ;|
 $88:8FAA 69 00 98    ADC #$9800             ;|
 $88:8FAD 9D D8 18    STA $18D8,x[$7E:18D8]  ;/
 $88:8FB0 A5 16       LDA $16    [$7E:0016]  ;\
 $88:8FB2 18          CLC                    ;|
-$88:8FB3 69 01 A1    ADC #$A101             ;} Window 2 right position HDMA object table pointer = $A101 + [$0CE8] * 3
+$88:8FB3 69 01 A1    ADC #$A101             ;} Power bomb explosion window 2 right HDMA object table pointer = $A101 + [power bomb explosion HDMA table index] * 3
 $88:8FB6 9D DA 18    STA $18DA,x[$7E:18DA]  ;/
 $88:8FB9 6B          RTL
 }
@@ -2775,42 +2785,40 @@ $88:8FB9 6B          RTL
 {
 ; Clone of $8CC6
 
-; LOOP_ALPHA
-$88:8FBA B9 26 A2    LDA $A226,y            ;\
-$88:8FBD 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:8FC0 EA          NOP                    ;|
-$88:8FC1 EA          NOP                    ;} $14 = [$4202] * [$A226 + [Y]] / 100h
-$88:8FC2 EA          NOP                    ;|
-$88:8FC3 AD 17 42    LDA $4217  [$7E:4217]  ;|
-$88:8FC6 85 14       STA $14    [$7E:0014]  ;/
-$88:8FC8 B9 06 A2    LDA $A206,y            ;\
-$88:8FCB 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:8FCE EA          NOP                    ;|
-$88:8FCF AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;} If [$0CE6] + [$4202] * [$A206 + [Y]] / 100h < 100h:
-$88:8FD2 18          CLC                    ;|
-$88:8FD3 6D 17 42    ADC $4217  [$7E:4217]  ;|
-$88:8FD6 B0 07       BCS $07    [$8FDF]     ;/
-$88:8FD8 A9 00       LDA #$00               ;\
-$88:8FDA EB          XBA                    ;} A high = 0
-$88:8FDB A9 FF       LDA #$FF               ; A low = FFh
+$88:8FBA B9 26 A2    LDA $A226,y
+$88:8FBD 8D 03 42    STA $4203  [$7E:4203]
+$88:8FC0 EA          NOP
+$88:8FC1 EA          NOP
+$88:8FC2 EA          NOP
+$88:8FC3 AD 17 42    LDA $4217  [$7E:4217]
+$88:8FC6 85 14       STA $14    [$7E:0014]
+$88:8FC8 B9 06 A2    LDA $A206,y
+$88:8FCB 8D 03 42    STA $4203  [$7E:4203]
+$88:8FCE EA          NOP
+$88:8FCF AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:8FD2 18          CLC
+$88:8FD3 6D 17 42    ADC $4217  [$7E:4217]
+$88:8FD6 B0 07       BCS $07    [$8FDF]
+$88:8FD8 A9 00       LDA #$00
+$88:8FDA EB          XBA
+$88:8FDB A9 FF       LDA #$FF
 $88:8FDD 80 03       BRA $03    [$8FE2]
 
-$88:8FDF EB          XBA                    ; Else ([$0CE6] + [$4202] * [$A206 + [Y]] / 100h >= 100h):
-$88:8FE0 A9 00       LDA #$00               ; A high = [$0CE6] + [$4202] * [$A206 + [Y]] / 100h
-                                            ; A low = 0
-; LOOP_BETA
+$88:8FDF EB          XBA
+$88:8FE0 A9 00       LDA #$00
+
 $88:8FE2 9F 06 C4 7E STA $7EC406,x
-$88:8FE6 EB          XBA                    ; $7E:C406 + [X] = [A low]
-$88:8FE7 9F 06 C5 7E STA $7EC506,x          ;\
-$88:8FEB EB          XBA                    ;} $7E:C506 + [X] = [A high]
-$88:8FEC E4 14       CPX $14    [$7E:0014]  ;/
-$88:8FEE F0 04       BEQ $04    [$8FF4]     ;\
-$88:8FF0 CA          DEX                    ;} If [X] != [$14]:
-$88:8FF1 4C E2 8F    JMP $8FE2  [$88:8FE2]  ; Decrement X
-                                            ; Go to LOOP_BETA
+$88:8FE6 EB          XBA
+$88:8FE7 9F 06 C5 7E STA $7EC506,x
+$88:8FEB EB          XBA
+$88:8FEC E4 14       CPX $14    [$7E:0014]
+$88:8FEE F0 04       BEQ $04    [$8FF4]
+$88:8FF0 CA          DEX
+$88:8FF1 4C E2 8F    JMP $8FE2  [$88:8FE2]
+
 $88:8FF4 C8          INY
-$88:8FF5 10 C3       BPL $C3    [$8FBA]     ; Increment Y
-$88:8FF7 60          RTS                    ; If [Y] < 80h: go to LOOP_ALPHA
+$88:8FF5 10 C3       BPL $C3    [$8FBA]
+$88:8FF7 60          RTS
 }
 
 
@@ -2818,42 +2826,40 @@ $88:8FF7 60          RTS                    ; If [Y] < 80h: go to LOOP_ALPHA
 {
 ; Clone of $8D04
 
-; LOOP_ALPHA
-$88:8FF8 B9 26 A2    LDA $A226,y            ;\
-$88:8FFB 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:8FFE EA          NOP                    ;|
-$88:8FFF EA          NOP                    ;} $14 = [$4202] * [$A226 + [Y]] / 100h
-$88:9000 EA          NOP                    ;|
-$88:9001 AD 17 42    LDA $4217  [$7E:4217]  ;|
-$88:9004 85 14       STA $14    [$7E:0014]  ;/
-$88:9006 B9 06 A2    LDA $A206,y            ;\
-$88:9009 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:900C EA          NOP                    ;|
-$88:900D AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;|
-$88:9010 18          CLC                    ;|
-$88:9011 6D 17 42    ADC $4217  [$7E:4217]  ;} A high = min(FFh, [$0CE6] + [$4202] * [$A206 + [Y]] / 100h)
-$88:9014 90 02       BCC $02    [$9018]     ;|
-$88:9016 A9 FF       LDA #$FF               ;|
-                                            ;|
-$88:9018 EB          XBA                    ;/
-$88:9019 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
-$88:901C 38          SEC                    ;|
-$88:901D ED 17 42    SBC $4217  [$7E:4217]  ;} A low = max(0, [$0CE6] - [$4202] * [$A206 + [Y]] / 100h)
-$88:9020 B0 02       BCS $02    [$9024]     ;|
-$88:9022 A9 00       LDA #$00               ;/
+$88:8FF8 B9 26 A2    LDA $A226,y
+$88:8FFB 8D 03 42    STA $4203  [$7E:4203]
+$88:8FFE EA          NOP
+$88:8FFF EA          NOP
+$88:9000 EA          NOP
+$88:9001 AD 17 42    LDA $4217  [$7E:4217]
+$88:9004 85 14       STA $14    [$7E:0014]
+$88:9006 B9 06 A2    LDA $A206,y
+$88:9009 8D 03 42    STA $4203  [$7E:4203]
+$88:900C EA          NOP
+$88:900D AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:9010 18          CLC
+$88:9011 6D 17 42    ADC $4217  [$7E:4217]
+$88:9014 90 02       BCC $02    [$9018]
+$88:9016 A9 FF       LDA #$FF
 
-; LOOP_BETA
-$88:9024 9F 06 C4 7E STA $7EC406,x          ; $7E:C406 + [X] = [A low]
-$88:9028 EB          XBA                    ;\
-$88:9029 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = [A high]
-$88:902D EB          XBA                    ;/
-$88:902E E4 14       CPX $14    [$7E:0014]  ;\
-$88:9030 F0 04       BEQ $04    [$9036]     ;} If [X] != [$14]:
-$88:9032 CA          DEX                    ; Decrement X
-$88:9033 4C 24 90    JMP $9024  [$88:9024]  ; Go to LOOP_BETA
+$88:9018 EB          XBA
+$88:9019 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:901C 38          SEC
+$88:901D ED 17 42    SBC $4217  [$7E:4217]
+$88:9020 B0 02       BCS $02    [$9024]
+$88:9022 A9 00       LDA #$00
 
-$88:9036 C8          INY                    ; Increment Y
-$88:9037 10 BF       BPL $BF    [$8FF8]     ; If [Y] >= 0: go to LOOP_ALPHA
+$88:9024 9F 06 C4 7E STA $7EC406,x
+$88:9028 EB          XBA
+$88:9029 9F 06 C5 7E STA $7EC506,x
+$88:902D EB          XBA
+$88:902E E4 14       CPX $14    [$7E:0014]
+$88:9030 F0 04       BEQ $04    [$9036]
+$88:9032 CA          DEX
+$88:9033 4C 24 90    JMP $9024  [$88:9024]
+
+$88:9036 C8          INY
+$88:9037 10 BF       BPL $BF    [$8FF8]
 $88:9039 60          RTS
 }
 
@@ -2862,44 +2868,41 @@ $88:9039 60          RTS
 {
 ; Clone of $8D46
 
-; LOOP_ALPHA
-$88:903A B9 26 A2    LDA $A226,y            ;\
-$88:903D 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:9040 EA          NOP                    ;|
-$88:9041 EA          NOP                    ;} $14 = [$4202] * [$A226 + [Y]] / 100h
-$88:9042 EA          NOP                    ;|
-$88:9043 AD 17 42    LDA $4217  [$7E:4217]  ;|
-$88:9046 85 14       STA $14    [$7E:0014]  ;/
-$88:9048 B9 06 A2    LDA $A206,y            ;\
-$88:904B 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:904E EA          NOP                    ;|
-$88:904F AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;} If [$0CE6] - [$4202] * [$A206 + [Y]] / 100h >= 0:
-$88:9052 38          SEC                    ;|
-$88:9053 ED 17 42    SBC $4217  [$7E:4217]  ;|
-$88:9056 90 07       BCC $07    [$905F]     ;/
-$88:9058 A9 FF       LDA #$FF               ;\
-$88:905A EB          XBA                    ;} A low = FFh
-$88:905B A9 00       LDA #$00               ; A high = 0
+$88:903A B9 26 A2    LDA $A226,y
+$88:903D 8D 03 42    STA $4203  [$7E:4203]
+$88:9040 EA          NOP
+$88:9041 EA          NOP
+$88:9042 EA          NOP
+$88:9043 AD 17 42    LDA $4217  [$7E:4217]
+$88:9046 85 14       STA $14    [$7E:0014]
+$88:9048 B9 06 A2    LDA $A206,y
+$88:904B 8D 03 42    STA $4203  [$7E:4203]
+$88:904E EA          NOP
+$88:904F AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:9052 38          SEC
+$88:9053 ED 17 42    SBC $4217  [$7E:4217]
+$88:9056 90 07       BCC $07    [$905F]
+$88:9058 A9 FF       LDA #$FF
+$88:905A EB          XBA
+$88:905B A9 00       LDA #$00
 $88:905D 80 03       BRA $03    [$9062]
 
-                                            ; Else ([$0CE6] - [$4202] * [$A206 + [Y]] / 100h < 0):
-$88:905F EB          XBA                    ; A low = [$0CE6] - [$4202] * [$A206 + [Y]] / 100h
-$88:9060 A9 FF       LDA #$FF               ; A high = FFh
+$88:905F EB          XBA
+$88:9060 A9 FF       LDA #$FF
 
 $88:9062 EB          XBA
 
-; LOOP_BETA
-$88:9063 9F 06 C4 7E STA $7EC406,x          ; $7E:C406 + [X] = [A low]
-$88:9067 EB          XBA                    ;\
-$88:9068 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = [A high]
-$88:906C EB          XBA                    ;/
-$88:906D E4 14       CPX $14    [$7E:0014]  ;\
-$88:906F F0 04       BEQ $04    [$9075]     ;} If [X] != [$14]:
-$88:9071 CA          DEX                    ; Decrement X
-$88:9072 4C 63 90    JMP $9063  [$88:9063]  ; Go to LOOP_BETA
+$88:9063 9F 06 C4 7E STA $7EC406,x
+$88:9067 EB          XBA
+$88:9068 9F 06 C5 7E STA $7EC506,x
+$88:906C EB          XBA
+$88:906D E4 14       CPX $14    [$7E:0014]
+$88:906F F0 04       BEQ $04    [$9075]
+$88:9071 CA          DEX
+$88:9072 4C 63 90    JMP $9063  [$88:9063]
 
-$88:9075 C8          INY                    ; Increment Y
-$88:9076 10 C2       BPL $C2    [$903A]     ; If [Y] >= 0: go to LOOP_ALPHA
+$88:9075 C8          INY
+$88:9076 10 C2       BPL $C2    [$903A]
 $88:9078 60          RTS
 }
 
@@ -2907,6 +2910,7 @@ $88:9078 60          RTS
 ;;; $9079: Power bomb pre-explosion colours ;;;
 {
 ; Indexed by [power bomb pre-explosion radius] / 800h
+; Red, green, blue. Range 0..1Fh
 
 ; White section
 $88:9079             db 10,10,10,
@@ -2954,11 +2958,13 @@ $88:90A9             db 13,13,0F,
 
 ;;; $90D9: Unused ;;;
 {
+; There's no (non-pre) explosion parallel to this constant (as there is for initial speed and acceleration),
+; so I can't even speculate what this might have been for
 $88:90D9             dw 0001
 }
 
 
-;;; $90DB: Power bomb pre-explosion radius initial speed ;;;
+;;; $90DB: Power bomb pre-explosion initial radius speed ;;;
 {
 $88:90DB             dw 3000
 }
@@ -3001,10 +3007,10 @@ $88:910D 85 12       STA $12    [$7E:0012]  ;/
 $88:910F AA          TAX                    ; X = power bomb pre-explosion Y radius in pixels
 $88:9110 F4 25 91    PEA $9125              ; Push RETURN - 1
 $88:9113 AD E7 0C    LDA $0CE7  [$7E:0CE7]  ;\
-$88:9116 29 FF       AND #$FF               ;} If [$0CE6] < 100h: go to BRANCH_OFFSCREEN_LEFT
+$88:9116 29 FF       AND #$FF               ;} If (X position of power bomb on screen) < 0: go to BRANCH_OFFSCREEN_LEFT
 $88:9118 F0 09       BEQ $09    [$9123]     ;/
 $88:911A 3A          DEC A                  ;\
-$88:911B F0 03       BEQ $03    [$9120]     ;} If [$0CE6] < 200h: go to BRANCH_ONSCREEN
+$88:911B F0 03       BEQ $03    [$9120]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
 $88:911D 4C 46 8D    JMP $8D46  [$88:8D46]  ; Calculate power bomb explosion HDMA data tables - scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
@@ -3015,11 +3021,11 @@ $88:9123 4C C6 8C    JMP $8CC6  [$88:8CC6]  ; Calculate power bomb explosion HDM
 
 ; RETURN
 ; LOOP_PAD_DATA_TABLE_BEGIN
-$88:9126 9F 06 C4 7E STA $7EC406,x[$7E:C406]; $7E:C406 + [X] = [A low]
+$88:9126 9F 06 C4 7E STA $7EC406,x[$7E:C406]; Power bomb explosion window 2 left HDMA data table entry = [A low]
 $88:912A EB          XBA                    ;\
-$88:912B 9F 06 C5 7E STA $7EC506,x[$7E:C506];} $7E:C506 + [X] = [A high]
+$88:912B 9F 06 C5 7E STA $7EC506,x[$7E:C506];} Power bomb explosion window 2 right HDMA data table entry = [A high]
 $88:912F EB          XBA                    ;/
-$88:9130 CA          DEX                    ; Decrement X
+$88:9130 CA          DEX                    ; Decrement X (previous data table entry)
 $88:9131 10 F3       BPL $F3    [$9126]     ; If [X] >= 0: go to LOOP_PAD_DATA_TABLE_BEGIN
 $88:9133 A6 12       LDX $12    [$7E:0012]  ;\
 $88:9135 E8          INX                    ;} X = power bomb pre-explosion Y radius in pixels + 1
@@ -3028,11 +3034,11 @@ $88:9138 F0 11       BEQ $11    [$914B]     ;} If [X] = C0h: go to BRANCH_FINISH
 $88:913A A9 FF       LDA #$FF               ; A = FFh
 
 ; LOOP_PAD_DATA_TABLE_END
-$88:913C 9F 06 C4 7E STA $7EC406,x[$7E:C409]; $7E:C406 + [X] = FFh
+$88:913C 9F 06 C4 7E STA $7EC406,x[$7E:C409]; Power bomb explosion window 2 left HDMA data table entry = FFh
 $88:9140 1A          INC A                  ;\
-$88:9141 9F 06 C5 7E STA $7EC506,x[$7E:C509];} $7E:C506 + [X] = 0
+$88:9141 9F 06 C5 7E STA $7EC506,x[$7E:C509];} Power bomb explosion window 2 right HDMA data table entry = 0
 $88:9145 3A          DEC A                  ;/
-$88:9146 E8          INX                    ; Increment X
+$88:9146 E8          INX                    ; Increment X (next data table entry)
 $88:9147 E0 C0       CPX #$C0               ;\
 $88:9149 D0 F1       BNE $F1    [$913C]     ;} If [X] != C0h: go to LOOP_PAD_DATA_TABLE_END
 
@@ -3099,14 +3105,14 @@ $88:91B8 F4 00 88    PEA $8800              ;\
 $88:91BB AB          PLB                    ;} DB = $88
 $88:91BC AB          PLB                    ;/
 $88:91BD AC F2 0C    LDY $0CF2  [$7E:0CF2]  ; Y = [pre-scaled power bomb explosion shape definition pointer]
-$88:91C0 A2 00 00    LDX #$0000             ; X = 0
+$88:91C0 A2 00 00    LDX #$0000             ; X = 0 (power bomb explosion HDMA data table index)
 $88:91C3 E2 20       SEP #$20
 $88:91C5 F4 DA 91    PEA $91DA              ; Push RETURN - 1
 $88:91C8 AD E7 0C    LDA $0CE7  [$7E:0CE7]  ;\
-$88:91CB 29 FF       AND #$FF               ;} If [$0CE6] < 100h: go to BRANCH_OFFSCREEN_LEFT
+$88:91CB 29 FF       AND #$FF               ;} If (X position of power bomb on screen) < 0: go to BRANCH_OFFSCREEN_LEFT
 $88:91CD F0 09       BEQ $09    [$91D8]     ;/
 $88:91CF 3A          DEC A                  ;\
-$88:91D0 F0 03       BEQ $03    [$91D5]     ;} If [$0CE6] < 200h: go to BRANCH_ONSCREEN
+$88:91D0 F0 03       BEQ $03    [$91D5]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
 $88:91D2 4C 3A 8C    JMP $8C3A  [$88:8C3A]  ; Calculate power bomb explosion HDMA data tables - pre-scaled - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
@@ -3146,7 +3152,7 @@ $88:9211 18          CLC                    ;|
 $88:9212 69 C0 00    ADC #$00C0             ;} Pre-scaled power bomb explosion shape definition pointer += C0h
 $88:9215 8D F2 0C    STA $0CF2  [$7E:0CF2]  ;/
 $88:9218 C9 06 A2    CMP #$A206             ;\
-$88:921B D0 0F       BNE $0F    [$922C]     ;} If [pre-scaled power bomb explosion shape definition pointer] = A206h:
+$88:921B D0 0F       BNE $0F    [$922C]     ;} If [pre-scaled power bomb explosion shape definition pointer] = $A206:
 $88:921D A9 01 00    LDA #$0001             ;\
 $88:9220 9D E4 18    STA $18E4,x[$7E:18E4]  ;|
 $88:9223 FE CC 18    INC $18CC,x[$7E:18CC]  ;} Wake HDMA object
@@ -3235,7 +3241,7 @@ $88:A286             db BF, BF, BE, BD, BA, B8, B6, B2, AF, AB, A6, A2, 9C, 96, 
 
 ;;; $A2A6: Spawn crystal flash HDMA objects ;;;
 {
-; These HDMA objects don't actually have any effect, presumably this is all leftover code from earlier development
+; These HDMAs aren't really needed
 $88:A2A6 A9 00 80    LDA #$8000             ;\
 $88:A2A9 8D 92 05    STA $0592  [$7E:0592]  ;} Set power bomb exploding flag
 $88:A2AC 22 35 84 88 JSL $888435[$88:8435]  ;\
@@ -3262,7 +3268,7 @@ $88:A2BD             dx 8655,89,    ; HDMA table bank = $89
 }
 
 
-;;; $A2E4: Crystal flash - setup - part 1 ;;;
+;;; $A2E4: Crystal flash - setup (1/2) ;;;
 {
 $88:A2E4 E2 20       SEP #$20
 $88:A2E6 A9 FF       LDA #$FF               ;\
@@ -3280,7 +3286,7 @@ $88:A308 6B          RTL
 }
 
 
-;;; $A309: Crystal flash - setup - part 2 ;;;
+;;; $A309: Crystal flash - setup (2/2) ;;;
 {
 $88:A309 A9 00 04    LDA #$0400             ;\
 $88:A30C 8D EA 0C    STA $0CEA  [$7E:0CEA]  ;} Power bomb explosion radius = 400h
@@ -3352,31 +3358,31 @@ $88:A370 0D 76 00    ORA $0076  [$7E:0076]  ;} If colour math subscreen backdrop
 $88:A373 29 1F       AND #$1F               ;|
 $88:A375 F0 31       BEQ $31    [$A3A8]     ;/
 $88:A377 AD 74 00    LDA $0074  [$7E:0074]  ;\
-$88:A37A 29 1F       AND #$1F               ;} If red component of colour math subscreen backdrop colour != 0:
+$88:A37A 29 1F       AND #$1F               ;} If (red component of colour math subscreen backdrop colour) != 0:
 $88:A37C F0 06       BEQ $06    [$A384]     ;/
 $88:A37E 3A          DEC A                  ;\
-$88:A37F 09 20       ORA #$20               ;} Decrement red component of colour math subscreen backdrop colour
+$88:A37F 09 20       ORA #$20               ;} Decrement (red component of colour math subscreen backdrop colour)
 $88:A381 8D 74 00    STA $0074  [$7E:0074]  ;/
 
 $88:A384 AD 75 00    LDA $0075  [$7E:0075]  ;\
-$88:A387 29 1F       AND #$1F               ;} If green component of colour math subscreen backdrop colour != 0:
+$88:A387 29 1F       AND #$1F               ;} If (green component of colour math subscreen backdrop colour) != 0:
 $88:A389 F0 06       BEQ $06    [$A391]     ;/
 $88:A38B 3A          DEC A                  ;\
-$88:A38C 09 40       ORA #$40               ;} Decrement green component of colour math subscreen backdrop colour
+$88:A38C 09 40       ORA #$40               ;} Decrement (green component of colour math subscreen backdrop colour)
 $88:A38E 8D 75 00    STA $0075  [$7E:0075]  ;/
 
 $88:A391 AD 76 00    LDA $0076  [$7E:0076]  ;\
-$88:A394 29 1F       AND #$1F               ;} If blue component of colour math subscreen backdrop colour != 0:
+$88:A394 29 1F       AND #$1F               ;} If (blue component of colour math subscreen backdrop colour) != 0:
 $88:A396 F0 06       BEQ $06    [$A39E]     ;/
 $88:A398 3A          DEC A                  ;\
-$88:A399 09 80       ORA #$80               ;} Decrement blue component of colour math subscreen backdrop colour
+$88:A399 09 80       ORA #$80               ;} Decrement (blue component of colour math subscreen backdrop colour)
 $88:A39B 8D 76 00    STA $0076  [$7E:0076]  ;/
 
 $88:A39E AF 96 8B 88 LDA $888B96[$88:8B96]  ;\
 $88:A3A2 9D 08 19    STA $1908,x[$7E:190A]  ;} HDMA object timer = 3
 $88:A3A5 C2 20       REP #$20
 
-$88:A3A7 6B          RTL
+$88:A3A7 6B          RTL                    ; Return
 
 ; BRANCH_WAKE
 $88:A3A8 C2 20       REP #$20
@@ -3392,26 +3398,24 @@ $88:A3B6 6B          RTL
 {
 ; Clone of $8BEA
 
-; LOOP
-$88:A3B7 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
-$88:A3BA 18          CLC                    ;|
-$88:A3BB 79 00 00    ADC $0000,y            ;} If [$0CE6] + [[Y]] < 100h:
-$88:A3BE B0 0D       BCS $0D    [$A3CD]     ;/
-$88:A3C0 A9 00       LDA #$00               ;\
-$88:A3C2 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = 0
-$88:A3C6 1A          INC A                  ;\
-$88:A3C7 9F 06 C4 7E STA $7EC406,x          ;} $7E:C406 + [X] = 1
+$88:A3B7 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:A3BA 18          CLC
+$88:A3BB 79 00 00    ADC $0000,y
+$88:A3BE B0 0D       BCS $0D    [$A3CD]
+$88:A3C0 A9 00       LDA #$00
+$88:A3C2 9F 06 C5 7E STA $7EC506,x
+$88:A3C6 1A          INC A
+$88:A3C7 9F 06 C4 7E STA $7EC406,x
 $88:A3CB 80 0A       BRA $0A    [$A3D7]
 
-                                            ; Else [$0CE6] + [[Y]] >= 100h):
-$88:A3CD 9F 06 C5 7E STA $7EC506,x          ; $7E:C506 + [X] = [$0CE6] + [[Y]] & FFh
-$88:A3D1 A9 00       LDA #$00               ;\
-$88:A3D3 9F 06 C4 7E STA $7EC406,x          ;} $7E:C406 + [X] = 0
+$88:A3CD 9F 06 C5 7E STA $7EC506,x
+$88:A3D1 A9 00       LDA #$00
+$88:A3D3 9F 06 C4 7E STA $7EC406,x
 
-$88:A3D7 C8          INY                    ; Increment Y
-$88:A3D8 E8          INX                    ; Increment X
-$88:A3D9 E0 C0 00    CPX #$00C0             ;\
-$88:A3DC D0 D9       BNE $D9    [$A3B7]     ;} If [X] != C0h: go to LOOP
+$88:A3D7 C8          INY
+$88:A3D8 E8          INX
+$88:A3D9 E0 C0 00    CPX #$00C0
+$88:A3DC D0 D9       BNE $D9    [$A3B7]
 $88:A3DE 60          RTS
 }
 
@@ -3420,26 +3424,25 @@ $88:A3DE 60          RTS
 {
 ; Clone of $8C12
 
-; LOOP
-$88:A3DF B9 00 00    LDA $0000,y            ;\
-$88:A3E2 F0 22       BEQ $22    [$A406]     ;} If [[Y]] = 0: return
-$88:A3E4 18          CLC                    ;\
-$88:A3E5 6D E6 0C    ADC $0CE6  [$7E:0CE6]  ;|
-$88:A3E8 90 02       BCC $02    [$A3EC]     ;|
-$88:A3EA A9 FF       LDA #$FF               ;} $7E:C506 + [X] = min(FFh, [$0CE6] + [[Y]])
-                                            ;|
-$88:A3EC 9F 06 C5 7E STA $7EC506,x          ;/
-$88:A3F0 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
-$88:A3F3 38          SEC                    ;|
-$88:A3F4 F9 00 00    SBC $0000,y            ;|
-$88:A3F7 B0 02       BCS $02    [$A3FB]     ;} $7E:C406 + [X] = max(0, [$0CE6] - [[Y]])
-$88:A3F9 A9 00       LDA #$00               ;|
-                                            ;|
-$88:A3FB 9F 06 C4 7E STA $7EC406,x          ;/
-$88:A3FF C8          INY                    ; Increment Y
-$88:A400 E8          INX                    ; Increment X
-$88:A401 E0 C0 00    CPX #$00C0             ;\
-$88:A404 D0 D9       BNE $D9    [$A3DF]     ;} If [X] != C0h: go to LOOP
+$88:A3DF B9 00 00    LDA $0000,y
+$88:A3E2 F0 22       BEQ $22    [$A406]
+$88:A3E4 18          CLC
+$88:A3E5 6D E6 0C    ADC $0CE6  [$7E:0CE6]
+$88:A3E8 90 02       BCC $02    [$A3EC]
+$88:A3EA A9 FF       LDA #$FF
+
+$88:A3EC 9F 06 C5 7E STA $7EC506,x
+$88:A3F0 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:A3F3 38          SEC
+$88:A3F4 F9 00 00    SBC $0000,y
+$88:A3F7 B0 02       BCS $02    [$A3FB]
+$88:A3F9 A9 00       LDA #$00
+
+$88:A3FB 9F 06 C4 7E STA $7EC406,x
+$88:A3FF C8          INY
+$88:A400 E8          INX
+$88:A401 E0 C0 00    CPX #$00C0
+$88:A404 D0 D9       BNE $D9    [$A3DF]
 
 $88:A406 60          RTS
 }
@@ -3449,26 +3452,24 @@ $88:A406 60          RTS
 {
 ; Clone of $8C3A
 
-; LOOP
-$88:A407 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
-$88:A40A 38          SEC                    ;|
-$88:A40B F9 00 00    SBC $0000,y            ;} If [$0CE6] - [[Y]] >= 0:
-$88:A40E 90 0D       BCC $0D    [$A41D]     ;/
-$88:A410 A9 FF       LDA #$FF               ;\
-$88:A412 9F 06 C4 7E STA $7EC406,x          ;} $7E:C406 + [X] = FFh
-$88:A416 3A          DEC A                  ;\
-$88:A417 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = FEh
+$88:A407 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:A40A 38          SEC
+$88:A40B F9 00 00    SBC $0000,y
+$88:A40E 90 0D       BCC $0D    [$A41D]
+$88:A410 A9 FF       LDA #$FF
+$88:A412 9F 06 C4 7E STA $7EC406,x
+$88:A416 3A          DEC A
+$88:A417 9F 06 C5 7E STA $7EC506,x
 $88:A41B 80 0A       BRA $0A    [$A427]
 
-                                            ; Else ([$0CE6] < [[Y]]):
-$88:A41D 9F 06 C4 7E STA $7EC406,x          ; $7E:C406 + [X] = [$0CE6] - [[Y]]
-$88:A421 A9 FF       LDA #$FF               ;\
-$88:A423 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = FFh
+$88:A41D 9F 06 C4 7E STA $7EC406,x
+$88:A421 A9 FF       LDA #$FF
+$88:A423 9F 06 C5 7E STA $7EC506,x
 
-$88:A427 C8          INY                    ; Increment Y
-$88:A428 E8          INX                    ; Increment X
-$88:A429 E0 C0 00    CPX #$00C0             ;\
-$88:A42C D0 D9       BNE $D9    [$A407]     ;} If [X] != C0h: go to LOOP
+$88:A427 C8          INY
+$88:A428 E8          INX
+$88:A429 E0 C0 00    CPX #$00C0
+$88:A42C D0 D9       BNE $D9    [$A407]
 $88:A42E 60          RTS
 }
 
@@ -3476,54 +3477,54 @@ $88:A42E 60          RTS
 ;;; $A42F: Calculate crystal flash HDMA object table pointers ;;;
 {
 ; Clone of $8C62
-$88:A42F AD 92 05    LDA $0592  [$7E:0592]  ;\
-$88:A432 30 01       BMI $01    [$A435]     ;} If power bomb is not exploding:
-$88:A434 6B          RTL                    ; Return
 
-$88:A435 AD E2 0C    LDA $0CE2  [$7E:0CE2]  ;\
-$88:A438 38          SEC                    ;|
-$88:A439 ED 11 09    SBC $0911  [$7E:0911]  ;|
-$88:A43C 18          CLC                    ;|
-$88:A43D 69 00 01    ADC #$0100             ;} If [power bomb explosion X position] - [layer 1 X position] + 100h >= 300h: go to BRANCH_OFFSCREEN
-$88:A440 C9 00 03    CMP #$0300             ;|
-$88:A443 90 02       BCC $02    [$A447]     ;|
-$88:A445 80 13       BRA $13    [$A45A]     ;/
+$88:A42F AD 92 05    LDA $0592  [$7E:0592]
+$88:A432 30 01       BMI $01    [$A435]
+$88:A434 6B          RTL
 
-$88:A447 8D E6 0C    STA $0CE6  [$7E:0CE6]  ; $0CE6 = [power bomb explosion X position] - [layer 1 X position] + 100h
-$88:A44A AD E4 0C    LDA $0CE4  [$7E:0CE4]  ;\
-$88:A44D 38          SEC                    ;|
-$88:A44E ED 15 09    SBC $0915  [$7E:0915]  ;} A = [power bomb explosion Y position] - [layer 1 Y position] + 100h
-$88:A451 18          CLC                    ;|
-$88:A452 69 00 01    ADC #$0100             ;/
-$88:A455 C9 00 03    CMP #$0300             ;\
-$88:A458 90 03       BCC $03    [$A45D]     ;} If [A] >= 300h:
+$88:A435 AD E2 0C    LDA $0CE2  [$7E:0CE2]
+$88:A438 38          SEC
+$88:A439 ED 11 09    SBC $0911  [$7E:0911]
+$88:A43C 18          CLC
+$88:A43D 69 00 01    ADC #$0100
+$88:A440 C9 00 03    CMP #$0300
+$88:A443 90 02       BCC $02    [$A447]
+$88:A445 80 13       BRA $13    [$A45A]
 
-; BRANCH_OFFSCREEN
-$88:A45A A9 00 00    LDA #$0000             ; A = 0
+$88:A447 8D E6 0C    STA $0CE6  [$7E:0CE6]
+$88:A44A AD E4 0C    LDA $0CE4  [$7E:0CE4]
+$88:A44D 38          SEC
+$88:A44E ED 15 09    SBC $0915  [$7E:0915]
+$88:A451 18          CLC
+$88:A452 69 00 01    ADC #$0100
+$88:A455 C9 00 03    CMP #$0300
+$88:A458 90 03       BCC $03    [$A45D]
 
-$88:A45D 49 FF 03    EOR #$03FF             ;\
-$88:A460 38          SEC                    ;|
-$88:A461 E9 00 01    SBC #$0100             ;} $0CE8 = 2FFh - [A]
-$88:A464 8D E8 0C    STA $0CE8  [$7E:0CE8]  ;/
-$88:A467 AD EA 0C    LDA $0CEA  [$7E:0CEA]  ;\
-$88:A46A 29 00 FF    AND #$FF00             ;} If [power bomb radius] < 100h:
-$88:A46D D0 03       BNE $03    [$A472]     ;/
-$88:A46F 9C E8 0C    STZ $0CE8  [$7E:0CE8]  ; $0CE8 = 0
+$88:A45A A9 00 00    LDA #$0000
 
-$88:A472 BD C0 18    LDA $18C0,x[$7E:18C2]  ;\
-$88:A475 29 FF 00    AND #$00FF             ;} >_<
-$88:A478 A8          TAY                    ;/
-$88:A479 AD E8 0C    LDA $0CE8  [$7E:0CE8]  ;\
-$88:A47C 0A          ASL A                  ;|
-$88:A47D 18          CLC                    ;|
-$88:A47E 6D E8 0C    ADC $0CE8  [$7E:0CE8]  ;} Window 2 left position HDMA object table pointer = $9800 + [$0CE8] * 3
-$88:A481 85 16       STA $16    [$7E:0016]  ;|
-$88:A483 69 00 98    ADC #$9800             ;|
-$88:A486 9D D8 18    STA $18D8,x[$7E:18DA]  ;/
-$88:A489 A5 16       LDA $16    [$7E:0016]  ;\
-$88:A48B 18          CLC                    ;|
-$88:A48C 69 01 A1    ADC #$A101             ;} Window 2 right position HDMA object table pointer = $A101 + [$0CE8] * 3
-$88:A48F 9D DA 18    STA $18DA,x[$7E:18DC]  ;/
+$88:A45D 49 FF 03    EOR #$03FF
+$88:A460 38          SEC
+$88:A461 E9 00 01    SBC #$0100
+$88:A464 8D E8 0C    STA $0CE8  [$7E:0CE8]
+$88:A467 AD EA 0C    LDA $0CEA  [$7E:0CEA]
+$88:A46A 29 00 FF    AND #$FF00
+$88:A46D D0 03       BNE $03    [$A472]
+$88:A46F 9C E8 0C    STZ $0CE8  [$7E:0CE8]
+
+$88:A472 BD C0 18    LDA $18C0,x[$7E:18C2]
+$88:A475 29 FF 00    AND #$00FF
+$88:A478 A8          TAY
+$88:A479 AD E8 0C    LDA $0CE8  [$7E:0CE8]
+$88:A47C 0A          ASL A
+$88:A47D 18          CLC
+$88:A47E 6D E8 0C    ADC $0CE8  [$7E:0CE8]
+$88:A481 85 16       STA $16    [$7E:0016]
+$88:A483 69 00 98    ADC #$9800
+$88:A486 9D D8 18    STA $18D8,x[$7E:18DA]
+$88:A489 A5 16       LDA $16    [$7E:0016]
+$88:A48B 18          CLC
+$88:A48C 69 01 A1    ADC #$A101
+$88:A48F 9D DA 18    STA $18DA,x[$7E:18DC]
 $88:A492 6B          RTL
 }
 
@@ -3532,42 +3533,39 @@ $88:A492 6B          RTL
 {
 ; Clone of $8CC6
 
-; LOOP_ALPHA
-$88:A493 B9 26 A2    LDA $A226,y            ;\
-$88:A496 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:A499 EA          NOP                    ;|
-$88:A49A EA          NOP                    ;} $14 = [$4202] * [$A226 + [Y]] / 100h
-$88:A49B EA          NOP                    ;|
-$88:A49C AD 17 42    LDA $4217  [$7E:4217]  ;|
-$88:A49F 85 14       STA $14    [$7E:0014]  ;/
-$88:A4A1 B9 06 A2    LDA $A206,y            ;\
-$88:A4A4 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:A4A7 EA          NOP                    ;|
-$88:A4A8 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;} If [$0CE6] + [$4202] * [$A206 + [Y]] / 100h < 100h:
-$88:A4AB 18          CLC                    ;|
-$88:A4AC 6D 17 42    ADC $4217  [$7E:4217]  ;|
-$88:A4AF B0 07       BCS $07    [$A4B8]     ;/
-$88:A4B1 A9 00       LDA #$00               ;\
-$88:A4B3 EB          XBA                    ;} A high = 0
-$88:A4B4 A9 FF       LDA #$FF               ; A low = FFh
+$88:A493 B9 26 A2    LDA $A226,y
+$88:A496 8D 03 42    STA $4203  [$7E:4203]
+$88:A499 EA          NOP
+$88:A49A EA          NOP
+$88:A49B EA          NOP
+$88:A49C AD 17 42    LDA $4217  [$7E:4217]
+$88:A49F 85 14       STA $14    [$7E:0014]
+$88:A4A1 B9 06 A2    LDA $A206,y
+$88:A4A4 8D 03 42    STA $4203  [$7E:4203]
+$88:A4A7 EA          NOP
+$88:A4A8 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:A4AB 18          CLC
+$88:A4AC 6D 17 42    ADC $4217  [$7E:4217]
+$88:A4AF B0 07       BCS $07    [$A4B8]
+$88:A4B1 A9 00       LDA #$00
+$88:A4B3 EB          XBA
+$88:A4B4 A9 FF       LDA #$FF
 $88:A4B6 80 03       BRA $03    [$A4BB]
 
-                                            ; Else ([$0CE6] + [$4202] * [$A206 + [Y]] / 100h >= 100h):
-$88:A4B8 EB          XBA                    ; A high = [$0CE6] + [$4202] * [$A206 + [Y]] / 100h
-$88:A4B9 A9 00       LDA #$00               ; A low = 0
+$88:A4B8 EB          XBA
+$88:A4B9 A9 00       LDA #$00
 
-; LOOP_BETA
-$88:A4BB 9F 06 C4 7E STA $7EC406,x          ; $7E:C406 + [X] = [A low]
-$88:A4BF EB          XBA                    ;\
-$88:A4C0 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = [A high]
-$88:A4C4 EB          XBA                    ;/
-$88:A4C5 E4 14       CPX $14    [$7E:0014]  ;\
-$88:A4C7 F0 04       BEQ $04    [$A4CD]     ;} If [X] != [$14]:
-$88:A4C9 CA          DEX                    ; Decrement X
-$88:A4CA 4C BB A4    JMP $A4BB  [$88:A4BB]  ; Go to LOOP_BETA
+$88:A4BB 9F 06 C4 7E STA $7EC406,x
+$88:A4BF EB          XBA
+$88:A4C0 9F 06 C5 7E STA $7EC506,x
+$88:A4C4 EB          XBA
+$88:A4C5 E4 14       CPX $14    [$7E:0014]
+$88:A4C7 F0 04       BEQ $04    [$A4CD]
+$88:A4C9 CA          DEX
+$88:A4CA 4C BB A4    JMP $A4BB  [$88:A4BB]
 
-$88:A4CD C8          INY                    ; Increment Y
-$88:A4CE 10 C3       BPL $C3    [$A493]     ; If [Y] < 80h: go to LOOP_ALPHA
+$88:A4CD C8          INY
+$88:A4CE 10 C3       BPL $C3    [$A493]
 $88:A4D0 60          RTS
 }
 
@@ -3576,42 +3574,40 @@ $88:A4D0 60          RTS
 {
 ; Clone of $8D04
 
-; LOOP_ALPHA
-$88:A4D1 B9 26 A2    LDA $A226,y[$88:A286]  ;\
-$88:A4D4 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:A4D7 EA          NOP                    ;|
-$88:A4D8 EA          NOP                    ;} $14 = [$4202] * [$A226 + [Y]] / 100h
-$88:A4D9 EA          NOP                    ;|
-$88:A4DA AD 17 42    LDA $4217  [$7E:4217]  ;|
-$88:A4DD 85 14       STA $14    [$7E:0014]  ;/
-$88:A4DF B9 06 A2    LDA $A206,y[$88:A266]  ;\
-$88:A4E2 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:A4E5 EA          NOP                    ;|
-$88:A4E6 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;|
-$88:A4E9 18          CLC                    ;|
-$88:A4EA 6D 17 42    ADC $4217  [$7E:4217]  ;} A high = min(FFh, [$0CE6] + [$4202] * [$A206 + [Y]] / 100h)
-$88:A4ED 90 02       BCC $02    [$A4F1]     ;|
-$88:A4EF A9 FF       LDA #$FF               ;|
-                                            ;|
-$88:A4F1 EB          XBA                    ;/
-$88:A4F2 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;\
-$88:A4F5 38          SEC                    ;|
-$88:A4F6 ED 17 42    SBC $4217  [$7E:4217]  ;} A low = max(0, [$0CE6] - [$4202] * [$A206 + [Y]] / 100h)
-$88:A4F9 B0 02       BCS $02    [$A4FD]     ;|
-$88:A4FB A9 00       LDA #$00               ;/
+$88:A4D1 B9 26 A2    LDA $A226,y[$88:A286]
+$88:A4D4 8D 03 42    STA $4203  [$7E:4203]
+$88:A4D7 EA          NOP
+$88:A4D8 EA          NOP
+$88:A4D9 EA          NOP
+$88:A4DA AD 17 42    LDA $4217  [$7E:4217]
+$88:A4DD 85 14       STA $14    [$7E:0014]
+$88:A4DF B9 06 A2    LDA $A206,y[$88:A266]
+$88:A4E2 8D 03 42    STA $4203  [$7E:4203]
+$88:A4E5 EA          NOP
+$88:A4E6 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:A4E9 18          CLC
+$88:A4EA 6D 17 42    ADC $4217  [$7E:4217]
+$88:A4ED 90 02       BCC $02    [$A4F1]
+$88:A4EF A9 FF       LDA #$FF
 
-; LOOP_BETA
-$88:A4FD 9F 06 C4 7E STA $7EC406,x[$7E:C408]; $7E:C406 + [X] = [A low]
-$88:A501 EB          XBA                    ;\
-$88:A502 9F 06 C5 7E STA $7EC506,x[$7E:C508];} $7E:C506 + [X] = [A high]
-$88:A506 EB          XBA                    ;/
-$88:A507 E4 14       CPX $14    [$7E:0014]  ;\
-$88:A509 F0 04       BEQ $04    [$A50F]     ;} If [X] != [$14]:
-$88:A50B CA          DEX                    ; Decrement X
-$88:A50C 4C FD A4    JMP $A4FD  [$88:A4FD]  ; Go to LOOP_BETA
+$88:A4F1 EB          XBA
+$88:A4F2 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:A4F5 38          SEC
+$88:A4F6 ED 17 42    SBC $4217  [$7E:4217]
+$88:A4F9 B0 02       BCS $02    [$A4FD]
+$88:A4FB A9 00       LDA #$00
 
-$88:A50F C8          INY                    ; Increment Y
-$88:A510 10 BF       BPL $BF    [$A4D1]     ; If [Y] >= 0: go to LOOP_ALPHA
+$88:A4FD 9F 06 C4 7E STA $7EC406,x[$7E:C408]
+$88:A501 EB          XBA
+$88:A502 9F 06 C5 7E STA $7EC506,x[$7E:C508]
+$88:A506 EB          XBA
+$88:A507 E4 14       CPX $14    [$7E:0014]
+$88:A509 F0 04       BEQ $04    [$A50F]
+$88:A50B CA          DEX
+$88:A50C 4C FD A4    JMP $A4FD  [$88:A4FD]
+
+$88:A50F C8          INY
+$88:A510 10 BF       BPL $BF    [$A4D1]
 $88:A512 60          RTS
 }
 
@@ -3620,44 +3616,41 @@ $88:A512 60          RTS
 {
 ; Clone of $8D46
 
-; LOOP_ALPHA
-$88:A513 B9 26 A2    LDA $A226,y            ;\
-$88:A516 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:A519 EA          NOP                    ;|
-$88:A51A EA          NOP                    ;} $14 = [$4202] * [$A226 + [Y]] / 100h
-$88:A51B EA          NOP                    ;|
-$88:A51C AD 17 42    LDA $4217  [$7E:4217]  ;|
-$88:A51F 85 14       STA $14    [$7E:0014]  ;/
-$88:A521 B9 06 A2    LDA $A206,y            ;\
-$88:A524 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:A527 EA          NOP                    ;|
-$88:A528 AD E6 0C    LDA $0CE6  [$7E:0CE6]  ;} If [$0CE6] - [$4202] * [$A206 + [Y]] / 100h >= 0:
-$88:A52B 38          SEC                    ;|
-$88:A52C ED 17 42    SBC $4217  [$7E:4217]  ;|
-$88:A52F 90 07       BCC $07    [$A538]     ;/
-$88:A531 A9 FF       LDA #$FF               ;\
-$88:A533 EB          XBA                    ;} A low = FFh
-$88:A534 A9 00       LDA #$00               ; A high = 0
+$88:A513 B9 26 A2    LDA $A226,y
+$88:A516 8D 03 42    STA $4203  [$7E:4203]
+$88:A519 EA          NOP
+$88:A51A EA          NOP
+$88:A51B EA          NOP
+$88:A51C AD 17 42    LDA $4217  [$7E:4217]
+$88:A51F 85 14       STA $14    [$7E:0014]
+$88:A521 B9 06 A2    LDA $A206,y
+$88:A524 8D 03 42    STA $4203  [$7E:4203]
+$88:A527 EA          NOP
+$88:A528 AD E6 0C    LDA $0CE6  [$7E:0CE6]
+$88:A52B 38          SEC
+$88:A52C ED 17 42    SBC $4217  [$7E:4217]
+$88:A52F 90 07       BCC $07    [$A538]
+$88:A531 A9 FF       LDA #$FF
+$88:A533 EB          XBA
+$88:A534 A9 00       LDA #$00
 $88:A536 80 03       BRA $03    [$A53B]
 
-                                            ; Else ([$0CE6] - [$4202] * [$A206 + [Y]] / 100h < 0):
-$88:A538 EB          XBA                    ; A low = [$0CE6] - [$4202] * [$A206 + [Y]] / 100h
-$88:A539 A9 FF       LDA #$FF               ; A high = FFh
+$88:A538 EB          XBA
+$88:A539 A9 FF       LDA #$FF
 
 $88:A53B EB          XBA
 
-; LOOP_BETA
-$88:A53C 9F 06 C4 7E STA $7EC406,x          ; $7E:C406 + [X] = [A low]
-$88:A540 EB          XBA                    ;\
-$88:A541 9F 06 C5 7E STA $7EC506,x          ;} $7E:C506 + [X] = [A high]
-$88:A545 EB          XBA                    ;/
-$88:A546 E4 14       CPX $14    [$7E:0014]  ;\
-$88:A548 F0 04       BEQ $04    [$A54E]     ;} If [X] != [$14]:
-$88:A54A CA          DEX                    ; Decrement X
-$88:A54B 4C 3C A5    JMP $A53C  [$88:A53C]  ; Go to LOOP_BETA
+$88:A53C 9F 06 C4 7E STA $7EC406,x
+$88:A540 EB          XBA
+$88:A541 9F 06 C5 7E STA $7EC506,x
+$88:A545 EB          XBA
+$88:A546 E4 14       CPX $14    [$7E:0014]
+$88:A548 F0 04       BEQ $04    [$A54E]
+$88:A54A CA          DEX
+$88:A54B 4C 3C A5    JMP $A53C  [$88:A53C]
 
-$88:A54E C8          INY                    ; Increment Y
-$88:A54F 10 C2       BPL $C2    [$A513]     ; If [Y] >= 0: go to LOOP_ALPHA
+$88:A54E C8          INY
+$88:A54F 10 C2       BPL $C2    [$A513]
 $88:A551 60          RTS
 }
 
@@ -3691,13 +3684,13 @@ $88:A57B EA          NOP                    ;|
 $88:A57C EA          NOP                    ;|
 $88:A57D AD 17 42    LDA $4217  [$7E:4217]  ;|
 $88:A580 85 12       STA $12    [$7E:0012]  ;/
-$88:A582 AA          TAX                    ; X = [$12]
+$88:A582 AA          TAX                    ; X = (power bomb explosion Y radius in pixels)
 $88:A583 F4 98 A5    PEA $A598              ; Push RETURN - 1
 $88:A586 AD E7 0C    LDA $0CE7  [$7E:0CE7]  ;\
-$88:A589 29 FF       AND #$FF               ;} If [$0CE6] < 100h: go to BRANCH_OFFSCREEN_LEFT
+$88:A589 29 FF       AND #$FF               ;} If (X position of power bomb on screen) < 0: go to BRANCH_OFFSCREEN_LEFT
 $88:A58B F0 09       BEQ $09    [$A596]     ;/
 $88:A58D 3A          DEC A                  ;\
-$88:A58E F0 03       BEQ $03    [$A593]     ;} If [$0CE6] < 200h: go to BRANCH_ONSCREEN
+$88:A58E F0 03       BEQ $03    [$A593]     ;} If (X position of power bomb on screen) < 100h: go to BRANCH_ONSCREEN
 $88:A590 4C 13 A5    JMP $A513  [$88:A513]  ; Calculate crystal flash HDMA data tables - power bomb is right of screen
 
 ; BRANCH_ONSCREEN
@@ -3708,24 +3701,24 @@ $88:A596 4C 93 A4    JMP $A493  [$88:A493]  ; Calculate crystal flash HDMA data 
 
 ; RETURN
 ; LOOP_PAD_DATA_TABLE_BEGIN
-$88:A599 9F 06 C4 7E STA $7EC406,x[$7E:C406]; $7E:C406 + [X] = [A low]
+$88:A599 9F 06 C4 7E STA $7EC406,x[$7E:C406]; Power bomb explosion window 2 left HDMA data table entry = [A low]
 $88:A59D EB          XBA                    ;\
-$88:A59E 9F 06 C5 7E STA $7EC506,x[$7E:C506];} $7E:C506 + [X] = [A high]
+$88:A59E 9F 06 C5 7E STA $7EC506,x[$7E:C506];} Power bomb explosion window 2 right HDMA data table entry = [A high]
 $88:A5A2 EB          XBA                    ;/
-$88:A5A3 CA          DEX                    ; Decrement X
+$88:A5A3 CA          DEX                    ; Decrement X (previous data table entry)
 $88:A5A4 10 F3       BPL $F3    [$A599]     ; If [X] >= 0: go to LOOP_PAD_DATA_TABLE_BEGIN
 $88:A5A6 A6 12       LDX $12    [$7E:0012]  ;\
-$88:A5A8 E8          INX                    ;} X = power bomb explosion Y radius in pixels + 1
+$88:A5A8 E8          INX                    ;} X = (power bomb explosion Y radius in pixels) + 1
 $88:A5A9 E0 C0       CPX #$C0               ;\
 $88:A5AB F0 11       BEQ $11    [$A5BE]     ;} If [X] = C0h: go to BRANCH_FINISHED_TABLE
 $88:A5AD A9 FF       LDA #$FF               ; A = FFh
 
 ; LOOP_PAD_DATA_TABLE_END
-$88:A5AF 9F 06 C4 7E STA $7EC406,x[$7E:C409]; $7E:C406 + [X] = FFh
+$88:A5AF 9F 06 C4 7E STA $7EC406,x[$7E:C409]; Power bomb explosion window 2 left HDMA data table entry = FFh
 $88:A5B3 1A          INC A                  ;\
-$88:A5B4 9F 06 C5 7E STA $7EC506,x[$7E:C509];} $7E:C506 + [X] = 0
+$88:A5B4 9F 06 C5 7E STA $7EC506,x[$7E:C509];} Power bomb explosion window 2 right HDMA data table entry = 0
 $88:A5B8 3A          DEC A                  ;/
-$88:A5B9 E8          INX                    ; Increment X
+$88:A5B9 E8          INX                    ; Increment X (next data table entry)
 $88:A5BA E0 C0       CPX #$C0               ;\
 $88:A5BC D0 F1       BNE $F1    [$A5AF]     ;} If [X] != C0h: go to LOOP_PAD_DATA_TABLE_END
 
@@ -4948,7 +4941,7 @@ $88:B278 6B          RTL
 ;;; $B279: FX type 2: lava ;;;
 {
 $88:B279 A9 43 B3    LDA #$B343             ;\
-$88:B27C 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $B343
+$88:B27C 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $B343 (normal)
 $88:B27F AD 78 19    LDA $1978  [$7E:1978]  ;\
 $88:B282 8D 62 19    STA $1962  [$7E:1962]  ;} Lava/acid Y position = [FX base Y position]
 $88:B285 22 35 84 88 JSL $888435[$88:8435]  ;\
@@ -4965,7 +4958,7 @@ $88:B2A0 6B          RTL
 ;;; $B2A1: FX type 4: acid ;;;
 {
 $88:B2A1 A9 43 B3    LDA #$B343             ;\
-$88:B2A4 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $B343
+$88:B2A4 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $B343 (normal)
 $88:B2A7 AD 78 19    LDA $1978  [$7E:1978]  ;\
 $88:B2AA 8D 62 19    STA $1962  [$7E:1962]  ;} Lava/acid Y position = [FX base Y position]
 $88:B2AD 22 35 84 88 JSL $888435[$88:8435]  ;\
@@ -4979,69 +4972,69 @@ $88:B2C8 6B          RTL
 }
 
 
-;;; $B2C9:  ;;;
+;;; $B2C9: Handle tide ;;;
 {
-$88:B2C9 2C 7D 19    BIT $197D  [$7E:197D]
-$88:B2CC 30 03       BMI $03    [$B2D1]
-$88:B2CE 70 38       BVS $38    [$B308]
-$88:B2D0 60          RTS
+$88:B2C9 2C 7D 19    BIT $197D  [$7E:197D]  ;\
+$88:B2CC 30 03       BMI $03    [$B2D1]     ;} If [FX liquid options] & 80h != 0: go to BRANCH_SMALL_TIDE
+$88:B2CE 70 38       BVS $38    [$B308]     ; If [FX liquid options] & 40h != 0: go to BRANCH_BIG_TIDE
+$88:B2D0 60          RTS                    ; Return
 
 ; BRANCH_SMALL_TIDE
-$88:B2D1 9C 70 19    STZ $1970  [$7E:1970]
-$88:B2D4 9C 72 19    STZ $1972  [$7E:1972]
-$88:B2D7 AD 75 19    LDA $1975  [$7E:1975]
-$88:B2DA 29 FF 00    AND #$00FF
-$88:B2DD 0A          ASL A
-$88:B2DE AA          TAX
-$88:B2DF BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3]
-$88:B2E3 0A          ASL A
-$88:B2E4 0A          ASL A
-$88:B2E5 0A          ASL A
-$88:B2E6 10 03       BPL $03    [$B2EB]
-$88:B2E8 CE 72 19    DEC $1972  [$7E:1972]
-
-$88:B2EB 8D 71 19    STA $1971  [$7E:1971]
-$88:B2EE BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3]
-$88:B2F2 10 09       BPL $09    [$B2FD]
-$88:B2F4 AD 74 19    LDA $1974  [$7E:1974]
-$88:B2F7 18          CLC
-$88:B2F8 69 C0 00    ADC #$00C0
+$88:B2D1 9C 70 19    STZ $1970  [$7E:1970]  ;\
+$88:B2D4 9C 72 19    STZ $1972  [$7E:1972]  ;|
+$88:B2D7 AD 75 19    LDA $1975  [$7E:1975]  ;|
+$88:B2DA 29 FF 00    AND #$00FF             ;|
+$88:B2DD 0A          ASL A                  ;|
+$88:B2DE AA          TAX                    ;|
+$88:B2DF BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];|
+$88:B2E3 0A          ASL A                  ;} FX Y offset = 8 * -cos([tide phase] / 100h * pi / 80h)
+$88:B2E4 0A          ASL A                  ;|
+$88:B2E5 0A          ASL A                  ;|
+$88:B2E6 10 03       BPL $03    [$B2EB]     ;|
+$88:B2E8 CE 72 19    DEC $1972  [$7E:1972]  ;|
+                                            ;|
+$88:B2EB 8D 71 19    STA $1971  [$7E:1971]  ;/
+$88:B2EE BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];\
+$88:B2F2 10 09       BPL $09    [$B2FD]     ;} If -40h < [tide phase] / 100h < 40h (tide above midpoint):
+$88:B2F4 AD 74 19    LDA $1974  [$7E:1974]  ;\
+$88:B2F7 18          CLC                    ;} Tide phase += C0h
+$88:B2F8 69 C0 00    ADC #$00C0             ;/
 $88:B2FB 80 07       BRA $07    [$B304]
 
-$88:B2FD AD 74 19    LDA $1974  [$7E:1974]
-$88:B300 18          CLC
-$88:B301 69 20 01    ADC #$0120
+$88:B2FD AD 74 19    LDA $1974  [$7E:1974]  ;\ Else (not -40h < [tide phase] / 100h < 40h (tide below midpoint)):
+$88:B300 18          CLC                    ;} Tide phase += 120h
+$88:B301 69 20 01    ADC #$0120             ;/
 
 $88:B304 8D 74 19    STA $1974  [$7E:1974]
-$88:B307 60          RTS
+$88:B307 60          RTS                    ; Return
 
 ; BRANCH_BIG_TIDE
-$88:B308 9C 70 19    STZ $1970  [$7E:1970]
-$88:B30B 9C 72 19    STZ $1972  [$7E:1972]
-$88:B30E AD 75 19    LDA $1975  [$7E:1975]
-$88:B311 29 FF 00    AND #$00FF
-$88:B314 0A          ASL A
-$88:B315 AA          TAX
-$88:B316 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3]
-$88:B31A 0A          ASL A
-$88:B31B 0A          ASL A
-$88:B31C 0A          ASL A
-$88:B31D 0A          ASL A
-$88:B31E 0A          ASL A
-$88:B31F 10 03       BPL $03    [$B324]
-$88:B321 CE 72 19    DEC $1972  [$7E:1972]
-
-$88:B324 8D 71 19    STA $1971  [$7E:1971]
-$88:B327 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3]
-$88:B32B 10 09       BPL $09    [$B336]
-$88:B32D AD 74 19    LDA $1974  [$7E:1974]
-$88:B330 18          CLC
-$88:B331 69 80 00    ADC #$0080
-$88:B334 80 07       BRA $07    [$B33D]
-
-$88:B336 AD 74 19    LDA $1974  [$7E:1974]
-$88:B339 18          CLC
-$88:B33A 69 E0 00    ADC #$00E0
+$88:B308 9C 70 19    STZ $1970  [$7E:1970]  ;\
+$88:B30B 9C 72 19    STZ $1972  [$7E:1972]  ;|
+$88:B30E AD 75 19    LDA $1975  [$7E:1975]  ;|
+$88:B311 29 FF 00    AND #$00FF             ;|
+$88:B314 0A          ASL A                  ;|
+$88:B315 AA          TAX                    ;|
+$88:B316 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];|
+$88:B31A 0A          ASL A                  ;|
+$88:B31B 0A          ASL A                  ;} FX Y offset = 20h * -cos([tide phase] / 100h * pi / 80h)
+$88:B31C 0A          ASL A                  ;|
+$88:B31D 0A          ASL A                  ;|
+$88:B31E 0A          ASL A                  ;|
+$88:B31F 10 03       BPL $03    [$B324]     ;|
+$88:B321 CE 72 19    DEC $1972  [$7E:1972]  ;|
+                                            ;|
+$88:B324 8D 71 19    STA $1971  [$7E:1971]  ;/
+$88:B327 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];\
+$88:B32B 10 09       BPL $09    [$B336]     ;} If -40h < [tide phase] / 100h < 40h (tide above midpoint):
+$88:B32D AD 74 19    LDA $1974  [$7E:1974]  ;\
+$88:B330 18          CLC                    ;} Tide phase += 80h
+$88:B331 69 80 00    ADC #$0080             ;/
+$88:B334 80 07       BRA $07    [$B33D]     
+                                            
+$88:B336 AD 74 19    LDA $1974  [$7E:1974]  ;\ Else (not -40h < [tide phase] / 100h < 40h (tide below midpoint)):
+$88:B339 18          CLC                    ;} Tide phase += E0h
+$88:B33A 69 E0 00    ADC #$00E0             ;/
 
 $88:B33D 8D 74 19    STA $1974  [$7E:1974]
 $88:B340 60          RTS
@@ -5070,7 +5063,7 @@ $88:B34D CD 78 19    CMP $1978  [$7E:1978]  ;|
 $88:B350 F0 02       BEQ $02    [$B354]     ;} If [FX target Y position] > [FX base Y position]: go to BRANCH_DO_RISE
 $88:B352 B0 0C       BCS $0C    [$B360]     ;/
 
-$88:B354 60          RTS
+$88:B354 60          RTS                    ; Return
 
 ; BRANCH_NEGATIVE
 $88:B355 AD 7A 19    LDA $197A  [$7E:197A]  ;\
@@ -5078,7 +5071,7 @@ $88:B358 CD 78 19    CMP $1978  [$7E:1978]  ;|
 $88:B35B F0 02       BEQ $02    [$B35F]     ;} If [FX target Y position] < [FX base Y position]: go to BRANCH_DO_RISE
 $88:B35D 90 01       BCC $01    [$B360]     ;/
 
-$88:B35F 60          RTS
+$88:B35F 60          RTS                    ; Return
 
 ; BRANCH_DO_RISE
 $88:B360 A9 67 B3    LDA #$B367             ;\
@@ -5117,7 +5110,7 @@ $88:B396 60          RTS                    ; Return
 
 $88:B397 9C 7C 19    STZ $197C  [$7E:197C]  ; FX Y velocity = 0
 $88:B39A A9 43 B3    LDA #$B343             ;\
-$88:B39D 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $B343
+$88:B39D 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $B343 (normal)
 $88:B3A0 60          RTS
 }
 
@@ -5129,7 +5122,7 @@ $88:B3A1             db 12, 13, 14, 12, 13, 14, 12, 13
 }
 
 
-;;; $B3A9:  ;;;
+;;; $B3A9: Instruction - lava sound timer = 70h ;;;
 {
 $88:B3A9 A9 70 00    LDA #$0070
 $88:B3AC 9D 2C 19    STA $192C,x[$7E:192C]
@@ -5137,7 +5130,7 @@ $88:B3AF 60          RTS
 }
 
 
-;;; $B3B0: Pre-instruction: lava/acid BG3 Y scroll ;;;
+;;; $B3B0: Pre-instruction - lava/acid BG3 Y scroll ;;;
 {
 $88:B3B0 8B          PHB
 $88:B3B1 AD 84 19    LDA $1984  [$7E:1984]  ;\
@@ -5149,9 +5142,9 @@ $88:B3BD 6B          RTL                    ;} Return
 
 $88:B3BE C2 30       REP #$30
 $88:B3C0 F4 C5 B3    PEA $B3C5              ;\
-$88:B3C3 6C 6C 19    JMP ($196C)[$88:B343]  ;} Execute FX rising function (cause of rumbling)
+$88:B3C3 6C 6C 19    JMP ($196C)[$88:B343]  ;} Execute FX rising function
 
-$88:B3C6 20 C9 B2    JSR $B2C9  [$88:B2C9]  ; Execute $B2C9 (handles tides)
+$88:B3C6 20 C9 B2    JSR $B2C9  [$88:B2C9]  ; Handle tide
 $88:B3C9 E2 10       SEP #$10
 $88:B3CB AD 76 19    LDA $1976  [$7E:1976]  ;\
 $88:B3CE 18          CLC                    ;|
@@ -5196,10 +5189,10 @@ $88:B424 C9 02 00    CMP #$0002             ;} If [FX type] = lava:
 $88:B427 D0 21       BNE $21    [$B44A]     ;/
 $88:B429 AD 62 19    LDA $1962  [$7E:1962]  ;\
 $88:B42C 30 1C       BMI $1C    [$B44A]     ;} If [lava/acid Y position] >= 0:
-$88:B42E DE 2C 19    DEC $192C,x[$7E:192C]  ; Decrement HDMA $192C
-$88:B431 D0 17       BNE $17    [$B44A]     ; If [HDMA $192C] = 0:
+$88:B42E DE 2C 19    DEC $192C,x[$7E:192C]  ; Decrement HDMA object lava sound timer
+$88:B431 D0 17       BNE $17    [$B44A]     ; If [HDMA object lava sound timer] = 0:
 $88:B433 A9 70 00    LDA #$0070             ;\
-$88:B436 9D 2C 19    STA $192C,x[$7E:192C]  ;} HDMA $192C = 70h
+$88:B436 9D 2C 19    STA $192C,x[$7E:192C]  ;} HDMA object lava sound timer = 70h
 $88:B439 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $88:B43C 29 07 00    AND #$0007             ;|
 $88:B43F A8          TAY                    ;} Queue sound [$B3A1 + [random number] % 8], sound library 2, max queued sounds allowed = 6
@@ -5212,7 +5205,7 @@ $88:B44D EB          XBA                    ;} Exchange bytes of random number
 $88:B44E 8D E5 05    STA $05E5  [$7E:05E5]  ;/
 $88:B451 AE B2 18    LDX $18B2  [$7E:18B2]
 $88:B454 BD C0 18    LDA $18C0,x[$7E:18C0]  ;\
-$88:B457 29 FF 00    AND #$00FF             ;} >_<
+$88:B457 29 FF 00    AND #$00FF             ;} >_<;
 $88:B45A A8          TAY                    ;/
 $88:B45B AD 62 19    LDA $1962  [$7E:1962]  ;\
 $88:B45E 30 14       BMI $14    [$B474]     ;} If [lava/acid Y position] < 0: go to BRANCH_NEGATIVE
@@ -5220,12 +5213,12 @@ $88:B460 38          SEC                    ;\
 $88:B461 ED 15 09    SBC $0915  [$7E:0915]  ;|
 $88:B464 18          CLC                    ;} A = [lava/acid Y position] - [layer 1 Y position] + 100h
 $88:B465 69 00 01    ADC #$0100             ;/
-$88:B468 10 05       BPL $05    [$B46F]     ; If [A] < 0:
+$88:B468 10 05       BPL $05    [$B46F]     ; If [lava/acid Y position] - [layer 1 Y position] < -100h:
 $88:B46A A9 FF 00    LDA #$00FF             ; A = FFh
 $88:B46D 80 08       BRA $08    [$B477]     ; Go to BRANCH_MERGE_2
 
 $88:B46F C9 00 02    CMP #$0200             ;\
-$88:B472 90 03       BCC $03    [$B477]     ;} If [A] < 200h: go to BRANCH_MERGE_2
+$88:B472 90 03       BCC $03    [$B477]     ;} If [lava/acid Y position] - [layer 1 Y position] < 100h: go to BRANCH_MERGE_2
 
 ; BRANCH_NEGATIVE
 $88:B474 A9 FF 01    LDA #$01FF             ; A = 1FFh
@@ -5264,7 +5257,7 @@ $88:B4D4 60          RTS
 }
 
 
-;;; $B4D5: Pre-instruction: lava/acid BG2 Y scroll ;;;
+;;; $B4D5: Pre-instruction - lava/acid BG2 Y scroll ;;;
 {
 $88:B4D5 8B          PHB
 $88:B4D6 A5 B7       LDA $B7    [$7E:00B7]
@@ -5433,6 +5426,12 @@ $88:B60A             dw 0000,0001,0001,0000,0000,FFFF,FFFF,0000,
 
 
 ;;; $B62A: Indirect HDMA table - lava/acid BG3 Y scroll ;;;
+{
+; 81h,$9C00 x F0h
+; 81h,$9C02 x 190h
+; 60h,%9C02 x 2
+; 0
+
 {
 $88:B62A             dx 81,9C00,
                         81,9C00,
@@ -6078,6 +6077,7 @@ $88:B62A             dx 81,9C00,
                         60,9C02,
                         00
 }
+}
 
 
 ;;; $BDB1:  ;;;
@@ -6617,7 +6617,7 @@ $88:BDB1             dx 81,9C44,
 {
 $88:C3E1             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
-                        B3A9,       ; HDMA object $192C = 70h
+                        B3A9,       ; Lava sound timer = 70h
                         8570,88B3B0,; Pre-instruction = $88:B3B0
                         8682        ; Sleep
 }
@@ -6734,7 +6734,7 @@ $88:C49E C2 30       REP #$30
 $88:C4A0 F4 A5 C4    PEA $C4A5              ;\
 $88:C4A3 6C 6C 19    JMP ($196C)[$88:C428]  ;} Execute FX rising function
 
-$88:C4A6 20 C9 B2    JSR $B2C9  [$88:B2C9]  ; Execute $B2C9 (handles tides)
+$88:C4A6 20 C9 B2    JSR $B2C9  [$88:B2C9]  ; Handle tide
 $88:C4A9 E2 10       SEP #$10
 $88:C4AB AD 76 19    LDA $1976  [$7E:1976]  ;\
 $88:C4AE 18          CLC                    ;|
