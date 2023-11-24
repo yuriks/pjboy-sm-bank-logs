@@ -763,8 +763,8 @@ $A9:8BFF 4C 9D 8B    JMP $8B9D  [$A9:8B9D]  ; Go to handle falling tube smoke
 $A9:8C02 20 0C D0    JSR $D00C  [$A9:D00C]  ; End screen flashing
 $A9:8C05 A9 19 00    LDA #$0019             ;\
 $A9:8C08 22 0B F4 AD JSL $ADF40B[$AD:F40B]  ;} Enable earthquake type 19h for 20 frames (BG1, BG2 and enemies, 3 pixel displacement, vertical)
-$A9:8C0C 9C B4 18    STZ $18B4  [$7E:18B4]  ; Disable HDMA object 0
-$A9:8C0F 9C B6 18    STZ $18B6  [$7E:18B6]  ; Disable HDMA object 1
+$A9:8C0C 9C B4 18    STZ $18B4  [$7E:18B4]  ; Delete HDMA object 0
+$A9:8C0F 9C B6 18    STZ $18B6  [$7E:18B6]  ; Delete HDMA object 1
 $A9:8C12 9E AC 0F    STZ $0FAC,x[$7E:10AA]  ; Enemy Y velocity = 0
 $A9:8C15 A9 C4 00    LDA #$00C4             ;\
 $A9:8C18 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;} Mother Brain's brain Y position = C4h

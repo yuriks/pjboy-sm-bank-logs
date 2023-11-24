@@ -1912,7 +1912,7 @@ $88:8A54 9C 8E 0A    STZ $0A8E  [$7E:0A8E]  ;|
 $88:8A57 9C 90 0A    STZ $0A90  [$7E:0A90]  ;/
 $88:8A5A 22 AD E2 91 JSL $91E2AD[$91:E2AD]  ; Set non x-ray Samus pose
 $88:8A5E AE B2 18    LDX $18B2  [$7E:18B2]  ;\
-$88:8A61 9E B4 18    STZ $18B4,x[$7E:18B8]  ;} HDMA object channel = 0
+$88:8A61 9E B4 18    STZ $18B4,x[$7E:18B8]  ;} Delete HDMA object
 $88:8A64 A9 0A 00    LDA #$000A             ;\
 $88:8A67 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound Ah, sound library 1, max queued sounds allowed = 6 (x-ray end)
 $88:8A6B E2 20       SEP #$20
@@ -3829,7 +3829,7 @@ $88:A676 8B          PHB
 $88:A677 DA          PHX
 $88:A678 5A          PHY
 $88:A679 AD 15 09    LDA $0915  [$7E:0915]  ;\
-$88:A67C C9 00 04    CMP #$0400             ;} If [layer 1 Y position] >= 400h: go to BRANCH_A6AC
+$88:A67C C9 00 04    CMP #$0400             ;} If [layer 1 Y position] >= 400h: go to BRANCH_WAVY
 $88:A67F 10 2B       BPL $2B    [$A6AC]     ;/
 $88:A681 AD B5 05    LDA $05B5  [$7E:05B5]  ;\
 $88:A684 29 01 00    AND #$0001             ;} If [8-bit frame counter] % 2 = 0:
@@ -3853,34 +3853,34 @@ $88:A6A5 C0 20 00    CPY #$0020             ;|
 $88:A6A8 30 F0       BMI $F0    [$A69A]     ;/
 $88:A6AA 80 32       BRA $32    [$A6DE]     ; Go to BRANCH_MERGE
 
-; BRANCH_A6AC
-$88:A6AC DE 20 19    DEC $1920,x            ; Decrement HDMA object $1920
-$88:A6AF D0 11       BNE $11    [$A6C2]     ; If [HDMA object $1920] = 0:
+; BRANCH_WAVY
+$88:A6AC DE 20 19    DEC $1920,x            ; Decrement HDMA object phase increase timer
+$88:A6AF D0 11       BNE $11    [$A6C2]     ; If [HDMA object phase increase timer] = 0:
 $88:A6B1 A9 06 00    LDA #$0006             ;\
-$88:A6B4 9D 20 19    STA $1920,x            ;} HDMA object $1920 = 6
+$88:A6B4 9D 20 19    STA $1920,x            ;} HDMA object phase increase timer = 6
 $88:A6B7 BD 14 19    LDA $1914,x            ;\
 $88:A6BA 1A          INC A                  ;|
-$88:A6BB 1A          INC A                  ;} HDMA object $1914 = ([HDMA object $1914] + 2) % 20h
+$88:A6BB 1A          INC A                  ;} HDMA object wave phase = ([HDMA object wave phase] + 2) % 20h
 $88:A6BC 29 1F 00    AND #$001F             ;|
 $88:A6BF 9D 14 19    STA $1914,x            ;/
 
 $88:A6C2 BD 14 19    LDA $1914,x            ;\
-$88:A6C5 AA          TAX                    ;} X = [HDMA object $1914]
-$88:A6C6 A0 1E 00    LDY #$001E             ; Y = 1Eh
+$88:A6C5 AA          TAX                    ;} X = [HDMA object wave phase] (HDMA data table end index)
+$88:A6C6 A0 1E 00    LDY #$001E             ; Y = 1Eh (wave displacement table index)
 
-; LOOP_A6C9
+; LOOP_WAVY
 $88:A6C9 A5 B1       LDA $B1    [$7E:00B1]  ;\
 $88:A6CB 18          CLC                    ;|
 $88:A6CC 79 6E C4    ADC $C46E,y            ;} $7E:9E80 + [X] = [BG1 X scroll] + [$C46E + [Y]]
 $88:A6CF 9F 80 9E 7E STA $7E9E80,x          ;/
 $88:A6D3 8A          TXA                    ;\
 $88:A6D4 3A          DEC A                  ;|
-$88:A6D5 3A          DEC A                  ;} X = ([X] - 2) % 20h
+$88:A6D5 3A          DEC A                  ;} X = ([X] - 2) % 20h (previous HDMA data table entry)
 $88:A6D6 29 1F 00    AND #$001F             ;|
 $88:A6D9 AA          TAX                    ;/
 $88:A6DA 88          DEY                    ;\
-$88:A6DB 88          DEY                    ;} Y -= 2
-$88:A6DC 10 EB       BPL $EB    [$A6C9]     ; If [Y] >= 0: go to LOOP_A6C9
+$88:A6DB 88          DEY                    ;} Y -= 2 (previous wave displacement table entry)
+$88:A6DC 10 EB       BPL $EB    [$A6C9]     ; If [Y] >= 0: go to LOOP_WAVY
 
 ; BRANCH_MERGE
 $88:A6DE A9 00 00    LDA #$0000             ;\
@@ -5139,6 +5139,7 @@ $88:B3AF 60          RTS
 ; (100h is the offset of lava/acid in the BG3 tilemap)
 
 ; As far as I can tell, the HDMA done here is completely pointless and a big waste of time and space
+; I suspect that lava/acid was a copy+paste job from water FX, and this BG3 HDMA is a leftover by-product
 ; The HDMA set up here writes the zero BG3 Y scroll on every scanline up until 8 pixels above the FX tilemap starts,
 ; and then writes the calculated [$7E:9C02] BG3 Y scroll for the remaining scanlines
 ; But there's (more than) a full screen of transparent padding before the FX tilemap, so this is completely unnecessary
@@ -5599,7 +5600,7 @@ $88:C432 CD 78 19    CMP $1978  [$7E:1978]  ;|
 $88:C435 F0 02       BEQ $02    [$C439]     ;} If [FX target Y position] > [FX base Y position]: go to BRANCH_DO_RISE
 $88:C437 B0 0C       BCS $0C    [$C445]     ;/
 
-$88:C439 60          RTS
+$88:C439 60          RTS                    ; Return
 
 ; BRANCH_NEGATIVE
 $88:C43A AD 7A 19    LDA $197A  [$7E:197A]  ;\
@@ -5607,7 +5608,7 @@ $88:C43D CD 78 19    CMP $1978  [$7E:1978]  ;|
 $88:C440 F0 02       BEQ $02    [$C444]     ;} If [FX target Y position] < [FX base Y position]: go to BRANCH_DO_RISE
 $88:C442 90 01       BCC $01    [$C445]     ;/
 
-$88:C444 60          RTS
+$88:C444 60          RTS                    ; Return
 
 ; BRANCH_DO_RISE
 $88:C445 A9 4C C4    LDA #$C44C             ;\
@@ -5633,14 +5634,14 @@ $88:C457 60          RTS
 $88:C458 20 8C 86    JSR $868C  [$88:868C]  ; Raise/lower FX
 $88:C45B 90 09       BCC $09    [$C466]     ; If not reached target: return
 $88:C45D A9 28 C4    LDA #$C428             ;\
-$88:C460 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $C428
+$88:C460 8D 6C 19    STA $196C  [$7E:196C]  ;} FX rising function = $C428 (normal)
 $88:C463 9C 7C 19    STZ $197C  [$7E:197C]  ; FX Y velocity = 0
 
 $88:C466 60          RTS
 }
 
 
-;;; $C467:  ;;;
+;;; $C467: Instruction - HDMA object phase increase timer = 1 ;;;
 {
 $88:C467 A9 01 00    LDA #$0001
 $88:C46A 9D 20 19    STA $1920,x[$7E:1920]
@@ -5648,7 +5649,7 @@ $88:C46D 60          RTS
 }
 
 
-;;; $C46E:  ;;;
+;;; $C46E: Wave displacement table - water ;;;
 {
 $88:C46E             dw 0000,0001,0001,0000,0000,FFFF,FFFF,0000,
                         0000,0001,0001,0000,0000,FFFF,FFFF,0000
@@ -5657,6 +5658,10 @@ $88:C46E             dw 0000,0001,0001,0000,0000,FFFF,FFFF,0000,
 
 ;;; $C48E: Pre-instruction - water BG3 X scroll ;;;
 {
+; For on-screen water,
+; the calculation 200h - [A] at $C569 is equivalent to 100h + (Y position of screen on FX)
+; (100h is the offset of water in the BG3 tilemap)
+
 $88:C48E 8B          PHB
 $88:C48F AD 84 19    LDA $1984  [$7E:1984]  ;\
 $88:C492 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = [FX layer 3 layer blending configuration]
@@ -5669,7 +5674,7 @@ $88:C49C DA          PHX
 $88:C49D 5A          PHY
 $88:C49E C2 30       REP #$30
 $88:C4A0 F4 A5 C4    PEA $C4A5              ;\
-$88:C4A3 6C 6C 19    JMP ($196C)[$88:C428]  ;} Execute FX rising function
+$88:C4A3 6C 6C 19    JMP ($196C)[$88:C428]  ;} Execute [FX rising function]
 
 $88:C4A6 20 C9 B2    JSR $B2C9  [$88:B2C9]  ; Handle tide
 $88:C4A9 E2 10       SEP #$10
@@ -5688,7 +5693,7 @@ $88:C4C7 F0 02       BEQ $02    [$C4CB]     ;} If [FX Y position] - [layer 1 Y p
 $88:C4C9 10 0B       BPL $0B    [$C4D6]     ;/
 
 $88:C4CB 49 1F 00    EOR #$001F             ;\
-$88:C4CE 29 1F 00    AND #$001F             ;} A = 11Fh - ([FX Y position] - [layer 1 Y position] & 1Fh)
+$88:C4CE 29 1F 00    AND #$001F             ;} A = 100h + (Y position of screen on FX) % 20h
 $88:C4D1 09 00 01    ORA #$0100             ;/
 $88:C4D4 80 10       BRA $10    [$C4E6]     ; Go to BRANCH_MERGE
 
@@ -5702,7 +5707,7 @@ $88:C4DE 80 06       BRA $06    [$C4E6]     ; Go to BRANCH_MERGE
 
 ; BRANCH_ON_SCREEN
 $88:C4E0 49 FF 00    EOR #$00FF             ;\
-$88:C4E3 29 FF 00    AND #$00FF             ;} A = FFh - ([FX Y position] - [layer 1 Y position] & FFh)
+$88:C4E3 29 FF 00    AND #$00FF             ;} A = 100h + (Y position of screen on FX) - 1
 
 ; BRANCH_MERGE
 $88:C4E6 8F DE CA 7E STA $7ECADE[$7E:CADE]  ; BG3 Y position = [A]
@@ -5712,38 +5717,38 @@ $88:C4F0 EB          XBA                    ;|
 $88:C4F1 10 05       BPL $05    [$C4F8]     ;|
 $88:C4F3 09 00 FF    ORA #$FF00             ;|
 $88:C4F6 80 03       BRA $03    [$C4FB]     ;|
-                                            ;} $14 = [layer 1 X position] + ±[FX $192C]
+                                            ;} $14 = [layer 1 X position] + ±[HDMA object $192C]
 $88:C4F8 29 FF 00    AND #$00FF             ;|
                                             ;|
 $88:C4FB 18          CLC                    ;|
 $88:C4FC 6D 11 09    ADC $0911  [$7E:0911]  ;|
 $88:C4FF 85 14       STA $14    [$7E:0014]  ;/
-$88:C501 DE 20 19    DEC $1920,x[$7E:1920]  ; Decrement FX $1920
-$88:C504 D0 11       BNE $11    [$C517]     ; If [FX $1920] = 0:
+$88:C501 DE 20 19    DEC $1920,x[$7E:1920]  ; Decrement HDMA object phase increase timer
+$88:C504 D0 11       BNE $11    [$C517]     ; If [HDMA object phase increase timer] = 0:
 $88:C506 A9 0A 00    LDA #$000A             ;\
-$88:C509 9D 20 19    STA $1920,x[$7E:1920]  ;} FX $1920 = Ah
+$88:C509 9D 20 19    STA $1920,x[$7E:1920]  ;} HDMA object phase increase timer = Ah
 $88:C50C BD 14 19    LDA $1914,x[$7E:1914]  ;\
 $88:C50F 1A          INC A                  ;|
-$88:C510 1A          INC A                  ;} FX $1914 = ([FX $1914] + 2) % 20h
+$88:C510 1A          INC A                  ;} HDMA object wave phase = ([HDMA object wave phase] + 2) % 20h
 $88:C511 29 1E 00    AND #$001E             ;|
 $88:C514 9D 14 19    STA $1914,x[$7E:1914]  ;/
 
 $88:C517 BD 14 19    LDA $1914,x[$7E:1914]  ;\
-$88:C51A AA          TAX                    ;} X = [FX $1914]
-$88:C51B A0 1E       LDY #$1E               ; Y = 1Eh
+$88:C51A AA          TAX                    ;} X = [HDMA object wave phase] (HDMA data table end index)
+$88:C51B A0 1E       LDY #$1E               ; Y = 1Eh (wave displacement table index)
 
 ; LOOP
 $88:C51D A5 14       LDA $14    [$7E:0014]  ;\
 $88:C51F 18          CLC                    ;|
-$88:C520 79 6E C4    ADC $C46E,y[$88:C48C]  ;} $7E:9C04 + [X] = [$14] + [$C46E + [Y]]
+$88:C520 79 6E C4    ADC $C46E,y[$88:C48C]  ;} Water BG3 X scroll HDMA data table entry = [$14] + [$C46E + [Y]]
 $88:C523 9F 04 9C 7E STA $7E9C04,x[$7E:9C06];/
 $88:C527 CA          DEX                    ;\
 $88:C528 CA          DEX                    ;|
-$88:C529 8A          TXA                    ;} X = ([X] - 2) % 20h
+$88:C529 8A          TXA                    ;} X = ([X] - 2) % 20h (previous HDMA data table entry)
 $88:C52A 29 1E 00    AND #$001E             ;|
 $88:C52D AA          TAX                    ;/
 $88:C52E 88          DEY                    ;\
-$88:C52F 88          DEY                    ;} Y -= 2
+$88:C52F 88          DEY                    ;} Y -= 2 (previous wave displacement table entry)
 $88:C530 10 EB       BPL $EB    [$C51D]     ; If [Y] >= 0: go to LOOP
 $88:C532 AE B2 18    LDX $18B2  [$7E:18B2]
 $88:C535 AD 7E 19    LDA $197E  [$7E:197E]  ;\
@@ -5751,7 +5756,7 @@ $88:C538 29 01 00    AND #$0001             ;} If liquid flows:
 $88:C53B F0 0A       BEQ $0A    [$C547]     ;/
 $88:C53D BD 2C 19    LDA $192C,x[$7E:192C]  ;\
 $88:C540 18          CLC                    ;|
-$88:C541 69 40 00    ADC #$0040             ;} FX $192C += 40h
+$88:C541 69 40 00    ADC #$0040             ;} HDMA object $192C += 40h
 $88:C544 9D 2C 19    STA $192C,x[$7E:192C]  ;/
 
 $88:C547 AE B2 18    LDX $18B2  [$7E:18B2]
@@ -5759,15 +5764,15 @@ $88:C54A AD 5E 19    LDA $195E  [$7E:195E]  ;\
 $88:C54D 30 17       BMI $17    [$C566]     ;} If [FX Y position] < 0: go to BRANCH_NEGATIVE_2
 $88:C54F 38          SEC                    ;\
 $88:C550 ED 15 09    SBC $0915  [$7E:0915]  ;|
-$88:C553 18          CLC                    ;} A = [FX Y position] - [layer 1 Y position] + 100h
+$88:C553 18          CLC                    ;} A = 100h + [FX Y position] - [layer 1 Y position]
 $88:C554 69 00 01    ADC #$0100             ;/
-$88:C557 10 08       BPL $08    [$C561]     ; If [A] < 0:
+$88:C557 10 08       BPL $08    [$C561]     ; If [FX Y position] - [layer 1 Y position] < -100h:
 $88:C559 29 0F 00    AND #$000F             ;\
-$88:C55C 09 00 01    ORA #$0100             ;} A = [A] & Fh | 100h
+$88:C55C 09 00 01    ORA #$0100             ;} A = 100h + ([FX Y position] - [layer 1 Y position]) % 10h
 $88:C55F 80 08       BRA $08    [$C569]     ; Go to BRANCH_MERGE_2
 
 $88:C561 C9 00 02    CMP #$0200             ;\
-$88:C564 90 03       BCC $03    [$C569]     ;} If [A] < 200h: go to BRANCH_MERGE_2
+$88:C564 90 03       BCC $03    [$C569]     ;} If [FX Y position] - [layer 1 Y position] < 100h: go to BRANCH_MERGE_2
 
 ; BRANCH_NEGATIVE_2
 $88:C566 A9 FF 01    LDA #$01FF             ; A = 1FFh
@@ -5778,7 +5783,7 @@ $88:C56C 1A          INC A                  ;|
 $88:C56D 29 FF 03    AND #$03FF             ;|
 $88:C570 85 12       STA $12    [$7E:0012]  ;|
 $88:C572 A5 12       LDA $12    [$7E:0012]  ;|
-$88:C574 0A          ASL A                  ;} HDMA object table pointer = $C645 + (1FFh - [A]) * 3
+$88:C574 0A          ASL A                  ;} HDMA object table pointer = $C645 + (200h - [A]) * 3
 $88:C575 18          CLC                    ;|
 $88:C576 65 12       ADC $12    [$7E:0012]  ;|
 $88:C578 69 45 C6    ADC #$C645             ;|
@@ -5790,8 +5795,9 @@ $88:C581 6B          RTL
 }
 
 
-;;; $C582:  ;;;
+;;; $C582: Instruction - HDMA object phase increase timer = 1 ;;;
 {
+; Clone of $C467
 $88:C582 A9 01 00    LDA #$0001
 $88:C585 9D 20 19    STA $1920,x[$7E:1922]
 $88:C588 60          RTS
@@ -5800,1665 +5806,234 @@ $88:C588 60          RTS
 
 ;;; $C589: Pre-instruction - water BG2 X scroll ;;;
 {
+; For on-screen water,
+; the calculation 1FFh - [A] at $C5CE is equivalent to FFh + (Y position of screen on FX)
+; (100h is the offset of water in the BG3 tilemap, and I think FFh is an off-by-one error)
+
 $88:C589 8B          PHB
-$88:C58A A5 B5       LDA $B5    [$7E:00B5]
-$88:C58C 8F 44 9C 7E STA $7E9C44[$7E:9C44]
-$88:C590 AD 78 0A    LDA $0A78  [$7E:0A78]
-$88:C593 D0 0B       BNE $0B    [$C5A0]
-$88:C595 AD 7E 19    LDA $197E  [$7E:197E]
-$88:C598 29 02 00    AND #$0002
-$88:C59B D0 08       BNE $08    [$C5A5]
-$88:C59D 9E B4 18    STZ $18B4,x
+$88:C58A A5 B5       LDA $B5    [$7E:00B5]  ;\
+$88:C58C 8F 44 9C 7E STA $7E9C44[$7E:9C44]  ;} $7E:9C44 = [BG2 X scroll]
+$88:C590 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
+$88:C593 D0 0B       BNE $0B    [$C5A0]     ;} If time is not frozen:
+$88:C595 AD 7E 19    LDA $197E  [$7E:197E]  ;\
+$88:C598 29 02 00    AND #$0002             ;} If layer 2 is wavy: go to BRANCH_WAVY
+$88:C59B D0 08       BNE $08    [$C5A5]     ;/
+$88:C59D 9E B4 18    STZ $18B4,x            ; Delete HDMA object
 
-$88:C5A0 20 36 C6    JSR $C636  [$88:C636]
-$88:C5A3 80 03       BRA $03    [$C5A8]
+$88:C5A0 20 36 C6    JSR $C636  [$88:C636]  ; Set up water BG2 X scroll data table - not wavy
+$88:C5A3 80 03       BRA $03    [$C5A8]     ; Go to BRANCH_MERGE
 
-$88:C5A5 20 E4 C5    JSR $C5E4  [$88:C5E4]
+; BRANCH_WAVY
+$88:C5A5 20 E4 C5    JSR $C5E4  [$88:C5E4]  ; Set up water BG2 X scroll data table - wavy
 
-$88:C5A8 BD C0 18    LDA $18C0,x[$7E:18C2]
-$88:C5AB 29 FF 00    AND #$00FF
-$88:C5AE A8          TAY
-$88:C5AF AD 5E 19    LDA $195E  [$7E:195E]
-$88:C5B2 30 17       BMI $17    [$C5CB]
-$88:C5B4 38          SEC
-$88:C5B5 ED 15 09    SBC $0915  [$7E:0915]
-$88:C5B8 18          CLC
-$88:C5B9 69 00 01    ADC #$0100
-$88:C5BC 10 08       BPL $08    [$C5C6]
-$88:C5BE 29 0F 00    AND #$000F
-$88:C5C1 09 00 01    ORA #$0100
-$88:C5C4 80 08       BRA $08    [$C5CE]
+; BRANCH_MERGE
+$88:C5A8 BD C0 18    LDA $18C0,x[$7E:18C2]  ;\
+$88:C5AB 29 FF 00    AND #$00FF             ;} >_<;
+$88:C5AE A8          TAY                    ;/
+$88:C5AF AD 5E 19    LDA $195E  [$7E:195E]  ;\
+$88:C5B2 30 17       BMI $17    [$C5CB]     ;} If [FX Y position] < 0: go to BRANCH_NEGATIVE
+$88:C5B4 38          SEC                    ;\
+$88:C5B5 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$88:C5B8 18          CLC                    ;} A = 100h + [FX Y position] - [layer 1 Y position]
+$88:C5B9 69 00 01    ADC #$0100             ;/
+$88:C5BC 10 08       BPL $08    [$C5C6]     ; If [FX Y position] - [layer 1 Y position] < -100h:
+$88:C5BE 29 0F 00    AND #$000F             ;\
+$88:C5C1 09 00 01    ORA #$0100             ;} A = 100h + ([FX Y position] - [layer 1 Y position]) % 10h
+$88:C5C4 80 08       BRA $08    [$C5CE]     ; Go to BRANCH_MERGE_2
+                                            
+$88:C5C6 C9 00 02    CMP #$0200             ;\
+$88:C5C9 90 03       BCC $03    [$C5CE]     ;} If [FX Y position] - [layer 1 Y position] < 100h: go to BRANCH_MERGE_2
 
-$88:C5C6 C9 00 02    CMP #$0200
-$88:C5C9 90 03       BCC $03    [$C5CE]
+; BRANCH_NEGATIVE
+$88:C5CB A9 FF 01    LDA #$01FF             ; A = 1FFh
 
-$88:C5CB A9 FF 01    LDA #$01FF
-
-$88:C5CE 49 FF 01    EOR #$01FF
-$88:C5D1 29 FF 03    AND #$03FF
-$88:C5D4 85 12       STA $12    [$7E:0012]
-$88:C5D6 A5 12       LDA $12    [$7E:0012]
-$88:C5D8 0A          ASL A
-$88:C5D9 18          CLC
-$88:C5DA 65 12       ADC $12    [$7E:0012]
-$88:C5DC 69 46 CF    ADC #$CF46
-$88:C5DF 9D D8 18    STA $18D8,x[$7E:18DA]
+; BRANCH_MERGE_2
+$88:C5CE 49 FF 01    EOR #$01FF             ;\
+$88:C5D1 29 FF 03    AND #$03FF             ;|
+$88:C5D4 85 12       STA $12    [$7E:0012]  ;|
+$88:C5D6 A5 12       LDA $12    [$7E:0012]  ;|
+$88:C5D8 0A          ASL A                  ;} HDMA object table pointer = $CF46 + (1FFh - [A]) * 3
+$88:C5D9 18          CLC                    ;|
+$88:C5DA 65 12       ADC $12    [$7E:0012]  ;|
+$88:C5DC 69 46 CF    ADC #$CF46             ;|
+$88:C5DF 9D D8 18    STA $18D8,x[$7E:18DA]  ;/
 $88:C5E2 AB          PLB
 $88:C5E3 6B          RTL
 }
 
 
-;;; $C5E4:  ;;;
+;;; $C5E4: Set up water BG2 X scroll data table - wavy ;;;
 {
-; Take a look at $A673 after commenting this routine
-
-$88:C5E4 DE 20 19    DEC $1920,x[$7E:1922]
-$88:C5E7 D0 11       BNE $11    [$C5FA]
-$88:C5E9 A9 06 00    LDA #$0006
-$88:C5EC 9D 20 19    STA $1920,x[$7E:1922]
-$88:C5EF BD 14 19    LDA $1914,x[$7E:1916]
-$88:C5F2 1A          INC A
-$88:C5F3 1A          INC A
-$88:C5F4 29 1E 00    AND #$001E
-$88:C5F7 9D 14 19    STA $1914,x[$7E:1916]
+$88:C5E4 DE 20 19    DEC $1920,x[$7E:1922]  ; Decrement HDMA object phase increase timer
+$88:C5E7 D0 11       BNE $11    [$C5FA]     ; If [HDMA object phase increase timer] = 0:
+$88:C5E9 A9 06 00    LDA #$0006             ;\
+$88:C5EC 9D 20 19    STA $1920,x[$7E:1922]  ;} HDMA object phase increase timer = 6
+$88:C5EF BD 14 19    LDA $1914,x[$7E:1916]  ;\
+$88:C5F2 1A          INC A                  ;|
+$88:C5F3 1A          INC A                  ;} HDMA object wave phase = ([HDMA object wave phase] + 2) % 20h
+$88:C5F4 29 1E 00    AND #$001E             ;|
+$88:C5F7 9D 14 19    STA $1914,x[$7E:1916]  ;/
 
 $88:C5FA DA          PHX
-$88:C5FB A5 B7       LDA $B7    [$7E:00B7]
-$88:C5FD 29 0F 00    AND #$000F
-$88:C600 0A          ASL A
-$88:C601 48          PHA
-$88:C602 18          CLC
-$88:C603 7D 14 19    ADC $1914,x[$7E:1916]
-$88:C606 29 1E 00    AND #$001E
-$88:C609 A8          TAY
-$88:C60A 68          PLA
-$88:C60B 18          CLC
-$88:C60C 69 1E 00    ADC #$001E
-$88:C60F 29 1E 00    AND #$001E
-$88:C612 AA          TAX
-$88:C613 A9 0F 00    LDA #$000F
-$88:C616 85 12       STA $12    [$7E:0012]
+$88:C5FB A5 B7       LDA $B7    [$7E:00B7]  ;\
+$88:C5FD 29 0F 00    AND #$000F             ;|
+$88:C600 0A          ASL A                  ;|
+$88:C601 48          PHA                    ;|
+$88:C602 18          CLC                    ;} Y = ([BG2 Y scroll] % 10h * 2 + [HDMA object wave phase]) % 20h (wave displacement table index)
+$88:C603 7D 14 19    ADC $1914,x[$7E:1916]  ;|
+$88:C606 29 1E 00    AND #$001E             ;|
+$88:C609 A8          TAY                    ;/
+$88:C60A 68          PLA                    ;\
+$88:C60B 18          CLC                    ;|
+$88:C60C 69 1E 00    ADC #$001E             ;} X = ([BG2 Y scroll] % 10h * 2 + 1Eh) % 20h (HDMA data table end index)
+$88:C60F 29 1E 00    AND #$001E             ;|
+$88:C612 AA          TAX                    ;/
+$88:C613 A9 0F 00    LDA #$000F             ;\
+$88:C616 85 12       STA $12    [$7E:0012]  ;} $12 = Fh (loop counter)
 
-$88:C618 A5 B5       LDA $B5    [$7E:00B5]
-$88:C61A 18          CLC
-$88:C61B 79 6E C4    ADC $C46E,y[$88:C470]
-$88:C61E 9F 48 9C 7E STA $7E9C48,x[$7E:9C66]
-$88:C622 CA          DEX
-$88:C623 CA          DEX
-$88:C624 8A          TXA
-$88:C625 29 1E 00    AND #$001E
-$88:C628 AA          TAX
-$88:C629 88          DEY
-$88:C62A 88          DEY
-$88:C62B 98          TYA
-$88:C62C 29 1E 00    AND #$001E
-$88:C62F A8          TAY
-$88:C630 C6 12       DEC $12    [$7E:0012]
-$88:C632 10 E4       BPL $E4    [$C618]
+; LOOP
+$88:C618 A5 B5       LDA $B5    [$7E:00B5]  ;\
+$88:C61A 18          CLC                    ;|
+$88:C61B 79 6E C4    ADC $C46E,y[$88:C470]  ;} Water BG2 X scroll HDMA data table entry = [BG2 X scroll] + [$C46E + [Y]]
+$88:C61E 9F 48 9C 7E STA $7E9C48,x[$7E:9C66];/
+$88:C622 CA          DEX                    ;\
+$88:C623 CA          DEX                    ;|
+$88:C624 8A          TXA                    ;} X = ([X] - 2) % 20h (previous HDMA data table entry)
+$88:C625 29 1E 00    AND #$001E             ;|
+$88:C628 AA          TAX                    ;/
+$88:C629 88          DEY                    ;\
+$88:C62A 88          DEY                    ;|
+$88:C62B 98          TYA                    ;} Y = ([Y] - 2) % 20h (previous wave displacement table entry)
+$88:C62C 29 1E 00    AND #$001E             ;|
+$88:C62F A8          TAY                    ;/
+$88:C630 C6 12       DEC $12    [$7E:0012]  ; Decrement $12
+$88:C632 10 E4       BPL $E4    [$C618]     ; If [$12] >= 0: go to LOOP
 $88:C634 FA          PLX
 $88:C635 60          RTS
 }
 
 
-;;; $C636:  ;;;
+;;; $C636: Set up water BG2 X scroll data table - not wavy ;;;
 {
-$88:C636 DA          PHX
-$88:C637 A2 1E       LDX #$1E
-$88:C639 A5 B5       LDA $B5    [$7E:00B5]
-
-$88:C63B 9F 48 9C 7E STA $7E9C48,x[$7E:9C66]
-$88:C63F CA          DEX
-$88:C640 CA          DEX
-$88:C641 10 F8       BPL $F8    [$C63B]
-$88:C643 FA          PLX
+$88:C636 DA          PHX                    ;\
+$88:C637 A2 1E       LDX #$1E               ;|
+$88:C639 A5 B5       LDA $B5    [$7E:00B5]  ;|
+                                            ;|
+$88:C63B 9F 48 9C 7E STA $7E9C48,x[$7E:9C66];} $7E:9C48..67 = [BG2 X scroll]
+$88:C63F CA          DEX                    ;|
+$88:C640 CA          DEX                    ;|
+$88:C641 10 F8       BPL $F8    [$C63B]     ;|
+$88:C643 FA          PLX                    ;/
 $88:C644 60          RTS
 }
 
 
 ;;; $C645: Indirect HDMA table - water BG3 X scroll ;;;
 {
-$88:C645             dx 81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C00,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
-                        81,9C04,
-                        81,9C06,
-                        81,9C08,
-                        81,9C0A,
-                        81,9C0C,
-                        81,9C0E,
-                        81,9C10,
-                        81,9C12,
-                        81,9C14,
-                        81,9C16,
-                        81,9C18,
-                        81,9C1A,
-                        81,9C1C,
-                        81,9C1E,
-                        81,9C20,
-                        81,9C22,
+$88:C645             dx 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
+                        
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
+                        81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
                         00
 }
 
 
 ;;; $CF46: Indirect HDMA table - water BG2 X scroll ;;;
 {
-$88:CF46             dx 81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C44,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
-                        81,9C48,
-                        81,9C4A,
-                        81,9C4C,
-                        81,9C4E,
-                        81,9C50,
-                        81,9C52,
-                        81,9C54,
-                        81,9C56,
-                        81,9C58,
-                        81,9C5A,
-                        81,9C5C,
-                        81,9C5E,
-                        81,9C60,
-                        81,9C62,
-                        81,9C64,
-                        81,9C66,
+$88:CF46             dx 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
+                        
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
+                        81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
                         00
 }
 
@@ -7467,7 +6042,7 @@ $88:CF46             dx 81,9C44,
 {
 $88:D847             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
-                        C582,       ; HDMA object $1920 = 1
+                        C582,       ; HDMA object phase increase timer = 1
                         8570,88C589,; Pre-instruction = $88:C589
                         8682        ; Sleep
 }
@@ -7477,7 +6052,7 @@ $88:D847             dx 8655,88,    ; HDMA table bank = $88
 {
 $88:D856             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
-                        C467,       ; HDMA object $1920 = 1
+                        C467,       ; HDMA object phase increase timer = 1
                         8570,88C48E,; Pre-instruction = $88:C48E
                         8682        ; Sleep
 }
@@ -9754,7 +8329,7 @@ $88:E7E3 28          PLP
 $88:E7E4 6B          RTL
 
 $88:E7E5 AE B2 18    LDX $18B2  [$7E:18B2]
-$88:E7E8 9E B4 18    STZ $18B4,x
+$88:E7E8 9E B4 18    STZ $18B4,x            ; Delete HDMA object
 $88:E7EB 28          PLP
 $88:E7EC 6B          RTL
 }
