@@ -4282,7 +4282,7 @@ $88:AD4E             dx 8655,7E,    ; HDMA table bank = $7E
                         A66C,       ; HDMA object $1920 = 1
                         8570,88A673 ; Pre-instruction = $88:A673
 $88:AD5B             dx 7000,9E02,
-                        85EC,AD5B,  ; Go to $AD5B
+                        85EC,AD5B   ; Go to $AD5B
 }
 
 
