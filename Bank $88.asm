@@ -371,7 +371,7 @@ $88:8112 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen laye
 $88:8114 A9 B3       LDA #$B3               ;\
 $88:8116 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG2/sprites/backdrop
 $88:8118 2C 87 19    BIT $1987  [$7E:1987]  ;\
-$88:811B 30 0C       BMI $0C    [$8129]     ;} If [$1987] & 80h: return
+$88:811B 30 0C       BMI $0C    [$8129]     ;} If power bomb explosion active: return
 $88:811D A9 25       LDA #$25               ;\
 $88:811F 85 74       STA $74    [$7E:0074]  ;|
 $88:8121 A9 40       LDA #$40               ;|
@@ -402,7 +402,7 @@ $88:812A 64 6E       STZ $6E    [$7E:006E]  ; Disable colour math subscreen laye
 $88:812C A9 B3       LDA #$B3               ;\
 $88:812E 85 71       STA $71    [$7E:0071]  ;} Enable subtractive colour math on BG2/sprites/backdrop
 $88:8130 2C 87 19    BIT $1987  [$7E:1987]  ;\
-$88:8133 30 0C       BMI $0C    [$8141]     ;} If [$1987] & 80h: return
+$88:8133 30 0C       BMI $0C    [$8141]     ;} If power bomb explosion active: return
 $88:8135 A9 26       LDA #$26               ;\
 $88:8137 85 74       STA $74    [$7E:0074]  ;|
 $88:8139 A9 42       LDA #$42               ;|
@@ -3774,6 +3774,8 @@ $88:A61A 6B          RTL
 {
 ;;; $A61B: FX type 22h: unused ;;;
 {
+; Seems like it might have been an early version of the WS entrance scrolling sky + water
+; Trying to use this FX in that room has tragic results though, and the code in its present form is a mess / broken
 $88:A61B 08          PHP
 $88:A61C C2 30       REP #$30
 $88:A61E A9 E0 04    LDA #$04E0             ;\
@@ -3811,7 +3813,7 @@ $88:A66B 6B          RTL
 }
 
 
-;;; $A66C: Instruction - HDMA object $1920 = 1 ;;;
+;;; $A66C: Instruction - HDMA object phase increase timer = 1 ;;;
 {
 $88:A66C A9 01 00    LDA #$0001             ;\
 $88:A66F 9D 20 19    STA $1920,x            ;} HDMA object $1920 = 1
@@ -3821,7 +3823,9 @@ $88:A672 60          RTS
 
 ;;; $A673: Pre-instruction - FX type 22h BG3 X scroll ;;;
 {
-; This code is making my eyes heavy...
+; $7E:9E02..??: FX type 22h BG3 X scroll indirect HDMA table
+; $7E:9F02..??: FX type 22h BG1 X scroll indirect HDMA table
+; $7E:9E80..??: FX type 22h BG3 X scroll HDMA data table
 
 $88:A673 08          PHP
 $88:A674 C2 30       REP #$30
@@ -3898,26 +3902,26 @@ $88:A704 C9 00 04    CMP #$0400             ;} If [layer 1 Y position] >= 400h:
 $88:A707 30 0F       BMI $0F    [$A718]     ;/
 $88:A709 A9 B1 00    LDA #$00B1             ;\
 $88:A70C 85 14       STA $14    [$7E:0014]  ;} $14 = BG1 X scroll
-$88:A70E 64 16       STZ $16    [$7E:0016]  ; $16 = 0
-$88:A710 A2 05 01    LDX #$0105             ; X = 105h
-$88:A713 20 86 A7    JSR $A786  [$88:A786]  ; Execute $A786
+$88:A70E 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (single HDMA data entry)
+$88:A710 A2 05 01    LDX #$0105             ; X = 100h + 5 (BG1 X scroll indirect HDMA table index)
+$88:A713 20 86 A7    JSR $A786  [$88:A786]  ; Calculate FX type 22h indirect HDMA table
 $88:A716 80 07       BRA $07    [$A71F]
 
 $88:A718 A9 00 00    LDA #$0000             ;\ Else ([layer 1 Y position] < 400h):
 $88:A71B 8F 02 9F 7E STA $7E9F02[$7E:9F02]  ;} $7E:9F02 = 0,0
 
-$88:A71F A2 05 00    LDX #$0005             ; X = 5 (HDMA table index)
+$88:A71F A2 05 00    LDX #$0005             ; X = 5 (BG3 X scroll indirect HDMA table index)
 $88:A722 A9 80 9E    LDA #$9E80             ;\
-$88:A725 85 14       STA $14    [$7E:0014]  ;} $14 = $9E80
+$88:A725 85 14       STA $14    [$7E:0014]  ;} $14 = $9E80 (BG3 X scroll HDMA data table)
 $88:A727 A9 80 00    LDA #$0080             ;\
-$88:A72A 85 16       STA $16    [$7E:0016]  ;} $16 = 80h
-$88:A72C 20 86 A7    JSR $A786  [$88:A786]  ; Execute $A786
+$88:A72A 85 16       STA $16    [$7E:0016]  ;} $16 = 80h (multi-entry HDMA data table)
+$88:A72C 20 86 A7    JSR $A786  [$88:A786]  ; Calculate FX type 22h indirect HDMA table
 $88:A72F A9 E0 00    LDA #$00E0             ;\
 $88:A732 38          SEC                    ;|
-$88:A733 E5 12       SBC $12    [$7E:0012]  ;} Y = E0h - [$12]
+$88:A733 E5 12       SBC $12    [$7E:0012]  ;} Y = E0h - [$12] (number of scanlines remaining on screen)
 $88:A735 A8          TAY                    ;/
 
-; LOOP_A736
+; LOOP_PAD
 $88:A736 98          TYA                    ;\
 $88:A737 38          SEC                    ;|
 $88:A738 E9 10 00    SBC #$0010             ;} If [Y] >= 10h:
@@ -3932,7 +3936,7 @@ $88:A750 9F 01 9F 7E STA $7E9F01,x          ;/
 $88:A754 E8          INX                    ;\
 $88:A755 E8          INX                    ;} X += 3 (next HDMA table entry)
 $88:A756 E8          INX                    ;/
-$88:A757 80 DD       BRA $DD    [$A736]     ; Go to LOOP_A736
+$88:A757 80 DD       BRA $DD    [$A736]     ; Go to LOOP_PAD
 
 $88:A759 98          TYA                    ; A = [Y]
 $88:A75A C9 00 00    CMP #$0000             ;\
@@ -3956,10 +3960,10 @@ $88:A785 6B          RTL
 }
 
 
-;;; $A786:  ;;;
+;;; $A786: Calculate FX type 22h indirect HDMA table ;;;
 {
 ;; Parameters:
-;;     X: HDMA table index
+;;     X: HDMA table index. If 5, writes to BG3 X scroll HDMA table. If 105h, writes to BG1 X scroll HDMA table
 ;;     $12: Y position on screen
 ;;     $14: HDMA data pointer
 ;;     $16: HDMA consecutive data flag. If 0, $14 points to one value used for many scanlines. If 80h, $14 points to consecutive values used for consecutive scanlines
@@ -3967,21 +3971,31 @@ $88:A785 6B          RTL
 ;;     X: HDMA table index
 ;;     $12: Y position on screen
 
+; If [$16] = 0:
+;     Set all scanlines to use HDMA data entry [$14] until (at most) layer 1 Y position 4DFh
+; If [$16] = 80h:
+;     If layer 1 Y position 4DFh is within 80h pixels of the HUD:
+;         Set up to 7Fh scanlines to use HDMA data table [$14] until layer 1 Y position 4DFh
+;     Else:
+;         Set 10h scanline strips to use HDMA data table [$14] until the bottom of the screen
+
+; (In the following calculations, 1Fh is the HUD height)
+
 $88:A786 A9 C0 04    LDA #$04C0             ;\
 $88:A789 38          SEC                    ;|
-$88:A78A ED 15 09    SBC $0915  [$7E:0915]  ;} $18 = 4C0h - [layer 1 Y position]
+$88:A78A ED 15 09    SBC $0915  [$7E:0915]  ;} $18 = 4DFh - ([layer 1 Y position] + 1Fh)
 $88:A78D 85 18       STA $18    [$7E:0018]  ;/
 $88:A78F 30 46       BMI $46    [$A7D7]     ;\
-$88:A791 F0 44       BEQ $44    [$A7D7]     ;} If [layer 1 Y position] >= 4C0h: return
+$88:A791 F0 44       BEQ $44    [$A7D7]     ;} If [layer 1 Y position] + 1Fh >= 4DFh: return
 $88:A793 C9 80 00    CMP #$0080             ;\
-$88:A796 30 2C       BMI $2C    [$A7C4]     ;} If [layer 1 Y position] > 440h: go to BRANCH_A7C4
+$88:A796 30 2C       BMI $2C    [$A7C4]     ;} If 4DFh - ([layer 1 Y position] + 1Fh) < 80h: go to BRANCH_ONLY_ONE_ENTRY_NEEDED
 $88:A798 85 12       STA $12    [$7E:0012]
 $88:A79A C9 C1 00    CMP #$00C1             ;\
 $88:A79D 30 03       BMI $03    [$A7A2]     ;|
-$88:A79F A9 C1 00    LDA #$00C1             ;|
-                                            ;} $18 = $12 = min(C1h, 4C0h - [layer 1 Y position])
-$88:A7A2 85 12       STA $12    [$7E:0012]  ;|
-$88:A7A4 85 18       STA $18    [$7E:0018]  ;/
+$88:A79F A9 C1 00    LDA #$00C1             ;} $12 = min(E0h - 1Fh, 4DFh - ([layer 1 Y position] + 1Fh))
+                                            ;|
+$88:A7A2 85 12       STA $12    [$7E:0012]  ;/
+$88:A7A4 85 18       STA $18    [$7E:0018]  ; $18 = [$12] (remaining scanline counter)
 
 ; LOOP
 $88:A7A6 38          SEC                    ;\
@@ -3999,8 +4013,8 @@ $88:A7C0 E8          INX                    ;} X += 3 (next HDMA table entry)
 $88:A7C1 E8          INX                    ;/
 $88:A7C2 80 E2       BRA $E2    [$A7A6]     ; Go to LOOP
 
-; BRANCH_A7C4
-$88:A7C4 85 12       STA $12    [$7E:0012]  ; $12 = 4C0h - [layer 1 Y position]
+; BRANCH_ONLY_ONE_ENTRY_NEEDED
+$88:A7C4 85 12       STA $12    [$7E:0012]  ; $12 = 4DFh - ([layer 1 Y position] + 1Fh)
 
 ; BRANCH_DONE
 $88:A7C6 A5 18       LDA $18    [$7E:0018]  ;\
@@ -4220,9 +4234,9 @@ $88:A8E8             dw 0000,0010,0020,
 }
 
 
-;;; $A938:  ;;;
+;;; $A938: FX type 22h BG3 X scroll HDMA data ;;;
 {
-; Looks like only the first line is used
+; Looks like only the first line is used (see $88:A673)
 $88:A938             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
 $88:A958             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
 $88:A978             dw 0000,0001,0002,0003,0003,0002,0001,0000,0000,FFFF,FFFE,FFFD,FFFD,FFFE,FFFF,0000
@@ -4271,7 +4285,7 @@ $88:AD39             dx 8655,7E,    ; HDMA table bank = $7E
                         A66C,       ; HDMA object $1920 = 1
                         8570,88AD38,; Pre-instruction = RTL
 $88:AD46             dx 7000,9F02,
-                        85EC,AD46,  ; Go to $AD46
+                        85EC,AD46   ; Go to $AD46
 }
 
 
@@ -4279,7 +4293,7 @@ $88:AD46             dx 7000,9F02,
 {
 $88:AD4E             dx 8655,7E,    ; HDMA table bank = $7E
                         866A,7E,    ; Indirect HDMA data bank = $7E
-                        A66C,       ; HDMA object $1920 = 1
+                        A66C,       ; HDMA object phase increase timer = 1
                         8570,88A673 ; Pre-instruction = $88:A673
 $88:AD5B             dx 7000,9E02,
                         85EC,AD5B   ; Go to $AD5B
@@ -4348,34 +4362,37 @@ $88:ADC1 6B          RTL
 
 ;;; $ADC2: Handle scrolling sky BG2 X scroll HDMA tables ;;;
 {
+; The $059E HDMA data entry pointer used at $AE05 I low-key suspect should be $059C,
+; which is explicitly set to zero in room setup ASM and otherwise unused,
+; unlike $059E which is never set (but is also otherwise unused)
 $88:ADC2 E2 30       SEP #$30
 $88:ADC4 A9 4A       LDA #$4A               ;\
 $88:ADC6 85 59       STA $59    [$7E:0059]  ;} BG2 tilemap base address = $4800, size = 32x64
 $88:ADC8 C2 30       REP #$30
-$88:ADCA A0 00 00    LDY #$0000             ; Y = 0
+$88:ADCA A0 00 00    LDY #$0000             ; Y = 0 (scrolling sky scroll table index)
 
 ; LOOP_DATA_TABLE
 $88:ADCD B9 C7 AE    LDA $AEC7,y[$88:AEC7]  ;\
-$88:ADD0 AA          TAX                    ;} X = [$AEC1 + [Y] + 6]
+$88:ADD0 AA          TAX                    ;} X = [$AEC1 + [Y] + 6] (HDMA data table index)
 $88:ADD1 B9 C3 AE    LDA $AEC3,y[$88:AEC3]  ;\
 $88:ADD4 18          CLC                    ;|
-$88:ADD5 7F 00 00 7E ADC $7E0000,x[$7E:9F80];} $7E:0000 + [X] += [$AEC1 + [Y] + 2]
+$88:ADD5 7F 00 00 7E ADC $7E0000,x[$7E:9F80];} $7E:0000 + [X] += [$AEC1 + [Y] + 2] (scroll subspeed)
 $88:ADD9 9F 00 00 7E STA $7E0000,x[$7E:9F80];/
 $88:ADDD B9 C5 AE    LDA $AEC5,y[$88:AEC5]  ;\
-$88:ADE0 7F 02 00 7E ADC $7E0002,x[$7E:9F82];} $7E:0002 + [X] += [$AEC1 + [Y] + 4]
+$88:ADE0 7F 02 00 7E ADC $7E0002,x[$7E:9F82];} $7E:0000 + [X] + 2 += [$AEC1 + [Y] + 4] (scroll speed)
 $88:ADE4 9F 02 00 7E STA $7E0002,x[$7E:9F82];/
 $88:ADE8 98          TYA                    ;\
 $88:ADE9 18          CLC                    ;|
-$88:ADEA 69 08 00    ADC #$0008             ;} Y += 8
+$88:ADEA 69 08 00    ADC #$0008             ;} Y += 8 (next scrolling sky scroll table entry)
 $88:ADED A8          TAY                    ;|
 $88:ADEE C9 B8 00    CMP #$00B8             ;/
 $88:ADF1 30 DA       BMI $DA    [$ADCD]     ; If [Y] < B8h: go to LOOP_DATA_TABLE
 $88:ADF3 A9 00 00    LDA #$0000             ;\
-$88:ADF6 8F D8 9F 7E STA $7E9FD8[$7E:9FD8]  ;} $7E:9FD8 = 0
-$88:ADFA 8F DA 9F 7E STA $7E9FDA[$7E:9FDA]  ; $7E:9FDA = 0
+$88:ADF6 8F D8 9F 7E STA $7E9FD8[$7E:9FD8]  ;} $7E:9FD8 = 0 (last data table subspeed entry)
+$88:ADFA 8F DA 9F 7E STA $7E9FDA[$7E:9FDA]  ; $7E:9FDA = 0 (last data table speed entry)
 $88:ADFE A9 1F 00    LDA #$001F             ;\
 $88:AE01 8F 00 9F 7E STA $7E9F00[$7E:9F00]  ;|
-$88:AE05 A9 9E 05    LDA #$059E             ;} $7E:9F00 = 1Fh,$059E
+$88:AE05 A9 9E 05    LDA #$059E             ;} $7E:9F00 = 1Fh,$059E (first indirect HDMA table entry)
 $88:AE08 8F 01 9F 7E STA $7E9F01[$7E:9F01]  ;/
 $88:AE0C AD 15 09    LDA $0915  [$7E:0915]  ;\
 $88:AE0F 18          CLC                    ;|
@@ -4384,24 +4401,24 @@ $88:AE13 85 12       STA $12    [$7E:0012]  ;/
 $88:AE15 18          CLC                    ;\
 $88:AE16 69 C0 00    ADC #$00C0             ;} $14 = [layer 1 Y position] + E0h (last line)
 $88:AE19 85 14       STA $14    [$7E:0014]  ;/
-$88:AE1B A0 00 00    LDY #$0000             ; Y = 0 (scrolling sky table index)
+$88:AE1B A0 00 00    LDY #$0000             ; Y = 0 (scrolling sky scrolling table index)
 $88:AE1E A2 03 00    LDX #$0003             ; X = 3 (indirect HDMA table index)
 
 ; LOOP_INDIRECT_TABLE
 $88:AE21 A5 12       LDA $12    [$7E:0012]  ;\
-$88:AE23 D9 C1 AE    CMP $AEC1,y[$88:AEC1]  ;} If current line >= [$AEC1 + [Y]]:
+$88:AE23 D9 C1 AE    CMP $AEC1,y[$88:AEC1]  ;} If (current line) >= [$AEC1 + [Y]]:
 $88:AE26 30 05       BMI $05    [$AE2D]     ;/
 $88:AE28 D9 C9 AE    CMP $AEC9,y[$88:AEC9]  ;\
-$88:AE2B 30 44       BMI $44    [$AE71]     ;} If current line < [$AEC1 + [Y] + 8]: go to BRANCH_SCROLLING_SECTION
+$88:AE2B 30 44       BMI $44    [$AE71]     ;} If (current line) < [$AEC1 + [Y] + 8]: go to BRANCH_SCROLLING_SECTION
 
 $88:AE2D 98          TYA                    ;\
 $88:AE2E 18          CLC                    ;|
-$88:AE2F 69 08 00    ADC #$0008             ;} Y += 8
+$88:AE2F 69 08 00    ADC #$0008             ;} Y += 8 (next scrolling sky scroll table entry)
 $88:AE32 A8          TAY                    ;/
 $88:AE33 C9 B8 00    CMP #$00B8             ;\
 $88:AE36 30 E9       BMI $E9    [$AE21]     ;} If [Y] < B8h: go to LOOP_INDIRECT_TABLE
 $88:AE38 A9 FF 05    LDA #$05FF             ;\
-$88:AE3B 38          SEC                    ;} A = 5FFh - current line
+$88:AE3B 38          SEC                    ;} A = 5FFh - (current line)
 $88:AE3C E5 12       SBC $12    [$7E:0012]  ;/
 
 ; LOOP_NON_SCROLLING_SECTION
@@ -4430,7 +4447,7 @@ $88:AE70 6B          RTL
 ; BRANCH_SCROLLING_SECTION
 $88:AE71 B9 C9 AE    LDA $AEC9,y[$88:AED1]  ;\
 $88:AE74 38          SEC                    ;|
-$88:AE75 E5 12       SBC $12    [$7E:0012]  ;} A = $18 = [$AEC1 + [Y] + 8] - current line (scrolling section height)
+$88:AE75 E5 12       SBC $12    [$7E:0012]  ;} A = $18 = [$AEC1 + [Y] + 8] - (current line) (scrolling section height)
 $88:AE77 85 18       STA $18    [$7E:0018]  ;/
 $88:AE79 C9 80 00    CMP #$0080             ;\
 $88:AE7C 30 19       BMI $19    [$AE97]     ;} If scrolling section height >= 80h:
@@ -4460,14 +4477,15 @@ $88:AEAD E8          INX                    ;\
 $88:AEAE E8          INX                    ;} X += 3
 $88:AEAF E8          INX                    ;/
 $88:AEB0 A5 12       LDA $12    [$7E:0012]  ;\
-$88:AEB2 C5 14       CMP $14    [$7E:0014]  ;} If current line < last line:
+$88:AEB2 C5 14       CMP $14    [$7E:0014]  ;} If (current line) < (last line):
 $88:AEB4 10 03       BPL $03    [$AEB9]     ;/
 $88:AEB6 4C 21 AE    JMP $AE21  [$88:AE21]  ; Go to LOOP_INDIRECT_TABLE
 
 $88:AEB9 A9 00 00    LDA #$0000             ;\
-$88:AEBC 9F 03 9F 7E STA $7E9F03,x[$7E:9F15];} $7E:9F00 + [X] + 3 = 0
+$88:AEBC 9F 03 9F 7E STA $7E9F03,x[$7E:9F15];} $7E:9F00 + [X] + 3 = 0 (terminate HDMA table)
 $88:AEC0 6B          RTL
 
+; Scrolling sky scroll table
 ;                        ________________ Top position of scrolling section
 ;                       |     ___________ Scroll subspeed
 ;                       |    |     ______ Scroll speed
@@ -4759,36 +4777,40 @@ $88:B11D 6B          RTL
 {
 ;;; $B11E: Unused. Spawn expanding and contracting effect HDMA object ;;;
 {
+; Causes an expanding and contracting effect, see "expanding message box.asm"
+; The RAM used here is the same as used for the message box animation,
+; usage looks similar too (HDMA table of $85:8363, $05A2..A7 of $85:82B8),
+; so this is not unlikely an early version of the message box animation
 $88:B11E 08          PHP
 $88:B11F C2 30       REP #$30
-$88:B121 9C A0 05    STZ $05A0  [$7E:05A0]
-$88:B124 9C 9A 05    STZ $059A  [$7E:059A]
-$88:B127 A9 80 00    LDA #$0080
-$88:B12A 8D A4 05    STA $05A4  [$7E:05A4]
-$88:B12D 8D A6 05    STA $05A6  [$7E:05A6]
-$88:B130 A9 7F 00    LDA #$007F
-$88:B133 8D A8 05    STA $05A8  [$7E:05A8]
-$88:B136 8D AA 05    STA $05AA  [$7E:05AA]
-$88:B139 A9 00 20    LDA #$2000
-$88:B13C 8D A2 05    STA $05A2  [$7E:05A2]
-$88:B13F A9 FF 00    LDA #$00FF
-$88:B142 8F 00 9E 7E STA $7E9E00[$7E:9E00]
-$88:B146 A9 00 9C    LDA #$9C00
-$88:B149 8F 01 9E 7E STA $7E9E01[$7E:9E01]
-$88:B14D A9 E1 00    LDA #$00E1
-$88:B150 8F 03 9E 7E STA $7E9E03[$7E:9E03]
-$88:B154 A9 FE 9C    LDA #$9CFE
-$88:B157 8F 04 9E 7E STA $7E9E04[$7E:9E04]
-$88:B15B A9 00 00    LDA #$0000
-$88:B15E 8F 06 9E 7E STA $7E9E06[$7E:9E06]
-$88:B162 22 35 84 88 JSL $888435[$88:8435]
-$88:B166             dx 42,10,B16C
+$88:B121 9C A0 05    STZ $05A0  [$7E:05A0]  ; Contracting flag = 0 (expanding)
+$88:B124 9C 9A 05    STZ $059A  [$7E:059A]  ; $059A = 0
+$88:B127 A9 80 00    LDA #$0080             ;\
+$88:B12A 8D A4 05    STA $05A4  [$7E:05A4]  ;} $05A4 = 80h
+$88:B12D 8D A6 05    STA $05A6  [$7E:05A6]  ; $05A6 = 80h
+$88:B130 A9 7F 00    LDA #$007F             ;\
+$88:B133 8D A8 05    STA $05A8  [$7E:05A8]  ;} $05A8 = 7Fh
+$88:B136 8D AA 05    STA $05AA  [$7E:05AA]  ; $05AA = 7Fh
+$88:B139 A9 00 20    LDA #$2000             ;\
+$88:B13C 8D A2 05    STA $05A2  [$7E:05A2]  ;} $05A2 = 2000h
+$88:B13F A9 FF 00    LDA #$00FF             ;\
+$88:B142 8F 00 9E 7E STA $7E9E00[$7E:9E00]  ;|
+$88:B146 A9 00 9C    LDA #$9C00             ;|
+$88:B149 8F 01 9E 7E STA $7E9E01[$7E:9E01]  ;|
+$88:B14D A9 E1 00    LDA #$00E1             ;|
+$88:B150 8F 03 9E 7E STA $7E9E03[$7E:9E03]  ;} $7E:9E00..07 = FFh,$9C00, E1h,$9CFE, 0 (indirect HDMA table)
+$88:B154 A9 FE 9C    LDA #$9CFE             ;|
+$88:B157 8F 04 9E 7E STA $7E9E04[$7E:9E04]  ;|
+$88:B15B A9 00 00    LDA #$0000             ;|
+$88:B15E 8F 06 9E 7E STA $7E9E06[$7E:9E06]  ;/
+$88:B162 22 35 84 88 JSL $888435[$88:8435]  ;\
+$88:B166             dx 42, 10, B16C        ;} Spawn indirect HDMA object for BG2 Y scroll with instruction list $B16C
 $88:B16A 28          PLP
 $88:B16B 6B          RTL
 }
 
 
-;;; $B16C: Instruction list - expanding and contracting effect ;;;
+;;; $B16C: Instruction list - expanding and contracting effect BG2 Y scroll ;;;
 {
 $88:B16C             dx 8655,7E,    ; HDMA table bank = $7E
                         866A,7E,    ; Indirect HDMA data bank = $7E
@@ -4798,9 +4820,9 @@ $88:B177             dx 7777,9E00,
 }
 
 
-;;; $B17F: Expanding and contracting HDMA data table handler ;;;
+;;; $B17F: Pre-instruction - expanding and contracting effect BG2 Y scroll ;;;
 {
-; Causes an expanding and contracting effect, see "expanding message box.asm"
+; C.f. $85:859B
 $88:B17F 08          PHP
 $88:B180 C2 30       REP #$30
 $88:B182 EE 9A 05    INC $059A  [$7E:059A]  ; Increment $059A
@@ -4809,7 +4831,7 @@ $88:B188 C9 04 00    CMP #$0004             ;} If [$059A] < 4: go to BRANCH_B1D3
 $88:B18B 30 46       BMI $46    [$B1D3]     ;/
 $88:B18D 9C 9A 05    STZ $059A  [$7E:059A]  ; $059A = 0
 $88:B190 AD A0 05    LDA $05A0  [$7E:05A0]  ;\
-$88:B193 F0 1A       BEQ $1A    [$B1AF]     ;} If [$05A0] != 0:
+$88:B193 F0 1A       BEQ $1A    [$B1AF]     ;} If contracting:
 $88:B195 AD A2 05    LDA $05A2  [$7E:05A2]  ;\
 $88:B198 38          SEC                    ;|
 $88:B199 E9 00 04    SBC #$0400             ;} $05A2 -= 400h
@@ -4818,20 +4840,20 @@ $88:B19F C9 00 20    CMP #$2000             ;\
 $88:B1A2 10 1D       BPL $1D    [$B1C1]     ;} If [$05A2] < 2000h:
 $88:B1A4 A9 00 20    LDA #$2000             ;\
 $88:B1A7 8D A2 05    STA $05A2  [$7E:05A2]  ;} $05A2 = 2000h
-$88:B1AA 9C A0 05    STZ $05A0  [$7E:05A0]  ; $05A0 = 0
+$88:B1AA 9C A0 05    STZ $05A0  [$7E:05A0]  ; Contracting flag = 0
 $88:B1AD 80 12       BRA $12    [$B1C1]
 
-$88:B1AF AD A2 05    LDA $05A2  [$7E:05A2]  ;\ Else ([$05A0] = 0):
+$88:B1AF AD A2 05    LDA $05A2  [$7E:05A2]  ;\ Else (expanding):
 $88:B1B2 18          CLC                    ;|
 $88:B1B3 69 00 04    ADC #$0400             ;} $05A2 += 400h
 $88:B1B6 8D A2 05    STA $05A2  [$7E:05A2]  ;/
 $88:B1B9 C9 00 80    CMP #$8000             ;\
 $88:B1BC 30 03       BMI $03    [$B1C1]     ;} If [$05A2] >= 8000h:
-$88:B1BE EE A0 05    INC $05A0  [$7E:05A0]  ; $05A0 = 1
+$88:B1BE EE A0 05    INC $05A0  [$7E:05A0]  ; Contracting flag = 1
 
 $88:B1C1 A9 80 00    LDA #$0080             ;\
 $88:B1C4 8D A4 05    STA $05A4  [$7E:05A4]  ;} $05A4 = 80h
-$88:B1C7 8D A6 05    STA $05A6  [$7E:05A6]  ; $0FA6 = 80h
+$88:B1C7 8D A6 05    STA $05A6  [$7E:05A6]  ; $05A6 = 80h
 $88:B1CA A9 7F 00    LDA #$007F             ;\
 $88:B1CD 8D A8 05    STA $05A8  [$7E:05A8]  ;} $05A8 = 7Fh
 $88:B1D0 8D AA 05    STA $05AA  [$7E:05AA]  ; $05AA = 7Fh
@@ -6168,13 +6190,13 @@ $88:D8FD             db 1F,04,
 {
 $88:D906             dx 8655,88,    ; HDMA table bank = $88
                         866A,00,    ; Indirect HDMA data bank = $00
-                        D916        ; $07EB = 9
+                        D916        ; Video mode for HUD and floor = 1
 $88:D90E             dx 7FFF,D8F0,
                         85EC,D90E   ; Go to $D90E
 }
 
 
-;;; $D916:  ;;;
+;;; $D916: Instruction - video mode for HUD and floor = 1 ;;;
 {
 $88:D916 A9 09 00    LDA #$0009
 $88:D919 8D EB 07    STA $07EB  [$7E:07EB]
@@ -6219,13 +6241,13 @@ $88:D932             dx 1F,07EB,
 {
 $88:D939             dx 8655,88,    ; HDMA table bank = $88
                         866A,00,    ; Indirect HDMA data bank = $00
-                        D949,       ; $07EB = 9
+                        D949,       ; Video mode for HUD = 1
 $88:D941             dx 7FFF,D932,
                         85EC,D941   ; Go to $D941
 }
 
 
-;;; $D949: Instruction - HUD video mode = mode 1 ;;;
+;;; $D949: Instruction - video mode for HUD = 1 ;;;
 {
 $88:D949 A9 09 00    LDA #$0009
 $88:D94C 8D EB 07    STA $07EB  [$7E:07EB]
@@ -6257,7 +6279,7 @@ $88:D96C             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
                         D981,       ; HDMA object BG3 X velocity = randomly ±400h/±600h
                         8570,88D9A1 ; Pre-instruction = $88:D9A1
-$88:D979             dx 7FFF,D86F,  ; Indirect HDMA table - BG3 scroll
+$88:D979             dx 7FFF,D86F,  ; <-- this is the BG3 scroll HDMA object HDMA table
                         85EC,D979   ; Go to $D979
 }
 
@@ -6279,7 +6301,7 @@ $88:D992             dw FA00, 0600, FC00, 0400
 }
 
 
-;;; $D99A: Indirect HDMA table ;;;
+;;; $D99A: Unused. Indirect HDMA table ;;;
 {
 ; Looks like a more space-efficient version of $88:D86F
 $88:D99A             dx 1F,CAD8,
@@ -6370,13 +6392,14 @@ $88:DA2C 6B          RTL
 $88:DA2D             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
                         8570,88DA47 ; Pre-instruction = $88:DA47
-$88:DA38             dx 7FFF,D86F,
+$88:DA38             dx 7FFF,D86F,  ; <-- this is the BG3 scroll HDMA object HDMA table
                         85EC,DA38   ; Go to $DA38
 }
 
 
-;;; $DA40: Indirect HDMA table ;;;
+;;; $DA40: Unused. Indirect HDMA table ;;;
 {
+; Looks like a more space-efficient version of $88:D86F
 $88:DA40             dx 1F,CAD8,
                         81,CADC,
                         00
@@ -6432,7 +6455,7 @@ $88:DA9E 6B          RTL
 }
 
 
-;;; $DA9F:  ;;;
+;;; $DA9F: Unused ;;;
 {
 $88:DA9F DE 20 19    DEC $1920,x
 $88:DAA2 D0 11       BNE $11    [$DAB5]
@@ -6498,7 +6521,7 @@ $88:DB19             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
                         DB2E,       ; NOP
                         8570,88DB36 ; Pre-instruction = $88:DB36
-$88:DB26             dx 7FFF,D86F,
+$88:DB26             dx 7FFF,D86F,  ; <-- this is the BG3 scroll HDMA object HDMA table
                         85EC,DB26,  ; Go to $DB26
 }
 
@@ -6509,7 +6532,7 @@ $88:DB2E 60          RTS
 }
 
 
-;;; $DB2F: Indirect HDMA table ;;;
+;;; $DB2F: Unused. Indirect HDMA table ;;;
 {
 ; Looks like a more space-efficient version of $88:D86F
 $88:DB2F             dx 1F,CAD8,
@@ -6605,7 +6628,7 @@ $88:DBD6 60          RTS
 }
 
 
-;;; $DBD7:  ;;;
+;;; $DBD7: Pre-instruction ;;;
 {
 $88:DBD7 08          PHP
 $88:DBD8 C2 30       REP #$30
@@ -6639,7 +6662,7 @@ $88:DC22 6B          RTL
 }
 
 
-;;; $DC23:  ;;;
+;;; $DC23: Pre-instruction ;;;
 {
 $88:DC23 20 1D B2    JSR $B21D  [$88:B21D]
 $88:DC26 A9 0D 00    LDA #$000D             ;\
@@ -6669,7 +6692,7 @@ $88:DC68 6B          RTL
 }
 
 
-;;; $DC69:  ;;;
+;;; $DC69: Pre-instruction ;;;
 {
 $88:DC69 20 1D B2    JSR $B21D  [$88:B21D]
 $88:DC6C A9 0D 00    LDA #$000D             ;\
@@ -6707,7 +6730,7 @@ $88:DCB9 6B          RTL
 }
 
 
-;;; $DCBA:  ;;;
+;;; $DCBA: Pre-instruction ;;;
 {
 $88:DCBA A9 00 80    LDA #$8000
 $88:DCBD 8D 6D 1E    STA $1E6D  [$7E:1E6D]
@@ -6718,7 +6741,7 @@ $88:DCCA 6B          RTL
 }
 
 
-;;; $DCCB:  ;;;
+;;; $DCCB: Instruction - go to [[Y]] if entrance to Tourian is unlocked ;;;
 {
 $88:DCCB 9E 2C 19    STZ $192C,x[$7E:192E]  ; HDMA object $192C = 0
 $88:DCCE 9E 14 19    STZ $1914,x[$7E:1916]  ; HDMA object $1914 = 0
@@ -6886,7 +6909,7 @@ $88:DDE1 6B          RTL
 }
 
 
-;;; $DDE2:  ;;;
+;;; $DDE2: Unused ;;;
 {
 $88:DDE2 A9 E8 DD    LDA #$DDE8
 $88:DDE5 9D F0 18    STA $18F0,x
