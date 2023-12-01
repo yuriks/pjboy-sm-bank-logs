@@ -4823,6 +4823,28 @@ $88:B177             dx 7777,9E00,
 ;;; $B17F: Pre-instruction - expanding and contracting effect BG2 Y scroll ;;;
 {
 ; C.f. $85:859B
+
+; y_low_0  = [$05A4]
+; y_high_0 = [$05A8]
+; extra_delta = [$05A2]
+; extra_low_0 = [$05A6]
+; extra_high_0 = [$05AA]
+; for (i = 0; i < 20h; ++i)
+; {
+;     y_low  = y_low_0  + i
+;     y_high = y_high_0 - i
+;     extra = (extra_delta * i + 8000h) / 10000h
+;     y_extra_low  = extra_low_0  + extra
+;     y_extra_high = extra_high_0 - extra
+;     $7E:9C00 + y_low  * 2 = y_extra_low  - y_low
+;     $7E:9C00 + y_high * 2 = y_extra_high - y_high
+; }
+
+; $05A4 += 20h
+; $05A8 -= 20h
+; $05A6 += extra_delta / 800h
+; $05AA -= extra_delta / 800h
+
 $88:B17F 08          PHP
 $88:B180 C2 30       REP #$30
 $88:B182 EE 9A 05    INC $059A  [$7E:059A]  ; Increment $059A
@@ -4867,7 +4889,7 @@ $88:B1DB 0A          ASL A                  ;} Y = [$05A8] * 2
 $88:B1DC A8          TAY                    ;/
 $88:B1DD 64 12       STZ $12    [$7E:0012]  ; $12 = 0
 $88:B1DF A9 20 00    LDA #$0020             ;\
-$88:B1E2 85 14       STA $14    [$7E:0014]  ;} $14 = 20h
+$88:B1E2 85 14       STA $14    [$7E:0014]  ;} $14 = 20h (loop counter)
 
 ; LOOP
 $88:B1E4 AD A6 05    LDA $05A6  [$7E:05A6]  ;\
@@ -4885,7 +4907,7 @@ $88:B1FD A5 12       LDA $12    [$7E:0012]  ;\
 $88:B1FF 18          CLC                    ;|
 $88:B200 6D A2 05    ADC $05A2  [$7E:05A2]  ;} $12 += [$05A2]
 $88:B203 85 12       STA $12    [$7E:0012]  ;/
-$88:B205 70 06       BVS $06    [$B20D]     ; If not ([$12] >= 8000h and [$12] - [$05A2] < 8000h):
+$88:B205 70 06       BVS $06    [$B20D]     ; If not 8000h <= [$12] < 8000h + [$05A2]:
 $88:B207 EE A6 05    INC $05A6  [$7E:05A6]  ; Increment $05A6
 $88:B20A CE AA 05    DEC $05AA  [$7E:05AA]  ; Decrement $05AA
 

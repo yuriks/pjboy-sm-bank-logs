@@ -2252,7 +2252,6 @@ $A0:9486 F0 07       BEQ $07    [$948F]     ;/
 $A0:9488 C6 14       DEC $14    [$7E:0014]  ; Decrement $14
 $A0:948A CE 22 0E    DEC $0E22  [$7E:0E22]  ; Decrement $0E22
 $A0:948D 80 05       BRA $05    [$9494]
-
                                             ; Else ([enemy frame counter] & 2 = 0):
 $A0:948F E6 14       INC $14    [$7E:0014]  ; Increment $14
 $A0:9491 EE 22 0E    INC $0E22  [$7E:0E22]  ; Increment $0E22
@@ -3612,7 +3611,7 @@ $A0:9EBF A9 00 00    LDA #$0000             ; A = 0
 $A0:9EC2 7A          PLY
 $A0:9EC3 FA          PLX
 $A0:9EC4 AB          PLB
-$A0:9EC5 6B          RTL
+$A0:9EC5 6B          RTL                    ; Return
 
 $A0:9EC6 AA          TAX                    ;\
 $A0:9EC7 BD A0 0F    LDA $0FA0,x[$7E:0FA0]  ;} If [enemy invincibility timer] != 0: go to BRANCH_NEXT
@@ -3690,7 +3689,7 @@ $A0:9F54 F0 04       BEQ $04    [$9F5A]     ;} If [A] = 5: go to BRANCH_ATTACH_G
 $A0:9F56 7A          PLY
 $A0:9F57 FA          PLX
 $A0:9F58 AB          PLB
-$A0:9F59 6B          RTL
+$A0:9F59 6B          RTL                    ; Return
 
 ; BRANCH_ATTACH_GRAPPLE
 $A0:9F5A 48          PHA
