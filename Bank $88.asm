@@ -4827,15 +4827,15 @@ $88:B177             dx 7777,9E00,
 ; y_low_0  = [$05A4]
 ; y_high_0 = [$05A8]
 ; extra_delta = [$05A2]
-; extra_low_0 = [$05A6]
-; extra_high_0 = [$05AA]
+; y_extra_low_0  = [$05A6]
+; y_extra_high_0 = [$05AA]
 ; for (i = 0; i < 20h; ++i)
 ; {
 ;     y_low  = y_low_0  + i
 ;     y_high = y_high_0 - i
 ;     extra = (extra_delta * i + 8000h) / 10000h
-;     y_extra_low  = extra_low_0  + extra
-;     y_extra_high = extra_high_0 - extra
+;     y_extra_low  = y_extra_low_0  + extra
+;     y_extra_high = y_extra_high_0 - extra
 ;     $7E:9C00 + y_low  * 2 = y_extra_low  - y_low
 ;     $7E:9C00 + y_high * 2 = y_extra_high - y_high
 ; }
