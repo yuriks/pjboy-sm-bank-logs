@@ -4,7 +4,7 @@
 ;     $8A1E - load enemies - at $80:A0CA (start gameplay)
 ;     $8CD7 - initialise enemies and transfer tiles to VRAM - at $82:80C9/80F9/814C (gamestate 06h/1Fh/28h), executed 6 times for 6 frames
 
-; Main gameplay (gamestate 8):
+; Main gameplay (game state 8):
 ;     $8EB6 - determine which enemies to process
 ;     $9785 - Samus / projectile interaction handler
 ;     $8FD4 - main enemy routine
@@ -949,7 +949,7 @@ $A0:8AB6 AB          PLB                    ;/
 $A0:8AB7 C2 30       REP #$30
 $A0:8AB9 9C 4E 0E    STZ $0E4E  [$7E:0E4E]  ; Number of enemies = 0
 $A0:8ABC 9C 50 0E    STZ $0E50  [$7E:0E50]  ; Number of enemies killed = 0
-$A0:8ABF 9C 3C 18    STZ $183C  [$7E:183C]  ; Process all enemies regardless of on-screen or not = 0
+$A0:8ABF 9C 3C 18    STZ $183C  [$7E:183C]  ; Disable global off-screen enemy processing
 $A0:8AC2 A2 1E 01    LDX #$011E             ;\
 $A0:8AC5 A9 00 00    LDA #$0000             ;|
                                             ;|
@@ -1461,7 +1461,7 @@ $A0:8EC1 9C 54 0E    STZ $0E54  [$7E:0E54]  ; Enemy index = 0
 $A0:8EC4 9C A4 17    STZ $17A4  [$7E:17A4]  ; Active enemy indices stack pointer = 0
 $A0:8EC7 9C A6 17    STZ $17A6  [$7E:17A6]  ; Interactive enemy indices stack pointer = 0
 $A0:8ECA AD 3C 18    LDA $183C  [$7E:183C]  ;\
-$A0:8ECD F0 03       BEQ $03    [$8ED2]     ;} If process all enemies regardless of on-screen or not: go to LOOP_PROCESS_OFFSCREEN
+$A0:8ECD F0 03       BEQ $03    [$8ED2]     ;} If global off-screen enemy processing enabled: go to LOOP_PROCESS_OFFSCREEN
 $A0:8ECF 4C 77 8F    JMP $8F77  [$A0:8F77]  ;/
 
 $A0:8ED2 A2 00 00    LDX #$0000             ; >_<;
@@ -4196,8 +4196,8 @@ $A0:A30E AD EB 0C    LDA $0CEB  [$7E:0CEB]  ;\
 $A0:A311 29 FF 00    AND #$00FF             ;} $12 = [power bomb explosion radius] / 100h
 $A0:A314 85 12       STA $12    [$7E:0012]  ;/
 $A0:A316 D0 02       BNE $02    [$A31A]     ; If [$12] = 0:
-$A0:A318 AB          PLB                    ;\
-$A0:A319 6B          RTL                    ;} Return
+$A0:A318 AB          PLB
+$A0:A319 6B          RTL                    ; Return
 
 $A0:A31A 4A          LSR A                  ;\
 $A0:A31B 65 12       ADC $12    [$7E:0012]  ;|
@@ -4262,7 +4262,7 @@ $A0:A395 E9 40 00    SBC #$0040             ;} Enemy index -= 40h (previous enem
 $A0:A398 8D 54 0E    STA $0E54  [$7E:0E54]  ;/
 $A0:A39B 10 89       BPL $89    [$A326]     ; If [enemy index] >= 0: go to LOOP
 $A0:A39D AB          PLB
-$A0:A39E 6B          RTL
+$A0:A39E 6B          RTL                    ; Return
 
 ; Execute enemy AI
 $A0:A39F AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6897,7 +6897,7 @@ $A0:BAA4 DA          PHX
 $A0:BAA5 5A          PHY
 $A0:BAA6 08          PHP
 $A0:BAA7 A9 10 00    LDA #$0010             ;\
-$A0:BAAA 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h
+$A0:BAAA 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
 ; LOOP
 $A0:BAAD 22 11 81 80 JSL $808111[$80:8111]  ;\
@@ -6928,7 +6928,7 @@ $A0:BAD7 DA          PHX
 $A0:BAD8 5A          PHY
 $A0:BAD9 08          PHP
 $A0:BADA A9 10 00    LDA #$0010             ;\
-$A0:BADD 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h
+$A0:BADD 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
 ; LOOP
 $A0:BAE0 22 11 81 80 JSL $808111[$80:8111]  ;\
@@ -6959,8 +6959,9 @@ $A0:BB0A DA          PHX
 $A0:BB0B 5A          PHY
 $A0:BB0C 08          PHP
 $A0:BB0D A9 10 00    LDA #$0010             ;\
-$A0:BB10 8D 0B 06    STA $060B  [$7E:060B]  ;} Number of item drops
+$A0:BB10 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
+; LOOP
 $A0:BB13 22 11 81 80 JSL $808111[$80:8111]  ;\
 $A0:BB17 29 7F 00    AND #$007F             ;|
 $A0:BB1A 18          CLC                    ;} Item drop X position = 40h..CFh randomly
@@ -6974,8 +6975,8 @@ $A0:BB28 69 10 02    ADC #$0210             ;|
 $A0:BB2B 85 14       STA $14    [$7E:0014]  ;/
 $A0:BB2D A9 3F DF    LDA #$DF3F             ;\
 $A0:BB30 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Spore Spawn's drop chances
-$A0:BB34 CE 0B 06    DEC $060B  [$7E:060B]  ;\
-$A0:BB37 D0 DA       BNE $DA    [$BB13]     ;} Next!
+$A0:BB34 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BB37 D0 DA       BNE $DA    [$BB13]     ; If [$060B] != 0: go to LOOP
 $A0:BB39 28          PLP
 $A0:BB3A 7A          PLY
 $A0:BB3B FA          PLX
@@ -6989,8 +6990,9 @@ $A0:BB3D DA          PHX
 $A0:BB3E 5A          PHY
 $A0:BB3F 08          PHP
 $A0:BB40 A9 10 00    LDA #$0010             ;\
-$A0:BB43 8D 0B 06    STA $060B  [$7E:060B]  ;} Number of item drops
+$A0:BB43 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
+; LOOP
 $A0:BB46 22 11 81 80 JSL $808111[$80:8111]  ;\
 $A0:BB4A 29 FF 00    AND #$00FF             ;|
 $A0:BB4D 18          CLC                    ;} Item drop X position = 80h..17Fh randomly
@@ -7003,9 +7005,9 @@ $A0:BB5A 18          CLC                    ;} Item drop Y position = 120h..15Fh
 $A0:BB5B 69 60 01    ADC #$0160             ;|
 $A0:BB5E 85 14       STA $14    [$7E:0014]  ;/
 $A0:BB60 A9 3F DE    LDA #$DE3F             ;\
-$A0:BB63 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with BT's drop chances
-$A0:BB67 CE 0B 06    DEC $060B  [$7E:060B]  ;\
-$A0:BB6A D0 DA       BNE $DA    [$BB46]     ;} Next!
+$A0:BB63 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Bomb Torizo's drop chances
+$A0:BB67 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BB6A D0 DA       BNE $DA    [$BB46]     ; If [$060B] != 0: go to LOOP
 $A0:BB6C 28          PLP
 $A0:BB6D 7A          PLY
 $A0:BB6E FA          PLX

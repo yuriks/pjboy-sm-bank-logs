@@ -715,7 +715,8 @@ $85:859A 60          RTS
 
 ;;; $859B: Write message box BG3 Y scroll HDMA data table ;;;
 {
-; This algorithm implementation is questionable... decrementing/incrementing $05A4..AB doesn't affect the calculations
+; This algorithm implementation is questionable... decrementing/incrementing $05A4..AB doesn't affect the calculations,
+; probably an artefact leftover from porting the algorithm of the (unused) expanding and contracting effect ($88:B17F)
 ; Ideally this code would just do:
 ;     $7E:30BC..30F7 = -(18h - [message box animation Y radius] / 100h)
 ;     $7E:30F8..3133 = 18h - [message box animation Y radius] / 100h
@@ -724,11 +725,13 @@ $85:859A 60          RTS
 ; Given that message box animation Y radius is set to 0 and increased by 200h per frame (for opening the message box, the process happens backwards for closing):
 ;     The rows between Y positions 5Eh..7Bh are initially scrolled down by 18px, scrolling up 2px per frame
 ;     The rows between Y positions 7Ch..99h are initially scrolled up by 18px, scrolling down 2px per frame
+
 ; So basically the message appears to emerge out of thin air halfway between lines 7Bh and 7Ch
 ; Note that whilst only 18h pixels of the message are scrolled out on either side, the HDMA is affecting 1Eh lines on either side.
 ; The large message box actually is larger than 18h * 2 pixels, so the HDMA does make sense;
 ; the fact hat only 18h pixels are scrolled makes large message boxes abruptly expand at the end (actually quite hard to notice),
 ; but making the scroll affect more than 18h pixels on small message boxes wouldn't have any visible effect for some frames, causing a (more noticeable) delay
+
 $85:859B 08          PHP
 $85:859C 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:859F C2 30       REP #$30

@@ -5334,7 +5334,7 @@ $84:AAE3             dw 86BC    ; Delete
 
 ;;; $AAE5: Instruction list - PLM $B773 (crumble access to Tourian elevator) ;;;
 {
-$84:AAE5             dx 874E,06     ; Timer = 06h
+$84:AAE5             dx 874E,06     ; Timer = 6
 $84:AAE8             dw 0004,92A3,
                         0004,92AF,
                         0004,92BB,

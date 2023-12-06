@@ -16293,7 +16293,7 @@ $90:F294 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F295: $F084 - A = Bh ;;;
+;;; $F295: $F084 - A = Bh: unlock Samus from facing forward ;;;
 {
 ; Called by suit acquisition and elevators
 $90:F295 A9 52 EB    LDA #$EB52             ;\

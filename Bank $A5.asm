@@ -35,7 +35,7 @@ $A5:86B0 8D 8E 17    STA $178E  [$7E:178E]  ;|
 $A5:86B3 A9 42 93    LDA #$9342             ;} Enemy graphics drawn hook = $A5:9342
 $A5:86B6 8D 8C 17    STA $178C  [$7E:178C]  ;/
 $A5:86B9 A9 FF FF    LDA #$FFFF             ;\
-$A5:86BC 8D 3C 18    STA $183C  [$7E:183C]  ;} Process off-screen enemies
+$A5:86BC 8D 3C 18    STA $183C  [$7E:183C]  ;} Enable global off-screen enemy processing
 $A5:86BF A9 89 98    LDA #$9889             ;\
 $A5:86C2 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Draygon body instruction list pointer = $9889 (facing left - idle)
 $A5:86C5 A9 44 99    LDA #$9944             ;\

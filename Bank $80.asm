@@ -177,9 +177,9 @@ $80:80E0 D0 F7       BNE $F7    [$80D9]     ;/
 $80:80E2 FA          PLX
 $80:80E3 70 9A       BVS $9A    [$807F]     ; If block size != 0: go to BRANCH_UPLOAD_DATA_BLOCK
 $80:80E5 E2 20       SEP #$20
-$80:80E7 9C 41 21    STZ $2141  [$7E:2141]
-$80:80EA 9C 42 21    STZ $2142  [$7E:2142]
-$80:80ED 9C 43 21    STZ $2143  [$7E:2143]
+$80:80E7 9C 41 21    STZ $2141              ;\
+$80:80EA 9C 42 21    STZ $2142              ;} These stores have no effect (because DB is set to some hirom bank), but there's also no reason to do these stores anyway
+$80:80ED 9C 43 21    STZ $2143              ;/
 $80:80F0 28          PLP
 $80:80F1 60          RTS
 
@@ -921,7 +921,7 @@ $80:843A A2 04       LDX #$04               ;\
                                             ;|
 $80:843C AD 12 42    LDA $4212  [$7E:4212]  ;|
 $80:843F 10 FB       BPL $FB    [$843C]     ;|
-                                            ;} Wait 3 frames (why?), then for the start of v-blank
+                                            ;} Wait the remainder of this frame and 3 more frames (???)
 $80:8441 AD 12 42    LDA $4212  [$7E:4212]  ;|
 $80:8444 30 FB       BMI $FB    [$8441]     ;|
 $80:8446 CA          DEX                    ;|
@@ -964,7 +964,7 @@ $80:8473 A2 04       LDX #$04               ;\
                                             ;|
 $80:8475 AD 12 42    LDA $4212  [$80:4212]  ;|
 $80:8478 10 FB       BPL $FB    [$8475]     ;|
-                                            ;} Wait 3 frames (why?), then for the start of v-blank
+                                            ;} Wait the remainder of this frame and 3 more frames (???)
 $80:847A AD 12 42    LDA $4212  [$80:4212]  ;|
 $80:847D 30 FB       BMI $FB    [$847A]     ;|
 $80:847F CA          DEX                    ;|
@@ -1036,12 +1036,12 @@ $80:8519 C2 30       REP #$30
 $80:851B 9C 40 21    STZ $2140  [$7E:2140]  ;\
 $80:851E 9C 42 21    STZ $2142  [$7E:2142]  ;} Clear APU IO registers (harmless 16-bit write bug)
 $80:8521 E2 30       SEP #$30
-$80:8523 A2 04       LDX #$04
-
-$80:8525 AD 12 42    LDA $4212  [$7E:4212]  ;\
-$80:8528 10 FB       BPL $FB    [$8525]     ;|
+$80:8523 A2 04       LDX #$04               ;\
                                             ;|
-$80:852A AD 12 42    LDA $4212  [$7E:4212]  ;} Wait 3 frames, then for the start of v-blank
+$80:8525 AD 12 42    LDA $4212  [$7E:4212]  ;|
+$80:8528 10 FB       BPL $FB    [$8525]     ;|
+                                            ;} Wait the remainder of this frame and 3 more frames (???)
+$80:852A AD 12 42    LDA $4212  [$7E:4212]  ;|
 $80:852D 30 FB       BMI $FB    [$852A]     ;|
 $80:852F CA          DEX                    ;|
 $80:8530 D0 F3       BNE $F3    [$8525]     ;/
@@ -2237,7 +2237,7 @@ $80:8EA1 60          RTS
 ;;; $8EA2: Handle VRAM read table ;;;
 {
 ; Buggy? This routine stores a 1-byte zero-terminator but checks for a 2-byte zero terminator as the loop condition.
-; I think this only works because only one entry can ever be set up in any given frame
+; I think this only works because only one entry is ever set up in any given frame
 $80:8EA2 08          PHP
 $80:8EA3 E2 30       SEP #$30
 $80:8EA5 AE 60 03    LDX $0360  [$7E:0360]  ;\
