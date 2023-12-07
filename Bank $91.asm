@@ -4837,16 +4837,16 @@ $91:BE09             db 04,0F,FF,06,03,00,15,00 ; FCh: Facing left  - standing t
 }
 
 
-;;; $BE11..C9D3: Calculate x-ray HDMA data table ;;;
+;;; $BE11..C9D3: Calculate x-ray / morph ball eye beam HDMA data table ;;;
 {
-;;; $BE11: Calculate x-ray HDMA data table - x-ray origin is off screen ;;;
+;;; $BE11: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen ;;;
 {
 ;; Parameters:
-;;     X: X-ray origin X position
-;;     Y: X-ray origin Y position
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $12: X-ray angle
-;;     $14: X-ray angular width
+;;     X: Beam origin X position
+;;     Y: Beam origin Y position
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $12: Beam angle
+;;     $14: Beam angular width
 $91:BE11 08          PHP
 $91:BE12 8B          PHB
 $91:BE13 4B          PHK                    ;\
@@ -4859,9 +4859,9 @@ $91:BE1C 85 16       STA $16    [$7E:0016]  ;/
 $91:BE1E 84 18       STY $18    [$7E:0018]  ; $18 = [Y]
 $91:BE20 A5 12       LDA $12    [$7E:0012]  ;\
 $91:BE22 38          SEC                    ;|
-$91:BE23 E5 14       SBC $14    [$7E:0014]  ;} $1A = [x-ray angle] - [x-ray angular width] (x-ray left edge angle)
+$91:BE23 E5 14       SBC $14    [$7E:0014]  ;} $1A = [beam angle] - [beam angular width] (beam left edge angle)
 $91:BE25 85 1A       STA $1A    [$7E:001A]  ;/
-$91:BE27 10 08       BPL $08    [$BE31]     ; If [x-ray angle] < [x-ray angular width]:
+$91:BE27 10 08       BPL $08    [$BE31]     ; If [beam angle] < [beam angular width]:
 $91:BE29 A9 00 01    LDA #$0100             ;\
 $91:BE2C 18          CLC                    ;|
 $91:BE2D 65 1A       ADC $1A    [$7E:001A]  ;} $1A += 100h
@@ -4869,61 +4869,61 @@ $91:BE2F 85 1A       STA $1A    [$7E:001A]  ;/
 
 $91:BE31 A5 12       LDA $12    [$7E:0012]  ;\
 $91:BE33 18          CLC                    ;|
-$91:BE34 65 14       ADC $14    [$7E:0014]  ;} $1C = [x-ray angle] + [x-ray angular width] (x-ray right edge angle)
+$91:BE34 65 14       ADC $14    [$7E:0014]  ;} $1C = [beam angle] + [beam angular width] (beam right edge angle)
 $91:BE36 85 1C       STA $1C    [$7E:001C]  ;/
 $91:BE38 C9 01 01    CMP #$0101             ;\
-$91:BE3B 30 06       BMI $06    [$BE43]     ;} If [x-ray angle] + [x-ray angular width] > 100h:
+$91:BE3B 30 06       BMI $06    [$BE43]     ;} If [beam angle] + [beam angular width] > 100h:
 $91:BE3D 38          SEC                    ;\
 $91:BE3E E9 00 01    SBC #$0100             ;} $1C -= 100h
 $91:BE41 85 1C       STA $1C    [$7E:001C]  ;/
 
 $91:BE43 A5 14       LDA $14    [$7E:0014]  ;\
-$91:BE45 D0 0C       BNE $0C    [$BE53]     ;} If [x-ray angular width] = 0:
+$91:BE45 D0 0C       BNE $0C    [$BE53]     ;} If [beam angular width] = 0:
 $91:BE47 A5 12       LDA $12    [$7E:0012]  ;\
-$91:BE49 C9 40 00    CMP #$0040             ;} If [x-ray angle] = 40h: go to BRANCH_STRICTLY_HORIZONTAL
+$91:BE49 C9 40 00    CMP #$0040             ;} If [beam angle] = 40h: go to BRANCH_STRICTLY_HORIZONTAL
 $91:BE4C F0 3C       BEQ $3C    [$BE8A]     ;/
 $91:BE4E C9 C0 00    CMP #$00C0             ;\
-$91:BE51 F0 37       BEQ $37    [$BE8A]     ;} If [x-ray angle] = C0h: go to BRANCH_STRICTLY_HORIZONTAL
+$91:BE51 F0 37       BEQ $37    [$BE8A]     ;} If [beam angle] = C0h: go to BRANCH_STRICTLY_HORIZONTAL
 
 $91:BE53 A5 1A       LDA $1A    [$7E:001A]  ;\
-$91:BE55 C9 80 00    CMP #$0080             ;} If [x-ray left edge angle] < 80h:
+$91:BE55 C9 80 00    CMP #$0080             ;} If [beam left edge angle] < 80h:
 $91:BE58 10 0E       BPL $0E    [$BE68]     ;/
 $91:BE5A C9 40 00    CMP #$0040             ;\
-$91:BE5D 10 21       BPL $21    [$BE80]     ;} If [x-ray left edge angle] >= 40h: go to BRANCH_BOTTOM_HALF
+$91:BE5D 10 21       BPL $21    [$BE80]     ;} If [beam left edge angle] >= 40h: go to BRANCH_BOTTOM_HALF
 $91:BE5F A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:BE61 C9 40 00    CMP #$0040             ;} If [x-ray right edge angle] < 40h: go to BRANCH_TOP_HALF
+$91:BE61 C9 40 00    CMP #$0040             ;} If [beam right edge angle] < 40h: go to BRANCH_TOP_HALF
 $91:BE64 30 15       BMI $15    [$BE7B]     ;/
 $91:BE66 80 0E       BRA $0E    [$BE76]     ; Go to BRANCH_RIGHT
 
 $91:BE68 C9 C0 00    CMP #$00C0             ;\
-$91:BE6B 10 0E       BPL $0E    [$BE7B]     ;} If [x-ray left edge angle] >= C0h: go to BRANCH_TOP_HALF
+$91:BE6B 10 0E       BPL $0E    [$BE7B]     ;} If [beam left edge angle] >= C0h: go to BRANCH_TOP_HALF
 $91:BE6D A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:BE6F C9 C0 00    CMP #$00C0             ;} If [x-ray right edge angle] < C0h: go to BRANCH_BOTTOM_HALF
+$91:BE6F C9 C0 00    CMP #$00C0             ;} If [beam right edge angle] < C0h: go to BRANCH_BOTTOM_HALF
 $91:BE72 30 0C       BMI $0C    [$BE80]     ;/
 $91:BE74 80 0F       BRA $0F    [$BE85]     ; Go to BRANCH_LEFT
 
 ; BRANCH_RIGHT
-; [x-ray left edge angle] < 40h and [x-ray right edge angle] >= 40h
+; [beam left edge angle] < 40h and [beam right edge angle] >= 40h
 $91:BE76 A0 00 00    LDY #$0000             ; Y = 0
 $91:BE79 80 12       BRA $12    [$BE8D]     ; Go to BRANCH_MERGE
 
 ; BRANCH_TOP_HALF
-; [x-ray right edge angle] < 40h or [x-ray left edge angle] >= C0h
+; [beam right edge angle] < 40h or [beam left edge angle] >= C0h
 $91:BE7B A0 02 00    LDY #$0002             ; Y = 2
 $91:BE7E 80 0D       BRA $0D    [$BE8D]     ; Go to BRANCH_MERGE
 
 ; BRANCH_BOTTOM_HALF
-; 40h <= [x-ray left edge angle] < 80h or 80h <= [x-ray left edge angle] and [x-ray right edge angle] < C0h
+; 40h <= [beam left edge angle] < 80h or 80h <= [beam left edge angle] and [beam right edge angle] < C0h
 $91:BE80 A0 04 00    LDY #$0004             ; Y = 4
 $91:BE83 80 08       BRA $08    [$BE8D]     ; Go to BRANCH_MERGE
 
 ; BRANCH_LEFT
-; [x-ray left edge angle] < C0h and [x-ray right edge angle] >= C0h
+; [beam left edge angle] < C0h and [beam right edge angle] >= C0h
 $91:BE85 A0 06 00    LDY #$0006             ; Y = 6
 $91:BE88 80 03       BRA $03    [$BE8D]     ; Go to BRANCH_MERGE
 
 ; BRANCH_STRICTLY_HORIZONTAL
-; [x-ray angular width] = 0 and ([x-ray angle] = 40h or [x-ray angle] = C0h)
+; [beam angular width] = 0 and ([beam angle] = 40h or [beam angle] = C0h)
 $91:BE8A A0 08 00    LDY #$0008             ; Y = 8
 
 ; BRANCH_MERGE
@@ -4932,7 +4932,7 @@ $91:BE8F C9 80 00    CMP #$0080             ;|
 $91:BE92 30 04       BMI $04    [$BE98]     ;|
 $91:BE94 38          SEC                    ;|
 $91:BE95 E9 80 00    SBC #$0080             ;|
-                                            ;} $1E = |tan([x-ray left edge angle] % 80h * pi / 80h)| * 100h (x-ray left edge gradient)
+                                            ;} $1E = |tan([beam left edge angle] % 80h * pi / 80h)| * 100h (beam left edge gradient)
 $91:BE98 0A          ASL A                  ;|
 $91:BE99 AA          TAX                    ;|
 $91:BE9A BD D4 C9    LDA $C9D4,x[$91:CA74]  ;|
@@ -4942,7 +4942,7 @@ $91:BEA1 C9 80 00    CMP #$0080             ;|
 $91:BEA4 30 04       BMI $04    [$BEAA]     ;|
 $91:BEA6 38          SEC                    ;|
 $91:BEA7 E9 80 00    SBC #$0080             ;|
-                                            ;} $20 = |tan([x-ray right edge angle] % 80h * pi / 80h)| * 100h (x-ray right edge gradient)
+                                            ;} $20 = |tan([beam right edge angle] % 80h * pi / 80h)| * 100h (beam right edge gradient)
 $91:BEAA 0A          ASL A                  ;|
 $91:BEAB AA          TAX                    ;|
 $91:BEAC BD D4 C9    LDA $C9D4,x[$91:CA84]  ;|
@@ -4957,14 +4957,14 @@ $91:BEB8             dw BEC2, C022, C27F, BF72, C505
 }
 
 
-;;; $BEC2: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed right ;;;
+;;; $BEC2: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed right ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h (note: negative)
-;;     $18: X-ray origin Y position
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h (note: negative)
+;;     $18: Beam origin Y position
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -4973,16 +4973,16 @@ $91:BEC2 08          PHP
 $91:BEC3 C2 30       REP #$30
 $91:BEC5 A5 18       LDA $18    [$7E:0018]  ;\
 $91:BEC7 3A          DEC A                  ;|
-$91:BEC8 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:BEC8 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:BEC9 A8          TAY                    ;/
 $91:BECA A5 16       LDA $16    [$7E:0016]  ;\
-$91:BECC 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:BECE 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:BECC 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:BECE 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 
 ; LOOP_LEFT_OFF_SCREEN
 $91:BED0 A5 22       LDA $22    [$7E:0022]  ;\
 $91:BED2 18          CLC                    ;|
-$91:BED3 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:BED3 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:BED5 85 22       STA $22    [$7E:0022]  ;/
 $91:BED7 B0 09       BCS $09    [$BEE2]     ; If [$22] < 0:
 $91:BED9 88          DEY                    ;\
@@ -5005,7 +5005,7 @@ $91:BEF2 A8          TAY                    ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:BEF3 A5 22       LDA $22    [$7E:0022]  ;\
 $91:BEF5 18          CLC                    ;|
-$91:BEF6 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:BEF6 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:BEF8 85 22       STA $22    [$7E:0022]  ;/
 $91:BEFA B0 0D       BCS $0D    [$BF09]     ; If [$22] < 10000h:
 $91:BEFC A5 23       LDA $23    [$7E:0023]  ;\
@@ -5024,13 +5024,13 @@ $91:BF10 10 F7       BPL $F7    [$BF09]     ;/
 
 ; BRANCH_LEFT_EDGE_END
 $91:BF12 A5 18       LDA $18    [$7E:0018]  ;\
-$91:BF14 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:BF14 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:BF15 A8          TAY                    ;/
 
 ; LOOP_RIGHT_OFF_SCREEN
 $91:BF16 A5 24       LDA $24    [$7E:0024]  ;\
 $91:BF18 18          CLC                    ;|
-$91:BF19 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:BF19 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:BF1B 85 24       STA $24    [$7E:0024]  ;/
 $91:BF1D B0 0C       BCS $0C    [$BF2B]     ; If [$24] < 0:
 $91:BF1F C8          INY                    ;\
@@ -5054,7 +5054,7 @@ $91:BF3B A8          TAY                    ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:BF3C A5 24       LDA $24    [$7E:0024]  ;\
 $91:BF3E 18          CLC                    ;|
-$91:BF3F 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:BF3F 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:BF41 85 24       STA $24    [$7E:0024]  ;/
 $91:BF43 B0 10       BCS $10    [$BF55]     ; If [$24] < 10000h:
 $91:BF45 A5 25       LDA $25    [$7E:0025]  ;\
@@ -5088,14 +5088,14 @@ $91:BF71 60          RTS
 }
 
 
-;;; $BF72: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed left ;;;
+;;; $BF72: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed left ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h (note: over 10000h)
-;;     $18: X-ray origin Y position
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h (note: over 10000h)
+;;     $18: Beam origin Y position
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -5104,16 +5104,16 @@ $91:BF72 08          PHP
 $91:BF73 C2 30       REP #$30
 $91:BF75 A5 18       LDA $18    [$7E:0018]  ;\
 $91:BF77 3A          DEC A                  ;|
-$91:BF78 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:BF78 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:BF79 A8          TAY                    ;/
 $91:BF7A A5 16       LDA $16    [$7E:0016]  ;\
-$91:BF7C 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:BF7E 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:BF7C 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:BF7E 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 
 ; LOOP_RIGHT_OFF_SCREEN
 $91:BF80 A5 24       LDA $24    [$7E:0024]  ;\
 $91:BF82 38          SEC                    ;|
-$91:BF83 E5 20       SBC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:BF83 E5 20       SBC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:BF85 85 24       STA $24    [$7E:0024]  ;/
 $91:BF87 90 09       BCC $09    [$BF92]     ; If [$24] >= 10000h:
 $91:BF89 88          DEY                    ;\
@@ -5136,7 +5136,7 @@ $91:BFA2 A8          TAY                    ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:BFA3 A5 24       LDA $24    [$7E:0024]  ;\
 $91:BFA5 38          SEC                    ;|
-$91:BFA6 E5 20       SBC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:BFA6 E5 20       SBC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:BFA8 85 24       STA $24    [$7E:0024]  ;/
 $91:BFAA 90 0D       BCC $0D    [$BFB9]     ; If [$24] >= 0:
 $91:BFAC A5 24       LDA $24    [$7E:0024]  ;\
@@ -5155,13 +5155,13 @@ $91:BFC0 10 F7       BPL $F7    [$BFB9]     ;/
 
 ; BRANCH_RIGHT_EDGE_END
 $91:BFC2 A5 18       LDA $18    [$7E:0018]  ;\
-$91:BFC4 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:BFC4 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:BFC5 A8          TAY                    ;/
 
 ; LOOP_LEFT_OFF_SCREEN
 $91:BFC6 A5 22       LDA $22    [$7E:0022]  ;\
 $91:BFC8 38          SEC                    ;|
-$91:BFC9 E5 1E       SBC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:BFC9 E5 1E       SBC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:BFCB 85 22       STA $22    [$7E:0022]  ;/
 $91:BFCD 90 0C       BCC $0C    [$BFDB]     ; If [$22] >= 10000h:
 $91:BFCF C8          INY                    ;\
@@ -5185,7 +5185,7 @@ $91:BFEB A8          TAY                    ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:BFEC A5 22       LDA $22    [$7E:0022]  ;\
 $91:BFEE 38          SEC                    ;|
-$91:BFEF E5 1E       SBC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:BFEF E5 1E       SBC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:BFF1 85 22       STA $22    [$7E:0022]  ;/
 $91:BFF3 90 10       BCC $10    [$C005]     ; If [$22] >= 0:
 $91:BFF5 A5 22       LDA $22    [$7E:0022]  ;\
@@ -5219,33 +5219,33 @@ $91:C021 60          RTS
 }
 
 
-;;; $C022: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed upwards ;;;
+;;; $C022: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed upwards ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h
-;;     $18: X-ray origin Y position
-;;     $1A: X-ray left edge angle
-;;     $1C: X-ray right edge angle
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h
+;;     $18: Beam origin Y position
+;;     $1A: Beam left edge angle
+;;     $1C: Beam right edge angle
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 $91:C022 08          PHP
 $91:C023 C2 30       REP #$30
 $91:C025 A5 18       LDA $18    [$7E:0018]  ;\
 $91:C027 3A          DEC A                  ;|
-$91:C028 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C028 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C029 A8          TAY                    ;/
 $91:C02A A5 16       LDA $16    [$7E:0016]  ;\
-$91:C02C 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:C02E 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:C02C 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:C02E 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 $91:C030 A5 1A       LDA $1A    [$7E:001A]  ;\
-$91:C032 C9 C0 00    CMP #$00C0             ;} If [x-ray left edge angle] < C0h:
+$91:C032 C9 C0 00    CMP #$00C0             ;} If [beam left edge angle] < C0h:
 $91:C035 10 05       BPL $05    [$C03C]     ;/
 $91:C037 A2 00 00    LDX #$0000             ; X = 0
 $91:C03A 80 0F       BRA $0F    [$C04B]     ; Go to BRANCH_MERGE
 
 $91:C03C A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:C03E C9 C0 00    CMP #$00C0             ;} If [x-ray right edge angle] < C0h:
+$91:C03E C9 C0 00    CMP #$00C0             ;} If [beam right edge angle] < C0h:
 $91:C041 10 05       BPL $05    [$C048]     ;/
 $91:C043 A2 02 00    LDX #$0002             ; X = 2
 $91:C046 80 03       BRA $03    [$C04B]     ; Go to BRANCH_MERGE
@@ -5254,7 +5254,7 @@ $91:C048 A2 04 00    LDX #$0004             ; X = 4
 
 ; BRANCH_MERGE
 $91:C04B A5 18       LDA $18    [$7E:0018]  ;\
-$91:C04D 0A          ASL A                  ;} $1A = [x-ray origin Y position] * 2
+$91:C04D 0A          ASL A                  ;} $1A = [beam origin Y position] * 2
 $91:C04E 85 1A       STA $1A    [$7E:001A]  ;/
 $91:C050 FC 63 C0    JSR ($C063,x)          ; Execute [$C063 + [X]]
 $91:C053 A4 12       LDY $12    [$7E:0012]  ;\
@@ -5272,15 +5272,15 @@ $91:C063             dw C069, C123, C1CA
 }
 
 
-;;; $C069: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed upwards - beam is aimed up-right ;;;
+;;; $C069: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed upwards - beam is aimed up-right ;;;
 {
 ;; Parameters:
-;;     Y: ([X-ray origin Y position] - 1) * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h (note: negative)
-;;     $24: X-ray origin X position * 100h (note: negative)
+;;     Y: ([Beam origin Y position] - 1) * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h (note: negative)
+;;     $24: Beam origin X position * 100h (note: negative)
 
 ;; Returns:
 ;;     $12: Index of bottom Y position of the beam
@@ -5295,7 +5295,7 @@ $91:C06C 5A          PHY                    ; Save Y
 ; LOOP_LEFT_OFF_SCREEN
 $91:C06D A5 22       LDA $22    [$7E:0022]  ;\
 $91:C06F 18          CLC                    ;|
-$91:C070 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C070 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C072 85 22       STA $22    [$7E:0022]  ;/
 $91:C074 B0 08       BCS $08    [$C07E]     ; If [$22] < 0:
 $91:C076 88          DEY                    ;\
@@ -5323,7 +5323,7 @@ $91:C096 85 12       STA $12    [$7E:0012]  ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:C098 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C09A 18          CLC                    ;|
-$91:C09B 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C09B 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C09D 85 22       STA $22    [$7E:0022]  ;/
 $91:C09F B0 0E       BCS $0E    [$C0AF]     ; If [$22] < 10000h:
 $91:C0A1 E2 20       SEP #$20               ;\
@@ -5346,12 +5346,12 @@ $91:C0B7 10 F8       BPL $F8    [$C0B1]     ;/
 ; BRANCH_LEFT_EDGE_END
 $91:C0B9 C2 20       REP #$20
 $91:C0BB 7A          PLY                    ;\
-$91:C0BC C8          INY                    ;} Y = ([x-ray origin Y position] - 1) * 2 + 1
+$91:C0BC C8          INY                    ;} Y = ([beam origin Y position] - 1) * 2 + 1
 
 ; LOOP_RIGHT_OFF_SCREEN
 $91:C0BD A5 24       LDA $24    [$7E:0024]  ;\
 $91:C0BF 18          CLC                    ;|
-$91:C0C0 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C0C0 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C0C2 85 24       STA $24    [$7E:0024]  ;/
 $91:C0C4 B0 0B       BCS $0B    [$C0D1]     ; If [$24] < 0:
 $91:C0C6 88          DEY                    ;\
@@ -5380,7 +5380,7 @@ $91:C0E9 85 14       STA $14    [$7E:0014]  ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:C0EB A5 24       LDA $24    [$7E:0024]  ;\
 $91:C0ED 18          CLC                    ;|
-$91:C0EE 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C0EE 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C0F0 85 24       STA $24    [$7E:0024]  ;/
 $91:C0F2 B0 0E       BCS $0E    [$C102]     ; If [$24] < 10000h:
 $91:C0F4 E2 20       SEP #$20               ;\
@@ -5419,15 +5419,15 @@ $91:C122 60          RTS
 }
 
 
-;;; $C123: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed upwards - beam is aimed up ;;;
+;;; $C123: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed upwards - beam is aimed up ;;;
 {
 ;; Parameters:
-;;     Y: ([X-ray origin Y position] - 1) * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: ([Beam origin Y position] - 1) * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ;; Returns:
 ;;     $12: Index of bottom Y position of the beam
@@ -5435,10 +5435,10 @@ $91:C122 60          RTS
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
 
-; This routine is never called, because x-ray is not allowed to be aimed upwards.
+; This routine is never called, because x-ray is not allowed to be aimed upwards and morph ball eye isn't positioned to allow it.
 ; That said, this routine seems... wrong?
-; It looks like it works off the assumption that the x-ray left/right lines both start off-screen,
-; specifically that the left line comes from right off-screen and the right line froms from left off-screen,
+; It looks like it works off the assumption that the beam left/right lines both start off-screen,
+; specifically that the left line comes from right off-screen and the right line comes from left off-screen,
 ; which is clearly impossible.
 ; The return value $12 is questionable too,
 ; it's given here as the index of the lowest Y position of the left line that's on-screen,
@@ -5452,7 +5452,7 @@ $91:C126 5A          PHY                    ; Save Y
 ; LOOP_LEFT_OFF_SCREEN
 $91:C127 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C129 38          SEC                    ;|
-$91:C12A E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C12A E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C12C 85 22       STA $22    [$7E:0022]  ;/
 $91:C12E 90 08       BCC $08    [$C138]     ; If [$22] < 10000h:
 $91:C130 88          DEY                    ;\
@@ -5480,7 +5480,7 @@ $91:C150 85 12       STA $12    [$7E:0012]  ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:C152 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C154 38          SEC                    ;|
-$91:C155 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C155 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C157 85 22       STA $22    [$7E:0022]  ;/
 $91:C159 90 0E       BCC $0E    [$C169]     ; If [$22] >= 0:
 $91:C15B E2 20       SEP #$20               ;\
@@ -5503,12 +5503,12 @@ $91:C171 10 F8       BPL $F8    [$C16B]     ;/
 ; BRANCH_LEFT_EDGE_END
 $91:C173 C2 20       REP #$20
 $91:C175 7A          PLY                    ;\
-$91:C176 C8          INY                    ;} Y = ([x-ray origin Y position] - 1) * 2 + 1
+$91:C176 C8          INY                    ;} Y = ([beam origin Y position] - 1) * 2 + 1
 
 ; LOOP_RIGHT_OFF_SCREEN
 $91:C177 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C179 18          CLC                    ;|
-$91:C17A 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C17A 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C17C 85 24       STA $24    [$7E:0024]  ;/
 $91:C17E B0 0B       BCS $0B    [$C18B]     ; If [$24] < 0:
 $91:C180 88          DEY                    ;\
@@ -5537,7 +5537,7 @@ $91:C1A3 85 14       STA $14    [$7E:0014]  ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:C1A5 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C1A7 18          CLC                    ;|
-$91:C1A8 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C1A8 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C1AA 85 24       STA $24    [$7E:0024]  ;/
 $91:C1AC B0 0E       BCS $0E    [$C1BC]     ; If [$24] < 10000h:
 $91:C1AE E2 20       SEP #$20               ;\
@@ -5563,15 +5563,15 @@ $91:C1C9 60          RTS
 }
 
 
-;;; $C1CA: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed upwards - beam is aimed up-left ;;;
+;;; $C1CA: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed upwards - beam is aimed up-left ;;;
 {
 ;; Parameters:
-;;     Y: ([X-ray origin Y position] - 1) * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h (note: over 10000h)
-;;     $24: X-ray origin X position * 100h (note: over 10000h)
+;;     Y: ([Beam origin Y position] - 1) * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h (note: over 10000h)
+;;     $24: Beam origin X position * 100h (note: over 10000h)
 
 ;; Returns:
 ;;     $12: Index of bottom Y position of the beam
@@ -5586,7 +5586,7 @@ $91:C1CD 5A          PHY                    ; Save Y
 ; LOOP_LEFT_OFF_SCREEN
 $91:C1CE A5 22       LDA $22    [$7E:0022]  ;\
 $91:C1D0 38          SEC                    ;|
-$91:C1D1 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C1D1 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C1D3 85 22       STA $22    [$7E:0022]  ;/
 $91:C1D5 90 08       BCC $08    [$C1DF]     ; If [$22] >= 10000h:
 $91:C1D7 88          DEY                    ;\
@@ -5614,7 +5614,7 @@ $91:C1F7 85 12       STA $12    [$7E:0012]  ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:C1F9 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C1FB 38          SEC                    ;|
-$91:C1FC E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C1FC E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C1FE 85 22       STA $22    [$7E:0022]  ;/
 $91:C200 90 0E       BCC $0E    [$C210]     ; If [$22] >= 0:
 $91:C202 E2 20       SEP #$20               ;\
@@ -5637,12 +5637,12 @@ $91:C218 10 F8       BPL $F8    [$C212]     ;/
 ; BRANCH_LEFT_EDGE_END
 $91:C21A C2 20       REP #$20
 $91:C21C 7A          PLY                    ;\
-$91:C21D C8          INY                    ;} Y = ([x-ray origin Y position] - 1) * 2 + 1
+$91:C21D C8          INY                    ;} Y = ([beam origin Y position] - 1) * 2 + 1
 
 ; LOOP_RIGHT_OFF_SCREEN
 $91:C21E A5 24       LDA $24    [$7E:0024]  ;\
 $91:C220 38          SEC                    ;|
-$91:C221 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C221 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C223 85 24       STA $24    [$7E:0024]  ;/
 $91:C225 90 0B       BCC $0B    [$C232]     ; If [$24] < 10000h:
 $91:C227 88          DEY                    ;\
@@ -5671,7 +5671,7 @@ $91:C24A 85 14       STA $14    [$7E:0014]  ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:C24C A5 24       LDA $24    [$7E:0024]  ;\
 $91:C24E 38          SEC                    ;|
-$91:C24F E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C24F E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C251 85 24       STA $24    [$7E:0024]  ;/
 $91:C253 90 0E       BCC $0E    [$C263]     ; If [$24] < 0:
 $91:C255 E2 20       SEP #$20               ;\
@@ -5707,32 +5707,32 @@ $91:C27E 60          RTS
 }
 
 
-;;; $C27F: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed downwards ;;;
+;;; $C27F: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed downwards ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h
-;;     $18: X-ray origin Y position
-;;     $1A: X-ray left edge angle
-;;     $1C: X-ray right edge angle
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h
+;;     $18: Beam origin Y position
+;;     $1A: Beam left edge angle
+;;     $1C: Beam right edge angle
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 $91:C27F 08          PHP
 $91:C280 C2 30       REP #$30
 $91:C282 A5 18       LDA $18    [$7E:0018]  ;\
-$91:C284 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:C284 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:C285 A8          TAY                    ;/
 $91:C286 A5 16       LDA $16    [$7E:0016]  ;\
-$91:C288 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:C28A 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:C288 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:C28A 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 $91:C28C A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:C28E C9 80 00    CMP #$0080             ;} If [x-ray right edge angle] < 80h:
+$91:C28E C9 80 00    CMP #$0080             ;} If [beam right edge angle] < 80h:
 $91:C291 10 05       BPL $05    [$C298]     ;/
 $91:C293 A2 00 00    LDX #$0000             ; X = 0
 $91:C296 80 0F       BRA $0F    [$C2A7]     ; Go to BRANCH_MERGE
 
 $91:C298 A5 1A       LDA $1A    [$7E:001A]  ;\
-$91:C29A C9 80 00    CMP #$0080             ;} If [x-ray left edge angle] < 80h:
+$91:C29A C9 80 00    CMP #$0080             ;} If [beam left edge angle] < 80h:
 $91:C29D 10 05       BPL $05    [$C2A4]     ;/
 $91:C29F A2 02 00    LDX #$0002             ; X = 2
 $91:C2A2 80 03       BRA $03    [$C2A7]     ; Go to BRANCH_MERGE
@@ -5755,15 +5755,15 @@ $91:C2B7             dw C2BD, C381, C446
 }
 
 
-;;; $C2BD: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed downwards - beam is aimed down-right ;;;
+;;; $C2BD: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed downwards - beam is aimed down-right ;;;
 {
 ;; Parameters:
-;;     Y: [X-ray origin Y position] * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h (note: negative)
-;;     $24: X-ray origin X position * 100h (note: negative)
+;;     Y: [Beam origin Y position] * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h (note: negative)
+;;     $24: Beam origin X position * 100h (note: negative)
 
 ;; Returns:
 ;;     $12: Index of top Y position of the beam
@@ -5778,7 +5778,7 @@ $91:C2C0 5A          PHY                    ; Save Y
 ; LOOP_RIGHT_OFF_SCREEN
 $91:C2C1 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C2C3 18          CLC                    ;|
-$91:C2C4 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C2C4 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C2C6 85 24       STA $24    [$7E:0024]  ;/
 $91:C2C8 B0 0B       BCS $0B    [$C2D5]     ; If [$24] < 0:
 $91:C2CA C8          INY                    ;\
@@ -5806,7 +5806,7 @@ $91:C2EC 85 12       STA $12    [$7E:0012]  ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:C2EE A5 24       LDA $24    [$7E:0024]  ;\
 $91:C2F0 18          CLC                    ;|
-$91:C2F1 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C2F1 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C2F3 85 24       STA $24    [$7E:0024]  ;/
 $91:C2F5 B0 0D       BCS $0D    [$C304]     ; If [$24] < 10000h:
 $91:C2F7 A5 25       LDA $25    [$7E:0025]  ;\
@@ -5826,12 +5826,12 @@ $91:C30E 30 F4       BMI $F4    [$C304]     ;/
 
 ; BRANCH_RIGHT_EDGE_END
 $91:C310 7A          PLY                    ;\
-$91:C311 C8          INY                    ;} Y = [x-ray origin Y position] * 2 + 1
+$91:C311 C8          INY                    ;} Y = [beam origin Y position] * 2 + 1
 
 ; LOOP_LEFT_OFF_SCREEN
 $91:C312 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C314 18          CLC                    ;|
-$91:C315 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C315 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C317 85 22       STA $22    [$7E:0022]  ;/
 $91:C319 B0 0B       BCS $0B    [$C326]     ; If [$22] < 0:
 $91:C31B C8          INY                    ;\
@@ -5861,7 +5861,7 @@ $91:C341 85 14       STA $14    [$7E:0014]  ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:C343 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C345 18          CLC                    ;|
-$91:C346 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C346 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C348 85 22       STA $22    [$7E:0022]  ;/
 $91:C34A B0 11       BCS $11    [$C35D]     ; If [$22] < 10000h:
 $91:C34C E2 20       SEP #$20               ;\
@@ -5902,15 +5902,15 @@ $91:C380 60          RTS
 }
 
 
-;;; $C381: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed downwards - beam is aimed down ;;;
+;;; $C381: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed downwards - beam is aimed down ;;;
 {
 ;; Parameters:
-;;     Y: [X-ray origin Y position] * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: [Beam origin Y position] * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ;; Returns:
 ;;     $12: Index of top Y position of the beam
@@ -5922,7 +5922,7 @@ $91:C381 08          PHP
 $91:C382 C2 30       REP #$30
 $91:C384 5A          PHY                    ; Save Y
 $91:C385 A5 20       LDA $20    [$7E:0020]  ;\
-$91:C387 D0 10       BNE $10    [$C399]     ;} If [x-ray right edge gradient * 100h] != 0: go to LOOP_RIGHT_OFF_SCREEN
+$91:C387 D0 10       BNE $10    [$C399]     ;} If [beam right edge gradient * 100h] != 0: go to LOOP_RIGHT_OFF_SCREEN
 $91:C389 84 12       STY $12    [$7E:0012]  ; $12 = [Y]
 $91:C38B A9 00 00    LDA #$0000             ;\
                                             ;|
@@ -5936,7 +5936,7 @@ $91:C397 80 4F       BRA $4F    [$C3E8]     ; Go to BRANCH_RIGHT_EDGE_END
 ; LOOP_RIGHT_OFF_SCREEN
 $91:C399 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C39B 38          SEC                    ;|
-$91:C39C E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C39C E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C39E 85 24       STA $24    [$7E:0024]  ;/
 $91:C3A0 90 0B       BCC $0B    [$C3AD]     ; If [$24] >= 10000h:
 $91:C3A2 C8          INY                    ;\
@@ -5964,7 +5964,7 @@ $91:C3C4 85 12       STA $12    [$7E:0012]  ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:C3C6 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C3C8 38          SEC                    ;|
-$91:C3C9 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C3C9 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C3CB 85 24       STA $24    [$7E:0024]  ;/
 $91:C3CD 90 0D       BCC $0D    [$C3DC]     ; If [$24] >= 0:
 $91:C3CF A5 25       LDA $25    [$7E:0025]  ;\
@@ -5984,12 +5984,12 @@ $91:C3E6 30 F4       BMI $F4    [$C3DC]     ;/
 
 ; BRANCH_RIGHT_EDGE_END
 $91:C3E8 7A          PLY                    ;\
-$91:C3E9 C8          INY                    ;} Y = [x-ray origin Y position] * 2 + 1
+$91:C3E9 C8          INY                    ;} Y = [beam origin Y position] * 2 + 1
 
 ; LOOP_LEFT_OFF_SCREEN
 $91:C3EA A5 22       LDA $22    [$7E:0022]  ;\
 $91:C3EC 18          CLC                    ;|
-$91:C3ED 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C3ED 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C3EF 85 22       STA $22    [$7E:0022]  ;/
 $91:C3F1 B0 0B       BCS $0B    [$C3FE]     ; If [$22] < 0:
 $91:C3F3 C8          INY                    ;\
@@ -6019,7 +6019,7 @@ $91:C419 85 14       STA $14    [$7E:0014]  ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:C41B A5 22       LDA $22    [$7E:0022]  ;\
 $91:C41D 18          CLC                    ;|
-$91:C41E 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C41E 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C420 85 22       STA $22    [$7E:0022]  ;/
 $91:C422 B0 11       BCS $11    [$C435]     ; If [$22] < 10000h:
 $91:C424 E2 20       SEP #$20               ;\
@@ -6047,15 +6047,15 @@ $91:C445 60          RTS
 }
 
 
-;;; $C446: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is aimed downwards - beam is aimed down-left ;;;
+;;; $C446: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is aimed downwards - beam is aimed down-left ;;;
 {
 ;; Parameters:
-;;     Y: [X-ray origin Y position] * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h (note: above 10000h)
-;;     $24: X-ray origin X position * 100h (note: above 10000h)
+;;     Y: [Beam origin Y position] * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h (note: above 10000h)
+;;     $24: Beam origin X position * 100h (note: above 10000h)
 
 ;; Returns:
 ;;     $12: Index of top Y position of the beam
@@ -6070,7 +6070,7 @@ $91:C449 5A          PHY                    ; Save Y
 ; LOOP_RIGHT_OFF_SCREEN
 $91:C44A A5 24       LDA $24    [$7E:0024]  ;\
 $91:C44C 38          SEC                    ;|
-$91:C44D E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C44D E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C44F 85 24       STA $24    [$7E:0024]  ;/
 $91:C451 90 0B       BCC $0B    [$C45E]     ; If [$24] >= 10000h:
 $91:C453 C8          INY                    ;\
@@ -6098,7 +6098,7 @@ $91:C475 85 12       STA $12    [$7E:0012]  ;/
 ; LOOP_RIGHT_ON_SCREEN
 $91:C477 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C479 38          SEC                    ;|
-$91:C47A E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C47A E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C47C 85 24       STA $24    [$7E:0024]  ;/
 $91:C47E 90 0D       BCC $0D    [$C48D]     ; If [$24] >= 0:
 $91:C480 A5 25       LDA $25    [$7E:0025]  ;\
@@ -6118,12 +6118,12 @@ $91:C497 30 F4       BMI $F4    [$C48D]     ;/
 
 ; BRANCH_RIGHT_EDGE_END
 $91:C499 7A          PLY                    ;\
-$91:C49A C8          INY                    ;} Y = [x-ray origin Y position] * 2 + 1
+$91:C49A C8          INY                    ;} Y = [beam origin Y position] * 2 + 1
 
 ; LOOP_LEFT_OFF_SCREEN
 $91:C49B A5 22       LDA $22    [$7E:0022]  ;\
 $91:C49D 38          SEC                    ;|
-$91:C49E E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C49E E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C4A0 85 22       STA $22    [$7E:0022]  ;/
 $91:C4A2 90 0B       BCC $0B    [$C4AF]     ; If [$22] >= 10000h:
 $91:C4A4 C8          INY                    ;\
@@ -6153,7 +6153,7 @@ $91:C4CA 85 14       STA $14    [$7E:0014]  ;/
 ; LOOP_LEFT_ON_SCREEN
 $91:C4CC A5 22       LDA $22    [$7E:0022]  ;\
 $91:C4CE 38          SEC                    ;|
-$91:C4CF E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C4CF E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C4D1 85 22       STA $22    [$7E:0022]  ;/
 $91:C4D3 90 11       BCC $11    [$C4E6]     ; If [$22] >= 0:
 $91:C4D5 E2 20       SEP #$20               ;\
@@ -6191,17 +6191,17 @@ $91:C504 60          RTS
 }
 
 
-;;; $C505: Calculate x-ray HDMA data table - x-ray origin is off screen - beam is horizontal line ;;;
+;;; $C505: Calculate x-ray / morph ball eye beam HDMA data table - origin is off screen - beam is horizontal line ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $12: X-ray angle
-;;     $18: X-ray origin Y position
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $12: Beam angle
+;;     $18: Beam origin Y position
 $91:C505 08          PHP
 $91:C506 C2 30       REP #$30
 $91:C508 A5 18       LDA $18    [$7E:0018]  ;\
 $91:C50A 3A          DEC A                  ;|
-$91:C50B 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C50B 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C50C A8          TAY                    ;/
 $91:C50D A5 12       LDA $12    [$7E:0012]  ;\
 $91:C50F C9 40 00    CMP #$0040             ;|
@@ -6228,7 +6228,7 @@ $91:C530 10 F0       BPL $F0    [$C522]     ; If [Y] >= 0: go to LOOP_TOP
 
 ; LOOP_BOTTOM
 $91:C532 A5 18       LDA $18    [$7E:0018]  ;\
-$91:C534 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:C534 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:C535 A8          TAY                    ;/
 
 $91:C536 B7 00       LDA [$00],y            ;\
@@ -6246,14 +6246,14 @@ $91:C54A 60          RTS
 }
 
 
-;;; $C54B: Calculate x-ray HDMA data table - x-ray origin is on screen ;;;
+;;; $C54B: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen ;;;
 {
 ;; Parameters:
-;;     X: X-ray origin X position
-;;     Y: X-ray origin Y position
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $12: [x-ray angle]
-;;     $14: [x-ray angular width]
+;;     X: Beam origin X position
+;;     Y: Beam origin Y position
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $12: [beam angle]
+;;     $14: [beam angular width]
 $91:C54B 08          PHP
 $91:C54C 8B          PHB
 $91:C54D 4B          PHK                    ;\
@@ -6266,9 +6266,9 @@ $91:C556 85 16       STA $16    [$7E:0016]  ;/
 $91:C558 84 18       STY $18    [$7E:0018]  ; $18 = [Y]
 $91:C55A A5 12       LDA $12    [$7E:0012]  ;\
 $91:C55C 38          SEC                    ;|
-$91:C55D E5 14       SBC $14    [$7E:0014]  ;} $1A = [x-ray angle] - [x-ray angular width] (x-ray left edge angle)
+$91:C55D E5 14       SBC $14    [$7E:0014]  ;} $1A = [beam angle] - [beam angular width] (beam left edge angle)
 $91:C55F 85 1A       STA $1A    [$7E:001A]  ;/
-$91:C561 10 08       BPL $08    [$C56B]     ; If [x-ray angle] < [x-ray angular width]:
+$91:C561 10 08       BPL $08    [$C56B]     ; If [beam angle] < [beam angular width]:
 $91:C563 A9 00 01    LDA #$0100             ;\
 $91:C566 18          CLC                    ;|
 $91:C567 65 1A       ADC $1A    [$7E:001A]  ;} $1A += 100h
@@ -6276,61 +6276,61 @@ $91:C569 85 1A       STA $1A    [$7E:001A]  ;/
 
 $91:C56B A5 12       LDA $12    [$7E:0012]  ;\
 $91:C56D 18          CLC                    ;|
-$91:C56E 65 14       ADC $14    [$7E:0014]  ;} $1C = [x-ray angle] + [x-ray angular width] (x-ray right edge angle)
+$91:C56E 65 14       ADC $14    [$7E:0014]  ;} $1C = [beam angle] + [beam angular width] (beam right edge angle)
 $91:C570 85 1C       STA $1C    [$7E:001C]  ;/
 $91:C572 C9 01 01    CMP #$0101             ;\
-$91:C575 30 06       BMI $06    [$C57D]     ;} If [x-ray angle] + [x-ray angular width] > 100h:
+$91:C575 30 06       BMI $06    [$C57D]     ;} If [beam angle] + [beam angular width] > 100h:
 $91:C577 38          SEC                    ;\
 $91:C578 E9 00 01    SBC #$0100             ;} $1C -= 100h
 $91:C57B 85 1C       STA $1C    [$7E:001C]  ;/
 
 $91:C57D A5 14       LDA $14    [$7E:0014]  ;\
-$91:C57F D0 0C       BNE $0C    [$C58D]     ;} If [x-ray angular width] = 0:
+$91:C57F D0 0C       BNE $0C    [$C58D]     ;} If [beam angular width] = 0:
 $91:C581 A5 12       LDA $12    [$7E:0012]  ;\
-$91:C583 C9 40 00    CMP #$0040             ;} If [x-ray angle] = 40h: go to BRANCH_STRICTLY_HORIZONTAL
+$91:C583 C9 40 00    CMP #$0040             ;} If [beam angle] = 40h: go to BRANCH_STRICTLY_HORIZONTAL
 $91:C586 F0 3C       BEQ $3C    [$C5C4]     ;/
 $91:C588 C9 C0 00    CMP #$00C0             ;\
-$91:C58B F0 37       BEQ $37    [$C5C4]     ;} If [x-ray angle] = C0h: go to BRANCH_STRICTLY_HORIZONTAL
+$91:C58B F0 37       BEQ $37    [$C5C4]     ;} If [beam angle] = C0h: go to BRANCH_STRICTLY_HORIZONTAL
 
 $91:C58D A5 1A       LDA $1A    [$7E:001A]  ;\
-$91:C58F C9 80 00    CMP #$0080             ;} If [x-ray left edge angle] < 80h:
+$91:C58F C9 80 00    CMP #$0080             ;} If [beam left edge angle] < 80h:
 $91:C592 10 0E       BPL $0E    [$C5A2]     ;/
 $91:C594 C9 40 00    CMP #$0040             ;\
-$91:C597 10 21       BPL $21    [$C5BA]     ;} If [x-ray left edge angle] >= 40h: go to BRANCH_BOTTOM_HALF
+$91:C597 10 21       BPL $21    [$C5BA]     ;} If [beam left edge angle] >= 40h: go to BRANCH_BOTTOM_HALF
 $91:C599 A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:C59B C9 40 00    CMP #$0040             ;} If [x-ray right edge angle] < 40h: go to BRANCH_TOP_HALF
+$91:C59B C9 40 00    CMP #$0040             ;} If [beam right edge angle] < 40h: go to BRANCH_TOP_HALF
 $91:C59E 30 15       BMI $15    [$C5B5]     ;/
 $91:C5A0 80 0E       BRA $0E    [$C5B0]     ; Go to BRANCH_RIGHT
 
 $91:C5A2 C9 C0 00    CMP #$00C0             ;\
-$91:C5A5 10 0E       BPL $0E    [$C5B5]     ;} If [x-ray left edge angle] >= C0h: go to BRANCH_TOP_HALF
+$91:C5A5 10 0E       BPL $0E    [$C5B5]     ;} If [beam left edge angle] >= C0h: go to BRANCH_TOP_HALF
 $91:C5A7 A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:C5A9 C9 C0 00    CMP #$00C0             ;} If [x-ray right edge angle] < C0h: go to BRANCH_BOTTOM_HALF
+$91:C5A9 C9 C0 00    CMP #$00C0             ;} If [beam right edge angle] < C0h: go to BRANCH_BOTTOM_HALF
 $91:C5AC 30 0C       BMI $0C    [$C5BA]     ;/
 $91:C5AE 80 0F       BRA $0F    [$C5BF]     ; Go to BRANCH_LEFT
 
 ; BRANCH_RIGHT
-; [x-ray left edge angle] < 40h and [x-ray right edge angle] >= 40h
+; [beam left edge angle] < 40h and [beam right edge angle] >= 40h
 $91:C5B0 A0 00 00    LDY #$0000             ; Y = 0
 $91:C5B3 80 12       BRA $12    [$C5C7]     ; Go to BRANCH_MERGE
 
 ; BRANCH_TOP_HALF
-; [x-ray right edge angle] < 40h or [x-ray left edge angle] >= C0h
+; [beam right edge angle] < 40h or [beam left edge angle] >= C0h
 $91:C5B5 A0 02 00    LDY #$0002             ; Y = 2
 $91:C5B8 80 0D       BRA $0D    [$C5C7]     ; Go to BRANCH_MERGE
 
 ; BRANCH_BOTTOM_HALF
-; 40h <= [x-ray left edge angle] < 80h or 80h <= [x-ray left edge angle] and [x-ray right edge angle] < C0h
+; 40h <= [beam left edge angle] < 80h or 80h <= [beam left edge angle] and [beam right edge angle] < C0h
 $91:C5BA A0 04 00    LDY #$0004             ; Y = 4
 $91:C5BD 80 08       BRA $08    [$C5C7]     ; Go to BRANCH_MERGE
 
 ; BRANCH_LEFT
-; [x-ray left edge angle] < C0h and [x-ray right edge angle] >= C0h
+; [beam left edge angle] < C0h and [beam right edge angle] >= C0h
 $91:C5BF A0 06 00    LDY #$0006             ; Y = 6
 $91:C5C2 80 03       BRA $03    [$C5C7]     ; Go to BRANCH_MERGE
 
 ; BRANCH_STRICTLY_HORIZONTAL
-; [x-ray angular width] = 0 and ([x-ray angle] = 40h or [x-ray angle] = C0h)
+; [beam angular width] = 0 and ([beam angle] = 40h or [beam angle] = C0h)
 $91:C5C4 A0 08 00    LDY #$0008             ; Y = 8
 
 ; BRANCH_MERGE
@@ -6339,7 +6339,7 @@ $91:C5C9 C9 80 00    CMP #$0080             ;|
 $91:C5CC 30 04       BMI $04    [$C5D2]     ;|
 $91:C5CE 38          SEC                    ;|
 $91:C5CF E9 80 00    SBC #$0080             ;|
-                                            ;} $1E = |tan([x-ray left edge angle] % 80h * pi / 80h)| * 100h (x-ray left edge gradient)
+                                            ;} $1E = |tan([beam left edge angle] % 80h * pi / 80h)| * 100h (beam left edge gradient)
 $91:C5D2 0A          ASL A                  ;|
 $91:C5D3 AA          TAX                    ;|
 $91:C5D4 BD D4 C9    LDA $C9D4,x[$91:CA7E]  ;|
@@ -6349,7 +6349,7 @@ $91:C5DB C9 80 00    CMP #$0080             ;|
 $91:C5DE 30 04       BMI $04    [$C5E4]     ;|
 $91:C5E0 38          SEC                    ;|
 $91:C5E1 E9 80 00    SBC #$0080             ;|
-                                            ;} $20 = |tan([x-ray right edge angle] % 80h * pi / 80h)| * 100h (x-ray right edge gradient)
+                                            ;} $20 = |tan([beam right edge angle] % 80h * pi / 80h)| * 100h (beam right edge gradient)
 $91:C5E4 0A          ASL A                  ;|
 $91:C5E5 AA          TAX                    ;|
 $91:C5E6 BD D4 C9    LDA $C9D4,x[$91:CA7E]  ;|
@@ -6365,14 +6365,14 @@ $91:C5F5             dw C5FF, C6C1, C822, C660, C998
 }
 
 
-;;; $C5FF: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed right ;;;
+;;; $C5FF: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed right ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h
-;;     $18: X-ray origin Y position
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h
+;;     $18: Beam origin Y position
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -6380,21 +6380,21 @@ $91:C5FF 08          PHP
 $91:C600 C2 30       REP #$30
 $91:C602 A5 18       LDA $18    [$7E:0018]  ;\
 $91:C604 3A          DEC A                  ;|
-$91:C605 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C605 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C606 A8          TAY                    ;/
 $91:C607 A5 17       LDA $17    [$7E:0017]  ;\
-$91:C609 09 00 FF    ORA #$FF00             ;} [$00] + [Y] = [x-ray origin X position], FFh
+$91:C609 09 00 FF    ORA #$FF00             ;} [$00] + [Y] = [beam origin X position], FFh
 $91:C60C 97 00       STA [$00],y[$7E:9894]  ;/
 $91:C60E 88          DEY                    ;\
 $91:C60F 88          DEY                    ;} Y -= 2
 $91:C610 A5 16       LDA $16    [$7E:0016]  ;\
-$91:C612 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:C614 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:C612 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:C614 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 
 ; LOOP_LEFT_ON_SCREEN
 $91:C616 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C618 18          CLC                    ;|
-$91:C619 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C619 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C61B 85 22       STA $22    [$7E:0022]  ;/
 $91:C61D B0 0D       BCS $0D    [$C62C]     ; If [$22] < 10000h:
 $91:C61F A5 23       LDA $23    [$7E:0023]  ;\
@@ -6413,13 +6413,13 @@ $91:C633 10 F7       BPL $F7    [$C62C]     ;/
 
 ; BRANCH_LEFT_EDGE_END
 $91:C635 A5 18       LDA $18    [$7E:0018]  ;\
-$91:C637 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:C637 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:C638 A8          TAY                    ;/
 
 ; LOOP_RIGHT_ON_SCREEN
 $91:C639 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C63B 18          CLC                    ;|
-$91:C63C 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C63C 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C63E 85 24       STA $24    [$7E:0024]  ;/
 $91:C640 B0 10       BCS $10    [$C652]     ; If [$24] < 10000h:
 $91:C642 A5 25       LDA $25    [$7E:0025]  ;\
@@ -6443,14 +6443,14 @@ $91:C65F 60          RTS
 }
 
 
-;;; $C660: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed left ;;;
+;;; $C660: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed left ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h
-;;     $18: X-ray origin Y position
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h
+;;     $18: Beam origin Y position
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -6458,21 +6458,21 @@ $91:C660 08          PHP
 $91:C661 C2 30       REP #$30
 $91:C663 A5 18       LDA $18    [$7E:0018]  ;\
 $91:C665 3A          DEC A                  ;|
-$91:C666 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C666 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C667 A8          TAY                    ;/
 $91:C668 A5 16       LDA $16    [$7E:0016]  ;\
-$91:C66A 29 00 FF    AND #$FF00             ;} [$00] + [Y] = [x-ray origin X position], FFh
+$91:C66A 29 00 FF    AND #$FF00             ;} [$00] + [Y] = [beam origin X position], FFh
 $91:C66D 97 00       STA [$00],y[$7E:98FE]  ;/
 $91:C66F 88          DEY                    ;\
 $91:C670 88          DEY                    ;} Y -= 2
 $91:C671 A5 16       LDA $16    [$7E:0016]  ;\
-$91:C673 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:C675 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:C673 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:C675 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 
 ; LOOP_RIGHT_ON_SCREEN
 $91:C677 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C679 38          SEC                    ;|
-$91:C67A E5 20       SBC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C67A E5 20       SBC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C67C 85 24       STA $24    [$7E:0024]  ;/
 $91:C67E 90 0D       BCC $0D    [$C68D]     ; If [$24] >= 0:
 $91:C680 A5 24       LDA $24    [$7E:0024]  ;\
@@ -6491,13 +6491,13 @@ $91:C694 10 F7       BPL $F7    [$C68D]     ;/
 
 ; BRANCH_RIGHT_EDGE_END
 $91:C696 A5 18       LDA $18    [$7E:0018]  ;\
-$91:C698 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:C698 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:C699 A8          TAY                    ;/
 
 ; LOOP_LEFT_ON_SCREEN
 $91:C69A A5 22       LDA $22    [$7E:0022]  ;\
 $91:C69C 38          SEC                    ;|
-$91:C69D E5 1E       SBC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C69D E5 1E       SBC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C69F 85 22       STA $22    [$7E:0022]  ;/
 $91:C6A1 90 10       BCC $10    [$C6B3]     ; If [$22] >= 0:
 $91:C6A3 A5 22       LDA $22    [$7E:0022]  ;\
@@ -6521,43 +6521,43 @@ $91:C6C0 60          RTS
 }
 
 
-;;; $C6C1: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed upwards ;;;
+;;; $C6C1: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed upwards ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h
-;;     $18: X-ray origin Y position
-;;     $1A: X-ray left edge angle
-;;     $1C: X-ray right edge angle
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h
+;;     $18: Beam origin Y position
+;;     $1A: Beam left edge angle
+;;     $1C: Beam right edge angle
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 $91:C6C1 08          PHP
 $91:C6C2 C2 30       REP #$30
 $91:C6C4 A5 18       LDA $18    [$7E:0018]  ;\
 $91:C6C6 3A          DEC A                  ;|
-$91:C6C7 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C6C7 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C6C8 A8          TAY                    ;/
 $91:C6C9 E2 20       SEP #$20               ;\
 $91:C6CB A5 17       LDA $17    [$7E:0017]  ;|
 $91:C6CD 97 00       STA [$00],y[$7E:9948]  ;|
 $91:C6CF C8          INY                    ;|
-$91:C6D0 A5 17       LDA $17    [$7E:0017]  ;} [$00] + [Y] = [x-ray origin X position], [x-ray origin X position]
+$91:C6D0 A5 17       LDA $17    [$7E:0017]  ;} [$00] + [Y] = [beam origin X position], [beam origin X position]
 $91:C6D2 97 00       STA [$00],y[$7E:9949]  ;|
 $91:C6D4 C2 20       REP #$20               ;|
 $91:C6D6 88          DEY                    ;/
 $91:C6D7 88          DEY                    ;\
 $91:C6D8 88          DEY                    ;} Y -= 2
 $91:C6D9 A5 16       LDA $16    [$7E:0016]  ;\
-$91:C6DB 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:C6DD 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:C6DB 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:C6DD 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 $91:C6DF A5 1A       LDA $1A    [$7E:001A]  ;\
-$91:C6E1 C9 C0 00    CMP #$00C0             ;} If [x-ray left edge angle] < C0h:
+$91:C6E1 C9 C0 00    CMP #$00C0             ;} If [beam left edge angle] < C0h:
 $91:C6E4 10 05       BPL $05    [$C6EB]     ;/
 $91:C6E6 A2 00 00    LDX #$0000             ; X = 0
 $91:C6E9 80 0F       BRA $0F    [$C6FA]     ; Go to BRANCH_MERGE
 
 $91:C6EB A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:C6ED C9 C0 00    CMP #$00C0             ;} If [x-ray right edge angle] < C0h:
+$91:C6ED C9 C0 00    CMP #$00C0             ;} If [beam right edge angle] < C0h:
 $91:C6F0 10 05       BPL $05    [$C6F7]     ;/
 $91:C6F2 A2 02 00    LDX #$0002             ; X = 2
 $91:C6F5 80 03       BRA $03    [$C6FA]     ; Go to BRANCH_MERGE
@@ -6567,7 +6567,7 @@ $91:C6F7 A2 04 00    LDX #$0004             ; X = 4
 ; BRANCH_MERGE
 $91:C6FA FC 16 C7    JSR ($C716,x)[$91:C7CB]; Execute [$C716 + [X]]
 $91:C6FD A5 18       LDA $18    [$7E:0018]  ;\
-$91:C6FF 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:C6FF 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:C700 A8          TAY                    ;/
 
 ; LOOP
@@ -6588,15 +6588,15 @@ $91:C716             dw C71C, C77F, C7CB
 }
 
 
-;;; $C71C: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed upwards - beam is aimed up-right ;;;
+;;; $C71C: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed upwards - beam is aimed up-right ;;;
 {
 ;; Parameters:
-;;     Y: ([X-ray origin Y position] - 1) * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: ([Beam origin Y position] - 1) * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -6607,7 +6607,7 @@ $91:C71F 5A          PHY                    ; Save Y
 ; LOOP_LEFT_ON_SCREEN
 $91:C720 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C722 18          CLC                    ;|
-$91:C723 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C723 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C725 85 22       STA $22    [$7E:0022]  ;/
 $91:C727 B0 0E       BCS $0E    [$C737]     ; If [$22] < 10000h:
 $91:C729 E2 20       SEP #$20               ;\
@@ -6631,12 +6631,12 @@ $91:C744 C2 20       REP #$20
 
 ; BRANCH_LEFT_EDGE_END
 $91:C746 7A          PLY                    ;\
-$91:C747 C8          INY                    ;} Y = ([x-ray origin Y position] - 1) * 2 + 1
+$91:C747 C8          INY                    ;} Y = ([beam origin Y position] - 1) * 2 + 1
 
 ; LOOP_RIGHT_ON_SCREEN
 $91:C748 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C74A 18          CLC                    ;|
-$91:C74B 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C74B 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C74D 85 24       STA $24    [$7E:0024]  ;/
 $91:C74F B0 0E       BCS $0E    [$C75F]     ; If [$24] < 10000h:
 $91:C751 E2 20       SEP #$20               ;\
@@ -6673,20 +6673,20 @@ $91:C77E 60          RTS
 }
 
 
-;;; $C77F: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed upwards - beam is aimed up ;;;
+;;; $C77F: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed upwards - beam is aimed up ;;;
 {
 ;; Parameters:
-;;     Y: ([X-ray origin Y position] - 1) * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: ([Beam origin Y position] - 1) * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
 
-; This routine is never called, because x-ray is not allowed to be aimed upwards.
+; This routine is never called, because x-ray is not allowed to be aimed upwards and morph ball eye isn't positioned to allow it.
 $91:C77F 08          PHP
 $91:C780 C2 30       REP #$30
 $91:C782 5A          PHY                    ; Save Y
@@ -6694,7 +6694,7 @@ $91:C782 5A          PHY                    ; Save Y
 ; LOOP_LEFT_ON_SCREEN
 $91:C783 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C785 38          SEC                    ;|
-$91:C786 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C786 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C788 85 22       STA $22    [$7E:0022]  ;/
 $91:C78A 90 0E       BCC $0E    [$C79A]     ; If [$22] >= 0:
 $91:C78C E2 20       SEP #$20               ;\
@@ -6717,12 +6717,12 @@ $91:C7A4 C2 20       REP #$20
 
 ; BRANCH_LEFT_EDGE_END
 $91:C7A6 7A          PLY                    ;\
-$91:C7A7 C8          INY                    ;} Y = ([x-ray origin Y position] - 1) * 2 + 1
+$91:C7A7 C8          INY                    ;} Y = ([beam origin Y position] - 1) * 2 + 1
 
 ; LOOP_RIGHT_ON_SCREEN
 $91:C7A8 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C7AA 18          CLC                    ;|
-$91:C7AB 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C7AB 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C7AD 85 24       STA $24    [$7E:0024]  ;/
 $91:C7AF B0 0E       BCS $0E    [$C7BF]     ; If [$24] < 10000h:
 $91:C7B1 E2 20       SEP #$20               ;\
@@ -6747,15 +6747,15 @@ $91:C7CA 60          RTS
 }
 
 
-;;; $C7CB: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed upwards - beam is aimed up-left ;;;
+;;; $C7CB: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed upwards - beam is aimed up-left ;;;
 {
 ;; Parameters:
-;;     Y: ([X-ray origin Y position] - 1) * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: ([Beam origin Y position] - 1) * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -6766,7 +6766,7 @@ $91:C7CE 5A          PHY                    ; Save Y
 ; LOOP_LEFT_ON_SCREEN
 $91:C7CF A5 22       LDA $22    [$7E:0022]  ;\
 $91:C7D1 38          SEC                    ;|
-$91:C7D2 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C7D2 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C7D4 85 22       STA $22    [$7E:0022]  ;/
 $91:C7D6 90 0E       BCC $0E    [$C7E6]     ; If [$22] >= 0:
 $91:C7D8 E2 20       SEP #$20               ;\
@@ -6789,12 +6789,12 @@ $91:C7F0 C2 20       REP #$20
 
 ; BRANCH_LEFT_EDGE_END
 $91:C7F2 7A          PLY                    ;\
-$91:C7F3 C8          INY                    ;} Y = ([x-ray origin Y position] - 1) * 2 + 1
+$91:C7F3 C8          INY                    ;} Y = ([beam origin Y position] - 1) * 2 + 1
 
 ; LOOP_RIGHT_ON_SCREEN
 $91:C7F4 A5 24       LDA $24    [$7E:0024]  ;\
 $91:C7F6 38          SEC                    ;|
-$91:C7F7 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C7F7 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C7F9 85 24       STA $24    [$7E:0024]  ;/
 $91:C7FB 90 0E       BCC $0E    [$C80B]     ; If [$24] < 0:
 $91:C7FD E2 20       SEP #$20               ;\
@@ -6828,41 +6828,41 @@ $91:C821 60          RTS
 }
 
 
-;;; $C822: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed downwards ;;;
+;;; $C822: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed downwards ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $16: X-ray origin X position * 100h
-;;     $18: X-ray origin Y position
-;;     $1A: X-ray left edge angle
-;;     $1C: X-ray right edge angle
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $16: Beam origin X position * 100h
+;;     $18: Beam origin Y position
+;;     $1A: Beam left edge angle
+;;     $1C: Beam right edge angle
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
 $91:C822 08          PHP
 $91:C823 C2 30       REP #$30
 $91:C825 A5 18       LDA $18    [$7E:0018]  ;\
 $91:C827 3A          DEC A                  ;|
-$91:C828 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C828 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C829 A8          TAY                    ;/
 $91:C82A E2 20       SEP #$20               ;\
 $91:C82C A5 17       LDA $17    [$7E:0017]  ;|
 $91:C82E 97 00       STA [$00],y[$7E:918E]  ;|
-$91:C830 C8          INY                    ;} [$00] + [Y] = [x-ray origin X position], [x-ray origin X position]
+$91:C830 C8          INY                    ;} [$00] + [Y] = [beam origin X position], [beam origin X position]
 $91:C831 A5 17       LDA $17    [$7E:0017]  ;|
 $91:C833 97 00       STA [$00],y[$7E:918F]  ;|
 $91:C835 C2 20       REP #$20               ;/
 $91:C837 C8          INY                    ; Y += 2
 $91:C838 A5 16       LDA $16    [$7E:0016]  ;\
-$91:C83A 85 22       STA $22    [$7E:0022]  ;} $22 = [x-ray origin X position * 100h]
-$91:C83C 85 24       STA $24    [$7E:0024]  ; $24 = [x-ray origin X position * 100h]
+$91:C83A 85 22       STA $22    [$7E:0022]  ;} $22 = [beam origin X position * 100h]
+$91:C83C 85 24       STA $24    [$7E:0024]  ; $24 = [beam origin X position * 100h]
 $91:C83E A5 1C       LDA $1C    [$7E:001C]  ;\
-$91:C840 C9 80 00    CMP #$0080             ;} If [x-ray right edge angle] < 80h:
+$91:C840 C9 80 00    CMP #$0080             ;} If [beam right edge angle] < 80h:
 $91:C843 10 05       BPL $05    [$C84A]     ;/
 $91:C845 A2 00 00    LDX #$0000             ; X = 0
 $91:C848 80 0F       BRA $0F    [$C859]     ; Go to BRANCH_MERGE
 
 $91:C84A A5 1A       LDA $1A    [$7E:001A]  ;\
-$91:C84C C9 80 00    CMP #$0080             ;} If [x-ray left edge angle] < 80h:
+$91:C84C C9 80 00    CMP #$0080             ;} If [beam left edge angle] < 80h:
 $91:C84F 10 05       BPL $05    [$C856]     ;/
 $91:C851 A2 02 00    LDX #$0002             ; X = 2
 $91:C854 80 03       BRA $03    [$C859]     ; Go to BRANCH_MERGE
@@ -6873,7 +6873,7 @@ $91:C856 A2 04 00    LDX #$0004             ; X = 4
 $91:C859 FC 74 C8    JSR ($C874,x)[$91:C87A]; Execute [$C874 + [X]]
 $91:C85C A5 18       LDA $18    [$7E:0018]  ;\
 $91:C85E 3A          DEC A                  ;|
-$91:C85F 3A          DEC A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C85F 3A          DEC A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C860 0A          ASL A                  ;|
 $91:C861 A8          TAY                    ;/
 
@@ -6894,15 +6894,15 @@ $91:C874             dw C87A, C8E8, C939
 }
 
 
-;;; $C87A: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed downwards - beam is aimed down-right ;;;
+;;; $C87A: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed downwards - beam is aimed down-right ;;;
 {
 ;; Parameters:
-;;     Y: [X-ray origin Y position] * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: [Beam origin Y position] * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -6913,7 +6913,7 @@ $91:C87D 5A          PHY                    ; Save Y
 ; LOOP_RIGHT_ON_SCREEN
 $91:C87E A5 24       LDA $24    [$7E:0024]  ;\
 $91:C880 18          CLC                    ;|
-$91:C881 65 20       ADC $20    [$7E:0020]  ;} $24 += [x-ray right edge gradient * 100h]
+$91:C881 65 20       ADC $20    [$7E:0020]  ;} $24 += [beam right edge gradient * 100h]
 $91:C883 85 24       STA $24    [$7E:0024]  ;/
 $91:C885 B0 0D       BCS $0D    [$C894]     ; If [$24] < 10000h:
 $91:C887 A5 25       LDA $25    [$7E:0025]  ;\
@@ -6934,13 +6934,13 @@ $91:C89E C0 CC 01    CPY #$01CC             ;|
 $91:C8A1 30 F7       BMI $F7    [$C89A]     ;/
 
 ; BRANCH_RIGHT_EDGE_END                     ;\
-$91:C8A3 7A          PLY                    ;} Y = [x-ray origin Y position] * 2 + 1
+$91:C8A3 7A          PLY                    ;} Y = [beam origin Y position] * 2 + 1
 $91:C8A4 C8          INY
 
 ; LOOP_LEFT_ON_SCREEN
 $91:C8A5 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C8A7 18          CLC                    ;|
-$91:C8A8 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C8A8 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C8AA 85 22       STA $22    [$7E:0022]  ;/
 $91:C8AC B0 11       BCS $11    [$C8BF]     ; If [$22] < 10000h:
 $91:C8AE E2 20       SEP #$20               ;\
@@ -6981,15 +6981,15 @@ $91:C8E7 60          RTS
 }
 
 
-;;; $C8E8: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed downwards - beam is aimed down ;;;
+;;; $C8E8: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed downwards - beam is aimed down ;;;
 {
 ;; Parameters:
-;;     Y: [X-ray origin Y position] * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: [Beam origin Y position] * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -7000,7 +7000,7 @@ $91:C8EB 5A          PHY                    ; Save Y
 ; LOOP_RIGHT_ON_SCREEN
 $91:C8EC A5 24       LDA $24    [$7E:0024]  ;\
 $91:C8EE 38          SEC                    ;|
-$91:C8EF E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C8EF E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C8F1 85 24       STA $24    [$7E:0024]  ;/
 $91:C8F3 90 0D       BCC $0D    [$C902]     ; If [$24] >= 0:
 $91:C8F5 A5 25       LDA $25    [$7E:0025]  ;\
@@ -7020,12 +7020,12 @@ $91:C90C 30 F4       BMI $F4    [$C902]     ;/
 
 ; BRANCH_RIGHT_EDGE_END
 $91:C90E 7A          PLY                    ;\
-$91:C90F C8          INY                    ;} Y = [x-ray origin Y position] * 2 + 1
+$91:C90F C8          INY                    ;} Y = [beam origin Y position] * 2 + 1
 
 ; LOOP_LEFT_ON_SCREEN
 $91:C910 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C912 18          CLC                    ;|
-$91:C913 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [x-ray left edge gradient * 100h]
+$91:C913 65 1E       ADC $1E    [$7E:001E]  ;} $22 += [beam left edge gradient * 100h]
 $91:C915 85 22       STA $22    [$7E:0022]  ;/
 $91:C917 B0 11       BCS $11    [$C92A]     ; If [$22] < 10000h:
 $91:C919 E2 20       SEP #$20               ;\
@@ -7052,15 +7052,15 @@ $91:C938 60          RTS
 }
 
 
-;;; $C939: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is aimed downwards - beam is aimed down-left ;;;
+;;; $C939: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is aimed downwards - beam is aimed down-left ;;;
 {
 ;; Parameters:
-;;     Y: [X-ray origin Y position] * 2
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $1E: X-ray left edge gradient * 100h (dx/dy)
-;;     $20: X-ray right edge gradient * 100h (dx/dy)
-;;     $22: X-ray origin X position * 100h
-;;     $24: X-ray origin X position * 100h
+;;     Y: [Beam origin Y position] * 2
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $1E: Beam left edge gradient * 100h (dx/dy)
+;;     $20: Beam right edge gradient * 100h (dx/dy)
+;;     $22: Beam origin X position * 100h
+;;     $24: Beam origin X position * 100h
 
 ; Current left line co-ordinates = ([$22], [Y] / 2)
 ; Current right line co-ordinates = ([$24], [Y] / 2)
@@ -7071,7 +7071,7 @@ $91:C93C 5A          PHY                    ; Save Y
 ; LOOP_RIGHT_ON_SCREEN
 $91:C93D A5 24       LDA $24    [$7E:0024]  ;\
 $91:C93F 38          SEC                    ;|
-$91:C940 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [x-ray right edge gradient * 100h]
+$91:C940 E5 20       SBC $20    [$7E:0020]  ;} $24 -= [beam right edge gradient * 100h]
 $91:C942 85 24       STA $24    [$7E:0024]  ;/
 $91:C944 90 0D       BCC $0D    [$C953]     ; If [$24] >= 0:
 $91:C946 A5 25       LDA $25    [$7E:0025]  ;\
@@ -7091,12 +7091,12 @@ $91:C95D 30 F4       BMI $F4    [$C953]     ;/
 
 ; BRANCH_RIGHT_EDGE_END
 $91:C95F 7A          PLY                    ;\
-$91:C960 C8          INY                    ;} Y = [x-ray origin Y position] * 2 + 1
+$91:C960 C8          INY                    ;} Y = [beam origin Y position] * 2 + 1
 
 ; LOOP_LEFT_ON_SCREEN
 $91:C961 A5 22       LDA $22    [$7E:0022]  ;\
 $91:C963 38          SEC                    ;|
-$91:C964 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [x-ray left edge gradient * 100h]
+$91:C964 E5 1E       SBC $1E    [$7E:001E]  ;} $22 -= [beam left edge gradient * 100h]
 $91:C966 85 22       STA $22    [$7E:0022]  ;/
 $91:C968 90 11       BCC $11    [$C97B]     ; If [$22] >= 0:
 $91:C96A E2 20       SEP #$20               ;\
@@ -7133,29 +7133,29 @@ $91:C997 60          RTS
 }
 
 
-;;; $C998: Calculate x-ray HDMA data table - x-ray origin is on screen - beam is horizontal line ;;;
+;;; $C998: Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen - beam is horizontal line ;;;
 {
 ;; Parameters:
-;;     $00: $7E:9800 (x-ray HDMA data table)
-;;     $12: X-ray angle
-;;     $16: X-ray origin X position * 100h
-;;     $18: X-ray origin Y position
+;;     $00: HDMA data table pointer. $7E:9100 for morph ball eye beam, $7E:9800 for x-ray
+;;     $12: Beam angle
+;;     $16: Beam origin X position * 100h
+;;     $18: Beam origin Y position
 $91:C998 08          PHP
 $91:C999 C2 30       REP #$30
 $91:C99B A5 18       LDA $18    [$7E:0018]  ;\
 $91:C99D 3A          DEC A                  ;|
-$91:C99E 0A          ASL A                  ;} Y = ([x-ray origin Y position] - 1) * 2
+$91:C99E 0A          ASL A                  ;} Y = ([beam origin Y position] - 1) * 2
 $91:C99F A8          TAY                    ;/
 $91:C9A0 A5 12       LDA $12    [$7E:0012]  ;\
-$91:C9A2 C9 40 00    CMP #$0040             ;} If [x-ray angle] = 40h:
+$91:C9A2 C9 40 00    CMP #$0040             ;} If [beam angle] = 40h:
 $91:C9A5 D0 09       BNE $09    [$C9B0]     ;/
 $91:C9A7 A5 17       LDA $17    [$7E:0017]  ;\
-$91:C9A9 09 00 FF    ORA #$FF00             ;} [$00] + [Y] = [x-ray origin X position], FFh
+$91:C9A9 09 00 FF    ORA #$FF00             ;} [$00] + [Y] = [beam origin X position], FFh
 $91:C9AC 97 00       STA [$00],y[$7E:9894]  ;/
 $91:C9AE 80 07       BRA $07    [$C9B7]
 
-$91:C9B0 A5 16       LDA $16    [$7E:0016]  ;\ Else ([x-ray angle] != 40h):
-$91:C9B2 29 00 FF    AND #$FF00             ;} [$00] + [Y] = 00h, [x-ray origin X position]
+$91:C9B0 A5 16       LDA $16    [$7E:0016]  ;\ Else ([beam angle] != 40h):
+$91:C9B2 29 00 FF    AND #$FF00             ;} [$00] + [Y] = 00h, [beam origin X position]
 $91:C9B5 97 00       STA [$00],y[$7E:98FE]  ;/
 
 $91:C9B7 88          DEY                    ;\
@@ -7167,7 +7167,7 @@ $91:C9BE 88          DEY                    ;} [$00]..([$00] + [Y] + 1) = FFh, 0
 $91:C9BF 88          DEY                    ;|
 $91:C9C0 10 FA       BPL $FA    [$C9BC]     ;/
 $91:C9C2 A5 18       LDA $18    [$7E:0018]  ;\
-$91:C9C4 0A          ASL A                  ;} Y = [x-ray origin Y position] * 2
+$91:C9C4 0A          ASL A                  ;} Y = [beam origin Y position] * 2
 $91:C9C5 A8          TAY                    ;/
 $91:C9C6 A9 FF 00    LDA #$00FF             ;\
                                             ;|

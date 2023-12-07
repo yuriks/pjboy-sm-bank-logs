@@ -747,7 +747,7 @@ $82:860B A9 00 00    LDA #$0000             ;\
 $82:860E 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $82:8612 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $82:8615 A9 68 9B    LDA #$9B68             ;\
-$82:8618 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (title sequence)
+$82:8618 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
 $82:861B 28          PLP
 $82:861C 60          RTS                    ; Return
 
@@ -1249,7 +1249,7 @@ $82:8AE4 9C F8 0D    STZ $0DF8  [$7E:0DF8]  ; $0DF8 = 0
 $82:8AE7 9C FA 0D    STZ $0DFA  [$7E:0DFA]  ; $0DFA = 0
 $82:8AEA 9C FC 0D    STZ $0DFC  [$7E:0DFC]  ; $0DFC = 0
 $82:8AED A9 68 9B    LDA #$9B68             ;\
-$82:8AF0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68
+$82:8AF0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
 $82:8AF3 9C 55 1F    STZ $1F55  [$7E:1F55]  ; Demo set = 0
 $82:8AF6 AD 59 1F    LDA $1F59  [$7E:1F59]  ;\
 $82:8AF9 C9 04 00    CMP #$0004             ;} If [number of demo sets] = 4:

@@ -4053,7 +4053,7 @@ $8B:9B67 60          RTS
 }
 
 
-;;; $9B68: Cinematic function - title sequence ;;;
+;;; $9B68: Cinematic function - load title sequence ;;;
 {
 $8B:9B68 22 87 9B 8B JSL $8B9B87[$8B:9B87]  ; Load title sequence graphics
 $8B:9B6C A9 03 FF    LDA #$FF03             ;\
@@ -4071,7 +4071,7 @@ $8B:9B86 60          RTS
 ;;; $9B87: Load title sequence graphics ;;;
 {
 ; Called by:
-;     $9B68
+;     $9B68: Load title sequence
 ;     $82:85FB: Game state 2Ch (transition from demo)
 $8B:9B87 08          PHP
 $8B:9B88 8B          PHB
@@ -4665,8 +4665,8 @@ $8B:A009 60          RTS
 {
 $8B:A00A 08          PHP
 $8B:A00B 8B          PHB
-$8B:A00C 4B          PHK
-$8B:A00D AB          PLB
+$8B:A00C 4B          PHK                    ;\
+$8B:A00D AB          PLB                    ;} DB = $8B
 $8B:A00E C2 30       REP #$30
 $8B:A010 AD 8F 19    LDA $198F  [$7E:198F]  ;\
 $8B:A013 29 F0 00    AND #$00F0             ;|

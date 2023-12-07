@@ -8102,7 +8102,7 @@ $88:E5D3 8D 02 42    STA $4202  [$7E:4202]  ;|
 $88:E5D6 AD 6E 10    LDA $106E  [$7E:106E]  ;|
 $88:E5D9 8D 03 42    STA $4203  [$7E:4203]  ;|
 $88:E5DC EA          NOP                    ;|
-$88:E5DD EA          NOP                    ;} A = [$106E low] * [$12 low] / 100h
+$88:E5DD EA          NOP                    ;} A = [wavy Phantoon amplitude low] * [$12 low] / 100h
 $88:E5DE EA          NOP                    ;|
 $88:E5DF C2 20       REP #$20               ;|
 $88:E5E1 AD 16 42    LDA $4216  [$7E:4216]  ;|
@@ -8114,7 +8114,7 @@ $88:E5EC A5 13       LDA $13    [$7E:0013]  ;|
 $88:E5EE 8D 02 42    STA $4202  [$7E:4202]  ;|
 $88:E5F1 AD 6E 10    LDA $106E  [$7E:106E]  ;|
 $88:E5F4 8D 03 42    STA $4203  [$7E:4203]  ;|
-$88:E5F7 EA          NOP                    ;} A += [$106E low] * [$12 high]
+$88:E5F7 EA          NOP                    ;} A += [wavy Phantoon amplitude low] * [$12 high]
 $88:E5F8 EA          NOP                    ;|
 $88:E5F9 EA          NOP                    ;|
 $88:E5FA C2 20       REP #$20               ;|
@@ -8131,7 +8131,7 @@ $88:E611 EA          NOP                    ;|
 $88:E612 EA          NOP                    ;|
 $88:E613 EA          NOP                    ;|
 $88:E614 C2 20       REP #$20               ;|
-$88:E616 AD 16 42    LDA $4216  [$7E:4216]  ;} A += [$106E high] * [$12 low]
+$88:E616 AD 16 42    LDA $4216  [$7E:4216]  ;} A += [wavy Phantoon amplitude high] * [$12 low]
 $88:E619 85 18       STA $18    [$7E:0018]  ;|
 $88:E61B E2 20       SEP #$20               ;|
 $88:E61D A5 13       LDA $13    [$7E:0013]  ;|
@@ -8144,7 +8144,7 @@ $88:E62C 18          CLC                    ;|
 $88:E62D 65 18       ADC $18    [$7E:0018]  ;/
 $88:E62F 85 16       STA $16    [$7E:0016]  ;\
 $88:E631 AD 15 42    LDA $4215  [$7E:4215]  ;|
-$88:E634 29 00 FF    AND #$FF00             ;} A += [$106E high] * [$12 high] * 100h (whoops, carry isn't being propagated)
+$88:E634 29 00 FF    AND #$FF00             ;} A += [wavy Phantoon amplitude high] * [$12 high] * 100h (whoops, carry isn't being propagated)
 $88:E637 18          CLC                    ;|
 $88:E638 65 16       ADC $16    [$7E:0016]  ;/
 $88:E63A 29 00 FF    AND #$FF00             ;\
@@ -8340,7 +8340,7 @@ $88:E774 A9 8F       LDA #$8F               ;|
 $88:E776 85 76       STA $76    [$7E:0076]  ;|
 $88:E778 C2 30       REP #$30               ;/
 $88:E77A A9 24 00    LDA #$0024             ;\
-$88:E77D 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 24h (BG1/BG2/sprites are drawn the backdrop is added on top inside window 1), layer blending window 2 configuration = none
+$88:E77D 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 24h (BG1/BG2/sprites are drawn the backdrop is added on top inside window 1)
 $88:E780 E2 20       SEP #$20
 $88:E782 A9 E4       LDA #$E4               ; >_<;
 $88:E784 A9 64       LDA #$64               ;\
@@ -8375,7 +8375,7 @@ $88:E7BF AD 98 09    LDA $0998  [$7E:0998]  ;\
 $88:E7C2 C9 13 00    CMP #$0013             ;} If [game state] = death sequence, start: go to BRANCH_DELETE
 $88:E7C5 F0 1E       BEQ $1E    [$E7E5]     ;/
 $88:E7C7 A9 24 00    LDA #$0024             ;\
-$88:E7CA 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 24h (BG1/BG2/sprites are drawn the backdrop is added on top inside window 1), layer blending window 2 configuration = none
+$88:E7CA 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 24h (BG1/BG2/sprites are drawn the backdrop is added on top inside window 1)
 $88:E7CD AD 98 09    LDA $0998  [$7E:0998]  ;\
 $88:E7D0 C9 1B 00    CMP #$001B             ;} If [game state] != reserve tanks auto:
 $88:E7D3 F0 0E       BEQ $0E    [$E7E3]     ;/
@@ -8385,7 +8385,7 @@ $88:E7D9 AB          PLB                    ;|
 $88:E7DA AB          PLB                    ;} Calculate Mother Brain rainbow beam HDMA tables
 $88:E7DB 22 66 94 A9 JSL $A99466[$A9:9466]  ;|
 $88:E7DF AB          PLB                    ;/
-$88:E7E0 20 ED E7    JSR $E7ED  [$88:E7ED]  ; Execute $E7ED
+$88:E7E0 20 ED E7    JSR $E7ED  [$88:E7ED]  ; Set rainbow beam colour math subscreen backdrop colour
 
 $88:E7E3 28          PLP
 $88:E7E4 6B          RTL                    ; Return
@@ -8398,58 +8398,60 @@ $88:E7EC 6B          RTL
 }
 
 
-;;; $E7ED:  ;;;
+;;; $E7ED: Set rainbow beam colour math subscreen backdrop colour ;;;
 {
-$88:E7ED AE 14 19    LDX $1914  [$7E:1914]
-$88:E7F0 BD 33 E8    LDA $E833,x[$88:E833]
-$88:E7F3 10 08       BPL $08    [$E7FD]
-$88:E7F5 9C 14 19    STZ $1914  [$7E:1914]
-$88:E7F8 AD 33 E8    LDA $E833  [$88:E833]
+$88:E7ED AE 14 19    LDX $1914  [$7E:1914]  ;\
+$88:E7F0 BD 33 E8    LDA $E833,x[$88:E833]  ;} A = [$E833 + [HDMA object 0 colour index]]
+$88:E7F3 10 08       BPL $08    [$E7FD]     ; If [A] & 8000h != 0:
+$88:E7F5 9C 14 19    STZ $1914  [$7E:1914]  ; HDMA object 0 colour index = 0
+$88:E7F8 AD 33 E8    LDA $E833  [$88:E833]  ; A = 1Fh (red)
 $88:E7FB 80 0C       BRA $0C    [$E809]
 
-$88:E7FD EE 14 19    INC $1914  [$7E:1914]
-$88:E800 EE 14 19    INC $1914  [$7E:1914]
-$88:E803 EE 14 19    INC $1914  [$7E:1914]
-$88:E806 EE 14 19    INC $1914  [$7E:1914]
+$88:E7FD EE 14 19    INC $1914  [$7E:1914]  ;\ Else ([A] & 8000h = 0):
+$88:E800 EE 14 19    INC $1914  [$7E:1914]  ;|
+$88:E803 EE 14 19    INC $1914  [$7E:1914]  ;} HDMA object 0 colour index += 4
+$88:E806 EE 14 19    INC $1914  [$7E:1914]  ;/
 
-$88:E809 48          PHA
-$88:E80A E2 20       SEP #$20
-$88:E80C 29 1F       AND #$1F
-$88:E80E 09 20       ORA #$20
-$88:E810 85 74       STA $74    [$7E:0074]
-$88:E812 C2 20       REP #$20
-$88:E814 A3 01       LDA $01,s  [$7E:1FF0]
-$88:E816 0A          ASL A
-$88:E817 0A          ASL A
-$88:E818 0A          ASL A
-$88:E819 EB          XBA
-$88:E81A E2 20       SEP #$20
-$88:E81C 29 1F       AND #$1F
-$88:E81E 09 40       ORA #$40
-$88:E820 85 75       STA $75    [$7E:0075]
-$88:E822 C2 20       REP #$20
-$88:E824 68          PLA
-$88:E825 4A          LSR A
-$88:E826 4A          LSR A
-$88:E827 EB          XBA
-$88:E828 E2 20       SEP #$20
-$88:E82A 29 1F       AND #$1F
-$88:E82C 09 80       ORA #$80
-$88:E82E 85 76       STA $76    [$7E:0076]
-$88:E830 C2 20       REP #$20
+$88:E809 48          PHA                    ;\
+$88:E80A E2 20       SEP #$20               ;|
+$88:E80C 29 1F       AND #$1F               ;|
+$88:E80E 09 20       ORA #$20               ;|
+$88:E810 85 74       STA $74    [$7E:0074]  ;|
+$88:E812 C2 20       REP #$20               ;|
+$88:E814 A3 01       LDA $01,s  [$7E:1FF0]  ;|
+$88:E816 0A          ASL A                  ;|
+$88:E817 0A          ASL A                  ;|
+$88:E818 0A          ASL A                  ;|
+$88:E819 EB          XBA                    ;|
+$88:E81A E2 20       SEP #$20               ;|
+$88:E81C 29 1F       AND #$1F               ;} Colour math subscreen backdrop colour = ([A] & 1Fh, [A] >> 5 & 1Fh, [A] >> Ah & 1Fh)
+$88:E81E 09 40       ORA #$40               ;|
+$88:E820 85 75       STA $75    [$7E:0075]  ;|
+$88:E822 C2 20       REP #$20               ;|
+$88:E824 68          PLA                    ;|
+$88:E825 4A          LSR A                  ;|
+$88:E826 4A          LSR A                  ;|
+$88:E827 EB          XBA                    ;|
+$88:E828 E2 20       SEP #$20               ;|
+$88:E82A 29 1F       AND #$1F               ;|
+$88:E82C 09 80       ORA #$80               ;|
+$88:E82E 85 76       STA $76    [$7E:0076]  ;|
+$88:E830 C2 20       REP #$20               ;/
 $88:E832 60          RTS
 
-$88:E833             dw 001F,005F,009F,00DF,011F,015F,019F,01DF,
-                        023F,027F,02BF,02FF,033F,037F,03BF,03FF,
-                        03FD,03FB,03F9,03F7,03F5,03F3,03F1,03EF,
-                        03EC,03EA,03E8,03E6,03E4,03E2,03E0,0BA0,
-                        1360,1B20,22E0,2AA0,3260,3A20,45E0,4D80,
-                        5540,5D00,64C0,6C80,7440,7C00,7C02,7C04,
-                        7C06,7C08,7C0A,7C0C,7C0D,7C2F,7C31,7C33,
-                        7C35,7C37,7C39,7C3B,7C1F,741F,6C1F,641F,
-                        5C1F,541F,4C1F,441F,3C1F,301F,281F,201F,
-                        181F,101F,081F,FFFF,FFFF,FFFF,FFFF,FFFF,
-                        FFFF,FFFF,FFFF
+; Rainbow beam colour table
+; The table index is incremented by 4 per frame instead of 2, so only entries 2k for some k are used
+$88:E833             dw 001F,005F, 009F,00DF, 011F,015F, 019F,01DF,
+                        023F,027F, 02BF,02FF, 033F,037F, 03BF,03FF,
+                        03FD,03FB, 03F9,03F7, 03F5,03F3, 03F1,03EF,
+                        03EC,03EA, 03E8,03E6, 03E4,03E2, 03E0,0BA0,
+                        1360,1B20, 22E0,2AA0, 3260,3A20, 45E0,4D80,
+                        5540,5D00, 64C0,6C80, 7440,7C00, 7C02,7C04,
+                        7C06,7C08, 7C0A,7C0C, 7C0D,7C2F, 7C31,7C33,
+                        7C35,7C37, 7C39,7C3B, 7C1F,741F, 6C1F,641F,
+                        5C1F,541F, 4C1F,441F, 3C1F,301F, 281F,201F,
+                        181F,101F, 081F,FFFF, FFFF,
+                        FFFF,FFFF,FFFF,FFFF,FFFF,FFFF ; Excess terminators
 }
 }
 
@@ -8458,11 +8460,10 @@ $88:E833             dw 001F,005F,009F,00DF,011F,015F,019F,01DF,
 {
 ;;; $E8D9: Spawn morph ball eye beam HDMA object ;;;
 {
-; Spawned by morph ball eye
 $88:E8D9 08          PHP
 $88:E8DA 8B          PHB
-$88:E8DB 4B          PHK
-$88:E8DC AB          PLB
+$88:E8DB 4B          PHK                    ;\
+$88:E8DC AB          PLB                    ;} DB = $88
 $88:E8DD C2 30       REP #$30
 $88:E8DF DA          PHX
 $88:E8E0 22 35 84 88 JSL $888435[$88:8435]  ;\
@@ -8497,253 +8498,258 @@ $88:E8EC             dx 866A,7E,    ; Indirect HDMA data bank = $7E
 $88:E917 08          PHP
 $88:E918 E2 20       SEP #$20
 $88:E91A C2 10       REP #$10
-$88:E91C A9 30       LDA #$30
-$88:E91E 9D 14 19    STA $1914,x[$7E:1914]
-$88:E921 85 74       STA $74    [$7E:0074]
-$88:E923 A9 50       LDA #$50
-$88:E925 9D 15 19    STA $1915,x[$7E:1915]
-$88:E928 85 75       STA $75    [$7E:0075]
-$88:E92A A9 80       LDA #$80
-$88:E92C 9D 20 19    STA $1920,x[$7E:1920]
-$88:E92F 85 76       STA $76    [$7E:0076]
+$88:E91C A9 30       LDA #$30               ;\
+$88:E91E 9D 14 19    STA $1914,x[$7E:1914]  ;|
+$88:E921 85 74       STA $74    [$7E:0074]  ;|
+$88:E923 A9 50       LDA #$50               ;|
+$88:E925 9D 15 19    STA $1915,x[$7E:1915]  ;} Colour math subscreen backdrop colour = HDMA object colour components = (10h, 10h, 0) (dark yellow)
+$88:E928 85 75       STA $75    [$7E:0075]  ;|
+$88:E92A A9 80       LDA #$80               ;|
+$88:E92C 9D 20 19    STA $1920,x[$7E:1920]  ;|
+$88:E92F 85 76       STA $76    [$7E:0076]  ;/
 $88:E931 C2 30       REP #$30
-$88:E933 A9 10 00    LDA #$0010
-$88:E936 8D 86 19    STA $1986  [$7E:1986]
-$88:E939 A9 E4 00    LDA #$00E4
-$88:E93C 8F 00 90 7E STA $7E9000[$7E:9000]
-$88:E940 A9 00 91    LDA #$9100
-$88:E943 8F 01 90 7E STA $7E9001[$7E:9001]
-$88:E947 A9 E4 00    LDA #$00E4
-$88:E94A 8F 03 90 7E STA $7E9003[$7E:9003]
-$88:E94E A9 C8 91    LDA #$91C8
-$88:E951 8F 04 90 7E STA $7E9004[$7E:9004]
-$88:E955 A9 98 00    LDA #$0098
-$88:E958 8F 06 90 7E STA $7E9006[$7E:9006]
-$88:E95C A9 90 92    LDA #$9290
-$88:E95F 8F 07 90 7E STA $7E9007[$7E:9007]
-$88:E963 A9 00 00    LDA #$0000
-$88:E966 8F 09 90 7E STA $7E9009[$7E:9009]
-$88:E96A A9 01 00    LDA #$0001
-$88:E96D 8D EC 0F    STA $0FEC  [$7E:0FEC]
-$88:E970 9E 2C 19    STZ $192C,x[$7E:192C]
-$88:E973 9E 38 19    STZ $1938,x[$7E:1938]
-$88:E976 A9 00 00    LDA #$0000
-$88:E979 8F 80 90 7E STA $7E9080[$7E:9080]
-$88:E97D 8F 82 90 7E STA $7E9082[$7E:9082]
-$88:E981 8F 90 90 7E STA $7E9090[$7E:9090]
+$88:E933 A9 10 00    LDA #$0010             ;\
+$88:E936 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 10h (normal, but BG3 is disabled inside window 1)
+$88:E939 A9 E4 00    LDA #$00E4             ;\
+$88:E93C 8F 00 90 7E STA $7E9000[$7E:9000]  ;|
+$88:E940 A9 00 91    LDA #$9100             ;|
+$88:E943 8F 01 90 7E STA $7E9001[$7E:9001]  ;|
+$88:E947 A9 E4 00    LDA #$00E4             ;|
+$88:E94A 8F 03 90 7E STA $7E9003[$7E:9003]  ;|
+$88:E94E A9 C8 91    LDA #$91C8             ;|
+$88:E951 8F 04 90 7E STA $7E9004[$7E:9004]  ;} $7E:9000..0A = E4h,$9100, E4h,$91C8, 98h,$9290, 0,0
+$88:E955 A9 98 00    LDA #$0098             ;|
+$88:E958 8F 06 90 7E STA $7E9006[$7E:9006]  ;|
+$88:E95C A9 90 92    LDA #$9290             ;|
+$88:E95F 8F 07 90 7E STA $7E9007[$7E:9007]  ;|
+$88:E963 A9 00 00    LDA #$0000             ;|
+$88:E966 8F 09 90 7E STA $7E9009[$7E:9009]  ;/
+$88:E96A A9 01 00    LDA #$0001             ;\
+$88:E96D 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Enemy 1 $0FAC = 1
+$88:E970 9E 2C 19    STZ $192C,x[$7E:192C]  ; HDMA object $192C = 0
+$88:E973 9E 38 19    STZ $1938,x[$7E:1938]  ; HDMA object $1938 = 0
+$88:E976 A9 00 00    LDA #$0000             ;\
+$88:E979 8F 80 90 7E STA $7E9080[$7E:9080]  ;} Morph ball eye beam angular width delta = 0.0
+$88:E97D 8F 82 90 7E STA $7E9082[$7E:9082]  ;/
+$88:E981 8F 90 90 7E STA $7E9090[$7E:9090]  ; Morph ball eye beam colour index = 0
 $88:E985 28          PLP
 $88:E986 60          RTS
 }
 
 
-;;; $E987:  ;;;
+;;; $E987: Update morph ball eye beam HDMA data table and colour math subscreen backdrop colour ;;;
 {
 $88:E987 08          PHP
 $88:E988 C2 30       REP #$30
 $88:E98A DA          PHX
-$88:E98B AD EE 0F    LDA $0FEE  [$7E:0FEE]
-$88:E98E 85 12       STA $12    [$7E:0012]
-$88:E990 BD 2C 19    LDA $192C,x[$7E:192C]
-$88:E993 85 14       STA $14    [$7E:0014]
-$88:E995 AD BE 0F    LDA $0FBE  [$7E:0FBE]
-$88:E998 38          SEC
-$88:E999 ED 15 09    SBC $0915  [$7E:0915]
-$88:E99C A8          TAY
-$88:E99D AD BA 0F    LDA $0FBA  [$7E:0FBA]
-$88:E9A0 38          SEC
-$88:E9A1 ED 11 09    SBC $0911  [$7E:0911]
-$88:E9A4 AA          TAX
-$88:E9A5 30 18       BMI $18    [$E9BF]
-$88:E9A7 C9 00 01    CMP #$0100
-$88:E9AA 10 13       BPL $13    [$E9BF]
-$88:E9AC E2 20       SEP #$20
-$88:E9AE A9 7E       LDA #$7E
-$88:E9B0 85 02       STA $02    [$7E:0002]
-$88:E9B2 C2 20       REP #$20
-$88:E9B4 A9 00 91    LDA #$9100
-$88:E9B7 85 00       STA $00    [$7E:0000]
-$88:E9B9 22 4B C5 91 JSL $91C54B[$91:C54B]
+$88:E98B AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
+$88:E98E 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy 1 beam angle]
+$88:E990 BD 2C 19    LDA $192C,x[$7E:192C]  ;\
+$88:E993 85 14       STA $14    [$7E:0014]  ;} $14 = [HDMA object angular width]
+$88:E995 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
+$88:E998 38          SEC                    ;|
+$88:E999 ED 15 09    SBC $0915  [$7E:0915]  ;} Y = [enemy 1 Y position] - [layer 1 Y position] (morph ball eye beam origin Y position)
+$88:E99C A8          TAY                    ;/
+$88:E99D AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
+$88:E9A0 38          SEC                    ;|
+$88:E9A1 ED 11 09    SBC $0911  [$7E:0911]  ;} X = [enemy 1 X position] - [layer 1 X position] (morph ball eye beam origin X position)
+$88:E9A4 AA          TAX                    ;/
+$88:E9A5 30 18       BMI $18    [$E9BF]     ;\
+$88:E9A7 C9 00 01    CMP #$0100             ;} If 0 <= [X] < 100h:
+$88:E9AA 10 13       BPL $13    [$E9BF]     ;/
+$88:E9AC E2 20       SEP #$20               ;\
+$88:E9AE A9 7E       LDA #$7E               ;|
+$88:E9B0 85 02       STA $02    [$7E:0002]  ;|
+$88:E9B2 C2 20       REP #$20               ;} $00 = $7E:9100 (morph ball eye beam HDMA data table)
+$88:E9B4 A9 00 91    LDA #$9100             ;|
+$88:E9B7 85 00       STA $00    [$7E:0000]  ;/
+$88:E9B9 22 4B C5 91 JSL $91C54B[$91:C54B]  ; Calculate x-ray / morph ball eye beam HDMA data table - origin is on screen
 $88:E9BD 80 11       BRA $11    [$E9D0]
 
-$88:E9BF E2 20       SEP #$20
-$88:E9C1 A9 7E       LDA #$7E
-$88:E9C3 85 02       STA $02    [$7E:0002]
-$88:E9C5 C2 20       REP #$20
-$88:E9C7 A9 00 91    LDA #$9100
-$88:E9CA 85 00       STA $00    [$7E:0000]
-$88:E9CC 22 11 BE 91 JSL $91BE11[$91:BE11]
+$88:E9BF E2 20       SEP #$20               ;\ Else (not 0 <= [X] < 100h):
+$88:E9C1 A9 7E       LDA #$7E               ;|
+$88:E9C3 85 02       STA $02    [$7E:0002]  ;|
+$88:E9C5 C2 20       REP #$20               ;} $00 = $7E:9100 (morph ball eye beam HDMA data table)
+$88:E9C7 A9 00 91    LDA #$9100             ;|
+$88:E9CA 85 00       STA $00    [$7E:0000]  ;/
+$88:E9CC 22 11 BE 91 JSL $91BE11[$91:BE11]  ; Calculate morph ball eye beam HDMA data table - origin is off screen
 
 $88:E9D0 FA          PLX
 $88:E9D1 E2 20       SEP #$20
-$88:E9D3 BD 14 19    LDA $1914,x[$7E:1914]
-$88:E9D6 85 74       STA $74    [$7E:0074]
-$88:E9D8 BD 15 19    LDA $1915,x[$7E:1915]
-$88:E9DB 85 75       STA $75    [$7E:0075]
-$88:E9DD BD 20 19    LDA $1920,x[$7E:1920]
-$88:E9E0 85 76       STA $76    [$7E:0076]
-$88:E9E2 C2 20       REP #$20
+$88:E9D3 BD 14 19    LDA $1914,x[$7E:1914]  ;\
+$88:E9D6 85 74       STA $74    [$7E:0074]  ;|
+$88:E9D8 BD 15 19    LDA $1915,x[$7E:1915]  ;|
+$88:E9DB 85 75       STA $75    [$7E:0075]  ;} Colour math subscreen backdrop colour = [HDMA object colour component]
+$88:E9DD BD 20 19    LDA $1920,x[$7E:1920]  ;|
+$88:E9E0 85 76       STA $76    [$7E:0076]  ;/
+$88:E9E2 C2 20       REP #$20               ; >_<;
 $88:E9E4 28          PLP
 $88:E9E5 60          RTS
 }
 
 
-;;; $E9E6: Pre-instruction ;;;
+;;; $E9E6: Pre-instruction - morph ball eye beam HDMA - beam is widening ;;;
 {
 $88:E9E6 08          PHP
 $88:E9E7 C2 30       REP #$30
-$88:E9E9 A9 10 00    LDA #$0010
-$88:E9EC 8D 86 19    STA $1986  [$7E:1986]
-$88:E9EF AF 82 90 7E LDA $7E9082[$7E:9082]
-$88:E9F3 18          CLC
-$88:E9F4 69 00 40    ADC #$4000
-$88:E9F7 8F 82 90 7E STA $7E9082[$7E:9082]
-$88:E9FB AF 80 90 7E LDA $7E9080[$7E:9080]
-$88:E9FF 69 00 00    ADC #$0000
-$88:EA02 8F 80 90 7E STA $7E9080[$7E:9080]
-$88:EA06 BD 38 19    LDA $1938,x[$7E:1938]
-$88:EA09 18          CLC
-$88:EA0A 6F 82 90 7E ADC $7E9082[$7E:9082]
-$88:EA0E 9D 38 19    STA $1938,x[$7E:1938]
-$88:EA11 BD 2C 19    LDA $192C,x[$7E:192C]
-$88:EA14 6F 80 90 7E ADC $7E9080[$7E:9080]
-$88:EA18 9D 2C 19    STA $192C,x[$7E:192C]
-$88:EA1B C9 04 00    CMP #$0004
-$88:EA1E 30 17       BMI $17    [$EA37]
-$88:EA20 A9 04 00    LDA #$0004
-$88:EA23 9D 2C 19    STA $192C,x[$7E:192C]
+$88:E9E9 A9 10 00    LDA #$0010             ;\
+$88:E9EC 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 10h (normal, but BG3 is disabled inside window 1)
+$88:E9EF AF 82 90 7E LDA $7E9082[$7E:9082]  ;\
+$88:E9F3 18          CLC                    ;|
+$88:E9F4 69 00 40    ADC #$4000             ;|
+$88:E9F7 8F 82 90 7E STA $7E9082[$7E:9082]  ;} Morph ball eye beam angular width delta += 0.4000h
+$88:E9FB AF 80 90 7E LDA $7E9080[$7E:9080]  ;|
+$88:E9FF 69 00 00    ADC #$0000             ;|
+$88:EA02 8F 80 90 7E STA $7E9080[$7E:9080]  ;/
+$88:EA06 BD 38 19    LDA $1938,x[$7E:1938]  ;\
+$88:EA09 18          CLC                    ;|
+$88:EA0A 6F 82 90 7E ADC $7E9082[$7E:9082]  ;|
+$88:EA0E 9D 38 19    STA $1938,x[$7E:1938]  ;} HDMA object angular width += [morph ball eye beam angular width delta]
+$88:EA11 BD 2C 19    LDA $192C,x[$7E:192C]  ;|
+$88:EA14 6F 80 90 7E ADC $7E9080[$7E:9080]  ;|
+$88:EA18 9D 2C 19    STA $192C,x[$7E:192C]  ;/
+$88:EA1B C9 04 00    CMP #$0004             ;\
+$88:EA1E 30 17       BMI $17    [$EA37]     ;} If [HDMA object angular width] >= 4:
+$88:EA20 A9 04 00    LDA #$0004             ;\
+$88:EA23 9D 2C 19    STA $192C,x[$7E:192C]  ;} HDMA object angular width = 4
 $88:EA26 AE B2 18    LDX $18B2  [$7E:18B2]
-$88:EA29 BD CC 18    LDA $18CC,x[$7E:18CC]
-$88:EA2C 1A          INC A
-$88:EA2D 1A          INC A
-$88:EA2E 9D CC 18    STA $18CC,x[$7E:18CC]
-$88:EA31 A9 01 00    LDA #$0001
-$88:EA34 9D E4 18    STA $18E4,x[$7E:18E4]
+$88:EA29 BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
+$88:EA2C 1A          INC A                  ;|
+$88:EA2D 1A          INC A                  ;} HDMA object instruction list pointer += 2
+$88:EA2E 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
+$88:EA31 A9 01 00    LDA #$0001             ;\
+$88:EA34 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
 
-$88:EA37 20 87 E9    JSR $E987  [$88:E987]
+$88:EA37 20 87 E9    JSR $E987  [$88:E987]  ; Update morph ball eye beam HDMA data table and colour math subscreen backdrop colour
 $88:EA3A 28          PLP
 $88:EA3B 6B          RTL
 }
 
 
-;;; $EA3C: Pre-instruction ;;;
+;;; $EA3C: Pre-instruction - morph ball eye beam HDMA - full beam ;;;
 {
 $88:EA3C 08          PHP
 $88:EA3D C2 30       REP #$30
-$88:EA3F A9 10 00    LDA #$0010
-$88:EA42 8D 86 19    STA $1986  [$7E:1986]
-$88:EA45 AD EC 0F    LDA $0FEC  [$7E:0FEC]
-$88:EA48 D0 13       BNE $13    [$EA5D]
+$88:EA3F A9 10 00    LDA #$0010             ;\
+$88:EA42 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 10h (normal, but BG3 is disabled inside window 1)
+$88:EA45 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
+$88:EA48 D0 13       BNE $13    [$EA5D]     ;} If [enemy 1 $0FAC] = 0:
 $88:EA4A AE B2 18    LDX $18B2  [$7E:18B2]
-$88:EA4D BD CC 18    LDA $18CC,x[$7E:18CC]
-$88:EA50 1A          INC A
-$88:EA51 1A          INC A
-$88:EA52 9D CC 18    STA $18CC,x[$7E:18CC]
-$88:EA55 A9 01 00    LDA #$0001
-$88:EA58 9D E4 18    STA $18E4,x[$7E:18E4]
+$88:EA4D BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
+$88:EA50 1A          INC A                  ;|
+$88:EA51 1A          INC A                  ;} HDMA object instruction list pointer += 2
+$88:EA52 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
+$88:EA55 A9 01 00    LDA #$0001             ;\
+$88:EA58 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
 $88:EA5B 28          PLP
-$88:EA5C 6B          RTL
+$88:EA5C 6B          RTL                    ; Return
 
-$88:EA5D 20 87 E9    JSR $E987  [$88:E987]
-$88:EA60 AF 90 90 7E LDA $7E9090[$7E:9090]
-$88:EA64 0A          ASL A
-$88:EA65 0A          ASL A
-$88:EA66 A8          TAY
+$88:EA5D 20 87 E9    JSR $E987  [$88:E987]  ; Update morph ball eye beam HDMA data table and colour math subscreen backdrop colour
+$88:EA60 AF 90 90 7E LDA $7E9090[$7E:9090]  ;\
+$88:EA64 0A          ASL A                  ;|
+$88:EA65 0A          ASL A                  ;} Y = [morph ball eye beam colour index] * 4
+$88:EA66 A8          TAY                    ;/
 $88:EA67 E2 20       SEP #$20
-$88:EA69 B9 8B EA    LDA $EA8B,y[$88:EA8B]
-$88:EA6C 9D 14 19    STA $1914,x[$7E:1914]
-$88:EA6F B9 8C EA    LDA $EA8C,y[$88:EA8C]
-$88:EA72 9D 15 19    STA $1915,x[$7E:1915]
-$88:EA75 B9 8D EA    LDA $EA8D,y[$88:EA8D]
-$88:EA78 9D 20 19    STA $1920,x[$7E:1920]
+$88:EA69 B9 8B EA    LDA $EA8B,y[$88:EA8B]  ;\
+$88:EA6C 9D 14 19    STA $1914,x[$7E:1914]  ;} HDMA object red colour component = [$EA8B + [Y]]
+$88:EA6F B9 8C EA    LDA $EA8C,y[$88:EA8C]  ;\
+$88:EA72 9D 15 19    STA $1915,x[$7E:1915]  ;} HDMA object green colour component = [$EA8B + [Y] + 1]
+$88:EA75 B9 8D EA    LDA $EA8D,y[$88:EA8D]  ;\
+$88:EA78 9D 20 19    STA $1920,x[$7E:1920]  ;} HDMA object blue colour component = [$EA8B + [Y] + 2]
 $88:EA7B C2 20       REP #$20
-$88:EA7D AF 90 90 7E LDA $7E9090[$7E:9090]
-$88:EA81 1A          INC A
-$88:EA82 29 0F 00    AND #$000F
-$88:EA85 8F 90 90 7E STA $7E9090[$7E:9090]
+$88:EA7D AF 90 90 7E LDA $7E9090[$7E:9090]  ;\
+$88:EA81 1A          INC A                  ;|
+$88:EA82 29 0F 00    AND #$000F             ;} Morph ball eye beam colour index = ([morph ball eye beam colour index] + 1) % 10h
+$88:EA85 8F 90 90 7E STA $7E9090[$7E:9090]  ;/
 $88:EA89 28          PLP
 $88:EA8A 6B          RTL
 
-$88:EA8B             db 30,50,80,00,
-                        2F,4F,80,00,
-                        2E,4E,80,00,
-                        2D,4D,80,00,
-                        2C,4C,80,00,
-                        2B,4B,80,00,
-                        2A,4A,80,00,
-                        29,49,80,00,
-                        28,48,80,00,
-                        29,49,80,00,
-                        2A,4A,80,00,
-                        2B,4B,80,00,
-                        2C,4C,80,00,
-                        2D,4D,80,00,
-                        2E,4E,80,00,
-                        2F,4F,80,00
+;                        __________ Red component
+;                       |   _______ Green component
+;                       |  |   ____ Blue component
+;                       |  |  |
+$88:EA8B             db 30,50,80, 00,
+                        2F,4F,80, 00,
+                        2E,4E,80, 00,
+                        2D,4D,80, 00,
+                        2C,4C,80, 00,
+                        2B,4B,80, 00,
+                        2A,4A,80, 00,
+                        29,49,80, 00,
+                        28,48,80, 00,
+                        29,49,80, 00,
+                        2A,4A,80, 00,
+                        2B,4B,80, 00,
+                        2C,4C,80, 00,
+                        2D,4D,80, 00,
+                        2E,4E,80, 00,
+                        2F,4F,80, 00
 }
 
 
-;;; $EACB: Pre-instruction ;;;
+;;; $EACB: Pre-instruction - morph ball eye beam HDMA - deactivate beam ;;;
 {
 $88:EACB 08          PHP
 $88:EACC C2 30       REP #$30
-$88:EACE A9 10 00    LDA #$0010
-$88:EAD1 8D 86 19    STA $1986  [$7E:1986]
+$88:EACE A9 10 00    LDA #$0010             ;\
+$88:EAD1 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 10h (normal, but BG3 is disabled inside window 1)
 $88:EAD4 E2 20       SEP #$20
-$88:EAD6 BD 15 19    LDA $1915,x[$7E:1915]
-$88:EAD9 C9 40       CMP #$40
-$88:EADB D0 4C       BNE $4C    [$EB29]
-$88:EADD A9 20       LDA #$20
-$88:EADF 85 74       STA $74    [$7E:0074]
-$88:EAE1 A9 40       LDA #$40
-$88:EAE3 85 75       STA $75    [$7E:0075]
-$88:EAE5 A9 80       LDA #$80
-$88:EAE7 85 76       STA $76    [$7E:0076]
+$88:EAD6 BD 15 19    LDA $1915,x[$7E:1915]  ;\
+$88:EAD9 C9 40       CMP #$40               ;} If (HDMA object green colour component) != 0: go to BRANCH_NOT_DONE
+$88:EADB D0 4C       BNE $4C    [$EB29]     ;/
+$88:EADD A9 20       LDA #$20               ;\
+$88:EADF 85 74       STA $74    [$7E:0074]  ;|
+$88:EAE1 A9 40       LDA #$40               ;|
+$88:EAE3 85 75       STA $75    [$7E:0075]  ;} Colour math subscreen backdrop colour = (0, 0, 0)
+$88:EAE5 A9 80       LDA #$80               ;|
+$88:EAE7 85 76       STA $76    [$7E:0076]  ;/
 $88:EAE9 C2 20       REP #$20
-$88:EAEB 9E 38 19    STZ $1938,x[$7E:1938]
-$88:EAEE 9E 2C 19    STZ $192C,x[$7E:192C]
+$88:EAEB 9E 38 19    STZ $1938,x[$7E:1938]  ;\
+$88:EAEE 9E 2C 19    STZ $192C,x[$7E:192C]  ;} HDMA object angular width = 0.0
 $88:EAF1 A2 FE 01    LDX #$01FE
 
-$88:EAF4 A9 FF 00    LDA #$00FF
-$88:EAF7 9F 00 91 7E STA $7E9100,x[$7E:92FE]
-$88:EAFB CA          DEX
-$88:EAFC CA          DEX
-$88:EAFD 10 F5       BPL $F5    [$EAF4]
-$88:EAFF A9 00 00    LDA #$0000
-$88:EB02 8F 00 90 7E STA $7E9000[$7E:9000]
-$88:EB06 8F 02 90 7E STA $7E9002[$7E:9002]
-$88:EB0A 8F 04 90 7E STA $7E9004[$7E:9004]
-$88:EB0E 8F 06 90 7E STA $7E9006[$7E:9006]
-$88:EB12 8F 08 90 7E STA $7E9008[$7E:9008]
+$88:EAF4 A9 FF 00    LDA #$00FF             ;\
+$88:EAF7 9F 00 91 7E STA $7E9100,x[$7E:92FE];|
+$88:EAFB CA          DEX                    ;} Morph ball eye beam window 1 HDMA data table = FFh,0
+$88:EAFC CA          DEX                    ;|
+$88:EAFD 10 F5       BPL $F5    [$EAF4]     ;/
+$88:EAFF A9 00 00    LDA #$0000             ;\
+$88:EB02 8F 00 90 7E STA $7E9000[$7E:9000]  ;|
+$88:EB06 8F 02 90 7E STA $7E9002[$7E:9002]  ;|
+$88:EB0A 8F 04 90 7E STA $7E9004[$7E:9004]  ;} Morph ball eye beam window 1 indirect HDMA table = 0,0, ...
+$88:EB0E 8F 06 90 7E STA $7E9006[$7E:9006]  ;|
+$88:EB12 8F 08 90 7E STA $7E9008[$7E:9008]  ;/
 $88:EB16 AE B2 18    LDX $18B2  [$7E:18B2]
-$88:EB19 BD CC 18    LDA $18CC,x[$7E:18CC]
-$88:EB1C 1A          INC A
-$88:EB1D 1A          INC A
-$88:EB1E 9D CC 18    STA $18CC,x[$7E:18CC]
-$88:EB21 A9 01 00    LDA #$0001
-$88:EB24 9D E4 18    STA $18E4,x[$7E:18E4]
-$88:EB27 80 2D       BRA $2D    [$EB56]
+$88:EB19 BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
+$88:EB1C 1A          INC A                  ;|
+$88:EB1D 1A          INC A                  ;} HDMA object instruction list pointer += 2
+$88:EB1E 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
+$88:EB21 A9 01 00    LDA #$0001             ;\
+$88:EB24 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
+$88:EB27 80 2D       BRA $2D    [$EB56]     ; Return
 
+; BRANCH_NOT_DONE
 $88:EB29 C2 20       REP #$20
-$88:EB2B 20 87 E9    JSR $E987  [$88:E987]
+$88:EB2B 20 87 E9    JSR $E987  [$88:E987]  ; Update morph ball eye beam HDMA data table and colour math subscreen backdrop colour
 $88:EB2E AE B2 18    LDX $18B2  [$7E:18B2]
 $88:EB31 E2 20       SEP #$20
-$88:EB33 BD 14 19    LDA $1914,x[$7E:1914]
-$88:EB36 C9 20       CMP #$20
-$88:EB38 F0 04       BEQ $04    [$EB3E]
-$88:EB3A 3A          DEC A
-$88:EB3B 9D 14 19    STA $1914,x[$7E:1914]
+$88:EB33 BD 14 19    LDA $1914,x[$7E:1914]  ;\
+$88:EB36 C9 20       CMP #$20               ;|
+$88:EB38 F0 04       BEQ $04    [$EB3E]     ;} (HDMA object red colour component) = max(0, (HDMA object red colour component) - 1)
+$88:EB3A 3A          DEC A                  ;|
+$88:EB3B 9D 14 19    STA $1914,x[$7E:1914]  ;/
 
-$88:EB3E BD 15 19    LDA $1915,x[$7E:1915]
-$88:EB41 C9 40       CMP #$40
-$88:EB43 F0 04       BEQ $04    [$EB49]
-$88:EB45 3A          DEC A
-$88:EB46 9D 15 19    STA $1915,x[$7E:1915]
+$88:EB3E BD 15 19    LDA $1915,x[$7E:1915]  ;\
+$88:EB41 C9 40       CMP #$40               ;|
+$88:EB43 F0 04       BEQ $04    [$EB49]     ;} (HDMA object green colour component) = max(0, (HDMA object green colour component) - 1)
+$88:EB45 3A          DEC A                  ;|
+$88:EB46 9D 15 19    STA $1915,x[$7E:1915]  ;/
 
-$88:EB49 BD 20 19    LDA $1920,x[$7E:1920]
-$88:EB4C C9 80       CMP #$80
-$88:EB4E F0 04       BEQ $04    [$EB54]
-$88:EB50 3A          DEC A
-$88:EB51 9D 20 19    STA $1920,x
+$88:EB49 BD 20 19    LDA $1920,x[$7E:1920]  ;\
+$88:EB4C C9 80       CMP #$80               ;|
+$88:EB4E F0 04       BEQ $04    [$EB54]     ;} (HDMA object blue colour component) = max(0, (HDMA object blue colour component) - 1)
+$88:EB50 3A          DEC A                  ;|
+$88:EB51 9D 20 19    STA $1920,x            ;/
 
 $88:EB54 C2 20       REP #$20
 
@@ -8759,8 +8765,8 @@ $88:EB57 6B          RTL
 {
 $88:EB58 08          PHP
 $88:EB59 8B          PHB
-$88:EB5A 4B          PHK
-$88:EB5B AB          PLB
+$88:EB5A 4B          PHK                    ;\
+$88:EB5B AB          PLB                    ;} DB = $88
 $88:EB5C C2 30       REP #$30
 $88:EB5E DA          PHX
 $88:EB5F 22 35 84 88 JSL $888435[$88:8435]  ;\
@@ -8791,7 +8797,7 @@ $88:EB85             dx 8655,88,    ; HDMA table bank = $88
                         8570,88EBD2,; Pre-instruction = $88:EBD2
                         0001,EB95,
                         8682,       ; Sleep
-                        8569,       ; Delete
+                        8569        ; Delete
 }
 
 
@@ -8827,7 +8833,7 @@ $88:EBB0 08          PHP
 $88:EBB1 C2 30       REP #$30
 $88:EBB3 22 0A A0 8B JSL $8BA00A[$8B:A00A]  ; Configure title sequence gradient HDMA table
 $88:EBB7 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
-$88:EBBA C9 68 9B    CMP #$9B68             ;} If [$1F51] = $9B68:
+$88:EBBA C9 68 9B    CMP #$9B68             ;} If [cinematic function] = $9B68 (load title sequence):
 $88:EBBD D0 11       BNE $11    [$EBD0]     ;/
 $88:EBBF AE B2 18    LDX $18B2  [$7E:18B2]  ;\
 $88:EBC2 BD CC 18    LDA $18CC,x[$7E:18CC]  ;|
@@ -8847,7 +8853,7 @@ $88:EBD1 6B          RTL
 $88:EBD2 08          PHP
 $88:EBD3 C2 30       REP #$30
 $88:EBD5 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
-$88:EBD8 C9 68 9B    CMP #$9B68             ;} If [$1F51] = $9B68:
+$88:EBD8 C9 68 9B    CMP #$9B68             ;} If [cinematic function] = $9B68 (load title sequence):
 $88:EBDB D0 11       BNE $11    [$EBEE]     ;/
 $88:EBDD AE B2 18    LDX $18B2  [$7E:18B2]  ;\
 $88:EBE0 BD CC 18    LDA $18CC,x[$7E:18CE]  ;|
@@ -8927,32 +8933,33 @@ $88:EC3A 6B          RTL
 {
 ;;; $EC3B: Spawn wavy Samus HDMA object ;;;
 {
+; Almost identical to doubled wavelength wavy Phantoon
 $88:EC3B 08          PHP
 $88:EC3C 8B          PHB
-$88:EC3D 4B          PHK
-$88:EC3E AB          PLB
+$88:EC3D 4B          PHK                    ;\
+$88:EC3E AB          PLB                    ;} DB = $88
 $88:EC3F C2 30       REP #$30
 $88:EC41 DA          PHX
-$88:EC42 A9 01 00    LDA #$0001
-$88:EC45 8D 9C 0D    STA $0D9C  [$7E:0D9C]
-$88:EC48 A9 00 40    LDA #$4000
-$88:EC4B 8D 9E 0D    STA $0D9E  [$7E:0D9E]
-$88:EC4E A9 08 00    LDA #$0008
-$88:EC51 8D A0 0D    STA $0DA0  [$7E:0DA0]
-$88:EC54 A9 C0 00    LDA #$00C0
-$88:EC57 8D 82 0D    STA $0D82  [$7E:0D82]
-$88:EC5A 8D 85 0D    STA $0D85  [$7E:0D85]
-$88:EC5D 8D 88 0D    STA $0D88  [$7E:0D88]
-$88:EC60 8D 8B 0D    STA $0D8B  [$7E:0D8B]
-$88:EC63 A9 00 98    LDA #$9800
-$88:EC66 8D 83 0D    STA $0D83  [$7E:0D83]
-$88:EC69 A9 80 98    LDA #$9880
-$88:EC6C 8D 86 0D    STA $0D86  [$7E:0D86]
-$88:EC6F A9 00 98    LDA #$9800
-$88:EC72 8D 89 0D    STA $0D89  [$7E:0D89]
-$88:EC75 A9 80 98    LDA #$9880
-$88:EC78 8D 8C 0D    STA $0D8C  [$7E:0D8C]
-$88:EC7B 9C 8E 0D    STZ $0D8E  [$7E:0D8E]
+$88:EC42 A9 01 00    LDA #$0001             ;\
+$88:EC45 8D 9C 0D    STA $0D9C  [$7E:0D9C]  ;} Enable wavy Samus
+$88:EC48 A9 00 40    LDA #$4000             ;\
+$88:EC4B 8D 9E 0D    STA $0D9E  [$7E:0D9E]  ;} Wavy Samus amplitude = 4000h
+$88:EC4E A9 08 00    LDA #$0008             ;\
+$88:EC51 8D A0 0D    STA $0DA0  [$7E:0DA0]  ;} Wavy Samus phase delta = 8
+$88:EC54 A9 C0 00    LDA #$00C0             ;\
+$88:EC57 8D 82 0D    STA $0D82  [$7E:0D82]  ;|
+$88:EC5A 8D 85 0D    STA $0D85  [$7E:0D85]  ;|
+$88:EC5D 8D 88 0D    STA $0D88  [$7E:0D88]  ;|
+$88:EC60 8D 8B 0D    STA $0D8B  [$7E:0D8B]  ;|
+$88:EC63 A9 00 98    LDA #$9800             ;|
+$88:EC66 8D 83 0D    STA $0D83  [$7E:0D83]  ;|
+$88:EC69 A9 80 98    LDA #$9880             ;} $0D82..8F = C0h,$9800, C0h,$9880, C0h,$9800, C0h,$9880, 0,0
+$88:EC6C 8D 86 0D    STA $0D86  [$7E:0D86]  ;|
+$88:EC6F A9 00 98    LDA #$9800             ;|
+$88:EC72 8D 89 0D    STA $0D89  [$7E:0D89]  ;|
+$88:EC75 A9 80 98    LDA #$9880             ;|
+$88:EC78 8D 8C 0D    STA $0D8C  [$7E:0D8C]  ;|
+$88:EC7B 9C 8E 0D    STZ $0D8E  [$7E:0D8E]  ;/
 $88:EC7E 22 35 84 88 JSL $888435[$88:8435]  ;\
 $88:EC82             dx 42, 11, EC8A        ;} Spawn indirect HDMA object for BG3 X scroll with instruction list $EC8A
 $88:EC86 FA          PLX
@@ -8966,7 +8973,7 @@ $88:EC89 6B          RTL
 {
 $88:EC8A             dx 866A,7E,    ; Indirect HDMA data bank = $7E
                         8655,00,    ; HDMA table bank = $00
-                        EC9F,       ; ???
+                        EC9F,       ; Set up wavy Samus
                         8570,88ECB6,; Pre-instruction = $88:ECB6
                         0001,0D82,
                         8682,       ; Sleep
@@ -8974,16 +8981,16 @@ $88:EC8A             dx 866A,7E,    ; Indirect HDMA data bank = $7E
 }
 
 
-;;; $EC9F: Instruction ;;;
+;;; $EC9F: Instruction - set up wavy Samus ;;;
 {
 $88:EC9F 08          PHP
 $88:ECA0 C2 30       REP #$30
-$88:ECA2 A9 FE FF    LDA #$FFFE
-$88:ECA5 9D 14 19    STA $1914,x[$7E:1914]
-$88:ECA8 A9 01 00    LDA #$0001
-$88:ECAB 9D 20 19    STA $1920,x[$7E:1920]
-$88:ECAE 9E 2C 19    STZ $192C,x[$7E:192C]
-$88:ECB1 9E 38 19    STZ $1938,x[$7E:1938]
+$88:ECA2 A9 FE FF    LDA #$FFFE             ;\
+$88:ECA5 9D 14 19    STA $1914,x[$7E:1914]  ;} HDMA object wave phase = FFFEh
+$88:ECA8 A9 01 00    LDA #$0001             ;\
+$88:ECAB 9D 20 19    STA $1920,x[$7E:1920]  ;} HDMA object phase increase timer = 1
+$88:ECAE 9E 2C 19    STZ $192C,x[$7E:192C]  ; HDMA object $192C = 0 (unused)
+$88:ECB1 9E 38 19    STZ $1938,x[$7E:1938]  ; HDMA object $1938 = 0 (unused)
 $88:ECB4 28          PLP
 $88:ECB5 60          RTS
 }
@@ -8991,194 +8998,196 @@ $88:ECB5 60          RTS
 
 ;;; $ECB6: Pre-instruction - wavy Samus ;;;
 {
-; Looks similar to $E567: Pre-instruction - wavy Phantoon
 $88:ECB6 08          PHP
 $88:ECB7 C2 30       REP #$30
-$88:ECB9 AD 9C 0D    LDA $0D9C  [$7E:0D9C]
-$88:ECBC D0 13       BNE $13    [$ECD1]
+$88:ECB9 AD 9C 0D    LDA $0D9C  [$7E:0D9C]  ;\
+$88:ECBC D0 13       BNE $13    [$ECD1]     ;} If wavy Samus is disabled:
 $88:ECBE AE B2 18    LDX $18B2  [$7E:18B2]
-$88:ECC1 BD CC 18    LDA $18CC,x[$7E:18CC]
-$88:ECC4 1A          INC A
-$88:ECC5 1A          INC A
-$88:ECC6 9D CC 18    STA $18CC,x[$7E:18CC]
-$88:ECC9 A9 01 00    LDA #$0001
-$88:ECCC 9D E4 18    STA $18E4,x[$7E:18E4]
-$88:ECCF 28          PLP
-$88:ECD0 6B          RTL
+$88:ECC1 BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
+$88:ECC4 1A          INC A                  ;|
+$88:ECC5 1A          INC A                  ;} HDMA object instruction list pointer += 2
+$88:ECC6 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
+$88:ECC9 A9 01 00    LDA #$0001             ;\
+$88:ECCC 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
+$88:ECCF 28          PLP                    
+$88:ECD0 6B          RTL                    ; Return
 
-$88:ECD1 A9 04 00    LDA #$0004
-$88:ECD4 85 1C       STA $1C    [$7E:001C]
-$88:ECD6 A9 80 00    LDA #$0080
-$88:ECD9 85 1E       STA $1E    [$7E:001E]
+$88:ECD1 A9 04 00    LDA #$0004             ;\
+$88:ECD4 85 1C       STA $1C    [$7E:001C]  ;} $1C = 4
+$88:ECD6 A9 80 00    LDA #$0080             ;\
+$88:ECD9 85 1E       STA $1E    [$7E:001E]  ;} $1E = 80h
 $88:ECDB DA          PHX
-$88:ECDC AD A0 0D    LDA $0DA0  [$7E:0DA0]
-$88:ECDF 0A          ASL A
-$88:ECE0 85 12       STA $12    [$7E:0012]
-$88:ECE2 BD 14 19    LDA $1914,x[$7E:1914]
-$88:ECE5 18          CLC
-$88:ECE6 65 12       ADC $12    [$7E:0012]
-$88:ECE8 29 FF 01    AND #$01FF
-$88:ECEB 9D 14 19    STA $1914,x[$7E:1914]
-$88:ECEE BD 14 19    LDA $1914,x[$7E:1914]
-$88:ECF1 85 14       STA $14    [$7E:0014]
-$88:ECF3 A2 00 00    LDX #$0000
+$88:ECDC AD A0 0D    LDA $0DA0  [$7E:0DA0]  ;\
+$88:ECDF 0A          ASL A                  ;|
+$88:ECE0 85 12       STA $12    [$7E:0012]  ;|
+$88:ECE2 BD 14 19    LDA $1914,x[$7E:1914]  ;|
+$88:ECE5 18          CLC                    ;} HDMA object wave phase += [wavy Samus phase delta] * 2
+$88:ECE6 65 12       ADC $12    [$7E:0012]  ;|
+$88:ECE8 29 FF 01    AND #$01FF             ;|
+$88:ECEB 9D 14 19    STA $1914,x[$7E:1914]  ;/
+$88:ECEE BD 14 19    LDA $1914,x[$7E:1914]  ; >_<;
+$88:ECF1 85 14       STA $14    [$7E:0014]  ; $14 = [HDMA object wave phase]
+$88:ECF3 A2 00 00    LDX #$0000             ; X = 0
+                                            
+; LOOP                                      
+$88:ECF6 DA          PHX                    
+$88:ECF7 A6 14       LDX $14    [$7E:0014]  ;\
+$88:ECF9 BF 43 B4 A0 LDA $A0B443,x[$A0:B451];} If [$14] / 2 <= 80h:
+$88:ECFD 10 03       BPL $03    [$ED02]     ;/
+$88:ECFF 4C 89 ED    JMP $ED89  [$88:ED89]  ; Go to BRANCH_NEGATIVE
 
-$88:ECF6 DA          PHX
-$88:ECF7 A6 14       LDX $14    [$7E:0014]
-$88:ECF9 BF 43 B4 A0 LDA $A0B443,x[$A0:B451]
-$88:ECFD 10 03       BPL $03    [$ED02]
-$88:ECFF 4C 89 ED    JMP $ED89  [$88:ED89]
+$88:ED02 85 12       STA $12    [$7E:0012]  ; $12 = sin([$14] / 2 * pi / 80h) * 100h
+$88:ED04 E2 20       SEP #$20               ;\
+$88:ED06 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED09 AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
+$88:ED0C 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED0F EA          NOP                    ;|
+$88:ED10 EA          NOP                    ;} A = [wavy Samus amplitude low] * [$12 low] / 100h
+$88:ED11 EA          NOP                    ;|
+$88:ED12 C2 20       REP #$20               ;|
+$88:ED14 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:ED17 EB          XBA                    ;|
+$88:ED18 29 FF 00    AND #$00FF             ;/
+$88:ED1B 85 16       STA $16    [$7E:0016]  ;\
+$88:ED1D E2 20       SEP #$20               ;|
+$88:ED1F A5 13       LDA $13    [$7E:0013]  ;|
+$88:ED21 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED24 AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
+$88:ED27 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED2A EA          NOP                    ;} A += [wavy Samus amplitude low] * [$12 high]
+$88:ED2B EA          NOP                    ;|
+$88:ED2C EA          NOP                    ;|
+$88:ED2D C2 20       REP #$20               ;|
+$88:ED2F AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:ED32 18          CLC                    ;|
+$88:ED33 65 16       ADC $16    [$7E:0016]  ;/
+$88:ED35 85 16       STA $16    [$7E:0016]  ;\
+$88:ED37 E2 20       SEP #$20               ;|
+$88:ED39 A5 12       LDA $12    [$7E:0012]  ;|
+$88:ED3B 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED3E AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
+$88:ED41 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED44 EA          NOP                    ;|
+$88:ED45 EA          NOP                    ;|
+$88:ED46 EA          NOP                    ;|
+$88:ED47 C2 20       REP #$20               ;|
+$88:ED49 AD 16 42    LDA $4216  [$7E:4216]  ;} A += [wavy Samus amplitude high] * [$12 low]
+$88:ED4C 85 18       STA $18    [$7E:0018]  ;|
+$88:ED4E E2 20       SEP #$20               ;|
+$88:ED50 A5 13       LDA $13    [$7E:0013]  ;|
+$88:ED52 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED55 AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
+$88:ED58 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED5B C2 20       REP #$20               ;|
+$88:ED5D A5 16       LDA $16    [$7E:0016]  ;|
+$88:ED5F 18          CLC                    ;|
+$88:ED60 65 18       ADC $18    [$7E:0018]  ;/
+$88:ED62 85 16       STA $16    [$7E:0016]  ;\
+$88:ED64 AD 15 42    LDA $4215  [$7E:4215]  ;|
+$88:ED67 29 00 FF    AND #$FF00             ;} A += [wavy Samus amplitude high] * [$12 high] * 100h (whoops, carry isn't being propagated)
+$88:ED6A 18          CLC                    ;|
+$88:ED6B 65 16       ADC $16    [$7E:0016]  ;/
+$88:ED6D 29 00 FF    AND #$FF00             ;\
+$88:ED70 EB          XBA                    ;} $12 = [A] / 100h
+$88:ED71 85 12       STA $12    [$7E:0012]  ;/
+$88:ED73 8A          TXA                    ;\
+$88:ED74 18          CLC                    ;} $14 += 4
+$88:ED75 65 1C       ADC $1C    [$7E:001C]  ;/
+$88:ED77 29 FF 01    AND #$01FF             ;\
+$88:ED7A 85 14       STA $14    [$7E:0014]  ;} $14 %= 200h
+$88:ED7C FA          PLX                    
+$88:ED7D A5 B9       LDA $B9    [$7E:00B9]  ;\
+$88:ED7F 18          CLC                    ;|
+$88:ED80 65 12       ADC $12    [$7E:0012]  ;} $7E:9800 + [X] = [BG3 X scroll] + [$12]
+$88:ED82 9F 00 98 7E STA $7E9800,x[$7E:9800];/
+$88:ED86 4C 11 EE    JMP $EE11  [$88:EE11]  ; Go to BRANCH_NEXT
 
-$88:ED02 85 12       STA $12    [$7E:0012]
-$88:ED04 E2 20       SEP #$20
-$88:ED06 8D 02 42    STA $4202  [$7E:4202]
-$88:ED09 AD 9E 0D    LDA $0D9E  [$7E:0D9E]
-$88:ED0C 8D 03 42    STA $4203  [$7E:4203]
-$88:ED0F EA          NOP
-$88:ED10 EA          NOP
-$88:ED11 EA          NOP
-$88:ED12 C2 20       REP #$20
-$88:ED14 AD 16 42    LDA $4216  [$7E:4216]
-$88:ED17 EB          XBA
-$88:ED18 29 FF 00    AND #$00FF
-$88:ED1B 85 16       STA $16    [$7E:0016]
-$88:ED1D E2 20       SEP #$20
-$88:ED1F A5 13       LDA $13    [$7E:0013]
-$88:ED21 8D 02 42    STA $4202  [$7E:4202]
-$88:ED24 AD 9E 0D    LDA $0D9E  [$7E:0D9E]
-$88:ED27 8D 03 42    STA $4203  [$7E:4203]
-$88:ED2A EA          NOP
-$88:ED2B EA          NOP
-$88:ED2C EA          NOP
-$88:ED2D C2 20       REP #$20
-$88:ED2F AD 16 42    LDA $4216  [$7E:4216]
-$88:ED32 18          CLC
-$88:ED33 65 16       ADC $16    [$7E:0016]
-$88:ED35 85 16       STA $16    [$7E:0016]
-$88:ED37 E2 20       SEP #$20
-$88:ED39 A5 12       LDA $12    [$7E:0012]
-$88:ED3B 8D 02 42    STA $4202  [$7E:4202]
-$88:ED3E AD 9F 0D    LDA $0D9F  [$7E:0D9F]
-$88:ED41 8D 03 42    STA $4203  [$7E:4203]
-$88:ED44 EA          NOP
-$88:ED45 EA          NOP
-$88:ED46 EA          NOP
-$88:ED47 C2 20       REP #$20
-$88:ED49 AD 16 42    LDA $4216  [$7E:4216]
-$88:ED4C 85 18       STA $18    [$7E:0018]
-$88:ED4E E2 20       SEP #$20
-$88:ED50 A5 13       LDA $13    [$7E:0013]
-$88:ED52 8D 02 42    STA $4202  [$7E:4202]
-$88:ED55 AD 9F 0D    LDA $0D9F  [$7E:0D9F]
-$88:ED58 8D 03 42    STA $4203  [$7E:4203]
-$88:ED5B C2 20       REP #$20
-$88:ED5D A5 16       LDA $16    [$7E:0016]
-$88:ED5F 18          CLC
-$88:ED60 65 18       ADC $18    [$7E:0018]
-$88:ED62 85 16       STA $16    [$7E:0016]
-$88:ED64 AD 15 42    LDA $4215  [$7E:4215]
-$88:ED67 29 00 FF    AND #$FF00
-$88:ED6A 18          CLC
-$88:ED6B 65 16       ADC $16    [$7E:0016]
-$88:ED6D 29 00 FF    AND #$FF00
-$88:ED70 EB          XBA
-$88:ED71 85 12       STA $12    [$7E:0012]
-$88:ED73 8A          TXA
-$88:ED74 18          CLC
-$88:ED75 65 1C       ADC $1C    [$7E:001C]
-$88:ED77 29 FF 01    AND #$01FF
-$88:ED7A 85 14       STA $14    [$7E:0014]
-$88:ED7C FA          PLX
-$88:ED7D A5 B9       LDA $B9    [$7E:00B9]
-$88:ED7F 18          CLC
-$88:ED80 65 12       ADC $12    [$7E:0012]
-$88:ED82 9F 00 98 7E STA $7E9800,x[$7E:9800]
-$88:ED86 4C 11 EE    JMP $EE11  [$88:EE11]
+; BRANCH_NEGATIVE
+$88:ED89 49 FF FF    EOR #$FFFF             ;\
+$88:ED8C 1A          INC A                  ;} $12 = -sin([$14] / 2 * pi / 80h) * 100h
+$88:ED8D 85 12       STA $12    [$7E:0012]  ;/
+$88:ED8F E2 20       SEP #$20               ;\
+$88:ED91 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:ED94 AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
+$88:ED97 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:ED9A EA          NOP                    ;|
+$88:ED9B EA          NOP                    ;|
+$88:ED9C EA          NOP                    ;|
+$88:ED9D C2 20       REP #$20               ;|
+$88:ED9F AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:EDA2 EB          XBA                    ;|
+$88:EDA3 29 FF 00    AND #$00FF             ;|
+$88:EDA6 85 16       STA $16    [$7E:0016]  ;|
+$88:EDA8 E2 20       SEP #$20               ;|
+$88:EDAA A5 13       LDA $13    [$7E:0013]  ;|
+$88:EDAC 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:EDAF AD 9E 0D    LDA $0D9E  [$7E:0D9E]  ;|
+$88:EDB2 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:EDB5 EA          NOP                    ;|
+$88:EDB6 EA          NOP                    ;|
+$88:EDB7 EA          NOP                    ;|
+$88:EDB8 C2 20       REP #$20               ;|
+$88:EDBA AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:EDBD 18          CLC                    ;|
+$88:EDBE 65 16       ADC $16    [$7E:0016]  ;|
+$88:EDC0 85 16       STA $16    [$7E:0016]  ;|
+$88:EDC2 E2 20       SEP #$20               ;|
+$88:EDC4 A5 12       LDA $12    [$7E:0012]  ;} Same as above: $12 = [wavy Samus amplitude] * [$12] / 10000h (possibly off-by-1)
+$88:EDC6 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:EDC9 AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
+$88:EDCC 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:EDCF EA          NOP                    ;|
+$88:EDD0 EA          NOP                    ;|
+$88:EDD1 EA          NOP                    ;|
+$88:EDD2 C2 20       REP #$20               ;|
+$88:EDD4 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$88:EDD7 85 18       STA $18    [$7E:0018]  ;|
+$88:EDD9 E2 20       SEP #$20               ;|
+$88:EDDB A5 13       LDA $13    [$7E:0013]  ;|
+$88:EDDD 8D 02 42    STA $4202  [$7E:4202]  ;|
+$88:EDE0 AD 9F 0D    LDA $0D9F  [$7E:0D9F]  ;|
+$88:EDE3 8D 03 42    STA $4203  [$7E:4203]  ;|
+$88:EDE6 C2 20       REP #$20               ;|
+$88:EDE8 A5 16       LDA $16    [$7E:0016]  ;|
+$88:EDEA 18          CLC                    ;|
+$88:EDEB 65 18       ADC $18    [$7E:0018]  ;|
+$88:EDED 85 16       STA $16    [$7E:0016]  ;|
+$88:EDEF AD 15 42    LDA $4215  [$7E:4215]  ;|
+$88:EDF2 29 00 FF    AND #$FF00             ;|
+$88:EDF5 18          CLC                    ;|
+$88:EDF6 65 16       ADC $16    [$7E:0016]  ;|
+$88:EDF8 29 00 FF    AND #$FF00             ;|
+$88:EDFB EB          XBA                    ;|
+$88:EDFC 85 12       STA $12    [$7E:0012]  ;/
+$88:EDFE 8A          TXA                    ;\
+$88:EDFF 18          CLC                    ;} $14 += 4
+$88:EE00 65 1C       ADC $1C    [$7E:001C]  ;/
+$88:EE02 29 FF 01    AND #$01FF             ;\
+$88:EE05 85 14       STA $14    [$7E:0014]  ;} $14 %= 200h
+$88:EE07 FA          PLX                    
+$88:EE08 A5 B9       LDA $B9    [$7E:00B9]  ;\
+$88:EE0A 38          SEC                    ;|
+$88:EE0B E5 12       SBC $12    [$7E:0012]  ;} $7E:9800 + [X] = [BG3 X scroll] - [$12]
+$88:EE0D 9F 00 98 7E STA $7E9800,x[$7E:987A];/
 
-$88:ED89 49 FF FF    EOR #$FFFF
-$88:ED8C 1A          INC A
-$88:ED8D 85 12       STA $12    [$7E:0012]
-$88:ED8F E2 20       SEP #$20
-$88:ED91 8D 02 42    STA $4202  [$7E:4202]
-$88:ED94 AD 9E 0D    LDA $0D9E  [$7E:0D9E]
-$88:ED97 8D 03 42    STA $4203  [$7E:4203]
-$88:ED9A EA          NOP
-$88:ED9B EA          NOP
-$88:ED9C EA          NOP
-$88:ED9D C2 20       REP #$20
-$88:ED9F AD 16 42    LDA $4216  [$7E:4216]
-$88:EDA2 EB          XBA
-$88:EDA3 29 FF 00    AND #$00FF
-$88:EDA6 85 16       STA $16    [$7E:0016]
-$88:EDA8 E2 20       SEP #$20
-$88:EDAA A5 13       LDA $13    [$7E:0013]
-$88:EDAC 8D 02 42    STA $4202  [$7E:4202]
-$88:EDAF AD 9E 0D    LDA $0D9E  [$7E:0D9E]
-$88:EDB2 8D 03 42    STA $4203  [$7E:4203]
-$88:EDB5 EA          NOP
-$88:EDB6 EA          NOP
-$88:EDB7 EA          NOP
-$88:EDB8 C2 20       REP #$20
-$88:EDBA AD 16 42    LDA $4216  [$7E:4216]
-$88:EDBD 18          CLC
-$88:EDBE 65 16       ADC $16    [$7E:0016]
-$88:EDC0 85 16       STA $16    [$7E:0016]
-$88:EDC2 E2 20       SEP #$20
-$88:EDC4 A5 12       LDA $12    [$7E:0012]
-$88:EDC6 8D 02 42    STA $4202  [$7E:4202]
-$88:EDC9 AD 9F 0D    LDA $0D9F  [$7E:0D9F]
-$88:EDCC 8D 03 42    STA $4203  [$7E:4203]
-$88:EDCF EA          NOP
-$88:EDD0 EA          NOP
-$88:EDD1 EA          NOP
-$88:EDD2 C2 20       REP #$20
-$88:EDD4 AD 16 42    LDA $4216  [$7E:4216]
-$88:EDD7 85 18       STA $18    [$7E:0018]
-$88:EDD9 E2 20       SEP #$20
-$88:EDDB A5 13       LDA $13    [$7E:0013]
-$88:EDDD 8D 02 42    STA $4202  [$7E:4202]
-$88:EDE0 AD 9F 0D    LDA $0D9F  [$7E:0D9F]
-$88:EDE3 8D 03 42    STA $4203  [$7E:4203]
-$88:EDE6 C2 20       REP #$20
-$88:EDE8 A5 16       LDA $16    [$7E:0016]
-$88:EDEA 18          CLC
-$88:EDEB 65 18       ADC $18    [$7E:0018]
-$88:EDED 85 16       STA $16    [$7E:0016]
-$88:EDEF AD 15 42    LDA $4215  [$7E:4215]
-$88:EDF2 29 00 FF    AND #$FF00
-$88:EDF5 18          CLC
-$88:EDF6 65 16       ADC $16    [$7E:0016]
-$88:EDF8 29 00 FF    AND #$FF00
-$88:EDFB EB          XBA
-$88:EDFC 85 12       STA $12    [$7E:0012]
-$88:EDFE 8A          TXA
-$88:EDFF 18          CLC
-$88:EE00 65 1C       ADC $1C    [$7E:001C]
-$88:EE02 29 FF 01    AND #$01FF
-$88:EE05 85 14       STA $14    [$7E:0014]
-$88:EE07 FA          PLX
-$88:EE08 A5 B9       LDA $B9    [$7E:00B9]
-$88:EE0A 38          SEC
-$88:EE0B E5 12       SBC $12    [$7E:0012]
-$88:EE0D 9F 00 98 7E STA $7E9800,x[$7E:987A]
+; BRANCH_NEXT
+$88:EE11 E8          INX                    ;\
+$88:EE12 E8          INX                    ;} X += 2
+$88:EE13 E4 1E       CPX $1E    [$7E:001E]  ;\
+$88:EE15 10 03       BPL $03    [$EE1A]     ;} If [X] < 80h:
+$88:EE17 4C F6 EC    JMP $ECF6  [$88:ECF6]  ; Go to LOOP
 
-$88:EE11 E8          INX
-$88:EE12 E8          INX
-$88:EE13 E4 1E       CPX $1E    [$7E:001E]
-$88:EE15 10 03       BPL $03    [$EE1A]
-$88:EE17 4C F6 EC    JMP $ECF6  [$88:ECF6]
-
-$88:EE1A A2 7E 00    LDX #$007E
-
-$88:EE1D A5 B9       LDA $B9    [$7E:00B9]
-$88:EE1F 38          SEC
-$88:EE20 FF 00 98 7E SBC $7E9800,x[$7E:987E]
-$88:EE24 18          CLC
-$88:EE25 65 B9       ADC $B9    [$7E:00B9]
-$88:EE27 9F 80 98 7E STA $7E9880,x[$7E:98FE]
-$88:EE2B CA          DEX
-$88:EE2C CA          DEX
-$88:EE2D 10 EE       BPL $EE    [$EE1D]
+$88:EE1A A2 7E 00    LDX #$007E             ;\
+                                            ;|
+$88:EE1D A5 B9       LDA $B9    [$7E:00B9]  ;|
+$88:EE1F 38          SEC                    ;|
+$88:EE20 FF 00 98 7E SBC $7E9800,x[$7E:987E];|
+$88:EE24 18          CLC                    ;} $7E:9880..FF = [BG3 X scroll] - ([$7E:9800..7F] - [BG3 X scroll])
+$88:EE25 65 B9       ADC $B9    [$7E:00B9]  ;|
+$88:EE27 9F 80 98 7E STA $7E9880,x[$7E:98FE];|
+$88:EE2B CA          DEX                    ;|
+$88:EE2C CA          DEX                    ;|
+$88:EE2D 10 EE       BPL $EE    [$EE1D]     ;/
 $88:EE2F FA          PLX
 $88:EE30 28          PLP
 $88:EE31 6B          RTL
