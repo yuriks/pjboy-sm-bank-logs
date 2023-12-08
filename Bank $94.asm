@@ -500,7 +500,22 @@ $94:82E0 60          RTS
 
 ;;; $82E1: Post grapple collision detection - horizontal - jump table ;;;
 {
-$94:82E1             dw 82A7, 82A9, 82A7, 82A7, 82A7, 82A7, 82A7, 82A7, 82BE, 82BE, 82BE, 82BE, 82BE, 82BE, 82BE, 82BE
+$94:82E1             dw 82A7, ;  0: Air
+                        82A9, ; *1: Slope
+                        82A7, ;  2: Spike air
+                        82A7, ;  3: Special air
+                        82A7, ;  4: Shootable air
+                        82A7, ;  5: Horizontal extension
+                        82A7, ;  6: Unused air
+                        82A7, ;  7: Bombable air
+                        82BE, ;  8: Solid block
+                        82BE, ;  9: Door block
+                        82BE, ;  Ah: Spike block
+                        82BE, ;  Bh: Special block
+                        82BE, ;  Ch: Shootable block
+                        82BE, ;  Dh: Vertical extension
+                        82BE, ;  Eh: Grapple block
+                        82BE  ;  Fh: Bombable block
 }
 
 
@@ -515,7 +530,7 @@ $94:8301             dw 82A7, 82C5, 82A7, 82A7, 82A7, 82A7, 82A7, 82A7, 82DA, 82
 ;; Parameters:
 ;;     X: Block index
 ;;     $1A: Number of blocks left to check (0 if final (bottom) block)
-;;     $1C: Samus' Y block span
+;;     $1C: Samus Y block span
 ;;     $20: Samus left/right boundary
 ;; Returns:
 ;;     Carry: Set if Samus collides with block, clear otherwise
@@ -571,8 +586,8 @@ $94:8350 4B          PHK                    ;\
 $94:8351 AB          PLB                    ;} DB = $94
 $94:8352 A9 01 00    LDA #$0001             ;\
 $94:8355 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = right
-$94:8358 9C 04 0E    STZ $0E04  [$7E:0E04]  ; $0E04 = 0
-$94:835B 20 95 94    JSR $9495  [$94:9495]  ; $1A = Samus Y block span
+$94:8358 9C 04 0E    STZ $0E04  [$7E:0E04]  ; $0E04 = 0 (distance to eject Samus left)
+$94:835B 20 95 94    JSR $9495  [$94:9495]  ; $1A = $1C = Samus Y block span
 $94:835E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:8361 38          SEC                    ;|
 $94:8362 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
@@ -587,16 +602,16 @@ $94:8371 8D 03 42    STA $4203  [$7E:4203]  ;/
 $94:8374 C2 20       REP #$20
 $94:8376 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $94:8379 85 16       STA $16    [$7E:0016]  ;|
-$94:837B AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} $18.$16 = [Samus X position]
+$94:837B AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} $18.$16 = [Samus X position] <-- never read
 $94:837E 85 18       STA $18    [$7E:0018]  ;/
 $94:8380 18          CLC                    ;\
 $94:8381 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
-$94:8384 3A          DEC A                  ;} $20 = Samus right boundary
+$94:8384 3A          DEC A                  ;} $20 = (Samus right boundary)
 $94:8385 85 20       STA $20    [$7E:0020]  ;/
 $94:8387 4A          LSR A                  ;\
 $94:8388 4A          LSR A                  ;|
 $94:8389 4A          LSR A                  ;|
-$94:838A 4A          LSR A                  ;} Current block index = Samus top-right corner
+$94:838A 4A          LSR A                  ;} Current block index = (Samus top-right corner)
 $94:838B 18          CLC                    ;|
 $94:838C 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $94:838F 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
@@ -613,7 +628,7 @@ $94:839F 8D 04 0E    STA $0E04  [$7E:0E04]  ;/
 
 $94:83A2 8A          TXA                    ;\
 $94:83A3 18          CLC                    ;|
-$94:83A4 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width in blocks] * 2
+$94:83A4 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width in blocks] * 2 (next row)
 $94:83A7 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
 $94:83AA AA          TAX                    ;/
 $94:83AB C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
@@ -629,8 +644,8 @@ $94:83B1 8B          PHB
 $94:83B2 4B          PHK                    ;\
 $94:83B3 AB          PLB                    ;} DB = $94
 $94:83B4 9C 02 0B    STZ $0B02  [$7E:0B02]  ; Collision direction = left
-$94:83B7 9C 06 0E    STZ $0E06  [$7E:0E06]  ; $0E06 = 0
-$94:83BA 20 95 94    JSR $9495  [$94:9495]  ; $1A = Samus Y block span
+$94:83B7 9C 06 0E    STZ $0E06  [$7E:0E06]  ; $0E06 = 0 (distance to eject Samus right)
+$94:83BA 20 95 94    JSR $9495  [$94:9495]  ; $1A = $1C = Samus Y block span
 $94:83BD AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:83C0 38          SEC                    ;|
 $94:83C1 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
@@ -645,10 +660,10 @@ $94:83D0 8D 03 42    STA $4203  [$7E:4203]  ;/
 $94:83D3 C2 20       REP #$20
 $94:83D5 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $94:83D8 85 16       STA $16    [$7E:0016]  ;|
-$94:83DA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} $18.$16 = [Samus X position]
+$94:83DA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} $18.$16 = [Samus X position] <-- never read
 $94:83DD 85 18       STA $18    [$7E:0018]  ;/
 $94:83DF 38          SEC                    ;\
-$94:83E0 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;} $20 = Samus left boundary
+$94:83E0 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;} $20 = (Samus left boundary)
 $94:83E3 85 20       STA $20    [$7E:0020]  ;/
 $94:83E5 4A          LSR A                  ;\
 $94:83E6 4A          LSR A                  ;|
@@ -670,7 +685,7 @@ $94:83FD 8D 06 0E    STA $0E06  [$7E:0E06]  ;/
 
 $94:8400 8A          TXA                    ;\
 $94:8401 18          CLC                    ;|
-$94:8402 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width in blocks] * 2
+$94:8402 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width in blocks] * 2 (next row)
 $94:8405 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
 $94:8408 AA          TAX                    ;/
 $94:8409 C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
@@ -687,15 +702,15 @@ $94:8410 4B          PHK                    ;\
 $94:8411 AB          PLB                    ;} DB = $94
 $94:8412 A9 03 00    LDA #$0003             ;\
 $94:8415 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = down
-$94:8418 9C 08 0E    STZ $0E08  [$7E:0E08]  ; $0E08 = 0
-$94:841B 20 B5 94    JSR $94B5  [$94:94B5]  ; $1C = $1A = Samus X block span
+$94:8418 9C 08 0E    STZ $0E08  [$7E:0E08]  ; $0E08 = 0 (distance to eject Samus up)
+$94:841B 20 B5 94    JSR $94B5  [$94:94B5]  ; $1A = $1C = Samus X block span
 $94:841E AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $94:8421 85 16       STA $16    [$7E:0016]  ;|
-$94:8423 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} $18.$16 = [Samus Y position]
+$94:8423 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} $18.$16 = [Samus Y position] <-- never read
 $94:8426 85 18       STA $18    [$7E:0018]  ;/
 $94:8428 18          CLC                    ;\
 $94:8429 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
-$94:842C 3A          DEC A                  ;} $20 = Samus bottom boundary
+$94:842C 3A          DEC A                  ;} $20 = (Samus bottom boundary)
 $94:842D 85 20       STA $20    [$7E:0020]  ;/
 $94:842F 4A          LSR A                  ;\
 $94:8430 4A          LSR A                  ;|
@@ -712,7 +727,7 @@ $94:8444 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;/
 $94:8447 4A          LSR A                  ;\
 $94:8448 4A          LSR A                  ;|
 $94:8449 4A          LSR A                  ;|
-$94:844A 4A          LSR A                  ;} Current block index = Samus bottom-left corner
+$94:844A 4A          LSR A                  ;} Current block index = (Samus bottom-left corner)
 $94:844B 18          CLC                    ;|
 $94:844C 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $94:844F 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
@@ -728,7 +743,7 @@ $94:845D 90 03       BCC $03    [$8462]     ;} $0E08 = max([$0E08], [A] + 1) (di
 $94:845F 8D 08 0E    STA $0E08  [$7E:0E08]  ;/
 
 $94:8462 E8          INX                    ;\
-$94:8463 E8          INX                    ;} X += 2
+$94:8463 E8          INX                    ;} X += 2 (next block)
 $94:8464 C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
 $94:8466 10 EC       BPL $EC    [$8454]     ; If [$1A] >= 0: go to LOOP
 $94:8468 AB          PLB
@@ -743,14 +758,14 @@ $94:846B 4B          PHK                    ;\
 $94:846C AB          PLB                    ;} DB = $94
 $94:846D A9 02 00    LDA #$0002             ;\
 $94:8470 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = up
-$94:8473 9C 0A 0E    STZ $0E0A  [$7E:0E0A]  ; $0E0A = 0
-$94:8476 20 B5 94    JSR $94B5  [$94:94B5]  ; $1C = $1A = Samus X block span
+$94:8473 9C 0A 0E    STZ $0E0A  [$7E:0E0A]  ; $0E0A = 0 (distance to eject Samus down)
+$94:8476 20 B5 94    JSR $94B5  [$94:94B5]  ; $1A = $1C = Samus X block span
 $94:8479 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $94:847C 85 16       STA $16    [$7E:0016]  ;|
-$94:847E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} $18.$16 = [Samus Y position]
+$94:847E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} $18.$16 = [Samus Y position] <-- never read
 $94:8481 85 18       STA $18    [$7E:0018]  ;/
 $94:8483 38          SEC                    ;\
-$94:8484 ED 00 0B    SBC $0B00  [$7E:0B00]  ;} $20 = Samus top boundary
+$94:8484 ED 00 0B    SBC $0B00  [$7E:0B00]  ;} $20 = (Samus top boundary)
 $94:8487 85 20       STA $20    [$7E:0020]  ;/
 $94:8489 4A          LSR A                  ;\
 $94:848A 4A          LSR A                  ;|
@@ -767,7 +782,7 @@ $94:849E ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;/
 $94:84A1 4A          LSR A                  ;\
 $94:84A2 4A          LSR A                  ;|
 $94:84A3 4A          LSR A                  ;|
-$94:84A4 4A          LSR A                  ;} Current block index = Samus top-left corner
+$94:84A4 4A          LSR A                  ;} Current block index = (Samus top-left corner)
 $94:84A5 18          CLC                    ;|
 $94:84A6 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $94:84A9 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
@@ -783,7 +798,7 @@ $94:84B7 90 03       BCC $03    [$84BC]     ;} $0E0A = max([$0E0A], [A] + 1) (di
 $94:84B9 8D 0A 0E    STA $0E0A  [$7E:0E0A]  ;/
 
 $94:84BC E8          INX                    ;\
-$94:84BD E8          INX                    ;} X += 2
+$94:84BD E8          INX                    ;} X += 2 (next block)
 $94:84BE C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
 $94:84C0 10 EC       BPL $EC    [$84AE]     ; If [$1A] >= 0: go to LOOP
 $94:84C2 AB          PLB
@@ -793,6 +808,7 @@ $94:84C3 60          RTS
 
 ;;; $84C4: Post grapple collision handling - horizontal ;;;
 {
+; Called by $90:EF25 (post grapple collision detection)
 $94:84C4 08          PHP
 $94:84C5 20 4F 83    JSR $834F  [$94:834F]  ; Post grapple collision handling - rightwards
 $94:84C8 20 B1 83    JSR $83B1  [$94:83B1]  ; Post grapple collision handling - leftwards
@@ -803,6 +819,7 @@ $94:84CC 6B          RTL
 
 ;;; $84CD: Post grapple collision handling - vertical ;;;
 {
+; Called by $90:EF25 (post grapple collision detection), sometimes twice
 $94:84CD 08          PHP
 $94:84CE 20 0F 84    JSR $840F  [$94:840F]  ; Post grapple collision handling - downwards
 $94:84D1 20 6A 84    JSR $846A  [$94:846A]  ; Post grapple collision handling - upwards
