@@ -1014,7 +1014,7 @@ $86:859B B0 03       BCS $03    [$85A0]     ;/
 $86:859D 4C C2 85    JMP $85C2  [$86:85C2]  ; Go to enemy projectile block collision reaction - horizontal - slope - square
 
 $86:85A0 BF 02 64 7F LDA $7F6402,x[$7F:671F];\
-$86:85A4 29 FF 00    AND #$00FF             ;} Current slope BTS = [block BTS] & FFh
+$86:85A4 29 FF 00    AND #$00FF             ;} Current slope BTS = [block BTS]
 $86:85A7 8D 77 1E    STA $1E77  [$7E:1E77]  ;/
 $86:85AA 4C 3D 87    JMP $873D  [$86:873D]  ; Go to enemy projectile block collision reaction - horizontal - slope - non-square
 }
@@ -1238,9 +1238,9 @@ $86:8729             db 00,01,82,83, 00,81,02,83, 00,01,02,83, 00,81,82,83, 80,8
 }
 
 
-;;; $873D: Enemy projectile block collision reaction - horizontal - slope - non-square ;;;
+;;; $873D: Clear carry. Enemy projectile block collision reaction - horizontal - slope - non-square ;;;
 {
-$86:873D AD 77 1E    LDA $1E77  [$7E:1E77]
+$86:873D AD 77 1E    LDA $1E77  [$7E:1E77]  
 $86:8740 29 1F 00    AND #$001F
 $86:8743 0A          ASL A
 $86:8744 0A          ASL A

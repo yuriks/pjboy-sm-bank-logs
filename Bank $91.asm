@@ -604,6 +604,7 @@ $91:82D8 60          RTS
 
 ;;; $82D9: Handle transition table lookup failure ;;;
 {
+; Also called when grapple beam is disconnected
 $91:82D9 08          PHP
 $91:82DA 8B          PHB
 $91:82DB 4B          PHK                    ;\

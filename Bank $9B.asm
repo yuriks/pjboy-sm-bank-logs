@@ -3362,7 +3362,7 @@ $9B:C85D AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $9B:C860 29 FF 00    AND #$00FF             ;|
 $9B:C863 C9 16 00    CMP #$0016             ;} If [Samus movement type] = grappling:
 $9B:C866 D0 06       BNE $06    [$C86E]     ;/
-$9B:C868 22 D9 82 91 JSL $9182D9[$91:82D9]  ; Execute $91:82D9
+$9B:C868 22 D9 82 91 JSL $9182D9[$91:82D9]  ; Handle transition table lookup failure
 $9B:C86C 80 07       BRA $07    [$C875]
 
 $9B:C86E A9 1C 00    LDA #$001C             ;\ Else ([Samus movement type] != grappling):

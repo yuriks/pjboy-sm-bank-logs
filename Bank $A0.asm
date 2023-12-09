@@ -8362,36 +8362,36 @@ $A0:C2DA             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 00
 }
 
 
-;;; $C2FA: Enemy block collision horizontal reaction - slope ;;;
+;;; $C2FA: Enemy block collision reaction - horizontal - slope ;;;
 {
-$A0:C2FA AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A0:C2FD BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A0:C301 29 1F 00    AND #$001F
-$A0:C304 C9 05 00    CMP #$0005
-$A0:C307 B0 03       BCS $03    [$C30C]
-$A0:C309 4C 2E C3    JMP $C32E  [$A0:C32E]
-
-$A0:C30C BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A0:C310 29 FF 00    AND #$00FF
-$A0:C313 8D 77 1E    STA $1E77  [$7E:1E77]
-$A0:C316 4C 49 C4    JMP $C449  [$A0:C449]
+$A0:C2FA AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A0:C2FD BF 02 64 7F LDA $7F6402,x[$7F:6A6C];|
+$A0:C301 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5:
+$A0:C304 C9 05 00    CMP #$0005             ;|
+$A0:C307 B0 03       BCS $03    [$C30C]     ;/
+$A0:C309 4C 2E C3    JMP $C32E  [$A0:C32E]  ; Go to enemy block collision reaction - horizontal - slope - square
+                                            
+$A0:C30C BF 02 64 7F LDA $7F6402,x[$7F:6A6C];\
+$A0:C310 29 FF 00    AND #$00FF             ;} Current slope BTS = [block BTS]
+$A0:C313 8D 77 1E    STA $1E77  [$7E:1E77]  ;/
+$A0:C316 4C 49 C4    JMP $C449  [$A0:C449]  ; Go to enemy block collision reaction - horizontal - slope - non-square
 }
 
 
-;;; $C319: Enemy block collision vertical reaction - slope ;;;
+;;; $C319: Enemy block collision reaction - vertical - slope ;;;
 {
-$A0:C319 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A0:C31C BF 02 64 7F LDA $7F6402,x[$7F:65D7]
-$A0:C320 29 1F 00    AND #$001F
-$A0:C323 C9 05 00    CMP #$0005
-$A0:C326 B0 03       BCS $03    [$C32B]
-$A0:C328 4C B2 C3    JMP $C3B2  [$A0:C3B2]
+$A0:C319 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A0:C31C BF 02 64 7F LDA $7F6402,x[$7F:65D7];|
+$A0:C320 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5:
+$A0:C323 C9 05 00    CMP #$0005             ;|
+$A0:C326 B0 03       BCS $03    [$C32B]     ;/
+$A0:C328 4C B2 C3    JMP $C3B2  [$A0:C3B2]  ; Go to enemy block collision reaction - vertical - slope - square
 
-$A0:C32B 4C 1F C5    JMP $C51F  [$A0:C51F]
+$A0:C32B 4C 1F C5    JMP $C51F  [$A0:C51F]  ; Go to enemy block collision reaction - vertical - slope - non-square
 }
 
 
-;;; $C32E: Enemy block collision horizontal reaction - slope - square ;;;
+;;; $C32E: Enemy block collision reaction - horizontal - slope - square ;;;
 {
 $A0:C32E 0A          ASL A
 $A0:C32F 0A          ASL A
@@ -8475,7 +8475,7 @@ $A0:C3B1 60          RTS
 }
 
 
-;;; $C3B2: Enemy block collision vertical reaction - slope - square ;;;
+;;; $C3B2: Enemy block collision reaction - vertical - slope - square ;;;
 {
 $A0:C3B2 0A          ASL A
 $A0:C3B3 0A          ASL A
@@ -8566,7 +8566,7 @@ $A0:C435             db 00, 01, 82, 83, 00, 81, 02, 83, 00, 01, 02, 83, 00, 81, 
 }
 
 
-;;; $C449: Enemy block collision horizontal reaction - slope - non-square ;;;
+;;; $C449: Enemy block collision reaction - horizontal - slope - non-square ;;;
 {
 $A0:C449 24 20       BIT $20    [$7E:0020]  ;\
 $A0:C44B 30 06       BMI $06    [$C453]     ;} If [$20] positive:
@@ -8620,7 +8620,7 @@ $A0:C49F             dw 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0
 }
 
 
-;;; $C51F: Enemy block collision vertical reaction - slope - non-square ;;;
+;;; $C51F: Enemy block collision reaction - vertical - slope - non-square ;;;
 {
 $A0:C51F AC 54 0E    LDY $0E54  [$7E:0E54]
 $A0:C522 A5 14       LDA $14    [$7E:0014]

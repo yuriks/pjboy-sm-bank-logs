@@ -15872,13 +15872,13 @@ $90:EF29 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision handling - 
 $90:EF2D AD 0A 0E    LDA $0E0A  [$7E:0E0A]  ;\
 $90:EF30 F0 05       BEQ $05    [$EF37]     ;|
 $90:EF32 AD 08 0E    LDA $0E08  [$7E:0E08]  ;|
-$90:EF35 D0 25       BNE $25    [$EF5C]     ;} If [$0E08] = 0 or [$0E0A] != 0: return
+$90:EF35 D0 25       BNE $25    [$EF5C]     ;} If [distance to eject Samus up] = 0 or [distance to eject Samus down] != 0: return
                                             ;|
 $90:EF37 AD 08 0E    LDA $0E08  [$7E:0E08]  ;|
 $90:EF3A F0 20       BEQ $20    [$EF5C]     ;/
 $90:EF3C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:EF3F 38          SEC                    ;|
-$90:EF40 ED 08 0E    SBC $0E08  [$7E:0E08]  ;} Samus Y position -= [$0E08]
+$90:EF40 ED 08 0E    SBC $0E08  [$7E:0E08]  ;} Samus Y position -= [distance to eject Samus up]
 $90:EF43 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $90:EF46 AD 00 0B    LDA $0B00  [$7E:0B00]  ;\
 $90:EF49 C9 10 00    CMP #$0010             ;} If [Samus Y radius] < 10h: return
@@ -15886,7 +15886,7 @@ $90:EF4C 30 0E       BMI $0E    [$EF5C]     ;/
 $90:EF4E 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision handling - vertical
 $90:EF52 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:EF55 38          SEC                    ;|
-$90:EF56 ED 08 0E    SBC $0E08  [$7E:0E08]  ;} Samus Y position -= [$0E08]
+$90:EF56 ED 08 0E    SBC $0E08  [$7E:0E08]  ;} Samus Y position -= [distance to eject Samus up]
 $90:EF59 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 
 $90:EF5C 28          PLP

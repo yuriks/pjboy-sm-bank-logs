@@ -21,7 +21,7 @@ $94:800F E2 20       SEP #$20               ;|
 $94:8011 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $94:8014 8D 06 42    STA $4206  [$7E:4206]  ;|
 $94:8017 C2 20       REP #$20               ;|
-$94:8019 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h:
+$94:8019 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (never true):
 $94:801C 4A          LSR A                  ;|
 $94:801D 4A          LSR A                  ;|
 $94:801E 4A          LSR A                  ;|
@@ -32,12 +32,12 @@ $94:8025 18          CLC                    ;\
 $94:8026 60          RTS                    ;} Return carry clear
 
 $94:8027 A5 20       LDA $20    [$7E:0020]  ;\
-$94:8029 29 0F 00    AND #$000F             ;} $0DD4 = [Samus left boundary] % 10h
+$94:8029 29 0F 00    AND #$000F             ;} $0DD4 = [Samus left boundary] % 10h (Samus left X offset)
 $94:802C 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:802F BF 02 64 7F LDA $7F6402,x          ;\
 $94:8033 29 1F 00    AND #$001F             ;|
 $94:8036 0A          ASL A                  ;|
-$94:8037 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h
+$94:8037 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
 $94:8038 0A          ASL A                  ;|
 $94:8039 0A          ASL A                  ;|
 $94:803A 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
@@ -55,14 +55,14 @@ $94:8052 49 0F 00    EOR #$000F             ;} A = Fh - [Samus Y position] % 10h
 $94:8055 29 0F 00    AND #$000F
 $94:8058 18          CLC                    ;\
 $94:8059 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
-$94:805C AA          TAX                    ;|
-$94:805D BD 2B 89    LDA $892B,x            ;|
-$94:8060 29 1F 00    AND #$001F             ;} A = ([$892B + [$0DD6] + [A]] & 1Fh) - [$0DD4] - 1
-$94:8063 38          SEC                    ;|
-$94:8064 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;|
+$94:805C AA          TAX                    ;} A = [$892B + [$0DD6] + [A]] (slope left X offset)
+$94:805D BD 2B 89    LDA $892B,x            ;/
+$94:8060 29 1F 00    AND #$001F
+$94:8063 38          SEC                    ;\
+$94:8064 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Samus left X offset) + 1
 $94:8067 3A          DEC A                  ;/
-$94:8068 F0 02       BEQ $02    [$806C]     ;\
-$94:806A 30 02       BMI $02    [$806E]     ;} If [A] < 0: return carry clear
+$94:8068 F0 02       BEQ $02    [$806C]
+$94:806A 30 02       BMI $02    [$806E]     ; If [A] < 0: return carry clear
 
 $94:806C 38          SEC                    ;\
 $94:806D 60          RTS                    ;} Return carry set
@@ -79,7 +79,7 @@ $94:8079 E2 20       SEP #$20               ;|
 $94:807B AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $94:807E 8D 06 42    STA $4206  [$7E:4206]  ;|
 $94:8081 C2 20       REP #$20               ;|
-$94:8083 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h:
+$94:8083 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus left boundary is in different block column than right boundary): (this check seems wrong)
 $94:8086 4A          LSR A                  ;|
 $94:8087 4A          LSR A                  ;|
 $94:8088 4A          LSR A                  ;|
@@ -90,12 +90,12 @@ $94:808F 18          CLC                    ;\
 $94:8090 60          RTS                    ;} Return carry clear
 
 $94:8091 A5 20       LDA $20    [$7E:0020]  ;\
-$94:8093 29 0F 00    AND #$000F             ;} $0DD4 = [Samus right boundary] % 10h
+$94:8093 29 0F 00    AND #$000F             ;} $0DD4 = [Samus right boundary] % 10h (Samus right X offset)
 $94:8096 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:8099 BF 02 64 7F LDA $7F6402,x          ;\
 $94:809D 29 1F 00    AND #$001F             ;|
 $94:80A0 0A          ASL A                  ;|
-$94:80A1 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h
+$94:80A1 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
 $94:80A2 0A          ASL A                  ;|
 $94:80A3 0A          ASL A                  ;|
 $94:80A4 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
@@ -113,11 +113,11 @@ $94:80BC 49 0F 00    EOR #$000F             ;} A = Fh - [Samus Y position] % 10h
 $94:80BF 29 0F 00    AND #$000F
 $94:80C2 18          CLC                    ;\
 $94:80C3 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
-$94:80C6 AA          TAX                    ;|
-$94:80C7 BD 2B 89    LDA $892B,x            ;|
-$94:80CA 29 1F 00    AND #$001F             ;} A = ([$892B + [$0DD6] + [A]] & 1Fh) - [$0DD4] - 1
-$94:80CD 38          SEC                    ;|
-$94:80CE ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;|
+$94:80C6 AA          TAX                    ;} A = [$892B + [$0DD6] + [A]] (slope left X offset)
+$94:80C7 BD 2B 89    LDA $892B,x            ;/
+$94:80CA 29 1F 00    AND #$001F
+$94:80CD 38          SEC                    ;\
+$94:80CE ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Samus right X offset) + 1
 $94:80D1 3A          DEC A                  ;/
 $94:80D2 F0 02       BEQ $02    [$80D6]     ;\
 $94:80D4 10 05       BPL $05    [$80DB]     ;} If [A] > 0: return carry clear
@@ -165,12 +165,12 @@ $94:8105 18          CLC                    ;\
 $94:8106 60          RTS                    ;} Return carry clear
 
 $94:8107 A5 20       LDA $20    [$7E:0020]  ;\
-$94:8109 29 0F 00    AND #$000F             ;} $0DD4 = [Samus top boundary] % 10h
+$94:8109 29 0F 00    AND #$000F             ;} $0DD4 = [Samus top boundary] % 10h (Samus top Y offset)
 $94:810C 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:810F BF 02 64 7F LDA $7F6402,x          ;\
 $94:8113 29 1F 00    AND #$001F             ;|
 $94:8116 0A          ASL A                  ;|
-$94:8117 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h
+$94:8117 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
 $94:8118 0A          ASL A                  ;|
 $94:8119 0A          ASL A                  ;|
 $94:811A 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
@@ -187,14 +187,14 @@ $94:812E 49 0F 00    EOR #$000F             ;} A = Fh - [Samus X position] % 10h
 $94:8131 29 0F 00    AND #$000F
 $94:8134 18          CLC                    ;\
 $94:8135 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
-$94:8138 AA          TAX                    ;|
-$94:8139 BD 2B 8B    LDA $8B2B,x            ;|
-$94:813C 29 1F 00    AND #$001F             ;} A = ([$8B2B + [$0DD6] + [A]] & 1Fh) - [$0DD4] - 1
-$94:813F 38          SEC                    ;|
-$94:8140 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;|
+$94:8138 AA          TAX                    ;} A = [$8B2B + [$0DD6] + [A]] (slope top Y offset)
+$94:8139 BD 2B 8B    LDA $8B2B,x            ;/
+$94:813C 29 1F 00    AND #$001F
+$94:813F 38          SEC                    ;\
+$94:8140 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Samus top Y offset) + 1
 $94:8143 3A          DEC A                  ;/
-$94:8144 F0 02       BEQ $02    [$8148]     ;\
-$94:8146 30 02       BMI $02    [$814A]     ;} If [A] < 0: return carry clear
+$94:8144 F0 02       BEQ $02    [$8148]
+$94:8146 30 02       BMI $02    [$814A]     ; If [A] < 0: return carry clear
 
 $94:8148 38          SEC                    ;\
 $94:8149 60          RTS                    ;} Return carry set
@@ -222,12 +222,12 @@ $94:816B 18          CLC                    ;\
 $94:816C 60          RTS                    ;} Return carry clear
 
 $94:816D A5 20       LDA $20    [$7E:0020]  ;\
-$94:816F 29 0F 00    AND #$000F             ;} $0DD4 = [Samus bottom boundary] % 10h
+$94:816F 29 0F 00    AND #$000F             ;} $0DD4 = [Samus bottom boundary] % 10h (Samus bottom Y offset)
 $94:8172 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:8175 BF 02 64 7F LDA $7F6402,x          ;\
 $94:8179 29 1F 00    AND #$001F             ;|
 $94:817C 0A          ASL A                  ;|
-$94:817D 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h
+$94:817D 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
 $94:817E 0A          ASL A                  ;|
 $94:817F 0A          ASL A                  ;|
 $94:8180 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
@@ -244,11 +244,11 @@ $94:8194 49 0F 00    EOR #$000F             ;} A = Fh - [Samus X position] % 10h
 $94:8197 29 0F 00    AND #$000F
 $94:819A 18          CLC                    ;\
 $94:819B 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
-$94:819E AA          TAX                    ;|
-$94:819F BD 2B 8B    LDA $8B2B,x            ;|
-$94:81A2 29 1F 00    AND #$001F             ;} A = ([$8B2B + [$0DD6] + [A]] & 1Fh) - [$0DD4] - 1
-$94:81A5 38          SEC                    ;|
-$94:81A6 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;|
+$94:819E AA          TAX                    ;} A = [$8B2B + [$0DD6] + [A]] (slope top Y offset)
+$94:819F BD 2B 8B    LDA $8B2B,x            ;/
+$94:81A2 29 1F 00    AND #$001F             
+$94:81A5 38          SEC                    ;\
+$94:81A6 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Samus bottom Y offset) + 1
 $94:81A9 3A          DEC A                  ;/
 $94:81AA F0 02       BEQ $02    [$81AE]     ;\
 $94:81AC 10 05       BPL $05    [$81B3]     ;} If [A] > 0: return carry clear
@@ -521,7 +521,22 @@ $94:82E1             dw 82A7, ;  0: Air
 
 ;;; $8301: Post grapple collision detection - vertical - jump table ;;;
 {
-$94:8301             dw 82A7, 82C5, 82A7, 82A7, 82A7, 82A7, 82A7, 82A7, 82DA, 82DA, 82DA, 82DA, 82DA, 82DA, 82DA, 82DA
+$94:8301             dw 82A7, ;  0: Air
+                        82C5, ; *1: Slope
+                        82A7, ;  2: Spike air
+                        82A7, ;  3: Special air
+                        82A7, ;  4: Shootable air
+                        82A7, ;  5: Horizontal extension
+                        82A7, ;  6: Unused air
+                        82A7, ;  7: Bombable air
+                        82DA, ;  8: Solid block
+                        82DA, ;  9: Door block
+                        82DA, ;  Ah: Spike block
+                        82DA, ;  Bh: Special block
+                        82DA, ;  Ch: Shootable block
+                        82DA, ;  Dh: Vertical extension
+                        82DA, ;  Eh: Grapple block
+                        82DA  ;  Fh: Bombable block
 }
 
 
@@ -620,7 +635,7 @@ $94:8393 AA          TAX                    ;} X = [current block index] * 2
 
 ; LOOP
 $94:8394 20 21 83    JSR $8321  [$94:8321]  ; Post grapple collision detection - horizontal
-$94:8397 90 09       BCC $09    [$83A2]     ; If carry set: (collision)
+$94:8397 90 09       BCC $09    [$83A2]     ; If collision:
 $94:8399 1A          INC A                  ;\
 $94:839A CD 04 0E    CMP $0E04  [$7E:0E04]  ;|
 $94:839D 90 03       BCC $03    [$83A2]     ;} $0E04 = max([$0E04], [A] + 1) (distance to eject Samus left)
@@ -677,7 +692,7 @@ $94:83F1 AA          TAX                    ;} X = [current block index] * 2
 
 ; LOOP
 $94:83F2 20 21 83    JSR $8321  [$94:8321]  ; Post grapple collision detection - horizontal
-$94:83F5 90 09       BCC $09    [$8400]     ; If carry set: (collision)
+$94:83F5 90 09       BCC $09    [$8400]     ; If collision:
 $94:83F7 1A          INC A                  ;\
 $94:83F8 CD 06 0E    CMP $0E06  [$7E:0E06]  ;|
 $94:83FB 90 03       BCC $03    [$8400]     ;} $0E06 = max([$0E06], [A] + 1) (distance to eject Samus right)
@@ -736,7 +751,7 @@ $94:8453 AA          TAX                    ;} X = [current block index] * 2
 
 ; LOOP
 $94:8454 20 38 83    JSR $8338  [$94:8338]  ; Post grapple collision detection - vertical
-$94:8457 90 09       BCC $09    [$8462]     ; If carry set: (collision)
+$94:8457 90 09       BCC $09    [$8462]     ; If collision:
 $94:8459 1A          INC A                  ;\
 $94:845A CD 08 0E    CMP $0E08  [$7E:0E08]  ;|
 $94:845D 90 03       BCC $03    [$8462]     ;} $0E08 = max([$0E08], [A] + 1) (distance to eject Samus up)
@@ -791,7 +806,7 @@ $94:84AD AA          TAX                    ;} X = [current block index] * 2
 
 ; LOOP
 $94:84AE 20 38 83    JSR $8338  [$94:8338]  ; Post grapple collision detection - vertical
-$94:84B1 90 09       BCC $09    [$84BC]     ; If carry set: (collision)
+$94:84B1 90 09       BCC $09    [$84BC]     ; If collision:
 $94:84B3 1A          INC A                  ;\
 $94:84B4 CD 0A 0E    CMP $0E0A  [$7E:0E0A]  ;|
 $94:84B7 90 03       BCC $03    [$84BC]     ;} $0E0A = max([$0E0A], [A] + 1) (distance to eject Samus down)
@@ -809,6 +824,8 @@ $94:84C3 60          RTS
 ;;; $84C4: Post grapple collision handling - horizontal ;;;
 {
 ; Called by $90:EF25 (post grapple collision detection)
+; This routine is used to calculate $0E04/06 (distance to eject Samus left/right), which is never read,
+; making this routine and all its subroutines entirely pointless
 $94:84C4 08          PHP
 $94:84C5 20 4F 83    JSR $834F  [$94:834F]  ; Post grapple collision handling - rightwards
 $94:84C8 20 B1 83    JSR $83B1  [$94:83B1]  ; Post grapple collision handling - leftwards
@@ -819,7 +836,7 @@ $94:84CC 6B          RTL
 
 ;;; $84CD: Post grapple collision handling - vertical ;;;
 {
-; Called by $90:EF25 (post grapple collision detection), sometimes twice
+; Called by $90:EF25 (post grapple collision detection), sometimes twice (if Samus was ejected up and her hitbox is >= 10h pixels tall)
 $94:84CD 08          PHP
 $94:84CE 20 0F 84    JSR $840F  [$94:840F]  ; Post grapple collision handling - downwards
 $94:84D1 20 6A 84    JSR $846A  [$94:846A]  ; Post grapple collision handling - upwards
@@ -1363,7 +1380,7 @@ $94:891B             db 0F,0E,0D,0C,0B,0A,09,08,07,06,05,04,03,02,01,00
 
 ;;; $892B: Slope definitions (slope left X offset by Y pixel) ;;;
 {
-; ALMOST unused, used only by post-grapple collision detection, but referenced by some unused code too
+; ALMOST unused, used only by post-grapple collision detection (which has no effect), but referenced by some unused code too
 ; Data here looks incorrect, many of the rows here are identical to $8B2B
 ; Indexed by ([block BTS] & 1Fh) * 10h + [Samus Y position] % 10h
 $94:892B             db 10,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00, ; 0

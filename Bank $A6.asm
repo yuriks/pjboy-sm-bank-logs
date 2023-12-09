@@ -3781,6 +3781,7 @@ $A6:B288             dw 0008
 
 ;;; $B28A: Time is frozen AI - enemy $E17F (Ridley) ;;;
 {
+; The only time is frozen AI in the game!
 $A6:B28A A9 00 00    LDA #$0000
 $A6:B28D 8F 08 80 7E STA $7E8008[$7E:8008]
 $A6:B291 A9 01 00    LDA #$0001
