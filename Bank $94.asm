@@ -147,7 +147,6 @@ $94:80E3 4A          LSR A                  ;} If collision direction is down:
 $94:80E4 90 03       BCC $03    [$80E9]     ;/
 $94:80E6 4C 4F 81    JMP $814F  [$94:814F]  ; Go to BRANCH_DOWN
 
-; BRANCH_UP
 $94:80E9 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
 $94:80EC 8D 04 42    STA $4204  [$7E:4204]  ;|
 $94:80EF E2 20       SEP #$20               ;|
@@ -850,103 +849,135 @@ $94:84D5 6B          RTL
 {
 ;;; $84D6: Samus block collision reaction - horizontal - slope - non-square ;;;
 {
-; If BTS is negative or Samus is moving vertically, just CLC and RTS.
-; Get the distance ($12.$15) in A, and $8588,((BTS AND #$001F)*4) in Y, and JSL $8082D6.
-; Use 05F1 and 05F3 as new distances.
-; BASICALLY: Multiply Samuss movement by (94:8588,X)/(100), X = 4*BTS.
-; The multiplier is, obviously, usually less than 100
-$94:84D6 AD 77 1E    LDA $1E77  [$7E:1E77]
-$94:84D9 89 80 00    BIT #$0080
-$94:84DC D0 08       BNE $08    [$84E6]
-$94:84DE AD 2C 0B    LDA $0B2C  [$7E:0B2C]
-$94:84E1 0D 2E 0B    ORA $0B2E  [$7E:0B2E]
-$94:84E4 F0 02       BEQ $02    [$84E8]
+;; Parameters:
+;;     $12.$14: Distance to check for collision
+;; Returns:
+;;     Carry: Clear (no collision)
+;;     $12.$14: Adjusted distance to move Samus
 
-$94:84E6 18          CLC
-$94:84E7 60          RTS
+$94:84D6 AD 77 1E    LDA $1E77  [$7E:1E77]  ;\
+$94:84D9 89 80 00    BIT #$0080             ;} If [current slope BTS] & 80h = 0 (not Y flipped):
+$94:84DC D0 08       BNE $08    [$84E6]     ;/
+$94:84DE AD 2C 0B    LDA $0B2C  [$7E:0B2C]  ;\
+$94:84E1 0D 2E 0B    ORA $0B2E  [$7E:0B2E]  ;} If [Samus Y speed] = 0.0: go to BRANCH_SAMUS_ON_SLOPE_SURFACE
+$94:84E4 F0 02       BEQ $02    [$84E8]     ;/
 
-$94:84E8 AD 77 1E    LDA $1E77  [$7E:1E77]
-$94:84EB 29 1F 00    AND #$001F
-$94:84EE 0A          ASL A
-$94:84EF 0A          ASL A
-$94:84F0 AA          TAX
-$94:84F1 A5 12       LDA $12    [$7E:0012]
-$94:84F3 10 51       BPL $51    [$8546]
+$94:84E6 18          CLC                    ;\
+$94:84E7 60          RTS                    ;} Return carry clear
+
+; BRANCH_SAMUS_ON_SLOPE_SURFACE
+$94:84E8 AD 77 1E    LDA $1E77  [$7E:1E77]  ;\
+$94:84EB 29 1F 00    AND #$001F             ;|
+$94:84EE 0A          ASL A                  ;} X = ([current slope BTS] & 1Fh) * 4
+$94:84EF 0A          ASL A                  ;|
+$94:84F0 AA          TAX                    ;/
+$94:84F1 A5 12       LDA $12    [$7E:0012]  ;\
+$94:84F3 10 51       BPL $51    [$8546]     ;} If [$12] >= 0: go to BRANCH_RIGHT
 $94:84F5 AD 48 0B    LDA $0B48  [$7E:0B48]  ;\
-$94:84F8 0D 46 0B    ORA $0B46  [$7E:0B46]  ;} If [Samus X base speed] = 0.0: go to BRANCH_8519
-$94:84FB F0 1C       BEQ $1C    [$8519]     ;/
-$94:84FD AD 77 1E    LDA $1E77  [$7E:1E77]
-$94:8500 89 40 00    BIT #$0040
-$94:8503 D0 0B       BNE $0B    [$8510]
-$94:8505 AD 48 0B    LDA $0B48  [$7E:0B48]
-$94:8508 18          CLC
-$94:8509 7D 86 85    ADC $8586,x[$94:85D6]
-$94:850C 90 0B       BCC $0B    [$8519]
-$94:850E 80 09       BRA $09    [$8519]
+$94:84F8 0D 46 0B    ORA $0B46  [$7E:0B46]  ;|
+$94:84FB F0 1C       BEQ $1C    [$8519]     ;|
+$94:84FD AD 77 1E    LDA $1E77  [$7E:1E77]  ;|
+$94:8500 89 40 00    BIT #$0040             ;|
+$94:8503 D0 0B       BNE $0B    [$8510]     ;|
+$94:8505 AD 48 0B    LDA $0B48  [$7E:0B48]  ;|
+$94:8508 18          CLC                    ;|
+$94:8509 7D 86 85    ADC $8586,x[$94:85D6]  ;} >_<;
+$94:850C 90 0B       BCC $0B    [$8519]     ;|
+$94:850E 80 09       BRA $09    [$8519]     ;|
+                                            ;|
+$94:8510 AD 48 0B    LDA $0B48  [$7E:0B48]  ;|
+$94:8513 38          SEC                    ;|
+$94:8514 FD 86 85    SBC $8586,x[$94:85D6]  ;|
+$94:8517 B0 00       BCS $00    [$8519]     ;/
 
-$94:8510 AD 48 0B    LDA $0B48  [$7E:0B48]
-$94:8513 38          SEC
-$94:8514 FD 86 85    SBC $8586,x[$94:85D6]
-$94:8517 B0 00       BCS $00    [$8519]
+$94:8519 E2 20       SEP #$20               ;\
+$94:851B A5 12       LDA $12    [$7E:0012]  ;|
+$94:851D EB          XBA                    ;|
+$94:851E A5 15       LDA $15    [$7E:0015]  ;|
+$94:8520 C2 20       REP #$20               ;|
+$94:8522 49 FF FF    EOR #$FFFF             ;|
+$94:8525 1A          INC A                  ;|
+$94:8526 BC 88 85    LDY $8588,x[$94:85D8]  ;|
+$94:8529 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
+$94:852D AD F1 05    LDA $05F1  [$7E:05F1]  ;} $12.$14 = [$12].[$14] * [$8588 + [X]] / 100h
+$94:8530 49 FF FF    EOR #$FFFF             ;|
+$94:8533 18          CLC                    ;|
+$94:8534 69 01 00    ADC #$0001             ;|
+$94:8537 85 14       STA $14    [$7E:0014]  ;|
+$94:8539 AD F3 05    LDA $05F3  [$7E:05F3]  ;|
+$94:853C 49 FF FF    EOR #$FFFF             ;|
+$94:853F 69 00 00    ADC #$0000             ;|
+$94:8542 85 12       STA $12    [$7E:0012]  ;/
+$94:8544 18          CLC                    ;\
+$94:8545 60          RTS                    ;} Return carry clear
 
-; BRANCH_8519
-$94:8519 E2 20       SEP #$20
-$94:851B A5 12       LDA $12    [$7E:0012]
-$94:851D EB          XBA
-$94:851E A5 15       LDA $15    [$7E:0015]
-$94:8520 C2 20       REP #$20
-$94:8522 49 FF FF    EOR #$FFFF
-$94:8525 1A          INC A
-$94:8526 BC 88 85    LDY $8588,x[$94:85D8]
-$94:8529 22 D6 82 80 JSL $8082D6[$80:82D6]
-$94:852D AD F1 05    LDA $05F1  [$7E:05F1]
-$94:8530 49 FF FF    EOR #$FFFF
-$94:8533 18          CLC
-$94:8534 69 01 00    ADC #$0001
-$94:8537 85 14       STA $14    [$7E:0014]
-$94:8539 AD F3 05    LDA $05F3  [$7E:05F3]
-$94:853C 49 FF FF    EOR #$FFFF
-$94:853F 69 00 00    ADC #$0000
-$94:8542 85 12       STA $12    [$7E:0012]
-$94:8544 18          CLC
-$94:8545 60          RTS
+; BRANCH_RIGHT
+$94:8546 AD 48 0B    LDA $0B48  [$7E:0B48]  ;\
+$94:8549 0D 46 0B    ORA $0B46  [$7E:0B46]  ;|
+$94:854C F0 1C       BEQ $1C    [$856A]     ;|
+$94:854E AD 77 1E    LDA $1E77  [$7E:1E77]  ;|
+$94:8551 89 40 00    BIT #$0040             ;|
+$94:8554 F0 0B       BEQ $0B    [$8561]     ;|
+$94:8556 AD 48 0B    LDA $0B48  [$7E:0B48]  ;|
+$94:8559 18          CLC                    ;|
+$94:855A 7D 86 85    ADC $8586,x[$94:85D6]  ;} >_<;
+$94:855D 90 0B       BCC $0B    [$856A]     ;|
+$94:855F 80 09       BRA $09    [$856A]     ;|
+                                            ;|
+$94:8561 AD 48 0B    LDA $0B48  [$7E:0B48]  ;|
+$94:8564 38          SEC                    ;|
+$94:8565 FD 86 85    SBC $8586,x[$94:85D6]  ;|
+$94:8568 B0 00       BCS $00    [$856A]     ;/
 
-$94:8546 AD 48 0B    LDA $0B48  [$7E:0B48]    ;\
-$94:8549 0D 46 0B    ORA $0B46  [$7E:0B46]    ;} If [Samus X base speed] = 0.0: go to BRANCH_856A
-$94:854C F0 1C       BEQ $1C    [$856A]       ;/
-$94:854E AD 77 1E    LDA $1E77  [$7E:1E77]
-$94:8551 89 40 00    BIT #$0040
-$94:8554 F0 0B       BEQ $0B    [$8561]
-$94:8556 AD 48 0B    LDA $0B48  [$7E:0B48]
-$94:8559 18          CLC
-$94:855A 7D 86 85    ADC $8586,x[$94:85D6]
-$94:855D 90 0B       BCC $0B    [$856A]
-$94:855F 80 09       BRA $09    [$856A]
+$94:856A E2 20       SEP #$20               ;\
+$94:856C A5 12       LDA $12    [$7E:0012]  ;|
+$94:856E EB          XBA                    ;|
+$94:856F A5 15       LDA $15    [$7E:0015]  ;|
+$94:8571 C2 20       REP #$20               ;|
+$94:8573 BC 88 85    LDY $8588,x[$94:85D8]  ;} $12.$14 = [$12].[$14] * [$8588 + [X]] / 100h
+$94:8576 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
+$94:857A AD F1 05    LDA $05F1  [$7E:05F1]  ;|
+$94:857D 85 14       STA $14    [$7E:0014]  ;|
+$94:857F AD F3 05    LDA $05F3  [$7E:05F3]  ;|
+$94:8582 85 12       STA $12    [$7E:0012]  ;/
+$94:8584 18          CLC                    ;\
+$94:8585 60          RTS                    ;} Return carry clear
 
-$94:8561 AD 48 0B    LDA $0B48  [$7E:0B48]
-$94:8564 38          SEC
-$94:8565 FD 86 85    SBC $8586,x[$94:85D6]
-$94:8568 B0 00       BCS $00    [$856A]
-
-; BRANCH_856A
-$94:856A E2 20       SEP #$20
-$94:856C A5 12       LDA $12    [$7E:0012]
-$94:856E EB          XBA
-$94:856F A5 15       LDA $15    [$7E:0015]
-$94:8571 C2 20       REP #$20
-$94:8573 BC 88 85    LDY $8588,x[$94:85D8]
-$94:8576 22 D6 82 80 JSL $8082D6[$80:82D6]
-$94:857A AD F1 05    LDA $05F1  [$7E:05F1]
-$94:857D 85 14       STA $14    [$7E:0014]
-$94:857F AD F3 05    LDA $05F3  [$7E:05F3]
-$94:8582 85 12       STA $12    [$7E:0012]
-$94:8584 18          CLC
-$94:8585 60          RTS
-
-$94:8586             dw 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100,
-                        0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 1000,00B0, 1000,00B0,
-                        0000,0100, 0000,0100, 1000,00C0, 0000,0100, 1000,00C0, 1000,00C0, 0800,00D8, 0800,00D8,
-                        0600,00F0, 0600,00F0, 0600,00F0, 4000,0080, 4000,0080, 6000,0050, 6000,0050, 6000,0050
+;                        ________ Unused. Seem to be speed modifiers, added to or subtracted from Samus X base subspeed when moving down or up the slope respectively
+;                       |     ___ Adjusted distance multiplier * 100h
+;                       |    |
+$94:8586             dw 0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100, ; 5: Unused. Half height isosceles triangle
+                        0000,0100, ; 6: Unused. Isosceles triangle
+                        0000,0100, ; 7: Half height rectangle
+                        0000,0100, ; 8: Unused. Rectangle
+                        0000,0100, ; 9: Unused. Rectangle
+                        0000,0100, ; Ah: Unused. Rectangle
+                        0000,0100, ; Bh: Unused. Rectangle
+                        0000,0100, ; Ch: Unused. Rectangle
+                        0000,0100, ; Dh: Unused. Rectangle
+                        1000,00B0, ; Eh: Unused. Very bumpy triangle
+                        1000,00B0, ; Fh: Bumpy triangle
+                        0000,0100, ; 10h: Unused
+                        0000,0100, ; 11h: Unused
+                        1000,00C0, ; 12h: Triangle
+                        0000,0100, ; 13h: Rectangle
+                        1000,00C0, ; 14h: Quarter triangle
+                        1000,00C0, ; 15h: Three quarter triangle
+                        0800,00D8, ; 16h: Lower half-height triangle
+                        0800,00D8, ; 17h: Upper half-height triangle
+                        0600,00F0, ; 18h: Unused. Lower third-height triangle
+                        0600,00F0, ; 19h: Unused. Middle third-height triangle
+                        0600,00F0, ; 1Ah: Unused. Upper third-height triangle
+                        4000,0080, ; 1Bh: Upper half-width triangle
+                        4000,0080, ; 1Ch: Lower half-width triangle
+                        6000,0050, ; 1Dh: Unused. Upper third-width triangle
+                        6000,0050, ; 1Eh: Unused. Middle third-width triangle
+                        6000,0050  ; 1Fh: Unused. Lower third-width triangle
 }
 
 
@@ -1094,77 +1125,78 @@ $94:86FB 4C 49 8F    JMP $8F49  [$94:8F49]
 
 ;;; $86FE: Samus block collision reaction - vertical - slope - non-square ;;;
 {
-$94:86FE AD 02 0B    LDA $0B02  [$7E:0B02]
-$94:8701 4A          LSR A
-$94:8702 90 03       BCC $03    [$8707]
-$94:8704 4C 80 87    JMP $8780  [$94:8780]
+$94:86FE AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
+$94:8701 4A          LSR A                  ;} If collision direction is down:
+$94:8702 90 03       BCC $03    [$8707]     ;/
+$94:8704 4C 80 87    JMP $8780  [$94:8780]  ; Go to BRANCH_DOWN
 
-$94:8707 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$94:870A 8D 04 42    STA $4204  [$7E:4204]
-$94:870D E2 20       SEP #$20
-$94:870F AD A5 07    LDA $07A5  [$7E:07A5]
-$94:8712 8D 06 42    STA $4206  [$7E:4206]
-$94:8715 C2 20       REP #$20
-$94:8717 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$94:871A 4A          LSR A
-$94:871B 4A          LSR A
-$94:871C 4A          LSR A
-$94:871D 4A          LSR A
-$94:871E CD 16 42    CMP $4216  [$7E:4216]
-$94:8721 F0 02       BEQ $02    [$8725]
-$94:8723 18          CLC
-$94:8724 60          RTS
+$94:8707 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$94:870A 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:870D E2 20       SEP #$20               ;|
+$94:870F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:8712 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:8715 C2 20       REP #$20               ;|
+$94:8717 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h:
+$94:871A 4A          LSR A                  ;|
+$94:871B 4A          LSR A                  ;|
+$94:871C 4A          LSR A                  ;|
+$94:871D 4A          LSR A                  ;|
+$94:871E CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:8721 F0 02       BEQ $02    [$8725]     ;/
+$94:8723 18          CLC                    ;\
+$94:8724 60          RTS                    ;} Return carry clear
 
-$94:8725 A5 18       LDA $18    [$7E:0018]
-$94:8727 38          SEC
-$94:8728 ED 00 0B    SBC $0B00  [$7E:0B00]
-$94:872B 29 0F 00    AND #$000F
-$94:872E 49 0F 00    EOR #$000F
-$94:8731 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:8734 BF 02 64 7F LDA $7F6402,x[$7F:6626]
-$94:8738 29 1F 00    AND #$001F
-$94:873B 0A          ASL A
-$94:873C 0A          ASL A
-$94:873D 0A          ASL A
-$94:873E 0A          ASL A
-$94:873F 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$94:8742 BF 01 64 7F LDA $7F6401,x[$7F:6625]
-$94:8746 10 35       BPL $35    [$877D]
-$94:8748 0A          ASL A
-$94:8749 30 05       BMI $05    [$8750]
-$94:874B AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$94:874E 80 06       BRA $06    [$8756]
+$94:8725 A5 18       LDA $18    [$7E:0018]  ;\
+$94:8727 38          SEC                    ;|
+$94:8728 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
+$94:872B 29 0F 00    AND #$000F             ;} $0DD4 = Fh - ([$18] - [Samus Y radius]) % 10h
+$94:872E 49 0F 00    EOR #$000F             ;|
+$94:8731 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:8734 BF 02 64 7F LDA $7F6402,x[$7F:6626];\
+$94:8738 29 1F 00    AND #$001F             ;|
+$94:873B 0A          ASL A                  ;|
+$94:873C 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$94:873D 0A          ASL A                  ;|
+$94:873E 0A          ASL A                  ;|
+$94:873F 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$94:8742 BF 01 64 7F LDA $7F6401,x[$7F:6625];\
+$94:8746 10 35       BPL $35    [$877D]     ;} If [block BTS] & 80h = 0: return carry clear
+$94:8748 0A          ASL A                  ;\
+$94:8749 30 05       BMI $05    [$8750]     ;} If [block BTS] & 40h = 0:
+$94:874B AD F6 0A    LDA $0AF6  [$7E:0AF6]  ; A = [Samus X position] % 10h
+$94:874E 80 06       BRA $06    [$8756]     
+                                            
+$94:8750 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\ Else ([block BTS] & 40h != 0):
+$94:8753 49 0F 00    EOR #$000F             ;} A = Fh - [Samus X position] % 10h
+                                            
+$94:8756 29 0F 00    AND #$000F             
+$94:8759 18          CLC                    ;\
+$94:875A 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
+$94:875D AA          TAX                    ;} A = [$8B2B + [$0DD6] + [A]] (slope top Y offset)
+$94:875E BD 2B 8B    LDA $8B2B,x[$94:8C57]  ;/
+$94:8761 29 1F 00    AND #$001F             
+$94:8764 38          SEC                    ;\
+$94:8765 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
+$94:8768 3A          DEC A                  ;/
+$94:8769 F0 02       BEQ $02    [$876D]     ;\
+$94:876B 10 0E       BPL $0E    [$877B]     ;} If [A] > 0: return carry clear
 
-$94:8750 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$94:8753 49 0F 00    EOR #$000F
-
-$94:8756 29 0F 00    AND #$000F
-$94:8759 18          CLC
-$94:875A 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$94:875D AA          TAX
-$94:875E BD 2B 8B    LDA $8B2B,x[$94:8C57]
-$94:8761 29 1F 00    AND #$001F
-$94:8764 38          SEC
-$94:8765 ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$94:8768 3A          DEC A
-$94:8769 F0 02       BEQ $02    [$876D]
-$94:876B 10 0E       BPL $0E    [$877B]
-
-$94:876D 18          CLC
-$94:876E 65 12       ADC $12    [$7E:0012]
-$94:8770 10 03       BPL $03    [$8775]
-$94:8772 A9 00 00    LDA #$0000
-
-$94:8775 85 12       STA $12    [$7E:0012]
-$94:8777 64 14       STZ $14    [$7E:0014]
-$94:8779 38          SEC
-$94:877A 60          RTS
+$94:876D 18          CLC                    ;\
+$94:876E 65 12       ADC $12    [$7E:0012]  ;|
+$94:8770 10 03       BPL $03    [$8775]     ;|
+$94:8772 A9 00 00    LDA #$0000             ;} $12 = max(0, [$12] + [A])
+                                            ;|
+$94:8775 85 12       STA $12    [$7E:0012]  ;/
+$94:8777 64 14       STZ $14    [$7E:0014]  ; $14 = 0
+$94:8779 38          SEC                    ;\
+$94:877A 60          RTS                    ;} Return carry set
 
 $94:877B 18          CLC
 $94:877C 60          RTS
 
 $94:877D 4C 7B 87    JMP $877B  [$94:877B]
 
+; BRANCH_DOWN
 $94:8780 AD C4 0D    LDA $0DC4  [$7E:0DC4]
 $94:8783 8D 04 42    STA $4204  [$7E:4204]
 $94:8786 E2 20       SEP #$20
@@ -1383,163 +1415,171 @@ $94:891B             db 0F,0E,0D,0C,0B,0A,09,08,07,06,05,04,03,02,01,00
 ; ALMOST unused, used only by post-grapple collision detection (which has no effect), but referenced by some unused code too
 ; Data here looks incorrect, many of the rows here are identical to $8B2B
 ; Indexed by ([block BTS] & 1Fh) * 10h + [Samus Y position] % 10h
-$94:892B             db 10,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00, ; 0
-                        08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,08, ; 1
-                        10,10,10,10,10,10,10,10,08,08,08,08,08,08,08,08, ; 2
-                        08,08,08,08,08,08,08,08,00,00,00,00,00,00,00,00, ; 3
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 4
-                        10,0F,0E,0D,0C,0B,0A,09,09,0A,0B,0C,0D,0E,0F,10, ; 5
-                        10,0E,0C,0A,08,06,04,02,02,04,06,08,0A,0C,0E,10, ; 6
-                        10,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00, ; 7
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 8
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 9
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ah
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Bh
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ch
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Dh
-                        0C,0C,0C,0C,08,08,08,08,04,04,04,04,00,00,00,00, ; Eh
-                        0E,0E,0C,0C,0A,0A,08,08,06,06,04,04,02,02,00,00, ; Fh
-                        10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10, ; 10h
-                        14,14,14,14,14,14,14,14,14,14,14,14,14,10,10,10, ; 11h
-                        10,0F,0E,0D,0C,0B,0A,09,08,07,06,05,04,03,02,01, ; 12h
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 13h
-                        10,10,10,10,10,10,10,10,10,0F,0E,0D,0C,0B,0A,09, ; 14h
-                        08,07,06,05,04,03,02,01,00,00,00,00,00,00,00,00, ; 15h
-                        10,10,10,10,10,10,10,10,10,0E,0C,0A,08,06,04,02, ; 16h
-                        00,00,00,00,00,00,00,00,00,02,04,06,08,0A,0C,0E, ; 17h
-                        10,10,10,0F,0F,0F,0E,0E,0E,0D,0D,0D,0C,0C,0C,0B, ; 18h
-                        0B,0B,0A,0A,0A,09,09,09,08,08,08,07,07,07,06,06, ; 19h
-                        06,05,05,05,04,04,04,03,03,03,02,02,02,01,01,01, ; 1Ah
-                        14,14,14,14,14,14,14,14,10,0E,0C,0A,08,06,04,02, ; 1Bh
-                        10,0E,0C,0A,08,06,04,02,00,00,00,00,00,00,00,00, ; 1Ch
-                        14,14,14,14,14,14,14,14,14,14,14,0F,0C,09,06,03, ; 1Dh
-                        14,14,14,14,14,14,0E,0B,08,05,02,00,00,00,00,00, ; 1Eh
-                        10,0D,0A,07,04,01,00,00,00,00,00,00,00,00,00,00  ; 1Fh
+$94:892B             db 10,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00,
+                        08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,
+                        10,10,10,10,10,10,10,10,08,08,08,08,08,08,08,08,
+                        08,08,08,08,08,08,08,08,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        10,0F,0E,0D,0C,0B,0A,09,09,0A,0B,0C,0D,0E,0F,10, ; 5: Unused. Half height isosceles triangle
+                        10,0E,0C,0A,08,06,04,02,02,04,06,08,0A,0C,0E,10, ; 6: Unused. Isosceles triangle
+                        10,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00, ; 7: Half height rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 8: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 9: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ah: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Bh: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ch: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Dh: Unused. Rectangle
+                        0C,0C,0C,0C,08,08,08,08,04,04,04,04,00,00,00,00, ; Eh: Unused. Very bumpy triangle
+                        0E,0E,0C,0C,0A,0A,08,08,06,06,04,04,02,02,00,00, ; Fh: Bumpy triangle
+                        10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10, ; 10h: Unused
+                        14,14,14,14,14,14,14,14,14,14,14,14,14,10,10,10, ; 11h: Unused
+                        10,0F,0E,0D,0C,0B,0A,09,08,07,06,05,04,03,02,01, ; 12h: Triangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 13h: Rectangle
+                        10,10,10,10,10,10,10,10,10,0F,0E,0D,0C,0B,0A,09, ; 14h: Quarter triangle
+                        08,07,06,05,04,03,02,01,00,00,00,00,00,00,00,00, ; 15h: Three quarter triangle
+                        10,10,10,10,10,10,10,10,10,0E,0C,0A,08,06,04,02, ; 16h: Lower half-height triangle
+                        00,00,00,00,00,00,00,00,00,02,04,06,08,0A,0C,0E, ; 17h: Upper half-height triangle
+                        10,10,10,0F,0F,0F,0E,0E,0E,0D,0D,0D,0C,0C,0C,0B, ; 18h: Unused. Lower third-height triangle
+                        0B,0B,0A,0A,0A,09,09,09,08,08,08,07,07,07,06,06, ; 19h: Unused. Middle third-height triangle
+                        06,05,05,05,04,04,04,03,03,03,02,02,02,01,01,01, ; 1Ah: Unused. Upper third-height triangle
+                        14,14,14,14,14,14,14,14,10,0E,0C,0A,08,06,04,02, ; 1Bh: Upper half-width triangle
+                        10,0E,0C,0A,08,06,04,02,00,00,00,00,00,00,00,00, ; 1Ch: Lower half-width triangle
+                        14,14,14,14,14,14,14,14,14,14,14,0F,0C,09,06,03, ; 1Dh: Unused. Upper third-width triangle
+                        14,14,14,14,14,14,0E,0B,08,05,02,00,00,00,00,00, ; 1Eh: Unused. Middle third-width triangle
+                        10,0D,0A,07,04,01,00,00,00,00,00,00,00,00,00,00  ; 1Fh: Unused. Lower third-width triangle
 }
 
 
 ;;; $8B2B: Slope definitions (slope top Y offset by X pixel) ;;;
 {
 ; Indexed by ([block BTS] & 1Fh) * 10h + [Samus X position] % 10h
-$94:8B2B             db 08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,08, ; 0
-                        10,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00, ; 1
-                        10,10,10,10,10,10,10,10,08,08,08,08,08,08,08,08, ; 2
-                        08,08,08,08,08,08,08,08,00,00,00,00,00,00,00,00, ; 3
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 4
-                        10,0F,0E,0D,0C,0B,0A,09,09,0A,0B,0C,0D,0E,0F,10, ; 5
-                        10,0E,0C,0A,08,06,04,02,02,04,06,08,0A,0C,0E,10, ; 6
-                        08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,08, ; 7
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 8
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 9
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ah
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Bh
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ch
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Dh
-                        0C,0C,0C,0C,08,08,08,08,04,04,04,04,00,00,00,00, ; Eh
-                        0E,0E,0C,0C,0A,0A,08,08,06,06,04,04,02,02,00,00, ; Fh
-                        10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10, ; 10h
-                        14,14,14,14,14,14,14,14,14,14,14,14,14,10,10,10, ; 11h
-                        10,0F,0E,0D,0C,0B,0A,09,08,07,06,05,04,03,02,01, ; 12h
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 13h
-                        10,10,10,10,10,10,10,10,10,0F,0E,0D,0C,0B,0A,09, ; 14h
-                        08,07,06,05,04,03,02,01,00,00,00,00,00,00,00,00, ; 15h
-                        10,10,0F,0F,0E,0E,0D,0D,0C,0C,0B,0B,0A,0A,09,09, ; 16h
-                        08,08,07,07,06,06,05,05,04,04,03,03,02,02,01,01, ; 17h
-                        10,10,10,0F,0F,0F,0E,0E,0E,0D,0D,0D,0C,0C,0C,0B, ; 18h
-                        0B,0B,0A,0A,0A,09,09,09,08,08,08,07,07,07,06,06, ; 19h
-                        06,05,05,05,04,04,04,03,03,03,02,02,02,01,01,01, ; 1Ah
-                        14,14,14,14,14,14,14,14,10,0E,0C,0A,08,06,04,02, ; 1Bh
-                        10,0E,0C,0A,08,06,04,02,00,00,00,00,00,00,00,00, ; 1Ch
-                        14,14,14,14,14,14,14,14,14,14,14,0F,0C,09,06,03, ; 1Dh
-                        14,14,14,14,14,14,0E,0B,08,05,02,00,00,00,00,00, ; 1Eh
-                        10,0D,0A,07,04,01,00,00,00,00,00,00,00,00,00,00  ; 1Fh
+$94:8B2B             db 08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,
+                        10,10,10,10,10,10,10,10,00,00,00,00,00,00,00,00,
+                        10,10,10,10,10,10,10,10,08,08,08,08,08,08,08,08,
+                        08,08,08,08,08,08,08,08,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        10,0F,0E,0D,0C,0B,0A,09,09,0A,0B,0C,0D,0E,0F,10, ; 5: Unused. Half height isosceles triangle
+                        10,0E,0C,0A,08,06,04,02,02,04,06,08,0A,0C,0E,10, ; 6: Unused. Isosceles triangle
+                        08,08,08,08,08,08,08,08,08,08,08,08,08,08,08,08, ; 7: Half height rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 8: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 9: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ah: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Bh: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Ch: Unused. Rectangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; Dh: Unused. Rectangle
+                        0C,0C,0C,0C,08,08,08,08,04,04,04,04,00,00,00,00, ; Eh: Unused. Very bumpy triangle
+                        0E,0E,0C,0C,0A,0A,08,08,06,06,04,04,02,02,00,00, ; Fh: Bumpy triangle
+                        10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10, ; 10h: Unused
+                        14,14,14,14,14,14,14,14,14,14,14,14,14,10,10,10, ; 11h: Unused
+                        10,0F,0E,0D,0C,0B,0A,09,08,07,06,05,04,03,02,01, ; 12h: Triangle
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00, ; 13h: Rectangle
+                        10,10,10,10,10,10,10,10,10,0F,0E,0D,0C,0B,0A,09, ; 14h: Quarter triangle
+                        08,07,06,05,04,03,02,01,00,00,00,00,00,00,00,00, ; 15h: Three quarter triangle
+                        10,10,0F,0F,0E,0E,0D,0D,0C,0C,0B,0B,0A,0A,09,09, ; 16h: Lower half-height triangle
+                        08,08,07,07,06,06,05,05,04,04,03,03,02,02,01,01, ; 17h: Upper half-height triangle
+                        10,10,10,0F,0F,0F,0E,0E,0E,0D,0D,0D,0C,0C,0C,0B, ; 18h: Unused. Lower third-height triangle
+                        0B,0B,0A,0A,0A,09,09,09,08,08,08,07,07,07,06,06, ; 19h: Unused. Middle third-height triangle
+                        06,05,05,05,04,04,04,03,03,03,02,02,02,01,01,01, ; 1Ah: Unused. Upper third-height triangle
+                        14,14,14,14,14,14,14,14,10,0E,0C,0A,08,06,04,02, ; 1Bh: Upper half-width triangle
+                        10,0E,0C,0A,08,06,04,02,00,00,00,00,00,00,00,00, ; 1Ch: Lower half-width triangle
+                        14,14,14,14,14,14,14,14,14,14,14,0F,0C,09,06,03, ; 1Dh: Unused. Upper third-width triangle
+                        14,14,14,14,14,14,0E,0B,08,05,02,00,00,00,00,00, ; 1Eh: Unused. Middle third-width triangle
+                        10,0D,0A,07,04,01,00,00,00,00,00,00,00,00,00,00  ; 1Fh: Unused. Lower third-width triangle
 }
 
 
 ;;; $8D2B: Samus block collision reaction - horizontal - slope - square ;;;
 {
-; BTS AND #$001F into $0DD4. BTS X/Y flip into $0DD6.
-; Other stuff I'm not going to bother figuring out.
-; BASICALLY: 94:8E54 is a table of 4-byte entries for the first 5 special 'slope' blocks.
-; 80 = solid, 00 = air, organized topleft, topright, bottomleft, bottomright
-$94:8D2B 0A          ASL A
-$94:8D2C 0A          ASL A
-$94:8D2D 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:8D30 BF 01 64 7F LDA $7F6401,x[$7F:648D]
-$94:8D34 2A          ROL A
-$94:8D35 2A          ROL A
-$94:8D36 2A          ROL A
-$94:8D37 29 03 00    AND #$0003
-$94:8D3A 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$94:8D3D A5 20       LDA $20    [$7E:0020]
-$94:8D3F 29 08 00    AND #$0008
-$94:8D42 4A          LSR A
-$94:8D43 4A          LSR A
-$94:8D44 4A          LSR A
-$94:8D45 4D D6 0D    EOR $0DD6  [$7E:0DD6]
-$94:8D48 6D D4 0D    ADC $0DD4  [$7E:0DD4]
-$94:8D4B AA          TAX
-$94:8D4C A5 1A       LDA $1A    [$7E:001A]
-$94:8D4E D0 14       BNE $14    [$8D64]
-$94:8D50 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$94:8D53 18          CLC
-$94:8D54 6D 00 0B    ADC $0B00  [$7E:0B00]
-$94:8D57 3A          DEC A
-$94:8D58 29 08 00    AND #$0008
-$94:8D5B D0 17       BNE $17    [$8D74]
-$94:8D5D BD 53 8E    LDA $8E53,x[$94:8E53]
-$94:8D60 30 23       BMI $23    [$8D85]
-$94:8D62 80 1F       BRA $1F    [$8D83]
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     $12.$14: Distance to check for collision
+;;     $20: Target boundary position (left/right depending on sign of [$12])
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 
-$94:8D64 C5 1C       CMP $1C    [$7E:001C]
-$94:8D66 D0 0C       BNE $0C    [$8D74]
-$94:8D68 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$94:8D6B 38          SEC
-$94:8D6C ED 00 0B    SBC $0B00  [$7E:0B00]
-$94:8D6F 29 08 00    AND #$0008
-$94:8D72 D0 05       BNE $05    [$8D79]
+$94:8D2B 0A          ASL A                  ;\
+$94:8D2C 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
+$94:8D2D 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:8D30 BF 01 64 7F LDA $7F6401,x[$7F:648D];\
+$94:8D34 2A          ROL A                  ;|
+$94:8D35 2A          ROL A                  ;|
+$94:8D36 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slope flip flags)
+$94:8D37 29 03 00    AND #$0003             ;|
+$94:8D3A 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$94:8D3D A5 20       LDA $20    [$7E:0020]  ;\
+$94:8D3F 29 08 00    AND #$0008             ;} A = [$20] & 8 (is Samus boundary in right half of block)
+$94:8D42 4A          LSR A                  ;\
+$94:8D43 4A          LSR A                  ;|
+$94:8D44 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 3 (toggle X flip flag if Samus is in right half of block)
+$94:8D45 4D D6 0D    EOR $0DD6  [$7E:0DD6]  ;/
+$94:8D48 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;\
+$94:8D4B AA          TAX                    ;} X = [$0DD4] + [A] (solid slope definition table index)
+$94:8D4C A5 1A       LDA $1A    [$7E:001A]  ;\
+$94:8D4E D0 14       BNE $14    [$8D64]     ;} If [$1A] = 0 (bottom block check):
+$94:8D50 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$94:8D53 18          CLC                    ;|
+$94:8D54 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
+$94:8D57 3A          DEC A                  ;} If Samus bottom boundary is in bottom half: go to BRANCH_CHECK_BOTH_HALVES
+$94:8D58 29 08 00    AND #$0008             ;|
+$94:8D5B D0 17       BNE $17    [$8D74]     ;/
+$94:8D5D BD 53 8E    LDA $8E53,x[$94:8E53]  ;\
+$94:8D60 30 23       BMI $23    [$8D85]     ;} If [$8E54 + [X]] & 80h != 0 (top half is solid): go to BRANCH_SOLID
+$94:8D62 80 1F       BRA $1F    [$8D83]     ; Return carry clear
+                                            
+$94:8D64 C5 1C       CMP $1C    [$7E:001C]  ;\
+$94:8D66 D0 0C       BNE $0C    [$8D74]     ;} If [$1C] = 0 (Samus spans one tile):
+$94:8D68 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$94:8D6B 38          SEC                    ;|
+$94:8D6C ED 00 0B    SBC $0B00  [$7E:0B00]  ;} If Samus top boundary is in bottom half: go to BRANCH_CHECK_BOTTOM_HALF
+$94:8D6F 29 08 00    AND #$0008             ;|
+$94:8D72 D0 05       BNE $05    [$8D79]     ;/
 
-$94:8D74 BD 53 8E    LDA $8E53,x[$94:8E57]
-$94:8D77 30 0C       BMI $0C    [$8D85]
+; BRANCH_CHECK_BOTH_HALVES
+$94:8D74 BD 53 8E    LDA $8E53,x[$94:8E57]  ;\
+$94:8D77 30 0C       BMI $0C    [$8D85]     ;} If [$8E54 + [X]] & 80h != 0 (top half is solid): go to BRANCH_SOLID
 
-$94:8D79 8A          TXA
-$94:8D7A 49 02 00    EOR #$0002
-$94:8D7D AA          TAX
-$94:8D7E BD 53 8E    LDA $8E53,x[$94:8E59]
-$94:8D81 30 02       BMI $02    [$8D85]
+; BRANCH_CHECK_BOTTOM_HALF
+$94:8D79 8A          TXA                    ;\
+$94:8D7A 49 02 00    EOR #$0002             ;|
+$94:8D7D AA          TAX                    ;} If [$8E54 + ([X] ^ 2)] & 80h != 0 (bottom half is solid): go to BRANCH_SOLID
+$94:8D7E BD 53 8E    LDA $8E53,x[$94:8E59]  ;|
+$94:8D81 30 02       BMI $02    [$8D85]     ;/
 
-$94:8D83 18          CLC
-$94:8D84 60          RTS
+$94:8D83 18          CLC                    ;\
+$94:8D84 60          RTS                    ;} Return carry clear
 
-$94:8D85 64 14       STZ $14    [$7E:0014]
+; BRANCH_SOLID
+$94:8D85 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $94:8D87 A5 20       LDA $20    [$7E:0020]
-$94:8D89 24 12       BIT $12    [$7E:0012]
-$94:8D8B 30 19       BMI $19    [$8DA6]
-$94:8D8D 29 F8 FF    AND #$FFF8
-$94:8D90 38          SEC
-$94:8D91 ED FE 0A    SBC $0AFE  [$7E:0AFE]
-$94:8D94 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$94:8D97 10 03       BPL $03    [$8D9C]
-$94:8D99 A9 00 00    LDA #$0000
+$94:8D89 24 12       BIT $12    [$7E:0012]  ;\
+$94:8D8B 30 19       BMI $19    [$8DA6]     ;} If [$12] < 0: go to BRANCH_LEFT
+$94:8D8D 29 F8 FF    AND #$FFF8             ; A = [$20] - [$20] % 8 (target right boundary rounded down to left of 8x8 tile)
+$94:8D90 38          SEC                    ;\
+$94:8D91 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
+$94:8D94 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$94:8D97 10 03       BPL $03    [$8D9C]     ;} $12 = max(0, [A] - 1 - (Samus right boundary))
+$94:8D99 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$94:8D9C 85 12       STA $12    [$7E:0012]  ;/
+$94:8D9E A9 FF FF    LDA #$FFFF             ;\
+$94:8DA1 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;} Samus X subposition = FFFFh
+$94:8DA4 38          SEC                    ;\
+$94:8DA5 60          RTS                    ;} Return carry set
 
-$94:8D9C 85 12       STA $12    [$7E:0012]
-$94:8D9E A9 FF FF    LDA #$FFFF
-$94:8DA1 8D F8 0A    STA $0AF8  [$7E:0AF8]
-$94:8DA4 38          SEC
-$94:8DA5 60          RTS
-
-$94:8DA6 09 07 00    ORA #$0007
-$94:8DA9 38          SEC
-$94:8DAA 6D FE 0A    ADC $0AFE  [$7E:0AFE]
-$94:8DAD 38          SEC
-$94:8DAE ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$94:8DB1 30 03       BMI $03    [$8DB6]
-$94:8DB3 A9 00 00    LDA #$0000
-
-$94:8DB6 85 12       STA $12    [$7E:0012]
-$94:8DB8 9C F8 0A    STZ $0AF8  [$7E:0AF8]
-$94:8DBB 38          SEC
-$94:8DBC 60          RTS
+; BRANCH_LEFT
+$94:8DA6 09 07 00    ORA #$0007             ; A = [$20] - [$20] % 8 + 7 (target left boundary rounded up to right of 8x8 tile)
+$94:8DA9 38          SEC                    ;\
+$94:8DAA 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
+$94:8DAD 38          SEC                    ;|
+$94:8DAE ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$94:8DB1 30 03       BMI $03    [$8DB6]     ;} $12 = max(0, [A] + 1 - (Samus left boundary))
+$94:8DB3 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$94:8DB6 85 12       STA $12    [$7E:0012]  ;/
+$94:8DB8 9C F8 0A    STZ $0AF8  [$7E:0AF8]  ; Samus X subposition = 0
+$94:8DBB 38          SEC                    ;\
+$94:8DBC 60          RTS                    ;} Return carry set
 }
 
 
@@ -1643,9 +1683,18 @@ $94:8E53 60          RTS                    ;} Return carry clear
 
 ;;; $8E54: Square slope definitions ;;;
 {
-; BASICALLY: 94:8E54 is a table of 4-byte entries for the first 5 special 'slope' blocks.
-; 80 = solid, 00 = air, organized topleft, topright, bottomleft, bottomright
-$94:8E54             db 00,00,80,80, 00,80,00,80, 00,00,00,80, 00,80,80,80, 80,80,80,80
+; 0 = air, 80h = solid
+
+;                        __________ Top-left
+;                       |   _______ Top-right
+;                       |  |   ____ Bottom-left
+;                       |  |  |   _ Bottom-right
+;                       |  |  |  |
+$94:8E54             db 00,00,80,80, ; 0: Half height
+                        00,80,00,80, ; 1: Half width
+                        00,00,00,80, ; 2: Quarter
+                        00,80,80,80, ; 3: Three-quarters
+                        80,80,80,80  ; 4: Whole
 }
 
 
@@ -1889,13 +1938,20 @@ $94:8FBA 60          RTS                    ;} Return carry set
 
 ;;; $8FBB: Samus block collision reaction - horizontal - slope ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to check for collision
+;;     $20: Target boundary position (left/right depending on sign of [$12])
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
+
 $94:8FBB AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$94:8FBE BF 02 64 7F LDA $7F6402,x[$7F:648E];|
-$94:8FC2 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh >= 5:
-$94:8FC5 C9 05 00    CMP #$0005             ;|
-$94:8FC8 90 0D       BCC $0D    [$8FD7]     ;/
+$94:8FBE BF 02 64 7F LDA $7F6402,x[$7F:648E];} A = [block BTS] & 1Fh
+$94:8FC2 29 1F 00    AND #$001F             ;/
+$94:8FC5 C9 05 00    CMP #$0005             ;\
+$94:8FC8 90 0D       BCC $0D    [$8FD7]     ;} If [block BTS] & 1Fh >= 5:
 $94:8FCA BF 02 64 7F LDA $7F6402,x[$7F:6546];\
-$94:8FCE 29 FF 00    AND #$00FF             ;} Current slope BTS = [block BTS] & FFh
+$94:8FCE 29 FF 00    AND #$00FF             ;} Current slope BTS = [block BTS]
 $94:8FD1 8D 77 1E    STA $1E77  [$7E:1E77]  ;/
 $94:8FD4 4C D6 84    JMP $84D6  [$94:84D6]  ; Go to Samus block collision reaction - horizontal - slope - non-square
 
@@ -2476,7 +2532,7 @@ $94:94F5             dw 8F47, ; 0: Air
 ;;     $20: Target boundary position (left/right depending on sign of [$12])
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
-;;     $12: If carry set: distance to move Samus
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 $94:9515 DA          PHX
 $94:9516 8A          TXA                    ;\
 $94:9517 4A          LSR A                  ;} Current block index = [X] / 2
@@ -2522,10 +2578,10 @@ $94:9542 60          RTS
 ;;; $9543: Samus block collision handling - horizontal ;;;
 {
 ;; Parameters:
-;;     $12.$14: Distance to check for collision
+;;     $12.$14: Distance to move Samus
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
-;;     $12: If carry set: distance to move Samus
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 $94:9543 20 95 94    JSR $9495  [$94:9495]  ; $1A = $1C = Samus Y block span
 $94:9546 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:9549 38          SEC                    ;|
@@ -2882,6 +2938,8 @@ $94:971D 6B          RTL
 
 ;;; $971E: Move Samus right by [$12].[$14], no solid enemy collision ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to move Samus
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 $94:971E 08          PHP
