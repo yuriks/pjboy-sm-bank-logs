@@ -6412,6 +6412,8 @@ $84:B145 60          RTS                    ;/
 
 ;;; $B146: Activate the station at block index [A] if Samus arm cannon is lined up ;;;
 {
+;; Returns:
+;;     Carry: Set
 $84:B146 A2 4E 00    LDX #$004E             ; X = 4Eh
 
 ; LOOP
@@ -6441,14 +6443,14 @@ $84:B173 A9 01 00    LDA #$0001             ;\
 $84:B176 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];} PLM [X] instruction timer = 1
 $84:B17A A9 06 00    LDA #$0006             ;\
 $84:B17D 22 84 F0 90 JSL $90F084[$90:F084]  ;} Presumably locks Samus into station
-$84:B181 38          SEC
-$84:B182 60          RTS
+$84:B181 38          SEC                    ;\
+$84:B182 60          RTS                    ;} Return carry set
 
 ; BRANCH_DELETE
 $84:B183 A9 00 00    LDA #$0000             ;\
 $84:B186 99 37 1C    STA $1C37,y            ;} Delete PLM
-$84:B189 38          SEC
-$84:B18A 60          RTS
+$84:B189 38          SEC                    ;\
+$84:B18A 60          RTS                    ;} Return carry set
 }
 
 
@@ -6485,6 +6487,8 @@ $84:B1C7 60          RTS
 
 ;;; $B1C8: Setup - PLM $B6D7 (collision reaction, special, BTS 47h. Map station right access) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:B1C8 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B1CB 29 0F 00    AND #$000F             ;} If [collision direction] = left:
 $84:B1CE D0 18       BNE $18    [$B1E8]     ;/
@@ -6496,18 +6500,20 @@ $84:B1DB 29 04 00    AND #$0004             ;} If [direction Samus is facing] = 
 $84:B1DE F0 08       BEQ $08    [$B1E8]     ;/
 $84:B1E0 B9 87 1C    LDA $1C87,y[$7E:1CD3]  ;\
 $84:B1E3 3A          DEC A                  ;|
-$84:B1E4 3A          DEC A                  ;} Activate the station at the block to the left if arm cannon is lined up (and return)
+$84:B1E4 3A          DEC A                  ;} Go to activate the station at the block to the left if arm cannon is lined up
 $84:B1E5 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B1E8 A9 00 00    LDA #$0000             ;\
 $84:B1EB 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
-$84:B1EE 38          SEC
-$84:B1EF 60          RTS
+$84:B1EE 38          SEC                    ;\
+$84:B1EF 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $B1F0: Setup - PLM $B6DB (collision reaction, special, BTS 48h. Map station left access) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:B1F0 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B1F3 29 0F 00    AND #$000F             ;|
 $84:B1F6 C9 01 00    CMP #$0001             ;} If [collision direction] = right:
@@ -6521,14 +6527,14 @@ $84:B209 F0 0A       BEQ $0A    [$B215]     ;/
 $84:B20B B9 87 1C    LDA $1C87,y[$7E:1CD3]  ;\
 $84:B20E 1A          INC A                  ;|
 $84:B20F 1A          INC A                  ;|
-$84:B210 1A          INC A                  ;} Activate the station at the block two to the right if arm cannon is lined up (and return)
+$84:B210 1A          INC A                  ;} Go to activate the station at the block two to the right if arm cannon is lined up
 $84:B211 1A          INC A                  ;|
 $84:B212 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B215 A9 00 00    LDA #$0000             ;\
 $84:B218 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
-$84:B21B 38          SEC
-$84:B21C 60          RTS
+$84:B21B 38          SEC                    ;\
+$84:B21C 60          RTS                    ;} Return carry set
 }
 
 
@@ -6576,6 +6582,8 @@ $84:B26C 60          RTS
 
 ;;; $B26D: Setup - PLM $B6E3 (collision reaction, special, BTS 49h. Energy station right access) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:B26D AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B270 29 0F 00    AND #$000F             ;} If [collision direction] = left:
 $84:B273 D0 20       BNE $20    [$B295]     ;/
@@ -6590,18 +6598,20 @@ $84:B288 CD C4 09    CMP $09C4  [$7E:09C4]  ;} If [Samus health] != [Samus max h
 $84:B28B F0 08       BEQ $08    [$B295]     ;/
 $84:B28D B9 87 1C    LDA $1C87,y[$7E:1CD3]  ;\
 $84:B290 3A          DEC A                  ;|
-$84:B291 3A          DEC A                  ;} Activate the station at the block to the left if arm cannon is lined up (and return)
+$84:B291 3A          DEC A                  ;} Go to activate the station at the block to the left if arm cannon is lined up
 $84:B292 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B295 A9 00 00    LDA #$0000             ;\
 $84:B298 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
-$84:B29B 38          SEC
-$84:B29C 60          RTS
+$84:B29B 38          SEC                    ;\
+$84:B29C 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $B29D: Setup - PLM $B6E7 (collision reaction, special, BTS 4Ah. Energy station left access) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:B29D AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B2A0 29 0F 00    AND #$000F             ;|
 $84:B2A3 C9 01 00    CMP #$0001             ;} If [collision direction] = right:
@@ -6617,18 +6627,20 @@ $84:B2BB CD C4 09    CMP $09C4  [$7E:09C4]  ;} If [Samus health] != [Samus max h
 $84:B2BE F0 08       BEQ $08    [$B2C8]     ;/
 $84:B2C0 B9 87 1C    LDA $1C87,y[$7E:1CD1]  ;\
 $84:B2C3 1A          INC A                  ;|
-$84:B2C4 1A          INC A                  ;} Activate the station at the block to the right if arm cannon is lined up (and return)
+$84:B2C4 1A          INC A                  ;} Go to activate the station at the block to the right if arm cannon is lined up
 $84:B2C5 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B2C8 A9 00 00    LDA #$0000             ;\
 $84:B2CB 99 37 1C    STA $1C37,y[$7E:1C81]  ;} Delete PLM
-$84:B2CE 38          SEC
-$84:B2CF 60          RTS
+$84:B2CE 38          SEC                    ;\
+$84:B2CF 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $B2D0: Setup - PLM $B6EF (collision reaction, special, BTS 4Bh. Missile station right access) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:B2D0 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B2D3 29 0F 00    AND #$000F             ;} If [collision direction] = left:
 $84:B2D6 D0 20       BNE $20    [$B2F8]     ;/
@@ -6643,18 +6655,20 @@ $84:B2EB CD C8 09    CMP $09C8  [$7E:09C8]  ;} If [Samus missiles] != [Samus max
 $84:B2EE F0 08       BEQ $08    [$B2F8]     ;/
 $84:B2F0 B9 87 1C    LDA $1C87,y[$7E:1CD3]  ;\
 $84:B2F3 3A          DEC A                  ;|
-$84:B2F4 3A          DEC A                  ;} Activate the station at the block to the left if arm cannon is lined up (and return)
+$84:B2F4 3A          DEC A                  ;} Go to activate the station at the block to the left if arm cannon is lined up
 $84:B2F5 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B2F8 A9 00 00    LDA #$0000             ;\
 $84:B2FB 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
-$84:B2FE 38          SEC
-$84:B2FF 60          RTS
+$84:B2FE 38          SEC                    ;\
+$84:B2FF 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $B300: Setup - PLM $B6F3 (collision reaction, special, BTS 4Ch. Missile station left access) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:B300 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B303 29 0F 00    AND #$000F             ;|
 $84:B306 C9 01 00    CMP #$0001             ;} If [collision direction] = right:
@@ -6670,13 +6684,13 @@ $84:B31E CD C8 09    CMP $09C8  [$7E:09C8]  ;} If [Samus missiles] != [Samus max
 $84:B321 F0 08       BEQ $08    [$B32B]     ;/
 $84:B323 B9 87 1C    LDA $1C87,y            ;\
 $84:B326 1A          INC A                  ;|
-$84:B327 1A          INC A                  ;} Activate the station at the block to the right if arm cannon is lined up (and return)
+$84:B327 1A          INC A                  ;} Go to activate the station at the block to the right if arm cannon is lined up
 $84:B328 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B32B A9 00 00    LDA #$0000             ;\
 $84:B32E 99 37 1C    STA $1C37,y[$7E:1C81]  ;} Delete PLM
-$84:B331 38          SEC
-$84:B332 60          RTS
+$84:B331 38          SEC                    ;\
+$84:B332 60          RTS                    ;} Return carry set
 }
 
 
@@ -6764,6 +6778,8 @@ $84:B391 80 D3       BRA $D3    [$B366]
 
 ;;; $B393: Setup - PLM $B6FF (collision reaction, special, BTS 46h / inside reaction, special air, BTS 46h. Scroll block touch PLM) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:B393 BB          TYX                    ;\
 $84:B394 BD 87 1C    LDA $1C87,x[$7E:1CBF]  ;} A = [PLM block index]
 $84:B397 9E 87 1C    STZ $1C87,x[$7E:1CBF]  ; PLM block index = 0
@@ -6802,14 +6818,14 @@ $84:B3CF 60          RTS
 }
 
 
-;;; $B3D0: Setup - PLM $B633 (nothing) ;;;
+;;; $B3D0: Clear carry. Setup - PLM $B633 (collision reaction, special, BTS Brinstar 80h/81h) ;;;
 {
 $84:B3D0 18          CLC
 $84:B3D1 60          RTS
 }
 
 
-;;; $B3D2: Unused. Setup - PLM $B637 (nothing) ;;;
+;;; $B3D2: Unused. Set carry. Setup - PLM $B637 (nothing) ;;;
 {
 $84:B3D2 38          SEC
 $84:B3D3 60          RTS
@@ -6974,6 +6990,12 @@ $84:B4C3 60          RTS
 
 ;;; $B4C4: Setup - PLM $B72B / $B72F / $B733 (collision reaction, special, BTS Maridia 80h/81h/82h. Quicksand surface) ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to check for collision
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
+
 $84:B4C4 AD 02 0B    LDA $0B02  [$7E:0B02]
 $84:B4C7 29 02 00    AND #$0002
 $84:B4CA D0 02       BNE $02    [$B4CE]
@@ -7064,16 +7086,18 @@ $84:B53D             dw 0030, 0030
 
 ;;; $B541: Setup - PLM $B737 (collision reaction, special, BTS Maridia 83h. Submerging quicksand) ;;;
 {
+;; Returns:
+;;     Carry: Clear. No collision
 $84:B541 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $84:B544 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $84:B547 9C 32 0B    STZ $0B32  [$7E:0B32]  ;\
 $84:B54A 9C 34 0B    STZ $0B34  [$7E:0B34]  ;} Samus Y acceleration = 0.0
-$84:B54D 18          CLC
-$84:B54E 60          RTS
+$84:B54D 18          CLC                    ;\
+$84:B54E 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $B54F: Setup - PLM $B73B / $B73F (collision reaction, special, BTS Maridia  84h/85h. Sand falls) ;;;
+;;; $B54F: Clear carry. Setup - PLM $B73B / $B73F (collision reaction, special, BTS Maridia  84h/85h. Sand falls) ;;;
 {
 $84:B54F 18          CLC
 $84:B550 60          RTS
@@ -7123,22 +7147,25 @@ $84:B58F 60          RTS
 
 ;;; $B590: Setup - PLM $B76B (collision reaction, special, BTS 4Dh. Save station trigger) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
+
 ; I wrote `[Samus X position] < PLM X position + 18h` below,
 ; but Samus X position must be less than PLM X position + 10h for the collision to happen in the first place.
 ; So save stations cruelly require Samus centre to be within the centre-left quarter of the station
 $84:B590 AD 92 05    LDA $0592  [$7E:0592]  ;\
-$84:B593 D0 57       BNE $57    [$B5EC]     ;} If power bomb explosion is active: return
+$84:B593 D0 57       BNE $57    [$B5EC]     ;} If power bomb explosion is active: return set
 $84:B595 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $84:B598 C9 01 00    CMP #$0001             ;|
-$84:B59B F0 05       BEQ $05    [$B5A2]     ;} If Samus current pose is not normally standing: return
+$84:B59B F0 05       BEQ $05    [$B5A2]     ;} If Samus current pose is not normally standing: return set
 $84:B59D C9 02 00    CMP #$0002             ;|
 $84:B5A0 D0 4A       BNE $4A    [$B5EC]     ;/
 
 $84:B5A2 AD 75 1E    LDA $1E75  [$7E:1E75]  ;\
-$84:B5A5 D0 45       BNE $45    [$B5EC]     ;} If save station has been used: return
+$84:B5A5 D0 45       BNE $45    [$B5EC]     ;} If save station has been used: return set
 $84:B5A7 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B5AA 29 0F 00    AND #$000F             ;|
-$84:B5AD C9 03 00    CMP #$0003             ;} If [collision direction] != below: return
+$84:B5AD C9 03 00    CMP #$0003             ;} If [collision direction] != below: return set
 $84:B5B0 D0 3A       BNE $3A    [$B5EC]     ;/
 $84:B5B2 BB          TYX                    ;\
 $84:B5B3 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
@@ -7146,7 +7173,7 @@ $84:B5B7 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $84:B5BA 38          SEC                    ;|
 $84:B5BB E9 08 00    SBC #$0008             ;|
 $84:B5BE 4A          LSR A                  ;|
-$84:B5BF 4A          LSR A                  ;} If not (PLM X position + 8 <= [Samus X position] < PLM X position + 18h): return
+$84:B5BF 4A          LSR A                  ;} If not (PLM X position + 8 <= [Samus X position] < PLM X position + 18h): return set
 $84:B5C0 4A          LSR A                  ;|
 $84:B5C1 4A          LSR A                  ;|
 $84:B5C2 CD 29 1C    CMP $1C29  [$7E:1C29]  ;|
@@ -7163,8 +7190,8 @@ $84:B5D7 F0 06       BEQ $06    [$B5DF]     ;} If [PLM [X] block index] = [A]: g
 $84:B5D9 CA          DEX                    ;\
 $84:B5DA CA          DEX                    ;} X -= 2
 $84:B5DB 10 F7       BPL $F7    [$B5D4]     ; If [X] >= 0: Go to LOOP
-$84:B5DD 38          SEC
-$84:B5DE 60          RTS
+$84:B5DD 38          SEC                    ;\
+$84:B5DE 60          RTS                    ;} Return carry set
 
 ; BRANCH_FOUND
 $84:B5DF FE 27 1D    INC $1D27,x[$7E:1D75]  ;\
@@ -7172,8 +7199,8 @@ $84:B5E2 FE 27 1D    INC $1D27,x[$7E:1D75]  ;} PLM [X] instruction list pointer 
 $84:B5E5 A9 01 00    LDA #$0001             ;\
 $84:B5E8 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];} PLM [X] instruction timer = 1
 
-$84:B5EC 38          SEC
-$84:B5ED 60          RTS
+$84:B5EC 38          SEC                    ;\
+$84:B5ED 60          RTS                    ;} Return carry set
 }
 
 
@@ -7221,9 +7248,9 @@ $84:B62E 60          RTS
 
 ;;; $B62F..B7C2: PLM entries ;;;
 {
-$84:B62F             dw B3CF,AAE3   ; Don't make PLM
-$84:B633             dw B3D0,AAE3   ; Collision reaction, special, BTS Brinstar 80h/81h. Nothing
-$84:B637             dw B3D2,AAE3   ; Unused. Nothing
+$84:B62F             dw B3CF,AAE3   ; Nothing
+$84:B633             dw B3D0,AAE3   ; Collision reaction, special, BTS Brinstar 80h/81h. Clear carry
+$84:B637             dw B3D2,AAE3   ; Unused. Set carry
 $84:B63B             dw B33A,AFA4   ; Rightwards extension
 $84:B63F             dw B345,AF9E   ; Leftwards extension
 $84:B643             dw B350,AFB0   ; Downwards extension
@@ -7345,12 +7372,12 @@ $84:B7BF             dw B3C1,ABA9   ; Crumble Kraid spike blocks
 ;;; $B7C3: Setup - PLM $B7EB (enable sounds in 20h frames, or F0h frames if on Ceres) ;;;
 {
 $84:B7C3 AD 9F 07    LDA $079F  [$7E:079F]  ;\
-$84:B7C6 C9 06 00    CMP #$0006             ;} If [region number] = Ceres:
+$84:B7C6 C9 06 00    CMP #$0006             ;} If [area index] = Ceres:
 $84:B7C9 D0 05       BNE $05    [$B7D0]     ;/
 $84:B7CB A9 20 00    LDA #$0020             ; A = 20h
 $84:B7CE 80 03       BRA $03    [$B7D3]
-
-$84:B7D0 A9 F0 00    LDA #$00F0             ; Else ([region number] != Ceres): A = F0h
+                                            ; Else ([area index] != Ceres):
+$84:B7D0 A9 F0 00    LDA #$00F0             ; A = F0h
 
 $84:B7D3 99 77 1D    STA $1D77,y[$7E:1DC5]  ; PLM timer = F0h
 $84:B7D6 A9 DD B7    LDA #$B7DD             ;\
@@ -9574,6 +9601,8 @@ $84:C7E1 60          RTS
 
 ;;; $C7E2: Setup - PLM $C83E (shot/bombed/grappled reaction, shootable, BTS 44h / collision reaction, special, BTS 44h. Generic shot trigger for a PLM) ;;;
 {
+;; Returns:
+;;     Carry: Set if PLM found (unconditional collision), garbage otherwise
 $84:C7E2 BB          TYX                    ;\
 $84:C7E3 BD 87 1C    LDA $1C87,x[$7E:1CCB]  ;} A = [PLM block index]
 $84:C7E6 9E 87 1C    STZ $1C87,x[$7E:1CCB]  ; PLM block index = 0
@@ -9585,7 +9614,7 @@ $84:C7EF F0 05       BEQ $05    [$C7F6]     ;} If [PLM [X] block index] = [A]: g
 $84:C7F1 CA          DEX                    ;\
 $84:C7F2 CA          DEX                    ;} X -= 2
 $84:C7F3 10 F7       BPL $F7    [$C7EC]     ; If [X] >= 0: go to LOOP
-$84:C7F5 60          RTS
+$84:C7F5 60          RTS                    ; Return
 
 ; BRANCH_FOUND
 $84:C7F6 AC DE 0D    LDY $0DDE  [$7E:0DDE]  ;\
@@ -10393,6 +10422,8 @@ $84:CDE9 60          RTS
 
 ;;; $CDEA: Setup - PLM $D030/$D034/$D038/$D03C/$D040 (collision reaction, special, BTS Eh/Fh / Brinstar 82h..85h. Respawning speed boost block) ;;;
 {
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 $84:CDEA AD 3E 0B    LDA $0B3E  [$7E:0B3E]  ;\
 $84:CDED 29 00 0F    AND #$0F00             ;|
 $84:CDF0 C9 00 04    CMP #$0400             ;} If Samus is not speed boosting:
@@ -10412,8 +10443,8 @@ $84:CE11 C9 CE 00    CMP #$00CE             ;|
 $84:CE14 F0 08       BEQ $08    [$CE1E]     ;/
 $84:CE16 A9 00 00    LDA #$0000             ;\
 $84:CE19 99 37 1C    STA $1C37,y[$7E:1C7F]  ;} Delete PLM
-$84:CE1C 38          SEC
-$84:CE1D 60          RTS
+$84:CE1C 38          SEC                    ;\
+$84:CE1D 60          RTS                    ;} Return carry set
 
 $84:CE1E BE 87 1C    LDX $1C87,y[$7E:1CD5]  ;\
 $84:CE21 BF 02 00 7F LDA $7F0002,x[$7F:099A];|
@@ -10422,13 +10453,15 @@ $84:CE28 09 B6 00    ORA #$00B6             ;|
 $84:CE2B 99 17 1E    STA $1E17,y[$7E:1E65]  ;/
 $84:CE2E 29 FF 0F    AND #$0FFF             ;\
 $84:CE31 9F 02 00 7F STA $7F0002,x[$7F:099A];} PLM block = 00B6h
-$84:CE35 18          CLC
-$84:CE36 60          RTS
+$84:CE35 18          CLC                    ;\
+$84:CE36 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $CE37: Setup - PLM $D044/$D048/$D04C/$D050/$D054/$D058/$D05C/$D060 (collision reaction, special, BTS 0..7. (Respawning) crumble block) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $84:CE37 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:CE3A 29 0F 00    AND #$000F             ;|
 $84:CE3D C9 03 00    CMP #$0003             ;} If [collision direction] = below:
@@ -10443,13 +10476,13 @@ $84:CE55 9F 02 00 7F STA $7F0002,x[$7F:0230];} PLM block = 00BCh
 $84:CE59 BB          TYX                    ;\
 $84:CE5A A9 04 00    LDA #$0004             ;} PLM instruction timer = 4
 $84:CE5D 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];/
-$84:CE61 38          SEC
-$84:CE62 60          RTS
+$84:CE61 38          SEC                    ;\
+$84:CE62 60          RTS                    ;} Return carry set
 
 $84:CE63 A9 00 00    LDA #$0000             ;\
 $84:CE66 99 37 1C    STA $1C37,y[$7E:1C77]  ;} Delete PLM
-$84:CE69 38          SEC
-$84:CE6A 60          RTS
+$84:CE69 38          SEC                    ;\
+$84:CE6A 60          RTS                    ;} Return carry set
 }
 
 
@@ -10493,7 +10526,7 @@ $84:CEB7 F0 08       BEQ $08    [$CEC1]     ;/
 $84:CEB9 A9 00 00    LDA #$0000             ;\
 $84:CEBC 99 37 1C    STA $1C37,y[$7E:1C7B]  ;} Delete PLM
 $84:CEBF 38          SEC
-$84:CEC0 60          RTS
+$84:CEC0 60          RTS                    ; Return
 
 $84:CEC1 BE 87 1C    LDX $1C87,y[$7E:1CCF]  ;\
 $84:CEC4 BF 02 00 7F LDA $7F0002,x[$7F:5428];|
@@ -10867,13 +10900,16 @@ $84:D18E 60          RTS
 
 ;;; $D18F: Setup - PLM $D6DA (collision reaction, special, BTS Norfair 83h. Lower Norfair chozo hand trigger) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
+
 ; Enemy 0 is presumed to be the chozo
 $84:D18F AD A4 09    LDA $09A4  [$7E:09A4]  ;\
 $84:D192 29 00 02    AND #$0200             ;} If Samus doesn't have space jump: go to BRANCH_RETURN
 $84:D195 F0 47       BEQ $47    [$D1DE]     ;/
 $84:D197 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:D19A 29 0F 00    AND #$000F             ;|
-$84:D19D C9 03 00    CMP #$0003             ;} If [collision direction] != below: go to BRACH_RETURN
+$84:D19D C9 03 00    CMP #$0003             ;} If [collision direction] != below: go to BRANCH_RETURN
 $84:D1A0 D0 3C       BNE $3C    [$D1DE]     ;/
 $84:D1A2 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $84:D1A5 C9 1D 00    CMP #$001D             ;} If [Samus pose] != facing right - morph ball - no springball - on ground:
@@ -10886,7 +10922,7 @@ $84:D1B2 D0 2A       BNE $2A    [$D1DE]     ;/
 $84:D1B4 A9 0C 00    LDA #$000C             ;\
 $84:D1B7 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Set Lower Norfair chozo event
 $84:D1BB A9 01 00    LDA #$0001             ;\
-$84:D1BE 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 Speed = 1
+$84:D1BE 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 $0FB4 = 1
 $84:D1C1 BE 87 1C    LDX $1C87,y[$7E:1CD1]  ;\
 $84:D1C4 BF 02 00 7F LDA $7F0002,x[$7F:030A];|
 $84:D1C8 29 FF 0F    AND #$0FFF             ;} Make PLM block air
@@ -10899,8 +10935,8 @@ $84:D1DA             dx 0C, 1D, D113        ;} Spawn PLM $D113 (crumble Lower No
 ; BRANCH_RETURN
 $84:D1DE A9 00 00    LDA #$0000             ;\
 $84:D1E1 99 37 1C    STA $1C37,y[$7E:1C81]  ;} Delete PLM
-$84:D1E4 38          SEC
-$84:D1E5 60          RTS
+$84:D1E4 38          SEC                    ;\
+$84:D1E5 60          RTS                    ;} Return carry set
 }
 
 
@@ -11422,13 +11458,16 @@ $84:D61F 60          RTS
 
 ;;; $D620: Setup - PLM $D6F2 (collision reaction, special, BTS Wrecked Ship 80h. Wrecked Ship chozo hand trigger) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
+
 ; Enemy 0 is presumed to be the chozo
 $84:D620 A9 01 00    LDA #$0001             ;\
 $84:D623 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area main boss is not dead: go to BRANCH_RETURN
 $84:D627 90 4E       BCC $4E    [$D677]     ;/
 $84:D629 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:D62C 29 0F 00    AND #$000F             ;|
-$84:D62F C9 03 00    CMP #$0003             ;} If [collision direction] != below: go to BRACH_RETURN
+$84:D62F C9 03 00    CMP #$0003             ;} If [collision direction] != below: go to BRANCH_RETURN
 $84:D632 D0 43       BNE $43    [$D677]     ;/
 $84:D634 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $84:D637 C9 1D 00    CMP #$001D             ;} If [Samus pose] != facing right - morph ball - no springball - on ground:
@@ -11456,8 +11495,8 @@ $84:D673             dx 17, 1D, D6F8        ;} Spawn PLM $D6F8 (clear slope acce
 ; BRANCH_RETURN
 $84:D677 A9 00 00    LDA #$0000             ;\
 $84:D67A 99 37 1C    STA $1C37,y[$7E:1C7B]  ;} Delete PLM
-$84:D67D 38          SEC
-$84:D67E 60          RTS
+$84:D67D 38          SEC                    ;\
+$84:D67E 60          RTS                    ;} Return carry set
 }
 
 
@@ -14086,6 +14125,8 @@ $84:EEAA 60          RTS
 
 ;;; $EEAB: Setup - PLM $EED3 (shot/bombed/grappled reaction, shootable, BTS 45h / collision reaction, special, BTS 45h. Item collision detection) ;;;
 {
+;; Returns:
+;;     Carry: Clear (no collision) if time is not frozen, unchanged otherwise
 $84:EEAB AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $84:EEAE D0 1C       BNE $1C    [$EECC]     ;} If time is frozen: go to BRANCH_DELETE
 $84:EEB0 BB          TYX                    ;\
@@ -14104,8 +14145,8 @@ $84:EEC3 00          BRK                    ; Crash
 ; BRANCH_FOUND
 $84:EEC4 A9 FF 00    LDA #$00FF             ;\
 $84:EEC7 9D 77 1D    STA $1D77,x[$7E:1DBB]  ;} Trigger PLM [X]
-$84:EECA 18          CLC
-$84:EECB 60          RTS
+$84:EECA 18          CLC                    ;\
+$84:EECB 60          RTS                    ;} Return carry clear
 
 ; BRANCH_DELETE
 $84:EECC A9 00 00    LDA #$0000             ;\
