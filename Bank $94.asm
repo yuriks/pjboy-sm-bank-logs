@@ -1125,6 +1125,13 @@ $94:86FB 4C 49 8F    JMP $8F49  [$94:8F49]
 
 ;;; $86FE: Samus block collision reaction - vertical - slope - non-square ;;;
 {
+;; Parameters:
+;;     X: Block index
+;;     $12: Distance to check for collision
+;;     $18: Target Y position
+;; Returns:
+;;     Carry: Set if Samus collides with solid slope, clear otherwise
+;;     A: If carry set, depth into slope in pixels
 $94:86FE AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $94:8701 4A          LSR A                  ;} If collision direction is down:
 $94:8702 90 03       BCC $03    [$8707]     ;/
@@ -1149,7 +1156,7 @@ $94:8724 60          RTS                    ;} Return carry clear
 $94:8725 A5 18       LDA $18    [$7E:0018]  ;\
 $94:8727 38          SEC                    ;|
 $94:8728 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$94:872B 29 0F 00    AND #$000F             ;} $0DD4 = Fh - ([$18] - [Samus Y radius]) % 10h
+$94:872B 29 0F 00    AND #$000F             ;} $0DD4 = Fh - (Samus target top boundary) % 10h
 $94:872E 49 0F 00    EOR #$000F             ;|
 $94:8731 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:8734 BF 02 64 7F LDA $7F6402,x[$7F:6626];\
@@ -1216,7 +1223,7 @@ $94:879D 60          RTS                    ;} Return carry clear
 $94:879E A5 18       LDA $18    [$7E:0018]  ;\
 $94:87A0 18          CLC                    ;|
 $94:87A1 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
-$94:87A4 3A          DEC A                  ;} $0DD4 = ([$18] + [Samus Y radius] - 1) % 10h
+$94:87A4 3A          DEC A                  ;} $0DD4 = (Samus target bottom boundary) % 10h
 $94:87A5 29 0F 00    AND #$000F             ;|
 $94:87A8 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:87AB BF 02 64 7F LDA $7F6402,x[$7F:6544];\
@@ -1304,7 +1311,7 @@ $94:8843 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:8846 BF 02 64 7F LDA $7F6402,x[$7F:6545];\
 $94:884A 29 1F 00    AND #$001F             ;|
 $94:884D 0A          ASL A                  ;|
-$94:884E 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h
+$94:884E 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
 $94:884F 0A          ASL A                  ;|
 $94:8850 0A          ASL A                  ;|
 $94:8851 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
