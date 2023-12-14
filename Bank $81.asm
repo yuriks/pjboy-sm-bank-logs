@@ -3186,7 +3186,7 @@ $81:9B64 C2 30       REP #$30
 $81:9B66 22 5B BA 82 JSL $82BA5B[$82:BA5B]  ; Draw border around DATA CLEAR MODE
 $81:9B6A 22 6E BA 82 JSL $82BA6E[$82:BA6E]  ; Draw menu selection missile
 $81:9B6E A5 8F       LDA $8F    [$7E:008F]  ;\
-$81:9B70 89 80 10    BIT #$1080             ;} If new pressed A or start: go to BRANCH_9BD4
+$81:9B70 89 80 10    BIT #$1080             ;} If new pressed A or start: go to BRANCH_SELECT
 $81:9B73 D0 5F       BNE $5F    [$9BD4]     ;/
 $81:9B75 89 00 80    BIT #$8000             ;\
 $81:9B78 D0 2B       BNE $2B    [$9BA5]     ;} If newly pressed B: go to BRANCH_EXIT
@@ -3237,7 +3237,7 @@ $81:9BCC A9 37       LDA #$37               ;\
 $81:9BCE 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
 $81:9BD2 80 1B       BRA $1B    [$9BEF]     ; Go to set file clear menu selection missile position
 
-; BRANCH_9BD4
+; BRANCH_SELECT
 $81:9BD4 C2 30       REP #$30
 $81:9BD6 A9 37 00    LDA #$0037             ;\
 $81:9BD9 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
@@ -3562,7 +3562,7 @@ $81:9E4D             dw A32A, A37C, A546, A582, A5B3, A725, A800, AAAC, AC66, AD
 }
 
 
-;;; $9E7B: File select map - index 16h: file clear - select slot ;;;
+;;; $9E7B: File select map - index 16h: file clear - area select map to game options ;;;
 {
 $81:9E7B 20 7E A9    JSR $A97E  [$81:A97E]  ; Draw area select map labels
 $81:9E7E 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
