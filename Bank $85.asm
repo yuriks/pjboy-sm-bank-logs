@@ -170,7 +170,7 @@ $85:81A2 C2 30       REP #$30
 $85:81A4 A2 80 00    LDX #$0080             ;\
 $85:81A7 A9 00 00    LDA #$0000             ;|
                                             ;|
-$85:81AA 9F 00 30 7E STA $7E3000,x[$7E:3080];} 7E:3000..7F = 0
+$85:81AA 9F 00 30 7E STA $7E3000,x[$7E:3080];} $7E:3000..7F = 0
 $85:81AE CA          DEX                    ;|
 $85:81AF CA          DEX                    ;|
 $85:81B0 10 F8       BPL $F8    [$81AA]     ;/
@@ -923,7 +923,7 @@ $85:8749             dw 0000, ; 1: Energy tank
                         0000, ; 18h: Save completed
                         0000, ; 19h: Reserve tank
                         0000, ; 1Ah: Gravity suit
-                        0000  ; 1Bh:
+                        0000  ; 1Bh: Dummy
 }
 
 

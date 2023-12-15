@@ -4075,7 +4075,7 @@ $A2:AD0D 6B          RTL
 
 ;;; $AD0E: Gunship function - liftoff - accelerating / set game state ;;;
 {
-$A2:AD0E 22 2D AD A2 JSL $A2AD2D[$A2:AD2D]  ; Execute $A2:AD2D
+$A2:AD0E 22 2D AD A2 JSL $A2AD2D[$A2:AD2D]  ; Liftoff - accelerating
 $A2:AD12 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A2:AD15 C9 00 01    CMP #$0100             ;} If [enemy Y position] >= 100h: return
 $A2:AD18 10 12       BPL $12    [$AD2C]     ;/
@@ -4109,7 +4109,7 @@ $A2:AD4A 29 00 FF    AND #$FF00             ;|
 $A2:AD4D 85 14       STA $14    [$7E:0014]  ;|
 $A2:AD4F 68          PLA                    ;|
 $A2:AD50 29 FF 00    AND #$00FF             ;|
-$A2:AD53 85 12       STA $12    [$7E:0012]  ;} Samus Y position += [enemy ([X] + 1) $0FB2] / 100h
+$A2:AD53 85 12       STA $12    [$7E:0012]  ;} Samus Y position -= [enemy ([X] + 1) $0FB2] / 100h
 $A2:AD55 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;|
 $A2:AD58 38          SEC                    ;|
 $A2:AD59 E5 14       SBC $14    [$7E:0014]  ;|

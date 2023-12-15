@@ -159,7 +159,7 @@ $8D:8466             dx 0001, 01FC,FC,212A
 ; Enemy projectile $A395 (Ceres elevator platform)
 $8D:846D             dx 0004, 0008,FC,3A20, 0000,FC,3A20, 01F8,FC,3A20, 01F0,FC,3A20
 
-; Enemy projectile $A379
+; Enemy projectile $A379 (gunship liftoff dust clouds)
 $8D:8483             dx 0001, C3F8,F8,3B68
 $8D:848A             dx 0003, C202,EE,3B68, C3F2,E6,3B68, C3FA,F6,3B6A
 $8D:849B             dx 0004, C204,E4,3B68, C3F4,E3,3B6A, C204,EB,3B6A, C3FC,F3,3B6C
@@ -207,7 +207,7 @@ $8D:88E9             dx 000C, C3D0,F0,7BA9, C3E0,F0,7BA7, C3D0,E0,7B89, C3E0,E0,
 $8D:8927             dx 0008, C3EC,E6,7BE2, C3FC,E6,7BE0, C3EC,D6,7BC2, C3FC,D6,7BC0, C3CC,EE,7BAD, C3DC,EE,7BAB, C3CC,DE,7B8D, C3DC,DE,7B8B
 $8D:8951             dx 0004, C3C8,EC,7BE2, C3D8,EC,7BE0, C3C8,DC,7BC2, C3D8,DC,7BC0
 
-; Enemy projectile $8E6C
+; Enemy projectile $8E6C (unused. Uses unused evir tiles)
 $8D:8967             dx 0001, 01FC,FC,3100
 $8D:896E             dx 0001, 01FC,FC,3101
 $8D:8975             dx 0001, 01FC,FC,3102
@@ -321,10 +321,10 @@ $8D:8C29             dx 0001, 01FC,FC,3A53
 $8D:8C30             dx 0001, 01FC,FC,3A51
 $8D:8C37             dx 0004, 0000,00,FA60, 0000,F8,7A60, 01F8,00,BA60, 01F8,F8,3A60
 
-; Enemy projectile $AB07
+; Enemy projectile $AB07 (unused. Question mark)
 $8D:8C4D             dx 0001, C3F8,F8,2AE0
 
-; Enemy projectile $A95B/$A969 (Bomb Torizo low-health drool) / enemy projectile $A977
+; Enemy projectile $A95B/$A969 (Bomb Torizo low-health drool) / enemy projectile $A977 (spawned by unused PLM $B743)
 $8D:8C54             dx 0001, 01FC,FC,6B70
 $8D:8C5B             dx 0001, 01FC,FC,6B63
 $8D:8C62             dx 0001, 01FC,FC,6B67
@@ -537,13 +537,13 @@ $8D:933E             dx 0000
 ; Enemy projectile $BD5A (Norfair lavaquake rocks)
 $8D:9340             dx 0001, 01FC,FC,210A
 
-; Enemy projectile $BE25/$BE33/$BE41
+; Enemy projectile $BE25/$BE33/$BE41 (Shaktool's attack)
 $8D:9347             dx 0001, 01FC,FC,2053
 
-; Enemy projectile $BE25/$BE33
+; Enemy projectile $BE25/$BE33 (Shaktool's attack - front/middle circle)
 $8D:934E             dx 0001, 01FC,FC,2051
 
-; Enemy projectile $BE25
+; Enemy projectile $BE25 (Shaktool's attack - front circle)
 $8D:9355             dx 0004, 0000,00,E060, 0000,F8,6060, 01F8,00,A060, 01F8,F8,2060
 
 ; Enemy projectile $C17E (Mother Brain's room turrets)
@@ -626,7 +626,7 @@ $8D:96F6             dx 0001, 01FC,FC,331D
 $8D:96FD             dx 0001, 01FC,FC,331E
 $8D:9704             dx 0001, 01FC,FC,331F
 
-; Enemy projectile $CBBB
+; Enemy projectile $CBBB (time bomb set Japanese text)
 $8D:970B             dx 000C, 0008,08,35C9, 0008,00,35C8, 0000,08,35C7, 01F8,08,35C6, 0000,00,35C5, 01F8,00,35C4, C3E8,00,35AD, 0018,F8,35C9, 0018,F0,35C8, C208,F0,35A6, C3F8,F0,35A2, C3E8,F0,35A0
 
 ; Enemy projectile $CEFC (Mother Brain's glass shattering - shard)
@@ -833,7 +833,7 @@ $8D:A939             dx 0001, 01FC,FC,B10F
 $8D:A940             dx 0001, 01FC,FC,F10E
 $8D:A947             dx 0001, 01FC,FC,F11B
 
-; Enemy projectile $DBF2
+; Enemy projectile $DBF2 (mini-Crocomire projectile)
 $8D:A94E             dx 0001, 01FC,FC,311E
 $8D:A955             dx 0001, 01FC,FC,311D
 
@@ -1035,7 +1035,7 @@ $8D:B249             dx 0001, 01FC,FC,3A2F
 
 ; Smoke
 ; Enemy projectile $A9AF (Torizo death explosion)
-; Enemy projectile $AB07
+; Enemy projectile $AB07 (unused. Question mark)
 ; Enemy projectile $C18C (Mother Brain's room turret bullets)
 ; Enemy projectile $E509/$E525 (dust cloud / explosion)
 $8D:B250             dx 0001, 81F8,F6,3A76
@@ -1091,7 +1091,7 @@ $8D:B3F8             dx 0001, 01FC,FC,3A3E
 $8D:B3FF             dx 0001, 01FC,FC,3A3F
 
 ; Big explosion
-; Enemy projectile $AF76
+; Enemy projectile $AF76 (unused)
 ; Enemy projectile $B31A (Golden Torizo super missile)
 ; Enemy projectile $CB4B (Mother Brain's blue ring lasers)
 ; Enemy projectile $E509/$E525 (dust cloud / explosion)

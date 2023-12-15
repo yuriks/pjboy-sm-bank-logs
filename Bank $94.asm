@@ -1293,13 +1293,13 @@ $94:8815 20 1D 9C    JSR $9C1D  [$94:9C1D]  ; Calculate block at ([$1A], [$1C])
 $94:8818 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
 $94:881B 0A          ASL A                  ;|
 $94:881C AA          TAX                    ;|
-$94:881D BF 02 00 7F LDA $7F0002,x[$7F:0114];} If block is not a slope: go to BRANCH_SAMUS_TOP_CHECK
+$94:881D BF 02 00 7F LDA $7F0002,x[$7F:0114];} If (block type) != slope: go to BRANCH_SAMUS_TOP_CHECK
 $94:8821 29 00 F0    AND #$F000             ;|
 $94:8824 C9 00 10    CMP #$1000             ;|
 $94:8827 D0 61       BNE $61    [$888A]     ;/
 $94:8829 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:882C BF 02 64 7F LDA $7F6402,x[$7F:648B];|
-$94:8830 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5: go to BRANCH_SAMUS_TOP_CHECK
+$94:8830 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5 (square slope): go to BRANCH_SAMUS_TOP_CHECK
 $94:8833 C9 05 00    CMP #$0005             ;|
 $94:8836 90 52       BCC $52    [$888A]     ;/
 $94:8838 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -1327,7 +1327,7 @@ $94:8865 49 0F 00    EOR #$000F             ;} A = Fh - [Samus X position] % 10h
 
 $94:8868 29 0F 00    AND #$000F
 $94:886B 18          CLC                    ;\
-$94:886C 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = ([block BTS] & 1Fh) * 10h + [A] (slope definition index)
+$94:886C 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = (slope definition table base index) + [A] (slope definition index)
 $94:886F AA          TAX                    ;/
 $94:8870 BD 2B 8B    LDA $8B2B,x[$94:8C7C]  ;\
 $94:8873 29 1F 00    AND #$001F             ;} A = [$8B2B + [X]] % 20h (slope top Y offset)
@@ -1354,13 +1354,13 @@ $94:889C 20 1D 9C    JSR $9C1D  [$94:9C1D]  ; Calculate block at ([$1A], [$1C])
 $94:889F AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
 $94:88A2 0A          ASL A                  ;|
 $94:88A3 AA          TAX                    ;|
-$94:88A4 BF 02 00 7F LDA $7F0002,x[$7F:00B4];} If block is not a slope: return
+$94:88A4 BF 02 00 7F LDA $7F0002,x[$7F:00B4];} If (block type) != slope: return
 $94:88A8 29 00 F0    AND #$F000             ;|
 $94:88AB C9 00 10    CMP #$1000             ;|
 $94:88AE D0 69       BNE $69    [$8919]     ;/
 $94:88B0 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:88B3 BF 02 64 7F LDA $7F6402,x[$7F:65FF];|
-$94:88B7 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5: return
+$94:88B7 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5 (square slope): return
 $94:88BA C9 05 00    CMP #$0005             ;|
 $94:88BD 90 5A       BCC $5A    [$8919]     ;/
 $94:88BF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -1372,7 +1372,7 @@ $94:88CC 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
 $94:88CF BF 02 64 7F LDA $7F6402,x[$7F:6626];\
 $94:88D3 29 1F 00    AND #$001F             ;|
 $94:88D6 0A          ASL A                  ;|
-$94:88D7 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h
+$94:88D7 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
 $94:88D8 0A          ASL A                  ;|
 $94:88D9 0A          ASL A                  ;|
 $94:88DA 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
@@ -1388,7 +1388,7 @@ $94:88EE 49 0F 00    EOR #$000F             ;} A = Fh - [Samus X position] % 10h
 
 $94:88F1 29 0F 00    AND #$000F
 $94:88F4 18          CLC                    ;\
-$94:88F5 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = ([block BTS] & 1Fh) * 10h + [A] (slope definition index)
+$94:88F5 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = (slope definition table base index) + [A] (slope definition index)
 $94:88F8 AA          TAX                    ;/
 $94:88F9 BD 2B 8B    LDA $8B2B,x[$94:8C53]  ;\
 $94:88FC 29 1F 00    AND #$001F             ;} A = [$8B2B + [X]] % 20h (slope top Y offset)
@@ -1563,7 +1563,7 @@ $94:8D84 60          RTS                    ;} Return carry clear
 $94:8D85 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $94:8D87 A5 20       LDA $20    [$7E:0020]
 $94:8D89 24 12       BIT $12    [$7E:0012]  ;\
-$94:8D8B 30 19       BMI $19    [$8DA6]     ;} If [$12] < 0: go to BRANCH_LEFT
+$94:8D8B 30 19       BMI $19    [$8DA6]     ;} If [$12] >= 0:
 $94:8D8D 29 F8 FF    AND #$FFF8             ; A = [$20] - [$20] % 8 (target right boundary rounded down to left of 8x8 tile)
 $94:8D90 38          SEC                    ;\
 $94:8D91 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
@@ -1577,7 +1577,6 @@ $94:8DA1 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;} Samus X subposition = FFFFh
 $94:8DA4 38          SEC                    ;\
 $94:8DA5 60          RTS                    ;} Return carry set
 
-; BRANCH_LEFT
 $94:8DA6 09 07 00    ORA #$0007             ; A = [$20] - [$20] % 8 + 7 (target left boundary rounded up to right of 8x8 tile)
 $94:8DA9 38          SEC                    ;\
 $94:8DAA 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
@@ -1660,11 +1659,11 @@ $94:8E16 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $94:8E18 A5 20       LDA $20    [$7E:0020]
 $94:8E1A 24 12       BIT $12    [$7E:0012]  ;\
 $94:8E1C 30 1F       BMI $1F    [$8E3D]     ;} If [$12] >= 0:
-$94:8E1E 29 F8 FF    AND #$FFF8             ;\
-$94:8E21 38          SEC                    ;|
+$94:8E1E 29 F8 FF    AND #$FFF8             ; A = [$20] - [$20] % 8 (target bottom boundary rounded down to top of 8x8 tile)
+$94:8E21 38          SEC                    ;\
 $94:8E22 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
 $94:8E25 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
-$94:8E28 10 03       BPL $03    [$8E2D]     ;} $12 = max(0, [$20] - [$20] % 8 - (Samus bottom boundary))
+$94:8E28 10 03       BPL $03    [$8E2D]     ;} $12 = max(0, [A] - 1 - (Samus bottom boundary))
 $94:8E2A A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8E2D 85 12       STA $12    [$7E:0012]  ;/
@@ -1673,20 +1672,20 @@ $94:8E32 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;} Samus Y subposition = FFFFh
 $94:8E35 A9 01 00    LDA #$0001             ;\
 $94:8E38 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Samus' position was adjusted by a slope flag = 1
 $94:8E3B 38          SEC                    ;\
-$94:8E3C 60          RTS                    ;} Return carry clear
+$94:8E3C 60          RTS                    ;} Return carry set
 
-$94:8E3D 09 07 00    ORA #$0007             ;\
-$94:8E40 38          SEC                    ;|
+$94:8E3D 09 07 00    ORA #$0007             ; A = [$20] - [$20] % 8 + 7 (target top boundary rounded up to bottom of 8x8 tile)
+$94:8E40 38          SEC                    ;\
 $94:8E41 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
 $94:8E44 38          SEC                    ;|
-$94:8E45 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $12 = min(0, [$20] - [$20] % 8 + 8 - (Samus top boundary))
+$94:8E45 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $12 = min(0, [A] + 1 - (Samus top boundary))
 $94:8E48 30 03       BMI $03    [$8E4D]     ;|
 $94:8E4A A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8E4D 85 12       STA $12    [$7E:0012]  ;/
 $94:8E4F 9C FC 0A    STZ $0AFC  [$7E:0AFC]  ; Samus Y subposition = 0
 $94:8E52 38          SEC                    ;\
-$94:8E53 60          RTS                    ;} Return carry clear
+$94:8E53 60          RTS                    ;} Return carry set
 
 }
 
@@ -1708,9 +1707,12 @@ $94:8E54             db 00,00,80,80, ; 0: Half height
 }
 
 
-;;; $8E68: Get suit divisor ;;;
+;;; $8E68: Unused. Determine Samus suit palette index ;;;
 {
-; Return 4 if gravity suit equipped, 2 if varia suit equipped, 1 otherwise
+;; Returns:
+;;     Y: 4 if gravity suit equipped, 2 if varia suit equipped, 0 otherwise
+
+; Basing this routine name on $90:ECB6
 $94:8E68 A0 04 00    LDY #$0004
 $94:8E6B AD A2 09    LDA $09A2  [$7E:09A2]
 $94:8E6E 89 20 00    BIT #$0020
@@ -1750,12 +1752,12 @@ $94:8E82 60          RTS
 ;;; $8E83: Samus block collision reaction - spike block - BTS 0 (generic spike) ;;;
 {
 ; Unless already hurt, deal 60 damage (environmental) to Samus, unless in WS and Phantoon is alive
-$94:8E83 AD 9F 07    LDA $079F  [$7E:079F]
-$94:8E86 C9 03 00    CMP #$0003
-$94:8E89 D0 09       BNE $09    [$8E94]
-$94:8E8B A9 01 00    LDA #$0001
-$94:8E8E 22 DC 81 80 JSL $8081DC[$80:81DC]
-$94:8E92 90 3A       BCC $3A    [$8ECE]
+$94:8E83 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$94:8E86 C9 03 00    CMP #$0003             ;} If [area index] = Wrecked Ship:
+$94:8E89 D0 09       BNE $09    [$8E94]     ;/
+$94:8E8B A9 01 00    LDA #$0001             ;\
+$94:8E8E 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area boss is not dead: return
+$94:8E92 90 3A       BCC $3A    [$8ECE]     ;/
 
 $94:8E94 AD A8 18    LDA $18A8  [$7E:18A8]
 $94:8E97 D0 35       BNE $35    [$8ECE]

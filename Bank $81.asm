@@ -4260,15 +4260,15 @@ $81:A3E2 A8          TAY                    ;/
 ;;; $A3E3: Load area map foreground colours ;;;
 {
 ;; Parameters:
-;;     Y: Pointer to table of 5-colour sets
+;;     Y: Area select map foreground palette table index (relative to $A4E6)
 
 ; Colour set table format:
 ;     ssss,dddd ; Entry 0
 ;     [...]     ; Entry 1...
 ;     FFFF      ; Terminator
 ; Where:
-;     s: Offset into $82:C7CB to load 5 colours from
-;     d: Offset into palette RAM to store colours to
+;     s: Palette data index (relative to $A40E) to load 5 colours from
+;     d: Palette RAM index (relative to $7E:C000) to store colours to
 
 ; LOOP_ENTRY
 $81:A3E3 B9 E6 A4    LDA $A4E6,y[$81:A4E6]  ;\
@@ -4276,11 +4276,11 @@ $81:A3E6 C9 FF FF    CMP #$FFFF             ;} If [$A4E6 + [Y]] = FFFFh: return
 $81:A3E9 F0 22       BEQ $22    [$A40D]     ;/
 $81:A3EB 5A          PHY                    ; Save Y
 $81:A3EC 48          PHA                    ;\
-$81:A3ED B9 E8 A4    LDA $A4E8,y[$81:A4E8]  ;} X = [$A4E8 + [Y]]
-$81:A3F0 AA          TAX                    ;} Y = [$A4E6 + [Y]]
+$81:A3ED B9 E8 A4    LDA $A4E8,y[$81:A4E8]  ;} X = [$A4E6 + [Y] + 2] (palette RAM dest index)
+$81:A3F0 AA          TAX                    ;} Y = [$A4E6 + [Y]] (palette data source index)
 $81:A3F1 7A          PLY                    ;/
 $81:A3F2 A9 05 00    LDA #$0005             ;\
-$81:A3F5 85 12       STA $12    [$7E:0012]  ;} $12 = 5
+$81:A3F5 85 12       STA $12    [$7E:0012]  ;} $12 = 5 (loop counter)
 
 ; LOOP_COLOURS
 $81:A3F7 B9 0E A4    LDA $A40E,y[$81:A41A]  ;\
@@ -4294,7 +4294,7 @@ $81:A404 D0 F1       BNE $F1    [$A3F7]     ; If [$12] != 0: go to LOOP_COLOURS
 $81:A406 7A          PLY                    ; Restore Y
 $81:A407 C8          INY                    ;\
 $81:A408 C8          INY                    ;|
-$81:A409 C8          INY                    ;} Y += 4
+$81:A409 C8          INY                    ;} Y += 4 (next palette table entry)
 $81:A40A C8          INY                    ;/
 $81:A40B 80 D6       BRA $D6    [$A3E3]     ; Go to LOOP_ENTRY
 
@@ -4302,7 +4302,7 @@ $81:A40D 60          RTS
 }
 
 
-;;; $A40E: Area select map foreground palettes ;;;
+;;; $A40E: Area select map foreground palette data ;;;
 {
 ;                             2                         Ch                        16h
 $81:A40E             dw 0000, 7FE0,7EA0,7D40,7C00,4000, 01DB,0196,0150,00EB,00A5, 033B,0296,01F0,014B,00A5 ; 0.   Active.   WS-Crateria,  Crateria, Crateria
@@ -4311,14 +4311,18 @@ $81:A44E             dw 0000, 7FE0,7EA0,7D40,7C00,4000, 6417,4C12,380D,2007,0802
 $81:A46E             dw 0000, 35AD,2D6B,2529,18C6,1084, 4A52,3DEF,318C,2108,14A5, 56B5,4A52,39CE,2D6B,1CE7 ; 60h. Inactive. WS-Crateria,  Crateria, Crateria
 $81:A48E             dw 0000, 18C6,14A5,1084,0842,0421, 1084,0C63,0842,0421,0000, 2108,1CE7,14A5,1084,0842 ; 80h. Inactive. Maridia,      Norfair,  Brinstar
 $81:A4AE             dw 0000, 35AD,2D6B,2529,18C6,1084, 294A,2108,1CE7,14A5,0C63, 4A52,3DEF,318C,2108,14A5 ; A0h. Inactive. Wrecked Ship, Tourian,  Wrecked Ship
+}
 
-; Offsets into $A4E6
+
+;;; $A4CE: Area select map foreground palette table ;;;
+{
+; Area select map foreground palette table indices (relative to $A4E6)
 $81:A4CE             dw 0000, 000A, 0010, 0016, 0024, 002A ; Active
 $81:A4DA             dw 0030, 003A, 0040, 0046, 0054, 005A ; Inactive
 
 
-;                        ________ Offset into $A40E
-;                       |     ___ Offset into palette RAM
+;                        ________ Palette data index (relative to $A40E)
+;                       |     ___ Palette RAM index (relative to $7E:C000)
 ;                       |    |
 $81:A4E6             dw 000C,00AC, ; Active - Crateria - orange
                         0016,00B6, ; Active - Crateria - yellow
