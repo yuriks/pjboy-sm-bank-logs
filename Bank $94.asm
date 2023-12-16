@@ -1678,8 +1678,8 @@ $94:8E3D 09 07 00    ORA #$0007             ; A = [$20] - [$20] % 8 + 7 (target 
 $94:8E40 38          SEC                    ;\
 $94:8E41 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
 $94:8E44 38          SEC                    ;|
-$94:8E45 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $12 = min(0, [A] + 1 - (Samus top boundary))
-$94:8E48 30 03       BMI $03    [$8E4D]     ;|
+$94:8E45 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
+$94:8E48 30 03       BMI $03    [$8E4D]     ;} $12 = min(0, [A] + 1 - (Samus top boundary))
 $94:8E4A A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8E4D 85 12       STA $12    [$7E:0012]  ;/
@@ -1751,36 +1751,35 @@ $94:8E82 60          RTS
 
 ;;; $8E83: Samus block collision reaction - spike block - BTS 0 (generic spike) ;;;
 {
-; Unless already hurt, deal 60 damage (environmental) to Samus, unless in WS and Phantoon is alive
 $94:8E83 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $94:8E86 C9 03 00    CMP #$0003             ;} If [area index] = Wrecked Ship:
 $94:8E89 D0 09       BNE $09    [$8E94]     ;/
 $94:8E8B A9 01 00    LDA #$0001             ;\
-$94:8E8E 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area boss is not dead: return
+$94:8E8E 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If Phantoon is not dead: return
 $94:8E92 90 3A       BCC $3A    [$8ECE]     ;/
 
-$94:8E94 AD A8 18    LDA $18A8  [$7E:18A8]
-$94:8E97 D0 35       BNE $35    [$8ECE]
-$94:8E99 A9 3C 00    LDA #$003C
-$94:8E9C 8D A8 18    STA $18A8  [$7E:18A8]
-$94:8E9F A9 0A 00    LDA #$000A
-$94:8EA2 8D AA 18    STA $18AA  [$7E:18AA]
+$94:8E94 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$94:8E97 D0 35       BNE $35    [$8ECE]     ;} If [Samus invincibility timer] != 0: return
+$94:8E99 A9 3C 00    LDA #$003C             ;\
+$94:8E9C 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60
+$94:8E9F A9 0A 00    LDA #$000A             ;\
+$94:8EA2 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = Ah
 $94:8EA5 AD 4E 0A    LDA $0A4E  [$7E:0A4E]
 $94:8EA8 18          CLC
 $94:8EA9 69 00 00    ADC #$0000
 $94:8EAC 8D 4E 0A    STA $0A4E  [$7E:0A4E]
-$94:8EAF AD 50 0A    LDA $0A50  [$7E:0A50]
-$94:8EB2 69 3C 00    ADC #$003C
-$94:8EB5 8D 50 0A    STA $0A50  [$7E:0A50]
-$94:8EB8 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$94:8EBB 49 0C 00    EOR #$000C
-$94:8EBE 89 08 00    BIT #$0008
-$94:8EC1 F0 08       BEQ $08    [$8ECB]
-$94:8EC3 A9 01 00    LDA #$0001
-$94:8EC6 8D 54 0A    STA $0A54  [$7E:0A54]
+$94:8EAF AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$94:8EB2 69 3C 00    ADC #$003C             ;} Periodic damage += 60
+$94:8EB5 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
+$94:8EB8 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$94:8EBB 49 0C 00    EOR #$000C             ;|
+$94:8EBE 89 08 00    BIT #$0008             ;} If facing left:
+$94:8EC1 F0 08       BEQ $08    [$8ECB]     ;/
+$94:8EC3 A9 01 00    LDA #$0001             ;\
+$94:8EC6 8D 54 0A    STA $0A54  [$7E:0A54]  ;} Knockback X direction = right
 $94:8EC9 80 03       BRA $03    [$8ECE]
 
-$94:8ECB 9C 54 0A    STZ $0A54  [$7E:0A54]
+$94:8ECB 9C 54 0A    STZ $0A54  [$7E:0A54]  ; Knockback X direction = left
 
 $94:8ECE 60          RTS
 }
@@ -1788,29 +1787,28 @@ $94:8ECE 60          RTS
 
 ;;; $8ECF: Samus block collision reaction - spike block - BTS 1 (Kraid's lair spike) ;;;
 {
-; Unless already hurt, deal 16 damage (environmental) to Samus
-$94:8ECF AD A8 18    LDA $18A8  [$7E:18A8]
-$94:8ED2 D0 35       BNE $35    [$8F09]
-$94:8ED4 A9 3C 00    LDA #$003C
-$94:8ED7 8D A8 18    STA $18A8  [$7E:18A8]
-$94:8EDA A9 0A 00    LDA #$000A
-$94:8EDD 8D AA 18    STA $18AA  [$7E:18AA]
-$94:8EE0 AD 4E 0A    LDA $0A4E  [$7E:0A4E]
-$94:8EE3 18          CLC
-$94:8EE4 69 00 00    ADC #$0000
-$94:8EE7 8D 4E 0A    STA $0A4E  [$7E:0A4E]
-$94:8EEA AD 50 0A    LDA $0A50  [$7E:0A50]
-$94:8EED 69 10 00    ADC #$0010
-$94:8EF0 8D 50 0A    STA $0A50  [$7E:0A50]
-$94:8EF3 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$94:8EF6 49 0C 00    EOR #$000C
-$94:8EF9 89 08 00    BIT #$0008
-$94:8EFC F0 08       BEQ $08    [$8F06]
-$94:8EFE A9 01 00    LDA #$0001
-$94:8F01 8D 54 0A    STA $0A54  [$7E:0A54]
-$94:8F04 80 03       BRA $03    [$8F09]
-
-$94:8F06 9C 54 0A    STZ $0A54  [$7E:0A54]
+$94:8ECF AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$94:8ED2 D0 35       BNE $35    [$8F09]     ;} If [Samus invincibility timer] != 0: return
+$94:8ED4 A9 3C 00    LDA #$003C             ;\
+$94:8ED7 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60
+$94:8EDA A9 0A 00    LDA #$000A             ;\
+$94:8EDD 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = Ah
+$94:8EE0 AD 4E 0A    LDA $0A4E  [$7E:0A4E]  
+$94:8EE3 18          CLC                    
+$94:8EE4 69 00 00    ADC #$0000             
+$94:8EE7 8D 4E 0A    STA $0A4E  [$7E:0A4E]  
+$94:8EEA AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$94:8EED 69 10 00    ADC #$0010             ;} Periodic damage += 10h
+$94:8EF0 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
+$94:8EF3 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$94:8EF6 49 0C 00    EOR #$000C             ;|
+$94:8EF9 89 08 00    BIT #$0008             ;} If facing left:
+$94:8EFC F0 08       BEQ $08    [$8F06]     ;/
+$94:8EFE A9 01 00    LDA #$0001             ;\
+$94:8F01 8D 54 0A    STA $0A54  [$7E:0A54]  ;} Knockback X direction = right
+$94:8F04 80 03       BRA $03    [$8F09]     
+                                            
+$94:8F06 9C 54 0A    STZ $0A54  [$7E:0A54]  ; Knockback X direction = left
 
 $94:8F09 60          RTS
 }
@@ -1818,7 +1816,7 @@ $94:8F09 60          RTS
 
 ;;; $8F0A: Samus block collision reaction - spike block - BTS 3 (Draygon's broken turret) ;;;
 {
-; Identical to 8ECF
+; Clone of $8ECF
 $94:8F0A AD A8 18    LDA $18A8  [$7E:18A8]
 $94:8F0D D0 35       BNE $35    [$8F44]
 $94:8F0F A9 3C 00    LDA #$003C
@@ -1873,13 +1871,13 @@ $94:8F48 60          RTS
 $94:8F49 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $94:8F4B A5 20       LDA $20    [$7E:0020]
 $94:8F4D 24 12       BIT $12    [$7E:0012]  ;\
-$94:8F4F 30 1A       BMI $1A    [$8F6B]     ;} If [$12] < 0: go to BRANCH_LEFT
-$94:8F51 29 F0 FF    AND #$FFF0             ;\
-$94:8F54 38          SEC                    ;|
+$94:8F4F 30 1A       BMI $1A    [$8F6B]     ;} If [$12] >= 0:
+$94:8F51 29 F0 FF    AND #$FFF0             ; A = [$20] - [$20] % 10h (target right boundary rounded down to left of 16x16 tile)
+$94:8F54 38          SEC                    ;\
 $94:8F55 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
 $94:8F58 38          SEC                    ;|
-$94:8F59 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = max(0, ([$20] & ~Fh) - [Samus X position] - [Samus X radius])
-$94:8F5C 10 03       BPL $03    [$8F61]     ;|
+$94:8F59 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$94:8F5C 10 03       BPL $03    [$8F61]     ;} $12 = max(0, [A] - 1 - (Samus right boundary))
 $94:8F5E A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8F61 85 12       STA $12    [$7E:0012]  ;/
@@ -1888,13 +1886,12 @@ $94:8F66 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;} Samus X subposition = FFFFh
 $94:8F69 38          SEC                    ;\
 $94:8F6A 60          RTS                    ;} Return carry set
 
-; BRANCH_LEFT
-$94:8F6B 09 0F 00    ORA #$000F             ;\
-$94:8F6E 38          SEC                    ;|
+$94:8F6B 09 0F 00    ORA #$000F             ; A = [$20] - [$20] % 10h + Fh (target left boundary rounded up to right of 16x16 tile)
+$94:8F6E 38          SEC                    ;\
 $94:8F6F 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
 $94:8F72 38          SEC                    ;|
-$94:8F73 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = min(0, ([$20] | Fh) + [Samus X position] + [Samus X radius])
-$94:8F76 30 03       BMI $03    [$8F7B]     ;|
+$94:8F73 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$94:8F76 30 03       BMI $03    [$8F7B]     ;} $12 = max(0, [A] + 1 - (Samus left boundary))
 $94:8F78 A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8F7B 85 12       STA $12    [$7E:0012]  ;/
@@ -1911,19 +1908,18 @@ $94:8F81 60          RTS                    ;} Return carry set
 ;;     $20: Target boundary position (top/bottom depending on sign of [$12])
 ;; Returns:
 ;;     Carry: Set. Unconditional collision
-;;     $12: Distance to move Samus (0 if Samus top/bottom boundary is inside the block)
+;;     $12.$14: Distance to collision
 
-; [$20] - (Samus top/bottom boundary position) = distance to check for collision ($12)
 $94:8F82 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $94:8F84 A5 20       LDA $20    [$7E:0020]
 $94:8F86 24 12       BIT $12    [$7E:0012]  ;\
-$94:8F88 30 1A       BMI $1A    [$8FA4]     ;} If [$12] < 0: go to BRANCH_UPWARDS
-$94:8F8A 29 F0 FF    AND #$FFF0             ;\
-$94:8F8D 38          SEC                    ;|
+$94:8F88 30 1A       BMI $1A    [$8FA4]     ;} If [$12] >= 0:
+$94:8F8A 29 F0 FF    AND #$FFF0             ; A = [$20] - [$20] % 10h (target bottom boundary rounded down to top of 16x16 tile)
+$94:8F8D 38          SEC                    ;\
 $94:8F8E ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
 $94:8F91 38          SEC                    ;|
-$94:8F92 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $12 = max(0, [$20] - (Samus bottom boundary position) - [$20] % 10h)
-$94:8F95 10 03       BPL $03    [$8F9A]     ;|
+$94:8F92 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
+$94:8F95 10 03       BPL $03    [$8F9A]     ;} $12 = max(0, [A] - 1 - (Samus bottom boundary))
 $94:8F97 A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8F9A 85 12       STA $12    [$7E:0012]  ;/
@@ -1932,13 +1928,12 @@ $94:8F9F 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;} Samus Y subposition = FFFFh
 $94:8FA2 38          SEC                    ;\
 $94:8FA3 60          RTS                    ;} Return carry set
 
-; BRANCH_UPWARDS
-$94:8FA4 09 0F 00    ORA #$000F             ;\
-$94:8FA7 38          SEC                    ;|
+$94:8FA4 09 0F 00    ORA #$000F             ; A = [$20] - [$20] % 10h + Fh (target top boundary rounded up to bottom of 16x16 tile)
+$94:8FA7 38          SEC                    ;\
 $94:8FA8 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
 $94:8FAB 38          SEC                    ;|
-$94:8FAC ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $12 = min(0, [$20] + 10h - [$20] % 10h - (Samus top boundary position))
-$94:8FAF 30 03       BMI $03    [$8FB4]     ;|
+$94:8FAC ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
+$94:8FAF 30 03       BMI $03    [$8FB4]     ;} $12 = min(0, [A] + 1 - (Samus top boundary))
 $94:8FB1 A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8FB4 85 12       STA $12    [$7E:0012]  ;/
@@ -2000,6 +1995,7 @@ $94:8FF3 4C BD 8D    JMP $8DBD  [$94:8DBD]  ; Go to Samus block collision reacti
 
 ;;; $8FF6: Samus block collision reaction - vertical - spike air - jump table ;;;
 {
+; Yeah, great table
 $94:8FF6             dw 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81, 8E81
 }
 
@@ -2052,14 +2048,20 @@ $94:905A 4C 49 8F    JMP $8F49  [$94:8F49]  ; Go to Samus block collision reacti
 
 ;;; $905D: Samus block collision reaction - vertical - spike block ;;;
 {
-; Check BTS. JSR $902B,BTS. JMP $8F82 when done (normal solid)
-$94:905D AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:9060 BF 02 64 7F LDA $7F6402,x[$7F:678E]
-$94:9064 0A          ASL A
-$94:9065 29 FF 01    AND #$01FF
-$94:9068 AA          TAX
-$94:9069 FC 2B 90    JSR ($902B,x)[$94:8ECF]
-$94:906C 4C 82 8F    JMP $8F82  [$94:8F82]
+;; Parameters:
+;;     $12: Distance to check for collision
+;;     $20: Target boundary position (top/bottom depending on sign of [$12])
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     $12.$14: Distance to collision
+
+$94:905D AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:9060 BF 02 64 7F LDA $7F6402,x[$7F:678E];|
+$94:9064 0A          ASL A                  ;|
+$94:9065 29 FF 01    AND #$01FF             ;} Execute [$902B + [block BTS] * 2]
+$94:9068 AA          TAX                    ;|
+$94:9069 FC 2B 90    JSR ($902B,x)[$94:8ECF];/
+$94:906C 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
 }
 
 
@@ -2101,6 +2103,13 @@ $94:909C 60          RTS
 
 ;;; $909D: Samus block collision reaction - vertical - special air ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to check for collision
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
+
+; Clone of $906F
 $94:909D AE C4 0D    LDX $0DC4  [$7E:0DC4]
 $94:90A0 BF 01 64 7F LDA $7F6401,x[$7F:673D]
 $94:90A4 29 00 FF    AND #$FF00
@@ -2170,36 +2179,40 @@ $94:9101 60          RTS
 
 ;;; $9102: Samus block collision reaction - vertical - special block ;;;
 {
-; Check BTS.
-; If positive, make a PLM from the table at 9139,X (X=2*BTS, max BTS is 4F).
-; If negative, make a region-indexed PLM (91D9 + 20*Area + 2*BTS, max BTS is 0F).
-; If PLM fails to be made, JMP $8F82 (normal solid)
-$94:9102 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:9105 BF 01 64 7F LDA $7F6401,x[$7F:78C6]
-$94:9109 29 00 FF    AND #$FF00
-$94:910C EB          XBA
-$94:910D 30 0F       BMI $0F    [$911E]
-$94:910F 0A          ASL A
-$94:9110 AA          TAX
-$94:9111 BD 39 91    LDA $9139,x[$94:91C3]
-$94:9114 22 E7 84 84 JSL $8484E7[$84:84E7]
-$94:9118 90 03       BCC $03    [$911D]
-$94:911A 4C 82 8F    JMP $8F82  [$94:8F82]
+;; Parameters:
+;;     $12.$14: Distance to check for collision
+;;     $20: Target boundary position (left/right depending on sign of [$12])
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 
-$94:911D 60          RTS
-
-$94:911E 29 7F 00    AND #$007F
-$94:9121 0A          ASL A
-$94:9122 A8          TAY
-$94:9123 AD 9F 07    LDA $079F  [$7E:079F]
-$94:9126 0A          ASL A
-$94:9127 AA          TAX
-$94:9128 BD E9 92    LDA $92E9,x[$94:92EB]
-$94:912B 85 22       STA $22    [$7E:0022]
-$94:912D B1 22       LDA ($22),y[$94:9201]
-$94:912F 22 E7 84 84 JSL $8484E7[$84:84E7]
-$94:9133 90 03       BCC $03    [$9138]
-$94:9135 4C 82 8F    JMP $8F82  [$94:8F82]
+$94:9102 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:9105 BF 01 64 7F LDA $7F6401,x[$7F:78C6];|
+$94:9109 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
+$94:910C EB          XBA                    ;|
+$94:910D 30 0F       BMI $0F    [$911E]     ;/
+$94:910F 0A          ASL A                  ;\
+$94:9110 AA          TAX                    ;|
+$94:9111 BD 39 91    LDA $9139,x[$94:91C3]  ;} Spawn PLM [$9139 + [block BTS] * 2]
+$94:9114 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
+$94:9118 90 03       BCC $03    [$911D]     ; If carry clear: return carry clear
+$94:911A 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
+                                            
+$94:911D 60          RTS                    
+                                            
+; BRANCH_AREA_DEPENDANT                     
+$94:911E 29 7F 00    AND #$007F             ;\
+$94:9121 0A          ASL A                  ;|
+$94:9122 A8          TAY                    ;|
+$94:9123 AD 9F 07    LDA $079F  [$7E:079F]  ;|
+$94:9126 0A          ASL A                  ;|
+$94:9127 AA          TAX                    ;} Spawn PLM [[$92E9 + [area index] * 2] + ([block BTS] & 7Fh) * 2]
+$94:9128 BD E9 92    LDA $92E9,x[$94:92EB]  ;|
+$94:912B 85 22       STA $22    [$7E:0022]  ;|
+$94:912D B1 22       LDA ($22),y[$94:9201]  ;|
+$94:912F 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
+$94:9133 90 03       BCC $03    [$9138]     ; If carry clear: return carry clear
+$94:9135 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
 
 $94:9138 60          RTS
 }
@@ -2255,6 +2268,10 @@ $94:9312 60          RTS                    ;} Return carry clear
 
 ;;; $9313: Samus block collision reaction - vertical - bombable air ;;;
 {
+;; Returns:
+;;     Carry: Clear. No collision
+
+; Clone of $92F9
 $94:9313 AE C4 0D    LDX $0DC4  [$7E:0DC4]
 $94:9316 BF 01 64 7F LDA $7F6401,x
 $94:931A 29 00 FF    AND #$FF00
@@ -2274,6 +2291,13 @@ $94:932C 60          RTS
 
 ;;; $932D: Samus block collision reaction - horizontal - bomb block ;;;
 {
+;; Parameters:
+;;     $12: Distance to check for collision
+;;     $20: Target boundary position (left/right depending on sign of [$12])
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     $12.$14: Distance to collision
+
 $94:932D AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9330 BF 01 64 7F LDA $7F6401,x[$7F:66E0];|
 $94:9334 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h = 0:
@@ -2294,19 +2318,26 @@ $94:934B 60          RTS
 
 ;;; $934C: Samus block collision reaction - vertical - bomb block ;;;
 {
-$94:934C AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:934F BF 01 64 7F LDA $7F6401,x[$7F:65E6]
-$94:9353 29 00 FF    AND #$FF00
-$94:9356 EB          XBA
-$94:9357 30 0E       BMI $0E    [$9367]
-$94:9359 0A          ASL A
-$94:935A AA          TAX
-$94:935B BD 6B 93    LDA $936B,x[$94:9377]
-$94:935E 22 E7 84 84 JSL $8484E7[$84:84E7]
-$94:9362 90 06       BCC $06    [$936A]
-$94:9364 4C 82 8F    JMP $8F82  [$94:8F82]
+;; Parameters:
+;;     $12: Distance to check for collision
+;;     $20: Target boundary position (top/bottom depending on sign of [$12])
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     $12.$14: Distance to collision
 
-$94:9367 4C 82 8F    JMP $8F82  [$94:8F82]
+$94:934C AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:934F BF 01 64 7F LDA $7F6401,x[$7F:65E6];|
+$94:9353 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h = 0:
+$94:9356 EB          XBA                    ;|
+$94:9357 30 0E       BMI $0E    [$9367]     ;/
+$94:9359 0A          ASL A                  ;\
+$94:935A AA          TAX                    ;|
+$94:935B BD 6B 93    LDA $936B,x[$94:9377]  ;} Spawn PLM [$936B + [block BTS] * 2]
+$94:935E 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
+$94:9362 90 06       BCC $06    [$936A]     
+$94:9364 4C 82 8F    JMP $8F82  [$94:8F82]  
+                                            
+$94:9367 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
 
 $94:936A 60          RTS
 }
@@ -3124,21 +3155,18 @@ $94:97D7 60          RTS
 }
 
 
-;;; $97D8: Clear carry ;;;
+;;; $97D8: Clear carry. Block inside reaction - spike air - BTS 0 ;;;
 {
+; Looks like this block's effect was NOP'd out, although this block is never used anyway
 $94:97D8 18          CLC
 $94:97D9 60          RTS
-}
 
-
-;;; $97DA:  ;;;
-{
-$94:97DA AD 4E 0A    LDA $0A4E  [$7E:0A4E]
-$94:97DD 18          CLC
-$94:97DE 8D 4E 0A    STA $0A4E  [$7E:0A4E]
-$94:97E1 AD 50 0A    LDA $0A50  [$7E:0A50]
-$94:97E4 69 01 00    ADC #$0001
-$94:97E7 8D 50 0A    STA $0A50  [$7E:0A50]
+$94:97DA AD 4E 0A    LDA $0A4E  [$7E:0A4E]  ;\
+$94:97DD 18          CLC                    ;} >_<;
+$94:97DE 8D 4E 0A    STA $0A4E  [$7E:0A4E]  ;/
+$94:97E1 AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$94:97E4 69 01 00    ADC #$0001             ;} Periodic damage += 1
+$94:97E7 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
 $94:97EA 9C 42 0B    STZ $0B42  [$7E:0B42]  ; Samus X extra run speed = 0
 $94:97ED 9C 46 0B    STZ $0B46  [$7E:0B46]  ; Samus X base speed = 0
 $94:97F0 18          CLC
@@ -3181,10 +3209,10 @@ $94:9813 60          RTS
 ; Damages Samus, kills her jump height, gives her lava X speed physics
 $94:9814 A0 00 00    LDY #$0000
 $94:9817 AD 4E 0A    LDA $0A4E  [$7E:0A4E]  ;\
-$94:981A 18          CLC                    ;|
-$94:981B 8D 4E 0A    STA $0A4E  [$7E:0A4E]  ;|
-$94:981E AD 50 0A    LDA $0A50  [$7E:0A50]  ;} Periodic damage += 1.0
-$94:9821 69 01 00    ADC #$0001             ;|
+$94:981A 18          CLC                    ;} >_<;
+$94:981B 8D 4E 0A    STA $0A4E  [$7E:0A4E]  ;/
+$94:981E AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$94:9821 69 01 00    ADC #$0001             ;} Periodic damage += 1
 $94:9824 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
 $94:9827 A9 DD A1    LDA #$A1DD             ;\
 $94:982A 8D 6C 0A    STA $0A6C  [$7E:0A6C]  ;} Samus X speed table pointer = $A1DD (acid/lava)
@@ -3230,12 +3258,12 @@ $94:9870 A9 3C 00    LDA #$003C             ;\
 $94:9873 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60
 $94:9876 A9 0A 00    LDA #$000A             ;\
 $94:9879 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = 10
-$94:987C AD 4E 0A    LDA $0A4E  [$7E:0A4E]  ;\
-$94:987F 18          CLC                    ;|
-$94:9880 69 00 00    ADC #$0000             ;} >_<;
-$94:9883 8D 4E 0A    STA $0A4E  [$7E:0A4E]  ;/
+$94:987C AD 4E 0A    LDA $0A4E  [$7E:0A4E]
+$94:987F 18          CLC
+$94:9880 69 00 00    ADC #$0000
+$94:9883 8D 4E 0A    STA $0A4E  [$7E:0A4E]
 $94:9886 AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
-$94:9889 69 10 00    ADC #$0010             ;} Periodic damage = 10h
+$94:9889 69 10 00    ADC #$0010             ;} Periodic damage += 10h
 $94:988C 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
 $94:988F AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $94:9892 49 0C 00    EOR #$000C             ;|

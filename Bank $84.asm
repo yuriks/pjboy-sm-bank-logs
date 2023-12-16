@@ -5729,9 +5729,9 @@ $84:AC9D AD 4E 0A    LDA $0A4E  [$7E:0A4E]
 $84:ACA0 18          CLC
 $84:ACA1 69 00 00    ADC #$0000
 $84:ACA4 8D 4E 0A    STA $0A4E  [$7E:0A4E]
-$84:ACA7 AD 50 0A    LDA $0A50  [$7E:0A50]
-$84:ACAA 69 02 00    ADC #$0002
-$84:ACAD 8D 50 0A    STA $0A50  [$7E:0A50]
+$84:ACA7 AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$84:ACAA 69 02 00    ADC #$0002             ;} Periodic damage += 2
+$84:ACAD 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
 $84:ACB0 60          RTS
 }
 
@@ -10685,14 +10685,18 @@ $84:CFD4 60          RTS
 
 ;;; $CFD5: Setup - PLM $D0E8 (grappled reaction, spike block, BTS 3. Draygon's broken turret) ;;;
 {
+;; Returns:
+;;     Carry: Set
+;;     Overflow: Set
+
 ; Deal 1 damage to Samus
 $84:CFD5 AD 4E 0A    LDA $0A4E  [$7E:0A4E]
 $84:CFD8 18          CLC
 $84:CFD9 69 00 00    ADC #$0000
 $84:CFDC 8D 4E 0A    STA $0A4E  [$7E:0A4E]
-$84:CFDF AD 50 0A    LDA $0A50  [$7E:0A50]
-$84:CFE2 69 01 00    ADC #$0001
-$84:CFE5 8D 50 0A    STA $0A50  [$7E:0A50]
+$84:CFDF AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$84:CFE2 69 01 00    ADC #$0001             ;} Periodic damage += 1
+$84:CFE5 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
 $84:CFE8 E2 40       SEP #$40
 $84:CFEA 38          SEC
 $84:CFEB 60          RTS
