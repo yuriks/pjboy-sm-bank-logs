@@ -2356,7 +2356,7 @@ $94:936B             dw D098, D09C, D0A0, D0A4, D0A8, D0AC, D0B0, D0B4, B62F, B6
 ;;     $20: Target boundary position (left/right depending on sign of [$12])
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
-;;     $12.$14: If carry set, distance to collision, unchanged otherwise
+;;     $12.$14: If carry set, distance to collision
 
 $94:938B A9 7D E1    LDA #$E17D             ;\
 $94:938E 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E17D (handle elevator)
@@ -2385,12 +2385,19 @@ $94:93C3 B0 06       BCS $06    [$93CB]     ;/
 $94:93C5 A9 01 00    LDA #$0001             ;\
 $94:93C8 8D 16 0E    STA $0E16  [$7E:0E16]  ;} Elevator properties = standing on elevator
 
-$94:93CB 4C 49 8F    JMP $8F49  [$94:8F49]  ; Samus block collision reaction - horizontal - solid/shootable/grapple block
+$94:93CB 4C 49 8F    JMP $8F49  [$94:8F49]  ; Go to Samus block collision reaction - horizontal - solid/shootable/grapple block
 }
 
 
 ;;; $93CE: Samus block collision reaction - vertical - door ;;;
 {
+;; Parameters:
+;;     $12: Distance to check for collision
+;;     $20: Target boundary position (top/bottom depending on sign of [$12])
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: If carry set, distance to collision
+
 $94:93CE A9 7D E1    LDA #$E17D             ;\
 $94:93D1 8D 9C 09    STA $099C  [$7E:099C]  ;} Door transition function = $E17D (handle elevator)
 $94:93D4 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
@@ -2419,45 +2426,51 @@ $94:9408 A9 01 00    LDA #$0001             ;\
 $94:940B 8D 16 0E    STA $0E16  [$7E:0E16]  ;} Elevator properties = standing on elevator
 
 
-$94:940E 4C 82 8F    JMP $8F82  [$94:8F82]  ; Samus block collision reaction - vertical - solid/shootable/grapple block
+$94:940E 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
 }
 
 
 ;;; $9411: Block shot/bombed/grappled/collision/inside reaction - horizontal extension ;;;
 {
-; Use the BTS as a relative horizontal block offset (1 byte signed),
-; and via clever stack manipulation handle it as if Samus is touching that block
-; (gasp! The code is actually clever!...
-; well, except for that redundant AND #$00FF and poor testing/branching)
-; If 0, CLC and RTS.
-; Else use it as a horizontal tile offset to use a different tile for the jump index
-$94:9411 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:9414 BF 02 64 7F LDA $7F6402,x[$7F:6789]
-$94:9418 29 FF 00    AND #$00FF
-$94:941B F0 28       BEQ $28    [$9445]
-$94:941D 89 80 00    BIT #$0080
-$94:9420 D0 05       BNE $05    [$9427]
-$94:9422 29 FF 00    AND #$00FF
-$94:9425 80 03       BRA $03    [$942A]
+;; Parameters:
+;;     X: Block index (multiple of 2)
+;;     $12.$14: Distance to check for collision
+;;     $1A: Number of blocks left to check (0 if final (bottom) block)
+;;     $1C: Samus' Y block span
+;;     $20: Target boundary position (left/right depending on sign of [$12])
+;; Returns:
+;;     Carry: Clear. No collision
 
-$94:9427 09 00 FF    ORA #$FF00
+; If BTS is 0, acts like air
+; Otherwise, offsets block index by block BTS, updates X, and loops back to the `JSR (xxxx, X)` instruction that jumped to here
 
-$94:942A 18          CLC
-$94:942B 6D C4 0D    ADC $0DC4  [$7E:0DC4]
-$94:942E 8D C4 0D    STA $0DC4  [$7E:0DC4]
-$94:9431 0A          ASL A
-$94:9432 AA          TAX
-$94:9433 BF 02 00 7F LDA $7F0002,x[$7F:070E]
-$94:9437 29 00 F0    AND #$F000
-$94:943A EB          XBA
-$94:943B 4A          LSR A
-$94:943C 4A          LSR A
-$94:943D 4A          LSR A
-$94:943E AA          TAX
-$94:943F 68          PLA
-$94:9440 38          SEC
-$94:9441 E9 03 00    SBC #$0003
-$94:9444 48          PHA
+$94:9411 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:9414 BF 02 64 7F LDA $7F6402,x[$7F:6789];|
+$94:9418 29 FF 00    AND #$00FF             ;} If [block BTS] = 0: return carry clear
+$94:941B F0 28       BEQ $28    [$9445]     ;/
+$94:941D 89 80 00    BIT #$0080             ;\
+$94:9420 D0 05       BNE $05    [$9427]     ;|
+$94:9422 29 FF 00    AND #$00FF             ;|
+$94:9425 80 03       BRA $03    [$942A]     ;|
+                                            ;|
+$94:9427 09 00 FF    ORA #$FF00             ;} Current block index += ±[block BTS]
+                                            ;|
+$94:942A 18          CLC                    ;|
+$94:942B 6D C4 0D    ADC $0DC4  [$7E:0DC4]  ;|
+$94:942E 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
+$94:9431 0A          ASL A                  ;\
+$94:9432 AA          TAX                    ;|
+$94:9433 BF 02 00 7F LDA $7F0002,x[$7F:070E];|
+$94:9437 29 00 F0    AND #$F000             ;|
+$94:943A EB          XBA                    ;} X = (block type) * 2
+$94:943B 4A          LSR A                  ;|
+$94:943C 4A          LSR A                  ;|
+$94:943D 4A          LSR A                  ;|
+$94:943E AA          TAX                    ;/
+$94:943F 68          PLA                    ;\
+$94:9440 38          SEC                    ;|
+$94:9441 E9 03 00    SBC #$0003             ;} Return address -= 3
+$94:9444 48          PHA                    ;/
 
 $94:9445 18          CLC
 $94:9446 60          RTS
@@ -2466,46 +2479,56 @@ $94:9446 60          RTS
 
 ;;; $9447: Block shot/bombed/grappled/collision/inside reaction - vertical extension ;;;
 {
-; Use the BTS as a relative vertial block offset (1 byte signed),
-; and handle it as if Samus is touching that block
-$94:9447 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:944A BF 02 64 7F LDA $7F6402,x[$7F:8BF3]
-$94:944E 29 FF 00    AND #$00FF
-$94:9451 F0 40       BEQ $40    [$9493]
-$94:9453 89 80 00    BIT #$0080
-$94:9456 D0 12       BNE $12    [$946A]
-$94:9458 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:945B AD C4 0D    LDA $0DC4  [$7E:0DC4]
+;; Parameters:
+;;     X: Block index (multiple of 2)
+;;     $12.$14: Distance to check for collision
+;;     $18: Target Y position
+;;     $20: Target boundary position (top/bottom depending on sign of [$12])
+;; Returns:
+;;     Carry: Clear. No collision
 
-$94:945E 18          CLC
-$94:945F 6D A5 07    ADC $07A5  [$7E:07A5]
-$94:9462 CE D4 0D    DEC $0DD4  [$7E:0DD4]
-$94:9465 D0 F7       BNE $F7    [$945E]
-$94:9467 4C 7C 94    JMP $947C  [$94:947C]
+; If BTS is 0, acts like air
+; Otherwise, offsets block index by block BTS, updates X, and loops back to the `JSR (xxxx, X)` instruction that jumped to here
+; Uses an addition/subtraction loop for multiplication, which is probably faster for an offset of 1 or maybe 2
 
-$94:946A 09 00 FF    ORA #$FF00
-$94:946D 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:9470 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-
-$94:9473 38          SEC
-$94:9474 ED A5 07    SBC $07A5  [$7E:07A5]
-$94:9477 EE D4 0D    INC $0DD4  [$7E:0DD4]
-$94:947A D0 F7       BNE $F7    [$9473]
-
-$94:947C 8D C4 0D    STA $0DC4  [$7E:0DC4]
-$94:947F 0A          ASL A
-$94:9480 AA          TAX
-$94:9481 BF 02 00 7F LDA $7F0002,x[$7F:4EC4]
-$94:9485 29 00 F0    AND #$F000
-$94:9488 EB          XBA
-$94:9489 4A          LSR A
-$94:948A 4A          LSR A
-$94:948B 4A          LSR A
-$94:948C AA          TAX
-$94:948D 68          PLA
-$94:948E 38          SEC
-$94:948F E9 03 00    SBC #$0003
-$94:9492 48          PHA
+$94:9447 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:944A BF 02 64 7F LDA $7F6402,x[$7F:8BF3];|
+$94:944E 29 FF 00    AND #$00FF             ;} If [block BTS] = 0: return carry clear
+$94:9451 F0 40       BEQ $40    [$9493]     ;/
+$94:9453 89 80 00    BIT #$0080             ;\
+$94:9456 D0 12       BNE $12    [$946A]     ;|
+$94:9458 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;|
+$94:945B AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;|
+                                            ;|
+$94:945E 18          CLC                    ;|
+$94:945F 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$94:9462 CE D4 0D    DEC $0DD4  [$7E:0DD4]  ;|
+$94:9465 D0 F7       BNE $F7    [$945E]     ;|
+$94:9467 4C 7C 94    JMP $947C  [$94:947C]  ;|
+                                            ;} Current block index += ±[block BTS] * [room width in blocks]
+$94:946A 09 00 FF    ORA #$FF00             ;|
+$94:946D 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;|
+$94:9470 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;|
+                                            ;|
+$94:9473 38          SEC                    ;|
+$94:9474 ED A5 07    SBC $07A5  [$7E:07A5]  ;|
+$94:9477 EE D4 0D    INC $0DD4  [$7E:0DD4]  ;|
+$94:947A D0 F7       BNE $F7    [$9473]     ;|
+                                            ;|
+$94:947C 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
+$94:947F 0A          ASL A                  ;\
+$94:9480 AA          TAX                    ;|
+$94:9481 BF 02 00 7F LDA $7F0002,x[$7F:4EC4];|
+$94:9485 29 00 F0    AND #$F000             ;|
+$94:9488 EB          XBA                    ;} X = (block type) * 2
+$94:9489 4A          LSR A                  ;|
+$94:948A 4A          LSR A                  ;|
+$94:948B 4A          LSR A                  ;|
+$94:948C AA          TAX                    ;/
+$94:948D 68          PLA                    ;\
+$94:948E 38          SEC                    ;|
+$94:948F E9 03 00    SBC #$0003             ;} Return address -= 3
+$94:9492 48          PHA                    ;/
 
 $94:9493 18          CLC
 $94:9494 60          RTS
@@ -2643,6 +2666,7 @@ $94:952B 60          RTS
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 ;;     $12.$14: Adjusted distance to move Samus or distance to collision
+
 $94:952C DA          PHX
 $94:952D 8A          TXA                    ;\
 $94:952E 4A          LSR A                  ;} Current block index = [X] / 2
@@ -2667,6 +2691,7 @@ $94:9542 60          RTS
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 ;;     $12.$14: Adjusted distance to move Samus or distance to collision
+
 $94:9543 20 95 94    JSR $9495  [$94:9495]  ; $1A = $1C = Samus Y block span
 $94:9546 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:9549 38          SEC                    ;|
@@ -2690,11 +2715,11 @@ $94:956B 85 18       STA $18    [$7E:0018]  ;/
 $94:956D 24 12       BIT $12    [$7E:0012]  ;\
 $94:956F 10 06       BPL $06    [$9577]     ;} If [$12] < 0: (moving left)
 $94:9571 38          SEC                    ;\
-$94:9572 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;} $20 = [$18] - [Samus X radius]
+$94:9572 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;} $20 = [$18] - [Samus X radius] (target left boundary position)
 $94:9575 80 05       BRA $05    [$957C]
 
 $94:9577 18          CLC                    ;\ Else ([$12] >= 0):
-$94:9578 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;} $20 = [$18] + [Samus X radius] - 1
+$94:9578 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;} $20 = [$18] + [Samus X radius] - 1 (target right boundary position)
 $94:957B 3A          DEC A                  ;/
 
 $94:957C 85 20       STA $20    [$7E:0020]
