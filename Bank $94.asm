@@ -2656,7 +2656,7 @@ $94:952B 60          RTS
 }
 
 
-;;; $952C: Samus block collision detection - vertical ;;;
+;;; $952C: Samus block collision reaction - vertical ;;;
 {
 ;; Parameters:
 ;;     X: Block index (multiple of 2)
@@ -2800,7 +2800,7 @@ $94:95E4 0A          ASL A                  ;\
 $94:95E5 AA          TAX                    ;} X = [current block index] * 2
 
 ; LOOP
-$94:95E6 20 2C 95    JSR $952C  [$94:952C]  ; Samus block collision detection - vertical
+$94:95E6 20 2C 95    JSR $952C  [$94:952C]  ; Samus block collision reaction - vertical
 $94:95E9 B0 08       BCS $08    [$95F3]     ; If collision: return carry set
 $94:95EB E8          INX                    ;\
 $94:95EC E8          INX                    ;} X += 2
@@ -2866,7 +2866,7 @@ $94:963E 0A          ASL A                  ;\
 $94:963F AA          TAX                    ;} X = [current block index] * 2
 
 ; LOOP
-$94:9640 20 2C 95    JSR $952C  [$94:952C]  ; Samus block collision detection - vertical
+$94:9640 20 2C 95    JSR $952C  [$94:952C]  ; Samus block collision reaction - vertical
 $94:9643 B0 0C       BCS $0C    [$9651]     ; If collision: return carry set
 $94:9645 CA          DEX                    ;\
 $94:9646 CA          DEX                    ;} X += 2
@@ -2924,6 +2924,11 @@ $94:967E 60          RTS
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 ;;     $12: If carry set: collision distance
+
+; Wrapper function of $9543 for wall-jump check ($90:9D35/9CAC)
+; Why does block collision needs a wrapper function when the equivalent solid enemy collision doesn't?
+; Why is the collision direction set to Fh?
+
 $94:967F 08          PHP
 $94:9680 8B          PHB
 $94:9681 4B          PHK                    ;\
@@ -3020,12 +3025,11 @@ $94:96F2 9C 71 1E    STZ $1E71  [$7E:1E71]  ; Clear Samus is in quicksand
 $94:96F5 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $94:96F8 4A          LSR A                  ;} If [frame counter] % 2 = 0:
 $94:96F9 B0 07       BCS $07    [$9702]     ;/
-$94:96FB 20 9E 95    JSR $959E  [$94:959E]  ; Collision detection - left to right
+$94:96FB 20 9E 95    JSR $959E  [$94:959E]  ; Samus block collision handling - vertical - left to right
 $94:96FE 90 14       BCC $14    [$9714]     ; If carry clear: go to BRANCH_NO_COLLISION
 $94:9700 B0 05       BCS $05    [$9707]
-
                                             ; Else ([frame counter] % 2 != 0):
-$94:9702 20 F5 95    JSR $95F5  [$94:95F5]  ; Collision detection - right to left
+$94:9702 20 F5 95    JSR $95F5  [$94:95F5]  ; Samus block collision handling - vertical - right to left
 $94:9705 90 0D       BCC $0D    [$9714]     ; If returned carry clear: go to BRANCH_NO_COLLISION
 
 $94:9707 20 69 96    JSR $9669  [$94:9669]  ; $12.$14 = |[$12].[$14]|
@@ -3110,7 +3114,6 @@ $94:9779 B0 07       BCS $07    [$9782]     ;/
 $94:977B 20 9E 95    JSR $959E  [$94:959E]  ; Samus block collision handling - vertical - left to right
 $94:977E 90 22       BCC $22    [$97A2]     ; If no collision: go to BRANCH_NO_COLLISION
 $94:9780 B0 05       BCS $05    [$9787]
-
                                             ; Else ([frame counter] % 2 != 0):
 $94:9782 20 F5 95    JSR $95F5  [$94:95F5]  ; Samus block collision handling - vertical - right to left
 $94:9785 90 1B       BCC $1B    [$97A2]     ; If no collision: go to BRANCH_NO_COLLISION
