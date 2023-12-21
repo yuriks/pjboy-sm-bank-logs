@@ -14452,6 +14452,8 @@ $91:FDAD 6B          RTL
 ; and Samus would collide with opposite surface due to position adjustment,
 ; new pose is disallowed.
 
+; The result stored to $0DD0 is unused
+
 $91:FDAE 08          PHP
 $91:FDAF C2 30       REP #$30
 $91:FDB1 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -14582,6 +14584,9 @@ $91:FE9D 60          RTS
 {
 ;; Returns:
 ;;     Carry: Set if there's no space for Samus pose, clear otherwise
+
+; The result stored to $0DD0 is unused
+
 $91:FE9E AD 3A 0A    LDA $0A3A  [$7E:0A3A]  ;\
 $91:FEA1 38          SEC                    ;|
 $91:FEA2 ED 3E 0A    SBC $0A3E  [$7E:0A3E]  ;} $12 = [Samus Y radius difference] - [space to move Samus up] (distance to move down)
@@ -14621,6 +14626,9 @@ $91:FEDE 60          RTS                    ;} Return carry set
 {
 ;; Returns:
 ;;     Carry: Set if there's no space for Samus pose, clear otherwise
+
+; The result stored to $0DD0 is unused
+
 $91:FEDF AD 3A 0A    LDA $0A3A  [$7E:0A3A]  ;\
 $91:FEE2 38          SEC                    ;|
 $91:FEE3 ED 40 0A    SBC $0A40  [$7E:0A40]  ;} $12 = [Samus Y radius difference] - [space to move Samus down]

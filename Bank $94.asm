@@ -2926,6 +2926,8 @@ $94:967E 60          RTS
 ;;     $12: If carry set: collision distance
 
 ; Wrapper function of $9543 for wall-jump check ($90:9D35/9CAC)
+; The result stored to $0DD0 is unused
+
 ; Why does block collision needs a wrapper function when the equivalent solid enemy collision doesn't?
 ; Why is the collision direction set to Fh?
 
@@ -3012,6 +3014,8 @@ $94:96E2 6B          RTL
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 ;;     $12: If carry set: distance to move Samus
+
+; The result stored to $0DD0 is unused
 
 $94:96E3 08          PHP
 $94:96E4 8B          PHB

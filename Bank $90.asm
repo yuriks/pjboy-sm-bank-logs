@@ -494,7 +494,7 @@ $90:835F 60          RTS                    ;} Return carry set
 }
 
 
-;;; $8360: Animation delay instruction 7 - $0A58 = $94CB ;;;
+;;; $8360: Animation delay instruction 7 - set drained Samus movement handler ;;;
 {
 ; Used by:
 ;     E8h: Facing right - Samus drained - crouching
@@ -2421,8 +2421,8 @@ $90:8E85 89 00 01    BIT #$0100             ;} If not pressing right:
 $90:8E88 D0 14       BNE $14    [$8E9E]     ;/
 $90:8E8A 89 00 02    BIT #$0200             ;\
 $90:8E8D D0 0F       BNE $0F    [$8E9E]     ;} If not pressing left:
-$90:8E8F 64 12       STZ $12    [$7E:0012]
-$90:8E91 64 14       STZ $14    [$7E:0014]
+$90:8E8F 64 12       STZ $12    [$7E:0012]  ;\
+$90:8E91 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
 $90:8E93 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:8E96 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:8E99 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
@@ -2560,7 +2560,6 @@ $90:8F6B C9 01 00    CMP #$0001             ;} If [Samus push direction] != left
 $90:8F6E F0 05       BEQ $05    [$8F75]     ;/
 $90:8F70 20 AD E4    JSR $E4AD  [$90:E4AD]  ; Calculate Samus X displacement for moving right
 $90:8F73 80 03       BRA $03    [$8F78]
-
                                             ; Else ([Samus push direction] = left):
 $90:8F75 20 64 E4    JSR $E464  [$90:E464]  ; Calculate Samus X displacement for moving left
 
@@ -2849,7 +2848,6 @@ $90:9189 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:918C 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:918F 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
 $90:9192 80 03       BRA $03    [$9197]
-
                                             ; Else (pressing left/right):
 $90:9194 20 A9 8E    JSR $8EA9  [$90:8EA9]  ; Move Samus horizontally
 
@@ -3111,7 +3109,6 @@ $90:9319 A5 12       LDA $12    [$7E:0012]  ;\
 $90:931B 30 05       BMI $05    [$9322]     ;} If [$12] >= 0:
 $90:931D 20 B1 93    JSR $93B1  [$90:93B1]  ; Move Samus right by [$12].[$14]
 $90:9320 80 03       BRA $03    [$9325]
-
                                             ; Else ([$12] < 0):
 $90:9322 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
 
@@ -3329,7 +3326,6 @@ $90:94AE 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:94B1 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $90:94B4 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0 (no collision)
 $90:94B7 80 03       BRA $03    [$94BC]
-
                                             ; Else ([Samus X acceleration mode] != accelerating or pressing right/left):
 $90:94B9 20 A9 8E    JSR $8EA9  [$90:8EA9]  ; Move Samus horizontally
 

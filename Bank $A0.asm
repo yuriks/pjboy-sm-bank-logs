@@ -4990,6 +4990,9 @@ $A0:A8EF 6B          RTL
 ; Solid enemy means an interactive enemy ($17EC) that is either frozen
 ; or whose hitbox is solid to Samus ([enemy properties] & 8000h != 0)
 ; If Samus is already partly within a solid enemy, that doesn't count as a collision
+
+; Amazingly, there are no subroutine calls in here
+
 $A0:A8F0 08          PHP
 $A0:A8F1 8B          PHB
 $A0:A8F2 F4 00 A0    PEA $A000              ;\
@@ -5002,7 +5005,7 @@ $A0:A8FE 80 06       BRA $06    [$A906]     ;/
 $A0:A900 A9 00 00    LDA #$0000             ; Return A = 0
 $A0:A903 AB          PLB
 $A0:A904 28          PLP
-$A0:A905 6B          RTL
+$A0:A905 6B          RTL                    ; Return
 
 $A0:A906 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $A0:A909 29 03 00    AND #$0003             ;|
@@ -5267,7 +5270,7 @@ $A0:AB19 9E 34 18    STZ $1834,x[$7E:1836]  ; $1834 + [collision direction] * 2 
 $A0:AB1C A9 FF FF    LDA #$FFFF             ; A = FFFFh
 $A0:AB1F AB          PLB
 $A0:AB20 28          PLP
-$A0:AB21 6B          RTL
+$A0:AB21 6B          RTL                    ; Return
 
 ; BRANCH_NOT_TOUCHING
 $A0:AB22 48          PHA
@@ -5305,12 +5308,12 @@ $A0:AB72 9D 2C 18    STA $182C,x[$7E:182E]  ;} $182C + [collision direction] * 2
 $A0:AB75 A9 FF FF    LDA #$FFFF             ; A = FFFFh
 $A0:AB78 AB          PLB
 $A0:AB79 28          PLP
-$A0:AB7A 6B          RTL
+$A0:AB7A 6B          RTL                    ; Return
 
 $A0:AB7B A9 00 00    LDA #$0000
 $A0:AB7E AB          PLB
 $A0:AB7F 28          PLP
-$A0:AB80 6B          RTL
+$A0:AB80 6B          RTL                    ; Return
 
 $A0:AB81 4C BF AA    JMP $AABF  [$A0:AABF]
 
@@ -5352,7 +5355,7 @@ $A0:ABD8 9D 2C 18    STA $182C,x            ;} $182C + [collision direction] * 2
 $A0:ABDB A9 FF FF    LDA #$FFFF             ; A = FFFFh
 $A0:ABDE AB          PLB
 $A0:ABDF 28          PLP
-$A0:ABE0 6B          RTL
+$A0:ABE0 6B          RTL                    ; Return
 
 ; Unused
 $A0:ABE1 A9 00 00    LDA #$0000
