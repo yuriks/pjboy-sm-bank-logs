@@ -1427,7 +1427,7 @@ $A7:AC4A 6C A8 0F    JMP ($0FA8)[$A7:C865]  ; Execute Kraid function
 
 ;;; $AC4D: Kraid function - Kraid gets big - break ceiling into platforms ;;;
 {
-$A7:AC4D AD B6 05    LDA $06B6  [$7E:05B6]  ;\
+$A7:AC4D AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $A7:AC50 29 07 00    AND #$0007             ;} If [frame counter] % 8 = 0:
 $A7:AC53 D0 03       BNE $03    [$AC58]     ;/
 $A7:AC55 20 95 C9    JSR $C995  [$A7:C995]  ; Spawn random earthquake projectile

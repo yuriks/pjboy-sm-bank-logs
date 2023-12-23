@@ -6996,31 +6996,33 @@ $84:B4C3 60          RTS
 ;;     Carry: Set if collision, clear otherwise
 ;;     $12.$14: Adjusted distance to move Samus or distance to collision
 
-$84:B4C4 AD 02 0B    LDA $0B02  [$7E:0B02]
-$84:B4C7 29 02 00    AND #$0002
-$84:B4CA D0 02       BNE $02    [$B4CE]
-$84:B4CC 18          CLC
-$84:B4CD 60          RTS
+; Effectively no effect for horizontal collisions
 
-$84:B4CE A0 00 00    LDY #$0000
-$84:B4D1 AD A2 09    LDA $09A2  [$7E:09A2]
-$84:B4D4 89 20 00    BIT #$0020
-$84:B4D7 F0 03       BEQ $03    [$B4DC]
-$84:B4D9 A0 02 00    LDY #$0002
+$84:B4C4 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
+$84:B4C7 29 02 00    AND #$0002             ;} If collision direction is not vertical:
+$84:B4CA D0 02       BNE $02    [$B4CE]     ;/
+$84:B4CC 18          CLC                    ;\
+$84:B4CD 60          RTS                    ;} Return carry clear
 
-$84:B4DC A6 12       LDX $12    [$7E:0012]
-$84:B4DE A5 14       LDA $14    [$7E:0014]
-$84:B4E0 85 12       STA $12    [$7E:0012]
-$84:B4E2 86 14       STX $14    [$7E:0014]
+$84:B4CE A0 00 00    LDY #$0000             ; Y = 0
+$84:B4D1 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$84:B4D4 89 20 00    BIT #$0020             ;} If gravity suit equipped:
+$84:B4D7 F0 03       BEQ $03    [$B4DC]     ;/
+$84:B4D9 A0 02 00    LDY #$0002             ; Y = 2
+
+$84:B4DC A6 12       LDX $12    [$7E:0012]  ;\
+$84:B4DE A5 14       LDA $14    [$7E:0014]  ;|
+$84:B4E0 85 12       STA $12    [$7E:0012]  ;} $14.$12 = [$12].[$14]
+$84:B4E2 86 14       STX $14    [$7E:0014]  ;/
 $84:B4E4 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $84:B4E7 29 03 00    AND #$0003             ;|
 $84:B4EA 0A          ASL A                  ;} Go to [$B4F8 + [Samus Y direction] * 2]
 $84:B4EB AA          TAX                    ;|
 $84:B4EC FC F8 B4    JSR ($B4F8,x)[$84:B52A];/
-$84:B4EF A6 12       LDX $12    [$7E:0012]
-$84:B4F1 A5 14       LDA $14    [$7E:0014]
-$84:B4F3 85 12       STA $12    [$7E:0012]
-$84:B4F5 86 14       STX $14    [$7E:0014]
+$84:B4EF A6 12       LDX $12    [$7E:0012]  ;\
+$84:B4F1 A5 14       LDA $14    [$7E:0014]  ;|
+$84:B4F3 85 12       STA $12    [$7E:0012]  ;} $12.$14 = [$14].[$12]
+$84:B4F5 86 14       STX $14    [$7E:0014]  ;/
 $84:B4F7 60          RTS
 
 $84:B4F8             dw B500, B528, B52A, B500
@@ -7029,30 +7031,37 @@ $84:B4F8             dw B500, B528, B52A, B500
 
 ;;; $B500: Collision reaction - quicksand surface - Samus is grounded ;;;
 {
-$84:B500 AD 02 0B    LDA $0B02  [$7E:0B02]
-$84:B503 29 0F 00    AND #$000F
-$84:B506 C9 02 00    CMP #$0002
-$84:B509 F0 1B       BEQ $1B    [$B526]
-$84:B50B C9 03 00    CMP #$0003
-$84:B50E F0 02       BEQ $02    [$B512]
-$84:B510 80 14       BRA $14    [$B526]
+;; Parameters:
+;;     Y: 
+;;     $14.$12: Distance to check for collision
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $14.$12: Adjusted distance to move Samus or distance to collision
 
-$84:B512 AD 6E 0A    LDA $0A6E  [$7E:0A6E]
-$84:B515 C9 01 00    CMP #$0001
-$84:B518 F0 1D       BEQ $1D    [$B537]
-$84:B51A B9 3D B5    LDA $B53D,y[$84:B53F]
-$84:B51D C5 13       CMP $13    [$7E:0013]
-$84:B51F B0 02       BCS $02    [$B523]
-$84:B521 85 13       STA $13    [$7E:0013]
+$84:B500 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
+$84:B503 29 0F 00    AND #$000F             ;|
+$84:B506 C9 02 00    CMP #$0002             ;} If [collision direction] = up: return carry clear
+$84:B509 F0 1B       BEQ $1B    [$B526]     ;/
+$84:B50B C9 03 00    CMP #$0003             ;\
+$84:B50E F0 02       BEQ $02    [$B512]     ;} If [collision direction] != down:
+$84:B510 80 14       BRA $14    [$B526]     ; Return carry clear
 
-$84:B523 EE 71 1E    INC $1E71  [$7E:1E71]
+$84:B512 AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
+$84:B515 C9 01 00    CMP #$0001             ;} If [Samus contact damage index] = speed boosting: go to quicksand speed boosting
+$84:B518 F0 1D       BEQ $1D    [$B537]     ;/
+$84:B51A B9 3D B5    LDA $B53D,y[$84:B53F]  ;\
+$84:B51D C5 13       CMP $13    [$7E:0013]  ;|
+$84:B51F B0 02       BCS $02    [$B523]     ;} $14.$12 = min([$14].[$12], 0.3000h)
+$84:B521 85 13       STA $13    [$7E:0013]  ;/
 
-$84:B526 18          CLC
-$84:B527 60          RTS
+$84:B523 EE 71 1E    INC $1E71  [$7E:1E71]  ; Set Samus in in quicksand flag
+
+$84:B526 18          CLC                    ;\
+$84:B527 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $B528: Collision reaction - quicksand surface - Samus is moving up ;;;
+;;; $B528: Clear carry. Collision reaction - quicksand surface - Samus is moving up ;;;
 {
 $84:B528 18          CLC
 $84:B529 60          RTS
@@ -7061,12 +7070,26 @@ $84:B529 60          RTS
 
 ;;; $B52A: Collision reaction - quicksand surface - Samus is moving down ;;;
 {
-$84:B52A AD 6E 0A    LDA $0A6E  [$7E:0A6E]
-$84:B52D C9 01 00    CMP #$0001
-$84:B530 F0 05       BEQ $05    [$B537]
-$84:B532 EE 71 1E    INC $1E71  [$7E:1E71]
-$84:B535 18          CLC
-$84:B536 60          RTS
+;; Parameters:
+;;     $14.$12: Distance to check for collision
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $14.$12: Distance to move Samus or distance to collision
+
+$84:B52A AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
+$84:B52D C9 01 00    CMP #$0001             ;} If [Samus contact damage index] = speed boosting: go to quicksand speed boosting
+$84:B530 F0 05       BEQ $05    [$B537]     ;/
+$84:B532 EE 71 1E    INC $1E71  [$7E:1E71]  ; Set Samus in in quicksand flag
+$84:B535 18          CLC                    ;\
+$84:B536 60          RTS                    ;} Return carry clear
+}
+
+
+;;; $B537: Collision reaction - quicksand surface - quicksand speed boosting ;;;
+{
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     $14.$12: 0.0. Distance to collision
 
 $84:B537 64 12       STZ $12    [$7E:0012]
 $84:B539 64 14       STZ $14    [$7E:0014]
@@ -7075,7 +7098,7 @@ $84:B53C 60          RTS
 }
 
 
-;;; $B53D: Quicksand surface collision reaction constants ;;;
+;;; $B53D: Quicksand surface max sinking speed ;;;
 {
 ;                        _________ Without gravity suit
 ;                       |      ___ With gravity suit
@@ -7165,7 +7188,7 @@ $84:B5A2 AD 75 1E    LDA $1E75  [$7E:1E75]  ;\
 $84:B5A5 D0 45       BNE $45    [$B5EC]     ;} If save station has been used: return set
 $84:B5A7 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:B5AA 29 0F 00    AND #$000F             ;|
-$84:B5AD C9 03 00    CMP #$0003             ;} If [collision direction] != below: return set
+$84:B5AD C9 03 00    CMP #$0003             ;} If [collision direction] != down: return set
 $84:B5B0 D0 3A       BNE $3A    [$B5EC]     ;/
 $84:B5B2 BB          TYX                    ;\
 $84:B5B3 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
@@ -10464,7 +10487,7 @@ $84:CE36 60          RTS                    ;} Return carry clear
 ;;     Carry: Set. Unconditional collision
 $84:CE37 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:CE3A 29 0F 00    AND #$000F             ;|
-$84:CE3D C9 03 00    CMP #$0003             ;} If [collision direction] = below:
+$84:CE3D C9 03 00    CMP #$0003             ;} If [collision direction] = down:
 $84:CE40 D0 21       BNE $21    [$CE63]     ;/
 $84:CE42 BE 87 1C    LDX $1C87,y[$7E:1CD5]  ;\
 $84:CE45 BF 02 00 7F LDA $7F0002,x[$7F:0230];|
@@ -10913,7 +10936,7 @@ $84:D192 29 00 02    AND #$0200             ;} If Samus doesn't have space jump:
 $84:D195 F0 47       BEQ $47    [$D1DE]     ;/
 $84:D197 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:D19A 29 0F 00    AND #$000F             ;|
-$84:D19D C9 03 00    CMP #$0003             ;} If [collision direction] != below: go to BRANCH_RETURN
+$84:D19D C9 03 00    CMP #$0003             ;} If [collision direction] != down: go to BRANCH_RETURN
 $84:D1A0 D0 3C       BNE $3C    [$D1DE]     ;/
 $84:D1A2 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $84:D1A5 C9 1D 00    CMP #$001D             ;} If [Samus pose] != facing right - morph ball - no springball - on ground:
@@ -11471,7 +11494,7 @@ $84:D623 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area main boss is not dead: go
 $84:D627 90 4E       BCC $4E    [$D677]     ;/
 $84:D629 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $84:D62C 29 0F 00    AND #$000F             ;|
-$84:D62F C9 03 00    CMP #$0003             ;} If [collision direction] != below: go to BRANCH_RETURN
+$84:D62F C9 03 00    CMP #$0003             ;} If [collision direction] != down: go to BRANCH_RETURN
 $84:D632 D0 43       BNE $43    [$D677]     ;/
 $84:D634 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $84:D637 C9 1D 00    CMP #$001D             ;} If [Samus pose] != facing right - morph ball - no springball - on ground:

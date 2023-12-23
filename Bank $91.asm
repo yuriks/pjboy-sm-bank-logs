@@ -14497,7 +14497,7 @@ $91:FDF5 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $91:FDF7 A9 02 00    LDA #$0002             ;\
 $91:FDFA 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = up
 $91:FDFD 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FE01 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$91:FE01 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $91:FE04 AA          TAX                    ;\
 $91:FE05 F0 06       BEQ $06    [$FE0D]     ;} If collision detected:
 $91:FE07 A9 01 00    LDA #$0001             ;\
@@ -14511,7 +14511,7 @@ $91:FE17 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $91:FE19 A9 03 00    LDA #$0003             ;\
 $91:FE1C 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = down
 $91:FE1F 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FE23 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$91:FE23 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $91:FE26 AA          TAX                    ;\
 $91:FE27 F0 09       BEQ $09    [$FE32]     ;} If collision detected:
 $91:FE29 AD 34 0A    LDA $0A34  [$7E:0A34]  ;\
@@ -14605,7 +14605,7 @@ $91:FEBB 8D 00 0B    STA $0B00  [$7E:0B00]  ;/
 $91:FEBE A9 03 00    LDA #$0003             ;\
 $91:FEC1 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = down
 $91:FEC4 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FEC8 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$91:FEC8 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $91:FECB AA          TAX                    ;\
 $91:FECC D0 0B       BNE $0B    [$FED9]     ;} If collision not detected:
 $91:FECE A5 12       LDA $12    [$7E:0012]  ;\
@@ -14647,7 +14647,7 @@ $91:FEFC 8D 00 0B    STA $0B00  [$7E:0B00]  ;/
 $91:FEFF A9 02 00    LDA #$0002             ;\
 $91:FF02 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = up
 $91:FF05 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$91:FF09 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$91:FF09 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $91:FF0C AA          TAX                    ;\
 $91:FF0D D0 0B       BNE $0B    [$FF1A]     ;} If collision not detected:
 $91:FF0F A5 12       LDA $12    [$7E:0012]  ;\

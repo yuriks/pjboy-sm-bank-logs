@@ -1339,7 +1339,7 @@ $94:887D 18          CLC                    ;\
 $94:887E 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;} Samus Y position += [A] (bring Samus on top of slope)
 $94:8881 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $94:8884 A9 01 00    LDA #$0001             ;\
-$94:8887 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Set Samus position adjusted by slope
+$94:8887 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Samus position was adjusted by a slope flag = 1
 
 ; BRANCH_SAMUS_TOP_CHECK
 $94:888A AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -1404,7 +1404,7 @@ $94:890C 18          CLC                    ;} Samus Y position -= [A] (bring Sa
 $94:890D 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;|
 $94:8910 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $94:8913 A9 01 00    LDA #$0001             ;\
-$94:8916 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Set Samus position adjusted by slope
+$94:8916 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Samus position was adjusted by a slope flag = 1
 
 $94:8919 AB          PLB
 $94:891A 6B          RTL
@@ -1670,7 +1670,7 @@ $94:8E2D 85 12       STA $12    [$7E:0012]  ;/
 $94:8E2F A9 FF FF    LDA #$FFFF             ;\
 $94:8E32 8D FC 0A    STA $0AFC  [$7E:0AFC]  ;} Samus Y subposition = FFFFh
 $94:8E35 A9 01 00    LDA #$0001             ;\
-$94:8E38 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Samus' position was adjusted by a slope flag = 1
+$94:8E38 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Samus position was adjusted by a slope flag = 1
 $94:8E3B 38          SEC                    ;\
 $94:8E3C 60          RTS                    ;} Return carry set
 
@@ -2820,7 +2820,7 @@ $94:95F4 60          RTS
 ;;     $12.$14: Distance to check for collision
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
-;;     $12: If carry set: distance to move Samus (0 if Samus top/bottom boundary is inside the block)
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 
 $94:95F5 20 B5 94    JSR $94B5  [$94:94B5]  ; $1C = Samus X block span
 $94:95F8 64 1A       STZ $1A    [$7E:001A]  ; $1A = 0
@@ -2832,7 +2832,7 @@ $94:9602 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
 $94:9605 65 12       ADC $12    [$7E:0012]  ;|
 $94:9607 85 18       STA $18    [$7E:0018]  ;/
 $94:9609 24 12       BIT $12    [$7E:0012]  ;\
-$94:960B 10 06       BPL $06    [$9613]     ;} If [$12] < 0:
+$94:960B 10 06       BPL $06    [$9613]     ;} If [$12] < 0: (moving up)
 $94:960D 38          SEC                    ;\
 $94:960E ED 00 0B    SBC $0B00  [$7E:0B00]  ;} $20 = [$18] - [Samus Y radius] (target top boundary position)
 $94:9611 80 05       BRA $05    [$9618]
@@ -2925,18 +2925,19 @@ $94:967E 60          RTS
 ;;     Carry: Set if collision, clear otherwise
 ;;     $12: If carry set: collision distance
 
-; Wrapper function of $9543 for wall-jump check ($90:9D35/9CAC)
+; Wrapper function of $9543 for wall-jump check ($90:9D35/9CAC) that ignores special air/block collisions
 ; The result stored to $0DD0 is unused
 
-; Why does block collision needs a wrapper function when the equivalent solid enemy collision doesn't?
-; Why is the collision direction set to Fh?
+; By setting $0B02 to Fh, all of the collision direction checks in special air/block collision PLM setup routines
+; (map/energy/missile station left/right access, quicksand surface, save station / chozo hand trigger, crumble block)
+; result in no effect (no other subroutine of $9543 checks collision direction)
 
 $94:967F 08          PHP
 $94:9680 8B          PHB
 $94:9681 4B          PHK                    ;\
 $94:9682 AB          PLB                    ;} DB = $94
 $94:9683 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
-$94:9686 09 0F 00    ORA #$000F             ;} Collision direction |= Fh
+$94:9686 09 0F 00    ORA #$000F             ;} Collision direction = Fh
 $94:9689 8D 02 0B    STA $0B02  [$7E:0B02]  ;/
 $94:968C 9C 71 1E    STZ $1E71  [$7E:1E71]  ; Samus is in quicksand flag = 0
 $94:968F 20 43 95    JSR $9543  [$94:9543]  ; Samus block collision handling - horizontal
@@ -2946,32 +2947,28 @@ $94:9697 AB          PLB
 $94:9698 28          PLP
 $94:9699 38          SEC                    ; Set carry
 $94:969A A9 01 00    LDA #$0001             ;\
-$94:969D 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} $0DD0 = 1
+$94:969D 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} Samus solid collision flag = block collision
 $94:96A0 6B          RTL                    ; Return
 
 $94:96A1 20 53 96    JSR $9653  [$94:9653]  ; $12.$14 = |[$12].[$14]|
 $94:96A4 AB          PLB
 $94:96A5 28          PLP
 $94:96A6 18          CLC                    ; Clear carry
-$94:96A7 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$94:96A7 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $94:96AA 6B          RTL
 }
 
 
-;;; $96AB: Collision detection due to change of pose ;;;
+;;; $96AB: Block collision detection due to change of pose ;;;
 {
 ;; Parameters:
 ;;     $12: Distance to check for collision (assume less than 10h)
-;;     $14: Subdistance to check for collision
+;;     $14: 0. Subdistance to check for collision
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
-;;     $12: If carry set: absolute space to move Samus
+;;     $12: Adjusted distance to move Samus or distance to collision
 
-; If [$12] >= 8:
-;     $96E3(8) ; Deals with e.g. unmorphing on ground (which has a collision distance of 9 pixels) from skipping the immediately placed block
-;     If carry set:
-;         Return
-; $96E3([$12])
+; Check for collision with the one or two blocks (depending on the distance to check) below Samus, ignoring special air/block collisions
 
 $94:96AB A5 12       LDA $12    [$7E:0012]  ;\
 $94:96AD 10 04       BPL $04    [$96B3]     ;|
@@ -2984,38 +2981,45 @@ $94:96B8 22 E3 96 94 JSL $9496E3[$94:96E3]  ; Collision detection due to change 
 $94:96BC 6B          RTL                    ; Return
 
 $94:96BD A5 12       LDA $12    [$7E:0012]  ;\
-$94:96BF 48          PHA                    ;} Push $12
-$94:96C0 A5 14       LDA $14    [$7E:0014]  ;\
-$94:96C2 48          PHA                    ;} Push $14
+$94:96BF 48          PHA                    ;|
+$94:96C0 A5 14       LDA $14    [$7E:0014]  ;} Save $12.$14
+$94:96C2 48          PHA                    ;/
 $94:96C3 A5 12       LDA $12    [$7E:0012]  ;\
 $94:96C5 29 F8 FF    AND #$FFF8             ;|
-$94:96C8 09 08 00    ORA #$0008             ;} $12 = [$12] - [$12] % 10h + 8 (round to closest n * 10h + 8)
-$94:96CB 85 12       STA $12    [$7E:0012]  ;/
-$94:96CD 64 14       STZ $14    [$7E:0014]  ; $14 = 0
+$94:96C8 09 08 00    ORA #$0008             ;} $12.$14 = 8.0
+$94:96CB 85 12       STA $12    [$7E:0012]  ;|
+$94:96CD 64 14       STZ $14    [$7E:0014]  ;/
 $94:96CF 22 E3 96 94 JSL $9496E3[$94:96E3]  ; Collision detection due to change of pose - single block
-$94:96D3 90 03       BCC $03    [$96D8]     ; If carry set:
+$94:96D3 90 03       BCC $03    [$96D8]     ; If solid collision:
 $94:96D5 68          PLA                    ;\
-$94:96D6 68          PLA                    ;} Return
+$94:96D6 68          PLA                    ;} Return carry set
 $94:96D7 6B          RTL                    ;/
 
 $94:96D8 68          PLA                    ;\
-$94:96D9 85 14       STA $14    [$7E:0014]  ;} Pull to $14
-$94:96DB 68          PLA                    ;\
-$94:96DC 85 12       STA $12    [$7E:0012]  ;} Pull to $12
+$94:96D9 85 14       STA $14    [$7E:0014]  ;|
+$94:96DB 68          PLA                    ;} Restore $12.$14
+$94:96DC 85 12       STA $12    [$7E:0012]  ;/
 $94:96DE 22 E3 96 94 JSL $9496E3[$94:96E3]  ; Collision detection due to change of pose - single block
 $94:96E2 6B          RTL
 }
 
 
-;;; $96E3: Collision detection due to change of pose - single block ;;;
+;;; $96E3: Block collision detection due to change of pose - single block ;;;
 {
 ;; Parameters:
-;;     $12.$14: Distance to check for collision
+;;     $12: Distance to check for collision (assume less than 8)
+;;     $14: 0. Subdistance to check for collision
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
-;;     $12: If carry set: distance to move Samus
+;;     $12: Adjusted distance to move Samus or distance to collision
 
 ; The result stored to $0DD0 is unused
+
+; By setting $0B02 to Fh, all of the collision direction checks in special air/block collision PLM setup routines *except for quicksand surface*
+; (map/energy/missile station left/right access, save station / chozo hand trigger, crumble block)
+; result in no effect (no other subroutine of $959E/95F5 checks collision direction)
+; Quicksand surface collision is partially disabled, but can still set the Samus is in quicksand flag
+; Not really sure if it makes sense to disable these interactions...
 
 $94:96E3 08          PHP
 $94:96E4 8B          PHB
@@ -3023,9 +3027,9 @@ $94:96E5 C2 30       REP #$30
 $94:96E7 4B          PHK                    ;\
 $94:96E8 AB          PLB                    ;} DB = $94
 $94:96E9 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
-$94:96EC 09 0F 00    ORA #$000F             ;} Direction of collision detection |= Fh (???)
+$94:96EC 09 0F 00    ORA #$000F             ;} Collision direction = Fh
 $94:96EF 8D 02 0B    STA $0B02  [$7E:0B02]  ;/
-$94:96F2 9C 71 1E    STZ $1E71  [$7E:1E71]  ; Clear Samus is in quicksand
+$94:96F2 9C 71 1E    STZ $1E71  [$7E:1E71]  ; Clear Samus is in quicksand flag
 $94:96F5 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $94:96F8 4A          LSR A                  ;} If [frame counter] % 2 = 0:
 $94:96F9 B0 07       BCS $07    [$9702]     ;/
@@ -3041,7 +3045,7 @@ $94:970A AB          PLB
 $94:970B 28          PLP
 $94:970C 38          SEC                    ; Set carry
 $94:970D A9 01 00    LDA #$0001             ;\
-$94:9710 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} $0DD0 = 1
+$94:9710 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} Samus solid collision flag = block collision
 $94:9713 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
@@ -3049,7 +3053,7 @@ $94:9714 20 69 96    JSR $9669  [$94:9669]  ; $12.$14 = |[$12].[$14]|
 $94:9717 AB          PLB
 $94:9718 28          PLP
 $94:9719 18          CLC                    ; Clear carry
-$94:971A 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$94:971A 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $94:971D 6B          RTL
 }
 
@@ -3060,6 +3064,8 @@ $94:971D 6B          RTL
 ;;     $12.$14: Distance to move Samus
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: Adjusted distance Samus was moved
+
 $94:971E 08          PHP
 $94:971F 8B          PHB
 $94:9720 4B          PHK                    ;\
@@ -3081,7 +3087,7 @@ $94:9741 AB          PLB
 $94:9742 28          PLP
 $94:9743 38          SEC                    ; Set carry
 $94:9744 A9 01 00    LDA #$0001             ;\
-$94:9747 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} $0DD0 = 1
+$94:9747 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} Samus solid collision flag = block collision
 $94:974A 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
@@ -3095,13 +3101,19 @@ $94:9759 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
 $94:975C AB          PLB
 $94:975D 28          PLP
 $94:975E 18          CLC                    ; Clear carry
-$94:975F 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$94:975F 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $94:9762 6B          RTL
 }
 
 
 ;;; $9763: Move Samus down by [$12].[$14], no solid enemy collision ;;;
 {
+;; Parameters:
+;;     $12.$14: Distance to move Samus
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: Adjusted distance Samus was moved
+
 $94:9763 08          PHP
 $94:9764 8B          PHB
 $94:9765 C2 30       REP #$30
@@ -3110,7 +3122,7 @@ $94:9768 AB          PLB                    ;} DB = $94
 $94:9769 A5 14       LDA $14    [$7E:0014]  ;\
 $94:976B 05 12       ORA $12    [$7E:0012]  ;} If [$12].[$14] = 0.0: go to BRANCH_NO_COLLISION
 $94:976D F0 33       BEQ $33    [$97A2]     ;/
-$94:976F 9C BA 0D    STZ $0DBA  [$7E:0DBA]  ; Samus was adjusted by slope flag = 0
+$94:976F 9C BA 0D    STZ $0DBA  [$7E:0DBA]  ; Samus position was adjusted by a slope flag = 0
 $94:9772 9C 71 1E    STZ $1E71  [$7E:1E71]  ; Samus is in quicksand flag = 0
 $94:9775 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $94:9778 4A          LSR A                  ;} If [frame counter] % 2 = 0:
@@ -3135,7 +3147,7 @@ $94:9798 AB          PLB
 $94:9799 28          PLP
 $94:979A 38          SEC                    ; Set carry
 $94:979B A9 01 00    LDA #$0001             ;\
-$94:979E 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} $0DD0 = 1
+$94:979E 8D D0 0D    STA $0DD0  [$7E:0DD0]  ;} Samus solid collision flag = block collision
 $94:97A1 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
@@ -3151,7 +3163,7 @@ $94:97B6 D0 E0       BNE $E0    [$9798]     ;} If Samus is in quicksand: go to B
 $94:97B8 AB          PLB
 $94:97B9 28          PLP
 $94:97BA 18          CLC                    ; Clear carry
-$94:97BB 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$94:97BB 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $94:97BE 6B          RTL
 }
 }

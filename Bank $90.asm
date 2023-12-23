@@ -2425,7 +2425,7 @@ $90:8E8F 64 12       STZ $12    [$7E:0012]  ;\
 $90:8E91 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
 $90:8E93 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:8E96 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:8E99 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:8E99 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:8E9C 80 09       BRA $09    [$8EA7]
 
 $90:8E9E A9 02 00    LDA #$0002             ;\
@@ -2652,7 +2652,7 @@ $90:901E 64 12       STZ $12    [$7E:0012]
 $90:9020 64 14       STZ $14    [$7E:0014]
 $90:9022 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:9025 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:9028 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:9028 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:902B 80 0E       BRA $0E    [$903B]     ; Go to BRANCH_NO_X_MOVEMENT
 
 ; BRANCH_WALL_JUMPING
@@ -2717,7 +2717,7 @@ $90:9093 64 12       STZ $12    [$7E:0012]  ;\
 $90:9095 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
 $90:9097 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:909A 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:909D 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:909D 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:90A0 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $90:90A3 80 0B       BRA $0B    [$90B0]     ; Go to BRANCH_MERGE
 
@@ -2846,7 +2846,7 @@ $90:9185 64 12       STZ $12    [$7E:0012]  ;\
 $90:9187 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
 $90:9189 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:918C 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:918F 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:918F 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:9192 80 03       BRA $03    [$9197]
                                             ; Else (pressing left/right):
 $90:9194 20 A9 8E    JSR $8EA9  [$90:8EA9]  ; Move Samus horizontally
@@ -2875,7 +2875,7 @@ $90:91B9 64 12       STZ $12    [$7E:0012]  ;\
 $90:91BB 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
 $90:91BD 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:91C0 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:91C3 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:91C3 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 
 $90:91C6 20 A9 8E    JSR $8EA9  [$90:8EA9]  ; Move Samus horizontally
 $90:91C9 20 C4 90    JSR $90C4  [$90:90C4]  ; Check if Samus has started falling
@@ -2902,7 +2902,7 @@ $90:91EB 64 12       STZ $12    [$7E:0012]  ;\
 $90:91ED 64 14       STZ $14    [$7E:0014]  ;} $12.$14 = 0.0
 $90:91EF 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:91F2 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:91F5 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:91F5 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 
 $90:91F8 20 A9 8E    JSR $8EA9  [$90:8EA9]  ; Move Samus horizontally
 $90:91FB AD 52 0A    LDA $0A52  [$7E:0A52]  ;\
@@ -2944,6 +2944,10 @@ $90:923E 60          RTS
 
 ;;; $923F: Samus Y movement - no speed calculations ;;;
 {
+; Total X speed is added to distance moved down in an attempt to keep Samus in contact with downwards slopes
+; (unless it's already been determined that she's on a slope, in which case no adjustment is made)
+; You'll note that this only works up to a steepness of 45°, which may or may not be intentional...
+; If you wanted Samus to not fall off steep slopes, it might be better to just try pushing Samus to the bottom of the block that's one pixel down?
 $90:923F 08          PHP
 $90:9240 C2 30       REP #$30
 $90:9242 AD 5C 0B    LDA $0B5C  [$7E:0B5C]  ;\
@@ -3113,7 +3117,7 @@ $90:9320 80 03       BRA $03    [$9325]
 $90:9322 20 50 93    JSR $9350  [$90:9350]  ; Move Samus left by [$12].[$14]
 
 $90:9325 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:9328 D0 1C       BNE $1C    [$9346]     ;} If collision detected: return
+$90:9328 D0 1C       BNE $1C    [$9346]     ;} If solid collision: return
 $90:932A AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:932D 29 FF 00    AND #$00FF             ;|
 $90:9330 C9 04 00    CMP #$0004             ;} If facing right:
@@ -3156,7 +3160,7 @@ $90:9362 D0 02       BNE $02    [$9366]     ;|
 $90:9364 E6 12       INC $12    [$7E:0012]  ;/
 
 $90:9366 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:936A 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$90:936A 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $90:936D AA          TAX                    ;\
 $90:936E F0 0C       BEQ $0C    [$937C]     ;} If collision detected:
 $90:9370 20 CE E5    JSR $E5CE  [$90:E5CE]  ; Kill Samus X speed if collision detected
@@ -3181,9 +3185,9 @@ $90:9395 8D AC 0D    STA $0DAC  [$7E:0DAC]  ;|
 $90:9398 A5 12       LDA $12    [$7E:0012]  ;} Distance Samus moved left = [$12].[$14]
 $90:939A 8D AA 0D    STA $0DAA  [$7E:0DAA]  ;/
 $90:939D AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
-$90:93A0 89 01 00    BIT #$0001             ;} If [collision direction] != left:
+$90:93A0 89 01 00    BIT #$0001             ;} If [collision direction] = right:
 $90:93A3 F0 03       BEQ $03    [$93A8]     ;/
-$90:93A5 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:93A5 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 
 $90:93A8 20 CE E5    JSR $E5CE  [$90:E5CE]  ; Kill Samus X speed if collision detected
 $90:93AB 22 F4 87 94 JSL $9487F4[$94:87F4]  ; Align Samus Y position with non-square slope
@@ -3197,7 +3201,7 @@ $90:93B0 60          RTS
 $90:93B1 08          PHP
 $90:93B2 C2 30       REP #$30
 $90:93B4 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:93B8 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$90:93B8 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $90:93BB AA          TAX                    ;\
 $90:93BC F0 0C       BEQ $0C    [$93CA]     ;} If collision detected:
 $90:93BE 20 CE E5    JSR $E5CE  [$90:E5CE]  ; Kill Samus X speed if collision detected
@@ -3212,9 +3216,9 @@ $90:93D0 8D B0 0D    STA $0DB0  [$7E:0DB0]  ;|
 $90:93D3 A5 12       LDA $12    [$7E:0012]  ;} Distance Samus moved right = [$12].[$14]
 $90:93D5 8D AE 0D    STA $0DAE  [$7E:0DAE]  ;/
 $90:93D8 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
-$90:93DB 89 01 00    BIT #$0001             ;} If [collision direction] = left:
+$90:93DB 89 01 00    BIT #$0001             ;} If [collision direction] != right:
 $90:93DE D0 03       BNE $03    [$93E3]     ;/
-$90:93E0 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:93E0 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 
 $90:93E3 20 CE E5    JSR $E5CE  [$90:E5CE]  ; Kill Samus X speed if collision detected
 $90:93E6 22 F4 87 94 JSL $9487F4[$94:87F4]  ; Align Samus Y position with non-square slope
@@ -3240,7 +3244,7 @@ $90:9404 D0 02       BNE $02    [$9408]     ;|
 $90:9406 E6 12       INC $12    [$7E:0012]  ;/
 
 $90:9408 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:940C 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$90:940C 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $90:940F AA          TAX                    ;\
 $90:9410 F0 08       BEQ $08    [$941A]     ;} If collision detected:
 $90:9412 20 06 E6    JSR $E606  [$90:E606]  ; Set Samus solid vertical collision result - upwards movement
@@ -3276,7 +3280,7 @@ $90:9441 C2 30       REP #$30
 $90:9443 A9 03 00    LDA #$0003             ;\
 $90:9446 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = down
 $90:9449 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
-$90:944D 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = FFFFh if collision detected, 0 otherwise
+$90:944D 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh if solid enemy collision, 0 otherwise
 $90:9450 AA          TAX                    ;\
 $90:9451 F0 08       BEQ $08    [$945B]     ;} If collision detected:
 $90:9453 20 1B E6    JSR $E61B  [$90:E61B]  ; Set Samus solid vertical collision result - downwards movement
@@ -3324,7 +3328,7 @@ $90:94AA 64 12       STZ $12    [$7E:0012]  ;\
 $90:94AC 64 14       STZ $14    [$7E:0014]  ;} $12 = 0.0
 $90:94AE 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $90:94B1 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
-$90:94B4 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; $0DD0 = 0 (no collision)
+$90:94B4 9C D0 0D    STZ $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:94B7 80 03       BRA $03    [$94BC]
                                             ; Else ([Samus X acceleration mode] != accelerating or pressing right/left):
 $90:94B9 20 A9 8E    JSR $8EA9  [$90:8EA9]  ; Move Samus horizontally
@@ -3343,7 +3347,7 @@ $90:94CA 60          RTS
 {
 $90:94CB 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
 $90:94CE AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:94D1 F0 18       BEQ $18    [$94EB]     ;} If no collision: return
+$90:94D1 F0 18       BEQ $18    [$94EB]     ;} If no solid collision: return
 $90:94D3 A9 37 A3    LDA #$A337             ;\
 $90:94D6 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:94D9 A9 08 00    LDA #$0008             ;\
@@ -4508,7 +4512,7 @@ $90:9CCB A9 01 00    LDA #$0001             ;\
 $90:9CCE 8D 02 0B    STA $0B02  [$7E:0B02]  ;} Collision direction = right
 $90:9CD1 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
 $90:9CD5 AA          TAX                    ;\
-$90:9CD6 D0 10       BNE $10    [$9CE8]     ;} If collision not detected:
+$90:9CD6 D0 10       BNE $10    [$9CE8]     ;} If no collision:
 $90:9CD8 22 7F 96 94 JSL $94967F[$94:967F]  ; Wall jump block collision detection
 $90:9CDC 90 EA       BCC $EA    [$9CC8]     ; If no collision: return carry clear
 $90:9CDE A5 8F       LDA $8F    [$7E:008F]  ;\
@@ -11377,7 +11381,7 @@ $90:D175 85 12       STA $12    [$7E:0012]  ;/
 $90:D177 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
 $90:D17B AA          TAX                    ;\
 $90:D17C F0 05       BEQ $05    [$D183]     ;} If collision detected:
-$90:D17E 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:D17E 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:D181 80 53       BRA $53    [$D1D6]     ; Go to BRANCH_MERGE
 
 $90:D183 22 1E 97 94 JSL $94971E[$94:971E]  ; Move Samus right by [$12].[$14], no solid enemy collision
@@ -11405,7 +11409,7 @@ $90:D1AD 85 12       STA $12    [$7E:0012]  ;/
 $90:D1AF 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
 $90:D1B3 AA          TAX                    ;\
 $90:D1B4 F0 05       BEQ $05    [$D1BB]     ;} If collision detected:
-$90:D1B6 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:D1B6 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:D1B9 80 1B       BRA $1B    [$D1D6]     ; Go to BRANCH_MERGE
 
 $90:D1BB A5 12       LDA $12    [$7E:0012]  ;\
@@ -11508,7 +11512,7 @@ $90:D27E 85 12       STA $12    [$7E:0012]  ;/
 $90:D280 22 F0 A8 A0 JSL $A0A8F0[$A0:A8F0]  ; Samus / solid enemy collision detection
 $90:D284 AA          TAX                    ;\
 $90:D285 F0 05       BEQ $05    [$D28C]     ;} If collision detected:
-$90:D287 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; $0DD0 = 0
+$90:D287 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = no collision
 $90:D28A 80 17       BRA $17    [$D2A3]     ; Go to BRANCH_NO_MOVEMENT
 
 $90:D28C A5 12       LDA $12    [$7E:0012]  ;\
@@ -11544,7 +11548,7 @@ $90:D2BA AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $90:D2BD C9 1E 00    CMP #$001E             ;} If [Samus health] >= 30:
 $90:D2C0 30 07       BMI $07    [$D2C9]     ;/
 $90:D2C2 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:D2C5 D0 02       BNE $02    [$D2C9]     ;} If collision not detected:
+$90:D2C5 D0 02       BNE $02    [$D2C9]     ;} If no solid collision:
 $90:D2C7 18          CLC                    ;\
 $90:D2C8 60          RTS                    ;} Return carry clear
 
@@ -12410,7 +12414,7 @@ $90:D9B4 9D 64 0B    STA $0B64,x            ;/
 
 ; BRANCH_MOVEMENT_DONE
 $90:D9B7 22 21 A6 94 JSL $94A621[$94:A621]  ; Spread bomb block collision detection
-$90:D9BB 90 4A       BCC $4A    [$DA07]     ; If collision not detected: return
+$90:D9BB 90 4A       BCC $4A    [$DA07]     ; If no collision: return
 $90:D9BD AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:D9C0 BD DC 0B    LDA $0BDC,x            ;\
 $90:D9C3 48          PHA                    ;|
@@ -13302,7 +13306,7 @@ $90:DF6D 60          RTS
 {
 ; Called by Ceres to end pushing
 $90:DF6E AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:DF71 F0 25       BEQ $25    [$DF98]     ;} If collision detected:
+$90:DF71 F0 25       BEQ $25    [$DF98]     ;} If solid collision:
 $90:DF73 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $90:DF76 9C CE 0D    STZ $0DCE  [$7E:0DCE]  ; Samus X speed killed flag = 0
 $90:DF79 9C 22 0B    STZ $0B22  [$7E:0B22]  ; Samus is falling flag = 0
@@ -13461,7 +13465,7 @@ $90:E055 C9 02 00    CMP #$0002             ;} If [Samus Y direction] != down:
 $90:E058 F0 08       BEQ $08    [$E062]     ;/
 $90:E05A 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
 $90:E05D AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E060 F0 03       BEQ $03    [$E065]     ;} If collision not occurred: return
+$90:E060 F0 03       BEQ $03    [$E065]     ;} If no solid collision: return
 
 $90:E062 20 7D E0    JSR $E07D  [$90:E07D]  ; End bomb jump
 
@@ -13477,7 +13481,7 @@ $90:E06C C9 02 00    CMP #$0002             ;} If [Samus Y direction] != down:
 $90:E06F F0 08       BEQ $08    [$E079]     ;/
 $90:E071 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
 $90:E074 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E077 F0 03       BEQ $03    [$E07C]     ;} If collision not occurred: return
+$90:E077 F0 03       BEQ $03    [$E07C]     ;} If no solid collision: return
 
 $90:E079 20 7D E0    JSR $E07D  [$90:E07D]  ; End bomb jump
 
@@ -13710,7 +13714,7 @@ $90:E1F7             dw 0000, E1FD, E21C
 {
 $90:E1FD 20 5F 8F    JSR $8F5F  [$90:8F5F]  ; Move Samus horizontally - pushed by Ceres Ridley
 $90:E200 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E203 F0 13       BEQ $13    [$E218]     ;} If collision occurred:
+$90:E203 F0 13       BEQ $13    [$E218]     ;} If solid collision:
 $90:E205 A9 37 A3    LDA #$A337             ;\
 $90:E208 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E20B A9 E6 E0    LDA #$E0E6             ;\
@@ -13729,7 +13733,7 @@ $90:E21B 60          RTS
 ; Clone of $E1FD
 $90:E21C 20 5F 8F    JSR $8F5F  [$90:8F5F]  ; Move Samus horizontally - pushed by Ceres Ridley
 $90:E21F AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E222 F0 13       BEQ $13    [$E237]     ;} If collision occurred:
+$90:E222 F0 13       BEQ $13    [$E237]     ;} If solid collision:
 $90:E224 A9 37 A3    LDA #$A337             ;\
 $90:E227 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:E22A A9 E6 E0    LDA #$E0E6             ;\
@@ -13940,10 +13944,10 @@ $90:E3A2 6B          RTL
 {
 $90:E3A3 20 5F 8F    JSR $8F5F  [$90:8F5F]  ; Move Samus horizontally - pushed by Ceres Ridley
 $90:E3A6 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E3A9 D0 08       BNE $08    [$E3B3]     ;} If collision did not occur:
+$90:E3A9 D0 08       BNE $08    [$E3B3]     ;} If solid collision:
 $90:E3AB 20 86 8F    JSR $8F86  [$90:8F86]  ; Move Samus vertically - pushed by Ceres Ridley
 $90:E3AE AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E3B1 F0 1B       BEQ $1B    [$E3CE]     ;} If collision did not occur: return
+$90:E3B1 F0 1B       BEQ $1B    [$E3CE]     ;} If solid collision: return
 
 $90:E3B3 A9 37 A3    LDA #$A337             ;\
 $90:E3B6 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
@@ -14318,7 +14322,7 @@ $90:E5CD 60          RTS
 $90:E5CE 08          PHP
 $90:E5CF C2 30       REP #$30
 $90:E5D1 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E5D4 F0 28       BEQ $28    [$E5FE]     ;} If collision not detected: go to BRANCH_NO_COLLISION
+$90:E5D4 F0 28       BEQ $28    [$E5FE]     ;} If no solid collision: go to BRANCH_NO_COLLISION
 $90:E5D6 AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $90:E5D9 F0 08       BEQ $08    [$E5E3]     ;} If [collision direction] != left:
 $90:E5DB A9 08 00    LDA #$0008             ;\
@@ -14350,7 +14354,7 @@ $90:E605 60          RTS
 $90:E606 08          PHP
 $90:E607 C2 30       REP #$30
 $90:E609 AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E60C F0 08       BEQ $08    [$E616]     ;} If collision detected:
+$90:E60C F0 08       BEQ $08    [$E616]     ;} If solid collision:
 $90:E60E A9 04 00    LDA #$0004             ;\
 $90:E611 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} Samus solid vertical collision result = hit ceiling
 $90:E614 80 03       BRA $03    [$E619]     ; Return
@@ -14367,7 +14371,7 @@ $90:E61A 60          RTS
 $90:E61B 08          PHP
 $90:E61C C2 30       REP #$30
 $90:E61E AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
-$90:E621 F0 16       BEQ $16    [$E639]     ;} If collision detected:
+$90:E621 F0 16       BEQ $16    [$E639]     ;} If solid collision:
 $90:E623 A9 01 00    LDA #$0001             ;\
 $90:E626 8D C6 0D    STA $0DC6  [$7E:0DC6]  ;} Samus solid vertical collision result = landed
 $90:E629 E2 30       SEP #$30               ;\

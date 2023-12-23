@@ -3184,7 +3184,6 @@ $9B:C72C 90 05       BCC $05    [$C733]     ; If carry set:
 $9B:C72E A8          TAY                    ;\
 $9B:C72F D0 F2       BNE $F2    [$C723]     ;} If [A] != 0: go to BRANCH_CANCEL
 $9B:C731 80 08       BRA $08    [$C73B]
-
                                             ; Else (carry clear):
 $9B:C733 22 5B A8 94 JSL $94A85B[$94:A85B]  ; Grapple beam block collision handling
 $9B:C737 90 1F       BCC $1F    [$C758]     ; If carry clear: return
@@ -3224,7 +3223,7 @@ $9B:C76E ED 00 0D    SBC $0D00  [$7E:0D00]  ;} Grapple beam length -= [grapple b
 $9B:C771 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
 $9B:C774 C9 0D 00    CMP #$000D             ;\
 $9B:C777 30 E7       BMI $E7    [$C760]     ;} If [grapple beam length] < Dh: go to BRANCH_CANCEL
-$9B:C779 22 5B A8 94 JSL $94A85B[$94:A85B]
+$9B:C779 22 5B A8 94 JSL $94A85B[$94:A85B]  ; Grapple beam block collision handling
 $9B:C77D 60          RTS
 }
 
