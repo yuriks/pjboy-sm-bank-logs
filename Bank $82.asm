@@ -13046,6 +13046,7 @@ $82:F575             dw 0040, ; X
 
 ;;; $F587: Draw game options menu controller bindings ;;;
 {
+; $91:81F4 has the evil code that physically disallows aiming to not be L and R, this code just sets the OFF tilemap
 $82:F587 A2 00 00    LDX #$0000             ; X = 0 (game options menu controller binding index)
 
 ; LOOP

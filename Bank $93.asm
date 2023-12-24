@@ -199,7 +199,7 @@ $93:8150 4B          PHK                    ;\
 $93:8151 AB          PLB                    ;} DB = $93
 $93:8152 C2 30       REP #$30
 $93:8154 AD 83 86    LDA $8683  [$93:8683]  ;\
-$93:8157 9D 40 0C    STA $0C40,x[$7E:0C4A]  ;} Projectile instruction pointer = $A06B
+$93:8157 9D 40 0C    STA $0C40,x[$7E:0C4A]  ;} Projectile instruction pointer = $A06B (bomb explosion)
 $93:815A A9 01 00    LDA #$0001             ;\
 $93:815D 9D 54 0C    STA $0C54,x[$7E:0C5E]  ;} Projectile instruction timer = 1
 $93:8160 AB          PLB
@@ -1999,11 +1999,8 @@ $93:9F87             dx 0005,AB97,04,04,0000,
                         0005,AB9E,04,04,0000,
                         0005,ABA5,04,04,0000,
                         8239,9F87             ; Go to $9F87
-}
 
-
-;;; $9FA3: Unused. Instruction list - fast power bomb ;;;
-{
+; Fast animation. Plays when bomb timer reaches Fh (see $90:C157)
 $93:9FA3             dx 0001,AB97,04,04,0000,
                         0001,AB9E,04,04,0000,
                         0001,ABA5,04,04,0000,
@@ -2018,11 +2015,8 @@ $93:9FBF             dx 0005,AD45,04,04,0000,
                         0005,AD53,04,04,0000,
                         0005,AD5A,04,04,0000,
                         8239,9FBF             ; Go to $9FBF
-}
 
-
-;;; $9FE3: Unused. Instruction list - fast bomb ;;;
-{
+; Fast animation. Plays when bomb timer reaches Fh (see $90:C128)
 $93:9FE3             dx 0001,AD45,04,04,0000,
                         0001,AD4C,04,04,0000,
                         0001,AD53,04,04,0000,

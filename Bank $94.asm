@@ -1,4 +1,4 @@
-;;; $8000..84D5: Post grapple collision handling ;;;
+;;; $8000..84D5: Post grapple collision detection ;;;
 {
 ;;; $8000: Post grapple collision detection - horizontal - slope - non-square ;;;
 {
@@ -539,7 +539,7 @@ $94:8301             dw 82A7, ;  0: Air
 }
 
 
-;;; $8321: Post grapple collision detection - horizontal ;;;
+;;; $8321: Post grapple collision detection - horizontal - single block ;;;
 {
 ;; Parameters:
 ;;     X: Block index
@@ -566,7 +566,7 @@ $94:8337 60          RTS
 }
 
 
-;;; $8338: Post grapple collision detection - vertical ;;;
+;;; $8338: Post grapple collision detection - vertical - single block ;;;
 {
 ;; Parameters:
 ;;     X: Block index
@@ -593,7 +593,7 @@ $94:834E 60          RTS
 }
 
 
-;;; $834F: Post grapple collision handling - rightwards ;;;
+;;; $834F: Post grapple collision detection - rightwards ;;;
 {
 $94:834F 8B          PHB
 $94:8350 4B          PHK                    ;\
@@ -652,7 +652,7 @@ $94:83B0 60          RTS
 }
 
 
-;;; $83B1: Post grapple collision handling - leftwards ;;;
+;;; $83B1: Post grapple collision detection - leftwards ;;;
 {
 $94:83B1 8B          PHB
 $94:83B2 4B          PHK                    ;\
@@ -709,7 +709,7 @@ $94:840E 60          RTS
 }
 
 
-;;; $840F: Post grapple collision handling - downwards ;;;
+;;; $840F: Post grapple collision detection - downwards ;;;
 {
 $94:840F 8B          PHB
 $94:8410 4B          PHK                    ;\
@@ -765,7 +765,7 @@ $94:8469 60          RTS
 }
 
 
-;;; $846A: Post grapple collision handling - upwards ;;;
+;;; $846A: Post grapple collision detection - upwards ;;;
 {
 $94:846A 8B          PHB
 $94:846B 4B          PHK                    ;\
@@ -820,7 +820,7 @@ $94:84C3 60          RTS
 }
 
 
-;;; $84C4: Post grapple collision handling - horizontal ;;;
+;;; $84C4: Post grapple collision detection - horizontal ;;;
 {
 ; Called by $90:EF25 (post grapple collision detection)
 ; This routine is used to calculate $0E04/06 (distance to eject Samus left/right), which is never read,
@@ -833,7 +833,7 @@ $94:84CC 6B          RTL
 }
 
 
-;;; $84CD: Post grapple collision handling - vertical ;;;
+;;; $84CD: Post grapple collision detection - vertical ;;;
 {
 ; Called by $90:EF25 (post grapple collision detection), sometimes twice (if Samus was ejected up and her hitbox is >= 10h pixels tall)
 $94:84CD 08          PHP
@@ -845,7 +845,7 @@ $94:84D5 6B          RTL
 }
 
 
-;;; $84D6..97BE: Samus block collision handling ;;;
+;;; $84D6..97BE: Samus block collision detection ;;;
 {
 ;;; $84D6: Samus block collision reaction - horizontal - slope - non-square ;;;
 {
@@ -2433,7 +2433,6 @@ $94:940E 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reacti
 ;;; $9411: Block shot/bombed/grappled/collision/inside reaction - horizontal extension ;;;
 {
 ;; Parameters:
-;;     X: Block index (multiple of 2)
 ;;     $12.$14: Distance to check for collision
 ;;     $1A: Number of blocks left to check (0 if final (bottom) block)
 ;;     $1C: Samus' Y block span
@@ -2480,7 +2479,6 @@ $94:9446 60          RTS
 ;;; $9447: Block shot/bombed/grappled/collision/inside reaction - vertical extension ;;;
 {
 ;; Parameters:
-;;     X: Block index (multiple of 2)
 ;;     $12.$14: Distance to check for collision
 ;;     $18: Target Y position
 ;;     $20: Target boundary position (top/bottom depending on sign of [$12])
@@ -2684,7 +2682,7 @@ $94:9542 60          RTS
 }
 
 
-;;; $9543: Samus block collision handling - horizontal ;;;
+;;; $9543: Samus block collision detection - horizontal ;;;
 {
 ;; Parameters:
 ;;     $12.$14: Distance to move Samus
@@ -2750,7 +2748,7 @@ $94:959D 60          RTS
 }
 
 
-;;; $959E: Samus block collision handling - vertical - left to right ;;;
+;;; $959E: Samus block collision detection - vertical - left to right ;;;
 {
 ;; Parameters:
 ;;     $12.$14: Distance to move Samus
@@ -2814,7 +2812,7 @@ $94:95F4 60          RTS
 }
 
 
-;;; $95F5: Samus block collision handling - vertical - right to left ;;;
+;;; $95F5: Samus block collision detection - vertical - right to left ;;;
 {
 ;; Parameters:
 ;;     $12.$14: Distance to check for collision
@@ -3173,7 +3171,8 @@ $94:97BE 6B          RTL
 {
 ;;; $97BF: Block inside reaction - slope ;;;
 {
-; Check if the slope is a special case (0-5) or normal slope. Then do nothing
+; Check if the slope is a square slope (BTS 0..5) or not. Then do nothing
+; Maybe they cared about the carry flag at one point, but probably not
 $94:97BF AE C4 0D    LDX $0DC4  [$7E:0DC4]
 $94:97C2 BF 02 64 7F LDA $7F6402,x[$7F:648B]
 $94:97C6 29 1F 00    AND #$001F
@@ -3199,11 +3198,11 @@ $94:97D7 60          RTS
 }
 
 
-;;; $97D8: Clear carry. Block inside reaction - spike air - BTS 0 ;;;
+;;; $97D8: Clear carry. Block inside reaction - spike air - BTS 0 (unused) ;;;
 {
 ; Looks like this block's effect was NOP'd out, although this block is never used anyway
 $94:97D8 18          CLC
-$94:97D9 60          RTS
+$94:97D9 60          RTS                    ; Return
 
 $94:97DA AD 4E 0A    LDA $0A4E  [$7E:0A4E]  ;\
 $94:97DD 18          CLC                    ;} >_<;
@@ -3218,17 +3217,17 @@ $94:97F1 60          RTS
 }
 
 
-;;; $97F2:  ;;;
+;;; $97F2: Unused. Some kind of upwards boost ;;;
 {
 $94:97F2 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $94:97F5 C9 01 00    CMP #$0001             ;} If [Samus Y direction] = up:
 $94:97F8 D0 0E       BNE $0E    [$9808]     ;/
-$94:97FA A9 00 00    LDA #$0000
-$94:97FD 8D 32 0B    STA $0B32  [$7E:0B32]
-$94:9800 A9 02 00    LDA #$0002
-$94:9803 8D 34 0B    STA $0B34  [$7E:0B34]
+$94:97FA A9 00 00    LDA #$0000             ;\
+$94:97FD 8D 32 0B    STA $0B32  [$7E:0B32]  ;|
+$94:9800 A9 02 00    LDA #$0002             ;} Samus Y acceleration = 2.0
+$94:9803 8D 34 0B    STA $0B34  [$7E:0B34]  ;/
 $94:9806 18          CLC
-$94:9807 60          RTS
+$94:9807 60          RTS                    ; Return
 
 $94:9808 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;\
 $94:980B 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;} Samus Y speed = 0.0
@@ -3248,7 +3247,7 @@ $94:9811 60          RTS
 {
 ; Looks like this block's effect was NOP'd out, although this block is never used anyway
 $94:9812 18          CLC
-$94:9813 60          RTS
+$94:9813 60          RTS                    ; Return
 
 ; Damages Samus, kills her jump height, gives her lava X speed physics
 $94:9814 A0 00 00    LDY #$0000
@@ -3270,7 +3269,7 @@ $94:983E 8D 32 0B    STA $0B32  [$7E:0B32]  ;|
 $94:9841 B9 5F 98    LDA $985F,y            ;} Samus Y acceleration = 5.0
 $94:9844 8D 34 0B    STA $0B34  [$7E:0B34]  ;/
 $94:9847 18          CLC
-$94:9848 60          RTS
+$94:9848 60          RTS                    ; Return
 
 $94:9849 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;\
 $94:984C 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;} Samus Y speed = 0.0
@@ -3316,7 +3315,6 @@ $94:9898 F0 08       BEQ $08    [$98A2]     ;/
 $94:989A A9 01 00    LDA #$0001             ;\
 $94:989D 8D 54 0A    STA $0A54  [$7E:0A54]  ;} Knockback X direction = right
 $94:98A0 80 03       BRA $03    [$98A5]
-
                                             ; Else (facing right):
 $94:98A2 9C 54 0A    STZ $0A54  [$7E:0A54]  ; Knockback X direction = right
 
@@ -3335,18 +3333,12 @@ $94:98AC             dw 97D8, 9812, 9866, 97D7, 97D7, 97D7, 97D7, 97D7, 97D7, 97
 
 ;;; $98CC: Block inside reaction - spike air ;;;
 {
-; Jump to a routine depending on the BTS of the tile.
-; Greater than 0F will likely cause a crash.
-; The perfectly positioned AND fails to fix this. >_>
-; 00 or 01: CLC. 03-0F: Nothing. 02: Hurt Samus if there's no reason not to
-; JSR ($98AC,X), X = 2*BTS (expected 00 - 0F).
-; 0 = CLC RTS, 1 = CLC RTS, 2 = do $10 damage to Samus as if an enemy hurt her, 3-F = RTS
-$94:98CC AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:98CF BF 02 64 7F LDA $7F6402,x[$7F:665E]
-$94:98D3 29 FF 00    AND #$00FF
-$94:98D6 0A          ASL A
-$94:98D7 AA          TAX
-$94:98D8 FC AC 98    JSR ($98AC,x)[$94:9866]
+$94:98CC AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:98CF BF 02 64 7F LDA $7F6402,x[$7F:665E];|
+$94:98D3 29 FF 00    AND #$00FF             ;|
+$94:98D6 0A          ASL A                  ;} Execute [$98AC + [block BTS] * 2]
+$94:98D7 AA          TAX                    ;|
+$94:98D8 FC AC 98    JSR ($98AC,x)[$94:9866];/
 $94:98DB 60          RTS
 }
 
@@ -3360,7 +3352,7 @@ $94:98E2 60          RTS
 }
 
 
-;;; $98E3:  ;;;
+;;; $98E3: Block inside reaction - special air - default ;;;
 {
 $94:98E3 A9 55 9F    LDA #$9F55             ;\
 $94:98E6 8D 6C 0A    STA $0A6C  [$7E:0A6C]  ;} Samus X speed table pointer = $9F55 (normal)
@@ -3436,6 +3428,9 @@ $94:9955 60          RTS
 
 ;;; $9956: Block inside reaction - special air - BTS 46h (scroll PLM trigger) ;;;
 {
+; This routine is weird, block collision should have already spawned the scroll PLM trigger PLM,
+; and the check here means the PLM is only spawned here if Samus' bottom boundary is in a different block than her centre,
+; which seems a bit random. As far as I can tell, this reaction can just be replaced with the default $98E3
 $94:9956 AD 73 1E    LDA $1E73  [$7E:1E73]  ;\
 $94:9959 C9 01 00    CMP #$0001             ;} If [inside block reaction Samus point] = centre:
 $94:995C D0 07       BNE $07    [$9965]     ;/
@@ -3482,7 +3477,7 @@ $94:9B22 EB          XBA                    ;|
 $94:9B23 0A          ASL A                  ;} Execute [$9966 + [block BTS] * 2]
 $94:9B24 AA          TAX                    ;|
 $94:9B25 FC 66 99    JSR ($9966,x)[$94:9956];/
-$94:9B28 60          RTS
+$94:9B28 60          RTS                    ; Return
 
 $94:9B29 EB          XBA                    ;\
 $94:9B2A 29 7F 00    AND #$007F             ;|
@@ -3501,30 +3496,33 @@ $94:9B3F 60          RTS
 
 ;;; $9B40: Block inside reaction pointers ;;;
 {
-$94:9B40             dw 97D0,   ; 0: Air
-                        97BF,   ; 1: Slope
-                        98CC,   ; 2: Spike air
-                        9B16,   ; 3: Special air
-                        97D0,   ; 4: Shootable air
-                        9411,   ; 5: Horizontal extension
-                        97D0,   ; 6: Unused air
-                        97D0,   ; 7: Bombable air
-                        98DC,   ; 8: Solid block
-                        98DC,   ; 9: Door block
-                        98DC,   ; Ah: Spike block
-                        98DC,   ; Bh: Special block
-                        98DC,   ; Ch: Shootable block
-                        9447,   ; Dh: Vertical extension
-                        98DC,   ; Eh: Grapple block
-                        98DC    ; Fh: Bombable block
+$94:9B40             dw 97D0, ; *0: Air
+                        97BF, ;  1: Slope
+                        98CC, ;  2: Spike air
+                        9B16, ;  3: Special air
+                        97D0, ; *4: Shootable air
+                        9411, ;  5: Horizontal extension
+                        97D0, ; *6: Unused air
+                        97D0, ; *7: Bombable air
+                        98DC, ; *8: Solid block
+                        98DC, ; *9: Door block
+                        98DC, ; *Ah: Spike block
+                        98DC, ; *Bh: Special block
+                        98DC, ; *Ch: Shootable block
+                        9447, ;  Dh: Vertical extension
+                        98DC, ; *Eh: Grapple block
+                        98DC  ; *Fh: Bombable block
 }
 
 
-;;; $9B60: Samus block inside detection ;;;
+;;; $9B60: Samus block inside handling ;;;
 {
 ; This routine uses XOR to test if two values are different, which is fine,
 ; but chaining it a second time ($94:9BEB) doesn't work at all,
 ; so that branch is very unlikely to be taken >_<;
+; Result is that if Samus' top and centre are in the same block (and her bottom is in a different block),
+; that block's inside reaction will usually be executed twice
+; I guess the reaction of the block her top is inside *won't* be executed under some circumstances too
 $94:9B60 8B          PHB
 $94:9B61 4B          PHK                    ;\
 $94:9B62 AB          PLB                    ;} DB = $94
@@ -3584,17 +3582,17 @@ $94:9BD9 8D 73 1E    STA $1E73  [$7E:1E73]  ;} Inside block reaction Samus point
 $94:9BDC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:9BDF 38          SEC                    ;|
 $94:9BE0 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$94:9BE3 4D 02 0E    EOR $0E02  [$7E:0E02]  ;} If ([Samus Y position] - [Samus Y radius]) / 10h != [Samus bottom boundary position] / 10h:
+$94:9BE3 4D 02 0E    EOR $0E02  [$7E:0E02]  ;} If (Samus top boundary) / 10h != [Samus bottom boundary position] / 10h:
 $94:9BE6 29 F0 FF    AND #$FFF0             ;|
 $94:9BE9 F0 30       BEQ $30    [$9C1B]     ;/
 $94:9BEB 4D FA 0A    EOR $0AFA  [$7E:0AFA]  ;\
-$94:9BEE 29 F0 FF    AND #$FFF0             ;} If ([Samus Y position] - [Samus Y radius] ^ [Samus bottom boundary position]) / 10h != [Samus X position] / 10h:
+$94:9BEE 29 F0 FF    AND #$FFF0             ;} If ((Samus top boundary) ^ [Samus bottom boundary position]) / 10h != [Samus X position] / 10h:
 $94:9BF1 F0 28       BEQ $28    [$9C1B]     ;/
 $94:9BF3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $94:9BF6 85 1A       STA $1A    [$7E:001A]  ;} $1A = [Samus X position]
 $94:9BF8 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:9BFB 38          SEC                    ;|
-$94:9BFC ED 00 0B    SBC $0B00  [$7E:0B00]  ;} $1C = [Samus Y position] - [Samus Y radius]
+$94:9BFC ED 00 0B    SBC $0B00  [$7E:0B00]  ;} $1C = (Samus top boundary)
 $94:9BFF 85 1C       STA $1C    [$7E:001C]  ;/
 $94:9C01 64 1E       STZ $1E    [$7E:001E]  ;\
 $94:9C03 64 20       STZ $20    [$7E:0020]  ;} Calculate block at ([$1A], [$1C])
@@ -3616,11 +3614,10 @@ $94:9C1C 6B          RTL
 }
 
 
-;;; $9C1D..B19E: Block shot/bombed/grappled handling / grapple beam drawing ;;;
-{
 ;;; $9C1D: Calculate block at ([$1A] + [$1E], [$1C] + [$20]) ;;;
 {
 ; Every call site sets $1E and $20 to zero
+; Sets X to zero if block index is calculated successfully (for no reason)
 $94:9C1D 08          PHP
 $94:9C1E C2 30       REP #$30
 $94:9C20 A5 1A       LDA $1A    [$7E:001A]  ;\
@@ -3673,36 +3670,47 @@ $94:9C72 60          RTS
 }
 
 
-;;; $9C73:  ;;;
+;;; $9C73..B19E: Block shot/bombed/grappled handling / grapple beam drawing ;;;
 {
+;;; $9C73: Determine projectile proto type ;;;
+{
+;; Parameters:
+;;     X: Projectile index
+
+; Called only as part of $9CAC for determining if a (power) bomb is a normal bomb or not
+; Highly likely that this is based on an old model of the projectile system and was supposed to have been entirely abandoned,
+; but here we are
+
+; The is a frame after the end of a power bomb explosion where this subroutine is called where the projectile type is 0,
+; cause the code at $9C83 to be executed. I doubt this is intentional
 $94:9C73 08          PHP
 $94:9C74 8B          PHB
 $94:9C75 DA          PHX
-$94:9C76 F4 00 90    PEA $9000
-$94:9C79 AB          PLB
-$94:9C7A AB          PLB
-$94:9C7B BD 19 0C    LDA $0C19,x[$7E:0C23]
-$94:9C7E 29 0F 00    AND #$000F
-$94:9C81 D0 19       BNE $19    [$9C9C]
-$94:9C83 BD 18 0C    LDA $0C18,x[$7E:0C22]
-$94:9C86 29 0F 00    AND #$000F
-$94:9C89 85 12       STA $12    [$7E:0012]
-$94:9C8B 0A          ASL A
-$94:9C8C 65 12       ADC $12    [$7E:0012]
-$94:9C8E 1A          INC A
-$94:9C8F 1A          INC A
-$94:9C90 AA          TAX
-$94:9C91 BD 7B C3    LDA $C37B,x[$90:C37D]
-$94:9C94 29 FF 00    AND #$00FF
-$94:9C97 8D D2 0D    STA $0DD2  [$7E:0DD2]
+$94:9C76 F4 00 90    PEA $9000              ;\
+$94:9C79 AB          PLB                    ;} DB = $90
+$94:9C7A AB          PLB                    ;/
+$94:9C7B BD 19 0C    LDA $0C19,x[$7E:0C23]  ;\
+$94:9C7E 29 0F 00    AND #$000F             ;} If (projectile type) = beam:
+$94:9C81 D0 19       BNE $19    [$9C9C]     ;/
+$94:9C83 BD 18 0C    LDA $0C18,x[$7E:0C22]  ;\
+$94:9C86 29 0F 00    AND #$000F             ;|
+$94:9C89 85 12       STA $12    [$7E:0012]  ;|
+$94:9C8B 0A          ASL A                  ;|
+$94:9C8C 65 12       ADC $12    [$7E:0012]  ;|
+$94:9C8E 1A          INC A                  ;} Projectile proto type = [$C37B + [beam type] * 3 + 2]
+$94:9C8F 1A          INC A                  ;|
+$94:9C90 AA          TAX                    ;|
+$94:9C91 BD 7B C3    LDA $C37B,x[$90:C37D]  ;|
+$94:9C94 29 FF 00    AND #$00FF             ;|
+$94:9C97 8D D2 0D    STA $0DD2  [$7E:0DD2]  ;/
 $94:9C9A 80 0C       BRA $0C    [$9CA8]
 
-$94:9C9C 0A          ASL A
-$94:9C9D 1A          INC A
-$94:9C9E AA          TAX
-$94:9C9F BD 9F C3    LDA $C39F,x[$90:C3AA]
-$94:9CA2 29 FF 00    AND #$00FF
-$94:9CA5 8D D2 0D    STA $0DD2  [$7E:0DD2]
+$94:9C9C 0A          ASL A                  ;\ Else ((projectile type) != beam):
+$94:9C9D 1A          INC A                  ;|
+$94:9C9E AA          TAX                    ;|
+$94:9C9F BD 9F C3    LDA $C39F,x[$90:C3AA]  ;} Projectile proto type = [$C39F + (projectile type) * 2 + 1]
+$94:9CA2 29 FF 00    AND #$00FF             ;|
+$94:9CA5 8D D2 0D    STA $0DD2  [$7E:0DD2]  ;/
 
 $94:9CA8 FA          PLX
 $94:9CA9 AB          PLB
@@ -3711,41 +3719,45 @@ $94:9CAB 60          RTS
 }
 
 
-;;; $9CAC: (Power) bomb explosion block collision detection ;;;
+;;; $9CAC: (Power) bomb explosion block collision handling ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+
+; Executed for bombs on every frame, not just the frame(s) an explosion is active o_O
 $94:9CAC 08          PHP
 $94:9CAD 8B          PHB
-$94:9CAE 4B          PHK
-$94:9CAF AB          PLB
+$94:9CAE 4B          PHK                    ;\
+$94:9CAF AB          PLB                    ;} DB = $94
 $94:9CB0 C2 30       REP #$30
-$94:9CB2 20 73 9C    JSR $9C73  [$94:9C73]
-$94:9CB5 BD 64 0B    LDA $0B64,x[$7E:0B6E]
-$94:9CB8 30 37       BMI $37    [$9CF1]
-$94:9CBA 85 1A       STA $1A    [$7E:001A]
-$94:9CBC EB          XBA
-$94:9CBD 29 FF 00    AND #$00FF
-$94:9CC0 CD A9 07    CMP $07A9  [$7E:07A9]
-$94:9CC3 10 2C       BPL $2C    [$9CF1]
-$94:9CC5 BD 78 0B    LDA $0B78,x[$7E:0B82]
-$94:9CC8 30 27       BMI $27    [$9CF1]
-$94:9CCA 85 1C       STA $1C    [$7E:001C]
-$94:9CCC EB          XBA
-$94:9CCD 29 FF 00    AND #$00FF
-$94:9CD0 CD AB 07    CMP $07AB  [$7E:07AB]
-$94:9CD3 10 1C       BPL $1C    [$9CF1]
-$94:9CD5 64 1E       STZ $1E    [$7E:001E]
-$94:9CD7 64 20       STZ $20    [$7E:0020]
-$94:9CD9 9C C4 0D    STZ $0DC4  [$7E:0DC4]
-$94:9CDC DA          PHX
-$94:9CDD 20 1D 9C    JSR $9C1D  [$94:9C1D]  ; Calculate block at ([$1A], [$1C])
-$94:9CE0 FA          PLX
-$94:9CE1 AD D2 0D    LDA $0DD2  [$7E:0DD2]
-$94:9CE4 C9 02 00    CMP #$0002
-$94:9CE7 F0 05       BEQ $05    [$9CEE]
-$94:9CE9 20 6A A0    JSR $A06A  [$94:A06A]  ; Power bomb explosion block collision detection
+$94:9CB2 20 73 9C    JSR $9C73  [$94:9C73]  ; Determine projectile proto type
+$94:9CB5 BD 64 0B    LDA $0B64,x[$7E:0B6E]  ;\
+$94:9CB8 30 37       BMI $37    [$9CF1]     ;} If [projectile X position] < 0: return
+$94:9CBA 85 1A       STA $1A    [$7E:001A]  ; $1A = [projectile X position]
+$94:9CBC EB          XBA                    ;\
+$94:9CBD 29 FF 00    AND #$00FF             ;|
+$94:9CC0 CD A9 07    CMP $07A9  [$7E:07A9]  ;} If [projectile X position] >= [room width]: return
+$94:9CC3 10 2C       BPL $2C    [$9CF1]     ;/
+$94:9CC5 BD 78 0B    LDA $0B78,x[$7E:0B82]  ;\
+$94:9CC8 30 27       BMI $27    [$9CF1]     ;} If [projectile Y position] < 0: return
+$94:9CCA 85 1C       STA $1C    [$7E:001C]  ; $1C = [projectile Y position]
+$94:9CCC EB          XBA                    ;\
+$94:9CCD 29 FF 00    AND #$00FF             ;|
+$94:9CD0 CD AB 07    CMP $07AB  [$7E:07AB]  ;} If [projectile Y position] >= [room height]: return
+$94:9CD3 10 1C       BPL $1C    [$9CF1]     ;/
+$94:9CD5 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0
+$94:9CD7 64 20       STZ $20    [$7E:0020]  ; $20 = 0
+$94:9CD9 9C C4 0D    STZ $0DC4  [$7E:0DC4]  ; Current block index = 0
+$94:9CDC DA          PHX                    ;\
+$94:9CDD 20 1D 9C    JSR $9C1D  [$94:9C1D]  ;} Calculate block at ([$1A], [$1C])
+$94:9CE0 FA          PLX                    ;/
+$94:9CE1 AD D2 0D    LDA $0DD2  [$7E:0DD2]  ;\
+$94:9CE4 C9 02 00    CMP #$0002             ;} If [projectile proto type] != bomb:
+$94:9CE7 F0 05       BEQ $05    [$9CEE]     ;/
+$94:9CE9 20 6A A0    JSR $A06A  [$94:A06A]  ; Power bomb explosion block collision handling
 $94:9CEC 80 03       BRA $03    [$9CF1]
-
-$94:9CEE 20 F4 9C    JSR $9CF4  [$94:9CF4]  ; Bomb explosion block collision detection
+                                            ; Else ([projectile proto type] = bomb):
+$94:9CEE 20 F4 9C    JSR $9CF4  [$94:9CF4]  ; Bomb explosion block collision handling
 
 $94:9CF1 AB          PLB
 $94:9CF2 28          PLP
@@ -3753,22 +3765,25 @@ $94:9CF3 6B          RTL
 }
 
 
-;;; $9CF4: Bomb explosion block collision detection ;;;
+;;; $9CF4: Bomb explosion block collision handling ;;;
 {
-$94:9CF4 BD 7C 0C    LDA $0C7C,x[$7E:0C86]
-$94:9CF7 D0 39       BNE $39    [$9D32]
-$94:9CF9 BD 18 0C    LDA $0C18,x[$7E:0C22]
-$94:9CFC 89 01 00    BIT #$0001
-$94:9CFF D0 31       BNE $31    [$9D32]
-$94:9D01 09 01 00    ORA #$0001
-$94:9D04 9D 18 0C    STA $0C18,x[$7E:0C22]
-$94:9D07 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$94:9D0A C9 FF FF    CMP #$FFFF
-$94:9D0D F0 23       BEQ $23    [$9D32]
-$94:9D0F A0 00 00    LDY #$0000
-$94:9D12 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$94:9D15 0A          ASL A
-$94:9D16 AA          TAX
+;; Parameters:
+;;     X: Projectile index
+
+$94:9CF4 BD 7C 0C    LDA $0C7C,x[$7E:0C86]  ;\
+$94:9CF7 D0 39       BNE $39    [$9D32]     ;} If [bomb timer] != 0: return
+$94:9CF9 BD 18 0C    LDA $0C18,x[$7E:0C22]  ;\
+$94:9CFC 89 01 00    BIT #$0001             ;} If bomb explosion active: return
+$94:9CFF D0 31       BNE $31    [$9D32]     ;/
+$94:9D01 09 01 00    ORA #$0001             ;\
+$94:9D04 9D 18 0C    STA $0C18,x[$7E:0C22]  ;} Set bomb explosion active
+$94:9D07 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$94:9D0A C9 FF FF    CMP #$FFFF             ;} If [current block index] = FFFFh: return
+$94:9D0D F0 23       BEQ $23    [$9D32]     ;/
+$94:9D0F A0 00 00    LDY #$0000             ; Y = 0
+$94:9D12 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ; >_<;
+$94:9D15 0A          ASL A                  ;\
+$94:9D16 AA          TAX                    ;} X = [current block index] * 2
 $94:9D17 20 52 A0    JSR $A052  [$94:A052]  ; Block bombed reaction
 $94:9D1A 20 34 9D    JSR $9D34  [$94:9D34]  ; X = block index above (bug if bomb is laid on top row of room)
 $94:9D1D 20 52 A0    JSR $A052  [$94:A052]  ; Block bombed reaction
@@ -3789,7 +3804,7 @@ $94:9D33 60          RTS
 }
 
 
-;;; $9D34:  ;;;
+;;; $9D34: Move block index X one row up ;;;
 {
 $94:9D34 8A          TXA
 $94:9D35 38          SEC
@@ -3800,7 +3815,7 @@ $94:9D3D 60          RTS
 }
 
 
-;;; $9D3E:  ;;;
+;;; $9D3E: Move block index X one row down, one column right ;;;
 {
 $94:9D3E 8A          TXA
 $94:9D3F 38          SEC
@@ -3812,7 +3827,7 @@ $94:9D48 60          RTS
 }
 
 
-;;; $9D49:  ;;;
+;;; $9D49: Move block index X two columns left ;;;
 {
 $94:9D49 CA          DEX
 $94:9D4A CA          DEX
@@ -3822,8 +3837,9 @@ $94:9D4D 60          RTS
 }
 
 
-;;; $9D4E:  ;;;
+;;; $9D4E: Move block index X one row down, one column right ;;;
 {
+; Clone of $9D3E
 $94:9D4E 8A          TXA
 $94:9D4F 38          SEC
 $94:9D50 6D A5 07    ADC $07A5  [$7E:07A5]
@@ -4054,45 +4070,47 @@ $94:A012             dw D0B8, D0BC, D0C0, D0C4, D0C8, D0CC, D0D0, D0D4, B62F, B6
 
 ;;; $A032: Block bombed reaction pointers ;;;
 {
-$94:A032             dw 9D59, ; 0: Air
-                        9D59, ; 1: Slope
-                        9D59, ; 2: Spike air
-                        9D59, ; 3: Special air
-                        9E55, ; 4: Shootable air
-                        9411, ; 5: Horizontal extension
-                        9D59, ; 6: Unused air
-                        9FD6, ; 7: Bombable air
-                        9D5B, ; 8: Solid block
-                        9D5B, ; 9: Door block
-                        9D5B, ; Ah: Spike block
-                        9D71, ; Bh: Special block
-                        9E73, ; Ch: Shootable block
-                        9447, ; Dh: Vertical extension
-                        9D5B, ; Eh: Grapple block
-                        9FF4  ; Fh: Bombable block
+$94:A032             dw 9D59, ; *0: Air
+                        9D59, ; *1: Slope
+                        9D59, ; *2: Spike air
+                        9D59, ; *3: Special air
+                        9E55, ;  4: Shootable air
+                        9411, ;  5: Horizontal extension
+                        9D59, ; *6: Unused air
+                        9FD6, ;  7: Bombable air
+                        9D5B, ; *8: Solid block
+                        9D5B, ; *9: Door block
+                        9D5B, ; *Ah: Spike block
+                        9D71, ;  Bh: Special block
+                        9E73, ;  Ch: Shootable block
+                        9447, ;  Dh: Vertical extension
+                        9D5B, ; *Eh: Grapple block
+                        9FF4  ;  Fh: Bombable block
 }
 
 
 ;;; $A052: Block bombed reaction ;;;
 {
-; Bomb reaction routine for blocks. X must contain (block number * 2); usable for 7F:0002,X
+;; Parameters:
+;;     X: Block index
+
 $94:A052 DA          PHX
-$94:A053 8E C4 0D    STX $0DC4  [$7E:0DC4]
-$94:A056 4E C4 0D    LSR $0DC4  [$7E:0DC4]
-$94:A059 BF 02 00 7F LDA $7F0002,x[$7F:073C]
-$94:A05D 29 00 F0    AND #$F000
-$94:A060 EB          XBA
-$94:A061 4A          LSR A
-$94:A062 4A          LSR A
-$94:A063 4A          LSR A
-$94:A064 AA          TAX
-$94:A065 FC 32 A0    JSR ($A032,x)[$94:9D59]
+$94:A053 8E C4 0D    STX $0DC4  [$7E:0DC4]  ;\
+$94:A056 4E C4 0D    LSR $0DC4  [$7E:0DC4]  ;} Current block index = [X] / 2
+$94:A059 BF 02 00 7F LDA $7F0002,x[$7F:073C];\
+$94:A05D 29 00 F0    AND #$F000             ;|
+$94:A060 EB          XBA                    ;|
+$94:A061 4A          LSR A                  ;|
+$94:A062 4A          LSR A                  ;} Execute [$A032 + (block type) * 2]
+$94:A063 4A          LSR A                  ;|
+$94:A064 AA          TAX                    ;|
+$94:A065 FC 32 A0    JSR ($A032,x)[$94:9D59];/
 $94:A068 FA          PLX
 $94:A069 60          RTS
 }
 
 
-;;; $A06A: Power bomb explosion block collision detection ;;;
+;;; $A06A: Power bomb explosion block collision handling ;;;
 {
 $94:A06A BD 7C 0C    LDA $0C7C,x[$7E:0C86]
 $94:A06D F0 06       BEQ $06    [$A075]
@@ -4176,7 +4194,7 @@ $94:A0F3 60          RTS
 }
 
 
-;;; $A0F4: Power bomb explosion block collision detection - row ;;;
+;;; $A0F4: Power bomb explosion block collision handling - row ;;;
 {
 $94:A0F4 E2 20       SEP #$20
 $94:A0F6 8D 02 42    STA $4202  [$7E:4202]
@@ -4204,7 +4222,7 @@ $94:A119 60          RTS
 }
 
 
-;;; $A11A: Power bomb explosion block collision detection - column ;;;
+;;; $A11A: Power bomb explosion block collision handling - column ;;;
 {
 $94:A11A E2 20       SEP #$20
 $94:A11C 8D 02 42    STA $4202  [$7E:4202]
@@ -5060,9 +5078,9 @@ $94:A62F 85 1C       STA $1C    [$7E:001C]  ;} $1C = [bomb Y position]
 $94:A631 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0
 $94:A633 64 20       STZ $20    [$7E:0020]  ; $20 = 0
 $94:A635 9C C4 0D    STZ $0DC4  [$7E:0DC4]  ; Current block index = 0
-$94:A638 DA          PHX
-$94:A639 20 1D 9C    JSR $9C1D  [$94:9C1D]  ; Calculate block at ([$1A], [$1C])
-$94:A63C FA          PLX
+$94:A638 DA          PHX                    ;\
+$94:A639 20 1D 9C    JSR $9C1D  [$94:9C1D]  ;} Calculate block at ([$1A], [$1C])
+$94:A63C FA          PLX                    ;/
 $94:A63D BD 7C 0C    LDA $0C7C,x            ;\
 $94:A640 D0 05       BNE $05    [$A647]     ;} If [bomb timer] = 0:
 $94:A642 20 F4 9C    JSR $9CF4  [$94:9CF4]  ; Bomb explosion block collision detection

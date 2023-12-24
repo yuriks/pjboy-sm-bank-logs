@@ -6882,7 +6882,7 @@ $90:AEE7 CA          DEX                    ;\
 $90:AEE8 CA          DEX                    ;} Projectile index -= 2
 $90:AEE9 8E DE 0D    STX $0DDE  [$7E:0DDE]  ;/
 $90:AEEC 10 EA       BPL $EA    [$AED8]     ; If [projectile index] >= 0: go to LOOP
-$90:AEEE 9C D2 0D    STZ $0DD2  [$7E:0DD2]  ; $0DD2 = 0
+$90:AEEE 9C D2 0D    STZ $0DD2  [$7E:0DD2]  ; Projectile proto type = normal
 $90:AEF1 28          PLP
 $90:AEF2 60          RTS
 }
@@ -7170,7 +7170,7 @@ $90:B0A1 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:B0A5 60          RTS                    ; Return
 
 $90:B0A6 20 28 C1    JSR $C128  [$90:C128]  ; Handle bomb
-$90:B0A9 22 AC 9C 94 JSL $949CAC[$94:9CAC]  ; (Power) bomb explosion block collision detection
+$90:B0A9 22 AC 9C 94 JSL $949CAC[$94:9CAC]  ; (Power) bomb explosion block collision handling
 $90:B0AD 60          RTS
 }
 
@@ -7184,7 +7184,7 @@ $90:B0B6 22 B7 AD 90 JSL $90ADB7[$90:ADB7]  ; Clear projectile
 $90:B0BA 60          RTS                    ; Return
 
 $90:B0BB 20 57 C1    JSR $C157  [$90:C157]  ; Handle power bomb
-$90:B0BE 22 AC 9C 94 JSL $949CAC[$94:9CAC]  ; (Power) bomb explosion block collision detection
+$90:B0BE 22 AC 9C 94 JSL $949CAC[$94:9CAC]  ; (Power) bomb explosion block collision handling
 $90:B0C2 60          RTS
 }
 
@@ -9598,6 +9598,8 @@ $90:C156 60          RTS
 
 ;;; $C157: Handle power bomb ;;;
 {
+; The call to $ADB7 really shouldn't be there, there's more processing to be done to the projectile this frame
+; Clearing projectile RAM should be left for the pre-instruction $B0AE to do, by signalling to delete the projectile
 $90:C157 08          PHP
 $90:C158 C2 30       REP #$30
 $90:C15A AE DE 0D    LDX $0DDE  [$7E:0DDE]
@@ -9854,8 +9856,16 @@ $90:C367             dw FFF0, ; 0: Up, facing right
 }
 
 
-;;; $C37B: Beam constants ;;;
+;;; $C37B: Proto weapon constants ;;;
 {
+; Used only by $94:9C73 to set $0DD2 as part of bomb explosion block collision detection
+; Highly likely that these tables were supposed to be abandoned entirely and that one check was left over
+
+; Beams:
+;                        _______ Unused. Uncharged damage?
+;                       |   ____ Unused. Charged damage?
+;                       |  |   _ Projectile proto type
+;                       |  |  |
 $90:C37B             db 03,14,00, ; 0: Power
                         0A,28,01, ; 1: Wave
                         05,1E,00, ; 2: Ice
@@ -9868,11 +9878,11 @@ $90:C37B             db 03,14,00, ; 0: Power
                         1E,64,01, ; 9: Plasma + wave
                         1E,64,00, ; Ah: Plasma + ice
                         1E,64,01  ; Bh: Plasma + ice + wave
-}
 
-
-;;; $C39F: Non-beam constants ;;;
-{
+; Non-beams:
+;                        ____ Unused. Damage?
+;                       |   _ Projectile proto type
+;                       |  |
 $90:C39F             db 00,00,
                         0A,00, ; Missile
                         32,00, ; Super missile
@@ -14485,7 +14495,7 @@ $90:E6B0 20 22 EC    JSR $EC22  [$90:EC22]  ; Set Samus radius
 $90:E6B3 20 0F E9    JSR $E90F  [$90:E90F]  ; Execute [Samus pose input handler]
 $90:E6B6 20 B6 EC    JSR $ECB6  [$90:ECB6]  ; Determine Samus suit palette index
 $90:E6B9 20 5B 9C    JSR $9C5B  [$90:9C5B]  ; Determine Samus Y acceleration
-$90:E6BC 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside detection
+$90:E6BC 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside handling
 $90:E6C0 20 DD DC    JSR $DCDD  [$90:DCDD]  ; Handle HUD specific behaviour and projectiles
 $90:E6C3 20 02 EB    JSR $EB02  [$90:EB02]  ; Execute $EB02
 $90:E6C6 AB          PLB
@@ -14520,7 +14530,7 @@ $90:E6FA 20 22 EC    JSR $EC22  [$90:EC22]  ; Set Samus radius
 $90:E6FD 20 B6 EC    JSR $ECB6  [$90:ECB6]  ; Determine Samus suit palette index
 $90:E700 20 0F E9    JSR $E90F  [$90:E90F]  ; Execute [Samus pose input handler]
 $90:E703 20 5B 9C    JSR $9C5B  [$90:9C5B]  ; Determine Samus Y acceleration
-$90:E706 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside detection
+$90:E706 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside handling
 $90:E70A 20 DD DC    JSR $DCDD  [$90:DCDD]  ; Handle HUD specific behaviour and projectiles
 $90:E70D 20 02 EB    JSR $EB02  [$90:EB02]  ; Execute $EB02
 $90:E710 AB          PLB
@@ -15867,8 +15877,8 @@ $90:EF20             dw 0010
 {
 $90:EF22 08          PHP
 $90:EF23 C2 30       REP #$30
-$90:EF25 22 C4 84 94 JSL $9484C4[$94:84C4]  ; Post grapple collision handling - horizontal
-$90:EF29 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision handling - vertical
+$90:EF25 22 C4 84 94 JSL $9484C4[$94:84C4]  ; Post grapple collision detection - horizontal
+$90:EF29 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision detection - vertical
 $90:EF2D AD 0A 0E    LDA $0E0A  [$7E:0E0A]  ;\
 $90:EF30 F0 05       BEQ $05    [$EF37]     ;|
 $90:EF32 AD 08 0E    LDA $0E08  [$7E:0E08]  ;|
@@ -15883,7 +15893,7 @@ $90:EF43 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $90:EF46 AD 00 0B    LDA $0B00  [$7E:0B00]  ;\
 $90:EF49 C9 10 00    CMP #$0010             ;} If [Samus Y radius] < 10h: return
 $90:EF4C 30 0E       BMI $0E    [$EF5C]     ;/
-$90:EF4E 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision handling - vertical
+$90:EF4E 22 CD 84 94 JSL $9484CD[$94:84CD]  ; Post grapple collision detection - vertical
 $90:EF52 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:EF55 38          SEC                    ;|
 $90:EF56 ED 08 0E    SBC $0E08  [$7E:0E08]  ;} Samus Y position -= [distance to eject Samus up]

@@ -6625,34 +6625,34 @@ $8F:E2B5 60          RTS
 $8F:E2B6 A9 80 00    LDA #$0080             ;\
 $8F:E2B9 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;} Samus X position = 80h
 $8F:E2BC 9C F8 0A    STZ $0AF8  [$7E:0AF8]  ;/
-$8F:E2BF 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (Y suboffset)
-$8F:E2C1 64 14       STZ $14    [$7E:0014]  ; $14 = 0 (Y offset)
-$8F:E2C3 AD E5 07    LDA $07E5  [$7E:07E5]  ;\
-$8F:E2C6 10 02       BPL $02    [$E2CA]     ;} If elevatube speed is negative:
-$8F:E2C8 C6 14       DEC $14    [$7E:0014]  ; $14 = FFFFh (sign extend the following assignment)
-
-$8F:E2CA 85 13       STA $13    [$7E:0013]  ; $12 = elevatube speed low byte << 8, $14 = high byte
+$8F:E2BF 64 12       STZ $12    [$7E:0012]  ;\
+$8F:E2C1 64 14       STZ $14    [$7E:0014]  ;|
+$8F:E2C3 AD E5 07    LDA $07E5  [$7E:07E5]  ;|
+$8F:E2C6 10 02       BPL $02    [$E2CA]     ;} $14.$12 = ±[elevatube velocity] / 100h
+$8F:E2C8 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$8F:E2CA 85 13       STA $13    [$7E:0013]  ;/
 $8F:E2CC AD E1 07    LDA $07E1  [$7E:07E1]  ;\
 $8F:E2CF 18          CLC                    ;|
-$8F:E2D0 65 12       ADC $12    [$7E:0012]  ;} Elevatube subposition += [$12] (Y suboffset)
-$8F:E2D2 8D E1 07    STA $07E1  [$7E:07E1]  ;/
-$8F:E2D5 AD E3 07    LDA $07E3  [$7E:07E3]  ;\
-$8F:E2D8 65 14       ADC $14    [$7E:0014]  ;} Elevatube position += [$14] (Y offset)
+$8F:E2D0 65 12       ADC $12    [$7E:0012]  ;|
+$8F:E2D2 8D E1 07    STA $07E1  [$7E:07E1]  ;} Elevatube position += [$14].[$12]
+$8F:E2D5 AD E3 07    LDA $07E3  [$7E:07E3]  ;|
+$8F:E2D8 65 14       ADC $14    [$7E:0014]  ;|
 $8F:E2DA 8D E3 07    STA $07E3  [$7E:07E3]  ;/
 $8F:E2DD A5 12       LDA $12    [$7E:0012]  ;\
 $8F:E2DF A6 14       LDX $14    [$7E:0014]  ;|
-$8F:E2E1 86 12       STX $12    [$7E:0012]  ;} $12, $14 = [$14], [$12]
+$8F:E2E1 86 12       STX $12    [$7E:0012]  ;} $12.$14 = [$14].[$12]
 $8F:E2E3 85 14       STA $14    [$7E:0014]  ;/
-$8F:E2E5 22 63 97 94 JSL $949763[$94:9763]  ; Samus Y position += [$12].[$14]
+$8F:E2E5 22 63 97 94 JSL $949763[$94:9763]  ; Move Samus down by [$12].[$14], no solid enemy collision
 $8F:E2E9 AD E5 07    LDA $07E5  [$7E:07E5]  ;\
 $8F:E2EC 18          CLC                    ;|
 $8F:E2ED 6D E7 07    ADC $07E7  [$7E:07E7]  ;|
-$8F:E2F0 18          CLC                    ;} If |elevatube speed + elevatube acceleration| <= 0E20h:
+$8F:E2F0 18          CLC                    ;} If [elevatube velocity] + [elevatube acceleration] <= E20h:
 $8F:E2F1 69 20 0E    ADC #$0E20             ;|
 $8F:E2F4 C9 41 1C    CMP #$1C41             ;|
 $8F:E2F7 B0 07       BCS $07    [$E300]     ;/
 $8F:E2F9 38          SEC                    ;\
-$8F:E2FA E9 20 0E    SBC #$0E20             ;} Elevatube speed += elevatube acceleration
+$8F:E2FA E9 20 0E    SBC #$0E20             ;} Elevatube velocity += [elevatube acceleration]
 $8F:E2FD 8D E5 07    STA $07E5  [$7E:07E5]  ;/
 
 $8F:E300 60          RTS

@@ -488,6 +488,7 @@ $91:81F3 60          RTS                    ;} Return carry set
 ;;     $14: The controller 1 input bits *not* pressed (not including start/select)
 
 ; This contains the evil code that disallows aiming to not be L and R
+; $82:F587 handles the graphical part of the controller settings menu
 $91:81F4 A5 8F       LDA $8F    [$7E:008F]  ;\
 $91:81F6 29 00 0F    AND #$0F00             ;} $12 = newly pressed d-pad input
 $91:81F9 85 12       STA $12    [$7E:0012]  ;/
@@ -11905,7 +11906,7 @@ $91:ECF7 AA          TAX                    ;} Samus Y radius = [$B62F + [Samus 
 $91:ECF8 BD 2F B6    LDA $B62F,x[$91:B7D7]  ;|
 $91:ECFB 29 FF 00    AND #$00FF             ;|
 $91:ECFE 8D 00 0B    STA $0B00  [$7E:0B00]  ;/
-$91:ED01 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Collision detection due to change of pose
+$91:ED01 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Block collision detection due to change of pose
 
 ; BRANCH_NOT_SHRINKING
 $91:ED05 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -14530,7 +14531,7 @@ $91:FE44 49 FF FF    EOR #$FFFF             ;|
 $91:FE47 1A          INC A                  ;} $12 = -[Samus Y radius difference]
 $91:FE48 85 12       STA $12    [$7E:0012]  ;/
 $91:FE4A 64 14       STZ $14    [$7E:0014]  ; $14 = 0
-$91:FE4C 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Collision detection due to change of pose
+$91:FE4C 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Block collision detection due to change of pose
 $91:FE50 90 06       BCC $06    [$FE58]     ; If carry set: (collision detected)
 $91:FE52 A9 01 00    LDA #$0001             ;\
 $91:FE55 8D 36 0A    STA $0A36  [$7E:0A36]  ;} Block collision flags = 1
@@ -14540,7 +14541,7 @@ $91:FE5A 8D 38 0A    STA $0A38  [$7E:0A38]  ;} $0A38 = [$12] (space to move Samu
 $91:FE5D AD 3A 0A    LDA $0A3A  [$7E:0A3A]  ;\
 $91:FE60 85 12       STA $12    [$7E:0012]  ;} $12 = [Samus Y radius difference]
 $91:FE62 64 14       STZ $14    [$7E:0014]  ; $14 = 0
-$91:FE64 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Collision detection due to change of pose
+$91:FE64 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Block collision detection due to change of pose
 $91:FE68 90 09       BCC $09    [$FE73]     ; If carry set: (collision detected)
 $91:FE6A AD 36 0A    LDA $0A36  [$7E:0A36]  ;\
 $91:FE6D 09 02 00    ORA #$0002             ;} Block collision flags |= 2
@@ -14671,7 +14672,7 @@ $91:FF23 38          SEC                    ;|
 $91:FF24 ED 38 0A    SBC $0A38  [$7E:0A38]  ;} $12 = [Samus Y radius difference] - [space to move Samus up]
 $91:FF27 85 12       STA $12    [$7E:0012]  ;/
 $91:FF29 64 14       STZ $14    [$7E:0014]  ; $14 = 0
-$91:FF2B 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Collision detection due to change of pose
+$91:FF2B 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Block collision detection due to change of pose
 $91:FF2F B0 16       BCS $16    [$FF47]     ; If carry set (collision detected): return carry set
 $91:FF31 AD 34 0A    LDA $0A34  [$7E:0A34]  ;\
 $91:FF34 89 02 00    BIT #$0002             ;} If solid enemy collision from below: go to handle collision from both sides due to pose change
@@ -14698,7 +14699,7 @@ $91:FF50 49 FF FF    EOR #$FFFF             ;} $12 = [space to move Samus down] 
 $91:FF53 1A          INC A                  ;|
 $91:FF54 85 12       STA $12    [$7E:0012]  ;/
 $91:FF56 64 14       STZ $14    [$7E:0014]  ; $14 = 0
-$91:FF58 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Collision detection due to change of pose
+$91:FF58 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Block collision detection due to change of pose
 $91:FF5C B0 16       BCS $16    [$FF74]     ; If carry set (collision detected): return carry set
 $91:FF5E AD 34 0A    LDA $0A34  [$7E:0A34]  ;\
 $91:FF61 89 01 00    BIT #$0001             ;} If solid enemy collision from above: go to handle collision from both sides due to pose change

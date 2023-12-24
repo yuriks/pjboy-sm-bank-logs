@@ -7032,7 +7032,7 @@ $84:B4F8             dw B500, B528, B52A, B500
 ;;; $B500: Collision reaction - quicksand surface - Samus is grounded ;;;
 {
 ;; Parameters:
-;;     Y: 
+;;     Y: Quicksand surface max sinking speed table index. 0 without gravity suit, 2 with gravity suit
 ;;     $14.$12: Distance to check for collision
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
