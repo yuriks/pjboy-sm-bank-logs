@@ -4193,15 +4193,15 @@ $A0:A306 8B          PHB
 $A0:A307 A9 05 00    LDA #$0005             ;\
 $A0:A30A 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Stage of enemy processing = 5
 $A0:A30E AD EB 0C    LDA $0CEB  [$7E:0CEB]  ;\
-$A0:A311 29 FF 00    AND #$00FF             ;} $12 = [power bomb explosion radius] / 100h
+$A0:A311 29 FF 00    AND #$00FF             ;} $12 = [power bomb explosion radius] / 100h (power bomb X radius)
 $A0:A314 85 12       STA $12    [$7E:0012]  ;/
-$A0:A316 D0 02       BNE $02    [$A31A]     ; If [$12] = 0:
+$A0:A316 D0 02       BNE $02    [$A31A]     ; If (power bomb X radius) = 0:
 $A0:A318 AB          PLB
 $A0:A319 6B          RTL                    ; Return
 
 $A0:A31A 4A          LSR A                  ;\
 $A0:A31B 65 12       ADC $12    [$7E:0012]  ;|
-$A0:A31D 4A          LSR A                  ;} $14 = [$12] * 3/4
+$A0:A31D 4A          LSR A                  ;} $14 = (power bomb X radius) * 3/4 (power bomb Y radius)
 $A0:A31E 85 14       STA $14    [$7E:0014]  ;/
 $A0:A320 A9 C0 07    LDA #$07C0             ;\
 $A0:A323 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy index = 7C0h (last slot)
@@ -4228,7 +4228,7 @@ $A0:A34F AD E2 0C    LDA $0CE2  [$7E:0CE2]  ;\
 $A0:A352 38          SEC                    ;|
 $A0:A353 FD 7A 0F    SBC $0F7A,x[$7E:103A]  ;|
 $A0:A356 10 04       BPL $04    [$A35C]     ;|
-$A0:A358 49 FF FF    EOR #$FFFF             ;} If |[power bomb explosion X position] - [enemy X position]| >= [$12]: go to BRANCH_NEXT
+$A0:A358 49 FF FF    EOR #$FFFF             ;} If |[power bomb explosion X position] - [enemy X position]| >= (power bomb X radius): go to BRANCH_NEXT
 $A0:A35B 1A          INC A                  ;|
                                             ;|
 $A0:A35C C5 12       CMP $12    [$7E:0012]  ;|
@@ -4237,7 +4237,7 @@ $A0:A360 AD E4 0C    LDA $0CE4  [$7E:0CE4]  ;\
 $A0:A363 38          SEC                    ;|
 $A0:A364 FD 7E 0F    SBC $0F7E,x[$7E:0FFE]  ;|
 $A0:A367 10 04       BPL $04    [$A36D]     ;|
-$A0:A369 49 FF FF    EOR #$FFFF             ;} If |[power bomb explosion Y position] - [enemy Y position]| >= [$14]: go to BRANCH_NEXT
+$A0:A369 49 FF FF    EOR #$FFFF             ;} If |[power bomb explosion Y position] - [enemy Y position]| >= (power bomb Y radius): go to BRANCH_NEXT
 $A0:A36C 1A          INC A                  ;|
                                             ;|
 $A0:A36D C5 14       CMP $14    [$7E:0014]  ;|

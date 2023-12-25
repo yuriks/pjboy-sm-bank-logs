@@ -6938,7 +6938,7 @@ $90:AF36             dw AF4A, ; 0: Up, facing right
 ;;; $AF4A: Beam block collision - no wave beam - vertical ;;;
 {
 $90:AF4A AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AF4D 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
+$90:AF4D 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Move beam vertically - no wave beam
 $90:AF51 60          RTS
 }
 
@@ -6946,9 +6946,9 @@ $90:AF51 60          RTS
 ;;; $AF52: Beam block collision - no wave beam - diagonal ;;;
 {
 $90:AF52 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AF55 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
+$90:AF55 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Move beam horizontally - no wave beam
 $90:AF59 B0 04       BCS $04    [$AF5F]     ; If not collided:
-$90:AF5B 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
+$90:AF5B 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Move beam vertically - no wave beam
 
 $90:AF5F 60          RTS
 }
@@ -6957,7 +6957,7 @@ $90:AF5F 60          RTS
 ;;; $AF60: Beam block collision - no wave beam - horizontal ;;;
 {
 $90:AF60 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AF63 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
+$90:AF63 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Move beam horizontally - no wave beam
 $90:AF67 60          RTS
 }
 }
@@ -7019,7 +7019,7 @@ $90:AFB3             dw AFC7, ; 0: Up, facing right
 ;;; $AFC7: Missile block collision - vertical ;;;
 {
 $90:AFC7 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AFCA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:AFCA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; Move (super) missile vertically
 $90:AFCE 60          RTS
 }
 
@@ -7027,9 +7027,9 @@ $90:AFCE 60          RTS
 ;;; $AFCF: Missile block collision - diagonal ;;;
 {
 $90:AFCF AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AFD2 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:AFD2 22 6F A4 94 JSL $94A46F[$94:A46F]  ; Move (super) missile horizontally
 $90:AFD6 B0 04       BCS $04    [$AFDC]     ; If not collided:
-$90:AFD8 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:AFD8 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; Move (super) missile vertically
 
 $90:AFDC 60          RTS
 }
@@ -7038,7 +7038,7 @@ $90:AFDC 60          RTS
 ;;; $AFDD: Missile block collision - horizontal ;;;
 {
 $90:AFDD AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:AFE0 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:AFE0 22 6F A4 94 JSL $94A46F[$94:A46F]  ; Move (super) missile horizontally
 $90:AFE4 60          RTS
 }
 }
@@ -7105,7 +7105,7 @@ $90:B033             dw B047, ; 0: Up, facing right
 ;;; $B047: Super missile block collision - vertical ;;;
 {
 $90:B047 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B04A 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:B04A 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; Move (super) missile vertically
 $90:B04E 20 66 B3    JSR $B366  [$90:B366]  ; Super missile link vertical block collision detection
 $90:B051 60          RTS
 }
@@ -7114,10 +7114,10 @@ $90:B051 60          RTS
 ;;; $B052: Super missile block collision - diagonal ;;;
 {
 $90:B052 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B055 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:B055 22 6F A4 94 JSL $94A46F[$94:A46F]  ; Move (super) missile horizontally
 $90:B059 B0 0B       BCS $0B    [$B066]     ; If not collided:
 $90:B05B 20 06 B4    JSR $B406  [$90:B406]  ; Super missile link horizontal block collision detection
-$90:B05E 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:B05E 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; Move (super) missile vertically
 $90:B062 20 66 B3    JSR $B366  [$90:B366]  ; Super missile link vertical block collision detection
 $90:B065 60          RTS                    ; Return
 
@@ -7129,7 +7129,7 @@ $90:B069 60          RTS
 ;;; $B06A: Super missile block collision - horizontal ;;;
 {
 $90:B06A AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B06D 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:B06D 22 6F A4 94 JSL $94A46F[$94:A46F]  ; Move (super) missile horizontally
 $90:B071 20 06 B4    JSR $B406  [$90:B406]  ; Super missile link horizontal block collision detection
 $90:B074 60          RTS
 }
@@ -7252,7 +7252,7 @@ $90:B127             dw B13B, B143, B151, B143, B13B, B13B, B143, B151, B143, B1
 ;;; $B13B: Wave beam block collision - vertical ;;;
 {
 $90:B13B AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B13E 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
+$90:B13E 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Move beam vertically - wave beam
 $90:B142 60          RTS
 }
 
@@ -7260,9 +7260,9 @@ $90:B142 60          RTS
 ;;; $B143: Wave beam block collision - diagonal ;;;
 {
 $90:B143 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B146 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
+$90:B146 22 52 A3 94 JSL $94A352[$94:A352]  ; Move beam horizontally - wave beam
 $90:B14A B0 04       BCS $04    [$B150]     ; If not collided:
-$90:B14C 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
+$90:B14C 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Move beam vertically - wave beam
 
 $90:B150 60          RTS
 }
@@ -7271,7 +7271,7 @@ $90:B150 60          RTS
 ;;; $B151: Wave beam block collision - horizontal ;;;
 {
 $90:B151 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:B154 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
+$90:B154 22 52 A3 94 JSL $94A352[$94:A352]  ; Move beam horizontally - wave beam
 $90:B158 60          RTS
 }
 }
@@ -7691,7 +7691,7 @@ $90:B3A9 E5 12       SBC $12    [$7E:0012]  ;} Linked projectile Y position = [p
 $90:B3AB 99 78 0B    STA $0B78,y[$7E:0B7A]  ;/
 $90:B3AE BB          TYX                    ;\
 $90:B3AF 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
-$90:B3B2 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:B3B2 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; Move (super) missile vertically
 $90:B3B6 9B          TXY
 $90:B3B7 FA          PLX                    ; Restore X
 $90:B3B8 8E DE 0D    STX $0DDE  [$7E:0DDE]
@@ -7712,7 +7712,7 @@ $90:B3D1 65 12       ADC $12    [$7E:0012]  ;} Linked projectile Y position = [p
 $90:B3D3 99 78 0B    STA $0B78,y[$7E:0B7A]  ;/
 $90:B3D6 BB          TYX                    ;\
 $90:B3D7 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
-$90:B3DA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; (Super) missile vertical block collision detection
+$90:B3DA 22 D9 A4 94 JSL $94A4D9[$94:A4D9]  ; Move (super) missile vertically
 $90:B3DE 9B          TXY
 $90:B3DF FA          PLX                    ; Restore X
 $90:B3E0 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
@@ -7778,7 +7778,7 @@ $90:B449 E5 12       SBC $12    [$7E:0012]  ;} Linked projectile X position = [p
 $90:B44B 99 64 0B    STA $0B64,y[$7E:0B66]  ;/
 $90:B44E BB          TYX                    ;\
 $90:B44F 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
-$90:B452 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:B452 22 6F A4 94 JSL $94A46F[$94:A46F]  ; Move (super) missile horizontally
 $90:B456 9B          TXY
 $90:B457 FA          PLX                    ; Restore X
 $90:B458 8E DE 0D    STX $0DDE  [$7E:0DDE]
@@ -7799,7 +7799,7 @@ $90:B471 65 12       ADC $12    [$7E:0012]  ;} Linked projectile X position = [p
 $90:B473 99 64 0B    STA $0B64,y[$7E:0B66]  ;/
 $90:B476 BB          TYX                    ;\
 $90:B477 8C DE 0D    STY $0DDE  [$7E:0DDE]  ;} X = projectile index = [Y]
-$90:B47A 22 6F A4 94 JSL $94A46F[$94:A46F]  ; (Super) missile horizontal block collision detection
+$90:B47A 22 6F A4 94 JSL $94A46F[$94:A46F]  ; Move (super) missile horizontally
 $90:B47E 9B          TXY
 $90:B47F FA          PLX                    ; Restore X
 $90:B480 8E DE 0D    STX $0DDE  [$7E:0DDE]  ; Projectile index = [X]
@@ -9041,7 +9041,7 @@ $90:BD72             dw BD86, ; 0: Up, facing right
 ;;; $BD86: Initial beam block collision - no wave beam - vertical ;;;
 {
 $90:BD86 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BD89 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
+$90:BD89 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Move beam vertically - no wave beam
 $90:BD8D 60          RTS
 }
 
@@ -9049,9 +9049,9 @@ $90:BD8D 60          RTS
 ;;; $BD8E: Initial beam block collision - no wave beam - diagonal ;;;
 {
 $90:BD8E AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BD91 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
+$90:BD91 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Move beam horizontally - no wave beam
 $90:BD95 B0 04       BCS $04    [$BD9B]     ; If not collided:
-$90:BD97 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Beam vertical block collision detection - no wave beam
+$90:BD97 22 CA A2 94 JSL $94A2CA[$94:A2CA]  ; Move beam vertically - no wave beam
 
 $90:BD9B 60          RTS
 }
@@ -9060,7 +9060,7 @@ $90:BD9B 60          RTS
 ;;; $BD9C: Initial beam block collision - no wave beam - right ;;;
 {
 $90:BD9C AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BD9F 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
+$90:BD9F 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Move beam horizontally - no wave beam
 $90:BDA3 60          RTS
 }
 
@@ -9070,7 +9070,7 @@ $90:BDA3 60          RTS
 $90:BDA4 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:BDA7 A9 FF FF    LDA #$FFFF             ;\
 $90:BDAA 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;} Projectile X velocity = -1
-$90:BDAD 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Beam horizontal block collision detection - no wave beam
+$90:BDAD 22 3B A2 94 JSL $94A23B[$94:A23B]  ; Move beam horizontally - no wave beam
 $90:BDB1 60          RTS
 }
 
@@ -9102,7 +9102,7 @@ $90:BDC0             dw BDD4, ; 0: Up, facing right
 ;;; $BDD4: Initial wave beam block collision - vertical ;;;
 {
 $90:BDD4 AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDD7 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
+$90:BDD7 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Move beam vertically - wave beam
 $90:BDDB 60          RTS
 }
 
@@ -9110,9 +9110,9 @@ $90:BDDB 60          RTS
 ;;; $BDDC: Initial wave beam block collision - diagonal ;;;
 {
 $90:BDDC AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDDF 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
+$90:BDDF 22 52 A3 94 JSL $94A352[$94:A352]  ; Move beam horizontally - wave beam
 $90:BDE3 B0 04       BCS $04    [$BDE9]     ; If not collided:
-$90:BDE5 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Beam vertical block collision detection - wave beam
+$90:BDE5 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Move beam vertically - wave beam
 
 $90:BDE9 60          RTS
 }
@@ -9121,7 +9121,7 @@ $90:BDE9 60          RTS
 ;;; $BDEA: Initial wave beam block collision - right ;;;
 {
 $90:BDEA AE DE 0D    LDX $0DDE  [$7E:0DDE]
-$90:BDED 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
+$90:BDED 22 52 A3 94 JSL $94A352[$94:A352]  ; Move beam horizontally - wave beam
 $90:BDF1 60          RTS
 }
 
@@ -9131,7 +9131,7 @@ $90:BDF1 60          RTS
 $90:BDF2 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:BDF5 A9 FF FF    LDA #$FFFF             ;\
 $90:BDF8 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;} Projectile X velocity = -1
-$90:BDFB 22 52 A3 94 JSL $94A352[$94:A352]  ; Beam horizontal block collision detection - wave beam
+$90:BDFB 22 52 A3 94 JSL $94A352[$94:A352]  ; Move beam horizontally - wave beam
 $90:BDFF 60          RTS
 }
 }

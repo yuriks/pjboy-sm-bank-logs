@@ -2988,7 +2988,7 @@ $94:96C8 09 08 00    ORA #$0008             ;} $12.$14 = 8.0
 $94:96CB 85 12       STA $12    [$7E:0012]  ;|
 $94:96CD 64 14       STZ $14    [$7E:0014]  ;/
 $94:96CF 22 E3 96 94 JSL $9496E3[$94:96E3]  ; Collision detection due to change of pose - single block
-$94:96D3 90 03       BCC $03    [$96D8]     ; If solid collision:
+$94:96D3 90 03       BCC $03    [$96D8]     ; If collision:
 $94:96D5 68          PLA                    ;\
 $94:96D6 68          PLA                    ;} Return carry set
 $94:96D7 6B          RTL                    ;/
@@ -3864,13 +3864,15 @@ $94:9D5C 60          RTS
 }
 
 
-;;; $9D5D:  ;;;
+;;; $9D5D: Spread bomb block reaction - slope ;;;
 {
+;; Returns:
+;;     Carry: Set if collision detected, clear otherwise
 $94:9D5D AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$94:9D60 BF 02 64 7F LDA $7F6402,x          ;} A = (block BTS) & 1Fh
-$94:9D64 29 1F 00    AND #$001F             ;/
-$94:9D67 C9 05 00    CMP #$0005             ;\
-$94:9D6A 90 03       BCC $03    [$9D6F]     ;} If [A] >= 5:
+$94:9D60 BF 02 64 7F LDA $7F6402,x          ;|
+$94:9D64 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh >= 5:
+$94:9D67 C9 05 00    CMP #$0005             ;|
+$94:9D6A 90 03       BCC $03    [$9D6F]     ;/
 $94:9D6C 4C 43 A5    JMP $A543  [$94:A543]  ; Go to block shot reaction - horizontal - slope - non-square
 
 $94:9D6F 38          SEC                    ;\
@@ -3880,33 +3882,30 @@ $94:9D70 60          RTS                    ;} Return carry set
 
 ;;; $9D71: Block bombed reaction - special block ;;;
 {
-; Load the BTS into A.
-; If negative, AND with #$007F and use to find a region-indexed PLM (94:9DC4 + Region * 10 + BTS * 2).
-; If positive, use as an index for 94:9DA4,X to make a PLM.
-; Either way, clear V, SEC, and RTS
-$94:9D71 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:9D74 BF 01 64 7F LDA $7F6401,x[$7F:6668]
-$94:9D78 29 00 FF    AND #$FF00
-$94:9D7B EB          XBA
-$94:9D7C 30 0D       BMI $0D    [$9D8B]
-$94:9D7E 0A          ASL A
-$94:9D7F AA          TAX
-$94:9D80 BD A4 9D    LDA $9DA4,x[$94:9DA4]
-$94:9D83 22 E7 84 84 JSL $8484E7[$84:84E7]
+$94:9D71 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:9D74 BF 01 64 7F LDA $7F6401,x[$7F:6668];|
+$94:9D78 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
+$94:9D7B EB          XBA                    ;|
+$94:9D7C 30 0D       BMI $0D    [$9D8B]     ;/
+$94:9D7E 0A          ASL A                  ;\
+$94:9D7F AA          TAX                    ;|
+$94:9D80 BD A4 9D    LDA $9DA4,x[$94:9DA4]  ;} Spawn PLM [$9DA4 + [block BTS] * 2]
+$94:9D83 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9D87 C2 40       REP #$40
 $94:9D89 38          SEC
-$94:9D8A 60          RTS
+$94:9D8A 60          RTS                    ; Return
 
-$94:9D8B 29 7F 00    AND #$007F
-$94:9D8E 0A          ASL A
-$94:9D8F A8          TAY
-$94:9D90 AD 9F 07    LDA $079F  [$7E:079F]
-$94:9D93 0A          ASL A
-$94:9D94 AA          TAX
-$94:9D95 BD 44 9E    LDA $9E44,x
-$94:9D98 85 12       STA $12    [$7E:0012]
-$94:9D9A B1 12       LDA ($12),y
-$94:9D9C 22 E7 84 84 JSL $8484E7[$84:84E7]
+; BRANCH_AREA_DEPENDANT
+$94:9D8B 29 7F 00    AND #$007F             ;\
+$94:9D8E 0A          ASL A                  ;|
+$94:9D8F A8          TAY                    ;|
+$94:9D90 AD 9F 07    LDA $079F  [$7E:079F]  ;|
+$94:9D93 0A          ASL A                  ;|
+$94:9D94 AA          TAX                    ;} Spawn PLM [[$9E44 + [area index] * 2] + ([block BTS] & 7Fh) * 2]
+$94:9D95 BD 44 9E    LDA $9E44,x            ;|
+$94:9D98 85 12       STA $12    [$7E:0012]  ;|
+$94:9D9A B1 12       LDA ($12),y            ;|
+$94:9D9C 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9DA0 C2 40       REP #$40
 $94:9DA2 38          SEC
 $94:9DA3 60          RTS
@@ -3915,6 +3914,7 @@ $94:9DA3 60          RTS
 
 ;;; $9DA4: Block bombed reaction - special block - PLM table ;;;
 {
+; Region independent
 $94:9DA4             dw CFFC, D000, D004, D008, CFFC, D000, D004, D008, B62F, B62F, B62F, B62F, B62F, B62F, D024, D024
 
 ; Region dependant
@@ -3939,17 +3939,15 @@ $94:9E54 60          RTS
 
 ;;; $9E55: Block shot/bombed/grappled reaction - shootable air ;;;
 {
-; Check BTS. If positive, create PLM from main table (94:9EA6 + BTS*2, 'max' BTS of 50).
-; Clear V, CLC, RTS
-$94:9E55 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:9E58 BF 01 64 7F LDA $7F6401,x[$7F:64C3]
-$94:9E5C 29 00 FF    AND #$FF00
-$94:9E5F EB          XBA
-$94:9E60 30 0D       BMI $0D    [$9E6F]
-$94:9E62 0A          ASL A
-$94:9E63 AA          TAX
-$94:9E64 BD A6 9E    LDA $9EA6,x[$94:9EA6]
-$94:9E67 22 E7 84 84 JSL $8484E7[$84:84E7]
+$94:9E55 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:9E58 BF 01 64 7F LDA $7F6401,x[$7F:64C3];|
+$94:9E5C 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return
+$94:9E5F EB          XBA                    ;|
+$94:9E60 30 0D       BMI $0D    [$9E6F]     ;/
+$94:9E62 0A          ASL A                  ;\
+$94:9E63 AA          TAX                    ;|
+$94:9E64 BD A6 9E    LDA $9EA6,x[$94:9EA6]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
+$94:9E67 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9E6B C2 40       REP #$40
 $94:9E6D 18          CLC
 $94:9E6E 60          RTS
@@ -3962,32 +3960,30 @@ $94:9E72 60          RTS
 
 ;;; $9E73: Block shot/bombed/grappled reaction - shootable block ;;;
 {
-; Check BTS. If positive, create PLM from main table (94:9EA6 + BTS*2, 'max' BTS of 50).
-; If negative, create region-indexed PLM (94:9F46 + 10*region + BTS*2, 'max' BTS of 10).
-; Either way, clear V, SEC, RTS.
-$94:9E73 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:9E76 BF 01 64 7F LDA $7F6401,x[$7F:8B62]
-$94:9E7A 29 00 FF    AND #$FF00
-$94:9E7D EB          XBA
-$94:9E7E 30 0D       BMI $0D    [$9E8D]
-$94:9E80 0A          ASL A
-$94:9E81 AA          TAX
-$94:9E82 BD A6 9E    LDA $9EA6,x[$94:9F28]
-$94:9E85 22 E7 84 84 JSL $8484E7[$84:84E7]
-$94:9E89 C2 40       REP #$40
-$94:9E8B 38          SEC
-$94:9E8C 60          RTS
-
-$94:9E8D 29 7F 00    AND #$007F
-$94:9E90 0A          ASL A
-$94:9E91 A8          TAY
-$94:9E92 AD 9F 07    LDA $079F  [$7E:079F]
-$94:9E95 0A          ASL A
-$94:9E96 AA          TAX
-$94:9E97 BD C6 9F    LDA $9FC6,x[$94:9FC6]
-$94:9E9A 85 12       STA $12    [$7E:0012]
-$94:9E9C B1 12       LDA ($12),y[$7E:5555]
-$94:9E9E 22 E7 84 84 JSL $8484E7[$84:84E7]
+$94:9E73 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:9E76 BF 01 64 7F LDA $7F6401,x[$7F:8B62];|
+$94:9E7A 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
+$94:9E7D EB          XBA                    ;|
+$94:9E7E 30 0D       BMI $0D    [$9E8D]     ;/
+$94:9E80 0A          ASL A                  ;\
+$94:9E81 AA          TAX                    ;|
+$94:9E82 BD A6 9E    LDA $9EA6,x[$94:9F28]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
+$94:9E85 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
+$94:9E89 C2 40       REP #$40               
+$94:9E8B 38          SEC                    
+$94:9E8C 60          RTS                    ; Return
+                                            
+; BRANCH_AREA_DEPENDANT                     
+$94:9E8D 29 7F 00    AND #$007F             ;\
+$94:9E90 0A          ASL A                  ;|
+$94:9E91 A8          TAY                    ;|
+$94:9E92 AD 9F 07    LDA $079F  [$7E:079F]  ;|
+$94:9E95 0A          ASL A                  ;|
+$94:9E96 AA          TAX                    ;} Spawn PLM [[$9FC6 + [area index] * 2] + ([block BTS] & 7Fh) * 2]
+$94:9E97 BD C6 9F    LDA $9FC6,x[$94:9FC6]  ;|
+$94:9E9A 85 12       STA $12    [$7E:0012]  ;|
+$94:9E9C B1 12       LDA ($12),y[$7E:5555]  ;|
+$94:9E9E 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9EA2 C2 40       REP #$40
 $94:9EA4 38          SEC
 $94:9EA5 60          RTS
@@ -3996,21 +3992,22 @@ $94:9EA5 60          RTS
 
 ;;; $9EA6: Block shot/bombed/grappled reaction - shootable - PLM table ;;;
 {
+; Region independent
 $94:9EA6             dw D064, D068, D06C, D070, D074, D078, D07C, D080, D084, D088, D08C, D090, B62F, B62F, B62F, B62F,
                         B974, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F,
                         B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F,
                         B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F,
                         C8A2, C8A8, C8AE, C8B4, C83E, EED3, C816, C81A, C80E, C812, C806, C80A, C81E, C822, B62F, B9C1
 
-; Region dependant BTS for shotblock only
-$94:9F46             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
-$94:9F56             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
-$94:9F66             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
-$94:9F76             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
-$94:9F86             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
-$94:9F96             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
-$94:9FA6             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
-$94:9FB6             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F
+; Region dependant. Shootable block only
+$94:9F46             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 0: Crateria
+$94:9F56             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 1: Brinstar
+$94:9F66             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 2: Norfair
+$94:9F76             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 3: Wrecked Ship
+$94:9F86             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 4: Maridia
+$94:9F96             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 5: Tourian
+$94:9FA6             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 6: Ceres
+$94:9FB6             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 7: Debug
 
 $94:9FC6             dw 9F46, 9F56, 9F66, 9F76, 9F86, 9F96, 9FA6, 9FB6
 }
@@ -4018,17 +4015,15 @@ $94:9FC6             dw 9F46, 9F56, 9F66, 9F76, 9F86, 9F96, 9FA6, 9FB6
 
 ;;; $9FD6: Block shot/bombed/grappled reaction - bombable air ;;;
 {
-; Check BTS. If positive, create PLM (94:A012 + BTS*2, 'max' BTS of 20?).
-; Clear V, CLC, RTS
-$94:9FD6 AE C4 0D    LDX $0DC4  [$7F:0DC4]
-$94:9FD9 BF 01 64 7F LDA $7F6401,x[$7F:6401]
-$94:9FDD 29 00 FF    AND #$FF00
-$94:9FE0 EB          XBA
-$94:9FE1 30 0D       BMI $0D    [$9FF0]
-$94:9FE3 0A          ASL A
-$94:9FE4 AA          TAX
-$94:9FE5 BD 12 A0    LDA $A012,x[$94:A012]
-$94:9FE8 22 E7 84 84 JSL $8484E7[$84:84E7]
+$94:9FD6 AE C4 0D    LDX $0DC4  [$7F:0DC4]  ;\
+$94:9FD9 BF 01 64 7F LDA $7F6401,x[$7F:6401];|
+$94:9FDD 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return
+$94:9FE0 EB          XBA                    ;|
+$94:9FE1 30 0D       BMI $0D    [$9FF0]     ;/
+$94:9FE3 0A          ASL A                  ;\
+$94:9FE4 AA          TAX                    ;|
+$94:9FE5 BD 12 A0    LDA $A012,x[$94:A012]  ;} Spawn PLM [$A012 + [block BTS] * 2]
+$94:9FE8 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9FEC C2 40       REP #$40
 $94:9FEE 18          CLC
 $94:9FEF 60          RTS
@@ -4041,17 +4036,15 @@ $94:9FF3 60          RTS
 
 ;;; $9FF4: Block shot/bombed/grappled reaction - bombable block ;;;
 {
-; Check BTS. If positive, create PLM (94:A012 + BTS*2, 'max' BTS of 20?).
-; Clear V, SEC, RTS
-$94:9FF4 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:9FF7 BF 01 64 7F LDA $7F6401,x[$7F:66E0]
-$94:9FFB 29 00 FF    AND #$FF00
-$94:9FFE EB          XBA
-$94:9FFF 30 0D       BMI $0D    [$A00E]
-$94:A001 0A          ASL A
-$94:A002 AA          TAX
-$94:A003 BD 12 A0    LDA $A012,x[$94:A014]
-$94:A006 22 E7 84 84 JSL $8484E7[$84:84E7]
+$94:9FF4 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:9FF7 BF 01 64 7F LDA $7F6401,x[$7F:66E0];|
+$94:9FFB 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return
+$94:9FFE EB          XBA                    ;|
+$94:9FFF 30 0D       BMI $0D    [$A00E]     ;/
+$94:A001 0A          ASL A                  ;\
+$94:A002 AA          TAX                    ;|
+$94:A003 BD 12 A0    LDA $A012,x[$94:A014]  ;} Spawn PLM [$A012 + [block BTS] * 2]
+$94:A006 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:A00A C2 40       REP #$40
 $94:A00C 38          SEC
 $94:A00D 60          RTS
@@ -4070,22 +4063,22 @@ $94:A012             dw D0B8, D0BC, D0C0, D0C4, D0C8, D0CC, D0D0, D0D4, B62F, B6
 
 ;;; $A032: Block bombed reaction pointers ;;;
 {
-$94:A032             dw 9D59, ; *0: Air
-                        9D59, ; *1: Slope
-                        9D59, ; *2: Spike air
-                        9D59, ; *3: Special air
-                        9E55, ;  4: Shootable air
-                        9411, ;  5: Horizontal extension
-                        9D59, ; *6: Unused air
-                        9FD6, ;  7: Bombable air
-                        9D5B, ; *8: Solid block
-                        9D5B, ; *9: Door block
-                        9D5B, ; *Ah: Spike block
-                        9D71, ;  Bh: Special block
-                        9E73, ;  Ch: Shootable block
-                        9447, ;  Dh: Vertical extension
-                        9D5B, ; *Eh: Grapple block
-                        9FF4  ;  Fh: Bombable block
+$94:A032             dw 9D59, ;  0: Air
+                        9D59, ;  1: Slope
+                        9D59, ;  2: Spike air
+                        9D59, ;  3: Special air
+                        9E55, ; *4: Shootable air
+                        9411, ; *5: Horizontal extension
+                        9D59, ;  6: Unused air
+                        9FD6, ; *7: Bombable air
+                        9D5B, ;  8: Solid block
+                        9D5B, ;  9: Door block
+                        9D5B, ;  Ah: Spike block
+                        9D71, ; *Bh: Special block
+                        9E73, ; *Ch: Shootable block
+                        9447, ; *Dh: Vertical extension
+                        9D5B, ;  Eh: Grapple block
+                        9FF4  ; *Fh: Bombable block
 }
 
 
@@ -4112,83 +4105,87 @@ $94:A069 60          RTS
 
 ;;; $A06A: Power bomb explosion block collision handling ;;;
 {
-$94:A06A BD 7C 0C    LDA $0C7C,x[$7E:0C86]
-$94:A06D F0 06       BEQ $06    [$A075]
-$94:A06F 10 03       BPL $03    [$A074]
-$94:A071 9E 7C 0C    STZ $0C7C,x[$7E:0C86]
+;; Parameters:
+;;     X: Projectile index
 
-$94:A074 60          RTS
+$94:A06A BD 7C 0C    LDA $0C7C,x[$7E:0C86]  ;\
+$94:A06D F0 06       BEQ $06    [$A075]     ;} If [bomb timer] = 0: go to BRANCH_ZERO
+$94:A06F 10 03       BPL $03    [$A074]     ;\
+$94:A071 9E 7C 0C    STZ $0C7C,x[$7E:0C86]  ;} Bomb timer = max([bomb timer], 0)
 
-$94:A075 AD EB 0C    LDA $0CEB  [$7E:0CEB]
-$94:A078 29 FF 00    AND #$00FF
-$94:A07B 85 12       STA $12    [$7E:0012]
-$94:A07D 0A          ASL A
-$94:A07E 65 12       ADC $12    [$7E:0012]
-$94:A080 4A          LSR A
-$94:A081 4A          LSR A
-$94:A082 85 14       STA $14    [$7E:0014]
-$94:A084 AD E2 0C    LDA $0CE2  [$7E:0CE2]
-$94:A087 38          SEC
-$94:A088 E5 12       SBC $12    [$7E:0012]
-$94:A08A 10 03       BPL $03    [$A08F]
-$94:A08C A9 00 00    LDA #$0000
+$94:A074 60          RTS                    ; Return
 
-$94:A08F 4A          LSR A
-$94:A090 4A          LSR A
-$94:A091 4A          LSR A
-$94:A092 4A          LSR A
-$94:A093 85 16       STA $16    [$7E:0016]
-$94:A095 AD E2 0C    LDA $0CE2  [$7E:0CE2]
-$94:A098 18          CLC
-$94:A099 65 12       ADC $12    [$7E:0012]
-$94:A09B 4A          LSR A
-$94:A09C 4A          LSR A
-$94:A09D 4A          LSR A
-$94:A09E 4A          LSR A
-$94:A09F CD A5 07    CMP $07A5  [$7E:07A5]
-$94:A0A2 90 04       BCC $04    [$A0A8]
-$94:A0A4 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A0A7 3A          DEC A
-
-$94:A0A8 85 18       STA $18    [$7E:0018]
-$94:A0AA AD E4 0C    LDA $0CE4  [$7E:0CE4]
-$94:A0AD 38          SEC
-$94:A0AE E5 14       SBC $14    [$7E:0014]
-$94:A0B0 10 03       BPL $03    [$A0B5]
-$94:A0B2 A9 00 00    LDA #$0000
-
-$94:A0B5 4A          LSR A
-$94:A0B6 4A          LSR A
-$94:A0B7 4A          LSR A
-$94:A0B8 4A          LSR A
-$94:A0B9 85 1A       STA $1A    [$7E:001A]
-$94:A0BB AD E4 0C    LDA $0CE4  [$7E:0CE4]
-$94:A0BE 18          CLC
-$94:A0BF 65 14       ADC $14    [$7E:0014]
-$94:A0C1 4A          LSR A
-$94:A0C2 4A          LSR A
-$94:A0C3 4A          LSR A
-$94:A0C4 4A          LSR A
-$94:A0C5 CD A7 07    CMP $07A7  [$7E:07A7]
-$94:A0C8 90 04       BCC $04    [$A0CE]
-$94:A0CA AD A7 07    LDA $07A7  [$7E:07A7]
-$94:A0CD 3A          DEC A
-
-$94:A0CE 85 1C       STA $1C    [$7E:001C]
-$94:A0D0 A5 15       LDA $15    [$7E:0015]
-$94:A0D2 29 00 FF    AND #$FF00
-$94:A0D5 05 1A       ORA $1A    [$7E:001A]
-$94:A0D7 48          PHA
-$94:A0D8 20 F4 A0    JSR $A0F4  [$94:A0F4]  ; Power bomb explosion block collision detection - row
-$94:A0DB 68          PLA
+; BRANCH_ZERO
+$94:A075 AD EB 0C    LDA $0CEB  [$7E:0CEB]  ;\
+$94:A078 29 FF 00    AND #$00FF             ;} $12 = [power bomb explosion radius] / 100h (power bomb X radius)
+$94:A07B 85 12       STA $12    [$7E:0012]  ;/
+$94:A07D 0A          ASL A                  ;\
+$94:A07E 65 12       ADC $12    [$7E:0012]  ;|
+$94:A080 4A          LSR A                  ;} $14 = (power bomb X radius) * 3/4 (power bomb Y radius)
+$94:A081 4A          LSR A                  ;|
+$94:A082 85 14       STA $14    [$7E:0014]  ;/
+$94:A084 AD E2 0C    LDA $0CE2  [$7E:0CE2]  ;\
+$94:A087 38          SEC                    ;|
+$94:A088 E5 12       SBC $12    [$7E:0012]  ;|
+$94:A08A 10 03       BPL $03    [$A08F]     ;|
+$94:A08C A9 00 00    LDA #$0000             ;|
+                                            ;} $16 = max(0, [power bomb explosion X position] - (power bomb X radius)) / 10h (power bomb left boundary)
+$94:A08F 4A          LSR A                  ;|
+$94:A090 4A          LSR A                  ;|
+$94:A091 4A          LSR A                  ;|
+$94:A092 4A          LSR A                  ;|
+$94:A093 85 16       STA $16    [$7E:0016]  ;/
+$94:A095 AD E2 0C    LDA $0CE2  [$7E:0CE2]  ;\
+$94:A098 18          CLC                    ;|
+$94:A099 65 12       ADC $12    [$7E:0012]  ;|
+$94:A09B 4A          LSR A                  ;|
+$94:A09C 4A          LSR A                  ;|
+$94:A09D 4A          LSR A                  ;|
+$94:A09E 4A          LSR A                  ;} $18 = min([room width in blocks] - 1, [power bomb explosion X position] + (power bomb X radius)) / 10h (power bomb right boundary)
+$94:A09F CD A5 07    CMP $07A5  [$7E:07A5]  ;|
+$94:A0A2 90 04       BCC $04    [$A0A8]     ;|
+$94:A0A4 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A0A7 3A          DEC A                  ;|
+                                            ;|
+$94:A0A8 85 18       STA $18    [$7E:0018]  ;/
+$94:A0AA AD E4 0C    LDA $0CE4  [$7E:0CE4]  ;\
+$94:A0AD 38          SEC                    ;|
+$94:A0AE E5 14       SBC $14    [$7E:0014]  ;|
+$94:A0B0 10 03       BPL $03    [$A0B5]     ;|
+$94:A0B2 A9 00 00    LDA #$0000             ;|
+                                            ;} $1A = max(0, [power bomb explosion Y position] - (power bomb Y radius)) / 10h (power bomb top boundary)
+$94:A0B5 4A          LSR A                  ;|
+$94:A0B6 4A          LSR A                  ;|
+$94:A0B7 4A          LSR A                  ;|
+$94:A0B8 4A          LSR A                  ;|
+$94:A0B9 85 1A       STA $1A    [$7E:001A]  ;/
+$94:A0BB AD E4 0C    LDA $0CE4  [$7E:0CE4]  ;\
+$94:A0BE 18          CLC                    ;|
+$94:A0BF 65 14       ADC $14    [$7E:0014]  ;|
+$94:A0C1 4A          LSR A                  ;|
+$94:A0C2 4A          LSR A                  ;|
+$94:A0C3 4A          LSR A                  ;|
+$94:A0C4 4A          LSR A                  ;} $1C = min([room height in blocks] - 1, [power bomb explosion Y position] + (power bomb Y radius)) / 10h (power bomb bottom boundary)
+$94:A0C5 CD A7 07    CMP $07A7  [$7E:07A7]  ;|
+$94:A0C8 90 04       BCC $04    [$A0CE]     ;|
+$94:A0CA AD A7 07    LDA $07A7  [$7E:07A7]  ;|
+$94:A0CD 3A          DEC A                  ;|
+                                            ;|
+$94:A0CE 85 1C       STA $1C    [$7E:001C]  ;/
+$94:A0D0 A5 15       LDA $15    [$7E:0015]  ;\
+$94:A0D2 29 00 FF    AND #$FF00             ;} A high = (power bomb left boundary)
+$94:A0D5 05 1A       ORA $1A    [$7E:001A]  ; A low = (power bomb top boundary)
+$94:A0D7 48          PHA                    ;\
+$94:A0D8 20 F4 A0    JSR $A0F4  [$94:A0F4]  ;} Power bomb explosion block collision detection - row
+$94:A0DB 68          PLA                    ;/
 $94:A0DC 20 1A A1    JSR $A11A  [$94:A11A]  ; Power bomb explosion block collision detection - column
-$94:A0DF A5 15       LDA $15    [$7E:0015]
-$94:A0E1 29 00 FF    AND #$FF00
-$94:A0E4 05 1C       ORA $1C    [$7E:001C]
+$94:A0DF A5 15       LDA $15    [$7E:0015]  ;\
+$94:A0E1 29 00 FF    AND #$FF00             ;} A high = (power bomb left boundary)
+$94:A0E4 05 1C       ORA $1C    [$7E:001C]  ; A low = (power bomb bottom boundary)
 $94:A0E6 20 F4 A0    JSR $A0F4  [$94:A0F4]  ; Power bomb explosion block collision detection - row
-$94:A0E9 A5 17       LDA $17    [$7E:0017]
-$94:A0EB 29 00 FF    AND #$FF00
-$94:A0EE 05 1A       ORA $1A    [$7E:001A]
+$94:A0E9 A5 17       LDA $17    [$7E:0017]  ;\
+$94:A0EB 29 00 FF    AND #$FF00             ;} A high = (power bomb right boundary)
+$94:A0EE 05 1A       ORA $1A    [$7E:001A]  ; A low = (power bomb top boundary)
 $94:A0F0 20 1A A1    JSR $A11A  [$94:A11A]  ; Power bomb explosion block collision detection - column
 $94:A0F3 60          RTS
 }
@@ -4196,59 +4193,71 @@ $94:A0F3 60          RTS
 
 ;;; $A0F4: Power bomb explosion block collision handling - row ;;;
 {
-$94:A0F4 E2 20       SEP #$20
-$94:A0F6 8D 02 42    STA $4202  [$7E:4202]
-$94:A0F9 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A0FC 8D 03 42    STA $4203  [$7E:4203]
-$94:A0FF A9 00       LDA #$00
-$94:A101 EB          XBA
-$94:A102 C2 31       REP #$31
-$94:A104 6D 16 42    ADC $4216  [$7E:4216]
-$94:A107 0A          ASL A
-$94:A108 AA          TAX
-$94:A109 A5 18       LDA $18    [$7E:0018]
-$94:A10B 38          SEC
-$94:A10C E5 16       SBC $16    [$7E:0016]
-$94:A10E A8          TAY
+;; Parameters:
+;;     A low: Origin Y block
+;;     A high: Origin X block
+;;     $16: Power bomb left boundary
+;;     $18: Power bomb right boundary
+$94:A0F4 E2 20       SEP #$20               ;\
+$94:A0F6 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A0F9 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A0FC 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A0FF A9 00       LDA #$00               ;|
+$94:A101 EB          XBA                    ;} X = ((origin Y block) * [room width in blocks] + (origin X block)) * 2
+$94:A102 C2 31       REP #$31               ;|
+$94:A104 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A107 0A          ASL A                  ;|
+$94:A108 AA          TAX                    ;/
+$94:A109 A5 18       LDA $18    [$7E:0018]  ;\
+$94:A10B 38          SEC                    ;|
+$94:A10C E5 16       SBC $16    [$7E:0016]  ;} Y = (power bomb right boundary) - (power bomb left boundary)
+$94:A10E A8          TAY                    ;/
 
-$94:A10F 5A          PHY
-$94:A110 20 52 A0    JSR $A052  [$94:A052]  ; Block bombed reaction
-$94:A113 7A          PLY
-$94:A114 E8          INX
-$94:A115 E8          INX
-$94:A116 88          DEY
-$94:A117 10 F6       BPL $F6    [$A10F]
+; LOOP
+$94:A10F 5A          PHY                    ;\
+$94:A110 20 52 A0    JSR $A052  [$94:A052]  ;} Block bombed reaction
+$94:A113 7A          PLY                    ;/
+$94:A114 E8          INX                    ;\
+$94:A115 E8          INX                    ;} X += 2 (next block)
+$94:A116 88          DEY                    ; Decrement Y
+$94:A117 10 F6       BPL $F6    [$A10F]     ; If [Y] >= 0: go to LOOP
 $94:A119 60          RTS
 }
 
 
 ;;; $A11A: Power bomb explosion block collision handling - column ;;;
 {
-$94:A11A E2 20       SEP #$20
-$94:A11C 8D 02 42    STA $4202  [$7E:4202]
-$94:A11F AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A122 8D 03 42    STA $4203  [$7E:4203]
-$94:A125 A9 00       LDA #$00
-$94:A127 EB          XBA
-$94:A128 C2 31       REP #$31
-$94:A12A 6D 16 42    ADC $4216  [$7E:4216]
-$94:A12D 0A          ASL A
-$94:A12E AA          TAX
-$94:A12F A5 1C       LDA $1C    [$7E:001C]
-$94:A131 38          SEC
-$94:A132 E5 1A       SBC $1A    [$7E:001A]
-$94:A134 A8          TAY
+;; Parameters:
+;;     A low: Origin Y block
+;;     A high: Origin X block
+;;     $1A: Power bomb top boundary
+;;     $1C: Power bomb bottom boundary
+$94:A11A E2 20       SEP #$20               ;\
+$94:A11C 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A11F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A122 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A125 A9 00       LDA #$00               ;|
+$94:A127 EB          XBA                    ;} X = ((origin Y block) * [room width in blocks] + (origin X block)) * 2
+$94:A128 C2 31       REP #$31               ;|
+$94:A12A 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A12D 0A          ASL A                  ;|
+$94:A12E AA          TAX                    ;/
+$94:A12F A5 1C       LDA $1C    [$7E:001C]  ;\
+$94:A131 38          SEC                    ;|
+$94:A132 E5 1A       SBC $1A    [$7E:001A]  ;} Y = (power bomb bottom boundary) - (power bomb top boundary)
+$94:A134 A8          TAY                    ;/
 
-$94:A135 5A          PHY
-$94:A136 20 52 A0    JSR $A052  [$94:A052]  ; Block bombed reaction
-$94:A139 7A          PLY
-$94:A13A 8A          TXA
-$94:A13B 18          CLC
-$94:A13C 6D A5 07    ADC $07A5  [$7E:07A5]
-$94:A13F 6D A5 07    ADC $07A5  [$7E:07A5]
-$94:A142 AA          TAX
-$94:A143 88          DEY
-$94:A144 10 EF       BPL $EF    [$A135]
+; LOOP
+$94:A135 5A          PHY                    ;\
+$94:A136 20 52 A0    JSR $A052  [$94:A052]  ;} Block bombed reaction
+$94:A139 7A          PLY                    ;/
+$94:A13A 8A          TXA                    ;\
+$94:A13B 18          CLC                    ;|
+$94:A13C 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width] * 2 (next row)
+$94:A13F 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$94:A142 AA          TAX                    ;/
+$94:A143 88          DEY                    ; Decrement Y
+$94:A144 10 EF       BPL $EF    [$A135]     ; If [Y] >= 0: go to LOOP
 $94:A146 60          RTS
 }
 
@@ -4256,7 +4265,7 @@ $94:A146 60          RTS
 ;;; $A147: Block shot reaction - horizontal - slope ;;;
 {
 $94:A147 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$94:A14A BF 02 64 7F LDA $7F6402,x[$7F:6CE9];} A = (block BTS) & 1Fh
+$94:A14A BF 02 64 7F LDA $7F6402,x[$7F:6CE9];} A = [block BTS] & 1Fh
 $94:A14E 29 1F 00    AND #$001F             ;/
 $94:A151 C9 05 00    CMP #$0005             ;\
 $94:A154 90 03       BCC $03    [$A159]     ;} If [A] >= 5:
@@ -4447,8 +4456,10 @@ $94:A23A 60          RTS
 }
 
 
-;;; $A23B: Beam horizontal block collision detection - no wave beam ;;;
+;;; $A23B: Move beam horizontally - no wave beam ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
 $94:A23B 8B          PHB
@@ -4538,7 +4549,7 @@ $94:A2C9 6B          RTL                    ;} Return carry set
 }
 
 
-;;; $A2CA: Beam vertical block collision detection - no wave beam ;;;
+;;; $A2CA: Move beam vertically - no wave beam ;;;
 {
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
@@ -4624,7 +4635,7 @@ $94:A351 6B          RTL
 }
 
 
-;;; $A352: Beam horizontal block collision detection - wave beam ;;;
+;;; $A352: Move beam horizontally - wave beam ;;;
 {
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
@@ -4713,7 +4724,7 @@ $94:A3E3 6B          RTL                    ;} Return carry clear
 }
 
 
-;;; $A3E4: Beam vertical block collision detection - wave beam ;;;
+;;; $A3E4: Move beam vertically - wave beam ;;;
 {
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
@@ -4798,7 +4809,7 @@ $94:A46E 6B          RTL
 }
 
 
-;;; $A46F: (Super) missile horizontal block collision detection ;;;
+;;; $A46F: Move (super) missile horizontally ;;;
 {
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
@@ -4865,7 +4876,7 @@ $94:A4D8 6B          RTL
 }
 
 
-;;; $A4D9: (Super) missile vertical block collision detection ;;;
+;;; $A4D9: Move (super) missile vertically ;;;
 {
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
@@ -5064,6 +5075,8 @@ $94:A601             dw 9D59, ;  0: Air
 
 ;;; $A621: Spread bomb block collision detection ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 ;; Returns:
 ;;     Carry: Set if collision detected, clear otherwise
 $94:A621 08          PHP
@@ -5115,6 +5128,9 @@ $94:A669 6B          RTL
 
 ;;; $A66A: Block shot reaction - horizontal - slope - square ;;;
 {
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     X: Block index
 $94:A66A 0A          ASL A
 $94:A66B 0A          ASL A
 $94:A66C 8D D4 0D    STA $0DD4  [$7E:0DD4]
