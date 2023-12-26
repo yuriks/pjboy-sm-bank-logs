@@ -7261,7 +7261,7 @@ $90:B142 60          RTS
 {
 $90:B143 AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:B146 22 52 A3 94 JSL $94A352[$94:A352]  ; Move beam horizontally - wave beam
-$90:B14A B0 04       BCS $04    [$B150]     ; If not collided:
+$90:B14A B0 04       BCS $04    [$B150]
 $90:B14C 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Move beam vertically - wave beam
 
 $90:B150 60          RTS
@@ -9111,7 +9111,7 @@ $90:BDDB 60          RTS
 {
 $90:BDDC AE DE 0D    LDX $0DDE  [$7E:0DDE]
 $90:BDDF 22 52 A3 94 JSL $94A352[$94:A352]  ; Move beam horizontally - wave beam
-$90:BDE3 B0 04       BCS $04    [$BDE9]     ; If not collided:
+$90:BDE3 B0 04       BCS $04    [$BDE9]
 $90:BDE5 22 E4 A3 94 JSL $94A3E4[$94:A3E4]  ; Move beam vertically - wave beam
 
 $90:BDE9 60          RTS

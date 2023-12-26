@@ -245,7 +245,7 @@ $94:819A 18          CLC                    ;\
 $94:819B 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
 $94:819E AA          TAX                    ;} A = [$8B2B + [$0DD6] + [A]] (slope top Y offset)
 $94:819F BD 2B 8B    LDA $8B2B,x            ;/
-$94:81A2 29 1F 00    AND #$001F             
+$94:81A2 29 1F 00    AND #$001F
 $94:81A5 38          SEC                    ;\
 $94:81A6 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Samus bottom Y offset) + 1
 $94:81A9 3A          DEC A                  ;/
@@ -305,7 +305,7 @@ $94:81F4 30 23       BMI $23    [$8219]     ;} If [$8E54 + [X]] & 80h != 0 (top 
 $94:81F6 80 1F       BRA $1F    [$8217]     ; Return carry clear
 
 $94:81F8 C5 1C       CMP $1C    [$7E:001C]  ;\
-$94:81FA D0 0C       BNE $0C    [$8208]     ;} If [$1C] = 0 (Samus spans one tile):
+$94:81FA D0 0C       BNE $0C    [$8208]     ;} If [$1A] = [$1C] (top block check):
 $94:81FC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:81FF 38          SEC                    ;|
 $94:8200 ED 00 0B    SBC $0B00  [$7E:0B00]  ;} If Samus top boundary is in bottom half: go to BRANCH_CHECK_BOTTOM_HALF
@@ -384,7 +384,7 @@ $94:826B 30 23       BMI $23    [$8290]     ;} If [$8E54 + [X]] & 80h != 0 (left
 $94:826D 80 1F       BRA $1F    [$828E]     ; Return carry clear
 
 $94:826F C5 1C       CMP $1C    [$7E:001C]  ;\
-$94:8271 D0 0C       BNE $0C    [$827F]     ;} If [$1C] = 0 (Samus spans one tile):
+$94:8271 D0 0C       BNE $0C    [$827F]     ;} If [$1A] = [$1C] (leftmost block check):
 $94:8273 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $94:8276 38          SEC                    ;|
 $94:8277 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;} If Samus left boundary is in right half: go to BRANCH_CHECK_RIGHT_HALF
@@ -1171,17 +1171,17 @@ $94:8746 10 35       BPL $35    [$877D]     ;} If [block BTS] & 80h = 0: return 
 $94:8748 0A          ASL A                  ;\
 $94:8749 30 05       BMI $05    [$8750]     ;} If [block BTS] & 40h = 0:
 $94:874B AD F6 0A    LDA $0AF6  [$7E:0AF6]  ; A = [Samus X position] % 10h
-$94:874E 80 06       BRA $06    [$8756]     
-                                            
+$94:874E 80 06       BRA $06    [$8756]
+
 $94:8750 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\ Else ([block BTS] & 40h != 0):
 $94:8753 49 0F 00    EOR #$000F             ;} A = Fh - [Samus X position] % 10h
-                                            
-$94:8756 29 0F 00    AND #$000F             
+
+$94:8756 29 0F 00    AND #$000F
 $94:8759 18          CLC                    ;\
 $94:875A 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
 $94:875D AA          TAX                    ;} A = [$8B2B + [$0DD6] + [A]] (slope top Y offset)
 $94:875E BD 2B 8B    LDA $8B2B,x[$94:8C57]  ;/
-$94:8761 29 1F 00    AND #$001F             
+$94:8761 29 1F 00    AND #$001F
 $94:8764 38          SEC                    ;\
 $94:8765 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
 $94:8768 3A          DEC A                  ;/
@@ -1238,23 +1238,23 @@ $94:87BD 30 33       BMI $33    [$87F2]     ;} If [block BTS] & 80h = 0: return 
 $94:87BF 0A          ASL A                  ;\
 $94:87C0 30 05       BMI $05    [$87C7]     ;} If [block BTS] & 40h = 0:
 $94:87C2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ; A = [Samus X position] % 10h
-$94:87C5 80 06       BRA $06    [$87CD]     
-                                            
+$94:87C5 80 06       BRA $06    [$87CD]
+
 $94:87C7 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\ Else ([block BTS] & 40h != 0):
 $94:87CA 49 0F 00    EOR #$000F             ;} A = Fh - [Samus X position] % 10h
-                                            
-$94:87CD 29 0F 00    AND #$000F             
+
+$94:87CD 29 0F 00    AND #$000F
 $94:87D0 18          CLC                    ;\
 $94:87D1 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
 $94:87D4 AA          TAX                    ;} A = [$8B2B + [$0DD6] + [A]] (slope top Y offset)
 $94:87D5 BD 2B 8B    LDA $8B2B,x[$94:8C64]  ;/
-$94:87D8 29 1F 00    AND #$001F             
+$94:87D8 29 1F 00    AND #$001F
 $94:87DB 38          SEC                    ;\
 $94:87DC ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
 $94:87DF 3A          DEC A                  ;/
 $94:87E0 F0 02       BEQ $02    [$87E4]     ;\
 $94:87E2 10 0E       BPL $0E    [$87F2]     ;} If [A] > 0: return carry clear
-                                            
+
 $94:87E4 18          CLC                    ;\
 $94:87E5 65 12       ADC $12    [$7E:0012]  ;|
 $94:87E7 10 03       BPL $03    [$87EC]     ;|
@@ -1536,9 +1536,9 @@ $94:8D5B D0 17       BNE $17    [$8D74]     ;/
 $94:8D5D BD 53 8E    LDA $8E53,x[$94:8E53]  ;\
 $94:8D60 30 23       BMI $23    [$8D85]     ;} If [$8E54 + [X]] & 80h != 0 (top half is solid): go to BRANCH_SOLID
 $94:8D62 80 1F       BRA $1F    [$8D83]     ; Return carry clear
-                                            
+
 $94:8D64 C5 1C       CMP $1C    [$7E:001C]  ;\
-$94:8D66 D0 0C       BNE $0C    [$8D74]     ;} If [$1C] = 0 (Samus spans one tile):
+$94:8D66 D0 0C       BNE $0C    [$8D74]     ;} If [$1A] = [$1C] (top block check):
 $94:8D68 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $94:8D6B 38          SEC                    ;|
 $94:8D6C ED 00 0B    SBC $0B00  [$7E:0B00]  ;} If Samus top boundary is in bottom half: go to BRANCH_CHECK_BOTTOM_HALF
@@ -1633,7 +1633,7 @@ $94:8DF1 30 23       BMI $23    [$8E16]     ;} If [$8E54 + [X]] & 80h != 0 (left
 $94:8DF3 80 1F       BRA $1F    [$8E14]     ; Return carry clear
 
 $94:8DF5 C5 1C       CMP $1C    [$7E:001C]  ;\
-$94:8DF7 D0 0C       BNE $0C    [$8E05]     ;} If [$1C] = 0 (Samus spans one tile):
+$94:8DF7 D0 0C       BNE $0C    [$8E05]     ;} If [$1A] = [$1C] (leftmost block check):
 $94:8DF9 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $94:8DFC 38          SEC                    ;|
 $94:8DFD ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;} If Samus left boundary is in right half: go to BRANCH_CHECK_RIGHT_HALF
@@ -1793,10 +1793,10 @@ $94:8ED4 A9 3C 00    LDA #$003C             ;\
 $94:8ED7 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60
 $94:8EDA A9 0A 00    LDA #$000A             ;\
 $94:8EDD 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = Ah
-$94:8EE0 AD 4E 0A    LDA $0A4E  [$7E:0A4E]  
-$94:8EE3 18          CLC                    
-$94:8EE4 69 00 00    ADC #$0000             
-$94:8EE7 8D 4E 0A    STA $0A4E  [$7E:0A4E]  
+$94:8EE0 AD 4E 0A    LDA $0A4E  [$7E:0A4E]
+$94:8EE3 18          CLC
+$94:8EE4 69 00 00    ADC #$0000
+$94:8EE7 8D 4E 0A    STA $0A4E  [$7E:0A4E]
 $94:8EEA AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
 $94:8EED 69 10 00    ADC #$0010             ;} Periodic damage += 10h
 $94:8EF0 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
@@ -1806,8 +1806,8 @@ $94:8EF9 89 08 00    BIT #$0008             ;} If facing left:
 $94:8EFC F0 08       BEQ $08    [$8F06]     ;/
 $94:8EFE A9 01 00    LDA #$0001             ;\
 $94:8F01 8D 54 0A    STA $0A54  [$7E:0A54]  ;} Knockback X direction = right
-$94:8F04 80 03       BRA $03    [$8F09]     
-                                            
+$94:8F04 80 03       BRA $03    [$8F09]
+
 $94:8F06 9C 54 0A    STZ $0A54  [$7E:0A54]  ; Knockback X direction = left
 
 $94:8F09 60          RTS
@@ -2197,10 +2197,10 @@ $94:9111 BD 39 91    LDA $9139,x[$94:91C3]  ;} Spawn PLM [$9139 + [block BTS] * 
 $94:9114 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9118 90 03       BCC $03    [$911D]     ; If carry clear: return carry clear
 $94:911A 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
-                                            
-$94:911D 60          RTS                    
-                                            
-; BRANCH_AREA_DEPENDANT                     
+
+$94:911D 60          RTS
+
+; BRANCH_AREA_DEPENDANT
 $94:911E 29 7F 00    AND #$007F             ;\
 $94:9121 0A          ASL A                  ;|
 $94:9122 A8          TAY                    ;|
@@ -2334,9 +2334,9 @@ $94:9359 0A          ASL A                  ;\
 $94:935A AA          TAX                    ;|
 $94:935B BD 6B 93    LDA $936B,x[$94:9377]  ;} Spawn PLM [$936B + [block BTS] * 2]
 $94:935E 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9362 90 06       BCC $06    [$936A]     
-$94:9364 4C 82 8F    JMP $8F82  [$94:8F82]  
-                                            
+$94:9362 90 06       BCC $06    [$936A]
+$94:9364 4C 82 8F    JMP $8F82  [$94:8F82]
+
 $94:9367 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
 
 $94:936A 60          RTS
@@ -3939,9 +3939,11 @@ $94:9E54 60          RTS
 
 ;;; $9E55: Block shot/bombed/grappled reaction - shootable air ;;;
 {
+;; Returns:
+;;     Carry: Clear. No collision
 $94:9E55 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9E58 BF 01 64 7F LDA $7F6401,x[$7F:64C3];|
-$94:9E5C 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return
+$94:9E5C 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return carry clear
 $94:9E5F EB          XBA                    ;|
 $94:9E60 30 0D       BMI $0D    [$9E6F]     ;/
 $94:9E62 0A          ASL A                  ;\
@@ -3949,8 +3951,8 @@ $94:9E63 AA          TAX                    ;|
 $94:9E64 BD A6 9E    LDA $9EA6,x[$94:9EA6]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
 $94:9E67 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9E6B C2 40       REP #$40
-$94:9E6D 18          CLC
-$94:9E6E 60          RTS
+$94:9E6D 18          CLC                    ;\
+$94:9E6E 60          RTS                    ;} Return carry clear
 
 $94:9E6F C2 40       REP #$40
 $94:9E71 18          CLC
@@ -3960,6 +3962,8 @@ $94:9E72 60          RTS
 
 ;;; $9E73: Block shot/bombed/grappled reaction - shootable block ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $94:9E73 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9E76 BF 01 64 7F LDA $7F6401,x[$7F:8B62];|
 $94:9E7A 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
@@ -3969,11 +3973,11 @@ $94:9E80 0A          ASL A                  ;\
 $94:9E81 AA          TAX                    ;|
 $94:9E82 BD A6 9E    LDA $9EA6,x[$94:9F28]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
 $94:9E85 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9E89 C2 40       REP #$40               
-$94:9E8B 38          SEC                    
-$94:9E8C 60          RTS                    ; Return
-                                            
-; BRANCH_AREA_DEPENDANT                     
+$94:9E89 C2 40       REP #$40
+$94:9E8B 38          SEC                    ;\
+$94:9E8C 60          RTS                    ;} Return set
+
+; BRANCH_AREA_DEPENDANT
 $94:9E8D 29 7F 00    AND #$007F             ;\
 $94:9E90 0A          ASL A                  ;|
 $94:9E91 A8          TAY                    ;|
@@ -3985,8 +3989,8 @@ $94:9E9A 85 12       STA $12    [$7E:0012]  ;|
 $94:9E9C B1 12       LDA ($12),y[$7E:5555]  ;|
 $94:9E9E 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9EA2 C2 40       REP #$40
-$94:9EA4 38          SEC
-$94:9EA5 60          RTS
+$94:9EA4 38          SEC                    ;\
+$94:9EA5 60          RTS                    ;} Return carry set
 }
 
 
@@ -4015,9 +4019,11 @@ $94:9FC6             dw 9F46, 9F56, 9F66, 9F76, 9F86, 9F96, 9FA6, 9FB6
 
 ;;; $9FD6: Block shot/bombed/grappled reaction - bombable air ;;;
 {
+;; Returns:
+;;     Carry: Clear. No collision
 $94:9FD6 AE C4 0D    LDX $0DC4  [$7F:0DC4]  ;\
 $94:9FD9 BF 01 64 7F LDA $7F6401,x[$7F:6401];|
-$94:9FDD 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return
+$94:9FDD 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return clear
 $94:9FE0 EB          XBA                    ;|
 $94:9FE1 30 0D       BMI $0D    [$9FF0]     ;/
 $94:9FE3 0A          ASL A                  ;\
@@ -4025,8 +4031,8 @@ $94:9FE4 AA          TAX                    ;|
 $94:9FE5 BD 12 A0    LDA $A012,x[$94:A012]  ;} Spawn PLM [$A012 + [block BTS] * 2]
 $94:9FE8 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:9FEC C2 40       REP #$40
-$94:9FEE 18          CLC
-$94:9FEF 60          RTS
+$94:9FEE 18          CLC                    ;\
+$94:9FEF 60          RTS                    ;} Return carry clear
 
 $94:9FF0 C2 40       REP #$40
 $94:9FF2 18          CLC
@@ -4036,9 +4042,11 @@ $94:9FF3 60          RTS
 
 ;;; $9FF4: Block shot/bombed/grappled reaction - bombable block ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
 $94:9FF4 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9FF7 BF 01 64 7F LDA $7F6401,x[$7F:66E0];|
-$94:9FFB 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return
+$94:9FFB 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return carry sey
 $94:9FFE EB          XBA                    ;|
 $94:9FFF 30 0D       BMI $0D    [$A00E]     ;/
 $94:A001 0A          ASL A                  ;\
@@ -4046,8 +4054,8 @@ $94:A002 AA          TAX                    ;|
 $94:A003 BD 12 A0    LDA $A012,x[$94:A014]  ;} Spawn PLM [$A012 + [block BTS] * 2]
 $94:A006 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:A00A C2 40       REP #$40
-$94:A00C 38          SEC
-$94:A00D 60          RTS
+$94:A00C 38          SEC                    ;\
+$94:A00D 60          RTS                    ;} Return carry set
 
 $94:A00E C2 40       REP #$40
 $94:A010 38          SEC
@@ -4264,6 +4272,16 @@ $94:A146 60          RTS
 
 ;;; $A147: Block shot reaction - horizontal - slope ;;;
 {
+;; Parameters:
+;;     $1A: Projectile Y span - 1
+;;     $1C: Target boundary (left/right depending on sign of projectile velocity)
+;;     $1E: (Super) missile flag
+;;     $26: Number of blocks left to check - 1
+;;     $28: Target number of collisions - 1
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $26: Remaining number of blocks left to check - 1
+;;     $28: Remaining target number of collisions - 1
 $94:A147 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:A14A BF 02 64 7F LDA $7F6402,x[$7F:6CE9];} A = [block BTS] & 1Fh
 $94:A14E 29 1F 00    AND #$001F             ;/
@@ -4284,13 +4302,23 @@ $94:A15D 60          RTS
 
 ;;; $A15E: Block shot reaction - vertical - slope ;;;
 {
+;; Parameters:
+;;     $1A: Projectile Y span - 1
+;;     $1C: Target boundary (left/right depending on sign of projectile velocity)
+;;     $1E: (Super) missile flag
+;;     $26: Number of blocks left to check - 1
+;;     $28: Target number of collisions - 1
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $26: Remaining number of blocks left to check - 1
+;;     $28: Remaining target number of collisions - 1
 $94:A15E AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
-$94:A161 BF 02 64 7F LDA $7F6402,x[$7F:6AA5];} A = (block BTS) & 1Fh
+$94:A161 BF 02 64 7F LDA $7F6402,x[$7F:6AA5];} A = [block BTS] & 1Fh
 $94:A165 29 1F 00    AND #$001F             ;/
 $94:A168 C9 05 00    CMP #$0005             ;\
 $94:A16B 90 03       BCC $03    [$A170]     ;} If [A] >= 5:
 $94:A16D 4C 69 A5    JMP $A569  [$94:A569]  ; Go to block shot reaction - vertical - slope - non-square
-                                            
+
 $94:A170 4C 1A A7    JMP $A71A  [$94:A71A]  ; Go to block shot reaction - vertical - slope - square
 }
 
@@ -4349,9 +4377,16 @@ $94:A195             dw 9D59, ;  0: Air
 ;; Parameters:
 ;;     X: Block index
 ;;     $1A: Projectile Y span - 1
-;;     $28: Number of non-solid blocks - 1
+;;     $1C: Target boundary (left/right depending on sign of projectile velocity)
+;;     $1E: (Super) missile flag
+;;     $26: Number of blocks left to check - 1
+;;     $28: Target number of collisions - 1
+;; Returns:
+;;     Carry: set if collided with block, clear otherwise
+;;     $26: Remaining number of blocks left to check - 1
+;;     $28: Remaining target number of collisions - 1
 $94:A1B5 EC B9 07    CPX $07B9  [$7E:07B9]  ;\
-$94:A1B8 B0 1B       BCS $1B    [$A1D5]     ;} If [X] >= [level data size]: return
+$94:A1B8 B0 1B       BCS $1B    [$A1D5]     ;} If [X] >= [level data size]: return set
 $94:A1BA DA          PHX
 $94:A1BB 8E C4 0D    STX $0DC4  [$7E:0DC4]  ;\
 $94:A1BE 4E C4 0D    LSR $0DC4  [$7E:0DC4]  ;} Current block index = [X] / 2
@@ -4363,8 +4398,8 @@ $94:A1CA 4A          LSR A                  ;} Execute [$A175 + (block type) * 2
 $94:A1CB 4A          LSR A                  ;|
 $94:A1CC AA          TAX                    ;|
 $94:A1CD FC 75 A1    JSR ($A175,x)[$94:9D59];/
-$94:A1D0 90 02       BCC $02    [$A1D4]     ; If solid:
-$94:A1D2 C6 28       DEC $28    [$7E:0028]  ; Decrement $28
+$94:A1D0 90 02       BCC $02    [$A1D4]     ; If collision:
+$94:A1D2 C6 28       DEC $28    [$7E:0028]  ; Decrement (target number of collisions - 1)
 
 $94:A1D4 FA          PLX
 
@@ -4374,21 +4409,32 @@ $94:A1D5 60          RTS
 
 ;;; $A1D6: Block shot reaction - vertical ;;;
 {
-$94:A1D6 EC B9 07    CPX $07B9  [$7E:07B9]
-$94:A1D9 B0 1B       BCS $1B    [$A1F6]
-$94:A1DB DA          PHX
-$94:A1DC 8E C4 0D    STX $0DC4  [$7E:0DC4]
-$94:A1DF 4E C4 0D    LSR $0DC4  [$7E:0DC4]
-$94:A1E2 BF 02 00 7F LDA $7F0002,x[$7F:5356]
-$94:A1E6 29 00 F0    AND #$F000
-$94:A1E9 EB          XBA
-$94:A1EA 4A          LSR A
-$94:A1EB 4A          LSR A
-$94:A1EC 4A          LSR A
-$94:A1ED AA          TAX
-$94:A1EE FC 95 A1    JSR ($A195,x)[$94:9D59]
-$94:A1F1 90 02       BCC $02    [$A1F5]
-$94:A1F3 C6 28       DEC $28    [$7E:0028]
+;; Parameters:
+;;     X: Block index
+;;     $1A: Projectile X span - 1
+;;     $1C: Target boundary (top/bottom depending on sign of projectile velocity)
+;;     $1E: (Super) missile flag
+;;     $26: Number of blocks left to check - 1
+;;     $28: Target number of collisions - 1
+;; Returns:
+;;     Carry: set if collided with block, clear otherwise
+;;     $26: Remaining number of blocks left to check - 1
+;;     $28: Remaining target number of collisions - 1
+$94:A1D6 EC B9 07    CPX $07B9  [$7E:07B9]  ;\
+$94:A1D9 B0 1B       BCS $1B    [$A1F6]     ;} If [X] >= [level data size]: return set
+$94:A1DB DA          PHX                    
+$94:A1DC 8E C4 0D    STX $0DC4  [$7E:0DC4]  ;\
+$94:A1DF 4E C4 0D    LSR $0DC4  [$7E:0DC4]  ;} Current block index = [X] / 2
+$94:A1E2 BF 02 00 7F LDA $7F0002,x[$7F:5356];\
+$94:A1E6 29 00 F0    AND #$F000             ;|
+$94:A1E9 EB          XBA                    ;|
+$94:A1EA 4A          LSR A                  ;|
+$94:A1EB 4A          LSR A                  ;} Execute [$A195 + (block type) * 2]
+$94:A1EC 4A          LSR A                  ;|
+$94:A1ED AA          TAX                    ;|
+$94:A1EE FC 95 A1    JSR ($A195,x)[$94:9D59];/
+$94:A1F1 90 02       BCC $02    [$A1F5]     ; If collision:
+$94:A1F3 C6 28       DEC $28    [$7E:0028]  ; Decrement (target number of collisions - 1)
 
 $94:A1F5 FA          PLX
 
@@ -4401,7 +4447,7 @@ $94:A1F6 60          RTS
 ;; Returns:
 ;;     $1A: Projectile Y span - 1
 ;;     $26: Number of blocks left to check - 1
-;;     $28: Number of (potentially) non-solid blocks - 1
+;;     $28: Target number of collisions - 1
 
 ; $1A = $26 = $28 = (projectile bottom boundary) / 10h - (projectile top boundary) / 10h
 $94:A1F7 BD 78 0B    LDA $0B78,x[$7E:0B78]
@@ -4431,7 +4477,7 @@ $94:A218 60          RTS
 ;; Returns:
 ;;     $1A: Projectile X span - 1
 ;;     $26: Number of blocks left to check - 1
-;;     $28: Number of (potentially) non-solid blocks - 1
+;;     $28: Target number of collisions - 1
 
 ; $1A = $26 = $28 = (projectile right boundary) / 10h - (projectile left boundary) / 10h
 $94:A219 BD 64 0B    LDA $0B64,x[$7E:0B64]
@@ -4466,11 +4512,11 @@ $94:A23B 8B          PHB
 $94:A23C DA          PHX
 $94:A23D 4B          PHK                    ;\
 $94:A23E AB          PLB                    ;} DB = $90
-$94:A23F 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0
+$94:A23F 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0 (missile flag)
 $94:A241 64 12       STZ $12    [$7E:0012]  ;\
 $94:A243 64 14       STZ $14    [$7E:0014]  ;|
 $94:A245 BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;|
-$94:A248 10 02       BPL $02    [$A24C]     ;} $14.$12 = [projectile X velocity] / 100h
+$94:A248 10 02       BPL $02    [$A24C]     ;} $14.$12 = ±[projectile X velocity] / 100h
 $94:A24A C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $94:A24C 85 13       STA $13    [$7E:0013]  ;/
@@ -4481,7 +4527,7 @@ $94:A255 FD C8 0B    SBC $0BC8,x[$7E:0BC8]  ;|
 $94:A258 4A          LSR A                  ;|
 $94:A259 4A          LSR A                  ;|
 $94:A25A 4A          LSR A                  ;|
-$94:A25B 4A          LSR A                  ;} Calculate (projectile top boundary) / 10h * [room width in blocks] (projectile row block index)
+$94:A25B 4A          LSR A                  ;} Calculate block index of row of projectile top boundary
 $94:A25C E2 20       SEP #$20               ;|
 $94:A25E 8D 02 42    STA $4202  [$7E:4202]  ;|
 $94:A261 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
@@ -4511,12 +4557,12 @@ $94:A28F 4A          LSR A                  ;\
 $94:A290 4A          LSR A                  ;|
 $94:A291 4A          LSR A                  ;|
 $94:A292 4A          LSR A                  ;|
-$94:A293 18          CLC                    ;} X = ((projectile row block index) + [$1C] / 10h) * 2 (index of top block to check)
+$94:A293 18          CLC                    ;} X = ((block index of row of projectile top boundary) + [$1C] / 10h) * 2 (index of top block to check)
 $94:A294 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $94:A297 0A          ASL A                  ;|
 $94:A298 AA          TAX                    ;/
 $94:A299 A5 26       LDA $26    [$7E:0026]  ;\
-$94:A29B C9 10 00    CMP #$0010             ;} If [$26] >= 10h: return carry clear <-- I don't see how this condition could ever be true
+$94:A29B C9 10 00    CMP #$0010             ;} If (number of blocks left to check - 1) >= 10h: return carry clear <-- I don't see how this condition could ever be true
 $94:A29E 10 1E       BPL $1E    [$A2BE]     ;/
 $94:A2A0 A5 1D       LDA $1D    [$7E:001D]  ;\
 $94:A2A2 29 FF 00    AND #$00FF             ;|
@@ -4533,14 +4579,14 @@ $94:A2B5 AA          TAX                    ;/
 $94:A2B6 C6 26       DEC $26    [$7E:0026]  ; Decrement $26 (number of blocks left to check - 1)
 $94:A2B8 10 F0       BPL $F0    [$A2AA]     ; If [$26] >= 0: go to LOOP
 $94:A2BA A5 28       LDA $28    [$7E:0028]  ;\
-$94:A2BC 30 04       BMI $04    [$A2C2]     ;} If [$28] < 0 (number of non-solid blocks - 1): go to BRANCH_ALL_SOLID
+$94:A2BC 30 04       BMI $04    [$A2C2]     ;} If (target number of collisions - 1) < 0: go to BRANCH_COMPLETE_COLLISION
 
 $94:A2BE FA          PLX
 $94:A2BF AB          PLB
 $94:A2C0 18          CLC                    ;\
 $94:A2C1 6B          RTL                    ;} Return carry clear
 
-; BRANCH_ALL_SOLID
+; BRANCH_COMPLETE_COLLISION
 $94:A2C2 FA          PLX
 $94:A2C3 22 06 AE 90 JSL $90AE06[$90:AE06]  ; Kill projectile
 $94:A2C7 AB          PLB
@@ -4551,103 +4597,109 @@ $94:A2C9 6B          RTL                    ;} Return carry set
 
 ;;; $A2CA: Move beam vertically - no wave beam ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
 $94:A2CA 8B          PHB
 $94:A2CB DA          PHX
-$94:A2CC 4B          PHK
-$94:A2CD AB          PLB
-$94:A2CE 64 1E       STZ $1E    [$7E:001E]
-$94:A2D0 64 12       STZ $12    [$7E:0012]
-$94:A2D2 64 14       STZ $14    [$7E:0014]
-$94:A2D4 BD F0 0B    LDA $0BF0,x[$7E:0BF0]
-$94:A2D7 10 02       BPL $02    [$A2DB]
-$94:A2D9 C6 14       DEC $14    [$7E:0014]
-
-$94:A2DB 85 13       STA $13    [$7E:0013]
-$94:A2DD 20 19 A2    JSR $A219  [$94:A219]
-$94:A2E0 BD A0 0B    LDA $0BA0,x[$7E:0BA0]
-$94:A2E3 18          CLC
-$94:A2E4 65 12       ADC $12    [$7E:0012]
-$94:A2E6 9D A0 0B    STA $0BA0,x[$7E:0BA0]
-$94:A2E9 85 16       STA $16    [$7E:0016]
-$94:A2EB BD 78 0B    LDA $0B78,x[$7E:0B78]
-$94:A2EE 65 14       ADC $14    [$7E:0014]
-$94:A2F0 9D 78 0B    STA $0B78,x[$7E:0B78]
-$94:A2F3 85 18       STA $18    [$7E:0018]
-$94:A2F5 24 14       BIT $14    [$7E:0014]
-$94:A2F7 30 07       BMI $07    [$A300]
-$94:A2F9 18          CLC
-$94:A2FA 7D C8 0B    ADC $0BC8,x[$7E:0BC8]
-$94:A2FD 3A          DEC A
+$94:A2CC 4B          PHK                    ;\
+$94:A2CD AB          PLB                    ;} DB = $90
+$94:A2CE 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0 (missile flag)
+$94:A2D0 64 12       STZ $12    [$7E:0012]  ;\
+$94:A2D2 64 14       STZ $14    [$7E:0014]  ;|
+$94:A2D4 BD F0 0B    LDA $0BF0,x[$7E:0BF0]  ;|
+$94:A2D7 10 02       BPL $02    [$A2DB]     ;} $14.$12 = ±[projectile Y velocity] / 100h
+$94:A2D9 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$94:A2DB 85 13       STA $13    [$7E:0013]  ;/
+$94:A2DD 20 19 A2    JSR $A219  [$94:A219]  ; Calculate projectile X block span
+$94:A2E0 BD A0 0B    LDA $0BA0,x[$7E:0BA0]  ;\
+$94:A2E3 18          CLC                    ;|
+$94:A2E4 65 12       ADC $12    [$7E:0012]  ;|
+$94:A2E6 9D A0 0B    STA $0BA0,x[$7E:0BA0]  ;|
+$94:A2E9 85 16       STA $16    [$7E:0016]  ;} Projectile Y position += [$14].[$12]
+$94:A2EB BD 78 0B    LDA $0B78,x[$7E:0B78]  ;} $18.$16 = [projectile Y position]
+$94:A2EE 65 14       ADC $14    [$7E:0014]  ;|
+$94:A2F0 9D 78 0B    STA $0B78,x[$7E:0B78]  ;|
+$94:A2F3 85 18       STA $18    [$7E:0018]  ;/
+$94:A2F5 24 14       BIT $14    [$7E:0014]  ;\
+$94:A2F7 30 07       BMI $07    [$A300]     ;} If [$14] >= 0:
+$94:A2F9 18          CLC                    ;\
+$94:A2FA 7D C8 0B    ADC $0BC8,x[$7E:0BC8]  ;} $1C = (projectile bottom boundary)
+$94:A2FD 3A          DEC A                  ;/
 $94:A2FE 80 04       BRA $04    [$A304]
 
-$94:A300 38          SEC
-$94:A301 FD C8 0B    SBC $0BC8,x[$7E:0BC8]
+$94:A300 38          SEC                    ;\ Else ([$14] < 0):
+$94:A301 FD C8 0B    SBC $0BC8,x[$7E:0BC8]  ;} $1C = (projectile top boundary)
 
 $94:A304 85 1C       STA $1C    [$7E:001C]
-$94:A306 4A          LSR A
-$94:A307 4A          LSR A
-$94:A308 4A          LSR A
-$94:A309 4A          LSR A
-$94:A30A E2 20       SEP #$20
-$94:A30C 8D 02 42    STA $4202  [$7E:4202]
-$94:A30F AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A312 8D 03 42    STA $4203  [$7E:4203]
-$94:A315 C2 20       REP #$20
-$94:A317 BD 64 0B    LDA $0B64,x[$7E:0B64]
-$94:A31A 38          SEC
-$94:A31B FD B4 0B    SBC $0BB4,x[$7E:0BB4]
-$94:A31E 4A          LSR A
-$94:A31F 4A          LSR A
-$94:A320 4A          LSR A
-$94:A321 4A          LSR A
-$94:A322 18          CLC
-$94:A323 6D 16 42    ADC $4216  [$7E:4216]
-$94:A326 0A          ASL A
-$94:A327 AA          TAX
-$94:A328 A5 26       LDA $26    [$7E:0026]
-$94:A32A C9 10 00    CMP #$0010
-$94:A32D 10 17       BPL $17    [$A346]
-$94:A32F A5 1D       LDA $1D    [$7E:001D]
-$94:A331 29 FF 00    AND #$00FF
-$94:A334 CD AB 07    CMP $07AB  [$7E:07AB]
-$94:A337 10 0D       BPL $0D    [$A346]
+$94:A306 4A          LSR A                  ;\
+$94:A307 4A          LSR A                  ;|
+$94:A308 4A          LSR A                  ;|
+$94:A309 4A          LSR A                  ;|
+$94:A30A E2 20       SEP #$20               ;|
+$94:A30C 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A30F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A312 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A315 C2 20       REP #$20               ;|
+$94:A317 BD 64 0B    LDA $0B64,x[$7E:0B64]  ;|
+$94:A31A 38          SEC                    ;} X = ([$1C] / 10h * [room width in blocks] + (projectile left boundary) / 10h) * 2 (index of leftmost block to check)
+$94:A31B FD B4 0B    SBC $0BB4,x[$7E:0BB4]  ;|
+$94:A31E 4A          LSR A                  ;|
+$94:A31F 4A          LSR A                  ;|
+$94:A320 4A          LSR A                  ;|
+$94:A321 4A          LSR A                  ;|
+$94:A322 18          CLC                    ;|
+$94:A323 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A326 0A          ASL A                  ;|
+$94:A327 AA          TAX                    ;/
+$94:A328 A5 26       LDA $26    [$7E:0026]  ;\
+$94:A32A C9 10 00    CMP #$0010             ;} If (number of blocks left to check - 1) >= 10h: return carry clear <-- I don't see how this condition could ever be true
+$94:A32D 10 17       BPL $17    [$A346]     ;/
+$94:A32F A5 1D       LDA $1D    [$7E:001D]  ;\
+$94:A331 29 FF 00    AND #$00FF             ;|
+$94:A334 CD AB 07    CMP $07AB  [$7E:07AB]  ;} If [$1C] >= [room height in pixels]: return carry clear
+$94:A337 10 0D       BPL $0D    [$A346]     ;/
 
-$94:A339 20 D6 A1    JSR $A1D6  [$94:A1D6]
-$94:A33C E8          INX
-$94:A33D E8          INX
-$94:A33E C6 26       DEC $26    [$7E:0026]
-$94:A340 10 F7       BPL $F7    [$A339]
-$94:A342 A5 28       LDA $28    [$7E:0028]
-$94:A344 30 04       BMI $04    [$A34A]
+; LOOP
+$94:A339 20 D6 A1    JSR $A1D6  [$94:A1D6]  ; Block shot reaction - vertical
+$94:A33C E8          INX                    ;\
+$94:A33D E8          INX                    ;} X += 2 (next block)
+$94:A33E C6 26       DEC $26    [$7E:0026]  ; Decrement $26 (number of blocks left to check - 1)
+$94:A340 10 F7       BPL $F7    [$A339]     ; If [$26] >= 0: go to LOOP
+$94:A342 A5 28       LDA $28    [$7E:0028]  ;\
+$94:A344 30 04       BMI $04    [$A34A]     ;} If (target number of collisions - 1) < 0: go to BRANCH_COMPLETE_COLLISION
 
 $94:A346 FA          PLX
 $94:A347 AB          PLB
-$94:A348 18          CLC
-$94:A349 6B          RTL
+$94:A348 18          CLC                    ;\
+$94:A349 6B          RTL                    ;} Return carry clear
 
+; BRANCH_COMPLETE_COLLISION
 $94:A34A FA          PLX
-$94:A34B 22 06 AE 90 JSL $90AE06[$90:AE06]
+$94:A34B 22 06 AE 90 JSL $90AE06[$90:AE06]  ; Kill projectile
 $94:A34F AB          PLB
-$94:A350 38          SEC
-$94:A351 6B          RTL
+$94:A350 38          SEC                    ;\
+$94:A351 6B          RTL                    ;} Return carry set
 }
 
 
 ;;; $A352: Move beam horizontally - wave beam ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Clear. No collision
 $94:A352 8B          PHB
 $94:A353 DA          PHX
 $94:A354 4B          PHK                    ;\
 $94:A355 AB          PLB                    ;} DB = $90
-$94:A356 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0
+$94:A356 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0 (missile flag)
 $94:A358 64 12       STZ $12    [$7E:0012]  ;\
 $94:A35A 64 14       STZ $14    [$7E:0014]  ;|
 $94:A35C BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;|
-$94:A35F 10 02       BPL $02    [$A363]     ;} $14.$12 = [projectile X velocity] / 100h
+$94:A35F 10 02       BPL $02    [$A363]     ;} $14.$12 = ±[projectile X velocity] / 100h
 $94:A361 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $94:A363 85 13       STA $13    [$7E:0013]  ;/
@@ -4658,7 +4710,7 @@ $94:A36C FD C8 0B    SBC $0BC8,x[$7E:0BC8]  ;|
 $94:A36F 4A          LSR A                  ;|
 $94:A370 4A          LSR A                  ;|
 $94:A371 4A          LSR A                  ;|
-$94:A372 4A          LSR A                  ;} Calculate (projectile top boundary) / 10h * [room width in blocks] (projectile row block index)
+$94:A372 4A          LSR A                  ;} Calculate block index of row of projectile top boundary
 $94:A373 E2 20       SEP #$20               ;|
 $94:A375 8D 02 42    STA $4202  [$7E:4202]  ;|
 $94:A378 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
@@ -4688,12 +4740,12 @@ $94:A3A6 4A          LSR A                  ;\
 $94:A3A7 4A          LSR A                  ;|
 $94:A3A8 4A          LSR A                  ;|
 $94:A3A9 4A          LSR A                  ;|
-$94:A3AA 18          CLC                    ;} Y = ((projectile row block index) + [$1C] / 10h) * 2 (index of top block to check)
+$94:A3AA 18          CLC                    ;} Y = ((block index of row of projectile top boundary) + [$1C] / 10h) * 2 (index of top block to check)
 $94:A3AB 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $94:A3AE 0A          ASL A                  ;|
 $94:A3AF A8          TAY                    ;/
 $94:A3B0 A5 26       LDA $26    [$7E:0026]  ;\
-$94:A3B2 C9 10 00    CMP #$0010             ;} If [$26] >= 10h: return carry clear <-- I don't see how this condition could ever be true
+$94:A3B2 C9 10 00    CMP #$0010             ;} If (number of blocks left to check - 1) >= 10h: return carry clear <-- I don't see how this condition could ever be true
 $94:A3B5 10 29       BPL $29    [$A3E0]     ;/
 $94:A3B7 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
 $94:A3BA EB          XBA                    ;} If [projectile Y position] < 0: return carry clear
@@ -4705,7 +4757,7 @@ $94:A3C5 A5 1D       LDA $1D    [$7E:001D]  ;\
 $94:A3C7 29 FF 00    AND #$00FF             ;|
 $94:A3CA CD A9 07    CMP $07A9  [$7E:07A9]  ;} If [$1C] >= [room width in pixels]: return carry clear
 $94:A3CD 10 11       BPL $11    [$A3E0]     ;/
-$94:A3CF BB          TYX
+$94:A3CF BB          TYX                    ; X = [Y]
 
 ; LOOP
 $94:A3D0 20 B5 A1    JSR $A1B5  [$94:A1B5]  ; Block shot reaction - horizontal
@@ -4726,329 +4778,361 @@ $94:A3E3 6B          RTL                    ;} Return carry clear
 
 ;;; $A3E4: Move beam vertically - wave beam ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 ;; Returns:
-;;     Carry: set if collided with block, clear otherwise
+;;     Carry: Clear. No collision
 $94:A3E4 8B          PHB
 $94:A3E5 DA          PHX
-$94:A3E6 4B          PHK
-$94:A3E7 AB          PLB
-$94:A3E8 64 1E       STZ $1E    [$7E:001E]
-$94:A3EA 64 12       STZ $12    [$7E:0012]
-$94:A3EC 64 14       STZ $14    [$7E:0014]
-$94:A3EE BD F0 0B    LDA $0BF0,x[$7E:0BF2]
-$94:A3F1 10 02       BPL $02    [$A3F5]
-$94:A3F3 C6 14       DEC $14    [$7E:0014]
-
-$94:A3F5 85 13       STA $13    [$7E:0013]
-$94:A3F7 20 19 A2    JSR $A219  [$94:A219]
-$94:A3FA BD A0 0B    LDA $0BA0,x[$7E:0BA2]
-$94:A3FD 18          CLC
-$94:A3FE 65 12       ADC $12    [$7E:0012]
-$94:A400 9D A0 0B    STA $0BA0,x[$7E:0BA2]
-$94:A403 85 16       STA $16    [$7E:0016]
-$94:A405 BD 78 0B    LDA $0B78,x[$7E:0B7A]
-$94:A408 65 14       ADC $14    [$7E:0014]
-$94:A40A 9D 78 0B    STA $0B78,x[$7E:0B7A]
-$94:A40D 85 18       STA $18    [$7E:0018]
-$94:A40F 24 14       BIT $14    [$7E:0014]
-$94:A411 30 07       BMI $07    [$A41A]
-$94:A413 18          CLC
-$94:A414 7D C8 0B    ADC $0BC8,x[$7E:0BCA]
-$94:A417 3A          DEC A
+$94:A3E6 4B          PHK                    ;\
+$94:A3E7 AB          PLB                    ;} DB = $90
+$94:A3E8 64 1E       STZ $1E    [$7E:001E]  ; $1E = 0 (missile flag)
+$94:A3EA 64 12       STZ $12    [$7E:0012]  ;\
+$94:A3EC 64 14       STZ $14    [$7E:0014]  ;|
+$94:A3EE BD F0 0B    LDA $0BF0,x[$7E:0BF2]  ;|
+$94:A3F1 10 02       BPL $02    [$A3F5]     ;} $14.$12 = ±[projectile Y velocity] / 100h
+$94:A3F3 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$94:A3F5 85 13       STA $13    [$7E:0013]  ;/
+$94:A3F7 20 19 A2    JSR $A219  [$94:A219]  ; Calculate projectile X block span
+$94:A3FA BD A0 0B    LDA $0BA0,x[$7E:0BA2]  ;\
+$94:A3FD 18          CLC                    ;|
+$94:A3FE 65 12       ADC $12    [$7E:0012]  ;|
+$94:A400 9D A0 0B    STA $0BA0,x[$7E:0BA2]  ;|
+$94:A403 85 16       STA $16    [$7E:0016]  ;} Projectile Y position += [$14].[$12]
+$94:A405 BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;} $18.$16 = [projectile Y position]
+$94:A408 65 14       ADC $14    [$7E:0014]  ;|
+$94:A40A 9D 78 0B    STA $0B78,x[$7E:0B7A]  ;|
+$94:A40D 85 18       STA $18    [$7E:0018]  ;/
+$94:A40F 24 14       BIT $14    [$7E:0014]  ;\
+$94:A411 30 07       BMI $07    [$A41A]     ;} If [$14] >= 0:
+$94:A413 18          CLC                    ;\
+$94:A414 7D C8 0B    ADC $0BC8,x[$7E:0BCA]  ;} $1C = (projectile bottom boundary)
+$94:A417 3A          DEC A                  ;/
 $94:A418 80 04       BRA $04    [$A41E]
 
-$94:A41A 38          SEC
-$94:A41B FD C8 0B    SBC $0BC8,x[$7E:0BCA]
+$94:A41A 38          SEC                    ;\ Else ([$14] < 0):
+$94:A41B FD C8 0B    SBC $0BC8,x[$7E:0BCA]  ;} $1C = (projectile top boundary)
 
 $94:A41E 85 1C       STA $1C    [$7E:001C]
-$94:A420 4A          LSR A
-$94:A421 4A          LSR A
-$94:A422 4A          LSR A
-$94:A423 4A          LSR A
-$94:A424 E2 20       SEP #$20
-$94:A426 8D 02 42    STA $4202  [$7E:4202]
-$94:A429 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A42C 8D 03 42    STA $4203  [$7E:4203]
-$94:A42F C2 20       REP #$20
-$94:A431 BD 64 0B    LDA $0B64,x[$7E:0B66]
-$94:A434 38          SEC
-$94:A435 FD B4 0B    SBC $0BB4,x[$7E:0BB6]
-$94:A438 4A          LSR A
-$94:A439 4A          LSR A
-$94:A43A 4A          LSR A
-$94:A43B 4A          LSR A
-$94:A43C 18          CLC
-$94:A43D 6D 16 42    ADC $4216  [$7E:4216]
-$94:A440 0A          ASL A
-$94:A441 A8          TAY
-$94:A442 A5 26       LDA $26    [$7E:0026]
-$94:A444 C9 10 00    CMP #$0010
-$94:A447 10 22       BPL $22    [$A46B]
-$94:A449 BD 64 0B    LDA $0B64,x[$7E:0B66]
-$94:A44C EB          XBA
-$94:A44D 30 1C       BMI $1C    [$A46B]
-$94:A44F 29 FF 00    AND #$00FF
-$94:A452 CD A9 07    CMP $07A9  [$7E:07A9]
-$94:A455 10 14       BPL $14    [$A46B]
-$94:A457 A5 1D       LDA $1D    [$7E:001D]
-$94:A459 29 FF 00    AND #$00FF
-$94:A45C CD AB 07    CMP $07AB  [$7E:07AB]
-$94:A45F 10 0A       BPL $0A    [$A46B]
-$94:A461 BB          TYX
+$94:A420 4A          LSR A                  ;\
+$94:A421 4A          LSR A                  ;|
+$94:A422 4A          LSR A                  ;|
+$94:A423 4A          LSR A                  ;|
+$94:A424 E2 20       SEP #$20               ;|
+$94:A426 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A429 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A42C 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A42F C2 20       REP #$20               ;|
+$94:A431 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;|
+$94:A434 38          SEC                    ;} Y = ([$1C] / 10h * [room width in blocks] + (projectile left boundary) / 10h) * 2 (index of leftmost block to check)
+$94:A435 FD B4 0B    SBC $0BB4,x[$7E:0BB6]  ;|
+$94:A438 4A          LSR A                  ;|
+$94:A439 4A          LSR A                  ;|
+$94:A43A 4A          LSR A                  ;|
+$94:A43B 4A          LSR A                  ;|
+$94:A43C 18          CLC                    ;|
+$94:A43D 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A440 0A          ASL A                  ;|
+$94:A441 A8          TAY                    ;/
+$94:A442 A5 26       LDA $26    [$7E:0026]  ;\
+$94:A444 C9 10 00    CMP #$0010             ;} If (number of blocks left to check - 1) >= 10h: return carry clear <-- I don't see how this condition could ever be true
+$94:A447 10 22       BPL $22    [$A46B]     ;/
+$94:A449 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;\
+$94:A44C EB          XBA                    ;} If [projectile X position] < 0: return carry clear
+$94:A44D 30 1C       BMI $1C    [$A46B]     ;/
+$94:A44F 29 FF 00    AND #$00FF             ;\
+$94:A452 CD A9 07    CMP $07A9  [$7E:07A9]  ;} If [projectile X position] >= [room width in pixels]: return carry clear
+$94:A455 10 14       BPL $14    [$A46B]     ;/
+$94:A457 A5 1D       LDA $1D    [$7E:001D]  ;\
+$94:A459 29 FF 00    AND #$00FF             ;|
+$94:A45C CD AB 07    CMP $07AB  [$7E:07AB]  ;} If [$1C] >= [room height in pixels]: return carry clear
+$94:A45F 10 0A       BPL $0A    [$A46B]     ;/
+$94:A461 BB          TYX                    ; X = [Y]
 
-$94:A462 20 D6 A1    JSR $A1D6  [$94:A1D6]
-$94:A465 E8          INX
-$94:A466 E8          INX
-$94:A467 C6 26       DEC $26    [$7E:0026]
-$94:A469 10 F7       BPL $F7    [$A462]
+; LOOP
+$94:A462 20 D6 A1    JSR $A1D6  [$94:A1D6]  ; Block shot reaction - vertical
+$94:A465 E8          INX                    ;\
+$94:A466 E8          INX                    ;} X += 2 (next block)
+$94:A467 C6 26       DEC $26    [$7E:0026]  ; Decrement $26 (number of blocks left to check - 1)
+$94:A469 10 F7       BPL $F7    [$A462]     ; If [$26] >= 0: go to LOOP
 
 $94:A46B FA          PLX
 $94:A46C AB          PLB
-$94:A46D 18          CLC
-$94:A46E 6B          RTL
+$94:A46D 18          CLC                    ;\
+$94:A46E 6B          RTL                    ;} Return carry clear
 }
 
 
 ;;; $A46F: Move (super) missile horizontally ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
 $94:A46F 8B          PHB
 $94:A470 DA          PHX
-$94:A471 4B          PHK
-$94:A472 AB          PLB
-$94:A473 A9 01 00    LDA #$0001
-$94:A476 85 1E       STA $1E    [$7E:001E]
-$94:A478 64 26       STZ $26    [$7E:0026]
-$94:A47A 64 1A       STZ $1A    [$7E:001A]
-$94:A47C 64 12       STZ $12    [$7E:0012]
-$94:A47E 64 14       STZ $14    [$7E:0014]
-$94:A480 BD DC 0B    LDA $0BDC,x[$7E:0BDC]
-$94:A483 10 02       BPL $02    [$A487]
-$94:A485 C6 14       DEC $14    [$7E:0014]
-
-$94:A487 85 13       STA $13    [$7E:0013]
-$94:A489 BD 78 0B    LDA $0B78,x[$7E:0B78]
-$94:A48C 4A          LSR A
-$94:A48D 4A          LSR A
-$94:A48E 4A          LSR A
-$94:A48F 4A          LSR A
-$94:A490 E2 20       SEP #$20
-$94:A492 8D 02 42    STA $4202  [$7E:4202]
-$94:A495 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A498 8D 03 42    STA $4203  [$7E:4203]
-$94:A49B C2 20       REP #$20
-$94:A49D BD 8C 0B    LDA $0B8C,x[$7E:0B8C]
-$94:A4A0 18          CLC
-$94:A4A1 65 12       ADC $12    [$7E:0012]
-$94:A4A3 9D 8C 0B    STA $0B8C,x[$7E:0B8C]
-$94:A4A6 85 16       STA $16    [$7E:0016]
-$94:A4A8 BD 64 0B    LDA $0B64,x[$7E:0B64]
-$94:A4AB 65 14       ADC $14    [$7E:0014]
-$94:A4AD 9D 64 0B    STA $0B64,x[$7E:0B64]
-$94:A4B0 85 18       STA $18    [$7E:0018]
-$94:A4B2 85 1C       STA $1C    [$7E:001C]
-$94:A4B4 4A          LSR A
-$94:A4B5 4A          LSR A
-$94:A4B6 4A          LSR A
-$94:A4B7 4A          LSR A
-$94:A4B8 18          CLC
-$94:A4B9 6D 16 42    ADC $4216  [$7E:4216]
-$94:A4BC 0A          ASL A
-$94:A4BD AA          TAX
-$94:A4BE A5 19       LDA $19    [$7E:0019]
-$94:A4C0 29 FF 00    AND #$00FF
-$94:A4C3 CD A9 07    CMP $07A9  [$7E:07A9]
-$94:A4C6 10 05       BPL $05    [$A4CD]
-$94:A4C8 20 B5 A1    JSR $A1B5  [$94:A1B5]
-$94:A4CB B0 04       BCS $04    [$A4D1]
+$94:A471 4B          PHK                    ;\
+$94:A472 AB          PLB                    ;} DB = $90
+$94:A473 A9 01 00    LDA #$0001             ;\
+$94:A476 85 1E       STA $1E    [$7E:001E]  ;} $1E = 1 (missile flag)
+$94:A478 64 26       STZ $26    [$7E:0026]  ; $26 = 0 (number of blocks left to check - 1)
+$94:A47A 64 1A       STZ $1A    [$7E:001A]  ; $1A = 0 (projectile Y span - 1)
+$94:A47C 64 12       STZ $12    [$7E:0012]  ;\
+$94:A47E 64 14       STZ $14    [$7E:0014]  ;|
+$94:A480 BD DC 0B    LDA $0BDC,x[$7E:0BDC]  ;|
+$94:A483 10 02       BPL $02    [$A487]     ;} $14.$12 = ±[projectile X velocity] / 100h
+$94:A485 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$94:A487 85 13       STA $13    [$7E:0013]  ;/
+$94:A489 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
+$94:A48C 4A          LSR A                  ;|
+$94:A48D 4A          LSR A                  ;|
+$94:A48E 4A          LSR A                  ;|
+$94:A48F 4A          LSR A                  ;|
+$94:A490 E2 20       SEP #$20               ;} Calculate block index of row of projectile
+$94:A492 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A495 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A498 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A49B C2 20       REP #$20               ;/
+$94:A49D BD 8C 0B    LDA $0B8C,x[$7E:0B8C]  ;\
+$94:A4A0 18          CLC                    ;|
+$94:A4A1 65 12       ADC $12    [$7E:0012]  ;|
+$94:A4A3 9D 8C 0B    STA $0B8C,x[$7E:0B8C]  ;|
+$94:A4A6 85 16       STA $16    [$7E:0016]  ;} Projectile X position += [$14].[$12]
+$94:A4A8 BD 64 0B    LDA $0B64,x[$7E:0B64]  ;} $18.$16 = [projectile X position]
+$94:A4AB 65 14       ADC $14    [$7E:0014]  ;|
+$94:A4AD 9D 64 0B    STA $0B64,x[$7E:0B64]  ;|
+$94:A4B0 85 18       STA $18    [$7E:0018]  ;/
+$94:A4B2 85 1C       STA $1C    [$7E:001C]  ; $1C = [projectile X position] (target boundary)
+$94:A4B4 4A          LSR A                  ;\
+$94:A4B5 4A          LSR A                  ;|
+$94:A4B6 4A          LSR A                  ;|
+$94:A4B7 4A          LSR A                  ;|
+$94:A4B8 18          CLC                    ;} X = ((block index of row of projectile) + [$1C] / 10h) * 2 (index of block to check)
+$94:A4B9 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A4BC 0A          ASL A                  ;|
+$94:A4BD AA          TAX                    ;/
+$94:A4BE A5 19       LDA $19    [$7E:0019]  ;\
+$94:A4C0 29 FF 00    AND #$00FF             ;|
+$94:A4C3 CD A9 07    CMP $07A9  [$7E:07A9]  ;} If [$18] >= [room width in pixels]: return carry clear
+$94:A4C6 10 05       BPL $05    [$A4CD]     ;/
+$94:A4C8 20 B5 A1    JSR $A1B5  [$94:A1B5]  ; Block shot reaction - horizontal
+$94:A4CB B0 04       BCS $04    [$A4D1]     ; If collision: go to BRANCH_COLLISION
 
 $94:A4CD FA          PLX
 $94:A4CE AB          PLB
-$94:A4CF 18          CLC
-$94:A4D0 6B          RTL
+$94:A4CF 18          CLC                    ;\
+$94:A4D0 6B          RTL                    ;} Return carry clear
 
+; BRANCH_COLLISION
 $94:A4D1 FA          PLX
-$94:A4D2 22 06 AE 90 JSL $90AE06[$90:AE06]
+$94:A4D2 22 06 AE 90 JSL $90AE06[$90:AE06]  ; Kill projectile
 $94:A4D6 AB          PLB
-$94:A4D7 38          SEC
-$94:A4D8 6B          RTL
+$94:A4D7 38          SEC                    ;\
+$94:A4D8 6B          RTL                    ;} Return carry set
 }
 
 
 ;;; $A4D9: Move (super) missile vertically ;;;
 {
+;; Parameters:
+;;     X: Projectile index
 ;; Returns:
 ;;     Carry: set if collided with block, clear otherwise
 $94:A4D9 8B          PHB
 $94:A4DA DA          PHX
-$94:A4DB 4B          PHK
-$94:A4DC AB          PLB
-$94:A4DD A9 01 00    LDA #$0001
-$94:A4E0 85 1E       STA $1E    [$7E:001E]
-$94:A4E2 64 26       STZ $26    [$7E:0026]
-$94:A4E4 64 1A       STZ $1A    [$7E:001A]
-$94:A4E6 64 12       STZ $12    [$7E:0012]
-$94:A4E8 64 14       STZ $14    [$7E:0014]
-$94:A4EA BD F0 0B    LDA $0BF0,x[$7E:0BF0]
-$94:A4ED 10 02       BPL $02    [$A4F1]
-$94:A4EF C6 14       DEC $14    [$7E:0014]
-
-$94:A4F1 85 13       STA $13    [$7E:0013]
-$94:A4F3 BD A0 0B    LDA $0BA0,x[$7E:0BA0]
-$94:A4F6 18          CLC
-$94:A4F7 65 12       ADC $12    [$7E:0012]
-$94:A4F9 9D A0 0B    STA $0BA0,x[$7E:0BA0]
-$94:A4FC 85 16       STA $16    [$7E:0016]
-$94:A4FE BD 78 0B    LDA $0B78,x[$7E:0B78]
-$94:A501 65 14       ADC $14    [$7E:0014]
-$94:A503 9D 78 0B    STA $0B78,x[$7E:0B78]
-$94:A506 85 18       STA $18    [$7E:0018]
-$94:A508 85 1C       STA $1C    [$7E:001C]
-$94:A50A 4A          LSR A
-$94:A50B 4A          LSR A
-$94:A50C 4A          LSR A
-$94:A50D 4A          LSR A
-$94:A50E E2 20       SEP #$20
-$94:A510 8D 02 42    STA $4202  [$7E:4202]
-$94:A513 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A516 8D 03 42    STA $4203  [$7E:4203]
-$94:A519 C2 20       REP #$20
-$94:A51B BD 64 0B    LDA $0B64,x[$7E:0B64]
-$94:A51E 4A          LSR A
-$94:A51F 4A          LSR A
-$94:A520 4A          LSR A
-$94:A521 4A          LSR A
-$94:A522 18          CLC
-$94:A523 6D 16 42    ADC $4216  [$7E:4216]
-$94:A526 0A          ASL A
-$94:A527 AA          TAX
-$94:A528 A5 19       LDA $19    [$7E:0019]
-$94:A52A 29 FF 00    AND #$00FF
-$94:A52D CD AB 07    CMP $07AB  [$7E:07AB]
-$94:A530 10 05       BPL $05    [$A537]
-$94:A532 20 D6 A1    JSR $A1D6  [$94:A1D6]
-$94:A535 B0 04       BCS $04    [$A53B]
+$94:A4DB 4B          PHK                    ;\
+$94:A4DC AB          PLB                    ;} DB = $90
+$94:A4DD A9 01 00    LDA #$0001             ;\
+$94:A4E0 85 1E       STA $1E    [$7E:001E]  ;} $1E = 1 (missile flag)
+$94:A4E2 64 26       STZ $26    [$7E:0026]  ; $26 = 0 (number of blocks left to check - 1)
+$94:A4E4 64 1A       STZ $1A    [$7E:001A]  ; $1A = 0 (projectile X span - 1)
+$94:A4E6 64 12       STZ $12    [$7E:0012]  ;\
+$94:A4E8 64 14       STZ $14    [$7E:0014]  ;|
+$94:A4EA BD F0 0B    LDA $0BF0,x[$7E:0BF0]  ;|
+$94:A4ED 10 02       BPL $02    [$A4F1]     ;} $14.$12 = ±[projectile Y velocity] / 100h
+$94:A4EF C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$94:A4F1 85 13       STA $13    [$7E:0013]  ;/
+$94:A4F3 BD A0 0B    LDA $0BA0,x[$7E:0BA0]  ;\
+$94:A4F6 18          CLC                    ;|
+$94:A4F7 65 12       ADC $12    [$7E:0012]  ;|
+$94:A4F9 9D A0 0B    STA $0BA0,x[$7E:0BA0]  ;|
+$94:A4FC 85 16       STA $16    [$7E:0016]  ;} Projectile Y position += [$14].[$12]
+$94:A4FE BD 78 0B    LDA $0B78,x[$7E:0B78]  ;} $18.$16 = [projectile Y position]
+$94:A501 65 14       ADC $14    [$7E:0014]  ;|
+$94:A503 9D 78 0B    STA $0B78,x[$7E:0B78]  ;|
+$94:A506 85 18       STA $18    [$7E:0018]  ;/
+$94:A508 85 1C       STA $1C    [$7E:001C]  ; $1C = [projectile Y position] (target boundary)
+$94:A50A 4A          LSR A                  ;\
+$94:A50B 4A          LSR A                  ;|
+$94:A50C 4A          LSR A                  ;|
+$94:A50D 4A          LSR A                  ;|
+$94:A50E E2 20       SEP #$20               ;|
+$94:A510 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:A513 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A516 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A519 C2 20       REP #$20               ;|
+$94:A51B BD 64 0B    LDA $0B64,x[$7E:0B64]  ;} X = ([$1C] / 10h * [room width in blocks] + [projectile X position] / 10h) * 2 (index of block to check)
+$94:A51E 4A          LSR A                  ;|
+$94:A51F 4A          LSR A                  ;|
+$94:A520 4A          LSR A                  ;|
+$94:A521 4A          LSR A                  ;|
+$94:A522 18          CLC                    ;|
+$94:A523 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:A526 0A          ASL A                  ;|
+$94:A527 AA          TAX                    ;/
+$94:A528 A5 19       LDA $19    [$7E:0019]  ;\
+$94:A52A 29 FF 00    AND #$00FF             ;|
+$94:A52D CD AB 07    CMP $07AB  [$7E:07AB]  ;} If [$18] >= [room height in pixels]: return carry clear
+$94:A530 10 05       BPL $05    [$A537]     ;/
+$94:A532 20 D6 A1    JSR $A1D6  [$94:A1D6]  ; Block shot reaction - vertical
+$94:A535 B0 04       BCS $04    [$A53B]     ; If collision: go to BRANCH_COLLISION
 
 $94:A537 FA          PLX
 $94:A538 AB          PLB
-$94:A539 18          CLC
-$94:A53A 6B          RTL
+$94:A539 18          CLC                    ;\
+$94:A53A 6B          RTL                    ;} Return carry clear
 
+; BRANCH_COLLISION
 $94:A53B FA          PLX
-$94:A53C 22 06 AE 90 JSL $90AE06[$90:AE06]
+$94:A53C 22 06 AE 90 JSL $90AE06[$90:AE06]  ; Kill projectile
 $94:A540 AB          PLB
-$94:A541 38          SEC
-$94:A542 6B          RTL
+$94:A541 38          SEC                    ;\
+$94:A542 6B          RTL                    ;} Return carry set
 }
 
 
 ;;; $A543: Block shot reaction - horizontal - slope - non-square ;;;
 {
+;; Parameters:
+;;     $26: Number of blocks left to check - 1
+;;     $28: Target number of collisions - 1
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $26: Remaining number of blocks left to check - 1
+;;     $28: Remaining target number of collisions - 1
 $94:A543 C2 20       REP #$20
-$94:A545 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:A548 AC DE 0D    LDY $0DDE  [$7E:0DDE]
-$94:A54B AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$94:A54E 8D 04 42    STA $4204  [$7E:4204]
-$94:A551 E2 20       SEP #$20
-$94:A553 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A556 8D 06 42    STA $4206  [$7E:4206]
-$94:A559 C2 20       REP #$20
-$94:A55B B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A55E 4A          LSR A
-$94:A55F 4A          LSR A
-$94:A560 4A          LSR A
-$94:A561 4A          LSR A
-$94:A562 CD 14 42    CMP $4214  [$7E:4214]
-$94:A565 F0 28       BEQ $28    [$A58F]
-$94:A567 18          CLC
-$94:A568 60          RTS
+$94:A545 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ; X = [current block index]
+$94:A548 AC DE 0D    LDY $0DDE  [$7E:0DDE]  ; Y = [projectile index]
+$94:A54B AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$94:A54E 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:A551 E2 20       SEP #$20               ;|
+$94:A553 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A556 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:A559 C2 20       REP #$20               ;|
+$94:A55B B9 78 0B    LDA $0B78,y[$7E:0B78]  ;} If [projectile Y position] / 10h = [current block index] / [room width in blocks] (projectile centre isn't in block): go to block shot reaction - slope - non-square
+$94:A55E 4A          LSR A                  ;|
+$94:A55F 4A          LSR A                  ;|
+$94:A560 4A          LSR A                  ;|
+$94:A561 4A          LSR A                  ;|
+$94:A562 CD 14 42    CMP $4214  [$7E:4214]  ;|
+$94:A565 F0 28       BEQ $28    [$A58F]     ;/
+$94:A567 18          CLC                    ;\
+$94:A568 60          RTS                    ;} Return carry clear
 }
 
 
 ;;; $A569: Block shot reaction - vertical - slope - non-square ;;;
 {
+;; Parameters:
+;;     $26: Number of blocks left to check - 1
+;;     $28: Target number of collisions - 1
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $26: Remaining number of blocks left to check - 1
+;;     $28: Remaining target number of collisions - 1
 $94:A569 C2 20       REP #$20
-$94:A56B AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:A56E AC DE 0D    LDY $0DDE  [$7E:0DDE]
-$94:A571 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$94:A574 8D 04 42    STA $4204  [$7E:4204]
-$94:A577 E2 20       SEP #$20
-$94:A579 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:A57C 8D 06 42    STA $4206  [$7E:4206]
-$94:A57F C2 20       REP #$20
-$94:A581 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$94:A584 4A          LSR A
-$94:A585 4A          LSR A
-$94:A586 4A          LSR A
-$94:A587 4A          LSR A
-$94:A588 CD 16 42    CMP $4216  [$7E:4216]
-$94:A58B F0 02       BEQ $02    [$A58F]
-$94:A58D 18          CLC
-$94:A58E 60          RTS
+$94:A56B AE C4 0D    LDX $0DC4  [$7E:0DC4]  ; X = [current block index]
+$94:A56E AC DE 0D    LDY $0DDE  [$7E:0DDE]  ; Y = [projectile index]
+$94:A571 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$94:A574 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:A577 E2 20       SEP #$20               ;|
+$94:A579 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:A57C 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:A57F C2 20       REP #$20               ;|
+$94:A581 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;} If [projectile X position] / 10h = [current block index] % [room width in blocks] (projectile centre isn't in block): go to block shot reaction - slope - non-square
+$94:A584 4A          LSR A                  ;|
+$94:A585 4A          LSR A                  ;|
+$94:A586 4A          LSR A                  ;|
+$94:A587 4A          LSR A                  ;|
+$94:A588 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:A58B F0 02       BEQ $02    [$A58F]     ;/
+$94:A58D 18          CLC                    ;\
+$94:A58E 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $A58F:  ;;;
+;;; $A58F: Block shot reaction - slope - non-square ;;;
 {
-$94:A58F BF 02 64 7F LDA $7F6402,x[$7F:6AA6]
-$94:A593 29 1F 00    AND #$001F
-$94:A596 0A          ASL A
-$94:A597 0A          ASL A
-$94:A598 0A          ASL A
-$94:A599 0A          ASL A
-$94:A59A 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$94:A59D BF 01 64 7F LDA $7F6401,x[$7F:6AA5]
-$94:A5A1 0A          ASL A
-$94:A5A2 30 05       BMI $05    [$A5A9]
-$94:A5A4 B9 64 0B    LDA $0B64,y[$7E:0B64]
+;; Parameters:
+;;     X: Block index
+;;     $26: Number of blocks left to check - 1
+;;     $28: Target number of collisions - 1
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $26: Remaining number of blocks left to check - 1
+;;     $28: Remaining target number of collisions - 1
+$94:A58F BF 02 64 7F LDA $7F6402,x[$7F:6AA6];\
+$94:A593 29 1F 00    AND #$001F             ;|
+$94:A596 0A          ASL A                  ;|
+$94:A597 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$94:A598 0A          ASL A                  ;|
+$94:A599 0A          ASL A                  ;|
+$94:A59A 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$94:A59D BF 01 64 7F LDA $7F6401,x[$7F:6AA5];\
+$94:A5A1 0A          ASL A                  ;} If [block BTS] & 40h = 0:
+$94:A5A2 30 05       BMI $05    [$A5A9]     ;/
+$94:A5A4 B9 64 0B    LDA $0B64,y[$7E:0B64]  ; A = [projectile X position] % 10h
 $94:A5A7 80 06       BRA $06    [$A5AF]
 
-$94:A5A9 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$94:A5AC 49 0F 00    EOR #$000F
+$94:A5A9 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\ Else ([block BTS] & 40h != 0):
+$94:A5AC 49 0F 00    EOR #$000F             ;} A = Fh - [projectile X position] % 10h
 
-$94:A5AF 29 0F 00    AND #$000F
-$94:A5B2 18          CLC
-$94:A5B3 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$94:A5B6 48          PHA
-$94:A5B7 BF 01 64 7F LDA $7F6401,x[$7F:6AA5]
-$94:A5BB 30 03       BMI $03    [$A5C0]
-$94:A5BD 4C E2 A5    JMP $A5E2  [$94:A5E2]
+$94:A5AF 29 0F 00    AND #$000F             ;\
+$94:A5B2 18          CLC                    ;|
+$94:A5B3 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = [$0DD6] + [A] (slope definition table index)
+$94:A5B6 48          PHA                    ;/
+$94:A5B7 BF 01 64 7F LDA $7F6401,x[$7F:6AA5];\
+$94:A5BB 30 03       BMI $03    [$A5C0]     ;} If [block BTS] & 80h = 0:
+$94:A5BD 4C E2 A5    JMP $A5E2  [$94:A5E2]  ; Go to BRANCH_Y_FLIP
 
 $94:A5C0 FA          PLX
-$94:A5C1 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A5C4 29 0F 00    AND #$000F
-$94:A5C7 49 0F 00    EOR #$000F
-$94:A5CA 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:A5CD BD 2B 8B    LDA $8B2B,x[$94:8C5A]
+$94:A5C1 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$94:A5C4 29 0F 00    AND #$000F             ;|
+$94:A5C7 49 0F 00    EOR #$000F             ;} $0DD4 = Fh - [projectile Y position] % 10h
+$94:A5CA 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:A5CD BD 2B 8B    LDA $8B2B,x[$94:8C5A]  ; A = [$8B2B + [X]] (slope top Y offset)
 $94:A5D0 29 1F 00    AND #$001F
-$94:A5D3 CD D4 0D    CMP $0DD4  [$7E:0DD4]
-$94:A5D6 30 04       BMI $04    [$A5DC]
-$94:A5D8 F0 02       BEQ $02    [$A5DC]
-$94:A5DA 18          CLC
-$94:A5DB 60          RTS
+$94:A5D3 CD D4 0D    CMP $0DD4  [$7E:0DD4]  ;\
+$94:A5D6 30 04       BMI $04    [$A5DC]     ;} If [A] > [$0DD4]:
+$94:A5D8 F0 02       BEQ $02    [$A5DC]     ;/
+$94:A5DA 18          CLC                    ;\
+$94:A5DB 60          RTS                    ;} Return carry clear
 
-$94:A5DC 64 26       STZ $26    [$7E:0026]
-$94:A5DE 64 28       STZ $28    [$7E:0028]
-$94:A5E0 38          SEC
-$94:A5E1 60          RTS
+$94:A5DC 64 26       STZ $26    [$7E:0026]  ; (Number of blocks left to check - 1) = 0
+$94:A5DE 64 28       STZ $28    [$7E:0028]  ; (Target number of collisions - 1) = 0
+$94:A5E0 38          SEC                    ;\
+$94:A5E1 60          RTS                    ;} Return carry set
 
+; BRANCH_Y_FLIP
 $94:A5E2 FA          PLX
-$94:A5E3 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A5E6 29 0F 00    AND #$000F
-$94:A5E9 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:A5EC BD 2B 8B    LDA $8B2B,x[$94:8C54]
+$94:A5E3 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$94:A5E6 29 0F 00    AND #$000F             ;} $0DD4 = [projectile Y position] % 10h
+$94:A5E9 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:A5EC BD 2B 8B    LDA $8B2B,x[$94:8C54]  ; A = [$8B2B + [X]] (slope top Y offset)
 $94:A5EF 29 1F 00    AND #$001F
-$94:A5F2 CD D4 0D    CMP $0DD4  [$7E:0DD4]
-$94:A5F5 30 04       BMI $04    [$A5FB]
-$94:A5F7 F0 02       BEQ $02    [$A5FB]
-$94:A5F9 18          CLC
-$94:A5FA 60          RTS
+$94:A5F2 CD D4 0D    CMP $0DD4  [$7E:0DD4]  ;\
+$94:A5F5 30 04       BMI $04    [$A5FB]     ;} If [A] > [$0DD4]:
+$94:A5F7 F0 02       BEQ $02    [$A5FB]     ;/
+$94:A5F9 18          CLC                    ;\
+$94:A5FA 60          RTS                    ;} Return carry clear
 
-$94:A5FB 64 26       STZ $26    [$7E:0026]
-$94:A5FD 64 28       STZ $28    [$7E:0028]
-$94:A5FF 38          SEC
-$94:A600 60          RTS
+$94:A5FB 64 26       STZ $26    [$7E:0026]  ; (Number of blocks left to check - 1) = 0
+$94:A5FD 64 28       STZ $28    [$7E:0028]  ; (Target number of collisions - 1) = 0
+$94:A5FF 38          SEC                    ;\
+$94:A600 60          RTS                    ;} Return carry set
 }
 
 
@@ -5131,102 +5215,113 @@ $94:A669 6B          RTL
 ;; Parameters:
 ;;     A: [Block BTS] & 1Fh
 ;;     X: Block index
-$94:A66A 0A          ASL A
-$94:A66B 0A          ASL A
-$94:A66C 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:A66F BF 01 64 7F LDA $7F6401,x[$7F:6CE8]
-$94:A673 2A          ROL A
-$94:A674 2A          ROL A
-$94:A675 2A          ROL A
-$94:A676 29 03 00    AND #$0003
-$94:A679 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$94:A67C A5 1C       LDA $1C    [$7E:001C]
-$94:A67E 29 08 00    AND #$0008
-$94:A681 4A          LSR A
-$94:A682 4A          LSR A
-$94:A683 4A          LSR A
-$94:A684 4D D6 0D    EOR $0DD6  [$7E:0DD6]
-$94:A687 6D D4 0D    ADC $0DD4  [$7E:0DD4]
-$94:A68A AA          TAX
-$94:A68B AC DE 0D    LDY $0DDE  [$7E:0DDE]
-$94:A68E A5 1E       LDA $1E    [$7E:001E]
-$94:A690 D0 6F       BNE $6F    [$A701]
-$94:A692 A5 1A       LDA $1A    [$7E:001A]
-$94:A694 D0 2D       BNE $2D    [$A6C3]
-$94:A696 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A699 38          SEC
-$94:A69A F9 C8 0B    SBC $0BC8,y[$7E:0BC8]
-$94:A69D 29 08 00    AND #$0008
-$94:A6A0 D0 05       BNE $05    [$A6A7]
-$94:A6A2 BD 53 8E    LDA $8E53,x[$94:8E61]
-$94:A6A5 30 19       BMI $19    [$A6C0]
+;;     $1A: Projectile Y span - 1
+;;     $1C: Target boundary (left/right depending on sign of projectile velocity)
+;;     $1E: (Super) missile flag
+;;     $26: Number of blocks left to check - 1
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 
-$94:A6A7 8A          TXA
-$94:A6A8 49 02 00    EOR #$0002
-$94:A6AB AA          TAX
-$94:A6AC B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A6AF 18          CLC
-$94:A6B0 79 C8 0B    ADC $0BC8,y[$7E:0BC8]
-$94:A6B3 3A          DEC A
-$94:A6B4 29 08 00    AND #$0008
-$94:A6B7 F0 05       BEQ $05    [$A6BE]
-$94:A6B9 BD 53 8E    LDA $8E53,x[$94:8E53]
-$94:A6BC 30 02       BMI $02    [$A6C0]
+$94:A66A 0A          ASL A                  ;\
+$94:A66B 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
+$94:A66C 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:A66F BF 01 64 7F LDA $7F6401,x[$7F:6CE8];\
+$94:A673 2A          ROL A                  ;|
+$94:A674 2A          ROL A                  ;|
+$94:A675 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slope flip flags)
+$94:A676 29 03 00    AND #$0003             ;|
+$94:A679 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$94:A67C A5 1C       LDA $1C    [$7E:001C]  ;\
+$94:A67E 29 08 00    AND #$0008             ;} A = [$1C] & 8 (is projectile target boundary in right half of block)
+$94:A681 4A          LSR A                  ;\
+$94:A682 4A          LSR A                  ;|
+$94:A683 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 3 (toggle X flip flag if projectile is in right half of block)
+$94:A684 4D D6 0D    EOR $0DD6  [$7E:0DD6]  ;/
+$94:A687 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;\
+$94:A68A AA          TAX                    ;} X = [$0DD4] + [A] (solid slope definition table index)
+$94:A68B AC DE 0D    LDY $0DDE  [$7E:0DDE]  ; Y = [projectile index]
+$94:A68E A5 1E       LDA $1E    [$7E:001E]  ;\
+$94:A690 D0 6F       BNE $6F    [$A701]     ;} If (super) missile: go to BRANCH_MISSILE
+$94:A692 A5 1A       LDA $1A    [$7E:001A]  ;\
+$94:A694 D0 2D       BNE $2D    [$A6C3]     ;} If [$1A] != 0 (projectile spans more than one block): go to BRANCH_MULTI_BLOCK
+$94:A696 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$94:A699 38          SEC                    ;|
+$94:A69A F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;} If (projectile top boundary) & 8 = 0 (projectile top boundary is in top half of block):
+$94:A69D 29 08 00    AND #$0008             ;|
+$94:A6A0 D0 05       BNE $05    [$A6A7]     ;/
+$94:A6A2 BD 53 8E    LDA $8E53,x[$94:8E61]  ;\
+$94:A6A5 30 19       BMI $19    [$A6C0]     ;} If [$8E54 + [X]] & 80h != 0 (top half is solid): return carry set
 
-$94:A6BE 18          CLC
-$94:A6BF 60          RTS
+$94:A6A7 8A          TXA                    ;\
+$94:A6A8 49 02 00    EOR #$0002             ;} X ^= 2 (toggle Y flip flag)
+$94:A6AB AA          TAX                    ;/
+$94:A6AC B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$94:A6AF 18          CLC                    ;|
+$94:A6B0 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;|
+$94:A6B3 3A          DEC A                  ;} If (projectile bottom boundary) & 8 != 0 (projectile bottom boundary is in bottom half of block):
+$94:A6B4 29 08 00    AND #$0008             ;|
+$94:A6B7 F0 05       BEQ $05    [$A6BE]     ;/
+$94:A6B9 BD 53 8E    LDA $8E53,x[$94:8E53]  ;\
+$94:A6BC 30 02       BMI $02    [$A6C0]     ;} If [$8E54 + [X]] & 80h != 0 (bottom half is solid): return carry set
+
+$94:A6BE 18          CLC                    ;\
+$94:A6BF 60          RTS                    ;} Return carry clear
 
 $94:A6C0 4C FF A6    JMP $A6FF  [$94:A6FF]
 
-$94:A6C3 A5 26       LDA $26    [$7E:0026]
-$94:A6C5 D0 14       BNE $14    [$A6DB]
-$94:A6C7 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A6CA 18          CLC
-$94:A6CB 79 C8 0B    ADC $0BC8,y[$7E:0BC8]
-$94:A6CE 3A          DEC A
-$94:A6CF 29 08 00    AND #$0008
-$94:A6D2 D0 17       BNE $17    [$A6EB]
-$94:A6D4 BD 53 8E    LDA $8E53,x[$94:8E56]
-$94:A6D7 30 23       BMI $23    [$A6FC]
-$94:A6D9 80 1F       BRA $1F    [$A6FA]
+; BRANCH_MULTI_BLOCK
+$94:A6C3 A5 26       LDA $26    [$7E:0026]  ;\
+$94:A6C5 D0 14       BNE $14    [$A6DB]     ;} If [$26] = 0 (bottom block check):
+$94:A6C7 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$94:A6CA 18          CLC                    ;|
+$94:A6CB 79 C8 0B    ADC $0BC8,y[$7E:0BC8]  ;|
+$94:A6CE 3A          DEC A                  ;} If (projectile bottom boundary) & 8 != 0 (projectile bottom boundary is in bottom half of block): go to BRANCH_CHECK_BOTH_HALVES
+$94:A6CF 29 08 00    AND #$0008             ;|
+$94:A6D2 D0 17       BNE $17    [$A6EB]     ;/
+$94:A6D4 BD 53 8E    LDA $8E53,x[$94:8E56]  ;\
+$94:A6D7 30 23       BMI $23    [$A6FC]     ;} If [$8E54 + [X]] & 80h != 0 (top half is solid): return carry set
+$94:A6D9 80 1F       BRA $1F    [$A6FA]     ; Return carry clear
 
-$94:A6DB C5 1A       CMP $1A    [$7E:001A]
-$94:A6DD D0 0C       BNE $0C    [$A6EB]
-$94:A6DF B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A6E2 38          SEC
-$94:A6E3 F9 C8 0B    SBC $0BC8,y[$7E:0BC8]
-$94:A6E6 29 08 00    AND #$0008
-$94:A6E9 D0 05       BNE $05    [$A6F0]
+$94:A6DB C5 1A       CMP $1A    [$7E:001A]  ;\
+$94:A6DD D0 0C       BNE $0C    [$A6EB]     ;} If [$26] = [$1A] (top block check):
+$94:A6DF B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$94:A6E2 38          SEC                    ;|
+$94:A6E3 F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;} If projectile top boundary is in bottom half: go to BRANCH_CHECK_BOTTOM_HALF
+$94:A6E6 29 08 00    AND #$0008             ;|
+$94:A6E9 D0 05       BNE $05    [$A6F0]     ;/
 
-$94:A6EB BD 53 8E    LDA $8E53,x[$94:8E56]
-$94:A6EE 30 0C       BMI $0C    [$A6FC]
+; BRANCH_CHECK_BOTH_HALVES
+$94:A6EB BD 53 8E    LDA $8E53,x[$94:8E56]  ;\
+$94:A6EE 30 0C       BMI $0C    [$A6FC]     ;} If [$8E54 + [X]] & 80h != 0 (top half is solid): return carry set
 
-$94:A6F0 8A          TXA
-$94:A6F1 49 02 00    EOR #$0002
-$94:A6F4 AA          TAX
-$94:A6F5 BD 53 8E    LDA $8E53,x[$94:8E5B]
-$94:A6F8 30 02       BMI $02    [$A6FC]
+; BRANCH_CHECK_BOTTOM_HALF
+$94:A6F0 8A          TXA                    ;\
+$94:A6F1 49 02 00    EOR #$0002             ;|
+$94:A6F4 AA          TAX                    ;} If [$8E54 + ([X] ^ 2)] & 80h != 0 (bottom half is solid): return carry set
+$94:A6F5 BD 53 8E    LDA $8E53,x[$94:8E5B]  ;|
+$94:A6F8 30 02       BMI $02    [$A6FC]     ;/
 
-$94:A6FA 18          CLC
-$94:A6FB 60          RTS
+$94:A6FA 18          CLC                    ;\
+$94:A6FB 60          RTS                    ;} Return carry clear
 
 $94:A6FC 4C FF A6    JMP $A6FF  [$94:A6FF]
 
 $94:A6FF 38          SEC
 $94:A700 60          RTS
 
+; BRANCH_MISSILE
 $94:A701 AC DE 0D    LDY $0DDE  [$7E:0DDE]
-$94:A704 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$94:A707 29 08 00    AND #$0008
-$94:A70A F0 05       BEQ $05    [$A711]
-$94:A70C 8A          TXA
-$94:A70D 49 02 00    EOR #$0002
-$94:A710 AA          TAX
+$94:A704 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$94:A707 29 08 00    AND #$0008             ;} If [projectile Y position] & 8 != 0 (projectile centre in bottom half of block):
+$94:A70A F0 05       BEQ $05    [$A711]     ;/
+$94:A70C 8A          TXA                    ;\
+$94:A70D 49 02 00    EOR #$0002             ;} X ^= 2 (toggle Y flip flag)
+$94:A710 AA          TAX                    ;/
 
-$94:A711 BD 53 8E    LDA $8E53,x[$94:8E54]
-$94:A714 30 02       BMI $02    [$A718]
-$94:A716 18          CLC
-$94:A717 60          RTS
+$94:A711 BD 53 8E    LDA $8E53,x[$94:8E54]  ;\
+$94:A714 30 02       BMI $02    [$A718]     ;} If [$8E54 + [X]] & 80h != 0: return carry set
+$94:A716 18          CLC                    ;\
+$94:A717 60          RTS                    ;} Return carry clear
 
 $94:A718 38          SEC
 $94:A719 60          RTS

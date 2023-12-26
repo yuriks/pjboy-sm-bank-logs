@@ -3298,7 +3298,6 @@ $9B:C7F7 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:C7FA 09 00 80    ORA #$8000             ;} Set grappling enemy flag
 $9B:C7FD 8D F4 0C    STA $0CF4  [$7E:0CF4]  ;/
 $9B:C800 80 05       BRA $05    [$C807]
-
                                             ; Else ([A] = 0):
 $9B:C802 20 F1 B8    JSR $B8F1  [$9B:B8F1]  ;\
 $9B:C805 90 9D       BCC $9D    [$C7A4]     ;} If grapple is not connected to a block: go to BRANCH_CANCEL
