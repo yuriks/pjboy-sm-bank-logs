@@ -4353,6 +4353,7 @@ $94:A175             dw 9D59, ;  0: Air
 
 ;;; $A195: Block shot reaction pointers - vertical ;;;
 {
+; Same as horizontal pointers except for slope
 $94:A195             dw 9D59, ;  0: Air
                         A15E, ; *1: Slope
                         9D59, ;  2: Spike air
@@ -5180,7 +5181,7 @@ $94:A639 20 1D 9C    JSR $9C1D  [$94:9C1D]  ;} Calculate block at ([$1A], [$1C])
 $94:A63C FA          PLX                    ;/
 $94:A63D BD 7C 0C    LDA $0C7C,x            ;\
 $94:A640 D0 05       BNE $05    [$A647]     ;} If [bomb timer] = 0:
-$94:A642 20 F4 9C    JSR $9CF4  [$94:9CF4]  ; Bomb explosion block collision detection
+$94:A642 20 F4 9C    JSR $9CF4  [$94:9CF4]  ; Bomb explosion block collision handling
 $94:A645 80 1B       BRA $1B    [$A662]     ; Return carry clear
 
 $94:A647 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
@@ -5330,105 +5331,115 @@ $94:A719 60          RTS
 
 ;;; $A71A: Block shot reaction - vertical - slope - square ;;;
 {
-$94:A71A 0A          ASL A
-$94:A71B 0A          ASL A
-$94:A71C 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:A71F BF 01 64 7F LDA $7F6401,x[$7F:71C5]
-$94:A723 2A          ROL A
-$94:A724 2A          ROL A
-$94:A725 2A          ROL A
-$94:A726 29 03 00    AND #$0003
-$94:A729 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$94:A72C A5 1C       LDA $1C    [$7E:001C]
-$94:A72E 29 08 00    AND #$0008
-$94:A731 4A          LSR A
-$94:A732 4A          LSR A
-$94:A733 4D D6 0D    EOR $0DD6  [$7E:0DD6]
-$94:A736 6D D4 0D    ADC $0DD4  [$7E:0DD4]
-$94:A739 AA          TAX
-$94:A73A AC DE 0D    LDY $0DDE  [$7E:0DDE]
-$94:A73D A5 1E       LDA $1E    [$7E:001E]
-$94:A73F D0 6F       BNE $6F    [$A7B0]
-$94:A741 A5 1A       LDA $1A    [$7E:001A]
-$94:A743 D0 2D       BNE $2D    [$A772]
-$94:A745 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$94:A748 38          SEC
-$94:A749 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]
-$94:A74C 29 08 00    AND #$0008
-$94:A74F D0 05       BNE $05    [$A756]
-$94:A751 BD 53 8E    LDA $8E53,x[$94:8E54]
-$94:A754 30 19       BMI $19    [$A76F]
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     X: Block index
+;;     $1A: Projectile X span - 1
+;;     $1C: Target boundary (top/bottom depending on sign of projectile velocity)
+;;     $1E: (Super) missile flag
+;;     $26: Number of blocks left to check - 1
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 
-$94:A756 8A          TXA
-$94:A757 49 01 00    EOR #$0001
-$94:A75A AA          TAX
-$94:A75B B9 64 0B    LDA $0B64,y[$7E:0B64]
-$94:A75E 18          CLC
-$94:A75F 79 B4 0B    ADC $0BB4,y[$7E:0BB4]
-$94:A762 3A          DEC A
-$94:A763 29 08 00    AND #$0008
-$94:A766 F0 05       BEQ $05    [$A76D]
-$94:A768 BD 53 8E    LDA $8E53,x[$94:8E53]
-$94:A76B 30 02       BMI $02    [$A76F]
+$94:A71A 0A          ASL A                  ;\
+$94:A71B 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
+$94:A71C 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:A71F BF 01 64 7F LDA $7F6401,x[$7F:71C5];\
+$94:A723 2A          ROL A                  ;|
+$94:A724 2A          ROL A                  ;|
+$94:A725 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slope flip flags)
+$94:A726 29 03 00    AND #$0003             ;|
+$94:A729 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$94:A72C A5 1C       LDA $1C    [$7E:001C]  ;\
+$94:A72E 29 08 00    AND #$0008             ;} A = [$1C] & 8 (is projectile target boundary in bottom half of block)
+$94:A731 4A          LSR A                  ;\
+$94:A732 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 2 (toggle Y flip flag if projectile is in bottom half of block)
+$94:A733 4D D6 0D    EOR $0DD6  [$7E:0DD6]  ;/
+$94:A736 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;\
+$94:A739 AA          TAX                    ;} X = [$0DD4] + [A] (solid slope definition table index)
+$94:A73A AC DE 0D    LDY $0DDE  [$7E:0DDE]  ; Y = [projectile index]
+$94:A73D A5 1E       LDA $1E    [$7E:001E]  ;\
+$94:A73F D0 6F       BNE $6F    [$A7B0]     ;} If (super) missile: go to BRANCH_MISSILE
+$94:A741 A5 1A       LDA $1A    [$7E:001A]  ;\
+$94:A743 D0 2D       BNE $2D    [$A772]     ;} If [$1A] != 0 (projectile spans more than one block): go to BRANCH_MULTI_BLOCK
+$94:A745 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$94:A748 38          SEC                    ;|
+$94:A749 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} If (projectile left boundary) & 8 = 0 (projectile left boundary is in left half of block):
+$94:A74C 29 08 00    AND #$0008             ;|
+$94:A74F D0 05       BNE $05    [$A756]     ;/
+$94:A751 BD 53 8E    LDA $8E53,x[$94:8E54]  ;\
+$94:A754 30 19       BMI $19    [$A76F]     ;} If [$8E54 + [X]] & 80h != 0 (left half is solid): return carry set
 
-$94:A76D 18          CLC
-$94:A76E 60          RTS
+$94:A756 8A          TXA                    ;\
+$94:A757 49 01 00    EOR #$0001             ;} X ^= 1 (toggle X flip flag)
+$94:A75A AA          TAX                    ;/
+$94:A75B B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$94:A75E 18          CLC                    ;|
+$94:A75F 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;|
+$94:A762 3A          DEC A                  ;} If (projectile right boundary) & 8 != 0 (projectile right boundary is in right half of block):
+$94:A763 29 08 00    AND #$0008             ;|
+$94:A766 F0 05       BEQ $05    [$A76D]     ;/
+$94:A768 BD 53 8E    LDA $8E53,x[$94:8E53]  ;\
+$94:A76B 30 02       BMI $02    [$A76F]     ;} If [$8E54 + [X]] & 80h != 0 (right half is solid): return carry set
+                                            
+$94:A76D 18          CLC                    ;\
+$94:A76E 60          RTS                    ;} Return carry clear
 
 $94:A76F 4C AE A7    JMP $A7AE  [$94:A7AE]
 
-$94:A772 A5 26       LDA $26    [$7E:0026]
-$94:A774 D0 14       BNE $14    [$A78A]
-$94:A776 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$94:A779 18          CLC
-$94:A77A 79 B4 0B    ADC $0BB4,y[$7E:0BB4]
-$94:A77D 3A          DEC A
-$94:A77E 29 08 00    AND #$0008
-$94:A781 D0 17       BNE $17    [$A79A]
-$94:A783 BD 53 8E    LDA $8E53,x[$94:8E5B]
-$94:A786 30 23       BMI $23    [$A7AB]
-$94:A788 80 1F       BRA $1F    [$A7A9]
+; BRANCH_MULTI_BLOCK
+$94:A772 A5 26       LDA $26    [$7E:0026]  ;\
+$94:A774 D0 14       BNE $14    [$A78A]     ;} If [$26] = 0 (rightmost block check):
+$94:A776 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$94:A779 18          CLC                    ;|
+$94:A77A 79 B4 0B    ADC $0BB4,y[$7E:0BB4]  ;|
+$94:A77D 3A          DEC A                  ;} If (projectile right boundary) & 8 != 0 (projectile right boundary is in right half of block): go to BRANCH_CHECK_BOTH_HALVES
+$94:A77E 29 08 00    AND #$0008             ;|
+$94:A781 D0 17       BNE $17    [$A79A]     ;/
+$94:A783 BD 53 8E    LDA $8E53,x[$94:8E5B]  ;\
+$94:A786 30 23       BMI $23    [$A7AB]     ;} If [$8E54 + [X]] & 80h != 0 (left half is solid): return carry set
+$94:A788 80 1F       BRA $1F    [$A7A9]     ; Return carry clear
+                                            
+$94:A78A C5 1A       CMP $1A    [$7E:001A]  ;\
+$94:A78C D0 0C       BNE $0C    [$A79A]     ;} If [$26] = [$1A] (leftmost block check):
+$94:A78E B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$94:A791 38          SEC                    ;|
+$94:A792 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;} If projectile left boundary is in left half: go to BRANCH_CHECK_LEFT_HALF
+$94:A795 29 08 00    AND #$0008             ;|
+$94:A798 D0 05       BNE $05    [$A79F]     ;/
 
-$94:A78A C5 1A       CMP $1A    [$7E:001A]
-$94:A78C D0 0C       BNE $0C    [$A79A]
-$94:A78E B9 64 0B    LDA $0B64,y[$7E:0B64]
-$94:A791 38          SEC
-$94:A792 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]
-$94:A795 29 08 00    AND #$0008
-$94:A798 D0 05       BNE $05    [$A79F]
-
-$94:A79A BD 53 8E    LDA $8E53,x[$94:8E5E]
-$94:A79D 30 0C       BMI $0C    [$A7AB]
-
-$94:A79F 8A          TXA
-$94:A7A0 49 01 00    EOR #$0001
-$94:A7A3 AA          TAX
-$94:A7A4 BD 53 8E    LDA $8E53,x[$94:8E55]
-$94:A7A7 30 02       BMI $02    [$A7AB]
-
-$94:A7A9 18          CLC
-$94:A7AA 60          RTS
+; BRANCH_CHECK_BOTH_HALVES
+$94:A79A BD 53 8E    LDA $8E53,x[$94:8E5E]  ;\
+$94:A79D 30 0C       BMI $0C    [$A7AB]     ;} If [$8E54 + [X]] & 80h != 0 (left half is solid): return carry set
+                                            
+; BRANCH_CHECK_LEFT_HALF                    
+$94:A79F 8A          TXA                    ;\
+$94:A7A0 49 01 00    EOR #$0001             ;|
+$94:A7A3 AA          TAX                    ;} If [$8E54 + ([X] ^ 1)] & 80h != 0 (right half is solid): return carry set
+$94:A7A4 BD 53 8E    LDA $8E53,x[$94:8E55]  ;|
+$94:A7A7 30 02       BMI $02    [$A7AB]     ;/
+                                            
+$94:A7A9 18          CLC                    ;\
+$94:A7AA 60          RTS                    ;} Return carry clear
 
 $94:A7AB 4C AE A7    JMP $A7AE  [$94:A7AE]
 
 $94:A7AE 38          SEC
 $94:A7AF 60          RTS
-}
 
-
-;;; $A7B0:  ;;;
-{
+; BRANCH_MISSILE
 $94:A7B0 AC DE 0D    LDY $0DDE  [$7E:0DDE]
-$94:A7B3 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$94:A7B6 29 08 00    AND #$0008
-$94:A7B9 F0 05       BEQ $05    [$A7C0]
-$94:A7BB 8A          TXA
-$94:A7BC 49 01 00    EOR #$0001
-$94:A7BF AA          TAX
-
-$94:A7C0 BD 53 8E    LDA $8E53,x[$94:8E53]
-$94:A7C3 30 02       BMI $02    [$A7C7]
-$94:A7C5 18          CLC
-$94:A7C6 60          RTS
+$94:A7B3 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$94:A7B6 29 08 00    AND #$0008             ;} If [projectile X position] & 8 != 0 (projectile centre in right half of block):
+$94:A7B9 F0 05       BEQ $05    [$A7C0]     ;/
+$94:A7BB 8A          TXA                    ;\
+$94:A7BC 49 01 00    EOR #$0001             ;} X ^= 1 (toggle X flip flag)
+$94:A7BF AA          TAX                    ;/
+                                            
+$94:A7C0 BD 53 8E    LDA $8E53,x[$94:8E53]  ;\
+$94:A7C3 30 02       BMI $02    [$A7C7]     ;} If [$8E54 + [X]] & 80h != 0: return carry set
+$94:A7C5 18          CLC                    ;\
+$94:A7C6 60          RTS                    ;} Return carry clear
 
 $94:A7C7 38          SEC
 $94:A7C8 60          RTS
