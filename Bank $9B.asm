@@ -1785,7 +1785,7 @@ $9B:BA8F 38          SEC                    ;\
 $9B:BA90 E9 18 00    SBC #$0018             ;} Grapple beam length -= 18h
 $9B:BA93 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
 
-$9B:BA96 22 11 AC 94 JSL $94AC11[$94:AC11]  ; Execute $94:AC11
+$9B:BA96 22 11 AC 94 JSL $94AC11[$94:AC11]  ; Update grapple beam start position
 $9B:BA9A 60          RTS
 }
 
@@ -1814,7 +1814,7 @@ $9B:BAC9 38          SEC                    ;\
 $9B:BACA E9 18 00    SBC #$0018             ;} Grapple beam length -= 18h
 $9B:BACD 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;/
 
-$9B:BAD0 22 11 AC 94 JSL $94AC11[$94:AC11]  ; Execute $94:AC11
+$9B:BAD0 22 11 AC 94 JSL $94AC11[$94:AC11]  ; Update grapple beam start position
 $9B:BAD4 60          RTS
 }
 }
@@ -3166,7 +3166,7 @@ $9B:C708 D0 07       BNE $07    [$C711]     ;/
 ; BRANCH_CANCEL
 $9B:C70A A9 56 C8    LDA #$C856             ;\
 $9B:C70D 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = cancel
-$9B:C710 60          RTS
+$9B:C710 60          RTS                    ; Return
 
 ; BRANCH_FIRING
 $9B:C711 20 D4 B8    JSR $B8D4  [$9B:B8D4]  ; RTS
@@ -3213,7 +3213,7 @@ $9B:C75E D0 07       BNE $07    [$C767]     ;/
 ; BRANCH_CANCEL
 $9B:C760 A9 56 C8    LDA #$C856             ;\
 $9B:C763 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = cancel
-$9B:C766 60          RTS
+$9B:C766 60          RTS                    ; Return
 
 ; BRANCH_FIRING
 $9B:C767 20 D4 B8    JSR $B8D4  [$9B:B8D4]  ; RTS
@@ -3302,7 +3302,7 @@ $9B:C800 80 05       BRA $05    [$C807]
 $9B:C802 20 F1 B8    JSR $B8F1  [$9B:B8F1]  ;\
 $9B:C805 90 9D       BCC $9D    [$C7A4]     ;} If grapple is not connected to a block: go to BRANCH_CANCEL
 
-$9B:C807 22 11 AC 94 JSL $94AC11[$94:AC11]  ; Execute $94:AC11
+$9B:C807 22 11 AC 94 JSL $94AC11[$94:AC11]  ; Update grapple beam start position
 $9B:C80B 22 0B AF 94 JSL $94AF0B[$94:AF0B]  ; Clear carry
 $9B:C80F 22 95 BD 9B JSL $9BBD95[$9B:BD95]  ; Execute $9B:BD95
 $9B:C813 60          RTS

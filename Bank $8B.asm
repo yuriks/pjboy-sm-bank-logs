@@ -7856,7 +7856,7 @@ $8B:BC29 8D 84 0D    STA $0D84  [$7E:0D84]  ;|
 $8B:BC2C AD B6 09    LDA $09B6  [$7E:09B6]  ;|
 $8B:BC2F 8D 86 0D    STA $0D86  [$7E:0D86]  ;|
 $8B:BC32 AD B8 09    LDA $09B8  [$7E:09B8]  ;|
-$8B:BC35 8D 88 0D    STA $0D88  [$7E:0D88]  ;} Back up previous button settings to $0D82..0D8F
+$8B:BC35 8D 88 0D    STA $0D88  [$7E:0D88]  ;} Back up previous button settings to $0D82..8F
 $8B:BC38 AD BA 09    LDA $09BA  [$7E:09BA]  ;|
 $8B:BC3B 8D 8A 0D    STA $0D8A  [$7E:0D8A]  ;|
 $8B:BC3E AD BC 09    LDA $09BC  [$7E:09BC]  ;|

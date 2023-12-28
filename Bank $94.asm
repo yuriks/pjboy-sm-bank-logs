@@ -3941,18 +3941,19 @@ $94:9E54 60          RTS
 {
 ;; Returns:
 ;;     Carry: Clear. No collision
+;;     Overflow: Clear (no effect)
 $94:9E55 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9E58 BF 01 64 7F LDA $7F6401,x[$7F:64C3];|
-$94:9E5C 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return carry clear
+$94:9E5C 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return carry clear, overflow clear
 $94:9E5F EB          XBA                    ;|
 $94:9E60 30 0D       BMI $0D    [$9E6F]     ;/
 $94:9E62 0A          ASL A                  ;\
 $94:9E63 AA          TAX                    ;|
 $94:9E64 BD A6 9E    LDA $9EA6,x[$94:9EA6]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
 $94:9E67 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9E6B C2 40       REP #$40
-$94:9E6D 18          CLC                    ;\
-$94:9E6E 60          RTS                    ;} Return carry clear
+$94:9E6B C2 40       REP #$40               ;\
+$94:9E6D 18          CLC                    ;} Return carry clear, overflow clear
+$94:9E6E 60          RTS                    ;/
 
 $94:9E6F C2 40       REP #$40
 $94:9E71 18          CLC
@@ -3964,6 +3965,7 @@ $94:9E72 60          RTS
 {
 ;; Returns:
 ;;     Carry: Set. Unconditional collision
+;;     Overflow: Clear. Cancel grapple beam
 $94:9E73 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9E76 BF 01 64 7F LDA $7F6401,x[$7F:8B62];|
 $94:9E7A 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
@@ -3973,9 +3975,9 @@ $94:9E80 0A          ASL A                  ;\
 $94:9E81 AA          TAX                    ;|
 $94:9E82 BD A6 9E    LDA $9EA6,x[$94:9F28]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
 $94:9E85 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9E89 C2 40       REP #$40
-$94:9E8B 38          SEC                    ;\
-$94:9E8C 60          RTS                    ;} Return set
+$94:9E89 C2 40       REP #$40               ;\
+$94:9E8B 38          SEC                    ;} Return carry set, overflow clear
+$94:9E8C 60          RTS                    ;/
 
 ; BRANCH_AREA_DEPENDANT
 $94:9E8D 29 7F 00    AND #$007F             ;\
@@ -3988,9 +3990,9 @@ $94:9E97 BD C6 9F    LDA $9FC6,x[$94:9FC6]  ;|
 $94:9E9A 85 12       STA $12    [$7E:0012]  ;|
 $94:9E9C B1 12       LDA ($12),y[$7E:5555]  ;|
 $94:9E9E 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9EA2 C2 40       REP #$40
-$94:9EA4 38          SEC                    ;\
-$94:9EA5 60          RTS                    ;} Return carry set
+$94:9EA2 C2 40       REP #$40               ;\
+$94:9EA4 38          SEC                    ;} Return carry set, overflow clear
+$94:9EA5 60          RTS                    ;/
 }
 
 
@@ -4021,18 +4023,19 @@ $94:9FC6             dw 9F46, 9F56, 9F66, 9F76, 9F86, 9F96, 9FA6, 9FB6
 {
 ;; Returns:
 ;;     Carry: Clear. No collision
+;;     Overflow: Clear (no effect)
 $94:9FD6 AE C4 0D    LDX $0DC4  [$7F:0DC4]  ;\
 $94:9FD9 BF 01 64 7F LDA $7F6401,x[$7F:6401];|
-$94:9FDD 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return clear
+$94:9FDD 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return clear, overflow clear
 $94:9FE0 EB          XBA                    ;|
 $94:9FE1 30 0D       BMI $0D    [$9FF0]     ;/
 $94:9FE3 0A          ASL A                  ;\
 $94:9FE4 AA          TAX                    ;|
 $94:9FE5 BD 12 A0    LDA $A012,x[$94:A012]  ;} Spawn PLM [$A012 + [block BTS] * 2]
 $94:9FE8 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9FEC C2 40       REP #$40
-$94:9FEE 18          CLC                    ;\
-$94:9FEF 60          RTS                    ;} Return carry clear
+$94:9FEC C2 40       REP #$40               ;\
+$94:9FEE 18          CLC                    ;} Return carry clear, overflow clear
+$94:9FEF 60          RTS                    ;/
 
 $94:9FF0 C2 40       REP #$40
 $94:9FF2 18          CLC
@@ -4044,18 +4047,19 @@ $94:9FF3 60          RTS
 {
 ;; Returns:
 ;;     Carry: Set. Unconditional collision
+;;     Overflow: Clear. Cancel grapple beam
 $94:9FF4 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9FF7 BF 01 64 7F LDA $7F6401,x[$7F:66E0];|
-$94:9FFB 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return carry sey
+$94:9FFB 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: return carry set, overflow clear
 $94:9FFE EB          XBA                    ;|
 $94:9FFF 30 0D       BMI $0D    [$A00E]     ;/
 $94:A001 0A          ASL A                  ;\
 $94:A002 AA          TAX                    ;|
 $94:A003 BD 12 A0    LDA $A012,x[$94:A014]  ;} Spawn PLM [$A012 + [block BTS] * 2]
 $94:A006 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:A00A C2 40       REP #$40
-$94:A00C 38          SEC                    ;\
-$94:A00D 60          RTS                    ;} Return carry set
+$94:A00A C2 40       REP #$40               ;\
+$94:A00C 38          SEC                    ;} Return carry set, overflow clear
+$94:A00D 60          RTS                    ;/
 
 $94:A00E C2 40       REP #$40
 $94:A010 38          SEC
@@ -5014,6 +5018,8 @@ $94:A542 6B          RTL                    ;} Return carry set
 ;;     Carry: Set if collision, clear otherwise
 ;;     $26: Remaining number of blocks left to check - 1
 ;;     $28: Remaining target number of collisions - 1
+
+; Used for spread bomb collision also
 $94:A543 C2 20       REP #$20
 $94:A545 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ; X = [current block index]
 $94:A548 AC DE 0D    LDY $0DDE  [$7E:0DDE]  ; Y = [projectile index]
@@ -5075,6 +5081,9 @@ $94:A58E 60          RTS                    ;} Return carry clear
 ;;     Carry: Set if collision, clear otherwise
 ;;     $26: Remaining number of blocks left to check - 1
 ;;     $28: Remaining target number of collisions - 1
+
+; Used for spread bomb collision also ($26/$28 don't matter in that case)
+
 $94:A58F BF 02 64 7F LDA $7F6402,x[$7F:6AA6];\
 $94:A593 29 1F 00    AND #$001F             ;|
 $94:A596 0A          ASL A                  ;|
@@ -5448,6 +5457,9 @@ $94:A7C8 60          RTS
 
 ;;; $A7C9: Block grapple reaction - air / spike air / special air / unused air ;;;
 {
+;; Returns:
+;;     Carry: Clear. No collision
+;;     Overflow: Clear (no effect)
 $94:A7C9 C2 40       REP #$40
 $94:A7CB 18          CLC
 $94:A7CC 60          RTS
@@ -5456,6 +5468,9 @@ $94:A7CC 60          RTS
 
 ;;; $A7CD: Block grapple reaction - slope / solid block / door block / special block ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     Overflow: Clear. Cancel grapple beam
 $94:A7CD C2 40       REP #$40
 $94:A7CF 38          SEC
 $94:A7D0 60          RTS
@@ -5465,55 +5480,50 @@ $94:A7D0 60          RTS
 ;;; $A7D1: Block grapple reaction - grapple block ;;;
 {
 ;; Returns:
-;;     Carry/overflow: Both clear if BTS >= 80h, otherwise both set by PLM initialisation
+;;     Carry/overflow: Clear if BTS >= 80h, otherwise set according to PLM initialisation (always set)
 
-; Spawn PLM for grapple block
-$94:A7D1 A9 00 80    LDA #$8000
-$94:A7D4 1C F4 0C    TRB $0CF4  [$7E:0CF4]
-$94:A7D7 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:A7DA BF 01 64 7F LDA $7F6401,x[$7F:646C]
-$94:A7DE EB          XBA
-$94:A7DF 30 0D       BMI $0D    [$A7EE]
-$94:A7E1 29 7F 00    AND #$007F
-$94:A7E4 0A          ASL A
-$94:A7E5 AA          TAX
-$94:A7E6 BD F5 A7    LDA $A7F5,x[$94:A7F5]
-$94:A7E9 22 E7 84 84 JSL $8484E7[$84:84E7]
-$94:A7ED 60          RTS
-
-$94:A7EE 29 7F 00    AND #$007F
+$94:A7D1 A9 00 80    LDA #$8000             ;\
+$94:A7D4 1C F4 0C    TRB $0CF4  [$7E:0CF4]  ;} Clear grappling enemy flag
+$94:A7D7 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:A7DA BF 01 64 7F LDA $7F6401,x[$7F:646C];|
+$94:A7DE EB          XBA                    ;} If [block BTS] & 80h != 0: return carry clear, overflow clear
+$94:A7DF 30 0D       BMI $0D    [$A7EE]     ;|
+$94:A7E1 29 7F 00    AND #$007F             ;/
+$94:A7E4 0A          ASL A                  ;\
+$94:A7E5 AA          TAX                    ;|
+$94:A7E6 BD F5 A7    LDA $A7F5,x[$94:A7F5]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
+$94:A7E9 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
+$94:A7ED 60          RTS                    ; Return
+                                            
+$94:A7EE 29 7F 00    AND #$007F             ; >_<;
 $94:A7F1 C2 40       REP #$40
 $94:A7F3 18          CLC
 $94:A7F4 60          RTS
 
-$94:A7F5             dw D0D8, ; Generic grapple block
-                        D0DC, ; Respawning crumbling grapple block
-                        D0E0, ; Non-respawning crumbling grapple block
-                        D0D8
+$94:A7F5             dw D0D8, D0DC, D0E0, D0D8
 }
 
 
 ;;; $A7FD: Block grapple reaction - spike block ;;;
 {
 ;; Returns:
-;;     Carry: Clear if BTS >= 80h, set by PLM initialisation
-;;     Overflow: Clear if BTS >= 80h, otherwise set according to PLM initialisation:
-;;         BTS 3h:    Set (Draygon's broken turret)
-;;         Otherwise: Clear
+;;     Carry/overflow: Clear if BTS >= 80h, otherwise set according to PLM initialisation
+;;         BTS 3h (Draygon's broken turret): Set carry and overflow
+;;         Otherwise: Clear carry and overflow
 
 ; Spawn PLM for spike block
-$94:A7FD AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:A800 BF 01 64 7F LDA $7F6401,x
-$94:A804 EB          XBA
-$94:A805 30 0D       BMI $0D    [$A814]
-$94:A807 29 7F 00    AND #$007F
-$94:A80A 0A          ASL A
-$94:A80B AA          TAX
-$94:A80C BD 1B A8    LDA $A81B,x
-$94:A80F 22 E7 84 84 JSL $8484E7[$84:84E7]
-$94:A813 60          RTS
+$94:A7FD AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:A800 BF 01 64 7F LDA $7F6401,x          ;|
+$94:A804 EB          XBA                    ;} If [block BTS] & 80h != 0: return carry clear, overflow clear
+$94:A805 30 0D       BMI $0D    [$A814]     ;|
+$94:A807 29 7F 00    AND #$007F             ;/
+$94:A80A 0A          ASL A                  ;\
+$94:A80B AA          TAX                    ;|
+$94:A80C BD 1B A8    LDA $A81B,x            ;} Spawn PLM [$9EA6 + [block BTS] * 2]
+$94:A80F 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
+$94:A813 60          RTS                    ; Return
 
-$94:A814 29 7F 00    AND #$007F
+$94:A814 29 7F 00    AND #$007F             ; >_<;
 $94:A817 C2 40       REP #$40
 $94:A819 18          CLC
 $94:A81A 60          RTS
@@ -5524,21 +5534,37 @@ $94:A81B             dw D0E4, D0E4, D0E4, D0E8, D0E4, D0E4, D0E4, D0E4, D0E4, D0
 
 ;;; $A83B: Block grapple reaction pointers ;;;
 {
-$94:A83B             dw A7C9, A7CD, A7C9, A7C9, 9E55, 9411, A7C9, 9FD6, A7CD, A7CD, A7FD, A7CD, 9E73, 9447, A7D1, 9FF4
+$94:A83B             dw A7C9, ;  0: Air
+                        A7CD, ;  1: Slope
+                        A7C9, ;  2: Spike air
+                        A7C9, ;  3: Special air
+                        9E55, ; *4: Shootable air
+                        9411, ; *5: Horizontal extension
+                        A7C9, ;  6: Unused air
+                        9FD6, ; *7: Bombable air
+                        A7CD, ;  8: Solid block
+                        A7CD, ;  9: Door block
+                        A7FD, ; *Ah: Spike block
+                        A7CD, ;  Bh: Special block
+                        9E73, ; *Ch: Shootable block
+                        9447, ; *Dh: Vertical extension
+                        A7D1, ; *Eh: Grapple block
+                        9FF4  ; *Fh: Bombable block
 }
 
 
 ;;; $A85B: Grapple beam block collision detection ;;;
 {
 ;; Returns:
-;;     Carry: Set if interaction, otherwise clear.
-;;     Overflow: If interaction; set if connecting to block, clear if grapple beam cancelled
+;;     Carry: Set if collision, otherwise clear
+;;     Overflow: If carry set; set if connecting to block, clear if grapple beam cancelled
 
 ; Checks the four points given by quarter increments of grapple velocity for block collision
+; Grapple is connected if *any* point results in a connection, otherwise grapple cancel is determined by the *last* point
 
 $94:A85B 8B          PHB
-$94:A85C 4B          PHK
-$94:A85D AB          PLB
+$94:A85C 4B          PHK                    ;\
+$94:A85D AB          PLB                    ;} DB = $94
 $94:A85E AD 22 0D    LDA $0D22  [$7E:0D22]  ;\
 $94:A861 8D 83 0D    STA $0D83  [$7E:0D83]  ;|
 $94:A864 18          CLC                    ;|
@@ -5600,30 +5626,33 @@ $94:A8ED 18          CLC                    ;|
 $94:A8EE 6D 04 0D    ADC $0D04  [$7E:0D04]  ;|
 $94:A8F1 8D 0C 0D    STA $0D0C  [$7E:0D0C]  ;/
 $94:A8F4 22 1F A9 94 JSL $94A91F[$94:A91F]  ; Block grapple reaction
-$94:A8F8 50 1E       BVC $1E    [$A918]     ; If overflow set:
-$94:A8FA 90 1C       BCC $1C    [$A918]     ; If carry set:
+$94:A8F8 50 1E       BVC $1E    [$A918]     ; If overflow set (connect to block):
+$94:A8FA 90 1C       BCC $1C    [$A918]     ; If collision:
 $94:A8FC 08          PHP
 $94:A8FD AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
 $94:A900 29 F0 FF    AND #$FFF0             ;|
-$94:A903 09 08 00    ORA #$0008             ;} Grapple beam end X position = [grapple beam end X position] & FFF0h | 8
+$94:A903 09 08 00    ORA #$0008             ;} Grapple beam end X position = [grapple beam end X position] rounded to centre of 16x16 block
 $94:A906 8D 08 0D    STA $0D08  [$7E:0D08]  ;/
 $94:A909 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
 $94:A90C 29 F0 FF    AND #$FFF0             ;|
-$94:A90F 09 08 00    ORA #$0008             ;} Grapple beam end Y position = [grapple beam end Y position] & FFF0h | 8
+$94:A90F 09 08 00    ORA #$0008             ;} Grapple beam end Y position = [grapple beam end Y position] rounded to centre of 16x16 block
 $94:A912 8D 0C 0D    STA $0D0C  [$7E:0D0C]  ;/
-$94:A915 28          PLP                    ;\
-$94:A916 AB          PLB                    ;} Return
-$94:A917 6B          RTL                    ;/
+$94:A915 28          PLP
+$94:A916 AB          PLB
+$94:A917 6B          RTL                    ; Return carry set, overflow set
 
 $94:A918 CE 8A 0D    DEC $0D8A  [$7E:0D8A]  ; Decrement $0D8A
 $94:A91B D0 83       BNE $83    [$A8A0]     ; If [$0D8A] != 0: go to LOOP
 $94:A91D AB          PLB
-$94:A91E 6B          RTL
+$94:A91E 6B          RTL                    ; Return result of last call to $A91F
 }
 
 
 ;;; $A91F: Block grapple reaction ;;;
 {
+;; Returns:
+;;     Carry: Set if collision, otherwise clear
+;;     Overflow: If carry set; set if connecting to block, clear if grapple beam cancelled
 $94:A91F 8B          PHB
 $94:A920 4B          PHK                    ;\
 $94:A921 AB          PLB                    ;} DB = $94
@@ -5636,7 +5665,7 @@ $94:A929 E2 20       SEP #$20               ;|
 $94:A92B 8D 02 42    STA $4202  [$7E:4202]  ;|
 $94:A92E AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $94:A931 8D 03 42    STA $4203  [$7E:4203]  ;|
-$94:A934 C2 20       REP #$20               ;} Current block = [grapple beam end Y position] / 10h * [room width in blocks] + [grapple beam end X position] / 10h
+$94:A934 C2 20       REP #$20               ;} Current block index = [grapple beam end Y position] / 10h * [room width in blocks] + [grapple beam end X position] / 10h
 $94:A936 AD 08 0D    LDA $0D08  [$7E:0D08]  ;|
 $94:A939 4A          LSR A                  ;|
 $94:A93A 4A          LSR A                  ;|
@@ -5650,7 +5679,7 @@ $94:A945 AA          TAX                    ;|
 $94:A946 BF 02 00 7F LDA $7F0002,x[$7F:0192];|
 $94:A94A 29 00 F0    AND #$F000             ;|
 $94:A94D EB          XBA                    ;|
-$94:A94E 4A          LSR A                  ;} Execute [$A83B + block type * 2]
+$94:A94E 4A          LSR A                  ;} Execute [$A83B + (block type) * 2]
 $94:A94F 4A          LSR A                  ;|
 $94:A950 4A          LSR A                  ;|
 $94:A951 AA          TAX                    ;|
@@ -5660,140 +5689,150 @@ $94:A956 6B          RTL
 }
 
 
-;;; $A957:  ;;;
+;;; $A957: Calculate grapple beam start position from end position ;;;
 {
-$94:A957 AE 82 0D    LDX $0D82  [$7E:0D82]
-$94:A95A AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$94:A95D 30 3A       BMI $3A    [$A999]
-$94:A95F BF 43 B4 A0 LDA $A0B443,x[$A0:B56D]
-$94:A963 30 0B       BMI $0B    [$A970]
-$94:A965 AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:A968 29 F0 FF    AND #$FFF0
-$94:A96B 09 08 00    ORA #$0008
+;; Parameters:
+;;     $0D82: [grapple beam end angle] * 2
+;;     $0D84: [grapple beam length]
+;; Returns:
+;;     $0D90: Grapple beam start X position
+;;     $0D92: Grapple beam start Y position
+;;     $0D94: Grapple beam start X block
+;;     $0D96: Grapple beam start Y block
+
+$94:A957 AE 82 0D    LDX $0D82  [$7E:0D82]  ; X = [grapple beam end angle] * 2
+$94:A95A AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$94:A95D 30 3A       BMI $3A    [$A999]     ;} If grappling enemy: go to BRANCH_GRAPPLING_ENEMY
+$94:A95F BF 43 B4 A0 LDA $A0B443,x[$A0:B56D];\
+$94:A963 30 0B       BMI $0B    [$A970]     ;} If [grapple beam end angle] <= 80h:
+$94:A965 AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
+$94:A968 29 F0 FF    AND #$FFF0             ;} Grapple beam end X position = [grapple beam end X position] rounded to pixel 8 of 16x16 block
+$94:A96B 09 08 00    ORA #$0008             ;/
 $94:A96E 80 09       BRA $09    [$A979]
 
-$94:A970 AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:A973 29 F0 FF    AND #$FFF0
-$94:A976 09 07 00    ORA #$0007
+$94:A970 AD 08 0D    LDA $0D08  [$7E:0D08]  ;\ Else ([grapple beam end angle] > 80h):
+$94:A973 29 F0 FF    AND #$FFF0             ;} Grapple beam end X position = [grapple beam end X position] rounded to pixel 7 of 16x16 block
+$94:A976 09 07 00    ORA #$0007             ;/
 
 $94:A979 8D 08 0D    STA $0D08  [$7E:0D08]
-$94:A97C BF C3 B3 A0 LDA $A0B3C3,x[$A0:B4ED]
-$94:A980 30 0B       BMI $0B    [$A98D]
-$94:A982 AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:A985 29 F0 FF    AND #$FFF0
-$94:A988 09 08 00    ORA #$0008
-$94:A98B 80 09       BRA $09    [$A996]
-
-$94:A98D AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:A990 29 F0 FF    AND #$FFF0
-$94:A993 09 07 00    ORA #$0007
+$94:A97C BF C3 B3 A0 LDA $A0B3C3,x[$A0:B4ED];\
+$94:A980 30 0B       BMI $0B    [$A98D]     ;} If 40h <= [grapple beam end angle] <= C0h:
+$94:A982 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
+$94:A985 29 F0 FF    AND #$FFF0             ;} Grapple beam end Y position = [grapple beam end Y position] rounded to pixel 8 of 16x16 block
+$94:A988 09 08 00    ORA #$0008             ;/
+$94:A98B 80 09       BRA $09    [$A996]     
+                                            
+$94:A98D AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\ Else (not 40h <= [grapple beam end angle] <= C0h):
+$94:A990 29 F0 FF    AND #$FFF0             ;} Grapple beam end Y position = [grapple beam end Y position] rounded to pixel 7 of 16x16 block
+$94:A993 09 07 00    ORA #$0007             ;/
 
 $94:A996 8D 0C 0D    STA $0D0C  [$7E:0D0C]
 
-$94:A999 E2 20       SEP #$20
-$94:A99B AD 84 0D    LDA $0D84  [$7E:0D84]
-$94:A99E 8D 02 42    STA $4202  [$7E:4202]
-$94:A9A1 C2 20       REP #$20
-$94:A9A3 BF 43 B4 A0 LDA $A0B443,x[$A0:B56D]
-$94:A9A7 30 24       BMI $24    [$A9CD]
-$94:A9A9 C9 00 01    CMP #$0100
-$94:A9AC D0 09       BNE $09    [$A9B7]
-$94:A9AE AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:A9B1 18          CLC
-$94:A9B2 6D 84 0D    ADC $0D84  [$7E:0D84]
-$94:A9B5 80 3F       BRA $3F    [$A9F6]
-
-$94:A9B7 E2 20       SEP #$20
-$94:A9B9 8D 03 42    STA $4203  [$7E:4203]
-$94:A9BC C2 20       REP #$20
-$94:A9BE EA          NOP
-$94:A9BF EA          NOP
-$94:A9C0 AD 16 42    LDA $4216  [$7E:4216]
-$94:A9C3 29 00 FF    AND #$FF00
-$94:A9C6 EB          XBA
-$94:A9C7 18          CLC
-$94:A9C8 6D 08 0D    ADC $0D08  [$7E:0D08]
-$94:A9CB 80 29       BRA $29    [$A9F6]
-
-$94:A9CD C9 00 FF    CMP #$FF00
-$94:A9D0 D0 09       BNE $09    [$A9DB]
-$94:A9D2 AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:A9D5 38          SEC
-$94:A9D6 ED 84 0D    SBC $0D84  [$7E:0D84]
-$94:A9D9 80 1B       BRA $1B    [$A9F6]
-
-$94:A9DB E2 20       SEP #$20
-$94:A9DD 49 FF       EOR #$FF
-$94:A9DF 1A          INC A
-$94:A9E0 8D 03 42    STA $4203  [$7E:4203]
-$94:A9E3 C2 20       REP #$20
-$94:A9E5 EA          NOP
-$94:A9E6 EA          NOP
-$94:A9E7 AD 16 42    LDA $4216  [$7E:4216]
-$94:A9EA 29 00 FF    AND #$FF00
-$94:A9ED EB          XBA
-$94:A9EE 49 FF FF    EOR #$FFFF
-$94:A9F1 1A          INC A
-$94:A9F2 18          CLC
-$94:A9F3 6D 08 0D    ADC $0D08  [$7E:0D08]
-
-$94:A9F6 8D 90 0D    STA $0D90  [$7E:0D90]
-$94:A9F9 4A          LSR A
-$94:A9FA 4A          LSR A
-$94:A9FB 4A          LSR A
-$94:A9FC 4A          LSR A
-$94:A9FD 29 FF 00    AND #$00FF
-$94:AA00 8D 94 0D    STA $0D94  [$7E:0D94]
-$94:AA03 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B4ED]
-$94:AA07 30 24       BMI $24    [$AA2D]
-$94:AA09 C9 00 01    CMP #$0100
-$94:AA0C D0 09       BNE $09    [$AA17]
-$94:AA0E AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:AA11 18          CLC
-$94:AA12 6D 84 0D    ADC $0D84  [$7E:0D84]
-$94:AA15 80 3F       BRA $3F    [$AA56]
-
-$94:AA17 E2 20       SEP #$20
-$94:AA19 8D 03 42    STA $4203  [$7E:4203]
-$94:AA1C C2 20       REP #$20
-$94:AA1E EA          NOP
-$94:AA1F EA          NOP
-$94:AA20 AD 16 42    LDA $4216  [$7E:4216]
-$94:AA23 29 00 FF    AND #$FF00
-$94:AA26 EB          XBA
-$94:AA27 18          CLC
-$94:AA28 6D 0C 0D    ADC $0D0C  [$7E:0D0C]
-$94:AA2B 80 29       BRA $29    [$AA56]
-
-$94:AA2D C9 00 FF    CMP #$FF00
-$94:AA30 D0 09       BNE $09    [$AA3B]
-$94:AA32 AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:AA35 38          SEC
-$94:AA36 ED 84 0D    SBC $0D84  [$7E:0D84]
-$94:AA39 80 1B       BRA $1B    [$AA56]
-
-$94:AA3B E2 20       SEP #$20
-$94:AA3D 49 FF       EOR #$FF
-$94:AA3F 1A          INC A
-$94:AA40 8D 03 42    STA $4203  [$7E:4203]
-$94:AA43 C2 20       REP #$20
-$94:AA45 EA          NOP
-$94:AA46 EA          NOP
-$94:AA47 AD 16 42    LDA $4216  [$7E:4216]
-$94:AA4A 29 00 FF    AND #$FF00
-$94:AA4D EB          XBA
-$94:AA4E 49 FF FF    EOR #$FFFF
-$94:AA51 1A          INC A
-$94:AA52 18          CLC
-$94:AA53 6D 0C 0D    ADC $0D0C  [$7E:0D0C]
-
-$94:AA56 8D 92 0D    STA $0D92  [$7E:0D92]
-$94:AA59 4A          LSR A
-$94:AA5A 4A          LSR A
-$94:AA5B 4A          LSR A
-$94:AA5C 4A          LSR A
-$94:AA5D 29 FF 00    AND #$00FF
-$94:AA60 8D 96 0D    STA $0D96  [$7E:0D96]
+; BRANCH_GRAPPLING_ENEMY
+$94:A999 E2 20       SEP #$20               ;\
+$94:A99B AD 84 0D    LDA $0D84  [$7E:0D84]  ;|
+$94:A99E 8D 02 42    STA $4202  [$7E:4202]  ;} Multiplicand = [grapple beam length]
+$94:A9A1 C2 20       REP #$20               ;/
+$94:A9A3 BF 43 B4 A0 LDA $A0B443,x[$A0:B56D];\
+$94:A9A7 30 24       BMI $24    [$A9CD]     ;|
+$94:A9A9 C9 00 01    CMP #$0100             ;|
+$94:A9AC D0 09       BNE $09    [$A9B7]     ;|
+$94:A9AE AD 08 0D    LDA $0D08  [$7E:0D08]  ;|
+$94:A9B1 18          CLC                    ;|
+$94:A9B2 6D 84 0D    ADC $0D84  [$7E:0D84]  ;|
+$94:A9B5 80 3F       BRA $3F    [$A9F6]     ;|
+                                            ;|
+$94:A9B7 E2 20       SEP #$20               ;|
+$94:A9B9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A9BC C2 20       REP #$20               ;|
+$94:A9BE EA          NOP                    ;|
+$94:A9BF EA          NOP                    ;|
+$94:A9C0 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:A9C3 29 00 FF    AND #$FF00             ;|
+$94:A9C6 EB          XBA                    ;|
+$94:A9C7 18          CLC                    ;|
+$94:A9C8 6D 08 0D    ADC $0D08  [$7E:0D08]  ;|
+$94:A9CB 80 29       BRA $29    [$A9F6]     ;|
+                                            ;|
+$94:A9CD C9 00 FF    CMP #$FF00             ;|
+$94:A9D0 D0 09       BNE $09    [$A9DB]     ;} $0D90 = [grapple beam end X position] + [grapple beam length] * sin([grapple beam end angle] * pi / 80h)
+$94:A9D2 AD 08 0D    LDA $0D08  [$7E:0D08]  ;|
+$94:A9D5 38          SEC                    ;|
+$94:A9D6 ED 84 0D    SBC $0D84  [$7E:0D84]  ;|
+$94:A9D9 80 1B       BRA $1B    [$A9F6]     ;|
+                                            ;|
+$94:A9DB E2 20       SEP #$20               ;|
+$94:A9DD 49 FF       EOR #$FF               ;|
+$94:A9DF 1A          INC A                  ;|
+$94:A9E0 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:A9E3 C2 20       REP #$20               ;|
+$94:A9E5 EA          NOP                    ;|
+$94:A9E6 EA          NOP                    ;|
+$94:A9E7 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:A9EA 29 00 FF    AND #$FF00             ;|
+$94:A9ED EB          XBA                    ;|
+$94:A9EE 49 FF FF    EOR #$FFFF             ;|
+$94:A9F1 1A          INC A                  ;|
+$94:A9F2 18          CLC                    ;|
+$94:A9F3 6D 08 0D    ADC $0D08  [$7E:0D08]  ;|
+                                            ;|
+$94:A9F6 8D 90 0D    STA $0D90  [$7E:0D90]  ;/
+$94:A9F9 4A          LSR A                  ;\
+$94:A9FA 4A          LSR A                  ;|
+$94:A9FB 4A          LSR A                  ;|
+$94:A9FC 4A          LSR A                  ;} $0D94 = [$0D90] / 10h
+$94:A9FD 29 FF 00    AND #$00FF             ;|
+$94:AA00 8D 94 0D    STA $0D94  [$7E:0D94]  ;/
+$94:AA03 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B4ED];\
+$94:AA07 30 24       BMI $24    [$AA2D]     ;|
+$94:AA09 C9 00 01    CMP #$0100             ;|
+$94:AA0C D0 09       BNE $09    [$AA17]     ;|
+$94:AA0E AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;|
+$94:AA11 18          CLC                    ;|
+$94:AA12 6D 84 0D    ADC $0D84  [$7E:0D84]  ;|
+$94:AA15 80 3F       BRA $3F    [$AA56]     ;|
+                                            ;|
+$94:AA17 E2 20       SEP #$20               ;|
+$94:AA19 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:AA1C C2 20       REP #$20               ;|
+$94:AA1E EA          NOP                    ;|
+$94:AA1F EA          NOP                    ;|
+$94:AA20 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:AA23 29 00 FF    AND #$FF00             ;|
+$94:AA26 EB          XBA                    ;|
+$94:AA27 18          CLC                    ;|
+$94:AA28 6D 0C 0D    ADC $0D0C  [$7E:0D0C]  ;|
+$94:AA2B 80 29       BRA $29    [$AA56]     ;|
+                                            ;|
+$94:AA2D C9 00 FF    CMP #$FF00             ;|
+$94:AA30 D0 09       BNE $09    [$AA3B]     ;} $0D92 = [grapple beam end Y position] + [grapple beam length] * -cos([grapple beam end angle] * pi / 80h)
+$94:AA32 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;|
+$94:AA35 38          SEC                    ;|
+$94:AA36 ED 84 0D    SBC $0D84  [$7E:0D84]  ;|
+$94:AA39 80 1B       BRA $1B    [$AA56]     ;|
+                                            ;|
+$94:AA3B E2 20       SEP #$20               ;|
+$94:AA3D 49 FF       EOR #$FF               ;|
+$94:AA3F 1A          INC A                  ;|
+$94:AA40 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:AA43 C2 20       REP #$20               ;|
+$94:AA45 EA          NOP                    ;|
+$94:AA46 EA          NOP                    ;|
+$94:AA47 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$94:AA4A 29 00 FF    AND #$FF00             ;|
+$94:AA4D EB          XBA                    ;|
+$94:AA4E 49 FF FF    EOR #$FFFF             ;|
+$94:AA51 1A          INC A                  ;|
+$94:AA52 18          CLC                    ;|
+$94:AA53 6D 0C 0D    ADC $0D0C  [$7E:0D0C]  ;|
+                                            ;|
+$94:AA56 8D 92 0D    STA $0D92  [$7E:0D92]  ;/
+$94:AA59 4A          LSR A                  ;\
+$94:AA5A 4A          LSR A                  ;|
+$94:AA5B 4A          LSR A                  ;|
+$94:AA5C 4A          LSR A                  ;} $0D96 = [$0D92] / 10h
+$94:AA5D 29 FF 00    AND #$00FF             ;|
+$94:AA60 8D 96 0D    STA $0D96  [$7E:0D96]  ;/
 $94:AA63 60          RTS
 }
 
@@ -5963,7 +6002,7 @@ $94:ABEF 18          CLC
 $94:ABF0 6D FE 0C    ADC $0CFE  [$7E:0CFE]
 $94:ABF3 8D 84 0D    STA $0D84  [$7E:0D84]
 
-$94:ABF6 20 57 A9    JSR $A957  [$94:A957]
+$94:ABF6 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
 $94:ABF9 20 B0 AB    JSR $ABB0  [$94:ABB0]
 $94:ABFC B0 11       BCS $11    [$AC0F]
 $94:ABFE AD 84 0D    LDA $0D84  [$7E:0D84]
@@ -5980,7 +6019,7 @@ $94:AC10 60          RTS
 }
 
 
-;;; $AC11:  ;;;
+;;; $AC11: Update grapple beam start position ;;;
 {
 $94:AC11 AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
 $94:AC14 29 FF 00    AND #$00FF             ;|
@@ -5988,11 +6027,11 @@ $94:AC17 0A          ASL A                  ;} $0D82 = [grapple beam end angle] 
 $94:AC18 8D 82 0D    STA $0D82  [$7E:0D82]  ;/
 $94:AC1B AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $94:AC1E 8D 84 0D    STA $0D84  [$7E:0D84]  ;} $0D84 = [grapple beam length]
-$94:AC21 20 57 A9    JSR $A957  [$94:A957]  ; Execute $A957
+$94:AC21 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
 $94:AC24 AD 90 0D    LDA $0D90  [$7E:0D90]  ;\
-$94:AC27 8D 16 0D    STA $0D16  [$7E:0D16]  ;} $0D16 = [$0D90]
+$94:AC27 8D 16 0D    STA $0D16  [$7E:0D16]  ;} Grapple beam start X position = [$0D90]
 $94:AC2A AD 92 0D    LDA $0D92  [$7E:0D92]  ;\
-$94:AC2D 8D 18 0D    STA $0D18  [$7E:0D18]  ;} $0D18 = [$0D92]
+$94:AC2D 8D 18 0D    STA $0D18  [$7E:0D18]  ;} Grapple beam start Y position = [$0D92]
 $94:AC30 6B          RTL
 }
 
@@ -6033,7 +6072,7 @@ $94:AC71 3A          DEC A
 $94:AC72 18          CLC
 $94:AC73 6D 8E 0D    ADC $0D8E  [$7E:0D8E]
 $94:AC76 8D 84 0D    STA $0D84  [$7E:0D84]
-$94:AC79 20 57 A9    JSR $A957  [$94:A957]
+$94:AC79 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
 $94:AC7C 20 64 AA    JSR $AA64  [$94:AA64]
 $94:AC7F B0 14       BCS $14    [$AC95]
 $94:AC81 CE 8A 0D    DEC $0D8A  [$7E:0D8A]
@@ -6077,7 +6116,7 @@ $94:ACCE 1A          INC A
 $94:ACCF 18          CLC
 $94:ACD0 6D 8E 0D    ADC $0D8E  [$7E:0D8E]
 $94:ACD3 8D 84 0D    STA $0D84  [$7E:0D84]
-$94:ACD6 20 57 A9    JSR $A957  [$94:A957]
+$94:ACD6 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
 $94:ACD9 20 64 AA    JSR $AA64  [$94:AA64]
 $94:ACDC B0 B7       BCS $B7    [$AC95]
 $94:ACDE EE 8A 0D    INC $0D8A  [$7E:0D8A]
@@ -6454,25 +6493,26 @@ $94:AF86 6B          RTL
 
 ;;; $AF87:  ;;;
 {
-$94:AF87 A2 1E 00    LDX #$001E             ; X = 1Eh
+; Initialise grapple segment animation instructions?
+$94:AF87 A2 1E 00    LDX #$001E             ; X = 1Eh (grapple segment animation index)
 
 ; LOOP
 $94:AF8A A9 97 B1    LDA #$B197             ;\
 $94:AF8D 9D 62 0D    STA $0D62,x[$7E:0D80]  ;} $0D62 + [X] = $B197
 $94:AF90 A9 93 B1    LDA #$B193             ;\
-$94:AF93 9D 60 0D    STA $0D60,x[$7E:0D7E]  ;} $0D60 + [X] = $B193
+$94:AF93 9D 60 0D    STA $0D60,x[$7E:0D7E]  ;} $0D62 + [X] - 2 = $B193
 $94:AF96 A9 8F B1    LDA #$B18F             ;\
-$94:AF99 9D 5E 0D    STA $0D5E,x[$7E:0D7C]  ;} $0D5E + [X] = $B18F
+$94:AF99 9D 5E 0D    STA $0D5E,x[$7E:0D7C]  ;} $0D62 + [X] - 4 = $B18F
 $94:AF9C A9 8B B1    LDA #$B18B             ;\
-$94:AF9F 9D 5C 0D    STA $0D5C,x[$7E:0D7A]  ;} $0D5C + [X] = $B18B
+$94:AF9F 9D 5C 0D    STA $0D5C,x[$7E:0D7A]  ;} $0D62 + [X] - 6 = $B18B
 $94:AFA2 A9 01 00    LDA #$0001             ;\
 $94:AFA5 9D 42 0D    STA $0D42,x[$7E:0D60]  ;} $0D42 + [X] = 1
-$94:AFA8 9D 40 0D    STA $0D40,x[$7E:0D5E]  ; $0D40 + [X] = 1
-$94:AFAB 9D 3E 0D    STA $0D3E,x[$7E:0D5C]  ; $0D3E + [X] = 1
-$94:AFAE 9D 3C 0D    STA $0D3C,x[$7E:0D5A]  ; $0D3C + [X] = 1
+$94:AFA8 9D 40 0D    STA $0D40,x[$7E:0D5E]  ; $0D42 + [X] - 2 = 1
+$94:AFAB 9D 3E 0D    STA $0D3E,x[$7E:0D5C]  ; $0D42 + [X] - 4 = 1
+$94:AFAE 9D 3C 0D    STA $0D3C,x[$7E:0D5A]  ; $0D42 + [X] - 6 = 1
 $94:AFB1 8A          TXA                    ;\
 $94:AFB2 38          SEC                    ;|
-$94:AFB3 E9 08 00    SBC #$0008             ;} X -= 8
+$94:AFB3 E9 08 00    SBC #$0008             ;} X -= 8 (next 4 grapple segment animations)
 $94:AFB6 AA          TAX                    ;/
 $94:AFB7 10 D1       BPL $D1    [$AF8A]     ; If [X] >= 0: go to LOOP
 $94:AFB9 6B          RTL
@@ -6484,128 +6524,131 @@ $94:AFB9 6B          RTL
 ; 94:AFBA uses 0D08 and 0D0C (grapple point X/Y), 0D1A and 0D1C (grapple start X/Y), 0CFA (grapple beam angle), 0CFE (grapple beam length).
 ; Does all the other work from there.
 $94:AFBA 8B          PHB
-$94:AFBB 4B          PHK
-$94:AFBC AB          PLB
-$94:AFBD AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:AFC0 38          SEC
-$94:AFC1 ED 1A 0D    SBC $0D1A  [$7E:0D1A]
-$94:AFC4 85 12       STA $12    [$7E:0012]
-$94:AFC6 AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:AFC9 38          SEC
-$94:AFCA ED 1C 0D    SBC $0D1C  [$7E:0D1C]
-$94:AFCD 85 14       STA $14    [$7E:0014]
-$94:AFCF 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$94:AFD3 0A          ASL A
-$94:AFD4 AA          TAX
-$94:AFD5 64 1A       STZ $1A    [$7E:001A]
-$94:AFD7 64 1C       STZ $1C    [$7E:001C]
-$94:AFD9 BF 43 B4 A0 LDA $A0B443,x[$A0:B633]
-$94:AFDD 0A          ASL A
-$94:AFDE 0A          ASL A
-$94:AFDF 0A          ASL A
-$94:AFE0 10 02       BPL $02    [$AFE4]
-$94:AFE2 C6 1C       DEC $1C    [$7E:001C]
+$94:AFBB 4B          PHK                    ;\
+$94:AFBC AB          PLB                    ;} DB = $94
+$94:AFBD AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
+$94:AFC0 38          SEC                    ;|
+$94:AFC1 ED 1A 0D    SBC $0D1A  [$7E:0D1A]  ;|
+$94:AFC4 85 12       STA $12    [$7E:0012]  ;|
+$94:AFC6 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;} A = angle from ([$0D1A], [$0D1C]) to ([grapple beam end X position], [grapple beam end Y position])
+$94:AFC9 38          SEC                    ;|
+$94:AFCA ED 1C 0D    SBC $0D1C  [$7E:0D1C]  ;|
+$94:AFCD 85 14       STA $14    [$7E:0014]  ;|
+$94:AFCF 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$94:AFD3 0A          ASL A                  ;\
+$94:AFD4 AA          TAX                    ;} X = [A] * 2
+$94:AFD5 64 1A       STZ $1A    [$7E:001A]  ;\
+$94:AFD7 64 1C       STZ $1C    [$7E:001C]  ;|
+$94:AFD9 BF 43 B4 A0 LDA $A0B443,x[$A0:B633];|
+$94:AFDD 0A          ASL A                  ;|
+$94:AFDE 0A          ASL A                  ;|
+$94:AFDF 0A          ASL A                  ;} $1C.$1A = 8 * sin([A] * pi / 80h)
+$94:AFE0 10 02       BPL $02    [$AFE4]     ;|
+$94:AFE2 C6 1C       DEC $1C    [$7E:001C]  ;|
+                                            ;|
+$94:AFE4 85 1B       STA $1B    [$7E:001B]  ;/
+$94:AFE6 64 1E       STZ $1E    [$7E:001E]  ;\
+$94:AFE8 64 20       STZ $20    [$7E:0020]  ;|
+$94:AFEA BF C3 B3 A0 LDA $A0B3C3,x[$A0:B5B3];|
+$94:AFEE 0A          ASL A                  ;|
+$94:AFEF 0A          ASL A                  ;|
+$94:AFF0 0A          ASL A                  ;} $20.$1E = 8 * -cos([A] * pi / 80h)
+$94:AFF1 10 02       BPL $02    [$AFF5]     ;|
+$94:AFF3 C6 20       DEC $20    [$7E:0020]  ;|
+                                            ;|
+$94:AFF5 85 1F       STA $1F    [$7E:001F]  ;/
+$94:AFF7 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$94:AFFA 29 00 80    AND #$8000             ;|
+$94:AFFD 4A          LSR A                  ;|
+$94:AFFE 85 26       STA $26    [$7E:0026]  ;|
+$94:B000 4D FA 0C    EOR $0CFA  [$7E:0CFA]  ;} Map [grapple beam end angle] quadrant to $27:
+$94:B003 29 00 40    AND #$4000             ;} 0 = bottom-left, 40h = top-right, 80h = bottom-right, C0h = top-left
+$94:B006 49 00 40    EOR #$4000             ;|
+$94:B009 0A          ASL A                  ;|
+$94:B00A 05 26       ORA $26    [$7E:0026]  ;|
+$94:B00C 85 26       STA $26    [$7E:0026]  ;/
+$94:B00E AD 1A 0D    LDA $0D1A  [$7E:0D1A]  ;\
+$94:B011 38          SEC                    ;|
+$94:B012 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$94:B015 38          SEC                    ;} $14 = [$0D1A] - [layer 1 X position] - 4
+$94:B016 E9 04 00    SBC #$0004             ;|
+$94:B019 85 14       STA $14    [$7E:0014]  ;/
+$94:B01B 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$94:B01D AD 1C 0D    LDA $0D1C  [$7E:0D1C]  ;\
+$94:B020 38          SEC                    ;|
+$94:B021 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$94:B024 38          SEC                    ;} $14 = [$0D1A] - [layer 1 X position] - 4
+$94:B025 E9 04 00    SBC #$0004             ;|
+$94:B028 85 18       STA $18    [$7E:0018]  ;/
+$94:B02A 64 16       STZ $16    [$7E:0016]  ; $12 = 0
+$94:B02C AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:B02F 30 77       BMI $77    [$B0A8]     ;} If [grapple beam length] < 0: return
+$94:B031 8D 04 42    STA $4204  [$7E:4204]  ;\
+$94:B034 E2 20       SEP #$20               ;|
+$94:B036 A9 08       LDA #$08               ;|
+$94:B038 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:B03B C2 20       REP #$20               ;|
+$94:B03D EA          NOP                    ;|
+$94:B03E EA          NOP                    ;} A = [grapple beam length] / 8
+$94:B03F EA          NOP                    ;|
+$94:B040 EA          NOP                    ;|
+$94:B041 EA          NOP                    ;|
+$94:B042 EA          NOP                    ;|
+$94:B043 AD 14 42    LDA $4214  [$7E:4214]  ;/
+$94:B046 30 60       BMI $60    [$B0A8]     ; >_<;
+$94:B048 29 0F 00    AND #$000F             ;\
+$94:B04B 38          SEC                    ;|
+$94:B04C E9 01 00    SBC #$0001             ;} $28 = [grapple beam length] / 8 % 10h - 1
+$94:B04F 85 28       STA $28    [$7E:0028]  ;/
+$94:B051 A2 1E 00    LDX #$001E             ; X = 1Eh (grapple segment animation index)
 
-$94:AFE4 85 1B       STA $1B    [$7E:001B]
-$94:AFE6 64 1E       STZ $1E    [$7E:001E]
-$94:AFE8 64 20       STZ $20    [$7E:0020]
-$94:AFEA BF C3 B3 A0 LDA $A0B3C3,x[$A0:B5B3]
-$94:AFEE 0A          ASL A
-$94:AFEF 0A          ASL A
-$94:AFF0 0A          ASL A
-$94:AFF1 10 02       BPL $02    [$AFF5]
-$94:AFF3 C6 20       DEC $20    [$7E:0020]
+; LOOP_ANIMATIONS
+$94:B054 DE 42 0D    DEC $0D42,x[$7E:0D60]  ;\
+$94:B057 D0 1D       BNE $1D    [$B076]     ;} If [grapple segment animation instruction timer] != 0: go to BRANCH_PROCESSED_INSTRUCTIONS
+$94:B059 BC 62 0D    LDY $0D62,x[$7E:0D80]  ; Y = [grapple segment animation instruction list pointer]
 
-$94:AFF5 85 1F       STA $1F    [$7E:001F]
-$94:AFF7 AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$94:AFFA 29 00 80    AND #$8000
-$94:AFFD 4A          LSR A
-$94:AFFE 85 26       STA $26    [$7E:0026]
-$94:B000 4D FA 0C    EOR $0CFA  [$7E:0CFA]
-$94:B003 29 00 40    AND #$4000
-$94:B006 49 00 40    EOR #$4000
-$94:B009 0A          ASL A
-$94:B00A 05 26       ORA $26    [$7E:0026]
-$94:B00C 85 26       STA $26    [$7E:0026]
-$94:B00E AD 1A 0D    LDA $0D1A  [$7E:0D1A]
-$94:B011 38          SEC
-$94:B012 ED 11 09    SBC $0911  [$7E:0911]
-$94:B015 38          SEC
-$94:B016 E9 04 00    SBC #$0004
-$94:B019 85 14       STA $14    [$7E:0014]
-$94:B01B 64 12       STZ $12    [$7E:0012]
-$94:B01D AD 1C 0D    LDA $0D1C  [$7E:0D1C]
-$94:B020 38          SEC
-$94:B021 ED 15 09    SBC $0915  [$7E:0915]
-$94:B024 38          SEC
-$94:B025 E9 04 00    SBC #$0004
-$94:B028 85 18       STA $18    [$7E:0018]
-$94:B02A 64 16       STZ $16    [$7E:0016]
-$94:B02C AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:B02F 30 77       BMI $77    [$B0A8]
-$94:B031 8D 04 42    STA $4204  [$7E:4204]
-$94:B034 E2 20       SEP #$20
-$94:B036 A9 08       LDA #$08
-$94:B038 8D 06 42    STA $4206  [$7E:4206]
-$94:B03B C2 20       REP #$20
-$94:B03D EA          NOP
-$94:B03E EA          NOP
-$94:B03F EA          NOP
-$94:B040 EA          NOP
-$94:B041 EA          NOP
-$94:B042 EA          NOP
-$94:B043 AD 14 42    LDA $4214  [$7E:4214]
-$94:B046 30 60       BMI $60    [$B0A8]
-$94:B048 29 0F 00    AND #$000F
-$94:B04B 38          SEC
-$94:B04C E9 01 00    SBC #$0001
-$94:B04F 85 28       STA $28    [$7E:0028]
-$94:B051 A2 1E 00    LDX #$001E
+; LOOP_INSTRUCTIONS
+$94:B05C B9 00 00    LDA $0000,y[$94:B197]  ;\
+$94:B05F 10 0A       BPL $0A    [$B06B]     ;} If [[Y]] & 8000h != 0:
+$94:B061 85 24       STA $24    [$7E:0024]  ; $24 = [[Y]]
+$94:B063 F4 5B B0    PEA $B05B              ; Return to LOOP_INSTRUCTIONS
+$94:B066 C8          INY                    ;\
+$94:B067 C8          INY                    ;} Y += 2
+$94:B068 6C 24 00    JMP ($0024)[$94:B0F4]  ; Execute [$24]
 
-$94:B054 DE 42 0D    DEC $0D42,x[$7E:0D60]
-$94:B057 D0 1D       BNE $1D    [$B076]
-$94:B059 BC 62 0D    LDY $0D62,x[$7E:0D80]
+$94:B06B 9D 42 0D    STA $0D42,x[$7E:0D60]  ; Grapple segment animation instruction timer = [[Y]]
+$94:B06E 98          TYA                    ;\
+$94:B06F 18          CLC                    ;|
+$94:B070 69 04 00    ADC #$0004             ;} Grapple segment animation instruction list pointer = [Y] + 4
+$94:B073 9D 62 0D    STA $0D62,x[$7E:0D80]  ;/
 
-$94:B05C B9 00 00    LDA $0000,y[$94:B197]
-$94:B05F 10 0A       BPL $0A    [$B06B]
-$94:B061 85 24       STA $24    [$7E:0024]
-$94:B063 F4 5B B0    PEA $B05B
-$94:B066 C8          INY
-$94:B067 C8          INY
-$94:B068 6C 24 00    JMP ($0024)[$94:B0F4]
-
-$94:B06B 9D 42 0D    STA $0D42,x[$7E:0D60]
-$94:B06E 98          TYA
-$94:B06F 18          CLC
-$94:B070 69 04 00    ADC #$0004
-$94:B073 9D 62 0D    STA $0D62,x[$7E:0D80]
-
-$94:B076 A5 14       LDA $14    [$7E:0014]
-$94:B078 05 18       ORA $18    [$7E:0018]
-$94:B07A 29 00 FF    AND #$FF00
-$94:B07D D0 14       BNE $14    [$B093]
+; BRANCH_PROCESSED_INSTRUCTIONS
+$94:B076 A5 14       LDA $14    [$7E:0014]  ;\
+$94:B078 05 18       ORA $18    [$7E:0018]  ;|
+$94:B07A 29 00 FF    AND #$FF00             ;} If [$14] | [$18] < 100h:
+$94:B07D D0 14       BNE $14    [$B093]     ;/
 $94:B07F DA          PHX
-$94:B080 BC 62 0D    LDY $0D62,x[$7E:0D80]
-$94:B083 88          DEY
-$94:B084 88          DEY
-$94:B085 B9 00 00    LDA $0000,y[$94:B199]
-$94:B088 A8          TAY
-$94:B089 20 AA B0    JSR $B0AA  [$94:B0AA]
+$94:B080 BC 62 0D    LDY $0D62,x[$7E:0D80]  ;\
+$94:B083 88          DEY                    ;|
+$94:B084 88          DEY                    ;} Y = [[grapple segment animation instruction list pointer] - 2]
+$94:B085 B9 00 00    LDA $0000,y[$94:B199]  ;|
+$94:B088 A8          TAY                    ;/
+$94:B089 20 AA B0    JSR $B0AA  [$94:B0AA]  ; Execute $B0AA
 $94:B08C FA          PLX
-$94:B08D CA          DEX
-$94:B08E CA          DEX
-$94:B08F C6 28       DEC $28    [$7E:0028]
-$94:B091 10 C1       BPL $C1    [$B054]
+$94:B08D CA          DEX                    ;\
+$94:B08E CA          DEX                    ;} X -= 2
+$94:B08F C6 28       DEC $28    [$7E:0028]  ; Decrement $28 (next grapple segment animation)
+$94:B091 10 C1       BPL $C1    [$B054]     ; If [$28] >= 0: go to LOOP_ANIMATIONS
 
-$94:B093 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$94:B096 C9 B2 00    CMP #$00B2
-$94:B099 F0 0A       BEQ $0A    [$B0A5]
-$94:B09B C9 B3 00    CMP #$00B3
-$94:B09E F0 05       BEQ $05    [$B0A5]
-$94:B0A0 20 F9 B0    JSR $B0F9  [$94:B0F9]
+$94:B093 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$94:B096 C9 B2 00    CMP #$00B2             ;|
+$94:B099 F0 0A       BEQ $0A    [$B0A5]     ;} If [Samus pose] != [grapple swinging]:
+$94:B09B C9 B3 00    CMP #$00B3             ;|
+$94:B09E F0 05       BEQ $05    [$B0A5]     ;/
+$94:B0A0 20 F9 B0    JSR $B0F9  [$94:B0F9]  ; Execute $B0F9
 $94:B0A3 80 03       BRA $03    [$B0A8]
-
-$94:B0A5 20 4B B1    JSR $B14B  [$94:B14B]
+                                            ; Else ([Samus pose] = [grapple swinging]):
+$94:B0A5 20 4B B1    JSR $B14B  [$94:B14B]  ; Execute $B14B
 
 $94:B0A8 AB          PLB
 $94:B0A9 6B          RTL
@@ -6656,7 +6699,7 @@ $94:B0F3 60          RTS
 }
 
 
-;;; $B0F4:  ;;;
+;;; $B0F4: Instruction - go to [[Y]] ;;;
 {
 $94:B0F4 B9 00 00    LDA $0000,y[$94:B19D]
 $94:B0F7 A8          TAY
@@ -6740,13 +6783,13 @@ $94:B18A 60          RTS
 }
 
 
-;;; $B18B:  ;;;
+;;; $B18B: Instruction list ;;;
 {
 $94:B18B             dw 0005,3A21,
                         0005,3A22,
                         0005,3A23,
                         0005,3A24,
-                        B0F4,B18B
+                        B0F4,B18B  ; Go to $B18B
 }
 }
 

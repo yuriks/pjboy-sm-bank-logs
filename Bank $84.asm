@@ -10678,6 +10678,9 @@ $84:CFB4 60          RTS
 
 ;;; $CFB5: Setup - PLM $D0DC/$D0E0 (grappled reaction, grapple block, BTS 1/2. (Respawning) breakable grapple block) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     Overflow: Set. Connect grapple beam
 $84:CFB5 BE 87 1C    LDX $1C87,y[$7E:1CD5]  ;\
 $84:CFB8 BF 02 00 7F LDA $7F0002,x[$7F:00A2];} PLM respawn block = [PLM block]
 $84:CFBC 99 17 1E    STA $1E17,y[$7E:1E65]  ;/
@@ -10690,8 +10693,11 @@ $84:CFC9 9F 02 64 7F STA $7F6402,x[$7F:6452];/
 }
 
 
-;;; $CFCD: Setup - PLM $D0D8 (grappled reaction, grapple block, BTS 0/3. Grapple block) ;;;
+;;; $CFCD: Setup - PLM $D0D8 (grappled reaction, grapple block, BTS 0/3. Generic grapple block) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     Overflow: Set. Connect grapple beam
 $84:CFCD E2 40       SEP #$40
 $84:CFCF 38          SEC
 $84:CFD0 60          RTS
@@ -10700,6 +10706,9 @@ $84:CFD0 60          RTS
 
 ;;; $CFD1: Setup - PLM $D0E4 (grappled reaction, generic spike block) ;;;
 {
+;; Returns:
+;;     Carry: Set. Unconditional collision
+;;     Overflow: Clear. Cancel grapple beam
 $84:CFD1 C2 40       REP #$40
 $84:CFD3 38          SEC
 $84:CFD4 60          RTS
@@ -10709,8 +10718,8 @@ $84:CFD4 60          RTS
 ;;; $CFD5: Setup - PLM $D0E8 (grappled reaction, spike block, BTS 3. Draygon's broken turret) ;;;
 {
 ;; Returns:
-;;     Carry: Set
-;;     Overflow: Set
+;;     Carry: Set. Unconditional collision
+;;     Overflow: Set. Connect grapple beam
 
 ; Deal 1 damage to Samus
 $84:CFD5 AD 4E 0A    LDA $0A4E  [$7E:0A4E]
@@ -10720,9 +10729,9 @@ $84:CFDC 8D 4E 0A    STA $0A4E  [$7E:0A4E]
 $84:CFDF AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
 $84:CFE2 69 01 00    ADC #$0001             ;} Periodic damage += 1
 $84:CFE5 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
-$84:CFE8 E2 40       SEP #$40
-$84:CFEA 38          SEC
-$84:CFEB 60          RTS
+$84:CFE8 E2 40       SEP #$40               ;\
+$84:CFEA 38          SEC                    ;} Return carry set, overflow set
+$84:CFEB 60          RTS                    ;/
 }
 }
 
