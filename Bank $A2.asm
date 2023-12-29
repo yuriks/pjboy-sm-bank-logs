@@ -6055,7 +6055,7 @@ $A2:C0D1             dw 3800, 4E7F, 3975, 0C0A, 0006, 45D8, 2D33, 1C8E, 102B, 53
 }
 
 
-;;; $C0F1: Instruction list -  ;;;
+;;; $C0F1: Instruction list - main - idle ;;;
 {
 $A2:C0F1             dx C1DF,       ; ???
                         000D,C442,
@@ -6066,7 +6066,7 @@ $A2:C0F1             dx C1DF,       ; ???
 }
 
 
-;;; $C107: Instruction list -  ;;;
+;;; $C107: Instruction list - main - swoop - start descending ;;;
 {
 $A2:C107             dx C1D4,       ; ???
                         0001,C427,
@@ -6085,7 +6085,7 @@ $A2:C107             dx C1D4,       ; ???
 }
 
 
-;;; $C12F: Instruction list -  ;;;
+;;; $C12F: Instruction list - main - swoop - descending ;;;
 {
 $A2:C12F             dx C1F5,       ; ???
                         0006,C4B7,
@@ -6096,7 +6096,7 @@ $A2:C12F             dx C1F5,       ; ???
 }
 
 
-;;; $C145: Instruction list -  ;;;
+;;; $C145: Instruction list - main - swoop - start ascending ;;;
 {
 $A2:C145             dx C22C,       ; ???
                         0001,C56A,
@@ -6119,7 +6119,7 @@ $A2:C145             dx C22C,       ; ???
 }
 
 
-;;; $C179: Instruction list -  ;;;
+;;; $C179: Instruction list - main - swoop - ascending ;;;
 {
 $A2:C179             dx C237,       ; ???
                         0006,C585,
@@ -6130,7 +6130,7 @@ $A2:C179             dx C237,       ; ???
 }
 
 
-;;; $C18F: Instruction list -  ;;;
+;;; $C18F: Instruction list - flames - ascending ;;;
 {
 $A2:C18F             dx 0006,C493,
                         0005,C49F,
@@ -6140,7 +6140,7 @@ $A2:C18F             dx 0006,C493,
 }
 
 
-;;; $C1A3: Instruction list -  ;;;
+;;; $C1A3: Instruction list - flames - descending ;;;
 {
 $A2:C1A3             dx 0006,C5D6,
                         0005,C5E2,
@@ -6155,16 +6155,18 @@ $A2:C1A3             dx 0006,C5D6,
 ; Unused?
 $A2:C1B7             dw 0000, 000E, 000C, 000E, 0010
 
+; Swoop Y speeds
 $A2:C1C1             dw 0700, 05C0
 
+; Swoop X speed
 $A2:C1C5             dw 0100
 
-; Unused?
+; Unused. Probably leftover swoop X speed
 $A2:C1C7             dw 0100
 }
 
 
-;;; $C1C9: Instruction ;;;
+;;; $C1C9: Instruction - set enemy finished swoop start animation flag ;;;
 {
 $A2:C1C9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C1CC A9 01 00    LDA #$0001
@@ -6173,7 +6175,7 @@ $A2:C1D3 6B          RTL
 }
 
 
-;;; $C1D4: Instruction ;;;
+;;; $C1D4: Instruction - flames Y offset = 8 ;;;
 {
 $A2:C1D4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C1D7 A9 08 00    LDA #$0008
@@ -6182,7 +6184,7 @@ $A2:C1DE 6B          RTL
 }
 
 
-;;; $C1DF: Instruction ;;;
+;;; $C1DF: Instruction - flames Y offset = 8 ;;;
 {
 $A2:C1DF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C1E2 A9 08 00    LDA #$0008
@@ -6191,7 +6193,7 @@ $A2:C1E9 6B          RTL
 }
 
 
-;;; $C1EA: Instruction ;;;
+;;; $C1EA: Instruction - flames Y offset = Ch ;;;
 {
 $A2:C1EA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C1ED A9 0C 00    LDA #$000C
@@ -6200,7 +6202,7 @@ $A2:C1F4 6B          RTL
 }
 
 
-;;; $C1F5: Instruction ;;;
+;;; $C1F5: Instruction - flames Y offset = -Ch ;;;
 {
 $A2:C1F5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C1F8 A9 F4 FF    LDA #$FFF4
@@ -6209,7 +6211,7 @@ $A2:C1FF 6B          RTL
 }
 
 
-;;; $C200: Instruction ;;;
+;;; $C200: Instruction - flames Y offset = 4 ;;;
 {
 $A2:C200 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C203 A9 04 00    LDA #$0004
@@ -6218,7 +6220,7 @@ $A2:C20A 6B          RTL
 }
 
 
-;;; $C20B: Instruction ;;;
+;;; $C20B: Instruction - flames Y offset = 0 ;;;
 {
 $A2:C20B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C20E A9 00 00    LDA #$0000
@@ -6227,7 +6229,7 @@ $A2:C215 6B          RTL
 }
 
 
-;;; $C216: Instruction ;;;
+;;; $C216: Instruction - flames Y offset = -4 ;;;
 {
 $A2:C216 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C219 A9 FC FF    LDA #$FFFC
@@ -6236,7 +6238,7 @@ $A2:C220 6B          RTL
 }
 
 
-;;; $C221: Instruction ;;;
+;;; $C221: Instruction - flames Y offset = -Ch ;;;
 {
 $A2:C221 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C224 A9 F4 FF    LDA #$FFF4
@@ -6245,7 +6247,7 @@ $A2:C22B 6B          RTL
 }
 
 
-;;; $C22C: Instruction ;;;
+;;; $C22C: Instruction - flames Y offset = -10h ;;;
 {
 $A2:C22C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C22F A9 F0 FF    LDA #$FFF0
@@ -6254,7 +6256,7 @@ $A2:C236 6B          RTL
 }
 
 
-;;; $C237: Instruction ;;;
+;;; $C237: Instruction - flames Y offset = Ch ;;;
 {
 $A2:C237 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C23A A9 0C 00    LDA #$000C
@@ -6266,145 +6268,148 @@ $A2:C241 6B          RTL
 ;;; $C242: Initialisation AI - enemy $D2FF (Norfair rio) ;;;
 {
 $A2:C242 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:C245 A9 00 00    LDA #$0000
-$A2:C248 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A2:C24C 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A2:C250 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:C253 30 11       BMI $11    [$C266]
-$A2:C255 A9 F1 C0    LDA #$C0F1
-$A2:C258 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:C25C 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:C25F A9 E7 C2    LDA #$C2E7
-$A2:C262 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A2:C265 6B          RTL
+$A2:C245 A9 00 00    LDA #$0000             ;\
+$A2:C248 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy finished swoop start animation flag = 0
+$A2:C24C 9F 04 78 7E STA $7E7804,x[$7E:7804]; Enemy flames offset = 0
+$A2:C250 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:C253 30 11       BMI $11    [$C266]     ;} If [enemy parameter 1] & 8000h = 0 (main part):
+$A2:C255 A9 F1 C0    LDA #$C0F1             ;\
+$A2:C258 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy instruction list pointer = enemy instruction list = $C0F1 (main - idle)
+$A2:C25C 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
+$A2:C25F A9 E7 C2    LDA #$C2E7             ;\
+$A2:C262 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $C2E7 (idle)
+$A2:C265 6B          RTL                    ; Return
 
-$A2:C266 A9 8F C1    LDA #$C18F
-$A2:C269 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$A2:C26D 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A2:C270 A9 81 C2    LDA #$C281
-$A2:C273 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A2:C266 A9 8F C1    LDA #$C18F             ;\
+$A2:C269 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy instruction list pointer = enemy instruction list = $C18F (flames - ascending)
+$A2:C26D 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;/
+$A2:C270 A9 81 C2    LDA #$C281             ;\
+$A2:C273 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $C281 (flames)
 $A2:C276 6B          RTL
 }
 
 
 ;;; $C277: Main AI - enemy $D2FF (Norfair rio) ;;;
 {
-$A2:C277 22 11 81 80 JSL $808111[$80:8111]
+$A2:C277 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A2:C27B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:C27E 7C B2 0F    JMP ($0FB2,x)[$A2:C2E7]
+$A2:C27E 7C B2 0F    JMP ($0FB2,x)[$A2:C2E7]; Go to [enemy function]
 }
 
 
-;;; $C281:  ;;;
+;;; $C281: Norfair rio function - flames ;;;
 {
-$A2:C281 BD 4C 0F    LDA $0F4C,x[$7E:0F8C]
-$A2:C284 D0 0A       BNE $0A    [$C290]
-$A2:C286 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A2:C289 09 00 02    ORA #$0200
-$A2:C28C 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A2:C28F 6B          RTL
+$A2:C281 BD 4C 0F    LDA $0F4C,x[$7E:0F8C]  ;\
+$A2:C284 D0 0A       BNE $0A    [$C290]     ;} If [enemy ([X] - 1) health] = 0:
+$A2:C286 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A2:C289 09 00 02    ORA #$0200             ;} Mark enemy for deletion
+$A2:C28C 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A2:C28F 6B          RTL                    ; Return
 
-$A2:C290 BD 5E 0F    LDA $0F5E,x[$7E:0F9E]
-$A2:C293 9D 9E 0F    STA $0F9E,x[$7E:0FDE]
-$A2:C296 F0 03       BEQ $03    [$C29B]
-$A2:C298 80 13       BRA $13    [$C2AD]
-$A2:C29A 6B          RTL
+$A2:C290 BD 5E 0F    LDA $0F5E,x[$7E:0F9E]  ;\
+$A2:C293 9D 9E 0F    STA $0F9E,x[$7E:0FDE]  ;} Enemy frozen timer = [enemy ([X] - 1) frozen timer]
+$A2:C296 F0 03       BEQ $03    [$C29B]     ; If [enemy frozen timer] != 0:
+$A2:C298 80 13       BRA $13    [$C2AD]     ; Go to BRANCH_FROZEN
+$A2:C29A 6B          RTL                    ; >_<;
 
-$A2:C29B BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A2:C29E 29 FF FE    AND #$FEFF
-$A2:C2A1 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A2:C2A4 BF C0 77 7E LDA $7E77C0,x[$7E:7800]
-$A2:C2A8 C9 F1 C0    CMP #$C0F1
-$A2:C2AB D0 0A       BNE $0A    [$C2B7]
+$A2:C29B BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A2:C29E 29 FF FE    AND #$FEFF             ;} Set enemy to be visible
+$A2:C2A1 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A2:C2A4 BF C0 77 7E LDA $7E77C0,x[$7E:7800];\
+$A2:C2A8 C9 F1 C0    CMP #$C0F1             ;} If [enemy ([X] - 1) instruction list] != $C0F1 (idle): go to BRANCH_SWOOPING
+$A2:C2AB D0 0A       BNE $0A    [$C2B7]     ;/
 
-$A2:C2AD BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A2:C2B0 09 00 01    ORA #$0100
-$A2:C2B3 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A2:C2B6 6B          RTL
+; BRANCH_FROZEN
+$A2:C2AD BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A2:C2B0 09 00 01    ORA #$0100             ;} Set enemy to be invisible
+$A2:C2B3 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A2:C2B6 6B          RTL                    ; Return
 
-$A2:C2B7 A9 8F C1    LDA #$C18F
-$A2:C2BA 85 12       STA $12    [$7E:0012]
-$A2:C2BC BF C4 77 7E LDA $7E77C4,x[$7E:7804]
-$A2:C2C0 10 05       BPL $05    [$C2C7]
-$A2:C2C2 A9 A3 C1    LDA #$C1A3
-$A2:C2C5 85 12       STA $12    [$7E:0012]
+; BRANCH_SWOOPING
+$A2:C2B7 A9 8F C1    LDA #$C18F             ;\
+$A2:C2BA 85 12       STA $12    [$7E:0012]  ;} $12 = $C18F (ascending)
+$A2:C2BC BF C4 77 7E LDA $7E77C4,x[$7E:7804];\
+$A2:C2C0 10 05       BPL $05    [$C2C7]     ;} If [enemy ([X] - 1) flames Y offset] < 0:
+$A2:C2C2 A9 A3 C1    LDA #$C1A3             ;\
+$A2:C2C5 85 12       STA $12    [$7E:0012]  ;} $12 = $C1A3 (descending)
 
-$A2:C2C7 A5 12       LDA $12    [$7E:0012]
-$A2:C2C9 20 0D C4    JSR $C40D  [$A2:C40D]
-$A2:C2CC BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A2:C2CF 29 FF FE    AND #$FEFF
-$A2:C2D2 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A2:C2D5 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]
-$A2:C2D8 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A2:C2DB BD 3E 0F    LDA $0F3E,x[$7E:0F7E]
-$A2:C2DE 18          CLC
-$A2:C2DF 7F C4 77 7E ADC $7E77C4,x[$7E:7804]
-$A2:C2E3 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
+$A2:C2C7 A5 12       LDA $12    [$7E:0012]  ;\
+$A2:C2C9 20 0D C4    JSR $C40D  [$A2:C40D]  ;| Set enemy instruction list to [$12]
+$A2:C2CC BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A2:C2CF 29 FF FE    AND #$FEFF             ;} Set enemy to be visible
+$A2:C2D2 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A2:C2D5 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\
+$A2:C2D8 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy ([X] - 1) X position]
+$A2:C2DB BD 3E 0F    LDA $0F3E,x[$7E:0F7E]  ;\
+$A2:C2DE 18          CLC                    ;|
+$A2:C2DF 7F C4 77 7E ADC $7E77C4,x[$7E:7804];} Enemy Y position = [enemy ([X] - 1) Y position] + [enemy ([X] - 1) flames Y offset]
+$A2:C2E3 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A2:C2E6 6B          RTL
 }
 
 
-;;; $C2E7:  ;;;
+;;; $C2E7: Norfair rio function - idle ;;;
 {
-$A2:C2E7 AD E5 05    LDA $05E5  [$7E:05E5]
-$A2:C2EA 29 01 01    AND #$0101
-$A2:C2ED F0 09       BEQ $09    [$C2F8]
-$A2:C2EF A9 C0 00    LDA #$00C0
-$A2:C2F2 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$A2:C2F6 90 14       BCC $14    [$C30C]
+$A2:C2E7 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A2:C2EA 29 01 01    AND #$0101             ;} If [random number] & 101h != 0:
+$A2:C2ED F0 09       BEQ $09    [$C2F8]     ;/
+$A2:C2EF A9 C0 00    LDA #$00C0             ;\
+$A2:C2F2 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than C0h: go to BRANCH_SWOOP
+$A2:C2F6 90 14       BCC $14    [$C30C]     ;/
 
-$A2:C2F8 BF 02 78 7E LDA $7E7802,x[$7E:7882]
-$A2:C2FC F0 0D       BEQ $0D    [$C30B]
-$A2:C2FE A9 00 00    LDA #$0000
-$A2:C301 9F 02 78 7E STA $7E7802,x
-$A2:C305 A9 F1 C0    LDA #$C0F1
-$A2:C308 20 0D C4    JSR $C40D  [$A2:C40D]
+$A2:C2F8 BF 02 78 7E LDA $7E7802,x[$7E:7882];\
+$A2:C2FC F0 0D       BEQ $0D    [$C30B]     ;} If finished swoop start animation:
+$A2:C2FE A9 00 00    LDA #$0000             ;\
+$A2:C301 9F 02 78 7E STA $7E7802,x          ;} Enemy finished swoop start animation flag = 0
+$A2:C305 A9 F1 C0    LDA #$C0F1             ;\
+$A2:C308 20 0D C4    JSR $C40D  [$A2:C40D]  ;} Set enemy instruction list to $C0F1 (idle)
 
-$A2:C30B 6B          RTL
+$A2:C30B 6B          RTL                    ; Return
 
-$A2:C30C AD E5 05    LDA $05E5  [$7E:05E5]
-$A2:C30F 4A          LSR A
-$A2:C310 29 02 00    AND #$0002
-$A2:C313 A8          TAY
-$A2:C314 B9 C1 C1    LDA $C1C1,y[$A2:C1C1]
-$A2:C317 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:C31A AD C5 C1    LDA $C1C5  [$A2:C1C5]
-$A2:C31D 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A2:C320 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:C323 DD 7A 0F    CMP $0F7A,x[$7E:0F7A]
-$A2:C326 10 0A       BPL $0A    [$C332]
-$A2:C328 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$A2:C32B 49 FF FF    EOR #$FFFF
-$A2:C32E 1A          INC A
-$A2:C32F 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-
-$A2:C332 A9 07 C1    LDA #$C107
-$A2:C335 20 0D C4    JSR $C40D  [$A2:C40D]
-$A2:C338 A9 3F C3    LDA #$C33F
-$A2:C33B 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+; BRANCH_SWOOP
+$A2:C30C AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A2:C30F 4A          LSR A                  ;|
+$A2:C310 29 02 00    AND #$0002             ;|
+$A2:C313 A8          TAY                    ;} Enemy Y velocity = [$C1C1 + ([random number] >> 1 & 2)]
+$A2:C314 B9 C1 C1    LDA $C1C1,y[$A2:C1C1]  ;|
+$A2:C317 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
+$A2:C31A AD C5 C1    LDA $C1C5  [$A2:C1C5]  ;\
+$A2:C31D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy X velocity = 100h
+$A2:C320 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:C323 DD 7A 0F    CMP $0F7A,x[$7E:0F7A]  ;} If [Samus X position] < [enemy X position]:
+$A2:C326 10 0A       BPL $0A    [$C332]     ;/
+$A2:C328 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$A2:C32B 49 FF FF    EOR #$FFFF             ;|
+$A2:C32E 1A          INC A                  ;} Negate enemy X velocity
+$A2:C32F 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
+                                            
+$A2:C332 A9 07 C1    LDA #$C107             ;\
+$A2:C335 20 0D C4    JSR $C40D  [$A2:C40D]  ;} Set enemy instruction list to $C107 (swoop - start descending)
+$A2:C338 A9 3F C3    LDA #$C33F             ;\
+$A2:C33B 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $C33F (start swoop)
 $A2:C33E 6B          RTL
 }
 
 
-;;; $C33F:  ;;;
+;;; $C33F: Norfair rio function - start swoop ;;;
 {
-$A2:C33F BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A2:C343 D0 01       BNE $01    [$C346]
-$A2:C345 6B          RTL
-
-$A2:C346 A9 00 00    LDA #$0000
-$A2:C349 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A2:C34D A9 2F C1    LDA #$C12F
-$A2:C350 20 0D C4    JSR $C40D  [$A2:C40D]
-$A2:C353 A9 61 C3    LDA #$C361
-$A2:C356 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A2:C33F BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A2:C343 D0 01       BNE $01    [$C346]     ;} If not finished swoop start animation:
+$A2:C345 6B          RTL                    ; Return
+                                            
+$A2:C346 A9 00 00    LDA #$0000             ;\
+$A2:C349 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy finished swoop start animation flag = 0
+$A2:C34D A9 2F C1    LDA #$C12F             ;\
+$A2:C350 20 0D C4    JSR $C40D  [$A2:C40D]  ;} Set enemy instruction list to $C12F (swoop - descending)
+$A2:C353 A9 61 C3    LDA #$C361             ;\
+$A2:C356 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $C361 (swoop - descending)
 $A2:C359 A9 65 00    LDA #$0065             ;\
 $A2:C35C 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 65h, sound library 2, max queued sounds allowed = 6 (rio cry)
 $A2:C360 6B          RTL
 }
 
 
-;;; $C361:  ;;;
+;;; $C361: Norfair rio function - swoop - descending ;;;
 {
 $A2:C361 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C363 64 14       STZ $14    [$7E:0014]  ;|
@@ -6415,10 +6420,10 @@ $A2:C36A C6 14       DEC $14    [$7E:0014]  ;} Move enemy right by [enemy X velo
 $A2:C36C 85 13       STA $13    [$7E:0013]  ;|
 $A2:C36E 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A2:C372 90 0A       BCC $0A    [$C37E]     ; If collided with wall:
-$A2:C374 BD AA 0F    LDA $0FAA,x[$7E:102A]
-$A2:C377 49 FF FF    EOR #$FFFF
-$A2:C37A 1A          INC A
-$A2:C37B 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A2:C374 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
+$A2:C377 49 FF FF    EOR #$FFFF             ;|
+$A2:C37A 1A          INC A                  ;} Negate enemy X velocity
+$A2:C37B 9D AA 0F    STA $0FAA,x[$7E:102A]  ;/
 
 $A2:C37E 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C380 64 14       STZ $14    [$7E:0014]  ;|
@@ -6429,24 +6434,24 @@ $A2:C387 C6 14       DEC $14    [$7E:0014]  ;} Move enemy down by [enemy Y veloc
 $A2:C389 85 13       STA $13    [$7E:0013]  ;|
 $A2:C38B 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A2:C38F B0 0D       BCS $0D    [$C39E]     ; If not collided with block:
-$A2:C391 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:C394 38          SEC
-$A2:C395 E9 20 00    SBC #$0020
-$A2:C398 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:C39B 30 01       BMI $01    [$C39E]
-$A2:C39D 6B          RTL
+$A2:C391 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:C394 38          SEC                    ;|
+$A2:C395 E9 20 00    SBC #$0020             ;} Enemy Y velocity -= 20h
+$A2:C398 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
+$A2:C39B 30 01       BMI $01    [$C39E]     ; If [enemy Y velocity] >= 0:
+$A2:C39D 6B          RTL                    ; Return
 
-$A2:C39E A9 FF FF    LDA #$FFFF
-$A2:C3A1 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:C3A4 A9 45 C1    LDA #$C145
-$A2:C3A7 20 0D C4    JSR $C40D  [$A2:C40D]
-$A2:C3AA A9 B1 C3    LDA #$C3B1
-$A2:C3AD 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A2:C39E A9 FF FF    LDA #$FFFF             ;\
+$A2:C3A1 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy Y velocity = -1
+$A2:C3A4 A9 45 C1    LDA #$C145             ;\
+$A2:C3A7 20 0D C4    JSR $C40D  [$A2:C40D]  ;} Set enemy instruction list to $C145 (swoop - start ascending)
+$A2:C3AA A9 B1 C3    LDA #$C3B1             ;\
+$A2:C3AD 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $C3B1 (swoop - ascending)
 $A2:C3B0 6B          RTL
 }
 
 
-;;; $C3B1:  ;;;
+;;; $C3B1: Norfair rio function - swoop - ascending ;;;
 {
 $A2:C3B1 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C3B3 64 14       STZ $14    [$7E:0014]  ;|
@@ -6457,10 +6462,10 @@ $A2:C3BA C6 14       DEC $14    [$7E:0014]  ;} Move enemy right by [enemy X velo
 $A2:C3BC 85 13       STA $13    [$7E:0013]  ;|
 $A2:C3BE 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A2:C3C2 90 0A       BCC $0A    [$C3CE]     ; If collided with wall:
-$A2:C3C4 BD AA 0F    LDA $0FAA,x[$7E:102A]
-$A2:C3C7 49 FF FF    EOR #$FFFF
-$A2:C3CA 1A          INC A
-$A2:C3CB 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A2:C3C4 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
+$A2:C3C7 49 FF FF    EOR #$FFFF             ;|
+$A2:C3CA 1A          INC A                  ;} Negate enemy X velocity
+$A2:C3CB 9D AA 0F    STA $0FAA,x[$7E:102A]  ;/
 
 $A2:C3CE 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C3D0 64 14       STZ $14    [$7E:0014]  ;|
@@ -6471,44 +6476,44 @@ $A2:C3D7 C6 14       DEC $14    [$7E:0014]  ;} Move enemy down by [enemy Y veloc
 $A2:C3D9 85 13       STA $13    [$7E:0013]  ;|
 $A2:C3DB 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A2:C3DF B0 1E       BCS $1E    [$C3FF]     ; If collided with block: go to BRANCH_COLLIDED_VERTICALLY
-$A2:C3E1 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:C3E4 38          SEC
-$A2:C3E5 E9 20 00    SBC #$0020
-$A2:C3E8 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:C3EB BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A2:C3EF F0 0D       BEQ $0D    [$C3FE]
-$A2:C3F1 A9 00 00    LDA #$0000
-$A2:C3F4 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A2:C3F8 A9 79 C1    LDA #$C179
-$A2:C3FB 20 0D C4    JSR $C40D  [$A2:C40D]
+$A2:C3E1 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:C3E4 38          SEC                    ;|
+$A2:C3E5 E9 20 00    SBC #$0020             ;} Enemy Y velocity -= 20h
+$A2:C3E8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
+$A2:C3EB BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A2:C3EF F0 0D       BEQ $0D    [$C3FE]     ;} If finished swoop start animation:
+$A2:C3F1 A9 00 00    LDA #$0000             ;\
+$A2:C3F4 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy finished swoop start animation flag = 0
+$A2:C3F8 A9 79 C1    LDA #$C179             ;\
+$A2:C3FB 20 0D C4    JSR $C40D  [$A2:C40D]  ;} Set enemy instruction list to $C179 (swoop - ascending)
 
-$A2:C3FE 6B          RTL
+$A2:C3FE 6B          RTL                    ; Return
 
 ; BRANCH_COLLIDED_VERTICALLY
-$A2:C3FF A9 06 C4    LDA #$C406
-$A2:C402 9D B2 0F    STA $0FB2,x[$7E:1032]
+$A2:C3FF A9 06 C4    LDA #$C406             ;\
+$A2:C402 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $C406 (finish swoop)
 $A2:C405 6B          RTL
 }
 
 
-;;; $C406:  ;;;
+;;; $C406: Norfair rio function - finish swoop ;;;
 {
-$A2:C406 A9 E7 C2    LDA #$C2E7
-$A2:C409 9D B2 0F    STA $0FB2,x[$7E:1032]
+$A2:C406 A9 E7 C2    LDA #$C2E7             ;\
+$A2:C409 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $C2E7 (idle)
 $A2:C40C 6B          RTL
 }
 
 
-;;; $C40D:  ;;;
+;;; $C40D: Set Norfair rio instruction list ;;;
 {
 $A2:C40D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:C410 DF 00 78 7E CMP $7E7800,x[$7E:7800]
-$A2:C414 F0 10       BEQ $10    [$C426]
-$A2:C416 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:C41A 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:C41D A9 01 00    LDA #$0001
-$A2:C420 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:C423 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A2:C410 DF 00 78 7E CMP $7E7800,x[$7E:7800];\
+$A2:C414 F0 10       BEQ $10    [$C426]     ;} If [A] = [enemy instruction list]: return
+$A2:C416 9F 00 78 7E STA $7E7800,x[$7E:7800]; Enemy instruction list = [A]
+$A2:C41A 9D 92 0F    STA $0F92,x[$7E:0F92]  ; Enemy instruction list pointer = [A]
+$A2:C41D A9 01 00    LDA #$0001             ;\
+$A2:C420 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:C423 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 
 $A2:C426 60          RTS
 }

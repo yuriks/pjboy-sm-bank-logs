@@ -11853,6 +11853,7 @@ $90:D524 60          RTS
 {
 ; Looks like this is supposed to make Samus extend and contract her grapple beam in a loop for the duration of [$0A9E]
 ; No idea what this would hypothetically be used for
+; This is the only place where $0CFA and $0CFC aren't mirrors of each other
 $90:D525 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:D527 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If pressing shoot: go to BRANCH_HOLDING_SHOOT
 $90:D52A D0 07       BNE $07    [$D533]     ;/
@@ -11895,7 +11896,7 @@ $90:D570 8D 00 0D    STA $0D00  [$7E:0D00]  ;} Grapple beam length delta = 10h
 ; BRANCH_CONTINUE
 $90:D573 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $90:D576 EB          XBA                    ;|
-$90:D577 29 FF 00    AND #$00FF             ;} Y = [grapple beam end angle]
+$90:D577 29 FF 00    AND #$00FF             ;} Y = [grapple beam end angle / 100h]
 $90:D57A A8          TAY                    ;/
 $90:D57B AD FE 0C    LDA $0CFE  [$7E:0CFE]  ; A = [grapple beam length]
 $90:D57E 20 39 CC    JSR $CC39  [$90:CC39]  ; ($14, $16) = ([A] * sin([Y] * pi / 80h), [A] * -cos([Y] * pi / 80h))
@@ -11909,7 +11910,7 @@ $90:D58E 65 16       ADC $16    [$7E:0016]  ;} Grapple beam end Y position = [gr
 $90:D590 8D 0C 0D    STA $0D0C  [$7E:0D0C]  ;/
 $90:D593 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $90:D596 18          CLC                    ;|
-$90:D597 69 00 08    ADC #$0800             ;} Grapple beam end angle += 8
+$90:D597 69 00 08    ADC #$0800             ;} Grapple beam end angle += 800h
 $90:D59A 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;/
 $90:D59D 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]  ; Execute $9B:BF1B
 $90:D5A1 60          RTS
@@ -15297,7 +15298,7 @@ $90:EBB6 20 63 C6    JSR $C663  [$90:C663]  ; Draw arm cannon
 $90:EBB9 22 A5 BF 9B JSL $9BBFA5[$9B:BFA5]  ; Update grapple beam tiles and increment flare counter
 $90:EBBD AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $90:EBC0 F0 2F       BEQ $2F    [$EBF1]     ;} If [grapple beam length] != 0:
-$90:EBC2 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Handle grapple beam graphics
+$90:EBC2 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Draw grapple beam
 $90:EBC6 60          RTS                    ; Return
 
 $90:EBC7 20 4C 8A    JSR $8A4C  [$90:8A4C]  ; Handle atmospheric effects
@@ -15306,7 +15307,7 @@ $90:EBCD 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EBD0 22 A5 BF 9B JSL $9BBFA5[$9B:BFA5]  ; Update grapple beam tiles and increment flare counter
 $90:EBD4 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $90:EBD7 F0 18       BEQ $18    [$EBF1]     ;} If [grapple beam length] != 0:
-$90:EBD9 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Handle grapple beam graphics
+$90:EBD9 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Draw grapple beam
 $90:EBDD 60          RTS                    ; Return
 
 ; BRANCH_NO_ARM_CANNON
@@ -15315,7 +15316,7 @@ $90:EBE1 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EBE4 22 A5 BF 9B JSL $9BBFA5[$9B:BFA5]  ; Update grapple beam tiles and increment flare counter
 $90:EBE8 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $90:EBEB F0 04       BEQ $04    [$EBF1]     ;} If [grapple beam length] != 0:
-$90:EBED 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Handle grapple beam graphics
+$90:EBED 22 BA AF 94 JSL $94AFBA[$94:AFBA]  ; Draw grapple beam
 
 $90:EBF1 60          RTS
 }
@@ -16695,10 +16696,10 @@ $90:F4D9 60          RTS                    ;} Return carry clear
 $90:F4DA 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
 $90:F4DD 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
 $90:F4E0 9C 34 0D    STZ $0D34  [$7E:0D34]  ; Direction grapple is fired = 0
-$90:F4E3 9C 36 0D    STZ $0D36  [$7E:0D36]  ; $0D36 = 0
+$90:F4E3 9C 36 0D    STZ $0D36  [$7E:0D36]  ; Disable special grapple beam angle handling
 $90:F4E6 9C 9E 0A    STZ $0A9E  [$7E:0A9E]  ; Grapple walljump timer = 0
 $90:F4E9 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
-$90:F4EC 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; $0CF6 = 0
+$90:F4EC 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; Grapple pose change auto-fire timer = 0
 $90:F4EF 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
 $90:F4F2 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $90:F4F5 22 F0 AC 90 JSL $90ACF0[$90:ACF0]  ;} Load current beam palette

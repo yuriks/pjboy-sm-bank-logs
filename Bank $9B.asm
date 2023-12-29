@@ -1388,7 +1388,7 @@ $9B:B8A2 D0 01       BNE $01    [$B8A5]     ;} If direction shots are fired & F0
 $9B:B8A4 60          RTS                    ; Return
 
 $9B:B8A5 AD F6 0C    LDA $0CF6  [$7E:0CF6]  ;\
-$9B:B8A8 F0 C6       BEQ $C6    [$B870]     ;} If [$0CF6] = 0: go to BRANCH_CANCEL_GRAPPLE
+$9B:B8A8 F0 C6       BEQ $C6    [$B870]     ;} If [grapple pose change auto-fire timer] = 0: go to BRANCH_CANCEL_GRAPPLE
 $9B:B8AA A9 07 00    LDA #$0007             ;\
 $9B:B8AD 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 7, sound library 1, max queued sounds allowed = 6 (grapple end)
 $9B:B8B1 A9 1E C5    LDA #$C51E             ;\
@@ -1770,13 +1770,13 @@ $9B:BA6A 38          SEC                    ;|
 $9B:BA6B ED 08 0D    SBC $0D08  [$7E:0D08]  ;|
 $9B:BA6E 85 12       STA $12    [$7E:0012]  ;|
 $9B:BA70 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
-$9B:BA73 38          SEC                    ;} Grapple beam end angle = angle of ([Samus X position] - [grapple beam end X position], [Samus Y position] - [grapple beam end Y position])
-$9B:BA74 ED 0C 0D    SBC $0D0C  [$7E:0D0C]  ;|
+$9B:BA73 38          SEC                    ;|
+$9B:BA74 ED 0C 0D    SBC $0D0C  [$7E:0D0C]  ;} Grapple beam end angle = angle of ([Samus X position] - [grapple beam end X position], [Samus Y position] - [grapple beam end Y position])
 $9B:BA77 85 14       STA $14    [$7E:0014]  ;|
 $9B:BA79 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;|
 $9B:BA7D EB          XBA                    ;|
-$9B:BA7E 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;/
-$9B:BA81 8D FC 0C    STA $0CFC  [$7E:0CFC]  ; $0CFC = [grapple beam end angle]
+$9B:BA7E 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;|
+$9B:BA81 8D FC 0C    STA $0CFC  [$7E:0CFC]  ;/
 $9B:BA84 9C 00 0D    STZ $0D00  [$7E:0D00]  ; Grapple beam length delta = 0
 $9B:BA87 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $9B:BA8A C9 40 00    CMP #$0040             ;} If [grapple beam length] >= 40h:
@@ -1799,13 +1799,13 @@ $9B:BAA4 38          SEC                    ;|
 $9B:BAA5 ED 08 0D    SBC $0D08  [$7E:0D08]  ;|
 $9B:BAA8 85 12       STA $12    [$7E:0012]  ;|
 $9B:BAAA AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
-$9B:BAAD 38          SEC                    ;} Grapple beam end angle = angle of ([Samus X position] - [grapple beam end X position], [Samus Y position] - [grapple beam end Y position])
-$9B:BAAE ED 0C 0D    SBC $0D0C  [$7E:0D0C]  ;|
+$9B:BAAD 38          SEC                    ;|
+$9B:BAAE ED 0C 0D    SBC $0D0C  [$7E:0D0C]  ;} Grapple beam end angle = angle of ([Samus X position] - [grapple beam end X position], [Samus Y position] - [grapple beam end Y position])
 $9B:BAB1 85 14       STA $14    [$7E:0014]  ;|
 $9B:BAB3 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;|
 $9B:BAB7 EB          XBA                    ;|
-$9B:BAB8 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;/
-$9B:BABB 8D FC 0C    STA $0CFC  [$7E:0CFC]  ; $0CFC = [grapple beam end angle]
+$9B:BAB8 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;|
+$9B:BABB 8D FC 0C    STA $0CFC  [$7E:0CFC]  ;/
 $9B:BABE 9C 00 0D    STZ $0D00  [$7E:0D00]  ; Grapple beam length delta = 0
 $9B:BAC1 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $9B:BAC4 C9 40 00    CMP #$0040             ;} If [grapple beam length] >= 40h:
@@ -1839,7 +1839,7 @@ $9B:BAD5 A2 46 00    LDX #$0046             ; X = 46h
 
 ; LOOP
 $9B:BAD8 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
-$9B:BADB DD 3E C4    CMP $C43E,x[$9B:C484]  ;} If [grapple beam end angle] * 100h != [$C43E + [X]]
+$9B:BADB DD 3E C4    CMP $C43E,x[$9B:C484]  ;} If [grapple beam end angle] != [$C43E + [X]]
 $9B:BADE F0 0A       BEQ $0A    [$BAEA]     ;/
 $9B:BAE0 8A          TXA                    ;\
 $9B:BAE1 38          SEC                    ;|
@@ -1909,10 +1909,10 @@ $9B:BB63 60          RTS                    ;} Return carry set
 ;;; $BB64: Handle grapple d-pad input ;;;
 {
 $9B:BB64 A5 8F       LDA $8F    [$7E:008F]  ;\
-$9B:BB66 89 00 08    BIT #$0800             ;} If newly pressing up: go to BRANCH_INCREASE_LENGTH
+$9B:BB66 89 00 08    BIT #$0800             ;} If newly pressing up: go to BRANCH_DECREASE_LENGTH
 $9B:BB69 D0 1F       BNE $1F    [$BB8A]     ;/
 $9B:BB6B 89 00 04    BIT #$0400             ;\
-$9B:BB6E D0 0A       BNE $0A    [$BB7A]     ;} If newly pressing down: go to BRANCH_DECREASE_LENGTH
+$9B:BB6E D0 0A       BNE $0A    [$BB7A]     ;} If newly pressing down: go to BRANCH_INCREASE_LENGTH
 
 $9B:BB70 80 27       BRA $27    [$BB99]     ; Go to BRANCH_ADJUST_LENGTH_END
 
@@ -1921,7 +1921,7 @@ $9B:BB72 A9 40 00    LDA #$0040             ;\
 $9B:BB75 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;} Grapple beam length = 40h
 $9B:BB78 80 1F       BRA $1F    [$BB99]     ; Go to BRANCH_ADJUST_LENGTH_END
 
-; BRANCH_DECREASE_LENGTH
+; BRANCH_INCREASE_LENGTH
 $9B:BB7A AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $9B:BB7D C9 40 00    CMP #$0040             ;} If [grapple beam length] >= 40h: go to BRANCH_FULLY_LENGTHENED
 $9B:BB80 10 F0       BPL $F0    [$BB72]     ;/
@@ -1929,7 +1929,7 @@ $9B:BB82 A9 02 00    LDA #$0002             ;\
 $9B:BB85 8D 00 0D    STA $0D00  [$7E:0D00]  ;} Grapple beam length delta = 2
 $9B:BB88 80 0F       BRA $0F    [$BB99]     ; Go to BRANCH_ADJUST_LENGTH_END
 
-; BRANCH_INCREASE_LENGTH
+; BRANCH_DECREASE_LENGTH
 $9B:BB8A AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $9B:BB8D F0 E1       BEQ $E1    [$BB70]     ;} If [grapple beam length] != 0:
 $9B:BB8F A9 02 00    LDA #$0002             ;\
@@ -1940,28 +1940,28 @@ $9B:BB96 8D 00 0D    STA $0D00  [$7E:0D00]  ;/
 ; BRANCH_ADJUST_LENGTH_END
 $9B:BB99 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BB9C 29 00 FF    AND #$FF00             ;|
-$9B:BB9F C9 00 40    CMP #$4000             ;} If not -40h <= [grapple beam angle] < 40h: (Samus is below grapple point)
+$9B:BB9F C9 00 40    CMP #$4000             ;} If not -40h <= [grapple beam angle] / 100h < 40h: (Samus is below grapple point)
 $9B:BBA2 30 11       BMI $11    [$BBB5]     ;/
 $9B:BBA4 C9 00 C0    CMP #$C000             ;\
-$9B:BBA7 10 0C       BPL $0C    [$BBB5]     ;} If not -40h <= [grapple beam angle] < 40h: (>_<;)
+$9B:BBA7 10 0C       BPL $0C    [$BBB5]     ;} If not -40h <= [grapple beam angle] / 100h < 40h: (>_<;)
 $9B:BBA9 A5 8B       LDA $8B    [$7E:008B]  ;\
 $9B:BBAB 89 00 02    BIT #$0200             ;} If pressing left: go to BRANCH_LEFT
 $9B:BBAE D0 40       BNE $40    [$BBF0]     ;/
 $9B:BBB0 89 00 01    BIT #$0100             ;\
 $9B:BBB3 D0 04       BNE $04    [$BBB9]     ;} If pressing right: go to BRANCH_RIGHT
 
-$9B:BBB5 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; Grapple swing Samus acceleration due to button input = 0
+$9B:BBB5 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; Grapple swing angular acceleration due to button input = 0
 $9B:BBB8 60          RTS                    ; Return
 
 ; BRANCH_RIGHT
 $9B:BBB9 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BBBC 29 00 FF    AND #$FF00             ;|
-$9B:BBBF C9 00 80    CMP #$8000             ;} If [grapple beam angle] = 80h
+$9B:BBBF C9 00 80    CMP #$8000             ;} If [grapple beam angle] / 100h = 80h
 $9B:BBC2 D0 0B       BNE $0B    [$BBCF]     ;/
 $9B:BBC4 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:BBC7 D0 06       BNE $06    [$BBCF]     ;} If [grapple swing Samus speed] = 0:
+$9B:BBC7 D0 06       BNE $06    [$BBCF]     ;} If [grapple swing angular velocity] = 0:
 $9B:BBC9 A9 00 FF    LDA #$FF00             ;\
-$9B:BBCC 8D 26 0D    STA $0D26  [$7E:0D26]  ;} Grapple swing Samus speed = -100h
+$9B:BBCC 8D 26 0D    STA $0D26  [$7E:0D26]  ;} Grapple swing angular velocity = -100h
 
 $9B:BBCF AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BBD2 F0 11       BEQ $11    [$BBE5]     ;|
@@ -1969,57 +1969,57 @@ $9B:BBD4 89 01 00    BIT #$0001             ;} If grapple beam liquid physics:
 $9B:BBD7 F0 0C       BEQ $0C    [$BBE5]     ;/
 $9B:BBD9 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
 $9B:BBDC 4A          LSR A                  ;|
-$9B:BBDD 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus acceleration due to button input = -6
+$9B:BBDD 49 FF FF    EOR #$FFFF             ;} Grapple swing angular acceleration due to button input = -6
 $9B:BBE0 1A          INC A                  ;|
 $9B:BBE1 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;/
 $9B:BBE4 60          RTS                    ; Return
 
 $9B:BBE5 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
 $9B:BBE8 49 FF FF    EOR #$FFFF             ;|
-$9B:BBEB 1A          INC A                  ;} Grapple swing Samus acceleration due to button input = -Ch
+$9B:BBEB 1A          INC A                  ;} Grapple swing angular acceleration due to button input = -Ch
 $9B:BBEC 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;/
 $9B:BBEF 60          RTS                    ; Return
 
 ; BRANCH_LEFT
 $9B:BBF0 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BBF3 29 00 FF    AND #$FF00             ;|
-$9B:BBF6 C9 00 80    CMP #$8000             ;} If [grapple beam angle] = 80h
+$9B:BBF6 C9 00 80    CMP #$8000             ;} If [grapple beam angle] / 100h = 80h
 $9B:BBF9 D0 0B       BNE $0B    [$BC06]     ;/
 $9B:BBFB AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:BBFE D0 06       BNE $06    [$BC06]     ;} If [grapple swing Samus speed] = 0:
+$9B:BBFE D0 06       BNE $06    [$BC06]     ;} If [grapple swing angular velocity] = 0:
 $9B:BC00 A9 00 01    LDA #$0100             ;\
-$9B:BC03 8D 26 0D    STA $0D26  [$7E:0D26]  ;} Grapple swing Samus speed = 100h
+$9B:BC03 8D 26 0D    STA $0D26  [$7E:0D26]  ;} Grapple swing angular velocity = 100h
 
 $9B:BC06 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BC09 F0 0D       BEQ $0D    [$BC18]     ;|
 $9B:BC0B 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
 $9B:BC0E F0 08       BEQ $08    [$BC18]     ;/
 $9B:BC10 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
-$9B:BC13 4A          LSR A                  ;} Grapple swing Samus acceleration due to button input = 6
+$9B:BC13 4A          LSR A                  ;} Grapple swing angular acceleration due to button input = 6
 $9B:BC14 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;/
 $9B:BC17 60          RTS
 
 $9B:BC18 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
-$9B:BC1B 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;} Grapple swing Samus acceleration due to button input = Ch
+$9B:BC1B 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;} Grapple swing angular acceleration due to button input = Ch
 $9B:BC1E 60          RTS
 }
 
 
-;;; $BC1F: Determine grapple swing Samus acceleration due to angle of swing ;;;
+;;; $BC1F: Determine grapple swing angular acceleration due to angle of swing ;;;
 {
 $9B:BC1F AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BC22 29 00 C0    AND #$C000             ;|
-$9B:BC25 C9 00 C0    CMP #$C000             ;} If [grapple beam end angle] / 40h = 3: go to BRANCH_UP_LEFT
+$9B:BC25 C9 00 C0    CMP #$C000             ;} If [grapple beam end angle] / 4000h = 3: go to BRANCH_UP_LEFT
 $9B:BC28 F0 2F       BEQ $2F    [$BC59]     ;/
 $9B:BC2A 89 00 80    BIT #$8000             ;\
-$9B:BC2D D0 4C       BNE $4C    [$BC7B]     ;} If [grapple beam end angle] / 40h = 2: go to BRANCH_DOWN_LEFT
+$9B:BC2D D0 4C       BNE $4C    [$BC7B]     ;} If [grapple beam end angle] / 4000h = 2: go to BRANCH_DOWN_LEFT
 $9B:BC2F 89 00 40    BIT #$4000             ;\
-$9B:BC32 D0 28       BNE $28    [$BC5C]     ;} If [grapple beam end angle] / 40h = 1: go to BRANCH_DOWN_RIGHT
+$9B:BC32 D0 28       BNE $28    [$BC5C]     ;} If [grapple beam end angle] / 4000h = 1: go to BRANCH_DOWN_RIGHT
 
 ; Up right
 $9B:BC34 AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
 $9B:BC37 4A          LSR A                  ;|
-$9B:BC38 4A          LSR A                  ;} Grapple swing Samus deceleration = 1
+$9B:BC38 4A          LSR A                  ;} Grapple swing angular deceleration = 1
 $9B:BC39 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;/
 $9B:BC3C AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BC3F F0 0F       BEQ $0F    [$BC50]     ;|
@@ -2027,14 +2027,14 @@ $9B:BC41 89 01 00    BIT #$0001             ;} If grapple beam liquid physics en
 $9B:BC44 F0 0A       BEQ $0A    [$BC50]     ;/
 $9B:BC46 AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BC49 4A          LSR A                  ;|
-$9B:BC4A 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = 3
+$9B:BC4A 4A          LSR A                  ;} Grapple swing angular acceleration due to angle of swing = 3
 $9B:BC4B 4A          LSR A                  ;|
 $9B:BC4C 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BC4F 60          RTS
 
 $9B:BC50 AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BC53 4A          LSR A                  ;|
-$9B:BC54 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = 6
+$9B:BC54 4A          LSR A                  ;} Grapple swing angular acceleration due to angle of swing = 6
 $9B:BC55 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BC58 60          RTS
 
@@ -2042,28 +2042,28 @@ $9B:BC59 4C CE BC    JMP $BCCE  [$9B:BCCE]
 
 ; BRANCH_DOWN_RIGHT
 $9B:BC5C AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
-$9B:BC5F 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;} Grapple swing Samus deceleration = 5
+$9B:BC5F 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;} Grapple swing angular deceleration = 5
 $9B:BC62 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BC65 F0 0D       BEQ $0D    [$BC74]     ;|
 $9B:BC67 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
 $9B:BC6A F0 08       BEQ $08    [$BC74]     ;/
 $9B:BC6C AD 18 C1    LDA $C118  [$9B:C118]  ;\
-$9B:BC6F 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = Ch
+$9B:BC6F 4A          LSR A                  ;} Grapple swing angular acceleration due to angle of swing = Ch
 $9B:BC70 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BC73 60          RTS
 
 $9B:BC74 AD 18 C1    LDA $C118  [$9B:C118]  ;\
-$9B:BC77 8D 28 0D    STA $0D28  [$7E:0D28]  ;} Grapple swing Samus acceleration due to angle of swing = 18h
+$9B:BC77 8D 28 0D    STA $0D28  [$7E:0D28]  ;} Grapple swing angular acceleration due to angle of swing = 18h
 $9B:BC7A 60          RTS
 
 ; BRANCH_DOWN_LEFT
 $9B:BC7B AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BC7E 29 00 FF    AND #$FF00             ;|
-$9B:BC81 C9 00 80    CMP #$8000             ;} If [grapple beam end angle] = 80h: go to BRANCH_STRAIGHT_DOWN
+$9B:BC81 C9 00 80    CMP #$8000             ;} If [grapple beam end angle] / 100h = 80h: go to BRANCH_STRAIGHT_DOWN
 $9B:BC84 F0 2B       BEQ $2B    [$BCB1]     ;/
 $9B:BC86 AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
 $9B:BC89 49 FF FF    EOR #$FFFF             ;|
-$9B:BC8C 1A          INC A                  ;} Grapple swing Samus deceleration = -5
+$9B:BC8C 1A          INC A                  ;} Grapple swing angular deceleration = -5
 $9B:BC8D 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;/
 $9B:BC90 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BC93 F0 11       BEQ $11    [$BCA6]     ;|
@@ -2071,39 +2071,39 @@ $9B:BC95 89 01 00    BIT #$0001             ;} If grapple beam liquid physics en
 $9B:BC98 F0 0C       BEQ $0C    [$BCA6]     ;/
 $9B:BC9A AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BC9D 4A          LSR A                  ;|
-$9B:BC9E 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus acceleration due to angle of swing = -Ch
+$9B:BC9E 49 FF FF    EOR #$FFFF             ;} Grapple swing angular acceleration due to angle of swing = -Ch
 $9B:BCA1 1A          INC A                  ;|
 $9B:BCA2 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BCA5 60          RTS
 
 $9B:BCA6 AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BCA9 49 FF FF    EOR #$FFFF             ;|
-$9B:BCAC 1A          INC A                  ;} Grapple swing Samus acceleration due to angle of swing = -18h
+$9B:BCAC 1A          INC A                  ;} Grapple swing angular acceleration due to angle of swing = -18h
 $9B:BCAD 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BCB0 60          RTS
 
 ; BRANCH_STRAIGHT_DOWN
-$9B:BCB1 9C 28 0D    STZ $0D28  [$7E:0D28]  ; Grapple swing Samus acceleration due to angle of swing = 0
-$9B:BCB4 9C 2C 0D    STZ $0D2C  [$7E:0D2C]  ; Grapple swing Samus deceleration = 0
+$9B:BCB1 9C 28 0D    STZ $0D28  [$7E:0D28]  ; Grapple swing angular acceleration due to angle of swing = 0
+$9B:BCB4 9C 2C 0D    STZ $0D2C  [$7E:0D2C]  ; Grapple swing angular deceleration = 0
 $9B:BCB7 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:BCBA 10 04       BPL $04    [$BCC0]     ;|
 $9B:BCBC 3A          DEC A                  ;|
 $9B:BCBD 49 FF FF    EOR #$FFFF             ;|
-                                            ;} If |[grapple swing Samus speed]| / 100h >= 1:
+                                            ;} If |[grapple swing angular velocity]| / 100h >= 1:
 $9B:BCC0 EB          XBA                    ;|
 $9B:BCC1 29 FF 00    AND #$00FF             ;|
 $9B:BCC4 C9 01 00    CMP #$0001             ;|
 $9B:BCC7 30 01       BMI $01    [$BCCA]     ;/
 $9B:BCC9 60          RTS                    ; Return
 
-$9B:BCCA 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing Samus speed = 0
+$9B:BCCA 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing angular velocity = 0
 $9B:BCCD 60          RTS
 
 ; BRANCH_UP_LEFT
 $9B:BCCE AD 1C C1    LDA $C11C  [$9B:C11C]  ;\
 $9B:BCD1 4A          LSR A                  ;|
 $9B:BCD2 4A          LSR A                  ;|
-$9B:BCD3 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus deceleration = -1
+$9B:BCD3 49 FF FF    EOR #$FFFF             ;} Grapple swing angular deceleration = -1
 $9B:BCD6 1A          INC A                  ;|
 $9B:BCD7 8D 2C 0D    STA $0D2C  [$7E:0D2C]  ;/
 $9B:BCDA AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
@@ -2113,7 +2113,7 @@ $9B:BCE2 F0 0E       BEQ $0E    [$BCF2]     ;/
 $9B:BCE4 AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BCE7 4A          LSR A                  ;|
 $9B:BCE8 4A          LSR A                  ;|
-$9B:BCE9 4A          LSR A                  ;} Grapple swing Samus acceleration due to angle of swing = -3
+$9B:BCE9 4A          LSR A                  ;} Grapple swing angular acceleration due to angle of swing = -3
 $9B:BCEA 49 FF FF    EOR #$FFFF             ;|
 $9B:BCED 1A          INC A                  ;|
 $9B:BCEE 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
@@ -2122,36 +2122,36 @@ $9B:BCF1 60          RTS
 $9B:BCF2 AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BCF5 4A          LSR A                  ;|
 $9B:BCF6 4A          LSR A                  ;|
-$9B:BCF7 49 FF FF    EOR #$FFFF             ;} Grapple swing Samus acceleration due to angle of swing = -6
+$9B:BCF7 49 FF FF    EOR #$FFFF             ;} Grapple swing angular acceleration due to angle of swing = -6
 $9B:BCFA 1A          INC A                  ;|
 $9B:BCFB 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
 $9B:BCFE 60          RTS
 }
 
 
-;;; $BCFF: Update grapple swing Samus speed ;;;
+;;; $BCFF: Update grapple swing angular velocity ;;;
 {
 $9B:BCFF AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:BD02 18          CLC                    ;|
 $9B:BD03 6D 28 0D    ADC $0D28  [$7E:0D28]  ;|
-$9B:BD06 18          CLC                    ;} Grapple swing Samus speed += [grapple swing Samus acceleration due to angle of swing] + [grapple swing Samus acceleration due to button input]
+$9B:BD06 18          CLC                    ;} Grapple swing angular velocity += [grapple swing angular acceleration due to angle of swing] + [grapple swing angular acceleration due to button input]
 $9B:BD07 6D 2A 0D    ADC $0D2A  [$7E:0D2A]  ;|
 $9B:BD0A 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
 $9B:BD0D AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
-$9B:BD10 4D 26 0D    EOR $0D26  [$7E:0D26]  ;} If [grapple beam end angle] & 80h != [grapple swing Samus speed] & 80h (Samus is rising):
+$9B:BD10 4D 26 0D    EOR $0D26  [$7E:0D26]  ;} If sgn([grapple beam end angle]) != sgn([grapple swing angular velocity]) (Samus is rising):
 $9B:BD13 10 0A       BPL $0A    [$BD1F]     ;/
 $9B:BD15 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:BD18 18          CLC                    ;|
-$9B:BD19 6D 2C 0D    ADC $0D2C  [$7E:0D2C]  ;} Grapple swing Samus speed += [grapple swing Samus deceleration]
+$9B:BD19 6D 2C 0D    ADC $0D2C  [$7E:0D2C]  ;} Grapple swing angular velocity += [grapple swing angular deceleration]
 $9B:BD1C 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
 
 $9B:BD1F AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:BD22 10 14       BPL $14    [$BD38]     ;} If [grapple swing Samus speed] < 0:
+$9B:BD22 10 14       BPL $14    [$BD38]     ;} If [grapple swing angular velocity] < 0:
 $9B:BD24 49 FF FF    EOR #$FFFF             ;\
 $9B:BD27 1A          INC A                  ;|
 $9B:BD28 CD 1E C1    CMP $C11E  [$9B:C11E]  ;|
 $9B:BD2B 90 16       BCC $16    [$BD43]     ;|
-$9B:BD2D AD 1E C1    LDA $C11E  [$9B:C11E]  ;} Grapple swing Samus speed = max([grapple swing Samus speed], -480h)
+$9B:BD2D AD 1E C1    LDA $C11E  [$9B:C11E]  ;} Grapple swing angular velocity = max([grapple swing angular velocity], -480h)
 $9B:BD30 49 FF FF    EOR #$FFFF             ;|
 $9B:BD33 1A          INC A                  ;|
 $9B:BD34 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
@@ -2159,37 +2159,37 @@ $9B:BD37 60          RTS                    ; Return
 
 $9B:BD38 CD 1E C1    CMP $C11E  [$9B:C11E]  ;\
 $9B:BD3B 90 06       BCC $06    [$BD43]     ;|
-$9B:BD3D AD 1E C1    LDA $C11E  [$9B:C11E]  ;} Grapple swing Samus speed = min([grapple swing Samus speed], 480h)
+$9B:BD3D AD 1E C1    LDA $C11E  [$9B:C11E]  ;} Grapple swing angular velocity = min([grapple swing angular velocity], 480h)
 $9B:BD40 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
 
 $9B:BD43 60          RTS
 }
 
 
-;;; $BD44:  ;;;
+;;; $BD44: Handle grapple kick ;;;
 {
 $9B:BD44 AD 30 0D    LDA $0D30  [$7E:0D30]  ;\
-$9B:BD47 F0 0F       BEQ $0F    [$BD58]     ;} If [$0D30] = 0: return
+$9B:BD47 F0 0F       BEQ $0F    [$BD58]     ;} If [grapple kick cooldown timer] = 0: return
 $9B:BD49 A5 8F       LDA $8F    [$7E:008F]  ;\
 $9B:BD4B 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If not newly pressing jump: return
 $9B:BD4E F0 08       BEQ $08    [$BD58]     ;/
 $9B:BD50 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:BD53 D0 04       BNE $04    [$BD59]     ;} If [grapple swing Samus speed] = 0:
-$9B:BD55 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; $0D2E = 0
+$9B:BD53 D0 04       BNE $04    [$BD59]     ;} If [grapple swing angular velocity] = 0:
+$9B:BD55 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; Extra grapple swing angular velocity = 0
 $9B:BD58 60          RTS                    ; Return
 
-$9B:BD59 30 19       BMI $19    [$BD74]     ; If [grapple swing Samus speed] < 0: go to BRANCH_ANTICLOCKWISE
+$9B:BD59 30 19       BMI $19    [$BD74]     ; If [grapple swing angular velocity] < 0: go to BRANCH_ANTICLOCKWISE
 $9B:BD5B AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $9B:BD5E F0 0D       BEQ $0D    [$BD6D]     ;|
 $9B:BD60 89 01 00    BIT #$0001             ;} If grapple beam liquid physics enabled:
 $9B:BD63 F0 08       BEQ $08    [$BD6D]     ;/
 $9B:BD65 AD 20 C1    LDA $C120  [$9B:C120]  ;\
-$9B:BD68 4A          LSR A                  ;} $0D2E = 180h
+$9B:BD68 4A          LSR A                  ;} Extra grapple swing angular velocity = 180h
 $9B:BD69 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
 $9B:BD6C 60          RTS                    ; Return
 
 $9B:BD6D AD 20 C1    LDA $C120  [$9B:C120]  ;\
-$9B:BD70 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;} $0D2E = 300h
+$9B:BD70 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;} Extra grapple swing angular velocity = 300h
 $9B:BD73 60          RTS                    ; Return
 
 ; BRANCH_ANTICLOCKWISE
@@ -2199,14 +2199,14 @@ $9B:BD79 89 01 00    BIT #$0001             ;} If grapple beam liquid physics en
 $9B:BD7C F0 0C       BEQ $0C    [$BD8A]     ;/
 $9B:BD7E AD 20 C1    LDA $C120  [$9B:C120]  ;\
 $9B:BD81 4A          LSR A                  ;|
-$9B:BD82 49 FF FF    EOR #$FFFF             ;} $0D2E = -180h
+$9B:BD82 49 FF FF    EOR #$FFFF             ;} Extra grapple swing angular velocity = -180h
 $9B:BD85 1A          INC A                  ;|
 $9B:BD86 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
 $9B:BD89 60          RTS                    ; Return
 
 $9B:BD8A AD 20 C1    LDA $C120  [$9B:C120]  ;\
 $9B:BD8D 49 FF FF    EOR #$FFFF             ;|
-$9B:BD90 1A          INC A                  ;} $0D2E = -300h
+$9B:BD90 1A          INC A                  ;} Extra grapple swing angular velocity = -300h
 $9B:BD91 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
 $9B:BD94 60          RTS
 }
@@ -2223,7 +2223,7 @@ $9B:BD99 C2 30       REP #$30
 $9B:BD9B AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
 $9B:BD9E 10 04       BPL $04    [$BDA4]     ;|
 $9B:BDA0 49 FF FF    EOR #$FFFF             ;|
-$9B:BDA3 1A          INC A                  ;} If |[grapple swing Samus speed]| >= 40h:
+$9B:BDA3 1A          INC A                  ;} If |[grapple swing angular velocity]| >= 40h:
                                             ;|
 $9B:BDA4 C9 40 00    CMP #$0040             ;|
 $9B:BDA7 30 08       BMI $08    [$BDB1]     ;/
@@ -2234,7 +2234,7 @@ $9B:BDAF 80 31       BRA $31    [$BDE2]     ; Go to BRANCH_BDE2
 $9B:BDB1 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
 $9B:BDB4 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BDB7 29 00 FF    AND #$FF00             ;|
-$9B:BDBA C9 00 80    CMP #$8000             ;} If [grapple beam end angle] != 80h (down): go to BRANCH_BDE2
+$9B:BDBA C9 00 80    CMP #$8000             ;} If [grapple beam end angle] / 100h != 80h (down): go to BRANCH_BDE2
 $9B:BDBD D0 23       BNE $23    [$BDE2]     ;/
 $9B:BDBF AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $9B:BDC2 C9 40 00    CMP #$0040             ;} If [Samus animation frame] < 40h:
@@ -2246,7 +2246,7 @@ $9B:BDD0 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 40h
 
 $9B:BDD3 AD FD 0C    LDA $0CFD  [$7E:0CFD]  ;\
 $9B:BDD6 29 FF 00    AND #$00FF             ;|
-$9B:BDD9 AA          TAX                    ;} A = [$C1C2 + [$0CFD]]
+$9B:BDD9 AA          TAX                    ;} A = [$C1C2 + [grapple beam end angle] / 100h]
 $9B:BDDA BD C2 C1    LDA $C1C2,x[$9B:C242]  ;|
 $9B:BDDD 29 FF 00    AND #$00FF             ;/
 $9B:BDE0 80 16       BRA $16    [$BDF8]     ; Go to BRANCH_BDF8
@@ -2256,19 +2256,19 @@ $9B:BDE2 A9 0F 00    LDA #$000F             ;\
 $9B:BDE5 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = Fh
 $9B:BDE8 AD FD 0C    LDA $0CFD  [$7E:0CFD]  ;\
 $9B:BDEB 29 FF 00    AND #$00FF             ;|
-$9B:BDEE AA          TAX                    ;} A = [$C1C2 + [$0CFD]]
+$9B:BDEE AA          TAX                    ;} A = [$C1C2 + [grapple beam end angle] / 100h]
 $9B:BDEF BD C2 C1    LDA $C1C2,x[$9B:C257]  ;|
 $9B:BDF2 29 FF 00    AND #$00FF             ;/
 $9B:BDF5 8D 96 0A    STA $0A96  [$7E:0A96]  ; Samus animation frame = [A]
 
 ; BRANCH_BDF8
 $9B:BDF8 0A          ASL A                  ;\
-$9B:BDF9 AA          TAX                    ;} X = [$C1C2 + [$0CFD]] * 2
+$9B:BDF9 AA          TAX                    ;} X = [$C1C2 + [grapple beam end angle] / 100h] * 2
 $9B:BDFA AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;\
 $9B:BDFD 10 04       BPL $04    [$BE03]     ;|
 $9B:BDFF 49 FF FF    EOR #$FFFF             ;|
 $9B:BE02 1A          INC A                  ;|
-                                            ;} If |[$0D2E]| / 100h != 1: go to BRANCH_BE1D
+                                            ;} If |[extra grapple swing angular velocity]| / 100h != 1: go to BRANCH_BE1D
 $9B:BE03 29 00 FF    AND #$FF00             ;|
 $9B:BE06 C9 00 01    CMP #$0100             ;|
 $9B:BE09 D0 12       BNE $12    [$BE1D]     ;/
@@ -2290,7 +2290,7 @@ $9B:BE28 BD 01 C3    LDA $C301,x[$9B:C327]  ;\
 $9B:BE2B 29 00 FF    AND #$FF00             ;|
 $9B:BE2E EB          XBA                    ;|
 $9B:BE2F 10 03       BPL $03    [$BE34]     ;|
-$9B:BE31 09 00 FF    ORA #$FF00             ;} Samus X position = ±[$C302 + [X]] + [$0D16]
+$9B:BE31 09 00 FF    ORA #$FF00             ;} Samus X position = [grapple beam start X position] + ±[$C302 + [X]]
                                             ;|
 $9B:BE34 18          CLC                    ;|
 $9B:BE35 6D 16 0D    ADC $0D16  [$7E:0D16]  ;|
@@ -2299,15 +2299,15 @@ $9B:BE3B BD 02 C3    LDA $C302,x[$9B:C328]  ;\
 $9B:BE3E 29 00 FF    AND #$FF00             ;|
 $9B:BE41 EB          XBA                    ;|
 $9B:BE42 10 03       BPL $03    [$BE47]     ;|
-$9B:BE44 09 00 FF    ORA #$FF00             ;} Samus Y position = ±[$C303 + [X]] + [$0D18]
+$9B:BE44 09 00 FF    ORA #$FF00             ;} Samus Y position = [grapple beam start Y position] + ±[$C303 + [X]]
                                             ;|
 $9B:BE47 18          CLC                    ;|
 $9B:BE48 6D 18 0D    ADC $0D18  [$7E:0D18]  ;|
 $9B:BE4B 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $9B:BE4E AD 16 0D    LDA $0D16  [$7E:0D16]  ;\
-$9B:BE51 8D 1A 0D    STA $0D1A  [$7E:0D1A]  ;} $0D1A = [$0D16]
+$9B:BE51 8D 1A 0D    STA $0D1A  [$7E:0D1A]  ;} $0D1A = [grapple beam start X position]
 $9B:BE54 AD 18 0D    LDA $0D18  [$7E:0D18]  ;\
-$9B:BE57 8D 1C 0D    STA $0D1C  [$7E:0D1C]  ;} $0D1C = [$0D18]
+$9B:BE57 8D 1C 0D    STA $0D1C  [$7E:0D1C]  ;} $0D1C = [grapple beam start Y position]
 $9B:BE5A 20 98 BE    JSR $BE98  [$9B:BE98]  ; Execute $BE98
 $9B:BE5D AB          PLB
 $9B:BE5E 28          PLP
@@ -2520,19 +2520,19 @@ $9B:BFBC 6B          RTL
 ;;; $BFBD: Update grapple beam tiles ;;;
 {
 $9B:BFBD AD 3E 0D    LDA $0D3E  [$7E:0D3E]  ;\
-$9B:BFC0 3A          DEC A                  ;} Decrement $0D3E
+$9B:BFC0 3A          DEC A                  ;} Decrement grapple beam start animation timer
 $9B:BFC1 8D 3E 0D    STA $0D3E  [$7E:0D3E]  ;/
-$9B:BFC4 10 1B       BPL $1B    [$BFE1]     ; If [$0D3E] < 0:
+$9B:BFC4 10 1B       BPL $1B    [$BFE1]     ; If [grapple beam start animation timer] < 0:
 $9B:BFC6 A9 05 00    LDA #$0005             ;\
-$9B:BFC9 8D 3E 0D    STA $0D3E  [$7E:0D3E]  ;} $0D3E = 5
+$9B:BFC9 8D 3E 0D    STA $0D3E  [$7E:0D3E]  ;} Grapple beam start animation timer = 5
 $9B:BFCC AD 40 0D    LDA $0D40  [$7E:0D40]  ;\
 $9B:BFCF 18          CLC                    ;|
-$9B:BFD0 69 00 02    ADC #$0200             ;} $0D40 += 200h
+$9B:BFD0 69 00 02    ADC #$0200             ;} Grapple beam start animation tile pointer += 200h
 $9B:BFD3 8D 40 0D    STA $0D40  [$7E:0D40]  ;/
 $9B:BFD6 CD 44 C3    CMP $C344  [$9B:C344]  ;\
-$9B:BFD9 30 06       BMI $06    [$BFE1]     ;} If [$0D40] >= [$C344]:
+$9B:BFD9 30 06       BMI $06    [$BFE1]     ;} If [grapple beam start animation tile pointer] >= $8A00:
 $9B:BFDB AD 42 C3    LDA $C342  [$9B:C342]  ;\
-$9B:BFDE 8D 40 0D    STA $0D40  [$7E:0D40]  ;} $0D40 = [$C342]
+$9B:BFDE 8D 40 0D    STA $0D40  [$7E:0D40]  ;} Grapple beam start animation tile pointer = $8200
 
 $9B:BFE1 AE 30 03    LDX $0330  [$7E:0330]  ;\
 $9B:BFE4 A9 20 00    LDA #$0020             ;|
@@ -2543,7 +2543,7 @@ $9B:BFEB AD 40 0D    LDA $0D40  [$7E:0D40]  ;|
 $9B:BFEE 95 D0       STA $D0,x  [$7E:00D9]  ;|
 $9B:BFF0 E8          INX                    ;|
 $9B:BFF1 E8          INX                    ;|
-$9B:BFF2 E2 20       SEP #$20               ;} Queue transfer of 20h bytes from $9A:[$0D40] to VRAM $6200
+$9B:BFF2 E2 20       SEP #$20               ;} Queue transfer of 20h bytes from $9A:0000 + [grapple beam start animation tile pointer] to VRAM $6200
 $9B:BFF4 A9 9A       LDA #$9A               ;|
 $9B:BFF6 95 D0       STA $D0,x  [$7E:00DB]  ;|
 $9B:BFF8 C2 20       REP #$20               ;|
@@ -2556,7 +2556,7 @@ $9B:C002 8E 30 03    STX $0330  [$7E:0330]  ;/
 $9B:C005 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:C008 29 00 FF    AND #$FF00             ;|
 $9B:C00B EB          XBA                    ;|
-$9B:C00C 4A          LSR A                  ;} Y = [$0CFA] / 400h * 2
+$9B:C00C 4A          LSR A                  ;} Y = [grapple beam end angle] / 100h / 4 * 2
 $9B:C00D 29 FE 00    AND #$00FE             ;|
 $9B:C010 A8          TAY                    ;/
 $9B:C011 AE 30 03    LDX $0330  [$7E:0330]  ;\
@@ -2590,29 +2590,29 @@ $9B:C038 4B          PHK                    ;\
 $9B:C039 AB          PLB                    ;} DB = $9B
 $9B:C03A C2 30       REP #$30
 $9B:C03C AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
-$9B:C03F D0 03       BNE $03    [$C044]     ;} If [$0CD0] = 0:
+$9B:C03F D0 03       BNE $03    [$C044]     ;} If [flare counter] = 0:
 $9B:C041 AB          PLB                    ;\
 $9B:C042 28          PLP                    ;} Return
 $9B:C043 6B          RTL                    ;/
 
 $9B:C044 C9 01 00    CMP #$0001             ;\
-$9B:C047 D0 0C       BNE $0C    [$C055]     ;} If [$0CD0] = 1:
+$9B:C047 D0 0C       BNE $0C    [$C055]     ;} If [flare counter] = 1:
 $9B:C049 A9 10 00    LDA #$0010             ;\
-$9B:C04C 8D D6 0C    STA $0CD6  [$7E:0CD6]  ;} Grapple beam flare animation frame = 10h
+$9B:C04C 8D D6 0C    STA $0CD6  [$7E:0CD6]  ;} Flare animation frame = 10h
 $9B:C04F A9 03 00    LDA #$0003             ;\
-$9B:C052 8D DC 0C    STA $0CDC  [$7E:0CDC]  ;} $0CDC = 3
+$9B:C052 8D DC 0C    STA $0CDC  [$7E:0CDC]  ;} Flare animation timer = 3
 
 $9B:C055 AD DC 0C    LDA $0CDC  [$7E:0CDC]  ;\
-$9B:C058 3A          DEC A                  ;} Decrement $0CDC
+$9B:C058 3A          DEC A                  ;} Decrement flare animation timer
 $9B:C059 8D DC 0C    STA $0CDC  [$7E:0CDC]  ;/
-$9B:C05C 10 34       BPL $34    [$C092]     ; If [$0CDC] >= 0: go to BRANCH_POSITIVE
+$9B:C05C 10 34       BPL $34    [$C092]     ; If [flare animation timer] >= 0: go to BRANCH_POSITIVE
 $9B:C05E AD D6 0C    LDA $0CD6  [$7E:0CD6]  ;\
-$9B:C061 1A          INC A                  ;} Increment grapple beam flare animation frame
+$9B:C061 1A          INC A                  ;} Increment flare animation frame
 $9B:C062 8D D6 0C    STA $0CD6  [$7E:0CD6]  ;/
 $9B:C065 AA          TAX                    ;\
 $9B:C066 BF 87 C4 90 LDA $90C487,x[$90:C498];|
 $9B:C06A 29 FF 00    AND #$00FF             ;|
-$9B:C06D C9 FE 00    CMP #$00FE             ;} If [$90:C487 + [grapple beam flare animation frame]] = FEh:
+$9B:C06D C9 FE 00    CMP #$00FE             ;} If [$90:C487 + [flare animation frame]] = FEh:
 $9B:C070 F0 02       BEQ $02    [$C074]     ;|
 $9B:C072 80 14       BRA $14    [$C088]     ;/
 
@@ -2620,14 +2620,14 @@ $9B:C074 E8          INX                    ;\
 $9B:C075 BF 87 C4 90 LDA $90C487,x[$90:C4A6];|
 $9B:C079 29 FF 00    AND #$00FF             ;|
 $9B:C07C 85 12       STA $12    [$7E:0012]  ;|
-$9B:C07E AD D6 0C    LDA $0CD6  [$7E:0CD6]  ;} Grapple beam flare animation frame -= [$90:C487 + [grapple beam flare animation frame] + 1]
+$9B:C07E AD D6 0C    LDA $0CD6  [$7E:0CD6]  ;} Flare animation frame -= [$90:C487 + [flare animation frame] + 1]
 $9B:C081 38          SEC                    ;|
 $9B:C082 E5 12       SBC $12    [$7E:0012]  ;|
 $9B:C084 8D D6 0C    STA $0CD6  [$7E:0CD6]  ;|
 $9B:C087 AA          TAX                    ;/
 
 $9B:C088 BF 87 C4 90 LDA $90C487,x[$90:C498];\
-$9B:C08C 29 FF 00    AND #$00FF             ;} $0CDC = [$90:C487 + [grapple beam flare animation frame]]
+$9B:C08C 29 FF 00    AND #$00FF             ;} Flare animation timer = [$90:C487 + [flare animation frame]]
 $9B:C08F 8D DC 0C    STA $0CDC  [$7E:0CDC]  ;/
 
 ; BRANCH_POSITIVE
@@ -2637,13 +2637,13 @@ $9B:C098 C9 04 00    CMP #$0004             ;} If Samus is facing right:
 $9B:C09B F0 0C       BEQ $0C    [$C0A9]     ;/
 $9B:C09D AF 25 A2 93 LDA $93A225[$93:A225]  ;\
 $9B:C0A1 18          CLC                    ;|
-$9B:C0A2 6D D6 0C    ADC $0CD6  [$7E:0CD6]  ;} $16 = [$93:A225] + [grapple beam flare animation frame]
-$9B:C0A5 85 16       STA $16    [$7E:0016]  ;/
-$9B:C0A7 80 0A       BRA $0A    [$C0B3]
-
-$9B:C0A9 AF 2B A2 93 LDA $93A22B[$93:A22B]  ;\ Else (Samus is facing left):
+$9B:C0A2 6D D6 0C    ADC $0CD6  [$7E:0CD6]  ;|
+$9B:C0A5 85 16       STA $16    [$7E:0016]  ;|
+$9B:C0A7 80 0A       BRA $0A    [$C0B3]     ;|
+                                            ;} $16 = [flare animation frame]
+$9B:C0A9 AF 2B A2 93 LDA $93A22B[$93:A22B]  ;|
 $9B:C0AD 18          CLC                    ;|
-$9B:C0AE 6D D6 0C    ADC $0CD6  [$7E:0CD6]  ;} $16 = [$93:A22B] + [grapple beam flare animation frame]
+$9B:C0AE 6D D6 0C    ADC $0CD6  [$7E:0CD6]  ;|
 $9B:C0B1 85 16       STA $16    [$7E:0016]  ;/
 
 $9B:C0B3 AD 1A 0D    LDA $0D1A  [$7E:0D1A]  ;\
@@ -2689,13 +2689,13 @@ $9B:C0EF             dw F40C,F784,0000,087C,0BF4,0BF4,087C,0000,F784,F40C ; Grap
 
 $9B:C103             db 80 ; Unused?
 
-$9B:C104             dw 8000,A000,C000,E000,0000,0000,2000,4000,6000,8000 ; Initial grapple beam end angle * 100h
+$9B:C104             dw 8000,A000,C000,E000,0000,0000,2000,4000,6000,8000 ; Initial grapple beam end angle. Unit pi/8000h radians
 
 $9B:C118             dw 0018 ; Grapple swing Samus base acceleration due to angle of swing
 $9B:C11A             dw 000C ; Grapple swing Samus base acceleration due to button input
 $9B:C11C             dw 0005 ; Grapple swing Samus base deceleration
-$9B:C11E             dw 0480 ; Absolute grapple swing Samus speed
-$9B:C120             dw 0300
+$9B:C11E             dw 0480 ; Absolute grapple swing angular velocity
+$9B:C120             dw 0300 ; Extra grapple swing 
 
 $9B:C122             dw 0002,000A,0002,000A,0003,FFFC,FFF6,FFFE,FFF6,FFFE ; Initial grapple beam origin X offset - not running
 $9B:C136             dw FFF0,FFF4,0002,0000,0006,0006,0000,0002,FFF4,FFF0 ; Initial grapple beam origin Y offset - not running
@@ -2709,11 +2709,9 @@ $9B:C1AE             dw FFE0,FFEA,FFFD,0006,0019,0019,0006,FFFD,FFEC,FFE0 ; Init
 }
 
 
-;;; $C1C2: Grapple beam data ;;;
+;;; $C1C2: Grapple swing Samus X/Y offsets ;;;
 {
-; To do with swinging.
-; $C1C2 is indexed by [$0CFC] / 100h,
-; then that value * 2 is used to index $C2C2 (left) or $C302 (right)
+; Indices into $C2C2/C302 tables. Indexed by [grapple beam end angle] / 100h
 $9B:C1C2             db 00, 00, 00, 00, 01, 01, 01, 01, 01, 01, 01, 01, 02, 02, 02, 02,
                         02, 02, 02, 02, 03, 03, 03, 03, 03, 03, 03, 03, 04, 04, 04, 04,
                         04, 04, 04, 04, 05, 05, 05, 05, 05, 05, 05, 05, 06, 06, 06, 06,
@@ -2731,15 +2729,19 @@ $9B:C1C2             db 00, 00, 00, 00, 01, 01, 01, 01, 01, 01, 01, 01, 02, 02, 
                         1C, 1C, 1C, 1C, 1D, 1D, 1D, 1D, 1D, 1D, 1D, 1D, 1E, 1E, 1E, 1E,
                         1E, 1E, 1E, 1E, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 1F, 00, 00, 00, 00
 
+; X/Y offsets of Samus from grapple beam start position
+
+; Swinging left
 $9B:C2C2             db 00,F1, 07,F2, 0C,F5, 12,F6, 16,FA, 1A,02, 1D,05, 1F,0A, 1F,11, 1E,16, 1B,1B, 1A,1F, 15,26, 10,29, 10,2C, 08,2E,
                         00,2F, F9,2E, F4,2B, EE,2A, EA,26, E6,1E, E3,1B, E1,16, E1,0F, E2,0A, E5,05, E6,01, EB,FA, F0,F7, F0,F4, F8,F2
 
+; Swinging right
 $9B:C302             db 00,F2, 09,F3, 10,F6, 12,F8, 15,FB, 1A,02, 1C,06, 1E,0A, 1E,10, 1E,17, 1B,1C, 1A,21, 15,25, 10,29, 0B,2B, 05,2D,
                         00,2E, F7,2D, F0,2A, EE,28, EB,25, E6,1E, E4,1A, E2,16, E1,0F, E2,09, E5,04, E6,FF, EB,FB, F0,F7, F5,F5, FB,F3
 }
 
 
-;;; $C342: Grapple beam flare tiles begin/end pointers ;;;
+;;; $C342: Grapple beam start tiles begin/end pointers ;;;
 {
 ; Bank $9A
 $9B:C342             dw 8200
@@ -2817,7 +2819,7 @@ $9B:C416             dw C79D,B9D9, ; 0: Up, facing right
 ;     C77E: Connected - locked in place
 ;     C814: Wallgrab
 
-;                        _______________________ Angle * 100h
+;                        _______________________ Angle. Unit pi/8000h radians
 ;                       |     __________________ Samus pose
 ;                       |    |     _____________ X offset
 ;                       |    |    |     ________ Y offset
@@ -2849,7 +2851,7 @@ $9B:C493 AB          PLB                    ;} DB = $9B
 $9B:C494 C2 30       REP #$30
 $9B:C496 AD F6 0C    LDA $0CF6  [$7E:0CF6]  ;\
 $9B:C499 F0 04       BEQ $04    [$C49F]     ;|
-$9B:C49B 3A          DEC A                  ;} $0CF6 = max(0, [$0CF6] - 1)
+$9B:C49B 3A          DEC A                  ;} Grapple pose change auto-fire timer = max(0, [grapple pose change auto-fire timer] - 1)
 $9B:C49C 8D F6 0C    STA $0CF6  [$7E:0CF6]  ;/
 
 $9B:C49F AD 64 0A    LDA $0A64  [$7E:0A64]  ;\
@@ -2952,10 +2954,10 @@ $9B:C558 8D 22 0D    STA $0D22  [$7E:0D22]  ;} Grapple beam extension X velocity
 $9B:C55B BD EF C0    LDA $C0EF,x[$9B:C0F1]  ;\
 $9B:C55E 8D 24 0D    STA $0D24  [$7E:0D24]  ;} Grapple beam extension Y velocity = [$C0EF + [X]] / 100h
 $9B:C561 BD 04 C1    LDA $C104,x[$9B:C106]  ;\
-$9B:C564 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;} Grapple beam end angle = [$C104 + [X]] / 100h
-$9B:C567 8D FC 0C    STA $0CFC  [$7E:0CFC]  ; $0CFC = [grapple beam end angle]
+$9B:C564 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;} Grapple beam end angle = [$C104 + [X]]
+$9B:C567 8D FC 0C    STA $0CFC  [$7E:0CFC]  ;/
 $9B:C56A A9 0A 00    LDA #$000A             ;\
-$9B:C56D 8D F6 0C    STA $0CF6  [$7E:0CF6]  ;} $0CF6 = Ah
+$9B:C56D 8D F6 0C    STA $0CF6  [$7E:0CF6]  ;} Grapple pose change auto-fire timer = Ah
 $9B:C570 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $9B:C573 C9 49 00    CMP #$0049             ;|
 $9B:C576 F0 10       BEQ $10    [$C588]     ;} If [Samus pose] != moonwalk:
@@ -3038,12 +3040,12 @@ $9B:C618 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
 $9B:C61B A9 0C 00    LDA #$000C             ;\
 $9B:C61E 8D 00 0D    STA $0D00  [$7E:0D00]  ;} Grapple beam length delta = Ch
 $9B:C621 9C FE 0C    STZ $0CFE  [$7E:0CFE]  ; Grapple beam length = 0
-$9B:C624 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing Samus speed = 0
-$9B:C627 9C 28 0D    STZ $0D28  [$7E:0D28]  ; Grapple swing Samus acceleration due to angle of swing = 0
-$9B:C62A 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; Grapple swing Samus acceleration due to button input = 0
-$9B:C62D 9C 2C 0D    STZ $0D2C  [$7E:0D2C]  ; Grapple swing Samus deceleration = 0
-$9B:C630 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; $0D2E = 0
-$9B:C633 9C 30 0D    STZ $0D30  [$7E:0D30]  ; $0D30 = 0
+$9B:C624 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing angular velocity = 0
+$9B:C627 9C 28 0D    STZ $0D28  [$7E:0D28]  ; Grapple swing angular acceleration due to angle of swing = 0
+$9B:C62A 9C 2A 0D    STZ $0D2A  [$7E:0D2A]  ; Grapple swing angular acceleration due to button input = 0
+$9B:C62D 9C 2C 0D    STZ $0D2C  [$7E:0D2C]  ; Grapple swing angular deceleration = 0
+$9B:C630 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; Extra grapple swing angular velocity = 0
+$9B:C633 9C 30 0D    STZ $0D30  [$7E:0D30]  ; Grapple kick cooldown timer = 0
 $9B:C636 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
 $9B:C639 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
 $9B:C63C A9 02 00    LDA #$0002             ;\
@@ -3062,7 +3064,7 @@ $9B:C660 9C 8C 0D    STZ $0D8C  [$7E:0D8C]  ; $0D8C = 0
 $9B:C663 9C 8E 0D    STZ $0D8E  [$7E:0D8E]  ; $0D8E = 0
 $9B:C666 9C 90 0D    STZ $0D90  [$7E:0D90]  ; $0D90 = 0
 $9B:C669 9C 38 0D    STZ $0D38  [$7E:0D38]  ; $0D38 = 0
-$9B:C66C 9C 36 0D    STZ $0D36  [$7E:0D36]  ; $0D36 = 0
+$9B:C66C 9C 36 0D    STZ $0D36  [$7E:0D36]  ; Disable special grapple beam angle handling
 $9B:C66F 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
 $9B:C672 22 87 AF 94 JSL $94AF87[$94:AF87]  ; Execute $94:AF87
 $9B:C676 A9 86 EB    LDA #$EB86             ;\
@@ -3259,9 +3261,9 @@ $9B:C7A2 D0 24       BNE $24    [$C7C8]     ;/
 
 ; BRANCH_CANCEL
 $9B:C7A4 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:C7A7 D0 0F       BNE $0F    [$C7B8]     ;} If [grapple swing Samus speed] = 0:
+$9B:C7A7 D0 0F       BNE $0F    [$C7B8]     ;} If [grapple swing angular velocity] = 0:
 $9B:C7A9 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
-$9B:C7AC C9 00 80    CMP #$8000             ;} If [grapple beam end angle] = 80h (straight down):
+$9B:C7AC C9 00 80    CMP #$8000             ;} If [grapple beam end angle] / 100h = 80h (straight down):
 $9B:C7AF D0 07       BNE $07    [$C7B8]     ;/
 $9B:C7B1 A9 C5 C8    LDA #$C8C5             ;\
 $9B:C7B4 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = $C8C5 (dropped)
@@ -3278,14 +3280,14 @@ $9B:C7C7 60          RTS
 $9B:C7C8 20 64 BB    JSR $BB64  [$9B:BB64]  ; Handle grapple d-pad input
 $9B:C7CB AD 00 0D    LDA $0D00  [$7E:0D00]  ;\
 $9B:C7CE F0 04       BEQ $04    [$C7D4]     ;} If [grapple beam length delta] != 0:
-$9B:C7D0 22 31 AC 94 JSL $94AC31[$94:AC31]  ; Execute $94:AC31
+$9B:C7D0 22 31 AC 94 JSL $94AC31[$94:AC31]  ; Handle grapple beam length change
 
-$9B:C7D4 20 1F BC    JSR $BC1F  [$9B:BC1F]  ; Determine grapple swing Samus acceleration due to angle of swing
-$9B:C7D7 20 FF BC    JSR $BCFF  [$9B:BCFF]  ; Update grapple swing Samus speed
-$9B:C7DA 20 44 BD    JSR $BD44  [$9B:BD44]  ; Execute $BD44
-$9B:C7DD 22 FE AC 94 JSL $94ACFE[$94:ACFE]  ; Execute $94:ACFE
+$9B:C7D4 20 1F BC    JSR $BC1F  [$9B:BC1F]  ; Determine grapple swing angular acceleration due to angle of swing
+$9B:C7D7 20 FF BC    JSR $BCFF  [$9B:BCFF]  ; Update grapple swing angular velocity
+$9B:C7DA 20 44 BD    JSR $BD44  [$9B:BD44]  ; Handle grapple kick
+$9B:C7DD 22 FE AC 94 JSL $94ACFE[$94:ACFE]  ; Handle grapple beam swinging movement
 $9B:C7E1 AD 36 0D    LDA $0D36  [$7E:0D36]  ;\
-$9B:C7E4 10 0A       BPL $0A    [$C7F0]     ;} If [$0D36] < 0:
+$9B:C7E4 10 0A       BPL $0A    [$C7F0]     ;} If special grapple beam angle handling enabled:
 $9B:C7E6 20 D5 BA    JSR $BAD5  [$9B:BAD5]  ; Handle special grapple beam angles
 $9B:C7E9 90 05       BCC $05    [$C7F0]     ; If handled special grapple beam angle:
 $9B:C7EB 22 0B AF 94 JSL $94AF0B[$94:AF0B]  ; Clear carry
@@ -3369,10 +3371,10 @@ $9B:C871 22 84 F0 90 JSL $90F084[$90:F084]  ;} Play spin jump sound if spin jump
 $9B:C875 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
 $9B:C878 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
 $9B:C87B 9C 34 0D    STZ $0D34  [$7E:0D34]  ; Direction grapple is fired = 0
-$9B:C87E 9C 36 0D    STZ $0D36  [$7E:0D36]  ; $0D36 = 0
+$9B:C87E 9C 36 0D    STZ $0D36  [$7E:0D36]  ; Disable special grapple beam angle handling
 $9B:C881 9C 9E 0A    STZ $0A9E  [$7E:0A9E]  ; Grapple walljump timer = 0
 $9B:C884 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
-$9B:C887 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; $0CF6 = 0
+$9B:C887 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; Grapple pose change auto-fire timer = 0
 $9B:C88A 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
 $9B:C88D 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $9B:C890 9C D6 0C    STZ $0CD6  [$7E:0CD6]  ;\
@@ -3482,10 +3484,10 @@ $9B:C967 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $9B:C96A 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
 $9B:C96D 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
 $9B:C970 9C 34 0D    STZ $0D34  [$7E:0D34]  ; Direction grapple is fired = 0
-$9B:C973 9C 36 0D    STZ $0D36  [$7E:0D36]  ; $0D36 = 0
+$9B:C973 9C 36 0D    STZ $0D36  [$7E:0D36]  ; Disable special grapple beam angle handling
 $9B:C976 9C 9E 0A    STZ $0A9E  [$7E:0A9E]  ; Grapple walljump timer = 0
 $9B:C979 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
-$9B:C97C 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; $0CF6 = 0
+$9B:C97C 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; Grapple pose change auto-fire timer = 0
 $9B:C97F 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
 $9B:C982 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $9B:C985 9C D6 0C    STZ $0CD6  [$7E:0CD6]  ;\
@@ -3545,10 +3547,10 @@ $9B:CA12 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 $9B:CA15 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
 $9B:CA18 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
 $9B:CA1B 9C 34 0D    STZ $0D34  [$7E:0D34]  ; Direction grapple is fired = 0
-$9B:CA1E 9C 36 0D    STZ $0D36  [$7E:0D36]  ; $0D36 = 0
+$9B:CA1E 9C 36 0D    STZ $0D36  [$7E:0D36]  ; Disable special grapple beam angle handling
 $9B:CA21 9C 9E 0A    STZ $0A9E  [$7E:0A9E]  ; Grapple walljump timer = 0
 $9B:CA24 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
-$9B:CA27 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; $0CF6 = 0
+$9B:CA27 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; Grapple pose change auto-fire timer = 0
 $9B:CA2A 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
 $9B:CA2D 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $9B:CA30 9C D6 0C    STZ $0CD6  [$7E:0CD6]  ;\
@@ -3575,25 +3577,26 @@ $9B:CA64 60          RTS
 
 ;;; $CA65: Propel Samus from grapple swing ;;;
 {
+; Note the extra angular velocity due to grapple kick isn't included in this calculation, which feels like an oversight to me
 $9B:CA65 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:CA68 30 03       BMI $03    [$CA6D]     ;} If [grapple swing Samus speed] >= 0:
+$9B:CA68 30 03       BMI $03    [$CA6D]     ;} If [grapple swing angular velocity] >= 0:
 $9B:CA6A 4C FE CA    JMP $CAFE  [$9B:CAFE]  ; Go to BRANCH_POSITIVE
 
 $9B:CA6D 49 FF FF    EOR #$FFFF             ;\
 $9B:CA70 1A          INC A                  ;|
-$9B:CA71 0A          ASL A                  ;} Y = -[grapple swing Samus speed] * 2
+$9B:CA71 0A          ASL A                  ;} Y = -[grapple swing angular velocity] * 2
 $9B:CA72 A8          TAY                    ;/
 $9B:CA73 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:CA76 EB          XBA                    ;|
 $9B:CA77 29 FF 00    AND #$00FF             ;|
-$9B:CA7A 0A          ASL A                  ;} If sin([grapple beam end angle] * pi / 80h) >= 0:
+$9B:CA7A 0A          ASL A                  ;} If sin([grapple beam end angle] * pi / 8000h) >= 0:
 $9B:CA7B AA          TAX                    ;|
 $9B:CA7C BF 43 B4 A0 LDA $A0B443,x[$A0:B503];|
 $9B:CA80 30 1A       BMI $1A    [$CA9C]     ;/
 $9B:CA82 5A          PHY                    ;\
 $9B:CA83 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
 $9B:CA87 7A          PLY                    ;|
-$9B:CA88 AD F1 05    LDA $05F1  [$7E:05F1]  ;} Samus Y speed = [Y] * sin([grapple beam end angle] * pi / 80h) / 10000h
+$9B:CA88 AD F1 05    LDA $05F1  [$7E:05F1]  ;} Samus Y speed = [Y] * sin([grapple beam end angle] * pi / 8000h) / 10000h
 $9B:CA8B 8D 2C 0B    STA $0B2C  [$7E:0B2C]  ;|
 $9B:CA8E AD F3 05    LDA $05F3  [$7E:05F3]  ;|
 $9B:CA91 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;/
@@ -3605,7 +3608,7 @@ $9B:CA9C 49 FF FF    EOR #$FFFF             ;\ Else (sin([grapple beam end angle
 $9B:CA9F 1A          INC A                  ;|
 $9B:CAA0 5A          PHY                    ;|
 $9B:CAA1 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
-$9B:CAA5 7A          PLY                    ;} Samus Y speed = [Y] * -sin([grapple beam end angle] * pi / 80h) / 10000h
+$9B:CAA5 7A          PLY                    ;} Samus Y speed = [Y] * -sin([grapple beam end angle] * pi / 8000h) / 10000h
 $9B:CAA6 AD F1 05    LDA $05F1  [$7E:05F1]  ;|
 $9B:CAA9 8D 2C 0B    STA $0B2C  [$7E:0B2C]  ;|
 $9B:CAAC AD F3 05    LDA $05F3  [$7E:05F3]  ;|
@@ -3630,7 +3633,7 @@ $9B:CAD0 E5 12       SBC $12    [$7E:0012]  ;|
 $9B:CAD2 85 12       STA $12    [$7E:0012]  ;|
 $9B:CAD4 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;|
 $9B:CAD7 EB          XBA                    ;|
-$9B:CAD8 29 FF 00    AND #$00FF             ;} Samus X base speed = [Y] * |sin([grapple beam angle] * pi / 80h - (40h - [Y] / 200h * 3))|
+$9B:CAD8 29 FF 00    AND #$00FF             ;} Samus X base speed = [Y] * |sin([grapple beam angle] * pi / 8000h - (40h - [Y] / 200h * 3))| <-- I must have made a mistake, todo
 $9B:CADB 38          SEC                    ;|
 $9B:CADC E5 12       SBC $12    [$7E:0012]  ;|
 $9B:CADE 29 FF 00    AND #$00FF             ;|
@@ -3650,11 +3653,11 @@ $9B:CAFD 60          RTS
 
 ; BRANCH_POSITIVE
 $9B:CAFE 0A          ASL A                  ;\
-$9B:CAFF A8          TAY                    ;} Y = [grapple swing Samus speed] * 2
+$9B:CAFF A8          TAY                    ;} Y = [grapple swing angular velocity] * 2
 $9B:CB00 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:CB03 EB          XBA                    ;|
 $9B:CB04 29 FF 00    AND #$00FF             ;|
-$9B:CB07 0A          ASL A                  ;} If sin([grapple beam end angle] * pi / 80h) < 0:
+$9B:CB07 0A          ASL A                  ;} If sin([grapple beam end angle] * pi / 8000h) < 0:
 $9B:CB08 AA          TAX                    ;|
 $9B:CB09 BF 43 B4 A0 LDA $A0B443,x[$A0:B56F];|
 $9B:CB0D 10 1E       BPL $1E    [$CB2D]     ;/
@@ -3662,7 +3665,7 @@ $9B:CB0F 49 FF FF    EOR #$FFFF             ;\
 $9B:CB12 1A          INC A                  ;|
 $9B:CB13 5A          PHY                    ;|
 $9B:CB14 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
-$9B:CB18 7A          PLY                    ;} Samus Y speed = [Y] * -sin([grapple beam end angle] * pi / 80h) / 10000h
+$9B:CB18 7A          PLY                    ;} Samus Y speed = [Y] * -sin([grapple beam end angle] * pi / 8000h) / 10000h
 $9B:CB19 AD F1 05    LDA $05F1  [$7E:05F1]  ;|
 $9B:CB1C 8D 2C 0B    STA $0B2C  [$7E:0B2C]  ;|
 $9B:CB1F AD F3 05    LDA $05F3  [$7E:05F3]  ;|
@@ -3671,10 +3674,10 @@ $9B:CB25 A9 01 00    LDA #$0001             ;\
 $9B:CB28 8D 36 0B    STA $0B36  [$7E:0B36]  ;} Samus Y direction = up
 $9B:CB2B 80 18       BRA $18    [$CB45]
 
-$9B:CB2D 5A          PHY                    ;\ Else (sin([grapple beam end angle] * pi / 80h) >= 0):
+$9B:CB2D 5A          PHY                    ;\ Else (sin([grapple beam end angle] * pi / 8000h) >= 0):
 $9B:CB2E 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
 $9B:CB32 7A          PLY                    ;|
-$9B:CB33 AD F1 05    LDA $05F1  [$7E:05F1]  ;} Samus Y speed = [Y] * sin([grapple beam end angle] * pi / 80h) / 10000h
+$9B:CB33 AD F1 05    LDA $05F1  [$7E:05F1]  ;} Samus Y speed = [Y] * sin([grapple beam end angle] * pi / 8000h) / 10000h
 $9B:CB36 8D 2C 0B    STA $0B2C  [$7E:0B2C]  ;|
 $9B:CB39 AD F3 05    LDA $05F3  [$7E:05F3]  ;|
 $9B:CB3C 8D 2E 0B    STA $0B2E  [$7E:0B2E]  ;/
@@ -3698,7 +3701,7 @@ $9B:CB5D E5 12       SBC $12    [$7E:0012]  ;|
 $9B:CB5F 85 12       STA $12    [$7E:0012]  ;|
 $9B:CB61 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;|
 $9B:CB64 EB          XBA                    ;|
-$9B:CB65 29 FF 00    AND #$00FF             ;} Samus X base speed = [Y] * |sin([grapple beam angle] * pi / 80h - (40h - [Y] / 200h * 3))|
+$9B:CB65 29 FF 00    AND #$00FF             ;} Samus X base speed = [Y] * |sin([grapple beam angle] * pi / 8000h - (40h - [Y] / 200h * 3))|
 $9B:CB68 38          SEC                    ;|
 $9B:CB69 E5 12       SBC $12    [$7E:0012]  ;|
 $9B:CB6B 29 FF 00    AND #$00FF             ;|
@@ -3723,12 +3726,12 @@ $9B:CB8A 60          RTS
 $9B:CB8B A9 07 00    LDA #$0007             ;\
 $9B:CB8E 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 7, sound library 1, max queued sounds allowed = 15 (grapple end)
 $9B:CB92 AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
-$9B:CB95 10 08       BPL $08    [$CB9F]     ;} If [grapple swing Samus speed] < 0:
+$9B:CB95 10 08       BPL $08    [$CB9F]     ;} If [grapple swing angular velocity] < 0:
 $9B:CB97 A9 51 00    LDA #$0051             ;\
 $9B:CB9A 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing right - normal jump - not aiming - moving forward
 $9B:CB9D 80 06       BRA $06    [$CBA5]
 
-$9B:CB9F A9 52 00    LDA #$0052             ;\ Else ([grapple swing Samus speed] >= 0):
+$9B:CB9F A9 52 00    LDA #$0052             ;\ Else ([grapple swing angular velocity] >= 0):
 $9B:CBA2 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;} Super special prospective pose = facing left - normal jump - not aiming - moving forward
 
 $9B:CBA5 A9 07 00    LDA #$0007             ;\
@@ -3736,10 +3739,10 @@ $9B:CBA8 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose ch
 $9B:CBAB 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
 $9B:CBAE 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0
 $9B:CBB1 9C 34 0D    STZ $0D34  [$7E:0D34]  ; Direction grapple is fired = 0
-$9B:CBB4 9C 36 0D    STZ $0D36  [$7E:0D36]  ; $0D36 = 0
+$9B:CBB4 9C 36 0D    STZ $0D36  [$7E:0D36]  ; Disable special grapple beam angle handling
 $9B:CBB7 9C 9E 0A    STZ $0A9E  [$7E:0A9E]  ; Grapple walljump timer = 0
 $9B:CBBA 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
-$9B:CBBD 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; $0CF6 = 0
+$9B:CBBD 9C F6 0C    STZ $0CF6  [$7E:0CF6]  ; Grapple pose change auto-fire timer = 0
 $9B:CBC0 9C F4 0C    STZ $0CF4  [$7E:0CF4]  ; Grapple beam flags = 0
 $9B:CBC3 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $9B:CBC6 9C D6 0C    STZ $0CD6  [$7E:0CD6]  ;\

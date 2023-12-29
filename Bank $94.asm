@@ -983,138 +983,147 @@ $94:8586             dw 0000,0100,
 
 ;;; $8606: Unused ;;;
 {
-$94:8606 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$94:8609 8D 04 42    STA $4204  [$7E:4204]
-$94:860C E2 20       SEP #$20
-$94:860E AD A5 07    LDA $07A5  [$7E:07A5]
-$94:8611 8D 06 42    STA $4206  [$7E:4206]
-$94:8614 C2 20       REP #$20
-$94:8616 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$94:8619 4A          LSR A
-$94:861A 4A          LSR A
-$94:861B 4A          LSR A
-$94:861C 4A          LSR A
-$94:861D CD 16 42    CMP $4216  [$7E:4216]
-$94:8620 F0 02       BEQ $02    [$8624]
-$94:8622 18          CLC
-$94:8623 60          RTS
+;; Parameters:
+;;     X: Block index
+;;     $12: Distance to check for collision
+;;     $18: Target X position
+;; Returns:
+;;     Carry: Set if Samus collides with solid slope, clear otherwise
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 
-$94:8624 A5 18       LDA $18    [$7E:0018]
-$94:8626 38          SEC
-$94:8627 ED FE 0A    SBC $0AFE  [$7E:0AFE]
-$94:862A 29 0F 00    AND #$000F
-$94:862D 49 0F 00    EOR #$000F
-$94:8630 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:8633 BF 02 64 7F LDA $7F6402,x
-$94:8637 29 1F 00    AND #$001F
-$94:863A 0A          ASL A
-$94:863B 0A          ASL A
-$94:863C 0A          ASL A
-$94:863D 0A          ASL A
-$94:863E 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$94:8641 BF 01 64 7F LDA $7F6401,x
-$94:8645 0A          ASL A
-$94:8646 10 38       BPL $38    [$8680]
-$94:8648 BF 01 64 7F LDA $7F6401,x
-$94:864C 30 05       BMI $05    [$8653]
-$94:864E AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$94:8651 80 06       BRA $06    [$8659]
+; This resembles $8000 adapted for block collision, or $86FE adapted for horizontal collision
+; I guess this was written before it was decided that non-square slopes shouldn't have solid horizontal collision
+; Looking at $86FE, I assume there's supposed to be a collision direction check here to branch to BRANCH_RIGHT
 
-$94:8653 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$94:8656 49 0F 00    EOR #$000F
+$94:8606 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$94:8609 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:860C E2 20       SEP #$20               ;|
+$94:860E AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:8611 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:8614 C2 20       REP #$20               ;|
+$94:8616 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
+$94:8619 4A          LSR A                  ;|
+$94:861A 4A          LSR A                  ;|
+$94:861B 4A          LSR A                  ;|
+$94:861C 4A          LSR A                  ;|
+$94:861D CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:8620 F0 02       BEQ $02    [$8624]     ;/
+$94:8622 18          CLC                    ;\
+$94:8623 60          RTS                    ;} Return carry clear
 
-$94:8659 29 0F 00    AND #$000F
-$94:865C 18          CLC
-$94:865D 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$94:8660 AA          TAX
-$94:8661 BD 2B 89    LDA $892B,x
-$94:8664 29 1F 00    AND #$001F
-$94:8667 38          SEC
-$94:8668 ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$94:866B 3A          DEC A
-$94:866C F0 02       BEQ $02    [$8670]
-$94:866E 10 0E       BPL $0E    [$867E]
+$94:8624 A5 18       LDA $18    [$7E:0018]  ;\
+$94:8626 38          SEC                    ;|
+$94:8627 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
+$94:862A 29 0F 00    AND #$000F             ;} $0DD4 = Fh - (Samus target left boundary) % 10h
+$94:862D 49 0F 00    EOR #$000F             ;|
+$94:8630 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:8633 BF 02 64 7F LDA $7F6402,x          ;\
+$94:8637 29 1F 00    AND #$001F             ;|
+$94:863A 0A          ASL A                  ;|
+$94:863B 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$94:863C 0A          ASL A                  ;|
+$94:863D 0A          ASL A                  ;|
+$94:863E 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$94:8641 BF 01 64 7F LDA $7F6401,x          ;\
+$94:8645 0A          ASL A                  ;} If [block BTS] & 40h = 0: go to Samus block collision reaction - horizontal - solid/shootable/grapple block
+$94:8646 10 38       BPL $38    [$8680]     ;/
+$94:8648 BF 01 64 7F LDA $7F6401,x          ;\
+$94:864C 30 05       BMI $05    [$8653]     ;} If [block BTS] & 80h = 0:
+$94:864E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ; A = [Samus Y position] % 10h
+$94:8651 80 06       BRA $06    [$8659]     
+                                            
+$94:8653 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\ Else ([block BTS] & 80h != 0):
+$94:8656 49 0F 00    EOR #$000F             ;} A = Fh - [Samus Y position] % 10h
+                                            
+$94:8659 29 0F 00    AND #$000F             
+$94:865C 18          CLC                    ;\
+$94:865D 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
+$94:8660 AA          TAX                    ;} A = [$892B + [$0DD6] + [A]] (slope left X offset)
+$94:8661 BD 2B 89    LDA $892B,x            ;/
+$94:8664 29 1F 00    AND #$001F             
+$94:8667 38          SEC                    ;\
+$94:8668 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
+$94:866B 3A          DEC A                  ;/
+$94:866C F0 02       BEQ $02    [$8670]     ;\
+$94:866E 10 0E       BPL $0E    [$867E]     ;} If [A] > 0: return carry clear
 
-$94:8670 18          CLC
-$94:8671 65 12       ADC $12    [$7E:0012]
-$94:8673 10 03       BPL $03    [$8678]
-$94:8675 A9 00 00    LDA #$0000
-
-$94:8678 85 12       STA $12    [$7E:0012]
-$94:867A 64 14       STZ $14    [$7E:0014]
-$94:867C 38          SEC
-$94:867D 60          RTS
+$94:8670 18          CLC                    ;\
+$94:8671 65 12       ADC $12    [$7E:0012]  ;|
+$94:8673 10 03       BPL $03    [$8678]     ;|
+$94:8675 A9 00 00    LDA #$0000             ;} $12 = max(0, [A] + [$12])
+                                            ;|
+$94:8678 85 12       STA $12    [$7E:0012]  ;/
+$94:867A 64 14       STZ $14    [$7E:0014]  ; $14 = 0
+$94:867C 38          SEC                    ;\
+$94:867D 60          RTS                    ;} Return carry set
 
 $94:867E 18          CLC
 $94:867F 60          RTS
 
 $94:8680 4C 49 8F    JMP $8F49  [$94:8F49]
-}
 
+; BRANCH_RIGHT
+$94:8683 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$94:8686 8D 04 42    STA $4204  [$7E:4204]  ;|
+$94:8689 E2 20       SEP #$20               ;|
+$94:868B AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:868E 8D 06 42    STA $4206  [$7E:4206]  ;|
+$94:8691 C2 20       REP #$20               ;|
+$94:8693 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} If [current block index] % [room width in blocks] != [Samus X position] / 10h (Samus' centre isn't in block):
+$94:8696 4A          LSR A                  ;|
+$94:8697 4A          LSR A                  ;|
+$94:8698 4A          LSR A                  ;|
+$94:8699 4A          LSR A                  ;|
+$94:869A CD 16 42    CMP $4216  [$7E:4216]  ;|
+$94:869D F0 02       BEQ $02    [$86A1]     ;/
+$94:869F 18          CLC                    ;\
+$94:86A0 60          RTS                    ;} Return carry clear
 
-;;; $8683: Unused ;;;
-{
-$94:8683 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$94:8686 8D 04 42    STA $4204  [$7E:4204]
-$94:8689 E2 20       SEP #$20
-$94:868B AD A5 07    LDA $07A5  [$7E:07A5]
-$94:868E 8D 06 42    STA $4206  [$7E:4206]
-$94:8691 C2 20       REP #$20
-$94:8693 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$94:8696 4A          LSR A
-$94:8697 4A          LSR A
-$94:8698 4A          LSR A
-$94:8699 4A          LSR A
-$94:869A CD 16 42    CMP $4216  [$7E:4216]
-$94:869D F0 02       BEQ $02    [$86A1]
-$94:869F 18          CLC
-$94:86A0 60          RTS
-
-$94:86A1 A5 18       LDA $18    [$7E:0018]
-$94:86A3 18          CLC
-$94:86A4 6D FE 0A    ADC $0AFE  [$7E:0AFE]
-$94:86A7 3A          DEC A
-$94:86A8 29 0F 00    AND #$000F
-$94:86AB 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$94:86AE BF 02 64 7F LDA $7F6402,x
-$94:86B2 29 1F 00    AND #$001F
-$94:86B5 0A          ASL A
-$94:86B6 0A          ASL A
-$94:86B7 0A          ASL A
-$94:86B8 0A          ASL A
-$94:86B9 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$94:86BC BF 01 64 7F LDA $7F6401,x
-$94:86C0 0A          ASL A
-$94:86C1 30 38       BMI $38    [$86FB]
-$94:86C3 BF 01 64 7F LDA $7F6401,x
-$94:86C7 30 05       BMI $05    [$86CE]
-$94:86C9 AD FA 0A    LDA $0AFA  [$7E:0AFA]
+$94:86A1 A5 18       LDA $18    [$7E:0018]  ;\
+$94:86A3 18          CLC                    ;|
+$94:86A4 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
+$94:86A7 3A          DEC A                  ;} $0DD4 = (Samus target right boundary) % 10h
+$94:86A8 29 0F 00    AND #$000F             ;|
+$94:86AB 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$94:86AE BF 02 64 7F LDA $7F6402,x          ;\
+$94:86B2 29 1F 00    AND #$001F             ;|
+$94:86B5 0A          ASL A                  ;|
+$94:86B6 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$94:86B7 0A          ASL A                  ;|
+$94:86B8 0A          ASL A                  ;|
+$94:86B9 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$94:86BC BF 01 64 7F LDA $7F6401,x          ;\
+$94:86C0 0A          ASL A                  ;} If [block BTS] & 40h != 0: go to Samus block collision reaction - horizontal - solid/shootable/grapple block
+$94:86C1 30 38       BMI $38    [$86FB]     ;/
+$94:86C3 BF 01 64 7F LDA $7F6401,x          ;\
+$94:86C7 30 05       BMI $05    [$86CE]     ;} If [block BTS] & 80h = 0:
+$94:86C9 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ; A = [Samus Y position] % 10h
 $94:86CC 80 06       BRA $06    [$86D4]
 
-$94:86CE AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$94:86D1 49 0F 00    EOR #$000F
-
-$94:86D4 29 0F 00    AND #$000F
-$94:86D7 18          CLC
-$94:86D8 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$94:86DB AA          TAX
-$94:86DC BD 2B 89    LDA $892B,x
-$94:86DF 29 1F 00    AND #$001F
-$94:86E2 38          SEC
-$94:86E3 ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$94:86E6 3A          DEC A
-$94:86E7 F0 02       BEQ $02    [$86EB]
-$94:86E9 10 0E       BPL $0E    [$86F9]
-
-$94:86EB 18          CLC
-$94:86EC 65 12       ADC $12    [$7E:0012]
-$94:86EE 10 03       BPL $03    [$86F3]
-$94:86F0 A9 00 00    LDA #$0000
-
-$94:86F3 85 12       STA $12    [$7E:0012]
-$94:86F5 64 14       STZ $14    [$7E:0014]
-$94:86F7 38          SEC
-$94:86F8 60          RTS
+$94:86CE AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\ Else ([block BTS] & 80h != 0):
+$94:86D1 49 0F 00    EOR #$000F             ;} A = Fh - [Samus Y position] % 10h
+                                            
+$94:86D4 29 0F 00    AND #$000F             
+$94:86D7 18          CLC                    ;\
+$94:86D8 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
+$94:86DB AA          TAX                    ;} A = [$892B + [$0DD6] + [A]] (slope left X offset)
+$94:86DC BD 2B 89    LDA $892B,x            ;/
+$94:86DF 29 1F 00    AND #$001F             
+$94:86E2 38          SEC                    ;\
+$94:86E3 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
+$94:86E6 3A          DEC A                  ;/
+$94:86E7 F0 02       BEQ $02    [$86EB]     ;\
+$94:86E9 10 0E       BPL $0E    [$86F9]     ;} If [A] > 0: return carry clear
+                                            
+$94:86EB 18          CLC                    ;\
+$94:86EC 65 12       ADC $12    [$7E:0012]  ;|
+$94:86EE 10 03       BPL $03    [$86F3]     ;|
+$94:86F0 A9 00 00    LDA #$0000             ;} $12 = max(0, [A] + [$12])
+                                            ;|
+$94:86F3 85 12       STA $12    [$7E:0012]  ;/
+$94:86F5 64 14       STZ $14    [$7E:0014]  ; $14 = 0
+$94:86F7 38          SEC                    ;\
+$94:86F8 60          RTS                    ;} Return carry set
 
 $94:86F9 18          CLC
 $94:86FA 60          RTS
@@ -1131,7 +1140,7 @@ $94:86FB 4C 49 8F    JMP $8F49  [$94:8F49]
 ;;     $18: Target Y position
 ;; Returns:
 ;;     Carry: Set if Samus collides with solid slope, clear otherwise
-;;     A: If carry set, depth into slope in pixels
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 $94:86FE AD 02 0B    LDA $0B02  [$7E:0B02]  ;\
 $94:8701 4A          LSR A                  ;} If collision direction is down:
 $94:8702 90 03       BCC $03    [$8707]     ;/
@@ -1603,7 +1612,7 @@ $94:8DBC 60          RTS                    ;} Return carry set
 ;;     $20: Target boundary position (top/bottom depending on sign of [$12])
 ;; Returns:
 ;;     Carry: Set if Samus collides with solid slope, clear otherwise
-;;     A: If carry set, depth into slope in pixels
+;;     $12.$14: Adjusted distance to move Samus or distance to collision
 $94:8DBD 0A          ASL A                  ;\
 $94:8DBE 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
 $94:8DBF 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
@@ -3670,7 +3679,7 @@ $94:9C72 60          RTS
 }
 
 
-;;; $9C73..B19E: Block shot/bombed/grappled handling / grapple beam drawing ;;;
+;;; $9C73..A956: Block shot/bombed/grappled handling ;;;
 {
 ;;; $9C73: Determine projectile proto type ;;;
 {
@@ -5687,42 +5696,45 @@ $94:A952 FC 3B A8    JSR ($A83B,x)[$94:A7C9];/
 $94:A955 AB          PLB
 $94:A956 6B          RTL
 }
+}
 
 
-;;; $A957: Calculate grapple beam start position from end position ;;;
+;;; $A957..AF86: Grapple swing movement ;;;
+{
+;;; $A957: Calculate position from grapple beam end with distance and angle ;;;
 {
 ;; Parameters:
-;;     $0D82: [grapple beam end angle] * 2
-;;     $0D84: [grapple beam length]
+;;     $0D82: Grapple beam end angle * 2
+;;     $0D84: Distance from grapple beam end
 ;; Returns:
-;;     $0D90: Grapple beam start X position
-;;     $0D92: Grapple beam start Y position
-;;     $0D94: Grapple beam start X block
-;;     $0D96: Grapple beam start Y block
+;;     $0D90: X position
+;;     $0D92: Y position
+;;     $0D94: X block
+;;     $0D96: Y block
 
-$94:A957 AE 82 0D    LDX $0D82  [$7E:0D82]  ; X = [grapple beam end angle] * 2
+$94:A957 AE 82 0D    LDX $0D82  [$7E:0D82]  ; X = (grapple beam end angle) * 2
 $94:A95A AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
 $94:A95D 30 3A       BMI $3A    [$A999]     ;} If grappling enemy: go to BRANCH_GRAPPLING_ENEMY
 $94:A95F BF 43 B4 A0 LDA $A0B443,x[$A0:B56D];\
-$94:A963 30 0B       BMI $0B    [$A970]     ;} If [grapple beam end angle] <= 80h:
+$94:A963 30 0B       BMI $0B    [$A970]     ;} If (grapple beam end angle) <= 80h:
 $94:A965 AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
 $94:A968 29 F0 FF    AND #$FFF0             ;} Grapple beam end X position = [grapple beam end X position] rounded to pixel 8 of 16x16 block
 $94:A96B 09 08 00    ORA #$0008             ;/
 $94:A96E 80 09       BRA $09    [$A979]
 
-$94:A970 AD 08 0D    LDA $0D08  [$7E:0D08]  ;\ Else ([grapple beam end angle] > 80h):
+$94:A970 AD 08 0D    LDA $0D08  [$7E:0D08]  ;\ Else ((grapple beam end angle) > 80h):
 $94:A973 29 F0 FF    AND #$FFF0             ;} Grapple beam end X position = [grapple beam end X position] rounded to pixel 7 of 16x16 block
 $94:A976 09 07 00    ORA #$0007             ;/
 
 $94:A979 8D 08 0D    STA $0D08  [$7E:0D08]
 $94:A97C BF C3 B3 A0 LDA $A0B3C3,x[$A0:B4ED];\
-$94:A980 30 0B       BMI $0B    [$A98D]     ;} If 40h <= [grapple beam end angle] <= C0h:
+$94:A980 30 0B       BMI $0B    [$A98D]     ;} If 40h <= (grapple beam end angle) <= C0h:
 $94:A982 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
 $94:A985 29 F0 FF    AND #$FFF0             ;} Grapple beam end Y position = [grapple beam end Y position] rounded to pixel 8 of 16x16 block
 $94:A988 09 08 00    ORA #$0008             ;/
 $94:A98B 80 09       BRA $09    [$A996]     
                                             
-$94:A98D AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\ Else (not 40h <= [grapple beam end angle] <= C0h):
+$94:A98D AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\ Else (not 40h <= (grapple beam end angle) <= C0h):
 $94:A990 29 F0 FF    AND #$FFF0             ;} Grapple beam end Y position = [grapple beam end Y position] rounded to pixel 7 of 16x16 block
 $94:A993 09 07 00    ORA #$0007             ;/
 
@@ -5731,7 +5743,7 @@ $94:A996 8D 0C 0D    STA $0D0C  [$7E:0D0C]
 ; BRANCH_GRAPPLING_ENEMY
 $94:A999 E2 20       SEP #$20               ;\
 $94:A99B AD 84 0D    LDA $0D84  [$7E:0D84]  ;|
-$94:A99E 8D 02 42    STA $4202  [$7E:4202]  ;} Multiplicand = [grapple beam length]
+$94:A99E 8D 02 42    STA $4202  [$7E:4202]  ;} Multiplicand = [distance from grapple beam end]
 $94:A9A1 C2 20       REP #$20               ;/
 $94:A9A3 BF 43 B4 A0 LDA $A0B443,x[$A0:B56D];\
 $94:A9A7 30 24       BMI $24    [$A9CD]     ;|
@@ -5755,7 +5767,7 @@ $94:A9C8 6D 08 0D    ADC $0D08  [$7E:0D08]  ;|
 $94:A9CB 80 29       BRA $29    [$A9F6]     ;|
                                             ;|
 $94:A9CD C9 00 FF    CMP #$FF00             ;|
-$94:A9D0 D0 09       BNE $09    [$A9DB]     ;} $0D90 = [grapple beam end X position] + [grapple beam length] * sin([grapple beam end angle] * pi / 80h)
+$94:A9D0 D0 09       BNE $09    [$A9DB]     ;} $0D90 = [grapple beam end X position] + [distance from grapple beam end] * sin((grapple beam end angle) * pi / 80h)
 $94:A9D2 AD 08 0D    LDA $0D08  [$7E:0D08]  ;|
 $94:A9D5 38          SEC                    ;|
 $94:A9D6 ED 84 0D    SBC $0D84  [$7E:0D84]  ;|
@@ -5805,7 +5817,7 @@ $94:AA28 6D 0C 0D    ADC $0D0C  [$7E:0D0C]  ;|
 $94:AA2B 80 29       BRA $29    [$AA56]     ;|
                                             ;|
 $94:AA2D C9 00 FF    CMP #$FF00             ;|
-$94:AA30 D0 09       BNE $09    [$AA3B]     ;} $0D92 = [grapple beam end Y position] + [grapple beam length] * -cos([grapple beam end angle] * pi / 80h)
+$94:AA30 D0 09       BNE $09    [$AA3B]     ;} $0D92 = [grapple beam end Y position] + [distance from grapple beam end] * -cos((grapple beam end angle) * pi / 80h)
 $94:AA32 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;|
 $94:AA35 38          SEC                    ;|
 $94:AA36 ED 84 0D    SBC $0D84  [$7E:0D84]  ;|
@@ -5837,34 +5849,39 @@ $94:AA63 60          RTS
 }
 
 
-;;; $AA64:  ;;;
+;;; $AA64: Grapple swing collision reaction ;;;
 {
+;; Parameters:
+;;     $0D94: X block
+;;     $0D96: Y block
+;; Returns:
+;;     Carry: set if collision, clear otherwise
 $94:AA64 E2 20       SEP #$20
-$94:AA66 AD 96 0D    LDA $0D96  [$7E:0D96]
-$94:AA69 8D 02 42    STA $4202  [$7E:4202]
-$94:AA6C AD A5 07    LDA $07A5  [$7E:07A5]
-$94:AA6F 8D 03 42    STA $4203  [$7E:4203]
-$94:AA72 C2 21       REP #$21
-$94:AA74 AD 94 0D    LDA $0D94  [$7E:0D94]
-$94:AA77 6D 16 42    ADC $4216  [$7E:4216]
-$94:AA7A 8D C4 0D    STA $0DC4  [$7E:0DC4]
-$94:AA7D 0A          ASL A
-$94:AA7E AA          TAX
-$94:AA7F BF 02 00 7F LDA $7F0002,x[$7F:01F4]
-$94:AA83 29 00 F0    AND #$F000
-$94:AA86 48          PHA
-$94:AA87 DA          PHX
-$94:AA88 EB          XBA
-$94:AA89 4A          LSR A
-$94:AA8A 4A          LSR A
-$94:AA8B 4A          LSR A
-$94:AA8C AA          TAX
-$94:AA8D FC 90 AB    JSR ($AB90,x)[$94:AA9A]
-$94:AA90 B0 04       BCS $04    [$AA96]
+$94:AA66 AD 96 0D    LDA $0D96  [$7E:0D96]  ;\
+$94:AA69 8D 02 42    STA $4202  [$7E:4202]  ;|
+$94:AA6C AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:AA6F 8D 03 42    STA $4203  [$7E:4203]  ;|
+$94:AA72 C2 21       REP #$21               ;} Current block index = [$0D96] * [room width in blocks] + [$0D94]
+$94:AA74 AD 94 0D    LDA $0D94  [$7E:0D94]  ;|
+$94:AA77 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$94:AA7A 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
+$94:AA7D 0A          ASL A                  ;\
+$94:AA7E AA          TAX                    ;|
+$94:AA7F BF 02 00 7F LDA $7F0002,x[$7F:01F4];|
+$94:AA83 29 00 F0    AND #$F000             ;|
+$94:AA86 48          PHA                    ;|
+$94:AA87 DA          PHX                    ;|
+$94:AA88 EB          XBA                    ;} Execute [$AB90 + (block type) * 2]
+$94:AA89 4A          LSR A                  ;|
+$94:AA8A 4A          LSR A                  ;|
+$94:AA8B 4A          LSR A                  ;|
+$94:AA8C AA          TAX                    ;|
+$94:AA8D FC 90 AB    JSR ($AB90,x)[$94:AA9A];/
+$94:AA90 B0 04       BCS $04    [$AA96]     ; If collision: return carry set
 $94:AA92 FA          PLX
 $94:AA93 68          PLA
-$94:AA94 18          CLC
-$94:AA95 60          RTS
+$94:AA94 18          CLC                    ;\
+$94:AA95 60          RTS                    ;} Return carry clear
 
 $94:AA96 FA          PLX
 $94:AA97 68          PLA
@@ -5873,92 +5890,115 @@ $94:AA99 60          RTS
 }
 
 
-;;; $AA9A:  ;;;
+;;; $AA9A: Clear carry ;;;
 {
 $94:AA9A 18          CLC
 $94:AA9B 60          RTS
 }
 
 
-;;; $AA9C:  ;;;
+;;; $AA9C: Set carry ;;;
 {
 $94:AA9C 38          SEC
 $94:AA9D 60          RTS
 }
 
 
-;;; $AA9E:  ;;;
+;;; $AA9E: Grapple swing collision reaction - spike air ;;;
 {
-$94:AA9E AD A8 18    LDA $18A8  [$7E:18A8]
-$94:AAA1 D0 32       BNE $32    [$AAD5]
-$94:AAA3 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:AAA6 BF 02 64 7F LDA $7F6402,x
-$94:AAAA 30 29       BMI $29    [$AAD5]
-$94:AAAC 0A          ASL A
-$94:AAAD AA          TAX
-$94:AAAE BD D7 AA    LDA $AAD7,x
-$94:AAB1 1D F7 AA    ORA $AAF7,x
-$94:AAB4 F0 1F       BEQ $1F    [$AAD5]
-$94:AAB6 AD 4E 0A    LDA $0A4E  [$7E:0A4E]
-$94:AAB9 18          CLC
-$94:AABA 7D D7 AA    ADC $AAD7,x
-$94:AABD 8D 4E 0A    STA $0A4E  [$7E:0A4E]
-$94:AAC0 AD 50 0A    LDA $0A50  [$7E:0A50]
-$94:AAC3 7D F7 AA    ADC $AAF7,x
-$94:AAC6 8D 50 0A    STA $0A50  [$7E:0A50]
-$94:AAC9 A9 3C 00    LDA #$003C
-$94:AACC 8D A8 18    STA $18A8  [$7E:18A8]
-$94:AACF A9 0A 00    LDA #$000A
-$94:AAD2 8D AA 18    STA $18AA  [$7E:18AA]
+;; Returns:
+;;     Carry: Clear. No collision
 
-$94:AAD5 18          CLC
-$94:AAD6 60          RTS
+; There's really no reason to have this reaction, the spike air inside reaction does this damage anyway
+; Although you can set grapple swing specific damage here if you want...
+$94:AA9E AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$94:AAA1 D0 32       BNE $32    [$AAD5]     ;} If [Samus invincibility timer] = 0:
+$94:AAA3 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:AAA6 BF 02 64 7F LDA $7F6402,x          ;} If (BTS of one block right) & 80h = 0:
+$94:AAAA 30 29       BMI $29    [$AAD5]     ;/
+$94:AAAC 0A          ASL A                  ;\
+$94:AAAD AA          TAX                    ;} X = [block BTS] * 2
+$94:AAAE BD D7 AA    LDA $AAD7,x            ;\
+$94:AAB1 1D F7 AA    ORA $AAF7,x            ;} If [$AAF7 + [X]] != 0:
+$94:AAB4 F0 1F       BEQ $1F    [$AAD5]     ;/
+$94:AAB6 AD 4E 0A    LDA $0A4E  [$7E:0A4E]  ;\
+$94:AAB9 18          CLC                    ;|
+$94:AABA 7D D7 AA    ADC $AAD7,x            ;} >_<;
+$94:AABD 8D 4E 0A    STA $0A4E  [$7E:0A4E]  ;/
+$94:AAC0 AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$94:AAC3 7D F7 AA    ADC $AAF7,x            ;} Periodic damage += [$AAF7 + [X]]
+$94:AAC6 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
+$94:AAC9 A9 3C 00    LDA #$003C             ;\
+$94:AACC 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 3Ch
+$94:AACF A9 0A 00    LDA #$000A             ;\
+$94:AAD2 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = Ah
+                                            
+$94:AAD5 18          CLC                    ;\
+$94:AAD6 60          RTS                    ;} Return carry clear
 
 $94:AAD7             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 $94:AAF7             dw 0000, 0000, 0010, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 }
 
 
-;;; $AB17:  ;;;
+;;; $AB17: Grapple swing collision reaction - spike block ;;;
 {
-$94:AB17 AD A8 18    LDA $18A8  [$7E:18A8]
-$94:AB1A D0 32       BNE $32    [$AB4E]
-$94:AB1C AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$94:AB1F BF 02 64 7F LDA $7F6402,x
-$94:AB23 30 29       BMI $29    [$AB4E]
-$94:AB25 0A          ASL A
-$94:AB26 AA          TAX
-$94:AB27 BD 50 AB    LDA $AB50,x
-$94:AB2A 1D 70 AB    ORA $AB70,x
-$94:AB2D F0 1F       BEQ $1F    [$AB4E]
-$94:AB2F AD 4E 0A    LDA $0A4E  [$7E:0A4E]
-$94:AB32 18          CLC
-$94:AB33 7D 50 AB    ADC $AB50,x
-$94:AB36 8D 4E 0A    STA $0A4E  [$7E:0A4E]
-$94:AB39 AD 50 0A    LDA $0A50  [$7E:0A50]
-$94:AB3C 7D 70 AB    ADC $AB70,x
-$94:AB3F 8D 50 0A    STA $0A50  [$7E:0A50]
-$94:AB42 A9 3C 00    LDA #$003C
-$94:AB45 8D A8 18    STA $18A8  [$7E:18A8]
-$94:AB48 A9 0A 00    LDA #$000A
-$94:AB4B 8D AA 18    STA $18AA  [$7E:18AA]
+;; Returns:
+;;     Carry: Set. Unconditional collision
+$94:AB17 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$94:AB1A D0 32       BNE $32    [$AB4E]     ;} If [Samus invincibility timer] = 0:
+$94:AB1C AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$94:AB1F BF 02 64 7F LDA $7F6402,x          ;} If (BTS of one block right) & 80h = 0:
+$94:AB23 30 29       BMI $29    [$AB4E]     ;/
+$94:AB25 0A          ASL A                  ;\
+$94:AB26 AA          TAX                    ;} X = [block BTS] * 2
+$94:AB27 BD 50 AB    LDA $AB50,x            ;\
+$94:AB2A 1D 70 AB    ORA $AB70,x            ;} If [$AB70 + [X]] != 0:
+$94:AB2D F0 1F       BEQ $1F    [$AB4E]     ;/
+$94:AB2F AD 4E 0A    LDA $0A4E  [$7E:0A4E]  ;\
+$94:AB32 18          CLC                    ;|
+$94:AB33 7D 50 AB    ADC $AB50,x            ;} >_<;
+$94:AB36 8D 4E 0A    STA $0A4E  [$7E:0A4E]  ;/
+$94:AB39 AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
+$94:AB3C 7D 70 AB    ADC $AB70,x            ;} Periodic damage += [$AB70 + [X]]
+$94:AB3F 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
+$94:AB42 A9 3C 00    LDA #$003C             ;\
+$94:AB45 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 3Ch
+$94:AB48 A9 0A 00    LDA #$000A             ;\
+$94:AB4B 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = Ah
 
-$94:AB4E 38          SEC
-$94:AB4F 60          RTS
+$94:AB4E 38          SEC                    ;\
+$94:AB4F 60          RTS                    ;} Return carry set
 
 $94:AB50             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 $94:AB70             dw 003C, 0010, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 }
 
 
-;;; $AB90:  ;;;
+;;; $AB90: Grapple swing collision reaction pointers ;;;
 {
-$94:AB90             dw AA9A, AA9C, AA9E, AA9A, AA9A, 9411, AA9A, AA9A, AA9C, AA9C, AB17, AA9C, AA9C, 9447, AA9C, AA9C
+$94:AB90             dw AA9A, ;  0: Air
+                        AA9C, ;  1: Slope
+                        AA9E, ; *2: Spike air
+                        AA9A, ;  3: Special air
+                        AA9A, ;  4: Shootable air
+                        9411, ; *5: Horizontal extension
+                        AA9A, ;  6: Unused air
+                        AA9A, ;  7: Bombable air
+                        AA9C, ;  8: Solid block
+                        AA9C, ;  9: Door block
+                        AB17, ; *Ah: Spike block
+                        AA9C, ;  Bh: Special block
+                        AA9C, ;  Ch: Shootable block
+                        9447, ; *Dh: Vertical extension
+                        AA9C, ;  Eh: Grapple block
+                        AA9C  ;  Fh: Bombable block
 }
 
 
-;;; $ABB0:  ;;;
+;;; $ABB0: Grapple swing collision reaction ;;;
 {
+; Clone of $AA64
 $94:ABB0 E2 20       SEP #$20
 $94:ABB2 AD 96 0D    LDA $0D96  [$7E:0D96]
 $94:ABB5 8D 02 42    STA $4202  [$7E:4202]
@@ -5993,28 +6033,35 @@ $94:ABE5 60          RTS
 }
 
 
-;;; $ABE6:  ;;;
+;;; $ABE6: Grapple swing collision detection due to swinging ;;;
 {
-$94:ABE6 A9 06 00    LDA #$0006
-$94:ABE9 8D 98 0D    STA $0D98  [$7E:0D98]
-$94:ABEC A9 08 00    LDA #$0008
-$94:ABEF 18          CLC
-$94:ABF0 6D FE 0C    ADC $0CFE  [$7E:0CFE]
-$94:ABF3 8D 84 0D    STA $0D84  [$7E:0D84]
+;; Returns:
+;;     Carry: set if collision, clear otherwise
+;;     $0D98: Distance of grapple swing collision from Samus' feet. Unit 8px
 
-$94:ABF6 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
-$94:ABF9 20 B0 AB    JSR $ABB0  [$94:ABB0]
-$94:ABFC B0 11       BCS $11    [$AC0F]
-$94:ABFE AD 84 0D    LDA $0D84  [$7E:0D84]
-$94:AC01 18          CLC
-$94:AC02 69 08 00    ADC #$0008
-$94:AC05 8D 84 0D    STA $0D84  [$7E:0D84]
-$94:AC08 CE 98 0D    DEC $0D98  [$7E:0D98]
-$94:AC0B D0 E9       BNE $E9    [$ABF6]
-$94:AC0D 18          CLC
-$94:AC0E 60          RTS
+; Checks 6(!) points along the 48px line projecting 8px beyond the grapple beam start position
 
-$94:AC0F EA          NOP
+$94:ABE6 A9 06 00    LDA #$0006             ;\
+$94:ABE9 8D 98 0D    STA $0D98  [$7E:0D98]  ;} Distance of grapple swing collision from Samus' feet = 6
+$94:ABEC A9 08 00    LDA #$0008             ;\
+$94:ABEF 18          CLC                    ;|
+$94:ABF0 6D FE 0C    ADC $0CFE  [$7E:0CFE]  ;} $0D84 = [grapple beam length] + 8 (distance from grapple beam end)
+$94:ABF3 8D 84 0D    STA $0D84  [$7E:0D84]  ;/
+
+; LOOP
+$94:ABF6 20 57 A9    JSR $A957  [$94:A957]  ; Calculate position from grapple beam end with distance and angle
+$94:ABF9 20 B0 AB    JSR $ABB0  [$94:ABB0]  ; Grapple swing collision reaction
+$94:ABFC B0 11       BCS $11    [$AC0F]     ; If collision: return carry set
+$94:ABFE AD 84 0D    LDA $0D84  [$7E:0D84]  ;\
+$94:AC01 18          CLC                    ;|
+$94:AC02 69 08 00    ADC #$0008             ;} (Distance from grapple beam end) += 8
+$94:AC05 8D 84 0D    STA $0D84  [$7E:0D84]  ;/
+$94:AC08 CE 98 0D    DEC $0D98  [$7E:0D98]  ; Decrement remaining number of blocks to check
+$94:AC0B D0 E9       BNE $E9    [$ABF6]     ; If [remaining number of blocks to check] != 0: go to LOOP
+$94:AC0D 18          CLC                    ;\
+$94:AC0E 60          RTS                    ;} Return carry clear
+
+$94:AC0F EA          NOP                    ; Wild NOP appears!
 $94:AC10 60          RTS
 }
 
@@ -6023,11 +6070,11 @@ $94:AC10 60          RTS
 {
 $94:AC11 AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
 $94:AC14 29 FF 00    AND #$00FF             ;|
-$94:AC17 0A          ASL A                  ;} $0D82 = [grapple beam end angle] * 2
+$94:AC17 0A          ASL A                  ;} $0D82 = [grapple beam end angle] / 100h * 2
 $94:AC18 8D 82 0D    STA $0D82  [$7E:0D82]  ;/
 $94:AC1B AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $94:AC1E 8D 84 0D    STA $0D84  [$7E:0D84]  ;} $0D84 = [grapple beam length]
-$94:AC21 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
+$94:AC21 20 57 A9    JSR $A957  [$94:A957]  ; Calculate position from grapple beam end with distance and angle
 $94:AC24 AD 90 0D    LDA $0D90  [$7E:0D90]  ;\
 $94:AC27 8D 16 0D    STA $0D16  [$7E:0D16]  ;} Grapple beam start X position = [$0D90]
 $94:AC2A AD 92 0D    LDA $0D92  [$7E:0D92]  ;\
@@ -6036,101 +6083,107 @@ $94:AC30 6B          RTL
 }
 
 
-;;; $AC31:  ;;;
+;;; $AC31: Handle grapple beam length change ;;;
 {
 $94:AC31 8B          PHB
-$94:AC32 4B          PHK
-$94:AC33 AB          PLB
-$94:AC34 AD 00 0D    LDA $0D00  [$7E:0D00]
-$94:AC37 D0 03       BNE $03    [$AC3C]
-$94:AC39 4C FB AC    JMP $ACFB  [$94:ACFB]
+$94:AC32 4B          PHK                    ;\
+$94:AC33 AB          PLB                    ;} DB = $94
+$94:AC34 AD 00 0D    LDA $0D00  [$7E:0D00]  ;\
+$94:AC37 D0 03       BNE $03    [$AC3C]     ;} If [grapple beam length delta] = 0:
+$94:AC39 4C FB AC    JMP $ACFB  [$94:ACFB]  ; Return carry clear
 
-$94:AC3C 30 03       BMI $03    [$AC41]
-$94:AC3E 4C 9E AC    JMP $AC9E  [$94:AC9E]
+$94:AC3C 30 03       BMI $03    [$AC41]     ; If [grapple beam length delta] > 0:
+$94:AC3E 4C 9E AC    JMP $AC9E  [$94:AC9E]  ; Go to BRANCH_INCREASE_LENGTH
 
-$94:AC41 AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:AC44 18          CLC
-$94:AC45 6D 00 0D    ADC $0D00  [$7E:0D00]
-$94:AC48 C9 08 00    CMP #$0008
-$94:AC4B B0 06       BCS $06    [$AC53]
-$94:AC4D 9C 00 0D    STZ $0D00  [$7E:0D00]
-$94:AC50 A9 08 00    LDA #$0008
+$94:AC41 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:AC44 18          CLC                    ;} Target grapple beam length = [grapple beam length] + [grapple beam length delta]
+$94:AC45 6D 00 0D    ADC $0D00  [$7E:0D00]  ;/
+$94:AC48 C9 08 00    CMP #$0008             ;\
+$94:AC4B B0 06       BCS $06    [$AC53]     ;} If [target grapple beam length] < 8:
+$94:AC4D 9C 00 0D    STZ $0D00  [$7E:0D00]  ; Grapple beam length delta = 0
+$94:AC50 A9 08 00    LDA #$0008             ; Target grapple beam length = 8
 
 $94:AC53 8D 8C 0D    STA $0D8C  [$7E:0D8C]
-$94:AC56 A9 08 00    LDA #$0008
-$94:AC59 8D 8E 0D    STA $0D8E  [$7E:0D8E]
-$94:AC5C AD FB 0C    LDA $0CFB  [$7E:0CFB]
-$94:AC5F 29 FF 00    AND #$00FF
-$94:AC62 0A          ASL A
-$94:AC63 8D 82 0D    STA $0D82  [$7E:0D82]
-$94:AC66 AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:AC69 CD 8C 0D    CMP $0D8C  [$7E:0D8C]
-$94:AC6C F0 1E       BEQ $1E    [$AC8C]
+$94:AC56 A9 08 00    LDA #$0008             ;\
+$94:AC59 8D 8E 0D    STA $0D8E  [$7E:0D8E]  ;} Samus front boundary offset from grapple beam start = 8
+$94:AC5C AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
+$94:AC5F 29 FF 00    AND #$00FF             ;|
+$94:AC62 0A          ASL A                  ;} $0D82 = [grapple beam end angle] / 100h * 2
+$94:AC63 8D 82 0D    STA $0D82  [$7E:0D82]  ;/
+$94:AC66 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ; A = [grapple beam length]
+$94:AC69 CD 8C 0D    CMP $0D8C  [$7E:0D8C]  ;\
+$94:AC6C F0 1E       BEQ $1E    [$AC8C]     ;} If [A] = [target grapple beam length]: go to BRANCH_DECREASED_TO_TARGET_LENGTH
 
-$94:AC6E 8D 8A 0D    STA $0D8A  [$7E:0D8A]
-$94:AC71 3A          DEC A
-$94:AC72 18          CLC
-$94:AC73 6D 8E 0D    ADC $0D8E  [$7E:0D8E]
-$94:AC76 8D 84 0D    STA $0D84  [$7E:0D84]
-$94:AC79 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
-$94:AC7C 20 64 AA    JSR $AA64  [$94:AA64]
-$94:AC7F B0 14       BCS $14    [$AC95]
-$94:AC81 CE 8A 0D    DEC $0D8A  [$7E:0D8A]
-$94:AC84 AD 8A 0D    LDA $0D8A  [$7E:0D8A]
-$94:AC87 CD 8C 0D    CMP $0D8C  [$7E:0D8C]
-$94:AC8A D0 E2       BNE $E2    [$AC6E]
+; LOOP_DECREASE_LENGTH
+$94:AC6E 8D 8A 0D    STA $0D8A  [$7E:0D8A]  ; New grapple beam length = [A]
+$94:AC71 3A          DEC A                  ;\
+$94:AC72 18          CLC                    ;|
+$94:AC73 6D 8E 0D    ADC $0D8E  [$7E:0D8E]  ;} $0D84 = [Samus front boundary offset from grapple beam start] + [new grapple beam length] - 1
+$94:AC76 8D 84 0D    STA $0D84  [$7E:0D84]  ;/
+$94:AC79 20 57 A9    JSR $A957  [$94:A957]  ; Calculate position from grapple beam end with distance and angle
+$94:AC7C 20 64 AA    JSR $AA64  [$94:AA64]  ; Grapple swing collision reaction
+$94:AC7F B0 14       BCS $14    [$AC95]     ; If collision: go to BRANCH_COLLISION
+$94:AC81 CE 8A 0D    DEC $0D8A  [$7E:0D8A]  ; Decrement new grapple beam length
+$94:AC84 AD 8A 0D    LDA $0D8A  [$7E:0D8A]  ; A = [new grapple beam length]
+$94:AC87 CD 8C 0D    CMP $0D8C  [$7E:0D8C]  ;\
+$94:AC8A D0 E2       BNE $E2    [$AC6E]     ;} If [A] != [target grapple beam length]: go to LOOP_DECREASE_LENGTH
 
-$94:AC8C AD 8C 0D    LDA $0D8C  [$7E:0D8C]
-$94:AC8F 8D FE 0C    STA $0CFE  [$7E:0CFE]
+; BRANCH_DECREASED_TO_TARGET_LENGTH
+$94:AC8C AD 8C 0D    LDA $0D8C  [$7E:0D8C]  ;\
+$94:AC8F 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;} Grapple beam length = [target grapple beam length]
 $94:AC92 AB          PLB
-$94:AC93 18          CLC
-$94:AC94 6B          RTL
+$94:AC93 18          CLC                    ;\
+$94:AC94 6B          RTL                    ;} Return carry clear
 
-$94:AC95 AD 8A 0D    LDA $0D8A  [$7E:0D8A]
-$94:AC98 8D FE 0C    STA $0CFE  [$7E:0CFE]
+; BRANCH_COLLISION
+$94:AC95 AD 8A 0D    LDA $0D8A  [$7E:0D8A]  ;\
+$94:AC98 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;} Grapple beam length = [new grapple beam length]
 $94:AC9B AB          PLB
-$94:AC9C 38          SEC
-$94:AC9D 6B          RTL
+$94:AC9C 38          SEC                    ;\
+$94:AC9D 6B          RTL                    ;} Return carry set
 
-$94:AC9E AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:ACA1 18          CLC
-$94:ACA2 6D 00 0D    ADC $0D00  [$7E:0D00]
-$94:ACA5 C9 3F 00    CMP #$003F
-$94:ACA8 90 06       BCC $06    [$ACB0]
-$94:ACAA 9C 00 0D    STZ $0D00  [$7E:0D00]
-$94:ACAD A9 3F 00    LDA #$003F
+; BRANCH_INCREASE_LENGTH
+$94:AC9E AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:ACA1 18          CLC                    ;} Target grapple beam length = [grapple beam length] + [grapple beam length delta]
+$94:ACA2 6D 00 0D    ADC $0D00  [$7E:0D00]  ;/
+$94:ACA5 C9 3F 00    CMP #$003F             ;\
+$94:ACA8 90 06       BCC $06    [$ACB0]     ;} If [target grapple beam length] >= 3Fh:
+$94:ACAA 9C 00 0D    STZ $0D00  [$7E:0D00]  ; Grapple beam length delta = 0
+$94:ACAD A9 3F 00    LDA #$003F             ; Target grapple beam length = 3Fh
+                                            
+$94:ACB0 8D 8C 0D    STA $0D8C  [$7E:0D8C]  
+$94:ACB3 A9 38 00    LDA #$0038             ;\
+$94:ACB6 8D 8E 0D    STA $0D8E  [$7E:0D8E]  ;} Samus front boundary offset from grapple beam start = 38h
+$94:ACB9 AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
+$94:ACBC 29 FF 00    AND #$00FF             ;|
+$94:ACBF 0A          ASL A                  ;} $0D82 = [grapple beam end angle] / 100h * 2
+$94:ACC0 8D 82 0D    STA $0D82  [$7E:0D82]  ;/
+$94:ACC3 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ; A = [grapple beam length]
+$94:ACC6 CD 8C 0D    CMP $0D8C  [$7E:0D8C]  ;\
+$94:ACC9 F0 1E       BEQ $1E    [$ACE9]     ;} If [A] = [target grapple beam length]: go to BRANCH_INCREASED_TO_TARGET_LENGTH
 
-$94:ACB0 8D 8C 0D    STA $0D8C  [$7E:0D8C]
-$94:ACB3 A9 38 00    LDA #$0038
-$94:ACB6 8D 8E 0D    STA $0D8E  [$7E:0D8E]
-$94:ACB9 AD FB 0C    LDA $0CFB  [$7E:0CFB]
-$94:ACBC 29 FF 00    AND #$00FF
-$94:ACBF 0A          ASL A
-$94:ACC0 8D 82 0D    STA $0D82  [$7E:0D82]
-$94:ACC3 AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:ACC6 CD 8C 0D    CMP $0D8C  [$7E:0D8C]
-$94:ACC9 F0 1E       BEQ $1E    [$ACE9]
-
+; LOOP_INCREASE_LENGTH
 $94:ACCB 8D 8A 0D    STA $0D8A  [$7E:0D8A]
-$94:ACCE 1A          INC A
-$94:ACCF 18          CLC
-$94:ACD0 6D 8E 0D    ADC $0D8E  [$7E:0D8E]
-$94:ACD3 8D 84 0D    STA $0D84  [$7E:0D84]
-$94:ACD6 20 57 A9    JSR $A957  [$94:A957]  ; Calculate grapple beam start position from end position
-$94:ACD9 20 64 AA    JSR $AA64  [$94:AA64]
-$94:ACDC B0 B7       BCS $B7    [$AC95]
-$94:ACDE EE 8A 0D    INC $0D8A  [$7E:0D8A]
-$94:ACE1 AD 8A 0D    LDA $0D8A  [$7E:0D8A]
-$94:ACE4 CD 8C 0D    CMP $0D8C  [$7E:0D8C]
-$94:ACE7 D0 E2       BNE $E2    [$ACCB]
+$94:ACCE 1A          INC A                  ;\
+$94:ACCF 18          CLC                    ;|
+$94:ACD0 6D 8E 0D    ADC $0D8E  [$7E:0D8E]  ;} $0D84 = [Samus front boundary offset from grapple beam start] + [new grapple beam length] + 1
+$94:ACD3 8D 84 0D    STA $0D84  [$7E:0D84]  ;/
+$94:ACD6 20 57 A9    JSR $A957  [$94:A957]  ; Calculate position from grapple beam end with distance and angle
+$94:ACD9 20 64 AA    JSR $AA64  [$94:AA64]  ; Grapple swing collision reaction
+$94:ACDC B0 B7       BCS $B7    [$AC95]     ; If collision: go to BRANCH_COLLISION
+$94:ACDE EE 8A 0D    INC $0D8A  [$7E:0D8A]  ; Increment new grapple beam length
+$94:ACE1 AD 8A 0D    LDA $0D8A  [$7E:0D8A]  ; A = [new grapple beam length]
+$94:ACE4 CD 8C 0D    CMP $0D8C  [$7E:0D8C]  ;\
+$94:ACE7 D0 E2       BNE $E2    [$ACCB]     ;} If [A] != [target grapple beam length]: go to LOOP_INCREASE_LENGTH
 
-$94:ACE9 AD 8C 0D    LDA $0D8C  [$7E:0D8C]
-$94:ACEC 8D FE 0C    STA $0CFE  [$7E:0CFE]
+; BRANCH_INCREASED_TO_TARGET_LENGTH
+$94:ACE9 AD 8C 0D    LDA $0D8C  [$7E:0D8C]  ;\
+$94:ACEC 8D FE 0C    STA $0CFE  [$7E:0CFE]  ;} Grapple beam length = [target grapple beam length]
 $94:ACEF AB          PLB
-$94:ACF0 18          CLC
-$94:ACF1 6B          RTL
+$94:ACF0 18          CLC                    ;\
+$94:ACF1 6B          RTL                    ;} Return carry clear
 
-; Nothing points here
+; Unused copy+paste of BRANCH_COLLISION
 $94:ACF2 AD 8A 0D    LDA $0D8A  [$7E:0D8A]
 $94:ACF5 8D FE 0C    STA $0CFE  [$7E:0CFE]
 $94:ACF8 AB          PLB
@@ -6143,91 +6196,94 @@ $94:ACFD 6B          RTL
 }
 
 
-;;; $ACFE:  ;;;
+;;; $ACFE: Handle grapple beam swinging movement ;;;
 {
-; Handles all movement and collision detection for Samuss grappling
-; JSR $AB90,X (X = 2*blocktype) is the actual collision code
+; The clockwise and anticlockwise branches are identical except for the INC/DEC in the loop >_>;
 $94:ACFE 8B          PHB
-$94:ACFF 4B          PHK
-$94:AD00 AB          PLB
-$94:AD01 A0 00 01    LDY #$0100
-$94:AD04 AD F4 0C    LDA $0CF4  [$7E:0CF4]
-$94:AD07 89 01 00    BIT #$0001
-$94:AD0A F0 03       BEQ $03    [$AD0F]
-$94:AD0C A0 A0 00    LDY #$00A0
+$94:ACFF 4B          PHK                    ;\
+$94:AD00 AB          PLB                    ;} DB = $94
+$94:AD01 A0 00 01    LDY #$0100             ; Y = 100h
+$94:AD04 AD F4 0C    LDA $0CF4  [$7E:0CF4]  ;\
+$94:AD07 89 01 00    BIT #$0001             ;} If grapple beam liquid physics:
+$94:AD0A F0 03       BEQ $03    [$AD0F]     ;/
+$94:AD0C A0 A0 00    LDY #$00A0             ; Y = A0h
 
-$94:AD0F AD 26 0D    LDA $0D26  [$7E:0D26]
-$94:AD12 18          CLC
-$94:AD13 6D 2E 0D    ADC $0D2E  [$7E:0D2E]
-$94:AD16 10 17       BPL $17    [$AD2F]
-$94:AD18 49 FF FF    EOR #$FFFF
-$94:AD1B 1A          INC A
-$94:AD1C 22 D6 82 80 JSL $8082D6[$80:82D6]
-$94:AD20 AD F2 05    LDA $05F2  [$7E:05F2]
-$94:AD23 49 FF FF    EOR #$FFFF
-$94:AD26 1A          INC A
-$94:AD27 F0 14       BEQ $14    [$AD3D]
-$94:AD29 8D 9C 0D    STA $0D9C  [$7E:0D9C]
-$94:AD2C 4C 10 AE    JMP $AE10  [$94:AE10]
+$94:AD0F AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$94:AD12 18          CLC                    ;} A = [grapple swing angular velocity] + [extra grapple swing angular velocity]
+$94:AD13 6D 2E 0D    ADC $0D2E  [$7E:0D2E]  ;/
+$94:AD16 10 17       BPL $17    [$AD2F]     ; If [A] < 0 (anticlockwise):
+$94:AD18 49 FF FF    EOR #$FFFF             ;\
+$94:AD1B 1A          INC A                  ;|
+$94:AD1C 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
+$94:AD20 AD F2 05    LDA $05F2  [$7E:05F2]  ;} A *= [Y] / 100h
+$94:AD23 49 FF FF    EOR #$FFFF             ;|
+$94:AD26 1A          INC A                  ;/
+$94:AD27 F0 14       BEQ $14    [$AD3D]     ; If [A] = 0: go to BRANCH_FAILED_MOVEMENT
+$94:AD29 8D 9C 0D    STA $0D9C  [$7E:0D9C]  ; Total grapple swing angular velocity = [A]
+$94:AD2C 4C 10 AE    JMP $AE10  [$94:AE10]  ; Go to BRANCH_ANTICLOCKWISE
 
-$94:AD2F 22 D6 82 80 JSL $8082D6[$80:82D6]
-$94:AD33 AD F2 05    LDA $05F2  [$7E:05F2]
-$94:AD36 F0 05       BEQ $05    [$AD3D]
-$94:AD38 8D 9C 0D    STA $0D9C  [$7E:0D9C]
-$94:AD3B 80 03       BRA $03    [$AD40]
+$94:AD2F 22 D6 82 80 JSL $8082D6[$80:82D6]  ;\
+$94:AD33 AD F2 05    LDA $05F2  [$7E:05F2]  ;} A *= [Y] / 100h
+$94:AD36 F0 05       BEQ $05    [$AD3D]     ; If [A] = 0: go to BRANCH_FAILED_MOVEMENT
+$94:AD38 8D 9C 0D    STA $0D9C  [$7E:0D9C]  ; Total grapple swing angular velocity = [A]
+$94:AD3B 80 03       BRA $03    [$AD40]     ; Go to BRANCH_CLOCKWISE
 
 $94:AD3D 4C E0 AE    JMP $AEE0  [$94:AEE0]
 
-$94:AD40 18          CLC
-$94:AD41 6D FA 0C    ADC $0CFA  [$7E:0CFA]
-$94:AD44 EB          XBA
-$94:AD45 29 FF 00    AND #$00FF
-$94:AD48 0A          ASL A
-$94:AD49 8D 88 0D    STA $0D88  [$7E:0D88]
-$94:AD4C AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:AD4F 8D 84 0D    STA $0D84  [$7E:0D84]
-$94:AD52 AD FB 0C    LDA $0CFB  [$7E:0CFB]
-$94:AD55 29 FF 00    AND #$00FF
-$94:AD58 0A          ASL A
-$94:AD59 CD 88 0D    CMP $0D88  [$7E:0D88]
-$94:AD5C F0 1D       BEQ $1D    [$AD7B]
+; BRANCH_CLOCKWISE
+{
+$94:AD40 18          CLC                    ;\
+$94:AD41 6D FA 0C    ADC $0CFA  [$7E:0CFA]  ;|
+$94:AD44 EB          XBA                    ;|
+$94:AD45 29 FF 00    AND #$00FF             ;} Target grapple beam end angle * 2 = ([total grapple swing angular velocity] + [grapple beam end angle]) / 100h * 2
+$94:AD48 0A          ASL A                  ;|
+$94:AD49 8D 88 0D    STA $0D88  [$7E:0D88]  ;/
+$94:AD4C AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:AD4F 8D 84 0D    STA $0D84  [$7E:0D84]  ;} $0D84 = [grapple beam length]
+$94:AD52 AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
+$94:AD55 29 FF 00    AND #$00FF             ;} A = [grapple beam end angle] / 100h * 2
+$94:AD58 0A          ASL A                  ;/
+$94:AD59 CD 88 0D    CMP $0D88  [$7E:0D88]  ;\
+$94:AD5C F0 1D       BEQ $1D    [$AD7B]     ;} If [A] = [target grapple beam end angle * 2]: go to BRANCH_REACHED_TARGET_CLOCKWISE
 
-$94:AD5E 8D 86 0D    STA $0D86  [$7E:0D86]
-$94:AD61 1A          INC A
-$94:AD62 1A          INC A
-$94:AD63 29 FF 01    AND #$01FF
-$94:AD66 8D 82 0D    STA $0D82  [$7E:0D82]
-$94:AD69 20 E6 AB    JSR $ABE6  [$94:ABE6]
-$94:AD6C B0 46       BCS $46    [$ADB4]
-$94:AD6E AD 86 0D    LDA $0D86  [$7E:0D86]
-$94:AD71 1A          INC A
-$94:AD72 1A          INC A
-$94:AD73 29 FF 01    AND #$01FF
-$94:AD76 CD 88 0D    CMP $0D88  [$7E:0D88]
-$94:AD79 D0 E3       BNE $E3    [$AD5E]
+; LOOP_CLOCKWISE
+$94:AD5E 8D 86 0D    STA $0D86  [$7E:0D86]  ; New grapple beam end angle * 2 = [A]
+$94:AD61 1A          INC A                  ;\
+$94:AD62 1A          INC A                  ;|
+$94:AD63 29 FF 01    AND #$01FF             ;} $0D82 = ([new grapple beam end angle * 2] + 2) % 200h
+$94:AD66 8D 82 0D    STA $0D82  [$7E:0D82]  ;/
+$94:AD69 20 E6 AB    JSR $ABE6  [$94:ABE6]  ; Grapple swing collision detection due to swinging
+$94:AD6C B0 46       BCS $46    [$ADB4]     ; If collision: go to BRANCH_COLLISION_CLOCKWISE
+$94:AD6E AD 86 0D    LDA $0D86  [$7E:0D86]  ;\
+$94:AD71 1A          INC A                  ;|
+$94:AD72 1A          INC A                  ;} A = ([new grapple beam end angle * 2] + 2) % 200h
+$94:AD73 29 FF 01    AND #$01FF             ;/
+$94:AD76 CD 88 0D    CMP $0D88  [$7E:0D88]  ;\
+$94:AD79 D0 E3       BNE $E3    [$AD5E]     ;} If [A] != [target grapple beam end angle * 2]: go to LOOP_CLOCKWISE
 
-$94:AD7B AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$94:AD7E 18          CLC
-$94:AD7F 6D 9C 0D    ADC $0D9C  [$7E:0D9C]
-$94:AD82 8D FA 0C    STA $0CFA  [$7E:0CFA]
-$94:AD85 8D FC 0C    STA $0CFC  [$7E:0CFC]
-$94:AD88 A9 00 80    LDA #$8000
-$94:AD8B 1C 36 0D    TRB $0D36  [$7E:0D36]
-$94:AD8E CE 30 0D    DEC $0D30  [$7E:0D30]
-$94:AD91 10 03       BPL $03    [$AD96]
-$94:AD93 9C 30 0D    STZ $0D30  [$7E:0D30]
+; BRANCH_REACHED_TARGET_CLOCKWISE
+$94:AD7B AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$94:AD7E 18          CLC                    ;|
+$94:AD7F 6D 9C 0D    ADC $0D9C  [$7E:0D9C]  ;} Grapple beam end angle += [total grapple swing angular velocity]
+$94:AD82 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;|
+$94:AD85 8D FC 0C    STA $0CFC  [$7E:0CFC]  ;/
+$94:AD88 A9 00 80    LDA #$8000             ;\
+$94:AD8B 1C 36 0D    TRB $0D36  [$7E:0D36]  ;} Disable special grapple beam angle handling
+$94:AD8E CE 30 0D    DEC $0D30  [$7E:0D30]  ;\
+$94:AD91 10 03       BPL $03    [$AD96]     ;} Grapple kick cooldown timer = max(0, [grapple kick cooldown timer] - 1)
+$94:AD93 9C 30 0D    STZ $0D30  [$7E:0D30]  ;/
 
-$94:AD96 AD 2E 0D    LDA $0D2E  [$7E:0D2E]
-$94:AD99 10 08       BPL $08    [$ADA3]
-$94:AD9B 18          CLC
-$94:AD9C 69 06 00    ADC #$0006
-$94:AD9F 10 0A       BPL $0A    [$ADAB]
-$94:ADA1 80 0B       BRA $0B    [$ADAE]
+$94:AD96 AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;\
+$94:AD99 10 08       BPL $08    [$ADA3]     ;} If [extra grapple swing angular velocity] < 0:
+$94:AD9B 18          CLC                    ;\
+$94:AD9C 69 06 00    ADC #$0006             ;} Extra grapple swing angular velocity = min(0, [extra grapple swing angular velocity] + 6)
+$94:AD9F 10 0A       BPL $0A    [$ADAB]     ;/
+$94:ADA1 80 0B       BRA $0B    [$ADAE]     ; Return carry clear
 
-$94:ADA3 38          SEC
-$94:ADA4 E9 06 00    SBC #$0006
-$94:ADA7 30 02       BMI $02    [$ADAB]
-$94:ADA9 80 03       BRA $03    [$ADAE]
+$94:ADA3 38          SEC                    ;\
+$94:ADA4 E9 06 00    SBC #$0006             ;} Extra grapple swing angular velocity = max(0, [extra grapple swing angular velocity] - 6)
+$94:ADA7 30 02       BMI $02    [$ADAB]     ;/
+$94:ADA9 80 03       BRA $03    [$ADAE]     ; Return carry clear
 
 $94:ADAB A9 00 00    LDA #$0000
 
@@ -6236,100 +6292,107 @@ $94:ADB1 AB          PLB
 $94:ADB2 18          CLC
 $94:ADB3 6B          RTL
 
-$94:ADB4 AD 86 0D    LDA $0D86  [$7E:0D86]
-$94:ADB7 4A          LSR A
-$94:ADB8 29 FF 00    AND #$00FF
-$94:ADBB EB          XBA
-$94:ADBC 09 80 00    ORA #$0080
-$94:ADBF 8D FA 0C    STA $0CFA  [$7E:0CFA]
-$94:ADC2 8D FC 0C    STA $0CFC  [$7E:0CFC]
-$94:ADC5 AD 98 0D    LDA $0D98  [$7E:0D98]
-$94:ADC8 C9 06 00    CMP #$0006
-$94:ADCB F0 05       BEQ $05    [$ADD2]
-$94:ADCD C9 05 00    CMP #$0005
-$94:ADD0 D0 17       BNE $17    [$ADE9]
+; BRANCH_COLLISION_CLOCKWISE
+$94:ADB4 AD 86 0D    LDA $0D86  [$7E:0D86]  ;\
+$94:ADB7 4A          LSR A                  ;|
+$94:ADB8 29 FF 00    AND #$00FF             ;|
+$94:ADBB EB          XBA                    ;} Grapple beam end angle = 0.80h + [new grapple beam end angle * 2] / 2
+$94:ADBC 09 80 00    ORA #$0080             ;|
+$94:ADBF 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;|
+$94:ADC2 8D FC 0C    STA $0CFC  [$7E:0CFC]  ;/
+$94:ADC5 AD 98 0D    LDA $0D98  [$7E:0D98]  ;\
+$94:ADC8 C9 06 00    CMP #$0006             ;|
+$94:ADCB F0 05       BEQ $05    [$ADD2]     ;} If [distance of grapple swing collision from Samus' feet] < 5 (40px): go to BRANCH_CLOCKWISE_BOUNCE
+$94:ADCD C9 05 00    CMP #$0005             ;|
+$94:ADD0 D0 17       BNE $17    [$ADE9]     ;/
 
-$94:ADD2 AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:ADD5 C9 08 00    CMP #$0008
-$94:ADD8 D0 0F       BNE $0F    [$ADE9]
-$94:ADDA A9 00 80    LDA #$8000
-$94:ADDD 0C 36 0D    TSB $0D36  [$7E:0D36]
-$94:ADE0 9C 26 0D    STZ $0D26  [$7E:0D26]
-$94:ADE3 9C 2E 0D    STZ $0D2E  [$7E:0D2E]
+$94:ADD2 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:ADD5 C9 08 00    CMP #$0008             ;} If [grapple beam length] = 8:
+$94:ADD8 D0 0F       BNE $0F    [$ADE9]     ;/
+$94:ADDA A9 00 80    LDA #$8000             ;\
+$94:ADDD 0C 36 0D    TSB $0D36  [$7E:0D36]  ;} Enable special grapple beam angle handling
+$94:ADE0 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing angular velocity = 0
+$94:ADE3 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; Extra grapple swing angular velocity = 0
 $94:ADE6 AB          PLB
-$94:ADE7 38          SEC
-$94:ADE8 6B          RTL
+$94:ADE7 38          SEC                    ;\
+$94:ADE8 6B          RTL                    ;} Return carry set
 
-$94:ADE9 A9 10 00    LDA #$0010
-$94:ADEC 8D 30 0D    STA $0D30  [$7E:0D30]
-$94:ADEF AD 26 0D    LDA $0D26  [$7E:0D26]
-$94:ADF2 0A          ASL A
-$94:ADF3 AD 26 0D    LDA $0D26  [$7E:0D26]
-$94:ADF6 6A          ROR A
-$94:ADF7 49 FF FF    EOR #$FFFF
-$94:ADFA 1A          INC A
-$94:ADFB 8D 26 0D    STA $0D26  [$7E:0D26]
-$94:ADFE AD 2E 0D    LDA $0D2E  [$7E:0D2E]
-$94:AE01 0A          ASL A
-$94:AE02 AD 2E 0D    LDA $0D2E  [$7E:0D2E]
-$94:AE05 6A          ROR A
-$94:AE06 49 FF FF    EOR #$FFFF
-$94:AE09 1A          INC A
-$94:AE0A 8D 2E 0D    STA $0D2E  [$7E:0D2E]
+; BRANCH_CLOCKWISE_BOUNCE
+$94:ADE9 A9 10 00    LDA #$0010             ;\
+$94:ADEC 8D 30 0D    STA $0D30  [$7E:0D30]  ;} Grapple kick cooldown timer = 10h
+$94:ADEF AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$94:ADF2 0A          ASL A                  ;|
+$94:ADF3 AD 26 0D    LDA $0D26  [$7E:0D26]  ;|
+$94:ADF6 6A          ROR A                  ;} Grapple swing angular velocity = -[grapple swing angular velocity] / 2
+$94:ADF7 49 FF FF    EOR #$FFFF             ;|
+$94:ADFA 1A          INC A                  ;|
+$94:ADFB 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
+$94:ADFE AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;\
+$94:AE01 0A          ASL A                  ;|
+$94:AE02 AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;|
+$94:AE05 6A          ROR A                  ;} Extra grapple swing angular velocity = -[extra grapple swing angular velocity] / 2
+$94:AE06 49 FF FF    EOR #$FFFF             ;|
+$94:AE09 1A          INC A                  ;|
+$94:AE0A 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
 $94:AE0D AB          PLB
-$94:AE0E 38          SEC
-$94:AE0F 6B          RTL
+$94:AE0E 38          SEC                    ;\
+$94:AE0F 6B          RTL                    ;} Return carry set
+}
 
-$94:AE10 18          CLC
-$94:AE11 6D FA 0C    ADC $0CFA  [$7E:0CFA]
-$94:AE14 EB          XBA
-$94:AE15 29 FF 00    AND #$00FF
-$94:AE18 0A          ASL A
-$94:AE19 8D 88 0D    STA $0D88  [$7E:0D88]
-$94:AE1C AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:AE1F 8D 84 0D    STA $0D84  [$7E:0D84]
-$94:AE22 AD FB 0C    LDA $0CFB  [$7E:0CFB]
-$94:AE25 29 FF 00    AND #$00FF
-$94:AE28 0A          ASL A
-$94:AE29 CD 88 0D    CMP $0D88  [$7E:0D88]
-$94:AE2C F0 1D       BEQ $1D    [$AE4B]
+; BRANCH_ANTICLOCKWISE
+{
+$94:AE10 18          CLC                    ;\
+$94:AE11 6D FA 0C    ADC $0CFA  [$7E:0CFA]  ;|
+$94:AE14 EB          XBA                    ;|
+$94:AE15 29 FF 00    AND #$00FF             ;} Target grapple beam end angle * 2 = ([total grapple swing angular velocity] + [grapple beam end angle]) / 100h * 2
+$94:AE18 0A          ASL A                  ;|
+$94:AE19 8D 88 0D    STA $0D88  [$7E:0D88]  ;/
+$94:AE1C AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:AE1F 8D 84 0D    STA $0D84  [$7E:0D84]  ;} $0D84 = [grapple beam length]
+$94:AE22 AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
+$94:AE25 29 FF 00    AND #$00FF             ;} A = [grapple beam end angle] / 100h * 2
+$94:AE28 0A          ASL A                  ;/
+$94:AE29 CD 88 0D    CMP $0D88  [$7E:0D88]  ;\
+$94:AE2C F0 1D       BEQ $1D    [$AE4B]     ;} If [A] = [target grapple beam end angle * 2]: go to BRANCH_REACHED_TARGET_ANTICLOCKWISE
 
-$94:AE2E 8D 86 0D    STA $0D86  [$7E:0D86]
-$94:AE31 3A          DEC A
-$94:AE32 3A          DEC A
-$94:AE33 29 FF 01    AND #$01FF
-$94:AE36 8D 82 0D    STA $0D82  [$7E:0D82]
-$94:AE39 20 E6 AB    JSR $ABE6  [$94:ABE6]
-$94:AE3C B0 46       BCS $46    [$AE84]
-$94:AE3E AD 86 0D    LDA $0D86  [$7E:0D86]
-$94:AE41 3A          DEC A
-$94:AE42 3A          DEC A
-$94:AE43 29 FF 01    AND #$01FF
-$94:AE46 CD 88 0D    CMP $0D88  [$7E:0D88]
-$94:AE49 D0 E3       BNE $E3    [$AE2E]
+; LOOP_ANTICLOCKWISE
+$94:AE2E 8D 86 0D    STA $0D86  [$7E:0D86]  ; New grapple beam end angle * 2 = [A]
+$94:AE31 3A          DEC A                  ;\
+$94:AE32 3A          DEC A                  ;|
+$94:AE33 29 FF 01    AND #$01FF             ;} $0D82 = ([new grapple beam end angle * 2] - 2) % 200h
+$94:AE36 8D 82 0D    STA $0D82  [$7E:0D82]  ;/
+$94:AE39 20 E6 AB    JSR $ABE6  [$94:ABE6]  ; Grapple swing collision detection due to swinging
+$94:AE3C B0 46       BCS $46    [$AE84]     ; If collision: go to BRANCH_COLLISION_ANTICLOCKWISE
+$94:AE3E AD 86 0D    LDA $0D86  [$7E:0D86]  ;\
+$94:AE41 3A          DEC A                  ;|
+$94:AE42 3A          DEC A                  ;} A = ([new grapple beam end angle * 2] - 2) % 200h
+$94:AE43 29 FF 01    AND #$01FF             ;/
+$94:AE46 CD 88 0D    CMP $0D88  [$7E:0D88]  ;\
+$94:AE49 D0 E3       BNE $E3    [$AE2E]     ;} If [A] != [target grapple beam end angle * 2]: go to LOOP_ANTICLOCKWISE
 
-$94:AE4B AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$94:AE4E 18          CLC
-$94:AE4F 6D 9C 0D    ADC $0D9C  [$7E:0D9C]
-$94:AE52 8D FA 0C    STA $0CFA  [$7E:0CFA]
-$94:AE55 8D FC 0C    STA $0CFC  [$7E:0CFC]
-$94:AE58 A9 00 80    LDA #$8000
-$94:AE5B 1C 36 0D    TRB $0D36  [$7E:0D36]
-$94:AE5E CE 30 0D    DEC $0D30  [$7E:0D30]
-$94:AE61 10 03       BPL $03    [$AE66]
-$94:AE63 9C 30 0D    STZ $0D30  [$7E:0D30]
-
-$94:AE66 AD 2E 0D    LDA $0D2E  [$7E:0D2E]
-$94:AE69 10 08       BPL $08    [$AE73]
-$94:AE6B 18          CLC
-$94:AE6C 69 06 00    ADC #$0006
-$94:AE6F 10 0A       BPL $0A    [$AE7B]
-$94:AE71 80 0B       BRA $0B    [$AE7E]
-
-$94:AE73 38          SEC
-$94:AE74 E9 06 00    SBC #$0006
-$94:AE77 30 02       BMI $02    [$AE7B]
-$94:AE79 80 03       BRA $03    [$AE7E]
+; BRANCH_REACHED_TARGET_ANTICLOCKWISE
+$94:AE4B AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$94:AE4E 18          CLC                    ;|
+$94:AE4F 6D 9C 0D    ADC $0D9C  [$7E:0D9C]  ;} Grapple beam end angle += [total grapple swing angular velocity]
+$94:AE52 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;|
+$94:AE55 8D FC 0C    STA $0CFC  [$7E:0CFC]  ;/
+$94:AE58 A9 00 80    LDA #$8000             ;\
+$94:AE5B 1C 36 0D    TRB $0D36  [$7E:0D36]  ;} Disable special grapple beam angle handling
+$94:AE5E CE 30 0D    DEC $0D30  [$7E:0D30]  ;\
+$94:AE61 10 03       BPL $03    [$AE66]     ;} Grapple kick cooldown timer = max(0, [grapple kick cooldown timer] - 1)
+$94:AE63 9C 30 0D    STZ $0D30  [$7E:0D30]  ;/
+                                            
+$94:AE66 AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;\
+$94:AE69 10 08       BPL $08    [$AE73]     ;} If [extra grapple swing angular velocity] < 0:
+$94:AE6B 18          CLC                    ;\
+$94:AE6C 69 06 00    ADC #$0006             ;} Extra grapple swing angular velocity = min(0, [extra grapple swing angular velocity] + 6)
+$94:AE6F 10 0A       BPL $0A    [$AE7B]     ;/
+$94:AE71 80 0B       BRA $0B    [$AE7E]     ; Return carry clear
+                                            
+$94:AE73 38          SEC                    ;\
+$94:AE74 E9 06 00    SBC #$0006             ;} Extra grapple swing angular velocity = max(0, [extra grapple swing angular velocity] - 6)
+$94:AE77 30 02       BMI $02    [$AE7B]     ;/
+$94:AE79 80 03       BRA $03    [$AE7E]     ; Return carry clear
 
 $94:AE7B A9 00 00    LDA #$0000
 
@@ -6338,178 +6401,182 @@ $94:AE81 AB          PLB
 $94:AE82 18          CLC
 $94:AE83 6B          RTL
 
-$94:AE84 AD 86 0D    LDA $0D86  [$7E:0D86]
-$94:AE87 4A          LSR A
-$94:AE88 29 FF 00    AND #$00FF
-$94:AE8B EB          XBA
-$94:AE8C 09 80 00    ORA #$0080
-$94:AE8F 8D FA 0C    STA $0CFA  [$7E:0CFA]
-$94:AE92 8D FC 0C    STA $0CFC  [$7E:0CFC]
-$94:AE95 AD 98 0D    LDA $0D98  [$7E:0D98]
-$94:AE98 C9 06 00    CMP #$0006
-$94:AE9B F0 05       BEQ $05    [$AEA2]
-$94:AE9D C9 05 00    CMP #$0005
-$94:AEA0 D0 17       BNE $17    [$AEB9]
+; BRANCH_COLLISION_ANTICLOCKWISE
+$94:AE84 AD 86 0D    LDA $0D86  [$7E:0D86]  ;\
+$94:AE87 4A          LSR A                  ;|
+$94:AE88 29 FF 00    AND #$00FF             ;|
+$94:AE8B EB          XBA                    ;} Grapple beam end angle = 0.80h + [new grapple beam end angle * 2] / 2
+$94:AE8C 09 80 00    ORA #$0080             ;|
+$94:AE8F 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;|
+$94:AE92 8D FC 0C    STA $0CFC  [$7E:0CFC]  ;/
+$94:AE95 AD 98 0D    LDA $0D98  [$7E:0D98]  ;\
+$94:AE98 C9 06 00    CMP #$0006             ;|
+$94:AE9B F0 05       BEQ $05    [$AEA2]     ;} If [distance of grapple swing collision from Samus' feet] < 5 (40px): go to BRANCH_ANTICLOCKWISE_BOUNCE
+$94:AE9D C9 05 00    CMP #$0005             ;|
+$94:AEA0 D0 17       BNE $17    [$AEB9]     ;/
+                                            
+$94:AEA2 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:AEA5 C9 08 00    CMP #$0008             ;} If [grapple beam length] = 8:
+$94:AEA8 D0 0F       BNE $0F    [$AEB9]     ;/
+$94:AEAA A9 00 80    LDA #$8000             ;\
+$94:AEAD 0C 36 0D    TSB $0D36  [$7E:0D36]  ;} Enable special grapple beam angle handling
+$94:AEB0 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing angular velocity = 0
+$94:AEB3 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; Extra grapple swing angular velocity = 0
+$94:AEB6 AB          PLB                    
+$94:AEB7 38          SEC                    ;\
+$94:AEB8 6B          RTL                    ;} Return carry set
 
-$94:AEA2 AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:AEA5 C9 08 00    CMP #$0008
-$94:AEA8 D0 0F       BNE $0F    [$AEB9]
-$94:AEAA A9 00 80    LDA #$8000
-$94:AEAD 0C 36 0D    TSB $0D36  [$7E:0D36]
-$94:AEB0 9C 26 0D    STZ $0D26  [$7E:0D26]
-$94:AEB3 9C 2E 0D    STZ $0D2E  [$7E:0D2E]
-$94:AEB6 AB          PLB
-$94:AEB7 38          SEC
-$94:AEB8 6B          RTL
-
-$94:AEB9 A9 10 00    LDA #$0010
-$94:AEBC 8D 30 0D    STA $0D30  [$7E:0D30]
-$94:AEBF AD 26 0D    LDA $0D26  [$7E:0D26]
-$94:AEC2 0A          ASL A
-$94:AEC3 AD 26 0D    LDA $0D26  [$7E:0D26]
-$94:AEC6 6A          ROR A
-$94:AEC7 49 FF FF    EOR #$FFFF
-$94:AECA 1A          INC A
-$94:AECB 8D 26 0D    STA $0D26  [$7E:0D26]
-$94:AECE AD 2E 0D    LDA $0D2E  [$7E:0D2E]
-$94:AED1 0A          ASL A
-$94:AED2 AD 2E 0D    LDA $0D2E  [$7E:0D2E]
-$94:AED5 6A          ROR A
-$94:AED6 49 FF FF    EOR #$FFFF
-$94:AED9 1A          INC A
-$94:AEDA 8D 2E 0D    STA $0D2E  [$7E:0D2E]
-$94:AEDD AB          PLB
-$94:AEDE 38          SEC
-$94:AEDF 6B          RTL
-
-$94:AEE0 AB          PLB
-$94:AEE1 18          CLC
-$94:AEE2 6B          RTL
+; BRANCH_ANTICLOCKWISE_BOUNCE
+$94:AEB9 A9 10 00    LDA #$0010             ;\
+$94:AEBC 8D 30 0D    STA $0D30  [$7E:0D30]  ;} Grapple kick cooldown timer = 10h
+$94:AEBF AD 26 0D    LDA $0D26  [$7E:0D26]  ;\
+$94:AEC2 0A          ASL A                  ;|
+$94:AEC3 AD 26 0D    LDA $0D26  [$7E:0D26]  ;|
+$94:AEC6 6A          ROR A                  ;} Grapple swing angular velocity = -[grapple swing angular velocity] / 2
+$94:AEC7 49 FF FF    EOR #$FFFF             ;|
+$94:AECA 1A          INC A                  ;|
+$94:AECB 8D 26 0D    STA $0D26  [$7E:0D26]  ;/
+$94:AECE AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;\
+$94:AED1 0A          ASL A                  ;|
+$94:AED2 AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;|
+$94:AED5 6A          ROR A                  ;} Extra grapple swing angular velocity = -[extra grapple swing angular velocity] / 2
+$94:AED6 49 FF FF    EOR #$FFFF             ;|
+$94:AED9 1A          INC A                  ;|
+$94:AEDA 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
+$94:AEDD AB          PLB                    
+$94:AEDE 38          SEC                    ;\
+$94:AEDF 6B          RTL                    ;} Return carry set
 }
 
+; BRANCH_FAILED_MOVEMENT
+; Looks like RTL'd out code
+$94:AEE0 AB          PLB
+$94:AEE1 18          CLC                    ;\
+$94:AEE2 6B          RTL                    ;} Return carry clear
 
-;;; $AEE3:  ;;;
-{
-$94:AEE3 AD FA 0C    LDA $0CFA  [$7E:0CFA]
-$94:AEE6 4D 26 0D    EOR $0D26  [$7E:0D26]
-$94:AEE9 30 1A       BMI $1A    [$AF05]
-$94:AEEB EE 38 0D    INC $0D38  [$7E:0D38]
-$94:AEEE AD 38 0D    LDA $0D38  [$7E:0D38]
-$94:AEF1 C9 20 00    CMP #$0020
-$94:AEF4 D0 06       BNE $06    [$AEFC]
-$94:AEF6 A9 C5 C8    LDA #$C8C5
-$94:AEF9 8D 32 0D    STA $0D32  [$7E:0D32]
+; This code would make Samus drop if she failed too many failed movements in a row (such as holding right from rest)
+$94:AEE3 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
+$94:AEE6 4D 26 0D    EOR $0D26  [$7E:0D26]  ;} If sgn([grapple beam end angle]) != sgn([grapple swing angular velocity]): go to BRANCH_RISING
+$94:AEE9 30 1A       BMI $1A    [$AF05]     ;/
+$94:AEEB EE 38 0D    INC $0D38  [$7E:0D38]  ; Increment $0D38
+$94:AEEE AD 38 0D    LDA $0D38  [$7E:0D38]  ;\
+$94:AEF1 C9 20 00    CMP #$0020             ;} If [$0D38] = 20h:
+$94:AEF4 D0 06       BNE $06    [$AEFC]     ;/
+$94:AEF6 A9 C5 C8    LDA #$C8C5             ;\
+$94:AEF9 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = dropped
 
-$94:AEFC 9C 26 0D    STZ $0D26  [$7E:0D26]
-$94:AEFF 9C 2E 0D    STZ $0D2E  [$7E:0D2E]
+$94:AEFC 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing angular velocity = 0
+$94:AEFF 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; Extra grapple swing angular velocity = 0
 $94:AF02 AB          PLB
-$94:AF03 38          SEC
-$94:AF04 6B          RTL
+$94:AF03 38          SEC                    ;\
+$94:AF04 6B          RTL                    ;} Return carry set
 
-$94:AF05 9C 38 0D    STZ $0D38  [$7E:0D38]
+; BRANCH_RISING
+$94:AF05 9C 38 0D    STZ $0D38  [$7E:0D38]  ; $0D38 = 0
 $94:AF08 AB          PLB
-$94:AF09 38          SEC
-$94:AF0A 6B          RTL
+$94:AF09 38          SEC                    ;\
+$94:AF0A 6B          RTL                    ;} Return carry set
 }
 
 
 ;;; $AF0B: Clear carry ;;;
 {
-; Called by grapple beam code
+; Looks like RTL'd out code
+; Either required a parameter X and the loop fixed, or there was supposed to be code to set X in the loop
+; Appears to (try to) check for block collisions of the entire grapple beam, and drop grapple beam if so
 $94:AF0B 18          CLC
 $94:AF0C 6B          RTL
-}
 
-
-;;; $AF0D:  ;;;
-{
 $94:AF0D 8B          PHB
-$94:AF0E 4B          PHK
-$94:AF0F AB          PLB
-$94:AF10 AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:AF13 4A          LSR A
-$94:AF14 4A          LSR A
-$94:AF15 4A          LSR A
-$94:AF16 4A          LSR A
-$94:AF17 29 FF 00    AND #$00FF
-$94:AF1A EB          XBA
-$94:AF1B 8D 94 0D    STA $0D94  [$7E:0D94]
-$94:AF1E AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:AF21 4A          LSR A
-$94:AF22 4A          LSR A
-$94:AF23 4A          LSR A
-$94:AF24 4A          LSR A
-$94:AF25 29 FF 00    AND #$00FF
-$94:AF28 EB          XBA
-$94:AF29 8D 96 0D    STA $0D96  [$7E:0D96]
-$94:AF2C AD FE 0C    LDA $0CFE  [$7E:0CFE]
-$94:AF2F 4A          LSR A
-$94:AF30 4A          LSR A
-$94:AF31 4A          LSR A
-$94:AF32 4A          LSR A
-$94:AF33 8D 98 0D    STA $0D98  [$7E:0D98]
+$94:AF0E 4B          PHK                    ;\
+$94:AF0F AB          PLB                    ;} DB = $94
+$94:AF10 AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
+$94:AF13 4A          LSR A                  ;|
+$94:AF14 4A          LSR A                  ;|
+$94:AF15 4A          LSR A                  ;|
+$94:AF16 4A          LSR A                  ;} $0D94 = [grapple beam end X position] / 10h * 100h
+$94:AF17 29 FF 00    AND #$00FF             ;|
+$94:AF1A EB          XBA                    ;|
+$94:AF1B 8D 94 0D    STA $0D94  [$7E:0D94]  ;/
+$94:AF1E AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
+$94:AF21 4A          LSR A                  ;|
+$94:AF22 4A          LSR A                  ;|
+$94:AF23 4A          LSR A                  ;|
+$94:AF24 4A          LSR A                  ;} $0D96 = [grapple beam end Y position] / 10h * 100h
+$94:AF25 29 FF 00    AND #$00FF             ;|
+$94:AF28 EB          XBA                    ;|
+$94:AF29 8D 96 0D    STA $0D96  [$7E:0D96]  ;/
+$94:AF2C AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
+$94:AF2F 4A          LSR A                  ;|
+$94:AF30 4A          LSR A                  ;|
+$94:AF31 4A          LSR A                  ;} $0D98 = [grapple beam length] / 10h
+$94:AF32 4A          LSR A                  ;|
+$94:AF33 8D 98 0D    STA $0D98  [$7E:0D98]  ;/
 
-$94:AF36 BF C3 B3 A0 LDA $A0B3C3,x
-$94:AF3A 18          CLC
-$94:AF3B 6D 96 0D    ADC $0D96  [$7E:0D96]
-$94:AF3E 8D 96 0D    STA $0D96  [$7E:0D96]
-$94:AF41 EB          XBA
-$94:AF42 E2 20       SEP #$20
-$94:AF44 8D 02 42    STA $4202  [$7E:4202]
-$94:AF47 AD A5 07    LDA $07A5  [$7E:07A5]
-$94:AF4A 8D 03 42    STA $4203  [$7E:4203]
-$94:AF4D C2 21       REP #$21
-$94:AF4F BF 43 B4 A0 LDA $A0B443,x
-$94:AF53 6D 94 0D    ADC $0D94  [$7E:0D94]
-$94:AF56 8D 94 0D    STA $0D94  [$7E:0D94]
-$94:AF59 29 00 FF    AND #$FF00
-$94:AF5C EB          XBA
-$94:AF5D 6D 16 42    ADC $4216  [$7E:4216]
-$94:AF60 8D C4 0D    STA $0DC4  [$7E:0DC4]
-$94:AF63 0A          ASL A
-$94:AF64 AA          TAX
-$94:AF65 BF 02 00 7F LDA $7F0002,x
-$94:AF69 29 00 F0    AND #$F000
-$94:AF6C EB          XBA
-$94:AF6D 4A          LSR A
-$94:AF6E 4A          LSR A
-$94:AF6F 4A          LSR A
-$94:AF70 AA          TAX
-$94:AF71 FC 90 AB    JSR ($AB90,x)
-$94:AF74 B0 08       BCS $08    [$AF7E]
-$94:AF76 CE 98 0D    DEC $0D98  [$7E:0D98]
-$94:AF79 10 BB       BPL $BB    [$AF36]
+; LOOP
+$94:AF36 BF C3 B3 A0 LDA $A0B3C3,x          ;\
+$94:AF3A 18          CLC                    ;|
+$94:AF3B 6D 96 0D    ADC $0D96  [$7E:0D96]  ;} $0D96 += 100h * -cos([X] / 2 * pi / 80h)
+$94:AF3E 8D 96 0D    STA $0D96  [$7E:0D96]  ;/
+$94:AF41 EB          XBA                    ;\
+$94:AF42 E2 20       SEP #$20               ;|
+$94:AF44 8D 02 42    STA $4202  [$7E:4202]  ;} Calculate [$0D96] / 100h * [room width in blocks]
+$94:AF47 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$94:AF4A 8D 03 42    STA $4203  [$7E:4203]  ;/
+$94:AF4D C2 21       REP #$21               ;\
+$94:AF4F BF 43 B4 A0 LDA $A0B443,x          ;|
+$94:AF53 6D 94 0D    ADC $0D94  [$7E:0D94]  ;} $0D94 += 100h * sin([X] / 2 * pi / 80h)
+$94:AF56 8D 94 0D    STA $0D94  [$7E:0D94]  ;/
+$94:AF59 29 00 FF    AND #$FF00             ;\
+$94:AF5C EB          XBA                    ;|
+$94:AF5D 6D 16 42    ADC $4216  [$7E:4216]  ;} Current block index = [$0D96] / 100h * [room width in blocks] + [$0D94] / 100h
+$94:AF60 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
+$94:AF63 0A          ASL A                  ;\
+$94:AF64 AA          TAX                    ;|
+$94:AF65 BF 02 00 7F LDA $7F0002,x          ;|
+$94:AF69 29 00 F0    AND #$F000             ;|
+$94:AF6C EB          XBA                    ;|
+$94:AF6D 4A          LSR A                  ;} Execute [$AB90 + (block type) * 2]
+$94:AF6E 4A          LSR A                  ;|
+$94:AF6F 4A          LSR A                  ;|
+$94:AF70 AA          TAX                    ;|
+$94:AF71 FC 90 AB    JSR ($AB90,x)          ;/
+$94:AF74 B0 08       BCS $08    [$AF7E]     ; If no collision:
+$94:AF76 CE 98 0D    DEC $0D98  [$7E:0D98]  ; Decrement $0D98
+$94:AF79 10 BB       BPL $BB    [$AF36]     ; If [$0D98] >= 0: go to LOOP <-- X has been clobbered, so this loop is no good
 $94:AF7B AB          PLB
-$94:AF7C 18          CLC
-$94:AF7D 6B          RTL
+$94:AF7C 18          CLC                    ;\
+$94:AF7D 6B          RTL                    ;} Return carry clear
 
-$94:AF7E A9 C5 C8    LDA #$C8C5
-$94:AF81 8D 32 0D    STA $0D32  [$7E:0D32]
+$94:AF7E A9 C5 C8    LDA #$C8C5             ;\
+$94:AF81 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = dropped
 $94:AF84 AB          PLB
-$94:AF85 38          SEC
-$94:AF86 6B          RTL
+$94:AF85 38          SEC                    ;\
+$94:AF86 6B          RTL                    ;} Return carry set
+}
 }
 
 
-;;; $AF87:  ;;;
+;;; $AF87..B19E: Grapple beam drawing ;;;
 {
-; Initialise grapple segment animation instructions?
+;;; $AF87: Initialise grapple segment animations ;;;
+{
 $94:AF87 A2 1E 00    LDX #$001E             ; X = 1Eh (grapple segment animation index)
 
 ; LOOP
 $94:AF8A A9 97 B1    LDA #$B197             ;\
-$94:AF8D 9D 62 0D    STA $0D62,x[$7E:0D80]  ;} $0D62 + [X] = $B197
+$94:AF8D 9D 62 0D    STA $0D62,x[$7E:0D80]  ;} Grapple segment animation instruction list pointer [X] = $B197
 $94:AF90 A9 93 B1    LDA #$B193             ;\
-$94:AF93 9D 60 0D    STA $0D60,x[$7E:0D7E]  ;} $0D62 + [X] - 2 = $B193
+$94:AF93 9D 60 0D    STA $0D60,x[$7E:0D7E]  ;} Grapple segment animation instruction list pointer ([X] - 2) = $B193
 $94:AF96 A9 8F B1    LDA #$B18F             ;\
-$94:AF99 9D 5E 0D    STA $0D5E,x[$7E:0D7C]  ;} $0D62 + [X] - 4 = $B18F
+$94:AF99 9D 5E 0D    STA $0D5E,x[$7E:0D7C]  ;} Grapple segment animation instruction list pointer ([X] - 4) = $B18F
 $94:AF9C A9 8B B1    LDA #$B18B             ;\
-$94:AF9F 9D 5C 0D    STA $0D5C,x[$7E:0D7A]  ;} $0D62 + [X] - 6 = $B18B
+$94:AF9F 9D 5C 0D    STA $0D5C,x[$7E:0D7A]  ;} Grapple segment animation instruction list pointer ([X] - 6) = $B18B
 $94:AFA2 A9 01 00    LDA #$0001             ;\
-$94:AFA5 9D 42 0D    STA $0D42,x[$7E:0D60]  ;} $0D42 + [X] = 1
-$94:AFA8 9D 40 0D    STA $0D40,x[$7E:0D5E]  ; $0D42 + [X] - 2 = 1
-$94:AFAB 9D 3E 0D    STA $0D3E,x[$7E:0D5C]  ; $0D42 + [X] - 4 = 1
-$94:AFAE 9D 3C 0D    STA $0D3C,x[$7E:0D5A]  ; $0D42 + [X] - 6 = 1
+$94:AFA5 9D 42 0D    STA $0D42,x[$7E:0D60]  ;} Grapple segment animation instruction timer [X] = 1
+$94:AFA8 9D 40 0D    STA $0D40,x[$7E:0D5E]  ; Grapple segment animation instruction timer ([X] - 2) = 1
+$94:AFAB 9D 3E 0D    STA $0D3E,x[$7E:0D5C]  ; Grapple segment animation instruction timer ([X] - 4) = 1
+$94:AFAE 9D 3C 0D    STA $0D3C,x[$7E:0D5A]  ; Grapple segment animation instruction timer ([X] - 6) = 1
 $94:AFB1 8A          TXA                    ;\
 $94:AFB2 38          SEC                    ;|
 $94:AFB3 E9 08 00    SBC #$0008             ;} X -= 8 (next 4 grapple segment animations)
@@ -6519,10 +6586,19 @@ $94:AFB9 6B          RTL
 }
 
 
-;;; $AFBA: Handle grapple beam graphics ;;;
+;;; $AFBA: Draw grapple beam ;;;
 {
-; 94:AFBA uses 0D08 and 0D0C (grapple point X/Y), 0D1A and 0D1C (grapple start X/Y), 0CFA (grapple beam angle), 0CFE (grapple beam length).
-; Does all the other work from there.
+; Uses:
+;     $0CFE: Grapple beam length
+;     $0D08: Grapple beam end X position
+;     $0D0C: Grapple beam end Y position
+;     $0D1A: Grapple beam start X position
+;     $0D1C: Grapple beam start Y position
+;     $0D42..61: Grapple segment animation instruction timers
+;     $0D62..81: Grapple segment animation instruction list pointers
+
+; Doesn't use [grapple beam end angle] except for unused calculation at $AFF7
+
 $94:AFBA 8B          PHB
 $94:AFBB 4B          PHK                    ;\
 $94:AFBC AB          PLB                    ;} DB = $94
@@ -6542,7 +6618,7 @@ $94:AFD7 64 1C       STZ $1C    [$7E:001C]  ;|
 $94:AFD9 BF 43 B4 A0 LDA $A0B443,x[$A0:B633];|
 $94:AFDD 0A          ASL A                  ;|
 $94:AFDE 0A          ASL A                  ;|
-$94:AFDF 0A          ASL A                  ;} $1C.$1A = 8 * sin([A] * pi / 80h)
+$94:AFDF 0A          ASL A                  ;} $1C.$1A = 8 * sin([A] * pi / 80h) (width)
 $94:AFE0 10 02       BPL $02    [$AFE4]     ;|
 $94:AFE2 C6 1C       DEC $1C    [$7E:001C]  ;|
                                             ;|
@@ -6552,7 +6628,7 @@ $94:AFE8 64 20       STZ $20    [$7E:0020]  ;|
 $94:AFEA BF C3 B3 A0 LDA $A0B3C3,x[$A0:B5B3];|
 $94:AFEE 0A          ASL A                  ;|
 $94:AFEF 0A          ASL A                  ;|
-$94:AFF0 0A          ASL A                  ;} $20.$1E = 8 * -cos([A] * pi / 80h)
+$94:AFF0 0A          ASL A                  ;} $20.$1E = 8 * -cos([A] * pi / 80h) (height)
 $94:AFF1 10 02       BPL $02    [$AFF5]     ;|
 $94:AFF3 C6 20       DEC $20    [$7E:0020]  ;|
                                             ;|
@@ -6561,8 +6637,8 @@ $94:AFF7 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $94:AFFA 29 00 80    AND #$8000             ;|
 $94:AFFD 4A          LSR A                  ;|
 $94:AFFE 85 26       STA $26    [$7E:0026]  ;|
-$94:B000 4D FA 0C    EOR $0CFA  [$7E:0CFA]  ;} Map [grapple beam end angle] quadrant to $27:
-$94:B003 29 00 40    AND #$4000             ;} 0 = bottom-left, 40h = top-right, 80h = bottom-right, C0h = top-left
+$94:B000 4D FA 0C    EOR $0CFA  [$7E:0CFA]  ;} Map [grapple beam end angle] quadrant to $26, never read >_>;
+$94:B003 29 00 40    AND #$4000             ;} 0 = bottom-left, 4000h = top-right, 8000h = bottom-right, C000h = top-left
 $94:B006 49 00 40    EOR #$4000             ;|
 $94:B009 0A          ASL A                  ;|
 $94:B00A 05 26       ORA $26    [$7E:0026]  ;|
@@ -6570,17 +6646,17 @@ $94:B00C 85 26       STA $26    [$7E:0026]  ;/
 $94:B00E AD 1A 0D    LDA $0D1A  [$7E:0D1A]  ;\
 $94:B011 38          SEC                    ;|
 $94:B012 ED 11 09    SBC $0911  [$7E:0911]  ;|
-$94:B015 38          SEC                    ;} $14 = [$0D1A] - [layer 1 X position] - 4
+$94:B015 38          SEC                    ;} $14 = [$0D1A] - [layer 1 X position] - 4 (X position)
 $94:B016 E9 04 00    SBC #$0004             ;|
 $94:B019 85 14       STA $14    [$7E:0014]  ;/
-$94:B01B 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$94:B01B 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (X subposition)
 $94:B01D AD 1C 0D    LDA $0D1C  [$7E:0D1C]  ;\
 $94:B020 38          SEC                    ;|
 $94:B021 ED 15 09    SBC $0915  [$7E:0915]  ;|
-$94:B024 38          SEC                    ;} $14 = [$0D1A] - [layer 1 X position] - 4
+$94:B024 38          SEC                    ;} $18 = [$0D1A] - [layer 1 X position] - 4 (Y position)
 $94:B025 E9 04 00    SBC #$0004             ;|
 $94:B028 85 18       STA $18    [$7E:0018]  ;/
-$94:B02A 64 16       STZ $16    [$7E:0016]  ; $12 = 0
+$94:B02A 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (Y subposition)
 $94:B02C AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $94:B02F 30 77       BMI $77    [$B0A8]     ;} If [grapple beam length] < 0: return
 $94:B031 8D 04 42    STA $4204  [$7E:4204]  ;\
@@ -6598,7 +6674,7 @@ $94:B043 AD 14 42    LDA $4214  [$7E:4214]  ;/
 $94:B046 30 60       BMI $60    [$B0A8]     ; >_<;
 $94:B048 29 0F 00    AND #$000F             ;\
 $94:B04B 38          SEC                    ;|
-$94:B04C E9 01 00    SBC #$0001             ;} $28 = [grapple beam length] / 8 % 10h - 1
+$94:B04C E9 01 00    SBC #$0001             ;} $28 = [grapple beam length] / 8 % 10h - 1 (number of grapple segments)
 $94:B04F 85 28       STA $28    [$7E:0028]  ;/
 $94:B051 A2 1E 00    LDX #$001E             ; X = 1Eh (grapple segment animation index)
 
@@ -6614,7 +6690,7 @@ $94:B061 85 24       STA $24    [$7E:0024]  ; $24 = [[Y]]
 $94:B063 F4 5B B0    PEA $B05B              ; Return to LOOP_INSTRUCTIONS
 $94:B066 C8          INY                    ;\
 $94:B067 C8          INY                    ;} Y += 2
-$94:B068 6C 24 00    JMP ($0024)[$94:B0F4]  ; Execute [$24]
+$94:B068 6C 24 00    JMP ($0024)[$94:B0F4]  ; Go to [$24]
 
 $94:B06B 9D 42 0D    STA $0D42,x[$7E:0D60]  ; Grapple segment animation instruction timer = [[Y]]
 $94:B06E 98          TYA                    ;\
@@ -6625,19 +6701,19 @@ $94:B073 9D 62 0D    STA $0D62,x[$7E:0D80]  ;/
 ; BRANCH_PROCESSED_INSTRUCTIONS
 $94:B076 A5 14       LDA $14    [$7E:0014]  ;\
 $94:B078 05 18       ORA $18    [$7E:0018]  ;|
-$94:B07A 29 00 FF    AND #$FF00             ;} If [$14] | [$18] < 100h:
+$94:B07A 29 00 FF    AND #$FF00             ;} If 0 <= (X position) | (Y position) < 100h:
 $94:B07D D0 14       BNE $14    [$B093]     ;/
 $94:B07F DA          PHX
 $94:B080 BC 62 0D    LDY $0D62,x[$7E:0D80]  ;\
 $94:B083 88          DEY                    ;|
-$94:B084 88          DEY                    ;} Y = [[grapple segment animation instruction list pointer] - 2]
+$94:B084 88          DEY                    ;} Y = [[grapple segment animation instruction list pointer] - 2] (tile number and attributes)
 $94:B085 B9 00 00    LDA $0000,y[$94:B199]  ;|
 $94:B088 A8          TAY                    ;/
-$94:B089 20 AA B0    JSR $B0AA  [$94:B0AA]  ; Execute $B0AA
+$94:B089 20 AA B0    JSR $B0AA  [$94:B0AA]  ; Draw grapple segment
 $94:B08C FA          PLX
 $94:B08D CA          DEX                    ;\
-$94:B08E CA          DEX                    ;} X -= 2
-$94:B08F C6 28       DEC $28    [$7E:0028]  ; Decrement $28 (next grapple segment animation)
+$94:B08E CA          DEX                    ;} X -= 2 (next grapple segment animation)
+$94:B08F C6 28       DEC $28    [$7E:0028]  ; Decrement $28
 $94:B091 10 C1       BPL $C1    [$B054]     ; If [$28] >= 0: go to LOOP_ANIMATIONS
 
 $94:B093 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -6645,56 +6721,67 @@ $94:B096 C9 B2 00    CMP #$00B2             ;|
 $94:B099 F0 0A       BEQ $0A    [$B0A5]     ;} If [Samus pose] != [grapple swinging]:
 $94:B09B C9 B3 00    CMP #$00B3             ;|
 $94:B09E F0 05       BEQ $05    [$B0A5]     ;/
-$94:B0A0 20 F9 B0    JSR $B0F9  [$94:B0F9]  ; Execute $B0F9
+$94:B0A0 20 F9 B0    JSR $B0F9  [$94:B0F9]  ; Draw grapple beam end - not connected
 $94:B0A3 80 03       BRA $03    [$B0A8]
                                             ; Else ([Samus pose] = [grapple swinging]):
-$94:B0A5 20 4B B1    JSR $B14B  [$94:B14B]  ; Execute $B14B
+$94:B0A5 20 4B B1    JSR $B14B  [$94:B14B]  ; Draw grapple beam end - connected
 
 $94:B0A8 AB          PLB
 $94:B0A9 6B          RTL
 }
 
 
-;;; $B0AA:  ;;;
+;;; $B0AA: Draw grapple segment ;;;
 {
-; Draws a grapple beam segment
-$94:B0AA AE 90 05    LDX $0590  [$7E:0590]
+;; Parameters:
+;;     Y: Tile number and attributes
+;;     $14.$12: X position
+;;     $18.$16: Y position
+;;     $1C.$1A: Width
+;;     $20.$1E: Height
+
+; The branch at $B0C3 seems like it was supposed to be BEQ to set the high X position bit if X position >= 100h, 
+; but it checks $14 after the width is added, so that would need to be fixed too to make the dead code useful
+; The X position is checked to be < 100h by callers, so there is no point in doing this check anyway
+; Tldr, $B0C0..D2 can be eliminated entirely
+$94:B0AA AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
 $94:B0AD 18          CLC
-$94:B0AE A5 14       LDA $14    [$7E:0014]
-$94:B0B0 9D 70 03    STA $0370,x[$7E:0398]
-$94:B0B3 A5 12       LDA $12    [$7E:0012]
-$94:B0B5 18          CLC
-$94:B0B6 65 1A       ADC $1A    [$7E:001A]
-$94:B0B8 85 12       STA $12    [$7E:0012]
-$94:B0BA A5 14       LDA $14    [$7E:0014]
-$94:B0BC 65 1C       ADC $1C    [$7E:001C]
-$94:B0BE 85 14       STA $14    [$7E:0014]
-$94:B0C0 29 00 01    AND #$0100
-$94:B0C3 80 0E       BRA $0E    [$B0D3]
+$94:B0AE A5 14       LDA $14    [$7E:0014]  ;\
+$94:B0B0 9D 70 03    STA $0370,x[$7E:0398]  ;} OAM entry X position = [$14]
+$94:B0B3 A5 12       LDA $12    [$7E:0012]  ;\
+$94:B0B5 18          CLC                    ;|
+$94:B0B6 65 1A       ADC $1A    [$7E:001A]  ;|
+$94:B0B8 85 12       STA $12    [$7E:0012]  ;} $14.$12 += [$1C].[$1A]
+$94:B0BA A5 14       LDA $14    [$7E:0014]  ;|
+$94:B0BC 65 1C       ADC $1C    [$7E:001C]  ;|
+$94:B0BE 85 14       STA $14    [$7E:0014]  ;/
+$94:B0C0 29 00 01    AND #$0100             ; >_<;
+$94:B0C3 80 0E       BRA $0E    [$B0D3]     ; Go to BRANCH
 
 ; Nothing points to this
-$94:B0C5 BF 9F 85 81 LDA $81859F,x
-$94:B0C9 85 22       STA $22    [$7E:0022]
-$94:B0CB B2 22       LDA ($22)
-$94:B0CD 1F 9F 83 81 ORA $81839F,x
-$94:B0D1 92 22       STA ($22)
+$94:B0C5 BF 9F 85 81 LDA $81859F,x          ;\
+$94:B0C9 85 22       STA $22    [$7E:0022]  ;|
+$94:B0CB B2 22       LDA ($22)              ;} Set OAM entry high X position bit
+$94:B0CD 1F 9F 83 81 ORA $81839F,x          ;|
+$94:B0D1 92 22       STA ($22)              ;/
 
-$94:B0D3 A5 18       LDA $18    [$7E:0018]
-$94:B0D5 9D 71 03    STA $0371,x[$7E:0399]
-$94:B0D8 A5 16       LDA $16    [$7E:0016]
-$94:B0DA 18          CLC
-$94:B0DB 65 1E       ADC $1E    [$7E:001E]
-$94:B0DD 85 16       STA $16    [$7E:0016]
-$94:B0DF A5 18       LDA $18    [$7E:0018]
-$94:B0E1 65 20       ADC $20    [$7E:0020]
-$94:B0E3 85 18       STA $18    [$7E:0018]
-$94:B0E5 98          TYA
-$94:B0E6 05 26       ORA $26    [$7E:0026]
-$94:B0E8 9D 72 03    STA $0372,x[$7E:039A]
-$94:B0EB 8A          TXA
-$94:B0EC 18          CLC
-$94:B0ED 69 04 00    ADC #$0004
-$94:B0F0 8D 90 05    STA $0590  [$7E:0590]
+; BRANCH
+$94:B0D3 A5 18       LDA $18    [$7E:0018]  ;\
+$94:B0D5 9D 71 03    STA $0371,x[$7E:0399]  ;} OAM entry Y position = [$18]
+$94:B0D8 A5 16       LDA $16    [$7E:0016]  ;\
+$94:B0DA 18          CLC                    ;|
+$94:B0DB 65 1E       ADC $1E    [$7E:001E]  ;|
+$94:B0DD 85 16       STA $16    [$7E:0016]  ;} $18.$16 += [$20].[$1E]
+$94:B0DF A5 18       LDA $18    [$7E:0018]  ;|
+$94:B0E1 65 20       ADC $20    [$7E:0020]  ;|
+$94:B0E3 85 18       STA $18    [$7E:0018]  ;/
+$94:B0E5 98          TYA                    ;\
+$94:B0E6 05 26       ORA $26    [$7E:0026]  ;} OAM entry tile number and attributes = [Y] | [$26]
+$94:B0E8 9D 72 03    STA $0372,x[$7E:039A]  ;/
+$94:B0EB 8A          TXA                    ;\
+$94:B0EC 18          CLC                    ;|
+$94:B0ED 69 04 00    ADC #$0004             ;} OAM stack pointer = [X] + 4
+$94:B0F0 8D 90 05    STA $0590  [$7E:0590]  ;/
 $94:B0F3 60          RTS
 }
 
@@ -6707,88 +6794,87 @@ $94:B0F8 60          RTS
 }
 
 
-;;; $B0F9:  ;;;
+;;; $B0F9: Draw grapple beam end - not connected ;;;
 {
-; Draws the grapple beam end
-$94:B0F9 AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:B0FC 38          SEC
-$94:B0FD ED 15 09    SBC $0915  [$7E:0915]
-$94:B100 89 00 FF    BIT #$FF00
-$94:B103 D0 45       BNE $45    [$B14A]
-$94:B105 AE 90 05    LDX $0590  [$7E:0590]
-$94:B108 18          CLC
-$94:B109 A5 14       LDA $14    [$7E:0014]  ; >_<;
-$94:B10B AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:B10E 38          SEC
-$94:B10F ED 11 09    SBC $0911  [$7E:0911]
-$94:B112 38          SEC
-$94:B113 E9 04 00    SBC #$0004
-$94:B116 9D 70 03    STA $0370,x[$7E:039C]
-$94:B119 29 00 01    AND #$0100
-$94:B11C F0 0E       BEQ $0E    [$B12C]
-$94:B11E BF 9F 85 81 LDA $81859F,x
-$94:B122 85 22       STA $22    [$7E:0022]
-$94:B124 B2 22       LDA ($22)
-$94:B126 1F 9F 83 81 ORA $81839F,x
-$94:B12A 92 22       STA ($22)
+$94:B0F9 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
+$94:B0FC 38          SEC                    ;|
+$94:B0FD ED 15 09    SBC $0915  [$7E:0915]  ;} If not 0 <= [grapple beam end Y position] - [layer 1 Y position] < 100h: return
+$94:B100 89 00 FF    BIT #$FF00             ;|
+$94:B103 D0 45       BNE $45    [$B14A]     ;/
+$94:B105 AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
+$94:B108 18          CLC                    ;\
+$94:B109 A5 14       LDA $14    [$7E:0014]  ;} >_<;
+$94:B10B AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
+$94:B10E 38          SEC                    ;|
+$94:B10F ED 11 09    SBC $0911  [$7E:0911]  ;|
+$94:B112 38          SEC                    ;} OAM entry X position = [grapple beam end X position] - [layer 1 X position] - 4
+$94:B113 E9 04 00    SBC #$0004             ;|
+$94:B116 9D 70 03    STA $0370,x[$7E:039C]  ;/
+$94:B119 29 00 01    AND #$0100             ;\
+$94:B11C F0 0E       BEQ $0E    [$B12C]     ;} If not 0 <= [OAM entry X position] < 100h:
+$94:B11E BF 9F 85 81 LDA $81859F,x          ;\
+$94:B122 85 22       STA $22    [$7E:0022]  ;|
+$94:B124 B2 22       LDA ($22)              ;} Set OAM entry high X position bit
+$94:B126 1F 9F 83 81 ORA $81839F,x          ;|
+$94:B12A 92 22       STA ($22)              ;/
 
 $94:B12C A5 18       LDA $18    [$7E:0018]  ; >_<;
-$94:B12E AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:B131 38          SEC
-$94:B132 ED 15 09    SBC $0915  [$7E:0915]
-$94:B135 38          SEC
-$94:B136 E9 04 00    SBC #$0004
-$94:B139 9D 71 03    STA $0371,x[$7E:039D]
-$94:B13C A9 20 3A    LDA #$3A20
-$94:B13F 9D 72 03    STA $0372,x[$7E:039E]
-$94:B142 8A          TXA
-$94:B143 18          CLC
-$94:B144 69 04 00    ADC #$0004
-$94:B147 8D 90 05    STA $0590  [$7E:0590]
+$94:B12E AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
+$94:B131 38          SEC                    ;|
+$94:B132 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$94:B135 38          SEC                    ;} OAM entry Y position = [grapple beam end Y position] - [layer 1 Y position] - 4
+$94:B136 E9 04 00    SBC #$0004             ;|
+$94:B139 9D 71 03    STA $0371,x[$7E:039D]  ;/
+$94:B13C A9 20 3A    LDA #$3A20             ;\
+$94:B13F 9D 72 03    STA $0372,x[$7E:039E]  ;} OAM entry tile number and attributes = 3A20h
+$94:B142 8A          TXA                    ;\
+$94:B143 18          CLC                    ;|
+$94:B144 69 04 00    ADC #$0004             ;} OAM stack pointer = [X] + 4
+$94:B147 8D 90 05    STA $0590  [$7E:0590]  ;/
 
 $94:B14A 60          RTS
 }
 
 
-;;; $B14B:  ;;;
+;;; $B14B: Draw grapple beam end - connected ;;;
 {
-; Draws the grapple beam block connection
-$94:B14B AE 90 05    LDX $0590  [$7E:0590]
-$94:B14E 18          CLC
-$94:B14F AD 08 0D    LDA $0D08  [$7E:0D08]
-$94:B152 38          SEC
-$94:B153 ED 11 09    SBC $0911  [$7E:0911]
-$94:B156 E9 04 00    SBC #$0004
-$94:B159 9D 70 03    STA $0370,x[$7E:03B0]
-$94:B15C 29 00 01    AND #$0100
-$94:B15F F0 0E       BEQ $0E    [$B16F]
-$94:B161 BF 9F 85 81 LDA $81859F,x
-$94:B165 85 22       STA $22    [$7E:0022]
-$94:B167 B2 22       LDA ($22)
-$94:B169 1F 9F 83 81 ORA $81839F,x
-$94:B16D 92 22       STA ($22)
+; Equivalent to $B0F9
+$94:B14B AE 90 05    LDX $0590  [$7E:0590]  ; X = [OAM stack pointer]
+$94:B14E 18          CLC                    ; >_<;
+$94:B14F AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
+$94:B152 38          SEC                    ;|
+$94:B153 ED 11 09    SBC $0911  [$7E:0911]  ;} OAM entry X position = [grapple beam end X position] - [layer 1 X position] - 4
+$94:B156 E9 04 00    SBC #$0004             ;|
+$94:B159 9D 70 03    STA $0370,x[$7E:03B0]  ;/
+$94:B15C 29 00 01    AND #$0100             ;\
+$94:B15F F0 0E       BEQ $0E    [$B16F]     ;} If not 0 <= [OAM entry X position] < 100h:
+$94:B161 BF 9F 85 81 LDA $81859F,x          ;\
+$94:B165 85 22       STA $22    [$7E:0022]  ;|
+$94:B167 B2 22       LDA ($22)              ;} Set OAM entry high X position bit
+$94:B169 1F 9F 83 81 ORA $81839F,x          ;|
+$94:B16D 92 22       STA ($22)              ;/
 
-$94:B16F AD 0C 0D    LDA $0D0C  [$7E:0D0C]
-$94:B172 38          SEC
-$94:B173 ED 15 09    SBC $0915  [$7E:0915]
-$94:B176 E9 04 00    SBC #$0004
-$94:B179 9D 71 03    STA $0371,x[$7E:03B1]
-$94:B17C A9 20 3A    LDA #$3A20
-$94:B17F 9D 72 03    STA $0372,x[$7E:03B2]
-$94:B182 8A          TXA
-$94:B183 18          CLC
-$94:B184 69 04 00    ADC #$0004
-$94:B187 8D 90 05    STA $0590  [$7E:0590]
+$94:B16F AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
+$94:B172 38          SEC                    ;|
+$94:B173 ED 15 09    SBC $0915  [$7E:0915]  ;} OAM entry Y position = [grapple beam end Y position] - [layer 1 Y position] - 4
+$94:B176 E9 04 00    SBC #$0004             ;|
+$94:B179 9D 71 03    STA $0371,x[$7E:03B1]  ;/
+$94:B17C A9 20 3A    LDA #$3A20             ;\
+$94:B17F 9D 72 03    STA $0372,x[$7E:03B2]  ;} OAM entry tile number and attributes = 3A20h
+$94:B182 8A          TXA                    ;\
+$94:B183 18          CLC                    ;|
+$94:B184 69 04 00    ADC #$0004             ;} OAM stack pointer = [X] + 4
+$94:B187 8D 90 05    STA $0590  [$7E:0590]  ;/
 $94:B18A 60          RTS
 }
 
 
-;;; $B18B: Instruction list ;;;
+;;; $B18B: Instruction lists - grapple segment animations ;;;
 {
-$94:B18B             dw 0005,3A21,
-                        0005,3A22,
-                        0005,3A23,
-                        0005,3A24,
+$94:B18B             dw 0005,3A21
+$94:B18F             dw 0005,3A22
+$94:B193             dw 0005,3A23
+$94:B197             dw 0005,3A24,
                         B0F4,B18B  ; Go to $B18B
 }
 }

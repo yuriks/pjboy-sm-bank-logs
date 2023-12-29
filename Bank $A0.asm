@@ -3716,8 +3716,8 @@ $A0:9F7C 6B          RTL
 
 ;;; $9F7D: Samus latches on with grapple ;;;
 {
-$A0:9F7D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:9F80 AE 54 0E    LDX $0E54  [$7E:0E54]
+$A0:9F7D AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A0:9F80 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} >_<;;
 $A0:9F83 BD 7A 0F    LDA $0F7A,x            ;\
 $A0:9F86 8D 08 0D    STA $0D08  [$7E:0D08]  ;} Grapple beam end X position = [enemy X position]
 $A0:9F89 BD 7E 0F    LDA $0F7E,x            ;\
@@ -3738,9 +3738,9 @@ $A0:9FAD 9D 9C 0F    STA $0F9C,x            ;/
 $A0:9FB0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9FB3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9FB6 9E 8A 0F    STZ $0F8A,x            ; Enemy AI handler = main AI
-$A0:9FB9 6B          RTL
+$A0:9FB9 6B          RTL                    ; Return
 
-$A0:9FBA AE 54 0E    LDX $0E54  [$7E:0E54]  ; Else ([enemy frozen timer] != 0):
+$A0:9FBA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9FBD A9 04 00    LDA #$0004             ;\
 $A0:9FC0 9D 8A 0F    STA $0F8A,x            ;} Enemy AI handler = frozen AI
 $A0:9FC3 6B          RTL

@@ -262,7 +262,6 @@ $B3:88CF 3C A8 0F    BIT $0FA8,x[$7E:11E8]  ;\
 $B3:88D2 30 05       BMI $05    [$88D9]     ;} If [enemy direction] = right:
 $B3:88D4 A9 02 00    LDA #$0002             ; Enemy instruction list table index = 2
 $B3:88D7 80 03       BRA $03    [$88DC]
-
                                             ; Else ([enemy direction] = left):
 $B3:88D9 A9 00 00    LDA #$0000             ; Enemy instruction list table index = 0
 
@@ -369,7 +368,6 @@ $B3:899D BD B4 0F    LDA $0FB4,x[$7E:11F4]  ;\
 $B3:89A0 D0 05       BNE $05    [$89A7]     ;} If [enemy parameter 1] = 0 (red bug):
 $B3:89A2 B9 2B 88    LDA $882B,y[$B3:882F]  ; Enemy instruction list pointer = [$882B + [Y]]
 $B3:89A5 80 03       BRA $03    [$89AA]
-
                                             ; Else ([enemy parameter 1] != 0 (green bug)):
 $B3:89A7 B9 33 88    LDA $8833,y[$B3:8835]  ; Enemy instruction list pointer = [$8833 + [Y]]
 

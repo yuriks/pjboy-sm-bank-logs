@@ -144,11 +144,11 @@ $A3:8796 A9 04 00    LDA #$0004
 $A3:8799 8D 32 0E    STA $0E32  [$7E:0E32]
 $A3:879C BD AE 0F    LDA $0FAE,x[$7E:0FAE]
 $A3:879F 29 FF 00    AND #$00FF
-$A3:87A2 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  
+$A3:87A2 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
 $A3:87A6 85 14       STA $14    [$7E:0014]  ;\
 $A3:87A8 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by [A]
 $A3:87AA 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A3:87AE 90 12       BCC $12    [$87C2]     ; If collided with block: 
+$A3:87AE 90 12       BCC $12    [$87C2]     ; If collided with block:
 $A3:87B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:87B3 BD AE 0F    LDA $0FAE,x[$7E:0FEE]
 $A3:87B6 18          CLC
@@ -1025,7 +1025,7 @@ $A3:916F FF 06 78 7E SBC $7E7806,x[$7E:7846]
 $A3:9173 85 14       STA $14    [$7E:0014]
 $A3:9175 64 12       STZ $12    [$7E:0012]  ;\
 $A3:9177 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14]
-$A3:917B 90 17       BCC $17    [$9194]     ; If collided with block: 
+$A3:917B 90 17       BCC $17    [$9194]     ; If collided with block:
 $A3:917D A9 24 92    LDA #$9224
 $A3:9180 9D A8 0F    STA $0FA8,x[$7E:10E8]
 $A3:9183 A9 01 00    LDA #$0001
@@ -1075,7 +1075,7 @@ $A3:91E8 FF 06 78 7E SBC $7E7806,x[$7E:7846]
 $A3:91EC 85 14       STA $14    [$7E:0014]
 $A3:91EE 64 12       STZ $12    [$7E:0012]  ;\
 $A3:91F0 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14]
-$A3:91F4 90 17       BCC $17    [$920D]     ; If collided with block: 
+$A3:91F4 90 17       BCC $17    [$920D]     ; If collided with block:
 $A3:91F6 A9 56 92    LDA #$9256
 $A3:91F9 9D A8 0F    STA $0FA8,x[$7E:1128]
 $A3:91FC A9 01 00    LDA #$0001
@@ -3000,7 +3000,7 @@ $A3:A666 85 12       STA $12    [$7E:0012]  ;|
 $A3:A668 BF 1E 78 7E LDA $7E781E,x          ;} Move enemy down by [enemy Y velocity]
 $A3:A66C 85 14       STA $14    [$7E:0014]  ;|
 $A3:A66E 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A3:A672 90 06       BCC $06    [$A67A]     ; If collided with block: 
+$A3:A672 90 06       BCC $06    [$A67A]     ; If collided with block:
 $A3:A674 A9 D7 A2    LDA #$A2D7
 $A3:A677 9D AA 0F    STA $0FAA,x
 
@@ -3318,7 +3318,7 @@ $A3:A93B 60          RTS
 }
 
 
-;;; $A93C: Set enemy instruction list ;;;
+;;; $A93C: Set mochtroid instruction list ;;;
 {
 ; Mocktroid respawn crash: if mochtroid is set to respawn,
 ; then [enemy $7E:7802] is likely already set to [A],
@@ -3846,7 +3846,7 @@ $A3:AD7A 85 14       STA $14    [$7E:0014]  ;|
 $A3:AD7C B9 93 83    LDA $8393,y[$A3:85B3]  ;} $14.$12 = [$838F + [Y] + 6].[$838F + [Y] + 4]
 $A3:AD7F 85 12       STA $12    [$7E:0012]  ;/
 $A3:AD81 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$A3:AD85 90 13       BCC $13    [$AD9A]     ; If collided with block: 
+$A3:AD85 90 13       BCC $13    [$AD9A]     ; If collided with block:
 $A3:AD87 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
 $A3:AD8A 49 FF FF    EOR #$FFFF
 $A3:AD8D 1A          INC A
@@ -4242,19 +4242,19 @@ $A3:B3A1             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 1D
 }
 
 
-;;; $B3C1: Instruction list -  ;;;
+;;; $B3C1: Instruction list - facing left - shooting ;;;
 {
-$A3:B3C1             dx B429,       ; ???
+$A3:B3C1             dx B429,       ; Enemy X speed table index = 4
                         0040,B55F,
-                        B434,       ; ???
+                        B434,       ; Enemy X speed table index = 8
                         0008,B566,
-                        B43F,       ; ???
+                        B43F,       ; Enemy X speed table index = Ch
                         0030,B56D,
                         80ED,B3C1   ; Go to $B3C1
 }
 
 
-;;; $B3D7: Instruction list -  ;;;
+;;; $B3D7: Instruction list - facing left - rising ;;;
 {
 $A3:B3D7             dx 0004,B57B,
                         0004,B574,
@@ -4263,19 +4263,19 @@ $A3:B3D7             dx 0004,B57B,
 }
 
 
-;;; $B3E7: Instruction list -  ;;;
+;;; $B3E7: Instruction list - facing right - shooting ;;;
 {
-$A3:B3E7             dx B429,       ; ???
-                        0040,B589,
-                        B434,       ; ???
-                        0008,B590,
-                        B43F,       ; ???
+$A3:B3E7             dx B429,       ; Enemy X speed table index = 4
+                        0040,B589,  
+                        B434,       ; Enemy X speed table index = 8
+                        0008,B590,  
+                        B43F,       ; Enemy X speed table index = Ch
                         0030,B597,
                         80ED,B3E7   ; Go to $B3E7
 }
 
 
-;;; $B3FD: Instruction list -  ;;;
+;;; $B3FD: Instruction list - facing right - rising ;;;
 {
 $A3:B3FD             dx 0004,B5A5,
                         0004,B59E,
@@ -4290,13 +4290,21 @@ $A3:B40D             dw B3C1, B3D7, B3E7, B3FD
 }
 
 
-;;; $B415:  ;;;
+;;; $B415: Maridia refill candy X speed table ;;;
 {
-$A3:B415             dw 0000,0000, 0000,8000, 0000,A000, 0002,0000, 0000,0000
+; Indexed by enemy $7E:7800
+;                        ________ X speed
+;                       |     ___ X subspeed
+;                       |    |
+$A3:B415             dw 0000,0000, 
+                        0000,8000, 
+                        0000,A000, 
+                        0002,0000, 
+                        0000,0000
 }
 
 
-;;; $B429: Instruction ;;;
+;;; $B429: Instruction - enemy X speed table index = 4 ;;;
 {
 $A3:B429 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B42C A9 04 00    LDA #$0004
@@ -4305,7 +4313,7 @@ $A3:B433 6B          RTL
 }
 
 
-;;; $B434: Instruction ;;;
+;;; $B434: Instruction - enemy X speed table index = 8 ;;;
 {
 $A3:B434 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B437 A9 08 00    LDA #$0008
@@ -4314,7 +4322,7 @@ $A3:B43E 6B          RTL
 }
 
 
-;;; $B43F: Instruction ;;;
+;;; $B43F: Instruction - enemy X speed table index = Ch ;;;
 {
 $A3:B43F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B442 A9 0C 00    LDA #$000C
@@ -4326,21 +4334,21 @@ $A3:B449 6B          RTL
 ;;; $B44A: Initialisation AI - enemy $DA7F (Maridia refill candy) ;;;
 {
 $A3:B44A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:B44D A9 82 B4    LDA #$B482
-$A3:B450 9D B4 0F    STA $0FB4,x[$7E:0FF4]
-$A3:B453 A9 00 00    LDA #$0000
-$A3:B456 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A3:B459 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A3:B45C 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$A3:B460 A9 C1 B3    LDA #$B3C1
-$A3:B463 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:B466 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A3:B469 09 00 01    ORA #$0100
-$A3:B46C 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A3:B46F BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$A3:B472 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A3:B475 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A3:B478 9D AC 0F    STA $0FAC,x[$7E:0FEC]
+$A3:B44D A9 82 B4    LDA #$B482             ;\
+$A3:B450 9D B4 0F    STA $0FB4,x[$7E:0FF4]  ;| Enemy function = $B482 (wait for Samus to get near)
+$A3:B453 A9 00 00    LDA #$0000             ;\
+$A3:B456 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy instruction list table index = 0
+$A3:B459 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ; Enemy previous instruction list table index = 0
+$A3:B45C 9F 00 78 7E STA $7E7800,x[$7E:7840]; Enemy X speed table index = 0
+$A3:B460 A9 C1 B3    LDA #$B3C1             ;\
+$A3:B463 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $B3C1
+$A3:B466 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A3:B469 09 00 01    ORA #$0100             ;} Set enemy to be invisible
+$A3:B46C 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A3:B46F BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$A3:B472 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy spawn X position = [enemy X position]
+$A3:B475 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A3:B478 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;} Enemy spawn Y position = [enemy Y position]
 $A3:B47B 6B          RTL
 }
 
@@ -4348,124 +4356,125 @@ $A3:B47B 6B          RTL
 ;;; $B47C: Main AI - enemy $DA7F (Maridia refill candy) ;;;
 {
 $A3:B47C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:B47F 7C B4 0F    JMP ($0FB4,x)[$A3:B482]
+$A3:B47F 7C B4 0F    JMP ($0FB4,x)[$A3:B482]; Go to [enemy function]
 }
 
 
-;;; $B482:  ;;;
+;;; $B482: Maridia refill candy function - wait for Samus to get near ;;;
 {
 $A3:B482 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:B485 A9 80 00    LDA #$0080
-$A3:B488 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A3:B48C F0 19       BEQ $19    [$B4A7]
-$A3:B48E A0 01 00    LDY #$0001
-$A3:B491 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A3:B495 30 03       BMI $03    [$B49A]
-$A3:B497 A0 03 00    LDY #$0003
+$A3:B485 A9 80 00    LDA #$0080             ;\
+$A3:B488 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is not within 80h pixel columns of enemy: return
+$A3:B48C F0 19       BEQ $19    [$B4A7]     ;/
+$A3:B48E A0 01 00    LDY #$0001             ; Enemy instruction list table index = 1
+$A3:B491 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A3:B495 30 03       BMI $03    [$B49A]     ;} If [Samus X position] >= [enemy X position]:
+$A3:B497 A0 03 00    LDY #$0003             ; Enemy instruction list table index = 3
 
 $A3:B49A 98          TYA
 $A3:B49B 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A3:B49E 20 37 B5    JSR $B537  [$A3:B537]
-$A3:B4A1 A9 A8 B4    LDA #$B4A8
-$A3:B4A4 9D B4 0F    STA $0FB4,x[$7E:0FF4]
+$A3:B49E 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
+$A3:B4A1 A9 A8 B4    LDA #$B4A8             ;\
+$A3:B4A4 9D B4 0F    STA $0FB4,x[$7E:0FF4]  ;} Enemy function = $B4A8 (rising)
 
 $A3:B4A7 6B          RTL
 }
 
 
-;;; $B4A8:  ;;;
+;;; $B4A8: Maridia refill candy function - rising ;;;
 {
-$A3:B4A8 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A3:B4AB 29 FF FE    AND #$FEFF
-$A3:B4AE 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A3:B4B1 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]
-$A3:B4B5 30 10       BMI $10    [$B4C7]
-$A3:B4B7 DE AE 0F    DEC $0FAE,x[$7E:0FEE]
-$A3:B4BA 20 37 B5    JSR $B537  [$A3:B537]
+$A3:B4A8 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A3:B4AB 29 FF FE    AND #$FEFF             ;} Set enemy to be visible
+$A3:B4AE 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A3:B4B1 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
+$A3:B4B5 30 10       BMI $10    [$B4C7]     ;} If [Samus Y position] >= [enemy Y position]:
+$A3:B4B7 DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Enemy instruction list table index -= 1
+$A3:B4BA 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
 $A3:B4BD 9E B2 0F    STZ $0FB2,x[$7E:0FF2]
-$A3:B4C0 A9 D6 B4    LDA #$B4D6
-$A3:B4C3 9D B4 0F    STA $0FB4,x[$7E:0FF4]
+$A3:B4C0 A9 D6 B4    LDA #$B4D6             ;\
+$A3:B4C3 9D B4 0F    STA $0FB4,x[$7E:0FF4]  ;} Enemy function = $B4D6 (shooting)
 $A3:B4C6 6B          RTL
 
-$A3:B4C7 A9 00 00    LDA #$0000
-$A3:B4CA 85 14       STA $14    [$7E:0014]
-$A3:B4CC A9 00 80    LDA #$8000
-$A3:B4CF 85 12       STA $12    [$7E:0012]
-$A3:B4D1 22 7E AF A0 JSL $A0AF7E[$A0:AF7E]
+$A3:B4C7 A9 00 00    LDA #$0000             ;\
+$A3:B4CA 85 14       STA $14    [$7E:0014]  ;|
+$A3:B4CC A9 00 80    LDA #$8000             ;} Enemy Y position -= 0.8000h
+$A3:B4CF 85 12       STA $12    [$7E:0012]  ;|
+$A3:B4D1 22 7E AF A0 JSL $A0AF7E[$A0:AF7E]  ;/
 $A3:B4D5 6B          RTL
 }
 
 
-;;; $B4D6:  ;;;
+;;; $B4D6: Maridia refill candy function - shooting ;;;
 {
-$A3:B4D6 BD AE 0F    LDA $0FAE,x[$7E:0FEE]
-$A3:B4D9 F0 1D       BEQ $1D    [$B4F8]
-$A3:B4DB BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$A3:B4DF A8          TAY
-$A3:B4E0 B9 15 B4    LDA $B415,y[$A3:B419]
-$A3:B4E3 85 14       STA $14    [$7E:0014]
-$A3:B4E5 B9 17 B4    LDA $B417,y[$A3:B41B]
-$A3:B4E8 85 12       STA $12    [$7E:0012]
-$A3:B4EA 22 6C AF A0 JSL $A0AF6C[$A0:AF6C]
-$A3:B4EE 22 70 AD A0 JSL $A0AD70[$A0:AD70]
-$A3:B4F2 D0 21       BNE $21    [$B515]
-$A3:B4F4 20 37 B5    JSR $B537  [$A3:B537]
+$A3:B4D6 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
+$A3:B4D9 F0 1D       BEQ $1D    [$B4F8]     ;} If [enemy direction] = left:
+$A3:B4DB BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$A3:B4DF A8          TAY                    ;} Y = [enemy X speed table index]
+$A3:B4E0 B9 15 B4    LDA $B415,y[$A3:B419]  ;\
+$A3:B4E3 85 14       STA $14    [$7E:0014]  ;|
+$A3:B4E5 B9 17 B4    LDA $B417,y[$A3:B41B]  ;} Enemy X position += [$B415 + [Y]].[$B415 + [Y] + 2]
+$A3:B4E8 85 12       STA $12    [$7E:0012]  ;|
+$A3:B4EA 22 6C AF A0 JSL $A0AF6C[$A0:AF6C]  ;/
+$A3:B4EE 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
+$A3:B4F2 D0 21       BNE $21    [$B515]     ;} If enemy is off-screen: go to BRANCH_OFF_SCREEN
+$A3:B4F4 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
 $A3:B4F7 6B          RTL
 
-$A3:B4F8 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$A3:B4FC A8          TAY
-$A3:B4FD B9 15 B4    LDA $B415,y[$A3:B419]
-$A3:B500 85 14       STA $14    [$7E:0014]
-$A3:B502 B9 17 B4    LDA $B417,y[$A3:B41B]
-$A3:B505 85 12       STA $12    [$7E:0012]
-$A3:B507 22 5A AF A0 JSL $A0AF5A[$A0:AF5A]
-$A3:B50B 22 70 AD A0 JSL $A0AD70[$A0:AD70]
-$A3:B50F D0 04       BNE $04    [$B515]
-$A3:B511 20 37 B5    JSR $B537  [$A3:B537]
+$A3:B4F8 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$A3:B4FC A8          TAY                    ;} Y = [enemy X speed table index]
+$A3:B4FD B9 15 B4    LDA $B415,y[$A3:B419]  ;\
+$A3:B500 85 14       STA $14    [$7E:0014]  ;|
+$A3:B502 B9 17 B4    LDA $B417,y[$A3:B41B]  ;} Enemy X position -= [$B415 + [Y]].[$B415 + [Y] + 2]
+$A3:B505 85 12       STA $12    [$7E:0012]  ;|
+$A3:B507 22 5A AF A0 JSL $A0AF5A[$A0:AF5A]  ;/
+$A3:B50B 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
+$A3:B50F D0 04       BNE $04    [$B515]     ;} If enemy is off-screen: go to BRANCH_OFF_SCREEN
+$A3:B511 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
 $A3:B514 6B          RTL
 
-$A3:B515 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A3:B518 09 00 01    ORA #$0100
-$A3:B51B 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A3:B51E BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$A3:B521 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A3:B524 BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A3:B527 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A3:B52A 9E AE 0F    STZ $0FAE,x[$7E:0FAE]
-$A3:B52D 20 37 B5    JSR $B537  [$A3:B537]
-$A3:B530 A9 82 B4    LDA #$B482
-$A3:B533 9D B4 0F    STA $0FB4,x[$7E:0FB4]
+; BRANCH_OFF_SCREEN
+$A3:B515 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A3:B518 09 00 01    ORA #$0100             ;} Set enemy to be invisible
+$A3:B51B 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A3:B51E BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$A3:B521 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy spawn X position]
+$A3:B524 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A3:B527 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy spawn Y position]
+$A3:B52A 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ; Enemy instruction list table index = 0
+$A3:B52D 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
+$A3:B530 A9 82 B4    LDA #$B482             ;\
+$A3:B533 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy function = $B482 (wait for Samus to get near)
 $A3:B536 6B          RTL
 }
 
 
-;;; $B537:  ;;;
+;;; $B537: Set Maridia refill candy instruction list ;;;
 {
 $A3:B537 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:B53A BD AE 0F    LDA $0FAE,x[$7E:0FEE]
-$A3:B53D DD B0 0F    CMP $0FB0,x[$7E:0FF0]
-$A3:B540 F0 14       BEQ $14    [$B556]
-$A3:B542 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A3:B545 0A          ASL A
-$A3:B546 A8          TAY
-$A3:B547 B9 0D B4    LDA $B40D,y[$A3:B413]
-$A3:B54A 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:B54D A9 01 00    LDA #$0001
-$A3:B550 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A3:B553 9E 90 0F    STZ $0F90,x[$7E:0FD0]
+$A3:B53A BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
+$A3:B53D DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy previous instruction list table index] = [enemy instruction list table index]: return
+$A3:B540 F0 14       BEQ $14    [$B556]     ;/
+$A3:B542 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ; Enemy previous instruction list table index = [enemy instruction list table index]
+$A3:B545 0A          ASL A                  ;\
+$A3:B546 A8          TAY                    ;|
+$A3:B547 B9 0D B4    LDA $B40D,y[$A3:B413]  ;} Enemy instruction list pointer = [$B40D + [enemy instruction list table index] * 2]
+$A3:B54A 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;/
+$A3:B54D A9 01 00    LDA #$0001             ;\
+$A3:B550 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A3:B553 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
 
 $A3:B556 60          RTS
 }
 
 
-;;; $B557:  ;;;
+;;; $B557: RTL ;;;
 {
 $A3:B557 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B55A 6B          RTL
 }
 
 
-;;; $B55B:  ;;;
+;;; $B55B: RTL ;;;
 {
 $A3:B55B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B55E 6B          RTL
@@ -8304,7 +8313,7 @@ $A3:E0B9 85 13       STA $13    [$7E:0013]  ;/
 $A3:E0BB A5 14       LDA $14    [$7E:0014]  ;\
 $A3:E0BD 10 03       BPL $03    [$E0C2]     ;} If [$14] < 0:
 $A3:E0BF 3A          DEC A                  ; $14 -= 1
-$A3:E0C0 80 01       BRA $01    [$E0C3]     
+$A3:E0C0 80 01       BRA $01    [$E0C3]
                                             ; Else ([$14] >= 0):
 $A3:E0C2 1A          INC A                  ; $14 += 1
 
@@ -8313,7 +8322,7 @@ $A3:E0C5 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], p
 $A3:E0C9 90 61       BCC $61    [$E12C]     ; If not collided with wall: go to BRANCH_NO_COLLISION
 $A3:E0CB A9 00 00    LDA #$0000
 $A3:E0CE 9F 08 78 7E STA $7E7808,x
-$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  
+$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
 $A3:E0D6 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E0D8 64 14       STZ $14    [$7E:0014]  ;|
 $A3:E0DA BD AA 0F    LDA $0FAA,x            ;|
@@ -8410,7 +8419,7 @@ $A3:E190 85 13       STA $13    [$7E:0013]  ;/
 $A3:E192 A5 14       LDA $14    [$7E:0014]  ;\
 $A3:E194 10 03       BPL $03    [$E199]     ;} If [$14] < 0:
 $A3:E196 3A          DEC A                  ; $14 -= 1
-$A3:E197 80 01       BRA $01    [$E19A]     
+$A3:E197 80 01       BRA $01    [$E19A]
                                             ; Else ([$14] >= 0):
 $A3:E199 1A          INC A                  ; $14 += 1
 
@@ -8736,7 +8745,7 @@ $A3:E6F0 85 13       STA $13    [$7E:0013]  ;/
 $A3:E6F2 A5 14       LDA $14    [$7E:0014]  ;\
 $A3:E6F4 10 03       BPL $03    [$E6F9]     ;} If [$14] < 0:
 $A3:E6F6 3A          DEC A                  ; $14 -= 1
-$A3:E6F7 80 01       BRA $01    [$E6FA]     
+$A3:E6F7 80 01       BRA $01    [$E6FA]
                                             ; Else ([$14] >= 0):
 $A3:E6F9 1A          INC A                  ; $14 += 1
 
@@ -8874,11 +8883,11 @@ $A3:E81A 85 13       STA $13    [$7E:0013]  ;/
 $A3:E81C A5 14       LDA $14    [$7E:0014]  ;\
 $A3:E81E 10 03       BPL $03    [$E823]     ;} If [$14] < 0:
 $A3:E820 3A          DEC A                  ; $14 -= 1
-$A3:E821 80 01       BRA $01    [$E824]     
+$A3:E821 80 01       BRA $01    [$E824]
                                             ; Else ([$14] >= 0):
 $A3:E823 1A          INC A                  ; $14 += 1
-                                            
-$A3:E824 85 14       STA $14    [$7E:0014]  
+
+$A3:E824 85 14       STA $14    [$7E:0014]
 $A3:E826 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A3:E82A 90 39       BCC $39    [$E865]     ; If not collided with block: go to BRANCH_NO_COLLISION
 $A3:E82C A9 00 00    LDA #$0000
@@ -9301,7 +9310,7 @@ $A3:EC5F BD AE 0F    LDA $0FAE,x[$7E:106E]  ;|
 $A3:EC62 85 14       STA $14    [$7E:0014]  ;} Move enemy down by [enemy Y velocity]
 $A3:EC64 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
 $A3:EC67 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A3:EC6B 90 09       BCC $09    [$EC76]     ; If collided with block: 
+$A3:EC6B 90 09       BCC $09    [$EC76]     ; If collided with block:
 $A3:EC6D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EC70 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
 $A3:EC73 9E AE 0F    STZ $0FAE,x[$7E:0FAE]
@@ -9396,14 +9405,14 @@ $A3:ED1E A5 14       LDA $14    [$7E:0014]  ;} Enemy Y velocity = [$14].[$12]
 $A3:ED20 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A3:ED23 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ED26 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [enemy Y velocity]
-$A3:ED2A 90 09       BCC $09    [$ED35]     ; If collided with block: 
+$A3:ED2A 90 09       BCC $09    [$ED35]     ; If collided with block:
 $A3:ED2C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ED2F 9E AC 0F    STZ $0FAC,x            ;\
 $A3:ED32 9E AE 0F    STZ $0FAE,x            ;} Enemy Y velocity = 0.0
 
 $A3:ED35 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ED38 64 12       STZ $12    [$7E:0012]  ; $12 = 0
-$A3:ED3A 64 14       STZ $14    [$7E:0014]  
+$A3:ED3A 64 14       STZ $14    [$7E:0014]
 $A3:ED3C AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A3:ED3F 38          SEC                    ;|
 $A3:ED40 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]  ;|
@@ -9418,7 +9427,7 @@ $A3:ED4F F0 07       BEQ $07    [$ED58]     ;|
 $A3:ED51 A5 14       LDA $14    [$7E:0014]  ;|
 $A3:ED53 09 00 E0    ORA #$E000             ;|
 $A3:ED56 85 14       STA $14    [$7E:0014]  ;/
-                                            
+
 $A3:ED58 A5 14       LDA $14    [$7E:0014]  ;\
 $A3:ED5A 30 0A       BMI $0A    [$ED66]     ;|
 $A3:ED5C C9 03 00    CMP #$0003             ;|
@@ -9431,16 +9440,16 @@ $A3:ED69 B0 07       BCS $07    [$ED72]     ;|
 $A3:ED6B A9 FD FF    LDA #$FFFD             ;|
                                             ;|
 $A3:ED6E 85 14       STA $14    [$7E:0014]  ;/
-$A3:ED70 64 12       STZ $12    [$7E:0012]  
-                                            
+$A3:ED70 64 12       STZ $12    [$7E:0012]
+
 $A3:ED72 A5 12       LDA $12    [$7E:0012]  ;\
 $A3:ED74 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;|
 $A3:ED77 A5 14       LDA $14    [$7E:0014]  ;} Enemy X velocity = [$14].[$12]
-$A3:ED79 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/ 
-$A3:ED7C AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A3:ED79 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
+$A3:ED7C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ED7F 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [enemy X velocity]
 $A3:ED83 90 09       BCC $09    [$ED8E]     ; If collided with wall:
-$A3:ED85 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A3:ED85 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ED88 9E A8 0F    STZ $0FA8,x            ;\
 $A3:ED8B 9E AA 0F    STZ $0FAA,x            ;} Enemy X velocity = 0.0
 
