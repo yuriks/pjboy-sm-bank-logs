@@ -12919,7 +12919,7 @@ $90:DD61             dw B80D, ; Nothing
 
 ;;; $DD6F: HUD selection handler - grappling ;;;
 {
-$90:DD6F 22 90 C4 9B JSL $9BC490[$9B:C490]
+$90:DD6F 22 90 C4 9B JSL $9BC490[$9B:C490]  ; Grapple beam handler
 $90:DD73 60          RTS
 }
 

@@ -2229,29 +2229,29 @@ $9B:BDA4 C9 40 00    CMP #$0040             ;|
 $9B:BDA7 30 08       BMI $08    [$BDB1]     ;/
 $9B:BDA9 A9 01 00    LDA #$0001             ;\
 $9B:BDAC 8D F8 0C    STA $0CF8  [$7E:0CF8]  ;} Slow grapple scrolling flag = 1
-$9B:BDAF 80 31       BRA $31    [$BDE2]     ; Go to BRANCH_BDE2
+$9B:BDAF 80 31       BRA $31    [$BDE2]     ; Go to BRANCH_SET_SWINGING_ANIMATION_FRAME
 
 $9B:BDB1 9C F8 0C    STZ $0CF8  [$7E:0CF8]  ; Slow grapple scrolling flag = 0
 $9B:BDB4 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $9B:BDB7 29 00 FF    AND #$FF00             ;|
-$9B:BDBA C9 00 80    CMP #$8000             ;} If [grapple beam end angle] / 100h != 80h (down): go to BRANCH_BDE2
+$9B:BDBA C9 00 80    CMP #$8000             ;} If [grapple beam end angle] / 100h != 80h (down): go to BRANCH_SET_SWINGING_ANIMATION_FRAME
 $9B:BDBD D0 23       BNE $23    [$BDE2]     ;/
 $9B:BDBF AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
-$9B:BDC2 C9 40 00    CMP #$0040             ;} If [Samus animation frame] < 40h:
+$9B:BDC2 C9 40 00    CMP #$0040             ;} If [Samus animation frame] < 40h not (hanging straight down):
 $9B:BDC5 10 0C       BPL $0C    [$BDD3]     ;/
 $9B:BDC7 A9 08 00    LDA #$0008             ;\
 $9B:BDCA 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 8
 $9B:BDCD A9 40 00    LDA #$0040             ;\
-$9B:BDD0 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 40h
+$9B:BDD0 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 40h (hanging straight down)
 
 $9B:BDD3 AD FD 0C    LDA $0CFD  [$7E:0CFD]  ;\
 $9B:BDD6 29 FF 00    AND #$00FF             ;|
 $9B:BDD9 AA          TAX                    ;} A = [$C1C2 + [grapple beam end angle] / 100h]
 $9B:BDDA BD C2 C1    LDA $C1C2,x[$9B:C242]  ;|
 $9B:BDDD 29 FF 00    AND #$00FF             ;/
-$9B:BDE0 80 16       BRA $16    [$BDF8]     ; Go to BRANCH_BDF8
+$9B:BDE0 80 16       BRA $16    [$BDF8]     ; Go to BRANCH_MERGE
 
-; BRANCH_BDE2
+; BRANCH_SET_SWINGING_ANIMATION_FRAME
 $9B:BDE2 A9 0F 00    LDA #$000F             ;\
 $9B:BDE5 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = Fh
 $9B:BDE8 AD FD 0C    LDA $0CFD  [$7E:0CFD]  ;\
@@ -2261,19 +2261,19 @@ $9B:BDEF BD C2 C1    LDA $C1C2,x[$9B:C257]  ;|
 $9B:BDF2 29 FF 00    AND #$00FF             ;/
 $9B:BDF5 8D 96 0A    STA $0A96  [$7E:0A96]  ; Samus animation frame = [A]
 
-; BRANCH_BDF8
+; BRANCH_MERGE
 $9B:BDF8 0A          ASL A                  ;\
-$9B:BDF9 AA          TAX                    ;} X = [$C1C2 + [grapple beam end angle] / 100h] * 2
+$9B:BDF9 AA          TAX                    ;} X = [A] * 2
 $9B:BDFA AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;\
 $9B:BDFD 10 04       BPL $04    [$BE03]     ;|
 $9B:BDFF 49 FF FF    EOR #$FFFF             ;|
 $9B:BE02 1A          INC A                  ;|
-                                            ;} If |[extra grapple swing angular velocity]| / 100h != 1: go to BRANCH_BE1D
+                                            ;} If |[extra grapple swing angular velocity]| / 100h != 1: go to BRANCH_NOT_GRAPPLING_KICKING
 $9B:BE03 29 00 FF    AND #$FF00             ;|
 $9B:BE06 C9 00 01    CMP #$0100             ;|
 $9B:BE09 D0 12       BNE $12    [$BE1D]     ;/
 $9B:BE0B AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
-$9B:BE0E C9 40 00    CMP #$0040             ;} If [Samus animation frame] >= 40h:
+$9B:BE0E C9 40 00    CMP #$0040             ;} If [Samus animation frame] >= 40h (hanging straight down):
 $9B:BE11 30 03       BMI $03    [$BE16]     ;/
 $9B:BE13 A9 10 00    LDA #$0010             ; Samus animation frame = 10h
 
@@ -2281,10 +2281,10 @@ $9B:BE16 18          CLC                    ;\
 $9B:BE17 69 20 00    ADC #$0020             ;} Samus animation frame += 20h
 $9B:BE1A 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 
-; BRANCH_BE1D
+; BRANCH_NOT_GRAPPLING_KICKING
 $9B:BE1D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $9B:BE20 29 FF 00    AND #$00FF             ;|
-$9B:BE23 C9 04 00    CMP #$0004             ;} If [Samus pose X direction] = left: go to BRANCH_LEFT
+$9B:BE23 C9 04 00    CMP #$0004             ;} If [Samus pose X direction] != left:
 $9B:BE26 F0 38       BEQ $38    [$BE60]     ;/
 $9B:BE28 BD 01 C3    LDA $C301,x[$9B:C327]  ;\
 $9B:BE2B 29 00 FF    AND #$FF00             ;|
@@ -2311,9 +2311,8 @@ $9B:BE57 8D 1C 0D    STA $0D1C  [$7E:0D1C]  ;} $0D1C = [grapple beam start Y pos
 $9B:BE5A 20 98 BE    JSR $BE98  [$9B:BE98]  ; Execute $BE98
 $9B:BE5D AB          PLB
 $9B:BE5E 28          PLP
-$9B:BE5F 6B          RTL
+$9B:BE5F 6B          RTL                    ; Return
 
-; BRANCH_LEFT
 $9B:BE60 BD C1 C2    LDA $C2C1,x[$9B:C2DD]  ;\
 $9B:BE63 29 00 FF    AND #$FF00             ;|
 $9B:BE66 EB          XBA                    ;|
@@ -2392,26 +2391,26 @@ $9B:BEEA 60          RTS
 ; Something for connecting grapple - stuck in place
 $9B:BEEB 08          PHP
 $9B:BEEC 8B          PHB
-$9B:BEED 4B          PHK
-$9B:BEEE AB          PLB
+$9B:BEED 4B          PHK                    ;\
+$9B:BEEE AB          PLB                    ;} DB = $9B
 $9B:BEEF C2 30       REP #$30
-$9B:BEF1 AD 34 0D    LDA $0D34  [$7E:0D34]
-$9B:BEF4 0A          ASL A
-$9B:BEF5 AA          TAX
-$9B:BEF6 AD 16 0D    LDA $0D16  [$7E:0D16]
-$9B:BEF9 38          SEC
-$9B:BEFA FD 22 C1    SBC $C122,x
-$9B:BEFD 8D F6 0A    STA $0AF6  [$7E:0AF6]
-$9B:BF00 18          CLC
-$9B:BF01 7D 4A C1    ADC $C14A,x
-$9B:BF04 8D 1A 0D    STA $0D1A  [$7E:0D1A]
-$9B:BF07 AD 18 0D    LDA $0D18  [$7E:0D18]
-$9B:BF0A 38          SEC
-$9B:BF0B FD 36 C1    SBC $C136,x
-$9B:BF0E 8D FA 0A    STA $0AFA  [$7E:0AFA]
-$9B:BF11 18          CLC
-$9B:BF12 7D 5E C1    ADC $C15E,x
-$9B:BF15 8D 1C 0D    STA $0D1C  [$7E:0D1C]
+$9B:BEF1 AD 34 0D    LDA $0D34  [$7E:0D34]  ;\
+$9B:BEF4 0A          ASL A                  ;} X = [direction grapple is fired] * 2
+$9B:BEF5 AA          TAX                    ;/
+$9B:BEF6 AD 16 0D    LDA $0D16  [$7E:0D16]  ;\
+$9B:BEF9 38          SEC                    ;|
+$9B:BEFA FD 22 C1    SBC $C122,x            ;} Samus X position = [$0D16] - [$C122 + [X]]
+$9B:BEFD 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
+$9B:BF00 18          CLC                    ;\
+$9B:BF01 7D 4A C1    ADC $C14A,x            ;} $0D1A = [Samus X position] + [$C14A + [X]]
+$9B:BF04 8D 1A 0D    STA $0D1A  [$7E:0D1A]  ;/
+$9B:BF07 AD 18 0D    LDA $0D18  [$7E:0D18]  ;\
+$9B:BF0A 38          SEC                    ;|
+$9B:BF0B FD 36 C1    SBC $C136,x            ;} Samus Y position = [$0D18] - [$C136 + [X]]
+$9B:BF0E 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
+$9B:BF11 18          CLC                    ;\
+$9B:BF12 7D 5E C1    ADC $C15E,x            ;} $0D1C = [Samus Y position] + [$C15E + [X]]
+$9B:BF15 8D 1C 0D    STA $0D1C  [$7E:0D1C]  ;/
 $9B:BF18 AB          PLB
 $9B:BF19 28          PLP
 $9B:BF1A 6B          RTL
@@ -2863,7 +2862,7 @@ $9B:C4AE 6C 32 0D    JMP ($0D32)[$9B:C4F0]  ;} Execute [grapple beam function]
 
 $9B:C4B1 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
 $9B:C4B4 C9 F0 C4    CMP #$C4F0             ;|
-$9B:C4B7 F0 2B       BEQ $2B    [$C4E4]     ;} If [grapple beam function] < cancel:
+$9B:C4B7 F0 2B       BEQ $2B    [$C4E4]     ;} If [grapple beam function] != inactive:
 $9B:C4B9 C9 56 C8    CMP #$C856             ;|
 $9B:C4BC 10 26       BPL $26    [$C4E4]     ;/
 $9B:C4BE AD 74 0A    LDA $0A74  [$7E:0A74]  ;\
@@ -2892,6 +2891,8 @@ $9B:C4EF 6B          RTL
 }
 
 
+;;; $C4F0..CBFA: Grapple beam functions ;;;
+{
 ;;; $C4F0: Grapple beam function - inactive ;;;
 {
 $9B:C4F0 A5 8F       LDA $8F    [$7E:008F]  ;\
@@ -2915,8 +2916,6 @@ $9B:C51D 60          RTS
 }
 
 
-;;; $C51E..CBFA: Grapple beam functions ;;;
-{
 ;;; $C51E: Grapple beam function - fire / go to cancel ;;;
 {
 ; Act as if fire was just pressed. This is often used to *cancel* the beam during no-fire conditions
