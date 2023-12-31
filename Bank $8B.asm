@@ -2786,7 +2786,7 @@ $8B:9441 60          RTS
 }
 
 
-;;; $9442: Instruction - sleep ;;;
+;;; $9442: Unused. Instruction - sleep ;;;
 {
 $8B:9442 C2 30       REP #$30
 $8B:9444 88          DEY
@@ -2809,7 +2809,7 @@ $8B:9456 60          RTS
 }
 
 
-;;; $9457: Instruction - clear pre-instruction ;;;
+;;; $9457: Unused. Instruction - clear pre-instruction ;;;
 {
 $8B:9457 C2 30       REP #$30
 $8B:9459 A9 5F 94    LDA #$945F
@@ -2818,7 +2818,7 @@ $8B:945F 60          RTS
 }
 
 
-;;; $9460: Instruction - call external function [[Y]] ;;;
+;;; $9460: Unused. Instruction - call external function [[Y]] ;;;
 {
 $8B:9460 C2 30       REP #$30
 $8B:9462 B9 00 00    LDA $0000,y
@@ -2838,7 +2838,7 @@ $8B:947B DC 12 00    JML [$0012]
 }
 
 
-;;; $947E: Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
+;;; $947E: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
 $8B:947E C2 30       REP #$30
 $8B:9480 B9 00 00    LDA $0000,y
@@ -2860,7 +2860,7 @@ $8B:949F DC 12 00    JML [$0012]
 }
 
 
-;;; $94A2: Instruction - go to [Y] + ±[[Y]] ;;;
+;;; $94A2: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
 $8B:94A2 C2 30       REP #$30
 $8B:94A4 8C 12 00    STY $0012  [$7E:0012]
@@ -2900,7 +2900,7 @@ $8B:94CC 60          RTS
 }
 
 
-;;; $94CD: Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
+;;; $94CD: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
 $8B:94CD C2 30       REP #$30
 $8B:94CF DE 7D 1B    DEC $1B7D,x

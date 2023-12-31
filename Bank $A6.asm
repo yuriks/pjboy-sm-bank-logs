@@ -8048,10 +8048,13 @@ $A6:D4F8 60          RTS
 }
 
 
-;;; $D4F9:  ;;;
+;;; $D4F9: Check for collision with non-air block ;;;
 {
-; Checks for collisions with blocks at pixel X/Y.
-; All non-air blocks are considered fully solid, SEC if hit, CLC if air
+;; Parameters:
+;;     X: X position
+;;     Y: Y position
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 $A6:D4F9 98          TYA
 $A6:D4FA 4A          LSR A
 $A6:D4FB 4A          LSR A

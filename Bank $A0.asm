@@ -279,7 +279,7 @@ $A0:80B4 6B          RTL
 }
 
 
-;;; $80B5: Instruction - call external function [[Y]] ;;;
+;;; $80B5: Unused. Instruction - call external function [[Y]] ;;;
 {
 $A0:80B5 B9 00 00    LDA $0000,y
 $A0:80B8 85 12       STA $12    [$7E:0012]
@@ -299,7 +299,7 @@ $A0:80CB DC 12 00    JML [$0012]
 }
 
 
-;;; $80CE: Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
+;;; $80CE: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
 $A0:80CE B9 00 00    LDA $0000,y
 $A0:80D1 85 12       STA $12    [$7E:0012]
@@ -1078,7 +1078,7 @@ $A0:8BE3 8D 52 0E    STA $0E52  [$7E:0E52]  ;/
 
 $A0:8BE6 AB          PLB
 $A0:8BE7 28          PLP
-$A0:8BE8 6B          RTL
+$A0:8BE8 6B          RTL                    ; Return
 
 ; Execute enemy initialisation AI
 $A0:8BE9 B9 A6 0F    LDA $0FA6,y[$7E:0FA6]
@@ -5365,7 +5365,7 @@ $A0:ABE6 6B          RTL
 }
 
 
-;;; $ABE7: Check if enemy is touching Samus ;;;
+;;; $ABE7: Check if enemy is touching Samus from below ;;;
 {
 ;; Returns:
 ;;     A: FFFFh if touching Samus, otherwise 0
@@ -5387,14 +5387,14 @@ $A0:AC02 6B          RTL                    ;} Return A = 0
 $A0:AC03 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A0:AC06 18          CLC                    ;|
 $A0:AC07 69 03 00    ADC #$0003             ;|
-$A0:AC0A 38          SEC                    ;|
+$A0:AC0A 38          SEC                    ;} If [Samus Y position] + 3 >= [enemy Y position]: return A = 0
 $A0:AC0B FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;|
-$A0:AC0E 10 11       BPL $11    [$AC21]     ;|
-$A0:AC10 49 FF FF    EOR #$FFFF             ;|
-$A0:AC13 1A          INC A                  ;} If |[Samus Y position] + 3 - [enemy Y position]| <= [Samus X radius] + [enemy X radius]: return A = FFFFh
+$A0:AC0E 10 11       BPL $11    [$AC21]     ;/
+$A0:AC10 49 FF FF    EOR #$FFFF             ;\
+$A0:AC13 1A          INC A                  ;|
 $A0:AC14 38          SEC                    ;|
 $A0:AC15 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$A0:AC18 90 0B       BCC $0B    [$AC25]     ;|
+$A0:AC18 90 0B       BCC $0B    [$AC25]     ;} If [enemy Y position] - ([Samus Y position] + 3) <= [Samus Y radius] + [enemy Y radius]: return A = FFFFh
 $A0:AC1A DD 84 0F    CMP $0F84,x[$7E:0F84]  ;|
 $A0:AC1D F0 06       BEQ $06    [$AC25]     ;|
 $A0:AC1F 90 04       BCC $04    [$AC25]     ;/
@@ -5409,6 +5409,8 @@ $A0:AC28 6B          RTL
 
 ;;; $AC29: Unused. Check if Samus is touching enemy from above ;;;
 {
+;; Returns:
+;;     A: FFFFh if touching Samus, otherwise 0
 $A0:AC29 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A0:AC2C 38          SEC                    ;|
 $A0:AC2D FD 7A 0F    SBC $0F7A,x            ;|
@@ -5432,7 +5434,7 @@ $A0:AC4E 49 FF FF    EOR #$FFFF             ;\
 $A0:AC51 1A          INC A                  ;|
 $A0:AC52 38          SEC                    ;|
 $A0:AC53 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$A0:AC56 90 0B       BCC $0B    [$AC63]     ;} If [enemy X position] - [Samus X position] <= [Samus X radius] + [enemy X radius]: return A = FFFFh
+$A0:AC56 90 0B       BCC $0B    [$AC63]     ;} If [enemy Y position] - [Samus Y position] <= [Samus Y radius] + [enemy Y radius]: return A = FFFFh
 $A0:AC58 DD 84 0F    CMP $0F84,x            ;|
 $A0:AC5B F0 06       BEQ $06    [$AC63]     ;|
 $A0:AC5D 90 04       BCC $04    [$AC63]     ;/
@@ -5445,80 +5447,91 @@ $A0:AC66 6B          RTL
 }
 
 
-;;; $AC67:  ;;;
+;;; $AC67: Check if enemy is touching Samus ;;;
 {
-$A0:AC67 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A0:AC6A 38          SEC
-$A0:AC6B FD 7A 0F    SBC $0F7A,x
-$A0:AC6E 10 04       BPL $04    [$AC74]
-$A0:AC70 49 FF FF    EOR #$FFFF
-$A0:AC73 1A          INC A
+;; Returns:
+;;     A: FFFFh if touching Samus, otherwise 0
+$A0:AC67 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A0:AC6A 38          SEC                    ;|
+$A0:AC6B FD 7A 0F    SBC $0F7A,x            ;|
+$A0:AC6E 10 04       BPL $04    [$AC74]     ;|
+$A0:AC70 49 FF FF    EOR #$FFFF             ;|
+$A0:AC73 1A          INC A                  ;|
+                                            ;|
+$A0:AC74 38          SEC                    ;} If |[Samus X position] - [enemy X position]| >= [Samus X radius] + max(8, [enemy X radius]):
+$A0:AC75 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
+$A0:AC78 90 0E       BCC $0E    [$AC88]     ;|
+$A0:AC7A DD 82 0F    CMP $0F82,x            ;|
+$A0:AC7D 90 09       BCC $09    [$AC88]     ;|
+$A0:AC7F C9 08 00    CMP #$0008             ;|
+$A0:AC82 90 04       BCC $04    [$AC88]     ;/
+$A0:AC84 A9 00 00    LDA #$0000             ;\
+$A0:AC87 6B          RTL                    ;} Return A = 0
 
-$A0:AC74 38          SEC
-$A0:AC75 ED FE 0A    SBC $0AFE  [$7E:0AFE]
-$A0:AC78 90 0E       BCC $0E    [$AC88]
-$A0:AC7A DD 82 0F    CMP $0F82,x
-$A0:AC7D 90 09       BCC $09    [$AC88]
-$A0:AC7F C9 08 00    CMP #$0008
-$A0:AC82 90 04       BCC $04    [$AC88]
-$A0:AC84 A9 00 00    LDA #$0000
-$A0:AC87 6B          RTL
+$A0:AC88 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A0:AC8B 38          SEC                    ;|
+$A0:AC8C FD 7E 0F    SBC $0F7E,x            ;|
+$A0:AC8F 10 04       BPL $04    [$AC95]     ;|
+$A0:AC91 49 FF FF    EOR #$FFFF             ;|
+$A0:AC94 1A          INC A                  ;|
+                                            ;} If |[Samus Y position] - [enemy Y position]| >= [Samus Y radius] + [enemy Y radius]:
+$A0:AC95 38          SEC                    ;|
+$A0:AC96 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
+$A0:AC99 90 09       BCC $09    [$ACA4]     ;|
+$A0:AC9B DD 84 0F    CMP $0F84,x            ;|
+$A0:AC9E 90 04       BCC $04    [$ACA4]     ;/
+$A0:ACA0 A9 00 00    LDA #$0000             ;\
+$A0:ACA3 6B          RTL                    ;} Return A = 0
 
-$A0:AC88 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A0:AC8B 38          SEC
-$A0:AC8C FD 7E 0F    SBC $0F7E,x
-$A0:AC8F 10 04       BPL $04    [$AC95]
-$A0:AC91 49 FF FF    EOR #$FFFF
-$A0:AC94 1A          INC A
-
-$A0:AC95 38          SEC
-$A0:AC96 ED 00 0B    SBC $0B00  [$7E:0B00]
-$A0:AC99 90 09       BCC $09    [$ACA4]
-$A0:AC9B DD 84 0F    CMP $0F84,x
-$A0:AC9E 90 04       BCC $04    [$ACA4]
-$A0:ACA0 A9 00 00    LDA #$0000
-$A0:ACA3 6B          RTL
-
-$A0:ACA4 A9 FF FF    LDA #$FFFF
-$A0:ACA7 6B          RTL
+$A0:ACA4 A9 FF FF    LDA #$FFFF             ;\
+$A0:ACA7 6B          RTL                    ;} Return A = FFFFh
 }
 
 
 ;;; $ACA8:  ;;;
 {
+;; Parameters:
+;;     $0E32: Enemy X position
+;;     $0E34: Enemy Y position
+;;     $0E36: Samus X position
+;;     $0E38: Samus Y position
+;; Returns:
+;;     A: 
+;;     $0E3A: 
+
 ; Called by yapping maw
 $A0:ACA8 DA          PHX
 $A0:ACA9 5A          PHY
-$A0:ACAA AD 36 0E    LDA $0E36  [$7E:0E36]
-$A0:ACAD 38          SEC
-$A0:ACAE ED 32 0E    SBC $0E32  [$7E:0E32]
-$A0:ACB1 8D 3C 0E    STA $0E3C  [$7E:0E3C]
-$A0:ACB4 10 04       BPL $04    [$ACBA]
-$A0:ACB6 49 FF FF    EOR #$FFFF
-$A0:ACB9 1A          INC A
+$A0:ACAA AD 36 0E    LDA $0E36  [$7E:0E36]  ;\
+$A0:ACAD 38          SEC                    ;|
+$A0:ACAE ED 32 0E    SBC $0E32  [$7E:0E32]  ;|
+$A0:ACB1 8D 3C 0E    STA $0E3C  [$7E:0E3C]  ;} A = |[Samus X position] - [enemy X position]|
+$A0:ACB4 10 04       BPL $04    [$ACBA]     ;|
+$A0:ACB6 49 FF FF    EOR #$FFFF             ;|
+$A0:ACB9 1A          INC A                  ;/
 
-$A0:ACBA C9 FF 00    CMP #$00FF
-$A0:ACBD 10 70       BPL $70    [$AD2F]
+$A0:ACBA C9 FF 00    CMP #$00FF             ;\
+$A0:ACBD 10 70       BPL $70    [$AD2F]     ;} If [A] >= FFh: return
 $A0:ACBF 85 12       STA $12    [$7E:0012]
 $A0:ACC1 8D 20 0E    STA $0E20  [$7E:0E20]
-$A0:ACC4 AD 38 0E    LDA $0E38  [$7E:0E38]
-$A0:ACC7 38          SEC
-$A0:ACC8 ED 34 0E    SBC $0E34  [$7E:0E34]
-$A0:ACCB 8D 3E 0E    STA $0E3E  [$7E:0E3E]
-$A0:ACCE 10 04       BPL $04    [$ACD4]
-$A0:ACD0 49 FF FF    EOR #$FFFF
-$A0:ACD3 1A          INC A
-
-$A0:ACD4 C9 FF 00    CMP #$00FF
-$A0:ACD7 10 56       BPL $56    [$AD2F]
+$A0:ACC4 AD 38 0E    LDA $0E38  [$7E:0E38]  ;\
+$A0:ACC7 38          SEC                    ;|
+$A0:ACC8 ED 34 0E    SBC $0E34  [$7E:0E34]  ;|
+$A0:ACCB 8D 3E 0E    STA $0E3E  [$7E:0E3E]  ;} A = |[Samus Y position] - [enemy Y position]|
+$A0:ACCE 10 04       BPL $04    [$ACD4]     ;|
+$A0:ACD0 49 FF FF    EOR #$FFFF             ;|
+$A0:ACD3 1A          INC A                  ;/
+                                            
+$A0:ACD4 C9 FF 00    CMP #$00FF             ;\
+$A0:ACD7 10 56       BPL $56    [$AD2F]     ;} If [A] >= FFh: return
 $A0:ACD9 85 14       STA $14    [$7E:0014]
 $A0:ACDB 8D 22 0E    STA $0E22  [$7E:0E22]
-$A0:ACDE 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
+$A0:ACDE 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; Calculate angle of ([$12], [$14]) offset
 $A0:ACE2 8D 24 0E    STA $0E24  [$7E:0E24]
 $A0:ACE5 AD 20 0E    LDA $0E20  [$7E:0E20]
 $A0:ACE8 8D 32 0E    STA $0E32  [$7E:0E32]
 $A0:ACEB AD 24 0E    LDA $0E24  [$7E:0E24]
-$A0:ACEE 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
+$A0:ACEE 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ; 8-bit negative sine multiplication
 $A0:ACF2 89 00 80    BIT #$8000
 $A0:ACF5 F0 04       BEQ $04    [$ACFB]
 $A0:ACF7 49 FF FF    EOR #$FFFF
@@ -5528,7 +5541,7 @@ $A0:ACFB 8D 26 0E    STA $0E26  [$7E:0E26]
 $A0:ACFE AD 22 0E    LDA $0E22  [$7E:0E22]
 $A0:AD01 8D 32 0E    STA $0E32  [$7E:0E32]
 $A0:AD04 AD 24 0E    LDA $0E24  [$7E:0E24]
-$A0:AD07 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
+$A0:AD07 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ; 8-bit cosine multiplication
 $A0:AD0B 89 00 80    BIT #$8000
 $A0:AD0E F0 04       BEQ $04    [$AD14]
 $A0:AD10 49 FF FF    EOR #$FFFF
@@ -5541,7 +5554,7 @@ $A0:AD19 AD 3C 0E    LDA $0E3C  [$7E:0E3C]
 $A0:AD1C 85 12       STA $12    [$7E:0012]
 $A0:AD1E AD 3E 0E    LDA $0E3E  [$7E:0E3E]
 $A0:AD21 85 14       STA $14    [$7E:0014]
-$A0:AD23 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
+$A0:AD23 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; Calculate angle of ([$12], [$14]) offset
 $A0:AD27 8D 3A 0E    STA $0E3A  [$7E:0E3A]
 $A0:AD2A 68          PLA
 $A0:AD2B 7A          PLY
@@ -7050,7 +7063,7 @@ $A0:BB9A 6B          RTL
 }
 
 
-;;; $BB9B: Check if X distance between enemy and Samus is at least [A]  ;;;
+;;; $BB9B: Check if X distance between enemy and Samus is at least [A] ;;;
 {
 ;; Returns:
 ;;     Carry: Set if X distance between enemy and Samus is at least [A], clear otherwise
@@ -7068,7 +7081,7 @@ $A0:BBAC 6B          RTL
 }
 
 
-;;; $BBAD: Check if Y distance between enemy and Samus is at least [A] ;;;
+;;; $BBAD: Unused. Check if Y distance between enemy and Samus is at least [A] ;;;
 {
 ;; Returns:
 ;;     Carry: Set if Y distance between enemy and Samus is at least [A], clear otherwise
@@ -8302,7 +8315,7 @@ $A0:C28C C8          INY                    ;\
 $A0:C28D C8          INY                    ;} Y += 2
 $A0:C28E 4B          PHK                    ;\
 $A0:C28F F4 83 C2    PEA $C283              ;} Return to LOOP
-$A0:C292 DC 84 17    JML [$1784][$A6:F68B]  ; Execute [$1784]
+$A0:C292 DC 84 17    JML [$1784][$A6:F68B]  ; Go to [$1784]
 
 $A0:C295 9D 94 0F    STA $0F94,x[$7E:0F94]  ; Enemy instruction timer = [[Y]]
 $A0:C298 B9 02 00    LDA $0002,y[$A6:F614]  ;\
@@ -8317,7 +8330,7 @@ $A0:C2AC 9D 88 0F    STA $0F88,x[$7E:0F88]  ;/
 
 ; Where enemy instruction: kill returns to
 $A0:C2AF AB          PLB
-$A0:C2B0 60          RTS
+$A0:C2B0 60          RTS                    ; Return
 
 ; BRANCH_NO_UPDATE
 $A0:C2B1 BD 88 0F    LDA $0F88,x[$7E:0FC8]  ;\

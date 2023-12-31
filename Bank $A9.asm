@@ -95,7 +95,7 @@ $A9:8750 AF 44 78 7E LDA $7E7844[$7E:7844]  ;\
 $A9:8754 F0 0C       BEQ $0C    [$8762]     ;} If unpause hook enabled:
 $A9:8756 A9 00 A9    LDA #$A900             ;\
 $A9:8759 8D 05 06    STA $0605  [$7E:0605]  ;|
-$A9:875C A9 63 87    LDA #$8763             ;} Unpause hook = $A9:8763
+$A9:875C A9 63 87    LDA #$8763             ;} Unpause hook = unpause hook - Mother Brain body
 $A9:875F 8D 04 06    STA $0604  [$7E:0604]  ;/
 
 $A9:8762 6B          RTL

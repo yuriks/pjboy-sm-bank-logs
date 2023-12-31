@@ -4888,34 +4888,34 @@ $8F:C8DC 60          RTS
 ;;; $C8DD: Setup ASM: set pausing code for Draygon ;;;
 {
 ; Room $DA60. Draygon's room
-$8F:C8DD A9 00 8F    LDA #$8F00
-$8F:C8E0 8D 02 06    STA $0602  [$7E:0602]
-$8F:C8E3 A9 F6 C8    LDA #$C8F6
-$8F:C8E6 8D 01 06    STA $0601  [$7E:0601]
-$8F:C8E9 A9 00 8F    LDA #$8F00
-$8F:C8EC 8D 05 06    STA $0605  [$7E:0605]
-$8F:C8EF A9 FC C8    LDA #$C8FC
-$8F:C8F2 8D 04 06    STA $0604  [$7E:0604]
+$8F:C8DD A9 00 8F    LDA #$8F00             ;\
+$8F:C8E0 8D 02 06    STA $0602  [$7E:0602]  ;|
+$8F:C8E3 A9 F6 C8    LDA #$C8F6             ;} Pause hook = pause hook - Draygon
+$8F:C8E6 8D 01 06    STA $0601  [$7E:0601]  ;/
+$8F:C8E9 A9 00 8F    LDA #$8F00             ;\
+$8F:C8EC 8D 05 06    STA $0605  [$7E:0605]  ;|
+$8F:C8EF A9 FC C8    LDA #$C8FC             ;} Unpause hook = unpause hook - Draygon
+$8F:C8F2 8D 04 06    STA $0604  [$7E:0604]  ;/
 $8F:C8F5 60          RTS
 }
 
 
-;;; $C8F6: Draygon's room pausing code ;;;
+;;; $C8F6: Pause hook - Draygon ;;;
 {
 ; Set interrupt handler to main gameplay
-$8F:C8F6 A9 04 00    LDA #$0004
-$8F:C8F9 85 A7       STA $A7    [$7E:00A7]
+$8F:C8F6 A9 04 00    LDA #$0004             ;\
+$8F:C8F9 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = main gameplay
 $8F:C8FB 6B          RTL
 }
 
 
-;;; $C8FC: Draygon's room unpausing code ;;;
+;;; $C8FC: Unpause hook - Draygon ;;;
 {
 $8F:C8FC AD B6 18    LDA $18B6  [$7E:18B6]  ;\
-$8F:C8FF C9 08 00    CMP #$0008             ;} If second DMA slot is empty:
+$8F:C8FF C9 08 00    CMP #$0008             ;} If HDMA object 1 enabled:
 $8F:C902 D0 05       BNE $05    [$C909]     ;/
 $8F:C904 A9 0C 00    LDA #$000C             ;\
-$8F:C907 85 A7       STA $A7    [$7E:00A7]  ;} Set interrupt handler to Draygon's room
+$8F:C907 85 A7       STA $A7    [$7E:00A7]  ;} Next interrupt command = Draygon's room
 
 $8F:C909 6B          RTL
 }

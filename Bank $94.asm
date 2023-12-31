@@ -6066,7 +6066,7 @@ $94:AC10 60          RTS
 }
 
 
-;;; $AC11: Update grapple beam start position ;;;
+;;; $AC11: Update grapple beam start position during grapple swinging ;;;
 {
 $94:AC11 AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
 $94:AC14 29 FF 00    AND #$00FF             ;|
@@ -6458,9 +6458,9 @@ $94:AEE2 6B          RTL                    ;} Return carry clear
 $94:AEE3 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $94:AEE6 4D 26 0D    EOR $0D26  [$7E:0D26]  ;} If sgn([grapple beam end angle]) != sgn([grapple swing angular velocity]): go to BRANCH_RISING
 $94:AEE9 30 1A       BMI $1A    [$AF05]     ;/
-$94:AEEB EE 38 0D    INC $0D38  [$7E:0D38]  ; Increment $0D38
+$94:AEEB EE 38 0D    INC $0D38  [$7E:0D38]  ; Increment failed grapple swing movement counter
 $94:AEEE AD 38 0D    LDA $0D38  [$7E:0D38]  ;\
-$94:AEF1 C9 20 00    CMP #$0020             ;} If [$0D38] = 20h:
+$94:AEF1 C9 20 00    CMP #$0020             ;} If [failed grapple swing movement counter] = 20h:
 $94:AEF4 D0 06       BNE $06    [$AEFC]     ;/
 $94:AEF6 A9 C5 C8    LDA #$C8C5             ;\
 $94:AEF9 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = dropped
@@ -6472,7 +6472,7 @@ $94:AF03 38          SEC                    ;\
 $94:AF04 6B          RTL                    ;} Return carry set
 
 ; BRANCH_RISING
-$94:AF05 9C 38 0D    STZ $0D38  [$7E:0D38]  ; $0D38 = 0
+$94:AF05 9C 38 0D    STZ $0D38  [$7E:0D38]  ; Failed grapple swing movement counter = 0
 $94:AF08 AB          PLB
 $94:AF09 38          SEC                    ;\
 $94:AF0A 6B          RTL                    ;} Return carry set
@@ -6592,8 +6592,8 @@ $94:AFB9 6B          RTL
 ;     $0CFE: Grapple beam length
 ;     $0D08: Grapple beam end X position
 ;     $0D0C: Grapple beam end Y position
-;     $0D1A: Grapple beam start X position
-;     $0D1C: Grapple beam start Y position
+;     $0D1A: Grapple beam flare X position
+;     $0D1C: Grapple beam flare Y position
 ;     $0D42..61: Grapple segment animation instruction timers
 ;     $0D62..81: Grapple segment animation instruction list pointers
 
@@ -6606,7 +6606,7 @@ $94:AFBD AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
 $94:AFC0 38          SEC                    ;|
 $94:AFC1 ED 1A 0D    SBC $0D1A  [$7E:0D1A]  ;|
 $94:AFC4 85 12       STA $12    [$7E:0012]  ;|
-$94:AFC6 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;} A = angle from ([$0D1A], [$0D1C]) to ([grapple beam end X position], [grapple beam end Y position])
+$94:AFC6 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;} A = angle from ([grapple beam flare X position], [grapple beam flare Y position]) to ([grapple beam end X position], [grapple beam end Y position])
 $94:AFC9 38          SEC                    ;|
 $94:AFCA ED 1C 0D    SBC $0D1C  [$7E:0D1C]  ;|
 $94:AFCD 85 14       STA $14    [$7E:0014]  ;|
@@ -6646,14 +6646,14 @@ $94:B00C 85 26       STA $26    [$7E:0026]  ;/
 $94:B00E AD 1A 0D    LDA $0D1A  [$7E:0D1A]  ;\
 $94:B011 38          SEC                    ;|
 $94:B012 ED 11 09    SBC $0911  [$7E:0911]  ;|
-$94:B015 38          SEC                    ;} $14 = [$0D1A] - [layer 1 X position] - 4 (X position)
+$94:B015 38          SEC                    ;} $14 = [grapple beam flare X position] - [layer 1 X position] - 4 (X position)
 $94:B016 E9 04 00    SBC #$0004             ;|
 $94:B019 85 14       STA $14    [$7E:0014]  ;/
 $94:B01B 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (X subposition)
 $94:B01D AD 1C 0D    LDA $0D1C  [$7E:0D1C]  ;\
 $94:B020 38          SEC                    ;|
 $94:B021 ED 15 09    SBC $0915  [$7E:0915]  ;|
-$94:B024 38          SEC                    ;} $18 = [$0D1A] - [layer 1 X position] - 4 (Y position)
+$94:B024 38          SEC                    ;} $18 = [grapple beam flare Y position] - [layer 1 Y position] - 4 (Y position)
 $94:B025 E9 04 00    SBC #$0004             ;|
 $94:B028 85 18       STA $18    [$7E:0018]  ;/
 $94:B02A 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (Y subposition)

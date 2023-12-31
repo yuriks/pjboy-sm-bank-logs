@@ -296,7 +296,7 @@ $86:8188 DC 12 00    JML [$0012][$86:C7FB]
 }
 
 
-;;; $818B: Instruction - call external function [[Y]] with 2 byte parameter [[Y] + 3] ;;;
+;;; $818B: Unused. Instruction - call external function [[Y]] with 2 byte parameter [[Y] + 3] ;;;
 {
 $86:818B B9 00 00    LDA $0000,y
 $86:818E 85 12       STA $12    [$7E:0012]
@@ -354,7 +354,7 @@ $86:81CD 60          RTS
 }
 
 
-;;; $81CE: Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
+;;; $81CE: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
 $86:81CE DE DF 19    DEC $19DF,x
 $86:81D1 D0 DD       BNE $DD    [$81B0]
@@ -450,7 +450,7 @@ $86:8247 60          RTS
 }
 
 
-;;; $8248: Instruction - enable collision with Samus projectiles ;;;
+;;; $8248: Unused. Instruction - enable collision with Samus projectiles ;;;
 {
 $86:8248 BD D7 1B    LDA $1BD7,x
 $86:824B 09 00 80    ORA #$8000
@@ -477,7 +477,7 @@ $86:8265 60          RTS
 }
 
 
-;;; $8266: Instruction - enable collision with Samus ;;;
+;;; $8266: Unused. Instruction - enable collision with Samus ;;;
 {
 $86:8266 BD D7 1B    LDA $1BD7,x
 $86:8269 29 FF DF    AND #$DFFF
@@ -486,7 +486,7 @@ $86:826F 60          RTS
 }
 
 
-;;; $8270: Instruction - set to not die on contact ;;;
+;;; $8270: Unused. Instruction - set to not die on contact ;;;
 {
 $86:8270 BD D7 1B    LDA $1BD7,x
 $86:8273 09 00 40    ORA #$4000
@@ -495,7 +495,7 @@ $86:8279 60          RTS
 }
 
 
-;;; $827A: Instruction - set to die on contact ;;;
+;;; $827A: Unused. Instruction - set to die on contact ;;;
 {
 $86:827A BD D7 1B    LDA $1BD7,x
 $86:827D 29 FF BF    AND #$BFFF
@@ -513,7 +513,7 @@ $86:828D 60          RTS
 }
 
 
-;;; $828E: Instruction - set high priority ;;;
+;;; $828E: Unused. Instruction - set high priority ;;;
 {
 $86:828E BD D7 1B    LDA $1BD7,x
 $86:8291 29 FF EF    AND #$EFFF
@@ -532,7 +532,7 @@ $86:82A0 60          RTS
 }
 
 
-;;; $82A1: Instruction - X radius = 0, Y radius = 0 ;;;
+;;; $82A1: Unused. Instruction - X radius = 0, Y radius = 0 ;;;
 {
 $86:82A1 9E B3 1B    STZ $1BB3,x
 $86:82A4 60          RTS
@@ -566,7 +566,7 @@ $86:82D4 60          RTS
 }
 
 
-;;; $82D5: Instruction - write [[Y] + 4] colours from [[Y]] to colour index [[Y] + 2] ;;;
+;;; $82D5: Unused. Instruction - write [[Y] + 4] colours from [[Y]] to colour index [[Y] + 2] ;;;
 {
 $86:82D5 5A          PHY
 $86:82D6 DA          PHX
@@ -594,7 +594,7 @@ $86:82FC 60          RTS
 }
 
 
-;;; $82FD: Instruction - queue music track [[Y]] ;;;
+;;; $82FD: Unused. Instruction - queue music track [[Y]] ;;;
 {
 $86:82FD B9 00 00    LDA $0000,y
 $86:8300 29 FF 00    AND #$00FF
@@ -604,7 +604,7 @@ $86:8308 60          RTS
 }
 
 
-;;; $8309: Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 6 ;;;
+;;; $8309: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 6 ;;;
 {
 $86:8309 B9 00 00    LDA $0000,y
 $86:830C 22 49 90 80 JSL $809049[$80:9049]
@@ -640,7 +640,7 @@ $86:832C 60          RTS
 }
 
 
-;;; $832D: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 15 ;;;
+;;; $832D: Unused. Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 15 ;;;
 {
 $86:832D B9 00 00    LDA $0000,y
 $86:8330 22 A3 90 80 JSL $8090A3[$80:90A3]
@@ -649,7 +649,7 @@ $86:8335 60          RTS
 }
 
 
-;;; $8336: Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 15 ;;;
+;;; $8336: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 15 ;;;
 {
 $86:8336 B9 00 00    LDA $0000,y
 $86:8339 22 25 91 80 JSL $809125[$80:9125]
@@ -658,7 +658,7 @@ $86:833E 60          RTS
 }
 
 
-;;; $833F: Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 3 ;;;
+;;; $833F: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 3 ;;;
 {
 $86:833F B9 00 00    LDA $0000,y
 $86:8342 22 35 90 80 JSL $809035[$80:9035]
@@ -667,7 +667,7 @@ $86:8347 60          RTS
 }
 
 
-;;; $8348: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 3 ;;;
+;;; $8348: Unused. Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 3 ;;;
 {
 $86:8348 B9 00 00    LDA $0000,y
 $86:834B 22 B7 90 80 JSL $8090B7[$80:90B7]
@@ -676,7 +676,7 @@ $86:8350 60          RTS
 }
 
 
-;;; $8351: Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 3 ;;;
+;;; $8351: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 3 ;;;
 {
 $86:8351 B9 00 00    LDA $0000,y
 $86:8354 22 39 91 80 JSL $809139[$80:9139]
@@ -685,7 +685,7 @@ $86:8359 60          RTS
 }
 
 
-;;; $835A: Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 9 ;;;
+;;; $835A: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 9 ;;;
 {
 $86:835A B9 00 00    LDA $0000,y
 $86:835D 22 2B 90 80 JSL $80902B[$80:902B]
@@ -694,7 +694,7 @@ $86:8362 60          RTS
 }
 
 
-;;; $8363: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 9 ;;;
+;;; $8363: Unused. Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 9 ;;;
 {
 $86:8363 B9 00 00    LDA $0000,y
 $86:8366 22 AD 90 80 JSL $8090AD[$80:90AD]
@@ -703,7 +703,7 @@ $86:836B 60          RTS
 }
 
 
-;;; $836C: Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 9 ;;;
+;;; $836C: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 9 ;;;
 {
 $86:836C B9 00 00    LDA $0000,y
 $86:836F 22 2F 91 80 JSL $80912F[$80:912F]
@@ -712,7 +712,7 @@ $86:8374 60          RTS
 }
 
 
-;;; $8375: Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 1 ;;;
+;;; $8375: Unused. Instruction - queue sound [[Y]], sound library 1, max queued sounds allowed = 1 ;;;
 {
 $86:8375 B9 00 00    LDA $0000,y
 $86:8378 22 3F 90 80 JSL $80903F[$80:903F]
@@ -9967,7 +9967,7 @@ $86:C76E             dx 0006,82DC,
 ;;; $C796: Instruction list - enemy projectile $CB67/$CB75 (Mother Brain's death beam) ;;;
 {
 $86:C796             dx 0003,835D,
-                        8171,86C7FB,; Spawn Mother Brain's death beam - fired enemy projectile
+                        8171,86C7FB,    ; Call function spawn Mother Brain's death beam - fired enemy projectile
                         0003,8364,
                         0002,836B,
                         0002,8372,
@@ -9975,7 +9975,7 @@ $86:C796             dx 0003,835D,
                         0001,8380,
                         0001,8387,
                         0003,835D,
-                        8171,86C7FB,; Spawn Mother Brain's death beam - fired enemy projectile
+                        8171,86C7FB,    ; Call function spawn Mother Brain's death beam - fired enemy projectile
                         0003,8364,
                         0002,836B,
                         0002,8372,
@@ -9983,14 +9983,14 @@ $86:C796             dx 0003,835D,
                         0001,8380,
                         0001,8387,
                         0003,835D,
-                        8171,86C7FB,; Spawn Mother Brain's death beam - fired enemy projectile
+                        8171,86C7FB,    ; Call function spawn Mother Brain's death beam - fired enemy projectile
                         0003,8364,
                         0002,836B,
                         0002,8372,
                         0001,8379,
                         0001,8380,
                         0001,8387,
-                        8154        ; Delete
+                        8154            ; Delete
 }
 
 

@@ -818,6 +818,7 @@ $88:83DA A9 5A       LDA #$5A               ;\
 $88:83DC 85 5A       STA $5A    [$7E:005A]  ;} BG3 tilemap base address = $5800, size = 32x64
 $88:83DE 85 5B       STA $5B    [$7E:005B]  ;/
 $88:83E0 28          PLP
+
 $88:83E1 6B          RTL
 }
 
@@ -1143,7 +1144,7 @@ $88:8583 60          RTS
 }
 
 
-;;; $8584: Instruction - clear pre-instruction ;;;
+;;; $8584: Unused. Instruction - clear pre-instruction ;;;
 {
 $88:8584 A9 8A 85    LDA #$858A
 $88:8587 9D F0 18    STA $18F0,x
@@ -1152,7 +1153,7 @@ $88:858A 60          RTS
 }
 
 
-;;; $858B: Instruction - call function [[Y]] ;;;
+;;; $858B: Unused. Instruction - call function [[Y]] ;;;
 {
 $88:858B B9 00 00    LDA $0000,y
 $88:858E 85 12       STA $12    [$7E:0012]
@@ -1169,7 +1170,7 @@ $88:859C 60          RTS
 }
 
 
-;;; $859D: Instruction - call function [[Y]] with A = [[Y] + 2] ;;;
+;;; $859D: Unused. Instruction - call function [[Y]] with A = [[Y] + 2] ;;;
 {
 $88:859D B9 00 00    LDA $0000,y
 $88:85A0 85 12       STA $12    [$7E:0012]
@@ -1209,7 +1210,7 @@ $88:85CA DC 12 00    JML [$0012][$88:8B14]
 }
 
 
-;;; $85CD: Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
+;;; $85CD: Unused. Instruction - call external function [[Y]] with A = [[Y] + 3] ;;;
 {
 $88:85CD B9 00 00    LDA $0000,y
 $88:85D0 85 12       STA $12    [$7E:0012]
@@ -1239,7 +1240,7 @@ $88:85F0 60          RTS
 }
 
 
-;;; $85F1: Instruction - go to [Y] + ±[[Y]] ;;;
+;;; $85F1: Unused. Instruction - go to [Y] + ±[[Y]] ;;;
 {
 $88:85F1 84 12       STY $12    [$7E:0012]
 $88:85F3 88          DEY
@@ -1258,7 +1259,7 @@ $88:8606 60          RTS
 }
 
 
-;;; $8607: Instruction - decrement timer and go to [[Y]] if non-zero ;;;
+;;; $8607: Unused. Instruction - decrement timer and go to [[Y]] if non-zero ;;;
 {
 $88:8607 DE 08 19    DEC $1908,x
 $88:860A D0 E0       BNE $E0    [$85EC]
@@ -1268,7 +1269,7 @@ $88:860E 60          RTS
 }
 
 
-;;; $860F: Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
+;;; $860F: Unused. Instruction - decrement timer and go to [Y] + ±[[Y]] if non-zero ;;;
 {
 $88:860F DE 08 19    DEC $1908,x
 $88:8612 D0 DD       BNE $DD    [$85F1]
@@ -1277,7 +1278,7 @@ $88:8615 60          RTS
 }
 
 
-;;; $8616: Instruction - timer = [[Y]] ;;;
+;;; $8616: Unused. Instruction - timer = [[Y]] ;;;
 {
 $88:8616 E2 20       SEP #$20
 $88:8618 B9 00 00    LDA $0000,y
@@ -1288,7 +1289,7 @@ $88:8621 60          RTS
 }
 
 
-;;; $8622: Instruction - HDMA control = [[Y]] ;;;
+;;; $8622: Unused. Instruction - HDMA control = [[Y]] ;;;
 {
 $88:8622 DA          PHX
 $88:8623 BD C0 18    LDA $18C0,x
@@ -1304,7 +1305,7 @@ $88:8636 60          RTS
 }
 
 
-;;; $8637: Instruction - HDMA target = [[Y]] ;;;
+;;; $8637: Unused. Instruction - HDMA target = [[Y]] ;;;
 {
 $88:8637 DA          PHX
 $88:8638 BD C0 18    LDA $18C0,x
@@ -1320,7 +1321,7 @@ $88:864B 60          RTS
 }
 
 
-;;; $864C: Instruction - HDMA table pointer = [[Y]] ;;;
+;;; $864C: Unused. Instruction - HDMA table pointer = [[Y]] ;;;
 {
 $88:864C B9 00 00    LDA $0000,y
 $88:864F 9D D8 18    STA $18D8,x
@@ -1362,7 +1363,7 @@ $88:867E 60          RTS
 }
 
 
-;;; $867F: Instruction - skip next instruction ;;;
+;;; $867F: Unused. Instruction - skip next instruction ;;;
 {
 $88:867F C8          INY
 $88:8680 C8          INY

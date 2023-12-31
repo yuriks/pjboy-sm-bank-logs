@@ -4126,7 +4126,9 @@ $91:B2C0             db 02,
 
 ; B2h: Facing clockwise     - grapple - in air
 ; B3h: Facing anticlockwise - grapple - in air
-$91:B2C4             db 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08,
+$91:B2C4             db 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 
+                        08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, ; Grapple kicking
+                        08, ; Hanging straight down
                         08, FE,01
 
 ; 4Bh: Facing right - normal jump transition
@@ -6357,7 +6359,7 @@ $91:C5E5 AA          TAX                    ;|
 $91:C5E6 BD D4 C9    LDA $C9D4,x[$91:CA7E]  ;|
 $91:C5E9 85 20       STA $20    [$7E:0020]  ;/
 $91:C5EB BB          TYX
-$91:C5EC 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0
+$91:C5EC 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; Off-screen beam HDMA data table index = 0
 $91:C5EF FC F5 C5    JSR ($C5F5,x)[$91:C822]; Execute [$C5F5 + [Y]]
 $91:C5F2 AB          PLB
 $91:C5F3 28          PLP
@@ -6621,7 +6623,7 @@ $91:C732 88          DEY                    ;} Y -= 2
 $91:C733 10 EB       BPL $EB    [$C720]     ; If [Y] >= 0: go to LOOP_LEFT_ON_SCREEN
 $91:C735 80 0F       BRA $0F    [$C746]     ; Go to BRANCH_LEFT_EDGE_END
 
-$91:C737 8C 1E 0D    STY $0D1E  [$7E:0D1E]  ; $0D1E = [Y]
+$91:C737 8C 1E 0D    STY $0D1E  [$7E:0D1E]  ; Off-screen beam HDMA data table index = [Y]
 $91:C73A E2 20       SEP #$20               ;\
 $91:C73C A9 FF       LDA #$FF               ;|
                                             ;|
@@ -6658,8 +6660,8 @@ $91:C765 88          DEY                    ;} [$00]..([$00] + [Y]) = xx,FFh
 $91:C766 88          DEY                    ;|
 $91:C767 10 F8       BPL $F8    [$C761]     ;|
 $91:C769 C2 20       REP #$20               ;/
-$91:C76B AC 1E 0D    LDY $0D1E  [$7E:0D1E]  ;\
-$91:C76E F0 0D       BEQ $0D    [$C77D]     ;} If [$0D1E] = 0: return
+$91:C76B AC 1E 0D    LDY $0D1E  [$7E:0D1E]  ; Y = [off-screen beam HDMA data table index]
+$91:C76E F0 0D       BEQ $0D    [$C77D]     ; If [Y] = 0: return
 $91:C770 88          DEY                    ;\
 $91:C771 88          DEY                    ;} Y -= 2
 $91:C772 30 09       BMI $09    [$C77D]     ; If [Y] < 0: return
@@ -6926,7 +6928,7 @@ $91:C88D C0 CC 01    CPY #$01CC             ;\
 $91:C890 30 EC       BMI $EC    [$C87E]     ;} If [Y] < 1CCh: go to LOOP_RIGHT_ON_SCREEN
 $91:C892 80 0F       BRA $0F    [$C8A3]     ; Go to BRANCH_RIGHT_EDGE_END
 
-$91:C894 8C 1E 0D    STY $0D1E  [$7E:0D1E]
+$91:C894 8C 1E 0D    STY $0D1E  [$7E:0D1E]  ; Off-screen beam HDMA data table index = [Y]
 $91:C897 A9 FF 00    LDA #$00FF             ;\
                                             ;|
 $91:C89A 97 00       STA [$00],y[$7E:92A4]  ;|
@@ -6964,8 +6966,8 @@ $91:C8C6 C8          INY                    ;|
 $91:C8C7 C0 CC 01    CPY #$01CC             ;|
 $91:C8CA 30 F5       BMI $F5    [$C8C1]     ;/
 $91:C8CC C2 20       REP #$20
-$91:C8CE AC 1E 0D    LDY $0D1E  [$7E:0D1E]  ;\
-$91:C8D1 F0 13       BEQ $13    [$C8E6]     ;} If [$0D1E] = 0: return
+$91:C8CE AC 1E 0D    LDY $0D1E  [$7E:0D1E]  ; Y = [off-screen beam HDMA data table index]
+$91:C8D1 F0 13       BEQ $13    [$C8E6]     ; If [Y] = 0: return
 $91:C8D3 C8          INY                    ;\
 $91:C8D4 C8          INY                    ;} Y += 2
 $91:C8D5 C0 CC 01    CPY #$01CC             ;\
@@ -12263,7 +12265,7 @@ $91:EF4E 60          RTS
 
 ;;; $EF4F: Special prospective pose change command 9 - connecting grapple - swinging ;;;
 {
-$91:EF4F 22 95 BD 9B JSL $9BBD95[$9B:BD95]  ; Execute $9B:BD95
+$91:EF4F 22 95 BD 9B JSL $9BBD95[$9B:BD95]  ; Set Samus animation frame and position during grapple swinging
 }
 
 
@@ -12271,39 +12273,39 @@ $91:EF4F 22 95 BD 9B JSL $9BBD95[$9B:BD95]  ; Execute $9B:BD95
 {
 $91:EF53 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $91:EF56 38          SEC                    ;|
-$91:EF57 ED 10 0B    SBC $0B10  [$7E:0B10]  ;} If [Samus X position] >= [Samus previous X position]:
-$91:EF5A 30 11       BMI $11    [$EF6D]     ;/
-$91:EF5C C9 0D 00    CMP #$000D             ;\
+$91:EF57 ED 10 0B    SBC $0B10  [$7E:0B10]  ;|
+$91:EF5A 30 11       BMI $11    [$EF6D]     ;|
+$91:EF5C C9 0D 00    CMP #$000D             ;|
 $91:EF5F 30 1B       BMI $1B    [$EF7C]     ;|
 $91:EF61 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
-$91:EF64 38          SEC                    ;} Samus previous X position = max([Samus previous X position], [Samus X position] - Ch)
+$91:EF64 38          SEC                    ;|
 $91:EF65 E9 0C 00    SBC #$000C             ;|
-$91:EF68 8D 10 0B    STA $0B10  [$7E:0B10]  ;/
-$91:EF6B 80 0F       BRA $0F    [$EF7C]
-
-$91:EF6D C9 F4 FF    CMP #$FFF4             ;\ Else ([Samus X position] < [Samus previous X position]):
+$91:EF68 8D 10 0B    STA $0B10  [$7E:0B10]  ;} Samus previous X position = clamp([Samus previous X position], [Samus X position] - Ch, [Samus X position] + Ch)
+$91:EF6B 80 0F       BRA $0F    [$EF7C]     ;|
+                                            ;|
+$91:EF6D C9 F4 FF    CMP #$FFF4             ;|
 $91:EF70 10 0A       BPL $0A    [$EF7C]     ;|
 $91:EF72 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
-$91:EF75 18          CLC                    ;} Samus previous X position = min([Samus previous X position], [Samus X position] + Ch)
+$91:EF75 18          CLC                    ;|
 $91:EF76 69 0C 00    ADC #$000C             ;|
 $91:EF79 8D 10 0B    STA $0B10  [$7E:0B10]  ;/
-
+                                            
 $91:EF7C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $91:EF7F 38          SEC                    ;|
-$91:EF80 ED 14 0B    SBC $0B14  [$7E:0B14]  ;} If [Samus Y position] >= [Samus previous Y position]:
-$91:EF83 30 11       BMI $11    [$EF96]     ;/
-$91:EF85 C9 0D 00    CMP #$000D             ;\
+$91:EF80 ED 14 0B    SBC $0B14  [$7E:0B14]  ;|
+$91:EF83 30 11       BMI $11    [$EF96]     ;|
+$91:EF85 C9 0D 00    CMP #$000D             ;|
 $91:EF88 30 1B       BMI $1B    [$EFA5]     ;|
 $91:EF8A AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
-$91:EF8D 38          SEC                    ;} Samus previous Y position = max([Samus previous Y position], [Samus Y position] - Ch)
+$91:EF8D 38          SEC                    ;|
 $91:EF8E E9 0C 00    SBC #$000C             ;|
-$91:EF91 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
-$91:EF94 80 0F       BRA $0F    [$EFA5]
-
-$91:EF96 C9 F4 FF    CMP #$FFF4             ;\ Else ([Samus Y position] < [Samus previous Y position]):
+$91:EF91 8D 14 0B    STA $0B14  [$7E:0B14]  ;} Samus previous Y position = clamp([Samus previous Y position], [Samus Y position] - Ch, [Samus Y position] + Ch)
+$91:EF94 80 0F       BRA $0F    [$EFA5]     ;|
+                                            ;|
+$91:EF96 C9 F4 FF    CMP #$FFF4             ;|
 $91:EF99 10 0A       BPL $0A    [$EFA5]     ;|
 $91:EF9B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
-$91:EF9E 18          CLC                    ;} Samus previous Y position = min([Samus previous Y position], [Samus Y position] + Ch)
+$91:EF9E 18          CLC                    ;|
 $91:EF9F 69 0C 00    ADC #$000C             ;|
 $91:EFA2 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
 
@@ -12320,7 +12322,7 @@ $91:EFBB 60          RTS
 
 ;;; $EFBC: Special prospective pose change command Ah - connecting grapple - stuck in place ;;;
 {
-$91:EFBC 22 EB BE 9B JSL $9BBEEB[$9B:BEEB]  ; Execute $9B:BEEB
+$91:EFBC 22 EB BE 9B JSL $9BBEEB[$9B:BEEB]  ; Set Samus animation frame and position for connecting grapple stuck in place
 $91:EFC0 4C 53 EF    JMP $EF53  [$91:EF53]  ; Go to connecting grapple - kill speed and clamp scrolling speed
 }
 }
@@ -12961,42 +12963,42 @@ $91:F3A9 60          RTS
 
 ;;; $F3AA: Super special prospective pose change command 7 - start release from grapple swing ;;;
 {
-; This just clamps scrolling speed, why is this done via $0A32 handler instead of in $9B:CB8B?
+; Clamps scrolling speed. I guess the idea is that Samus might have moved too far due to the pose change
 $91:F3AA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $91:F3AD 38          SEC                    ;|
-$91:F3AE ED 10 0B    SBC $0B10  [$7E:0B10]  ;} If [Samus X position] >= [Samus previous X position]:
-$91:F3B1 30 11       BMI $11    [$F3C4]     ;/
-$91:F3B3 C9 0D 00    CMP #$000D             ;\
+$91:F3AE ED 10 0B    SBC $0B10  [$7E:0B10]  ;|
+$91:F3B1 30 11       BMI $11    [$F3C4]     ;|
+$91:F3B3 C9 0D 00    CMP #$000D             ;|
 $91:F3B6 30 1B       BMI $1B    [$F3D3]     ;|
 $91:F3B8 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
-$91:F3BB 38          SEC                    ;} Samus previous X position = max([Samus previous X position], [Samus X position] - Ch)
+$91:F3BB 38          SEC                    ;|
 $91:F3BC E9 0C 00    SBC #$000C             ;|
-$91:F3BF 8D 10 0B    STA $0B10  [$7E:0B10]  ;/
-$91:F3C2 80 0F       BRA $0F    [$F3D3]
-
-$91:F3C4 C9 F4 FF    CMP #$FFF4             ;\ Else ([Samus X position] < [Samus previous X position]):
+$91:F3BF 8D 10 0B    STA $0B10  [$7E:0B10]  ;} Samus previous X position = clamp([Samus previous X position], [Samus X position] - Ch, [Samus X position] + Ch)
+$91:F3C2 80 0F       BRA $0F    [$F3D3]     ;|
+                                            ;|
+$91:F3C4 C9 F4 FF    CMP #$FFF4             ;|
 $91:F3C7 10 0A       BPL $0A    [$F3D3]     ;|
 $91:F3C9 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
-$91:F3CC 18          CLC                    ;} Samus previous X position = min([Samus previous X position], [Samus X position] + Ch)
+$91:F3CC 18          CLC                    ;|
 $91:F3CD 69 0C 00    ADC #$000C             ;|
 $91:F3D0 8D 10 0B    STA $0B10  [$7E:0B10]  ;/
-
+                                            
 $91:F3D3 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $91:F3D6 38          SEC                    ;|
-$91:F3D7 ED 14 0B    SBC $0B14  [$7E:0B14]  ;} If [Samus Y position] >= [Samus previous Y position]:
-$91:F3DA 30 11       BMI $11    [$F3ED]     ;/
-$91:F3DC C9 0D 00    CMP #$000D             ;\
+$91:F3D7 ED 14 0B    SBC $0B14  [$7E:0B14]  ;|
+$91:F3DA 30 11       BMI $11    [$F3ED]     ;|
+$91:F3DC C9 0D 00    CMP #$000D             ;|
 $91:F3DF 30 1B       BMI $1B    [$F3FC]     ;|
 $91:F3E1 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
-$91:F3E4 38          SEC                    ;} Samus previous Y position = max([Samus previous Y position], [Samus Y position] - Ch)
+$91:F3E4 38          SEC                    ;|
 $91:F3E5 E9 0C 00    SBC #$000C             ;|
-$91:F3E8 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
-$91:F3EB 80 0F       BRA $0F    [$F3FC]
-
-$91:F3ED C9 F4 FF    CMP #$FFF4             ;\ Else ([Samus Y position] < [Samus previous Y position]):
+$91:F3E8 8D 14 0B    STA $0B14  [$7E:0B14]  ;} Samus previous Y position = clamp([Samus previous Y position], [Samus Y position] - Ch, [Samus Y position] + Ch)
+$91:F3EB 80 0F       BRA $0F    [$F3FC]     ;|
+                                            ;|
+$91:F3ED C9 F4 FF    CMP #$FFF4             ;|
 $91:F3F0 10 0A       BPL $0A    [$F3FC]     ;|
 $91:F3F2 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
-$91:F3F5 18          CLC                    ;} Samus previous Y position = min([Samus previous Y position], [Samus Y position] + Ch)
+$91:F3F5 18          CLC                    ;|
 $91:F3F6 69 0C 00    ADC #$000C             ;|
 $91:F3F9 8D 14 0B    STA $0B14  [$7E:0B14]  ;/
 

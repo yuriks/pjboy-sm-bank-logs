@@ -1894,7 +1894,7 @@ $A3:9D16 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:9D19 A9 00 00    LDA #$0000
 $A3:9D1C 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $A3:9D20 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A3:9D24 F0 07       BEQ $07    [$9D2D]     ;} If enemy is touching Samus:
+$A3:9D24 F0 07       BEQ $07    [$9D2D]     ;} If enemy is touching Samus from below:
 $A3:9D26 A9 01 00    LDA #$0001
 $A3:9D29 9F 00 78 7E STA $7E7800,x[$7E:7840]
 

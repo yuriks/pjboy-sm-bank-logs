@@ -2876,7 +2876,7 @@ $A7:B8DB 9F 00 78 7E STA $7E7800,x[$7E:7900];} Kraid enemy next function = produ
 $A7:B8DF 9E AA 0F    STZ $0FAA,x[$7E:10AA]  ; Kraid lint spawning X speed = 0
 
 $A7:B8E2 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A7:B8E6 29 FF FF    AND #$FFFF             ;} If Samus is not touching the enemy: return
+$A7:B8E6 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below: return
 $A7:B8E9 F0 1B       BEQ $1B    [$B906]     ;/
 $A7:B8EB AD 56 0B    LDA $0B56  [$7E:0B56]  ;\
 $A7:B8EE 38          SEC                    ;|

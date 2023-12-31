@@ -216,7 +216,7 @@ $80:8110 60          RTS
 }
 
 
-;;; $8111: Random number generator ;;;
+;;; $8111: Generate random number ;;;
 {
 ;; Returns
 ;;     A: New random number
@@ -4104,24 +4104,24 @@ $80:9AAF D0 F2       BNE $F2    [$9AA3]     ;/
 $80:9AB1 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $80:9AB4 89 00 80    BIT #$8000             ;} If x-ray equipped:
 $80:9AB7 F0 04       BEQ $04    [$9ABD]     ;/
-$80:9AB9 22 3E 9A 80 JSL $809A3E            ; Add x-ray to HUD tilemap
+$80:9AB9 22 3E 9A 80 JSL $809A3E[$80:9A3E]  ; Add x-ray to HUD tilemap
 
 $80:9ABD AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $80:9AC0 89 00 40    BIT #$4000             ;} If grapple equipped:
 $80:9AC3 F0 04       BEQ $04    [$9AC9]     ;/
-$80:9AC5 22 2E 9A 80 JSL $809A2E            ; Add grapple to HUD tilemap
+$80:9AC5 22 2E 9A 80 JSL $809A2E[$80:9A2E]  ; Add grapple to HUD tilemap
 
 $80:9AC9 AD C8 09    LDA $09C8  [$7E:09C8]  ;\
 $80:9ACC F0 04       BEQ $04    [$9AD2]     ;} If [Samus max missiles] != 0:
-$80:9ACE 22 CF 99 80 JSL $8099CF            ; Add missiles to HUD tilemap
+$80:9ACE 22 CF 99 80 JSL $8099CF[$80:99CF]  ; Add missiles to HUD tilemap
 
 $80:9AD2 AD CC 09    LDA $09CC  [$7E:09CC]  ;\
 $80:9AD5 F0 04       BEQ $04    [$9ADB]     ;} If [Samus max super missiles] != 0:
-$80:9AD7 22 0E 9A 80 JSL $809A0E            ; Add super missiles to HUD tilemap
+$80:9AD7 22 0E 9A 80 JSL $809A0E[$80:9A0E]  ; Add super missiles to HUD tilemap
 
 $80:9ADB AD D0 09    LDA $09D0  [$7E:09D0]  ;\
 $80:9ADE F0 04       BEQ $04    [$9AE4]     ;} If [Samus max power bombs] != 0:
-$80:9AE0 22 1E 9A 80 JSL $809A1E            ; Add power bombs to HUD tilemap
+$80:9AE0 22 1E 9A 80 JSL $809A1E[$80:9A1E]  ; Add power bombs to HUD tilemap
 
 $80:9AE4 9C 06 0A    STZ $0A06  [$7E:0A06]  ; Samus previous health = 0
 $80:9AE7 9C 08 0A    STZ $0A08  [$7E:0A08]  ; Samus previous missiles = 0

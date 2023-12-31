@@ -13056,7 +13056,7 @@ $84:E2C1             dx 8899,                               ; Set the room argum
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0001,07,                       ; Pick up equipment 1 and display message box 7
-                        870B,91D4E4,                        ; Call function $91:D4E4
+                        870B,91D4E4,                        ; Call function varia suit pick up
 $84:E2D2             dx 8724,DFA9,                          ; Go to $DFA9
 }
 
@@ -13074,7 +13074,7 @@ $84:E2F6             dx 8899,                               ; Set the room argum
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0020,1A,                       ; Pick up equipment 20h and display message box 1Ah
-                        870B,91D5BA,                        ; Call function $91:D5BA
+                        870B,91D5BA,                        ; Call function gravity suit pick up
 $84:E307             dx 8724,DFA9,                          ; Go to $DFA9
 }
 
@@ -13452,7 +13452,7 @@ $84:E71E             dx 8899,                               ; Set the room argum
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0001,07,                       ; Pick up equipment 0001h and display message box 07h
-                        870B,91D4E4,                        ; Call function $91D4E4
+                        870B,91D4E4,                        ; Call function varia suit pick up
 $84:E72F             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13474,7 +13474,7 @@ $84:E760             dx 8899,                               ; Set the room argum
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0020,1A,                       ; Pick up equipment 0020h and display message box 1Ah
-                        870B,91D5BA,                        ; Call function $91D5BA
+                        870B,91D5BA,                        ; Call function gravity suit pick up
 $84:E771             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13885,7 +13885,7 @@ $84:EC28             dx 8899,                               ; Set the room argum
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0001,07,                       ; Pick up equipment 0001h and display message box 07h
-                        870B,91D4E4,                        ; Call function $91D4E4
+                        870B,91D4E4,                        ; Call function varia suit pick up
 $84:EC39             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EC05,                          ; Go to $EC05
 }
@@ -13908,7 +13908,7 @@ $84:EC70             dx 8899,                               ; Set the room argum
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0020,1A,                       ; Pick up equipment 0020h and display message box 1Ah
-                        870B,91D5BA,                        ; Call function $91D5BA
+                        870B,91D5BA,                        ; Call function gravity suit pick up
 $84:EC81             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EC4D,                          ; Go to $EC4D
 }

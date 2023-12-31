@@ -6902,7 +6902,7 @@ $A8:CD35 FA          PLX
 $A8:CD36 6B          RTL                    ; Return
 
 $A8:CD37 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:CD3B 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:CD3B 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:CD3E F0 0C       BEQ $0C    [$CD4C]     ;/
 $A8:CD40 A9 00 00    LDA #$0000             ;\
 $A8:CD43 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
@@ -6973,7 +6973,7 @@ $A8:CDD0 FA          PLX
 $A8:CDD1 6B          RTL                    ; Return
 
 $A8:CDD2 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:CDD6 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:CDD6 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:CDD9 F0 0C       BEQ $0C    [$CDE7]     ;/
 $A8:CDDB A9 00 00    LDA #$0000             ;\
 $A8:CDDE 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
@@ -7010,7 +7010,7 @@ $A8:CE16 FA          PLX
 $A8:CE17 6B          RTL                    ; Return
 
 $A8:CE18 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:CE1C 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:CE1C 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:CE1F F0 0C       BEQ $0C    [$CE2D]     ;/
 $A8:CE21 A9 00 00    LDA #$0000             ;\
 $A8:CE24 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
@@ -7081,7 +7081,7 @@ $A8:CEB1 FA          PLX
 $A8:CEB2 6B          RTL                    ; Return
 
 $A8:CEB3 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:CEB7 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:CEB7 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:CEBA F0 0C       BEQ $0C    [$CEC8]     ;/
 $A8:CEBC A9 00 00    LDA #$0000             ;\
 $A8:CEBF 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
@@ -7125,7 +7125,7 @@ $A8:CEFB FA          PLX
 $A8:CEFC 6B          RTL                    ; Return
 
 $A8:CEFD 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:CF01 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:CF01 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:CF04 F0 0C       BEQ $0C    [$CF12]     ;/
 $A8:CF06 A9 00 00    LDA #$0000             ;\
 $A8:CF09 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
@@ -7196,7 +7196,7 @@ $A8:CF96 FA          PLX
 $A8:CF97 6B          RTL                    ; Return
 
 $A8:CF98 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:CF9C 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:CF9C 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:CF9F F0 0C       BEQ $0C    [$CFAD]     ;/
 $A8:CFA1 A9 00 00    LDA #$0000             ;\
 $A8:CFA4 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
@@ -7233,7 +7233,7 @@ $A8:CFDC FA          PLX
 $A8:CFDD 6B          RTL                    ; Return
 
 $A8:CFDE 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:CFE2 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:CFE2 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:CFE5 F0 0C       BEQ $0C    [$CFF3]     ;/
 $A8:CFE7 A9 00 00    LDA #$0000             ;\
 $A8:CFEA 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
@@ -7304,7 +7304,7 @@ $A8:D077 FA          PLX
 $A8:D078 6B          RTL                    ; Return
 
 $A8:D079 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
-$A8:D07D 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus:
+$A8:D07D 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A8:D080 F0 0C       BEQ $0C    [$D08E]     ;/
 $A8:D082 A9 00 00    LDA #$0000             ;\
 $A8:D085 8D 56 0B    STA $0B56  [$7E:0B56]  ;|

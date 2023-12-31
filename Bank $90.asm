@@ -11912,7 +11912,7 @@ $90:D593 AD FA 0C    LDA $0CFA  [$7E:0CFA]  ;\
 $90:D596 18          CLC                    ;|
 $90:D597 69 00 08    ADC #$0800             ;} Grapple beam end angle += 800h
 $90:D59A 8D FA 0C    STA $0CFA  [$7E:0CFA]  ;/
-$90:D59D 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]  ; Execute $9B:BF1B
+$90:D59D 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]  ; Update grapple beam start position during grapple fire
 $90:D5A1 60          RTS
 }
 
@@ -15282,10 +15282,11 @@ $90:EB8E AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
 $90:EB91 C9 03 C7    CMP #$C703             ;} If [grapple beam function] != firing:
 $90:EB94 F0 05       BEQ $05    [$EB9B]     ;/
 $90:EB96 C9 59 C7    CMP #$C759             ;\
-$90:EB99 D0 04       BNE $04    [$EB9F]     ;} If [grapple beam function] != $C759 (unused):
+$90:EB99 D0 04       BNE $04    [$EB9F]     ;} If [grapple beam function] != unfiring (unused): go to BRANCH_START_POSITION_CALCULATED
 
-$90:EB9B 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]  ; Execute $9B:BF1B
+$90:EB9B 22 1B BF 9B JSL $9BBF1B[$9B:BF1B]  ; Update grapple beam start position during grapple fire
 
+; BRANCH_START_POSITION_CALCULATED
 $90:EB9F 22 36 C0 9B JSL $9BC036[$9B:C036]  ; Handle grapple beam flare
 $90:EBA3 AD AC 0A    LDA $0AAC  [$7E:0AAC]  ;\
 $90:EBA6 29 0F 00    AND #$000F             ;} If [arm cannon drawing mode] = 0: go to BRANCH_NO_ARM_CANNON
@@ -16043,7 +16044,7 @@ $90:F083 60          RTS
 
 ;;; $F084..F506: $F084 scripts ;;;
 {
-;;; $F084: Very general use routines ;;;
+;;; $F084: Run $F084 script ;;;
 {
 ; Depending on A. Can range from 0 to 1F
 $90:F084 08          PHP
