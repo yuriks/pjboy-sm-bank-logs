@@ -5488,7 +5488,7 @@ $A0:ACA7 6B          RTL                    ;} Return A = FFFFh
 }
 
 
-;;; $ACA8:  ;;;
+;;; $ACA8: Calculate distance and angle of Samus from enemy ;;;
 {
 ;; Parameters:
 ;;     $0E32: Enemy X position
@@ -5496,76 +5496,83 @@ $A0:ACA7 6B          RTL                    ;} Return A = FFFFh
 ;;     $0E36: Samus X position
 ;;     $0E38: Samus Y position
 ;; Returns:
-;;     A: 
-;;     $0E3A: 
+;;     Carry: Set if error, clear otherwise
+;;     A: If carry clear, distance from enemy to Samus
+;;     $0E3A: If carry clear, angle from enemy to Samus
 
-; Called by yapping maw
+; Called by yapping maw only
+; Avoids sqrt and division operations with the identity
+;     sqrt(x² + y²) = x cos(arctan(x, y)) + y sin(arctan(x, y))
+; (tweaked to account for SM's angle convention)
+; Slightly unfortunate second call to $C0AE, would have been sufficient to call it once to get $0E3A and normalise the quadrant with
+;     LDA $0E3A : AND #$007F : CMP #$0040 : BCS + : EOR #$007F : INC : + : STA $0E24
+
 $A0:ACA8 DA          PHX
 $A0:ACA9 5A          PHY
 $A0:ACAA AD 36 0E    LDA $0E36  [$7E:0E36]  ;\
 $A0:ACAD 38          SEC                    ;|
-$A0:ACAE ED 32 0E    SBC $0E32  [$7E:0E32]  ;|
-$A0:ACB1 8D 3C 0E    STA $0E3C  [$7E:0E3C]  ;} A = |[Samus X position] - [enemy X position]|
-$A0:ACB4 10 04       BPL $04    [$ACBA]     ;|
-$A0:ACB6 49 FF FF    EOR #$FFFF             ;|
+$A0:ACAE ED 32 0E    SBC $0E32  [$7E:0E32]  ;} $0E3C = [Samus X position] - [enemy X position]
+$A0:ACB1 8D 3C 0E    STA $0E3C  [$7E:0E3C]  ;/
+$A0:ACB4 10 04       BPL $04    [$ACBA]     ;\
+$A0:ACB6 49 FF FF    EOR #$FFFF             ;} A = |[Samus X position] - [enemy X position]|
 $A0:ACB9 1A          INC A                  ;/
 
 $A0:ACBA C9 FF 00    CMP #$00FF             ;\
-$A0:ACBD 10 70       BPL $70    [$AD2F]     ;} If [A] >= FFh: return
-$A0:ACBF 85 12       STA $12    [$7E:0012]
-$A0:ACC1 8D 20 0E    STA $0E20  [$7E:0E20]
+$A0:ACBD 10 70       BPL $70    [$AD2F]     ;} If [A] >= FFh: return carry set
+$A0:ACBF 85 12       STA $12    [$7E:0012]  ;\
+$A0:ACC1 8D 20 0E    STA $0E20  [$7E:0E20]  ;} $12 = $0E20 = |[Samus X position] - [enemy X position]|
 $A0:ACC4 AD 38 0E    LDA $0E38  [$7E:0E38]  ;\
 $A0:ACC7 38          SEC                    ;|
-$A0:ACC8 ED 34 0E    SBC $0E34  [$7E:0E34]  ;|
-$A0:ACCB 8D 3E 0E    STA $0E3E  [$7E:0E3E]  ;} A = |[Samus Y position] - [enemy Y position]|
-$A0:ACCE 10 04       BPL $04    [$ACD4]     ;|
-$A0:ACD0 49 FF FF    EOR #$FFFF             ;|
+$A0:ACC8 ED 34 0E    SBC $0E34  [$7E:0E34]  ;} $0E3E = [Samus Y position] - [enemy Y position]
+$A0:ACCB 8D 3E 0E    STA $0E3E  [$7E:0E3E]  ;/
+$A0:ACCE 10 04       BPL $04    [$ACD4]     ;\
+$A0:ACD0 49 FF FF    EOR #$FFFF             ;} A = |[Samus Y position] - [enemy Y position]|
 $A0:ACD3 1A          INC A                  ;/
                                             
 $A0:ACD4 C9 FF 00    CMP #$00FF             ;\
-$A0:ACD7 10 56       BPL $56    [$AD2F]     ;} If [A] >= FFh: return
-$A0:ACD9 85 14       STA $14    [$7E:0014]
-$A0:ACDB 8D 22 0E    STA $0E22  [$7E:0E22]
-$A0:ACDE 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; Calculate angle of ([$12], [$14]) offset
-$A0:ACE2 8D 24 0E    STA $0E24  [$7E:0E24]
-$A0:ACE5 AD 20 0E    LDA $0E20  [$7E:0E20]
-$A0:ACE8 8D 32 0E    STA $0E32  [$7E:0E32]
-$A0:ACEB AD 24 0E    LDA $0E24  [$7E:0E24]
-$A0:ACEE 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ; 8-bit negative sine multiplication
-$A0:ACF2 89 00 80    BIT #$8000
-$A0:ACF5 F0 04       BEQ $04    [$ACFB]
-$A0:ACF7 49 FF FF    EOR #$FFFF
-$A0:ACFA 1A          INC A
-
-$A0:ACFB 8D 26 0E    STA $0E26  [$7E:0E26]
-$A0:ACFE AD 22 0E    LDA $0E22  [$7E:0E22]
-$A0:AD01 8D 32 0E    STA $0E32  [$7E:0E32]
-$A0:AD04 AD 24 0E    LDA $0E24  [$7E:0E24]
-$A0:AD07 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ; 8-bit cosine multiplication
-$A0:AD0B 89 00 80    BIT #$8000
-$A0:AD0E F0 04       BEQ $04    [$AD14]
-$A0:AD10 49 FF FF    EOR #$FFFF
-$A0:AD13 1A          INC A
-
-$A0:AD14 18          CLC
-$A0:AD15 6D 26 0E    ADC $0E26  [$7E:0E26]
-$A0:AD18 48          PHA
-$A0:AD19 AD 3C 0E    LDA $0E3C  [$7E:0E3C]
-$A0:AD1C 85 12       STA $12    [$7E:0012]
-$A0:AD1E AD 3E 0E    LDA $0E3E  [$7E:0E3E]
-$A0:AD21 85 14       STA $14    [$7E:0014]
-$A0:AD23 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; Calculate angle of ([$12], [$14]) offset
-$A0:AD27 8D 3A 0E    STA $0E3A  [$7E:0E3A]
-$A0:AD2A 68          PLA
+$A0:ACD7 10 56       BPL $56    [$AD2F]     ;} If [A] >= FFh: return carry set
+$A0:ACD9 85 14       STA $14    [$7E:0014]  ;\
+$A0:ACDB 8D 22 0E    STA $0E22  [$7E:0E22]  ;} $14 = $0E22 = |[Samus Y position] - [enemy Y position]|
+$A0:ACDE 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;\
+$A0:ACE2 8D 24 0E    STA $0E24  [$7E:0E24]  ;} $0E24 = angle of ([$12], [$14]) offset (angle from enemy to Samus reflected to down-right quadrant)
+$A0:ACE5 AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
+$A0:ACE8 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A0:ACEB AD 24 0E    LDA $0E24  [$7E:0E24]  ;|
+$A0:ACEE 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A0:ACF2 89 00 80    BIT #$8000             ;|
+$A0:ACF5 F0 04       BEQ $04    [$ACFB]     ;} $0E26 = |[$0E20] * -sin([$0E24] * pi / 80h) * FFh / 100h|
+$A0:ACF7 49 FF FF    EOR #$FFFF             ;|
+$A0:ACFA 1A          INC A                  ;|
+                                            ;|
+$A0:ACFB 8D 26 0E    STA $0E26  [$7E:0E26]  ;/
+$A0:ACFE AD 22 0E    LDA $0E22  [$7E:0E22]  ;\
+$A0:AD01 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A0:AD04 AD 24 0E    LDA $0E24  [$7E:0E24]  ;|
+$A0:AD07 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
+$A0:AD0B 89 00 80    BIT #$8000             ;|
+$A0:AD0E F0 04       BEQ $04    [$AD14]     ;} A = [$0E26] + |[$0E22] * cos([$0E24] * pi / 80h) * FFh / 100h|
+$A0:AD10 49 FF FF    EOR #$FFFF             ;|
+$A0:AD13 1A          INC A                  ;|
+                                            ;|
+$A0:AD14 18          CLC                    ;|
+$A0:AD15 6D 26 0E    ADC $0E26  [$7E:0E26]  ;/
+$A0:AD18 48          PHA                    ;\
+$A0:AD19 AD 3C 0E    LDA $0E3C  [$7E:0E3C]  ;|
+$A0:AD1C 85 12       STA $12    [$7E:0012]  ;|
+$A0:AD1E AD 3E 0E    LDA $0E3E  [$7E:0E3E]  ;|
+$A0:AD21 85 14       STA $14    [$7E:0014]  ;} $0E3A = angle from enemy to Samus
+$A0:AD23 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;|
+$A0:AD27 8D 3A 0E    STA $0E3A  [$7E:0E3A]  ;|
+$A0:AD2A 68          PLA                    ;/
 $A0:AD2B 7A          PLY
 $A0:AD2C FA          PLX
-$A0:AD2D 18          CLC
-$A0:AD2E 6B          RTL
+$A0:AD2D 18          CLC                    ;\
+$A0:AD2E 6B          RTL                    ;} Return carry clear
 
 $A0:AD2F 7A          PLY
 $A0:AD30 FA          PLX
-$A0:AD31 38          SEC
-$A0:AD32 6B          RTL
+$A0:AD31 38          SEC                    ;\
+$A0:AD32 6B          RTL                    ;} Return carry set
 }
 
 
@@ -5650,43 +5657,48 @@ $A0:ADA2 6B          RTL                    ;} Return A = 1
 }
 
 
-;;; $ADA3:  ;;;
+;;; $ADA3: Check if enemy is over [A] pixels off-screen ;;;
 {
-; Called by mini-Draygon
+;; Parameters:
+;;     A: Target off-screen distance
+;; Returns:
+;;     Zero: Clear if enemy is over [A] pixels off-screen, set otherwise
+
+; Called by mini-Draygon only
 $A0:ADA3 DA          PHX
-$A0:ADA4 85 12       STA $12    [$7E:0012]
+$A0:ADA4 85 12       STA $12    [$7E:0012]  ; $12 = [A]
 $A0:ADA6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:ADA9 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A0:ADAC 18          CLC
-$A0:ADAD 65 12       ADC $12    [$7E:0012]
-$A0:ADAF CD 11 09    CMP $0911  [$7E:0911]
-$A0:ADB2 30 2E       BMI $2E    [$ADE2]
-$A0:ADB4 AD 11 09    LDA $0911  [$7E:0911]
-$A0:ADB7 18          CLC
-$A0:ADB8 69 00 01    ADC #$0100
-$A0:ADBB 18          CLC
-$A0:ADBC 65 12       ADC $12    [$7E:0012]
-$A0:ADBE DD 7A 0F    CMP $0F7A,x[$7E:0FFA]
-$A0:ADC1 30 1F       BMI $1F    [$ADE2]
-$A0:ADC3 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A0:ADC6 18          CLC
-$A0:ADC7 65 12       ADC $12    [$7E:0012]
-$A0:ADC9 CD 15 09    CMP $0915  [$7E:0915]
-$A0:ADCC 30 14       BMI $14    [$ADE2]
-$A0:ADCE AD 15 09    LDA $0915  [$7E:0915]
-$A0:ADD1 18          CLC
-$A0:ADD2 69 00 01    ADC #$0100
-$A0:ADD5 18          CLC
-$A0:ADD6 65 12       ADC $12    [$7E:0012]
-$A0:ADD8 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]
-$A0:ADDB 30 05       BMI $05    [$ADE2]
+$A0:ADA9 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A0:ADAC 18          CLC                    ;|
+$A0:ADAD 65 12       ADC $12    [$7E:0012]  ;|
+$A0:ADAF CD 11 09    CMP $0911  [$7E:0911]  ;|
+$A0:ADB2 30 2E       BMI $2E    [$ADE2]     ;|
+$A0:ADB4 AD 11 09    LDA $0911  [$7E:0911]  ;|
+$A0:ADB7 18          CLC                    ;} If [layer 1 X position] - [$12] <= [enemy X position] <= [layer 1 X position] + 100h + [$12]:
+$A0:ADB8 69 00 01    ADC #$0100             ;|
+$A0:ADBB 18          CLC                    ;|
+$A0:ADBC 65 12       ADC $12    [$7E:0012]  ;|
+$A0:ADBE DD 7A 0F    CMP $0F7A,x[$7E:0FFA]  ;|
+$A0:ADC1 30 1F       BMI $1F    [$ADE2]     ;/
+$A0:ADC3 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A0:ADC6 18          CLC                    ;|
+$A0:ADC7 65 12       ADC $12    [$7E:0012]  ;|
+$A0:ADC9 CD 15 09    CMP $0915  [$7E:0915]  ;|
+$A0:ADCC 30 14       BMI $14    [$ADE2]     ;|
+$A0:ADCE AD 15 09    LDA $0915  [$7E:0915]  ;|
+$A0:ADD1 18          CLC                    ;} If [layer 1 Y position] - [$12] <= [enemy Y position] <= [layer 1 Y position] + 100h + [$12]:
+$A0:ADD2 69 00 01    ADC #$0100             ;|
+$A0:ADD5 18          CLC                    ;|
+$A0:ADD6 65 12       ADC $12    [$7E:0012]  ;|
+$A0:ADD8 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]  ;|
+$A0:ADDB 30 05       BMI $05    [$ADE2]     ;/
 $A0:ADDD FA          PLX
-$A0:ADDE A9 00 00    LDA #$0000
-$A0:ADE1 6B          RTL
+$A0:ADDE A9 00 00    LDA #$0000             ;\
+$A0:ADE1 6B          RTL                    ;} Return zero set
 
 $A0:ADE2 FA          PLX
-$A0:ADE3 A9 01 00    LDA #$0001
-$A0:ADE6 6B          RTL
+$A0:ADE3 A9 01 00    LDA #$0001             ;\
+$A0:ADE6 6B          RTL                    ;} Return zero clear
 }
 
 
@@ -7101,57 +7113,62 @@ $A0:BBBE 6B          RTL
 
 ;;; $BBBF:  ;;;
 {
+;; Parameters:
+;;     $14.$12: 
+;; Returns:
+;;     Carry: 
+
 ; Lots of enemy boundary calculations
 ; (seems to be trying to find it's location in room, possibly calculating x distance movement).
 ; Used by walking pirates, looks like it's vertical collision routine to stop it from falling?
 ; NOP'd with no observable effects... (only runs when walking left)
 $A0:BBBF 8B          PHB
-$A0:BBC0 E2 20       SEP #$20
-$A0:BBC2 A9 A0       LDA #$A0
-$A0:BBC4 48          PHA
-$A0:BBC5 AB          PLB
-$A0:BBC6 C2 30       REP #$30
+$A0:BBC0 E2 20       SEP #$20               ;\
+$A0:BBC2 A9 A0       LDA #$A0               ;|
+$A0:BBC4 48          PHA                    ;} DB = $A0
+$A0:BBC5 AB          PLB                    ;|
+$A0:BBC6 C2 30       REP #$30               ;/
 $A0:BBC8 DA          PHX
-$A0:BBC9 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A0:BBCC 38          SEC
-$A0:BBCD FD 84 0F    SBC $0F84,x[$7E:1004]
-$A0:BBD0 29 F0 FF    AND #$FFF0
-$A0:BBD3 85 1A       STA $1A    [$7E:001A]
-$A0:BBD5 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A0:BBD8 18          CLC
-$A0:BBD9 7D 84 0F    ADC $0F84,x[$7E:1004]
-$A0:BBDC 3A          DEC A
-$A0:BBDD 38          SEC
-$A0:BBDE E5 1A       SBC $1A    [$7E:001A]
-$A0:BBE0 4A          LSR A
-$A0:BBE1 4A          LSR A
-$A0:BBE2 4A          LSR A
-$A0:BBE3 4A          LSR A
-$A0:BBE4 85 1A       STA $1A    [$7E:001A]
-$A0:BBE6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A0:BBE9 38          SEC
-$A0:BBEA FD 84 0F    SBC $0F84,x[$7E:1004]
-$A0:BBED 4A          LSR A
-$A0:BBEE 4A          LSR A
-$A0:BBEF 4A          LSR A
-$A0:BBF0 4A          LSR A
-$A0:BBF1 E2 20       SEP #$20
-$A0:BBF3 8D 02 42    STA $4202  [$7E:4202]
-$A0:BBF6 AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:BBF9 8D 03 42    STA $4203  [$7E:4203]
-$A0:BBFC C2 20       REP #$20
-$A0:BBFE BD 7C 0F    LDA $0F7C,x[$7E:0FFC]
-$A0:BC01 18          CLC
-$A0:BC02 65 12       ADC $12    [$7E:0012]
-$A0:BC04 85 16       STA $16    [$7E:0016]
-$A0:BC06 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A0:BC09 65 14       ADC $14    [$7E:0014]
-$A0:BC0B 85 18       STA $18    [$7E:0018]
-$A0:BC0D 24 14       BIT $14    [$7E:0014]
-$A0:BC0F 30 07       BMI $07    [$BC18]
-$A0:BC11 18          CLC
-$A0:BC12 7D 82 0F    ADC $0F82,x[$7E:1182]
-$A0:BC15 3A          DEC A
+$A0:BBC9 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A0:BBCC 38          SEC                    ;|
+$A0:BBCD FD 84 0F    SBC $0F84,x[$7E:1004]  ;|
+$A0:BBD0 29 F0 FF    AND #$FFF0             ;|
+$A0:BBD3 85 1A       STA $1A    [$7E:001A]  ;|
+$A0:BBD5 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
+$A0:BBD8 18          CLC                    ;|
+$A0:BBD9 7D 84 0F    ADC $0F84,x[$7E:1004]  ;|
+$A0:BBDC 3A          DEC A                  ;} $1A = (enemy bottom boundary) / 10h - (enemy top boundary) / 10h (number of blocks left to check)
+$A0:BBDD 38          SEC                    ;|
+$A0:BBDE E5 1A       SBC $1A    [$7E:001A]  ;|
+$A0:BBE0 4A          LSR A                  ;|
+$A0:BBE1 4A          LSR A                  ;|
+$A0:BBE2 4A          LSR A                  ;|
+$A0:BBE3 4A          LSR A                  ;|
+$A0:BBE4 85 1A       STA $1A    [$7E:001A]  ;/
+$A0:BBE6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A0:BBE9 38          SEC                    ;|
+$A0:BBEA FD 84 0F    SBC $0F84,x[$7E:1004]  ;|
+$A0:BBED 4A          LSR A                  ;|
+$A0:BBEE 4A          LSR A                  ;|
+$A0:BBEF 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
+$A0:BBF0 4A          LSR A                  ;|
+$A0:BBF1 E2 20       SEP #$20               ;|
+$A0:BBF3 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BBF6 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:BBF9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BBFC C2 20       REP #$20               ;/
+$A0:BBFE BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;\
+$A0:BC01 18          CLC                    ;|
+$A0:BC02 65 12       ADC $12    [$7E:0012]  ;|
+$A0:BC04 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy X position] + [$14].[$12] (target X position)
+$A0:BC06 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;|
+$A0:BC09 65 14       ADC $14    [$7E:0014]  ;|
+$A0:BC0B 85 18       STA $18    [$7E:0018]  ;/
+$A0:BC0D 24 14       BIT $14    [$7E:0014]  ;\
+$A0:BC0F 30 07       BMI $07    [$BC18]     ;} If [$14] >= 0:
+$A0:BC11 18          CLC                    ;\
+$A0:BC12 7D 82 0F    ADC $0F82,x[$7E:1182]  ;} $1A = (target right boundary)
+$A0:BC15 3A          DEC A                  ;/
 $A0:BC16 80 04       BRA $04    [$BC1C]
 
 $A0:BC18 38          SEC
@@ -7957,6 +7974,9 @@ $A0:C0AB 4C B1 C0    JMP $C0B1  [$A0:C0B1]
 ;          80h
 ;
 ; Where # is the origin and | is the negative y axis
+
+; Assumes -FFh <= x,y <= FFh
+
 $A0:C0AE 08          PHP
 $A0:C0AF C2 30       REP #$30
 }

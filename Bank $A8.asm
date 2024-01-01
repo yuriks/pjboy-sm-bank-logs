@@ -520,9 +520,9 @@ $A8:8AB0 60          RTS
 ;;; $8AB1:  ;;;
 {
 $A8:8AB1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:8AB4 A9 00 01    LDA #$0100
-$A8:8AB7 22 A3 AD A0 JSL $A0ADA3[$A0:ADA3]
-$A8:8ABB F0 2A       BEQ $2A    [$8AE7]
+$A8:8AB4 A9 00 01    LDA #$0100             ;\
+$A8:8AB7 22 A3 AD A0 JSL $A0ADA3[$A0:ADA3]  ;} If enemy is over 100h pixels off-screen:
+$A8:8ABB F0 2A       BEQ $2A    [$8AE7]     ;/
 $A8:8ABD BD 1E 0F    LDA $0F1E,x[$7E:0F9E]
 $A8:8AC0 D0 25       BNE $25    [$8AE7]
 $A8:8AC2 A9 00 00    LDA #$0000
@@ -2352,9 +2352,9 @@ $A8:A244 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A8:A247 8D 36 0E    STA $0E36  [$7E:0E36]  ;} $0E36 = [Samus X position]
 $A8:A24A AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A8:A24D 8D 38 0E    STA $0E38  [$7E:0E38]  ;} $0E38 = [Samus Y position]
-$A8:A250 22 A8 AC A0 JSL $A0ACA8[$A0:ACA8]  ; Execute $A0:ACA8
-$A8:A254 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
-$A8:A258 9F 10 78 7E STA $7E7810,x[$7E:7850];} Enemy $7E:7810 = [A]
+$A8:A250 22 A8 AC A0 JSL $A0ACA8[$A0:ACA8]  ; Calculate distance and angle of Samus from enemy
+$A8:A254 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; >_<;
+$A8:A258 9F 10 78 7E STA $7E7810,x[$7E:7850]; Enemy $7E:7810 = (distance of Samus from enemy)
 $A8:A25C C9 20 00    CMP #$0020             ;\
 $A8:A25F 30 23       BMI $23    [$A284]     ;} If [A] < 20h: go to BRANCH_POINT_BLANK
 $A8:A261 DD B2 0F    CMP $0FB2,x[$7E:0FF2]  ;\
@@ -2366,7 +2366,7 @@ $A8:A26F A9 40 00    LDA #$0040             ;} Enemy $7E:7810 = min(40h, [A])
 $A8:A272 9F 10 78 7E STA $7E7810,x[$7E:7890];/
 
 $A8:A276 AD 3A 0E    LDA $0E3A  [$7E:0E3A]  ;\
-$A8:A279 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy $7E:7814 = [$0E3A]
+$A8:A279 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy $7E:7814 = [$0E3A] (angle of Samus from enemy)
 $A8:A27D A9 8C A2    LDA #$A28C             ;\
 $A8:A280 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A28C
 
