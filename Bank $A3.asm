@@ -6858,9 +6858,9 @@ $A3:D022 20 0D D1    JSR $D10D  [$A3:D10D]
 $A3:D025 90 36       BCC $36    [$D05D]     ; If not collided with wall: go to BRANCH_NO_COLLISION
 $A3:D027 A9 00 00    LDA #$0000
 $A3:D02A 9D B0 0F    STA $0FB0,x[$7E:1170]
-$A3:D02D 5A          PHY
-$A3:D02E 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
-$A3:D032 7A          PLY
+$A3:D02D 5A          PHY                    ;\
+$A3:D02E 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ;} Align enemy Y position with non-square slope
+$A3:D032 7A          PLY                    ;/
 $A3:D033 20 24 D1    JSR $D124  [$A3:D124]
 $A3:D036 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D038 64 14       STZ $14    [$7E:0014]  ;|
@@ -6938,7 +6938,7 @@ $A3:D0B6 5A          PHY
 $A3:D0B7 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], process slopes
 $A3:D0BB 7A          PLY
 $A3:D0BC B0 08       BCS $08    [$D0C6]     ; If not collided with wall:
-$A3:D0BE 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$A3:D0BE 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A3:D0C2 20 24 D1    JSR $D124  [$A3:D124]
 $A3:D0C5 6B          RTL
 
@@ -8322,7 +8322,7 @@ $A3:E0C5 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], p
 $A3:E0C9 90 61       BCC $61    [$E12C]     ; If not collided with wall: go to BRANCH_NO_COLLISION
 $A3:E0CB A9 00 00    LDA #$0000
 $A3:E0CE 9F 08 78 7E STA $7E7808,x
-$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A3:E0D6 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E0D8 64 14       STZ $14    [$7E:0014]  ;|
 $A3:E0DA BD AA 0F    LDA $0FAA,x            ;|
@@ -8437,7 +8437,7 @@ $A3:E1B2 C6 14       DEC $14    [$7E:0014]  ;|
 $A3:E1B4 85 13       STA $13    [$7E:0013]  ;/
 $A3:E1B6 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], process slopes
 $A3:E1BA B0 24       BCS $24    [$E1E0]     ; If collided with wall: go to BRANCH_COLLIDED_HORIZONTALLY
-$A3:E1BC 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$A3:E1BC 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A3:E1C0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:E1C3 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $A3:E1C6 38          SEC
@@ -8754,7 +8754,7 @@ $A3:E6FC 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A3:E700 90 43       BCC $43    [$E745]     ; If not collided with wall: go to BRANCH_NO_COLLISION
 $A3:E702 A9 00 00    LDA #$0000
 $A3:E705 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A3:E709 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$A3:E709 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A3:E70D 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E70F 64 14       STZ $14    [$7E:0014]  ;|
 $A3:E711 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;|
@@ -8895,7 +8895,7 @@ $A3:E82F 9F 08 78 7E STA $7E7808,x[$7E:7808]
 $A3:E833 20 A5 E8    JSR $E8A5  [$A3:E8A5]
 $A3:E836 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A3:E83A B0 05       BCS $05    [$E841]     ; If not collided with wall:
-$A3:E83C 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$A3:E83C 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A3:E840 6B          RTL
 
 $A3:E841 BD AA 0F    LDA $0FAA,x[$7E:0FAA]

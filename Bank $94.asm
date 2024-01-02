@@ -1701,6 +1701,7 @@ $94:8E53 60          RTS                    ;} Return carry set
 
 ;;; $8E54: Square slope definitions ;;;
 {
+; Enemies use $A0:C435
 ; 0 = air, 80h = solid
 
 ;                        __________ Top-left

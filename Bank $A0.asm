@@ -4451,7 +4451,7 @@ $A0:A4CC A0 C8 00    LDY #$00C8             ; $16 = 200 (damage)
 $A0:A4CF C9 04 00    CMP #$0004             ;\
 $A0:A4D2 D0 09       BNE $09    [$A4DD]     ;} If [Samus contact damage index] = pseudo screw attacking:
 $A0:A4D4 A9 04 00    LDA #$0004             ;\
-$A0:A4D7 22 84 F0 90 JSL $90F084[$90:F084]  ;} 
+$A0:A4D7 22 84 F0 90 JSL $90F084[$90:F084]  ;}
 $A0:A4DB 80 03       BRA $03    [$A4E0]     ; Go to BRANCH_DAMAGE_CALCULATED
 
 $A0:A4DD A0 C8 00    LDY #$00C8             ; $16 = 200 <-- a default damage value(!) Never used in vanilla
@@ -4697,7 +4697,7 @@ $A0:A6B7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6BA 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A0:A6BD AD 2E 0E    LDA $0E2E  [$7E:0E2E]  ;\
 $A0:A6C0 F0 18       BEQ $18    [$A6DA]     ;} If enemy hit:
-$A0:A6C2 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A0:A6C2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6C5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A0:A6C8 85 12       STA $12    [$7E:0012]  ;|
 $A0:A6CA BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
@@ -5528,7 +5528,7 @@ $A0:ACCB 8D 3E 0E    STA $0E3E  [$7E:0E3E]  ;/
 $A0:ACCE 10 04       BPL $04    [$ACD4]     ;\
 $A0:ACD0 49 FF FF    EOR #$FFFF             ;} A = |[Samus Y position] - [enemy Y position]|
 $A0:ACD3 1A          INC A                  ;/
-                                            
+
 $A0:ACD4 C9 FF 00    CMP #$00FF             ;\
 $A0:ACD7 10 56       BPL $56    [$AD2F]     ;} If [A] >= FFh: return carry set
 $A0:ACD9 85 14       STA $14    [$7E:0014]  ;\
@@ -6473,8 +6473,8 @@ $A0:B6DC 9D 80 0F    STA $0F80,x[$7E:0F80]  ;} Enemy Y position += [$0E28].[$0E2
 $A0:B6DF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
 $A0:B6E2 6D 28 0E    ADC $0E28  [$7E:0E28]  ;|
 $A0:B6E5 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
-$A0:B6E8 80 13       BRA $13    [$B6FD]     
-                                            
+$A0:B6E8 80 13       BRA $13    [$B6FD]
+
 $A0:B6EA BD 80 0F    LDA $0F80,x[$7E:1040]  ;\ Else ([$0E20] % 100h < 80h):
 $A0:B6ED 38          SEC                    ;|
 $A0:B6EE ED 2A 0E    SBC $0E2A  [$7E:0E2A]  ;|
@@ -6641,7 +6641,7 @@ $A0:B7D9 A0 F4 FF    LDY #$FFF4             ; Y = -Ch
 $A0:B7DC A5 12       LDA $12    [$7E:0012]  ;\
 $A0:B7DE 30 03       BMI $03    [$B7E3]     ;} If [$12] >= 0:
 $A0:B7E0 A0 0C 00    LDY #$000C             ; Y = Ch
-                                            
+
 $A0:B7E3 98          TYA                    ;\
 $A0:B7E4 18          CLC                    ;|
 $A0:B7E5 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} Samus previous X position = [Samus X position] + [Y]
@@ -7043,7 +7043,7 @@ $A0:BB6F 6B          RTL
 }
 
 
-;;; $BB70: Calculate then block containing a pixel position ;;;
+;;; $BB70: Calculate the block containing a pixel position ;;;
 {
 ; Call after pushing a X then Y pixel position onto the stack (2 bytes each).
 ; 0DC4 is set with block #, and stack is also cleaned up (do not try to pull Y and X position from stack)
@@ -7111,17 +7111,13 @@ $A0:BBBE 6B          RTL
 }
 
 
-;;; $BBBF:  ;;;
+;;; $BBBF: Check for horizontal "solid" block collision ;;;
 {
 ;; Parameters:
-;;     $14.$12: 
+;;     $14.$12: Distance to check for collision (signed)
 ;; Returns:
-;;     Carry: 
+;;     Carry: Set if collision, clear otherwise
 
-; Lots of enemy boundary calculations
-; (seems to be trying to find it's location in room, possibly calculating x distance movement).
-; Used by walking pirates, looks like it's vertical collision routine to stop it from falling?
-; NOP'd with no observable effects... (only runs when walking left)
 $A0:BBBF 8B          PHB
 $A0:BBC0 E2 20       SEP #$20               ;\
 $A0:BBC2 A9 A0       LDA #$A0               ;|
@@ -7167,670 +7163,712 @@ $A0:BC0B 85 18       STA $18    [$7E:0018]  ;/
 $A0:BC0D 24 14       BIT $14    [$7E:0014]  ;\
 $A0:BC0F 30 07       BMI $07    [$BC18]     ;} If [$14] >= 0:
 $A0:BC11 18          CLC                    ;\
-$A0:BC12 7D 82 0F    ADC $0F82,x[$7E:1182]  ;} $1A = (target right boundary)
+$A0:BC12 7D 82 0F    ADC $0F82,x[$7E:1182]  ;} $22 = (target right boundary)
 $A0:BC15 3A          DEC A                  ;/
 $A0:BC16 80 04       BRA $04    [$BC1C]
 
-$A0:BC18 38          SEC
-$A0:BC19 FD 82 0F    SBC $0F82,x[$7E:1002]
+$A0:BC18 38          SEC                    ;\ Else ([$14] < 0):
+$A0:BC19 FD 82 0F    SBC $0F82,x[$7E:1002]  ;} $22 = (target left boundary)
 
 $A0:BC1C 85 22       STA $22    [$7E:0022]
-$A0:BC1E 4A          LSR A
-$A0:BC1F 4A          LSR A
-$A0:BC20 4A          LSR A
-$A0:BC21 4A          LSR A
-$A0:BC22 18          CLC
-$A0:BC23 6D 16 42    ADC $4216  [$7E:4216]
-$A0:BC26 0A          ASL A
-$A0:BC27 AA          TAX
+$A0:BC1E 4A          LSR A                  ;\
+$A0:BC1F 4A          LSR A                  ;|
+$A0:BC20 4A          LSR A                  ;|
+$A0:BC21 4A          LSR A                  ;|
+$A0:BC22 18          CLC                    ;} X = ((target row block index) + [$22] / 10h) * 2 (index of top block to check)
+$A0:BC23 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BC26 0A          ASL A                  ;|
+$A0:BC27 AA          TAX                    ;/
 
-$A0:BC28 BF 02 00 7F LDA $7F0002,x[$7F:021E]
-$A0:BC2C 30 11       BMI $11    [$BC3F]
-$A0:BC2E 8A          TXA
-$A0:BC2F 18          CLC
-$A0:BC30 6D A5 07    ADC $07A5  [$7E:07A5]
-$A0:BC33 6D A5 07    ADC $07A5  [$7E:07A5]
-$A0:BC36 AA          TAX
-$A0:BC37 C6 1A       DEC $1A    [$7E:001A]
-$A0:BC39 10 ED       BPL $ED    [$BC28]
+; LOOP
+$A0:BC28 BF 02 00 7F LDA $7F0002,x[$7F:021E];\
+$A0:BC2C 30 11       BMI $11    [$BC3F]     ;} If (block type) < 8: <-- including horizontal extension, but not vertical extension ^^;
+$A0:BC2E 8A          TXA                    ;\
+$A0:BC2F 18          CLC                    ;|
+$A0:BC30 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width in blocks] * 2 (next row)
+$A0:BC33 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$A0:BC36 AA          TAX                    ;/
+$A0:BC37 C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
+$A0:BC39 10 ED       BPL $ED    [$BC28]     ; If [$1A] >= 0: go to LOOP
 $A0:BC3B FA          PLX
-$A0:BC3C 18          CLC
-$A0:BC3D AB          PLB
-$A0:BC3E 6B          RTL
+$A0:BC3C 18          CLC                    ;\
+$A0:BC3D AB          PLB                    ;} Return carry clear
+$A0:BC3E 6B          RTL                    ;/
 
 $A0:BC3F FA          PLX
-$A0:BC40 64 12       STZ $12    [$7E:0012]
+$A0:BC40 64 12       STZ $12    [$7E:0012]  ; $12 = 0
 $A0:BC42 A5 22       LDA $22    [$7E:0022]
-$A0:BC44 24 14       BIT $14    [$7E:0014]
-$A0:BC46 30 15       BMI $15    [$BC5D]
-$A0:BC48 29 F0 FF    AND #$FFF0
-$A0:BC4B 38          SEC
-$A0:BC4C FD 82 0F    SBC $0F82,x[$7E:1182]
-$A0:BC4F 38          SEC
-$A0:BC50 FD 7A 0F    SBC $0F7A,x[$7E:117A]
-$A0:BC53 10 03       BPL $03    [$BC58]
-$A0:BC55 A9 00 00    LDA #$0000
+$A0:BC44 24 14       BIT $14    [$7E:0014]  ;\
+$A0:BC46 30 15       BMI $15    [$BC5D]     ;} If [$14] < 0: go to BRANCH_MOVING_LEFT
+$A0:BC48 29 F0 FF    AND #$FFF0             ; A = [$22] - [$22] % 10h (target right boundary rounded down to left of 16x16 tile)
+$A0:BC4B 38          SEC                    ;\
+$A0:BC4C FD 82 0F    SBC $0F82,x[$7E:1182]  ;|
+$A0:BC4F 38          SEC                    ;|
+$A0:BC50 FD 7A 0F    SBC $0F7A,x[$7E:117A]  ;|
+$A0:BC53 10 03       BPL $03    [$BC58]     ;} $14 = max(0, [A] - [enemy X radius] - [enemy X position])
+$A0:BC55 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A0:BC58 85 14       STA $14    [$7E:0014]  ;/
+$A0:BC5A 38          SEC                    ;\
+$A0:BC5B AB          PLB                    ;} Return carry set
+$A0:BC5C 6B          RTL                    ;/
 
-$A0:BC58 85 14       STA $14    [$7E:0014]
-$A0:BC5A 38          SEC
-$A0:BC5B AB          PLB
-$A0:BC5C 6B          RTL
-
-$A0:BC5D 09 0F 00    ORA #$000F
-$A0:BC60 38          SEC
-$A0:BC61 7D 82 0F    ADC $0F82,x[$7E:0FC2]
-$A0:BC64 38          SEC
-$A0:BC65 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]
-$A0:BC68 30 03       BMI $03    [$BC6D]
-$A0:BC6A A9 00 00    LDA #$0000
-
-$A0:BC6D 49 FF FF    EOR #$FFFF
-$A0:BC70 1A          INC A
-$A0:BC71 85 14       STA $14    [$7E:0014]
-$A0:BC73 38          SEC
-$A0:BC74 AB          PLB
-$A0:BC75 6B          RTL
+; BRANCH_MOVING_LEFT
+$A0:BC5D 09 0F 00    ORA #$000F             ;\
+$A0:BC60 38          SEC                    ;} A = [$22] - [$22] % 10h + 10h (target left boundary rounded up to right of 16x16 tile)
+$A0:BC61 7D 82 0F    ADC $0F82,x[$7E:0FC2]  ;\
+$A0:BC64 38          SEC                    ;|
+$A0:BC65 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]  ;|
+$A0:BC68 30 03       BMI $03    [$BC6D]     ;|
+$A0:BC6A A9 00 00    LDA #$0000             ;} $14 = -max(0, [A] + [enemy X radius] - [enemy X position])
+                                            ;|
+$A0:BC6D 49 FF FF    EOR #$FFFF             ;|
+$A0:BC70 1A          INC A                  ;|
+$A0:BC71 85 14       STA $14    [$7E:0014]  ;/
+$A0:BC73 38          SEC                    ;\
+$A0:BC74 AB          PLB                    ;} Return carry set
+$A0:BC75 6B          RTL                    ;/
 }
 
 
-;;; $BC76:  ;;;
+;;; $BC76: Check for vertical "solid" block collision ;;;
 {
+;; Parameters:
+;;     $14.$12: Distance to check for collision (signed)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $A0:BC76 8B          PHB
-$A0:BC77 E2 20       SEP #$20
-$A0:BC79 A9 A0       LDA #$A0
-$A0:BC7B 48          PHA
-$A0:BC7C AB          PLB
-$A0:BC7D C2 30       REP #$30
+$A0:BC77 E2 20       SEP #$20               ;\
+$A0:BC79 A9 A0       LDA #$A0               ;|
+$A0:BC7B 48          PHA                    ;} DB = $A0
+$A0:BC7C AB          PLB                    ;|
+$A0:BC7D C2 30       REP #$30               ;/
 $A0:BC7F DA          PHX
-$A0:BC80 BD 7A 0F    LDA $0F7A,x[$7E:107A]
-$A0:BC83 38          SEC
-$A0:BC84 FD 82 0F    SBC $0F82,x[$7E:1082]
-$A0:BC87 29 F0 FF    AND #$FFF0
-$A0:BC8A 85 1A       STA $1A    [$7E:001A]
-$A0:BC8C BD 7A 0F    LDA $0F7A,x[$7E:107A]
-$A0:BC8F 18          CLC
-$A0:BC90 7D 82 0F    ADC $0F82,x[$7E:1082]
-$A0:BC93 3A          DEC A
-$A0:BC94 38          SEC
-$A0:BC95 E5 1A       SBC $1A    [$7E:001A]
-$A0:BC97 4A          LSR A
-$A0:BC98 4A          LSR A
-$A0:BC99 4A          LSR A
-$A0:BC9A 4A          LSR A
-$A0:BC9B 85 1A       STA $1A    [$7E:001A]
-$A0:BC9D BD 80 0F    LDA $0F80,x[$7E:1080]
-$A0:BCA0 18          CLC
-$A0:BCA1 65 12       ADC $12    [$7E:0012]
-$A0:BCA3 85 16       STA $16    [$7E:0016]
-$A0:BCA5 BD 7E 0F    LDA $0F7E,x[$7E:107E]
-$A0:BCA8 65 14       ADC $14    [$7E:0014]
-$A0:BCAA 85 18       STA $18    [$7E:0018]
-$A0:BCAC 24 14       BIT $14    [$7E:0014]
-$A0:BCAE 30 07       BMI $07    [$BCB7]
-$A0:BCB0 18          CLC
-$A0:BCB1 7D 84 0F    ADC $0F84,x[$7E:1084]
-$A0:BCB4 3A          DEC A
+$A0:BC80 BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;\
+$A0:BC83 38          SEC                    ;|
+$A0:BC84 FD 82 0F    SBC $0F82,x[$7E:1082]  ;|
+$A0:BC87 29 F0 FF    AND #$FFF0             ;|
+$A0:BC8A 85 1A       STA $1A    [$7E:001A]  ;|
+$A0:BC8C BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;|
+$A0:BC8F 18          CLC                    ;|
+$A0:BC90 7D 82 0F    ADC $0F82,x[$7E:1082]  ;|
+$A0:BC93 3A          DEC A                  ;} $1A = (enemy right boundary) / 10h - (enemy left boundary) / 10h (number of blocks left to check)
+$A0:BC94 38          SEC                    ;|
+$A0:BC95 E5 1A       SBC $1A    [$7E:001A]  ;|
+$A0:BC97 4A          LSR A                  ;|
+$A0:BC98 4A          LSR A                  ;|
+$A0:BC99 4A          LSR A                  ;|
+$A0:BC9A 4A          LSR A                  ;|
+$A0:BC9B 85 1A       STA $1A    [$7E:001A]  ;/
+$A0:BC9D BD 80 0F    LDA $0F80,x[$7E:1080]  ;\
+$A0:BCA0 18          CLC                    ;|
+$A0:BCA1 65 12       ADC $12    [$7E:0012]  ;|
+$A0:BCA3 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy Y position] + [$14].[$12] (target position)
+$A0:BCA5 BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;|
+$A0:BCA8 65 14       ADC $14    [$7E:0014]  ;|
+$A0:BCAA 85 18       STA $18    [$7E:0018]  ;/
+$A0:BCAC 24 14       BIT $14    [$7E:0014]  ;\
+$A0:BCAE 30 07       BMI $07    [$BCB7]     ;} If [$14] >= 0: (moving down)
+$A0:BCB0 18          CLC                    ;\
+$A0:BCB1 7D 84 0F    ADC $0F84,x[$7E:1084]  ;} $22 = [$18] + [enemy Y radius] - 1 (target front boundary)
+$A0:BCB4 3A          DEC A                  ;/
 $A0:BCB5 80 04       BRA $04    [$BCBB]
 
-$A0:BCB7 38          SEC
-$A0:BCB8 FD 84 0F    SBC $0F84,x[$7E:1044]
+$A0:BCB7 38          SEC                    ;\ Else ([$14] < 0): (moving up)
+$A0:BCB8 FD 84 0F    SBC $0F84,x[$7E:1044]  ;} $22 = [$18] - [enemy Y radius] (target front boundary)
 
 $A0:BCBB 85 22       STA $22    [$7E:0022]
-$A0:BCBD 4A          LSR A
-$A0:BCBE 4A          LSR A
-$A0:BCBF 4A          LSR A
-$A0:BCC0 4A          LSR A
-$A0:BCC1 E2 20       SEP #$20
-$A0:BCC3 8D 02 42    STA $4202  [$7E:4202]
-$A0:BCC6 AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:BCC9 8D 03 42    STA $4203  [$7E:4203]
-$A0:BCCC C2 20       REP #$20
-$A0:BCCE BD 7A 0F    LDA $0F7A,x[$7E:107A]
-$A0:BCD1 38          SEC
-$A0:BCD2 FD 82 0F    SBC $0F82,x[$7E:1082]
-$A0:BCD5 4A          LSR A
-$A0:BCD6 4A          LSR A
-$A0:BCD7 4A          LSR A
-$A0:BCD8 4A          LSR A
-$A0:BCD9 18          CLC
-$A0:BCDA 6D 16 42    ADC $4216  [$7E:4216]
-$A0:BCDD 0A          ASL A
-$A0:BCDE AA          TAX
+$A0:BCBD 4A          LSR A                  ;\
+$A0:BCBE 4A          LSR A                  ;|
+$A0:BCBF 4A          LSR A                  ;|
+$A0:BCC0 4A          LSR A                  ;|
+$A0:BCC1 E2 20       SEP #$20               ;|
+$A0:BCC3 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BCC6 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:BCC9 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BCCC C2 20       REP #$20               ;|
+$A0:BCCE BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;|
+$A0:BCD1 38          SEC                    ;} X = ((enemy front boundary) / 10h * [room width] + (enemy left boundary) / 10h) * 2 (index of leftmost block to check)
+$A0:BCD2 FD 82 0F    SBC $0F82,x[$7E:1082]  ;|
+$A0:BCD5 4A          LSR A                  ;|
+$A0:BCD6 4A          LSR A                  ;|
+$A0:BCD7 4A          LSR A                  ;|
+$A0:BCD8 4A          LSR A                  ;|
+$A0:BCD9 18          CLC                    ;|
+$A0:BCDA 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BCDD 0A          ASL A                  ;|
+$A0:BCDE AA          TAX                    ;/
 
-$A0:BCDF BF 02 00 7F LDA $7F0002,x[$7F:232A]
-$A0:BCE3 30 0A       BMI $0A    [$BCEF]
-$A0:BCE5 E8          INX
-$A0:BCE6 E8          INX
-$A0:BCE7 C6 1A       DEC $1A    [$7E:001A]
-$A0:BCE9 10 F4       BPL $F4    [$BCDF]
+; LOOP
+$A0:BCDF BF 02 00 7F LDA $7F0002,x[$7F:232A];\
+$A0:BCE3 30 0A       BMI $0A    [$BCEF]     ;} If (block type) < 8:
+$A0:BCE5 E8          INX                    ;\
+$A0:BCE6 E8          INX                    ;} X += 2
+$A0:BCE7 C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
+$A0:BCE9 10 F4       BPL $F4    [$BCDF]     ; If [$1A] >= 0: go to LOOP
 $A0:BCEB FA          PLX
-$A0:BCEC 18          CLC
-$A0:BCED AB          PLB
-$A0:BCEE 6B          RTL
+$A0:BCEC 18          CLC                    ;\
+$A0:BCED AB          PLB                    ;} Return carry clear
+$A0:BCEE 6B          RTL                    ;/
 
 $A0:BCEF FA          PLX
-$A0:BCF0 64 12       STZ $12    [$7E:0012]
+$A0:BCF0 64 12       STZ $12    [$7E:0012]  ; $12 = 0
 $A0:BCF2 A5 22       LDA $22    [$7E:0022]
-$A0:BCF4 24 14       BIT $14    [$7E:0014]
-$A0:BCF6 30 15       BMI $15    [$BD0D]
-$A0:BCF8 29 F0 FF    AND #$FFF0
-$A0:BCFB 38          SEC
-$A0:BCFC FD 84 0F    SBC $0F84,x[$7E:1084]
-$A0:BCFF 38          SEC
-$A0:BD00 FD 7E 0F    SBC $0F7E,x[$7E:107E]
-$A0:BD03 10 03       BPL $03    [$BD08]
-$A0:BD05 A9 00 00    LDA #$0000
+$A0:BCF4 24 14       BIT $14    [$7E:0014]  ;\
+$A0:BCF6 30 15       BMI $15    [$BD0D]     ;} If [$14] < 0: go to BRANCH_MOVING_UP
+$A0:BCF8 29 F0 FF    AND #$FFF0             ; A = [$22] - [$22] % 10h (target bottom boundary rounded down to top of 16x16 tile)
+$A0:BCFB 38          SEC                    ;\
+$A0:BCFC FD 84 0F    SBC $0F84,x[$7E:1084]  ;|
+$A0:BCFF 38          SEC                    ;|
+$A0:BD00 FD 7E 0F    SBC $0F7E,x[$7E:107E]  ;|
+$A0:BD03 10 03       BPL $03    [$BD08]     ;} $14 = max(0, [A] - [enemy Y radius] - [enemy Y position])
+$A0:BD05 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A0:BD08 85 14       STA $14    [$7E:0014]  ;/
+$A0:BD0A 38          SEC                    ;\
+$A0:BD0B AB          PLB                    ;} Return carry set
+$A0:BD0C 6B          RTL                    ;/
 
-$A0:BD08 85 14       STA $14    [$7E:0014]
-$A0:BD0A 38          SEC
-$A0:BD0B AB          PLB
-$A0:BD0C 6B          RTL
-
-$A0:BD0D 09 0F 00    ORA #$000F
-$A0:BD10 38          SEC
-$A0:BD11 7D 84 0F    ADC $0F84,x[$7E:1044]
-$A0:BD14 38          SEC
-$A0:BD15 FD 7E 0F    SBC $0F7E,x[$7E:103E]
-$A0:BD18 30 03       BMI $03    [$BD1D]
-$A0:BD1A A9 00 00    LDA #$0000
-
-$A0:BD1D 49 FF FF    EOR #$FFFF
-$A0:BD20 1A          INC A
-$A0:BD21 85 14       STA $14    [$7E:0014]
-$A0:BD23 38          SEC
-$A0:BD24 AB          PLB
-$A0:BD25 6B          RTL
+; BRANCH_MOVING_UP
+$A0:BD0D 09 0F 00    ORA #$000F             ;\
+$A0:BD10 38          SEC                    ;} A = [$22] - [$22] % 10h + 10h (target top boundary rounded up to bottom of 16x16 tile)
+$A0:BD11 7D 84 0F    ADC $0F84,x[$7E:1044]  ;\
+$A0:BD14 38          SEC                    ;|
+$A0:BD15 FD 7E 0F    SBC $0F7E,x[$7E:103E]  ;|
+$A0:BD18 30 03       BMI $03    [$BD1D]     ;|
+$A0:BD1A A9 00 00    LDA #$0000             ;} $14 = -max(0, [A] + [enemy Y radius] - [enemy Y position])
+                                            ;|
+$A0:BD1D 49 FF FF    EOR #$FFFF             ;|
+$A0:BD20 1A          INC A                  ;|
+$A0:BD21 85 14       STA $14    [$7E:0014]  ;/
+$A0:BD23 38          SEC                    ;\
+$A0:BD24 AB          PLB                    ;} Return carry set
+$A0:BD25 6B          RTL                    ;/
 }
 
 
-;;; $BD26:  ;;;
+;;; $BD26: Unused. Move enemy right by [$14].[$12], no block collision reactions ;;;
 {
+;; Parameters:
+;;     A: Direction. 0 = left, 1 = right
+;;     $14.$12: Distance to move (signed)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $A0:BD26 8B          PHB
-$A0:BD27 E2 20       SEP #$20
-$A0:BD29 A9 A0       LDA #$A0
-$A0:BD2B 48          PHA
-$A0:BD2C AB          PLB
-$A0:BD2D C2 30       REP #$30
+$A0:BD27 E2 20       SEP #$20               ;\
+$A0:BD29 A9 A0       LDA #$A0               ;|
+$A0:BD2B 48          PHA                    ;} DB = $A0 <-- clobbers A, whoops
+$A0:BD2C AB          PLB                    ;|
+$A0:BD2D C2 30       REP #$30               ;/
 $A0:BD2F DA          PHX
-$A0:BD30 85 1C       STA $1C    [$7E:001C]
-$A0:BD32 BD 7E 0F    LDA $0F7E,x
-$A0:BD35 38          SEC
-$A0:BD36 FD 84 0F    SBC $0F84,x
-$A0:BD39 29 F0 FF    AND #$FFF0
-$A0:BD3C 85 1A       STA $1A    [$7E:001A]
-$A0:BD3E BD 7E 0F    LDA $0F7E,x
-$A0:BD41 18          CLC
-$A0:BD42 7D 84 0F    ADC $0F84,x
-$A0:BD45 3A          DEC A
-$A0:BD46 38          SEC
-$A0:BD47 E5 1A       SBC $1A    [$7E:001A]
-$A0:BD49 4A          LSR A
-$A0:BD4A 4A          LSR A
-$A0:BD4B 4A          LSR A
-$A0:BD4C 4A          LSR A
-$A0:BD4D 85 1A       STA $1A    [$7E:001A]
-$A0:BD4F BD 7E 0F    LDA $0F7E,x
-$A0:BD52 38          SEC
-$A0:BD53 FD 84 0F    SBC $0F84,x
-$A0:BD56 4A          LSR A
-$A0:BD57 4A          LSR A
-$A0:BD58 4A          LSR A
-$A0:BD59 4A          LSR A
-$A0:BD5A E2 20       SEP #$20
-$A0:BD5C 8D 02 42    STA $4202  [$7E:4202]
-$A0:BD5F AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:BD62 8D 03 42    STA $4203  [$7E:4203]
-$A0:BD65 C2 20       REP #$20
-$A0:BD67 A5 1C       LDA $1C    [$7E:001C]
-$A0:BD69 4A          LSR A
-$A0:BD6A 90 16       BCC $16    [$BD82]
-$A0:BD6C BD 7C 0F    LDA $0F7C,x
-$A0:BD6F 18          CLC
-$A0:BD70 65 12       ADC $12    [$7E:0012]
-$A0:BD72 85 16       STA $16    [$7E:0016]
-$A0:BD74 BD 7A 0F    LDA $0F7A,x
-$A0:BD77 65 14       ADC $14    [$7E:0014]
-$A0:BD79 85 18       STA $18    [$7E:0018]
-$A0:BD7B 18          CLC
-$A0:BD7C 7D 82 0F    ADC $0F82,x
-$A0:BD7F 3A          DEC A
+$A0:BD30 85 1C       STA $1C    [$7E:001C]  ; $1C = [A]
+$A0:BD32 BD 7E 0F    LDA $0F7E,x            ;\
+$A0:BD35 38          SEC                    ;|
+$A0:BD36 FD 84 0F    SBC $0F84,x            ;|
+$A0:BD39 29 F0 FF    AND #$FFF0             ;|
+$A0:BD3C 85 1A       STA $1A    [$7E:001A]  ;|
+$A0:BD3E BD 7E 0F    LDA $0F7E,x            ;|
+$A0:BD41 18          CLC                    ;|
+$A0:BD42 7D 84 0F    ADC $0F84,x            ;|
+$A0:BD45 3A          DEC A                  ;} $1A = (enemy bottom boundary) / 10h - (enemy top boundary) / 10h (number of blocks left to check)
+$A0:BD46 38          SEC                    ;|
+$A0:BD47 E5 1A       SBC $1A    [$7E:001A]  ;|
+$A0:BD49 4A          LSR A                  ;|
+$A0:BD4A 4A          LSR A                  ;|
+$A0:BD4B 4A          LSR A                  ;|
+$A0:BD4C 4A          LSR A                  ;|
+$A0:BD4D 85 1A       STA $1A    [$7E:001A]  ;/
+$A0:BD4F BD 7E 0F    LDA $0F7E,x            ;\
+$A0:BD52 38          SEC                    ;|
+$A0:BD53 FD 84 0F    SBC $0F84,x            ;|
+$A0:BD56 4A          LSR A                  ;|
+$A0:BD57 4A          LSR A                  ;|
+$A0:BD58 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
+$A0:BD59 4A          LSR A                  ;|
+$A0:BD5A E2 20       SEP #$20               ;|
+$A0:BD5C 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BD5F AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:BD62 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BD65 C2 20       REP #$20               ;/
+$A0:BD67 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:BD69 4A          LSR A                  ;} If [$1C] & 1 != 0:
+$A0:BD6A 90 16       BCC $16    [$BD82]     ;/
+$A0:BD6C BD 7C 0F    LDA $0F7C,x            ;\
+$A0:BD6F 18          CLC                    ;|
+$A0:BD70 65 12       ADC $12    [$7E:0012]  ;|
+$A0:BD72 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy X position] + [$14].[$12] (target X position)
+$A0:BD74 BD 7A 0F    LDA $0F7A,x            ;|
+$A0:BD77 65 14       ADC $14    [$7E:0014]  ;|
+$A0:BD79 85 18       STA $18    [$7E:0018]  ;/
+$A0:BD7B 18          CLC                    ;\
+$A0:BD7C 7D 82 0F    ADC $0F82,x            ;} $22 = (target right boundary)
+$A0:BD7F 3A          DEC A                  ;/
 $A0:BD80 80 13       BRA $13    [$BD95]
 
-$A0:BD82 BD 7C 0F    LDA $0F7C,x
-$A0:BD85 38          SEC
-$A0:BD86 E5 12       SBC $12    [$7E:0012]
-$A0:BD88 85 16       STA $16    [$7E:0016]
-$A0:BD8A BD 7A 0F    LDA $0F7A,x
-$A0:BD8D E5 14       SBC $14    [$7E:0014]
-$A0:BD8F 85 18       STA $18    [$7E:0018]
-$A0:BD91 38          SEC
-$A0:BD92 FD 82 0F    SBC $0F82,x
+$A0:BD82 BD 7C 0F    LDA $0F7C,x            ;\ Else ([$1C] & 1 = 0):
+$A0:BD85 38          SEC                    ;|
+$A0:BD86 E5 12       SBC $12    [$7E:0012]  ;|
+$A0:BD88 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy X position] - [$14].[$12] (target X position)
+$A0:BD8A BD 7A 0F    LDA $0F7A,x            ;|
+$A0:BD8D E5 14       SBC $14    [$7E:0014]  ;|
+$A0:BD8F 85 18       STA $18    [$7E:0018]  ;/
+$A0:BD91 38          SEC                    ;\
+$A0:BD92 FD 82 0F    SBC $0F82,x            ;} $22 = (target left boundary)
 
 $A0:BD95 85 22       STA $22    [$7E:0022]
-$A0:BD97 4A          LSR A
-$A0:BD98 4A          LSR A
-$A0:BD99 4A          LSR A
-$A0:BD9A 4A          LSR A
-$A0:BD9B 18          CLC
-$A0:BD9C 6D 16 42    ADC $4216  [$7E:4216]
-$A0:BD9F 0A          ASL A
-$A0:BDA0 AA          TAX
+$A0:BD97 4A          LSR A                  ;\
+$A0:BD98 4A          LSR A                  ;|
+$A0:BD99 4A          LSR A                  ;|
+$A0:BD9A 4A          LSR A                  ;|
+$A0:BD9B 18          CLC                    ;} X = ((target row block index) + [$22] / 10h) * 2 (index of top block to check)
+$A0:BD9C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BD9F 0A          ASL A                  ;|
+$A0:BDA0 AA          TAX                    ;/
 
-$A0:BDA1 BF 02 00 7F LDA $7F0002,x
-$A0:BDA5 30 1B       BMI $1B    [$BDC2]
-$A0:BDA7 8A          TXA
-$A0:BDA8 18          CLC
-$A0:BDA9 6D A5 07    ADC $07A5  [$7E:07A5]
-$A0:BDAC 6D A5 07    ADC $07A5  [$7E:07A5]
-$A0:BDAF AA          TAX
-$A0:BDB0 C6 1A       DEC $1A    [$7E:001A]
-$A0:BDB2 10 ED       BPL $ED    [$BDA1]
+; LOOP
+$A0:BDA1 BF 02 00 7F LDA $7F0002,x          ;\
+$A0:BDA5 30 1B       BMI $1B    [$BDC2]     ;} If (block type) < 8:
+$A0:BDA7 8A          TXA                    ;\
+$A0:BDA8 18          CLC                    ;|
+$A0:BDA9 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width in blocks] * 2 (next row)
+$A0:BDAC 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$A0:BDAF AA          TAX                    ;/
+$A0:BDB0 C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
+$A0:BDB2 10 ED       BPL $ED    [$BDA1]     ; If [$1A] >= 0: go to LOOP
 $A0:BDB4 FA          PLX
-$A0:BDB5 A5 16       LDA $16    [$7E:0016]
-$A0:BDB7 9D 7C 0F    STA $0F7C,x
-$A0:BDBA A5 18       LDA $18    [$7E:0018]
-$A0:BDBC 9D 7A 0F    STA $0F7A,x
-$A0:BDBF 18          CLC
-$A0:BDC0 AB          PLB
-$A0:BDC1 6B          RTL
+$A0:BDB5 A5 16       LDA $16    [$7E:0016]  ;\
+$A0:BDB7 9D 7C 0F    STA $0F7C,x            ;|
+$A0:BDBA A5 18       LDA $18    [$7E:0018]  ;} Enemy X position = (target X position)
+$A0:BDBC 9D 7A 0F    STA $0F7A,x            ;/
+$A0:BDBF 18          CLC                    ;\
+$A0:BDC0 AB          PLB                    ;} Return carry clear
+$A0:BDC1 6B          RTL                    ;/
 
 $A0:BDC2 FA          PLX
-$A0:BDC3 9E 7C 0F    STZ $0F7C,x
-$A0:BDC6 A5 1C       LDA $1C    [$7E:001C]
-$A0:BDC8 4A          LSR A
-$A0:BDC9 90 14       BCC $14    [$BDDF]
-$A0:BDCB A5 22       LDA $22    [$7E:0022]
-$A0:BDCD 29 F0 FF    AND #$FFF0
-$A0:BDD0 38          SEC
-$A0:BDD1 FD 82 0F    SBC $0F82,x
-$A0:BDD4 DD 7A 0F    CMP $0F7A,x
-$A0:BDD7 30 03       BMI $03    [$BDDC]
-$A0:BDD9 9D 7A 0F    STA $0F7A,x
+$A0:BDC3 9E 7C 0F    STZ $0F7C,x            ; Enemy X subposition = 0
+$A0:BDC6 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:BDC8 4A          LSR A                  ;} If [$1C] & 1 = 0: go to BRANCH_MOVING_LEFT
+$A0:BDC9 90 14       BCC $14    [$BDDF]     ;/
+$A0:BDCB A5 22       LDA $22    [$7E:0022]  ;\
+$A0:BDCD 29 F0 FF    AND #$FFF0             ;} A = [$22] - [$22] % 10h (target right boundary rounded down to left of 16x16 tile)
+$A0:BDD0 38          SEC                    ;\
+$A0:BDD1 FD 82 0F    SBC $0F82,x            ;|
+$A0:BDD4 DD 7A 0F    CMP $0F7A,x            ;} Enemy X position = min([enemy X position], [A] - [enemy X radius])
+$A0:BDD7 30 03       BMI $03    [$BDDC]     ;|
+$A0:BDD9 9D 7A 0F    STA $0F7A,x            ;/
 
-$A0:BDDC 38          SEC
-$A0:BDDD AB          PLB
-$A0:BDDE 6B          RTL
+$A0:BDDC 38          SEC                    ;\
+$A0:BDDD AB          PLB                    ;} Return carry set
+$A0:BDDE 6B          RTL                    ;/
 
-$A0:BDDF A5 22       LDA $22    [$7E:0022]
-$A0:BDE1 09 0F 00    ORA #$000F
-$A0:BDE4 38          SEC
-$A0:BDE5 7D 82 0F    ADC $0F82,x
-$A0:BDE8 38          SEC
-$A0:BDE9 DD 7A 0F    CMP $0F7A,x
-$A0:BDEC F0 02       BEQ $02    [$BDF0]
-$A0:BDEE 10 03       BPL $03    [$BDF3]
+; BRANCH_MOVING_LEFT
+$A0:BDDF A5 22       LDA $22    [$7E:0022]  ;\
+$A0:BDE1 09 0F 00    ORA #$000F             ;} A = [$22] - [$22] % 10h + 10h (target left boundary rounded up to right of 16x16 tile)
+$A0:BDE4 38          SEC                    ;/
+$A0:BDE5 7D 82 0F    ADC $0F82,x            ;\
+$A0:BDE8 38          SEC                    ;|
+$A0:BDE9 DD 7A 0F    CMP $0F7A,x            ;|
+$A0:BDEC F0 02       BEQ $02    [$BDF0]     ;} Enemy X position = max([enemy X position], [A] + [enemy X radius])
+$A0:BDEE 10 03       BPL $03    [$BDF3]     ;|
+                                            ;|
+$A0:BDF0 9D 7A 0F    STA $0F7A,x            ;/
 
-$A0:BDF0 9D 7A 0F    STA $0F7A,x
-
-$A0:BDF3 38          SEC
-$A0:BDF4 AB          PLB
-$A0:BDF5 6B          RTL
+$A0:BDF3 38          SEC                    ;\
+$A0:BDF4 AB          PLB                    ;} Return carry set
+$A0:BDF5 6B          RTL                    ;/
 }
 
 
-;;; $BDF6:  ;;;
+;;; $BDF6: Unused. Move enemy down by [$14].[$12], no block collision reactions ;;;
 {
+;; Parameters:
+;;     A: Direction. 0 = up, 1 = down
+;;     $14.$12: Distance to move (unsigned)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $A0:BDF6 8B          PHB
-$A0:BDF7 E2 20       SEP #$20
-$A0:BDF9 A9 A0       LDA #$A0
-$A0:BDFB 48          PHA
-$A0:BDFC AB          PLB
-$A0:BDFD C2 30       REP #$30
-$A0:BDFF 85 1C       STA $1C    [$7E:001C]
+$A0:BDF7 E2 20       SEP #$20               ;\
+$A0:BDF9 A9 A0       LDA #$A0               ;|
+$A0:BDFB 48          PHA                    ;} DB = $A0
+$A0:BDFC AB          PLB                    ;|
+$A0:BDFD C2 30       REP #$30               ;/
+$A0:BDFF 85 1C       STA $1C    [$7E:001C]  ; $1C = [A]
 $A0:BE01 DA          PHX
-$A0:BE02 BD 7A 0F    LDA $0F7A,x
-$A0:BE05 38          SEC
-$A0:BE06 FD 82 0F    SBC $0F82,x
-$A0:BE09 29 F0 FF    AND #$FFF0
-$A0:BE0C 85 1A       STA $1A    [$7E:001A]
-$A0:BE0E BD 7A 0F    LDA $0F7A,x
-$A0:BE11 18          CLC
-$A0:BE12 7D 82 0F    ADC $0F82,x
-$A0:BE15 3A          DEC A
-$A0:BE16 38          SEC
-$A0:BE17 E5 1A       SBC $1A    [$7E:001A]
-$A0:BE19 4A          LSR A
-$A0:BE1A 4A          LSR A
-$A0:BE1B 4A          LSR A
-$A0:BE1C 4A          LSR A
-$A0:BE1D 85 1A       STA $1A    [$7E:001A]
-$A0:BE1F A5 1C       LDA $1C    [$7E:001C]
-$A0:BE21 4A          LSR A
-$A0:BE22 90 16       BCC $16    [$BE3A]
-$A0:BE24 BD 80 0F    LDA $0F80,x
-$A0:BE27 18          CLC
-$A0:BE28 65 12       ADC $12    [$7E:0012]
-$A0:BE2A 85 16       STA $16    [$7E:0016]
-$A0:BE2C BD 7E 0F    LDA $0F7E,x
-$A0:BE2F 65 14       ADC $14    [$7E:0014]
-$A0:BE31 85 18       STA $18    [$7E:0018]
-$A0:BE33 18          CLC
-$A0:BE34 7D 84 0F    ADC $0F84,x
-$A0:BE37 3A          DEC A
+$A0:BE02 BD 7A 0F    LDA $0F7A,x            ;\
+$A0:BE05 38          SEC                    ;|
+$A0:BE06 FD 82 0F    SBC $0F82,x            ;|
+$A0:BE09 29 F0 FF    AND #$FFF0             ;|
+$A0:BE0C 85 1A       STA $1A    [$7E:001A]  ;|
+$A0:BE0E BD 7A 0F    LDA $0F7A,x            ;|
+$A0:BE11 18          CLC                    ;|
+$A0:BE12 7D 82 0F    ADC $0F82,x            ;|
+$A0:BE15 3A          DEC A                  ;} $1A = (enemy right boundary) / 10h - (enemy left boundary) / 10h (number of blocks left to check)
+$A0:BE16 38          SEC                    ;|
+$A0:BE17 E5 1A       SBC $1A    [$7E:001A]  ;|
+$A0:BE19 4A          LSR A                  ;|
+$A0:BE1A 4A          LSR A                  ;|
+$A0:BE1B 4A          LSR A                  ;|
+$A0:BE1C 4A          LSR A                  ;|
+$A0:BE1D 85 1A       STA $1A    [$7E:001A]  ;/
+$A0:BE1F A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:BE21 4A          LSR A                  ;} If [$1C] & 1 != 0:
+$A0:BE22 90 16       BCC $16    [$BE3A]     ;/
+$A0:BE24 BD 80 0F    LDA $0F80,x            ;\
+$A0:BE27 18          CLC                    ;|
+$A0:BE28 65 12       ADC $12    [$7E:0012]  ;|
+$A0:BE2A 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy Y position] + [$14].[$12] (target position)
+$A0:BE2C BD 7E 0F    LDA $0F7E,x            ;|
+$A0:BE2F 65 14       ADC $14    [$7E:0014]  ;|
+$A0:BE31 85 18       STA $18    [$7E:0018]  ;/
+$A0:BE33 18          CLC                    ;\
+$A0:BE34 7D 84 0F    ADC $0F84,x            ;} $22 = [$18] + [enemy Y radius] - 1 (target front boundary)
+$A0:BE37 3A          DEC A                  ;/
 $A0:BE38 80 13       BRA $13    [$BE4D]
 
-$A0:BE3A BD 80 0F    LDA $0F80,x
-$A0:BE3D 38          SEC
-$A0:BE3E E5 12       SBC $12    [$7E:0012]
-$A0:BE40 85 16       STA $16    [$7E:0016]
-$A0:BE42 BD 7E 0F    LDA $0F7E,x
-$A0:BE45 E5 14       SBC $14    [$7E:0014]
-$A0:BE47 85 18       STA $18    [$7E:0018]
-$A0:BE49 38          SEC
-$A0:BE4A FD 84 0F    SBC $0F84,x
+$A0:BE3A BD 80 0F    LDA $0F80,x            ;\ Else ([$1C] & 1 = 0):
+$A0:BE3D 38          SEC                    ;|
+$A0:BE3E E5 12       SBC $12    [$7E:0012]  ;|
+$A0:BE40 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy Y position] - [$14].[$12] (target position)
+$A0:BE42 BD 7E 0F    LDA $0F7E,x            ;|
+$A0:BE45 E5 14       SBC $14    [$7E:0014]  ;|
+$A0:BE47 85 18       STA $18    [$7E:0018]  ;/
+$A0:BE49 38          SEC                    ;\
+$A0:BE4A FD 84 0F    SBC $0F84,x            ;} $22 = [$18] - [enemy Y radius] (target front boundary)
 
 $A0:BE4D 85 22       STA $22    [$7E:0022]
-$A0:BE4F 4A          LSR A
-$A0:BE50 4A          LSR A
-$A0:BE51 4A          LSR A
-$A0:BE52 4A          LSR A
-$A0:BE53 E2 20       SEP #$20
-$A0:BE55 8D 02 42    STA $4202  [$7E:4202]
-$A0:BE58 AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:BE5B 8D 03 42    STA $4203  [$7E:4203]
-$A0:BE5E C2 20       REP #$20
-$A0:BE60 BD 7A 0F    LDA $0F7A,x
-$A0:BE63 38          SEC
-$A0:BE64 FD 82 0F    SBC $0F82,x
-$A0:BE67 4A          LSR A
-$A0:BE68 4A          LSR A
-$A0:BE69 4A          LSR A
-$A0:BE6A 4A          LSR A
-$A0:BE6B 18          CLC
-$A0:BE6C 6D 16 42    ADC $4216  [$7E:4216]
-$A0:BE6F 0A          ASL A
-$A0:BE70 AA          TAX
+$A0:BE4F 4A          LSR A                  ;\
+$A0:BE50 4A          LSR A                  ;|
+$A0:BE51 4A          LSR A                  ;|
+$A0:BE52 4A          LSR A                  ;|
+$A0:BE53 E2 20       SEP #$20               ;|
+$A0:BE55 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BE58 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:BE5B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BE5E C2 20       REP #$20               ;|
+$A0:BE60 BD 7A 0F    LDA $0F7A,x            ;|
+$A0:BE63 38          SEC                    ;} X = ((enemy front boundary) / 10h * [room width] + (enemy left boundary) / 10h) * 2 (index of leftmost block to check)
+$A0:BE64 FD 82 0F    SBC $0F82,x            ;|
+$A0:BE67 4A          LSR A                  ;|
+$A0:BE68 4A          LSR A                  ;|
+$A0:BE69 4A          LSR A                  ;|
+$A0:BE6A 4A          LSR A                  ;|
+$A0:BE6B 18          CLC                    ;|
+$A0:BE6C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BE6F 0A          ASL A                  ;|
+$A0:BE70 AA          TAX                    ;/
 
-$A0:BE71 BF 02 00 7F LDA $7F0002,x
-$A0:BE75 30 14       BMI $14    [$BE8B]
-$A0:BE77 E8          INX
-$A0:BE78 E8          INX
-$A0:BE79 C6 1A       DEC $1A    [$7E:001A]
-$A0:BE7B 10 F4       BPL $F4    [$BE71]
+; LOOP
+$A0:BE71 BF 02 00 7F LDA $7F0002,x          ;\
+$A0:BE75 30 14       BMI $14    [$BE8B]     ;} If (block type) < 8:
+$A0:BE77 E8          INX                    ;\
+$A0:BE78 E8          INX                    ;} X += 2
+$A0:BE79 C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
+$A0:BE7B 10 F4       BPL $F4    [$BE71]     ; If [$1A] >= 0: go to LOOP
 $A0:BE7D FA          PLX
-$A0:BE7E A5 16       LDA $16    [$7E:0016]
-$A0:BE80 9D 80 0F    STA $0F80,x
-$A0:BE83 A5 18       LDA $18    [$7E:0018]
-$A0:BE85 9D 7E 0F    STA $0F7E,x
-$A0:BE88 18          CLC
-$A0:BE89 AB          PLB
-$A0:BE8A 6B          RTL
+$A0:BE7E A5 16       LDA $16    [$7E:0016]  ;\
+$A0:BE80 9D 80 0F    STA $0F80,x            ;|
+$A0:BE83 A5 18       LDA $18    [$7E:0018]  ;} Enemy Y position = (target Y position)
+$A0:BE85 9D 7E 0F    STA $0F7E,x            ;/
+$A0:BE88 18          CLC                    ;\
+$A0:BE89 AB          PLB                    ;} Return carry clear
+$A0:BE8A 6B          RTL                    ;/
 
 $A0:BE8B FA          PLX
-$A0:BE8C 9E 80 0F    STZ $0F80,x
-$A0:BE8F A5 1C       LDA $1C    [$7E:001C]
-$A0:BE91 4A          LSR A
-$A0:BE92 90 14       BCC $14    [$BEA8]
-$A0:BE94 A5 22       LDA $22    [$7E:0022]
-$A0:BE96 29 F0 FF    AND #$FFF0
-$A0:BE99 38          SEC
-$A0:BE9A FD 84 0F    SBC $0F84,x
-$A0:BE9D DD 7E 0F    CMP $0F7E,x
-$A0:BEA0 30 03       BMI $03    [$BEA5]
-$A0:BEA2 9D 7E 0F    STA $0F7E,x
+$A0:BE8C 9E 80 0F    STZ $0F80,x            ; Enemy Y subposition = 0
+$A0:BE8F A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:BE91 4A          LSR A                  ;} If [$1C] & 1 = 0: go to BRANCH_MOVING_UP
+$A0:BE92 90 14       BCC $14    [$BEA8]     ;/
+$A0:BE94 A5 22       LDA $22    [$7E:0022]  ;\
+$A0:BE96 29 F0 FF    AND #$FFF0             ;} A = [$22] - [$22] % 10h (target bottom boundary rounded down to top of 16x16 tile)
+$A0:BE99 38          SEC                    ;\
+$A0:BE9A FD 84 0F    SBC $0F84,x            ;|
+$A0:BE9D DD 7E 0F    CMP $0F7E,x            ;} Enemy Y position = min([enemy Y position], [A] - [enemy Y radius])
+$A0:BEA0 30 03       BMI $03    [$BEA5]     ;|
+$A0:BEA2 9D 7E 0F    STA $0F7E,x            ;/
+                                            
+$A0:BEA5 38          SEC                    ;\
+$A0:BEA6 AB          PLB                    ;} Return carry set
+$A0:BEA7 6B          RTL                    ;/
 
-$A0:BEA5 38          SEC
-$A0:BEA6 AB          PLB
-$A0:BEA7 6B          RTL
-
-$A0:BEA8 A5 22       LDA $22    [$7E:0022]
-$A0:BEAA 09 0F 00    ORA #$000F
-$A0:BEAD 38          SEC
-$A0:BEAE 7D 84 0F    ADC $0F84,x
-$A0:BEB1 38          SEC
-$A0:BEB2 DD 7E 0F    CMP $0F7E,x
-$A0:BEB5 F0 02       BEQ $02    [$BEB9]
-$A0:BEB7 10 03       BPL $03    [$BEBC]
-
-$A0:BEB9 9D 7E 0F    STA $0F7E,x
-
-$A0:BEBC 38          SEC
-$A0:BEBD AB          PLB
-$A0:BEBE 6B          RTL
+; BRANCH_MOVING_UP
+$A0:BEA8 A5 22       LDA $22    [$7E:0022]  ;\
+$A0:BEAA 09 0F 00    ORA #$000F             ;} A = [$22] - [$22] % 10h + 10h (target top boundary rounded up to bottom of 16x16 tile)
+$A0:BEAD 38          SEC                    ;/
+$A0:BEAE 7D 84 0F    ADC $0F84,x            ;\
+$A0:BEB1 38          SEC                    ;|
+$A0:BEB2 DD 7E 0F    CMP $0F7E,x            ;|
+$A0:BEB5 F0 02       BEQ $02    [$BEB9]     ;} Enemy Y position = max([enemy Y position], [A] + [enemy Y radius])
+$A0:BEB7 10 03       BPL $03    [$BEBC]     ;|
+                                            ;|
+$A0:BEB9 9D 7E 0F    STA $0F7E,x            ;/
+                                            
+$A0:BEBC 38          SEC                    ;\
+$A0:BEBD AB          PLB                    ;} Return carry set
+$A0:BEBE 6B          RTL                    ;/
 }
 
 
-;;; $BEBF:  ;;;
+;;; $BEBF: Unused. Check for horizontal "solid" block collision ;;;
 {
-$A0:BEBF 85 1C       STA $1C    [$7E:001C]
+;; Parameters:
+;;     A: Direction. 0 = left, 1 = right
+;;     $14.$12: Distance to check for collision (unsigned)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
+$A0:BEBF 85 1C       STA $1C    [$7E:001C]  ; $1C = [A]
 $A0:BEC1 8B          PHB
-$A0:BEC2 E2 20       SEP #$20
-$A0:BEC4 A9 A0       LDA #$A0
-$A0:BEC6 48          PHA
-$A0:BEC7 AB          PLB
-$A0:BEC8 C2 30       REP #$30
+$A0:BEC2 E2 20       SEP #$20               ;\
+$A0:BEC4 A9 A0       LDA #$A0               ;|
+$A0:BEC6 48          PHA                    ;} DB = $A0
+$A0:BEC7 AB          PLB                    ;|
+$A0:BEC8 C2 30       REP #$30               ;/
 $A0:BECA DA          PHX
-$A0:BECB BD 7E 0F    LDA $0F7E,x
-$A0:BECE 38          SEC
-$A0:BECF FD 84 0F    SBC $0F84,x
-$A0:BED2 29 F0 FF    AND #$FFF0
-$A0:BED5 85 1A       STA $1A    [$7E:001A]
-$A0:BED7 BD 7E 0F    LDA $0F7E,x
-$A0:BEDA 18          CLC
-$A0:BEDB 7D 84 0F    ADC $0F84,x
-$A0:BEDE 3A          DEC A
-$A0:BEDF 38          SEC
-$A0:BEE0 E5 1A       SBC $1A    [$7E:001A]
-$A0:BEE2 4A          LSR A
-$A0:BEE3 4A          LSR A
-$A0:BEE4 4A          LSR A
-$A0:BEE5 4A          LSR A
-$A0:BEE6 85 1A       STA $1A    [$7E:001A]
-$A0:BEE8 BD 7E 0F    LDA $0F7E,x
-$A0:BEEB 38          SEC
-$A0:BEEC FD 84 0F    SBC $0F84,x
-$A0:BEEF 4A          LSR A
-$A0:BEF0 4A          LSR A
-$A0:BEF1 4A          LSR A
-$A0:BEF2 4A          LSR A
-$A0:BEF3 E2 20       SEP #$20
-$A0:BEF5 8D 02 42    STA $4202  [$7E:4202]
-$A0:BEF8 AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:BEFB 8D 03 42    STA $4203  [$7E:4203]
-$A0:BEFE C2 20       REP #$20
-$A0:BF00 A5 1C       LDA $1C    [$7E:001C]
-$A0:BF02 4A          LSR A
-$A0:BF03 90 16       BCC $16    [$BF1B]
-$A0:BF05 BD 7C 0F    LDA $0F7C,x
-$A0:BF08 18          CLC
-$A0:BF09 65 12       ADC $12    [$7E:0012]
-$A0:BF0B 85 16       STA $16    [$7E:0016]
-$A0:BF0D BD 7A 0F    LDA $0F7A,x
-$A0:BF10 65 14       ADC $14    [$7E:0014]
-$A0:BF12 85 18       STA $18    [$7E:0018]
-$A0:BF14 18          CLC
-$A0:BF15 7D 82 0F    ADC $0F82,x
-$A0:BF18 3A          DEC A
-$A0:BF19 80 13       BRA $13    [$BF2E]
+$A0:BECB BD 7E 0F    LDA $0F7E,x            ;\
+$A0:BECE 38          SEC                    ;|
+$A0:BECF FD 84 0F    SBC $0F84,x            ;|
+$A0:BED2 29 F0 FF    AND #$FFF0             ;|
+$A0:BED5 85 1A       STA $1A    [$7E:001A]  ;|
+$A0:BED7 BD 7E 0F    LDA $0F7E,x            ;|
+$A0:BEDA 18          CLC                    ;|
+$A0:BEDB 7D 84 0F    ADC $0F84,x            ;|
+$A0:BEDE 3A          DEC A                  ;} $1A = (enemy bottom boundary) / 10h - (enemy top boundary) / 10h (number of blocks left to check)
+$A0:BEDF 38          SEC                    ;|
+$A0:BEE0 E5 1A       SBC $1A    [$7E:001A]  ;|
+$A0:BEE2 4A          LSR A                  ;|
+$A0:BEE3 4A          LSR A                  ;|
+$A0:BEE4 4A          LSR A                  ;|
+$A0:BEE5 4A          LSR A                  ;|
+$A0:BEE6 85 1A       STA $1A    [$7E:001A]  ;/
+$A0:BEE8 BD 7E 0F    LDA $0F7E,x            ;\
+$A0:BEEB 38          SEC                    ;|
+$A0:BEEC FD 84 0F    SBC $0F84,x            ;|
+$A0:BEEF 4A          LSR A                  ;|
+$A0:BEF0 4A          LSR A                  ;|
+$A0:BEF1 4A          LSR A                  ;} Calculate (enemy top boundary) / 10h * [room width in blocks] (target row block index)
+$A0:BEF2 4A          LSR A                  ;|
+$A0:BEF3 E2 20       SEP #$20               ;|
+$A0:BEF5 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BEF8 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:BEFB 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BEFE C2 20       REP #$20               ;/
+$A0:BF00 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:BF02 4A          LSR A                  ;} If [$1C] & 1 != 0:
+$A0:BF03 90 16       BCC $16    [$BF1B]     ;/
+$A0:BF05 BD 7C 0F    LDA $0F7C,x            ;\
+$A0:BF08 18          CLC                    ;|
+$A0:BF09 65 12       ADC $12    [$7E:0012]  ;|
+$A0:BF0B 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy X position] + [$14].[$12] (target X position)
+$A0:BF0D BD 7A 0F    LDA $0F7A,x            ;|
+$A0:BF10 65 14       ADC $14    [$7E:0014]  ;|
+$A0:BF12 85 18       STA $18    [$7E:0018]  ;/
+$A0:BF14 18          CLC                    ;\
+$A0:BF15 7D 82 0F    ADC $0F82,x            ;} $22 = (target right boundary)
+$A0:BF18 3A          DEC A                  ;/
+$A0:BF19 80 13       BRA $13    [$BF2E]     
+                                            
+$A0:BF1B BD 7C 0F    LDA $0F7C,x            ;\ Else ([$1C] & 1 = 0):
+$A0:BF1E 38          SEC                    ;|
+$A0:BF1F E5 12       SBC $12    [$7E:0012]  ;|
+$A0:BF21 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy X position] - [$14].[$12] (target X position)
+$A0:BF23 BD 7A 0F    LDA $0F7A,x            ;|
+$A0:BF26 E5 14       SBC $14    [$7E:0014]  ;|
+$A0:BF28 85 18       STA $18    [$7E:0018]  ;/
+$A0:BF2A 38          SEC                    ;\
+$A0:BF2B FD 82 0F    SBC $0F82,x            ;} $22 = (target left boundary)
+                                            
+$A0:BF2E 85 22       STA $22    [$7E:0022]  
+$A0:BF30 4A          LSR A                  ;\
+$A0:BF31 4A          LSR A                  ;|
+$A0:BF32 4A          LSR A                  ;|
+$A0:BF33 4A          LSR A                  ;|
+$A0:BF34 18          CLC                    ;} X = ((target row block index) + [$22] / 10h) * 2 (index of top block to check)
+$A0:BF35 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BF38 0A          ASL A                  ;|
+$A0:BF39 AA          TAX                    ;/
 
-$A0:BF1B BD 7C 0F    LDA $0F7C,x
-$A0:BF1E 38          SEC
-$A0:BF1F E5 12       SBC $12    [$7E:0012]
-$A0:BF21 85 16       STA $16    [$7E:0016]
-$A0:BF23 BD 7A 0F    LDA $0F7A,x
-$A0:BF26 E5 14       SBC $14    [$7E:0014]
-$A0:BF28 85 18       STA $18    [$7E:0018]
-$A0:BF2A 38          SEC
-$A0:BF2B FD 82 0F    SBC $0F82,x
-
-$A0:BF2E 85 22       STA $22    [$7E:0022]
-$A0:BF30 4A          LSR A
-$A0:BF31 4A          LSR A
-$A0:BF32 4A          LSR A
-$A0:BF33 4A          LSR A
-$A0:BF34 18          CLC
-$A0:BF35 6D 16 42    ADC $4216  [$7E:4216]
-$A0:BF38 0A          ASL A
-$A0:BF39 AA          TAX
-
-$A0:BF3A BF 02 00 7F LDA $7F0002,x
-$A0:BF3E 30 11       BMI $11    [$BF51]
-$A0:BF40 8A          TXA
-$A0:BF41 18          CLC
-$A0:BF42 6D A5 07    ADC $07A5  [$7E:07A5]
-$A0:BF45 6D A5 07    ADC $07A5  [$7E:07A5]
-$A0:BF48 AA          TAX
-$A0:BF49 C6 1A       DEC $1A    [$7E:001A]
-$A0:BF4B 10 ED       BPL $ED    [$BF3A]
+; LOOP
+$A0:BF3A BF 02 00 7F LDA $7F0002,x          ;\
+$A0:BF3E 30 11       BMI $11    [$BF51]     ;} If (block type) < 8:
+$A0:BF40 8A          TXA                    ;\
+$A0:BF41 18          CLC                    ;|
+$A0:BF42 6D A5 07    ADC $07A5  [$7E:07A5]  ;} X += [room width in blocks] * 2 (next row)
+$A0:BF45 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$A0:BF48 AA          TAX                    ;/
+$A0:BF49 C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
+$A0:BF4B 10 ED       BPL $ED    [$BF3A]     ; If [$1A] >= 0: go to LOOP
 $A0:BF4D FA          PLX
-$A0:BF4E 18          CLC
-$A0:BF4F AB          PLB
-$A0:BF50 6B          RTL
+$A0:BF4E 18          CLC                    ;\
+$A0:BF4F AB          PLB                    ;} Return carry clear
+$A0:BF50 6B          RTL                    ;/
 
 $A0:BF51 FA          PLX
 $A0:BF52 64 12       STZ $12    [$7E:0012]
-$A0:BF54 A5 1C       LDA $1C    [$7E:001C]
-$A0:BF56 4A          LSR A
-$A0:BF57 90 16       BCC $16    [$BF6F]
-$A0:BF59 A5 22       LDA $22    [$7E:0022]
-$A0:BF5B 29 F0 FF    AND #$FFF0
-$A0:BF5E 38          SEC
-$A0:BF5F FD 82 0F    SBC $0F82,x
-$A0:BF62 FD 7A 0F    SBC $0F7A,x
-$A0:BF65 10 03       BPL $03    [$BF6A]
-$A0:BF67 A9 00 00    LDA #$0000
+$A0:BF54 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:BF56 4A          LSR A                  ;} If [$1C] & 1 = 0: go to BRANCH_MOVING_LEFT
+$A0:BF57 90 16       BCC $16    [$BF6F]     ;/
+$A0:BF59 A5 22       LDA $22    [$7E:0022]  ;\
+$A0:BF5B 29 F0 FF    AND #$FFF0             ;} A = [$22] - [$22] % 10h (target right boundary rounded down to left of 16x16 tile)
+$A0:BF5E 38          SEC                    ;\
+$A0:BF5F FD 82 0F    SBC $0F82,x            ;|
+$A0:BF62 FD 7A 0F    SBC $0F7A,x            ;|
+$A0:BF65 10 03       BPL $03    [$BF6A]     ;} $14 = max(0, [A] - [enemy X radius] - [enemy X position])
+$A0:BF67 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A0:BF6A 85 14       STA $14    [$7E:0014]  ;/
+$A0:BF6C 38          SEC                    ;\
+$A0:BF6D AB          PLB                    ;} Return carry set
+$A0:BF6E 6B          RTL                    ;/
 
-$A0:BF6A 85 14       STA $14    [$7E:0014]
-$A0:BF6C 38          SEC
-$A0:BF6D AB          PLB
-$A0:BF6E 6B          RTL
-
-$A0:BF6F A5 22       LDA $22    [$7E:0022]
-$A0:BF71 09 0F 00    ORA #$000F
-$A0:BF74 38          SEC
-$A0:BF75 7D 82 0F    ADC $0F82,x
-$A0:BF78 38          SEC
-$A0:BF79 FD 7A 0F    SBC $0F7A,x
-$A0:BF7C 30 03       BMI $03    [$BF81]
-$A0:BF7E A9 00 00    LDA #$0000
-
-$A0:BF81 49 FF FF    EOR #$FFFF
-$A0:BF84 1A          INC A
-$A0:BF85 85 14       STA $14    [$7E:0014]
-$A0:BF87 38          SEC
-$A0:BF88 AB          PLB
-$A0:BF89 6B          RTL
+; BRANCH_MOVING_LEFT
+$A0:BF6F A5 22       LDA $22    [$7E:0022]  ;\
+$A0:BF71 09 0F 00    ORA #$000F             ;} A = [$22] - [$22] % 10h + 10h (target left boundary rounded up to right of 16x16 tile)
+$A0:BF74 38          SEC                    ;/
+$A0:BF75 7D 82 0F    ADC $0F82,x            ;\
+$A0:BF78 38          SEC                    ;|
+$A0:BF79 FD 7A 0F    SBC $0F7A,x            ;|
+$A0:BF7C 30 03       BMI $03    [$BF81]     ;|
+$A0:BF7E A9 00 00    LDA #$0000             ;} $14 = -max(0, [A] + [enemy X radius] - [enemy X position])
+                                            ;|
+$A0:BF81 49 FF FF    EOR #$FFFF             ;|
+$A0:BF84 1A          INC A                  ;|
+$A0:BF85 85 14       STA $14    [$7E:0014]  ;/
+$A0:BF87 38          SEC                    ;\
+$A0:BF88 AB          PLB                    ;} Return carry set
+$A0:BF89 6B          RTL                    ;/
 }
 
 
-;;; $BF8A:  ;;;
+;;; $BF8A: Check for vertical "solid" block collision ;;;
 {
-$A0:BF8A 85 1C       STA $1C    [$7E:001C]
-$A0:BF8C 8B          PHB
-$A0:BF8D E2 20       SEP #$20
-$A0:BF8F A9 A0       LDA #$A0
-$A0:BF91 48          PHA
-$A0:BF92 AB          PLB
+;; Parameters:
+;;     A: Direction. 0 = left, 1 = right
+;;     $14.$12: Distance to check for collision (unsigned)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
+; Used by (metal) skree
+
+$A0:BF8A 85 1C       STA $1C    [$7E:001C]  ; $1C = [A]
+$A0:BF8C 8B          PHB                    ;\
+$A0:BF8D E2 20       SEP #$20               ;|
+$A0:BF8F A9 A0       LDA #$A0               ;} DB = $A0
+$A0:BF91 48          PHA                    ;|
+$A0:BF92 AB          PLB                    ;/
 $A0:BF93 C2 30       REP #$30
-
 $A0:BF95 DA          PHX
-$A0:BF96 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A0:BF99 38          SEC
-$A0:BF9A FD 82 0F    SBC $0F82,x[$7E:1002]
-$A0:BF9D 29 F0 FF    AND #$FFF0
-$A0:BFA0 85 1A       STA $1A    [$7E:001A]
-$A0:BFA2 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A0:BFA5 18          CLC
-$A0:BFA6 7D 82 0F    ADC $0F82,x[$7E:1002]
-$A0:BFA9 3A          DEC A
-$A0:BFAA 38          SEC
-$A0:BFAB E5 1A       SBC $1A    [$7E:001A]
-$A0:BFAD 4A          LSR A
-$A0:BFAE 4A          LSR A
-$A0:BFAF 4A          LSR A
-$A0:BFB0 4A          LSR A
-$A0:BFB1 85 1A       STA $1A    [$7E:001A]
-$A0:BFB3 A5 1C       LDA $1C    [$7E:001C]
-$A0:BFB5 4A          LSR A
-$A0:BFB6 90 16       BCC $16    [$BFCE]
-$A0:BFB8 BD 80 0F    LDA $0F80,x[$7E:1000]
-$A0:BFBB 18          CLC
-$A0:BFBC 65 12       ADC $12    [$7E:0012]
-$A0:BFBE 85 16       STA $16    [$7E:0016]
-$A0:BFC0 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A0:BFC3 65 14       ADC $14    [$7E:0014]
-$A0:BFC5 85 18       STA $18    [$7E:0018]
-$A0:BFC7 18          CLC
-$A0:BFC8 7D 84 0F    ADC $0F84,x[$7E:1004]
-$A0:BFCB 3A          DEC A
-$A0:BFCC 80 13       BRA $13    [$BFE1]
-
-$A0:BFCE BD 80 0F    LDA $0F80,x
-$A0:BFD1 38          SEC
-$A0:BFD2 E5 12       SBC $12    [$7E:0012]
-$A0:BFD4 85 16       STA $16    [$7E:0016]
-$A0:BFD6 BD 7E 0F    LDA $0F7E,x
-$A0:BFD9 E5 14       SBC $14    [$7E:0014]
-$A0:BFDB 85 18       STA $18    [$7E:0018]
-$A0:BFDD 38          SEC
-$A0:BFDE FD 84 0F    SBC $0F84,x
+$A0:BF96 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A0:BF99 38          SEC                    ;|
+$A0:BF9A FD 82 0F    SBC $0F82,x[$7E:1002]  ;|
+$A0:BF9D 29 F0 FF    AND #$FFF0             ;|
+$A0:BFA0 85 1A       STA $1A    [$7E:001A]  ;|
+$A0:BFA2 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;|
+$A0:BFA5 18          CLC                    ;|
+$A0:BFA6 7D 82 0F    ADC $0F82,x[$7E:1002]  ;|
+$A0:BFA9 3A          DEC A                  ;} $1A = (enemy right boundary) / 10h - (enemy left boundary) / 10h (number of blocks left to check)
+$A0:BFAA 38          SEC                    ;|
+$A0:BFAB E5 1A       SBC $1A    [$7E:001A]  ;|
+$A0:BFAD 4A          LSR A                  ;|
+$A0:BFAE 4A          LSR A                  ;|
+$A0:BFAF 4A          LSR A                  ;|
+$A0:BFB0 4A          LSR A                  ;|
+$A0:BFB1 85 1A       STA $1A    [$7E:001A]  ;/
+$A0:BFB3 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:BFB5 4A          LSR A                  ;} If [$1C] & 1 != 0:
+$A0:BFB6 90 16       BCC $16    [$BFCE]     ;/
+$A0:BFB8 BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
+$A0:BFBB 18          CLC                    ;|
+$A0:BFBC 65 12       ADC $12    [$7E:0012]  ;|
+$A0:BFBE 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy Y position] + [$14].[$12] (target position)
+$A0:BFC0 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
+$A0:BFC3 65 14       ADC $14    [$7E:0014]  ;|
+$A0:BFC5 85 18       STA $18    [$7E:0018]  ;/
+$A0:BFC7 18          CLC                    ;\
+$A0:BFC8 7D 84 0F    ADC $0F84,x[$7E:1004]  ;} $22 = [$18] + [enemy Y radius] - 1 (target front boundary)
+$A0:BFCB 3A          DEC A                  ;/
+$A0:BFCC 80 13       BRA $13    [$BFE1]     
+                                            
+$A0:BFCE BD 80 0F    LDA $0F80,x            ;\ Else ([$1C] & 1 = 0):
+$A0:BFD1 38          SEC                    ;|
+$A0:BFD2 E5 12       SBC $12    [$7E:0012]  ;|
+$A0:BFD4 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy Y position] - [$14].[$12] (target position)
+$A0:BFD6 BD 7E 0F    LDA $0F7E,x            ;|
+$A0:BFD9 E5 14       SBC $14    [$7E:0014]  ;|
+$A0:BFDB 85 18       STA $18    [$7E:0018]  ;/
+$A0:BFDD 38          SEC                    ;\
+$A0:BFDE FD 84 0F    SBC $0F84,x            ;} $22 = [$18] - [enemy Y radius] (target front boundary)
 
 $A0:BFE1 85 22       STA $22    [$7E:0022]
-$A0:BFE3 4A          LSR A
-$A0:BFE4 4A          LSR A
-$A0:BFE5 4A          LSR A
-$A0:BFE6 4A          LSR A
-$A0:BFE7 E2 20       SEP #$20
-$A0:BFE9 8D 02 42    STA $4202  [$7E:4202]
-$A0:BFEC AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:BFEF 8D 03 42    STA $4203  [$7E:4203]
-$A0:BFF2 C2 20       REP #$20
-$A0:BFF4 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A0:BFF7 38          SEC
-$A0:BFF8 FD 82 0F    SBC $0F82,x[$7E:1002]
-$A0:BFFB 4A          LSR A
-$A0:BFFC 4A          LSR A
-$A0:BFFD 4A          LSR A
-$A0:BFFE 4A          LSR A
-$A0:BFFF 18          CLC
-$A0:C000 6D 16 42    ADC $4216  [$7E:4216]
-$A0:C003 0A          ASL A
-$A0:C004 AA          TAX
+$A0:BFE3 4A          LSR A                  ;\
+$A0:BFE4 4A          LSR A                  ;|
+$A0:BFE5 4A          LSR A                  ;|
+$A0:BFE6 4A          LSR A                  ;|
+$A0:BFE7 E2 20       SEP #$20               ;|
+$A0:BFE9 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BFEC AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:BFEF 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BFF2 C2 20       REP #$20               ;|
+$A0:BFF4 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;|
+$A0:BFF7 38          SEC                    ;} X = ((enemy front boundary) / 10h * [room width] + (enemy left boundary) / 10h) * 2 (index of leftmost block to check)
+$A0:BFF8 FD 82 0F    SBC $0F82,x[$7E:1002]  ;|
+$A0:BFFB 4A          LSR A                  ;|
+$A0:BFFC 4A          LSR A                  ;|
+$A0:BFFD 4A          LSR A                  ;|
+$A0:BFFE 4A          LSR A                  ;|
+$A0:BFFF 18          CLC                    ;|
+$A0:C000 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:C003 0A          ASL A                  ;|
+$A0:C004 AA          TAX                    ;/
 
-$A0:C005 BF 02 00 7F LDA $7F0002,x[$7F:0DFC]
-$A0:C009 30 0A       BMI $0A    [$C015]
-$A0:C00B E8          INX
-$A0:C00C E8          INX
-$A0:C00D C6 1A       DEC $1A    [$7E:001A]
-$A0:C00F 10 F4       BPL $F4    [$C005]
+; LOOP
+$A0:C005 BF 02 00 7F LDA $7F0002,x[$7F:0DFC];\
+$A0:C009 30 0A       BMI $0A    [$C015]     ;} If (block type) < 8:
+$A0:C00B E8          INX                    ;\
+$A0:C00C E8          INX                    ;} X += 2
+$A0:C00D C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
+$A0:C00F 10 F4       BPL $F4    [$C005]     ; If [$1A] >= 0: go to LOOP
 $A0:C011 FA          PLX
-$A0:C012 18          CLC
-$A0:C013 AB          PLB
-$A0:C014 6B          RTL
+$A0:C012 18          CLC                    ;\
+$A0:C013 AB          PLB                    ;} Return carry clear
+$A0:C014 6B          RTL                    ;/
 
 $A0:C015 FA          PLX
 $A0:C016 64 12       STZ $12    [$7E:0012]
-$A0:C018 A5 1C       LDA $1C    [$7E:001C]
-$A0:C01A 4A          LSR A
-$A0:C01B 90 16       BCC $16    [$C033]
-$A0:C01D A5 22       LDA $22    [$7E:0022]
-$A0:C01F 29 F0 FF    AND #$FFF0
-$A0:C022 38          SEC
-$A0:C023 FD 84 0F    SBC $0F84,x[$7E:1004]
-$A0:C026 FD 7E 0F    SBC $0F7E,x[$7E:0FFE]
-$A0:C029 10 03       BPL $03    [$C02E]
-$A0:C02B A9 00 00    LDA #$0000
+$A0:C018 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:C01A 4A          LSR A                  ;} If [$1C] & 1 = 0: go to BRANCH_MOVING_UP
+$A0:C01B 90 16       BCC $16    [$C033]     ;/
+$A0:C01D A5 22       LDA $22    [$7E:0022]  ;\
+$A0:C01F 29 F0 FF    AND #$FFF0             ;} A = [$22] - [$22] % 10h (target bottom boundary rounded down to top of 16x16 tile)
+$A0:C022 38          SEC                    ;\
+$A0:C023 FD 84 0F    SBC $0F84,x[$7E:1004]  ;|
+$A0:C026 FD 7E 0F    SBC $0F7E,x[$7E:0FFE]  ;|
+$A0:C029 10 03       BPL $03    [$C02E]     ;} $14 = max(0, [A] - [enemy Y radius] - [enemy Y position])
+$A0:C02B A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A0:C02E 85 14       STA $14    [$7E:0014]  ;/
+$A0:C030 38          SEC                    ;\
+$A0:C031 AB          PLB                    ;} Return carry set
+$A0:C032 6B          RTL                    ;/
 
-$A0:C02E 85 14       STA $14    [$7E:0014]
-$A0:C030 38          SEC
-$A0:C031 AB          PLB
-$A0:C032 6B          RTL
-
-$A0:C033 A5 22       LDA $22    [$7E:0022]
-$A0:C035 09 0F 00    ORA #$000F
-$A0:C038 38          SEC
-$A0:C039 7D 84 0F    ADC $0F84,x
-$A0:C03C 38          SEC
-$A0:C03D FD 7E 0F    SBC $0F7E,x
-$A0:C040 30 03       BMI $03    [$C045]
-$A0:C042 A9 00 00    LDA #$0000
-
-$A0:C045 49 FF FF    EOR #$FFFF
-$A0:C048 1A          INC A
-$A0:C049 85 14       STA $14    [$7E:0014]
-$A0:C04B 38          SEC
-$A0:C04C AB          PLB
-$A0:C04D 6B          RTL
+; BRANCH_MOVING_UP
+$A0:C033 A5 22       LDA $22    [$7E:0022]  ;\
+$A0:C035 09 0F 00    ORA #$000F             ;} A = [$22] - [$22] % 10h + 10h (target top boundary rounded up to bottom of 16x16 tile)
+$A0:C038 38          SEC                    ;/
+$A0:C039 7D 84 0F    ADC $0F84,x            ;\
+$A0:C03C 38          SEC                    ;|
+$A0:C03D FD 7E 0F    SBC $0F7E,x            ;|
+$A0:C040 30 03       BMI $03    [$C045]     ;|
+$A0:C042 A9 00 00    LDA #$0000             ;} $14 = -max(0, [A] + [enemy Y radius] - [enemy Y position])
+                                            ;|
+$A0:C045 49 FF FF    EOR #$FFFF             ;|
+$A0:C048 1A          INC A                  ;|
+$A0:C049 85 14       STA $14    [$7E:0014]  ;/
+$A0:C04B 38          SEC                    ;\
+$A0:C04C AB          PLB                    ;} Return carry set
+$A0:C04D 6B          RTL                    ;/
 }
 
 
@@ -8222,7 +8260,7 @@ $A0:C1C8 10 05       BPL $05    [$C1CF]     ;/
 $A0:C1CA A9 00 00    LDA #$0000             ; A = 0
 $A0:C1CD 18          CLC                    ;\
 $A0:C1CE 6B          RTL                    ;} Return carry clear
-                                            
+
 $A0:C1CF A9 01 00    LDA #$0001             ; A = 1
 $A0:C1D2 38          SEC                    ;\
 $A0:C1D3 6B          RTL                    ;} Return carry set
@@ -8406,7 +8444,7 @@ $A0:C301 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5:
 $A0:C304 C9 05 00    CMP #$0005             ;|
 $A0:C307 B0 03       BCS $03    [$C30C]     ;/
 $A0:C309 4C 2E C3    JMP $C32E  [$A0:C32E]  ; Go to enemy block collision reaction - horizontal - slope - square
-                                            
+
 $A0:C30C BF 02 64 7F LDA $7F6402,x[$7F:6A6C];\
 $A0:C310 29 FF 00    AND #$00FF             ;} Current slope BTS = [block BTS]
 $A0:C313 8D 77 1E    STA $1E77  [$7E:1E77]  ;/
@@ -8429,55 +8467,65 @@ $A0:C32B 4C 1F C5    JMP $C51F  [$A0:C51F]  ; Go to enemy block collision reacti
 
 ;;; $C32E: Enemy block collision reaction - horizontal - slope - square ;;;
 {
-$A0:C32E 0A          ASL A
-$A0:C32F 0A          ASL A
-$A0:C330 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$A0:C333 BF 01 64 7F LDA $7F6401,x[$7F:6BB7]
-$A0:C337 2A          ROL A
-$A0:C338 2A          ROL A
-$A0:C339 2A          ROL A
-$A0:C33A 29 03 00    AND #$0003
-$A0:C33D 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$A0:C340 A5 1A       LDA $1A    [$7E:001A]
-$A0:C342 29 08 00    AND #$0008
-$A0:C345 4A          LSR A
-$A0:C346 4A          LSR A
-$A0:C347 4A          LSR A
-$A0:C348 4D D6 0D    EOR $0DD6  [$7E:0DD6]
-$A0:C34B 6D D4 0D    ADC $0DD4  [$7E:0DD4]
-$A0:C34E AA          TAX
-$A0:C34F AC 54 0E    LDY $0E54  [$7E:0E54]
-$A0:C352 A5 1C       LDA $1C    [$7E:001C]
-$A0:C354 D0 15       BNE $15    [$C36B]
-$A0:C356 B9 7E 0F    LDA $0F7E,y[$7E:103E]
-$A0:C359 18          CLC
-$A0:C35A 79 84 0F    ADC $0F84,y[$7E:1044]
-$A0:C35D 3A          DEC A
-$A0:C35E 29 08 00    AND #$0008
-$A0:C361 D0 18       BNE $18    [$C37B]
-$A0:C363 BF 34 C4 A0 LDA $A0C434,x[$A0:C442]
-$A0:C367 30 25       BMI $25    [$C38E]
-$A0:C369 80 21       BRA $21    [$C38C]
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     X: Block index
+;;     $1A: Target boundary position (left/right)
+;;     $1C: Number of blocks left to check (0 if final (bottom) block)
+;;     $1E: Enemy Y block span
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+$A0:C32E 0A          ASL A                  ;\
+$A0:C32F 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
+$A0:C330 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$A0:C333 BF 01 64 7F LDA $7F6401,x[$7F:6BB7];\
+$A0:C337 2A          ROL A                  ;|
+$A0:C338 2A          ROL A                  ;|
+$A0:C339 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slope flip flags)
+$A0:C33A 29 03 00    AND #$0003             ;|
+$A0:C33D 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$A0:C340 A5 1A       LDA $1A    [$7E:001A]  ;\
+$A0:C342 29 08 00    AND #$0008             ;} A = [$1A] & 8 (is enemy boundary in right half of block)
+$A0:C345 4A          LSR A                  ;\
+$A0:C346 4A          LSR A                  ;|
+$A0:C347 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 3 (toggle X flip flag if enemy is in right half of block)
+$A0:C348 4D D6 0D    EOR $0DD6  [$7E:0DD6]  ;/
+$A0:C34B 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;\
+$A0:C34E AA          TAX                    ;} X = [$0DD4] + [A] (solid slope definition table index)
+$A0:C34F AC 54 0E    LDY $0E54  [$7E:0E54]  ; Y = [enemy index]
+$A0:C352 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:C354 D0 15       BNE $15    [$C36B]     ;} If [$1C] = 0 (bottom block check):
+$A0:C356 B9 7E 0F    LDA $0F7E,y[$7E:103E]  ;\
+$A0:C359 18          CLC                    ;|
+$A0:C35A 79 84 0F    ADC $0F84,y[$7E:1044]  ;|
+$A0:C35D 3A          DEC A                  ;} If enemy bottom boundary is in bottom half: go to BRANCH_CHECK_BOTH_HALVES
+$A0:C35E 29 08 00    AND #$0008             ;|
+$A0:C361 D0 18       BNE $18    [$C37B]     ;/
+$A0:C363 BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
+$A0:C367 30 25       BMI $25    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): return carry set
+$A0:C369 80 21       BRA $21    [$C38C]     ; Return carry clear
+                                            
+$A0:C36B C5 1E       CMP $1E    [$7E:001E]  ;\
+$A0:C36D D0 0C       BNE $0C    [$C37B]     ;} If [$1C] = [$1E] (top block check):
+$A0:C36F B9 7E 0F    LDA $0F7E,y[$7E:0FFE]  ;\
+$A0:C372 38          SEC                    ;|
+$A0:C373 F9 84 0F    SBC $0F84,y[$7E:1004]  ;} If enemy top boundary is in bottom half: go to BRANCH_CHECK_BOTTOM_HALF
+$A0:C376 29 08 00    AND #$0008             ;|
+$A0:C379 D0 06       BNE $06    [$C381]     ;/
 
-$A0:C36B C5 1E       CMP $1E    [$7E:001E]
-$A0:C36D D0 0C       BNE $0C    [$C37B]
-$A0:C36F B9 7E 0F    LDA $0F7E,y[$7E:0FFE]
-$A0:C372 38          SEC
-$A0:C373 F9 84 0F    SBC $0F84,y[$7E:1004]
-$A0:C376 29 08 00    AND #$0008
-$A0:C379 D0 06       BNE $06    [$C381]
-
-$A0:C37B BF 34 C4 A0 LDA $A0C434,x[$A0:C442]
-$A0:C37F 30 0D       BMI $0D    [$C38E]
-
-$A0:C381 8A          TXA
-$A0:C382 49 02 00    EOR #$0002
-$A0:C385 AA          TAX
-$A0:C386 BF 34 C4 A0 LDA $A0C434,x[$A0:C440]
-$A0:C38A 30 02       BMI $02    [$C38E]
-
-$A0:C38C 18          CLC
-$A0:C38D 60          RTS
+; BRANCH_CHECK_BOTH_HALVES
+$A0:C37B BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
+$A0:C37F 30 0D       BMI $0D    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): return carry set
+                                            
+; BRANCH_CHECK_BOTTOM_HALF                  
+$A0:C381 8A          TXA                    ;\
+$A0:C382 49 02 00    EOR #$0002             ;|
+$A0:C385 AA          TAX                    ;} If [$C435 + ([X] ^ 2)] & 80h != 0 (bottom half is solid): return carry set
+$A0:C386 BF 34 C4 A0 LDA $A0C434,x[$A0:C440];|
+$A0:C38A 30 02       BMI $02    [$C38E]     ;/
+                                            
+$A0:C38C 18          CLC                    ;\
+$A0:C38D 60          RTS                    ;} Return carry clear
 
 $A0:C38E 38          SEC
 $A0:C38F 60          RTS
@@ -8513,54 +8561,64 @@ $A0:C3B1 60          RTS
 
 ;;; $C3B2: Enemy block collision reaction - vertical - slope - square ;;;
 {
-$A0:C3B2 0A          ASL A
-$A0:C3B3 0A          ASL A
-$A0:C3B4 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$A0:C3B7 BF 01 64 7F LDA $7F6401,x[$7F:65D6]
-$A0:C3BB 2A          ROL A
-$A0:C3BC 2A          ROL A
-$A0:C3BD 2A          ROL A
-$A0:C3BE 29 03 00    AND #$0003
-$A0:C3C1 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$A0:C3C4 A5 1A       LDA $1A    [$7E:001A]
-$A0:C3C6 29 08 00    AND #$0008
-$A0:C3C9 4A          LSR A
-$A0:C3CA 4A          LSR A
-$A0:C3CB 4D D6 0D    EOR $0DD6  [$7E:0DD6]
-$A0:C3CE 6D D4 0D    ADC $0DD4  [$7E:0DD4]
-$A0:C3D1 AA          TAX
-$A0:C3D2 AC 54 0E    LDY $0E54  [$7E:0E54]
-$A0:C3D5 A5 1C       LDA $1C    [$7E:001C]
-$A0:C3D7 D0 15       BNE $15    [$C3EE]
-$A0:C3D9 B9 7A 0F    LDA $0F7A,y[$7E:0FFA]
-$A0:C3DC 18          CLC
-$A0:C3DD 79 82 0F    ADC $0F82,y[$7E:1002]
-$A0:C3E0 3A          DEC A
-$A0:C3E1 29 08 00    AND #$0008
-$A0:C3E4 D0 18       BNE $18    [$C3FE]
-$A0:C3E6 BF 34 C4 A0 LDA $A0C434,x[$A0:C442]
-$A0:C3EA 30 25       BMI $25    [$C411]
-$A0:C3EC 80 21       BRA $21    [$C40F]
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     X: Block index
+;;     $1A: Target boundary position (top/bottom)
+;;     $1C: Number of blocks left to check (0 if final (rightmost) block)
+;;     $1E: Enemy X block span
+;; Returns:
+;;     Carry: Set if enemy collides with solid slope, clear otherwise
+$A0:C3B2 0A          ASL A                  ;\
+$A0:C3B3 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
+$A0:C3B4 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$A0:C3B7 BF 01 64 7F LDA $7F6401,x[$7F:65D6];\
+$A0:C3BB 2A          ROL A                  ;|
+$A0:C3BC 2A          ROL A                  ;|
+$A0:C3BD 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slope flip flags)
+$A0:C3BE 29 03 00    AND #$0003             ;|
+$A0:C3C1 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$A0:C3C4 A5 1A       LDA $1A    [$7E:001A]  ;\
+$A0:C3C6 29 08 00    AND #$0008             ;} A = [$1A] & 8 (is target boundary in lower half of block)
+$A0:C3C9 4A          LSR A                  ;\
+$A0:C3CA 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 2 (toggle Y flip flag if enemy is in lower half of block)
+$A0:C3CB 4D D6 0D    EOR $0DD6  [$7E:0DD6]  ;/
+$A0:C3CE 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;\
+$A0:C3D1 AA          TAX                    ;} X = [$0DD4] + [A] (solid slope definition table index)
+$A0:C3D2 AC 54 0E    LDY $0E54  [$7E:0E54]  ; Y = [enemy index]
+$A0:C3D5 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A0:C3D7 D0 15       BNE $15    [$C3EE]     ;} If [$1C] = 0 (rightmost block check):
+$A0:C3D9 B9 7A 0F    LDA $0F7A,y[$7E:0FFA]  ;\
+$A0:C3DC 18          CLC                    ;|
+$A0:C3DD 79 82 0F    ADC $0F82,y[$7E:1002]  ;|
+$A0:C3E0 3A          DEC A                  ;} If enemy right boundary is in right half: go to BRANCH_CHECK_BOTH_HALVES
+$A0:C3E1 29 08 00    AND #$0008             ;|
+$A0:C3E4 D0 18       BNE $18    [$C3FE]     ;/
+$A0:C3E6 BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
+$A0:C3EA 30 25       BMI $25    [$C411]     ;} If [$C435 + [X]] & 80h != 0 (left half is solid): return carry set
+$A0:C3EC 80 21       BRA $21    [$C40F]     ; Return carry clear
 
-$A0:C3EE C5 1E       CMP $1E    [$7E:001E]
-$A0:C3F0 D0 0C       BNE $0C    [$C3FE]
-$A0:C3F2 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C3F5 38          SEC
-$A0:C3F6 F9 82 0F    SBC $0F82,y[$7E:0F82]
-$A0:C3F9 29 08 00    AND #$0008
-$A0:C3FC D0 06       BNE $06    [$C404]
+$A0:C3EE C5 1E       CMP $1E    [$7E:001E]  ;\
+$A0:C3F0 D0 0C       BNE $0C    [$C3FE]     ;} If [$1C] = [$1E] (leftmost block check):
+$A0:C3F2 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;\
+$A0:C3F5 38          SEC                    ;|
+$A0:C3F6 F9 82 0F    SBC $0F82,y[$7E:0F82]  ;} If enemy left boundary is in right half: go to BRANCH_CHECK_RIGHT_HALF
+$A0:C3F9 29 08 00    AND #$0008             ;|
+$A0:C3FC D0 06       BNE $06    [$C404]     ;/
 
-$A0:C3FE BF 34 C4 A0 LDA $A0C434,x[$A0:C436]
-$A0:C402 30 0D       BMI $0D    [$C411]
-
-$A0:C404 8A          TXA
-$A0:C405 49 01 00    EOR #$0001
-$A0:C408 AA          TAX
-$A0:C409 BF 34 C4 A0 LDA $A0C434,x[$A0:C43F]
-$A0:C40D 30 02       BMI $02    [$C411]
-
-$A0:C40F 18          CLC
-$A0:C410 60          RTS
+; BRANCH_CHECK_BOTH_HALVES
+$A0:C3FE BF 34 C4 A0 LDA $A0C434,x[$A0:C436];\
+$A0:C402 30 0D       BMI $0D    [$C411]     ;} If [$C435 + [X]] & 80h != 0 (left half is solid): return carry set
+                                            
+; BRANCH_CHECK_RIGHT_HALF                   
+$A0:C404 8A          TXA                    ;\
+$A0:C405 49 01 00    EOR #$0001             ;|
+$A0:C408 AA          TAX                    ;} If [$C435 + ([X] ^ 1)] & 80h != 0 (right half is solid): return carry set
+$A0:C409 BF 34 C4 A0 LDA $A0C434,x[$A0:C43F];|
+$A0:C40D 30 02       BMI $02    [$C411]     ;/
+                                            
+$A0:C40F 18          CLC                    ;\
+$A0:C410 60          RTS                    ;} Return carry clear
 
 $A0:C411 38          SEC
 $A0:C412 60          RTS
@@ -8594,11 +8652,21 @@ $A0:C434 60          RTS
 }
 
 
-;;; $C435:  ;;;
+;;; $C435: Square slope definitions ;;;
 {
-; Used by enemy block collision reactions - slope - square
-; Only used to check the sign and return carry set/clear accordingly
-$A0:C435             db 00, 01, 82, 83, 00, 81, 02, 83, 00, 01, 02, 83, 00, 81, 82, 83, 80, 81, 82, 83
+; Copy of $94:8E54 for enemies
+; 7Fh- = air, 80h+ = solid
+
+;                        __________ Top-left
+;                       |   _______ Top-right
+;                       |  |   ____ Bottom-left
+;                       |  |  |   _ Bottom-right
+;                       |  |  |  |
+$A0:C435             db 00,01,82,83, ; 0: Half height
+                        00,81,02,83, ; 1: Half width
+                        00,01,02,83, ; 2: Quarter
+                        00,81,82,83, ; 3: Three-quarters
+                        80,81,82,83  ; 4: Whole
 }
 
 
@@ -8878,10 +8946,9 @@ $A0:C69C 60          RTS
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: X suboffset to move by
-;;     $14: X offset to move by
+;;     $14.$12: Distance to move (signed)
 ;; Returns:
-;;     Carry: Set if collided with wall
+;;     Carry: Set if collision, clear otherwise
 
 ; Used by Maridia large indestructible snail
 
@@ -8895,10 +8962,9 @@ $A0:C6A2 80 09       BRA $09    [$C6AD]
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: X suboffset to move by
-;;     $14: X offset to move by
+;;     $14.$12: Distance to move (signed)
 ;; Returns:
-;;     Carry: Set if collided with wall
+;;     Carry: Set if collision, clear otherwise
 
 ; Call $A0:C8AD if this routine returns carry clear to adjust the enemy's position for any slopes
 ; Used by Maridia snail and Wrecked Ship orange zoomer
@@ -8913,10 +8979,9 @@ $A0:C6A9 80 02       BRA $02    [$C6AD]
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: X suboffset to move by
-;;     $14: X offset to move by
+;;     $14.$12: Distance to move (signed)
 ;; Returns:
-;;     Carry: Set if collided with wall
+;;     Carry: Set if collision, clear otherwise
 
 ; This is the commonly used one
 
@@ -8928,13 +8993,12 @@ $A0:C6AB 64 20       STZ $20    [$7E:0020]
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: X suboffset to move by
-;;     $14: X offset to move by
+;;     $14.$12: Distance to move (signed)
 ;;     $20: In non-square slope collision:
 ;;         8000h: Process slopes
 ;;         4000h: Treat slopes as walls
 ;; Returns:
-;;     Carry: Set if collided with wall
+;;     Carry: Set if collision, clear otherwise
 
 $A0:C6AD A5 12       LDA $12    [$7E:0012]  ;\
 $A0:C6AF 05 14       ORA $14    [$7E:0014]  ;} If [$14].[$12] = 0.0:
@@ -9031,10 +9095,10 @@ $A0:C744 FA          PLX
 $A0:C745 A5 1A       LDA $1A    [$7E:001A]
 $A0:C747 24 14       BIT $14    [$7E:0014]  ;\
 $A0:C749 30 17       BMI $17    [$C762]     ;} If [$14] < 0: go to BRANCH_MOVING_LEFT
-$A0:C74B 29 F0 FF    AND #$FFF0             ;\
-$A0:C74E 38          SEC                    ;|
+$A0:C74B 29 F0 FF    AND #$FFF0             ; A = [$20] - [$20] % 10h (target right boundary rounded down to left of 16x16 tile)
+$A0:C74E 38          SEC                    ;\
 $A0:C74F FD 82 0F    SBC $0F82,x[$7E:0FC2]  ;|
-$A0:C752 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;} Enemy X position = max([enemy X position], (target front boundary) / 10h * 10h - [enemy X radius])
+$A0:C752 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;} Enemy X position = max([enemy X position], [A] - [enemy X radius])
 $A0:C755 90 03       BCC $03    [$C75A]     ;|
 $A0:C757 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 
@@ -9044,11 +9108,11 @@ $A0:C760 38          SEC                    ;\
 $A0:C761 6B          RTL                    ;} Return carry set
 
 ; BRANCH_MOVING_LEFT
-$A0:C762 09 0F 00    ORA #$000F             ;\
-$A0:C765 38          SEC                    ;|
+$A0:C762 09 0F 00    ORA #$000F             ; A = [$1A] - [$1A] % 10h + Fh (target left boundary rounded up to right of 16x16 tile)
+$A0:C765 38          SEC                    ;\
 $A0:C766 7D 82 0F    ADC $0F82,x[$7E:0FC2]  ;|
 $A0:C769 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;|
-$A0:C76C F0 02       BEQ $02    [$C770]     ;} Enemy X position = min([enemy X position], (target front boundary) / 10h * 10h + 10h + [enemy X radius])
+$A0:C76C F0 02       BEQ $02    [$C770]     ;} Enemy X position = min([enemy X position], [A] + 1 + [enemy X radius])
 $A0:C76E B0 03       BCS $03    [$C773]     ;|
                                             ;|
 $A0:C770 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
@@ -9093,10 +9157,9 @@ $A0:C784 80 02       BRA $02    [$C788]
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: Y suboffset to move by
-;;     $14: Y offset to move by
+;;     $14.$12: Distance to move (signed)
 ;; Returns:
-;;     Carry: Set if collided with wall
+;;     Carry: Set if collision, clear otherwise
 
 ; This is the commonly (and only) used one
 
@@ -9108,10 +9171,9 @@ $A0:C786 64 20       STZ $20    [$7E:0020]
 {
 ;; Parameters:
 ;;     X: Enemy index
-;;     $12: X suboffset to move by
-;;     $14: X offset to move by
+;;     $14.$12: Distance to move (signed)
 ;; Returns:
-;;     Carry: Set if collided with wall
+;;     Carry: Set if collision, clear otherwise
 
 ; The value of $20 actually has no effect for vertical movement
 $A0:C788 A5 12       LDA $12    [$7E:0012]  ;\
@@ -9315,144 +9377,144 @@ $A0:C88D             dw C2BC,
 }
 
 
-;;; $C8AD:  ;;;
+;;; $C8AD: Align enemy Y position with non-square slope ;;;
 {
 ;; Parameters:
 ;;     X: Enemy index
 ;; Returns:
-;;     Carry: ?
+;;     Carry: Set if position was adjusted by slope, otherwise clear
 
 ; Align enemy vertically to slopes if currently in contact with slopes
 ; Call this after $A0:C6A4 if it returns carry clear
 
 $A0:C8AD 5A          PHY
 $A0:C8AE DA          PHX
-$A0:C8AF 18          CLC
-$A0:C8B0 08          PHP
-$A0:C8B1 9B          TXY
-$A0:C8B2 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C8B5 48          PHA
-$A0:C8B6 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]
-$A0:C8B9 18          CLC
-$A0:C8BA 79 84 0F    ADC $0F84,y[$7E:0F84]
-$A0:C8BD 3A          DEC A
-$A0:C8BE 48          PHA
-$A0:C8BF 22 70 BB A0 JSL $A0BB70[$A0:BB70]
-$A0:C8C3 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$A0:C8C6 0A          ASL A
-$A0:C8C7 AA          TAX
-$A0:C8C8 BF 02 00 7F LDA $7F0002,x[$7F:00EC]
-$A0:C8CC 29 00 F0    AND #$F000
-$A0:C8CF C9 00 10    CMP #$1000
-$A0:C8D2 D0 5F       BNE $5F    [$C933]
-$A0:C8D4 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A0:C8D7 BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A0:C8DB 29 1F 00    AND #$001F
-$A0:C8DE C9 05 00    CMP #$0005
-$A0:C8E1 90 50       BCC $50    [$C933]
-$A0:C8E3 28          PLP
-$A0:C8E4 38          SEC
-$A0:C8E5 08          PHP
-$A0:C8E6 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]
-$A0:C8E9 18          CLC
-$A0:C8EA 79 84 0F    ADC $0F84,y[$7E:0F84]
-$A0:C8ED 3A          DEC A
-$A0:C8EE 29 0F 00    AND #$000F
-$A0:C8F1 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$A0:C8F4 BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A0:C8F8 29 1F 00    AND #$001F
-$A0:C8FB 0A          ASL A
-$A0:C8FC 0A          ASL A
-$A0:C8FD 0A          ASL A
-$A0:C8FE 0A          ASL A
-$A0:C8FF 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$A0:C902 BF 01 64 7F LDA $7F6401,x[$7F:6A6B]
-$A0:C906 30 2B       BMI $2B    [$C933]
-$A0:C908 0A          ASL A
-$A0:C909 30 05       BMI $05    [$C910]
-$A0:C90B B9 7A 0F    LDA $0F7A,y[$7E:0FBA]
+$A0:C8AF 18          CLC                    ;\
+$A0:C8B0 08          PHP                    ;} Saved carry = clear
+$A0:C8B1 9B          TXY                    ;\
+$A0:C8B2 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;|
+$A0:C8B5 48          PHA                    ;|
+$A0:C8B6 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]  ;|
+$A0:C8B9 18          CLC                    ;} Calculate the block containing enemy bottom centre
+$A0:C8BA 79 84 0F    ADC $0F84,y[$7E:0F84]  ;|
+$A0:C8BD 3A          DEC A                  ;|
+$A0:C8BE 48          PHA                    ;|
+$A0:C8BF 22 70 BB A0 JSL $A0BB70[$A0:BB70]  ;/
+$A0:C8C3 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$A0:C8C6 0A          ASL A                  ;|
+$A0:C8C7 AA          TAX                    ;|
+$A0:C8C8 BF 02 00 7F LDA $7F0002,x[$7F:00EC];} If (block type) != slope: go to BRANCH_ENEMY_TOP_CHECK
+$A0:C8CC 29 00 F0    AND #$F000             ;|
+$A0:C8CF C9 00 10    CMP #$1000             ;|
+$A0:C8D2 D0 5F       BNE $5F    [$C933]     ;/
+$A0:C8D4 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A0:C8D7 BF 02 64 7F LDA $7F6402,x[$7F:6A6C];|
+$A0:C8DB 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5 (square slope): go to BRANCH_ENEMY_TOP_CHECK
+$A0:C8DE C9 05 00    CMP #$0005             ;|
+$A0:C8E1 90 50       BCC $50    [$C933]     ;/
+$A0:C8E3 28          PLP                    ;\
+$A0:C8E4 38          SEC                    ;} Saved carry = set
+$A0:C8E5 08          PHP                    ;/
+$A0:C8E6 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]  ;\
+$A0:C8E9 18          CLC                    ;|
+$A0:C8EA 79 84 0F    ADC $0F84,y[$7E:0F84]  ;|
+$A0:C8ED 3A          DEC A                  ;} $0DD4 = (enemy bottom boundary) % 10h (Y distance into slope)
+$A0:C8EE 29 0F 00    AND #$000F             ;|
+$A0:C8F1 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$A0:C8F4 BF 02 64 7F LDA $7F6402,x[$7F:6A6C];\
+$A0:C8F8 29 1F 00    AND #$001F             ;|
+$A0:C8FB 0A          ASL A                  ;|
+$A0:C8FC 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$A0:C8FD 0A          ASL A                  ;|
+$A0:C8FE 0A          ASL A                  ;|
+$A0:C8FF 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$A0:C902 BF 01 64 7F LDA $7F6401,x[$7F:6A6B];\
+$A0:C906 30 2B       BMI $2B    [$C933]     ;} If [block BTS] & 80h != 0: go to BRANCH_ENEMY_TOP_CHECK
+$A0:C908 0A          ASL A                  ;\
+$A0:C909 30 05       BMI $05    [$C910]     ;} If [block BTS] & 40h = 0:
+$A0:C90B B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ; A = [enemy X position] % 10h (X distance into slope)
 $A0:C90E 80 06       BRA $06    [$C916]
 
-$A0:C910 B9 7A 0F    LDA $0F7A,y[$7E:0FBA]
-$A0:C913 49 0F 00    EOR #$000F
+$A0:C910 B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;\ Else ([block BTS] & 40h != 0):
+$A0:C913 49 0F 00    EOR #$000F             ;} A = Fh - [enemy X position] % 10h (X distance into slope)
 
 $A0:C916 29 0F 00    AND #$000F
-$A0:C919 18          CLC
-$A0:C91A 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$A0:C91D AA          TAX
-$A0:C91E BF 2B 8B 94 LDA $948B2B,x[$94:8C5A]
-$A0:C922 29 1F 00    AND #$001F
-$A0:C925 38          SEC
-$A0:C926 ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$A0:C929 3A          DEC A
-$A0:C92A 10 07       BPL $07    [$C933]
-$A0:C92C 18          CLC
-$A0:C92D 79 7E 0F    ADC $0F7E,y[$7E:117E]
-$A0:C930 99 7E 0F    STA $0F7E,y[$7E:117E]
+$A0:C919 18          CLC                    ;\
+$A0:C91A 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = (slope definition table base index) + [A] (slope definition index)
+$A0:C91D AA          TAX                    ;/
+$A0:C91E BF 2B 8B 94 LDA $948B2B,x[$94:8C5A];\
+$A0:C922 29 1F 00    AND #$001F             ;} A = [$94:8B2B + [X]] % 20h (slope top Y offset)
+$A0:C925 38          SEC                    ;\
+$A0:C926 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Y distance into slope) + 1
+$A0:C929 3A          DEC A                  ;/
+$A0:C92A 10 07       BPL $07    [$C933]     ; If [A] >= 0 (enemy is above the slope): go to BRANCH_ENEMY_TOP_CHECK
+$A0:C92C 18          CLC                    ;\
+$A0:C92D 79 7E 0F    ADC $0F7E,y[$7E:117E]  ;} Enemy Y position += [A] (bring enemy on top of slope)
+$A0:C930 99 7E 0F    STA $0F7E,y[$7E:117E]  ;/
 
-$A0:C933 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C936 48          PHA
-$A0:C937 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]
-$A0:C93A 38          SEC
-$A0:C93B F9 84 0F    SBC $0F84,y[$7E:0F84]
-$A0:C93E 48          PHA
-$A0:C93F 22 70 BB A0 JSL $A0BB70[$A0:BB70]
-$A0:C943 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$A0:C946 0A          ASL A
-$A0:C947 AA          TAX
-$A0:C948 BF 02 00 7F LDA $7F0002,x[$7F:00EC]
-$A0:C94C 29 00 F0    AND #$F000
-$A0:C94F C9 00 10    CMP #$1000
-$A0:C952 D0 67       BNE $67    [$C9BB]
-$A0:C954 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A0:C957 BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A0:C95B 29 1F 00    AND #$001F
-$A0:C95E C9 05 00    CMP #$0005
-$A0:C961 90 58       BCC $58    [$C9BB]
-$A0:C963 28          PLP
-$A0:C964 38          SEC
-$A0:C965 08          PHP
-$A0:C966 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]
-$A0:C969 38          SEC
-$A0:C96A F9 84 0F    SBC $0F84,y[$7E:0F84]
-$A0:C96D 29 0F 00    AND #$000F
-$A0:C970 49 0F 00    EOR #$000F
-$A0:C973 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$A0:C976 BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A0:C97A 29 1F 00    AND #$001F
-$A0:C97D 0A          ASL A
-$A0:C97E 0A          ASL A
-$A0:C97F 0A          ASL A
-$A0:C980 0A          ASL A
-$A0:C981 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$A0:C984 BF 01 64 7F LDA $7F6401,x[$7F:6A6B]
-$A0:C988 10 31       BPL $31    [$C9BB]
-$A0:C98A 0A          ASL A
-
-$A0:C98B 30 05       BMI $05    [$C992]
-$A0:C98D B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C990 80 06       BRA $06    [$C998]
-
-$A0:C992 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C995 49 0F 00    EOR #$000F
-
-$A0:C998 29 0F 00    AND #$000F
-$A0:C99B 18          CLC
-$A0:C99C 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$A0:C99F AA          TAX
-$A0:C9A0 BF 2B 8B 94 LDA $948B2B,x[$94:8C4B]
-$A0:C9A4 29 1F 00    AND #$001F
-$A0:C9A7 38          SEC
-$A0:C9A8 ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$A0:C9AB 3A          DEC A
-$A0:C9AC F0 02       BEQ $02    [$C9B0]
-$A0:C9AE 10 0B       BPL $0B    [$C9BB]
-
-$A0:C9B0 49 FF FF    EOR #$FFFF
-$A0:C9B3 1A          INC A
-$A0:C9B4 18          CLC
-$A0:C9B5 79 7E 0F    ADC $0F7E,y[$7E:0F7E]
-$A0:C9B8 99 7E 0F    STA $0F7E,y[$7E:0F7E]
+; BRANCH_ENEMY_TOP_CHECK
+$A0:C933 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;\
+$A0:C936 48          PHA                    ;|
+$A0:C937 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]  ;|
+$A0:C93A 38          SEC                    ;} Calculate the block containing enemy top centre
+$A0:C93B F9 84 0F    SBC $0F84,y[$7E:0F84]  ;|
+$A0:C93E 48          PHA                    ;|
+$A0:C93F 22 70 BB A0 JSL $A0BB70[$A0:BB70]  ;/
+$A0:C943 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$A0:C946 0A          ASL A                  ;|
+$A0:C947 AA          TAX                    ;|
+$A0:C948 BF 02 00 7F LDA $7F0002,x[$7F:00EC];} If (block type) != slope: return
+$A0:C94C 29 00 F0    AND #$F000             ;|
+$A0:C94F C9 00 10    CMP #$1000             ;|
+$A0:C952 D0 67       BNE $67    [$C9BB]     ;/
+$A0:C954 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A0:C957 BF 02 64 7F LDA $7F6402,x[$7F:6A6C];|
+$A0:C95B 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5 (square slope): return
+$A0:C95E C9 05 00    CMP #$0005             ;|
+$A0:C961 90 58       BCC $58    [$C9BB]     ;/
+$A0:C963 28          PLP                    ;\
+$A0:C964 38          SEC                    ;} Saved carry = set
+$A0:C965 08          PHP                    ;/
+$A0:C966 B9 7E 0F    LDA $0F7E,y[$7E:0F7E]  ;\
+$A0:C969 38          SEC                    ;|
+$A0:C96A F9 84 0F    SBC $0F84,y[$7E:0F84]  ;|
+$A0:C96D 29 0F 00    AND #$000F             ;} $0DD4 = Fh - (enemy top boundary) % 10h (Y distance into slope)
+$A0:C970 49 0F 00    EOR #$000F             ;|
+$A0:C973 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$A0:C976 BF 02 64 7F LDA $7F6402,x[$7F:6A6C];\
+$A0:C97A 29 1F 00    AND #$001F             ;|
+$A0:C97D 0A          ASL A                  ;|
+$A0:C97E 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$A0:C97F 0A          ASL A                  ;|
+$A0:C980 0A          ASL A                  ;|
+$A0:C981 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$A0:C984 BF 01 64 7F LDA $7F6401,x[$7F:6A6B];\
+$A0:C988 10 31       BPL $31    [$C9BB]     ;} If [block BTS] & 80h != 0: return
+$A0:C98A 0A          ASL A                  ;\
+$A0:C98B 30 05       BMI $05    [$C992]     ;} If [block BTS] & 40h = 0:
+$A0:C98D B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ; A = [enemy X position] % 10h (X distance into slope)
+$A0:C990 80 06       BRA $06    [$C998]     
+                                            
+$A0:C992 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;\ Else ([block BTS] & 40h != 0):
+$A0:C995 49 0F 00    EOR #$000F             ;} A = Fh - [enemy X position] % 10h (X distance into slope)
+                                            
+$A0:C998 29 0F 00    AND #$000F             
+$A0:C99B 18          CLC                    ;\
+$A0:C99C 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = (slope definition table base index) + [A] (slope definition index)
+$A0:C99F AA          TAX                    ;/
+$A0:C9A0 BF 2B 8B 94 LDA $948B2B,x[$94:8C4B];\
+$A0:C9A4 29 1F 00    AND #$001F             ;} A = [$94:8B2B + [X]] % 20h (slope top Y offset)
+$A0:C9A7 38          SEC                    ;\
+$A0:C9A8 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Y distance into slope) + 1
+$A0:C9AB 3A          DEC A                  ;/
+$A0:C9AC F0 02       BEQ $02    [$C9B0]     ;\
+$A0:C9AE 10 0B       BPL $0B    [$C9BB]     ;} If [A] > 0 (enemy is above the slope): return
+                                            
+$A0:C9B0 49 FF FF    EOR #$FFFF             ;\
+$A0:C9B3 1A          INC A                  ;|
+$A0:C9B4 18          CLC                    ;} Enemy Y position -= [A] (bring enemy under slope)
+$A0:C9B5 79 7E 0F    ADC $0F7E,y[$7E:0F7E]  ;|
+$A0:C9B8 99 7E 0F    STA $0F7E,y[$7E:0F7E]  ;/
 
 $A0:C9BB 28          PLP
 $A0:C9BC FA          PLX

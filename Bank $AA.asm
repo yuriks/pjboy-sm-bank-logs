@@ -1853,7 +1853,7 @@ $AA:C496 A0 62 B9    LDY #$B962
 $AA:C499 6B          RTL
 
 ; BRANCH_NO_COLLISION
-$AA:C49A 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$AA:C49A 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $AA:C49E AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $AA:C4A1 38          SEC
 $AA:C4A2 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
@@ -1900,7 +1900,7 @@ $AA:C50B A0 0E BD    LDY #$BD0E
 $AA:C50E 6B          RTL
 
 ; BRANCH_NO_COLLISION
-$AA:C50F 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$AA:C50F 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $AA:C513 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $AA:C516 38          SEC
 $AA:C517 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
@@ -2385,7 +2385,7 @@ $AA:C835 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:C837 85 13       STA $13    [$7E:0013]  ;/
 $AA:C839 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
-$AA:C83D 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$AA:C83D 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $AA:C841 64 12       STZ $12    [$7E:0012]  ;\
 $AA:C843 64 14       STZ $14    [$7E:0014]  ;|
 $AA:C845 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;|
@@ -3721,7 +3721,7 @@ $AA:D573 A0 03 D2    LDY #$D203
 $AA:D576 6B          RTL
 
 ; BRANCH_NO_COLLISION
-$AA:D577 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$AA:D577 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $AA:D57B AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $AA:D57E 38          SEC
 $AA:D57F FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
@@ -5251,7 +5251,7 @@ $AA:E609 85 13       STA $13    [$7E:0013]  ;/
 $AA:E60B 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $AA:E60F B0 00       BCS $00    [$E611]
 
-$AA:E611 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$AA:E611 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $AA:E615 BC AC 0F    LDY $0FAC,x[$7E:0FAC]
 $AA:E618 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $AA:E61B 18          CLC

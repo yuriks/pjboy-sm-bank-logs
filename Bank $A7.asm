@@ -9315,7 +9315,7 @@ $A7:F601 E6 14       INC $14    [$7E:0014]
 
 $A7:F603 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A7:F607 B0 06       BCS $06    [$F60F]     ; If not collided with wall:
-$A7:F609 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$A7:F609 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A7:F60D 80 2B       BRA $2B    [$F63A]
 
 $A7:F60F A9 07 F4    LDA #$F407
@@ -9359,7 +9359,7 @@ $A7:F65C 80 C3       BRA $C3    [$F621]
 $A7:F65E 20 D5 F6    JSR $F6D5  [$A7:F6D5]
 $A7:F661 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A7:F665 B0 06       BCS $06    [$F66D]     ; If not collided with wall:
-$A7:F667 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]
+$A7:F667 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A7:F66B 80 2C       BRA $2C    [$F699]
 
 $A7:F66D A9 71 00    LDA #$0071             ;\
