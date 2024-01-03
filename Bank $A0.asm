@@ -8415,19 +8415,18 @@ $A0:C2BF 60          RTS
 
 ;;; $C2C0: Enemy block collision reaction - spike ;;;
 {
-; Load ($A0C2DA,X), X = 2*(BTS & 7F).
-; If 0000, act as solid, else make a PLM with it and act as passable.
-; BTS == 0F: Break this block
-$A0:C2C0 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A0:C2C3 BF 02 64 7F LDA $7F6402,x[$7F:65E4]
-$A0:C2C7 29 7F 00    AND #$007F
-$A0:C2CA 0A          ASL A
-$A0:C2CB AA          TAX
-$A0:C2CC BF DA C2 A0 LDA $A0C2DA,x[$A0:C2DA]
-$A0:C2D0 F0 06       BEQ $06    [$C2D8]
-$A0:C2D2 22 E7 84 84 JSL $8484E7[$84:84E7]
-$A0:C2D6 18          CLC
-$A0:C2D7 60          RTS
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+$A0:C2C0 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A0:C2C3 BF 02 64 7F LDA $7F6402,x[$7F:65E4];|
+$A0:C2C7 29 7F 00    AND #$007F             ;|
+$A0:C2CA 0A          ASL A                  ;} A = [$A0:C2DA + ([block BTS] & 7Fh) * 2]
+$A0:C2CB AA          TAX                    ;|
+$A0:C2CC BF DA C2 A0 LDA $A0C2DA,x[$A0:C2DA];/
+$A0:C2D0 F0 06       BEQ $06    [$C2D8]     ; If [A] = 0: return carry set
+$A0:C2D2 22 E7 84 84 JSL $8484E7[$84:84E7]  ; Spawn PLM [A]
+$A0:C2D6 18          CLC                    ;\
+$A0:C2D7 60          RTS                    ;} Return carry clear
 
 $A0:C2D8 38          SEC
 $A0:C2D9 60          RTS
@@ -8438,6 +8437,17 @@ $A0:C2DA             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 00
 
 ;;; $C2FA: Enemy block collision reaction - horizontal - slope ;;;
 {
+;; Parameters:
+;;     $14.$12: Distance to check for collision
+;;     $1A: Target boundary position (left/right)
+;;     $1C: Number of blocks left to check (0 if final (bottom) block)
+;;     $1E: Enemy Y block span
+;;     $20: In non-square slope collision:
+;;         8000h: Process slopes
+;;         4000h: Treat slopes as walls
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $14.$12: If carry clear, adjusted distance to move Samus
 $A0:C2FA AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $A0:C2FD BF 02 64 7F LDA $7F6402,x[$7F:6A6C];|
 $A0:C301 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5:
@@ -8454,6 +8464,14 @@ $A0:C316 4C 49 C4    JMP $C449  [$A0:C449]  ; Go to enemy block collision reacti
 
 ;;; $C319: Enemy block collision reaction - vertical - slope ;;;
 {
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     X: Block index
+;;     $1A: Target boundary position (top/bottom)
+;;     $1C: Number of blocks left to check (0 if final (rightmost) block)
+;;     $1E: Enemy X block span
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 $A0:C319 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $A0:C31C BF 02 64 7F LDA $7F6402,x[$7F:65D7];|
 $A0:C320 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5:
@@ -8502,7 +8520,7 @@ $A0:C35D 3A          DEC A                  ;} If enemy bottom boundary is in bo
 $A0:C35E 29 08 00    AND #$0008             ;|
 $A0:C361 D0 18       BNE $18    [$C37B]     ;/
 $A0:C363 BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
-$A0:C367 30 25       BMI $25    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): return carry set
+$A0:C367 30 25       BMI $25    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): go to BRANCH_SOLID
 $A0:C369 80 21       BRA $21    [$C38C]     ; Return carry clear
                                             
 $A0:C36B C5 1E       CMP $1E    [$7E:001E]  ;\
@@ -8515,47 +8533,41 @@ $A0:C379 D0 06       BNE $06    [$C381]     ;/
 
 ; BRANCH_CHECK_BOTH_HALVES
 $A0:C37B BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
-$A0:C37F 30 0D       BMI $0D    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): return carry set
+$A0:C37F 30 0D       BMI $0D    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): go to BRANCH_SOLID
                                             
 ; BRANCH_CHECK_BOTTOM_HALF                  
 $A0:C381 8A          TXA                    ;\
 $A0:C382 49 02 00    EOR #$0002             ;|
-$A0:C385 AA          TAX                    ;} If [$C435 + ([X] ^ 2)] & 80h != 0 (bottom half is solid): return carry set
+$A0:C385 AA          TAX                    ;} If [$C435 + ([X] ^ 2)] & 80h != 0 (bottom half is solid): go to BRANCH_SOLID
 $A0:C386 BF 34 C4 A0 LDA $A0C434,x[$A0:C440];|
 $A0:C38A 30 02       BMI $02    [$C38E]     ;/
                                             
 $A0:C38C 18          CLC                    ;\
 $A0:C38D 60          RTS                    ;} Return carry clear
 
-$A0:C38E 38          SEC
-$A0:C38F 60          RTS
-}
+; BRANCH_SOLID
+$A0:C38E 38          SEC                    ;\
+$A0:C38F 60          RTS                    ;} Return carry set
 
-
-;;; $C390: Set enemy X position to [$1A] aligned: left if [$14] is negative, else right ;;;
-{
-;; Parameter Y: enemy index
-;;           [$14]: direction
-;;           [$1A]: position to align
-;; Returns carry set
+; Looks like code that was RTS'd out from a time where these collision reaction set the enemy position directly (now moved to $A0:C744)
 $A0:C390 BB          TYX
 $A0:C391 9E 7C 0F    STZ $0F7C,x            ; Enemy X subposition = 0
 $A0:C394 A5 1A       LDA $1A    [$7E:001A]
 $A0:C396 24 14       BIT $14    [$7E:0014]  ;\
-$A0:C398 30 0C       BMI $0C    [$C3A6]     ;} If [$14] is negative:
-$A0:C39A 29 F8 FF    AND #$FFF8             ;\
-$A0:C39D 38          SEC                    ;|
-$A0:C39E FD 82 0F    SBC $0F82,x            ;} Enemy X position = ([$1A] & ~7) - enemy width
+$A0:C398 30 0C       BMI $0C    [$C3A6]     ;} If [$14] >= 0:
+$A0:C39A 29 F8 FF    AND #$FFF8             ; A = [$1A] - [$1A] % 8 (target right boundary rounded down to left of 8x8 tile)
+$A0:C39D 38          SEC                    ;\
+$A0:C39E FD 82 0F    SBC $0F82,x            ;} Enemy X position = [A] - [enemy X radius]
 $A0:C3A1 9D 7A 0F    STA $0F7A,x            ;/
-$A0:C3A4 38          SEC
-$A0:C3A5 60          RTS
+$A0:C3A4 38          SEC                    ;\
+$A0:C3A5 60          RTS                    ;} Return carry set
 
-$A0:C3A6 09 07 00    ORA #$0007             ;\ Else ([$14] is positive):
-$A0:C3A9 38          SEC                    ;\
-$A0:C3AA 7D 82 0F    ADC $0F82,x            ;} Enemy X position = ([$1A] | 7) + 1 + enemy width
-$A0:C3AD 9D 7A 0F    STA $0F7A,x            ;/
-$A0:C3B0 38          SEC
-$A0:C3B1 60          RTS
+$A0:C3A6 09 07 00    ORA #$0007             ;\
+$A0:C3A9 38          SEC                    ;} A = [$1A] - [$1A] % 8 + 8 (target left boundary rounded up to right of 8x8 tile)
+$A0:C3AA 7D 82 0F    ADC $0F82,x            ;\
+$A0:C3AD 9D 7A 0F    STA $0F7A,x            ;} Enemy X position = [A] + [enemy X radius]
+$A0:C3B0 38          SEC                    ;\
+$A0:C3B1 60          RTS                    ;} Return carry set
 }
 
 
@@ -8568,7 +8580,7 @@ $A0:C3B1 60          RTS
 ;;     $1C: Number of blocks left to check (0 if final (rightmost) block)
 ;;     $1E: Enemy X block span
 ;; Returns:
-;;     Carry: Set if enemy collides with solid slope, clear otherwise
+;;     Carry: Set if collision, clear otherwise
 $A0:C3B2 0A          ASL A                  ;\
 $A0:C3B3 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
 $A0:C3B4 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
@@ -8595,7 +8607,7 @@ $A0:C3E0 3A          DEC A                  ;} If enemy right boundary is in rig
 $A0:C3E1 29 08 00    AND #$0008             ;|
 $A0:C3E4 D0 18       BNE $18    [$C3FE]     ;/
 $A0:C3E6 BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
-$A0:C3EA 30 25       BMI $25    [$C411]     ;} If [$C435 + [X]] & 80h != 0 (left half is solid): return carry set
+$A0:C3EA 30 25       BMI $25    [$C411]     ;} If [$C435 + [X]] & 80h != 0 (left half is solid): go to BRANCH_SOLID
 $A0:C3EC 80 21       BRA $21    [$C40F]     ; Return carry clear
 
 $A0:C3EE C5 1E       CMP $1E    [$7E:001E]  ;\
@@ -8608,47 +8620,42 @@ $A0:C3FC D0 06       BNE $06    [$C404]     ;/
 
 ; BRANCH_CHECK_BOTH_HALVES
 $A0:C3FE BF 34 C4 A0 LDA $A0C434,x[$A0:C436];\
-$A0:C402 30 0D       BMI $0D    [$C411]     ;} If [$C435 + [X]] & 80h != 0 (left half is solid): return carry set
+$A0:C402 30 0D       BMI $0D    [$C411]     ;} If [$C435 + [X]] & 80h != 0 (left half is solid): go to BRANCH_SOLID
                                             
 ; BRANCH_CHECK_RIGHT_HALF                   
 $A0:C404 8A          TXA                    ;\
 $A0:C405 49 01 00    EOR #$0001             ;|
-$A0:C408 AA          TAX                    ;} If [$C435 + ([X] ^ 1)] & 80h != 0 (right half is solid): return carry set
+$A0:C408 AA          TAX                    ;} If [$C435 + ([X] ^ 1)] & 80h != 0 (right half is solid): go to BRANCH_SOLID
 $A0:C409 BF 34 C4 A0 LDA $A0C434,x[$A0:C43F];|
 $A0:C40D 30 02       BMI $02    [$C411]     ;/
                                             
 $A0:C40F 18          CLC                    ;\
 $A0:C410 60          RTS                    ;} Return carry clear
 
-$A0:C411 38          SEC
-$A0:C412 60          RTS
-}
+; BRANCH_SOLID
+$A0:C411 38          SEC                    ;\
+$A0:C412 60          RTS                    ;} Return carry set
 
-
-;;; $C413: Set enemy Y position to [$1A] aligned: bottom if [$14] is negative, else top ;;;
-{
-;; Parameter Y: enemy index
-;;           [$14]: direction
-;;           [$1A]: position to align
-;; Returns carry set
+; Looks like code that was RTS'd out. Without this code, enemies don't align with slopes when the collide with them,
+; e.g. an enemy falling at 5px/frame can "land" 4px above a half-height slope
 $A0:C413 BB          TYX
 $A0:C414 9E 80 0F    STZ $0F80,x            ; Enemy Y subposition = 0
 $A0:C417 A5 1A       LDA $1A    [$7E:001A]
 $A0:C419 24 14       BIT $14    [$7E:0014]  ;\
-$A0:C41B 30 0C       BMI $0C    [$C429]     ;} If [$14] is negative:
-$A0:C41D 29 F8 FF    AND #$FFF8             ;\
-$A0:C420 38          SEC                    ;|
-$A0:C421 FD 84 0F    SBC $0F84,x            ;} Enemy Y position = ([$1A] & ~7) - enemy height
+$A0:C41B 30 0C       BMI $0C    [$C429]     ;} If [$14] >= 0:
+$A0:C41D 29 F8 FF    AND #$FFF8             ; A = [$1A] - [$1A] % 8 (target bottom boundary rounded down to top of 8x8 tile)
+$A0:C420 38          SEC                    ;\
+$A0:C421 FD 84 0F    SBC $0F84,x            ;} Enemy X position = [A] - [enemy X radius]
 $A0:C424 9D 7E 0F    STA $0F7E,x            ;/
-$A0:C427 38          SEC
-$A0:C428 60          RTS
-
-$A0:C429 09 07 00    ORA #$0007             ;\ Else ([$14] is positive):
-$A0:C42C 38          SEC                    ;\
-$A0:C42D 7D 84 0F    ADC $0F84,x            ;} Enemy Y position = ([$1A] | 7) + 1 + enemy height
-$A0:C430 9D 7E 0F    STA $0F7E,x            ;/
-$A0:C433 38          SEC
-$A0:C434 60          RTS
+$A0:C427 38          SEC                    ;\
+$A0:C428 60          RTS                    ;} Return carry set
+                                            
+$A0:C429 09 07 00    ORA #$0007             ;\
+$A0:C42C 38          SEC                    ;} A = [$1A] - [$1A] % 8 + 8 (target right boundary rounded up to bottom of 8x8 tile)
+$A0:C42D 7D 84 0F    ADC $0F84,x            ;\
+$A0:C430 9D 7E 0F    STA $0F7E,x            ;} Enemy X position = [A] + [enemy X radius]
+$A0:C433 38          SEC                    ;\
+$A0:C434 60          RTS                    ;} Return carry set
 }
 
 
@@ -8672,22 +8679,34 @@ $A0:C435             db 00,01,82,83, ; 0: Half height
 
 ;;; $C449: Enemy block collision reaction - horizontal - slope - non-square ;;;
 {
+;; Parameters:
+;;     $14.$12: Distance to check for collision
+;;     $1A: Target boundary position (left/right)
+;;     $1C: Number of blocks left to check (0 if final (bottom) block)
+;;     $1E: Enemy Y block span
+;;     $20: In non-square slope collision:
+;;         8000h: Process slopes
+;;         4000h: Treat slopes as walls
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+;;     $14.$12: If carry clear, adjusted distance to move Samus
 $A0:C449 24 20       BIT $20    [$7E:0020]  ;\
-$A0:C44B 30 06       BMI $06    [$C453]     ;} If [$20] positive:
-$A0:C44D 70 02       BVS $02    [$C451]     ; If [$20] bit14 clear:
+$A0:C44B 30 06       BMI $06    [$C453]     ;} If [$20] & 8000h != 0: go to BRANCH_PROCESS_SLOPES
+$A0:C44D 70 02       BVS $02    [$C451]     ; If [$20] & 4000h = 0 (treat slopes as air):
 $A0:C44F 18          CLC                    ;\
 $A0:C450 60          RTS                    ;} Return carry clear
 
-$A0:C451 38          SEC                    ;\ Else ([$20] bit14 set):
+$A0:C451 38          SEC                    ;\
 $A0:C452 60          RTS                    ;} Return carry set
 
-$A0:C453 AD 77 1E    LDA $1E77  [$7E:1E77]  ;\ Else ([$20] negative):
+; BRANCH_PROCESS_SLOPES
+$A0:C453 AD 77 1E    LDA $1E77  [$7E:1E77]  ;\
 $A0:C456 29 1F 00    AND #$001F             ;|
-$A0:C459 0A          ASL A                  ;} X = BTS * 4 (index into $A0:C49F)
+$A0:C459 0A          ASL A                  ;} X = ([current slope BTS] & 1Fh) * 4
 $A0:C45A 0A          ASL A                  ;|
 $A0:C45B AA          TAX                    ;/
 $A0:C45C A5 14       LDA $14    [$7E:0014]  ;\
-$A0:C45E 10 28       BPL $28    [$C488]     ;} If [$14] negative:
+$A0:C45E 10 28       BPL $28    [$C488]     ;} If [$12] < 0:
 $A0:C460 BF A1 C4 A0 LDA $A0C4A1,x          ;\
 $A0:C464 A8          TAY                    ;|
 $A0:C465 A5 13       LDA $13    [$7E:0013]  ;|
@@ -8695,7 +8714,7 @@ $A0:C467 49 FF FF    EOR #$FFFF             ;|
 $A0:C46A 1A          INC A                  ;|
 $A0:C46B 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
 $A0:C46F AD F1 05    LDA $05F1  [$7E:05F1]  ;|
-$A0:C472 49 FF FF    EOR #$FFFF             ;} $12..15 = [$A0C49F + X + 2] * [$14] * 100h (adjusting the sign for subroutine and back)
+$A0:C472 49 FF FF    EOR #$FFFF             ;} $14.$12 *= [$A0:C49F + [X] + 2] / 100h
 $A0:C475 18          CLC                    ;|
 $A0:C476 69 01 00    ADC #$0001             ;|
 $A0:C479 85 12       STA $12    [$7E:0012]  ;|
@@ -8710,23 +8729,54 @@ $A0:C488 BF A1 C4 A0 LDA $A0C4A1,x[$A0:C4E9];\
 $A0:C48C A8          TAY                    ;|
 $A0:C48D A5 13       LDA $13    [$7E:0013]  ;|
 $A0:C48F 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
-$A0:C493 AD F1 05    LDA $05F1  [$7E:05F1]  ;} $12..15 = [$A0C49F + X + 2] * [$14] * 100h
+$A0:C493 AD F1 05    LDA $05F1  [$7E:05F1]  ;} $14.$12 *= [$A0:C49F + [X] + 2] / 100h
 $A0:C496 85 12       STA $12    [$7E:0012]  ;|
 $A0:C498 AD F3 05    LDA $05F3  [$7E:05F3]  ;|
 $A0:C49B 85 14       STA $14    [$7E:0014]  ;/
 $A0:C49D 18          CLC                    ;\
 $A0:C49E 60          RTS                    ;} Return carry clear
 
-$A0:C49F             dw 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100,
-                        0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 0000,0100, 1000,00B0, 1000,00B0,
-                        0000,0100, 0000,0100, 1000,00C0, 0000,0100, 1000,00C0, 1000,00C0, 0800,00D8, 0800,00D8,
-                        0600,00F0, 0600,00F0, 0600,00F0, 4000,0080, 4000,0080, 6000,0050, 6000,0050, 6000,0050
+;                        ________ Unused. Seem to be additive speed modifiers in the $94:8586 version of this table
+;                       |     ___ Adjusted distance multiplier * 100h
+;                       |    |
+$A0:C49F             dw 0000,0100,
+                        0000,0100, 
+                        0000,0100, 
+                        0000,0100, 
+                        0000,0100, 
+                        0000,0100, ; 5: Unused. Half height isosceles triangle 
+                        0000,0100, ; 6: Unused. Isosceles triangle 
+                        0000,0100, ; 7: Half height rectangle
+                        0000,0100, ; 8: Unused. Rectangle 
+                        0000,0100, ; 9: Unused. Rectangle 
+                        0000,0100, ; Ah: Unused. Rectangle 
+                        0000,0100, ; Bh: Unused. Rectangle 
+                        0000,0100, ; Ch: Unused. Rectangle 
+                        0000,0100, ; Dh: Unused. Rectangle 
+                        1000,00B0, ; Eh: Unused. Very bumpy triangle 
+                        1000,00B0, ; Fh: Bumpy triangle
+                        0000,0100, ; 10h: Unused 
+                        0000,0100, ; 11h: Unused 
+                        1000,00C0, ; 12h: Triangle 
+                        0000,0100, ; 13h: Rectangle 
+                        1000,00C0, ; 14h: Quarter triangle 
+                        1000,00C0, ; 15h: Three quarter triangle 
+                        0800,00D8, ; 16h: Lower half-height triangle 
+                        0800,00D8, ; 17h: Upper half-height triangle
+                        0600,00F0, ; 18h: Unused. Lower third-height triangle 
+                        0600,00F0, ; 19h: Unused. Middle third-height triangle 
+                        0600,00F0, ; 1Ah: Unused. Upper third-height triangle 
+                        4000,0080, ; 1Bh: Upper half-width triangle 
+                        4000,0080, ; 1Ch: Lower half-width triangle 
+                        6000,0050, ; 1Dh: Unused. Upper third-width triangle 
+                        6000,0050, ; 1Eh: Unused. Middle third-width triangle 
+                        6000,0050  ; 1Fh: Unused. Lower third-width triangle
 }
 
 
 ;;; $C51F: Enemy block collision reaction - vertical - slope - non-square ;;;
 {
-$A0:C51F AC 54 0E    LDY $0E54  [$7E:0E54]
+$A0:C51F AC 54 0E    LDY $0E54  [$7E:0E54]  
 $A0:C522 A5 14       LDA $14    [$7E:0014]
 $A0:C524 10 03       BPL $03    [$C529]
 $A0:C526 4C 9E C5    JMP $C59E  [$A0:C59E]
@@ -9095,7 +9145,7 @@ $A0:C744 FA          PLX
 $A0:C745 A5 1A       LDA $1A    [$7E:001A]
 $A0:C747 24 14       BIT $14    [$7E:0014]  ;\
 $A0:C749 30 17       BMI $17    [$C762]     ;} If [$14] < 0: go to BRANCH_MOVING_LEFT
-$A0:C74B 29 F0 FF    AND #$FFF0             ; A = [$20] - [$20] % 10h (target right boundary rounded down to left of 16x16 tile)
+$A0:C74B 29 F0 FF    AND #$FFF0             ; A = [$1A] - [$1A] % 10h (target right boundary rounded down to left of 16x16 tile)
 $A0:C74E 38          SEC                    ;\
 $A0:C74F FD 82 0F    SBC $0F82,x[$7E:0FC2]  ;|
 $A0:C752 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;} Enemy X position = max([enemy X position], [A] - [enemy X radius])
@@ -9108,11 +9158,11 @@ $A0:C760 38          SEC                    ;\
 $A0:C761 6B          RTL                    ;} Return carry set
 
 ; BRANCH_MOVING_LEFT
-$A0:C762 09 0F 00    ORA #$000F             ; A = [$1A] - [$1A] % 10h + Fh (target left boundary rounded up to right of 16x16 tile)
-$A0:C765 38          SEC                    ;\
+$A0:C762 09 0F 00    ORA #$000F             ;\
+$A0:C765 38          SEC                    ;} A = [$1A] - [$1A] % 10h + 10h (target left boundary rounded up to right of 16x16 tile)
 $A0:C766 7D 82 0F    ADC $0F82,x[$7E:0FC2]  ;|
 $A0:C769 DD 7A 0F    CMP $0F7A,x[$7E:0FBA]  ;|
-$A0:C76C F0 02       BEQ $02    [$C770]     ;} Enemy X position = min([enemy X position], [A] + 1 + [enemy X radius])
+$A0:C76C F0 02       BEQ $02    [$C770]     ;} Enemy X position = min([enemy X position], [A] + [enemy X radius])
 $A0:C76E B0 03       BCS $03    [$C773]     ;|
                                             ;|
 $A0:C770 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
@@ -9265,10 +9315,10 @@ $A0:C811 FA          PLX
 $A0:C812 A5 1A       LDA $1A    [$7E:001A]
 $A0:C814 24 14       BIT $14    [$7E:0014]  ;\
 $A0:C816 30 17       BMI $17    [$C82F]     ;} If [$14] < 0: go to BRANCH_MOVING_UP
-$A0:C818 29 F0 FF    AND #$FFF0             ;\
-$A0:C81B 38          SEC                    ;|
+$A0:C818 29 F0 FF    AND #$FFF0             ; A = [$1A] - [$1A] % 10h (target bottom boundary rounded down to top of 16x16 tile)
+$A0:C81B 38          SEC                    ;\
 $A0:C81C FD 84 0F    SBC $0F84,x[$7E:0F84]  ;|
-$A0:C81F DD 7E 0F    CMP $0F7E,x[$7E:0F7E]  ;} Enemy Y position = max([enemy Y position], [$1A] - [$1A] % 10h - [enemy Y radius])
+$A0:C81F DD 7E 0F    CMP $0F7E,x[$7E:0F7E]  ;} Enemy Y position = max([enemy Y position], [A] - [enemy Y radius])
 $A0:C822 90 03       BCC $03    [$C827]     ;|
 $A0:C824 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 
@@ -9279,10 +9329,10 @@ $A0:C82E 6B          RTL                    ;} Return carry set
 
 ; BRANCH_MOVING_UP
 $A0:C82F 09 0F 00    ORA #$000F             ;\
-$A0:C832 38          SEC                    ;|
-$A0:C833 7D 84 0F    ADC $0F84,x[$7E:0FC4]  ;|
+$A0:C832 38          SEC                    ;} A = [$1A] - [$1A] % 10h + 10h (target right boundary rounded up to bottom of 16x16 tile)
+$A0:C833 7D 84 0F    ADC $0F84,x[$7E:0FC4]  ;\
 $A0:C836 DD 7E 0F    CMP $0F7E,x[$7E:0FBE]  ;|
-$A0:C839 F0 02       BEQ $02    [$C83D]     ;} Enemy Y position = min([enemy Y position], [$1A] + 10h - [$1A] % 10h + [enemy Y radius])
+$A0:C839 F0 02       BEQ $02    [$C83D]     ;} Enemy Y position = min([enemy Y position], [A] + [enemy Y radius])
 $A0:C83B B0 03       BCS $03    [$C840]     ;|
                                             ;|
 $A0:C83D 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
@@ -9297,41 +9347,49 @@ $A0:C844 6B          RTL                    ;} Return carry set
 {
 ;; Parameters
 ;;     A: Block
-;;     X: Block index
+;;     X: Block index (multiple of 2)
+;;     $14.$12: Distance to check for collision
+;;     $1A: Target boundary position (left/right)
+;;     $1C: Number of blocks left to check (0 if final (bottom) block)
+;;     $1E: Enemy Y block span
+;;     $20: In non-square slope collision:
+;;         8000h: Process slopes
+;;         4000h: Treat slopes as walls
 ;; Returns:
-;;     Carry: Set if solid collision
+;;     Carry: Set if collision, clear otherwise
+;;     $14.$12: If carry clear, adjusted distance to move Samus
 
 $A0:C845 DA          PHX
-$A0:C846 9B          TXY
-$A0:C847 29 00 F0    AND #$F000
-$A0:C84A EB          XBA
-$A0:C84B 4A          LSR A
-$A0:C84C 4A          LSR A
-$A0:C84D 4A          LSR A
-$A0:C84E AA          TAX
-$A0:C84F 98          TYA
-$A0:C850 4A          LSR A
-$A0:C851 8D C4 0D    STA $0DC4  [$7E:0DC4]
-$A0:C854 FC 59 C8    JSR ($C859,x)[$A0:C2BC]
+$A0:C846 9B          TXY                    ; Y = [X]
+$A0:C847 29 00 F0    AND #$F000             ;\
+$A0:C84A EB          XBA                    ;|
+$A0:C84B 4A          LSR A                  ;|
+$A0:C84C 4A          LSR A                  ;} X = (block type) * 2
+$A0:C84D 4A          LSR A                  ;|
+$A0:C84E AA          TAX                    ;/
+$A0:C84F 98          TYA                    ;\
+$A0:C850 4A          LSR A                  ;} Current block index = [Y] / 2
+$A0:C851 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
+$A0:C854 FC 59 C8    JSR ($C859,x)[$A0:C2BC]; Execute [$C859 + [X]]
 $A0:C857 FA          PLX
 $A0:C858 60          RTS
 
-$A0:C859             dw C2BC,
-                        C2FA, ; 1: Slope
-                        C2BC,
-                        C2BC,
-                        C2BC,
-                        C619, ; 5: Horizontal extension
-                        C2BC,
-                        C2BC,
-                        C2BE,
-                        C2BE,
-                        C2C0, ; Ah: Spike block
-                        C2BE,
-                        C2BE,
-                        C64F, ; Dh: Vertical extension
-                        C2BE,
-                        C2BE
+$A0:C859             dw C2BC, ;  0: Air
+                        C2FA, ; *1: Slope
+                        C2BC, ;  2: Spike air
+                        C2BC, ;  3: Special air
+                        C2BC, ;  4: Shootable air
+                        C619, ; *5: Horizontal extension
+                        C2BC, ;  6: Unused air
+                        C2BC, ;  7: Bombable air
+                        C2BE, ;  8: Solid block
+                        C2BE, ;  9: Door block
+                        C2C0, ; *Ah: Spike block
+                        C2BE, ;  Bh: Special block
+                        C2BE, ;  Ch: Shootable block
+                        C64F, ; *Dh: Vertical extension
+                        C2BE, ;  Eh: Grapple block
+                        C2BE  ;  Fh: Bombable block
 }
 
 
@@ -9344,36 +9402,36 @@ $A0:C859             dw C2BC,
 ;;     Carry: Set if solid collision
 
 $A0:C879 DA          PHX
-$A0:C87A 9B          TXY
-$A0:C87B 29 00 F0    AND #$F000
-$A0:C87E EB          XBA
-$A0:C87F 4A          LSR A
-$A0:C880 4A          LSR A
-$A0:C881 4A          LSR A
-$A0:C882 AA          TAX
-$A0:C883 98          TYA
-$A0:C884 4A          LSR A
-$A0:C885 8D C4 0D    STA $0DC4  [$7E:0DC4]
-$A0:C888 FC 8D C8    JSR ($C88D,x)[$A0:C319]
+$A0:C87A 9B          TXY                    ; Y = [X]
+$A0:C87B 29 00 F0    AND #$F000             ;\
+$A0:C87E EB          XBA                    ;|
+$A0:C87F 4A          LSR A                  ;|
+$A0:C880 4A          LSR A                  ;} X = (block type) * 2
+$A0:C881 4A          LSR A                  ;|
+$A0:C882 AA          TAX                    ;/
+$A0:C883 98          TYA                    ;\
+$A0:C884 4A          LSR A                  ;} Current block index = [Y] / 2
+$A0:C885 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
+$A0:C888 FC 8D C8    JSR ($C88D,x)[$A0:C319]; Execute [$C88D + [X]]
 $A0:C88B FA          PLX
 $A0:C88C 60          RTS
 
-$A0:C88D             dw C2BC,
-                        C319, ; 1: Slope
-                        C2BC,
-                        C2BC,
-                        C2BC,
-                        C619, ; 5: Horizontal extension
-                        C2BC,
-                        C2BC,
-                        C2BE,
-                        C2BE,
-                        C2C0, ; Ah: Spike block
-                        C2BE,
-                        C2BE,
-                        C64F, ; Dh: Vertical extension
-                        C2BE,
-                        C2BE
+$A0:C88D             dw C2BC, ;  0: Air
+                        C319, ; *1: Slope
+                        C2BC, ;  2: Spike air
+                        C2BC, ;  3: Special air
+                        C2BC, ;  4: Shootable air
+                        C619, ; *5: Horizontal extension
+                        C2BC, ;  6: Unused air
+                        C2BC, ;  7: Bombable air
+                        C2BE, ;  8: Solid block
+                        C2BE, ;  9: Door block
+                        C2C0, ; *Ah: Spike block
+                        C2BE, ;  Bh: Special block
+                        C2BE, ;  Ch: Shootable block
+                        C64F, ; *Dh: Vertical extension
+                        C2BE, ;  Eh: Grapple block
+                        C2BE  ;  Fh: Bombable block
 }
 
 

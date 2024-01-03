@@ -539,7 +539,7 @@ $84:84E6 60          RTS
 }
 
 
-;;; $84E7: Spawn PLM ;;;
+;;; $84E7: Spawn PLM (to current block index) ;;;
 {
 ;; Parameter:
 ;;     A: PLM ID
@@ -566,7 +566,7 @@ $84:84FC 6B          RTL                    ; Return
 
 ; BRANCH_FOUND
 $84:84FD AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
-$84:8500 0A          ASL A                  ;} PLM block index = [current nth block] * 2
+$84:8500 0A          ASL A                  ;} PLM block index = [current block index] * 2
 $84:8501 9D 87 1C    STA $1C87,x[$7E:1CCF]  ;/
 $84:8504 98          TYA                    ;\
 $84:8505 9D 37 1C    STA $1C37,x[$7E:1C7F]  ;} PLM ID = [Y]

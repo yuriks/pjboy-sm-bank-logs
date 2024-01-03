@@ -1577,7 +1577,7 @@ $94:8D8D 29 F8 FF    AND #$FFF8             ; A = [$20] - [$20] % 8 (target righ
 $94:8D90 38          SEC                    ;\
 $94:8D91 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
 $94:8D94 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
-$94:8D97 10 03       BPL $03    [$8D9C]     ;} $12 = max(0, [A] - 1 - (Samus right boundary))
+$94:8D97 10 03       BPL $03    [$8D9C]     ;} $12 = max(0, [A] - (Samus right boundary))
 $94:8D99 A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8D9C 85 12       STA $12    [$7E:0012]  ;/
@@ -1586,12 +1586,12 @@ $94:8DA1 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;} Samus X subposition = FFFFh
 $94:8DA4 38          SEC                    ;\
 $94:8DA5 60          RTS                    ;} Return carry set
 
-$94:8DA6 09 07 00    ORA #$0007             ; A = [$20] - [$20] % 8 + 7 (target left boundary rounded up to right of 8x8 tile)
-$94:8DA9 38          SEC                    ;\
-$94:8DAA 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
+$94:8DA6 09 07 00    ORA #$0007             ;\
+$94:8DA9 38          SEC                    ;} A = [$20] - [$20] % 8 + 8 (target left boundary rounded up to right of 8x8 tile)
+$94:8DAA 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;\
 $94:8DAD 38          SEC                    ;|
 $94:8DAE ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
-$94:8DB1 30 03       BMI $03    [$8DB6]     ;} $12 = max(0, [A] + 1 - (Samus left boundary))
+$94:8DB1 30 03       BMI $03    [$8DB6]     ;} $12 = max(0, [A] - (Samus left boundary))
 $94:8DB3 A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8DB6 85 12       STA $12    [$7E:0012]  ;/
@@ -1672,7 +1672,7 @@ $94:8E1E 29 F8 FF    AND #$FFF8             ; A = [$20] - [$20] % 8 (target bott
 $94:8E21 38          SEC                    ;\
 $94:8E22 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
 $94:8E25 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
-$94:8E28 10 03       BPL $03    [$8E2D]     ;} $12 = max(0, [A] - 1 - (Samus bottom boundary))
+$94:8E28 10 03       BPL $03    [$8E2D]     ;} $12 = max(0, [A] - (Samus bottom boundary))
 $94:8E2A A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8E2D 85 12       STA $12    [$7E:0012]  ;/
@@ -1683,12 +1683,12 @@ $94:8E38 8D BA 0D    STA $0DBA  [$7E:0DBA]  ;} Samus position was adjusted by a 
 $94:8E3B 38          SEC                    ;\
 $94:8E3C 60          RTS                    ;} Return carry set
 
-$94:8E3D 09 07 00    ORA #$0007             ; A = [$20] - [$20] % 8 + 7 (target top boundary rounded up to bottom of 8x8 tile)
-$94:8E40 38          SEC                    ;\
-$94:8E41 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
+$94:8E3D 09 07 00    ORA #$0007             ;\
+$94:8E40 38          SEC                    ;} A = [$20] - [$20] % 8 + 8 (target top boundary rounded up to bottom of 8x8 tile)
+$94:8E41 6D 00 0B    ADC $0B00  [$7E:0B00]  ;\
 $94:8E44 38          SEC                    ;|
 $94:8E45 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
-$94:8E48 30 03       BMI $03    [$8E4D]     ;} $12 = min(0, [A] + 1 - (Samus top boundary))
+$94:8E48 30 03       BMI $03    [$8E4D]     ;} $12 = min(0, [A] - (Samus top boundary))
 $94:8E4A A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8E4D 85 12       STA $12    [$7E:0012]  ;/
@@ -1887,7 +1887,7 @@ $94:8F54 38          SEC                    ;\
 $94:8F55 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
 $94:8F58 38          SEC                    ;|
 $94:8F59 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
-$94:8F5C 10 03       BPL $03    [$8F61]     ;} $12 = max(0, [A] - 1 - (Samus right boundary))
+$94:8F5C 10 03       BPL $03    [$8F61]     ;} $12 = max(0, [A] - (Samus right boundary))
 $94:8F5E A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8F61 85 12       STA $12    [$7E:0012]  ;/
@@ -1896,12 +1896,12 @@ $94:8F66 8D F8 0A    STA $0AF8  [$7E:0AF8]  ;} Samus X subposition = FFFFh
 $94:8F69 38          SEC                    ;\
 $94:8F6A 60          RTS                    ;} Return carry set
 
-$94:8F6B 09 0F 00    ORA #$000F             ; A = [$20] - [$20] % 10h + Fh (target left boundary rounded up to right of 16x16 tile)
-$94:8F6E 38          SEC                    ;\
-$94:8F6F 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
+$94:8F6B 09 0F 00    ORA #$000F             ;\
+$94:8F6E 38          SEC                    ;} A = [$20] - [$20] % 10h + 10h (target left boundary rounded up to right of 16x16 tile)
+$94:8F6F 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;\
 $94:8F72 38          SEC                    ;|
 $94:8F73 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
-$94:8F76 30 03       BMI $03    [$8F7B]     ;} $12 = max(0, [A] + 1 - (Samus left boundary))
+$94:8F76 30 03       BMI $03    [$8F7B]     ;} $12 = max(0, [A] - (Samus left boundary))
 $94:8F78 A9 00 00    LDA #$0000             ;|
                                             ;|
 $94:8F7B 85 12       STA $12    [$7E:0012]  ;/
