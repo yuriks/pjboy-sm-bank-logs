@@ -15342,7 +15342,7 @@ $86:EF88 60          RTS
 {
 $86:EF89 DA          PHX
 $86:EF8A 5A          PHY
-$86:EF8B BB          TYX
+$86:EF8B BB          TYX                    ; X = [Y]
 $86:EF8C AC 54 0E    LDY $0E54  [$7E:0E54]  ; Y = [enemy index]
 $86:EF8F B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;\
 $86:EF92 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position = [enemy X position]

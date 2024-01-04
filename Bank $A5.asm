@@ -2995,6 +2995,7 @@ $A5:9FDF 6B          RTL
 
 ;;; $9FE0: Handle death sequence mini-Draygon movement ;;;
 {
+; Where does $0E24 come from? Maybe $8817? Only used when moving left. Supposed to be `SBC #$0000`?
 $A5:9FE0 5A          PHY
 $A5:9FE1 A2 3E 00    LDX #$003E             ; X = 3Eh (sprite object index)
 $A5:9FE4 A0 14 00    LDY #$0014             ; Y = 14h
@@ -3017,7 +3018,7 @@ $A5:A00A 80 17       BRA $17    [$A023]
 $A5:A00C BF 78 F1 7E LDA $7EF178,x[$7E:F1B6];\ Else (not 40h <= [$A1DF + [Y]] % 100h < C0h):
 $A5:A010 38          SEC                    ;|
 $A5:A011 F9 AF A1    SBC $A1AF,y[$A5:A1C3]  ;|
-$A5:A014 9F 78 F1 7E STA $7EF178,x[$7E:F1B6];} Sprite object X position -= [$A1AF + [Y]] / 10000h
+$A5:A014 9F 78 F1 7E STA $7EF178,x[$7E:F1B6];} Sprite object X position -= [$0E24] + [$A1AF + [Y]] / 10000h
 $A5:A018 BF F8 F0 7E LDA $7EF0F8,x[$7E:F136];|
 $A5:A01C ED 24 0E    SBC $0E24  [$7E:0E24]  ;|
 $A5:A01F 9F F8 F0 7E STA $7EF0F8,x[$7E:F136];/

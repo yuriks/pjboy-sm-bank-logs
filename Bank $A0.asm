@@ -2,7 +2,7 @@
 {
 ; Loading the game:
 ;     $8A1E - load enemies - at $80:A0CA (start gameplay)
-;     $8CD7 - initialise enemies and transfer tiles to VRAM - at $82:80C9/80F9/814C (gamestate 06h/1Fh/28h), executed 6 times for 6 frames
+;     $8CD7 - initialise enemies and transfer tiles to VRAM - at $82:80C9/80F9/814C (game state 6/1Fh/28h), executed 6 times for 6 frames
 
 ; Main gameplay (game state 8):
 ;     $8EB6 - determine which enemies to process
@@ -49,37 +49,41 @@
 
 ;;; $8000..8686: Common to all enemy banks ;;;
 {
-;;; $8000: Grapple reaction: no interaction. Also unfreezes enemies(!) ;;;
+;;; $8000..45: Common enemy AI ;;;
 {
-; Used by FISH, Draygon, nuclear waffle, Phantoon, etecoon, dachora and WS ghost
+;;; $8000: Grapple AI - no interaction. Also unfreezes enemies(!) ;;;
+{
+; Used by Maridia fish, Draygon body, nuclear waffle, Phantoon, etecoon, dachora and WS ghost
 $A0:8000 22 6D 9F A0 JSL $A09F6D[$A0:9F6D]  ; Switch enemy AI to main AI
 $A0:8004 6B          RTL
 }
 
 
-;;; $8005: Grapple reaction: Samus latches on ;;;
+;;; $8005: Grapple AI - Samus latches on ;;;
 {
-; Used by WS ripper, Crocomire and Crocomire's tongue
+; Used by grapplable jet powered ripper and Crocomire
 $A0:8005 22 7D 9F A0 JSL $A09F7D[$A0:9F7D]  ; Samus latches on with grapple
 $A0:8009 6B          RTL
 }
 
 
-;;; $800A: Grapple reaction: kill enemy ;;;
+;;; $800A: Grapple AI - kill enemy ;;;
 {
+; Common
 $A0:800A 22 C4 9F A0 JSL $A09FC4[$A0:9FC4]  ; Enemy grapple death
 $A0:800E 6B          RTL
 }
 
 
-;;; $800F: Grapple reaction: cancel grapple beam ;;;
+;;; $800F: Grapple AI - cancel grapple beam ;;;
 {
+; Common
 $A0:800F 22 DF 9F A0 JSL $A09FDF[$A0:9FDF]  ; Switch to frozen AI
 $A0:8013 6B          RTL
 }
 
 
-;;; $8014: Grapple reaction: Samus latches on - no invincibility ;;;
+;;; $8014: Grapple AI - Samus latches on - no invincibility ;;;
 {
 ; Used by Maridia floater
 $A0:8014 22 E9 9F A0 JSL $A09FE9[$A0:9FE9]  ; Samus latches on with grapple - no invincibility
@@ -87,18 +91,17 @@ $A0:8018 6B          RTL
 }
 
 
-;;; $8019: Grapple reaction: Samus latches on - paralyse enemy ;;;
+;;; $8019: Unused. Grapple AI - Samus latches on - paralyse enemy ;;;
 {
-; Unused
 $A0:8019 22 3E A0 A0 JSL $A0A03E[$A0:A03E]  ; Samus latches on with grapple - paralyse enemy
 $A0:801D 6B          RTL
 }
 
 
-;;; $801E: Grapple reaction: hurt Samus ;;;
+;;; $801E: Grapple AI - hurt Samus ;;;
 {
 ; Used by WS spark
-; Unknown how this actually hurts Samus (not logged). Guessing in $9B
+; Hurt reaction happens in $9B:B932
 $A0:801E 22 70 A0 A0 JSL $A0A070[$A0:A070]  ; Switch to frozen AI
 $A0:8022 6B          RTL
 }
@@ -149,8 +152,9 @@ $A0:8040 6B          RTL
 
 ;;; $8041: Normal enemy frozen AI ;;;
 {
-$A0:8041 22 7E 95 A0 JSL $A0957E[$A0:957E]
+$A0:8041 22 7E 95 A0 JSL $A0957E[$A0:957E]  ; Normal enemy frozen AI
 $A0:8045 6B          RTL
+}
 }
 
 
@@ -181,7 +185,6 @@ $A0:804D             dw 0000
 
 ;;; $804F: Extended spritemap - nothing ;;;
 {
-; The entry
 $A0:804F             dw 0001, 0000,0000,804D,8059
 }
 
@@ -207,6 +210,8 @@ $A0:806A EA          NOP
 }
 
 
+;;; $806B..8186: Instructions ;;;
+{
 ;;; $806B: Instruction - enemy $0FB2 = [[Y]] ;;;
 {
 $A0:806B B9 00 00    LDA $0000,y
@@ -222,11 +227,7 @@ $A0:8073 6B          RTL
 $A0:8074 A9 7B 80    LDA #$807B
 $A0:8077 9D B2 0F    STA $0FB2,x
 $A0:807A 6B          RTL
-}
 
-
-;;; $807B: RTS ;;;
-{
 $A0:807B 60          RTS
 }
 
@@ -464,6 +465,7 @@ $A0:8180 29 FF F7    AND #$F7FF
 $A0:8183 9D 86 0F    STA $0F86,x
 $A0:8186 6B          RTL
 }
+}
 
 
 ;;; $8187: Common enemy speeds - linearly increasing ;;;
@@ -525,7 +527,6 @@ $A0:838F             dw 0000,0000,0000,0000, 0109,0000,FEF7,FFFF, 031B,0000,FCE5
 
 ;;; $8687: Handle room shaking ;;;
 {
-; 183E contains shake type, looks up displacement in table at A0:872D (2 byte values in pixels: BG1 X, BG1 Y, BG2 X, BG2 Y)
 $A0:8687 8B          PHB
 $A0:8688 F4 00 A0    PEA $A000              ;\
 $A0:868B AB          PLB                    ;} DB = $A0
@@ -646,9 +647,9 @@ $A0:872D             dw 0001,0000,0000,0000, 0000,0001,0000,0000, 0001,0001,0000
 ;;; $884D: Draw Samus, projectiles, enemies and enemy projectiles ;;;
 {
 $A0:884D 8B          PHB
-$A0:884E F4 00 A0    PEA $A000
-$A0:8851 AB          PLB
-$A0:8852 AB          PLB
+$A0:884E F4 00 A0    PEA $A000              ;\
+$A0:8851 AB          PLB                    ;} DB = $A0
+$A0:8852 AB          PLB                    ;/
 $A0:8853 C2 30       REP #$30
 $A0:8855 22 32 BD B4 JSL $B4BD32[$B4:BD32]  ; Draw sprite objects
 $A0:8859 22 4D 83 93 JSL $93834D[$93:834D]  ; Draw bombs and projectile explosions
@@ -1354,7 +1355,7 @@ $A0:8DEB A9 10 00    LDA #$0010             ;|
 $A0:8DEE 8D 2E 0E    STA $0E2E  [$7E:0E2E]  ;|
 $A0:8DF1 A6 16       LDX $16    [$7E:0016]  ;|
 $A0:8DF3 A4 14       LDY $14    [$7E:0014]  ;|
-                                            ;} Target enemy palette = [[$0E20]:[$14]..[$14]+1Fh] (load target enemy palette)
+                                            ;} Target enemy palette = 20h bytes from [$0E20]:[$14]
 $A0:8DF5 B9 00 00    LDA $0000,y[$A6:F4EC]  ;|
 $A0:8DF8 9F 00 00 7E STA $7E0000,x[$7E:C340];|
 $A0:8DFC E8          INX                    ;|
@@ -4301,7 +4302,7 @@ $A0:A3CD A9 00 00    LDA #$0000             ; A = 0
 $A0:A3D0 8D 20 0E    STA $0E20  [$7E:0E20]  ; $0E20 = [A]
 $A0:A3D3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A3D6 A0 45 F3    LDY #$F345             ;\
-$A0:A3D9 AD 20 0E    LDA $0E20  [$7E:0E20]  ;} Spawn death explosion / pickup enemy projectile
+$A0:A3D9 AD 20 0E    LDA $0E20  [$7E:0E20]  ;} Spawn enemy death explosion enemy projectile
 $A0:A3DC 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A0:A3E0 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A0:A3E3 29 00 40    AND #$4000             ;} $12 = enemy respawn flag
@@ -4345,7 +4346,7 @@ $A0:A41E A9 00 00    LDA #$0000             ; A = 0
 $A0:A421 8D 20 0E    STA $0E20  [$7E:0E20]  ; $0E20 = [A]
 $A0:A424 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A427 A0 45 F3    LDY #$F345             ;\
-$A0:A42A AD 20 0E    LDA $0E20  [$7E:0E20]  ;} Spawn death explosion / pickup enemy projectile
+$A0:A42A AD 20 0E    LDA $0E20  [$7E:0E20]  ;} Spawn enemy death explosion enemy projectile
 $A0:A42D 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A0:A431 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
 $A0:A434 29 00 40    AND #$4000             ;} $12 = enemy respawn flag
@@ -6667,6 +6668,8 @@ $A0:B7EE             dw 0000, 0648, 0C8F, 12D5, 1917, 1F56, 258F, 2BC3, 31F1, 38
 }
 
 
+;;; $B8EE..BB6F: Enemy death item drop routines ;;;
+{
 ;;; $B8EE: Mini-Kraid death item drop routine ;;;
 {
 $A0:B8EE DA          PHX
@@ -7041,6 +7044,7 @@ $A0:BB6D 7A          PLY
 $A0:BB6E FA          PLX
 $A0:BB6F 6B          RTL
 }
+}
 
 
 ;;; $BB70: Calculate the block containing a pixel position ;;;
@@ -7111,6 +7115,8 @@ $A0:BBBE 6B          RTL
 }
 
 
+;;; $BBBF..C04D: Enemy "solid" block collision detection ;;;
+{
 ;;; $BBBF: Check for horizontal "solid" block collision ;;;
 {
 ;; Parameters:
@@ -7870,8 +7876,11 @@ $A0:C04B 38          SEC                    ;\
 $A0:C04C AB          PLB                    ;} Return carry set
 $A0:C04D 6B          RTL                    ;/
 }
+}
 
 
+;;; $C04E..C18D: Calculate angle ;;;
+{
 ;;; $C04E: Calculate angle of Samus from enemy projectile ;;;
 {
 ;; Parameters:
@@ -8213,6 +8222,7 @@ $A0:C188 E5 12       SBC $12    [$7E:0012]
 $A0:C18A 29 FF 00    AND #$00FF
 $A0:C18D 60          RTS
 }
+}
 
 
 ;;; $C18E: Check if enemy is horizontally off-screen ;;;
@@ -8267,9 +8277,9 @@ $A0:C1D3 6B          RTL                    ;} Return carry set
 }
 
 
-;;; $C1D4: Unused ;;;
+;;; $C1D4: Unused. Assess Samus threat level ;;;
 {
-; Assesses Samus' threat level?
+; ?
 $A0:C1D4 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
 $A0:C1D7 8D 04 42    STA $4204  [$7E:4204]  ;|
 $A0:C1DA E2 20       SEP #$20               ;|
@@ -8399,6 +8409,8 @@ $A0:C2BB 60          RTS
 }
 
 
+;;; $C2BC..C9BE: Enemy block collision handling ;;;
+{
 ;;; $C2BC: Clear carry ;;;
 {
 $A0:C2BC 18          CLC
@@ -8467,6 +8479,7 @@ $A0:C316 4C 49 C4    JMP $C449  [$A0:C449]  ; Go to enemy block collision reacti
 ;; Parameters:
 ;;     A: [Block BTS] & 1Fh
 ;;     X: Block index
+;;     $18: Target Y position
 ;;     $1A: Target boundary position (top/bottom)
 ;;     $1C: Number of blocks left to check (0 if final (rightmost) block)
 ;;     $1E: Enemy X block span
@@ -8776,133 +8789,139 @@ $A0:C49F             dw 0000,0100,
 
 ;;; $C51F: Enemy block collision reaction - vertical - slope - non-square ;;;
 {
-$A0:C51F AC 54 0E    LDY $0E54  [$7E:0E54]  
-$A0:C522 A5 14       LDA $14    [$7E:0014]
-$A0:C524 10 03       BPL $03    [$C529]
-$A0:C526 4C 9E C5    JMP $C59E  [$A0:C59E]
+;; Parameters:
+;;     $14: Distance to check for collision
+;;     $18: Target Y position
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+$A0:C51F AC 54 0E    LDY $0E54  [$7E:0E54]  ; Y = [enemy index]
+$A0:C522 A5 14       LDA $14    [$7E:0014]  ;\
+$A0:C524 10 03       BPL $03    [$C529]     ;} If [$14] < 0:
+$A0:C526 4C 9E C5    JMP $C59E  [$A0:C59E]  ; Go to BRANCH_UP
 
-$A0:C529 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A0:C52C 8E 04 42    STX $4204  [$7E:4204]
-$A0:C52F E2 20       SEP #$20
-$A0:C531 AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:C534 8D 06 42    STA $4206  [$7E:4206]
-$A0:C537 C2 20       REP #$20
-$A0:C539 B9 7A 0F    LDA $0F7A,y[$7E:107A]
-$A0:C53C 4A          LSR A
-$A0:C53D 4A          LSR A
-$A0:C53E 4A          LSR A
-$A0:C53F 4A          LSR A
-$A0:C540 CD 16 42    CMP $4216  [$7E:4216]
-$A0:C543 F0 02       BEQ $02    [$C547]
-$A0:C545 18          CLC
-$A0:C546 60          RTS
-
-$A0:C547 A5 18       LDA $18    [$7E:0018]
-$A0:C549 18          CLC
-$A0:C54A 79 84 0F    ADC $0F84,y[$7E:0FC4]
-$A0:C54D 3A          DEC A
-$A0:C54E 29 0F 00    AND #$000F
-$A0:C551 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$A0:C554 BF 02 64 7F LDA $7F6402,x[$7F:6713]
-$A0:C558 29 1F 00    AND #$001F
-$A0:C55B 0A          ASL A
-$A0:C55C 0A          ASL A
-$A0:C55D 0A          ASL A
-$A0:C55E 0A          ASL A
-$A0:C55F 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$A0:C562 BF 01 64 7F LDA $7F6401,x[$7F:6712]
-$A0:C566 30 34       BMI $34    [$C59C]
-$A0:C568 0A          ASL A
-$A0:C569 30 05       BMI $05    [$C570]
-$A0:C56B B9 7A 0F    LDA $0F7A,y[$7E:0FBA]
-$A0:C56E 80 06       BRA $06    [$C576]
-
-$A0:C570 B9 7A 0F    LDA $0F7A,y[$7E:0FBA]
-$A0:C573 49 0F 00    EOR #$000F
-
-$A0:C576 29 0F 00    AND #$000F
-$A0:C579 18          CLC
-$A0:C57A 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$A0:C57D AA          TAX
-$A0:C57E BF 2B 8B 94 LDA $948B2B,x[$94:8C6A]
-$A0:C582 29 1F 00    AND #$001F
-$A0:C585 38          SEC
-$A0:C586 ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$A0:C589 3A          DEC A
-$A0:C58A F0 02       BEQ $02    [$C58E]
-$A0:C58C 10 0E       BPL $0E    [$C59C]
-
-$A0:C58E 18          CLC
-$A0:C58F 65 18       ADC $18    [$7E:0018]
-$A0:C591 99 7E 0F    STA $0F7E,y[$7E:0FBE]
-$A0:C594 A9 FF FF    LDA #$FFFF
-$A0:C597 99 80 0F    STA $0F80,y[$7E:0FC0]
-$A0:C59A 38          SEC
-$A0:C59B 60          RTS
-
-$A0:C59C 18          CLC
+$A0:C529 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A0:C52C 8E 04 42    STX $4204  [$7E:4204]  ;|
+$A0:C52F E2 20       SEP #$20               ;|
+$A0:C531 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:C534 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A0:C537 C2 20       REP #$20               ;|
+$A0:C539 B9 7A 0F    LDA $0F7A,y[$7E:107A]  ;} If [current block index] % [room width in blocks] != [enemy X position] / 10h (enemy centre isn't in block):
+$A0:C53C 4A          LSR A                  ;|
+$A0:C53D 4A          LSR A                  ;|
+$A0:C53E 4A          LSR A                  ;|
+$A0:C53F 4A          LSR A                  ;|
+$A0:C540 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$A0:C543 F0 02       BEQ $02    [$C547]     ;/
+$A0:C545 18          CLC                    ;\
+$A0:C546 60          RTS                    ;} Return carry clear
+                                            
+$A0:C547 A5 18       LDA $18    [$7E:0018]  ;\
+$A0:C549 18          CLC                    ;|
+$A0:C54A 79 84 0F    ADC $0F84,y[$7E:0FC4]  ;|
+$A0:C54D 3A          DEC A                  ;} $0DD4 = (enemy target bottom boundary) % 10h
+$A0:C54E 29 0F 00    AND #$000F             ;|
+$A0:C551 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$A0:C554 BF 02 64 7F LDA $7F6402,x[$7F:6713];\
+$A0:C558 29 1F 00    AND #$001F             ;|
+$A0:C55B 0A          ASL A                  ;|
+$A0:C55C 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$A0:C55D 0A          ASL A                  ;|
+$A0:C55E 0A          ASL A                  ;|
+$A0:C55F 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$A0:C562 BF 01 64 7F LDA $7F6401,x[$7F:6712];\
+$A0:C566 30 34       BMI $34    [$C59C]     ;} If [block BTS] & 80h = 0: return carry clear
+$A0:C568 0A          ASL A                  ;\
+$A0:C569 30 05       BMI $05    [$C570]     ;} If [block BTS] & 40h = 0:
+$A0:C56B B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ; A = [enemy X position] % 10h
+$A0:C56E 80 06       BRA $06    [$C576]     
+                                            
+$A0:C570 B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;\ Else ([block BTS] & 40h != 0):
+$A0:C573 49 0F 00    EOR #$000F             ;} A = Fh - [enemy X position] % 10h
+                                            
+$A0:C576 29 0F 00    AND #$000F             
+$A0:C579 18          CLC                    ;\
+$A0:C57A 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
+$A0:C57D AA          TAX                    ;} A = [$94:8B2B + [$0DD6] + [A]] (slope top Y offset)
+$A0:C57E BF 2B 8B 94 LDA $948B2B,x[$94:8C6A];/
+$A0:C582 29 1F 00    AND #$001F             
+$A0:C585 38          SEC                    ;\
+$A0:C586 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
+$A0:C589 3A          DEC A                  ;/
+$A0:C58A F0 02       BEQ $02    [$C58E]     ;\
+$A0:C58C 10 0E       BPL $0E    [$C59C]     ;} If [A] > 0: return carry clear
+                                            
+$A0:C58E 18          CLC                    ;\
+$A0:C58F 65 18       ADC $18    [$7E:0018]  ;} Enemy Y position = (target Y position) + [A]
+$A0:C591 99 7E 0F    STA $0F7E,y[$7E:0FBE]  ;/
+$A0:C594 A9 FF FF    LDA #$FFFF             ;\
+$A0:C597 99 80 0F    STA $0F80,y[$7E:0FC0]  ;} Enemy Y subposition = FFFFh
+$A0:C59A 38          SEC                    ;\
+$A0:C59B 60          RTS                    ;} Return carry set
+                                            
+$A0:C59C 18          CLC                    
 $A0:C59D 60          RTS
 
-$A0:C59E AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A0:C5A1 8E 04 42    STX $4204  [$7E:4204]
-$A0:C5A4 E2 20       SEP #$20
-$A0:C5A6 AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:C5A9 8D 06 42    STA $4206  [$7E:4206]
-$A0:C5AC C2 20       REP #$20
-$A0:C5AE B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C5B1 4A          LSR A
-$A0:C5B2 4A          LSR A
-$A0:C5B3 4A          LSR A
-$A0:C5B4 4A          LSR A
-$A0:C5B5 CD 16 42    CMP $4216  [$7E:4216]
-$A0:C5B8 F0 02       BEQ $02    [$C5BC]
-$A0:C5BA 18          CLC
-$A0:C5BB 60          RTS
+; BRANCH_UP
+$A0:C59E AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A0:C5A1 8E 04 42    STX $4204  [$7E:4204]  ;|
+$A0:C5A4 E2 20       SEP #$20               ;|
+$A0:C5A6 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:C5A9 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A0:C5AC C2 20       REP #$20               ;|
+$A0:C5AE B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;} If [current block index] % [room width in blocks] != [enemy X position] / 10h (enemy centre isn't in block):
+$A0:C5B1 4A          LSR A                  ;|
+$A0:C5B2 4A          LSR A                  ;|
+$A0:C5B3 4A          LSR A                  ;|
+$A0:C5B4 4A          LSR A                  ;|
+$A0:C5B5 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$A0:C5B8 F0 02       BEQ $02    [$C5BC]     ;/
+$A0:C5BA 18          CLC                    ;\
+$A0:C5BB 60          RTS                    ;} Return carry clear
+                                            
+$A0:C5BC A5 18       LDA $18    [$7E:0018]  ;\
+$A0:C5BE 38          SEC                    ;|
+$A0:C5BF F9 84 0F    SBC $0F84,y[$7E:0F84]  ;|
+$A0:C5C2 29 0F 00    AND #$000F             ;} $0DD4 = Fh - (enemy target top boundary) % 10h
+$A0:C5C5 49 0F 00    EOR #$000F             ;|
+$A0:C5C8 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$A0:C5CB BF 02 64 7F LDA $7F6402,x[$7F:6A6C];\
+$A0:C5CF 29 1F 00    AND #$001F             ;|
+$A0:C5D2 0A          ASL A                  ;|
+$A0:C5D3 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$A0:C5D4 0A          ASL A                  ;|
+$A0:C5D5 0A          ASL A                  ;|
+$A0:C5D6 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$A0:C5D9 BF 01 64 7F LDA $7F6401,x[$7F:6A6B];\
+$A0:C5DD 10 38       BPL $38    [$C617]     ;} If [block BTS] & 80h = 0: return carry clear
+$A0:C5DF 0A          ASL A                  ;\
+$A0:C5E0 30 05       BMI $05    [$C5E7]     ;} If [block BTS] & 40h = 0:
+$A0:C5E2 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ; A = [enemy X position] % 10h
+$A0:C5E5 80 06       BRA $06    [$C5ED]     
+                                            
+$A0:C5E7 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;\ Else ([block BTS] & 40h != 0):
+$A0:C5EA 49 0F 00    EOR #$000F             ;} A = Fh - [enemy X position] % 10h
+                                            
+$A0:C5ED 29 0F 00    AND #$000F             
+$A0:C5F0 18          CLC                    ;\
+$A0:C5F1 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
+$A0:C5F4 AA          TAX                    ;} A = [$94:8B2B + [$0DD6] + [A]] (slope top Y offset)
+$A0:C5F5 BF 2B 8B 94 LDA $948B2B,x[$94:8C4D];/
+$A0:C5F9 29 1F 00    AND #$001F             
+$A0:C5FC 38          SEC                    ;\
+$A0:C5FD ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
+$A0:C600 3A          DEC A                  ;/
+$A0:C601 F0 02       BEQ $02    [$C605]     ;\
+$A0:C603 10 12       BPL $12    [$C617]     ;} If [A] > 0: return carry clear
 
-$A0:C5BC A5 18       LDA $18    [$7E:0018]
-$A0:C5BE 38          SEC
-$A0:C5BF F9 84 0F    SBC $0F84,y[$7E:0F84]
-$A0:C5C2 29 0F 00    AND #$000F
-$A0:C5C5 49 0F 00    EOR #$000F
-$A0:C5C8 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$A0:C5CB BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A0:C5CF 29 1F 00    AND #$001F
-$A0:C5D2 0A          ASL A
-$A0:C5D3 0A          ASL A
-$A0:C5D4 0A          ASL A
-$A0:C5D5 0A          ASL A
-$A0:C5D6 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$A0:C5D9 BF 01 64 7F LDA $7F6401,x[$7F:6A6B]
-$A0:C5DD 10 38       BPL $38    [$C617]
-$A0:C5DF 0A          ASL A
-$A0:C5E0 30 05       BMI $05    [$C5E7]
-$A0:C5E2 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C5E5 80 06       BRA $06    [$C5ED]
-
-$A0:C5E7 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$A0:C5EA 49 0F 00    EOR #$000F
-
-$A0:C5ED 29 0F 00    AND #$000F
-$A0:C5F0 18          CLC
-$A0:C5F1 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$A0:C5F4 AA          TAX
-$A0:C5F5 BF 2B 8B 94 LDA $948B2B,x[$94:8C4D]
-$A0:C5F9 29 1F 00    AND #$001F
-$A0:C5FC 38          SEC
-$A0:C5FD ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$A0:C600 3A          DEC A
-$A0:C601 F0 02       BEQ $02    [$C605]
-$A0:C603 10 12       BPL $12    [$C617]
-
-$A0:C605 49 FF FF    EOR #$FFFF
-$A0:C608 1A          INC A
-$A0:C609 18          CLC
-$A0:C60A 65 18       ADC $18    [$7E:0018]
-$A0:C60C 99 7E 0F    STA $0F7E,y[$7E:0F7E]
-$A0:C60F A9 00 00    LDA #$0000
-$A0:C612 99 80 0F    STA $0F80,y[$7E:0F80]
-$A0:C615 38          SEC
-$A0:C616 60          RTS
+$A0:C605 49 FF FF    EOR #$FFFF             ;\
+$A0:C608 1A          INC A                  ;|
+$A0:C609 18          CLC                    ;} Enemy Y position = (target Y position) - [A]
+$A0:C60A 65 18       ADC $18    [$7E:0018]  ;|
+$A0:C60C 99 7E 0F    STA $0F7E,y[$7E:0F7E]  ;/
+$A0:C60F A9 00 00    LDA #$0000             ;\
+$A0:C612 99 80 0F    STA $0F80,y[$7E:0F80]  ;} Enemy Y subposition = 0
+$A0:C615 38          SEC                    ;\
+$A0:C616 60          RTS                    ;} Return carry set
 
 $A0:C617 18          CLC
 $A0:C618 60          RTS
@@ -8911,7 +8930,12 @@ $A0:C618 60          RTS
 
 ;;; $C619: Enemy block collision reaction - horizontal extension ;;;
 {
-; Adjust horizontal position according to BTS and go to the pointed-to block's code
+;; Returns:
+;;     Carry: Clear. No collision
+
+; Clone of $94:9411
+; If BTS is 0, acts like air
+; Otherwise, offsets block index by block BTS, updates X, and loops back to the `JSR (xxxx, X)` instruction that jumped to here
 $A0:C619 AE C4 0D    LDX $0DC4  [$7E:0DC4]
 $A0:C61C BF 02 64 7F LDA $7F6402,x[$7F:6642]
 $A0:C620 29 FF 00    AND #$00FF
@@ -8947,7 +8971,12 @@ $A0:C64E 60          RTS
 
 ;;; $C64F: Enemy block collision reaction - vertical extension ;;;
 {
-; Adjust vertical position according to BTS and go to the pointed-to block's code
+;; Returns:
+;;     Carry: Clear. No collision
+
+; Clone of $94:9447
+; If BTS is 0, acts like air
+; Otherwise, offsets block index by block BTS, updates X, and loops back to the `JSR (xxxx, X)` instruction that jumped to here
 $A0:C64F AE C4 0D    LDX $0DC4  [$7E:0DC4]
 $A0:C652 BF 02 64 7F LDA $7F6402,x[$7F:6BB3]
 $A0:C656 29 FF 00    AND #$00FF
@@ -9397,9 +9426,14 @@ $A0:C859             dw C2BC, ;  0: Air
 {
 ;; Parameters
 ;;     A: Block
-;;     X: Block index
+;;     X: Block index (multiple of 2)
+;;     $14.$12: Distance to check for collision
+;;     $18: Target Y position
+;;     $1A: Target boundary position (top/bottom)
+;;     $1C: Number of blocks left to check (0 if final (rightmost) block)
+;;     $1E: Enemy X block span
 ;; Returns:
-;;     Carry: Set if solid collision
+;;     Carry: Set if collision, clear otherwise
 
 $A0:C879 DA          PHX
 $A0:C87A 9B          TXY                    ; Y = [X]
@@ -9578,6 +9612,7 @@ $A0:C9BB 28          PLP
 $A0:C9BC FA          PLX
 $A0:C9BD 7A          PLY
 $A0:C9BE 6B          RTL
+}
 }
 
 

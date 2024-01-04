@@ -2442,11 +2442,6 @@ $94:940E 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reacti
 
 ;;; $9411: Block shot/bombed/grappled/collision/inside reaction - horizontal extension ;;;
 {
-;; Parameters:
-;;     $12.$14: Distance to check for collision
-;;     $1A: Number of blocks left to check (0 if final (bottom) block)
-;;     $1C: Samus' Y block span
-;;     $20: Target boundary position (left/right depending on sign of [$12])
 ;; Returns:
 ;;     Carry: Clear. No collision
 
@@ -2488,10 +2483,6 @@ $94:9446 60          RTS
 
 ;;; $9447: Block shot/bombed/grappled/collision/inside reaction - vertical extension ;;;
 {
-;; Parameters:
-;;     $12.$14: Distance to check for collision
-;;     $18: Target Y position
-;;     $20: Target boundary position (top/bottom depending on sign of [$12])
 ;; Returns:
 ;;     Carry: Clear. No collision
 
