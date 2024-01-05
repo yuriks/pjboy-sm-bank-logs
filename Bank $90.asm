@@ -14919,11 +14919,11 @@ $90:E935 0D B4 09    ORA $09B4  [$7E:09B4]  ;} Newly pressed controller 1 input 
 $90:E938 85 8F       STA $8F    [$7E:008F]  ;/
 $90:E93A 9C F4 0A    STZ $0AF4  [$7E:0AF4]  ; Auto-jump timer = 0
 
-$90:E93D 22 00 80 91 JSL $918000[$91:8000]  ; Execute $91:8000
+$90:E93D 22 00 80 91 JSL $918000[$91:8000]  ; Animate Samus
 $90:E941 68          PLA                    ;\
 $90:E942 85 8F       STA $8F    [$7E:008F]  ;} Pull into controller 1 input
 $90:E944 A9 13 E9    LDA #$E913             ;\
-$90:E947 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (auto-jump hack)
+$90:E947 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
 $90:E94A 60          RTS
 }
 }
@@ -15151,7 +15151,6 @@ $90:EAC0 2C B4 09    BIT $09B4  [$7E:09B4]  ;} If previously pressing jump:
 $90:EAC3 F0 05       BEQ $05    [$EACA]     ;/
 $90:EAC5 EE F4 0A    INC $0AF4  [$7E:0AF4]  ; Increment auto-jump timer
 $90:EAC8 80 03       BRA $03    [$EACD]
-
                                             ; Else (not pressing jump or not previously pressing jump)
 $90:EACA 9C F4 0A    STZ $0AF4  [$7E:0AF4]  ; Auto-jump timer = 0
 
