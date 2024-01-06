@@ -1175,9 +1175,9 @@ $89:AC51 DC 12 00    JML [$0012][$88:D928]  ;/
 
 $89:AC54 AE 66 19    LDX $1966  [$7E:1966]
 $89:AC57 BD 0D 00    LDA $000D,x[$83:A153]  ;\
-$89:AC5A 29 FF 00    AND #$00FF             ;} If [[Y] + Dh] = 0: go to BRANCH_PALETTE_FX_END
+$89:AC5A 29 FF 00    AND #$00FF             ;} If [[X] + Dh] = 0: go to BRANCH_PALETTE_FX_END
 $89:AC5D F0 2B       BEQ $2B    [$AC8A]     ;/
-$89:AC5F 8D 6A 19    STA $196A  [$7E:196A]  ; FX palette FX bitset = [[Y] + Dh]
+$89:AC5F 8D 6A 19    STA $196A  [$7E:196A]  ; FX palette FX bitset = [[X] + Dh]
 $89:AC62 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $89:AC65 0A          ASL A                  ;|
 $89:AC66 A8          TAY                    ;} $AF = [$AC46 + [region] * 2] (current region FX palette FX object table)
@@ -1207,9 +1207,9 @@ $89:AC88 80 E5       BRA $E5    [$AC6F]     ; Go to LOOP_PALETTE_FX
 ; BRANCH_PALETTE_FX_END
 $89:AC8A AE 66 19    LDX $1966  [$7E:1966]
 $89:AC8D BD 0E 00    LDA $000E,x[$83:A154]  ;\
-$89:AC90 29 FF 00    AND #$00FF             ;} If [[Y] + Eh] = 0: return
+$89:AC90 29 FF 00    AND #$00FF             ;} If [[X] + Eh] = 0: return
 $89:AC93 F0 2B       BEQ $2B    [$ACC0]     ;/
-$89:AC95 8D 6A 19    STA $196A  [$7E:196A]  ; FX animated tiles bitset = [[Y] + Dh]
+$89:AC95 8D 6A 19    STA $196A  [$7E:196A]  ; FX animated tiles bitset = [[X] + Dh]
 $89:AC98 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $89:AC9B 0A          ASL A                  ;|
 $89:AC9C A8          TAY                    ;} $AF = [$AC56 + [region] * 2] (current region FX animated tiles object table)

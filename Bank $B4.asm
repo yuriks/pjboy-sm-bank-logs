@@ -3083,13 +3083,13 @@ $B4:9785 AA          TAX                    ;\
 $B4:9786 BF 00 00 A0 LDA $A00000,x          ;|
 $B4:978A EB          XBA                    ;|
 $B4:978B 29 FF 00    AND #$00FF             ;|
-$B4:978E 4A          LSR A                  ;} $0E2C += enemy set entry enemy tile data size / 200h
+$B4:978E 4A          LSR A                  ;} $0E2C += (enemy set entry enemy tile data size) / 200h
 $B4:978F 18          CLC                    ;|
 $B4:9790 6D 2C 0E    ADC $0E2C  [$7E:0E2C]  ;|
 $B4:9793 8D 2C 0E    STA $0E2C  [$7E:0E2C]  ;/
 $B4:9796 BF 3E 00 A0 LDA $A0003E,x          ;\
 $B4:979A AA          TAX                    ;|
-$B4:979B BF 0C 00 B4 LDA $B4000C,x          ;} $16 = [$B4:000C + enemy set entry enemy name] + 30h
+$B4:979B BF 0C 00 B4 LDA $B4000C,x          ;} $16 = [$B4:000C + (enemy set entry enemy name)] + 30h
 $B4:979F 18          CLC                    ;|
 $B4:97A0 69 30 00    ADC #$0030             ;|
 $B4:97A3 85 16       STA $16    [$7E:0016]  ;/

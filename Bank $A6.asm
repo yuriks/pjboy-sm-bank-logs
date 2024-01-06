@@ -10430,7 +10430,7 @@ $A6:F016 7C A8 0F    JMP ($0FA8,x)[$A6:EFF4]
 }
 
 
-;;; $F019:  ;;;
+;;; $F019: Calculate graphical offset in rotating elevator room ;;;
 {
 $A6:F019 BD 7A 0F    LDA $0F7A,x[$7E:11FA]
 $A6:F01C 85 12       STA $12    [$7E:0012]

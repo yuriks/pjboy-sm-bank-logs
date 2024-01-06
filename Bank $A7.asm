@@ -2252,7 +2252,7 @@ $A7:B282 A9 10 00    LDA #$0010             ;\
 $A7:B285 8D A0 0F    STA $0FA0  [$7E:0FA0]  ;} Enemy 0 invincibility timer = 10h
 
 $A7:B288 AE 78 0F    LDX $0F78  [$7E:0F78]  ;\
-$A7:B28B BF 3C 00 A0 LDA $A0003C,x          ;} $14 = enemy 0 vulnerabilities
+$A7:B28B BF 3C 00 A0 LDA $A0003C,x          ;} $14 = (enemy 0 vulnerabilities)
 $A7:B28F D0 03       BNE $03    [$B294]     ; If [$14] = 0:
 $A7:B291 A9 1C EC    LDA #$EC1C             ; $14 = $EC1C
 
@@ -2262,7 +2262,7 @@ $A7:B298 89 00 0F    BIT #$0F00             ;} If beam:
 $A7:B29B D0 0D       BNE $0D    [$B2AA]     ;/
 $A7:B29D 29 FF 00    AND #$00FF             ;\
 $A7:B2A0 18          CLC                    ;|
-$A7:B2A1 65 14       ADC $14    [$7E:0014]  ;} $0E32 = [$B4:0000 + [$14] + beam type]
+$A7:B2A1 65 14       ADC $14    [$7E:0014]  ;} $0E32 = [$B4:0000 + [$14] + (beam type)]
 $A7:B2A3 AA          TAX                    ;|
 $A7:B2A4 BF 00 00 B4 LDA $B40000,x          ;/
 $A7:B2A8 80 30       BRA $30    [$B2DA]     ; Go to BRANCH_DETERMINED_VULNERABILITY
@@ -2275,7 +2275,7 @@ $A7:B2B5 D0 0B       BNE $0B    [$B2C2]     ;/
 
 $A7:B2B7 EB          XBA                    ;\
 $A7:B2B8 18          CLC                    ;|
-$A7:B2B9 65 14       ADC $14    [$7E:0014]  ;} $0E32 = [$B4:0000 + [$14] + Bh + missile type]
+$A7:B2B9 65 14       ADC $14    [$7E:0014]  ;} $0E32 = [$B4:0000 + [$14] + Bh + (missile type)]
 $A7:B2BB AA          TAX                    ;|
 $A7:B2BC BF 0B 00 B4 LDA $B4000B,x          ;/
 $A7:B2C0 80 18       BRA $18    [$B2DA]     ; Go to BRANCH_DETERMINED_VULNERABILITY
@@ -2332,7 +2332,7 @@ $A7:B326 8D 8C 0F    STA $0F8C  [$7E:0F8C]  ;/
 
 ; BRANCH_TRIPLE_DAMAGE_END
 $A7:B329 AE 78 0F    LDX $0F78  [$7E:0F78]  ;\
-$A7:B32C BF 0E 00 A0 LDA $A0000E,x          ;} A = enemy 0 cry
+$A7:B32C BF 0E 00 A0 LDA $A0000E,x          ;} A = (enemy 0 cry)
 $A7:B330 22 CB 90 80 JSL $8090CB[$80:90CB]  ; Queue sound [A], sound library 2, max queued sounds allowed = 6
 
 $A7:B334 7A          PLY

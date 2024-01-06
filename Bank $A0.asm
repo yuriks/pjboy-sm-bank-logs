@@ -525,6 +525,8 @@ $A0:838F             dw 0000,0000,0000,0000, 0109,0000,FEF7,FFFF, 031B,0000,FCE5
 }
 
 
+;;; $8687..884C: Room shaking ;;;
+{
 ;;; $8687: Handle room shaking ;;;
 {
 $A0:8687 8B          PHB
@@ -642,6 +644,7 @@ $A0:872D             dw 0001,0000,0000,0000, 0000,0001,0000,0000, 0001,0001,0000
                         0000,0000,0002,0000, 0000,0000,0000,0002, 0000,0000,0002,0002, ;} BG2 only and enemies
                         0000,0000,0003,0000, 0000,0000,0000,0003, 0000,0000,0003,0003  ;/
 }
+}
 
 
 ;;; $884D: Draw Samus, projectiles, enemies and enemy projectiles ;;;
@@ -654,49 +657,49 @@ $A0:8853 C2 30       REP #$30
 $A0:8855 22 32 BD B4 JSL $B4BD32[$B4:BD32]  ; Draw sprite objects
 $A0:8859 22 4D 83 93 JSL $93834D[$93:834D]  ; Draw bombs and projectile explosions
 $A0:885D 22 90 83 86 JSL $868390[$86:8390]  ; Draw low priority enemy projectiles
-$A0:8861 9C 32 0E    STZ $0E32  [$7E:0E32]  ; $0E32 = 0
+$A0:8861 9C 32 0E    STZ $0E32  [$7E:0E32]  ; Enemy layer = 0
 
 ; LOOP_MAIN
 $A0:8864 AD 32 0E    LDA $0E32  [$7E:0E32]  ;\
-$A0:8867 C9 08 00    CMP #$0008             ;} If [$0E32] = 8: go to BRANCH_FINISH
+$A0:8867 C9 08 00    CMP #$0008             ;} If [enemy layer] = 8: go to BRANCH_FINISH
 $A0:886A F0 50       BEQ $50    [$88BC]     ;/
 $A0:886C C9 03 00    CMP #$0003             ;\
-$A0:886F D0 06       BNE $06    [$8877]     ;} If [$0E32] = 3:
+$A0:886F D0 06       BNE $06    [$8877]     ;} If [enemy layer] = 3:
 $A0:8871 22 35 EB 90 JSL $90EB35[$90:EB35]  ; Draw Samus and projectiles
 $A0:8875 80 09       BRA $09    [$8880]
 
-$A0:8877 C9 06 00    CMP #$0006             ;\ Else ([$0E32] != 3):
-$A0:887A D0 04       BNE $04    [$8880]     ;} If [$0E32] = 6:
+$A0:8877 C9 06 00    CMP #$0006             ;\ Else ([enemy layer] != 3):
+$A0:887A D0 04       BNE $04    [$8880]     ;} If [enemy layer] = 6:
 $A0:887C 22 B2 83 86 JSL $8683B2[$86:83B2]  ; Draw high priority enemy projectiles
 
 $A0:8880 AD 32 0E    LDA $0E32  [$7E:0E32]  ;\
-$A0:8883 0A          ASL A                  ;|
-$A0:8884 A8          TAY                    ;} If [$0F68 + [$0E32] * 2] = 0: go to BRANCH_NEXT
-$A0:8885 B9 68 0F    LDA $0F68,y[$7E:0F68]  ;|
-$A0:8888 F0 2D       BEQ $2D    [$88B7]     ;/
-$A0:888A 8D 36 0E    STA $0E36  [$7E:0E36]  ; $0E36 = [$0F68 + [$0E32] * 2]
+$A0:8883 0A          ASL A                  ;} Y = [enemy layer] * 2
+$A0:8884 A8          TAY                    ;/
+$A0:8885 B9 68 0F    LDA $0F68,y[$7E:0F68]  ; A = [enemy drawing queue size]
+$A0:8888 F0 2D       BEQ $2D    [$88B7]     ; If [enemy drawing queue size] = 0: go to BRANCH_NEXT
+$A0:888A 8D 36 0E    STA $0E36  [$7E:0E36]  ; Enemy drawing queue size backup = [enemy drawing queue size]
 $A0:888D B9 33 B1    LDA $B133,y[$A0:B137]  ;\
-$A0:8890 8D 3A 0E    STA $0E3A  [$7E:0E3A]  ;} $0E3A = [$B133 + [$0E32] * 2]
+$A0:8890 8D 3A 0E    STA $0E3A  [$7E:0E3A]  ;} Enemy drawing queue address = [$B133 + [enemy layer] * 2]
 $A0:8893 A9 00 00    LDA #$0000             ; A = 0
-$A0:8896 99 68 0F    STA $0F68,y[$7E:0F6C]  ; $0F68 + [$0E32] * 2 = 0
+$A0:8896 99 68 0F    STA $0F68,y[$7E:0F6C]  ; Enemy drawing queue size = 0
 
 ; LOOP_OAM
-$A0:8899 8D 38 0E    STA $0E38  [$7E:0E38]  ; $0E38 = [A]
+$A0:8899 8D 38 0E    STA $0E38  [$7E:0E38]  ; Enemy drawing queue index = [A]
 $A0:889C 18          CLC                    ;\
-$A0:889D 6D 3A 0E    ADC $0E3A  [$7E:0E3A]  ;} X = [$0E3A] + [$0E38]
+$A0:889D 6D 3A 0E    ADC $0E3A  [$7E:0E3A]  ;} X = [enemy drawing queue address] + [enemy drawing queue index]
 $A0:88A0 AA          TAX                    ;/
 $A0:88A1 BD 00 00    LDA $0000,x[$7E:0EA6]  ;\
 $A0:88A4 9E 00 00    STZ $0000,x[$7E:0EA6]  ;} Enemy index = [[X]], [X] = 0
 $A0:88A7 8D 54 0E    STA $0E54  [$7E:0E54]  ;/
 $A0:88AA 20 4A 94    JSR $944A  [$A0:944A]  ; Write enemy OAM
 $A0:88AD AD 38 0E    LDA $0E38  [$7E:0E38]  ;\
-$A0:88B0 1A          INC A                  ;} A = [$0E38] + 2
+$A0:88B0 1A          INC A                  ;} A = [enemy drawing queue index] + 2
 $A0:88B1 1A          INC A                  ;/
 $A0:88B2 CD 36 0E    CMP $0E36  [$7E:0E36]  ;\
-$A0:88B5 D0 E2       BNE $E2    [$8899]     ;} If [A] != [$0E36]: go to LOOP_OAM
+$A0:88B5 D0 E2       BNE $E2    [$8899]     ;} If [A] != [enemy drawing queue size]: go to LOOP_OAM
 
 ; BRANCH_NEXT
-$A0:88B7 EE 32 0E    INC $0E32  [$7E:0E32]  ; Increment $0E32
+$A0:88B7 EE 32 0E    INC $0E32  [$7E:0E32]  ; Increment enemy layer
 $A0:88BA 80 A8       BRA $A8    [$8864]     ; Go to LOOP_MAIN
 
 ; BRANCH_FINISH
@@ -717,10 +720,14 @@ $A0:88CF 6B          RTL
 }
 
 
+;;; $88D0..8EB5: Enemy loading ;;;
+{
 ;;; $88D0: Record enemy spawn data ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy index
+
+; Used almost exclusively by debug enemy spawner. Rinka uses X/Y position
 $A0:88D0 DA          PHX
 $A0:88D1 5A          PHY
 $A0:88D2 BB          TYX
@@ -759,7 +766,7 @@ $A0:892D 85 14       STA $14    [$7E:0014]  ;|
 $A0:892F BF 04 00 B4 LDA $B40004,x[$B4:E0D5];|
 $A0:8933 85 16       STA $16    [$7E:0016]  ;|
 $A0:8935 BF 06 00 B4 LDA $B40006,x[$B4:E0D7];|
-$A0:8939 85 18       STA $18    [$7E:0018]  ;} $7E:702E+[Y]..39+[Y] = (enemy name)
+$A0:8939 85 18       STA $18    [$7E:0018]  ;} Copy Ch bytes from (enemy name) to $7E:702E + [Y]
 $A0:893B BF 08 00 B4 LDA $B40008,x[$B4:E0D9];|
 $A0:893F 85 1A       STA $1A    [$7E:001A]  ;|
 $A0:8941 BF 0C 00 B4 LDA $B4000C,x[$B4:E0DD];|
@@ -786,6 +793,7 @@ $A0:896E 6B          RTL
 
 ;;; $896F: Debug. Load enemy set data ;;;
 {
+; This enemy set data is never used, not even by the enemy debugger. This routine serves no purpose
 $A0:896F A9 00 00    LDA #$0000             ;\
 $A0:8972 A2 00 00    LDX #$0000             ;|
 $A0:8975 A0 A0 00    LDY #$00A0             ;|
@@ -804,7 +812,7 @@ $A0:898A BF 00 00 B4 LDA $B40000,x[$B4:9211];\
 $A0:898E 8F 52 D5 7E STA $7ED552[$7E:D552]  ;|
 $A0:8992 BF 02 00 B4 LDA $B40002,x[$B4:9213];|
 $A0:8996 8F 54 D5 7E STA $7ED554[$7E:D554]  ;|
-$A0:899A BF 04 00 B4 LDA $B40004,x[$B4:9215];} Enemy set name = [$B4:0000+[X] .. $B4:0007+[X]] (harmless one byte overflow)
+$A0:899A BF 04 00 B4 LDA $B40004,x[$B4:9215];} Enemy set name = 8 bytes from $B4:0000 + [X] (harmless one byte overflow)
 $A0:899E 8F 56 D5 7E STA $7ED556[$7E:D556]  ;|
 $A0:89A2 BF 06 00 B4 LDA $B40006,x[$B4:9217];|
 $A0:89A6 8F 58 D5 7E STA $7ED558[$7E:D558]  ;/
@@ -866,6 +874,9 @@ $A0:8A1D 6B          RTL
 
 ;;; $8A1E: Load enemies (load and process enemy set, clear enemy data, load enemy tile data) ;;;
 {
+; Called when loading the game, and during door transition
+; This routine loads enemy tile data, which during door transition has already loaded by $82:DFD1, making the call to $8C6C a fairly hefty waste of time
+; Aside from loading tile data, this routine also loads palette data, and the enemy GFX data needed for respawn
 $A0:8A1E 08          PHP
 $A0:8A1F 8B          PHB
 $A0:8A20 F4 00 A0    PEA $A000              ;\
@@ -903,9 +914,9 @@ $A0:8A6C 6B          RTL
 {
 $A0:8A6D 08          PHP
 $A0:8A6E 8B          PHB
-$A0:8A6F F4 00 A0    PEA $A000
-$A0:8A72 AB          PLB
-$A0:8A73 AB          PLB
+$A0:8A6F F4 00 A0    PEA $A000              ;\
+$A0:8A72 AB          PLB                    ;} DB = $A0
+$A0:8A73 AB          PLB                    ;/
 $A0:8A74 C2 30       REP #$30
 $A0:8A76 A9 00 00    LDA #$0000             ;\
 $A0:8A79 A0 00 08    LDY #$0800             ;|
@@ -961,7 +972,7 @@ $A0:8ACE 10 F8       BPL $F8    [$8AC8]     ;/
 $A0:8AD0 A2 22 00    LDX #$0022             ;\
 $A0:8AD3 A9 FF FF    LDA #$FFFF             ;|
                                             ;|
-$A0:8AD6 9F 10 F4 7E STA $7EF410,x[$7E:F432];} $7E:F410..33 = FFFFh (enemy projectile killed enemy indices for respawning enemies)
+$A0:8AD6 9F 10 F4 7E STA $7EF410,x[$7E:F432];} $7E:F410..33 = FFFFh (enemy projectile killed enemy indices, for respawning enemies)
 $A0:8ADA CA          DEX                    ;|
 $A0:8ADB CA          DEX                    ;|
 $A0:8ADC 10 F8       BPL $F8    [$8AD6]     ;/
@@ -992,7 +1003,7 @@ $A0:8B17 BD 0C 00    LDA $000C,x[$A0:E24B]  ;\
 $A0:8B1A 99 A6 0F    STA $0FA6,y[$7E:0FA6]  ;} Enemy bank = [[A] + Ch]
 $A0:8B1D BD 10 00    LDA $0010,x[$A0:E24F]  ;\
 $A0:8B20 F0 03       BEQ $03    [$8B25]     ;} If [[A] + 10h] != 0:
-$A0:8B22 8D 9C 17    STA $179C  [$7E:179C]  ; Boss value = [[A] + 10h]
+$A0:8B22 8D 9C 17    STA $179C  [$7E:179C]  ; Boss ID = [[A] + 10h]
 
 $A0:8B25 FA          PLX
 $A0:8B26 BF 00 00 A1 LDA $A10000,x[$A1:E88A];\
@@ -1140,7 +1151,7 @@ $A0:8C42 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy [$14] palette index = $7E:7
 $A0:8C45 9F 08 70 7E STA $7E7008,x[$7E:7088];/
 $A0:8C49 7A          PLY
 $A0:8C4A FA          PLX
-$A0:8C4B 60          RTS
+$A0:8C4B 60          RTS                    ; Return
 
 ; BRANCH_FOUND
 $A0:8C4C A6 1C       LDX $1C    [$7E:001C]  ;\
@@ -1168,7 +1179,7 @@ $A0:8C6C C2 30       REP #$30
 $A0:8C6E A2 FE 01    LDX #$01FE             ;\
                                             ;|
 $A0:8C71 BF 00 EA 9A LDA $9AEA00,x[$9A:EBFE];|
-$A0:8C75 9F 00 70 7E STA $7E7000,x[$7E:71FE];} $7E:7000..71FF = [$9A:EA00..EBFF]
+$A0:8C75 9F 00 70 7E STA $7E7000,x[$7E:71FE];} $7E:7000..71FF = [$9A:EA00..EBFF] (standard sprite tiles)
 $A0:8C79 CA          DEX                    ;|
 $A0:8C7A CA          DEX                    ;|
 $A0:8C7B 10 F4       BPL $F4    [$8C71]     ;/
@@ -1228,25 +1239,25 @@ $A0:8CD6 6B          RTL
 ; To be executed 6 times
 $A0:8CD7 C2 30       REP #$30
 $A0:8CD9 AD 7C 0E    LDA $0E7C  [$7E:0E7C]  ;\
-$A0:8CDC D0 0C       BNE $0C    [$8CEA]     ;} If [$0E7C] = 0:
+$A0:8CDC D0 0C       BNE $0C    [$8CEA]     ;} If [enemy tiles VRAM update source address] = 0:
 $A0:8CDE A9 00 70    LDA #$7000             ;\
-$A0:8CE1 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;} $0E7C = $7000
+$A0:8CE1 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;} Enemy tiles VRAM update source address = $7000
 $A0:8CE4 A2 00 6C    LDX #$6C00             ;\
-$A0:8CE7 8E 7E 0E    STX $0E7E  [$7E:0E7E]  ;} $0E7E = $6C00
+$A0:8CE7 8E 7E 0E    STX $0E7E  [$7E:0E7E]  ;} Enemy tiles VRAM update destination address = $6C00
 
 $A0:8CEA C9 FF FF    CMP #$FFFF             ;\
-$A0:8CED D0 01       BNE $01    [$8CF0]     ;} If [$0E7C] = FFFFh: return
-$A0:8CEF 6B          RTL                    ;/
+$A0:8CED D0 01       BNE $01    [$8CF0]     ;} If [enemy tiles VRAM update source address] = FFFFh:
+$A0:8CEF 6B          RTL                    ; Return
 
 $A0:8CF0 C9 FE FF    CMP #$FFFE             ;\
-$A0:8CF3 D0 0B       BNE $0B    [$8D00]     ;} If [$0E7C] = FFFEh:
+$A0:8CF3 D0 0B       BNE $0B    [$8D00]     ;} If [enemy tiles VRAM update source address] = FFFEh:
 $A0:8CF5 22 9E 8A A0 JSL $A08A9E[$A0:8A9E]  ; Initialise enemies
 $A0:8CF9 A9 FF FF    LDA #$FFFF             ;\
-$A0:8CFC 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;} $0E7C = FFFFh
-$A0:8CFF 6B          RTL
+$A0:8CFC 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;} Enemy tiles VRAM update source address = FFFFh
+$A0:8CFF 6B          RTL                    ; Return
 
 $A0:8D00 C9 00 98    CMP #$9800             ;\
-$A0:8D03 F0 2E       BEQ $2E    [$8D33]     ;} If [$0E7C] != $9800:
+$A0:8D03 F0 2E       BEQ $2E    [$8D33]     ;} If [enemy tiles VRAM update source address] != $9800:
 $A0:8D05 AE 30 03    LDX $0330  [$7E:0330]  ;\
 $A0:8D08 A9 00 08    LDA #$0800             ;|
 $A0:8D0B 95 D0       STA $D0,x  [$7E:00D7]  ;|
@@ -1255,9 +1266,9 @@ $A0:8D10 95 D2       STA $D2,x  [$7E:00D9]  ;|
 $A0:8D12 18          CLC                    ;|
 $A0:8D13 69 00 08    ADC #$0800             ;|
 $A0:8D16 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;|
-$A0:8D19 A9 7E 00    LDA #$007E             ;} Queue transfer of 800h bytes from $7E:0000 + [$0E7C] to VRAM [$0E7E]
-$A0:8D1C 95 D4       STA $D4,x  [$7E:00DB]  ;} $0E7C += 800h
-$A0:8D1E AD 7E 0E    LDA $0E7E  [$7E:0E7E]  ;} $0E7E += 400h
+$A0:8D19 A9 7E 00    LDA #$007E             ;} Queue transfer of 800h bytes from $7E:0000 + [enemy tiles VRAM update source address] to VRAM [enemy tiles VRAM update destination address]
+$A0:8D1C 95 D4       STA $D4,x  [$7E:00DB]  ;} Enemy tiles VRAM update source address += 800h
+$A0:8D1E AD 7E 0E    LDA $0E7E  [$7E:0E7E]  ;} Enemy tiles VRAM update destination address += 400h
 $A0:8D21 95 D5       STA $D5,x  [$7E:00DC]  ;|
 $A0:8D23 18          CLC                    ;|
 $A0:8D24 69 00 04    ADC #$0400             ;|
@@ -1269,7 +1280,7 @@ $A0:8D2F 8D 30 03    STA $0330  [$7E:0330]  ;/
 $A0:8D32 6B          RTL                    ; Return
 
 $A0:8D33 A9 FE FF    LDA #$FFFE             ;\
-$A0:8D36 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;} $0E7C = FFFEh
+$A0:8D36 8D 7C 0E    STA $0E7C  [$7E:0E7C]  ;} Enemy tiles VRAM update source address = FFFEh
 $A0:8D39 6B          RTL
 }
 
@@ -1301,9 +1312,9 @@ $A0:8D63 6B          RTL
 {
 $A0:8D64 DA          PHX
 $A0:8D65 5A          PHY
-$A0:8D66 9C 7A 0E    STZ $0E7A  [$7E:0E7A]  ; $0E7A = 0
+$A0:8D66 9C 7A 0E    STZ $0E7A  [$7E:0E7A]  ; Enemy loading data stack pointer = 0
 $A0:8D69 A9 00 08    LDA #$0800             ;\
-$A0:8D6C 85 1E       STA $1E    [$7E:001E]  ;} $1E = 800h
+$A0:8D6C 85 1E       STA $1E    [$7E:001E]  ;} $1E = 800h (next enemy loading tile data destination offset)
 $A0:8D6E A9 00 00    LDA #$0000             ;\
 $A0:8D71 8F 5C EF 7E STA $7EEF5C[$7E:EF5C]  ;|
 $A0:8D75 8F 5E EF 7E STA $7EEF5E[$7E:EF5E]  ;|
@@ -1311,7 +1322,7 @@ $A0:8D79 8F 60 EF 7E STA $7EEF60[$7E:EF60]  ;|
 $A0:8D7D 8F 62 EF 7E STA $7EEF62[$7E:EF62]  ;|
 $A0:8D81 8F 64 EF 7E STA $7EEF64[$7E:EF64]  ;|
 $A0:8D85 8F 66 EF 7E STA $7EEF66[$7E:EF66]  ;|
-$A0:8D89 8F 68 EF 7E STA $7EEF68[$7E:EF68]  ;} $7E:EF5C..EF77 = 0
+$A0:8D89 8F 68 EF 7E STA $7EEF68[$7E:EF68]  ;} $7E:EF5C..EF77 = 0 (enemy GFX data RAM)
 $A0:8D8D 8F 6A EF 7E STA $7EEF6A[$7E:EF6A]  ;|
 $A0:8D91 8F 6C EF 7E STA $7EEF6C[$7E:EF6C]  ;|
 $A0:8D95 8F 6E EF 7E STA $7EEF6E[$7E:EF6E]  ;|
@@ -1366,7 +1377,7 @@ $A0:8E00 CE 2E 0E    DEC $0E2E  [$7E:0E2E]  ;|
 $A0:8E03 D0 F0       BNE $F0    [$8DF5]     ;|
 $A0:8E05 AB          PLB                    ;/
 $A0:8E06 A6 1C       LDX $1C    [$7E:001C]  ;\
-$A0:8E08 BF 00 00 B4 LDA $B40000,x[$B4:9218];} X = enemy ID
+$A0:8E08 BF 00 00 B4 LDA $B40000,x[$B4:9218];} X = (enemy ID)
 $A0:8E0C AA          TAX                    ;/
 $A0:8E0D BD 36 00    LDA $0036,x[$A0:E275]  ;\
 $A0:8E10 85 16       STA $16    [$7E:0016]  ;} $16 = [(enemy ID) + 36h] (enemy tile data pointer)
@@ -1381,7 +1392,7 @@ $A0:8E25 A5 16       LDA $16    [$7E:0016]  ;\
 $A0:8E27 9D 5C 0E    STA $0E5C,x[$7E:0E5C]  ;} Enemy loading tile data pointer = (enemy tile data pointer)
 $A0:8E2A A5 1E       LDA $1E    [$7E:001E]  ; A = [$1E]
 $A0:8E2C 24 12       BIT $12    [$7E:0012]  ;\
-$A0:8E2E 10 0E       BPL $0E    [$8E3E]     ;} If (enemy tile data size0 & 8000h:
+$A0:8E2E 10 0E       BPL $0E    [$8E3E]     ;} If (enemy tile data size) & 8000h != 0:
 $A0:8E30 DA          PHX                    ;\
 $A0:8E31 A6 1C       LDX $1C    [$7E:001C]  ;|
 $A0:8E33 BF 02 00 B4 LDA $B40002,x[$B4:921A];|
@@ -1394,7 +1405,7 @@ $A0:8E3D FA          PLX                    ;/
 $A0:8E3E 9D 5F 0E    STA $0E5F,x[$7E:0E5F]  ; Enemy loading tile data destination offset = [A]
 $A0:8E41 E2 20       SEP #$20               ;\
 $A0:8E43 A5 1A       LDA $1A    [$7E:001A]  ;|
-$A0:8E45 9D 5E 0E    STA $0E5E,x[$7E:0E5E]  ;} Enemy loading tile data = enemy tile data bank
+$A0:8E45 9D 5E 0E    STA $0E5E,x[$7E:0E5E]  ;} Enemy loading tile data = (enemy tile data bank)
 $A0:8E48 C2 20       REP #$20               ;/
 $A0:8E4A AD 7A 0E    LDA $0E7A  [$7E:0E7A]  ;\
 $A0:8E4D 18          CLC                    ;|
@@ -1434,7 +1445,7 @@ $A0:8E95 8F 76 EF 7E STA $7EEF76[$7E:EF76]  ;/
 $A0:8E99 A6 1C       LDX $1C    [$7E:001C]  ;\
 $A0:8E9B BF 00 00 B4 LDA $B40000,x[$B4:9218];|
 $A0:8E9F AA          TAX                    ;|
-$A0:8EA0 BD 00 00    LDA $0000,x[$A0:E23F]  ;} $1E += enemy tile data size (even the negative ones, thus those enemies need to be last in the enemy set)
+$A0:8EA0 BD 00 00    LDA $0000,x[$A0:E23F]  ;} $1E += (enemy tile data size) (even the negative ones, thus those enemies need to be last in the enemy set)
 $A0:8EA3 18          CLC                    ;|
 $A0:8EA4 65 1E       ADC $1E    [$7E:001E]  ;|
 $A0:8EA6 85 1E       STA $1E    [$7E:001E]  ;/
@@ -1447,6 +1458,7 @@ $A0:8EB0 4C AE 8D    JMP $8DAE  [$A0:8DAE]  ; Go to LOOP
 $A0:8EB3 7A          PLY
 $A0:8EB4 FA          PLX
 $A0:8EB5 60          RTS
+}
 }
 
 
@@ -1466,7 +1478,7 @@ $A0:8ECD F0 03       BEQ $03    [$8ED2]     ;} If global off-screen enemy proces
 $A0:8ECF 4C 77 8F    JMP $8F77  [$A0:8F77]  ;/
 
 $A0:8ED2 A2 00 00    LDX #$0000             ; >_<;
-$A0:8ED5 A0 00 00    LDY #$0000             ; Y = 0
+$A0:8ED5 A0 00 00    LDY #$0000             ; >_<;
 
 ; LOOP
 $A0:8ED8 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
@@ -1539,7 +1551,7 @@ $A0:8F6C 99 AC 17    STA $17AC,y[$7E:17B0]  ;/
 $A0:8F6F AC A6 17    LDY $17A6  [$7E:17A6]  ;\
 $A0:8F72 99 EC 17    STA $17EC,y[$7E:17F0]  ;} Terminate interactive enemy indices list
 $A0:8F75 AB          PLB
-$A0:8F76 6B          RTL
+$A0:8F76 6B          RTL                    ; Return
 
 ; LOOP_PROCESS_OFFSCREEN
 $A0:8F77 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
@@ -2631,6 +2643,8 @@ $A0:9757 6B          RTL
 }
 
 
+;;; $9758..A3AE: Enemy collision handling ;;;
+{
 ;;; $9758: Enemy collision handler ;;;
 {
 $A0:9758 08          PHP
@@ -3704,6 +3718,8 @@ $A0:9F6B 80 E9       BRA $E9    [$9F56]     ; Return
 }
 
 
+;;; $9F6D..A079: Enemy grapple AIs ;;;
+{
 ;;; $9F6D: Switch enemy AI to main AI ;;;
 {
 $A0:9F6D AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3846,6 +3862,7 @@ $A0:A070 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A073 A9 04 00    LDA #$0004
 $A0:A076 9D 8A 0F    STA $0F8A,x
 $A0:A079 6B          RTL
+}
 }
 
 
@@ -4275,6 +4292,7 @@ $A0:A3AA AB          PLB
 $A0:A3AB AB          PLB
 $A0:A3AC DC 84 17    JML [$1784][$A2:8037]
 }
+}
 
 
 ;;; $A3AF: Enemy death ;;;
@@ -4396,6 +4414,8 @@ $A0:A476 6B          RTL
 }
 
 
+;;; $A477..A596: Normal enemy touch AI ;;;
+{
 ;;; $A477: Normal enemy touch AI ;;;
 {
 $A0:A477 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4413,7 +4433,7 @@ $A0:A496 6B          RTL
 }
 
 
-;;; $A497: Normal touch AI - no death check (external) ;;;
+;;; $A497: Normal enemy touch AI - no death check (external) ;;;
 {
 $A0:A497 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A49A 20 A1 A4    JSR $A4A1  [$A0:A4A1]
@@ -4422,7 +4442,7 @@ $A0:A4A0 6B          RTL
 }
 
 
-;;; $A4A1: Normal touch AI - no death check ;;;
+;;; $A4A1: Normal enemy touch AI - no death check ;;;
 {
 ; Damage values:
 ;     Speed boosting:      $A4AF
@@ -4539,8 +4559,11 @@ $A0:A590 A0 01 00    LDY #$0001             ; Knockback X direction = right
 $A0:A593 8C 54 0A    STY $0A54  [$7E:0A54]
 $A0:A596 60          RTS
 }
+}
 
 
+;;; $A597..A63C: Normal enemy power bomb AI ;;;
+{
 ;;; $A597: Normal enemy power bomb AI ;;;
 {
 ; Used by Metroid and space pirates
@@ -4625,8 +4648,11 @@ $A0:A639 9D 8C 0F    STA $0F8C,x[$7E:100C]  ;/
 
 $A0:A63C 60          RTS
 }
+}
 
 
+;;; $A63D..A8BB: Normal enemy shot AI ;;;
+{
 ;;; $A63D: Normal enemy shot AI ;;;
 {
 $A0:A63D 9C 2E 0E    STZ $0E2E  [$7E:0E2E]  ; Clear enemy hit flag
@@ -4693,7 +4719,7 @@ $A0:A6B3 6B          RTL
 ;;; $A6B4: Normal enemy shot AI - no death check ;;;
 {
 ; Used by Spore Spawn
-$A0:A6B4 9C 2E 0E    STZ $0E2E  [$7E:0E2E]
+$A0:A6B4 9C 2E 0E    STZ $0E2E  [$7E:0E2E]  ; Clear enemy hit flag
 $A0:A6B7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6BA 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A0:A6BD AD 2E 0E    LDA $0E2E  [$7E:0E2E]  ;\
@@ -4889,7 +4915,7 @@ $A0:A843 22 B7 90 80 JSL $8090B7[$80:90B7]  ; Queue (enemy cry), sound library 2
 
 $A0:A847 7A          PLY                    ;\
 $A0:A848 FA          PLX                    ;} Yeah great, glad these were pushed...
-$A0:A849 EE 2E 0E    INC $0E2E  [$7E:0E2E]  ; $0E2E = 1
+$A0:A849 EE 2E 0E    INC $0E2E  [$7E:0E2E]  ; Set enemy hit flag
 
 ; BRANCH_NO_FLASH_NO_CRY
 $A0:A84C AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4945,6 +4971,7 @@ $A0:A8B4 A9 00 00    LDA #$0000             ; A = 0
 $A0:A8B7 9D 8C 0F    STA $0F8C,x[$7E:0FCC]  ; Enemy health = [A]
 $A0:A8BA AB          PLB
 $A0:A8BB 60          RTS
+}
 }
 
 
@@ -5169,13 +5196,13 @@ $A0:AA3A BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
 $A0:AA3D 18          CLC                    ;|
 $A0:AA3E 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;|
 $A0:AA41 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A0:AA44 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} A = Samus left boundary position - enemy right boundary position
+$A0:AA44 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} A = (Samus left boundary position) - (enemy right boundary position) - 1
 $A0:AA47 38          SEC                    ;|
 $A0:AA48 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
 $A0:AA4B 38          SEC                    ;|
 $A0:AA4C ED 32 0E    SBC $0E32  [$7E:0E32]  ;/
-$A0:AA4F F0 08       BEQ $08    [$AA59]     ; If Samus left boundary position = enemy right boundary position: go to BRANCH_TOUCHING
-$A0:AA51 10 03       BPL $03    [$AA56]     ; If Samus left boundary position > enemy right boundary position: go to BRANCH_NOT_TOUCHING
+$A0:AA4F F0 08       BEQ $08    [$AA59]     ; If (Samus left boundary position) = (enemy right boundary position) + 1: go to BRANCH_TOUCHING
+$A0:AA51 10 03       BPL $03    [$AA56]     ; If (Samus left boundary position) > (enemy right boundary position) + 1: go to BRANCH_NOT_TOUCHING
 $A0:AA53 4C 81 AB    JMP $AB81  [$A0:AB81]  ; Go to BRANCH_NEXT
 
 $A0:AA56 4C 22 AB    JMP $AB22  [$A0:AB22]
@@ -5188,13 +5215,13 @@ $A0:AA5F AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
 $A0:AA62 18          CLC                    ;|
 $A0:AA63 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
 $A0:AA66 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A0:AA69 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;} A = enemy left boundary position - Samus right boundary position
+$A0:AA69 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;} A = (enemy left boundary position) - (Samus right boundary position) - 1
 $A0:AA6C 38          SEC                    ;|
 $A0:AA6D FD 82 0F    SBC $0F82,x[$7E:0FC2]  ;|
 $A0:AA70 38          SEC                    ;|
 $A0:AA71 ED 32 0E    SBC $0E32  [$7E:0E32]  ;/
-$A0:AA74 F0 52       BEQ $52    [$AAC8]     ; If Samus right boundary position = enemy left boundary position: go to BRANCH_TOUCHING
-$A0:AA76 10 03       BPL $03    [$AA7B]     ; If Samus right boundary position < enemy left boundary position: go to BRANCH_NOT_TOUCHING
+$A0:AA74 F0 52       BEQ $52    [$AAC8]     ; If (Samus right boundary position) = (enemy left boundary position) + 1: go to BRANCH_TOUCHING
+$A0:AA76 10 03       BPL $03    [$AA7B]     ; If (Samus right boundary position) < (enemy left boundary position) + 1: go to BRANCH_NOT_TOUCHING
 $A0:AA78 4C 81 AB    JMP $AB81  [$A0:AB81]  ; Go to BRANCH_NEXT
 
 $A0:AA7B 4C 22 AB    JMP $AB22  [$A0:AB22]
@@ -5205,13 +5232,13 @@ $A0:AA81 BD 7E 0F    LDA $0F7E,x[$7E:123E]  ;|
 $A0:AA84 18          CLC                    ;|
 $A0:AA85 7D 84 0F    ADC $0F84,x[$7E:1244]  ;|
 $A0:AA88 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A0:AA8B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = Samus top boundary position - enemy bottom boundary position
+$A0:AA8B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = (Samus top boundary position) - (enemy bottom boundary position) - 1
 $A0:AA8E 38          SEC                    ;|
 $A0:AA8F ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
 $A0:AA92 38          SEC                    ;|
 $A0:AA93 ED 32 0E    SBC $0E32  [$7E:0E32]  ;/
-$A0:AA96 F0 30       BEQ $30    [$AAC8]     ; If Samus top boundary position = enemy bottom boundary position: go to BRANCH_TOUCHING
-$A0:AA98 10 03       BPL $03    [$AA9D]     ; If Samus top boundary position > enemy bottom boundary position: go to BRANCH_NOT_TOUCHING
+$A0:AA96 F0 30       BEQ $30    [$AAC8]     ; If (Samus top boundary position) = (enemy bottom boundary position) + 1: go to BRANCH_TOUCHING
+$A0:AA98 10 03       BPL $03    [$AA9D]     ; If (Samus top boundary position) > (enemy bottom boundary position) + 1: go to BRANCH_NOT_TOUCHING
 $A0:AA9A 4C 81 AB    JMP $AB81  [$A0:AB81]  ; Go to BRANCH_NEXT
 
 $A0:AA9D 4C 22 AB    JMP $AB22  [$A0:AB22]
@@ -5222,13 +5249,13 @@ $A0:AAA3 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
 $A0:AAA6 18          CLC                    ;|
 $A0:AAA7 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
 $A0:AAAA 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A0:AAAD BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;} A = enemy top boundary position - Samus bottom boundary position
+$A0:AAAD BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;} A = (enemy top boundary position) - (Samus bottom boundary position) - 1
 $A0:AAB0 38          SEC                    ;|
 $A0:AAB1 FD 84 0F    SBC $0F84,x[$7E:0FC4]  ;|
 $A0:AAB4 38          SEC                    ;|
 $A0:AAB5 ED 32 0E    SBC $0E32  [$7E:0E32]  ;/
-$A0:AAB8 F0 0E       BEQ $0E    [$AAC8]     ; If Samus bottom boundary position = enemy top boundary position: go to BRANCH_TOUCHING
-$A0:AABA 10 66       BPL $66    [$AB22]     ; If Samus bottom boundary position < enemy top boundary position: go to BRANCH_NOT_TOUCHING
+$A0:AAB8 F0 0E       BEQ $0E    [$AAC8]     ; If (Samus bottom boundary position) = (enemy top boundary position) + 1: go to BRANCH_TOUCHING
+$A0:AABA 10 66       BPL $66    [$AB22]     ; If (Samus bottom boundary position) < (enemy top boundary position) + 1: go to BRANCH_NOT_TOUCHING
 $A0:AABC 4C 81 AB    JMP $AB81  [$A0:AB81]  ; Go to BRANCH_NEXT
 
 ; BRANCH_NEXT
@@ -5366,6 +5393,8 @@ $A0:ABE6 6B          RTL
 }
 
 
+;;; $ABE7..C269: Utility functions ;;;
+{
 ;;; $ABE7: Check if enemy is touching Samus from below ;;;
 {
 ;; Returns:
@@ -5924,6 +5953,8 @@ $A0:AF28 6B          RTL
 }
 
 
+;;; $AF29..A1: Move enemy (no collision) ;;;
+{
 ;;; $AF29: Unused. Enemy X += [$14].[$12] ;;;
 {
 ; Unused. Clone of $A0:AF6C
@@ -6013,8 +6044,11 @@ $A0:AF9C 65 14       ADC $14    [$7E:0014]
 $A0:AF9E 9D 7E 0F    STA $0F7E,x[$7E:123E]
 $A0:AFA1 6B          RTL
 }
+}
 
 
+;;; $AFA2..E9: Unused. Move Samus ;;;
+{
 ;;; $AFA2: Unused. Extra Samus X displacement = [Samus X position] - [$14].[$12] ;;;
 {
 $A0:AFA2 AD F8 0A    LDA $0AF8  [$7E:0AF8]
@@ -6065,8 +6099,11 @@ $A0:AFE4 65 14       ADC $14    [$7E:0014]
 $A0:AFE6 8D 5C 0B    STA $0B5C  [$7E:0B5C]
 $A0:AFE9 6B          RTL
 }
+}
 
 
+;;; $AFEA..B0B1: Trivial maths ;;;
+{
 ;;; $AFEA: Sign extend A ;;;
 {
 $A0:AFEA 8D 32 0E    STA $0E32  [$7E:0E32]
@@ -6241,6 +6278,7 @@ $A0:B0AD 6B          RTL
 
 $A0:B0AE A9 01 00    LDA #$0001
 $A0:B0B1 6B          RTL
+}
 }
 
 
@@ -8357,6 +8395,7 @@ $A0:C265 90 02       BCC $02    [$C269]     ;} If [$14] < 30: return
 $A0:C267 E6 12       INC $12    [$7E:0012]  ; Increment $12
 
 $A0:C269 6B          RTL
+}
 }
 
 

@@ -2823,6 +2823,9 @@ $83:ABE5             dx E82C,04,00,00,00,01,00,01,0000
 
 ;;; $ABF0: FX type tilemap pointers ;;;
 {
+; This table is too short, it's missing the entries for 28h/2Ah/2Ch (Ceres Ridley/elevator / haze)
+; This is fine, because those rooms disabled layer 3 anyway, but it does mean garbage is loaded to VRAM from pointers in the following table
+
 ; In bank $8A
 $83:ABF0             dw 0000, ; 0: None
                         8000, ; 2: Lava

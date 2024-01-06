@@ -9885,8 +9885,8 @@ $82:DFD0 60          RTS
 {
 $82:DFD1 A9 00 70    LDA #$7000             ;\
 $82:DFD4 85 12       STA $12    [$7E:0012]  ;} $12 = $7000 (tile data VRAM destination)
-$82:DFD6 AE D1 07    LDX $07D1  [$7E:07D1]  ;\
-$82:DFD9 F0 5D       BEQ $5D    [$E038]     ;} If [enemy set pointer] = 0: return
+$82:DFD6 AE D1 07    LDX $07D1  [$7E:07D1]  ; X = [enemy set pointer]
+$82:DFD9 F0 5D       BEQ $5D    [$E038]     ; If [enemy set pointer] = 0: return
 $82:DFDB 9B          TXY
 
 ; LOOP

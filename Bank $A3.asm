@@ -495,32 +495,32 @@ $A3:8B0E 6B          RTL
 ;;; $8B0F: Enemy shot - enemy $D67F (metal skree) ;;;
 {
 $A3:8B0F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8B12 BD 98 0F    LDA $0F98,x[$7E:1118]
-$A3:8B15 8D 2A 0E    STA $0E2A  [$7E:0E2A]
-$A3:8B18 BD 96 0F    LDA $0F96,x[$7E:1116]
-$A3:8B1B 8D 2C 0E    STA $0E2C  [$7E:0E2C]
-$A3:8B1E 22 2D 80 A3 JSL $A3802D[$A3:802D]
+$A3:8B12 BD 98 0F    LDA $0F98,x[$7E:1118]  ;\
+$A3:8B15 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;} Metal skree particle VRAM tiles index = [enemy VRAM tiles index]
+$A3:8B18 BD 96 0F    LDA $0F96,x[$7E:1116]  ;\
+$A3:8B1B 8D 2C 0E    STA $0E2C  [$7E:0E2C]  ;} Metal skree particle palette index = [enemy palette index]
+$A3:8B1E 22 2D 80 A3 JSL $A3802D[$A3:802D]  ; Normal enemy shot AI
 $A3:8B22 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8B25 BD 8C 0F    LDA $0F8C,x[$7E:110C]
-$A3:8B28 D0 3A       BNE $3A    [$8B64]
+$A3:8B25 BD 8C 0F    LDA $0F8C,x[$7E:110C]  ;\
+$A3:8B28 D0 3A       BNE $3A    [$8B64]     ;} If [enemy health] = 0:
 $A3:8B2A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8B2D AD 2A 0E    LDA $0E2A  [$7E:0E2A]
-$A3:8B30 9D 98 0F    STA $0F98,x
-$A3:8B33 AD 2C 0E    LDA $0E2C  [$7E:0E2C]
-$A3:8B36 9D 96 0F    STA $0F96,x
-$A3:8B39 BD A8 0F    LDA $0FA8,x
+$A3:8B2D AD 2A 0E    LDA $0E2A  [$7E:0E2A]  ;\
+$A3:8B30 9D 98 0F    STA $0F98,x            ;} Enemy VRAM tiles index = [metal skree particle VRAM tiles index]
+$A3:8B33 AD 2C 0E    LDA $0E2C  [$7E:0E2C]  ;\
+$A3:8B36 9D 96 0F    STA $0F96,x            ;} Enemy palette index = [metal skree particle palette index]
+$A3:8B39 BD A8 0F    LDA $0FA8,x            ; A = [enemy $0FA8] <-- I think zero'd by enemy death routine, parameter is unused anyway
 $A3:8B3C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8B3F A0 FA 8B    LDY #$8BFA
-$A3:8B42 22 27 80 86 JSL $868027[$86:8027]
-$A3:8B46 A0 08 8C    LDY #$8C08
-$A3:8B49 22 27 80 86 JSL $868027[$86:8027]
-$A3:8B4D A0 16 8C    LDY #$8C16
-$A3:8B50 22 27 80 86 JSL $868027[$86:8027]
-$A3:8B54 A0 24 8C    LDY #$8C24
-$A3:8B57 22 27 80 86 JSL $868027[$86:8027]
+$A3:8B3F A0 FA 8B    LDY #$8BFA             ;\
+$A3:8B42 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - down-right enemy projectile
+$A3:8B46 A0 08 8C    LDY #$8C08             ;\
+$A3:8B49 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - up-right enemy projectile
+$A3:8B4D A0 16 8C    LDY #$8C16             ;\
+$A3:8B50 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - down-left enemy projectile
+$A3:8B54 A0 24 8C    LDY #$8C24             ;\
+$A3:8B57 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - up-left enemy projectile
 $A3:8B5B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8B5E 9E 98 0F    STZ $0F98,x
-$A3:8B61 9E 96 0F    STZ $0F96,x
+$A3:8B5E 9E 98 0F    STZ $0F98,x            ; Enemy VRAM tiles index = 0
+$A3:8B61 9E 96 0F    STZ $0F96,x            ; Enemy palette index = 0
 
 $A3:8B64 6B          RTL
 }

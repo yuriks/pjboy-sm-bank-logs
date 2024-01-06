@@ -15590,14 +15590,14 @@ $86:F109 F4 00 A0    PEA $A000              ;\
 $86:F10C AB          PLB                    ;} DB = $A0
 $86:F10D AB          PLB                    ;/
 $86:F10E BF 10 F4 7E LDA $7EF410,x[$7E:F432];\
-$86:F112 29 FF 7F    AND #$7FFF             ;} $0E2A = [enemy projectile $7E:F410] & 7FFFh (seemingly pointless)
+$86:F112 29 FF 7F    AND #$7FFF             ;} $0E2A = [enemy projectile killed enemy index] & 7FFFh (never read)
 $86:F115 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;/
 $86:F118 BF C8 F3 7E LDA $7EF3C8,x[$7E:F3EA];\
 $86:F11C AA          TAX                    ;} X = $0E28 = [enemy projectile $7E:F3C8] (enemy header pointer)
 $86:F11D 8D 28 0E    STA $0E28  [$7E:0E28]  ;/
 $86:F120 BF 3A 00 A0 LDA $A0003A,x[$A0:F38D];\
-$86:F124 AA          TAX                    ;} X = enemy drop chances pointer
-$86:F125 D0 03       BNE $03    [$F12A]     ; If [enemy drop chances pointer] = 0:
+$86:F124 AA          TAX                    ;} X = (enemy drop chances pointer)
+$86:F125 D0 03       BNE $03    [$F12A]     ; If (enemy drop chances pointer) = 0:
 $86:F127 4C 4D F2    JMP $F24D  [$86:F24D]  ; Go to RETURN_NOTHING
 
 $86:F12A 22 11 81 80 JSL $808111[$80:8111]  ;\
@@ -15625,14 +15625,14 @@ $86:F156 AD 1A 0E    LDA $0E1A  [$7E:0E1A]  ;\
 $86:F159 F0 12       BEQ $12    [$F16D]     ;} If [health drop bias flag] != 0:
 $86:F15B BF 00 00 B4 LDA $B40000,x[$B4:F398];\
 $86:F15F 18          CLC                    ;|
-$86:F160 7F 01 00 B4 ADC $B40001,x[$B4:F399];} Pooled minor item drop chance = small energy chance + big energy chance
+$86:F160 7F 01 00 B4 ADC $B40001,x[$B4:F399];} Pooled minor item drop chance = (small energy chance) + (big energy chance)
 $86:F164 85 12       STA $12    [$7E:0012]  ;/
 $86:F166 A9 03       LDA #$03               ;\
 $86:F168 85 16       STA $16    [$7E:0016]  ;} $16 = 3 (enabled drops)
 $86:F16A 4C DF F1    JMP $F1DF  [$86:F1DF]  ; Go to BRANCH_DROP_CHANCES_POOLED
 
 $86:F16D BF 03 00 B4 LDA $B40003,x[$B4:F2AB];\
-$86:F171 85 12       STA $12    [$7E:0012]  ;} Pooled minor item drop chance = nothing chance
+$86:F171 85 12       STA $12    [$7E:0012]  ;} Pooled minor item drop chance = (nothing chance)
 $86:F173 A9 08       LDA #$08               ;\
 $86:F175 85 16       STA $16    [$7E:0016]  ;} Enabled drops = 8
 $86:F177 AC C2 09    LDY $09C2  [$7E:09C2]  ;\
@@ -15644,7 +15644,7 @@ $86:F185 F0 13       BEQ $13    [$F19A]     ;/
 
 $86:F187 A5 12       LDA $12    [$7E:0012]  ;\
 $86:F189 18          CLC                    ;|
-$86:F18A 7F 00 00 B4 ADC $B40000,x[$B4:F38C];} Pooled minor item drop chance += small energy chance + big energy chance
+$86:F18A 7F 00 00 B4 ADC $B40000,x[$B4:F38C];} Pooled minor item drop chance += (small energy chance) + (big energy chance)
 $86:F18E 7F 01 00 B4 ADC $B40001,x[$B4:F38D];|
 $86:F192 85 12       STA $12    [$7E:0012]  ;/
 $86:F194 A5 16       LDA $16    [$7E:0016]  ;\
@@ -15657,7 +15657,7 @@ $86:F19D CC C8 09    CPY $09C8  [$7E:09C8]  ;} If [Samus missiles] != [Samus max
 $86:F1A0 F0 0F       BEQ $0F    [$F1B1]     ;/
 $86:F1A2 A5 12       LDA $12    [$7E:0012]  ;\
 $86:F1A4 18          CLC                    ;|
-$86:F1A5 7F 02 00 B4 ADC $B40002,x[$B4:F2AA];} Pooled minor item drop chance += missile chance
+$86:F1A5 7F 02 00 B4 ADC $B40002,x[$B4:F2AA];} Pooled minor item drop chance += (missile chance)
 $86:F1A9 85 12       STA $12    [$7E:0012]  ;/
 $86:F1AB A5 16       LDA $16    [$7E:0016]  ;\
 $86:F1AD 09 04       ORA #$04               ;} Enabled drops |= 4
@@ -15668,7 +15668,7 @@ $86:F1B4 CC CC 09    CPY $09CC  [$7E:09CC]  ;} If [Samus super missiles] != [Sam
 $86:F1B7 F0 0F       BEQ $0F    [$F1C8]     ;/
 $86:F1B9 A5 14       LDA $14    [$7E:0014]  ;\
 $86:F1BB 38          SEC                    ;|
-$86:F1BC FF 04 00 B4 SBC $B40004,x[$B4:F252];} Pooled major item drop chance complement -= super missile chance
+$86:F1BC FF 04 00 B4 SBC $B40004,x[$B4:F252];} Pooled major item drop chance complement -= (super missile chance)
 $86:F1C0 85 14       STA $14    [$7E:0014]  ;/
 $86:F1C2 A5 16       LDA $16    [$7E:0016]  ;\
 $86:F1C4 09 10       ORA #$10               ;} Enabled drops |= 10h
@@ -15679,7 +15679,7 @@ $86:F1CB CC D0 09    CPY $09D0  [$7E:09D0]  ;} If [Samus power bombs] != [Samus 
 $86:F1CE F0 0F       BEQ $0F    [$F1DF]     ;/
 $86:F1D0 A5 14       LDA $14    [$7E:0014]  ;\
 $86:F1D2 38          SEC                    ;|
-$86:F1D3 FF 05 00 B4 SBC $B40005,x[$B4:F2F5];} Pooled major item drop chance complement -= power bombs chance
+$86:F1D3 FF 05 00 B4 SBC $B40005,x[$B4:F2F5];} Pooled major item drop chance complement -= (power bombs chance)
 $86:F1D7 85 14       STA $14    [$7E:0014]  ;/
 $86:F1D9 A5 16       LDA $16    [$7E:0016]  ;\
 $86:F1DB 09 20       ORA #$20               ;} Enabled drops |= 20h
@@ -15702,7 +15702,7 @@ $86:F1F8 5A          PHY                    ;|
 $86:F1F9 EA          NOP                    ;|
 $86:F1FA EA          NOP                    ;|
 $86:F1FB AC 16 42    LDY $4216  [$7E:4216]  ;|
-$86:F1FE 8C 04 42    STY $4204  [$7E:4204]  ;} Drop chance accumulator += drop chance * [pooled major item drop chance complement] / [pooled minor item drop chance]
+$86:F1FE 8C 04 42    STY $4204  [$7E:4204]  ;} Drop chance accumulator += (drop chance) * [pooled major item drop chance complement] / [pooled minor item drop chance]
 $86:F201 A5 12       LDA $12    [$7E:0012]  ;|
 $86:F203 8D 06 42    STA $4206  [$7E:4206]  ;|
 $86:F206 7A          PLY                    ;|
@@ -15742,10 +15742,10 @@ $86:F232 90 12       BCC $12    [$F246]     ; If carry clear: go to BRANCH_NEXT_
 $86:F234 C2 20       REP #$20
 $86:F236 BF 00 00 B4 LDA $B40000,x[$B4:F252];\
 $86:F23A 29 FF 00    AND #$00FF             ;|
-$86:F23D 18          CLC                    ;} Drop chance accumulator += drop chance
+$86:F23D 18          CLC                    ;} Drop chance accumulator += (drop chance)
 $86:F23E 65 18       ADC $18    [$7E:0018]  ;/
 $86:F240 C5 1A       CMP $1A    [$7E:001A]  ;\
-$86:F242 B0 0C       BCS $0C    [$F250]     ;} If [drop chance accumulator] + drop chance >= [random target]: go to BRANCH_RETURN
+$86:F242 B0 0C       BCS $0C    [$F250]     ;} If [drop chance accumulator] + (drop chance) >= [random target]: go to BRANCH_RETURN
 $86:F244 85 18       STA $18    [$7E:0018]
 
 ; BRANCH_NEXT_MAJOR_DROP
