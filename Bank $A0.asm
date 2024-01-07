@@ -1469,7 +1469,7 @@ $A0:8EB7 F4 00 A0    PEA $A000              ;\
 $A0:8EBA AB          PLB                    ;} DB = $A0
 $A0:8EBB AB          PLB                    ;/
 $A0:8EBC C2 30       REP #$30
-$A0:8EBE EE 46 0E    INC $0E46  [$7E:0E46]  ; Increment $0E46
+$A0:8EBE EE 46 0E    INC $0E46  [$7E:0E46]  ; Increment $0E46 (never read)
 $A0:8EC1 9C 54 0E    STZ $0E54  [$7E:0E54]  ; Enemy index = 0
 $A0:8EC4 9C A4 17    STZ $17A4  [$7E:17A4]  ; Active enemy indices stack pointer = 0
 $A0:8EC7 9C A6 17    STZ $17A6  [$7E:17A6]  ; Interactive enemy indices stack pointer = 0
@@ -1499,24 +1499,24 @@ $A0:8EFB 89 04 00    BIT #$0004             ;} If enemy is not frozen:
 $A0:8EFE D0 34       BNE $34    [$8F34]     ;/
 $A0:8F00 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
 $A0:8F03 18          CLC                    ;|
-$A0:8F04 7D 82 0F    ADC $0F82,x[$7E:1002]  ;} If [enemy X position] + [enemy width] < [layer 1 X position]: go to BRANCH_NEXT
+$A0:8F04 7D 82 0F    ADC $0F82,x[$7E:1002]  ;} If (enemy left boundary) < [layer 1 X position]: go to BRANCH_NEXT
 $A0:8F07 CD 11 09    CMP $0911  [$7E:0911]  ;|
 $A0:8F0A 30 48       BMI $48    [$8F54]     ;/
 $A0:8F0C AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A0:8F0F 18          CLC                    ;|
 $A0:8F10 69 00 01    ADC #$0100             ;|
-$A0:8F13 18          CLC                    ;} If [layer 1 X position] + 100h < [enemy X position]: go to BRANCH_NEXT
+$A0:8F13 18          CLC                    ;} If [layer 1 X position] + FFh < (enemy right boundary): go to BRANCH_NEXT
 $A0:8F14 7D 82 0F    ADC $0F82,x[$7E:1002]  ;|
 $A0:8F17 DD 7A 0F    CMP $0F7A,x[$7E:0FFA]  ;|
 $A0:8F1A 30 38       BMI $38    [$8F54]     ;/
 $A0:8F1C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A0:8F1F 18          CLC                    ;|
-$A0:8F20 69 08 00    ADC #$0008             ;} If [enemy Y position] + 8 < [layer 1 Y position]: go to BRANCH_NEXT
+$A0:8F20 69 08 00    ADC #$0008             ;|
 $A0:8F23 CD 15 09    CMP $0915  [$7E:0915]  ;|
-$A0:8F26 30 2C       BMI $2C    [$8F54]     ;/
-$A0:8F28 AD 15 09    LDA $0915  [$7E:0915]  ;\
+$A0:8F26 30 2C       BMI $2C    [$8F54]     ;|
+$A0:8F28 AD 15 09    LDA $0915  [$7E:0915]  ;} If not [layer 1 Y position] - 8 <= [enemy Y position] <= [layer 1 Y position] + F8h: go to BRANCH_NEXT
 $A0:8F2B 18          CLC                    ;|
-$A0:8F2C 69 F8 00    ADC #$00F8             ;} If [layer 1 Y position] + F8h < [enemy Y position]: go to BRANCH_NEXT
+$A0:8F2C 69 F8 00    ADC #$00F8             ;|
 $A0:8F2F DD 7E 0F    CMP $0F7E,x[$7E:107E]  ;|
 $A0:8F32 30 20       BMI $20    [$8F54]     ;/
 
