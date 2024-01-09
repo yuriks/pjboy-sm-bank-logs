@@ -4801,174 +4801,183 @@ $A2:B5FB             dx 0001, 01FC,FC,210A
 ;;; $B602: Initialisation AI - enemy $D23F (rinka) ;;;
 {
 $A2:B602 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B605 BD B4 0F    LDA $0FB4,x[$7E:10B4]
-$A2:B608 F0 20       BEQ $20    [$B62A]
-$A2:B60A 20 9B B6    JSR $B69B  [$A2:B69B]
+$A2:B605 BD B4 0F    LDA $0FB4,x[$7E:10B4]  ;\
+$A2:B608 F0 20       BEQ $20    [$B62A]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B60A 20 9B B6    JSR $B69B  [$A2:B69B]  ; Spawn Mother Brain's room rinka
 $A2:B60D AF 3A 78 7E LDA $7E783A[$7E:783A]  ; >_<;
-$A2:B611 BD 86 0F    LDA $0F86,x[$7E:1046]
-$A2:B614 09 00 2C    ORA #$2C00
-$A2:B617 29 FF BF    AND #$BFFF
-$A2:B61A 9D 86 0F    STA $0F86,x[$7E:1046]
+$A2:B611 BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
+$A2:B614 09 00 2C    ORA #$2C00             ;|
+$A2:B617 29 FF BF    AND #$BFFF             ;} Set enemy to not respawn if killed, process instructions, process whilst off-screen, and as tangible
+$A2:B61A 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
 $A2:B61D 80 17       BRA $17    [$B636]
 $A2:B61F BD 86 0F    LDA $0F86,x
 $A2:B622 09 00 2C    ORA #$2C00
 $A2:B625 9D 86 0F    STA $0F86,x
 $A2:B628 80 0C       BRA $0C    [$B636]
 
-$A2:B62A BD 86 0F    LDA $0F86,x[$7E:1086]
-$A2:B62D 09 00 64    ORA #$6400
-$A2:B630 29 FF F7    AND #$F7FF
-$A2:B633 9D 86 0F    STA $0F86,x[$7E:1086]
+$A2:B62A BD 86 0F    LDA $0F86,x[$7E:1086]  ;\ Else ([enemy parameter 1] = 0):
+$A2:B62D 09 00 64    ORA #$6400             ;|
+$A2:B630 29 FF F7    AND #$F7FF             ;} Set enemy to respawn if killed, process instructions, to not process whilst off-screen, and as tangible
+$A2:B633 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
 
-$A2:B636 A9 00 04    LDA #$0400
-$A2:B639 9D 96 0F    STA $0F96,x[$7E:1096]
-$A2:B63C 80 16       BRA $16    [$B654]
+$A2:B636 A9 00 04    LDA #$0400             ;\
+$A2:B639 9D 96 0F    STA $0F96,x[$7E:1096]  ;} Enemy palette index = 400h (palette 2)
+$A2:B63C 80 16       BRA $16    [$B654]     ; Go to reset rinka
 }
 
 
-;;; $B63E:  ;;;
+;;; $B63E: Respawn rinka ;;;
 {
-$A2:B63E BD B4 0F    LDA $0FB4,x[$7E:1134]
-$A2:B641 F0 03       BEQ $03    [$B646]
-$A2:B643 20 9B B6    JSR $B69B  [$A2:B69B]
+$A2:B63E BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$A2:B641 F0 03       BEQ $03    [$B646]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B643 20 9B B6    JSR $B69B  [$A2:B69B]  ; Spawn Mother Brain's room rinka
 
-$A2:B646 BF 20 70 7E LDA $7E7020,x[$7E:71A0]
-$A2:B64A 9D 7A 0F    STA $0F7A,x[$7E:10FA]
-$A2:B64D BF 22 70 7E LDA $7E7022,x[$7E:71A2]
-$A2:B651 9D 7E 0F    STA $0F7E,x[$7E:10FE]
+$A2:B646 BF 20 70 7E LDA $7E7020,x[$7E:71A0];\
+$A2:B64A 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = [enemy spawn X position]
+$A2:B64D BF 22 70 7E LDA $7E7022,x[$7E:71A2];\
+$A2:B651 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = [enemy spawn Y position]
 }
 
 
-;;; $B654:  ;;;
+;;; $B654: Reset rinka ;;;
 {
-$A2:B654 A9 52 B8    LDA #$B852
-$A2:B657 9D A8 0F    STA $0FA8,x[$7E:10A8]
-$A2:B65A A9 1A 00    LDA #$001A
-$A2:B65D 9D B2 0F    STA $0FB2,x[$7E:10B2]
-$A2:B660 9E AA 0F    STZ $0FAA,x[$7E:10AA]
-$A2:B663 9E AC 0F    STZ $0FAC,x[$7E:10AC]
-$A2:B666 BD B4 0F    LDA $0FB4,x[$7E:10B4]
-$A2:B669 D0 10       BNE $10    [$B67B]
-$A2:B66B A9 E0 B9    LDA #$B9E0
-$A2:B66E 9D 92 0F    STA $0F92,x[$7E:1092]
-$A2:B671 A9 01 00    LDA #$0001
-$A2:B674 9D 94 0F    STA $0F94,x[$7E:1094]
-$A2:B677 9E 90 0F    STZ $0F90,x[$7E:1090]
-$A2:B67A 6B          RTL
+$A2:B654 A9 52 B8    LDA #$B852             ;\
+$A2:B657 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $B852
+$A2:B65A A9 1A 00    LDA #$001A             ;\
+$A2:B65D 9D B2 0F    STA $0FB2,x[$7E:10B2]  ;} Enemy function timer = 1Ah
+$A2:B660 9E AA 0F    STZ $0FAA,x[$7E:10AA]  ; Enemy X velocity = 0
+$A2:B663 9E AC 0F    STZ $0FAC,x[$7E:10AC]  ; Enemy Y velocity = 0
+$A2:B666 BD B4 0F    LDA $0FB4,x[$7E:10B4]  ;\
+$A2:B669 D0 10       BNE $10    [$B67B]     ;} If [enemy parameter 1] = 0 (not Mother Brain's room):
+$A2:B66B A9 E0 B9    LDA #$B9E0             ;\
+$A2:B66E 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $B9E0
+$A2:B671 A9 01 00    LDA #$0001             ;\
+$A2:B674 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
+$A2:B677 9E 90 0F    STZ $0F90,x[$7E:1090]  ; Enemy timer = 0
+$A2:B67A 6B          RTL                    ; Return
 
-$A2:B67B AF 3A 78 7E LDA $7E783A[$7E:783A]
-$A2:B67F F0 0A       BEQ $0A    [$B68B]
-$A2:B681 BD 86 0F    LDA $0F86,x
-$A2:B684 09 00 02    ORA #$0200
-$A2:B687 9D 86 0F    STA $0F86,x
-$A2:B68A 6B          RTL
+$A2:B67B AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
+$A2:B67F F0 0A       BEQ $0A    [$B68B]     ;} If turrets and rinkas are flagged for deletion:
+$A2:B681 BD 86 0F    LDA $0F86,x            ;\
+$A2:B684 09 00 02    ORA #$0200             ;} Flag enemy for deletion
+$A2:B687 9D 86 0F    STA $0F86,x            ;/
+$A2:B68A 6B          RTL                    ; Return
 
-$A2:B68B A9 0C BA    LDA #$BA0C
-$A2:B68E 9D 92 0F    STA $0F92,x[$7E:1052]
-$A2:B691 A9 01 00    LDA #$0001
-$A2:B694 9D 94 0F    STA $0F94,x[$7E:1054]
-$A2:B697 9E 90 0F    STZ $0F90,x[$7E:1050]
+$A2:B68B A9 0C BA    LDA #$BA0C             ;\
+$A2:B68E 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $BA0C
+$A2:B691 A9 01 00    LDA #$0001             ;\
+$A2:B694 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
+$A2:B697 9E 90 0F    STZ $0F90,x[$7E:1050]  ; Enemy timer = 0
 $A2:B69A 6B          RTL
 }
 
 
-;;; $B69B:  ;;;
+;;; $B69B: Spawn Mother Brain's room rinka ;;;
 {
-$A2:B69B BF 20 70 7E LDA $7E7020,x[$7E:70E0]
-$A2:B69F 85 12       STA $12    [$7E:0012]
-$A2:B6A1 BF 22 70 7E LDA $7E7022,x[$7E:70E2]
-$A2:B6A5 85 14       STA $14    [$7E:0014]
-$A2:B6A7 22 FF B8 A2 JSL $A2B8FF[$A2:B8FF]
-$A2:B6AB B0 1D       BCS $1D    [$B6CA]
-$A2:B6AD 20 9D B7    JSR $B79D  [$A2:B79D]
-$A2:B6B0 A8          TAY
-$A2:B6B1 DA          PHX
-$A2:B6B2 AA          TAX
-$A2:B6B3 BF FE 87 7E LDA $7E87FE,x[$7E:8804]
-$A2:B6B7 4A          LSR A
-$A2:B6B8 FA          PLX
-$A2:B6B9 B0 0F       BCS $0F    [$B6CA]
-$A2:B6BB 98          TYA
-$A2:B6BC 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A2:B6BF DA          PHX
-$A2:B6C0 AA          TAX
-$A2:B6C1 A9 FF FF    LDA #$FFFF
-$A2:B6C4 9F FE 87 7E STA $7E87FE,x[$7E:8806]
-$A2:B6C8 FA          PLX
-$A2:B6C9 60          RTS
+; Spawn a rinka to one of the predefined spawn points in the room that's currently available
+; The spawn point is selected as follows:
+;     If it's on screen, the spawn point the rinka was previously spawned from
+;     Otherwise, any on screen spawn point
+;     Otherwise, any spawn point
+$A2:B69B BF 20 70 7E LDA $7E7020,x[$7E:70E0];\
+$A2:B69F 85 12       STA $12    [$7E:0012]  ;|
+$A2:B6A1 BF 22 70 7E LDA $7E7022,x[$7E:70E2];|
+$A2:B6A5 85 14       STA $14    [$7E:0014]  ;} If enemy spawn position is on screen:
+$A2:B6A7 22 FF B8 A2 JSL $A2B8FF[$A2:B8FF]  ;|
+$A2:B6AB B0 1D       BCS $1D    [$B6CA]     ;/
+$A2:B6AD 20 9D B7    JSR $B79D  [$A2:B79D]  ; Get availability index of enemy spawn position
+$A2:B6B0 A8          TAY                    ; Y = [A]
+$A2:B6B1 DA          PHX                    ;\
+$A2:B6B2 AA          TAX                    ;|
+$A2:B6B3 BF FE 87 7E LDA $7E87FE,x[$7E:8804];|
+$A2:B6B7 4A          LSR A                  ;} If [$7E:8800 + [Y] - 2] & 1 = 0 (available):
+$A2:B6B8 FA          PLX                    ;|
+$A2:B6B9 B0 0F       BCS $0F    [$B6CA]     ;/
+$A2:B6BB 98          TYA                    ;\
+$A2:B6BC 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy spawn point availability table index = [Y]
+$A2:B6BF DA          PHX                    ;\
+$A2:B6C0 AA          TAX                    ;|
+$A2:B6C1 A9 FF FF    LDA #$FFFF             ;} $7E:8800 + [Y] - 2 = FFFFh (unavailable)
+$A2:B6C4 9F FE 87 7E STA $7E87FE,x[$7E:8806];|
+$A2:B6C8 FA          PLX                    ;/
+$A2:B6C9 60          RTS                    ; Return
 
-$A2:B6CA A0 00 00    LDY #$0000
+$A2:B6CA A0 00 00    LDY #$0000             ; Y = 0
 
-$A2:B6CD B9 5B B7    LDA $B75B,y[$A2:B75B]
-$A2:B6D0 85 12       STA $12    [$7E:0012]
-$A2:B6D2 B9 5D B7    LDA $B75D,y[$A2:B75D]
-$A2:B6D5 85 14       STA $14    [$7E:0014]
-$A2:B6D7 22 FF B8 A2 JSL $A2B8FF[$A2:B8FF]
-$A2:B6DB B0 0C       BCS $0C    [$B6E9]
-$A2:B6DD DA          PHX
-$A2:B6DE BE 5F B7    LDX $B75F,y[$A2:B75F]
-$A2:B6E1 BF FE 87 7E LDA $7E87FE,x[$7E:8800]
-$A2:B6E5 4A          LSR A
-$A2:B6E6 FA          PLX
-$A2:B6E7 90 0F       BCC $0F    [$B6F8]
+; LOOP_ON_SCREEN
+$A2:B6CD B9 5B B7    LDA $B75B,y[$A2:B75B]  ;\
+$A2:B6D0 85 12       STA $12    [$7E:0012]  ;|
+$A2:B6D2 B9 5D B7    LDA $B75D,y[$A2:B75D]  ;|
+$A2:B6D5 85 14       STA $14    [$7E:0014]  ;} If ([$B75B + [Y]], [$B75B + [Y] + 2]) is on screen:
+$A2:B6D7 22 FF B8 A2 JSL $A2B8FF[$A2:B8FF]  ;|
+$A2:B6DB B0 0C       BCS $0C    [$B6E9]     ;/
+$A2:B6DD DA          PHX                    ;\
+$A2:B6DE BE 5F B7    LDX $B75F,y[$A2:B75F]  ;|
+$A2:B6E1 BF FE 87 7E LDA $7E87FE,x[$7E:8800];|
+$A2:B6E5 4A          LSR A                  ;} If [$7E:8800 + [$B75B + [Y] + 4] - 2] & 1 = 0 (available): go to BRANCH_FOUND
+$A2:B6E6 FA          PLX                    ;|
+$A2:B6E7 90 0F       BCC $0F    [$B6F8]     ;/
 
-$A2:B6E9 C8          INY
-$A2:B6EA C8          INY
-$A2:B6EB C8          INY
-$A2:B6EC C8          INY
-$A2:B6ED C8          INY
-$A2:B6EE C8          INY
-$A2:B6EF C0 42 00    CPY #$0042
-$A2:B6F2 30 D9       BMI $D9    [$B6CD]
-$A2:B6F4 4C 1B B7    JMP $B71B  [$A2:B71B]
-$A2:B6F7 60          RTS
+$A2:B6E9 C8          INY                    ;\
+$A2:B6EA C8          INY                    ;|
+$A2:B6EB C8          INY                    ;|
+$A2:B6EC C8          INY                    ;} Y += 6
+$A2:B6ED C8          INY                    ;|
+$A2:B6EE C8          INY                    ;/
+$A2:B6EF C0 42 00    CPY #$0042             ;\
+$A2:B6F2 30 D9       BMI $D9    [$B6CD]     ;} If [Y] < 42h: go to LOOP_ON_SCREEN
+$A2:B6F4 4C 1B B7    JMP $B71B  [$A2:B71B]  ; Go to BRANCH_NOT_FOUND
+$A2:B6F7 60          RTS                    ; >_<;
 
-$A2:B6F8 A5 12       LDA $12    [$7E:0012]
-$A2:B6FA 9F 20 70 7E STA $7E7020,x[$7E:70E0]
-$A2:B6FE 9D 7A 0F    STA $0F7A,x[$7E:103A]
-$A2:B701 A5 14       LDA $14    [$7E:0014]
-$A2:B703 9F 22 70 7E STA $7E7022,x[$7E:70E2]
-$A2:B707 9D 7E 0F    STA $0F7E,x[$7E:103E]
-$A2:B70A DA          PHX
-$A2:B70B BE 5F B7    LDX $B75F,y[$A2:B75F]
-$A2:B70E A9 FF FF    LDA #$FFFF
-$A2:B711 9F FE 87 7E STA $7E87FE,x[$7E:8800]
-$A2:B715 8A          TXA
-$A2:B716 FA          PLX
-$A2:B717 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A2:B71A 60          RTS
+; BRANCH_FOUND
+$A2:B6F8 A5 12       LDA $12    [$7E:0012]  ;\
+$A2:B6FA 9F 20 70 7E STA $7E7020,x[$7E:70E0];} Enemy X position = enemy spawn X position = [$B75B + [Y]]
+$A2:B6FE 9D 7A 0F    STA $0F7A,x[$7E:103A]  ;/
+$A2:B701 A5 14       LDA $14    [$7E:0014]  ;\
+$A2:B703 9F 22 70 7E STA $7E7022,x[$7E:70E2];} Enemy Y position = enemy spawn Y position = [$B75B + [Y] + 2]
+$A2:B707 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;/
+$A2:B70A DA          PHX                    ;\
+$A2:B70B BE 5F B7    LDX $B75F,y[$A2:B75F]  ;|
+$A2:B70E A9 FF FF    LDA #$FFFF             ;|
+$A2:B711 9F FE 87 7E STA $7E87FE,x[$7E:8800];} $7E:8800 + [$B75B + [Y] + 4] - 2 = FFFFh (unavailable)
+$A2:B715 8A          TXA                    ;|
+$A2:B716 FA          PLX                    ;/
+$A2:B717 9D AE 0F    STA $0FAE,x[$7E:106E]  ; Enemy spawn point availability table index = [$B75B + [Y] + 4]
+$A2:B71A 60          RTS                    ; Return
 
-$A2:B71B A0 00 00    LDY #$0000
+; BRANCH_NOT_FOUND
+$A2:B71B A0 00 00    LDY #$0000             ; Y = 0
 
-$A2:B71E DA          PHX
-$A2:B71F BE 5F B7    LDX $B75F,y[$A2:B75F]
-$A2:B722 BF FE 87 7E LDA $7E87FE,x[$7E:8800]
-$A2:B726 FA          PLX
-$A2:B727 4A          LSR A
-$A2:B728 90 0C       BCC $0C    [$B736]
-$A2:B72A C8          INY
-$A2:B72B C8          INY
-$A2:B72C C8          INY
-$A2:B72D C8          INY
-$A2:B72E C8          INY
-$A2:B72F C8          INY
-$A2:B730 C0 42 00    CPY #$0042
-$A2:B733 30 E9       BMI $E9    [$B71E]
-$A2:B735 60          RTS
+; LOOP_ANY
+$A2:B71E DA          PHX                    ;\
+$A2:B71F BE 5F B7    LDX $B75F,y[$A2:B75F]  ;|
+$A2:B722 BF FE 87 7E LDA $7E87FE,x[$7E:8800];|
+$A2:B726 FA          PLX                    ;} If [$7E:8800 + [$B75B + [Y] + 4] - 2] & 1 != 0 (unavailable):
+$A2:B727 4A          LSR A                  ;|
+$A2:B728 90 0C       BCC $0C    [$B736]     ;/
+$A2:B72A C8          INY                    ;\
+$A2:B72B C8          INY                    ;|
+$A2:B72C C8          INY                    ;|
+$A2:B72D C8          INY                    ;} Y += 6
+$A2:B72E C8          INY                    ;|
+$A2:B72F C8          INY                    ;/
+$A2:B730 C0 42 00    CPY #$0042             ;\
+$A2:B733 30 E9       BMI $E9    [$B71E]     ;} If [Y] < 42h: go to LOOP_ANY
+$A2:B735 60          RTS                    ; Return
 
-$A2:B736 B9 5B B7    LDA $B75B,y[$A2:B767]
-$A2:B739 9F 20 70 7E STA $7E7020,x[$7E:7160]
-$A2:B73D 9D 7A 0F    STA $0F7A,x[$7E:10BA]
-$A2:B740 B9 5D B7    LDA $B75D,y[$A2:B769]
-$A2:B743 9F 22 70 7E STA $7E7022,x[$7E:7162]
-$A2:B747 9D 7E 0F    STA $0F7E,x[$7E:10BE]
-$A2:B74A B9 5F B7    LDA $B75F,y[$A2:B76B]
-$A2:B74D 9D AE 0F    STA $0FAE,x[$7E:10EE]
-$A2:B750 DA          PHX
-$A2:B751 AA          TAX
-$A2:B752 A9 FF FF    LDA #$FFFF
-$A2:B755 9F FE 87 7E STA $7E87FE,x[$7E:8804]
-$A2:B759 FA          PLX
+$A2:B736 B9 5B B7    LDA $B75B,y[$A2:B767]  ;\
+$A2:B739 9F 20 70 7E STA $7E7020,x[$7E:7160];} Enemy X position = enemy spawn X position = [$B75B + [Y]]
+$A2:B73D 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;/
+$A2:B740 B9 5D B7    LDA $B75D,y[$A2:B769]  ;\
+$A2:B743 9F 22 70 7E STA $7E7022,x[$7E:7162];} Enemy Y position = enemy spawn Y position = [$B75B + [Y] + 2]
+$A2:B747 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;/
+$A2:B74A B9 5F B7    LDA $B75F,y[$A2:B76B]  ;\
+$A2:B74D 9D AE 0F    STA $0FAE,x[$7E:10EE]  ;} Enemy spawn point availability table index = [$B75B + [Y] + 4]
+$A2:B750 DA          PHX                    ;\
+$A2:B751 AA          TAX                    ;|
+$A2:B752 A9 FF FF    LDA #$FFFF             ;} $7E:8800 + [$B75B + [Y] + 4] - 2 = FFFFh (unavailable)
+$A2:B755 9F FE 87 7E STA $7E87FE,x[$7E:8804];|
+$A2:B759 FA          PLX                    ;/
 $A2:B75A 60          RTS
 }
 
@@ -4977,7 +4986,7 @@ $A2:B75A 60          RTS
 {
 ;                        _____________ X position
 ;                       |     ________ Y position
-;                       |    |     ___ Index into $7E:8800 table (+ 2)
+;                       |    |     ___ Index into spawn point availability table + 2
 ;                       |    |    |
 $A2:B75B             dw 03E7,0026,0002,
                         03E7,00A6,0004,
@@ -4993,26 +5002,28 @@ $A2:B75B             dw 03E7,0026,0002,
 }
 
 
-;;; $B79D:  ;;;
+;;; $B79D: Get availability index of enemy spawn position ;;;
 {
-$A2:B79D A0 00 00    LDY #$0000
+$A2:B79D A0 00 00    LDY #$0000             ; Y = 0
 
-$A2:B7A0 B9 5B B7    LDA $B75B,y[$A2:B75B]
-$A2:B7A3 DF 20 70 7E CMP $7E7020,x[$7E:7160]
-$A2:B7A7 D0 09       BNE $09    [$B7B2]
-$A2:B7A9 B9 5D B7    LDA $B75D,y[$A2:B769]
-$A2:B7AC DF 22 70 7E CMP $7E7022,x[$7E:7162]
-$A2:B7B0 F0 0E       BEQ $0E    [$B7C0]
+; LOOP
+$A2:B7A0 B9 5B B7    LDA $B75B,y[$A2:B75B]  ;\
+$A2:B7A3 DF 20 70 7E CMP $7E7020,x[$7E:7160];} If [$B75B + [Y]] = [enemy spawn X position]:
+$A2:B7A7 D0 09       BNE $09    [$B7B2]     ;/
+$A2:B7A9 B9 5D B7    LDA $B75D,y[$A2:B769]  ;\
+$A2:B7AC DF 22 70 7E CMP $7E7022,x[$7E:7162];} If [$B75B + [Y] + 2] = [enemy spawn Y position]: go to BRANCH_FOUND
+$A2:B7B0 F0 0E       BEQ $0E    [$B7C0]     ;/
 
-$A2:B7B2 98          TYA
-$A2:B7B3 18          CLC
-$A2:B7B4 69 06 00    ADC #$0006
-$A2:B7B7 A8          TAY
-$A2:B7B8 C9 42 00    CMP #$0042
-$A2:B7BB 30 E3       BMI $E3    [$B7A0]
-$A2:B7BD A0 00 00    LDY #$0000
+$A2:B7B2 98          TYA                    ;\
+$A2:B7B3 18          CLC                    ;|
+$A2:B7B4 69 06 00    ADC #$0006             ;} Y += 6
+$A2:B7B7 A8          TAY                    ;/
+$A2:B7B8 C9 42 00    CMP #$0042             ;\
+$A2:B7BB 30 E3       BMI $E3    [$B7A0]     ;} If [Y] < 42h: go to LOOP
+$A2:B7BD A0 00 00    LDY #$0000             ; Y = 0
 
-$A2:B7C0 B9 5F B7    LDA $B75F,y[$A2:B76B]
+; BRANCH_FOUND
+$A2:B7C0 B9 5F B7    LDA $B75F,y[$A2:B76B]  ; A = [$B75B + [Y] + 4]
 $A2:B7C3 60          RTS
 }
 
@@ -5020,284 +5031,295 @@ $A2:B7C3 60          RTS
 ;;; $B7C4: Main AI - enemy $D23F (rinka) ;;;
 {
 $A2:B7C4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B7C7 BD B4 0F    LDA $0FB4,x[$7E:1134]
-$A2:B7CA F0 10       BEQ $10    [$B7DC]
-$A2:B7CC AF 3A 78 7E LDA $7E783A[$7E:783A]
-$A2:B7D0 F0 0A       BEQ $0A    [$B7DC]
-$A2:B7D2 20 80 B8    JSR $B880  [$A2:B880]
-$A2:B7D5 20 BB B8    JSR $B8BB  [$A2:B8BB]
+$A2:B7C7 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$A2:B7CA F0 10       BEQ $10    [$B7DC]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B7CC AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
+$A2:B7D0 F0 0A       BEQ $0A    [$B7DC]     ;} If turrets and rinkas are flagged for deletion:
+$A2:B7D2 20 80 B8    JSR $B880  [$A2:B880]  ; Decrement rinka counter
+$A2:B7D5 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
 $A2:B7D8 5C 10 A4 A0 JMP $A0A410[$A0:A410]  ; Rinka's death animation
 
-$A2:B7DC 7C A8 0F    JMP ($0FA8,x)[$A2:B852]
+$A2:B7DC 7C A8 0F    JMP ($0FA8,x)[$A2:B852]; Go to [enemy function]
 }
 
 
-;;; $B7DF:  ;;;
+;;; $B7DF: Rinka function - fire ;;;
 {
-$A2:B7DF DE B2 0F    DEC $0FB2,x[$7E:1132]
-$A2:B7E2 10 5F       BPL $5F    [$B843]
-$A2:B7E4 A9 5B B8    LDA #$B85B
-$A2:B7E7 9D A8 0F    STA $0FA8,x[$7E:1128]
-$A2:B7EA BD B4 0F    LDA $0FB4,x[$7E:1134]
-$A2:B7ED F0 0B       BEQ $0B    [$B7FA]
-$A2:B7EF BD 86 0F    LDA $0F86,x[$7E:1046]
-$A2:B7F2 29 FF FB    AND #$FBFF
-$A2:B7F5 9D 86 0F    STA $0F86,x[$7E:1046]
+$A2:B7DF DE B2 0F    DEC $0FB2,x[$7E:1132]  ; Decrement enemy function timer
+$A2:B7E2 10 5F       BPL $5F    [$B843]     ; If [enemy function timer] >= 0: return
+$A2:B7E4 A9 5B B8    LDA #$B85B             ;\
+$A2:B7E7 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $B85B
+$A2:B7EA BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$A2:B7ED F0 0B       BEQ $0B    [$B7FA]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B7EF BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
+$A2:B7F2 29 FF FB    AND #$FBFF             ;} Set enemy as tangible
+$A2:B7F5 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
 $A2:B7F8 80 0C       BRA $0C    [$B806]
 
-$A2:B7FA BD 86 0F    LDA $0F86,x[$7E:1106]
-$A2:B7FD 09 00 08    ORA #$0800
-$A2:B800 29 FF FB    AND #$FBFF
-$A2:B803 9D 86 0F    STA $0F86,x[$7E:1106]
+$A2:B7FA BD 86 0F    LDA $0F86,x[$7E:1106]  ;\ Else (not Mother Brain's room):
+$A2:B7FD 09 00 08    ORA #$0800             ;|
+$A2:B800 29 FF FB    AND #$FBFF             ;} Set to process whilst off-screen and enemy as tangible
+$A2:B803 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
 
-$A2:B806 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:B809 38          SEC
-$A2:B80A FD 7A 0F    SBC $0F7A,x[$7E:10FA]
-$A2:B80D 85 12       STA $12    [$7E:0012]
-$A2:B80F AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A2:B812 38          SEC
-$A2:B813 FD 7E 0F    SBC $0F7E,x[$7E:10FE]
-$A2:B816 85 14       STA $14    [$7E:0014]
-$A2:B818 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A2:B81C 38          SEC
-$A2:B81D E9 80 00    SBC #$0080
-$A2:B820 49 FF FF    EOR #$FFFF
-$A2:B823 1A          INC A
-$A2:B824 29 FF 00    AND #$00FF
-$A2:B827 85 12       STA $12    [$7E:0012]
-$A2:B829 A9 20 01    LDA #$0120
-$A2:B82C 22 6C C2 86 JSL $86C26C[$86:C26C]
-$A2:B830 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B833 9D AA 0F    STA $0FAA,x[$7E:112A]
-$A2:B836 A9 20 01    LDA #$0120
-$A2:B839 22 72 C2 86 JSL $86C272[$86:C272]
-$A2:B83D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B840 9D AC 0F    STA $0FAC,x[$7E:112C]
+$A2:B806 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:B809 38          SEC                    ;|
+$A2:B80A FD 7A 0F    SBC $0F7A,x[$7E:10FA]  ;|
+$A2:B80D 85 12       STA $12    [$7E:0012]  ;|
+$A2:B80F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = angle from enemy to Samus
+$A2:B812 38          SEC                    ;|
+$A2:B813 FD 7E 0F    SBC $0F7E,x[$7E:10FE]  ;|
+$A2:B816 85 14       STA $14    [$7E:0014]  ;|
+$A2:B818 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$A2:B81C 38          SEC                    ;\
+$A2:B81D E9 80 00    SBC #$0080             ;|
+$A2:B820 49 FF FF    EOR #$FFFF             ;|
+$A2:B823 1A          INC A                  ;} $12 = (80h - [A]) % 100h (invert the sign of the sin, leaving the sign of cos unaffected)
+$A2:B824 29 FF 00    AND #$00FF             ;|
+$A2:B827 85 12       STA $12    [$7E:0012]  ;/
+$A2:B829 A9 20 01    LDA #$0120             ;\
+$A2:B82C 22 6C C2 86 JSL $86C26C[$86:C26C]  ;|
+$A2:B830 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Enemy X velocity = 120h * sin([$12] * pi / 80h)
+$A2:B833 9D AA 0F    STA $0FAA,x[$7E:112A]  ;/
+$A2:B836 A9 20 01    LDA #$0120             ;\
+$A2:B839 22 72 C2 86 JSL $86C272[$86:C272]  ;|
+$A2:B83D AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Enemy Y velocity = 120h * cos([$12] * pi / 80h)
+$A2:B840 9D AC 0F    STA $0FAC,x[$7E:112C]  ;/
 
 $A2:B843 6B          RTL
 }
 
 
-;;; $B844:  ;;;
+;;; $B844: Rinka function - killed ;;;
 {
-$A2:B844 DE B2 0F    DEC $0FB2,x[$7E:10F2]
-$A2:B847 10 FA       BPL $FA    [$B843]
-$A2:B849 A9 0A 00    LDA #$000A
-$A2:B84C 9D 8C 0F    STA $0F8C,x[$7E:10CC]
-$A2:B84F 4C 3E B6    JMP $B63E  [$A2:B63E]
+$A2:B844 DE B2 0F    DEC $0FB2,x[$7E:10F2]  ; Decrement enemy function timer
+$A2:B847 10 FA       BPL $FA    [$B843]     ; If [enemy function timer] >= 0: return
+$A2:B849 A9 0A 00    LDA #$000A             ;\
+$A2:B84C 9D 8C 0F    STA $0F8C,x[$7E:10CC]  ;} Enemy health = Ah
+$A2:B84F 4C 3E B6    JMP $B63E  [$A2:B63E]  ; Go to respawn rinka
 }
 
 
-;;; $B852:  ;;;
+;;; $B852: Rinka function - waiting to fire ;;;
 {
-$A2:B852 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]
-$A2:B856 90 EB       BCC $EB    [$B843]
-$A2:B858 4C 65 B8    JMP $B865  [$A2:B865]
+$A2:B852 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]  ;\
+$A2:B856 90 EB       BCC $EB    [$B843]     ;} If enemy is on screen: return
+$A2:B858 4C 65 B8    JMP $B865  [$A2:B865]  ; Go to delete and respawn rinkas
 }
 
 
-;;; $B85B:  ;;;
+;;; $B85B: Rinka function - moving ;;;
 {
-$A2:B85B 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]
-$A2:B85F 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]
-$A2:B863 90 DE       BCC $DE    [$B843]
+$A2:B85B 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]  ; Move enemy according to enemy velocity
+$A2:B85F 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]  ;\
+$A2:B863 90 DE       BCC $DE    [$B843]     ;} If enemy is on screen: return
+}
 
-$A2:B865 BD B4 0F    LDA $0FB4,x[$7E:1134]
-$A2:B868 F0 10       BEQ $10    [$B87A]
-$A2:B86A 20 BB B8    JSR $B8BB  [$A2:B8BB]
-$A2:B86D AF 3A 78 7E LDA $7E783A[$7E:783A]
-$A2:B871 F0 07       BEQ $07    [$B87A]
-$A2:B873 20 80 B8    JSR $B880  [$A2:B880]
+
+;;; $B865: Delete and respawn rinka ;;;
+{
+$A2:B865 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$A2:B868 F0 10       BEQ $10    [$B87A]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B86A 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
+$A2:B86D AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
+$A2:B871 F0 07       BEQ $07    [$B87A]     ;} If turrets and rinkas are flagged for deletion:
+$A2:B873 20 80 B8    JSR $B880  [$A2:B880]  ; Decrement rinka counter
 $A2:B876 5C 2B 92 A0 JML $A0922B[$A0:922B]  ; Go to delete enemy and any connected enemies
 
-$A2:B87A 20 80 B8    JSR $B880  [$A2:B880]
-$A2:B87D 4C 3E B6    JMP $B63E  [$A2:B63E]
+$A2:B87A 20 80 B8    JSR $B880  [$A2:B880]  ; Decrement rinka counter
+$A2:B87D 4C 3E B6    JMP $B63E  [$A2:B63E]  ; Go to respawn rinka
 }
 
 
-;;; $B880:  ;;;
+;;; $B880: Decrement rinka counter ;;;
 {
-$A2:B880 BD B4 0F    LDA $0FB4,x[$7E:1134]
-$A2:B883 F0 16       BEQ $16    [$B89B]
-$A2:B885 BD 86 0F    LDA $0F86,x[$7E:1046]
-$A2:B888 29 00 01    AND #$0100
-$A2:B88B D0 0E       BNE $0E    [$B89B]
-$A2:B88D AF 3C 78 7E LDA $7E783C[$7E:783C]
-$A2:B891 3A          DEC A
-$A2:B892 10 03       BPL $03    [$B897]
-$A2:B894 A9 00 00    LDA #$0000
-
-$A2:B897 8F 3C 78 7E STA $7E783C[$7E:783C]
+$A2:B880 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$A2:B883 F0 16       BEQ $16    [$B89B]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B885 BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
+$A2:B888 29 00 01    AND #$0100             ;} If enemy is visible:
+$A2:B88B D0 0E       BNE $0E    [$B89B]     ;/
+$A2:B88D AF 3C 78 7E LDA $7E783C[$7E:783C]  ;\
+$A2:B891 3A          DEC A                  ;|
+$A2:B892 10 03       BPL $03    [$B897]     ;|
+$A2:B894 A9 00 00    LDA #$0000             ;} Rinka counter = max(0, [rinka counter] - 1)
+                                            ;|
+$A2:B897 8F 3C 78 7E STA $7E783C[$7E:783C]  ;/
 
 $A2:B89B 60          RTS
 }
 
 
-;;; $B89C:  ;;;
+;;; $B89C: Unused ;;;
 {
-$A2:B89C AD 44 0E    LDA $0E44  [$7E:0E44]
-$A2:B89F 29 03 00    AND #$0003
-$A2:B8A2 DD B4 0F    CMP $0FB4,x
-$A2:B8A5 D0 0A       BNE $0A    [$B8B1]
-$A2:B8A7 BD 86 0F    LDA $0F86,x
-$A2:B8AA 29 FF FB    AND #$FBFF
-$A2:B8AD 9D 86 0F    STA $0F86,x
-$A2:B8B0 60          RTS
+$A2:B89C AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
+$A2:B89F 29 03 00    AND #$0003             ;|
+$A2:B8A2 DD B4 0F    CMP $0FB4,x            ;} If [number of times main enemy routine has been executed] % 4 = [enemy parameter 1]:
+$A2:B8A5 D0 0A       BNE $0A    [$B8B1]     ;/
+$A2:B8A7 BD 86 0F    LDA $0F86,x            ;\
+$A2:B8AA 29 FF FB    AND #$FBFF             ;} Set enemy as tangible
+$A2:B8AD 9D 86 0F    STA $0F86,x            ;/
+$A2:B8B0 60          RTS                    ; Return
 
-$A2:B8B1 BD 86 0F    LDA $0F86,x
-$A2:B8B4 09 00 04    ORA #$0400
-$A2:B8B7 9D 86 0F    STA $0F86,x
+$A2:B8B1 BD 86 0F    LDA $0F86,x            ;\
+$A2:B8B4 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$A2:B8B7 9D 86 0F    STA $0F86,x            ;/
 $A2:B8BA 60          RTS
 }
 
 
-;;; $B8BB:  ;;;
+;;; $B8BB: Mark rinka spawn point available ;;;
 {
-$A2:B8BB BD B4 0F    LDA $0FB4,x[$7E:10F4]
-$A2:B8BE F0 12       BEQ $12    [$B8D2]
-$A2:B8C0 BD AE 0F    LDA $0FAE,x[$7E:106E]
-$A2:B8C3 F0 0D       BEQ $0D    [$B8D2]
-$A2:B8C5 DA          PHX
-$A2:B8C6 AA          TAX
-$A2:B8C7 A9 00 00    LDA #$0000
-$A2:B8CA 9F FE 87 7E STA $7E87FE,x[$7E:8800]
-$A2:B8CE FA          PLX
-$A2:B8CF 9D AE 0F    STA $0FAE,x[$7E:106E]
+$A2:B8BB BD B4 0F    LDA $0FB4,x[$7E:10F4]  ;\
+$A2:B8BE F0 12       BEQ $12    [$B8D2]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
+$A2:B8C0 BD AE 0F    LDA $0FAE,x[$7E:106E]  ;\
+$A2:B8C3 F0 0D       BEQ $0D    [$B8D2]     ;} If [enemy spawn point availability table index] != 0:
+$A2:B8C5 DA          PHX                    ;\
+$A2:B8C6 AA          TAX                    ;|
+$A2:B8C7 A9 00 00    LDA #$0000             ;} $7E:8800 + [enemy spawn point availability table index] - 2 = 0
+$A2:B8CA 9F FE 87 7E STA $7E87FE,x[$7E:8800];|
+$A2:B8CE FA          PLX                    ;/
+$A2:B8CF 9D AE 0F    STA $0FAE,x[$7E:106E]  ; Enemy spawn point availability table index = 0
 
 $A2:B8D2 60          RTS
 }
 
 
-;;; $B8D3:  ;;;
+;;; $B8D3: Check if rinka is on screen ;;;
 {
-$A2:B8D3 BD 7E 0F    LDA $0F7E,x[$7E:10FE]
-$A2:B8D6 30 25       BMI $25    [$B8FD]
-$A2:B8D8 18          CLC
-$A2:B8D9 69 10 00    ADC #$0010
-$A2:B8DC 38          SEC
-$A2:B8DD ED 15 09    SBC $0915  [$7E:0915]
-$A2:B8E0 30 1B       BMI $1B    [$B8FD]
-$A2:B8E2 C9 00 01    CMP #$0100
-$A2:B8E5 10 16       BPL $16    [$B8FD]
-$A2:B8E7 BD 7A 0F    LDA $0F7A,x[$7E:10FA]
-$A2:B8EA 30 11       BMI $11    [$B8FD]
-$A2:B8EC 18          CLC
-$A2:B8ED 69 10 00    ADC #$0010
-$A2:B8F0 38          SEC
-$A2:B8F1 ED 11 09    SBC $0911  [$7E:0911]
-$A2:B8F4 30 07       BMI $07    [$B8FD]
-$A2:B8F6 C9 20 01    CMP #$0120
-$A2:B8F9 10 02       BPL $02    [$B8FD]
-$A2:B8FB 18          CLC
-$A2:B8FC 6B          RTL
+;; Returns:
+;;     Carry: Clear if rinka is on screen, set otherwise
+$A2:B8D3 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
+$A2:B8D6 30 25       BMI $25    [$B8FD]     ;} If [enemy Y position] >= 0:
+$A2:B8D8 18          CLC                    ;\
+$A2:B8D9 69 10 00    ADC #$0010             ;|
+$A2:B8DC 38          SEC                    ;|
+$A2:B8DD ED 15 09    SBC $0915  [$7E:0915]  ;} If -10h <= [enemy Y position] - [layer 1 Y position] < F0h:
+$A2:B8E0 30 1B       BMI $1B    [$B8FD]     ;|
+$A2:B8E2 C9 00 01    CMP #$0100             ;|
+$A2:B8E5 10 16       BPL $16    [$B8FD]     ;/
+$A2:B8E7 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;\
+$A2:B8EA 30 11       BMI $11    [$B8FD]     ;} If [enemy X position] >= 0:
+$A2:B8EC 18          CLC                    ;\
+$A2:B8ED 69 10 00    ADC #$0010             ;|
+$A2:B8F0 38          SEC                    ;|
+$A2:B8F1 ED 11 09    SBC $0911  [$7E:0911]  ;} If -10h <= [enemy X position] - [layer 1 X position] < 110h:
+$A2:B8F4 30 07       BMI $07    [$B8FD]     ;|
+$A2:B8F6 C9 20 01    CMP #$0120             ;|
+$A2:B8F9 10 02       BPL $02    [$B8FD]     ;/
+$A2:B8FB 18          CLC                    ;\
+$A2:B8FC 6B          RTL                    ;} Return carry clear
 
-$A2:B8FD 38          SEC
-$A2:B8FE 6B          RTL
+$A2:B8FD 38          SEC                    ;\
+$A2:B8FE 6B          RTL                    ;} Return carry set
 }
 
 
-;;; $B8FF:  ;;;
+;;; $B8FF: Check if position is on screen ;;;
 {
-$A2:B8FF A5 14       LDA $14    [$7E:0014]
-$A2:B901 30 24       BMI $24    [$B927]
-$A2:B903 18          CLC
-$A2:B904 69 00 00    ADC #$0000
-$A2:B907 38          SEC
-$A2:B908 ED 15 09    SBC $0915  [$7E:0915]
-$A2:B90B 30 1A       BMI $1A    [$B927]
-$A2:B90D C9 E0 00    CMP #$00E0
-$A2:B910 10 15       BPL $15    [$B927]
-$A2:B912 A5 12       LDA $12    [$7E:0012]
-$A2:B914 30 11       BMI $11    [$B927]
-$A2:B916 18          CLC
-$A2:B917 69 00 00    ADC #$0000
-$A2:B91A 38          SEC
-$A2:B91B ED 11 09    SBC $0911  [$7E:0911]
-$A2:B91E 30 07       BMI $07    [$B927]
-$A2:B920 C9 00 01    CMP #$0100
-$A2:B923 10 02       BPL $02    [$B927]
-$A2:B925 18          CLC
-$A2:B926 6B          RTL
+;; Parameters:
+;;     $12: X position
+;;     $14: Y position
+;; Returns:
+;;     Carry: Clear if position is on screen, set otherwise
+$A2:B8FF A5 14       LDA $14    [$7E:0014]  ;\
+$A2:B901 30 24       BMI $24    [$B927]     ;} If [Y position] >= 0:
+$A2:B903 18          CLC                    ;\
+$A2:B904 69 00 00    ADC #$0000             ;} >_<;
+$A2:B907 38          SEC                    ;\
+$A2:B908 ED 15 09    SBC $0915  [$7E:0915]  ;|
+$A2:B90B 30 1A       BMI $1A    [$B927]     ;} If 0 <= [Y position] - [layer 1 Y position] < E0h:
+$A2:B90D C9 E0 00    CMP #$00E0             ;|
+$A2:B910 10 15       BPL $15    [$B927]     ;/
+$A2:B912 A5 12       LDA $12    [$7E:0012]  ;\
+$A2:B914 30 11       BMI $11    [$B927]     ;} If [X position] >= 0:
+$A2:B916 18          CLC                    ;\
+$A2:B917 69 00 00    ADC #$0000             ;} >_<;
+$A2:B91A 38          SEC                    ;\
+$A2:B91B ED 11 09    SBC $0911  [$7E:0911]  ;|
+$A2:B91E 30 07       BMI $07    [$B927]     ;} If 0 <= [X position] - [layer 1 X position] < 100h:
+$A2:B920 C9 00 01    CMP #$0100             ;|
+$A2:B923 10 02       BPL $02    [$B927]     ;/
+$A2:B925 18          CLC                    ;\
+$A2:B926 6B          RTL                    ;} Return carry clear
 
-$A2:B927 38          SEC
-$A2:B928 6B          RTL
+$A2:B927 38          SEC                    ;\
+$A2:B928 6B          RTL                    ;} Return carry set
 }
 
 
 ;;; $B929: Frozen AI - enemy $D23F (rinka) ;;;
 {
-$A2:B929 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]
-$A2:B92D 90 03       BCC $03    [$B932]
-$A2:B92F 9E 9E 0F    STZ $0F9E,x[$7E:10DE]
+$A2:B929 22 D3 B8 A2 JSL $A2B8D3[$A2:B8D3]  ;\
+$A2:B92D 90 03       BCC $03    [$B932]     ;} If rinka is off-screen:
+$A2:B92F 9E 9E 0F    STZ $0F9E,x[$7E:10DE]  ; Enemy frozen timer = 0
 
-$A2:B932 22 7E 95 A0 JSL $A0957E[$A0:957E]
-$A2:B936 AF 3A 78 7E LDA $7E783A[$7E:783A]
-$A2:B93A D0 01       BNE $01    [$B93D]
-$A2:B93C 6B          RTL
+$A2:B932 22 7E 95 A0 JSL $A0957E[$A0:957E]  ; Normal enemy frozen AI
+$A2:B936 AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
+$A2:B93A D0 01       BNE $01    [$B93D]     ;} If turrets and rinkas are not flagged for deletion:
+$A2:B93C 6B          RTL                    ; Return
 
-$A2:B93D 20 80 B8    JSR $B880  [$A2:B880]
-$A2:B940 20 BB B8    JSR $B8BB  [$A2:B8BB]
+$A2:B93D 20 80 B8    JSR $B880  [$A2:B880]  ; Decrement rinka counter
+$A2:B940 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
 $A2:B943 5C 10 A4 A0 JML $A0A410[$A0:A410]  ; Go to rinka's death animation
 }
 
 
 ;;; $B947: Enemy touch - enemy $D23F (rinka) ;;;
 {
-$A2:B947 22 97 A4 A0 JSL $A0A497[$A0:A497]
-$A2:B94B 80 13       BRA $13    [$B960]
+$A2:B947 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
+$A2:B94B 80 13       BRA $13    [$B960]     ; Go to rinka shared contact reaction
 }
 
 
 ;;; $B94D: Enemy shot - enemy $D23F (rinka) ;;;
 {
-$A2:B94D 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
-$A2:B951 80 0D       BRA $0D    [$B960]
+$A2:B94D 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
+$A2:B951 80 0D       BRA $0D    [$B960]     ; Go to rinka shared contact reaction
 }
 
 
 ;;; $B953: Power bomb reaction - enemy $D23F (rinka) ;;;
 {
-$A2:B953 BD 86 0F    LDA $0F86,x[$7E:10C6]
-$A2:B956 29 00 01    AND #$0100
-$A2:B959 F0 01       BEQ $01    [$B95C]
-$A2:B95B 6B          RTL
+$A2:B953 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
+$A2:B956 29 00 01    AND #$0100             ;} If enemy is invisible:
+$A2:B959 F0 01       BEQ $01    [$B95C]     ;/
+$A2:B95B 6B          RTL                    ; Return
 
-$A2:B95C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]
+$A2:B95C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no death check
 }
 
 
-;;; $B960: Rinka shared contact AI ;;;
+;;; $B960: Rinka shared contact reaction ;;;
 {
-$A2:B960 BD 8C 0F    LDA $0F8C,x[$7E:10CC]
-$A2:B963 F0 01       BEQ $01    [$B966]
-$A2:B965 6B          RTL
+$A2:B960 BD 8C 0F    LDA $0F8C,x[$7E:10CC]  ;\
+$A2:B963 F0 01       BEQ $01    [$B966]     ;} If [enemy health] != 0:
+$A2:B965 6B          RTL                    ; Return
 
-$A2:B966 20 80 B8    JSR $B880  [$A2:B880]
-$A2:B969 20 BB B8    JSR $B8BB  [$A2:B8BB]
-$A2:B96C BD B4 0F    LDA $0FB4,x[$7E:10F4]
-$A2:B96F D0 07       BNE $07    [$B978]
-$A2:B971 A9 00 00    LDA #$0000
-$A2:B974 5C 10 A4 A0 JMP $A0A410[$A0:A410]
+$A2:B966 20 80 B8    JSR $B880  [$A2:B880]  ; Decrement rinka counter
+$A2:B969 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
+$A2:B96C BD B4 0F    LDA $0FB4,x[$7E:10F4]  ;\
+$A2:B96F D0 07       BNE $07    [$B978]     ;} If [enemy parameter 1] = 0 (not Mother Brain's room):
+$A2:B971 A9 00 00    LDA #$0000             ; A = 0
+$A2:B974 5C 10 A4 A0 JMP $A0A410[$A0:A410]  ; Go to rinka death
 
-$A2:B978 BD 86 0F    LDA $0F86,x[$7E:10C6]
-$A2:B97B 09 00 05    ORA #$0500
-$A2:B97E 9D 86 0F    STA $0F86,x[$7E:10C6]
-$A2:B981 BD 7A 0F    LDA $0F7A,x[$7E:10BA]
-$A2:B984 85 12       STA $12    [$7E:0012]
-$A2:B986 BD 7E 0F    LDA $0F7E,x[$7E:10BE]
-$A2:B989 85 14       STA $14    [$7E:0014]
+$A2:B978 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
+$A2:B97B 09 00 05    ORA #$0500             ;} Set enemy as intangible and invisible
+$A2:B97E 9D 86 0F    STA $0F86,x[$7E:10C6]  ;/
+$A2:B981 BD 7A 0F    LDA $0F7A,x[$7E:10BA]  ;\
+$A2:B984 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A2:B986 BD 7E 0F    LDA $0F7E,x[$7E:10BE]  ;\
+$A2:B989 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A2:B98B A0 09 E5    LDY #$E509
 $A2:B98E A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $A2:B991 22 97 80 86 JSL $868097[$86:8097]  ; Spawn dust cloud / explosion enemy projectile
-$A2:B995 A9 44 B8    LDA #$B844
-$A2:B998 9D A8 0F    STA $0FA8,x[$7E:10E8]
-$A2:B99B A9 01 00    LDA #$0001
-$A2:B99E 9D B2 0F    STA $0FB2,x[$7E:10F2]
+$A2:B995 A9 44 B8    LDA #$B844             ;\
+$A2:B998 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $B844
+$A2:B99B A9 01 00    LDA #$0001             ;\
+$A2:B99E 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy $0FB2 = 1
 $A2:B9A1 6B          RTL
 }
 
 
-;;; $B9A2: Unused. Instruction ;;;
+;;; $B9A2: Unused. Instruction - go to [[Y]] if [rinka counter] >= 3 ;;;
 {
 $A2:B9A2 AF 3C 78 7E LDA $7E783C[$7E:783C]
 $A2:B9A6 C9 03 00    CMP #$0003
@@ -5330,26 +5352,26 @@ $A2:B9C6 6B          RTL
 }
 
 
-;;; $B9C7: Instruction -  ;;;
+;;; $B9C7: Instruction - fire rinka ;;;
 {
-$A2:B9C7 BD 86 0F    LDA $0F86,x[$7E:1106]
-$A2:B9CA 29 FF FA    AND #$FAFF
-$A2:B9CD 9D 86 0F    STA $0F86,x[$7E:1106]
-$A2:B9D0 A9 DF B7    LDA #$B7DF
-$A2:B9D3 9D A8 0F    STA $0FA8,x[$7E:1128]
-$A2:B9D6 AF 3C 78 7E LDA $7E783C[$7E:783C]
-$A2:B9DA 1A          INC A
-$A2:B9DB 8F 3C 78 7E STA $7E783C[$7E:783C]
+$A2:B9C7 BD 86 0F    LDA $0F86,x[$7E:1106]  ;\
+$A2:B9CA 29 FF FA    AND #$FAFF             ;} Set enemy as tangible and visible
+$A2:B9CD 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
+$A2:B9D0 A9 DF B7    LDA #$B7DF             ;\
+$A2:B9D3 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $B7DF
+$A2:B9D6 AF 3C 78 7E LDA $7E783C[$7E:783C]  ;\
+$A2:B9DA 1A          INC A                  ;} Increment rinka counter
+$A2:B9DB 8F 3C 78 7E STA $7E783C[$7E:783C]  ;/
 $A2:B9DF 6B          RTL
 }
 
 
-;;; $B9E0: Instruction list -  ;;;
+;;; $B9E0: Instruction list - not Mother Brain's room ;;;
 {
-$A2:B9E0             dx B9B3,       ; Set enemy as intangible and invisible
+$A2:B9E0             dw B9B3,       ; Set enemy as intangible and invisible
                         0040,BA38,
-                        B9C7,       ; ???
-                        0010,BA38,
+                        B9C7        ; Fire rinka
+$A2:B9E8             dw 0010,BA38,
                         0008,BA3F,
                         0007,BA46,
                         0006,BA4D,
@@ -5361,12 +5383,12 @@ $A2:B9E0             dx B9B3,       ; Set enemy as intangible and invisible
 }
 
 
-;;; $BA0C: Instruction list -  ;;;
+;;; $BA0C: Instruction list - Mother Brain's room ;;;
 {
-$A2:BA0C             dx B9BD,       ; Set enemy as intangible, invisible and active off-screen
+$A2:BA0C             dw B9BD,       ; Set enemy as intangible, invisible and active off-screen
                         0040,BA38,
-                        B9C7,       ; ???
-                        0010,BA38,
+                        B9C7        ; Fire rinka
+$A2:BA14             dw 0010,BA38,
                         0008,BA3F,
                         0007,BA46,
                         0006,BA4D,
@@ -7242,9 +7264,9 @@ $A2:CD80 38          SEC
 $A2:CD81 FF 0C 78 7E SBC $7E780C,x[$7E:780C]
 $A2:CD85 F0 30       BEQ $30    [$CDB7]
 $A2:CD87 30 17       BMI $17    [$CDA0]
-$A2:CD89 A5 8B       LDA $8B    [$7E:008B]
-$A2:CD8B 29 00 02    AND #$0200
-$A2:CD8E F0 55       BEQ $55    [$CDE5]
+$A2:CD89 A5 8B       LDA $8B    [$7E:008B]  ;\
+$A2:CD8B 29 00 02    AND #$0200             ;} If not pressing left: return
+$A2:CD8E F0 55       BEQ $55    [$CDE5]     ;/
 $A2:CD90 A9 01 00    LDA #$0001
 $A2:CD93 9F 16 78 7E STA $7E7816,x
 $A2:CD97 BF 0C 78 7E LDA $7E780C,x
@@ -7271,9 +7293,9 @@ $A2:CDC9 80 0C       BRA $0C    [$CDD7]
 
 $A2:CDCB BD AE 0F    LDA $0FAE,x[$7E:0FAE]
 $A2:CDCE D0 15       BNE $15    [$CDE5]
-$A2:CDD0 A5 8B       LDA $8B    [$7E:008B]
-$A2:CDD2 29 00 02    AND #$0200
-$A2:CDD5 F0 0E       BEQ $0E    [$CDE5]
+$A2:CDD0 A5 8B       LDA $8B    [$7E:008B]  ;\
+$A2:CDD2 29 00 02    AND #$0200             ;} If not pressing left: return
+$A2:CDD5 F0 0E       BEQ $0E    [$CDE5]     ;/
 
 $A2:CDD7 A9 01 00    LDA #$0001
 $A2:CDDA 9F 16 78 7E STA $7E7816,x[$7E:7816]

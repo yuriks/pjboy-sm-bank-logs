@@ -7350,26 +7350,26 @@ $A3:D420 6B          RTL
 
 ;;; $D421:  ;;;
 {
-$A3:D421 A5 8B       LDA $8B    [$7E:008B]
-$A3:D423 29 00 03    AND #$0300
-$A3:D426 EB          XBA
-$A3:D427 3A          DEC A
-$A3:D428 85 12       STA $12    [$7E:0012]
-$A3:D42A BD AC 0F    LDA $0FAC,x
-$A3:D42D 29 01 00    AND #$0001
-$A3:D430 85 14       STA $14    [$7E:0014]
-$A3:D432 A5 12       LDA $12    [$7E:0012]
-$A3:D434 D0 06       BNE $06    [$D43C]
-$A3:D436 A5 14       LDA $14    [$7E:0014]
-$A3:D438 F0 0A       BEQ $0A    [$D444]
+$A3:D421 A5 8B       LDA $8B    [$7E:008B]  ;\
+$A3:D423 29 00 03    AND #$0300             ;|
+$A3:D426 EB          XBA                    ;} $12 = 0 iff pressing right and not left
+$A3:D427 3A          DEC A                  ;|
+$A3:D428 85 12       STA $12    [$7E:0012]  ;/
+$A3:D42A BD AC 0F    LDA $0FAC,x            ;\
+$A3:D42D 29 01 00    AND #$0001             ;} $14 = [enemy $0FAC] & 1
+$A3:D430 85 14       STA $14    [$7E:0014]  ;/
+$A3:D432 A5 12       LDA $12    [$7E:0012]  ;\
+$A3:D434 D0 06       BNE $06    [$D43C]     ;} If [$12] = 0:
+$A3:D436 A5 14       LDA $14    [$7E:0014]  ;\
+$A3:D438 F0 0A       BEQ $0A    [$D444]     ;} If [$14] = 0: return carry set
 $A3:D43A 80 06       BRA $06    [$D442]
 
-$A3:D43C A5 14       LDA $14    [$7E:0014]
-$A3:D43E F0 02       BEQ $02    [$D442]
-$A3:D440 80 02       BRA $02    [$D444]
+$A3:D43C A5 14       LDA $14    [$7E:0014]  ;\ Else ([$12] != 0):
+$A3:D43E F0 02       BEQ $02    [$D442]     ;} If [$14] != 0:
+$A3:D440 80 02       BRA $02    [$D444]     ; Return carry set
 
-$A3:D442 18          CLC
-$A3:D443 60          RTS
+$A3:D442 18          CLC                    ;\
+$A3:D443 60          RTS                    ;} Return carry clear
 
 $A3:D444 38          SEC
 $A3:D445 60          RTS

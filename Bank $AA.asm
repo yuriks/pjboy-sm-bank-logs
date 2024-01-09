@@ -2474,9 +2474,9 @@ $AA:C90F 22 32 DD 88 JSL $88DD32[$88:DD32]
 $AA:C913 6B          RTL
 
 $AA:C914 20 80 C2    JSR $C280  [$AA:C280]
-$AA:C917 A5 8B       LDA $8B    [$7E:008B]
-$AA:C919 C9 C0 C0    CMP #$C0C0
-$AA:C91C D0 3F       BNE $3F    [$C95D]
+$AA:C917 A5 8B       LDA $8B    [$7E:008B]  ;\
+$AA:C919 C9 C0 C0    CMP #$C0C0             ;} If pressing exactly BYAX:
+$AA:C91C D0 3F       BNE $3F    [$C95D]     ;/
 $AA:C91E A9 BC 02    LDA #$02BC
 $AA:C921 8D C2 09    STA $09C2  [$7E:09C2]
 $AA:C924 8D C4 09    STA $09C4  [$7E:09C4]

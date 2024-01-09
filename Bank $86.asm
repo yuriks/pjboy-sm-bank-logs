@@ -15321,7 +15321,7 @@ $86:EF64 A9 FF FF    LDA #$FFFF             ;} Enemy projectile $7E:F410 = FFFFh
 $86:EF67 9F 10 F4 7E STA $7EF410,x[$7E:F412];/
 $86:EF6B 7A          PLY
 $86:EF6C FA          PLX
-$86:EF6D 60          RTS
+$86:EF6D 60          RTS                    ; Return
 
 ; BRANCH_NOTHING
 $86:EF6E A9 A3 EC    LDA #$ECA3             ;\
@@ -15874,7 +15874,7 @@ $86:F334 DC 84 17    JML [$1784][$B3:883B]  ; Go to [enemy AI pointer]
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:F337             dx EF29,EFE0,ED8D,10,10,3000,84FC,84FC ; Pickup (from orbs, bosses etc.)
+$86:F337             dx EF29,EFE0,ED8D,10,10,3000,84FC,84FC ; Pickup (from bosses and enemy projectiles)
 $86:F345             dx EF89,EFDF,ED8D,10,10,7000,84FC,84FC ; Enemy death explosion / pickup
 }
 }

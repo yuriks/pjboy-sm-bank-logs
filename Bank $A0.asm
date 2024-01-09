@@ -1628,16 +1628,18 @@ $A0:8FD3 6B          RTL
 ;                     If [enemy ID] = 0: (enemy was killed?)
 ;                         Go to BRANCH_DRAW_ENEMY_END
 ;
-;                 If enemy AI is disabled:
+;                 If enemy is paralysed:
 ;                     Go to BRANCH_PROCESS_AI_END
 ;             }
 ;         }
 ;
 ;         Enable enemy drawing
 ;         If time is frozen or enemy time is frozen:
+;         {
 ;             If [enemy time is frozen AI pointer] != 0:
 ;                 Enemy AI pointer = [enemy time is frozen AI pointer]
 ;                 Execute enemy AI pointer in enemy bank
+;         }
 ;         Else:
 ;         {
 ;             X = 0
@@ -1653,9 +1655,8 @@ $A0:8FD3 6B          RTL
 ;         }
 ;
 ;         BRANCH_PROCESS_AI_END:
-;         If enemy AI is disabled:
+;         If enemy is paralysed:
 ;             If [enemy flash timer] = 1 or [enemy frozen timer] = 1:
-;                 Enemy $7E:7002 = 0
 ;                 Enemy death
 ;
 ;         If (enemy is on-screen or enemy uses extended spritemap format) and enemy is not deleted and enemy is not invisible and enemy drawing is enabled:
@@ -1672,8 +1673,8 @@ $A0:8FD3 6B          RTL
 ;
 ;     Handle sprite objects
 ;     Increment number of times main enemy routine has been executed
-;     $182C..33 = FFFFh
-;     $1834..3B = 0
+;     Enemy indices when Samus collides with solid enemy = FFFFh
+;     Distances between Samus and enemy when Samus collides with solid enemy = 0
 ; }
 }
 
@@ -1733,7 +1734,7 @@ $A0:9049 4C 18 91    JMP $9118  [$A0:9118]  ; Go to BRANCH_DRAW_ENEMY_END
 
 $A0:904C AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:904F BD 88 0F    LDA $0F88,x[$7E:0F88]  ;|
-$A0:9052 89 01 00    BIT #$0001             ;} If enemy AI is disabled: go to BRANCH_PROCESS_AI_END
+$A0:9052 89 01 00    BIT #$0001             ;} If enemy is paralysed: go to BRANCH_PROCESS_AI_END
 $A0:9055 D0 6F       BNE $6F    [$90C6]     ;/
 
 ; BRANCH_INTERACT_END
@@ -1796,22 +1797,21 @@ $A0:90C3 20 6A C2    JSR $C26A  [$A0:C26A]  ; Process enemy instructions
 ; BRANCH_PROCESS_AI_END
 $A0:90C6 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:90C9 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;|
-$A0:90CC 89 01 00    BIT #$0001             ;} If enemy AI is enabled: go to BRANCH_KILL_ENEMY_END
+$A0:90CC 89 01 00    BIT #$0001             ;} If enemy is not paralysed: go to BRANCH_PARALYSED_END
 $A0:90CF F0 1E       BEQ $1E    [$90EF]     ;/
 $A0:90D1 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
 $A0:90D4 C9 01 00    CMP #$0001             ;} If [enemy flash timer] != 1:
 $A0:90D7 F0 08       BEQ $08    [$90E1]     ;/
 $A0:90D9 BD 9E 0F    LDA $0F9E,x[$7E:0F9E]  ;\
-$A0:90DC C9 01 00    CMP #$0001             ;} If [enemy frozen timer] != 1: go to BRANCH_KILL_ENEMY_END
+$A0:90DC C9 01 00    CMP #$0001             ;} If [enemy frozen timer] != 1: go to BRANCH_PARALYSED_END
 $A0:90DF D0 0E       BNE $0E    [$90EF]     ;/
 
-; So apparently enemies die when their enemy AI is disabled (due to grapple?) and ([enemy flash timer] = 1 or [enemy frozen timer] = 1)
 $A0:90E1 A9 00 00    LDA #$0000             ;\
-$A0:90E4 9F 02 70 7E STA $7E7002,x[$7E:7002];} Enemy $7E:7002 = 0
+$A0:90E4 9F 02 70 7E STA $7E7002,x[$7E:7002];} Enemy cause of death = 0 (grapple paralysis)
 $A0:90E8 A9 00 00    LDA #$0000             ; A = 0
 $A0:90EB 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
-; BRANCH_KILL_ENEMY_END
+; BRANCH_PARALYSED_END
 $A0:90EF AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:90F2 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;|
 $A0:90F5 89 04 00    BIT #$0004             ;} If enemy doesn't use extended spritemap format:
@@ -1852,36 +1852,36 @@ $A0:9142 4C FF 8F    JMP $8FFF  [$A0:8FFF]  ; Go to LOOP
 $A0:9145 22 82 BC B4 JSL $B4BC82[$B4:BC82]  ; Handle sprite objects
 $A0:9149 EE 44 0E    INC $0E44  [$7E:0E44]  ; Increment number of times main enemy routine has been executed
 $A0:914C A9 FF FF    LDA #$FFFF             ;\
-$A0:914F 8D 2C 18    STA $182C  [$7E:182C]  ;|
-$A0:9152 8D 2E 18    STA $182E  [$7E:182E]  ;} $182C..33 = FFFFh
-$A0:9155 8D 30 18    STA $1830  [$7E:1830]  ;|
-$A0:9158 8D 32 18    STA $1832  [$7E:1832]  ;/
-$A0:915B 9C 34 18    STZ $1834  [$7E:1834]  ;\
-$A0:915E 9C 36 18    STZ $1836  [$7E:1836]  ;|
-$A0:9161 9C 38 18    STZ $1838  [$7E:1838]  ;} $1834..3B = 0
-$A0:9164 9C 3A 18    STZ $183A  [$7E:183A]  ;/
+$A0:914F 8D 2C 18    STA $182C  [$7E:182C]  ;} Enemy index when Samus moving left collides with solid enemy = FFFFh
+$A0:9152 8D 2E 18    STA $182E  [$7E:182E]  ; Enemy index when Samus moving right collides with solid enemy = FFFFh
+$A0:9155 8D 30 18    STA $1830  [$7E:1830]  ; Enemy index when Samus moving up collides with solid enemy = FFFFh
+$A0:9158 8D 32 18    STA $1832  [$7E:1832]  ; Enemy index when Samus moving down collides with solid enemy = FFFFh
+$A0:915B 9C 34 18    STZ $1834  [$7E:1834]  ; Distance between Samus and enemy when Samus moving left collides with solid enemy = 0
+$A0:915E 9C 36 18    STZ $1836  [$7E:1836]  ; Distance between Samus and enemy when Samus moving right collides with solid enemy = 0
+$A0:9161 9C 38 18    STZ $1838  [$7E:1838]  ; Distance between Samus and enemy when Samus moving up collides with solid enemy = 0
+$A0:9164 9C 3A 18    STZ $183A  [$7E:183A]  ; Distance between Samus and enemy when Samus moving down collides with solid enemy = 0
 $A0:9167 AB          PLB
 $A0:9168 6B          RTL
 }
 
 
-;;; $9169: Decrement Samus hurt timers and clear active enemy indices ;;;
+;;; $9169: Decrement Samus hurt timers and clear active enemy indices lists ;;;
 {
-$A0:9169 AD A8 18    LDA $18A8  [$7E:18A8]
-$A0:916C F0 03       BEQ $03    [$9171]
-$A0:916E CE A8 18    DEC $18A8  [$7E:18A8]
+$A0:9169 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$A0:916C F0 03       BEQ $03    [$9171]     ;} Samus invincibility timer = max(0, [Samus invincibility timer] - 1])
+$A0:916E CE A8 18    DEC $18A8  [$7E:18A8]  ;/
 
-$A0:9171 AD AA 18    LDA $18AA  [$7E:18AA]
-$A0:9174 F0 03       BEQ $03    [$9179]
-$A0:9176 CE AA 18    DEC $18AA  [$7E:18AA]
+$A0:9171 AD AA 18    LDA $18AA  [$7E:18AA]  ;\
+$A0:9174 F0 03       BEQ $03    [$9179]     ;} Samus knockback timer = max(0, [Samus knockback timer] - 1])
+$A0:9176 CE AA 18    DEC $18AA  [$7E:18AA]  ;/
 
-$A0:9179 AD AC 18    LDA $18AC  [$7E:18AC]
-$A0:917C F0 03       BEQ $03    [$9181]
-$A0:917E CE AC 18    DEC $18AC  [$7E:18AC]
+$A0:9179 AD AC 18    LDA $18AC  [$7E:18AC]  ;\
+$A0:917C F0 03       BEQ $03    [$9181]     ;} Projectile invincibility timer = max(0, [Projectile invincibility timer] - 1])
+$A0:917E CE AC 18    DEC $18AC  [$7E:18AC]  ;/
 
-$A0:9181 A9 FF FF    LDA #$FFFF
-$A0:9184 8D EC 17    STA $17EC  [$7E:17EC]
-$A0:9187 8D AC 17    STA $17AC  [$7E:17AC]
+$A0:9181 A9 FF FF    LDA #$FFFF             ;\
+$A0:9184 8D EC 17    STA $17EC  [$7E:17EC]  ;} Terminate interactive enemy indices list
+$A0:9187 8D AC 17    STA $17AC  [$7E:17AC]  ; Terminate active enemy indices list
 $A0:918A 6B          RTL
 }
 
@@ -1938,19 +1938,24 @@ $A0:920D 60          RTS
 
 ;;; $920E: Spawn enemy drops ;;;
 {
-; $12 and $14 are X/Y. A contains enemy header pointer (to check drop rates)
+;; Parameters:
+;;     A: Enemy header pointer (to check drop rates)
+;;     $12: X position
+;;     $14: Y position
+
+; Used for boss deaths and enemy projectiles, but not normal enemy death
 $A0:920E 08          PHP
 $A0:920F 8B          PHB
 $A0:9210 DA          PHX
 $A0:9211 5A          PHY
-$A0:9212 8D 24 0E    STA $0E24  [$7E:0E24]
-$A0:9215 F4 00 A0    PEA $A000
-$A0:9218 AB          PLB
-$A0:9219 AB          PLB
+$A0:9212 8D 24 0E    STA $0E24  [$7E:0E24]  ; $0E24 = [A] (enemy header pointer)
+$A0:9215 F4 00 A0    PEA $A000              ;\
+$A0:9218 AB          PLB                    ;} DB = $A0
+$A0:9219 AB          PLB                    ;/
 $A0:921A C2 30       REP #$30
-$A0:921C A0 37 F3    LDY #$F337
-$A0:921F AD 20 0E    LDA $0E20  [$7E:0E20]
-$A0:9222 22 27 80 86 JSL $868027[$86:8027]
+$A0:921C A0 37 F3    LDY #$F337             ;\
+$A0:921F AD 20 0E    LDA $0E20  [$7E:0E20]  ;} Spawn pickup enemy projectile
+$A0:9222 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A0:9226 FA          PLX
 $A0:9227 7A          PLY
 $A0:9228 AB          PLB
@@ -1961,26 +1966,28 @@ $A0:922A 6B          RTL
 
 ;;; $922B: Delete enemy and any connected enemies ;;;
 {
-; This is called by rinkas in some specific circumstance (rinka with enemy speed != 0 and Mother Brain first form killed?). See $A2:B844
+; This is called only by rinkas in Mother Brain's room when deleted due to Mother Brain first form defeat
+; Rinka has 1 part >_>;
 $A0:922B 8B          PHB
-$A0:922C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:922F DA          PHX
-$A0:9230 BD 78 0F    LDA $0F78,x
-$A0:9233 AA          TAX
-$A0:9234 BF 14 00 A0 LDA $A00014,x
-$A0:9238 D0 01       BNE $01    [$923B]
-$A0:923A 1A          INC A
+$A0:922C AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$A0:922F DA          PHX                    ;\
+$A0:9230 BD 78 0F    LDA $0F78,x            ;|
+$A0:9233 AA          TAX                    ;|
+$A0:9234 BF 14 00 A0 LDA $A00014,x          ;|
+$A0:9238 D0 01       BNE $01    [$923B]     ;} Y = max((number of enemy parts), 1)
+$A0:923A 1A          INC A                  ;|
+                                            ;|
+$A0:923B A8          TAY                    ;|
+$A0:923C FA          PLX                    ;/
 
-$A0:923B A8          TAY
-$A0:923C FA          PLX
-
-$A0:923D 9E 78 0F    STZ $0F78,x
-$A0:9240 8A          TXA
-$A0:9241 18          CLC
-$A0:9242 69 40 00    ADC #$0040
-$A0:9245 AA          TAX
-$A0:9246 88          DEY
-$A0:9247 D0 F4       BNE $F4    [$923D]
+; LOOP
+$A0:923D 9E 78 0F    STZ $0F78,x            ; Enemy ID = 0
+$A0:9240 8A          TXA                    ;\
+$A0:9241 18          CLC                    ;|
+$A0:9242 69 40 00    ADC #$0040             ;} X += 40h (next enemy)
+$A0:9245 AA          TAX                    ;/
+$A0:9246 88          DEY                    ; Decrement Y
+$A0:9247 D0 F4       BNE $F4    [$923D]     ; If [Y] != 0: go to LOOP
 $A0:9249 AB          PLB
 $A0:924A 6B          RTL
 }
@@ -3847,9 +3854,9 @@ $A0:A057 9D 9C 0F    STA $0F9C,x            ;/
 $A0:A05A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A05D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A060 9E 8A 0F    STZ $0F8A,x            ; Enemy AI handler = main AI
-$A0:A063 AE 54 0E    LDX $0E54  [$7E:0E54]
+$A0:A063 AE 54 0E    LDX $0E54  [$7E:0E54]  ; >_<;;;
 $A0:A066 BD 88 0F    LDA $0F88,x            ;\
-$A0:A069 09 01 00    ORA #$0001             ;} Disable enemy AI
+$A0:A069 09 01 00    ORA #$0001             ;} Set enemy as paralysed
 $A0:A06C 9D 88 0F    STA $0F88,x            ;/
 $A0:A06F 6B          RTL
 }

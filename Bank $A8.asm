@@ -577,7 +577,7 @@ $A8:8B12 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
 }
 
 
-;;; $8B16: Mini-Draygon shared contact AI ;;;
+;;; $8B16: Mini-Draygon shared contact reaction ;;;
 {
 $A8:8B16 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8B19 BD 8C 0F    LDA $0F8C,x[$7E:104C]  ;\
@@ -4288,7 +4288,7 @@ $A8:B40C 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
 }
 
 
-;;; $B410: Norfair lava creature shared contact AI ;;;
+;;; $B410: Norfair lava creature shared contact reaction ;;;
 {
 $A8:B410 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B413 BD 8C 0F    LDA $0F8C,x[$7E:104C]
