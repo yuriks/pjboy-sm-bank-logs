@@ -691,7 +691,7 @@ $82:85A1 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $82:85A5 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 2Ch (transition from demo)
 $82:85A8 9C 23 07    STZ $0723  [$7E:0723]  ;\
 $82:85AB 9C 25 07    STZ $0725  [$7E:0725]  ;} Disable screen fade
-$82:85AE 22 9E 82 88 JSL $88829E[$88:829E]  ; Clear DMA queue
+$82:85AE 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
 $82:85B2 22 5F 98 80 JSL $80985F[$80:985F]  ; Disable h/v-counter interrupts
 $82:85B6 9C 82 19    STZ $1982  [$7E:1982]  ; Default layer blending configuration = 0
 $82:85B9 64 AB       STZ $AB    [$7E:00AB]  ; Clear interrupt index
@@ -10599,7 +10599,7 @@ $82:E526 AD 31 09    LDA $0931  [$7E:0931]  ;\
 $82:E529 10 FB       BPL $FB    [$E526]     ;} Wait until door transition has finished scrolling
 $82:E52B A9 E0 3B    LDA #$3BE0             ;\
 $82:E52E 8F 88 C1 7E STA $7EC188[$7E:C188]  ;} Sprite palette 4 colour 4 (Samus visor) = (0, 1Fh, Eh)
-$82:E532 22 65 D8 88 JSL $88D865[$88:D865]  ; Spawn HUD BG3 scroll HDMA object
+$82:E532 22 65 D8 88 JSL $88D865[$88:D865]  ; Spawn BG3 scroll HDMA object (for the HUD)
 $82:E536 A9 00 80    LDA #$8000             ;\
 $82:E539 0C B0 18    TSB $18B0  [$7E:18B0]  ;} Set HDMA flag
 $82:E53C 22 B4 85 84 JSL $8485B4[$84:85B4]  ; PLM handler

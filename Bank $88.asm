@@ -6110,7 +6110,10 @@ $88:D856             dx 8655,88,    ; HDMA table bank = $88
 ;;; $D865: Spawn BG3 scroll HDMA object ;;;
 {
 ; Applies an HDMA that sets BG3 scrolls to [$7E:CAD8]/[$7E:CADA] every line of the HUD and [$7E:CADC]/[$7E:CADE] after the last line of the HUD
-; Spawned by lava, acid, water, rain, spores, Tourian entrance statue
+; Spawned by:
+;     Lava, acid, water, rain, spores, Tourian entrance statue
+;     Draygon's body initialisation
+;     Door transition after scrolling finishes and before the screen fades in
 $88:D865 22 0A 84 88 JSL $88840A[$88:840A]  ;\
 $88:D869             dx 43, 11, D8D0        ;} Spawn indirect HDMA object for BG3 scroll with instruction list $D8D0
 $88:D86D 6B          RTL
