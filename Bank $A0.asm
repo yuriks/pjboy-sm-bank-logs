@@ -1052,7 +1052,7 @@ $A0:8BA1 DA          PHX
 $A0:8BA2 5A          PHY
 $A0:8BA3 A2 4D 80    LDX #$804D             ; Enemy spritemap pointer = $804D
 $A0:8BA6 B9 88 0F    LDA $0F88,y[$7E:0F88]  ;\
-$A0:8BA9 89 04 00    BIT #$0004             ;} If enemy has extended spritemap format:
+$A0:8BA9 89 04 00    BIT #$0004             ;} If enemy uses extended spritemap format:
 $A0:8BAC F0 03       BEQ $03    [$8BB1]     ;/
 $A0:8BAE A2 4F 80    LDX #$804F             ; Enemy spritemap pointer = $804F
 
@@ -1995,21 +1995,24 @@ $A0:924A 6B          RTL
 
 ;;; $924B: Debug. Spawn enemy to enemy index [Y] ;;;
 {
+;; Parameters:
+;;     X: New enemy population data
+;;     Y: New enemy index
 $A0:924B 8B          PHB
 $A0:924C 8E 20 0E    STX $0E20  [$7E:0E20]  ; $0E20 = [X]
 $A0:924F 8C 4A 0E    STY $0E4A  [$7E:0E4A]  ; New enemy index = [Y]
 $A0:9252 AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
-$A0:9255 8D 56 0E    STA $0E56  [$7E:0E56]  ;} $0E56 = [enemy index]
+$A0:9255 8D 56 0E    STA $0E56  [$7E:0E56]  ;} Enemy index backup = [enemy index]
 $A0:9258 AD 84 17    LDA $1784  [$7E:1784]  ;\
 $A0:925B 8D 88 17    STA $1788  [$7E:1788]  ;|
-$A0:925E AD 86 17    LDA $1786  [$7E:1786]  ;} $1788 = [enemy AI pointer]
+$A0:925E AD 86 17    LDA $1786  [$7E:1786]  ;} Enemy AI pointer backup = [enemy AI pointer]
 $A0:9261 8D 8A 17    STA $178A  [$7E:178A]  ;/
 $A0:9264 BD 00 00    LDA $0000,x            ;\
 $A0:9267 AA          TAX                    ;|
 $A0:9268 BF 14 00 A0 LDA $A00014,x          ;} $0E26 = [$A0:0014 + [X]] & FFh (number of enemy parts)
 $A0:926C 29 FF 00    AND #$00FF             ;|
 $A0:926F 8D 26 0E    STA $0E26  [$7E:0E26]  ;/
-$A0:9272 4C DB 92    JMP $92DB  [$A0:92DB]  ; Go to spawn enemy parts
+$A0:9272 4C DB 92    JMP $92DB  [$A0:92DB]  ; Go to spawn enemy
 }
 
 
@@ -2021,28 +2024,33 @@ $A0:9272 4C DB 92    JMP $92DB  [$A0:92DB]  ; Go to spawn enemy parts
 ;;     A: 0 if successfully spawned, FFFFh otherwise
 ;;     X: New enemy index (or 800h if failed to spawn)
 
-; Looking forward at $92DB `$0E26 = [number of enemy parts] - 1` looks like an off-by-one error for multi-part enemies
+; This routine attempts to find (number of enemy parts) consecutive free enemy slots, and calls $92DB if it succeeds
+; It has a couple problems for multi-part enemies
+; Looking forward at $92DB, $0E26 is supposed to be the number of enemy parts (non-decremented). Further evidenced by the debug spawn routine above
+; $0E22 should be reset back to [number of enemy parts] - 1 as part of LOOP_FIRST_ENEMY,
+; otherwise after finding one free slot and then finding one occupied slot,
+; the loop will try to find one fewer consecutive slots
 $A0:9275 8B          PHB
 $A0:9276 8E 20 0E    STX $0E20  [$7E:0E20]  ; $0E20 = [X]
 $A0:9279 AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
-$A0:927C 8D 56 0E    STA $0E56  [$7E:0E56]  ;} $0E56 = [enemy index]
+$A0:927C 8D 56 0E    STA $0E56  [$7E:0E56]  ;} Enemy index backup = [enemy index]
 $A0:927F AD 84 17    LDA $1784  [$7E:1784]  ;\
 $A0:9282 8D 88 17    STA $1788  [$7E:1788]  ;|
-$A0:9285 AD 86 17    LDA $1786  [$7E:1786]  ;} $1788 = [enemy AI pointer]
+$A0:9285 AD 86 17    LDA $1786  [$7E:1786]  ;} Enemy AI pointer backup = [enemy AI pointer]
 $A0:9288 8D 8A 17    STA $178A  [$7E:178A]  ;/
 $A0:928B BD 00 00    LDA $0000,x[$A6:AA2F]  ;\
-$A0:928E A8          TAY                    ;|
-$A0:928F DA          PHX                    ;|
+$A0:928E A8          TAY                    ;} Y = [[X]] (enemy ID)
+$A0:928F DA          PHX                    ;\
 $A0:9290 AA          TAX                    ;|
 $A0:9291 BF 14 00 A0 LDA $A00014,x[$A0:E253];|
 $A0:9295 FA          PLX                    ;|
-$A0:9296 3A          DEC A                  ;} $0E22 = $0E26 = max(0, [$A0:0014 + [[X]]] - 1) (number of additional parts)
-$A0:9297 10 03       BPL $03    [$929C]     ;|
+$A0:9296 3A          DEC A                  ;|
+$A0:9297 10 03       BPL $03    [$929C]     ;} $0E22 (loop counter) = $0E26 = max(0, (number of enemy parts) - 1)
 $A0:9299 A9 00 00    LDA #$0000             ;|
                                             ;|
 $A0:929C 8D 22 0E    STA $0E22  [$7E:0E22]  ;|
 $A0:929F 8D 26 0E    STA $0E26  [$7E:0E26]  ;/
-$A0:92A2 9C 4A 0E    STZ $0E4A  [$7E:0E4A]  ; $0E4A = 0 (new enemy index)
+$A0:92A2 9C 4A 0E    STZ $0E4A  [$7E:0E4A]  ; New enemy index = 0
 
 ; LOOP_FIRST_ENEMY
 $A0:92A5 AE 4A 0E    LDX $0E4A  [$7E:0E4A]  ; X = [new enemy index]
@@ -2053,11 +2061,11 @@ $A0:92AB D0 1A       BNE $1A    [$92C7]     ;} If [new enemy ID] != 0: go to BRA
 $A0:92AD BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
 $A0:92B0 D0 15       BNE $15    [$92C7]     ;} If [enemy [X] ID] != 0: go to BRANCH_NEXT
 $A0:92B2 AD 22 0E    LDA $0E22  [$7E:0E22]  ;\
-$A0:92B5 F0 24       BEQ $24    [$92DB]     ;} If [$0E22] = 0: go to spawn enemy parts
+$A0:92B5 F0 24       BEQ $24    [$92DB]     ;} If [$0E22] = 0: go to spawn enemy
 $A0:92B7 CE 22 0E    DEC $0E22  [$7E:0E22]  ; Decrement $0E22
 $A0:92BA 8A          TXA                    ;\
 $A0:92BB 18          CLC                    ;|
-$A0:92BC 69 40 00    ADC #$0040             ;} X += 40h
+$A0:92BC 69 40 00    ADC #$0040             ;} X += 40h (next enemy)
 $A0:92BF AA          TAX                    ;/
 $A0:92C0 E0 00 08    CPX #$0800             ;\
 $A0:92C3 30 E8       BMI $E8    [$92AD]     ;} If [X] < 800h: go to LOOP_OTHER_ENEMIES
@@ -2078,40 +2086,40 @@ $A0:92DA 6B          RTL
 }
 
 
-;;; $92DB: Spawn enemy parts ;;;
+;;; $92DB: Spawn enemy ;;;
 {
 ;; Parameters:
 ;;     DB:$0E20: New enemy population data
-;;     $0E26: Number of enemy parts to spawn
+;;     $0E26: Number of enemy parts to spawn. 0 acts like 1 (thanks to the BEQ at $93E2)
 ;; Returns:
-;;     A: 0
+;;     A: 0. This routine doesn't check if it's overwriting an enemy or not and has no bounds checking, so it always succeeds
 ;;     X: New enemy index
 
 $A0:92DB AC 4A 0E    LDY $0E4A  [$7E:0E4A]  ; Y = [$0E4A] (new enemy index)
 $A0:92DE AE 20 0E    LDX $0E20  [$7E:0E20]  ;\
 $A0:92E1 BD 00 00    LDA $0000,x[$A6:AA2F]  ;} A = [[$0E20]] (new enemy ID)
-$A0:92E4 A2 00 00    LDX #$0000             ; X = 0
+$A0:92E4 A2 00 00    LDX #$0000             ; X = 0 (enemy GFX data index)
 $A0:92E7 CF 5C EF 7E CMP $7EEF5C[$7E:EF5C]  ;\
-$A0:92EB F0 26       BEQ $26    [$9313]     ;} If new enemy ID != [$7E:EF5C]:
+$A0:92EB F0 26       BEQ $26    [$9313]     ;} If (new enemy ID) != [enemy GFX data 0 enemy ID]:
 $A0:92ED A2 02 00    LDX #$0002             ; X = 2
 $A0:92F0 CF 5E EF 7E CMP $7EEF5E[$7E:EF5E]  ;\
-$A0:92F4 F0 1D       BEQ $1D    [$9313]     ;} If new enemy ID != [$7E:EF5E]:
+$A0:92F4 F0 1D       BEQ $1D    [$9313]     ;} If (new enemy ID) != [enemy GFX data 1 enemy ID]:
 $A0:92F6 A2 04 00    LDX #$0004             ; X = 4
 $A0:92F9 CF 60 EF 7E CMP $7EEF60[$7E:EF60]  ;\
-$A0:92FD F0 14       BEQ $14    [$9313]     ;} If new enemy ID != [$7E:EF60]:
+$A0:92FD F0 14       BEQ $14    [$9313]     ;} If (new enemy ID) != [enemy GFX data 2 enemy ID]:
 $A0:92FF A2 06 00    LDX #$0006             ; X = 6
 $A0:9302 CF 62 EF 7E CMP $7EEF62[$7E:EF62]  ;\
-$A0:9306 F0 0B       BEQ $0B    [$9313]     ;} If new enemy ID != [$7E:EF62]:
+$A0:9306 F0 0B       BEQ $0B    [$9313]     ;} If (new enemy ID) != [enemy GFX data 3 enemy ID]:
 $A0:9308 A9 00 00    LDA #$0000             ;\
 $A0:930B 99 98 0F    STA $0F98,y[$7E:1018]  ;} New enemy VRAM tiles index = 0
 $A0:930E 99 96 0F    STA $0F96,y[$7E:1016]  ; New enemy palette index = 0
 $A0:9311 80 10       BRA $10    [$9323]
 
 $A0:9313 BF 64 EF 7E LDA $7EEF64,x[$7E:EF66];\ Else:
-$A0:9317 99 98 0F    STA $0F98,y[$7E:1018]  ;} New enemy VRAM tiles index = [$7E:EF64 + [X]]
+$A0:9317 99 98 0F    STA $0F98,y[$7E:1018]  ;} New enemy VRAM tiles index = [enemy GFX data enemy tiles index]
 $A0:931A BF 6C EF 7E LDA $7EEF6C,x[$7E:EF6E];\
 $A0:931E EB          XBA                    ;|
-$A0:931F 0A          ASL A                  ;} New enemy palette index = [$7E:EF6C + [X]] * 200h
+$A0:931F 0A          ASL A                  ;} New enemy palette index = [enemy GFX data enemy palette index] * 200h
 $A0:9320 99 96 0F    STA $0F96,y[$7E:1016]  ;/
 
 $A0:9323 AE 20 0E    LDX $0E20  [$7E:0E20]  ;\
@@ -2128,23 +2136,23 @@ $A0:9343 29 FF 00    AND #$00FF             ;} New enemy layer = [$A0:0039 + [X]
 $A0:9346 99 9A 0F    STA $0F9A,y[$7E:101A]  ;/
 $A0:9349 BF 0C 00 A0 LDA $A0000C,x[$A0:E24B];\
 $A0:934D 99 A6 0F    STA $0FA6,y[$7E:1026]  ;} New enemy bank = [$A0:000C + [X]]
-$A0:9350 AE 20 0E    LDX $0E20  [$7E:0E20]  ;\
-$A0:9353 BD 00 00    LDA $0000,x[$A6:AA2F]  ;} New enemy ID = [[$0E20]]
-$A0:9356 99 78 0F    STA $0F78,y[$7E:0FF8]  ;/
+$A0:9350 AE 20 0E    LDX $0E20  [$7E:0E20]  ; X = [$0E20] (enemy population data pointer)
+$A0:9353 BD 00 00    LDA $0000,x[$A6:AA2F]  ;\
+$A0:9356 99 78 0F    STA $0F78,y[$7E:0FF8]  ;} New enemy ID = [[X]]
 $A0:9359 BD 02 00    LDA $0002,x[$A6:AA31]  ;\
-$A0:935C 99 7A 0F    STA $0F7A,y[$7E:0FFA]  ;} New enemy X position = [[$0E20] + 2]
+$A0:935C 99 7A 0F    STA $0F7A,y[$7E:0FFA]  ;} New enemy X position = [[X] + 2]
 $A0:935F BD 04 00    LDA $0004,x[$A6:AA33]  ;\
-$A0:9362 99 7E 0F    STA $0F7E,y[$7E:0FFE]  ;} New enemy Y position = [[$0E20] + 4]
+$A0:9362 99 7E 0F    STA $0F7E,y[$7E:0FFE]  ;} New enemy Y position = [[X] + 4]
 $A0:9365 BD 06 00    LDA $0006,x[$A6:AA35]  ;\
-$A0:9368 99 92 0F    STA $0F92,y[$7E:1012]  ;} New enemy initialisation parameter = [[$0E20] + 6]
+$A0:9368 99 92 0F    STA $0F92,y[$7E:1012]  ;} New enemy initialisation parameter = [[X] + 6]
 $A0:936B BD 08 00    LDA $0008,x[$A6:AA37]  ;\
-$A0:936E 99 86 0F    STA $0F86,y[$7E:1006]  ;} New enemy properties = [[$0E20] + 8]
+$A0:936E 99 86 0F    STA $0F86,y[$7E:1006]  ;} New enemy properties = [[X] + 8]
 $A0:9371 BD 0A 00    LDA $000A,x[$A6:AA39]  ;\
-$A0:9374 99 88 0F    STA $0F88,y[$7E:1008]  ;} New enemy extra properties = [[$0E20] + Ah]
+$A0:9374 99 88 0F    STA $0F88,y[$7E:1008]  ;} New enemy extra properties = [[X] + Ah]
 $A0:9377 BD 0C 00    LDA $000C,x[$A6:AA3B]  ;\
-$A0:937A 99 B4 0F    STA $0FB4,y[$7E:1034]  ;} New enemy parameter 1 = [[$0E20] + Ch]
+$A0:937A 99 B4 0F    STA $0FB4,y[$7E:1034]  ;} New enemy parameter 1 = [[X] + Ch]
 $A0:937D BD 0E 00    LDA $000E,x[$A6:AA3D]  ;\
-$A0:9380 99 B6 0F    STA $0FB6,y[$7E:1036]  ;} New enemy parameter 2 = [[$0E20] + Eh]
+$A0:9380 99 B6 0F    STA $0FB6,y[$7E:1036]  ;} New enemy parameter 2 = [[X] + Eh]
 $A0:9383 A9 00 00    LDA #$0000             ;\
 $A0:9386 99 A4 0F    STA $0FA4,y[$7E:1024]  ;} New enemy frame counter = 0
 $A0:9389 99 90 0F    STA $0F90,y[$7E:1010]  ; New enemy instruction timer = 0
@@ -2164,12 +2172,12 @@ $A0:93AF 5A          PHY
 $A0:93B0 8C 54 0E    STY $0E54  [$7E:0E54]  ; Enemy index = [new enemy index]
 $A0:93B3 BE 78 0F    LDX $0F78,y[$7E:0FF8]  ;\
 $A0:93B6 BF 12 00 A0 LDA $A00012,x[$A0:E251];|
-$A0:93BA C9 00 80    CMP #$8000             ;} If [$A0:0012 + [new enemy ID]] >= 8000h:
+$A0:93BA C9 00 80    CMP #$8000             ;} If (new enemy initialisation AI) >= 8000h:
 $A0:93BD 30 10       BMI $10    [$93CF]     ;/
 $A0:93BF 8D 84 17    STA $1784  [$7E:1784]  ;\
 $A0:93C2 BF 0C 00 A0 LDA $A0000C,x[$A0:E24B];|
 $A0:93C6 8D 86 17    STA $1786  [$7E:1786]  ;|
-$A0:93C9 8B          PHB                    ;} Execute new enemy initialisation AI
+$A0:93C9 8B          PHB                    ;} Execute (new enemy initialisation AI)
 $A0:93CA 22 1A 94 A0 JSL $A0941A[$A0:941A]  ;|
 $A0:93CE AB          PLB                    ;/
 
@@ -2179,7 +2187,7 @@ $A0:93D1 B9 86 0F    LDA $0F86,y[$7E:1006]  ;\
 $A0:93D4 89 00 20    BIT #$2000             ;} If new enemy processes instructions:
 $A0:93D7 F0 06       BEQ $06    [$93DF]     ;/
 $A0:93D9 A9 4D 80    LDA #$804D             ;\
-$A0:93DC 99 8E 0F    STA $0F8E,y[$7E:100E]  ;} New enemy spritemap pointer = $804D
+$A0:93DC 99 8E 0F    STA $0F8E,y[$7E:100E]  ;} New enemy spritemap pointer = $804D (kinda rude to do this *after* executing the enemy init AI)
 
 $A0:93DF AD 26 0E    LDA $0E26  [$7E:0E26]  ;\
 $A0:93E2 F0 1C       BEQ $1C    [$9400]     ;} If [$0E26] != 0:
@@ -2191,20 +2199,20 @@ $A0:93ED 69 40 00    ADC #$0040             ;} New enemy index += 40h
 $A0:93F0 8D 4A 0E    STA $0E4A  [$7E:0E4A]  ;/
 $A0:93F3 AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
 $A0:93F6 18          CLC                    ;|
-$A0:93F7 69 10 00    ADC #$0010             ;} $0E20 += 10h
+$A0:93F7 69 10 00    ADC #$0010             ;} $0E20 += 10h (next enemy population entry)
 $A0:93FA 8D 20 0E    STA $0E20  [$7E:0E20]  ;/
 $A0:93FD 4C DB 92    JMP $92DB  [$A0:92DB]  ; Go to spawn enemy parts
 
 $A0:9400 AD 88 17    LDA $1788  [$7E:1788]  ;\
 $A0:9403 8D 84 17    STA $1784  [$7E:1784]  ;|
-$A0:9406 AD 8A 17    LDA $178A  [$7E:178A]  ;} Enemy AI pointer = [$1788]
+$A0:9406 AD 8A 17    LDA $178A  [$7E:178A]  ;} Enemy AI pointer = [enemy AI pointer backup]
 $A0:9409 8D 86 17    STA $1786  [$7E:1786]  ;/
 $A0:940C AD 56 0E    LDA $0E56  [$7E:0E56]  ;\
-$A0:940F 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy index = [$0E56]
+$A0:940F 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy index = [enemy index backup]
 $A0:9412 AE 4A 0E    LDX $0E4A  [$7E:0E4A]  ; X = [new enemy index]
 $A0:9415 A9 00 00    LDA #$0000             ; A = 0
 $A0:9418 AB          PLB
-$A0:9419 6B          RTL
+$A0:9419 6B          RTL                    ; Return
 
 ; Execute enemy AI pointer
 $A0:941A B9 A5 0F    LDA $0FA5,y[$7E:1025]
@@ -2241,7 +2249,6 @@ $A0:9449 60          RTS
 
 ;;; $944A: Write enemy OAM (if not on frozen or invincible frame) ;;;
 {
-; I think $7E:7010/12 are X and Y offsets due to Ceres elevator room rotation
 $A0:944A 8B          PHB
 $A0:944B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:944E BD A5 0F    LDA $0FA5,x[$7E:0FA5]  ;\
@@ -2253,63 +2260,66 @@ $A0:9456 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9459 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A0:945C 38          SEC                    ;|
 $A0:945D ED 11 09    SBC $0911  [$7E:0911]  ;|
-$A0:9460 18          CLC                    ;} $0E22 = [enemy X position] - [layer 1 X position] + [enemy $7E:7010]
+$A0:9460 18          CLC                    ;} $0E22 = [enemy X position] - [layer 1 X position] + [enemy graphical X offset] (enemy X position on screen)
 $A0:9461 7F 10 70 7E ADC $7E7010,x[$7E:7010];|
 $A0:9465 8D 22 0E    STA $0E22  [$7E:0E22]  ;/
-$A0:9468 85 14       STA $14    [$7E:0014]  ; $14 = [$0E22]
+$A0:9468 85 14       STA $14    [$7E:0014]  ; $14 = (enemy X position on screen) (sprite X position)
 $A0:946A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A0:946D 38          SEC                    ;|
 $A0:946E ED 15 09    SBC $0915  [$7E:0915]  ;|
-$A0:9471 18          CLC                    ;} $0E20 = [enemy Y position] - [layer 1 Y position] + [enemy $7E:7012]
+$A0:9471 18          CLC                    ;} $0E20 = [enemy Y position] - [layer 1 Y position] + [enemy graphical Y offset] (enemy Y position on screen)
 $A0:9472 7F 12 70 7E ADC $7E7012,x[$7E:7012];|
 $A0:9476 8D 20 0E    STA $0E20  [$7E:0E20]  ;/
-$A0:9479 85 12       STA $12    [$7E:0012]  ; $12 = [$0E20]
+$A0:9479 85 12       STA $12    [$7E:0012]  ; $12 = (enemy Y position on screen) (sprite Y position)
 $A0:947B BD A2 0F    LDA $0FA2,x[$7E:0FA2]  ;\
-$A0:947E F0 17       BEQ $17    [$9497]     ;} If [enemy shake timer] != 0:
+$A0:947E F0 17       BEQ $17    [$9497]     ;} If [enemy shake timer] = 0: BRANCH_NO_SHAKE
 $A0:9480 BD A4 0F    LDA $0FA4,x[$7E:1024]  ;\
 $A0:9483 29 02 00    AND #$0002             ;} If [enemy frame counter] & 2 != 0:
 $A0:9486 F0 07       BEQ $07    [$948F]     ;/
-$A0:9488 C6 14       DEC $14    [$7E:0014]  ; Decrement $14
-$A0:948A CE 22 0E    DEC $0E22  [$7E:0E22]  ; Decrement $0E22
+$A0:9488 C6 14       DEC $14    [$7E:0014]  ; Decrement (sprite X position)
+$A0:948A CE 22 0E    DEC $0E22  [$7E:0E22]  ; Decrement (enemy X position on screen)
 $A0:948D 80 05       BRA $05    [$9494]
                                             ; Else ([enemy frame counter] & 2 = 0):
-$A0:948F E6 14       INC $14    [$7E:0014]  ; Increment $14
-$A0:9491 EE 22 0E    INC $0E22  [$7E:0E22]  ; Increment $0E22
+$A0:948F E6 14       INC $14    [$7E:0014]  ; Increment (sprite X position)
+$A0:9491 EE 22 0E    INC $0E22  [$7E:0E22]  ; Increment (enemy X position on screen)
 
 $A0:9494 DE A2 0F    DEC $0FA2,x[$7E:1022]  ; Decrement enemy shake timer
 
+; BRANCH_NO_SHAKE
 $A0:9497 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
-$A0:949A F0 0D       BEQ $0D    [$94A9]     ;} If enemy not invincible:
+$A0:949A F0 0D       BEQ $0D    [$94A9]     ;} If [enemy flash timer] != 0:
 $A0:949C AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
-$A0:949F 29 02 00    AND #$0002             ;} Or if [$0E44] & 2 = 0:
+$A0:949F 29 02 00    AND #$0002             ;} If [number of times main enemy routine has been executed] & 2 != 0:
 $A0:94A2 F0 05       BEQ $05    [$94A9]     ;/
-$A0:94A4 A9 00 00    LDA #$0000             ;\
-$A0:94A7 80 17       BRA $17    [$94C0]     ;} Else: $03 = 0
+$A0:94A4 A9 00 00    LDA #$0000             ; $03 = 0 (palette 0)
+$A0:94A7 80 17       BRA $17    [$94C0]     ; Go to BRANCH_DETERMINED_PALETTE
 
 $A0:94A9 BD 9E 0F    LDA $0F9E,x[$7E:0F9E]  ;\
-$A0:94AC F0 0F       BEQ $0F    [$94BD]     ;} If [enemy frozen timer] != 0:
+$A0:94AC F0 0F       BEQ $0F    [$94BD]     ;} If [enemy frozen timer] = 0: go to BRANCH_USE_ENEMY_PALETTE
 $A0:94AE C9 5A 00    CMP #$005A             ;\
-$A0:94B1 B0 05       BCS $05    [$94B8]     ;} If [enemy frozen timer] >= 90:
+$A0:94B1 B0 05       BCS $05    [$94B8]     ;} If [enemy frozen timer] < 90:
 $A0:94B3 89 02 00    BIT #$0002             ;\
-$A0:94B6 F0 05       BEQ $05    [$94BD]     ;} Or [enemy frozen timer] & 2 != 0:
+$A0:94B6 F0 05       BEQ $05    [$94BD]     ;} Or [enemy frozen timer] & 2 = 0: go to BRANCH_USE_ENEMY_PALETTE
 
-$A0:94B8 A9 00 0C    LDA #$0C00             ;\
-$A0:94BB 80 03       BRA $03    [$94C0]     ;} $03 = C00h
+$A0:94B8 A9 00 0C    LDA #$0C00             ; $03 = C00h (palette 6)
+$A0:94BB 80 03       BRA $03    [$94C0]     ; Go to BRANCH_DETERMINED_PALETTE
 
-$A0:94BD BD 96 0F    LDA $0F96,x[$7E:0F96]  ; Else: $03 = [enemy palette slot]
+; BRANCH_USE_ENEMY_PALETTE
+$A0:94BD BD 96 0F    LDA $0F96,x[$7E:0F96]  ; $03 = [enemy palette index]
 
+; BRANCH_DETERMINED_PALETTE
 $A0:94C0 85 03       STA $03    [$7E:0003]
 $A0:94C2 BD 98 0F    LDA $0F98,x[$7E:0F98]  ;\
-$A0:94C5 85 00       STA $00    [$7E:0000]  ;} $00 = [VRAM tiles index]
+$A0:94C5 85 00       STA $00    [$7E:0000]  ;} $00 = [enemy VRAM tiles index]
 $A0:94C7 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
-$A0:94CA 89 04 00    BIT #$0004             ;} If enemy is not multi hitbox:
+$A0:94CA 89 04 00    BIT #$0004             ;} If enemy doesn't use extended spritemap format:
 $A0:94CD D0 25       BNE $25    [$94F4]     ;/
 $A0:94CF BD 78 0F    LDA $0F78,x[$7E:0F78]  ;\
-$A0:94D2 8F 7E F3 7E STA $7EF37E[$7E:F37E]  ;} $7E:F37E = [enemy ID]
+$A0:94D2 8F 7E F3 7E STA $7EF37E[$7E:F37E]  ;} $7E:F37E = [enemy ID] (never read)
 $A0:94D6 BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
-$A0:94D9 8F 7A F3 7E STA $7EF37A[$7E:F37A]  ;} $7E:F37A = [enemy instruction pointer]
+$A0:94D9 8F 7A F3 7E STA $7EF37A[$7E:F37A]  ;} $7E:F37A = [enemy instruction list pointer] (never read)
 $A0:94DD AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
-$A0:94E0 8F 7C F3 7E STA $7EF37C[$7E:F37C]  ;} $7E:F37C = [enemy index]
+$A0:94E0 8F 7C F3 7E STA $7EF37C[$7E:F37C]  ;} $7E:F37C = [enemy index] (never read)
 $A0:94E4 A9 01 00    LDA #$0001             ;\
 $A0:94E7 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = 1
 $A0:94EB BC 8E 0F    LDY $0F8E,x[$7E:0F8E]  ; Y = [enemy spritemap pointer]
@@ -2317,61 +2327,61 @@ $A0:94EE 22 B8 8A 81 JSL $818AB8[$81:8AB8]  ; Add spritemap to OAM with base til
 $A0:94F2 AB          PLB
 $A0:94F3 60          RTS                    ; Return
 
-$A0:94F4 BD 8E 0F    LDA $0F8E,x[$7E:0F8E]  ;\ Else (enemy is multi hitbox):
+$A0:94F4 BD 8E 0F    LDA $0F8E,x[$7E:0F8E]  ;\
 $A0:94F7 C9 00 80    CMP #$8000             ;|
                                             ;} If [enemy spritemap pointer] < 8000h: crash
 $A0:94FA 30 FE       BMI $FE    [$94FA]     ;/
-$A0:94FC A8          TAY                    ;\
-$A0:94FD B9 00 00    LDA $0000,y[$A6:E983]  ;|
-$A0:9500 29 FF 00    AND #$00FF             ;} $060B = number of hitboxes
+$A0:94FC A8          TAY                    ; Y = [enemy spritemap pointer]
+$A0:94FD B9 00 00    LDA $0000,y[$A6:E983]  ;\
+$A0:9500 29 FF 00    AND #$00FF             ;} Number of remaining enemy spritemap entries = [[Y]]
 $A0:9503 8D 0B 06    STA $060B  [$7E:060B]  ;/
-$A0:9506 C8          INY
-$A0:9507 C8          INY
+$A0:9506 C8          INY                    ;\
+$A0:9507 C8          INY                    ;} Y += 2 (extended spritemap entry index)
 
+; LOOP
 $A0:9508 B9 04 00    LDA $0004,y[$A6:E989]  ;\
-$A0:950B 85 16       STA $16    [$7E:0016]  ;} $16 = spritemap pointer
+$A0:950B 85 16       STA $16    [$7E:0016]  ;} $16 = (entry spritemap pointer)
 $A0:950D AA          TAX                    ;\
 $A0:950E BD 00 00    LDA $0000,x[$A6:ED29]  ;|
-$A0:9511 C9 FE FF    CMP #$FFFE             ;} If [entry spritemap pointer] = FFFEh: (extended tilemap)
+$A0:9511 C9 FE FF    CMP #$FFFE             ;} If [(entry spritemap pointer)] = FFFEh: (extended tilemap)
 $A0:9514 D0 22       BNE $22    [$9538]     ;/
 $A0:9516 B9 00 00    LDA $0000,y[$A4:C30E]  ;\
 $A0:9519 18          CLC                    ;|
-$A0:951A 6D 22 0E    ADC $0E22  [$7E:0E22]  ;} $14 = [$0E22] + entry X offset
+$A0:951A 6D 22 0E    ADC $0E22  [$7E:0E22]  ;} $14 = (enemy X position on screen) + (entry X offset) (never read)
 $A0:951D 85 14       STA $14    [$7E:0014]  ;/
 $A0:951F B9 02 00    LDA $0002,y[$A4:C310]  ;\
 $A0:9522 18          CLC                    ;|
-$A0:9523 6D 20 0E    ADC $0E20  [$7E:0E20]  ;} $12 = [$0E20] + entry Y offset
+$A0:9523 6D 20 0E    ADC $0E20  [$7E:0E20]  ;} $12 = (enemy Y position on screen) + (entry Y offset) (never read)
 $A0:9526 85 12       STA $12    [$7E:0012]  ;/
 $A0:9528 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:952B BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
-$A0:952E 29 00 80    AND #$8000             ;} If enemy GFX update:
+$A0:952E 29 00 80    AND #$8000             ;} If not processed a new enemy instruction: go to BRANCH_NEXT
 $A0:9531 F0 3E       BEQ $3E    [$9571]     ;/
 $A0:9533 20 CA 96    JSR $96CA  [$A0:96CA]  ; Process extended tilemap
 $A0:9536 80 39       BRA $39    [$9571]     ; Go to BRANCH_NEXT
 
-$A0:9538 B9 00 00    LDA $0000,y[$A6:E985]  ;\ Else ([entry spritemap pointer] != FFFEh):
+$A0:9538 B9 00 00    LDA $0000,y[$A6:E985]  ;\
 $A0:953B 18          CLC                    ;|
-$A0:953C 6D 22 0E    ADC $0E22  [$7E:0E22]  ;} $14 = [$0E22] + entry X offset
+$A0:953C 6D 22 0E    ADC $0E22  [$7E:0E22]  ;} $14 = (enemy X position on screen) + (entry X offset) (sprite X position)
 $A0:953F 85 14       STA $14    [$7E:0014]  ;/
 $A0:9541 69 80 00    ADC #$0080             ;\
-$A0:9544 89 00 FE    BIT #$FE00             ;} If [$14] + 80h & FE00h: go to BRANCH_NEXT
+$A0:9544 89 00 FE    BIT #$FE00             ;} If not -80h <= (sprite X position) < 180h: go to BRANCH_NEXT
 $A0:9547 D0 28       BNE $28    [$9571]     ;/
 $A0:9549 B9 02 00    LDA $0002,y[$A6:E987]  ;\
 $A0:954C 18          CLC                    ;|
-$A0:954D 6D 20 0E    ADC $0E20  [$7E:0E20]  ;} $12 = [$0E20] + entry Y offset
+$A0:954D 6D 20 0E    ADC $0E20  [$7E:0E20]  ;} $12 = (enemy Y position on screen) + (entry Y offset) (sprite Y position)
 $A0:9550 85 12       STA $12    [$7E:0012]  ;/
 $A0:9552 69 80 00    ADC #$0080             ;\
-$A0:9555 89 00 FE    BIT #$FE00             ;} If [$12] + 80h & FE00h: go to BRANCH_NEXT
+$A0:9555 89 00 FE    BIT #$FE00             ;} If not -80h <= (sprite Y position) < 180h: go to BRANCH_NEXT
 $A0:9558 D0 17       BNE $17    [$9571]     ;/
 $A0:955A 5A          PHY
 $A0:955B A5 12       LDA $12    [$7E:0012]  ;\
-$A0:955D 89 00 FF    BIT #$FF00             ;} If [$12] & FF00h = 0:
+$A0:955D 89 00 FF    BIT #$FF00             ;} If 0 <= (sprite Y position) < 100h:
 $A0:9560 D0 08       BNE $08    [$956A]     ;/
 $A0:9562 A4 16       LDY $16    [$7E:0016]  ; Y = [$16]
 $A0:9564 22 22 8B 81 JSL $818B22[$81:8B22]  ; Add spritemap to OAM with base tile number
 $A0:9568 80 06       BRA $06    [$9570]
-
-                                            ; Else ([$12] & FF00h != 0):
+                                            ; Else (not 0 <= (sprite Y position) < 100h):
 $A0:956A A4 16       LDY $16    [$7E:0016]  ; Y = [$16]
 $A0:956C 22 96 8B 81 JSL $818B96[$81:8B96]  ; Add spritemap to OAM with base tile number off-screen
 
@@ -2380,10 +2390,10 @@ $A0:9570 7A          PLY
 ; BRANCH_NEXT
 $A0:9571 98          TYA                    ;\
 $A0:9572 18          CLC                    ;|
-$A0:9573 69 08 00    ADC #$0008             ;} Y += 8
+$A0:9573 69 08 00    ADC #$0008             ;} Y += 8 (next extended spritemap entry)
 $A0:9576 A8          TAY                    ;/
-$A0:9577 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
-$A0:957A D0 8C       BNE $8C    [$9508]     ; Loop
+$A0:9577 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement number of remaining enemy spritemap entries
+$A0:957A D0 8C       BNE $8C    [$9508]     ; If [number of remaining enemy spritemap entries] != 0: go to LOOP
 $A0:957C AB          PLB
 $A0:957D 60          RTS
 }
@@ -2401,14 +2411,14 @@ $A0:958B DE 9E 0F    DEC $0F9E,x[$7E:0FDE]  ; Decrement enemy frozen timer
 $A0:958E AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $A0:9591 29 02 00    AND #$0002             ;} If ice beam is equipped:
 $A0:9594 F0 05       BEQ $05    [$959B]     ;/
-$A0:9596 A9 01 00    LDA #$0001             ;\
-$A0:9599 80 0F       BRA $0F    [$95AA]     ;} Return A = 1
+$A0:9596 A9 01 00    LDA #$0001
+$A0:9599 80 0F       BRA $0F    [$95AA]     ; Return
 
 $A0:959B BD 8A 0F    LDA $0F8A,x[$7E:104A]  ;\
 $A0:959E 29 FB FF    AND #$FFFB             ;} Unset frozen AI
 $A0:95A1 9D 8A 0F    STA $0F8A,x[$7E:104A]  ;/
 $A0:95A4 9D 9E 0F    STA $0F9E,x[$7E:105E]  ; Set frozen timer to zero (hopefully, depending on if other AI bits were set)
-$A0:95A7 A9 00 00    LDA #$0000             ; Return A = 0
+$A0:95A7 A9 00 00    LDA #$0000
 
 $A0:95AA 7A          PLY
 $A0:95AB FA          PLX
@@ -2535,7 +2545,7 @@ $A0:96AE 99 A6 0F    STA $0FA6,y            ;} Enemy bank = [[X] + Ch]
 $A0:96B1 8D 86 17    STA $1786  [$7E:1786]  ; Enemy AI bank = [enemy bank]
 $A0:96B4 22 BA 96 A0 JSL $A096BA[$A0:96BA]  ; Execute enemy AI
 $A0:96B8 AB          PLB
-$A0:96B9 6B          RTL
+$A0:96B9 6B          RTL                    ; Return
 
 $A0:96BA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:96BD BD A6 0F    LDA $0FA6,x
@@ -2662,7 +2672,7 @@ $A0:975E AB          PLB                    ;/
 $A0:975F C2 30       REP #$30
 $A0:9761 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9764 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;|
-$A0:9767 89 04 00    BIT #$0004             ;} If enemy uses extended spritemap:
+$A0:9767 89 04 00    BIT #$0004             ;} If enemy uses extended spritemap format:
 $A0:976A F0 0C       BEQ $0C    [$9778]     ;/
 $A0:976C 20 7F 9B    JSR $9B7F  [$A0:9B7F]  ; Enemy / projectile collision handler - extended spritemap
 $A0:976F 20 23 9D    JSR $9D23  [$A0:9D23]  ; Enemy / bomb collision handler - extended spritemap
@@ -7973,6 +7983,9 @@ $A0:C063 4C B1 C0    JMP $C0B1  [$A0:C0B1]
 ;          80h
 ;
 ; Where # is the origin enemy and | is the negative y axis
+
+; Assumes Samus and enemy are with FFh pixels of each other in both dimensions
+
 $A0:C066 08          PHP
 $A0:C067 C2 30       REP #$30
 $A0:C069 AD F6 0A    LDA $0AF6  [$7E:0AF6]
@@ -8033,6 +8046,8 @@ $A0:C093 4C B1 C0    JMP $C0B1  [$A0:C0B1]
 ;          80h
 ;
 ; Where # is the origin enemy and | is the negative y axis
+
+; Assumes enemies are with FFh pixels of each other in both dimensions
 
 ; Used by shaktool
 

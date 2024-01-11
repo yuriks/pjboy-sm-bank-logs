@@ -7702,7 +7702,7 @@ $84:B968             dw B3C1,B940
 }
 
 
-;;; $B96C: Setup - PLM $B974 (shot/bombed/grappled reaction, shootable, BTS 10h) ;;;
+;;; $B96C: Setup - PLM $B974 (shot/bombed/grappled reaction, shootable, BTS 10h. Gate block) ;;;
 {
 $84:B96C 64 26       STZ $26    [$7E:0026]
 $84:B96E A9 FF FF    LDA #$FFFF
@@ -7711,7 +7711,7 @@ $84:B973 60          RTS
 }
 
 
-;;; $B974: PLM entry - shot/bombed/grappled reaction, shootable, BTS 10h ;;;
+;;; $B974: PLM entry - shot/bombed/grappled reaction, shootable, BTS 10h. Gate block ;;;
 {
 $84:B974             dw B96C,AAE3
 }
