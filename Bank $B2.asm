@@ -82,7 +82,7 @@ $B2:878C BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
 $B2:878F 8F 34 F4 7E STA $7EF434[$7E:F434]  ;} Special death item drop X origin position = [enemy X position]
 $B2:8793 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $B2:8796 8F 36 F4 7E STA $7EF436[$7E:F436]  ;} Special death item drop Y origin position = [enemy Y position]
-$B2:879A 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI, but skips hit-projectile and death animation
+$B2:879A 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $B2:879E BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
 $B2:87A1 D0 19       BNE $19    [$87BC]     ;} If [enemy health] != 0: return
 $B2:87A3 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -90,14 +90,14 @@ $B2:87A6 BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
 $B2:87A9 C9 93 F5    CMP #$F593             ;} If Lower Norfair pirate:
 $B2:87AC D0 0F       BNE $0F    [$87BD]     ;/
 $B2:87AE 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = 0
-$B2:87B1 A9 04 00    LDA #$0004             ;\
-$B2:87B4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;} Death animation
+$B2:87B1 A9 04 00    LDA #$0004             ; A = 4
+$B2:87B4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $B2:87B8 22 2B B9 A0 JSL $A0B92B[$A0:B92B]  ; Lower Norfair space pirate death item drop routine
-$B2:87BC 6B          RTL
+$B2:87BC 6B          RTL                    ; Return
 
 $B2:87BD 9E AA 0F    STZ $0FAA,x[$7E:102A]  ; Enemy $0FAA = 0
-$B2:87C0 A9 04 00    LDA #$0004             ;\
-$B2:87C3 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;} Death animation
+$B2:87C0 A9 04 00    LDA #$0004             ; A = 4
+$B2:87C3 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $B2:87C7 6B          RTL
 }
 

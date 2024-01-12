@@ -2080,17 +2080,17 @@ $B3:96FE 60          RTS
 
 ;;; $96FF: Unused. Set Botwoon body enemy projectiles as intangible ;;;
 {
-$B3:96FF A0 22 00    LDY #$0022             ; Y = 22h
+$B3:96FF A0 22 00    LDY #$0022             ; Y = 22h (enemy projectile index)
 
 ; LOOP
 $B3:9702 BB          TYX
 $B3:9703 B9 D7 1B    LDA $1BD7,y            ;\
-$B3:9706 09 00 20    ORA #$2000             ;} Disable enemy projectile [Y] collisions with Samus
+$B3:9706 09 00 20    ORA #$2000             ;} Disable enemy projectile collisions with Samus
 $B3:9709 99 D7 1B    STA $1BD7,y            ;/
 $B3:970C A9 02 00    LDA #$0002             ;\
-$B3:970F 9F 80 F3 7E STA $7EF380,x          ;} Enemy projectile [Y] $7E:F380 = 2
+$B3:970F 9F 80 F3 7E STA $7EF380,x          ;} Disable enemy projectile interaction with projectiles
 $B3:9713 88          DEY                    ;\
-$B3:9714 88          DEY                    ;} Y -= 2
+$B3:9714 88          DEY                    ;} Y -= 2 (next enemy projectile)
 $B3:9715 C0 0A 00    CPY #$000A             ;\
 $B3:9718 10 E8       BPL $E8    [$9702]     ;} If [Y] >= Ah: go to LOOP
 $B3:971A 60          RTS
@@ -2703,7 +2703,7 @@ $B3:9CC8 09 00 20    ORA #$2000             ;} Disable enemy projectile collisio
 $B3:9CCB 99 D7 1B    STA $1BD7,y[$7E:1BF9]  ;/
 $B3:9CCE DA          PHX                    ;\
 $B3:9CCF BB          TYX                    ;|
-$B3:9CD0 A9 02 00    LDA #$0002             ;} Enemy projectile $7E:F380 = 2 (disable dud shot)
+$B3:9CD0 A9 02 00    LDA #$0002             ;} Disable enemy projectile interaction with projectiles
 $B3:9CD3 9F 80 F3 7E STA $7EF380,x[$7E:F3A2];|
 $B3:9CD7 FA          PLX                    ;/
 $B3:9CD8 80 13       BRA $13    [$9CED]
@@ -2713,7 +2713,7 @@ $B3:9CDD 29 FF DF    AND #$DFFF             ;} Enable enemy projectile collision
 $B3:9CE0 99 D7 1B    STA $1BD7,y[$7E:1BF9]  ;/
 $B3:9CE3 DA          PHX                    ;\
 $B3:9CE4 BB          TYX                    ;|
-$B3:9CE5 A9 01 00    LDA #$0001             ;} Enemy projectile $7E:F380 = 1 (enable buggy dud shot)
+$B3:9CE5 A9 01 00    LDA #$0001             ;} Enable enemy projectile buggy dud shot
 $B3:9CE8 9F 80 F3 7E STA $7EF380,x[$7E:F3A2];|
 $B3:9CEC FA          PLX                    ;/
 

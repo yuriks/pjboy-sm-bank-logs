@@ -3359,7 +3359,7 @@ $A7:BCCE 60          RTS
 {
 $A7:BCCF 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A7:BCD3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A7:BCD6 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
+$A7:BCD6 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A7:BCDA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A7:BCDD 6B          RTL
 }
@@ -3369,7 +3369,7 @@ $A7:BCDD 6B          RTL
 {
 $A7:BCDE 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A7:BCE2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A7:BCE5 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
+$A7:BCE5 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A7:BCE9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A7:BCEC 6B          RTL
 }
@@ -4175,22 +4175,22 @@ $A7:C3A8 AD 06 11    LDA $1106  [$7E:1106]  ;\
 $A7:C3AB 29 FF BF    AND #$BFFF             ;} Set Kraid good fingernail to not respawn or be solid to Samus
 $A7:C3AE 8D 06 11    STA $1106  [$7E:1106]  ;/
 $A7:C3B1 A9 80 01    LDA #$0180             ;\
-$A7:C3B4 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Death animation on Kraid good fingernail
+$A7:C3B4 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid good fingernail
 $A7:C3B7 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
 $A7:C3BB AD 46 11    LDA $1146  [$7E:1146]  ;\
 $A7:C3BE 29 FF BF    AND #$BFFF             ;} Set Kraid bad fingernail to not respawn or be solid to Samus
 $A7:C3C1 8D 46 11    STA $1146  [$7E:1146]  ;/
 $A7:C3C4 A9 C0 01    LDA #$01C0             ;\
-$A7:C3C7 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Death animation on Kraid bad fingernail
+$A7:C3C7 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid bad fingernail
 $A7:C3CA 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
 $A7:C3CE A9 80 00    LDA #$0080             ;\
-$A7:C3D1 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Death animation on Kraid top lint
+$A7:C3D1 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid top lint
 $A7:C3D4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
 $A7:C3D8 A9 C0 00    LDA #$00C0             ;\
-$A7:C3DB 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Death animation on Kraid middle lint
+$A7:C3DB 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid middle lint
 $A7:C3DE 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
 $A7:C3E2 A9 00 01    LDA #$0100             ;\
-$A7:C3E5 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Death animation on Kraid bottom lint
+$A7:C3E5 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid bottom lint
 $A7:C3E8 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
 $A7:C3EC 68          PLA
 $A7:C3ED 8D 54 0E    STA $0E54  [$7E:0E54]

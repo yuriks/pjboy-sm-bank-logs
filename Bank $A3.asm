@@ -789,7 +789,7 @@ $A3:8E6A 6B          RTL
 ;;; $8E6B: Enemy touch - enemy $D6BF (fireflea) ;;;
 {
 $A3:8E6B 22 23 80 A3 JSL $A38023[$A3:8023]  ; Normal enemy touch AI
-$A3:8E6F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Death animation
+$A3:8E6F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A3:8E73 AD 7E 17    LDA $177E  [$7E:177E]  ;\
 $A3:8E76 18          CLC                    ;|
 $A3:8E77 69 02 00    ADC #$0002             ;} If [fireflea darkness level] < Ch: (this should actually be compared to Ah, Ch causes table overread)
@@ -5134,7 +5134,7 @@ $A3:BBB4 09 00 04    ORA #$0400
 $A3:BBB7 9D 86 0F    STA $0F86,x
 $A3:BBBA 22 29 AE A0 JSL $A0AE29[$A0:AE29]
 $A3:BBBE 20 EB BB    JSR $BBEB  [$A3:BBEB]
-$A3:BBC1 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]
+$A3:BBC1 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A3:BBC5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BBC8 BD C6 0F    LDA $0FC6,x
 $A3:BBCB 09 00 02    ORA #$0200
@@ -5976,8 +5976,8 @@ $A3:C834 C9 00 02    CMP #$0200
 $A3:C837 F0 03       BEQ $03    [$C83C]
 $A3:C839 A0 00 00    LDY #$0000
 
-$A3:C83C 98          TYA
-$A3:C83D 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]
+$A3:C83C 98          TYA                    ; A = [Y]
+$A3:C83D 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 $A3:C841 6B          RTL
 }
@@ -9674,8 +9674,8 @@ $A3:EF3C 22 32 80 A3 JSL $A38032[$A3:8032]
 $A3:EF40 BD 8C 0F    LDA $0F8C,x[$7E:104C]
 $A3:EF43 D0 33       BNE $33    [$EF78]
 $A3:EF45 9E AA 0F    STZ $0FAA,x[$7E:106A]
-$A3:EF48 A9 04 00    LDA #$0004
-$A3:EF4B 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]
+$A3:EF48 A9 04 00    LDA #$0004             ; A = 4
+$A3:EF4B 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A3:EF4F A9 13 00    LDA #$0013
 $A3:EF52 22 84 F0 90 JSL $90F084[$90:F084]
 $A3:EF56 AE 54 0E    LDX $0E54  [$7E:0E54]

@@ -8,7 +8,7 @@
 ;     $8EB6 - determine which enemies to process
 ;     $9785 - Samus / projectile interaction handler
 ;     $8FD4 - main enemy routine
-;         $9758 - enemy collision handler
+;         $9758 - enemy collision handling
 ;         $C26A - process enemy instructions
 ;         $9423 - add enemy to drawing queue
 ;     $A8F0 - Samus / solid enemy collision detection, executed at least twice
@@ -1624,7 +1624,7 @@ $A0:8FD3 6B          RTL
 ;             Else if sprite interactions enabled:
 ;             {
 ;                 If time is not frozen and enemy time is not frozen:
-;                     Enemy collision handler
+;                     Enemy collision handling
 ;                     If [enemy ID] = 0: (enemy was killed?)
 ;                         Go to BRANCH_DRAW_ENEMY_END
 ;
@@ -1726,7 +1726,7 @@ $A0:9034 D0 21       BNE $21    [$9057]     ;} If sprite interactions disabled: 
 $A0:9036 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $A0:9039 0D 5E 18    ORA $185E  [$7E:185E]  ;} If time is not frozen and enemy time is not frozen:
 $A0:903C D0 0E       BNE $0E    [$904C]     ;/
-$A0:903E 20 58 97    JSR $9758  [$A0:9758]  ; Enemy collision handler
+$A0:903E 20 58 97    JSR $9758  [$A0:9758]  ; Enemy collision handling
 $A0:9041 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9044 BD 78 0F    LDA $0F78,x[$7E:0F78]  ;} If [enemy ID] = 0: (enemy was killed?)
 $A0:9047 D0 03       BNE $03    [$904C]     ;/
@@ -2570,7 +2570,7 @@ $A0:96C7 DC 84 17    JML [$1784]
 ;     dddd nnnn xxxx xxxx [...] ; First entry
 ;     dddd nnnn xxxx xxxx [...] ; Second entry
 ;     [...]                     ; Other entries
-;     FFFFh                     ; Terminator
+;     FFFF                      ; Terminator
 ; where
 ;     d: Destination address (in bank $7E)
 ;     n: Number of tiles (size of tilemap / 2)
@@ -2584,21 +2584,21 @@ $A0:96CE C8          INY                    ;/
 $A0:96CF B9 00 00    LDA $0000,y[$A4:D6DC]  ;\
 $A0:96D2 C9 FF FF    CMP #$FFFF             ;} If [[Y]] = FFFFh: go to BRANCH_RETURN
 $A0:96D5 F0 4A       BEQ $4A    [$9721]     ;/
-$A0:96D7 AA          TAX                    ; X = [[Y]]
+$A0:96D7 AA          TAX                    ; X = [[Y]] (destination address)
 $A0:96D8 B9 02 00    LDA $0002,y[$A4:D6DE]  ;\
-$A0:96DB 8D 0D 06    STA $060D  [$7E:060D]  ;} $060D = [[Y] + 2]
+$A0:96DB 8D 0D 06    STA $060D  [$7E:060D]  ;} Number of tiles = [[Y] + 2]
 $A0:96DE C8          INY                    ;\
 $A0:96DF C8          INY                    ;|
-$A0:96E0 C8          INY                    ;} Y += 4
+$A0:96E0 C8          INY                    ;} Y += 4 (tilemap address)
 $A0:96E1 C8          INY                    ;/
 $A0:96E2 4A          LSR A                  ;\
-$A0:96E3 90 13       BCC $13    [$96F8]     ;} If [$060D] & 1 = 0: go to BRANCH_UNROLLED
+$A0:96E3 90 13       BCC $13    [$96F8]     ;} If [number of tiles] % 2 = 0: go to BRANCH_UNROLLED
 
 $A0:96E5 B9 00 00    LDA $0000,y[$A4:D6F4]  ;\
 $A0:96E8 9F 00 00 7E STA $7E0000,x[$7E:2040];|
 $A0:96EC E8          INX                    ;|
-$A0:96ED E8          INX                    ;|
-$A0:96EE C8          INY                    ;} Copy [$060D] words from [Y] to $7E:0000 + [X]
+$A0:96ED E8          INX                    ;} Copy [number of tiles] words from [Y] to $7E:0000 + [X]
+$A0:96EE C8          INY                    ;} Y += [number of tiles] * 2
 $A0:96EF C8          INY                    ;|
 $A0:96F0 CE 0D 06    DEC $060D  [$7E:060D]  ;|
 $A0:96F3 D0 F0       BNE $F0    [$96E5]     ;/
@@ -2614,8 +2614,8 @@ $A0:9707 E8          INX                    ;|
 $A0:9708 E8          INX                    ;|
 $A0:9709 E8          INX                    ;|
 $A0:970A C8          INY                    ;|
-$A0:970B C8          INY                    ;} Copy [$060D] words from [Y] to $7E:0000 + [X]
-$A0:970C C8          INY                    ;|
+$A0:970B C8          INY                    ;} Copy [number of tiles] words from [Y] to $7E:0000 + [X]
+$A0:970C C8          INY                    ;} Y += [number of tiles] * 2
 $A0:970D C8          INY                    ;|
 $A0:970E E0 00 28    CPX #$2800             ;|
                                             ;|
@@ -2635,11 +2635,11 @@ $A0:9725 60          RTS
 
 ;;; $9726: Handle queuing enemy BG2 tilemap VRAM transfer ;;;
 {
-; Used by Crocomire and Mother Brain
+; Used by Phantoon, Draygon, Crocomire and Mother Brain
 $A0:9726 AD 1E 0E    LDA $0E1E  [$7E:0E1E]  ;\
 $A0:9729 F0 29       BEQ $29    [$9754]     ;} If enemy BG2 tilemap VRAM transfer requested:
 $A0:972B AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
-$A0:972E 0D 5E 18    ORA $185E  [$7E:185E]  ;} If time is not frozen:
+$A0:972E 0D 5E 18    ORA $185E  [$7E:185E]  ;} If time is not frozen and enemy time is not frozen:
 $A0:9731 D0 21       BNE $21    [$9754]     ;/
 $A0:9733 AE 30 03    LDX $0330  [$7E:0330]  ;\
 $A0:9736 AD 9A 17    LDA $179A  [$7E:179A]  ;|
@@ -2662,7 +2662,7 @@ $A0:9757 6B          RTL
 
 ;;; $9758..A3AE: Enemy collision handling ;;;
 {
-;;; $9758: Enemy collision handler ;;;
+;;; $9758: Enemy collision handling ;;;
 {
 $A0:9758 08          PHP
 $A0:9759 8B          PHB
@@ -2674,16 +2674,16 @@ $A0:9761 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9764 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;|
 $A0:9767 89 04 00    BIT #$0004             ;} If enemy uses extended spritemap format:
 $A0:976A F0 0C       BEQ $0C    [$9778]     ;/
-$A0:976C 20 7F 9B    JSR $9B7F  [$A0:9B7F]  ; Enemy / projectile collision handler - extended spritemap
-$A0:976F 20 23 9D    JSR $9D23  [$A0:9D23]  ; Enemy / bomb collision handler - extended spritemap
-$A0:9772 20 5A 9A    JSR $9A5A  [$A0:9A5A]  ; Enemy / Samus collision handler - extended spritemap
+$A0:976C 20 7F 9B    JSR $9B7F  [$A0:9B7F]  ; Enemy / projectile collision handling - extended spritemap
+$A0:976F 20 23 9D    JSR $9D23  [$A0:9D23]  ; Enemy / bomb collision handling - extended spritemap
+$A0:9772 20 5A 9A    JSR $9A5A  [$A0:9A5A]  ; Enemy / Samus collision handling - extended spritemap
 $A0:9775 AB          PLB
 $A0:9776 28          PLP
-$A0:9777 60          RTS
+$A0:9777 60          RTS                    ; Return
 
-$A0:9778 20 43 A1    JSR $A143  [$A0:A143]  ; Enemy / projectile collision handler
-$A0:977B 20 36 A2    JSR $A236  [$A0:A236]  ; Enemy / bomb collision handler
-$A0:977E 20 7A A0    JSR $A07A  [$A0:A07A]  ; Enemy / Samus collision handler
+$A0:9778 20 43 A1    JSR $A143  [$A0:A143]  ; Enemy / projectile collision handling
+$A0:977B 20 36 A2    JSR $A236  [$A0:A236]  ; Enemy / bomb collision handling
+$A0:977E 20 7A A0    JSR $A07A  [$A0:A07A]  ; Enemy / Samus collision handling
 $A0:9781 AB          PLB
 $A0:9782 28          PLP
 $A0:9783 60          RTS
@@ -2696,7 +2696,7 @@ $A0:9784 6B          RTL
 }
 
 
-;;; $9785: Samus / projectile interaction handler ;;;
+;;; $9785: Samus / projectile interaction handling ;;;
 {
 ; Handles bomb jumps and damage due to reflected projectiles
 $A0:9785 8B          PHB
@@ -2716,7 +2716,7 @@ $A0:97A4 AD CE 0C    LDA $0CCE  [$7E:0CCE]  ;\
 $A0:97A7 D0 08       BNE $08    [$97B1]     ;} If [projectile counter] != 0: go to BRANCH_PROJECTILE_IS_ACTIVE
 
 $A0:97A9 AB          PLB
-$A0:97AA 6B          RTL
+$A0:97AA 6B          RTL                    ; Return
 
 ; BRANCH_BOMB_IS_ACTIVE
 $A0:97AB A9 0A 00    LDA #$000A             ;\
@@ -2725,13 +2725,13 @@ $A0:97AE 8D 7C 18    STA $187C  [$7E:187C]  ;} Number of projectiles to check = 
 ; BRANCH_PROJECTILE_IS_ACTIVE
 $A0:97B1 AD AC 18    LDA $18AC  [$7E:18AC]  ;\
 $A0:97B4 F0 02       BEQ $02    [$97B8]     ;} If [projectile invincibility timer] != 0:
-$A0:97B6 AB          PLB                    ;\
-$A0:97B7 6B          RTL                    ;} Return
+$A0:97B6 AB          PLB
+$A0:97B7 6B          RTL                    ; Return
 
 $A0:97B8 AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $A0:97BB F0 02       BEQ $02    [$97BF]     ;} If [Samus contact damage index] != normal:
-$A0:97BD AB          PLB                    ;\
-$A0:97BE 6B          RTL                    ;} Return
+$A0:97BD AB          PLB
+$A0:97BE 6B          RTL                    ; Return
 
 $A0:97BF 9C A6 18    STZ $18A6  [$7E:18A6]  ; $18A6 = 0 (projectile index)
 
@@ -2842,7 +2842,7 @@ $A0:9893 6B          RTL
 }
 
 
-;;; $9894: Enemy projectile / Samus collision detection ;;;
+;;; $9894: Enemy projectile / Samus collision handling ;;;
 {
 $A0:9894 08          PHP
 $A0:9895 8B          PHB
@@ -2854,9 +2854,9 @@ $A0:989D A9 0B 00    LDA #$000B             ;\
 $A0:98A0 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = Bh
 $A0:98A4 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
 $A0:98A7 F0 03       BEQ $03    [$98AC]     ;} If [Samus invincibility timer] != 0:
-$A0:98A9 AB          PLB                    ;\
-$A0:98AA 28          PLP                    ;} Return
-$A0:98AB 6B          RTL                    ;/
+$A0:98A9 AB          PLB
+$A0:98AA 28          PLP
+$A0:98AB 6B          RTL                    ; Return
 
 $A0:98AC AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $A0:98AF D0 6F       BNE $6F    [$9920]     ;} If [Samus contact damage index] != normal: return
@@ -2923,15 +2923,17 @@ $A0:9922 6B          RTL
 
 ;;; $9923: Handle enemy projectile collision with Samus ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 $A0:9923 A9 60 00    LDA #$0060             ;\
 $A0:9926 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60h
 $A0:9929 A9 05 00    LDA #$0005             ;\
 $A0:992C 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = 5
 $A0:992F 9B          TXY                    ;\
 $A0:9930 BE 97 19    LDX $1997,y[$7E:19B9]  ;|
-$A0:9933 BF 0A 00 86 LDA $86000A,x[$86:973E];} If [$86:000A + [enemy projectile ID]] != 0:
+$A0:9933 BF 0A 00 86 LDA $86000A,x[$86:973E];} If (enemy projectile touch instruction list) != 0:
 $A0:9937 F0 09       BEQ $09    [$9942]     ;/
-$A0:9939 99 47 1B    STA $1B47,y[$7E:1B69]  ; Enemy projectile instruction pointer = [$86:000A + [enemy projectile ID]]
+$A0:9939 99 47 1B    STA $1B47,y[$7E:1B69]  ; Enemy projectile instruction pointer = (enemy projectile touch instruction list)
 $A0:993C A9 01 00    LDA #$0001             ;\
 $A0:993F 99 8F 1B    STA $1B8F,y[$7E:1BB1]  ;} Enemy projectile instruction delay = 1
 
@@ -2956,7 +2958,7 @@ $A0:996B 60          RTS
 }
 
 
-;;; $996C: Enemy projectile / projectile collision detection ;;;
+;;; $996C: Enemy projectile / projectile collision handling ;;;
 {
 $A0:996C 08          PHP
 $A0:996D 8B          PHB
@@ -2968,9 +2970,9 @@ $A0:9975 A9 0C 00    LDA #$000C             ;\
 $A0:9978 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = Ch
 $A0:997C AD CE 0C    LDA $0CCE  [$7E:0CCE]  ;\
 $A0:997F D0 03       BNE $03    [$9984]     ;} If [projectile counter] = 0:
-$A0:9981 AB          PLB                    ;\
-$A0:9982 28          PLP                    ;} Return
-$A0:9983 6B          RTL                    ;/
+$A0:9981 AB          PLB
+$A0:9982 28          PLP
+$A0:9983 6B          RTL                    ; Return
 
 $A0:9984 A9 22 00    LDA #$0022             ;\
 $A0:9987 8D A6 18    STA $18A6  [$7E:18A6]  ;} $18A6 = 22h (enemy projectile index)
@@ -2985,17 +2987,17 @@ $A0:9997 A0 00 00    LDY #$0000             ; Y = 0 (projectile index)
 
 ; LOOP_PROJECTILE
 $A0:999A BF 80 F3 7E LDA $7EF380,x[$7E:F3A2];\
-$A0:999E C9 02 00    CMP #$0002             ;} If [enemy projectile $7E:F380] = 2: go to BRANCH_NEXT_ENEMY_PROJECTILE
+$A0:999E C9 02 00    CMP #$0002             ;} If enemy projectile interaction with projectiles is disabled: go to BRANCH_NEXT_ENEMY_PROJECTILE
 $A0:99A1 F0 45       BEQ $45    [$99E8]     ;/
 $A0:99A3 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:99A6 F0 39       BEQ $39    [$99E1]     ;} If [projectile type] = 0: go to BRANCH_NEXT_PROJECTILE
 $A0:99A8 29 00 0F    AND #$0F00             ;\
-$A0:99AB C9 00 03    CMP #$0300             ;} If power bomb: go to BRANCH_NEXT_PROJECTILE
+$A0:99AB C9 00 03    CMP #$0300             ;} If projectile is power bomb: go to BRANCH_NEXT_PROJECTILE
 $A0:99AE F0 31       BEQ $31    [$99E1]     ;/
 $A0:99B0 C9 00 05    CMP #$0500             ;\
-$A0:99B3 F0 2C       BEQ $2C    [$99E1]     ;} If bomb: go to BRANCH_NEXT_PROJECTILE
+$A0:99B3 F0 2C       BEQ $2C    [$99E1]     ;} If projectile is bomb: go to BRANCH_NEXT_PROJECTILE
 $A0:99B5 C9 00 07    CMP #$0700             ;\
-$A0:99B8 10 27       BPL $27    [$99E1]     ;} If projectile explosion: go to BRANCH_NEXT_PROJECTILE
+$A0:99B8 10 27       BPL $27    [$99E1]     ;} If projectile is projectile explosion: go to BRANCH_NEXT_PROJECTILE
 $A0:99BA B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $A0:99BD 29 E0 FF    AND #$FFE0             ;|
 $A0:99C0 85 12       STA $12    [$7E:0012]  ;|
@@ -3014,7 +3016,7 @@ $A0:99DE 20 F9 99    JSR $99F9  [$A0:99F9]  ; Handle enemy projectile collision 
 
 ; BRANCH_NEXT_PROJECTILE
 $A0:99E1 C8          INY                    ;\
-$A0:99E2 C8          INY                    ;} Y += 2
+$A0:99E2 C8          INY                    ;} Y += 2 (next projectile)
 $A0:99E3 C0 0A 00    CPY #$000A             ;\
 $A0:99E6 30 B2       BMI $B2    [$999A]     ;} If [Y] < Ah: go to LOOP_PROJECTILE
 
@@ -3040,22 +3042,26 @@ $A0:99F8 6B          RTL
 ; Code at $9A3D for creating the dud shot graphics uses the wrong index register for the projectile position,
 ; meaning the sprite object usually doesn't appear (used for nuclear waffle and Botwoon)
 
+; Why does getting shot mask off all the property bits?
+; The first ASM instructions of the shot instruction list *are* executed in time to disable Samus collision before the next check,
+; but the high priority is applied for drawing this frame
+
 $A0:99F9 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
-$A0:99FC 89 08 00    BIT #$0008             ;} If projectile is not plasma:
+$A0:99FC 89 08 00    BIT #$0008             ;} If projectile is not plasma beam:
 $A0:99FF D0 09       BNE $09    [$9A0A]     ;/
 $A0:9A01 B9 04 0C    LDA $0C04,y[$7E:0C04]  ;\
-$A0:9A04 09 10 00    ORA #$0010             ;} Delete projectile
+$A0:9A04 09 10 00    ORA #$0010             ;} Flag projectile for deletion
 $A0:9A07 99 04 0C    STA $0C04,y[$7E:0C04]  ;/
 
 $A0:9A0A BF 80 F3 7E LDA $7EF380,x[$7E:F396];\
-$A0:9A0E C9 01 00    CMP #$0001             ;} If [enemy projectile $7E:F380] != 1:
+$A0:9A0E C9 01 00    CMP #$0001             ;} If enemy projectile buggy dud shot enabled: go to BRANCH_BUGGY_DUD_SHOT
 $A0:9A11 F0 2A       BEQ $2A    [$9A3D]     ;/
 $A0:9A13 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:9A16 5A          PHY                    ;|
 $A0:9A17 9B          TXY                    ;} Enemy projectile $1BFB = [projectile type]
 $A0:9A18 99 FB 1B    STA $1BFB,y[$7E:1C11]  ;/
 $A0:9A1B BE 97 19    LDX $1997,y[$7E:19AD]  ;\
-$A0:9A1E BF 0C 00 86 LDA $86000C,x[$86:AD6A];} Enemy projectile instruction list pointer = [$86:000C + [enemy projectile ID]] (shot instruction list)
+$A0:9A1E BF 0C 00 86 LDA $86000C,x[$86:AD6A];} Enemy projectile instruction list pointer = (enemy projectile shot instruction list)
 $A0:9A22 99 47 1B    STA $1B47,y[$7E:1B5D]  ;/
 $A0:9A25 A9 01 00    LDA #$0001             ;\
 $A0:9A28 99 8F 1B    STA $1B8F,y[$7E:1BA5]  ;} Enemy projectile instruction timer = 1
@@ -3068,6 +3074,7 @@ $A0:9A3A BB          TYX
 $A0:9A3B 7A          PLY
 $A0:9A3C 60          RTS                    ; Return
 
+; BRANCH_BUGGY_DUD_SHOT
 $A0:9A3D BD 64 0B    LDA $0B64,x[$7E:0B86]  ;\
 $A0:9A40 85 12       STA $12    [$7E:0012]  ;|
 $A0:9A42 BD 78 0B    LDA $0B78,x[$7E:0B9A]  ;|
@@ -3082,9 +3089,9 @@ $A0:9A59 60          RTS
 }
 
 
-;;; $9A5A: Enemy / Samus collision handler - extended spritemap ;;;
+;;; $9A5A: Enemy / Samus collision handling - extended spritemap ;;;
 {
-; This routine disables Samuss invincibility if she is using blue suit or screw attack (unless there are no tangible enemies)
+; This routine disables Samus' invincibility if she is using blue suit or screw attack (unless there are no tangible enemies)
 $A0:9A5A 8B          PHB
 $A0:9A5B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9A5E BD A6 0F    LDA $0FA6,x[$7E:0FA6]  ;\
@@ -3105,8 +3112,8 @@ $A0:9A7F C9 4C 80    CMP #$804C             ;} If (enemy touch) = $804B/$804C:
 $A0:9A82 F0 05       BEQ $05    [$9A89]     ;|
 $A0:9A84 C9 4B 80    CMP #$804B             ;|
 $A0:9A87 D0 02       BNE $02    [$9A8B]     ;/
-$A0:9A89 AB          PLB                    ;\
-$A0:9A8A 60          RTS                    ;} Return
+$A0:9A89 AB          PLB
+$A0:9A8A 60          RTS                    ; Return
 
 $A0:9A8B AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $A0:9A8E F0 05       BEQ $05    [$9A95]     ;} If [Samus contact damage index] != normal:
@@ -3222,7 +3229,7 @@ $A0:9B7E 60          RTS
 }
 
 
-;;; $9B7F: Enemy / projectile collision handler - extended spritemap ;;;
+;;; $9B7F: Enemy / projectile collision handling - extended spritemap ;;;
 {
 $A0:9B7F 8B          PHB
 $A0:9B80 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3236,10 +3243,10 @@ $A0:9B8D A9 03 00    LDA #$0003             ;\
 $A0:9B90 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = 3
 $A0:9B94 AD CE 0C    LDA $0CCE  [$7E:0CCE]  ;\
 $A0:9B97 D0 02       BNE $02    [$9B9B]     ;} If [projectile counter] = 0:
-$A0:9B99 AB          PLB                    ;\
-$A0:9B9A 60          RTS                    ;} Return
+$A0:9B99 AB          PLB
+$A0:9B9A 60          RTS                    ; Return
 
-$A0:9B9B 8D 0F 06    STA $060F  [$7E:060F]
+$A0:9B9B 8D 0F 06    STA $060F  [$7E:060F]  ; $060F = [projectile counter] (never read)
 $A0:9B9E AC 54 0E    LDY $0E54  [$7E:0E54]  ;\
 $A0:9BA1 B9 8E 0F    LDA $0F8E,y[$7E:0F8E]  ;} If [enemy spritemap pointer] = 0: return
 $A0:9BA4 F0 16       BEQ $16    [$9BBC]     ;/
@@ -3248,12 +3255,12 @@ $A0:9BA9 F0 11       BEQ $11    [$9BBC]     ;} If [enemy spritemap pointer] = $8
 $A0:9BAB BE 78 0F    LDX $0F78,y[$7E:0F78]  ;\
 $A0:9BAE BF 32 00 A0 LDA $A00032,x[$A0:F685];|
 $A0:9BB2 C9 4C 80    CMP #$804C             ;|
-$A0:9BB5 F0 05       BEQ $05    [$9BBC]     ;} If [enemy shot] = $804B/$804C:
+$A0:9BB5 F0 05       BEQ $05    [$9BBC]     ;} If (enemy shot) = $804B/$804C:
 $A0:9BB7 C9 4B 80    CMP #$804B             ;|
 $A0:9BBA D0 02       BNE $02    [$9BBE]     ;/
 
-$A0:9BBC AB          PLB                    ;\
-$A0:9BBD 60          RTS                    ;} Return
+$A0:9BBC AB          PLB
+$A0:9BBD 60          RTS                    ; Return
 
 $A0:9BBE AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9BC1 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;|
@@ -3274,15 +3281,16 @@ $A0:9BE0 A8          TAY                    ;} If [projectile type] = 0: go to B
 $A0:9BE1 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;|
 $A0:9BE4 F0 12       BEQ $12    [$9BF8]     ;/
 $A0:9BE6 29 00 0F    AND #$0F00             ;\
-$A0:9BE9 C9 00 03    CMP #$0300             ;} If power bomb: go to BRANCH_NEXT_PROJECTILE
+$A0:9BE9 C9 00 03    CMP #$0300             ;} If projectile is not power bomb:
 $A0:9BEC F0 0A       BEQ $0A    [$9BF8]     ;/
 $A0:9BEE C9 00 05    CMP #$0500             ;\
-$A0:9BF1 F0 05       BEQ $05    [$9BF8]     ;} If bomb: go to BRANCH_NEXT_PROJECTILE
+$A0:9BF1 F0 05       BEQ $05    [$9BF8]     ;} If projectile is not bomb:
 $A0:9BF3 C9 00 07    CMP #$0700             ;\
-$A0:9BF6 30 03       BMI $03    [$9BFB]     ;} If projectile explosion: Go to BRANCH_NEXT_PROJECTILE
+$A0:9BF6 30 03       BMI $03    [$9BFB]     ;} If projectile is not projectile explosion: go to BRANCH_VALID_PROJECTILE
 
 $A0:9BF8 4C 07 9D    JMP $9D07  [$A0:9D07]  ; Go to BRANCH_NEXT_PROJECTILE
 
+; BRANCH_VALID_PROJECTILE
 $A0:9BFB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9BFE BD 8E 0F    LDA $0F8E,x[$7E:0F8E]  ;\
 $A0:9C01 C9 00 80    CMP #$8000             ;|
@@ -3363,7 +3371,7 @@ $A0:9CA1 CD 76 18    CMP $1876  [$7E:1876]  ;|
 $A0:9CA4 10 39       BPL $39    [$9CDF]     ;/
 $A0:9CA6 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:9CA9 29 00 0F    AND #$0F00             ;|
-$A0:9CAC C9 00 02    CMP #$0200             ;} If super missile:
+$A0:9CAC C9 00 02    CMP #$0200             ;} If projectile is super missile:
 $A0:9CAF D0 0C       BNE $0C    [$9CBD]     ;/
 $A0:9CB1 A9 1E 00    LDA #$001E             ;\
 $A0:9CB4 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 30
@@ -3372,16 +3380,17 @@ $A0:9CBA 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and en
 
 $A0:9CBD AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9CC0 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;|
-$A0:9CC3 89 00 10    BIT #$1000             ;|
-$A0:9CC6 D0 08       BNE $08    [$9CD0]     ;} If enemy blocks plasma beam or projectile is not plasma beam:
-$A0:9CC8 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;|
-$A0:9CCB 29 08 00    AND #$0008             ;|
+$A0:9CC3 89 00 10    BIT #$1000             ;} If enemy doesn't block plasma beam:
+$A0:9CC6 D0 08       BNE $08    [$9CD0]     ;/
+$A0:9CC8 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$A0:9CCB 29 08 00    AND #$0008             ;} If projectile is plasma beam: go to BRANCH_NO_DELETE
 $A0:9CCE D0 09       BNE $09    [$9CD9]     ;/
 
 $A0:9CD0 B9 04 0C    LDA $0C04,y[$7E:0C04]  ;\
 $A0:9CD3 09 10 00    ORA #$0010             ;} Flag projectile for deletion
 $A0:9CD6 99 04 0C    STA $0C04,y[$7E:0C04]  ;/
 
+; BRANCH_NO_DELETE
 $A0:9CD9 22 17 9D A0 JSL $A09D17[$A0:9D17]  ; Execute [enemy hitbox entry projectile collision pointer]
 $A0:9CDD 80 36       BRA $36    [$9D15]     ; Return
 
@@ -3422,7 +3431,7 @@ $A0:9D20 DC 84 17    JML [$1784][$B2:8779]
 }
 
 
-;;; $9D23: Enemy / bomb collision handler - extended spritemap ;;;
+;;; $9D23: Enemy / bomb collision handling - extended spritemap ;;;
 {
 ; I don't really see any reason why this routine should be separate from $9B7F
 $A0:9D23 8B          PHB
@@ -3452,8 +3461,8 @@ $A0:9D5D F0 05       BEQ $05    [$9D64]     ;} If [enemy shot] = $804B/$804C:
 $A0:9D5F C9 4B 80    CMP #$804B             ;|
 $A0:9D62 D0 02       BNE $02    [$9D66]     ;/
 
-$A0:9D64 AB          PLB                    ;\
-$A0:9D65 60          RTS                    ;} Return
+$A0:9D64 AB          PLB
+$A0:9D65 60          RTS                    ; Return
 
 $A0:9D66 AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
 $A0:9D69 F0 F9       BEQ $F9    [$9D64]     ;} If [bomb counter] = 0: return
@@ -3462,9 +3471,9 @@ $A0:9D6E 8D A6 18    STA $18A6  [$7E:18A6]  ;} Projectile index = 6
 
 ; LOOP_PROJECTILES
 $A0:9D71 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:9D74 AD A6 18    LDA $18A6  [$7E:18A6]
-$A0:9D77 0A          ASL A
-$A0:9D78 A8          TAY
+$A0:9D74 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A0:9D77 0A          ASL A                  ;} Y = [projectile index] * 2
+$A0:9D78 A8          TAY                    ;/
 $A0:9D79 B9 64 0B    LDA $0B64,y[$7E:0B6E]  ;\
 $A0:9D7C D0 03       BNE $03    [$9D81]     ;} If [projectile X position] = 0:
 $A0:9D7E 4C 7E 9E    JMP $9E7E  [$A0:9E7E]  ; Go to BRANCH_NEXT_PROJECTILE
@@ -3472,11 +3481,12 @@ $A0:9D7E 4C 7E 9E    JMP $9E7E  [$A0:9E7E]  ; Go to BRANCH_NEXT_PROJECTILE
 $A0:9D81 B9 18 0C    LDA $0C18,y[$7E:0C22]  ;\
 $A0:9D84 F0 08       BEQ $08    [$9D8E]     ;} If [projectile type] = 0: go to BRANCH_NEXT_PROJECTILE
 $A0:9D86 29 00 0F    AND #$0F00             ;\
-$A0:9D89 C9 00 05    CMP #$0500             ;} If not a bomb:
+$A0:9D89 C9 00 05    CMP #$0500             ;} If a bomb: go to BRANCH_BOMB
 $A0:9D8C F0 03       BEQ $03    [$9D91]     ;/
 
 $A0:9D8E 4C 7E 9E    JMP $9E7E  [$A0:9E7E]  ; Go to BRANCH_NEXT_PROJECTILE
 
+; BRANCH_BOMB
 $A0:9D91 B9 7C 0C    LDA $0C7C,y[$7E:0C86]  ;\
 $A0:9D94 F0 03       BEQ $03    [$9D99]     ;} If [bomb timer] != 0:
 $A0:9D96 4C 7E 9E    JMP $9E7E  [$A0:9E7E]  ; Go to BRANCH_NEXT_PROJECTILE
@@ -3629,7 +3639,7 @@ $A0:9EA0 22 84 F0 90 JSL $90F084[$90:F084]  ;} If grapple beam is inactive:
 $A0:9EA4 D0 03       BNE $03    [$9EA9]     ;/
 $A0:9EA6 4C 44 9F    JMP $9F44  [$A0:9F44]  ; Go to BRANCH_9F44 (fortunately this branch is never taken)
 
-$A0:9EA9 9C A6 18    STZ $18A6  [$7E:18A6]  ; $18A6 = 0
+$A0:9EA9 9C A6 18    STZ $18A6  [$7E:18A6]  ; $18A6 = 0 (never read)
 $A0:9EAC 9C AA 17    STZ $17AA  [$7E:17AA]  ; Interactive enemy indices index = 0
 
 ; LOOP
@@ -3690,25 +3700,25 @@ $A0:9F16 C9 00 80    CMP #$8000             ;|
 $A0:9F19 F0 29       BEQ $29    [$9F44]     ;/
 $A0:9F1B A0 01 00    LDY #$0001             ; Y = 1
 $A0:9F1E C9 05 80    CMP #$8005             ;\
-$A0:9F21 F0 21       BEQ $21    [$9F44]     ;} If enemy grapple AI != $8005:
+$A0:9F21 F0 21       BEQ $21    [$9F44]     ;} If (enemy grapple AI) = $8005: go to BRANCH_GRAPPLE_INDEX_DETERMINED
 $A0:9F23 C8          INY                    ; Y = 2
 $A0:9F24 C9 0A 80    CMP #$800A             ;\
-$A0:9F27 F0 1B       BEQ $1B    [$9F44]     ;} If enemy grapple AI != $800A:
+$A0:9F27 F0 1B       BEQ $1B    [$9F44]     ;} If (enemy grapple AI) = $800A: go to BRANCH_GRAPPLE_INDEX_DETERMINED
 $A0:9F29 C8          INY                    ; Y = 3
 $A0:9F2A C9 0F 80    CMP #$800F             ;\
-$A0:9F2D F0 15       BEQ $15    [$9F44]     ;} If enemy grapple AI != $800F:
+$A0:9F2D F0 15       BEQ $15    [$9F44]     ;} If (enemy grapple AI) = $800F: go to BRANCH_GRAPPLE_INDEX_DETERMINED
 $A0:9F2F C8          INY                    ; Y = 4
 $A0:9F30 C9 14 80    CMP #$8014             ;\
-$A0:9F33 F0 0F       BEQ $0F    [$9F44]     ;} If enemy grapple AI != $8014:
+$A0:9F33 F0 0F       BEQ $0F    [$9F44]     ;} If (enemy grapple AI) = $8014: go to BRANCH_GRAPPLE_INDEX_DETERMINED
 $A0:9F35 C8          INY                    ; Y = 5
 $A0:9F36 C9 19 80    CMP #$8019             ;\
-$A0:9F39 F0 09       BEQ $09    [$9F44]     ;} If enemy grapple AI != $8019:
+$A0:9F39 F0 09       BEQ $09    [$9F44]     ;} If (enemy grapple AI) = $8019: go to BRANCH_GRAPPLE_INDEX_DETERMINED
 $A0:9F3B C8          INY                    ; Y = 6
 $A0:9F3C C9 1E 80    CMP #$801E             ;\
-$A0:9F3F F0 03       BEQ $03    [$9F44]     ;} If enemy grapple AI != $801E:
+$A0:9F3F F0 03       BEQ $03    [$9F44]     ;} If (enemy grapple AI) = $801E: go to BRANCH_GRAPPLE_INDEX_DETERMINED
 $A0:9F41 A0 00 00    LDY #$0000             ; Y = 0
 
-; BRANCH_9F44
+; BRANCH_GRAPPLE_INDEX_DETERMINED
 $A0:9F44 86 12       STX $12    [$7E:0012]  ; $12 = [enemy ID]
 $A0:9F46 98          TYA                    ; A = [Y]
 $A0:9F47 C9 01 00    CMP #$0001             ;\
@@ -3740,10 +3750,10 @@ $A0:9F6B 80 E9       BRA $E9    [$9F56]     ; Return
 ;;; $9F6D: Switch enemy AI to main AI ;;;
 {
 $A0:9F6D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:9F70 9E 8A 0F    STZ $0F8A,x[$7E:0F8A]  ; AI handler = main AI
-$A0:9F73 9E A0 0F    STZ $0FA0,x[$7E:0FA0]  ; Invincibility timer = 0
-$A0:9F76 9E 9E 0F    STZ $0F9E,x[$7E:0F9E]  ; Frozen timer = 0
-$A0:9F79 9E A2 0F    STZ $0FA2,x[$7E:0FA2]  ; Shake timer = 0
+$A0:9F70 9E 8A 0F    STZ $0F8A,x[$7E:0F8A]  ; Enemy AI handler = main AI
+$A0:9F73 9E A0 0F    STZ $0FA0,x[$7E:0FA0]  ; Enemy invincibility timer = 0
+$A0:9F76 9E 9E 0F    STZ $0F9E,x[$7E:0F9E]  ; Enemy frozen timer = 0
+$A0:9F79 9E A2 0F    STZ $0FA2,x[$7E:0FA2]  ; Enemy shake timer = 0
 $A0:9F7C 6B          RTL
 }
 
@@ -3786,11 +3796,11 @@ $A0:9FC3 6B          RTL
 $A0:9FC4 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9FC7 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} >_<;
 $A0:9FCA A9 04 00    LDA #$0004             ;\
-$A0:9FCD 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 4
+$A0:9FCD 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 4 (grapple killed)
 $A0:9FD1 A9 00 00    LDA #$0000             ; A = 0
 $A0:9FD4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A0:9FD8 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:9FDB 9E 8A 0F    STZ $0F8A,x[$7E:10CA]  ; Set main AI
+$A0:9FDB 9E 8A 0F    STZ $0F8A,x[$7E:10CA]  ; Enemy AI handler = main AI
 $A0:9FDE 6B          RTL
 }
 
@@ -3798,15 +3808,14 @@ $A0:9FDE 6B          RTL
 ;;; $9FDF: Switch to frozen AI ;;;
 {
 $A0:9FDF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:9FE2 A9 04 00    LDA #$0004
-$A0:9FE5 9D 8A 0F    STA $0F8A,x[$7E:0F8A]
+$A0:9FE2 A9 04 00    LDA #$0004             ;\
+$A0:9FE5 9D 8A 0F    STA $0F8A,x[$7E:0F8A]  ;} Enemy AI handler = frozen AI
 $A0:9FE8 6B          RTL
 }
 
 
 ;;; $9FE9: Samus latches on with grapple - no invincibility ;;;
 {
-; Grapple reaction
 $A0:9FE9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9FEC BD 9E 0F    LDA $0F9E,x[$7E:105E]  ;\
 $A0:9FEF D0 37       BNE $37    [$A028]     ;} If [enemy frozen timer] != 0: go to BRANCH_FROZEN
@@ -3814,7 +3823,7 @@ $A0:9FF1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9FF4 BD 78 0F    LDA $0F78,x[$7E:1038]  ;\
 $A0:9FF7 AA          TAX                    ;|
 $A0:9FF8 BF 18 00 A0 LDA $A00018,x[$A0:E8D7];|
-$A0:9FFC 8D 84 17    STA $1784  [$7E:1784]  ;} Execute enemy main AI
+$A0:9FFC 8D 84 17    STA $1784  [$7E:1784]  ;} Execute (enemy main AI)
 $A0:9FFF 8B          PHB                    ;|
 $A0:A000 22 18 A0 A0 JSL $A0A018[$A0:A018]  ;|
 $A0:A004 AB          PLB                    ;/
@@ -3824,7 +3833,7 @@ $A0:A00B 8D 08 0D    STA $0D08  [$7E:0D08]  ;} Grapple beam end X position = [en
 $A0:A00E BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
 $A0:A011 8D 0C 0D    STA $0D0C  [$7E:0D0C]  ;} Grapple beam end Y position = [enemy Y position]
 $A0:A014 9E 8A 0F    STZ $0F8A,x[$7E:104A]  ; Enemy AI handler = main AI
-$A0:A017 6B          RTL
+$A0:A017 6B          RTL                    ; Return
 
 ; Execute enemy AI pointer
 $A0:A018 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3874,7 +3883,7 @@ $A0:A06F 6B          RTL
 
 ;;; $A070: Switch to frozen AI ;;;
 {
-; Exact clone of $9FDF
+; Clone of $9FDF
 $A0:A070 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A073 A9 04 00    LDA #$0004
 $A0:A076 9D 8A 0F    STA $0F8A,x
@@ -3883,7 +3892,7 @@ $A0:A079 6B          RTL
 }
 
 
-;;; $A07A: Enemy / Samus collision handler ;;;
+;;; $A07A: Enemy / Samus collision handling ;;;
 {
 ; $A091 is the cause of screw attack cancelling invincibility (need to check $9A8B too)
 ; Not the cause of crystal flash insta-death, that would be $90:D6D6
@@ -3990,7 +3999,7 @@ $A0:A140 DC 84 17    JML [$1784][$A6:F920]  ; Go to [$1784]
 }
 
 
-;;; $A143: Enemy / projectile collision handler ;;;
+;;; $A143: Enemy / projectile collision handling ;;;
 {
 $A0:A143 8B          PHB
 $A0:A144 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4003,9 +4012,9 @@ $A0:A150 AB          PLB                    ;/
 $A0:A151 A9 07 00    LDA #$0007             ;\
 $A0:A154 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = 7
 $A0:A158 AD CE 0C    LDA $0CCE  [$7E:0CCE]  ;\
-$A0:A15B D0 02       BNE $02    [$A15F]     ;} If [projectile counter ] = 0:
-$A0:A15D AB          PLB                    ;\
-$A0:A15E 60          RTS                    ;} Return
+$A0:A15B D0 02       BNE $02    [$A15F]     ;} If [projectile counter] = 0:
+$A0:A15D AB          PLB
+$A0:A15E 60          RTS                    ; Return
 
 $A0:A15F AC 54 0E    LDY $0E54  [$7E:0E54]
 $A0:A162 B9 8E 0F    LDA $0F8E,y[$7E:10CE]  ;\
@@ -4020,31 +4029,33 @@ $A0:A177 C9 FF DA    CMP #$DAFF             ;} If [enemy ID] = respawning enemy 
 $A0:A17A F0 E1       BEQ $E1    [$A15D]     ;/
 $A0:A17C B9 A0 0F    LDA $0FA0,y[$7E:10E0]  ;\
 $A0:A17F D0 DC       BNE $DC    [$A15D]     ;} If [enemy invincibility timer] != 0: return
-$A0:A181 9C A6 18    STZ $18A6  [$7E:18A6]  ; $18A6 = 0 (projectile index)
+$A0:A181 9C A6 18    STZ $18A6  [$7E:18A6]  ; Projectile index = 0
 
 ; LOOP
 $A0:A184 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A187 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A18A 0A          ASL A                  ;} Y = [$18A6] * 2
+$A0:A18A 0A          ASL A                  ;} Y = [projectile index] * 2
 $A0:A18B A8          TAY                    ;/
 $A0:A18C B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
-$A0:A18F F0 12       BEQ $12    [$A1A3]     ;} If [projectile type] = 0: go to BRANCH_NEXT
+$A0:A18F F0 12       BEQ $12    [$A1A3]     ;} If [projectile type] = 0: go to BRANCH_NEXT_PROJECTILE
 $A0:A191 29 00 0F    AND #$0F00             ;\
-$A0:A194 C9 00 03    CMP #$0300             ;} If (projectile type) = power bomb: go to BRANCH_NEXT
+$A0:A194 C9 00 03    CMP #$0300             ;} If projectile is not power bomb:
 $A0:A197 F0 0A       BEQ $0A    [$A1A3]     ;/
 $A0:A199 C9 00 05    CMP #$0500             ;\
-$A0:A19C F0 05       BEQ $05    [$A1A3]     ;} If (projectile type) = bomb: go to BRANCH_NEXT
+$A0:A19C F0 05       BEQ $05    [$A1A3]     ;} If projectile is not bomb:
 $A0:A19E C9 00 07    CMP #$0700             ;\
-$A0:A1A1 30 03       BMI $03    [$A1A6]     ;} If (projectile type) >= 7 (explosion):
-$A0:A1A3 4C 16 A2    JMP $A216  [$A0:A216]  ; Go to BRANCH_NEXT
+$A0:A1A1 30 03       BMI $03    [$A1A6]     ;} If projectile is not projectile explosion: go to BRANCH_VALID_PROJECTILE
 
+$A0:A1A3 4C 16 A2    JMP $A216  [$A0:A216]  ; Go to BRANCH_NEXT_PROJECTILE
+
+; BRANCH_VALID_PROJECTILE
 $A0:A1A6 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $A0:A1A9 38          SEC                    ;|
 $A0:A1AA FD 7A 0F    SBC $0F7A,x[$7E:11FA]  ;|
 $A0:A1AD 10 04       BPL $04    [$A1B3]     ;|
 $A0:A1AF 49 FF FF    EOR #$FFFF             ;|
 $A0:A1B2 1A          INC A                  ;|
-                                            ;} If |[projectile X position] - [enemy X position]| >= [projectile X radius] + [enemy X radius]: go to BRANCH_NEXT
+                                            ;} If |[projectile X position] - [enemy X position]| >= [projectile X radius] + [enemy X radius]: go to BRANCH_NEXT_PROJECTILE
 $A0:A1B3 38          SEC                    ;|
 $A0:A1B4 F9 B4 0B    SBC $0BB4,y[$7E:0BB4]  ;|
 $A0:A1B7 90 05       BCC $05    [$A1BE]     ;|
@@ -4063,11 +4074,11 @@ $A0:A1CC F9 C8 0B    SBC $0BC8,y[$7E:0BC8]  ;|
 $A0:A1CF 90 07       BCC $07    [$A1D8]     ;|
 $A0:A1D1 DD 84 0F    CMP $0F84,x[$7E:1204]  ;|
 $A0:A1D4 90 02       BCC $02    [$A1D8]     ;/
-$A0:A1D6 80 3E       BRA $3E    [$A216]     ; Go to BRANCH_NEXT
+$A0:A1D6 80 3E       BRA $3E    [$A216]     ; Go to BRANCH_NEXT_PROJECTILE
 
 $A0:A1D8 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:A1DB 29 00 0F    AND #$0F00             ;|
-$A0:A1DE C9 00 02    CMP #$0200             ;} If (projectile type) = super missile:
+$A0:A1DE C9 00 02    CMP #$0200             ;} If projectile is super missile:
 $A0:A1E1 D0 0C       BNE $0C    [$A1EF]     ;/
 $A0:A1E3 A9 1E 00    LDA #$001E             ;\
 $A0:A1E6 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 30
@@ -4075,28 +4086,28 @@ $A0:A1E9 A9 12 00    LDA #$0012             ;\
 $A0:A1EC 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
 
 $A0:A1EF AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A1F2 0A          ASL A                  ;} Y = [$18A6] * 2
+$A0:A1F2 0A          ASL A                  ;} Y = [projectile index] * 2
 $A0:A1F3 A8          TAY                    ;/
 $A0:A1F4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A1F7 BD 86 0F    LDA $0F86,x[$7E:1246]  ;\
 $A0:A1FA 89 00 10    BIT #$1000             ;} If enemy doesn't block plasma beam:
 $A0:A1FD D0 08       BNE $08    [$A207]     ;/
 $A0:A1FF B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
-$A0:A202 89 08 00    BIT #$0008             ;} If projectile is plasma: go to BRANCH_DONT_DELETE_BEAM
+$A0:A202 89 08 00    BIT #$0008             ;} If projectile is plasma beam: go to BRANCH_NO_DELETE
 $A0:A205 D0 09       BNE $09    [$A210]     ;/
 
 $A0:A207 B9 04 0C    LDA $0C04,y[$7E:0C04]  ;\
-$A0:A20A 09 10 00    ORA #$0010             ;} Delete projectile
+$A0:A20A 09 10 00    ORA #$0010             ;} Flag projectile for deletion
 $A0:A20D 99 04 0C    STA $0C04,y[$7E:0C04]  ;/
 
-; BRANCH_DONT_DELETE_BEAM
+; BRANCH_NO_DELETE
 $A0:A210 22 26 A2 A0 JSL $A0A226[$A0:A226]  ; Execute enemy shot
 $A0:A214 80 0E       BRA $0E    [$A224]     ; Return
 
-; BRANCH_NEXT
-$A0:A216 EE A6 18    INC $18A6  [$7E:18A6]  ; Increment $18A6
+; BRANCH_NEXT_PROJECTILE
+$A0:A216 EE A6 18    INC $18A6  [$7E:18A6]  ; Increment projectile index
 $A0:A219 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A21C C9 05 00    CMP #$0005             ;} If [$18A6] = 5: return
+$A0:A21C C9 05 00    CMP #$0005             ;} If [projectile index] = 5: return
 $A0:A21F F0 03       BEQ $03    [$A224]     ;/
 $A0:A221 4C 84 A1    JMP $A184  [$A0:A184]  ; Go to LOOP
 
@@ -4112,7 +4123,7 @@ $A0:A233 DC 84 17    JML [$1784][$A8:E91D]
 }
 
 
-;;; $A236: Enemy / bomb collision handler ;;;
+;;; $A236: Enemy / bomb collision handling ;;;
 {
 $A0:A236 8B          PHB
 $A0:A237 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4125,9 +4136,9 @@ $A0:A243 AB          PLB                    ;/
 $A0:A244 A9 08 00    LDA #$0008             ;\
 $A0:A247 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = 8
 $A0:A24B AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
-$A0:A24E D0 02       BNE $02    [$A252]     ;} If [projectile counter ] = 0:
-$A0:A250 AB          PLB                    ;\
-$A0:A251 60          RTS                    ;} Return
+$A0:A24E D0 02       BNE $02    [$A252]     ;} If [projectile counter] = 0:
+$A0:A250 AB          PLB
+$A0:A251 60          RTS                    ; Return
 
 $A0:A252 AC 54 0E    LDY $0E54  [$7E:0E54]
 $A0:A255 B9 8E 0F    LDA $0F8E,y[$7E:0F8E]  ;\
@@ -4139,12 +4150,12 @@ $A0:A262 B9 78 0F    LDA $0F78,y[$7E:0F78]  ;\
 $A0:A265 C9 FF DA    CMP #$DAFF             ;} If [enemy ID] = respawning enemy placeholder: return
 $A0:A268 F0 E6       BEQ $E6    [$A250]     ;/
 $A0:A26A A9 05 00    LDA #$0005             ;\
-$A0:A26D 8D A6 18    STA $18A6  [$7E:18A6]  ;} $18A6 = 5 (bomb index)
+$A0:A26D 8D A6 18    STA $18A6  [$7E:18A6]  ;} Bomb index = 5
 
 ; LOOP
 $A0:A270 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A273 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A276 0A          ASL A                  ;} Y = [$18A6] * 2
+$A0:A276 0A          ASL A                  ;} Y = [bomb index] * 2
 $A0:A277 A8          TAY                    ;/
 $A0:A278 B9 18 0C    LDA $0C18,y[$7E:0C22]  ;\
 $A0:A27B D0 03       BNE $03    [$A280]     ;} If [projectile type] = 0:
@@ -4154,7 +4165,7 @@ $A0:A280 B9 7C 0C    LDA $0C7C,y[$7E:0C86]  ;\
 $A0:A283 D0 61       BNE $61    [$A2E6]     ;} If [bomb timer] != 0: go to BRANCH_NEXT
 $A0:A285 B9 18 0C    LDA $0C18,y[$7E:0C22]  ;\
 $A0:A288 29 00 0F    AND #$0F00             ;|
-$A0:A28B C9 00 05    CMP #$0500             ;} If (projectile type) != bomb:
+$A0:A28B C9 00 05    CMP #$0500             ;} If projectile is not bomb:
 $A0:A28E F0 0B       BEQ $0B    [$A29B]     ;/
 $A0:A290 B9 18 0C    LDA $0C18,y[$7E:0C22]  ;\
 $A0:A293 89 00 80    BIT #$8000             ;} If projectile interacts with Samus:
@@ -4189,20 +4200,20 @@ $A0:A2C9 90 02       BCC $02    [$A2CD]     ;/
 $A0:A2CB 80 19       BRA $19    [$A2E6]     ; Go to BRANCH_NEXT
 
 $A0:A2CD AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A2D0 0A          ASL A                  ;} Y = [$18A6] * 2
+$A0:A2D0 0A          ASL A                  ;} Y = [bomb index] * 2
 $A0:A2D1 A8          TAY                    ;/
 $A0:A2D2 B9 7C 0C    LDA $0C7C,y[$7E:0C86]  ;\
 $A0:A2D5 D0 0F       BNE $0F    [$A2E6]     ;} If [bomb timer] != 0: go to BRANCH_NEXT (never true)
 $A0:A2D7 B9 04 0C    LDA $0C04,y[$7E:0C0E]  ;\
-$A0:A2DA 09 10 00    ORA #$0010             ;} Delete projectile
+$A0:A2DA 09 10 00    ORA #$0010             ;} Flag projectile for deletion
 $A0:A2DD 99 04 0C    STA $0C04,y[$7E:0C0E]  ;/
 $A0:A2E0 22 F6 A2 A0 JSL $A0A2F6[$A0:A2F6]  ; Execute enemy shot
 $A0:A2E4 80 0E       BRA $0E    [$A2F4]     ; Return
 
 ; BRANCH_NEXT
-$A0:A2E6 EE A6 18    INC $18A6  [$7E:18A6]  ; Increment $18A6
+$A0:A2E6 EE A6 18    INC $18A6  [$7E:18A6]  ; Increment bomb index
 $A0:A2E9 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A2EC C9 0A 00    CMP #$000A             ;} If [$18A6] = Ah: return
+$A0:A2EC C9 0A 00    CMP #$000A             ;} If [bomb index] = Ah: return
 $A0:A2EF F0 03       BEQ $03    [$A2F4]     ;/
 $A0:A2F1 4C 70 A2    JMP $A270  [$A0:A270]  ; Go to LOOP
 
@@ -4221,9 +4232,9 @@ $A0:A303 DC 84 17    JML [$1784][$A2:F0A2]
 ;;; $A306: Process enemy power bomb interaction ;;;
 {
 ; This routine is relying on $12 and $14 (the calculated power bomb explosion radius) not being modified over the course of the loop(!)
-; This is naive as hell obviously, and actually doesn't hold true if an enemy is killed by the power bomb (see e.g. $A3E6).
-; For respawning enemies, $12 = 4000h in their enemy death, making power bombs effectively infinite wide for the remaining enemies that frame.
-; For non-respawning enemies, $12 = 0 in their enemy death, making power bombs effectively zero sized for the remaining enemies that frame.
+; This doesn't hold true if an enemy is killed by the power bomb (see e.g. $A3E6) >_>;
+; For respawning enemies, $12 = 4000h in their enemy death, making power bombs effectively infinite wide for the remaining enemies that frame
+; For non-respawning enemies, $12 = 0 in their enemy death, making power bombs effectively zero sized for the remaining enemies that frame
 $A0:A306 8B          PHB
 $A0:A307 A9 05 00    LDA #$0005             ;\
 $A0:A30A 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Stage of enemy processing = 5
@@ -4278,10 +4289,10 @@ $A0:A36C 1A          INC A                  ;|
 $A0:A36D C5 14       CMP $14    [$7E:0014]  ;|
 $A0:A36F B0 20       BCS $20    [$A391]     ;/
 $A0:A371 BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
-$A0:A374 AA          TAX                    ;} A = enemy power bomb reaction
+$A0:A374 AA          TAX                    ;} A = (enemy power bomb reaction)
 $A0:A375 BF 28 00 A0 LDA $A00028,x[$A0:CEE7];/
 $A0:A379 D0 03       BNE $03    [$A37E]     ; If [A] = 0:
-$A0:A37B A9 37 80    LDA #$8037             ; A = $8037
+$A0:A37B A9 37 80    LDA #$8037             ; A = $8037 (normal enemy power bomb AI)
 
 $A0:A37E 8D 84 17    STA $1784  [$7E:1784]  ; Enemy AI pointer = [A]
 $A0:A381 22 9F A3 A0 JSL $A0A39F[$A0:A39F]  ; Execute enemy AI
@@ -4315,7 +4326,12 @@ $A0:A3AC DC 84 17    JML [$1784][$A2:8037]
 ;;; $A3AF: Enemy death ;;;
 {
 ;; Parameter:
-;;     A: Death animation
+;;     A: Death animation. Range 0..4
+;;         0: Small explosion. Used by grapple killed, power bomb killed, refill candy, fire geyser, boulder, creepy crawlies, skree, Norfair fireball, fireflea, waver, rinka, lavaquake rocks, fly, Maridia spikey shells, thin hopping blob, bouncing gooball, zebetite
+;;         1: Killed by Samus contact
+;;         2: Normal explosion. Used by super missile killed default, Wrecked Ship orb / robot / ghost, Maridia puffer / floater / large indestructible snail / snail / fish, fune, sidehopper, desgeega, mochtroid, slug, crab, metal skree, chute, rio, Norfair lava-jumping enemy, rio, spike shooting plant
+;;         3: Mini-Kraid explosion
+;;         4: Big explosion. Used by space pirates, Shaktool, ki-hunter, lava seahorse, kago, yapping maw, mini-Draygon, metroid, super-sidehopper/desgeega, Maridia beyblade turtle
 $A0:A3AF 08          PHP
 $A0:A3B0 8B          PHB
 $A0:A3B1 F4 00 A0    PEA $A000              ;\
@@ -4340,7 +4356,7 @@ $A0:A3D6 A0 45 F3    LDY #$F345             ;\
 $A0:A3D9 AD 20 0E    LDA $0E20  [$7E:0E20]  ;} Spawn enemy death explosion enemy projectile
 $A0:A3DC 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A0:A3E0 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
-$A0:A3E3 29 00 40    AND #$4000             ;} $12 = enemy respawn flag
+$A0:A3E3 29 00 40    AND #$4000             ;} $12 = (enemy respawn flag)
 $A0:A3E6 85 12       STA $12    [$7E:0012]  ;/
 $A0:A3E8 A0 3E 00    LDY #$003E             ;\
 $A0:A3EB AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
@@ -4368,6 +4384,11 @@ $A0:A40F 6B          RTL
 
 ;;; $A410: Rinka death ;;;
 {
+;; Parameter:
+;;     A: Death animation. Range 0..4
+;;         0/3/4: Small explosion
+;;         1: Killed by Samus contact
+;;         2: Normal explosion
 $A0:A410 08          PHP
 $A0:A411 8B          PHB
 $A0:A412 F4 00 A0    PEA $A000              ;\
@@ -4375,7 +4396,7 @@ $A0:A415 AB          PLB                    ;} DB = $A0
 $A0:A416 AB          PLB                    ;/
 $A0:A417 C2 30       REP #$30
 $A0:A419 C9 03 00    CMP #$0003             ;\
-$A0:A41C 30 03       BMI $03    [$A421]     ;} If [A] < 3:
+$A0:A41C 30 03       BMI $03    [$A421]     ;} If [A] >= 3:
 $A0:A41E A9 00 00    LDA #$0000             ; A = 0
 
 $A0:A421 8D 20 0E    STA $0E20  [$7E:0E20]  ; $0E20 = [A]
@@ -4384,7 +4405,7 @@ $A0:A427 A0 45 F3    LDY #$F345             ;\
 $A0:A42A AD 20 0E    LDA $0E20  [$7E:0E20]  ;} Spawn enemy death explosion enemy projectile
 $A0:A42D 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A0:A431 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
-$A0:A434 29 00 40    AND #$4000             ;} $12 = enemy respawn flag
+$A0:A434 29 00 40    AND #$4000             ;} $12 = (enemy respawn flag)
 $A0:A437 85 12       STA $12    [$7E:0012]  ;/
 $A0:A439 A0 3E 00    LDY #$003E             ;\
 $A0:A43C AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
@@ -4699,7 +4720,7 @@ $A0:A674 29 0F 00    AND #$000F             ;|
 $A0:A677 9F 02 70 7E STA $7E7002,x[$7E:7042];/
 $A0:A67B A0 02 00    LDY #$0002             ; Y = 2
 $A0:A67E C9 02 00    CMP #$0002             ;\
-$A0:A681 F0 0D       BEQ $0D    [$A690]     ;} If (projectile type) != super missile:
+$A0:A681 F0 0D       BEQ $0D    [$A690]     ;} If projectile is not super missile:
 $A0:A683 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\
 $A0:A686 AA          TAX                    ;|
 $A0:A687 BF 22 00 A0 LDA $A00022,x[$A0:F375];|
@@ -4708,7 +4729,7 @@ $A0:A68B F0 00       BEQ $00    [$A68D]     ;} Y = (enemy death animation)
 $A0:A68D A8          TAY                    ;/
 $A0:A68E 80 0E       BRA $0E    [$A69E]
 
-$A0:A690 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\ Else ((projectile type) = super missile):
+$A0:A690 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\ Else (projectile is super missile):
 $A0:A693 AA          TAX                    ;|
 $A0:A694 BF 22 00 A0 LDA $A00022,x[$A0:D061];} If (enemy death animation) >= 3:
 $A0:A698 C9 03 00    CMP #$0003             ;|
@@ -4954,7 +4975,7 @@ $A0:A86B B0 4A       BCS $4A    [$A8B7]     ;} If [A] > 0: go to BRANCH_RETURN
 $A0:A86D AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A0:A870 0A          ASL A                  ;|
 $A0:A871 A8          TAY                    ;|
-$A0:A872 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If projectile is not an ice beam: go to BRANCH_ENEMY_HEALTH_ZERO
+$A0:A872 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If projectile is not ice beam: go to BRANCH_ENEMY_HEALTH_ZERO
 $A0:A875 29 02 00    AND #$0002             ;|
 $A0:A878 F0 3A       BEQ $3A    [$A8B4]     ;/
 $A0:A87A AD 40 0E    LDA $0E40  [$7E:0E40]  ;\
@@ -7649,7 +7670,7 @@ $A0:BE9A FD 84 0F    SBC $0F84,x            ;|
 $A0:BE9D DD 7E 0F    CMP $0F7E,x            ;} Enemy Y position = min([enemy Y position], [A] - [enemy Y radius])
 $A0:BEA0 30 03       BMI $03    [$BEA5]     ;|
 $A0:BEA2 9D 7E 0F    STA $0F7E,x            ;/
-                                            
+
 $A0:BEA5 38          SEC                    ;\
 $A0:BEA6 AB          PLB                    ;} Return carry set
 $A0:BEA7 6B          RTL                    ;/
@@ -7665,7 +7686,7 @@ $A0:BEB5 F0 02       BEQ $02    [$BEB9]     ;} Enemy Y position = max([enemy Y p
 $A0:BEB7 10 03       BPL $03    [$BEBC]     ;|
                                             ;|
 $A0:BEB9 9D 7E 0F    STA $0F7E,x            ;/
-                                            
+
 $A0:BEBC 38          SEC                    ;\
 $A0:BEBD AB          PLB                    ;} Return carry set
 $A0:BEBE 6B          RTL                    ;/
@@ -7729,8 +7750,8 @@ $A0:BF12 85 18       STA $18    [$7E:0018]  ;/
 $A0:BF14 18          CLC                    ;\
 $A0:BF15 7D 82 0F    ADC $0F82,x            ;} $22 = (target right boundary)
 $A0:BF18 3A          DEC A                  ;/
-$A0:BF19 80 13       BRA $13    [$BF2E]     
-                                            
+$A0:BF19 80 13       BRA $13    [$BF2E]
+
 $A0:BF1B BD 7C 0F    LDA $0F7C,x            ;\ Else ([$1C] & 1 = 0):
 $A0:BF1E 38          SEC                    ;|
 $A0:BF1F E5 12       SBC $12    [$7E:0012]  ;|
@@ -7740,8 +7761,8 @@ $A0:BF26 E5 14       SBC $14    [$7E:0014]  ;|
 $A0:BF28 85 18       STA $18    [$7E:0018]  ;/
 $A0:BF2A 38          SEC                    ;\
 $A0:BF2B FD 82 0F    SBC $0F82,x            ;} $22 = (target left boundary)
-                                            
-$A0:BF2E 85 22       STA $22    [$7E:0022]  
+
+$A0:BF2E 85 22       STA $22    [$7E:0022]
 $A0:BF30 4A          LSR A                  ;\
 $A0:BF31 4A          LSR A                  ;|
 $A0:BF32 4A          LSR A                  ;|
@@ -7850,8 +7871,8 @@ $A0:BFC5 85 18       STA $18    [$7E:0018]  ;/
 $A0:BFC7 18          CLC                    ;\
 $A0:BFC8 7D 84 0F    ADC $0F84,x[$7E:1004]  ;} $22 = [$18] + [enemy Y radius] - 1 (target front boundary)
 $A0:BFCB 3A          DEC A                  ;/
-$A0:BFCC 80 13       BRA $13    [$BFE1]     
-                                            
+$A0:BFCC 80 13       BRA $13    [$BFE1]
+
 $A0:BFCE BD 80 0F    LDA $0F80,x            ;\ Else ([$1C] & 1 = 0):
 $A0:BFD1 38          SEC                    ;|
 $A0:BFD2 E5 12       SBC $12    [$7E:0012]  ;|
@@ -8596,7 +8617,7 @@ $A0:C361 D0 18       BNE $18    [$C37B]     ;/
 $A0:C363 BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
 $A0:C367 30 25       BMI $25    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): go to BRANCH_SOLID
 $A0:C369 80 21       BRA $21    [$C38C]     ; Return carry clear
-                                            
+
 $A0:C36B C5 1E       CMP $1E    [$7E:001E]  ;\
 $A0:C36D D0 0C       BNE $0C    [$C37B]     ;} If [$1C] = [$1E] (top block check):
 $A0:C36F B9 7E 0F    LDA $0F7E,y[$7E:0FFE]  ;\
@@ -8608,14 +8629,14 @@ $A0:C379 D0 06       BNE $06    [$C381]     ;/
 ; BRANCH_CHECK_BOTH_HALVES
 $A0:C37B BF 34 C4 A0 LDA $A0C434,x[$A0:C442];\
 $A0:C37F 30 0D       BMI $0D    [$C38E]     ;} If [$C435 + [X]] & 80h != 0 (top half is solid): go to BRANCH_SOLID
-                                            
-; BRANCH_CHECK_BOTTOM_HALF                  
+
+; BRANCH_CHECK_BOTTOM_HALF
 $A0:C381 8A          TXA                    ;\
 $A0:C382 49 02 00    EOR #$0002             ;|
 $A0:C385 AA          TAX                    ;} If [$C435 + ([X] ^ 2)] & 80h != 0 (bottom half is solid): go to BRANCH_SOLID
 $A0:C386 BF 34 C4 A0 LDA $A0C434,x[$A0:C440];|
 $A0:C38A 30 02       BMI $02    [$C38E]     ;/
-                                            
+
 $A0:C38C 18          CLC                    ;\
 $A0:C38D 60          RTS                    ;} Return carry clear
 
@@ -8695,14 +8716,14 @@ $A0:C3FC D0 06       BNE $06    [$C404]     ;/
 ; BRANCH_CHECK_BOTH_HALVES
 $A0:C3FE BF 34 C4 A0 LDA $A0C434,x[$A0:C436];\
 $A0:C402 30 0D       BMI $0D    [$C411]     ;} If [$C435 + [X]] & 80h != 0 (left half is solid): go to BRANCH_SOLID
-                                            
-; BRANCH_CHECK_RIGHT_HALF                   
+
+; BRANCH_CHECK_RIGHT_HALF
 $A0:C404 8A          TXA                    ;\
 $A0:C405 49 01 00    EOR #$0001             ;|
 $A0:C408 AA          TAX                    ;} If [$C435 + ([X] ^ 1)] & 80h != 0 (right half is solid): go to BRANCH_SOLID
 $A0:C409 BF 34 C4 A0 LDA $A0C434,x[$A0:C43F];|
 $A0:C40D 30 02       BMI $02    [$C411]     ;/
-                                            
+
 $A0:C40F 18          CLC                    ;\
 $A0:C410 60          RTS                    ;} Return carry clear
 
@@ -8723,7 +8744,7 @@ $A0:C421 FD 84 0F    SBC $0F84,x            ;} Enemy X position = [A] - [enemy X
 $A0:C424 9D 7E 0F    STA $0F7E,x            ;/
 $A0:C427 38          SEC                    ;\
 $A0:C428 60          RTS                    ;} Return carry set
-                                            
+
 $A0:C429 09 07 00    ORA #$0007             ;\
 $A0:C42C 38          SEC                    ;} A = [$1A] - [$1A] % 8 + 8 (target right boundary rounded up to bottom of 8x8 tile)
 $A0:C42D 7D 84 0F    ADC $0F84,x            ;\
@@ -8814,36 +8835,36 @@ $A0:C49E 60          RTS                    ;} Return carry clear
 ;                       |     ___ Adjusted distance multiplier * 100h
 ;                       |    |
 $A0:C49F             dw 0000,0100,
-                        0000,0100, 
-                        0000,0100, 
-                        0000,0100, 
-                        0000,0100, 
-                        0000,0100, ; 5: Unused. Half height isosceles triangle 
-                        0000,0100, ; 6: Unused. Isosceles triangle 
+                        0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100, ; 5: Unused. Half height isosceles triangle
+                        0000,0100, ; 6: Unused. Isosceles triangle
                         0000,0100, ; 7: Half height rectangle
-                        0000,0100, ; 8: Unused. Rectangle 
-                        0000,0100, ; 9: Unused. Rectangle 
-                        0000,0100, ; Ah: Unused. Rectangle 
-                        0000,0100, ; Bh: Unused. Rectangle 
-                        0000,0100, ; Ch: Unused. Rectangle 
-                        0000,0100, ; Dh: Unused. Rectangle 
-                        1000,00B0, ; Eh: Unused. Very bumpy triangle 
+                        0000,0100, ; 8: Unused. Rectangle
+                        0000,0100, ; 9: Unused. Rectangle
+                        0000,0100, ; Ah: Unused. Rectangle
+                        0000,0100, ; Bh: Unused. Rectangle
+                        0000,0100, ; Ch: Unused. Rectangle
+                        0000,0100, ; Dh: Unused. Rectangle
+                        1000,00B0, ; Eh: Unused. Very bumpy triangle
                         1000,00B0, ; Fh: Bumpy triangle
-                        0000,0100, ; 10h: Unused 
-                        0000,0100, ; 11h: Unused 
-                        1000,00C0, ; 12h: Triangle 
-                        0000,0100, ; 13h: Rectangle 
-                        1000,00C0, ; 14h: Quarter triangle 
-                        1000,00C0, ; 15h: Three quarter triangle 
-                        0800,00D8, ; 16h: Lower half-height triangle 
+                        0000,0100, ; 10h: Unused
+                        0000,0100, ; 11h: Unused
+                        1000,00C0, ; 12h: Triangle
+                        0000,0100, ; 13h: Rectangle
+                        1000,00C0, ; 14h: Quarter triangle
+                        1000,00C0, ; 15h: Three quarter triangle
+                        0800,00D8, ; 16h: Lower half-height triangle
                         0800,00D8, ; 17h: Upper half-height triangle
-                        0600,00F0, ; 18h: Unused. Lower third-height triangle 
-                        0600,00F0, ; 19h: Unused. Middle third-height triangle 
-                        0600,00F0, ; 1Ah: Unused. Upper third-height triangle 
-                        4000,0080, ; 1Bh: Upper half-width triangle 
-                        4000,0080, ; 1Ch: Lower half-width triangle 
-                        6000,0050, ; 1Dh: Unused. Upper third-width triangle 
-                        6000,0050, ; 1Eh: Unused. Middle third-width triangle 
+                        0600,00F0, ; 18h: Unused. Lower third-height triangle
+                        0600,00F0, ; 19h: Unused. Middle third-height triangle
+                        0600,00F0, ; 1Ah: Unused. Upper third-height triangle
+                        4000,0080, ; 1Bh: Upper half-width triangle
+                        4000,0080, ; 1Ch: Lower half-width triangle
+                        6000,0050, ; 1Dh: Unused. Upper third-width triangle
+                        6000,0050, ; 1Eh: Unused. Middle third-width triangle
                         6000,0050  ; 1Fh: Unused. Lower third-width triangle
 }
 
@@ -8875,7 +8896,7 @@ $A0:C540 CD 16 42    CMP $4216  [$7E:4216]  ;|
 $A0:C543 F0 02       BEQ $02    [$C547]     ;/
 $A0:C545 18          CLC                    ;\
 $A0:C546 60          RTS                    ;} Return carry clear
-                                            
+
 $A0:C547 A5 18       LDA $18    [$7E:0018]  ;\
 $A0:C549 18          CLC                    ;|
 $A0:C54A 79 84 0F    ADC $0F84,y[$7E:0FC4]  ;|
@@ -8894,23 +8915,23 @@ $A0:C566 30 34       BMI $34    [$C59C]     ;} If [block BTS] & 80h = 0: return 
 $A0:C568 0A          ASL A                  ;\
 $A0:C569 30 05       BMI $05    [$C570]     ;} If [block BTS] & 40h = 0:
 $A0:C56B B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ; A = [enemy X position] % 10h
-$A0:C56E 80 06       BRA $06    [$C576]     
-                                            
+$A0:C56E 80 06       BRA $06    [$C576]
+
 $A0:C570 B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;\ Else ([block BTS] & 40h != 0):
 $A0:C573 49 0F 00    EOR #$000F             ;} A = Fh - [enemy X position] % 10h
-                                            
-$A0:C576 29 0F 00    AND #$000F             
+
+$A0:C576 29 0F 00    AND #$000F
 $A0:C579 18          CLC                    ;\
 $A0:C57A 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
 $A0:C57D AA          TAX                    ;} A = [$94:8B2B + [$0DD6] + [A]] (slope top Y offset)
 $A0:C57E BF 2B 8B 94 LDA $948B2B,x[$94:8C6A];/
-$A0:C582 29 1F 00    AND #$001F             
+$A0:C582 29 1F 00    AND #$001F
 $A0:C585 38          SEC                    ;\
 $A0:C586 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
 $A0:C589 3A          DEC A                  ;/
 $A0:C58A F0 02       BEQ $02    [$C58E]     ;\
 $A0:C58C 10 0E       BPL $0E    [$C59C]     ;} If [A] > 0: return carry clear
-                                            
+
 $A0:C58E 18          CLC                    ;\
 $A0:C58F 65 18       ADC $18    [$7E:0018]  ;} Enemy Y position = (target Y position) + [A]
 $A0:C591 99 7E 0F    STA $0F7E,y[$7E:0FBE]  ;/
@@ -8918,8 +8939,8 @@ $A0:C594 A9 FF FF    LDA #$FFFF             ;\
 $A0:C597 99 80 0F    STA $0F80,y[$7E:0FC0]  ;} Enemy Y subposition = FFFFh
 $A0:C59A 38          SEC                    ;\
 $A0:C59B 60          RTS                    ;} Return carry set
-                                            
-$A0:C59C 18          CLC                    
+
+$A0:C59C 18          CLC
 $A0:C59D 60          RTS
 
 ; BRANCH_UP
@@ -8938,7 +8959,7 @@ $A0:C5B5 CD 16 42    CMP $4216  [$7E:4216]  ;|
 $A0:C5B8 F0 02       BEQ $02    [$C5BC]     ;/
 $A0:C5BA 18          CLC                    ;\
 $A0:C5BB 60          RTS                    ;} Return carry clear
-                                            
+
 $A0:C5BC A5 18       LDA $18    [$7E:0018]  ;\
 $A0:C5BE 38          SEC                    ;|
 $A0:C5BF F9 84 0F    SBC $0F84,y[$7E:0F84]  ;|
@@ -8957,17 +8978,17 @@ $A0:C5DD 10 38       BPL $38    [$C617]     ;} If [block BTS] & 80h = 0: return 
 $A0:C5DF 0A          ASL A                  ;\
 $A0:C5E0 30 05       BMI $05    [$C5E7]     ;} If [block BTS] & 40h = 0:
 $A0:C5E2 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ; A = [enemy X position] % 10h
-$A0:C5E5 80 06       BRA $06    [$C5ED]     
-                                            
+$A0:C5E5 80 06       BRA $06    [$C5ED]
+
 $A0:C5E7 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;\ Else ([block BTS] & 40h != 0):
 $A0:C5EA 49 0F 00    EOR #$000F             ;} A = Fh - [enemy X position] % 10h
-                                            
-$A0:C5ED 29 0F 00    AND #$000F             
+
+$A0:C5ED 29 0F 00    AND #$000F
 $A0:C5F0 18          CLC                    ;\
 $A0:C5F1 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
 $A0:C5F4 AA          TAX                    ;} A = [$94:8B2B + [$0DD6] + [A]] (slope top Y offset)
 $A0:C5F5 BF 2B 8B 94 LDA $948B2B,x[$94:8C4D];/
-$A0:C5F9 29 1F 00    AND #$001F             
+$A0:C5F9 29 1F 00    AND #$001F
 $A0:C5FC 38          SEC                    ;\
 $A0:C5FD ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
 $A0:C600 3A          DEC A                  ;/
@@ -9646,12 +9667,12 @@ $A0:C988 10 31       BPL $31    [$C9BB]     ;} If [block BTS] & 80h != 0: return
 $A0:C98A 0A          ASL A                  ;\
 $A0:C98B 30 05       BMI $05    [$C992]     ;} If [block BTS] & 40h = 0:
 $A0:C98D B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ; A = [enemy X position] % 10h (X distance into slope)
-$A0:C990 80 06       BRA $06    [$C998]     
-                                            
+$A0:C990 80 06       BRA $06    [$C998]
+
 $A0:C992 B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;\ Else ([block BTS] & 40h != 0):
 $A0:C995 49 0F 00    EOR #$000F             ;} A = Fh - [enemy X position] % 10h (X distance into slope)
-                                            
-$A0:C998 29 0F 00    AND #$000F             
+
+$A0:C998 29 0F 00    AND #$000F
 $A0:C99B 18          CLC                    ;\
 $A0:C99C 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;} X = (slope definition table base index) + [A] (slope definition index)
 $A0:C99F AA          TAX                    ;/
@@ -9662,7 +9683,7 @@ $A0:C9A8 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= (Y distance into slope) + 1
 $A0:C9AB 3A          DEC A                  ;/
 $A0:C9AC F0 02       BEQ $02    [$C9B0]     ;\
 $A0:C9AE 10 0B       BPL $0B    [$C9BB]     ;} If [A] > 0 (enemy is above the slope): return
-                                            
+
 $A0:C9B0 49 FF FF    EOR #$FFFF             ;\
 $A0:C9B3 1A          INC A                  ;|
 $A0:C9B4 18          CLC                    ;} Enemy Y position -= [A] (bring enemy under slope)

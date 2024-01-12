@@ -1339,7 +1339,7 @@ $82:8B54 22 27 C5 8D JSL $8DC527[$8D:C527]  ; Palette FX object handler
 $82:8B58 22 92 E6 90 JSL $90E692[$90:E692]  ; JSR ($0A42) - handles controller input for game physics
 $82:8B5C AD 12 0E    LDA $0E12  [$7E:0E12]  ;\
 $82:8B5F D0 04       BNE $04    [$8B65]     ;} If sprite interactions enabled:
-$82:8B61 22 85 97 A0 JSL $A09785[$A0:9785]  ; Samus / projectile interaction handler
+$82:8B61 22 85 97 A0 JSL $A09785[$A0:9785]  ; Samus / projectile interaction handling
 
 $82:8B65 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
 $82:8B69 22 22 E7 90 JSL $90E722[$90:E722]  ; Handles Samus movements and pausing? JSR ($0A44)
@@ -1348,8 +1348,8 @@ $82:8B71 22 B4 85 84 JSL $8485B4[$84:85B4]  ; PLM handler
 $82:8B75 22 64 80 87 JSL $878064[$87:8064]  ; Animated tiles objects handler
 $82:8B79 AD 12 0E    LDA $0E12  [$7E:0E12]  ;\
 $82:8B7C D0 0C       BNE $0C    [$8B8A]     ;} If sprite interactions enabled:
-$82:8B7E 22 94 98 A0 JSL $A09894[$A0:9894]  ; Enemy projectile / Samus collision detection
-$82:8B82 22 6C 99 A0 JSL $A0996C[$A0:996C]  ; Enemy projectile / projectile detection
+$82:8B7E 22 94 98 A0 JSL $A09894[$A0:9894]  ; Enemy projectile / Samus collision handling
+$82:8B82 22 6C 99 A0 JSL $A0996C[$A0:996C]  ; Enemy projectile / projectile handling
 $82:8B86 22 06 A3 A0 JSL $A0A306[$A0:A306]  ; Process enemy power bomb interaction
 
 $82:8B8A 22 EC 94 90 JSL $9094EC[$90:94EC]  ; Main scrolling routine

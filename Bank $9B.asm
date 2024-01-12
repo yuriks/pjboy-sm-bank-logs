@@ -3222,10 +3222,10 @@ $9B:C72C 90 05       BCC $05    [$C733]     ; If carry set:
 $9B:C72E A8          TAY                    ;\
 $9B:C72F D0 F2       BNE $F2    [$C723]     ;} If [A] != 0: go to BRANCH_CANCEL
 $9B:C731 80 08       BRA $08    [$C73B]
-                                            ; Else (carry clear):
+
 $9B:C733 22 5B A8 94 JSL $94A85B[$94:A85B]  ; Grapple beam block collision handling
-$9B:C737 90 1F       BCC $1F    [$C758]     ; If carry clear: return
-$9B:C739 50 E8       BVC $E8    [$C723]     ; If overflow clear: go to BRANCH_CANCEL
+$9B:C737 90 1F       BCC $1F    [$C758]     ; If no collision: return
+$9B:C739 50 E8       BVC $E8    [$C723]     ; If grapple beam cancelled: go to BRANCH_CANCEL
 
 $9B:C73B A9 06 00    LDA #$0006             ;\
 $9B:C73E 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 6, sound library 1, max queued sounds allowed = 6 (grappling)

@@ -8284,25 +8284,25 @@ $86:BB5E             dx 0003,9306,
 
 ;;; $BB92: Initialisation AI - enemy projectile $BBC7 (nuclear waffle body) ;;;
 {
-$86:BB92 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:BB95 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:BB98 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:BB9B BD 7C 0F    LDA $0F7C,x[$7E:0F7C]
-$86:BB9E 99 27 1A    STA $1A27,y[$7E:1A49]
-$86:BBA1 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:BBA4 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:BBA7 BD 80 0F    LDA $0F80,x[$7E:0F80]
-$86:BBAA 99 6F 1A    STA $1A6F,y[$7E:1A91]
+$86:BB92 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:BB95 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:BB98 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;|
+$86:BB9B BD 7C 0F    LDA $0F7C,x[$7E:0F7C]  ;} Enemy projectile X position = [enemy X position]
+$86:BB9E 99 27 1A    STA $1A27,y[$7E:1A49]  ;/
+$86:BBA1 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:BBA4 99 93 1A    STA $1A93,y[$7E:1AB5]  ;|
+$86:BBA7 BD 80 0F    LDA $0F80,x[$7E:0F80]  ;} Enemy projectile Y position = [enemy Y position]
+$86:BBAA 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;/
 $86:BBAD DA          PHX
-$86:BBAE BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$86:BBB2 18          CLC
-$86:BBB3 6D 54 0E    ADC $0E54  [$7E:0E54]
-$86:BBB6 AA          TAX
-$86:BBB7 98          TYA
-$86:BBB8 9F 00 78 7E STA $7E7800,x[$7E:7808]
-$86:BBBC BB          TYX
-$86:BBBD A9 01 00    LDA #$0001
-$86:BBC0 9F 80 F3 7E STA $7EF380,x[$7E:F3A2]
+$86:BBAE BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$86:BBB2 18          CLC                    ;|
+$86:BBB3 6D 54 0E    ADC $0E54  [$7E:0E54]  ;|
+$86:BBB6 AA          TAX                    ;} Enemy $7E:8000 + [enemy $7E:8014] = [enemy projectile index]
+$86:BBB7 98          TYA                    ;|
+$86:BBB8 9F 00 78 7E STA $7E7800,x[$7E:7808];/
+$86:BBBC BB          TYX                    ;\
+$86:BBBD A9 01 00    LDA #$0001             ;} Enable enemy projectile buggy dud shot
+$86:BBC0 9F 80 F3 7E STA $7EF380,x[$7E:F3A2];/
 $86:BBC4 FA          PLX
 $86:BBC5 60          RTS
 }
@@ -14557,7 +14557,7 @@ $86:EA69 98          TYA                    ;} $7E:7800 + [Botwoon body projecti
 $86:EA6A 9F 00 78 7E STA $7E7800,x[$7E:7818];/
 $86:EA6E DA          PHX                    ;\
 $86:EA6F AA          TAX                    ;|
-$86:EA70 A9 02 00    LDA #$0002             ;} Enemy projectile $7E:F380 = 2 (disable dud shot)
+$86:EA70 A9 02 00    LDA #$0002             ;} Disable enemy projectile interaction with projectiles
 $86:EA73 9F 80 F3 7E STA $7EF380,x[$7E:F3A2];|
 $86:EA77 FA          PLX                    ;/
 $86:EA78 A9 01 00    LDA #$0001             ;\
@@ -15340,6 +15340,13 @@ $86:EF88 60          RTS
 
 ;;; $EF89: Initialisation AI - enemy projectile $F345 (enemy death explosion) ;;;
 {
+;; Parameter:
+;;     $1993: Death animation. Range 0..4
+;;         0: Small explosion
+;;         1: Killed by Samus contact
+;;         2: Normal explosion
+;;         3: Mini-Kraid explosion
+;;         4: Big explosion
 $86:EF89 DA          PHX
 $86:EF8A 5A          PHY
 $86:EF8B BB          TYX                    ; X = [Y]
