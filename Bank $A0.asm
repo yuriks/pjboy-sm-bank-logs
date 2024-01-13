@@ -1808,7 +1808,7 @@ $A0:90DF D0 0E       BNE $0E    [$90EF]     ;/
 
 $A0:90E1 A9 00 00    LDA #$0000             ;\
 $A0:90E4 9F 02 70 7E STA $7E7002,x[$7E:7002];} Enemy cause of death = 0 (grapple paralysis)
-$A0:90E8 A9 00 00    LDA #$0000             ; A = 0
+$A0:90E8 A9 00 00    LDA #$0000             ; A = 0 (small explosion)
 $A0:90EB 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 ; BRANCH_PARALYSED_END
@@ -3796,8 +3796,8 @@ $A0:9FC3 6B          RTL
 $A0:9FC4 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:9FC7 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} >_<;
 $A0:9FCA A9 04 00    LDA #$0004             ;\
-$A0:9FCD 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 4 (grapple killed)
-$A0:9FD1 A9 00 00    LDA #$0000             ; A = 0
+$A0:9FCD 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy cause of death = 4 (grapple killed)
+$A0:9FD1 A9 00 00    LDA #$0000             ; A = 0 (small explosion)
 $A0:9FD4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A0:9FD8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:9FDB 9E 8A 0F    STZ $0F8A,x[$7E:10CA]  ; Enemy AI handler = main AI
@@ -4432,23 +4432,26 @@ $A0:A45D 6B          RTL
 
 ;;; $A45E: Suit damage division ;;;
 {
-; Divide damage (A) by 4 for Gravity, or 2 for Varia. Nothing if neither suit.
-; Result in A and $12
-$A0:A45E 85 12       STA $12    [$7E:0012]
-$A0:A460 AD A2 09    LDA $09A2  [$7E:09A2]
-$A0:A463 89 20 00    BIT #$0020
-$A0:A466 D0 08       BNE $08    [$A470]
-$A0:A468 4A          LSR A
-$A0:A469 90 02       BCC $02    [$A46D]
-$A0:A46B 46 12       LSR $12    [$7E:0012]
+;; Parameter:
+;;     A: Damage
+;; Returns:
+;;     A/$12: Damage divided by 1/2/4 if power/varia/gravity suit equipped
+$A0:A45E 85 12       STA $12    [$7E:0012]  ; $12 = [A]
+$A0:A460 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
+$A0:A463 89 20 00    BIT #$0020             ;} If gravity suit equipped: go to BRANCH_GRAVITY_SUIT
+$A0:A466 D0 08       BNE $08    [$A470]     ;/
+$A0:A468 4A          LSR A                  ;\
+$A0:A469 90 02       BCC $02    [$A46D]     ;} If varia suit equipped:
+$A0:A46B 46 12       LSR $12    [$7E:0012]  ; $12 /= 2
 
-$A0:A46D A5 12       LDA $12    [$7E:0012]
-$A0:A46F 6B          RTL
+$A0:A46D A5 12       LDA $12    [$7E:0012]  ;\
+$A0:A46F 6B          RTL                    ;} Return A = [$12]
 
-$A0:A470 46 12       LSR $12    [$7E:0012]
-$A0:A472 46 12       LSR $12    [$7E:0012]
-$A0:A474 A5 12       LDA $12    [$7E:0012]
-$A0:A476 6B          RTL
+; BRANCH_GRAVITY_SUIT
+$A0:A470 46 12       LSR $12    [$7E:0012]  ;\
+$A0:A472 46 12       LSR $12    [$7E:0012]  ;} $12 /= 4
+$A0:A474 A5 12       LDA $12    [$7E:0012]  ;\
+$A0:A476 6B          RTL                    ;} Return A = [$12]
 }
 
 
@@ -4462,8 +4465,8 @@ $A0:A47D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A480 BD 8C 0F    LDA $0F8C,x[$7E:108C]  ;\
 $A0:A483 D0 0E       BNE $0E    [$A493]     ;} If [enemy health] = 0:
 $A0:A485 A9 06 00    LDA #$0006             ;\
-$A0:A488 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 6
-$A0:A48C A9 01 00    LDA #$0001             ; A = 1
+$A0:A488 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy cause of death = 6 (Samus contact killed)
+$A0:A48C A9 01 00    LDA #$0001             ; A = 1 (killed by Samus contact)
 $A0:A48F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 $A0:A493 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4474,7 +4477,7 @@ $A0:A496 6B          RTL
 ;;; $A497: Normal enemy touch AI - no death check (external) ;;;
 {
 $A0:A497 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A49A 20 A1 A4    JSR $A4A1  [$A0:A4A1]
+$A0:A49A 20 A1 A4    JSR $A4A1  [$A0:A4A1]  ; Normal touch AI - no death check
 $A0:A49D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A4A0 6B          RTL
 }
@@ -4521,7 +4524,7 @@ $A0:A4E2 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A0:A4E5 BD 78 0F    LDA $0F78,x[$7E:10B8]  ;|
 $A0:A4E8 AA          TAX                    ;} A = (enemy vulnerabilities)
 $A0:A4E9 BF 3C 00 A0 LDA $A0003C,x[$A0:E8BB];/
-$A0:A4ED D0 03       BNE $03    [$A4F2]     ; If [A] = 0
+$A0:A4ED D0 03       BNE $03    [$A4F2]     ; If [A] = 0:
 $A0:A4EF A9 1C EC    LDA #$EC1C             ; A = $EC1C
 
 $A0:A4F2 18          CLC                    ;\
@@ -4604,15 +4607,14 @@ $A0:A596 60          RTS
 {
 ;;; $A597: Normal enemy power bomb AI ;;;
 {
-; Used by Metroid and space pirates
 $A0:A597 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A59A 20 C1 A5    JSR $A5C1  [$A0:A5C1]  ; Normal enemy power bomb AI - no death check
 $A0:A59D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A5A0 BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
 $A0:A5A3 D0 0E       BNE $0E    [$A5B3]     ;} If [enemy health] = 0:
 $A0:A5A5 A9 03 00    LDA #$0003             ;\
-$A0:A5A8 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy $7E:7002 = 3
-$A0:A5AC A9 00 00    LDA #$0000             ; A = 0
+$A0:A5A8 9F 02 70 7E STA $7E7002,x[$7E:7142];} Enemy cause of death = 3 (power bomb killed)
+$A0:A5AC A9 00 00    LDA #$0000             ; A = 0 (small explosion)
 $A0:A5AF 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 
 $A0:A5B3 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4622,9 +4624,9 @@ $A0:A5B6 6B          RTL
 
 ;;; $A5B7: Normal enemy power bomb AI - no death check (external) ;;;
 {
-; Kraid's power bomb AI
+; Called by rinka, mini-Kraid, Kraid, Draygon, Ridley, Mother Brain
 $A0:A5B7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:A5BA 20 C1 A5    JSR $A5C1  [$A0:A5C1]
+$A0:A5BA 20 C1 A5    JSR $A5C1  [$A0:A5C1]  ; Normal enemy power bomb AI - no death check
 $A0:A5BD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A5C0 6B          RTL
 }
@@ -4710,15 +4712,15 @@ $A0:A660 64 18       STZ $18    [$7E:0018]  ;|
 $A0:A662 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A0:A666 BD 8C 0F    LDA $0F8C,x[$7E:0FCC]  ;\
-$A0:A669 D0 38       BNE $38    [$A6A3]     ;} If no enemy health:
+$A0:A669 D0 38       BNE $38    [$A6A3]     ;} If [enemy health] != 0: return
 $A0:A66B AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A0:A66E 0A          ASL A                  ;|
 $A0:A66F A8          TAY                    ;|
-$A0:A670 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} Enemy $7E:7002 = (projectile type)
+$A0:A670 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} Enemy cause of death = (projectile type)
 $A0:A673 EB          XBA                    ;|
 $A0:A674 29 0F 00    AND #$000F             ;|
 $A0:A677 9F 02 70 7E STA $7E7002,x[$7E:7042];/
-$A0:A67B A0 02 00    LDY #$0002             ; Y = 2
+$A0:A67B A0 02 00    LDY #$0002             ; Y = 2 (normal explosion)
 $A0:A67E C9 02 00    CMP #$0002             ;\
 $A0:A681 F0 0D       BEQ $0D    [$A690]     ;} If projectile is not super missile:
 $A0:A683 BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\

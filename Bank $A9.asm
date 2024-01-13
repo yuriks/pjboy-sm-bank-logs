@@ -135,7 +135,7 @@ $A9:8786 6B          RTL
 
 ;;; $8787: Power bomb reaction - enemy $EC3F/$EC7F (Mother Brain) ;;;
 {
-$A9:8787 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI, but skips death animation
+$A9:8787 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no death check
 }
 
 

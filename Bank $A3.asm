@@ -5966,15 +5966,15 @@ $A3:C818 A0 DE 8B    LDY #$8BDE             ;\
 $A3:C81B 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn skree particle - down-left enemy projectile
 $A3:C81F A0 EC 8B    LDY #$8BEC             ;\
 $A3:C822 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn skree particle - up-left enemy projectile
-$A3:C826 A0 02 00    LDY #$0002
-$A3:C829 AD A6 18    LDA $18A6  [$7E:18A6]
-$A3:C82C 0A          ASL A
-$A3:C82D AA          TAX
-$A3:C82E BD 18 0C    LDA $0C18,x[$7E:0C18]
-$A3:C831 29 00 0F    AND #$0F00
-$A3:C834 C9 00 02    CMP #$0200
-$A3:C837 F0 03       BEQ $03    [$C83C]
-$A3:C839 A0 00 00    LDY #$0000
+$A3:C826 A0 02 00    LDY #$0002             ; Y = 2 (normal explosion)
+$A3:C829 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A3:C82C 0A          ASL A                  ;|
+$A3:C82D AA          TAX                    ;|
+$A3:C82E BD 18 0C    LDA $0C18,x[$7E:0C18]  ;} If projectile is not super missile:
+$A3:C831 29 00 0F    AND #$0F00             ;|
+$A3:C834 C9 00 02    CMP #$0200             ;|
+$A3:C837 F0 03       BEQ $03    [$C83C]     ;/
+$A3:C839 A0 00 00    LDY #$0000             ; Y = 0 (small explosion)
 
 $A3:C83C 98          TYA                    ; A = [Y]
 $A3:C83D 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
@@ -9674,7 +9674,7 @@ $A3:EF3C 22 32 80 A3 JSL $A38032[$A3:8032]
 $A3:EF40 BD 8C 0F    LDA $0F8C,x[$7E:104C]
 $A3:EF43 D0 33       BNE $33    [$EF78]
 $A3:EF45 9E AA 0F    STZ $0FAA,x[$7E:106A]
-$A3:EF48 A9 04 00    LDA #$0004             ; A = 4
+$A3:EF48 A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $A3:EF4B 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A3:EF4F A9 13 00    LDA #$0013
 $A3:EF52 22 84 F0 90 JSL $90F084[$90:F084]

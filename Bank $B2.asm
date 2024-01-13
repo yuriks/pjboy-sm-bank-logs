@@ -90,13 +90,13 @@ $B2:87A6 BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
 $B2:87A9 C9 93 F5    CMP #$F593             ;} If Lower Norfair pirate:
 $B2:87AC D0 0F       BNE $0F    [$87BD]     ;/
 $B2:87AE 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = 0
-$B2:87B1 A9 04 00    LDA #$0004             ; A = 4
+$B2:87B1 A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $B2:87B4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $B2:87B8 22 2B B9 A0 JSL $A0B92B[$A0:B92B]  ; Lower Norfair space pirate death item drop routine
 $B2:87BC 6B          RTL                    ; Return
 
 $B2:87BD 9E AA 0F    STZ $0FAA,x[$7E:102A]  ; Enemy $0FAA = 0
-$B2:87C0 A9 04 00    LDA #$0004             ; A = 4
+$B2:87C0 A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $B2:87C3 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $B2:87C7 6B          RTL
 }

@@ -3221,7 +3221,7 @@ $A8:ABB3 38          SEC
 $A8:ABB4 E9 01 00    SBC #$0001
 $A8:ABB7 9F 08 78 7E STA $7E7808,x[$7E:7848]
 $A8:ABBB 10 10       BPL $10    [$ABCD]
-$A8:ABBD A9 04 00    LDA #$0004             ; A = 4
+$A8:ABBD A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $A8:ABC0 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A8:ABC4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:ABC7 A9 01 00    LDA #$0001
