@@ -2514,36 +2514,36 @@ $AA:C973             dw 0030, 0029
 
 ;;; $C977: Enemy touch - enemy $EEFF/$EF3F/$EF7F/$EFBF (Torizos) ;;;
 {
-$AA:C977 22 97 A4 A0 JSL $A0A497[$A0:A497]
+$AA:C977 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $AA:C97B 6B          RTL
 }
 
 
 ;;; $C97C: Enemy shot - enemy $EEFF/$EF3F (Bomb Torizo) ;;;
 {
-$AA:C97C AD 9F 07    LDA $079F  [$7E:079F]
-$AA:C97F F0 03       BEQ $03    [$C984]
-$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]
+$AA:C97C AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$AA:C97F F0 03       BEQ $03    [$C984]     ;} If [area index] != Crateria:
+$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to $D667
 
 $AA:C984 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:C987 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]
-$AA:C98A 1F 08 78 7E ORA $7E7808,x[$7E:7808]
-$AA:C98E D0 30       BNE $30    [$C9C0]
-$AA:C990 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Handles beam damage, freezing, and sound. Clears enemy hit flag
+$AA:C987 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
+$AA:C98A 1F 08 78 7E ORA $7E7808,x[$7E:7808];} If [enemy flash timer] != 0 or [enemy $7E:7808] != 0: return
+$AA:C98E D0 30       BNE $30    [$C9C0]     ;/
+$AA:C990 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $AA:C994 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:C997 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
-$AA:C99A D0 24       BNE $24    [$C9C0]     ;} If not dead: return
+$AA:C99A D0 24       BNE $24    [$C9C0]     ;} If [enemy health] != 0: return
 $AA:C99C A9 AB C6    LDA #$C6AB             ;\
-$AA:C99F 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} $0FB0,X = $C6AB
+$AA:C99F 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy $0FB0 = $C6AB
 $AA:C9A2 A9 C8 B1    LDA #$B1C8             ;\
-$AA:C9A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} PLM-esque instruction = $B1C8
+$AA:C9A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B1C8
 $AA:C9A8 A9 01 00    LDA #$0001             ;\
-$AA:C9AB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} PLM-esque instruction delay = 1
+$AA:C9AB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C9AE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
-$AA:C9B1 09 00 C0    ORA #$C000             ;} Enemy speed 2 |= C000h
+$AA:C9B1 09 00 C0    ORA #$C000             ;} Enemy $0FB6 |= C000h
 $AA:C9B4 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
 $AA:C9B7 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
-$AA:C9BA 09 00 04    ORA #$0400             ;} Set to ignore Samus/projectiles
+$AA:C9BA 09 00 04    ORA #$0400             ;} Set enemy as intangible
 $AA:C9BD 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 
 $AA:C9C0 6B          RTL
@@ -3885,7 +3885,7 @@ $AA:D6A3 9D B6 0F    STA $0FB6,x[$7E:0FB6]
 
 ;;; $D6A6:  ;;;
 {
-$AA:D6A6 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
+$AA:D6A6 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $AA:D6AA AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D6AD BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
 $AA:D6B0 D0 1E       BNE $1E    [$D6D0]

@@ -109,35 +109,35 @@ $A0:8022 6B          RTL
 
 ;;; $8023: Normal enemy touch AI ;;;
 {
-$A0:8023 22 77 A4 A0 JSL $A0A477[$A0:A477]
+$A0:8023 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A0:8027 6B          RTL
 }
 
 
 ;;; $8028: Normal touch AI - no death check ;;;
 {
-$A0:8028 22 97 A4 A0 JSL $A0A497[$A0:A497]
+$A0:8028 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A0:802C 6B          RTL
 }
 
 
 ;;; $802D: Normal enemy shot AI ;;;
 {
-$A0:802D 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A0:802D 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A0:8031 6B          RTL
 }
 
 
 ;;; $8032: Normal enemy shot AI - no death check, no enemy shot graphic ;;;
 {
-$A0:8032 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
+$A0:8032 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A0:8036 6B          RTL
 }
 
 
 ;;; $8037: Normal enemy power bomb AI ;;;
 {
-$A0:8037 22 97 A5 A0 JSL $A0A597[$A0:A597]
+$A0:8037 22 97 A5 A0 JSL $A0A597[$A0:A597]  ; Normal enemy power bomb AI
 $A0:803B 6B          RTL
 }
 
@@ -145,7 +145,7 @@ $A0:803B 6B          RTL
 ;;; $803C: Normal enemy power bomb AI - no death check ;;;
 {
 ; Kraid's power bomb AI
-$A0:803C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]
+$A0:803C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no death check
 $A0:8040 6B          RTL
 }
 
@@ -2814,7 +2814,7 @@ $A0:9850 B9 04 0C    LDA $0C04,y            ;\
 $A0:9853 09 10 00    ORA #$0010             ;} Flag projectile for deletion
 $A0:9856 99 04 0C    STA $0C04,y            ;/
 $A0:9859 B9 2C 0C    LDA $0C2C,y            ;\
-$A0:985C 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;} Deal [projectile damage] suit-adjusted damage to Samus
+$A0:985C 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;} Deal suit-adjusted projectile damage to Samus
 $A0:9860 22 51 DF 91 JSL $91DF51[$91:DF51]  ;/
 $A0:9864 A9 60 00    LDA #$0060             ;\
 $A0:9867 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 60h
@@ -4759,6 +4759,7 @@ $A0:A6B3 6B          RTL
 ;;; $A6B4: Normal enemy shot AI - no death check ;;;
 {
 ; Used by Spore Spawn
+; Shame it's not used by $A63D
 $A0:A6B4 9C 2E 0E    STZ $0E2E  [$7E:0E2E]  ; Clear enemy hit flag
 $A0:A6B7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A6BA 20 DE A6    JSR $A6DE  [$A0:A6DE]  ; Normal enemy shot AI - no death check, no enemy shot graphic
@@ -5017,28 +5018,27 @@ $A0:A8BB 60          RTS
 
 ;;; $A8BC: Creates a dud shot ;;;
 {
-; (graphic and kills projectile)
 $A0:A8BC DA          PHX
 $A0:A8BD 5A          PHY
-$A0:A8BE AD A6 18    LDA $18A6  [$7E:18A6]
-$A0:A8C1 0A          ASL A
-$A0:A8C2 AA          TAX
-$A0:A8C3 BD 64 0B    LDA $0B64,x[$7E:0B66]
-$A0:A8C6 85 12       STA $12    [$7E:0012]
-$A0:A8C8 BD 78 0B    LDA $0B78,x[$7E:0B7A]
-$A0:A8CB 85 14       STA $14    [$7E:0014]
-$A0:A8CD A9 06 00    LDA #$0006
-$A0:A8D0 85 16       STA $16    [$7E:0016]
-$A0:A8D2 64 18       STZ $18    [$7E:0018]
-$A0:A8D4 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A0:A8BE AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A0:A8C1 0A          ASL A                  ;|
+$A0:A8C2 AA          TAX                    ;|
+$A0:A8C3 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;|
+$A0:A8C6 85 12       STA $12    [$7E:0012]  ;|
+$A0:A8C8 BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;} Create sprite object 6 (dud shot) at projectile position
+$A0:A8CB 85 14       STA $14    [$7E:0014]  ;|
+$A0:A8CD A9 06 00    LDA #$0006             ;|
+$A0:A8D0 85 16       STA $16    [$7E:0016]  ;|
+$A0:A8D2 64 18       STZ $18    [$7E:0018]  ;|
+$A0:A8D4 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A0:A8D8 A9 3D 00    LDA #$003D             ;\
 $A0:A8DB 22 35 90 80 JSL $809035[$80:9035]  ;} Queue sound 3Dh, sound library 1, max queued sounds allowed = 3 (dud shot)
-$A0:A8DF AD A6 18    LDA $18A6  [$7E:18A6]
-$A0:A8E2 0A          ASL A
-$A0:A8E3 AA          TAX
-$A0:A8E4 BD 04 0C    LDA $0C04,x[$7E:0C06]
-$A0:A8E7 09 10 00    ORA #$0010
-$A0:A8EA 9D 04 0C    STA $0C04,x[$7E:0C06]
+$A0:A8DF AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A0:A8E2 0A          ASL A                  ;|
+$A0:A8E3 AA          TAX                    ;|
+$A0:A8E4 BD 04 0C    LDA $0C04,x[$7E:0C06]  ;} Flag projectile for deletion
+$A0:A8E7 09 10 00    ORA #$0010             ;|
+$A0:A8EA 9D 04 0C    STA $0C04,x[$7E:0C06]  ;/
 $A0:A8ED 7A          PLY
 $A0:A8EE FA          PLX
 $A0:A8EF 6B          RTL
@@ -5055,11 +5055,25 @@ $A0:A8EF 6B          RTL
 ;;     $14: If collision detected: 0
 ;;     $16: If collision detected: index of colliding enemy
 
-; Solid enemy means an interactive enemy ($17EC) that is either frozen
-; or whose hitbox is solid to Samus ([enemy properties] & 8000h != 0)
+; Solid enemy means an interactive enemy ($17EC) that is either frozen or whose hitbox is solid to Samus ([enemy properties] & 8000h != 0)
 ; If Samus is already partly within a solid enemy, that doesn't count as a collision
 
 ; Amazingly, there are no subroutine calls in here
+
+; This routine considers it a collision if Samus' front boundary is one pixel in front of an enemy's front boundary,
+; which seems to be important for moving solid enemies
+; (otherwise if this routine were called with [$12].[$14] = 0.0, no collision would be detected even if the enemy is moving towards Samus)
+; If you NOP'd out the INC at $A9A9 for example, you can do a short hop on one of the rising platform enemies and fall straight through
+
+; On the zebetite skip:
+; The way this behaviour is implemented is effectively just incrementing the $12 parameter (unfortunately not written so straight forwardly)
+; Consequently, Samus can collide with enemies one pixel further than she should be able to reach (i.e. one pixel further than in block collision),
+; which explains why Samus collides with the frozen rinka in the zebetite skip, even though it's 2 pixels deep into the wall
+; Because a collision is reported in this case, no Samus block collision detection is done, meaning Samus doesn't collide with the wall,
+; and because the zebetite's right boundary is aligned with the wall (one pixel further right than the rinka's),
+; Samus is now horizontally inside the zebetite, and so no horizontal collision will be detected due to the zebetite
+
+; The BEQs at $A931/A959/A980/A9A7 I can't make sense of
 
 $A0:A8F0 08          PHP
 $A0:A8F1 8B          PHB
@@ -5083,21 +5097,22 @@ $A0:A90E 7C 11 A9    JMP ($A911,x)[$A0:A945];/
 
 $A0:A911             dw A919, A945, A96C, A993
 
+{
 ; Collision direction = left
 $A0:A919 A5 12       LDA $12    [$7E:0012]  ;\
 $A0:A91B 49 FF FF    EOR #$FFFF             ;|
 $A0:A91E 1A          INC A                  ;|
-$A0:A91F 18          CLC                    ;} Samus target X position = [Samus X position] - [$12]
+$A0:A91F 18          CLC                    ;|
 $A0:A920 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;|
-$A0:A923 8D 9A 18    STA $189A  [$7E:189A]  ;/
-$A0:A926 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
+$A0:A923 8D 9A 18    STA $189A  [$7E:189A]  ;} Samus target X position = [Samus X position] - [$12].[$14]
+$A0:A926 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;|
 $A0:A929 38          SEC                    ;|
-$A0:A92A E5 14       SBC $14    [$7E:0014]  ;} If [Samus X subposition] < [$14]:
-$A0:A92C B0 03       BCS $03    [$A931]     ;/
-$A0:A92E CE 9A 18    DEC $189A  [$7E:189A]  ; Decrement Samus target X position
+$A0:A92A E5 14       SBC $14    [$7E:0014]  ;|
+$A0:A92C B0 03       BCS $03    [$A931]     ;|
+$A0:A92E CE 9A 18    DEC $189A  [$7E:189A]  ;/
 
-$A0:A931 F0 03       BEQ $03    [$A936]     ; If [Samus X subposition] - [$14] != 0:
-$A0:A933 CE 9A 18    DEC $189A  [$7E:189A]  ; Decrement Samus target X position (why, wtf? This allows the zebetite skip)
+$A0:A931 F0 03       BEQ $03    [$A936]     ; If [Samus X subposition] - [$14] != 0 or [Samus target X position] != 0:
+$A0:A933 CE 9A 18    DEC $189A  [$7E:189A]  ; Decrement Samus target X position
 
 $A0:A936 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A0:A939 8D 9E 18    STA $189E  [$7E:189E]  ;} Samus target Y position = [Samus Y position]
@@ -5108,16 +5123,16 @@ $A0:A942 4C B8 A9    JMP $A9B8  [$A0:A9B8]  ; Go to BRANCH_TARGET_POSITION_SET
 ; Collision direction = right
 $A0:A945 A5 12       LDA $12    [$7E:0012]  ;\
 $A0:A947 18          CLC                    ;|
-$A0:A948 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;} Samus target X position = [Samus X position] + [$12]
-$A0:A94B 8D 9A 18    STA $189A  [$7E:189A]  ;/
-$A0:A94E A5 14       LDA $14    [$7E:0014]  ;\
+$A0:A948 6D F6 0A    ADC $0AF6  [$7E:0AF6]  ;|
+$A0:A94B 8D 9A 18    STA $189A  [$7E:189A]  ;|
+$A0:A94E A5 14       LDA $14    [$7E:0014]  ;} Samus target X position = [Samus X position] + [$12].[$14]
 $A0:A950 18          CLC                    ;|
-$A0:A951 6D F8 0A    ADC $0AF8  [$7E:0AF8]  ;} If [Samus X subposition] + [$14] >= 10000h:
-$A0:A954 90 03       BCC $03    [$A959]     ;/
-$A0:A956 EE 9A 18    INC $189A  [$7E:189A]  ; Increment Samus target X position
+$A0:A951 6D F8 0A    ADC $0AF8  [$7E:0AF8]  ;|
+$A0:A954 90 03       BCC $03    [$A959]     ;|
+$A0:A956 EE 9A 18    INC $189A  [$7E:189A]  ;/
 
-$A0:A959 F0 03       BEQ $03    [$A95E]     ; If [Samus X subposition] + [$14] != 0:
-$A0:A95B EE 9A 18    INC $189A  [$7E:189A]  ; Increment Samus target X position (why?)
+$A0:A959 F0 03       BEQ $03    [$A95E]     ; If [Samus X subposition] + [$14] != 10000h or [Samus target X position] != 0:
+$A0:A95B EE 9A 18    INC $189A  [$7E:189A]  ; Increment Samus target X position
 
 $A0:A95E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A0:A961 8D 9E 18    STA $189E  [$7E:189E]  ;} Samus target Y position = [Samus Y position]
@@ -5128,16 +5143,16 @@ $A0:A96A 80 4C       BRA $4C    [$A9B8]     ; Go to BRANCH_TARGET_POSITION_SET
 ; Collision direction = up
 $A0:A96C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A0:A96F 38          SEC                    ;|
-$A0:A970 E5 12       SBC $12    [$7E:0012]  ;} Samus target Y position = [Samus Y position] - [$12]
-$A0:A972 8D 9E 18    STA $189E  [$7E:189E]  ;/
-$A0:A975 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
+$A0:A970 E5 12       SBC $12    [$7E:0012]  ;|
+$A0:A972 8D 9E 18    STA $189E  [$7E:189E]  ;|
+$A0:A975 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;} Samus target Y position = [Samus Y position] - [$12].[$14]
 $A0:A978 38          SEC                    ;|
-$A0:A979 E5 14       SBC $14    [$7E:0014]  ;} If [Samus Y subposition] <= [$14]:
-$A0:A97B B0 03       BCS $03    [$A980]     ;/
-$A0:A97D CE 9E 18    DEC $189E  [$7E:189E]  ; Decrement Samus target Y position
+$A0:A979 E5 14       SBC $14    [$7E:0014]  ;|
+$A0:A97B B0 03       BCS $03    [$A980]     ;|
+$A0:A97D CE 9E 18    DEC $189E  [$7E:189E]  ;/
 
-$A0:A980 F0 03       BEQ $03    [$A985]     ; If [Samus Y subposition] - [$14] != 0:
-$A0:A982 CE 9E 18    DEC $189E  [$7E:189E]  ; Decrement Samus target Y position (why?)
+$A0:A980 F0 03       BEQ $03    [$A985]     ; If [Samus Y subposition] - [$14] != 0 or [Samus target Y position] != 0:
+$A0:A982 CE 9E 18    DEC $189E  [$7E:189E]  ; Decrement Samus target Y position
 
 $A0:A985 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A0:A988 8D 9A 18    STA $189A  [$7E:189A]  ;} Samus target X position = [Samus X position]
@@ -5148,21 +5163,22 @@ $A0:A991 80 25       BRA $25    [$A9B8]     ; Go to BRANCH_TARGET_POSITION_SET
 ; Collision direction = down
 $A0:A993 A5 12       LDA $12    [$7E:0012]  ;\
 $A0:A995 18          CLC                    ;|
-$A0:A996 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;} Samus target Y position = [Samus Y position] + [$12]
-$A0:A999 8D 9E 18    STA $189E  [$7E:189E]  ;/
-$A0:A99C A5 14       LDA $14    [$7E:0014]  ;\
+$A0:A996 6D FA 0A    ADC $0AFA  [$7E:0AFA]  ;|
+$A0:A999 8D 9E 18    STA $189E  [$7E:189E]  ;|
+$A0:A99C A5 14       LDA $14    [$7E:0014]  ;} Samus target Y position = [Samus Y position] + [$12].[$14]
 $A0:A99E 18          CLC                    ;|
-$A0:A99F 6D FC 0A    ADC $0AFC  [$7E:0AFC]  ;} If [Samus Y subposition] + [$14] >= 10000h:
-$A0:A9A2 90 03       BCC $03    [$A9A7]     ;/
-$A0:A9A4 EE 9E 18    INC $189E  [$7E:189E]  ; Increment Samus target Y position
+$A0:A99F 6D FC 0A    ADC $0AFC  [$7E:0AFC]  ;|
+$A0:A9A2 90 03       BCC $03    [$A9A7]     ;|
+$A0:A9A4 EE 9E 18    INC $189E  [$7E:189E]  ;/
 
-$A0:A9A7 F0 03       BEQ $03    [$A9AC]     ; If [Samus Y subposition] + [$14] != 0:
-$A0:A9A9 EE 9E 18    INC $189E  [$7E:189E]  ; Increment Samus target Y position (why?)
+$A0:A9A7 F0 03       BEQ $03    [$A9AC]     ; If [Samus Y subposition] + [$14] != 10000h or [Samus target Y position] != 0:
+$A0:A9A9 EE 9E 18    INC $189E  [$7E:189E]  ; Increment Samus target Y position
 
 $A0:A9AC AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A0:A9AF 8D 9A 18    STA $189A  [$7E:189A]  ;} Samus target X position = [Samus X position]
 $A0:A9B2 AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
 $A0:A9B5 8D 9C 18    STA $189C  [$7E:189C]  ;} Samus target X subposition = [Samus X subposition]
+}
 
 ; BRANCH_TARGET_POSITION_SET
 $A0:A9B8 AD FE 0A    LDA $0AFE  [$7E:0AFE]  ;\
@@ -5190,7 +5206,7 @@ $A0:A9E9 4C BF AA    JMP $AABF  [$A0:AABF]  ; Go to BRANCH_NEXT
 
 $A0:A9EC 8A          TXA                    ;\
 $A0:A9ED 18          CLC                    ;|
-$A0:A9EE 69 7A 0F    ADC #$0F7A             ;} X += enemy 0 X position
+$A0:A9EE 69 7A 0F    ADC #$0F7A             ;} X = enemy X position
 $A0:A9F1 AA          TAX                    ;/
 $A0:A9F2 A0 9A 18    LDY #$189A             ; Y = Samus target X position
 $A0:A9F5 B5 00       LDA $00,x  [$7E:0FBA]  ;\
@@ -5198,26 +5214,26 @@ $A0:A9F7 38          SEC                    ;|
 $A0:A9F8 F9 00 00    SBC $0000,y[$7E:189A]  ;|
 $A0:A9FB 10 04       BPL $04    [$AA01]     ;|
 $A0:A9FD 49 FF FF    EOR #$FFFF             ;|
-$A0:AA00 1A          INC A                  ;} If |[enemy X position] - [Samus target X position]| >= [enemy X radius]:
-                                            ;|
+$A0:AA00 1A          INC A                  ;|
+                                            ;} If |[enemy X position] - [Samus target X position]| >= [enemy X radius] + [Samus X radius]: go to BRANCH_NEXT
 $A0:AA01 38          SEC                    ;|
 $A0:AA02 F5 08       SBC $08,x  [$7E:0FC2]  ;|
-$A0:AA04 90 05       BCC $05    [$AA0B]     ;/
-$A0:AA06 D9 08 00    CMP $0008,y[$7E:18A2]  ;\
-$A0:AA09 B0 16       BCS $16    [$AA21]     ;} If |[enemy X position] - [Samus target X position]| >= [enemy X radius] + [Samus X radius]: go to BRANCH_NEXT
+$A0:AA04 90 05       BCC $05    [$AA0B]     ;|
+$A0:AA06 D9 08 00    CMP $0008,y[$7E:18A2]  ;|
+$A0:AA09 B0 16       BCS $16    [$AA21]     ;/
 
 $A0:AA0B B5 04       LDA $04,x  [$7E:0FBE]  ;\
 $A0:AA0D 38          SEC                    ;|
 $A0:AA0E F9 04 00    SBC $0004,y[$7E:189E]  ;|
 $A0:AA11 10 04       BPL $04    [$AA17]     ;|
 $A0:AA13 49 FF FF    EOR #$FFFF             ;|
-$A0:AA16 1A          INC A                  ;} If |[enemy Y position] - [Samus target Y position]| >= [enemy Y radius]:
-                                            ;|
+$A0:AA16 1A          INC A                  ;|
+                                            ;} If |[enemy Y position] - [Samus target Y position]| < [enemy Y radius] + [Samus Y radius]: go to BRANCH_COLLISION
 $A0:AA17 38          SEC                    ;|
 $A0:AA18 F5 0A       SBC $0A,x  [$7E:0FC4]  ;|
-$A0:AA1A 90 08       BCC $08    [$AA24]     ;/
-$A0:AA1C D9 0A 00    CMP $000A,y[$7E:18A4]  ;\
-$A0:AA1F 90 03       BCC $03    [$AA24]     ;} If |[enemy Y position] - [Samus target Y position]| < [enemy Y radius] + [Samus Y radius]: go to BRANCH_COLLISION
+$A0:AA1A 90 08       BCC $08    [$AA24]     ;|
+$A0:AA1C D9 0A 00    CMP $000A,y[$7E:18A4]  ;|
+$A0:AA1F 90 03       BCC $03    [$AA24]     ;/
 
 $A0:AA21 4C BF AA    JMP $AABF  [$A0:AABF]  ; Go to BRANCH_NEXT
 
@@ -5230,6 +5246,7 @@ $A0:AA2C 7C 2F AA    JMP ($AA2F,x)[$A0:AA5C];/
 
 $A0:AA2F             dw AA37, AA5C, AA7E, AAA0
 
+{
 ; Collision direction = left
 $A0:AA37 AE A6 18    LDX $18A6  [$7E:18A6]  ;\
 $A0:AA3A BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
@@ -5260,8 +5277,8 @@ $A0:AA6C 38          SEC                    ;|
 $A0:AA6D FD 82 0F    SBC $0F82,x[$7E:0FC2]  ;|
 $A0:AA70 38          SEC                    ;|
 $A0:AA71 ED 32 0E    SBC $0E32  [$7E:0E32]  ;/
-$A0:AA74 F0 52       BEQ $52    [$AAC8]     ; If (Samus right boundary position) = (enemy left boundary position) + 1: go to BRANCH_TOUCHING
-$A0:AA76 10 03       BPL $03    [$AA7B]     ; If (Samus right boundary position) < (enemy left boundary position) + 1: go to BRANCH_NOT_TOUCHING
+$A0:AA74 F0 52       BEQ $52    [$AAC8]     ; If (Samus right boundary position) + 1 = (enemy left boundary position): go to BRANCH_TOUCHING
+$A0:AA76 10 03       BPL $03    [$AA7B]     ; If (Samus right boundary position) + 1 < (enemy left boundary position): go to BRANCH_NOT_TOUCHING
 $A0:AA78 4C 81 AB    JMP $AB81  [$A0:AB81]  ; Go to BRANCH_NEXT
 
 $A0:AA7B 4C 22 AB    JMP $AB22  [$A0:AB22]
@@ -5294,9 +5311,10 @@ $A0:AAB0 38          SEC                    ;|
 $A0:AAB1 FD 84 0F    SBC $0F84,x[$7E:0FC4]  ;|
 $A0:AAB4 38          SEC                    ;|
 $A0:AAB5 ED 32 0E    SBC $0E32  [$7E:0E32]  ;/
-$A0:AAB8 F0 0E       BEQ $0E    [$AAC8]     ; If (Samus bottom boundary position) = (enemy top boundary position) + 1: go to BRANCH_TOUCHING
-$A0:AABA 10 66       BPL $66    [$AB22]     ; If (Samus bottom boundary position) < (enemy top boundary position) + 1: go to BRANCH_NOT_TOUCHING
+$A0:AAB8 F0 0E       BEQ $0E    [$AAC8]     ; If (Samus bottom boundary position) + 1 = (enemy top boundary position): go to BRANCH_TOUCHING
+$A0:AABA 10 66       BPL $66    [$AB22]     ; If (Samus bottom boundary position) + 1 < (enemy top boundary position): go to BRANCH_NOT_TOUCHING
 $A0:AABC 4C 81 AB    JMP $AB81  [$A0:AB81]  ; Go to BRANCH_NEXT
+}
 
 ; BRANCH_NEXT
 $A0:AABF EE AA 17    INC $17AA  [$7E:17AA]  ;\
@@ -5366,8 +5384,8 @@ $A0:AB5D 29 03 00    AND #$0003             ;|
 $A0:AB60 0A          ASL A                  ;} X = [collision direction] * 2
 $A0:AB61 AA          TAX                    ;/
 $A0:AB62 68          PLA                    ;\
-$A0:AB63 85 12       STA $12    [$7E:0012]  ;} $12 = [A] (distance to collision)
-$A0:AB65 9D 34 18    STA $1834,x[$7E:1836]  ; $1834 + [collision direction] * 2 = [$12]
+$A0:AB63 85 12       STA $12    [$7E:0012]  ;} $12 = $1834 + [collision direction] * 2 = [A] (distance to collision)
+$A0:AB65 9D 34 18    STA $1834,x[$7E:1836]  ;/
 $A0:AB68 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $A0:AB6A AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A0:AB6D 85 16       STA $16    [$7E:0016]  ;} $16 = [enemy index]
@@ -5381,7 +5399,7 @@ $A0:AB7A 6B          RTL                    ; Return
 $A0:AB7B A9 00 00    LDA #$0000
 $A0:AB7E AB          PLB
 $A0:AB7F 28          PLP
-$A0:AB80 6B          RTL                    ; Return
+$A0:AB80 6B          RTL
 
 $A0:AB81 4C BF AA    JMP $AABF  [$A0:AABF]
 
@@ -5650,16 +5668,16 @@ $A0:AD32 6B          RTL                    ;} Return carry set
 {
 $A0:AD33 8B          PHB
 $A0:AD34 E2 20       SEP #$20
-$A0:AD36 A9 A0       LDA #$A0
-$A0:AD38 48          PHA
-$A0:AD39 AB          PLB
+$A0:AD36 A9 A0       LDA #$A0               ;\
+$A0:AD38 48          PHA                    ;} DB = $A0
+$A0:AD39 AB          PLB                    ;/
 $A0:AD3A C2 30       REP #$30
 $A0:AD3C BD B0 0F    LDA $0FB0,x            ;\
 $A0:AD3F F0 09       BEQ $09    [$AD4A]     ;} If [enemy $0FB0] != 0:
 $A0:AD41 DE B0 0F    DEC $0FB0,x            ; Decrement enemy $0FB0
 $A0:AD44 F0 04       BEQ $04    [$AD4A]     ; If [enemy $0FB0] != 0:
 $A0:AD46 A9 00 00    LDA #$0000             ;\
-$A0:AD49 6B          RTL                    ;} Return A = 0 (bug, doesn't pull B, will crash)
+$A0:AD49 6B          RTL                    ;} Return A = 0 (bug, doesn't pull DB, will crash)
 
 $A0:AD4A A9 01 00    LDA #$0001             ;\
 $A0:AD4D AB          PLB                    ;} Return A = 1
@@ -5669,39 +5687,39 @@ $A0:AD4E 6B          RTL                    ;/
 
 ;;; $AD4F: Unused. A = sgn([A]) (zero is special case) ;;;
 {
-$A0:AD4F D0 04       BNE $04    [$AD55]
-$A0:AD51 A9 00 00    LDA #$0000
-$A0:AD54 6B          RTL
+$A0:AD4F D0 04       BNE $04    [$AD55] ; If [A] = 0:
+$A0:AD51 A9 00 00    LDA #$0000         ;\
+$A0:AD54 6B          RTL                ;} Return A = 0
 
-$A0:AD55 C9 00 80    CMP #$8000
-$A0:AD58 30 04       BMI $04    [$AD5E]
-$A0:AD5A A9 FF FF    LDA #$FFFF
-$A0:AD5D 6B          RTL
+$A0:AD55 C9 00 80    CMP #$8000         ;\
+$A0:AD58 30 04       BMI $04    [$AD5E] ;} If [A] < 0:
+$A0:AD5A A9 FF FF    LDA #$FFFF         ;\
+$A0:AD5D 6B          RTL                ;} Return A = -1
 
-$A0:AD5E A9 01 00    LDA #$0001
-$A0:AD61 6B          RTL
+$A0:AD5E A9 01 00    LDA #$0001         ;\
+$A0:AD61 6B          RTL                ;} Return A = 1
 }
 
 
 ;;; $AD62: Unused. A = |[A]| ;;;
 {
-$A0:AD62 A8          TAY
-$A0:AD63 29 00 80    AND #$8000
-$A0:AD66 D0 02       BNE $02    [$AD6A]
-$A0:AD68 98          TYA
-$A0:AD69 6B          RTL
+$A0:AD62 A8          TAY                ;\
+$A0:AD63 29 00 80    AND #$8000         ;|
+$A0:AD66 D0 02       BNE $02    [$AD6A] ;} If [A] >= 0:
+$A0:AD68 98          TYA                ;/
+$A0:AD69 6B          RTL                ; Return
 
 $A0:AD6A 98          TYA
-$A0:AD6B 49 FF FF    EOR #$FFFF
-$A0:AD6E 1A          INC A
-$A0:AD6F 6B          RTL
+$A0:AD6B 49 FF FF    EOR #$FFFF         ;\
+$A0:AD6E 1A          INC A              ;} Negate A
+$A0:AD6F 6B          RTL                ; Return
 }
 
 
-;;; $AD70: Check if enemy is on screen or not ;;;
+;;; $AD70: Check if enemy centre is on screen or not ;;;
 {
 ;; Returns:
-;;     A: 0 if enemy is on screen, 1 otherwise
+;;     A/zero: 0/set if enemy centre is on screen, 1/clear otherwise
 $A0:AD70 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:AD73 BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;\
 $A0:AD76 CD 11 09    CMP $0911  [$7E:0911]  ;|
@@ -5727,12 +5745,12 @@ $A0:ADA2 6B          RTL                    ;} Return A = 1
 }
 
 
-;;; $ADA3: Check if enemy is over [A] pixels off-screen ;;;
+;;; $ADA3: Check if enemy centre is over [A] pixels off-screen ;;;
 {
 ;; Parameters:
 ;;     A: Target off-screen distance
 ;; Returns:
-;;     Zero: Clear if enemy is over [A] pixels off-screen, set otherwise
+;;     Zero: Clear if enemy centre is over [A] pixels off-screen, set otherwise
 
 ; Called by mini-Draygon only
 $A0:ADA3 DA          PHX
@@ -5772,54 +5790,56 @@ $A0:ADE6 6B          RTL                    ;} Return zero clear
 }
 
 
-;;; $ADE7: Determines if enemies with normal sprites are off screen ;;;
+;;; $ADE7: Check if enemy is on screen or not off screen ;;;
 {
-; I guess. 1 at a time
+;; Returns:
+;;     A/zero: 0/set if enemy centre is on screen, 1/clear otherwise
 $A0:ADE7 DA          PHX
 $A0:ADE8 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A0:ADEB BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A0:ADEE 18          CLC
-$A0:ADEF 7D 82 0F    ADC $0F82,x[$7E:0F82]
-$A0:ADF2 CD 11 09    CMP $0911  [$7E:0911]
-$A0:ADF5 30 2D       BMI $2D    [$AE24]
-$A0:ADF7 AD 11 09    LDA $0911  [$7E:0911]
-$A0:ADFA 18          CLC
-$A0:ADFB 69 00 01    ADC #$0100
-$A0:ADFE 18          CLC
-$A0:ADFF 7D 82 0F    ADC $0F82,x[$7E:0F82]
-$A0:AE02 DD 7A 0F    CMP $0F7A,x[$7E:0F7A]
-$A0:AE05 30 1D       BMI $1D    [$AE24]
-$A0:AE07 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A0:AE0A 18          CLC
-$A0:AE0B 69 08 00    ADC #$0008
-$A0:AE0E CD 15 09    CMP $0915  [$7E:0915]
-$A0:AE11 30 11       BMI $11    [$AE24]
-$A0:AE13 AD 15 09    LDA $0915  [$7E:0915]
-$A0:AE16 18          CLC
-$A0:AE17 69 F8 00    ADC #$00F8
-$A0:AE1A DD 7E 0F    CMP $0F7E,x[$7E:0F7E]
-$A0:AE1D 30 05       BMI $05    [$AE24]
+$A0:ADEB BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A0:ADEE 18          CLC                    ;|
+$A0:ADEF 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;|
+$A0:ADF2 CD 11 09    CMP $0911  [$7E:0911]  ;|
+$A0:ADF5 30 2D       BMI $2D    [$AE24]     ;|
+$A0:ADF7 AD 11 09    LDA $0911  [$7E:0911]  ;|
+$A0:ADFA 18          CLC                    ;} If [layer 1 X position] - [enemy X radius] <= [enemy X position] <= [layer 1 X position] + 100h + [enemy X radius]:
+$A0:ADFB 69 00 01    ADC #$0100             ;|
+$A0:ADFE 18          CLC                    ;|
+$A0:ADFF 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;|
+$A0:AE02 DD 7A 0F    CMP $0F7A,x[$7E:0F7A]  ;|
+$A0:AE05 30 1D       BMI $1D    [$AE24]     ;/
+$A0:AE07 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A0:AE0A 18          CLC                    ;|
+$A0:AE0B 69 08 00    ADC #$0008             ;|
+$A0:AE0E CD 15 09    CMP $0915  [$7E:0915]  ;|
+$A0:AE11 30 11       BMI $11    [$AE24]     ;|
+$A0:AE13 AD 15 09    LDA $0915  [$7E:0915]  ;} If [layer 1 Y position] - 8 <= [enemy X position] <= [layer 1 X position] + F8h:
+$A0:AE16 18          CLC                    ;|
+$A0:AE17 69 F8 00    ADC #$00F8             ;|
+$A0:AE1A DD 7E 0F    CMP $0F7E,x[$7E:0F7E]  ;|
+$A0:AE1D 30 05       BMI $05    [$AE24]     ;/
 $A0:AE1F FA          PLX
-$A0:AE20 A9 00 00    LDA #$0000
-$A0:AE23 6B          RTL
-
-$A0:AE24 FA          PLX
-$A0:AE25 A9 01 00    LDA #$0001
-$A0:AE28 6B          RTL
+$A0:AE20 A9 00 00    LDA #$0000             ;\
+$A0:AE23 6B          RTL                    ;} Return zero set
+                                            
+$A0:AE24 FA          PLX                    
+$A0:AE25 A9 01 00    LDA #$0001             ;\
+$A0:AE28 6B          RTL                    ;} Return zero clear
 }
 
 
 ;;; $AE29: Determine direction of Samus from enemy ;;;
 {
-;; Returns A:
-;;     0: Up         - Samus is not within 2 block rows of enemy, is within 2 block columns of enemy, and Samus is above enemy
-;;     1: Up-right   - Samus is not within 2 blocks of enemy, Samus is right of enemy, and Samus is above enemy
-;;     2: Right      - Samus is within 2 block rows of enemy and Samus is right of enemy
-;;     3: Down-right - Samus is not within 2 blocks of enemy, Samus is right of enemy, and Samus is below enemy
-;;     4: Down       - Samus is not within 2 block rows of enemy, is within 2 block columns of enemy, and Samus is below enemy
-;;     6: Down-left  - Samus is not within 2 blocks of enemy, Samus is left of enemy, and Samus is below enemy
-;;     7: Left       - Samus is within 2 block rows of enemy and Samus is left of enemy
-;;     8: Up-left    - Samus is not within 2 blocks of enemy, Samus is left of enemy, and Samus is above enemy
+;; Returns:
+;;     A: Direction
+;;         0: Up         - Samus is not within 2 block rows of enemy, is within 2 block columns of enemy, and Samus is above enemy
+;;         1: Up-right   - Samus is not within 2 blocks of enemy, Samus is right of enemy, and Samus is above enemy
+;;         2: Right      - Samus is within 2 block rows of enemy and Samus is right of enemy
+;;         3: Down-right - Samus is not within 2 blocks of enemy, Samus is right of enemy, and Samus is below enemy
+;;         4: Down       - Samus is not within 2 block rows of enemy, is within 2 block columns of enemy, and Samus is below enemy
+;;         6: Down-left  - Samus is not within 2 blocks of enemy, Samus is left of enemy, and Samus is below enemy
+;;         7: Left       - Samus is within 2 block rows of enemy and Samus is left of enemy
+;;         8: Up-left    - Samus is not within 2 blocks of enemy, Samus is left of enemy, and Samus is above enemy
 
 ; Graphically, return values are as follows where # is the enemy and each numeral is a block
 ; 8888 0000 1111
@@ -5845,7 +5865,7 @@ $A0:AE3C 10 03       BPL $03    [$AE41]     ;} If Samus is left of enemy:
 $A0:AE3E A0 07 00    LDY #$0007             ; Y = 7
 
 $A0:AE41 98          TYA                    ; A = [Y]
-$A0:AE42 6B          RTL
+$A0:AE42 6B          RTL                    ; Return
 
 ; BRANCH_NOT_LEFT_NOR_RIGHT
 $A0:AE43 A9 20 00    LDA #$0020             ;\
@@ -5858,7 +5878,7 @@ $A0:AE55 A0 00 00    LDY #$0000             ; Y = 0
 
 
 $A0:AE58 98          TYA                    ; A = [Y]
-$A0:AE59 6B          RTL
+$A0:AE59 6B          RTL                    ; Return
 
 ; BRANCH_NOT_ABOVE_OR_BELOW
 $A0:AE5A 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
@@ -5869,7 +5889,7 @@ $A0:AE67 10 03       BPL $03    [$AE6C]     ;} If Samus is above enemy:
 $A0:AE69 A0 01 00    LDY #$0001             ; Y = 1
 
 $A0:AE6C 98          TYA                    ; A = [Y]
-$A0:AE6D 6B          RTL
+$A0:AE6D 6B          RTL                    ; Return
 
 ; BRANCH_NOT_DIAGONALLY_RIGHT
 $A0:AE6E A0 06 00    LDY #$0006             ; Y = 6
@@ -5968,7 +5988,7 @@ $A0:AEFB AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
 $A0:AEFE CD 20 0E    CMP $0E20  [$7E:0E20]  ;|
 $A0:AF01 10 04       BPL $04    [$AF07]     ;/
 $A0:AF03 A9 01 00    LDA #$0001             ; A = 1
-$A0:AF06 6B          RTL
+$A0:AF06 6B          RTL                    ; Return
 
 $A0:AF07 A9 00 00    LDA #$0000             ; A = 0
 $A0:AF0A 6B          RTL
@@ -6253,6 +6273,7 @@ $A0:B060 6B          RTL
 
 ;;; $B061: Unused. A = xxyy -> A = yyxx ;;;
 {
+; Whoever wrote these three nybble swapping routines must've thought XBA had to be done in 8-bit mode
 $A0:B061 E2 20       SEP #$20
 $A0:B063 EB          XBA
 $A0:B064 C2 20       REP #$20
@@ -6262,13 +6283,12 @@ $A0:B066 6B          RTL
 
 ;;; $B067: A = |[A]| ;;;
 {
-; Also into $0E32
-$A0:B067 8D 32 0E    STA $0E32  [$7E:0E32]
-$A0:B06A 29 00 80    AND #$8000
-$A0:B06D F0 0A       BEQ $0A    [$B079]
-$A0:B06F AD 32 0E    LDA $0E32  [$7E:0E32]
-$A0:B072 49 FF FF    EOR #$FFFF
-$A0:B075 1A          INC A
+$A0:B067 8D 32 0E    STA $0E32  [$7E:0E32]  ;\
+$A0:B06A 29 00 80    AND #$8000             ;|
+$A0:B06D F0 0A       BEQ $0A    [$B079]     ;} If [A] < 0:
+$A0:B06F AD 32 0E    LDA $0E32  [$7E:0E32]  ;/
+$A0:B072 49 FF FF    EOR #$FFFF             ;\
+$A0:B075 1A          INC A                  ;} Negate A
 $A0:B076 8D 32 0E    STA $0E32  [$7E:0E32]
 
 $A0:B079 AD 32 0E    LDA $0E32  [$7E:0E32]
@@ -6278,20 +6298,19 @@ $A0:B07C 6B          RTL
 
 ;;; $B07D: A = |[Y] - [X]| ;;;
 {
-; Also into $0E34
 $A0:B07D DA          PHX
 $A0:B07E 5A          PHY
-$A0:B07F 8A          TXA
-$A0:B080 8D 32 0E    STA $0E32  [$7E:0E32]
-$A0:B083 98          TYA
-$A0:B084 38          SEC
-$A0:B085 ED 32 0E    SBC $0E32  [$7E:0E32]
-$A0:B088 8D 34 0E    STA $0E34  [$7E:0E34]
-$A0:B08B 29 00 80    AND #$8000
-$A0:B08E F0 0A       BEQ $0A    [$B09A]
-$A0:B090 AD 34 0E    LDA $0E34  [$7E:0E34]
-$A0:B093 49 FF FF    EOR #$FFFF
-$A0:B096 1A          INC A
+$A0:B07F 8A          TXA                    ;\
+$A0:B080 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A0:B083 98          TYA                    ;} A = [Y] - [X]
+$A0:B084 38          SEC                    ;|
+$A0:B085 ED 32 0E    SBC $0E32  [$7E:0E32]  ;/
+$A0:B088 8D 34 0E    STA $0E34  [$7E:0E34]  ;\
+$A0:B08B 29 00 80    AND #$8000             ;|
+$A0:B08E F0 0A       BEQ $0A    [$B09A]     ;} If [A] < 0:
+$A0:B090 AD 34 0E    LDA $0E34  [$7E:0E34]  ;/
+$A0:B093 49 FF FF    EOR #$FFFF             ;\
+$A0:B096 1A          INC A                  ;} Negate A
 $A0:B097 8D 34 0E    STA $0E34  [$7E:0E34]
 
 $A0:B09A AD 34 0E    LDA $0E34  [$7E:0E34]
@@ -6328,14 +6347,14 @@ $A0:B0B1 6B          RTL
 
 ; Bug. Only accurate for angles in the range C0h..3Fh (see $B0DA)
 
-$A0:B0B2 18          CLC
-$A0:B0B3 69 40 00    ADC #$0040
-$A0:B0B6 29 FF 00    AND #$00FF
-$A0:B0B9 8D 34 0E    STA $0E34  [$7E:0E34]
+$A0:B0B2 18          CLC                    ;\
+$A0:B0B3 69 40 00    ADC #$0040             ;|
+$A0:B0B6 29 FF 00    AND #$00FF             ;} $0E34 = ([A] + 40h) % 100h
+$A0:B0B9 8D 34 0E    STA $0E34  [$7E:0E34]  ;/
 $A0:B0BC DA          PHX
 $A0:B0BD 5A          PHY
 $A0:B0BE 8B          PHB
-$A0:B0BF 20 DA B0    JSR $B0DA  [$A0:B0DA]
+$A0:B0BF 20 DA B0    JSR $B0DA  [$A0:B0DA]  ; 8-bit sine multiplication
 $A0:B0C2 AB          PLB
 $A0:B0C3 7A          PLY
 $A0:B0C4 FA          PLX
@@ -6349,14 +6368,14 @@ $A0:B0C5 6B          RTL
 
 ; Bug. Only accurate for angles in the range 80h..FFh (see $B0DA)
 
-$A0:B0C6 18          CLC
-$A0:B0C7 69 80 00    ADC #$0080
-$A0:B0CA 29 FF 00    AND #$00FF
-$A0:B0CD 8D 34 0E    STA $0E34  [$7E:0E34]
-$A0:B0D0 DA          PHX
-$A0:B0D1 5A          PHY
-$A0:B0D2 8B          PHB
-$A0:B0D3 20 DA B0    JSR $B0DA  [$A0:B0DA]
+$A0:B0C6 18          CLC                    ;\
+$A0:B0C7 69 80 00    ADC #$0080             ;|
+$A0:B0CA 29 FF 00    AND #$00FF             ;} $0E34 = ([A] + 80h) % 100h
+$A0:B0CD 8D 34 0E    STA $0E34  [$7E:0E34]  ;/
+$A0:B0D0 DA          PHX                    
+$A0:B0D1 5A          PHY                    
+$A0:B0D2 8B          PHB                    
+$A0:B0D3 20 DA B0    JSR $B0DA  [$A0:B0DA]  ; 8-bit sine multiplication
 $A0:B0D6 AB          PLB
 $A0:B0D7 7A          PLY
 $A0:B0D8 FA          PLX
@@ -6501,7 +6520,7 @@ $A0:B67E A5 14       LDA $14    [$7E:0014]  ;|
 $A0:B680 85 28       STA $28    [$7E:0028]  ;|
 $A0:B682 22 FF B6 A0 JSL $A0B6FF[$A0:B6FF]  ;/
 $A0:B686 A5 2C       LDA $2C    [$7E:002C]  ;\
-$A0:B688 85 16       STA $16    [$7E:0016]  ;} $16 = [$2A} / 10000h
+$A0:B688 85 16       STA $16    [$7E:0016]  ;} $16 = [$2A] / 10000h
 $A0:B68A A5 2A       LDA $2A    [$7E:002A]  ;\
 $A0:B68C 85 18       STA $18    [$7E:0018]  ;} $18 = [$2A] & FFFFh
 $A0:B68E FA          PLX
@@ -6569,57 +6588,63 @@ $A0:B6FE 6B          RTL
 
 ;;; $B6FF: 16bit ($26) * 16bit ($28) = 32bit ($2A) ;;;
 {
+;; Parameters:
+;;     $26: Multiplicand. Let $26 = a + b * 100h
+;;     $28: Multiplicand. Let $28 = c + d * 100h
+;; Returns:
+;;     $2A..2D: 32-bit result
+
 $A0:B6FF DA          PHX
 $A0:B700 5A          PHY
 $A0:B701 08          PHP
 $A0:B702 C2 20       REP #$20
 $A0:B704 E2 10       SEP #$10
-$A0:B706 A6 26       LDX $26    [$7E:0026]
-$A0:B708 8E 02 42    STX $4202  [$7E:4202]
-$A0:B70B A6 28       LDX $28    [$7E:0028]
-$A0:B70D 8E 03 42    STX $4203  [$7E:4203]
-$A0:B710 EA          NOP
-$A0:B711 EA          NOP
-$A0:B712 EA          NOP
-$A0:B713 AD 16 42    LDA $4216  [$7E:4216]
-$A0:B716 85 2A       STA $2A    [$7E:002A]
-$A0:B718 A6 27       LDX $27    [$7E:0027]
-$A0:B71A 8E 02 42    STX $4202  [$7E:4202]
-$A0:B71D A6 29       LDX $29    [$7E:0029]
-$A0:B71F 8E 03 42    STX $4203  [$7E:4203]
-$A0:B722 EA          NOP
-$A0:B723 EA          NOP
-$A0:B724 EA          NOP
-$A0:B725 AE 16 42    LDX $4216  [$7E:4216]
-$A0:B728 86 2C       STX $2C    [$7E:002C]
-$A0:B72A AC 17 42    LDY $4217  [$7E:4217]
-$A0:B72D A6 27       LDX $27    [$7E:0027]
-$A0:B72F 8E 02 42    STX $4202  [$7E:4202]
-$A0:B732 A6 28       LDX $28    [$7E:0028]
-$A0:B734 8E 03 42    STX $4203  [$7E:4203]
-$A0:B737 EA          NOP
-$A0:B738 EA          NOP
-$A0:B739 A5 2B       LDA $2B    [$7E:002B]
-$A0:B73B 18          CLC
-$A0:B73C 6D 16 42    ADC $4216  [$7E:4216]
-$A0:B73F 85 2B       STA $2B    [$7E:002B]
-$A0:B741 90 01       BCC $01    [$B744]
-$A0:B743 C8          INY
+$A0:B706 A6 26       LDX $26    [$7E:0026]  ;\
+$A0:B708 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B70B A6 28       LDX $28    [$7E:0028]  ;|
+$A0:B70D 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B710 EA          NOP                    ;} Result = ac
+$A0:B711 EA          NOP                    ;|
+$A0:B712 EA          NOP                    ;|
+$A0:B713 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A0:B716 85 2A       STA $2A    [$7E:002A]  ;/
+$A0:B718 A6 27       LDX $27    [$7E:0027]  ;\
+$A0:B71A 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B71D A6 29       LDX $29    [$7E:0029]  ;|
+$A0:B71F 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B722 EA          NOP                    ;} Result += bd % 100h * 10000h
+$A0:B723 EA          NOP                    ;|
+$A0:B724 EA          NOP                    ;|
+$A0:B725 AE 16 42    LDX $4216  [$7E:4216]  ;|
+$A0:B728 86 2C       STX $2C    [$7E:002C]  ;/
+$A0:B72A AC 17 42    LDY $4217  [$7E:4217]  ; Y = bd / 100h
+$A0:B72D A6 27       LDX $27    [$7E:0027]  ;\
+$A0:B72F 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B732 A6 28       LDX $28    [$7E:0028]  ;|
+$A0:B734 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B737 EA          NOP                    ;|
+$A0:B738 EA          NOP                    ;} Result += bc * 100h
+$A0:B739 A5 2B       LDA $2B    [$7E:002B]  ;|
+$A0:B73B 18          CLC                    ;|
+$A0:B73C 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:B73F 85 2B       STA $2B    [$7E:002B]  ;/
+$A0:B741 90 01       BCC $01    [$B744]     ; If carry set:
+$A0:B743 C8          INY                    ; Y += 1
 
-$A0:B744 A6 26       LDX $26    [$7E:0026]
-$A0:B746 8E 02 42    STX $4202  [$7E:4202]
-$A0:B749 A6 29       LDX $29    [$7E:0029]
-$A0:B74B 8E 03 42    STX $4203  [$7E:4203]
-$A0:B74E EA          NOP
-$A0:B74F EA          NOP
-$A0:B750 A5 2B       LDA $2B    [$7E:002B]
-$A0:B752 18          CLC
-$A0:B753 6D 16 42    ADC $4216  [$7E:4216]
-$A0:B756 85 2B       STA $2B    [$7E:002B]
-$A0:B758 90 01       BCC $01    [$B75B]
-$A0:B75A C8          INY
+$A0:B744 A6 26       LDX $26    [$7E:0026]  ;\
+$A0:B746 8E 02 42    STX $4202  [$7E:4202]  ;|
+$A0:B749 A6 29       LDX $29    [$7E:0029]  ;|
+$A0:B74B 8E 03 42    STX $4203  [$7E:4203]  ;|
+$A0:B74E EA          NOP                    ;|
+$A0:B74F EA          NOP                    ;} Result += ad * 100h
+$A0:B750 A5 2B       LDA $2B    [$7E:002B]  ;|
+$A0:B752 18          CLC                    ;|
+$A0:B753 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:B756 85 2B       STA $2B    [$7E:002B]  ;/
+$A0:B758 90 01       BCC $01    [$B75B]     ; If carry set:
+$A0:B75A C8          INY                    ; Y += 1
 
-$A0:B75B 84 2D       STY $2D    [$7E:002D]
+$A0:B75B 84 2D       STY $2D    [$7E:002D]  ; Result += [Y] * 1000000h
 $A0:B75D 28          PLP
 $A0:B75E 7A          PLY
 $A0:B75F FA          PLX
@@ -6753,28 +6778,29 @@ $A0:B7EE             dw 0000, 0648, 0C8F, 12D5, 1917, 1F56, 258F, 2BC3, 31F1, 38
 $A0:B8EE DA          PHX
 $A0:B8EF 5A          PHY
 $A0:B8F0 08          PHP
-$A0:B8F1 A9 04 00    LDA #$0004
-$A0:B8F4 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:B8F7 22 11 81 80 JSL $808111[$80:8111]
-$A0:B8FB 29 1F 00    AND #$001F
-$A0:B8FE 38          SEC
-$A0:B8FF E9 10 00    SBC #$0010
-$A0:B902 18          CLC
-$A0:B903 6F 34 F4 7E ADC $7EF434[$7E:F434]
-$A0:B907 85 12       STA $12    [$7E:0012]
-$A0:B909 AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:B90C 29 00 1F    AND #$1F00
-$A0:B90F EB          XBA
-$A0:B910 38          SEC
-$A0:B911 E9 10 00    SBC #$0010
-$A0:B914 18          CLC
-$A0:B915 6F 36 F4 7E ADC $7EF436[$7E:F436]
-$A0:B919 85 14       STA $14    [$7E:0014]
-$A0:B91B A9 FF E0    LDA #$E0FF
-$A0:B91E 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:B922 CE 0B 06    DEC $060B  [$7E:060B]
-$A0:B925 D0 D0       BNE $D0    [$B8F7]
+$A0:B8F1 A9 04 00    LDA #$0004             ;\
+$A0:B8F4 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 4 (number of drops)
+                                            
+; LOOP                                      
+$A0:B8F7 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:B8FB 29 1F 00    AND #$001F             ;\
+$A0:B8FE 38          SEC                    ;|
+$A0:B8FF E9 10 00    SBC #$0010             ;|
+$A0:B902 18          CLC                    ;} $12 = [special death item drop X origin position] + [random number] % 20h - 10h
+$A0:B903 6F 34 F4 7E ADC $7EF434[$7E:F434]  ;|
+$A0:B907 85 12       STA $12    [$7E:0012]  ;/
+$A0:B909 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:B90C 29 00 1F    AND #$1F00             ;|
+$A0:B90F EB          XBA                    ;|
+$A0:B910 38          SEC                    ;|
+$A0:B911 E9 10 00    SBC #$0010             ;} $14 = [special death item drop Y origin position] + ([random number] >> 8) % 20h - 10h
+$A0:B914 18          CLC                    ;|
+$A0:B915 6F 36 F4 7E ADC $7EF436[$7E:F436]  ;|
+$A0:B919 85 14       STA $14    [$7E:0014]  ;/
+$A0:B91B A9 FF E0    LDA #$E0FF             ;\
+$A0:B91E 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with mini-Kraid's drop chances
+$A0:B922 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:B925 D0 D0       BNE $D0    [$B8F7]     ; If [$060B] != 0: go to LOOP
 $A0:B927 28          PLP
 $A0:B928 7A          PLY
 $A0:B929 FA          PLX
@@ -6787,28 +6813,29 @@ $A0:B92A 6B          RTL
 $A0:B92B DA          PHX
 $A0:B92C 5A          PHY
 $A0:B92D 08          PHP
-$A0:B92E A9 05 00    LDA #$0005
-$A0:B931 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:B934 22 11 81 80 JSL $808111[$80:8111]
-$A0:B938 29 1F 00    AND #$001F
-$A0:B93B 38          SEC
-$A0:B93C E9 10 00    SBC #$0010
-$A0:B93F 18          CLC
-$A0:B940 6F 34 F4 7E ADC $7EF434[$7E:F434]
-$A0:B944 85 12       STA $12    [$7E:0012]
-$A0:B946 AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:B949 29 00 1F    AND #$1F00
-$A0:B94C EB          XBA
-$A0:B94D 38          SEC
-$A0:B94E E9 10 00    SBC #$0010
-$A0:B951 18          CLC
-$A0:B952 6F 36 F4 7E ADC $7EF436[$7E:F436]
-$A0:B956 85 14       STA $14    [$7E:0014]
-$A0:B958 A9 93 F5    LDA #$F593
-$A0:B95B 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:B95F CE 0B 06    DEC $060B  [$7E:060B]
-$A0:B962 D0 D0       BNE $D0    [$B934]
+$A0:B92E A9 05 00    LDA #$0005             ;\
+$A0:B931 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 5 (number of drops)
+                                            
+; LOOP                                      
+$A0:B934 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:B938 29 1F 00    AND #$001F             ;\
+$A0:B93B 38          SEC                    ;|
+$A0:B93C E9 10 00    SBC #$0010             ;|
+$A0:B93F 18          CLC                    ;} $12 = [special death item drop X origin position] + [random number] % 20h - 10h
+$A0:B940 6F 34 F4 7E ADC $7EF434[$7E:F434]  ;|
+$A0:B944 85 12       STA $12    [$7E:0012]  ;/
+$A0:B946 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:B949 29 00 1F    AND #$1F00             ;|
+$A0:B94C EB          XBA                    ;|
+$A0:B94D 38          SEC                    ;|
+$A0:B94E E9 10 00    SBC #$0010             ;} $14 = [special death item drop Y origin position] + ([random number] >> 8) % 20h - 10h
+$A0:B951 18          CLC                    ;|
+$A0:B952 6F 36 F4 7E ADC $7EF436[$7E:F436]  ;|
+$A0:B956 85 14       STA $14    [$7E:0014]  ;/
+$A0:B958 A9 93 F5    LDA #$F593             ;\
+$A0:B95B 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with gold ninja space pirate's drop chances
+$A0:B95F CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:B962 D0 D0       BNE $D0    [$B934]     ; If [$060B] != 0: go to LOOP
 $A0:B964 28          PLP
 $A0:B965 7A          PLY
 $A0:B966 FA          PLX
@@ -6821,28 +6848,29 @@ $A0:B967 6B          RTL
 $A0:B968 DA          PHX
 $A0:B969 5A          PHY
 $A0:B96A 08          PHP
-$A0:B96B A9 05 00    LDA #$0005
-$A0:B96E 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:B971 22 11 81 80 JSL $808111[$80:8111]
-$A0:B975 29 1F 00    AND #$001F
-$A0:B978 38          SEC
-$A0:B979 E9 10 00    SBC #$0010
-$A0:B97C 18          CLC
-$A0:B97D 6F 34 F4 7E ADC $7EF434[$7E:F434]
-$A0:B981 85 12       STA $12    [$7E:0012]
-$A0:B983 AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:B986 29 00 1F    AND #$1F00
-$A0:B989 EB          XBA
-$A0:B98A 38          SEC
-$A0:B98B E9 10 00    SBC #$0010
-$A0:B98E 18          CLC
-$A0:B98F 6F 36 F4 7E ADC $7EF436[$7E:F436]
-$A0:B993 85 14       STA $14    [$7E:0014]
-$A0:B995 A9 7F DD    LDA #$DD7F
-$A0:B998 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:B99C CE 0B 06    DEC $060B  [$7E:060B]
-$A0:B99F D0 D0       BNE $D0    [$B971]
+$A0:B96B A9 05 00    LDA #$0005             ;\
+$A0:B96E 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 5 (number of drops)
+                                            
+; LOOP                                      
+$A0:B971 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:B975 29 1F 00    AND #$001F             ;\
+$A0:B978 38          SEC                    ;|
+$A0:B979 E9 10 00    SBC #$0010             ;|
+$A0:B97C 18          CLC                    ;} $12 = [special death item drop X origin position] + [random number] % 20h - 10h
+$A0:B97D 6F 34 F4 7E ADC $7EF434[$7E:F434]  ;|
+$A0:B981 85 12       STA $12    [$7E:0012]  ;/
+$A0:B983 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:B986 29 00 1F    AND #$1F00             ;|
+$A0:B989 EB          XBA                    ;|
+$A0:B98A 38          SEC                    ;|
+$A0:B98B E9 10 00    SBC #$0010             ;} $14 = [special death item drop Y origin position] + ([random number] >> 8) % 20h - 10h
+$A0:B98E 18          CLC                    ;|
+$A0:B98F 6F 36 F4 7E ADC $7EF436[$7E:F436]  ;|
+$A0:B993 85 14       STA $14    [$7E:0014]  ;/
+$A0:B995 A9 7F DD    LDA #$DD7F             ;\
+$A0:B998 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with metroid's drop chances
+$A0:B99C CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:B99F D0 D0       BNE $D0    [$B971]     ; If [$060B] != 0: go to LOOP
 $A0:B9A1 28          PLP
 $A0:B9A2 7A          PLY
 $A0:B9A3 FA          PLX
@@ -6855,24 +6883,25 @@ $A0:B9A4 6B          RTL
 $A0:B9A5 DA          PHX
 $A0:B9A6 5A          PHY
 $A0:B9A7 08          PHP
-$A0:B9A8 A9 10 00    LDA #$0010
-$A0:B9AB 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:B9AE 22 11 81 80 JSL $808111[$80:8111]
-$A0:B9B2 29 7F 00    AND #$007F
-$A0:B9B5 18          CLC
-$A0:B9B6 69 40 00    ADC #$0040
-$A0:B9B9 85 12       STA $12    [$7E:0012]
-$A0:B9BB AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:B9BE 29 00 3F    AND #$3F00
-$A0:B9C1 EB          XBA
-$A0:B9C2 18          CLC
-$A0:B9C3 69 40 01    ADC #$0140
-$A0:B9C6 85 14       STA $14    [$7E:0014]
-$A0:B9C8 A9 7F E1    LDA #$E17F
-$A0:B9CB 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:B9CF CE 0B 06    DEC $060B  [$7E:060B]
-$A0:B9D2 D0 DA       BNE $DA    [$B9AE]
+$A0:B9A8 A9 10 00    LDA #$0010             ;\
+$A0:B9AB 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
+                                            
+; LOOP                                      
+$A0:B9AE 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:B9B2 29 7F 00    AND #$007F             ;\
+$A0:B9B5 18          CLC                    ;|
+$A0:B9B6 69 40 00    ADC #$0040             ;} $12 = 40h + [random number] % 80h (X position)
+$A0:B9B9 85 12       STA $12    [$7E:0012]  ;/
+$A0:B9BB AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:B9BE 29 00 3F    AND #$3F00             ;|
+$A0:B9C1 EB          XBA                    ;|
+$A0:B9C2 18          CLC                    ;} $12 = 140h + ([random number] >> 8) % 40h (Y position)
+$A0:B9C3 69 40 01    ADC #$0140             ;|
+$A0:B9C6 85 14       STA $14    [$7E:0014]  ;/
+$A0:B9C8 A9 7F E1    LDA #$E17F             ;\
+$A0:B9CB 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Ridley's drop chances
+$A0:B9CF CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:B9D2 D0 DA       BNE $DA    [$B9AE]     ; If [$060B] != 0: go to LOOP
 $A0:B9D4 28          PLP
 $A0:B9D5 7A          PLY
 $A0:B9D6 FA          PLX
@@ -6885,24 +6914,25 @@ $A0:B9D7 6B          RTL
 $A0:B9D8 DA          PHX
 $A0:B9D9 5A          PHY
 $A0:B9DA 08          PHP
-$A0:B9DB A9 10 00    LDA #$0010
-$A0:B9DE 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:B9E1 22 11 81 80 JSL $808111[$80:8111]
-$A0:B9E5 29 7F 00    AND #$007F
-$A0:B9E8 18          CLC
-$A0:B9E9 69 40 02    ADC #$0240
-$A0:B9EC 85 12       STA $12    [$7E:0012]
-$A0:B9EE AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:B9F1 29 00 3F    AND #$3F00
-$A0:B9F4 EB          XBA
-$A0:B9F5 18          CLC
-$A0:B9F6 69 60 00    ADC #$0060
-$A0:B9F9 85 14       STA $14    [$7E:0014]
-$A0:B9FB A9 BF DD    LDA #$DDBF
-$A0:B9FE 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:BA02 CE 0B 06    DEC $060B  [$7E:060B]
-$A0:BA05 D0 DA       BNE $DA    [$B9E1]
+$A0:B9DB A9 10 00    LDA #$0010             ;\
+$A0:B9DE 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
+                                            
+; LOOP                                      
+$A0:B9E1 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:B9E5 29 7F 00    AND #$007F             ;\
+$A0:B9E8 18          CLC                    ;|
+$A0:B9E9 69 40 02    ADC #$0240             ;} $12 = 240h + [random number] % 80h (X position)
+$A0:B9EC 85 12       STA $12    [$7E:0012]  ;/
+$A0:B9EE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:B9F1 29 00 3F    AND #$3F00             ;|
+$A0:B9F4 EB          XBA                    ;|
+$A0:B9F5 18          CLC                    ;} $12 = 60h + ([random number] >> 8) % 40h (Y position)
+$A0:B9F6 69 60 00    ADC #$0060             ;|
+$A0:B9F9 85 14       STA $14    [$7E:0014]  ;/
+$A0:B9FB A9 BF DD    LDA #$DDBF             ;\
+$A0:B9FE 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Crocomire's drop chances
+$A0:BA02 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BA05 D0 DA       BNE $DA    [$B9E1]     ; If [$060B] != 0: go to LOOP
 $A0:BA07 28          PLP
 $A0:BA08 7A          PLY
 $A0:BA09 FA          PLX
@@ -6915,24 +6945,25 @@ $A0:BA0A 6B          RTL
 $A0:BA0B DA          PHX
 $A0:BA0C 5A          PHY
 $A0:BA0D 08          PHP
-$A0:BA0E A9 10 00    LDA #$0010
-$A0:BA11 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:BA14 22 11 81 80 JSL $808111[$80:8111]
-$A0:BA18 29 7F 00    AND #$007F
-$A0:BA1B 18          CLC
-$A0:BA1C 69 40 00    ADC #$0040
-$A0:BA1F 85 12       STA $12    [$7E:0012]
-$A0:BA21 AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:BA24 29 00 3F    AND #$3F00
-$A0:BA27 EB          XBA
-$A0:BA28 18          CLC
-$A0:BA29 69 60 00    ADC #$0060
-$A0:BA2C 85 14       STA $14    [$7E:0014]
-$A0:BA2E A9 BF E4    LDA #$E4BF
-$A0:BA31 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:BA35 CE 0B 06    DEC $060B  [$7E:060B]
-$A0:BA38 D0 DA       BNE $DA    [$BA14]
+$A0:BA0E A9 10 00    LDA #$0010             ;\
+$A0:BA11 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
+                                            
+; LOOP                                      
+$A0:BA14 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:BA18 29 7F 00    AND #$007F             ;\
+$A0:BA1B 18          CLC                    ;|
+$A0:BA1C 69 40 00    ADC #$0040             ;} $12 = 40h + [random number] % 80h (X position)
+$A0:BA1F 85 12       STA $12    [$7E:0012]  ;/
+$A0:BA21 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:BA24 29 00 3F    AND #$3F00             ;|
+$A0:BA27 EB          XBA                    ;|
+$A0:BA28 18          CLC                    ;} $12 = 60h + ([random number] >> 8) % 40h (Y position)
+$A0:BA29 69 60 00    ADC #$0060             ;|
+$A0:BA2C 85 14       STA $14    [$7E:0014]  ;/
+$A0:BA2E A9 BF E4    LDA #$E4BF             ;\
+$A0:BA31 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Phantoon body's drop chances
+$A0:BA35 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BA38 D0 DA       BNE $DA    [$BA14]     ; If [$060B] != 0: go to LOOP
 $A0:BA3A 28          PLP
 $A0:BA3B 7A          PLY
 $A0:BA3C FA          PLX
@@ -6945,24 +6976,25 @@ $A0:BA3D 6B          RTL
 $A0:BA3E DA          PHX
 $A0:BA3F 5A          PHY
 $A0:BA40 08          PHP
-$A0:BA41 A9 10 00    LDA #$0010
-$A0:BA44 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:BA47 22 11 81 80 JSL $808111[$80:8111]
-$A0:BA4B 29 7F 00    AND #$007F
-$A0:BA4E 18          CLC
-$A0:BA4F 69 40 00    ADC #$0040
-$A0:BA52 85 12       STA $12    [$7E:0012]
-$A0:BA54 AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:BA57 29 00 3F    AND #$3F00
-$A0:BA5A EB          XBA
-$A0:BA5B 18          CLC
-$A0:BA5C 69 80 00    ADC #$0080
-$A0:BA5F 85 14       STA $14    [$7E:0014]
-$A0:BA61 A9 93 F2    LDA #$F293
-$A0:BA64 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:BA68 CE 0B 06    DEC $060B  [$7E:060B]
-$A0:BA6B D0 DA       BNE $DA    [$BA47]
+$A0:BA41 A9 10 00    LDA #$0010             ;\
+$A0:BA44 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
+                                            
+; LOOP                                      
+$A0:BA47 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:BA4B 29 7F 00    AND #$007F             ;\
+$A0:BA4E 18          CLC                    ;|
+$A0:BA4F 69 40 00    ADC #$0040             ;} $12 = 40h + [random number] % 80h (X position)
+$A0:BA52 85 12       STA $12    [$7E:0012]  ;/
+$A0:BA54 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:BA57 29 00 3F    AND #$3F00             ;|
+$A0:BA5A EB          XBA                    ;|
+$A0:BA5B 18          CLC                    ;} $12 = 80h + ([random number] >> 8) % 40h (Y position)
+$A0:BA5C 69 80 00    ADC #$0080             ;|
+$A0:BA5F 85 14       STA $14    [$7E:0014]  ;/
+$A0:BA61 A9 93 F2    LDA #$F293             ;\
+$A0:BA64 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Botwoon's drop chances
+$A0:BA68 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BA6B D0 DA       BNE $DA    [$BA47]     ; If [$060B] != 0: go to LOOP
 $A0:BA6D 28          PLP
 $A0:BA6E 7A          PLY
 $A0:BA6F FA          PLX
@@ -6975,24 +7007,25 @@ $A0:BA70 6B          RTL
 $A0:BA71 DA          PHX
 $A0:BA72 5A          PHY
 $A0:BA73 08          PHP
-$A0:BA74 A9 10 00    LDA #$0010
-$A0:BA77 8D 0B 06    STA $060B  [$7E:060B]
-
-$A0:BA7A 22 11 81 80 JSL $808111[$80:8111]
-$A0:BA7E 29 FF 00    AND #$00FF
-$A0:BA81 18          CLC
-$A0:BA82 69 80 00    ADC #$0080
-$A0:BA85 85 12       STA $12    [$7E:0012]
-$A0:BA87 AD E5 05    LDA $05E5  [$7E:05E5]
-$A0:BA8A 29 00 3F    AND #$3F00
-$A0:BA8D EB          XBA
-$A0:BA8E 18          CLC
-$A0:BA8F 69 60 01    ADC #$0160
-$A0:BA92 85 14       STA $14    [$7E:0014]
-$A0:BA94 A9 BF E2    LDA #$E2BF
-$A0:BA97 22 0E 92 A0 JSL $A0920E[$A0:920E]
-$A0:BA9B CE 0B 06    DEC $060B  [$7E:060B]
-$A0:BA9E D0 DA       BNE $DA    [$BA7A]
+$A0:BA74 A9 10 00    LDA #$0010             ;\
+$A0:BA77 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
+                                            
+; LOOP                                      
+$A0:BA7A 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:BA7E 29 FF 00    AND #$00FF             ;\
+$A0:BA81 18          CLC                    ;|
+$A0:BA82 69 80 00    ADC #$0080             ;} $12 = 80h + [random number] % 100h (X position)
+$A0:BA85 85 12       STA $12    [$7E:0012]  ;/
+$A0:BA87 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A0:BA8A 29 00 3F    AND #$3F00             ;|
+$A0:BA8D EB          XBA                    ;|
+$A0:BA8E 18          CLC                    ;} $12 = 160h + ([random number] >> 8) % 40h (Y position)
+$A0:BA8F 69 60 01    ADC #$0160             ;|
+$A0:BA92 85 14       STA $14    [$7E:0014]  ;/
+$A0:BA94 A9 BF E2    LDA #$E2BF             ;\
+$A0:BA97 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Kraid's drop chances
+$A0:BA9B CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
+$A0:BA9E D0 DA       BNE $DA    [$BA7A]     ; If [$060B] != 0: go to LOOP
 $A0:BAA0 28          PLP
 $A0:BAA1 7A          PLY
 $A0:BAA2 FA          PLX
@@ -7009,15 +7042,15 @@ $A0:BAA7 A9 10 00    LDA #$0010             ;\
 $A0:BAAA 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
 ; LOOP
-$A0:BAAD 22 11 81 80 JSL $808111[$80:8111]  ;\
-$A0:BAB1 29 7F 00    AND #$007F             ;|
-$A0:BAB4 18          CLC                    ;} Item drop X position = 40h..BFh randomly
-$A0:BAB5 69 40 00    ADC #$0040             ;|
+$A0:BAAD 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:BAB1 29 7F 00    AND #$007F             ;\
+$A0:BAB4 18          CLC                    ;|
+$A0:BAB5 69 40 00    ADC #$0040             ;} $12 = 40h + [random number] % 80h (X position)
 $A0:BAB8 85 12       STA $12    [$7E:0012]  ;/
 $A0:BABA AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BABD 29 00 3F    AND #$3F00             ;|
 $A0:BAC0 EB          XBA                    ;|
-$A0:BAC1 18          CLC                    ;} Item drop Y position = 60h..9Fh randomly
+$A0:BAC1 18          CLC                    ;} $12 = 60h + ([random number] >> 8) % 40h (Y position)
 $A0:BAC2 69 60 00    ADC #$0060             ;|
 $A0:BAC5 85 14       STA $14    [$7E:0014]  ;/
 $A0:BAC7 A9 FF EE    LDA #$EEFF             ;\
@@ -7040,19 +7073,19 @@ $A0:BADA A9 10 00    LDA #$0010             ;\
 $A0:BADD 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
 ; LOOP
-$A0:BAE0 22 11 81 80 JSL $808111[$80:8111]  ;\
-$A0:BAE4 29 FF 00    AND #$00FF             ;|
-$A0:BAE7 18          CLC                    ;} Item drop X position = 80h..17Fh randomly
-$A0:BAE8 69 80 00    ADC #$0080             ;|
+$A0:BAE0 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:BAE4 29 FF 00    AND #$00FF             ;\
+$A0:BAE7 18          CLC                    ;|
+$A0:BAE8 69 80 00    ADC #$0080             ;} $12 = 80h + [random number] % 80h (X position)
 $A0:BAEB 85 12       STA $12    [$7E:0012]  ;/
 $A0:BAED AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BAF0 29 00 3F    AND #$3F00             ;|
 $A0:BAF3 EB          XBA                    ;|
-$A0:BAF4 18          CLC                    ;} Item drop Y position = 120h..15Fh randomly
+$A0:BAF4 18          CLC                    ;} $12 = 120h + ([random number] >> 8) % 40h (Y position)
 $A0:BAF5 69 20 01    ADC #$0120             ;|
 $A0:BAF8 85 14       STA $14    [$7E:0014]  ;/
 $A0:BAFA A9 FF EE    LDA #$EEFF             ;\
-$A0:BAFD 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Bomb Torizo's drop chances
+$A0:BAFD 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Bomb Torizo's(!) drop chances
 $A0:BB01 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
 $A0:BB04 D0 DA       BNE $DA    [$BAE0]     ; If [$060B] != 0: go to LOOP
 $A0:BB06 28          PLP
@@ -7071,15 +7104,15 @@ $A0:BB0D A9 10 00    LDA #$0010             ;\
 $A0:BB10 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
 ; LOOP
-$A0:BB13 22 11 81 80 JSL $808111[$80:8111]  ;\
-$A0:BB17 29 7F 00    AND #$007F             ;|
-$A0:BB1A 18          CLC                    ;} Item drop X position = 40h..CFh randomly
-$A0:BB1B 69 40 00    ADC #$0040             ;|
+$A0:BB13 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:BB17 29 7F 00    AND #$007F             ;\
+$A0:BB1A 18          CLC                    ;|
+$A0:BB1B 69 40 00    ADC #$0040             ;} $12 = 40h + [random number] % 80h (X position)
 $A0:BB1E 85 12       STA $12    [$7E:0012]  ;/
 $A0:BB20 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BB23 29 00 3F    AND #$3F00             ;|
 $A0:BB26 EB          XBA                    ;|
-$A0:BB27 18          CLC                    ;} Item drop Y position = 210h..24Fh randomly
+$A0:BB27 18          CLC                    ;} $12 = 210h + ([random number] >> 8) % 40h (Y position)
 $A0:BB28 69 10 02    ADC #$0210             ;|
 $A0:BB2B 85 14       STA $14    [$7E:0014]  ;/
 $A0:BB2D A9 3F DF    LDA #$DF3F             ;\
@@ -7102,19 +7135,19 @@ $A0:BB40 A9 10 00    LDA #$0010             ;\
 $A0:BB43 8D 0B 06    STA $060B  [$7E:060B]  ;} $060B = 10h (number of drops)
 
 ; LOOP
-$A0:BB46 22 11 81 80 JSL $808111[$80:8111]  ;\
-$A0:BB4A 29 FF 00    AND #$00FF             ;|
-$A0:BB4D 18          CLC                    ;} Item drop X position = 80h..17Fh randomly
-$A0:BB4E 69 80 00    ADC #$0080             ;|
+$A0:BB46 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A0:BB4A 29 FF 00    AND #$00FF             ;\
+$A0:BB4D 18          CLC                    ;|
+$A0:BB4E 69 80 00    ADC #$0080             ;} $12 = 80h + [random number] % 100h (X position)
 $A0:BB51 85 12       STA $12    [$7E:0012]  ;/
 $A0:BB53 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BB56 29 00 3F    AND #$3F00             ;|
 $A0:BB59 EB          XBA                    ;|
-$A0:BB5A 18          CLC                    ;} Item drop Y position = 120h..15Fh randomly
+$A0:BB5A 18          CLC                    ;} $12 = 160h + ([random number] >> 8) % 40h (Y position)
 $A0:BB5B 69 60 01    ADC #$0160             ;|
 $A0:BB5E 85 14       STA $14    [$7E:0014]  ;/
 $A0:BB60 A9 3F DE    LDA #$DE3F             ;\
-$A0:BB63 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Bomb Torizo's drop chances
+$A0:BB63 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with Draygon body's drop chances
 $A0:BB67 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
 $A0:BB6A D0 DA       BNE $DA    [$BB46]     ; If [$060B] != 0: go to LOOP
 $A0:BB6C 28          PLP
@@ -7129,30 +7162,30 @@ $A0:BB6F 6B          RTL
 {
 ; Call after pushing a X then Y pixel position onto the stack (2 bytes each).
 ; 0DC4 is set with block #, and stack is also cleaned up (do not try to pull Y and X position from stack)
-$A0:BB70 A3 04       LDA $04,s  [$7E:1FEB]
-$A0:BB72 4A          LSR A
-$A0:BB73 4A          LSR A
-$A0:BB74 4A          LSR A
-$A0:BB75 4A          LSR A
-$A0:BB76 E2 20       SEP #$20
-$A0:BB78 8D 02 42    STA $4202  [$7E:4202]
-$A0:BB7B AD A5 07    LDA $07A5  [$7E:07A5]
-$A0:BB7E 8D 03 42    STA $4203  [$7E:4203]
-$A0:BB81 C2 20       REP #$20
-$A0:BB83 A3 06       LDA $06,s  [$7E:1FED]
-$A0:BB85 4A          LSR A
-$A0:BB86 4A          LSR A
-$A0:BB87 4A          LSR A
-$A0:BB88 4A          LSR A
-$A0:BB89 18          CLC
-$A0:BB8A 6D 16 42    ADC $4216  [$7E:4216]
-$A0:BB8D 8D C4 0D    STA $0DC4  [$7E:0DC4]
-$A0:BB90 A3 02       LDA $02,s  [$7E:1FE9]
-$A0:BB92 83 06       STA $06,s  [$7E:1FED]
-$A0:BB94 A3 01       LDA $01,s  [$7E:1FE8]
-$A0:BB96 83 05       STA $05,s  [$7E:1FEC]
-$A0:BB98 68          PLA
-$A0:BB99 68          PLA
+$A0:BB70 A3 04       LDA $04,s  [$7E:1FEB]  ;\
+$A0:BB72 4A          LSR A                  ;|
+$A0:BB73 4A          LSR A                  ;|
+$A0:BB74 4A          LSR A                  ;|
+$A0:BB75 4A          LSR A                  ;|
+$A0:BB76 E2 20       SEP #$20               ;|
+$A0:BB78 8D 02 42    STA $4202  [$7E:4202]  ;|
+$A0:BB7B AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$A0:BB7E 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A0:BB81 C2 20       REP #$20               ;} Current block index = [[S] + 4] / 10h * [room width in blocks] + [[S] + 6] / 10h
+$A0:BB83 A3 06       LDA $06,s  [$7E:1FED]  ;|
+$A0:BB85 4A          LSR A                  ;|
+$A0:BB86 4A          LSR A                  ;|
+$A0:BB87 4A          LSR A                  ;|
+$A0:BB88 4A          LSR A                  ;|
+$A0:BB89 18          CLC                    ;|
+$A0:BB8A 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$A0:BB8D 8D C4 0D    STA $0DC4  [$7E:0DC4]  ;/
+$A0:BB90 A3 02       LDA $02,s  [$7E:1FE9]  ;\
+$A0:BB92 83 06       STA $06,s  [$7E:1FED]  ;|
+$A0:BB94 A3 01       LDA $01,s  [$7E:1FE8]  ;} [S] + 5 = [[S] + 1] (move return address 4 bytes up the stack)
+$A0:BB96 83 05       STA $05,s  [$7E:1FEC]  ;/
+$A0:BB98 68          PLA                    ;\
+$A0:BB99 68          PLA                    ;} S += 4
 $A0:BB9A 6B          RTL
 }
 
@@ -7975,6 +8008,7 @@ $A0:C04D 6B          RTL                    ;/
 ;
 ; Where # is the origin enemy projectile and | is the negative y axis
 
+; Assumes Samus and enemy are with FFh pixels of each other in both dimensions
 ; Used by Golden Torizo super missile
 
 $A0:C04E 08          PHP
@@ -8167,7 +8201,7 @@ $A0:C0E2 C2 20       REP #$20               ;/
 $A0:C0E4 FC EA C0    JSR ($C0EA,x)[$A0:C120]; Execute [$C0EA + [X]]
 $A0:C0E7 FA          PLX
 $A0:C0E8 28          PLP
-$A0:C0E9 6B          RTL
+$A0:C0E9 6B          RTL                    ; Return
 
 $A0:C0EA             dw C120, C132, C14E, C17C
 
@@ -8310,6 +8344,8 @@ $A0:C18D 60          RTS
 
 ;;; $C18E: Check if enemy is horizontally off-screen ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     A/carry: Set if off-screen, clear otherwise
 $A0:C18E BD 7A 0F    LDA $0F7A,x[$7E:11BA]  ;\
@@ -8336,6 +8372,8 @@ $A0:C1B0 6B          RTL                    ;} Return carry set
 
 ;;; $C1B1: Unused. Check if enemy is vertically off-screen ;;;
 {
+;; Parameters:
+;;     X: Enemy index
 ;; Returns:
 ;;     A/carry: Set if off-screen, clear otherwise
 $A0:C1B1 BD 7E 0F    LDA $0F7E,x            ;\
@@ -8449,7 +8487,7 @@ $A0:C269 6B          RTL
 $A0:C26A 8B          PHB
 $A0:C26B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:C26E BD 8A 0F    LDA $0F8A,x[$7E:0F8A]  ;\
-$A0:C271 29 04 00    AND #$0004             ;} If [enemy AI handler] & 4 != 0 (frozen AI): return
+$A0:C271 29 04 00    AND #$0004             ;} If enemy is frozen: return
 $A0:C274 D0 39       BNE $39    [$C2AF]     ;/
 $A0:C276 DE 94 0F    DEC $0F94,x[$7E:0F94]  ; Decrement enemy instruction timer
 $A0:C279 D0 36       BNE $36    [$C2B1]     ; If [enemy instruction timer] != 0: go to BRANCH_NO_UPDATE

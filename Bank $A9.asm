@@ -382,7 +382,7 @@ $A9:8929             dw 0088,0074,
 }
 
 
-;;; $8949..8AE5: Mother brain body subfunctions ;;;
+;;; $8949..8AE4: Mother brain body subfunctions ;;;
 {
 ;;; $8949: Mother brain body subfunction - wait until there are less than 4 enemy projectiles alive and spawn tubes falling enemy 0 ;;;
 {
@@ -4328,7 +4328,7 @@ $A9:B502 60          RTS                    ;} Return carry set
 
 ;;; $B503: Enemy shot - enemy $EC7F (Mother Brain's body) ;;;
 {
-$A9:B503 5C BC A8 A0 JMP $A0A8BC[$A0:A8BC]  ; Creates a dud shot
+$A9:B503 5C BC A8 A0 JML $A0A8BC[$A0:A8BC]  ; Go to creates a dud shot
 }
 
 
@@ -4360,7 +4360,7 @@ $A9:B53B 90 01       BCC $01    [$B53E]     ;} If [Mother Brain brain invincibil
 $A9:B53D C8          INY                    ; Y = Eh
 
 $A9:B53E 8C DC 0F    STY $0FDC  [$7E:0FDC]  ; Mother Brain brain invincibility timer = [Y]
-$A9:B541 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI, but skips hit-projectile and death animation
+$A9:B541 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 
 $A9:B545 6B          RTL
 
@@ -4378,9 +4378,9 @@ $A9:B54E 20 62 B5    JSR $B562  [$A9:B562]  ; Mother Brain second/third phase sh
 $A9:B551 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
 $A9:B555 C9 01 00    CMP #$0001             ;} If [Mother Brain's form] = fake death:
 $A9:B558 D0 04       BNE $04    [$B55E]     ;/
-$A9:B55A 5C BC A8 A0 JMP $A0A8BC[$A0:A8BC]  ; Creates a dud shot
+$A9:B55A 5C BC A8 A0 JML $A0A8BC[$A0:A8BC]  ; Go to creates a dud shot
 
-$A9:B55E 5C A7 A6 A0 JMP $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI, but skips hit-projectile and death animation
+$A9:B55E 5C A7 A6 A0 JML $A0A6A7[$A0:A6A7]  ; Go to normal enemy shot AI - no death check, no enemy shot graphic
 }
 
 
@@ -9905,7 +9905,7 @@ $A9:DD47 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
 $A9:DD4B C9 08 00    CMP #$0008             ;} If [enemy $7E:7810] >= 8: go to dead sidehopper contact reaction - rottable
 $A9:DD4E B0 E1       BCS $E1    [$DD31]     ;/
 $A9:DD50 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:DD53 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal touch AI, but skips death animation
+$A9:DD53 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A9:DD57 6B          RTL
 }
 }

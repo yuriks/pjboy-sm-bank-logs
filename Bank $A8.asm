@@ -419,9 +419,9 @@ $A8:89D4 AD 54 0E    LDA $0E54  [$7E:0E54]
 $A8:89D7 38          SEC
 $A8:89D8 E9 80 00    SBC #$0080
 $A8:89DB AA          TAX
-$A8:89DC A9 80 00    LDA #$0080
-$A8:89DF 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A8:89E3 F0 4E       BEQ $4E    [$8A33]
+$A8:89DC A9 80 00    LDA #$0080             ;\
+$A8:89DF 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within 80h pixel columns of enemy:
+$A8:89E3 F0 4E       BEQ $4E    [$8A33]     ;/
 $A8:89E5 A9 04 00    LDA #$0004
 $A8:89E8 8D 32 0E    STA $0E32  [$7E:0E32]
 $A8:89EB 22 66 C0 A0 JSL $A0C066[$A0:C066]
@@ -521,7 +521,7 @@ $A8:8AB0 60          RTS
 {
 $A8:8AB1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8AB4 A9 00 01    LDA #$0100             ;\
-$A8:8AB7 22 A3 AD A0 JSL $A0ADA3[$A0:ADA3]  ;} If enemy is over 100h pixels off-screen:
+$A8:8AB7 22 A3 AD A0 JSL $A0ADA3[$A0:ADA3]  ;} If enemy centre is over 100h pixels off-screen:
 $A8:8ABB F0 2A       BEQ $2A    [$8AE7]     ;/
 $A8:8ABD BD 1E 0F    LDA $0F1E,x[$7E:0F9E]
 $A8:8AC0 D0 25       BNE $25    [$8AE7]
@@ -573,7 +573,7 @@ $A8:8B10 80 04       BRA $04    [$8B16]
 
 ;;; $8B12: Enemy touch - enemy $E63F (mini-Draygon) ;;;
 {
-$A8:8B12 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A8:8B12 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 }
 
 
@@ -823,14 +823,14 @@ $A8:90F0 6B          RTL
 
 ;;; $90F1:  ;;;
 {
-$A8:90F1 AD 54 90    LDA $9054  [$A8:9054]
-$A8:90F4 22 ED AE A0 JSL $A0AEED[$A0:AEED]
-$A8:90F8 A8          TAY
-$A8:90F9 F0 32       BEQ $32    [$912D]
-$A8:90FB AD 50 90    LDA $9050  [$A8:9050]
-$A8:90FE 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A8:9102 A8          TAY
-$A8:9103 F0 28       BEQ $28    [$912D]
+$A8:90F1 AD 54 90    LDA $9054  [$A8:9054]  ;\
+$A8:90F4 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
+$A8:90F8 A8          TAY                    ;} If Samus is not within 80h pixels rows of enemy: return
+$A8:90F9 F0 32       BEQ $32    [$912D]     ;/
+$A8:90FB AD 50 90    LDA $9050  [$A8:9050]  ;\
+$A8:90FE 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
+$A8:9102 A8          TAY                    ;} If Samus is not within 80h pixel columns of enemy: return
+$A8:9103 F0 28       BEQ $28    [$912D]     ;/
 $A8:9105 A9 20 00    LDA #$0020
 $A8:9108 9D B0 0F    STA $0FB0,x[$7E:0FF0]
 $A8:910B A9 01 00    LDA #$0001
@@ -880,14 +880,14 @@ $A8:915F 6B          RTL
 
 ;;; $9160:  ;;;
 {
-$A8:9160 AD 56 90    LDA $9056  [$A8:9056]
-$A8:9163 22 ED AE A0 JSL $A0AEED[$A0:AEED]
-$A8:9167 A8          TAY
-$A8:9168 F0 0A       BEQ $0A    [$9174]
-$A8:916A AD 52 90    LDA $9052  [$A8:9052]
-$A8:916D 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A8:9171 A8          TAY
-$A8:9172 D0 2E       BNE $2E    [$91A2]
+$A8:9160 AD 56 90    LDA $9056  [$A8:9056]  ;\
+$A8:9163 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
+$A8:9167 A8          TAY                    ;} If Samus is within 80h pixels rows of enemy:
+$A8:9168 F0 0A       BEQ $0A    [$9174]     ;/
+$A8:916A AD 52 90    LDA $9052  [$A8:9052]  ;\
+$A8:916D 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
+$A8:9171 A8          TAY                    ;} If Samus is within 80h pixel columns of enemy: go to BRANCH_91A2
+$A8:9172 D0 2E       BNE $2E    [$91A2]     ;/
 
 $A8:9174 A9 71 00    LDA #$0071             ;\
 $A8:9177 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 71h, sound library 2, max queued sounds allowed = 6 (silence)
@@ -908,6 +908,7 @@ $A8:919A A9 CE 91    LDA #$91CE
 $A8:919D 9D B2 0F    STA $0FB2,x[$7E:0FF2]
 $A8:91A0 80 25       BRA $25    [$91C7]
 
+; BRANCH_91A2
 $A8:91A2 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $A8:91A5 38          SEC
 $A8:91A6 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]
@@ -1347,8 +1348,8 @@ $A8:978F 60          RTS
 ;;; $9790:  ;;;
 {
 $A8:9790 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:9793 BD AC 0F    LDA $0FAC,x[$7E:10AC]
-$A8:9796 22 ED AE A0 JSL $A0AEED[$A0:AEED]
+$A8:9793 BD AC 0F    LDA $0FAC,x[$7E:10AC]  ;\
+$A8:9796 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} Is Samus is within [enemy $0FAC] pixel rows of enemy
 $A8:979A 60          RTS
 }
 
@@ -2330,7 +2331,7 @@ $A8:A211 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:A214 BF 2A 80 7E LDA $7E802A,x[$7E:806A];\
 $A8:A218 3A          DEC A                  ;} Decrement enemy $7E:802A
 $A8:A219 9F 2A 80 7E STA $7E802A,x[$7E:806A];/
-$A8:A21D 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ; Check if enemy is on screen or not
+$A8:A21D 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ; Check if enemy centre is on screen or not
 $A8:A221 9F 2C 80 7E STA $7E802C,x[$7E:806C]; Enemy off-screen flag = [A]
 $A8:A225 FC A8 0F    JSR ($0FA8,x)[$A8:A235]; Execute [enemy function]
 $A8:A228 20 1D A7    JSR $A71D  [$A8:A71D]  ; Set body segment 3 position
@@ -3201,7 +3202,7 @@ $A8:AB82 6B          RTL
 {
 $A8:AB83 DA          PHX
 $A8:AB84 5A          PHY
-$A8:AB85 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A8:AB85 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A8:AB89 A9 02 00    LDA #$0002             ;\
 $A8:AB8C 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, diagonal
 $A8:AB8F A9 10 00    LDA #$0010             ;\
@@ -3479,8 +3480,8 @@ $A8:AE0C             dx 0001,B4B5,
 {
 $A8:AE12 DA          PHX
 $A8:AE13 5A          PHY
-$A8:AE14 22 70 AD A0 JSL $A0AD70[$A0:AD70]
-$A8:AE18 D0 07       BNE $07    [$AE21]
+$A8:AE14 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
+$A8:AE18 D0 07       BNE $07    [$AE21]     ;} If enemy centre is on screen:
 $A8:AE1A B9 00 00    LDA $0000,y[$A8:AD52]
 $A8:AE1D 22 CB 90 80 JSL $8090CB[$80:90CB]
 
@@ -3721,8 +3722,8 @@ $A8:AFA6 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $A8:AFAA 9F 04 78 7E STA $7E7804,x[$7E:7804]
 $A8:AFAE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A8:AFB1 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$A8:AFB5 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A8:AFB9 10 07       BPL $07    [$AFC2]
+$A8:AFB5 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A8:AFB9 10 07       BPL $07    [$AFC2]     ;} If [Samus X position] < [enemy X position]:
 $A8:AFBB A9 01 00    LDA #$0001
 $A8:AFBE 9F 00 78 7E STA $7E7800,x[$7E:7800]
 
@@ -3900,8 +3901,8 @@ $A8:B11D A9 00 00    LDA #$0000
 $A8:B120 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $A8:B124 A9 9C AC    LDA #$AC9C
 $A8:B127 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A8:B12A 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A8:B12E 30 0D       BMI $0D    [$B13D]
+$A8:B12A 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A8:B12E 30 0D       BMI $0D    [$B13D]     ;} If [Samus X position] >= [enemy X position]:
 $A8:B130 A9 3C AD    LDA #$AD3C
 $A8:B133 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 $A8:B136 A9 01 00    LDA #$0001
@@ -3912,10 +3913,10 @@ $A8:B140 BF 88 78 7E LDA $7E7888,x[$7E:7888]
 $A8:B144 10 2E       BPL $2E    [$B174]
 $A8:B146 A9 00 00    LDA #$0000
 $A8:B149 9F 88 78 7E STA $7E7888,x[$7E:7888]
-$A8:B14D BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A8:B150 29 FF 00    AND #$00FF
-$A8:B153 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A8:B157 F0 1B       BEQ $1B    [$B174]
+$A8:B14D BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A8:B150 29 FF 00    AND #$00FF             ;|
+$A8:B153 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is not within [enemy $0FB6] pixel columns of enemy: return
+$A8:B157 F0 1B       BEQ $1B    [$B174]     ;/
 $A8:B159 A9 DE AC    LDA #$ACDE
 $A8:B15C 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 $A8:B15F BF 00 78 7E LDA $7E7800,x[$7E:7800]
@@ -3954,8 +3955,8 @@ $A8:B196 BF 04 78 7E LDA $7E7804,x[$7E:7804]
 $A8:B19A D0 1B       BNE $1B    [$B1B7]
 $A8:B19C A9 0C AD    LDA #$AD0C
 $A8:B19F 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A8:B1A2 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A8:B1A6 30 06       BMI $06    [$B1AE]
+$A8:B1A2 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A8:B1A6 30 06       BMI $06    [$B1AE]     ;} If [Samus X position] >= [enemy X position]:
 $A8:B1A8 A9 AC AD    LDA #$ADAC
 $A8:B1AB 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 
@@ -3974,8 +3975,8 @@ $A8:B1BB BF 02 78 7E LDA $7E7802,x[$7E:7802]
 $A8:B1BF D0 1B       BNE $1B    [$B1DC]
 $A8:B1C1 A9 9C AC    LDA #$AC9C
 $A8:B1C4 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A8:B1C7 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A8:B1CB 30 06       BMI $06    [$B1D3]
+$A8:B1C7 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A8:B1CB 30 06       BMI $06    [$B1D3]     ;} If [Samus X position] >= [enemy X position]:
 $A8:B1CD A9 3C AD    LDA #$AD3C
 $A8:B1D0 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 
@@ -4187,8 +4188,8 @@ $A8:B35F A9 B0 AC    LDA #$ACB0
 $A8:B362 9D AE 0F    STA $0FAE,x[$7E:102E]
 $A8:B365 A9 00 00    LDA #$0000
 $A8:B368 9D AA 0F    STA $0FAA,x[$7E:102A]
-$A8:B36B 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A8:B36F 30 0C       BMI $0C    [$B37D]
+$A8:B36B 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A8:B36F 30 0C       BMI $0C    [$B37D]     ;} If [Samus X position] >= [enemy X position]:
 $A8:B371 A9 50 AD    LDA #$AD50
 $A8:B374 9D AE 0F    STA $0FAE,x[$7E:102E]
 $A8:B377 A9 01 00    LDA #$0001
@@ -4284,7 +4285,7 @@ $A8:B40A 80 04       BRA $04    [$B410]
 
 ;;; $B40C: Enemy shot - enemy $E83F (Norfair lava creature) ;;;
 {
-$A8:B40C 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A8:B40C 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 }
 
 
@@ -6105,7 +6106,7 @@ $A8:C5C1 BD B6 0F    LDA $0FB6,x[$7E:1076]
 $A8:C5C4 D0 28       BNE $28    [$C5EE]
 $A8:C5C6 BD 96 0F    LDA $0F96,x[$7E:1056]
 $A8:C5C9 48          PHA
-$A8:C5CA 22 77 A4 A0 JSL $A0A477[$A0:A477]
+$A8:C5CA 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A8:C5CE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:C5D1 BD 8C 0F    LDA $0F8C,x[$7E:104C]
 $A8:C5D4 F0 02       BEQ $02    [$C5D8]
@@ -6134,7 +6135,7 @@ $A8:C5F6 F0 02       BEQ $02    [$C5FA]
 $A8:C5F8 AB          PLB
 $A8:C5F9 6B          RTL
 
-$A8:C5FA 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
+$A8:C5FA 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A8:C5FE BD 8A 0F    LDA $0F8A,x
 $A8:C601 89 04 00    BIT #$0004
 $A8:C604 F0 0F       BEQ $0F    [$C615]
@@ -7769,8 +7770,8 @@ $A8:D9B5 29 FF 00    AND #$00FF
 $A8:D9B8 9F 02 78 7E STA $7E7802,x[$7E:7882]
 $A8:D9BC 38          SEC
 $A8:D9BD FF 04 78 7E SBC $7E7804,x[$7E:7884]
-$A8:D9C1 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
-$A8:D9C5 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A8:D9C1 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
+$A8:D9C5 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A8:D9C9 C9 30 00    CMP #$0030
 $A8:D9CC 30 0C       BMI $0C    [$D9DA]
 $A8:D9CE A9 7C D9    LDA #$D97C
@@ -7801,7 +7802,7 @@ $A8:D9F7 10 02       BPL $02    [$D9FB]
 $A8:D9F9 E6 1A       INC $1A    [$7E:001A]
 
 $A8:D9FB A5 12       LDA $12    [$7E:0012]
-$A8:D9FD 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A8:D9FD 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A8:DA01 29 00 FF    AND #$FF00
 $A8:DA04 EB          XBA
 $A8:DA05 85 16       STA $16    [$7E:0016]
@@ -7840,7 +7841,7 @@ $A8:DA40 10 02       BPL $02    [$DA44]
 $A8:DA42 E6 1A       INC $1A    [$7E:001A]
 
 $A8:DA44 A5 12       LDA $12    [$7E:0012]
-$A8:DA46 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A8:DA46 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A8:DA4A 29 00 FF    AND #$FF00
 $A8:DA4D EB          XBA
 $A8:DA4E 85 16       STA $16    [$7E:0016]
@@ -8535,7 +8536,7 @@ $A8:DF9C 6B          RTL
 
 ;;; $DF9D:  ;;;
 {
-$A8:DF9D 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A8:DF9D 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A8:DFA1 6B          RTL
 }
 
@@ -8690,8 +8691,8 @@ $A8:E3D8 6B          RTL
 $A8:E3D9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E3DC A9 05 E4    LDA #$E405
 $A8:E3DF 9D A8 0F    STA $0FA8,x[$7E:16E8]
-$A8:E3E2 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]
-$A8:E3E6 30 06       BMI $06    [$E3EE]
+$A8:E3E2 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
+$A8:E3E6 30 06       BMI $06    [$E3EE]     ;} If [Samus Y position] >= [enemy Y position]:
 $A8:E3E8 A9 24 E4    LDA #$E424
 $A8:E3EB 9D A8 0F    STA $0FA8,x[$7E:16E8]
 
@@ -8704,8 +8705,8 @@ $A8:E3EE 60          RTS
 $A8:E3EF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E3F2 A9 43 E4    LDA #$E443
 $A8:E3F5 9D AA 0F    STA $0FAA,x[$7E:16EA]
-$A8:E3F8 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A8:E3FC 30 06       BMI $06    [$E404]
+$A8:E3F8 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A8:E3FC 30 06       BMI $06    [$E404]     ;} If [Samus X position] >= [enemy X position]:
 $A8:E3FE A9 62 E4    LDA #$E462
 $A8:E401 9D AA 0F    STA $0FAA,x[$7E:16EA]
 
@@ -9194,13 +9195,13 @@ $A8:E8C9 EB          XBA
 $A8:E8CA 8D 94 17    STA $1794  [$7E:1794]
 $A8:E8CD BD A8 0F    LDA $0FA8,x[$7E:10E8]
 $A8:E8D0 D0 49       BNE $49    [$E91B]
-$A8:E8D2 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]
-$A8:E8D6 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A8:E8D2 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ; A = [Samus Y position] - [enemy Y position]
+$A8:E8D6 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A8:E8DA DD B4 0F    CMP $0FB4,x[$7E:10F4]
 $A8:E8DD 10 3C       BPL $3C    [$E91B]
-$A8:E8DF 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A8:E8E3 9D AA 0F    STA $0FAA,x[$7E:10EA]
-$A8:E8E6 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A8:E8DF 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A8:E8E3 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy $0FAA = [Samus X position] - [enemy X position]
+$A8:E8E6 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A8:E8EA DD B4 0F    CMP $0FB4,x[$7E:10F4]
 $A8:E8ED 10 2C       BPL $2C    [$E91B]
 $A8:E8EF BD AA 0F    LDA $0FAA,x[$7E:10EA]
@@ -10128,7 +10129,7 @@ $A8:F700 6B          RTL
 
 ;;; $F701: Enemy shot - enemy $EABF/$EB3F/$EBBF (ki-hunter) ;;;
 {
-$A8:F701 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A8:F701 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A8:F705 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F708 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
 $A8:F70B F0 20       BEQ $20    [$F72D]

@@ -118,14 +118,14 @@ $A6:8799 6B          RTL
 ;;; $879A:  ;;;
 {
 $A6:879A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:879D 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]
-$A6:87A1 30 49       BMI $49    [$87EC]
+$A6:879D 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
+$A6:87A1 30 49       BMI $49    [$87EC]     ;} If [Samus Y position] < [enemy Y position]: return
 $A6:87A3 DF 0C 78 7E CMP $7E780C,x[$7E:780C]
 $A6:87A7 10 43       BPL $43    [$87EC]
 $A6:87A9 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
 $A6:87AC D0 20       BNE $20    [$87CE]
-$A6:87AE 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A6:87B2 30 38       BMI $38    [$87EC]
+$A6:87AE 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A6:87B2 30 38       BMI $38    [$87EC]     ;} If [Samus X position] < [enemy X position]: return
 $A6:87B4 DF 00 78 7E CMP $7E7800,x[$7E:79C0]
 $A6:87B8 10 32       BPL $32    [$87EC]
 $A6:87BA A9 ED 87    LDA #$87ED
@@ -136,8 +136,8 @@ $A6:87C6 A9 42 89    LDA #$8942
 $A6:87C9 9D A8 0F    STA $0FA8,x[$7E:1168]
 $A6:87CC 80 1E       BRA $1E    [$87EC]
 
-$A6:87CE 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A6:87D2 10 18       BPL $18    [$87EC]
+$A6:87CE 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A6:87D2 10 18       BPL $18    [$87EC]     ;} If [Samus X position] >= [enemy X position]: return
 $A6:87D4 DF 00 78 7E CMP $7E7800,x[$7E:7800]
 $A6:87D8 30 12       BMI $12    [$87EC]
 $A6:87DA A9 ED 87    LDA #$87ED
@@ -612,12 +612,12 @@ $A6:8BE0 BD 7E 0F    LDA $0F7E,x[$7E:123E]
 $A6:8BE3 9F 02 78 7E STA $7E7802,x[$7E:7AC2]
 $A6:8BE7 BF 04 78 7E LDA $7E7804,x[$7E:7AC4]
 $A6:8BEB AA          TAX
-$A6:8BEC BD 87 81    LDA $8187,x[$A6:8287]
-$A6:8BEF 85 14       STA $14    [$7E:0014]
-$A6:8BF1 BD 89 81    LDA $8189,x[$A6:8289]
-$A6:8BF4 85 12       STA $12    [$7E:0012]
-$A6:8BF6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8BF9 22 90 AF A0 JSL $A0AF90[$A0:AF90]
+$A6:8BEC BD 87 81    LDA $8187,x[$A6:8287]  ;\
+$A6:8BEF 85 14       STA $14    [$7E:0014]  ;|
+$A6:8BF1 BD 89 81    LDA $8189,x[$A6:8289]  ;|
+$A6:8BF4 85 12       STA $12    [$7E:0012]  ;} Enemy Y position += [$8187 + [X]].[$8187 + [X] + 2]
+$A6:8BF6 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A6:8BF9 22 90 AF A0 JSL $A0AF90[$A0:AF90]  ;/
 $A6:8BFD BD 7E 0F    LDA $0F7E,x[$7E:123E]
 $A6:8C00 DD AE 0F    CMP $0FAE,x[$7E:126E]
 $A6:8C03 30 1A       BMI $1A    [$8C1F]
@@ -672,11 +672,11 @@ $A6:8C5D DA          PHX
 $A6:8C5E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8C61 BD 7E 0F    LDA $0F7E,x[$7E:12BE]
 $A6:8C64 9F 02 78 7E STA $7E7802,x[$7E:7B42]
-$A6:8C68 A9 00 80    LDA #$8000
-$A6:8C6B 85 12       STA $12    [$7E:0012]
-$A6:8C6D A9 00 00    LDA #$0000
-$A6:8C70 85 14       STA $14    [$7E:0014]
-$A6:8C72 22 7E AF A0 JSL $A0AF7E[$A0:AF7E]
+$A6:8C68 A9 00 80    LDA #$8000             ;\
+$A6:8C6B 85 12       STA $12    [$7E:0012]  ;|
+$A6:8C6D A9 00 00    LDA #$0000             ;} Enemy Y position -= 0.8000h
+$A6:8C70 85 14       STA $14    [$7E:0014]  ;|
+$A6:8C72 22 7E AF A0 JSL $A0AF7E[$A0:AF7E]  ;/
 $A6:8C76 BD 7E 0F    LDA $0F7E,x[$7E:12BE]
 $A6:8C79 DD AC 0F    CMP $0FAC,x[$7E:12EC]
 $A6:8C7C 10 0C       BPL $0C    [$8C8A]
@@ -2036,6 +2036,7 @@ $A6:9ADB 6B          RTL
 
 ;;; $9ADC:  ;;;
 {
+; Typo at $9B18 >_<;
 $A6:9ADC DA          PHX
 $A6:9ADD 98          TYA
 $A6:9ADE 86 12       STX $12    [$7E:0012]
@@ -2063,9 +2064,9 @@ $A6:9B0B 30 03       BMI $03    [$9B10]     ;} If [enemy $0FAC] & 8000h = 0:
 $A6:9B0D A0 CC 9D    LDY #$9DCC             ; Y = $9DCC (mini Kraid spikes - right)
 
 $A6:9B10 22 27 80 86 JSL $868027[$86:8027]  ; Spawn enemy projectile
-$A6:9B14 22 70 AD A0 JSL $A0AD70[$A0:AD70]
-$A6:9B18 2F FF FF 00 AND $00FFFF[$00:FFFF]  ; <-- typo
-$A6:9B1C D0 07       BNE $07    [$9B25]
+$A6:9B14 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
+$A6:9B18 2F FF FF 00 AND $00FFFF[$00:FFFF]  ;} If enemy centre is on screen:
+$A6:9B1C D0 07       BNE $07    [$9B25]     ;/
 $A6:9B1E A9 3F 00    LDA #$003F             ;\
 $A6:9B21 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Fh, sound library 2, max queued sounds allowed = 6 (fake Kraid lint)
 
@@ -2151,9 +2152,10 @@ $A6:9BB1 6B          RTL
 
 ;;; $9BB2: Instruction ;;;
 {
-$A6:9BB2 22 70 AD A0 JSL $A0AD70[$A0:AD70]
-$A6:9BB6 2F FF FF 00 AND $00FFFF[$00:FFFF]  ; <-- typo
-$A6:9BBA D0 07       BNE $07    [$9BC3]
+; Another AND instruction typo
+$A6:9BB2 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
+$A6:9BB6 2F FF FF 00 AND $00FFFF[$00:FFFF]  ;} If enemy centre is on screen:
+$A6:9BBA D0 07       BNE $07    [$9BC3]     ;/
 $A6:9BBC A9 16 00    LDA #$0016             ;\
 $A6:9BBF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 16h, sound library 2, max queued sounds allowed = 6 (fake Kraid cry)
 
@@ -2210,7 +2212,7 @@ $A6:9C0E BD 7A 0F    LDA $0F7A,x
 $A6:9C11 8F 34 F4 7E STA $7EF434[$7E:F434]
 $A6:9C15 BD 7E 0F    LDA $0F7E,x
 $A6:9C18 8F 36 F4 7E STA $7EF436[$7E:F436]
-$A6:9C1C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]
+$A6:9C1C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no death check
 $A6:9C20 80 2E       BRA $2E    [$9C50]
 }
 
@@ -2222,7 +2224,7 @@ $A6:9C25 BD 7A 0F    LDA $0F7A,x[$7E:103A]
 $A6:9C28 8F 34 F4 7E STA $7EF434[$7E:F434]
 $A6:9C2C BD 7E 0F    LDA $0F7E,x[$7E:103E]
 $A6:9C2F 8F 36 F4 7E STA $7EF436[$7E:F436]
-$A6:9C33 22 97 A4 A0 JSL $A0A497[$A0:A497]
+$A6:9C33 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A6:9C37 80 17       BRA $17    [$9C50]
 }
 
@@ -2234,7 +2236,7 @@ $A6:9C3C BD 7A 0F    LDA $0F7A,x[$7E:103A]
 $A6:9C3F 8F 34 F4 7E STA $7EF434[$7E:F434]
 $A6:9C43 BD 7E 0F    LDA $0F7E,x[$7E:103E]
 $A6:9C46 8F 36 F4 7E STA $7EF436[$7E:F436]
-$A6:9C4A 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
+$A6:9C4A 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A6:9C4E 80 00       BRA $00    [$9C50]
 }
 
@@ -3194,10 +3196,10 @@ $A6:AA1D 4C 54 AA    JMP $AA54  [$A6:AA54]
 
 ;;; $AA20: Spawn walls during Ceres Ridley getaway cutscene ;;;
 {
-$A6:AA20 A2 2F AA    LDX #$AA2F
-$A6:AA23 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:AA27 A2 3F AA    LDX #$AA3F
-$A6:AA2A 22 75 92 A0 JSL $A09275[$A0:9275]
+$A6:AA20 A2 2F AA    LDX #$AA2F             ;\
+$A6:AA23 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn left wall
+$A6:AA27 A2 3F AA    LDX #$AA3F             ;\
+$A6:AA2A 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn right wall
 $A6:AA2E 60          RTS
 
 ;                        ______________________________________ Enemy ID
@@ -3209,8 +3211,8 @@ $A6:AA2E 60          RTS
 ;                       |    |    |    |    |    |     ________ Parameter 1
 ;                       |    |    |    |    |    |    |     ___ Parameter 2
 ;                       |    |    |    |    |    |    |    |
-$A6:AA2F             dw E23F,0008,007F,0000,2800,0000,0005,0000
-$A6:AA3F             dw E23F,00F8,007F,0000,2800,0000,0006,0000
+$A6:AA2F             dw E23F,0008,007F,0000,2800,0000,0005,0000 ; Ceres door
+$A6:AA3F             dw E23F,00F8,007F,0000,2800,0000,0006,0000 ; Ceres door
 }
 
 
@@ -6473,7 +6475,7 @@ $A6:C902 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]
 $A6:C906 DE B2 0F    DEC $0FB2,x[$7E:0FF2]
 $A6:C909 10 07       BPL $07    [$C912]
 $A6:C90B A9 00 00    LDA #$0000             ; A = 0 (small explosion)
-$A6:C90E 5C AF A3 A0 JMP $A0A3AF[$A0:A3AF]  ; Go to enemy death
+$A6:C90E 5C AF A3 A0 JML $A0A3AF[$A0:A3AF]  ; Go to enemy death
 
 $A6:C912 6B          RTL
 }
@@ -6497,46 +6499,55 @@ $A6:C931 60          RTS
 }
 
 
-;;; $C932:  ;;;
+;;; $C932: Spawn Ridley's explosion enemies ;;;
 {
-$A6:C932 A2 E7 C9    LDX #$C9E7
-$A6:C935 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C939 A2 D7 C9    LDX #$C9D7
-$A6:C93C 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C940 A2 C7 C9    LDX #$C9C7
-$A6:C943 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C947 A2 B7 C9    LDX #$C9B7
-$A6:C94A 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C94E A2 A7 C9    LDX #$C9A7
-$A6:C951 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C955 A2 97 C9    LDX #$C997
-$A6:C958 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C95C A2 87 C9    LDX #$C987
-$A6:C95F 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C963 A2 F7 C9    LDX #$C9F7
-$A6:C966 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C96A A2 07 CA    LDX #$CA07
-$A6:C96D 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C971 A2 27 CA    LDX #$CA27
-$A6:C974 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C978 A2 17 CA    LDX #$CA17
-$A6:C97B 22 75 92 A0 JSL $A09275[$A0:9275]
-$A6:C97F A2 37 CA    LDX #$CA37
-$A6:C982 22 75 92 A0 JSL $A09275[$A0:9275]
+$A6:C932 A2 E7 C9    LDX #$C9E7             ;\
+$A6:C935 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 0
+$A6:C939 A2 D7 C9    LDX #$C9D7             ;\
+$A6:C93C 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 1
+$A6:C940 A2 C7 C9    LDX #$C9C7             ;\
+$A6:C943 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 2
+$A6:C947 A2 B7 C9    LDX #$C9B7             ;\
+$A6:C94A 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 3
+$A6:C94E A2 A7 C9    LDX #$C9A7             ;\
+$A6:C951 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 4
+$A6:C955 A2 97 C9    LDX #$C997             ;\
+$A6:C958 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 5
+$A6:C95C A2 87 C9    LDX #$C987             ;\
+$A6:C95F 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 6
+$A6:C963 A2 F7 C9    LDX #$C9F7             ;\
+$A6:C966 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 7
+$A6:C96A A2 07 CA    LDX #$CA07             ;\
+$A6:C96D 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 8
+$A6:C971 A2 27 CA    LDX #$CA27             ;\
+$A6:C974 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 9
+$A6:C978 A2 17 CA    LDX #$CA17             ;\
+$A6:C97B 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion Ah
+$A6:C97F A2 37 CA    LDX #$CA37             ;\
+$A6:C982 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion Bh
 $A6:C986 60          RTS
 
-$A6:C987             dw E1BF,0000,0000,0000,2C00,0000,0000,0000
-$A6:C997             dw E1BF,0000,0000,0000,2C00,0000,0002,0000
-$A6:C9A7             dw E1BF,0000,0000,0000,2C00,0000,0004,0000
-$A6:C9B7             dw E1BF,0000,0000,0000,2C00,0000,0006,0000
-$A6:C9C7             dw E1BF,0000,0000,0000,2C00,0000,0008,0000
-$A6:C9D7             dw E1BF,0000,0000,0000,2C00,0000,000A,0000
-$A6:C9E7             dw E1BF,0000,0000,0000,2C00,0000,000C,0000
-$A6:C9F7             dw E1BF,0000,0000,0000,2C00,0000,000E,0000
-$A6:CA07             dw E1BF,0000,0000,0000,2C00,0000,0010,0000
-$A6:CA17             dw E1BF,0000,0000,0000,2C00,0000,0012,0000
-$A6:CA27             dw E1BF,0000,0000,0000,2C00,0000,0014,0000
-$A6:CA37             dw E1BF,0000,0000,0000,2C00,0000,0016,0000
+;                        ______________________________________ Enemy ID
+;                       |     _________________________________ X position
+;                       |    |     ____________________________ Y position
+;                       |    |    |     _______________________ Initialisation parameter
+;                       |    |    |    |     __________________ Properties
+;                       |    |    |    |    |     _____________ Extra properties
+;                       |    |    |    |    |    |     ________ Parameter 1
+;                       |    |    |    |    |    |    |     ___ Parameter 2
+;                       |    |    |    |    |    |    |    |
+$A6:C987             dw E1BF,0000,0000,0000,2C00,0000,0000,0000 ; Ridley's explosion
+$A6:C997             dw E1BF,0000,0000,0000,2C00,0000,0002,0000 ; Ridley's explosion
+$A6:C9A7             dw E1BF,0000,0000,0000,2C00,0000,0004,0000 ; Ridley's explosion
+$A6:C9B7             dw E1BF,0000,0000,0000,2C00,0000,0006,0000 ; Ridley's explosion
+$A6:C9C7             dw E1BF,0000,0000,0000,2C00,0000,0008,0000 ; Ridley's explosion
+$A6:C9D7             dw E1BF,0000,0000,0000,2C00,0000,000A,0000 ; Ridley's explosion
+$A6:C9E7             dw E1BF,0000,0000,0000,2C00,0000,000C,0000 ; Ridley's explosion
+$A6:C9F7             dw E1BF,0000,0000,0000,2C00,0000,000E,0000 ; Ridley's explosion
+$A6:CA07             dw E1BF,0000,0000,0000,2C00,0000,0010,0000 ; Ridley's explosion
+$A6:CA17             dw E1BF,0000,0000,0000,2C00,0000,0012,0000 ; Ridley's explosion
+$A6:CA27             dw E1BF,0000,0000,0000,2C00,0000,0014,0000 ; Ridley's explosion
+$A6:CA37             dw E1BF,0000,0000,0000,2C00,0000,0016,0000 ; Ridley's explosion
 }
 
 
@@ -9303,7 +9314,7 @@ $A6:DF56 60          RTS
 
 $A6:DF57 38          SEC
 $A6:DF58 60          RTS
-$A6:DF59 22 97 A4 A0 JSL $A0A497[$A0:A497]
+$A6:DF59 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A6:DF5D 4C B6 DF    JMP $DFB6  [$A6:DFB6]
 }
 
@@ -9348,14 +9359,14 @@ $A6:DFA5 1A          INC A
 $A6:DFA6 8F 1A 78 7E STA $7E781A[$7E:781A]
 $A6:DFAA 80 0A       BRA $0A    [$DFB6]
 
-$A6:DFAC 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
+$A6:DFAC 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A6:DFB0 80 04       BRA $04    [$DFB6]
 }
 
 
 ;;; $DFB2: Power bomb reaction - enemy $E13F/$E17F (Ridley) ;;;
 {
-$A6:DFB2 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]
+$A6:DFB2 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no death check
 }
 
 
@@ -9396,9 +9407,9 @@ $A6:DFE6 AF A6 20 7E LDA $7E20A6[$7E:20A6]
 $A6:DFEA 85 14       STA $14    [$7E:0014]
 $A6:DFEC 20 29 DF    JSR $DF29  [$A6:DF29]
 $A6:DFEF 90 29       BCC $29    [$E01A]
-$A6:DFF1 AF 38 78 7E LDA $7E7838[$7E:7838]
-$A6:DFF5 22 5E A4 A0 JSL $A0A45E[$A0:A45E]
-$A6:DFF9 22 51 DF 91 JSL $91DF51[$91:DF51]
+$A6:DFF1 AF 38 78 7E LDA $7E7838[$7E:7838]  ;\
+$A6:DFF5 22 5E A4 A0 JSL $A0A45E[$A0:A45E]  ;} Deal [$7E:7838] suit-adjusted damage to Samus
+$A6:DFF9 22 51 DF 91 JSL $91DF51[$91:DF51]  ;/
 $A6:DFFD A9 60 00    LDA #$0060
 $A6:E000 8D A8 18    STA $18A8  [$7E:18A8]
 $A6:E003 A9 05 00    LDA #$0005
@@ -10455,7 +10466,7 @@ $A6:F03E 6B          RTL
 $A6:F03F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:F042 A9 FF 7F    LDA #$7FFF
 $A6:F045 9D 8C 0F    STA $0F8C,x[$7E:108C]
-$A6:F048 22 77 A4 A0 JSL $A0A477[$A0:A477]
+$A6:F048 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A6:F04C 6B          RTL
 }
 
@@ -11382,7 +11393,7 @@ $A6:FC85 BD B4 0F    LDA $0FB4,x[$7E:1034]
 $A6:FC88 F0 07       BEQ $07    [$FC91]
 
 $A6:FC8A A9 00 00    LDA #$0000             ; A = 0 (small explosion)
-$A6:FC8D 5C AF A3 A0 JMP $A0A3AF[$A0:A3AF]  ; Go to enemy death
+$A6:FC8D 5C AF A3 A0 JML $A0A3AF[$A0:A3AF]  ; Go to enemy death
 
 $A6:FC91 20 AA FC    JSR $FCAA  [$A6:FCAA]
 $A6:FC94 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -11429,8 +11440,8 @@ $A6:FCD8 60          RTS
 
 ;;; $FCD9: Spawn top zebetite ;;;
 {
-$A6:FCD9 A2 E1 FC    LDX #$FCE1
-$A6:FCDC 22 75 92 A0 JSL $A09275[$A0:9275]
+$A6:FCD9 A2 E1 FC    LDX #$FCE1             ;\
+$A6:FCDC 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn top zebetite
 $A6:FCE0 60          RTS
 
 ;                        ___________________________________________ Enemy ID
@@ -11442,14 +11453,14 @@ $A6:FCE0 60          RTS
 ;                       |     |     |     |     |     |      _______ General purpose parameter (speed in SMILE)
 ;                       |     |     |     |     |     |     |      _ General purpose parameter (speed2 in SMILE)
 ;                       |     |     |     |     |     |     |     |
-$A6:FCE1             dw E27F, 0000, 0000, 0000, 2000, 0000, 0000, 0000
+$A6:FCE1             dw E27F, 0000, 0000, 0000, 2000, 0000, 0000, 0000 ; Zebetites
 }
 
 
 ;;; $FCF1: Spawn bottom zebetite ;;;
 {
-$A6:FCF1 A2 F9 FC    LDX #$FCF9
-$A6:FCF4 22 75 92 A0 JSL $A09275[$A0:9275]
+$A6:FCF1 A2 F9 FC    LDX #$FCF9             ;\
+$A6:FCF4 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn bottom zebetite
 $A6:FCF8 60          RTS
 
 ;                        ___________________________________________ Enemy ID
@@ -11461,7 +11472,7 @@ $A6:FCF8 60          RTS
 ;                       |     |     |     |     |     |      _______ General purpose parameter (speed in SMILE)
 ;                       |     |     |     |     |     |     |      _ General purpose parameter (speed2 in SMILE)
 ;                       |     |     |     |     |     |     |     |
-$A6:FCF9             dw E27F, 0000, 0000, 0000, 2000, 0000, 0002, 0000
+$A6:FCF9             dw E27F, 0000, 0000, 0000, 2000, 0000, 0002, 0000 ; Zebetites
 }
 
 
@@ -11533,7 +11544,7 @@ $A6:FD87             dw 005F,0037,
 
 ;;; $FDA7: Enemy touch - enemy $E27F (zebetites) ;;;
 {
-$A6:FDA7 22 97 A4 A0 JSL $A0A497[$A0:A497]
+$A6:FDA7 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A6:FDAB 6B          RTL
 }
 
@@ -11544,7 +11555,7 @@ $A6:FDAC 48          PHA                    ;\
 $A6:FDAD A9 09 00    LDA #$0009             ;|
 $A6:FDB0 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 9, sound library 3, max queued sounds allowed = 6 (shot zebetite)
 $A6:FDB4 68          PLA                    ;/
-$A6:FDB5 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
+$A6:FDB5 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A6:FDB9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:FDBC BC B6 0F    LDY $0FB6,x[$7E:1036]
 $A6:FDBF BD 8C 0F    LDA $0F8C,x[$7E:100C]

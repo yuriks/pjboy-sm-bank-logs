@@ -15048,7 +15048,7 @@ $90:EA0E 8D 50 0A    STA $0A50  [$7E:0A50]  ;/
 
 $90:EA11 AD 50 0A    LDA $0A50  [$7E:0A50]  ;\
 $90:EA14 10 04       BPL $04    [$EA1A]     ;} If periodic damage is negative, crash...
-$90:EA16 5C 73 85 80 JMP $808573[$80:8573]  ;/
+$90:EA16 5C 73 85 80 JML $808573[$80:8573]  ;/
 
 $90:EA1A AD 4C 0A    LDA $0A4C  [$7E:0A4C]  ;\
 $90:EA1D 38          SEC                    ;|

@@ -7432,7 +7432,7 @@ $82:BAA0 AD A1 19    LDA $19A1  [$7E:19A1]  ;\
 $82:BAA3 AA          TAX                    ;} X = [menu selection missile X position]
 $82:BAA4 68          PLA
 $82:BAA5 AB          PLB
-$82:BAA6 5C 1F 89 81 JMP $81891F[$81:891F]  ; Go to add spritemap from $82:C569 table to OAM
+$82:BAA6 5C 1F 89 81 JML $81891F[$81:891F]  ; Go to add spritemap from $82:C569 table to OAM
 
 $82:BAAA             dw 0008, 0008, 0008, 0008
 $82:BAB2             dw 0037, 0036, 0035, 0034

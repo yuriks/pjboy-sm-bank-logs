@@ -86,14 +86,14 @@ $A3:870F 49 FF FF    EOR #$FFFF
 $A3:8712 1A          INC A
 $A3:8713 29 00 FF    AND #$FF00
 $A3:8716 EB          XBA
-$A3:8717 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
+$A3:8717 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
 $A3:871B 9D AA 0F    STA $0FAA,x[$7E:0FEA]
 $A3:871E A9 80 01    LDA #$0180
 $A3:8721 49 FF FF    EOR #$FFFF
 $A3:8724 1A          INC A
 $A3:8725 29 FF 00    AND #$00FF
 $A3:8728 EB          XBA
-$A3:8729 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
+$A3:8729 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
 $A3:872D 9D A8 0F    STA $0FA8,x[$7E:0FE8]
 
 $A3:8730 9E B2 0F    STZ $0FB2,x[$7E:0FB2]
@@ -124,14 +124,14 @@ $A3:8764 49 FF FF    EOR #$FFFF
 $A3:8767 1A          INC A
 $A3:8768 29 00 FF    AND #$FF00
 $A3:876B EB          XBA
-$A3:876C 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
+$A3:876C 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
 $A3:8770 9D AA 0F    STA $0FAA,x[$7E:102A]
 $A3:8773 A5 12       LDA $12    [$7E:0012]
 $A3:8775 49 FF FF    EOR #$FFFF
 $A3:8778 1A          INC A
 $A3:8779 29 FF 00    AND #$00FF
 $A3:877C EB          XBA
-$A3:877D 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
+$A3:877D 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
 $A3:8781 9D A8 0F    STA $0FA8,x[$7E:1028]
 $A3:8784 BD B2 0F    LDA $0FB2,x[$7E:1032]
 $A3:8787 49 01 00    EOR #$0001
@@ -2513,14 +2513,14 @@ $A3:A2D6 6B          RTL
 ;;; $A2D7:  ;;;
 {
 $A3:A2D7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:A2DA BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A3:A2DD 29 FF 00    AND #$00FF
-$A3:A2E0 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A3:A2E4 F0 1A       BEQ $1A    [$A300]
-$A3:A2E6 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A3:A2E9 29 FF 00    AND #$00FF
-$A3:A2EC 22 ED AE A0 JSL $A0AEED[$A0:AEED]
-$A3:A2F0 F0 0E       BEQ $0E    [$A300]
+$A3:A2DA BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A3:A2DD 29 FF 00    AND #$00FF             ;|
+$A3:A2E0 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within [enemy $0FB6] pixel columns of enemy:
+$A3:A2E4 F0 1A       BEQ $1A    [$A300]     ;/
+$A3:A2E6 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A3:A2E9 29 FF 00    AND #$00FF             ;|
+$A3:A2EC 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within [enemy $0FB6] pixels rows of enemy:
+$A3:A2F0 F0 0E       BEQ $0E    [$A300]     ;/
 $A3:A2F2 BD B7 0F    LDA $0FB7,x[$7E:0FB7]
 $A3:A2F5 29 FF 00    AND #$00FF
 $A3:A2F8 0A          ASL A
@@ -2765,7 +2765,7 @@ $A3:A481 30 2C       BMI $2C    [$A4AF]
 $A3:A483 BD 7A 0F    LDA $0F7A,x
 $A3:A486 38          SEC
 $A3:A487 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A3:A48A 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A3:A48A 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A3:A48E C9 60 00    CMP #$0060
 $A3:A491 10 02       BPL $02    [$A495]
 $A3:A493 80 15       BRA $15    [$A4AA]
@@ -2773,7 +2773,7 @@ $A3:A493 80 15       BRA $15    [$A4AA]
 $A3:A495 BD 7E 0F    LDA $0F7E,x
 $A3:A498 38          SEC
 $A3:A499 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$A3:A49C 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A3:A49C 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A3:A4A0 C9 60 00    CMP #$0060
 $A3:A4A3 10 02       BPL $02    [$A4A7]
 $A3:A4A5 80 03       BRA $03    [$A4AA]
@@ -3655,8 +3655,8 @@ $A3:AC3F 60          RTS
 $A3:AC40 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:AC43 A9 6C AC    LDA #$AC6C
 $A3:AC46 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A3:AC49 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A3:AC4D 30 06       BMI $06    [$AC55]
+$A3:AC49 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A3:AC4D 30 06       BMI $06    [$AC55]     ;} If [Samus X position] >= [enemy X position]:
 $A3:AC4F A9 8F AC    LDA #$AC8F
 $A3:AC52 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
@@ -3669,8 +3669,8 @@ $A3:AC55 60          RTS
 $A3:AC56 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:AC59 A9 A8 AC    LDA #$ACA8
 $A3:AC5C 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A3:AC5F 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A3:AC63 30 06       BMI $06    [$AC6B]
+$A3:AC5F 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A3:AC63 30 06       BMI $06    [$AC6B]     ;} If [Samus X position] >= [enemy X position]:
 $A3:AC65 A9 CB AC    LDA #$ACCB
 $A3:AC68 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
@@ -4416,7 +4416,7 @@ $A3:B4E5 B9 17 B4    LDA $B417,y[$A3:B41B]  ;} Enemy X position += [$B415 + [Y]]
 $A3:B4E8 85 12       STA $12    [$7E:0012]  ;|
 $A3:B4EA 22 6C AF A0 JSL $A0AF6C[$A0:AF6C]  ;/
 $A3:B4EE 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$A3:B4F2 D0 21       BNE $21    [$B515]     ;} If enemy is off-screen: go to BRANCH_OFF_SCREEN
+$A3:B4F2 D0 21       BNE $21    [$B515]     ;} If enemy centre is off-screen: go to BRANCH_OFF_SCREEN
 $A3:B4F4 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
 $A3:B4F7 6B          RTL
 
@@ -4428,7 +4428,7 @@ $A3:B502 B9 17 B4    LDA $B417,y[$A3:B41B]  ;} Enemy X position -= [$B415 + [Y]]
 $A3:B505 85 12       STA $12    [$7E:0012]  ;|
 $A3:B507 22 5A AF A0 JSL $A0AF5A[$A0:AF5A]  ;/
 $A3:B50B 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$A3:B50F D0 04       BNE $04    [$B515]     ;} If enemy is off-screen: go to BRANCH_OFF_SCREEN
+$A3:B50F D0 04       BNE $04    [$B515]     ;} If enemy centre is off-screen: go to BRANCH_OFF_SCREEN
 $A3:B511 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
 $A3:B514 6B          RTL
 
@@ -5132,7 +5132,7 @@ $A3:BBAE 9D A0 0F    STA $0FA0,x
 $A3:BBB1 BD 86 0F    LDA $0F86,x
 $A3:BBB4 09 00 04    ORA #$0400
 $A3:BBB7 9D 86 0F    STA $0F86,x
-$A3:BBBA 22 29 AE A0 JSL $A0AE29[$A0:AE29]
+$A3:BBBA 22 29 AE A0 JSL $A0AE29[$A0:AE29]  ; Determine direction of Samus from enemy
 $A3:BBBE 20 EB BB    JSR $BBEB  [$A3:BBEB]
 $A3:BBC1 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A3:BBC5 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -5267,8 +5267,8 @@ $A3:BCFC 29 FF 00    AND #$00FF
 $A3:BCFF 9F 04 78 7E STA $7E7804,x
 $A3:BD03 38          SEC
 $A3:BD04 FF 02 78 7E SBC $7E7802,x
-$A3:BD08 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
-$A3:BD0C 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A3:BD08 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
+$A3:BD0C 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A3:BD10 C9 30 00    CMP #$0030
 $A3:BD13 30 06       BMI $06    [$BD1B]
 $A3:BD15 A9 2C BD    LDA #$BD2C
@@ -5375,7 +5375,7 @@ $A3:BDD5 A9 01 00    LDA #$0001
 $A3:BDD8 9F 0E 78 7E STA $7E780E,x
 
 $A3:BDDC A5 12       LDA $12    [$7E:0012]
-$A3:BDDE 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A3:BDDE 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A3:BDE2 29 00 FF    AND #$FF00
 $A3:BDE5 EB          XBA
 $A3:BDE6 85 16       STA $16    [$7E:0016]
@@ -5422,7 +5422,7 @@ $A3:BE34 A9 01 00    LDA #$0001
 $A3:BE37 9F 10 78 7E STA $7E7810,x
 
 $A3:BE3B A5 12       LDA $12    [$7E:0012]
-$A3:BE3D 22 67 B0 A0 JSL $A0B067[$A0:B067]
+$A3:BE3D 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A3:BE41 29 00 FF    AND #$FF00
 $A3:BE44 EB          XBA
 $A3:BE45 85 16       STA $16    [$7E:0016]
@@ -9789,7 +9789,7 @@ $A3:F041 6B          RTL
 
 ;;; $F042: Power bomb reaction - enemy $DD7F (metroid) ;;;
 {
-$A3:F042 22 97 A5 A0 JSL $A0A597[$A0:A597]
+$A3:F042 22 97 A5 A0 JSL $A0A597[$A0:A597]  ; Normal enemy power bomb AI
 $A3:F046 BD 8C 0F    LDA $0F8C,x[$7E:0FCC]
 $A3:F049 D0 25       BNE $25    [$F070]
 $A3:F04B A9 13 00    LDA #$0013

@@ -1835,7 +1835,7 @@ $A5:95E9 6B          RTL
 
 ;;; $95EA: Enemy touch - enemy $DE3F (Draygon) ;;;
 {
-$A5:95EA 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal touch AI, but skips death animation
+$A5:95EA 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A5:95EE 80 1D       BRA $1D    [$960D]     ; Go to Draygon reaction
 }
 
@@ -1849,7 +1849,7 @@ $A5:95F8 C9 A0 00    CMP #$00A0             ;} Draygon swoop Y acceleration = mi
 $A5:95FB 10 04       BPL $04    [$9601]     ;|
 $A5:95FD 8F 1E 78 7E STA $7E781E[$7E:781E]  ;/
 
-$A5:9601 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI, but skips hit-projectile and death animation
+$A5:9601 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A5:9605 80 06       BRA $06    [$960D]     ; Go to Draygon reaction
 }
 
@@ -5515,7 +5515,7 @@ $A5:ED67 89 10 00    BIT #$0010             ;\
 $A5:ED6A D0 01       BNE $01    [$ED6D]     ;} If projectile is not charged:
 $A5:ED6C 6B          RTL                    ; Return
 
-$A5:ED6D 22 B4 A6 A0 JSL $A0A6B4[$A0:A6B4]  ; Normal enemy shot AI, but skips death animation
+$A5:ED6D 22 B4 A6 A0 JSL $A0A6B4[$A0:A6B4]  ; Normal enemy shot AI - no death check
 $A5:ED71 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
 $A5:ED74 F0 74       BEQ $74    [$EDEA]     ;} If [enemy flash timer] = 0: go to Spore Spawn reaction
 $A5:ED76 A9 52 EB    LDA #$EB52             ;\
@@ -5575,7 +5575,7 @@ $A5:EDEA 80 07       BRA $07    [$EDF3]     ; Go to Spore Spawn reaction
 
 ;;; $EDEC: Enemy touch - enemy $DF3F/$DF7F (Spore Spawn) ;;;
 {
-$A5:EDEC 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal touch AI, but skips death animation
+$A5:EDEC 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $A5:EDF0 80 01       BRA $01    [$EDF3]     ; Go to Spore Spawn reaction
 }
 

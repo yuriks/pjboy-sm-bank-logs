@@ -250,8 +250,8 @@ $A2:8893 60          RTS
 ;;; $8894:  ;;;
 {
 $A2:8894 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8897 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A2:889A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
+$A2:8897 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A2:889A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} A = (1 if Samus within [enemy parameter 2] pixel columns of enemy, else 0)
 $A2:889E 60          RTS
 }
 
@@ -1556,7 +1556,7 @@ $A2:930E 6B          RTL
 
 ;;; $930F: Enemy shot - enemy $CF7F (mini Maridia beyblade turtle) ;;;
 {
-$A2:930F 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A2:930F 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:9313 80 EA       BRA $EA    [$92FF]
 }
 
@@ -1611,7 +1611,7 @@ $A2:9373 C5 16       CMP $16    [$7E:0016]
 $A2:9375 30 09       BMI $09    [$9380]
 $A2:9377 AD A8 18    LDA $18A8  [$7E:18A8]
 $A2:937A D0 04       BNE $04    [$9380]
-$A2:937C 22 77 A4 A0 JSL $A0A477[$A0:A477]
+$A2:937C 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 
 $A2:9380 60          RTS
 }
@@ -4727,12 +4727,12 @@ $A2:B595 6B          RTL
 ;;; $B596:  ;;;
 {
 $A2:B596 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B599 A9 40 00    LDA #$0040
-$A2:B59C 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:B5A0 F0 0F       BEQ $0F    [$B5B1]
-$A2:B5A2 A9 40 00    LDA #$0040
-$A2:B5A5 22 ED AE A0 JSL $A0AEED[$A0:AEED]
-$A2:B5A9 F0 06       BEQ $06    [$B5B1]
+$A2:B599 A9 40 00    LDA #$0040             ;\
+$A2:B59C 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within 40h pixels columns of enemy:
+$A2:B5A0 F0 0F       BEQ $0F    [$B5B1]     ;/
+$A2:B5A2 A9 40 00    LDA #$0040             ;\
+$A2:B5A5 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 40h pixels rows of enemy:
+$A2:B5A9 F0 06       BEQ $06    [$B5B1]     ;/
 $A2:B5AB A9 B2 B5    LDA #$B5B2
 $A2:B5AE 9D A8 0F    STA $0FA8,x[$7E:11E8]
 
@@ -5037,7 +5037,7 @@ $A2:B7CC AF 3A 78 7E LDA $7E783A[$7E:783A]  ;\
 $A2:B7D0 F0 0A       BEQ $0A    [$B7DC]     ;} If turrets and rinkas are flagged for deletion:
 $A2:B7D2 20 80 B8    JSR $B880  [$A2:B880]  ; Decrement rinka counter
 $A2:B7D5 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
-$A2:B7D8 5C 10 A4 A0 JMP $A0A410[$A0:A410]  ; Rinka's death animation
+$A2:B7D8 5C 10 A4 A0 JML $A0A410[$A0:A410]  ; Go to rinka death
 
 $A2:B7DC 7C A8 0F    JMP ($0FA8,x)[$A2:B852]; Go to [enemy function]
 }
@@ -5259,7 +5259,7 @@ $A2:B93C 6B          RTL                    ; Return
 
 $A2:B93D 20 80 B8    JSR $B880  [$A2:B880]  ; Decrement rinka counter
 $A2:B940 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
-$A2:B943 5C 10 A4 A0 JML $A0A410[$A0:A410]  ; Go to rinka's death animation
+$A2:B943 5C 10 A4 A0 JML $A0A410[$A0:A410]  ; Go to rinka death
 }
 
 
@@ -5299,7 +5299,7 @@ $A2:B969 20 BB B8    JSR $B8BB  [$A2:B8BB]  ; Mark rinka spawn point available
 $A2:B96C BD B4 0F    LDA $0FB4,x[$7E:10F4]  ;\
 $A2:B96F D0 07       BNE $07    [$B978]     ;} If [enemy parameter 1] = 0 (not Mother Brain's room):
 $A2:B971 A9 00 00    LDA #$0000             ; A = 0
-$A2:B974 5C 10 A4 A0 JMP $A0A410[$A0:A410]  ; Go to rinka death
+$A2:B974 5C 10 A4 A0 JML $A0A410[$A0:A410]  ; Go to rinka death
 
 $A2:B978 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
 $A2:B97B 09 00 05    ORA #$0500             ;} Set enemy as intangible and invisible
@@ -5594,9 +5594,9 @@ $A2:BC15 A9 7F BB    LDA #$BB7F
 $A2:BC18 20 54 BD    JSR $BD54  [$A2:BD54]
 $A2:BC1B A9 48 BC    LDA #$BC48
 $A2:BC1E 9D AA 0F    STA $0FAA,x[$7E:10AA]
-$A2:BC21 22 70 AD A0 JSL $A0AD70[$A0:AD70]
-$A2:BC25 29 FF FF    AND #$FFFF
-$A2:BC28 D0 07       BNE $07    [$BC31]
+$A2:BC21 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
+$A2:BC25 29 FF FF    AND #$FFFF             ;} If enemy centre is on screen:
+$A2:BC28 D0 07       BNE $07    [$BC31]     ;/
 $A2:BC2A A9 65 00    LDA #$0065             ;\
 $A2:BC2D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 65h, sound library 2, max queued sounds allowed = 6 (rio cry)
 
@@ -7316,16 +7316,16 @@ $A2:CDF1 80 37       BRA $37    [$CE2A]
 
 $A2:CDF3 A9 00 00    LDA #$0000
 $A2:CDF6 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:CDFA 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A2:CDFE 10 0A       BPL $0A    [$CE0A]
+$A2:CDFA 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A2:CDFE 10 0A       BPL $0A    [$CE0A]     ;} If [Samus X position] < [enemy X position]:
 $A2:CE00 A9 01 00    LDA #$0001
 $A2:CE03 9D AE 0F    STA $0FAE,x[$7E:0FAE]
 $A2:CE06 9F 00 78 7E STA $7E7800,x[$7E:7800]
 
 $A2:CE0A 20 DF CF    JSR $CFDF  [$A2:CFDF]
-$A2:CE0D A9 18 00    LDA #$0018
-$A2:CE10 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:CE14 F0 14       BEQ $14    [$CE2A]
+$A2:CE0D A9 18 00    LDA #$0018             ;\
+$A2:CE10 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within 18h pixels columns of enemy:
+$A2:CE14 F0 14       BEQ $14    [$CE2A]     ;/
 $A2:CE16 BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $A2:CE1A 09 02 00    ORA #$0002
 $A2:CE1D 9F 00 78 7E STA $7E7800,x[$7E:7800]
@@ -7364,9 +7364,9 @@ $A2:CE5D 64 24       STZ $24    [$7E:0024]
 $A2:CE5F DE AC 0F    DEC $0FAC,x[$7E:0FAC]
 $A2:CE62 10 51       BPL $51    [$CEB5]
 $A2:CE64 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A2:CE67 A9 20 00    LDA #$0020
-$A2:CE6A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:CE6E F0 45       BEQ $45    [$CEB5]
+$A2:CE67 A9 20 00    LDA #$0020             ;\
+$A2:CE6A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is not within 20h pixels columns of enemy: go to BRANCH_CEB5
+$A2:CE6E F0 45       BEQ $45    [$CEB5]     ;/
 $A2:CE70 BF 06 78 7E LDA $7E7806,x
 $A2:CE74 F0 3F       BEQ $3F    [$CEB5]
 $A2:CE76 BD B0 0F    LDA $0FB0,x
@@ -7374,8 +7374,8 @@ $A2:CE79 D0 3A       BNE $3A    [$CEB5]
 $A2:CE7B A9 00 00    LDA #$0000
 $A2:CE7E 9F 00 78 7E STA $7E7800,x
 $A2:CE82 9D AE 0F    STA $0FAE,x
-$A2:CE85 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A2:CE89 10 0A       BPL $0A    [$CE95]
+$A2:CE85 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A2:CE89 10 0A       BPL $0A    [$CE95]     ;} If [Samus X position] < [enemy X position]:
 $A2:CE8B A9 01 00    LDA #$0001
 $A2:CE8E 9F 00 78 7E STA $7E7800,x
 $A2:CE92 9D AE 0F    STA $0FAE,x
@@ -7391,6 +7391,7 @@ $A2:CEAC A9 40 CF    LDA #$CF40
 $A2:CEAF 9D A8 0F    STA $0FA8,x
 $A2:CEB2 4C 3F CF    JMP $CF3F  [$A2:CF3F]
 
+; BRANCH_CEB5
 $A2:CEB5 A9 80 00    LDA #$0080
 $A2:CEB8 A8          TAY
 $A2:CEB9 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
@@ -7574,16 +7575,16 @@ $A2:CFFF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:D002 A9 00 00    LDA #$0000
 $A2:D005 9F 08 78 7E STA $7E7808,x[$7E:7808]
 $A2:D009 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A2:D00D A9 20 00    LDA #$0020
-$A2:D010 22 ED AE A0 JSL $A0AEED[$A0:AEED]
-$A2:D014 F0 1D       BEQ $1D    [$D033]
-$A2:D016 A9 18 00    LDA #$0018
-$A2:D019 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:D01D F0 14       BEQ $14    [$D033]
+$A2:D00D A9 20 00    LDA #$0020             ;\
+$A2:D010 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 20h pixels rows of enemy:
+$A2:D014 F0 1D       BEQ $1D    [$D033]     ;/
+$A2:D016 A9 18 00    LDA #$0018             ;\
+$A2:D019 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within 18h pixels columns of enemy:
+$A2:D01D F0 14       BEQ $14    [$D033]     ;/
 $A2:D01F A9 01 00    LDA #$0001
 $A2:D022 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A2:D026 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
-$A2:D02A 10 07       BPL $07    [$D033]
+$A2:D026 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
+$A2:D02A 10 07       BPL $07    [$D033]     ;} If [Samus X position] < [enemy X position]:
 $A2:D02C A9 01 00    LDA #$0001
 $A2:D02F 9F 0A 78 7E STA $7E780A,x[$7E:780A]
 
@@ -7658,7 +7659,7 @@ $A2:D3B3 6B          RTL
 
 ;;; $D3B4: Enemy shot - enemy $D37F (Maridia large indestructible snail) ;;;
 {
-$A2:D3B4 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A2:D3B4 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:D3B8 A9 57 00    LDA #$0057             ;\
 $A2:D3BB 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot Maridia large indestructible snail)
 $A2:D3BF 6B          RTL
@@ -7935,9 +7936,9 @@ $A2:E034 6B          RTL
 ;;; $E035:  ;;;
 {
 $A2:E035 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:E038 A9 50 00    LDA #$0050
-$A2:E03B 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:E03F F0 0D       BEQ $0D    [$E04E]
+$A2:E038 A9 50 00    LDA #$0050             ;\
+$A2:E03B 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within 50h pixels columns of enemy:
+$A2:E03F F0 0D       BEQ $0D    [$E04E]     ;/
 $A2:E041 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
 $A2:E044 9F 0E 78 7E STA $7E780E,x[$7E:780E]
 $A2:E048 A9 4F E0    LDA #$E04F
@@ -8253,7 +8254,7 @@ $A2:E2A3 6B          RTL
 ;;; $E2A4: Unused. Enemy shot ;;;
 {
 ; Clone of $E3A9
-$A2:E2A4 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A2:E2A4 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:E2A8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E2AB BD 9E 0F    LDA $0F9E,x
 $A2:E2AE F0 0F       BEQ $0F    [$E2BF]
@@ -8398,7 +8399,7 @@ $A2:E3A8 6B          RTL
 
 ;;; $E3A9: Enemy shot - enemy $D3FF/$D43F (gripper / jet powered ripper) ;;;
 {
-$A2:E3A9 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A2:E3A9 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:E3AD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E3B0 BD 9E 0F    LDA $0F9E,x[$7E:105E]
 $A2:E3B3 F0 0F       BEQ $0F    [$E3C4]
@@ -8666,7 +8667,7 @@ $A2:E65A A9 30 00    LDA #$0030
 $A2:E65D 9D AE 0F    STA $0FAE,x[$7E:116E]
 $A2:E660 A9 AD E6    LDA #$E6AD
 $A2:E663 9D B2 0F    STA $0FB2,x[$7E:1172]
-$A2:E666 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]
+$A2:E666 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ; A = [Samus X position] - [enemy X position]
 $A2:E66A A8          TAY
 $A2:E66B 3E A8 0F    ROL $0FA8,x[$7E:1168]
 $A2:E66E 2A          ROL A
@@ -9052,10 +9053,10 @@ $A2:EAD0 60          RTS
 
 ;;; $EAD1:  ;;;
 {
-$A2:EAD1 BD B4 0F    LDA $0FB4,x
-$A2:EAD4 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:EAD8 29 FF FF    AND #$FFFF
-$A2:EADB F0 09       BEQ $09    [$EAE6]
+$A2:EAD1 BD B4 0F    LDA $0FB4,x            ;\
+$A2:EAD4 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
+$A2:EAD8 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy $0FB4] pixels columns of enemy:
+$A2:EADB F0 09       BEQ $09    [$EAE6]     ;/
 $A2:EADD 20 5A EF    JSR $EF5A  [$A2:EF5A]
 $A2:EAE0 A9 13 EC    LDA #$EC13
 $A2:EAE3 9D A8 0F    STA $0FA8,x
@@ -9066,10 +9067,10 @@ $A2:EAE6 60          RTS
 
 ;;; $EAE7:  ;;;
 {
-$A2:EAE7 BD B4 0F    LDA $0FB4,x[$7E:1034]
-$A2:EAEA 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:EAEE 29 FF FF    AND #$FFFF
-$A2:EAF1 F0 09       BEQ $09    [$EAFC]
+$A2:EAE7 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
+$A2:EAEA 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
+$A2:EAEE 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy $0FB4] pixels columns of enemy:
+$A2:EAF1 F0 09       BEQ $09    [$EAFC]     ;/
 $A2:EAF3 20 5A EF    JSR $EF5A  [$A2:EF5A]
 $A2:EAF6 A9 11 EB    LDA #$EB11
 $A2:EAF9 9D A8 0F    STA $0FA8,x[$7E:1028]
@@ -9558,9 +9559,9 @@ $A2:EF27 60          RTS
 ;;; $EF28:  ;;;
 {
 $A2:EF28 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EF2B BF 0C 78 7E LDA $7E780C,x[$7E:788C]
-$A2:EF2F 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:EF33 F0 03       BEQ $03    [$EF38]
+$A2:EF2B BF 0C 78 7E LDA $7E780C,x[$7E:788C];\
+$A2:EF2F 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within [enemy $7E:780C] pixels columns of enemy:
+$A2:EF33 F0 03       BEQ $03    [$EF38]     ;/
 $A2:EF35 20 44 EF    JSR $EF44  [$A2:EF44]
 
 $A2:EF38 60          RTS
@@ -9598,8 +9599,8 @@ $A2:EF59 60          RTS
 
 ;;; $EF5A:  ;;;
 {
-$A2:EF5A 22 70 AD A0 JSL $A0AD70[$A0:AD70]
-$A2:EF5E D0 07       BNE $07    [$EF67]
+$A2:EF5A 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
+$A2:EF5E D0 07       BNE $07    [$EF67]     ;} If enemy centre is on screen:
 $A2:EF60 A9 0E 00    LDA #$000E             ;\
 $A2:EF63 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound Eh, sound library 3, max queued sounds allowed = 6 (gate opening/closing)
 
@@ -9768,7 +9769,7 @@ $A2:F0A9 6B          RTL
 ;;; $F0AA: Enemy shot - enemy $B5BF (destroyable timed shutter) ;;;
 {
 $A2:F0AA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F0AD 22 3D A6 A0 JSL $A0A63D[$A0:A63D]
+$A2:F0AD 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:F0B1 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]
 $A2:F0B5 6B          RTL
 }
@@ -9960,9 +9961,9 @@ $A2:F242 60          RTS
 ;;; $F243:  ;;;
 {
 $A2:F243 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F246 BF 0C 78 7E LDA $7E780C,x
-$A2:F24A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]
-$A2:F24E F0 03       BEQ $03    [$F253]
+$A2:F246 BF 0C 78 7E LDA $7E780C,x          ;\
+$A2:F24A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within [enemy $7E:780C] pixels columns of enemy:
+$A2:F24E F0 03       BEQ $03    [$F253]     ;/
 $A2:F250 20 5F F2    JSR $F25F  [$A2:F25F]
 
 $A2:F253 60          RTS
@@ -10004,8 +10005,8 @@ $A2:F275 BD 7A 0F    LDA $0F7A,x
 $A2:F278 9F 1A 78 7E STA $7E781A,x
 $A2:F27C A9 00 00    LDA #$0000
 $A2:F27F 9F 26 78 7E STA $7E7826,x
-$A2:F283 22 67 AC A0 JSL $A0AC67[$A0:AC67]
-$A2:F287 F0 0F       BEQ $0F    [$F298]
+$A2:F283 22 67 AC A0 JSL $A0AC67[$A0:AC67]  ;\
+$A2:F287 F0 0F       BEQ $0F    [$F298]     ;} If enemy is touching Samus:
 $A2:F289 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $A2:F28C DD 7A 0F    CMP $0F7A,x
 $A2:F28F 10 07       BPL $07    [$F298]
@@ -10052,8 +10053,8 @@ $A2:F2E7 BD 7A 0F    LDA $0F7A,x
 $A2:F2EA 9F 1A 78 7E STA $7E781A,x
 $A2:F2EE A9 00 00    LDA #$0000
 $A2:F2F1 9F 26 78 7E STA $7E7826,x
-$A2:F2F5 22 67 AC A0 JSL $A0AC67[$A0:AC67]
-$A2:F2F9 F0 0F       BEQ $0F    [$F30A]
+$A2:F2F5 22 67 AC A0 JSL $A0AC67[$A0:AC67]  ;\
+$A2:F2F9 F0 0F       BEQ $0F    [$F30A]     ;} If enemy is touching Samus:
 $A2:F2FB AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $A2:F2FE DD 7A 0F    CMP $0F7A,x
 $A2:F301 30 07       BMI $07    [$F30A]
@@ -10203,7 +10204,7 @@ $A2:F40D 6B          RTL
 ;;; $F40E: Enemy shot - enemy $D57F (horizontal shootable shutter) ;;;
 {
 $A2:F40E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F411 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]
+$A2:F411 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A2:F415 22 1A F4 A2 JSL $A2F41A[$A2:F41A]
 $A2:F419 6B          RTL
 }

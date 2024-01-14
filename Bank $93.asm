@@ -42,7 +42,7 @@ $93:803B A8          TAY                    ;/
 $93:803C B9 00 00    LDA $0000,y[$93:8641]  ;\
 $93:803F 9D 2C 0C    STA $0C2C,x[$7E:0C2C]  ;} Projectile damage = [[Y]]
 $93:8042 10 04       BPL $04    [$8048]     ; If [projectile damage] < 0:
-$93:8044 5C 73 85 80 JMP $808573[$80:8573]  ; Crash
+$93:8044 5C 73 85 80 JML $808573[$80:8573]  ; Crash
 
 $93:8048 C8          INY                    ;\
 $93:8049 C8          INY                    ;|

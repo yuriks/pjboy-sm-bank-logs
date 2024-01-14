@@ -221,7 +221,7 @@ $B3:887D 7C B2 0F    JMP ($0FB2,x)[$B3:8880]
 {
 $B3:8880 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8883 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$B3:8887 D0 06       BNE $06    [$888F]     ;} If enemy is on screen:
+$B3:8887 D0 06       BNE $06    [$888F]     ;} If enemy centre is on screen:
 $B3:8889 A9 90 88    LDA #$8890             ;\
 $B3:888C 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $8890
 
@@ -560,7 +560,7 @@ $B3:8BA7 6B          RTL
 {
 $B3:8BA8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8BAB 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$B3:8BAF F0 1B       BEQ $1B    [$8BCC]     ;} If enemy is off-screen:
+$B3:8BAF F0 1B       BEQ $1B    [$8BCC]     ;} If enemy centre is off-screen:
 $B3:8BB1 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $B3:8BB4 09 00 01    ORA #$0100             ;} Set enemy as invisible
 $B3:8BB7 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
@@ -604,9 +604,9 @@ $B3:8BFE 60          RTS
 {
 $B3:8BFF AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8C02 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
-$B3:8C05 29 FF 00    AND #$00FF             ;} A = [enemy parameter 2 low]
-$B3:8C08 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;\
-$B3:8C0C F0 43       BEQ $43    [$8C51]     ;} If Samus is not within [A] pixel columns of enemy: return
+$B3:8C05 29 FF 00    AND #$00FF             ;|
+$B3:8C08 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is not within [enemy parameter 2 low] pixel columns of enemy: return
+$B3:8C0C F0 43       BEQ $43    [$8C51]     ;/
 $B3:8C0E BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $B3:8C11 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [enemy Y position] < [Samus Y position]: return
 $B3:8C14 30 3B       BMI $3B    [$8C51]     ;/
@@ -1067,7 +1067,7 @@ $B3:8FD0 C9 40 FF    CMP #$FF40             ;} If not -C0h <= [Samus X position]
 $B3:8FD3 30 1F       BMI $1F    [$8FF4]     ;/
 
 $B3:8FD5 A9 30 00    LDA #$0030             ;\
-$B3:8FD8 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus within 30h pixel rows of enemy:
+$B3:8FD8 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 30h pixel rows of enemy:
 $B3:8FDC F0 16       BEQ $16    [$8FF4]     ;/
 $B3:8FDE BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
 $B3:8FE1 29 FF FE    AND #$FEFF             ;} Set enemy as visible
@@ -1112,7 +1112,7 @@ $B3:9027 60          RTS
 $B3:9028 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:902B 20 A1 90    JSR $90A1  [$B3:90A1]  ; Move Brinstar yellow pipe bug left
 $B3:902E 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$B3:9032 F0 2C       BEQ $2C    [$9060]     ;} If enemy is not on screen:
+$B3:9032 F0 2C       BEQ $2C    [$9060]     ;} If enemy centre is not on screen:
 $B3:9034 BF 0E 78 7E LDA $7E780E,x          ;\
 $B3:9038 9D 7A 0F    STA $0F7A,x            ;} Enemy X position = [enemy spawn X position]
 $B3:903B BF 10 78 7E LDA $7E7810,x          ;\
@@ -1177,7 +1177,7 @@ $B3:90BC 60          RTS
 $B3:90BD AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:90C0 20 3A 91    JSR $913A  [$B3:913A]  ; Move Brinstar yellow pipe bug right
 $B3:90C3 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$B3:90C7 F0 2C       BEQ $2C    [$90F5]     ;} If enemy is not on screen:
+$B3:90C7 F0 2C       BEQ $2C    [$90F5]     ;} If enemy centre is not on screen:
 $B3:90C9 BF 0E 78 7E LDA $7E780E,x[$7E:790E];\
 $B3:90CD 9D 7A 0F    STA $0F7A,x[$7E:107A]  ;} Enemy X position = [enemy spawn X position]
 $B3:90D0 BF 10 78 7E LDA $7E7810,x[$7E:7910];\
@@ -1245,7 +1245,7 @@ $B3:9159 60          RTS
 {
 $B3:915A AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:915D 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$B3:9161 F0 3C       BEQ $3C    [$919F]     ;} If enemy is not on screen:
+$B3:9161 F0 3C       BEQ $3C    [$919F]     ;} If enemy centre is not on screen:
 $B3:9163 BF 0E 78 7E LDA $7E780E,x[$7E:78CE];\
 $B3:9167 9D 7A 0F    STA $0F7A,x[$7E:103A]  ;} Enemy X position = [enemy spawn X position]
 $B3:916A BF 10 78 7E LDA $7E7810,x[$7E:78D0];\
@@ -1296,7 +1296,7 @@ $B3:91D7 60          RTS
 {
 $B3:91D8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:91DB 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
-$B3:91DF F0 3C       BEQ $3C    [$921D]     ;} If enemy is not on screen:
+$B3:91DF F0 3C       BEQ $3C    [$921D]     ;} If enemy centre is not on screen:
 $B3:91E1 BF 0E 78 7E LDA $7E780E,x[$7E:7A4E];\
 $B3:91E5 9D 7A 0F    STA $0F7A,x[$7E:11BA]  ;} Enemy X position = [enemy spawn X position]
 $B3:91E8 BF 10 78 7E LDA $7E7810,x[$7E:7A50];\

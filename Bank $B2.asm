@@ -1544,7 +1544,7 @@ $B2:F033 6B          RTL
 {
 $B2:F034 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F037 A9 20 00    LDA #$0020             ;\
-$B2:F03A 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus within 20h pixel rows of enemy:
+$B2:F03A 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 20h pixel rows of enemy:
 $B2:F03E F0 0D       BEQ $0D    [$F04D]     ;/
 $B2:F040 A9 80 ED    LDA #$ED80             ;\
 $B2:F043 9D 92 0F    STA $0F92,x[$7E:1212]  ;} Enemy instruction list pointer = $ED80
@@ -1625,7 +1625,7 @@ $B2:F0C7 60          RTS
 {
 $B2:F0C8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F0CB A9 20 00    LDA #$0020             ;\
-$B2:F0CE 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus within 20h pixel rows of enemy:
+$B2:F0CE 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 20h pixel rows of enemy:
 $B2:F0D2 F0 0D       BEQ $0D    [$F0E1]     ;/
 $B2:F0D4 A9 C0 EC    LDA #$ECC0             ;\
 $B2:F0D7 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $ECC0
@@ -3116,7 +3116,7 @@ $B2:FCC9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:FCCC A9 10 00    LDA #$0010             ;\
 $B2:FCCF 5A          PHY                    ;|
 $B2:FCD0 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
-$B2:FCD4 7A          PLY                    ;} If Samus within 10h pixel rows of enemy: go to BRANCH_VERTICAL_CLOSE
+$B2:FCD4 7A          PLY                    ;} If Samus is within 10h pixel rows of enemy: go to BRANCH_VERTICAL_CLOSE
 $B2:FCD5 29 FF FF    AND #$FFFF             ;|
 $B2:FCD8 D0 14       BNE $14    [$FCEE]     ;/
 $B2:FCDA AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3185,9 +3185,9 @@ $B2:FD43 6B          RTL
 ;;; $FD44: Walking space pirate function - walking left ;;;
 {
 $B2:FD44 AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:FD47 A9 10 00    LDA #$0010
-$B2:FD4A 22 ED AE A0 JSL $A0AEED[$A0:AEED]
-$B2:FD4E F0 1A       BEQ $1A    [$FD6A]
+$B2:FD47 A9 10 00    LDA #$0010             ;\
+$B2:FD4A 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is not within 10h pixel rows of enemy: go to BRANCH_FD6A
+$B2:FD4E F0 1A       BEQ $1A    [$FD6A]     ;/
 $B2:FD50 A0 8C FB    LDY #$FB8C
 $B2:FD53 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $B2:FD56 38          SEC
@@ -3201,6 +3201,7 @@ $B2:FD63 A9 01 00    LDA #$0001
 $B2:FD66 9D 94 0F    STA $0F94,x[$7E:1014]
 $B2:FD69 60          RTS
 
+; BRANCH_FD6A
 $B2:FD6A A9 01 00    LDA #$0001             ;\
 $B2:FD6D 85 14       STA $14    [$7E:0014]  ;|
 $B2:FD6F 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by 1.0
@@ -3247,9 +3248,9 @@ $B2:FDCD 60          RTS
 ;;; $FDCE: Walking space pirate function - walking right ;;;
 {
 $B2:FDCE AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:FDD1 A9 10 00    LDA #$0010
-$B2:FDD4 22 ED AE A0 JSL $A0AEED[$A0:AEED]
-$B2:FDD8 F0 1A       BEQ $1A    [$FDF4]
+$B2:FDD1 A9 10 00    LDA #$0010             ;\
+$B2:FDD4 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is not within 10h pixel rows of enemy: go to BRANCH_FDF4
+$B2:FDD8 F0 1A       BEQ $1A    [$FDF4]     ;/
 $B2:FDDA A0 8C FB    LDY #$FB8C
 $B2:FDDD AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $B2:FDE0 38          SEC
