@@ -7862,7 +7862,8 @@ $A0:BF89 6B          RTL                    ;/
 ;;; $BF8A: Check for vertical "solid" block collision ;;;
 {
 ;; Parameters:
-;;     A: Direction. 0 = left, 1 = right
+;;     A: Direction. 0 = up, 1 = down
+;;     X: Enemy index
 ;;     $14.$12: Distance to check for collision (unsigned)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise

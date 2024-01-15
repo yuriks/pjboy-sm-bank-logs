@@ -424,22 +424,22 @@ $A8:89DF 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within 80h pixel colu
 $A8:89E3 F0 4E       BEQ $4E    [$8A33]     ;/
 $A8:89E5 A9 04 00    LDA #$0004
 $A8:89E8 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:89EB 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A8:89EB 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A8:89EF 38          SEC
 $A8:89F0 E9 40 00    SBC #$0040
 $A8:89F3 29 FF 00    AND #$00FF
 $A8:89F6 49 FF FF    EOR #$FFFF
 $A8:89F9 1A          INC A
 $A8:89FA 85 16       STA $16    [$7E:0016]
-$A8:89FC 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A8:8A00 9F 0E 78 7E STA $7E780E,x[$7E:788E]
-$A8:8A04 AD 38 0E    LDA $0E38  [$7E:0E38]
-$A8:8A07 9F 10 78 7E STA $7E7810,x[$7E:7890]
-$A8:8A0B A5 16       LDA $16    [$7E:0016]
-$A8:8A0D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A8:8A11 9F 12 78 7E STA $7E7812,x[$7E:7892]
-$A8:8A15 AD 38 0E    LDA $0E38  [$7E:0E38]
-$A8:8A18 9F 14 78 7E STA $7E7814,x[$7E:7894]
+$A8:89FC 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
+$A8:8A00 9F 0E 78 7E STA $7E780E,x[$7E:788E];|
+$A8:8A04 AD 38 0E    LDA $0E38  [$7E:0E38]  ;} Enemy $7E:780E = 4 * cos([$16] * pi / 80h) * FFh / 100h
+$A8:8A07 9F 10 78 7E STA $7E7810,x[$7E:7890];/
+$A8:8A0B A5 16       LDA $16    [$7E:0016]  ;\
+$A8:8A0D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A8:8A11 9F 12 78 7E STA $7E7812,x[$7E:7892];} Enemy $7E:7812 = 4 * -sin([$16] * pi / 80h) * FFh / 100h
+$A8:8A15 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A8:8A18 9F 14 78 7E STA $7E7814,x[$7E:7894];/
 $A8:8A1C A9 6F 87    LDA #$876F
 $A8:8A1F 9F 04 78 7E STA $7E7804,x[$7E:7884]
 $A8:8A23 20 E8 8A    JSR $8AE8  [$A8:8AE8]
@@ -863,16 +863,16 @@ $A8:9138 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 17h, sound library 2,
 $A8:913C 22 D9 E8 88 JSL $88E8D9[$88:E8D9]
 $A8:9140 A9 60 91    LDA #$9160
 $A8:9143 9D B2 0F    STA $0FB2,x[$7E:0FF2]
-$A8:9146 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:9149 38          SEC
-$A8:914A FD 7A 0F    SBC $0F7A,x[$7E:0FBA]
-$A8:914D 85 12       STA $12    [$7E:0012]
-$A8:914F AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A8:9152 38          SEC
-$A8:9153 FD 7E 0F    SBC $0F7E,x[$7E:0FBE]
-$A8:9156 85 14       STA $14    [$7E:0014]
-$A8:9158 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A8:915C 9D AE 0F    STA $0FAE,x[$7E:0FEE]
+$A8:9146 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:9149 38          SEC                    ;|
+$A8:914A FD 7A 0F    SBC $0F7A,x[$7E:0FBA]  ;|
+$A8:914D 85 12       STA $12    [$7E:0012]  ;|
+$A8:914F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$A8:9152 38          SEC                    ;} Enemy $0FAE = angle from enemy to Samus
+$A8:9153 FD 7E 0F    SBC $0F7E,x[$7E:0FBE]  ;|
+$A8:9156 85 14       STA $14    [$7E:0014]  ;|
+$A8:9158 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;|
+$A8:915C 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 
 $A8:915F 6B          RTL
 }
@@ -909,16 +909,16 @@ $A8:919D 9D B2 0F    STA $0FB2,x[$7E:0FF2]
 $A8:91A0 80 25       BRA $25    [$91C7]
 
 ; BRANCH_91A2
-$A8:91A2 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:91A5 38          SEC
-$A8:91A6 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]
-$A8:91A9 85 12       STA $12    [$7E:0012]
-$A8:91AB AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A8:91AE 38          SEC
-$A8:91AF FD 7E 0F    SBC $0F7E,x[$7E:0FBE]
-$A8:91B2 85 14       STA $14    [$7E:0014]
-$A8:91B4 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
-$A8:91B8 9D AE 0F    STA $0FAE,x[$7E:0FEE]
+$A8:91A2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:91A5 38          SEC                    ;|
+$A8:91A6 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]  ;|
+$A8:91A9 85 12       STA $12    [$7E:0012]  ;|
+$A8:91AB AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$A8:91AE 38          SEC                    ;} Enemy $0FAE = angle from enemy to Samus
+$A8:91AF FD 7E 0F    SBC $0F7E,x[$7E:0FBE]  ;|
+$A8:91B2 85 14       STA $14    [$7E:0014]  ;|
+$A8:91B4 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;|
+$A8:91B8 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A8:91BB 29 F0 00    AND #$00F0
 $A8:91BE 4A          LSR A
 $A8:91BF 4A          LSR A
@@ -2774,7 +2774,7 @@ $A8:A67A BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
 $A8:A67D 18          CLC
 $A8:A67E 7F 26 80 7E ADC $7E8026,x[$7E:8066]
 $A8:A682 8D FA 0A    STA $0AFA  [$7E:0AFA]
-$A8:A685 22 A1 B7 A0 JSL $A0B7A1[$A0:B7A1]
+$A8:A685 22 A1 B7 A0 JSL $A0B7A1[$A0:B7A1]  ; Cap scrolling speed
 $A8:A689 60          RTS
 }
 
@@ -7706,7 +7706,7 @@ $A8:D93F 60          RTS
 ;;; $D940:  ;;;
 {
 $A8:D940 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:D943 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A8:D943 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A8:D947 38          SEC
 $A8:D948 E9 40 00    SBC #$0040
 $A8:D94B 29 FF 00    AND #$00FF
@@ -7763,7 +7763,7 @@ $A8:D9A9 60          RTS
 ;;; $D9AA:  ;;;
 {
 $A8:D9AA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:D9AD 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A8:D9AD 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A8:D9B1 38          SEC
 $A8:D9B2 E9 40 00    SBC #$0040
 $A8:D9B5 29 FF 00    AND #$00FF
@@ -9794,28 +9794,28 @@ $A8:F468 A9 68 F2    LDA #$F268
 $A8:F46B 9D A8 0F    STA $0FA8,x[$7E:0FA8]
 $A8:F46E 6B          RTL
 
-$A8:F46F BF 22 78 7E LDA $7E7822,x[$7E:7822]
-$A8:F473 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F476 BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A8:F479 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A8:F47D 18          CLC
-$A8:F47E 7D AA 0F    ADC $0FAA,x[$7E:0FAA]
-$A8:F481 38          SEC
-$A8:F482 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$A8:F485 85 14       STA $14    [$7E:0014]
+$A8:F46F BF 22 78 7E LDA $7E7822,x[$7E:7822];\
+$A8:F473 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F476 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;|
+$A8:F479 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
+$A8:F47D 18          CLC                    ;} $14 = [enemy $0FAA] - [enemy X position] + [enemy $7E:7822] * cos([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A8:F47E 7D AA 0F    ADC $0FAA,x[$7E:0FAA]  ;|
+$A8:F481 38          SEC                    ;|
+$A8:F482 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;|
+$A8:F485 85 14       STA $14    [$7E:0014]  ;/
 $A8:F487 64 12       STZ $12    [$7E:0012]  ;\
 $A8:F489 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;} Move enemy right by [$14]
 $A8:F48D B0 25       BCS $25    [$F4B4]     ; If collided with wall: go to BRANCH_COLLIDED_HORIZONTALLY
 $A8:F48F 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$A8:F493 BF 24 78 7E LDA $7E7824,x[$7E:7824]
-$A8:F497 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F49A BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A8:F49D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A8:F4A1 18          CLC
-$A8:F4A2 7D AC 0F    ADC $0FAC,x[$7E:0FAC]
-$A8:F4A5 38          SEC
-$A8:F4A6 FD 7E 0F    SBC $0F7E,x[$7E:0F7E]
-$A8:F4A9 85 14       STA $14    [$7E:0014]
+$A8:F493 BF 24 78 7E LDA $7E7824,x[$7E:7824];\
+$A8:F497 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F49A BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;|
+$A8:F49D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A8:F4A1 18          CLC                    ;} $14 = [enemy $0FAC] - [enemy Y position] + [enemy $7E:7824] * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A8:F4A2 7D AC 0F    ADC $0FAC,x[$7E:0FAC]  ;|
+$A8:F4A5 38          SEC                    ;|
+$A8:F4A6 FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;|
+$A8:F4A9 85 14       STA $14    [$7E:0014]  ;/
 $A8:F4AB 64 12       STZ $12    [$7E:0012]  ;\
 $A8:F4AD 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14]
 $A8:F4B1 B0 25       BCS $25    [$F4D8]     ; If collided with block: go to BRANCH_COLLIDED_VERTICALLY
@@ -10231,30 +10231,30 @@ $A8:F7E9 BD B2 0F    LDA $0FB2,x[$7E:10F2]
 $A8:F7EC 18          CLC
 $A8:F7ED 79 94 83    ADC $8394,y[$A8:84E4]
 $A8:F7F0 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A8:F7F3 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F7F6 29 FF 00    AND #$00FF
-$A8:F7F9 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F7FC BD B2 0F    LDA $0FB2,x[$7E:10F2]
-$A8:F7FF EB          XBA
-$A8:F800 29 FF 00    AND #$00FF
-$A8:F803 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A8:F807 38          SEC
-$A8:F808 FF 08 78 7E SBC $7E7808,x[$7E:7948]
-$A8:F80C 18          CLC
-$A8:F80D 7F 0C 78 7E ADC $7E780C,x[$7E:794C]
-$A8:F811 9D 7E 0F    STA $0F7E,x[$7E:10BE]
-$A8:F814 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F817 29 FF 00    AND #$00FF
-$A8:F81A 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F81D BD B2 0F    LDA $0FB2,x[$7E:10F2]
-$A8:F820 EB          XBA
-$A8:F821 29 FF 00    AND #$00FF
-$A8:F824 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A8:F828 38          SEC
-$A8:F829 FF 06 78 7E SBC $7E7806,x[$7E:7946]
-$A8:F82D 18          CLC
-$A8:F82E 7F 0A 78 7E ADC $7E780A,x[$7E:794A]
-$A8:F832 9D 7A 0F    STA $0F7A,x[$7E:10BA]
+$A8:F7F3 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F7F6 29 FF 00    AND #$00FF             ;|
+$A8:F7F9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F7FC BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
+$A8:F7FF EB          XBA                    ;|
+$A8:F800 29 FF 00    AND #$00FF             ;|
+$A8:F803 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy $7E:780C] - [enemy $7E:7808] + 30h * -sin([enemy $0FB2] * pi / 8000h) * FFh / 100h
+$A8:F807 38          SEC                    ;|
+$A8:F808 FF 08 78 7E SBC $7E7808,x[$7E:7948];|
+$A8:F80C 18          CLC                    ;|
+$A8:F80D 7F 0C 78 7E ADC $7E780C,x[$7E:794C];|
+$A8:F811 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;/
+$A8:F814 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F817 29 FF 00    AND #$00FF             ;|
+$A8:F81A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F81D BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
+$A8:F820 EB          XBA                    ;|
+$A8:F821 29 FF 00    AND #$00FF             ;|
+$A8:F824 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy $7E:780A] - [enemy $7E:7806] + 30h * cos([enemy $0FB2] * pi / 8000h) * FFh / 100h
+$A8:F828 38          SEC                    ;|
+$A8:F829 FF 06 78 7E SBC $7E7806,x[$7E:7946];|
+$A8:F82D 18          CLC                    ;|
+$A8:F82E 7F 0A 78 7E ADC $7E780A,x[$7E:794A];|
+$A8:F832 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;/
 $A8:F835 BD B2 0F    LDA $0FB2,x[$7E:10F2]
 $A8:F838 C9 00 C0    CMP #$C000
 $A8:F83B 10 04       BPL $04    [$F841]
@@ -10275,20 +10275,20 @@ $A8:F850 6B          RTL
 ;;; $F851:  ;;;
 {
 $A8:F851 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:F854 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F857 29 FF 00    AND #$00FF
-$A8:F85A 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F85D A9 00 E0    LDA #$E000
-$A8:F860 EB          XBA
-$A8:F861 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A8:F865 9F 06 78 7E STA $7E7806,x[$7E:7946]
-$A8:F869 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F86C 29 FF 00    AND #$00FF
-$A8:F86F 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F872 A9 00 E0    LDA #$E000
-$A8:F875 EB          XBA
-$A8:F876 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A8:F87A 9F 08 78 7E STA $7E7808,x[$7E:7948]
+$A8:F854 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F857 29 FF 00    AND #$00FF             ;|
+$A8:F85A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F85D A9 00 E0    LDA #$E000             ;} Enemy $7E:7806 = 30h * cos(E0h * pi / 80h) * FFh / 100h
+$A8:F860 EB          XBA                    ;|
+$A8:F861 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
+$A8:F865 9F 06 78 7E STA $7E7806,x[$7E:7946];/
+$A8:F869 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F86C 29 FF 00    AND #$00FF             ;|
+$A8:F86F 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F872 A9 00 E0    LDA #$E000             ;} Enemy $7E:7808 = 30h * -sin(E0h * pi / 80h) * FFh / 100h
+$A8:F875 EB          XBA                    ;|
+$A8:F876 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A8:F87A 9F 08 78 7E STA $7E7808,x[$7E:7948];/
 $A8:F87E 60          RTS
 }
 
@@ -10296,20 +10296,20 @@ $A8:F87E 60          RTS
 ;;; $F87F:  ;;;
 {
 $A8:F87F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:F882 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F885 29 FF 00    AND #$00FF
-$A8:F888 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F88B A9 00 A0    LDA #$A000
-$A8:F88E EB          XBA
-$A8:F88F 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A8:F893 9F 02 78 7E STA $7E7802,x[$7E:7942]
-$A8:F897 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F89A 29 FF 00    AND #$00FF
-$A8:F89D 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F8A0 A9 00 A0    LDA #$A000
-$A8:F8A3 EB          XBA
-$A8:F8A4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A8:F8A8 9F 04 78 7E STA $7E7804,x[$7E:7944]
+$A8:F882 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F885 29 FF 00    AND #$00FF             ;|
+$A8:F888 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F88B A9 00 A0    LDA #$A000             ;} Enemy $7E:7802 = 30h * cos(A0h * pi / 80h) * FFh / 100h
+$A8:F88E EB          XBA                    ;|
+$A8:F88F 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
+$A8:F893 9F 02 78 7E STA $7E7802,x[$7E:7942];/
+$A8:F897 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F89A 29 FF 00    AND #$00FF             ;|
+$A8:F89D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F8A0 A9 00 A0    LDA #$A000             ;} Enemy $7E:7804 = 30h * -sin(A0h * pi / 80h) * FFh / 100h
+$A8:F8A3 EB          XBA                    ;|
+$A8:F8A4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A8:F8A8 9F 04 78 7E STA $7E7804,x[$7E:7944];/
 $A8:F8AC 60          RTS
 }
 
@@ -10328,35 +10328,35 @@ $A8:F8BB BD B2 0F    LDA $0FB2,x[$7E:10F2]
 $A8:F8BE 18          CLC
 $A8:F8BF 79 90 83    ADC $8390,y[$A8:84E0]
 $A8:F8C2 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A8:F8C5 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F8C8 29 FF 00    AND #$00FF
-$A8:F8CB 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F8CE BD B2 0F    LDA $0FB2,x[$7E:10F2]
-$A8:F8D1 EB          XBA
-$A8:F8D2 29 FF 00    AND #$00FF
-$A8:F8D5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A8:F8D9 38          SEC
-$A8:F8DA FF 04 78 7E SBC $7E7804,x[$7E:7944]
-$A8:F8DE 18          CLC
-$A8:F8DF 7F 0C 78 7E ADC $7E780C,x[$7E:794C]
-$A8:F8E3 38          SEC
-$A8:F8E4 FD 7E 0F    SBC $0F7E,x[$7E:10BE]
-$A8:F8E7 85 14       STA $14    [$7E:0014]
+$A8:F8C5 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F8C8 29 FF 00    AND #$00FF             ;|
+$A8:F8CB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F8CE BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
+$A8:F8D1 EB          XBA                    ;|
+$A8:F8D2 29 FF 00    AND #$00FF             ;} A = [enemy $7E:780C] - [enemy $7E:7804] + 30h * -sin([enemy $0FB2] * pi / 8000h) * FFh / 100h
+$A8:F8D5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A8:F8D9 38          SEC                    ;|
+$A8:F8DA FF 04 78 7E SBC $7E7804,x[$7E:7944];|
+$A8:F8DE 18          CLC                    ;|
+$A8:F8DF 7F 0C 78 7E ADC $7E780C,x[$7E:794C];/
+$A8:F8E3 38          SEC                    ;\
+$A8:F8E4 FD 7E 0F    SBC $0F7E,x[$7E:10BE]  ;} $14 = [A] - [enemy Y position]
+$A8:F8E7 85 14       STA $14    [$7E:0014]  ;/
 $A8:F8E9 64 12       STZ $12    [$7E:0012]  ;\
 $A8:F8EB 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14]
 $A8:F8EF B0 3D       BCS $3D    [$F92E]     ; If collided with block: go to BRANCH_COLLIDED_VERTICALLY
-$A8:F8F1 AD 86 F1    LDA $F186  [$A8:F186]
-$A8:F8F4 29 FF 00    AND #$00FF
-$A8:F8F7 8D 32 0E    STA $0E32  [$7E:0E32]
-$A8:F8FA BD B2 0F    LDA $0FB2,x[$7E:10F2]
-$A8:F8FD EB          XBA
-$A8:F8FE 29 FF 00    AND #$00FF
-$A8:F901 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A8:F905 38          SEC
-$A8:F906 FF 02 78 7E SBC $7E7802,x[$7E:7942]
-$A8:F90A 18          CLC
-$A8:F90B 7F 0A 78 7E ADC $7E780A,x[$7E:794A]
-$A8:F90F 9D 7A 0F    STA $0F7A,x[$7E:10BA]
+$A8:F8F1 AD 86 F1    LDA $F186  [$A8:F186]  ;\
+$A8:F8F4 29 FF 00    AND #$00FF             ;|
+$A8:F8F7 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A8:F8FA BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
+$A8:F8FD EB          XBA                    ;|
+$A8:F8FE 29 FF 00    AND #$00FF             ;|
+$A8:F901 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy $7E:780A] - [enemy $7E:7802] + 30h * cos([enemy $0FB2] * pi / 8000h) * FFh / 100h
+$A8:F905 38          SEC                    ;|
+$A8:F906 FF 02 78 7E SBC $7E7802,x[$7E:7942];|
+$A8:F90A 18          CLC                    ;|
+$A8:F90B 7F 0A 78 7E ADC $7E780A,x[$7E:794A];|
+$A8:F90F 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;/
 $A8:F912 BD B2 0F    LDA $0FB2,x[$7E:10F2]
 $A8:F915 C9 00 C0    CMP #$C000
 $A8:F918 30 04       BMI $04    [$F91E]

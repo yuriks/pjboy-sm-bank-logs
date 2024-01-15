@@ -1571,25 +1571,25 @@ $B2:F04F 60          RTS
 ;;; $F050:  ;;;
 {
 $B2:F050 AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F053 BD B6 0F    LDA $0FB6,x[$7E:1236]
-$B2:F056 4A          LSR A
-$B2:F057 8D 32 0E    STA $0E32  [$7E:0E32]
-$B2:F05A BD B2 0F    LDA $0FB2,x[$7E:1232]
-$B2:F05D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$B2:F061 18          CLC
-$B2:F062 7D AE 0F    ADC $0FAE,x[$7E:122E]
-$B2:F065 9D 7A 0F    STA $0F7A,x[$7E:11FA]
-$B2:F068 BD B6 0F    LDA $0FB6,x[$7E:1236]
-$B2:F06B 4A          LSR A
-$B2:F06C 4A          LSR A
-$B2:F06D 8D 32 0E    STA $0E32  [$7E:0E32]
-$B2:F070 BD B2 0F    LDA $0FB2,x[$7E:1232]
-$B2:F073 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$B2:F077 49 FF FF    EOR #$FFFF
-$B2:F07A 1A          INC A
-$B2:F07B 18          CLC
-$B2:F07C 7D B0 0F    ADC $0FB0,x[$7E:1230]
-$B2:F07F 9D 7E 0F    STA $0F7E,x[$7E:11FE]
+$B2:F053 BD B6 0F    LDA $0FB6,x[$7E:1236]  ;\
+$B2:F056 4A          LSR A                  ;|
+$B2:F057 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$B2:F05A BD B2 0F    LDA $0FB2,x[$7E:1232]  ;|
+$B2:F05D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy $0FAE] + [enemy $0FB6] / 2 * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F061 18          CLC                    ;|
+$B2:F062 7D AE 0F    ADC $0FAE,x[$7E:122E]  ;|
+$B2:F065 9D 7A 0F    STA $0F7A,x[$7E:11FA]  ;/
+$B2:F068 BD B6 0F    LDA $0FB6,x[$7E:1236]  ;\
+$B2:F06B 4A          LSR A                  ;|
+$B2:F06C 4A          LSR A                  ;|
+$B2:F06D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$B2:F070 BD B2 0F    LDA $0FB2,x[$7E:1232]  ;|
+$B2:F073 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy $0FB0] - [enemy $0FB6] / 4 * cos([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F077 49 FF FF    EOR #$FFFF             ;|
+$B2:F07A 1A          INC A                  ;|
+$B2:F07B 18          CLC                    ;|
+$B2:F07C 7D B0 0F    ADC $0FB0,x[$7E:1230]  ;|
+$B2:F07F 9D 7E 0F    STA $0F7E,x[$7E:11FE]  ;/
 $B2:F082 BD B2 0F    LDA $0FB2,x[$7E:1232]
 $B2:F085 38          SEC
 $B2:F086 FF 04 80 7E SBC $7E8004,x[$7E:8284]
@@ -1652,25 +1652,25 @@ $B2:F0E3 60          RTS
 ;;; $F0E4:  ;;;
 {
 $B2:F0E4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F0E7 BD B6 0F    LDA $0FB6,x[$7E:11F6]
-$B2:F0EA 4A          LSR A
-$B2:F0EB 8D 32 0E    STA $0E32  [$7E:0E32]
-$B2:F0EE BD B2 0F    LDA $0FB2,x[$7E:11F2]
-$B2:F0F1 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$B2:F0F5 18          CLC
-$B2:F0F6 7D AE 0F    ADC $0FAE,x[$7E:11EE]
-$B2:F0F9 9D 7A 0F    STA $0F7A,x[$7E:11BA]
-$B2:F0FC BD B6 0F    LDA $0FB6,x[$7E:11F6]
-$B2:F0FF 4A          LSR A
-$B2:F100 4A          LSR A
-$B2:F101 8D 32 0E    STA $0E32  [$7E:0E32]
-$B2:F104 BD B2 0F    LDA $0FB2,x[$7E:11F2]
-$B2:F107 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$B2:F10B 49 FF FF    EOR #$FFFF
-$B2:F10E 1A          INC A
-$B2:F10F 18          CLC
-$B2:F110 7D B0 0F    ADC $0FB0,x[$7E:11F0]
-$B2:F113 9D 7E 0F    STA $0F7E,x[$7E:11BE]
+$B2:F0E7 BD B6 0F    LDA $0FB6,x[$7E:11F6]  ;\
+$B2:F0EA 4A          LSR A                  ;|
+$B2:F0EB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$B2:F0EE BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;|
+$B2:F0F1 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy $0FAE] + [enemy $0FB6] / 2 * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F0F5 18          CLC                    ;|
+$B2:F0F6 7D AE 0F    ADC $0FAE,x[$7E:11EE]  ;|
+$B2:F0F9 9D 7A 0F    STA $0F7A,x[$7E:11BA]  ;/
+$B2:F0FC BD B6 0F    LDA $0FB6,x[$7E:11F6]  ;\
+$B2:F0FF 4A          LSR A                  ;|
+$B2:F100 4A          LSR A                  ;|
+$B2:F101 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$B2:F104 BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;|
+$B2:F107 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy $0FB0] - [enemy $0FB6] / 4 * cos([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F10B 49 FF FF    EOR #$FFFF             ;|
+$B2:F10E 1A          INC A                  ;|
+$B2:F10F 18          CLC                    ;|
+$B2:F110 7D B0 0F    ADC $0FB0,x[$7E:11F0]  ;|
+$B2:F113 9D 7E 0F    STA $0F7E,x[$7E:11BE]  ;/
 $B2:F116 BD B2 0F    LDA $0FB2,x[$7E:11F2]
 $B2:F119 18          CLC
 $B2:F11A 7F 04 80 7E ADC $7E8004,x[$7E:8244]
@@ -3221,11 +3221,11 @@ $B2:FD91 BF 00 78 7E LDA $7E7800,x[$7E:7880]
 $B2:FD95 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
 $B2:FD98 28          PLP
 $B2:FD99 90 26       BCC $26    [$FDC1]     ; If collided with block:
-$B2:FD9B A9 00 00    LDA #$0000
-$B2:FD9E 85 12       STA $12    [$7E:0012]
-$B2:FDA0 A9 F7 FF    LDA #$FFF7
-$B2:FDA3 85 14       STA $14    [$7E:0014]
-$B2:FDA5 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]
+$B2:FD9B A9 00 00    LDA #$0000             ;\
+$B2:FD9E 85 12       STA $12    [$7E:0012]  ;|
+$B2:FDA0 A9 F7 FF    LDA #$FFF7             ;} $14.$12 = -9.0
+$B2:FDA3 85 14       STA $14    [$7E:0014]  ;/
+$B2:FDA5 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]  ; Check for horizontal "solid" block collision... and discard the result
 $B2:FDA9 A9 FF C7    LDA #$C7FF             ;\
 $B2:FDAC 85 12       STA $12    [$7E:0012]  ;|
 $B2:FDAE A9 FF FF    LDA #$FFFF             ;} Move enemy left by 0.3801h

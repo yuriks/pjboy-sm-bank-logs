@@ -8407,11 +8407,11 @@ $A7:EB2B 6B          RTL
 
 ;;; $EB2C:  ;;;
 {
-$A7:EB2C A9 20 00    LDA #$0020
-$A7:EB2F 85 14       STA $14    [$7E:0014]
-$A7:EB31 64 12       STZ $12    [$7E:0012]
-$A7:EB33 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]
-$A7:EB37 90 13       BCC $13    [$EB4C]
+$A7:EB2C A9 20 00    LDA #$0020             ;\
+$A7:EB2F 85 14       STA $14    [$7E:0014]  ;} $14.$12 = 20h.0
+$A7:EB31 64 12       STZ $12    [$7E:0012]  ;/
+$A7:EB33 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]  ; Check for horizontal "solid" block collision
+$A7:EB37 90 13       BCC $13    [$EB4C]     ; If collision:
 $A7:EB39 A9 01 00    LDA #$0001
 $A7:EB3C 9D 94 0F    STA $0F94,x
 $A7:EB3F A9 98 E8    LDA #$E898

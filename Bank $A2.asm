@@ -543,11 +543,11 @@ $A2:8A7D 90 05       BCC $05    [$8A84]     ; If collided with wall:
 $A2:8A7F 20 95 8A    JSR $8A95  [$A2:8A95]
 $A2:8A82 80 10       BRA $10    [$8A94]
 
-$A2:8A84 A9 02 00    LDA #$0002
-$A2:8A87 85 14       STA $14    [$7E:0014]
-$A2:8A89 64 12       STZ $12    [$7E:0012]
-$A2:8A8B 22 76 BC A0 JSL $A0BC76[$A0:BC76]
-$A2:8A8F B0 03       BCS $03    [$8A94]
+$A2:8A84 A9 02 00    LDA #$0002             ;\
+$A2:8A87 85 14       STA $14    [$7E:0014]  ;} $14.$12 = 2.0
+$A2:8A89 64 12       STZ $12    [$7E:0012]  ;/
+$A2:8A8B 22 76 BC A0 JSL $A0BC76[$A0:BC76]  ; Check for vertical "solid" block collision
+$A2:8A8F B0 03       BCS $03    [$8A94]     ; If no collision:
 $A2:8A91 20 95 8A    JSR $8A95  [$A2:8A95]
 
 $A2:8A94 60          RTS
@@ -4577,7 +4577,7 @@ $A2:B3E6 85 12       STA $12    [$7E:0012]
 $A2:B3E8 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
 $A2:B3EB 29 FF 00    AND #$00FF
 $A2:B3EE 85 14       STA $14    [$7E:0014]
-$A2:B3F0 22 43 B6 A0 JSL $A0B643[$A0:B643]
+$A2:B3F0 22 43 B6 A0 JSL $A0B643[$A0:B643]  ; ($16.$18, $1A.$1C) = ([$14] * |cos([$12] * pi / 80h)|, [$14] * |sin([$12] * pi / 80h)|)
 $A2:B3F4 A5 16       LDA $16    [$7E:0016]
 $A2:B3F6 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 $A2:B3F9 A5 18       LDA $18    [$7E:0018]
@@ -4601,7 +4601,7 @@ $A2:B415 85 12       STA $12    [$7E:0012]
 $A2:B417 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
 $A2:B41A 29 FF 00    AND #$00FF
 $A2:B41D 85 14       STA $14    [$7E:0014]
-$A2:B41F 22 43 B6 A0 JSL $A0B643[$A0:B643]
+$A2:B41F 22 43 B6 A0 JSL $A0B643[$A0:B643]  ; ($16.$18, $1A.$1C) = ([$14] * |cos([$12] * pi / 80h)|, [$14] * |sin([$12] * pi / 80h)|)
 $A2:B423 A5 16       LDA $16    [$7E:0016]
 $A2:B425 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 $A2:B428 A5 18       LDA $18    [$7E:0018]
@@ -5573,12 +5573,12 @@ $A2:BBEA 7C AA 0F    JMP ($0FAA,x)[$A2:BBED]
 
 ;;; $BBED:  ;;;
 {
-$A2:BBED A9 A0 00    LDA #$00A0
-$A2:BBF0 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$A2:BBF4 90 01       BCC $01    [$BBF7]
-$A2:BBF6 6B          RTL
+$A2:BBED A9 A0 00    LDA #$00A0             ;\
+$A2:BBF0 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is at least A0h:
+$A2:BBF4 90 01       BCC $01    [$BBF7]     ;/
+$A2:BBF6 6B          RTL                    ; Return
 
-$A2:BBF7 AD BB BB    LDA $BBBB  [$A2:BBBB]
+$A2:BBF7 AD BB BB    LDA $BBBB  [$A2:BBBB]  ; Woah
 $A2:BBFA 9D AC 0F    STA $0FAC,x[$7E:10AC]
 $A2:BBFD AD BF BB    LDA $BBBF  [$A2:BBBF]
 $A2:BC00 9D AE 0F    STA $0FAE,x[$7E:10AE]
@@ -5722,7 +5722,7 @@ $A2:BCFF BD 7E 0F    LDA $0F7E,x
 $A2:BD02 38          SEC
 $A2:BD03 ED FA 0A    SBC $0AFA  [$7E:0AFA]
 $A2:BD06 10 39       BPL $39    [$BD41]
-$A2:BD08 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A2:BD08 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A2:BD0C 9B          TXY
 $A2:BD0D 0A          ASL A
 $A2:BD0E AA          TAX
@@ -6774,9 +6774,9 @@ $A2:C770 6B          RTL
 $A2:C771 AD E5 05    LDA $05E5  [$7E:05E5]
 $A2:C774 29 01 01    AND #$0101
 $A2:C777 F0 09       BEQ $09    [$C782]
-$A2:C779 A9 70 00    LDA #$0070
-$A2:C77C 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$A2:C780 90 0E       BCC $0E    [$C790]
+$A2:C779 A9 70 00    LDA #$0070             ;\
+$A2:C77C 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 70h: go to BRANCH_C790
+$A2:C780 90 0E       BCC $0E    [$C790]     ;/
 
 $A2:C782 A9 00 00    LDA #$0000
 $A2:C785 9F 02 78 7E STA $7E7802,x[$7E:7982]
@@ -6784,6 +6784,7 @@ $A2:C789 A9 1A C6    LDA #$C61A
 $A2:C78C 20 A3 C8    JSR $C8A3  [$A2:C8A3]
 $A2:C78F 6B          RTL
 
+; BRANCH_C790
 $A2:C790 AD CA C6    LDA $C6CA  [$A2:C6CA]
 $A2:C793 9D AC 0F    STA $0FAC,x[$7E:112C]
 $A2:C796 AD CE C6    LDA $C6CE  [$A2:C6CE]

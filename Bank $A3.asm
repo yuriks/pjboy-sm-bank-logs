@@ -140,11 +140,11 @@ $A3:878D 9D B2 0F    STA $0FB2,x[$7E:1032]
 $A3:8790 20 FE 87    JSR $87FE  [$A3:87FE]
 $A3:8793 4C CF 87    JMP $87CF  [$A3:87CF]
 
-$A3:8796 A9 04 00    LDA #$0004
-$A3:8799 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:879C BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:879F 29 FF 00    AND #$00FF
-$A3:87A2 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
+$A3:8796 A9 04 00    LDA #$0004             ;\
+$A3:8799 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:879C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;} A = 4 * -sin([enemy $0FAE] * pi / 80h) * FFh / 100h
+$A3:879F 29 FF 00    AND #$00FF             ;|
+$A3:87A2 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;/
 $A3:87A6 85 14       STA $14    [$7E:0014]  ;\
 $A3:87A8 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by [A]
 $A3:87AA 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
@@ -378,15 +378,15 @@ $A3:89F2 6B          RTL
 $A3:89F3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:89F6 A9 15 00    LDA #$0015
 $A3:89F9 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A3:89FC BD B2 0F    LDA $0FB2,x[$7E:1032]
-$A3:89FF 85 14       STA $14    [$7E:0014]
-$A3:8A01 64 12       STZ $12    [$7E:0012]
-$A3:8A03 BD 86 0F    LDA $0F86,x[$7E:1006]
-$A3:8A06 09 03 00    ORA #$0003
-$A3:8A09 9D 86 0F    STA $0F86,x[$7E:1006]
+$A3:89FC BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
+$A3:89FF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy $0FB2]
+$A3:8A01 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$A3:8A03 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A3:8A06 09 03 00    ORA #$0003             ;} A = [enemy $0F86] | 3
+$A3:8A09 9D 86 0F    STA $0F86,x[$7E:1006]  ; Enemy $0F86 = [A]
 $A3:8A0C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8A0F 22 8A BF A0 JSL $A0BF8A[$A0:BF8A]
-$A3:8A13 B0 2D       BCS $2D    [$8A42]
+$A3:8A0F 22 8A BF A0 JSL $A0BF8A[$A0:BF8A]  ; Check for downwards "solid" block collision
+$A3:8A13 B0 2D       BCS $2D    [$8A42]     ; If collision: go to BRANCH_COLLISION
 $A3:8A15 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8A18 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
 $A3:8A1B 18          CLC
@@ -406,6 +406,7 @@ $A3:8A3A 6D 24 0E    ADC $0E24  [$7E:0E24]
 $A3:8A3D 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
 $A3:8A40 80 19       BRA $19    [$8A5B]
 
+; BRANCH_COLLISION
 $A3:8A42 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8A45 A9 01 00    LDA #$0001
 $A3:8A48 9D 94 0F    STA $0F94,x[$7E:1014]
@@ -700,20 +701,20 @@ $A3:8DAD 60          RTS
 
 ;;; $8DAE:  ;;;
 {
-$A3:8DAE BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A3:8DB1 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:8DB4 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:8DB7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A3:8DBB 18          CLC
-$A3:8DBC 7D B0 0F    ADC $0FB0,x[$7E:0FB0]
-$A3:8DBF 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A3:8DC2 BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A3:8DC5 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:8DC8 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:8DCB 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:8DCF 18          CLC
-$A3:8DD0 7D B2 0F    ADC $0FB2,x[$7E:0FB2]
-$A3:8DD3 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
+$A3:8DAE BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A3:8DB1 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:8DB4 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
+$A3:8DB7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy $0FB0] + [enemy $0FAC] * cos([enemy $0FAE] * pi / 80h) * FFh / 100h
+$A3:8DBB 18          CLC                    ;|
+$A3:8DBC 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;|
+$A3:8DBF 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$A3:8DC2 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A3:8DC5 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:8DC8 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
+$A3:8DCB 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy $0FB2] + [enemy $0FAC] * -sin([enemy $0FAE] * pi / 80h) * FFh / 100h
+$A3:8DCF 18          CLC                    ;|
+$A3:8DD0 7D B2 0F    ADC $0FB2,x[$7E:0FB2]  ;|
+$A3:8DD3 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A3:8DD6 60          RTS
 }
 
@@ -738,24 +739,24 @@ $A3:8DEE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8DF1 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
 $A3:8DF4 29 02 00    AND #$0002
 $A3:8DF7 F0 3B       BEQ $3B    [$8E34]
-$A3:8DF9 BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A3:8DFC 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:8DFF BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:8E02 29 00 FF    AND #$FF00
-$A3:8E05 EB          XBA
-$A3:8E06 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A3:8E0A 18          CLC
-$A3:8E0B 7D B0 0F    ADC $0FB0,x[$7E:0FB0]
-$A3:8E0E 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A3:8E11 BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A3:8E14 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:8E17 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:8E1A 29 00 FF    AND #$FF00
-$A3:8E1D EB          XBA
-$A3:8E1E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:8E22 18          CLC
-$A3:8E23 7D B2 0F    ADC $0FB2,x[$7E:0FB2]
-$A3:8E26 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
+$A3:8DF9 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A3:8DFC 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:8DFF BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
+$A3:8E02 29 00 FF    AND #$FF00             ;|
+$A3:8E05 EB          XBA                    ;} Enemy X position = [enemy $0FB0] + [enemy $0FAC] * cos([enemy $0FAE] * pi / 8000h) * FFh / 100h
+$A3:8E06 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
+$A3:8E0A 18          CLC                    ;|
+$A3:8E0B 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;|
+$A3:8E0E 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$A3:8E11 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A3:8E14 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:8E17 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
+$A3:8E1A 29 00 FF    AND #$FF00             ;|
+$A3:8E1D EB          XBA                    ;} Enemy Y position = [enemy $0FB2] + [enemy $0FAC] * cos([enemy $0FAE] * pi / 8000h) * FFh / 100h
+$A3:8E1E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A3:8E22 18          CLC                    ;|
+$A3:8E23 7D B2 0F    ADC $0FB2,x[$7E:0FB2]  ;|
+$A3:8E26 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A3:8E29 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
 $A3:8E2C 18          CLC
 $A3:8E2D 7D A9 0F    ADC $0FA9,x[$7E:0FA9]
@@ -980,11 +981,11 @@ $A3:910A 9F 04 78 7E STA $7E7804,x[$7E:7804]
 $A3:910E A9 00 00    LDA #$0000
 $A3:9111 9D B2 0F    STA $0FB2,x[$7E:0FB2]
 $A3:9114 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A3:9118 BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$A3:911C 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:911F BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A3:9122 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:9126 9F 06 78 7E STA $7E7806,x[$7E:7806]
+$A3:9118 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$A3:911C 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:911F BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;} Enemy $7E:7806 = [enemy $7E:7800] * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A3:9122 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A3:9126 9F 06 78 7E STA $7E7806,x[$7E:7806];/
 $A3:912A 6B          RTL
 }
 
@@ -1015,11 +1016,11 @@ $A3:9154 A9 3C 90    LDA #$903C
 $A3:9157 9D 92 0F    STA $0F92,x[$7E:0FD2]
 $A3:915A 80 46       BRA $46    [$91A2]
 
-$A3:915C BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$A3:9160 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:9163 BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A3:9166 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:916A 9F 08 78 7E STA $7E7808,x[$7E:7848]
+$A3:915C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$A3:9160 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:9163 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy $7E:7808 = [enemy $7E:7800] * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A3:9166 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A3:916A 9F 08 78 7E STA $7E7808,x[$7E:7848];/
 $A3:916E 38          SEC
 $A3:916F FF 06 78 7E SBC $7E7806,x[$7E:7846]
 $A3:9173 85 14       STA $14    [$7E:0014]
@@ -1065,11 +1066,11 @@ $A3:91CD A9 72 90    LDA #$9072
 $A3:91D0 9D 92 0F    STA $0F92,x[$7E:0F92]
 $A3:91D3 80 46       BRA $46    [$921B]
 
-$A3:91D5 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$A3:91D9 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:91DC BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A3:91DF 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:91E3 9F 08 78 7E STA $7E7808,x[$7E:7848]
+$A3:91D5 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$A3:91D9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:91DC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy $7E:7808 = [enemy $7E:7800] * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A3:91DF 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A3:91E3 9F 08 78 7E STA $7E7808,x[$7E:7848];/
 $A3:91E7 38          SEC
 $A3:91E8 FF 06 78 7E SBC $7E7806,x[$7E:7846]
 $A3:91EC 85 14       STA $14    [$7E:0014]
@@ -2348,7 +2349,7 @@ $A3:A189 85 14       STA $14    [$7E:0014]
 $A3:A18B BD B5 0F    LDA $0FB5,x[$7E:0FB5]
 $A3:A18E 29 FF 00    AND #$00FF
 $A3:A191 85 12       STA $12    [$7E:0012]
-$A3:A193 22 43 B6 A0 JSL $A0B643[$A0:B643]
+$A3:A193 22 43 B6 A0 JSL $A0B643[$A0:B643]  ; ($16.$18, $1A.$1C) = ([$14] * |cos([$12] * pi / 80h)|, [$14] * |sin([$12] * pi / 80h)|)
 $A3:A197 A5 16       LDA $16    [$7E:0016]
 $A3:A199 9F 02 78 7E STA $7E7802,x[$7E:7802]
 $A3:A19D A5 18       LDA $18    [$7E:0018]
@@ -2363,86 +2364,86 @@ $A3:A1AF 60          RTS
 
 ;;; $A1B0:  ;;;
 {
-$A3:A1B0 BD B4 0F    LDA $0FB4,x
-$A3:A1B3 29 FF 00    AND #$00FF
-$A3:A1B6 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A1B9 BD B5 0F    LDA $0FB5,x
-$A3:A1BC 29 FF 00    AND #$00FF
-$A3:A1BF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A3:A1C3 AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A1C6 9F 02 78 7E STA $7E7802,x
-$A3:A1CA AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A1CD 9F 00 78 7E STA $7E7800,x
-$A3:A1D1 BD B4 0F    LDA $0FB4,x
-$A3:A1D4 29 FF 00    AND #$00FF
-$A3:A1D7 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A1DA BD B5 0F    LDA $0FB5,x
-$A3:A1DD 29 FF 00    AND #$00FF
-$A3:A1E0 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:A1E4 AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A1E7 9F 06 78 7E STA $7E7806,x
-$A3:A1EB AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A1EE 9F 04 78 7E STA $7E7804,x
+$A3:A1B0 BD B4 0F    LDA $0FB4,x            ;\
+$A3:A1B3 29 FF 00    AND #$00FF             ;|
+$A3:A1B6 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A1B9 BD B5 0F    LDA $0FB5,x            ;|
+$A3:A1BC 29 FF 00    AND #$00FF             ;|
+$A3:A1BF 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy $7E:8000 = [enemy $0FB4] * cos([enemy $0FB5] * pi / 80h) * FFh / 100h
+$A3:A1C3 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A1C6 9F 02 78 7E STA $7E7802,x          ;|
+$A3:A1CA AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A1CD 9F 00 78 7E STA $7E7800,x          ;/
+$A3:A1D1 BD B4 0F    LDA $0FB4,x            ;\
+$A3:A1D4 29 FF 00    AND #$00FF             ;|
+$A3:A1D7 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A1DA BD B5 0F    LDA $0FB5,x            ;|
+$A3:A1DD 29 FF 00    AND #$00FF             ;|
+$A3:A1E0 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy $7E:8004 = [enemy $0FB4] * -sin([enemy $0FB5] * pi / 80h) * FFh / 100h
+$A3:A1E4 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A1E7 9F 06 78 7E STA $7E7806,x          ;|
+$A3:A1EB AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A1EE 9F 04 78 7E STA $7E7804,x          ;/
 $A3:A1F2 60          RTS
 }
 
 
 ;;; $A1F3:  ;;;
 {
-$A3:A1F3 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:A1F6 29 FF 00    AND #$00FF
-$A3:A1F9 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A1FC BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A3:A1FF 38          SEC
-$A3:A200 E9 20 00    SBC #$0020
-$A3:A203 29 FF 00    AND #$00FF
-$A3:A206 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A3:A20A AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A20D 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A3:A211 AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A214 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A3:A218 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:A21B 29 FF 00    AND #$00FF
-$A3:A21E 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A221 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A3:A224 38          SEC
-$A3:A225 E9 20 00    SBC #$0020
-$A3:A228 29 FF 00    AND #$00FF
-$A3:A22B 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:A22F AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A232 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A3:A236 AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A239 9F 0C 78 7E STA $7E780C,x[$7E:780C]
+$A3:A1F3 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:A1F6 29 FF 00    AND #$00FF             ;|
+$A3:A1F9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A1FC BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
+$A3:A1FF 38          SEC                    ;|
+$A3:A200 E9 20 00    SBC #$0020             ;|
+$A3:A203 29 FF 00    AND #$00FF             ;} Enemy $7E:8008 = [enemy $0FB4] * cos(([enemy $0FB5] - 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A206 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
+$A3:A20A AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A20D 9F 0A 78 7E STA $7E780A,x[$7E:780A];|
+$A3:A211 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A214 9F 08 78 7E STA $7E7808,x[$7E:7808];/
+$A3:A218 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:A21B 29 FF 00    AND #$00FF             ;|
+$A3:A21E 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A221 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
+$A3:A224 38          SEC                    ;|
+$A3:A225 E9 20 00    SBC #$0020             ;|
+$A3:A228 29 FF 00    AND #$00FF             ;} Enemy $7E:800C = [enemy $0FB4] * -sin(([enemy $0FB5] - 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A22B 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A3:A22F AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A232 9F 0E 78 7E STA $7E780E,x[$7E:780E];|
+$A3:A236 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A239 9F 0C 78 7E STA $7E780C,x[$7E:780C];/
 $A3:A23D 60          RTS
 }
 
 
 ;;; $A23E:  ;;;
 {
-$A3:A23E BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:A241 29 FF 00    AND #$00FF
-$A3:A244 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A247 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A3:A24A 18          CLC
-$A3:A24B 69 20 00    ADC #$0020
-$A3:A24E 29 FF 00    AND #$00FF
-$A3:A251 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A3:A255 AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A258 9F 12 78 7E STA $7E7812,x[$7E:7812]
-$A3:A25C AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A25F 9F 10 78 7E STA $7E7810,x[$7E:7810]
-$A3:A263 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:A266 29 FF 00    AND #$00FF
-$A3:A269 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A26C BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A3:A26F 18          CLC
-$A3:A270 69 20 00    ADC #$0020
-$A3:A273 29 FF 00    AND #$00FF
-$A3:A276 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:A27A AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A27D 9F 16 78 7E STA $7E7816,x[$7E:7816]
-$A3:A281 AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A284 9F 14 78 7E STA $7E7814,x[$7E:7814]
+$A3:A23E BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:A241 29 FF 00    AND #$00FF             ;|
+$A3:A244 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A247 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
+$A3:A24A 18          CLC                    ;|
+$A3:A24B 69 20 00    ADC #$0020             ;|
+$A3:A24E 29 FF 00    AND #$00FF             ;} Enemy $7E:8010 = [enemy $0FB4] * cos(([enemy $0FB5] + 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A251 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
+$A3:A255 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A258 9F 12 78 7E STA $7E7812,x[$7E:7812];|
+$A3:A25C AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A25F 9F 10 78 7E STA $7E7810,x[$7E:7810];/
+$A3:A263 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:A266 29 FF 00    AND #$00FF             ;|
+$A3:A269 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A26C BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;|
+$A3:A26F 18          CLC                    ;|
+$A3:A270 69 20 00    ADC #$0020             ;|
+$A3:A273 29 FF 00    AND #$00FF             ;} Enemy $7E:8014 = [enemy $0FB4] * -sin(([enemy $0FB5] + 20h) % 100h * pi / 80h) * FFh / 100h
+$A3:A276 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
+$A3:A27A AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A27D 9F 16 78 7E STA $7E7816,x[$7E:7816];|
+$A3:A281 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A284 9F 14 78 7E STA $7E7814,x[$7E:7814];/
 $A3:A288 60          RTS
 }
 
@@ -2588,7 +2589,7 @@ $A3:A34A 60          RTS
 ;;; $A34B:  ;;;
 {
 $A3:A34B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:A34E 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A3:A34E 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A3:A352 38          SEC
 $A3:A353 E9 40 00    SBC #$0040
 $A3:A356 49 FF FF    EOR #$FFFF
@@ -2613,7 +2614,7 @@ $A3:A37F 60          RTS
 ;;; $A380:  ;;;
 {
 $A3:A380 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:A383 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A3:A383 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A3:A387 38          SEC
 $A3:A388 E9 40 00    SBC #$0040
 $A3:A38B 49 FF FF    EOR #$FFFF
@@ -2654,24 +2655,24 @@ $A3:A3C9 60          RTS
 
 ;;; $A3CA:  ;;;
 {
-$A3:A3CA BD B4 0F    LDA $0FB4,x
-$A3:A3CD 29 FF 00    AND #$00FF
-$A3:A3D0 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A3D3 BD AC 0F    LDA $0FAC,x
-$A3:A3D6 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A3:A3DA AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A3DD 9F 1A 78 7E STA $7E781A,x
-$A3:A3E1 AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A3E4 9F 18 78 7E STA $7E7818,x
-$A3:A3E8 BD B4 0F    LDA $0FB4,x
-$A3:A3EB 29 FF 00    AND #$00FF
-$A3:A3EE 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:A3F1 BD AC 0F    LDA $0FAC,x
-$A3:A3F4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A3:A3F8 AD 36 0E    LDA $0E36  [$7E:0E36]
-$A3:A3FB 9F 1E 78 7E STA $7E781E,x
-$A3:A3FF AD 38 0E    LDA $0E38  [$7E:0E38]
-$A3:A402 9F 1C 78 7E STA $7E781C,x
+$A3:A3CA BD B4 0F    LDA $0FB4,x            ;\
+$A3:A3CD 29 FF 00    AND #$00FF             ;|
+$A3:A3D0 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A3D3 BD AC 0F    LDA $0FAC,x            ;|
+$A3:A3D6 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy $7E:7818 = [enemy $0FB4] * cos([enemy $0FAC] * pi / 80h) * FFh / 100h
+$A3:A3DA AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A3DD 9F 1A 78 7E STA $7E781A,x          ;|
+$A3:A3E1 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A3E4 9F 18 78 7E STA $7E7818,x          ;/
+$A3:A3E8 BD B4 0F    LDA $0FB4,x            ;\
+$A3:A3EB 29 FF 00    AND #$00FF             ;|
+$A3:A3EE 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:A3F1 BD AC 0F    LDA $0FAC,x            ;|
+$A3:A3F4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy $7E:781C = [enemy $0FB4] * -sin([enemy $0FAC] * pi / 80h) * FFh / 100h
+$A3:A3F8 AD 36 0E    LDA $0E36  [$7E:0E36]  ;|
+$A3:A3FB 9F 1E 78 7E STA $7E781E,x          ;|
+$A3:A3FF AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
+$A3:A402 9F 1C 78 7E STA $7E781C,x          ;/
 $A3:A406 60          RTS
 }
 
@@ -2888,7 +2889,7 @@ $A3:A591 8D 2A 0E    STA $0E2A  [$7E:0E2A]
 $A3:A594 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
 $A3:A597 29 FF 00    AND #$00FF
 $A3:A59A 8D 20 0E    STA $0E20  [$7E:0E20]
-$A3:A59D 22 91 B6 A0 JSL $A0B691[$A0:B691]
+$A3:A59D 22 91 B6 A0 JSL $A0B691[$A0:B691]  ; Move enemy according to angle and X/Y speeds
 $A3:A5A1 60          RTS
 }
 
@@ -5241,7 +5242,7 @@ $A3:BCC4 60          RTS
 ;;; $BCC5:  ;;;
 {
 $A3:BCC5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BCC8 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A3:BCC8 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A3:BCCC 38          SEC
 $A3:BCCD E9 40 00    SBC #$0040
 $A3:BCD0 29 FF 00    AND #$00FF
@@ -5260,7 +5261,7 @@ $A3:BCF0 60          RTS
 ;;; $BCF1:  ;;;
 {
 $A3:BCF1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BCF4 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$A3:BCF4 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A3:BCF8 38          SEC
 $A3:BCF9 E9 40 00    SBC #$0040
 $A3:BCFC 29 FF 00    AND #$00FF
@@ -5853,15 +5854,15 @@ $A3:C715 6B          RTL
 $A3:C716 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C719 A9 15 00    LDA #$0015
 $A3:C71C 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A3:C71F A9 06 00    LDA #$0006
-$A3:C722 85 14       STA $14    [$7E:0014]
-$A3:C724 64 12       STZ $12    [$7E:0012]
-$A3:C726 BD 86 0F    LDA $0F86,x[$7E:1006]
-$A3:C729 09 03 00    ORA #$0003
-$A3:C72C 9D 86 0F    STA $0F86,x[$7E:1006]
-$A3:C72F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C732 22 8A BF A0 JSL $A0BF8A[$A0:BF8A]
-$A3:C736 B0 2D       BCS $2D    [$C765]
+$A3:C71F A9 06 00    LDA #$0006             ;\
+$A3:C722 85 14       STA $14    [$7E:0014]  ;} $14.$12 = 6.0
+$A3:C724 64 12       STZ $12    [$7E:0012]  ;/
+$A3:C726 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A3:C729 09 03 00    ORA #$0003             ;} A = [enemy $0F86] | 3
+$A3:C72C 9D 86 0F    STA $0F86,x[$7E:1006]  ; Enemy $0F86 = [A]
+$A3:C72F AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A3:C732 22 8A BF A0 JSL $A0BF8A[$A0:BF8A]  ; Check for downwards "solid" block collision
+$A3:C736 B0 2D       BCS $2D    [$C765]     ; If collision: go to BRANCH_COLLISION
 $A3:C738 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C73B BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
 $A3:C73E 18          CLC
@@ -5881,6 +5882,7 @@ $A3:C75D 6D 24 0E    ADC $0E24  [$7E:0E24]
 $A3:C760 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
 $A3:C763 80 19       BRA $19    [$C77E]
 
+; BRANCH_COLLISION
 $A3:C765 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C768 A9 01 00    LDA #$0001
 $A3:C76B 9D 94 0F    STA $0F94,x[$7E:1014]
@@ -6709,24 +6711,24 @@ $A3:CF5F 6B          RTL
 
 ;;; $CF60:  ;;;
 {
-$A3:CF60 BF 0E 78 7E LDA $7E780E,x[$7E:788E]
-$A3:CF64 C9 04 00    CMP #$0004
-$A3:CF67 B0 11       BCS $11    [$CF7A]
-$A3:CF69 64 12       STZ $12    [$7E:0012]
-$A3:CF6B 64 14       STZ $14    [$7E:0014]
+$A3:CF60 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
+$A3:CF64 C9 04 00    CMP #$0004             ;} If [enemy $7E:780E] < 4:
+$A3:CF67 B0 11       BCS $11    [$CF7A]     ;/
+$A3:CF69 64 12       STZ $12    [$7E:0012]  ;\
+$A3:CF6B 64 14       STZ $14    [$7E:0014]  ;} $14.$12 = 0.0
 $A3:CF6D BD A8 0F    LDA $0FA8,x[$7E:1028]
 $A3:CF70 20 8F CF    JSR $CF8F  [$A3:CF8F]
-$A3:CF73 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]
-$A3:CF77 90 12       BCC $12    [$CF8B]
-$A3:CF79 6B          RTL
+$A3:CF73 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]  ; Check for horizontal "solid" block collision
+$A3:CF77 90 12       BCC $12    [$CF8B]     ; If collision:
+$A3:CF79 6B          RTL                    ; Return
 
-$A3:CF7A 64 12       STZ $12    [$7E:0012]
-$A3:CF7C 64 14       STZ $14    [$7E:0014]
+$A3:CF7A 64 12       STZ $12    [$7E:0012]  ;\ Else ([enemy $7E:780E] >= 4):
+$A3:CF7C 64 14       STZ $14    [$7E:0014]  ;} $14.$12 = 0.0
 $A3:CF7E BD AA 0F    LDA $0FAA,x[$7E:10AA]
 $A3:CF81 20 8F CF    JSR $CF8F  [$A3:CF8F]
-$A3:CF84 22 76 BC A0 JSL $A0BC76[$A0:BC76]
-$A3:CF88 90 01       BCC $01    [$CF8B]
-$A3:CF8A 6B          RTL
+$A3:CF84 22 76 BC A0 JSL $A0BC76[$A0:BC76]  ; Check for vertical "solid" block collision
+$A3:CF88 90 01       BCC $01    [$CF8B]     ; If collision:
+$A3:CF8A 6B          RTL                    ; Return
 
 $A3:CF8B 20 64 D1    JSR $D164  [$A3:D164]
 $A3:CF8E 6B          RTL
@@ -8952,18 +8954,18 @@ $A3:E8A4 6B          RTL
 $A3:E8A5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $A3:E8A8 48          PHA
 $A3:E8A9 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A3:E8AC 3C AA 0F    BIT $0FAA,x[$7E:0FAA]
-$A3:E8AF 10 06       BPL $06    [$E8B7]
-$A3:E8B1 38          SEC
-$A3:E8B2 FD 84 0F    SBC $0F84,x[$7E:0FC4]
+$A3:E8AC 3C AA 0F    BIT $0FAA,x[$7E:0FAA]  ;\
+$A3:E8AF 10 06       BPL $06    [$E8B7]     ;} If [enemy $0FAA] < 0:
+$A3:E8B1 38          SEC                    ;\
+$A3:E8B2 FD 84 0F    SBC $0F84,x[$7E:0FC4]  ;} A = (enemy top boundary)
 $A3:E8B5 80 05       BRA $05    [$E8BC]
 
-$A3:E8B7 18          CLC
-$A3:E8B8 7D 84 0F    ADC $0F84,x[$7E:0F84]
-$A3:E8BB 3A          DEC A
+$A3:E8B7 18          CLC                    ;\ Else ([enemy $0FAA] >= 0):
+$A3:E8B8 7D 84 0F    ADC $0F84,x[$7E:0F84]  ;} A = (enemy bottom boundary)
+$A3:E8BB 3A          DEC A                  ;/
 
-$A3:E8BC 48          PHA
-$A3:E8BD 22 70 BB A0 JSL $A0BB70[$A0:BB70]
+$A3:E8BC 48          PHA                    ;\
+$A3:E8BD 22 70 BB A0 JSL $A0BB70[$A0:BB70]  ;} Calculate the block containing ([enemy X position], [A])
 $A3:E8C1 AD C4 0D    LDA $0DC4  [$7E:0DC4]
 $A3:E8C4 0A          ASL A
 $A3:E8C5 AA          TAX
@@ -9688,7 +9690,7 @@ $A3:EF68 BF 02 78 7E LDA $7E7802,x[$7E:78C2]
 $A3:EF6C AA          TAX
 $A3:EF6D A9 00 00    LDA #$0000
 $A3:EF70 9F 78 EF 7E STA $7EEF78,x[$7E:EFA8]
-$A3:EF74 22 68 B9 A0 JSL $A0B968[$A0:B968]
+$A3:EF74 22 68 B9 A0 JSL $A0B968[$A0:B968]  ; Metroid death item drop routine
 
 $A3:EF78 6B          RTL
 

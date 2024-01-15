@@ -1399,21 +1399,21 @@ $A6:954C BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $A6:954F 9F 0C 80 7E STA $7E800C,x[$7E:800C]
 $A6:9553 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A6:9556 9F 0E 80 7E STA $7E800E,x[$7E:800E]
-$A6:955A BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A6:955D 8D 32 0E    STA $0E32  [$7E:0E32]
-$A6:9560 BF 06 80 7E LDA $7E8006,x[$7E:8006]
-$A6:9564 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A6:9568 18          CLC
-$A6:9569 7F 0C 80 7E ADC $7E800C,x[$7E:800C]
-$A6:956D 9F 10 80 7E STA $7E8010,x[$7E:8010]
-$A6:9571 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A6:9574 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A6:9577 8D 32 0E    STA $0E32  [$7E:0E32]
-$A6:957A BF 06 80 7E LDA $7E8006,x[$7E:8006]
-$A6:957E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A6:9582 18          CLC
-$A6:9583 7F 0E 80 7E ADC $7E800E,x[$7E:800E]
-$A6:9587 9F 12 80 7E STA $7E8012,x[$7E:8012]
+$A6:955A BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A6:955D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A6:9560 BF 06 80 7E LDA $7E8006,x[$7E:8006];|
+$A6:9564 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy $7E:8010 = [enemy $7E:800C] + [enemy $0FAE] * cos([enemy $7E:8006] * pi / 80h) * FFh / 100h
+$A6:9568 18          CLC                    ;|
+$A6:9569 7F 0C 80 7E ADC $7E800C,x[$7E:800C];|
+$A6:956D 9F 10 80 7E STA $7E8010,x[$7E:8010];/
+$A6:9571 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  
+$A6:9574 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A6:9577 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A6:957A BF 06 80 7E LDA $7E8006,x[$7E:8006];|
+$A6:957E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy $7E:8012 = [enemy $7E:800E] + [enemy $0FAE] * cos([enemy $7E:8006] * pi / 80h) * FFh / 100h
+$A6:9582 18          CLC                    ;|
+$A6:9583 7F 0E 80 7E ADC $7E800E,x[$7E:800E];|
+$A6:9587 9F 12 80 7E STA $7E8012,x[$7E:8012];/
 $A6:958B 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
 $A6:958E A9 08 00    LDA #$0008
 $A6:9591 9F 14 80 7E STA $7E8014,x[$7E:8014]
@@ -1545,16 +1545,16 @@ $A6:96D6 68          PLA
 $A6:96D7 9F 26 80 7E STA $7E8026,x[$7E:8026]
 $A6:96DB BF 02 80 7E LDA $7E8002,x[$7E:8002]
 $A6:96DF 20 AD 98    JSR $98AD  [$A6:98AD]
-$A6:96E2 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A6:96E6 18          CLC
-$A6:96E7 7F 0C 80 7E ADC $7E800C,x[$7E:800C]
-$A6:96EB 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
+$A6:96E2 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
+$A6:96E6 18          CLC                    ;|
+$A6:96E7 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy X position = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:96EB 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
 $A6:96EE BF 02 80 7E LDA $7E8002,x[$7E:8002]
 $A6:96F2 20 AD 98    JSR $98AD  [$A6:98AD]
-$A6:96F5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A6:96F9 18          CLC
-$A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E]
-$A6:96FE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
+$A6:96F5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
+$A6:96F9 18          CLC                    ;|
+$A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy Y position = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:96FE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A6:9701 20 21 97    JSR $9721  [$A6:9721]
 $A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]
 $A6:9707 18          CLC
@@ -1626,16 +1626,16 @@ $A6:979D 9F 10 78 7E STA $7E7810,x[$7E:7818]
 $A6:97A1 FA          PLX
 $A6:97A2 A5 24       LDA $24    [$7E:0024]
 $A6:97A4 20 AD 98    JSR $98AD  [$A6:98AD]
-$A6:97A7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A6:97AB 18          CLC
-$A6:97AC 7F 0C 80 7E ADC $7E800C,x[$7E:800C]
-$A6:97B0 99 4B 1A    STA $1A4B,y[$7E:1A6D]
+$A6:97A7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
+$A6:97AB 18          CLC                    ;|
+$A6:97AC 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy projectile X position = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:97B0 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
 $A6:97B3 A5 24       LDA $24    [$7E:0024]
 $A6:97B5 20 AD 98    JSR $98AD  [$A6:98AD]
-$A6:97B8 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A6:97BC 18          CLC
-$A6:97BD 7F 0E 80 7E ADC $7E800E,x[$7E:800E]
-$A6:97C1 99 93 1A    STA $1A93,y[$7E:1AB5]
+$A6:97B8 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
+$A6:97BC 18          CLC                    ;|
+$A6:97BD 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy projectile Y position = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:97C1 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $A6:97C4 BF 14 80 7E LDA $7E8014,x[$7E:8014]
 $A6:97C8 38          SEC
 $A6:97C9 E9 02 00    SBC #$0002
@@ -1714,16 +1714,16 @@ $A6:9867 9F 30 78 7E STA $7E7830,x[$7E:7836]
 $A6:986B FA          PLX
 $A6:986C A5 24       LDA $24    [$7E:0024]
 $A6:986E 20 AD 98    JSR $98AD  [$A6:98AD]
-$A6:9871 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]
-$A6:9875 18          CLC
-$A6:9876 7F 0C 80 7E ADC $7E800C,x[$7E:800C]
-$A6:987A 85 20       STA $20    [$7E:0020]
+$A6:9871 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
+$A6:9875 18          CLC                    ;|
+$A6:9876 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} $20 = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:987A 85 20       STA $20    [$7E:0020]  ;/
 $A6:987C A5 24       LDA $24    [$7E:0024]
 $A6:987E 20 AD 98    JSR $98AD  [$A6:98AD]
-$A6:9881 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]
-$A6:9885 18          CLC
-$A6:9886 7F 0E 80 7E ADC $7E800E,x[$7E:800E]
-$A6:988A 85 22       STA $22    [$7E:0022]
+$A6:9881 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
+$A6:9885 18          CLC                    ;|
+$A6:9886 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} $22 = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:988A 85 22       STA $22    [$7E:0022]  ;/
 $A6:988C DA          PHX
 $A6:988D BB          TYX
 $A6:988E A5 20       LDA $20    [$7E:0020]
@@ -6117,7 +6117,7 @@ $A6:C5DA CE B2 0F    DEC $0FB2  [$7E:0FB2]
 $A6:C5DD 10 21       BPL $21    [$C600]
 $A6:C5DF A9 01 00    LDA #$0001
 $A6:C5E2 22 A6 81 80 JSL $8081A6[$80:81A6]
-$A6:C5E6 22 A5 B9 A0 JSL $A0B9A5[$A0:B9A5]
+$A6:C5E6 22 A5 B9 A0 JSL $A0B9A5[$A0:B9A5]  ; Ridley death item drop routine
 $A6:C5EA A9 03 00    LDA #$0003             ;\
 $A6:C5ED 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 $A6:C5F1 AD 86 0F    LDA $0F86  [$7E:0F86]
@@ -7654,7 +7654,7 @@ $A6:D1DA 85 14       STA $14    [$7E:0014]
 $A6:D1DC 8B          PHB
 $A6:D1DD 4B          PHK
 $A6:D1DE AB          PLB
-$A6:D1DF 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
+$A6:D1DF 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; A = angle of ([$12], [$14]) offset
 $A6:D1E3 AB          PLB
 $A6:D1E4 38          SEC
 $A6:D1E5 E9 80 00    SBC #$0080
@@ -9430,15 +9430,15 @@ $A6:E01A 60          RTS
 ;;; $E01B:  ;;;
 {
 $A6:E01B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:E01E AD 64 0B    LDA $0B64  [$7E:0B64]
-$A6:E021 38          SEC
-$A6:E022 FD 7A 0F    SBC $0F7A,x
-$A6:E025 85 12       STA $12    [$7E:0012]
-$A6:E027 AD 78 0B    LDA $0B78  [$7E:0B78]
-$A6:E02A 38          SEC
-$A6:E02B FD 7E 0F    SBC $0F7E,x
-$A6:E02E 85 14       STA $14    [$7E:0014]
-$A6:E030 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
+$A6:E01E AD 64 0B    LDA $0B64  [$7E:0B64]  ;\
+$A6:E021 38          SEC                    ;|
+$A6:E022 FD 7A 0F    SBC $0F7A,x            ;|
+$A6:E025 85 12       STA $12    [$7E:0012]  ;|
+$A6:E027 AD 78 0B    LDA $0B78  [$7E:0B78]  ;} A = angle from enemy to projectile 0
+$A6:E02A 38          SEC                    ;|
+$A6:E02B FD 7E 0F    SBC $0F7E,x            ;|
+$A6:E02E 85 14       STA $14    [$7E:0014]  ;|
+$A6:E030 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
 $A6:E034 38          SEC
 $A6:E035 E9 80 00    SBC #$0080
 $A6:E038 49 FF FF    EOR #$FFFF
@@ -10146,23 +10146,23 @@ $A6:E84D DA          PHX
 $A6:E84E 5A          PHY
 $A6:E84F AF 20 78 7E LDA $7E7820[$7E:7820]
 $A6:E853 D0 4C       BNE $4C    [$E8A1]
-$A6:E855 A9 E7 FF    LDA #$FFE7
-$A6:E858 18          CLC
-$A6:E859 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:E85C 85 12       STA $12    [$7E:0012]
-$A6:E85E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A6:E861 38          SEC
-$A6:E862 E5 12       SBC $12    [$7E:0012]
-$A6:E864 85 12       STA $12    [$7E:0012]
-$A6:E866 A9 D5 FF    LDA #$FFD5
-$A6:E869 18          CLC
-$A6:E86A 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:E86D 85 14       STA $14    [$7E:0014]
-$A6:E86F AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A6:E872 38          SEC
-$A6:E873 E5 14       SBC $14    [$7E:0014]
-$A6:E875 85 14       STA $14    [$7E:0014]
-$A6:E877 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
+$A6:E855 A9 E7 FF    LDA #$FFE7             ;\
+$A6:E858 18          CLC                    ;|
+$A6:E859 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
+$A6:E85C 85 12       STA $12    [$7E:0012]  ;|
+$A6:E85E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
+$A6:E861 38          SEC                    ;|
+$A6:E862 E5 12       SBC $12    [$7E:0012]  ;|
+$A6:E864 85 12       STA $12    [$7E:0012]  ;|
+$A6:E866 A9 D5 FF    LDA #$FFD5             ;} A = angle from enemy position - (19h, 2Bh) to Samus
+$A6:E869 18          CLC                    ;|
+$A6:E86A 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;|
+$A6:E86D 85 14       STA $14    [$7E:0014]  ;|
+$A6:E86F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$A6:E872 38          SEC                    ;|
+$A6:E873 E5 14       SBC $14    [$7E:0014]  ;|
+$A6:E875 85 14       STA $14    [$7E:0014]  ;|
+$A6:E877 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
 $A6:E87B 38          SEC
 $A6:E87C E9 80 00    SBC #$0080
 $A6:E87F 49 FF FF    EOR #$FFFF
@@ -10183,23 +10183,23 @@ $A6:E89A A9 EB 00    LDA #$00EB
 $A6:E89D 85 12       STA $12    [$7E:0012]
 $A6:E89F 80 4A       BRA $4A    [$E8EB]
 
-$A6:E8A1 A9 19 00    LDA #$0019
-$A6:E8A4 18          CLC
-$A6:E8A5 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:E8A8 85 12       STA $12    [$7E:0012]
-$A6:E8AA AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A6:E8AD 38          SEC
-$A6:E8AE E5 12       SBC $12    [$7E:0012]
-$A6:E8B0 85 12       STA $12    [$7E:0012]
-$A6:E8B2 A9 D5 FF    LDA #$FFD5
-$A6:E8B5 18          CLC
-$A6:E8B6 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:E8B9 85 14       STA $14    [$7E:0014]
-$A6:E8BB AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A6:E8BE 38          SEC
-$A6:E8BF E5 14       SBC $14    [$7E:0014]
-$A6:E8C1 85 14       STA $14    [$7E:0014]
-$A6:E8C3 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
+$A6:E8A1 A9 19 00    LDA #$0019             ;\
+$A6:E8A4 18          CLC                    ;|
+$A6:E8A5 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
+$A6:E8A8 85 12       STA $12    [$7E:0012]  ;|
+$A6:E8AA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
+$A6:E8AD 38          SEC                    ;|
+$A6:E8AE E5 12       SBC $12    [$7E:0012]  ;|
+$A6:E8B0 85 12       STA $12    [$7E:0012]  ;|
+$A6:E8B2 A9 D5 FF    LDA #$FFD5             ;} A = angle from enemy position + (19h, -2Bh) to Samus
+$A6:E8B5 18          CLC                    ;|
+$A6:E8B6 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;|
+$A6:E8B9 85 14       STA $14    [$7E:0014]  ;|
+$A6:E8BB AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$A6:E8BE 38          SEC                    ;|
+$A6:E8BF E5 14       SBC $14    [$7E:0014]  ;|
+$A6:E8C1 85 14       STA $14    [$7E:0014]  ;|
+$A6:E8C3 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
 $A6:E8C7 38          SEC
 $A6:E8C8 E9 80 00    SBC #$0080
 $A6:E8CB 49 FF FF    EOR #$FFFF

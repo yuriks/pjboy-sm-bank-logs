@@ -2560,8 +2560,8 @@ $B3:9BB6 60          RTS
 {
 $B3:9BB7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:9BBA 20 F8 9B    JSR $9BF8  [$B3:9BF8]  ;\
-$B3:9BBD 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;} Calculate angle to target hole
-$B3:9BC1 9F 32 80 7E STA $7E8032,x[$7E:8032]; Enemy $7E:8032 = [A] (unused)
+$B3:9BBD 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;} Enemy $7E:8032 = angle to target hole (never read)
+$B3:9BC1 9F 32 80 7E STA $7E8032,x[$7E:8032];/
 $B3:9BC5 38          SEC                    ;\
 $B3:9BC6 E9 40 00    SBC #$0040             ;|
 $B3:9BC9 49 FF FF    EOR #$FFFF             ;|
@@ -2841,8 +2841,8 @@ $B3:9DCD BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $B3:9DD0 38          SEC                    ;|
 $B3:9DD1 FF 2E 88 7E SBC $7E882E,x[$7E:882E];} $14 = [enemy Y position] - [enemy Y position 4 frames ago]
 $B3:9DD5 85 14       STA $14    [$7E:0014]  ;/
-$B3:9DD7 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; Calculate angle of ([$12], [$14]) offset
-$B3:9DDB 85 16       STA $16    [$7E:0016]  ; $16 = [A]
+$B3:9DD7 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;\
+$B3:9DDB 85 16       STA $16    [$7E:0016]  ;} $16 = angle from enemy 4 frames ago to enemy
 $B3:9DDD A5 12       LDA $12    [$7E:0012]  ;\
 $B3:9DDF D0 07       BNE $07    [$9DE8]     ;} If [$12] = 0:
 $B3:9DE1 A5 14       LDA $14    [$7E:0014]  ;\
@@ -2917,7 +2917,7 @@ $B3:9E77             dw 0002, 0003, 0004
 $B3:9E7D AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:9E80 A9 02 00    LDA #$0002             ;\
 $B3:9E83 9D 9A 0F    STA $0F9A,x[$7E:0F9A]  ;} Enemy layer = 2
-$B3:9E86 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; Calculate angle of Samus from enemy
+$B3:9E86 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $B3:9E8A 9F 3A 80 7E STA $7E803A,x[$7E:803A]; Enemy spit angle = [A]
 $B3:9E8E 18          CLC                    ;\
 $B3:9E8F 69 10 00    ADC #$0010             ;|

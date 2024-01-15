@@ -6598,7 +6598,7 @@ $94:AFBD AD 08 0D    LDA $0D08  [$7E:0D08]  ;\
 $94:AFC0 38          SEC                    ;|
 $94:AFC1 ED 1A 0D    SBC $0D1A  [$7E:0D1A]  ;|
 $94:AFC4 85 12       STA $12    [$7E:0012]  ;|
-$94:AFC6 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;} A = angle from ([grapple beam flare X position], [grapple beam flare Y position]) to ([grapple beam end X position], [grapple beam end Y position])
+$94:AFC6 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;} A = angle from grapple beam flare to grapple beam end
 $94:AFC9 38          SEC                    ;|
 $94:AFCA ED 1C 0D    SBC $0D1C  [$7E:0D1C]  ;|
 $94:AFCD 85 14       STA $14    [$7E:0014]  ;|

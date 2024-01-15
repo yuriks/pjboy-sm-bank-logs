@@ -5299,16 +5299,16 @@ $A9:BB7E 8F 26 80 7E STA $7E8026[$7E:8026]  ;/
 $A9:BB82 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A9:BB85 38          SEC                    ;|
 $A9:BB86 ED BA 0F    SBC $0FBA  [$7E:0FBA]  ;|
-$A9:BB89 38          SEC                    ;} $12 = [Samus X position] - [Mother Brain's brain X position] - 10h
+$A9:BB89 38          SEC                    ;|
 $A9:BB8A E9 10 00    SBC #$0010             ;|
-$A9:BB8D 85 12       STA $12    [$7E:0012]  ;/
-$A9:BB8F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A9:BB8D 85 12       STA $12    [$7E:0012]  ;|
+$A9:BB8F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = angle from Mother Brain's brain - (10h, 4) to Samus
 $A9:BB92 38          SEC                    ;|
 $A9:BB93 ED BE 0F    SBC $0FBE  [$7E:0FBE]  ;|
-$A9:BB96 38          SEC                    ;} $14 = [Samus Y position] - [Mother Brain's brain Y position] - 4
+$A9:BB96 38          SEC                    ;|
 $A9:BB97 E9 04 00    SBC #$0004             ;|
-$A9:BB9A 85 14       STA $14    [$7E:0014]  ;/
-$A9:BB9C 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; A = angle of ([$12], [$14]) offset
+$A9:BB9A 85 14       STA $14    [$7E:0014]  ;|
+$A9:BB9C 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
 $A9:BBA0 38          SEC                    ;\
 $A9:BBA1 E9 80 00    SBC #$0080             ;|
 $A9:BBA4 49 FF FF    EOR #$FFFF             ;|

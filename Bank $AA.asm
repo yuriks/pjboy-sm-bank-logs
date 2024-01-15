@@ -533,8 +533,8 @@ $AA:B25E AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:B261 D0 06       BNE $06    [$B269]     ;} If Bomb Torizo:
 $AA:B263 22 A4 BA A0 JSL $A0BAA4[$A0:BAA4]  ; Bomb Torizo death item drop routine
 $AA:B267 80 04       BRA $04    [$B26D]
-
-$AA:B269 22 D7 BA A0 JSL $A0BAD7[$A0:BAD7]  ; Else (Golden Torizo): Golden Torizo death item drop routine
+                                            ; Else (Golden Torizo):
+$AA:B269 22 D7 BA A0 JSL $A0BAD7[$A0:BAD7]  ; Golden Torizo death item drop routine
 
 $AA:B26D 28          PLP
 $AA:B26E FA          PLX
@@ -1940,14 +1940,15 @@ $AA:C566 6B          RTL
 
 ;;; $C567: Instruction ;;;
 {
-$AA:C567 A9 38 00    LDA #$0038
-$AA:C56A 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:C56E 90 03       BCC $03    [$C573]
+$AA:C567 A9 38 00    LDA #$0038             ;\
+$AA:C56A 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 38h: go to BRANCH_NEAR
+$AA:C56E 90 03       BCC $03    [$C573]     ;/
 
 $AA:C570 C8          INY
 $AA:C571 C8          INY
 $AA:C572 6B          RTL
 
+; BRANCH_NEAR
 $AA:C573 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $AA:C576 38          SEC
 $AA:C577 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
@@ -1965,9 +1966,9 @@ $AA:C58A 6B          RTL
 
 ;;; $C58B: Instruction ;;;
 {
-$AA:C58B A9 20 00    LDA #$0020
-$AA:C58E 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:C592 B0 0D       BCS $0D    [$C5A1]
+$AA:C58B A9 20 00    LDA #$0020             ;\
+$AA:C58E 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 20h:
+$AA:C592 B0 0D       BCS $0D    [$C5A1]     ;/
 $AA:C594 20 A7 D3    JSR $D3A7  [$AA:D3A7]
 $AA:C597 30 08       BMI $08    [$C5A1]
 $AA:C599 20 2D C2    JSR $C22D  [$AA:C22D]
@@ -3486,12 +3487,12 @@ $AA:D3E9 6B          RTL
 {
 $AA:D3EA 20 A7 D3    JSR $D3A7  [$AA:D3A7]
 $AA:D3ED 10 44       BPL $44    [$D433]
-$AA:D3EF A9 04 00    LDA #$0004
-$AA:D3F2 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:D3F6 90 3B       BCC $3B    [$D433]
-$AA:D3F8 A9 28 00    LDA #$0028
-$AA:D3FB 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:D3FF B0 32       BCS $32    [$D433]
+$AA:D3EF A9 04 00    LDA #$0004             ;\
+$AA:D3F2 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 4: go to BRANCH_NO_GO_TO
+$AA:D3F6 90 3B       BCC $3B    [$D433]     ;/
+$AA:D3F8 A9 28 00    LDA #$0028             ;\
+$AA:D3FB 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is at least 28h: go to BRANCH_NO_GO_TO
+$AA:D3FF B0 32       BCS $32    [$D433]     ;/
 $AA:D401 AD 1C 0A    LDA $0A1C  [$7E:0A1C]
 $AA:D404 C9 1D 00    CMP #$001D
 $AA:D407 F0 1E       BEQ $1E    [$D427]
@@ -3514,6 +3515,7 @@ $AA:D42E B9 00 00    LDA $0000,y
 $AA:D431 A8          TAY
 $AA:D432 6B          RTL
 
+; BRANCH_NO_GO_TO
 $AA:D433 C8          INY
 $AA:D434 C8          INY
 $AA:D435 6B          RTL
@@ -3537,12 +3539,12 @@ $AA:D444 6B          RTL
 {
 $AA:D445 20 A7 D3    JSR $D3A7  [$AA:D3A7]
 $AA:D448 30 27       BMI $27    [$D471]
-$AA:D44A A9 20 00    LDA #$0020
-$AA:D44D 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:D451 90 1E       BCC $1E    [$D471]
-$AA:D453 A9 60 00    LDA #$0060
-$AA:D456 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:D45A B0 15       BCS $15    [$D471]
+$AA:D44A A9 20 00    LDA #$0020             ;\
+$AA:D44D 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is at least 20h:
+$AA:D451 90 1E       BCC $1E    [$D471]     ;/
+$AA:D453 A9 60 00    LDA #$0060             ;\
+$AA:D456 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 60h:
+$AA:D45A B0 15       BCS $15    [$D471]     ;/
 $AA:D45C 22 11 81 80 JSL $808111[$80:8111]
 $AA:D460 29 10 01    AND #$0110
 $AA:D463 D0 0C       BNE $0C    [$D471]
@@ -3608,16 +3610,16 @@ $AA:D4B9 6B          RTL
 
 ;;; $D4BA: Instruction ;;;
 {
-$AA:D4BA A9 70 00    LDA #$0070
-$AA:D4BD 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:D4C1 90 2D       BCC $2D    [$D4F0]
+$AA:D4BA A9 70 00    LDA #$0070             ;\
+$AA:D4BD 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 70h: go to BRANCH_NO_GO_TO
+$AA:D4C1 90 2D       BCC $2D    [$D4F0]     ;/
 $AA:D4C3 20 A7 D3    JSR $D3A7  [$AA:D3A7]
 $AA:D4C6 30 28       BMI $28    [$D4F0]
 $AA:D4C8 A9 68 01    LDA #$0168
 $AA:D4CB DF 0E 78 7E CMP $7E780E,x[$7E:780E]
 $AA:D4CF 90 10       BCC $10    [$D4E1]
 $AA:D4D1 A5 8B       LDA $8B    [$7E:008B]  ;\
-$AA:D4D3 29 00 03    AND #$0300             ;} If not pressing left or right: go to BRANCH_D4F0
+$AA:D4D3 29 00 03    AND #$0300             ;} If not pressing left or right: go to BRANCH_NO_GO_TO
 $AA:D4D6 F0 18       BEQ $18    [$D4F0]     ;/
 $AA:D4D8 22 11 81 80 JSL $808111[$80:8111]
 $AA:D4DC 29 01 01    AND #$0101
@@ -3630,7 +3632,7 @@ $AA:D4EB B9 00 00    LDA $0000,y[$AA:D2DB]
 $AA:D4EE A8          TAY
 $AA:D4EF 6B          RTL
 
-; BRANCH_D4F0
+; BRANCH_NO_GO_TO
 $AA:D4F0 C8          INY
 $AA:D4F1 C8          INY
 $AA:D4F2 6B          RTL
@@ -3652,9 +3654,9 @@ $AA:D4FC 6B          RTL
 $AA:D4FD BF 12 78 7E LDA $7E7812,x[$7E:7812]
 $AA:D501 C9 08 00    CMP #$0008
 $AA:D504 B0 0E       BCS $0E    [$D514]
-$AA:D506 A9 20 00    LDA #$0020
-$AA:D509 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]
-$AA:D50D B0 14       BCS $14    [$D523]
+$AA:D506 A9 20 00    LDA #$0020             ;\
+$AA:D509 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is at least 20h: go to BRANCH_NO_GO_TO
+$AA:D50D B0 14       BCS $14    [$D523]     ;/
 $AA:D50F 20 A7 D3    JSR $D3A7  [$AA:D3A7]
 $AA:D512 30 0F       BMI $0F    [$D523]
 
@@ -3665,6 +3667,7 @@ $AA:D51E B9 00 00    LDA $0000,y[$AA:D32F]
 $AA:D521 A8          TAY
 $AA:D522 6B          RTL
 
+; BRANCH_NO_GO_TO
 $AA:D523 C8          INY
 $AA:D524 C8          INY
 $AA:D525 6B          RTL
@@ -4779,7 +4782,7 @@ $AA:DDFD 20 0E DB    JSR $DB0E  [$AA:DB0E]
 
 $AA:DE00 9E AE 0F    STZ $0FAE,x[$7E:112E]
 $AA:DE03 BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:DE06 22 96 C0 A0 JSL $A0C096[$A0:C096]  ; Rough angle between enemy in X and enemy in Y
+$AA:DE06 22 96 C0 A0 JSL $A0C096[$A0:C096]  ; A = angle of enemy [X] from enemy [Y]
 $AA:DE0A EB          XBA
 $AA:DE0B 29 00 FF    AND #$FF00
 $AA:DE0E 3C B4 0F    BIT $0FB4,x[$7E:1134]
@@ -5182,15 +5185,15 @@ $AA:E58E 6B          RTL
 {
 $AA:E58F DA          PHX
 $AA:E590 5A          PHY
-$AA:E591 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$AA:E594 18          CLC
-$AA:E595 79 00 00    ADC $0000,y[$AA:E4C7]
-$AA:E598 48          PHA
-$AA:E599 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$AA:E59C 18          CLC
-$AA:E59D 69 1C 00    ADC #$001C
-$AA:E5A0 48          PHA
-$AA:E5A1 22 70 BB A0 JSL $A0BB70[$A0:BB70]
+$AA:E591 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$AA:E594 18          CLC                    ;|
+$AA:E595 79 00 00    ADC $0000,y[$AA:E4C7]  ;|
+$AA:E598 48          PHA                    ;|
+$AA:E599 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;} Calculate the block containing enemy position + ([[Y]], 1Ch)
+$AA:E59C 18          CLC                    ;|
+$AA:E59D 69 1C 00    ADC #$001C             ;|
+$AA:E5A0 48          PHA                    ;|
+$AA:E5A1 22 70 BB A0 JSL $A0BB70[$A0:BB70]  ;/
 $AA:E5A5 AD C4 0D    LDA $0DC4  [$7E:0DC4]
 $AA:E5A8 18          CLC
 $AA:E5A9 6D A5 07    ADC $07A5  [$7E:07A5]

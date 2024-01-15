@@ -549,17 +549,17 @@ $86:82AA FD 4B 1A    SBC $1A4B,x[$7E:1A6D]  ;|
 $86:82AD 85 12       STA $12    [$7E:0012]  ;|
 $86:82AF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
 $86:82B2 38          SEC                    ;|
-$86:82B3 FD 93 1A    SBC $1A93,x[$7E:1AB5]  ;} Enemy projectile $1AFF = angle from enemy projectile to Samus * 2
+$86:82B3 FD 93 1A    SBC $1A93,x[$7E:1AB5]  ;} Enemy projectile $1AFF = (angle from enemy projectile to Samus) * 2
 $86:82B6 85 14       STA $14    [$7E:0014]  ;|
 $86:82B8 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;|
 $86:82BC 0A          ASL A                  ;|
 $86:82BD AC 91 19    LDY $1991  [$7E:1991]  ;|
 $86:82C0 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;/
 $86:82C3 AA          TAX                    ;\
-$86:82C4 BF 43 B4 A0 LDA $A0B443,x[$A0:B5B3];} Enemy projectile $1AB7 = sine of angle from enemy projectile to Samus
+$86:82C4 BF 43 B4 A0 LDA $A0B443,x[$A0:B5B3];} Enemy projectile $1AB7 = (sine of angle from enemy projectile to Samus)
 $86:82C8 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
 $86:82CB BF C3 B3 A0 LDA $A0B3C3,x[$A0:B533];\
-$86:82CF 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile $1ADB = negative cosine of angle from enemy projectile to Samus
+$86:82CF 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile $1ADB = (negative cosine of angle from enemy projectile to Samus)
 $86:82D2 BB          TYX
 $86:82D3 7A          PLY
 $86:82D4 60          RTS
@@ -2568,15 +2568,15 @@ $86:9074 BD DF 19    LDA $19DF,x[$7E:19FD]
 $86:9077 18          CLC
 $86:9078 7D B7 1A    ADC $1AB7,x[$7E:1AD5]
 $86:907B 9D DF 19    STA $19DF,x[$7E:19FD]
-$86:907E A9 C0 FF    LDA #$FFC0
-$86:9081 85 12       STA $12    [$7E:0012]
-$86:9083 DA          PHX
-$86:9084 AE B2 0F    LDX $0FB2  [$7E:0FB2]
-$86:9087 BD 59 90    LDA $9059,x[$86:905B]
-$86:908A 85 14       STA $14    [$7E:0014]
-$86:908C FA          PLX
-$86:908D 9B          TXY
-$86:908E 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]
+$86:907E A9 C0 FF    LDA #$FFC0             ;\
+$86:9081 85 12       STA $12    [$7E:0012]  ;} $12 = -40h
+$86:9083 DA          PHX                    ;\
+$86:9084 AE B2 0F    LDX $0FB2  [$7E:0FB2]  ;|
+$86:9087 BD 59 90    LDA $9059,x[$86:905B]  ;} $14 = [$9059 + [enemy $0FB2]]
+$86:908A 85 14       STA $14    [$7E:0014]  ;|
+$86:908C FA          PLX                    ;/
+$86:908D 9B          TXY                    ; Y = [enemy $0FB2]
+$86:908E 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; A = angle of ([$12], [$14]) offset
 $86:9092 0A          ASL A
 $86:9093 AA          TAX
 $86:9094 18          CLC
@@ -6142,7 +6142,7 @@ $86:AC12             dw AB15,FFE5,FE70,FFD8,FE60
 {
 $86:AC1C 22 11 81 80 JSL $808111[$80:8111]
 $86:AC20 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:AC23 22 66 C0 A0 JSL $A0C066[$A0:C066]
+$86:AC23 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $86:AC27 85 12       STA $12    [$7E:0012]
 $86:AC29 AD E5 05    LDA $05E5  [$7E:05E5]
 $86:AC2C 29 0F 00    AND #$000F
@@ -7007,18 +7007,18 @@ $86:B268 60          RTS
 }
 
 
-;;; $B269:  ;;;
+;;; $B269: Instruction ;;;
 {
-$86:B269 22 4E C0 A0 JSL $A0C04E[$A0:C04E]
-$86:B26D 29 7F 00    AND #$007F
-$86:B270 80 07       BRA $07    [$B279]
+$86:B269 22 4E C0 A0 JSL $A0C04E[$A0:C04E]  ; A = angle of Samus from enemy projectile
+$86:B26D 29 7F 00    AND #$007F             ; If angle >= 80h: invert angle
+$86:B270 80 07       BRA $07    [$B279]     ; Go to $B279
 }
 
 
-;;; $B272:  ;;;
+;;; $B272: Instruction ;;;
 {
-$86:B272 22 4E C0 A0 JSL $A0C04E[$A0:C04E]
-$86:B276 09 80 00    ORA #$0080
+$86:B272 22 4E C0 A0 JSL $A0C04E[$A0:C04E]  ; A = angle of Samus from enemy projectile
+$86:B276 09 80 00    ORA #$0080             ; If angle < 80h: invert angle
 }
 
 
@@ -14158,7 +14158,7 @@ $86:E7BF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $86:E7C2 38          SEC                    ;|
 $86:E7C3 F9 93 1A    SBC $1A93,y[$7E:1AB5]  ;} $14 = [Samus Y position] - [enemy projectile Y position]
 $86:E7C6 85 14       STA $14    [$7E:0014]  ;/
-$86:E7C8 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; Calculate angle of ([$12], [$14]) offset
+$86:E7C8 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; A = angle of ([$12], [$14]) offset
 $86:E7CC 49 FF 00    EOR #$00FF             ;\
 $86:E7CF 1A          INC A                  ;|
 $86:E7D0 18          CLC                    ;|

@@ -4926,7 +4926,7 @@ $A5:E8B0 6B          RTL
 {
 $A5:E8B1 DA          PHX
 $A5:E8B2 5A          PHY
-$A5:E8B3 22 0A BB A0 JSL $A0BB0A[$A0:BB0A]
+$A5:E8B3 22 0A BB A0 JSL $A0BB0A[$A0:BB0A]  ; Spore Spawn death item drop routine
 $A5:E8B7 7A          PLY
 $A5:E8B8 FA          PLX
 $A5:E8B9 6B          RTL
@@ -5293,7 +5293,7 @@ $A5:EB6F 38          SEC                    ;|
 $A5:EB70 E9 10 00    SBC #$0010             ;|
 $A5:EB73 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A5:EB76 AF 14 78 7E LDA $7E7814[$7E:7814]  ;|
-$A5:EB7A 38          SEC                    ;} Enemy Y position = [enemy Y origin] + ([Spore Spawn max X radius] - 10h) * sin([Spore Spawn angle] * 2 * pi / 80h) * FFh / 100h
+$A5:EB7A 38          SEC                    ;} Enemy Y position = [enemy Y origin] - ([Spore Spawn max X radius] - 10h) * sin([Spore Spawn angle] * 2 * pi / 80h) * FFh / 100h
 $A5:EB7B E9 40 00    SBC #$0040             ;|
 $A5:EB7E 0A          ASL A                  ;|
 $A5:EB7F 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
