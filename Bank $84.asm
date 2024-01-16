@@ -1977,14 +1977,14 @@ $84:8D26 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $84:8D29 22 00 80 81 JSL $818000[$81:8000]  ;} Save current save slot to SRAM
 $84:8D2D 7A          PLY
 $84:8D2E FA          PLX
-$84:8D2F C8          INY
-$84:8D30 C8          INY
-$84:8D31 60          RTS
+$84:8D2F C8          INY                    ;\
+$84:8D30 C8          INY                    ;} Y += 2
+$84:8D31 60          RTS                    ; Return
 
 $84:8D32 7A          PLY
 $84:8D33 FA          PLX
-$84:8D34 B9 00 00    LDA $0000,y
-$84:8D37 A8          TAY
+$84:8D34 B9 00 00    LDA $0000,y            ;\
+$84:8D37 A8          TAY                    ;} Y = [[Y]]
 $84:8D38 60          RTS
 }
 

@@ -1298,7 +1298,7 @@ $80:870F 8D 16 21    STA $2116  [$82:2116]  ;|
 $80:8712 A9 40       LDA #$40               ;|
 $80:8714 8D 17 21    STA $2117  [$82:2117]  ;|
 $80:8717 A9 80       LDA #$80               ;|
-$80:8719 8D 15 21    STA $2115  [$82:2115]  ;} VRAM $4000..47FF = [$80:B437..C436] (BG1 tilemap)
+$80:8719 8D 15 21    STA $2115  [$82:2115]  ;} VRAM $4000..47FF = [$80:BC37..C436] (BG1 tilemap)
 $80:871C 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $80:8720             dx 01,01,18,80BC37,1000;|
 $80:8728 A9 02       LDA #$02               ;|
@@ -6111,7 +6111,7 @@ $80:A9AB 6B          RTL
 }
 
 
-;;; $A9AC: Debug scroll position save/loading ;;;
+;;; $A9AC: Debug layer 1 position save/loading ;;;
 {
 $80:A9AC A5 91       LDA $91    [$7E:0091]  ;\
 $80:A9AE 29 40 00    AND #$0040             ;} If controller 2 newly pressed X:
@@ -6122,15 +6122,15 @@ $80:A9B6 AD D3 05    LDA $05D3  [$7E:05D3]  ;\
 $80:A9B9 4A          LSR A                  ;} If [debug saved scroll flag] set:
 $80:A9BA 90 0D       BCC $0D    [$A9C9]     ;/
 $80:A9BC AD D5 05    LDA $05D5  [$7E:05D5]  ;\
-$80:A9BF 8D 11 09    STA $0911  [$7E:0911]  ;} Restore X-Scroll position
+$80:A9BF 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = [saved layer 1 X position]
 $80:A9C2 AD D7 05    LDA $05D7  [$7E:05D7]  ;\
-$80:A9C5 8D 15 09    STA $0915  [$7E:0915]  ;} Restore Y-Scroll position
-$80:A9C8 6B          RTL
+$80:A9C5 8D 15 09    STA $0915  [$7E:0915]  ;} Layer 1 Y position = [saved layer 1 Y position]
+$80:A9C8 6B          RTL                    ; Return
 
-$80:A9C9 AD 11 09    LDA $0911  [$7E:0911]  ;\ Else ([debug saved scroll flag] clear):
-$80:A9CC 8D D5 05    STA $05D5  [$7E:05D5]  ;} Save X-Scroll position
+$80:A9C9 AD 11 09    LDA $0911  [$7E:0911]  ;\
+$80:A9CC 8D D5 05    STA $05D5  [$7E:05D5]  ;} Saved layer 1 X position = [layer 1 X position]
 $80:A9CF AD 15 09    LDA $0915  [$7E:0915]  ;\
-$80:A9D2 8D D7 05    STA $05D7  [$7E:05D7]  ;} Save Y-Scroll position
+$80:A9D2 8D D7 05    STA $05D7  [$7E:05D7]  ;} Saved layer 1 Y position = [layer 1 Y position]
 $80:A9D5 6B          RTL
 }
 
@@ -6435,12 +6435,12 @@ $80:ABB0 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:ABB3 A9 10 00    LDA #$0010             ;\
 $80:ABB6 38          SEC                    ;|
 $80:ABB7 ED 33 09    SBC $0933  [$7E:0933]  ;|
-$80:ABBA 0A          ASL A                  ;} Unwrapped tilemap VRAM update size = (10h - ([VRAM blocks to update X block] & 0Fh)) * 4
+$80:ABBA 0A          ASL A                  ;} Unwrapped tilemap VRAM update size = (10h - ([VRAM blocks to update X block] & Fh)) * 4
 $80:ABBB 0A          ASL A                  ;|
 $80:ABBC 9D 64 09    STA $0964,x[$7E:0964]  ;/
 $80:ABBF AD 33 09    LDA $0933  [$7E:0933]  ;\
 $80:ABC2 1A          INC A                  ;|
-$80:ABC3 0A          ASL A                  ;} Wrapped tilemap VRAM update size = (([VRAM blocks to update X block] & 0Fh) + 1) * 4
+$80:ABC3 0A          ASL A                  ;} Wrapped tilemap VRAM update size = (([VRAM blocks to update X block] & Fh) + 1) * 4
 $80:ABC4 0A          ASL A                  ;|
 $80:ABC5 9D 66 09    STA $0966,x[$7E:0966]  ;/
 $80:ABC8 E2 20       SEP #$20               ;\
@@ -7040,11 +7040,9 @@ $80:B031 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $B032: Unused. Mode 7 initialisation? ;;;
+;;; $B032: Unused. Set up rotating mode 7 background ;;;
 {
-; Unused... Uses data from $98 which isn't consistent with the bank log:
-; $98:8000-8303 Font 3 [Bank Split]
-; $98:8304-FFFF Zebes Boom [Bank Split]
+; Uses data from $98 that doesn't exist anymore
 $80:B032 A9 01 00    LDA #$0001             ;\
 $80:B035 8D 83 07    STA $0783  [$7E:0783]  ;} Set mode 7
 $80:B038 AD 83 07    LDA $0783  [$7E:0783]  ;\
@@ -7060,7 +7058,7 @@ $80:B04C A9 00 19    LDA #$1900             ;|
 $80:B04F 8D 10 43    STA $4310  [$7E:4310]  ;|
 $80:B052 A9 00 80    LDA #$8000             ;|
 $80:B055 8D 12 43    STA $4312  [$7E:4312]  ;|
-$80:B058 A9 00 40    LDA #$4000             ;} VRAM $0000..1FFF = [$98:8000..BFFF]
+$80:B058 A9 00 40    LDA #$4000             ;} VRAM $0000..3FFF high bytes (mode 7 tiles) = [$98:8000..BFFF]
 $80:B05B 8D 15 43    STA $4315  [$7E:4315]  ;|
 $80:B05E E2 20       SEP #$20               ;|
 $80:B060 A9 98       LDA #$98               ;|
@@ -7071,40 +7069,41 @@ $80:B06A 9C 15 21    STZ $2115  [$7E:2115]  ;\
 $80:B06D 9C 16 21    STZ $2116  [$7E:2116]  ;|
 $80:B070 9C 17 21    STZ $2117  [$7E:2117]  ;|
 $80:B073 A2 00 40    LDX #$4000             ;|
-                                            ;} Clear VRAM $0000..1FFF (oh...)
+                                            ;} VRAM $0000..3FFF low bytes (mode 7 tilemap) = 0
 $80:B076 9C 18 21    STZ $2118  [$7E:2118]  ;|
 $80:B079 CA          DEX                    ;|
 $80:B07A D0 FA       BNE $FA    [$B076]     ;/
-$80:B07C A0 00 00    LDY #$0000             ;\
-$80:B07F BB          TYX                    ;|
-                                            ;|
-$80:B080 8C 16 21    STY $2116  [$7E:2116]  ;|
+$80:B07C A0 00 00    LDY #$0000             ; Y = 0
+$80:B07F BB          TYX                    ; X = 0
+
+; LOOP
+$80:B080 8C 16 21    STY $2116  [$7E:2116]  ;\
 $80:B083 5A          PHY                    ;|
 $80:B084 A0 20 00    LDY #$0020             ;|
                                             ;|
-$80:B087 BF 00 C0 98 LDA $98C000,x          ;|
-$80:B08B 8D 18 21    STA $2118  [$7E:2118]  ;|
-$80:B08E E8          INX                    ;} $98C000[i*20h..i*20h+1Fh] -> VRAM[i*80h..i*80h+1Fh]
-$80:B08F 88          DEY                    ;} For 0 <= i < 8
-$80:B090 D0 F5       BNE $F5    [$B087]     ;|
-$80:B092 C2 20       REP #$20               ;|
+$80:B087 BF 00 C0 98 LDA $98C000,x          ;} Copy 20h bytes from $98:C000 + [X] to VRAM [Y] low bytes
+$80:B08B 8D 18 21    STA $2118  [$7E:2118]  ;} X += 20h
+$80:B08E E8          INX                    ;|
+$80:B08F 88          DEY                    ;|
+$80:B090 D0 F5       BNE $F5    [$B087]     ;/
+$80:B092 C2 20       REP #$20               ;\
 $80:B094 68          PLA                    ;|
 $80:B095 18          CLC                    ;|
-$80:B096 69 80 00    ADC #$0080             ;|
+$80:B096 69 80 00    ADC #$0080             ;} Y += 80h
 $80:B099 A8          TAY                    ;|
-$80:B09A E2 20       SEP #$20               ;|
-$80:B09C E0 00 04    CPX #$0400             ;|
-$80:B09F D0 DF       BNE $DF    [$B080]     ;/
+$80:B09A E2 20       SEP #$20               ;/
+$80:B09C E0 00 04    CPX #$0400             ;\
+$80:B09F D0 DF       BNE $DF    [$B080]     ;} If [X] != 400h: go to LOOP
 $80:B0A1 A9 07       LDA #$07               ;\
 $80:B0A3 85 55       STA $55    [$7E:0055]  ;} BG mode = 7
 $80:B0A5 C2 20       REP #$20
 $80:B0A7 A9 00 01    LDA #$0100             ;\
 $80:B0AA 85 78       STA $78    [$7E:0078]  ;|
-$80:B0AC 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 matrix = identity
+$80:B0AC 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
 $80:B0AE 64 7C       STZ $7C    [$7E:007C]  ;|
 $80:B0B0 85 7E       STA $7E    [$7E:007E]  ;/
 $80:B0B2 A9 80 00    LDA #$0080             ;\
-$80:B0B5 85 80       STA $80    [$7E:0080]  ;} Set mode 7 centre to the bottom-right corner
+$80:B0B5 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation centre = (80h, 80h)
 $80:B0B7 85 82       STA $82    [$7E:0082]  ;/
 $80:B0B9 9C 85 07    STZ $0785  [$7E:0785]  ; Mode 7 rotation angle = 0
 $80:B0BC 22 82 83 80 JSL $808382[$80:8382]  ; Clear force blank and wait for NMI
@@ -7113,7 +7112,7 @@ $80:B0C1 6B          RTL
 }
 
 
-;;; $B0C2: Configure mode 7 rotation matrix ;;;
+;;; $B0C2: Unused. Configure mode 7 rotation matrix ;;;
 {
 $80:B0C2 08          PHP
 $80:B0C3 C2 30       REP #$30
@@ -7750,6 +7749,10 @@ $80:B435 80 9C       BRA $9C    [$B3D3]     ; Go to LOOP_DICTIONARY_COPY
 
 ;;; $B437: Tilemap - failed NTSC/PAL check ;;;
 {
+; THIS GAME PAK IS NOT DESIGNED
+; FOR YOUR SUPER FAMICOM OR
+; SUPER NES.            NINTENDO
+
 $80:B437             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
                         000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
                         000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
@@ -7787,6 +7790,21 @@ $80:B437             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 00
 
 ;;; $BC37: Tilemap - failed SRAM mapping check ;;;
 {
+;  IT IS A SERIOUS CRIME TO COPY
+;  VIDEO GAMES.      18 USC 2319.
+;  PLEASE REFER TO YOUR NINTENDO
+;  GAME INSTRUCTION BOOKLET FOR
+;  FURTHER INFORMATION.
+; --------------------------------
+;
+;              警  告
+;      ビデオゲームのコピーは法律で禁じられています。
+;      詳しくは取扱説明書を参照してください。
+
+; (warning)
+; (game copying is prohibited by law.)
+; (for further information, please consult your user's manual.)
+
 $80:BC37             dw 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
                         000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
                         000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 002F, 000A, 000D, 0027, 0022, 0027, 000C, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F, 000F,
@@ -7891,7 +7909,7 @@ $80:C4B5             dw C4C5, C5CF, C6D9, C81B, C917, CA2F, CB2B, CC19
 
 ; Load station lists are indexed by $078B
 ; Indices 0..7 are the only ones that can be used by save stations (gunship save station uses 0)
-; Indices 8..Fh are elevators, selectable by the debug file select map if they've been used before
+; Indices 8..Fh are elevators, selectable by the debug file select map if they've been used before (if elevator doors mark them as used)
 ; Indices 10h+ are debug load points, except for Crateria's index 12h, which is used for the gunship landing sequence,
 ; these debug load points are unconditionally selectable in the debug file select map
 
@@ -7928,7 +7946,7 @@ $80:C4C5             dw 91F8,896A,0000,0400,0400,0040,0000, ; 0: Landing site (f
 $80:C5CF             dw A184,8DF6,0000,0000,0000,0098,FFE0, ; 0: Pre Spore Spawn save station (from Charge beam room)
                         A201,8D12,0000,0000,0000,0098,FFE0, ; 1: Green Brinstar mainstreet save station (from Green Brinstar mainstreet)
                         A22A,8F52,0000,0000,0000,0098,FFE0, ; 2: Brinstar false floor save station (from Brinstar false floor spike hall)
-                        A70B,9186,0000,0000,0000,0098,0000, ; 3: Kraid save station (from Kraid keyhunter hall)
+                        A70B,9186,0000,0000,0000,0098,0000, ; 3: Kraid save station (from Kraid kihunter hall)
                         A734,90D2,0000,0000,0000,0098,0000, ; 4: Red Brinstar save station (from Red Brinstar -> Crateria elevator)
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
@@ -8072,19 +8090,20 @@ $80:CC19             dw E82C,ABC4,0000,0000,0000,00B0,0000, ; Debug room (from ?
 }
 
 
-;;; $CD07: Set elevators as used ;;;
+;;; $CD07: Set debug elevators as used ;;;
 {
+; Called if an elevator door has (elevator properties) & Fh != 0, which is never true, so this routine is unused/debug
 $80:CD07 08          PHP
 $80:CD08 8B          PHB
-$80:CD09 4B          PHK
-$80:CD0A AB          PLB
+$80:CD09 4B          PHK                    ;\
+$80:CD0A AB          PLB                    ;} DB = $80
 $80:CD0B C2 30       REP #$30
 $80:CD0D AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $80:CD10 0A          ASL A                  ;|
 $80:CD11 AA          TAX                    ;|
 $80:CD12 AD 93 07    LDA $0793  [$7E:0793]  ;|
 $80:CD15 29 0F 00    AND #$000F             ;|
-$80:CD18 3A          DEC A                  ;} Y = [$CD46 + [area index] * 2] + (([door bitflags] & Fh) - 1) * 4
+$80:CD18 3A          DEC A                  ;} Y = [$CD46 + [area index] * 2] + (([elevator door properties] & Fh) - 1) * 4
 $80:CD19 0A          ASL A                  ;|
 $80:CD1A 0A          ASL A                  ;|
 $80:CD1B 18          CLC                    ;|

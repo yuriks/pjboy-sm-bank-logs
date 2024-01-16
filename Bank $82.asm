@@ -879,7 +879,7 @@ $82:8717 A9 00 00    LDA #$0000             ;|
 $82:871A 9F B0 D8 7E STA $7ED8B0,x[$7E:D8B0];|
 $82:871E 9F 20 D8 7E STA $7ED820,x[$7E:D820];|
 $82:8722 9F 28 D8 7E STA $7ED828,x[$7E:D828];|
-$82:8726 E8          INX                    ;} Set all item / map station / save station / elevator bits
+$82:8726 E8          INX                    ;} Set all item / map station / save station / debug elevator bits
 $82:8727 E8          INX                    ;} Clear all door / event / boss bits
 $82:8728 E0 08 00    CPX #$0008             ;|
 $82:872B 30 CF       BMI $CF    [$86FC]     ;|
@@ -1355,7 +1355,7 @@ $82:8B86 22 06 A3 A0 JSL $A0A306[$A0:A306]  ; Process enemy power bomb interacti
 $82:8B8A 22 EC 94 90 JSL $9094EC[$90:94EC]  ; Main scrolling routine
 $82:8B8E AF 06 80 80 LDA $808006[$80:8006]  ;\
 $82:8B92 F0 04       BEQ $04    [$8B98]     ;} If debug scrolling enabled:
-$82:8B94 22 AC A9 80 JSL $80A9AC[$80:A9AC]  ; Debug scrolling position saving/loading
+$82:8B94 22 AC A9 80 JSL $80A9AC[$80:A9AC]  ; Debug layer 1 position save/loading
 
 $82:8B98 22 4D 88 A0 JSL $A0884D[$A0:884D]  ; Draw Samus, projectiles, enemies and enemy projectiles
 $82:8B9C 22 26 97 A0 JSL $A09726[$A0:9726]  ; Handle queuing enemy BG2 tilemap VRAM transfer
@@ -8428,7 +8428,7 @@ $82:C7C3             dw 0098,0048,0059,
 }
 
 
-;;; $C7CB: Map icon data pointers ;;;
+;;; $C7CB: Map icon positions table ;;;
 {
 ;                        ______________________________________ Crateria
 ;                       |     _________________________________ Brinstar
@@ -8449,7 +8449,7 @@ $82:C82B             dw C893,C8FD,C963,C9D1,CA33,CA91,0000,0000 ; Debug save poi
 }
 
 
-;;; $C83B: Crateria map icon data ;;;
+;;; $C83B: Crateria map icon positions ;;;
 {
 ; Boss icons
 $82:C83B             dw FFFE,FFFE, FFFE,FFFE, FFFE,FFFE, FFFF
@@ -8474,7 +8474,7 @@ $82:C893             dw 00D8,0028, 0188,0028, FFFF
 }
 
 
-;;; $C89D: Brinstar map icon data ;;;
+;;; $C89D: Brinstar map icon positions ;;;
 {
 ; Boss icons
 $82:C89D             dw 01BC,009C, FFFF
@@ -8499,7 +8499,7 @@ $82:C8FD             dw 0048,0018, 01B8,00A0, 0090,0020, FFFF
 }
 
 
-;;; $C90B: Norfair map icon data ;;;
+;;; $C90B: Norfair map icon positions ;;;
 {
 ; Boss icons
 $82:C90B             dw 00B8,0090, FFFF
@@ -8524,7 +8524,7 @@ $82:C963             dw 0050,0010, 0078,0050, 00B0,0088, 0050,0058, 00A8,0070, 0
 }
 
 
-;;; $C981: Wrecked Ship map icon data ;;;
+;;; $C981: Wrecked Ship map icon positions ;;;
 {
 ; Boss icons
 $82:C981             dw 0098,00A0, FFFF
@@ -8549,7 +8549,7 @@ $82:C9D1             dw 0050,0078, 0090,00A0, FFFF
 }
 
 
-;;; $C9DB: Maridia map icon data ;;;
+;;; $C9DB: Maridia map icon positions ;;;
 {
 ; Boss icons
 $82:C9DB             dw 013C,0054, FFFF
@@ -8574,7 +8574,7 @@ $82:CA33             dw 0090,0028, 0148,0050, 00B8,0048, 00B0,0088, FFFF
 }
 
 
-;;; $CA45: Tourian map icon data ;;;
+;;; $CA45: Tourian map icon positions ;;;
 {
 ; (Boss icons)
 $82:CA45             dw FFFF
@@ -8599,7 +8599,7 @@ $82:CA91             dw 0088,0050, 0068,00C0, FFFF
 }
 
 
-;;; $CA9B: Ceres map icon data ;;;
+;;; $CA9B: Ceres map icon positions ;;;
 {
 ; Boss icons
 $82:CA9B             dw 00A0,0088, FFFF
@@ -9682,7 +9682,6 @@ $82:DE55 89 02 00    BIT #$0002             ;} If door orientation is horizontal
 $82:DE58 D0 05       BNE $05    [$DE5F]     ;/
 $82:DE5A A9 C8 00    LDA #$00C8             ; A = C8h
 $82:DE5D 80 03       BRA $03    [$DE62]
-
                                             ; Else (door orientation is vertical):
 $82:DE5F A9 80 01    LDA #$0180             ; A = 180h
 
@@ -9844,9 +9843,9 @@ $82:DF98 60          RTS
 ;;; $DF99: Save map explored if elevator ;;;
 {
 $82:DF99 AD 93 07    LDA $0793  [$7E:0793]  ;\
-$82:DF9C 29 0F 00    AND #$000F             ;} A = [elevator door properties] & Fh (elevator index to mark as used)
+$82:DF9C 29 0F 00    AND #$000F             ;} A = [elevator door properties] & Fh (always 0)
 $82:DF9F F0 04       BEQ $04    [$DFA5]     ; If [A] != 0:
-$82:DFA1 22 07 CD 80 JSL $80CD07[$80:CD07]  ; Set elevators as used
+$82:DFA1 22 07 CD 80 JSL $80CD07[$80:CD07]  ; Set debug elevators as used
 
 $82:DFA5 AE 8D 07    LDX $078D  [$7E:078D]  ;\
 $82:DFA8 BF 02 00 83 LDA $830002,x[$83:AB4E];|

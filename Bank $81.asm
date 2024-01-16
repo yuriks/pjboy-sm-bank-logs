@@ -4810,7 +4810,7 @@ $81:A8C7 BD A0 AA    LDA $AAA0,x            ;|
 $81:A8CA 8D 9F 07    STA $079F  [$7E:079F]  ;/
 $81:A8CD 0A          ASL A                  ;\
 $81:A8CE AA          TAX                    ;|
-$81:A8CF BF F8 D8 7E LDA $7ED8F8,x          ;} $12 = [$7E:D8F8 + [area index] * 2] (used save stations / elevators)
+$81:A8CF BF F8 D8 7E LDA $7ED8F8,x          ;} $12 = [$7E:D8F8 + [area index] * 2] (used save stations / debug elevators)
 $81:A8D3 85 12       STA $12    [$7E:0012]  ;/
 $81:A8D5 A2 00 00    LDX #$0000             ; X = 0
 $81:A8D8 A9 82 00    LDA #$0082             ;\
@@ -4818,14 +4818,14 @@ $81:A8DB 85 02       STA $02    [$7E:0002]  ;} $02 = $82
 $81:A8DD A9 0B C8    LDA #$C80B             ;\
 $81:A8E0 85 00       STA $00    [$7E:0000]  ;|
 $81:A8E2 AD 9F 07    LDA $079F  [$7E:079F]  ;|
-$81:A8E5 0A          ASL A                  ;} A = [$82:C80B + [area index] * 2] (save points)
+$81:A8E5 0A          ASL A                  ;} A = [$82:C80B + [area index] * 2] (save point map icon positions)
 $81:A8E6 A8          TAY                    ;|
 $81:A8E7 B7 00       LDA [$00],y            ;/
 
 $81:A8E9 F0 FE       BEQ $FE    [$A8E9]     ; If [A] = 0: crash
 $81:A8EB 85 00       STA $00    [$7E:0000]  ; $00 = [A]
 $81:A8ED A9 10 00    LDA #$0010             ;\
-$81:A8F0 85 14       STA $14    [$7E:0014]  ;} $14 = 10h
+$81:A8F0 85 14       STA $14    [$7E:0014]  ;} $14 = 10h (loop counter)
 
 ; LOOP_SAVES_ELEVATORS
 $81:A8F2 46 12       LSR $12    [$7E:0012]  ; $12 >>= 1
@@ -4870,7 +4870,7 @@ $81:A92E 4C 3B A8    JMP $A83B  [$81:A83B]  ; Go to draw area select map labels
 }
 
 
-;;; $A931: Check if file select map area can be selected ;;;
+;;; $A931: Debug. Check if file select map area can be selected ;;;
 {
 ;; Parameters:
 ;;     A: File select map area index
@@ -4886,7 +4886,7 @@ $81:A935 BD A0 AA    LDA $AAA0,x            ;} X = [$AAA0 + [A] * 2]
 $81:A938 0A          ASL A                  ;|
 $81:A939 AA          TAX                    ;/
 $81:A93A BF F8 D8 7E LDA $7ED8F8,x          ;\
-$81:A93E D0 17       BNE $17    [$A957]     ;} If [$7E:D8F8 + [X]] != 0 (used save station or elevator): return zero clear
+$81:A93E D0 17       BNE $17    [$A957]     ;} If [$7E:D8F8 + [X]] != 0 (used save station / debug elevator): return zero clear
 $81:A940 8B          PHB
 $81:A941 A9 00 82    LDA #$8200             ;\
 $81:A944 48          PHA                    ;|
@@ -4957,11 +4957,11 @@ $81:A9AC 48          PHA                    ;|
 $81:A9AD AB          PLB                    ;} DB = $82
 $81:A9AE AB          PLB                    ;/
 $81:A9AF BF F8 D8 7E LDA $7ED8F8,x[$7E:D8F8];\
-$81:A9B3 85 24       STA $24    [$7E:0024]  ;} $24 = [$7E:D8F8 + [X]] (used save stations)
+$81:A9B3 85 24       STA $24    [$7E:0024]  ;} $24 = [$7E:D8F8 + [X]] (used save station / debug elevator)
 $81:A9B5 BF 0B C8 82 LDA $82C80B,x[$82:C80B];\
 $81:A9B9 AA          TAX                    ;} X = [$82:C80B + [X]] (save point icon data pointer)
 $81:A9BA A9 10 00    LDA #$0010             ;\
-$81:A9BD 85 1E       STA $1E    [$7E:001E]  ;} $1E = 10h
+$81:A9BD 85 1E       STA $1E    [$7E:001E]  ;} $1E = 10h (loop counter)
 
 ; LOOP_SAVE_POINTS
 $81:A9BF BD 00 00    LDA $0000,x[$82:C853]  ;\
@@ -5476,7 +5476,7 @@ $81:ADEF AB          PLB                    ;} DB = $82
 $81:ADF0 C2 20       REP #$20
 $81:ADF2 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $81:ADF5 0A          ASL A                  ;|
-$81:ADF6 AA          TAX                    ;} $18 = [$7E:D8F8 + [area index] * 2] (used save stations / elevators)
+$81:ADF6 AA          TAX                    ;} $18 = [$7E:D8F8 + [area index] * 2] (used save stations / debug elevators)
 $81:ADF7 BF F8 D8 7E LDA $7ED8F8,x          ;|
 $81:ADFB 85 18       STA $18    [$7E:0018]  ;/
 $81:ADFD AD 8B 07    LDA $078B  [$7E:078B]  ;\
@@ -5546,7 +5546,7 @@ $81:AE65 80 E9       BRA $E9    [$AE50]     ; Go to LOOP_DEBUG_SAVE_POINTS
 $81:AE67 9C 8B 07    STZ $078B  [$7E:078B]  ; Load station index = 0
 $81:AE6A AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $81:AE6D 0A          ASL A                  ;|
-$81:AE6E AA          TAX                    ;} $18 = [$7E:D8F8 + [area index] * 2] (used save stations / elevators)
+$81:AE6E AA          TAX                    ;} $18 = [$7E:D8F8 + [area index] * 2] (used save stations / debug elevators)
 $81:AE6F BF F8 D8 7E LDA $7ED8F8,x          ;|
 $81:AE73 85 18       STA $18    [$7E:0018]  ;/
 $81:AE75 80 B8       BRA $B8    [$AE2F]     ; Go to LOOP_SAVES_ELEVATORS
@@ -5986,7 +5986,7 @@ $81:B386 9F 08 D9 7E STA $7ED908,x[$7E:D908];|
 $81:B38A 9F F8 D8 7E STA $7ED8F8,x[$7E:D8F8];|
 $81:B38E 9F 00 D9 7E STA $7ED900,x[$7E:D900];|
 $81:B392 E8          INX                    ;|
-$81:B393 E8          INX                    ;} Clear all item / door / map station / save station / elevator bits
+$81:B393 E8          INX                    ;} Clear all item / door / map station / save station / debug elevator bits
 $81:B394 E0 08 00    CPX #$0008             ;|
 $81:B397 30 D9       BMI $D9    [$B372]     ;|
 $81:B399 A9 00 00    LDA #$0000             ;|
