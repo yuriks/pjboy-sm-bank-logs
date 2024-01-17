@@ -3422,8 +3422,8 @@ $90:9547 E9 03 00    SBC #$0003             ;} Layer 1 Y position -= 3
 $90:954A 8D 15 09    STA $0915  [$7E:0915]  ;/
 
 ; BRANCH_GRAPPLE_SCROLL_VERTICAL_END
-$90:954D 22 28 A5 80 JSL $80A528[$80:A528]  ; Handle horizontal autoscrolling
-$90:9551 22 31 A7 80 JSL $80A731[$80:A731]  ; Handle vertical autoscrolling
+$90:954D 22 28 A5 80 JSL $80A528[$80:A528]  ; Handle scroll zones - horizontal autoscrolling
+$90:9551 22 31 A7 80 JSL $80A731[$80:A731]  ; Handle scroll zones - vertical autoscrolling
 $90:9555 80 0C       BRA $0C    [$9563]     ; Go to BRANCH_FINISHED_SCROLLING
 
 ; BRANCH_NORMAL_SCROLLING
@@ -3476,15 +3476,12 @@ $90:959F 60          RTS
 
 ;;; $95A0: Handle horizontal scrolling ;;;
 {
-; If Samus didn't move, JSL $80A528 and do nothing else.
-; Calculates ideal position, adjusts by how much Samus moved,
-; and JSL $80A641 if scrolling right, JSL $80A6BB if scrolling left.
 $90:95A0 08          PHP
 $90:95A1 C2 30       REP #$30
 $90:95A3 AD 10 0B    LDA $0B10  [$7E:0B10]  ;\
 $90:95A6 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [Samus X position] = [Samus previous X position]:
 $90:95A9 D0 07       BNE $07    [$95B2]     ;/
-$90:95AB 22 28 A5 80 JSL $80A528[$80:A528]  ; Handle horizontal autoscrolling
+$90:95AB 22 28 A5 80 JSL $80A528[$80:A528]  ; Handle scroll zones - horizontal autoscrolling
 $90:95AF 4C 3D 96    JMP $963D  [$90:963D]  ; Return
 
 $90:95B2 AD 11 09    LDA $0911  [$7E:0911]  ;\
@@ -3539,7 +3536,7 @@ $90:9614 8D 0F 09    STA $090F  [$7E:090F]  ;} Layer 1 X position += [camera X s
 $90:9617 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $90:961A 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;|
 $90:961D 8D 11 09    STA $0911  [$7E:0911]  ;/
-$90:9620 22 41 A6 80 JSL $80A641[$80:A641]  ; Handle scrolling when moving and triggered scrolling right
+$90:9620 22 41 A6 80 JSL $80A641[$80:A641]  ; Handle scroll zones - scrolling right
 $90:9624 80 17       BRA $17    [$963D]
 
 $90:9626 AD 0F 09    LDA $090F  [$7E:090F]  ;\ Else ([ideal layer 1 X position] >= [layer 1 X position]):
@@ -3549,7 +3546,7 @@ $90:962D 8D 0F 09    STA $090F  [$7E:090F]  ;} Layer 1 X position -= [camera X s
 $90:9630 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $90:9633 ED A2 0D    SBC $0DA2  [$7E:0DA2]  ;|
 $90:9636 8D 11 09    STA $0911  [$7E:0911]  ;/
-$90:9639 22 BB A6 80 JSL $80A6BB[$80:A6BB]  ; Handle scrolling when moving and triggered scrolling left
+$90:9639 22 BB A6 80 JSL $80A6BB[$80:A6BB]  ; Handle scroll zones - scrolling left
 
 $90:963D 28          PLP
 $90:963E 60          RTS
@@ -3562,37 +3559,34 @@ $90:9647             dw 00A0, 0050, 0020, 00E0 ; When Samus is facing left
 
 ;;; $964F: Handle vertical scrolling ;;;
 {
-; If Samus didn't move, JSL $80A731 and do nothing.
-; Calculates ideal position, adjusts by how much Samus moved,
-; and JSL $80A893 if scrolling down, JSL $80A936 if scrolling up.
 $90:964F 08          PHP
 $90:9650 C2 30       REP #$30
 $90:9652 AD 14 0B    LDA $0B14  [$7E:0B14]  ;\
-$90:9655 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If Samus previous Y position == Samus Y position:
+$90:9655 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [Samus Y position] = [Samus previous Y position]:
 $90:9658 D0 07       BNE $07    [$9661]     ;/
-$90:965A 22 31 A7 80 JSL $80A731[$80:A731]  ; Handle vertical autoscrolling
+$90:965A 22 31 A7 80 JSL $80A731[$80:A731]  ; Handle scroll zones - vertical autoscrolling
 $90:965E 4C BE 96    JMP $96BE  [$90:96BE]  ; Return
 
 $90:9661 AD 15 09    LDA $0915  [$7E:0915]  ;\
-$90:9664 85 12       STA $12    [$7E:0012]  ;} $12 = layer 1 Y position
+$90:9664 85 12       STA $12    [$7E:0012]  ;} $12 = [layer 1 Y position]
 $90:9666 AD 36 0B    LDA $0B36  [$7E:0B36]  ;\
 $90:9669 C9 01 00    CMP #$0001             ;} If [Samus Y direction] != up:
 $90:966C F0 0C       BEQ $0C    [$967A]     ;/
 $90:966E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:9671 38          SEC                    ;|
-$90:9672 ED AD 07    SBC $07AD  [$7E:07AD]  ;} Ideal layer 1 Y position = Samus Y position - up scroller
+$90:9672 ED AD 07    SBC $07AD  [$7E:07AD]  ;} Ideal layer 1 Y position = [Samus Y position] - [up scroller]
 $90:9675 8D 0E 0B    STA $0B0E  [$7E:0B0E]  ;/
 $90:9678 80 0A       BRA $0A    [$9684]
 
 $90:967A AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\ Else ([Samus Y direction] = up):
 $90:967D 38          SEC                    ;|
-$90:967E ED AF 07    SBC $07AF  [$7E:07AF]  ;} Ideal layer 1 Y position = Samus Y position - down scroller
+$90:967E ED AF 07    SBC $07AF  [$7E:07AF]  ;} Ideal layer 1 Y position = [Samus Y position] - [down scroller]
 $90:9681 8D 0E 0B    STA $0B0E  [$7E:0B0E]  ;/
 
 $90:9684 AD 0E 0B    LDA $0B0E  [$7E:0B0E]  ;\
-$90:9687 CD 15 09    CMP $0915  [$7E:0915]  ;} If ideal layer 1 Y position = layer 1 Y position: return
+$90:9687 CD 15 09    CMP $0915  [$7E:0915]  ;} If [ideal layer 1 Y position] = [layer 1 Y position]: return
 $90:968A F0 32       BEQ $32    [$96BE]     ;/
-$90:968C 30 19       BMI $19    [$96A7]     ; If ideal layer 1 Y position > layer 1 Y position:
+$90:968C 30 19       BMI $19    [$96A7]     ; If [ideal layer 1 Y position] > [layer 1 Y position]:
 $90:968E AD 13 09    LDA $0913  [$7E:0913]  ;\
 $90:9691 18          CLC                    ;|
 $90:9692 6D A8 0D    ADC $0DA8  [$7E:0DA8]  ;|
@@ -3600,17 +3594,17 @@ $90:9695 8D 13 09    STA $0913  [$7E:0913]  ;} Layer 1 Y position += [camera Y s
 $90:9698 AD 15 09    LDA $0915  [$7E:0915]  ;|
 $90:969B 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;|
 $90:969E 8D 15 09    STA $0915  [$7E:0915]  ;/
-$90:96A1 22 93 A8 80 JSL $80A893[$80:A893]  ; Handle scrolling when moving and triggered scrolling down
+$90:96A1 22 93 A8 80 JSL $80A893[$80:A893]  ; Handle scroll zones - scrolling down
 $90:96A5 80 17       BRA $17    [$96BE]
 
-$90:96A7 AD 13 09    LDA $0913  [$7E:0913]  ;\ Else (ideal layer 1 Y position < layer 1 Y position):
+$90:96A7 AD 13 09    LDA $0913  [$7E:0913]  ;\ Else ([ideal layer 1 Y position] < [layer 1 Y position]):
 $90:96AA 38          SEC                    ;|
 $90:96AB ED A8 0D    SBC $0DA8  [$7E:0DA8]  ;|
 $90:96AE 8D 13 09    STA $0913  [$7E:0913]  ;} Layer 1 Y position -= [camera Y speed]
 $90:96B1 AD 15 09    LDA $0915  [$7E:0915]  ;|
 $90:96B4 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
 $90:96B7 8D 15 09    STA $0915  [$7E:0915]  ;/
-$90:96BA 22 36 A9 80 JSL $80A936[$80:A936]  ; Handle scrolling when moving and triggered scrolling up
+$90:96BA 22 36 A9 80 JSL $80A936[$80:A936]  ; Handle scroll zones - scrolling up
 
 $90:96BE 28          PLP
 $90:96BF 60          RTS
@@ -16118,7 +16112,7 @@ $90:F124 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F125: $F084 - A = 2: reached Ceres elevator ;;;
+;;; $F125: $F084 - A = 2: Samus reached Ceres elevator ;;;
 {
 $90:F125 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:F128 29 FF 00    AND #$00FF             ;|

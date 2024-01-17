@@ -1086,9 +1086,9 @@ $89:AB89 AB          PLB                    ;} DB = $83
 $89:AB8A AB          PLB                    ;/
 $89:AB8B AE CD 07    LDX $07CD  [$7E:07CD]  ; X = [FX pointer]
 $89:AB8E D0 03       BNE $03    [$AB93]     ;} If [X] = 0:
-$89:AB90 AB          PLB                    ;\
-$89:AB91 28          PLP                    ;} Return
-$89:AB92 6B          RTL                    ;/
+$89:AB90 AB          PLB
+$89:AB91 28          PLP
+$89:AB92 6B          RTL                    ; Return
 
 $89:AB93 BD 00 00    LDA $0000,x[$83:A146]  ; >_<
 $89:AB96 A0 00 00    LDY #$0000             ; Y = 0 (FX entry offset)
@@ -1098,9 +1098,9 @@ $89:AB99 BD 00 00    LDA $0000,x[$83:A146]  ;\
 $89:AB9C F0 1B       BEQ $1B    [$ABB9]     ;} If [[X]] = 0: go to BRANCH_LOAD
 $89:AB9E C9 FF FF    CMP #$FFFF             ;\
 $89:ABA1 D0 03       BNE $03    [$ABA6]     ;} If [[X]] = FFFFh:
-$89:ABA3 AB          PLB                    ;\
-$89:ABA4 28          PLP                    ;} Return
-$89:ABA5 6B          RTL                    ;/
+$89:ABA3 AB          PLB
+$89:ABA4 28          PLP
+$89:ABA5 6B          RTL                    ; Return
 
 $89:ABA6 CD 8D 07    CMP $078D  [$7E:078D]  ;\
 $89:ABA9 F0 0E       BEQ $0E    [$ABB9]     ;} If [[X]] = [door pointer]: go to BRANCH_LOAD
@@ -1249,9 +1249,9 @@ $89:ACC3 8B          PHB
 $89:ACC4 4B          PHK
 $89:ACC5 AB          PLB
 $89:ACC6 AD 3F 09    LDA $093F  [$7E:093F]  ;\
-$89:ACC9 30 02       BMI $02    [$ACCD]     ;} If Ceres elevator shaft is not rotating: return
+$89:ACC9 30 02       BMI $02    [$ACCD]     ;} If Ceres elevator shaft is not rotating:
 $89:ACCB AB          PLB
-$89:ACCC 6B          RTL
+$89:ACCC 6B          RTL                    ; Return
 
 $89:ACCD A9 80 00    LDA #$0080             ;\
 $89:ACD0 38          SEC                    ;|
@@ -1277,7 +1277,7 @@ $89:ACFF AD 98 09    LDA $0998  [$7E:0998]  ;\
 $89:AD02 C9 08 00    CMP #$0008             ;} If [game state] = normal gameplay
 $89:AD05 D0 13       BNE $13    [$AD1A]     ;/
 $89:AD07 A9 02 00    LDA #$0002             ;\
-$89:AD0A 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set Samus to standing etc.
+$89:AD0A 22 84 F0 90 JSL $90F084[$90:F084]  ;} Samus reached Ceres elevator
 $89:AD0E 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $89:AD11 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $89:AD14 A9 20 00    LDA #$0020             ;\
@@ -1306,9 +1306,8 @@ $89:AD44 30 0B       BMI $0B    [$AD51]     ;} If [rotation matrix index] & 8000
 $89:AD46 1A          INC A                  ; Increment rotation matrix index
 $89:AD47 C9 44 00    CMP #$0044             ;\
 $89:AD4A D0 0E       BNE $0E    [$AD5A]     ;} If [rotation matrix index] = 44h:
-$89:AD4C 09 00 80    ORA #$8000             ;\
-$89:AD4F 80 09       BRA $09    [$AD5A]     ;} Rotation matrix index |= 8000h (start rotating anticlockwise)
-
+$89:AD4C 09 00 80    ORA #$8000             ; Rotation matrix index |= 8000h (start rotating anticlockwise)
+$89:AD4F 80 09       BRA $09    [$AD5A]
                                             ; Else ([rotation matrix index] & 8000h != 0):
 $89:AD51 3A          DEC                    ; Decrement rotation matrix index
 $89:AD52 C9 00 80    CMP #$8000             ;\

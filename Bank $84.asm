@@ -7636,7 +7636,7 @@ $84:B918 60          RTS
 }
 
 
-;;; $B919: Instruction list - PLM $B964 (old Tourian escape shaft escape) ;;;
+;;; $B919: Instruction list - PLM $B964 (make old Tourian escape shaft fake wall explode) ;;;
 {
 $84:B919             dx 86C1,B927,  ; Pre-instruction = old Tourian escape shaft escape
                         86B4,       ; Sleep
@@ -7646,9 +7646,8 @@ $84:B919             dx 86C1,B927,  ; Pre-instruction = old Tourian escape shaft
 }
 
 
-;;; $B927: Pre-instruction - old Tourian escape shaft escape ;;;
+;;; $B927: Pre-instruction - make old Tourian escape shaft fake wall explode ;;;
 {
-; Used by PLM $B964 (old Tourian escape shaft escape)
 $84:B927 A9 F0 00    LDA #$00F0             ;\
 $84:B92A 85 12       STA $12    [$7E:0012]  ;|
 $84:B92C A9 20 08    LDA #$0820             ;|
@@ -7664,17 +7663,16 @@ $84:B93F 60          RTS
 }
 
 
-;;; $B940: Instruction list - PLM $B968 (escape room before old Tourian escape shaft) ;;;
+;;; $B940: Instruction list - PLM $B968 (raise acid in escape room before old Tourian escape shaft) ;;;
 {
-$84:B940             dx 86C1,B948,  ; Pre-instruction = escape room before old Tourian escape shaft
+$84:B940             dx 86C1,B948,  ; Pre-instruction = raise acid in escape room before old Tourian escape shaft
                         86B4,       ; Sleep
                         86BC        ; Delete
 }
 
 
-;;; $B948: Pre-instruction - escape room before old Tourian escape shaft ;;;
+;;; $B948: Pre-instruction - raise acid in escape room before old Tourian escape shaft ;;;
 {
-; Used by PLM $B968 (escape room before old Tourian escape shaft)
 $84:B948 A9 F0 00    LDA #$00F0             ;\
 $84:B94B 85 12       STA $12    [$7E:0012]  ;|
 $84:B94D A9 40 05    LDA #$0540             ;|
@@ -7690,13 +7688,13 @@ $84:B963 60          RTS
 }
 
 
-;;; $B964: PLM entry - old Tourian escape shaft escape ;;;
+;;; $B964: PLM entry - make old Tourian escape shaft fake wall explode ;;;
 {
 $84:B964             dw B3C1,B919
 }
 
 
-;;; $B968: PLM entry - escape room before old Tourian escape shaft ;;;
+;;; $B968: PLM entry - raise acid in escape room before old Tourian escape shaft ;;;
 {
 $84:B968             dw B3C1,B940
 }
@@ -7941,10 +7939,10 @@ $84:BB05             dw BAFA,BAFF
 }
 
 
-;;; $BB09: Setup - PLM $BB30 (Crateria mainstreet escape) ;;;
+;;; $BB09: Setup - PLM $BB30 (clear Crateria mainstreet escape passage if critters escaped) ;;;
 {
 $84:BB09 A9 0F 00    LDA #$000F             ;\
-$84:BB0C 22 33 82 80 JSL $808233[$80:8233]  ;} If critters escaped: return
+$84:BB0C 22 33 82 80 JSL $808233[$80:8233]  ;} If critters not escaped:
 $84:BB10 B0 06       BCS $06    [$BB18]     ;/
 $84:BB12 A9 00 00    LDA #$0000             ;\
 $84:BB15 99 37 1C    STA $1C37,y[$7E:1C65]  ;} Delete PLM
@@ -7953,7 +7951,7 @@ $84:BB18 60          RTS
 }
 
 
-;;; $BB19: Instruction list - PLM $BB30 (Crateria mainstreet escape) ;;;
+;;; $BB19: Instruction list - PLM $BB30 (clear Crateria mainstreet escape passage if critters escaped) ;;;
 {
 $84:BB19             dx 0001,9253,
                         BB25,       ; Move PLM right 4 blocks
@@ -7972,7 +7970,7 @@ $84:BB2F 60          RTS
 }
 
 
-;;; $BB30: PLM entry - Crateria mainstreet escape ;;;
+;;; $BB30: PLM entry - clear Crateria mainstreet escape passage if critters escaped ;;;
 {
 $84:BB30             dw BB09,BB19
 }

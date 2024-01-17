@@ -545,12 +545,12 @@ $8F:918C             dx B76F,07,0B,0005, 0000
 ;;; $9194: Setup ASM: clear a few blocks after saving animals and shake screen ;;;
 {
 ; Room $92FD, state $9348. Crateria mainstreet, Zebes timebomb set
-$8F:9194 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:9198             dx  3D, 0B, BB30
+$8F:9194 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:9198             dx  3D, 0B, BB30       ;} Spawn PLM to clear Crateria mainstreet escape passage if critters escaped
 $8F:919C A9 18 00    LDA #$0018             ;\
 $8F:919F 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 3 pixel displacement, horizontal
-$8F:91A2 A9 FF FF    LDA #$FFFF
-$8F:91A5 8D 40 18    STA $1840  [$7E:1840]
+$8F:91A2 A9 FF FF    LDA #$FFFF             ;\
+$8F:91A5 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 $8F:91A8 60          RTS
 }
 
@@ -558,8 +558,8 @@ $8F:91A8 60          RTS
 ;;; $91A9: Setup ASM: auto-destroy the wall during escape ;;;
 {
 ; Room $96BA, state $9705. Old Tourian escape shaft, Zebes timebomb set
-$8F:91A9 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:91AD             dx  10, 87, B964
+$8F:91A9 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:91AD             dx  10, 87, B964       ;} Spawn PLM to make old Tourian escape shaft fake wall explode
 $8F:91B1 60          RTS
 }
 
@@ -567,8 +567,8 @@ $8F:91B1 60          RTS
 ;;; $91B2: Setup ASM: turn wall into shotblocks during escape ;;;
 {
 ; Room $9804, state $984F. Bomb Torizo's room, Zebes timebomb set
-$8F:91B2 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:91B6             dx  0F, 0A, B9ED
+$8F:91B2 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:91B6             dx  0F, 0A, B9ED       ;} Spawn critters escape block PLM
 $8F:91BA 60          RTS
 }
 
@@ -598,8 +598,8 @@ $8F:91BC 60          RTS
 ; Room $91F8, state $9261. Landing site, Zebes timebomb set
 $8F:91BD A9 06 00    LDA #$0006             ;\
 $8F:91C0 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 3 pixel displacement, horizontal
-$8F:91C3 A9 FF FF    LDA #$FFFF
-$8F:91C6 8D 40 18    STA $1840  [$7E:1840]
+$8F:91C3 A9 FF FF    LDA #$FFFF             ;\
+$8F:91C6 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 }
 
 
@@ -731,14 +731,14 @@ $8F:91D6 60          RTS
 ;;; $91D7: Setup ASM: run statue unlocking animations ;;;
 {
 ; Room $A66A. Tourian entrance
-$8F:91D7 A0 58 85    LDY #$8558
-$8F:91DA 22 27 80 87 JSL $878027[$87:8027]
-$8F:91DE A0 4C 85    LDY #$854C
-$8F:91E1 22 27 80 87 JSL $878027[$87:8027]
-$8F:91E5 A0 5E 85    LDY #$855E
-$8F:91E8 22 27 80 87 JSL $878027[$87:8027]
-$8F:91EC A0 52 85    LDY #$8552
-$8F:91EF 22 27 80 87 JSL $878027[$87:8027]
+$8F:91D7 A0 58 85    LDY #$8558             ;\
+$8F:91DA 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Tourian statue - Kraid animated tiles object
+$8F:91DE A0 4C 85    LDY #$854C             ;\
+$8F:91E1 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Tourian statue - Phantoon animated tiles object
+$8F:91E5 A0 5E 85    LDY #$855E             ;\
+$8F:91E8 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Tourian statue - Draygon animated tiles object
+$8F:91EC A0 52 85    LDY #$8552             ;\
+$8F:91EF 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Tourian statue - Ridley animated tiles object
 $8F:91F3 60          RTS
 }
 
@@ -3287,10 +3287,10 @@ $8F:B956             dx 0004,BA8DBD,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C0
 ;;; $B971: Door ASM: start Wrecked Ship treadmill west entrance ;;;
 {
 ; Room $93FE, door list index 1: Door
-$8F:B971 A0 75 82    LDY #$8275
-$8F:B974 22 27 80 87 JSL $878027[$87:8027]
-$8F:B978 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:B97C             dx 04, 09, B64B
+$8F:B971 A0 75 82    LDY #$8275             ;\
+$8F:B974 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Wrecked Ship treadmill - rightwards animated tiles object
+$8F:B978 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:B97C             dx 04, 09, B64B        ;} Spawn Wrecked Ship entrance treadmill from west PLM
 $8F:B980 60          RTS
 }
 
@@ -3931,7 +3931,7 @@ $8F:BF83             dx 0004,B9C5C8,4000, 0002,7E4000,4800,0800, 0002,7E4000,4C0
 
 ;;; $BF9E..C115: Door ASM ;;;
 {
-;;; Door ASM: scroll 3..4 = red, 6..8 = blue ;;;
+;;; $BF9E: Door ASM: scroll 3..4 = red, 6..8 = blue ;;;
 {
 ; Room $B283, door list index 0: Door
 $8F:BF9E 08          PHP
@@ -4260,10 +4260,10 @@ $8F:C11F 60          RTS
 }
 
 
-;;; $C120: Main ASM: scrolling sky land ;;;
+;;; $C120: Main ASM: scrolling sky land, Zebes timebomb set ;;;
 {
 ; Room $91F8, state $9261. Landing site, Zebes timebomb set
-$8F:C120 22 8D AF 88 JSL $88AF8D[$88:AF8D]
+$8F:C120 22 8D AF 88 JSL $88AF8D[$88:AF8D]  ; Room main ASM - scrolling sky land
 }
 
 
@@ -4284,20 +4284,20 @@ $8F:C130 60          RTS
 ;;; $C131: Generate random explosion on even frames on random non-blank tile ;;;
 {
 $8F:C131 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
-$8F:C134 D0 4C       BNE $4C    [$C182]     ;} If time frozen: return
+$8F:C134 D0 4C       BNE $4C    [$C182]     ;} If time is frozen: return
 $8F:C136 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
-$8F:C139 29 01 00    AND #$0001             ;} If odd frame: return
+$8F:C139 29 01 00    AND #$0001             ;} If [frame counter] % 2 != 0: return
 $8F:C13C D0 44       BNE $44    [$C182]     ;/
 $8F:C13E 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $8F:C142 48          PHA                    ;\
 $8F:C143 29 FF 00    AND #$00FF             ;|
-$8F:C146 18          CLC                    ;} $12 = [layer 1 X position] + [random number] & FFh
+$8F:C146 18          CLC                    ;} $12 = [layer 1 X position] + [random number low]
 $8F:C147 6D 11 09    ADC $0911  [$7E:0911]  ;|
 $8F:C14A 85 12       STA $12    [$7E:0012]  ;/
 $8F:C14C 68          PLA                    ;\
 $8F:C14D EB          XBA                    ;|
 $8F:C14E 29 FF 00    AND #$00FF             ;|
-$8F:C151 18          CLC                    ;} $14 = [layer 1 Y position] + [random number] >> 8
+$8F:C151 18          CLC                    ;} $14 = [layer 1 Y position] + [random number high]
 $8F:C152 6D 15 09    ADC $0915  [$7E:0915]  ;|
 $8F:C155 85 14       STA $14    [$7E:0014]  ;/
 $8F:C157 4A          LSR A                  ;\
@@ -4310,19 +4310,19 @@ $8F:C15E AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $8F:C161 8D 02 42    STA $4202  [$7E:4202]  ;|
 $8F:C164 68          PLA                    ;|
 $8F:C165 8D 03 42    STA $4203  [$7E:4203]  ;|
-$8F:C168 C2 20       REP #$20               ;|
+$8F:C168 C2 20       REP #$20               ;} X = ([$14] / 10h * [room width in blocks] + [$12] / 10h) * 2 (block index)
 $8F:C16A A5 12       LDA $12    [$7E:0012]  ;|
-$8F:C16C 4A          LSR A                  ;} If block at pixel ($12,$14) has graphic FFh: return
+$8F:C16C 4A          LSR A                  ;|
 $8F:C16D 4A          LSR A                  ;|
 $8F:C16E 4A          LSR A                  ;|
 $8F:C16F 4A          LSR A                  ;|
 $8F:C170 18          CLC                    ;|
 $8F:C171 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $8F:C174 0A          ASL A                  ;|
-$8F:C175 AA          TAX                    ;|
-$8F:C176 BF 02 00 7F LDA $7F0002,x[$7F:31FE];|
+$8F:C175 AA          TAX                    ;/
+$8F:C176 BF 02 00 7F LDA $7F0002,x[$7F:31FE];\
 $8F:C17A 29 FF 03    AND #$03FF             ;|
-$8F:C17D C9 FF 00    CMP #$00FF             ;|
+$8F:C17D C9 FF 00    CMP #$00FF             ;} If (block tile table index) != FFh: go to generate random explosion at ([$12], [$14])
 $8F:C180 D0 27       BNE $27    [$C1A9]     ;/
 
 $8F:C182 60          RTS
@@ -4332,20 +4332,20 @@ $8F:C182 60          RTS
 ;;; $C183: Generate random explosion on every fourth frame ;;;
 {
 $8F:C183 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
-$8F:C186 D0 4D       BNE $4D    [$C1D5]     ;} If time frozen: return
+$8F:C186 D0 4D       BNE $4D    [$C1D5]     ;} If time is frozen: return
 $8F:C188 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
-$8F:C18B 29 03 00    AND #$0003             ;} If frame is not multiple of 4: return
+$8F:C18B 29 03 00    AND #$0003             ;} If [frame counter] % 4 != 0: return
 $8F:C18E D0 45       BNE $45    [$C1D5]     ;/
 $8F:C190 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $8F:C194 48          PHA                    ;\
 $8F:C195 29 FF 00    AND #$00FF             ;|
-$8F:C198 18          CLC                    ;} $12 = [layer 1 X position] + [random number] & FFh
+$8F:C198 18          CLC                    ;} $12 = [layer 1 X position] + [random number low]
 $8F:C199 6D 11 09    ADC $0911  [$7E:0911]  ;|
 $8F:C19C 85 12       STA $12    [$7E:0012]  ;/
 $8F:C19E 68          PLA                    ;\
 $8F:C19F EB          XBA                    ;|
 $8F:C1A0 29 FF 00    AND #$00FF             ;|
-$8F:C1A3 18          CLC                    ;} $14 = [layer 1 Y position] + [random number] >> 8
+$8F:C1A3 18          CLC                    ;} $14 = [layer 1 Y position] + [random number high]
 $8F:C1A4 6D 15 09    ADC $0915  [$7E:0915]  ;|
 $8F:C1A7 85 14       STA $14    [$7E:0014]  ;/
 }
@@ -4408,6 +4408,7 @@ $8F:C208 60          RTS
 
 ;;; $C209: Unknown, unreferenced ;;;
 {
+; We may never know...
 $8F:C209             dw 0051, 0061, 0001, 0002, 0005, 0006
 }
 
@@ -4956,12 +4957,12 @@ $8F:C91E 60          RTS
 ;;; $C91F: Setup ASM: set Zebes timebomb event and set light horizontal room shaking ;;;
 {
 ; Room $DE4D. Escape room 1
-$8F:C91F A9 0E 00    LDA #$000E
-$8F:C922 22 FA 81 80 JSL $8081FA[$80:81FA]
+$8F:C91F A9 0E 00    LDA #$000E             ;\
+$8F:C922 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark Zebes timebomb set event
 $8F:C926 A9 12 00    LDA #$0012             ;\
 $8F:C929 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
-$8F:C92C A9 FF FF    LDA #$FFFF
-$8F:C92F 8D 40 18    STA $1840  [$7E:1840]
+$8F:C92C A9 FF FF    LDA #$FFFF             ;\
+$8F:C92F 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 $8F:C932 60          RTS
 }
 
@@ -4971,10 +4972,10 @@ $8F:C932 60          RTS
 ; Room $DE7A. Escape room 2
 $8F:C933 A9 12 00    LDA #$0012             ;\
 $8F:C936 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
-$8F:C939 8D E3 07    STA $07E3  [$7E:07E3]
-$8F:C93C 9C E1 07    STZ $07E1  [$7E:07E1]
-$8F:C93F A9 FF FF    LDA #$FFFF
-$8F:C942 8D 40 18    STA $1840  [$7E:1840]
+$8F:C939 8D E3 07    STA $07E3  [$7E:07E3]  ; $07E3 = 12h
+$8F:C93C 9C E1 07    STZ $07E1  [$7E:07E1]  ; $07E1 = 0
+$8F:C93F A9 FF FF    LDA #$FFFF             ;\
+$8F:C942 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 $8F:C945 60          RTS
 }
 
@@ -4984,8 +4985,8 @@ $8F:C945 60          RTS
 ; Room $DEA7. Escape room 3
 $8F:C946 A9 15 00    LDA #$0015             ;\
 $8F:C949 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
-$8F:C94C A9 FF FF    LDA #$FFFF
-$8F:C94F 8D 40 18    STA $1840  [$7E:1840]
+$8F:C94C A9 FF FF    LDA #$FFFF             ;\
+$8F:C94F 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 $8F:C952 60          RTS
 }
 
@@ -4993,23 +4994,23 @@ $8F:C952 60          RTS
 ;;; $C953: Setup ASM: set up escape room 4's PLM and set medium horizontal room shaking ;;;
 {
 ; Room $DEDE. Escape room 4
-$8F:C953 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:C957             dx  10, 10, B968
+$8F:C953 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:C957             dx  10, 10, B968       ;} Spawn PLM to raise acid in escape room before old Tourian escape shaft
 $8F:C95B A9 15 00    LDA #$0015             ;\
 $8F:C95E 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
-$8F:C961 8D E3 07    STA $07E3  [$7E:07E3]
-$8F:C964 9C E1 07    STZ $07E1  [$7E:07E1]
-$8F:C967 A9 FF FF    LDA #$FFFF
-$8F:C96A 8D 40 18    STA $1840  [$7E:1840]
+$8F:C961 8D E3 07    STA $07E3  [$7E:07E3]  ; $07E3 = 15h
+$8F:C964 9C E1 07    STZ $07E1  [$7E:07E1]  ; $07E1 = 0
+$8F:C967 A9 FF FF    LDA #$FFFF             ;\
+$8F:C96A 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 $8F:C96D 60          RTS
 }
 
 
-;;; $C96E: Setup ASM: turn Ceres door to solid blocks ;;;
+;;; $C96E: Setup ASM: turn Ceres door to solid blocks and spawn haze ;;;
 {
 ; Room $DF45, state $DF71. Ceres elevator, Ceres Ridley dead
-$8F:C96E 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:C972             dx  0F, 26, BA48
+$8F:C96E 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:C972             dx  0F, 26, BA48       ;} Spawn PLM to turn Ceres elevator door to solid blocks during escape
 }
 
 
@@ -5028,14 +5029,14 @@ $8F:C97A 60          RTS
 ;;; $C97B: Setup ASM: Set BG1/2 tiles base address and spawn haze ;;;
 {
 ; Room $E0B5. Ceres Ridley's room
-$8F:C97B 08          PHP
-$8F:C97C E2 20       SEP #$20
-$8F:C97E A9 66       LDA #$66               ;\
-$8F:C980 85 5D       STA $5D    [$7E:005D]  ;} BG1 tiles base address = BG2 tiles base address = $6000
-$8F:C982 28          PLP
+$8F:C97B 08          PHP                    ;\
+$8F:C97C E2 20       SEP #$20               ;|
+$8F:C97E A9 66       LDA #$66               ;} BG1 tiles base address = BG2 tiles base address = $6000
+$8F:C980 85 5D       STA $5D    [$7E:005D]  ;|
+$8F:C982 28          PLP                    ;/
 $8F:C983 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; FX type 2Ch: haze
 $8F:C987 A9 09 00    LDA #$0009             ;\
-$8F:C98A 8D EB 07    STA $07EB  [$7E:07EB]  ;} $07EB = 9 (mode 1 with BG3 priority)
+$8F:C98A 8D EB 07    STA $07EB  [$7E:07EB]  ;} Video mode for HUD and floor = 9 (mode 1 with BG3 priority)
 $8F:C98D 60          RTS
 }
 }
@@ -6480,10 +6481,10 @@ $8F:E1D4             dx 000A, 0000
 ;;; $E1D8: Door ASM: start Wrecked Ship treadmill east entrance ;;;
 {
 ; Room $CAF6, door list index 0: Door
-$8F:E1D8 A0 7B 82    LDY #$827B
-$8F:E1DB 22 27 80 87 JSL $878027[$87:8027]
-$8F:E1DF 22 D7 83 84 JSL $8483D7[$84:83D7]
-$8F:E1E3             dx 04, 09, B64F
+$8F:E1D8 A0 7B 82    LDY #$827B             ;\
+$8F:E1DB 22 27 80 87 JSL $878027[$87:8027]  ;} Spawn Wrecked Ship treadmill - leftwards animated tiles object
+$8F:E1DF 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$8F:E1E3             dx 04, 09, B64F        ;} Spawn Wrecked Ship entrance treadmill from east PLM
 $8F:E1E7 60          RTS
 }
 
@@ -6586,14 +6587,14 @@ $8F:E25A             dx 0004,BAA69F,4000, 0002,7E4000,4800,1000, 0000
 {
 ; Room $D48E, door list index 2: Door
 $8F:E26C A9 00 FF    LDA #$FF00             ;\
-$8F:E26F 8D E5 07    STA $07E5  [$7E:07E5]  ;} Elevatube speed = FF00h
-$8F:E272 9C E3 07    STZ $07E3  [$7E:07E3]
+$8F:E26F 8D E5 07    STA $07E5  [$7E:07E5]  ;} Elevatube velocity = -100h
+$8F:E272 9C E3 07    STZ $07E3  [$7E:07E3]  ; >_<;
 $8F:E275 A9 C0 09    LDA #$09C0             ;\
 $8F:E278 8D E3 07    STA $07E3  [$7E:07E3]  ;} Elevatube position = 9C0h
 $8F:E27B A9 E0 FF    LDA #$FFE0             ;\
-$8F:E27E 8D E7 07    STA $07E7  [$7E:07E7]  ;} Elevatube acceleration = FFE0h
+$8F:E27E 8D E7 07    STA $07E7  [$7E:07E7]  ;} Elevatube acceleration = -20h
 $8F:E281 A9 00 00    LDA #$0000             ;\
-$8F:E284 22 84 F0 90 JSL $90F084[$90:F084]  ;} I'm guessing this disables Samus controls
+$8F:E284 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
 $8F:E288 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $8F:E28C             dx  01, 00, B8F9       ;} Spawn Maridia elevatube PLM
 $8F:E290 60          RTS
@@ -6604,14 +6605,14 @@ $8F:E290 60          RTS
 {
 ; Room $D340, door list index 1: Door
 $8F:E291 A9 00 01    LDA #$0100             ;\
-$8F:E294 8D E5 07    STA $07E5  [$7E:07E5]  ;} Elevatube speed = 100h
-$8F:E297 9C E3 07    STZ $07E3  [$7E:07E3]
+$8F:E294 8D E5 07    STA $07E5  [$7E:07E5]  ;} Elevatube velocity = 100h
+$8F:E297 9C E3 07    STZ $07E3  [$7E:07E3]  ; >_<;
 $8F:E29A A9 40 00    LDA #$0040             ;\
 $8F:E29D 8D E3 07    STA $07E3  [$7E:07E3]  ;} Elevatube position = 40h
 $8F:E2A0 A9 20 00    LDA #$0020             ;\
 $8F:E2A3 8D E7 07    STA $07E7  [$7E:07E7]  ;} Elevatube acceleration = 20h
 $8F:E2A6 A9 00 00    LDA #$0000             ;\
-$8F:E2A9 22 84 F0 90 JSL $90F084[$90:F084]  ;} I'm guessing this disables Samus controls
+$8F:E2A9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
 $8F:E2AD 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $8F:E2B1             dx 01, 00, B8F9        ;} Spawn Maridia elevatube PLM
 $8F:E2B5 60          RTS
@@ -6665,7 +6666,7 @@ $8F:E300 60          RTS
 {
 ; Room $D408, door list index 1: Door
 $8F:E301 A9 01 00    LDA #$0001             ;\
-$8F:E304 22 84 F0 90 JSL $90F084[$90:F084]  ;} I'm guessing this enables Samus controls
+$8F:E304 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
 $8F:E308 60          RTS
 }
 
@@ -6676,7 +6677,7 @@ $8F:E308 60          RTS
 $8F:E309 A9 02 02    LDA #$0202             ;\
 $8F:E30C 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scroll 0..1 = green
 $8F:E310 A9 01 00    LDA #$0001             ;\
-$8F:E313 22 84 F0 90 JSL $90F084[$90:F084]  ;} I'm guessing this enables Samus controls
+$8F:E313 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
 $8F:E317 60          RTS
 }
 
@@ -6957,13 +6958,13 @@ $8F:E4E6 8D 05 21    STA $2105  [$7E:2105]  ; BG mode = 7
 $8F:E4E9 C2 20       REP #$20
 $8F:E4EB A9 00 01    LDA #$0100             ;\
 $8F:E4EE 85 78       STA $78    [$7E:0078]  ;|
-$8F:E4F0 85 7E       STA $7E    [$7E:007E]  ;} Set identity matrix
+$8F:E4F0 85 7E       STA $7E    [$7E:007E]  ;} Mode 7 transformation matrix = identity
 $8F:E4F2 64 7A       STZ $7A    [$7E:007A]  ;|
 $8F:E4F4 64 7C       STZ $7C    [$7E:007C]  ;/
 $8F:E4F6 A9 80 00    LDA #$0080             ;\
-$8F:E4F9 85 80       STA $80    [$7E:0080]  ;} CentreX is middle of screen
-$8F:E4FB A9 F0 03    LDA #$03F0             ;\
-$8F:E4FE 85 82       STA $82    [$7E:0082]  ;} CentreY is (almost) as low as possible
+$8F:E4F9 85 80       STA $80    [$7E:0080]  ;|
+$8F:E4FB A9 F0 03    LDA #$03F0             ;} Mode 7 transformation origin = (80h, 3F0h)
+$8F:E4FE 85 82       STA $82    [$7E:0082]  ;/
 $8F:E500 A9 01 00    LDA #$0001             ;\
 $8F:E503 8D 83 07    STA $0783  [$7E:0783]  ;} Set mode 7
 $8F:E506 A9 22 00    LDA #$0022             ;\
@@ -7018,7 +7019,7 @@ $8F:E52F A9 08 00    LDA #$0008             ;\
 $8F:E532 8D E1 07    STA $07E1  [$7E:07E1]  ;} Debris delay timer = 8
 $8F:E535 A0 34 97    LDY #$9734             ; Y = $9734 (light coloured debris)
 $8F:E538 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
-$8F:E53B 0A          ASL A                  ;} If random number bit 15 set:
+$8F:E53B 0A          ASL A                  ;} If [random number] >= 8000h:
 $8F:E53C 90 03       BCC $03    [$E541]     ;/
 $8F:E53E A0 42 97    LDY #$9742             ; Y = $9742 (dark coloured debris)
 
@@ -7072,33 +7073,32 @@ $8F:E59D 8D 3E 18    STA $183E  [$7E:183E]
 {
 ; Room $DE4D. Escape room 1
 ; Room $DEA7. Escape room 3
-$8F:E5A0 20 83 C1    JSR $C183  [$8F:C183]
+$8F:E5A0 20 83 C1    JSR $C183  [$8F:C183]  ; Generate random explosion on every fourth frame
 $8F:E5A3 60          RTS
 }
 
 
 ;;; $E5A4: Main ASM: shake screen switching between medium horizontal and strong diagonal ;;;
 {
-; A slight modification of $E57C; the use of the variable $07E3 is redundant
 ; Room $DEDE. Escape room 4
 $8F:E5A4 AD E1 07    LDA $07E1  [$7E:07E1]  ;\
 $8F:E5A7 F0 0A       BEQ $0A    [$E5B3]     ;} If [main ASM timer] != 0:
 $8F:E5A9 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer
 $8F:E5AC D0 1A       BNE $1A    [$E5C8]     ; If [main ASM timer] = 0:
-$8F:E5AE A9 15 00    LDA #$0015             ;\
-$8F:E5B1 80 12       BRA $12    [$E5C5]     ;} Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
+$8F:E5AE A9 15 00    LDA #$0015             ; $07E3 = 15h (BG1, BG2 and enemies, 2 pixel displacement, horizontal)
+$8F:E5B1 80 12       BRA $12    [$E5C5]
 
 $8F:E5B3 22 11 81 80 JSL $808111[$80:8111]  ;\ Else ([main ASM timer] != 0):
 $8F:E5B7 C9 80 01    CMP #$0180             ;} If [random number] < 200h
 $8F:E5BA B0 0C       BCS $0C    [$E5C8]     ;/
 $8F:E5BC A9 2A 00    LDA #$002A             ;\
 $8F:E5BF 8D E1 07    STA $07E1  [$7E:07E1]  ;} Main ASM timer = 2Ah
-$8F:E5C2 A9 1A 00    LDA #$001A             ; Earthquake type = BG1, BG2 and enemies, 3 pixel displacement, diagonal
+$8F:E5C2 A9 1A 00    LDA #$001A             ; $07E3 = 1Ah (BG1, BG2 and enemies, 3 pixel displacement, diagonal)
 
 $8F:E5C5 8D E3 07    STA $07E3  [$7E:07E3]
 
-$8F:E5C8 AD E3 07    LDA $07E3  [$7E:07E3]
-$8F:E5CB 8D 3E 18    STA $183E  [$7E:183E]
+$8F:E5C8 AD E3 07    LDA $07E3  [$7E:07E3]  ;\
+$8F:E5CB 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = [$07E3]
 $8F:E5CE 20 83 C1    JSR $C183  [$8F:C183]  ; Generate random explosion on every fourth frame
 $8F:E5D1 60          RTS
 }
@@ -7379,6 +7379,7 @@ $8F:E87F             dx 0000
 
 ;;; $E881: Unknown, unreferenced ;;;
 {
+; See $C209
 $8F:E881             dw 009E, 00AD, 0081, 0001, 0004, 0002, 0000
 }
 

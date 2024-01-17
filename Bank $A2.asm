@@ -3934,7 +3934,7 @@ $A2:ABD5 B9 07 AC    LDA $AC07,y[$A2:AC07]  ;|
 $A2:ABD8 95 D0       STA $D0,x  [$7E:00D2]  ;|
 $A2:ABDA E8          INX                    ;|
 $A2:ABDB E8          INX                    ;|
-$A2:ABDC E2 20       SEP #$20               ;} Queue DMA of 400 bytes from $94:0000 + [$AC07 + [$0DEC]] to VRAM [$AC11 + [$0DEC]]
+$A2:ABDC E2 20       SEP #$20               ;} Queue transfer of 400h bytes from $94:C800 + [$0DEC] / 2 * 400h to VRAM $7600 + [$0DEC] / 2 * 200h
 $A2:ABDE A9 94       LDA #$94               ;|
 $A2:ABE0 95 D0       STA $D0,x  [$7E:00D4]  ;|
 $A2:ABE2 C2 20       REP #$20               ;|

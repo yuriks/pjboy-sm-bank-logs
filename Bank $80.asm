@@ -3276,11 +3276,11 @@ $80:94D4 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
 $80:94D7 D0 0F       BNE $0F    [$94E8]     ;} If debug mode not enabled:
 $80:94D9 9C C5 05    STZ $05C5  [$7E:05C5]  ;\
 $80:94DC 9C C7 05    STZ $05C7  [$7E:05C7]  ;|
-$80:94DF A9 EF FF    LDA #$FFEF             ;} >_<
-$80:94E2 14 8D       TRB $8D    [$7E:008D]  ;|
-$80:94E4 14 91       TRB $91    [$7E:0091]  ;/
-$80:94E6 28          PLP
-$80:94E7 6B          RTL
+$80:94DF A9 EF FF    LDA #$FFEF             ;|
+$80:94E2 14 8D       TRB $8D    [$7E:008D]  ;} >_<
+$80:94E4 14 91       TRB $91    [$7E:0091]  ;|
+$80:94E6 28          PLP                    ;|
+$80:94E7 6B          RTL                    ;/
 
 $80:94E8 9C C5 05    STZ $05C5  [$7E:05C5]  ; $05C5 = 0 (newly pressed controller 1 input when select + L is pressed)
 $80:94EB 9C C7 05    STZ $05C7  [$7E:05C7]  ; $05C7 = 0 (newly pressed controller 1 input when select + R is pressed)
@@ -3711,7 +3711,7 @@ $80:9793 20 32 96    JSR $9632  [$80:9632]  ; Execute door transition VRAM updat
 
 $80:9796 AD 31 09    LDA $0931  [$7E:0931]  ;\
 $80:9799 30 04       BMI $04    [$979F]     ;} If door transition has not finished scrolling:
-$80:979B 22 4E AE 80 JSL $80AE4E[$80:AE4E]  ; Follow door transition
+$80:979B 22 4E AE 80 JSL $80AE4E[$80:AE4E]  ; Door transition scrolling
 
 $80:979F A9 14 00    LDA #$0014             ; Interrupt command = 14h
 $80:97A2 A0 D8 00    LDY #$00D8             ; IRQ v-counter target = D8h
@@ -3786,7 +3786,7 @@ $80:97F2 9C 31 21    STZ $2131  [$7E:2131]  ;} Disable colour math
 $80:97F5 C2 20       REP #$20
 $80:97F7 AD 31 09    LDA $0931  [$7E:0931]  ;\
 $80:97FA 30 04       BMI $04    [$9800]     ;} If door transition has not finished scrolling:
-$80:97FC 22 4E AE 80 JSL $80AE4E[$80:AE4E]  ; Follow door transition
+$80:97FC 22 4E AE 80 JSL $80AE4E[$80:AE4E]  ; Door transition scrolling
 
 $80:9800 A9 1A 00    LDA #$001A             ; Interrupt command = 1Ah
 $80:9803 A0 A0 00    LDY #$00A0             ; IRQ v-counter target = A0h (bottom of door)
@@ -4974,26 +4974,26 @@ $80:A1E2 6B          RTL
 
 ;;; $A1E3: Unused. Queue clearing of BG2 tilemap ;;;
 {
-$80:A1E3 A2 FE 0F    LDX #$0FFE
-$80:A1E6 A9 38 03    LDA #$0338
-
-$80:A1E9 9F 00 40 7E STA $7E4000,x[$7E:4002]
-$80:A1ED CA          DEX
-$80:A1EE CA          DEX
-$80:A1EF 10 F8       BPL $F8    [$A1E9]
-$80:A1F1 AE 30 03    LDX $0330  [$7E:0330]
-$80:A1F4 A9 00 10    LDA #$1000
-$80:A1F7 95 D0       STA $D0,x
-$80:A1F9 A9 00 40    LDA #$4000
-$80:A1FC 95 D2       STA $D2,x
-$80:A1FE A9 7E 00    LDA #$007E
-$80:A201 95 D4       STA $D4,x
-$80:A203 A9 00 48    LDA #$4800
-$80:A206 95 D5       STA $D5,x
-$80:A208 8A          TXA
-$80:A209 18          CLC
-$80:A20A 69 07 00    ADC #$0007
-$80:A20D 8D 30 03    STA $0330  [$7E:0330]
+$80:A1E3 A2 FE 0F    LDX #$0FFE             ;\
+$80:A1E6 A9 38 03    LDA #$0338             ;|
+                                            ;|
+$80:A1E9 9F 00 40 7E STA $7E4000,x[$7E:4002];} $7E:4000..4FFF = 338h
+$80:A1ED CA          DEX                    ;|
+$80:A1EE CA          DEX                    ;|
+$80:A1EF 10 F8       BPL $F8    [$A1E9]     ;/
+$80:A1F1 AE 30 03    LDX $0330  [$7E:0330]  ;\
+$80:A1F4 A9 00 10    LDA #$1000             ;|
+$80:A1F7 95 D0       STA $D0,x              ;|
+$80:A1F9 A9 00 40    LDA #$4000             ;|
+$80:A1FC 95 D2       STA $D2,x              ;|
+$80:A1FE A9 7E 00    LDA #$007E             ;|
+$80:A201 95 D4       STA $D4,x              ;} Queue transfer of $7E:4000..4FFF to VRAM $4800..4FFF
+$80:A203 A9 00 48    LDA #$4800             ;|
+$80:A206 95 D5       STA $D5,x              ;|
+$80:A208 8A          TXA                    ;|
+$80:A209 18          CLC                    ;|
+$80:A20A 69 07 00    ADC #$0007             ;|
+$80:A20D 8D 30 03    STA $0330  [$7E:0330]  ;/
 $80:A210 6B          RTL
 }
 
@@ -5002,26 +5002,26 @@ $80:A210 6B          RTL
 {
 ; Called by:
 ;     $82:8CEF: Game state Dh (pausing, loading pause screen)
-$80:A211 A2 FE 0E    LDX #$0EFE
-$80:A214 A9 4E 18    LDA #$184E
-
-$80:A217 9F 00 40 7E STA $7E4000,x[$7E:4EFE]
-$80:A21B CA          DEX
-$80:A21C CA          DEX
-$80:A21D 10 F8       BPL $F8    [$A217]
-$80:A21F AE 30 03    LDX $0330  [$7E:0330]
-$80:A222 A9 00 0F    LDA #$0F00
-$80:A225 95 D0       STA $D0,x  [$7E:00D7]
-$80:A227 A9 00 40    LDA #$4000
-$80:A22A 95 D2       STA $D2,x  [$7E:00D9]
-$80:A22C A9 7E 00    LDA #$007E
-$80:A22F 95 D4       STA $D4,x  [$7E:00DB]
-$80:A231 A9 80 58    LDA #$5880
-$80:A234 95 D5       STA $D5,x  [$7E:00DC]
-$80:A236 8A          TXA
-$80:A237 18          CLC
-$80:A238 69 07 00    ADC #$0007
-$80:A23B 8D 30 03    STA $0330  [$7E:0330]
+$80:A211 A2 FE 0E    LDX #$0EFE             ;\
+$80:A214 A9 4E 18    LDA #$184E             ;|
+                                            ;|
+$80:A217 9F 00 40 7E STA $7E4000,x[$7E:4EFE];} $7E:4000..4EFF = 184Eh
+$80:A21B CA          DEX                    ;|
+$80:A21C CA          DEX                    ;|
+$80:A21D 10 F8       BPL $F8    [$A217]     ;/
+$80:A21F AE 30 03    LDX $0330  [$7E:0330]  ;\
+$80:A222 A9 00 0F    LDA #$0F00             ;|
+$80:A225 95 D0       STA $D0,x  [$7E:00D7]  ;|
+$80:A227 A9 00 40    LDA #$4000             ;|
+$80:A22A 95 D2       STA $D2,x  [$7E:00D9]  ;|
+$80:A22C A9 7E 00    LDA #$007E             ;|
+$80:A22F 95 D4       STA $D4,x  [$7E:00DB]  ;} Queue transfer of $7E:4000..4EFF to VRAM $5880..5FFF
+$80:A231 A9 80 58    LDA #$5880             ;|
+$80:A234 95 D5       STA $D5,x  [$7E:00DC]  ;|
+$80:A236 8A          TXA                    ;|
+$80:A237 18          CLC                    ;|
+$80:A238 69 07 00    ADC #$0007             ;|
+$80:A23B 8D 30 03    STA $0330  [$7E:0330]  ;/
 $80:A23E 6B          RTL
 }
 
@@ -5043,7 +5043,7 @@ $80:A24B 8D 10 43    STA $4310  [$7E:4310]  ;|
 $80:A24E A9 9A A2    LDA #$A29A             ;|
 $80:A251 8D 12 43    STA $4312  [$7E:4312]  ;|
 $80:A254 A9 80 00    LDA #$0080             ;|
-$80:A257 8D 14 43    STA $4314  [$7E:4314]  ;} Write 38h to low bytes
+$80:A257 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $4800..4FFF low bytes = 38h
 $80:A25A A9 00 08    LDA #$0800             ;|
 $80:A25D 8D 15 43    STA $4315  [$7E:4315]  ;|
 $80:A260 E2 20       SEP #$20               ;|
@@ -5059,7 +5059,7 @@ $80:A277 8D 10 43    STA $4310  [$7E:4310]  ;|
 $80:A27A A9 9A A2    LDA #$A29A             ;|
 $80:A27D 8D 12 43    STA $4312  [$7E:4312]  ;|
 $80:A280 A9 80 00    LDA #$0080             ;|
-$80:A283 8D 14 43    STA $4314  [$7E:4314]  ;} Write 38h to high bytes
+$80:A283 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $4800..4FFF low bytes = 38h
 $80:A286 A9 00 08    LDA #$0800             ;|
 $80:A289 8D 15 43    STA $4315  [$7E:4315]  ;|
 $80:A28C E2 20       SEP #$20               ;|
@@ -5070,7 +5070,7 @@ $80:A295 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $80:A298 28          PLP
 $80:A299 6B          RTL
 
-$80:A29A             db 38, 03
+$80:A29A             dw 0338
 }
 
 
@@ -5088,7 +5088,7 @@ $80:A2A8 8D 10 43    STA $4310  [$7E:4310]  ;|
 $80:A2AB A9 F7 A2    LDA #$A2F7             ;|
 $80:A2AE 8D 12 43    STA $4312  [$7E:4312]  ;|
 $80:A2B1 A9 80 00    LDA #$0080             ;|
-$80:A2B4 8D 14 43    STA $4314  [$7E:4314]  ;} Write 4Eh to low bytes
+$80:A2B4 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $5880..5FFF low bytes = 4Eh
 $80:A2B7 A9 80 07    LDA #$0780             ;|
 $80:A2BA 8D 15 43    STA $4315  [$7E:4315]  ;|
 $80:A2BD E2 20       SEP #$20               ;|
@@ -5104,7 +5104,7 @@ $80:A2D4 8D 10 43    STA $4310  [$7E:4310]  ;|
 $80:A2D7 A9 F8 A2    LDA #$A2F8             ;|
 $80:A2DA 8D 12 43    STA $4312  [$7E:4312]  ;|
 $80:A2DD A9 80 00    LDA #$0080             ;|
-$80:A2E0 8D 14 43    STA $4314  [$7E:4314]  ;} Write 18h to high bytes
+$80:A2E0 8D 14 43    STA $4314  [$7E:4314]  ;} VRAM $5880..5FFF high bytes = 18h
 $80:A2E3 A9 80 07    LDA #$0780             ;|
 $80:A2E6 8D 15 43    STA $4315  [$7E:4315]  ;|
 $80:A2E9 E2 20       SEP #$20               ;|
@@ -5115,10 +5115,12 @@ $80:A2F2 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $80:A2F5 28          PLP
 $80:A2F6 6B          RTL
 
-$80:A2F7             db 4E, 18
+$80:A2F7             dw 184E
 }
 
 
+;;; $A2F9..B031: Scrolling ;;;
+{
 ;;; $A2F9: Calculate layer 2 X position ;;;
 {
 ;; Returns:
@@ -5261,10 +5263,10 @@ $80:A39F 60          RTS
 ;;; $A3A0: Calculate BG scrolls and update BG graphics when scrolling ;;;
 {
 ; Called by:
-;     $AE7E: Door transition - right
-;     $AEC2: Door transition - left
-;     $AF02: Door transition - down
-;     $AF89: Door transition - up
+;     $AE7E: Door transition scrolling - right
+;     $AEC2: Door transition scrolling - left
+;     $AF02: Door transition scrolling - down
+;     $AF89: Door transition scrolling - up
 $80:A3A0 08          PHP
 $80:A3A1 8B          PHB
 $80:A3A2 4B          PHK
@@ -5436,8 +5438,8 @@ $80:A4BA 6B          RTL
 ;     $AD74: Door transition scrolling setup - left
 ;     $AD9E: Door transition scrolling setup - down
 ;     $ADC8: Door transition scrolling setup - up
-;     $AF02: Door transition - down
-;     $AF89: Door transition - up
+;     $AF02: Door transition scrolling - down
+;     $AF89: Door transition scrolling - up
 $80:A4BB A5 B1       LDA $B1    [$7E:00B1]  ;\
 $80:A4BD 4A          LSR A                  ;|
 $80:A4BE 4A          LSR A                  ;|
@@ -5506,7 +5508,7 @@ $80:A527 60          RTS
 }
 
 
-;;; $A528: Handle horizontal autoscrolling ;;;
+;;; $A528: Handle scroll zones - horizontal autoscrolling ;;;
 {
 ; Called by:
 ;     $90:94EC: Main scrolling routine
@@ -5515,7 +5517,6 @@ $80:A527 60          RTS
 ; If time frozen:
 ;     Return
 ;
-; $0939 = [layer 1 X position]
 ; Layer 1 X position = clamp([layer 1 X position], 0, (room width in pixels) - 100h)
 ;
 ; If layer 1 position + 1/2 scroll down's scroll = red:
@@ -5523,15 +5524,15 @@ $80:A527 60          RTS
 ;     $0933 = position of right scroll boundary
 ;     $0939 = [layer 1 X position] + [camera X speed] + 2
 ;     Layer 1 X position = min([$0939], [$0933])
-;     If [$0939] < (position of right scroll boundary) and layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
+;     If [$0939] < [$0933] and layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 ;         Round layer 1 X position to left scroll boundary
 ; }
 ; Else if layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 ; {
 ;     $0933 = position of left scroll boundary
-;     $0939 -= [camera X speed] - 2
+;     $0939 = [layer 1 X position] - [camera X speed] - 2
 ;     Layer 1 X position = max([$0939], [$0933])
-;     If [$0939] >= (position of left scroll boundary) and layer 1 position + 1/2 scroll down's scroll = red:
+;     If [$0939] >= [$0933] and layer 1 position + 1/2 scroll down's scroll = red:
 ;         Layer 1 X position = [$0939] rounded to right scroll boundary
 ; }
 
@@ -5631,7 +5632,7 @@ $80:A5F0 ED A2 0D    SBC $0DA2  [$7E:0DA2]  ;|
 $80:A5F3 E9 02 00    SBC #$0002             ;} If [$0939] - [camera X speed] - 2 < (position of left scroll boundary): go to BRANCH_REACHED_LEFT_SCROLL_BOUNDARY
 $80:A5F6 CD 33 09    CMP $0933  [$7E:0933]  ;|
 $80:A5F9 30 3D       BMI $3D    [$A638]     ;/
-$80:A5FB 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera X speed] - 2
+$80:A5FB 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera X speed] + 2
 $80:A5FE AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A601 18          CLC                    ;|
 $80:A602 69 80 00    ADC #$0080             ;|
@@ -5669,7 +5670,7 @@ $80:A640 6B          RTL
 }
 
 
-;;; $A641: Handle scrolling when moving and triggered scrolling right ;;;
+;;; $A641: Handle scroll zones - scrolling right ;;;
 {
 ; Called by:
 ;     $90:95A0: Handle horizontal scrolling
@@ -5691,7 +5692,7 @@ $80:A65F 9C 0F 09    STZ $090F  [$7E:090F]  ;/
 
 $80:A662 AD A9 07    LDA $07A9  [$7E:07A9]  ;\
 $80:A665 3A          DEC A                  ;|
-$80:A666 EB          XBA                    ;} If (room width in pixels) - 100h < [layer 1 position]:
+$80:A666 EB          XBA                    ;} If [layer 1 position] > (room width in pixels) - 100h:
 $80:A667 CD 11 09    CMP $0911  [$7E:0911]  ;|
 $80:A66A B0 05       BCS $05    [$A671]     ;/
 $80:A66C 8D 11 09    STA $0911  [$7E:0911]  ; Layer 1 X position = (room width in pixels) - 100h
@@ -5705,7 +5706,7 @@ $80:A679 E2 20       SEP #$20               ;|
 $80:A67B 8D 02 42    STA $4202  [$7E:4202]  ;|
 $80:A67E AD A9 07    LDA $07A9  [$7E:07A9]  ;|
 $80:A681 8D 03 42    STA $4203  [$7E:4203]  ;|
-$80:A684 C2 20       REP #$20               ;} If layer 1 position + 1/2 scroll down + 1 scroll right's scroll != red: return
+$80:A684 C2 20       REP #$20               ;} If layer 1 position + 1/2 scroll down + 1 scroll right's scroll = red:
 $80:A686 AD 12 09    LDA $0912  [$7E:0912]  ;|
 $80:A689 29 FF 00    AND #$00FF             ;|
 $80:A68C 38          SEC                    ;|
@@ -5733,7 +5734,7 @@ $80:A6BA 6B          RTL
 }
 
 
-;;; $A6BB: Handle scrolling when moving and triggered scrolling left ;;;
+;;; $A6BB: Handle scroll zones - scrolling left ;;;
 {
 ; Called by:
 ;     $90:95A0: Handle horizontal scrolling
@@ -5745,17 +5746,17 @@ $80:A6C1 48          PHA                    ;} DB = $8F
 $80:A6C2 AB          PLB                    ;/
 $80:A6C3 C2 30       REP #$30
 $80:A6C5 AD 11 09    LDA $0911  [$7E:0911]  ;\
-$80:A6C8 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = layer 1 X position
+$80:A6C8 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 X position]
 $80:A6CB CD 0A 0B    CMP $0B0A  [$7E:0B0A]  ;\
 $80:A6CE 10 09       BPL $09    [$A6D9]     ;|
-$80:A6D0 AD 0A 0B    LDA $0B0A  [$7E:0B0A]  ;} Cap layer 1 X position to 'ideal' layer 1 X position
+$80:A6D0 AD 0A 0B    LDA $0B0A  [$7E:0B0A]  ;} Layer 1 X position = max([layer 1 X position], [ideal layer 1 X position])
 $80:A6D3 8D 11 09    STA $0911  [$7E:0911]  ;|
 $80:A6D6 9C 0F 09    STZ $090F  [$7E:090F]  ;/
 
 $80:A6D9 AD 11 09    LDA $0911  [$7E:0911]  ;\
-$80:A6DC 10 05       BPL $05    [$A6E3]     ;} Cap layer 1 X position to 0
-$80:A6DE 9C 11 09    STZ $0911  [$7E:0911]  ;/
-$80:A6E1 80 4B       BRA $4B    [$A72E]     ; If reached cap: return
+$80:A6DC 10 05       BPL $05    [$A6E3]     ;} If [layer 1 position] < 0:
+$80:A6DE 9C 11 09    STZ $0911  [$7E:0911]  ; Layer 1 X position = 0
+$80:A6E1 80 4B       BRA $4B    [$A72E]     ; Return
 
 $80:A6E3 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A6E6 18          CLC                    ;|
@@ -5765,7 +5766,7 @@ $80:A6EB E2 20       SEP #$20               ;|
 $80:A6ED 8D 02 42    STA $4202  [$7E:4202]  ;|
 $80:A6F0 AD A9 07    LDA $07A9  [$7E:07A9]  ;|
 $80:A6F3 8D 03 42    STA $4203  [$7E:4203]  ;|
-$80:A6F6 C2 20       REP #$20               ;} If layer 1 position + 1/2 screen down's scroll != 0: return
+$80:A6F6 C2 20       REP #$20               ;} If layer 1 position + 1/2 screen down's scroll = red:
 $80:A6F8 AD 12 09    LDA $0912  [$7E:0912]  ;|
 $80:A6FB 29 FF 00    AND #$00FF             ;|
 $80:A6FE 18          CLC                    ;|
@@ -5776,18 +5777,18 @@ $80:A707 29 FF 00    AND #$00FF             ;|
 $80:A70A D0 22       BNE $22    [$A72E]     ;/
 $80:A70C AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:A70F 29 00 FF    AND #$FF00             ;|
-$80:A712 18          CLC                    ;} $0933 = layer 1 X position rounded up to next screen
+$80:A712 18          CLC                    ;} $0933 = position of right scroll boundary
 $80:A713 69 00 01    ADC #$0100             ;|
 $80:A716 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A719 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A71C 18          CLC                    ;|
-$80:A71D 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;} A = [$0939] + [camera X speed] + 2
-$80:A720 69 02 00    ADC #$0002             ;/
-$80:A723 CD 33 09    CMP $0933  [$7E:0933]  ;\
-$80:A726 90 03       BCC $03    [$A72B]     ;} If A >= [$0933]:
-$80:A728 AD 33 09    LDA $0933  [$7E:0933]  ; Layer 1 X position = [$0933]
-
-$80:A72B 8D 11 09    STA $0911  [$7E:0911]  ; Else: layer 1 X position = A
+$80:A71D 6D A2 0D    ADC $0DA2  [$7E:0DA2]  ;|
+$80:A720 69 02 00    ADC #$0002             ;|
+$80:A723 CD 33 09    CMP $0933  [$7E:0933]  ;} Layer 1 X position = min([$0933], [$0939] + [camera X speed] + 2)
+$80:A726 90 03       BCC $03    [$A72B]     ;|
+$80:A728 AD 33 09    LDA $0933  [$7E:0933]  ;|
+                                            ;|
+$80:A72B 8D 11 09    STA $0911  [$7E:0911]  ;/
 
 $80:A72E AB          PLB
 $80:A72F 28          PLP
@@ -5795,11 +5796,42 @@ $80:A730 6B          RTL
 }
 
 
-;;; $A731: Handle vertical autoscrolling ;;;
+;;; $A731: Handle scroll zones - vertical autoscrolling ;;;
 {
 ; Called by:
 ;     $90:94EC: Main scrolling routine
 ;     $90:964F: Handle vertical scrolling
+
+; If time frozen:
+;     Return
+;
+; If layer 1 position + 1/2 scroll right's scroll = blue:
+;     $0933 = 0
+; Else
+;     $0933 = 1Fh
+;
+; Layer 1 Y position = clamp([layer 1 Y position], 0, (room height in pixels) - 100h + [$0933])
+;
+; If layer 1 position + 1/2 scroll right's scroll = red:
+; {
+;     $0935 = position of bottom scroll boundary
+;     $0939 = [layer 1 Y position] + [camera Y speed] + 2
+;     Layer 1 X position = min([$0939], [$0935])
+;     If [$0939] < [$0935] and layer 1 position + 1/2 scroll right + 1 scroll down's scroll = red:
+;         Round layer 1 Y position to top scroll boundary
+; }
+; Else if layer 1 position + 1/2 scroll right + 1 scroll down's scroll = red:
+; {
+;     $0937 = position of top scroll boundary + [$0933]
+;     If [$0937] < [layer 1 Y position]:
+;     {
+;         $0939 = [layer 1 Y position] - [camera Y speed] - 2
+;         Layer 1 Y position = max([$0939], [$0937])
+;         If [$0939] >= [$0937] and layer 1 position + 1/2 scroll right's scroll = red:
+;             Layer 1 Y position = [$0939] rounded to right bottom boundary
+;     }
+; }
+
 $80:A731 08          PHP
 $80:A732 8B          PHB
 $80:A733 E2 20       SEP #$20
@@ -5928,7 +5960,7 @@ $80:A842 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
 $80:A845 E9 02 00    SBC #$0002             ;} If [$0939] - [camera Y speed] - 2 < [$0937]: go to BRANCH_REACHED_TOP_SCROLL_BOUNDARY
 $80:A848 CD 37 09    CMP $0937  [$7E:0937]  ;|
 $80:A84B 30 3D       BMI $3D    [$A88A]     ;/
-$80:A84D 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera Y speed] - 2
+$80:A84D 8D 39 09    STA $0939  [$7E:0939]  ; $0939 -= [camera Y speed] + 2
 $80:A850 E2 20       SEP #$20               ;\
 $80:A852 AD 3A 09    LDA $093A  [$7E:093A]  ;|
 $80:A855 8D 02 42    STA $4202  [$7E:4202]  ;|
@@ -5937,7 +5969,7 @@ $80:A85B 8D 03 42    STA $4203  [$7E:4203]  ;|
 $80:A85E C2 20       REP #$20               ;|
 $80:A860 AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A863 18          CLC                    ;|
-$80:A864 69 80 00    ADC #$0080             ;} If new layer 1 position + 1/2 scroll right's scroll = ret:
+$80:A864 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 scroll right's scroll = red:
 $80:A867 EB          XBA                    ;|
 $80:A868 29 FF 00    AND #$00FF             ;|
 $80:A86B 18          CLC                    ;|
@@ -5966,7 +5998,7 @@ $80:A892 6B          RTL
 }
 
 
-;;; $A893: Handle scrolling when moving and triggered scrolling down ;;;
+;;; $A893: Handle scroll zones - scrolling down ;;;
 {
 ; Called by:
 ;     $90:964F: Handle vertical scrolling
@@ -5978,7 +6010,7 @@ $80:A899 48          PHA                    ;} DB = $8F
 $80:A89A AB          PLB                    ;/
 $80:A89B C2 30       REP #$30
 $80:A89D AD 15 09    LDA $0915  [$7E:0915]  ;\
-$80:A8A0 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = layer 1 Y position
+$80:A8A0 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position]
 $80:A8A3 A0 00 00    LDY #$0000             ; Y = 0
 $80:A8A6 E2 20       SEP #$20               ;\
 $80:A8A8 AD 16 09    LDA $0916  [$7E:0916]  ;|
@@ -6001,22 +6033,22 @@ $80:A8CF C9 01 00    CMP #$0001             ;|
 $80:A8D2 F0 03       BEQ $03    [$A8D7]     ;/
 $80:A8D4 A0 1F 00    LDY #$001F             ; Y = 1Fh
 
-$80:A8D7 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = Y
+$80:A8D7 8C 33 09    STY $0933  [$7E:0933]  ; $0933 = [Y]
 $80:A8DA AD 0E 0B    LDA $0B0E  [$7E:0B0E]  ;\
 $80:A8DD CD 15 09    CMP $0915  [$7E:0915]  ;|
 $80:A8E0 10 09       BPL $09    [$A8EB]     ;|
-$80:A8E2 AD 0E 0B    LDA $0B0E  [$7E:0B0E]  ;} Cap layer 1 Y position to 'ideal' layer 1 Y position
+$80:A8E2 AD 0E 0B    LDA $0B0E  [$7E:0B0E]  ;} Layer 1 Y position = min([layer 1 Y position], [ideal layer 1 Y position])
 $80:A8E5 8D 15 09    STA $0915  [$7E:0915]  ;|
 $80:A8E8 9C 13 09    STZ $0913  [$7E:0913]  ;/
 
 $80:A8EB AD AB 07    LDA $07AB  [$7E:07AB]  ;\
 $80:A8EE 3A          DEC A                  ;|
 $80:A8EF EB          XBA                    ;|
-$80:A8F0 18          CLC                    ;} $0937 = room height - 1 screen + [$0933]
+$80:A8F0 18          CLC                    ;} $0937 = (room width in pixels) - 100h + [$0933]
 $80:A8F1 6D 33 09    ADC $0933  [$7E:0933]  ;|
 $80:A8F4 8D 37 09    STA $0937  [$7E:0937]  ;/
 $80:A8F7 CD 15 09    CMP $0915  [$7E:0915]  ;\
-$80:A8FA 90 22       BCC $22    [$A91E]     ;} If [$0937] < layer 1 Y position: go to BRANCH_A91E
+$80:A8FA 90 22       BCC $22    [$A91E]     ;} If [$0937] >= [layer 1 Y position]:
 $80:A8FC A5 14       LDA $14    [$7E:0014]  ;\
 $80:A8FE 18          CLC                    ;|
 $80:A8FF 6D A9 07    ADC $07A9  [$7E:07A9]  ;|
@@ -6026,22 +6058,21 @@ $80:A907 29 FF 00    AND #$00FF             ;|
 $80:A90A D0 27       BNE $27    [$A933]     ;/
 $80:A90C AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A90F 29 00 FF    AND #$FF00             ;|
-$80:A912 18          CLC                    ;} $0937 = layer 1 Y position rounded down to next screen + [$0933]
+$80:A912 18          CLC                    ;} $0937 = position of top scroll boundary + [$0933]
 $80:A913 6D 33 09    ADC $0933  [$7E:0933]  ;|
 $80:A916 8D 37 09    STA $0937  [$7E:0937]  ;/
 $80:A919 CD 15 09    CMP $0915  [$7E:0915]  ;\
 $80:A91C B0 15       BCS $15    [$A933]     ;} If [$0937] >= [layer 1 Y position]: return
 
-; BRANCH_A91E
 $80:A91E AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A921 38          SEC                    ;|
-$80:A922 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;} A = [$0939] - [camera Y speed] - 2
-$80:A925 E9 02 00    SBC #$0002             ;/
-$80:A928 CD 37 09    CMP $0937  [$7E:0937]  ;\
-$80:A92B 10 03       BPL $03    [$A930]     ;} If A < [$0937]:
-$80:A92D AD 37 09    LDA $0937  [$7E:0937]  ; Layer 1 Y position = [$0937]
-
-$80:A930 8D 15 09    STA $0915  [$7E:0915]
+$80:A922 ED A6 0D    SBC $0DA6  [$7E:0DA6]  ;|
+$80:A925 E9 02 00    SBC #$0002             ;|
+$80:A928 CD 37 09    CMP $0937  [$7E:0937]  ;} Layer 1 Y position = max([$0937], [$0939] - [camera Y speed] - 2)
+$80:A92B 10 03       BPL $03    [$A930]     ;|
+$80:A92D AD 37 09    LDA $0937  [$7E:0937]  ;|
+                                            ;|
+$80:A930 8D 15 09    STA $0915  [$7E:0915]  ;/
 
 $80:A933 AB          PLB
 $80:A934 28          PLP
@@ -6049,7 +6080,7 @@ $80:A935 6B          RTL
 }
 
 
-;;; $A936: Handle scrolling when moving and triggered scrolling up ;;;
+;;; $A936: Handle scroll zones - scrolling up ;;;
 {
 ; Called by:
 ;     $90:964F: Handle vertical scrolling
@@ -6061,17 +6092,17 @@ $80:A93C 48          PHA                    ;} DB = $8F
 $80:A93D AB          PLB                    ;/
 $80:A93E C2 30       REP #$30
 $80:A940 AD 15 09    LDA $0915  [$7E:0915]  ;\
-$80:A943 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = layer 1 Y position
+$80:A943 8D 39 09    STA $0939  [$7E:0939]  ;} $0939 = [layer 1 Y position]
 $80:A946 CD 0E 0B    CMP $0B0E  [$7E:0B0E]  ;\
 $80:A949 10 09       BPL $09    [$A954]     ;|
-$80:A94B AD 0E 0B    LDA $0B0E  [$7E:0B0E]  ;} Cap layer 1 Y position to 'ideal' layer 1 Y position
+$80:A94B AD 0E 0B    LDA $0B0E  [$7E:0B0E]  ;} Layer 1 Y position = max([layer 1 Y position], [ideal layer 1 Y position])
 $80:A94E 8D 15 09    STA $0915  [$7E:0915]  ;|
 $80:A951 9C 13 09    STZ $0913  [$7E:0913]  ;/
 
 $80:A954 AD 15 09    LDA $0915  [$7E:0915]  ;\
-$80:A957 10 05       BPL $05    [$A95E]     ;} Cap layer 1 Y position to 0
-$80:A959 9C 15 09    STZ $0915  [$7E:0915]  ;/
-$80:A95C 80 4B       BRA $4B    [$A9A9]     ; If reached cap: return
+$80:A957 10 05       BPL $05    [$A95E]     ;} If [layer 1 Y position] < 0:
+$80:A959 9C 15 09    STZ $0915  [$7E:0915]  ; Layer 1 Y position = 0
+$80:A95C 80 4B       BRA $4B    [$A9A9]     ; Return
 
 $80:A95E E2 20       SEP #$20               ;\
 $80:A960 AD 16 09    LDA $0916  [$7E:0916]  ;|
@@ -6081,7 +6112,7 @@ $80:A969 8D 03 42    STA $4203  [$7E:4203]  ;|
 $80:A96C C2 20       REP #$20               ;|
 $80:A96E AD 11 09    LDA $0911  [$7E:0911]  ;|
 $80:A971 18          CLC                    ;|
-$80:A972 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 screen right's scroll != red: return
+$80:A972 69 80 00    ADC #$0080             ;} If layer 1 position + 1/2 screen right's scroll = red:
 $80:A975 EB          XBA                    ;|
 $80:A976 29 FF 00    AND #$00FF             ;|
 $80:A979 18          CLC                    ;|
@@ -6092,18 +6123,18 @@ $80:A982 29 FF 00    AND #$00FF             ;|
 $80:A985 D0 22       BNE $22    [$A9A9]     ;/
 $80:A987 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A98A 29 00 FF    AND #$FF00             ;|
-$80:A98D 18          CLC                    ;} $0933 = layer 1 Y position rounded up to next screen
+$80:A98D 18          CLC                    ;} $0933 = position of bottom scroll boundary
 $80:A98E 69 00 01    ADC #$0100             ;|
 $80:A991 8D 33 09    STA $0933  [$7E:0933]  ;/
 $80:A994 AD 39 09    LDA $0939  [$7E:0939]  ;\
 $80:A997 18          CLC                    ;|
-$80:A998 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;} A = [$0939] + [camera Y speed] + 2
-$80:A99B 69 02 00    ADC #$0002             ;/
-$80:A99E CD 33 09    CMP $0933  [$7E:0933]  ;\
-$80:A9A1 90 03       BCC $03    [$A9A6]     ;} If A >= [$0933]:
-$80:A9A3 AD 33 09    LDA $0933  [$7E:0933]  ; Layer 1 Y position = [$0933]
-
-$80:A9A6 8D 15 09    STA $0915  [$7E:0915]  ; Else: layer 1 Y position = A
+$80:A998 6D A6 0D    ADC $0DA6  [$7E:0DA6]  ;|
+$80:A99B 69 02 00    ADC #$0002             ;|
+$80:A99E CD 33 09    CMP $0933  [$7E:0933]  ;} Layer 1 Y position = min([$0933], [$0939] + [camera Y speed] + 2)
+$80:A9A1 90 03       BCC $03    [$A9A6]     ;|
+$80:A9A3 AD 33 09    LDA $0933  [$7E:0933]  ;|
+                                            ;|
+$80:A9A6 8D 15 09    STA $0915  [$7E:0915]  ;/
 
 $80:A9A9 AB          PLB
 $80:A9AA 28          PLP
@@ -6113,6 +6144,7 @@ $80:A9AB 6B          RTL
 
 ;;; $A9AC: Debug layer 1 position save/loading ;;;
 {
+; Good for testing scrolling
 $80:A9AC A5 91       LDA $91    [$7E:0091]  ;\
 $80:A9AE 29 40 00    AND #$0040             ;} If controller 2 newly pressed X:
 $80:A9B1 F0 03       BEQ $03    [$A9B6]     ;/
@@ -6608,7 +6640,7 @@ $80:AD20 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position bl
 $80:AD23 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
 $80:AD26 EE 01 09    INC $0901  [$7E:0901]  ; Increment previous layer 1 Y block
 $80:AD29 EE 05 09    INC $0905  [$7E:0905]  ; Increment previous layer 2 Y block
-$80:AD2C 20 89 AF    JSR $AF89  [$80:AF89]  ; Door transition - up
+$80:AD2C 20 89 AF    JSR $AF89  [$80:AF89]  ; Door transition scrolling - up
 $80:AD2F 6B          RTL
 }
 
@@ -6647,7 +6679,7 @@ $80:AD64 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position bl
 $80:AD67 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
 $80:AD6A CE FF 08    DEC $08FF  [$7E:08FF]  ; Decrement previous layer 1 X block
 $80:AD6D CE 03 09    DEC $0903  [$7E:0903]  ; Decrement previous layer 2 X block
-$80:AD70 20 7E AE    JSR $AE7E  [$80:AE7E]  ; Door transition - right
+$80:AD70 20 7E AE    JSR $AE7E  [$80:AE7E]  ; Door transition scrolling - right
 $80:AD73 60          RTS
 }
 
@@ -6668,7 +6700,7 @@ $80:AD8E 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position bl
 $80:AD91 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
 $80:AD94 EE FF 08    INC $08FF  [$7E:08FF]  ; Increment previous layer 1 X block
 $80:AD97 EE 03 09    INC $0903  [$7E:0903]  ; Increment previous layer 2 X block
-$80:AD9A 20 C2 AE    JSR $AEC2  [$80:AEC2]  ; Door transition - left
+$80:AD9A 20 C2 AE    JSR $AEC2  [$80:AEC2]  ; Door transition scrolling - left
 $80:AD9D 60          RTS
 }
 
@@ -6689,7 +6721,7 @@ $80:ADB8 20 BB A4    JSR $A4BB  [$80:A4BB]  ; Calculate BG and layer position bl
 $80:ADBB 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
 $80:ADBE CE 01 09    DEC $0901  [$7E:0901]  ; Decrement previous layer 1 Y block
 $80:ADC1 CE 05 09    DEC $0905  [$7E:0905]  ; Decrement previous layer 2 Y block
-$80:ADC4 20 02 AF    JSR $AF02  [$80:AF02]  ; Door transition - down
+$80:ADC4 20 02 AF    JSR $AF02  [$80:AF02]  ; Door transition scrolling - down
 $80:ADC7 60          RTS
 }
 
@@ -6720,7 +6752,7 @@ $80:ADF8 20 10 AE    JSR $AE10  [$80:AE10]  ; Update previous layer blocks
 $80:ADFB EE 01 09    INC $0901  [$7E:0901]  ; Increment previous layer 1 Y block
 $80:ADFE EE 05 09    INC $0905  [$7E:0905]  ; Increment previous layer 2 Y block
 $80:AE01 CE 15 09    DEC $0915  [$7E:0915]  ; Decrement layer 1 Y position
-$80:AE04 20 89 AF    JSR $AF89  [$80:AF89]  ; Door transition - up
+$80:AE04 20 89 AF    JSR $AF89  [$80:AF89]  ; Door transition scrolling - up
 $80:AE07 60          RTS
 }
 
@@ -6768,7 +6800,7 @@ $80:AE4D 60          RTS
 }
 
 
-;;; $AE4E: Follow door transition ;;;
+;;; $AE4E: Door transition scrolling ;;;
 {
 $80:AE4E 08          PHP
 $80:AE4F 8B          PHB
@@ -6796,7 +6828,7 @@ $80:AE76             dw AE7E, AEC2, AF02, AF89
 }
 
 
-;;; $AE7E: Door transition - right ;;;
+;;; $AE7E: Door transition scrolling - right ;;;
 {
 $80:AE7E AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
 $80:AE81 DA          PHX                    
@@ -6831,7 +6863,7 @@ $80:AEC1 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $AEC2: Door transition - left ;;;
+;;; $AEC2: Door transition scrolling - left ;;;
 {
 $80:AEC2 AE 25 09    LDX $0925  [$7E:0925]  ; X = [door transition frame counter]
 $80:AEC5 DA          PHX                    
@@ -6865,7 +6897,7 @@ $80:AF01 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $AF02: Door transition - down ;;;
+;;; $AF02: Door transition scrolling - down ;;;
 {
 ; Spends 1 frame drawing the top row of the new room
 ; Then spends 38h frames doing the scrolling (38h frames * 4px/frame = 224px)
@@ -6944,7 +6976,7 @@ $80:AF88 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $AF89: Door transition - up ;;;
+;;; $AF89: Door transition scrolling - up ;;;
 {
 ; This routine - unlike the other three door transition directions - is called once prior to the destination room being loaded (via $AD1D)
 ; The reason for this is to load the tilemap for the top row of the scroll, which hasn't yet been loaded by the scrolling routine
@@ -7037,6 +7069,7 @@ $80:B02F 60          RTS                    ;} Return carry set
 
 $80:B030 18          CLC                    ;\
 $80:B031 60          RTS                    ;} Return carry clear
+}
 }
 
 
