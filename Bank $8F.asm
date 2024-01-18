@@ -7109,151 +7109,153 @@ $8F:E5D1 60          RTS
 {
 ;;; $E5D2: Room state checking handler ;;;
 {
-$8F:E5D2 8A          TXA
-$8F:E5D3 18          CLC
-$8F:E5D4 69 0B 00    ADC #$000B
-$8F:E5D7 AA          TAX
+$8F:E5D2 8A          TXA                    ;\
+$8F:E5D3 18          CLC                    ;|
+$8F:E5D4 69 0B 00    ADC #$000B             ;} X += Bh
+$8F:E5D7 AA          TAX                    ;/
 
-$8F:E5D8 BD 00 00    LDA $0000,x[$8F:DF50]
-$8F:E5DB 8D B7 07    STA $07B7  [$7E:07B7]
-$8F:E5DE E8          INX
-$8F:E5DF E8          INX
-$8F:E5E0 F4 D7 E5    PEA $E5D7
-$8F:E5E3 6C B7 07    JMP ($07B7)[$8F:E629]
+; LOOP
+$8F:E5D8 BD 00 00    LDA $0000,x[$8F:DF50]  ;\
+$8F:E5DB 8D B7 07    STA $07B7  [$7E:07B7]  ;} Event pointer = [[X]]
+$8F:E5DE E8          INX                    ;\
+$8F:E5DF E8          INX                    ;} X += 2
+$8F:E5E0 F4 D7 E5    PEA $E5D7              ; Return to LOOP
+$8F:E5E3 6C B7 07    JMP ($07B7)[$8F:E629]  ; Go to [event pointer]
 }
 
 
-;;; $E5E6: Room state check: default ;;;
+;;; $E5E6: Use state pointer [X] ;;;
 {
-$8F:E5E6 8E BB 07    STX $07BB  [$7E:07BB]
-$8F:E5E9 68          PLA
+; Room state check: default
+$8F:E5E6 8E BB 07    STX $07BB  [$7E:07BB]  ; State pointer = [X]
+$8F:E5E9 68          PLA                    ; Terminate processing room state checks
 $8F:E5EA 6B          RTL
 }
 
 
 ;;; $E5EB: Room state check: door ;;;
 {
-$8F:E5EB BD 00 00    LDA $0000,x
-$8F:E5EE CD 8D 07    CMP $078D  [$7E:078D]
-$8F:E5F1 D0 07       BNE $07    [$E5FA]
-$8F:E5F3 BD 02 00    LDA $0002,x
-$8F:E5F6 AA          TAX
-$8F:E5F7 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E5EB BD 00 00    LDA $0000,x            ;\
+$8F:E5EE CD 8D 07    CMP $078D  [$7E:078D]  ;} If [[X]] = [door pointer]:
+$8F:E5F1 D0 07       BNE $07    [$E5FA]     ;/
+$8F:E5F3 BD 02 00    LDA $0002,x            ;\
+$8F:E5F6 AA          TAX                    ;} X = [[X] + 2]
+$8F:E5F7 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E5FA E8          INX
-$8F:E5FB E8          INX
-$8F:E5FC E8          INX
-$8F:E5FD E8          INX
+$8F:E5FA E8          INX                    ;\
+$8F:E5FB E8          INX                    ;|
+$8F:E5FC E8          INX                    ;} X += 4
+$8F:E5FD E8          INX                    ;/
 $8F:E5FE 60          RTS
 }
 
 
 ;;; $E5FF: Room state check: main area boss is dead ;;;
 {
-$8F:E5FF A9 01 00    LDA #$0001
-$8F:E602 22 DC 81 80 JSL $8081DC[$80:81DC]
-$8F:E606 90 07       BCC $07    [$E60F]
-$8F:E608 BD 00 00    LDA $0000,x
-$8F:E60B AA          TAX
-$8F:E60C 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E5FF A9 01 00    LDA #$0001             ;\
+$8F:E602 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area main boss is dead:
+$8F:E606 90 07       BCC $07    [$E60F]     ;/
+$8F:E608 BD 00 00    LDA $0000,x            ;\
+$8F:E60B AA          TAX                    ;} X = [[X]]
+$8F:E60C 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E60F E8          INX
-$8F:E610 E8          INX
+$8F:E60F E8          INX                    ;\
+$8F:E610 E8          INX                    ;} X += 2
 $8F:E611 60          RTS
 }
 
 
 ;;; $E612: Room state check: event has been set ;;;
 {
-$8F:E612 BD 00 00    LDA $0000,x[$8F:9205]
-$8F:E615 29 FF 00    AND #$00FF
-$8F:E618 22 33 82 80 JSL $808233[$80:8233]
-$8F:E61C 90 07       BCC $07    [$E625]
-$8F:E61E BD 01 00    LDA $0001,x[$8F:9EAD]
-$8F:E621 AA          TAX
-$8F:E622 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E612 BD 00 00    LDA $0000,x[$8F:9205]  ;\
+$8F:E615 29 FF 00    AND #$00FF             ;|
+$8F:E618 22 33 82 80 JSL $808233[$80:8233]  ;} If event [[X]] is marked:
+$8F:E61C 90 07       BCC $07    [$E625]     ;/
+$8F:E61E BD 01 00    LDA $0001,x[$8F:9EAD]  ;\
+$8F:E621 AA          TAX                    ;} X = [[X] + 1]
+$8F:E622 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E625 E8          INX
-$8F:E626 E8          INX
-$8F:E627 E8          INX
+$8F:E625 E8          INX                    ;\
+$8F:E626 E8          INX                    ;} X += 3
+$8F:E627 E8          INX                    ;/
 $8F:E628 60          RTS
 }
 
 
 ;;; $E629: Room state check: boss is dead ;;;
 {
-$8F:E629 BD 00 00    LDA $0000,x[$8F:DF52]
-$8F:E62C 29 FF 00    AND #$00FF
-$8F:E62F 22 DC 81 80 JSL $8081DC[$80:81DC]
-$8F:E633 90 07       BCC $07    [$E63C]
-$8F:E635 BD 01 00    LDA $0001,x[$8F:E079]
-$8F:E638 AA          TAX
-$8F:E639 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E629 BD 00 00    LDA $0000,x[$8F:DF52]  ;\
+$8F:E62C 29 FF 00    AND #$00FF             ;|
+$8F:E62F 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If any of the boss bits [[X]] are set:
+$8F:E633 90 07       BCC $07    [$E63C]     ;/
+$8F:E635 BD 01 00    LDA $0001,x[$8F:E079]  ;\
+$8F:E638 AA          TAX                    ;} X = [[X] + 1]
+$8F:E639 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E63C E8          INX
-$8F:E63D E8          INX
-$8F:E63E E8          INX
+$8F:E63C E8          INX                    ;\
+$8F:E63D E8          INX                    ;} X += 3
+$8F:E63E E8          INX                    ;/
 $8F:E63F 60          RTS
 }
 
 
 ;;; $E640: Unused. Room state check: morphball ;;;
 {
-$8F:E640 AD A4 09    LDA $09A4  [$7E:09A4]
-$8F:E643 29 04 00    AND #$0004
-$8F:E646 F0 07       BEQ $07    [$E64F]
-$8F:E648 BD 00 00    LDA $0000,x
-$8F:E64B AA          TAX
-$8F:E64C 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E640 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$8F:E643 29 04 00    AND #$0004             ;} If morph ball collected:
+$8F:E646 F0 07       BEQ $07    [$E64F]     ;/
+$8F:E648 BD 00 00    LDA $0000,x            ;\
+$8F:E64B AA          TAX                    ;} X = [[X]]
+$8F:E64C 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E64F E8          INX
-$8F:E650 E8          INX
+$8F:E64F E8          INX                    ;\
+$8F:E650 E8          INX                    ;} X += 2
 $8F:E651 60          RTS
 }
 
 
 ;;; $E652: Room state check: morphball and missiles ;;;
 {
-$8F:E652 AD A4 09    LDA $09A4  [$7E:09A4]
-$8F:E655 89 04 00    BIT #$0004
-$8F:E658 F0 0C       BEQ $0C    [$E666]
-$8F:E65A AD C8 09    LDA $09C8  [$7E:09C8]
-$8F:E65D F0 07       BEQ $07    [$E666]
-$8F:E65F BD 00 00    LDA $0000,x[$8F:97C2]
-$8F:E662 AA          TAX
-$8F:E663 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E652 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$8F:E655 89 04 00    BIT #$0004             ;} If morph ball collected:
+$8F:E658 F0 0C       BEQ $0C    [$E666]     ;/
+$8F:E65A AD C8 09    LDA $09C8  [$7E:09C8]  ;\
+$8F:E65D F0 07       BEQ $07    [$E666]     ;} If [Samus max missiles] != 0:
+$8F:E65F BD 00 00    LDA $0000,x[$8F:97C2]  ;\
+$8F:E662 AA          TAX                    ;} X = [[X]]
+$8F:E663 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E666 E8          INX
-$8F:E667 E8          INX
+$8F:E666 E8          INX                    ;\
+$8F:E667 E8          INX                    ;} X += 2
 $8F:E668 60          RTS
 }
 
 
 ;;; $E669: Room state check: power bombs ;;;
 {
-$8F:E669 AD D0 09    LDA $09D0  [$7E:09D0]
-$8F:E66C F0 07       BEQ $07    [$E675]
-$8F:E66E BD 00 00    LDA $0000,x[$8F:920A]
-$8F:E671 AA          TAX
-$8F:E672 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E669 AD D0 09    LDA $09D0  [$7E:09D0]  ;\
+$8F:E66C F0 07       BEQ $07    [$E675]     ;} If [Samus max power bombs] != 0:
+$8F:E66E BD 00 00    LDA $0000,x[$8F:920A]  ;\
+$8F:E671 AA          TAX                    ;} X = [[X]]
+$8F:E672 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E675 E8          INX
-$8F:E676 E8          INX
+$8F:E675 E8          INX                    ;\
+$8F:E676 E8          INX                    ;} X += 2
 $8F:E677 60          RTS
 }
 
 
 ;;; $E678: Unused. Room state check: speed booster ;;;
 {
-$8F:E678 AD A4 09    LDA $09A4  [$7E:09A4]
-$8F:E67B 29 00 20    AND #$2000
-$8F:E67E F0 07       BEQ $07    [$E687]
-$8F:E680 BD 00 00    LDA $0000,x
-$8F:E683 AA          TAX
-$8F:E684 4C E6 E5    JMP $E5E6  [$8F:E5E6]
+$8F:E678 AD A4 09    LDA $09A4  [$7E:09A4]  ;\
+$8F:E67B 29 00 20    AND #$2000             ;} If speed booster collected:
+$8F:E67E F0 07       BEQ $07    [$E687]     ;/
+$8F:E680 BD 00 00    LDA $0000,x            ;\
+$8F:E683 AA          TAX                    ;} X = [[X]]
+$8F:E684 4C E6 E5    JMP $E5E6  [$8F:E5E6]  ; Go to use state pointer [X]
 
-$8F:E687 E8          INX
-$8F:E688 E8          INX
+$8F:E687 E8          INX                    ;\
+$8F:E688 E8          INX                    ;} X += 2
 $8F:E689 60          RTS
 }
 }
@@ -7389,12 +7391,12 @@ $8F:E881             dw 009E, 00AD, 0081, 0001, 0004, 0002, 0000
 $8F:E88F 08          PHP
 $8F:E890 8B          PHB
 $8F:E891 C2 30       REP #$30
-$8F:E893 AE BB 07    LDX $07BB  [$7E:07BB]
-$8F:E896 BD 18 00    LDA $0018,x[$8F:DF6F]
-$8F:E899 F0 05       BEQ $05    [$E8A0]
-$8F:E89B 4B          PHK
-$8F:E89C AB          PLB
-$8F:E89D FC 18 00    JSR ($0018,x)[$8F:C976]
+$8F:E893 AE BB 07    LDX $07BB  [$7E:07BB]  ; X = [room state pointer]
+$8F:E896 BD 18 00    LDA $0018,x[$8F:DF6F]  ;\
+$8F:E899 F0 05       BEQ $05    [$E8A0]     ;} If (room setup ASM) != 0:
+$8F:E89B 4B          PHK                    ;\
+$8F:E89C AB          PLB                    ;} DB = $8F
+$8F:E89D FC 18 00    JSR ($0018,x)[$8F:C976]; Execute (room setup ASM)
 
 $8F:E8A0 AB          PLB
 $8F:E8A1 28          PLP
@@ -7407,14 +7409,14 @@ $8F:E8A2 6B          RTL
 $8F:E8A3 08          PHP
 $8F:E8A4 8B          PHB
 $8F:E8A5 C2 30       REP #$30
-$8F:E8A7 AE 8D 07    LDX $078D  [$7E:078D]
-$8F:E8AA BF 0A 00 83 LDA $83000A,x[$83:AB62]
-$8F:E8AE F0 0A       BEQ $0A    [$E8BA]
-$8F:E8B0 85 12       STA $12    [$7E:0012]
-$8F:E8B2 4B          PHK
-$8F:E8B3 AB          PLB
-$8F:E8B4 F4 B9 E8    PEA $E8B9
-$8F:E8B7 6C 12 00    JMP ($0012)[$8F:E4E0]
+$8F:E8A7 AE 8D 07    LDX $078D  [$7E:078D]  ; X = [door pointer]
+$8F:E8AA BF 0A 00 83 LDA $83000A,x[$83:AB62];\
+$8F:E8AE F0 0A       BEQ $0A    [$E8BA]     ;} If (door ASM pointer) != 0:
+$8F:E8B0 85 12       STA $12    [$7E:0012]  ; $12 = (door ASM pointer)
+$8F:E8B2 4B          PHK                    ;\
+$8F:E8B3 AB          PLB                    ;} DB = $8F
+$8F:E8B4 F4 B9 E8    PEA $E8B9              ;\
+$8F:E8B7 6C 12 00    JMP ($0012)[$8F:E4E0]  ;} Execute [$12]
 
 $8F:E8BA AB          PLB
 $8F:E8BB 28          PLP
@@ -7424,13 +7426,13 @@ $8F:E8BC 6B          RTL
 
 ;;; $E8BD: Execute room main ASM ;;;
 {
-$8F:E8BD AE DF 07    LDX $07DF  [$7E:07DF]
-$8F:E8C0 F0 0A       BEQ $0A    [$E8CC]
+$8F:E8BD AE DF 07    LDX $07DF  [$7E:07DF]  ;\
+$8F:E8C0 F0 0A       BEQ $0A    [$E8CC]     ;} If [room main ASM pointer] != 0:
 $8F:E8C2 8B          PHB
-$8F:E8C3 4B          PHK
-$8F:E8C4 AB          PLB
-$8F:E8C5 A2 00 00    LDX #$0000
-$8F:E8C8 FC DF 07    JSR ($07DF,x)[$8F:E51F]
+$8F:E8C3 4B          PHK                    ;\
+$8F:E8C4 AB          PLB                    ;} DB = $8F
+$8F:E8C5 A2 00 00    LDX #$0000             ;\
+$8F:E8C8 FC DF 07    JSR ($07DF,x)[$8F:E51F];} Execute [room main ASM pointer]
 $8F:E8CB AB          PLB
 
 $8F:E8CC 6B          RTL
@@ -7482,7 +7484,7 @@ $8F:E910 18          CLC                    ;|
 $8F:E911 65 12       ADC $12    [$7E:0012]  ;} BG2 Y scroll = [$12] + 30h
 $8F:E913 85 B7       STA $B7    [$7E:00B7]  ;/
 
-$8F:E915 60          RTS
+$8F:E915 60          RTS                    ; Return
 
 ; BRANCH_E916
 $8F:E916 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
@@ -7498,13 +7500,13 @@ $8F:E92C AD 11 09    LDA $0911  [$7E:0911]  ;\
 $8F:E92F 18          CLC                    ;|
 $8F:E930 69 04 00    ADC #$0004             ;} Layer 1 X position += 4
 $8F:E933 8D 11 09    STA $0911  [$7E:0911]  ;/
-$8F:E936 60          RTS
+$8F:E936 60          RTS                    ; Return
 
 $8F:E937 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $8F:E93A 38          SEC                    ;|
 $8F:E93B E9 04 00    SBC #$0004             ;} Layer 1 X position -= 4
 $8F:E93E 8D 11 09    STA $0911  [$7E:0911]  ;/
-$8F:E941 60          RTS
+$8F:E941 60          RTS                    ; Return
 
 ; BRANCH_E942
 $8F:E942 AD 15 09    LDA $0915  [$7E:0915]  ;\
