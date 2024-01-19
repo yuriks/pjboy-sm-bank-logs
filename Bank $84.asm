@@ -9609,7 +9609,7 @@ $84:C7C4 C9 00 03    CMP #$0300             ;|
 $84:C7C7 D0 07       BNE $07    [$C7D0]     ;/
 $84:C7C9 A9 00 00    LDA #$0000             ;\
 $84:C7CC 99 37 1C    STA $1C37,y[$7E:1C79]  ;} Delete PLM
-$84:C7CF 60          RTS
+$84:C7CF 60          RTS                    ; Return
 
 $84:C7D0 BE 87 1C    LDX $1C87,y[$7E:1CCF]  ;\
 $84:C7D3 BF 02 00 7F LDA $7F0002,x[$7F:4EC4];|
