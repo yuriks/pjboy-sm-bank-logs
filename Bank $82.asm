@@ -3970,7 +3970,7 @@ $82:A1B6 C8          INY                    ;} Y += 2
 $82:A1B7 B7 03       LDA [$03],y[$82:C06E]  ;\
 $82:A1B9 85 00       STA $00    [$7E:0000]  ;} $00 = [$82:C06C + [Y]]
 $82:A1BB C0 0C 00    CPY #$000C             ;\
-$82:A1BE 30 C0       BMI $C0    [$A180]     ;} If [Y] < Ch: go to LOOP_WEAPONS
+$82:A1BE 30 C0       BMI $C0    [$A180]     ;} If [Y] < Ch (should be Ah): go to LOOP_WEAPONS
 $82:A1C0 80 19       BRA $19    [$A1DB]     ; Go to BRANCH_MERGE
 
 ; BRANCH_HYPER_BEAM

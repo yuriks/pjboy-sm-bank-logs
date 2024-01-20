@@ -3,7 +3,7 @@
 ;;; $8000: Set Golden Torizo palette ;;;
 {
 ;; Parameter:
-;;     A: Health
+;;     A: Health. Assumed to be less than 8000h
 
 ; This is a great way to start the PLM bank
 $84:8000 DA          PHX
@@ -12,7 +12,7 @@ $84:8002 8B          PHB
 $84:8003 4B          PHK                    ;\
 $84:8004 AB          PLB                    ;} DB = $84
 $84:8005 EB          XBA                    ; A /= 100h
-$84:8006 29 78 00    AND #$0078             ; A &= 78h (round down to multiple of 8)
+$84:8006 29 78 00    AND #$0078             ;
 $84:8009 89 40 00    BIT #$0040             ;\
 $84:800C F0 03       BEQ $03    [$8011]     ;} A = min(38h, [A])
 $84:800E A9 38 00    LDA #$0038             ;/
@@ -7902,12 +7902,12 @@ $84:BAD7 4A          LSR A                  ;/
 $84:BAD8 A9 04 00    LDA #$0004             ;\
 $84:BADB 99 17 1E    STA $1E17,y            ;} PLM grey door type = 4 (area torizo is dead)
 $84:BADE B9 C7 1D    LDA $1DC7,y            ;\
-$84:BAE1 29 FF 83    AND #$83FF             ;} PLM room argument &= ~7C00h
-$84:BAE4 09 00 80    ORA #$8000             ;/
-$84:BAE7 99 C7 1D    STA $1DC7,y            ;\
-$84:BAEA BE 87 1C    LDX $1C87,y            ;} Make PLM shotblock with BTS 44h (generic shot trigger)
-$84:BAED A9 44 C0    LDA #$C044             ;/
-$84:BAF0 20 B4 82    JSR $82B4  [$84:82B4]
+$84:BAE1 29 FF 83    AND #$83FF             ;|
+$84:BAE4 09 00 80    ORA #$8000             ;} PLM room argument = [PLM room argument] & ~7C00h | 8000h
+$84:BAE7 99 C7 1D    STA $1DC7,y            ;/
+$84:BAEA BE 87 1C    LDX $1C87,y            ;\
+$84:BAED A9 44 C0    LDA #$C044             ;} Make PLM shotblock with BTS 44h (generic shot trigger)
+$84:BAF0 20 B4 82    JSR $82B4  [$84:82B4]  ;/
 $84:BAF3 60          RTS
 }
 
@@ -12004,23 +12004,23 @@ $84:DA8A             dx 86BC            ; Delete
 {
 ;;; $DA8C: Setup - PLM $DB48/$DB56 (eye door eye) ;;;
 {
-$84:DA8C 5A          PHY
-$84:DA8D B9 C7 1D    LDA $1DC7,y[$7E:1E0D]
-$84:DA90 22 8E 81 80 JSL $80818E[$80:818E]
-$84:DA94 BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B8]
-$84:DA98 7A          PLY
-$84:DA99 2D E7 05    AND $05E7  [$7E:05E7]
-$84:DA9C D0 1A       BNE $1A    [$DAB8]
-$84:DA9E BE 87 1C    LDX $1C87,y[$7E:1CCD]
-$84:DAA1 A9 44 C0    LDA #$C044
-$84:DAA4 20 B4 82    JSR $82B4  [$84:82B4]
-$84:DAA7 B9 87 1C    LDA $1C87,y[$7E:1CCD]
-$84:DAAA 18          CLC
-$84:DAAB 6D A5 07    ADC $07A5  [$7E:07A5]
-$84:DAAE 6D A5 07    ADC $07A5  [$7E:07A5]
-$84:DAB1 AA          TAX
-$84:DAB2 A9 FF D0    LDA #$D0FF
-$84:DAB5 20 B4 82    JSR $82B4  [$84:82B4]
+$84:DA8C 5A          PHY                    ;\
+$84:DA8D B9 C7 1D    LDA $1DC7,y[$7E:1E0D]  ;|
+$84:DA90 22 8E 81 80 JSL $80818E[$80:818E]  ;|
+$84:DA94 BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B8];} If PLM room argument door is set: return
+$84:DA98 7A          PLY                    ;|
+$84:DA99 2D E7 05    AND $05E7  [$7E:05E7]  ;|
+$84:DA9C D0 1A       BNE $1A    [$DAB8]     ;/
+$84:DA9E BE 87 1C    LDX $1C87,y[$7E:1CCD]  ;\
+$84:DAA1 A9 44 C0    LDA #$C044             ;|
+$84:DAA4 20 B4 82    JSR $82B4  [$84:82B4]  ;|
+$84:DAA7 B9 87 1C    LDA $1C87,y[$7E:1CCD]  ;|
+$84:DAAA 18          CLC                    ;|
+$84:DAAB 6D A5 07    ADC $07A5  [$7E:07A5]  ;} 2 block column below PLM = generic shot trigger
+$84:DAAE 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$84:DAB1 AA          TAX                    ;|
+$84:DAB2 A9 FF D0    LDA #$D0FF             ;|
+$84:DAB5 20 B4 82    JSR $82B4  [$84:82B4]  ;/
 
 $84:DAB8 60          RTS
 }
@@ -12028,16 +12028,16 @@ $84:DAB8 60          RTS
 
 ;;; $DAB9: Setup - door $DB4C/$DB5A / PLM $DB52/$DB60 (eye door) ;;;
 {
-$84:DAB9 5A          PHY
-$84:DABA B9 C7 1D    LDA $1DC7,y[$7E:1E11]
-$84:DABD 22 8E 81 80 JSL $80818E[$80:818E]
-$84:DAC1 BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B8]
-$84:DAC5 7A          PLY
-$84:DAC6 2D E7 05    AND $05E7  [$7E:05E7]
-$84:DAC9 D0 09       BNE $09    [$DAD4]
-$84:DACB BE 87 1C    LDX $1C87,y[$7E:1CD1]
-$84:DACE A9 00 A0    LDA #$A000
-$84:DAD1 20 B4 82    JSR $82B4  [$84:82B4]
+$84:DAB9 5A          PHY                    ;\
+$84:DABA B9 C7 1D    LDA $1DC7,y[$7E:1E11]  ;|
+$84:DABD 22 8E 81 80 JSL $80818E[$80:818E]  ;|
+$84:DAC1 BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B8];} If PLM room argument door is set: return
+$84:DAC5 7A          PLY                    ;|
+$84:DAC6 2D E7 05    AND $05E7  [$7E:05E7]  ;|
+$84:DAC9 D0 09       BNE $09    [$DAD4]     ;/
+$84:DACB BE 87 1C    LDX $1C87,y[$7E:1CD1]  ;\
+$84:DACE A9 00 A0    LDA #$A000             ;} Make PLM block a generic spike
+$84:DAD1 20 B4 82    JSR $82B4  [$84:82B4]  ;/
 
 $84:DAD4 60          RTS
 }

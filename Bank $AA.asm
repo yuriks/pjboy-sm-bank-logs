@@ -3440,10 +3440,10 @@ $AA:D3B1 60          RTS
 }
 
 
-;;; $D3B2:  ;;;
+;;; $D3B2: Golden Torizo health-based palette handling ;;;
 {
-$AA:D3B2 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$AA:D3B5 22 00 80 84 JSL $848000[$84:8000]
+$AA:D3B2 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ; A = [enemy health]
+$AA:D3B5 22 00 80 84 JSL $848000[$84:8000]  ; Golden Torizo health-based palette handling
 $AA:D3B9 60          RTS
 }
 
@@ -3451,23 +3451,23 @@ $AA:D3B9 60          RTS
 ;;; $D3BA: Hurt AI - enemy $EF7F/$EFBF (Gold Torizo) ;;;
 {
 $AA:D3BA AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:D3BD 20 20 C6    JSR $C620  [$AA:C620]
-$AA:D3C0 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]
-$AA:D3C3 4A          LSR A
-$AA:D3C4 B0 05       BCS $05    [$D3CB]
-$AA:D3C6 20 B2 D3    JSR $D3B2  [$AA:D3B2]
-$AA:D3C9 80 14       BRA $14    [$D3DF]
+$AA:D3BD 20 20 C6    JSR $C620  [$AA:C620]  ; Execute $C620
+$AA:D3C0 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
+$AA:D3C3 4A          LSR A                  ;} If [enemy flash counter] % 2 = 0:
+$AA:D3C4 B0 05       BCS $05    [$D3CB]     ;/
+$AA:D3C6 20 B2 D3    JSR $D3B2  [$AA:D3B2]  ; Golden Torizo health-based palette handling
+$AA:D3C9 80 14       BRA $14    [$D3DF]     ; Return
 
-$AA:D3CB DA          PHX
-$AA:D3CC A2 1E 00    LDX #$001E
-
-$AA:D3CF A9 FF 7F    LDA #$7FFF
-$AA:D3D2 9F 40 C1 7E STA $7EC140,x[$7E:C15E]
-$AA:D3D6 9F 20 C1 7E STA $7EC120,x[$7E:C13E]
-$AA:D3DA CA          DEX
-$AA:D3DB CA          DEX
-$AA:D3DC 10 F1       BPL $F1    [$D3CF]
-$AA:D3DE FA          PLX
+$AA:D3CB DA          PHX                    ;\
+$AA:D3CC A2 1E 00    LDX #$001E             ;|
+                                            ;|
+$AA:D3CF A9 FF 7F    LDA #$7FFF             ;|
+$AA:D3D2 9F 40 C1 7E STA $7EC140,x[$7E:C15E];|
+$AA:D3D6 9F 20 C1 7E STA $7EC120,x[$7E:C13E];} Sprite palette 1/2 = 7FFFh (white)
+$AA:D3DA CA          DEX                    ;|
+$AA:D3DB CA          DEX                    ;|
+$AA:D3DC 10 F1       BPL $F1    [$D3CF]     ;|
+$AA:D3DE FA          PLX                    ;/
 
 $AA:D3DF 6B          RTL
 }

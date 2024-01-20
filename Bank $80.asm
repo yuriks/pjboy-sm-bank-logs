@@ -4927,7 +4927,7 @@ $80:A177 E2 20       SEP #$20
 $80:A179 A5 58       LDA $58    [$7E:0058]  ;\
 $80:A17B 38          SEC                    ;|
 $80:A17C E5 59       SBC $59    [$7E:0059]  ;|
-$80:A17E EB          XBA                    ;} BG2 size = (BG1 address) - (BG2 address)
+$80:A17E EB          XBA                    ;} BG2 size = (BG1 tilemap base address) - (BG2 tilemap base address)
 $80:A17F C2 20       REP #$20               ;|
 $80:A181 29 00 F8    AND #$F800             ;|
 $80:A184 8D 8E 09    STA $098E  [$7E:098E]  ;/

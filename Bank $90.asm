@@ -16039,7 +16039,8 @@ $90:F083 60          RTS
 {
 ;;; $F084: Run $F084 script ;;;
 {
-; Depending on A. Can range from 0 to 1F
+;; Parameters:
+;;     A: Script ID. Range 0..1Fh
 $90:F084 08          PHP
 $90:F085 8B          PHB
 $90:F086 4B          PHK                    ;\
