@@ -309,18 +309,17 @@ $93:81ED C2 30       REP #$30
 $93:81EF AE DE 0D    LDX $0DDE  [$7E:0DDE]  ; X = [projectile index]
 $93:81F2 DE 54 0C    DEC $0C54,x[$7E:0C54]  ; Decrement projectile instruction timer
 $93:81F5 D0 35       BNE $35    [$822C]     ; If [projectile instruction timer] != 0: return
-$93:81F7 BC 40 0C    LDY $0C40,x[$7E:0C40]  ; Y = projectile instruction
+$93:81F7 BC 40 0C    LDY $0C40,x[$7E:0C40]  ; Y = [projectile instruction pointer]
 
 ; LOOP
 $93:81FA B9 00 00    LDA $0000,y[$93:9F03]  ;\
-$93:81FD 10 0A       BPL $0A    [$8209]     ;} If [[Y]] & 8000h:
+$93:81FD 10 0A       BPL $0A    [$8209]     ;} If [[Y]] & 8000h != 0:
 $93:81FF 85 12       STA $12    [$7E:0012]  ;\
 $93:8201 C8          INY                    ;|
 $93:8202 C8          INY                    ;} Execute [[Y]], Y += 2, go to LOOP
 $93:8203 F4 F9 81    PEA $81F9              ;|
 $93:8206 6C 12 00    JMP ($0012)[$93:8239]  ;/
 
-;                                            Else (positive):
 $93:8209 9D 54 0C    STA $0C54,x[$7E:0C54]  ; Projectile instruction timer = [[Y]]
 $93:820C B9 02 00    LDA $0002,y[$93:9F05]  ;\
 $93:820F 9D B8 0C    STA $0CB8,x[$7E:0CB8]  ;} Projectile spritemap pointer = [[Y] + 2]
@@ -332,7 +331,7 @@ $93:821E 29 FF 00    AND #$00FF             ;} Projectile Y radius = [[Y] + 5]
 $93:8221 9D C8 0B    STA $0BC8,x[$7E:0BC8]  ;/
 $93:8224 98          TYA                    ;\
 $93:8225 18          CLC                    ;|
-$93:8226 69 08 00    ADC #$0008             ;} Projectile instruction = [Y] + 8
+$93:8226 69 08 00    ADC #$0008             ;} Projectile instruction pointer = [Y] + 8
 $93:8229 9D 40 0C    STA $0C40,x[$7E:0C40]  ;/
 
 $93:822C AB          PLB

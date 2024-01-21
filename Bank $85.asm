@@ -14,17 +14,44 @@ $85:8040             dw 000E, 000E, 000E, 000E, 000E, 000E, 284E, 284E, 284E, 28
 {
 ;; Parameter:
 ;;     A: Message index
+;;         1: Energy tank
+;;         2: Missile
+;;         3: Super missile
+;;         4: Power bomb
+;;         5: Grappling beam
+;;         6: X-ray scope
+;;         7: Varia suit
+;;         8: Spring ball
+;;         9: Morphing ball
+;;         Ah: Screw attack
+;;         Bh: Hi-jump boots
+;;         Ch: Space jump
+;;         Dh: Speed booster
+;;         Eh: Charge beam
+;;         Fh: Ice beam
+;;         10h: Wave beam
+;;         11h: Spazer
+;;         12h: Plasma beam
+;;         13h: Bomb
+;;         14h: Map data access completed
+;;         15h: Energy recharge completed
+;;         16h: Missile reload completed
+;;         17h: Would you like to save?
+;;         18h: Save completed
+;;         19h: Reserve tank
+;;         1Ah: Gravity suit
+;;         1Ch: Would you like to save? (Used by gunship)
 ;; Returns:
 ;;     A: If save confirmation, returns [save confirmation selection] (0: yes, 2: no)
 
 ; This routine does not return until the message box has disappeared (~6 seconds)
-; Fun fact, this is the only routine in this bank that's externally callable
+; This is the only routine in this bank that's externally callable
 $85:8080 08          PHP
 $85:8081 8B          PHB
 $85:8082 DA          PHX
 $85:8083 5A          PHY
-$85:8084 4B          PHK
-$85:8085 AB          PLB
+$85:8084 4B          PHK                    ;\
+$85:8085 AB          PLB                    ;} DB = $85
 $85:8086 8D 1F 1C    STA $1C1F  [$7E:1C1F]  ; Message box index = [A]
 $85:8089 22 17 BE 82 JSL $82BE17[$82:BE17]  ; Cancel sound effects
 $85:808D 20 43 81    JSR $8143  [$85:8143]  ; Initialise PPU for message boxes
@@ -47,7 +74,7 @@ $85:80BA 7A          PLY
 $85:80BB FA          PLX
 $85:80BC AB          PLB
 $85:80BD 28          PLP
-$85:80BE 6B          RTL
+$85:80BE 6B          RTL                    ; Return
 
 ; BRANCH_GUNSHIP
 $85:80BF 20 6D 84    JSR $846D  [$85:846D]  ; Handle message box interaction
@@ -82,7 +109,7 @@ $85:80FF C9 14 00    CMP #$0014             ;} If [message box index] = map data
 $85:8102 D0 07       BNE $07    [$810B]     ;/
 $85:8104 A9 0C 00    LDA #$000C             ;\
 $85:8107 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = Ch (pausing, normal gameplay but darkening)
-$85:810A 60          RTS
+$85:810A 60          RTS                    ; Return
 
 $85:810B C9 1C 00    CMP #$001C             ;\
 $85:810E F0 05       BEQ $05    [$8115]     ;} If [message box index] != gunship save confirmation:
@@ -586,7 +613,7 @@ $85:84AD D0 05       BNE $05    [$84B4]     ;|
 $85:84AF AD 19 42    LDA $4219  [$7E:4219]  ;} If no IO controller 1 input: go to LOOP_INPUT
 $85:84B2 F0 EF       BEQ $EF    [$84A3]     ;/
 
-$85:84B4 60          RTS
+$85:84B4 60          RTS                    ; Return
 
 ; BRANCH_SAVE
 $85:84B5 C2 30       REP #$30

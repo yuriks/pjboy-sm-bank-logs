@@ -8355,7 +8355,7 @@ $A9:D1BB 10 0A       BPL $0A    [$D1C7]     ; If [[X]] & 8000h = 0: go to BRANCH
 $A9:D1BD 85 06       STA $06    [$7E:0006]  ; $06 = [[X]]
 $A9:D1BF E8          INX                    ;\
 $A9:D1C0 E8          INX                    ;} X += 2
-$A9:D1C1 F4 B5 D1    PEA $D1B5              ; Return address = LOOP - 1
+$A9:D1C1 F4 B5 D1    PEA $D1B5              ; Return to LOOP
 $A9:D1C4 6C 06 00    JMP ($0006)[$A9:9B0F]  ; Go to [$06]
 
 ; BRANCH_SPECIAL_INSTRUCTION

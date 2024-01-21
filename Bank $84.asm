@@ -1,6 +1,6 @@
 ;;; $8000..86B3: Routines ;;;
 {
-;;; $8000: Set Golden Torizo palette ;;;
+;;; $8000: Golden Torizo health-based palette handling ;;;
 {
 ;; Parameter:
 ;;     A: Health. Assumed to be less than 8000h
@@ -11,17 +11,17 @@ $84:8001 5A          PHY
 $84:8002 8B          PHB
 $84:8003 4B          PHK                    ;\
 $84:8004 AB          PLB                    ;} DB = $84
-$84:8005 EB          XBA                    ; A /= 100h
-$84:8006 29 78 00    AND #$0078             ;
-$84:8009 89 40 00    BIT #$0040             ;\
-$84:800C F0 03       BEQ $03    [$8011]     ;} A = min(38h, [A])
-$84:800E A9 38 00    LDA #$0038             ;/
-
-$84:8011 0A          ASL A                  ;\
+$84:8005 EB          XBA                    ;\
+$84:8006 29 78 00    AND #$0078             ;|
+$84:8009 89 40 00    BIT #$0040             ;|
+$84:800C F0 03       BEQ $03    [$8011]     ;|
+$84:800E A9 38 00    LDA #$0038             ;|
+                                            ;} Y = min(7, [A] / 800h) * 20h + 1Eh (source index)
+$84:8011 0A          ASL A                  ;|
 $84:8012 0A          ASL A                  ;|
-$84:8013 09 1E 00    ORA #$001E             ;} Y = [A] / 8 * 20h + 1Eh
+$84:8013 09 1E 00    ORA #$001E             ;|
 $84:8016 A8          TAY                    ;/
-$84:8017 A2 1E 00    LDX #$001E             ; X = 1Eh
+$84:8017 A2 1E 00    LDX #$001E             ; X = 1Eh (destination index)
 
 ; LOOP
 $84:801A B9 32 81    LDA $8132,y[$84:8210]  ;\
@@ -62,21 +62,22 @@ $84:8132             dw 1000, 4215, 2D0D, 0002, 0000, 3970, 20CB, 0C26, 0403, 46
 
 ;;; $8232: Load room PLM GFX ;;;
 {
+; Called as part of unpausing
 $84:8232 08          PHP
 $84:8233 8B          PHB
 $84:8234 C2 30       REP #$30
 $84:8236 4B          PHK                    ;\
 $84:8237 AB          PLB                    ;} DB = $84
 $84:8238 9C 2D 1C    STZ $1C2D  [$7E:1C2D]  ; PLM item GFX index = 0
-$84:823B A2 00 00    LDX #$0000             ; X = 0
+$84:823B A2 00 00    LDX #$0000             ; X = 0 (item PLM index)
 
 ; LOOP
 $84:823E DA          PHX
-$84:823F BC 2F 1C    LDY $1C2F,x[$7E:1C2F]  ; Y = [item PLM [X] GFX pointers]
+$84:823F BC 2F 1C    LDY $1C2F,x[$7E:1C2F]  ; Y = [item PLM GFX pointers]
 $84:8242 20 64 87    JSR $8764  [$84:8764]  ; Load item PLM GFX
 $84:8245 FA          PLX
 $84:8246 E8          INX                    ;\
-$84:8247 E8          INX                    ;} X += 2
+$84:8247 E8          INX                    ;} X += 2 (next item PLM)
 $84:8248 E0 08 00    CPX #$0008             ;\
 $84:824B D0 F1       BNE $F1    [$823E]     ;} If [X] != 8: go to LOOP
 $84:824D AB          PLB
@@ -87,14 +88,14 @@ $84:824F 6B          RTL
 
 ;;; $8250: Clear sounds when going through door ;;;
 {
-; Called by game state Ah: loading next room
-$84:8250 A9 1D 00    LDA #$001D
-$84:8253 22 84 F0 90 JSL $90F084[$90:F084]
+; Called at start of door transition
+$84:8250 A9 1D 00    LDA #$001D             ;\
+$84:8253 22 84 F0 90 JSL $90F084[$90:F084]  ;} Clear sounds when going through door
 $84:8257 6B          RTL
 }
 
 
-;;; $8258: Unused: clear spin jump sound when going through door ;;;
+;;; $8258: Unused. Clear spin jump sound when going through door ;;;
 {
 $84:8258 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $84:825B 29 00 FF    AND #$FF00             ;|
@@ -112,13 +113,14 @@ $84:826F 6B          RTL
 
 ;;; $8270: Play spin jump sound if spin jumping ;;;
 {
-$84:8270 A9 1C 00    LDA #$001C
-$84:8273 22 84 F0 90 JSL $90F084[$90:F084]
+; Called at end of door transition
+$84:8270 A9 1C 00    LDA #$001C             ;\
+$84:8273 22 84 F0 90 JSL $90F084[$90:F084]  ;} Play spin jump sound if spin jumping
 $84:8277 6B          RTL
 }
 
 
-;;; $8278: Unused: play resumed spin jump sound ;;;
+;;; $8278: Unused. Play resumed spin jump sound ;;;
 {
 $84:8278 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $84:827B 29 00 FF    AND #$FF00             ;|
@@ -138,23 +140,23 @@ $84:828F 6B          RTL
 {
 ;; Parameters:
 ;;     X: PLM index
-$84:8290 BD 87 1C    LDA $1C87,x[$7E:1CD3]
-$84:8293 4A          LSR A
-$84:8294 8D 04 42    STA $4204  [$7E:4204]
-$84:8297 E2 20       SEP #$20
-$84:8299 AD A5 07    LDA $07A5  [$7E:07A5]
-$84:829C 8D 06 42    STA $4206  [$7E:4206]
-$84:829F C2 20       REP #$20
-$84:82A1 EA          NOP
-$84:82A2 EA          NOP
-$84:82A3 EA          NOP
-$84:82A4 EA          NOP
-$84:82A5 EA          NOP
-$84:82A6 EA          NOP
-$84:82A7 AD 14 42    LDA $4214  [$7E:4214]
-$84:82AA 8D 2B 1C    STA $1C2B  [$7E:1C2B]
-$84:82AD AD 16 42    LDA $4216  [$7E:4216]
-$84:82B0 8D 29 1C    STA $1C29  [$7E:1C29]
+$84:8290 BD 87 1C    LDA $1C87,x[$7E:1CD3]  ;\
+$84:8293 4A          LSR A                  ;|
+$84:8294 8D 04 42    STA $4204  [$7E:4204]  ;|
+$84:8297 E2 20       SEP #$20               ;|
+$84:8299 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$84:829C 8D 06 42    STA $4206  [$7E:4206]  ;|
+$84:829F C2 20       REP #$20               ;|
+$84:82A1 EA          NOP                    ;} PLM Y block = [PLM block index] / 2 / [room width in blocks]
+$84:82A2 EA          NOP                    ;|
+$84:82A3 EA          NOP                    ;|
+$84:82A4 EA          NOP                    ;|
+$84:82A5 EA          NOP                    ;|
+$84:82A6 EA          NOP                    ;|
+$84:82A7 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$84:82AA 8D 2B 1C    STA $1C2B  [$7E:1C2B]  ;/
+$84:82AD AD 16 42    LDA $4216  [$7E:4216]  ;\
+$84:82B0 8D 29 1C    STA $1C29  [$7E:1C29]  ;} PLM X block = [PLM block index] / 2 % [room width in blocks]
 $84:82B3 6B          RTL
 }
 
@@ -162,24 +164,24 @@ $84:82B3 6B          RTL
 ;;; $82B4: Write level data block type and BTS ;;;
 {
 ;; Parameter:
-;;     A low:  BTS
+;;     A low: BTS
 ;;     A high: high byte of level data
-;;     X:      PLM level data offset
+;;     X: PLM block index
 $84:82B4 DA          PHX
-$84:82B5 85 12       STA $12    [$7E:0012]
-$84:82B7 E2 20       SEP #$20
-$84:82B9 BF 03 00 7F LDA $7F0003,x[$7F:2D3F]
-$84:82BD 29 0F       AND #$0F
-$84:82BF 05 13       ORA $13    [$7E:0013]
-$84:82C1 9F 03 00 7F STA $7F0003,x[$7F:2D3F]
-$84:82C5 C2 20       REP #$20
-$84:82C7 8A          TXA
-$84:82C8 4A          LSR A
-$84:82C9 AA          TAX
-$84:82CA E2 20       SEP #$20
-$84:82CC A5 12       LDA $12    [$7E:0012]
-$84:82CE 9F 02 64 7F STA $7F6402,x[$7F:7AA0]
-$84:82D2 C2 20       REP #$20
+$84:82B5 85 12       STA $12    [$7E:0012]  ;\
+$84:82B7 E2 20       SEP #$20               ;|
+$84:82B9 BF 03 00 7F LDA $7F0003,x[$7F:2D3F];|
+$84:82BD 29 0F       AND #$0F               ;} (PLM block type) = [A high] / 10h
+$84:82BF 05 13       ORA $13    [$7E:0013]  ;|
+$84:82C1 9F 03 00 7F STA $7F0003,x[$7F:2D3F];|
+$84:82C5 C2 20       REP #$20               ;/
+$84:82C7 8A          TXA                    ;\
+$84:82C8 4A          LSR A                  ;|
+$84:82C9 AA          TAX                    ;|
+$84:82CA E2 20       SEP #$20               ;} PLM BTS = [A low]
+$84:82CC A5 12       LDA $12    [$7E:0012]  ;|
+$84:82CE 9F 02 64 7F STA $7F6402,x[$7F:7AA0];|
+$84:82D2 C2 20       REP #$20               ;/
 $84:82D4 FA          PLX
 $84:82D5 60          RTS
 }
@@ -191,45 +193,47 @@ $84:82D5 60          RTS
 ;;     [[S] + 1] + 1: Level data block
 ;;     [[S] + 1] + 3: BTS
 ;;     [[S] + 1] + 5: Number of blocks
-;;     X:             PLM index
+;;     X: PLM index
 $84:82D6 DA          PHX
 $84:82D7 5A          PHY
-$84:82D8 A0 01 00    LDY #$0001
-$84:82DB B3 05       LDA ($05,s),y[$84:AD46]
-$84:82DD 85 12       STA $12    [$7E:0012]
-$84:82DF C8          INY
-$84:82E0 C8          INY
-$84:82E1 B3 05       LDA ($05,s),y[$84:AD48]
-$84:82E3 85 14       STA $14    [$7E:0014]
-$84:82E5 C8          INY
-$84:82E6 C8          INY
-$84:82E7 B3 05       LDA ($05,s),y[$84:AD4A]
-$84:82E9 85 16       STA $16    [$7E:0016]
-$84:82EB A3 05       LDA $05,s  [$7E:1FEE]
-$84:82ED 18          CLC
-$84:82EE 69 06 00    ADC #$0006
-$84:82F1 83 05       STA $05,s  [$7E:1FEE]
-$84:82F3 BD 87 1C    LDA $1C87,x[$7E:1CD5]
-$84:82F6 AA          TAX
+$84:82D8 A0 01 00    LDY #$0001             ;\
+$84:82DB B3 05       LDA ($05,s),y[$84:AD46];} $12 = [(return address) + 1] (level data block)
+$84:82DD 85 12       STA $12    [$7E:0012]  ;/
+$84:82DF C8          INY                    ;\
+$84:82E0 C8          INY                    ;|
+$84:82E1 B3 05       LDA ($05,s),y[$84:AD48];} $14 = [(return address) + 3] (BTS)
+$84:82E3 85 14       STA $14    [$7E:0014]  ;/
+$84:82E5 C8          INY                    ;\
+$84:82E6 C8          INY                    ;|
+$84:82E7 B3 05       LDA ($05,s),y[$84:AD4A];} $16 = [(return address) + 5] (number of blocks)
+$84:82E9 85 16       STA $16    [$7E:0016]  ;/
+$84:82EB A3 05       LDA $05,s  [$7E:1FEE]  ;\
+$84:82ED 18          CLC                    ;|
+$84:82EE 69 06 00    ADC #$0006             ;} (Return address) += 6
+$84:82F1 83 05       STA $05,s  [$7E:1FEE]  ;/
+$84:82F3 BD 87 1C    LDA $1C87,x[$7E:1CD5]  ;\
+$84:82F6 AA          TAX                    ;} X = [PLM block index]
 $84:82F7 4A          LSR A
 $84:82F8 48          PHA
 $84:82F9 A5 12       LDA $12    [$7E:0012]
-$84:82FB A4 16       LDY $16    [$7E:0016]
+$84:82FB A4 16       LDY $16    [$7E:0016]  ; Y = (number of blocks)
 
-$84:82FD 9F 02 00 7F STA $7F0002,x[$7F:048A]
-$84:8301 E8          INX
-$84:8302 E8          INX
-$84:8303 88          DEY
-$84:8304 D0 F7       BNE $F7    [$82FD]
+; LOOP_LEVEL_DATA
+$84:82FD 9F 02 00 7F STA $7F0002,x[$7F:048A]; $7F:0002 + [X] = (level data block)
+$84:8301 E8          INX                    ;\
+$84:8302 E8          INX                    ;} X += 2 (next block)
+$84:8303 88          DEY                    ; Decrement Y
+$84:8304 D0 F7       BNE $F7    [$82FD]     ; If [Y] != 0: go to LOOP_LEVEL_DATA
 $84:8306 E2 20       SEP #$20
-$84:8308 FA          PLX
+$84:8308 FA          PLX                    ; X = [PLM block index] / 2
 $84:8309 A5 14       LDA $14    [$7E:0014]
-$84:830B A4 16       LDY $16    [$7E:0016]
+$84:830B A4 16       LDY $16    [$7E:0016]  ; Y = (number of blocks)
 
-$84:830D 9F 02 64 7F STA $7F6402,x[$7F:6646]
-$84:8311 E8          INX
-$84:8312 88          DEY
-$84:8313 D0 F8       BNE $F8    [$830D]
+; LOOP_BTS
+$84:830D 9F 02 64 7F STA $7F6402,x[$7F:6646]; $7F:6402 + [X] = (BTS)
+$84:8311 E8          INX                    ; Increment X (next block)
+$84:8312 88          DEY                    ; Decrement Y
+$84:8313 D0 F8       BNE $F8    [$830D]     ; If [Y] != 0: go to LOOP_BTS
 $84:8315 C2 20       REP #$20
 $84:8317 7A          PLY
 $84:8318 FA          PLX
@@ -352,13 +356,13 @@ $84:83C2 6B          RTL
 $84:83C3 08          PHP
 $84:83C4 C2 30       REP #$30
 $84:83C6 DA          PHX
-$84:83C7 A2 4E 00    LDX #$004E
-
-$84:83CA 9E 37 1C    STZ $1C37,x[$7E:1C85]
-$84:83CD CA          DEX
-$84:83CE CA          DEX
-$84:83CF 10 F9       BPL $F9    [$83CA]
-$84:83D1 9C 2D 1C    STZ $1C2D  [$7E:1C2D]
+$84:83C7 A2 4E 00    LDX #$004E             ;\
+                                            ;|
+$84:83CA 9E 37 1C    STZ $1C37,x[$7E:1C85]  ;|
+$84:83CD CA          DEX                    ;} PLM IDs = 0
+$84:83CE CA          DEX                    ;|
+$84:83CF 10 F9       BPL $F9    [$83CA]     ;/
+$84:83D1 9C 2D 1C    STZ $1C2D  [$7E:1C2D]  ; PLM item GFX index = 0
 $84:83D4 FA          PLX
 $84:83D5 28          PLP
 $84:83D6 6B          RTL
@@ -373,6 +377,9 @@ $84:83D6 6B          RTL
 ;;     [[S] + 1] + 3: PLM ID
 ;; Returns:
 ;;     Carry: set if PLM could not be spawned
+
+; Must be called from lorom bank
+
 $84:83D7 8B          PHB
 $84:83D8 5A          PHY
 $84:83D9 DA          PHX
@@ -388,7 +395,7 @@ $84:83E5 88          DEY                    ;} Y -= 2
 $84:83E6 10 F7       BPL $F7    [$83DF]     ; If [Y] >= 0: go to LOOP
 $84:83E8 A3 06       LDA $06,s              ;\
 $84:83EA 18          CLC                    ;|
-$84:83EB 69 04 00    ADC #$0004             ;} Adjust return address
+$84:83EB 69 04 00    ADC #$0004             ;} (Return address) += 4
 $84:83EE 83 06       STA $06,s              ;/
 $84:83F0 FA          PLX
 $84:83F1 7A          PLY
@@ -399,7 +406,7 @@ $84:83F4 6B          RTL                    ;} Return carry set
 ; BRANCH_FOUND
 $84:83F5 E2 20       SEP #$20
 $84:83F7 A3 08       LDA $08,s  [$7E:1FF6]  ;\
-$84:83F9 48          PHA                    ;} DB = caller bank
+$84:83F9 48          PHA                    ;} DB = (caller bank)
 $84:83FA AB          PLB                    ;/
 $84:83FB BB          TYX                    ;\
 $84:83FC A0 02 00    LDY #$0002             ;|
@@ -408,7 +415,7 @@ $84:8401 8D 02 42    STA $4202  [$7E:4202]  ;|
 $84:8404 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $84:8407 8D 03 42    STA $4203  [$7E:4203]  ;|
 $84:840A A0 01 00    LDY #$0001             ;|
-$84:840D B3 06       LDA ($06,s),y[$80:A11E];} PLM block index = ([return address + 1] * [room width] + [return address + 2]) * 2
+$84:840D B3 06       LDA ($06,s),y[$80:A11E];} PLM block index = ([(return address) + 1] * [room width] + [(return address) + 2]) * 2
 $84:840F C2 20       REP #$20               ;|
 $84:8411 29 FF 00    AND #$00FF             ;|
 $84:8414 18          CLC                    ;|
@@ -416,7 +423,7 @@ $84:8415 6D 16 42    ADC $4216  [$7E:4216]  ;|
 $84:8418 0A          ASL A                  ;|
 $84:8419 9D 87 1C    STA $1C87,x[$7E:1CD5]  ;/
 $84:841C A0 03 00    LDY #$0003             ;\
-$84:841F B3 06       LDA ($06,s),y[$80:A120];} A = [return address + 3] (PLM ID)
+$84:841F B3 06       LDA ($06,s),y[$80:A120];} A = [(return address) + 3] (PLM ID)
 $84:8421 9B          TXY
 $84:8422 AA          TAX
 $84:8423 A3 06       LDA $06,s  [$7E:1FF4]  ;\
@@ -450,11 +457,7 @@ $84:8465 7A          PLY
 $84:8466 AB          PLB
 $84:8467 18          CLC                    ;\
 $84:8468 6B          RTL                    ;} Return carry clear
-}
 
-
-;;; $8469: RTS ;;;
-{
 $84:8469 60          RTS
 }
 
@@ -530,11 +533,7 @@ $84:84E2 AB          PLB
 $84:84E3 28          PLP
 $84:84E4 18          CLC                    ;\
 $84:84E5 6B          RTL                    ;} Return carry clear
-}
 
-
-;;; $84E6: RTS ;;;
-{
 $84:84E6 60          RTS
 }
 
@@ -590,11 +589,7 @@ $84:8539 FA          PLX
 $84:853A 7A          PLY
 $84:853B AB          PLB
 $84:853C 6B          RTL
-}
 
-
-;;; $853D: RTS ;;;
-{
 $84:853D 60          RTS
 }
 
@@ -668,11 +663,7 @@ $84:85AF FA          PLX
 $84:85B0 7A          PLY
 $84:85B1 AB          PLB
 $84:85B2 6B          RTL
-}
 
-
-;;; $85B3: RTS ;;;
-{
 $84:85B3 60          RTS
 }
 
@@ -720,7 +711,7 @@ $84:85EB BC 27 1D    LDY $1D27,x[$7E:1D75]  ; Y = [PLM instruction list pointer]
 
 ; LOOP
 $84:85EE B9 00 00    LDA $0000,y[$84:B7E9]  ;\
-$84:85F1 10 0A       BPL $0A    [$85FD]     ;} If [[Y]] is negative:
+$84:85F1 10 0A       BPL $0A    [$85FD]     ;} If [[Y]] & 8000h != 0:
 $84:85F3 85 12       STA $12    [$7E:0012]  ; $12 = [[Y]] (ASM instruction pointer)
 $84:85F5 C8          INY                    ;\
 $84:85F6 C8          INY                    ;} Y += 2
@@ -757,7 +748,7 @@ $84:8628 AA          TAX                    ;/
 $84:8629 B9 00 00    LDA $0000,y[$84:A827]  ;\
 $84:862C 30 19       BMI $19    [$8647]     ;} If [[Y]] & 8000h: go to BRANCH_COLUMN
 $84:862E 29 FF 00    AND #$00FF             ;\
-$84:8631 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]] & FFh (number of tiles)
+$84:8631 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]] & FFh (number of blocks)
 $84:8633 C8          INY                    ;\
 $84:8634 C8          INY                    ;} Y += 2
 
@@ -774,7 +765,7 @@ $84:8644 4C 64 86    JMP $8664  [$84:8664]  ; Go to BRANCH_NEXT
 
 ; BRANCH_COLUMN
 $84:8647 29 FF 00    AND #$00FF             ;\
-$84:864A 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]] & FFh (number of tiles)
+$84:864A 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]] & FFh (number of blocks)
 $84:864C C8          INY                    ;\
 $84:864D C8          INY                    ;} Y += 2
 
@@ -796,7 +787,7 @@ $84:8664 B9 00 00    LDA $0000,y[$84:A831]  ;\
 $84:8667 D0 01       BNE $01    [$866A]     ;} If [[Y]] = 0: return
 $84:8669 60          RTS                    ;/
 
-$84:866A 88          DEY                    ; --Y
+$84:866A 88          DEY                    ; Decrement Y
 $84:866B B9 00 00    LDA $0000,y[$84:9F28]  ;\
 $84:866E EB          XBA                    ;|
 $84:866F 10 05       BPL $05    [$8676]     ;|
@@ -1022,7 +1013,7 @@ $84:8763 60          RTS
 ;;; $8764: Instruction - load item PLM GFX ;;;
 {
 ;; Parameter
-;;     [Y]:     Pointer to GFX of two blocks (each composed of 4 tiles in the following order)
+;;     [Y]: Pointer to GFX of two blocks (each composed of 4 tiles in the following order)
 ;;     [Y] + 2: Palette index - block 1 - top-left
 ;;     [Y] + 3: Palette index - block 1 - top-right
 ;;     [Y] + 4: Palette index - block 1 - bottom-left
@@ -1041,9 +1032,9 @@ $84:8771 8D 2D 1C    STA $1C2D  [$7E:1C2D]  ;/
 $84:8774 BD CD 87    LDA $87CD,x[$84:87CD]  ;\
 $84:8777 85 12       STA $12    [$7E:0012]  ;} $12 = [$87CD + [X]] (VRAM address)
 $84:8779 BD D5 87    LDA $87D5,x[$84:87D5]  ;\
-$84:877C 85 14       STA $14    [$7E:0014]  ;} $14 = [$87D5 + [X]] (tile data offset)
+$84:877C 85 14       STA $14    [$7E:0014]  ;} $14 = [$87D5 + [X]] (tile table index)
 $84:877E BD DD 87    LDA $87DD,x[$84:87DD]  ;\
-$84:8781 85 16       STA $16    [$7E:0016]  ;} $16 = [$87DD + [X]] (starting tile number)
+$84:8781 85 16       STA $16    [$7E:0016]  ;} $16 = [$87DD + [X]] (tile number)
 $84:8783 98          TYA                    ;\
 $84:8784 9D 2F 1C    STA $1C2F,x[$7E:1C2F]  ;} Item PLM GFX pointers + [X] = [Y]
 $84:8787 AE 30 03    LDX $0330  [$7E:0330]  ;\
@@ -1052,7 +1043,7 @@ $84:878D 95 D0       STA $D0,x  [$7E:00D0]  ;|
 $84:878F B9 00 00    LDA $0000,y[$84:E3F1]  ;|
 $84:8792 95 D2       STA $D2,x  [$7E:00D2]  ;|
 $84:8794 A9 89 00    LDA #$0089             ;|
-$84:8797 95 D4       STA $D4,x  [$7E:00D4]  ;} $89:[[Y]]..[[Y]]+FFh -> VRAM [$12]..[$12]+7Fh
+$84:8797 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of 100h bytes from $89:0000 to VRAM [$12]
 $84:8799 A5 12       LDA $12    [$7E:0012]  ;|
 $84:879B 95 D5       STA $D5,x  [$7E:00D5]  ;|
 $84:879D 8A          TXA                    ;|
@@ -1061,34 +1052,34 @@ $84:879F 69 07 00    ADC #$0007             ;|
 $84:87A2 8D 30 03    STA $0330  [$7E:0330]  ;/
 $84:87A5 C8          INY                    ;\
 $84:87A6 C8          INY                    ;} Y += 2
-$84:87A7 A6 14       LDX $14    [$7E:0014]  ; X = [$14] (tile data offset)
+$84:87A7 A6 14       LDX $14    [$7E:0014]  ; X = [$14] (tile table index)
 $84:87A9 8A          TXA                    ;\
 $84:87AA 18          CLC                    ;|
-$84:87AB 69 10 00    ADC #$0010             ;} $18 = [X] + 10h (tile data end offset)
+$84:87AB 69 10 00    ADC #$0010             ;} $18 = (tile table index) + 10h (tile table end index)
 $84:87AE 85 18       STA $18    [$7E:0018]  ;/
 
 ; LOOP
 $84:87B0 B9 00 00    LDA $0000,y[$84:E3F3]  ;\
-$84:87B3 29 FF 00    AND #$00FF             ;|
-$84:87B6 EB          XBA                    ;|
+$84:87B3 29 FF 00    AND #$00FF             ;} A = [[Y]] (palette index)
+$84:87B6 EB          XBA                    ;\
 $84:87B7 0A          ASL A                  ;|
-$84:87B8 0A          ASL A                  ;} $7E:A000 + [X] = [[Y]] * 400h + [$16]
-$84:87B9 18          CLC                    ;|
+$84:87B8 0A          ASL A                  ;|
+$84:87B9 18          CLC                    ;} Tile table entry = [A] * 400h + (tile number)
 $84:87BA 65 16       ADC $16    [$7E:0016]  ;|
 $84:87BC 9F 00 A0 7E STA $7EA000,x[$7E:A470];/
-$84:87C0 E6 16       INC $16    [$7E:0016]  ; $16 += 1 (next tile number)
+$84:87C0 E6 16       INC $16    [$7E:0016]  ; (Tile number) += 1
 $84:87C2 C8          INY                    ; Y += 1 (next tile palette)
 $84:87C3 E8          INX                    ;\
-$84:87C4 E8          INX                    ;} X += 2 (next tile data offset)
+$84:87C4 E8          INX                    ;} X += 2 (next tile table entry)
 $84:87C5 E4 18       CPX $18    [$7E:0018]  ;\
-$84:87C7 D0 E7       BNE $E7    [$87B0]     ;} If [X] != [$18]: go to LOOP
+$84:87C7 D0 E7       BNE $E7    [$87B0]     ;} If [X] != (tile table end index): go to LOOP
 $84:87C9 AE 27 1C    LDX $1C27  [$7E:1C27]
 $84:87CC 60          RTS
 
 ; VRAM addresses
 $84:87CD             dw 3E00,3E80,3F00,3F80
 
-; Tile data offsets
+; Tile table indices
 $84:87D5             dw 0470,0480,0490,04A0
 
 ; Starting tile numbers
@@ -1098,23 +1089,23 @@ $84:87DD             dw 03E0,03E8,03F0,03F8
 
 ;;; $87E5: Instruction - transfer [[Y]] bytes from [[Y] + 2] to VRAM [[Y] + 5] ;;;
 {
-$84:87E5 AE 30 03    LDX $0330  [$7E:0330]
-$84:87E8 B9 00 00    LDA $0000,y[$84:D378]
-$84:87EB 95 D0       STA $D0,x  [$7E:00D0]
-$84:87ED B9 02 00    LDA $0002,y[$84:D37A]
-$84:87F0 95 D2       STA $D2,x  [$7E:00D2]
-$84:87F2 B9 03 00    LDA $0003,y[$84:D37B]
-$84:87F5 95 D3       STA $D3,x  [$7E:00D3]
-$84:87F7 B9 05 00    LDA $0005,y[$84:D37D]
-$84:87FA 95 D5       STA $D5,x  [$7E:00D5]
-$84:87FC 8A          TXA
-$84:87FD 18          CLC
-$84:87FE 69 07 00    ADC #$0007
-$84:8801 8D 30 03    STA $0330  [$7E:0330]
-$84:8804 98          TYA
-$84:8805 18          CLC
-$84:8806 69 07 00    ADC #$0007
-$84:8809 A8          TAY
+$84:87E5 AE 30 03    LDX $0330  [$7E:0330]  ;\
+$84:87E8 B9 00 00    LDA $0000,y[$84:D378]  ;|
+$84:87EB 95 D0       STA $D0,x  [$7E:00D0]  ;|
+$84:87ED B9 02 00    LDA $0002,y[$84:D37A]  ;|
+$84:87F0 95 D2       STA $D2,x  [$7E:00D2]  ;|
+$84:87F2 B9 03 00    LDA $0003,y[$84:D37B]  ;|
+$84:87F5 95 D3       STA $D3,x  [$7E:00D3]  ;} Queue transfer of [[Y]] bytes from [[Y] + 2] to VRAM [[Y] + 5]
+$84:87F7 B9 05 00    LDA $0005,y[$84:D37D]  ;|
+$84:87FA 95 D5       STA $D5,x  [$7E:00D5]  ;|
+$84:87FC 8A          TXA                    ;|
+$84:87FD 18          CLC                    ;|
+$84:87FE 69 07 00    ADC #$0007             ;|
+$84:8801 8D 30 03    STA $0330  [$7E:0330]  ;/
+$84:8804 98          TYA                    ;\
+$84:8805 18          CLC                    ;|
+$84:8806 69 07 00    ADC #$0007             ;} Y += 7
+$84:8809 A8          TAY                    ;/
 $84:880A AE 27 1C    LDX $1C27  [$7E:1C27]
 $84:880D 60          RTS
 }
@@ -1122,124 +1113,126 @@ $84:880D 60          RTS
 
 ;;; $880E: Instruction - go to [[Y] + 1] if any of the boss bits [[Y]] are set ;;;
 {
-$84:880E B9 00 00    LDA $0000,y[$84:AD3A]
-$84:8811 C8          INY
-$84:8812 29 FF 00    AND #$00FF
-$84:8815 22 DC 81 80 JSL $8081DC[$80:81DC]
-$84:8819 90 03       BCC $03    [$881E]
-$84:881B 4C 24 87    JMP $8724  [$84:8724]
+$84:880E B9 00 00    LDA $0000,y[$84:AD3A]  ; A = [[Y]]
+$84:8811 C8          INY                    ; Y += 1
+$84:8812 29 FF 00    AND #$00FF             ;\
+$84:8815 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If any of the boss bits [[Y]] are set:
+$84:8819 90 03       BCC $03    [$881E]     ;/
+$84:881B 4C 24 87    JMP $8724  [$84:8724]  ; Go to go to [[Y]]
 
-$84:881E C8          INY
-$84:881F C8          INY
+$84:881E C8          INY                    ;\
+$84:881F C8          INY                    ;} Y += 2
 $84:8820 60          RTS
 }
 
 
 ;;; $8821: Unused. Instruction - set the boss bits [[Y]] ;;;
 {
-$84:8821 B9 00 00    LDA $0000,y
-$84:8824 29 FF 00    AND #$00FF
-$84:8827 22 A6 81 80 JSL $8081A6[$80:81A6]
-$84:882B C8          INY
+$84:8821 B9 00 00    LDA $0000,y            ;\
+$84:8824 29 FF 00    AND #$00FF             ;} Set boss bits [[Y]] for current area
+$84:8827 22 A6 81 80 JSL $8081A6[$80:81A6]  ;/
+$84:882B C8          INY                    ; Increment Y
 $84:882C 60          RTS
 }
 
 
 ;;; $882D: Instruction - go to [[Y] + 2] if the event [[Y]] is set ;;;
 {
-$84:882D B9 00 00    LDA $0000,y[$84:D4D6]
-$84:8830 C8          INY
-$84:8831 C8          INY
-$84:8832 22 33 82 80 JSL $808233[$80:8233]
-$84:8836 90 03       BCC $03    [$883B]
-$84:8838 4C 24 87    JMP $8724  [$84:8724]
-
-$84:883B C8          INY
-$84:883C C8          INY
+$84:882D B9 00 00    LDA $0000,y[$84:D4D6]  ; A = [[Y]]
+$84:8830 C8          INY                    ;\
+$84:8831 C8          INY                    ;} Y += 2
+$84:8832 22 33 82 80 JSL $808233[$80:8233]  ;\
+$84:8836 90 03       BCC $03    [$883B]     ;} If the event [[Y]] is marked:
+$84:8838 4C 24 87    JMP $8724  [$84:8724]  ; Go to go to [[Y]]
+                                            
+$84:883B C8          INY                    ;\
+$84:883C C8          INY                    ;} Y += 2
 $84:883D 60          RTS
 }
 
 
 ;;; $883E: Instruction - set the event [[Y]] ;;;
 {
-$84:883E B9 00 00    LDA $0000,y[$84:D511]
-$84:8841 22 FA 81 80 JSL $8081FA[$80:81FA]
-$84:8845 C8          INY
-$84:8846 C8          INY
+$84:883E B9 00 00    LDA $0000,y[$84:D511]  ;\
+$84:8841 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event [[Y]]
+$84:8845 C8          INY                    ;\
+$84:8846 C8          INY                    ;} Y += 2
 $84:8847 60          RTS
 }
 
 
-;;; $8848: Instruction - go to [[Y]] if the room argument chozo is set ;;;
+;;; $8848: Instruction - go to [[Y]] if room argument chozo block destroyed ;;;
 {
-; Negative room argument => chozo is not set
-$84:8848 DA          PHX
-$84:8849 BD C7 1D    LDA $1DC7,x
-$84:884C 30 14       BMI $14    [$8862]
-$84:884E 22 8E 81 80 JSL $80818E[$80:818E]
-$84:8852 BF 30 D8 7E LDA $7ED830,x
-$84:8856 FA          PLX
-$84:8857 2D E7 05    AND $05E7  [$7E:05E7]
-$84:885A F0 03       BEQ $03    [$885F]
-$84:885C 4C 24 87    JMP $8724  [$84:8724]
+; Negative room argument => chozo block is not destroyed
+; Used by unused chozo block PLMs $D700/D708
+$84:8848 DA          PHX                    ; >_<;
+$84:8849 BD C7 1D    LDA $1DC7,x            ;\
+$84:884C 30 14       BMI $14    [$8862]     ;} If [PLM room argument] & 8000h = 0:
+$84:884E 22 8E 81 80 JSL $80818E[$80:818E]  ;\
+$84:8852 BF 30 D8 7E LDA $7ED830,x          ;|
+$84:8856 FA          PLX                    ;} If PLM room argument chozo block destroyed:
+$84:8857 2D E7 05    AND $05E7  [$7E:05E7]  ;|
+$84:885A F0 03       BEQ $03    [$885F]     ;/
+$84:885C 4C 24 87    JMP $8724  [$84:8724]  ; Go to go to [[Y]]
 
-$84:885F C8          INY
-$84:8860 C8          INY
-$84:8861 60          RTS
+$84:885F C8          INY                    ;\
+$84:8860 C8          INY                    ;} Y += 2
+$84:8861 60          RTS                    ; Return
 
 $84:8862 FA          PLX
 $84:8863 80 FA       BRA $FA    [$885F]
 }
 
 
-;;; $8865: Instruction - set the room argument chozo bit ;;;
+;;; $8865: Instruction - set room argument chozo block destroyed ;;;
 {
-; Negative room argument => chozo is not set
+; Negative room argument => chozo block destroyed flag isn't set
+; Used by unused chozo block PLMs $D700/D708
 $84:8865 DA          PHX
-$84:8866 BD C7 1D    LDA $1DC7,x
-$84:8869 30 0F       BMI $0F    [$887A]
-$84:886B 22 8E 81 80 JSL $80818E[$80:818E]
-$84:886F BF 30 D8 7E LDA $7ED830,x
-$84:8873 0D E7 05    ORA $05E7  [$7E:05E7]
-$84:8876 9F 30 D8 7E STA $7ED830,x
+$84:8866 BD C7 1D    LDA $1DC7,x            ;\
+$84:8869 30 0F       BMI $0F    [$887A]     ;} If [PLM room argument] & 8000h = 0:
+$84:886B 22 8E 81 80 JSL $80818E[$80:818E]  ;\
+$84:886F BF 30 D8 7E LDA $7ED830,x          ;|
+$84:8873 0D E7 05    ORA $05E7  [$7E:05E7]  ;} Set PLM room argument chozo block destroyed
+$84:8876 9F 30 D8 7E STA $7ED830,x          ;/
 
 $84:887A FA          PLX
 $84:887B 60          RTS
 }
 
 
-;;; $887C: Instruction - go to [[Y]] if the room argument item is set ;;;
+;;; $887C: Instruction - go to [[Y]] if the room argument item is collected ;;;
 {
-; Negative room argument => item is not set
-$84:887C DA          PHX
-$84:887D BD C7 1D    LDA $1DC7,x[$7E:1E0B]
-$84:8880 30 14       BMI $14    [$8896]
-$84:8882 22 8E 81 80 JSL $80818E[$80:818E]
-$84:8886 BF 70 D8 7E LDA $7ED870,x[$7E:D873]
-$84:888A FA          PLX
-$84:888B 2D E7 05    AND $05E7  [$7E:05E7]
-$84:888E F0 03       BEQ $03    [$8893]
-$84:8890 4C 24 87    JMP $8724  [$84:8724]
-
-$84:8893 C8          INY
-$84:8894 C8          INY
-$84:8895 60          RTS
+; Negative room argument => item is not collected
+$84:887C DA          PHX                    ; >_<;
+$84:887D BD C7 1D    LDA $1DC7,x[$7E:1E0B]  ;\
+$84:8880 30 14       BMI $14    [$8896]     ;} If [PLM room argument] & 8000h = 0:
+$84:8882 22 8E 81 80 JSL $80818E[$80:818E]  ;\
+$84:8886 BF 70 D8 7E LDA $7ED870,x[$7E:D873];|
+$84:888A FA          PLX                    ;} If PLM room argument item collected:
+$84:888B 2D E7 05    AND $05E7  [$7E:05E7]  ;|
+$84:888E F0 03       BEQ $03    [$8893]     ;/
+$84:8890 4C 24 87    JMP $8724  [$84:8724]  ; Go to go to [[Y]]
+                                            
+$84:8893 C8          INY                    ;\
+$84:8894 C8          INY                    ;} Y += 2
+$84:8895 60          RTS                    ; Return
 
 $84:8896 FA          PLX
 $84:8897 80 FA       BRA $FA    [$8893]
 }
 
 
-;;; $8899: Instruction - set the room argument item ;;;
+;;; $8899: Instruction - set the room argument item collected ;;;
 {
-; Negative room argument => item is not set
+; Negative room argument => item collected is not set
 $84:8899 DA          PHX
-$84:889A BD C7 1D    LDA $1DC7,x[$7E:1E0B]
-$84:889D 30 0F       BMI $0F    [$88AE]
-$84:889F 22 8E 81 80 JSL $80818E[$80:818E]
-$84:88A3 BF 70 D8 7E LDA $7ED870,x[$7E:D873]
-$84:88A7 0D E7 05    ORA $05E7  [$7E:05E7]
-$84:88AA 9F 70 D8 7E STA $7ED870,x[$7E:D873]
+$84:889A BD C7 1D    LDA $1DC7,x[$7E:1E0B]  ;\
+$84:889D 30 0F       BMI $0F    [$88AE]     ;} If [PLM room argument] & 8000h = 0:
+$84:889F 22 8E 81 80 JSL $80818E[$80:818E]  ;\
+$84:88A3 BF 70 D8 7E LDA $7ED870,x[$7E:D873];|
+$84:88A7 0D E7 05    ORA $05E7  [$7E:05E7]  ;} Set PLM room argument chozo block destroyed
+$84:88AA 9F 70 D8 7E STA $7ED870,x[$7E:D873];/
 
 $84:88AE FA          PLX
 $84:88AF 60          RTS
@@ -1439,30 +1432,30 @@ $84:8A23 60          RTS
 
 ;;; $8A24: Instruction - link instruction = [[Y]] ;;;
 {
-$84:8A24 B9 00 00    LDA $0000,y[$84:C1A2]
-$84:8A27 9F BC DE 7E STA $7EDEBC,x[$7E:DF08]
-$84:8A2B C8          INY
-$84:8A2C C8          INY
+$84:8A24 B9 00 00    LDA $0000,y[$84:C1A2]  ;\
+$84:8A27 9F BC DE 7E STA $7EDEBC,x[$7E:DF08];} PLM link instruction = [[Y]]
+$84:8A2B C8          INY                    ;\
+$84:8A2C C8          INY                    ;} Y += 2
 $84:8A2D 60          RTS
 }
 
 
 ;;; $8A2E: Instruction - call [[Y]] ;;;
 {
-$84:8A2E 98          TYA
-$84:8A2F 1A          INC A
-$84:8A30 1A          INC A
-$84:8A31 9F BC DE 7E STA $7EDEBC,x[$7E:DF0A]
-$84:8A35 B9 00 00    LDA $0000,y[$84:E482]
-$84:8A38 A8          TAY
+$84:8A2E 98          TYA                    ;\
+$84:8A2F 1A          INC A                  ;|
+$84:8A30 1A          INC A                  ;} PLM link instruction = [Y] + 2
+$84:8A31 9F BC DE 7E STA $7EDEBC,x[$7E:DF0A];/
+$84:8A35 B9 00 00    LDA $0000,y[$84:E482]  ;\
+$84:8A38 A8          TAY                    ;} Y = [[Y]]
 $84:8A39 60          RTS
 }
 
 
 ;;; $8A3A: Instruction - return ;;;
 {
-$84:8A3A BF BC DE 7E LDA $7EDEBC,x[$7E:DF0A]
-$84:8A3E A8          TAY
+$84:8A3A BF BC DE 7E LDA $7EDEBC,x[$7E:DF0A];\
+$84:8A3E A8          TAY                    ;} Y = [PLM link instruction]
 $84:8A3F 60          RTS
 }
 
@@ -1502,21 +1495,21 @@ $84:8A71 60          RTS
 ;;; $8A72: Instruction - go to [[Y]] if the room argument door is set ;;;
 {
 ; Negative room argument => door is not set
-$84:8A72 DA          PHX
-$84:8A73 BD C7 1D    LDA $1DC7,x[$7E:1E13]
-$84:8A76 30 16       BMI $16    [$8A8E]
-$84:8A78 22 8E 81 80 JSL $80818E[$80:818E]
-$84:8A7C BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B0]
-$84:8A80 FA          PLX
-$84:8A81 2D E7 05    AND $05E7  [$7E:05E7]
-$84:8A84 F0 05       BEQ $05    [$8A8B]
-$84:8A86 B9 00 00    LDA $0000,y[$84:C31A]
-$84:8A89 A8          TAY
-$84:8A8A 60          RTS
-
-$84:8A8B C8          INY
-$84:8A8C C8          INY
-$84:8A8D 60          RTS
+$84:8A72 DA          PHX                    ; >_<;
+$84:8A73 BD C7 1D    LDA $1DC7,x[$7E:1E13]  ;\
+$84:8A76 30 16       BMI $16    [$8A8E]     ;} If [PLM room argument] & 8000h = 0:
+$84:8A78 22 8E 81 80 JSL $80818E[$80:818E]  ;\
+$84:8A7C BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B0];|
+$84:8A80 FA          PLX                    ;} If PLM room argument door is set:
+$84:8A81 2D E7 05    AND $05E7  [$7E:05E7]  ;|
+$84:8A84 F0 05       BEQ $05    [$8A8B]     ;/
+$84:8A86 B9 00 00    LDA $0000,y[$84:C31A]  ;\
+$84:8A89 A8          TAY                    ;} Y = [[Y]]
+$84:8A8A 60          RTS                    ; Return
+                                            
+$84:8A8B C8          INY                    ;\
+$84:8A8C C8          INY                    ;} Y += 2
+$84:8A8D 60          RTS                    ; Return
 
 $84:8A8E FA          PLX
 $84:8A8F 80 FA       BRA $FA    [$8A8B]
@@ -1535,7 +1528,7 @@ $84:8AA1 B0 04       BCS $04    [$8AA7]     ;/
 $84:8AA3 C8          INY                    ;\
 $84:8AA4 C8          INY                    ;} Y += 3
 $84:8AA5 C8          INY                    ;/
-$84:8AA6 60          RTS
+$84:8AA6 60          RTS                    ; Return
 
 $84:8AA7 DA          PHX
 $84:8AA8 BD C7 1D    LDA $1DC7,x[$7E:1E13]  ;\
@@ -1550,47 +1543,47 @@ $84:8ABD 09 00 80    ORA #$8000             ;\
 $84:8AC0 9D C7 1D    STA $1DC7,x[$7E:1E13]  ;} PLM room argument |= 8000h
 $84:8AC3 A9 A6 8A    LDA #$8AA6             ;\
 $84:8AC6 9D D7 1C    STA $1CD7,x[$7E:1D23]  ;} Clear PLM pre-instruction
-$84:8AC9 C8          INY                    ;\
-$84:8ACA 4C 24 87    JMP $8724  [$84:8724]  ;} Instruction - go to [[Y] + 1]
+$84:8AC9 C8          INY                    ; Y += 1
+$84:8ACA 4C 24 87    JMP $8724  [$84:8724]  ; Go to go to [[Y]]
 }
 
 
 ;;; $8ACD: Instruction - increment room argument; room argument = FFFFh and go to [[Y] + 1] if [room argument] >= [[Y]] ;;;
 {
 ; Used by Draygon turrets
-$84:8ACD E2 20       SEP #$20
-$84:8ACF BD C7 1D    LDA $1DC7,x[$7E:1E0F]
-$84:8AD2 1A          INC A
-$84:8AD3 D9 00 00    CMP $0000,y[$84:DCF2]
-$84:8AD6 C2 20       REP #$20
-$84:8AD8 B0 07       BCS $07    [$8AE1]
-$84:8ADA 9D C7 1D    STA $1DC7,x[$7E:1E0F]
-$84:8ADD C8          INY
-$84:8ADE C8          INY
-$84:8ADF C8          INY
-$84:8AE0 60          RTS
+$84:8ACD E2 20       SEP #$20               ;\
+$84:8ACF BD C7 1D    LDA $1DC7,x[$7E:1E0F]  ;|
+$84:8AD2 1A          INC A                  ;|
+$84:8AD3 D9 00 00    CMP $0000,y[$84:DCF2]  ;} If [PLM room argument] + 1 < [[Y]]:
+$84:8AD6 C2 20       REP #$20               ;|
+$84:8AD8 B0 07       BCS $07    [$8AE1]     ;/
+$84:8ADA 9D C7 1D    STA $1DC7,x[$7E:1E0F]  ; Increment PLM room argument
+$84:8ADD C8          INY                    ;\
+$84:8ADE C8          INY                    ;} Y += 3
+$84:8ADF C8          INY                    ;/
+$84:8AE0 60          RTS                    ; Return
 
-$84:8AE1 A9 FF FF    LDA #$FFFF
-$84:8AE4 9D C7 1D    STA $1DC7,x[$7E:1E0F]
-$84:8AE7 A9 E0 8A    LDA #$8AE0
-$84:8AEA 9D D7 1C    STA $1CD7,x[$7E:1D1F]
-$84:8AED C8          INY
-$84:8AEE 4C 24 87    JMP $8724  [$84:8724]
+$84:8AE1 A9 FF FF    LDA #$FFFF             ;\
+$84:8AE4 9D C7 1D    STA $1DC7,x[$7E:1E0F]  ;} PLM room argument = FFFFh
+$84:8AE7 A9 E0 8A    LDA #$8AE0             ;\
+$84:8AEA 9D D7 1C    STA $1CD7,x[$7E:1D1F]  ;} Clear PLM pre-instruction
+$84:8AED C8          INY                    ; Y += 1
+$84:8AEE 4C 24 87    JMP $8724  [$84:8724]  ; Go to go to [[Y]]
 }
 
 
 ;;; $8AF1: Instruction - PLM BTS = [[Y]] ;;;
 {
-$84:8AF1 DA          PHX
-$84:8AF2 BD 87 1C    LDA $1C87,x[$7E:1CBF]
-$84:8AF5 4A          LSR A
-$84:8AF6 AA          TAX
-$84:8AF7 E2 20       SEP #$20
-$84:8AF9 B9 00 00    LDA $0000,y[$84:C4B3]
-$84:8AFC 9F 02 64 7F STA $7F6402,x[$7F:6630]
-$84:8B00 C2 20       REP #$20
-$84:8B02 FA          PLX
-$84:8B03 C8          INY
+$84:8AF1 DA          PHX                    ;\
+$84:8AF2 BD 87 1C    LDA $1C87,x[$7E:1CBF]  ;|
+$84:8AF5 4A          LSR A                  ;|
+$84:8AF6 AA          TAX                    ;|
+$84:8AF7 E2 20       SEP #$20               ;} PLM BTS = [[Y]]
+$84:8AF9 B9 00 00    LDA $0000,y[$84:C4B3]  ;|
+$84:8AFC 9F 02 64 7F STA $7F6402,x[$7F:6630];|
+$84:8B00 C2 20       REP #$20               ;|
+$84:8B02 FA          PLX                    ;/
+$84:8B03 C8          INY                    ; Y += 1
 $84:8B04 60          RTS
 }
 
@@ -1620,16 +1613,16 @@ $84:8B1C BE 87 1C    LDX $1C87,y[$7E:1CCD]  ;\
 $84:8B1F B9 17 1E    LDA $1E17,y[$7E:1E5D]  ;} PLM block = [PLM respawn block]
 $84:8B22 9F 02 00 7F STA $7F0002,x[$7F:08BC];/
 
-$84:8B26 8D 69 1E    STA $1E69  [$7E:1E69]  ; $1E69 = [PLM block] (blocks)
-$84:8B29 A9 01 00    LDA #$0001             ;\
-$84:8B2C 8D 67 1E    STA $1E67  [$7E:1E67]  ;} $1E67 = 1 (number of blocks)
-$84:8B2F 9C 6B 1E    STZ $1E6B  [$7E:1E6B]  ; $1E6B = 0 (terminator)
+$84:8B26 8D 69 1E    STA $1E69  [$7E:1E69]  ;\
+$84:8B29 A9 01 00    LDA #$0001             ;|
+$84:8B2C 8D 67 1E    STA $1E67  [$7E:1E67]  ;} Custom draw instruction = 1, [PLM block], 0
+$84:8B2F 9C 6B 1E    STZ $1E6B  [$7E:1E6B]  ;/
 $84:8B32 7A          PLY
 $84:8B33 FA          PLX
 $84:8B34 A9 01 00    LDA #$0001             ;\
 $84:8B37 9F 1C DE 7E STA $7EDE1C,x[$7E:DE64];} PLM instruction timer = 1
 $84:8B3B A9 67 1E    LDA #$1E67             ;\
-$84:8B3E 9F 6C DE 7E STA $7EDE6C,x[$7E:DEB4];} PLM draw instruction pointer = $1E67
+$84:8B3E 9F 6C DE 7E STA $7EDE6C,x[$7E:DEB4];} PLM draw instruction pointer = custom draw instruction
 $84:8B42 98          TYA                    ;\
 $84:8B43 9D 27 1D    STA $1D27,x[$7E:1D6F]  ;} PLM instruction list pointer = [Y]
 $84:8B46 20 1E 86    JSR $861E  [$84:861E]  ; Process PLM draw instruction
@@ -1646,7 +1639,7 @@ $84:8B54 60          RTS
 $84:8B55 8B          PHB
 $84:8B56 DA          PHX
 $84:8B57 5A          PHY                    ; Save Y
-$84:8B58 9E 17 1E    STZ $1E17,x[$7E:1E5B]  ; PLM $1E17 = 0
+$84:8B58 9E 17 1E    STZ $1E17,x[$7E:1E5B]  ; PLM scroll triggered flag = 0
 $84:8B5B BC C7 1D    LDY $1DC7,x[$7E:1E0B]  ; Y = [PLM room argument]
 $84:8B5E F4 00 8F    PEA $8F00              ;\
 $84:8B61 AB          PLB                    ;} DB = $8F
@@ -1685,7 +1678,7 @@ $84:8B92 60          RTS
 $84:8B93 8B          PHB
 $84:8B94 DA          PHX
 $84:8B95 5A          PHY                    ; Save Y
-$84:8B96 9E 17 1E    STZ $1E17,x[$7E:1E17]  ; PLM $1E17 = 0
+$84:8B96 9E 17 1E    STZ $1E17,x[$7E:1E17]  ; PLM scroll triggered flag = 0
 $84:8B99 BC C7 1D    LDY $1DC7,x            ; Y = [PLM room argument]
 $84:8B9C F4 00 8F    PEA $8F00              ;\
 $84:8B9F AB          PLB                    ;} DB = $8F
@@ -1711,7 +1704,7 @@ $84:8BBC DA          PHX
 $84:8BBD BD 87 1C    LDA $1C87,x            ;\
 $84:8BC0 AA          TAX                    ;|
 $84:8BC1 BF 02 00 7F LDA $7F0002,x          ;|
-$84:8BC5 29 FF 0F    AND #$0FFF             ;} PLM block type = crumble
+$84:8BC5 29 FF 0F    AND #$0FFF             ;} PLM block type = special block
 $84:8BC8 09 00 B0    ORA #$B000             ;|
 $84:8BCB 9F 02 00 7F STA $7F0002,x          ;/
 $84:8BCF FA          PLX
@@ -1721,34 +1714,34 @@ $84:8BD0 60          RTS
 
 ;;; $8BD1: Unused. Instruction - queue music track [[Y]] ;;;
 {
-$84:8BD1 B9 00 00    LDA $0000,y
-$84:8BD4 29 FF 00    AND #$00FF
-$84:8BD7 22 C1 8F 80 JSL $808FC1[$80:8FC1]
-$84:8BDB C8          INY
+$84:8BD1 B9 00 00    LDA $0000,y            ;\
+$84:8BD4 29 FF 00    AND #$00FF             ;} Queue music track [[Y]]
+$84:8BD7 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;/
+$84:8BDB C8          INY                    ; Y += 1
 $84:8BDC 60          RTS
 }
 
 
 ;;; $8BDD: Instruction - clear music queue and queue music track [[Y]] ;;;
 {
-$84:8BDD DA          PHX
-$84:8BDE A2 0E 00    LDX #$000E
-
-$84:8BE1 9E 19 06    STZ $0619,x[$7E:0627]
-$84:8BE4 9E 29 06    STZ $0629,x[$7E:0637]
-$84:8BE7 CA          DEX
-$84:8BE8 CA          DEX
-$84:8BE9 10 F6       BPL $F6    [$8BE1]
-$84:8BEB FA          PLX
-$84:8BEC AD 39 06    LDA $0639  [$7E:0639]
-$84:8BEF 8D 3B 06    STA $063B  [$7E:063B]
-$84:8BF2 A9 00 00    LDA #$0000
-$84:8BF5 8D 3F 06    STA $063F  [$7E:063F]
-$84:8BF8 8D 3D 06    STA $063D  [$7E:063D]
-$84:8BFB B9 00 00    LDA $0000,y[$84:E413]
-$84:8BFE 29 FF 00    AND #$00FF
-$84:8C01 22 C1 8F 80 JSL $808FC1[$80:8FC1]
-$84:8C05 C8          INY
+$84:8BDD DA          PHX                    ;\
+$84:8BDE A2 0E 00    LDX #$000E             ;|
+                                            ;|
+$84:8BE1 9E 19 06    STZ $0619,x[$7E:0627]  ;|
+$84:8BE4 9E 29 06    STZ $0629,x[$7E:0637]  ;} Music queue entries = music queue timers = 0
+$84:8BE7 CA          DEX                    ;|
+$84:8BE8 CA          DEX                    ;|
+$84:8BE9 10 F6       BPL $F6    [$8BE1]     ;|
+$84:8BEB FA          PLX                    ;/
+$84:8BEC AD 39 06    LDA $0639  [$7E:0639]  ;\
+$84:8BEF 8D 3B 06    STA $063B  [$7E:063B]  ;} Music queue start index = [music queue next index]
+$84:8BF2 A9 00 00    LDA #$0000             ;\
+$84:8BF5 8D 3F 06    STA $063F  [$7E:063F]  ;} Music timer = 0
+$84:8BF8 8D 3D 06    STA $063D  [$7E:063D]  ; Music entry = 0
+$84:8BFB B9 00 00    LDA $0000,y[$84:E413]  ;\
+$84:8BFE 29 FF 00    AND #$00FF             ;} Queue music track [[Y]]
+$84:8C01 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;/
+$84:8C05 C8          INY                    ; Y += 1
 $84:8C06 60          RTS
 }
 
@@ -1898,14 +1891,14 @@ $84:8C8E 60          RTS
 {
 $84:8C8F DA          PHX
 $84:8C90 5A          PHY
-$84:8C91 AE 9F 07    LDX $079F  [$7E:079F]
-$84:8C94 BF 08 D9 7E LDA $7ED908,x[$7E:D908]
-$84:8C98 09 FF 00    ORA #$00FF
-$84:8C9B 9F 08 D9 7E STA $7ED908,x[$7E:D908]
-$84:8C9F A9 14 00    LDA #$0014
-$84:8CA2 22 80 80 85 JSL $858080[$85:8080]
-$84:8CA6 A9 01 00    LDA #$0001
-$84:8CA9 8D 89 07    STA $0789  [$7E:0789]
+$84:8C91 AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$84:8C94 BF 08 D9 7E LDA $7ED908,x[$7E:D908];|
+$84:8C98 09 FF 00    ORA #$00FF             ;} Set map station activated
+$84:8C9B 9F 08 D9 7E STA $7ED908,x[$7E:D908];/
+$84:8C9F A9 14 00    LDA #$0014             ;\
+$84:8CA2 22 80 80 85 JSL $858080[$85:8080]  ;} Display map data access completed message box
+$84:8CA6 A9 01 00    LDA #$0001             ;\
+$84:8CA9 8D 89 07    STA $0789  [$7E:0789]  ;} Set current area map collected flag
 $84:8CAC 7A          PLY
 $84:8CAD FA          PLX
 $84:8CAE 60          RTS
@@ -1916,16 +1909,16 @@ $84:8CAE 60          RTS
 {
 $84:8CAF DA          PHX
 $84:8CB0 5A          PHY
-$84:8CB1 AD C4 09    LDA $09C4  [$7E:09C4]
-$84:8CB4 CD C2 09    CMP $09C2  [$7E:09C2]
-$84:8CB7 F0 0D       BEQ $0D    [$8CC6]
-$84:8CB9 A9 15 00    LDA #$0015
-$84:8CBC 22 80 80 85 JSL $858080[$85:8080]
-$84:8CC0 AD C4 09    LDA $09C4  [$7E:09C4]
-$84:8CC3 8D C2 09    STA $09C2  [$7E:09C2]
+$84:8CB1 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
+$84:8CB4 CD C2 09    CMP $09C2  [$7E:09C2]  ;} If [Samus health] != [Samus max health]:
+$84:8CB7 F0 0D       BEQ $0D    [$8CC6]     ;/
+$84:8CB9 A9 15 00    LDA #$0015             ;\
+$84:8CBC 22 80 80 85 JSL $858080[$85:8080]  ;} Display energy recharge completed message box
+$84:8CC0 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
+$84:8CC3 8D C2 09    STA $09C2  [$7E:09C2]  ;} Samus health = [Samus max health]
 
-$84:8CC6 A9 01 00    LDA #$0001
-$84:8CC9 22 84 F0 90 JSL $90F084[$90:F084]
+$84:8CC6 A9 01 00    LDA #$0001             ;\
+$84:8CC9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
 $84:8CCD 7A          PLY
 $84:8CCE FA          PLX
 $84:8CCF 60          RTS
@@ -1936,23 +1929,23 @@ $84:8CCF 60          RTS
 {
 $84:8CD0 DA          PHX
 $84:8CD1 5A          PHY
-$84:8CD2 AD C8 09    LDA $09C8  [$7E:09C8]
-$84:8CD5 CD C6 09    CMP $09C6  [$7E:09C6]
-$84:8CD8 F0 0D       BEQ $0D    [$8CE7]
-$84:8CDA A9 16 00    LDA #$0016
-$84:8CDD 22 80 80 85 JSL $858080[$85:8080]
-$84:8CE1 AD C8 09    LDA $09C8  [$7E:09C8]
-$84:8CE4 8D C6 09    STA $09C6  [$7E:09C6]
-
-$84:8CE7 A9 01 00    LDA #$0001
-$84:8CEA 22 84 F0 90 JSL $90F084[$90:F084]
+$84:8CD2 AD C8 09    LDA $09C8  [$7E:09C8]  ;\
+$84:8CD5 CD C6 09    CMP $09C6  [$7E:09C6]  ;} If [Samus missiles] != [Samus max missiles]:
+$84:8CD8 F0 0D       BEQ $0D    [$8CE7]     ;/
+$84:8CDA A9 16 00    LDA #$0016             ;\
+$84:8CDD 22 80 80 85 JSL $858080[$85:8080]  ;} Display missile reload completed message box
+$84:8CE1 AD C8 09    LDA $09C8  [$7E:09C8]  ;\
+$84:8CE4 8D C6 09    STA $09C6  [$7E:09C6]  ;} Samus missiles = [Samus max missiles]
+                                            
+$84:8CE7 A9 01 00    LDA #$0001             ;\
+$84:8CEA 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
 $84:8CEE 7A          PLY
 $84:8CEF FA          PLX
 $84:8CF0 60          RTS
 }
 
 
-;;; $8CF1: Instruction - activate save station and go to [[Y]] if [save confirmation selection] = no ;;;
+;;; $8CF1: Instruction - go to [[Y]] if [save confirmation selection] = no, otherwise activate save station ;;;
 {
 $84:8CF1 DA          PHX
 $84:8CF2 5A          PHY
@@ -1991,68 +1984,69 @@ $84:8D38 60          RTS
 
 ;;; $8D39: Unused. Instruction - resume music in 6 seconds ;;;
 {
-$84:8D39 A9 68 01    LDA #$0168
-$84:8D3C 22 18 E1 82 JSL $82E118[$82:E118]
+$84:8D39 A9 68 01    LDA #$0168             ;\
+$84:8D3C 22 18 E1 82 JSL $82E118[$82:E118]  ;} Play room music track after 6 seconds
 $84:8D40 60          RTS
 }
 
 
 ;;; $8D41: Instruction - go to [[Y] + 2] if Samus is within [[Y]] columns and [[Y] + 1] rows of PLM ;;;
 {
-$84:8D41 22 90 82 84 JSL $848290[$84:8290]
-$84:8D45 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$84:8D48 4A          LSR A
-$84:8D49 4A          LSR A
-$84:8D4A 4A          LSR A
-$84:8D4B 4A          LSR A
-$84:8D4C 38          SEC
-$84:8D4D ED 29 1C    SBC $1C29  [$7E:1C29]
-$84:8D50 10 04       BPL $04    [$8D56]
-$84:8D52 49 FF FF    EOR #$FFFF
-$84:8D55 1A          INC A
+$84:8D41 22 90 82 84 JSL $848290[$84:8290]  ; Calculate PLM block co-ordinates
+$84:8D45 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$84:8D48 4A          LSR A                  ;|
+$84:8D49 4A          LSR A                  ;|
+$84:8D4A 4A          LSR A                  ;|
+$84:8D4B 4A          LSR A                  ;|
+$84:8D4C 38          SEC                    ;|
+$84:8D4D ED 29 1C    SBC $1C29  [$7E:1C29]  ;|
+$84:8D50 10 04       BPL $04    [$8D56]     ;|
+$84:8D52 49 FF FF    EOR #$FFFF             ;} If |[Samus X position] / 10h - [PLM X block]| > [[Y]]: go to BRANCH_TOO_FAR
+$84:8D55 1A          INC A                  ;|
+                                            ;|
+$84:8D56 E2 20       SEP #$20               ;|
+$84:8D58 D9 00 00    CMP $0000,y[$84:D8EF]  ;|
+$84:8D5B C2 20       REP #$20               ;|
+$84:8D5D F0 02       BEQ $02    [$8D61]     ;|
+$84:8D5F B0 21       BCS $21    [$8D82]     ;/
 
-$84:8D56 E2 20       SEP #$20
-$84:8D58 D9 00 00    CMP $0000,y[$84:D8EF]
-$84:8D5B C2 20       REP #$20
-$84:8D5D F0 02       BEQ $02    [$8D61]
-$84:8D5F B0 21       BCS $21    [$8D82]
+$84:8D61 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$84:8D64 4A          LSR A                  ;|
+$84:8D65 4A          LSR A                  ;|
+$84:8D66 4A          LSR A                  ;|
+$84:8D67 4A          LSR A                  ;|
+$84:8D68 38          SEC                    ;|
+$84:8D69 ED 2B 1C    SBC $1C2B  [$7E:1C2B]  ;|
+$84:8D6C 10 04       BPL $04    [$8D72]     ;|
+$84:8D6E 49 FF FF    EOR #$FFFF             ;} If |[Samus Y position] / 10h - [PLM Y block]| > [[Y] + 1]: go to BRANCH_TOO_FAR
+$84:8D71 1A          INC A                  ;|
+                                            ;|
+$84:8D72 E2 20       SEP #$20               ;|
+$84:8D74 D9 01 00    CMP $0001,y[$84:D8F0]  ;|
+$84:8D77 C2 20       REP #$20               ;|
+$84:8D79 F0 02       BEQ $02    [$8D7D]     ;|
+$84:8D7B B0 05       BCS $05    [$8D82]     ;/
 
-$84:8D61 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$84:8D64 4A          LSR A
-$84:8D65 4A          LSR A
-$84:8D66 4A          LSR A
-$84:8D67 4A          LSR A
-$84:8D68 38          SEC
-$84:8D69 ED 2B 1C    SBC $1C2B  [$7E:1C2B]
-$84:8D6C 10 04       BPL $04    [$8D72]
-$84:8D6E 49 FF FF    EOR #$FFFF
-$84:8D71 1A          INC A
+$84:8D7D B9 02 00    LDA $0002,y[$84:D8F1]  ;\
+$84:8D80 A8          TAY                    ;} Y = [[Y] + 2]
+$84:8D81 60          RTS                    ; Return
 
-$84:8D72 E2 20       SEP #$20
-$84:8D74 D9 01 00    CMP $0001,y[$84:D8F0]
-$84:8D77 C2 20       REP #$20
-$84:8D79 F0 02       BEQ $02    [$8D7D]
-$84:8D7B B0 05       BCS $05    [$8D82]
-
-$84:8D7D B9 02 00    LDA $0002,y[$84:D8F1]
-$84:8D80 A8          TAY
-$84:8D81 60          RTS
-
-$84:8D82 98          TYA
-$84:8D83 18          CLC
-$84:8D84 69 04 00    ADC #$0004
-$84:8D87 A8          TAY
+; BRANCH_TOO_FAR
+$84:8D82 98          TYA                    ;\
+$84:8D83 18          CLC                    ;|
+$84:8D84 69 04 00    ADC #$0004             ;} Y += 4
+$84:8D87 A8          TAY                    ;/
 $84:8D88 60          RTS
 }
 
 
 ;;; $8D89: Unused. Instruction - move PLM down one block ;;;
 {
-$84:8D89 BD 87 1C    LDA $1C87,x
-$84:8D8C 18          CLC
-$84:8D8D 6D A5 07    ADC $07A5  [$7E:07A5]
-$84:8D90 6D A5 07    ADC $07A5  [$7E:07A5]
-$84:8D93 9D 87 1C    STA $1C87,x
+$84:8D89 BD 87 1C    LDA $1C87,x            ;\
+$84:8D8C 18          CLC                    ;|
+$84:8D8D 6D A5 07    ADC $07A5  [$7E:07A5]  ;} PLM block index += [room width in blocks]
+$84:8D90 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$84:8D93 9D 87 1C    STA $1C87,x            ;/
 $84:8D96 60          RTS
 }
 }
@@ -3286,31 +3280,31 @@ $84:9ACF             dw 000D, 00FF, 00FF, 00FF, 00FF, 00FF, 00FF, 00FF, 00FF, 00
 $84:9AED             dw 000D, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF, 80FF
                         0000
 
-; Used by instruction list $D490: PLM $D708 (Lower Norfair 2x2 chozo shot block)
+; Used by instruction list $D490: Unused. PLM $D708 (Lower Norfair 2x2 chozo shot block)
 $84:9B0B             dx 0002, C64A, 524A
                         00, 01
                         0002, D66A, D26A
                         0000
 
-; Used by instruction list $D490: PLM $D708 (Lower Norfair 2x2 chozo shot block)
+; Used by instruction list $D490: Unused. PLM $D708 (Lower Norfair 2x2 chozo shot block)
 $84:9B1B             dx 0002, 8053, 8053
                         00, 01
                         0002, 8053, 8053
                         0000
 
-; Used by instruction list $D490: PLM $D708 (Lower Norfair 2x2 chozo shot block)
+; Used by instruction list $D490: Unused. PLM $D708 (Lower Norfair 2x2 chozo shot block)
 $84:9B2B             dx 0002, 8054, 8054
                         00, 01
                         0002, 8054, 8054
                         0000
 
-; Used by instruction list $D490: PLM $D708 (Lower Norfair 2x2 chozo shot block)
+; Used by instruction list $D490: Unused. PLM $D708 (Lower Norfair 2x2 chozo shot block)
 $84:9B3B             dx 0002, 0055, 0055
                         00, 01
                         0002, 0055, 0055
                         0000
 
-; Used by instruction list $D490: PLM $D708 (Lower Norfair 2x2 chozo shot block)
+; Used by instruction list $D490: Unused. PLM $D708 (Lower Norfair 2x2 chozo shot block)
 $84:9B4B             dx 0002, 00FF, 00FF
                         00, 01
                         0002, 00FF, 00FF
@@ -5380,7 +5374,7 @@ $84:AB21             dw 0004,9413,
 }
 
 
-;;; $AB27: Setup - PLM $B797 (clear Botwoon wall) - RTS ;;;
+;;; $AB27: RTS. Setup - PLM $B797 (clear Botwoon wall) ;;;
 {
 $84:AB27 60          RTS
 }
@@ -5420,6 +5414,7 @@ $84:AB58 60          RTS
 
 ;;; $AB59: Instruction - move PLM down one block ;;;
 {
+; Clone of $8D89
 $84:AB59 BD 87 1C    LDA $1C87,x[$7E:1CD3]
 $84:AB5C 18          CLC
 $84:AB5D 6D A5 07    ADC $07A5  [$7E:07A5]
@@ -5713,12 +5708,13 @@ $84:AC83             dw 0001,9703,
 
 ;;; $AC89: Pre-instruction - position Samus and give at least 10h frames of invincibility ;;;
 {
-$84:AC89 BD 17 1E    LDA $1E17,x[$7E:1E65]
-$84:AC8C 8D F6 0A    STA $0AF6  [$7E:0AF6]
-$84:AC8F BF 0C DF 7E LDA $7EDF0C,x[$7E:DF5A]
-$84:AC93 8D FA 0A    STA $0AFA  [$7E:0AFA]
-$84:AC96 A9 10 00    LDA #$0010
-$84:AC99 0C A8 18    TSB $18A8  [$7E:18A8]
+; Used for Brinstar plants
+$84:AC89 BD 17 1E    LDA $1E17,x[$7E:1E65]  ;\
+$84:AC8C 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;} Samus X position = [PLM Samus X position]
+$84:AC8F BF 0C DF 7E LDA $7EDF0C,x[$7E:DF5A];\
+$84:AC93 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;} Samus Y position = [PLM Samus Y position]
+$84:AC96 A9 10 00    LDA #$0010             ;\
+$84:AC99 0C A8 18    TSB $18A8  [$7E:18A8]  ;} Samus invincibility timer |= 10h
 $84:AC9C 60          RTS
 }
 
@@ -5738,8 +5734,8 @@ $84:ACB0 60          RTS
 
 ;;; $ACB1: Instruction - give Samus 30h frames of invincibility ;;;
 {
-$84:ACB1 A9 30 00    LDA #$0030
-$84:ACB4 8D A8 18    STA $18A8  [$7E:18A8]
+$84:ACB1 A9 30 00    LDA #$0030             ;\
+$84:ACB4 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 30h
 $84:ACB7 60          RTS
 }
 
@@ -5917,17 +5913,17 @@ $84:AE33             dx 86BC        ; Delete
 
 ;;; $AE35: Instruction - go to [[Y]] and enable movement if Samus health is full ;;;
 {
-$84:AE35 AD C4 09    LDA $09C4  [$7E:09C4]
-$84:AE38 CD C2 09    CMP $09C2  [$7E:09C2]
-$84:AE3B F0 03       BEQ $03    [$AE40]
-$84:AE3D C8          INY
-$84:AE3E C8          INY
-$84:AE3F 60          RTS
+$84:AE35 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
+$84:AE38 CD C2 09    CMP $09C2  [$7E:09C2]  ;} If [Samus health] != [Samus max health]:
+$84:AE3B F0 03       BEQ $03    [$AE40]     ;/
+$84:AE3D C8          INY                    ;\
+$84:AE3E C8          INY                    ;} Y += 2
+$84:AE3F 60          RTS                    ; Return
 
-$84:AE40 A9 01 00    LDA #$0001
-$84:AE43 22 84 F0 90 JSL $90F084[$90:F084]
-$84:AE47 B9 00 00    LDA $0000,y
-$84:AE4A A8          TAY
+$84:AE40 A9 01 00    LDA #$0001             ;\
+$84:AE43 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:AE47 B9 00 00    LDA $0000,y            ;\
+$84:AE4A A8          TAY                    ;} Y = [[Y]]
 $84:AE4B 60          RTS
 }
 
@@ -5981,30 +5977,25 @@ $84:AEBD             dx 86BC        ; Delete
 
 ;;; $AEBF: Instruction - go to [[Y]] and enable movement if Samus missiles are full ;;;
 {
-$84:AEBF AD C8 09    LDA $09C8  [$7E:09C8]
-$84:AEC2 CD C6 09    CMP $09C6  [$7E:09C6]
-$84:AEC5 F0 03       BEQ $03    [$AECA]
-$84:AEC7 C8          INY
-$84:AEC8 C8          INY
-$84:AEC9 60          RTS
-
-$84:AECA A9 01 00    LDA #$0001
-$84:AECD 22 84 F0 90 JSL $90F084[$90:F084]
-$84:AED1 B9 00 00    LDA $0000,y
-$84:AED4 A8          TAY
+$84:AEBF AD C8 09    LDA $09C8  [$7E:09C8]  ;\
+$84:AEC2 CD C6 09    CMP $09C6  [$7E:09C6]  ;} If [Samus missiles] != [Samus max missiles]:
+$84:AEC5 F0 03       BEQ $03    [$AECA]     ;/
+$84:AEC7 C8          INY                    ;\
+$84:AEC8 C8          INY                    ;} Y += 2
+$84:AEC9 60          RTS                    ; Return
+                                            
+$84:AECA A9 01 00    LDA #$0001             ;\
+$84:AECD 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:AED1 B9 00 00    LDA $0000,y            ;\
+$84:AED4 A8          TAY                    ;} Y = [[Y]]
 $84:AED5 60          RTS
 }
 
 
-;;; $AED6: Unused. Instruction list - PLM $B6F7 (nothing) ;;;
+;;; $AED6: Instruction list - PLM $B6F7 (nothing) ;;;
 {
-$84:AED6             dx 86BC        ; Delete
-}
-
-
-;;; $AED8: Unused. Instruction list ;;;
-{
-$84:AED8             dx 0010,A255,
+$84:AED6             dw 86BC        ; Delete
+$84:AED8             dw 0010,A255,
                         0010,A25D,
                         0010,A265,
                         0010,A26D,
@@ -6026,13 +6017,8 @@ $84:AED8             dx 0010,A255,
 
 ;;; $AF1C: Instruction list - PLM $B6FB (nothing) ;;;
 {
-$84:AF1C             dx 86BC        ; Delete
-}
-
-
-;;; $AF1E: Unused. Instruction list ;;;
-{
-$84:AF1E             dx 0010,A275,
+$84:AF1C             dw 86BC        ; Delete
+$84:AF1E             dw 0010,A275,
                         0010,A285,
                         0010,A295,
                         0010,A2A5,
@@ -6089,7 +6075,7 @@ $84:AF8A             dx 86B4,       ; Sleep
 }
 
 
-;;; $AF92: Unused. Instruction list - PLM $B707 (solid scroll PLM) ;;;
+;;; $AF92: Instruction list - PLM $B707 (solid scroll PLM) ;;;
 {
 $84:AF92             dx 0001,AF68,
 $84:AF96             dx 86B4,       ; Sleep
@@ -6175,7 +6161,7 @@ $84:AFE2             dx 0001,9BBB,
 {
 $84:AFE8             dx 0001,9A3F,
                         86B4,       ; Sleep
-                        8CF1,B008,  ; Activate save station and go to $B008 if [save confirmation selection] = no
+                        8CF1,B008,  ; Go to $B008 if [save confirmation selection] = no, otherwise activate save station
                         B00E,       ; Place Samus on save station
                         8C07,2E,    ; Queue sound 2Eh, sound library 1, max queued sounds allowed = 6 (saving)
                         874E,15,    ; Timer = 15h
@@ -6190,11 +6176,11 @@ $84:B008             dx B030,       ; Enable movement and set save station used
 
 ;;; $B00E: Instruction - place Samus on save station ;;;
 {
-$84:B00E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$84:B011 18          CLC
-$84:B012 69 08 00    ADC #$0008
-$84:B015 29 F0 FF    AND #$FFF0
-$84:B018 8D F6 0A    STA $0AF6  [$7E:0AF6]
+$84:B00E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$84:B011 18          CLC                    ;|
+$84:B012 69 08 00    ADC #$0008             ;} Samus X position = [Samus X position] - [Samus X position] % 10h + 8
+$84:B015 29 F0 FF    AND #$FFF0             ;|
+$84:B018 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
 $84:B01B DA          PHX
 $84:B01C 5A          PHY
 $84:B01D 22 F6 E3 91 JSL $91E3F6[$91:E3F6]  ; Make Samus face forward
@@ -6208,8 +6194,8 @@ $84:B023 60          RTS
 {
 $84:B024 DA          PHX
 $84:B025 5A          PHY
-$84:B026 A9 18 00    LDA #$0018
-$84:B029 22 80 80 85 JSL $858080[$85:8080]
+$84:B026 A9 18 00    LDA #$0018             ;\
+$84:B029 22 80 80 85 JSL $858080[$85:8080]  ;} Display save completed message box
 $84:B02D 7A          PLY
 $84:B02E FA          PLX
 $84:B02F 60          RTS
@@ -6218,10 +6204,10 @@ $84:B02F 60          RTS
 
 ;;; $B030: Instruction - enable movement and set save station used ;;;
 {
-$84:B030 A9 01 00    LDA #$0001
-$84:B033 22 84 F0 90 JSL $90F084[$90:F084]
-$84:B037 A9 01 00    LDA #$0001
-$84:B03A 8D 75 1E    STA $1E75  [$7E:1E75]
+$84:B030 A9 01 00    LDA #$0001             ;\
+$84:B033 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:B037 A9 01 00    LDA #$0001             ;\
+$84:B03A 8D 75 1E    STA $1E75  [$7E:1E75]  ;} Save station lockout flag = 1
 $84:B03D 60          RTS
 }
 
@@ -6366,17 +6352,17 @@ $84:B0EA F0 08       BEQ $08    [$B0F4]     ;/
 $84:B0EC A9 00 00    LDA #$0000             ;\
 $84:B0EF 99 37 1C    STA $1C37,y[$7E:1C85]  ;} Delete PLM
 $84:B0F2 18          CLC
-$84:B0F3 60          RTS
+$84:B0F3 60          RTS                    ; Return
 
 $84:B0F4 BE 87 1C    LDX $1C87,y[$7E:1CD5]  ;\
 $84:B0F7 BF 02 00 7F LDA $7F0002,x[$7F:0502];|
 $84:B0FB 29 FF 8F    AND #$8FFF             ;} Deactivate block
 $84:B0FE 9F 02 00 7F STA $7F0002,x[$7F:0502];/
-$84:B102 BB          TYX                    ;\
-$84:B103 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;} PLM $1E17 = [Samus X position]
-$84:B106 9D 17 1E    STA $1E17,x[$7E:1E65]  ;/
+$84:B102 BB          TYX
+$84:B103 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$84:B106 9D 17 1E    STA $1E17,x[$7E:1E65]  ;} PLM Samus X position = [Samus X position]
 $84:B109 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$84:B10C 3A          DEC A                  ;} PLM $DF0C = [Samus Y position] - 1
+$84:B10C 3A          DEC A                  ;} PLM Samus Y position = [Samus Y position] - 1
 $84:B10D 9F 0C DF 7E STA $7EDF0C,x[$7E:DF5A];/
 $84:B111 18          CLC
 $84:B112 60          RTS
@@ -6387,26 +6373,26 @@ $84:B112 60          RTS
 {
 $84:B113 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $84:B116 38          SEC                    ;|
-$84:B117 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
-$84:B11A 29 0F 00    AND #$000F             ;} If Samus top boundary is not block aligned:
-$84:B11D F0 08       BEQ $08    [$B127]     ;|
-$84:B11F A9 00 00    LDA #$0000             ;|
-$84:B122 99 37 1C    STA $1C37,y            ;/
-$84:B125 18          CLC                    ;\
-$84:B126 60          RTS                    ;} Delete PLM
+$84:B117 ED 00 0B    SBC $0B00  [$7E:0B00]  ;} If Samus top boundary is not block aligned:
+$84:B11A 29 0F 00    AND #$000F             ;|
+$84:B11D F0 08       BEQ $08    [$B127]     ;/
+$84:B11F A9 00 00    LDA #$0000             ;\
+$84:B122 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:B125 18          CLC
+$84:B126 60          RTS                    ; Return
 
-$84:B127 BE 87 1C    LDX $1C87,y[$7E:1C87]
-$84:B12A BF 02 00 7F LDA $7F0002,x
-$84:B12E 29 FF 8F    AND #$8FFF             ;\
-$84:B131 9F 02 00 7F STA $7F0002,x          ;|
-$84:B135 BB          TYX                    ;} Deactivate block
-$84:B136 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;/
-$84:B139 9D 17 1E    STA $1E17,x            ;\
-$84:B13C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} PLM $1E17 = [Samus X position]
-$84:B13F 1A          INC A                  ;/
-$84:B140 9F 0C DF 7E STA $7EDF0C,x          ;\
-$84:B144 18          CLC                    ;} PLM $DF0C = [Samus Y position] + 1
-$84:B145 60          RTS                    ;/
+$84:B127 BE 87 1C    LDX $1C87,y[$7E:1C87]  ;\
+$84:B12A BF 02 00 7F LDA $7F0002,x          ;|
+$84:B12E 29 FF 8F    AND #$8FFF             ;} Deactivate block
+$84:B131 9F 02 00 7F STA $7F0002,x          ;/
+$84:B135 BB          TYX
+$84:B136 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$84:B139 9D 17 1E    STA $1E17,x            ;} PLM Samus X position = [Samus X position]
+$84:B13C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$84:B13F 1A          INC A                  ;} PLM Samus Y position = [Samus Y position] + 1
+$84:B140 9F 0C DF 7E STA $7EDF0C,x          ;/
+$84:B144 18          CLC
+$84:B145 60          RTS
 }
 
 
@@ -6414,11 +6400,11 @@ $84:B145 60          RTS                    ;/
 {
 ;; Returns:
 ;;     Carry: Set
-$84:B146 A2 4E 00    LDX #$004E             ; X = 4Eh
+$84:B146 A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
 ; LOOP
 $84:B149 DD 87 1C    CMP $1C87,x[$7E:1CD5]  ;\
-$84:B14C F0 06       BEQ $06    [$B154]     ;} If [PLM [X] block index] = [A]: go to BRANCH_FOUND
+$84:B14C F0 06       BEQ $06    [$B154]     ;} If [PLM block index] = [A]: go to BRANCH_FOUND
 $84:B14E CA          DEX                    ;\
 $84:B14F CA          DEX                    ;} X -= 2
 $84:B150 10 F7       BPL $F7    [$B149]     ; If [X] >= 0: go to LOOP
@@ -6438,11 +6424,11 @@ $84:B164 09 0B 00    ORA #$000B             ;|
 $84:B167 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;|
 $84:B16A D0 17       BNE $17    [$B183]     ;/
 $84:B16C BF BC DE 7E LDA $7EDEBC,x[$7E:DF0A];\
-$84:B170 9D 27 1D    STA $1D27,x[$7E:1D75]  ;} PLM [X] instruction list pointer = [PLM [X] link instruction]
-$84:B173 A9 01 00    LDA #$0001             ;\
-$84:B176 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];} PLM [X] instruction timer = 1
+$84:B170 9D 27 1D    STA $1D27,x[$7E:1D75]  ;} PLM instruction list pointer = [PLM link instruction]
+$84:B173 A9 01 00    LDA #$0001             ;\    
+$84:B176 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];} PLM instruction timer = 1
 $84:B17A A9 06 00    LDA #$0006             ;\
-$84:B17D 22 84 F0 90 JSL $90F084[$90:F084]  ;} Presumably locks Samus into station
+$84:B17D 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus into recharge station
 $84:B181 38          SEC                    ;\
 $84:B182 60          RTS                    ;} Return carry set
 
@@ -6477,7 +6463,7 @@ $84:B1B8 CA          DEX                    ;} Make block two to the left a map 
 $84:B1B9 CA          DEX                    ;|
 $84:B1BA A9 48 B0    LDA #$B048             ;|
 $84:B1BD 20 B4 82    JSR $82B4  [$84:82B4]  ;/
-$84:B1C0 60          RTS
+$84:B1C0 60          RTS                    ; Return
 
 $84:B1C1 A9 76 AD    LDA #$AD76             ;\
 $84:B1C4 99 27 1D    STA $1D27,y            ;} PLM instruction list pointer = $AD76
@@ -6714,7 +6700,7 @@ $84:B343 80 EE       BRA $EE    [$B333]
 
 ;;; $B345: Setup - PLM $B63F (leftwards extension) ;;;
 {
-; Write horizontal extension block with BTS 01h and delete PLM
+; Write horizontal extension block with BTS 1 and delete PLM
 $84:B345 BE 87 1C    LDX $1C87,y[$7E:1CCD]
 $84:B348 A9 01 50    LDA #$5001
 $84:B34B 20 B4 82    JSR $82B4  [$84:82B4]
@@ -6734,7 +6720,7 @@ $84:B359 80 D8       BRA $D8    [$B333]
 
 ;;; $B35B: Setup - PLM $B647 (upwards extension) ;;;
 {
-; Write vertical extension block with BTS 01h and delete PLM
+; Write vertical extension block with BTS 1 and delete PLM
 $84:B35B BE 87 1C    LDX $1C87,y[$7E:1CD3]
 $84:B35E A9 01 D0    LDA #$D001
 $84:B361 20 B4 82    JSR $82B4  [$84:82B4]
@@ -6744,10 +6730,10 @@ $84:B364 80 CD       BRA $CD    [$B333]
 
 ;;; $B366: Skip debug draw instruction for scroll PLMs ;;;
 {
-$84:B366 B9 27 1D    LDA $1D27,y[$7E:1D75]
-$84:B369 18          CLC
-$84:B36A 69 04 00    ADC #$0004
-$84:B36D 99 27 1D    STA $1D27,y[$7E:1D75]
+$84:B366 B9 27 1D    LDA $1D27,y[$7E:1D75]  ;\
+$84:B369 18          CLC                    ;|
+$84:B36A 69 04 00    ADC #$0004             ;} PLM instruction list pointer += 4
+$84:B36D 99 27 1D    STA $1D27,y[$7E:1D75]  ;/
 $84:B370 60          RTS
 }
 
@@ -6787,7 +6773,7 @@ $84:B39A A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
 ; LOOP
 $84:B39D DD 87 1C    CMP $1C87,x[$7E:1CD5]  ;\
-$84:B3A0 F0 06       BEQ $06    [$B3A8]     ;} If [PLM [X] block index] = [A]: go to BRANCH_FOUND
+$84:B3A0 F0 06       BEQ $06    [$B3A8]     ;} If [PLM block index] = [A]: go to BRANCH_FOUND
 $84:B3A2 CA          DEX                    ;\
 $84:B3A3 CA          DEX                    ;} X -= 2
 $84:B3A4 10 F7       BPL $F7    [$B39D]     ; If [X] >= 0: Go to LOOP
@@ -6796,13 +6782,13 @@ $84:B3A6 80 FE       BRA $FE    [$B3A6]     ; Crash
 
 ; BRANCH_FOUND
 $84:B3A8 BD 17 1E    LDA $1E17,x[$7E:1E5B]  ;\
-$84:B3AB 30 13       BMI $13    [$B3C0]     ;} If PLM [X] has been triggered: return
+$84:B3AB 30 13       BMI $13    [$B3C0]     ;} If PLM has been triggered: return
 $84:B3AD A9 00 80    LDA #$8000             ;\
-$84:B3B0 9D 17 1E    STA $1E17,x[$7E:1E5B]  ;} Trigger PLM [X]
+$84:B3B0 9D 17 1E    STA $1E17,x[$7E:1E5B]  ;} Trigger PLM
 $84:B3B3 FE 27 1D    INC $1D27,x[$7E:1D6B]  ;\
-$84:B3B6 FE 27 1D    INC $1D27,x[$7E:1D6B]  ;} PLM [X] instruction list pointer += 2
+$84:B3B6 FE 27 1D    INC $1D27,x[$7E:1D6B]  ;} PLM instruction list pointer += 2
 $84:B3B9 A9 01 00    LDA #$0001             ;\
-$84:B3BC 9F 1C DE 7E STA $7EDE1C,x[$7E:DE60];} PLM [X] instruction timer = 1
+$84:B3BC 9F 1C DE 7E STA $7EDE1C,x[$7E:DE60];} PLM instruction timer = 1
 
 $84:B3C0 60          RTS
 }
@@ -6845,9 +6831,8 @@ $84:B3E2 60          RTS
 
 ;;; $B3E3: Unused. Setup - PLM $B743 (Torizo drool?) ;;;
 {
-; Spawn Torizo drool enemy projectile?
-$84:B3E3 A0 77 A9    LDY #$A977
-$84:B3E6 22 97 80 86 JSL $868097[$86:8097]
+$84:B3E3 A0 77 A9    LDY #$A977             ;\
+$84:B3E6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn enemy projectile $A977
 $84:B3EA 60          RTS
 }
 
@@ -7445,18 +7430,18 @@ $84:B7FD 9C 7C 19    STZ $197C  [$7E:197C]  ; FX Y velocity = 0
 $84:B800 9C 80 19    STZ $1980  [$7E:1980]  ; FX timer = 0
 $84:B803 9C 40 18    STZ $1840  [$7E:1840]  ; Screen shaking duration = 0
 $84:B806 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; Delete PLM
-$84:B809 60          RTS
+$84:B809 60          RTS                    ; Return
 
 $84:B80A AD 7A 19    LDA $197A  [$7E:197A]  ;\
 $84:B80D 30 17       BMI $17    [$B826]     ;} If [FX target Y position] >= 0:
 $84:B80F A9 80 FF    LDA #$FF80             ;\
-$84:B812 8D 7C 19    STA $197C  [$7E:197C]  ;} FX Y velocity = $FF80
+$84:B812 8D 7C 19    STA $197C  [$7E:197C]  ;} FX Y velocity = -80h
 $84:B815 A9 01 00    LDA #$0001             ;\
 $84:B818 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];} PLM instruction timer = 1
 $84:B81C FE 27 1D    INC $1D27,x[$7E:1D75]  ;\
 $84:B81F FE 27 1D    INC $1D27,x[$7E:1D75]  ;} PLM instruction list pointer += 2
 $84:B822 9E 77 1D    STZ $1D77,x[$7E:1DC5]  ; PLM timer = 0
-$84:B825 60          RTS
+$84:B825 60          RTS                    ; Return
 
 $84:B826 9E 37 1C    STZ $1C37,x            ; Delete PLM
 $84:B829 60          RTS
@@ -7501,7 +7486,7 @@ $84:B866 18          CLC                    ;|
 $84:B867 69 06 00    ADC #$0006             ;} PLM timer += 6
 $84:B86A 9D 77 1D    STA $1D77,x[$7E:1DC5]  ;/
 
-$84:B86D 60          RTS
+$84:B86D 60          RTS                    ; Return
 
 ; BRANCH_DONE
 $84:B86E A9 15 00    LDA #$0015             ;\
@@ -7702,9 +7687,9 @@ $84:B968             dw B3C1,B940
 
 ;;; $B96C: Setup - PLM $B974 (shot/bombed/grappled reaction, shootable, BTS 10h. Gate block) ;;;
 {
-$84:B96C 64 26       STZ $26    [$7E:0026]
-$84:B96E A9 FF FF    LDA #$FFFF
-$84:B971 85 28       STA $28    [$7E:0028]
+$84:B96C 64 26       STZ $26    [$7E:0026]  ; Remaining number of blocks left to check - 1 = 0 (don't check any more blocks)
+$84:B96E A9 FF FF    LDA #$FFFF             ;\
+$84:B971 85 28       STA $28    [$7E:0028]  ;} Remaining target number of collisions - 1 = -1 (report collision even if only partial contact)
 $84:B973 60          RTS
 }
 
@@ -7719,9 +7704,9 @@ $84:B974             dw B96C,AAE3
 {
 ; Sets the PLM respawn block, but never uses it
 $84:B978 AE DE 0D    LDX $0DDE  [$7E:0DDE]  ;\
-$84:B97B BD 18 0C    LDA $0C18,x[$7E:0C1A]  ;} If [projectile type] = 0: (not sure if this can ever happen, maybe grapple?)
+$84:B97B BD 18 0C    LDA $0C18,x[$7E:0C1A]  ;} If [projectile type] = 0: (not sure if this can ever happen, maybe grapple or last frame of power bomb)
 $84:B97E D0 0A       BNE $0A    [$B98A]     ;/
-$84:B980 29 00 0F    AND #$0F00             ; ...
+$84:B980 29 00 0F    AND #$0F00             ; >_<;
 $84:B983 A9 00 00    LDA #$0000             ;\
 $84:B986 99 37 1C    STA $1C37,y            ;} Delete PLM
 $84:B989 60          RTS                    ; Return
@@ -8343,7 +8328,7 @@ $84:BD36 BF BC DE 7E LDA $7EDEBC,x[$7E:DEFC];\
 $84:BD3A 9D 27 1D    STA $1D27,x[$7E:1D67]  ;} PLM instruction list pointer = [PLM link instruction]
 $84:BD3D A9 01 00    LDA #$0001             ;\
 $84:BD40 9F 1C DE 7E STA $7EDE1C,x[$7E:DE5C];} PLM instruction timer = 1
-$84:BD44 60          RTS
+$84:BD44 60          RTS                    ; Return
 
 $84:BD45 A9 57 00    LDA #$0057             ;\
 $84:BD48 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
@@ -8369,14 +8354,14 @@ $84:BD65 BF BC DE 7E LDA $7EDEBC,x[$7E:DF08];\
 $84:BD69 9D 27 1D    STA $1D27,x[$7E:1D73]  ;} PLM instruction list pointer = [PLM link instruction]
 $84:BD6C A9 01 00    LDA #$0001             ;\
 $84:BD6F 9F 1C DE 7E STA $7EDE1C,x[$7E:DE68];} PLM instruction timer = 1
-$84:BD73 60          RTS
+$84:BD73 60          RTS                    ; Return
 
 ; BRANCH_DUD
 $84:BD74 A9 57 00    LDA #$0057             ;\
 $84:BD77 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
 
 $84:BD7B 9E 77 1D    STZ $1D77,x[$7E:1DB1]  ; Clear PLM shot status
-$84:BD7E 60          RTS
+$84:BD7E 60          RTS                    ; Return
 
 ; BRANCH_SUPER
 $84:BD7F A9 77 00    LDA #$0077             ;\
@@ -8397,7 +8382,7 @@ $84:BD98 BF BC DE 7E LDA $7EDEBC,x[$7E:DEF6];\
 $84:BD9C 9D 27 1D    STA $1D27,x[$7E:1D61]  ;} PLM instruction list pointer = [PLM link instruction]
 $84:BD9F A9 01 00    LDA #$0001             ;\
 $84:BDA2 9F 1C DE 7E STA $7EDE1C,x[$7E:DE56];} PLM instruction timer = 1
-$84:BDA6 60          RTS
+$84:BDA6 60          RTS                    ; Return
 
 $84:BDA7 A9 57 00    LDA #$0057             ;\
 $84:BDAA 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
@@ -10432,7 +10417,7 @@ $84:CDD6 99 17 1E    STA $1E17,y            ;} Make PLM block air
 $84:CDD9 29 FF 0F    AND #$0FFF             ;|
 $84:CDDC 9F 02 00 7F STA $7F0002,x          ;/
 $84:CDE0 18          CLC
-$84:CDE1 60          RTS
+$84:CDE1 60          RTS                    ; Return
 
 $84:CDE2 A9 00 00    LDA #$0000             ;\
 $84:CDE5 99 37 1C    STA $1C37,y            ;} Delete PLM
@@ -10572,7 +10557,7 @@ $84:CEE8 C9 00 03    CMP #$0300             ;\
 $84:CEEB F0 07       BEQ $07    [$CEF4]     ;} If current projectile is power bomb: go to BRANCH_POWER_BOMB
 $84:CEED A9 00 00    LDA #$0000             ;\
 $84:CEF0 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
-$84:CEF3 60          RTS
+$84:CEF3 60          RTS                    ; Return
 
 ; BRANCH_POWER_BOMB
 $84:CEF4 BE 87 1C    LDX $1C87,y[$7E:1CCB]  ;\
@@ -10582,7 +10567,7 @@ $84:CEFE 09 58 00    ORA #$0058             ;|
 $84:CF01 99 17 1E    STA $1E17,y[$7E:1E5B]  ;/
 $84:CF04 29 FF 8F    AND #$8FFF             ;\
 $84:CF07 9F 02 00 7F STA $7F0002,x[$7F:064E];} PLM block = [PLM block] & 8000h | 58h
-$84:CF0B 60          RTS
+$84:CF0B 60          RTS                    ; Return
 
 ; BRANCH_BOMB
 $84:CF0C B9 27 1D    LDA $1D27,y[$7E:1D61]  ;\
@@ -10611,7 +10596,7 @@ $84:CF3C C9 00 03    CMP #$0300             ;\
 $84:CF3F F0 07       BEQ $07    [$CF48]     ;} If current projectile is power bomb: go to BRANCH_POWER_BOMB
 $84:CF41 A9 00 00    LDA #$0000             ;\
 $84:CF44 99 37 1C    STA $1C37,y[$7E:1C85]  ;} Delete PLM
-$84:CF47 60          RTS
+$84:CF47 60          RTS                    ; Return
 
 ; BRANCH_POWER_BOMB
 $84:CF48 BE 87 1C    LDX $1C87,y[$7E:1CD3]  ;\
@@ -10621,7 +10606,7 @@ $84:CF52 09 57 00    ORA #$0057             ;|
 $84:CF55 99 17 1E    STA $1E17,y[$7E:1E63]  ;/
 $84:CF58 29 FF 8F    AND #$8FFF             ;\
 $84:CF5B 9F 02 00 7F STA $7F0002,x[$7F:01A4];} PLM block = [PLM block] & 8000h | 57h
-$84:CF5F 60          RTS
+$84:CF5F 60          RTS                    ; Return
 
 ; BRANCH_BOMB
 $84:CF60 A9 1C C9    LDA #$C91C             ;\
@@ -10641,7 +10626,7 @@ $84:CF75 C9 00 02    CMP #$0200             ;\
 $84:CF78 F0 07       BEQ $07    [$CF81]     ;} If current projectile is super missile: go to BRANCH_SUPER_MISSILE
 $84:CF7A A9 00 00    LDA #$0000             ;\
 $84:CF7D 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
-$84:CF80 60          RTS
+$84:CF80 60          RTS                    ; Return
 
 ; BRANCH_SUPER_MISSILE
 $84:CF81 BE 87 1C    LDX $1C87,y[$7E:1CCD]  ;\
@@ -10651,7 +10636,7 @@ $84:CF8B 09 9F 00    ORA #$009F             ;|
 $84:CF8E 99 17 1E    STA $1E17,y[$7E:1E5D]  ;/
 $84:CF91 29 FF 8F    AND #$8FFF             ;\
 $84:CF94 9F 02 00 7F STA $7F0002,x[$7F:0380];} PLM block = [PLM block] & 8000h | 9Fh
-$84:CF98 60          RTS
+$84:CF98 60          RTS                    ; Return
 
 ; BRANCH_BOMB
 $84:CF99 A9 22 C9    LDA #$C922             ;\
@@ -11213,7 +11198,7 @@ $84:D408 60          RTS
 
 ;;; $D409: Unused. Pre-instruction - go to link instruction if shot with a bomb ;;;
 {
-; Used PLM $D700 (Wrecked Ship 3x4 chozo bomb block)
+; Used PLM $D700 (unused. Wrecked Ship 3x4 chozo bomb block)
 $84:D409 BD 77 1D    LDA $1D77,x        ;\
 $84:D40C 29 00 0F    AND #$0F00         ;|
 $84:D40F C9 00 05    CMP #$0500         ;} If shot with bomb:
@@ -11230,12 +11215,12 @@ $84:D425 60          RTS
 
 ;;; $D426: Unused. Instruction list - PLM $D700 (Wrecked Ship 3x4 chozo bomb block) ;;;
 {
-$84:D426             dx 8848,D448,  ; Go to $D448 if the room argument chozo is set
+$84:D426             dx 8848,D448,  ; Go to $D448 if room argument chozo block destroyed
                         8A24,D43A,  ; Link instruction = $D43A
                         86C1,D409   ; Pre-instruction = go to link instruction if shot with a bomb
 $84:D432             dx 0077,9D59,
                         8724,D432   ; Go to $D432
-$84:D43A             dx 8865,       ; Set the room argument chozo bit
+$84:D43A             dx 8865,       ; Set room argument chozo block destroyed
                         0004,9D7D,
                         0004,9DA1,
                         0004,9DC5
@@ -11282,9 +11267,9 @@ $84:D48F 60          RTS
 }
 
 
-;;; $D490: Instruction list - PLM $D708 (Lower Norfair 2x2 chozo shot block) ;;;
+;;; $D490: Instruction list - PLM $D708 (unused. Lower Norfair 2x2 chozo shot block) ;;;
 {
-$84:D490             dx 8848,D4B8,  ; Go to $D4B8 if the room argument chozo is set
+$84:D490             dx 8848,D4B8,  ; Go to $D4B8 if room argument chozo block destroyed
                         8A24,D4A2,  ; Link instruction = $D4A2
                         86C1,BD0F,  ; Pre-instruction = go to link instruction if shot
                         0001,9B0B,
@@ -11293,7 +11278,7 @@ $84:D4A2             dx 0004,9B1B,
                         0004,9B2B,
                         0004,9B3B,
                         0001,9B4B,
-                        8865,       ; Set the room argument chozo bit
+                        8865,       ; Set room argument chozo block destroyed
                         D4BE,       ; NOP
                         86BC        ; Delete
 $84:D4B8             dx 0001,9B4B,
@@ -12194,7 +12179,7 @@ $84:DB7B 9D 27 1D    STA $1D27,x[$7E:1D6F]  ;} PLM instruction list pointer = [P
 $84:DB7E A9 01 00    LDA #$0001             ;\
 $84:DB81 9F 1C DE 7E STA $7EDE1C,x[$7E:DE64];} PLM instruction timer = 1
 
-$84:DB85 60          RTS
+$84:DB85 60          RTS                    ; Return
 
 ; BRANCH_SUPER
 $84:DB86 A9 77 00    LDA #$0077             ;\
@@ -12726,7 +12711,7 @@ $84:DFB3             dw 0014,A2C7,
 }
 
 
-;;; $DFC7: Instruction list - item orb burst ;;;
+;;; $DFC7: Instruction list - callable - item orb burst ;;;
 {
 $84:DFC7             dx 86CA,       ; Clear pre-instruction
                         0003,A2B5,
@@ -12736,14 +12721,14 @@ $84:DFC7             dx 86CA,       ; Clear pre-instruction
 }
 
 
-;;; $DFD7: Instruction list - empty item orb ;;;
+;;; $DFD7: Instruction list - callable - empty item orb ;;;
 {
 ; Coded like an incomplete reconcealing orb
 $84:DFD7             dx 86CA,       ; Clear pre-instruction
                         874E,16,    ; Timer = 16h
                         0008,A2B5,
                         873F,DFDC,  ; Decrement timer and go to $DFDC if non-zero
-                        8A3A,       ; Return
+                        8A3A        ; Return
 }
 
 
@@ -12765,7 +12750,7 @@ $84:E006 60          RTS
 }
 
 
-;;; $E007: Instruction list - item shot block ;;;
+;;; $E007: Instruction list - callable - item shot block ;;;
 {
 $84:E007             dx 86C1,DFE6,  ; Pre-instruction = wake PLM if triggered
                         86B4,       ; Sleep
@@ -12774,22 +12759,22 @@ $84:E007             dx 86C1,DFE6,  ; Pre-instruction = wake PLM if triggered
                         0004,A3DD,
                         0004,A3E3,
                         0004,A3E9,
-                        8A3A,       ; Return
+                        8A3A        ; Return
 }
 
 
-;;; $E020: Instruction list - item shot block reconcealing ;;;
+;;; $E020: Instruction list - callable - item shot block reconcealing ;;;
 {
 $84:E020             dx 86CA,       ; Clear pre-instruction
                         0004,A3E9,
                         0004,A3E3,
                         0004,A3DD,
                         8B05,       ; Draw PLM block
-                        8A3A,       ; Return
+                        8A3A        ; Return
 }
 
 
-;;; $E032: Instruction list - empty item shot block reconcealing ;;;
+;;; $E032: Instruction list - callable - empty item shot block reconcealing ;;;
 {
 $84:E032             dx 86CA,       ; Clear pre-instruction
                         874E,16,    ; Timer = 16h
@@ -12799,7 +12784,7 @@ $84:E032             dx 86CA,       ; Clear pre-instruction
                         0004,A34B,
                         0004,A345,
                         8B05,       ; Draw PLM block
-                        8A3A,       ; Return
+                        8A3A        ; Return
 }
 
 
@@ -12848,13 +12833,13 @@ $84:E098 60          RTS
 
 ;;; $E099: Instruction list - PLM $EED7 (energy tank) ;;;
 {
-$84:E099             dx 887C,E0BA,  ; Go to $E0BA if the room argument item is set
+$84:E099             dx 887C,E0BA,  ; Go to $E0BA if the room argument item is collected
                         8A24,E0B1,  ; Link instruction = $E0B1
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
 $84:E0A5             dx 0004,A2DF,
                         0004,A2E5,
                         8724,E0A5,  ; Go to $E0A5
-$84:E0B1             dx 8899,       ; Set the room argument item
+$84:E0B1             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         8968,0064,  ; Collect 100 health energy tank
 $84:E0BA             dx 8724,DFA9,  ; Go to $DFA9
@@ -12863,13 +12848,13 @@ $84:E0BA             dx 8724,DFA9,  ; Go to $DFA9
 
 ;;; $E0BE: Instruction list - PLM $EEDB (missile tank) ;;;
 {
-$84:E0BE             dx 887C,E0DF,  ; Go to $E0DF if the room argument item is set
+$84:E0BE             dx 887C,E0DF,  ; Go to $E0DF if the room argument item is collected
                         8A24,E0D6,  ; Link instruction = $E0D6
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
 $84:E0CA             dx 0004,A2EB,
                         0004,A2F1,
                         8724,E0CA,  ; Go to $E0CA
-$84:E0D6             dx 8899,       ; Set the room argument item
+$84:E0D6             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89A9,0005,  ; Collect 5 ammo missile tank
 $84:E0DF             dx 8724,DFA9,  ; Go to $DFA9
@@ -12878,13 +12863,13 @@ $84:E0DF             dx 8724,DFA9,  ; Go to $DFA9
 
 ;;; $E0E3: Instruction list - PLM $EEDF (super missile tank) ;;;
 {
-$84:E0E3             dx 887C,E104,  ; Go to $E104 if the room argument item is set
+$84:E0E3             dx 887C,E104,  ; Go to $E104 if the room argument item is collected
                         8A24,E0FB,  ; Link instruction = $E0FB
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
 $84:E0EF             dx 0004,A2F7,
                         0004,A2FD,
                         8724,E0EF,  ; Go to $E0EF
-$84:E0FB             dx 8899,       ; Set the room argument item
+$84:E0FB             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89D2,0005,  ; Collect 5 ammo super missile tank
 $84:E104             dx 8724,DFA9,  ; Go to $DFA9
@@ -12893,13 +12878,13 @@ $84:E104             dx 8724,DFA9,  ; Go to $DFA9
 
 ;;; $E108: Instruction list - PLM $EEE3 (power bomb tank) ;;;
 {
-$84:E108             dx 887C,E129,  ; Go to $E129 if the room argument item is set
+$84:E108             dx 887C,E129,  ; Go to $E129 if the room argument item is collected
                         8A24,E120,  ; Link instruction = $E120
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
 $84:E114             dx 0004,A303,
                         0004,A309,
                         8724,E114,  ; Go to $E114
-$84:E120             dx 8899,       ; Set the room argument item
+$84:E120             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89FB,0005,  ; Collect 5 ammo power bomb tank
 $84:E129             dx 8724,DFA9,  ; Go to $DFA9
@@ -12909,13 +12894,13 @@ $84:E129             dx 8724,DFA9,  ; Go to $DFA9
 ;;; $E12D: Instruction list - PLM $EEE7 (bombs) ;;;
 {
 $84:E12D             dx 8764,8000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E157,                          ; Go to $E157 if the room argument item is set
+                        887C,E157,                          ; Go to $E157 if the room argument item is collected
                         8A24,E14D,                          ; Link instruction = $E14D
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E145             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E145,                          ; Go to $E145
-$84:E14D             dx 8899,                               ; Set the room argument item
+$84:E14D             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,1000,13,                       ; Pick up equipment 1000h and display message box 13h
 $84:E157             dx 8724,DFA9,                          ; Go to $DFA9
@@ -12925,13 +12910,13 @@ $84:E157             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E15B: Instruction list - PLM $EEEB (charge beam) ;;;
 {
 $84:E15B             dx 8764,8B00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E185,                          ; Go to $E185 if the room argument item is set
+                        887C,E185,                          ; Go to $E185 if the room argument item is collected
                         8A24,E17B,                          ; Link instruction = $E17B
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E173             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E173,                          ; Go to $E173
-$84:E17B             dx 8899,                               ; Set the room argument item
+$84:E17B             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,1000,0E,                       ; Pick up beam 1000h and display message box Eh
 $84:E185             dx 8724,DFA9,                          ; Go to $DFA9
@@ -12941,13 +12926,13 @@ $84:E185             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E189: Instruction list - PLM $EEEF (ice beam) ;;;
 {
 $84:E189             dx 8764,8C00,00,03,00,00,00,03,00,00,  ; Load item PLM GFX
-                        887C,E1B3,                          ; Go to $E1B3 if the room argument item is set
+                        887C,E1B3,                          ; Go to $E1B3 if the room argument item is collected
                         8A24,E1A9,                          ; Link instruction = $E1A9
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E1A1             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E1A1,                          ; Go to $E1A1
-$84:E1A9             dx 8899,                               ; Set the room argument item
+$84:E1A9             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0002,0F,                       ; Pick up beam 2 and display message box Fh
 $84:E1B3             dx 8724,DFA9,                          ; Go to $DFA9
@@ -12957,13 +12942,13 @@ $84:E1B3             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E1B7: Instruction list - PLM $EEF3 (hi-jump) ;;;
 {
 $84:E1B7             dx 8764,8400,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E1E1,                          ; Go to $E1E1 if the room argument item is set
+                        887C,E1E1,                          ; Go to $E1E1 if the room argument item is collected
                         8A24,E1D7,                          ; Link instruction = $E1D7
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E1CF             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E1CF,                          ; Go to $E1CF
-$84:E1D7             dx 8899,                               ; Set the room argument item
+$84:E1D7             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0100,0B,                       ; Pick up equipment 100h and display message box Bh
 $84:E1E1             dx 8724,DFA9,                          ; Go to $DFA9
@@ -12973,13 +12958,13 @@ $84:E1E1             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E1E5: Instruction list - PLM $EEF7 (speed booster) ;;;
 {
 $84:E1E5             dx 8764,8A00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E20F,                          ; Go to $E20F if the room argument item is set
+                        887C,E20F,                          ; Go to $E20F if the room argument item is collected
                         8A24,E205,                          ; Link instruction = $E205
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E1FD             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E1FD,                          ; Go to $E1FD
-$84:E205             dx 8899,                               ; Set the room argument item
+$84:E205             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,2000,0D,                       ; Pick up equipment 2000h and display message box Dh
 $84:E20F             dx 8724,DFA9,                          ; Go to $DFA9
@@ -12989,13 +12974,13 @@ $84:E20F             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E213: Instruction list - PLM $EEFB (wave beam) ;;;
 {
 $84:E213             dx 8764,8D00,00,02,00,00,00,02,00,00,  ; Load item PLM GFX
-                        887C,E23D,                          ; Go to $E23D if the room argument item is set
+                        887C,E23D,                          ; Go to $E23D if the room argument item is collected
                         8A24,E233,                          ; Link instruction = $E233
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E22B             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E22B,                          ; Go to $E22B
-$84:E233             dx 8899,                               ; Set the room argument item
+$84:E233             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0001,10,                       ; Pick up beam 1 and display message box 10h
 $84:E23D             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13005,13 +12990,13 @@ $84:E23D             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E241: Instruction list - PLM $EEFF (spazer beam) ;;;
 {
 $84:E241             dx 8764,8F00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E26B,                          ; Go to $E26B if the room argument item is set
+                        887C,E26B,                          ; Go to $E26B if the room argument item is collected
                         8A24,E261,                          ; Link instruction = $E261
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E259             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E259,                          ; Go to $E259
-$84:E261             dx 8899,                               ; Set the room argument item
+$84:E261             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0004,11,                       ; Pick up beam 4 and display message box 11h
 $84:E26B             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13021,13 +13006,13 @@ $84:E26B             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E26F: Instruction list - PLM $EF03 (spring ball) ;;;
 {
 $84:E26F             dx 8764,8200,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E299,                          ; Go to $E299 if the room argument item is set
+                        887C,E299,                          ; Go to $E299 if the room argument item is collected
                         8A24,E28F,                          ; Link instruction = $E28F
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E287             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E287,                          ; Go to $E287
-$84:E28F             dx 8899,                               ; Set the room argument item
+$84:E28F             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0002,08,                       ; Pick up equipment 2 and display message box 8
 $84:E299             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13044,13 +13029,13 @@ $84:E2A0 60          RTS
 ;;; $E2A1: Instruction list - PLM $EF07 (varia suit) ;;;
 {
 $84:E2A1             dx 8764,8300,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E2D2,                          ; Go to $E2D2 if the room argument item is set
+                        887C,E2D2,                          ; Go to $E2D2 if the room argument item is collected
                         8A24,E2C1,                          ; Link instruction = $E2C1
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E2B9             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E2B9,                          ; Go to $E2B9
-$84:E2C1             dx 8899,                               ; Set the room argument item
+$84:E2C1             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0001,07,                       ; Pick up equipment 1 and display message box 7
@@ -13062,13 +13047,13 @@ $84:E2D2             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E2D6: Instruction list - PLM $EF0B (gravity suit) ;;;
 {
 $84:E2D6             dx 8764,8100,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E307,                          ; Go to $E307 if the room argument item is set
+                        887C,E307,                          ; Go to $E307 if the room argument item is collected
                         8A24,E2F6,                          ; Link instruction = $E2F6
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E2EE             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E2EE,                          ; Go to $E2EE
-$84:E2F6             dx 8899,                               ; Set the room argument item
+$84:E2F6             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0020,1A,                       ; Pick up equipment 20h and display message box 1Ah
@@ -13080,13 +13065,13 @@ $84:E307             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E30B: Instruction list - PLM $EF0F (x-ray scope) ;;;
 {
 $84:E30B             dx 8764,8900,01,01,00,00,03,03,00,00,  ; Load item PLM GFX
-                        887C,E334,                          ; Go to $E334 if the room argument item is set
+                        887C,E334,                          ; Go to $E334 if the room argument item is collected
                         8A24,E32B,                          ; Link instruction = $E32B
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E323             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E323,                          ; Go to $E323
-$84:E32B             dx 8899,                               ; Set the room argument item
+$84:E32B             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         8941,8000,                          ; Pick up equipment 8000h, add x-ray to HUD and display x-ray message box
 $84:E334             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13096,13 +13081,13 @@ $84:E334             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E338: Instruction list - PLM $EF13 (plasma beam) ;;;
 {
 $84:E338             dx 8764,8E00,00,01,00,00,00,01,00,00,  ; Load item PLM GFX
-                        887C,E362,                          ; Go to $E362 if the room argument item is set
+                        887C,E362,                          ; Go to $E362 if the room argument item is collected
                         8A24,E358,                          ; Link instruction = $E358
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E350             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E350,                          ; Go to $E350
-$84:E358             dx 8899,                               ; Set the room argument item
+$84:E358             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0008,12,                       ; Pick up beam 8 and display message box 12h
 $84:E362             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13112,13 +13097,13 @@ $84:E362             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E366: Instruction list - PLM $EF17 (grapple beam) ;;;
 {
 $84:E366             dx 8764,8800,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E38F,                          ; Go to $E38F if the room argument item is set
+                        887C,E38F,                          ; Go to $E38F if the room argument item is collected
                         8A24,E386,                          ; Link instruction = $E386
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E37E             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E37E,                          ; Go to $E37E
-$84:E386             dx 8899,                               ; Set the room argument item
+$84:E386             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         891A,4000,                          ; Pick up equipment 4000h, add grapple to HUD and display grapple message box
 $84:E38F             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13128,13 +13113,13 @@ $84:E38F             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E393: Instruction list - PLM $EF1B (space jump) ;;;
 {
 $84:E393             dx 8764,8600,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E3BD,                          ; Go to $E3BD if the room argument item is set
+                        887C,E3BD,                          ; Go to $E3BD if the room argument item is collected
                         8A24,E3B3,                          ; Link instruction = $E3B3
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E3AB             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E3AB,                          ; Go to $E3AB
-$84:E3B3             dx 8899,                               ; Set the room argument item
+$84:E3B3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0200,0C,                       ; Pick up equipment 0200h and display message box Ch
 $84:E3BD             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13144,13 +13129,13 @@ $84:E3BD             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E3C1: Instruction list - PLM $EF1F (screw attack) ;;;
 {
 $84:E3C1             dx 8764,8500,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E3EB,                          ; Go to $E3EB if the room argument item is set
+                        887C,E3EB,                          ; Go to $E3EB if the room argument item is collected
                         8A24,E3E1,                          ; Link instruction = $E3E1
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E3D9             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E3D9,                          ; Go to $E3D9
-$84:E3E1             dx 8899,                               ; Set the room argument item
+$84:E3E1             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0008,0A,                       ; Pick up equipment 8 and display message box Ah
 $84:E3EB             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13160,13 +13145,13 @@ $84:E3EB             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E3EF: Instruction list - PLM $EF23 (morph ball) ;;;
 {
 $84:E3EF             dx 8764,8700,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E419,                          ; Go to $E419 if the room argument item is set
+                        887C,E419,                          ; Go to $E419 if the room argument item is collected
                         8A24,E40F,                          ; Link instruction = $E40F
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E407             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E407,                          ; Go to $E407
-$84:E40F             dx 8899,                               ; Set the room argument item
+$84:E40F             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0004,09,                       ; Pick up equipment 4 and display message box 9
 $84:E419             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13176,13 +13161,13 @@ $84:E419             dx 8724,DFA9,                          ; Go to $DFA9
 ;;; $E41D: Instruction list - PLM $EF27 (reserve tank) ;;;
 {
 $84:E41D             dx 8764,9000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E446,                          ; Go to $E446 if the room argument item is set
+                        887C,E446,                          ; Go to $E446 if the room argument item is collected
                         8A24,E43D,                          ; Link instruction = $E43D
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
 $84:E435             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E435,                          ; Go to $E435
-$84:E43D             dx 8899,                               ; Set the room argument item
+$84:E43D             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         8986,0064,                          ; Collect 0064h health reserve tank
 $84:E446             dx 8724,DFA9,                          ; Go to $DFA9
@@ -13191,7 +13176,7 @@ $84:E446             dx 8724,DFA9,                          ; Go to $DFA9
 
 ;;; $E44A: Instruction list - PLM $EF2B (energy tank, chozo orb) ;;;
 {
-$84:E44A             dx 887C,E476,  ; Go to $E476 if the room argument item is set
+$84:E44A             dx 887C,E476,  ; Go to $E476 if the room argument item is collected
                         8A2E,DFAF,  ; Call $DFAF (item orb)
                         8A2E,DFC7,  ; Call $DFC7 (item orb burst)
                         8A24,E46D,  ; Link instruction = $E46D
@@ -13200,7 +13185,7 @@ $84:E44A             dx 887C,E476,  ; Go to $E476 if the room argument item is s
 $84:E461             dx 0004,A2DF,
                         0004,A2E5,
                         8724,E461,  ; Go to $E461
-$84:E46D             dx 8899,       ; Set the room argument item
+$84:E46D             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         8968,0064,  ; Collect 0064h health energy tank
 $84:E476             dx 0001,A2B5,
@@ -13210,7 +13195,7 @@ $84:E476             dx 0001,A2B5,
 
 ;;; $E47C: Instruction list - PLM $EF2F (missile tank, chozo orb) ;;;
 {
-$84:E47C             dx 887C,E4A8,  ; Go to $E4A8 if the room argument item is set
+$84:E47C             dx 887C,E4A8,  ; Go to $E4A8 if the room argument item is collected
                         8A2E,DFAF,  ; Call $DFAF (item orb)
                         8A2E,DFC7,  ; Call $DFC7 (item orb burst)
                         8A24,E49F,  ; Link instruction = $E49F
@@ -13219,7 +13204,7 @@ $84:E47C             dx 887C,E4A8,  ; Go to $E4A8 if the room argument item is s
 $84:E493             dx 0004,A2EB,
                         0004,A2F1,
                         8724,E493,  ; Go to $E493
-$84:E49F             dx 8899,       ; Set the room argument item
+$84:E49F             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89A9,0005,  ; Collect 0005h ammo missile tank
 $84:E4A8             dx 0001,A2B5,
@@ -13229,7 +13214,7 @@ $84:E4A8             dx 0001,A2B5,
 
 ;;; $E4AE: Instruction list - PLM $EF33 (super missile tank, chozo orb) ;;;
 {
-$84:E4AE             dx 887C,E4DA,  ; Go to $E4DA if the room argument item is set
+$84:E4AE             dx 887C,E4DA,  ; Go to $E4DA if the room argument item is collected
                         8A2E,DFAF,  ; Call $DFAF (item orb)
                         8A2E,DFC7,  ; Call $DFC7 (item orb burst)
                         8A24,E4D1,  ; Link instruction = $E4D1
@@ -13238,7 +13223,7 @@ $84:E4AE             dx 887C,E4DA,  ; Go to $E4DA if the room argument item is s
 $84:E4C5             dx 0004,A2F7,
                         0004,A2FD,
                         8724,E4C5,  ; Go to $E4C5
-$84:E4D1             dx 8899,       ; Set the room argument item
+$84:E4D1             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89D2,0005,  ; Collect 0005h ammo super missile tank
 $84:E4DA             dx 0001,A2B5,
@@ -13248,7 +13233,7 @@ $84:E4DA             dx 0001,A2B5,
 
 ;;; $E4E0: Instruction list - PLM $EF37 (power bomb tank, chozo orb) ;;;
 {
-$84:E4E0             dx 887C,E50C,  ; Go to $E50C if the room argument item is set
+$84:E4E0             dx 887C,E50C,  ; Go to $E50C if the room argument item is collected
                         8A2E,DFAF,  ; Call $DFAF (item orb)
                         8A2E,DFC7,  ; Call $DFC7 (item orb burst)
                         8A24,E503,  ; Link instruction = $E503
@@ -13257,7 +13242,7 @@ $84:E4E0             dx 887C,E50C,  ; Go to $E50C if the room argument item is s
 $84:E4F7             dx 0004,A303,
                         0004,A309,
                         8724,E4F7,  ; Go to $E4F7
-$84:E503             dx 8899,       ; Set the room argument item
+$84:E503             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89FB,0005,  ; Collect 0005h ammo power bomb tank
 $84:E50C             dx 0001,A2B5,
@@ -13268,7 +13253,7 @@ $84:E50C             dx 0001,A2B5,
 ;;; $E512: Instruction list - PLM $EF3B (bombs, chozo orb) ;;;
 {
 $84:E512             dx 8764,8000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E547,                          ; Go to $E547 if the room argument item is set
+                        887C,E547,                          ; Go to $E547 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E53D,                          ; Link instruction = $E53D
@@ -13277,7 +13262,7 @@ $84:E512             dx 8764,8000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E535             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E535,                          ; Go to $E535
-$84:E53D             dx 8899,                               ; Set the room argument item
+$84:E53D             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,1000,13,                       ; Pick up equipment 1000h and display message box 13h
 $84:E547             dx 0001,A2B5,
@@ -13288,7 +13273,7 @@ $84:E547             dx 0001,A2B5,
 ;;; $E54D: Instruction list - PLM $EF3F (charge beam, chozo orb) ;;;
 {
 $84:E54D             dx 8764,8B00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E582,                          ; Go to $E582 if the room argument item is set
+                        887C,E582,                          ; Go to $E582 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E578,                          ; Link instruction = $E578
@@ -13297,7 +13282,7 @@ $84:E54D             dx 8764,8B00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E570             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E570,                          ; Go to $E570
-$84:E578             dx 8899,                               ; Set the room argument item
+$84:E578             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,1000,0E,                       ; Pick up beam 1000h and display message box 0Eh
 $84:E582             dx 0001,A2B5,
@@ -13308,7 +13293,7 @@ $84:E582             dx 0001,A2B5,
 ;;; $E588: Instruction list - PLM $EF43 (ice beam, chozo orb) ;;;
 {
 $84:E588             dx 8764,8C00,00,03,00,00,00,03,00,00,  ; Load item PLM GFX
-                        887C,E5BD,                          ; Go to $E5BD if the room argument item is set
+                        887C,E5BD,                          ; Go to $E5BD if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E5B3,                          ; Link instruction = $E5B3
@@ -13317,7 +13302,7 @@ $84:E588             dx 8764,8C00,00,03,00,00,00,03,00,00,  ; Load item PLM GFX
 $84:E5AB             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E5AB,                          ; Go to $E5AB
-$84:E5B3             dx 8899,                               ; Set the room argument item
+$84:E5B3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0002,0F,                       ; Pick up beam 0002h and display message box 0Fh
 $84:E5BD             dx 0001,A2B5,
@@ -13328,7 +13313,7 @@ $84:E5BD             dx 0001,A2B5,
 ;;; $E5C3: Instruction list - PLM $EF47 (hi-jump, chozo orb) ;;;
 {
 $84:E5C3             dx 8764,8400,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E5F8,                          ; Go to $E5F8 if the room argument item is set
+                        887C,E5F8,                          ; Go to $E5F8 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E5EE,                          ; Link instruction = $E5EE
@@ -13337,7 +13322,7 @@ $84:E5C3             dx 8764,8400,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E5E6             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E5E6,                          ; Go to $E5E6
-$84:E5EE             dx 8899,                               ; Set the room argument item
+$84:E5EE             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0100,0B,                       ; Pick up equipment 0100h and display message box 0Bh
 $84:E5F8             dx 0001,A2B5,
@@ -13348,7 +13333,7 @@ $84:E5F8             dx 0001,A2B5,
 ;;; $E5FE: Instruction list - PLM $EF4B (speed booster, chozo orb) ;;;
 {
 $84:E5FE             dx 8764,8A00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E635,                          ; Go to $E635 if the room argument item is set
+                        887C,E635,                          ; Go to $E635 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E629,                          ; Link instruction = $E629
@@ -13357,7 +13342,7 @@ $84:E5FE             dx 8764,8A00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E621             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E621,                          ; Go to $E621
-$84:E629             dx 8899,                               ; Set the room argument item
+$84:E629             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,2000,0D,                       ; Pick up equipment 2000h and display message box 0Dh
 $84:E633             dx E63B,                               ; FX Y velocity = FFE0h
@@ -13377,7 +13362,7 @@ $84:E641 60          RTS
 ;;; $E642: Instruction list - PLM $EF4F (wave beam, chozo orb) ;;;
 {
 $84:E642             dx 8764,8D00,00,02,00,00,00,02,00,00,  ; Load item PLM GFX
-                        887C,E677,                          ; Go to $E677 if the room argument item is set
+                        887C,E677,                          ; Go to $E677 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E66D,                          ; Link instruction = $E66D
@@ -13386,7 +13371,7 @@ $84:E642             dx 8764,8D00,00,02,00,00,00,02,00,00,  ; Load item PLM GFX
 $84:E665             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E665,                          ; Go to $E665
-$84:E66D             dx 8899,                               ; Set the room argument item
+$84:E66D             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0001,10,                       ; Pick up beam 0001h and display message box 10h
 $84:E677             dx 0001,A2B5,
@@ -13397,7 +13382,7 @@ $84:E677             dx 0001,A2B5,
 ;;; $E67D: Instruction list - PLM $EF53 (spazer beam, chozo orb) ;;;
 {
 $84:E67D             dx 8764,8F00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E6B2,                          ; Go to $E6B2 if the room argument item is set
+                        887C,E6B2,                          ; Go to $E6B2 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E6A8,                          ; Link instruction = $E6A8
@@ -13406,7 +13391,7 @@ $84:E67D             dx 8764,8F00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E6A0             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E6A0,                          ; Go to $E6A0
-$84:E6A8             dx 8899,                               ; Set the room argument item
+$84:E6A8             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0004,11,                       ; Pick up beam 0004h and display message box 11h
 $84:E6B2             dx 0001,A2B5,
@@ -13417,7 +13402,7 @@ $84:E6B2             dx 0001,A2B5,
 ;;; $E6B8: Instruction list - PLM $EF57 (spring ball, chozo orb) ;;;
 {
 $84:E6B8             dx 8764,8200,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E6ED,                          ; Go to $E6ED if the room argument item is set
+                        887C,E6ED,                          ; Go to $E6ED if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E6E3,                          ; Link instruction = $E6E3
@@ -13426,7 +13411,7 @@ $84:E6B8             dx 8764,8200,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E6DB             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E6DB,                          ; Go to $E6DB
-$84:E6E3             dx 8899,                               ; Set the room argument item
+$84:E6E3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0002,08,                       ; Pick up equipment 0002h and display message box 08h
 $84:E6ED             dx 0001,A2B5,
@@ -13437,7 +13422,7 @@ $84:E6ED             dx 0001,A2B5,
 ;;; $E6F3: Instruction list - PLM $EF5B (varia suit, chozo orb) ;;;
 {
 $84:E6F3             dx 8764,8300,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E72F,                          ; Go to $E72F if the room argument item is set
+                        887C,E72F,                          ; Go to $E72F if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E71E,                          ; Link instruction = $E71E
@@ -13446,7 +13431,7 @@ $84:E6F3             dx 8764,8300,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E716             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E716,                          ; Go to $E716
-$84:E71E             dx 8899,                               ; Set the room argument item
+$84:E71E             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0001,07,                       ; Pick up equipment 0001h and display message box 07h
@@ -13459,7 +13444,7 @@ $84:E72F             dx 0001,A2B5,
 ;;; $E735: Instruction list - PLM $EF5F (gravity suit, chozo orb) ;;;
 {
 $84:E735             dx 8764,8100,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E771,                          ; Go to $E771 if the room argument item is set
+                        887C,E771,                          ; Go to $E771 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E760,                          ; Link instruction = $E760
@@ -13468,7 +13453,7 @@ $84:E735             dx 8764,8100,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E758             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E758,                          ; Go to $E758
-$84:E760             dx 8899,                               ; Set the room argument item
+$84:E760             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0020,1A,                       ; Pick up equipment 0020h and display message box 1Ah
@@ -13481,7 +13466,7 @@ $84:E771             dx 0001,A2B5,
 ;;; $E777: Instruction list - PLM $EF63 (x-ray scope, chozo orb) ;;;
 {
 $84:E777             dx 8764,8900,01,01,00,00,03,03,00,00,  ; Load item PLM GFX
-                        887C,E7AB,                          ; Go to $E7AB if the room argument item is set
+                        887C,E7AB,                          ; Go to $E7AB if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E7A2,                          ; Link instruction = $E7A2
@@ -13490,7 +13475,7 @@ $84:E777             dx 8764,8900,01,01,00,00,03,03,00,00,  ; Load item PLM GFX
 $84:E79A             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E79A,                          ; Go to $E79A
-$84:E7A2             dx 8899,                               ; Set the room argument item
+$84:E7A2             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         8941,8000,                          ; Pick up equipment 8000h, add x-ray to HUD and display x-ray message box
 $84:E7AB             dx 0001,A2B5,
@@ -13501,7 +13486,7 @@ $84:E7AB             dx 0001,A2B5,
 ;;; $E7B1: Instruction list - PLM $EF67 (plasma beam, chozo orb) ;;;
 {
 $84:E7B1             dx 8764,8E00,00,01,00,00,00,01,00,00,  ; Load item PLM GFX
-                        887C,E7E6,                          ; Go to $E7E6 if the room argument item is set
+                        887C,E7E6,                          ; Go to $E7E6 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E7DC,                          ; Link instruction = $E7DC
@@ -13510,7 +13495,7 @@ $84:E7B1             dx 8764,8E00,00,01,00,00,00,01,00,00,  ; Load item PLM GFX
 $84:E7D4             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E7D4,                          ; Go to $E7D4
-$84:E7DC             dx 8899,                               ; Set the room argument item
+$84:E7DC             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0008,12,                       ; Pick up beam 0008h and display message box 12h
 $84:E7E6             dx 0001,A2B5,
@@ -13521,7 +13506,7 @@ $84:E7E6             dx 0001,A2B5,
 ;;; $E7EC: Instruction list - PLM $EF6B (grapple beam, chozo orb) ;;;
 {
 $84:E7EC             dx 8764,8800,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E820,                          ; Go to $E820 if the room argument item is set
+                        887C,E820,                          ; Go to $E820 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E817,                          ; Link instruction = $E817
@@ -13530,7 +13515,7 @@ $84:E7EC             dx 8764,8800,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E80F             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E80F,                          ; Go to $E80F
-$84:E817             dx 8899,                               ; Set the room argument item
+$84:E817             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         891A,4000,                          ; Pick up equipment 4000h, add grapple to HUD and display grapple message box
 $84:E820             dx 0001,A2B5,
@@ -13541,7 +13526,7 @@ $84:E820             dx 0001,A2B5,
 ;;; $E826: Instruction list - PLM $EF6F (space jump, chozo orb) ;;;
 {
 $84:E826             dx 8764,8600,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E85B,                          ; Go to $E85B if the room argument item is set
+                        887C,E85B,                          ; Go to $E85B if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E851,                          ; Link instruction = $E851
@@ -13550,7 +13535,7 @@ $84:E826             dx 8764,8600,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E849             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E849,                          ; Go to $E849
-$84:E851             dx 8899,                               ; Set the room argument item
+$84:E851             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0200,0C,                       ; Pick up equipment 0200h and display message box 0Ch
 $84:E85B             dx 0001,A2B5,
@@ -13561,7 +13546,7 @@ $84:E85B             dx 0001,A2B5,
 ;;; $E861: Instruction list - PLM $EF73 (screw attack, chozo orb) ;;;
 {
 $84:E861             dx 8764,8500,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E896,                          ; Go to $E896 if the room argument item is set
+                        887C,E896,                          ; Go to $E896 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E88C,                          ; Link instruction = $E88C
@@ -13570,7 +13555,7 @@ $84:E861             dx 8764,8500,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E884             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E884,                          ; Go to $E884
-$84:E88C             dx 8899,                               ; Set the room argument item
+$84:E88C             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0008,0A,                       ; Pick up equipment 0008h and display message box 0Ah
 $84:E896             dx 0001,A2B5,
@@ -13581,7 +13566,7 @@ $84:E896             dx 0001,A2B5,
 ;;; $E89C: Instruction list - PLM $EF77 (morph ball, chozo orb) ;;;
 {
 $84:E89C             dx 8764,8700,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E8D1,                          ; Go to $E8D1 if the room argument item is set
+                        887C,E8D1,                          ; Go to $E8D1 if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E8C7,                          ; Link instruction = $E8C7
@@ -13590,7 +13575,7 @@ $84:E89C             dx 8764,8700,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E8BF             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E8BF,                          ; Go to $E8BF
-$84:E8C7             dx 8899,                               ; Set the room argument item
+$84:E8C7             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0002,09,                       ; Pick up equipment 0002h and display message box 09h
 $84:E8D1             dx 0001,A2B5,
@@ -13601,7 +13586,7 @@ $84:E8D1             dx 0001,A2B5,
 ;;; $E8D7: Instruction list - PLM $EF7B (reserve tank, chozo orb) ;;;
 {
 $84:E8D7             dx 8764,9000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
-                        887C,E90B,                          ; Go to $E90B if the room argument item is set
+                        887C,E90B,                          ; Go to $E90B if the room argument item is collected
                         8A2E,DFAF,                          ; Call $DFAF (item orb)
                         8A2E,DFC7,                          ; Call $DFC7 (item orb burst)
                         8A24,E902,                          ; Link instruction = $E902
@@ -13610,7 +13595,7 @@ $84:E8D7             dx 8764,9000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
 $84:E8FA             dx E04F,                               ; Draw item frame 0
                         E067,                               ; Draw item frame 1
                         8724,E8FA,                          ; Go to $E8FA
-$84:E902             dx 8899,                               ; Set the room argument item
+$84:E902             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         8986,0064,                          ; Collect 0064h health reserve tank
 $84:E90B             dx 0001,A2B5,
@@ -13621,7 +13606,7 @@ $84:E90B             dx 0001,A2B5,
 ;;; $E911: Instruction list - PLM $EF7F (energy tank, shot block) ;;;
 {
 $84:E911             dx 8A2E,E007,  ; Call $E007 (item shot block)
-                        887C,E941,  ; Go to $E941 if the room argument item is set
+                        887C,E941,  ; Go to $E941 if the room argument item is collected
                         8A24,E938,  ; Link instruction = $E938
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
                         874E,16,    ; Timer = 16h
@@ -13630,7 +13615,7 @@ $84:E924             dx 0004,A2DF,
                         873F,E924,  ; Decrement timer and go to $E924 if non-zero
                         8A2E,E020,  ; Call $E020 (item shot block reconcealing)
                         8724,E911,  ; Go to $E911
-$84:E938             dx 8899,       ; Set the room argument item
+$84:E938             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         8968,0064,  ; Collect 0064h health energy tank
 $84:E941             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
@@ -13641,7 +13626,7 @@ $84:E941             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcea
 ;;; $E949: Instruction list - PLM $EF83 (missile tank, shot block) ;;;
 {
 $84:E949             dx 8A2E,E007,  ; Call $E007 (item shot block)
-                        887C,E979,  ; Go to $E979 if the room argument item is set
+                        887C,E979,  ; Go to $E979 if the room argument item is collected
                         8A24,E970,  ; Link instruction = $E970
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
                         874E,16,    ; Timer = 16h
@@ -13650,7 +13635,7 @@ $84:E95C             dx 0004,A2EB,
                         873F,E95C,  ; Decrement timer and go to $E95C if non-zero
                         8A2E,E020,  ; Call $E020 (item shot block reconcealing)
                         8724,E949,  ; Go to $E949
-$84:E970             dx 8899,       ; Set the room argument item
+$84:E970             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89A9,0005,  ; Collect 0005h ammo missile tank
 $84:E979             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
@@ -13661,7 +13646,7 @@ $84:E979             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcea
 ;;; $E981: Instruction list - PLM $EF87 (super missile tank, shot block) ;;;
 {
 $84:E981             dx 8A2E,E007,  ; Call $E007 (item shot block)
-                        887C,E9B1,  ; Go to $E9B1 if the room argument item is set
+                        887C,E9B1,  ; Go to $E9B1 if the room argument item is collected
                         8A24,E9A8,  ; Link instruction = $E9A8
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
                         874E,16,    ; Timer = 16h
@@ -13670,7 +13655,7 @@ $84:E994             dx 0004,A2F7,
                         873F,E994,  ; Decrement timer and go to $E994 if non-zero
                         8A2E,E020,  ; Call $E020 (item shot block reconcealing)
                         8724,E981,  ; Go to $E981
-$84:E9A8             dx 8899,       ; Set the room argument item
+$84:E9A8             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89D2,0005,  ; Collect 0005h ammo super missile tank
 $84:E9B1             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
@@ -13681,7 +13666,7 @@ $84:E9B1             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcea
 ;;; $E9B9: Instruction list - PLM $EF8B (power bomb tank, shot block) ;;;
 {
 $84:E9B9             dx 8A2E,E007,  ; Call $E007 (item shot block)
-                        887C,E9E9,  ; Go to $E9E9 if the room argument item is set
+                        887C,E9E9,  ; Go to $E9E9 if the room argument item is collected
                         8A24,E9E0,  ; Link instruction = $E9E0
                         86C1,DF89,  ; Pre-instruction = go to link instruction if triggered
                         874E,16,    ; Timer = 16h
@@ -13690,7 +13675,7 @@ $84:E9CC             dx 0004,A303,
                         873F,E9CC,  ; Decrement timer and go to $E9CC if non-zero
                         8A2E,E020,  ; Call $E020 (item shot block reconcealing)
                         8724,E9B9,  ; Go to $E9B9
-$84:E9E0             dx 8899,       ; Set the room argument item
+$84:E9E0             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
                         89FB,0005,  ; Collect 0005h ammo power bomb tank
 $84:E9E9             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
@@ -13702,7 +13687,7 @@ $84:E9E9             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcea
 {
 $84:E9F1             dx 8764,8000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EA2A,                          ; Go to $EA2A if the room argument item is set
+                        887C,EA2A,                          ; Go to $EA2A if the room argument item is collected
                         8A24,EA20,                          ; Link instruction = $EA20
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13711,7 +13696,7 @@ $84:EA10             dx E04F,                               ; Draw item frame 0
                         873F,EA10,                          ; Decrement timer and go to $EA10 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,E9FD,                          ; Go to $E9FD
-$84:EA20             dx 8899,                               ; Set the room argument item
+$84:EA20             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,1000,13,                       ; Pick up equipment 1000h and display message box 13h
 $84:EA2A             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13723,7 +13708,7 @@ $84:EA2A             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EA32             dx 8764,8B00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EA6B,                          ; Go to $EA6B if the room argument item is set
+                        887C,EA6B,                          ; Go to $EA6B if the room argument item is collected
                         8A24,EA61,                          ; Link instruction = $EA61
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13732,7 +13717,7 @@ $84:EA51             dx E04F,                               ; Draw item frame 0
                         873F,EA51,                          ; Decrement timer and go to $EA51 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EA3E,                          ; Go to $EA3E
-$84:EA61             dx 8899,                               ; Set the room argument item
+$84:EA61             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,1000,0E,                       ; Pick up beam 1000h and display message box 0Eh
 $84:EA6B             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13744,7 +13729,7 @@ $84:EA6B             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EA73             dx 8764,8C00,00,03,00,00,00,03,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EAAC,                          ; Go to $EAAC if the room argument item is set
+                        887C,EAAC,                          ; Go to $EAAC if the room argument item is collected
                         8A24,EAA2,                          ; Link instruction = $EAA2
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13753,7 +13738,7 @@ $84:EA92             dx E04F,                               ; Draw item frame 0
                         873F,EA92,                          ; Decrement timer and go to $EA92 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EA7F,                          ; Go to $EA7F
-$84:EAA2             dx 8899,                               ; Set the room argument item
+$84:EAA2             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0002,0F,                       ; Pick up beam 0002h and display message box 0Fh
 $84:EAAC             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13765,7 +13750,7 @@ $84:EAAC             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EAB4             dx 8764,8400,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EAED,                          ; Go to $EAED if the room argument item is set
+                        887C,EAED,                          ; Go to $EAED if the room argument item is collected
                         8A24,EAE3,                          ; Link instruction = $EAE3
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13774,7 +13759,7 @@ $84:EAD3             dx E04F,                               ; Draw item frame 0
                         873F,EAD3,                          ; Decrement timer and go to $EAD3 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EAC0,                          ; Go to $EAC0
-$84:EAE3             dx 8899,                               ; Set the room argument item
+$84:EAE3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0100,0B,                       ; Pick up equipment 0100h and display message box 0Bh
 $84:EAED             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13786,7 +13771,7 @@ $84:EAED             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EAF5             dx 8764,8A00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EB2E,                          ; Go to $EB2E if the room argument item is set
+                        887C,EB2E,                          ; Go to $EB2E if the room argument item is collected
                         8A24,EB24,                          ; Link instruction = $EB24
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13795,7 +13780,7 @@ $84:EB14             dx E04F,                               ; Draw item frame 0
                         873F,EB14,                          ; Decrement timer and go to $EB14 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EB01,                          ; Go to $EB01
-$84:EB24             dx 8899,                               ; Set the room argument item
+$84:EB24             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,2000,0D,                       ; Pick up equipment 2000h and display message box 0Dh
 $84:EB2E             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13807,7 +13792,7 @@ $84:EB2E             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EB36             dx 8764,8D00,00,02,00,00,00,02,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EB6F,                          ; Go to $EB6F if the room argument item is set
+                        887C,EB6F,                          ; Go to $EB6F if the room argument item is collected
                         8A24,EB65,                          ; Link instruction = $EB65
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13816,7 +13801,7 @@ $84:EB55             dx E04F,                               ; Draw item frame 0
                         873F,EB55,                          ; Decrement timer and go to $EB55 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EB42,                          ; Go to $EB42
-$84:EB65             dx 8899,                               ; Set the room argument item
+$84:EB65             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0001,10,                       ; Pick up beam 0001h and display message box 10h
 $84:EB6F             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13828,7 +13813,7 @@ $84:EB6F             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EB77             dx 8764,8F00,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EBB0,                          ; Go to $EBB0 if the room argument item is set
+                        887C,EBB0,                          ; Go to $EBB0 if the room argument item is collected
                         8A24,EBA6,                          ; Link instruction = $EBA6
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13837,7 +13822,7 @@ $84:EB96             dx E04F,                               ; Draw item frame 0
                         873F,EB96,                          ; Decrement timer and go to $EB96 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EB83,                          ; Go to $EB83
-$84:EBA6             dx 8899,                               ; Set the room argument item
+$84:EBA6             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0004,11,                       ; Pick up beam 0004h and display message box 11h
 $84:EBB0             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13849,7 +13834,7 @@ $84:EBB0             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EBB8             dx 8764,8200,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EBF1,                          ; Go to $EBF1 if the room argument item is set
+                        887C,EBF1,                          ; Go to $EBF1 if the room argument item is collected
                         8A24,EBE7,                          ; Link instruction = $EBE7
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13858,7 +13843,7 @@ $84:EBD7             dx E04F,                               ; Draw item frame 0
                         873F,EBD7,                          ; Decrement timer and go to $EBD7 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EBC4,                          ; Go to $EBC4
-$84:EBE7             dx 8899,                               ; Set the room argument item
+$84:EBE7             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0002,08,                       ; Pick up equipment 0002h and display message box 08h
 $84:EBF1             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13870,7 +13855,7 @@ $84:EBF1             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EBF9             dx 8764,8300,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EC39,                          ; Go to $EC39 if the room argument item is set
+                        887C,EC39,                          ; Go to $EC39 if the room argument item is collected
                         8A24,EC28,                          ; Link instruction = $EC28
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13879,7 +13864,7 @@ $84:EC18             dx E04F,                               ; Draw item frame 0
                         873F,EC18,                          ; Decrement timer and go to $EC18 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EC05,                          ; Go to $EC05
-$84:EC28             dx 8899,                               ; Set the room argument item
+$84:EC28             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0001,07,                       ; Pick up equipment 0001h and display message box 07h
@@ -13893,7 +13878,7 @@ $84:EC39             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EC41             dx 8764,8100,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EC81,                          ; Go to $EC81 if the room argument item is set
+                        887C,EC81,                          ; Go to $EC81 if the room argument item is collected
                         8A24,EC70,                          ; Link instruction = $EC70
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13902,7 +13887,7 @@ $84:EC60             dx E04F,                               ; Draw item frame 0
                         873F,EC60,                          ; Decrement timer and go to $EC60 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EC4D,                          ; Go to $EC4D
-$84:EC70             dx 8899,                               ; Set the room argument item
+$84:EC70             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
                         88F3,0020,1A,                       ; Pick up equipment 0020h and display message box 1Ah
@@ -13916,7 +13901,7 @@ $84:EC81             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EC89             dx 8764,8900,01,01,00,00,03,03,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,ECC1,                          ; Go to $ECC1 if the room argument item is set
+                        887C,ECC1,                          ; Go to $ECC1 if the room argument item is collected
                         8A24,ECB8,                          ; Link instruction = $ECB8
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13925,7 +13910,7 @@ $84:ECA8             dx E04F,                               ; Draw item frame 0
                         873F,ECA8,                          ; Decrement timer and go to $ECA8 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EC95,                          ; Go to $EC95
-$84:ECB8             dx 8899,                               ; Set the room argument item
+$84:ECB8             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         8941,8000,                          ; Pick up equipment 8000h, add x-ray to HUD and display x-ray message box
 $84:ECC1             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13937,7 +13922,7 @@ $84:ECC1             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:ECC9             dx 8764,8E00,00,01,00,00,00,01,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,ED02,                          ; Go to $ED02 if the room argument item is set
+                        887C,ED02,                          ; Go to $ED02 if the room argument item is collected
                         8A24,ECF8,                          ; Link instruction = $ECF8
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13946,7 +13931,7 @@ $84:ECE8             dx E04F,                               ; Draw item frame 0
                         873F,ECE8,                          ; Decrement timer and go to $ECE8 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,ECD5,                          ; Go to $ECD5
-$84:ECF8             dx 8899,                               ; Set the room argument item
+$84:ECF8             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88B0,0008,12,                       ; Pick up beam 0008h and display message box 12h
 $84:ED02             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13958,7 +13943,7 @@ $84:ED02             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:ED0A             dx 8764,8800,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,ED42,                          ; Go to $ED42 if the room argument item is set
+                        887C,ED42,                          ; Go to $ED42 if the room argument item is collected
                         8A24,ED39,                          ; Link instruction = $ED39
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13967,7 +13952,7 @@ $84:ED29             dx E04F,                               ; Draw item frame 0
                         873F,ED29,                          ; Decrement timer and go to $ED29 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,ED16,                          ; Go to $ED16
-$84:ED39             dx 8899,                               ; Set the room argument item
+$84:ED39             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         891A,4000,                          ; Pick up equipment 4000h, add grapple to HUD and display grapple message box
 $84:ED42             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -13979,7 +13964,7 @@ $84:ED42             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:ED4A             dx 8764,8600,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,ED83,                          ; Go to $ED83 if the room argument item is set
+                        887C,ED83,                          ; Go to $ED83 if the room argument item is collected
                         8A24,ED79,                          ; Link instruction = $ED79
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -13988,7 +13973,7 @@ $84:ED69             dx E04F,                               ; Draw item frame 0
                         873F,ED69,                          ; Decrement timer and go to $ED69 if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,ED56,                          ; Go to $ED56
-$84:ED79             dx 8899,                               ; Set the room argument item
+$84:ED79             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0200,0C,                       ; Pick up equipment 0200h and display message box 0Ch
 $84:ED83             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -14000,7 +13985,7 @@ $84:ED83             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:ED8B             dx 8764,8500,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EDC4,                          ; Go to $EDC4 if the room argument item is set
+                        887C,EDC4,                          ; Go to $EDC4 if the room argument item is collected
                         8A24,EDBA,                          ; Link instruction = $EDBA
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -14009,7 +13994,7 @@ $84:EDAA             dx E04F,                               ; Draw item frame 0
                         873F,EDAA,                          ; Decrement timer and go to $EDAA if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,ED97,                          ; Go to $ED97
-$84:EDBA             dx 8899,                               ; Set the room argument item
+$84:EDBA             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0008,0A,                       ; Pick up equipment 0008h and display message box 0Ah
 $84:EDC4             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -14021,7 +14006,7 @@ $84:EDC4             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EDCC             dx 8764,8700,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EE05,                          ; Go to $EE05 if the room argument item is set
+                        887C,EE05,                          ; Go to $EE05 if the room argument item is collected
                         8A24,EDFB,                          ; Link instruction = $EDFB
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -14030,7 +14015,7 @@ $84:EDEB             dx E04F,                               ; Draw item frame 0
                         873F,EDEB,                          ; Decrement timer and go to $EDEB if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EDD8,                          ; Go to $EDD8
-$84:EDFB             dx 8899,                               ; Set the room argument item
+$84:EDFB             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         88F3,0002,09,                       ; Pick up equipment 0002h and display message box 09h
 $84:EE05             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
@@ -14042,7 +14027,7 @@ $84:EE05             dx 8A2E,E032,                          ; Call $E032 (empty 
 {
 $84:EE0D             dx 8764,9000,00,00,00,00,00,00,00,00,  ; Load item PLM GFX
                         8A2E,E007,                          ; Call $E007 (item shot block)
-                        887C,EE45,                          ; Go to $EE45 if the room argument item is set
+                        887C,EE45,                          ; Go to $EE45 if the room argument item is collected
                         8A24,EE3C,                          ; Link instruction = $EE3C
                         86C1,DF89,                          ; Pre-instruction = go to link instruction if triggered
                         874E,16,                            ; Timer = 16h
@@ -14051,7 +14036,7 @@ $84:EE2C             dx E04F,                               ; Draw item frame 0
                         873F,EE2C,                          ; Decrement timer and go to $EE2C if non-zero
                         8A2E,E020,                          ; Call $E020 (item shot block reconcealing)
                         8724,EE19,                          ; Go to $EE19
-$84:EE3C             dx 8899,                               ; Set the room argument item
+$84:EE3C             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         8986,0064,                          ; Collect 0064h health reserve tank
 $84:EE45             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)

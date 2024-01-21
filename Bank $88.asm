@@ -883,7 +883,7 @@ $88:8422 A9 00       LDA #$00               ;|
 $88:8424 C2 30       REP #$30               ;} $19 = [DB]
 $88:8426 85 18       STA $18    [$7E:0018]  ;/
 $88:8428 A3 03       LDA $03,s  [$7E:1FF3]  ;\
-$88:842A A8          TAY                    ;} Y = return address + 1
+$88:842A A8          TAY                    ;} Y = (return address) + 1
 $88:842B C8          INY                    ;/
 $88:842C 18          CLC                    ;\
 $88:842D 69 04 00    ADC #$0004             ;} Adjust return address
@@ -934,7 +934,7 @@ $88:843E A9 00       LDA #$00               ;|
 $88:8440 C2 30       REP #$30               ;} $19 = [DB]
 $88:8442 85 18       STA $18    [$7E:0018]  ;/
 $88:8444 A3 03       LDA $03,s  [$7E:1FE9]  ;\
-$88:8446 A8          TAY                    ;} Y = return address + 1
+$88:8446 A8          TAY                    ;} Y = (return address) + 1
 $88:8447 C8          INY                    ;/
 $88:8448 18          CLC                    ;\
 $88:8449 69 04 00    ADC #$0004             ;} Adjust return address
@@ -987,7 +987,7 @@ $88:847A 9D F0 18    STA $18F0,x[$7E:18F0]  ;|
 $88:847D A9 88 00    LDA #$0088             ;} HDMA object pre-instruction = RTL
 $88:8480 9D FC 18    STA $18FC,x[$7E:18FC]  ;/
 $88:8483 B9 02 00    LDA $0002,y[$88:EB65]  ;\
-$88:8486 9D CC 18    STA $18CC,x[$7E:18CC]  ;} HDMA object instruction list pointer = [return address + 3]
+$88:8486 9D CC 18    STA $18CC,x[$7E:18CC]  ;} HDMA object instruction list pointer = [(return address) + 3]
 $88:8489 A9 01 00    LDA #$0001             ;\
 $88:848C 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
 $88:848F 9E 08 19    STZ $1908,x[$7E:1908]  ; HDMA object timer = 0
@@ -1003,7 +1003,7 @@ $88:84A6 05 18       ORA $18    [$7E:0018]  ;} HDMA object channel index = [$14]
 $88:84A8 9D C0 18    STA $18C0,x[$7E:18C0]  ;/
 $88:84AB DA          PHX
 $88:84AC A6 14       LDX $14    [$7E:0014]  ;\
-$88:84AE B9 00 00    LDA $0000,y[$88:EB63]  ;} HDMA control / target = [return address + 1] / [return address + 2]
+$88:84AE B9 00 00    LDA $0000,y[$88:EB63]  ;} HDMA control / target = [(return address) + 1] / [(return address) + 2]
 $88:84B1 9D 00 43    STA $4300,x[$7E:4320]  ;/
 $88:84B4 68          PLA                    ; A = HDMA object index
 $88:84B5 AB          PLB

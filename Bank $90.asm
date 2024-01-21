@@ -8127,7 +8127,7 @@ $90:B6C8 BF 00 00 90 LDA $900000,x[$90:B5A1];\
 $90:B6CC 10 0A       BPL $0A    [$B6D8]     ;} If [$90:0000 + [X]] & 8000h != 0:
 $90:B6CE E8          INX                    ;\
 $90:B6CF E8          INX                    ;} X += 2
-$90:B6D0 F4 C7 B6    PEA $B6C7              ; Return address = LOOP_LEFT - 1
+$90:B6D0 F4 C7 B6    PEA $B6C7              ; Return to LOOP_LEFT
 $90:B6D3 85 12       STA $12    [$7E:0012]  ;\
 $90:B6D5 6C 12 00    JMP ($0012)[$90:B525]  ;} Go to [$90:0000 + [X]]
 
@@ -8176,7 +8176,7 @@ $90:B72E BF 00 00 90 LDA $900000,x[$90:B4C9];\
 $90:B732 10 0A       BPL $0A    [$B73E]     ;} If [$90:0000 + [X]] & 8000h != 0:
 $90:B734 E8          INX                    ;\
 $90:B735 E8          INX                    ;} X += 2
-$90:B736 F4 2D B7    PEA $B72D              ; Return address = LOOP_RIGHT - 1
+$90:B736 F4 2D B7    PEA $B72D              ; Return to LOOP_RIGHT
 $90:B739 85 12       STA $12    [$7E:0012]  ;\
 $90:B73B 6C 12 00    JMP ($0012)[$90:B587]  ;} Go to [$90:0000 + [X]]
 
@@ -16041,6 +16041,40 @@ $90:F083 60          RTS
 {
 ;; Parameters:
 ;;     A: Script ID. Range 0..1Fh
+;;         0: Lock Samus
+;;         1: Unlock Samus
+;;         2: Samus reached Ceres elevator
+;;         3: 
+;;         4: 
+;;         5: Set up Samus for being drained - able to stand
+;;         6: Lock Samus into recharge station
+;;         7: Set up Samus for elevator
+;;         8: Set up Samus for Ceres start
+;;         9: Set up Samus for Zebes start
+;;         Ah: 
+;;         Bh: Unlock Samus from facing forward
+;;         Ch: Unlock Samus from map station
+;;         Dh: Check if grapple beam is active
+;;         Eh: 
+;;         Fh: Enable timer handling
+;;         10h: Unlock Samus from reserve tank
+;;         11h: Set up Samus for death sequence
+;;         12h: Enable Samus blue flashing
+;;         13h: Disable Samus blue flashing
+;;         14h: Queue low health and grapple sound effects
+;;         15h: 
+;;         16h: Enable rainbow Samus
+;;         17h: Disable rainbow Samus and stand her up
+;;         18h: Set up Samus for being drained - unable to stand
+;;         19h: Freeze drained Samus animation
+;;         1Ah: 
+;;         1Bh: Lock Samus for reserve tank
+;;         1Ch: Play spin jump sound if spin jumping
+;;         1Dh: Clear sounds when going through door
+;;         1Eh: Resume sounds after power bomb explosion
+;;         1Fh: Kill grapple beam
+
+; Some of these scripts unconditionally return false, and you might be wondering what the point is in calling that code indirectly through this function
 $90:F084 08          PHP
 $90:F085 8B          PHB
 $90:F086 4B          PHK                    ;\
@@ -16176,7 +16210,11 @@ $90:F19A 60          RTS                    ;} Return carry set
 ;;; $F19B: $F084 - A = 4 ;;;
 {
 $90:F19B 9C 62 0B    STZ $0B62  [$7E:0B62]  ; Samus' charge palette index = 0
+}
 
+
+;;; $F19E: End charge beam animation ;;;
+{
 $90:F19E 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:F1A1 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear charge beam animation state
 $90:F1A4 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
@@ -16185,9 +16223,8 @@ $90:F1A9 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F1AA: $F084 - A = 6 ;;;
+;;; $F1AA: $F084 - A = 6: lock Samus into recharge station ;;;
 {
-; Locks Samus into (map/energy/missile) station
 $90:F1AA A9 13 E7    LDA #$E713             ;\
 $90:F1AD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
 $90:F1B0 A9 D6 E8    LDA #$E8D6             ;\
@@ -16198,7 +16235,7 @@ $90:F1BC 30 07       BMI $07    [$F1C5]     ;/
 $90:F1BE A9 02 00    LDA #$0002             ;\
 $90:F1C1 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 
-$90:F1C5 4C 9E F1    JMP $F19E  [$90:F19E]  ; Go to $F19E
+$90:F1C5 4C 9E F1    JMP $F19E  [$90:F19E]  ; Go to end charge beam animation
 }
 
 

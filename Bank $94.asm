@@ -2473,7 +2473,7 @@ $94:943D 4A          LSR A                  ;|
 $94:943E AA          TAX                    ;/
 $94:943F 68          PLA                    ;\
 $94:9440 38          SEC                    ;|
-$94:9441 E9 03 00    SBC #$0003             ;} Return address -= 3
+$94:9441 E9 03 00    SBC #$0003             ;} (Return address) -= 3
 $94:9444 48          PHA                    ;/
 
 $94:9445 18          CLC
@@ -2526,7 +2526,7 @@ $94:948B 4A          LSR A                  ;|
 $94:948C AA          TAX                    ;/
 $94:948D 68          PLA                    ;\
 $94:948E 38          SEC                    ;|
-$94:948F E9 03 00    SBC #$0003             ;} Return address -= 3
+$94:948F E9 03 00    SBC #$0003             ;} (Return address) -= 3
 $94:9492 48          PHA                    ;/
 
 $94:9493 18          CLC

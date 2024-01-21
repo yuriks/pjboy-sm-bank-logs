@@ -14,7 +14,7 @@ $80:8008             dw 0000 ; Disable audio ($80:8024)
 ;;     [[S] + 1] + 1: APU data pointer ($CF:8000)
 $80:800A A3 02       LDA $02,s  [$7E:1FFE]  ;\
 $80:800C 85 04       STA $04    [$7E:0004]  ;|
-$80:800E A3 01       LDA $01,s  [$7E:1FFD]  ;} $03 = return address
+$80:800E A3 01       LDA $01,s  [$7E:1FFD]  ;} $03 = (return address)
 $80:8010 85 03       STA $03    [$7E:0003]  ;/
 $80:8012 18          CLC                    ;\
 $80:8013 69 03 00    ADC #$0003             ;} Adjust return address
@@ -22,7 +22,7 @@ $80:8016 83 01       STA $01,s  [$7E:1FFD]  ;/
 $80:8018 A0 01 00    LDY #$0001             ;\
 $80:801B B7 03       LDA [$03],y[$80:845D]  ;|
 $80:801D 85 00       STA $00    [$7E:0000]  ;|
-$80:801F C8          INY                    ;} $00 = [return address + 1] (parameter address)
+$80:801F C8          INY                    ;} $00 = [(return address) + 1] (parameter address)
 $80:8020 B7 03       LDA [$03],y[$80:845E]  ;|
 $80:8022 85 01       STA $01    [$7E:0001]  ;/
 }
@@ -2879,10 +2879,10 @@ $80:91AF 48          PHA                    ;|
 $80:91B0 AB          PLB                    ;} DB = caller bank
 $80:91B1 AB          PLB                    ;/
 $80:91B2 A3 03       LDA $03,s  [$7E:1FF8]  ;\
-$80:91B4 A8          TAY                    ;} Y = return address
+$80:91B4 A8          TAY                    ;} Y = (return address)
 $80:91B5 B9 01 00    LDA $0001,y[$8B:92B9]  ;\
 $80:91B8 29 FF 00    AND #$00FF             ;|
-$80:91BB AA          TAX                    ;} X = [return address + 1] * 10h
+$80:91BB AA          TAX                    ;} X = [(return address) + 1] * 10h
 $80:91BC BF E6 91 80 LDA $8091E6,x[$80:91E7];|
 $80:91C0 29 FF 00    AND #$00FF             ;/
 $80:91C3 AA          TAX
@@ -2890,13 +2890,13 @@ $80:91C4 B9 02 00    LDA $0002,y[$8B:92BA]  ;\
 $80:91C7 9D 00 43    STA $4300,x[$7E:4310]  ;|
 $80:91CA B9 04 00    LDA $0004,y[$8B:92BC]  ;|
 $80:91CD 9D 02 43    STA $4302,x[$7E:4312]  ;|
-$80:91D0 B9 06 00    LDA $0006,y[$8B:92BE]  ;} ($4300 + [X])..($4306 + [X]) = [(return address + 2)..(return address + 8)]
+$80:91D0 B9 06 00    LDA $0006,y[$8B:92BE]  ;} Copy 7 bytes from (return address) + 2 to $4300 + [X]
 $80:91D3 9D 04 43    STA $4304,x[$7E:4314]  ;|
 $80:91D6 B9 07 00    LDA $0007,y[$8B:92BF]  ;|
 $80:91D9 9D 05 43    STA $4305,x[$7E:4315]  ;/
 $80:91DC 98          TYA                    ;\
 $80:91DD 18          CLC                    ;|
-$80:91DE 69 08 00    ADC #$0008             ;} Return address += 8
+$80:91DE 69 08 00    ADC #$0008             ;} (Return address) += 8
 $80:91E1 83 03       STA $03,s  [$7E:1FF8]  ;/
 $80:91E3 AB          PLB
 $80:91E4 28          PLP
@@ -7191,7 +7191,7 @@ $80:B101 85 45       STA $45    [$7E:0045]  ;|
 $80:B103 A3 01       LDA $01,s  [$7E:1FF8]  ;} $44 = (return address) - 1
 $80:B105 85 44       STA $44    [$7E:0044]  ;/
 $80:B107 18          CLC                    ;\
-$80:B108 69 03 00    ADC #$0003             ;} Return address += 3
+$80:B108 69 03 00    ADC #$0003             ;} (Return address) += 3
 $80:B10B 83 01       STA $01,s  [$7E:1FF8]  ;/
 $80:B10D A0 01 00    LDY #$0001             ;\
 $80:B110 B7 44       LDA [$44],y[$8B:92A1]  ;|
