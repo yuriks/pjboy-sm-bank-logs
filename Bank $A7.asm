@@ -1171,7 +1171,6 @@ $A7:AA06 4A          LSR A                  ;|
 $A7:AA07 4A          LSR A                  ;|
 $A7:AA08 85 12       STA $12    [$7E:0012]  ;|
                                             ;} $7E:780C + i*2 = [Kraid health] / 8 * (i + 1)
-
 $A7:AA0A 9F 0C 78 7E STA $7E780C,x[$7E:780C];} i = 0..7
 $A7:AA0E 18          CLC                    ;|
 $A7:AA0F 65 12       ADC $12    [$7E:0012]  ;|
