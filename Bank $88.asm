@@ -2060,7 +2060,7 @@ $88:8B6F 9E B6 18    STZ $18B6,x[$7E:18B6]  ;} Delete HDMA objects [X] and [X] +
 $88:8B72 9C EC 0C    STZ $0CEC  [$7E:0CEC]  ; Power bomb pre-explosion radius = 0
 $88:8B75 9C EA 0C    STZ $0CEA  [$7E:0CEA]  ; Power bomb explosion radius = 0
 $88:8B78 A9 1E 00    LDA #$001E             ;\
-$88:8B7B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Resume sounds after power bomb explosion
+$88:8B7B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - resume sounds after power bomb explosion
 $88:8B7F 6B          RTL
 }
 
@@ -7716,7 +7716,7 @@ $88:E2A2 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
 $88:E2A5 A9 01 00    LDA #$0001             ;\
 $88:E2A8 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
 $88:E2AB A9 0B 00    LDA #$000B             ;\
-$88:E2AE 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus from facing forward
+$88:E2AE 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus from facing forward
 $88:E2B2 18          CLC                    ;\
 $88:E2B3 60          RTS                    ;} Return carry clear
 }

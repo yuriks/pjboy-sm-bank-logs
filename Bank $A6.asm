@@ -5010,8 +5010,8 @@ $A6:BC6E 09 00 04    ORA #$0400
 $A6:BC71 8D 86 0F    STA $0F86  [$7E:0F86]
 $A6:BC74 A9 01 00    LDA #$0001
 $A6:BC77 8F 36 78 7E STA $7E7836[$7E:7836]
-$A6:BC7B 3A          DEC A
-$A6:BC7C 22 84 F0 90 JSL $90F084[$90:F084]
+$A6:BC7B 3A          DEC A                  ;\
+$A6:BC7C 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $A6:BC80 38          SEC
 $A6:BC81 4C 8B DA    JMP $DA8B  [$A6:DA8B]
 }
@@ -5019,7 +5019,7 @@ $A6:BC81 4C 8B DA    JMP $DA8B  [$A6:DA8B]
 
 ;;; $BC84:  ;;;
 {
-; Let go of Samus
+; Release Samus
 $A6:BC84 A9 01 00    LDA #$0001
 $A6:BC87 8F 04 20 7E STA $7E2004[$7E:2004]
 $A6:BC8B 8F 00 20 7E STA $7E2000[$7E:2000]
@@ -5034,8 +5034,8 @@ $A6:BCA0 8F 3C 78 7E STA $7E783C[$7E:783C]
 
 $A6:BCA4 A9 00 00    LDA #$0000
 $A6:BCA7 8F 36 78 7E STA $7E7836[$7E:7836]
-$A6:BCAB 1A          INC A
-$A6:BCAC 22 84 F0 90 JSL $90F084[$90:F084]
+$A6:BCAB 1A          INC A                  ;\
+$A6:BCAC 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $A6:BCB0 18          CLC
 $A6:BCB1 4C 8B DA    JMP $DA8B  [$A6:DA8B]
 }

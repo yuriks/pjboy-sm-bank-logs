@@ -299,18 +299,18 @@ $87:8159 60          RTS
 }
 
 
-;;; $815A: Unused. Instruction - disable movement ;;;
+;;; $815A: Unused. Instruction - lock Samus ;;;
 {
-$87:815A A9 00 00    LDA #$0000
-$87:815D 22 84 F0 90 JSL $90F084[$90:F084]
+$87:815A A9 00 00    LDA #$0000             ;\
+$87:815D 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $87:8161 60          RTS
 }
 
 
-;;; $8162: Unused. Instruction - enable movement ;;;
+;;; $8162: Unused. Instruction - unlock Samus ;;;
 {
-$87:8162 A9 01 00    LDA #$0001
-$87:8165 22 84 F0 90 JSL $90F084[$90:F084]
+$87:8162 A9 01 00    LDA #$0001             ;\
+$87:8165 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $87:8169 60          RTS
 }
 }

@@ -90,7 +90,7 @@ $84:824F 6B          RTL
 {
 ; Called at start of door transition
 $84:8250 A9 1D 00    LDA #$001D             ;\
-$84:8253 22 84 F0 90 JSL $90F084[$90:F084]  ;} Clear sounds when going through door
+$84:8253 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - clear sounds when going through door
 $84:8257 6B          RTL
 }
 
@@ -115,7 +115,7 @@ $84:826F 6B          RTL
 {
 ; Called at end of door transition
 $84:8270 A9 1C 00    LDA #$001C             ;\
-$84:8273 22 84 F0 90 JSL $90F084[$90:F084]  ;} Play spin jump sound if spin jumping
+$84:8273 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - play spin jump sound if spin jumping
 $84:8277 6B          RTL
 }
 
@@ -1918,7 +1918,7 @@ $84:8CC0 AD C4 09    LDA $09C4  [$7E:09C4]  ;\
 $84:8CC3 8D C2 09    STA $09C2  [$7E:09C2]  ;} Samus health = [Samus max health]
 
 $84:8CC6 A9 01 00    LDA #$0001             ;\
-$84:8CC9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:8CC9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $84:8CCD 7A          PLY
 $84:8CCE FA          PLX
 $84:8CCF 60          RTS
@@ -1938,7 +1938,7 @@ $84:8CE1 AD C8 09    LDA $09C8  [$7E:09C8]  ;\
 $84:8CE4 8D C6 09    STA $09C6  [$7E:09C6]  ;} Samus missiles = [Samus max missiles]
                                             
 $84:8CE7 A9 01 00    LDA #$0001             ;\
-$84:8CEA 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:8CEA 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $84:8CEE 7A          PLY
 $84:8CEF FA          PLX
 $84:8CF0 60          RTS
@@ -5921,7 +5921,7 @@ $84:AE3E C8          INY                    ;} Y += 2
 $84:AE3F 60          RTS                    ; Return
 
 $84:AE40 A9 01 00    LDA #$0001             ;\
-$84:AE43 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:AE43 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $84:AE47 B9 00 00    LDA $0000,y            ;\
 $84:AE4A A8          TAY                    ;} Y = [[Y]]
 $84:AE4B 60          RTS
@@ -5985,7 +5985,7 @@ $84:AEC8 C8          INY                    ;} Y += 2
 $84:AEC9 60          RTS                    ; Return
                                             
 $84:AECA A9 01 00    LDA #$0001             ;\
-$84:AECD 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:AECD 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $84:AED1 B9 00 00    LDA $0000,y            ;\
 $84:AED4 A8          TAY                    ;} Y = [[Y]]
 $84:AED5 60          RTS
@@ -6205,7 +6205,7 @@ $84:B02F 60          RTS
 ;;; $B030: Instruction - enable movement and set save station used ;;;
 {
 $84:B030 A9 01 00    LDA #$0001             ;\
-$84:B033 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$84:B033 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $84:B037 A9 01 00    LDA #$0001             ;\
 $84:B03A 8D 75 1E    STA $1E75  [$7E:1E75]  ;} Save station lockout flag = 1
 $84:B03D 60          RTS
@@ -6428,7 +6428,7 @@ $84:B170 9D 27 1D    STA $1D27,x[$7E:1D75]  ;} PLM instruction list pointer = [P
 $84:B173 A9 01 00    LDA #$0001             ;\    
 $84:B176 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];} PLM instruction timer = 1
 $84:B17A A9 06 00    LDA #$0006             ;\
-$84:B17D 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus into recharge station
+$84:B17D 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus into recharge station
 $84:B181 38          SEC                    ;\
 $84:B182 60          RTS                    ;} Return carry set
 
@@ -10947,7 +10947,7 @@ $84:D1C4 BF 02 00 7F LDA $7F0002,x[$7F:030A];|
 $84:D1C8 29 FF 0F    AND #$0FFF             ;} Make PLM block air
 $84:D1CB 9F 02 00 7F STA $7F0002,x[$7F:030A];/
 $84:D1CF A9 00 00    LDA #$0000             ;\
-$84:D1D2 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable Samus controls
+$84:D1D2 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $84:D1D6 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $84:D1DA             dx 0C, 1D, D113        ;} Spawn PLM $D113 (crumble Lower Norfair chozo room plug)
 
@@ -11318,7 +11318,7 @@ $84:D4E8             dx 8A24,D4F2,      ; Link instruction = $D4F2
                         86C1,D4BF,      ; Pre-instruction = wake PLM if A/X/B/Y/left/right pressed
                         86B4            ; Sleep
 $84:D4F2             dx 86CA,           ; Clear pre-instruction
-                        D5E6,           ; Disable Samus controls
+                        D5E6,           ; Lock Samus
                         D52C,           ; Spawn n00b tube crack enemy projectile
                         0030,98D7,
                         0001,9991,
@@ -11329,7 +11329,7 @@ $84:D4F2             dx 86CA,           ; Clear pre-instruction
                         0060,98DD,
                         883E,000B,      ; Set the event Bh
                         D525,           ; Enable water physics
-                        D5EE,           ; Enable Samus controls
+                        D5EE,           ; Unlock Samus
                         86BC            ; Delete
 $84:D519             dx 0001,98E3,
                         0001,9953
@@ -11421,18 +11421,18 @@ $84:D5E5 60          RTS
 }
 
 
-;;; $D5E6: Instruction - disable Samus controls ;;;
+;;; $D5E6: Instruction - lock Samus ;;;
 {
-$84:D5E6 A9 00 00    LDA #$0000
-$84:D5E9 22 84 F0 90 JSL $90F084[$90:F084]
+$84:D5E6 A9 00 00    LDA #$0000             ;\
+$84:D5E9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $84:D5ED 60          RTS
 }
 
 
-;;; $D5EE: Instruction - enable Samus controls ;;;
+;;; $D5EE: Instruction - unlock Samus ;;;
 {
-$84:D5EE A9 01 00    LDA #$0001
-$84:D5F1 22 84 F0 90 JSL $90F084[$90:F084]
+$84:D5EE A9 01 00    LDA #$0001             ;\
+$84:D5F1 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $84:D5F5 60          RTS
 }
 }
@@ -11507,7 +11507,7 @@ $84:D65D BF 02 00 7F LDA $7F0002,x[$7F:11D6];|
 $84:D661 29 FF 0F    AND #$0FFF             ;} Make PLM block air
 $84:D664 9F 02 00 7F STA $7F0002,x[$7F:11D6];/
 $84:D668 A9 00 00    LDA #$0000             ;\
-$84:D66B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable Samus controls
+$84:D66B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $84:D66F 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $84:D673             dx 17, 1D, D6F8        ;} Spawn PLM $D6F8 (clear slope access for Wrecked Ship chozo)
 

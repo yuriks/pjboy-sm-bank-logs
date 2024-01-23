@@ -3402,7 +3402,7 @@ $9B:C868 22 D9 82 91 JSL $9182D9[$91:82D9]  ; Handle transition table lookup fai
 $9B:C86C 80 07       BRA $07    [$C875]
 
 $9B:C86E A9 1C 00    LDA #$001C             ;\ Else ([Samus movement type] != grappling):
-$9B:C871 22 84 F0 90 JSL $90F084[$90:F084]  ;} Play spin jump sound if spin jumping
+$9B:C871 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - play spin jump sound if spin jumping
 
 $9B:C875 9C 1E 0D    STZ $0D1E  [$7E:0D1E]  ; $0D1E = 0 (unused)
 $9B:C878 9C 20 0D    STZ $0D20  [$7E:0D20]  ; $0D20 = 0 (unused)

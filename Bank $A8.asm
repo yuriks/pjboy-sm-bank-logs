@@ -2764,8 +2764,8 @@ $A8:A664 60          RTS
 ;;; $A665:  ;;;
 {
 $A8:A665 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:A668 A9 03 00    LDA #$0003
-$A8:A66B 22 84 F0 90 JSL $90F084[$90:F084]
+$A8:A668 A9 03 00    LDA #$0003             ;\
+$A8:A66B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unspin Samus
 $A8:A66F BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $A8:A672 18          CLC
 $A8:A673 7F 24 80 7E ADC $7E8024,x[$7E:8064]
@@ -2785,7 +2785,7 @@ $A8:A689 60          RTS
 ;      During shinespark, Samus pose input handler is supposed to be an RTS to disable transition table lookup
 ;      With transition table lookup allowed, and because the entries for shinespark poses are empty, if no buttons are being pressed,
 ;      then $91:8304 is executed, which sets prospective pose change command = stop
-;      Hence, When $91:EB88 (update Samus pose) is called, $91:ECD0 (prospective pose change command 2 - stop) is executed,
+;      Hence, when $91:EB88 (update Samus pose) is called, $91:ECD0 (prospective pose change command 2 - stop) is executed,
 ;      which calls $91:DE53 (cancel speed boosting), which sets $0AAF = FFh with the intention of flagging the echoes to merge back into Samus
 ;      However, during shinespark crash, $0AAF is used as "shinespark crash echo circle phase",
 ;      which is a jump table index in $90:D346 (Samus movement handler - shinespark crash - echoes circle Samus),

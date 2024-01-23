@@ -245,7 +245,7 @@ $A9:882C 30 01       BMI $01    [$882F]     ; If [Mother Brain's body function t
 $A9:882E 60          RTS                    ; Return
 
 $A9:882F A9 00 00    LDA #$0000             ;\
-$A9:8832 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
+$A9:8832 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $A9:8836 AF 20 CD 7E LDA $7ECD20[$7E:CD20]  ;\
 $A9:883A 29 FF 00    AND #$00FF             ;} Scroll 1 = red
 $A9:883D 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;/
@@ -276,7 +276,7 @@ $A9:8869 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function time
 $A9:886C CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
 $A9:886F 10 40       BPL $40    [$88B1]     ; If [Mother Brain's body function timer] >= 0: return
 $A9:8871 A9 01 00    LDA #$0001             ;\
-$A9:8874 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$A9:8874 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $A9:8878 A9 84 88    LDA #$8884             ;\
 $A9:887B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8884
 $A9:887E A9 08 00    LDA #$0008             ;\
@@ -4050,7 +4050,7 @@ $A9:B2F9 22 46 B3 A9 JSL $A9B346[$A9:B346]  ; Generate escape door explosion
 $A9:B2FD CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
 $A9:B300 10 27       BPL $27    [$B329]     ; If [Mother Brain's body function timer] >= 0: return
 $A9:B302 A9 0F 00    LDA #$000F             ;\
-$A9:B305 22 84 F0 90 JSL $90F084[$90:F084]  ;} Enable timer handling
+$A9:B305 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - enable timer handling
 $A9:B309 A9 02 00    LDA #$0002             ;\
 $A9:B30C 8D 43 09    STA $0943  [$7E:0943]  ;} Timer status = Mother Brain start
 $A9:B30F 22 A6 81 80 JSL $8081A6[$80:81A6]  ; Set mini-boss bit for current area
@@ -5068,7 +5068,7 @@ $A9:B9CB C0 BC 02    CPY #$02BC             ;} If [Samus health] < 700:
 $A9:B9CE 10 03       BPL $03    [$B9D3]     ;/
 $A9:B9D0 A9 18 00    LDA #$0018             ; A = 18h (set up Samus for being drained - unable to stand)
 
-$A9:B9D3 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$A9:B9D3 22 84 F0 90 JSL $90F084[$90:F084]  ; Run Samus command
 $A9:B9D7 A9 06 00    LDA #$0006             ;\
 $A9:B9DA 8F 2A 78 7E STA $7E782A[$7E:782A]  ;} Number of times to queue rainbow beam sound effect = 6 (seems excessive...)
 $A9:B9DE A9 E5 B9    LDA #$B9E5             ;\
@@ -5171,8 +5171,8 @@ $A9:BAA2 A9 02 00    LDA #$0002             ;\
 $A9:BAA5 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 6 (silence)
 $A9:BAA9 A9 00 00    LDA #$0000             ;\
 $A9:BAAC 8F 2C 78 7E STA $7E782C[$7E:782C]  ;} Set Mother Brain rainbow beam sound effect as not playing
-$A9:BAB0 A9 01 00    LDA #$0001             ; A = 1 (unlock Samus)
-$A9:BAB3 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$A9:BAB0 A9 01 00    LDA #$0001             ;\
+$A9:BAB3 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $A9:BAB7 A9 08 00    LDA #$0008             ;\
 $A9:BABA 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 8
 $A9:BABD A9 C4 BA    LDA #$BAC4             ;\
@@ -7687,7 +7687,7 @@ $A9:CC7C 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function timer = Ch
 $A9:CC7F DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:CC82 10 14       BPL $14    [$CC98]     ; If [enemy function timer] >= 0: return
 $A9:CC84 A9 19 00    LDA #$0019             ;\
-$A9:CC87 22 84 F0 90 JSL $90F084[$90:F084]  ;} Freeze drained Samus animation
+$A9:CC87 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - freeze drained Samus animation
 $A9:CC8B A9 30 CD    LDA #$CD30             ;\
 $A9:CC8E 8F 6C 78 7E STA $7E786C[$7E:786C]  ;} Samus rainbow palette function = $CD30 (activate rainbow when enemy is low enough)
 $A9:CC92 A9 99 CC    LDA #$CC99             ;\
@@ -7758,7 +7758,7 @@ $A9:CD00 90 BD       BCC $BD    [$CCBF]     ; If not finished transition: return
 $A9:CD02 A9 CF C1    LDA #$C1CF             ;\
 $A9:CD05 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C1CF (third phase - recover from cutscene)
 $A9:CD08 A9 17 00    LDA #$0017             ;\
-$A9:CD0B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable rainbow Samus and stand her up
+$A9:CD0B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable rainbow Samus and stand her up
 $A9:CD0F A9 03 00    LDA #$0003             ;\
 $A9:CD12 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Enable hyper beam
 $A9:CD16 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
@@ -7786,7 +7786,7 @@ $A9:CD34 69 10 00    ADC #$0010             ;} If [enemy Y position] + 10h >= [S
 $A9:CD37 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;|
 $A9:CD3A 30 0E       BMI $0E    [$CD4A]     ;/
 $A9:CD3C A9 16 00    LDA #$0016             ;\
-$A9:CD3F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Enable rainbow Samus
+$A9:CD3F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - enable rainbow Samus
 $A9:CD43 A9 4B CD    LDA #$CD4B             ;\
 $A9:CD46 8F 6C 78 7E STA $7E786C[$7E:786C]  ;} Samus rainbow palette function = $CD4B
 
@@ -12250,7 +12250,7 @@ $A9:F20B 4C 51 F4    JMP $F451  [$A9:F451]  ; Go to gradually accelerate towards
 ;;; $F20E: Shitroid function - start draining Samus ;;;
 {
 $A9:F20E A9 12 00    LDA #$0012             ;\
-$A9:F211 22 84 F0 90 JSL $90F084[$90:F084]  ;} Enable Samus blue flashing
+$A9:F211 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - enable Samus blue flashing
 $A9:F215 A9 1B F2    LDA #$F21B             ;\
 $A9:F218 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy function = $F21B
 }
@@ -12300,7 +12300,7 @@ $A9:F27B 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $F9
 $A9:F27F A9 0A 00    LDA #$000A             ;\
 $A9:F282 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy palette handler delay = Ah
 $A9:F285 A9 13 00    LDA #$0013             ;\
-$A9:F288 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable Samus blue flashing
+$A9:F288 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable Samus blue flashing
 $A9:F28C A9 00 00    LDA #$0000             ;\
 $A9:F28F 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Let drained Samus fall
 $A9:F293 A9 00 00    LDA #$0000             ;\

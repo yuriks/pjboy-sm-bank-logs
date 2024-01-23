@@ -1277,7 +1277,7 @@ $89:ACFF AD 98 09    LDA $0998  [$7E:0998]  ;\
 $89:AD02 C9 08 00    CMP #$0008             ;} If [game state] = normal gameplay
 $89:AD05 D0 13       BNE $13    [$AD1A]     ;/
 $89:AD07 A9 02 00    LDA #$0002             ;\
-$89:AD0A 22 84 F0 90 JSL $90F084[$90:F084]  ;} Samus reached Ceres elevator
+$89:AD0A 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - Samus reached Ceres elevator
 $89:AD0E 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $89:AD11 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $89:AD14 A9 20 00    LDA #$0020             ;\

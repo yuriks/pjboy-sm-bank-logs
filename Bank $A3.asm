@@ -1270,12 +1270,12 @@ $A3:9555 A9 0B 00    LDA #$000B             ;\
 $A3:9558 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound Bh, sound library 3, max queued sounds allowed = 6 (elevator)
 $A3:955C A9 32 00    LDA #$0032             ;\
 $A3:955F 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 32h, sound library 1, max queued sounds allowed = 6 (spin jump end)
-$A3:9563 A9 07 00    LDA #$0007             ; A = 7
-$A3:9566 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$A3:9563 A9 07 00    LDA #$0007             ;\
+$A3:9566 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - set Samus up for elevator
 $A3:956A 22 22 AD 90 JSL $90AD22[$90:AD22]  ; Reset projectile data
 $A3:956E 20 12 96    JSR $9612  [$A3:9612]  ; Place Samus on top of elevator
 $A3:9571 EE 18 0E    INC $0E18  [$7E:0E18]  ; Elevator state = leaving the room
-$A3:9574 60          RTS
+$A3:9574 60          RTS                    ; Return
 
 $A3:9575 9C 16 0E    STZ $0E16  [$7E:0E16]  ; Elevator properties = 0
 $A3:9578 60          RTS
@@ -1352,8 +1352,8 @@ $A3:95FE A9 25 00    LDA #$0025             ;\
 $A3:9601 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 25h, sound library 3, max queued sounds allowed = 6 (silence)
 $A3:9605 BD A8 0F    LDA $0FA8,x[$7E:1028]  ;\
 $A3:9608 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [enemy $0FA8]
-$A3:960B A9 0B 00    LDA #$000B             ; A = Bh
-$A3:960E 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$A3:960B A9 0B 00    LDA #$000B             ;\
+$A3:960E 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus from facing forward
 }
 
 
@@ -9602,8 +9602,8 @@ $A3:EEA8 1A          INC A
 $A3:EEA9 C9 08 00    CMP #$0008
 $A3:EEAC B0 0A       BCS $0A    [$EEB8]
 $A3:EEAE A0 02 00    LDY #$0002
-$A3:EEB1 A9 12 00    LDA #$0012
-$A3:EEB4 22 84 F0 90 JSL $90F084[$90:F084]
+$A3:EEB1 A9 12 00    LDA #$0012             ;\
+$A3:EEB4 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - enable Samus blue flashing
 
 $A3:EEB8 98          TYA
 $A3:EEB9 9D B2 0F    STA $0FB2,x[$7E:0FF2]
@@ -9678,8 +9678,8 @@ $A3:EF43 D0 33       BNE $33    [$EF78]
 $A3:EF45 9E AA 0F    STZ $0FAA,x[$7E:106A]
 $A3:EF48 A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $A3:EF4B 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
-$A3:EF4F A9 13 00    LDA #$0013
-$A3:EF52 22 84 F0 90 JSL $90F084[$90:F084]
+$A3:EF4F A9 13 00    LDA #$0013             ;\
+$A3:EF52 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable Samus blue flashing
 $A3:EF56 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EF59 BF 00 78 7E LDA $7E7800,x[$7E:78C0]
 $A3:EF5D AA          TAX
@@ -9709,8 +9709,8 @@ $A3:EF98 A9 CF E9    LDA #$E9CF
 $A3:EF9B 9D 92 0F    STA $0F92,x[$7E:0FD2]
 $A3:EF9E A9 01 00    LDA #$0001
 $A3:EFA1 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A3:EFA4 A9 13 00    LDA #$0013
-$A3:EFA7 22 84 F0 90 JSL $90F084[$90:F084]
+$A3:EFA4 A9 13 00    LDA #$0013             ;\
+$A3:EFA7 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable Samus blue flashing
 
 $A3:EFAB 6B          RTL
 
@@ -9794,8 +9794,8 @@ $A3:F041 6B          RTL
 $A3:F042 22 97 A5 A0 JSL $A0A597[$A0:A597]  ; Normal enemy power bomb AI
 $A3:F046 BD 8C 0F    LDA $0F8C,x[$7E:0FCC]
 $A3:F049 D0 25       BNE $25    [$F070]
-$A3:F04B A9 13 00    LDA #$0013
-$A3:F04E 22 84 F0 90 JSL $90F084[$90:F084]
+$A3:F04B A9 13 00    LDA #$0013             ;\
+$A3:F04E 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable Samus blue flashing
 $A3:F052 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:F055 BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $A3:F059 AA          TAX

@@ -133,12 +133,12 @@ $82:812B D0 10       BNE $10    [$813D]     ;/
 $82:812D A9 00 00    LDA #$0000             ;\
 $82:8130 8F BE C1 7E STA $7EC1BE[$7E:C1BE]  ;} Sprite palette 5, colour Fh = 0
 $82:8134 A9 08 00    LDA #$0008             ;\
-$82:8137 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for Ceres start
+$82:8137 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - set up Samus for Ceres start
 $82:813B 28          PLP
 $82:813C 60          RTS                    ; Return
 
 $82:813D A9 09 00    LDA #$0009             ;\
-$82:8140 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for Zebes start
+$82:8140 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - set up Samus for Zebes start
 $82:8144 28          PLP
 $82:8145 60          RTS                    ; Return
 
@@ -4160,7 +4160,7 @@ $82:A303 20 77 A3    JSR $A377  [$82:A377]  ; Update beam tiles and palette
 $82:A306 20 80 A3    JSR $A380  [$82:A380]  ; Clear pause menu data
 $82:A309 C2 30       REP #$30
 $82:A30B A9 0C 00    LDA #$000C             ;\
-$82:A30E 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus from map station
+$82:A30E 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus from map station
 $82:A312 60          RTS
 }
 
@@ -7775,7 +7775,7 @@ $82:BE4B A9 41 00    LDA #$0041             ;\
 $82:BE4E 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 41h, sound library 1, max queued sounds allowed = 6 (resume charging beam)
 
 $82:BE52 A9 14 00    LDA #$0014             ;\
-$82:BE55 22 84 F0 90 JSL $90F084[$90:F084]  ;} Queue low health, grapple and jump sound effects
+$82:BE55 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - queue low health, grapple and jump sound effects
 $82:BE59 6B          RTL
 }
 
@@ -9297,7 +9297,7 @@ $82:DB83 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Freeze time
 $82:DB86 A9 1B 00    LDA #$001B             ;\
 $82:DB89 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 1Bh (reserve tanks auto)
 $82:DB8C A9 1B 00    LDA #$001B             ;\
-$82:DB8F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus for reserve tank
+$82:DB8F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus for reserve tank
 $82:DB93 80 1D       BRA $1D    [$DBB2]     ; Go to BRANCH_TICK_GAME_TIME
 
 $82:DB95 AD 98 09    LDA $0998  [$7E:0998]  ;\
@@ -9309,7 +9309,7 @@ $82:DB9E 60          RTS                    ; Return
 $82:DB9F A9 00 80    LDA #$8000             ;\
 $82:DBA2 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Freeze time
 $82:DBA5 A9 11 00    LDA #$0011             ;\
-$82:DBA8 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for death sequence
+$82:DBA8 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - set up Samus for death sequence
 $82:DBAC A9 13 00    LDA #$0013             ;\
 $82:DBAF 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 13h (death sequence, start)
 
@@ -9367,7 +9367,7 @@ $82:DC18 9C 78 0A    STZ $0A78  [$7E:0A78]  ; Unfreeze time
 $82:DC1B A9 08 00    LDA #$0008             ;\
 $82:DC1E 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 8 (main gameplay)
 $82:DC21 A9 10 00    LDA #$0010             ;\
-$82:DC24 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus from reserve tank
+$82:DC24 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus from reserve tank
 
 $82:DC28 20 44 8B    JSR $8B44  [$82:8B44]  ; Main gameplay
 $82:DC2B 22 AB EA 90 JSL $90EAAB[$90:EAAB]  ; Low health check
@@ -10153,7 +10153,7 @@ $82:E17A 4C B7 E1    JMP $E1B7  [$82:E1B7]  ; Go to game state Ah
 $82:E17D AD 16 0E    LDA $0E16  [$7E:0E16]  ;\
 $82:E180 F0 1B       BEQ $1B    [$E19D]     ;} If door is not an elevator: return carry set
 $82:E182 A9 00 00    LDA #$0000             ;\
-$82:E185 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
+$82:E185 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $82:E189 AD 99 07    LDA $0799  [$7E:0799]  ;\
 $82:E18C 30 0F       BMI $0F    [$E19D]     ;} If elevator is going up: return carry set
 $82:E18E A9 30 00    LDA #$0030             ;\
@@ -10911,11 +10911,11 @@ $82:E70E F0 15       BEQ $15    [$E725]     ;} If door is not an elevator: go to
 $82:E710 2C 99 07    BIT $0799  [$7E:0799]  ;\
 $82:E713 10 09       BPL $09    [$E71E]     ;} If elevator direction is up:
 $82:E715 A9 00 00    LDA #$0000             ;\
-$82:E718 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
+$82:E718 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $82:E71C 80 07       BRA $07    [$E725]
 
 $82:E71E A9 07 00    LDA #$0007             ;\ Else (elevator direction is down):
-$82:E721 22 84 F0 90 JSL $90F084[$90:F084]  ;} Set up Samus for elevator
+$82:E721 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - set up Samus for elevator
 
 ; BRANCH_NOT_ELEVATOR
 $82:E725 22 0F 8E 90 JSL $908E0F[$90:8E0F]  ; Set liquid physics type

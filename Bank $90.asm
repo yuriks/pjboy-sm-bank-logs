@@ -15192,7 +15192,7 @@ $90:EB1D 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
 $90:EB20 9C 5E 0B    STZ $0B5E  [$7E:0B5E]  ; Pose transition shot direction = 0
 $90:EB23 AD FA 0D    LDA $0DFA  [$7E:0DFA]  ;\
 $90:EB26 EB          XBA                    ;|
-$90:EB27 29 00 FF    AND #$FF00             ;} $0DFA <<= 8
+$90:EB27 29 00 FF    AND #$FF00             ;} $0DFA <<= 8 (never read meaningfully)
 $90:EB2A 8D FA 0D    STA $0DFA  [$7E:0DFA]  ;/
 $90:EB2D AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:EB30 8D 10 0A    STA $0A10  [$7E:0A10]  ;} Samus' previous pose X direction / movement type = [Samus pose X direction / movement type]
@@ -15861,7 +15861,7 @@ $90:EF1C             dw 000C, 0010
 }
 
 
-;;; $EF20:  ;;;
+;;; $EF20: Unknown ;;;
 {
 ; Loaded by shinespark Samus movement handlers and then unused >_<;
 $90:EF20             dw 0010
@@ -16035,46 +16035,46 @@ $90:F083 60          RTS
 }
 
 
-;;; $F084..F506: $F084 scripts ;;;
+;;; $F084..F506: Samus commands ;;;
 {
-;;; $F084: Run $F084 script ;;;
+;;; $F084: Run Samus command ;;;
 {
 ;; Parameters:
-;;     A: Script ID. Range 0..1Fh
+;;     A: Command ID. Range 0..1Fh
 ;;         0: Lock Samus
 ;;         1: Unlock Samus
 ;;         2: Samus reached Ceres elevator
-;;         3: 
-;;         4: 
+;;         3: Unspin Samus
+;;         4: End charge beam
 ;;         5: Set up Samus for being drained - able to stand
 ;;         6: Lock Samus into recharge station
 ;;         7: Set up Samus for elevator
 ;;         8: Set up Samus for Ceres start
 ;;         9: Set up Samus for Zebes start
-;;         Ah: 
+;;         Ah: Stop drawing Samus
 ;;         Bh: Unlock Samus from facing forward
 ;;         Ch: Unlock Samus from map station
 ;;         Dh: Check if grapple beam is active
-;;         Eh: 
+;;         Eh: Unlock Samus from Ceres elevator
 ;;         Fh: Enable timer handling
 ;;         10h: Unlock Samus from reserve tank
 ;;         11h: Set up Samus for death sequence
 ;;         12h: Enable Samus blue flashing
 ;;         13h: Disable Samus blue flashing
 ;;         14h: Queue low health and grapple sound effects
-;;         15h: 
+;;         15h: Lock Samus into suit pickup
 ;;         16h: Enable rainbow Samus
 ;;         17h: Disable rainbow Samus and stand her up
 ;;         18h: Set up Samus for being drained - unable to stand
 ;;         19h: Freeze drained Samus animation
-;;         1Ah: 
+;;         1Ah: Samus enters gunship
 ;;         1Bh: Lock Samus for reserve tank
 ;;         1Ch: Play spin jump sound if spin jumping
 ;;         1Dh: Clear sounds when going through door
 ;;         1Eh: Resume sounds after power bomb explosion
 ;;         1Fh: Kill grapple beam
 
-; Some of these scripts unconditionally return false, and you might be wondering what the point is in calling that code indirectly through this function
+; Some of these commands unconditionally return false, and you might be wondering what the point is in calling that code indirectly through this function
 $90:F084 08          PHP
 $90:F085 8B          PHB
 $90:F086 4B          PHK                    ;\
@@ -16125,8 +16125,20 @@ $90:F108 60          RTS
 }
 
 
-;;; $F109: $F084 - A = 0: lock Samus ;;;
+;;; $F109: Samus command 0: lock Samus ;;;
 {
+; Called by:
+;     $82:E17D: Door transition function - handle elevator
+;     $82:E6A2: Door transition function - nudge Samus if she's intercepting the door
+;     $84:D18F: Setup - PLM $D6DA (collision reaction, special, BTS Norfair 83h. Lower Norfair chozo hand trigger)
+;     $84:D5E6: Instruction - lock Samus
+;     $84:D620: Setup - PLM $D6F2 (collision reaction, special, BTS Wrecked Ship 80h. Wrecked Ship chozo hand trigger)
+;     $87:815A: Unused. Instruction - lock Samus
+;     $8F:E26C: Door ASM: set up elevatube from south
+;     $8F:E291: Door ASM: set up elevatube from north
+;     $A6:BC68: (Draygon grabs Samus)
+;     $A9:8829: Mother Brain body function - fake death - descent - lock Samus and set scroll region
+
 $90:F109 A9 13 E7    LDA #$E713             ;\
 $90:F10C 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
 $90:F10F A9 DC E8    LDA #$E8DC             ;\
@@ -16136,8 +16148,24 @@ $90:F116 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F117: $F084 - A = 1: unlock Samus ;;;
+;;; $F117: Samus command 1: unlock Samus ;;;
 {
+; Called by:
+;     $84:8CAF: Instruction - activate energy station
+;     $84:8CD0: Instruction - activate missile station
+;     $84:AE35: Instruction - go to [[Y]] and enable movement if Samus health is full
+;     $84:AEBF: Instruction - go to [[Y]] and enable movement if Samus missiles are full
+;     $84:B030: Instruction - enable movement and set save station used
+;     $84:D5EE: Instruction - unlock Samus
+;     $87:8162: Unused. Instruction - unlock Samus
+;     $8F:E301: Door ASM: reset elevatube on north exit
+;     $8F:E309: Door ASM: reset elevatube on south exit
+;     $A6:BC84: (Draygon releases Samus)
+;     $A9:886C: Mother Brain body function - fake death - descent - unlock Samus
+;     $A9:BA5E: Mother Brain's body function - second phase - firing rainbow beam - finish firing rainbow beam
+;     $AA:E43D: Instruction - unlock Samus
+;     $AA:E6F0: Instruction - release Samus
+
 $90:F117 A9 95 E6    LDA #$E695             ;\
 $90:F11A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
 $90:F11D A9 25 E7    LDA #$E725             ;\
@@ -16147,8 +16175,10 @@ $90:F124 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F125: $F084 - A = 2: Samus reached Ceres elevator ;;;
+;;; $F125: Samus command 2: Samus reached Ceres elevator ;;;
 {
+; Called by:
+;     $89:ACC3: Room main ASM - Ceres elevator shaft
 $90:F125 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $90:F128 29 FF 00    AND #$00FF             ;|
 $90:F12B C9 04 00    CMP #$0004             ;} If Samus is facing right:
@@ -16169,10 +16199,12 @@ $90:F14F 4C 09 F1    JMP $F109  [$90:F109]  ; Go to lock Samus
 }
 
 
-;;; $F152: $F084 - A = 3 ;;;
+;;; $F152: Samus command 3: unspin Samus ;;;
 {
+; Called by:
+;     $A8:A665: (yapping maw)
 $90:F152 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
-$90:F155 C9 F0 C4    CMP #$C4F0             ;} If [grapple beam function] != inactive:
+$90:F155 C9 F0 C4    CMP #$C4F0             ;} If [grapple beam function] = inactive: go to BRANCH_GRAPPLE_INACTIVE
 $90:F158 F0 08       BEQ $08    [$F162]     ;/
 $90:F15A A9 C5 C8    LDA #$C8C5             ;\
 $90:F15D 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = dropped
@@ -16180,6 +16212,7 @@ $90:F15D 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = dropped
 $90:F160 18          CLC                    ;\
 $90:F161 60          RTS                    ;} Return carry clear
 
+; BRANCH_GRAPPLE_INACTIVE
 $90:F162 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:F165 29 FF 00    AND #$00FF             ;|
 $90:F168 C9 03 00    CMP #$0003             ;} If [Samus movement type] != spin jumping:
@@ -16207,13 +16240,17 @@ $90:F19A 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F19B: $F084 - A = 4 ;;;
+;;; $F19B: Samus command 4: end charge beam ;;;
 {
+; Called by:
+;     $A0:A4A1: Normal enemy touch AI - no death check
+
+; $A0:A4A1 assumes that this routine preserves Y (which it does)
 $90:F19B 9C 62 0B    STZ $0B62  [$7E:0B62]  ; Samus' charge palette index = 0
 }
 
 
-;;; $F19E: End charge beam animation ;;;
+;;; $F19E: End charge beam ;;;
 {
 $90:F19E 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:F1A1 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear charge beam animation state
@@ -16223,8 +16260,10 @@ $90:F1A9 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F1AA: $F084 - A = 6: lock Samus into recharge station ;;;
+;;; $F1AA: Samus command 6: lock Samus into recharge station ;;;
 {
+; Called by:
+;     $84:B146: Activate the station at block index [A] if Samus arm cannon is lined up
 $90:F1AA A9 13 E7    LDA #$E713             ;\
 $90:F1AD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
 $90:F1B0 A9 D6 E8    LDA #$E8D6             ;\
@@ -16235,12 +16274,15 @@ $90:F1BC 30 07       BMI $07    [$F1C5]     ;/
 $90:F1BE A9 02 00    LDA #$0002             ;\
 $90:F1C1 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 
-$90:F1C5 4C 9E F1    JMP $F19E  [$90:F19E]  ; Go to end charge beam animation
+$90:F1C5 4C 9E F1    JMP $F19E  [$90:F19E]  ; Go to end charge beam
 }
 
 
-;;; $F1C8: $F084 - A = 7: set up Samus for elevator ;;;
+;;; $F1C8: Samus command 7: set up Samus for elevator ;;;
 {
+; Called by:
+;     $82:E6A2: Door transition function - nudge Samus if she's intercepting the door
+;     $A3:9548: Elevator AI - elevator status = 0: inactive
 $90:F1C8 22 F6 E3 91 JSL $91E3F6[$91:E3F6]  ; Make Samus face forward
 $90:F1CC A9 EC E8    LDA #$E8EC             ;\
 $90:F1CF 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8EC (riding elevator)
@@ -16256,8 +16298,10 @@ $90:F1E8 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F1E9: $F084 - A = 8: set up Samus for Ceres start ;;;
+;;; $F1E9: Samus command 8: set up Samus for Ceres start ;;;
 {
+; Called by:
+;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
 $90:F1E9 A9 CD E8    LDA #$E8CD             ;\
 $90:F1EC 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = RTL
 $90:F1EF A9 DC E8    LDA #$E8DC             ;\
@@ -16288,8 +16332,10 @@ $90:F23B 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F23C: $F084 - A = 9: set up Samus for Zebes start ;;;
+;;; $F23C: Samus command 9: set up Samus for Zebes start ;;;
 {
+; Called by:
+;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
 $90:F23C AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $90:F23F 89 20 00    BIT #$0020             ;} If equipped gravity suit: go to BRANCH_GRAVITY
 $90:F242 D0 23       BNE $23    [$F267]     ;/
@@ -16327,8 +16373,10 @@ $90:F28C 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F28D: $F084 - A = Ah ;;;
+;;; $F28D: Samus command Ah: stop drawing Samus ;;;
 {
+; Called by:
+;     $A2:AAA2: Gunship function - go to liftoff or restore Samus health / ammo
 $90:F28D A9 0E E9    LDA #$E90E             ;\
 $90:F290 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = RTS
 $90:F293 18          CLC                    ;\
@@ -16336,18 +16384,21 @@ $90:F294 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F295: $F084 - A = Bh: unlock Samus from facing forward ;;;
+;;; $F295: Samus command Bh: unlock Samus from facing forward ;;;
 {
-; Called by suit acquisition and elevators
+; Called by:
+;     $88:E25F: Suit pickup stage 6
+;     $A3:95BC: Elevator AI - elevator status = 3: entering room
 $90:F295 A9 52 EB    LDA #$EB52             ;\
 $90:F298 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = default
 $90:F29B 4C 17 F1    JMP $F117  [$90:F117]  ; Go to unlock Samus
 }
 
 
-;;; $F29E: $F084 - A = Ch: unlock Samus from map station ;;;
+;;; $F29E: Samus command Ch: unlock Samus from map station ;;;
 {
-; Run when unpausing, unlocks Samus movement (for map stations to work)
+; Called by:
+;     $82:A2E3: Continue initialising gameplay resume
 $90:F29E 22 33 E6 91 JSL $91E633[$91:E633]  ; Update Samus pose due to change of equipment
 $90:F2A2 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
 $90:F2A5 C9 D6 E8    CMP #$E8D6             ;} If [$0A44] = $E8D6 (RTL):
@@ -16362,8 +16413,12 @@ $90:F2B7 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F2B8: $F084 - A = Dh: check if grapple beam is active ;;;
+;;; $F2B8: Samus command Dh: check if grapple beam is active ;;;
 {
+; Called by:
+;     $86:EFE0: Pre-instruction - enemy projectile $F337 (pickup)
+;     $A0:9E9A: Enemy / grapple beam collision detection
+;     $A5:8E19: Draygon body function - chase Samus
 $90:F2B8 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
 $90:F2BB C9 F0 C4    CMP #$C4F0             ;} If [grapple function] = inactive:
 $90:F2BE D0 05       BNE $05    [$F2C5]     ;/
@@ -16377,8 +16432,10 @@ $90:F2C9 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F2CA: $F084 - A = Eh ;;;
+;;; $F2CA: Samus command Eh: unlock Samus from Ceres elevator ;;;
 {
+; Called by:
+;     $86:A328: Pre-instruction - enemy projectile $A387 (Ceres elevator pad)
 $90:F2CA A9 95 E6    LDA #$E695             ;\
 $90:F2CD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
 $90:F2D0 A9 AA E8    LDA #$E8AA             ;\
@@ -16388,8 +16445,10 @@ $90:F2D7 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F2D8: $F084 - A = Fh: enable timer handling ;;;
+;;; $F2D8: Samus command Fh: enable timer handling ;;;
 {
+; Called by:
+;     $A9:B2F9: Mother Brain's body function - third phase - death sequence - escape door is exploding, start escape timer
 $90:F2D8 A9 E6 E0    LDA #$E0E6             ;\
 $90:F2DB 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer)
 $90:F2DE 18          CLC                    ;\
@@ -16397,8 +16456,10 @@ $90:F2DF 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F2E0: $F084 - A = 10h: unlock Samus from reserve tank ;;;
+;;; $F2E0: Samus command 10h: unlock Samus from reserve tank ;;;
 {
+; Called by:
+;     $82:DC10: Game state 1Bh (reserve tank auto)
 $90:F2E0 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
 $90:F2E3 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] = $E8D9 (Samus is being drained by rainbow beam):
 $90:F2E6 D0 02       BNE $02    [$F2EA]     ;/
@@ -16414,8 +16475,10 @@ $90:F2F7 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F2F8: $F084 - A = 11h: set up Samus for death sequence ;;;
+;;; $F2F8: Samus command 11h: set up Samus for death sequence ;;;
 {
+; Called by:
+;     $82:DB69: Handle Samus running out of health and increment game time
 $90:F2F8 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]  ; Disable palette FX objects
 }
 
@@ -16433,9 +16496,11 @@ $90:F30F 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F310: $F084 - A = 15h ;;;
+;;; $F310: Samus command 15h: lock Samus into suit pickup ;;;
 {
-; Called by suit acquisition
+; Called by:
+;     $91:D4E4: Varia suit pick up
+;     $91:D5BA: Gravity suit pick up
 $90:F310 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
 $90:F313 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:F316 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear flare animation state
@@ -16444,8 +16509,11 @@ $90:F31D 4C FC F2    JMP $F2FC  [$90:F2FC]  ; Go to lock Samus and set inanimate
 }
 
 
-;;; $F320: $F084 - A = 12h: enable Samus blue flashing ;;;
+;;; $F320: Samus command 12h: enable Samus blue flashing ;;;
 {
+; Called by:
+;     $A3:EDEB: Enemy touch - enemy $DD7F (metroid)
+;     $A9:F20E: Shitroid function - start draining Samus
 $90:F320 A9 01 00    LDA #$0001             ;\
 $90:F323 8D 4A 0A    STA $0A4A  [$7E:0A4A]  ;} Super special Samus palette flags = 1
 $90:F326 18          CLC                    ;\
@@ -16453,8 +16521,12 @@ $90:F327 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F328: $F084 - A = 13h: disable Samus blue flashing ;;;
+;;; $F328: Samus command 13h: disable Samus blue flashing ;;;
 {
+; Called by:
+;     $A3:EF07: Enemy shot - enemy $DD7F (metroid)
+;     $A3:F042: Power bomb reaction - enemy $DD7F (metroid)
+;     $A9:F21B: Shitroid function - draining Samus
 $90:F328 9C 4A 0A    STZ $0A4A  [$7E:0A4A]  ; Super special Samus palette flags = 0
 $90:F32B 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $90:F32F 18          CLC                    ;\
@@ -16462,8 +16534,11 @@ $90:F330 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F331: $F084 - A = 14h: queue low health and grapple sound effects ;;;
+;;; $F331: Samus command 14h: queue low health and grapple sound effects ;;;
 {
+; Called by:
+;     $82:BE2F: Queue Samus movement sound effects
+
 ; Typo: The LDA $0A1E at $F34F looks like it's supposed to be LDA $0A1F to check [Samus movement type] != spin jumping
 
 $90:F331 AD C2 09    LDA $09C2  [$7E:09C2]  ;\
@@ -16515,8 +16590,10 @@ $90:F38D 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F38E: $F084 - A = 5: set up Samus for being drained - able to stand ;;;
+;;; $F38E: Samus command 5: set up Samus for being drained - able to stand ;;;
 {
+; Called by:
+;     $A9:B975: Mother Brain's body function - second phase - firing rainbow beam - start firing rainbow beam
 $90:F38E A9 9B E0    LDA #$E09B             ;\
 $90:F391 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E09B (handle letting Samus up from being drained)
 }
@@ -16542,16 +16619,20 @@ $90:F3BF 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F3C0: $F084 - A = 18h: set up Samus for being drained - unable to stand ;;;
+;;; $F3C0: Samus command 18h: set up Samus for being drained - unable to stand ;;;
 {
+; Called by:
+;     $A9:B975: Mother Brain's body function - second phase - firing rainbow beam - start firing rainbow beam
 $90:F3C0 A9 C5 E0    LDA #$E0C5             ;\
 $90:F3C3 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0C5 (handle letting Samus fail to stand up from being drained)
 $90:F3C6 4C 94 F3    JMP $F394  [$90:F394]  ; Go to set up Samus for being drained
 }
 
 
-;;; $F3C9: $F084 - A = 16h: enable rainbow Samus ;;;
+;;; $F3C9: Samus command 16h: enable rainbow Samus ;;;
 {
+; Called by:
+;     $A9:CD30: Samus rainbow palette function - activate rainbow when enemy is low enough
 $90:F3C9 A9 00 80    LDA #$8000             ;\
 $90:F3CC 8D 4A 0A    STA $0A4A  [$7E:0A4A]  ;} Super special Samus palette flags = 8000h
 $90:F3CF A9 01 00    LDA #$0001             ;\
@@ -16563,8 +16644,11 @@ $90:F3DC 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F3DD: $F084 - A = 17h: disable rainbow Samus and stand her up ;;;
+;;; $F3DD: Samus command 17h: disable rainbow Samus and stand her up ;;;
 {
+; Called by:
+;     $90:F54C: Debug command handler - disable rainbow Samus and stand her up if controller 2 Y is newly pressed
+;     $A9:CCF0: Shitroid function - finish cutscene
 $90:F3DD 9C 4A 0A    STZ $0A4A  [$7E:0A4A]  ; Super special Samus palette flags = 0
 $90:F3E0 9C CE 0A    STZ $0ACE  [$7E:0ACE]  ; Rainbow Samus palette timer reset value = 0
 $90:F3E3 9C D0 0A    STZ $0AD0  [$7E:0AD0]  ; Rainbow Samus palette timer = 0
@@ -16579,8 +16663,10 @@ $90:F3FA 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F3FB: $F084 - A = 19h: freeze drained Samus animation ;;;
+;;; $F3FB: Samus command 19h: freeze drained Samus animation ;;;
 {
+; Called by:
+;     $A9:CC7F: Shitroid function - prepare Samus for hyper beam acquisition
 $90:F3FB A9 01 00    LDA #$0001             ;\
 $90:F3FE 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $90:F401 A9 1C 00    LDA #$001C             ;\
@@ -16590,8 +16676,10 @@ $90:F408 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F409: $F084 - A = 1Ah ;;;
+;;; $F409: Samus command 1Ah: Samus enters gunship ;;;
 {
+; Called by:
+;     $A2:A9BD: Gunship function - handle letting Samus enter
 $90:F409 A9 02 E9    LDA #$E902             ;\
 $90:F40C 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E902 (entering/exiting gunship)
 $90:F40F 18          CLC                    ;\
@@ -16599,8 +16687,10 @@ $90:F410 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F411: $F084 - A = 1Bh: lock Samus for reserve tank ;;;
+;;; $F411: Samus command 1Bh: lock Samus for reserve tank ;;;
 {
+; Called by:
+;     $82:DB69: Handle Samus running out of health and increment game time
 $90:F411 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
 $90:F414 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] != $E8D9 (Samus is being drained by rainbow beam):
 $90:F417 F0 03       BEQ $03    [$F41C]     ;/
@@ -16611,8 +16701,12 @@ $90:F41D 60          RTS                    ;} Return carry set
 }
 
 
-;;; $F41E: $F084 - A = 1Ch: play spin jump sound if spin jumping ;;;
+;;; $F41E: Samus command 1Ch: play spin jump sound if spin jumping ;;;
 {
+; Called by:
+;     $84:8270: Play spin jump sound if spin jumping
+;     $91:D8A5: Handle misc. Samus palette
+;     $9B:C856: Grapple beam function - hit nothing / cancel
 $90:F41E AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:F421 29 FF 00    AND #$00FF             ;|
 $90:F424 C9 14 00    CMP #$0014             ;} If [Samus movement type] = wall jumping: go to BRANCH_WALL_JUMP
@@ -16660,8 +16754,10 @@ $90:F470 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F471: $F084 - A = 1Dh: clear sounds when going through door ;;;
+;;; $F471: Samus command 1Dh: clear sounds when going through door ;;;
 {
+; Called by:
+;     $84:8250: Clear sounds when going through door
 $90:F471 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:F474 29 FF 00    AND #$00FF             ;|
 $90:F477 C9 03 00    CMP #$0003             ;} If [Samus movement type] != wall jumping:
@@ -16689,8 +16785,10 @@ $90:F4A1 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F4A2: $F084 - A = 1Eh: resume sounds after power bomb explosion ;;;
+;;; $F4A2: Samus command 1Eh: resume sounds after power bomb explosion ;;;
 {
+; Called by:
+;     $88:8B4E: Power bomb explosion - clean up and try crystal flash
 $90:F4A2 AD 98 09    LDA $0998  [$7E:0998]  ;\
 $90:F4A5 C9 08 00    CMP #$0008             ;} If [game state] != main gameplay: return carry clear
 $90:F4A8 D0 24       BNE $24    [$F4CE]     ;/
@@ -16717,8 +16815,10 @@ $90:F4CF 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $F4D0: $F084 - A = 1Fh: kill grapple beam ;;;
+;;; $F4D0: Samus command 1Fh: kill grapple beam ;;;
 {
+; Called by:
+;     $91:E3F6: Make Samus face forward
 $90:F4D0 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
 $90:F4D3 C9 F0 C4    CMP #$C4F0             ;} If [grapple beam function] = inactive:
 $90:F4D6 D0 02       BNE $02    [$F4DA]     ;/
@@ -16811,7 +16911,7 @@ $90:F54C A5 91       LDA $91    [$7E:0091]  ;\
 $90:F54E 89 00 40    BIT #$4000             ;} If not newly pressed controller 2 Y: return
 $90:F551 F0 0D       BEQ $0D    [$F560]     ;/
 $90:F553 A9 17 00    LDA #$0017             ;\
-$90:F556 22 84 F0 90 JSL $90F084[$90:F084]  ;} Disable rainbow Samus and stand her up
+$90:F556 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable rainbow Samus and stand her up
 $90:F55A A9 34 F5    LDA #$F534             ;\
 $90:F55D 8D 5E 0A    STA $0A5E  [$7E:0A5E]  ;} Debug command handler = RTS
 

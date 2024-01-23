@@ -5032,7 +5032,7 @@ $AA:E3A7             dx 8074,       ; Enemy $0FB2 = RTS
                         0008,F034,
                         E5D8,0020,  ; ???
                         0020,EFD8,
-                        E43D,       ; ???
+                        E43D,       ; Unlock Samus
                         E436,       ; ???
                         812F        ; Sleep
 }
@@ -5056,10 +5056,10 @@ $AA:E43C 6B          RTL
 }
 
 
-;;; $E43D: Instruction ;;;
+;;; $E43D: Instruction - unlock Samus ;;;
 {
-$AA:E43D A9 01 00    LDA #$0001
-$AA:E440 22 84 F0 90 JSL $90F084[$90:F084]
+$AA:E43D A9 01 00    LDA #$0001             ;\
+$AA:E440 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $AA:E444 6B          RTL
 }
 
@@ -5160,7 +5160,7 @@ $AA:E461             dx 8074,       ; Enemy $0FB2 = RTS
                         0008,E839,
                         E5D8,0000,  ; ???
                         0020,E7DD,
-                        E6F0,       ; ???
+                        E6F0,       ; Release Samus
                         812F        ; Sleep
 }
 
@@ -5280,16 +5280,16 @@ $AA:E6B0             dw FFE0, FFE7, FFE9, FFE9, FFE9, FFE8, FFE7, FFE8, FFE9, FF
 }
 
 
-;;; $E6F0: Instruction ;;;
+;;; $E6F0: Instruction - release Samus ;;;
 {
-$AA:E6F0 A9 01 00    LDA #$0001
-$AA:E6F3 22 84 F0 90 JSL $90F084[$90:F084]
-$AA:E6F7 A9 00 00    LDA #$0000
-$AA:E6FA 8F 26 CD 7E STA $7ECD26[$7E:CD26]
-$AA:E6FE 8F 28 CD 7E STA $7ECD28[$7E:CD28]
-$AA:E702 8F 29 CD 7E STA $7ECD29[$7E:CD29]
-$AA:E706 A9 01 00    LDA #$0001
-$AA:E709 8F 2D CD 7E STA $7ECD2D[$7E:CD2D]
+$AA:E6F0 A9 01 00    LDA #$0001             ;\
+$AA:E6F3 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
+$AA:E6F7 A9 00 00    LDA #$0000             ;\
+$AA:E6FA 8F 26 CD 7E STA $7ECD26[$7E:CD26]  ;|
+$AA:E6FE 8F 28 CD 7E STA $7ECD28[$7E:CD28]  ;|
+$AA:E702 8F 29 CD 7E STA $7ECD29[$7E:CD29]  ;} Scroll 6..Ah,Eh = red, scroll Dh = blue
+$AA:E706 A9 01 00    LDA #$0001             ;|
+$AA:E709 8F 2D CD 7E STA $7ECD2D[$7E:CD2D]  ;/
 $AA:E70D 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $AA:E711             dx 17, 1D, D6FC        ;} Block slope access for Wrecked Ship chozo
 $AA:E715 6B          RTL

@@ -902,7 +902,7 @@ $A0:8A55 9C 9C 17    STZ $179C  [$7E:179C]  ; Boss number = 0 (again)
 $A0:8A58 22 6D 8A A0 JSL $A08A6D[$A0:8A6D]  ; Clear enemy data and process enemy set
 $A0:8A5C 22 6C 8C A0 JSL $A08C6C[$A0:8C6C]  ; Load enemy tile data
 $A0:8A60 9C 7C 0E    STZ $0E7C  [$7E:0E7C]  ; Enemy tiles VRAM update source address = 0
-$A0:8A63 9C AE 18    STZ $18AE  [$7E:18AE]  ; Enable bomb jumping
+$A0:8A63 9C AE 18    STZ $18AE  [$7E:18AE]  ; Enable Samus / projectile interaction
 $A0:8A66 22 97 BD B4 JSL $B4BD97[$B4:BD97]  ; Clear sprite objects
 $A0:8A6A AB          PLB
 $A0:8A6B 28          PLP
@@ -2707,7 +2707,7 @@ $A0:978B C2 30       REP #$30
 $A0:978D A9 0A 00    LDA #$000A             ;\
 $A0:9790 8F 78 F3 7E STA $7EF378[$7E:F378]  ;} Enemy processing stage = Ah
 $A0:9794 AD AE 18    LDA $18AE  [$7E:18AE]  ;\
-$A0:9797 D0 10       BNE $10    [$97A9]     ;} If Samus / projectile interaction disabled: return
+$A0:9797 D0 10       BNE $10    [$97A9]     ;} If Samus / projectile interaction disabled (never true): return
 $A0:9799 A9 05 00    LDA #$0005             ;\
 $A0:979C 8D 7C 18    STA $187C  [$7E:187C]  ;} Number of projectiles to check = 5
 $A0:979F AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
@@ -4513,7 +4513,7 @@ $A0:A4CC A0 C8 00    LDY #$00C8             ; $16 = 200 (damage)
 $A0:A4CF C9 04 00    CMP #$0004             ;\
 $A0:A4D2 D0 09       BNE $09    [$A4DD]     ;} If [Samus contact damage index] = pseudo screw attacking:
 $A0:A4D4 A9 04 00    LDA #$0004             ;\
-$A0:A4D7 22 84 F0 90 JSL $90F084[$90:F084]  ;}
+$A0:A4D7 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - end charge beam
 $A0:A4DB 80 03       BRA $03    [$A4E0]     ; Go to BRANCH_DAMAGE_CALCULATED
 
 $A0:A4DD A0 C8 00    LDY #$00C8             ; $16 = 200 <-- a default damage value(!) Never used in vanilla

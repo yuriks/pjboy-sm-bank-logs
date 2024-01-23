@@ -8765,8 +8765,8 @@ $91:D564 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - var
 
 $91:D567 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:D56B 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
-$91:D56F A9 15 00    LDA #$0015             ; A = 15h
-$91:D572 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$91:D56F A9 15 00    LDA #$0015             ;\
+$91:D572 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus into suit pickup
 $91:D576 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $91:D579 18          CLC                    ;|
 $91:D57A 69 78 00    ADC #$0078             ;} Samus X position = [layer 1 X position] + 78h
@@ -8860,8 +8860,8 @@ $91:D63C 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - var
 
 $91:D63F 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:D643 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
-$91:D647 A9 15 00    LDA #$0015             ; A = 15h
-$91:D64A 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$91:D647 A9 15 00    LDA #$0015             ;\
+$91:D64A 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus into suit pickup
 $91:D64E AD 11 09    LDA $0911  [$7E:0911]  ;\
 $91:D651 18          CLC                    ;|
 $91:D652 69 78 00    ADC #$0078             ;} Samus X position = [layer 1 X position] + 78h
@@ -9259,7 +9259,7 @@ $91:D94B 60          RTS                    ; Return
 
 ; BRANCH_SPINNING
 $91:D94C A9 1C 00    LDA #$001C             ;\
-$91:D94F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Play spin jump sound if spin jumping
+$91:D94F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - play spin jump sound if spin jumping
 $91:D953 60          RTS                    ; Return
 
 ; BRANCH_SUPER_SPECIAL
@@ -9271,7 +9271,6 @@ $91:D95E BD 98 D9    LDA $D998,x[$91:D99C]  ;|
 $91:D961 AA          TAX                    ;} Samus palette = 20h bytes from $9B:0000 + [$D998 + [Samus suit palette index]]
 $91:D962 20 5B DD    JSR $DD5B  [$91:DD5B]  ;/
 $91:D965 80 04       BRA $04    [$D96B]
-
                                             ; Else ([super special Samus palette flags] & 1 = 0):
 $91:D967 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 
@@ -10649,7 +10648,7 @@ $91:E465 9C 2E 0A    STZ $0A2E  [$7E:0A2E]  ; Prospective pose change command = 
 $91:E468 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change command = none
 $91:E46B 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Special Super special pose change command = none
 $91:E46E A9 1F 00    LDA #$001F             ;\
-$91:E471 22 84 F0 90 JSL $90F084[$90:F084]  ;} Kill grapple beam
+$91:E471 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - kill grapple beam
 $91:E475 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
 $91:E478 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
 $91:E47B 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\

@@ -6594,7 +6594,7 @@ $8F:E278 8D E3 07    STA $07E3  [$7E:07E3]  ;} Elevatube position = 9C0h
 $8F:E27B A9 E0 FF    LDA #$FFE0             ;\
 $8F:E27E 8D E7 07    STA $07E7  [$7E:07E7]  ;} Elevatube acceleration = -20h
 $8F:E281 A9 00 00    LDA #$0000             ;\
-$8F:E284 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
+$8F:E284 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $8F:E288 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $8F:E28C             dx  01, 00, B8F9       ;} Spawn Maridia elevatube PLM
 $8F:E290 60          RTS
@@ -6612,7 +6612,7 @@ $8F:E29D 8D E3 07    STA $07E3  [$7E:07E3]  ;} Elevatube position = 40h
 $8F:E2A0 A9 20 00    LDA #$0020             ;\
 $8F:E2A3 8D E7 07    STA $07E7  [$7E:07E7]  ;} Elevatube acceleration = 20h
 $8F:E2A6 A9 00 00    LDA #$0000             ;\
-$8F:E2A9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Lock Samus
+$8F:E2A9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $8F:E2AD 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $8F:E2B1             dx 01, 00, B8F9        ;} Spawn Maridia elevatube PLM
 $8F:E2B5 60          RTS
@@ -6666,7 +6666,7 @@ $8F:E300 60          RTS
 {
 ; Room $D408, door list index 1: Door
 $8F:E301 A9 01 00    LDA #$0001             ;\
-$8F:E304 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$8F:E304 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $8F:E308 60          RTS
 }
 
@@ -6677,7 +6677,7 @@ $8F:E308 60          RTS
 $8F:E309 A9 02 02    LDA #$0202             ;\
 $8F:E30C 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scroll 0..1 = green
 $8F:E310 A9 01 00    LDA #$0001             ;\
-$8F:E313 22 84 F0 90 JSL $90F084[$90:F084]  ;} Unlock Samus
+$8F:E313 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $8F:E317 60          RTS
 }
 

@@ -3695,7 +3695,7 @@ $A2:AA01 A5 8F       LDA $8F    [$7E:008F]  ;\
 $A2:AA03 89 00 04    BIT #$0400             ;} If newly pressed down: go to BRANCH_ENTER_GUNSHIP
 $A2:AA06 D0 01       BNE $01    [$AA09]     ;/
 
-$A2:AA08 6B          RTL
+$A2:AA08 6B          RTL                    ; Return
 
 ; BRANCH_ENTER_GUNSHIP
 $A2:AA09 A9 4F AA    LDA #$AA4F             ;\
@@ -3708,8 +3708,8 @@ $A2:AA1A 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;} Samus X position = [enemy X posit
 $A2:AA1D 8D 10 0B    STA $0B10  [$7E:0B10]  ; Samus previous X position = [Samus X position]
 
 $A2:AA20 22 F6 E3 91 JSL $91E3F6[$91:E3F6]  ; Make Samus face forward
-$A2:AA24 A9 1A 00    LDA #$001A             ; A = 1Ah
-$A2:AA27 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$A2:AA24 A9 1A 00    LDA #$001A             ;\
+$A2:AA27 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - Samus enters gunship
 $A2:AA2B 9C 18 0E    STZ $0E18  [$7E:0E18]  ; Elevator status = inactive
 $A2:AA2E BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A2:AA31 3A          DEC A                  ;} Enemy ([X] + 2) Y position = [enemy Y position]
@@ -3821,9 +3821,9 @@ $A2:AB04 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; $0DEC = 0
 $A2:AB07 9C EE 0D    STZ $0DEE  [$7E:0DEE]  ; $0DEE = 0
 $A2:AB0A 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ; $0DF0 = 0
 $A2:AB0D 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ; $0DF2 = 0
-$A2:AB10 A9 0A 00    LDA #$000A             ; A = Ah
-$A2:AB13 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084 (stop drawing Samus)
-$A2:AB17 6B          RTL
+$A2:AB10 A9 0A 00    LDA #$000A             ;\
+$A2:AB13 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - stop drawing Samus
+$A2:AB17 6B          RTL                    ; Return
 
 ; BRANCH_CONTINUE
 $A2:AB18 A9 1F AB    LDA #$AB1F             ;\

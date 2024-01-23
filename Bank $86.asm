@@ -5070,8 +5070,8 @@ $86:A350 A9 01 00    LDA #$0001             ;\
 $86:A353 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:A356 A9 8B A2    LDA #$A28B             ;\
 $86:A359 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $A28B (delete)
-$86:A35C A9 0E 00    LDA #$000E             ; A = Eh
-$86:A35F 22 84 F0 90 JSL $90F084[$90:F084]  ; Execute $90:F084
+$86:A35C A9 0E 00    LDA #$000E             ;\
+$86:A35F 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus from Ceres elevator
 
 $86:A363 60          RTS
 }
