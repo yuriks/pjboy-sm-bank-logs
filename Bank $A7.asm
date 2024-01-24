@@ -1875,6 +1875,13 @@ $A7:AFA8 80 DE       BRA $DE    [$AF88]     ; Go to process next Kraid instructi
 
 ;;; $AFAA: Kraid's mouth / projectile collision handling ;;;
 {
+; The loop over projectiles is pretty wrong
+; Just because there are n active projectiles, that doesn't mean they're in the first n slots,
+; so it is possible for Kraid to detect a collision with an early slot inactive projectile and miss a collision with a late slot active projectile
+; The initial index is one slot beyond the supposed last projectile,
+; so even if using the projectile counter made sense, this would erroneously consider an inactive projectile
+; This routine has no handling for bombs, but if all 5 projectile slots are active, this will read the first bomb slot,
+; making it technically possible to get a bomb interaction from Kraid (trigger mouth to open and kill projectile)
 $A7:AFAA C2 30       REP #$30
 $A7:AFAC DA          PHX
 $A7:AFAD AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
@@ -2050,9 +2057,9 @@ $A7:B10B A2 00 00    LDX #$0000             ; X = 0 (body hitbox definition inde
 
 ; LOOP
 $A7:B10E DD 61 B1    CMP $B161,x[$A7:B161]  ;\
-$A7:B111 10 0B       BPL $0B    [$B11E]     ;} If [Samus Y position] - [Kraid Y position] < [$B161 + [X]]:
+$A7:B111 10 0B       BPL $0B    [$B11E]     ;} If [Samus Y position] < [Kraid Y position] + [$B161 + [X]]:
 $A7:B113 DD 65 B1    CMP $B165,x[$A7:B165]  ;\
-$A7:B116 10 06       BPL $06    [$B11E]     ;} If [Samus Y position] - [Kraid Y position] < [$B161 + [X] + 4]:
+$A7:B116 10 06       BPL $06    [$B11E]     ;} If [Samus Y position] < [Kraid Y position] + [$B161 + [X] + 4]:
 $A7:B118 E8          INX                    ;\
 $A7:B119 E8          INX                    ;|
 $A7:B11A E8          INX                    ;} X += 4 (next body hitbox definition)
@@ -2111,6 +2118,7 @@ $A7:B161             dw 03FF,FFD0,
 
 ;;; $B181: Kraid's body / projectile collision handling ;;;
 {
+; See projectile loop note in $AFAA
 $A7:B181 DA          PHX
 $A7:B182 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
 $A7:B185 C9 37 C5    CMP #$C537             ;} If [Kraid function] >= $C537: return
@@ -2144,23 +2152,23 @@ $A7:B1C1 85 12       STA $12    [$7E:0012]  ;/
 $A7:B1C3 AD CE 0C    LDA $0CCE  [$7E:0CCE]  ;\
 $A7:B1C6 F0 49       BEQ $49    [$B211]     ;} If [projectile counter] = 0: return
 $A7:B1C8 0A          ASL A                  ;\
-$A7:B1C9 AA          TAX                    ;} X = [projectile counter] * 2
+$A7:B1C9 AA          TAX                    ;} X = [projectile counter] * 2 (projectile index)
 
 ; LOOP
 $A7:B1CA BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;\
 $A7:B1CD 38          SEC                    ;|
 $A7:B1CE FD C8 0B    SBC $0BC8,x[$7E:0BCA]  ;|
-$A7:B1D1 3A          DEC A                  ;} If projectile top boundary > Kraid bottom boundary: go to BRANCH_BODY
+$A7:B1D1 3A          DEC A                  ;} If (projectile top boundary) > (Kraid bottom boundary): go to BRANCH_BODY
 $A7:B1D2 C5 12       CMP $12    [$7E:0012]  ;|
 $A7:B1D4 10 62       BPL $62    [$B238]     ;/
 $A7:B1D6 BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;\
 $A7:B1D9 18          CLC                    ;|
-$A7:B1DA 7D C8 0B    ADC $0BC8,x[$7E:0BCA]  ;} If projectile bottom boundary < Kraid top boundary: go to BRANCH_NEXT
+$A7:B1DA 7D C8 0B    ADC $0BC8,x[$7E:0BCA]  ;} If (projectile bottom boundary) + 1 < (Kraid top boundary): go to BRANCH_NEXT
 $A7:B1DD C5 14       CMP $14    [$7E:0014]  ;|
 $A7:B1DF 30 2C       BMI $2C    [$B20D]     ;/
 $A7:B1E1 BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
 $A7:B1E4 18          CLC                    ;|
-$A7:B1E5 7D B4 0B    ADC $0BB4,x[$7E:0BB4]  ;} If projectile right boundary < Kraid left boundary: go to BRANCH_NEXT
+$A7:B1E5 7D B4 0B    ADC $0BB4,x[$7E:0BB4]  ;} If (projectile right boundary) + 1 < (Kraid left boundary): go to BRANCH_NEXT
 $A7:B1E8 C5 16       CMP $16    [$7E:0016]  ;|
 $A7:B1EA 30 21       BMI $21    [$B20D]     ;/
 
@@ -2185,7 +2193,7 @@ $A7:B20F 10 B9       BPL $B9    [$B1CA]     ; If [X] >= 0: go to LOOP
 
 $A7:B211 FA          PLX
 $A7:B212 A4 30       LDY $30    [$7E:0030]  ;\
-$A7:B214 C0 00 00    CPY #$0000             ;} If [$30] = 0: return
+$A7:B214 C0 00 00    CPY #$0000             ;} If [$30] = 0 (no collision): return
 $A7:B217 F0 1E       BEQ $1E    [$B237]     ;/
 $A7:B219 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
 $A7:B21C C9 A4 AE    CMP #$AEA4             ;} If [Kraid function] != $AEA4 (Kraid main loop - thinking): return
@@ -2203,28 +2211,28 @@ $A7:B237 60          RTS                    ; Return
 ; BRANCH_BODY
 $A7:B238 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;\
 $A7:B23B 18          CLC                    ;|
-$A7:B23C 7D B4 0B    ADC $0BB4,x[$7E:0BB6]  ;} $12 = projectile right boundary
+$A7:B23C 7D B4 0B    ADC $0BB4,x[$7E:0BB6]  ;} $12 = (projectile right boundary) + 1
 $A7:B23F 85 12       STA $12    [$7E:0012]  ;/
 $A7:B241 BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;\
 $A7:B244 38          SEC                    ;} A = [projectile Y position] - [Kraid Y position]
 $A7:B245 ED 7E 0F    SBC $0F7E  [$7E:0F7E]  ;/
-$A7:B248 A0 00 00    LDY #$0000             ; Y = 0
+$A7:B248 A0 00 00    LDY #$0000             ; Y = 0 (body hitbox definition index)
 
 ; LOOP_BODY
 $A7:B24B D9 61 B1    CMP $B161,y[$A7:B161]  ;\
-$A7:B24E 10 0B       BPL $0B    [$B25B]     ;} If [projectile Y position] - [Kraid Y position] < [$B161 + [Y]]:
+$A7:B24E 10 0B       BPL $0B    [$B25B]     ;} If [projectile Y position] < [Kraid Y position] + [$B161 + [Y]]:
 $A7:B250 D9 65 B1    CMP $B165,y[$A7:B165]  ;\
-$A7:B253 10 06       BPL $06    [$B25B]     ;} If [projectile Y position] - [Kraid Y position] < [$B161 + [Y] + 4]:
+$A7:B253 10 06       BPL $06    [$B25B]     ;} If [projectile Y position] < [Kraid Y position] + [$B161 + [Y] + 4]:
 $A7:B255 C8          INY                    ;\
 $A7:B256 C8          INY                    ;|
-$A7:B257 C8          INY                    ;} Y += 4
+$A7:B257 C8          INY                    ;} Y += 4 (next body hitbox definition)
 $A7:B258 C8          INY                    ;/
 $A7:B259 80 F0       BRA $F0    [$B24B]     ; Go to LOOP_BODY
 
 $A7:B25B B9 63 B1    LDA $B163,y[$A7:B177]  ;\
 $A7:B25E 18          CLC                    ;|
 $A7:B25F 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
-$A7:B262 38          SEC                    ;} If projectile right boundary <= [Kraid X position] + [$B163 + [Y]]: go to BRANCH_NEXT
+$A7:B262 38          SEC                    ;} If (projectile right boundary) < [Kraid X position] + [$B163 + [Y]]: go to BRANCH_NEXT
 $A7:B263 E5 12       SBC $12    [$7E:0012]  ;|
 $A7:B265 10 A6       BPL $A6    [$B20D]     ;/
 $A7:B267 80 83       BRA $83    [$B1EC]     ; Branch to BRANCH_HIT
@@ -2374,17 +2382,17 @@ $A7:B370 60          RTS
 {
 $A7:B371 A0 00 00    LDY #$0000             ; Y = 0
 $A7:B374 AF 2A 78 7E LDA $7E782A[$7E:782A]  ;\
-$A7:B378 89 01 00    BIT #$0001             ;} If [Kraid hurt frame] is even:
+$A7:B378 89 01 00    BIT #$0001             ;} If [Kraid hurt frame] % 2 = 0:
 $A7:B37B D0 03       BNE $03    [$B380]     ;/
 $A7:B37D A0 20 00    LDY #$0020             ; Y = 20h
 
-$A7:B380 A2 00 00    LDX #$0000
-
-$A7:B383 B9 13 B5    LDA $B513,y[$A7:B513]  ;\
+$A7:B380 A2 00 00    LDX #$0000             ;\
+                                            ;|
+$A7:B383 B9 13 B5    LDA $B513,y[$A7:B513]  ;|
 $A7:B386 9F E0 C1 7E STA $7EC1E0,x[$7E:C1E0];|
 $A7:B38A E8          INX                    ;|
-$A7:B38B E8          INX                    ;|
-$A7:B38C C8          INY                    ;} Copy 20h bytes from $B513 + [Y] to sprite palette 7
+$A7:B38B E8          INX                    ;} Copy 20h bytes from $B513 + [Y] to sprite palette 7
+$A7:B38C C8          INY                    ;|
 $A7:B38D C8          INY                    ;|
 $A7:B38E E0 20 00    CPX #$0020             ;|
 $A7:B391 30 F0       BMI $F0    [$B383]     ;/
@@ -2396,14 +2404,14 @@ $A7:B393 60          RTS
 {
 $A7:B394 A0 00 00    LDY #$0000             ; Y = 0
 $A7:B397 AF 2A 78 7E LDA $7E782A[$7E:782A]  ;\
-$A7:B39B 89 01 00    BIT #$0001             ;} If [Kraid hurt frame] is even:
+$A7:B39B 89 01 00    BIT #$0001             ;} If [Kraid hurt frame] % 2 != 0: go to BRANCH_HURT_FLASH_FRAME
 $A7:B39E D0 18       BNE $18    [$B3B8]     ;/
 $A7:B3A0 A2 0E 00    LDX #$000E             ; X = Eh
 $A7:B3A3 AD 8C 0F    LDA $0F8C  [$7E:0F8C]
 
 ; LOOP
 $A7:B3A6 DF 0C 78 7E CMP $7E780C,x[$7E:781A];\
-$A7:B3AA 10 04       BPL $04    [$B3B0]     ;} If [Kraid health] < Kraid max health * [X] / 10h:
+$A7:B3AA 10 04       BPL $04    [$B3B0]     ;} If [Kraid health] < (Kraid max health) * ([X] + 2) / 10h:
 $A7:B3AC CA          DEX                    ;\
 $A7:B3AD CA          DEX                    ;} X -= 2
 $A7:B3AE D0 F6       BNE $F6    [$B3A6]     ; If [X] != 0: go to LOOP
@@ -2412,11 +2420,12 @@ $A7:B3B0 E8          INX                    ;\
 $A7:B3B1 E8          INX                    ;|
 $A7:B3B2 8A          TXA                    ;|
 $A7:B3B3 0A          ASL A                  ;|
-$A7:B3B4 0A          ASL A                  ;} Y = ([X] + 2) * 20h
+$A7:B3B4 0A          ASL A                  ;} Y = ([X] + 2) * 10h
 $A7:B3B5 0A          ASL A                  ;|
 $A7:B3B6 0A          ASL A                  ;|
 $A7:B3B7 A8          TAY                    ;/
 
+; BRANCH_HURT_FLASH_FRAME
 $A7:B3B8 A2 00 00    LDX #$0000
 
 $A7:B3BB B9 D3 B3    LDA $B3D3,y[$A7:B3D3]  ;\

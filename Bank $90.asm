@@ -9529,6 +9529,9 @@ $90:C0E6 60          RTS                    ;} Return carry clear
 {
 ;; Returns:
 ;;     Carry: set if bomb fired, clear otherwise
+
+; The caller routines overwrite the cooldown timer ($C017/$C089), so the (rather odd) increment done here has no effect
+
 $90:C0E7 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:C0E9 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: go to BRANCH_NO_FIRE
 $90:C0EC F0 22       BEQ $22    [$C110]     ;/
