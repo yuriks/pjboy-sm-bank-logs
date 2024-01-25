@@ -555,9 +555,15 @@ $A7:92AB             dw 0001, 0000,0000,A6DD,947D
 }
 
 
-;;; $92B5: Unused. Hitboxes - Kraid foot ;;;
+;;; $92B5: Hitbox - Kraid lint ;;;
 {
+; Used by $B96A
 $A7:92B5             dw 0001, FFE8,FFFC,0004,0006,948B,94B5
+}
+
+
+;;; $92C3: Unused. Hitbox - Kraid foot ;;;
+{
 $A7:92C3             dw 0001, FFF8,FFF8,0007,0007,948B,94B5
 }
 
@@ -1405,7 +1411,7 @@ $A7:AC20 6B          RTL
 {
 $A7:AC21 20 AA AF    JSR $AFAA  [$A7:AFAA]  ; Kraid's mouth / projectile collision handling
 $A7:AC24 20 37 B3    JSR $B337  [$A7:B337]  ; Kraid palette handling
-$A7:AC27 20 81 B1    JSR $B181  [$A7:B181]  ; Kraid's body / projectile collision handling
+$A7:AC27 20 81 B1    JSR $B181  [$A7:B181]  ; Kraid body / projectile collision handling
 $A7:AC2A 20 F3 B0    JSR $B0F3  [$A7:B0F3]  ; Kraid body / Samus collision handling
 $A7:AC2D AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $A7:AC30 A5 B1       LDA $B1    [$7E:00B1]  ;\
@@ -2116,7 +2122,7 @@ $A7:B161             dw 03FF,FFD0,
 }
 
 
-;;; $B181: Kraid's body / projectile collision handling ;;;
+;;; $B181: Kraid body / projectile collision handling ;;;
 {
 ; See projectile loop note in $AFAA
 $A7:B181 DA          PHX
@@ -2380,6 +2386,7 @@ $A7:B370 60          RTS
 
 ;;; $B371: Kraid hurt flash handling ;;;
 {
+; This routine is redundant/incorrect, $B394 handles the flash frames properly
 $A7:B371 A0 00 00    LDY #$0000             ; Y = 0
 $A7:B374 AF 2A 78 7E LDA $7E782A[$7E:782A]  ;\
 $A7:B378 89 01 00    BIT #$0001             ;} If [Kraid hurt frame] % 2 = 0:
@@ -2406,34 +2413,33 @@ $A7:B394 A0 00 00    LDY #$0000             ; Y = 0
 $A7:B397 AF 2A 78 7E LDA $7E782A[$7E:782A]  ;\
 $A7:B39B 89 01 00    BIT #$0001             ;} If [Kraid hurt frame] % 2 != 0: go to BRANCH_HURT_FLASH_FRAME
 $A7:B39E D0 18       BNE $18    [$B3B8]     ;/
-$A7:B3A0 A2 0E 00    LDX #$000E             ; X = Eh
-$A7:B3A3 AD 8C 0F    LDA $0F8C  [$7E:0F8C]
-
-; LOOP
-$A7:B3A6 DF 0C 78 7E CMP $7E780C,x[$7E:781A];\
-$A7:B3AA 10 04       BPL $04    [$B3B0]     ;} If [Kraid health] < (Kraid max health) * ([X] + 2) / 10h:
-$A7:B3AC CA          DEX                    ;\
-$A7:B3AD CA          DEX                    ;} X -= 2
-$A7:B3AE D0 F6       BNE $F6    [$B3A6]     ; If [X] != 0: go to LOOP
-
-$A7:B3B0 E8          INX                    ;\
+$A7:B3A0 A2 0E 00    LDX #$000E             ;\
+$A7:B3A3 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;|
+                                            ;|
+$A7:B3A6 DF 0C 78 7E CMP $7E780C,x[$7E:781A];|
+$A7:B3AA 10 04       BPL $04    [$B3B0]     ;|
+$A7:B3AC CA          DEX                    ;|
+$A7:B3AD CA          DEX                    ;|
+$A7:B3AE D0 F6       BNE $F6    [$B3A6]     ;|
+                                            ;} Y = max(1, [Kraid health] * 8 / (Kraid max health)) * 20h
+$A7:B3B0 E8          INX                    ;|
 $A7:B3B1 E8          INX                    ;|
 $A7:B3B2 8A          TXA                    ;|
 $A7:B3B3 0A          ASL A                  ;|
-$A7:B3B4 0A          ASL A                  ;} Y = ([X] + 2) * 10h
+$A7:B3B4 0A          ASL A                  ;|
 $A7:B3B5 0A          ASL A                  ;|
 $A7:B3B6 0A          ASL A                  ;|
 $A7:B3B7 A8          TAY                    ;/
 
 ; BRANCH_HURT_FLASH_FRAME
-$A7:B3B8 A2 00 00    LDX #$0000
-
-$A7:B3BB B9 D3 B3    LDA $B3D3,y[$A7:B3D3]  ;\
+$A7:B3B8 A2 00 00    LDX #$0000             ;\
+                                            ;|
+$A7:B3BB B9 D3 B3    LDA $B3D3,y[$A7:B3D3]  ;|
 $A7:B3BE 9F E0 C0 7E STA $7EC0E0,x[$7E:C0E0];|
 $A7:B3C2 B9 13 B5    LDA $B513,y[$A7:B513]  ;|
-$A7:B3C5 9F E0 C1 7E STA $7EC1E0,x[$7E:C1E0];|
-$A7:B3C9 C8          INY                    ;} Copy 20h bytes from $B3D3 + [Y] to BG palette 7
-$A7:B3CA C8          INY                    ;} Copy 20h bytes from $B513 + [Y] to sprite palette 7
+$A7:B3C5 9F E0 C1 7E STA $7EC1E0,x[$7E:C1E0];} Copy 20h bytes from $B3D3 + [Y] to BG palette 7
+$A7:B3C9 C8          INY                    ;} Copy 20h bytes from $B513 + [Y] to sprite palette 7
+$A7:B3CA C8          INY                    ;|
 $A7:B3CB E8          INX                    ;|
 $A7:B3CC E8          INX                    ;|
 $A7:B3CD E0 20 00    CPX #$0020             ;|
@@ -2497,7 +2503,7 @@ $A7:B63D EE 7E 0F    INC $0F7E  [$7E:0F7E]  ; Increment Kraid Y position
 $A7:B640 A9 01 00    LDA #$0001             ;\
 $A7:B643 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, vertical
 $A7:B646 A9 0A 00    LDA #$000A             ;\
-$A7:B649 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10
+$A7:B649 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = Ah
 $A7:B64C FA          PLX
 $A7:B64D 6B          RTL
 }
@@ -2529,7 +2535,7 @@ $A7:B666 6B          RTL
 
 ;;; $B667: Instruction - Kraid X position -= 3 ;;;
 {
-; This is exactly identical to $B65A
+; Clone of $B65A
 $A7:B667 DA          PHX
 $A7:B668 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
 $A7:B66B 38          SEC
@@ -2559,7 +2565,7 @@ $A7:B682 6B          RTL
 $A7:B683 DA          PHX
 $A7:B684 5A          PHY
 $A7:B685 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A7:B688 C9 40 01    CMP #$0140             ;} If [Kraid X position] >= 0140h:
+$A7:B688 C9 40 01    CMP #$0140             ;} If [Kraid X position] >= 140h:
 $A7:B68B 30 0B       BMI $0B    [$B698]     ;/
 $A7:B68D AF 1E 78 7E LDA $7E781E[$7E:781E]  ;\
 $A7:B691 3A          DEC A                  ;} Decrement Kraid target X position
@@ -2571,13 +2577,14 @@ $A7:B69B 64 12       STZ $12    [$7E:0012]  ;|
 $A7:B69D AD 22 A9    LDA $A922  [$82:A922]  ;} Move Kraid right 4.0
 $A7:B6A0 85 14       STA $14    [$7E:0014]  ;|
 $A7:B6A2 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
-$A7:B6A6 B0 03       BCS $03    [$B6AB]     ;} If not collided with wall: return
+$A7:B6A6 B0 03       BCS $03    [$B6AB]     ;} If collided with wall: go to BRANCH_COLLISION
 
 $A7:B6A8 7A          PLY
 $A7:B6A9 FA          PLX
-$A7:B6AA 6B          RTL
+$A7:B6AA 6B          RTL                    ; Return
 
-$A7:B6AB A9 00 00    LDA #$0000             ;\ Else (collided with wall):
+; BRANCH_COLLISION
+$A7:B6AB A9 00 00    LDA #$0000             ;\
 $A7:B6AE 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, horizontal
 $A7:B6B1 A9 07 00    LDA #$0007             ;\
 $A7:B6B4 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 7
@@ -2657,21 +2664,20 @@ $A7:B73C 6B          RTL
 {
 $A7:B73D DA          PHX
 $A7:B73E 5A          PHY
-$A7:B73F A2 0E 00    LDX #$000E             ; X = Eh
-$A7:B742 AD 8C 0F    LDA $0F8C  [$7E:0F8C]
-
-; LOOP
-$A7:B745 DF 0C 78 7E CMP $7E780C,x[$7E:781A];\
-$A7:B749 10 04       BPL $04    [$B74F]     ;} If [Kraid health] < Kraid max health * [X] / 10h:
-$A7:B74B CA          DEX                    ;\
-$A7:B74C CA          DEX                    ;} X -= 2
-$A7:B74D D0 F6       BNE $F6    [$B745]     ; If [X] != 0: go to LOOP
-
-$A7:B74F E8          INX                    ;\
+$A7:B73F A2 0E 00    LDX #$000E             ;\
+$A7:B742 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;|
+                                            ;|
+$A7:B745 DF 0C 78 7E CMP $7E780C,x[$7E:781A];|
+$A7:B749 10 04       BPL $04    [$B74F]     ;|
+$A7:B74B CA          DEX                    ;|
+$A7:B74C CA          DEX                    ;|
+$A7:B74D D0 F6       BNE $F6    [$B745]     ;|
+                                            ;} Y = max(1, [Kraid health] * 8 / (Kraid max health)) * 20h
+$A7:B74F E8          INX                    ;|
 $A7:B750 E8          INX                    ;|
 $A7:B751 8A          TXA                    ;|
 $A7:B752 0A          ASL A                  ;|
-$A7:B753 0A          ASL A                  ;} Y = ([X] + 2) * 20h
+$A7:B753 0A          ASL A                  ;|
 $A7:B754 0A          ASL A                  ;|
 $A7:B755 0A          ASL A                  ;|
 $A7:B756 A8          TAY                    ;/
@@ -2728,7 +2734,7 @@ $A7:B7BC 6B          RTL
 {
 $A7:B7BD AD 15 09    LDA $0915  [$7E:0915]  ;\
 $A7:B7C0 18          CLC                    ;|
-$A7:B7C1 69 E0 00    ADC #$00E0             ;} $12 = [BG1 Y position] + E0h
+$A7:B7C1 69 E0 00    ADC #$00E0             ;} $12 = [layer 1 Y position] + E0h
 $A7:B7C4 85 12       STA $12    [$7E:0012]  ;/
 $A7:B7C6 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A7:B7C9 38          SEC                    ;|
@@ -2736,14 +2742,14 @@ $A7:B7CA E9 2C 00    SBC #$002C             ;} Kraid arm Y position = [Kraid Y p
 $A7:B7CD 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;/
 $A7:B7D0 A8          TAY
 $A7:B7D1 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A7:B7D4 09 00 01    ORA #$0100             ;|
-$A7:B7D7 CC 15 09    CPY $0915  [$7E:0915]  ;|
-$A7:B7DA 30 07       BMI $07    [$B7E3]     ;} If [BG1 Y position] <= [Kraid arm Y position] < [BG1 Y position] + E0h
-$A7:B7DC C4 12       CPY $12    [$7E:0012]  ;} Set Kraid arm visible
-$A7:B7DE 10 03       BPL $03    [$B7E3]     ;} Else: Set Kraid arm invisible
-$A7:B7E0 29 FF FE    AND #$FEFF             ;|
-                                            ;|
-$A7:B7E3 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
+$A7:B7D4 09 00 01    ORA #$0100             ;} Set Kraid arm invisible
+$A7:B7D7 CC 15 09    CPY $0915  [$7E:0915]  ;\
+$A7:B7DA 30 07       BMI $07    [$B7E3]     ;|
+$A7:B7DC C4 12       CPY $12    [$7E:0012]  ;} If [layer 1 Y position] <= [Kraid arm Y position] < [layer 1 Y position] + E0h:
+$A7:B7DE 10 03       BPL $03    [$B7E3]     ;/
+$A7:B7E0 29 FF FE    AND #$FEFF             ; Set Kraid arm visible
+
+$A7:B7E3 8D C6 0F    STA $0FC6  [$7E:0FC6]
 $A7:B7E6 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:B7E9 18          CLC                    ;|
 $A7:B7EA 69 00 00    ADC #$0000             ;} Kraid arm X position = [Kraid X position]
@@ -2787,11 +2793,10 @@ $A7:B81F 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Kraid top lint instruction timer 
 
 ;;; $B822: Kraid lint main AI ;;;
 {
-; Takes parameter: X = enemy index
-$A7:B822 20 6A B9    JSR $B96A  [$A7:B96A]  ; Enemy touch - Kraid lint
+$A7:B822 20 6A B9    JSR $B96A  [$A7:B96A]  ; Kraid lint / Samus collision handling
 $A7:B825 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $A7:B828 18          CLC                    ;|
-$A7:B829 69 E0 00    ADC #$00E0             ;} $12 = [BG1 Y position] + E0h (unused)
+$A7:B829 69 E0 00    ADC #$00E0             ;} $12 = [layer 1 Y position] + E0h (unused)
 $A7:B82C 85 12       STA $12    [$7E:0012]  ;/
 $A7:B82E 7C A8 0F    JMP ($0FA8,x)[$A7:B831]; Execute [enemy function]
 $A7:B831 6B          RTL
@@ -2827,14 +2832,14 @@ $A7:B867 6B          RTL
 
 ;;; $B868: Kraid lint function - charge lint ;;;
 {
-$A7:B868 A0 00 00    LDY #$0000             ;\
-$A7:B86B BD B2 0F    LDA $0FB2,x[$7E:10B2]  ;|
-$A7:B86E 89 01 00    BIT #$0001             ;|
-$A7:B871 F0 03       BEQ $03    [$B876]     ;|
-$A7:B873 A0 00 0E    LDY #$0E00             ;} If [Kraid enemy function timer] & 1: enemy palette slot = E00h, else = 0
-                                            ;|
-$A7:B876 98          TYA                    ;|
-$A7:B877 9D 96 0F    STA $0F96,x[$7E:1096]  ;/
+$A7:B868 A0 00 00    LDY #$0000             ; Y = 0 (palette 0)
+$A7:B86B BD B2 0F    LDA $0FB2,x[$7E:10B2]  ;\
+$A7:B86E 89 01 00    BIT #$0001             ;} If [Kraid enemy function timer] % 2 != 0:
+$A7:B871 F0 03       BEQ $03    [$B876]     ;/
+$A7:B873 A0 00 0E    LDY #$0E00             ; Y = E00h (palette 7)
+
+$A7:B876 98          TYA                    ;\
+$A7:B877 9D 96 0F    STA $0F96,x[$7E:1096]  ;} Enemy palette index = [Y]
 $A7:B87A AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:B87D 18          CLC                    ;|
 $A7:B87E 7D AC 0F    ADC $0FAC,x[$7E:10AC]  ;|
@@ -2863,11 +2868,11 @@ $A7:B8A8 ED 28 A9    SBC $A928  [$A7:A928]  ;|
 $A7:B8AB 9D 7A 0F    STA $0F7A,x[$7E:107A]  ;/
 $A7:B8AE C9 38 00    CMP #$0038             ;\
 $A7:B8B1 10 0B       BPL $0B    [$B8BE]     ;} If [enemy X position] < 38h:
-$A7:B8B3 48          PHA
-$A7:B8B4 BD 86 0F    LDA $0F86,x[$7E:1086]  ;\
+$A7:B8B3 48          PHA                    ;\
+$A7:B8B4 BD 86 0F    LDA $0F86,x[$7E:1086]  ;|
 $A7:B8B7 09 00 04    ORA #$0400             ;} Set enemy as intangible
-$A7:B8BA 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
-$A7:B8BD 68          PLA
+$A7:B8BA 9D 86 0F    STA $0F86,x[$7E:1086]  ;|
+$A7:B8BD 68          PLA                    ;/
 
 $A7:B8BE C9 20 00    CMP #$0020             ;\
 $A7:B8C1 10 1F       BPL $1F    [$B8E2]     ;} If [enemy X position] < 20h:
@@ -2877,7 +2882,7 @@ $A7:B8C9 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
 $A7:B8CC A9 23 B9    LDA #$B923             ;\
 $A7:B8CF 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Kraid enemy function = horizontally align enemy to Kraid
 $A7:B8D2 A9 2C 01    LDA #$012C             ;\
-$A7:B8D5 9D B2 0F    STA $0FB2,x[$7E:10B2]  ;} Kraid enemy function timer = 12Ch
+$A7:B8D5 9D B2 0F    STA $0FB2,x[$7E:10B2]  ;} Kraid enemy function timer = 300
 $A7:B8D8 A9 32 B8    LDA #$B832             ;\
 $A7:B8DB 9F 00 78 7E STA $7E7800,x[$7E:7900];} Kraid enemy next function = produce lint
 $A7:B8DF 9E AA 0F    STZ $0FAA,x[$7E:10AA]  ; Kraid lint spawning X speed = 0
@@ -2917,7 +2922,7 @@ $A7:B922 6B          RTL
 }
 
 
-;;; $B923: Kraid enemy function - horizontally align enemy to Kraid ;;;
+;;; $B923: Kraid lint function - horizontally align enemy to Kraid ;;;
 {
 $A7:B923 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:B926 38          SEC                    ;|
@@ -2939,7 +2944,7 @@ $A7:B93E 6B          RTL
 }
 
 
-;;; $B93F: Decrement enemy function timer; set enemy instruction list to $8887 ;;;
+;;; $B93F: Kraid foot function - start retreat ;;;
 {
 $A7:B93F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A7:B942 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
@@ -2971,7 +2976,7 @@ $A7:B968 80 C3       BRA $C3    [$B92D]     ; Handle Kraid enemy function timer
 }
 
 
-;;; $B96A: Enemy touch - Kraid lint ;;;
+;;; $B96A: Kraid lint / Samus collision handling ;;;
 {
 $A7:B96A BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
 $A7:B96D 89 00 04    BIT #$0400             ;|
@@ -2988,7 +2993,7 @@ $A7:B980 E9 02 00    SBC #$0002             ;|
 $A7:B983 85 12       STA $12    [$7E:0012]  ;|
 $A7:B985 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
 $A7:B988 18          CLC                    ;|
-$A7:B989 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;} If not Samus left boundary < Kraid lint left boundary - 2 <= Samus right boundary: return
+$A7:B989 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;} If not (Samus left boundary) < (Kraid lint left boundary) - 2 <= (Samus right boundary) + 1: return
 $A7:B98C C5 12       CMP $12    [$7E:0012]  ;|
 $A7:B98E 30 65       BMI $65    [$B9F5]     ;|
 $A7:B990 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;|
@@ -3001,7 +3006,7 @@ $A7:B99E 18          CLC                    ;|
 $A7:B99F 6D B9 92    ADC $92B9  [$A7:92B9]  ;|
 $A7:B9A2 18          CLC                    ;|
 $A7:B9A3 69 02 00    ADC #$0002             ;|
-$A7:B9A6 85 16       STA $16    [$7E:0016]  ;} If Samus bottom boundary < Kraid lint top boundary + 2: return
+$A7:B9A6 85 16       STA $16    [$7E:0016]  ;} If (Samus bottom boundary) <= (Kraid lint top boundary): return
 $A7:B9A8 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
 $A7:B9AB 18          CLC                    ;|
 $A7:B9AC 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
@@ -3012,7 +3017,7 @@ $A7:B9B6 18          CLC                    ;|
 $A7:B9B7 6D BD 92    ADC $92BD  [$A7:92BD]  ;|
 $A7:B9BA 38          SEC                    ;|
 $A7:B9BB E9 02 00    SBC #$0002             ;|
-$A7:B9BE 85 18       STA $18    [$7E:0018]  ;} If Samus top boundary >= Kraid lint bottom boundary - 2: return
+$A7:B9BE 85 18       STA $18    [$7E:0018]  ;} If (Samus top boundary) >= (Kraid lint bottom boundary) - 2: return
 $A7:B9C0 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
 $A7:B9C3 38          SEC                    ;|
 $A7:B9C4 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
@@ -3061,7 +3066,6 @@ $A7:BA15 10 05       BPL $05    [$BA1C]     ;|
 $A7:BA17 09 00 01    ORA #$0100             ;|
 $A7:BA1A 80 08       BRA $08    [$BA24]     ;} If [Kraid foot Y position] - E0h < [BG1 Y position] <= [Kraid foot Y position]:
                                             ;} Set Kraid foot visible
-
 $A7:BA1C EC 15 09    CPX $0915  [$7E:0915]  ;} Else: Set Kraid foot invisible
 $A7:BA1F 30 03       BMI $03    [$BA24]     ;|
 $A7:BA21 09 00 01    ORA #$0100             ;|
@@ -3703,7 +3707,7 @@ $A7:BF8A 6B          RTL
 $A7:BF8B A9 AB BF    LDA #$BFAB             ;\ Else ([Kraid X position] = 5Ch):
 $A7:BF8E 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = retreat from lunge
 $A7:BF92 A9 3F B9    LDA #$B93F             ;\
-$A7:BF95 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = decrement enemy function timer; set enemy instruction list to Kraid is big - walking backwards
+$A7:BF95 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = start retreat
 $A7:BF98 A9 01 00    LDA #$0001             ;\
 $A7:BF9B 8D F2 10    STA $10F2  [$7E:10F2]  ;} Kraid foot function delay = 1
 $A7:BF9E A9 01 00    LDA #$0001             ;\
