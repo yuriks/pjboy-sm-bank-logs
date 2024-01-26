@@ -3060,17 +3060,17 @@ $A7:BA07 38          SEC                    ;\
 $A7:BA08 E9 E0 00    SBC #$00E0             ;} X = [Kraid foot Y position] - E0h
 $A7:BA0B AA          TAX                    ;/
 $A7:BA0C AD C6 10    LDA $10C6  [$7E:10C6]  ;\
-$A7:BA0F 29 FF FE    AND #$FEFF             ;|
-$A7:BA12 CC 15 09    CPY $0915  [$7E:0915]  ;|
-$A7:BA15 10 05       BPL $05    [$BA1C]     ;|
-$A7:BA17 09 00 01    ORA #$0100             ;|
-$A7:BA1A 80 08       BRA $08    [$BA24]     ;} If [Kraid foot Y position] - E0h < [BG1 Y position] <= [Kraid foot Y position]:
-                                            ;} Set Kraid foot visible
-$A7:BA1C EC 15 09    CPX $0915  [$7E:0915]  ;} Else: Set Kraid foot invisible
-$A7:BA1F 30 03       BMI $03    [$BA24]     ;|
-$A7:BA21 09 00 01    ORA #$0100             ;|
-                                            ;|
-$A7:BA24 8D C6 10    STA $10C6  [$7E:10C6]  ;/
+$A7:BA0F 29 FF FE    AND #$FEFF             ;} Set Kraid foot visible
+$A7:BA12 CC 15 09    CPY $0915  [$7E:0915]  ;\
+$A7:BA15 10 05       BPL $05    [$BA1C]     ;} If [Kraid foot Y position] < [layer 1 Y position]:
+$A7:BA17 09 00 01    ORA #$0100             ; Set Kraid foot invisible
+$A7:BA1A 80 08       BRA $08    [$BA24]
+
+$A7:BA1C EC 15 09    CPX $0915  [$7E:0915]  ;\ Else ([Kraid foot Y position] >= [layer 1 Y position]):
+$A7:BA1F 30 03       BMI $03    [$BA24]     ;} If [Kraid foot Y position] >= [layer 1 Y position] + E0h:
+$A7:BA21 09 00 01    ORA #$0100             ; Set Kraid foot invisible
+
+$A7:BA24 8D C6 10    STA $10C6  [$7E:10C6]
 $A7:BA27 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [Kraid foot index]
 $A7:BA2A 6C E8 10    JMP ($10E8)[$A7:BA2D]  ; Execute [Kraid foot function]
 }
@@ -3114,10 +3114,10 @@ $A7:BA63 BD 02 00    LDA $0002,x[$A7:BABB]  ;\
 $A7:BA66 A8          TAY                    ;} Y = [[X] + 2] (thinking timer)
 $A7:BA67 BD 00 00    LDA $0000,x[$A7:BAB9]  ; A = [[X]] (target X position)
 $A7:BA6A CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;\
-$A7:BA6D 10 07       BPL $07    [$BA76]     ;} If target X position < [Kraid X position]:
+$A7:BA6D 10 07       BPL $07    [$BA76]     ;} If (target X position) < [Kraid X position]:
 $A7:BA6F BD 00 00    LDA $0000,x[$A7:BAF9]
 $A7:BA72 20 29 BB    JSR $BB29  [$A7:BB29]  ; Set Kraid walking forwards
-$A7:BA75 6B          RTL
+$A7:BA75 6B          RTL                    ; Return
 
 $A7:BA76 BD 00 00    LDA $0000,x[$A7:BAB9]  ;\ Else (target X position >= Kraid X position):
 $A7:BA79 20 0D BB    JSR $BB0D  [$A7:BB0D]  ;} Set Kraid walking backwards
