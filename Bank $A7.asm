@@ -1770,7 +1770,7 @@ $A7:AF17 8D B2 0F    STA $0FB2  [$80:0FB2]  ;} Kraid function timer = 40h
 $A7:AF1A A9 BF B6    LDA #$B6BF             ;\
 $A7:AF1D 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Kraid next function = Kraid shot
 $A7:AF21 A9 02 00    LDA #$0002             ;\
-$A7:AF24 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 2
+$A7:AF24 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 2 (never read)
 
 $A7:AF28 6B          RTL                    ; Return
 
@@ -3088,47 +3088,52 @@ $A7:BA2E AF 40 79 7E LDA $7E7940[$7E:7940]  ;\
 $A7:BA32 3A          DEC A                  ;} Decrement Kraid foot thinking timer
 $A7:BA33 8F 40 79 7E STA $7E7940[$7E:7940]  ;/
 $A7:BA37 D0 43       BNE $43    [$BA7C]     ; If [Kraid foot thinking timer] != 0: return
-$A7:BA39 A2 00 00    LDX #$0000             ;\
-                                            ;|
-$A7:BA3C AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
-$A7:BA3F DD 7D BA    CMP $BA7D,x[$A7:BA7D]  ;|
-$A7:BA42 F0 0C       BEQ $0C    [$BA50]     ;|
-$A7:BA44 E8          INX                    ;|
-$A7:BA45 E8          INX                    ;} X = index of [Kraid X position] in [$BA7D + [X]] or 4
-$A7:BA46 E8          INX                    ;|
-$A7:BA47 E8          INX                    ;|
-$A7:BA48 E0 18 00    CPX #$0018             ;|
-$A7:BA4B 30 EF       BMI $EF    [$BA3C]     ;|
-$A7:BA4D A2 04 00    LDX #$0004             ;/
+$A7:BA39 A2 00 00    LDX #$0000             ; X = 0 (movement table index)
+
+; LOOP
+$A7:BA3C AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A7:BA3F DD 7D BA    CMP $BA7D,x[$A7:BA7D]  ;} If [$BA7D + [X]] != [Kraid X position]:
+$A7:BA42 F0 0C       BEQ $0C    [$BA50]     ;/
+$A7:BA44 E8          INX                    ;\
+$A7:BA45 E8          INX                    ;|
+$A7:BA46 E8          INX                    ;} X += 4
+$A7:BA47 E8          INX                    ;/
+$A7:BA48 E0 18 00    CPX #$0018             ;\
+$A7:BA4B 30 EF       BMI $EF    [$BA3C]     ;} If [X] < 18h: go to LOOP
+$A7:BA4D A2 04 00    LDX #$0004             ; X = 4
 
 $A7:BA50 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A7:BA53 29 1C 00    AND #$001C             ;|
-$A7:BA56 C9 10 00    CMP #$0010             ;} A = randomly 10h, 14h, 18h or 1Ch
+$A7:BA56 C9 10 00    CMP #$0010             ;|
 $A7:BA59 30 03       BMI $03    [$BA5E]     ;|
-$A7:BA5B A9 10 00    LDA #$0010             ;/
-
-$A7:BA5E 18          CLC                    ;\
-$A7:BA5F 7D 7F BA    ADC $BA7F,x[$A7:BA83]  ;} X = [$BA7D + [X] + 2] + [A] (movement data pointer)
+$A7:BA5B A9 10 00    LDA #$0010             ;} X = [$BA7D + [X] + 2] + min(4, [random number] / 4 % 8) * 4 (movement data pointer)
+                                            ;|
+$A7:BA5E 18          CLC                    ;|
+$A7:BA5F 7D 7F BA    ADC $BA7F,x[$A7:BA83]  ;|
 $A7:BA62 AA          TAX                    ;/
 $A7:BA63 BD 02 00    LDA $0002,x[$A7:BABB]  ;\
 $A7:BA66 A8          TAY                    ;} Y = [[X] + 2] (thinking timer)
 $A7:BA67 BD 00 00    LDA $0000,x[$A7:BAB9]  ; A = [[X]] (target X position)
 $A7:BA6A CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;\
 $A7:BA6D 10 07       BPL $07    [$BA76]     ;} If (target X position) < [Kraid X position]:
-$A7:BA6F BD 00 00    LDA $0000,x[$A7:BAF9]
-$A7:BA72 20 29 BB    JSR $BB29  [$A7:BB29]  ; Set Kraid walking forwards
+$A7:BA6F BD 00 00    LDA $0000,x[$A7:BAF9]  ;\
+$A7:BA72 20 29 BB    JSR $BB29  [$A7:BB29]  ;} Set Kraid walking forwards
 $A7:BA75 6B          RTL                    ; Return
 
-$A7:BA76 BD 00 00    LDA $0000,x[$A7:BAB9]  ;\ Else (target X position >= Kraid X position):
+$A7:BA76 BD 00 00    LDA $0000,x[$A7:BAB9]  ;\ Else ((target X position) >= [Kraid X position]):
 $A7:BA79 20 0D BB    JSR $BB0D  [$A7:BB0D]  ;} Set Kraid walking backwards
 
 $A7:BA7C 6B          RTL
+
+; Movement table
+; If Kraid is at a listed X position, that entry is used, otherwise the default entry is used
+; One of 5 corresponding movements is selected at random with chances 1/8, 1/8, 1/8, 1/8, 1/2
 
 ;                        ________ Kraid X position
 ;                       |     ___ Kraid movement data
 ;                       |    |
 $A7:BA7D             dw 00F0,BA95,
-                        0160,BAA9,
+                        0160,BAA9, ; Default
                         0180,BABD,
                         00D0,BAD1,
                         0140,BAE5,
@@ -3152,7 +3157,7 @@ $A7:BB0D 8F 1E 78 7E STA $7E781E[$7E:781E]  ; Kraid target X position = [A]
 $A7:BB11 98          TYA                    ;\
 $A7:BB12 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot thinking timer = [Y]
 $A7:BB16 A9 45 BB    LDA #$BB45             ;\
-$A7:BB19 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = second phase
+$A7:BB19 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = $BB45 (second phase - walking backwards)
 $A7:BB1C A9 01 00    LDA #$0001             ;\
 $A7:BB1F 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BB22 A9 87 88    LDA #$8887             ;\
@@ -3167,7 +3172,7 @@ $A7:BB29 8F 1E 78 7E STA $7E781E[$7E:781E]  ; Kraid target X position = [A]
 $A7:BB2D 98          TYA                    ;\
 $A7:BB2E 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot thinking timer = [Y]
 $A7:BB32 A9 AE BB    LDA #$BBAE             ;\
-$A7:BB35 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = $BBAE
+$A7:BB35 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = $BBAE (second phase - walking forwards)
 $A7:BB38 A9 01 00    LDA #$0001             ;\
 $A7:BB3B 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BB3E A9 F3 86    LDA #$86F3             ;\
@@ -3227,7 +3232,7 @@ $A7:BBA3 6B          RTL
 ;;; $BBA4: Kraid foot function - second phase setup - initialise second phase ;;;
 {
 $A7:BBA4 A9 60 01    LDA #$0160             ; A = 160h (Kraid target X position)
-$A7:BBA7 A0 B4 00    LDY #$00B4             ; Y = B4h (Kraid foot thinking timer)
+$A7:BBA7 A0 B4 00    LDY #$00B4             ; Y = 180 (Kraid foot thinking timer)
 $A7:BBAA 20 0D BB    JSR $BB0D  [$A7:BB0D]  ; Set Kraid walking backwards
 $A7:BBAD 6B          RTL
 }
@@ -3281,7 +3286,7 @@ $A7:BC08 D0 18       BNE $18    [$BC22]     ;/
 $A7:BC0A A0 45 9C    LDY #$9C45             ;\
 $A7:BC0D AD E5 05    LDA $05E5  [$7E:05E5]  ;|
 $A7:BC10 29 0E 00    AND #$000E             ;|
-$A7:BC13 AA          TAX                    ;} Spawn Kraid rock spit enemy projectile with random parameter FB40h/FB80h/FC00h/FC40h
+$A7:BC13 AA          TAX                    ;} Spawn Kraid rock spit enemy projectile with random X velocity -4.C0h/-4.80h/-4.00h/-3.C0h
 $A7:BC14 BD 65 BC    LDA $BC65,x[$A7:BC65]  ;|
 $A7:BC17 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A7:BC1B A9 1E 00    LDA #$001E             ;\
@@ -3292,7 +3297,7 @@ $A7:BC22 6B          RTL                    ; Return
 ; BRANCH_FINISHED_INSTRUCTIONS
 $A7:BC23 20 E9 AD    JSR $ADE9  [$A7:ADE9]  ; Set up Kraid main loop - thinking
 $A7:BC26 A9 5A 00    LDA #$005A             ;\
-$A7:BC29 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 5Ah
+$A7:BC29 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 90
 $A7:BC2C AF 0A 78 7E LDA $7E780A[$7E:780A]  ;\
 $A7:BC30 89 04 00    BIT #$0004             ;} If not set to reopen mouth: go to BRANCH_RETURN
 $A7:BC33 F0 28       BEQ $28    [$BC5D]     ;/
@@ -3308,14 +3313,15 @@ $A7:BC4B 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Kraid function timer = 40h
 $A7:BC4E A9 BF B6    LDA #$B6BF             ;\
 $A7:BC51 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Kraid next function = $B6BF (Kraid shot)
 $A7:BC55 A9 02 00    LDA #$0002             ;\
-$A7:BC58 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 2
-$A7:BC5C 6B          RTL
+$A7:BC58 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 2 (never read)
+$A7:BC5C 6B          RTL                    ; Return
 
 ; BRANCH_RETURN
 $A7:BC5D A9 00 00    LDA #$0000             ;\
 $A7:BC60 8F 0A 78 7E STA $7E780A[$7E:780A]  ;} Kraid mouth reopen flags = 0
 $A7:BC64 6B          RTL
 
+; Rock spit X velocities. Unit 1/100h px/frame
 $A7:BC65             dw FC00, FC40, FB40, FB80, FB40, FC00, FB80, FC40
 }
 
