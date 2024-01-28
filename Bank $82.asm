@@ -1665,7 +1665,7 @@ $82:8D38 9C 4D 07    STZ $074D  [$7E:074D]  ; Map scroll left arrow animation fr
 $82:8D3B A9 01 00    LDA #$0001             ;\
 $82:8D3E 8D 3B 07    STA $073B  [$7E:073B]  ;} Pause screen palette animation timer = 1
 $82:8D41 9C FD 05    STZ $05FD  [$7E:05FD]  ; Map scrolling direction = none
-$82:8D44 9C FF 05    STZ $05FF  [$7E:05FF]  ; $05FF = 0
+$82:8D44 9C FF 05    STZ $05FF  [$7E:05FF]  ; Map scrolling speed index = 0
 $82:8D47 22 11 A2 80 JSL $80A211[$80:A211]  ; Queue clearing of FX tilemap
 $82:8D4B EE 98 09    INC $0998  [$7E:0998]  ; Game state = Eh (paused, loading pause screen)
 $82:8D4E AB          PLB
@@ -2516,7 +2516,7 @@ $82:9382 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $82:9385 08          PHP
 $82:9386 8B          PHB
 $82:9387 4B          PHK                    ;\
-$82:9388 F4 8D 93    PEA $938D              ;} Execute unpause hook
+$82:9388 F4 8D 93    PEA $938D              ;} Execute [unpause hook]
 $82:938B DC 04 06    JML [$0604][$88:83E1]  ;/
 
 $82:938E 22 88 82 88 JSL $888288[$88:8288]  ; Enable HDMA objects

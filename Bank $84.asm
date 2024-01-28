@@ -5485,7 +5485,7 @@ $84:ABA3             dw 0001,939D,
 
 ;;; $ABA9: Instruction list - PLM $B7BF (crumble Kraid spike blocks) ;;;
 {
-$84:ABA9             dx 874E,0B     ; Timer = 0Bh
+$84:ABA9             dx 874E,0B     ; Timer = Bh
 $84:ABAC             dw 0003,9367,
                         0003,936D,
                         0003,9373,

@@ -943,7 +943,7 @@ $A7:A610             dx 0001, 81F8,F8,11A9
 }
 
 
-;;; $A617: Spritemaps - Kraid good fingernail ;;;
+;;; $A617: Spritemaps - Kraid fingernail ;;;
 {
 $A7:A617             dx 0002, C3F4,F8,212A, C3FC,F8,212C
 $A7:A623             dx 0004, 01F9,FB,2138, 01F9,03,2139, 0002,F9,612E, 01FA,F9,212E
@@ -1165,7 +1165,7 @@ $A7:A9E4 A9 02 00    LDA #$0002             ;\
 $A7:A9E7 8D 41 09    STA $0941  [$7E:0941]  ;} Camera distance index = 2 (keeps Samus to the left side of the screen)
 $A7:A9EA A9 00 00    LDA #$0000             ;\
 $A7:A9ED 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;|
-$A7:A9F1 A9 01 00    LDA #$0001             ;} Lock camera to bottom-left screen
+$A7:A9F1 A9 01 00    LDA #$0001             ;} Scrolls 0,1,3 = red, 2 = blue
 $A7:A9F4 8F 22 CD 7E STA $7ECD22[$7E:CD22]  ;/
 $A7:A9F8 A9 44 01    LDA #$0144             ;\
 $A7:A9FB 8F 08 78 7E STA $7E7808[$7E:7808]  ;} $7E:7808 = 144h (minimum Y position to which Kraid will eject Samus)
@@ -2742,7 +2742,7 @@ $A7:B7CA E9 2C 00    SBC #$002C             ;} Kraid arm Y position = [Kraid Y p
 $A7:B7CD 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;/
 $A7:B7D0 A8          TAY
 $A7:B7D1 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A7:B7D4 09 00 01    ORA #$0100             ;} Set Kraid arm invisible
+$A7:B7D4 09 00 01    ORA #$0100             ;} Set Kraid arm as invisible
 $A7:B7D7 CC 15 09    CPY $0915  [$7E:0915]  ;\
 $A7:B7DA 30 07       BMI $07    [$B7E3]     ;|
 $A7:B7DC C4 12       CPY $12    [$7E:0012]  ;} If [layer 1 Y position] <= [Kraid arm Y position] < [layer 1 Y position] + E0h:
@@ -3326,48 +3326,50 @@ $A7:BC65             dw FC00, FC40, FB40, FB80, FB40, FC00, FB80, FC40
 }
 
 
-;;; $BC75: Unused. ;;;
+;;; $BC75: Unused. Lunge forward if Samus is not invincible ;;;
 {
-$A7:BC75 AD D2 10    LDA $10D2  [$7E:10D2]
-$A7:BC78 C9 85 88    CMP #$8885
-$A7:BC7B 30 2A       BMI $2A    [$BCA7]
-$A7:BC7D AD A8 18    LDA $18A8  [$7E:18A8]
-$A7:BC80 F0 26       BEQ $26    [$BCA8]
-$A7:BC82 A9 45 BB    LDA #$BB45
-$A7:BC85 8D E8 10    STA $10E8  [$7E:10E8]
-$A7:BC88 AD 11 09    LDA $0911  [$7E:0911]
-$A7:BC8B 18          CLC
-$A7:BC8C 69 20 01    ADC #$0120
-$A7:BC8F C9 20 01    CMP #$0120
-$A7:BC92 30 03       BMI $03    [$BC97]
-$A7:BC94 A9 20 01    LDA #$0120
+; Possibly an old Samus / Kraid foot collision reaction
+$A7:BC75 AD D2 10    LDA $10D2  [$7E:10D2]  ;\
+$A7:BC78 C9 85 88    CMP #$8885             ;} If [Kraid foot instruction list pointer] < $8885 (last frame of lunge forward): return
+$A7:BC7B 30 2A       BMI $2A    [$BCA7]     ;/
+$A7:BC7D AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$A7:BC80 F0 26       BEQ $26    [$BCA8]     ;} If [Samus invincibility timer] = 0: go to BRANCH_LUNGE
+$A7:BC82 A9 45 BB    LDA #$BB45             ;\
+$A7:BC85 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = $BB45 (second phase - walking backwards)
+$A7:BC88 AD 11 09    LDA $0911  [$7E:0911]  ;\
+$A7:BC8B 18          CLC                    ;|
+$A7:BC8C 69 20 01    ADC #$0120             ;|
+$A7:BC8F C9 20 01    CMP #$0120             ;|
+$A7:BC92 30 03       BMI $03    [$BC97]     ;} Kraid target X position = min(0, [layer 1 X position]) + 120h
+$A7:BC94 A9 20 01    LDA #$0120             ;|
+                                            ;|
+$A7:BC97 8F 1E 78 7E STA $7E781E[$7E:781E]  ;/
+$A7:BC9B A9 01 00    LDA #$0001             ;\
+$A7:BC9E 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
+$A7:BCA1 A9 87 88    LDA #$8887             ;\
+$A7:BCA4 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $8887 (Kraid is big - walking backwards)
 
-$A7:BC97 8F 1E 78 7E STA $7E781E[$7E:781E]
-$A7:BC9B A9 01 00    LDA #$0001
-$A7:BC9E 8D D4 10    STA $10D4  [$7E:10D4]
-$A7:BCA1 A9 87 88    LDA #$8887
-$A7:BCA4 8D D2 10    STA $10D2  [$7E:10D2]
+$A7:BCA7 6B          RTL                    ; Return
 
-$A7:BCA7 6B          RTL
-
-$A7:BCA8 A9 01 00    LDA #$0001
-$A7:BCAB 8D D4 10    STA $10D4  [$7E:10D4]
-$A7:BCAE A9 BD 87    LDA #$87BD
-$A7:BCB1 8D D2 10    STA $10D2  [$7E:10D2]
+; BRANCH_LUNGE
+$A7:BCA8 A9 01 00    LDA #$0001             ;\
+$A7:BCAB 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
+$A7:BCAE A9 BD 87    LDA #$87BD             ;\
+$A7:BCB1 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $87BD (lunge forward)
 $A7:BCB4 6B          RTL
 }
 
 
-;;; $BCB5: Unused. ;;;
+;;; $BCB5: Unused. Fire lint after [A] frames ;;;
 {
-$A7:BCB5 9D B2 0F    STA $0FB2,x
-$A7:BCB8 A9 23 B9    LDA #$B923
-$A7:BCBB 9D A8 0F    STA $0FA8,x
-$A7:BCBE A9 9B B8    LDA #$B89B
-$A7:BCC1 9F 00 78 7E STA $7E7800,x
-$A7:BCC5 BD 86 0F    LDA $0F86,x
-$A7:BCC8 09 00 01    ORA #$0100
-$A7:BCCB 9D 86 0F    STA $0F86,x
+$A7:BCB5 9D B2 0F    STA $0FB2,x            ; Kraid enemy function timer = [A]
+$A7:BCB8 A9 23 B9    LDA #$B923             ;\
+$A7:BCBB 9D A8 0F    STA $0FA8,x            ;} Kraid enemy function = horizontally align enemy to Kraid
+$A7:BCBE A9 9B B8    LDA #$B89B             ;\
+$A7:BCC1 9F 00 78 7E STA $7E7800,x          ;} Kraid enemy next function = fire lint
+$A7:BCC5 BD 86 0F    LDA $0F86,x            ;\
+$A7:BCC8 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A7:BCCB 9D 86 0F    STA $0F86,x            ;/
 $A7:BCCE 60          RTS
 }
 
@@ -3415,16 +3417,16 @@ $A7:BCEF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A7:BCF2 AD 96 0F    LDA $0F96  [$7E:0F96]  ;\
 $A7:BCF5 9D 96 0F    STA $0F96,x[$7E:1116]  ;} Enemy palette = [Kraid palette]
 $A7:BCF8 A9 28 00    LDA #$0028             ;\
-$A7:BCFB 9D AA 0F    STA $0FAA,x[$7E:112A]  ;} Enemy $0FAA = 28h
+$A7:BCFB 9D AA 0F    STA $0FAA,x[$7E:112A]  ;} Enemy X subvelocity = 28h
 $A7:BCFE BD 86 0F    LDA $0F86,x[$7E:1106]  ;\
-$A7:BD01 09 00 01    ORA #$0100             ;} Set enemy invisible
+$A7:BD01 09 00 01    ORA #$0100             ;} Set enemy as invisible
 $A7:BD04 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
 $A7:BD07 A9 FF 7F    LDA #$7FFF             ;\
 $A7:BD0A 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 7FFFh
 $A7:BD0D A9 0A 8B    LDA #$8B0A             ;\
 $A7:BD10 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = $8B0A (fingernail)
 $A7:BD13 AD 0C 8B    LDA $8B0C  [$A7:8B0C]  ;\
-$A7:BD16 9D 8E 0F    STA $0F8E,x[$7E:110E]  ;} Enemy spritemap pointer = $A617
+$A7:BD16 9D 8E 0F    STA $0F8E,x[$7E:110E]  ;} Enemy spritemap pointer = $A617 (first fingernail frame)
 $A7:BD19 A9 60 BD    LDA #$BD60             ;\
 $A7:BD1C 9F 00 78 7E STA $7E7800,x[$7E:7980];} Enemy next function = initialise fingernail
 $A7:BD20 A9 2D B9    LDA #$B92D             ;\
@@ -3438,7 +3440,7 @@ $A7:BD2C 6B          RTL
 ;;; $BD2D: Initialisation AI - enemy $E47F (Kraid bad fingernail) ;;;
 {
 $A7:BD2D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A7:BD30 80 C0       BRA $C0    [$BCF2]
+$A7:BD30 80 C0       BRA $C0    [$BCF2]     ; Go to Kraid's fingernails initialisation AI
 }
 
 
@@ -3451,7 +3453,7 @@ $A7:BD3A 30 03       BMI $03    [$BD3F]     ;/
 $A7:BD3C 6C 28 11    JMP ($1128)[$A7:B92D]  ; Execute [Kraid good fingernail instruction]
 
 $A7:BD3F AD 06 11    LDA $1106  [$A0:1106]  ;\
-$A7:BD42 09 00 03    ORA #$0300             ;} Set Kraid good fingernail invisible and to delete
+$A7:BD42 09 00 03    ORA #$0300             ;} Set Kraid good fingernail as invisible and mark for deletion
 $A7:BD45 8D 06 11    STA $1106  [$A0:1106]  ;/
 $A7:BD48 6B          RTL
 }
@@ -3466,7 +3468,7 @@ $A7:BD51 30 03       BMI $03    [$BD56]     ;/
 $A7:BD53 6C 68 11    JMP ($1168)[$A7:B92D]  ; Execute [Kraid bad fingernail instruction]
 
 $A7:BD56 AD 46 11    LDA $1146  [$A0:1146]  ;\
-$A7:BD59 09 00 03    ORA #$0300             ;} Set Kraid bad fingernail invisible and to delete
+$A7:BD59 09 00 03    ORA #$0300             ;} Set Kraid bad fingernail as invisible and mark for deletion
 $A7:BD5C 8D 46 11    STA $1146  [$A0:1146]  ;/
 $A7:BD5F 6B          RTL
 }
@@ -3475,7 +3477,7 @@ $A7:BD5F 6B          RTL
 ;;; $BD60: Kraid fingernail function - initialise fingernail ;;;
 {
 $A7:BD60 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
-$A7:BD63 29 06 00    AND #$0006             ;} Y = 0, 2, 4 or 6 randomly
+$A7:BD63 29 06 00    AND #$0006             ;} Y = [random number] & 6
 $A7:BD66 A8          TAY                    ;/
 $A7:BD67 AD 30 11    LDA $1130  [$7E:1130]  ;\
 $A7:BD6A AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
@@ -3487,7 +3489,6 @@ $A7:BD75 C9 00 00    CMP #$0000             ;|
 $A7:BD78 10 05       BPL $05    [$BD7F]     ;/
 $A7:BD7A B9 3E BE    LDA $BE3E,y[$A7:BE42]  ; A = [$BE3E + [Y]]
 $A7:BD7D 80 03       BRA $03    [$BD82]
-
                                             ; Else ([Kraid fingernail Y velocity] >= 0):
 $A7:BD7F B9 46 BE    LDA $BE46,y[$A7:BE4A]  ; A = [$BE46 + [Y]]
 
@@ -3522,7 +3523,7 @@ $A7:BDCA 9F 0E 78 7E STA $7E780E,x[$7E:798E];} Kraid fingernail orientation = di
 $A7:BDCE AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:BDD1 38          SEC                    ;|
 $A7:BDD2 ED 82 0F    SBC $0F82  [$7E:0F82]  ;|
-$A7:BDD5 38          SEC                    ;} Enemy X position = Kraid left boundary - [enemy X radius], block-aligned
+$A7:BDD5 38          SEC                    ;} Enemy X position = Kraid left boundary - [enemy X radius] rounded down to block left boundary
 $A7:BDD6 FD 82 0F    SBC $0F82,x[$7E:1102]  ;|
 $A7:BDD9 29 F0 FF    AND #$FFF0             ;|
 $A7:BDDC 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;/
@@ -3530,7 +3531,7 @@ $A7:BDDF AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A7:BDE2 18          CLC                    ;|
 $A7:BDE3 69 80 00    ADC #$0080             ;} Enemy Y position = [Kraid arm Y position] + 80h
 $A7:BDE6 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;/
-$A7:BDE9 6B          RTL
+$A7:BDE9 6B          RTL                    ; Return
 
 ; BRANCH_HORIZONTAL
 $A7:BDEA AF 8E 79 7E LDA $7E798E[$7E:798E]  ; A = [Kraid good fingernail orientation]
@@ -3547,13 +3548,13 @@ $A7:BE06 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = 32h
 $A7:BE09 A9 F0 00    LDA #$00F0             ;\
 $A7:BE0C 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = F0h
 $A7:BE0F A9 00 00    LDA #$0000             ;\
-$A7:BE12 9D AA 0F    STA $0FAA,x[$7E:112A]  ;} Kraid fingernail X subvelocity = 0
-$A7:BE15 A9 01 00    LDA #$0001             ;\
-$A7:BE18 9D AC 0F    STA $0FAC,x[$7E:112C]  ;} Kraid fingernail X velocity = 1
+$A7:BE12 9D AA 0F    STA $0FAA,x[$7E:112A]  ;|
+$A7:BE15 A9 01 00    LDA #$0001             ;} Kraid fingernail X velocity = 1.0
+$A7:BE18 9D AC 0F    STA $0FAC,x[$7E:112C]  ;/
 $A7:BE1B A9 00 00    LDA #$0000             ;\
-$A7:BE1E 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Kraid fingernail Y subvelocity = 0
-$A7:BE21 A9 00 00    LDA #$0000             ;\
-$A7:BE24 9D B0 0F    STA $0FB0,x[$7E:1130]  ;} Kraid fingernail Y velocity = 0
+$A7:BE1E 9D AE 0F    STA $0FAE,x[$7E:112E]  ;|
+$A7:BE21 A9 00 00    LDA #$0000             ;} Kraid fingernail Y velocity = 0.0
+$A7:BE24 9D B0 0F    STA $0FB0,x[$7E:1130]  ;/
 $A7:BE27 A9 07 B9    LDA #$B907             ;\
 $A7:BE2A 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Kraid enemy function = wait until top lint X position >= 100h
 $A7:BE2D A9 8E BE    LDA #$BE8E             ;\
@@ -3622,7 +3623,7 @@ $A7:BEC9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:BECC 18          CLC                    ;|
 $A7:BECD 79 1D BF    ADC $BF1D,y[$A7:BF1D]  ;|
 $A7:BED0 85 12       STA $12    [$7E:0012]  ;|
-$A7:BED2 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;} If enemy right boundary >= [Kraid X position] + [$BF1D + [Y]]:
+$A7:BED2 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;} If (enemy right boundary) + 1 >= [Kraid X position] + [$BF1D + [Y]]:
 $A7:BED5 18          CLC                    ;|
 $A7:BED6 7D 82 0F    ADC $0F82,x[$7E:1102]  ;|
 $A7:BED9 C5 12       CMP $12    [$7E:0012]  ;|
@@ -3708,9 +3709,9 @@ $A7:BF7E A9 01 00    LDA #$0001             ;\
 $A7:BF81 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:BF84 A9 BD 87    LDA #$87BD             ;\
 $A7:BF87 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list pointer = $87BD (lunge forward)
-$A7:BF8A 6B          RTL
+$A7:BF8A 6B          RTL                    ; Return
 
-$A7:BF8B A9 AB BF    LDA #$BFAB             ;\ Else ([Kraid X position] = 5Ch):
+$A7:BF8B A9 AB BF    LDA #$BFAB             ;\
 $A7:BF8E 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = retreat from lunge
 $A7:BF92 A9 3F B9    LDA #$B93F             ;\
 $A7:BF95 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = start retreat
@@ -3744,9 +3745,9 @@ $A7:BFCC A9 87 88    LDA #$8887             ;\
 $A7:BFCF 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $8887 (Kraid is big - walking backwards)
 $A7:BFD2 A9 01 00    LDA #$0001             ;\
 $A7:BFD5 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
-$A7:BFD8 6B          RTL
+$A7:BFD8 6B          RTL                    ; Return
 
-$A7:BFD9 A9 F3 89    LDA #$89F3             ;\ Else (Kraid X position = B0h):
+$A7:BFD9 A9 F3 89    LDA #$89F3             ;\
 $A7:BFDC 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $89F3 (normal)
 $A7:BFDF A9 01 00    LDA #$0001             ;\
 $A7:BFE2 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Kraid arm instruction timer = 1
@@ -3759,7 +3760,7 @@ $A7:BFF4 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = thinking
 $A7:BFF7 A9 2C 01    LDA #$012C             ;\
 $A7:BFFA 8D F2 10    STA $10F2  [$7E:10F2]  ;} Kraid foot function timer = 300
 $A7:BFFD A9 2D BF    LDA #$BF2D             ;\
-$A7:C000 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = $BF2D
+$A7:C000 8F 40 79 7E STA $7E7940[$7E:7940]  ;} Kraid foot next function = $BF2D (prepare to lunge forward)
 
 $A7:C004 6B          RTL
 }
@@ -3784,29 +3785,29 @@ $A7:C004 6B          RTL
 ; Easiest way to fix this is to set the Kraid instruction timer to Ah unconditionally (instead of hoping it's Ah from instruction list lookup).
 ; I.e. $C04C = LDA #$000A
 $A7:C005 AD 8C 0F    LDA $0F8C  [$7E:0F8C]  ;\
-$A7:C008 CF 18 78 7E CMP $7E7818[$7E:7818]  ;|
-$A7:C00C 30 01       BMI $01    [$C00F]     ;} If [Kraid health] >= [7/8 Kraid health]: return
-$A7:C00E 60          RTS                    ;/
+$A7:C008 CF 18 78 7E CMP $7E7818[$7E:7818]  ;} If [Kraid health] >= [Kraid max health * 7/8]:
+$A7:C00C 30 01       BMI $01    [$C00F]     ;/
+$A7:C00E 60          RTS                    ; Return
 
 $A7:C00F A9 65 B9    LDA #$B965             ;\
 $A7:C012 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = process Kraid instruction
 $A7:C015 A9 B4 00    LDA #$00B4             ;\
-$A7:C018 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Kraid function timer = B4h
+$A7:C018 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Kraid function timer = 180
 $A7:C01B A9 A1 C0    LDA #$C0A1             ;\
 $A7:C01E 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Kraid next function = Kraid gets big
 $A7:C022 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A7:C025 AA          TAX                    ;} A = [[Kraid instruction list pointer] + 2]
 $A7:C026 BD 02 00    LDA $0002,x[$A7:96F6]  ;/
-$A7:C029 A0 32 00    LDY #$0032             ;\
-$A7:C02C C9 C8 97    CMP #$97C8             ;} If [A] = $97C8: Y = 32h
-$A7:C02F F0 13       BEQ $13    [$C044]     ;/
-$A7:C031 A0 2A 00    LDY #$002A             ;\
-$A7:C034 C9 C8 9A    CMP #$9AC8             ;} Else if [A] = $9AC8: Y = 2Ah
-$A7:C037 F0 0B       BEQ $0B    [$C044]     ;/
-$A7:C039 A0 22 00    LDY #$0022             ;\
-$A7:C03C C9 C8 9D    CMP #$9DC8             ;} Else if [A] = $9DC8: Y = 22h
-$A7:C03F F0 03       BEQ $03    [$C044]     ;/
-$A7:C041 A0 1A 00    LDY #$001A             ; Else: Y = 1Ah
+$A7:C029 A0 32 00    LDY #$0032             ; Y = 32h
+$A7:C02C C9 C8 97    CMP #$97C8             ;\
+$A7:C02F F0 13       BEQ $13    [$C044]     ;} If [A] != $97C8:
+$A7:C031 A0 2A 00    LDY #$002A             ; Y = 2Ah
+$A7:C034 C9 C8 9A    CMP #$9AC8             ;\
+$A7:C037 F0 0B       BEQ $0B    [$C044]     ;} If [A] != $9AC8:
+$A7:C039 A0 22 00    LDY #$0022             ; Y = 22h
+$A7:C03C C9 C8 9D    CMP #$9DC8             ;\
+$A7:C03F F0 03       BEQ $03    [$C044]     ;} If [A] != $9DC8:
+$A7:C041 A0 1A 00    LDY #$001A             ; Y = 1Ah
 
 $A7:C044 98          TYA                    ;\
 $A7:C045 18          CLC                    ;|
@@ -3832,13 +3833,13 @@ $A7:C07C AD 06 10    LDA $1006  [$7E:1006]  ;\
 $A7:C07F 09 00 01    ORA #$0100             ;|
 $A7:C082 8D 06 10    STA $1006  [$7E:1006]  ;|
 $A7:C085 AD 46 10    LDA $1046  [$7E:1046]  ;|
-$A7:C088 09 00 01    ORA #$0100             ;} Set Kraid lint invisible
+$A7:C088 09 00 01    ORA #$0100             ;} Set Kraid lint as invisible
 $A7:C08B 8D 46 10    STA $1046  [$7E:1046]  ;|
 $A7:C08E AD 86 10    LDA $1086  [$7E:1086]  ;|
 $A7:C091 09 00 01    ORA #$0100             ;|
 $A7:C094 8D 86 10    STA $1086  [$7E:1086]  ;/
 $A7:C097 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A7:C09A 09 00 04    ORA #$0400             ;} Set Kraid arm to be intangible
+$A7:C09A 09 00 04    ORA #$0400             ;} Set Kraid arm as intangible
 $A7:C09D 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A7:C0A0 60          RTS
 }
@@ -3850,7 +3851,7 @@ $A7:C0A1 A9 4D AC    LDA #$AC4D             ;\
 $A7:C0A4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = break ceiling into platforms
 $A7:C0A7 A9 02 02    LDA #$0202             ;\
 $A7:C0AA 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;|
-$A7:C0AE A9 01 01    LDA #$0101             ;} Release camera
+$A7:C0AE A9 01 01    LDA #$0101             ;} Scrolls 0..1 = green, 2..3 = blue
 $A7:C0B1 8F 22 CD 7E STA $7ECD22[$7E:CD22]  ;/
 $A7:C0B5 A9 A4 00    LDA #$00A4             ;\
 $A7:C0B8 8F 08 78 7E STA $7E7808[$7E:7808]  ;} $7E:7808 = A4h (minimum Y position to which Kraid will eject Samus)
@@ -4056,7 +4057,7 @@ $A7:C29F 6B          RTL
 {
 ; $5D isn't being masked, so this code only works because BG1 tiles base address = $0000
 ; Note that this routine is spending a frame on each row of Kraid it erases (worst case, 28 frames),
-; the forced blank isn't even being used to transfer the tilemap on demand... and only transfer is being queued per frame...
+; the forced blank isn't even being used to transfer the tilemap on demand... and only one transfer is being queued per frame...
 ; Also note that $0330 is being loaded for no reason (guaranteed to be 0), in fact, if it wasn't guaranteed to be 0,
 ; this loading procedure would end up repeating every transfer that was requested before this routine was started.
 
@@ -4082,8 +4083,8 @@ $A7:C2CE AB          PLB                    ;} DB = $A7
 $A7:C2CF AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A7:C2D2 CD E7 C5    CMP $C5E7  [$A7:C5E7]  ;} If [Kraid Y position] < [$C5E7]: go to BRANCH_RETURN
 $A7:C2D5 30 47       BMI $47    [$C31E]     ;/
-$A7:C2D7 A0 00 00    LDY #$0000             ; Y = 0
-$A7:C2DA AE 30 03    LDX $0330  [$7E:0330]  ; X = [VRAM write table stack pointer] (kinda pointless, will be 0 due to NMI)
+$A7:C2D7 A0 00 00    LDY #$0000             ; Y = 0 (sinking Kraid table index)
+$A7:C2DA AE 30 03    LDX $0330  [$7E:0330]  ; X = [VRAM write table stack pointer] (will be 0 due to NMI)
 
 ; LOOP
 $A7:C2DD C2 30       REP #$30
@@ -4112,7 +4113,7 @@ $A7:C30F 8D 30 03    STA $0330  [$7E:0330]  ;/
 $A7:C312 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
 $A7:C316 98          TYA                    ;\
 $A7:C317 18          CLC                    ;|
-$A7:C318 69 06 00    ADC #$0006             ;} Y += 6
+$A7:C318 69 06 00    ADC #$0006             ;} Y += 6 (next sinking Kraid table entry)
 $A7:C31B A8          TAY                    ;/
 $A7:C31C 80 BF       BRA $BF    [$C2DD]     ; Go to LOOP
 
@@ -4158,21 +4159,21 @@ $A7:C35F 6B          RTL
 ;;; $C360: Kraid death - initialise death ;;;
 {
 $A7:C360 AF 2A 78 7E LDA $7E782A[$7E:782A]  ;\
-$A7:C364 F0 01       BEQ $01    [$C367]     ;} If [Kraid hurt frame] != 0: return
-$A7:C366 6B          RTL                    ;/
+$A7:C364 F0 01       BEQ $01    [$C367]     ;} If [Kraid hurt frame] != 0:
+$A7:C366 6B          RTL                    ; Return
 
 $A7:C367 A2 C0 00    LDX #$00C0             ;\
 $A7:C36A A9 00 00    LDA #$0000             ;|
                                             ;|
 $A7:C36D 9F 00 C2 7E STA $7EC200,x[$7E:C2C0];|
-$A7:C371 E8          INX                    ;} Clear target colour palette line 6
+$A7:C371 E8          INX                    ;} Target BG1/2 palette 6 = 0
 $A7:C372 E8          INX                    ;|
 $A7:C373 E0 E0 00    CPX #$00E0             ;|
 $A7:C376 30 F5       BMI $F5    [$C36D]     ;/
 $A7:C378 A2 1E 00    LDX #$001E             ;\
                                             ;|
 $A7:C37B BD F3 B4    LDA $B4F3,x[$A7:B511]  ;|
-$A7:C37E 9F E0 C0 7E STA $7EC0E0,x[$7E:C0FE];} Write target colour palette line 7
+$A7:C37E 9F E0 C0 7E STA $7EC0E0,x[$7E:C0FE];} BG1/2 palette 7 = [$B4F3..$B512] (Kraid death palette)
 $A7:C382 CA          DEX                    ;|
 $A7:C383 CA          DEX                    ;|
 $A7:C384 10 F5       BPL $F5    [$C37B]     ;/
@@ -4186,8 +4187,8 @@ $A7:C398 A9 6C 97    LDA #$976C             ;\
 $A7:C39B 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Kraid instruction list pointer = $9764 + 8 (dying)
 $A7:C39E AD 64 97    LDA $9764  [$A7:9764]  ;\
 $A7:C3A1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 25
-$A7:C3A4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A7:C3A7 DA          PHX
+$A7:C3A4 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A7:C3A7 DA          PHX                    ;} Save enemy index
 $A7:C3A8 AD 06 11    LDA $1106  [$7E:1106]  ;\
 $A7:C3AB 29 FF BF    AND #$BFFF             ;} Set Kraid good fingernail to not respawn or be solid to Samus
 $A7:C3AE 8D 06 11    STA $1106  [$7E:1106]  ;/
@@ -4209,8 +4210,8 @@ $A7:C3DE 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
 $A7:C3E2 A9 00 01    LDA #$0100             ;\
 $A7:C3E5 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid bottom lint
 $A7:C3E8 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
-$A7:C3EC 68          PLA
-$A7:C3ED 8D 54 0E    STA $0E54  [$7E:0E54]
+$A7:C3EC 68          PLA                    ;\
+$A7:C3ED 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Restore enemy index
 $A7:C3F0 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A7:C3F4             dx 05, 1B, B7BF        ;} Spawn PLM to crumble spike floor
 $A7:C3F8 6B          RTL
@@ -4277,7 +4278,7 @@ $A7:C464 BD 00 00    LDA $0000,x            ;} If [[Kraid instruction list point
 $A7:C467 10 07       BPL $07    [$C470]     ;/
 $A7:C469 A9 00 00    LDA #$0000             ;\
 $A7:C46C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 0
-$A7:C46F 60          RTS
+$A7:C46F 60          RTS                    ; Return
 
 $A7:C470 8D AC 0F    STA $0FAC  [$7E:0FAC]  ; Kraid instruction timer = [[Kraid instruction list pointer]]
 $A7:C473 8A          TXA                    ;\
@@ -4340,7 +4341,7 @@ $A7:C4D7 8D 04 06    STA $0604  [$7E:0604]  ;/
 $A7:C4DA A9 37 C5    LDA #$C537             ;\
 $A7:C4DD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = Kraid sinks through floor
 $A7:C4E0 A9 2B 00    LDA #$002B             ;\
-$A7:C4E3 8F 00 90 7E STA $7E9000[$7E:9000]  ;} $7E:9000 = 2Bh
+$A7:C4E3 8F 00 90 7E STA $7E9000[$7E:9000]  ;} Kraid death sequence quake sound timer = 2Bh
 $A7:C4E7 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A7:C4EA 09 00 80    ORA #$8000             ;} Set Kraid to not hitbox solid to Samus
 $A7:C4ED 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
@@ -4365,13 +4366,13 @@ $A7:C51A 4C B6 C8    JMP $C8B6  [$A7:C8B6]  ; Update BG2 tilemap bottom half
 ;;; $C51D: Play sound every half second ;;;
 {
 $A7:C51D AF 00 90 7E LDA $7E9000[$7E:9000]  ;\
-$A7:C521 3A          DEC A                  ;} Decrement $7E:9000
+$A7:C521 3A          DEC A                  ;} Decrement Kraid death sequence quake sound timer
 $A7:C522 8F 00 90 7E STA $7E9000[$7E:9000]  ;/
-$A7:C526 D0 0E       BNE $0E    [$C536]     ; If [$7E:9000] = 0:
+$A7:C526 D0 0E       BNE $0E    [$C536]     ; If [Kraid death sequence quake sound timer] = 0:
 $A7:C528 A9 1E 00    LDA #$001E             ;\
 $A7:C52B 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 1Eh, sound library 3, max queued sounds allowed = 6 (Kraid's earthquake)
 $A7:C52F A9 1E 00    LDA #$001E             ;\
-$A7:C532 8F 00 90 7E STA $7E9000[$7E:9000]  ;} $7E:9000 = 30
+$A7:C532 8F 00 90 7E STA $7E9000[$7E:9000]  ;} Kraid death sequence quake sound timer = 30
 
 $A7:C536 60          RTS
 }
@@ -4582,7 +4583,7 @@ $A7:C71B C2 20       REP #$20
 $A7:C71D A2 FE 07    LDX #$07FE             ;\
 $A7:C720 A9 38 03    LDA #$0338             ;|
                                             ;|
-$A7:C723 9F 00 20 7E STA $7E2000,x[$7E:27FE];} $7E:2000..27FF = 0338h
+$A7:C723 9F 00 20 7E STA $7E2000,x[$7E:27FE];} $7E:2000..27FF = 338h
 $A7:C727 CA          DEX                    ;|
 $A7:C728 CA          DEX                    ;|
 $A7:C729 10 F8       BPL $F8    [$C723]     ;/
@@ -4727,7 +4728,7 @@ $A7:C831 9F 28 D8 7E STA $7ED828,x[$7E:D828];} Set Kraid as dead
 $A7:C835 A9 43 C8    LDA #$C843             ;\
 $A7:C838 8D A8 0F    STA $0FA8  [$80:0FA8]  ;} Kraid function = set enemy properties to dead - Kraid was alive
 
-$A7:C83B 6B          RTL
+$A7:C83B 6B          RTL                    ; Return
 
 ; BRANCH_KRAID_IS_DEAD
 $A7:C83C A9 51 C8    LDA #$C851             ;\ Else (Kraid is dead):
@@ -4855,7 +4856,7 @@ $A7:C8EC A9 02 C9    LDA #$C902             ;\
 $A7:C8EF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Kraid function = spawn random earthquake projectiles every 8 frames
 $A7:C8F2 A9 60 00    LDA #$0060             ;\
 $A7:C8F5 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Kraid function timer = 60h
-$A7:C8F8 6B          RTL
+$A7:C8F8 6B          RTL                    ; Return
 
 $A7:C8F9 29 0F 00    AND #$000F             ;\ Else ([Kraid function timer] != 0):
 $A7:C8FC D0 03       BNE $03    [$C901]     ;} If [Kraid function timer] is a multiple of 10h:
@@ -4876,7 +4877,7 @@ $A7:C90E A9 24 C9    LDA #$C924             ;\
 $A7:C911 8D A8 0F    STA $0FA8  [$82:0FA8]  ;} Kraid function = raise Kraid
 $A7:C914 A9 20 01    LDA #$0120             ;\
 $A7:C917 8D B2 0F    STA $0FB2  [$82:0FB2]  ;} Kraid function timer = 120h
-$A7:C91A 6B          RTL
+$A7:C91A 6B          RTL                    ; Return
 
 $A7:C91B 29 07 00    AND #$0007             ;\ Else ([Kraid function timer] != 0):
 $A7:C91E D0 03       BNE $03    [$C923]     ;} If [Kraid function timer] is a multiple of 8
@@ -8113,7 +8114,7 @@ $A7:E8C8             dx 0001,F20A,
 }
 
 
-;;; $E8CE: Instruction list - yyyy ;;;
+;;; $E8CE: Instruction list - initial ;;;
 {
 $A7:E8CE             dx 0008,F107,
                         80ED,E8CE   ; Go to $E8CE
@@ -8137,34 +8138,35 @@ $A7:E8DA             dx 0008,F107,
 }
 
 
-$A7:E900             dw FFFD
-$A7:E902             dw 0000
-$A7:E904             dw FFFC
-$A7:E906             dw 0000
-$A7:E908             dw 0002
-$A7:E90A             dw 0000
-$A7:E90C             dw FFFE
-$A7:E90E             dw 0000
-$A7:E910             dw 0040
+;;; $E900: Etecoon constants ;;;
+{
+$A7:E900             dw FFFD,0000 ; Y velocity
+$A7:E904             dw FFFC,0000 ; Y velocity
+
+$A7:E908             dw 0002,0000 ; X velocity - right
+$A7:E90C             dw FFFE,0000 ; X velocity - left
+
+$A7:E910             dw 0040 ; Samus proximity threshold
+}
 
 
 ;;; $E912: Initialisation AI - enemy $E5BF (etecoon) ;;;
 {
 $A7:E912 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A7:E915 BD 86 0F    LDA $0F86,x[$7E:1186]
-$A7:E918 09 00 20    ORA #$2000
-$A7:E91B 9D 86 0F    STA $0F86,x[$7E:1186]
-$A7:E91E A9 4D 80    LDA #$804D
-$A7:E921 9D 8E 0F    STA $0F8E,x[$7E:118E]
-$A7:E924 A9 01 00    LDA #$0001
-$A7:E927 9D 94 0F    STA $0F94,x[$7E:1194]
-$A7:E92A 9E 90 0F    STZ $0F90,x[$7E:1190]
-$A7:E92D A9 CE E8    LDA #$E8CE
-$A7:E930 9D 92 0F    STA $0F92,x[$7E:1192]
-$A7:E933 A9 AF E9    LDA #$E9AF
-$A7:E936 9D B2 0F    STA $0FB2,x[$7E:11B2]
-$A7:E939 A9 FF FF    LDA #$FFFF
-$A7:E93C 9D B0 0F    STA $0FB0,x[$7E:11B0]
+$A7:E915 BD 86 0F    LDA $0F86,x[$7E:1186]  ;\
+$A7:E918 09 00 20    ORA #$2000             ;} Set enemy to process instructions
+$A7:E91B 9D 86 0F    STA $0F86,x[$7E:1186]  ;/
+$A7:E91E A9 4D 80    LDA #$804D             ;\
+$A7:E921 9D 8E 0F    STA $0F8E,x[$7E:118E]  ;} Enemy spritemap pointer = $804D
+$A7:E924 A9 01 00    LDA #$0001             ;\
+$A7:E927 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
+$A7:E92A 9E 90 0F    STZ $0F90,x[$7E:1190]  ; Enemy timer = 0
+$A7:E92D A9 CE E8    LDA #$E8CE             ;\
+$A7:E930 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $E8CE
+$A7:E933 A9 AF E9    LDA #$E9AF             ;\
+$A7:E936 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $E9AF
+$A7:E939 A9 FF FF    LDA #$FFFF             ;\
+$A7:E93C 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy function timer = -1
 $A7:E93F 6B          RTL
 }
 
@@ -8172,39 +8174,41 @@ $A7:E93F 6B          RTL
 ;;; $E940: Main AI - enemy $E5BF (etecoon) ;;;
 {
 $A7:E940 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A7:E943 BD B6 0F    LDA $0FB6,x[$7E:11B6]
-$A7:E946 89 00 FF    BIT #$FF00
-$A7:E949 F0 09       BEQ $09    [$E954]
-$A7:E94B 38          SEC
-$A7:E94C E9 00 01    SBC #$0100
-$A7:E94F 9D B6 0F    STA $0FB6,x
-$A7:E952 80 03       BRA $03    [$E957]
+$A7:E943 BD B6 0F    LDA $0FB6,x[$7E:11B6]  ;\
+$A7:E946 89 00 FF    BIT #$FF00             ;} If [enemy $0FB7] != 0:
+$A7:E949 F0 09       BEQ $09    [$E954]     ;/
+$A7:E94B 38          SEC                    ;\
+$A7:E94C E9 00 01    SBC #$0100             ;} Decrement enemy $0FB7
+$A7:E94F 9D B6 0F    STA $0FB6,x            ;/
+$A7:E952 80 03       BRA $03    [$E957]     ; Return
 
-$A7:E954 7C B2 0F    JMP ($0FB2,x)[$A7:E9AF]
+$A7:E954 7C B2 0F    JMP ($0FB2,x)[$A7:E9AF]; Go to [enemy function]
 
 $A7:E957 6B          RTL
 }
 
 
-;;; $E958:  ;;;
+;;; $E958: Freeze etecoon if quake active ;;;
 {
-$A7:E958 AD 40 18    LDA $1840  [$7E:1840]
-$A7:E95B F0 16       BEQ $16    [$E973]
-$A7:E95D BD B6 0F    LDA $0FB6,x
-$A7:E960 29 FF 00    AND #$00FF
-$A7:E963 09 00 80    ORA #$8000
-$A7:E966 9D B6 0F    STA $0FB6,x
-$A7:E969 BD 94 0F    LDA $0F94,x
-$A7:E96C 18          CLC
-$A7:E96D 69 80 00    ADC #$0080
-$A7:E970 9D 94 0F    STA $0F94,x
+$A7:E958 AD 40 18    LDA $1840  [$7E:1840]  ;\
+$A7:E95B F0 16       BEQ $16    [$E973]     ;} If [earthquake timer] != 0:
+$A7:E95D BD B6 0F    LDA $0FB6,x            ;\
+$A7:E960 29 FF 00    AND #$00FF             ;|
+$A7:E963 09 00 80    ORA #$8000             ;} Enemy $0FB7 = 80h
+$A7:E966 9D B6 0F    STA $0FB6,x            ;/
+$A7:E969 BD 94 0F    LDA $0F94,x            ;\
+$A7:E96C 18          CLC                    ;|
+$A7:E96D 69 80 00    ADC #$0080             ;} Enemy instruction timer += 80h
+$A7:E970 9D 94 0F    STA $0F94,x            ;/
 
 $A7:E973 60          RTS
 }
 
 
-;;; $E974:  ;;;
+;;; $E974: Etecoon horizontal movement ;;;
 {
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 $A7:E974 BD AC 0F    LDA $0FAC,x            ;\
 $A7:E977 85 14       STA $14    [$7E:0014]  ;|
 $A7:E979 BD AE 0F    LDA $0FAE,x            ;} Move enemy right by [enemy X velocity]
@@ -8214,90 +8218,93 @@ $A7:E982 60          RTS
 }
 
 
-;;; $E983:  ;;;
+;;; $E983: Etecoon vertical movement ;;;
 {
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 $A7:E983 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
 $A7:E986 85 14       STA $14    [$7E:0014]  ;|
 $A7:E988 BD AA 0F    LDA $0FAA,x[$7E:11AA]  ;} $14.$12 = [enemy Y velocity]
 $A7:E98B 85 12       STA $12    [$7E:0012]  ;/
-$A7:E98D BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$A7:E990 C9 05 00    CMP #$0005
-$A7:E993 10 15       BPL $15    [$E9AA]
-$A7:E995 BD AA 0F    LDA $0FAA,x[$7E:11AA]
-$A7:E998 18          CLC
-$A7:E999 6F 32 0B 00 ADC $000B32[$7E:0B32]
-$A7:E99D 9D AA 0F    STA $0FAA,x[$7E:11AA]
-$A7:E9A0 BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$A7:E9A3 6F 34 0B 00 ADC $000B34[$7E:0B34]
-$A7:E9A7 9D A8 0F    STA $0FA8,x[$7E:11A8]
+$A7:E98D BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
+$A7:E990 C9 05 00    CMP #$0005             ;} If [enemy Y velocity] < 5:
+$A7:E993 10 15       BPL $15    [$E9AA]     ;/
+$A7:E995 BD AA 0F    LDA $0FAA,x[$7E:11AA]  ;\
+$A7:E998 18          CLC                    ;|
+$A7:E999 6F 32 0B 00 ADC $000B32[$7E:0B32]  ;|
+$A7:E99D 9D AA 0F    STA $0FAA,x[$7E:11AA]  ;} Enemy Y velocity += [Samus Y acceleration]
+$A7:E9A0 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;|
+$A7:E9A3 6F 34 0B 00 ADC $000B34[$7E:0B34]  ;|
+$A7:E9A7 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;/
 
 $A7:E9AA 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A7:E9AE 60          RTS
 }
 
 
-;;; $E9AF:  ;;;
+;;; $E9AF: Etecoon function - initial ;;;
 {
-$A7:E9AF AD 97 07    LDA $0797  [$7E:0797]
-$A7:E9B2 F0 01       BEQ $01    [$E9B5]
-$A7:E9B4 6B          RTL
+$A7:E9AF AD 97 07    LDA $0797  [$7E:0797]  ;\
+$A7:E9B2 F0 01       BEQ $01    [$E9B5]     ;} If [door transition flag] != 0:
+$A7:E9B4 6B          RTL                    ; Return
 
-$A7:E9B5 BD B0 0F    LDA $0FB0,x[$7E:11B0]
-$A7:E9B8 10 2C       BPL $2C    [$E9E6]
+$A7:E9B5 BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
+$A7:E9B8 10 2C       BPL $2C    [$E9E6]     ;} If [enemy function timer] >= 0: go to BRANCH_POSITIVE
 $A7:E9BA A9 80 00    LDA #$0080             ;\
 $A7:E9BD 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
 $A7:E9C1 A8          TAY                    ;} If Samus is not within 80h pixels rows of enemy: return
 $A7:E9C2 F0 3B       BEQ $3B    [$E9FF]     ;/
-$A7:E9C4 BD B6 0F    LDA $0FB6,x[$7E:11B6]
-$A7:E9C7 89 03 00    BIT #$0003
-$A7:E9CA D0 07       BNE $07    [$E9D3]
+$A7:E9C4 BD B6 0F    LDA $0FB6,x[$7E:11B6]  ;\
+$A7:E9C7 89 03 00    BIT #$0003             ;} If [enemy $0FB6] & 3 = 0:
+$A7:E9CA D0 07       BNE $07    [$E9D3]     ;/
 $A7:E9CC A9 35 00    LDA #$0035             ;\
 $A7:E9CF 22 A3 90 80 JSL $8090A3[$80:90A3]  ;} Queue sound 35h, sound library 2, max queued sounds allowed = 15 (etecoon's theme)
 
-$A7:E9D3 A9 01 00    LDA #$0001
-$A7:E9D6 9D 94 0F    STA $0F94,x[$7E:1194]
-$A7:E9D9 A9 D6 E8    LDA #$E8D6
-$A7:E9DC 9D 92 0F    STA $0F92,x[$7E:1192]
-$A7:E9DF A9 00 01    LDA #$0100
-$A7:E9E2 9D B0 0F    STA $0FB0,x[$7E:11B0]
-$A7:E9E5 6B          RTL
+$A7:E9D3 A9 01 00    LDA #$0001             ;\
+$A7:E9D6 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
+$A7:E9D9 A9 D6 E8    LDA #$E8D6             ;\
+$A7:E9DC 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $E8D6
+$A7:E9DF A9 00 01    LDA #$0100             ;\
+$A7:E9E2 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy function timer = 100h
+$A7:E9E5 6B          RTL                    ; Return
 
-$A7:E9E6 DE B0 0F    DEC $0FB0,x[$7E:11B0]
-$A7:E9E9 F0 02       BEQ $02    [$E9ED]
-$A7:E9EB 10 12       BPL $12    [$E9FF]
+; BRANCH_POSITIVE
+$A7:E9E6 DE B0 0F    DEC $0FB0,x[$7E:11B0]  ; Decrement enemy function timer
+$A7:E9E9 F0 02       BEQ $02    [$E9ED]     ;\
+$A7:E9EB 10 12       BPL $12    [$E9FF]     ;} If [enemy function timer] > 0: return
 
-$A7:E9ED A9 54 E8    LDA #$E854
-$A7:E9F0 9D 92 0F    STA $0F92,x[$7E:1192]
-$A7:E9F3 A9 00 EA    LDA #$EA00
-$A7:E9F6 9D B2 0F    STA $0FB2,x[$7E:11B2]
-$A7:E9F9 A9 0B 00    LDA #$000B
-$A7:E9FC 9D B0 0F    STA $0FB0,x[$7E:11B0]
+$A7:E9ED A9 54 E8    LDA #$E854             ;\
+$A7:E9F0 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $E854
+$A7:E9F3 A9 00 EA    LDA #$EA00             ;\
+$A7:E9F6 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $EA00
+$A7:E9F9 A9 0B 00    LDA #$000B             ;\
+$A7:E9FC 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy function timer = Bh
 
 $A7:E9FF 6B          RTL
 }
 
 
-;;; $EA00:  ;;;
+;;; $EA00: Etecoon function - start hop ;;;
 {
-$A7:EA00 DE B0 0F    DEC $0FB0,x[$7E:11B0]
-$A7:EA03 F0 02       BEQ $02    [$EA07]
-$A7:EA05 10 2F       BPL $2F    [$EA36]
+$A7:EA00 DE B0 0F    DEC $0FB0,x[$7E:11B0]  ; Decrement enemy function timer
+$A7:EA03 F0 02       BEQ $02    [$EA07]     ;\
+$A7:EA05 10 2F       BPL $2F    [$EA36]     ;} If [enemy function timer] > 0: return
 
-$A7:EA07 AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EA0A 9D A8 0F    STA $0FA8,x[$7E:11A8]
-$A7:EA0D AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EA10 9D AA 0F    STA $0FAA,x[$7E:11AA]
-$A7:EA13 BD 92 0F    LDA $0F92,x[$7E:1192]
-$A7:EA16 1A          INC A
-$A7:EA17 1A          INC A
-$A7:EA18 9D 92 0F    STA $0F92,x[$7E:1192]
-$A7:EA1B A9 01 00    LDA #$0001
-$A7:EA1E 9D 94 0F    STA $0F94,x[$7E:1194]
-$A7:EA21 A9 37 EA    LDA #$EA37
-$A7:EA24 9D B2 0F    STA $0FB2,x[$7E:11B2]
-$A7:EA27 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A7:EA2A C9 00 01    CMP #$0100
-$A7:EA2D 30 07       BMI $07    [$EA36]
+$A7:EA07 AD 00 E9    LDA $E900  [$A7:E900]  ;\
+$A7:EA0A 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;|
+$A7:EA0D AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EA10 9D AA 0F    STA $0FAA,x[$7E:11AA]  ;/
+$A7:EA13 BD 92 0F    LDA $0F92,x[$7E:1192]  ;\
+$A7:EA16 1A          INC A                  ;|
+$A7:EA17 1A          INC A                  ;} Enemy instruction list pointer += 2
+$A7:EA18 9D 92 0F    STA $0F92,x[$7E:1192]  ;/
+$A7:EA1B A9 01 00    LDA #$0001             ;\
+$A7:EA1E 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
+$A7:EA21 A9 37 EA    LDA #$EA37             ;\
+$A7:EA24 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $EA37
+$A7:EA27 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A7:EA2A C9 00 01    CMP #$0100             ;} If [Samus X position] >= 100h:
+$A7:EA2D 30 07       BMI $07    [$EA36]     ;/
 $A7:EA2F A9 33 00    LDA #$0033             ;\
 $A7:EA32 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 33h, sound library 2, max queued sounds allowed = 6 (etecoon cry)
 
@@ -8305,255 +8312,256 @@ $A7:EA36 6B          RTL
 }
 
 
-;;; $EA37:  ;;;
+;;; $EA37: Etecoon function - hopping ;;;
 {
-$A7:EA37 20 83 E9    JSR $E983  [$A7:E983]
-$A7:EA3A B0 01       BCS $01    [$EA3D]
-$A7:EA3C 6B          RTL
+$A7:EA37 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
+$A7:EA3A B0 01       BCS $01    [$EA3D]     ; If no collision:
+$A7:EA3C 6B          RTL                    ; Return
 
-$A7:EA3D BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$A7:EA40 10 13       BPL $13    [$EA55]
-$A7:EA42 9E A8 0F    STZ $0FA8,x
-$A7:EA45 9E AA 0F    STZ $0FAA,x
-$A7:EA48 A9 03 00    LDA #$0003
-$A7:EA4B 9D 94 0F    STA $0F94,x
-$A7:EA4E A9 62 E8    LDA #$E862
-$A7:EA51 9D 92 0F    STA $0F92,x
-$A7:EA54 6B          RTL
+$A7:EA3D BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
+$A7:EA40 10 13       BPL $13    [$EA55]     ;} If [enemy Y velocity] < 0:
+$A7:EA42 9E A8 0F    STZ $0FA8,x            ;\
+$A7:EA45 9E AA 0F    STZ $0FAA,x            ;} Enemy Y velocity = 0.0
+$A7:EA48 A9 03 00    LDA #$0003             ;\
+$A7:EA4B 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 3
+$A7:EA4E A9 62 E8    LDA #$E862             ;\
+$A7:EA51 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E862
+$A7:EA54 6B          RTL                    ; Return
 
 $A7:EA55 A9 40 00    LDA #$0040             ;\
 $A7:EA58 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
-$A7:EA5C A8          TAY                    ;} If Samus is not within 40h pixels rows of enemy: go to BRANCH_EA9C
+$A7:EA5C A8          TAY                    ;} If Samus is not within 40h pixels rows of enemy: go to BRANCH_HOP_MORE
 $A7:EA5D F0 3D       BEQ $3D    [$EA9C]     ;/
 $A7:EA5F AD 10 E9    LDA $E910  [$A7:E910]  ;\
 $A7:EA62 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
-$A7:EA66 A8          TAY                    ;} If Samus is not within 40h pixel columns of enemy: go to BRANCH_EA9C
+$A7:EA66 A8          TAY                    ;} If Samus is not within 40h pixel columns of enemy: go to BRANCH_HOP_MORE
 $A7:EA67 F0 33       BEQ $33    [$EA9C]     ;/
 $A7:EA69 22 29 AE A0 JSL $A0AE29[$A0:AE29]  ; Determine direction of Samus from enemy
-$A7:EA6D C9 05 00    CMP #$0005
-$A7:EA70 10 0B       BPL $0B    [$EA7D]
-$A7:EA72 A9 1E E8    LDA #$E81E
-$A7:EA75 9D 92 0F    STA $0F92,x
-$A7:EA78 9E B4 0F    STZ $0FB4,x
+$A7:EA6D C9 05 00    CMP #$0005             ;\
+$A7:EA70 10 0B       BPL $0B    [$EA7D]     ;} If direction is not (down/up) left:
+$A7:EA72 A9 1E E8    LDA #$E81E             ;\
+$A7:EA75 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E81E
+$A7:EA78 9E B4 0F    STZ $0FB4,x            ; Enemy $0FB4 = 0
 $A7:EA7B 80 0C       BRA $0C    [$EA89]
 
-$A7:EA7D A9 76 E8    LDA #$E876
-$A7:EA80 9D 92 0F    STA $0F92,x
-$A7:EA83 A9 01 00    LDA #$0001
-$A7:EA86 9D B4 0F    STA $0FB4,x
+$A7:EA7D A9 76 E8    LDA #$E876             ;\ Else (direction is (down/up) left):
+$A7:EA80 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E876
+$A7:EA83 A9 01 00    LDA #$0001             ;\
+$A7:EA86 9D B4 0F    STA $0FB4,x            ;} Enemy $0FB4 = 1
 
-$A7:EA89 A9 20 00    LDA #$0020
-$A7:EA8C 9D B0 0F    STA $0FB0,x
-$A7:EA8F A9 01 00    LDA #$0001
-$A7:EA92 9D 94 0F    STA $0F94,x
-$A7:EA95 A9 B5 EA    LDA #$EAB5
-$A7:EA98 9D B2 0F    STA $0FB2,x
-$A7:EA9B 6B          RTL
+$A7:EA89 A9 20 00    LDA #$0020             ;\
+$A7:EA8C 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = 20h
+$A7:EA8F A9 01 00    LDA #$0001             ;\
+$A7:EA92 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EA95 A9 B5 EA    LDA #$EAB5             ;\
+$A7:EA98 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EAB5
+$A7:EA9B 6B          RTL                    ; Return
 
-; BRANCH_EA9C
-$A7:EA9C A9 0B 00    LDA #$000B
-$A7:EA9F 9D B0 0F    STA $0FB0,x[$7E:11B0]
-$A7:EAA2 A9 00 EA    LDA #$EA00
-$A7:EAA5 9D B2 0F    STA $0FB2,x[$7E:11B2]
-$A7:EAA8 A9 01 00    LDA #$0001
-$A7:EAAB 9D 94 0F    STA $0F94,x[$7E:1194]
-$A7:EAAE A9 54 E8    LDA #$E854
-$A7:EAB1 9D 92 0F    STA $0F92,x[$7E:1192]
+; BRANCH_HOP_MORE
+$A7:EA9C A9 0B 00    LDA #$000B             ;\
+$A7:EA9F 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy function timer = Bh (hop cooldown)
+$A7:EAA2 A9 00 EA    LDA #$EA00             ;\
+$A7:EAA5 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $EA00 (start hop)
+$A7:EAA8 A9 01 00    LDA #$0001             ;\
+$A7:EAAB 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
+$A7:EAAE A9 54 E8    LDA #$E854             ;\
+$A7:EAB1 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $E854
 $A7:EAB4 6B          RTL
 }
 
 
-;;; $EAB5:  ;;;
+;;; $EAB5: Etecoon function ;;;
 {
-$A7:EAB5 DE B0 0F    DEC $0FB0,x
-$A7:EAB8 F0 02       BEQ $02    [$EABC]
-$A7:EABA 10 45       BPL $45    [$EB01]
+$A7:EAB5 DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
+$A7:EAB8 F0 02       BEQ $02    [$EABC]     ;\
+$A7:EABA 10 45       BPL $45    [$EB01]     ;} If [enemy function timer] > 0: return
 
-$A7:EABC BD 92 0F    LDA $0F92,x
-$A7:EABF 1A          INC A
-$A7:EAC0 1A          INC A
-$A7:EAC1 9D 92 0F    STA $0F92,x
-$A7:EAC4 A9 01 00    LDA #$0001
-$A7:EAC7 9D 94 0F    STA $0F94,x
-$A7:EACA BD B4 0F    LDA $0FB4,x
-$A7:EACD F0 14       BEQ $14    [$EAE3]
-$A7:EACF AD 08 E9    LDA $E908  [$A7:E908]
-$A7:EAD2 9D AC 0F    STA $0FAC,x
-$A7:EAD5 AD 0A E9    LDA $E90A  [$A7:E90A]
-$A7:EAD8 9D AE 0F    STA $0FAE,x
-$A7:EADB A9 2C EB    LDA #$EB2C
-$A7:EADE 9D B2 0F    STA $0FB2,x
+$A7:EABC BD 92 0F    LDA $0F92,x            ;\
+$A7:EABF 1A          INC A                  ;|
+$A7:EAC0 1A          INC A                  ;} Enemy instruction list pointer += 2
+$A7:EAC1 9D 92 0F    STA $0F92,x            ;/
+$A7:EAC4 A9 01 00    LDA #$0001             ;\
+$A7:EAC7 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EACA BD B4 0F    LDA $0FB4,x            ;\
+$A7:EACD F0 14       BEQ $14    [$EAE3]     ;} If [enemy $0FB4] != 0:
+$A7:EACF AD 08 E9    LDA $E908  [$A7:E908]  ;\
+$A7:EAD2 9D AC 0F    STA $0FAC,x            ;|
+$A7:EAD5 AD 0A E9    LDA $E90A  [$A7:E90A]  ;} Enemy X velocity = 2.0
+$A7:EAD8 9D AE 0F    STA $0FAE,x            ;/
+$A7:EADB A9 2C EB    LDA #$EB2C             ;\
+$A7:EADE 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EB2C
 $A7:EAE1 80 12       BRA $12    [$EAF5]
 
-$A7:EAE3 AD 0C E9    LDA $E90C  [$A7:E90C]
-$A7:EAE6 9D AC 0F    STA $0FAC,x
-$A7:EAE9 AD 0E E9    LDA $E90E  [$A7:E90E]
-$A7:EAEC 9D AE 0F    STA $0FAE,x
-$A7:EAEF A9 02 EB    LDA #$EB02
-$A7:EAF2 9D B2 0F    STA $0FB2,x
+$A7:EAE3 AD 0C E9    LDA $E90C  [$A7:E90C]  ;\ Else ([enemy $0FB4] = 0):
+$A7:EAE6 9D AC 0F    STA $0FAC,x            ;|
+$A7:EAE9 AD 0E E9    LDA $E90E  [$A7:E90E]  ;} Enemy X velocity = -2.0
+$A7:EAEC 9D AE 0F    STA $0FAE,x            ;/
+$A7:EAEF A9 02 EB    LDA #$EB02             ;\
+$A7:EAF2 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EB02
 
-$A7:EAF5 AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EAF8 9D A8 0F    STA $0FA8,x
-$A7:EAFB AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EAFE 9D AA 0F    STA $0FAA,x
+$A7:EAF5 AD 00 E9    LDA $E900  [$A7:E900]  ;\
+$A7:EAF8 9D A8 0F    STA $0FA8,x            ;|
+$A7:EAFB AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EAFE 9D AA 0F    STA $0FAA,x            ;/
 
 $A7:EB01 6B          RTL
 }
 
 
-;;; $EB02:  ;;;
+;;; $EB02: Etecoon function ;;;
 {
-$A7:EB02 20 74 E9    JSR $E974  [$A7:E974]
-$A7:EB05 90 24       BCC $24    [$EB2B]
-$A7:EB07 AD 08 E9    LDA $E908  [$A7:E908]
-$A7:EB0A 9D AC 0F    STA $0FAC,x
-$A7:EB0D AD 0A E9    LDA $E90A  [$A7:E90A]
-$A7:EB10 9D AE 0F    STA $0FAE,x
-$A7:EB13 A9 2C EB    LDA #$EB2C
-$A7:EB16 9D B2 0F    STA $0FB2,x
-$A7:EB19 A9 01 00    LDA #$0001
-$A7:EB1C 9D 94 0F    STA $0F94,x
-$A7:EB1F A9 80 E8    LDA #$E880
-$A7:EB22 9D 92 0F    STA $0F92,x
-$A7:EB25 A9 01 00    LDA #$0001
-$A7:EB28 9D B4 0F    STA $0FB4,x
+$A7:EB02 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:EB05 90 24       BCC $24    [$EB2B]     ; If collision:
+$A7:EB07 AD 08 E9    LDA $E908  [$A7:E908]  ;\
+$A7:EB0A 9D AC 0F    STA $0FAC,x            ;|
+$A7:EB0D AD 0A E9    LDA $E90A  [$A7:E90A]  ;} Enemy X velocity = 2.0
+$A7:EB10 9D AE 0F    STA $0FAE,x            ;/
+$A7:EB13 A9 2C EB    LDA #$EB2C             ;\
+$A7:EB16 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EB2C
+$A7:EB19 A9 01 00    LDA #$0001             ;\
+$A7:EB1C 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EB1F A9 80 E8    LDA #$E880             ;\
+$A7:EB22 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E880
+$A7:EB25 A9 01 00    LDA #$0001             ;\
+$A7:EB28 9D B4 0F    STA $0FB4,x            ;} Enemy $0FB4 = 1
 
 $A7:EB2B 6B          RTL
 }
 
 
-;;; $EB2C:  ;;;
+;;; $EB2C: Etecoon function ;;;
 {
 $A7:EB2C A9 20 00    LDA #$0020             ;\
 $A7:EB2F 85 14       STA $14    [$7E:0014]  ;} $14.$12 = 20h.0
 $A7:EB31 64 12       STZ $12    [$7E:0012]  ;/
 $A7:EB33 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]  ; Check for horizontal "solid" block collision
 $A7:EB37 90 13       BCC $13    [$EB4C]     ; If collision:
-$A7:EB39 A9 01 00    LDA #$0001
-$A7:EB3C 9D 94 0F    STA $0F94,x
-$A7:EB3F A9 98 E8    LDA #$E898
-$A7:EB42 9D 92 0F    STA $0F92,x
-$A7:EB45 A9 50 EB    LDA #$EB50
-$A7:EB48 9D B2 0F    STA $0FB2,x
-$A7:EB4B 6B          RTL
+$A7:EB39 A9 01 00    LDA #$0001             ;\
+$A7:EB3C 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EB3F A9 98 E8    LDA #$E898             ;\
+$A7:EB42 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E898
+$A7:EB45 A9 50 EB    LDA #$EB50             ;\
+$A7:EB48 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EB50
+$A7:EB4B 6B          RTL                    ; Return
 
-$A7:EB4C 20 74 E9    JSR $E974  [$A7:E974]
+$A7:EB4C 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
 $A7:EB4F 6B          RTL
 }
 
 
-;;; $EB50:  ;;;
+;;; $EB50: Etecoon function ;;;
 {
-$A7:EB50 20 58 E9    JSR $E958  [$A7:E958]
-$A7:EB53 20 74 E9    JSR $E974  [$A7:E974]
-$A7:EB56 90 3E       BCC $3E    [$EB96]
-$A7:EB58 BD B4 0F    LDA $0FB4,x
-$A7:EB5B D0 0E       BNE $0E    [$EB6B]
-$A7:EB5D A9 C8 E8    LDA #$E8C8
-$A7:EB60 9D 92 0F    STA $0F92,x
-$A7:EB63 A9 01 00    LDA #$0001
-$A7:EB66 9D B4 0F    STA $0FB4,x
+$A7:EB50 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
+$A7:EB53 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:EB56 90 3E       BCC $3E    [$EB96]     ; If no collision: go to BRANCH_EB96
+$A7:EB58 BD B4 0F    LDA $0FB4,x            ;\
+$A7:EB5B D0 0E       BNE $0E    [$EB6B]     ;} If [enemy $0FB4] = 0:
+$A7:EB5D A9 C8 E8    LDA #$E8C8             ;\
+$A7:EB60 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E8C8
+$A7:EB63 A9 01 00    LDA #$0001             ;\
+$A7:EB66 9D B4 0F    STA $0FB4,x            ;} Enemy $0FB4 = 1
 $A7:EB69 80 09       BRA $09    [$EB74]
 
-$A7:EB6B A9 70 E8    LDA #$E870
-$A7:EB6E 9D 92 0F    STA $0F92,x
-$A7:EB71 9E B4 0F    STZ $0FB4,x
+$A7:EB6B A9 70 E8    LDA #$E870             ;\ Else ([enemy $0FB4] != 0):
+$A7:EB6E 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E870
+$A7:EB71 9E B4 0F    STZ $0FB4,x            ; Enemy $0FB4 = 0
 
-$A7:EB74 A9 01 00    LDA #$0001
-$A7:EB77 9D 94 0F    STA $0F94,x
-$A7:EB7A A9 CD EB    LDA #$EBCD
-$A7:EB7D 9D B2 0F    STA $0FB2,x
-$A7:EB80 A9 08 00    LDA #$0008
-$A7:EB83 9D B0 0F    STA $0FB0,x
-$A7:EB86 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A7:EB89 C9 00 01    CMP #$0100
-$A7:EB8C 30 07       BMI $07    [$EB95]
+$A7:EB74 A9 01 00    LDA #$0001             ;\
+$A7:EB77 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EB7A A9 CD EB    LDA #$EBCD             ;\
+$A7:EB7D 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EBCD
+$A7:EB80 A9 08 00    LDA #$0008             ;\
+$A7:EB83 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = 8
+$A7:EB86 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A7:EB89 C9 00 01    CMP #$0100             ;} If [Samus X position] >= 100h:
+$A7:EB8C 30 07       BMI $07    [$EB95]     ;/
 $A7:EB8E A9 32 00    LDA #$0032             ;\
 $A7:EB91 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 32h, sound library 2, max queued sounds allowed = 6 (etecoon wall-jump)
 
-$A7:EB95 6B          RTL
+$A7:EB95 6B          RTL                    ; Return
 
-$A7:EB96 20 83 E9    JSR $E983  [$A7:E983]
-$A7:EB99 90 31       BCC $31    [$EBCC]
-$A7:EB9B BD B4 0F    LDA $0FB4,x
-$A7:EB9E D0 08       BNE $08    [$EBA8]
-$A7:EBA0 A9 AC E8    LDA #$E8AC
-$A7:EBA3 9D 92 0F    STA $0F92,x
+; BRANCH_EB96
+$A7:EB96 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
+$A7:EB99 90 31       BCC $31    [$EBCC]     ; If no collision: return
+$A7:EB9B BD B4 0F    LDA $0FB4,x            ;\
+$A7:EB9E D0 08       BNE $08    [$EBA8]     ;} If [enemy $0FB4] = 0:
+$A7:EBA0 A9 AC E8    LDA #$E8AC             ;\
+$A7:EBA3 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E8AC
 $A7:EBA6 80 06       BRA $06    [$EBAE]
 
-$A7:EBA8 A9 54 E8    LDA #$E854
-$A7:EBAB 9D 92 0F    STA $0F92,x
+$A7:EBA8 A9 54 E8    LDA #$E854             ;\ Else ([enemy $0FB4] != 0):
+$A7:EBAB 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E854
 
-$A7:EBAE A9 01 00    LDA #$0001
-$A7:EBB1 9D 94 0F    STA $0F94,x
-$A7:EBB4 A9 0B 00    LDA #$000B
-$A7:EBB7 9D B0 0F    STA $0FB0,x
-$A7:EBBA A9 1B EC    LDA #$EC1B
-$A7:EBBD 9D B2 0F    STA $0FB2,x
-$A7:EBC0 AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EBC3 9D A8 0F    STA $0FA8,x
-$A7:EBC6 AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EBC9 9D AA 0F    STA $0FAA,x
+$A7:EBAE A9 01 00    LDA #$0001             ;\
+$A7:EBB1 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EBB4 A9 0B 00    LDA #$000B             ;\
+$A7:EBB7 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Bh
+$A7:EBBA A9 1B EC    LDA #$EC1B             ;\
+$A7:EBBD 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EC1B
+$A7:EBC0 AD 00 E9    LDA $E900  [$A7:E900]  ;\
+$A7:EBC3 9D A8 0F    STA $0FA8,x            ;|
+$A7:EBC6 AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EBC9 9D AA 0F    STA $0FAA,x            ;/
 
 $A7:EBCC 6B          RTL
 }
 
 
-;;; $EBCD:  ;;;
+;;; $EBCD: Etecoon function ;;;
 {
-$A7:EBCD 20 58 E9    JSR $E958  [$A7:E958]
-$A7:EBD0 DE B0 0F    DEC $0FB0,x
-$A7:EBD3 F0 02       BEQ $02    [$EBD7]
-$A7:EBD5 10 43       BPL $43    [$EC1A]
+$A7:EBCD 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
+$A7:EBD0 DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
+$A7:EBD3 F0 02       BEQ $02    [$EBD7]     ;\
+$A7:EBD5 10 43       BPL $43    [$EC1A]     ;} If [enemy function timer] > 0: return
 
-$A7:EBD7 BD B4 0F    LDA $0FB4,x
-$A7:EBDA F0 14       BEQ $14    [$EBF0]
-$A7:EBDC A9 94 E8    LDA #$E894
-$A7:EBDF 9D 92 0F    STA $0F92,x
-$A7:EBE2 AD 08 E9    LDA $E908  [$A7:E908]
-$A7:EBE5 9D AC 0F    STA $0FAC,x
-$A7:EBE8 AD 0A E9    LDA $E90A  [$A7:E90A]
-$A7:EBEB 9D AE 0F    STA $0FAE,x
+$A7:EBD7 BD B4 0F    LDA $0FB4,x            ;\
+$A7:EBDA F0 14       BEQ $14    [$EBF0]     ;} If [enemy $0FB4] != 0:
+$A7:EBDC A9 94 E8    LDA #$E894             ;\
+$A7:EBDF 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E894
+$A7:EBE2 AD 08 E9    LDA $E908  [$A7:E908]  ;\
+$A7:EBE5 9D AC 0F    STA $0FAC,x            ;|
+$A7:EBE8 AD 0A E9    LDA $E90A  [$A7:E90A]  ;} Enemy X velocity = 2.0
+$A7:EBEB 9D AE 0F    STA $0FAE,x            ;/
 $A7:EBEE 80 12       BRA $12    [$EC02]
 
-$A7:EBF0 A9 3C E8    LDA #$E83C
-$A7:EBF3 9D 92 0F    STA $0F92,x
-$A7:EBF6 AD 0C E9    LDA $E90C  [$A7:E90C]
-$A7:EBF9 9D AC 0F    STA $0FAC,x
-$A7:EBFC AD 0E E9    LDA $E90E  [$A7:E90E]
-$A7:EBFF 9D AE 0F    STA $0FAE,x
+$A7:EBF0 A9 3C E8    LDA #$E83C             ;\ Else ([enemy $0FB4] = 0):
+$A7:EBF3 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E83C
+$A7:EBF6 AD 0C E9    LDA $E90C  [$A7:E90C]  ;\
+$A7:EBF9 9D AC 0F    STA $0FAC,x            ;|
+$A7:EBFC AD 0E E9    LDA $E90E  [$A7:E90E]  ;} Enemy X velocity = -2.0
+$A7:EBFF 9D AE 0F    STA $0FAE,x            ;/
 
-$A7:EC02 A9 01 00    LDA #$0001
-$A7:EC05 9D 94 0F    STA $0F94,x
-$A7:EC08 A9 50 EB    LDA #$EB50
-$A7:EC0B 9D B2 0F    STA $0FB2,x
-$A7:EC0E AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EC11 9D A8 0F    STA $0FA8,x
-$A7:EC14 AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EC17 9D AA 0F    STA $0FAA,x
+$A7:EC02 A9 01 00    LDA #$0001             ;\
+$A7:EC05 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EC08 A9 50 EB    LDA #$EB50             ;\
+$A7:EC0B 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EB50
+$A7:EC0E AD 00 E9    LDA $E900  [$A7:E900]  ;\
+$A7:EC11 9D A8 0F    STA $0FA8,x            ;|
+$A7:EC14 AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EC17 9D AA 0F    STA $0FAA,x            ;/
 
 $A7:EC1A 6B          RTL
 }
 
 
-;;; $EC1B:  ;;;
+;;; $EC1B: Etecoon function ;;;
 {
-$A7:EC1B DE B0 0F    DEC $0FB0,x
-$A7:EC1E F0 02       BEQ $02    [$EC22]
-$A7:EC20 10 1E       BPL $1E    [$EC40]
+$A7:EC1B DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
+$A7:EC1E F0 02       BEQ $02    [$EC22]     ;\
+$A7:EC20 10 1E       BPL $1E    [$EC40]     ;} If [enemy function timer] > 0: return
 
-$A7:EC22 AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EC25 9D A8 0F    STA $0FA8,x
-$A7:EC28 AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EC2B 9D AA 0F    STA $0FAA,x
-$A7:EC2E 9B          TXY
-$A7:EC2F BD B6 0F    LDA $0FB6,x
-$A7:EC32 29 FF 00    AND #$00FF
-$A7:EC35 0A          ASL A
-$A7:EC36 AA          TAX
-$A7:EC37 FC 41 EC    JSR ($EC41,x)
-$A7:EC3A A9 01 00    LDA #$0001
-$A7:EC3D 9D 94 0F    STA $0F94,x
+$A7:EC22 AD 00 E9    LDA $E900  [$A7:E900]  ;\
+$A7:EC25 9D A8 0F    STA $0FA8,x            ;|
+$A7:EC28 AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EC2B 9D AA 0F    STA $0FAA,x            ;/
+$A7:EC2E 9B          TXY                    ; Y = [enemy index]
+$A7:EC2F BD B6 0F    LDA $0FB6,x            ;\
+$A7:EC32 29 FF 00    AND #$00FF             ;|
+$A7:EC35 0A          ASL A                  ;} Execute [$EC41 + [enemy $0FB6] * 2]
+$A7:EC36 AA          TAX                    ;|
+$A7:EC37 FC 41 EC    JSR ($EC41,x)          ;/
+$A7:EC3A A9 01 00    LDA #$0001             ;\
+$A7:EC3D 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 
 $A7:EC40 6B          RTL
 
@@ -8564,14 +8572,14 @@ $A7:EC41             dw EC47, EC61, EC7B
 ;;; $EC47:  ;;;
 {
 $A7:EC47 BB          TYX
-$A7:EC48 A9 97 EC    LDA #$EC97
-$A7:EC4B 9D B2 0F    STA $0FB2,x
-$A7:EC4E A9 28 E8    LDA #$E828
-$A7:EC51 9D 92 0F    STA $0F92,x
-$A7:EC54 AD 0C E9    LDA $E90C  [$A7:E90C]
-$A7:EC57 9D AC 0F    STA $0FAC,x
-$A7:EC5A AD 0E E9    LDA $E90E  [$A7:E90E]
-$A7:EC5D 9D AE 0F    STA $0FAE,x
+$A7:EC48 A9 97 EC    LDA #$EC97             ;\
+$A7:EC4B 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EC97
+$A7:EC4E A9 28 E8    LDA #$E828             ;\
+$A7:EC51 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E828
+$A7:EC54 AD 0C E9    LDA $E90C  [$A7:E90C]  ;\
+$A7:EC57 9D AC 0F    STA $0FAC,x            ;|
+$A7:EC5A AD 0E E9    LDA $E90E  [$A7:E90E]  ;} Enemy X velocity = -2.0
+$A7:EC5D 9D AE 0F    STA $0FAE,x            ;/
 $A7:EC60 60          RTS
 }
 
@@ -8579,14 +8587,14 @@ $A7:EC60 60          RTS
 ;;; $EC61:  ;;;
 {
 $A7:EC61 BB          TYX
-$A7:EC62 A9 BB EC    LDA #$ECBB
-$A7:EC65 9D B2 0F    STA $0FB2,x
-$A7:EC68 A9 80 E8    LDA #$E880
-$A7:EC6B 9D 92 0F    STA $0F92,x
-$A7:EC6E AD 08 E9    LDA $E908  [$A7:E908]
-$A7:EC71 9D AC 0F    STA $0FAC,x
-$A7:EC74 AD 0A E9    LDA $E90A  [$A7:E90A]
-$A7:EC77 9D AE 0F    STA $0FAE,x
+$A7:EC62 A9 BB EC    LDA #$ECBB             ;\
+$A7:EC65 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ECBB
+$A7:EC68 A9 80 E8    LDA #$E880             ;\
+$A7:EC6B 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E880
+$A7:EC6E AD 08 E9    LDA $E908  [$A7:E908]  ;\
+$A7:EC71 9D AC 0F    STA $0FAC,x            ;|
+$A7:EC74 AD 0A E9    LDA $E90A  [$A7:E90A]  ;} Enemy X velocity = 2.0
+$A7:EC77 9D AE 0F    STA $0FAE,x            ;/
 $A7:EC7A 60          RTS
 }
 
@@ -8594,223 +8602,226 @@ $A7:EC7A 60          RTS
 ;;; $EC7B:  ;;;
 {
 $A7:EC7B BB          TYX
-$A7:EC7C A9 75 ED    LDA #$ED75
-$A7:EC7F 9D B2 0F    STA $0FB2,x
-$A7:EC82 BD 92 0F    LDA $0F92,x
-$A7:EC85 1A          INC A
-$A7:EC86 1A          INC A
-$A7:EC87 9D 92 0F    STA $0F92,x
-$A7:EC8A AD 08 E9    LDA $E908  [$A7:E908]
-$A7:EC8D 9D AC 0F    STA $0FAC,x
-$A7:EC90 AD 0A E9    LDA $E90A  [$A7:E90A]
-$A7:EC93 9D AE 0F    STA $0FAE,x
+$A7:EC7C A9 75 ED    LDA #$ED75             ;\
+$A7:EC7F 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ED75
+$A7:EC82 BD 92 0F    LDA $0F92,x            ;\
+$A7:EC85 1A          INC A                  ;|
+$A7:EC86 1A          INC A                  ;} Enemy instruction list pointer += 2
+$A7:EC87 9D 92 0F    STA $0F92,x            ;/
+$A7:EC8A AD 08 E9    LDA $E908  [$A7:E908]  ;\
+$A7:EC8D 9D AC 0F    STA $0FAC,x            ;|
+$A7:EC90 AD 0A E9    LDA $E90A  [$A7:E90A]  ;} Enemy X velocity = 2.0
+$A7:EC93 9D AE 0F    STA $0FAE,x            ;/
 $A7:EC96 60          RTS
 }
 
 
-;;; $EC97:  ;;;
+;;; $EC97: Etecoon function ;;;
 {
-$A7:EC97 20 74 E9    JSR $E974  [$A7:E974]
-$A7:EC9A BD 7A 0F    LDA $0F7A,x
-$A7:EC9D C9 19 02    CMP #$0219
-$A7:ECA0 10 18       BPL $18    [$ECBA]
-$A7:ECA2 A9 0B 00    LDA #$000B
-$A7:ECA5 9D B0 0F    STA $0FB0,x
-$A7:ECA8 A9 C7 ED    LDA #$EDC7
-$A7:ECAB 9D B2 0F    STA $0FB2,x
-$A7:ECAE A9 01 00    LDA #$0001
-$A7:ECB1 9D 94 0F    STA $0F94,x
-$A7:ECB4 A9 54 E8    LDA #$E854
-$A7:ECB7 9D 92 0F    STA $0F92,x
+$A7:EC97 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:EC9A BD 7A 0F    LDA $0F7A,x            ;\
+$A7:EC9D C9 19 02    CMP #$0219             ;} If [enemy X position] <= 218h:
+$A7:ECA0 10 18       BPL $18    [$ECBA]     ;/
+$A7:ECA2 A9 0B 00    LDA #$000B             ;\
+$A7:ECA5 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Bh
+$A7:ECA8 A9 C7 ED    LDA #$EDC7             ;\
+$A7:ECAB 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EDC7
+$A7:ECAE A9 01 00    LDA #$0001             ;\
+$A7:ECB1 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:ECB4 A9 54 E8    LDA #$E854             ;\
+$A7:ECB7 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E854
 
 $A7:ECBA 6B          RTL
 }
 
 
-;;; $ECBB:  ;;;
+;;; $ECBB: Etecoon function ;;;
 {
-$A7:ECBB 20 74 E9    JSR $E974  [$A7:E974]
-$A7:ECBE BD 7A 0F    LDA $0F7A,x
-$A7:ECC1 C9 58 02    CMP #$0258
-$A7:ECC4 30 18       BMI $18    [$ECDE]
-$A7:ECC6 A9 0B 00    LDA #$000B
-$A7:ECC9 9D B0 0F    STA $0FB0,x
-$A7:ECCC A9 C7 ED    LDA #$EDC7
-$A7:ECCF 9D B2 0F    STA $0FB2,x
-$A7:ECD2 A9 01 00    LDA #$0001
-$A7:ECD5 9D 94 0F    STA $0F94,x
-$A7:ECD8 A9 54 E8    LDA #$E854
-$A7:ECDB 9D 92 0F    STA $0F92,x
+$A7:ECBB 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:ECBE BD 7A 0F    LDA $0F7A,x            ;\
+$A7:ECC1 C9 58 02    CMP #$0258             ;} If [enemy X position] >= 258h:
+$A7:ECC4 30 18       BMI $18    [$ECDE]     ;/
+$A7:ECC6 A9 0B 00    LDA #$000B             ;\
+$A7:ECC9 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Bh
+$A7:ECCC A9 C7 ED    LDA #$EDC7             ;\
+$A7:ECCF 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EDC7
+$A7:ECD2 A9 01 00    LDA #$0001             ;\
+$A7:ECD5 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:ECD8 A9 54 E8    LDA #$E854             ;\
+$A7:ECDB 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E854
 
 $A7:ECDE 6B          RTL
 }
 
 
-;;; $ECDF:  ;;;
+;;; $ECDF: Etecoon function ;;;
 {
-$A7:ECDF 20 74 E9    JSR $E974  [$A7:E974]
-$A7:ECE2 BD 7A 0F    LDA $0F7A,x
-$A7:ECE5 C9 58 02    CMP #$0258
-$A7:ECE8 30 1E       BMI $1E    [$ED08]
-$A7:ECEA A9 09 ED    LDA #$ED09
-$A7:ECED 9D B2 0F    STA $0FB2,x
-$A7:ECF0 AD 04 E9    LDA $E904  [$A7:E904]
-$A7:ECF3 9D A8 0F    STA $0FA8,x
-$A7:ECF6 AD 06 E9    LDA $E906  [$A7:E906]
-$A7:ECF9 9D AA 0F    STA $0FAA,x
-$A7:ECFC A9 01 00    LDA #$0001
-$A7:ECFF 9D 94 0F    STA $0F94,x
-$A7:ED02 A9 98 E8    LDA #$E898
-$A7:ED05 9D 92 0F    STA $0F92,x
+$A7:ECDF 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:ECE2 BD 7A 0F    LDA $0F7A,x            ;\
+$A7:ECE5 C9 58 02    CMP #$0258             ;} If [enemy X position] >= 258h:
+$A7:ECE8 30 1E       BMI $1E    [$ED08]     ;/
+$A7:ECEA A9 09 ED    LDA #$ED09             ;\
+$A7:ECED 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ED09
+$A7:ECF0 AD 04 E9    LDA $E904  [$A7:E904]  ;\
+$A7:ECF3 9D A8 0F    STA $0FA8,x            ;|
+$A7:ECF6 AD 06 E9    LDA $E906  [$A7:E906]  ;} Enemy Y velocity = -4.0
+$A7:ECF9 9D AA 0F    STA $0FAA,x            ;/
+$A7:ECFC A9 01 00    LDA #$0001             ;\
+$A7:ECFF 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:ED02 A9 98 E8    LDA #$E898             ;\
+$A7:ED05 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E898
 
 $A7:ED08 6B          RTL
 }
 
 
-;;; $ED09:  ;;;
+;;; $ED09: Etecoon function ;;;
 {
-$A7:ED09 20 74 E9    JSR $E974  [$A7:E974]
-$A7:ED0C 20 83 E9    JSR $E983  [$A7:E983]
-$A7:ED0F BD 7A 0F    LDA $0F7A,x
-$A7:ED12 C9 A8 02    CMP #$02A8
-$A7:ED15 30 12       BMI $12    [$ED29]
-$A7:ED17 A9 01 00    LDA #$0001
-$A7:ED1A 9D 94 0F    STA $0F94,x
-$A7:ED1D A9 80 E8    LDA #$E880
-$A7:ED20 9D 92 0F    STA $0F92,x
-$A7:ED23 A9 2A ED    LDA #$ED2A
-$A7:ED26 9D B2 0F    STA $0FB2,x
+$A7:ED09 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:ED0C 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
+$A7:ED0F BD 7A 0F    LDA $0F7A,x            ;\
+$A7:ED12 C9 A8 02    CMP #$02A8             ;} If [enemy X position] >= 2A8h:
+$A7:ED15 30 12       BMI $12    [$ED29]     ;/
+$A7:ED17 A9 01 00    LDA #$0001             ;\
+$A7:ED1A 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:ED1D A9 80 E8    LDA #$E880             ;\
+$A7:ED20 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E880
+$A7:ED23 A9 2A ED    LDA #$ED2A             ;\
+$A7:ED26 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ED2A
 
 $A7:ED29 6B          RTL
 }
 
 
-;;; $ED2A:  ;;;
+;;; $ED2A: Etecoon function ;;;
 {
-$A7:ED2A 20 74 E9    JSR $E974  [$A7:E974]
-$A7:ED2D BD 7A 0F    LDA $0F7A,x
-$A7:ED30 C9 48 03    CMP #$0348
-$A7:ED33 30 1E       BMI $1E    [$ED53]
-$A7:ED35 A9 01 00    LDA #$0001
-$A7:ED38 9D 94 0F    STA $0F94,x
-$A7:ED3B A9 98 E8    LDA #$E898
-$A7:ED3E 9D 92 0F    STA $0F92,x
-$A7:ED41 A9 54 ED    LDA #$ED54
-$A7:ED44 9D B2 0F    STA $0FB2,x
-$A7:ED47 A9 FF FF    LDA #$FFFF
-$A7:ED4A 9D A8 0F    STA $0FA8,x
-$A7:ED4D AD 06 E9    LDA $E906  [$A7:E906]
-$A7:ED50 9D AA 0F    STA $0FAA,x
+$A7:ED2A 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:ED2D BD 7A 0F    LDA $0F7A,x            ;\
+$A7:ED30 C9 48 03    CMP #$0348             ;} If [enemy X position] >= 348h:
+$A7:ED33 30 1E       BMI $1E    [$ED53]     ;/
+$A7:ED35 A9 01 00    LDA #$0001             ;\
+$A7:ED38 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:ED3B A9 98 E8    LDA #$E898             ;\
+$A7:ED3E 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E898
+$A7:ED41 A9 54 ED    LDA #$ED54             ;\
+$A7:ED44 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ED54
+$A7:ED47 A9 FF FF    LDA #$FFFF             ;\
+$A7:ED4A 9D A8 0F    STA $0FA8,x            ;|
+$A7:ED4D AD 06 E9    LDA $E906  [$A7:E906]  ;} Enemy Y velocity = -1.0
+$A7:ED50 9D AA 0F    STA $0FAA,x            ;/
 
 $A7:ED53 6B          RTL
 }
 
 
-;;; $ED54:  ;;;
+;;; $ED54: Etecoon function ;;;
 {
-$A7:ED54 20 74 E9    JSR $E974  [$A7:E974]
-$A7:ED57 20 83 E9    JSR $E983  [$A7:E983]
-$A7:ED5A 90 18       BCC $18    [$ED74]
-$A7:ED5C A9 0B 00    LDA #$000B
-$A7:ED5F 9D B0 0F    STA $0FB0,x
-$A7:ED62 A9 01 00    LDA #$0001
-$A7:ED65 9D 94 0F    STA $0F94,x
-$A7:ED68 A9 54 E8    LDA #$E854
-$A7:ED6B 9D 92 0F    STA $0F92,x
-$A7:ED6E A9 C7 ED    LDA #$EDC7
-$A7:ED71 9D B2 0F    STA $0FB2,x
+$A7:ED54 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:ED57 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
+$A7:ED5A 90 18       BCC $18    [$ED74]     ; If collision:
+$A7:ED5C A9 0B 00    LDA #$000B             ;\
+$A7:ED5F 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Bh
+$A7:ED62 A9 01 00    LDA #$0001             ;\
+$A7:ED65 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:ED68 A9 54 E8    LDA #$E854             ;\
+$A7:ED6B 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E854
+$A7:ED6E A9 C7 ED    LDA #$EDC7             ;\
+$A7:ED71 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EDC7
 
 $A7:ED74 6B          RTL
 }
 
 
-;;; $ED75:  ;;;
+;;; $ED75: Etecoon function ;;;
 {
-$A7:ED75 20 58 E9    JSR $E958  [$A7:E958]
-$A7:ED78 20 83 E9    JSR $E983  [$A7:E983]
-$A7:ED7B B0 01       BCS $01    [$ED7E]
-$A7:ED7D 6B          RTL
+$A7:ED75 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
+$A7:ED78 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
+$A7:ED7B B0 01       BCS $01    [$ED7E]     ; If no collision:
+$A7:ED7D 6B          RTL                    ; Return
 
-$A7:ED7E BD A8 0F    LDA $0FA8,x
-$A7:ED81 10 13       BPL $13    [$ED96]
-$A7:ED83 9E A8 0F    STZ $0FA8,x
-$A7:ED86 9E AA 0F    STZ $0FAA,x
-$A7:ED89 A9 03 00    LDA #$0003
-$A7:ED8C 9D 94 0F    STA $0F94,x
-$A7:ED8F A9 62 E8    LDA #$E862
-$A7:ED92 9D 92 0F    STA $0F92,x
-$A7:ED95 6B          RTL
+$A7:ED7E BD A8 0F    LDA $0FA8,x            ;\
+$A7:ED81 10 13       BPL $13    [$ED96]     ;} If [enemy Y velocity] < 0:
+$A7:ED83 9E A8 0F    STZ $0FA8,x            ;\
+$A7:ED86 9E AA 0F    STZ $0FAA,x            ;} Enemy Y velocity = 0.0
+$A7:ED89 A9 03 00    LDA #$0003             ;\
+$A7:ED8C 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 3
+$A7:ED8F A9 62 E8    LDA #$E862             ;\
+$A7:ED92 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E862
+$A7:ED95 6B          RTL                    ; Return
 
-$A7:ED96 A9 0B 00    LDA #$000B
-$A7:ED99 9D B0 0F    STA $0FB0,x
-$A7:ED9C A9 01 00    LDA #$0001
-$A7:ED9F 9D 94 0F    STA $0F94,x
-$A7:EDA2 A9 54 E8    LDA #$E854
-$A7:EDA5 9D 92 0F    STA $0F92,x
-$A7:EDA8 BD B6 0F    LDA $0FB6,x
-$A7:EDAB 89 02 00    BIT #$0002
-$A7:EDAE D0 08       BNE $08    [$EDB8]
+$A7:ED96 A9 0B 00    LDA #$000B             ;\
+$A7:ED99 9D B0 0F    STA $0FB0,x            ;} Enemy function timer = Bh
+$A7:ED9C A9 01 00    LDA #$0001             ;\
+$A7:ED9F 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EDA2 A9 54 E8    LDA #$E854             ;\
+$A7:EDA5 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E854
+$A7:EDA8 BD B6 0F    LDA $0FB6,x            ;\
+$A7:EDAB 89 02 00    BIT #$0002             ;} If [enemy $0FB6] & 2 != 0: go to BRANCH_EDB8
+$A7:EDAE D0 08       BNE $08    [$EDB8]     ;/
 
-$A7:EDB0 A9 C7 ED    LDA #$EDC7
-$A7:EDB3 9D B2 0F    STA $0FB2,x
-$A7:EDB6 80 0E       BRA $0E    [$EDC6]
+; BRANCH_EDB0
+$A7:EDB0 A9 C7 ED    LDA #$EDC7             ;\
+$A7:EDB3 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EDC7
+$A7:EDB6 80 0E       BRA $0E    [$EDC6]     ; Return
 
-$A7:EDB8 BD 7A 0F    LDA $0F7A,x
-$A7:EDBB C9 40 03    CMP #$0340
-$A7:EDBE 10 F0       BPL $F0    [$EDB0]
-$A7:EDC0 A9 3E EE    LDA #$EE3E
-$A7:EDC3 9D B2 0F    STA $0FB2,x
+; BRANCH_EDB8
+$A7:EDB8 BD 7A 0F    LDA $0F7A,x            ;\
+$A7:EDBB C9 40 03    CMP #$0340             ;} If [enemy X position] >= 340h: go to BRANCH_EDB0
+$A7:EDBE 10 F0       BPL $F0    [$EDB0]     ;/
+$A7:EDC0 A9 3E EE    LDA #$EE3E             ;\
+$A7:EDC3 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EE3E
 
 $A7:EDC6 6B          RTL
 }
 
 
-;;; $EDC7:  ;;;
+;;; $EDC7: Etecoon function ;;;
 {
-$A7:EDC7 20 58 E9    JSR $E958  [$A7:E958]
-$A7:EDCA DE B0 0F    DEC $0FB0,x
-$A7:EDCD F0 02       BEQ $02    [$EDD1]
-$A7:EDCF 10 6C       BPL $6C    [$EE3D]
+$A7:EDC7 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
+$A7:EDCA DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
+$A7:EDCD F0 02       BEQ $02    [$EDD1]     ;\
+$A7:EDCF 10 6C       BPL $6C    [$EE3D]     ;} If [enemy function timer] > 0: return
 
-$A7:EDD1 BD B4 0F    LDA $0FB4,x
-$A7:EDD4 18          CLC
-$A7:EDD5 69 00 01    ADC #$0100
-$A7:EDD8 9D B4 0F    STA $0FB4,x
-$A7:EDDB 29 00 FF    AND #$FF00
-$A7:EDDE C9 00 04    CMP #$0400
-$A7:EDE1 30 2B       BMI $2B    [$EE0E]
-$A7:EDE3 BD B4 0F    LDA $0FB4,x
-$A7:EDE6 29 FF 00    AND #$00FF
-$A7:EDE9 9D B4 0F    STA $0FB4,x
-$A7:EDEC BD B6 0F    LDA $0FB6,x
-$A7:EDEF 89 02 00    BIT #$0002
-$A7:EDF2 D0 1A       BNE $1A    [$EE0E]
-$A7:EDF4 A9 9A EE    LDA #$EE9A
-$A7:EDF7 9D B2 0F    STA $0FB2,x
-$A7:EDFA A9 80 E8    LDA #$E880
-$A7:EDFD 9D 92 0F    STA $0F92,x
-$A7:EE00 AD 08 E9    LDA $E908  [$A7:E908]
-$A7:EE03 9D AC 0F    STA $0FAC,x
-$A7:EE06 AD 0A E9    LDA $E90A  [$A7:E90A]
-$A7:EE09 9D AE 0F    STA $0FAE,x
-$A7:EE0C 80 0E       BRA $0E    [$EE1C]
+$A7:EDD1 BD B4 0F    LDA $0FB4,x            ;\
+$A7:EDD4 18          CLC                    ;|
+$A7:EDD5 69 00 01    ADC #$0100             ;} Increment enemy $0FB5
+$A7:EDD8 9D B4 0F    STA $0FB4,x            ;/
+$A7:EDDB 29 00 FF    AND #$FF00             ;\
+$A7:EDDE C9 00 04    CMP #$0400             ;} If [enemy $0FB5] >= 4:
+$A7:EDE1 30 2B       BMI $2B    [$EE0E]     ;/
+$A7:EDE3 BD B4 0F    LDA $0FB4,x            ;\
+$A7:EDE6 29 FF 00    AND #$00FF             ;} Enemy $0FB5 = 0
+$A7:EDE9 9D B4 0F    STA $0FB4,x            ;/
+$A7:EDEC BD B6 0F    LDA $0FB6,x            ;\
+$A7:EDEF 89 02 00    BIT #$0002             ;} If [enemy $0FB6] & 2 = 0:
+$A7:EDF2 D0 1A       BNE $1A    [$EE0E]     ;/
+$A7:EDF4 A9 9A EE    LDA #$EE9A             ;\
+$A7:EDF7 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EE9A
+$A7:EDFA A9 80 E8    LDA #$E880             ;\
+$A7:EDFD 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E880
+$A7:EE00 AD 08 E9    LDA $E908  [$A7:E908]  ;\
+$A7:EE03 9D AC 0F    STA $0FAC,x            ;|
+$A7:EE06 AD 0A E9    LDA $E90A  [$A7:E90A]  ;} Enemy X velocity = 2.0
+$A7:EE09 9D AE 0F    STA $0FAE,x            ;/
+$A7:EE0C 80 0E       BRA $0E    [$EE1C]     ; Go to BRANCH_MERGE
 
-$A7:EE0E A9 75 ED    LDA #$ED75
-$A7:EE11 9D B2 0F    STA $0FB2,x
-$A7:EE14 BD 92 0F    LDA $0F92,x
-$A7:EE17 1A          INC A
-$A7:EE18 1A          INC A
-$A7:EE19 9D 92 0F    STA $0F92,x
+$A7:EE0E A9 75 ED    LDA #$ED75             ;\
+$A7:EE11 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ED75
+$A7:EE14 BD 92 0F    LDA $0F92,x            ;\
+$A7:EE17 1A          INC A                  ;|
+$A7:EE18 1A          INC A                  ;} Enemy instruction list pointer += 2
+$A7:EE19 9D 92 0F    STA $0F92,x            ;/
 
-$A7:EE1C AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EE1F 9D A8 0F    STA $0FA8,x
-$A7:EE22 AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EE25 9D AA 0F    STA $0FAA,x
-$A7:EE28 A9 01 00    LDA #$0001
-$A7:EE2B 9D 94 0F    STA $0F94,x
-$A7:EE2E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A7:EE31 C9 00 01    CMP #$0100
-$A7:EE34 30 07       BMI $07    [$EE3D]
+; BRANCH_MERGE
+$A7:EE1C AD 00 E9    LDA $E900  [$A7:E900]  ;\
+$A7:EE1F 9D A8 0F    STA $0FA8,x            ;|
+$A7:EE22 AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EE25 9D AA 0F    STA $0FAA,x            ;/
+$A7:EE28 A9 01 00    LDA #$0001             ;\
+$A7:EE2B 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EE2E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A7:EE31 C9 00 01    CMP #$0100             ;} If [Samus X position] >= 100h:
+$A7:EE34 30 07       BMI $07    [$EE3D]     ;/
 $A7:EE36 A9 33 00    LDA #$0033             ;\
 $A7:EE39 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 33h, sound library 2, max queued sounds allowed = 6 (etecoon cry)
 
@@ -8818,12 +8829,12 @@ $A7:EE3D 6B          RTL
 }
 
 
-;;; $EE3E:  ;;;
+;;; $EE3E: Etecoon function ;;;
 {
-$A7:EE3E 20 58 E9    JSR $E958  [$A7:E958]
-$A7:EE41 DE B0 0F    DEC $0FB0,x
-$A7:EE44 F0 02       BEQ $02    [$EE48]
-$A7:EE46 10 51       BPL $51    [$EE99]
+$A7:EE3E 20 58 E9    JSR $E958  [$A7:E958]  ; Freeze etecoon if quake active
+$A7:EE41 DE B0 0F    DEC $0FB0,x            ; Decrement enemy function timer
+$A7:EE44 F0 02       BEQ $02    [$EE48]     ;\
+$A7:EE46 10 51       BPL $51    [$EE99]     ;} If [enemy function timer] > 0: return
 
 $A7:EE48 A9 40 00    LDA #$0040             ;\
 $A7:EE4B 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;|
@@ -8833,71 +8844,71 @@ $A7:EE52 A9 30 00    LDA #$0030             ;\
 $A7:EE55 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
 $A7:EE59 A8          TAY                    ;} If Samus is within 30h pixel columns of enemy:
 $A7:EE5A F0 0E       BEQ $0E    [$EE6A]     ;/
-$A7:EE5C A9 80 E8    LDA #$E880
-$A7:EE5F 9D 92 0F    STA $0F92,x
-$A7:EE62 A9 DF EC    LDA #$ECDF
-$A7:EE65 9D B2 0F    STA $0FB2,x
+$A7:EE5C A9 80 E8    LDA #$E880             ;\
+$A7:EE5F 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E880
+$A7:EE62 A9 DF EC    LDA #$ECDF             ;\
+$A7:EE65 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ECDF
 $A7:EE68 80 29       BRA $29    [$EE93]
 
-$A7:EE6A AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EE6D 9D A8 0F    STA $0FA8,x
-$A7:EE70 AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EE73 9D AA 0F    STA $0FAA,x
-$A7:EE76 BD 92 0F    LDA $0F92,x
-$A7:EE79 1A          INC A
-$A7:EE7A 1A          INC A
-$A7:EE7B 9D 92 0F    STA $0F92,x
-$A7:EE7E A9 75 ED    LDA #$ED75
-$A7:EE81 9D B2 0F    STA $0FB2,x
-$A7:EE84 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A7:EE87 C9 00 01    CMP #$0100
-$A7:EE8A 30 07       BMI $07    [$EE93]
+$A7:EE6A AD 00 E9    LDA $E900  [$A7:E900]  ;\ Else (Samus is not within 30h x 40h pixels of enemy):
+$A7:EE6D 9D A8 0F    STA $0FA8,x            ;|
+$A7:EE70 AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EE73 9D AA 0F    STA $0FAA,x            ;/
+$A7:EE76 BD 92 0F    LDA $0F92,x            ;\
+$A7:EE79 1A          INC A                  ;|
+$A7:EE7A 1A          INC A                  ;} Enemy instruction list pointer += 2
+$A7:EE7B 9D 92 0F    STA $0F92,x            ;/
+$A7:EE7E A9 75 ED    LDA #$ED75             ;\
+$A7:EE81 9D B2 0F    STA $0FB2,x            ;} Enemy function = $ED75
+$A7:EE84 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A7:EE87 C9 00 01    CMP #$0100             ;} If [Samus X position] >= 100h:
+$A7:EE8A 30 07       BMI $07    [$EE93]     ;/
 $A7:EE8C A9 33 00    LDA #$0033             ;\
 $A7:EE8F 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 33h, sound library 2, max queued sounds allowed = 6 (etecoon cry)
 
-$A7:EE93 A9 01 00    LDA #$0001
-$A7:EE96 9D 94 0F    STA $0F94,x
+$A7:EE93 A9 01 00    LDA #$0001             ;\
+$A7:EE96 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 
 $A7:EE99 6B          RTL
 }
 
 
-;;; $EE9A:  ;;;
+;;; $EE9A: Etecoon function ;;;
 {
-$A7:EE9A 20 74 E9    JSR $E974  [$A7:E974]
-$A7:EE9D BD 7A 0F    LDA $0F7A,x
-$A7:EEA0 C9 58 02    CMP #$0258
-$A7:EEA3 30 12       BMI $12    [$EEB7]
-$A7:EEA5 A9 B8 EE    LDA #$EEB8
-$A7:EEA8 9D B2 0F    STA $0FB2,x
-$A7:EEAB A9 01 00    LDA #$0001
-$A7:EEAE 9D 94 0F    STA $0F94,x
-$A7:EEB1 A9 98 E8    LDA #$E898
-$A7:EEB4 9D 92 0F    STA $0F92,x
+$A7:EE9A 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:EE9D BD 7A 0F    LDA $0F7A,x            ;\
+$A7:EEA0 C9 58 02    CMP #$0258             ;} If [enemy X position] >= 258h:
+$A7:EEA3 30 12       BMI $12    [$EEB7]     ;/
+$A7:EEA5 A9 B8 EE    LDA #$EEB8             ;\
+$A7:EEA8 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EEB8
+$A7:EEAB A9 01 00    LDA #$0001             ;\
+$A7:EEAE 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EEB1 A9 98 E8    LDA #$E898             ;\
+$A7:EEB4 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E898
 
 $A7:EEB7 6B          RTL
 }
 
 
-;;; $EEB8:  ;;;
+;;; $EEB8: Etecoon function ;;;
 {
-$A7:EEB8 20 74 E9    JSR $E974  [$A7:E974]
-$A7:EEBB 20 83 E9    JSR $E983  [$A7:E983]
-$A7:EEBE 90 2A       BCC $2A    [$EEEA]
-$A7:EEC0 AD 0C E9    LDA $E90C  [$A7:E90C]
-$A7:EEC3 9D AC 0F    STA $0FAC,x
-$A7:EEC6 AD 0E E9    LDA $E90E  [$A7:E90E]
-$A7:EEC9 9D AE 0F    STA $0FAE,x
-$A7:EECC A9 02 EB    LDA #$EB02
-$A7:EECF 9D B2 0F    STA $0FB2,x
-$A7:EED2 AD 00 E9    LDA $E900  [$A7:E900]
-$A7:EED5 9D A8 0F    STA $0FA8,x
-$A7:EED8 AD 02 E9    LDA $E902  [$A7:E902]
-$A7:EEDB 9D AA 0F    STA $0FAA,x
-$A7:EEDE A9 01 00    LDA #$0001
-$A7:EEE1 9D 94 0F    STA $0F94,x
-$A7:EEE4 A9 28 E8    LDA #$E828
-$A7:EEE7 9D 92 0F    STA $0F92,x
+$A7:EEB8 20 74 E9    JSR $E974  [$A7:E974]  ; Etecoon horizontal movement
+$A7:EEBB 20 83 E9    JSR $E983  [$A7:E983]  ; Etecoon vertical movement
+$A7:EEBE 90 2A       BCC $2A    [$EEEA]     ; If collision:
+$A7:EEC0 AD 0C E9    LDA $E90C  [$A7:E90C]  ;\
+$A7:EEC3 9D AC 0F    STA $0FAC,x            ;|
+$A7:EEC6 AD 0E E9    LDA $E90E  [$A7:E90E]  ;} Enemy X velocity = -2.0
+$A7:EEC9 9D AE 0F    STA $0FAE,x            ;/
+$A7:EECC A9 02 EB    LDA #$EB02             ;\
+$A7:EECF 9D B2 0F    STA $0FB2,x            ;} Enemy function = $EB02
+$A7:EED2 AD 00 E9    LDA $E900  [$A7:E900]  ;\
+$A7:EED5 9D A8 0F    STA $0FA8,x            ;|
+$A7:EED8 AD 02 E9    LDA $E902  [$A7:E902]  ;} Enemy Y velocity = -3.0
+$A7:EEDB 9D AA 0F    STA $0FAA,x            ;/
+$A7:EEDE A9 01 00    LDA #$0001             ;\
+$A7:EEE1 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A7:EEE4 A9 28 E8    LDA #$E828             ;\
+$A7:EEE7 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E828
 
 $A7:EEEA 6B          RTL
 }

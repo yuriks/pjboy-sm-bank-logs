@@ -11790,7 +11790,7 @@ $8B:DE7F 60          RTS
 {
 $8B:DE80 20 D3 83    JSR $83D3  [$8B:83D3]  ; Set up PPU for credits
 $8B:DE83 20 DA 93    JSR $93DA  [$8B:93DA]  ; Clear cinematic sprite objects
-$8B:DE86 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
+$8B:DE86 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
 $8B:DE8A A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:DE8D BF E9 E9 8C LDA $8CE9E9,x[$8C:E9E9];|
