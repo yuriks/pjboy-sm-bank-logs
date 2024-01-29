@@ -15942,7 +15942,14 @@ $86:F3CD BD D6 F3    LDA $F3D6,x[$86:F3DA]
 $86:F3D0 99 FF 1A    STA $1AFF,y[$7E:1B21]
 $86:F3D3 60          RTS
 
-$86:F3D4             dw FFFF,B800, FFFF,C000, FFFF,E000, FFFF,FF00, 0000,0100, 0000,2000, 0000,4000
+; This table is one entry too short to be indexed with 1Ch >_<;
+$86:F3D4             dw FFFF,B800,
+                        FFFF,C000, 
+                        FFFF,E000, 
+                        FFFF,FF00, 
+                        0000,0100, 
+                        0000,2000, 
+                        0000,4000
 }
 
 

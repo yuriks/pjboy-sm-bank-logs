@@ -316,7 +316,7 @@ $87:8169 60          RTS
 }
 
 
-;;; $816A: Instruction lists - FX ;;;
+;;; $816A..B9: Instruction lists - FX ;;;
 {
 ;;; $816A: Instruction list - animated tiles object $8251 (vertical spikes) ;;;
 {
@@ -376,7 +376,7 @@ $87:81CA 60          RTS
 }
 
 
-;;; $81CB: Instruction lists - FX ;;;
+;;; $81CB..824A: Instruction lists - FX ;;;
 {
 ;;; $81CB: Instruction list - animated tiles object $826F (Wrecked Ship screen) ;;;
 {
@@ -472,7 +472,7 @@ $87:828D             dw 8235,0020,1020 ; Maridia sand falling
 }
 
 
-;;; $8293: Animated tiles objects and instruction lists - FX layer 3 ;;;
+;;; $8293..8302: Animated tiles objects and instruction lists - FX layer 3 ;;;
 {
 ;;; $8293: Instruction list - animated tiles object $82AB (lava) ;;;
 {
@@ -545,7 +545,7 @@ $87:82FD             dw 82ED,0030,4280
 }
 
 
-;;; $8303: Instructions ;;;
+;;; $8303..83AB: Instructions ;;;
 {
 ;;; $8303: Instruction - go to [[Y] + 2] if any of the boss bits [[Y]] for area [[Y] + 1] are set ;;;
 {
@@ -680,7 +680,7 @@ $87:839C             dw 3800, 7F58, 6ED5, 5A71, 49EE, 356A, 24E7, 1083
 }
 
 
-;;; $83AC: Instruction lists - Tourian statue ;;;
+;;; $83AC..854B: Instruction lists - Tourian statue ;;;
 {
 ;;; $83AC: Instruction list - animated tiles object $854C (Tourian statue - Phantoon) ;;;
 {
@@ -828,7 +828,7 @@ $87:855E             dw 84E4,0080,0CA0 ; Tourian statue - Draygon
 }
 
 
-;;; $8564: Animated tiles ;;;
+;;; $8564..AA03: Animated tiles ;;;
 {
 ;;; $8564: Crateria lake ;;;
 {
