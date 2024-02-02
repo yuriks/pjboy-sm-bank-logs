@@ -1696,7 +1696,7 @@ $B2:F14E 80 0B       BRA $0B    [$F15B]
 $B2:F150 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $B2:F153 29 F8 FF    AND #$FFF8
 $B2:F156 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:F159 80 00       BRA $00    [$F15B]
+$B2:F159 80 00       BRA $00    [$F15B]     ; >_<;
 
 $B2:F15B 60          RTS
 }

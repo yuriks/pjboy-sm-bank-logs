@@ -752,7 +752,7 @@ $A3:8E11 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8E14 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8E17 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
 $A3:8E1A 29 00 FF    AND #$FF00             ;|
-$A3:8E1D EB          XBA                    ;} Enemy Y position = [enemy $0FB2] + [enemy $0FAC] * cos([enemy $0FAE] * pi / 8000h) * FFh / 100h
+$A3:8E1D EB          XBA                    ;} Enemy Y position = [enemy $0FB2] + [enemy $0FAC] * -sin([enemy $0FAE] * pi / 8000h) * FFh / 100h
 $A3:8E1E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:8E22 18          CLC                    ;|
 $A3:8E23 7D B2 0F    ADC $0FB2,x[$7E:0FB2]  ;|

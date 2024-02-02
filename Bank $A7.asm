@@ -7361,7 +7361,7 @@ $A7:DC6D A2 00 00    LDX #$0000             ; X = 0
 ; LOOP
 $A7:DC70 DA          PHX
 $A7:DC71 BD 61 CA    LDA $CA61,x[$A7:CA61]  ;\
-$A7:DC74 A8          TAY                    ;} Y = 
+$A7:DC74 A8          TAY                    ;} Y = [$CA61 + [X]]
 $A7:DC75 BF 00 C0 7E LDA $7EC000,x[$7E:C000];\
 $A7:DC79 AA          TAX                    ;|
 $A7:DC7A AD F0 0F    LDA $0FF0  [$7E:0FF0]  ;|
@@ -8987,33 +8987,27 @@ $A7:F325             dw 3800,63BB,5F37,4AB3,4A72,6379,5737,52F5,4ED4,6FFF,677B,5
 
 ;;; $F345..F4C8: Instruction lists ;;;
 {
-;;; $F345: Instruction list - yyyy ;;;
+;;; $F345: Instruction list - running left ;;;
 {
-$A7:F345             dx 0005,F9C4,
+$A7:F345             dw 0005,F9C4,
                         0005,F9F3,
                         0005,FA22,
                         0005,FA5B,
                         0005,FA8A,
                         0005,FAB9,
                         80ED,F345   ; Go to $F345
-}
 
-
-;;; $F361: Instruction list - yyyy ;;;
-{
-$A7:F361             dx 0003,F9C4,
+; Fast animation
+$A7:F361             dw 0003,F9C4,
                         0003,F9F3,
                         0003,FA22,
                         0003,FA5B,
                         0003,FA8A,
                         0003,FAB9,
                         80ED,F361   ; Go to $F361
-}
 
-
-;;; $F37D: Instruction list - yyyy ;;;
-{
-$A7:F37D             dx 0001,F9C4,
+; Very fast animation
+$A7:F37D             dw 0001,F9C4,
                         0001,F9F3,
                         0001,FA22,
                         0001,FA5B,
@@ -9023,7 +9017,7 @@ $A7:F37D             dx 0001,F9C4,
 }
 
 
-;;; $F399: Instruction list - yyyy ;;;
+;;; $F399: Instruction list - idling - facing left ;;;
 {
 $A7:F399             dx 0030,FB50,
                         000A,FBE7,
@@ -9040,7 +9034,7 @@ $A7:F399             dx 0030,FB50,
 }
 
 
-;;; $F3C9: Instruction list - yyyy ;;;
+;;; $F3C9: Instruction list - blinking - facing left ;;;
 {
 $A7:F3C9             dx 000B,FB50,
                         0008,FB7F,
@@ -9055,28 +9049,28 @@ $A7:F3C9             dx 000B,FB50,
 }
 
 
-;;; $F3F1: Instruction list - yyyy ;;;
+;;; $F3F1: Unused. Instruction list - charge shinespark - facing left ;;;
 {
 $A7:F3F1             dx 0001,FAF2,
                         812F        ; Sleep
 }
 
 
-;;; $F3F7: Instruction list - yyyy ;;;
+;;; $F3F7: Instruction list - echo - facing left ;;;
 {
 $A7:F3F7             dx 000A,FB1C,
                         80ED,F3F7   ; Go to $F3F7
 }
 
 
-;;; $F3FF: Instruction list - yyyy ;;;
+;;; $F3FF: Instruction list - falling - facing left ;;;
 {
 $A7:F3FF             dx 0005,FA8A,
                         80ED,F3FF   ; Go to $F3FF
 }
 
 
-;;; $F407: Instruction list - yyyy ;;;
+;;; $F407: Instruction list - running right ;;;
 {
 $A7:F407             dx 0005,FCA3,
                         0005,FCD2,
@@ -9085,11 +9079,8 @@ $A7:F407             dx 0005,FCA3,
                         0005,FD69,
                         0005,FD98,
                         80ED,F407   ; Go to $F407
-}
 
-
-;;; $F423: Instruction list - yyyy ;;;
-{
+; Fast animation
 $A7:F423             dx 0003,FCA3,
                         0003,FCD2,
                         0003,FD01,
@@ -9097,11 +9088,8 @@ $A7:F423             dx 0003,FCA3,
                         0003,FD69,
                         0003,FD98,
                         80ED,F423   ; Go to $F423
-}
 
-
-;;; $F43F: Instruction list - yyyy ;;;
-{
+; Very fast animation
 $A7:F43F             dx 0001,FCA3,
                         0001,FCD2,
                         0001,FD01,
@@ -9112,7 +9100,7 @@ $A7:F43F             dx 0001,FCA3,
 }
 
 
-;;; $F45B: Instruction list - yyyy ;;;
+;;; $F45B: Instruction list - idling - facing right ;;;
 {
 $A7:F45B             dx 0030,FE2F,
                         000A,FEC6,
@@ -9129,7 +9117,7 @@ $A7:F45B             dx 0030,FE2F,
 }
 
 
-;;; $F48B: Instruction list - yyyy ;;;
+;;; $F48B: Instruction list - blinking - facing right ;;;
 {
 $A7:F48B             dx 000B,FE2F,
                         0008,FE5E,
@@ -9144,21 +9132,21 @@ $A7:F48B             dx 000B,FE2F,
 }
 
 
-;;; $F4B3: Instruction list - yyyy ;;;
+;;; $F4B3: Instruction list - charge shinespark - facing right ;;;
 {
 $A7:F4B3             dx 0001,FDD1,
                         812F        ; Sleep
 }
 
 
-;;; $F4B9: Instruction list - yyyy ;;;
+;;; $F4B9: Instruction list - echo - facing right ;;;
 {
 $A7:F4B9             dx 000A,FDFB,
                         80ED,F4B9   ; Go to $F4B9
 }
 
 
-;;; $F4C1: Instruction list - yyyy ;;;
+;;; $F4C1: Instruction list - falling - facing right ;;;
 {
 $A7:F4C1             dx 0005,FD69,
                         80ED,F4C1   ; Go to $F4C1
@@ -9168,16 +9156,29 @@ $A7:F4C1             dx 0005,FD69,
 
 ;;; $F4C9: Dachora constants ;;;
 {
+; Max X distance between dachora and Samus before dachora starts running
 $A7:F4C9             dw 0060 ; X threshold
-$A7:F4CB             dw 0060 ; X threshold
-$A7:F4CD             dw 0078 ; Timer
-$A7:F4CF             dw 003C ; Timer
+
+; Unused max X distance between dachora and Samus before dachora stops running
+$A7:F4CB             dw 0060
+
+; Blinking duration, between dachora seeing Samus and starting to run
+$A7:F4CD             dw 0078
+
+; Delay before activating shinespark
+$A7:F4CF             dw 003C
+
+; Echo position update interval
 $A7:F4D1             dw 0001
+
+; Echo lifetime
 $A7:F4D3             dw 0008
-$A7:F4D5             dw 0008
-$A7:F4D7             dw 0000
-$A7:F4D9             dw 0000
-$A7:F4DB             dw 1000
+
+; Max X speed
+$A7:F4D5             dw 0008, 0000
+
+; X acceleration
+$A7:F4D9             dw 0000, 1000
 }
 
 
@@ -9194,30 +9195,30 @@ $A7:F4F2 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
 $A7:F4F5 9E 90 0F    STZ $0F90,x[$7E:1190]  ; Enemy timer = 0
 $A7:F4F8 BD B4 0F    LDA $0FB4,x[$7E:11B4]  ;\
 $A7:F4FB 30 17       BMI $17    [$F514]     ;} If [enemy parameter 1] & 8000h != 0: go to BRANCH_ECHO
-$A7:F4FD F0 08       BEQ $08    [$F507]     ; If [enemy parameter 1] != 0:
+$A7:F4FD F0 08       BEQ $08    [$F507]     ; If [enemy direction] != left:
 $A7:F4FF A9 5B F4    LDA #$F45B             ;\
-$A7:F502 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F45B
+$A7:F502 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F45B (idling - facing right)
 $A7:F505 80 06       BRA $06    [$F50D]
 
-$A7:F507 A9 99 F3    LDA #$F399             ;\ Else ([enemy parameter 1] = 0):
-$A7:F50A 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F399
+$A7:F507 A9 99 F3    LDA #$F399             ;\ Else ([enemy direction] = left):
+$A7:F50A 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F399 (idling - facing left)
 
 $A7:F50D A9 70 F5    LDA #$F570             ;\
-$A7:F510 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F570
+$A7:F510 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F570 (wait for Samus to be near)
 $A7:F513 6B          RTL                    ; Return
 
 ; BRANCH_ECHO
 $A7:F514 89 01 00    BIT #$0001             ;\
-$A7:F517 F0 08       BEQ $08    [$F521]     ;} If [enemy parameter 1] & 1 != 0:
+$A7:F517 F0 08       BEQ $08    [$F521]     ;} If (enemy direction) != left:
 $A7:F519 A9 B9 F4    LDA #$F4B9             ;\
-$A7:F51C 9D 92 0F    STA $0F92,x[$7E:11D2]  ;} Enemy instruction list pointer = $F4B9
+$A7:F51C 9D 92 0F    STA $0F92,x[$7E:11D2]  ;} Enemy instruction list pointer = $F4B9 (echo - facing right)
 $A7:F51F 80 06       BRA $06    [$F527]
 
-$A7:F521 A9 F7 F3    LDA #$F3F7             ;\ Else ([enemy parameter 1] & 1 = 0):
-$A7:F524 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F3F7
+$A7:F521 A9 F7 F3    LDA #$F3F7             ;\ Else ((enemy direction) = left):
+$A7:F524 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F3F7 (echo - facing left)
 
 $A7:F527 A9 8C F9    LDA #$F98C             ;\
-$A7:F52A 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $F98C
+$A7:F52A 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $F98C (echo)
 $A7:F52D 6B          RTL
 }
 
@@ -9242,26 +9243,26 @@ $A7:F534 6B          RTL
 $A7:F535 08          PHP
 $A7:F536 C2 30       REP #$30
 $A7:F538 DA          PHX
-$A7:F539 A9 00 7E    LDA #$7E00
-$A7:F53C 85 01       STA $01    [$7E:0001]
-$A7:F53E BD 96 0F    LDA $0F96,x[$7E:1196]
-$A7:F541 EB          XBA
-$A7:F542 4A          LSR A
-$A7:F543 0A          ASL A
-$A7:F544 AA          TAX
-$A7:F545 BD 5F F5    LDA $F55F,x[$A7:F56D]
-$A7:F548 85 00       STA $00    [$7E:0000]
-$A7:F54A BB          TYX
-$A7:F54B A0 00 00    LDY #$0000
-
-$A7:F54E BD 00 00    LDA $0000,x[$A7:F245]
-$A7:F551 97 00       STA [$00],y[$7E:C1E0]
-$A7:F553 E8          INX
-$A7:F554 E8          INX
-$A7:F555 C8          INY
-$A7:F556 C8          INY
-$A7:F557 C0 20 00    CPY #$0020
-$A7:F55A 30 F2       BMI $F2    [$F54E]
+$A7:F539 A9 00 7E    LDA #$7E00             ;\
+$A7:F53C 85 01       STA $01    [$7E:0001]  ;|
+$A7:F53E BD 96 0F    LDA $0F96,x[$7E:1196]  ;|
+$A7:F541 EB          XBA                    ;|
+$A7:F542 4A          LSR A                  ;} $00 = $7E:C100 + [enemy palette index] / 200h * 20h
+$A7:F543 0A          ASL A                  ;|
+$A7:F544 AA          TAX                    ;|
+$A7:F545 BD 5F F5    LDA $F55F,x[$A7:F56D]  ;|
+$A7:F548 85 00       STA $00    [$7E:0000]  ;/
+$A7:F54A BB          TYX                    ;\
+$A7:F54B A0 00 00    LDY #$0000             ;|
+                                            ;|
+$A7:F54E BD 00 00    LDA $0000,x[$A7:F245]  ;|
+$A7:F551 97 00       STA [$00],y[$7E:C1E0]  ;|
+$A7:F553 E8          INX                    ;} Copy 20h bytes from [Y] to [$00]
+$A7:F554 E8          INX                    ;|
+$A7:F555 C8          INY                    ;|
+$A7:F556 C8          INY                    ;|
+$A7:F557 C0 20 00    CPY #$0020             ;|
+$A7:F55A 30 F2       BMI $F2    [$F54E]     ;/
 $A7:F55C FA          PLX
 $A7:F55D 28          PLP
 $A7:F55E 60          RTS
@@ -9276,7 +9277,7 @@ $A7:F56F 6B          RTL
 }
 
 
-;;; $F570: Dachora function ;;;
+;;; $F570: Dachora function - wait for Samus to be near ;;;
 {
 $A7:F570 A9 01 00    LDA #$0001             ;\
 $A7:F573 85 14       STA $14    [$7E:0014]  ;|
@@ -9293,16 +9294,16 @@ $A7:F58D F0 2C       BEQ $2C    [$F5BB]     ;/
 $A7:F58F BD B4 0F    LDA $0FB4,x[$7E:11B4]  ;\
 $A7:F592 F0 08       BEQ $08    [$F59C]     ;} If [enemy direction] != left:
 $A7:F594 A9 8B F4    LDA #$F48B             ;\
-$A7:F597 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F48B
+$A7:F597 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F48B (blinking - facing right)
 $A7:F59A 80 06       BRA $06    [$F5A2]
 
 $A7:F59C A9 C9 F3    LDA #$F3C9             ;\ Else ([enemy direction] = left):
-$A7:F59F 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F3C9
+$A7:F59F 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F3C9 (blinking - facing left)
 
 $A7:F5A2 A9 01 00    LDA #$0001             ;\
 $A7:F5A5 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
 $A7:F5A8 A9 BC F5    LDA #$F5BC             ;\
-$A7:F5AB 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F5BC
+$A7:F5AB 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F5BC (start running)
 $A7:F5AE AD CD F4    LDA $F4CD  [$A7:F4CD]  ;\
 $A7:F5B1 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;} Enemy function timer = 120
 $A7:F5B4 A9 1D 00    LDA #$001D             ;\
@@ -9312,22 +9313,22 @@ $A7:F5BB 6B          RTL
 }
 
 
-;;; $F5BC: Dachora function ;;;
+;;; $F5BC: Dachora function - start running ;;;
 {
 $A7:F5BC DE A8 0F    DEC $0FA8,x[$7E:11A8]  ; Decrement enemy function timer
 $A7:F5BF D0 2B       BNE $2B    [$F5EC]     ; If [enemy function timer] != 0: return
 $A7:F5C1 BD B4 0F    LDA $0FB4,x[$7E:11B4]  ;\
 $A7:F5C4 F0 0E       BEQ $0E    [$F5D4]     ;} If [enemy direction] != left:
 $A7:F5C6 A9 07 F4    LDA #$F407             ;\
-$A7:F5C9 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F407
+$A7:F5C9 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F407 (running right)
 $A7:F5CC A9 5E F6    LDA #$F65E             ;\
-$A7:F5CF 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F65E
+$A7:F5CF 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F65E (running right)
 $A7:F5D2 80 0C       BRA $0C    [$F5E0]
 
 $A7:F5D4 A9 45 F3    LDA #$F345             ;\ Else ([enemy direction] = left):
-$A7:F5D7 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F345
+$A7:F5D7 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F345 (running left)
 $A7:F5DA A9 ED F5    LDA #$F5ED             ;\
-$A7:F5DD 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F5ED
+$A7:F5DD 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F5ED (running left)
 
 $A7:F5E0 A9 01 00    LDA #$0001             ;\
 $A7:F5E3 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
@@ -9338,29 +9339,29 @@ $A7:F5EC 6B          RTL
 }
 
 
-;;; $F5ED: Dachora function ;;;
+;;; $F5ED: Dachora function - running left ;;;
 {
-$A7:F5ED 20 D5 F6    JSR $F6D5  [$A7:F6D5]  ; Execute $F6D5
+$A7:F5ED 20 D5 F6    JSR $F6D5  [$A7:F6D5]  ; Accelerate running dachora
 $A7:F5F0 A5 14       LDA $14    [$7E:0014]  ;\
 $A7:F5F2 49 FF FF    EOR #$FFFF             ;|
 $A7:F5F5 85 14       STA $14    [$7E:0014]  ;|
 $A7:F5F7 A5 12       LDA $12    [$7E:0012]  ;|
-$A7:F5F9 49 FF FF    EOR #$FFFF             ;} Negate $14.$12
-$A7:F5FC 1A          INC A                  ;|
+$A7:F5F9 49 FF FF    EOR #$FFFF             ;|
+$A7:F5FC 1A          INC A                  ;} Move enemy right by -[$14].[$12]
 $A7:F5FD 85 12       STA $12    [$7E:0012]  ;|
 $A7:F5FF D0 02       BNE $02    [$F603]     ;|
-$A7:F601 E6 14       INC $14    [$7E:0014]  ;/
-
-$A7:F603 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
+$A7:F601 E6 14       INC $14    [$7E:0014]  ;|
+                                            ;|
+$A7:F603 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A7:F607 B0 06       BCS $06    [$F60F]     ; If not collided with wall:
 $A7:F609 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A7:F60D 80 2B       BRA $2B    [$F63A]     ; Go to BRANCH_NO_WALL
 
 ; BRANCH_STOP
 $A7:F60F A9 07 F4    LDA #$F407             ;\
-$A7:F612 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F407
+$A7:F612 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F407 (running right)
 $A7:F615 A9 5E F6    LDA #$F65E             ;\
-$A7:F618 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F65E
+$A7:F618 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F65E (running right)
 $A7:F61B A9 01 00    LDA #$0001             ;\
 $A7:F61E 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy $0FB0 = 1
 
@@ -9369,8 +9370,8 @@ $A7:F621 A9 01 00    LDA #$0001             ;\
 $A7:F624 9D B4 0F    STA $0FB4,x[$7E:11B4]  ;} Enemy direction = right
 $A7:F627 A9 01 00    LDA #$0001             ;\
 $A7:F62A 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
-$A7:F62D 9E A8 0F    STZ $0FA8,x[$7E:11A8]  ; Enemy $0FA8 = 0
-$A7:F630 9E AA 0F    STZ $0FAA,x[$7E:11AA]  ; Enemy $0FAA = 0
+$A7:F62D 9E A8 0F    STZ $0FA8,x[$7E:11A8]  ;\
+$A7:F630 9E AA 0F    STZ $0FAA,x[$7E:11AA]  ;} Enemy speed = 0.0
 $A7:F633 A0 25 F2    LDY #$F225             ;\
 $A7:F636 20 35 F5    JSR $F535  [$A7:F535]  ;} Load default palette
 $A7:F639 6B          RTL                    ; Return
@@ -9387,85 +9388,90 @@ $A7:F646 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
 $A7:F64A A8          TAY                    ;} If Samus is within 60h pixel columns of enemy: go to BRANCH_STOP
 $A7:F64B D0 C2       BNE $C2    [$F60F]     ;/
 $A7:F64D A9 5B F4    LDA #$F45B             ;\
-$A7:F650 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F45B
+$A7:F650 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F45B (idling - facing right)
 $A7:F653 A9 70 F5    LDA #$F570             ;\
-$A7:F656 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F570
+$A7:F656 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F570 (wait for Samus to be near)
 $A7:F659 9E B0 0F    STZ $0FB0,x            ; Enemy $0FB0 = 0
 $A7:F65C 80 C3       BRA $C3    [$F621]     ; Go to BRANCH_MERGE
 }
 
 
-;;; $F65E: Dachora function ;;;
+;;; $F65E: Dachora function - running right ;;;
 {
-$A7:F65E 20 D5 F6    JSR $F6D5  [$A7:F6D5]
+$A7:F65E 20 D5 F6    JSR $F6D5  [$A7:F6D5]  ; Accelerate running dachora
 $A7:F661 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A7:F665 B0 06       BCS $06    [$F66D]     ; If not collided with wall:
 $A7:F667 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$A7:F66B 80 2C       BRA $2C    [$F699]
+$A7:F66B 80 2C       BRA $2C    [$F699]     ; Go to BRANCH_NO_WALL
 
 $A7:F66D A9 71 00    LDA #$0071             ;\
 $A7:F670 22 A3 90 80 JSL $8090A3[$80:90A3]  ;} Queue sound 71h, sound library 2, max queued sounds allowed = 15 (silence)
 $A7:F674 A9 45 F3    LDA #$F345             ;\
-$A7:F677 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F345
+$A7:F677 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F345 (running left)
 $A7:F67A A9 ED F5    LDA #$F5ED             ;\
-$A7:F67D 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F5ED
+$A7:F67D 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F5ED (running left)
 
-$A7:F680 9E B4 0F    STZ $0FB4,x[$7E:11B4]
-$A7:F683 9E A8 0F    STZ $0FA8,x[$7E:11A8]
+; BRANCH_MERGE
+$A7:F680 9E B4 0F    STZ $0FB4,x[$7E:11B4]  ; Enemy direction = left
+$A7:F683 9E A8 0F    STZ $0FA8,x[$7E:11A8]  ; Enemy speed = 0
 $A7:F686 A0 25 F2    LDY #$F225             ;\
 $A7:F689 20 35 F5    JSR $F535  [$A7:F535]  ;} Load default palette
 
-$A7:F68C 9E B0 0F    STZ $0FB0,x[$7E:11B0]
-$A7:F68F 9E AA 0F    STZ $0FAA,x[$7E:11AA]
+; BRANCH_NEW_ANIMATION
+$A7:F68C 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy $0FB0 = 0
+$A7:F68F 9E AA 0F    STZ $0FAA,x[$7E:11AA]  ; Enemy subspeed = 0
 $A7:F692 A9 01 00    LDA #$0001             ;\
 $A7:F695 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
-$A7:F698 6B          RTL
+$A7:F698 6B          RTL                    ; Return
 
-$A7:F699 BD 7A 0F    LDA $0F7A,x[$7E:117A]
-$A7:F69C C9 80 04    CMP #$0480
-$A7:F69F 10 01       BPL $01    [$F6A2]
-$A7:F6A1 6B          RTL
+; BRANCH_NO_WALL
+$A7:F699 BD 7A 0F    LDA $0F7A,x[$7E:117A]  ;\
+$A7:F69C C9 80 04    CMP #$0480             ;} If [enemy X position] < 480h:
+$A7:F69F 10 01       BPL $01    [$F6A2]     ;/
+$A7:F6A1 6B          RTL                    ; Return
 
 $A7:F6A2 A9 B3 F4    LDA #$F4B3             ;\
-$A7:F6A5 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F4B3
+$A7:F6A5 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F4B3 (charge shinespark - facing right)
 $A7:F6A8 A9 8F F7    LDA #$F78F             ;\
-$A7:F6AB 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F78F
-$A7:F6AE AD CF F4    LDA $F4CF  [$A7:F4CF]
-$A7:F6B1 9D A8 0F    STA $0FA8,x[$7E:11A8]
-$A7:F6B4 BD 7E 0F    LDA $0F7E,x[$7E:117E]
-$A7:F6B7 18          CLC
-$A7:F6B8 69 08 00    ADC #$0008
-$A7:F6BB 9D 7E 0F    STA $0F7E,x[$7E:117E]
+$A7:F6AB 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F78F (activate shinespark)
+$A7:F6AE AD CF F4    LDA $F4CF  [$A7:F4CF]  ;\
+$A7:F6B1 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;} Enemy function timer = 60
+$A7:F6B4 BD 7E 0F    LDA $0F7E,x[$7E:117E]  ;\
+$A7:F6B7 18          CLC                    ;|
+$A7:F6B8 69 08 00    ADC #$0008             ;} Enemy Y position += 8
+$A7:F6BB 9D 7E 0F    STA $0F7E,x[$7E:117E]  ;/
 $A7:F6BE A9 3D 00    LDA #$003D             ;\
 $A7:F6C1 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Dh, sound library 2, max queued sounds allowed = 6 (dachora stored shinespark)
-$A7:F6C5 80 C5       BRA $C5    [$F68C]
+$A7:F6C5 80 C5       BRA $C5    [$F68C]     ; Go to BRANCH_NEW_ANIMATION
 
 ; Unused branch
 $A7:F6C7 A9 99 F3    LDA #$F399             ;\
-$A7:F6CA 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F399
+$A7:F6CA 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F399 (idling - facing left)
 $A7:F6CD A9 70 F5    LDA #$F570             ;\
-$A7:F6D0 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F570
-$A7:F6D3 80 AB       BRA $AB    [$F680]
+$A7:F6D0 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F570 (wait for Samus to be near)
+$A7:F6D3 80 AB       BRA $AB    [$F680]     ; Go to BRANCH_MERGE
 }
 
 
-;;; $F6D5:  ;;;
+;;; $F6D5: Accelerate running dachora ;;;
 {
-$A7:F6D5 BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$A7:F6D8 CD D5 F4    CMP $F4D5  [$A7:F4D5]
-$A7:F6DB 30 42       BMI $42    [$F71F]
-$A7:F6DD BD B0 0F    LDA $0FB0,x[$7E:11B0]
-$A7:F6E0 C9 01 00    CMP #$0001
-$A7:F6E3 D0 07       BNE $07    [$F6EC]
+;; Returns:
+;;     $14.$12: X speed
+$A7:F6D5 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
+$A7:F6D8 CD D5 F4    CMP $F4D5  [$A7:F4D5]  ;} If [enemy speed] < 8: go to BRANCH_NO_PALETTE_CHANGE
+$A7:F6DB 30 42       BMI $42    [$F71F]     ;/
+$A7:F6DD BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
+$A7:F6E0 C9 01 00    CMP #$0001             ;} If [enemy $0FB0] = 1:
+$A7:F6E3 D0 07       BNE $07    [$F6EC]     ;/
 $A7:F6E5 A9 39 00    LDA #$0039             ;\
 $A7:F6E8 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 39h, sound library 2, max queued sounds allowed = 6 (dachora speed booster)
 
-$A7:F6EC BD B0 0F    LDA $0FB0,x[$7E:11B0]
-$A7:F6EF 3A          DEC A
-$A7:F6F0 9D B0 0F    STA $0FB0,x[$7E:11B0]
-$A7:F6F3 29 FF 00    AND #$00FF
-$A7:F6F6 F0 02       BEQ $02    [$F6FA]
-$A7:F6F8 10 25       BPL $25    [$F71F]
+$A7:F6EC BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
+$A7:F6EF 3A          DEC A                  ;} Decrement enemy $0FB0
+$A7:F6F0 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;/
+$A7:F6F3 29 FF 00    AND #$00FF             ;\
+$A7:F6F6 F0 02       BEQ $02    [$F6FA]     ;} If [enemy $0FB0] % 100h != 0: go to BRANCH_NO_PALETTE_CHANGE
+$A7:F6F8 10 25       BPL $25    [$F71F]     ;/
 
 $A7:F6FA BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
 $A7:F6FD EB          XBA                    ;|
@@ -9484,50 +9490,53 @@ $A7:F717 30 06       BMI $06    [$F71F]     ;} If [enemy $0FB0] >= 410h:
 $A7:F719 A9 10 03    LDA #$0310             ;\
 $A7:F71C 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy $0FB0 = 310h
 
+; BRANCH_NO_PALETTE_CHANGE
 $A7:F71F A9 01 00    LDA #$0001             ;\
 $A7:F722 85 14       STA $14    [$7E:0014]  ;|
 $A7:F724 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by 1.0
 $A7:F726 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A7:F72A BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$A7:F72D CD D5 F4    CMP $F4D5  [$A7:F4D5]
-$A7:F730 30 1A       BMI $1A    [$F74C]
-$A7:F732 BD AA 0F    LDA $0FAA,x[$7E:11AA]
-$A7:F735 CD D7 F4    CMP $F4D7  [$A7:F4D7]
-$A7:F738 30 12       BMI $12    [$F74C]
-$A7:F73A AD D5 F4    LDA $F4D5  [$A7:F4D5]
-$A7:F73D 9D A8 0F    STA $0FA8,x[$7E:11A8]
-$A7:F740 85 14       STA $14    [$7E:0014]
-$A7:F742 AD D7 F4    LDA $F4D7  [$A7:F4D7]
-$A7:F745 9D AA 0F    STA $0FAA,x[$7E:11AA]
-$A7:F748 85 12       STA $12    [$7E:0012]
-$A7:F74A 80 3A       BRA $3A    [$F786]
+$A7:F72A BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
+$A7:F72D CD D5 F4    CMP $F4D5  [$A7:F4D5]  ;|
+$A7:F730 30 1A       BMI $1A    [$F74C]     ;|
+$A7:F732 BD AA 0F    LDA $0FAA,x[$7E:11AA]  ;} If [enemy speed] >= 8.0:
+$A7:F735 CD D7 F4    CMP $F4D7  [$A7:F4D7]  ;|
+$A7:F738 30 12       BMI $12    [$F74C]     ;/
+$A7:F73A AD D5 F4    LDA $F4D5  [$A7:F4D5]  ;\
+$A7:F73D 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;|
+$A7:F740 85 14       STA $14    [$7E:0014]  ;|
+$A7:F742 AD D7 F4    LDA $F4D7  [$A7:F4D7]  ;} $14.$12 = enemy speed = 8.0
+$A7:F745 9D AA 0F    STA $0FAA,x[$7E:11AA]  ;|
+$A7:F748 85 12       STA $12    [$7E:0012]  ;/
+$A7:F74A 80 3A       BRA $3A    [$F786]     ; Return
 
-$A7:F74C BD AA 0F    LDA $0FAA,x[$7E:11AA]
-$A7:F74F 18          CLC
-$A7:F750 6D DB F4    ADC $F4DB  [$A7:F4DB]
-$A7:F753 9D AA 0F    STA $0FAA,x[$7E:11AA]
-$A7:F756 85 12       STA $12    [$7E:0012]
-$A7:F758 BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$A7:F75B 6D D9 F4    ADC $F4D9  [$A7:F4D9]
-$A7:F75E 9D A8 0F    STA $0FA8,x[$7E:11A8]
-$A7:F761 85 14       STA $14    [$7E:0014]
-$A7:F763 C9 04 00    CMP #$0004
-$A7:F766 D0 12       BNE $12    [$F77A]
-$A7:F768 A5 12       LDA $12    [$7E:0012]
-$A7:F76A C9 00 00    CMP #$0000
-$A7:F76D D0 17       BNE $17    [$F786]
+$A7:F74C BD AA 0F    LDA $0FAA,x[$7E:11AA]  ;\
+$A7:F74F 18          CLC                    ;|
+$A7:F750 6D DB F4    ADC $F4DB  [$A7:F4DB]  ;|
+$A7:F753 9D AA 0F    STA $0FAA,x[$7E:11AA]  ;|
+$A7:F756 85 12       STA $12    [$7E:0012]  ;} Enemy speed += 0.1000h
+$A7:F758 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;} $14.$12 = [enemy speed]
+$A7:F75B 6D D9 F4    ADC $F4D9  [$A7:F4D9]  ;|
+$A7:F75E 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;|
+$A7:F761 85 14       STA $14    [$7E:0014]  ;/
+$A7:F763 C9 04 00    CMP #$0004             ;\
+$A7:F766 D0 12       BNE $12    [$F77A]     ;} If [enemy speed] != 4: go to BRANCH_CHECK_MAX_SPEED
+$A7:F768 A5 12       LDA $12    [$7E:0012]  ;\
+$A7:F76A C9 00 00    CMP #$0000             ;} If [enemy speed] != 4.0: return
+$A7:F76D D0 17       BNE $17    [$F786]     ;/
 
+; BRANCH_MAX_SPEED
 $A7:F76F BD 92 0F    LDA $0F92,x[$7E:1192]  ;\
 $A7:F772 18          CLC                    ;|
 $A7:F773 69 1C 00    ADC #$001C             ;} Enemy instruction list pointer += 1Ch
 $A7:F776 9D 92 0F    STA $0F92,x[$7E:1192]  ;/
-$A7:F779 60          RTS
+$A7:F779 60          RTS                    ; Return
 
-$A7:F77A C9 08 00    CMP #$0008
-$A7:F77D D0 07       BNE $07    [$F786]
-$A7:F77F A5 12       LDA $12    [$7E:0012]
-$A7:F781 C9 00 00    CMP #$0000
-$A7:F784 F0 E9       BEQ $E9    [$F76F]
+; BRANCH_CHECK_MAX_SPEED
+$A7:F77A C9 08 00    CMP #$0008             ;\
+$A7:F77D D0 07       BNE $07    [$F786]     ;|
+$A7:F77F A5 12       LDA $12    [$7E:0012]  ;} If [enemy speed] = 8.0: go to BRANCH_MAX_SPEED
+$A7:F781 C9 00 00    CMP #$0000             ;|
+$A7:F784 F0 E9       BEQ $E9    [$F76F]     ;/
 
 $A7:F786 60          RTS
 
@@ -9535,11 +9544,11 @@ $A7:F787             dw F245, F265, F285, F2A5
 }
 
 
-;;; $F78F: Dachora function ;;;
+;;; $F78F: Dachora function - activate shinespark ;;;
 {
 $A7:F78F 20 0A F9    JSR $F90A  [$A7:F90A]  ; Load dachora shine palette
-$A7:F792 DE A8 0F    DEC $0FA8,x[$7E:11A8]
-$A7:F795 D0 6E       BNE $6E    [$F805]
+$A7:F792 DE A8 0F    DEC $0FA8,x[$7E:11A8]  ; Decrement enemy function timer
+$A7:F795 D0 6E       BNE $6E    [$F805]     ; If [enemy function timer] != 0: return
 $A7:F797 BD 92 0F    LDA $0F92,x[$7E:1192]  ;\
 $A7:F79A 1A          INC A                  ;|
 $A7:F79B 1A          INC A                  ;} Enemy instruction list pointer += 2
@@ -9547,49 +9556,49 @@ $A7:F79C 9D 92 0F    STA $0F92,x[$7E:1192]  ;/
 $A7:F79F A9 01 00    LDA #$0001             ;\
 $A7:F7A2 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
 $A7:F7A5 A9 06 F8    LDA #$F806             ;\
-$A7:F7A8 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F806
-$A7:F7AB 9E E8 0F    STZ $0FE8,x[$7E:11E8]
-$A7:F7AE 9E EE 0F    STZ $0FEE,x[$7E:11EE]
-$A7:F7B1 9E 2E 10    STZ $102E,x[$7E:122E]
-$A7:F7B4 9E 6E 10    STZ $106E,x[$7E:126E]
-$A7:F7B7 9E AE 10    STZ $10AE,x[$7E:12AE]
-$A7:F7BA 9E AC 0F    STZ $0FAC,x[$7E:11AC]
-$A7:F7BD 9E AE 0F    STZ $0FAE,x[$7E:11AE]
-$A7:F7C0 BD 7E 0F    LDA $0F7E,x[$7E:117E]
-$A7:F7C3 38          SEC
-$A7:F7C4 E9 08 00    SBC #$0008
-$A7:F7C7 9D 7E 0F    STA $0F7E,x[$7E:117E]
+$A7:F7A8 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F806 (shinesparking)
+$A7:F7AB 9E E8 0F    STZ $0FE8,x[$7E:11E8]  ; Enemy ([X] + 1) position update timer = 0
+$A7:F7AE 9E EE 0F    STZ $0FEE,x[$7E:11EE]  ; Enemy ([X] + 1) visibility timer = 0
+$A7:F7B1 9E 2E 10    STZ $102E,x[$7E:122E]  ; Enemy ([X] + 2) visibility timer = 0
+$A7:F7B4 9E 6E 10    STZ $106E,x[$7E:126E]  ; Enemy ([X] + 3) visibility timer = 0 
+$A7:F7B7 9E AE 10    STZ $10AE,x[$7E:12AE]  ; Enemy ([X] + 4) visibility timer = 0
+$A7:F7BA 9E AC 0F    STZ $0FAC,x[$7E:11AC]  ;\
+$A7:F7BD 9E AE 0F    STZ $0FAE,x[$7E:11AE]  ;} Enemy Y acceleration = 0.0
+$A7:F7C0 BD 7E 0F    LDA $0F7E,x[$7E:117E]  ;\
+$A7:F7C3 38          SEC                    ;|
+$A7:F7C4 E9 08 00    SBC #$0008             ;} Enemy Y position -= 8
+$A7:F7C7 9D 7E 0F    STA $0F7E,x[$7E:117E]  ;/
 $A7:F7CA A9 3B 00    LDA #$003B             ;\
 $A7:F7CD 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Bh, sound library 2, max queued sounds allowed = 6 (dachora shinespark)
-$A7:F7D1 BD B4 0F    LDA $0FB4,x[$7E:11B4]
-$A7:F7D4 F0 11       BEQ $11    [$F7E7]
-$A7:F7D6 A9 B9 F4    LDA #$F4B9
-$A7:F7D9 9D D2 0F    STA $0FD2,x[$7E:11D2]
-$A7:F7DC 9D 12 10    STA $1012,x[$7E:1212]
-$A7:F7DF 9D 52 10    STA $1052,x[$7E:1252]
-$A7:F7E2 9D 92 10    STA $1092,x[$7E:1292]
+$A7:F7D1 BD B4 0F    LDA $0FB4,x[$7E:11B4]  ;\
+$A7:F7D4 F0 11       BEQ $11    [$F7E7]     ;} If [enemy direction] != left:
+$A7:F7D6 A9 B9 F4    LDA #$F4B9             ;\
+$A7:F7D9 9D D2 0F    STA $0FD2,x[$7E:11D2]  ;} Enemy ([X] + 1) instruction list pointer = $F4B9 (echo - facing right)
+$A7:F7DC 9D 12 10    STA $1012,x[$7E:1212]  ; Enemy ([X] + 2) instruction list pointer = $F4B9 (echo - facing right)
+$A7:F7DF 9D 52 10    STA $1052,x[$7E:1252]  ; Enemy ([X] + 3) instruction list pointer = $F4B9 (echo - facing right)
+$A7:F7E2 9D 92 10    STA $1092,x[$7E:1292]  ; Enemy ([X] + 4) instruction list pointer = $F4B9 (echo - facing right)
 $A7:F7E5 80 0F       BRA $0F    [$F7F6]
 
-$A7:F7E7 A9 F7 F3    LDA #$F3F7
-$A7:F7EA 9D D2 0F    STA $0FD2,x
-$A7:F7ED 9D 12 10    STA $1012,x
-$A7:F7F0 9D 52 10    STA $1052,x
-$A7:F7F3 9D 92 10    STA $1092,x
+$A7:F7E7 A9 F7 F3    LDA #$F3F7             ;\ Else ([enemy direction] = left):
+$A7:F7EA 9D D2 0F    STA $0FD2,x            ;} Enemy ([X] + 1) instruction list pointer = $F3F7 (echo - facing left)
+$A7:F7ED 9D 12 10    STA $1012,x            ; Enemy ([X] + 2) instruction list pointer = $F3F7 (echo - facing left)
+$A7:F7F0 9D 52 10    STA $1052,x            ; Enemy ([X] + 3) instruction list pointer = $F3F7 (echo - facing left)
+$A7:F7F3 9D 92 10    STA $1092,x            ; Enemy ([X] + 4) instruction list pointer = $F3F7 (echo - facing left)
 
-$A7:F7F6 A9 01 00    LDA #$0001
-$A7:F7F9 9D D4 0F    STA $0FD4,x[$7E:11D4]
-$A7:F7FC 9D 14 10    STA $1014,x[$7E:1214]
-$A7:F7FF 9D 54 10    STA $1054,x[$7E:1254]
-$A7:F802 9D 94 10    STA $1094,x[$7E:1294]
+$A7:F7F6 A9 01 00    LDA #$0001             ;\
+$A7:F7F9 9D D4 0F    STA $0FD4,x[$7E:11D4]  ;} Enemy ([X] + 1) instruction timer = 1
+$A7:F7FC 9D 14 10    STA $1014,x[$7E:1214]  ; Enemy ([X] + 2) instruction timer = 1
+$A7:F7FF 9D 54 10    STA $1054,x[$7E:1254]  ; Enemy ([X] + 3) instruction timer = 1
+$A7:F802 9D 94 10    STA $1094,x[$7E:1294]  ; Enemy ([X] + 4) instruction timer = 1
 
 $A7:F805 6B          RTL
 }
 
 
-;;; $F806: Dachora function ;;;
+;;; $F806: Dachora function - shinesparking ;;;
 {
 $A7:F806 20 0A F9    JSR $F90A  [$A7:F90A]  ; Load dachora shine palette
-$A7:F809 20 9A F8    JSR $F89A  [$A7:F89A]
+$A7:F809 20 9A F8    JSR $F89A  [$A7:F89A]  ; Update echo positions
 $A7:F80C BD AE 0F    LDA $0FAE,x[$7E:11AE]  ;\
 $A7:F80F 18          CLC                    ;|
 $A7:F810 6F 32 0B 00 ADC $000B32[$7E:0B32]  ;|
@@ -9601,11 +9610,11 @@ $A7:F821 BD AA 0F    LDA $0FAA,x[$7E:11AA]  ;\
 $A7:F824 18          CLC                    ;|
 $A7:F825 7D AE 0F    ADC $0FAE,x[$7E:11AE]  ;|
 $A7:F828 9D AA 0F    STA $0FAA,x[$7E:11AA]  ;|
-$A7:F82B 85 12       STA $12    [$7E:0012]  ;} Enemy Y velocity += [enemy Y acceleration]
+$A7:F82B 85 12       STA $12    [$7E:0012]  ;} Enemy speed += [enemy Y acceleration]
 $A7:F82D BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;|
 $A7:F830 7D AC 0F    ADC $0FAC,x[$7E:11AC]  ;|
 $A7:F833 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;/
-$A7:F836 85 14       STA $14    [$7E:0014]  ; $14.$12 = [enemy Y velocity]
+$A7:F836 85 14       STA $14    [$7E:0014]  ; $14.$12 = [enemy speed]
 $A7:F838 C9 0F 00    CMP #$000F             ;\
 $A7:F83B 30 05       BMI $05    [$F842]     ;|
 $A7:F83D A9 0F 00    LDA #$000F             ;} $14 = min(Fh, [$14])
@@ -9615,33 +9624,33 @@ $A7:F842 A5 14       LDA $14    [$7E:0014]  ;\
 $A7:F844 49 FF FF    EOR #$FFFF             ;|
 $A7:F847 85 14       STA $14    [$7E:0014]  ;|
 $A7:F849 A5 12       LDA $12    [$7E:0012]  ;|
-$A7:F84B 49 FF FF    EOR #$FFFF             ;} Negate $14.$12
-$A7:F84E 1A          INC A                  ;|
+$A7:F84B 49 FF FF    EOR #$FFFF             ;|
+$A7:F84E 1A          INC A                  ;} Move enemy down by -[$14].[$12]
 $A7:F84F 85 12       STA $12    [$7E:0012]  ;|
 $A7:F851 D0 02       BNE $02    [$F855]     ;|
-$A7:F853 E6 14       INC $14    [$7E:0014]  ;/
-
-$A7:F855 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
+$A7:F853 E6 14       INC $14    [$7E:0014]  ;|
+                                            ;|
+$A7:F855 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A7:F859 90 3E       BCC $3E    [$F899]     ; If not collided with block: return
-$A7:F85B BD B4 0F    LDA $0FB4,x[$7E:11B4]
-$A7:F85E D0 0E       BNE $0E    [$F86E]
+$A7:F85B BD B4 0F    LDA $0FB4,x[$7E:11B4]  ;\
+$A7:F85E D0 0E       BNE $0E    [$F86E]     ;} If [enemy direction] = left:
 $A7:F860 A9 C1 F4    LDA #$F4C1             ;\
-$A7:F863 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F4C1
-$A7:F866 A9 01 00    LDA #$0001
-$A7:F869 9D B4 0F    STA $0FB4,x
+$A7:F863 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F4C1 (falling - facing right)
+$A7:F866 A9 01 00    LDA #$0001             ;\
+$A7:F869 9D B4 0F    STA $0FB4,x            ;} Enemy direction = right
 $A7:F86C 80 09       BRA $09    [$F877]
 
-$A7:F86E A9 FF F3    LDA #$F3FF             ;\
-$A7:F871 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F3FF
-$A7:F874 9E B4 0F    STZ $0FB4,x[$7E:11B4]
+$A7:F86E A9 FF F3    LDA #$F3FF             ;\ Else ([enemy direction] != left):
+$A7:F871 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F3FF (falling - facing left)
+$A7:F874 9E B4 0F    STZ $0FB4,x[$7E:11B4]  ; Enemy direction = left
 
 $A7:F877 A9 35 F9    LDA #$F935             ;\
-$A7:F87A 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F935
+$A7:F87A 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F935 (falling)
 $A7:F87D A9 01 00    LDA #$0001             ;\
 $A7:F880 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
-$A7:F883 9E A8 0F    STZ $0FA8,x[$7E:11A8]
-$A7:F886 9E AA 0F    STZ $0FAA,x[$7E:11AA]
-$A7:F889 9E B0 0F    STZ $0FB0,x[$7E:11B0]
+$A7:F883 9E A8 0F    STZ $0FA8,x[$7E:11A8]  ;\
+$A7:F886 9E AA 0F    STZ $0FAA,x[$7E:11AA]  ;} Enemy speed = 0.0
+$A7:F889 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy $0FB0 = 0
 $A7:F88C A0 25 F2    LDY #$F225             ;\
 $A7:F88F 20 35 F5    JSR $F535  [$A7:F535]  ;} Load default palette
 $A7:F892 A9 3C 00    LDA #$003C             ;\
@@ -9651,54 +9660,54 @@ $A7:F899 6B          RTL
 }
 
 
-;;; $F89A:  ;;;
+;;; $F89A: Update echo positions ;;;
 {
-$A7:F89A BD E8 0F    LDA $0FE8,x[$7E:11E8]
-$A7:F89D F0 05       BEQ $05    [$F8A4]
-$A7:F89F 3A          DEC A
-$A7:F8A0 9D E8 0F    STA $0FE8,x[$7E:11E8]
-$A7:F8A3 60          RTS
+$A7:F89A BD E8 0F    LDA $0FE8,x[$7E:11E8]  ;\
+$A7:F89D F0 05       BEQ $05    [$F8A4]     ;} If [enemy ([X] + 1) position update timer] != 0:
+$A7:F89F 3A          DEC A                  ;\
+$A7:F8A0 9D E8 0F    STA $0FE8,x[$7E:11E8]  ;} Decrement enemy ([X] + 1) position update timer
+$A7:F8A3 60          RTS                    ; Return
 
-$A7:F8A4 AD D1 F4    LDA $F4D1  [$A7:F4D1]
-$A7:F8A7 9D E8 0F    STA $0FE8,x[$7E:11E8]
-$A7:F8AA BD EE 0F    LDA $0FEE,x[$7E:11EE]
-$A7:F8AD D0 13       BNE $13    [$F8C2]
-$A7:F8AF BD 7A 0F    LDA $0F7A,x[$7E:117A]
-$A7:F8B2 9D BA 0F    STA $0FBA,x[$7E:11BA]
-$A7:F8B5 BD 7E 0F    LDA $0F7E,x[$7E:117E]
-$A7:F8B8 9D BE 0F    STA $0FBE,x[$7E:11BE]
-$A7:F8BB AD D3 F4    LDA $F4D3  [$A7:F4D3]
-$A7:F8BE 9D EE 0F    STA $0FEE,x[$7E:11EE]
-$A7:F8C1 60          RTS
+$A7:F8A4 AD D1 F4    LDA $F4D1  [$A7:F4D1]  ;\
+$A7:F8A7 9D E8 0F    STA $0FE8,x[$7E:11E8]  ;} Enemy ([X] + 1) position update timer = 1
+$A7:F8AA BD EE 0F    LDA $0FEE,x[$7E:11EE]  ;\
+$A7:F8AD D0 13       BNE $13    [$F8C2]     ;} If [enemy ([X] + 1) visibility timer] = 0:
+$A7:F8AF BD 7A 0F    LDA $0F7A,x[$7E:117A]  ;\
+$A7:F8B2 9D BA 0F    STA $0FBA,x[$7E:11BA]  ;} Enemy ([X] + 1) X position = [enemy X position]
+$A7:F8B5 BD 7E 0F    LDA $0F7E,x[$7E:117E]  ;\
+$A7:F8B8 9D BE 0F    STA $0FBE,x[$7E:11BE]  ;} Enemy ([X] + 1) Y position = [enemy Y position]
+$A7:F8BB AD D3 F4    LDA $F4D3  [$A7:F4D3]  ;\
+$A7:F8BE 9D EE 0F    STA $0FEE,x[$7E:11EE]  ;} Enemy ([X] + 1) visibility timer = 8
+$A7:F8C1 60          RTS                    ; Return
 
-$A7:F8C2 BD 2E 10    LDA $102E,x[$7E:122E]
-$A7:F8C5 D0 13       BNE $13    [$F8DA]
-$A7:F8C7 BD 7A 0F    LDA $0F7A,x[$7E:117A]
-$A7:F8CA 9D FA 0F    STA $0FFA,x[$7E:11FA]
-$A7:F8CD BD 7E 0F    LDA $0F7E,x[$7E:117E]
-$A7:F8D0 9D FE 0F    STA $0FFE,x[$7E:11FE]
-$A7:F8D3 AD D3 F4    LDA $F4D3  [$A7:F4D3]
-$A7:F8D6 9D 2E 10    STA $102E,x[$7E:122E]
-$A7:F8D9 60          RTS
+$A7:F8C2 BD 2E 10    LDA $102E,x[$7E:122E]  ;\
+$A7:F8C5 D0 13       BNE $13    [$F8DA]     ;} If [enemy ([X] + 2) visibility timer] = 0:
+$A7:F8C7 BD 7A 0F    LDA $0F7A,x[$7E:117A]  ;\
+$A7:F8CA 9D FA 0F    STA $0FFA,x[$7E:11FA]  ;} Enemy ([X] + 2) X position = [enemy X position]
+$A7:F8CD BD 7E 0F    LDA $0F7E,x[$7E:117E]  ;\
+$A7:F8D0 9D FE 0F    STA $0FFE,x[$7E:11FE]  ;} Enemy ([X] + 2) Y position = [enemy Y position]
+$A7:F8D3 AD D3 F4    LDA $F4D3  [$A7:F4D3]  ;\
+$A7:F8D6 9D 2E 10    STA $102E,x[$7E:122E]  ;} Enemy ([X] + 2) visibility timer = 8
+$A7:F8D9 60          RTS                    ; Return
 
-$A7:F8DA BD 6E 10    LDA $106E,x[$7E:126E]
-$A7:F8DD D0 13       BNE $13    [$F8F2]
-$A7:F8DF BD 7A 0F    LDA $0F7A,x[$7E:117A]
-$A7:F8E2 9D 3A 10    STA $103A,x[$7E:123A]
-$A7:F8E5 BD 7E 0F    LDA $0F7E,x[$7E:117E]
-$A7:F8E8 9D 3E 10    STA $103E,x[$7E:123E]
-$A7:F8EB AD D3 F4    LDA $F4D3  [$A7:F4D3]
-$A7:F8EE 9D 6E 10    STA $106E,x[$7E:126E]
-$A7:F8F1 60          RTS
+$A7:F8DA BD 6E 10    LDA $106E,x[$7E:126E]  ;\
+$A7:F8DD D0 13       BNE $13    [$F8F2]     ;} If [enemy ([X] + 3) visibility timer] = 0:
+$A7:F8DF BD 7A 0F    LDA $0F7A,x[$7E:117A]  ;\
+$A7:F8E2 9D 3A 10    STA $103A,x[$7E:123A]  ;} Enemy ([X] + 3) X position = [enemy X position]
+$A7:F8E5 BD 7E 0F    LDA $0F7E,x[$7E:117E]  ;\
+$A7:F8E8 9D 3E 10    STA $103E,x[$7E:123E]  ;} Enemy ([X] + 3) Y position = [enemy Y position]
+$A7:F8EB AD D3 F4    LDA $F4D3  [$A7:F4D3]  ;\
+$A7:F8EE 9D 6E 10    STA $106E,x[$7E:126E]  ;} Enemy ([X] + 3) visibility timer = 8
+$A7:F8F1 60          RTS                    ; Return
 
-$A7:F8F2 BD AE 10    LDA $10AE,x[$7E:12AE]
-$A7:F8F5 D0 12       BNE $12    [$F909]
-$A7:F8F7 BD 7A 0F    LDA $0F7A,x[$7E:117A]
-$A7:F8FA 9D 7A 10    STA $107A,x[$7E:127A]
-$A7:F8FD BD 7E 0F    LDA $0F7E,x[$7E:117E]
-$A7:F900 9D 7E 10    STA $107E,x[$7E:127E]
-$A7:F903 AD D3 F4    LDA $F4D3  [$A7:F4D3]
-$A7:F906 9D AE 10    STA $10AE,x[$7E:12AE]
+$A7:F8F2 BD AE 10    LDA $10AE,x[$7E:12AE]  ;\
+$A7:F8F5 D0 12       BNE $12    [$F909]     ;} If [enemy ([X] + 4) visibility timer] = 0:
+$A7:F8F7 BD 7A 0F    LDA $0F7A,x[$7E:117A]  ;\
+$A7:F8FA 9D 7A 10    STA $107A,x[$7E:127A]  ;} Enemy ([X] + 4) X position = [enemy X position]
+$A7:F8FD BD 7E 0F    LDA $0F7E,x[$7E:117E]  ;\
+$A7:F900 9D 7E 10    STA $107E,x[$7E:127E]  ;} Enemy ([X] + 4) Y position = [enemy Y position]
+$A7:F903 AD D3 F4    LDA $F4D3  [$A7:F4D3]  ;\
+$A7:F906 9D AE 10    STA $10AE,x[$7E:12AE]  ;} Enemy ([X] + 4) visibility timer = 8
 
 $A7:F909 60          RTS
 }
@@ -9728,42 +9737,42 @@ $A7:F92D             dw F2C5, F2E5, F305, F325
 }
 
 
-;;; $F935: Dachora function ;;;
+;;; $F935: Dachora function - falling ;;;
 {
 $A7:F935 BD AA 0F    LDA $0FAA,x[$7E:11AA]  ;\
 $A7:F938 18          CLC                    ;|
 $A7:F939 6F 32 0B 00 ADC $000B32[$7E:0B32]  ;|
 $A7:F93D 9D AA 0F    STA $0FAA,x[$7E:11AA]  ;|
-$A7:F940 85 12       STA $12    [$7E:0012]  ;} Enemy Y velocity += [Samus Y acceleration]
+$A7:F940 85 12       STA $12    [$7E:0012]  ;} Enemy speed += [Samus Y acceleration]
 $A7:F942 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;|
 $A7:F945 6F 34 0B 00 ADC $000B34[$7E:0B34]  ;|
 $A7:F949 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;/
-$A7:F94C 85 14       STA $14    [$7E:0014]  ; $14.$12 = [enemy Y velocity]
-$A7:F94E C9 0A 00    CMP #$000A             ;\
+$A7:F94C 85 14       STA $14    [$7E:0014]  ;\
+$A7:F94E C9 0A 00    CMP #$000A             ;|
 $A7:F951 30 07       BMI $07    [$F95A]     ;|
-$A7:F953 A9 0A 00    LDA #$000A             ;} $14.$12 = min(A.0h, [$14].[$12])
+$A7:F953 A9 0A 00    LDA #$000A             ;} $14.$12 = min([enemy speed], A.0h)
 $A7:F956 85 14       STA $14    [$7E:0014]  ;|
 $A7:F958 64 12       STZ $12    [$7E:0012]  ;/
 
 $A7:F95A 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A7:F95E 90 2B       BCC $2B    [$F98B]     ; If not collided with block: return
-$A7:F960 BD B4 0F    LDA $0FB4,x[$7E:11B4]
-$A7:F963 F0 0E       BEQ $0E    [$F973]
+$A7:F960 BD B4 0F    LDA $0FB4,x[$7E:11B4]  ;\
+$A7:F963 F0 0E       BEQ $0E    [$F973]     ;} If [enemy direction] != left:
 $A7:F965 A9 07 F4    LDA #$F407             ;\
-$A7:F968 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F407
+$A7:F968 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F407 (running right)
 $A7:F96B A9 5E F6    LDA #$F65E             ;\
-$A7:F96E 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F65E
+$A7:F96E 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F65E (running right)
 $A7:F971 80 0C       BRA $0C    [$F97F]
 
-$A7:F973 A9 45 F3    LDA #$F345             ;\
-$A7:F976 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F345
+$A7:F973 A9 45 F3    LDA #$F345             ;\ Else ([enemy direction] = left):
+$A7:F976 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = $F345 (running left)
 $A7:F979 A9 ED F5    LDA #$F5ED             ;\
-$A7:F97C 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F5ED
+$A7:F97C 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F5ED (running left)
 
 $A7:F97F A9 01 00    LDA #$0001             ;\
 $A7:F982 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
-$A7:F985 9E A8 0F    STZ $0FA8,x[$7E:11A8]
-$A7:F988 9E AA 0F    STZ $0FAA,x[$7E:11AA]
+$A7:F985 9E A8 0F    STZ $0FA8,x[$7E:11A8]  ;\
+$A7:F988 9E AA 0F    STZ $0FAA,x[$7E:11AA]  ;} Enemy speed = 0.0
 
 $A7:F98B 6B          RTL
 }
@@ -9772,9 +9781,9 @@ $A7:F98B 6B          RTL
 ;;; $F98C: Dachora function - echo ;;;
 {
 $A7:F98C BD AE 0F    LDA $0FAE,x[$7E:11EE]  ;\
-$A7:F98F F0 1C       BEQ $1C    [$F9AD]     ;} If [enemy $0FAE] = 0: go to BRANCH_INVISIBLE
+$A7:F98F F0 1C       BEQ $1C    [$F9AD]     ;} If [enemy visibility timer] = 0: go to BRANCH_INVISIBLE
 $A7:F991 3A          DEC A                  ;\
-$A7:F992 9D AE 0F    STA $0FAE,x[$7E:11EE]  ;} Decrement enemy $0FAE
+$A7:F992 9D AE 0F    STA $0FAE,x[$7E:11EE]  ;} Decrement enemy visibility timer
 $A7:F995 8A          TXA                    ;\
 $A7:F996 89 40 00    BIT #$0040             ;} If [enemy index] % 40h != 0:
 $A7:F999 F0 0A       BEQ $0A    [$F9A5]     ;/
@@ -9791,7 +9800,7 @@ $A7:F9AB F0 0B       BEQ $0B    [$F9B8]     ;/
 $A7:F9AD BD 86 0F    LDA $0F86,x[$7E:11C6]  ;\
 $A7:F9B0 09 00 01    ORA #$0100             ;} Set enemy as invisible
 $A7:F9B3 9D 86 0F    STA $0F86,x[$7E:11C6]  ;/
-$A7:F9B6 80 09       BRA $09    [$F9C1]
+$A7:F9B6 80 09       BRA $09    [$F9C1]     ; Return
 
 ; BRANCH_VISIBLE
 $A7:F9B8 BD 86 0F    LDA $0F86,x[$7E:11C6]  ;\
