@@ -4894,7 +4894,7 @@ $AA:DF33 6B          RTL
 ;;; $DF34: Enemy shot - enemy $F07F (Shaktool) ;;;
 {
 ; Bug: when an enemy dies and goes through its death animation, its enemy RAM is cleared,
-; so the LDY always loads 0, meaning the other pieces aren't aren't set to delete
+; so the LDY always loads 0, meaning this only works out if Shaktool is the first enemy in the room
 
 $AA:DF34 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $AA:DF38 AE 54 0E    LDX $0E54  [$7E:0E54]

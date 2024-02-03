@@ -10847,7 +10847,7 @@ $91:E5EF 60          RTS                    ;} Return carry set
 ;;; $E5F0: Drained Samus controller - 3: enable hyper beam ;;;
 {
 $91:E5F0 A9 09 10    LDA #$1009             ;\
-$91:E5F3 8D A6 09    STA $09A6  [$7E:09A6]  ;} Equipped beams = wave/plasma | 1000h
+$91:E5F3 8D A6 09    STA $09A6  [$7E:09A6]  ;} Equipped beams = wave/plasma/charge
 $91:E5F6 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam graphics
 $91:E5FA A0 F0 E1    LDY #$E1F0             ;\
 $91:E5FD 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn hyper beam palette FX object

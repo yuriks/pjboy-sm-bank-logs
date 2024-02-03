@@ -4,6 +4,8 @@
 }
 
 
+;;; $8687..C70F: Mother Brain ;;;
+{
 ;;; $8687: Initialisation AI - enemy $EC7F (Mother Brain's body) ;;;
 {
 $A9:8687 8B          PHB                    ;\
@@ -4285,7 +4287,7 @@ $A9:B4AC C6 16       DEC $16    [$7E:0016]  ; Decrement $16
 $A9:B4AE F0 09       BEQ $09    [$B4B9]     ; If [$16] = 0: return carry clear
 $A9:B4B0 8A          TXA                    ;\
 $A9:B4B1 18          CLC                    ;|
-$A9:B4B2 69 08 00    ADC #$0008             ;} X += 8
+$A9:B4B2 69 08 00    ADC #$0008             ;} X += 8 (next hitbox entry)
 $A9:B4B5 AA          TAX                    ;/
 $A9:B4B6 4C 5E B4    JMP $B45E  [$A9:B45E]  ; Go to LOOP
 
@@ -6998,6 +7000,7 @@ $A9:C70D 10 C3       BPL $C3    [$C6D2]     ;/
 
 $A9:C70F 60          RTS
 }
+}
 
 
 ;;; $C710..CFD3: Shitroid in cutscene ;;;
@@ -8534,19 +8537,19 @@ $A9:D30C AB          PLB                    ;|
 $A9:D30D AB          PLB                    ;|
 $A9:D30E A9 00 00    LDA #$0000             ;|
 $A9:D311 A2 FE 0F    LDX #$0FFE             ;|
-                                            ;} $7E:2000..2FFF = 0
+                                            ;} $7E:2000..2FFF = 0 (corpse rotting graphics)
 $A9:D314 9D 00 20    STA $2000,x[$7E:2FFE]  ;|
 $A9:D317 CA          DEX                    ;|
 $A9:D318 CA          DEX                    ;|
 $A9:D319 10 F9       BPL $F9    [$D314]     ;|
 $A9:D31B AB          PLB                    ;/
 $A9:D31C A9 AD D3    LDA #$D3AD             ;\
-$A9:D31F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3AD
+$A9:D31F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3AD (wait for Samus collision)
 $A9:D322 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A9:D325 09 00 A0    ORA #$A000             ;} Set dead torizo to process instructions and have solid hitbox
 $A9:D328 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D32B A9 DC D6    LDA #$D6DC             ;\
-$A9:D32E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Dead torizo instruction list pointer = $D6DC
+$A9:D32E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Dead torizo instruction list pointer = $D6DC (dead torizo)
 $A9:D331 A9 01 00    LDA #$0001             ;\
 $A9:D334 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Dead torizo instruction list timer = 1
 $A9:D337 9C 90 0F    STZ $0F90  [$7E:0F90]  ; Dead torizo timer = 0
@@ -8556,11 +8559,11 @@ $A9:D340 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Dead torizo X velocity = 0
 $A9:D343 A9 08 00    LDA #$0008             ;\
 $A9:D346 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Dead torizo Y velocity = 8
 $A9:D349 A9 00 00    LDA #$0000             ;\
-$A9:D34C 8F 08 78 7E STA $7E7808[$7E:7808]  ;} $7E:7808 = 0 (timer for $D3C8)
+$A9:D34C 8F 08 78 7E STA $7E7808[$7E:7808]  ;} Pre-rot delay timer = 0
 $A9:D350 A9 0F 00    LDA #$000F             ;\
-$A9:D353 8F 04 78 7E STA $7E7804[$7E:7804]  ;} $7E:7804 = Fh (line of sand heap tile data to copy)
+$A9:D353 8F 04 78 7E STA $7E7804[$7E:7804]  ;} Sand heap Y pixel row to copy = Fh
 $A9:D357 A9 00 00    LDA #$0000             ;\
-$A9:D35A 8F 06 78 7E STA $7E7806[$7E:7806]  ;} $7E:7806 = 0 (timer to start drawing sand heap)
+$A9:D35A 8F 06 78 7E STA $7E7806[$7E:7806]  ;} Sand heap formation timer = 0
 $A9:D35E A2 00 00    LDX #$0000             ; X = (dead torizo enemy index)
 $A9:D361 A0 58 DD    LDY #$DD58             ; Y = $DD58
 $A9:D364 20 5F DC    JSR $DC5F  [$A9:DC5F]  ; Initialise dead torizo corpse rotting
@@ -8573,13 +8576,13 @@ $A9:D367 6B          RTL
 $A9:D368 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A9:D36B 29 00 04    AND #$0400             ;} If dead torizo is tangible:
 $A9:D36E D0 14       BNE $14    [$D384]     ;/
-$A9:D370 20 43 D4    JSR $D443  [$A9:D443]  ; Execute $D443
-$A9:D373 90 0F       BCC $0F    [$D384]     ; If carry set:
+$A9:D370 20 43 D4    JSR $D443  [$A9:D443]  ; Dead torizo / Samus collision detection
+$A9:D373 90 0F       BCC $0F    [$D384]     ; If collision:
 $A9:D375 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A9:D378 09 00 04    ORA #$0400             ;} Set dead torizo as intangible
 $A9:D37B 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D37E A9 E6 D3    LDA #$D3E6             ;\
-$A9:D381 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6
+$A9:D381 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6 (rotting)
 
 $A9:D384 A9 00 A9    LDA #$A900             ;\
 $A9:D387 8D 8D 17    STA $178D  [$7E:178D]  ;|
@@ -8587,7 +8590,7 @@ $A9:D38A A9 9A D3    LDA #$D39A             ;} Enemy graphics drawn hook = $A9:D
 $A9:D38D 8D 8C 17    STA $178C  [$7E:178C]  ;/
 $A9:D390 A2 00 00    LDX #$0000             ;\
 $A9:D393 FC A8 0F    JSR ($0FA8,x)[$A9:D3AD];} Execute [dead torizo function]
-$A9:D396 20 CF D4    JSR $D4CF  [$A9:D4CF]  ; Execute $D4CF
+$A9:D396 20 CF D4    JSR $D4CF  [$A9:D4CF]  ; Process dead torizo corpse rotting VRAM transfers
 $A9:D399 6B          RTL
 }
 
@@ -8597,7 +8600,7 @@ $A9:D399 6B          RTL
 $A9:D39A 64 16       STZ $16    [$7E:0016]  ;\
 $A9:D39C A9 28 01    LDA #$0128             ;|
 $A9:D39F 85 12       STA $12    [$7E:0012]  ;|
-$A9:D3A1 A9 BB 00    LDA #$00BB             ;} Add spritemap $D761 to OAM at room position (128h, BBh) with palette 0
+$A9:D3A1 A9 BB 00    LDA #$00BB             ;} Add spritemap $D761 (sand heap) to OAM at room position (128h, BBh) with palette 0
 $A9:D3A4 85 14       STA $14    [$7E:0014]  ;|
 $A9:D3A6 A0 61 D7    LDY #$D761             ;|
 $A9:D3A9 20 EE 93    JSR $93EE  [$A9:93EE]  ;/
@@ -8617,7 +8620,7 @@ $A9:D3BC EC 32 18    CPX $1832  [$7E:1832]  ;|
 $A9:D3BF D0 06       BNE $06    [$D3C7]     ;/
 
 $A9:D3C1 A9 C8 D3    LDA #$D3C8             ;\
-$A9:D3C4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3C8
+$A9:D3C4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3C8 (pre-rot delay)
 
 $A9:D3C7 60          RTS
 }
@@ -8626,34 +8629,34 @@ $A9:D3C7 60          RTS
 ;;; $D3C8: Dead torizo function - pre-rot delay ;;;
 {
 $A9:D3C8 AF 08 78 7E LDA $7E7808[$7E:7808]  ;\
-$A9:D3CC 1A          INC A                  ;} Increment $7E:7808
+$A9:D3CC 1A          INC A                  ;} Increment pre-rot delay timer
 $A9:D3CD 8F 08 78 7E STA $7E7808[$7E:7808]  ;/
 $A9:D3D1 C9 10 00    CMP #$0010             ;\
-$A9:D3D4 B0 01       BCS $01    [$D3D7]     ;} If [$7E:7808] < 10h:
+$A9:D3D4 B0 01       BCS $01    [$D3D7]     ;} If [pre-rot delay timer] < 10h:
 $A9:D3D6 60          RTS                    ; Return
 
 $A9:D3D7 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A9:D3DA 09 00 04    ORA #$0400             ;} Set enemy as intangible
 $A9:D3DD 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D3E0 A9 E6 D3    LDA #$D3E6             ;\
-$A9:D3E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6
+$A9:D3E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6 (rotting)
 }
 
 
 ;;; $D3E6: Dead torizo function - rotting ;;;
 {
 $A9:D3E6 AF 06 78 7E LDA $7E7806[$7E:7806]  ;\
-$A9:D3EA 1A          INC A                  ;} Increment $7E:7806
+$A9:D3EA 1A          INC A                  ;} Increment sand heap formation timer
 $A9:D3EB 8F 06 78 7E STA $7E7806[$7E:7806]  ;/
 $A9:D3EF C9 0F 00    CMP #$000F             ;\
-$A9:D3F2 90 19       BCC $19    [$D40D]     ;} If [$7E:7806] >= Fh:
+$A9:D3F2 90 19       BCC $19    [$D40D]     ;} If [sand heap formation timer] >= Fh:
 $A9:D3F4 A9 00 00    LDA #$0000             ;\
-$A9:D3F7 8F 06 78 7E STA $7E7806[$7E:7806]  ;} $7E:7806 = 0
-$A9:D3FB AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
-$A9:D3FF F0 0C       BEQ $0C    [$D40D]     ;} If [$7E:7804] != 0:
+$A9:D3F7 8F 06 78 7E STA $7E7806[$7E:7806]  ;} Sand heap formation timer = 0
+$A9:D3FB AF 04 78 7E LDA $7E7804[$7E:7804]  ; A = [sand heap Y pixel row to copy]
+$A9:D3FF F0 0C       BEQ $0C    [$D40D]     ; If [sand heap Y pixel row to copy] != 0:
 $A9:D401 20 EA D5    JSR $D5EA  [$A9:D5EA]  ; Copy line of sand heap tile data
 $A9:D404 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
-$A9:D408 3A          DEC A                  ;} Decrement $7E:7804
+$A9:D408 3A          DEC A                  ;} Decrement sand heap Y pixel row to copy
 $A9:D409 8F 04 78 7E STA $7E7804[$7E:7804]  ;/
 
 $A9:D40D AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
@@ -8686,151 +8689,165 @@ $A9:D433 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A9:D436 09 00 04    ORA #$0400             ;} Set dead torizo as intangible
 $A9:D439 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D43C A9 E6 D3    LDA #$D3E6             ;\
-$A9:D43F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6
+$A9:D43F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6 (rotting)
 $A9:D442 6B          RTL
 }
 
 
-;;; $D443:  ;;;
+;;; $D443: Dead torizo / Samus collision detection ;;;
 {
-$A9:D443 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A9:D446 85 12       STA $12    [$7E:0012]
-$A9:D448 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A9:D44B 85 14       STA $14    [$7E:0014]
-$A9:D44D A2 7C D7    LDX #$D77C
-$A9:D450 BD 00 00    LDA $0000,x[$A9:D77C]
-$A9:D453 F0 5F       BEQ $5F    [$D4B4]
-$A9:D455 85 16       STA $16    [$7E:0016]
-$A9:D457 E8          INX
-$A9:D458 E8          INX
+;; Returns:
+;;     Carry: Set if collision, otherwise clear
+$A9:D443 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A9:D446 85 12       STA $12    [$7E:0012]  ;} $12 = [dead torizo X position]
+$A9:D448 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A9:D44B 85 14       STA $14    [$7E:0014]  ;} $14 = [dead torizo Y position]
+$A9:D44D A2 7C D7    LDX #$D77C             ; X = $D77C (dead torizo hitbox definition)
+$A9:D450 BD 00 00    LDA $0000,x[$A9:D77C]  ;\
+$A9:D453 F0 5F       BEQ $5F    [$D4B4]     ;} If 7 = 0: return carry clear >_<;
+$A9:D455 85 16       STA $16    [$7E:0016]  ; $16 = 7 (number of hitbox entries)
+$A9:D457 E8          INX                    ;\
+$A9:D458 E8          INX                    ;} X += 2 (first hitbox entry)
 
-$A9:D459 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A9:D45C 38          SEC
-$A9:D45D E5 14       SBC $14    [$7E:0014]
-$A9:D45F 10 0B       BPL $0B    [$D46C]
-$A9:D461 49 FF FF    EOR #$FFFF
-$A9:D464 1A          INC A
-$A9:D465 85 18       STA $18    [$7E:0018]
-$A9:D467 BD 02 00    LDA $0002,x[$A9:D780]
+; LOOP
+$A9:D459 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A9:D45C 38          SEC                    ;|
+$A9:D45D E5 14       SBC $14    [$7E:0014]  ;} If [Samus Y position] < [dead torizo Y position]:
+$A9:D45F 10 0B       BPL $0B    [$D46C]     ;/
+$A9:D461 49 FF FF    EOR #$FFFF             ;\
+$A9:D464 1A          INC A                  ;} $18 = [dead torizo Y position] - [Samus Y position]
+$A9:D465 85 18       STA $18    [$7E:0018]  ;/
+$A9:D467 BD 02 00    LDA $0002,x[$A9:D780]  ; A = [[X] + 2] (top offset)
 $A9:D46A 80 05       BRA $05    [$D471]
+                                            ; Else ([Samus Y position] >= [dead torizo Y position]):
+$A9:D46C 85 18       STA $18    [$7E:0018]  ; $18 = [Samus Y position] - [dead torizo Y position]
+$A9:D46E BD 06 00    LDA $0006,x[$A9:D784]  ; A = [[X] + 6] (bottom offset)
 
-$A9:D46C 85 18       STA $18    [$7E:0018]
-$A9:D46E BD 06 00    LDA $0006,x[$A9:D784]
+$A9:D471 10 04       BPL $04    [$D477]     ;\
+$A9:D473 49 FF FF    EOR #$FFFF             ;|
+$A9:D476 1A          INC A                  ;|
+                                            ;|
+$A9:D477 18          CLC                    ;} If |[A]| + [Samus Y radius] < |[dead torizo Y position] - [Samus Y position]|: go to BRANCH_NEXT
+$A9:D478 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
+$A9:D47B 38          SEC                    ;|
+$A9:D47C E5 18       SBC $18    [$7E:0018]  ;|
+$A9:D47E 30 27       BMI $27    [$D4A7]     ;/
+$A9:D480 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A9:D483 38          SEC                    ;|
+$A9:D484 E5 12       SBC $12    [$7E:0012]  ;} If [Samus X position] < [dead torizo X position]:
+$A9:D486 10 0B       BPL $0B    [$D493]     ;/
+$A9:D488 49 FF FF    EOR #$FFFF             ;\
+$A9:D48B 1A          INC A                  ;} $18 = [dead torizo X position] - [Samus X position]
+$A9:D48C 85 18       STA $18    [$7E:0018]  ;/
+$A9:D48E BD 00 00    LDA $0000,x            ; A = [[X]] (left offset)
+$A9:D491 80 05       BRA $05    [$D498]     
+                                            ; Else ([Samus X position] >= [dead torizo X position]):
+$A9:D493 85 18       STA $18    [$7E:0018]  ; $18 = [Samus X position] - [dead torizo X position]
+$A9:D495 BD 04 00    LDA $0004,x[$A9:D782]  ; A = [[X] + 4] (right offset)
 
-$A9:D471 10 04       BPL $04    [$D477]
-$A9:D473 49 FF FF    EOR #$FFFF
-$A9:D476 1A          INC A
+$A9:D498 10 04       BPL $04    [$D49E]     ;\
+$A9:D49A 49 FF FF    EOR #$FFFF             ;|
+$A9:D49D 1A          INC A                  ;|
+                                            ;|
+$A9:D49E 18          CLC                    ;} If |[A]| + [Samus X radius] >= |[dead torizo X position] - [Samus X position]|: go to BRANCH_COLLISION
+$A9:D49F 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
+$A9:D4A2 38          SEC                    ;|
+$A9:D4A3 E5 18       SBC $18    [$7E:0018]  ;|
+$A9:D4A5 10 0F       BPL $0F    [$D4B6]     ;/
 
-$A9:D477 18          CLC
-$A9:D478 6D 00 0B    ADC $0B00  [$7E:0B00]
-$A9:D47B 38          SEC
-$A9:D47C E5 18       SBC $18    [$7E:0018]
-$A9:D47E 30 27       BMI $27    [$D4A7]
-$A9:D480 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A9:D483 38          SEC
-$A9:D484 E5 12       SBC $12    [$7E:0012]
-$A9:D486 10 0B       BPL $0B    [$D493]
-$A9:D488 49 FF FF    EOR #$FFFF
-$A9:D48B 1A          INC A
-$A9:D48C 85 18       STA $18    [$7E:0018]
-$A9:D48E BD 00 00    LDA $0000,x
-$A9:D491 80 05       BRA $05    [$D498]
+; BRANCH_NEXT
+$A9:D4A7 C6 16       DEC $16    [$7E:0016]  ; Decrement $16
+$A9:D4A9 F0 09       BEQ $09    [$D4B4]     ; If [$16] != 0:
+$A9:D4AB 8A          TXA                    ;\
+$A9:D4AC 18          CLC                    ;|
+$A9:D4AD 69 08 00    ADC #$0008             ;} X += 8 (next hitbox entry)
+$A9:D4B0 AA          TAX                    ;/
+$A9:D4B1 4C 59 D4    JMP $D459  [$A9:D459]  ; Go to LOOP
 
-$A9:D493 85 18       STA $18    [$7E:0018]
-$A9:D495 BD 04 00    LDA $0004,x[$A9:D782]
+$A9:D4B4 18          CLC                    ;\
+$A9:D4B5 60          RTS                    ;} Return carry clear
 
-$A9:D498 10 04       BPL $04    [$D49E]
-$A9:D49A 49 FF FF    EOR #$FFFF
-$A9:D49D 1A          INC A
-
-$A9:D49E 18          CLC
-$A9:D49F 6D FE 0A    ADC $0AFE  [$7E:0AFE]
-$A9:D4A2 38          SEC
-$A9:D4A3 E5 18       SBC $18    [$7E:0018]
-$A9:D4A5 10 0F       BPL $0F    [$D4B6]
-
-$A9:D4A7 C6 16       DEC $16    [$7E:0016]
-$A9:D4A9 F0 09       BEQ $09    [$D4B4]
-$A9:D4AB 8A          TXA
-$A9:D4AC 18          CLC
-$A9:D4AD 69 08 00    ADC #$0008
-$A9:D4B0 AA          TAX
-$A9:D4B1 4C 59 D4    JMP $D459  [$A9:D459]
-
-$A9:D4B4 18          CLC
-$A9:D4B5 60          RTS
-
+; BRANCH_COLLISION
 $A9:D4B6 C9 04 00    CMP #$0004             ;\
 $A9:D4B9 10 03       BPL $03    [$D4BE]     ;|
-$A9:D4BB A9 04 00    LDA #$0004             ;} Extra Samus X displacement = max(4, [A])
+$A9:D4BB A9 04 00    LDA #$0004             ;} Extra Samus X displacement = max(4, |[A]|)
                                             ;|
 $A9:D4BE 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
 $A9:D4C1 A9 04 00    LDA #$0004             ;\
 $A9:D4C4 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;} Extra Samus Y displacement = 4
 $A9:D4C7 9C 56 0B    STZ $0B56  [$7E:0B56]  ; Extra Samus X subdisplacement = 0
 $A9:D4CA 9C 5A 0B    STZ $0B5A  [$7E:0B5A]  ; Extra Samus Y subdisplacement = 0
-$A9:D4CD 38          SEC
-$A9:D4CE 60          RTS
+$A9:D4CD 38          SEC                    ;\
+$A9:D4CE 60          RTS                    ;} Return carry set
 }
 
 
-;;; $D4CF:  ;;;
+;;; $D4CF: Process dead torizo corpse rotting VRAM transfers ;;;
 {
-$A9:D4CF AF 00 78 7E LDA $7E7800[$7E:7800]
-$A9:D4D3 1A          INC A
-$A9:D4D4 8F 00 78 7E STA $7E7800[$7E:7800]
-$A9:D4D8 4A          LSR A
-$A9:D4D9 B0 37       BCS $37    [$D512]
-$A9:D4DB A2 00 00    LDX #$0000
-$A9:D4DE AC 30 03    LDY $0330  [$7E:0330]
+$A9:D4CF AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
+$A9:D4D3 1A          INC A                  ;} Increment $7E:7800
+$A9:D4D4 8F 00 78 7E STA $7E7800[$7E:7800]  ;/
+$A9:D4D8 4A          LSR A                  ;\
+$A9:D4D9 B0 37       BCS $37    [$D512]     ;} If [$7E:7800] % 2 != 0: go to BRANCH_ODD
+$A9:D4DB A2 00 00    LDX #$0000             ; X = 0
+$A9:D4DE AC 30 03    LDY $0330  [$7E:0330]  ; Y = [VRAM write table stack pointer]
 $A9:D4E1 BD 49 D5    LDA $D549,x[$A9:D549]
 
-$A9:D4E4 99 D0 00    STA $00D0,y[$7E:00D0]
-$A9:D4E7 BD 4B D5    LDA $D54B,x[$A9:D54B]
-$A9:D4EA 99 D3 00    STA $00D3,y[$7E:00D3]
-$A9:D4ED BD 4D D5    LDA $D54D,x[$A9:D54D]
-$A9:D4F0 99 D2 00    STA $00D2,y[$7E:00D2]
-$A9:D4F3 BD 4F D5    LDA $D54F,x[$A9:D54F]
-$A9:D4F6 99 D5 00    STA $00D5,y[$7E:00D5]
-$A9:D4F9 98          TYA
-$A9:D4FA 18          CLC
-$A9:D4FB 69 07 00    ADC #$0007
-$A9:D4FE A8          TAY
-$A9:D4FF 8A          TXA
-$A9:D500 69 08 00    ADC #$0008
-$A9:D503 AA          TAX
-$A9:D504 BD 49 D5    LDA $D549,x[$A9:D551]
-$A9:D507 D0 DB       BNE $DB    [$D4E4]
-$A9:D509 8F 04 80 7E STA $7E8004[$7E:8004]
-$A9:D50D 98          TYA
-$A9:D50E 8D 30 03    STA $0330  [$7E:0330]
-$A9:D511 60          RTS
+; LOOP_EVEN
+$A9:D4E4 99 D0 00    STA $00D0,y[$7E:00D0]  ;\
+$A9:D4E7 BD 4B D5    LDA $D54B,x[$A9:D54B]  ;|
+$A9:D4EA 99 D3 00    STA $00D3,y[$7E:00D3]  ;|
+$A9:D4ED BD 4D D5    LDA $D54D,x[$A9:D54D]  ;} Queue transfer of [$D549 + [X]] bytes from $7E:0000 + [$D549 + [X] + 4] to VRAM [$D549 + [X] + 6]
+$A9:D4F0 99 D2 00    STA $00D2,y[$7E:00D2]  ;|
+$A9:D4F3 BD 4F D5    LDA $D54F,x[$A9:D54F]  ;|
+$A9:D4F6 99 D5 00    STA $00D5,y[$7E:00D5]  ;/
+$A9:D4F9 98          TYA                    ;\
+$A9:D4FA 18          CLC                    ;|
+$A9:D4FB 69 07 00    ADC #$0007             ;} Y += 7 (next VRAM write table entry)
+$A9:D4FE A8          TAY                    ;/
+$A9:D4FF 8A          TXA                    ;\
+$A9:D500 69 08 00    ADC #$0008             ;} X += 8 (next corpse rotting VRAM transfer)
+$A9:D503 AA          TAX                    ;/
+$A9:D504 BD 49 D5    LDA $D549,x[$A9:D551]  ;\
+$A9:D507 D0 DB       BNE $DB    [$D4E4]     ;} If [$D549 + [X]] != 0: go to LOOP_EVEN
+$A9:D509 8F 04 80 7E STA $7E8004[$7E:8004]  ; $7E:8004 = 0 (unused copy+paste residue of sprite tiles transfer entry pointer)
+$A9:D50D 98          TYA                    ;\
+$A9:D50E 8D 30 03    STA $0330  [$7E:0330]  ;} VRAM write table stack pointer = [Y]
+$A9:D511 60          RTS                    ; Return
 
-$A9:D512 A2 00 00    LDX #$0000
-$A9:D515 AC 30 03    LDY $0330  [$7E:0330]
-$A9:D518 BD 83 D5    LDA $D583,x[$A9:D583]
-
-$A9:D51B 99 D0 00    STA $00D0,y[$7E:00D0]
-$A9:D51E BD 85 D5    LDA $D585,x[$A9:D585]
-$A9:D521 99 D3 00    STA $00D3,y[$7E:00D3]
-$A9:D524 BD 87 D5    LDA $D587,x[$A9:D587]
-$A9:D527 99 D2 00    STA $00D2,y[$7E:00D2]
-$A9:D52A BD 89 D5    LDA $D589,x[$A9:D589]
-$A9:D52D 99 D5 00    STA $00D5,y[$7E:00D5]
-$A9:D530 98          TYA
-$A9:D531 18          CLC
-$A9:D532 69 07 00    ADC #$0007
-$A9:D535 A8          TAY
-$A9:D536 8A          TXA
-$A9:D537 69 08 00    ADC #$0008
-$A9:D53A AA          TAX
-$A9:D53B BD 83 D5    LDA $D583,x[$A9:D58B]
-$A9:D53E D0 DB       BNE $DB    [$D51B]
-$A9:D540 8F 04 80 7E STA $7E8004[$7E:8004]
-$A9:D544 98          TYA
-$A9:D545 8D 30 03    STA $0330  [$7E:0330]
+; BRANCH_ODD
+$A9:D512 A2 00 00    LDX #$0000             ; X = 0
+$A9:D515 AC 30 03    LDY $0330  [$7E:0330]  ; Y = [VRAM write table stack pointer]
+$A9:D518 BD 83 D5    LDA $D583,x[$A9:D583]  
+                                            
+; LOOP_ODD                                  
+$A9:D51B 99 D0 00    STA $00D0,y[$7E:00D0]  ;\
+$A9:D51E BD 85 D5    LDA $D585,x[$A9:D585]  ;|
+$A9:D521 99 D3 00    STA $00D3,y[$7E:00D3]  ;|
+$A9:D524 BD 87 D5    LDA $D587,x[$A9:D587]  ;} Queue transfer of [$D583 + [X]] bytes from $7E:0000 + [$D583 + [X] + 4] to VRAM [$D583 + [X] + 6]
+$A9:D527 99 D2 00    STA $00D2,y[$7E:00D2]  ;|
+$A9:D52A BD 89 D5    LDA $D589,x[$A9:D589]  ;|
+$A9:D52D 99 D5 00    STA $00D5,y[$7E:00D5]  ;/
+$A9:D530 98          TYA                    ;\
+$A9:D531 18          CLC                    ;|
+$A9:D532 69 07 00    ADC #$0007             ;} Y += 7 (next VRAM write table entry)
+$A9:D535 A8          TAY                    ;/
+$A9:D536 8A          TXA                    ;\
+$A9:D537 69 08 00    ADC #$0008             ;} X += 8 (next corpse rotting VRAM transfer)
+$A9:D53A AA          TAX                    ;/
+$A9:D53B BD 83 D5    LDA $D583,x[$A9:D58B]  ;\
+$A9:D53E D0 DB       BNE $DB    [$D51B]     ;} If [$D583 + [X]] != 0: go to LOOP_ODD
+$A9:D540 8F 04 80 7E STA $7E8004[$7E:8004]  ; $7E:8004 = 0 (unused copy+paste residue of sprite tiles transfer entry pointer)
+$A9:D544 98          TYA                    ;\
+$A9:D545 8D 30 03    STA $0330  [$7E:0330]  ;} VRAM write table stack pointer = [Y]
 $A9:D548 60          RTS
 
+; Corpse rotting VRAM transfers
+;                        __________________ Size
+;                       |     _____________ Source bank * 100h
+;                       |    |     ________ Source address
+;                       |    |    |     ___ VRAM address
+;                       |    |    |    |
 $A9:D549             dw 00C0,7E00,2060,7090,
                         00C0,7E00,21A0,7190,
                         0100,7E00,22C0,7280,
@@ -8856,11 +8873,11 @@ $A9:D583             dw 0100,7E00,27C0,7680,
 $A9:D5BD DA          PHX
 $A9:D5BE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:D5C1 29 1F 00    AND #$001F             ;|
-$A9:D5C4 18          CLC                    ;} $12 = 110h + [random number] % 20h
+$A9:D5C4 18          CLC                    ;} $12 = 110h + [random number] % 20h (X position)
 $A9:D5C5 69 10 01    ADC #$0110             ;|
 $A9:D5C8 85 12       STA $12    [$7E:0012]  ;/
 $A9:D5CA A9 BC 00    LDA #$00BC             ;\
-$A9:D5CD 85 14       STA $14    [$7E:0014]  ;} $14 = BCh
+$A9:D5CD 85 14       STA $14    [$7E:0014]  ;} $14 = BCh (Y position)
 $A9:D5CF A9 0A 00    LDA #$000A             ; A = Ah
 $A9:D5D2 A0 09 E5    LDY #$E509             ;\
 $A9:D5D5 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
@@ -8964,13 +8981,25 @@ $A9:D6DC             dx 0001,D6E2,
 
 ;;; $D6E2: Dead torizo spritemaps ;;;
 {
+; Dead torizo
 $A9:D6E2             dx 0019, 01E8,14,2397, C218,CC,230D, C208,CC,230B, C3F8,CC,2309, C220,DC,232E, C210,DC,232C, C200,DC,232A, C3F0,DC,2328, C220,EC,234E, C210,EC,234C, C200,EC,234A, C3F0,EC,2348, C220,FC,236E, C210,FC,236C, C200,FC,236A, C3F0,FC,2368, C220,0C,238E, C210,0C,238C, C200,0C,238A, C3F0,0C,2388, C220,1C,23AE, C210,1C,23AC, C200,1C,23AA, C3F0,1C,23A8, C3E0,1C,23A6
+
+; Sand heap
 $A9:D761             dx 0005, 0018,FE,2318, C208,F6,2306, C3F8,F6,2304, C3E8,F6,2302, C3D8,F6,2300
 }
 
 
 ;;; $D77C: Dead torizo hitbox definition ;;;
 {
+; [word] Number of entries
+; [entries]
+; 
+; Entry format:
+;     [word] Left offset
+;     [word] Top offset
+;     [word] Right offset
+;     [word] Bottom offset
+
 $A9:D77C             dw 0007,
                         FFE1,0025,FFF5,002B,
                         0010,0025,0026,002B,
@@ -9790,6 +9819,8 @@ $A9:DCB6 6C 12 00    JMP ($0012)[$A9:DE18]  ;/
 
 ;;; $DCB9: Process corpse rotting VRAM transfers ;;;
 {
+;; Parameters:
+;;     X: Corpse rotting VRAM transfers pointer. Format: size, source bank, source address, VRAM address (all 16 bit)
 $A9:DCB9 AC 30 03    LDY $0330  [$7E:0330]  ; Y = [VRAM write table stack pointer]
 $A9:DCBC BD 00 00    LDA $0000,x[$A9:E146]
 
@@ -12849,7 +12880,7 @@ $A9:F5E4 A5 14       LDA $14    [$7E:0014]  ; >_<;
 ; BRANCH_REACHED_TARGET
 $A9:F5E6 E6 1C       INC $1C    [$7E:001C]  ; Increment $1C
 
-$A9:F5E8 60          RTS
+$A9:F5E8 60          RTS                    ; Return
 
 ; BRANCH_UP
 $A9:F5E9 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
@@ -12913,7 +12944,7 @@ $A9:F643 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy X velocity = 0
 $A9:F646 A5 12       LDA $12    [$7E:0012]  ; >_<;
 $A9:F648 E6 1C       INC $1C    [$7E:001C]  ; Increment $1C
 
-$A9:F64A 60          RTS
+$A9:F64A 60          RTS                    ; Return
 
 ; BRANCH_LEFT
 $A9:F64B BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\

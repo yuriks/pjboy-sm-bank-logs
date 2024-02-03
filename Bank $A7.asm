@@ -9333,7 +9333,7 @@ $A7:F5DD 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F5ED (running l
 $A7:F5E0 A9 01 00    LDA #$0001             ;\
 $A7:F5E3 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
 $A7:F5E6 A9 01 00    LDA #$0001             ;\
-$A7:F5E9 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy $0FB0 = 1
+$A7:F5E9 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy palette index = 0, enemy palette timer = 1
 
 $A7:F5EC 6B          RTL
 }
@@ -9363,7 +9363,7 @@ $A7:F612 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = 
 $A7:F615 A9 5E F6    LDA #$F65E             ;\
 $A7:F618 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $F65E (running right)
 $A7:F61B A9 01 00    LDA #$0001             ;\
-$A7:F61E 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy $0FB0 = 1
+$A7:F61E 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy palette index = 0, enemy palette timer = 1
 
 ; BRANCH_MERGE
 $A7:F621 A9 01 00    LDA #$0001             ;\
@@ -9391,7 +9391,7 @@ $A7:F64D A9 5B F4    LDA #$F45B             ;\
 $A7:F650 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $F45B (idling - facing right)
 $A7:F653 A9 70 F5    LDA #$F570             ;\
 $A7:F656 9D B2 0F    STA $0FB2,x            ;} Enemy function = $F570 (wait for Samus to be near)
-$A7:F659 9E B0 0F    STZ $0FB0,x            ; Enemy $0FB0 = 0
+$A7:F659 9E B0 0F    STZ $0FB0,x            ; Enemy palette index = enemy palette timer = 0
 $A7:F65C 80 C3       BRA $C3    [$F621]     ; Go to BRANCH_MERGE
 }
 
@@ -9418,7 +9418,7 @@ $A7:F686 A0 25 F2    LDY #$F225             ;\
 $A7:F689 20 35 F5    JSR $F535  [$A7:F535]  ;} Load default palette
 
 ; BRANCH_NEW_ANIMATION
-$A7:F68C 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy $0FB0 = 0
+$A7:F68C 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy palette index = enemy palette timer = 0
 $A7:F68F 9E AA 0F    STZ $0FAA,x[$7E:11AA]  ; Enemy subspeed = 0
 $A7:F692 A9 01 00    LDA #$0001             ;\
 $A7:F695 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
@@ -9461,34 +9461,34 @@ $A7:F6D5 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
 $A7:F6D8 CD D5 F4    CMP $F4D5  [$A7:F4D5]  ;} If [enemy speed] < 8: go to BRANCH_NO_PALETTE_CHANGE
 $A7:F6DB 30 42       BMI $42    [$F71F]     ;/
 $A7:F6DD BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
-$A7:F6E0 C9 01 00    CMP #$0001             ;} If [enemy $0FB0] = 1:
+$A7:F6E0 C9 01 00    CMP #$0001             ;} If [enemy animation index] = 0 and [enemy animation timer] = 1:
 $A7:F6E3 D0 07       BNE $07    [$F6EC]     ;/
 $A7:F6E5 A9 39 00    LDA #$0039             ;\
 $A7:F6E8 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 39h, sound library 2, max queued sounds allowed = 6 (dachora speed booster)
 
 $A7:F6EC BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
-$A7:F6EF 3A          DEC A                  ;} Decrement enemy $0FB0
+$A7:F6EF 3A          DEC A                  ;} Decrement enemy animation timer
 $A7:F6F0 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;/
 $A7:F6F3 29 FF 00    AND #$00FF             ;\
-$A7:F6F6 F0 02       BEQ $02    [$F6FA]     ;} If [enemy $0FB0] % 100h != 0: go to BRANCH_NO_PALETTE_CHANGE
+$A7:F6F6 F0 02       BEQ $02    [$F6FA]     ;} If [enemy animation timer] % 100h != 0: go to BRANCH_NO_PALETTE_CHANGE
 $A7:F6F8 10 25       BPL $25    [$F71F]     ;/
 
 $A7:F6FA BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
 $A7:F6FD EB          XBA                    ;|
 $A7:F6FE 29 FF 00    AND #$00FF             ;|
 $A7:F701 0A          ASL A                  ;|
-$A7:F702 A8          TAY                    ;} Load palette $F245 + [enemy $0FB0] / 100h * 20h (speed boosting palette)
+$A7:F702 A8          TAY                    ;} Load palette $F245 + [enemy animation index] * 20h (speed boosting palette)
 $A7:F703 B9 87 F7    LDA $F787,y[$A7:F787]  ;|
 $A7:F706 A8          TAY                    ;|
 $A7:F707 20 35 F5    JSR $F535  [$A7:F535]  ;/
 $A7:F70A BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
 $A7:F70D 18          CLC                    ;|
-$A7:F70E 69 10 01    ADC #$0110             ;} Enemy $0FB0 += 110h
-$A7:F711 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;/
-$A7:F714 C9 10 04    CMP #$0410             ;\
-$A7:F717 30 06       BMI $06    [$F71F]     ;} If [enemy $0FB0] >= 410h:
-$A7:F719 A9 10 03    LDA #$0310             ;\
-$A7:F71C 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy $0FB0 = 310h
+$A7:F70E 69 10 01    ADC #$0110             ;|
+$A7:F711 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;} Enemy animation frame = max([enemy animation frame] + 1, 3)
+$A7:F714 C9 10 04    CMP #$0410             ;} Enemy animation timer = 10h
+$A7:F717 30 06       BMI $06    [$F71F]     ;|
+$A7:F719 A9 10 03    LDA #$0310             ;|
+$A7:F71C 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;/
 
 ; BRANCH_NO_PALETTE_CHANGE
 $A7:F71F A9 01 00    LDA #$0001             ;\
@@ -9650,7 +9650,7 @@ $A7:F87D A9 01 00    LDA #$0001             ;\
 $A7:F880 9D 94 0F    STA $0F94,x[$7E:1194]  ;} Enemy instruction timer = 1
 $A7:F883 9E A8 0F    STZ $0FA8,x[$7E:11A8]  ;\
 $A7:F886 9E AA 0F    STZ $0FAA,x[$7E:11AA]  ;} Enemy speed = 0.0
-$A7:F889 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy $0FB0 = 0
+$A7:F889 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy palette index = enemy palette timer = 0
 $A7:F88C A0 25 F2    LDY #$F225             ;\
 $A7:F88F 20 35 F5    JSR $F535  [$A7:F535]  ;} Load default palette
 $A7:F892 A9 3C 00    LDA #$003C             ;\
@@ -9719,17 +9719,17 @@ $A7:F90A BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
 $A7:F90D EB          XBA                    ;|
 $A7:F90E 29 FF 00    AND #$00FF             ;|
 $A7:F911 0A          ASL A                  ;|
-$A7:F912 A8          TAY                    ;} Load palette $F2C5 + [enemy $0FB0] / 100h * 20h
+$A7:F912 A8          TAY                    ;} Load palette $F2C5 + [enemy palette animation index] * 20h
 $A7:F913 B9 2D F9    LDA $F92D,y[$A7:F92D]  ;|
 $A7:F916 A8          TAY                    ;|
 $A7:F917 20 35 F5    JSR $F535  [$A7:F535]  ;/
 $A7:F91A BD B0 0F    LDA $0FB0,x[$7E:11B0]  ;\
 $A7:F91D 18          CLC                    ;|
-$A7:F91E 69 00 01    ADC #$0100             ;} Enemy $0FB0 += 100h
+$A7:F91E 69 00 01    ADC #$0100             ;} Increment enemy palette animation index
 $A7:F921 9D B0 0F    STA $0FB0,x[$7E:11B0]  ;/
 $A7:F924 C9 00 04    CMP #$0400             ;\
-$A7:F927 30 03       BMI $03    [$F92C]     ;} If [enemy $0FB0] >= 400h:
-$A7:F929 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy $0FB0 = 0
+$A7:F927 30 03       BMI $03    [$F92C]     ;} If [enemy palette animation index] >= 4:
+$A7:F929 9E B0 0F    STZ $0FB0,x[$7E:11B0]  ; Enemy palette index = enemy palette timer = 0
 
 $A7:F92C 60          RTS
 

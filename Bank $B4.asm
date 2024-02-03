@@ -4806,7 +4806,7 @@ $B4:BCC7 BF 00 00 B4 LDA $B40000,x[$B4:C5CA];|
 $B4:BCCB C9 00 80    CMP #$8000             ;} If [$B4:0000 + [sprite object instruction list pointer]] >= 8000h: go to BRANCH_ASM_INSTRUCTION
 $B4:BCCE 10 13       BPL $13    [$BCE3]     ;/
 $B4:BCD0 AE 44 18    LDX $1844  [$7E:1844]  ;\
-$B4:BCD3 9F F8 EF 7E STA $7EEFF8,x[$7E:F036];} Sprite object instruction timer = [$B4:0000 + [sprite object instruction list pointer]]
+$B4:BCD3 9F F8 EF 7E STA $7EEFF8,x[$7E:F036];} Sprite object instruction/timer = [$B4:0000 + [sprite object instruction list pointer]]
 
 ; BRANCH_NEXT
 $B4:BCD7 AD 44 18    LDA $1844  [$7E:1844]  ;\
