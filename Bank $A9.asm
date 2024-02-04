@@ -9027,6 +9027,7 @@ $A9:D7C0             dw D7C4, D825
 
 ;;; $D7C4: Dead sidehopper initialisation - enemy parameter 1 = 0 (initially alive) ;;;
 {
+; Palette 1 is loaded by Shitroid from $F8C6
 $A9:D7C4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D7C7 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A9:D7CA 29 FF 7F    AND #$7FFF             ;|
@@ -9040,23 +9041,23 @@ $A9:D7DE 09 00 02    ORA #$0200             ;} Mark enemy for deletion
 $A9:D7E1 9D 86 0F    STA $0F86,x            ;/
 
 $A9:D7E4 A9 00 00    LDA #$0000             ;\
-$A9:D7E7 9F 10 78 7E STA $7E7810,x[$7E:7850];} Enemy $7E:7810 = 0
+$A9:D7E7 9F 10 78 7E STA $7E7810,x[$7E:7850];} Enemy drained palette index = 0
 $A9:D7EB A9 60 00    LDA #$0060             ;\
-$A9:D7EE 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy $7E:7814 = 60h
+$A9:D7EE 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy X velocity = 60h
 $A9:D7F2 A9 00 01    LDA #$0100             ;\
-$A9:D7F5 9F 16 78 7E STA $7E7816,x[$7E:7856];} Enemy $7E:7816 = 100h
+$A9:D7F5 9F 16 78 7E STA $7E7816,x[$7E:7856];} Enemy Y velocity = 100h
 $A9:D7F9 A9 E8 01    LDA #$01E8             ;\
 $A9:D7FC 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = 1E8h
 $A9:D7FF A9 B8 00    LDA #$00B8             ;\
 $A9:D802 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = B8h
 $A9:D805 A9 E2 D8    LDA #$D8E2             ;\
-$A9:D808 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D8E2
+$A9:D808 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D8E2 (waiting for activation)
 $A9:D80B A9 00 02    LDA #$0200             ;\
 $A9:D80E 9D 96 0F    STA $0F96,x[$7E:0FD6]  ;} Enemy palette index = 200h (palette 1)
 $A9:D811 A9 15 00    LDA #$0015             ;\
 $A9:D814 9D 84 0F    STA $0F84,x[$7E:0FC4]  ;} Enemy Y radius = 15h
 $A9:D817 A9 E3 EC    LDA #$ECE3             ;\
-$A9:D81A 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECE3
+$A9:D81A 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECE3 (idle)
 $A9:D81E A0 68 DD    LDY #$DD68             ; Y = $DD68
 $A9:D821 20 5F DC    JSR $DC5F  [$A9:DC5F]  ; Initialise enemy corpse rotting
 $A9:D824 6B          RTL
@@ -9065,15 +9066,16 @@ $A9:D824 6B          RTL
 
 ;;; $D825: Dead sidehopper initialisation - enemy parameter 1 = 2 (initially dead) ;;;
 {
+; Palette 7 is loaded by Shitroid from $F8A6
 $A9:D825 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D828 A9 FF FF    LDA #$FFFF             ;\
-$A9:D82B 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy $7E:7810 = FFFFh
+$A9:D82B 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy drained palette index = FFFFh
 $A9:D82F A9 64 DA    LDA #$DA64             ;\
-$A9:D832 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $DA64
+$A9:D832 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $DA64 (dead - wait for Samus collision)
 $A9:D835 A9 00 0E    LDA #$0E00             ;\
 $A9:D838 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = E00h (palette 7)
 $A9:D83B A9 EF EC    LDA #$ECEF             ;\
-$A9:D83E 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECEF
+$A9:D83E 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECEF (dead)
 $A9:D842 A0 78 DD    LDY #$DD78             ; Y = $DD78
 $A9:D845 20 5F DC    JSR $DC5F  [$A9:DC5F]  ; Initialise enemy corpse rotting
 $A9:D848 6B          RTL
@@ -9086,7 +9088,7 @@ $A9:D849 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D84C A9 00 0E    LDA #$0E00             ;\
 $A9:D84F 9D 96 0F    STA $0F96,x[$7E:1056]  ;} Enemy palette index = E00h (palette 7)
 $A9:D852 A9 69 DA    LDA #$DA69             ;\
-$A9:D855 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $DA69
+$A9:D855 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $DA69 (wait for Samus collision)
 $A9:D858 BC B4 0F    LDY $0FB4,x[$7E:1074]  ;\
 $A9:D85B B9 6A D8    LDA $D86A,y[$A9:D86A]  ;} Set enemy instruction list to [$D86A + [enemy parameter 1]]
 $A9:D85E 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;/
@@ -9109,7 +9111,7 @@ $A9:D876 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D879 A9 00 0E    LDA #$0E00             ;\
 $A9:D87C 9D 96 0F    STA $0F96,x[$7E:1116]  ;} Enemy palette index = E00h (palette 7)
 $A9:D87F A9 73 DA    LDA #$DA73             ;\
-$A9:D882 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $DA73
+$A9:D882 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $DA73 (wait for Samus collision)
 $A9:D885 BC B4 0F    LDY $0FB4,x[$7E:1134]  ;\
 $A9:D888 B9 97 D8    LDA $D897,y[$A9:D897]  ;} Set enemy instruction list to [$D897 + [enemy parameter 1]]
 $A9:D88B 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;/
@@ -9132,7 +9134,7 @@ $A9:D89F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D8A2 A9 00 0E    LDA #$0E00             ;\
 $A9:D8A5 9D 96 0F    STA $0F96,x[$7E:1196]  ;} Enemy palette index = E00h (palette 7)
 $A9:D8A8 A9 6E DA    LDA #$DA6E             ;\
-$A9:D8AB 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;} Enemy function = $DA6E
+$A9:D8AB 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;} Enemy function = $DA6E (wait for Samus collision)
 $A9:D8AE BC B4 0F    LDY $0FB4,x[$7E:11B4]  ;\
 $A9:D8B1 B9 C0 D8    LDA $D8C0,y[$A9:D8C0]  ;} Set enemy instruction list to [$D8C0 + [enemy parameter 1]]
 $A9:D8B4 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;/
@@ -9153,7 +9155,7 @@ $A9:D8C6             dw DDD8, DDE8, DDF8
 {
 $A9:D8CC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D8CF BF 10 78 7E LDA $7E7810,x          ;\
-$A9:D8D3 C9 08 00    CMP #$0008             ;} If [enemy $7E:7810] >= 8:
+$A9:D8D3 C9 08 00    CMP #$0008             ;} If [enemy drained palette index] >= 8:
 $A9:D8D6 90 03       BCC $03    [$D8DB]     ;/
 $A9:D8D8 4C 1D DD    JMP $DD1D  [$A9:DD1D]  ; Go to enemy shot - dead sidehopper
 }
@@ -9175,20 +9177,20 @@ $A9:D8E8 30 01       BMI $01    [$D8EB]     ;/
 $A9:D8EA 60          RTS                    ; Return
 
 $A9:D8EB A9 F1 D8    LDA #$D8F1             ;\
-$A9:D8EE 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D8F1
+$A9:D8EE 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D8F1 (hopping)
 }
 
 
-;;; $D8F1: Dead sidehopper function - activated ;;;
+;;; $D8F1: Dead sidehopper function - hopping ;;;
 {
-$A9:D8F1 20 61 D9    JSR $D961  [$A9:D961]  ; Execute $D961
-$A9:D8F4 90 19       BCC $19    [$D90F]     ; If carry clear: return
+$A9:D8F1 20 61 D9    JSR $D961  [$A9:D961]  ; Dead sidehopper movement
+$A9:D8F4 90 19       BCC $19    [$D90F]     ; If collision:
 $A9:D8F6 BF 0C 78 7E LDA $7E780C,x[$7E:784C];\
 $A9:D8FA 1A          INC A                  ;|
-$A9:D8FB 29 03 00    AND #$0003             ;} Enemy $7E:780C = ([enemy $7E:780C] + 1) % 4
+$A9:D8FB 29 03 00    AND #$0003             ;} Enemy hop index = ([enemy hop index] + 1) % 4
 $A9:D8FE 9F 0C 78 7E STA $7E780C,x[$7E:784C];/
 $A9:D902 A9 AC EC    LDA #$ECAC             ;\
-$A9:D905 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECAC
+$A9:D905 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECAC (hopping)
 $A9:D909 A9 0F D9    LDA #$D90F             ;\
 $A9:D90C 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = RTS
 
@@ -9196,49 +9198,52 @@ $A9:D90F 60          RTS
 }
 
 
-;;; $D910: Dead sidehopper function ;;;
+;;; $D910: Dead sidehopper function - start idling ;;;
 {
-$A9:D910 A9 1D D9    LDA #$D91D
-$A9:D913 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A9:D916 A9 40 00    LDA #$0040
-$A9:D919 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A9:D910 A9 1D D9    LDA #$D91D             ;\
+$A9:D913 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D91D (idling)
+$A9:D916 A9 40 00    LDA #$0040             ;\
+$A9:D919 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function timer = 40h
 $A9:D91C 60          RTS
 }
 
 
-;;; $D91D:  ;;;
+;;; $D91D: Dead sidehopper function - idling ;;;
 {
-$A9:D91D DE B2 0F    DEC $0FB2,x[$7E:0FF2]
-$A9:D920 10 2E       BPL $2E    [$D950]
-$A9:D922 BF 10 78 7E LDA $7E7810,x[$7E:7850]
-$A9:D926 F0 07       BEQ $07    [$D92F]
-$A9:D928 A9 08 DA    LDA #$DA08
-$A9:D92B 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A9:D92E 60          RTS
+$A9:D91D DE B2 0F    DEC $0FB2,x[$7E:0FF2]  ; Decrement enemy function timer
+$A9:D920 10 2E       BPL $2E    [$D950]     ; If [enemy function timer] >= 0: return
+$A9:D922 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
+$A9:D926 F0 07       BEQ $07    [$D92F]     ;} If [enemy drained palette index] != 0:
+$A9:D928 A9 08 DA    LDA #$DA08             ;\
+$A9:D92B 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $DA08 (being drained)
+$A9:D92E 60          RTS                    ; Return
 
-$A9:D92F A9 F1 D8    LDA #$D8F1
-$A9:D932 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A9:D935 A9 E3 EC    LDA #$ECE3
-$A9:D938 22 53 C4 A9 JSL $A9C453[$A9:C453]
-$A9:D93C BF 0C 78 7E LDA $7E780C,x[$7E:784C]
-$A9:D940 0A          ASL A
-$A9:D941 A8          TAY
-$A9:D942 B9 51 D9    LDA $D951,y[$A9:D953]
-$A9:D945 9F 16 78 7E STA $7E7816,x[$7E:7856]
-$A9:D949 B9 59 D9    LDA $D959,y[$A9:D95B]
-$A9:D94C 9F 14 78 7E STA $7E7814,x[$7E:7854]
+$A9:D92F A9 F1 D8    LDA #$D8F1             ;\
+$A9:D932 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D8F1 (hopping)
+$A9:D935 A9 E3 EC    LDA #$ECE3             ;\
+$A9:D938 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECE3 (idle)
+$A9:D93C BF 0C 78 7E LDA $7E780C,x[$7E:784C];\
+$A9:D940 0A          ASL A                  ;} Y = [enemy hop index] * 2
+$A9:D941 A8          TAY                    ;/
+$A9:D942 B9 51 D9    LDA $D951,y[$A9:D953]  ;\
+$A9:D945 9F 16 78 7E STA $7E7816,x[$7E:7856];} Enemy Y velocity = [$D951 + [Y]]
+$A9:D949 B9 59 D9    LDA $D959,y[$A9:D95B]  ;\
+$A9:D94C 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy X velocity = [$D959 + [Y]]
 
 $A9:D950 60          RTS
 
-$A9:D951             dw FE00, FE00, FE00, FC00
-$A9:D959             dw 01C0, 0120, 0120, 0300
+; Hop initial velocities
+$A9:D951             dw FE00, FE00, FE00, FC00 ; Y velocity
+$A9:D959             dw 01C0, 0120, 0120, 0300 ; X velocity
 }
 
 
-;;; $D961:  ;;;
+;;; $D961: Dead sidehopper movement ;;;
 {
-$A9:D961 BF 14 78 7E LDA $7E7814,x[$7E:7854]
-$A9:D965 20 C7 D9    JSR $D9C7  [$A9:D9C7]
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+$A9:D961 BF 14 78 7E LDA $7E7814,x[$7E:7854]; A = [enemy X velocity]
+$A9:D965 20 C7 D9    JSR $D9C7  [$A9:D9C7]  ; Dead sidehopper horizontal movement
 $A9:D968 A0 20 00    LDY #$0020             ; Y = 20h
 $A9:D96B BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A9:D96F 30 03       BMI $03    [$D974]     ;} If [enemy Y velocity] >= 0:
@@ -9250,51 +9255,52 @@ $A9:D976 7F 16 78 7E ADC $7E7816,x[$7E:7856];} Enemy Y velocity += [Y]
 $A9:D97A 9F 16 78 7E STA $7E7816,x[$7E:7856];/
 $A9:D97E 85 12       STA $12    [$7E:0012]
 $A9:D980 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
-$A9:D983 C9 20 02    CMP #$0220             ;} If [enemy X position] < 220h: go to BRANCH_D9A2
+$A9:D983 C9 20 02    CMP #$0220             ;} If [enemy X position] >= 220h:
 $A9:D986 30 1A       BMI $1A    [$D9A2]     ;/
-$A9:D988 A5 12       LDA $12    [$7E:0012]  ;\
-$A9:D98A E2 20       SEP #$20               ;|
+$A9:D988 A5 12       LDA $12    [$7E:0012]
+$A9:D98A E2 20       SEP #$20               ;\
 $A9:D98C 85 13       STA $13    [$7E:0013]  ;|
 $A9:D98E 64 12       STZ $12    [$7E:0012]  ;|
 $A9:D990 C2 20       REP #$20               ;|
-$A9:D992 29 00 FF    AND #$FF00             ;} $14.$12 = [enemy Y velocity] / 100h
-$A9:D995 10 03       BPL $03    [$D99A]     ;|
+$A9:D992 29 00 FF    AND #$FF00             ;|
+$A9:D995 10 03       BPL $03    [$D99A]     ;} $14.$12 = ±[enemy Y velocity] / 100h
 $A9:D997 09 FF 00    ORA #$00FF             ;|
                                             ;|
 $A9:D99A EB          XBA                    ;|
 $A9:D99B 85 14       STA $14    [$7E:0014]  ;/
 $A9:D99D 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$A9:D9A1 60          RTS
+$A9:D9A1 60          RTS                    ; Return
 
-; BRANCH_D9A2
 $A9:D9A2 A5 12       LDA $12    [$7E:0012]
-$A9:D9A4 E2 20       SEP #$20
-$A9:D9A6 18          CLC
-$A9:D9A7 7D 81 0F    ADC $0F81,x[$7E:0FC1]
-$A9:D9AA 9D 81 0F    STA $0F81,x[$7E:0FC1]
-$A9:D9AD C2 20       REP #$20
-$A9:D9AF 29 00 FF    AND #$FF00
-$A9:D9B2 EB          XBA
-$A9:D9B3 10 03       BPL $03    [$D9B8]
-$A9:D9B5 09 00 FF    ORA #$FF00
+$A9:D9A4 E2 20       SEP #$20               ;\
+$A9:D9A6 18          CLC                    ;|
+$A9:D9A7 7D 81 0F    ADC $0F81,x[$7E:0FC1]  ;|
+$A9:D9AA 9D 81 0F    STA $0F81,x[$7E:0FC1]  ;|
+$A9:D9AD C2 20       REP #$20               ;|
+$A9:D9AF 29 00 FF    AND #$FF00             ;|
+$A9:D9B2 EB          XBA                    ;} Enemy Y position += ±[enemy Y velocity] / 100h
+$A9:D9B3 10 03       BPL $03    [$D9B8]     ;|
+$A9:D9B5 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$A9:D9B8 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]  ;|
+$A9:D9BB 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A9:D9BE C9 B8 00    CMP #$00B8             ;\
+$A9:D9C1 30 02       BMI $02    [$D9C5]     ;} If [enemy Y position] >= B8h:
+$A9:D9C3 38          SEC                    ;\
+$A9:D9C4 60          RTS                    ;} Return carry set
 
-$A9:D9B8 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]
-$A9:D9BB 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A9:D9BE C9 B8 00    CMP #$00B8
-$A9:D9C1 30 02       BMI $02    [$D9C5]
-$A9:D9C3 38          SEC
-$A9:D9C4 60          RTS
-
-$A9:D9C5 18          CLC
-$A9:D9C6 60          RTS
+$A9:D9C5 18          CLC                    ;\
+$A9:D9C6 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $D9C7:  ;;;
+;;; $D9C7: Dead sidehopper horizontal movement ;;;
 {
+;; Parameters:
+;;     A: Distance to move (signed)
 $A9:D9C7 85 12       STA $12    [$7E:0012]
 $A9:D9C9 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
-$A9:D9CC C9 20 02    CMP #$0220             ;} If [enemy X position] < 220h: go to BRANCH_D9EB
+$A9:D9CC C9 20 02    CMP #$0220             ;} If [enemy X position] >= 220h:
 $A9:D9CF 30 1A       BMI $1A    [$D9EB]     ;/
 $A9:D9D1 A5 12       LDA $12    [$7E:0012]
 $A9:D9D3 E2 20       SEP #$20               ;\
@@ -9302,68 +9308,67 @@ $A9:D9D5 85 13       STA $13    [$7E:0013]  ;|
 $A9:D9D7 64 12       STZ $12    [$7E:0012]  ;|
 $A9:D9D9 C2 20       REP #$20               ;|
 $A9:D9DB 29 00 FF    AND #$FF00             ;|
-$A9:D9DE 10 03       BPL $03    [$D9E3]     ;} $14.$12 = [A] / 100h
+$A9:D9DE 10 03       BPL $03    [$D9E3]     ;} $14.$12 = ±[A] / 100h
 $A9:D9E0 09 FF 00    ORA #$00FF             ;|
                                             ;|
 $A9:D9E3 EB          XBA                    ;|
 $A9:D9E4 85 14       STA $14    [$7E:0014]  ;/
 $A9:D9E6 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
-$A9:D9EA 60          RTS
+$A9:D9EA 60          RTS                    ; Return
 
-; BRANCH_D9EB
 $A9:D9EB A5 12       LDA $12    [$7E:0012]
-$A9:D9ED E2 20       SEP #$20
-$A9:D9EF 18          CLC
-$A9:D9F0 7D 7D 0F    ADC $0F7D,x[$7E:0FBD]
-$A9:D9F3 9D 7D 0F    STA $0F7D,x[$7E:0FBD]
-$A9:D9F6 C2 20       REP #$20
-$A9:D9F8 29 00 FF    AND #$FF00
-$A9:D9FB EB          XBA
-$A9:D9FC 10 03       BPL $03    [$DA01]
-$A9:D9FE 09 00 FF    ORA #$FF00
-
-$A9:DA01 7D 7A 0F    ADC $0F7A,x[$7E:0FBA]
-$A9:DA04 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
+$A9:D9ED E2 20       SEP #$20               ;\
+$A9:D9EF 18          CLC                    ;|
+$A9:D9F0 7D 7D 0F    ADC $0F7D,x[$7E:0FBD]  ;|
+$A9:D9F3 9D 7D 0F    STA $0F7D,x[$7E:0FBD]  ;|
+$A9:D9F6 C2 20       REP #$20               ;|
+$A9:D9F8 29 00 FF    AND #$FF00             ;|
+$A9:D9FB EB          XBA                    ;} Enemy X position += ±[A] / 100h
+$A9:D9FC 10 03       BPL $03    [$DA01]     ;|
+$A9:D9FE 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$A9:DA01 7D 7A 0F    ADC $0F7A,x[$7E:0FBA]  ;|
+$A9:DA04 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 $A9:DA07 60          RTS
 }
 
 
-;;; $DA08: Dead sidehopper function ;;;
+;;; $DA08: Dead sidehopper function - being drained ;;;
 {
-$A9:DA08 BF 0E 78 7E LDA $7E780E,x[$7E:784E]
-$A9:DA0C 1A          INC A
-$A9:DA0D 9F 0E 78 7E STA $7E780E,x[$7E:784E]
-$A9:DA11 C9 08 00    CMP #$0008
-$A9:DA14 90 4C       BCC $4C    [$DA62]
-$A9:DA16 A9 00 00    LDA #$0000
-$A9:DA19 9F 0E 78 7E STA $7E780E,x[$7E:784E]
-$A9:DA1D BF 10 78 7E LDA $7E7810,x[$7E:7850]
-$A9:DA21 3A          DEC A
-$A9:DA22 0A          ASL A
-$A9:DA23 0A          ASL A
-$A9:DA24 0A          ASL A
-$A9:DA25 0A          ASL A
-$A9:DA26 0A          ASL A
-$A9:DA27 69 CC EB    ADC #$EBCC
-$A9:DA2A A8          TAY
-$A9:DA2B A2 22 01    LDX #$0122
-$A9:DA2E A9 0F 00    LDA #$000F
-$A9:DA31 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]
-$A9:DA35 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A9:DA38 BF 10 78 7E LDA $7E7810,x[$7E:7850]
-$A9:DA3C 1A          INC A
-$A9:DA3D 9F 10 78 7E STA $7E7810,x[$7E:7850]
-$A9:DA41 C9 08 00    CMP #$0008
-$A9:DA44 90 1C       BCC $1C    [$DA62]
-$A9:DA46 A9 E9 EC    LDA #$ECE9
-$A9:DA49 22 53 C4 A9 JSL $A9C453[$A9:C453]
-$A9:DA4D A9 64 DA    LDA #$DA64
-$A9:DA50 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A9:DA53 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A9:DA56 09 00 80    ORA #$8000
-$A9:DA59 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A9:DA5C A9 0C 00    LDA #$000C
-$A9:DA5F 9D 84 0F    STA $0F84,x[$7E:0FC4]
+$A9:DA08 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
+$A9:DA0C 1A          INC A                  ;} Increment enemy drained palette timer
+$A9:DA0D 9F 0E 78 7E STA $7E780E,x[$7E:784E];/
+$A9:DA11 C9 08 00    CMP #$0008             ;\
+$A9:DA14 90 4C       BCC $4C    [$DA62]     ;} If [enemy drained palette timer] >= 8:
+$A9:DA16 A9 00 00    LDA #$0000             ;\
+$A9:DA19 9F 0E 78 7E STA $7E780E,x[$7E:784E];} Enemy drained palette timer = 0
+$A9:DA1D BF 10 78 7E LDA $7E7810,x[$7E:7850];\
+$A9:DA21 3A          DEC A                  ;|
+$A9:DA22 0A          ASL A                  ;|
+$A9:DA23 0A          ASL A                  ;|
+$A9:DA24 0A          ASL A                  ;} Y = $EBCC + ([enemy drained palette index] - 1) * 20h
+$A9:DA25 0A          ASL A                  ;|
+$A9:DA26 0A          ASL A                  ;|
+$A9:DA27 69 CC EB    ADC #$EBCC             ;|
+$A9:DA2A A8          TAY                    ;/
+$A9:DA2B A2 22 01    LDX #$0122             ;\
+$A9:DA2E A9 0F 00    LDA #$000F             ;} Sprite palette 1 colours 1..Fh = 1Eh bytes from [Y]
+$A9:DA31 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
+$A9:DA35 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A9:DA38 BF 10 78 7E LDA $7E7810,x[$7E:7850];|
+$A9:DA3C 1A          INC A                  ;} Increment enemy drained palette index
+$A9:DA3D 9F 10 78 7E STA $7E7810,x[$7E:7850];/
+$A9:DA41 C9 08 00    CMP #$0008             ;\
+$A9:DA44 90 1C       BCC $1C    [$DA62]     ;} If [enemy drained palette index] >= 8:
+$A9:DA46 A9 E9 EC    LDA #$ECE9             ;\
+$A9:DA49 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $ECE9 (corpse)
+$A9:DA4D A9 64 DA    LDA #$DA64             ;\
+$A9:DA50 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $DA64 (dead - wait for Samus collision)
+$A9:DA53 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A9:DA56 09 00 80    ORA #$8000             ;} Make enemy solid
+$A9:DA59 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A9:DA5C A9 0C 00    LDA #$000C             ;\
+$A9:DA5F 9D 84 0F    STA $0F84,x[$7E:0FC4]  ;} Enemy Y radius = Ch
 
 $A9:DA62 60          RTS
 }
@@ -9377,38 +9382,40 @@ $A9:DA63 60          RTS
 
 ;;; $DA64: Dead sidehopper function - dead - wait for Samus collision ;;;
 {
-$A9:DA64 A0 8F DA    LDY #$DA8F             ; Y = $DA8F
+$A9:DA64 A0 8F DA    LDY #$DA8F             ; Y = $DA8F (pre-rot delay)
 $A9:DA67 80 0D       BRA $0D    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
 
 
 ;;; $DA69: Dead zoomer function - wait for Samus collision ;;;
 {
-$A9:DA69 A0 94 DA    LDY #$DA94             ; Y = $DA94
+$A9:DA69 A0 94 DA    LDY #$DA94             ; Y = $DA94 (pre-rot delay)
 $A9:DA6C 80 08       BRA $08    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
 
 
 ;;; $DA6E: Dead skree function - wait for Samus collision ;;;
 {
-$A9:DA6E A0 9E DA    LDY #$DA9E             ; Y = $DA9E
+$A9:DA6E A0 9E DA    LDY #$DA9E             ; Y = $DA9E (pre-rot delay)
 $A9:DA71 80 03       BRA $03    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
 
 
 ;;; $DA73: Dead ripper function - wait for Samus collision ;;;
 {
-$A9:DA73 A0 99 DA    LDY #$DA99             ; Y = $DA99
+$A9:DA73 A0 99 DA    LDY #$DA99             ; Y = $DA99 (pre-rot delay)
 }
 
 
 ;;; $DA76: Dead monsters shared AI - wait for Samus collision ;;;
 {
+;; Parameters:
+;;     Y: New enemy function if collision occurred
 $A9:DA76 EC 2C 18    CPX $182C  [$7E:182C]  ;\
 $A9:DA79 F0 0F       BEQ $0F    [$DA8A]     ;|
 $A9:DA7B EC 2E 18    CPX $182E  [$7E:182E]  ;|
 $A9:DA7E F0 0A       BEQ $0A    [$DA8A]     ;|
-$A9:DA80 EC 30 18    CPX $1830  [$7E:1830]  ;} If Samus didn't collide with solid enemy (enemy index [X]): return
+$A9:DA80 EC 30 18    CPX $1830  [$7E:1830]  ;} If Samus collided with solid enemy:
 $A9:DA83 F0 05       BEQ $05    [$DA8A]     ;|
 $A9:DA85 EC 32 18    CPX $1832  [$7E:1832]  ;|
 $A9:DA88 D0 04       BNE $04    [$DA8E]     ;/
@@ -9421,7 +9428,7 @@ $A9:DA8E 60          RTS
 
 ;;; $DA8F: Dead sidehopper function - pre-rot delay ;;;
 {
-$A9:DA8F A0 BA DA    LDY #$DABA             ; Y = $DABA
+$A9:DA8F A0 BA DA    LDY #$DABA             ; Y = $DABA (rotting)
 $A9:DA92 80 0D       BRA $0D    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
 
 }
@@ -9429,29 +9436,31 @@ $A9:DA92 80 0D       BRA $0D    [$DAA1]     ; Go to dead enemies shared AI - pre
 
 ;;; $DA94: Dead zoomer function - pre-rot delay ;;;
 {
-$A9:DA94 A0 D0 DA    LDY #$DAD0             ; Y = $DAD0
+$A9:DA94 A0 D0 DA    LDY #$DAD0             ; Y = $DAD0 (rotting)
 $A9:DA97 80 08       BRA $08    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
 }
 
 
 ;;; $DA99: Dead ripper function - pre-rot delay ;;;
 {
-$A9:DA99 A0 E6 DA    LDY #$DAE6             ; Y = $DAE6
+$A9:DA99 A0 E6 DA    LDY #$DAE6             ; Y = $DAE6 (rotting)
 $A9:DA9C 80 03       BRA $03    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
 }
 
 
 ;;; $DA9E: Dead skree function - pre-rot delay ;;;
 {
-$A9:DA9E A0 FC DA    LDY #$DAFC             ; Y = $DAFC
+$A9:DA9E A0 FC DA    LDY #$DAFC             ; Y = $DAFC (rotting)
 }
 
 
 ;;; $DAA1: Dead monsters shared AI - pre-rot delay ;;;
 {
+;; Parameters:
+;;     Y: Rotting enemy function
 $A9:DAA1 FE AA 0F    INC $0FAA,x[$7E:10AA]  ; Increment enemy pre-rot timer
 $A9:DAA4 BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
-$A9:DAA7 C9 10 00    CMP #$0010             ;} If [enemy pre-rot timer] < 10h: return
+$A9:DAA7 C9 10 00    CMP #$0010             ;} If [enemy pre-rot timer] >= 10h:
 $A9:DAAA 90 0D       BCC $0D    [$DAB9]     ;/
 $A9:DAAC 98          TYA                    ;\
 $A9:DAAD 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = [Y]
@@ -9615,7 +9624,7 @@ $A9:DB61 B0 67       BCS $67    [$DBCA]     ;} If [[X] + 2] >= 4: go to BRANCH_N
 $A9:DB63 AD 04 88    LDA $8804  [$7E:8804]  ;\
 $A9:DB66 85 12       STA $12    [$7E:0012]  ;} $12 = [corpse rotting rot entry copy function]
 $A9:DB68 A3 01       LDA $01,s  [$7E:1FED]  ;\
-$A9:DB6A CD 0E 88    CMP $880E  [$7E:880E]  ;} If (loop counter) >= [Corpse rotting sprite height] - 2:
+$A9:DB6A CD 0E 88    CMP $880E  [$7E:880E]  ;} If (loop counter) >= [corpse rotting sprite height] - 2:
 $A9:DB6D 90 05       BCC $05    [$DB74]     ;/
 $A9:DB6F AD 06 88    LDA $8806  [$7E:8806]  ;\
 $A9:DB72 85 12       STA $12    [$7E:0012]  ;} $12 = [corpse rotting rot entry move function]
@@ -9689,6 +9698,8 @@ $A9:DBDF 60          RTS                    ;} Return carry clear
 ;;     A: Corpse rotting rot entry Y offset
 ;;     $12: Corpse rotting rot entry copy/move function
 ;;     $14: Corpse rotting tile data row offsets pointer
+
+; DB must be $7E
 
 $A9:DBE0 8D 02 88    STA $8802  [$7E:8802]  ; Corpse rotting rot entry Y offset = [A]
 $A9:DBE3 A8          TAY                    ;\
@@ -9834,10 +9845,10 @@ $A9:DCCE BD 06 00    LDA $0006,x[$A9:E14C]  ;|
 $A9:DCD1 99 D5 00    STA $00D5,y[$7E:00D5]  ;/
 $A9:DCD4 98          TYA                    ;\
 $A9:DCD5 18          CLC                    ;|
-$A9:DCD6 69 07 00    ADC #$0007             ;} Y += 7
+$A9:DCD6 69 07 00    ADC #$0007             ;} Y += 7 (next VRAM write table entry)
 $A9:DCD9 A8          TAY                    ;/
 $A9:DCDA 8A          TXA                    ;\
-$A9:DCDB 69 08 00    ADC #$0008             ;} X += 8
+$A9:DCDB 69 08 00    ADC #$0008             ;} X += 8 (next corpse rotting VRAM transfer)
 $A9:DCDE AA          TAX                    ;/
 $A9:DCDF BD 00 00    LDA $0000,x[$A9:E14E]  ;\
 $A9:DCE2 D0 DB       BNE $DB    [$DCBF]     ;} If [[X]] != 0: go to LOOP
@@ -9861,7 +9872,7 @@ $A9:DCF6 D0 4B       BNE $4B    [$DD43]     ;/
 
 ;;; $DCF8: Enemy touch / enemy shot - enemy $EDFF (dead zoomer) ;;;
 {
-$A9:DCF8 A9 D0 DA    LDA #$DAD0             ; Enemy function = $DAD0
+$A9:DCF8 A9 D0 DA    LDA #$DAD0             ; Enemy function = $DAD0 (rotting)
 $A9:DCFB 80 37       BRA $37    [$DD34]     ; Dead enemies shared contact reaction
 }
 
@@ -9877,7 +9888,7 @@ $A9:DD06 D0 3B       BNE $3B    [$DD43]     ;/
 
 ;;; $DD08: Enemy touch / enemy shot - enemy $EE3F (dead ripper) ;;;
 {
-$A9:DD08 A9 E6 DA    LDA #$DAE6             ; Enemy function = $DAE6
+$A9:DD08 A9 E6 DA    LDA #$DAE6             ; Enemy function = $DAE6 (rotting)
 $A9:DD0B 80 27       BRA $27    [$DD34]     ; Dead enemies shared contact reaction
 }
 
@@ -9893,7 +9904,7 @@ $A9:DD16 D0 2B       BNE $2B    [$DD43]     ;/
 
 ;;; $DD18: Enemy touch / enemy shot - enemy $EE7F (dead skree) ;;;
 {
-$A9:DD18 A9 FC DA    LDA #$DAFC             ; Enemy function = $DAFC
+$A9:DD18 A9 FC DA    LDA #$DAFC             ; Enemy function = $DAFC (rotting)
 $A9:DD1B 80 17       BRA $17    [$DD34]     ; Dead enemies shared contact reaction
 }
 
@@ -9906,19 +9917,21 @@ $A9:DD20 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A9:DD23 29 00 04    AND #$0400             ;} If enemy is intangible: return
 $A9:DD26 D0 1B       BNE $1B    [$DD43]     ;/
 $A9:DD28 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
-$A9:DD2C C9 08 00    CMP #$0008             ;} If [enemy $7E:7810] < 8: return
+$A9:DD2C C9 08 00    CMP #$0008             ;} If [enemy drained palette index] < 8: return
 $A9:DD2F 90 12       BCC $12    [$DD43]     ;/
 }
 
 
 ;;; $DD31: Dead sidehopper contact reaction - rottable ;;;
 {
-$A9:DD31 A9 BA DA    LDA #$DABA             ; Enemy function = $DABA
+$A9:DD31 A9 BA DA    LDA #$DABA             ; Enemy function = $DABA (rotting)
 }
 
 
 ;;; $DD34: Dead enemies shared contact reaction ;;;
 {
+;; Parameters:
+;;     A: Rotting enemy function
 $A9:DD34 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD37 9D A8 0F    STA $0FA8,x[$7E:11E8]  ; Enemy function = [A]
 $A9:DD3A BD 86 0F    LDA $0F86,x[$7E:11C6]  ;\
@@ -9933,7 +9946,7 @@ $A9:DD43 6B          RTL
 {
 $A9:DD44 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD47 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
-$A9:DD4B C9 08 00    CMP #$0008             ;} If [enemy $7E:7810] >= 8: go to dead sidehopper contact reaction - rottable
+$A9:DD4B C9 08 00    CMP #$0008             ;} If [enemy drained palette index] >= 8: go to dead sidehopper contact reaction - rottable
 $A9:DD4E B0 E1       BCS $E1    [$DD31]     ;/
 $A9:DD50 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD53 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
@@ -10498,6 +10511,8 @@ $A9:E262             dw 0000, 00E0, 01C0, 02A0, 0380, 0460, 0540, 0620
 {
 ;;; $E272: Corpse rotting rot entry move function - torizo ;;;
 {
+; DB must be $7E
+
 $A9:E272 AD 02 88    LDA $8802  [$7E:8802]
 $A9:E275 C9 50 00    CMP #$0050
 $A9:E278 90 17       BCC $17    [$E291]
@@ -11659,11 +11674,12 @@ $A9:EBAB 60          RTS
 
 ;;; $EBAC: Palette - enemy $EDBF (sidehopper, part 2) ;;;
 {
+; This palette is loaded by the enemy set of the Shitroid room, but that palette is overwritten by Shitroid init AI, making this effectively unused
 $A9:EBAC             dw 3800, 4EDA, 3A35, 2990, 14EB, 77E9, 5706, 3A44, 1D62, 2FBA, 22F6, 1A33, 1170, 08CD, 639F, 0446
 }
 
 
-;;; $EBCC: Palettes ;;;
+;;; $EBCC: Palettes - dead sidehopper being drained ;;;
 {
 $A9:EBCC             dw 3800,7FFF,56E0,3180,18C0,6BC0,5EC0,4A20,35A0,7FFF,039C,0237,00D1,03FF,0237,00D1
 $A9:EBEC             dw 3800,77DF,52C5,2962,14A1,67A5,56A4,4203,3182,77FF,0F7B,01F4,00CF,037B,01F3,00AF
@@ -11675,7 +11691,9 @@ $A9:EC8C             dw 3800,57FF,42F7,0929,00A5,7FFF,4231,0043,4B3F,42DB,3678,2
 }
 
 
-;;; $ECAC: Instruction list - dead sidehopper - alive - activated ;;;
+;;; $ECAC..ED24: Dead monster instruction lists ;;;
+{
+;;; $ECAC: Instruction list - dead sidehopper - alive - hopping ;;;
 {
 $A9:ECAC             dx 0002,EE3C,
                         0004,EE61,
@@ -11685,18 +11703,18 @@ $A9:ECAC             dx 0002,EE3C,
                         0004,EE61,
                         0005,EE3C,
                         0004,EE61,
-                        ECD0,       ; ???
+                        ECD0,       ; End hop
                         812F        ; Sleep
 }
 
 
-;;; $ECD0: Instruction ;;;
+;;; $ECD0: Instruction - end hop ;;;
 {
 $A9:ECD0 5A          PHY
-$A9:ECD1 A0 10 D9    LDY #$D910             ; Enemy function = $D910
+$A9:ECD1 A0 10 D9    LDY #$D910             ; Enemy function = $D910 (start idling)
 $A9:ECD4 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
-$A9:ECD8 F0 03       BEQ $03    [$ECDD]     ;} If [enemy $7E:7810] != 0:
-$A9:ECDA A0 08 DA    LDY #$DA08             ; Enemy function = $DA08
+$A9:ECD8 F0 03       BEQ $03    [$ECDD]     ;} If [enemy drained palette index] != 0:
+$A9:ECDA A0 08 DA    LDY #$DA08             ; Enemy function = $DA08 (being drained)
 
 $A9:ECDD 98          TYA
 $A9:ECDE 9D A8 0F    STA $0FA8,x[$7E:0FE8]
@@ -11705,9 +11723,7 @@ $A9:ECE2 6B          RTL
 }
 
 
-;;; $ECE3..ED24: Dead monster instruction lists ;;;
-{
-;;; $ECE3: Instruction list - dead sidehopper - alive - initial ;;;
+;;; $ECE3: Instruction list - dead sidehopper - alive - idle ;;;
 {
 $A9:ECE3             dx 0001,EE86,
                         812F        ; Sleep
@@ -11922,7 +11938,7 @@ $A9:EF3B AB          PLB                    ;|
 $A9:EF3C AB          PLB                    ;|
 $A9:EF3D A9 00 00    LDA #$0000             ;|
 $A9:EF40 A2 FE 0F    LDX #$0FFE             ;|
-                                            ;} $7E:2000..2FFF = 0
+                                            ;} $7E:2000..2FFF = 0 (corpse rotting graphics)
 $A9:EF43 9D 00 20    STA $2000,x[$7E:2FFE]  ;|
 $A9:EF46 CA          DEX                    ;|
 $A9:EF47 CA          DEX                    ;|
@@ -11939,7 +11955,7 @@ $A9:EF60 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = 
 $A9:EF63 A9 01 00    LDA #$0001             ;\
 $A9:EF66 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A9:EF69 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
-$A9:EF6C A9 E6 EF    LDA #$EFE6             ; Enemy function = $EFE6
+$A9:EF6C A9 E6 EF    LDA #$EFE6             ; Enemy function = $EFE6 (wait for camera)
 $A9:EF6F 2C 11 09    BIT $0911  [$7E:0911]  ;\
 $A9:EF72 10 0C       BPL $0C    [$EF80]     ;} If [layer 1 X position] < 0 (door transition from the left):
 $A9:EF74 BD 86 0F    LDA $0F86,x            ;\
@@ -11963,7 +11979,7 @@ $A9:EFA5 A9 10 00    LDA #$0010             ;} Sprite target palette 2 = [$F8E6.
 $A9:EFA8 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A9:EFAC A0 A6 F8    LDY #$F8A6             ;\
 $A9:EFAF A2 E0 01    LDX #$01E0             ;|
-$A9:EFB2 A9 10 00    LDA #$0010             ;} Sprite target palette 7 = [$F8A6..C5] (dead animals)
+$A9:EFB2 A9 10 00    LDA #$0010             ;} Sprite target palette 7 = [$F8A6..C5] (dead monsters)
 $A9:EFB5 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A9:EFB9 6B          RTL
 }
@@ -12161,7 +12177,7 @@ $A9:F124 60          RTS
 ;;; $F125: Shitroid function - make sidehopper rottable ;;;
 {
 $A9:F125 A9 01 00    LDA #$0001             ;\
-$A9:F128 8F 50 78 7E STA $7E7850[$7E:7850]  ;} Sidehopper $7E:7810 = 1
+$A9:F128 8F 50 78 7E STA $7E7850[$7E:7850]  ;} Sidehopper drained palette index = 1
 $A9:F12C A9 38 F1    LDA #$F138             ;\
 $A9:F12F 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F138
 $A9:F132 A9 C0 00    LDA #$00C0             ;\
@@ -12239,7 +12255,6 @@ $A9:F1C1 3A          DEC A                  ;\
 $A9:F1C2 9F 02 78 7E STA $7E7802,x          ;} Decrement enemy aggro timer
 $A9:F1C6 AC FA 0A    LDY $0AFA  [$7E:0AFA]  ; Y = [Samus Y position]
 $A9:F1C9 80 15       BRA $15    [$F1E0]
-
                                             ; Else ([enemy aggro timer] = 0):
 $A9:F1CB A0 50 00    LDY #$0050             ; Y = 50h
 $A9:F1CE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -12481,7 +12496,7 @@ $A9:F3A2 60          RTS
 {
 $A9:F3A3 DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Decrement enemy function timer
 $A9:F3A6 30 03       BMI $03    [$F3AB]     ; If [enemy function timer] >= 0:
-$A9:F3A8 4C D4 F3    JMP $F3D4  [$A9:F3D4]  ; Go to $F3D4
+$A9:F3A8 4C D4 F3    JMP $F3D4  [$A9:F3D4]  ; Go to gradually accelerate towards Samus
 
 $A9:F3AB A9 02 00    LDA #$0002             ;\
 $A9:F3AE 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Release Samus from drained pose
@@ -12553,7 +12568,6 @@ $A9:F410 18          CLC                    ;|
 $A9:F411 69 EE FF    ADC #$FFEE             ;} Y = [Samus Y position] - 12h
 $A9:F414 A8          TAY                    ;/
 $A9:F415 80 15       BRA $15    [$F42C]
-
                                             ; Else ([enemy aggro timer] = 0):
 $A9:F417 A0 50 00    LDY #$0050             ; Y = 50h
 $A9:F41A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -12660,7 +12674,7 @@ $A9:F4AE A9 00 05    LDA #$0500             ;/
 
 $A9:F4B1 9D AC 0F    STA $0FAC,x[$7E:0FAC]
 
-$A9:F4B4 60          RTS
+$A9:F4B4 60          RTS                    ; Return
 
 ; BRANCH_UP
 $A9:F4B5 8D 04 42    STA $4204  [$7E:4204]  ;\
@@ -12751,7 +12765,7 @@ $A9:F528 A9 00 08    LDA #$0800             ;/
 
 $A9:F52B 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 
-$A9:F52E 60          RTS
+$A9:F52E 60          RTS                    ; Return
 
 ; BRANCH_LEFT
 $A9:F52F 8D 04 42    STA $4204  [$7E:4204]  ;\
@@ -13234,7 +13248,7 @@ $A9:F8A5 6B          RTL
 }
 
 
-;;; $F8A6: Palette - enemy $ED7F/$EDFF/$EE3F/$EE7F (dead animals) ;;;
+;;; $F8A6: Palette - enemy $ED7F/$EDFF/$EE3F/$EE7F (dead monsters) ;;;
 {
 $A9:F8A6             dw 3800, 57FF, 42F7, 0929, 00A5, 7FFF, 4231, 0043, 4B3F, 42DB, 3678, 2E14, 2190, 192C, 0CC9, 0465
 }
