@@ -306,7 +306,7 @@ $80:818D 6B          RTL
 ;; Parameter:
 ;;     A: Bit index, bit 15 is forbidden (why?)
 ;; Returns:
-;;     A/X:   Byte index ([A] >> 3)
+;;     A/X: Byte index ([A] >> 3)
 ;;     $05E7: Bitmask (1 << ([A] & 7))
 
 ; Called mostly by PLMs
