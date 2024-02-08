@@ -8899,7 +8899,7 @@ $A9:D5E9 60          RTS
 
 ; Tile data calculations:
 ;     Tiles are 20h bytes
-;     Each dead torizo graphics row is 9 tiles = 120h bytes
+;     Each sand heap graphics row is 9 tiles = 120h bytes
 ;
 ;     Pixel (x, y) of tile at pointer p is:
 ;           ([p + y * 2]       >> 7 - x & 1)
@@ -9713,14 +9713,14 @@ $A9:DBEE C9 06 00    CMP #$0006             ;} If [A] % 8 < 6:
 $A9:DBF1 B0 09       BCS $09    [$DBFC]     ;/
 $A9:DBF3 9B          TXY                    ;\
 $A9:DBF4 0A          ASL A                  ;|
-$A9:DBF5 77 14       ADC [$14],y[$A9:E23C]  ;} X = [[$14] + [X]] + [A] % 8 * 2 (source)
+$A9:DBF5 77 14       ADC [$14],y[$A9:E23C]  ;} X = [[$14] + [A] / 8 * 2] + [A] % 8 * 2 (source)
 $A9:DBF7 AA          TAX                    ;/
 $A9:DBF8 A8          TAY                    ; Y = [X] (dest)
 $A9:DBF9 6C 12 00    JMP ($0012)[$A9:E38B]  ; Go to [$12]
 
 $A9:DBFC 9B          TXY                    ;\
 $A9:DBFD 0A          ASL A                  ;|
-$A9:DBFE 77 14       ADC [$14],y[$A9:E23C]  ;} X = [[$14] + [X]] + [A] % 8 * 2
+$A9:DBFE 77 14       ADC [$14],y[$A9:E23C]  ;} X = [[$14] + [A] / 8 * 2] + [A] % 8 * 2
 $A9:DC00 AA          TAX                    ;/
 $A9:DC01 6D 10 88    ADC $8810  [$7E:8810]  ;\
 $A9:DC04 A8          TAY                    ;} Y = [X] + [$8810] (tile data offset to get from pixel row 6 of current tile row to pixel row 0 of next tile row)
@@ -10511,119 +10511,144 @@ $A9:E262             dw 0000, 00E0, 01C0, 02A0, 0380, 0460, 0540, 0620
 {
 ;;; $E272: Corpse rotting rot entry move function - torizo ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
 ; DB must be $7E
 
-$A9:E272 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E275 C9 50 00    CMP #$0050
-$A9:E278 90 17       BCC $17    [$E291]
-$A9:E27A C9 5E 00    CMP #$005E
-$A9:E27D 10 0C       BPL $0C    [$E28B]
-$A9:E27F BD 00 20    LDA $2000,x[$7E:2DCA]
-$A9:E282 99 02 20    STA $2002,y[$7E:2DCC]
-$A9:E285 BD 10 20    LDA $2010,x[$7E:2DDA]
-$A9:E288 99 12 20    STA $2012,y[$7E:2DDC]
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E28B 9E 00 20    STZ $2000,x[$7E:2DCE]
-$A9:E28E 9E 10 20    STZ $2010,x[$7E:2DDE]
+; Column 0 is only used by rows Ah..Bh
+; Column 1 is only used by rows 9..Bh
+; Column 2 is only used by rows 2..Bh
+; Column 9 is only used by rows 2..Bh
+; (See $B7:A800)
 
-$A9:E291 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E294 C9 48 00    CMP #$0048
-$A9:E297 90 17       BCC $17    [$E2B0]
-$A9:E299 C9 5E 00    CMP #$005E
-$A9:E29C 10 0C       BPL $0C    [$E2AA]
-$A9:E29E BD 20 20    LDA $2020,x[$7E:2DEA]
-$A9:E2A1 99 22 20    STA $2022,y[$7E:2DEC]
-$A9:E2A4 BD 30 20    LDA $2030,x[$7E:2DFA]
-$A9:E2A7 99 32 20    STA $2032,y[$7E:2DFC]
+$A9:E272 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E275 C9 50 00    CMP #$0050             ;} If [corpse rotting rot entry Y offset] < 50h (tile row Ah): go to BRANCH_COLUMN_1
+$A9:E278 90 17       BCC $17    [$E291]     ;/
+$A9:E27A C9 5E 00    CMP #$005E             ;\
+$A9:E27D 10 0C       BPL $0C    [$E28B]     ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E27F BD 00 20    LDA $2000,x[$7E:2DCA]  ;\
+$A9:E282 99 02 20    STA $2002,y[$7E:2DCC]  ;|
+$A9:E285 BD 10 20    LDA $2010,x[$7E:2DDA]  ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E288 99 12 20    STA $2012,y[$7E:2DDC]  ;/
 
-$A9:E2AA 9E 20 20    STZ $2020,x[$7E:2DEE]
-$A9:E2AD 9E 30 20    STZ $2030,x[$7E:2DFE]
+$A9:E28B 9E 00 20    STZ $2000,x[$7E:2DCE]  ;\
+$A9:E28E 9E 10 20    STZ $2010,x[$7E:2DDE]  ;} Pixel row at [X] = 0
 
-$A9:E2B0 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E2B3 C9 10 00    CMP #$0010
-$A9:E2B6 90 17       BCC $17    [$E2CF]
-$A9:E2B8 C9 5E 00    CMP #$005E
-$A9:E2BB 10 0C       BPL $0C    [$E2C9]
-$A9:E2BD BD 40 20    LDA $2040,x[$7E:2E0A]
-$A9:E2C0 99 42 20    STA $2042,y[$7E:2E0C]
-$A9:E2C3 BD 50 20    LDA $2050,x[$7E:2E1A]
-$A9:E2C6 99 52 20    STA $2052,y[$7E:2E1C]
+; BRANCH_COLUMN_1
+$A9:E291 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E294 C9 48 00    CMP #$0048             ;} If [corpse rotting rot entry Y offset] < 48h (tile row 9): go to BRANCH_COLUMN_2
+$A9:E297 90 17       BCC $17    [$E2B0]     ;/
+$A9:E299 C9 5E 00    CMP #$005E             ;\
+$A9:E29C 10 0C       BPL $0C    [$E2AA]     ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E29E BD 20 20    LDA $2020,x[$7E:2DEA]  ;\
+$A9:E2A1 99 22 20    STA $2022,y[$7E:2DEC]  ;|
+$A9:E2A4 BD 30 20    LDA $2030,x[$7E:2DFA]  ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E2A7 99 32 20    STA $2032,y[$7E:2DFC]  ;/
+                                            
+$A9:E2AA 9E 20 20    STZ $2020,x[$7E:2DEE]  ;\
+$A9:E2AD 9E 30 20    STZ $2030,x[$7E:2DFE]  ;} Pixel row at [X] + (1 tile) = 0
 
-$A9:E2C9 9E 40 20    STZ $2040,x[$7E:2E0E]
-$A9:E2CC 9E 50 20    STZ $2050,x[$7E:2E1E]
+; BRANCH_COLUMN_2
+$A9:E2B0 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E2B3 C9 10 00    CMP #$0010             ;} If [corpse rotting rot entry Y offset] < 10h (tile row 2): go to BRANCH_COLUMN_3
+$A9:E2B6 90 17       BCC $17    [$E2CF]     ;/
+$A9:E2B8 C9 5E 00    CMP #$005E             ;\
+$A9:E2BB 10 0C       BPL $0C    [$E2C9]     ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E2BD BD 40 20    LDA $2040,x[$7E:2E0A]  ;\
+$A9:E2C0 99 42 20    STA $2042,y[$7E:2E0C]  ;|
+$A9:E2C3 BD 50 20    LDA $2050,x[$7E:2E1A]  ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E2C6 99 52 20    STA $2052,y[$7E:2E1C]  ;/
+                                            
+$A9:E2C9 9E 40 20    STZ $2040,x[$7E:2E0E]  ;\
+$A9:E2CC 9E 50 20    STZ $2050,x[$7E:2E1E]  ;} Pixel row at [X] + (2 tiles) = 0
 
-$A9:E2CF AD 02 88    LDA $8802  [$7E:8802]
-$A9:E2D2 C9 5E 00    CMP #$005E
-$A9:E2D5 10 0C       BPL $0C    [$E2E3]
-$A9:E2D7 BD 60 20    LDA $2060,x[$7E:2E2A]
-$A9:E2DA 99 62 20    STA $2062,y[$7E:2E2C]
-$A9:E2DD BD 70 20    LDA $2070,x[$7E:2E3A]
-$A9:E2E0 99 72 20    STA $2072,y[$7E:2E3C]
-
-$A9:E2E3 9E 60 20    STZ $2060,x[$7E:2E2E]
-$A9:E2E6 9E 70 20    STZ $2070,x[$7E:2E3E]
-$A9:E2E9 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E2EC C9 5E 00    CMP #$005E
-$A9:E2EF 10 0C       BPL $0C    [$E2FD]
-$A9:E2F1 BD 80 20    LDA $2080,x[$7E:2E4A]
-$A9:E2F4 99 82 20    STA $2082,y[$7E:2E4C]
-$A9:E2F7 BD 90 20    LDA $2090,x[$7E:2E5A]
-$A9:E2FA 99 92 20    STA $2092,y[$7E:2E5C]
-
-$A9:E2FD 9E 80 20    STZ $2080,x[$7E:2E4E]
-$A9:E300 9E 90 20    STZ $2090,x[$7E:2E5E]
-$A9:E303 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E306 C9 5E 00    CMP #$005E
-$A9:E309 10 0C       BPL $0C    [$E317]
-$A9:E30B BD A0 20    LDA $20A0,x[$7E:2E6A]
-$A9:E30E 99 A2 20    STA $20A2,y[$7E:2E6C]
-$A9:E311 BD B0 20    LDA $20B0,x[$7E:2E7A]
-$A9:E314 99 B2 20    STA $20B2,y[$7E:2E7C]
-
-$A9:E317 9E A0 20    STZ $20A0,x[$7E:2E6E]
-$A9:E31A 9E B0 20    STZ $20B0,x[$7E:2E7E]
-$A9:E31D AD 02 88    LDA $8802  [$7E:8802]
-$A9:E320 C9 5E 00    CMP #$005E
-$A9:E323 10 0C       BPL $0C    [$E331]
-$A9:E325 BD C0 20    LDA $20C0,x[$7E:2E8A]
-$A9:E328 99 C2 20    STA $20C2,y[$7E:2E8C]
-$A9:E32B BD D0 20    LDA $20D0,x[$7E:2E9A]
-$A9:E32E 99 D2 20    STA $20D2,y[$7E:2E9C]
-
-$A9:E331 9E C0 20    STZ $20C0,x[$7E:2E8E]
-$A9:E334 9E D0 20    STZ $20D0,x[$7E:2E9E]
-$A9:E337 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E33A C9 5E 00    CMP #$005E
-$A9:E33D 10 0C       BPL $0C    [$E34B]
-$A9:E33F BD E0 20    LDA $20E0,x[$7E:2EAA]
-$A9:E342 99 E2 20    STA $20E2,y[$7E:2EAC]
-$A9:E345 BD F0 20    LDA $20F0,x[$7E:2EBA]
-$A9:E348 99 F2 20    STA $20F2,y[$7E:2EBC]
-
-$A9:E34B 9E E0 20    STZ $20E0,x[$7E:2EAE]
-$A9:E34E 9E F0 20    STZ $20F0,x[$7E:2EBE]
-$A9:E351 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E354 C9 5E 00    CMP #$005E
-$A9:E357 10 0C       BPL $0C    [$E365]
-$A9:E359 BD 00 21    LDA $2100,x[$7E:2ECA]
-$A9:E35C 99 02 21    STA $2102,y[$7E:2ECC]
-$A9:E35F BD 10 21    LDA $2110,x[$7E:2EDA]
-$A9:E362 99 12 21    STA $2112,y[$7E:2EDC]
-
-$A9:E365 9E 00 21    STZ $2100,x[$7E:2ECE]
-$A9:E368 9E 10 21    STZ $2110,x[$7E:2EDE]
-$A9:E36B AD 02 88    LDA $8802  [$7E:8802]
-$A9:E36E C9 10 00    CMP #$0010
-$A9:E371 90 17       BCC $17    [$E38A]
-$A9:E373 C9 5E 00    CMP #$005E
-$A9:E376 10 0C       BPL $0C    [$E384]
-$A9:E378 BD 20 21    LDA $2120,x[$7E:2EEA]
-$A9:E37B 99 22 21    STA $2122,y[$7E:2EEC]
-$A9:E37E BD 30 21    LDA $2130,x[$7E:2EFA]
-$A9:E381 99 32 21    STA $2132,y[$7E:2EFC]
-
-$A9:E384 9E 20 21    STZ $2120,x[$7E:2EEE]
-$A9:E387 9E 30 21    STZ $2130,x[$7E:2EFE]
+; BRANCH_COLUMN_3
+$A9:E2CF AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E2D2 C9 5E 00    CMP #$005E             ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E2D5 10 0C       BPL $0C    [$E2E3]     ;/
+$A9:E2D7 BD 60 20    LDA $2060,x[$7E:2E2A]  ;\
+$A9:E2DA 99 62 20    STA $2062,y[$7E:2E2C]  ;|
+$A9:E2DD BD 70 20    LDA $2070,x[$7E:2E3A]  ;} Pixel row at [Y] + (3 tiles) + (1 pixel row) = pixel row at [X] + (3 tiles)
+$A9:E2E0 99 72 20    STA $2072,y[$7E:2E3C]  ;/
+                                            
+$A9:E2E3 9E 60 20    STZ $2060,x[$7E:2E2E]  ;\
+$A9:E2E6 9E 70 20    STZ $2070,x[$7E:2E3E]  ;} Pixel row at [X] + (3 tiles) = 0
+$A9:E2E9 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E2EC C9 5E 00    CMP #$005E             ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E2EF 10 0C       BPL $0C    [$E2FD]     ;/
+$A9:E2F1 BD 80 20    LDA $2080,x[$7E:2E4A]  ;\
+$A9:E2F4 99 82 20    STA $2082,y[$7E:2E4C]  ;|
+$A9:E2F7 BD 90 20    LDA $2090,x[$7E:2E5A]  ;} Pixel row at [Y] + (4 tiles) + (1 pixel row) = pixel row at [X] + (4 tiles)
+$A9:E2FA 99 92 20    STA $2092,y[$7E:2E5C]  ;/
+                                            
+$A9:E2FD 9E 80 20    STZ $2080,x[$7E:2E4E]  ;\
+$A9:E300 9E 90 20    STZ $2090,x[$7E:2E5E]  ;} Pixel row at [X] + (4 tiles) = 0
+$A9:E303 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E306 C9 5E 00    CMP #$005E             ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E309 10 0C       BPL $0C    [$E317]     ;/
+$A9:E30B BD A0 20    LDA $20A0,x[$7E:2E6A]  ;\
+$A9:E30E 99 A2 20    STA $20A2,y[$7E:2E6C]  ;|
+$A9:E311 BD B0 20    LDA $20B0,x[$7E:2E7A]  ;} Pixel row at [Y] + (5 tiles) + (1 pixel row) = pixel row at [X] + (5 tiles)
+$A9:E314 99 B2 20    STA $20B2,y[$7E:2E7C]  ;/
+                                            
+$A9:E317 9E A0 20    STZ $20A0,x[$7E:2E6E]  ;\
+$A9:E31A 9E B0 20    STZ $20B0,x[$7E:2E7E]  ;} Pixel row at [X] + (5 tiles) = 0
+$A9:E31D AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E320 C9 5E 00    CMP #$005E             ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E323 10 0C       BPL $0C    [$E331]     ;/
+$A9:E325 BD C0 20    LDA $20C0,x[$7E:2E8A]  ;\
+$A9:E328 99 C2 20    STA $20C2,y[$7E:2E8C]  ;|
+$A9:E32B BD D0 20    LDA $20D0,x[$7E:2E9A]  ;} Pixel row at [Y] + (6 tiles) + (1 pixel row) = pixel row at [X] + (6 tiles)
+$A9:E32E 99 D2 20    STA $20D2,y[$7E:2E9C]  ;/
+                                            
+$A9:E331 9E C0 20    STZ $20C0,x[$7E:2E8E]  ;\
+$A9:E334 9E D0 20    STZ $20D0,x[$7E:2E9E]  ;} Pixel row at [X] + (6 tiles) = 0
+$A9:E337 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E33A C9 5E 00    CMP #$005E             ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E33D 10 0C       BPL $0C    [$E34B]     ;/
+$A9:E33F BD E0 20    LDA $20E0,x[$7E:2EAA]  ;\
+$A9:E342 99 E2 20    STA $20E2,y[$7E:2EAC]  ;|
+$A9:E345 BD F0 20    LDA $20F0,x[$7E:2EBA]  ;} Pixel row at [Y] + (7 tiles) + (1 pixel row) = pixel row at [X] + (7 tiles)
+$A9:E348 99 F2 20    STA $20F2,y[$7E:2EBC]  ;/
+                                            
+$A9:E34B 9E E0 20    STZ $20E0,x[$7E:2EAE]  ;\
+$A9:E34E 9E F0 20    STZ $20F0,x[$7E:2EBE]  ;} Pixel row at [X] + (7 tiles) = 0
+$A9:E351 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E354 C9 5E 00    CMP #$005E             ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E357 10 0C       BPL $0C    [$E365]     ;/
+$A9:E359 BD 00 21    LDA $2100,x[$7E:2ECA]  ;\
+$A9:E35C 99 02 21    STA $2102,y[$7E:2ECC]  ;|
+$A9:E35F BD 10 21    LDA $2110,x[$7E:2EDA]  ;} Pixel row at [Y] + (8 tiles) + (1 pixel row) = pixel row at [X] + (8 tiles)
+$A9:E362 99 12 21    STA $2112,y[$7E:2EDC]  ;/
+                                            
+$A9:E365 9E 00 21    STZ $2100,x[$7E:2ECE]  ;\
+$A9:E368 9E 10 21    STZ $2110,x[$7E:2EDE]  ;} Pixel row at [X] + (8 tiles) = 0
+$A9:E36B AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E36E C9 10 00    CMP #$0010             ;} If [corpse rotting rot entry Y offset] < 10h (tile row 2): return
+$A9:E371 90 17       BCC $17    [$E38A]     ;/
+$A9:E373 C9 5E 00    CMP #$005E             ;\
+$A9:E376 10 0C       BPL $0C    [$E384]     ;} If [corpse rotting rot entry Y offset] < 5Eh:
+$A9:E378 BD 20 21    LDA $2120,x[$7E:2EEA]  ;\
+$A9:E37B 99 22 21    STA $2122,y[$7E:2EEC]  ;|
+$A9:E37E BD 30 21    LDA $2130,x[$7E:2EFA]  ;} Pixel row at [Y] + (9 tiles) + (1 pixel row) = pixel row at [X] + (9 tiles)
+$A9:E381 99 32 21    STA $2132,y[$7E:2EFC]  ;/
+                                            
+$A9:E384 9E 20 21    STZ $2120,x[$7E:2EEE]  ;\
+$A9:E387 9E 30 21    STZ $2130,x[$7E:2EFE]  ;} Pixel row at [X] + (9 tiles) = 0
 
 $A9:E38A 60          RTS
 }

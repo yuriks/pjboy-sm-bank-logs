@@ -5456,22 +5456,22 @@ $A5:ECE7 18          CLC                    ;\
 $A5:ECE8 65 12       ADC $12    [$7E:0012]  ;} $16 = [A] * 3/4
 $A5:ECEA 85 16       STA $16    [$7E:0016]  ;/
 $A5:ECEC A9 30 02    LDA #$0230             ;\
-$A5:ECEF 8D AF 1A    STA $1AAF  [$7E:1AAF]  ;} Spore Spawn stalk segment 3 Y position = 80h
+$A5:ECEF 8D AF 1A    STA $1AAF  [$7E:1AAF]  ;} Spore Spawn stalk segment 3 Y position = 230h
 $A5:ECF2 AF 0A 78 7E LDA $7E780A[$7E:780A]  ;\
 $A5:ECF6 38          SEC                    ;|
 $A5:ECF7 E5 14       SBC $14    [$7E:0014]  ;} Spore Spawn stalk segment 2 Y position = [Spore Spawn stalk Y origin] - [$14]
 $A5:ECF9 8D B1 1A    STA $1AB1  [$7E:1AB1]  ;/
-$A5:ECFC 8F 06 80 7E STA $7E8006[$7E:8006]  ; $7E:8000 = [Spore Spawn stalk segment 2 Y position]
+$A5:ECFC 8F 06 80 7E STA $7E8006[$7E:8006]  ; $7E:8006 = [Spore Spawn stalk segment 2 Y position]
 $A5:ED00 AF 0A 78 7E LDA $7E780A[$7E:780A]  ;\
 $A5:ED04 38          SEC                    ;|
 $A5:ED05 E5 12       SBC $12    [$7E:0012]  ;} Spore Spawn stalk segment 1 Y position = [Spore Spawn stalk Y origin] - [$12]
 $A5:ED07 8D B3 1A    STA $1AB3  [$7E:1AB3]  ;/
-$A5:ED0A 8F 08 80 7E STA $7E8008[$7E:8008]  ; $7E:8002 = [Spore Spawn stalk segment 1 Y position]
+$A5:ED0A 8F 08 80 7E STA $7E8008[$7E:8008]  ; $7E:8008 = [Spore Spawn stalk segment 1 Y position]
 $A5:ED0E AF 0A 78 7E LDA $7E780A[$7E:780A]  ;\
 $A5:ED12 38          SEC                    ;|
 $A5:ED13 E5 16       SBC $16    [$7E:0016]  ;} Spore Spawn stalk segment 0 Y position = [Spore Spawn stalk Y origin] - [$16]
 $A5:ED15 8D B5 1A    STA $1AB5  [$7E:1AB5]  ;/
-$A5:ED18 8F 0A 80 7E STA $7E800A[$7E:800A]  ; $7E:8004 = [Spore Spawn stalk segment 0 Y position]
+$A5:ED18 8F 0A 80 7E STA $7E800A[$7E:800A]  ; $7E:800A = [Spore Spawn stalk segment 0 Y position]
 $A5:ED1C 80 3B       BRA $3B    [$ED59]
 
 $A5:ED1E 4A          LSR A                  ;\ Else ([A] >= 0):
@@ -5482,22 +5482,22 @@ $A5:ED24 18          CLC                    ;\
 $A5:ED25 65 12       ADC $12    [$7E:0012]  ;} $16 = [A] * 3/4
 $A5:ED27 85 16       STA $16    [$7E:0016]  ;/
 $A5:ED29 A9 30 02    LDA #$0230             ;\
-$A5:ED2C 8D AF 1A    STA $1AAF  [$7E:1AAF]  ;} Spore Spawn stalk segment 3 Y position = 80h
+$A5:ED2C 8D AF 1A    STA $1AAF  [$7E:1AAF]  ;} Spore Spawn stalk segment 3 Y position = 230h
 $A5:ED2F A5 14       LDA $14    [$7E:0014]  ;\
 $A5:ED31 18          CLC                    ;|
-$A5:ED32 6F 0A 78 7E ADC $7E780A[$7E:780A]  ;} Spore Spawn stalk segment 2 Y position = [Spore Spawn stalk Y origin] - [$14]
+$A5:ED32 6F 0A 78 7E ADC $7E780A[$7E:780A]  ;} Spore Spawn stalk segment 2 Y position = [Spore Spawn stalk Y origin] + [$14]
 $A5:ED36 8D B1 1A    STA $1AB1  [$7E:1AB1]  ;/
-$A5:ED39 8F 06 80 7E STA $7E8006[$7E:8006]  ; $7E:8000 = [Spore Spawn stalk segment 2 Y position]
+$A5:ED39 8F 06 80 7E STA $7E8006[$7E:8006]  ; $7E:8006 = [Spore Spawn stalk segment 2 Y position]
 $A5:ED3D A5 12       LDA $12    [$7E:0012]  ;\
 $A5:ED3F 18          CLC                    ;|
-$A5:ED40 6F 0A 78 7E ADC $7E780A[$7E:780A]  ;} Spore Spawn stalk segment 1 Y position = [Spore Spawn stalk Y origin] - [$12]
+$A5:ED40 6F 0A 78 7E ADC $7E780A[$7E:780A]  ;} Spore Spawn stalk segment 1 Y position = [Spore Spawn stalk Y origin] + [$12]
 $A5:ED44 8D B3 1A    STA $1AB3  [$7E:1AB3]  ;/
-$A5:ED47 8F 08 80 7E STA $7E8008[$7E:8008]  ; $7E:8002 = [Spore Spawn stalk segment 1 Y position]
+$A5:ED47 8F 08 80 7E STA $7E8008[$7E:8008]  ; $7E:8008 = [Spore Spawn stalk segment 1 Y position]
 $A5:ED4B A5 16       LDA $16    [$7E:0016]  ;\
 $A5:ED4D 18          CLC                    ;|
-$A5:ED4E 6F 0A 78 7E ADC $7E780A[$7E:780A]  ;} Spore Spawn stalk segment 0 Y position = [Spore Spawn stalk Y origin] - [$16]
+$A5:ED4E 6F 0A 78 7E ADC $7E780A[$7E:780A]  ;} Spore Spawn stalk segment 0 Y position = [Spore Spawn stalk Y origin] + [$16]
 $A5:ED52 8D B5 1A    STA $1AB5  [$7E:1AB5]  ;/
-$A5:ED55 8F 0A 80 7E STA $7E800A[$7E:800A]  ; $7E:8004 = [Spore Spawn stalk segment 0 Y position]
+$A5:ED55 8F 0A 80 7E STA $7E800A[$7E:800A]  ; $7E:800A = [Spore Spawn stalk segment 0 Y position]
 
 $A5:ED59 60          RTS
 }
