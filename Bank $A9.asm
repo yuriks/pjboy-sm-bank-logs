@@ -10516,6 +10516,7 @@ $A9:E262             dw 0000, 00E0, 01C0, 02A0, 0380, 0460, 0540, 0620
 ;;     Y: Destination pixel row tile data offset
 
 ; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
 ; Tile data calculations:
 ;     Tiles are 20h bytes
@@ -10659,13 +10660,12 @@ $A9:E38A 60          RTS
 ;; Parameters:
 ;;     X: Source tile GFX offset
 ;;     Y: Destination tile GFX offset
-;;     $7E:8802: Pixel row being copied
 
+; DB must be $7E
 ; Copies a pixel row from source to one pixel down in dest
 
 ; Tile data calculations:
 ;     Tiles are 20h bytes
-;     Each Torizo graphics row is Ah tiles = 140h bytes
 ;
 ;     Pixel (x, y) of tile at pointer p is:
 ;           ([p + y * 2]       >> 7 - x & 1)
@@ -10675,6 +10675,12 @@ $A9:E38A 60          RTS
 ;
 ;     Hence, pixel row y of tile at pointer p is the bytes
 ;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
+; Column 0 is only used by rows Ah..Bh
+; Column 1 is only used by rows 9..Bh
+; Column 2 is only used by rows 2..Bh
+; Column 9 is only used by rows 2..Bh
+; (See $B7:A800)
 
 ; Tile 0
 $A9:E38B AD 02 88    LDA $8802  [$7E:8802]  ;\

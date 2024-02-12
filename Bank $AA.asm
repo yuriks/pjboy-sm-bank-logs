@@ -15,14 +15,22 @@ $AA:8687             dw 3800, 03FF, 033B, 0216, 0113, 6B1E, 4A16, 3591, 20E9, 15
 ;;; $86A7: Torizo palettes ;;;
 {
 $AA:86A7             dw 3800,02DF,01D7,00AC,5A73,41AD,2D08,1863,1486,0145,0145,0145,7FFF,0145,0145,0000
-$AA:86C7             dw 3800,679F,5299,252E,14AA,5EFC,4657,35B2,2D70,5B7F,3DF8,2D0E,5F5F,5E1A,5D35,0C63
-$AA:86E7             dw 3800,4ABA,35B2,0847,0003,4215,2970,18CB,1089,463A,28B3,1809,6F7F,51FD,4113,0C63
-$AA:8707             dw 3800,56BA,41B2,1447,0403,4E15,3570,24CB,1868,6F7F,51F8,410E,031F,01DA,00F5,0C63
-$AA:8727             dw 3800,4215,2D0D,0002,0000,3970,20CB,0C26,0403,463A,28B3,1809,6F7F,51FD,4113,0C63
-$AA:8747             dw 3800,6AB5,49B0,1C45,0C01,5613,416D,2CC9,2066,5714,31CC,14E3,5630,3569,1883,0C66
-$AA:8767             dw 3800,5610,350B,0800,0000,416E,2CC8,1823,0C01,6A31,4CAA,2406,7F7B,75F4,4D10,0C63
-$AA:8787             dw 3800,4BBE,06B9,00A8,0000,173A,0276,01F2,014D,73E0,4F20,2A20,7FE0,5AA0,5920,0043
-$AA:87A7             dw 3800,3719,0214,0003,0000,0295,01D1,014D,00A8,4B40,25E0,00E0,6B40,4600,4480,0000
+
+; Bomb Torizo statue palettes
+$AA:86C7             dw 3800,679F,5299,252E,14AA,5EFC,4657,35B2,2D70,5B7F,3DF8,2D0E,5F5F,5E1A,5D35,0C63 ; Sprite palette 1
+$AA:86E7             dw 3800,4ABA,35B2,0847,0003,4215,2970,18CB,1089,463A,28B3,1809,6F7F,51FD,4113,0C63 ; Sprite palette 2
+
+; Normal Torizo palettes (Bomb Torizo after coming to life, Golden Torizo transitions to this from damage)
+$AA:8707             dw 3800,56BA,41B2,1447,0403,4E15,3570,24CB,1868,6F7F,51F8,410E,031F,01DA,00F5,0C63 ; Sprite palette 1
+$AA:8727             dw 3800,4215,2D0D,0002,0000,3970,20CB,0C26,0403,463A,28B3,1809,6F7F,51FD,4113,0C63 ; Sprite palette 2
+
+; Golden Torizo statue palettes
+$AA:8747             dw 3800,6AB5,49B0,1C45,0C01,5613,416D,2CC9,2066,5714,31CC,14E3,5630,3569,1883,0C66 ; Sprite palette 1
+$AA:8767             dw 3800,5610,350B,0800,0000,416E,2CC8,1823,0C01,6A31,4CAA,2406,7F7B,75F4,4D10,0C63 ; Sprite palette 2
+
+; Golden Torizo palettes
+$AA:8787             dw 3800,4BBE,06B9,00A8,0000,173A,0276,01F2,014D,73E0,4F20,2A20,7FE0,5AA0,5920,0043 ; Sprite palette 1
+$AA:87A7             dw 3800,3719,0214,0003,0000,0295,01D1,014D,00A8,4B40,25E0,00E0,6B40,4600,4480,0000 ; Sprite palette 2
 }
 
 
@@ -362,7 +370,7 @@ $AA:B09A             dw 0003
 }
 
 
-;;; $B09C: Instruction - enemy $0FB0 = [[Y]] ;;;
+;;; $B09C: Instruction - enemy function = [[Y]] ;;;
 {
 $AA:B09C B9 00 00    LDA $0000,y[$AA:B883]
 $AA:B09F 9D B0 0F    STA $0FB0,x[$7E:0FB0]
@@ -380,7 +388,7 @@ $AA:B0A5             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 00
 
 ;;; $B0E5: Instruction list ;;;
 {
-$AA:B0E5             dx B09C,C6AB,              ; Enemy $0FB0 = $C6AB
+$AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
                         C2C9,                   ; Enemy $7E:7808 = 7777h
                         C303,0000,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter $0000 and sleep for 28h i-frames
                         B11D,                   ; Spawn 6 Bomb Torizo low-health continuous drool enemy projectiles
@@ -388,7 +396,7 @@ $AA:B0E5             dx B09C,C6AB,              ; Enemy $0FB0 = $C6AB
                         814B,0040,AAB679,7400,  ; Transfer 40h bytes from $AA:B679 to VRAM $7400
                         814B,0020,AAB4B9,7E70,  ; Transfer 20h bytes from $AA:B4B9 to VRAM $7E70
                         814B,0020,AAB6B9,7F70,  ; Transfer 20h bytes from $AA:B6B9 to VRAM $7F70
-                        B09C,C6FF,              ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,              ; Enemy function = $C6FF
                         C2D1,                   ; Enemy $7E:7808 = 0
                         C2FD                    ; Go to [enemy $7E:7802]
 }
@@ -421,7 +429,7 @@ $AA:B154 6B          RTL
 
 ;;; $B155: Instruction list ;;;
 {
-$AA:B155             dx B09C,C6AB,              ; Enemy $0FB0 = $C6AB
+$AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
                         C2C9,                   ; Enemy $7E:7808 = 7777h
                         C303,0006,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter 6 and sleep for 28h i-frames
                         B1BE,                   ; Enemy $0FB6 |= 4000h
@@ -435,7 +443,7 @@ $AA:B155             dx B09C,C6AB,              ; Enemy $0FB0 = $C6AB
                         814B,0040,AAB0A5,7E80,  ; Transfer 40h bytes from $AA:B0A5 to VRAM $7E80
                         814B,0040,AAB0A5,7F80,  ; Transfer 40h bytes from $AA:B0A5 to VRAM $7F80
                         814B,0020,AAB0A5,79F0,  ; Transfer 20h bytes from $AA:B0A5 to VRAM $79F0
-                        B09C,C6FF,              ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,              ; Enemy function = $C6FF
                         C2D1,                   ; Enemy $7E:7808 = 0
                         C2F7                    ; Go to [enemy $7E:7800]
 }
@@ -452,7 +460,7 @@ $AA:B1C7 6B          RTL
 
 ;;; $B1C8: Instruction list - Torizo death sequence ;;;
 {
-$AA:B1C8             dx B09C,C6AB,  ; Enemy $0FB0 = $C6AB
+$AA:B1C8             dx B09C,C6AB,  ; Enemy function = RTS
                         C2C9,       ; Enemy $7E:7808 = 7777h
                         8123,0008   ; Timer = 8
 $AA:B1D2             dx C32F,       ; ???
@@ -652,14 +660,14 @@ $AA:B679             db 7F,2F,2B,3F,3F,3F,07,2F,0D,07,01,03,03,01,00,00,00,58,00
 $AA:B879             dx C3A0,       ; ???
                         C2C9,       ; Enemy $7E:7808 = 7777h
                         0001,87D0,
-                        B09C,C6C6,  ; Enemy $0FB0 = $C6C6
+                        B09C,C6C6,  ; Enemy function = $C6C6
                         812F        ; Sleep
 }
 
 
 ;;; $B887: Instruction list -  ;;;
 {
-$AA:B887             dx B09C,C6BF,              ; Enemy $0FB0 = $C6BF
+$AA:B887             dx B09C,C6BF,              ; Enemy function = $C6BF
                         0030,AA12,
                         814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
                         0020,AA12,
@@ -725,11 +733,11 @@ $AA:B961 6B          RTL
 
 ;;; $B962: Instruction list -  ;;;
 {
-$AA:B962             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:B962             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0018,A4F0,
                         C377,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -749,7 +757,7 @@ $AA:B962             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
                         0006,A582,
                         C470,000A,  ; ???
                         C3A0,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -1034,11 +1042,11 @@ $AA:BCFA             dx C618,           ; Play torizo footsteps sound effect
 
 ;;; $BD0E: Instruction list -  ;;;
 {
-$AA:BD0E             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:BD0E             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0008,A4F0,
                         C377,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -1054,7 +1062,7 @@ $AA:BD0E             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
                         0005,A582,
                         C4E5,000A,  ; ???
                         C3A0,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -1077,14 +1085,14 @@ $AA:BD0E             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
 {
 $AA:BD90             dx C3B6,       ; ???
                         0001,87D0,
-                        B09C,C6C6,  ; Enemy $0FB0 = $C6C6
+                        B09C,C6C6,  ; Enemy function = $C6C6
                         812F        ; Sleep
 }
 
 
 ;;; $BD9C: Instruction list -  ;;;
 {
-$AA:BD9C             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:BD9C             dx B09C,C6BF,  ; Enemy function = $C6BF
                         0020,AF9C,
                         C3CC,0010,  ; ???
                         0010,AFA6,
@@ -1104,11 +1112,11 @@ $AA:BD9C             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
 
 ;;; $BDD8: Instruction list -  ;;;
 {
-$AA:BDD8             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:BDD8             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0018,A4F0,
                         C38A,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -1129,7 +1137,7 @@ $AA:BDD8             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
                         C58B,C110,  ; ???
                         C470,001E,  ; ???
                         C3B6,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -1414,11 +1422,11 @@ $AA:C174             dx C618,           ; Play torizo footsteps sound effect
 
 ;;; $C188: Instruction list -  ;;;
 {
-$AA:C188             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:C188             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0008,A4F0,
                         C38A,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -1434,7 +1442,7 @@ $AA:C188             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
                         0005,AB20,
                         C4E5,001E,  ; ???
                         C3B6,       ; ???
-                        B09C,C6FF,  ; Enemy $0FB0 = $C6FF
+                        B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; ???
                         C618,       ; Play torizo footsteps sound effect
@@ -1493,86 +1501,86 @@ $AA:C24F 60          RTS
 }
 
 
-;;; $C250:  ;;;
+;;; $C250: Load Bomb Torizo statue palettes ;;;
 {
 $AA:C250 DA          PHX
-$AA:C251 A2 1E 00    LDX #$001E
-
-$AA:C254 BD E7 86    LDA $86E7,x[$AA:8705]
-$AA:C257 9F 40 C3 7E STA $7EC340,x[$7E:C35E]
-$AA:C25B BD C7 86    LDA $86C7,x[$AA:86E5]
-$AA:C25E 9F 20 C3 7E STA $7EC320,x[$7E:C33E]
-$AA:C262 CA          DEX
-$AA:C263 CA          DEX
-$AA:C264 10 EE       BPL $EE    [$C254]
+$AA:C251 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:C254 BD E7 86    LDA $86E7,x[$AA:8705]  ;|
+$AA:C257 9F 40 C3 7E STA $7EC340,x[$7E:C35E];|
+$AA:C25B BD C7 86    LDA $86C7,x[$AA:86E5]  ;} Target sprite palette 2 = [$86E7..8706]
+$AA:C25E 9F 20 C3 7E STA $7EC320,x[$7E:C33E];} Target sprite palette 1 = [$86C7..E6]
+$AA:C262 CA          DEX                    ;|
+$AA:C263 CA          DEX                    ;|
+$AA:C264 10 EE       BPL $EE    [$C254]     ;/
 $AA:C266 FA          PLX
 $AA:C267 60          RTS
 }
 
 
-;;; $C268:  ;;;
+;;; $C268: Load normal torizo target palettes ;;;
 {
 $AA:C268 DA          PHX
-$AA:C269 A2 1E 00    LDX #$001E
-
-$AA:C26C BD 27 87    LDA $8727,x[$AA:8745]
-$AA:C26F 9F 40 C3 7E STA $7EC340,x[$7E:C35E]
-$AA:C273 BD 07 87    LDA $8707,x[$AA:8725]
-$AA:C276 9F 20 C3 7E STA $7EC320,x[$7E:C33E]
-$AA:C27A CA          DEX
-$AA:C27B CA          DEX
-$AA:C27C 10 EE       BPL $EE    [$C26C]
+$AA:C269 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:C26C BD 27 87    LDA $8727,x[$AA:8745]  ;|
+$AA:C26F 9F 40 C3 7E STA $7EC340,x[$7E:C35E];|
+$AA:C273 BD 07 87    LDA $8707,x[$AA:8725]  ;} Target sprite palette 2 = [$8727..46]
+$AA:C276 9F 20 C3 7E STA $7EC320,x[$7E:C33E];} Target sprite palette 1 = [$8707..26]
+$AA:C27A CA          DEX                    ;|
+$AA:C27B CA          DEX                    ;|
+$AA:C27C 10 EE       BPL $EE    [$C26C]     ;/
 $AA:C27E FA          PLX
 $AA:C27F 60          RTS
 }
 
 
-;;; $C280:  ;;;
+;;; $C280: Load Golden Torizo statue palettes ;;;
 {
 $AA:C280 DA          PHX
-$AA:C281 A2 1E 00    LDX #$001E
-
-$AA:C284 BD 67 87    LDA $8767,x[$AA:8785]
-$AA:C287 9F 40 C3 7E STA $7EC340,x[$7E:C35E]
-$AA:C28B BD 47 87    LDA $8747,x[$AA:8765]
-$AA:C28E 9F 20 C3 7E STA $7EC320,x[$7E:C33E]
-$AA:C292 CA          DEX
-$AA:C293 CA          DEX
-$AA:C294 10 EE       BPL $EE    [$C284]
+$AA:C281 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:C284 BD 67 87    LDA $8767,x[$AA:8785]  ;|
+$AA:C287 9F 40 C3 7E STA $7EC340,x[$7E:C35E];|
+$AA:C28B BD 47 87    LDA $8747,x[$AA:8765]  ;} Target sprite palette 2 = [$8767..86]
+$AA:C28E 9F 20 C3 7E STA $7EC320,x[$7E:C33E];} Target sprite palette 1 = [$8747..66]
+$AA:C292 CA          DEX                    ;|
+$AA:C293 CA          DEX                    ;|
+$AA:C294 10 EE       BPL $EE    [$C284]     ;/
 $AA:C296 FA          PLX
 $AA:C297 60          RTS
 }
 
 
-;;; $C298:  ;;;
+;;; $C298: Load Golden Torizo palettes ;;;
 {
 $AA:C298 DA          PHX
-$AA:C299 A2 1E 00    LDX #$001E
-
-$AA:C29C BD A7 87    LDA $87A7,x[$AA:87C5]
-$AA:C29F 9F 40 C3 7E STA $7EC340,x[$7E:C35E]
-$AA:C2A3 BD 87 87    LDA $8787,x[$AA:87A5]
-$AA:C2A6 9F 20 C3 7E STA $7EC320,x[$7E:C33E]
-$AA:C2AA CA          DEX
-$AA:C2AB CA          DEX
-$AA:C2AC 10 EE       BPL $EE    [$C29C]
+$AA:C299 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:C29C BD A7 87    LDA $87A7,x[$AA:87C5]  ;|
+$AA:C29F 9F 40 C3 7E STA $7EC340,x[$7E:C35E];|
+$AA:C2A3 BD 87 87    LDA $8787,x[$AA:87A5]  ;} Target sprite palette 2 = [$87A7..C6]
+$AA:C2A6 9F 20 C3 7E STA $7EC320,x[$7E:C33E];} Target sprite palette 1 = [$8787..A6]
+$AA:C2AA CA          DEX                    ;|
+$AA:C2AB CA          DEX                    ;|
+$AA:C2AC 10 EE       BPL $EE    [$C29C]     ;/
 $AA:C2AE FA          PLX
 $AA:C2AF 60          RTS
 }
 
 
-;;; $C2B0:  ;;;
+;;; $C2B0: Load normal torizo palettes ;;;
 {
 $AA:C2B0 DA          PHX
-$AA:C2B1 A2 1E 00    LDX #$001E
-
-$AA:C2B4 BD 27 87    LDA $8727,x[$AA:8745]
-$AA:C2B7 9F 40 C1 7E STA $7EC140,x[$7E:C15E]
-$AA:C2BB BD 07 87    LDA $8707,x[$AA:8725]
-$AA:C2BE 9F 20 C1 7E STA $7EC120,x[$7E:C13E]
-$AA:C2C2 CA          DEX
-$AA:C2C3 CA          DEX
-$AA:C2C4 10 EE       BPL $EE    [$C2B4]
+$AA:C2B1 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:C2B4 BD 27 87    LDA $8727,x[$AA:8745]  ;|
+$AA:C2B7 9F 40 C1 7E STA $7EC140,x[$7E:C15E];|
+$AA:C2BB BD 07 87    LDA $8707,x[$AA:8725]  ;} Sprite palette 2 = [$8727..46]
+$AA:C2BE 9F 20 C1 7E STA $7EC120,x[$7E:C13E];} Sprite palette 1 = [$8707..26]
+$AA:C2C2 CA          DEX                    ;|
+$AA:C2C3 CA          DEX                    ;|
+$AA:C2C4 10 EE       BPL $EE    [$C2B4]     ;/
 $AA:C2C6 FA          PLX
 $AA:C2C7 60          RTS
 }
@@ -2078,19 +2086,19 @@ $AA:C61F 6B          RTL
 }
 
 
-;;; $C620:  ;;;
+;;; $C620: Handle low-health initial drool ;;;
 {
-$AA:C620 AD 9F 07    LDA $079F  [$7E:079F]
-$AA:C623 F0 03       BEQ $03    [$C628]
-$AA:C625 4C 42 C6    JMP $C642  [$AA:C642]
+$AA:C620 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$AA:C623 F0 03       BEQ $03    [$C628]     ;} If [area index] != Crateria:
+$AA:C625 4C 42 C6    JMP $C642  [$AA:C642]  ; Return
 
-$AA:C628 AD E5 05    LDA $05E5  [$7E:05E5]
-$AA:C62B 29 42 81    AND #$8142
-$AA:C62E D0 11       BNE $11    [$C641]
-$AA:C630 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$AA:C633 F0 0C       BEQ $0C    [$C641]
-$AA:C635 C9 5E 01    CMP #$015E
-$AA:C638 B0 07       BCS $07    [$C641]
+$AA:C628 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$AA:C62B 29 42 81    AND #$8142             ;} If [random number] & 8142h = 0: (1/16 chance)
+$AA:C62E D0 11       BNE $11    [$C641]     ;/
+$AA:C630 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$AA:C633 F0 0C       BEQ $0C    [$C641]     ;|
+$AA:C635 C9 5E 01    CMP #$015E             ;} If 0 < [enemy health] < 350:
+$AA:C638 B0 07       BCS $07    [$C641]     ;/
 $AA:C63A A0 69 A9    LDY #$A969             ;\
 $AA:C63D 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Bomb Torizo low-health initial drool enemy projectile
 
@@ -2100,7 +2108,7 @@ $AA:C642 60          RTS
 }
 
 
-;;; $C643:  ;;;
+;;; $C643: Handle falling ;;;
 {
 $AA:C643 64 12       STZ $12    [$7E:0012]  ;\
 $AA:C645 64 14       STZ $14    [$7E:0014]  ;|
@@ -2115,18 +2123,18 @@ $AA:C656 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $AA:C659 18          CLC                    ;|
 $AA:C65A 69 28 00    ADC #$0028             ;} Enemy Y velocity += 28h
 $AA:C65D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
-$AA:C660 60          RTS
+$AA:C660 60          RTS                    ; Return
 
-$AA:C661 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$AA:C664 30 17       BMI $17    [$C67D]
-$AA:C666 C9 00 01    CMP #$0100
-$AA:C669 F0 12       BEQ $12    [$C67D]
+$AA:C661 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$AA:C664 30 17       BMI $17    [$C67D]     ;} If [enemy Y velocity] >= 0:
+$AA:C666 C9 00 01    CMP #$0100             ;\
+$AA:C669 F0 12       BEQ $12    [$C67D]     ;} If [enemy Y velocity] != 100h (initial Y velocity):
 $AA:C66B A9 04 00    LDA #$0004             ;\
 $AA:C66E 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
 $AA:C671 A9 20 00    LDA #$0020             ;\
 $AA:C674 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 20h
-$AA:C677 A9 00 01    LDA #$0100
-$AA:C67A 9D AA 0F    STA $0FAA,x[$7E:0FAA]
+$AA:C677 A9 00 01    LDA #$0100             ;\
+$AA:C67A 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy Y velocity = 100h
 
 $AA:C67D 60          RTS
 }
@@ -2135,23 +2143,23 @@ $AA:C67D 60          RTS
 ;;; $C67E: Hurt AI - enemy $EEFF/$EF3F (Bomb Torizo) ;;;
 {
 $AA:C67E AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:C681 20 20 C6    JSR $C620  [$AA:C620]
-$AA:C684 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]
-$AA:C687 4A          LSR A
-$AA:C688 B0 05       BCS $05    [$C68F]
-$AA:C68A 20 B0 C2    JSR $C2B0  [$AA:C2B0]
-$AA:C68D 80 14       BRA $14    [$C6A3]
+$AA:C681 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
+$AA:C684 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
+$AA:C687 4A          LSR A                  ;} If [enemy flash timer] % 2 = 0:
+$AA:C688 B0 05       BCS $05    [$C68F]     ;/
+$AA:C68A 20 B0 C2    JSR $C2B0  [$AA:C2B0]  ; Load normal torizo palettes
+$AA:C68D 80 14       BRA $14    [$C6A3]     ; Return
 
-$AA:C68F DA          PHX
-$AA:C690 A2 1E 00    LDX #$001E
-
-$AA:C693 A9 FF 7F    LDA #$7FFF
-$AA:C696 9F 40 C1 7E STA $7EC140,x[$7E:C15E]
-$AA:C69A 9F 20 C1 7E STA $7EC120,x[$7E:C13E]
-$AA:C69E CA          DEX
-$AA:C69F CA          DEX
-$AA:C6A0 10 F1       BPL $F1    [$C693]
-$AA:C6A2 FA          PLX
+$AA:C68F DA          PHX                    ;\
+$AA:C690 A2 1E 00    LDX #$001E             ;|
+                                            ;|
+$AA:C693 A9 FF 7F    LDA #$7FFF             ;|
+$AA:C696 9F 40 C1 7E STA $7EC140,x[$7E:C15E];|
+$AA:C69A 9F 20 C1 7E STA $7EC120,x[$7E:C13E];} Target sprite palette 1/2 = 7FFFh
+$AA:C69E CA          DEX                    ;|
+$AA:C69F CA          DEX                    ;|
+$AA:C6A0 10 F1       BPL $F1    [$C693]     ;|
+$AA:C6A2 FA          PLX                    ;/
 
 $AA:C6A3 6B          RTL
 }
@@ -2160,7 +2168,7 @@ $AA:C6A3 6B          RTL
 ;;; $C6A4: Main AI - enemy $EEFF/$EF3F (Bomb Torizo) ;;;
 {
 $AA:C6A4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:C6A7 FC B0 0F    JSR ($0FB0,x)[$AA:C6BF]
+$AA:C6A7 FC B0 0F    JSR ($0FB0,x)[$AA:C6BF]; Execute [enemy function]
 $AA:C6AA 6B          RTL
 }
 
@@ -2173,26 +2181,26 @@ $AA:C6AB 60          RTS
 
 ;;; $C6AC:  ;;;
 {
-$AA:C6AC 20 43 C6    JSR $C643  [$AA:C643]
+$AA:C6AC 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:C6AF A9 00 06    LDA #$0600             ;\
 $AA:C6B2 22 F7 DA 82 JSL $82DAF7[$82:DAF7]  ;} Advance gradual colour change of sprite palettes 1/2 - denominator = Ch
 $AA:C6B6 B0 06       BCS $06    [$C6BE]     ; If not reached target colour:
-$AA:C6B8 A9 AB C6    LDA #$C6AB
-$AA:C6BB 9D B0 0F    STA $0FB0,x
+$AA:C6B8 A9 AB C6    LDA #$C6AB             ;\
+$AA:C6BB 9D B0 0F    STA $0FB0,x            ;} Enemy function = RTS
 
 $AA:C6BE 60          RTS
 }
 
 
-;;; $C6BF:  ;;;
+;;; $C6BF: Torizo function ;;;
 {
-$AA:C6BF 20 20 C6    JSR $C620  [$AA:C620]
-$AA:C6C2 20 43 C6    JSR $C643  [$AA:C643]
+$AA:C6BF 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
+$AA:C6C2 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:C6C5 60          RTS
 }
 
 
-;;; $C6C6:  ;;;
+;;; $C6C6: Torizo function ;;;
 {
 $AA:C6C6 BD 86 0F    LDA $0F86,x[$7E:0F86]
 $AA:C6C9 09 00 04    ORA #$0400
@@ -2223,9 +2231,9 @@ $AA:C6FE 60          RTS
 }
 
 
-;;; $C6FF:  ;;;
+;;; $C6FF: Torizo function ;;;
 {
-$AA:C6FF 20 20 C6    JSR $C620  [$AA:C620]
+$AA:C6FF 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
 $AA:C702 3C B6 0F    BIT $0FB6,x[$7E:0FB6]
 $AA:C705 30 1C       BMI $1C    [$C723]
 $AA:C707 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
@@ -2371,7 +2379,7 @@ $AA:C827 60          RTS
 
 ;;; $C828:  ;;;
 {
-$AA:C828 20 43 C6    JSR $C643  [$AA:C643]
+$AA:C828 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:C82B 60          RTS
 }
 
@@ -2419,97 +2427,101 @@ $AA:C87E 60          RTS
 ;;; $C87F: Initialisation AI - enemy $EEFF/$EF3F/$EF7F/$EFBF (Torizos) ;;;
 {
 ; $AA:C91E is the GT code
-$AA:C87F A9 04 00    LDA #$0004
-$AA:C882 22 DC 81 80 JSL $8081DC[$80:81DC]
-$AA:C886 90 0D       BCC $0D    [$C895]
+$AA:C87F A9 04 00    LDA #$0004             ;\
+$AA:C882 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area torizo is dead:
+$AA:C886 90 0D       BCC $0D    [$C895]     ;/
 $AA:C888 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:C88B BD 86 0F    LDA $0F86,x
-$AA:C88E 09 00 02    ORA #$0200
-$AA:C891 9D 86 0F    STA $0F86,x
-$AA:C894 6B          RTL
+$AA:C88B BD 86 0F    LDA $0F86,x            ;\
+$AA:C88E 09 00 02    ORA #$0200             ;} Mark enemy for deletion
+$AA:C891 9D 86 0F    STA $0F86,x            ;/
+$AA:C894 6B          RTL                    ; Return
 
-$AA:C895 AC 9F 07    LDY $079F  [$7E:079F]
+$AA:C895 AC 9F 07    LDY $079F  [$7E:079F]  ; Y = [area index] (0 = Crateria, 2 = Norfair)
 $AA:C898 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:C89B BD 86 0F    LDA $0F86,x[$7E:0F86]
-$AA:C89E 19 6B C9    ORA $C96B,y[$AA:C96B]
-$AA:C8A1 9D 86 0F    STA $0F86,x[$7E:0F86]
-$AA:C8A4 BD 88 0F    LDA $0F88,x[$7E:0F88]
-$AA:C8A7 09 04 00    ORA #$0004
-$AA:C8AA 9D 88 0F    STA $0F88,x[$7E:0F88]
-$AA:C8AD B9 6F C9    LDA $C96F,y[$AA:C96F]
-$AA:C8B0 9D 82 0F    STA $0F82,x[$7E:0F82]
-$AA:C8B3 B9 73 C9    LDA $C973,y[$AA:C973]
-$AA:C8B6 9D 84 0F    STA $0F84,x[$7E:0F84]
-$AA:C8B9 A9 BF C6    LDA #$C6BF
-$AA:C8BC 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$AA:C8BF A9 01 00    LDA #$0001
-$AA:C8C2 9D 94 0F    STA $0F94,x[$7E:0F94]
-$AA:C8C5 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$AA:C8C8 9E 96 0F    STZ $0F96,x[$7E:0F96]
-$AA:C8CB A9 5E C9    LDA #$C95E
-$AA:C8CE 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$AA:C8D1 B9 67 C9    LDA $C967,y[$AA:C967]
-$AA:C8D4 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:C8D7 A9 D0 87    LDA #$87D0
-$AA:C8DA 9D 8E 0F    STA $0F8E,x[$7E:0F8E]
-$AA:C8DD B9 5F C9    LDA $C95F,y[$AA:C95F]
-$AA:C8E0 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$AA:C8E3 B9 63 C9    LDA $C963,y[$AA:C963]
-$AA:C8E6 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$AA:C8E9 9E A8 0F    STZ $0FA8,x[$7E:0FA8]
-$AA:C8EC A9 00 01    LDA #$0100
-$AA:C8EF 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$AA:C8F2 A2 1E 00    LDX #$001E
+$AA:C89B BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$AA:C89E 19 6B C9    ORA $C96B,y[$AA:C96B]  ;} Set enemy to process instructions and process whilst off-screen
+$AA:C8A1 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$AA:C8A4 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
+$AA:C8A7 09 04 00    ORA #$0004             ;} Enable enemy extended spritemap format
+$AA:C8AA 9D 88 0F    STA $0F88,x[$7E:0F88]  ;/
+$AA:C8AD B9 6F C9    LDA $C96F,y[$AA:C96F]  ;\
+$AA:C8B0 9D 82 0F    STA $0F82,x[$7E:0F82]  ;} Enemy X radius = 12h
+$AA:C8B3 B9 73 C9    LDA $C973,y[$AA:C973]  ;\
+$AA:C8B6 9D 84 0F    STA $0F84,x[$7E:0F84]  ;} Enemy Y radius = [$C973 + [Y]]
+$AA:C8B9 A9 BF C6    LDA #$C6BF             ;\
+$AA:C8BC 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy function = $C6BF
+$AA:C8BF A9 01 00    LDA #$0001             ;\
+$AA:C8C2 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$AA:C8C5 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$AA:C8C8 9E 96 0F    STZ $0F96,x[$7E:0F96]  ; Enemy palette index = 0
+$AA:C8CB A9 5E C9    LDA #$C95E             ;\
+$AA:C8CE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy $0FB2 = RTS
+$AA:C8D1 B9 67 C9    LDA $C967,y[$AA:C967]  ;\
+$AA:C8D4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = [$C967 + [Y]]
+$AA:C8D7 A9 D0 87    LDA #$87D0             ;\
+$AA:C8DA 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $87D0
+$AA:C8DD B9 5F C9    LDA $C95F,y[$AA:C95F]  ;\
+$AA:C8E0 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [$C95F + [Y]]
+$AA:C8E3 B9 63 C9    LDA $C963,y[$AA:C963]  ;\
+$AA:C8E6 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [$C963 + [Y]]
+$AA:C8E9 9E A8 0F    STZ $0FA8,x[$7E:0FA8]  ; Enemy X velocity = 0
+$AA:C8EC A9 00 01    LDA #$0100             ;\
+$AA:C8EF 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy Y velocity = 100h
+$AA:C8F2 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:C8F5 BD A7 86    LDA $86A7,x[$AA:86C5]  ;|
+$AA:C8F8 9F E0 C3 7E STA $7EC3E0,x[$7E:C3FE];|
+$AA:C8FC BD 87 86    LDA $8687,x[$AA:86A5]  ;} Target sprite palette 7 = [$86A7..C6]
+$AA:C8FF 9F 60 C3 7E STA $7EC360,x[$7E:C37E];} Target sprite palette 3 = [$8687..A6]
+$AA:C903 CA          DEX                    ;|
+$AA:C904 CA          DEX                    ;|
+$AA:C905 10 EE       BPL $EE    [$C8F5]     ;/
+$AA:C907 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$AA:C90A D0 08       BNE $08    [$C914]     ;} If [area index] = Crateria:
+$AA:C90C 20 50 C2    JSR $C250  [$AA:C250]  ; Load Bomb Torizo statue palettes
+$AA:C90F 22 32 DD 88 JSL $88DD32[$88:DD32]  ; Spawn Bomb Torizo haze
+$AA:C913 6B          RTL                    ; Return
 
-$AA:C8F5 BD A7 86    LDA $86A7,x[$AA:86C5]
-$AA:C8F8 9F E0 C3 7E STA $7EC3E0,x[$7E:C3FE]
-$AA:C8FC BD 87 86    LDA $8687,x[$AA:86A5]
-$AA:C8FF 9F 60 C3 7E STA $7EC360,x[$7E:C37E]
-$AA:C903 CA          DEX
-$AA:C904 CA          DEX
-$AA:C905 10 EE       BPL $EE    [$C8F5]
-$AA:C907 AD 9F 07    LDA $079F  [$7E:079F]
-$AA:C90A D0 08       BNE $08    [$C914]
-$AA:C90C 20 50 C2    JSR $C250  [$AA:C250]
-$AA:C90F 22 32 DD 88 JSL $88DD32[$88:DD32]
-$AA:C913 6B          RTL
-
-$AA:C914 20 80 C2    JSR $C280  [$AA:C280]
+$AA:C914 20 80 C2    JSR $C280  [$AA:C280]  ; Load Golden Torizo statue palettes
 $AA:C917 A5 8B       LDA $8B    [$7E:008B]  ;\
 $AA:C919 C9 C0 C0    CMP #$C0C0             ;} If pressing exactly BYAX:
 $AA:C91C D0 3F       BNE $3F    [$C95D]     ;/
-$AA:C91E A9 BC 02    LDA #$02BC
-$AA:C921 8D C2 09    STA $09C2  [$7E:09C2]
-$AA:C924 8D C4 09    STA $09C4  [$7E:09C4]
-$AA:C927 A9 2C 01    LDA #$012C
-$AA:C92A 8D D4 09    STA $09D4  [$7E:09D4]
-$AA:C92D 8D D6 09    STA $09D6  [$7E:09D6]
-$AA:C930 A9 64 00    LDA #$0064
-$AA:C933 8D C6 09    STA $09C6  [$7E:09C6]
-$AA:C936 8D C8 09    STA $09C8  [$7E:09C8]
-$AA:C939 A9 14 00    LDA #$0014
-$AA:C93C 8D CA 09    STA $09CA  [$7E:09CA]
-$AA:C93F 8D CC 09    STA $09CC  [$7E:09CC]
-$AA:C942 A9 14 00    LDA #$0014
-$AA:C945 8D CE 09    STA $09CE  [$7E:09CE]
-$AA:C948 8D D0 09    STA $09D0  [$7E:09D0]
-$AA:C94B A9 37 F3    LDA #$F337
-$AA:C94E 8D A2 09    STA $09A2  [$7E:09A2]
-$AA:C951 8D A4 09    STA $09A4  [$7E:09A4]
-$AA:C954 A9 0F 10    LDA #$100F
-$AA:C957 8D A6 09    STA $09A6  [$7E:09A6]
-$AA:C95A 8D A8 09    STA $09A8  [$7E:09A8]
+$AA:C91E A9 BC 02    LDA #$02BC             ;\
+$AA:C921 8D C2 09    STA $09C2  [$7E:09C2]  ;} Samus health = Samus max health = 700
+$AA:C924 8D C4 09    STA $09C4  [$7E:09C4]  ;/
+$AA:C927 A9 2C 01    LDA #$012C             ;\
+$AA:C92A 8D D4 09    STA $09D4  [$7E:09D4]  ;} Samus reserve health = Samus max reserve health = 300
+$AA:C92D 8D D6 09    STA $09D6  [$7E:09D6]  ;/
+$AA:C930 A9 64 00    LDA #$0064             ;\
+$AA:C933 8D C6 09    STA $09C6  [$7E:09C6]  ;} Samus missiles = Samus max missiles = 100
+$AA:C936 8D C8 09    STA $09C8  [$7E:09C8]  ;/
+$AA:C939 A9 14 00    LDA #$0014             ;\
+$AA:C93C 8D CA 09    STA $09CA  [$7E:09CA]  ;} Samus super missiles = Samus max super missiles = 20
+$AA:C93F 8D CC 09    STA $09CC  [$7E:09CC]  ;/
+$AA:C942 A9 14 00    LDA #$0014             ;\
+$AA:C945 8D CE 09    STA $09CE  [$7E:09CE]  ;} Samus power bombs = Samus max power bombs = 20
+$AA:C948 8D D0 09    STA $09D0  [$7E:09D0]  ;/
+$AA:C94B A9 37 F3    LDA #$F337             ;\
+$AA:C94E 8D A2 09    STA $09A2  [$7E:09A2]  ;} Equipped items = collected items = everything but screw attack + unused bitset 10h
+$AA:C951 8D A4 09    STA $09A4  [$7E:09A4]  ;/
+$AA:C954 A9 0F 10    LDA #$100F             ;\
+$AA:C957 8D A6 09    STA $09A6  [$7E:09A6]  ;} Equipped beams = collected beams = everything
+$AA:C95A 8D A8 09    STA $09A8  [$7E:09A8]  ;/
 
 $AA:C95D 6B          RTL
 
 $AA:C95E 60          RTS
 
-$AA:C95F             dw 00DB, 01A8
-$AA:C963             dw 00B3, 0090
-$AA:C967             dw B879, C9CB
-$AA:C96B             dw 2800, 2800
-$AA:C96F             dw 0012, 0012
-$AA:C973             dw 0030, 0029
+; Initial values
+;                        _________ Crateria
+;                       |      ___ Norfair
+;                       |     |
+$AA:C95F             dw 00DB, 01A8 ; X position
+$AA:C963             dw 00B3, 0090 ; Y position
+$AA:C967             dw B879, C9CB ; Instruction list pointer
+$AA:C96B             dw 2800, 2800 ; Properties. 2000h = process instructions, 800h = process whilst off-screen
+$AA:C96F             dw 0012, 0012 ; X radius
+$AA:C973             dw 0030, 0029 ; Y radius
 }
 
 
@@ -2524,7 +2536,7 @@ $AA:C97B 6B          RTL
 {
 $AA:C97C AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:C97F F0 03       BEQ $03    [$C984]     ;} If [area index] != Crateria:
-$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to $D667
+$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to enemy shot - Golden Torizo
 
 $AA:C984 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:C987 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
@@ -2535,7 +2547,7 @@ $AA:C994 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:C997 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $AA:C99A D0 24       BNE $24    [$C9C0]     ;} If [enemy health] != 0: return
 $AA:C99C A9 AB C6    LDA #$C6AB             ;\
-$AA:C99F 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy $0FB0 = $C6AB
+$AA:C99F 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy function = RTS
 $AA:C9A2 A9 C8 B1    LDA #$B1C8             ;\
 $AA:C9A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B1C8
 $AA:C9A8 A9 01 00    LDA #$0001             ;\
@@ -2551,7 +2563,7 @@ $AA:C9C0 6B          RTL
 }
 
 
-;;; $C9C1:  ;;;
+;;; $C9C1: RTL ;;;
 {
 $AA:C9C1 6B          RTL
 }
@@ -2572,7 +2584,7 @@ $AA:C9CA 6B          RTL
 $AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 0600h bytes from $AFE200 to VRAM $6D00
                         C3A0,                   ; ???
                         C2C9,                   ; Enemy $7E:7808 = 7777h
-                        B09C,D5C2,              ; Enemy $0FB0 = $D5C2
+                        B09C,D5C2,              ; Enemy function = $D5C2
                         0001,AA30,
                         812F                    ; Sleep
 }
@@ -2580,7 +2592,7 @@ $AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 0600h bytes from $AFE
 
 ;;; $C9E2: Instruction list -  ;;;
 {
-$AA:C9E2             dx B09C,C6BF,              ; Enemy $0FB0 = $C6BF
+$AA:C9E2             dx B09C,C6BF,              ; Enemy function = $C6BF
                         0001,AA30,
                         CACE,C9E6,              ; ???
                         C618,                   ; Play torizo footsteps sound effect
@@ -2590,25 +2602,25 @@ $AA:C9E2             dx B09C,C6BF,              ; Enemy $0FB0 = $C6BF
                         C41E,0002,              ; ???
                         0005,AA1C,
                         C41E,0000,              ; ???
-                        B09C,C6AB,              ; Enemy $0FB0 = $C6AB
+                        B09C,C6AB,              ; Enemy function = RTS
                         0030,AA12,
-                        814B,0040,AAB279,7D80,  ; Transfer 0040h bytes from $AAB279 to VRAM $7D80
+                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
                         0020,AA12,
-                        814B,0040,AAB2B9,7D80,  ; Transfer 0040h bytes from $AAB2B9 to VRAM $7D80
+                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B2B9 to VRAM $7D80
                         0010,AA12,
-                        814B,0040,AAB2F9,7D80,  ; Transfer 0040h bytes from $AAB2F9 to VRAM $7D80
+                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B2F9 to VRAM $7D80
                         0008,AA12,
-                        814B,0040,AAB339,7D80,  ; Transfer 0040h bytes from $AAB339 to VRAM $7D80
+                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
                         0020,AA12,
-                        8123,0002,              ; Timer = 0002h
+                        8123,0002,              ; Timer = 2
                         0004,AA12,
-                        814B,0040,AAB279,7D80,  ; Transfer 0040h bytes from $AAB279 to VRAM $7D80
+                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
                         0004,AA12,
-                        814B,0040,AAB2B9,7D80,  ; Transfer 0040h bytes from $AAB2B9 to VRAM $7D80
+                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B2B9 to VRAM $7D80
                         0004,AA12,
-                        814B,0040,AAB2F9,7D80,  ; Transfer 0040h bytes from $AAB2F9 to VRAM $7D80
+                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B2F9 to VRAM $7D80
                         0004,AA12,
-                        814B,0040,AAB339,7D80,  ; Transfer 0040h bytes from $AAB339 to VRAM $7D80
+                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
                         8110,CA48,              ; Decrement timer and go to $CA48 if non-zero
                         0020,AA12,
                         C3CC,0000,              ; ???
@@ -2622,8 +2634,8 @@ $AA:C9E2             dx B09C,C6BF,              ; Enemy $0FB0 = $C6BF
                         C3CC,0008,              ; ???
                         0008,AA4C,
                         C3CC,000A,              ; ???
-                        CADE,                   ; ???
-                        8123,0010,              ; Timer = 0010h
+                        CADE,                   ; Load Golden Torizo palettes
+                        8123,0010,              ; Timer = 10h
                         0004,AA5E,
                         B271,                   ; ???
                         8110,CAB6,              ; Decrement timer and go to $CAB6 if non-zero
@@ -2650,9 +2662,9 @@ $AA:CADD 6B          RTL
 }
 
 
-;;; $CADE: Instruction ;;;
+;;; $CADE: Instruction - load Golden Torizo palettes ;;;
 {
-$AA:CADE 20 98 C2    JSR $C298  [$AA:C298]
+$AA:CADE 20 98 C2    JSR $C298  [$AA:C298]  ; Load Golden Torizo palettes
 $AA:CAE1 6B          RTL
 }
 
@@ -2933,7 +2945,7 @@ $AA:CDE0 6B          RTL
 ;;; $CDE1: Instruction list -  ;;;
 {
 $AA:CDE1             dx D39F,       ; Play torizo sonic boom sound effect
-                        B09C,D5DF,  ; Enemy $0FB0 = $D5DF
+                        B09C,D5DF,  ; Enemy function = $D5DF
                         0001,A6EA,
                         0001,A8D2,
                         0001,A8EC,
@@ -2964,7 +2976,7 @@ $AA:CDE1             dx D39F,       ; Play torizo sonic boom sound effect
 ;;; $CE43: Instruction list -  ;;;
 {
 $AA:CE43             dx D39F,       ; Play torizo sonic boom sound effect
-                        B09C,D5DF,  ; Enemy $0FB0 = $D5DF
+                        B09C,D5DF,  ; Enemy function = $D5DF
                         0001,A64E,
                         0001,A786,
                         0001,A7A0,
@@ -2995,7 +3007,7 @@ $AA:CE43             dx D39F,       ; Play torizo sonic boom sound effect
 ;;; $CEA5: Instruction list -  ;;;
 {
 $AA:CEA5             dx D39F,       ; Play torizo sonic boom sound effect
-                        B09C,D5DF,  ; Enemy $0FB0 = $D5DF
+                        B09C,D5DF,  ; Enemy function = $D5DF
                         0001,AC88,
                         0001,AE70,
                         0001,AE8A,
@@ -3024,7 +3036,7 @@ $AA:CEA5             dx D39F,       ; Play torizo sonic boom sound effect
 ;;; $CEFF: Instruction list -  ;;;
 {
 $AA:CEFF             dx D39F,       ; Play torizo sonic boom sound effect
-                        B09C,D5DF,  ; Enemy $0FB0 = $D5DF
+                        B09C,D5DF,  ; Enemy function = $D5DF
                         0001,ABEC,
                         0001,AD24,
                         0001,AD3E,
@@ -3184,7 +3196,7 @@ $AA:D10C 6B          RTL
 
 ;;; $D10D: Instruction list -  ;;;
 {
-$AA:D10D             dx B09C,D5DF,              ; Enemy $0FB0 = $D5DF
+$AA:D10D             dx B09C,D5DF,              ; Enemy function = $D5DF
                         D17B,                   ; Enemy $7E:780C &= 7FFFh
                         C2C9,                   ; Enemy $7E:7808 = 7777h
                         813A,0008,              ; Wait 0008h frames
@@ -3208,7 +3220,7 @@ $AA:D10D             dx B09C,D5DF,              ; Enemy $0FB0 = $D5DF
                         813A,0008,              ; Wait 0008h frames
                         D17B,                   ; Enemy $7E:780C &= 7FFFh
                         C2D1,                   ; Enemy $7E:7808 = 0
-                        B09C,D5E6,              ; Enemy $0FB0 = $D5E6
+                        B09C,D5E6,              ; Enemy function = $D5E6
                         C2F7                    ; Go to [enemy $7E:7800]
 }
 
@@ -3265,7 +3277,7 @@ $AA:D1F0 6B          RTL
 
 ;;; $D1F1: Instruction list -  ;;;
 {
-$AA:D1F1             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:D1F1             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C2C9,       ; Enemy $7E:7808 = 7777h
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0018,A4F0,
@@ -3276,11 +3288,11 @@ $AA:D1F1             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
 
 ;;; $D203: Instruction list -  ;;;
 {
-$AA:D203             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:D203             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0008,A4F0,
                         C377,       ; ???
-                        B09C,D5E6,  ; Enemy $0FB0 = $D5E6
+                        B09C,D5E6,  ; Enemy function = $D5E6
                         806B,D5F1,  ; Enemy $0FB2 = $D5F1
                         C618,       ; Play torizo footsteps sound effect
                         0008,A4FA,
@@ -3300,7 +3312,7 @@ $AA:D203             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
                         0004,A582,
                         D54D,000A,  ; ???
                         C3A0,       ; ???
-                        B09C,D5E6,  ; Enemy $0FB0 = $D5E6
+                        B09C,D5E6,  ; Enemy function = $D5E6
                         806B,D5F1,  ; Enemy $0FB2 = $D5F1
                         C618,       ; Play torizo footsteps sound effect
                         0008,A5A4,
@@ -3326,7 +3338,7 @@ $AA:D203             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
 
 ;;; $D2AD: Instruction list -  ;;;
 {
-$AA:D2AD             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:D2AD             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C2C9,       ; Enemy $7E:7808 = 7777h
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0018,A4F0,
@@ -3337,11 +3349,11 @@ $AA:D2AD             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
 
 ;;; $D2BF: Instruction list -  ;;;
 {
-$AA:D2BF             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
+$AA:D2BF             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0008,A4F0,
                         C38A,       ; ???
-                        B09C,D5E6,  ; Enemy $0FB0 = $D5E6
+                        B09C,D5E6,  ; Enemy function = $D5E6
                         806B,D5F1,  ; Enemy $0FB2 = $D5F1
                         C618,       ; Play torizo footsteps sound effect
                         0008,AA98,
@@ -3361,7 +3373,7 @@ $AA:D2BF             dx B09C,C6BF,  ; Enemy $0FB0 = $C6BF
                         0004,AB20,
                         D54D,001E,  ; ???
                         C3B6,       ; ???
-                        B09C,D5E6,  ; Enemy $0FB0 = $D5E6
+                        B09C,D5E6,  ; Enemy function = $D5E6
                         806B,D5F1,  ; Enemy $0FB2 = $D5F1
                         C618,       ; Play torizo footsteps sound effect
                         0008,AB42,
@@ -3448,10 +3460,10 @@ $AA:D3B9 60          RTS
 }
 
 
-;;; $D3BA: Hurt AI - enemy $EF7F/$EFBF (Gold Torizo) ;;;
+;;; $D3BA: Hurt AI - enemy $EF7F/$EFBF (Golden Torizo) ;;;
 {
 $AA:D3BA AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:D3BD 20 20 C6    JSR $C620  [$AA:C620]  ; Execute $C620
+$AA:D3BD 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
 $AA:D3C0 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
 $AA:D3C3 4A          LSR A                  ;} If [enemy flash counter] % 2 = 0:
 $AA:D3C4 B0 05       BCS $05    [$D3CB]     ;/
@@ -3748,7 +3760,7 @@ $AA:D59A             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FF
 }
 
 
-;;; $D5C2: Activate Golden Torizo if Samus is in the right place ;;;
+;;; $D5C2: Torizo function - activate Golden Torizo if Samus is in the right place ;;;
 {
 $AA:D5C2 A9 40 01    LDA #$0140
 $AA:D5C5 CD FA 0A    CMP $0AFA  [$7E:0AFA]
@@ -3765,17 +3777,17 @@ $AA:D5DE 60          RTS
 }
 
 
-;;; $D5DF:  ;;;
+;;; $D5DF: Torizo function ;;;
 {
-$AA:D5DF 20 20 C6    JSR $C620  [$AA:C620]
-$AA:D5E2 20 43 C6    JSR $C643  [$AA:C643]
+$AA:D5DF 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
+$AA:D5E2 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:D5E5 60          RTS
 }
 
 
-;;; $D5E6:  ;;;
+;;; $D5E6: Torizo function ;;;
 {
-$AA:D5E6 20 20 C6    JSR $C620  [$AA:C620]
+$AA:D5E6 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
 $AA:D5E9 FC B2 0F    JSR ($0FB2,x)[$AA:D5F1]
 $AA:D5EC 60          RTS
 }
@@ -3783,7 +3795,7 @@ $AA:D5EC 60          RTS
 
 ;;; $D5ED:  ;;;
 {
-$AA:D5ED 20 43 C6    JSR $C643  [$AA:C643]
+$AA:D5ED 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:D5F0 60          RTS
 }
 
