@@ -8849,11 +8849,11 @@ $90:BC18 BF 2D B6 91 LDA $91B62D,x[$91:B6CD];\
 $90:BC1C 29 FF 00    AND #$00FF             ;} $18 = [$91:B62D + [X]] (Y offset of projectile origin)
 $90:BC1F 85 18       STA $18    [$7E:0018]  ;/
 $90:BC21 BF 2C B6 91 LDA $91B62C,x[$91:B6CC];\
-$90:BC25 29 FF 00    AND #$00FF             ;} A = [$91:B62C + [X]]
+$90:BC25 29 FF 00    AND #$00FF             ;} A = [$91:B62C + [X]] (direction shots are fired)
 $90:BC28 C9 FF 00    CMP #$00FF             ;\
 $90:BC2B F0 0A       BEQ $0A    [$BC37]     ;} If [A] = FFh: return
 $90:BC2D C9 10 00    CMP #$0010             ;\
-$90:BC30 F0 05       BEQ $05    [$BC37]     ;} If [A] = 10h: return
+$90:BC30 F0 05       BEQ $05    [$BC37]     ;} If [A] = 10h (never true): return
 $90:BC32 C9 10 00    CMP #$0010             ;\
 $90:BC35 D0 02       BNE $02    [$BC39]     ;} Go to BRANCH_CONTINUE
 
@@ -9653,9 +9653,10 @@ $90:C1A7 60          RTS
 ;                       |    |    |    |    |    |    |     _____________ 7: Left
 ;                       |    |    |    |    |    |    |    |     ________ 8: Up-left
 ;                       |    |    |    |    |    |    |    |    |     ___ 9: Up, facing left
-;                       |    |    |    |    |    |    |    |    |    |
-;                       |    |    |    |    |    |    |    |    |    |      ____ ??? ___
-;                       |    |    |    |    |    |    |    |    |    |     |            |
+;                       |    |    |    |    |    |    |    |    |    |      _____________ Ah: Turning - aiming up / up-left / up-right
+;                       |    |    |    |    |    |    |    |    |    |     |     ________ Bh: Turning - neutral aim
+;                       |    |    |    |    |    |    |    |    |    |     |    |     ___ Ch: Turning - aiming down / down-left / down-right
+;                       |    |    |    |    |    |    |    |    |    |     |    |    |
 $90:C1A8             dw 0002,0012,000F,0011,0003,FFFC,FFEF,FFF1,FFEE,FFFE, FFFC,FFFC,FFFC ; Flare X offsets - default
 $90:C1C2             dw FFE4,FFED,0001,0006,0011,0011,0006,0001,FFEC,FFE4, FFEC,FFFE,0008 ; Flare Y offsets - default
 
