@@ -7476,7 +7476,7 @@ $86:B5A2 80 0B       BRA $0B    [$B5AF]
 $86:B5A4 18          CLC
 $86:B5A5 69 20 00    ADC #$0020
 $86:B5A8 9D DB 1A    STA $1ADB,x[$7E:1AFB]
-$86:B5AB 20 B9 B5    JSR $B5B9  [$86:B5B9]
+$86:B5AB 20 B9 B5    JSR $B5B9  [$86:B5B9]  ; Delete enemy projectile if off-screen
 
 $86:B5AE 60          RTS
 
