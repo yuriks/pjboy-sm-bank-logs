@@ -4160,7 +4160,7 @@ $82:A303 20 77 A3    JSR $A377  [$82:A377]  ; Update beam tiles and palette
 $82:A306 20 80 A3    JSR $A380  [$82:A380]  ; Clear pause menu data
 $82:A309 C2 30       REP #$30
 $82:A30B A9 0C 00    LDA #$000C             ;\
-$82:A30E 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus from map station
+$82:A30E 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - update Samus due to unpause
 $82:A312 60          RTS
 }
 

@@ -10886,7 +10886,8 @@ $91:E632 60          RTS                    ;} Return carry set
 {
 ; Called by $90:F29E: unlock Samus from map station
 ; Seems to have been coded far more generally than for just map station release
-; Maybe it's for processing possible equipment changes during the pause menu?
+; Notably, this handles equipping speed booster mid-run
+; (if it did not, the speed boost timer might be 0 and underflow during the speed boost check $90:857D)
 $91:E633 08          PHP
 $91:E634 8B          PHB
 $91:E635 4B          PHK                    ;\

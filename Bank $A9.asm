@@ -10961,43 +10961,43 @@ $A9:E601 99 22 23    STA $2322,y            ;|
 $A9:E604 BD 30 23    LDA $2330,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
 $A9:E607 99 32 23    STA $2332,y            ;/
 
-$A9:E60A AD 02 88    LDA $8802  [$A9:8802]
-$A9:E60D C9 26 00    CMP #$0026
-$A9:E610 10 0C       BPL $0C    [$E61E]
-$A9:E612 BD 40 23    LDA $2340,x
-$A9:E615 99 42 23    STA $2342,y
-$A9:E618 BD 50 23    LDA $2350,x
-$A9:E61B 99 52 23    STA $2352,y
+$A9:E60A AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E60D C9 26 00    CMP #$0026             ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E610 10 0C       BPL $0C    [$E61E]     ;/
+$A9:E612 BD 40 23    LDA $2340,x            ;\
+$A9:E615 99 42 23    STA $2342,y            ;|
+$A9:E618 BD 50 23    LDA $2350,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E61B 99 52 23    STA $2352,y            ;/
 
-$A9:E61E AD 02 88    LDA $8802  [$A9:8802]
-$A9:E621 C9 08 00    CMP #$0008
-$A9:E624 90 11       BCC $11    [$E637]
-$A9:E626 C9 26 00    CMP #$0026
-$A9:E629 10 0C       BPL $0C    [$E637]
-$A9:E62B BD 60 23    LDA $2360,x
-$A9:E62E 99 62 23    STA $2362,y
-$A9:E631 BD 70 23    LDA $2370,x
-$A9:E634 99 72 23    STA $2372,y
+$A9:E61E AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E621 C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] >= 8 (tile row 1):
+$A9:E624 90 11       BCC $11    [$E637]     ;/
+$A9:E626 C9 26 00    CMP #$0026             ;\
+$A9:E629 10 0C       BPL $0C    [$E637]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E62B BD 60 23    LDA $2360,x            ;\
+$A9:E62E 99 62 23    STA $2362,y            ;|
+$A9:E631 BD 70 23    LDA $2370,x            ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E634 99 72 23    STA $2372,y            ;/
 
-$A9:E637 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E63A C9 08 00    CMP #$0008
-$A9:E63D 90 11       BCC $11    [$E650]
-$A9:E63F C9 26 00    CMP #$0026
-$A9:E642 10 0C       BPL $0C    [$E650]
-$A9:E644 BD 80 23    LDA $2380,x
-$A9:E647 99 82 23    STA $2382,y
-$A9:E64A BD 90 23    LDA $2390,x
-$A9:E64D 99 92 23    STA $2392,y
+$A9:E637 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E63A C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] >= 8 (tile row 1):
+$A9:E63D 90 11       BCC $11    [$E650]     ;/
+$A9:E63F C9 26 00    CMP #$0026             ;\
+$A9:E642 10 0C       BPL $0C    [$E650]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E644 BD 80 23    LDA $2380,x            ;\
+$A9:E647 99 82 23    STA $2382,y            ;|
+$A9:E64A BD 90 23    LDA $2390,x            ;} Pixel row at [Y] + (3 tiles) + (1 pixel row) = pixel row at [X] + (3 tiles)
+$A9:E64D 99 92 23    STA $2392,y            ;/
 
-$A9:E650 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E653 C9 08 00    CMP #$0008
-$A9:E656 90 11       BCC $11    [$E669]
-$A9:E658 C9 26 00    CMP #$0026
-$A9:E65B 10 0C       BPL $0C    [$E669]
-$A9:E65D BD A0 23    LDA $23A0,x
-$A9:E660 99 A2 23    STA $23A2,y
-$A9:E663 BD B0 23    LDA $23B0,x
-$A9:E666 99 B2 23    STA $23B2,y
+$A9:E650 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E653 C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] >= 8 (tile row 1):
+$A9:E656 90 11       BCC $11    [$E669]     ;/
+$A9:E658 C9 26 00    CMP #$0026             ;\
+$A9:E65B 10 0C       BPL $0C    [$E669]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E65D BD A0 23    LDA $23A0,x            ;\
+$A9:E660 99 A2 23    STA $23A2,y            ;|
+$A9:E663 BD B0 23    LDA $23B0,x            ;} Pixel row at [Y] + (4 tiles) + (1 pixel row) = pixel row at [X] + (4 tiles)
+$A9:E666 99 B2 23    STA $23B2,y            ;/
 
 $A9:E669 60          RTS
 }

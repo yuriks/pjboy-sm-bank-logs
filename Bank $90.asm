@@ -11583,7 +11583,7 @@ $90:D2FA 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:D2FD 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 $90:D300 9C 42 0B    STZ $0B42  [$7E:0B42]  ;\
 $90:D303 9C 44 0B    STZ $0B44  [$7E:0B44]  ;} Samus X extra run speed = 0.0
-$90:D306 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; speed boost counter = 0, speed boost timer = 0
+$90:D306 9C 3E 0B    STZ $0B3E  [$7E:0B3E]  ; Speed boost counter = 0, speed boost timer = 0
 $90:D309 9C 1A 0B    STZ $0B1A  [$7E:0B1A]  ; $0B1A = 0
 $90:D30C 9C 36 0B    STZ $0B36  [$7E:0B36]  ; Samus Y direction = none
 $90:D30F A9 46 D3    LDA #$D346             ;\
@@ -16399,10 +16399,13 @@ $90:F29B 4C 17 F1    JMP $F117  [$90:F117]  ; Go to unlock Samus
 }
 
 
-;;; $F29E: Samus command Ch: unlock Samus from map station ;;;
+;;; $F29E: Samus command Ch: update Samus due to unpause ;;;
 {
 ; Called by:
 ;     $82:A2E3: Continue initialising gameplay resume
+
+; This code is responsible for unlocking Samus from map stations
+
 $90:F29E 22 33 E6 91 JSL $91E633[$91:E633]  ; Update Samus pose due to change of equipment
 $90:F2A2 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
 $90:F2A5 C9 D6 E8    CMP #$E8D6             ;} If [$0A44] = $E8D6 (RTL):
