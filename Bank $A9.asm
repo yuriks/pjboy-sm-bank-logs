@@ -10658,8 +10658,8 @@ $A9:E38A 60          RTS
 ;;; $E38B: Corpse rotting rot entry copy function - torizo ;;;
 {
 ;; Parameters:
-;;     X: Source tile GFX offset
-;;     Y: Destination tile GFX offset
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
 ; DB must be $7E
 ; Copies a pixel row from source to one pixel down in dest
@@ -10776,68 +10776,108 @@ $A9:E467 60          RTS
 
 ;;; $E468: Corpse rotting rot entry move function - sidehopper - enemy parameter 1 = 0 ;;;
 {
-$A9:E468 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E46B C9 08 00    CMP #$0008
-$A9:E46E 90 17       BCC $17    [$E487]
-$A9:E470 C9 26 00    CMP #$0026
-$A9:E473 10 0C       BPL $0C    [$E481]
-$A9:E475 BD 00 20    LDA $2000,x
-$A9:E478 99 02 20    STA $2002,y
-$A9:E47B BD 10 20    LDA $2010,x
-$A9:E47E 99 12 20    STA $2012,y
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E481 9E 00 20    STZ $2000,x
-$A9:E484 9E 10 20    STZ $2010,x
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E487 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E48A C9 08 00    CMP #$0008
-$A9:E48D 90 17       BCC $17    [$E4A6]
-$A9:E48F C9 26 00    CMP #$0026
-$A9:E492 10 0C       BPL $0C    [$E4A0]
-$A9:E494 BD 20 20    LDA $2020,x
-$A9:E497 99 22 20    STA $2022,y
-$A9:E49A BD 30 20    LDA $2030,x
-$A9:E49D 99 32 20    STA $2032,y
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E4A0 9E 20 20    STZ $2020,x
-$A9:E4A3 9E 30 20    STZ $2030,x
+$A9:E468 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E46B C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] < 8 (tile row 1): go to BRANCH_COLUMN_1
+$A9:E46E 90 17       BCC $17    [$E487]     ;/
+$A9:E470 C9 26 00    CMP #$0026             ;\
+$A9:E473 10 0C       BPL $0C    [$E481]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E475 BD 00 20    LDA $2000,x            ;\
+$A9:E478 99 02 20    STA $2002,y            ;|
+$A9:E47B BD 10 20    LDA $2010,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E47E 99 12 20    STA $2012,y            ;/
 
-$A9:E4A6 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E4A9 C9 26 00    CMP #$0026
-$A9:E4AC 10 0C       BPL $0C    [$E4BA]
-$A9:E4AE BD 40 20    LDA $2040,x
-$A9:E4B1 99 42 20    STA $2042,y
-$A9:E4B4 BD 50 20    LDA $2050,x
-$A9:E4B7 99 52 20    STA $2052,y
+$A9:E481 9E 00 20    STZ $2000,x            ;\
+$A9:E484 9E 10 20    STZ $2010,x            ;} Pixel row at [X] = 0
 
-$A9:E4BA 9E 40 20    STZ $2040,x
-$A9:E4BD 9E 50 20    STZ $2050,x
-$A9:E4C0 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E4C3 C9 26 00    CMP #$0026
-$A9:E4C6 10 0C       BPL $0C    [$E4D4]
-$A9:E4C8 BD 60 20    LDA $2060,x
-$A9:E4CB 99 62 20    STA $2062,y
-$A9:E4CE BD 70 20    LDA $2070,x
-$A9:E4D1 99 72 20    STA $2072,y
+; BRANCH_COLUMN_1
+$A9:E487 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E48A C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] < 8 (tile row 1): go to BRANCH_COLUMN_2
+$A9:E48D 90 17       BCC $17    [$E4A6]     ;/
+$A9:E48F C9 26 00    CMP #$0026             ;\
+$A9:E492 10 0C       BPL $0C    [$E4A0]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E494 BD 20 20    LDA $2020,x            ;\
+$A9:E497 99 22 20    STA $2022,y            ;|
+$A9:E49A BD 30 20    LDA $2030,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E49D 99 32 20    STA $2032,y            ;/
 
-$A9:E4D4 9E 60 20    STZ $2060,x
-$A9:E4D7 9E 70 20    STZ $2070,x
-$A9:E4DA AD 02 88    LDA $8802  [$A9:8802]
-$A9:E4DD C9 26 00    CMP #$0026
-$A9:E4E0 10 0C       BPL $0C    [$E4EE]
-$A9:E4E2 BD 80 20    LDA $2080,x
-$A9:E4E5 99 82 20    STA $2082,y
-$A9:E4E8 BD 90 20    LDA $2090,x
-$A9:E4EB 99 92 20    STA $2092,y
+$A9:E4A0 9E 20 20    STZ $2020,x            ;\
+$A9:E4A3 9E 30 20    STZ $2030,x            ;} Pixel row at [X] + (1 tile) = 0
 
-$A9:E4EE 9E 80 20    STZ $2080,x
-$A9:E4F1 9E 90 20    STZ $2090,x
+; BRANCH_COLUMN_2
+$A9:E4A6 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E4A9 C9 26 00    CMP #$0026             ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E4AC 10 0C       BPL $0C    [$E4BA]     ;/
+$A9:E4AE BD 40 20    LDA $2040,x            ;\
+$A9:E4B1 99 42 20    STA $2042,y            ;|
+$A9:E4B4 BD 50 20    LDA $2050,x            ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E4B7 99 52 20    STA $2052,y            ;/
+
+$A9:E4BA 9E 40 20    STZ $2040,x            ;\
+$A9:E4BD 9E 50 20    STZ $2050,x            ;} Pixel row at [X] + (2 tiles) = 0
+$A9:E4C0 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E4C3 C9 26 00    CMP #$0026             ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E4C6 10 0C       BPL $0C    [$E4D4]     ;/
+$A9:E4C8 BD 60 20    LDA $2060,x            ;\
+$A9:E4CB 99 62 20    STA $2062,y            ;|
+$A9:E4CE BD 70 20    LDA $2070,x            ;} Pixel row at [Y] + (3 tiles) + (1 pixel row) = pixel row at [X] + (3 tiles)
+$A9:E4D1 99 72 20    STA $2072,y            ;/
+
+$A9:E4D4 9E 60 20    STZ $2060,x            ;\
+$A9:E4D7 9E 70 20    STZ $2070,x            ;} Pixel row at [X] + (3 tiles) = 0
+$A9:E4DA AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E4DD C9 26 00    CMP #$0026             ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E4E0 10 0C       BPL $0C    [$E4EE]     ;/
+$A9:E4E2 BD 80 20    LDA $2080,x            ;\
+$A9:E4E5 99 82 20    STA $2082,y            ;|
+$A9:E4E8 BD 90 20    LDA $2090,x            ;} Pixel row at [Y] + (4 tiles) + (1 pixel row) = pixel row at [X] + (4 tiles)
+$A9:E4EB 99 92 20    STA $2092,y            ;/
+
+$A9:E4EE 9E 80 20    STZ $2080,x            ;\
+$A9:E4F1 9E 90 20    STZ $2090,x            ;} Pixel row at [X] + (4 tiles) = 0
 $A9:E4F4 60          RTS
 }
 
 
 ;;; $E4F5: Corpse rotting rot entry copy function - sidehopper - enemy parameter 1 = 0 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E4F5 AD 02 88    LDA $8802  [$A9:8802]  ;\
 $A9:E4F8 C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] >= 8 (tile row 1):
 $A9:E4FB 90 11       BCC $11    [$E50E]     ;/
@@ -10888,64 +10928,85 @@ $A9:E563 60          RTS
 
 ;;; $E564: Corpse rotting rot entry move function - sidehopper - enemy parameter 1 = 2 ;;;
 {
-$A9:E564 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E567 C9 26 00    CMP #$0026
-$A9:E56A 10 0C       BPL $0C    [$E578]
-$A9:E56C BD 20 23    LDA $2320,x
-$A9:E56F 99 22 23    STA $2322,y
-$A9:E572 BD 30 23    LDA $2330,x
-$A9:E575 99 32 23    STA $2332,y
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E578 9E 20 23    STZ $2320,x
-$A9:E57B 9E 30 23    STZ $2330,x
-$A9:E57E AD 02 88    LDA $8802  [$A9:8802]
-$A9:E581 C9 26 00    CMP #$0026
-$A9:E584 10 0C       BPL $0C    [$E592]
-$A9:E586 BD 40 23    LDA $2340,x
-$A9:E589 99 42 23    STA $2342,y
-$A9:E58C BD 50 23    LDA $2350,x
-$A9:E58F 99 52 23    STA $2352,y
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E592 9E 40 23    STZ $2340,x
-$A9:E595 9E 50 23    STZ $2350,x
-$A9:E598 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E59B C9 08 00    CMP #$0008
-$A9:E59E 90 17       BCC $17    [$E5B7]
-$A9:E5A0 C9 26 00    CMP #$0026
-$A9:E5A3 10 0C       BPL $0C    [$E5B1]
-$A9:E5A5 BD 60 23    LDA $2360,x
-$A9:E5A8 99 62 23    STA $2362,y
-$A9:E5AB BD 70 23    LDA $2370,x
-$A9:E5AE 99 72 23    STA $2372,y
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E5B1 9E 60 23    STZ $2360,x
-$A9:E5B4 9E 70 23    STZ $2370,x
+$A9:E564 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E567 C9 26 00    CMP #$0026             ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E56A 10 0C       BPL $0C    [$E578]     ;/
+$A9:E56C BD 20 23    LDA $2320,x            ;\
+$A9:E56F 99 22 23    STA $2322,y            ;|
+$A9:E572 BD 30 23    LDA $2330,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E575 99 32 23    STA $2332,y            ;/
 
-$A9:E5B7 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E5BA C9 08 00    CMP #$0008
-$A9:E5BD 90 17       BCC $17    [$E5D6]
-$A9:E5BF C9 26 00    CMP #$0026
-$A9:E5C2 10 0C       BPL $0C    [$E5D0]
-$A9:E5C4 BD 80 23    LDA $2380,x
-$A9:E5C7 99 82 23    STA $2382,y
-$A9:E5CA BD 90 23    LDA $2390,x
-$A9:E5CD 99 92 23    STA $2392,y
+$A9:E578 9E 20 23    STZ $2320,x            ;\
+$A9:E57B 9E 30 23    STZ $2330,x            ;} Pixel row at [X] = 0
+$A9:E57E AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E581 C9 26 00    CMP #$0026             ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E584 10 0C       BPL $0C    [$E592]     ;/
+$A9:E586 BD 40 23    LDA $2340,x            ;\
+$A9:E589 99 42 23    STA $2342,y            ;|
+$A9:E58C BD 50 23    LDA $2350,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E58F 99 52 23    STA $2352,y            ;/
 
-$A9:E5D0 9E 80 23    STZ $2380,x
-$A9:E5D3 9E 90 23    STZ $2390,x
+$A9:E592 9E 40 23    STZ $2340,x            ;\
+$A9:E595 9E 50 23    STZ $2350,x            ;} Pixel row at [X] + (1 tile) = 0
+$A9:E598 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E59B C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] < 8 (tile row 1): go to BRANCH_COLUMN_3
+$A9:E59E 90 17       BCC $17    [$E5B7]     ;/
+$A9:E5A0 C9 26 00    CMP #$0026             ;\
+$A9:E5A3 10 0C       BPL $0C    [$E5B1]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E5A5 BD 60 23    LDA $2360,x            ;\
+$A9:E5A8 99 62 23    STA $2362,y            ;|
+$A9:E5AB BD 70 23    LDA $2370,x            ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E5AE 99 72 23    STA $2372,y            ;/
 
-$A9:E5D6 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E5D9 C9 08 00    CMP #$0008
-$A9:E5DC 90 17       BCC $17    [$E5F5]
-$A9:E5DE C9 26 00    CMP #$0026
-$A9:E5E1 10 0C       BPL $0C    [$E5EF]
-$A9:E5E3 BD A0 23    LDA $23A0,x
-$A9:E5E6 99 A2 23    STA $23A2,y
-$A9:E5E9 BD B0 23    LDA $23B0,x
-$A9:E5EC 99 B2 23    STA $23B2,y
+$A9:E5B1 9E 60 23    STZ $2360,x            ;\
+$A9:E5B4 9E 70 23    STZ $2370,x            ;} Pixel row at [X] + (2 tiles) = 0
 
-$A9:E5EF 9E A0 23    STZ $23A0,x
-$A9:E5F2 9E B0 23    STZ $23B0,x
+; BRANCH_COLUMN_3
+$A9:E5B7 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E5BA C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] < 8 (tile row 1): go to BRANCH_COLUMN_4
+$A9:E5BD 90 17       BCC $17    [$E5D6]     ;/
+$A9:E5BF C9 26 00    CMP #$0026             ;\
+$A9:E5C2 10 0C       BPL $0C    [$E5D0]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E5C4 BD 80 23    LDA $2380,x            ;\
+$A9:E5C7 99 82 23    STA $2382,y            ;|
+$A9:E5CA BD 90 23    LDA $2390,x            ;} Pixel row at [Y] + (3 tiles) + (1 pixel row) = pixel row at [X] + (3 tiles)
+$A9:E5CD 99 92 23    STA $2392,y            ;/
+
+$A9:E5D0 9E 80 23    STZ $2380,x            ;\
+$A9:E5D3 9E 90 23    STZ $2390,x            ;} Pixel row at [X] + (3 tiles) = 0
+
+; BRANCH_COLUMN_4
+$A9:E5D6 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E5D9 C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] >= 8 (tile row 1):
+$A9:E5DC 90 17       BCC $17    [$E5F5]     ;/
+$A9:E5DE C9 26 00    CMP #$0026             ;\
+$A9:E5E1 10 0C       BPL $0C    [$E5EF]     ;} If [corpse rotting rot entry Y offset] < 26h:
+$A9:E5E3 BD A0 23    LDA $23A0,x            ;\
+$A9:E5E6 99 A2 23    STA $23A2,y            ;|
+$A9:E5E9 BD B0 23    LDA $23B0,x            ;} Pixel row at [Y] + (4 tiles) + (1 pixel row) = pixel row at [X] + (4 tiles)
+$A9:E5EC 99 B2 23    STA $23B2,y            ;/
+
+$A9:E5EF 9E A0 23    STZ $23A0,x            ;\
+$A9:E5F2 9E B0 23    STZ $23B0,x            ;} Pixel row at [X] + (4 tiles) = 0
 
 $A9:E5F5 60          RTS
 }
@@ -10953,6 +11014,25 @@ $A9:E5F5 60          RTS
 
 ;;; $E5F6: Corpse rotting rot entry copy function - sidehopper - enemy parameter 1 = 2 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E5F6 AD 02 88    LDA $8802  [$A9:8802]  ;\
 $A9:E5F9 C9 26 00    CMP #$0026             ;} If [corpse rotting rot entry Y offset] < 26h:
 $A9:E5FC 10 0C       BPL $0C    [$E60A]     ;/
@@ -11005,42 +11085,80 @@ $A9:E669 60          RTS
 
 ;;; $E66A: Corpse rotting rot entry move function - zoomer - enemy parameter 1 = 0 ;;;
 {
-$A9:E66A AD 02 88    LDA $8802  [$A9:8802]
-$A9:E66D C9 0E 00    CMP #$000E
-$A9:E670 10 0C       BPL $0C    [$E67E]
-$A9:E672 BD 40 29    LDA $2940,x
-$A9:E675 99 42 29    STA $2942,y
-$A9:E678 BD 50 29    LDA $2950,x
-$A9:E67B 99 52 29    STA $2952,y
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E67E 9E 40 29    STZ $2940,x
-$A9:E681 9E 50 29    STZ $2950,x
-$A9:E684 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E687 C9 0E 00    CMP #$000E
-$A9:E68A 10 0C       BPL $0C    [$E698]
-$A9:E68C BD 60 29    LDA $2960,x
-$A9:E68F 99 62 29    STA $2962,y
-$A9:E692 BD 70 29    LDA $2970,x
-$A9:E695 99 72 29    STA $2972,y
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E698 9E 60 29    STZ $2960,x
-$A9:E69B 9E 70 29    STZ $2970,x
-$A9:E69E AD 02 88    LDA $8802  [$A9:8802]
-$A9:E6A1 C9 0E 00    CMP #$000E
-$A9:E6A4 10 0C       BPL $0C    [$E6B2]
-$A9:E6A6 BD 80 29    LDA $2980,x
-$A9:E6A9 99 82 29    STA $2982,y
-$A9:E6AC BD 90 29    LDA $2990,x
-$A9:E6AF 99 92 29    STA $2992,y
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E6B2 9E 80 29    STZ $2980,x
-$A9:E6B5 9E 90 29    STZ $2990,x
+$A9:E66A AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E66D C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E670 10 0C       BPL $0C    [$E67E]     ;/
+$A9:E672 BD 40 29    LDA $2940,x            ;\
+$A9:E675 99 42 29    STA $2942,y            ;|
+$A9:E678 BD 50 29    LDA $2950,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E67B 99 52 29    STA $2952,y            ;/
+                                            
+$A9:E67E 9E 40 29    STZ $2940,x            ;\
+$A9:E681 9E 50 29    STZ $2950,x            ;} Pixel row at [X] = 0
+$A9:E684 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E687 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E68A 10 0C       BPL $0C    [$E698]     ;/
+$A9:E68C BD 60 29    LDA $2960,x            ;\
+$A9:E68F 99 62 29    STA $2962,y            ;|
+$A9:E692 BD 70 29    LDA $2970,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E695 99 72 29    STA $2972,y            ;/
+
+$A9:E698 9E 60 29    STZ $2960,x            ;\
+$A9:E69B 9E 70 29    STZ $2970,x            ;} Pixel row at [X] + (1 tile) = 0
+$A9:E69E AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E6A1 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E6A4 10 0C       BPL $0C    [$E6B2]     ;/
+$A9:E6A6 BD 80 29    LDA $2980,x            ;\
+$A9:E6A9 99 82 29    STA $2982,y            ;|
+$A9:E6AC BD 90 29    LDA $2990,x            ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E6AF 99 92 29    STA $2992,y            ;/
+                                            
+$A9:E6B2 9E 80 29    STZ $2980,x            ;\
+$A9:E6B5 9E 90 29    STZ $2990,x            ;} Pixel row at [X] + (2 tiles) = 0
 $A9:E6B8 60          RTS
 }
 
 
 ;;; $E6B9: Corpse rotting rot entry copy function - zoomer - enemy parameter 1 = 0 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E6B9 AD 02 88    LDA $8802  [$A9:8802]  ;\
 $A9:E6BC C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
 $A9:E6BF 10 0C       BPL $0C    [$E6CD]     ;/
@@ -11071,42 +11189,80 @@ $A9:E6F5 60          RTS
 
 ;;; $E6F6: Corpse rotting rot entry move function - zoomer - enemy parameter 1 = 2 ;;;
 {
-$A9:E6F6 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E6F9 C9 0E 00    CMP #$000E
-$A9:E6FC 10 0C       BPL $0C    [$E70A]
-$A9:E6FE BD 00 2A    LDA $2A00,x[$7E:2A6A]
-$A9:E701 99 02 2A    STA $2A02,y[$7E:2A6C]
-$A9:E704 BD 10 2A    LDA $2A10,x[$7E:2A7A]
-$A9:E707 99 12 2A    STA $2A12,y[$7E:2A7C]
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E70A 9E 00 2A    STZ $2A00,x[$7E:2A6E]
-$A9:E70D 9E 10 2A    STZ $2A10,x[$7E:2A7E]
-$A9:E710 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E713 C9 0E 00    CMP #$000E
-$A9:E716 10 0C       BPL $0C    [$E724]
-$A9:E718 BD 20 2A    LDA $2A20,x[$7E:2A8A]
-$A9:E71B 99 22 2A    STA $2A22,y[$7E:2A8C]
-$A9:E71E BD 30 2A    LDA $2A30,x[$7E:2A9A]
-$A9:E721 99 32 2A    STA $2A32,y[$7E:2A9C]
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E724 9E 20 2A    STZ $2A20,x[$7E:2A8E]
-$A9:E727 9E 30 2A    STZ $2A30,x[$7E:2A9E]
-$A9:E72A AD 02 88    LDA $8802  [$7E:8802]
-$A9:E72D C9 0E 00    CMP #$000E
-$A9:E730 10 0C       BPL $0C    [$E73E]
-$A9:E732 BD 40 2A    LDA $2A40,x[$7E:2AAA]
-$A9:E735 99 42 2A    STA $2A42,y[$7E:2AAC]
-$A9:E738 BD 50 2A    LDA $2A50,x[$7E:2ABA]
-$A9:E73B 99 52 2A    STA $2A52,y[$7E:2ABC]
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E73E 9E 40 2A    STZ $2A40,x[$7E:2AAE]
-$A9:E741 9E 50 2A    STZ $2A50,x[$7E:2ABE]
+$A9:E6F6 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E6F9 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E6FC 10 0C       BPL $0C    [$E70A]     ;/
+$A9:E6FE BD 00 2A    LDA $2A00,x[$7E:2A6A]  ;\
+$A9:E701 99 02 2A    STA $2A02,y[$7E:2A6C]  ;|
+$A9:E704 BD 10 2A    LDA $2A10,x[$7E:2A7A]  ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E707 99 12 2A    STA $2A12,y[$7E:2A7C]  ;/
+                                            
+$A9:E70A 9E 00 2A    STZ $2A00,x[$7E:2A6E]  ;\
+$A9:E70D 9E 10 2A    STZ $2A10,x[$7E:2A7E]  ;} Pixel row at [X] = 0
+$A9:E710 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E713 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E716 10 0C       BPL $0C    [$E724]     ;/
+$A9:E718 BD 20 2A    LDA $2A20,x[$7E:2A8A]  ;\
+$A9:E71B 99 22 2A    STA $2A22,y[$7E:2A8C]  ;|
+$A9:E71E BD 30 2A    LDA $2A30,x[$7E:2A9A]  ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E721 99 32 2A    STA $2A32,y[$7E:2A9C]  ;/
+                                            
+$A9:E724 9E 20 2A    STZ $2A20,x[$7E:2A8E]  ;\
+$A9:E727 9E 30 2A    STZ $2A30,x[$7E:2A9E]  ;} Pixel row at [X] + (1 tile) = 0
+$A9:E72A AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E72D C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E730 10 0C       BPL $0C    [$E73E]     ;/
+$A9:E732 BD 40 2A    LDA $2A40,x[$7E:2AAA]  ;\
+$A9:E735 99 42 2A    STA $2A42,y[$7E:2AAC]  ;|
+$A9:E738 BD 50 2A    LDA $2A50,x[$7E:2ABA]  ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E73B 99 52 2A    STA $2A52,y[$7E:2ABC]  ;/
+                                            
+$A9:E73E 9E 40 2A    STZ $2A40,x[$7E:2AAE]  ;\
+$A9:E741 9E 50 2A    STZ $2A50,x[$7E:2ABE]  ;} Pixel row at [X] + (2 tiles) = 0
 $A9:E744 60          RTS
 }
 
 
 ;;; $E745: Corpse rotting rot entry copy function - zoomer - enemy parameter 1 = 2 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E745 AD 02 88    LDA $8802  [$7E:8802]  ;\
 $A9:E748 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
 $A9:E74B 10 0C       BPL $0C    [$E759]     ;/
@@ -11137,42 +11293,80 @@ $A9:E781 60          RTS
 
 ;;; $E782: Corpse rotting rot entry move function - zoomer - enemy parameter 1 = 4 ;;;
 {
-$A9:E782 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E785 C9 0E 00    CMP #$000E
-$A9:E788 10 0C       BPL $0C    [$E796]
-$A9:E78A BD C0 2A    LDA $2AC0,x
-$A9:E78D 99 C2 2A    STA $2AC2,y
-$A9:E790 BD D0 2A    LDA $2AD0,x
-$A9:E793 99 D2 2A    STA $2AD2,y
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E796 9E C0 2A    STZ $2AC0,x
-$A9:E799 9E D0 2A    STZ $2AD0,x
-$A9:E79C AD 02 88    LDA $8802  [$A9:8802]
-$A9:E79F C9 0E 00    CMP #$000E
-$A9:E7A2 10 0C       BPL $0C    [$E7B0]
-$A9:E7A4 BD E0 2A    LDA $2AE0,x
-$A9:E7A7 99 E2 2A    STA $2AE2,y
-$A9:E7AA BD F0 2A    LDA $2AF0,x
-$A9:E7AD 99 F2 2A    STA $2AF2,y
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E7B0 9E E0 2A    STZ $2AE0,x
-$A9:E7B3 9E F0 2A    STZ $2AF0,x
-$A9:E7B6 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E7B9 C9 0E 00    CMP #$000E
-$A9:E7BC 10 0C       BPL $0C    [$E7CA]
-$A9:E7BE BD 00 2B    LDA $2B00,x
-$A9:E7C1 99 02 2B    STA $2B02,y
-$A9:E7C4 BD 10 2B    LDA $2B10,x
-$A9:E7C7 99 12 2B    STA $2B12,y
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E7CA 9E 00 2B    STZ $2B00,x
-$A9:E7CD 9E 10 2B    STZ $2B10,x
+$A9:E782 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E785 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E788 10 0C       BPL $0C    [$E796]     ;/
+$A9:E78A BD C0 2A    LDA $2AC0,x            ;\
+$A9:E78D 99 C2 2A    STA $2AC2,y            ;|
+$A9:E790 BD D0 2A    LDA $2AD0,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E793 99 D2 2A    STA $2AD2,y            ;/
+                                            
+$A9:E796 9E C0 2A    STZ $2AC0,x            ;\
+$A9:E799 9E D0 2A    STZ $2AD0,x            ;} Pixel row at [X] = 0
+$A9:E79C AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E79F C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E7A2 10 0C       BPL $0C    [$E7B0]     ;/
+$A9:E7A4 BD E0 2A    LDA $2AE0,x            ;\
+$A9:E7A7 99 E2 2A    STA $2AE2,y            ;|
+$A9:E7AA BD F0 2A    LDA $2AF0,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E7AD 99 F2 2A    STA $2AF2,y            ;/
+                                            
+$A9:E7B0 9E E0 2A    STZ $2AE0,x            ;\
+$A9:E7B3 9E F0 2A    STZ $2AF0,x            ;} Pixel row at [X] + (1 tile) = 0
+$A9:E7B6 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E7B9 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E7BC 10 0C       BPL $0C    [$E7CA]     ;/
+$A9:E7BE BD 00 2B    LDA $2B00,x            ;\
+$A9:E7C1 99 02 2B    STA $2B02,y            ;|
+$A9:E7C4 BD 10 2B    LDA $2B10,x            ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E7C7 99 12 2B    STA $2B12,y            ;/
+                                            
+$A9:E7CA 9E 00 2B    STZ $2B00,x            ;\
+$A9:E7CD 9E 10 2B    STZ $2B10,x            ;} Pixel row at [X] + (2 tiles) = 0
 $A9:E7D0 60          RTS
 }
 
 
 ;;; $E7D1: Corpse rotting rot entry copy function - zoomer - enemy parameter 1 = 4 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E7D1 AD 02 88    LDA $8802  [$A9:8802]  ;\
 $A9:E7D4 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
 $A9:E7D7 10 0C       BPL $0C    [$E7E5]     ;/
@@ -11203,42 +11397,80 @@ $A9:E80D 60          RTS
 
 ;;; $E80E: Corpse rotting rot entry move function - ripper - enemy parameter 1 = 0 ;;;
 {
-$A9:E80E AD 02 88    LDA $8802  [$A9:8802]
-$A9:E811 C9 0E 00    CMP #$000E
-$A9:E814 10 0C       BPL $0C    [$E822]
-$A9:E816 BD 80 2B    LDA $2B80,x
-$A9:E819 99 82 2B    STA $2B82,y
-$A9:E81C BD 90 2B    LDA $2B90,x
-$A9:E81F 99 92 2B    STA $2B92,y
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E822 9E 80 2B    STZ $2B80,x
-$A9:E825 9E 90 2B    STZ $2B90,x
-$A9:E828 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E82B C9 0E 00    CMP #$000E
-$A9:E82E 10 0C       BPL $0C    [$E83C]
-$A9:E830 BD A0 2B    LDA $2BA0,x
-$A9:E833 99 A2 2B    STA $2BA2,y
-$A9:E836 BD B0 2B    LDA $2BB0,x
-$A9:E839 99 B2 2B    STA $2BB2,y
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E83C 9E A0 2B    STZ $2BA0,x
-$A9:E83F 9E B0 2B    STZ $2BB0,x
-$A9:E842 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E845 C9 0E 00    CMP #$000E
-$A9:E848 10 0C       BPL $0C    [$E856]
-$A9:E84A BD C0 2B    LDA $2BC0,x
-$A9:E84D 99 C2 2B    STA $2BC2,y
-$A9:E850 BD D0 2B    LDA $2BD0,x
-$A9:E853 99 D2 2B    STA $2BD2,y
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E856 9E C0 2B    STZ $2BC0,x
-$A9:E859 9E D0 2B    STZ $2BD0,x
+$A9:E80E AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E811 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E814 10 0C       BPL $0C    [$E822]     ;/
+$A9:E816 BD 80 2B    LDA $2B80,x            ;\
+$A9:E819 99 82 2B    STA $2B82,y            ;|
+$A9:E81C BD 90 2B    LDA $2B90,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E81F 99 92 2B    STA $2B92,y            ;/
+                                            
+$A9:E822 9E 80 2B    STZ $2B80,x            ;\
+$A9:E825 9E 90 2B    STZ $2B90,x            ;} Pixel row at [X] = 0
+$A9:E828 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E82B C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E82E 10 0C       BPL $0C    [$E83C]     ;/
+$A9:E830 BD A0 2B    LDA $2BA0,x            ;\
+$A9:E833 99 A2 2B    STA $2BA2,y            ;|
+$A9:E836 BD B0 2B    LDA $2BB0,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E839 99 B2 2B    STA $2BB2,y            ;/
+                                            
+$A9:E83C 9E A0 2B    STZ $2BA0,x            ;\
+$A9:E83F 9E B0 2B    STZ $2BB0,x            ;} Pixel row at [X] + (1 tile) = 0
+$A9:E842 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E845 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E848 10 0C       BPL $0C    [$E856]     ;/
+$A9:E84A BD C0 2B    LDA $2BC0,x            ;\
+$A9:E84D 99 C2 2B    STA $2BC2,y            ;|
+$A9:E850 BD D0 2B    LDA $2BD0,x            ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E853 99 D2 2B    STA $2BD2,y            ;/
+                                            
+$A9:E856 9E C0 2B    STZ $2BC0,x            ;\
+$A9:E859 9E D0 2B    STZ $2BD0,x            ;} Pixel row at [X] + (2 tiles) = 0
 $A9:E85C 60          RTS
 }
 
 
 ;;; $E85D: Corpse rotting rot entry copy function - ripper - enemy parameter 1 = 0 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E85D AD 02 88    LDA $8802  [$A9:8802]  ;\
 $A9:E860 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
 $A9:E863 10 0C       BPL $0C    [$E871]     ;/
@@ -11269,42 +11501,80 @@ $A9:E899 60          RTS
 
 ;;; $E89A: Corpse rotting rot entry move function - ripper - enemy parameter 1 = 2 ;;;
 {
-$A9:E89A AD 02 88    LDA $8802  [$7E:8802]
-$A9:E89D C9 0E 00    CMP #$000E
-$A9:E8A0 10 0C       BPL $0C    [$E8AE]
-$A9:E8A2 BD 40 2C    LDA $2C40,x[$7E:2CAA]
-$A9:E8A5 99 42 2C    STA $2C42,y[$7E:2CAC]
-$A9:E8A8 BD 50 2C    LDA $2C50,x[$7E:2CBA]
-$A9:E8AB 99 52 2C    STA $2C52,y[$7E:2CBC]
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E8AE 9E 40 2C    STZ $2C40,x[$7E:2CAE]
-$A9:E8B1 9E 50 2C    STZ $2C50,x[$7E:2CBE]
-$A9:E8B4 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E8B7 C9 0E 00    CMP #$000E
-$A9:E8BA 10 0C       BPL $0C    [$E8C8]
-$A9:E8BC BD 60 2C    LDA $2C60,x[$7E:2CCA]
-$A9:E8BF 99 62 2C    STA $2C62,y[$7E:2CCC]
-$A9:E8C2 BD 70 2C    LDA $2C70,x[$7E:2CDA]
-$A9:E8C5 99 72 2C    STA $2C72,y[$7E:2CDC]
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E8C8 9E 60 2C    STZ $2C60,x[$7E:2CCE]
-$A9:E8CB 9E 70 2C    STZ $2C70,x[$7E:2CDE]
-$A9:E8CE AD 02 88    LDA $8802  [$7E:8802]
-$A9:E8D1 C9 0E 00    CMP #$000E
-$A9:E8D4 10 0C       BPL $0C    [$E8E2]
-$A9:E8D6 BD 80 2C    LDA $2C80,x[$7E:2CEA]
-$A9:E8D9 99 82 2C    STA $2C82,y[$7E:2CEC]
-$A9:E8DC BD 90 2C    LDA $2C90,x[$7E:2CFA]
-$A9:E8DF 99 92 2C    STA $2C92,y[$7E:2CFC]
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-$A9:E8E2 9E 80 2C    STZ $2C80,x[$7E:2CEE]
-$A9:E8E5 9E 90 2C    STZ $2C90,x[$7E:2CFE]
+$A9:E89A AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E89D C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E8A0 10 0C       BPL $0C    [$E8AE]     ;/
+$A9:E8A2 BD 40 2C    LDA $2C40,x[$7E:2CAA]  ;\
+$A9:E8A5 99 42 2C    STA $2C42,y[$7E:2CAC]  ;|
+$A9:E8A8 BD 50 2C    LDA $2C50,x[$7E:2CBA]  ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E8AB 99 52 2C    STA $2C52,y[$7E:2CBC]  ;/
+                                            
+$A9:E8AE 9E 40 2C    STZ $2C40,x[$7E:2CAE]  ;\
+$A9:E8B1 9E 50 2C    STZ $2C50,x[$7E:2CBE]  ;} Pixel row at [X] = 0
+$A9:E8B4 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E8B7 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E8BA 10 0C       BPL $0C    [$E8C8]     ;/
+$A9:E8BC BD 60 2C    LDA $2C60,x[$7E:2CCA]  ;\
+$A9:E8BF 99 62 2C    STA $2C62,y[$7E:2CCC]  ;|
+$A9:E8C2 BD 70 2C    LDA $2C70,x[$7E:2CDA]  ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E8C5 99 72 2C    STA $2C72,y[$7E:2CDC]  ;/
+                                            
+$A9:E8C8 9E 60 2C    STZ $2C60,x[$7E:2CCE]  ;\
+$A9:E8CB 9E 70 2C    STZ $2C70,x[$7E:2CDE]  ;} Pixel row at [X] + (1 tile) = 0
+$A9:E8CE AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E8D1 C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
+$A9:E8D4 10 0C       BPL $0C    [$E8E2]     ;/
+$A9:E8D6 BD 80 2C    LDA $2C80,x[$7E:2CEA]  ;\
+$A9:E8D9 99 82 2C    STA $2C82,y[$7E:2CEC]  ;|
+$A9:E8DC BD 90 2C    LDA $2C90,x[$7E:2CFA]  ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:E8DF 99 92 2C    STA $2C92,y[$7E:2CFC]  ;/
+                                            
+$A9:E8E2 9E 80 2C    STZ $2C80,x[$7E:2CEE]  ;\
+$A9:E8E5 9E 90 2C    STZ $2C90,x[$7E:2CFE]  ;} Pixel row at [X] + (2 tiles) = 0
 $A9:E8E8 60          RTS
 }
 
 
 ;;; $E8E9: Corpse rotting rot entry copy function - ripper - enemy parameter 1 = 2 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E8E9 AD 02 88    LDA $8802  [$7E:8802]  ;\
 $A9:E8EC C9 0E 00    CMP #$000E             ;} If [corpse rotting rot entry Y offset] < Eh:
 $A9:E8EF 10 0C       BPL $0C    [$E8FD]     ;/
@@ -11335,32 +11605,70 @@ $A9:E925 60          RTS
 
 ;;; $E926: Corpse rotting rot entry move function - skree - enemy parameter 1 = 0 ;;;
 {
-$A9:E926 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E929 C9 1E 00    CMP #$001E
-$A9:E92C 10 0C       BPL $0C    [$E93A]
-$A9:E92E BD 40 26    LDA $2640,x
-$A9:E931 99 42 26    STA $2642,y
-$A9:E934 BD 50 26    LDA $2650,x
-$A9:E937 99 52 26    STA $2652,y
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E93A 9E 40 26    STZ $2640,x
-$A9:E93D 9E 50 26    STZ $2650,x
-$A9:E940 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E943 C9 1E 00    CMP #$001E
-$A9:E946 10 0C       BPL $0C    [$E954]
-$A9:E948 BD 60 26    LDA $2660,x
-$A9:E94B 99 62 26    STA $2662,y
-$A9:E94E BD 70 26    LDA $2670,x
-$A9:E951 99 72 26    STA $2672,y
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E954 9E 60 26    STZ $2660,x
-$A9:E957 9E 70 26    STZ $2670,x
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
+$A9:E926 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E929 C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
+$A9:E92C 10 0C       BPL $0C    [$E93A]     ;/
+$A9:E92E BD 40 26    LDA $2640,x            ;\
+$A9:E931 99 42 26    STA $2642,y            ;|
+$A9:E934 BD 50 26    LDA $2650,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E937 99 52 26    STA $2652,y            ;/
+                                            
+$A9:E93A 9E 40 26    STZ $2640,x            ;\
+$A9:E93D 9E 50 26    STZ $2650,x            ;} Pixel row at [X] = 0
+$A9:E940 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E943 C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
+$A9:E946 10 0C       BPL $0C    [$E954]     ;/
+$A9:E948 BD 60 26    LDA $2660,x            ;\
+$A9:E94B 99 62 26    STA $2662,y            ;|
+$A9:E94E BD 70 26    LDA $2670,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E951 99 72 26    STA $2672,y            ;/
+                                            
+$A9:E954 9E 60 26    STZ $2660,x            ;\
+$A9:E957 9E 70 26    STZ $2670,x            ;} Pixel row at [X] + (1 tile) = 0
 $A9:E95A 60          RTS
 }
 
 
 ;;; $E95B: Corpse rotting rot entry copy function - skree - enemy parameter 1 = 0 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E95B AD 02 88    LDA $8802  [$A9:8802]  ;\
 $A9:E95E C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
 $A9:E961 10 0C       BPL $0C    [$E96F]     ;/
@@ -11383,32 +11691,70 @@ $A9:E983 60          RTS
 
 ;;; $E984: Corpse rotting rot entry move function - skree - enemy parameter 1 = 2 ;;;
 {
-$A9:E984 AD 02 88    LDA $8802  [$7E:8802]
-$A9:E987 C9 1E 00    CMP #$001E
-$A9:E98A 10 0C       BPL $0C    [$E998]
-$A9:E98C BD 40 27    LDA $2740,x[$7E:280A]
-$A9:E98F 99 42 27    STA $2742,y[$7E:280C]
-$A9:E992 BD 50 27    LDA $2750,x[$7E:281A]
-$A9:E995 99 52 27    STA $2752,y[$7E:281C]
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E998 9E 40 27    STZ $2740,x[$7E:280E]
-$A9:E99B 9E 50 27    STZ $2750,x[$7E:281E]
-$A9:E99E AD 02 88    LDA $8802  [$7E:8802]
-$A9:E9A1 C9 1E 00    CMP #$001E
-$A9:E9A4 10 0C       BPL $0C    [$E9B2]
-$A9:E9A6 BD 60 27    LDA $2760,x[$7E:282A]
-$A9:E9A9 99 62 27    STA $2762,y[$7E:282C]
-$A9:E9AC BD 70 27    LDA $2770,x[$7E:283A]
-$A9:E9AF 99 72 27    STA $2772,y[$7E:283C]
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:E9B2 9E 60 27    STZ $2760,x[$7E:282E]
-$A9:E9B5 9E 70 27    STZ $2770,x[$7E:283E]
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
+$A9:E984 AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E987 C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
+$A9:E98A 10 0C       BPL $0C    [$E998]     ;/
+$A9:E98C BD 40 27    LDA $2740,x[$7E:280A]  ;\
+$A9:E98F 99 42 27    STA $2742,y[$7E:280C]  ;|
+$A9:E992 BD 50 27    LDA $2750,x[$7E:281A]  ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E995 99 52 27    STA $2752,y[$7E:281C]  ;/
+                                            
+$A9:E998 9E 40 27    STZ $2740,x[$7E:280E]  ;\
+$A9:E99B 9E 50 27    STZ $2750,x[$7E:281E]  ;} Pixel row at [X] = 0
+$A9:E99E AD 02 88    LDA $8802  [$7E:8802]  ;\
+$A9:E9A1 C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
+$A9:E9A4 10 0C       BPL $0C    [$E9B2]     ;/
+$A9:E9A6 BD 60 27    LDA $2760,x[$7E:282A]  ;\
+$A9:E9A9 99 62 27    STA $2762,y[$7E:282C]  ;|
+$A9:E9AC BD 70 27    LDA $2770,x[$7E:283A]  ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:E9AF 99 72 27    STA $2772,y[$7E:283C]  ;/
+                                            
+$A9:E9B2 9E 60 27    STZ $2760,x[$7E:282E]  ;\
+$A9:E9B5 9E 70 27    STZ $2770,x[$7E:283E]  ;} Pixel row at [X] + (1 tile) = 0
 $A9:E9B8 60          RTS
 }
 
 
 ;;; $E9B9: Corpse rotting rot entry copy function - skree - enemy parameter 1 = 2 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:E9B9 AD 02 88    LDA $8802  [$7E:8802]  ;\
 $A9:E9BC C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
 $A9:E9BF 10 0C       BPL $0C    [$E9CD]     ;/
@@ -11431,32 +11777,70 @@ $A9:E9E1 60          RTS
 
 ;;; $E9E2: Corpse rotting rot entry move function - skree - enemy parameter 1 = 4 ;;;
 {
-$A9:E9E2 AD 02 88    LDA $8802  [$A9:8802]
-$A9:E9E5 C9 1E 00    CMP #$001E
-$A9:E9E8 10 0C       BPL $0C    [$E9F6]
-$A9:E9EA BD 40 28    LDA $2840,x
-$A9:E9ED 99 42 28    STA $2842,y
-$A9:E9F0 BD 50 28    LDA $2850,x
-$A9:E9F3 99 52 28    STA $2852,y
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-$A9:E9F6 9E 40 28    STZ $2840,x
-$A9:E9F9 9E 50 28    STZ $2850,x
-$A9:E9FC AD 02 88    LDA $8802  [$A9:8802]
-$A9:E9FF C9 1E 00    CMP #$001E
-$A9:EA02 10 0C       BPL $0C    [$EA10]
-$A9:EA04 BD 60 28    LDA $2860,x
-$A9:EA07 99 62 28    STA $2862,y
-$A9:EA0A BD 70 28    LDA $2870,x
-$A9:EA0D 99 72 28    STA $2872,y
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
-$A9:EA10 9E 60 28    STZ $2860,x
-$A9:EA13 9E 70 28    STZ $2870,x
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
+$A9:E9E2 AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E9E5 C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
+$A9:E9E8 10 0C       BPL $0C    [$E9F6]     ;/
+$A9:E9EA BD 40 28    LDA $2840,x            ;\
+$A9:E9ED 99 42 28    STA $2842,y            ;|
+$A9:E9F0 BD 50 28    LDA $2850,x            ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:E9F3 99 52 28    STA $2852,y            ;/
+                                            
+$A9:E9F6 9E 40 28    STZ $2840,x            ;\
+$A9:E9F9 9E 50 28    STZ $2850,x            ;} Pixel row at [X] = 0
+$A9:E9FC AD 02 88    LDA $8802  [$A9:8802]  ;\
+$A9:E9FF C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
+$A9:EA02 10 0C       BPL $0C    [$EA10]     ;/
+$A9:EA04 BD 60 28    LDA $2860,x            ;\
+$A9:EA07 99 62 28    STA $2862,y            ;|
+$A9:EA0A BD 70 28    LDA $2870,x            ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:EA0D 99 72 28    STA $2872,y            ;/
+                                            
+$A9:EA10 9E 60 28    STZ $2860,x            ;\
+$A9:EA13 9E 70 28    STZ $2870,x            ;} Pixel row at [X] + (1 tile) = 0
 $A9:EA16 60          RTS
 }
 
 
 ;;; $EA17: Corpse rotting rot entry copy function - skree - enemy parameter 1 = 4 ;;;
 {
+;; Parameters:
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
+
+; DB must be $7E
+; Copies a pixel row from source to one pixel down in dest
+
+; Tile data calculations:
+;     Tiles are 20h bytes
+;
+;     Pixel (x, y) of tile at pointer p is:
+;           ([p + y * 2]       >> 7 - x & 1)
+;         | ([p + y * 2 + 1]   >> 7 - x & 1) << 1
+;         | ([p + y * 2 + 10h] >> 7 - x & 1) << 2
+;         | ([p + y * 2 + 11h] >> 7 - x & 1) << 3
+;
+;     Hence, pixel row y of tile at pointer p is the bytes
+;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
+
 $A9:EA17 AD 02 88    LDA $8802  [$A9:8802]  ;\
 $A9:EA1A C9 1E 00    CMP #$001E             ;} If [corpse rotting rot entry Y offset] < 1Eh:
 $A9:EA1D 10 0C       BPL $0C    [$EA2B]     ;/
@@ -11480,15 +11864,14 @@ $A9:EA3F 60          RTS
 ;;; $EA40: Corpse rotting rot entry move function - Mother Brain ;;;
 {
 ;; Parameters:
-;;     X: Source tile GFX offset
-;;     Y: Destination tile GFX offset
-;;     $7E:8802: Pixel row being moved
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
-; Copies a pixel row from source to one pixel down in dest and clears row source pixel row
+; DB must be $7E
+; Clears pixel row in dest and copies a pixel row from source to one pixel down in dest
 
 ; Tile data calculations:
 ;     Tiles are 20h bytes
-;     Each MB graphics row is 7 tiles = E0h bytes
 ;
 ;     Pixel (x, y) of tile at pointer p is:
 ;           ([p + y * 2]       >> 7 - x & 1)
@@ -11499,97 +11882,96 @@ $A9:EA3F 60          RTS
 ;     Hence, pixel row y of tile at pointer p is the bytes
 ;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-; Tile 0
+; Column 0 is only used by rows 2..5
+; Column 1 is only used by rows 1..5
+; Column 5 is only used by rows 1..5
+; Column 6 is only used by rows 4..5
+; (See $B7:CE00 right side)
+
 $A9:EA40 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EA43 C9 10 00    CMP #$0010             ;} If [$7E:8802] < 10h: go to BRANCH_COPY_TILE_0_END
+$A9:EA43 C9 10 00    CMP #$0010             ;} If [corpse rotting rot entry Y offset] < 10h (tile row 2): go to BRANCH_COLUMN_1
 $A9:EA46 90 17       BCC $17    [$EA5F]     ;/
 $A9:EA48 C9 2E 00    CMP #$002E             ;\
-$A9:EA4B 10 0C       BPL $0C    [$EA59]     ;} If [$7E:8802] < 2Eh:
+$A9:EA4B 10 0C       BPL $0C    [$EA59]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EA4D BD 00 90    LDA $9000,x[$7E:946A]  ;\
-$A9:EA50 99 02 90    STA $9002,y[$7E:946C]  ;} $7E:9002 + [Y] = [$7E:9000 + [X]]
-$A9:EA53 BD 10 90    LDA $9010,x[$7E:947A]  ;\
-$A9:EA56 99 12 90    STA $9012,y[$7E:947C]  ;} $7E:9012 + [Y] = [$7E:9010 + [X]]
+$A9:EA50 99 02 90    STA $9002,y[$7E:946C]  ;|
+$A9:EA53 BD 10 90    LDA $9010,x[$7E:947A]  ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:EA56 99 12 90    STA $9012,y[$7E:947C]  ;/
 
-$A9:EA59 9E 00 90    STZ $9000,x[$7E:946E]  ; $7E:9000 + [X] = 0
-$A9:EA5C 9E 10 90    STZ $9010,x[$7E:947E]  ; $7E:9010 + [X] = 0
-; BRANCH_COPY_TILE_0_END
+$A9:EA59 9E 00 90    STZ $9000,x[$7E:946E]  ;\
+$A9:EA5C 9E 10 90    STZ $9010,x[$7E:947E]  ;} Pixel row at [X] = 0
 
-; Tile 1
+; BRANCH_COLUMN_1
 $A9:EA5F AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EA62 C9 08 00    CMP #$0008             ;} If [$7E:8802] < 8: go to BRANCH_COPY_TILE_1_END
+$A9:EA62 C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] < 8 (tile row 1): go to BRANCH_COLUMN_2
 $A9:EA65 90 17       BCC $17    [$EA7E]     ;/
 $A9:EA67 C9 2E 00    CMP #$002E             ;\
-$A9:EA6A 10 0C       BPL $0C    [$EA78]     ;} If [$7E:8802] < 2Eh:
+$A9:EA6A 10 0C       BPL $0C    [$EA78]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EA6C BD 20 90    LDA $9020,x[$7E:948A]  ;\
-$A9:EA6F 99 22 90    STA $9022,y[$7E:948C]  ;} $7E:9022 + [Y] = [$7E:9020 + [X]]
-$A9:EA72 BD 30 90    LDA $9030,x[$7E:949A]  ;\
-$A9:EA75 99 32 90    STA $9032,y[$7E:949C]  ;} $7E:9032 + [Y] = [$7E:9030 + [X]]
+$A9:EA6F 99 22 90    STA $9022,y[$7E:948C]  ;|
+$A9:EA72 BD 30 90    LDA $9030,x[$7E:949A]  ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:EA75 99 32 90    STA $9032,y[$7E:949C]  ;/
 
-$A9:EA78 9E 20 90    STZ $9020,x[$7E:948E]  ; $7E:9020 + [X] = 0
-$A9:EA7B 9E 30 90    STZ $9030,x[$7E:949E]  ; $7E:9030 + [X] = 0
-; BRANCH_COPY_TILE_1_END
+$A9:EA78 9E 20 90    STZ $9020,x[$7E:948E]  ;\
+$A9:EA7B 9E 30 90    STZ $9030,x[$7E:949E]  ;} Pixel row at [X] + (1 tile) = 0
 
-; Tile 2
+; BRANCH_COLUMN_2
 $A9:EA7E AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EA81 C9 2E 00    CMP #$002E             ;} If [$7E:8802] < 2Eh:
+$A9:EA81 C9 2E 00    CMP #$002E             ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EA84 10 0C       BPL $0C    [$EA92]     ;/
 $A9:EA86 BD 40 90    LDA $9040,x[$7E:94AA]  ;\
-$A9:EA89 99 42 90    STA $9042,y[$7E:94AC]  ;} $7E:9042 + [Y] = [$7E:9040 + [X]]
-$A9:EA8C BD 50 90    LDA $9050,x[$7E:94BA]  ;\
-$A9:EA8F 99 52 90    STA $9052,y[$7E:94BC]  ;} $7E:9052 + [Y] = [$7E:9050 + [X]]
+$A9:EA89 99 42 90    STA $9042,y[$7E:94AC]  ;|
+$A9:EA8C BD 50 90    LDA $9050,x[$7E:94BA]  ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:EA8F 99 52 90    STA $9052,y[$7E:94BC]  ;/
 
-; Tile 3
-$A9:EA92 9E 40 90    STZ $9040,x[$7E:94AE]  ; $7E:9040 + [X] = 0
-$A9:EA95 9E 50 90    STZ $9050,x[$7E:94BE]  ; $7E:9050 + [X] = 0
+$A9:EA92 9E 40 90    STZ $9040,x[$7E:94AE]  ;\
+$A9:EA95 9E 50 90    STZ $9050,x[$7E:94BE]  ;} Pixel row at [X] + (2 tiles) = 0
 $A9:EA98 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EA9B C9 2E 00    CMP #$002E             ;} If [$7E:8802] < 2Eh:
+$A9:EA9B C9 2E 00    CMP #$002E             ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EA9E 10 0C       BPL $0C    [$EAAC]     ;/
 $A9:EAA0 BD 60 90    LDA $9060,x[$7E:94CA]  ;\
-$A9:EAA3 99 62 90    STA $9062,y[$7E:94CC]  ;} $7E:9062 + [Y] = [$7E:9060 + [X]]
-$A9:EAA6 BD 70 90    LDA $9070,x[$7E:94DA]  ;\
-$A9:EAA9 99 72 90    STA $9072,y[$7E:94DC]  ;} $7E:9072 + [Y] = [$7E:9070 + [X]]
+$A9:EAA3 99 62 90    STA $9062,y[$7E:94CC]  ;|
+$A9:EAA6 BD 70 90    LDA $9070,x[$7E:94DA]  ;} Pixel row at [Y] + (3 tiles) + (1 pixel row) = pixel row at [X] + (3 tiles)
+$A9:EAA9 99 72 90    STA $9072,y[$7E:94DC]  ;/
 
-; Tile 4
-$A9:EAAC 9E 60 90    STZ $9060,x[$7E:94CE]  ; $7E:9060 + [X] = 0
-$A9:EAAF 9E 70 90    STZ $9070,x[$7E:94DE]  ; $7E:9070 + [X] = 0
+$A9:EAAC 9E 60 90    STZ $9060,x[$7E:94CE]  ;\
+$A9:EAAF 9E 70 90    STZ $9070,x[$7E:94DE]  ;} Pixel row at [X] + (3 tiles) = 0
 $A9:EAB2 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EAB5 C9 2E 00    CMP #$002E             ;} If [$7E:8802] < 2Eh:
+$A9:EAB5 C9 2E 00    CMP #$002E             ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EAB8 10 0C       BPL $0C    [$EAC6]     ;/
 $A9:EABA BD 80 90    LDA $9080,x[$7E:94EA]  ;\
-$A9:EABD 99 82 90    STA $9082,y[$7E:94EC]  ;} $7E:9082 + [Y] = [$7E:9080 + [X]]
-$A9:EAC0 BD 90 90    LDA $9090,x[$7E:94FA]  ;\
-$A9:EAC3 99 92 90    STA $9092,y[$7E:94FC]  ;} $7E:9092 + [Y] = [$7E:9090 + [X]]
+$A9:EABD 99 82 90    STA $9082,y[$7E:94EC]  ;|
+$A9:EAC0 BD 90 90    LDA $9090,x[$7E:94FA]  ;} Pixel row at [Y] + (4 tiles) + (1 pixel row) = pixel row at [X] + (4 tiles)
+$A9:EAC3 99 92 90    STA $9092,y[$7E:94FC]  ;/
 
-; Tile 5
-$A9:EAC6 9E 80 90    STZ $9080,x[$7E:94EE]  ; $7E:9080 + [X] = 0
-$A9:EAC9 9E 90 90    STZ $9090,x[$7E:94FE]  ; $7E:9090 + [X] = 0
+$A9:EAC6 9E 80 90    STZ $9080,x[$7E:94EE]  ;\
+$A9:EAC9 9E 90 90    STZ $9090,x[$7E:94FE]  ;} Pixel row at [X] + (4 tiles) = 0
 $A9:EACC AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EACF C9 08 00    CMP #$0008             ;} If [$7E:8802] < 8: go to BRANCH_COPY_TILE_5_END
+$A9:EACF C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] < 8 (tile row 1): go to BRANCH_COLUMN_6
 $A9:EAD2 90 17       BCC $17    [$EAEB]     ;/
 $A9:EAD4 C9 2E 00    CMP #$002E             ;\
-$A9:EAD7 10 0C       BPL $0C    [$EAE5]     ;} If [$7E:8802] < 2Eh:
+$A9:EAD7 10 0C       BPL $0C    [$EAE5]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EAD9 BD A0 90    LDA $90A0,x[$7E:950A]  ;\
-$A9:EADC 99 A2 90    STA $90A2,y[$7E:950C]  ;} $7E:90A2 + [Y] = [$7E:90A0 + [X]]
-$A9:EADF BD B0 90    LDA $90B0,x[$7E:951A]  ;\
-$A9:EAE2 99 B2 90    STA $90B2,y[$7E:951C]  ;} $7E:90B2 + [Y] = [$7E:90B0 + [X]]
+$A9:EADC 99 A2 90    STA $90A2,y[$7E:950C]  ;|
+$A9:EADF BD B0 90    LDA $90B0,x[$7E:951A]  ;} Pixel row at [Y] + (5 tiles) + (1 pixel row) = pixel row at [X] + (5 tiles)
+$A9:EAE2 99 B2 90    STA $90B2,y[$7E:951C]  ;/
 
-$A9:EAE5 9E A0 90    STZ $90A0,x[$7E:950E]  ; $7E:90A0 + [X] = 0
-$A9:EAE8 9E B0 90    STZ $90B0,x[$7E:951E]  ; $7E:90B0 + [X] = 0
-; BRANCH_COPY_TILE_5_END
+$A9:EAE5 9E A0 90    STZ $90A0,x[$7E:950E]  ;\
+$A9:EAE8 9E B0 90    STZ $90B0,x[$7E:951E]  ;} Pixel row at [X] + (5 tiles) = 0
 
-; Tile 6
+; BRANCH_COLUMN_6
 $A9:EAEB AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EAEE C9 20 00    CMP #$0020             ;} If [$7E:8802] < 20h: return
+$A9:EAEE C9 20 00    CMP #$0020             ;} If [corpse rotting rot entry Y offset] < 20h (tile row 4): return
 $A9:EAF1 90 17       BCC $17    [$EB0A]     ;/
 $A9:EAF3 C9 2E 00    CMP #$002E             ;\
-$A9:EAF6 10 0C       BPL $0C    [$EB04]     ;} If [$7E:8802] < 2Eh:
+$A9:EAF6 10 0C       BPL $0C    [$EB04]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EAF8 BD C0 90    LDA $90C0,x[$7E:952A]  ;\
-$A9:EAFB 99 C2 90    STA $90C2,y[$7E:952C]  ;} $7E:90C2 + [Y] = [$7E:90C0 + [X]]
-$A9:EAFE BD D0 90    LDA $90D0,x[$7E:953A]  ;\
-$A9:EB01 99 D2 90    STA $90D2,y[$7E:953C]  ;} $7E:90D2 + [Y] = [$7E:90D0 + [X]]
+$A9:EAFB 99 C2 90    STA $90C2,y[$7E:952C]  ;|
+$A9:EAFE BD D0 90    LDA $90D0,x[$7E:953A]  ;} Pixel row at [Y] + (6 tiles) + (1 pixel row) = pixel row at [X] + (6 tiles)
+$A9:EB01 99 D2 90    STA $90D2,y[$7E:953C]  ;/
 
-$A9:EB04 9E C0 90    STZ $90C0,x[$7E:952E]  ; $7E:90C0 + [X] = 0
-$A9:EB07 9E D0 90    STZ $90D0,x[$7E:953E]  ; $7E:90D0 + [X] = 0
+$A9:EB04 9E C0 90    STZ $90C0,x[$7E:952E]  ;\
+$A9:EB07 9E D0 90    STZ $90D0,x[$7E:953E]  ;} Pixel row at [X] + (6 tiles) = 0
 
 $A9:EB0A 60          RTS
 }
@@ -11598,15 +11980,14 @@ $A9:EB0A 60          RTS
 ;;; $EB0B: Corpse rotting rot entry copy function - Mother Brain ;;;
 {
 ;; Parameters:
-;;     X: Source tile data offset
-;;     Y: Destination tile data offset
-;;     $7E:8802: Pixel row being copied
+;;     X: Source pixel row tile data offset
+;;     Y: Destination pixel row tile data offset
 
+; DB must be $7E
 ; Copies a pixel row from source to one pixel down in dest
 
 ; Tile data calculations:
 ;     Tiles are 20h bytes
-;     Each MB graphics row is 7 tiles = E0h bytes
 ;
 ;     Pixel (x, y) of tile at pointer p is:
 ;           ([p + y * 2]       >> 7 - x & 1)
@@ -11617,76 +11998,75 @@ $A9:EB0A 60          RTS
 ;     Hence, pixel row y of tile at pointer p is the bytes
 ;         [p + y * 2], [p + y * 2 + 1], [p + y * 2 + 10h], [p + y * 2 + 11h]
 
-; Tile 0
+; Column 0 is only used by rows 2..5
+; Column 1 is only used by rows 1..5
+; Column 5 is only used by rows 1..5
+; Column 6 is only used by rows 4..5
+; (See $B7:CE00 right side)
+
 $A9:EB0B AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EB0E C9 10 00    CMP #$0010             ;|
-$A9:EB11 90 11       BCC $11    [$EB24]     ;} If 10h <= [$7E:8802] < 2Eh: (tile 0 is only copied if pixel row y >= 10h)
-$A9:EB13 C9 2E 00    CMP #$002E             ;|
-$A9:EB16 10 0C       BPL $0C    [$EB24]     ;/
+$A9:EB0E C9 10 00    CMP #$0010             ;} If [corpse rotting rot entry Y offset] >= 10h (tile row 2):
+$A9:EB11 90 11       BCC $11    [$EB24]     ;/
+$A9:EB13 C9 2E 00    CMP #$002E             ;\
+$A9:EB16 10 0C       BPL $0C    [$EB24]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EB18 BD 00 90    LDA $9000,x[$7E:946A]  ;\
-$A9:EB1B 99 02 90    STA $9002,y[$7E:946C]  ;} $7E:9002 + [Y] = [$7E:9000 + [X]]
-$A9:EB1E BD 10 90    LDA $9010,x[$7E:947A]  ;\
-$A9:EB21 99 12 90    STA $9012,y[$7E:947C]  ;} $7E:9012 + [Y] = [$7E:9010 + [X]] (copy pixel row from source to one pixel row down in dest)
+$A9:EB1B 99 02 90    STA $9002,y[$7E:946C]  ;|
+$A9:EB1E BD 10 90    LDA $9010,x[$7E:947A]  ;} Pixel row at [Y] + (1 pixel row) = pixel row at [X]
+$A9:EB21 99 12 90    STA $9012,y[$7E:947C]  ;/
 
-; Tile 1
 $A9:EB24 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EB27 C9 08 00    CMP #$0008             ;|
-$A9:EB2A 90 11       BCC $11    [$EB3D]     ;} If 8 <= [$7E:8802] < 2Eh: (tile 1 is only copied if pixel row y >= 8)
-$A9:EB2C C9 2E 00    CMP #$002E             ;|
-$A9:EB2F 10 0C       BPL $0C    [$EB3D]     ;/
+$A9:EB27 C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] >= 8 (tile row 1):
+$A9:EB2A 90 11       BCC $11    [$EB3D]     ;/
+$A9:EB2C C9 2E 00    CMP #$002E             ;\
+$A9:EB2F 10 0C       BPL $0C    [$EB3D]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EB31 BD 20 90    LDA $9020,x[$7E:948A]  ;\
-$A9:EB34 99 22 90    STA $9022,y[$7E:948C]  ;} $7E:9022 + [Y] = [$7E:9020 + [X]]
-$A9:EB37 BD 30 90    LDA $9030,x[$7E:949A]  ;\
-$A9:EB3A 99 32 90    STA $9032,y[$7E:949C]  ;} $7E:9032 + [Y] = [$7E:9030 + [X]] (copy pixel row from source to one pixel row down in dest)
+$A9:EB34 99 22 90    STA $9022,y[$7E:948C]  ;|
+$A9:EB37 BD 30 90    LDA $9030,x[$7E:949A]  ;} Pixel row at [Y] + (1 tile) + (1 pixel row) = pixel row at [X] + (1 tile)
+$A9:EB3A 99 32 90    STA $9032,y[$7E:949C]  ;/
 
-; Tile 2
 $A9:EB3D AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EB40 C9 2E 00    CMP #$002E             ;} If [$7E:8802] < 2Eh:
+$A9:EB40 C9 2E 00    CMP #$002E             ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EB43 10 0C       BPL $0C    [$EB51]     ;/
 $A9:EB45 BD 40 90    LDA $9040,x[$7E:94AA]  ;\
-$A9:EB48 99 42 90    STA $9042,y[$7E:94AC]  ;} $7E:9042 + [Y] = [$7E:9040 + [X]]
-$A9:EB4B BD 50 90    LDA $9050,x[$7E:94BA]  ;\
-$A9:EB4E 99 52 90    STA $9052,y[$7E:94BC]  ;} $7E:9052 + [Y] = [$7E:9050 + [X]] (copy pixel row from source to one pixel row down in dest)
-
-; Tile 3
+$A9:EB48 99 42 90    STA $9042,y[$7E:94AC]  ;|
+$A9:EB4B BD 50 90    LDA $9050,x[$7E:94BA]  ;} Pixel row at [Y] + (2 tiles) + (1 pixel row) = pixel row at [X] + (2 tiles)
+$A9:EB4E 99 52 90    STA $9052,y[$7E:94BC]  ;/
+                                            
 $A9:EB51 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EB54 C9 2E 00    CMP #$002E             ;} If [$7E:8802] < 2Eh:
+$A9:EB54 C9 2E 00    CMP #$002E             ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EB57 10 0C       BPL $0C    [$EB65]     ;/
 $A9:EB59 BD 60 90    LDA $9060,x[$7E:94CA]  ;\
-$A9:EB5C 99 62 90    STA $9062,y[$7E:94CC]  ;} $7E:9062 + [Y] = [$7E:9060 + [X]]
-$A9:EB5F BD 70 90    LDA $9070,x[$7E:94DA]  ;\
-$A9:EB62 99 72 90    STA $9072,y[$7E:94DC]  ;} $7E:9072 + [Y] = [$7E:9070 + [X]] (copy pixel row from source to one pixel row down in dest)
-
-; Tile 4
+$A9:EB5C 99 62 90    STA $9062,y[$7E:94CC]  ;|
+$A9:EB5F BD 70 90    LDA $9070,x[$7E:94DA]  ;} Pixel row at [Y] + (3 tiles) + (1 pixel row) = pixel row at [X] + (3 tiles)
+$A9:EB62 99 72 90    STA $9072,y[$7E:94DC]  ;/
+                                            
 $A9:EB65 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EB68 C9 2E 00    CMP #$002E             ;} If [$7E:8802] < 2Eh:
+$A9:EB68 C9 2E 00    CMP #$002E             ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EB6B 10 0C       BPL $0C    [$EB79]     ;/
 $A9:EB6D BD 80 90    LDA $9080,x[$7E:94EA]  ;\
-$A9:EB70 99 82 90    STA $9082,y[$7E:94EC]  ;} $7E:9082 + [Y] = [$7E:9080 + [X]]
-$A9:EB73 BD 90 90    LDA $9090,x[$7E:94FA]  ;\
-$A9:EB76 99 92 90    STA $9092,y[$7E:94FC]  ;} $7E:9092 + [Y] = [$7E:9090 + [X]] (copy pixel row from source to one pixel row down in dest)
+$A9:EB70 99 82 90    STA $9082,y[$7E:94EC]  ;|
+$A9:EB73 BD 90 90    LDA $9090,x[$7E:94FA]  ;} Pixel row at [Y] + (4 tiles) + (1 pixel row) = pixel row at [X] + (4 tiles)
+$A9:EB76 99 92 90    STA $9092,y[$7E:94FC]  ;/
 
-; Tile 5
 $A9:EB79 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EB7C C9 08 00    CMP #$0008             ;|
-$A9:EB7F 90 11       BCC $11    [$EB92]     ;} If 8 <= [$7E:8802] < 2Eh: (tile 5 is only copied if pixel row y >= 8)
-$A9:EB81 C9 2E 00    CMP #$002E             ;|
-$A9:EB84 10 0C       BPL $0C    [$EB92]     ;/
+$A9:EB7C C9 08 00    CMP #$0008             ;} If [corpse rotting rot entry Y offset] >= 8 (tile row 1):
+$A9:EB7F 90 11       BCC $11    [$EB92]     ;/
+$A9:EB81 C9 2E 00    CMP #$002E             ;\
+$A9:EB84 10 0C       BPL $0C    [$EB92]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EB86 BD A0 90    LDA $90A0,x[$7E:950A]  ;\
-$A9:EB89 99 A2 90    STA $90A2,y[$7E:950C]  ;} $7E:90A2 + [Y] = [$7E:90A0 + [X]]
-$A9:EB8C BD B0 90    LDA $90B0,x[$7E:951A]  ;\
-$A9:EB8F 99 B2 90    STA $90B2,y[$7E:951C]  ;} $7E:90B2 + [Y] = [$7E:90B0 + [X]] (copy pixel row from source to one pixel row down in dest)
+$A9:EB89 99 A2 90    STA $90A2,y[$7E:950C]  ;|
+$A9:EB8C BD B0 90    LDA $90B0,x[$7E:951A]  ;} Pixel row at [Y] + (5 tiles) + (1 pixel row) = pixel row at [X] + (5 tiles)
+$A9:EB8F 99 B2 90    STA $90B2,y[$7E:951C]  ;/
 
-; Tile 6
 $A9:EB92 AD 02 88    LDA $8802  [$7E:8802]  ;\
-$A9:EB95 C9 20 00    CMP #$0020             ;|
-$A9:EB98 90 11       BCC $11    [$EBAB]     ;} If 20h <= [$7E:8802] < 2Eh: (tile 6 is only copied if pixel row y >= 20h)
-$A9:EB9A C9 2E 00    CMP #$002E             ;|
-$A9:EB9D 10 0C       BPL $0C    [$EBAB]     ;/
+$A9:EB95 C9 20 00    CMP #$0020             ;} If [corpse rotting rot entry Y offset] >= 20h (tile row 4):
+$A9:EB98 90 11       BCC $11    [$EBAB]     ;/
+$A9:EB9A C9 2E 00    CMP #$002E             ;\
+$A9:EB9D 10 0C       BPL $0C    [$EBAB]     ;} If [corpse rotting rot entry Y offset] < 2Eh:
 $A9:EB9F BD C0 90    LDA $90C0,x[$7E:952A]  ;\
-$A9:EBA2 99 C2 90    STA $90C2,y[$7E:952C]  ;} $7E:90C2 + [Y] = [$7E:90C0 + [X]]
-$A9:EBA5 BD D0 90    LDA $90D0,x[$7E:953A]  ;\
-$A9:EBA8 99 D2 90    STA $90D2,y[$7E:953C]  ;} $7E:90D2 + [Y] = [$7E:90D0 + [X]] (copy pixel row from source to one pixel row down in dest)
+$A9:EBA2 99 C2 90    STA $90C2,y[$7E:952C]  ;|
+$A9:EBA5 BD D0 90    LDA $90D0,x[$7E:953A]  ;} Pixel row at [Y] + (6 tiles) + (1 pixel row) = pixel row at [X] + (6 tiles)
+$A9:EBA8 99 D2 90    STA $90D2,y[$7E:953C]  ;/
 
 $A9:EBAB 60          RTS
 }

@@ -1123,7 +1123,7 @@ $B2:ECC0             dx EF83,F0E3,  ; Enemy function = RTS
                         813A,0020,  ; Wait 20h frames
                         EEFD,       ; Prepare wall-jump to left
                         EF83,F0E4,  ; Enemy function = $F0E4
-                        EF93,       ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        EF93,       ; Queue shot walking space pirate sound effect
                         000A,89B0,
                         0001,89BA,
                         812F        ; Sleep
@@ -1189,7 +1189,7 @@ $B2:ED80             dx EF83,F04F,  ; Enemy function = RTS
                         813A,0020,  ; Wait 20h frames
                         EED4,       ; Prepare wall-jump to right
                         EF83,F050,  ; Enemy function = $F050
-                        EF93,       ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        EF93,       ; Queue shot walking space pirate sound effect
                         000A,891E,
                         0001,8928,
                         812F        ; Sleep
@@ -1269,7 +1269,7 @@ $B2:EE67 F0 03       BEQ $03    [$EE6C]     ;} If [enemy $0FAC] != 0:
 $B2:EE69 A0 EC EC    LDY #$ECEC             ; Y = $ECEC
 
 $B2:EE6C FA          PLX
-$B2:EE6D 6B          RTL
+$B2:EE6D 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
 $B2:EE6E FA          PLX
@@ -1302,7 +1302,7 @@ $B2:EE99 F0 03       BEQ $03    [$EE9E]     ;} If [enemy $0FAC] != 0:
 $B2:EE9B A0 F6 ED    LDY #$EDF6             ; Y = $EDF6
 
 $B2:EE9E FA          PLX
-$B2:EE9F 6B          RTL
+$B2:EE9F 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
 $B2:EEA0 FA          PLX
@@ -1449,17 +1449,17 @@ $B2:EF82 6B          RTL
 $B2:EF83 5A          PHY
 $B2:EF84 DA          PHX
 $B2:EF85 AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:EF88 B9 00 00    LDA $0000,y[$B2:EDAE]
-$B2:EF8B 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$B2:EF88 B9 00 00    LDA $0000,y[$B2:EDAE]  ;\
+$B2:EF8B 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = [[Y]]
 $B2:EF8E FA          PLX
 $B2:EF8F 7A          PLY
-$B2:EF90 C8          INY
-$B2:EF91 C8          INY
+$B2:EF90 C8          INY                    ;\
+$B2:EF91 C8          INY                    ;} Y += 2
 $B2:EF92 6B          RTL
 }
 
 
-;;; $EF93:  ;;;
+;;; $EF93: Instruction - queue shot walking space pirate sound effect ;;;
 {
 $B2:EF93 DA          PHX
 $B2:EF94 5A          PHY
@@ -1474,58 +1474,58 @@ $B2:EF9E 6B          RTL
 ;;; $EF9F: Initialisation AI - enemy $F353/$F393/$F3D3/$F413/$F453/$F493 (wall space pirates) ;;;
 {
 $B2:EF9F AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:EFA2 A0 36 ED    LDY #$ED36
-$B2:EFA5 BD B4 0F    LDA $0FB4,x[$7E:0FF4]
-$B2:EFA8 89 01 00    BIT #$0001
-$B2:EFAB F0 03       BEQ $03    [$EFB0]
-$B2:EFAD A0 AC ED    LDY #$EDAC
+$B2:EFA2 A0 36 ED    LDY #$ED36             ; Enemy instruction list pointer = $ED36
+$B2:EFA5 BD B4 0F    LDA $0FB4,x[$7E:0FF4]  ;\
+$B2:EFA8 89 01 00    BIT #$0001             ;} If [enemy parameter 1] & 1 != 0 (facing left):
+$B2:EFAB F0 03       BEQ $03    [$EFB0]     ;/
+$B2:EFAD A0 AC ED    LDY #$EDAC             ; Enemy instruction list pointer = $EDAC
 
 $B2:EFB0 98          TYA
 $B2:EFB1 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:EFB4 A9 BE 00    LDA #$00BE
-$B2:EFB7 9F 00 80 7E STA $7E8000,x[$7E:8040]
-$B2:EFBB A9 42 00    LDA #$0042
-$B2:EFBE 9F 02 80 7E STA $7E8002,x[$7E:8042]
-$B2:EFC2 A9 02 00    LDA #$0002
-$B2:EFC5 9F 04 80 7E STA $7E8004,x[$7E:8044]
-$B2:EFC9 BD B4 0F    LDA $0FB4,x[$7E:0FF4]
-$B2:EFCC 89 00 80    BIT #$8000
-$B2:EFCF D0 24       BNE $24    [$EFF5]
-$B2:EFD1 BF 00 80 7E LDA $7E8000,x[$7E:8040]
-$B2:EFD5 18          CLC
-$B2:EFD6 69 02 00    ADC #$0002
-$B2:EFD9 9F 00 80 7E STA $7E8000,x[$7E:8040]
-$B2:EFDD BF 02 80 7E LDA $7E8002,x[$7E:8042]
-$B2:EFE1 38          SEC
-$B2:EFE2 E9 02 00    SBC #$0002
-$B2:EFE5 9F 02 80 7E STA $7E8002,x[$7E:8042]
-$B2:EFE9 BF 04 80 7E LDA $7E8004,x[$7E:8044]
-$B2:EFED 18          CLC
-$B2:EFEE 69 02 00    ADC #$0002
-$B2:EFF1 9F 04 80 7E STA $7E8004,x[$7E:8044]
+$B2:EFB4 A9 BE 00    LDA #$00BE             ;\
+$B2:EFB7 9F 00 80 7E STA $7E8000,x[$7E:8040];} Enemy $7E:8000 = BEh
+$B2:EFBB A9 42 00    LDA #$0042             ;\
+$B2:EFBE 9F 02 80 7E STA $7E8002,x[$7E:8042];} Enemy $7E:8002 = 42h
+$B2:EFC2 A9 02 00    LDA #$0002             ;\
+$B2:EFC5 9F 04 80 7E STA $7E8004,x[$7E:8044];} Enemy $7E:8004 = 2
+$B2:EFC9 BD B4 0F    LDA $0FB4,x[$7E:0FF4]  ;\
+$B2:EFCC 89 00 80    BIT #$8000             ;} If [enemy parameter 1] & 8000h = 0 (fast jump):
+$B2:EFCF D0 24       BNE $24    [$EFF5]     ;/
+$B2:EFD1 BF 00 80 7E LDA $7E8000,x[$7E:8040];\
+$B2:EFD5 18          CLC                    ;|
+$B2:EFD6 69 02 00    ADC #$0002             ;} Enemy $7E:8000 = C0h
+$B2:EFD9 9F 00 80 7E STA $7E8000,x[$7E:8040];/
+$B2:EFDD BF 02 80 7E LDA $7E8002,x[$7E:8042];\
+$B2:EFE1 38          SEC                    ;|
+$B2:EFE2 E9 02 00    SBC #$0002             ;} Enemy $7E:8002 = 40h
+$B2:EFE5 9F 02 80 7E STA $7E8002,x[$7E:8042];/
+$B2:EFE9 BF 04 80 7E LDA $7E8004,x[$7E:8044];\
+$B2:EFED 18          CLC                    ;|
+$B2:EFEE 69 02 00    ADC #$0002             ;} Enemy $7E:8004 = 4
+$B2:EFF1 9F 04 80 7E STA $7E8004,x[$7E:8044];/
 
-$B2:EFF5 A0 34 F0    LDY #$F034
-$B2:EFF8 BD B4 0F    LDA $0FB4,x[$7E:0FF4]
-$B2:EFFB 89 01 00    BIT #$0001
-$B2:EFFE F0 03       BEQ $03    [$F003]
-$B2:F000 A0 C8 F0    LDY #$F0C8
+$B2:EFF5 A0 34 F0    LDY #$F034             ; Enemy function = $F034
+$B2:EFF8 BD B4 0F    LDA $0FB4,x[$7E:0FF4]  ;\
+$B2:EFFB 89 01 00    BIT #$0001             ;} If [enemy parameter 1] & 1 != 0 (facing left):
+$B2:EFFE F0 03       BEQ $03    [$F003]     ;/
+$B2:F000 A0 C8 F0    LDY #$F0C8             ; Enemy function = $F0C8
 
 $B2:F003 98          TYA
 $B2:F004 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$B2:F007 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F00A 29 0F 00    AND #$000F
-$B2:F00D C9 0B 00    CMP #$000B
-$B2:F010 30 0F       BMI $0F    [$F021]
-$B2:F012 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F015 29 F0 FF    AND #$FFF0
-$B2:F018 18          CLC
-$B2:F019 69 10 00    ADC #$0010
-$B2:F01C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:F01F 80 0B       BRA $0B    [$F02C]
+$B2:F007 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F00A 29 0F 00    AND #$000F             ;|
+$B2:F00D C9 0B 00    CMP #$000B             ;} If [enemy X position] % 10h >= Bh:
+$B2:F010 30 0F       BMI $0F    [$F021]     ;/
+$B2:F012 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F015 29 F0 FF    AND #$FFF0             ;|
+$B2:F018 18          CLC                    ;} Enemy X position = [enemy X position] - [enemy X position] % 10h + 10h
+$B2:F019 69 10 00    ADC #$0010             ;|
+$B2:F01C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$B2:F01F 80 0B       BRA $0B    [$F02C]     ; Return
 
-$B2:F021 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$B2:F024 29 F8 FF    AND #$FFF8
-$B2:F027 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
+$B2:F021 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$B2:F024 29 F8 FF    AND #$FFF8             ;} Enemy X position -= [enemy X position] % 8
+$B2:F027 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
 $B2:F02A 80 00       BRA $00    [$F02C]
 
 $B2:F02C 6B          RTL
@@ -1535,19 +1535,19 @@ $B2:F02C 6B          RTL
 ;;; $F02D: Main AI - enemy $F353/$F393/$F3D3/$F413/$F453/$F493 (wall space pirates) ;;;
 {
 $B2:F02D AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F030 FC A8 0F    JSR ($0FA8,x)[$B2:F0C8]
+$B2:F030 FC A8 0F    JSR ($0FA8,x)[$B2:F0C8]; Execute [enemy function]
 $B2:F033 6B          RTL
 }
 
 
-;;; $F034:  ;;;
+;;; $F034: Wall space pirate function -  ;;;
 {
 $B2:F034 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F037 A9 20 00    LDA #$0020             ;\
 $B2:F03A 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 20h pixel rows of enemy:
 $B2:F03E F0 0D       BEQ $0D    [$F04D]     ;/
 $B2:F040 A9 80 ED    LDA #$ED80             ;\
-$B2:F043 9D 92 0F    STA $0F92,x[$7E:1212]  ;} Enemy instruction list pointer = $ED80
+$B2:F043 9D 92 0F    STA $0F92,x[$7E:1212]  ;} Enemy instruction list pointer = $ED80 (fire laser and wall-jump right)
 $B2:F046 A9 01 00    LDA #$0001             ;\
 $B2:F049 9D 94 0F    STA $0F94,x[$7E:1214]  ;} Enemy instruction timer = 1
 $B2:F04C 60          RTS
@@ -1621,14 +1621,14 @@ $B2:F0C7 60          RTS
 }
 
 
-;;; $F0C8:  ;;;
+;;; $F0C8: Wall space pirate function -  ;;;
 {
 $B2:F0C8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F0CB A9 20 00    LDA #$0020             ;\
 $B2:F0CE 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 20h pixel rows of enemy:
 $B2:F0D2 F0 0D       BEQ $0D    [$F0E1]     ;/
 $B2:F0D4 A9 C0 EC    LDA #$ECC0             ;\
-$B2:F0D7 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $ECC0
+$B2:F0D7 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $ECC0 (fire laser and wall-jump left)
 $B2:F0DA A9 01 00    LDA #$0001             ;\
 $B2:F0DD 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
 $B2:F0E0 60          RTS
