@@ -943,7 +943,7 @@ $91:84A3 9F 02 80 B8 STA $B88002,x          ;} $B8:8000 + [X] + 2 = [newly press
 $91:84A7 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $91:84AA 9F 04 80 B8 STA $B88004,x          ;} $B8:8000 + [X] + 4 = [layer 1 X position]
 $91:84AE AD 15 09    LDA $0915  [$7E:0915]  ;\
-$91:84B1 9F 06 80 B8 STA $B88006,x          ;} $B8:8000 + [X] + 6 = [layer 1 X position]
+$91:84B1 9F 06 80 B8 STA $B88006,x          ;} $B8:8000 + [X] + 6 = [layer 1 Y position]
 $91:84B5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $91:84B8 9F 08 80 B8 STA $B88008,x          ;} $B8:8000 + [X] + 8 = [Samus X position]
 $91:84BC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -1282,7 +1282,7 @@ $91:8776             dx 8427            ; Delete
 }
 
 
-;;; $8778: Demo input objects ;;;
+;;; $8778: Demo input objects - intro ;;;
 {
 ;                        _____________ Initialisation (RTS)
 ;                       |     ________ Pre-instruction
@@ -2550,7 +2550,7 @@ $91:9DAE             dx 001B,0000,0000, ;
 }
 
 
-;;; $9E52: Demo input objects ;;;
+;;; $9E52: Demo input objects - title ;;;
 {
 ;                        _____________ Initialisation (RTS)
 ;                       |     ________ Pre-instruction (ends demo controller input)
