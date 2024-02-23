@@ -1,4 +1,4 @@
-;;; $8000: Item PLM graphics ;;;
+;;; $8000..90FF: Item PLM graphics ;;;
 {
 ;;; $8000: Item PLM graphics - bombs ;;;
 {

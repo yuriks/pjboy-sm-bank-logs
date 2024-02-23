@@ -2040,8 +2040,8 @@ $B2:F1C4             dx EF83,804B,          ; Enemy function = RTS
 
 ;;; $F22E: Instruction list - yyyy ;;;
 {
-$B2:F22E             dx EF83,F6E4,  ; Enemy function = $F6E4
-                        000A,8F56,
+$B2:F22E             dx EF83,F6E4   ; Enemy function = $F6E4
+$B2:F232             dx 000A,8F56,
                         000A,8F60,
                         000A,8F6A,
                         000A,8F60,
@@ -2065,7 +2065,7 @@ $B2:F24C             dx 0005,8E36,
 }
 
 
-;;; $F270: Instruction list - yyyy ;;;
+;;; $F270: Instruction list - flinch - facing left ;;;
 {
 $B2:F270             dx EF83,804B,  ; Enemy function = RTS
                         0010,8F9C,
@@ -2232,11 +2232,16 @@ $B2:F3B2             dx EF83,804B,          ; Enemy function = RTS
 }
 
 
-;;; $F41C: Instruction list - yyyy ;;;
+;;; $F41C: Unused. Instruction list ;;;
 {
-$B2:F41C             dx 0010,8B86,
-                        EF83,F6E4,  ; Enemy function = $F6E4
-                        000A,8F74,
+$B2:F41C             dx 0010,8B86
+}
+
+
+;;; $F420: Instruction list - yyyy ;;;
+{
+$B2:F420             dx EF83,F6E4   ; Enemy function = $F6E4
+$B2:F424             dx 000A,8F74,
                         000A,8F7E,
                         000A,8F88,
                         000A,8F7E,
@@ -2260,7 +2265,7 @@ $B2:F43E             dx 0005,8EC6,
 }
 
 
-;;; $F462: Instruction list - yyyy ;;;
+;;; $F462: Instruction list - flinch - facing right ;;;
 {
 $B2:F462             dx EF83,804B,  ; Enemy function = RTS
                         0010,8FB0,
@@ -2619,15 +2624,15 @@ $B2:F6DC 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $B2:F6DF 60          RTS                    ; Return
 
 ; BRANCH_TOO_FAR
-$B2:F6E0 20 2E F7    JSR $F72E  [$B2:F72E]  ; Execute $F72E
+$B2:F6E0 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch detection
 $B2:F6E3 60          RTS
 }
 
 
 ;;; $F6E4: Ninja space pirate function ;;;
 {
-$B2:F6E4 20 2E F7    JSR $F72E  [$B2:F72E]
-$B2:F6E7 D0 0D       BNE $0D    [$F6F6]
+$B2:F6E4 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch detection
+$B2:F6E7 D0 0D       BNE $0D    [$F6F6]     ; If flinched: return
 $B2:F6E9 20 C6 F7    JSR $F7C6  [$B2:F7C6]
 $B2:F6EC D0 08       BNE $08    [$F6F6]
 $B2:F6EE 20 8D F7    JSR $F78D  [$B2:F78D]
@@ -2640,83 +2645,86 @@ $B2:F6F6 60          RTS
 
 ;;; $F6F7:  ;;;
 {
-$B2:F6F7 BD A4 0F    LDA $0FA4,x[$7E:0FE4]
-$B2:F6FA 29 3F 00    AND #$003F
-$B2:F6FD D0 2E       BNE $2E    [$F72D]
-$B2:F6FF BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F702 DD B0 0F    CMP $0FB0,x[$7E:0FF0]
-$B2:F705 F0 11       BEQ $11    [$F718]
-$B2:F707 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F70A 38          SEC
-$B2:F70B ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$B2:F70E 10 1D       BPL $1D    [$F72D]
-$B2:F710 A9 4A F3    LDA #$F34A
-$B2:F713 9D 92 0F    STA $0F92,x[$7E:0FD2]
+$B2:F6F7 BD A4 0F    LDA $0FA4,x[$7E:0FE4]  ;\
+$B2:F6FA 29 3F 00    AND #$003F             ;} If [enemy frame counter] % 40h != 0: return
+$B2:F6FD D0 2E       BNE $2E    [$F72D]     ;/
+$B2:F6FF BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F702 DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] != [enemy $0FB0]:
+$B2:F705 F0 11       BEQ $11    [$F718]     ;/
+$B2:F707 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F70A 38          SEC                    ;|
+$B2:F70B ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] >= [Samus X position]: return
+$B2:F70E 10 1D       BPL $1D    [$F72D]     ;/
+$B2:F710 A9 4A F3    LDA #$F34A             ;\
+$B2:F713 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F34A
 $B2:F716 80 0F       BRA $0F    [$F727]
 
-$B2:F718 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F71B 38          SEC
-$B2:F71C ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$B2:F71F 30 0C       BMI $0C    [$F72D]
-$B2:F721 A9 5C F1    LDA #$F15C
-$B2:F724 9D 92 0F    STA $0F92,x[$7E:0FD2]
+$B2:F718 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\ Else ([enemy X position] = [enemy $0FB0]):
+$B2:F71B 38          SEC                    ;|
+$B2:F71C ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]: return
+$B2:F71F 30 0C       BMI $0C    [$F72D]     ;/
+$B2:F721 A9 5C F1    LDA #$F15C             ;\
+$B2:F724 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F15C
 
-$B2:F727 A9 01 00    LDA #$0001
-$B2:F72A 9D 94 0F    STA $0F94,x[$7E:0FD4]
+$B2:F727 A9 01 00    LDA #$0001             ;\
+$B2:F72A 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 
 $B2:F72D 60          RTS
 }
 
 
-;;; $F72E:  ;;;
+;;; $F72E: Ninja space pirate flinch detection ;;;
 {
+;; Returns:
+;;     A: 1 if flinched, 0 otherwise
 $B2:F72E DA          PHX
 $B2:F72F AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F732 A0 08 00    LDY #$0008
-
-$B2:F735 B9 18 0C    LDA $0C18,y[$7E:0C20]
-$B2:F738 D0 06       BNE $06    [$F740]
-$B2:F73A 88          DEY
-$B2:F73B 88          DEY
-$B2:F73C 10 F7       BPL $F7    [$F735]
-$B2:F73E 80 48       BRA $48    [$F788]
-
-$B2:F740 B9 64 0B    LDA $0B64,y[$7E:0B64]
-$B2:F743 38          SEC
-$B2:F744 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$B2:F747 10 04       BPL $04    [$F74D]
-$B2:F749 49 FF FF    EOR #$FFFF
-$B2:F74C 1A          INC A
-
-$B2:F74D 38          SEC
-$B2:F74E E9 20 00    SBC #$0020
-$B2:F751 10 35       BPL $35    [$F788]
-$B2:F753 B9 78 0B    LDA $0B78,y[$7E:0B78]
-$B2:F756 38          SEC
-$B2:F757 FD 7E 0F    SBC $0F7E,x[$7E:0FBE]
-$B2:F75A 10 04       BPL $04    [$F760]
-$B2:F75C 49 FF FF    EOR #$FFFF
-$B2:F75F 1A          INC A
-
-$B2:F760 38          SEC
-$B2:F761 E9 20 00    SBC #$0020
-$B2:F764 10 22       BPL $22    [$F788]
-$B2:F766 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F769 38          SEC
-$B2:F76A ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$B2:F76D 85 12       STA $12    [$7E:0012]
-$B2:F76F A0 70 F2    LDY #$F270
-$B2:F772 A5 12       LDA $12    [$7E:0012]
-$B2:F774 10 03       BPL $03    [$F779]
-$B2:F776 A0 62 F4    LDY #$F462
-
-$B2:F779 98          TYA
-$B2:F77A 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:F77D A9 01 00    LDA #$0001
-$B2:F780 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:F783 FA          PLX
-$B2:F784 A9 01 00    LDA #$0001
-$B2:F787 60          RTS
+$B2:F732 A0 08 00    LDY #$0008             ; Y = 8 (projectile index)
+                                            
+; LOOP                                      
+$B2:F735 B9 18 0C    LDA $0C18,y[$7E:0C20]  ;\
+$B2:F738 D0 06       BNE $06    [$F740]     ;} If [projectile type] = 0:
+$B2:F73A 88          DEY                    ;\
+$B2:F73B 88          DEY                    ;} Y -= 2
+$B2:F73C 10 F7       BPL $F7    [$F735]     ; If [Y] >= 0: go to LOOP
+$B2:F73E 80 48       BRA $48    [$F788]     ; Return A = 0
+                                            
+$B2:F740 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
+$B2:F743 38          SEC                    ;|
+$B2:F744 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;|
+$B2:F747 10 04       BPL $04    [$F74D]     ;|
+$B2:F749 49 FF FF    EOR #$FFFF             ;|
+$B2:F74C 1A          INC A                  ;} If |[projectile X position] - [enemy X position]| >= 20h: return A = 0
+                                            ;|
+$B2:F74D 38          SEC                    ;|
+$B2:F74E E9 20 00    SBC #$0020             ;|
+$B2:F751 10 35       BPL $35    [$F788]     ;/
+$B2:F753 B9 78 0B    LDA $0B78,y[$7E:0B78]  ;\
+$B2:F756 38          SEC                    ;|
+$B2:F757 FD 7E 0F    SBC $0F7E,x[$7E:0FBE]  ;|
+$B2:F75A 10 04       BPL $04    [$F760]     ;|
+$B2:F75C 49 FF FF    EOR #$FFFF             ;|
+$B2:F75F 1A          INC A                  ;} If |[projectile Y position] - [enemy Y position]| >= 20h: return A = 0
+                                            ;|
+$B2:F760 38          SEC                    ;|
+$B2:F761 E9 20 00    SBC #$0020             ;|
+$B2:F764 10 22       BPL $22    [$F788]     ;/
+$B2:F766 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F769 38          SEC                    ;|
+$B2:F76A ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus X position]
+$B2:F76D 85 12       STA $12    [$7E:0012]  ;/
+$B2:F76F A0 70 F2    LDY #$F270             ; Enemy instruction list pointer = $F270 (flinch - facing left)
+$B2:F772 A5 12       LDA $12    [$7E:0012]  ;\
+$B2:F774 10 03       BPL $03    [$F779]     ;} If [enemy X position] < [Samus X position]:
+$B2:F776 A0 62 F4    LDY #$F462             ; Enemy instruction list pointer = $F462 (flinch - facing right)
+                                            
+$B2:F779 98          TYA                    
+$B2:F77A 9D 92 0F    STA $0F92,x[$7E:0FD2]  
+$B2:F77D A9 01 00    LDA #$0001             ;\
+$B2:F780 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:F783 FA          PLX                    
+$B2:F784 A9 01 00    LDA #$0001             ;\
+$B2:F787 60          RTS                    ;} Return A = 1
 
 $B2:F788 FA          PLX
 $B2:F789 A9 00 00    LDA #$0000
@@ -2728,29 +2736,29 @@ $B2:F78C 60          RTS
 {
 $B2:F78D DA          PHX
 $B2:F78E AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F791 BD AE 0F    LDA $0FAE,x[$7E:0FEE]
-$B2:F794 38          SEC
-$B2:F795 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$B2:F798 10 04       BPL $04    [$F79E]
-$B2:F79A 49 FF FF    EOR #$FFFF
-$B2:F79D 1A          INC A
-
-$B2:F79E 38          SEC
-$B2:F79F E9 20 00    SBC #$0020
-$B2:F7A2 10 1D       BPL $1D    [$F7C1]
-$B2:F7A4 A0 C4 F1    LDY #$F1C4
-$B2:F7A7 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F7AA DD B0 0F    CMP $0FB0,x[$7E:0FF0]
-$B2:F7AD D0 03       BNE $03    [$F7B2]
-$B2:F7AF A0 B2 F3    LDY #$F3B2
+$B2:F791 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
+$B2:F794 38          SEC                    ;|
+$B2:F795 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$B2:F798 10 04       BPL $04    [$F79E]     ;|
+$B2:F79A 49 FF FF    EOR #$FFFF             ;|
+$B2:F79D 1A          INC A                  ;} If |[enemy $0FAE] - [Samus X position]| >= 20h: return A = 0
+                                            ;|
+$B2:F79E 38          SEC                    ;|
+$B2:F79F E9 20 00    SBC #$0020             ;|
+$B2:F7A2 10 1D       BPL $1D    [$F7C1]     ;/
+$B2:F7A4 A0 C4 F1    LDY #$F1C4             ; Enemy instruction list pointer = $F1C4
+$B2:F7A7 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F7AA DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] = [enemy $0FB0]:
+$B2:F7AD D0 03       BNE $03    [$F7B2]     ;/
+$B2:F7AF A0 B2 F3    LDY #$F3B2             ; Enemy instruction list pointer = $F3B2
 
 $B2:F7B2 98          TYA
 $B2:F7B3 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:F7B6 A9 01 00    LDA #$0001
-$B2:F7B9 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:F7BC FA          PLX
-$B2:F7BD A9 01 00    LDA #$0001
-$B2:F7C0 60          RTS
+$B2:F7B6 A9 01 00    LDA #$0001             ;\
+$B2:F7B9 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:F7BC FA          PLX                    
+$B2:F7BD A9 01 00    LDA #$0001             ;\
+$B2:F7C0 60          RTS                    ;} Return A = 1
 
 $B2:F7C1 FA          PLX
 $B2:F7C2 A9 00 00    LDA #$0000
@@ -2762,42 +2770,42 @@ $B2:F7C5 60          RTS
 {
 $B2:F7C6 DA          PHX
 $B2:F7C7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F7CA AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$B2:F7CD 38          SEC
-$B2:F7CE FD 7A 0F    SBC $0F7A,x[$7E:0FBA]
-$B2:F7D1 10 04       BPL $04    [$F7D7]
-$B2:F7D3 49 FF FF    EOR #$FFFF
-$B2:F7D6 1A          INC A
-
-$B2:F7D7 38          SEC
-$B2:F7D8 E9 28 00    SBC #$0028
-$B2:F7DB 10 35       BPL $35    [$F812]
-$B2:F7DD AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$B2:F7E0 38          SEC
-$B2:F7E1 FD 7E 0F    SBC $0F7E,x[$7E:0FBE]
-$B2:F7E4 10 04       BPL $04    [$F7EA]
-$B2:F7E6 49 FF FF    EOR #$FFFF
-$B2:F7E9 1A          INC A
-
-$B2:F7EA 38          SEC
-$B2:F7EB E9 28 00    SBC #$0028
-$B2:F7EE 10 22       BPL $22    [$F812]
-$B2:F7F0 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F7F3 38          SEC
-$B2:F7F4 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$B2:F7F7 85 12       STA $12    [$7E:0012]
-$B2:F7F9 A0 2E F3    LDY #$F32E
-$B2:F7FC A5 12       LDA $12    [$7E:0012]
-$B2:F7FE 10 03       BPL $03    [$F803]
-$B2:F800 A0 1A F5    LDY #$F51A
+$B2:F7CA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$B2:F7CD 38          SEC                    ;|
+$B2:F7CE FD 7A 0F    SBC $0F7A,x[$7E:0FBA]  ;|
+$B2:F7D1 10 04       BPL $04    [$F7D7]     ;|
+$B2:F7D3 49 FF FF    EOR #$FFFF             ;|
+$B2:F7D6 1A          INC A                  ;} If |[Samus X position] - [enemy X position]| >= 28h: return A = 0
+                                            ;|
+$B2:F7D7 38          SEC                    ;|
+$B2:F7D8 E9 28 00    SBC #$0028             ;|
+$B2:F7DB 10 35       BPL $35    [$F812]     ;/
+$B2:F7DD AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$B2:F7E0 38          SEC                    ;|
+$B2:F7E1 FD 7E 0F    SBC $0F7E,x[$7E:0FBE]  ;|
+$B2:F7E4 10 04       BPL $04    [$F7EA]     ;|
+$B2:F7E6 49 FF FF    EOR #$FFFF             ;|
+$B2:F7E9 1A          INC A                  ;} If |[Samus Y position] - [enemy Y position]| >= 28h: return A = 0
+                                            ;|
+$B2:F7EA 38          SEC                    ;|
+$B2:F7EB E9 28 00    SBC #$0028             ;|
+$B2:F7EE 10 22       BPL $22    [$F812]     ;/
+$B2:F7F0 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F7F3 38          SEC                    ;|
+$B2:F7F4 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus X position]
+$B2:F7F7 85 12       STA $12    [$7E:0012]  ;/
+$B2:F7F9 A0 2E F3    LDY #$F32E             ; Enemy instruction list pointer = $F32E
+$B2:F7FC A5 12       LDA $12    [$7E:0012]  ;\
+$B2:F7FE 10 03       BPL $03    [$F803]     ;} If [enemy X position] < [Samus X position]:
+$B2:F800 A0 1A F5    LDY #$F51A             ; Enemy instruction list pointer = $F51A
 
 $B2:F803 98          TYA
 $B2:F804 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:F807 A9 01 00    LDA #$0001
-$B2:F80A 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:F80D FA          PLX
-$B2:F80E A9 01 00    LDA #$0001
-$B2:F811 60          RTS
+$B2:F807 A9 01 00    LDA #$0001             ;\
+$B2:F80A 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:F80D FA          PLX                    
+$B2:F80E A9 01 00    LDA #$0001             ;\
+$B2:F811 60          RTS                    ;} Return A = 1
 
 $B2:F812 FA          PLX
 $B2:F813 A9 00 00    LDA #$0000
@@ -2832,7 +2840,7 @@ $B2:F84B 60          RTS
 }
 
 
-;;; $F84C:  ;;;
+;;; $F84C: Ninja space pirate function ;;;
 {
 $B2:F84C BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $B2:F850 29 00 FF    AND #$FF00
@@ -2891,7 +2899,7 @@ $B2:F8C4 60          RTS
 }
 
 
-;;; $F8C5:  ;;;
+;;; $F8C5: Ninja space pirate function ;;;
 {
 $B2:F8C5 BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $B2:F8C9 29 00 FF    AND #$FF00
@@ -2925,8 +2933,8 @@ $B2:F908 60          RTS
 
 ;;; $F909: Ninja space pirate function ;;;
 {
-$B2:F909 20 2E F7    JSR $F72E  [$B2:F72E]
-$B2:F90C D0 08       BNE $08    [$F916]
+$B2:F909 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch detection
+$B2:F90C D0 08       BNE $08    [$F916]     ; If flinched: return
 $B2:F90E 20 C6 F7    JSR $F7C6  [$B2:F7C6]
 $B2:F911 D0 03       BNE $03    [$F916]
 $B2:F913 20 17 F9    JSR $F917  [$B2:F917]
@@ -3606,7 +3614,7 @@ $B2:FE4A 60          RTS
 
 ;;; $FE4B: Walking space pirate flinch detection ;;;
 {
-; Return value is ignored by caller
+; Return value is ignored by caller. Probably left over from $F72E copy+paste
 $B2:FE4B DA          PHX
 $B2:FE4C AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:FE4F A0 08 00    LDY #$0008             ; Y = 8 (projectile index)
