@@ -212,7 +212,7 @@ $B2:888F 99 04 0C    STA $0C04,y[$7E:0C04]
 $B2:8892 84 14       STY $14    [$7E:0014]  ; $14 = [Y] (projectile index)
 $B2:8894 22 00 BE 90 JSL $90BE00[$90:BE00]  ; Projectile reflection
 $B2:8898 A9 66 00    LDA #$0066             ;\
-$B2:889B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 66h, sound library 2, max queued sounds allowed = 6 (shot walking space pirate)
+$B2:889B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
 
 $B2:889F 6B          RTL
 }
@@ -1380,7 +1380,7 @@ $B2:ECC0             dx EF83,F0E3,  ; Enemy function = RTS
                         813A,0020,  ; Wait 20h frames
                         EEFD,       ; Prepare wall-jump to left
                         EF83,F0E4,  ; Enemy function = $F0E4 (wall-jumping left)
-                        EF93,       ; Queue shot walking space pirate sound effect
+                        EF93,       ; Queue space pirate attack sound effect
                         000A,89B0,
                         0001,89BA,
                         812F        ; Sleep
@@ -1451,7 +1451,7 @@ $B2:ED80             dx EF83,F04F,  ; Enemy function = RTS
                         813A,0020,  ; Wait 20h frames
                         EED4,       ; Prepare wall-jump to right
                         EF83,F050,  ; Enemy function = $F050 (wall-jumping right)
-                        EF93,       ; Queue shot walking space pirate sound effect
+                        EF93,       ; Queue space pirate attack sound effect
                         000A,891E,
                         0001,8928,
                         812F        ; Sleep
@@ -1729,12 +1729,12 @@ $B2:EF92 6B          RTL
 }
 
 
-;;; $EF93: Instruction - queue shot walking space pirate sound effect ;;;
+;;; $EF93: Instruction - queue space pirate attack sound effect ;;;
 {
 $B2:EF93 DA          PHX
 $B2:EF94 5A          PHY
 $B2:EF95 A9 66 00    LDA #$0066             ;\
-$B2:EF98 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 66h, sound library 2, max queued sounds allowed = 6 (shot walking space pirate)
+$B2:EF98 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
 $B2:EF9C 7A          PLY
 $B2:EF9D FA          PLX
 $B2:EF9E 6B          RTL
@@ -1963,7 +1963,7 @@ $B2:F147 18          CLC                    ;} Enemy X position = [enemy X posit
 $B2:F148 69 10 00    ADC #$0010             ;|
 $B2:F14B 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
 $B2:F14E 80 0B       BRA $0B    [$F15B]     ; Return
-                                            
+
 $B2:F150 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:F153 29 F8 FF    AND #$FFF8             ;} Enemy X position -= [enemy X position] % 8
 $B2:F156 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
@@ -1978,7 +1978,7 @@ $B2:F15B 60          RTS
 {
 ;;; $F15C..F535: Instruction lists ;;;
 {
-;;; $F15C: Instruction list - yyyy ;;;
+;;; $F15C: Instruction list - projectile claw attack left ;;;
 {
 $B2:F15C             dx EF83,804B,          ; Enemy function = RTS
                         0005,8A54,
@@ -1987,8 +1987,8 @@ $B2:F15C             dx EF83,804B,          ; Enemy function = RTS
                         0005,8A8A,
                         0005,8A9C,
                         0002,8AAE,
-                        F564,0000,FFE0,FFF8,; ???
-                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F564,0000,FFE0,FFF8,; Spawn space pirate claw enemy projectile thrown left with offset (-20h, -8)
+                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0002,8AC0,
                         0002,8AD2,
                         0002,8AE4,
@@ -1998,16 +1998,16 @@ $B2:F15C             dx EF83,804B,          ; Enemy function = RTS
                         0005,8A8A,
                         0005,8A9C,
                         0002,8AAE,
-                        F564,0000,FFF0,0008,; ???
-                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F564,0000,FFF0,0008,; Spawn space pirate claw enemy projectile thrown left with offset (-10h, 8)
+                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0002,8AC0,
                         0002,8AD2,
                         0002,8AE4,
-                        80ED,F22E           ; Go to $F22E
+                        80ED,F22E           ; Go to $F22E (active - facing left)
 }
 
 
-;;; $F1C4: Instruction list - yyyy ;;;
+;;; $F1C4: Instruction list - spin jump left ;;;
 {
 $B2:F1C4             dx EF83,804B,          ; Enemy function = RTS
                         0005,8A54,
@@ -2016,16 +2016,16 @@ $B2:F1C4             dx EF83,804B,          ; Enemy function = RTS
                         0005,8A8A,
                         0005,8A9C,
                         0002,8AAE,
-                        F564,0000,FFE0,FFF8,; ???
-                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F564,0000,FFE0,FFF8,; Spawn space pirate claw enemy projectile thrown left with offset (-20h, -8)
+                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0002,8AC0,
                         0002,8AD2,
                         0002,8AE4,
                         F5D6,               ; Enemy $7E:7800 = 0
                         EF83,804B,          ; Enemy function = RTS
                         0008,8A54,
-                        EF83,F817,          ; Enemy function = $F817
-                        F546,003F,          ; Queue sound 3Fh, sound library 2, max queued sounds allowed = 6
+                        EF83,F817           ; Enemy function = $F817 (spin jump left - rising)
+$B2:F206             dx F546,003F,          ; Queue sound 3Fh, sound library 2, max queued sounds allowed = 6 (ninja pirate spin jump)
                         0001,8D96,
                         0001,8DA0,
                         0001,8DAA,
@@ -2038,20 +2038,20 @@ $B2:F1C4             dx EF83,804B,          ; Enemy function = RTS
 }
 
 
-;;; $F22E: Instruction list - yyyy ;;;
+;;; $F22E: Instruction list - active - facing left ;;;
 {
-$B2:F22E             dx EF83,F6E4   ; Enemy function = $F6E4
+$B2:F22E             dx EF83,F6E4   ; Enemy function = $F6E4 (active)
 $B2:F232             dx 000A,8F56,
                         000A,8F60,
                         000A,8F6A,
                         000A,8F60,
                         EF83,804B,  ; Enemy function = RTS
-                        F590,       ; ???
+                        F590,       ; Set enemy $0FAC
                         80ED,F232   ; Go to $F232
 }
 
 
-;;; $F24C: Instruction list - yyyy ;;;
+;;; $F24C: Unused. Instruction list - walking left ;;;
 {
 $B2:F24C             dx 0005,8E36,
                         0005,8E48,
@@ -2069,43 +2069,38 @@ $B2:F24C             dx 0005,8E36,
 {
 $B2:F270             dx EF83,804B,  ; Enemy function = RTS
                         0010,8F9C,
-                        80ED,F22E   ; Go to $F22E
+                        80ED,F22E   ; Go to $F22E (active - facing left)
 }
 
 
-;;; $F27C: Instruction list - yyyy ;;;
+;;; $F27C: Instruction list - divekick left - jump ;;;
 {
 $B2:F27C             dx EF83,804B,  ; Enemy function = RTS
                         0008,90FE,
-                        F969,       ; ???
-                        EF83,F985,  ; Enemy function = $F985
-                        F536,0200,  ; Enemy palette index = 200h
+                        F969,       ; Set left divekick jump initial Y speed
+                        EF83,F985   ; Enemy function = $F985 (divekick left - jump)
+$B2:F28A             dx F536,0200,  ; Enemy palette index = 200h (palette 1)
                         0004,900A,
-                        F536,0E00,  ; Enemy palette index = E00h
+                        F536,0E00,  ; Enemy palette index = E00h (palette 7)
                         0004,900A,
-                        80ED,F28A   ; Go to $F28A
+                        80ED,F28A,  ; Go to $F28A
+                        812F        ; Sleep
 }
 
 
-;;; $F29E: Instruction list - yyyy ;;;
+;;; $F2A0: Instruction list - divekick left - divekick ;;;
 {
-$B2:F29E             dx 812F        ; Sleep
-}
-
-
-;;; $F2A0: Instruction list - yyyy ;;;
-{
-$B2:F2A0             dx F536,0E00,  ; Enemy palette index = E00h
-                        EF83,F9C1,  ; Enemy function = $F9C1
-                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+$B2:F2A0             dx F536,0E00,  ; Enemy palette index = E00h (palette 7)
+                        EF83,F9C1,  ; Enemy function = $F9C1 (divekick left - divekick)
+                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0001,9014,
                         812F        ; Sleep
 }
 
 
-;;; $F2B2: Instruction list - yyyy ;;;
+;;; $F2B2: Instruction list - divekick left - walk to left post ;;;
 {
-$B2:F2B2             dx EF83,FA15,  ; Enemy function = $FA15
+$B2:F2B2             dx EF83,FA15,  ; Enemy function = $FA15 (divekick left - walk to left post)
                         0005,8E36,
                         0005,8E48,
                         0005,8E5A,
@@ -2118,34 +2113,29 @@ $B2:F2B2             dx EF83,FA15,  ; Enemy function = $FA15
 }
 
 
-;;; $F2DA: Instruction list - yyyy ;;;
+;;; $F2DA: Instruction list - initial - facing left ;;;
 {
-$B2:F2DA             dx EF83,F6A9,  ; Enemy function = $F6A9
+$B2:F2DA             dx EF83,F6A9,  ; Enemy function = $F6A9 (initial)
                         0020,93EA,
                         000A,9404,
                         0020,9416,
                         000A,9404,
                         0020,93EA,
-                        80ED,F2DE   ; Go to $F2DE
+                        80ED,F2DE,  ; Go to $F2DE
+                        812F        ; Sleep
 }
 
 
-;;; $F2F6: Instruction list - yyyy ;;;
+;;; $F2F8: Instruction list - land - facing left ;;;
 {
-$B2:F2F6             dx 812F        ; Sleep
-}
-
-
-;;; $F2F8: Instruction list - yyyy ;;;
-{
-$B2:F2F8             dx F536,0200,  ; Enemy palette index = 200h
+$B2:F2F8             dx F536,0200,  ; Enemy palette index = 200h (palette 1)
                         EF83,804B,  ; Enemy function = RTS
                         0004,9404,
                         0008,93EA,
                         0004,9476,
                         0004,944A,
-                        EF83,F909,  ; Enemy function = $F909
-                        000A,8F74,
+                        EF83,F909   ; Enemy function = $F909 (ready to divekick)
+$B2:F314             dx 000A,8F74,
                         000A,8F7E,
                         000A,8F88,
                         000A,8F7E,
@@ -2153,26 +2143,26 @@ $B2:F2F8             dx F536,0200,  ; Enemy palette index = 200h
 }
 
 
-;;; $F328: Instruction list - yyyy ;;;
+;;; $F328: Unused. Instruction list - facing forward ;;;
 {
 $B2:F328             dx 0008,9476,
                         812F        ; Sleep
 }
 
 
-;;; $F32E: Instruction list - yyyy ;;;
+;;; $F32E: Instruction list - standing kick - facing left ;;;
 {
 $B2:F32E             dx EF83,804B,  ; Enemy function = RTS
                         0004,9032,
-                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0004,9372,
                         0020,903C,
                         0004,9372,
-                        80ED,F22E   ; Go to $F22E
+                        80ED,F22E   ; Go to $F22E (active - facing left)
 }
 
 
-;;; $F34A: Instruction list - yyyy ;;;
+;;; $F34A: Instruction list - projectile claw attack right ;;;
 {
 $B2:F34A             dx EF83,804B,          ; Enemy function = RTS
                         0005,8B86,
@@ -2181,8 +2171,8 @@ $B2:F34A             dx EF83,804B,          ; Enemy function = RTS
                         0005,8BBC,
                         0005,8BCE,
                         0002,8BE0,
-                        F564,0001,0020,FFF8,; ???
-                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F564,0001,0020,FFF8,; Spawn space pirate claw enemy projectile thrown right with offset (20h, -8)
+                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0002,8B98,
                         0002,8BF2,
                         0002,8C16,
@@ -2192,16 +2182,16 @@ $B2:F34A             dx EF83,804B,          ; Enemy function = RTS
                         0005,8BBC,
                         0005,8BCE,
                         0002,8BE0,
-                        F564,0001,0010,0008,; ???
+                        F564,0001,0010,0008,; Spawn space pirate claw enemy projectile thrown right with offset (10h, 8)
                         0002,8B98,
-                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0002,8BF2,
                         0002,8C16,
-                        80ED,F420           ; Go to $F420
+                        80ED,F420           ; Go to $F420 (active - facing right)
 }
 
 
-;;; $F3B2: Instruction list - yyyy ;;;
+;;; $F3B2: Instruction list - spin jump right ;;;
 {
 $B2:F3B2             dx EF83,804B,          ; Enemy function = RTS
                         0005,8B86,
@@ -2210,16 +2200,16 @@ $B2:F3B2             dx EF83,804B,          ; Enemy function = RTS
                         0005,8BBC,
                         0005,8BCE,
                         0002,8BE0,
-                        F564,0001,0020,FFF8,; ???
-                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F564,0001,0020,FFF8,; Spawn space pirate claw enemy projectile thrown right with offset (20h, -8)
+                        F546,0066,          ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0002,8B98,
                         0002,8BF2,
                         0002,8C16,
                         F5D6,               ; Enemy $7E:7800 = 0
                         EF83,804B,          ; Enemy function = RTS
                         0008,8B86,
-                        EF83,F890,          ; Enemy function = $F890
-                        F546,003F,          ; Queue sound 3Fh, sound library 2, max queued sounds allowed = 6
+                        EF83,F890           ; Enemy function = $F890 (spin jump right - rising)
+$B2:F3F4             dx F546,003F,          ; Queue sound 3Fh, sound library 2, max queued sounds allowed = 6 (ninja pirate spin jump)
                         0001,8DE6,
                         0001,8DF0,
                         0001,8DFA,
@@ -2238,20 +2228,20 @@ $B2:F41C             dx 0010,8B86
 }
 
 
-;;; $F420: Instruction list - yyyy ;;;
+;;; $F420: Instruction list - active - facing right ;;;
 {
-$B2:F420             dx EF83,F6E4   ; Enemy function = $F6E4
+$B2:F420             dx EF83,F6E4   ; Enemy function = $F6E4 (active)
 $B2:F424             dx 000A,8F74,
                         000A,8F7E,
                         000A,8F88,
                         000A,8F7E,
                         EF83,804B,  ; Enemy function = RTS
-                        F590,       ; ???
+                        F590,       ; Set enemy $0FAC
                         80ED,F424   ; Go to $F424
 }
 
 
-;;; $F43E: Instruction list - yyyy ;;;
+;;; $F43E: Unused. Instruction list - walking right ;;;
 {
 $B2:F43E             dx 0005,8EC6,
                         0005,8ED8,
@@ -2269,43 +2259,38 @@ $B2:F43E             dx 0005,8EC6,
 {
 $B2:F462             dx EF83,804B,  ; Enemy function = RTS
                         0010,8FB0,
-                        80ED,F420   ; Go to $F420
+                        80ED,F420   ; Go to $F420 (active - facing right)
 }
 
 
-;;; $F46E: Instruction list - yyyy ;;;
+;;; $F46E: Instruction list - divekick right - jump ;;;
 {
 $B2:F46E             dx EF83,804B,  ; Enemy function = RTS
                         0008,9280,
-                        FA3D,       ; ???
-                        EF83,FA59,  ; Enemy function = $FA59
-                        F536,0200,  ; Enemy palette index = 200h
+                        FA3D,       ; Set right divekick jump initial Y speed
+                        EF83,FA59   ; Enemy function = $FA59 (divekick right - jump)
+$B2:F47C             dx F536,0200,  ; Enemy palette index = 200h (palette 1)
                         0004,901E,
-                        F536,0E00,  ; Enemy palette index = E00h
+                        F536,0E00,  ; Enemy palette index = E00h (palette 7)
                         0004,901E,
-                        80ED,F47C   ; Go to $F47C
+                        80ED,F47C,  ; Go to $F47C
+                        812F        ; Sleep
 }
 
 
-;;; $F490: Instruction list - yyyy ;;;
+;;; $F492: Instruction list - divekick right - divekick ;;;
 {
-$B2:F490             dx 812F        ; Sleep
-}
-
-
-;;; $F492: Instruction list - yyyy ;;;
-{
-$B2:F492             dx F536,0E00,  ; Enemy palette index = E00h
-                        EF83,FA95,  ; Enemy function = $FA95
-                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+$B2:F492             dx F536,0E00,  ; Enemy palette index = E00h (palette 7)
+                        EF83,FA95,  ; Enemy function = $FA95 (divekick right - divekick)
+                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0001,9028,
                         812F        ; Sleep
 }
 
 
-;;; $F4A4: Instruction list - yyyy ;;;
+;;; $F4A4: Instruction list - divekick right - walk to right post ;;;
 {
-$B2:F4A4             dx EF83,FAE9,  ; Enemy function = $FAE9
+$B2:F4A4             dx EF83,FAE9,  ; Enemy function = $FAE9 (divekick right - walk to right post)
                         0005,8EC6,
                         0005,8ED8,
                         0005,8EEA,
@@ -2318,34 +2303,29 @@ $B2:F4A4             dx EF83,FAE9,  ; Enemy function = $FAE9
 }
 
 
-;;; $F4CC: Instruction list - yyyy ;;;
+;;; $F4CC: Instruction list - initial - facing right ;;;
 {
-$B2:F4CC             dx EF83,F6A9,  ; Enemy function = $F6A9
+$B2:F4CC             dx EF83,F6A9,  ; Enemy function = $F6A9 (initial)
                         0020,9430,
                         000A,944A,
                         0020,945C,
                         000A,944A,
                         0020,9430,
-                        80ED,F4D0   ; Go to $F4D0
+                        80ED,F4D0,  ; Go to $F4D0
+                        812F        ; Sleep
 }
 
 
-;;; $F4E8: Instruction list - yyyy ;;;
+;;; $F4EA: Instruction list - land - facing right ;;;
 {
-$B2:F4E8             dx 812F        ; Sleep
-}
-
-
-;;; $F4EA: Instruction list - yyyy ;;;
-{
-$B2:F4EA             dx F536,0200,  ; Enemy palette index = 200h
+$B2:F4EA             dx F536,0200,  ; Enemy palette index = 200h (palette 1)
                         EF83,804B,  ; Enemy function = RTS
                         0004,944A,
                         0008,9430,
                         0004,9476,
                         0004,9404,
-                        EF83,F909,  ; Enemy function = $F909
-                        000A,8F56,
+                        EF83,F909   ; Enemy function = $F909 (ready to divekick)
+$B2:F506             dx 000A,8F56,
                         000A,8F60,
                         000A,8F6A,
                         000A,8F60,
@@ -2353,15 +2333,15 @@ $B2:F4EA             dx F536,0200,  ; Enemy palette index = 200h
 }
 
 
-;;; $F51A: Instruction list - yyyy ;;;
+;;; $F51A: Instruction list - standing kick - facing right ;;;
 {
 $B2:F51A             dx EF83,804B,  ; Enemy function = RTS
                         0004,9046,
-                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6
+                        F546,0066,  ; Queue sound 66h, sound library 2, max queued sounds allowed = 6 (space pirate attack)
                         0004,937C,
                         0020,9050,
                         0004,937C,
-                        80ED,F420   ; Go to $F420
+                        80ED,F420   ; Go to $F420 (active - facing right)
 }
 }
 
@@ -2397,7 +2377,7 @@ $B2:F553 6B          RTL
 }
 
 
-;;; $F554: Instruction - go to [enemy $0FAC] ;;;
+;;; $F554: Unused. Instruction - go to [enemy $0FAC] ;;;
 {
 $B2:F554 DA          PHX
 $B2:F555 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2410,20 +2390,20 @@ $B2:F563 6B          RTL
 }
 
 
-;;; $F564: Instruction -  ;;;
+;;; $F564: Instruction - spawn space pirate claw enemy projectile with throw direction [[Y]] and spawn offset ([[Y] + 2], [[Y] + 4]) ;;;
 {
 $B2:F564 DA          PHX
 $B2:F565 5A          PHY
 $B2:F566 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F569 B9 02 00    LDA $0002,y[$B2:F36A]  ;\
-$B2:F56C 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y] + 2]
+$B2:F56C 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y] + 2] (spawn X offset)
 $B2:F56E B9 04 00    LDA $0004,y[$B2:F36C]  ;\
-$B2:F571 85 18       STA $18    [$7E:0018]  ;} $18 = [[Y] + 4]
+$B2:F571 85 18       STA $18    [$7E:0018]  ;} $18 = [[Y] + 4] (spawn Y offset)
 $B2:F573 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:F576 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $B2:F578 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
 $B2:F57B 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
-$B2:F57D B9 00 00    LDA $0000,y[$B2:F368]  ; A = [[Y]]
+$B2:F57D B9 00 00    LDA $0000,y[$B2:F368]  ; A = [[Y]] (throw direction, 0 = left)
 $B2:F580 A0 89 A1    LDY #$A189             ;\
 $B2:F583 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn space pirate claw enemy projectile
 $B2:F587 7A          PLY
@@ -2438,7 +2418,7 @@ $B2:F58F 6B          RTL
 }
 
 
-;;; $F590: Instruction -  ;;;
+;;; $F590: Instruction - set enemy $0FAC - active ;;;
 {
 $B2:F590 DA          PHX
 $B2:F591 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2448,10 +2428,10 @@ $B2:F598 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus
 $B2:F59B 85 12       STA $12    [$7E:0012]  ;/
 $B2:F59D A9 01 00    LDA #$0001             ;\
 $B2:F5A0 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
-$B2:F5A3 A0 2E F2    LDY #$F22E             ; Enemy $0FAC = $F22E
+$B2:F5A3 A0 2E F2    LDY #$F22E             ; Enemy $0FAC = $F22E (active - facing left) (never read)
 $B2:F5A6 A5 12       LDA $12    [$7E:0012]  ;\
 $B2:F5A8 10 03       BPL $03    [$F5AD]     ;} If [enemy X position] < [Samus X position]:
-$B2:F5AA A0 20 F4    LDY #$F420             ; Enemy $0FAC = $F420
+$B2:F5AA A0 20 F4    LDY #$F420             ; Enemy $0FAC = $F420 (active - facing right) (never read)
 
 $B2:F5AD 98          TYA
 $B2:F5AE 9D AC 0F    STA $0FAC,x[$7E:0FEC]
@@ -2460,7 +2440,7 @@ $B2:F5B2 6B          RTL
 }
 
 
-;;; $F5B3: Unused. Instruction -  ;;;
+;;; $F5B3: Unused. Instruction - set enemy $0FAC - standing kick ;;;
 {
 $B2:F5B3 DA          PHX
 $B2:F5B4 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2470,10 +2450,10 @@ $B2:F5BB ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus
 $B2:F5BE 85 12       STA $12    [$7E:0012]  ;/
 $B2:F5C0 A9 01 00    LDA #$0001             ;\
 $B2:F5C3 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$B2:F5C6 A0 2E F3    LDY #$F32E             ; Enemy $0FAC = $F32E
+$B2:F5C6 A0 2E F3    LDY #$F32E             ; Enemy $0FAC = $F32E (standing kick - facing left) (never read)
 $B2:F5C9 A5 12       LDA $12    [$7E:0012]  ;\
 $B2:F5CB 10 03       BPL $03    [$F5D0]     ;} If [enemy X position] < [Samus X position]:
-$B2:F5CD A0 1A F5    LDY #$F51A             ; Enemy $0FAC = $F51A
+$B2:F5CD A0 1A F5    LDY #$F51A             ; Enemy $0FAC = $F51A (standing kick - facing right) (never read)
 
 $B2:F5D0 98          TYA
 $B2:F5D1 9D AC 0F    STA $0FAC,x
@@ -2494,15 +2474,15 @@ $B2:F5DD 6B          RTL
 ;;; $F5DE: Initialisation AI - enemy $F4D3/$F513/$F553/$F593/$F5D3/$F613 (ninja space pirates) ;;;
 {
 $B2:F5DE AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F5E1 A0 DA F2    LDY #$F2DA             ; Enemy instruction list pointer = $F2DA
+$B2:F5E1 A0 DA F2    LDY #$F2DA             ; Enemy instruction list pointer = $F2DA (initial - facing left)
 $B2:F5E4 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $B2:F5E7 89 01 00    BIT #$0001             ;} If [enemy parameter 1] & 1 != 0:
 $B2:F5EA F0 03       BEQ $03    [$F5EF]     ;/
-$B2:F5EC A0 CC F4    LDY #$F4CC             ; Enemy instruction list pointer = $F4CC
+$B2:F5EC A0 CC F4    LDY #$F4CC             ; Enemy instruction list pointer = $F4CC (initial - facing right)
 
 $B2:F5EF 98          TYA
 $B2:F5F0 9D 92 0F    STA $0F92,x[$7E:0F92]
-$B2:F5F3 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy $0FAC = [enemy instruction list pointer]
+$B2:F5F3 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy $0FAC = [enemy instruction list pointer] (never read)
 $B2:F5F6 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $B2:F5F9 89 01 00    BIT #$0001             ;} If [enemy parameter 1] & 1 != 0:
 $B2:F5FC F0 0F       BEQ $0F    [$F60D]     ;/
@@ -2516,7 +2496,7 @@ $B2:F60B 80 0D       BRA $0D    [$F61A]
 $B2:F60D BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\ Else ([enemy parameter 1] & 1 = 0):
 $B2:F610 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy $0FB2 = [enemy X position]
 $B2:F613 38          SEC                    ;\
-$B2:F614 FD B6 0F    SBC $0FB6,x[$7E:0FF6]  ;} Enemy $0FB2 = [enemy X position] - [enemy parameter 2]
+$B2:F614 FD B6 0F    SBC $0FB6,x[$7E:0FF6]  ;} Enemy $0FB0 = [enemy X position] - [enemy parameter 2]
 $B2:F617 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;/
 
 $B2:F61A BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
@@ -2528,15 +2508,15 @@ $B2:F624 18          CLC                    ;\
 $B2:F625 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;} Enemy $0FAE = midpoint([enemy $0FB0], [enemy $0FB2])
 $B2:F628 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
 $B2:F62B BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ; >_<;
-$B2:F62E 64 12       STZ $12    [$7E:0012]  ; $12 = 0
-$B2:F630 64 16       STZ $16    [$7E:0016]  ;\
+$B2:F62E 64 12       STZ $12    [$7E:0012]  ;\
+$B2:F630 64 16       STZ $16    [$7E:0016]  ;|
 $B2:F632 A5 14       LDA $14    [$7E:0014]  ;|
 $B2:F634 29 FF 00    AND #$00FF             ;|
 $B2:F637 EB          XBA                    ;|
 $B2:F638 85 14       STA $14    [$7E:0014]  ;|
                                             ;|
-$B2:F63A A9 20 00    LDA #$0020             ;|
-$B2:F63D 18          CLC                    ;} $16 = ceil(sqrt([$14] * 2 / 0.20h)) (time to travel distance [$14] with acceleration 0.20h)
+$B2:F63A A9 20 00    LDA #$0020             ;} $12 = ceil(sqrt([$14] * 2 / 0.20h)) (time to travel distance [$14] with acceleration 0.20h)
+$B2:F63D 18          CLC                    ;} $16 = [$12] * ([$12] + 1) / 2 * 20h (distance travelled with acceleration 20h after [$14] frames)
 $B2:F63E 65 12       ADC $12    [$7E:0012]  ;|
 $B2:F640 85 12       STA $12    [$7E:0012]  ;|
 $B2:F642 18          CLC                    ;|
@@ -2545,7 +2525,7 @@ $B2:F645 85 16       STA $16    [$7E:0016]  ;|
 $B2:F647 C5 14       CMP $14    [$7E:0014]  ;|
 $B2:F649 30 EF       BMI $EF    [$F63A]     ;/
 $B2:F64B A5 12       LDA $12    [$7E:0012]  ;\
-$B2:F64D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = [$12]
+$B2:F64D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = [$12] (never read)
 $B2:F650 A5 16       LDA $16    [$7E:0016]  ;\
 $B2:F652 29 00 FF    AND #$FF00             ;|
 $B2:F655 EB          XBA                    ;} $18 = [$16] / 100h
@@ -2594,7 +2574,7 @@ $B2:F6A8 6B          RTL
 }
 
 
-;;; $F6A9: Ninja space pirate function ;;;
+;;; $F6A9: Ninja space pirate function - initial ;;;
 {
 $B2:F6A9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F6AC BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
@@ -2611,39 +2591,39 @@ $B2:F6BF BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $B2:F6C2 38          SEC                    ;|
 $B2:F6C3 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus X position]
 $B2:F6C6 85 12       STA $12    [$7E:0012]  ;/
-$B2:F6C8 A0 2E F2    LDY #$F22E             ; Enemy instruction list pointer = $F22E
+$B2:F6C8 A0 2E F2    LDY #$F22E             ; Enemy instruction list pointer = $F22E (active - facing left)
 $B2:F6CB A5 12       LDA $12    [$7E:0012]  ;\
 $B2:F6CD 10 03       BPL $03    [$F6D2]     ;} If [enemy X position] < [Samus X position]:
-$B2:F6CF A0 20 F4    LDY #$F420             ; Enemy instruction list pointer = $F420
+$B2:F6CF A0 20 F4    LDY #$F420             ; Enemy instruction list pointer = $F420 (active - facing right)
 
 $B2:F6D2 98          TYA
 $B2:F6D3 9D 92 0F    STA $0F92,x[$7E:0F92]
-$B2:F6D6 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy $0FAC = [enemy instruction list pointer]
+$B2:F6D6 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy $0FAC = [enemy instruction list pointer] (never read)
 $B2:F6D9 A9 01 00    LDA #$0001             ;\
 $B2:F6DC 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $B2:F6DF 60          RTS                    ; Return
 
 ; BRANCH_TOO_FAR
-$B2:F6E0 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch detection
+$B2:F6E0 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch trigger
 $B2:F6E3 60          RTS
 }
 
 
-;;; $F6E4: Ninja space pirate function ;;;
+;;; $F6E4: Ninja space pirate function - active ;;;
 {
-$B2:F6E4 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch detection
-$B2:F6E7 D0 0D       BNE $0D    [$F6F6]     ; If flinched: return
-$B2:F6E9 20 C6 F7    JSR $F7C6  [$B2:F7C6]
-$B2:F6EC D0 08       BNE $08    [$F6F6]
-$B2:F6EE 20 8D F7    JSR $F78D  [$B2:F78D]
-$B2:F6F1 D0 03       BNE $03    [$F6F6]
-$B2:F6F3 20 F7 F6    JSR $F6F7  [$B2:F6F7]
+$B2:F6E4 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch trigger
+$B2:F6E7 D0 0D       BNE $0D    [$F6F6]     ; If flinch triggered: return
+$B2:F6E9 20 C6 F7    JSR $F7C6  [$B2:F7C6]  ; Ninja space pirate standing kick trigger
+$B2:F6EC D0 08       BNE $08    [$F6F6]     ; If kick triggered: return
+$B2:F6EE 20 8D F7    JSR $F78D  [$B2:F78D]  ; Ninja space pirate spin jump trigger
+$B2:F6F1 D0 03       BNE $03    [$F6F6]     ; If spin jump triggered: return
+$B2:F6F3 20 F7 F6    JSR $F6F7  [$B2:F6F7]  ; Ninja space pirate projectile claw attack trigger
 
 $B2:F6F6 60          RTS
 }
 
 
-;;; $F6F7:  ;;;
+;;; $F6F7: Ninja space pirate projectile claw attack trigger ;;;
 {
 $B2:F6F7 BD A4 0F    LDA $0FA4,x[$7E:0FE4]  ;\
 $B2:F6FA 29 3F 00    AND #$003F             ;} If [enemy frame counter] % 40h != 0: return
@@ -2656,7 +2636,7 @@ $B2:F70A 38          SEC                    ;|
 $B2:F70B ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] >= [Samus X position]: return
 $B2:F70E 10 1D       BPL $1D    [$F72D]     ;/
 $B2:F710 A9 4A F3    LDA #$F34A             ;\
-$B2:F713 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F34A
+$B2:F713 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F34A (projectile claw attack right)
 $B2:F716 80 0F       BRA $0F    [$F727]
 
 $B2:F718 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\ Else ([enemy X position] = [enemy $0FB0]):
@@ -2664,7 +2644,7 @@ $B2:F71B 38          SEC                    ;|
 $B2:F71C ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]: return
 $B2:F71F 30 0C       BMI $0C    [$F72D]     ;/
 $B2:F721 A9 5C F1    LDA #$F15C             ;\
-$B2:F724 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F15C
+$B2:F724 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F15C (projectile claw attack left)
 
 $B2:F727 A9 01 00    LDA #$0001             ;\
 $B2:F72A 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
@@ -2673,22 +2653,22 @@ $B2:F72D 60          RTS
 }
 
 
-;;; $F72E: Ninja space pirate flinch detection ;;;
+;;; $F72E: Ninja space pirate flinch trigger ;;;
 {
 ;; Returns:
-;;     A: 1 if flinched, 0 otherwise
+;;     A: 1 if flinch triggered, 0 otherwise
 $B2:F72E DA          PHX
 $B2:F72F AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F732 A0 08 00    LDY #$0008             ; Y = 8 (projectile index)
-                                            
-; LOOP                                      
+
+; LOOP
 $B2:F735 B9 18 0C    LDA $0C18,y[$7E:0C20]  ;\
 $B2:F738 D0 06       BNE $06    [$F740]     ;} If [projectile type] = 0:
 $B2:F73A 88          DEY                    ;\
 $B2:F73B 88          DEY                    ;} Y -= 2
 $B2:F73C 10 F7       BPL $F7    [$F735]     ; If [Y] >= 0: go to LOOP
 $B2:F73E 80 48       BRA $48    [$F788]     ; Return A = 0
-                                            
+
 $B2:F740 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
 $B2:F743 38          SEC                    ;|
 $B2:F744 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;|
@@ -2717,12 +2697,12 @@ $B2:F76F A0 70 F2    LDY #$F270             ; Enemy instruction list pointer = $
 $B2:F772 A5 12       LDA $12    [$7E:0012]  ;\
 $B2:F774 10 03       BPL $03    [$F779]     ;} If [enemy X position] < [Samus X position]:
 $B2:F776 A0 62 F4    LDY #$F462             ; Enemy instruction list pointer = $F462 (flinch - facing right)
-                                            
-$B2:F779 98          TYA                    
-$B2:F77A 9D 92 0F    STA $0F92,x[$7E:0FD2]  
+
+$B2:F779 98          TYA
+$B2:F77A 9D 92 0F    STA $0F92,x[$7E:0FD2]
 $B2:F77D A9 01 00    LDA #$0001             ;\
 $B2:F780 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
-$B2:F783 FA          PLX                    
+$B2:F783 FA          PLX
 $B2:F784 A9 01 00    LDA #$0001             ;\
 $B2:F787 60          RTS                    ;} Return A = 1
 
@@ -2732,8 +2712,10 @@ $B2:F78C 60          RTS
 }
 
 
-;;; $F78D:  ;;;
+;;; $F78D: Ninja space pirate spin jump trigger ;;;
 {
+;; Returns:
+;;     A: 1 if spin jump triggered, 0 otherwise
 $B2:F78D DA          PHX
 $B2:F78E AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F791 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
@@ -2746,17 +2728,17 @@ $B2:F79D 1A          INC A                  ;} If |[enemy $0FAE] - [Samus X posi
 $B2:F79E 38          SEC                    ;|
 $B2:F79F E9 20 00    SBC #$0020             ;|
 $B2:F7A2 10 1D       BPL $1D    [$F7C1]     ;/
-$B2:F7A4 A0 C4 F1    LDY #$F1C4             ; Enemy instruction list pointer = $F1C4
+$B2:F7A4 A0 C4 F1    LDY #$F1C4             ; Enemy instruction list pointer = $F1C4 (spin jump left)
 $B2:F7A7 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:F7AA DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] = [enemy $0FB0]:
 $B2:F7AD D0 03       BNE $03    [$F7B2]     ;/
-$B2:F7AF A0 B2 F3    LDY #$F3B2             ; Enemy instruction list pointer = $F3B2
+$B2:F7AF A0 B2 F3    LDY #$F3B2             ; Enemy instruction list pointer = $F3B2 (spin jump right)
 
 $B2:F7B2 98          TYA
 $B2:F7B3 9D 92 0F    STA $0F92,x[$7E:0FD2]
 $B2:F7B6 A9 01 00    LDA #$0001             ;\
 $B2:F7B9 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
-$B2:F7BC FA          PLX                    
+$B2:F7BC FA          PLX
 $B2:F7BD A9 01 00    LDA #$0001             ;\
 $B2:F7C0 60          RTS                    ;} Return A = 1
 
@@ -2766,8 +2748,10 @@ $B2:F7C5 60          RTS
 }
 
 
-;;; $F7C6:  ;;;
+;;; $F7C6: Ninja space pirate standing kick trigger ;;;
 {
+;; Returns:
+;;     A: 1 if kick triggered, 0 otherwise
 $B2:F7C6 DA          PHX
 $B2:F7C7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:F7CA AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -2794,16 +2778,16 @@ $B2:F7F0 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:F7F3 38          SEC                    ;|
 $B2:F7F4 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} $12 = [enemy X position] - [Samus X position]
 $B2:F7F7 85 12       STA $12    [$7E:0012]  ;/
-$B2:F7F9 A0 2E F3    LDY #$F32E             ; Enemy instruction list pointer = $F32E
+$B2:F7F9 A0 2E F3    LDY #$F32E             ; Enemy instruction list pointer = $F32E (standing kick - facing left)
 $B2:F7FC A5 12       LDA $12    [$7E:0012]  ;\
 $B2:F7FE 10 03       BPL $03    [$F803]     ;} If [enemy X position] < [Samus X position]:
-$B2:F800 A0 1A F5    LDY #$F51A             ; Enemy instruction list pointer = $F51A
+$B2:F800 A0 1A F5    LDY #$F51A             ; Enemy instruction list pointer = $F51A (standing kick - facing right)
 
 $B2:F803 98          TYA
 $B2:F804 9D 92 0F    STA $0F92,x[$7E:0FD2]
 $B2:F807 A9 01 00    LDA #$0001             ;\
 $B2:F80A 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
-$B2:F80D FA          PLX                    
+$B2:F80D FA          PLX
 $B2:F80E A9 01 00    LDA #$0001             ;\
 $B2:F811 60          RTS                    ;} Return A = 1
 
@@ -2813,7 +2797,7 @@ $B2:F816 60          RTS
 }
 
 
-;;; $F817: Ninja space pirate function ;;;
+;;; $F817: Ninja space pirate function - spin jump left - rising ;;;
 {
 $B2:F817 BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $B2:F81B 29 00 FF    AND #$FF00
@@ -2840,7 +2824,7 @@ $B2:F84B 60          RTS
 }
 
 
-;;; $F84C: Ninja space pirate function ;;;
+;;; $F84C: Ninja space pirate function - spin jump left - falling ;;;
 {
 $B2:F84C BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $B2:F850 29 00 FF    AND #$FF00
@@ -2867,12 +2851,12 @@ $B2:F880 A9 01 00    LDA #$0001
 $B2:F883 9D 94 0F    STA $0F94,x[$7E:0FD4]
 $B2:F886 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
 $B2:F889 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:F88C 20 11 FB    JSR $FB11  [$B2:FB11]
+$B2:F88C 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:F88F 60          RTS
 }
 
 
-;;; $F890: Ninja space pirate function ;;;
+;;; $F890: Ninja space pirate function - spin jump right - rising ;;;
 {
 $B2:F890 BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $B2:F894 29 00 FF    AND #$FF00
@@ -2899,7 +2883,7 @@ $B2:F8C4 60          RTS
 }
 
 
-;;; $F8C5: Ninja space pirate function ;;;
+;;; $F8C5: Ninja space pirate function - spin jump right - falling ;;;
 {
 $B2:F8C5 BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $B2:F8C9 29 00 FF    AND #$FF00
@@ -2926,46 +2910,47 @@ $B2:F8F9 A9 01 00    LDA #$0001
 $B2:F8FC 9D 94 0F    STA $0F94,x[$7E:0F94]
 $B2:F8FF BD B2 0F    LDA $0FB2,x[$7E:0FB2]
 $B2:F902 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$B2:F905 20 11 FB    JSR $FB11  [$B2:FB11]
+$B2:F905 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:F908 60          RTS
 }
 
 
-;;; $F909: Ninja space pirate function ;;;
+;;; $F909: Ninja space pirate function - ready to divekick ;;;
 {
-$B2:F909 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch detection
-$B2:F90C D0 08       BNE $08    [$F916]     ; If flinched: return
-$B2:F90E 20 C6 F7    JSR $F7C6  [$B2:F7C6]
-$B2:F911 D0 03       BNE $03    [$F916]
-$B2:F913 20 17 F9    JSR $F917  [$B2:F917]
+$B2:F909 20 2E F7    JSR $F72E  [$B2:F72E]  ; Ninja space pirate flinch trigger
+$B2:F90C D0 08       BNE $08    [$F916]     ; If flinch triggered: return
+$B2:F90E 20 C6 F7    JSR $F7C6  [$B2:F7C6]  ; Ninja space pirate standing kick trigger
+$B2:F911 D0 03       BNE $03    [$F916]     ; If kick triggered: return
+$B2:F913 20 17 F9    JSR $F917  [$B2:F917]  ; Ninja space pirate divekick trigger
 
 $B2:F916 60          RTS
 }
 
 
-;;; $F917:  ;;;
+;;; $F917: Ninja space pirate divekick trigger ;;;
 {
 $B2:F917 AE 54 0E    LDX $0E54  [$7E:0E54]
-$B2:F91A BD AE 0F    LDA $0FAE,x[$7E:0FEE]
-$B2:F91D 38          SEC
-$B2:F91E ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$B2:F921 10 04       BPL $04    [$F927]
-$B2:F923 49 FF FF    EOR #$FFFF
-$B2:F926 1A          INC A
+$B2:F91A BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
+$B2:F91D 38          SEC                    ;|
+$B2:F91E ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$B2:F921 10 04       BPL $04    [$F927]     ;|
+$B2:F923 49 FF FF    EOR #$FFFF             ;|
+$B2:F926 1A          INC A                  ;} If |[enemy $0FAE] - [Samus X position]| >= 20h: return
+                                            ;|
+$B2:F927 38          SEC                    ;|
+$B2:F928 E9 20 00    SBC #$0020             ;|
+$B2:F92B 10 2B       BPL $2B    [$F958]     ;/
 
-$B2:F927 38          SEC
-$B2:F928 E9 20 00    SBC #$0020
-$B2:F92B 10 2B       BPL $2B    [$F958]
-
-$B2:F92D 22 11 81 80 JSL $808111[$80:8111]
-$B2:F931 29 03 00    AND #$0003
-$B2:F934 F0 F7       BEQ $F7    [$F92D]
+; LOOP
+$B2:F92D 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$B2:F931 29 03 00    AND #$0003             ;\
+$B2:F934 F0 F7       BEQ $F7    [$F92D]     ;} If [random number] & 3 = 0: go to LOOP
 $B2:F936 85 12       STA $12    [$7E:0012]
-$B2:F938 A0 00 00    LDY #$0000
-$B2:F93B BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F93E DD B0 0F    CMP $0FB0,x[$7E:0FF0]
-$B2:F941 D0 03       BNE $03    [$F946]
-$B2:F943 A0 04 00    LDY #$0004
+$B2:F938 A0 00 00    LDY #$0000             ; Enemy instruction list pointer = $F27C (divekick left - jump)
+$B2:F93B BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F93E DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] = [enemy $0FB0]:
+$B2:F941 D0 03       BNE $03    [$F946]     ;/
+$B2:F943 A0 04 00    LDY #$0004             ; Enemy instruction list pointer = $F46E (divekick right - jump)
 
 $B2:F946 98          TYA
 $B2:F947 18          CLC
@@ -2974,8 +2959,8 @@ $B2:F94A 0A          ASL A
 $B2:F94B A8          TAY
 $B2:F94C B9 59 F9    LDA $F959,y[$B2:F963]
 $B2:F94F 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:F952 A9 01 00    LDA #$0001
-$B2:F955 9D 94 0F    STA $0F94,x[$7E:0FD4]
+$B2:F952 A9 01 00    LDA #$0001             ;\
+$B2:F955 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
 
 $B2:F958 60          RTS
 
@@ -2984,26 +2969,26 @@ $B2:F959             dw 0000, F27C, F27C, F27C,
 }
 
 
-;;; $F969:  ;;;
+;;; $F969: Instruction - set left divekick jump initial Y speed ;;;
 {
 $B2:F969 DA          PHX
 $B2:F96A 5A          PHY
-$B2:F96B A9 00 06    LDA #$0600
-$B2:F96E 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:F972 BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$B2:F975 38          SEC
-$B2:F976 FD AE 0F    SBC $0FAE,x[$7E:0FEE]
-$B2:F979 4A          LSR A
-$B2:F97A 18          CLC
-$B2:F97B 7D AE 0F    ADC $0FAE,x[$7E:0FEE]
-$B2:F97E 9F 06 78 7E STA $7E7806,x[$7E:7846]
+$B2:F96B A9 00 06    LDA #$0600             ;\
+$B2:F96E 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy $7E:7800 = 600h
+$B2:F972 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
+$B2:F975 38          SEC                    ;|
+$B2:F976 FD AE 0F    SBC $0FAE,x[$7E:0FEE]  ;|
+$B2:F979 4A          LSR A                  ;} Enemy $7E:7806 = midpoint([enemy $0FAE], [enemy $0FB2]) (never read)
+$B2:F97A 18          CLC                    ;|
+$B2:F97B 7D AE 0F    ADC $0FAE,x[$7E:0FEE]  ;|
+$B2:F97E 9F 06 78 7E STA $7E7806,x[$7E:7846];/
 $B2:F982 7A          PLY
 $B2:F983 FA          PLX
 $B2:F984 6B          RTL
 }
 
 
-;;; $F985: Ninja space pirate function ;;;
+;;; $F985: Ninja space pirate function - divekick left - jump ;;;
 {
 $B2:F985 BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $B2:F989 29 00 FF    AND #$FF00
@@ -3032,7 +3017,7 @@ $B2:F9C0 60          RTS
 }
 
 
-;;; $F9C1: Ninja space pirate function ;;;
+;;; $F9C1: Ninja space pirate function - divekick left - divekick ;;;
 {
 $B2:F9C1 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $B2:F9C4 38          SEC
@@ -3046,7 +3031,7 @@ $B2:F9D5 BF 00 78 7E LDA $7E7800,x[$7E:7840];} Move enemy down by [enemy Y veloc
 $B2:F9D9 29 FF 00    AND #$00FF             ;|
 $B2:F9DC 85 12       STA $12    [$7E:0012]  ;|
 $B2:F9DE 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$B2:F9E2 B0 14       BCS $14    [$F9F8]     ; If not collided with block: 
+$B2:F9E2 B0 14       BCS $14    [$F9F8]     ; If not collided with block:
 $B2:F9E4 BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $B2:F9E8 38          SEC
 $B2:F9E9 E9 40 00    SBC #$0040
@@ -3064,12 +3049,12 @@ $B2:FA04 A9 01 00    LDA #$0001
 $B2:FA07 9D 94 0F    STA $0F94,x[$7E:0FD4]
 $B2:FA0A BF 10 78 7E LDA $7E7810,x[$7E:7850]
 $B2:FA0E 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$B2:FA11 20 11 FB    JSR $FB11  [$B2:FB11]
+$B2:FA11 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:FA14 60          RTS
 }
 
 
-;;; $FA15: Ninja space pirate function ;;;
+;;; $FA15: Ninja space pirate function - divekick left - walk to left post ;;;
 {
 $B2:FA15 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $B2:FA18 18          CLC
@@ -3090,26 +3075,26 @@ $B2:FA3C 60          RTS
 }
 
 
-;;; $FA3D:  ;;;
+;;; $FA3D: Instruction - set right divekick jump initial Y speed ;;;
 {
 $B2:FA3D DA          PHX
 $B2:FA3E 5A          PHY
-$B2:FA3F A9 00 06    LDA #$0600
-$B2:FA42 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:FA46 BD AE 0F    LDA $0FAE,x[$7E:0FEE]
-$B2:FA49 38          SEC
-$B2:FA4A FD B0 0F    SBC $0FB0,x[$7E:0FF0]
-$B2:FA4D 4A          LSR A
-$B2:FA4E 18          CLC
-$B2:FA4F 7D B0 0F    ADC $0FB0,x[$7E:0FF0]
-$B2:FA52 9F 06 78 7E STA $7E7806,x[$7E:7846]
+$B2:FA3F A9 00 06    LDA #$0600             ;\
+$B2:FA42 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy $7E:7800 = 600h
+$B2:FA46 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
+$B2:FA49 38          SEC                    ;|
+$B2:FA4A FD B0 0F    SBC $0FB0,x[$7E:0FF0]  ;|
+$B2:FA4D 4A          LSR A                  ;} Enemy $7E:7806 = midpoint([enemy $0FAE], [enemy $0FB0]) (never read)
+$B2:FA4E 18          CLC                    ;|
+$B2:FA4F 7D B0 0F    ADC $0FB0,x[$7E:0FF0]  ;|
+$B2:FA52 9F 06 78 7E STA $7E7806,x[$7E:7846];/
 $B2:FA56 7A          PLY
 $B2:FA57 FA          PLX
 $B2:FA58 6B          RTL
 }
 
 
-;;; $FA59: Ninja space pirate function ;;;
+;;; $FA59: Ninja space pirate function - divekick right - jump ;;;
 {
 $B2:FA59 BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $B2:FA5D 29 00 FF    AND #$FF00
@@ -3138,7 +3123,7 @@ $B2:FA94 60          RTS
 }
 
 
-;;; $FA95: Ninja space pirate function ;;;
+;;; $FA95: Ninja space pirate function - divekick right - divekick ;;;
 {
 $B2:FA95 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $B2:FA98 18          CLC
@@ -3152,7 +3137,7 @@ $B2:FAA9 BF 00 78 7E LDA $7E7800,x[$7E:7840];} Move enemy down by [enemy Y veloc
 $B2:FAAD 29 FF 00    AND #$00FF             ;|
 $B2:FAB0 85 12       STA $12    [$7E:0012]  ;|
 $B2:FAB2 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$B2:FAB6 B0 14       BCS $14    [$FACC]     ; If not collided with block: 
+$B2:FAB6 B0 14       BCS $14    [$FACC]     ; If not collided with block:
 $B2:FAB8 BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $B2:FABC 38          SEC
 $B2:FABD E9 40 00    SBC #$0040
@@ -3170,12 +3155,12 @@ $B2:FAD8 A9 01 00    LDA #$0001
 $B2:FADB 9D 94 0F    STA $0F94,x[$7E:0FD4]
 $B2:FADE BF 10 78 7E LDA $7E7810,x[$7E:7850]
 $B2:FAE2 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$B2:FAE5 20 11 FB    JSR $FB11  [$B2:FB11]
+$B2:FAE5 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:FAE8 60          RTS
 }
 
 
-;;; $FAE9: Ninja space pirate function ;;;
+;;; $FAE9: Ninja space pirate function - divekick right - walk to right post ;;;
 {
 $B2:FAE9 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $B2:FAEC 18          CLC
@@ -3196,7 +3181,7 @@ $B2:FB10 60          RTS
 }
 
 
-;;; $FB11:  ;;;
+;;; $FB11: Spawn ninja space pirate landing dust cloud ;;;
 {
 $B2:FB11 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
 $B2:FB14 38          SEC
@@ -3403,8 +3388,8 @@ $B2:FCB9 DA          PHX
 $B2:FCBA AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:FCBD B9 00 00    LDA $0000,y[$B2:FBE8]  ;\
 $B2:FCC0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = [[Y]]
-$B2:FCC3 FA          PLX                    
-$B2:FCC4 7A          PLY                    
+$B2:FCC3 FA          PLX
+$B2:FCC4 7A          PLY
 $B2:FCC5 C8          INY                    ;\
 $B2:FCC6 C8          INY                    ;} Y += 2
 $B2:FCC7 6B          RTL
@@ -3479,7 +3464,7 @@ $B2:FD35 FC A8 0F    JSR ($0FA8,x)[$B2:804B]; Execute [enemy function]
 $B2:FD38 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $B2:FD3B 89 00 80    BIT #$8000             ;} If [enemy parameter 1] & 8000h != 0:
 $B2:FD3E F0 03       BEQ $03    [$FD43]     ;/
-$B2:FD40 20 4B FE    JSR $FE4B  [$B2:FE4B]  ; Walking space pirate flinch detection
+$B2:FD40 20 4B FE    JSR $FE4B  [$B2:FE4B]  ; Walking space pirate flinch trigger
 
 $B2:FD43 6B          RTL
 }
@@ -3502,7 +3487,7 @@ $B2:FD5F 98          TYA
 $B2:FD60 9D 92 0F    STA $0F92,x[$7E:1012]
 $B2:FD63 A9 01 00    LDA #$0001             ;\
 $B2:FD66 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
-$B2:FD69 60          RTS                    ; Return 
+$B2:FD69 60          RTS                    ; Return
 
 ; BRANCH_WALK
 $B2:FD6A A9 01 00    LDA #$0001             ;\
@@ -3560,12 +3545,12 @@ $B2:FDE0 38          SEC                    ;|
 $B2:FDE1 FD 7A 0F    SBC $0F7A,x[$7E:103A]  ;} If [Samus X position] >= [enemy X position]:
 $B2:FDE4 30 03       BMI $03    [$FDE9]     ;/
 $B2:FDE6 A0 0E FC    LDY #$FC0E             ; Enemy instruction list pointer = $FC0E
-                                            
-$B2:FDE9 98          TYA                    
-$B2:FDEA 9D 92 0F    STA $0F92,x[$7E:1052]  
+
+$B2:FDE9 98          TYA
+$B2:FDEA 9D 92 0F    STA $0F92,x[$7E:1052]
 $B2:FDED A9 01 00    LDA #$0001             ;\
 $B2:FDF0 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
-$B2:FDF3 60          RTS                    ; Return 
+$B2:FDF3 60          RTS                    ; Return
 
 ; BRANCH_WALK
 $B2:FDF4 A9 01 00    LDA #$0001             ;\
@@ -3596,7 +3581,7 @@ $B2:FE33 B0 08       BCS $08    [$FE3D]     ; If not collided with wall:
 $B2:FE35 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $B2:FE38 DD B2 0F    CMP $0FB2,x[$7E:0FB2]  ;} If [enemy X position] < [enemy $0FB2]: return
 $B2:FE3B 30 0C       BMI $0C    [$FE49]     ;/
-                                            
+
 $B2:FE3D A9 48 FC    LDA #$FC48             ;\
 $B2:FE40 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $FC48
 $B2:FE43 A9 01 00    LDA #$0001             ;\
@@ -3612,7 +3597,7 @@ $B2:FE4A 60          RTS
 }
 
 
-;;; $FE4B: Walking space pirate flinch detection ;;;
+;;; $FE4B: Walking space pirate flinch trigger ;;;
 {
 ; Return value is ignored by caller. Probably left over from $F72E copy+paste
 $B2:FE4B DA          PHX
