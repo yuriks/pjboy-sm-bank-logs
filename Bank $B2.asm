@@ -2021,7 +2021,7 @@ $B2:F1C4             dx EF83,804B,          ; Enemy function = RTS
                         0002,8AC0,
                         0002,8AD2,
                         0002,8AE4,
-                        F5D6,               ; Enemy $7E:7800 = 0
+                        F5D6,               ; Enemy speed = 0
                         EF83,804B,          ; Enemy function = RTS
                         0008,8A54,
                         EF83,F817           ; Enemy function = $F817 (spin jump left - rising)
@@ -2205,7 +2205,7 @@ $B2:F3B2             dx EF83,804B,          ; Enemy function = RTS
                         0002,8B98,
                         0002,8BF2,
                         0002,8C16,
-                        F5D6,               ; Enemy $7E:7800 = 0
+                        F5D6,               ; Enemy speed = 0
                         EF83,804B,          ; Enemy function = RTS
                         0008,8B86,
                         EF83,F890           ; Enemy function = $F890 (spin jump right - rising)
@@ -2462,7 +2462,7 @@ $B2:F5D5 6B          RTL
 }
 
 
-;;; $F5D6: Instruction - enemy $7E:7800 = 0 ;;;
+;;; $F5D6: Instruction - enemy speed = 0 ;;;
 {
 $B2:F5D6 A9 00 00    LDA #$0000
 $B2:F5D9 9F 00 78 7E STA $7E7800,x[$7E:7840]
@@ -2487,25 +2487,25 @@ $B2:F5F6 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $B2:F5F9 89 01 00    BIT #$0001             ;} If [enemy parameter 1] & 1 != 0:
 $B2:F5FC F0 0F       BEQ $0F    [$F60D]     ;/
 $B2:F5FE BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$B2:F601 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy $0FB0 = [enemy X position]
+$B2:F601 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy left post X position = [enemy X position]
 $B2:F604 18          CLC                    ;\
-$B2:F605 7D B6 0F    ADC $0FB6,x[$7E:0FB6]  ;} Enemy $0FB2 = [enemy X position] + [enemy parameter 2]
+$B2:F605 7D B6 0F    ADC $0FB6,x[$7E:0FB6]  ;} Enemy right post X position = [enemy X position] + [enemy parameter 2]
 $B2:F608 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
 $B2:F60B 80 0D       BRA $0D    [$F61A]
 
 $B2:F60D BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\ Else ([enemy parameter 1] & 1 = 0):
-$B2:F610 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy $0FB2 = [enemy X position]
+$B2:F610 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy right post X position = [enemy X position]
 $B2:F613 38          SEC                    ;\
-$B2:F614 FD B6 0F    SBC $0FB6,x[$7E:0FF6]  ;} Enemy $0FB0 = [enemy X position] - [enemy parameter 2]
+$B2:F614 FD B6 0F    SBC $0FB6,x[$7E:0FF6]  ;} Enemy left post X position = [enemy X position] - [enemy parameter 2]
 $B2:F617 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;/
 
 $B2:F61A BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
 $B2:F61D 38          SEC                    ;|
-$B2:F61E FD B0 0F    SBC $0FB0,x[$7E:0FB0]  ;} $14 = ([enemy $0FB2] - [enemy $0FB0]) / 2
+$B2:F61E FD B0 0F    SBC $0FB0,x[$7E:0FB0]  ;} $14 = ([enemy right post X position] - [enemy left post X position]) / 2
 $B2:F621 4A          LSR A                  ;|
 $B2:F622 85 14       STA $14    [$7E:0014]  ;/
 $B2:F624 18          CLC                    ;\
-$B2:F625 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;} Enemy $0FAE = midpoint([enemy $0FB0], [enemy $0FB2])
+$B2:F625 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;} Enemy posts midpoint X position = midpoint([enemy left post X position], [enemy right post X position])
 $B2:F628 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
 $B2:F62B BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ; >_<;
 $B2:F62E 64 12       STZ $12    [$7E:0012]  ;\
@@ -2531,24 +2531,24 @@ $B2:F652 29 00 FF    AND #$FF00             ;|
 $B2:F655 EB          XBA                    ;} $18 = [$16] / 100h
 $B2:F656 85 18       STA $18    [$7E:0018]  ;/
 $B2:F658 18          CLC                    ;\
-$B2:F659 7D AE 0F    ADC $0FAE,x[$7E:0FAE]  ;} Enemy $0FB2 = [enemy $0FAE] + [$18]
+$B2:F659 7D AE 0F    ADC $0FAE,x[$7E:0FAE]  ;} Enemy right post X position = [enemy posts midpoint X position] + [$18]
 $B2:F65C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
 $B2:F65F BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $B2:F662 38          SEC                    ;|
-$B2:F663 E5 18       SBC $18    [$7E:0018]  ;} Enemy $0FB0 = [enemy $0FAE] - [$18]
+$B2:F663 E5 18       SBC $18    [$7E:0018]  ;} Enemy left post X position = [enemy posts midpoint X position] - [$18]
 $B2:F665 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
-$B2:F668 BC B0 0F    LDY $0FB0,x[$7E:0FB0]  ; Enemy X position = [enemy $0FB0]
+$B2:F668 BC B0 0F    LDY $0FB0,x[$7E:0FB0]  ; Enemy X position = [enemy left post X position]
 $B2:F66B BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $B2:F66E 89 01 00    BIT #$0001             ;} If [enemy parameter 1] & 1 = 0:
 $B2:F671 D0 03       BNE $03    [$F676]     ;/
-$B2:F673 BC B2 0F    LDY $0FB2,x[$7E:0FF2]  ; Enemy X position = [enemy $0FB2]
+$B2:F673 BC B2 0F    LDY $0FB2,x[$7E:0FF2]  ; Enemy X position = [enemy right post X position]
 
 $B2:F676 98          TYA
 $B2:F677 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
 $B2:F67A A9 4B 80    LDA #$804B             ;\
 $B2:F67D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTS
 $B2:F680 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$B2:F683 9F 10 78 7E STA $7E7810,x[$7E:7810];} Enemy $7E:7810 = [enemy Y position]
+$B2:F683 9F 10 78 7E STA $7E7810,x[$7E:7810];} Enemy spawn Y position = [enemy Y position]
 $B2:F687 A0 00 00    LDY #$0000             ;\
 $B2:F68A A2 00 00    LDX #$0000             ;|
 $B2:F68D A9 0F 00    LDA #$000F             ;|
@@ -2629,7 +2629,7 @@ $B2:F6F7 BD A4 0F    LDA $0FA4,x[$7E:0FE4]  ;\
 $B2:F6FA 29 3F 00    AND #$003F             ;} If [enemy frame counter] % 40h != 0: return
 $B2:F6FD D0 2E       BNE $2E    [$F72D]     ;/
 $B2:F6FF BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
-$B2:F702 DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] != [enemy $0FB0]:
+$B2:F702 DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] != [enemy left post X position]:
 $B2:F705 F0 11       BEQ $11    [$F718]     ;/
 $B2:F707 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $B2:F70A 38          SEC                    ;|
@@ -2639,7 +2639,7 @@ $B2:F710 A9 4A F3    LDA #$F34A             ;\
 $B2:F713 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F34A (projectile claw attack right)
 $B2:F716 80 0F       BRA $0F    [$F727]
 
-$B2:F718 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\ Else ([enemy X position] = [enemy $0FB0]):
+$B2:F718 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\ Else ([enemy X position] = [enemy left post X position]):
 $B2:F71B 38          SEC                    ;|
 $B2:F71C ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]: return
 $B2:F71F 30 0C       BMI $0C    [$F72D]     ;/
@@ -2723,14 +2723,14 @@ $B2:F794 38          SEC                    ;|
 $B2:F795 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
 $B2:F798 10 04       BPL $04    [$F79E]     ;|
 $B2:F79A 49 FF FF    EOR #$FFFF             ;|
-$B2:F79D 1A          INC A                  ;} If |[enemy $0FAE] - [Samus X position]| >= 20h: return A = 0
+$B2:F79D 1A          INC A                  ;} If |[enemy posts midpoint X position] - [Samus X position]| >= 20h: return A = 0
                                             ;|
 $B2:F79E 38          SEC                    ;|
 $B2:F79F E9 20 00    SBC #$0020             ;|
 $B2:F7A2 10 1D       BPL $1D    [$F7C1]     ;/
 $B2:F7A4 A0 C4 F1    LDY #$F1C4             ; Enemy instruction list pointer = $F1C4 (spin jump left)
 $B2:F7A7 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
-$B2:F7AA DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] = [enemy $0FB0]:
+$B2:F7AA DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] = [enemy left post X position]:
 $B2:F7AD D0 03       BNE $03    [$F7B2]     ;/
 $B2:F7AF A0 B2 F3    LDY #$F3B2             ; Enemy instruction list pointer = $F3B2 (spin jump right)
 
@@ -2799,58 +2799,58 @@ $B2:F816 60          RTS
 
 ;;; $F817: Ninja space pirate function - spin jump left - rising ;;;
 {
-$B2:F817 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:F81B 29 00 FF    AND #$FF00
-$B2:F81E EB          XBA
-$B2:F81F 85 12       STA $12    [$7E:0012]
-$B2:F821 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F824 38          SEC
-$B2:F825 E5 12       SBC $12    [$7E:0012]
-$B2:F827 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:F82A DE 7E 0F    DEC $0F7E,x[$7E:0FBE]
-$B2:F82D DE 7E 0F    DEC $0F7E,x[$7E:0FBE]
-$B2:F830 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:F834 18          CLC
-$B2:F835 69 20 00    ADC #$0020
-$B2:F838 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:F83C BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F83F DD AE 0F    CMP $0FAE,x[$7E:0FEE]
-$B2:F842 30 01       BMI $01    [$F845]
-$B2:F844 60          RTS
+$B2:F817 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:F81B 29 00 FF    AND #$FF00             ;|
+$B2:F81E EB          XBA                    ;|
+$B2:F81F 85 12       STA $12    [$7E:0012]  ;|
+$B2:F821 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;} Enemy X position -= [enemy speed] / 100h
+$B2:F824 38          SEC                    ;|
+$B2:F825 E5 12       SBC $12    [$7E:0012]  ;|
+$B2:F827 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$B2:F82A DE 7E 0F    DEC $0F7E,x[$7E:0FBE]  ;\
+$B2:F82D DE 7E 0F    DEC $0F7E,x[$7E:0FBE]  ;} Enemy Y position -= 2
+$B2:F830 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:F834 18          CLC                    ;|
+$B2:F835 69 20 00    ADC #$0020             ;} Enemy speed += 20h
+$B2:F838 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$B2:F83C BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F83F DD AE 0F    CMP $0FAE,x[$7E:0FEE]  ;} If [enemy X position] >= [enemy posts midpoint X position]:
+$B2:F842 30 01       BMI $01    [$F845]     ;/
+$B2:F844 60          RTS                    ; Return
 
-$B2:F845 A9 4C F8    LDA #$F84C
-$B2:F848 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$B2:F845 A9 4C F8    LDA #$F84C             ;\
+$B2:F848 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $F84C (spin jump left - falling)
 $B2:F84B 60          RTS
 }
 
 
 ;;; $F84C: Ninja space pirate function - spin jump left - falling ;;;
 {
-$B2:F84C BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:F850 29 00 FF    AND #$FF00
-$B2:F853 EB          XBA
-$B2:F854 85 12       STA $12    [$7E:0012]
-$B2:F856 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F859 38          SEC
-$B2:F85A E5 12       SBC $12    [$7E:0012]
-$B2:F85C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:F85F FE 7E 0F    INC $0F7E,x[$7E:0FBE]
-$B2:F862 FE 7E 0F    INC $0F7E,x[$7E:0FBE]
-$B2:F865 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:F869 38          SEC
-$B2:F86A E9 20 00    SBC #$0020
-$B2:F86D 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:F871 F0 01       BEQ $01    [$F874]
-$B2:F873 60          RTS
+$B2:F84C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:F850 29 00 FF    AND #$FF00             ;|
+$B2:F853 EB          XBA                    ;|
+$B2:F854 85 12       STA $12    [$7E:0012]  ;|
+$B2:F856 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;} Enemy X position -= [enemy speed] / 100h
+$B2:F859 38          SEC                    ;|
+$B2:F85A E5 12       SBC $12    [$7E:0012]  ;|
+$B2:F85C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$B2:F85F FE 7E 0F    INC $0F7E,x[$7E:0FBE]  ;\
+$B2:F862 FE 7E 0F    INC $0F7E,x[$7E:0FBE]  ;} Enemy Y position += 2
+$B2:F865 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:F869 38          SEC                    ;|
+$B2:F86A E9 20 00    SBC #$0020             ;} Enemy speed -= 20h
+$B2:F86D 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$B2:F871 F0 01       BEQ $01    [$F874]     ; If [enemy speed] != 0:
+$B2:F873 60          RTS                    ; Return
 
-$B2:F874 A9 4B 80    LDA #$804B
-$B2:F877 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$B2:F87A A9 F8 F2    LDA #$F2F8
-$B2:F87D 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:F880 A9 01 00    LDA #$0001
-$B2:F883 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:F886 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$B2:F889 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
+$B2:F874 A9 4B 80    LDA #$804B             ;\
+$B2:F877 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = RTS
+$B2:F87A A9 F8 F2    LDA #$F2F8             ;\
+$B2:F87D 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F2F8 (land - facing left)
+$B2:F880 A9 01 00    LDA #$0001             ;\
+$B2:F883 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:F886 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$B2:F889 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy left post X position]
 $B2:F88C 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:F88F 60          RTS
 }
@@ -2858,58 +2858,58 @@ $B2:F88F 60          RTS
 
 ;;; $F890: Ninja space pirate function - spin jump right - rising ;;;
 {
-$B2:F890 BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$B2:F894 29 00 FF    AND #$FF00
-$B2:F897 EB          XBA
-$B2:F898 85 12       STA $12    [$7E:0012]
-$B2:F89A BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$B2:F89D 18          CLC
-$B2:F89E 65 12       ADC $12    [$7E:0012]
-$B2:F8A0 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$B2:F8A3 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]
-$B2:F8A6 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]
-$B2:F8A9 BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$B2:F8AD 18          CLC
-$B2:F8AE 69 20 00    ADC #$0020
-$B2:F8B1 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$B2:F8B5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$B2:F8B8 DD AE 0F    CMP $0FAE,x[$7E:0FAE]
-$B2:F8BB 10 01       BPL $01    [$F8BE]
-$B2:F8BD 60          RTS
-
-$B2:F8BE A9 C5 F8    LDA #$F8C5
-$B2:F8C1 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$B2:F890 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$B2:F894 29 00 FF    AND #$FF00             ;|
+$B2:F897 EB          XBA                    ;|
+$B2:F898 85 12       STA $12    [$7E:0012]  ;|
+$B2:F89A BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;} Enemy X position += [enemy speed] / 100h
+$B2:F89D 18          CLC                    ;|
+$B2:F89E 65 12       ADC $12    [$7E:0012]  ;|
+$B2:F8A0 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$B2:F8A3 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]  ;\
+$B2:F8A6 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]  ;} Enemy Y position -= 2
+$B2:F8A9 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$B2:F8AD 18          CLC                    ;|
+$B2:F8AE 69 20 00    ADC #$0020             ;} Enemy speed += 20h
+$B2:F8B1 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$B2:F8B5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$B2:F8B8 DD AE 0F    CMP $0FAE,x[$7E:0FAE]  ;} If [enemy X position] < [enemy posts midpoint X position]:
+$B2:F8BB 10 01       BPL $01    [$F8BE]     ;/
+$B2:F8BD 60          RTS                    ; Return
+                                            
+$B2:F8BE A9 C5 F8    LDA #$F8C5             ;\
+$B2:F8C1 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F84C (spin jump right - falling)
 $B2:F8C4 60          RTS
 }
 
 
 ;;; $F8C5: Ninja space pirate function - spin jump right - falling ;;;
 {
-$B2:F8C5 BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$B2:F8C9 29 00 FF    AND #$FF00
-$B2:F8CC EB          XBA
-$B2:F8CD 85 12       STA $12    [$7E:0012]
-$B2:F8CF BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$B2:F8D2 18          CLC
-$B2:F8D3 65 12       ADC $12    [$7E:0012]
-$B2:F8D5 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$B2:F8D8 FE 7E 0F    INC $0F7E,x[$7E:0F7E]
-$B2:F8DB FE 7E 0F    INC $0F7E,x[$7E:0F7E]
-$B2:F8DE BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$B2:F8E2 38          SEC
-$B2:F8E3 E9 20 00    SBC #$0020
-$B2:F8E6 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$B2:F8EA F0 01       BEQ $01    [$F8ED]
-$B2:F8EC 60          RTS
-
-$B2:F8ED A9 4B 80    LDA #$804B
-$B2:F8F0 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$B2:F8F3 A9 EA F4    LDA #$F4EA
-$B2:F8F6 9D 92 0F    STA $0F92,x[$7E:0F92]
-$B2:F8F9 A9 01 00    LDA #$0001
-$B2:F8FC 9D 94 0F    STA $0F94,x[$7E:0F94]
-$B2:F8FF BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$B2:F902 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
+$B2:F8C5 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$B2:F8C9 29 00 FF    AND #$FF00             ;|
+$B2:F8CC EB          XBA                    ;|
+$B2:F8CD 85 12       STA $12    [$7E:0012]  ;|
+$B2:F8CF BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;} Enemy X position += [enemy speed] / 100h
+$B2:F8D2 18          CLC                    ;|
+$B2:F8D3 65 12       ADC $12    [$7E:0012]  ;|
+$B2:F8D5 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$B2:F8D8 FE 7E 0F    INC $0F7E,x[$7E:0F7E]  ;\
+$B2:F8DB FE 7E 0F    INC $0F7E,x[$7E:0F7E]  ;} Enemy Y position += 2
+$B2:F8DE BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$B2:F8E2 38          SEC                    ;|
+$B2:F8E3 E9 20 00    SBC #$0020             ;} Enemy speed -= 20h
+$B2:F8E6 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$B2:F8EA F0 01       BEQ $01    [$F8ED]     ; If [enemy speed] != 0:
+$B2:F8EC 60          RTS                    ; Return
+                                            
+$B2:F8ED A9 4B 80    LDA #$804B             ;\
+$B2:F8F0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTS
+$B2:F8F3 A9 EA F4    LDA #$F4EA             ;\
+$B2:F8F6 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $F4EA (land - facing right)
+$B2:F8F9 A9 01 00    LDA #$0001             ;\
+$B2:F8FC 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction list timer = 1
+$B2:F8FF BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$B2:F902 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy right post X position]
 $B2:F905 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:F908 60          RTS
 }
@@ -2935,7 +2935,7 @@ $B2:F91D 38          SEC                    ;|
 $B2:F91E ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
 $B2:F921 10 04       BPL $04    [$F927]     ;|
 $B2:F923 49 FF FF    EOR #$FFFF             ;|
-$B2:F926 1A          INC A                  ;} If |[enemy $0FAE] - [Samus X position]| >= 20h: return
+$B2:F926 1A          INC A                  ;} If |[enemy posts midpoint X position] - [Samus X position]| >= 20h: return
                                             ;|
 $B2:F927 38          SEC                    ;|
 $B2:F928 E9 20 00    SBC #$0020             ;|
@@ -2948,7 +2948,7 @@ $B2:F934 F0 F7       BEQ $F7    [$F92D]     ;} If [random number] & 3 = 0: go to
 $B2:F936 85 12       STA $12    [$7E:0012]
 $B2:F938 A0 00 00    LDY #$0000             ; Enemy instruction list pointer = $F27C (divekick left - jump)
 $B2:F93B BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
-$B2:F93E DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] = [enemy $0FB0]:
+$B2:F93E DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;} If [enemy X position] = [enemy left post X position]:
 $B2:F941 D0 03       BNE $03    [$F946]     ;/
 $B2:F943 A0 04 00    LDY #$0004             ; Enemy instruction list pointer = $F46E (divekick right - jump)
 
@@ -2974,11 +2974,11 @@ $B2:F959             dw 0000, F27C, F27C, F27C,
 $B2:F969 DA          PHX
 $B2:F96A 5A          PHY
 $B2:F96B A9 00 06    LDA #$0600             ;\
-$B2:F96E 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy $7E:7800 = 600h
+$B2:F96E 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy speed = 600h
 $B2:F972 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
 $B2:F975 38          SEC                    ;|
 $B2:F976 FD AE 0F    SBC $0FAE,x[$7E:0FEE]  ;|
-$B2:F979 4A          LSR A                  ;} Enemy $7E:7806 = midpoint([enemy $0FAE], [enemy $0FB2]) (never read)
+$B2:F979 4A          LSR A                  ;} Enemy $7E:7806 = midpoint([enemy posts midpoint X position], [enemy right post X position]) (never read)
 $B2:F97A 18          CLC                    ;|
 $B2:F97B 7D AE 0F    ADC $0FAE,x[$7E:0FEE]  ;|
 $B2:F97E 9F 06 78 7E STA $7E7806,x[$7E:7846];/
@@ -2990,39 +2990,39 @@ $B2:F984 6B          RTL
 
 ;;; $F985: Ninja space pirate function - divekick left - jump ;;;
 {
-$B2:F985 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:F989 29 00 FF    AND #$FF00
-$B2:F98C EB          XBA
-$B2:F98D 85 12       STA $12    [$7E:0012]
-$B2:F98F BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$B2:F992 38          SEC
-$B2:F993 E5 12       SBC $12    [$7E:0012]
-$B2:F995 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$B2:F998 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:F99C 38          SEC
-$B2:F99D E9 40 00    SBC #$0040
-$B2:F9A0 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:F9A4 30 01       BMI $01    [$F9A7]
-$B2:F9A6 60          RTS
+$B2:F985 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:F989 29 00 FF    AND #$FF00             ;|
+$B2:F98C EB          XBA                    ;|
+$B2:F98D 85 12       STA $12    [$7E:0012]  ;|
+$B2:F98F BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;} Enemy Y position -= [enemy speed] / 100h
+$B2:F992 38          SEC                    ;|
+$B2:F993 E5 12       SBC $12    [$7E:0012]  ;|
+$B2:F995 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$B2:F998 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:F99C 38          SEC                    ;|
+$B2:F99D E9 40 00    SBC #$0040             ;} Enemy speed -= 40h
+$B2:F9A0 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$B2:F9A4 30 01       BMI $01    [$F9A7]     ; If [enemy speed] >= 0:
+$B2:F9A6 60          RTS                    ; Return
 
-$B2:F9A7 A9 C1 F9    LDA #$F9C1
-$B2:F9AA 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$B2:F9AD A9 A0 F2    LDA #$F2A0
-$B2:F9B0 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:F9B3 A9 01 00    LDA #$0001
-$B2:F9B6 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:F9B9 A9 00 06    LDA #$0600
-$B2:F9BC 9F 00 78 7E STA $7E7800,x[$7E:7840]
+$B2:F9A7 A9 C1 F9    LDA #$F9C1             ;\
+$B2:F9AA 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $F9C1 (divekick left - divekick)
+$B2:F9AD A9 A0 F2    LDA #$F2A0             ;\
+$B2:F9B0 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F2A0 (divekick left - divekick)
+$B2:F9B3 A9 01 00    LDA #$0001             ;\
+$B2:F9B6 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:F9B9 A9 00 06    LDA #$0600             ;\
+$B2:F9BC 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy speed = 600h
 $B2:F9C0 60          RTS
 }
 
 
 ;;; $F9C1: Ninja space pirate function - divekick left - divekick ;;;
 {
-$B2:F9C1 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:F9C4 38          SEC
-$B2:F9C5 E9 05 00    SBC #$0005
-$B2:F9C8 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
+$B2:F9C1 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:F9C4 38          SEC                    ;|
+$B2:F9C5 E9 05 00    SBC #$0005             ;} Enemy X position -= 5
+$B2:F9C8 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 $B2:F9CB BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $B2:F9CF 29 00 FF    AND #$FF00             ;|
 $B2:F9D2 EB          XBA                    ;|
@@ -3032,23 +3032,23 @@ $B2:F9D9 29 FF 00    AND #$00FF             ;|
 $B2:F9DC 85 12       STA $12    [$7E:0012]  ;|
 $B2:F9DE 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $B2:F9E2 B0 14       BCS $14    [$F9F8]     ; If not collided with block:
-$B2:F9E4 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:F9E8 38          SEC
-$B2:F9E9 E9 40 00    SBC #$0040
-$B2:F9EC 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:F9F0 30 06       BMI $06    [$F9F8]
-$B2:F9F2 89 00 FF    BIT #$FF00
-$B2:F9F5 F0 01       BEQ $01    [$F9F8]
-$B2:F9F7 60          RTS
+$B2:F9E4 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:F9E8 38          SEC                    ;|
+$B2:F9E9 E9 40 00    SBC #$0040             ;} Enemy speed -= 40h
+$B2:F9EC 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$B2:F9F0 30 06       BMI $06    [$F9F8]     ;\
+$B2:F9F2 89 00 FF    BIT #$FF00             ;} If [enemy speed] >= 100h:
+$B2:F9F5 F0 01       BEQ $01    [$F9F8]     ;/
+$B2:F9F7 60          RTS                    ; Return
 
-$B2:F9F8 A9 15 FA    LDA #$FA15
-$B2:F9FB 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$B2:F9FE A9 B2 F2    LDA #$F2B2
-$B2:FA01 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:FA04 A9 01 00    LDA #$0001
-$B2:FA07 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:FA0A BF 10 78 7E LDA $7E7810,x[$7E:7850]
-$B2:FA0E 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
+$B2:F9F8 A9 15 FA    LDA #$FA15             ;\
+$B2:F9FB 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $FA15 (divekick left - walk to left post)
+$B2:F9FE A9 B2 F2    LDA #$F2B2             ;\
+$B2:FA01 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F2B2 (divekick left - walk to left post)
+$B2:FA04 A9 01 00    LDA #$0001             ;\
+$B2:FA07 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:FA0A BF 10 78 7E LDA $7E7810,x[$7E:7850];\
+$B2:FA0E 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy spawn Y position]
 $B2:FA11 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:FA14 60          RTS
 }
@@ -3056,20 +3056,20 @@ $B2:FA14 60          RTS
 
 ;;; $FA15: Ninja space pirate function - divekick left - walk to left post ;;;
 {
-$B2:FA15 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:FA18 18          CLC
-$B2:FA19 69 FE FF    ADC #$FFFE
-$B2:FA1C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:FA1F DD B0 0F    CMP $0FB0,x[$7E:0FF0]
-$B2:FA22 10 18       BPL $18    [$FA3C]
-$B2:FA24 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$B2:FA27 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:FA2A A9 F8 F2    LDA #$F2F8
-$B2:FA2D 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:FA30 A9 01 00    LDA #$0001
-$B2:FA33 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:FA36 A9 4B 80    LDA #$804B
-$B2:FA39 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$B2:FA15 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:FA18 18          CLC                    ;|
+$B2:FA19 69 FE FF    ADC #$FFFE             ;} Enemy X position -= 2
+$B2:FA1C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$B2:FA1F DD B0 0F    CMP $0FB0,x[$7E:0FF0]  ;\
+$B2:FA22 10 18       BPL $18    [$FA3C]     ;} If [enemy X position] >= [enemy left post X position]: return
+$B2:FA24 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$B2:FA27 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy left post X position]
+$B2:FA2A A9 F8 F2    LDA #$F2F8             ;\
+$B2:FA2D 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F2F8 (land - facing left)
+$B2:FA30 A9 01 00    LDA #$0001             ;\
+$B2:FA33 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:FA36 A9 4B 80    LDA #$804B             ;\
+$B2:FA39 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = RTS
 
 $B2:FA3C 60          RTS
 }
@@ -3080,11 +3080,11 @@ $B2:FA3C 60          RTS
 $B2:FA3D DA          PHX
 $B2:FA3E 5A          PHY
 $B2:FA3F A9 00 06    LDA #$0600             ;\
-$B2:FA42 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy $7E:7800 = 600h
+$B2:FA42 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy speed = 600h
 $B2:FA46 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
 $B2:FA49 38          SEC                    ;|
 $B2:FA4A FD B0 0F    SBC $0FB0,x[$7E:0FF0]  ;|
-$B2:FA4D 4A          LSR A                  ;} Enemy $7E:7806 = midpoint([enemy $0FAE], [enemy $0FB0]) (never read)
+$B2:FA4D 4A          LSR A                  ;} Enemy $7E:7806 = midpoint([enemy posts midpoint X position], [enemy left post X position]) (never read)
 $B2:FA4E 18          CLC                    ;|
 $B2:FA4F 7D B0 0F    ADC $0FB0,x[$7E:0FF0]  ;|
 $B2:FA52 9F 06 78 7E STA $7E7806,x[$7E:7846];/
@@ -3096,39 +3096,39 @@ $B2:FA58 6B          RTL
 
 ;;; $FA59: Ninja space pirate function - divekick right - jump ;;;
 {
-$B2:FA59 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:FA5D 29 00 FF    AND #$FF00
-$B2:FA60 EB          XBA
-$B2:FA61 85 12       STA $12    [$7E:0012]
-$B2:FA63 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$B2:FA66 38          SEC
-$B2:FA67 E5 12       SBC $12    [$7E:0012]
-$B2:FA69 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$B2:FA6C BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:FA70 38          SEC
-$B2:FA71 E9 40 00    SBC #$0040
-$B2:FA74 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:FA78 30 01       BMI $01    [$FA7B]
-$B2:FA7A 60          RTS
-
-$B2:FA7B A9 95 FA    LDA #$FA95
-$B2:FA7E 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$B2:FA81 A9 92 F4    LDA #$F492
-$B2:FA84 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:FA87 A9 01 00    LDA #$0001
-$B2:FA8A 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:FA8D A9 00 06    LDA #$0600
-$B2:FA90 9F 00 78 7E STA $7E7800,x[$7E:7840]
+$B2:FA59 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:FA5D 29 00 FF    AND #$FF00             ;|
+$B2:FA60 EB          XBA                    ;|
+$B2:FA61 85 12       STA $12    [$7E:0012]  ;|
+$B2:FA63 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;} Enemy Y position -= [enemy speed] / 100h
+$B2:FA66 38          SEC                    ;|
+$B2:FA67 E5 12       SBC $12    [$7E:0012]  ;|
+$B2:FA69 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$B2:FA6C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:FA70 38          SEC                    ;|
+$B2:FA71 E9 40 00    SBC #$0040             ;} Enemy speed -= 40h
+$B2:FA74 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$B2:FA78 30 01       BMI $01    [$FA7B]     ; If [enemy speed] >= 0:
+$B2:FA7A 60          RTS                    ; Return
+                                            
+$B2:FA7B A9 95 FA    LDA #$FA95             ;\
+$B2:FA7E 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $FA95 (divekick right - divekick)
+$B2:FA81 A9 92 F4    LDA #$F492             ;\
+$B2:FA84 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F492 (divekick right - divekick)
+$B2:FA87 A9 01 00    LDA #$0001             ;\
+$B2:FA8A 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:FA8D A9 00 06    LDA #$0600             ;\
+$B2:FA90 9F 00 78 7E STA $7E7800,x[$7E:7840];} Enemy speed = 600h
 $B2:FA94 60          RTS
 }
 
 
 ;;; $FA95: Ninja space pirate function - divekick right - divekick ;;;
 {
-$B2:FA95 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:FA98 18          CLC
-$B2:FA99 69 05 00    ADC #$0005
-$B2:FA9C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
+$B2:FA95 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:FA98 18          CLC                    ;|
+$B2:FA99 69 05 00    ADC #$0005             ;} Enemy X position += 5
+$B2:FA9C 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 $B2:FA9F BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $B2:FAA3 29 00 FF    AND #$FF00             ;|
 $B2:FAA6 EB          XBA                    ;|
@@ -3138,23 +3138,23 @@ $B2:FAAD 29 FF 00    AND #$00FF             ;|
 $B2:FAB0 85 12       STA $12    [$7E:0012]  ;|
 $B2:FAB2 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $B2:FAB6 B0 14       BCS $14    [$FACC]     ; If not collided with block:
-$B2:FAB8 BF 00 78 7E LDA $7E7800,x[$7E:7840]
-$B2:FABC 38          SEC
-$B2:FABD E9 40 00    SBC #$0040
-$B2:FAC0 9F 00 78 7E STA $7E7800,x[$7E:7840]
-$B2:FAC4 30 06       BMI $06    [$FACC]
-$B2:FAC6 89 00 FF    BIT #$FF00
-$B2:FAC9 F0 01       BEQ $01    [$FACC]
-$B2:FACB 60          RTS
-
-$B2:FACC A9 E9 FA    LDA #$FAE9
-$B2:FACF 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$B2:FAD2 A9 A4 F4    LDA #$F4A4
-$B2:FAD5 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:FAD8 A9 01 00    LDA #$0001
-$B2:FADB 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:FADE BF 10 78 7E LDA $7E7810,x[$7E:7850]
-$B2:FAE2 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
+$B2:FAB8 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
+$B2:FABC 38          SEC                    ;|
+$B2:FABD E9 40 00    SBC #$0040             ;} Enemy speed -= 40h
+$B2:FAC0 9F 00 78 7E STA $7E7800,x[$7E:7840];/
+$B2:FAC4 30 06       BMI $06    [$FACC]     ;\
+$B2:FAC6 89 00 FF    BIT #$FF00             ;} If [enemy speed] >= 100h:
+$B2:FAC9 F0 01       BEQ $01    [$FACC]     ;/
+$B2:FACB 60          RTS                    ; Return
+                                            
+$B2:FACC A9 E9 FA    LDA #$FAE9             ;\
+$B2:FACF 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $FAE9 (divekick right - walk to right post)
+$B2:FAD2 A9 A4 F4    LDA #$F4A4             ;\
+$B2:FAD5 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F4A4 (divekick right - walk to right post)
+$B2:FAD8 A9 01 00    LDA #$0001             ;\
+$B2:FADB 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:FADE BF 10 78 7E LDA $7E7810,x[$7E:7850];\
+$B2:FAE2 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy spawn Y position]
 $B2:FAE5 20 11 FB    JSR $FB11  [$B2:FB11]  ; Spawn ninja space pirate landing dust cloud
 $B2:FAE8 60          RTS
 }
@@ -3162,20 +3162,20 @@ $B2:FAE8 60          RTS
 
 ;;; $FAE9: Ninja space pirate function - divekick right - walk to right post ;;;
 {
-$B2:FAE9 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:FAEC 18          CLC
-$B2:FAED 69 02 00    ADC #$0002
-$B2:FAF0 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:FAF3 DD B2 0F    CMP $0FB2,x[$7E:0FF2]
-$B2:FAF6 30 18       BMI $18    [$FB10]
-$B2:FAF8 BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$B2:FAFB 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$B2:FAFE A9 EA F4    LDA #$F4EA
-$B2:FB01 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$B2:FB04 A9 01 00    LDA #$0001
-$B2:FB07 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$B2:FB0A A9 4B 80    LDA #$804B
-$B2:FB0D 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$B2:FAE9 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:FAEC 18          CLC                    ;|
+$B2:FAED 69 02 00    ADC #$0002             ;} Enemy X position += 2
+$B2:FAF0 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$B2:FAF3 DD B2 0F    CMP $0FB2,x[$7E:0FF2]  ;\
+$B2:FAF6 30 18       BMI $18    [$FB10]     ;} If [enemy X position] >= [enemy right post X position]: return
+$B2:FAF8 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
+$B2:FAFB 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy right post X position]
+$B2:FAFE A9 EA F4    LDA #$F4EA             ;\
+$B2:FB01 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $F4EA (land - facing right)
+$B2:FB04 A9 01 00    LDA #$0001             ;\
+$B2:FB07 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$B2:FB0A A9 4B 80    LDA #$804B             ;\
+$B2:FB0D 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = RTS
 
 $B2:FB10 60          RTS
 }
@@ -3183,30 +3183,30 @@ $B2:FB10 60          RTS
 
 ;;; $FB11: Spawn ninja space pirate landing dust cloud ;;;
 {
-$B2:FB11 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:FB14 38          SEC
-$B2:FB15 E9 08 00    SBC #$0008
-$B2:FB18 85 12       STA $12    [$7E:0012]
-$B2:FB1A BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$B2:FB1D 18          CLC
-$B2:FB1E 69 1C 00    ADC #$001C
-$B2:FB21 85 14       STA $14    [$7E:0014]
-$B2:FB23 A9 0A 00    LDA #$000A
-$B2:FB26 85 16       STA $16    [$7E:0016]
-$B2:FB28 64 18       STZ $18    [$7E:0018]
-$B2:FB2A 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$B2:FB2E BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$B2:FB31 18          CLC
-$B2:FB32 69 08 00    ADC #$0008
-$B2:FB35 85 12       STA $12    [$7E:0012]
-$B2:FB37 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$B2:FB3A 18          CLC
-$B2:FB3B 69 1C 00    ADC #$001C
-$B2:FB3E 85 14       STA $14    [$7E:0014]
-$B2:FB40 A9 0A 00    LDA #$000A
-$B2:FB43 85 16       STA $16    [$7E:0016]
-$B2:FB45 64 18       STZ $18    [$7E:0018]
-$B2:FB47 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$B2:FB11 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:FB14 38          SEC                    ;|
+$B2:FB15 E9 08 00    SBC #$0008             ;| $12 = [enemy X position] - 8
+$B2:FB18 85 12       STA $12    [$7E:0012]  ;/
+$B2:FB1A BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$B2:FB1D 18          CLC                    ;|
+$B2:FB1E 69 1C 00    ADC #$001C             ;} $14 = [enemy Y position] + 1Ch
+$B2:FB21 85 14       STA $14    [$7E:0014]  ;/
+$B2:FB23 A9 0A 00    LDA #$000A             ;\
+$B2:FB26 85 16       STA $16    [$7E:0016]  ;|
+$B2:FB28 64 18       STZ $18    [$7E:0018]  ;} Create sprite object Ah (ninja space pirate landing dust cloud) at position ([$12], [$14])
+$B2:FB2A 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
+$B2:FB2E BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$B2:FB31 18          CLC                    ;|
+$B2:FB32 69 08 00    ADC #$0008             ;| $12 = [enemy X position] + 8
+$B2:FB35 85 12       STA $12    [$7E:0012]  ;/
+$B2:FB37 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$B2:FB3A 18          CLC                    ;|
+$B2:FB3B 69 1C 00    ADC #$001C             ;} $14 = [enemy Y position] + 1Ch
+$B2:FB3E 85 14       STA $14    [$7E:0014]  ;/
+$B2:FB40 A9 0A 00    LDA #$000A             ;\
+$B2:FB43 85 16       STA $16    [$7E:0016]  ;|
+$B2:FB45 64 18       STZ $18    [$7E:0018]  ;} Create sprite object Ah (ninja space pirate landing dust cloud) at position ([$12], [$14])
+$B2:FB47 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $B2:FB4B 60          RTS
 }
 }
