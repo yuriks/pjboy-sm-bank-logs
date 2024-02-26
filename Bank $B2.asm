@@ -1531,11 +1531,11 @@ $B2:EE54 FA          PLX                    ;|
 $B2:EE55 7A          PLY                    ;/
 $B2:EE56 90 16       BCC $16    [$EE6E]     ; If not collided with block: go to BRANCH_NO_COLLISION
 $B2:EE58 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
-$B2:EE5B 49 01 00    EOR #$0001             ;} Enemy $0FAC ^= 1
+$B2:EE5B 49 01 00    EOR #$0001             ;} Enemy direction ^= up
 $B2:EE5E 9D AC 0F    STA $0FAC,x[$7E:106C]  ;/
 $B2:EE61 A0 36 ED    LDY #$ED36             ; Y = $ED36 (moving down left wall)
 $B2:EE64 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
-$B2:EE67 F0 03       BEQ $03    [$EE6C]     ;} If [enemy $0FAC] != 0:
+$B2:EE67 F0 03       BEQ $03    [$EE6C]     ;} If [enemy direction] != down:
 $B2:EE69 A0 EC EC    LDY #$ECEC             ; Y = $ECEC (moving up left wall)
 
 $B2:EE6C FA          PLX
@@ -1564,11 +1564,11 @@ $B2:EE86 FA          PLX                    ;|
 $B2:EE87 7A          PLY                    ;/
 $B2:EE88 90 16       BCC $16    [$EEA0]     ; If not collided with block: go to BRANCH_NO_COLLISION
 $B2:EE8A BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
-$B2:EE8D 49 01 00    EOR #$0001             ;} Enemy $0FAC ^= 1
+$B2:EE8D 49 01 00    EOR #$0001             ;} Enemy direction ^= up
 $B2:EE90 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;/
 $B2:EE93 A0 AC ED    LDY #$EDAC             ; Y = $EDAC (moving down right wall)
 $B2:EE96 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
-$B2:EE99 F0 03       BEQ $03    [$EE9E]     ;} If [enemy $0FAC] != 0:
+$B2:EE99 F0 03       BEQ $03    [$EE9E]     ;} If [enemy direction] != down:
 $B2:EE9B A0 F6 ED    LDY #$EDF6             ; Y = $EDF6 (moving up right wall)
 
 $B2:EE9E FA          PLX
@@ -1589,8 +1589,8 @@ $B2:EEA5 A0 36 ED    LDY #$ED36             ; Y = $ED36 (moving down left wall)
 $B2:EEA8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:EEAB 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $B2:EEAF 29 01 00    AND #$0001             ;\
-$B2:EEB2 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [random number] & 1
-$B2:EEB5 F0 03       BEQ $03    [$EEBA]     ; If [enemy $0FAC] != 0:
+$B2:EEB2 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy direction = [random number] & 1
+$B2:EEB5 F0 03       BEQ $03    [$EEBA]     ; If [enemy direction] != down:
 $B2:EEB7 A0 EC EC    LDY #$ECEC             ; Y = $ECEC (moving up left wall)
 
 $B2:EEBA FA          PLX
@@ -1605,8 +1605,8 @@ $B2:EEBD A0 AC ED    LDY #$EDAC             ; Y = $EDAC (moving down right wall)
 $B2:EEC0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:EEC3 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $B2:EEC7 29 01 00    AND #$0001             ;\
-$B2:EECA 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;} Enemy $0FAC = [random number] & 1
-$B2:EECD F0 03       BEQ $03    [$EED2]     ; If [enemy $0FAC] != 0:
+$B2:EECA 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;} Enemy direction = [random number] & 1
+$B2:EECD F0 03       BEQ $03    [$EED2]     ; If [enemy direction] != down:
 $B2:EECF A0 F6 ED    LDY #$EDF6             ; Y = $EDF6 (moving up right wall)
 
 $B2:EED2 FA          PLX
@@ -1621,17 +1621,17 @@ $B2:EED5 5A          PHY
 $B2:EED6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:EED9 BD B6 0F    LDA $0FB6,x[$7E:1236]  ;\
 $B2:EEDC 18          CLC                    ;|
-$B2:EEDD 7D 7A 0F    ADC $0F7A,x[$7E:11FA]  ;} Enemy $0FAA = [enemy X position] + [enemy parameter 2]
+$B2:EEDD 7D 7A 0F    ADC $0F7A,x[$7E:11FA]  ;} Enemy $0FAA = [enemy X position] + [enemy parameter 2] (never read)
 $B2:EEE0 9D AA 0F    STA $0FAA,x[$7E:122A]  ;/
 $B2:EEE3 BD B6 0F    LDA $0FB6,x[$7E:1236]  ;\
 $B2:EEE6 4A          LSR A                  ;|
-$B2:EEE7 18          CLC                    ;} Enemy $0FAE = [enemy X position] + [enemy parameter 2] / 2
+$B2:EEE7 18          CLC                    ;} Enemy wall-jump arc centre X position = [enemy X position] + [enemy parameter 2] / 2
 $B2:EEE8 7D 7A 0F    ADC $0F7A,x[$7E:11FA]  ;|
 $B2:EEEB 9D AE 0F    STA $0FAE,x[$7E:122E]  ;/
 $B2:EEEE BD 7E 0F    LDA $0F7E,x[$7E:11FE]  ;\
-$B2:EEF1 9D B0 0F    STA $0FB0,x[$7E:1230]  ;} Enemy $0FB0 = [enemy Y position]
+$B2:EEF1 9D B0 0F    STA $0FB0,x[$7E:1230]  ;} Enemy wall-jump arc centre Y position = [enemy Y position]
 $B2:EEF4 A9 40 00    LDA #$0040             ;\
-$B2:EEF7 9D B2 0F    STA $0FB2,x[$7E:1232]  ;} Enemy $0FB2 = 40h
+$B2:EEF7 9D B2 0F    STA $0FB2,x[$7E:1232]  ;} Enemy wall-jump arc angle = 40h
 $B2:EEFA 7A          PLY
 $B2:EEFB FA          PLX
 $B2:EEFC 6B          RTL
@@ -1645,19 +1645,19 @@ $B2:EEFE 5A          PHY
 $B2:EEFF AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:EF02 BD 7A 0F    LDA $0F7A,x[$7E:11BA]  ;\
 $B2:EF05 38          SEC                    ;|
-$B2:EF06 FD B6 0F    SBC $0FB6,x[$7E:11F6]  ;} Enemy $0FAA = [enemy X position] - [enemy parameter 2]
+$B2:EF06 FD B6 0F    SBC $0FB6,x[$7E:11F6]  ;} Enemy $0FAA = [enemy X position] - [enemy parameter 2] (never read)
 $B2:EF09 9D AA 0F    STA $0FAA,x[$7E:11EA]  ;/
 $B2:EF0C BD B6 0F    LDA $0FB6,x[$7E:11F6]  ;\
 $B2:EF0F 4A          LSR A                  ;|
 $B2:EF10 85 12       STA $12    [$7E:0012]  ;|
-$B2:EF12 BD 7A 0F    LDA $0F7A,x[$7E:11BA]  ;} Enemy $0FAE = [enemy X position] - [enemy parameter 2] / 2
+$B2:EF12 BD 7A 0F    LDA $0F7A,x[$7E:11BA]  ;} Enemy wall-jump arc centre X position = [enemy X position] - [enemy parameter 2] / 2
 $B2:EF15 38          SEC                    ;|
 $B2:EF16 E5 12       SBC $12    [$7E:0012]  ;|
 $B2:EF18 9D AE 0F    STA $0FAE,x[$7E:11EE]  ;/
 $B2:EF1B BD 7E 0F    LDA $0F7E,x[$7E:11BE]  ;\
-$B2:EF1E 9D B0 0F    STA $0FB0,x[$7E:11F0]  ;} Enemy $0FB0 = [enemy Y position]
+$B2:EF1E 9D B0 0F    STA $0FB0,x[$7E:11F0]  ;} Enemy wall-jump arc centre Y position = [enemy Y position]
 $B2:EF21 A9 C0 00    LDA #$00C0             ;\
-$B2:EF24 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy $0FB2 = C0h
+$B2:EF24 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy wall-jump arc angle = C0h
 $B2:EF27 7A          PLY
 $B2:EF28 FA          PLX
 $B2:EF29 6B          RTL
@@ -1754,25 +1754,25 @@ $B2:EFAD A0 AC ED    LDY #$EDAC             ; Enemy instruction list pointer = $
 $B2:EFB0 98          TYA
 $B2:EFB1 9D 92 0F    STA $0F92,x[$7E:0FD2]
 $B2:EFB4 A9 BE 00    LDA #$00BE             ;\
-$B2:EFB7 9F 00 80 7E STA $7E8000,x[$7E:8040];} Enemy $7E:8000 = BEh
+$B2:EFB7 9F 00 80 7E STA $7E8000,x[$7E:8040];} Enemy wall-jump arc right target angle = BEh
 $B2:EFBB A9 42 00    LDA #$0042             ;\
-$B2:EFBE 9F 02 80 7E STA $7E8002,x[$7E:8042];} Enemy $7E:8002 = 42h
+$B2:EFBE 9F 02 80 7E STA $7E8002,x[$7E:8042];} Enemy wall-jump arc left target angle = 42h
 $B2:EFC2 A9 02 00    LDA #$0002             ;\
-$B2:EFC5 9F 04 80 7E STA $7E8004,x[$7E:8044];} Enemy $7E:8004 = 2
+$B2:EFC5 9F 04 80 7E STA $7E8004,x[$7E:8044];} Enemy wall-jump arc angle delta = 2
 $B2:EFC9 BD B4 0F    LDA $0FB4,x[$7E:0FF4]  ;\
 $B2:EFCC 89 00 80    BIT #$8000             ;} If [enemy parameter 1] & 8000h = 0 (fast jump):
 $B2:EFCF D0 24       BNE $24    [$EFF5]     ;/
 $B2:EFD1 BF 00 80 7E LDA $7E8000,x[$7E:8040];\
 $B2:EFD5 18          CLC                    ;|
-$B2:EFD6 69 02 00    ADC #$0002             ;} Enemy $7E:8000 = C0h
+$B2:EFD6 69 02 00    ADC #$0002             ;} Enemy wall-jump arc right target angle = C0h
 $B2:EFD9 9F 00 80 7E STA $7E8000,x[$7E:8040];/
 $B2:EFDD BF 02 80 7E LDA $7E8002,x[$7E:8042];\
 $B2:EFE1 38          SEC                    ;|
-$B2:EFE2 E9 02 00    SBC #$0002             ;} Enemy $7E:8002 = 40h
+$B2:EFE2 E9 02 00    SBC #$0002             ;} Enemy wall-jump arc left target angle = 40h
 $B2:EFE5 9F 02 80 7E STA $7E8002,x[$7E:8042];/
 $B2:EFE9 BF 04 80 7E LDA $7E8004,x[$7E:8044];\
 $B2:EFED 18          CLC                    ;|
-$B2:EFEE 69 02 00    ADC #$0002             ;} Enemy $7E:8004 = 4
+$B2:EFEE 69 02 00    ADC #$0002             ;} Enemy wall-jump arc angle delta = 4
 $B2:EFF1 9F 04 80 7E STA $7E8004,x[$7E:8044];/
 
 $B2:EFF5 A0 34 F0    LDY #$F034             ; Enemy function = $F034 (climbing left wall)
@@ -1846,7 +1846,7 @@ $B2:F053 BD B6 0F    LDA $0FB6,x[$7E:1236]  ;\
 $B2:F056 4A          LSR A                  ;|
 $B2:F057 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F05A BD B2 0F    LDA $0FB2,x[$7E:1232]  ;|
-$B2:F05D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy $0FAE] + [enemy $0FB6] / 2 * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F05D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy wall-jump arc centre X position] + [enemy parameter 2] / 2 * -sin([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
 $B2:F061 18          CLC                    ;|
 $B2:F062 7D AE 0F    ADC $0FAE,x[$7E:122E]  ;|
 $B2:F065 9D 7A 0F    STA $0F7A,x[$7E:11FA]  ;/
@@ -1855,7 +1855,7 @@ $B2:F06B 4A          LSR A                  ;|
 $B2:F06C 4A          LSR A                  ;|
 $B2:F06D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F070 BD B2 0F    LDA $0FB2,x[$7E:1232]  ;|
-$B2:F073 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy $0FB0] - [enemy $0FB6] / 4 * cos([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F073 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy wall-jump arc centre Y position] - [enemy parameter 2] / 4 * cos([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
 $B2:F077 49 FF FF    EOR #$FFFF             ;|
 $B2:F07A 1A          INC A                  ;|
 $B2:F07B 18          CLC                    ;|
@@ -1863,11 +1863,11 @@ $B2:F07C 7D B0 0F    ADC $0FB0,x[$7E:1230]  ;|
 $B2:F07F 9D 7E 0F    STA $0F7E,x[$7E:11FE]  ;/
 $B2:F082 BD B2 0F    LDA $0FB2,x[$7E:1232]  ;\
 $B2:F085 38          SEC                    ;|
-$B2:F086 FF 04 80 7E SBC $7E8004,x[$7E:8284];} Enemy $0FB2 = ([enemy $0FB2] - [enemy $7E:8004]) % 100h
+$B2:F086 FF 04 80 7E SBC $7E8004,x[$7E:8284];} Enemy wall-jump arc angle = ([enemy wall-jump arc angle] - [enemy wall-jump arc angle delta]) % 100h
 $B2:F08A 29 FF 00    AND #$00FF             ;|
 $B2:F08D 9D B2 0F    STA $0FB2,x[$7E:1232]  ;/
 $B2:F090 DF 00 80 7E CMP $7E8000,x[$7E:8280];\
-$B2:F094 D0 31       BNE $31    [$F0C7]     ;} If [enemy $0FB2] != [enemy $7E:8000]: return
+$B2:F094 D0 31       BNE $31    [$F0C7]     ;} If [enemy wall-jump arc angle] != [enemy wall-jump arc right target angle]: return
 $B2:F096 A9 A4 ED    LDA #$EDA4             ;\
 $B2:F099 9D 92 0F    STA $0F92,x[$7E:1212]  ;} Enemy instruction list pointer = $EDA4 (landed on right wall)
 $B2:F09C A9 01 00    LDA #$0001             ;\
@@ -1927,7 +1927,7 @@ $B2:F0E7 BD B6 0F    LDA $0FB6,x[$7E:11F6]  ;\
 $B2:F0EA 4A          LSR A                  ;|
 $B2:F0EB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F0EE BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;|
-$B2:F0F1 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy $0FAE] + [enemy $0FB6] / 2 * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F0F1 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy X position = [enemy wall-jump arc centre X position] + [enemy parameter 2] / 2 * -sin([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
 $B2:F0F5 18          CLC                    ;|
 $B2:F0F6 7D AE 0F    ADC $0FAE,x[$7E:11EE]  ;|
 $B2:F0F9 9D 7A 0F    STA $0F7A,x[$7E:11BA]  ;/
@@ -1936,7 +1936,7 @@ $B2:F0FF 4A          LSR A                  ;|
 $B2:F100 4A          LSR A                  ;|
 $B2:F101 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $B2:F104 BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;|
-$B2:F107 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy $0FB0] - [enemy $0FB6] / 4 * cos([enemy $0FB2] * pi / 80h) * FFh / 100h
+$B2:F107 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy Y position = [enemy wall-jump arc centre Y position] - [enemy parameter 2] / 4 * cos([enemy wall-jump arc angle] * pi / 80h) * FFh / 100h
 $B2:F10B 49 FF FF    EOR #$FFFF             ;|
 $B2:F10E 1A          INC A                  ;|
 $B2:F10F 18          CLC                    ;|
@@ -1944,11 +1944,11 @@ $B2:F110 7D B0 0F    ADC $0FB0,x[$7E:11F0]  ;|
 $B2:F113 9D 7E 0F    STA $0F7E,x[$7E:11BE]  ;/
 $B2:F116 BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;\
 $B2:F119 18          CLC                    ;|
-$B2:F11A 7F 04 80 7E ADC $7E8004,x[$7E:8244];} Enemy $0FB2 = ([enemy $0FB2] + [enemy $7E:8004]) % 100h
+$B2:F11A 7F 04 80 7E ADC $7E8004,x[$7E:8244];} Enemy wall-jump arc angle = ([enemy wall-jump arc angle] + [enemy wall-jump arc angle delta]) % 100h
 $B2:F11E 29 FF 00    AND #$00FF             ;|
 $B2:F121 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;/
 $B2:F124 DF 02 80 7E CMP $7E8002,x[$7E:8242];\
-$B2:F128 D0 31       BNE $31    [$F15B]     ;} If [enemy $0FB2] != [enemy $7E:8002]: return
+$B2:F128 D0 31       BNE $31    [$F15B]     ;} If [enemy wall-jump arc angle] != [enemy wall-jump arc left target angle]: return
 $B2:F12A A9 E4 EC    LDA #$ECE4             ;\
 $B2:F12D 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $ECE4 (landed on left wall)
 $B2:F130 A9 01 00    LDA #$0001             ;\
