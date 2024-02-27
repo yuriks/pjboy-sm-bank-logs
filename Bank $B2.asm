@@ -3447,11 +3447,11 @@ $B2:FD17 A9 4B 80    LDA #$804B             ;\
 $B2:FD1A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTS
 $B2:FD1D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $B2:FD20 18          CLC                    ;|
-$B2:FD21 7D B6 0F    ADC $0FB6,x[$7E:0FB6]  ;} Enemy $0FB2 = [enemy X position] + [enemy parameter 2]
+$B2:FD21 7D B6 0F    ADC $0FB6,x[$7E:0FB6]  ;} Enemy right post X position = [enemy X position] + [enemy parameter 2]
 $B2:FD24 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
 $B2:FD27 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $B2:FD2A 38          SEC                    ;|
-$B2:FD2B FD B6 0F    SBC $0FB6,x[$7E:0FB6]  ;} Enemy $0FB0 = [enemy X position] - [enemy parameter 2]
+$B2:FD2B FD B6 0F    SBC $0FB6,x[$7E:0FB6]  ;} Enemy left post X position = [enemy X position] - [enemy parameter 2]
 $B2:FD2E 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 $B2:FD31 6B          RTL
 }
@@ -3476,12 +3476,12 @@ $B2:FD44 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:FD47 A9 10 00    LDA #$0010             ;\
 $B2:FD4A 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is not within 10h pixel rows of enemy: go to BRANCH_WALK
 $B2:FD4E F0 1A       BEQ $1A    [$FD6A]     ;/
-$B2:FD50 A0 8C FB    LDY #$FB8C             ; Enemy instruction list pointer = $FB8C
+$B2:FD50 A0 8C FB    LDY #$FB8C             ; Enemy instruction list pointer = $FB8C (fire lasers left)
 $B2:FD53 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $B2:FD56 38          SEC                    ;|
 $B2:FD57 FD 7A 0F    SBC $0F7A,x[$7E:0FFA]  ;} If [Samus X position] >= [enemy X position]:
 $B2:FD5A 30 03       BMI $03    [$FD5F]     ;/
-$B2:FD5C A0 0E FC    LDY #$FC0E             ; Enemy instruction list pointer = $FC0E
+$B2:FD5C A0 0E FC    LDY #$FC0E             ; Enemy instruction list pointer = $FC0E (fire lasers right)
 
 $B2:FD5F 98          TYA
 $B2:FD60 9D 92 0F    STA $0F92,x[$7E:1012]
@@ -3496,7 +3496,7 @@ $B2:FD6F 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by 1.0
 $B2:FD71 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $B2:FD75 90 56       BCC $56    [$FDCD]     ; If not collided with block: return
 $B2:FD77 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
-$B2:FD7A 9F 00 78 7E STA $7E7800,x[$7E:7880];} Enemy $7E:7800 = [enemy X position]
+$B2:FD7A 9F 00 78 7E STA $7E7800,x[$7E:7880];} Enemy X position backup = [enemy X position]
 $B2:FD7E 18          CLC                    ;\
 $B2:FD7F 69 EF FF    ADC #$FFEF             ;} Enemy X position -= 11h
 $B2:FD82 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
@@ -3506,7 +3506,7 @@ $B2:FD8A 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by 1.0
 $B2:FD8C 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $B2:FD90 08          PHP                    ;\
 $B2:FD91 BF 00 78 7E LDA $7E7800,x[$7E:7880];|
-$B2:FD95 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [enemy $7E:7800]
+$B2:FD95 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [enemy X position backup]
 $B2:FD98 28          PLP                    ;/
 $B2:FD99 90 26       BCC $26    [$FDC1]     ; If collided with block:
 $B2:FD9B A9 00 00    LDA #$0000             ;\
@@ -3521,11 +3521,11 @@ $B2:FDB1 85 14       STA $14    [$7E:0014]  ;|
 $B2:FDB3 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $B2:FDB7 B0 08       BCS $08    [$FDC1]     ; If not collided with wall:
 $B2:FDB9 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
-$B2:FDBC DD B0 0F    CMP $0FB0,x[$7E:1030]  ;} If [enemy X position] >= [enemy $0FB0]: return
+$B2:FDBC DD B0 0F    CMP $0FB0,x[$7E:1030]  ;} If [enemy X position] >= [enemy left post X position]: return
 $B2:FDBF 10 0C       BPL $0C    [$FDCD]     ;/
 
 $B2:FDC1 A9 C6 FB    LDA #$FBC6             ;\
-$B2:FDC4 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $FBC6
+$B2:FDC4 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $FBC6 (look around - facing left)
 $B2:FDC7 A9 01 00    LDA #$0001             ;\
 $B2:FDCA 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
 
@@ -3539,12 +3539,12 @@ $B2:FDCE AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:FDD1 A9 10 00    LDA #$0010             ;\
 $B2:FDD4 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is not within 10h pixel rows of enemy: go to BRANCH_WALK
 $B2:FDD8 F0 1A       BEQ $1A    [$FDF4]     ;/
-$B2:FDDA A0 8C FB    LDY #$FB8C             ; Enemy instruction list pointer = $FB8C
+$B2:FDDA A0 8C FB    LDY #$FB8C             ; Enemy instruction list pointer = $FB8C (fire lasers left)
 $B2:FDDD AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $B2:FDE0 38          SEC                    ;|
 $B2:FDE1 FD 7A 0F    SBC $0F7A,x[$7E:103A]  ;} If [Samus X position] >= [enemy X position]:
 $B2:FDE4 30 03       BMI $03    [$FDE9]     ;/
-$B2:FDE6 A0 0E FC    LDY #$FC0E             ; Enemy instruction list pointer = $FC0E
+$B2:FDE6 A0 0E FC    LDY #$FC0E             ; Enemy instruction list pointer = $FC0E (fire lasers right)
 
 $B2:FDE9 98          TYA
 $B2:FDEA 9D 92 0F    STA $0F92,x[$7E:1052]
@@ -3559,7 +3559,7 @@ $B2:FDF9 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by 1.0
 $B2:FDFB 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $B2:FDFF 90 48       BCC $48    [$FE49]     ; If not collided with block: return
 $B2:FE01 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$B2:FE04 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = [enemy X position]
+$B2:FE04 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy X position backup = [enemy X position]
 $B2:FE08 18          CLC                    ;\
 $B2:FE09 69 10 00    ADC #$0010             ;} Enemy X position += 10h
 $B2:FE0C 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
@@ -3569,7 +3569,7 @@ $B2:FE14 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by 1.0
 $B2:FE16 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $B2:FE1A 08          PHP                    ;\
 $B2:FE1B BF 00 78 7E LDA $7E7800,x[$7E:7800];|
-$B2:FE1F 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy $7E:7800]
+$B2:FE1F 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy X position backup]
 $B2:FE22 28          PLP                    ;/
 $B2:FE23 90 18       BCC $18    [$FE3D]     ; If collided with block:
 $B2:FE25 A9 00 38    LDA #$3800             ;\
@@ -3579,11 +3579,11 @@ $B2:FE2D 85 14       STA $14    [$7E:0014]  ;|
 $B2:FE2F 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $B2:FE33 B0 08       BCS $08    [$FE3D]     ; If not collided with wall:
 $B2:FE35 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$B2:FE38 DD B2 0F    CMP $0FB2,x[$7E:0FB2]  ;} If [enemy X position] < [enemy $0FB2]: return
+$B2:FE38 DD B2 0F    CMP $0FB2,x[$7E:0FB2]  ;} If [enemy X position] < [enemy right post X position]: return
 $B2:FE3B 30 0C       BMI $0C    [$FE49]     ;/
 
 $B2:FE3D A9 48 FC    LDA #$FC48             ;\
-$B2:FE40 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $FC48
+$B2:FE40 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $FC48 (look around - facing right)
 $B2:FE43 A9 01 00    LDA #$0001             ;\
 $B2:FE46 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
 
