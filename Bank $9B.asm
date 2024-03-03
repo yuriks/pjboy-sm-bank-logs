@@ -966,7 +966,7 @@ $9B:B4B6 08          PHP
 $9B:B4B7 C2 30       REP #$30
 $9B:B4B9 AC 74 0A    LDY $0A74  [$7E:0A74]  ;\
 $9B:B4BC B9 C8 B5    LDA $B5C8,y[$9B:B5C8]  ;|
-$9B:B4BF AA          TAX                    ;} $14 = [[$B5C8 + [Samus suit palette index]]]
+$9B:B4BF AA          TAX                    ;} X = [[$B5C8 + [Samus suit palette index]]]
 $9B:B4C0 BD 00 00    LDA $0000,x[$9B:B7D3]  ;|
 $9B:B4C3 AA          TAX                    ;/
 $9B:B4C4 8B          PHB

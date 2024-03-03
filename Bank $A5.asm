@@ -4908,7 +4908,7 @@ $A5:E8A2 6B          RTL
 }
 
 
-;;; $E8A3: Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 6 ;;;
+;;; $E8A3: Unused. Instruction - queue sound [[Y]], sound library 3, max queued sounds allowed = 6 ;;;
 {
 $A5:E8A3 DA          PHX
 $A5:E8A4 5A          PHY

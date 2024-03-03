@@ -10478,7 +10478,7 @@ $84:CE49 29 00 F0    AND #$F000             ;} PLM respawn block = [PLM block] &
 $84:CE4C 09 BC 00    ORA #$00BC             ;|
 $84:CE4F 99 17 1E    STA $1E17,y[$7E:1E65]  ;/
 $84:CE52 29 FF 8F    AND #$8FFF             ;\
-$84:CE55 9F 02 00 7F STA $7F0002,x[$7F:0230];} PLM block = 00BCh
+$84:CE55 9F 02 00 7F STA $7F0002,x[$7F:0230];} PLM block = [PLM block] & 8000h | BCh
 $84:CE59 BB          TYX                    ;\
 $84:CE5A A9 04 00    LDA #$0004             ;} PLM instruction timer = 4
 $84:CE5D 9F 1C DE 7E STA $7EDE1C,x[$7E:DE6A];/

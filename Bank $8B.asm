@@ -14303,7 +14303,7 @@ $8B:F33F DA          PHX                    ;\
 $8B:F340 A2 1E 00    LDX #$001E             ;|
                                             ;|
 $8B:F343 9F 20 C0 7E STA $7EC020,x[$7E:C03E];|
-$8B:F347 CA          DEX                    ;} BG1/2 palette 0 = 7FFFh
+$8B:F347 CA          DEX                    ;} BG1/2 palette 1 = 7FFFh
 $8B:F348 CA          DEX                    ;|
 $8B:F349 10 F8       BPL $F8    [$F343]     ;|
 $8B:F34B FA          PLX                    ;/
