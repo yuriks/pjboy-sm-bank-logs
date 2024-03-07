@@ -12598,6 +12598,7 @@ $8B:E589 60          RTS
 
 ;;; $E58A:  ;;;
 {
+; Handles palette transition to greyscale of Super Metroid icon
 $8B:E58A DA          PHX
 $8B:E58B 5A          PHY
 $8B:E58C 8B          PHB
