@@ -2754,7 +2754,7 @@ $A0:97DF 4C 84 98    JMP $9884  [$A0:9884]  ; Go to BRANCH_NEXT
 
 ; BRANCH_INTERACTIVE
 $A0:97E2 B9 04 0C    LDA $0C04,y[$7E:0C0E]  ;\
-$A0:97E5 29 10 00    AND #$0010             ;} If projectile is charged: go to BRANCH_NEXT
+$A0:97E5 29 10 00    AND #$0010             ;} If projectile is flagged for deletion: go to BRANCH_NEXT
 $A0:97E8 D0 F5       BNE $F5    [$97DF]     ;/
 $A0:97EA B9 64 0B    LDA $0B64,y[$7E:0B6E]  ;\
 $A0:97ED 38          SEC                    ;|
@@ -2823,7 +2823,7 @@ $A0:986D 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = 5
 $A0:9870 A0 00 00    LDY #$0000             ; Knockback X direction = left
 $A0:9873 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A0:9876 38          SEC                    ;|
-$A0:9877 FD 4B 1A    SBC $1A4B,x            ;} If [Samus X position] >= [enemy projectile X position]:
+$A0:9877 FD 4B 1A    SBC $1A4B,x            ;} If [Samus X position] >= [enemy projectile [X] X position]: <-- BUG: should be projectile [Y] X position
 $A0:987A 30 03       BMI $03    [$987F]     ;/
 $A0:987C A0 01 00    LDY #$0001             ; Knockback X direction = right
 

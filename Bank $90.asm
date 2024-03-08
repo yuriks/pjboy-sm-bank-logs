@@ -14868,7 +14868,7 @@ $90:E90E 60          RTS
 }
 
 
-;;; $E90F..4A: Samus pose input handler ;;;
+;;; $E90F..4A: Samus pose input handler ($0A60) ;;;
 {
 ;;; $E90F: Samus pose input handler ;;;
 {
