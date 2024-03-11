@@ -1788,7 +1788,7 @@ $A5:9589 A2 00 00    LDX #$0000             ;\
 $A5:958C B9 AF 96    LDA $96AF,y[$A5:96AF]  ;|
 $A5:958F 9F B2 C0 7E STA $7EC0B2,x[$7E:C0B2];|
 $A5:9593 C8          INY                    ;|
-$A5:9594 C8          INY                    ;} BG1/2 palette 4 colours 1..4 = 8 bytes from [$96AF + [Y]]
+$A5:9594 C8          INY                    ;} BG1/2 palette 5 colours 9..Ch = 8 bytes from [$96AF + [Y]]
 $A5:9595 E8          INX                    ;|
 $A5:9596 E8          INX                    ;|
 $A5:9597 E0 08 00    CPX #$0008             ;|
@@ -1982,7 +1982,7 @@ $A5:9721 A8          TAY                    ;|
 $A5:9722 A2 00 00    LDX #$0000             ;|
                                             ;|
 $A5:9725 B9 AF 96    LDA $96AF,y[$A5:96B7]  ;|
-$A5:9728 9F B2 C0 7E STA $7EC0B2,x[$7E:C0B2];} BG1/2 palette 4 colours 1..4 = 8 bytes from [$96AF + [X] * 4]
+$A5:9728 9F B2 C0 7E STA $7EC0B2,x[$7E:C0B2];} BG1/2 palette 5 colours 9..Ch = 8 bytes from [$96AF + [X] * 4]
 $A5:972C C8          INY                    ;|
 $A5:972D C8          INY                    ;|
 $A5:972E E8          INX                    ;|
