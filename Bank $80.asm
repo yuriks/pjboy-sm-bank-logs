@@ -719,11 +719,11 @@ $80:836E 6B          RTL
 ;;; $836F: Set force blank and wait for NMI ;;;
 {
 ; Called by:
-;     $B032: Unused. Mode 7 initialisation?
-;     $81:8D0F
-;     $81:944E
-;     $81:94EE
-;     $81:AF83
+;     $B032: Unused. Set up rotating mode 7 background
+;     $81:8D0F: (Debug) game over menu - index 0: fade out and configure graphics for menu
+;     $81:944E: File select menu - index 0: title sequence to main - fade out and configure graphics
+;     $81:94EE: File select menu - index 5/13h: fade out from main
+;     $81:AF83: File select map - index Eh: room select map to loading game data - wait
 ;     $A7:C1FB: Unpause hook - Kraid is dead
 ;     $A7:C24E: Unpause hook - Kraid is alive
 ;     $A7:C2A0: Unpause hook - Kraid is sinking
@@ -748,10 +748,10 @@ $80:8381 6B          RTL
 ;;; $8382: Clear force blank and wait for NMI ;;;
 {
 ; Called by:
-;     $B032: Unused. Mode 7 initialisation?
-;     $81:8D6D
-;     $81:91A4
-;     $81:9ED6
+;     $B032: Unused. Set up rotating mode 7 background
+;     $81:8D6D: Debug game over menu - index 1: initialise
+;     $81:91A4: Game over menu - index 1: initialise
+;     $81:9ED6: File select menu - index 2: title sequence to main - initialise
 ;     $A7:C24E: Unpause hook - Kraid is alive
 $80:8382 08          PHP
 $80:8383 8B          PHB

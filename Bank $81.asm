@@ -2350,7 +2350,7 @@ $81:950D 85 57       STA $57    [$7E:0057]  ;/
 $81:950F A5 51       LDA $51    [$7E:0051]  ;\
 $81:9511 29 0F 00    AND #$000F             ;} If (brightness) != 0: return
 $81:9514 D0 07       BNE $07    [$951D]     ;/
-$81:9516 22 6F 83 80 JSL $80836F[$80:836F]  ; Set force blank and wait for NMI
+$81:9516 22 6F 83 80 JSL $80836F[$80:836F]
 $81:951A EE 27 07    INC $0727  [$7E:0727]  ; Increment menu index
 
 $81:951D 60          RTS
