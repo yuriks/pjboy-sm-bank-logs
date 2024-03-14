@@ -17,7 +17,7 @@
 ; Door header format
 ;                        _____________________________ 0: Destination room header pointer (bank $8F)
 ;                       |     ________________________ 2: Elevator properties
-;                       |    |   _____________________ 3: Orientation
+;                       |    |   _____________________ 3: Direction
 ;                       |    |  |   __________________ 4: X position low byte
 ;                       |    |  |  |   _______________ 5: Y position low byte
 ;                       |    |  |  |  |   ____________ 6: X position high byte

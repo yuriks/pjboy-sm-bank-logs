@@ -9663,7 +9663,7 @@ $82:DE23 8D 93 07    STA $0793  [$7E:0793]  ;} Elevator door properties = [[X] +
 $82:DE26 29 80 00    AND #$0080             ;\
 $82:DE29 8D 16 0E    STA $0E16  [$7E:0E16]  ;} Elevator properties = [door flags] & 80h
 $82:DE2C BD 03 00    LDA $0003,x[$83:AB5B]  ;\
-$82:DE2F 29 FF 00    AND #$00FF             ;} Door orientation = [[X] + 3]
+$82:DE2F 29 FF 00    AND #$00FF             ;} Door direction = [[X] + 3]
 $82:DE32 8D 91 07    STA $0791  [$7E:0791]  ;/
 $82:DE35 BD 06 00    LDA $0006,x[$83:AB5E]  ;\
 $82:DE38 29 FF 00    AND #$00FF             ;|
@@ -9678,11 +9678,11 @@ $82:DE4B 64 14       STZ $14    [$7E:0014]
 $82:DE4D BD 08 00    LDA $0008,x[$83:AB60]  ; A = [[X] + 8]
 $82:DE50 10 10       BPL $10    [$DE62]     ; If [A] >= 0: go to BRANCH_POSITIVE
 $82:DE52 AD 91 07    LDA $0791  [$7E:0791]  ;\
-$82:DE55 89 02 00    BIT #$0002             ;} If door orientation is horizontal:
+$82:DE55 89 02 00    BIT #$0002             ;} If door direction is horizontal:
 $82:DE58 D0 05       BNE $05    [$DE5F]     ;/
 $82:DE5A A9 C8 00    LDA #$00C8             ; A = C8h
 $82:DE5D 80 03       BRA $03    [$DE62]
-                                            ; Else (door orientation is vertical):
+                                            ; Else (door direction is vertical):
 $82:DE5F A9 80 01    LDA #$0180             ; A = 180h
 
 ; BRANCH_POSITIVE
