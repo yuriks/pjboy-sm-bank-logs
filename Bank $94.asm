@@ -2305,8 +2305,8 @@ $94:932C 60          RTS
 ;;     $12: Distance to check for collision
 ;;     $20: Target boundary position (left/right depending on sign of [$12])
 ;; Returns:
-;;     Carry: Set. Unconditional collision
-;;     $12.$14: Distance to collision
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: If carry set, distance to collision
 
 $94:932D AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9330 BF 01 64 7F LDA $7F6401,x[$7F:66E0];|
@@ -2317,7 +2317,7 @@ $94:933A 0A          ASL A                  ;\
 $94:933B AA          TAX                    ;|
 $94:933C BD 6B 93    LDA $936B,x[$94:936D]  ;} Spawn PLM [$936B + [block BTS] * 2]
 $94:933F 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9343 90 06       BCC $06    [$934B]
+$94:9343 90 06       BCC $06    [$934B]     ; If carry clear: return carry clear
 $94:9345 4C 49 8F    JMP $8F49  [$94:8F49]
 
 $94:9348 4C 49 8F    JMP $8F49  [$94:8F49]  ; Go to Samus block collision reaction - horizontal - solid/shootable/grapple block
@@ -2332,8 +2332,8 @@ $94:934B 60          RTS
 ;;     $12: Distance to check for collision
 ;;     $20: Target boundary position (top/bottom depending on sign of [$12])
 ;; Returns:
-;;     Carry: Set. Unconditional collision
-;;     $12.$14: Distance to collision
+;;     Carry: Set if collision, clear otherwise
+;;     $12.$14: If carry set, distance to collision
 
 $94:934C AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:934F BF 01 64 7F LDA $7F6401,x[$7F:65E6];|
@@ -2344,7 +2344,7 @@ $94:9359 0A          ASL A                  ;\
 $94:935A AA          TAX                    ;|
 $94:935B BD 6B 93    LDA $936B,x[$94:9377]  ;} Spawn PLM [$936B + [block BTS] * 2]
 $94:935E 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
-$94:9362 90 06       BCC $06    [$936A]
+$94:9362 90 06       BCC $06    [$936A]     ; If carry clear: return carry clear
 $94:9364 4C 82 8F    JMP $8F82  [$94:8F82]
 
 $94:9367 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reaction - vertical - solid/shootable/grapple block
