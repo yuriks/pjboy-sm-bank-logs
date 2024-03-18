@@ -12944,7 +12944,7 @@ $8B:E81B 60          RTS                    ; Return
 $8B:E81C A9 28 00    LDA #$0028             ;\
 $8B:E81F 85 16       STA $16    [$7E:0016]  ;} $16 = 28h (loop counter)
 $8B:E821 A0 0C 0E    LDY #$0E0C             ; Y = $0E0C (shooting star base address)
-$8B:E824 80 1B       BRA $1B    [$E841]     ; Go to LOOP_E841
+$8B:E824 80 1B       BRA $1B    [$E841]     ; Go to LOOP_PROCESS
 
 ; BRANCH_DELAY
 $8B:E826 B9 0A 00    LDA $000A,y[$7E:0E16]  ;\
@@ -13527,7 +13527,7 @@ $8B:ED95             dx 000A,9D5A,
 $8B:ED9D             dx 000A,9DA7,
                         0010,9DEA,
                         0030,9E55,
-                        F604,       ; ???
+                        F604,       ; Samus shoots screen
                         0080,9E55,
                         9438        ; Delete
 }
@@ -14762,7 +14762,7 @@ $8B:F603 60          RTS
 }
 
 
-;;; $F604: Instruction ;;;
+;;; $F604: Instruction - Samus shoots screen ;;;
 {
 $8B:F604 DA          PHX
 $8B:F605 5A          PHY
