@@ -9222,7 +9222,7 @@ $A3:EB97 6B          RTL
 
 ;;; $EB98: Main AI - enemy $DD7F (metroid) ;;;
 {
-$A3:EB98 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$A3:EB98 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EB9B AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A3:EB9E 38          SEC                    ;|
 $A3:EB9F E9 08 00    SBC #$0008             ;} $0E32 = [Samus Y position] - 8
@@ -9248,7 +9248,7 @@ $A3:EBD0 A5 18       LDA $18    [$7E:0018]  ;\
 $A3:EBD2 9F 78 F0 7E STA $7EF078,x[$7E:F0AA];} Metroid electricity sprite object palette / VRAM index = [$18]
 $A3:EBD6 A9 00 00    LDA #$0000             ;\
 $A3:EBD9 9F F8 F2 7E STA $7EF2F8,x[$7E:F32A];} Metroid electricity sprite object $7E:F2F8 = 0
-$A3:EBDD AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$A3:EBDD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EBE0 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
 $A3:EBE3 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A3:EBE5 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
@@ -9269,42 +9269,44 @@ $A3:EC09             dw EC11, ECDC, ED8F, EDAB
 }
 
 
-;;; $EC11: Metroid function ;;;
+;;; $EC11: Metroid function - accelerate towards Samus ;;;
 {
+;; Parameter:
+;;     $0E32: [Samus Y position] - 8
 $A3:EC11 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:EC14 64 12       STZ $12    [$7E:0012]
-$A3:EC16 64 14       STZ $14    [$7E:0014]
-$A3:EC18 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A3:EC1B 38          SEC
-$A3:EC1C ED 32 0E    SBC $0E32  [$7E:0E32]
-$A3:EC1F 4A          LSR A
-$A3:EC20 4A          LSR A
-$A3:EC21 85 13       STA $13    [$7E:0013]
-$A3:EC23 29 00 20    AND #$2000
-$A3:EC26 F0 07       BEQ $07    [$EC2F]
-$A3:EC28 A5 14       LDA $14    [$7E:0014]
-$A3:EC2A 09 C0 FF    ORA #$FFC0
-$A3:EC2D 85 14       STA $14    [$7E:0014]
-
-$A3:EC2F BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A3:EC32 38          SEC
-$A3:EC33 E5 12       SBC $12    [$7E:0012]
-$A3:EC35 9D AC 0F    STA $0FAC,x[$7E:106C]
-$A3:EC38 BD AE 0F    LDA $0FAE,x[$7E:106E]
-$A3:EC3B E5 14       SBC $14    [$7E:0014]
-$A3:EC3D 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A3:EC40 30 0A       BMI $0A    [$EC4C]
-$A3:EC42 C9 03 00    CMP #$0003
-$A3:EC45 90 13       BCC $13    [$EC5A]
-$A3:EC47 A9 03 00    LDA #$0003
-$A3:EC4A 80 08       BRA $08    [$EC54]
-
-$A3:EC4C C9 FD FF    CMP #$FFFD
-$A3:EC4F B0 09       BCS $09    [$EC5A]
-$A3:EC51 A9 FD FF    LDA #$FFFD
-
-$A3:EC54 9D AE 0F    STA $0FAE,x
-$A3:EC57 9E AC 0F    STZ $0FAC,x
+$A3:EC14 64 12       STZ $12    [$7E:0012]  ;\
+$A3:EC16 64 14       STZ $14    [$7E:0014]  ;|
+$A3:EC18 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;|
+$A3:EC1B 38          SEC                    ;|
+$A3:EC1C ED 32 0E    SBC $0E32  [$7E:0E32]  ;|
+$A3:EC1F 4A          LSR A                  ;|
+$A3:EC20 4A          LSR A                  ;|
+$A3:EC21 85 13       STA $13    [$7E:0013]  ;|
+$A3:EC23 29 00 20    AND #$2000             ;|
+$A3:EC26 F0 07       BEQ $07    [$EC2F]     ;|
+$A3:EC28 A5 14       LDA $14    [$7E:0014]  ;} Enemy Y velocity -= floor(([enemy Y position] - [Samus Y position] + 8) / 4) / 100h
+$A3:EC2A 09 C0 FF    ORA #$FFC0             ;|
+$A3:EC2D 85 14       STA $14    [$7E:0014]  ;|
+                                            ;|
+$A3:EC2F BD AC 0F    LDA $0FAC,x[$7E:106C]  ;|
+$A3:EC32 38          SEC                    ;|
+$A3:EC33 E5 12       SBC $12    [$7E:0012]  ;|
+$A3:EC35 9D AC 0F    STA $0FAC,x[$7E:106C]  ;|
+$A3:EC38 BD AE 0F    LDA $0FAE,x[$7E:106E]  ;|
+$A3:EC3B E5 14       SBC $14    [$7E:0014]  ;|
+$A3:EC3D 9D AE 0F    STA $0FAE,x[$7E:106E]  ;/
+$A3:EC40 30 0A       BMI $0A    [$EC4C]     ;\
+$A3:EC42 C9 03 00    CMP #$0003             ;|
+$A3:EC45 90 13       BCC $13    [$EC5A]     ;|
+$A3:EC47 A9 03 00    LDA #$0003             ;|
+$A3:EC4A 80 08       BRA $08    [$EC54]     ;|
+                                            ;|
+$A3:EC4C C9 FD FF    CMP #$FFFD             ;} Enemy Y velocity = clamp([enemy Y velocity], -3.0, 3.0)
+$A3:EC4F B0 09       BCS $09    [$EC5A]     ;|
+$A3:EC51 A9 FD FF    LDA #$FFFD             ;|
+                                            ;|
+$A3:EC54 9D AE 0F    STA $0FAE,x            ;|
+$A3:EC57 9E AC 0F    STZ $0FAC,x            ;/
 
 $A3:EC5A BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
 $A3:EC5D 85 12       STA $12    [$7E:0012]  ;|
@@ -9314,43 +9316,43 @@ $A3:EC64 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
 $A3:EC67 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A3:EC6B 90 09       BCC $09    [$EC76]     ; If collided with block:
 $A3:EC6D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:EC70 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A3:EC73 9E AE 0F    STZ $0FAE,x[$7E:0FAE]
+$A3:EC70 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ;\
+$A3:EC73 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ;} Enemy Y velocity = 0.0
 
-$A3:EC76 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:EC79 64 12       STZ $12    [$7E:0012]
-$A3:EC7B 64 14       STZ $14    [$7E:0014]
-$A3:EC7D BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$A3:EC80 38          SEC
-$A3:EC81 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A3:EC84 4A          LSR A
-$A3:EC85 4A          LSR A
-$A3:EC86 85 13       STA $13    [$7E:0013]
-$A3:EC88 29 00 20    AND #$2000
-$A3:EC8B F0 07       BEQ $07    [$EC94]
-$A3:EC8D A5 14       LDA $14    [$7E:0014]
-$A3:EC8F 09 C0 FF    ORA #$FFC0
-$A3:EC92 85 14       STA $14    [$7E:0014]
-
-$A3:EC94 BD A8 0F    LDA $0FA8,x[$7E:1068]
-$A3:EC97 38          SEC
-$A3:EC98 E5 12       SBC $12    [$7E:0012]
-$A3:EC9A 9D A8 0F    STA $0FA8,x[$7E:1068]
-$A3:EC9D BD AA 0F    LDA $0FAA,x[$7E:106A]
-$A3:ECA0 E5 14       SBC $14    [$7E:0014]
-$A3:ECA2 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A3:ECA5 30 0A       BMI $0A    [$ECB1]
-$A3:ECA7 C9 03 00    CMP #$0003
-$A3:ECAA 90 13       BCC $13    [$ECBF]
-$A3:ECAC A9 03 00    LDA #$0003
-$A3:ECAF 80 08       BRA $08    [$ECB9]
-
-$A3:ECB1 C9 FD FF    CMP #$FFFD
-$A3:ECB4 B0 09       BCS $09    [$ECBF]
-$A3:ECB6 A9 FD FF    LDA #$FFFD
-
-$A3:ECB9 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A3:ECBC 9E A8 0F    STZ $0FA8,x[$7E:1068]
+$A3:EC76 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A3:EC79 64 12       STZ $12    [$7E:0012]  ;\
+$A3:EC7B 64 14       STZ $14    [$7E:0014]  ;|
+$A3:EC7D BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;|
+$A3:EC80 38          SEC                    ;|
+$A3:EC81 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A3:EC84 4A          LSR A                  ;|
+$A3:EC85 4A          LSR A                  ;|
+$A3:EC86 85 13       STA $13    [$7E:0013]  ;|
+$A3:EC88 29 00 20    AND #$2000             ;|
+$A3:EC8B F0 07       BEQ $07    [$EC94]     ;|
+$A3:EC8D A5 14       LDA $14    [$7E:0014]  ;} Enemy X velocity -= floor(([enemy X position] - [Samus X position]) / 4) / 100h
+$A3:EC8F 09 C0 FF    ORA #$FFC0             ;|
+$A3:EC92 85 14       STA $14    [$7E:0014]  ;|
+                                            ;|
+$A3:EC94 BD A8 0F    LDA $0FA8,x[$7E:1068]  ;|
+$A3:EC97 38          SEC                    ;|
+$A3:EC98 E5 12       SBC $12    [$7E:0012]  ;|
+$A3:EC9A 9D A8 0F    STA $0FA8,x[$7E:1068]  ;|
+$A3:EC9D BD AA 0F    LDA $0FAA,x[$7E:106A]  ;|
+$A3:ECA0 E5 14       SBC $14    [$7E:0014]  ;|
+$A3:ECA2 9D AA 0F    STA $0FAA,x[$7E:106A]  ;/
+$A3:ECA5 30 0A       BMI $0A    [$ECB1]     ;\
+$A3:ECA7 C9 03 00    CMP #$0003             ;|
+$A3:ECAA 90 13       BCC $13    [$ECBF]     ;|
+$A3:ECAC A9 03 00    LDA #$0003             ;|
+$A3:ECAF 80 08       BRA $08    [$ECB9]     ;|
+                                            ;|
+$A3:ECB1 C9 FD FF    CMP #$FFFD             ;} Enemy X velocity = clamp([enemy X velocity], -3.0, 3.0)
+$A3:ECB4 B0 09       BCS $09    [$ECBF]     ;|
+$A3:ECB6 A9 FD FF    LDA #$FFFD             ;|
+                                            ;|
+$A3:ECB9 9D AA 0F    STA $0FAA,x[$7E:106A]  ;|
+$A3:ECBC 9E A8 0F    STZ $0FA8,x[$7E:1068]  ;/
 
 $A3:ECBF BD A8 0F    LDA $0FA8,x[$7E:1068]  ;\
 $A3:ECC2 85 12       STA $12    [$7E:0012]  ;|
@@ -9367,8 +9369,15 @@ $A3:ECDB 60          RTS
 }
 
 
-;;; $ECDC: Metroid function ;;;
+;;; $ECDC: Metroid function - latch onto Samus ;;;
 {
+;; Parameter:
+;;     $0E32: [Samus Y position] - 8
+
+; This calculation of $14 = ((Samus position) - (metroid position)) * 20h is strange,
+; the result if non-zero will always be a huge value that has to be clamped to ±3
+; Hard to believe it's the intentional operation, possibly the intended destination of the calculation was $13,
+; though the sign extension code would have to be modified in that case too...
 $A3:ECDC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ECDF 64 12       STZ $12    [$7E:0012]  ; $12 = 0
 $A3:ECE1 64 14       STZ $14    [$7E:0014]
@@ -9379,7 +9388,7 @@ $A3:ECEA EB          XBA                    ;|
 $A3:ECEB 29 00 FF    AND #$FF00             ;|
 $A3:ECEE 4A          LSR A                  ;|
 $A3:ECEF 4A          LSR A                  ;|
-$A3:ECF0 4A          LSR A                  ;} $14 = ([$0E32] - [enemy Y position]) % 100h * 20h
+$A3:ECF0 4A          LSR A                  ;} $14 = ([Samus Y position] - 8 - [enemy Y position]) * 20h
 $A3:ECF1 85 14       STA $14    [$7E:0014]  ;|
 $A3:ECF3 29 00 10    AND #$1000             ;|
 $A3:ECF6 F0 07       BEQ $07    [$ECFF]     ;|
@@ -9403,7 +9412,7 @@ $A3:ED17 64 12       STZ $12    [$7E:0012]
 
 $A3:ED19 A5 12       LDA $12    [$7E:0012]  ;\
 $A3:ED1B 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;|
-$A3:ED1E A5 14       LDA $14    [$7E:0014]  ;} Enemy Y velocity = [$14].[$12]
+$A3:ED1E A5 14       LDA $14    [$7E:0014]  ;} Enemy Y velocity = [$14].0
 $A3:ED20 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A3:ED23 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ED26 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [enemy Y velocity]
@@ -9422,7 +9431,7 @@ $A3:ED43 EB          XBA                    ;|
 $A3:ED44 29 00 FF    AND #$FF00             ;|
 $A3:ED47 4A          LSR A                  ;|
 $A3:ED48 4A          LSR A                  ;|
-$A3:ED49 4A          LSR A                  ;} $14 = ([Samus X position] - [enemy X position]) % 100h * 20h
+$A3:ED49 4A          LSR A                  ;} $14 = ([Samus X position] - [enemy X position]) * 20h
 $A3:ED4A 85 14       STA $14    [$7E:0014]  ;|
 $A3:ED4C 29 00 10    AND #$1000             ;|
 $A3:ED4F F0 07       BEQ $07    [$ED58]     ;|
@@ -9446,7 +9455,7 @@ $A3:ED70 64 12       STZ $12    [$7E:0012]
 
 $A3:ED72 A5 12       LDA $12    [$7E:0012]  ;\
 $A3:ED74 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;|
-$A3:ED77 A5 14       LDA $14    [$7E:0014]  ;} Enemy X velocity = [$14].[$12]
+$A3:ED77 A5 14       LDA $14    [$7E:0014]  ;} Enemy X velocity = [$14].0
 $A3:ED79 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A3:ED7C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ED7F 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [enemy X velocity]
@@ -9459,17 +9468,19 @@ $A3:ED8E 60          RTS
 }
 
 
-;;; $ED8F: Metroid function ;;;
+;;; $ED8F: Metroid function - latched onto Samus ;;;
 {
+;; Parameter:
+;;     $0E32: [Samus Y position] - 8
 $A3:ED8F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:ED92 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A3:ED95 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A3:ED98 AD 32 0E    LDA $0E32  [$7E:0E32]
-$A3:ED9B 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A3:ED9E 9E A8 0F    STZ $0FA8,x[$7E:0FE8]
-$A3:EDA1 9E AA 0F    STZ $0FAA,x[$7E:0FEA]
-$A3:EDA4 9E AC 0F    STZ $0FAC,x[$7E:0FEC]
-$A3:EDA7 9E AE 0F    STZ $0FAE,x[$7E:0FEE]
+$A3:ED92 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A3:ED95 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [Samus X position]
+$A3:ED98 AD 32 0E    LDA $0E32  [$7E:0E32]  ;\
+$A3:ED9B 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [Samus Y position] - 8
+$A3:ED9E 9E A8 0F    STZ $0FA8,x[$7E:0FE8]  ;\
+$A3:EDA1 9E AA 0F    STZ $0FAA,x[$7E:0FEA]  ;} Enemy X velocity = 0.0
+$A3:EDA4 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ;\
+$A3:EDA7 9E AE 0F    STZ $0FAE,x[$7E:0FEE]  ;} Enemy Y velocity = 0.0
 $A3:EDAA 60          RTS
 }
 
@@ -9477,29 +9488,29 @@ $A3:EDAA 60          RTS
 ;;; $EDAB: Metroid function ;;;
 {
 $A3:EDAB AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:EDAE BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A3:EDB1 29 03 00    AND #$0003
-$A3:EDB4 0A          ASL A
-$A3:EDB5 A8          TAY
-$A3:EDB6 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$A3:EDB9 18          CLC
-$A3:EDBA 79 3F EA    ADC $EA3F,y[$A3:EA3F]
-$A3:EDBD 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A3:EDC0 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A3:EDC3 18          CLC
-$A3:EDC4 79 47 EA    ADC $EA47,y[$A3:EA47]
-$A3:EDC7 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A3:EDCA 9E A8 0F    STZ $0FA8,x[$7E:0FE8]
-$A3:EDCD 9E AA 0F    STZ $0FAA,x[$7E:0FEA]
-$A3:EDD0 9E AC 0F    STZ $0FAC,x[$7E:0FEC]
-$A3:EDD3 9E AE 0F    STZ $0FAE,x[$7E:0FEE]
-$A3:EDD6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
-$A3:EDD9 D0 0F       BNE $0F    [$EDEA]
-$A3:EDDB 9E B2 0F    STZ $0FB2,x[$7E:0FF2]
-$A3:EDDE A9 CF E9    LDA #$E9CF
-$A3:EDE1 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:EDE4 A9 01 00    LDA #$0001
-$A3:EDE7 9D 94 0F    STA $0F94,x[$7E:0FD4]
+$A3:EDAE BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A3:EDB1 29 03 00    AND #$0003             ;|
+$A3:EDB4 0A          ASL A                  ;} Y = ([enemy $0FB0] & 3) * 2
+$A3:EDB5 A8          TAY                    ;/
+$A3:EDB6 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$A3:EDB9 18          CLC                    ;|
+$A3:EDBA 79 3F EA    ADC $EA3F,y[$A3:EA3F]  ;} Enemy X position += [$EA3F + [Y]]
+$A3:EDBD 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$A3:EDC0 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A3:EDC3 18          CLC                    ;|
+$A3:EDC4 79 47 EA    ADC $EA47,y[$A3:EA47]  ;} Enemy Y position += [$EA47 + [Y]]
+$A3:EDC7 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A3:EDCA 9E A8 0F    STZ $0FA8,x[$7E:0FE8]  ;\
+$A3:EDCD 9E AA 0F    STZ $0FAA,x[$7E:0FEA]  ;} Enemy X velocity = 0.0
+$A3:EDD0 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ;\
+$A3:EDD3 9E AE 0F    STZ $0FAE,x[$7E:0FEE]  ;} Enemy Y velocity = 0.0
+$A3:EDD6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy $0FB0
+$A3:EDD9 D0 0F       BNE $0F    [$EDEA]     ; If [enemy $0FB0] = 0:
+$A3:EDDB 9E B2 0F    STZ $0FB2,x[$7E:0FF2]  ; Enemy function index = 0
+$A3:EDDE A9 CF E9    LDA #$E9CF             ;\
+$A3:EDE1 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $E9CF
+$A3:EDE4 A9 01 00    LDA #$0001             ;\
+$A3:EDE7 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 
 $A3:EDEA 60          RTS
 }
