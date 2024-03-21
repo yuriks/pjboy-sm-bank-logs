@@ -4738,9 +4738,9 @@ $B4:BC3E 80 3D       BRA $3D    [$BC7D]     ; Return
 ; BRANCH_FOUND
 $B4:BC40 A9 00 00    LDA #$0000
 $B4:BC43 9F 78 F0 7E STA $7EF078,x[$7E:F0B6]
-$B4:BC47 9F 78 F1 7E STA $7EF178,x[$7E:F1B6]; Sprite object $7E:F178 = 0
-$B4:BC4B 9F 78 F2 7E STA $7EF278,x[$7E:F2B6]; Sprite object $7E:F278 = 0
-$B4:BC4F 9F F8 F2 7E STA $7EF2F8,x[$7E:F336]; Sprite object $7E:F2F8 = 0
+$B4:BC47 9F 78 F1 7E STA $7EF178,x[$7E:F1B6]; Sprite object X subposition = 0
+$B4:BC4B 9F 78 F2 7E STA $7EF278,x[$7E:F2B6]; Sprite object Y subposition = 0
+$B4:BC4F 9F F8 F2 7E STA $7EF2F8,x[$7E:F336]; Sprite object disable flag = 0
 $B4:BC53 A5 12       LDA $12    [$7E:0012]  ;\
 $B4:BC55 9F F8 F0 7E STA $7EF0F8,x[$7E:F136];} Sprite object X position = [$12]
 $B4:BC59 A5 14       LDA $14    [$7E:0014]  ;\
@@ -4788,7 +4788,7 @@ $B4:BC9B AE 44 18    LDX $1844  [$7E:1844]  ;\
 $B4:BC9E BF 78 EF 7E LDA $7EEF78,x[$7E:EFB6];} If [sprite object instruction list pointer] = 0: go to BRANCH_NEXT
 $B4:BCA2 F0 33       BEQ $33    [$BCD7]     ;/
 $B4:BCA4 BF F8 F2 7E LDA $7EF2F8,x[$7E:F336];\
-$B4:BCA8 89 01 00    BIT #$0001             ;} If [sprite object $7E:F2F8] & 1 != 0: return
+$B4:BCA8 89 01 00    BIT #$0001             ;} If [sprite object disable flag] & 1 != 0: return
 $B4:BCAB D0 2A       BNE $2A    [$BCD7]     ;/
 $B4:BCAD BF F8 EF 7E LDA $7EEFF8,x[$7E:F036];\
 $B4:BCB1 30 30       BMI $30    [$BCE3]     ;} If [sprite object instruction/timer] & 8000h: go to BRANCH_ASM_INSTRUCTION
