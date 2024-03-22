@@ -5030,7 +5030,7 @@ $94:A551 E2 20       SEP #$20               ;|
 $94:A553 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $94:A556 8D 06 42    STA $4206  [$7E:4206]  ;|
 $94:A559 C2 20       REP #$20               ;|
-$94:A55B B9 78 0B    LDA $0B78,y[$7E:0B78]  ;} If [projectile Y position] / 10h = [current block index] / [room width in blocks] (projectile centre isn't in block): go to block shot reaction - slope - non-square
+$94:A55B B9 78 0B    LDA $0B78,y[$7E:0B78]  ;} If [projectile Y position] / 10h = [current block index] / [room width in blocks] (projectile centre is in block): go to block shot reaction - slope - non-square
 $94:A55E 4A          LSR A                  ;|
 $94:A55F 4A          LSR A                  ;|
 $94:A560 4A          LSR A                  ;|
@@ -5060,7 +5060,7 @@ $94:A577 E2 20       SEP #$20               ;|
 $94:A579 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
 $94:A57C 8D 06 42    STA $4206  [$7E:4206]  ;|
 $94:A57F C2 20       REP #$20               ;|
-$94:A581 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;} If [projectile X position] / 10h = [current block index] % [room width in blocks] (projectile centre isn't in block): go to block shot reaction - slope - non-square
+$94:A581 B9 64 0B    LDA $0B64,y[$7E:0B64]  ;} If [projectile X position] / 10h = [current block index] % [room width in blocks] (projectile centre is in block): go to block shot reaction - slope - non-square
 $94:A584 4A          LSR A                  ;|
 $94:A585 4A          LSR A                  ;|
 $94:A586 4A          LSR A                  ;|

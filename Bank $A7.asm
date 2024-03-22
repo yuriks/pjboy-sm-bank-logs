@@ -1955,7 +1955,7 @@ $A7:B02F 8F 0A 78 7E STA $7E780A[$7E:780A]  ;/
 
 $A7:B033 DA          PHX
 $A7:B034 8A          TXA                    ;\
-$A7:B035 4A          LSR A                  ;} Colliding projectile index = [X] / 2
+$A7:B035 4A          LSR A                  ;} Collided projectile index = [X] / 2
 $A7:B036 8D A6 18    STA $18A6  [$7E:18A6]  ;/
 $A7:B039 08          PHP
 $A7:B03A 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic

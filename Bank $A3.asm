@@ -9072,10 +9072,15 @@ $A3:EA25             dx 0010,F10D,
 }
 
 
-;;; $EA3F: Speeds ;;;
+;;; $EA3F: Bombed off X velocities ;;;
 {
-$A3:EA3F             dw 0002, 0000, FFFE, 0000
-$A3:EA47             dw 0000, FFFE, 0000, 0002
+;                        _____________________ Frame 0
+;                       |      _______________ Frame 3
+;                       |     |      _________ Frame 2
+;                       |     |     |      ___ Frame 1
+;                       |     |     |     |
+$A3:EA3F             dw 0002, 0000, FFFE, 0000 ; X velocity
+$A3:EA47             dw 0000, FFFE, 0000, 0002 ; Y velocity
 }
 
 
@@ -9095,7 +9100,7 @@ $A3:EA6A A9 32 00    LDA #$0032             ;|
 $A3:EA6D 85 16       STA $16    [$7E:0016]  ;|
 $A3:EA6F 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A3:EA73 A5 12       LDA $12    [$7E:0012]  ;\
-$A3:EA75 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = [sprite object index]
+$A3:EA75 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy metroid electricity sprite object index = [sprite object index]
 $A3:EA79 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EA7C BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
 $A3:EA7F 1D 98 0F    ORA $0F98,x[$7E:0F98]  ;} $18 = [enemy palette index] | [enemy VRAM tiles index]
@@ -9108,9 +9113,9 @@ $A3:EA8E A9 34 00    LDA #$0034             ;|
 $A3:EA91 85 16       STA $16    [$7E:0016]  ;|
 $A3:EA93 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A3:EA97 A5 12       LDA $12    [$7E:0012]  ;\
-$A3:EA99 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = [sprite object index]
+$A3:EA99 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy metroid shell sprite object index = [sprite object index]
 $A3:EA9D A9 00 00    LDA #$0000             ;\
-$A3:EAA0 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy $7E:7804 = 0
+$A3:EAA0 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy Samus subhealth = 0
 $A3:EAA4 6B          RTL
 }
 
@@ -9153,8 +9158,8 @@ $A3:EAD6             dw 0050, 0058, 005A, 0050, 0058, 005A, 0058, 005A
 $A3:EAE6 22 41 80 A3 JSL $A38041[$A3:8041]  ; Normal frozen AI
 $A3:EAEA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EAED BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
-$A3:EAF0 F0 09       BEQ $09    [$EAFB]     ;} If [enemy $0FB0] != 0:
-$A3:EAF2 DE B0 0F    DEC $0FB0,x            ; Decrement enemy $0FB0
+$A3:EAF0 F0 09       BEQ $09    [$EAFB]     ;} If [enemy bombed off Samus cooldown timer] != 0:
+$A3:EAF2 DE B0 0F    DEC $0FB0,x            ; Decrement enemy bombed off Samus cooldown timer
 $A3:EAF5 A9 02 00    LDA #$0002             ;\
 $A3:EAF8 9D 9C 0F    STA $0F9C,x            ;} Enemy flash timer = 2
 
@@ -9270,7 +9275,7 @@ $A3:EC09             dw EC11, ECDC, ED8F, EDAB
 }
 
 
-;;; $EC11: Metroid function - chase ;;;
+;;; $EC11: Metroid function - chase Samus ;;;
 {
 ;; Parameter:
 ;;     $0E32: [Samus Y position] - 8
@@ -9486,12 +9491,12 @@ $A3:EDAA 60          RTS
 }
 
 
-;;; $EDAB: Metroid function ;;;
+;;; $EDAB: Metroid function - bombed off Samus ;;;
 {
 $A3:EDAB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EDAE BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
 $A3:EDB1 29 03 00    AND #$0003             ;|
-$A3:EDB4 0A          ASL A                  ;} Y = ([enemy $0FB0] & 3) * 2
+$A3:EDB4 0A          ASL A                  ;} Y = [enemy bombed off Samus cooldown timer] % 4 * 2
 $A3:EDB5 A8          TAY                    ;/
 $A3:EDB6 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
 $A3:EDB9 18          CLC                    ;|
@@ -9505,9 +9510,9 @@ $A3:EDCA 9E A8 0F    STZ $0FA8,x[$7E:0FE8]  ;\
 $A3:EDCD 9E AA 0F    STZ $0FAA,x[$7E:0FEA]  ;} Enemy X velocity = 0.0
 $A3:EDD0 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ;\
 $A3:EDD3 9E AE 0F    STZ $0FAE,x[$7E:0FEE]  ;} Enemy Y velocity = 0.0
-$A3:EDD6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy $0FB0
-$A3:EDD9 D0 0F       BNE $0F    [$EDEA]     ; If [enemy $0FB0] = 0:
-$A3:EDDB 9E B2 0F    STZ $0FB2,x[$7E:0FF2]  ; Enemy function index = 0
+$A3:EDD6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy bombed off Samus cooldown timer
+$A3:EDD9 D0 0F       BNE $0F    [$EDEA]     ; If [enemy bombed off Samus cooldown timer] = 0:
+$A3:EDDB 9E B2 0F    STZ $0FB2,x[$7E:0FF2]  ; Enemy function index = chase Samus
 $A3:EDDE A9 CF E9    LDA #$E9CF             ;\
 $A3:EDE1 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $E9CF
 $A3:EDE4 A9 01 00    LDA #$0001             ;\
@@ -9571,14 +9576,14 @@ $A3:EE47 9E B2 0F    STZ $0FB2,x            ; Enemy function index = chase Samus
 $A3:EE4A A9 CF E9    LDA #$E9CF             ;\
 $A3:EE4D 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E9CF
 $A3:EE50 A9 01 00    LDA #$0001             ;\
-$A3:EE53 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 0
+$A3:EE53 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 
 $A3:EE56 6B          RTL                    ; Return
 
 ; BRANCH_NORMAL
 $A3:EE57 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EE5A BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
-$A3:EE5D C9 03 00    CMP #$0003             ;} If [enemy function index] = 3: go to BRANCH_NO_DAMAGE
+$A3:EE5D C9 03 00    CMP #$0003             ;} If [enemy function index] = bombed off Samus: return
 $A3:EE60 F0 1D       BEQ $1D    [$EE7F]     ;/
 $A3:EE62 AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
 $A3:EE65 29 07 00    AND #$0007             ;|
@@ -9592,9 +9597,8 @@ $A3:EE78 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Dh, sound library 3,
 
 $A3:EE7C 20 CE EE    JSR $EECE  [$A3:EECE]  ; Deal metroid contact damage to Samus
 
-; BRANCH_NO_DAMAGE
 $A3:EE7F BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
-$A3:EE82 C9 02 00    CMP #$0002             ;} If [enemy function index] >= 2: return
+$A3:EE82 C9 02 00    CMP #$0002             ;} If [enemy function index] >= 2 (latched onto Samus or bombed off Samus): return
 $A3:EE85 B0 CF       BCS $CF    [$EE56]     ;/
 $A3:EE87 A0 01 00    LDY #$0001             ; Enemy function index = latch onto Samus
 $A3:EE8A BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
@@ -9635,7 +9639,7 @@ $A3:EECD 6B          RTL
 {
 $A3:EECE AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A3:EED1 38          SEC                    ;|
-$A3:EED2 E9 08 00    SBC #$0008             ;} $0E32 = [Samus Y position] - 8
+$A3:EED2 E9 08 00    SBC #$0008             ;} $0E32 = [Samus Y position] - 8 (never read)
 $A3:EED5 8D 32 0E    STA $0E32  [$7E:0E32]  ;/
 $A3:EED8 AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $A3:EEDB 89 20 00    BIT #$0020             ;} If gravity suit equipped: go to BRANCH_GRAVITY_SUIT
@@ -9655,10 +9659,10 @@ $A3:EEED A9 00 C0    LDA #$C000             ; A = C000h
 ; BRANCH_MERGE
 $A3:EEF0 85 12       STA $12    [$7E:0012]  ;\
 $A3:EEF2 BF 04 78 7E LDA $7E7804,x[$7E:7844];|
-$A3:EEF6 38          SEC                    ;} Enemy $7E:7804 -= [A]
+$A3:EEF6 38          SEC                    ;} Enemy Samus subhealth -= [A]
 $A3:EEF7 E5 12       SBC $12    [$7E:0012]  ;|
 $A3:EEF9 9F 04 78 7E STA $7E7804,x[$7E:7844];/
-$A3:EEFD B0 07       BCS $07    [$EF06]     ; If [enemy $7E:7804] < 0:
+$A3:EEFD B0 07       BCS $07    [$EF06]     ; If [enemy Samus subhealth] underflowed 0:
 $A3:EEFF A9 01 00    LDA #$0001             ;\
 $A3:EF02 22 51 DF 91 JSL $91DF51[$91:DF51]  ;} Deal 1 damage to Samus
 
@@ -9668,138 +9672,142 @@ $A3:EF06 60          RTS
 
 ;;; $EF07: Enemy shot - enemy $DD7F (metroid) ;;;
 {
-$A3:EF07 AD FA 0A    LDA $0AFA  [$7E:0AFA]  
-$A3:EF0A 38          SEC
-$A3:EF0B E9 08 00    SBC #$0008
-$A3:EF0E 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:EF11 AD A6 18    LDA $18A6  [$7E:18A6]
-$A3:EF14 0A          ASL A
-$A3:EF15 A8          TAY
+$A3:EF07 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A3:EF0A 38          SEC                    ;|
+$A3:EF0B E9 08 00    SBC #$0008             ;} $0E32 = [Samus Y position] - 8 (never read)
+$A3:EF0E 8D 32 0E    STA $0E32  [$7E:0E32]  ;/
+$A3:EF11 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A3:EF14 0A          ASL A                  ;} Y = (collided projectile index)
+$A3:EF15 A8          TAY                    ;/
 $A3:EF16 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:EF19 BD 9E 0F    LDA $0F9E,x[$7E:105E]
-$A3:EF1C F0 5B       BEQ $5B    [$EF79]
-$A3:EF1E B9 18 0C    LDA $0C18,y[$7E:0C18]
-$A3:EF21 29 00 0F    AND #$0F00
-$A3:EF24 C9 00 01    CMP #$0100
-$A3:EF27 F0 05       BEQ $05    [$EF2E]
-$A3:EF29 C9 00 02    CMP #$0200
-$A3:EF2C D0 4A       BNE $4A    [$EF78]
+$A3:EF19 BD 9E 0F    LDA $0F9E,x[$7E:105E]  ;\
+$A3:EF1C F0 5B       BEQ $5B    [$EF79]     ;} If [enemy frozen timer] = 0: go to BRANCH_NOT_FROZEN
+$A3:EF1E B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$A3:EF21 29 00 0F    AND #$0F00             ;|
+$A3:EF24 C9 00 01    CMP #$0100             ;} If projectile is not missile:
+$A3:EF27 F0 05       BEQ $05    [$EF2E]     ;/
+$A3:EF29 C9 00 02    CMP #$0200             ;\
+$A3:EF2C D0 4A       BNE $4A    [$EF78]     ;} If projectile is not super missile: return
 
-$A3:EF2E BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$A3:EF31 8F 34 F4 7E STA $7EF434[$7E:F434]
-$A3:EF35 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A3:EF38 8F 36 F4 7E STA $7EF436[$7E:F436]
-$A3:EF3C 22 32 80 A3 JSL $A38032[$A3:8032]
-$A3:EF40 BD 8C 0F    LDA $0F8C,x[$7E:104C]
-$A3:EF43 D0 33       BNE $33    [$EF78]
-$A3:EF45 9E AA 0F    STZ $0FAA,x[$7E:106A]
+$A3:EF2E BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
+$A3:EF31 8F 34 F4 7E STA $7EF434[$7E:F434]  ;} Special death item drop X origin position = [enemy X position]
+$A3:EF35 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$A3:EF38 8F 36 F4 7E STA $7EF436[$7E:F436]  ;} Special death item drop Y origin position = [enemy Y position]
+$A3:EF3C 22 32 80 A3 JSL $A38032[$A3:8032]  ; Normal enemy shot AI - no death check, no enemy shot graphic
+$A3:EF40 BD 8C 0F    LDA $0F8C,x[$7E:104C]  ;\
+$A3:EF43 D0 33       BNE $33    [$EF78]     ;} If [enemy health] != 0: return
+$A3:EF45 9E AA 0F    STZ $0FAA,x[$7E:106A]  ;
 $A3:EF48 A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $A3:EF4B 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A3:EF4F A9 13 00    LDA #$0013             ;\
 $A3:EF52 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable Samus blue flashing
 $A3:EF56 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:EF59 BF 00 78 7E LDA $7E7800,x[$7E:78C0]
-$A3:EF5D AA          TAX
-$A3:EF5E A9 00 00    LDA #$0000
-$A3:EF61 9F 78 EF 7E STA $7EEF78,x[$7E:EFAA]
-$A3:EF65 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:EF68 BF 02 78 7E LDA $7E7802,x[$7E:78C2]
-$A3:EF6C AA          TAX
-$A3:EF6D A9 00 00    LDA #$0000
-$A3:EF70 9F 78 EF 7E STA $7EEF78,x[$7E:EFA8]
+$A3:EF59 BF 00 78 7E LDA $7E7800,x[$7E:78C0];\
+$A3:EF5D AA          TAX                    ;|
+$A3:EF5E A9 00 00    LDA #$0000             ;} Metroid electricity sprite object instruction list pointer = 0
+$A3:EF61 9F 78 EF 7E STA $7EEF78,x[$7E:EFAA];/
+$A3:EF65 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A3:EF68 BF 02 78 7E LDA $7E7802,x[$7E:78C2];\
+$A3:EF6C AA          TAX                    ;|
+$A3:EF6D A9 00 00    LDA #$0000             ;} Metroid shell sprite object instruction list pointer = 0
+$A3:EF70 9F 78 EF 7E STA $7EEF78,x[$7E:EFA8];/
 $A3:EF74 22 68 B9 A0 JSL $A0B968[$A0:B968]  ; Metroid death item drop routine
 
-$A3:EF78 6B          RTL
+$A3:EF78 6B          RTL                    ; Return
 
-$A3:EF79 BD B2 0F    LDA $0FB2,x[$7E:1072]
-$A3:EF7C C9 02 00    CMP #$0002
-$A3:EF7F D0 2B       BNE $2B    [$EFAC]
-$A3:EF81 B9 18 0C    LDA $0C18,y[$7E:0C18]
-$A3:EF84 29 00 0F    AND #$0F00
-$A3:EF87 C9 00 05    CMP #$0500
-$A3:EF8A D0 1F       BNE $1F    [$EFAB]
-$A3:EF8C A9 04 00    LDA #$0004
-$A3:EF8F 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A3:EF92 A9 03 00    LDA #$0003
-$A3:EF95 9D B2 0F    STA $0FB2,x[$7E:0FF2]
-$A3:EF98 A9 CF E9    LDA #$E9CF
-$A3:EF9B 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:EF9E A9 01 00    LDA #$0001
-$A3:EFA1 9D 94 0F    STA $0F94,x[$7E:0FD4]
+; BRANCH_NOT_FROZEN
+$A3:EF79 BD B2 0F    LDA $0FB2,x[$7E:1072]  ;\
+$A3:EF7C C9 02 00    CMP #$0002             ;} If [enemy function index] != latched onto Samus: go to BRANCH_NOT_LATCHED
+$A3:EF7F D0 2B       BNE $2B    [$EFAC]     ;/
+$A3:EF81 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$A3:EF84 29 00 0F    AND #$0F00             ;|
+$A3:EF87 C9 00 05    CMP #$0500             ;} If projectile is bomb:
+$A3:EF8A D0 1F       BNE $1F    [$EFAB]     ;/
+$A3:EF8C A9 04 00    LDA #$0004             ;\
+$A3:EF8F 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy bombed off Samus cooldown timer = 4
+$A3:EF92 A9 03 00    LDA #$0003             ;\
+$A3:EF95 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function index = bombed off Samus
+$A3:EF98 A9 CF E9    LDA #$E9CF             ;\
+$A3:EF9B 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction pointer list = $E9CF
+$A3:EF9E A9 01 00    LDA #$0001             ;\
+$A3:EFA1 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A3:EFA4 A9 13 00    LDA #$0013             ;\
 $A3:EFA7 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable Samus blue flashing
 
-$A3:EFAB 6B          RTL
+$A3:EFAB 6B          RTL                    ; Return
 
-$A3:EFAC 9E A8 0F    STZ $0FA8,x[$7E:1068]
-$A3:EFAF 9E AC 0F    STZ $0FAC,x[$7E:106C]
-$A3:EFB2 A0 00 00    LDY #$0000
-$A3:EFB5 BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$A3:EFB8 38          SEC
-$A3:EFB9 F9 64 0B    SBC $0B64,y[$7E:0B64]
-$A3:EFBC 10 03       BPL $03    [$EFC1]
-$A3:EFBE A0 00 FF    LDY #$FF00
-
-$A3:EFC1 48          PHA
-$A3:EFC2 98          TYA
-$A3:EFC3 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A3:EFC6 68          PLA
-$A3:EFC7 0A          ASL A
-$A3:EFC8 0A          ASL A
-$A3:EFC9 0A          ASL A
-$A3:EFCA 0A          ASL A
-$A3:EFCB 0A          ASL A
-$A3:EFCC 9D A9 0F    STA $0FA9,x[$7E:1069]
-$A3:EFCF A0 00 00    LDY #$0000
-$A3:EFD2 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A3:EFD5 38          SEC
-$A3:EFD6 F9 78 0B    SBC $0B78,y[$7E:0B78]
-$A3:EFD9 10 03       BPL $03    [$EFDE]
-$A3:EFDB A0 00 FF    LDY #$FF00
-
-$A3:EFDE 48          PHA
-$A3:EFDF 98          TYA
-$A3:EFE0 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A3:EFE3 68          PLA
-$A3:EFE4 0A          ASL A
-$A3:EFE5 0A          ASL A
-$A3:EFE6 0A          ASL A
-$A3:EFE7 0A          ASL A
-$A3:EFE8 0A          ASL A
-$A3:EFE9 9D AD 0F    STA $0FAD,x[$7E:106D]
-$A3:EFEC 9E B2 0F    STZ $0FB2,x[$7E:1072]
-$A3:EFEF A9 CF E9    LDA #$E9CF
-$A3:EFF2 9D 92 0F    STA $0F92,x[$7E:1052]
-$A3:EFF5 A9 01 00    LDA #$0001
-$A3:EFF8 9D 94 0F    STA $0F94,x[$7E:1054]
-$A3:EFFB AD A6 18    LDA $18A6  [$7E:18A6]
-$A3:EFFE 0A          ASL A
-$A3:EFFF A8          TAY
-$A3:F000 B9 18 0C    LDA $0C18,y[$7E:0C18]
-$A3:F003 29 02 00    AND #$0002
-$A3:F006 F0 32       BEQ $32    [$F03A]
+; BRANCH_NOT_LATCHED
+$A3:EFAC 9E A8 0F    STZ $0FA8,x[$7E:1068]  ; Enemy X subvelocity = 0
+$A3:EFAF 9E AC 0F    STZ $0FAC,x[$7E:106C]  ; Enemy Y subvelocity = 0
+$A3:EFB2 A0 00 00    LDY #$0000             ;\
+$A3:EFB5 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;|
+$A3:EFB8 38          SEC                    ;|
+$A3:EFB9 F9 64 0B    SBC $0B64,y[$7E:0B64]  ;|
+$A3:EFBC 10 03       BPL $03    [$EFC1]     ;|
+$A3:EFBE A0 00 FF    LDY #$FF00             ;|
+                                            ;|
+$A3:EFC1 48          PHA                    ;|
+$A3:EFC2 98          TYA                    ;} Enemy X velocity = ([enemy X position] - [Samus X position]) / 8
+$A3:EFC3 9D AA 0F    STA $0FAA,x[$7E:106A]  ;|
+$A3:EFC6 68          PLA                    ;|
+$A3:EFC7 0A          ASL A                  ;|
+$A3:EFC8 0A          ASL A                  ;|
+$A3:EFC9 0A          ASL A                  ;|
+$A3:EFCA 0A          ASL A                  ;|
+$A3:EFCB 0A          ASL A                  ;|
+$A3:EFCC 9D A9 0F    STA $0FA9,x[$7E:1069]  ;/
+$A3:EFCF A0 00 00    LDY #$0000             ;\
+$A3:EFD2 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;|
+$A3:EFD5 38          SEC                    ;|
+$A3:EFD6 F9 78 0B    SBC $0B78,y[$7E:0B78]  ;|
+$A3:EFD9 10 03       BPL $03    [$EFDE]     ;|
+$A3:EFDB A0 00 FF    LDY #$FF00             ;|
+                                            ;|
+$A3:EFDE 48          PHA                    ;|
+$A3:EFDF 98          TYA                    ;} Enemy Y velocity = ([enemy Y position] - [Samus Y position] + 8) / 8
+$A3:EFE0 9D AE 0F    STA $0FAE,x[$7E:106E]  ;|
+$A3:EFE3 68          PLA                    ;|
+$A3:EFE4 0A          ASL A                  ;|
+$A3:EFE5 0A          ASL A                  ;|
+$A3:EFE6 0A          ASL A                  ;|
+$A3:EFE7 0A          ASL A                  ;|
+$A3:EFE8 0A          ASL A                  ;|
+$A3:EFE9 9D AD 0F    STA $0FAD,x[$7E:106D]  ;/
+$A3:EFEC 9E B2 0F    STZ $0FB2,x[$7E:1072]  ; Enemy function index = chase Samus
+$A3:EFEF A9 CF E9    LDA #$E9CF             ;\
+$A3:EFF2 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $E9CF
+$A3:EFF5 A9 01 00    LDA #$0001             ;\
+$A3:EFF8 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
+$A3:EFFB AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A3:EFFE 0A          ASL A                  ;} Y = (collided projectile index)
+$A3:EFFF A8          TAY                    ;/
+$A3:F000 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$A3:F003 29 02 00    AND #$0002             ;} If projectile is not ice beam: go to BRANCH_NOT_ICE_BEAM
+$A3:F006 F0 32       BEQ $32    [$F03A]     ;/
 $A3:F008 A9 0A 00    LDA #$000A             ;\
 $A3:F00B 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound Ah, sound library 3, max queued sounds allowed = 6 (enemy frozen)
-$A3:F00F B9 2C 0C    LDA $0C2C,y[$7E:0C2C]
-$A3:F012 85 12       STA $12    [$7E:0012]
-$A3:F014 A9 04 00    LDA #$0004
-$A3:F017 9D 9C 0F    STA $0F9C,x[$7E:105C]
-$A3:F01A BD B6 0F    LDA $0FB6,x[$7E:1076]
-$A3:F01D 38          SEC
-$A3:F01E E5 12       SBC $12    [$7E:0012]
-$A3:F020 F0 02       BEQ $02    [$F024]
-$A3:F022 B0 13       BCS $13    [$F037]
+$A3:F00F B9 2C 0C    LDA $0C2C,y[$7E:0C2C]  ;\
+$A3:F012 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile damage]
+$A3:F014 A9 04 00    LDA #$0004             ;\
+$A3:F017 9D 9C 0F    STA $0F9C,x[$7E:105C]  ;} Enemy flash timer = 4
+$A3:F01A BD B6 0F    LDA $0FB6,x[$7E:1076]  ;\
+$A3:F01D 38          SEC                    ;|
+$A3:F01E E5 12       SBC $12    [$7E:0012]  ;} If [enemy freeze health threshold] > [projectile damage]: go to BRANCH_NO_FREEZE
+$A3:F020 F0 02       BEQ $02    [$F024]     ;|
+$A3:F022 B0 13       BCS $13    [$F037]     ;/
 
-$A3:F024 9E B6 0F    STZ $0FB6,x[$7E:1076]
-$A3:F027 A9 90 01    LDA #$0190
-$A3:F02A 9D 9E 0F    STA $0F9E,x[$7E:105E]
-$A3:F02D BD 8A 0F    LDA $0F8A,x[$7E:104A]
-$A3:F030 09 04 00    ORA #$0004
-$A3:F033 9D 8A 0F    STA $0F8A,x[$7E:104A]
-$A3:F036 6B          RTL
+$A3:F024 9E B6 0F    STZ $0FB6,x[$7E:1076]  ; Enemy freeze health threshold = 0
+$A3:F027 A9 90 01    LDA #$0190             ;\
+$A3:F02A 9D 9E 0F    STA $0F9E,x[$7E:105E]  ;} Enemy frozen timer = 400
+$A3:F02D BD 8A 0F    LDA $0F8A,x[$7E:104A]  ;\
+$A3:F030 09 04 00    ORA #$0004             ;} Set frozen AI
+$A3:F033 9D 8A 0F    STA $0F8A,x[$7E:104A]  ;/
+$A3:F036 6B          RTL                    ; Return
 
-$A3:F037 9D B6 0F    STA $0FB6,x
+; BRANCH_NO_FREEZE
+$A3:F037 9D B6 0F    STA $0FB6,x            ; Enemy freeze health threshold -= [projectile damage]
 
+; BRANCH_NOT_ICE_BEAM
 $A3:F03A A9 5A 00    LDA #$005A             ;\
 $A3:F03D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Ah, sound library 2, max queued sounds allowed = 6 (shot Metroid)
 $A3:F041 6B          RTL
@@ -9830,18 +9838,18 @@ $A3:F070 6B          RTL
 
 ;;; $F071: Metroid spritemaps ;;;
 {
-; Unused
+; Unused. Metroid shell, see $B4:D5B7
 $A3:F071             dx 000A, 0010,04,6130, 0010,FC,6120, 0010,F4,6110, 01E8,04,2130, 01E8,FC,2120, 01E8,F4,2110, 8000,FC,6121, 8000,EC,2103, 81F0,FC,2121, 81F0,EC,2101
 $A3:F0A5             dx 000A, 0010,FC,612A, 0010,04,613A, 0010,F4,211F, 01E8,04,213A, 01E8,FC,212A, 01E8,F4,211A, 8000,EC,210D, 8000,FC,612B, 81F0,FC,212B, 81F0,EC,210B
 $A3:F0D9             dx 000A, 01E8,FC,2125, 0010,04,6135, 0010,FC,6125, 0010,F4,6115, 01E8,04,2135, 01E8,F4,2115, 8000,FC,6126, 8000,EC,2108, 81F0,FC,2126, 81F0,EC,2106
 
-; Only these four frames are used
+; Metroid insides
 $A3:F10D             dx 0008, 0010,00,6160, 0010,F8,6150, 01E8,00,2160, 01E8,F8,2150, 8000,00,6161, 8000,F0,6141, 81F0,00,2161, 81F0,F0,2141
 $A3:F137             dx 0006, 0010,00,6163, 01E8,00,2163, 8000,00,6164, 8000,F0,6144, 81F0,00,2164, 81F0,F0,2144
 $A3:F157             dx 0008, 0010,00,6166, 0010,F8,6156, 01E8,00,2166, 01E8,F8,2156, 8000,00,6167, 8000,F0,6147, 81F0,00,2167, 81F0,F0,2147
 $A3:F181             dx 0008, 0010,00,6169, 0010,F8,6159, 01E8,00,2169, 01E8,F8,2159, 8000,00,616A, 8000,F0,614A, 81F0,00,216A, 81F0,F0,214A
 
-; Unused
+; Unused. Metroid electricity, see $B4:D6F1
 $A3:F1AB             dx 0003, 0000,EC,217C, 01F8,FC,214D, 01F0,FC,214C
 $A3:F1BC             dx 0003, 0000,EC,217D, 01F8,FC,215D, 01F0,FC,215C
 $A3:F1CD             dx 0003, 0000,EC,217E, 01F8,FC,216D, 01F0,FC,216C

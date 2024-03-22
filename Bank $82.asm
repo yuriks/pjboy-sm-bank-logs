@@ -4273,6 +4273,7 @@ $82:A3D8 60          RTS
 ;;; $A3D9: Unused. Change pose due to equipment change ;;;
 {
 ; Looks like maybe it was a hook on leaving the equipment screen if liquid physics apply
+; Possibly a proto version of what became $91:E633
 $82:A3D9 08          PHP
 $82:A3DA C2 30       REP #$30
 $82:A3DC AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\

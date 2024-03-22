@@ -3180,7 +3180,7 @@ $A4:B967 6B          RTL
 $A4:B968 DA          PHX
 $A4:B969 5A          PHY
 $A4:B96A AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A4:B96D 0A          ASL A                  ;} X = [projectile index] * 2
+$A4:B96D 0A          ASL A                  ;} X = (collided projectile index)
 $A4:B96E AA          TAX                    ;/
 $A4:B96F BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
 $A4:B972 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
@@ -3343,7 +3343,7 @@ $A4:BAB3 6B          RTL
 $A4:BAB4 DA          PHX
 $A4:BAB5 5A          PHY
 $A4:BAB6 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A4:BAB9 0A          ASL A                  ;} X = [projectile index] * 2
+$A4:BAB9 0A          ASL A                  ;} X = (collided projectile index)
 $A4:BABA AA          TAX                    ;/
 $A4:BABB BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
 $A4:BABE 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
