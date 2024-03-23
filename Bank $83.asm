@@ -18,10 +18,10 @@
 ;                        _____________________________ 0: Destination room header pointer (bank $8F)
 ;                       |     ________________________ 2: Elevator properties
 ;                       |    |   _____________________ 3: Direction
-;                       |    |  |   __________________ 4: X position low byte
-;                       |    |  |  |   _______________ 5: Y position low byte
-;                       |    |  |  |  |   ____________ 6: X position high byte
-;                       |    |  |  |  |  |   _________ 7: Y position high byte
+;                       |    |  |   __________________ 4: Doorcap X position in blocks
+;                       |    |  |  |   _______________ 5: Doorcap Y position in blocks
+;                       |    |  |  |  |   ____________ 6: X screen
+;                       |    |  |  |  |  |   _________ 7: Y screen
 ;                       |    |  |  |  |  |  |   ______ 8: Distance from door to spawn Samus
 ;                       |    |  |  |  |  |  |  |     _ Ah: Custom door ASM to execute (bank $8F)
 ;                       |    |  |  |  |  |  |  |    |
@@ -840,7 +840,7 @@ $83:8CD6             dx 9BC8,00,04,01,16,00,01,8000,0000
 $83:8CE2             dx 9CB3,00,04,01,06,00,00,8000,BD6C
 
 ; Room $9AD9, door list index 6: Door
-$83:8CEE             dx 9AD9,00,04,01,76,01,07,8000,BD25
+$83:8CEE             dx 9AD9,00,04,01,76,01,07,8000,BD25 ; <-- The doorcap X position is wrong (which doesn't matter because this door is behind a grey doorcap)
 
 ; Room $9AD9, door list index 7: Door
 $83:8CFA             dx A011,00,05,4E,16,04,01,8000,BD16
