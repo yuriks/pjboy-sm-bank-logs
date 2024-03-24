@@ -25,12 +25,13 @@ $86:8015 6B          RTL
 $86:8016 08          PHP
 $86:8017 C2 30       REP #$30
 $86:8019 DA          PHX
-$86:801A A2 22 00    LDX #$0022
+$86:801A A2 22 00    LDX #$0022             ; Y = 22h (enemy projectile index)
 
-$86:801D 9E 97 19    STZ $1997,x[$7E:19B9]
-$86:8020 CA          DEX
-$86:8021 CA          DEX
-$86:8022 10 F9       BPL $F9    [$801D]
+; LOOP
+$86:801D 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
+$86:8020 CA          DEX                    ;\
+$86:8021 CA          DEX                    ;} Y -= 2
+$86:8022 10 F9       BPL $F9    [$801D]     ; If [Y] >= 0: go to LOOP
 $86:8024 FA          PLX
 $86:8025 28          PLP
 $86:8026 6B          RTL
@@ -98,7 +99,7 @@ $86:8083 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile $1A27 = 0
 $86:8086 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F = 0
 $86:8089 99 FB 1B    STA $1BFB,y[$7E:1C1D]  ; Enemy projectile $1BFB = 0
 $86:808C 5A          PHY
-$86:808D FC 00 00    JSR ($0000,x)[$86:A2EE]; Execute [[X]]
+$86:808D FC 00 00    JSR ($0000,x)[$86:A2EE]; Execute [[X]] (initialisation AI)
 $86:8090 68          PLA
 $86:8091 7A          PLY
 $86:8092 FA          PLX
@@ -211,7 +212,7 @@ $86:8124 6B          RTL
 {
 ;; Parameter:
 ;;     X: Enemy projectile index
-$86:8125 FC 03 1A    JSR ($1A03,x)[$86:A328]; Execute enemy projectile pre-instruction
+$86:8125 FC 03 1A    JSR ($1A03,x)[$86:A328]; Execute [enemy projectile pre-instruction]
 $86:8128 AE 91 19    LDX $1991  [$7E:1991]  ; X = [enemy projectile index]
 $86:812B DE 8F 1B    DEC $1B8F,x[$7E:1BB1]  ; Decrement enemy projectile instruction timer
 $86:812E D0 23       BNE $23    [$8153]     ; If [enemy projectile instruction timer] != 0: return
@@ -224,7 +225,7 @@ $86:8138 85 12       STA $12    [$7E:0012]  ; $12 = [[Y]] (ASM instruction point
 $86:813A C8          INY                    ;\
 $86:813B C8          INY                    ;} Y += 2
 $86:813C F4 32 81    PEA $8132              ; Return to LOOP
-$86:813F 6C 12 00    JMP ($0012)[$86:81AB]  ; Execute ASM instruction
+$86:813F 6C 12 00    JMP ($0012)[$86:81AB]  ; Execute [$12]
 
 $86:8142 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ; Enemy projectile instruction timer = [[Y]] (spritemap timer)
 $86:8145 B9 02 00    LDA $0002,y[$86:A28F]  ;\
@@ -504,7 +505,7 @@ $86:8283 60          RTS
 }
 
 
-;;; $8284: Instruction - set low priority ;;;
+;;; $8284: Instruction - set high priority ;;;
 {
 $86:8284 BD D7 1B    LDA $1BD7,x[$7E:1BE5]
 $86:8287 09 00 10    ORA #$1000
@@ -513,7 +514,7 @@ $86:828D 60          RTS
 }
 
 
-;;; $828E: Unused. Instruction - set high priority ;;;
+;;; $828E: Unused. Instruction - set low priority ;;;
 {
 $86:828E BD D7 1B    LDA $1BD7,x
 $86:8291 29 FF EF    AND #$EFFF
@@ -740,7 +741,7 @@ $86:838F 60          RTS
 }
 
 
-;;; $8390: Draw low priority enemy projectiles ;;;
+;;; $8390: Draw high priority enemy projectiles ;;;
 {
 $86:8390 8B          PHB
 $86:8391 F4 00 8D    PEA $8D00              ;\
@@ -753,7 +754,7 @@ $86:8399 A2 22 00    LDX #$0022             ; X = 22h (enemy projectile index)
 $86:839C BD 97 19    LDA $1997,x[$7E:19B9]  ;\
 $86:839F F0 0B       BEQ $0B    [$83AC]     ;} If [enemy projectile ID] != 0:
 $86:83A1 BD D7 1B    LDA $1BD7,x[$7E:1BF9]  ;\
-$86:83A4 29 00 10    AND #$1000             ;} If enemy projectile is low priority:
+$86:83A4 29 00 10    AND #$1000             ;} If enemy projectile is high priority:
 $86:83A7 F0 03       BEQ $03    [$83AC]     ;/
 $86:83A9 20 D6 83    JSR $83D6  [$86:83D6]  ; Draw enemy projectile
 
@@ -765,7 +766,7 @@ $86:83B1 6B          RTL
 }
 
 
-;;; $83B2: Draw high priority enemy projectiles ;;;
+;;; $83B2: Draw low priority enemy projectiles ;;;
 {
 $86:83B2 8B          PHB
 $86:83B3 C2 30       REP #$30
@@ -779,7 +780,7 @@ $86:83BD A2 22 00    LDX #$0022             ; X = 22h (enemy projectile index)
 $86:83C0 BD 97 19    LDA $1997,x[$7E:19B9]  ;\
 $86:83C3 F0 0B       BEQ $0B    [$83D0]     ;} If [enemy projectile ID] != 0:
 $86:83C5 BD D7 1B    LDA $1BD7,x[$7E:1BF9]  ;\
-$86:83C8 29 00 10    AND #$1000             ;} If enemy projectile is not low priority:
+$86:83C8 29 00 10    AND #$1000             ;} If enemy projectile is not high priority:
 $86:83CB D0 03       BNE $03    [$83D0]     ;/
 $86:83CD 20 D6 83    JSR $83D6  [$86:83D6]  ; Draw enemy projectile
 
@@ -3579,7 +3580,7 @@ $86:9859 A9 B4 97    LDA #$97B4             ;\
 $86:985C 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $97B4 (casual flame - falling)
 $86:985F B9 D7 1B    LDA $1BD7,y[$7E:1BF9]  ;\
 $86:9862 29 FF 0F    AND #$0FFF             ;|
-$86:9865 09 00 20    ORA #$2000             ;} Disable projectile collisions, die on contact, disable Samus collisions, high priority
+$86:9865 09 00 20    ORA #$2000             ;} Disable projectile collisions, die on contact, disable Samus collisions, low priority
 $86:9868 99 D7 1B    STA $1BD7,y[$7E:1BF9]  ;/
 $86:986B 28          PLP
 $86:986C 60          RTS
@@ -3727,7 +3728,7 @@ $86:998B 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
 $86:998E 90 2E       BCC $2E    [$99BE]     ; If collided with block:
 $86:9990 BD D7 1B    LDA $1BD7,x[$7E:1BF9]  ;\
 $86:9993 29 FF 0F    AND #$0FFF             ;|
-$86:9996 09 00 80    ORA #$8000             ;} Enable projectile collisions, die on contact, enable Samus collisions, high priority
+$86:9996 09 00 80    ORA #$8000             ;} Enable projectile collisions, die on contact, enable Samus collisions, low priority
 $86:9999 9D D7 1B    STA $1BD7,x[$7E:1BF9]  ;/
 $86:999C A9 BF 99    LDA #$99BF             ;\
 $86:999F 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $99BF
@@ -4647,7 +4648,7 @@ $86:A029 99 93 1A    STA $1A93,y[$7E:1AB3]  ;} Enemy projectile Y position = [$1
 $86:A02C AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $86:A02F BD 78 0F    LDA $0F78,x[$7E:1038]  ;|
 $86:A032 AA          TAX                    ;|
-$86:A033 BF 06 00 A0 LDA $A00006,x[$A0:F659];} Enemy projectile properties = (enemy damage) | 1000h (low priority)
+$86:A033 BF 06 00 A0 LDA $A00006,x[$A0:F659];} Enemy projectile properties = (enemy damage) | 1000h (high priority)
 $86:A037 09 00 10    ORA #$1000             ;|
 $86:A03A 99 D7 1B    STA $1BD7,y[$7E:1BF7]  ;/
 $86:A03D AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6376,7 +6377,7 @@ $86:ADDD             dx 0050,8D75,
 $86:ADE5             dx 816A,               ; Clear pre-instruction
                         8252,               ; Disable collision with Samus projectiles
                         825C,               ; Disable collision with Samus
-                        8284,               ; Set low priority
+                        8284,               ; Set high priority
                         81D5,0005           ; Timer = 0005h
 $86:ADF1             dx A3BE,
                         81DF,0F,00,1F,00,   ; Move randomly within X radius Fh and Y radius 1Fh
@@ -15329,7 +15330,7 @@ $86:EF71 99 47 1B    STA $1B47,y[$7E:1B67]  ;} Enemy projectile instruction poin
 $86:EF74 A9 01 00    LDA #$0001             ;\
 $86:EF77 99 8F 1B    STA $1B8F,y[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
 $86:EF7A A9 00 30    LDA #$3000             ;\
-$86:EF7D 99 D7 1B    STA $1BD7,y[$7E:1BF7]  ;} Enemy projectile properties = 3000h (disable collisions, low priority)
+$86:EF7D 99 D7 1B    STA $1BD7,y[$7E:1BF7]  ;} Enemy projectile properties = 3000h (disable collisions, high priority)
 $86:EF80 A9 DF EF    LDA #$EFDF             ;\
 $86:EF83 99 03 1A    STA $1A03,y[$7E:1A23]  ;} Enemy projectile pre-instruction = RTS
 $86:EF86 7A          PLY
@@ -15434,7 +15435,7 @@ $86:F02E 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list
 $86:F031 A9 01 00    LDA #$0001             ;\
 $86:F034 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:F037 A9 00 30    LDA #$3000             ;\
-$86:F03A 9D D7 1B    STA $1BD7,x[$7E:1BF9]  ;} Enemy projectile properties = 3000h (disable collisions with Samus, low priority)
+$86:F03A 9D D7 1B    STA $1BD7,x[$7E:1BF9]  ;} Enemy projectile properties = 3000h (disable collisions with Samus, high priority)
 $86:F03D A9 DF EF    LDA #$EFDF             ;\
 $86:F040 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $EFDF
 $86:F043 80 65       BRA $65    [$F0AA]     ; Return
@@ -15483,7 +15484,7 @@ $86:F095 9D 47 1B    STA $1B47,x[$7E:1B67]  ;} Enemy projectile instruction list
 $86:F098 A9 01 00    LDA #$0001             ;\
 $86:F09B 9D 8F 1B    STA $1B8F,x[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
 $86:F09E A9 00 30    LDA #$3000             ;\
-$86:F0A1 9D D7 1B    STA $1BD7,x[$7E:1BF7]  ;} Enemy projectile properties = 3000h (disable collisions with Samus, low priority)
+$86:F0A1 9D D7 1B    STA $1BD7,x[$7E:1BF7]  ;} Enemy projectile properties = 3000h (disable collisions with Samus, high priority)
 $86:F0A4 A9 DF EF    LDA #$EFDF             ;\
 $86:F0A7 9D 03 1A    STA $1A03,x[$7E:1A23]  ;} Enemy projectile pre-instruction = $EFDF
 

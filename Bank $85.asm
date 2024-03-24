@@ -282,7 +282,7 @@ $85:8257 60          RTS
 }
 
 
-;;; $8258: Unused REP instruction ;;;
+;;; $8258: Unused. REP #$30 ;;;
 {
 $85:8258 C2 30       REP #$30
 }
@@ -294,19 +294,19 @@ $85:825A A2 00 00    LDX #$0000             ;\
                                             ;|
 $85:825D BD 00 80    LDA $8000,x[$85:8000]  ;|
 $85:8260 9F 00 32 7E STA $7E3200,x[$7E:3200];|
-$85:8264 E8          INX                    ;} $7E:3200..3F = [$8000..3F]
+$85:8264 E8          INX                    ;} $7E:3200..3F = [$8000..3F] (large message box top border)
 $85:8265 E8          INX                    ;|
 $85:8266 E0 40 00    CPX #$0040             ;|
 $85:8269 D0 F2       BNE $F2    [$825D]     ;/
 $85:826B A0 00 00    LDY #$0000             ; >_<
-$85:826E 20 B8 82    JSR $82B8  [$85:82B8]  ; Write message tilemap
+$85:826E 20 B8 82    JSR $82B8  [$85:82B8]  ; Write message tilemap (sets X to bottom border tilemap index)
 $85:8271 A9 20 00    LDA #$0020             ;\
 $85:8274 85 16       STA $16    [$7E:0016]  ;|
 $85:8276 A0 00 00    LDY #$0000             ;|
                                             ;|
 $85:8279 B9 00 80    LDA $8000,y[$85:8000]  ;|
 $85:827C 9F 00 32 7E STA $7E3200,x[$7E:3340];|
-$85:8280 C8          INY                    ;} Copy 20h bytes from $8000 + [X] to $7E:3200 + [X]
+$85:8280 C8          INY                    ;} Copy 40h bytes from $8000 to $7E:3200 + [X] (large message box bottom border)
 $85:8281 C8          INY                    ;|
 $85:8282 E8          INX                    ;|
 $85:8283 E8          INX                    ;|
@@ -323,18 +323,18 @@ $85:828C A2 00 00    LDX #$0000             ;\
                                             ;|
 $85:828F BD 40 80    LDA $8040,x[$85:8040]  ;|
 $85:8292 9F 00 32 7E STA $7E3200,x[$7E:3200];|
-$85:8296 E8          INX                    ;} $7E:3200..3F = [$8040..3F]
+$85:8296 E8          INX                    ;} $7E:3200..3F = [$8040..7F] (small message box top border)
 $85:8297 E8          INX                    ;|
 $85:8298 E0 40 00    CPX #$0040             ;|
 $85:829B D0 F2       BNE $F2    [$828F]     ;/
-$85:829D 20 B8 82    JSR $82B8  [$85:82B8]  ; Write message tilemap
+$85:829D 20 B8 82    JSR $82B8  [$85:82B8]  ; Write message tilemap (sets X to bottom border tilemap index)
 $85:82A0 A9 20 00    LDA #$0020             ;\
 $85:82A3 85 16       STA $16    [$7E:0016]  ;|
 $85:82A5 A0 00 00    LDY #$0000             ;|
                                             ;|
 $85:82A8 B9 40 80    LDA $8040,y[$85:8040]  ;|
 $85:82AB 9F 00 32 7E STA $7E3200,x[$7E:3280];|
-$85:82AF C8          INY                    ;} Copy 20h bytes from $8040 + [X] to $7E:3200 + [X]
+$85:82AF C8          INY                    ;} Copy 40h bytes from $8040 to $7E:3200 + [X] (small message box bottom border)
 $85:82B0 C8          INY                    ;|
 $85:82B1 E8          INX                    ;|
 $85:82B2 E8          INX                    ;|
@@ -346,6 +346,8 @@ $85:82B7 60          RTS
 
 ;;; $82B8: Write message tilemap ;;;
 {
+;; Returns:
+;;     X: Message box bottom border tilemap index. $7E:3240 + [$869B + ([message box index] - 1 + 1) * 6 + 4] - [$869B + ([message box index] - 1) * 6 + 4]
 $85:82B8 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:82BB 22 0C 8F 80 JSL $808F0C[$80:8F0C]  ; Handle music queue
 $85:82BF 22 EF 89 82 JSL $8289EF[$82:89EF]  ; Handle sound effects
@@ -400,6 +402,8 @@ $85:831D 60          RTS
 
 ;;; $831E: Set up PPU for active message box ;;;
 {
+;; Parameters:
+;;     $34: BG3 tilemap offset
 $85:831E 20 63 83    JSR $8363  [$85:8363]  ; Set up message box BG3 Y scroll HDMA
 $85:8321 20 36 81    JSR $8136  [$85:8136]  ; Wait for lag frame
 $85:8324 C2 20       REP #$20

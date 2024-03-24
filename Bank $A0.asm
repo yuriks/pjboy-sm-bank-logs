@@ -656,7 +656,7 @@ $A0:8852 AB          PLB                    ;/
 $A0:8853 C2 30       REP #$30
 $A0:8855 22 32 BD B4 JSL $B4BD32[$B4:BD32]  ; Draw sprite objects
 $A0:8859 22 4D 83 93 JSL $93834D[$93:834D]  ; Draw bombs and projectile explosions
-$A0:885D 22 90 83 86 JSL $868390[$86:8390]  ; Draw low priority enemy projectiles
+$A0:885D 22 90 83 86 JSL $868390[$86:8390]  ; Draw high priority enemy projectiles
 $A0:8861 9C 32 0E    STZ $0E32  [$7E:0E32]  ; Enemy layer = 0
 
 ; LOOP_MAIN
@@ -670,7 +670,7 @@ $A0:8875 80 09       BRA $09    [$8880]
 
 $A0:8877 C9 06 00    CMP #$0006             ;\ Else ([enemy layer] != 3):
 $A0:887A D0 04       BNE $04    [$8880]     ;} If [enemy layer] = 6:
-$A0:887C 22 B2 83 86 JSL $8683B2[$86:83B2]  ; Draw high priority enemy projectiles
+$A0:887C 22 B2 83 86 JSL $8683B2[$86:83B2]  ; Draw low priority enemy projectiles
 
 $A0:8880 AD 32 0E    LDA $0E32  [$7E:0E32]  ;\
 $A0:8883 0A          ASL A                  ;} Y = [enemy layer] * 2
