@@ -529,6 +529,7 @@ $A0:838F             dw 0000,0000,0000,0000, 0109,0000,FEF7,FFFF, 031B,0000,FCE5
 {
 ;;; $8687: Handle room shaking ;;;
 {
+; Enemy projectile shaking is handled by $86:8427
 $A0:8687 8B          PHB
 $A0:8688 F4 00 A0    PEA $A000              ;\
 $A0:868B AB          PLB                    ;} DB = $A0
@@ -629,6 +630,8 @@ $A0:872C 60          RTS
 
 ;;; $872D: BG shake displacements ;;;
 {
+; Enemy projectile shaking displacements are at $86:846B
+
 ;                       /----horizontal---\  /-----vertical----\  /-----diagonal----\
 ;                       BG1X BG1Y BG2X BG2Y
 $A0:872D             dw 0001,0000,0000,0000, 0000,0001,0000,0000, 0001,0001,0000,0000, ;\
@@ -3044,7 +3047,7 @@ $A0:99F8 6B          RTL
 
 ; Why does getting shot mask off all the property bits?
 ; The first ASM instructions of the shot instruction list *are* executed in time to disable Samus collision before the next check,
-; but the high priority is applied for drawing this frame
+; but the low priority is applied for drawing this frame
 
 $A0:99F9 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:99FC 89 08 00    BIT #$0008             ;} If projectile is not plasma beam:
@@ -3068,7 +3071,7 @@ $A0:9A28 99 8F 1B    STA $1B8F,y[$7E:1BA5]  ;} Enemy projectile instruction time
 $A0:9A2B A9 FB 84    LDA #$84FB             ;\
 $A0:9A2E 99 03 1A    STA $1A03,y[$7E:1A19]  ;} Enemy projectile pre-instruction = RTS
 $A0:9A31 B9 D7 1B    LDA $1BD7,y[$7E:1BED]  ;\
-$A0:9A34 29 FF 0F    AND #$0FFF             ;} Enemy projectile properties &= FFFh (don't detect collision with projectiles, die on contact, enable collisions with Samus, high priority)
+$A0:9A34 29 FF 0F    AND #$0FFF             ;} Enemy projectile properties &= FFFh (don't detect collision with projectiles, die on contact, enable collisions with Samus, low priority)
 $A0:9A37 99 D7 1B    STA $1BD7,y[$7E:1BED]  ;/
 $A0:9A3A BB          TYX
 $A0:9A3B 7A          PLY

@@ -542,25 +542,25 @@ $86:82A4 60          RTS
 
 ;;; $82A5: Instruction - calculate direction towards Samus ;;;
 {
-; Sine gives the horizontal component of direction to Samus, negative cosine gives the vertical component
+; Used only by eye door
 $86:82A5 5A          PHY
 $86:82A6 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $86:82A9 38          SEC                    ;|
 $86:82AA FD 4B 1A    SBC $1A4B,x[$7E:1A6D]  ;|
 $86:82AD 85 12       STA $12    [$7E:0012]  ;|
-$86:82AF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;|
+$86:82AF AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = (angle from enemy projectile to Samus)
 $86:82B2 38          SEC                    ;|
-$86:82B3 FD 93 1A    SBC $1A93,x[$7E:1AB5]  ;} Enemy projectile $1AFF = (angle from enemy projectile to Samus) * 2
+$86:82B3 FD 93 1A    SBC $1A93,x[$7E:1AB5]  ;|
 $86:82B6 85 14       STA $14    [$7E:0014]  ;|
-$86:82B8 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;|
-$86:82BC 0A          ASL A                  ;|
-$86:82BD AC 91 19    LDY $1991  [$7E:1991]  ;|
+$86:82B8 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
+$86:82BC 0A          ASL A                  ;\
+$86:82BD AC 91 19    LDY $1991  [$7E:1991]  ;} Enemy projectile $1AFF = [A] * 2 (angle * 2)
 $86:82C0 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;/
 $86:82C3 AA          TAX                    ;\
-$86:82C4 BF 43 B4 A0 LDA $A0B443,x[$A0:B5B3];} Enemy projectile $1AB7 = (sine of angle from enemy projectile to Samus)
+$86:82C4 BF 43 B4 A0 LDA $A0B443,x[$A0:B5B3];} Enemy projectile X velocity = sin([A] * pi / 80h)
 $86:82C8 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
 $86:82CB BF C3 B3 A0 LDA $A0B3C3,x[$A0:B533];\
-$86:82CF 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile $1ADB = (negative cosine of angle from enemy projectile to Samus)
+$86:82CF 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = -cos([A] * pi / 80h)
 $86:82D2 BB          TYX
 $86:82D3 7A          PLY
 $86:82D4 60          RTS
@@ -878,10 +878,24 @@ $86:8466 64 22       STZ $22    [$7E:0022]
 $86:8468 64 24       STZ $24    [$7E:0024]
 $86:846A 60          RTS
 
-$86:846B             dw 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000,
-                        0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000, 0000,0000,
-                        0001,0000, 0000,0001, 0001,0001, 0002,0000, 0000,0002, 0002,0002, 0003,0000, 0000,0003, 0003,0003,
-                        0001,0000, 0000,0001, 0001,0001, 0002,0000, 0000,0002, 0002,0002, 0003,0000, 0000,0003, 0003,0003
+; [X displacement], [Y displacement]
+
+;                        ______________________________ Horizontal shaking
+;                       |           ___________________ Vertical shaking
+;                       |          |           ________ Diagonal shaking
+;                       |          |          |
+$86:846B             dw 0000,0000, 0000,0000, 0000,0000, ;\
+                        0000,0000, 0000,0000, 0000,0000, ;} BG1 only
+                        0000,0000, 0000,0000, 0000,0000, ;/
+                        0000,0000, 0000,0000, 0000,0000, ;\
+                        0000,0000, 0000,0000, 0000,0000, ;} BG1 and BG2
+                        0000,0000, 0000,0000, 0000,0000, ;/
+                        0001,0000, 0000,0001, 0001,0001, ;\
+                        0002,0000, 0000,0002, 0002,0002, ;} BG1, BG2 and enemies
+                        0003,0000, 0000,0003, 0003,0003, ;/
+                        0001,0000, 0000,0001, 0001,0001, ;\
+                        0002,0000, 0000,0002, 0002,0002, ;} BG2 only and enemies
+                        0003,0000, 0000,0003, 0003,0003  ;/
 }
 
 
@@ -1036,26 +1050,26 @@ $86:85BF 4C 4E 87    JMP $874E  [$86:874E]  ; Go to enemy projectile block colli
 
 ;;; $85C2: Enemy projectile block collision reaction - horizontal - slope - square ;;;
 {
-$86:85C2 0A          ASL A
-$86:85C3 0A          ASL A
-$86:85C4 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$86:85C7 BF 01 64 7F LDA $7F6401,x[$7F:65CD]
-$86:85CB 2A          ROL A
-$86:85CC 2A          ROL A
-$86:85CD 2A          ROL A
-$86:85CE 29 03 00    AND #$0003
-$86:85D1 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$86:85D4 A5 22       LDA $22    [$7E:0022]
-$86:85D6 29 08 00    AND #$0008
-$86:85D9 4A          LSR A
-$86:85DA 4A          LSR A
-$86:85DB 4A          LSR A
-$86:85DC 4D D6 0D    EOR $0DD6  [$7E:0DD6]
-$86:85DF 6D D4 0D    ADC $0DD4  [$7E:0DD4]
-$86:85E2 AA          TAX
-$86:85E3 AC 91 19    LDY $1991  [$7E:1991]
-$86:85E6 A5 20       LDA $20    [$7E:0020]
-$86:85E8 D0 2D       BNE $2D    [$8617]
+$86:85C2 0A          ASL A                  ;\
+$86:85C3 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
+$86:85C4 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$86:85C7 BF 01 64 7F LDA $7F6401,x[$7F:65CD];\
+$86:85CB 2A          ROL A                  ;|
+$86:85CC 2A          ROL A                  ;|
+$86:85CD 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slope flip flags)
+$86:85CE 29 03 00    AND #$0003             ;|
+$86:85D1 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$86:85D4 A5 22       LDA $22    [$7E:0022]  ;\
+$86:85D6 29 08 00    AND #$0008             ;} A = [$22] & 8 (is enemy projectile boundary in right half of block)
+$86:85D9 4A          LSR A                  ;\
+$86:85DA 4A          LSR A                  ;|
+$86:85DB 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 3 (toggle X flip flag if enemy projectile is in right half of block)
+$86:85DC 4D D6 0D    EOR $0DD6  [$7E:0DD6]  ;/
+$86:85DF 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;\
+$86:85E2 AA          TAX                    ;} X = [$0DD4] + [A] (solid slope definition table index)
+$86:85E3 AC 91 19    LDY $1991  [$7E:1991]  ; Y = [enemy projectile index]
+$86:85E6 A5 20       LDA $20    [$7E:0020]  ;\
+$86:85E8 D0 2D       BNE $2D    [$8617]     ;} If [$20] != 0 (enemy projectile spans more than one block): go to BRANCH_MULTI_BLOCK
 $86:85EA B9 93 1A    LDA $1A93,y[$7E:1AB5]
 $86:85ED 38          SEC
 $86:85EE E5 1E       SBC $1E    [$7E:001E]
@@ -1081,6 +1095,7 @@ $86:8613 60          RTS
 
 $86:8614 4C 54 86    JMP $8654  [$86:8654]
 
+; BRANCH_MULTI_BLOCK
 $86:8617 A5 1A       LDA $1A    [$7E:001A]
 $86:8619 D0 14       BNE $14    [$862F]
 $86:861B B9 93 1A    LDA $1A93,y
