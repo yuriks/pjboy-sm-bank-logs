@@ -1030,17 +1030,17 @@ $94:8646 10 38       BPL $38    [$8680]     ;/
 $94:8648 BF 01 64 7F LDA $7F6401,x          ;\
 $94:864C 30 05       BMI $05    [$8653]     ;} If [block BTS] & 80h = 0:
 $94:864E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ; A = [Samus Y position] % 10h
-$94:8651 80 06       BRA $06    [$8659]     
-                                            
+$94:8651 80 06       BRA $06    [$8659]
+
 $94:8653 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\ Else ([block BTS] & 80h != 0):
 $94:8656 49 0F 00    EOR #$000F             ;} A = Fh - [Samus Y position] % 10h
-                                            
-$94:8659 29 0F 00    AND #$000F             
+
+$94:8659 29 0F 00    AND #$000F
 $94:865C 18          CLC                    ;\
 $94:865D 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
 $94:8660 AA          TAX                    ;} A = [$892B + [$0DD6] + [A]] (slope left X offset)
 $94:8661 BD 2B 89    LDA $892B,x            ;/
-$94:8664 29 1F 00    AND #$001F             
+$94:8664 29 1F 00    AND #$001F
 $94:8667 38          SEC                    ;\
 $94:8668 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
 $94:866B 3A          DEC A                  ;/
@@ -1102,19 +1102,19 @@ $94:86CC 80 06       BRA $06    [$86D4]
 
 $94:86CE AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\ Else ([block BTS] & 80h != 0):
 $94:86D1 49 0F 00    EOR #$000F             ;} A = Fh - [Samus Y position] % 10h
-                                            
-$94:86D4 29 0F 00    AND #$000F             
+
+$94:86D4 29 0F 00    AND #$000F
 $94:86D7 18          CLC                    ;\
 $94:86D8 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
 $94:86DB AA          TAX                    ;} A = [$892B + [$0DD6] + [A]] (slope left X offset)
 $94:86DC BD 2B 89    LDA $892B,x            ;/
-$94:86DF 29 1F 00    AND #$001F             
+$94:86DF 29 1F 00    AND #$001F
 $94:86E2 38          SEC                    ;\
 $94:86E3 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
 $94:86E6 3A          DEC A                  ;/
 $94:86E7 F0 02       BEQ $02    [$86EB]     ;\
 $94:86E9 10 0E       BPL $0E    [$86F9]     ;} If [A] > 0: return carry clear
-                                            
+
 $94:86EB 18          CLC                    ;\
 $94:86EC 65 12       ADC $12    [$7E:0012]  ;|
 $94:86EE 10 03       BPL $03    [$86F3]     ;|
@@ -1701,7 +1701,7 @@ $94:8E53 60          RTS                    ;} Return carry set
 
 ;;; $8E54: Square slope definitions ;;;
 {
-; Enemies use $A0:C435
+; Enemies use $A0:C435, enemy projectiles use $86:8729
 ; 0 = air, 80h = solid
 
 ;                        __________ Top-left
@@ -4428,7 +4428,7 @@ $94:A1D5 60          RTS
 ;;     $28: Remaining target number of collisions - 1
 $94:A1D6 EC B9 07    CPX $07B9  [$7E:07B9]  ;\
 $94:A1D9 B0 1B       BCS $1B    [$A1F6]     ;} If [X] >= [level data size]: return set
-$94:A1DB DA          PHX                    
+$94:A1DB DA          PHX
 $94:A1DC 8E C4 0D    STX $0DC4  [$7E:0DC4]  ;\
 $94:A1DF 4E C4 0D    LSR $0DC4  [$7E:0DC4]  ;} Current block index = [X] / 2
 $94:A1E2 BF 02 00 7F LDA $7F0002,x[$7F:5356];\
@@ -5391,7 +5391,7 @@ $94:A763 29 08 00    AND #$0008             ;|
 $94:A766 F0 05       BEQ $05    [$A76D]     ;/
 $94:A768 BD 53 8E    LDA $8E53,x[$94:8E53]  ;\
 $94:A76B 30 02       BMI $02    [$A76F]     ;} If [$8E54 + [X]] & 80h != 0 (right half is solid): return carry set
-                                            
+
 $94:A76D 18          CLC                    ;\
 $94:A76E 60          RTS                    ;} Return carry clear
 
@@ -5409,7 +5409,7 @@ $94:A781 D0 17       BNE $17    [$A79A]     ;/
 $94:A783 BD 53 8E    LDA $8E53,x[$94:8E5B]  ;\
 $94:A786 30 23       BMI $23    [$A7AB]     ;} If [$8E54 + [X]] & 80h != 0 (left half is solid): return carry set
 $94:A788 80 1F       BRA $1F    [$A7A9]     ; Return carry clear
-                                            
+
 $94:A78A C5 1A       CMP $1A    [$7E:001A]  ;\
 $94:A78C D0 0C       BNE $0C    [$A79A]     ;} If [$26] = [$1A] (leftmost block check):
 $94:A78E B9 64 0B    LDA $0B64,y[$7E:0B64]  ;\
@@ -5421,14 +5421,14 @@ $94:A798 D0 05       BNE $05    [$A79F]     ;/
 ; BRANCH_CHECK_BOTH_HALVES
 $94:A79A BD 53 8E    LDA $8E53,x[$94:8E5E]  ;\
 $94:A79D 30 0C       BMI $0C    [$A7AB]     ;} If [$8E54 + [X]] & 80h != 0 (left half is solid): return carry set
-                                            
-; BRANCH_CHECK_LEFT_HALF                    
+
+; BRANCH_CHECK_LEFT_HALF
 $94:A79F 8A          TXA                    ;\
 $94:A7A0 49 01 00    EOR #$0001             ;|
 $94:A7A3 AA          TAX                    ;} If [$8E54 + ([X] ^ 1)] & 80h != 0 (right half is solid): return carry set
 $94:A7A4 BD 53 8E    LDA $8E53,x[$94:8E55]  ;|
 $94:A7A7 30 02       BMI $02    [$A7AB]     ;/
-                                            
+
 $94:A7A9 18          CLC                    ;\
 $94:A7AA 60          RTS                    ;} Return carry clear
 
@@ -5445,7 +5445,7 @@ $94:A7B9 F0 05       BEQ $05    [$A7C0]     ;/
 $94:A7BB 8A          TXA                    ;\
 $94:A7BC 49 01 00    EOR #$0001             ;} X ^= 1 (toggle X flip flag)
 $94:A7BF AA          TAX                    ;/
-                                            
+
 $94:A7C0 BD 53 8E    LDA $8E53,x[$94:8E53]  ;\
 $94:A7C3 30 02       BMI $02    [$A7C7]     ;} If [$8E54 + [X]] & 80h != 0: return carry set
 $94:A7C5 18          CLC                    ;\
@@ -5495,7 +5495,7 @@ $94:A7E5 AA          TAX                    ;|
 $94:A7E6 BD F5 A7    LDA $A7F5,x[$94:A7F5]  ;} Spawn PLM [$9EA6 + [block BTS] * 2]
 $94:A7E9 22 E7 84 84 JSL $8484E7[$84:84E7]  ;/
 $94:A7ED 60          RTS                    ; Return
-                                            
+
 $94:A7EE 29 7F 00    AND #$007F             ; >_<;
 $94:A7F1 C2 40       REP #$40
 $94:A7F3 18          CLC
@@ -5724,8 +5724,8 @@ $94:A980 30 0B       BMI $0B    [$A98D]     ;} If 40h <= (grapple beam end angle
 $94:A982 AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\
 $94:A985 29 F0 FF    AND #$FFF0             ;} Grapple beam end Y position = [grapple beam end Y position] rounded to pixel 8 of 16x16 block
 $94:A988 09 08 00    ORA #$0008             ;/
-$94:A98B 80 09       BRA $09    [$A996]     
-                                            
+$94:A98B 80 09       BRA $09    [$A996]
+
 $94:A98D AD 0C 0D    LDA $0D0C  [$7E:0D0C]  ;\ Else (not 40h <= (grapple beam end angle) <= C0h):
 $94:A990 29 F0 FF    AND #$FFF0             ;} Grapple beam end Y position = [grapple beam end Y position] rounded to pixel 7 of 16x16 block
 $94:A993 09 07 00    ORA #$0007             ;/
@@ -5924,7 +5924,7 @@ $94:AAC9 A9 3C 00    LDA #$003C             ;\
 $94:AACC 8D A8 18    STA $18A8  [$7E:18A8]  ;} Samus invincibility timer = 3Ch
 $94:AACF A9 0A 00    LDA #$000A             ;\
 $94:AAD2 8D AA 18    STA $18AA  [$7E:18AA]  ;} Samus knockback timer = Ah
-                                            
+
 $94:AAD5 18          CLC                    ;\
 $94:AAD6 60          RTS                    ;} Return carry clear
 
@@ -6142,8 +6142,8 @@ $94:ACA5 C9 3F 00    CMP #$003F             ;\
 $94:ACA8 90 06       BCC $06    [$ACB0]     ;} If [target grapple beam length] >= 3Fh:
 $94:ACAA 9C 00 0D    STZ $0D00  [$7E:0D00]  ; Grapple beam length delta = 0
 $94:ACAD A9 3F 00    LDA #$003F             ; Target grapple beam length = 3Fh
-                                            
-$94:ACB0 8D 8C 0D    STA $0D8C  [$7E:0D8C]  
+
+$94:ACB0 8D 8C 0D    STA $0D8C  [$7E:0D8C]
 $94:ACB3 A9 38 00    LDA #$0038             ;\
 $94:ACB6 8D 8E 0D    STA $0D8E  [$7E:0D8E]  ;} Samus front boundary offset from grapple beam start = 38h
 $94:ACB9 AD FB 0C    LDA $0CFB  [$7E:0CFB]  ;\
@@ -6373,14 +6373,14 @@ $94:AE5B 1C 36 0D    TRB $0D36  [$7E:0D36]  ;} Disable special grapple beam angl
 $94:AE5E CE 30 0D    DEC $0D30  [$7E:0D30]  ;\
 $94:AE61 10 03       BPL $03    [$AE66]     ;} Grapple kick cooldown timer = max(0, [grapple kick cooldown timer] - 1)
 $94:AE63 9C 30 0D    STZ $0D30  [$7E:0D30]  ;/
-                                            
+
 $94:AE66 AD 2E 0D    LDA $0D2E  [$7E:0D2E]  ;\
 $94:AE69 10 08       BPL $08    [$AE73]     ;} If [extra grapple swing angular velocity] < 0:
 $94:AE6B 18          CLC                    ;\
 $94:AE6C 69 06 00    ADC #$0006             ;} Extra grapple swing angular velocity = min(0, [extra grapple swing angular velocity] + 6)
 $94:AE6F 10 0A       BPL $0A    [$AE7B]     ;/
 $94:AE71 80 0B       BRA $0B    [$AE7E]     ; Return carry clear
-                                            
+
 $94:AE73 38          SEC                    ;\
 $94:AE74 E9 06 00    SBC #$0006             ;} Extra grapple swing angular velocity = max(0, [extra grapple swing angular velocity] - 6)
 $94:AE77 30 02       BMI $02    [$AE7B]     ;/
@@ -6406,7 +6406,7 @@ $94:AE98 C9 06 00    CMP #$0006             ;|
 $94:AE9B F0 05       BEQ $05    [$AEA2]     ;} If [distance of grapple swing collision from Samus' feet] < 5 (40px): go to BRANCH_ANTICLOCKWISE_BOUNCE
 $94:AE9D C9 05 00    CMP #$0005             ;|
 $94:AEA0 D0 17       BNE $17    [$AEB9]     ;/
-                                            
+
 $94:AEA2 AD FE 0C    LDA $0CFE  [$7E:0CFE]  ;\
 $94:AEA5 C9 08 00    CMP #$0008             ;} If [grapple beam length] = 8:
 $94:AEA8 D0 0F       BNE $0F    [$AEB9]     ;/
@@ -6414,7 +6414,7 @@ $94:AEAA A9 00 80    LDA #$8000             ;\
 $94:AEAD 0C 36 0D    TSB $0D36  [$7E:0D36]  ;} Enable special grapple beam angle handling
 $94:AEB0 9C 26 0D    STZ $0D26  [$7E:0D26]  ; Grapple swing angular velocity = 0
 $94:AEB3 9C 2E 0D    STZ $0D2E  [$7E:0D2E]  ; Extra grapple swing angular velocity = 0
-$94:AEB6 AB          PLB                    
+$94:AEB6 AB          PLB
 $94:AEB7 38          SEC                    ;\
 $94:AEB8 6B          RTL                    ;} Return carry set
 
@@ -6435,7 +6435,7 @@ $94:AED5 6A          ROR A                  ;} Extra grapple swing angular veloc
 $94:AED6 49 FF FF    EOR #$FFFF             ;|
 $94:AED9 1A          INC A                  ;|
 $94:AEDA 8D 2E 0D    STA $0D2E  [$7E:0D2E]  ;/
-$94:AEDD AB          PLB                    
+$94:AEDD AB          PLB
 $94:AEDE 38          SEC                    ;\
 $94:AEDF 6B          RTL                    ;} Return carry set
 }
@@ -6732,7 +6732,7 @@ $94:B0A9 6B          RTL
 ;;     $1C.$1A: Width
 ;;     $20.$1E: Height
 
-; The branch at $B0C3 seems like it was supposed to be BEQ to set the high X position bit if X position >= 100h, 
+; The branch at $B0C3 seems like it was supposed to be BEQ to set the high X position bit if X position >= 100h,
 ; but it checks $14 after the width is added, so that would need to be fixed too to make the dead code useful
 ; The X position is checked to be < 100h by callers, so there is no point in doing this check anyway
 ; Tldr, $B0C0..D2 can be eliminated entirely

@@ -1021,6 +1021,16 @@ $86:858D 60          RTS
 
 ;;; $858E: Enemy projectile block collision - horizontal - slope ;;;
 {
+;; Parameters:
+;;     $14: Enemy projectile X velocity (used only for sign)
+;;     $1A: Number of blocks left to check
+;;     $1C: Enemy projectile X radius
+;;     $1E: Enemy projectile Y radius
+;;     $20: Enemy projectile Y span - 1
+;;     $22: Target front boundary (left/right depending on sign of enemy projectile velocity)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $86:858E AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $86:8591 BF 02 64 7F LDA $7F6402,x[$7F:671F];|
 $86:8595 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5:
@@ -1037,6 +1047,17 @@ $86:85AA 4C 3D 87    JMP $873D  [$86:873D]  ; Go to enemy projectile block colli
 
 ;;; $85AD: Enemy projectile block collision - vertical - slope ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $14: Enemy projectile Y velocity (used only for sign)
+;;     $1A: Number of blocks left to check
+;;     $1C: Enemy projectile X radius
+;;     $1E: Enemy projectile Y radius
+;;     $20: Enemy projectile X span - 1
+;;     $22: Target boundary (top/bottom depending on sign of enemy projectile velocity)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $86:85AD AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $86:85B0 BF 02 64 7F LDA $7F6402,x[$7F:659B];|
 $86:85B4 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5:
@@ -1050,6 +1071,18 @@ $86:85BF 4C 4E 87    JMP $874E  [$86:874E]  ; Go to enemy projectile block colli
 
 ;;; $85C2: Enemy projectile block collision reaction - horizontal - slope - square ;;;
 {
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     X: Block index
+;;     $14: Enemy projectile X velocity (used only for sign)
+;;     $1A: Number of blocks left to check
+;;     $1C: Enemy projectile X radius
+;;     $1E: Enemy projectile Y radius
+;;     $20: Enemy projectile Y span - 1
+;;     $22: Target front boundary (left/right depending on sign of enemy projectile velocity)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $86:85C2 0A          ASL A                  ;\
 $86:85C3 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
 $86:85C4 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
@@ -1060,7 +1093,7 @@ $86:85CD 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slo
 $86:85CE 29 03 00    AND #$0003             ;|
 $86:85D1 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
 $86:85D4 A5 22       LDA $22    [$7E:0022]  ;\
-$86:85D6 29 08 00    AND #$0008             ;} A = [$22] & 8 (is enemy projectile boundary in right half of block)
+$86:85D6 29 08 00    AND #$0008             ;} A = [$22] & 8 (is enemy projectile target boundary in right half of block)
 $86:85D9 4A          LSR A                  ;\
 $86:85DA 4A          LSR A                  ;|
 $86:85DB 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 3 (toggle X flip flag if enemy projectile is in right half of block)
@@ -1070,193 +1103,229 @@ $86:85E2 AA          TAX                    ;} X = [$0DD4] + [A] (solid slope de
 $86:85E3 AC 91 19    LDY $1991  [$7E:1991]  ; Y = [enemy projectile index]
 $86:85E6 A5 20       LDA $20    [$7E:0020]  ;\
 $86:85E8 D0 2D       BNE $2D    [$8617]     ;} If [$20] != 0 (enemy projectile spans more than one block): go to BRANCH_MULTI_BLOCK
-$86:85EA B9 93 1A    LDA $1A93,y[$7E:1AB5]
-$86:85ED 38          SEC
-$86:85EE E5 1E       SBC $1E    [$7E:001E]
-$86:85F0 29 08 00    AND #$0008
-$86:85F3 D0 06       BNE $06    [$85FB]
-$86:85F5 BF 28 87 86 LDA $868728,x[$86:8736]
-$86:85F9 30 19       BMI $19    [$8614]
+$86:85EA B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
+$86:85ED 38          SEC                    ;|
+$86:85EE E5 1E       SBC $1E    [$7E:001E]  ;} If (enemy projectile top boundary) & 8 = 0 (enemy projectile top boundary is in top half of block):
+$86:85F0 29 08 00    AND #$0008             ;|
+$86:85F3 D0 06       BNE $06    [$85FB]     ;/
+$86:85F5 BF 28 87 86 LDA $868728,x[$86:8736];\
+$86:85F9 30 19       BMI $19    [$8614]     ;} If [$8729 + [X]] & 80h != 0 (top half is solid): go to BRANCH_COLLISION
 
-$86:85FB 8A          TXA
-$86:85FC 49 02 00    EOR #$0002
-$86:85FF AA          TAX
-$86:8600 B9 93 1A    LDA $1A93,y
-$86:8603 18          CLC
-$86:8604 65 1E       ADC $1E    [$7E:001E]
-$86:8606 3A          DEC A
-$86:8607 29 08 00    AND #$0008
-$86:860A F0 06       BEQ $06    [$8612]
-$86:860C BF 28 87 86 LDA $868728,x
-$86:8610 30 02       BMI $02    [$8614]
+$86:85FB 8A          TXA                    ;\
+$86:85FC 49 02 00    EOR #$0002             ;} X ^= 2 (toggle Y flip flag)
+$86:85FF AA          TAX                    ;/
+$86:8600 B9 93 1A    LDA $1A93,y            ;\
+$86:8603 18          CLC                    ;|
+$86:8604 65 1E       ADC $1E    [$7E:001E]  ;|
+$86:8606 3A          DEC A                  ;} If (enemy projectile bottom boundary) & 8 != 0 (enemy projectile bottom boundary is in bottom half of block):
+$86:8607 29 08 00    AND #$0008             ;|
+$86:860A F0 06       BEQ $06    [$8612]     ;/
+$86:860C BF 28 87 86 LDA $868728,x          ;\
+$86:8610 30 02       BMI $02    [$8614]     ;} If [$8729 + [X]] & 80h != 0 (bottom half is solid): go to BRANCH_COLLISION
 
-$86:8612 18          CLC
-$86:8613 60          RTS
+$86:8612 18          CLC                    ;\
+$86:8613 60          RTS                    ;} Return carry clear
 
 $86:8614 4C 54 86    JMP $8654  [$86:8654]
 
 ; BRANCH_MULTI_BLOCK
-$86:8617 A5 1A       LDA $1A    [$7E:001A]
-$86:8619 D0 14       BNE $14    [$862F]
-$86:861B B9 93 1A    LDA $1A93,y
-$86:861E 18          CLC
-$86:861F 65 1E       ADC $1E    [$7E:001E]
-$86:8621 3A          DEC A
-$86:8622 29 08 00    AND #$0008
-$86:8625 D0 17       BNE $17    [$863E]
-$86:8627 BF 28 87 86 LDA $868728,x
-$86:862B 30 24       BMI $24    [$8651]
-$86:862D 80 20       BRA $20    [$864F]
+$86:8617 A5 1A       LDA $1A    [$7E:001A]  ;\
+$86:8619 D0 14       BNE $14    [$862F]     ;} If [$1A] = 0 (bottom block check):
+$86:861B B9 93 1A    LDA $1A93,y            ;\
+$86:861E 18          CLC                    ;|
+$86:861F 65 1E       ADC $1E    [$7E:001E]  ;|
+$86:8621 3A          DEC A                  ;} If (enemy projectile bottom boundary) & 8 != 0 (enemy projectile bottom boundary is in bottom half of block): go to BRANCH_CHECK_BOTH_HALVES
+$86:8622 29 08 00    AND #$0008             ;|
+$86:8625 D0 17       BNE $17    [$863E]     ;/
+$86:8627 BF 28 87 86 LDA $868728,x          ;\
+$86:862B 30 24       BMI $24    [$8651]     ;} If [$8729 + [X]] & 80h != 0 (top half is solid): go to BRANCH_COLLISION
+$86:862D 80 20       BRA $20    [$864F]     ; Return carry clear
 
-$86:862F C5 20       CMP $20    [$7E:0020]
-$86:8631 D0 0B       BNE $0B    [$863E]
-$86:8633 B9 93 1A    LDA $1A93,y[$7E:1AB5]
-$86:8636 38          SEC
-$86:8637 E5 1E       SBC $1E    [$7E:001E]
-$86:8639 29 08 00    AND #$0008
-$86:863C D0 06       BNE $06    [$8644]
+$86:862F C5 20       CMP $20    [$7E:0020]  ;\
+$86:8631 D0 0B       BNE $0B    [$863E]     ;} If [$1A] = [$20] (top block check):
+$86:8633 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
+$86:8636 38          SEC                    ;|
+$86:8637 E5 1E       SBC $1E    [$7E:001E]  ;} If enemy projectile top boundary is in bottom half: go to BRANCH_CHECK_BOTTOM_HALF
+$86:8639 29 08 00    AND #$0008             ;|
+$86:863C D0 06       BNE $06    [$8644]     ;/
 
-$86:863E BF 28 87 86 LDA $868728,x
-$86:8642 30 0D       BMI $0D    [$8651]
+; BRANCH_CHECK_BOTH_HALVES
+$86:863E BF 28 87 86 LDA $868728,x          ;\
+$86:8642 30 0D       BMI $0D    [$8651]     ;} If [$8729 + [X]] & 80h != 0 (top half is solid): go to BRANCH_COLLISION
 
-$86:8644 8A          TXA
-$86:8645 49 02 00    EOR #$0002
-$86:8648 AA          TAX
-$86:8649 BF 28 87 86 LDA $868728,x[$86:8734]
-$86:864D 30 02       BMI $02    [$8651]
+; BRANCH_CHECK_BOTTOM_HALF
+$86:8644 8A          TXA                    ;\
+$86:8645 49 02 00    EOR #$0002             ;|
+$86:8648 AA          TAX                    ;} If [$8729 + ([X] ^ 2)] & 80h != 0 (bottom half is solid): go to BRANCH_COLLISION
+$86:8649 BF 28 87 86 LDA $868728,x[$86:8734];|
+$86:864D 30 02       BMI $02    [$8651]     ;/
 
-$86:864F 18          CLC
-$86:8650 60          RTS
+$86:864F 18          CLC                    ;\
+$86:8650 60          RTS                    ;} Return carry clear
 
 $86:8651 4C 54 86    JMP $8654  [$86:8654]
 
+; BRANCH_COLLISION
 $86:8654 AE 91 19    LDX $1991  [$7E:1991]
-$86:8657 9E 27 1A    STZ $1A27,x[$7E:1A49]
+$86:8657 9E 27 1A    STZ $1A27,x[$7E:1A49]  ; Enemy projectile X subposition = 0
 $86:865A A5 22       LDA $22    [$7E:0022]
-$86:865C 24 14       BIT $14    [$7E:0014]
-$86:865E 30 0B       BMI $0B    [$866B]
-$86:8660 29 F8 FF    AND #$FFF8
-$86:8663 38          SEC
-$86:8664 E5 1C       SBC $1C    [$7E:001C]
-$86:8666 9D 4B 1A    STA $1A4B,x
-$86:8669 38          SEC
-$86:866A 60          RTS
+$86:865C 24 14       BIT $14    [$7E:0014]  ;\
+$86:865E 30 0B       BMI $0B    [$866B]     ;} If (enemy projectile X velocity) >= 0:
+$86:8660 29 F8 FF    AND #$FFF8             ; A = [$22] - [$22] % 8 (target right boundary rounded down to left of 8x8 tile)
+$86:8663 38          SEC                    ;\
+$86:8664 E5 1C       SBC $1C    [$7E:001C]  ;} Enemy projectile X position = [A] - (enemy projectile X radius)
+$86:8666 9D 4B 1A    STA $1A4B,x            ;/
+$86:8669 38          SEC                    ;\
+$86:866A 60          RTS                    ;} Return carry set
 
-$86:866B 09 07 00    ORA #$0007
-$86:866E 38          SEC
-$86:866F 65 1C       ADC $1C    [$7E:001C]
-$86:8671 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
-$86:8674 38          SEC
-$86:8675 60          RTS
+$86:866B 09 07 00    ORA #$0007             ;\
+$86:866E 38          SEC                    ;} A = [$22] - [$22] % 8 + 8 (target left boundary rounded up to right of 8x8 tile)
+$86:866F 65 1C       ADC $1C    [$7E:001C]  ;\
+$86:8671 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position = [A] + (enemy projectile X radius)
+$86:8674 38          SEC                    ;\
+$86:8675 60          RTS                    ;} Return carry set
 }
 
 
 ;;; $8676: Enemy projectile block collision reaction - vertical - slope - square ;;;
 {
-$86:8676 0A          ASL A
-$86:8677 0A          ASL A
-$86:8678 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$86:867B BF 01 64 7F LDA $7F6401,x[$7F:6435]
-$86:867F 2A          ROL A
-$86:8680 2A          ROL A
-$86:8681 2A          ROL A
-$86:8682 29 03 00    AND #$0003
-$86:8685 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$86:8688 A5 22       LDA $22    [$7E:0022]
-$86:868A 29 08 00    AND #$0008
-$86:868D 4A          LSR A
-$86:868E 4A          LSR A
-$86:868F 4D D6 0D    EOR $0DD6  [$7E:0DD6]
-$86:8692 6D D4 0D    ADC $0DD4  [$7E:0DD4]
-$86:8695 AA          TAX
-$86:8696 A5 20       LDA $20    [$7E:0020]
-$86:8698 D0 2D       BNE $2D    [$86C7]
-$86:869A B9 4B 1A    LDA $1A4B,y[$86:B053]
-$86:869D 38          SEC
-$86:869E E5 1C       SBC $1C    [$7E:001C]
-$86:86A0 29 08 00    AND #$0008
-$86:86A3 D0 06       BNE $06    [$86AB]
-$86:86A5 BF 28 87 86 LDA $868728,x[$86:8728]
-$86:86A9 30 19       BMI $19    [$86C4]
+;; Parameters:
+;;     A: [Block BTS] & 1Fh
+;;     X: Block index
+;;     Y: Enemy projectile index
+;;     $14: Enemy projectile Y velocity (used only for sign)
+;;     $1A: Number of blocks left to check
+;;     $1C: Enemy projectile X radius
+;;     $1E: Enemy projectile Y radius
+;;     $20: Enemy projectile X span - 1
+;;     $22: Target boundary (top/bottom depending on sign of enemy projectile velocity)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 
-$86:86AB 8A          TXA
-$86:86AC 49 01 00    EOR #$0001
-$86:86AF AA          TAX
-$86:86B0 B9 4B 1A    LDA $1A4B,y[$86:B053]
-$86:86B3 18          CLC
-$86:86B4 65 1C       ADC $1C    [$7E:001C]
-$86:86B6 3A          DEC A
-$86:86B7 29 08 00    AND #$0008
-$86:86BA F0 06       BEQ $06    [$86C2]
-$86:86BC BF 28 87 86 LDA $868728,x[$86:8729]
-$86:86C0 30 02       BMI $02    [$86C4]
+$86:8676 0A          ASL A                  ;\
+$86:8677 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
+$86:8678 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$86:867B BF 01 64 7F LDA $7F6401,x[$7F:6435];\
+$86:867F 2A          ROL A                  ;|
+$86:8680 2A          ROL A                  ;|
+$86:8681 2A          ROL A                  ;} $0DD6 = [block BTS] >> 6 & 3 (slope flip flags)
+$86:8682 29 03 00    AND #$0003             ;|
+$86:8685 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$86:8688 A5 22       LDA $22    [$7E:0022]  ;\
+$86:868A 29 08 00    AND #$0008             ;} A = [$22] & 8 (is enemy projectile target boundary in bottom half of block)
+$86:868D 4A          LSR A                  ;\
+$86:868E 4A          LSR A                  ;} A = [$0DD6] ^ [A] >> 2 (toggle Y flip flag if enemy projectile is in bottom half of block)
+$86:868F 4D D6 0D    EOR $0DD6  [$7E:0DD6]  ;/
+$86:8692 6D D4 0D    ADC $0DD4  [$7E:0DD4]  ;\
+$86:8695 AA          TAX                    ;} X = [$0DD4] + [A] (solid slope definition table index)
+$86:8696 A5 20       LDA $20    [$7E:0020]  ;\
+$86:8698 D0 2D       BNE $2D    [$86C7]     ;} If [$20] != 0 (enemy projectile spans more than one block): go to BRANCH_MULTI_BLOCK
+$86:869A B9 4B 1A    LDA $1A4B,y[$86:B053]  ;\
+$86:869D 38          SEC                    ;|
+$86:869E E5 1C       SBC $1C    [$7E:001C]  ;} If (enemy projectile left boundary) & 8 = 0 (enemy projectile left boundary is in left half of block):
+$86:86A0 29 08 00    AND #$0008             ;|
+$86:86A3 D0 06       BNE $06    [$86AB]     ;/
+$86:86A5 BF 28 87 86 LDA $868728,x[$86:8728];\
+$86:86A9 30 19       BMI $19    [$86C4]     ;} If [$8729 + [X]] & 80h != 0 (left half is solid): go to BRANCH_COLLISION
 
-$86:86C2 18          CLC
-$86:86C3 60          RTS
+$86:86AB 8A          TXA                    ;\
+$86:86AC 49 01 00    EOR #$0001             ;} X ^= 1 (toggle X flip flag)
+$86:86AF AA          TAX                    ;/
+$86:86B0 B9 4B 1A    LDA $1A4B,y[$86:B053]  ;\
+$86:86B3 18          CLC                    ;|
+$86:86B4 65 1C       ADC $1C    [$7E:001C]  ;|
+$86:86B6 3A          DEC A                  ;} If (enemy projectile right boundary) & 8 != 0 (enemy projectile right boundary is in right half of block):
+$86:86B7 29 08 00    AND #$0008             ;|
+$86:86BA F0 06       BEQ $06    [$86C2]     ;/
+$86:86BC BF 28 87 86 LDA $868728,x[$86:8729];\
+$86:86C0 30 02       BMI $02    [$86C4]     ;} If [$8729 + [X]] & 80h != 0 (right half is solid): go to BRANCH_COLLISION
+
+$86:86C2 18          CLC                    ;\
+$86:86C3 60          RTS                    ;} Return carry clear
 
 $86:86C4 4C 07 87    JMP $8707  [$86:8707]
 
+; BRANCH_MULTI_BLOCK
 $86:86C7 AC 91 19    LDY $1991  [$7E:1991]
-$86:86CA A5 1A       LDA $1A    [$7E:001A]
-$86:86CC D0 14       BNE $14    [$86E2]
-$86:86CE B9 4B 1A    LDA $1A4B,y[$7E:1A6D]
-$86:86D1 18          CLC
-$86:86D2 65 1C       ADC $1C    [$7E:001C]
-$86:86D4 3A          DEC A
-$86:86D5 29 08 00    AND #$0008
-$86:86D8 D0 17       BNE $17    [$86F1]
-$86:86DA BF 28 87 86 LDA $868728,x[$86:872C]
-$86:86DE 30 24       BMI $24    [$8704]
-$86:86E0 80 20       BRA $20    [$8702]
+$86:86CA A5 1A       LDA $1A    [$7E:001A]  ;\
+$86:86CC D0 14       BNE $14    [$86E2]     ;} If [$1A] = 0 (rightmost block check):
+$86:86CE B9 4B 1A    LDA $1A4B,y[$7E:1A6D]  ;\
+$86:86D1 18          CLC                    ;|
+$86:86D2 65 1C       ADC $1C    [$7E:001C]  ;|
+$86:86D4 3A          DEC A                  ;} If (enemy projectile right boundary) & 8 != 0 (enemy projectile right boundary is in right half of block): go to BRANCH_CHECK_BOTH_HALVES
+$86:86D5 29 08 00    AND #$0008             ;|
+$86:86D8 D0 17       BNE $17    [$86F1]     ;/
+$86:86DA BF 28 87 86 LDA $868728,x[$86:872C];\
+$86:86DE 30 24       BMI $24    [$8704]     ;} If [$8729 + [X]] & 80h != 0 (left half is solid): go to BRANCH_COLLISION
+$86:86E0 80 20       BRA $20    [$8702]     ; Return carry clear
 
-$86:86E2 C5 20       CMP $20    [$7E:0020]
-$86:86E4 D0 0B       BNE $0B    [$86F1]
-$86:86E6 B9 4B 1A    LDA $1A4B,y[$7E:1A6D]
-$86:86E9 38          SEC
-$86:86EA E5 1C       SBC $1C    [$7E:001C]
-$86:86EC 29 08 00    AND #$0008
-$86:86EF D0 06       BNE $06    [$86F7]
+$86:86E2 C5 20       CMP $20    [$7E:0020]  ;\
+$86:86E4 D0 0B       BNE $0B    [$86F1]     ;} If [$1A] = [$20] (leftmost block check):
+$86:86E6 B9 4B 1A    LDA $1A4B,y[$7E:1A6D]  ;\
+$86:86E9 38          SEC                    ;|
+$86:86EA E5 1C       SBC $1C    [$7E:001C]  ;} If enemy projectile left boundary is in left half: go to BRANCH_CHECK_LEFT_HALF
+$86:86EC 29 08 00    AND #$0008             ;|
+$86:86EF D0 06       BNE $06    [$86F7]     ;/
 
-$86:86F1 BF 28 87 86 LDA $868728,x[$86:8728]
-$86:86F5 30 0D       BMI $0D    [$8704]
+; BRANCH_CHECK_BOTH_HALVES
+$86:86F1 BF 28 87 86 LDA $868728,x[$86:8728];\
+$86:86F5 30 0D       BMI $0D    [$8704]     ;} If [$8729 + [X]] & 80h != 0 (left half is solid): go to BRANCH_COLLISION
 
-$86:86F7 8A          TXA
-$86:86F8 49 01 00    EOR #$0001
-$86:86FB AA          TAX
-$86:86FC BF 28 87 86 LDA $868728,x[$86:872E]
-$86:8700 30 02       BMI $02    [$8704]
+; BRANCH_CHECK_LEFT_HALF
+$86:86F7 8A          TXA                    ;\
+$86:86F8 49 01 00    EOR #$0001             ;|
+$86:86FB AA          TAX                    ;} If [$8729 + ([X] ^ 1)] & 80h != 0 (right half is solid): go to BRANCH_COLLISION
+$86:86FC BF 28 87 86 LDA $868728,x[$86:872E];|
+$86:8700 30 02       BMI $02    [$8704]     ;/
 
-$86:8702 18          CLC
-$86:8703 60          RTS
+$86:8702 18          CLC                    ;\
+$86:8703 60          RTS                    ;} Return carry clear
 
 $86:8704 4C 07 87    JMP $8707  [$86:8707]
 
+; BRANCH_COLLISION
 $86:8707 AE 91 19    LDX $1991  [$7E:1991]
-$86:870A 9E 6F 1A    STZ $1A6F,x
+$86:870A 9E 6F 1A    STZ $1A6F,x            ; Enemy projectile Y subposition = 0
 $86:870D A5 22       LDA $22    [$7E:0022]
-$86:870F 24 14       BIT $14    [$7E:0014]
-$86:8711 30 0B       BMI $0B    [$871E]
-$86:8713 29 F8 FF    AND #$FFF8
-$86:8716 38          SEC
-$86:8717 E5 1E       SBC $1E    [$7E:001E]
-$86:8719 9D 93 1A    STA $1A93,x
-$86:871C 38          SEC
-$86:871D 60          RTS
+$86:870F 24 14       BIT $14    [$7E:0014]  ;\
+$86:8711 30 0B       BMI $0B    [$871E]     ;} If (enemy projectile Y velocity) >= 0:
+$86:8713 29 F8 FF    AND #$FFF8             ; A = [$22] - [$22] % 8 (target bottom boundary rounded down to top of 8x8 tile)
+$86:8716 38          SEC                    ;\
+$86:8717 E5 1E       SBC $1E    [$7E:001E]  ;} Enemy projectile Y position = [A] - (enemy projectile Y radius)
+$86:8719 9D 93 1A    STA $1A93,x            ;/
+$86:871C 38          SEC                    ;\
+$86:871D 60          RTS                    ;} Return carry set
 
-$86:871E 09 07 00    ORA #$0007
-$86:8721 38          SEC
-$86:8722 65 1E       ADC $1E    [$7E:001E]
-$86:8724 9D 93 1A    STA $1A93,x
-$86:8727 38          SEC
-$86:8728 60          RTS
+$86:871E 09 07 00    ORA #$0007             ;\
+$86:8721 38          SEC                    ;} A = [$22] - [$22] % 8 + 8 (target top boundary rounded up to bottom of 8x8 tile)
+$86:8722 65 1E       ADC $1E    [$7E:001E]  ;\
+$86:8724 9D 93 1A    STA $1A93,x            ;} Enemy projectile Y position = [A] + (enemy projectile Y radius)
+$86:8727 38          SEC                    ;\
+$86:8728 60          RTS                    ;} Return carry set
+}
 
-$86:8729             db 00,01,82,83, 00,81,02,83, 00,01,02,83, 00,81,82,83, 80,81,82,83
+
+;;; $8729: Square slope definitions ;;;
+{
+; Copy of $94:8E54 for enemy projectiles
+; 7Fh- = air, 80h+ = solid
+
+;                        __________ Top-left
+;                       |   _______ Top-right
+;                       |  |   ____ Bottom-left
+;                       |  |  |   _ Bottom-right
+;                       |  |  |  |
+$86:8729             db 00,01,82,83, ; 0: Half height
+                        00,81,02,83, ; 1: Half width
+                        00,01,02,83, ; 2: Quarter
+                        00,81,82,83, ; 3: Three-quarters
+                        80,81,82,83  ; 4: Whole
 }
 
 
 ;;; $873D: Clear carry. Enemy projectile block collision reaction - horizontal - slope - non-square ;;;
 {
-$86:873D AD 77 1E    LDA $1E77  [$7E:1E77]  
+$86:873D AD 77 1E    LDA $1E77  [$7E:1E77]
 $86:8740 29 1F 00    AND #$001F
 $86:8743 0A          ASL A
 $86:8744 0A          ASL A
@@ -1491,12 +1560,12 @@ $86:88B5 60          RTS
 
 ; This routine expects:
 ;     Enemy projectile $1A27: X subposition
-;     Enemy projectile $1AB7: X velocity * 100h
+;     Enemy projectile $1AB7: X velocity (unit 1/100h px/frame)
 $86:88B6 DA          PHX
 $86:88B7 64 12       STZ $12    [$7E:0012]  ;\
 $86:88B9 64 14       STZ $14    [$7E:0014]  ;|
 $86:88BB BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;|
-$86:88BE 10 02       BPL $02    [$88C2]     ;} $14.$12 = [enemy projectile $1AB7] / 100h
+$86:88BE 10 02       BPL $02    [$88C2]     ;} $14.$12 = [enemy projectile X velocity] / 100h
 $86:88C0 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $86:88C2 85 13       STA $13    [$7E:0013]  ;/
@@ -15960,11 +16029,11 @@ $86:F3D3 60          RTS
 
 ; This table is one entry too short to be indexed with 1Ch >_<;
 $86:F3D4             dw FFFF,B800,
-                        FFFF,C000, 
-                        FFFF,E000, 
-                        FFFF,FF00, 
-                        0000,0100, 
-                        0000,2000, 
+                        FFFF,C000,
+                        FFFF,E000,
+                        FFFF,FF00,
+                        0000,0100,
+                        0000,2000,
                         0000,4000
 }
 
