@@ -1048,8 +1048,8 @@ $86:85AA 4C 3D 87    JMP $873D  [$86:873D]  ; Go to enemy projectile block colli
 ;;; $85AD: Enemy projectile block collision - vertical - slope ;;;
 {
 ;; Parameters:
-;;     Y: Enemy projectile index
 ;;     $14: Enemy projectile Y velocity (used only for sign)
+;;     $18: Target Y position
 ;;     $1A: Number of blocks left to check
 ;;     $1C: Enemy projectile X radius
 ;;     $1E: Enemy projectile Y radius
@@ -1166,7 +1166,7 @@ $86:8650 60          RTS                    ;} Return carry clear
 $86:8651 4C 54 86    JMP $8654  [$86:8654]
 
 ; BRANCH_COLLISION
-$86:8654 AE 91 19    LDX $1991  [$7E:1991]
+$86:8654 AE 91 19    LDX $1991  [$7E:1991]  ; X = [enemy projectile index]
 $86:8657 9E 27 1A    STZ $1A27,x[$7E:1A49]  ; Enemy projectile X subposition = 0
 $86:865A A5 22       LDA $22    [$7E:0022]
 $86:865C 24 14       BIT $14    [$7E:0014]  ;\
@@ -1192,7 +1192,6 @@ $86:8675 60          RTS                    ;} Return carry set
 ;; Parameters:
 ;;     A: [Block BTS] & 1Fh
 ;;     X: Block index
-;;     Y: Enemy projectile index
 ;;     $14: Enemy projectile Y velocity (used only for sign)
 ;;     $1A: Number of blocks left to check
 ;;     $1C: Enemy projectile X radius
@@ -1201,6 +1200,11 @@ $86:8675 60          RTS                    ;} Return carry set
 ;;     $22: Target boundary (top/bottom depending on sign of enemy projectile velocity)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
+
+; BUG: The single block branch ($869A) doesn't load the enemy projectile index into Y,
+;      so it loads garbage for the enemy projectile X position
+;      Result is the enemy projectile might erroneously consider the slope to be X flipped
+;      (which only affects the quarter and three-quarter slopes)
 
 $86:8676 0A          ASL A                  ;\
 $86:8677 0A          ASL A                  ;} $0DD4 = ([block BTS] & 1Fh) * 4 (solid slope definition table base index)
@@ -1246,7 +1250,7 @@ $86:86C3 60          RTS                    ;} Return carry clear
 $86:86C4 4C 07 87    JMP $8707  [$86:8707]
 
 ; BRANCH_MULTI_BLOCK
-$86:86C7 AC 91 19    LDY $1991  [$7E:1991]
+$86:86C7 AC 91 19    LDY $1991  [$7E:1991]  ; Y = [enemy projectile index]
 $86:86CA A5 1A       LDA $1A    [$7E:001A]  ;\
 $86:86CC D0 14       BNE $14    [$86E2]     ;} If [$1A] = 0 (rightmost block check):
 $86:86CE B9 4B 1A    LDA $1A4B,y[$7E:1A6D]  ;\
@@ -1284,7 +1288,7 @@ $86:8703 60          RTS                    ;} Return carry clear
 $86:8704 4C 07 87    JMP $8707  [$86:8707]
 
 ; BRANCH_COLLISION
-$86:8707 AE 91 19    LDX $1991  [$7E:1991]
+$86:8707 AE 91 19    LDX $1991  [$7E:1991]  ; X = [enemy projectile index]
 $86:870A 9E 6F 1A    STZ $1A6F,x            ; Enemy projectile Y subposition = 0
 $86:870D A5 22       LDA $22    [$7E:0022]
 $86:870F 24 14       BIT $14    [$7E:0014]  ;\
@@ -1342,133 +1346,141 @@ $86:874D 60          RTS
 
 ;;; $874E: Enemy projectile block collision reaction - vertical - slope - non-square ;;;
 {
-$86:874E AC 91 19    LDY $1991  [$7E:1991]
-$86:8751 A5 14       LDA $14    [$7E:0014]
-$86:8753 10 03       BPL $03    [$8758]
-$86:8755 4C CC 87    JMP $87CC  [$86:87CC]
+;; Parameters:
+;;     $14: Enemy projectile Y velocity (used only for sign)
+;;     $18: Target Y position
+;;     $1E: Enemy projectile Y radius
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
 
-$86:8758 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$86:875B 8E 04 42    STX $4204  [$7E:4204]
-$86:875E E2 20       SEP #$20
-$86:8760 AD A5 07    LDA $07A5  [$7E:07A5]
-$86:8763 8D 06 42    STA $4206  [$7E:4206]
-$86:8766 C2 20       REP #$20
-$86:8768 B9 4B 1A    LDA $1A4B,y[$7E:1A6B]
-$86:876B 4A          LSR A
-$86:876C 4A          LSR A
-$86:876D 4A          LSR A
-$86:876E 4A          LSR A
-$86:876F CD 16 42    CMP $4216  [$7E:4216]
-$86:8772 F0 02       BEQ $02    [$8776]
-$86:8774 18          CLC
-$86:8775 60          RTS
+$86:874E AC 91 19    LDY $1991  [$7E:1991]  ; Y = [enemy projectile index]
+$86:8751 A5 14       LDA $14    [$7E:0014]  ;\
+$86:8753 10 03       BPL $03    [$8758]     ;} If (enemy projectile Y velocity) < 0:
+$86:8755 4C CC 87    JMP $87CC  [$86:87CC]  ; Go to BRANCH_UP
 
-$86:8776 A5 18       LDA $18    [$7E:0018]
-$86:8778 18          CLC
-$86:8779 65 1E       ADC $1E    [$7E:001E]
-$86:877B 3A          DEC A
-$86:877C 29 0F 00    AND #$000F
-$86:877F 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$86:8782 BF 02 64 7F LDA $7F6402,x[$7F:659B]
-$86:8786 29 1F 00    AND #$001F
-$86:8789 0A          ASL A
-$86:878A 0A          ASL A
-$86:878B 0A          ASL A
-$86:878C 0A          ASL A
-$86:878D 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$86:8790 BF 01 64 7F LDA $7F6401,x[$7F:659A]
-$86:8794 30 34       BMI $34    [$87CA]
-$86:8796 0A          ASL A
-$86:8797 30 05       BMI $05    [$879E]
-$86:8799 B9 4B 1A    LDA $1A4B,y[$7E:1A6B]
+$86:8758 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$86:875B 8E 04 42    STX $4204  [$7E:4204]  ;|
+$86:875E E2 20       SEP #$20               ;|
+$86:8760 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$86:8763 8D 06 42    STA $4206  [$7E:4206]  ;|
+$86:8766 C2 20       REP #$20               ;|
+$86:8768 B9 4B 1A    LDA $1A4B,y[$7E:1A6B]  ;} If [current block index] % [room width in blocks] != [enemy projectile X position] / 10h (enemy projectile centre isn't in block):
+$86:876B 4A          LSR A                  ;|
+$86:876C 4A          LSR A                  ;|
+$86:876D 4A          LSR A                  ;|
+$86:876E 4A          LSR A                  ;|
+$86:876F CD 16 42    CMP $4216  [$7E:4216]  ;|
+$86:8772 F0 02       BEQ $02    [$8776]     ;/
+$86:8774 18          CLC                    ;\
+$86:8775 60          RTS                    ;} Return carry clear
+
+$86:8776 A5 18       LDA $18    [$7E:0018]  ;\
+$86:8778 18          CLC                    ;|
+$86:8779 65 1E       ADC $1E    [$7E:001E]  ;|
+$86:877B 3A          DEC A                  ;} $0DD4 = (enemy projectile target bottom boundary) % 10h
+$86:877C 29 0F 00    AND #$000F             ;|
+$86:877F 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$86:8782 BF 02 64 7F LDA $7F6402,x[$7F:659B];\
+$86:8786 29 1F 00    AND #$001F             ;|
+$86:8789 0A          ASL A                  ;|
+$86:878A 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$86:878B 0A          ASL A                  ;|
+$86:878C 0A          ASL A                  ;|
+$86:878D 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$86:8790 BF 01 64 7F LDA $7F6401,x[$7F:659A];\
+$86:8794 30 34       BMI $34    [$87CA]     ;} If [block BTS] & 80h = 0: return carry clear
+$86:8796 0A          ASL A                  ;\
+$86:8797 30 05       BMI $05    [$879E]     ;} If [block BTS] & 40h = 0:
+$86:8799 B9 4B 1A    LDA $1A4B,y[$7E:1A6B]  ; A = [enemy projectile X position] % 10h
 $86:879C 80 06       BRA $06    [$87A4]
 
-$86:879E B9 4B 1A    LDA $1A4B,y[$7E:1A63]
-$86:87A1 49 0F 00    EOR #$000F
+$86:879E B9 4B 1A    LDA $1A4B,y[$7E:1A63]  ;\ Else ([block BTS] & 40h != 0):
+$86:87A1 49 0F 00    EOR #$000F             ;} A = Fh - [enemy projectile X position] % 10h
 
 $86:87A4 29 0F 00    AND #$000F
-$86:87A7 18          CLC
-$86:87A8 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$86:87AB AA          TAX
-$86:87AC BF 2B 8B 94 LDA $948B2B,x[$94:8C6B]
+$86:87A7 18          CLC                    ;\
+$86:87A8 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
+$86:87AB AA          TAX                    ;} A = [$94:8B2B + [$0DD6] + [A]] (slope top Y offset)
+$86:87AC BF 2B 8B 94 LDA $948B2B,x[$94:8C6B];/
 $86:87B0 29 1F 00    AND #$001F
-$86:87B3 38          SEC
-$86:87B4 ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$86:87B7 3A          DEC A
-$86:87B8 F0 02       BEQ $02    [$87BC]
-$86:87BA 10 0E       BPL $0E    [$87CA]
+$86:87B3 38          SEC                    ;\
+$86:87B4 ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
+$86:87B7 3A          DEC A                  ;/
+$86:87B8 F0 02       BEQ $02    [$87BC]     ;\
+$86:87BA 10 0E       BPL $0E    [$87CA]     ;} If [A] > 0: return carry clear
 
-$86:87BC 18          CLC
-$86:87BD 65 18       ADC $18    [$7E:0018]
-$86:87BF 99 93 1A    STA $1A93,y[$7E:1AAB]
-$86:87C2 A9 FF FF    LDA #$FFFF
-$86:87C5 99 6F 1A    STA $1A6F,y[$7E:1A87]
-$86:87C8 38          SEC
-$86:87C9 60          RTS
+$86:87BC 18          CLC                    ;\
+$86:87BD 65 18       ADC $18    [$7E:0018]  ;} Enemy projectile Y position = (target Y position) + [A]
+$86:87BF 99 93 1A    STA $1A93,y[$7E:1AAB]  ;/
+$86:87C2 A9 FF FF    LDA #$FFFF             ;\
+$86:87C5 99 6F 1A    STA $1A6F,y[$7E:1A87]  ;} Enemy projectile Y subposition = FFFFh
+$86:87C8 38          SEC                    ;\
+$86:87C9 60          RTS                    ;} Return carry set
 
 $86:87CA 18          CLC
 $86:87CB 60          RTS
 
-$86:87CC AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$86:87CF 8E 04 42    STX $4204  [$7E:4204]
-$86:87D2 E2 20       SEP #$20
-$86:87D4 AD A5 07    LDA $07A5  [$7E:07A5]
-$86:87D7 8D 06 42    STA $4206  [$7E:4206]
-$86:87DA C2 20       REP #$20
-$86:87DC B9 4B 1A    LDA $1A4B,y[$7E:1A6B]
-$86:87DF 4A          LSR A
-$86:87E0 4A          LSR A
-$86:87E1 4A          LSR A
-$86:87E2 4A          LSR A
-$86:87E3 CD 16 42    CMP $4216  [$7E:4216]
-$86:87E6 F0 02       BEQ $02    [$87EA]
-$86:87E8 18          CLC
-$86:87E9 60          RTS
+; BRANCH_UP
+$86:87CC AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$86:87CF 8E 04 42    STX $4204  [$7E:4204]  ;|
+$86:87D2 E2 20       SEP #$20               ;|
+$86:87D4 AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$86:87D7 8D 06 42    STA $4206  [$7E:4206]  ;|
+$86:87DA C2 20       REP #$20               ;|
+$86:87DC B9 4B 1A    LDA $1A4B,y[$7E:1A6B]  ;} If [current block index] % [room width in blocks] != [enemy projectile X position] / 10h (enemy projectile centre isn't in block):
+$86:87DF 4A          LSR A                  ;|
+$86:87E0 4A          LSR A                  ;|
+$86:87E1 4A          LSR A                  ;|
+$86:87E2 4A          LSR A                  ;|
+$86:87E3 CD 16 42    CMP $4216  [$7E:4216]  ;|
+$86:87E6 F0 02       BEQ $02    [$87EA]     ;/
+$86:87E8 18          CLC                    ;\
+$86:87E9 60          RTS                    ;} Return carry clear
 
-$86:87EA A5 18       LDA $18    [$7E:0018]
-$86:87EC 38          SEC
-$86:87ED E5 1E       SBC $1E    [$7E:001E]
-$86:87EF 29 0F 00    AND #$000F
-$86:87F2 49 0F 00    EOR #$000F
-$86:87F5 8D D4 0D    STA $0DD4  [$7E:0DD4]
-$86:87F8 BF 02 64 7F LDA $7F6402,x[$7F:6826]
-$86:87FC 29 1F 00    AND #$001F
-$86:87FF 0A          ASL A
-$86:8800 0A          ASL A
-$86:8801 0A          ASL A
-$86:8802 0A          ASL A
-$86:8803 8D D6 0D    STA $0DD6  [$7E:0DD6]
-$86:8806 BF 01 64 7F LDA $7F6401,x[$7F:6825]
-$86:880A 10 38       BPL $38    [$8844]
-$86:880C 0A          ASL A
-$86:880D 30 05       BMI $05    [$8814]
-$86:880F B9 4B 1A    LDA $1A4B,y[$7E:1A6B]
+$86:87EA A5 18       LDA $18    [$7E:0018]  ;\
+$86:87EC 38          SEC                    ;|
+$86:87ED E5 1E       SBC $1E    [$7E:001E]  ;|
+$86:87EF 29 0F 00    AND #$000F             ;} $0DD4 = Fh - (enemy projectile target top boundary) % 10h
+$86:87F2 49 0F 00    EOR #$000F             ;|
+$86:87F5 8D D4 0D    STA $0DD4  [$7E:0DD4]  ;/
+$86:87F8 BF 02 64 7F LDA $7F6402,x[$7F:6826];\
+$86:87FC 29 1F 00    AND #$001F             ;|
+$86:87FF 0A          ASL A                  ;|
+$86:8800 0A          ASL A                  ;} $0DD6 = ([block BTS] & 1Fh) * 10h (slope definition table base index)
+$86:8801 0A          ASL A                  ;|
+$86:8802 0A          ASL A                  ;|
+$86:8803 8D D6 0D    STA $0DD6  [$7E:0DD6]  ;/
+$86:8806 BF 01 64 7F LDA $7F6401,x[$7F:6825];\
+$86:880A 10 38       BPL $38    [$8844]     ;} If [block BTS] & 80h = 0: return carry clear
+$86:880C 0A          ASL A                  ;\
+$86:880D 30 05       BMI $05    [$8814]     ;} If [block BTS] & 40h = 0:
+$86:880F B9 4B 1A    LDA $1A4B,y[$7E:1A6B]  ; A = [enemy projectile X position] % 10h
 $86:8812 80 06       BRA $06    [$881A]
 
-$86:8814 B9 4B 1A    LDA $1A4B,y[$7E:1A6D]
-$86:8817 49 0F 00    EOR #$000F
+$86:8814 B9 4B 1A    LDA $1A4B,y[$7E:1A6D]  ;\ Else ([block BTS] & 40h != 0):
+$86:8817 49 0F 00    EOR #$000F             ;} A = Fh - [enemy projectile X position] % 10h
 
 $86:881A 29 0F 00    AND #$000F
-$86:881D 18          CLC
-$86:881E 6D D6 0D    ADC $0DD6  [$7E:0DD6]
-$86:8821 AA          TAX
-$86:8822 BF 2B 8B 94 LDA $948B2B,x[$94:8C62]
+$86:881D 18          CLC                    ;\
+$86:881E 6D D6 0D    ADC $0DD6  [$7E:0DD6]  ;|
+$86:8821 AA          TAX                    ;} A = [$94:8B2B + [$0DD6] + [A]] (slope top Y offset)
+$86:8822 BF 2B 8B 94 LDA $948B2B,x[$94:8C62];/
 $86:8826 29 1F 00    AND #$001F
-$86:8829 38          SEC
-$86:882A ED D4 0D    SBC $0DD4  [$7E:0DD4]
-$86:882D 3A          DEC A
-$86:882E F0 02       BEQ $02    [$8832]
-$86:8830 10 12       BPL $12    [$8844]
+$86:8829 38          SEC                    ;\
+$86:882A ED D4 0D    SBC $0DD4  [$7E:0DD4]  ;} A -= [$0DD4] + 1
+$86:882D 3A          DEC A                  ;/
+$86:882E F0 02       BEQ $02    [$8832]     ;\
+$86:8830 10 12       BPL $12    [$8844]     ;} If [A] > 0: return carry clear
 
-$86:8832 49 FF FF    EOR #$FFFF
-$86:8835 1A          INC A
-$86:8836 18          CLC
-$86:8837 65 18       ADC $18    [$7E:0018]
-$86:8839 99 93 1A    STA $1A93,y[$7E:1AB3]
-$86:883C A9 00 00    LDA #$0000
-$86:883F 99 6F 1A    STA $1A6F,y[$7E:1A8F]
-$86:8842 38          SEC
-$86:8843 60          RTS
+$86:8832 49 FF FF    EOR #$FFFF             ;\
+$86:8835 1A          INC A                  ;|
+$86:8836 18          CLC                    ;} Enemy projectile Y position = (target Y position) - [A]
+$86:8837 65 18       ADC $18    [$7E:0018]  ;|
+$86:8839 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
+$86:883C A9 00 00    LDA #$0000             ;\
+$86:883F 99 6F 1A    STA $1A6F,y[$7E:1A8F]  ;} Enemy projectile Y subposition = 0
+$86:8842 38          SEC                    ;\
+$86:8843 60          RTS                    ;} Return carry set
 
 $86:8844 18          CLC
 $86:8845 60          RTS
@@ -1519,6 +1531,16 @@ $86:8866             dw 858A,
 
 ;;; $8886: Enemy projectile horizontal block reaction ;;;
 {
+;; Parameters:
+;;     $14: Enemy projectile X velocity (used only for sign)
+;;     $1A: Number of blocks left to check
+;;     $1C: Enemy projectile X radius
+;;     $1E: Enemy projectile Y radius
+;;     $20: Enemy projectile Y span - 1
+;;     $22: Target front boundary (left/right depending on sign of enemy projectile velocity)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $86:8886 DA          PHX
 $86:8887 8E C4 0D    STX $0DC4  [$7E:0DC4]  ;\
 $86:888A 4E C4 0D    LSR $0DC4  [$7E:0DC4]  ;} Current block index = [X] / 2
@@ -1537,6 +1559,17 @@ $86:889D 60          RTS
 
 ;;; $889E: Enemy projectile vertical block reaction ;;;
 {
+;; Parameters:
+;;     $14: Enemy projectile Y velocity (used only for sign)
+;;     $18: Target Y position
+;;     $1A: Number of blocks left to check
+;;     $1C: Enemy projectile X radius
+;;     $1E: Enemy projectile Y radius
+;;     $20: Enemy projectile X span - 1
+;;     $22: Target boundary (top/bottom depending on sign of enemy projectile velocity)
+;; Returns:
+;;     Carry: Set if collision, clear otherwise
+
 $86:889E DA          PHX
 $86:889F 8E C4 0D    STX $0DC4  [$7E:0DC4]  ;\
 $86:88A2 4E C4 0D    LSR $0DC4  [$7E:0DC4]  ;} Current block index = [X] / 2
@@ -1555,6 +1588,8 @@ $86:88B5 60          RTS
 
 ;;; $88B6: Move enemy projectile horizontally ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 ;; Returns:
 ;;     Carry: Set if collided with block
 
@@ -1682,122 +1717,127 @@ $86:897A 60          RTS                    ;} Return carry set
 
 ;;; $897B: Move enemy projectile vertically ;;;
 {
+;; Parameters:
+;;     X: Enemy projectile index
 ;; Returns:
 ;;     Carry: Set if collided with block
 
 ; This routine expects:
 ;     Enemy projectile $1A6F: Y subposition
-;     Enemy projectile $1ADB: Y velocity * 100h
+;     Enemy projectile $1ADB: Y velocity (unit 1/100h px/frame)
 $86:897B DA          PHX
-$86:897C 64 12       STZ $12    [$7E:0012]
-$86:897E 64 14       STZ $14    [$7E:0014]
-$86:8980 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:8983 10 02       BPL $02    [$8987]
-$86:8985 C6 14       DEC $14    [$7E:0014]
-
-$86:8987 85 13       STA $13    [$7E:0013]
-$86:8989 BD B4 1B    LDA $1BB4,x[$7E:1BD6]
-$86:898C 29 FF 00    AND #$00FF
-$86:898F 85 1E       STA $1E    [$7E:001E]
-$86:8991 BD B3 1B    LDA $1BB3,x[$7E:1BD5]
-$86:8994 29 FF 00    AND #$00FF
-$86:8997 85 1C       STA $1C    [$7E:001C]
-$86:8999 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:899C 38          SEC
-$86:899D E5 1C       SBC $1C    [$7E:001C]
-$86:899F 29 F0 FF    AND #$FFF0
-$86:89A2 85 1A       STA $1A    [$7E:001A]
-$86:89A4 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:89A7 18          CLC
-$86:89A8 65 1C       ADC $1C    [$7E:001C]
-$86:89AA 3A          DEC A
-$86:89AB 38          SEC
-$86:89AC E5 1A       SBC $1A    [$7E:001A]
-$86:89AE 4A          LSR A
-$86:89AF 4A          LSR A
-$86:89B0 4A          LSR A
-$86:89B1 4A          LSR A
-$86:89B2 85 1A       STA $1A    [$7E:001A]
-$86:89B4 85 20       STA $20    [$7E:0020]
-$86:89B6 BD 6F 1A    LDA $1A6F,x[$7E:1A91]
-$86:89B9 18          CLC
-$86:89BA 65 12       ADC $12    [$7E:0012]
-$86:89BC 85 16       STA $16    [$7E:0016]
-$86:89BE BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:89C1 65 14       ADC $14    [$7E:0014]
-$86:89C3 85 18       STA $18    [$7E:0018]
-$86:89C5 24 14       BIT $14    [$7E:0014]
-$86:89C7 30 06       BMI $06    [$89CF]
-$86:89C9 18          CLC
-$86:89CA 65 1E       ADC $1E    [$7E:001E]
-$86:89CC 3A          DEC A
-$86:89CD 80 03       BRA $03    [$89D2]
-
-$86:89CF 38          SEC
-$86:89D0 E5 1E       SBC $1E    [$7E:001E]
+$86:897C 64 12       STZ $12    [$7E:0012]  ;\
+$86:897E 64 14       STZ $14    [$7E:0014]  ;|
+$86:8980 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;|
+$86:8983 10 02       BPL $02    [$8987]     ;} $14.$12 = [enemy projectile Y velocity] / 100h
+$86:8985 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$86:8987 85 13       STA $13    [$7E:0013]  ;/
+$86:8989 BD B4 1B    LDA $1BB4,x[$7E:1BD6]  ;\
+$86:898C 29 FF 00    AND #$00FF             ;} $1E = [enemy projectile Y radius]
+$86:898F 85 1E       STA $1E    [$7E:001E]  ;/
+$86:8991 BD B3 1B    LDA $1BB3,x[$7E:1BD5]  ;\
+$86:8994 29 FF 00    AND #$00FF             ;} $1C = [enemy projectile X radius]
+$86:8997 85 1C       STA $1C    [$7E:001C]  ;/
+$86:8999 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
+$86:899C 38          SEC                    ;|
+$86:899D E5 1C       SBC $1C    [$7E:001C]  ;|
+$86:899F 29 F0 FF    AND #$FFF0             ;|
+$86:89A2 85 1A       STA $1A    [$7E:001A]  ;|
+$86:89A4 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;|
+$86:89A7 18          CLC                    ;|
+$86:89A8 65 1C       ADC $1C    [$7E:001C]  ;|
+$86:89AA 3A          DEC A                  ;} $1A = (enemy projectile right boundary) / 10h - (enemy projectile left boundary) / 10h (number of blocks left to check)
+$86:89AB 38          SEC                    ;|
+$86:89AC E5 1A       SBC $1A    [$7E:001A]  ;|
+$86:89AE 4A          LSR A                  ;|
+$86:89AF 4A          LSR A                  ;|
+$86:89B0 4A          LSR A                  ;|
+$86:89B1 4A          LSR A                  ;|
+$86:89B2 85 1A       STA $1A    [$7E:001A]  ;/
+$86:89B4 85 20       STA $20    [$7E:0020]  ; $20 = [$1A] (enemy projectile X block span)
+$86:89B6 BD 6F 1A    LDA $1A6F,x[$7E:1A91]  ;\
+$86:89B9 18          CLC                    ;|
+$86:89BA 65 12       ADC $12    [$7E:0012]  ;|
+$86:89BC 85 16       STA $16    [$7E:0016]  ;} $18.$16 = [enemy projectile Y position] + [$14].[$12] (target position)
+$86:89BE BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;|
+$86:89C1 65 14       ADC $14    [$7E:0014]  ;|
+$86:89C3 85 18       STA $18    [$7E:0018]  ;/
+$86:89C5 24 14       BIT $14    [$7E:0014]  ;\
+$86:89C7 30 06       BMI $06    [$89CF]     ;} If [$14] >= 0: (moving down)
+$86:89C9 18          CLC                    ;\
+$86:89CA 65 1E       ADC $1E    [$7E:001E]  ;} $22 = [$18] + [enemy projectile Y radius] - 1 (target front boundary)
+$86:89CC 3A          DEC A                  ;/
+$86:89CD 80 03       BRA $03    [$89D2]     
+                                            
+$86:89CF 38          SEC                    ;\ Else ([$14] < 0): (moving up)
+$86:89D0 E5 1E       SBC $1E    [$7E:001E]  ;} $22 = [$18] - [enemy projectile Y radius] (target front boundary)
 
 $86:89D2 85 22       STA $22    [$7E:0022]
-$86:89D4 4A          LSR A
-$86:89D5 4A          LSR A
-$86:89D6 4A          LSR A
-$86:89D7 4A          LSR A
-$86:89D8 E2 20       SEP #$20
-$86:89DA 8D 02 42    STA $4202  [$7E:4202]
-$86:89DD AD A5 07    LDA $07A5  [$7E:07A5]
-$86:89E0 8D 03 42    STA $4203  [$7E:4203]
-$86:89E3 C2 20       REP #$20
-$86:89E5 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:89E8 38          SEC
-$86:89E9 E5 1C       SBC $1C    [$7E:001C]
-$86:89EB 4A          LSR A
-$86:89EC 4A          LSR A
-$86:89ED 4A          LSR A
-$86:89EE 4A          LSR A
-$86:89EF 18          CLC
-$86:89F0 6D 16 42    ADC $4216  [$7E:4216]
-$86:89F3 0A          ASL A
-$86:89F4 AA          TAX
+$86:89D4 4A          LSR A                  ;\
+$86:89D5 4A          LSR A                  ;|
+$86:89D6 4A          LSR A                  ;|
+$86:89D7 4A          LSR A                  ;|
+$86:89D8 E2 20       SEP #$20               ;|
+$86:89DA 8D 02 42    STA $4202  [$7E:4202]  ;|
+$86:89DD AD A5 07    LDA $07A5  [$7E:07A5]  ;|
+$86:89E0 8D 03 42    STA $4203  [$7E:4203]  ;|
+$86:89E3 C2 20       REP #$20               ;|
+$86:89E5 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;|
+$86:89E8 38          SEC                    ;} X = ((enemy projectile front boundary) / 10h * [room width] + (enemy projectile left boundary) / 10h) * 2 (index of leftmost block to check)
+$86:89E9 E5 1C       SBC $1C    [$7E:001C]  ;|
+$86:89EB 4A          LSR A                  ;|
+$86:89EC 4A          LSR A                  ;|
+$86:89ED 4A          LSR A                  ;|
+$86:89EE 4A          LSR A                  ;|
+$86:89EF 18          CLC                    ;|
+$86:89F0 6D 16 42    ADC $4216  [$7E:4216]  ;|
+$86:89F3 0A          ASL A                  ;|
+$86:89F4 AA          TAX                    ;/
 
-$86:89F5 20 9E 88    JSR $889E  [$86:889E]
-$86:89F8 B0 13       BCS $13    [$8A0D]
-$86:89FA E8          INX
-$86:89FB E8          INX
-$86:89FC C6 1A       DEC $1A    [$7E:001A]
-$86:89FE 10 F5       BPL $F5    [$89F5]
-$86:8A00 FA          PLX
-$86:8A01 A5 16       LDA $16    [$7E:0016]
-$86:8A03 9D 6F 1A    STA $1A6F,x[$7E:1A91]
-$86:8A06 A5 18       LDA $18    [$7E:0018]
-$86:8A08 9D 93 1A    STA $1A93,x[$7E:1AB5]
-$86:8A0B 18          CLC
-$86:8A0C 60          RTS
+; LOOP
+$86:89F5 20 9E 88    JSR $889E  [$86:889E]  ; Enemy projectile vertical block reaction
+$86:89F8 B0 13       BCS $13    [$8A0D]     ; If solid: go to BRANCH_SOLID
+$86:89FA E8          INX                    ;\
+$86:89FB E8          INX                    ;} X += 2
+$86:89FC C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
+$86:89FE 10 F5       BPL $F5    [$89F5]     ; If [$1A] >= 0: go to LOOP
+$86:8A00 FA          PLX                    
+$86:8A01 A5 16       LDA $16    [$7E:0016]  ;\
+$86:8A03 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;|
+$86:8A06 A5 18       LDA $18    [$7E:0018]  ;} Enemy Y position = [$18].[$16]
+$86:8A08 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
+$86:8A0B 18          CLC                    ;\
+$86:8A0C 60          RTS                    ;} Return carry clear
 
+; BRANCH_SOLID
 $86:8A0D FA          PLX
-$86:8A0E 9E 6F 1A    STZ $1A6F,x[$7E:1A91]
+$86:8A0E 9E 6F 1A    STZ $1A6F,x[$7E:1A91]  ; Enemy projectile Y subposition = 0
 $86:8A11 A5 22       LDA $22    [$7E:0022]
-$86:8A13 24 14       BIT $14    [$7E:0014]
-$86:8A15 30 10       BMI $10    [$8A27]
-$86:8A17 29 F0 FF    AND #$FFF0
-$86:8A1A 38          SEC
-$86:8A1B E5 1E       SBC $1E    [$7E:001E]
-$86:8A1D DD 93 1A    CMP $1A93,x[$7E:1AB5]
-$86:8A20 90 03       BCC $03    [$8A25]
-$86:8A22 9D 93 1A    STA $1A93,x[$7E:1AB5]
+$86:8A13 24 14       BIT $14    [$7E:0014]  ;\
+$86:8A15 30 10       BMI $10    [$8A27]     ;} If [$14] < 0: go to BRANCH_MOVING_UP
+$86:8A17 29 F0 FF    AND #$FFF0             ; A = [$22] - [$22] % 10h (target bottom boundary rounded down to top of 16x16 tile)
+$86:8A1A 38          SEC                    ;\
+$86:8A1B E5 1E       SBC $1E    [$7E:001E]  ;|
+$86:8A1D DD 93 1A    CMP $1A93,x[$7E:1AB5]  ;} Enemy projectile Y position = max([enemy projectile Y position], [A] - [enemy projectile Y radius])
+$86:8A20 90 03       BCC $03    [$8A25]     ;|
+$86:8A22 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 
-$86:8A25 38          SEC
-$86:8A26 60          RTS
+$86:8A25 38          SEC                    ;\
+$86:8A26 60          RTS                    ;} Return carry set
 
-$86:8A27 09 0F 00    ORA #$000F
-$86:8A2A 38          SEC
-$86:8A2B 65 1E       ADC $1E    [$7E:001E]
-$86:8A2D DD 93 1A    CMP $1A93,x[$7E:1AB3]
-$86:8A30 F0 02       BEQ $02    [$8A34]
-$86:8A32 B0 03       BCS $03    [$8A37]
+; BRANCH_MOVING_UP
+$86:8A27 09 0F 00    ORA #$000F             ;\
+$86:8A2A 38          SEC                    ;} A = [$22] - [$22] % 10h + 10h (target right boundary rounded up to bottom of 16x16 tile)
+$86:8A2B 65 1E       ADC $1E    [$7E:001E]  ;\
+$86:8A2D DD 93 1A    CMP $1A93,x[$7E:1AB3]  ;|
+$86:8A30 F0 02       BEQ $02    [$8A34]     ;} Enemy projectile Y position = min([enemy projectile Y position], [A] + [enemy projectile Y radius])
+$86:8A32 B0 03       BCS $03    [$8A37]     ;|
+                                            ;|
+$86:8A34 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
 
-$86:8A34 9D 93 1A    STA $1A93,x[$7E:1AB3]
-
-$86:8A37 38          SEC
-$86:8A38 60          RTS
+$86:8A37 38          SEC                    ;\
+$86:8A38 60          RTS                    ;} Return carry set
 }
 }
 
@@ -1866,6 +1906,10 @@ $86:8AAE 60          RTS
 
 ;;; $8AAF: Unused. Enemy projectile ;;;
 {
+; There's no way of knowing what this enemy projectile might have been (especially with the garbage instruction lists)
+; It has no hitbox and falls 48h pixels at a constant velocity (initialised to [enemy $0FAE]),
+; so my best guess would have to be a sweat drop (a la eye door) or falling debris (a la Ceres pre elevator hall)
+
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Pre-instruction
 ;                       |    |     ________________________ Instruction list
