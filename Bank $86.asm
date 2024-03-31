@@ -1942,127 +1942,127 @@ $86:8AC5             dw 0010,8435,
 
 ;;; $8ACD: Initialisation AI - enemy projectile $8BC2/$8BFA ((metal) skree - down-right) ;;;
 {
-$86:8ACD AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:8AD0 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$86:8AD3 38          SEC
-$86:8AD4 E9 00 00    SBC #$0000
-$86:8AD7 99 93 1A    STA $1A93,y[$7E:1AB3]
-$86:8ADA A9 FF FC    LDA #$FCFF
-$86:8ADD 99 DB 1A    STA $1ADB,y[$7E:1AFB]
-$86:8AE0 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$86:8AE3 18          CLC
-$86:8AE4 69 06 00    ADC #$0006
-$86:8AE7 99 4B 1A    STA $1A4B,y[$7E:1A6B]
-$86:8AEA A9 40 01    LDA #$0140
-$86:8AED 99 B7 1A    STA $1AB7,y[$7E:1AD7]
+$86:8ACD AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:8AD0 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$86:8AD3 38          SEC                    ;|
+$86:8AD4 E9 00 00    SBC #$0000             ;} Enemy projectile Y position = [enemy Y position]
+$86:8AD7 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
+$86:8ADA A9 FF FC    LDA #$FCFF             ;\
+$86:8ADD 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile Y velocity = -301h
+$86:8AE0 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$86:8AE3 18          CLC                    ;|
+$86:8AE4 69 06 00    ADC #$0006             ;} Enemy projectile X position = [enemy X position] + 6
+$86:8AE7 99 4B 1A    STA $1A4B,y[$7E:1A6B]  ;/
+$86:8AEA A9 40 01    LDA #$0140             ;\
+$86:8AED 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = 140h
 $86:8AF0 60          RTS
 }
 
 
 ;;; $8AF1: Initialisation AI - enemy projectile $8BD0/$8C08 ((metal) skree - up-right) ;;;
 {
-$86:8AF1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:8AF4 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$86:8AF7 38          SEC
-$86:8AF8 E9 00 00    SBC #$0000
-$86:8AFB 99 93 1A    STA $1A93,y[$7E:1AB1]
-$86:8AFE A9 FF FB    LDA #$FBFF
-$86:8B01 99 DB 1A    STA $1ADB,y[$7E:1AF9]
-$86:8B04 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$86:8B07 18          CLC
-$86:8B08 69 06 00    ADC #$0006
-$86:8B0B 99 4B 1A    STA $1A4B,y[$7E:1A69]
-$86:8B0E A9 60 00    LDA #$0060
-$86:8B11 99 B7 1A    STA $1AB7,y[$7E:1AD5]
+$86:8AF1 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:8AF4 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$86:8AF7 38          SEC                    ;|
+$86:8AF8 E9 00 00    SBC #$0000             ;} Enemy projectile Y position = [enemy Y position]
+$86:8AFB 99 93 1A    STA $1A93,y[$7E:1AB1]  ;/
+$86:8AFE A9 FF FB    LDA #$FBFF             ;\
+$86:8B01 99 DB 1A    STA $1ADB,y[$7E:1AF9]  ;} Enemy projectile Y velocity = -401h
+$86:8B04 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$86:8B07 18          CLC                    ;|
+$86:8B08 69 06 00    ADC #$0006             ;} Enemy projectile X position = [enemy X position] + 6
+$86:8B0B 99 4B 1A    STA $1A4B,y[$7E:1A69]  ;/
+$86:8B0E A9 60 00    LDA #$0060             ;\
+$86:8B11 99 B7 1A    STA $1AB7,y[$7E:1AD5]  ;} Enemy projectile X velocity = 60h
 $86:8B14 60          RTS
 }
 
 
 ;;; $8B15: Initialisation AI - enemy projectile $8BDE/$8C16 ((metal) skree - down-left) ;;;
 {
-$86:8B15 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:8B18 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$86:8B1B 38          SEC
-$86:8B1C E9 00 00    SBC #$0000
-$86:8B1F 99 93 1A    STA $1A93,y[$7E:1AAF]
-$86:8B22 A9 FF FC    LDA #$FCFF
-$86:8B25 99 DB 1A    STA $1ADB,y[$7E:1AF7]
-$86:8B28 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$86:8B2B 18          CLC
-$86:8B2C 69 FA FF    ADC #$FFFA
-$86:8B2F 99 4B 1A    STA $1A4B,y[$7E:1A67]
-$86:8B32 A9 C0 FE    LDA #$FEC0
-$86:8B35 99 B7 1A    STA $1AB7,y[$7E:1AD3]
+$86:8B15 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:8B18 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$86:8B1B 38          SEC                    ;|
+$86:8B1C E9 00 00    SBC #$0000             ;} Enemy projectile Y position = [enemy Y position]
+$86:8B1F 99 93 1A    STA $1A93,y[$7E:1AAF]  ;/
+$86:8B22 A9 FF FC    LDA #$FCFF             ;\
+$86:8B25 99 DB 1A    STA $1ADB,y[$7E:1AF7]  ;} Enemy projectile Y velocity = -301h
+$86:8B28 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$86:8B2B 18          CLC                    ;|
+$86:8B2C 69 FA FF    ADC #$FFFA             ;} Enemy projectile X position = [enemy X position] - 6
+$86:8B2F 99 4B 1A    STA $1A4B,y[$7E:1A67]  ;/
+$86:8B32 A9 C0 FE    LDA #$FEC0             ;\
+$86:8B35 99 B7 1A    STA $1AB7,y[$7E:1AD3]  ;} Enemy projectile X velocity = -140h
 $86:8B38 60          RTS
 }
 
 
 ;;; $8B39: Initialisation AI - enemy projectile $8BEC/$8C24 ((metal) skree - up-left) ;;;
 {
-$86:8B39 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:8B3C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$86:8B3F 38          SEC
-$86:8B40 E9 00 00    SBC #$0000
-$86:8B43 99 93 1A    STA $1A93,y[$7E:1AAD]
-$86:8B46 A9 FF FB    LDA #$FBFF
-$86:8B49 99 DB 1A    STA $1ADB,y[$7E:1AF5]
-$86:8B4C BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$86:8B4F 18          CLC
-$86:8B50 69 FA FF    ADC #$FFFA
-$86:8B53 99 4B 1A    STA $1A4B,y[$7E:1A65]
-$86:8B56 A9 A0 FF    LDA #$FFA0
-$86:8B59 99 B7 1A    STA $1AB7,y[$7E:1AD1]
+$86:8B39 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:8B3C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$86:8B3F 38          SEC                    ;|
+$86:8B40 E9 00 00    SBC #$0000             ;} Enemy projectile Y position = [enemy Y position]
+$86:8B43 99 93 1A    STA $1A93,y[$7E:1AAD]  ;/
+$86:8B46 A9 FF FB    LDA #$FBFF             ;\
+$86:8B49 99 DB 1A    STA $1ADB,y[$7E:1AF5]  ;} Enemy projectile Y velocity = -401h
+$86:8B4C BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$86:8B4F 18          CLC                    ;|
+$86:8B50 69 FA FF    ADC #$FFFA             ;} Enemy projectile X position = [enemy X position] - 6
+$86:8B53 99 4B 1A    STA $1A4B,y[$7E:1A65]  ;/
+$86:8B56 A9 A0 FF    LDA #$FFA0             ;\
+$86:8B59 99 B7 1A    STA $1AB7,y[$7E:1AD1]  ;} Enemy projectile X velocity = -60h
 $86:8B5C 60          RTS
 }
 
 
 ;;; $8B5D: Pre-instruction - enemy projectile $8BC2/$8BD0/$8BDE/$8BEC/$8BFA/$8C08/$8C16/$8C24 ((metal) skree particle) ;;;
 {
-$86:8B5D BD B6 1A    LDA $1AB6,x[$7E:1AD6]
-$86:8B60 29 00 FF    AND #$FF00
-$86:8B63 85 14       STA $14    [$7E:0014]
-$86:8B65 BD B7 1A    LDA $1AB7,x[$7E:1AD7]
-$86:8B68 EB          XBA
-$86:8B69 10 05       BPL $05    [$8B70]
-$86:8B6B 09 00 FF    ORA #$FF00
-$86:8B6E 80 03       BRA $03    [$8B73]
-
-$86:8B70 29 FF 00    AND #$00FF
-
-$86:8B73 85 12       STA $12    [$7E:0012]
-$86:8B75 BD 27 1A    LDA $1A27,x[$7E:1A47]
-$86:8B78 18          CLC
-$86:8B79 65 14       ADC $14    [$7E:0014]
-$86:8B7B 9D 27 1A    STA $1A27,x[$7E:1A47]
-$86:8B7E BD 4B 1A    LDA $1A4B,x[$7E:1A6B]
-$86:8B81 65 12       ADC $12    [$7E:0012]
-$86:8B83 9D 4B 1A    STA $1A4B,x[$7E:1A6B]
-$86:8B86 BD DA 1A    LDA $1ADA,x[$7E:1AFA]
-$86:8B89 29 00 FF    AND #$FF00
-$86:8B8C 85 14       STA $14    [$7E:0014]
-$86:8B8E BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:8B91 EB          XBA
-$86:8B92 10 05       BPL $05    [$8B99]
-$86:8B94 09 00 FF    ORA #$FF00
-$86:8B97 80 03       BRA $03    [$8B9C]
-
-$86:8B99 29 FF 00    AND #$00FF
-
-$86:8B9C 85 12       STA $12    [$7E:0012]
-$86:8B9E BD 6F 1A    LDA $1A6F,x[$7E:1A8F]
-$86:8BA1 18          CLC
-$86:8BA2 65 14       ADC $14    [$7E:0014]
-$86:8BA4 9D 6F 1A    STA $1A6F,x[$7E:1A8F]
-$86:8BA7 BD 93 1A    LDA $1A93,x[$7E:1AB3]
-$86:8BAA 65 12       ADC $12    [$7E:0012]
-$86:8BAC 9D 93 1A    STA $1A93,x[$7E:1AB3]
-$86:8BAF BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:8BB2 18          CLC
-$86:8BB3 69 50 00    ADC #$0050
-$86:8BB6 9D DB 1A    STA $1ADB,x[$7E:1AFB]
-$86:8BB9 20 E0 E6    JSR $E6E0  [$86:E6E0]
-$86:8BBC F0 03       BEQ $03    [$8BC1]
-$86:8BBE 9E 97 19    STZ $1997,x[$7E:19B7]
+$86:8B5D BD B6 1A    LDA $1AB6,x[$7E:1AD6]  ;\
+$86:8B60 29 00 FF    AND #$FF00             ;|
+$86:8B63 85 14       STA $14    [$7E:0014]  ;|
+$86:8B65 BD B7 1A    LDA $1AB7,x[$7E:1AD7]  ;|
+$86:8B68 EB          XBA                    ;|
+$86:8B69 10 05       BPL $05    [$8B70]     ;|
+$86:8B6B 09 00 FF    ORA #$FF00             ;} $12.$14 = [enemy projectile X velocity] / 100h
+$86:8B6E 80 03       BRA $03    [$8B73]     ;|
+                                            ;|
+$86:8B70 29 FF 00    AND #$00FF             ;|
+                                            ;|
+$86:8B73 85 12       STA $12    [$7E:0012]  ;/
+$86:8B75 BD 27 1A    LDA $1A27,x[$7E:1A47]  ;\
+$86:8B78 18          CLC                    ;|
+$86:8B79 65 14       ADC $14    [$7E:0014]  ;|
+$86:8B7B 9D 27 1A    STA $1A27,x[$7E:1A47]  ;} Enemy projectile X position += [$12].[$14]
+$86:8B7E BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;|
+$86:8B81 65 12       ADC $12    [$7E:0012]  ;|
+$86:8B83 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;/
+$86:8B86 BD DA 1A    LDA $1ADA,x[$7E:1AFA]  ;\
+$86:8B89 29 00 FF    AND #$FF00             ;|
+$86:8B8C 85 14       STA $14    [$7E:0014]  ;|
+$86:8B8E BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;|
+$86:8B91 EB          XBA                    ;|
+$86:8B92 10 05       BPL $05    [$8B99]     ;|
+$86:8B94 09 00 FF    ORA #$FF00             ;} $12.$14 = [enemy projectile Y velocity] / 100h
+$86:8B97 80 03       BRA $03    [$8B9C]     ;|
+                                            ;|
+$86:8B99 29 FF 00    AND #$00FF             ;|
+                                            ;|
+$86:8B9C 85 12       STA $12    [$7E:0012]  ;/
+$86:8B9E BD 6F 1A    LDA $1A6F,x[$7E:1A8F]  ;\
+$86:8BA1 18          CLC                    ;|
+$86:8BA2 65 14       ADC $14    [$7E:0014]  ;|
+$86:8BA4 9D 6F 1A    STA $1A6F,x[$7E:1A8F]  ;} Enemy projectile Y position += [$12].[$14]
+$86:8BA7 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;|
+$86:8BAA 65 12       ADC $12    [$7E:0012]  ;|
+$86:8BAC 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
+$86:8BAF BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;\
+$86:8BB2 18          CLC                    ;|
+$86:8BB3 69 50 00    ADC #$0050             ;} Enemy projectile Y velocity += 50h
+$86:8BB6 9D DB 1A    STA $1ADB,x[$7E:1AFB]  ;/
+$86:8BB9 20 E0 E6    JSR $E6E0  [$86:E6E0]  ;\
+$86:8BBC F0 03       BEQ $03    [$8BC1]     ;} If enemy projectile is off-screen:
+$86:8BBE 9E 97 19    STZ $1997,x[$7E:19B7]  ; Enemy projectile ID = 0
 
 $86:8BC1 60          RTS
 }
@@ -2123,21 +2123,21 @@ $86:8C3A             dw 000A,8A16,
 {
 $86:8C58             dx 0008,8A8D,
                         0008,8A94,
-                        8C68,        ; Spawn enemy drops with Draygon's eye's drop chances
+                        8C68,        ; Spawn enemy drops with Draygon eye's drop chances
                         81AB,84FC,   ; Go to delete
                         8154         ; Delete
 }
 
 
-;;; $8C68: Instruction - spawn enemy drops with Draygon's eye's drop chances ;;;
+;;; $8C68: Instruction - spawn enemy drops with Draygon eye's drop chances ;;;
 {
 $86:8C68 5A          PHY
 $86:8C69 DA          PHX
-$86:8C6A BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:8C6D 85 12       STA $12    [$7E:0012]
-$86:8C6F BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:8C72 85 14       STA $14    [$7E:0014]
-$86:8C74 A9 7F DE    LDA #$DE7F
+$86:8C6A BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
+$86:8C6D 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:8C6F BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
+$86:8C72 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$86:8C74 A9 7F DE    LDA #$DE7F             ; A = $DE7F (Draygon eye)
 $86:8C77 22 0E 92 A0 JSL $A0920E[$A0:920E]  ; Spawn enemy drops
 $86:8C7B FA          PLX
 $86:8C7C 7A          PLY
