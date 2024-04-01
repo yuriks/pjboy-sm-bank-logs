@@ -3873,7 +3873,7 @@ $80:9869 6B          RTL
 {
 ; The first instruction of the routine called by the JSR (e.g. $966E) is executed 79 dots later than the IRQ h-counter target
 ; All of the (non-trivial) interrupt commands set IRQ h-counter = 98h, so that's 98h + 79 = 231 dots into the drawing period of the current scanline
-; Also note that the IRQ timing is a bit loose, for the h-counter target 98h,
+; Also note that the IRQ timing is a bit loose. For the h-counter target 98h,
 ; I've seen the IRQ fire at all different points in the range 95h..A3h on different frames (according to Mesen-S event viewer)
 $80:986A C2 30       REP #$30
 $80:986C 5C 70 98 80 JML $809870[$80:9870]  ; Execute in bank $80 (FastROM)

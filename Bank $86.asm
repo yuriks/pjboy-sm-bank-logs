@@ -1911,15 +1911,15 @@ $86:8AAE 60          RTS
 ; so my best guess would have to be a sweat drop (a la eye door) or falling debris (a la Ceres pre elevator hall)
 
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:8AAF             dx 8A39,8A7D,8A39,00,00,0002,0000,84FC
+$86:8AAF             dx 8A39,8A7D,8A39,00,00,0002,0000,84FC ; Initial instruction list ignored
 }
 }
 
@@ -2071,8 +2071,8 @@ $86:8BC1 60          RTS
 ;;; $8BC2: Enemy projectiles - skree particles ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -2160,7 +2160,7 @@ $86:8C7E             dx 0004,8A32,
 }
 
 
-;;; $8CA4: Instruction list - enemy projectile $8E5E/$8E6C (Draygon's wall turret projectile / ???) ;;;
+;;; $8CA4: Instruction list - enemy projectile $8E5E (Draygon's wall turret projectile) ;;;
 {
 $86:8CA4             dx 0005,AF57,
                         0004,AF68,
@@ -2178,7 +2178,7 @@ $86:8CA4             dx 0005,AF57,
                         000A,8A78,
                         000A,8A7F,
                         000A,8A86,
-                        8CF6        ; Pre-instruction = $8DFF (Draygon's wall turret projectile)
+                        8CF6        ; Pre-instruction = $8DFF (fired)
 $86:8CE6             dx 0008,8AAA,
                         0008,8AB1,
                         0008,8AB8,
@@ -2186,7 +2186,7 @@ $86:8CE6             dx 0008,8AAA,
 }
 
 
-;;; $8CF6: Instruction - pre-instruction = $8DFF (Draygon's wall turret projectile) ;;;
+;;; $8CF6: Instruction - pre-instruction = $8DFF (Draygon's wall turret projectile - fired) ;;;
 {
 $86:8CF6 A9 FF 8D    LDA #$8DFF
 $86:8CF9 9D 03 1A    STA $1A03,x[$7E:1A25]
@@ -2194,7 +2194,7 @@ $86:8CFC 60          RTS
 }
 
 
-;;; $8CFD: Unused ;;;
+;;; $8CFD: Unused. Pre-instruction = $8DCA (Draygon goop - stuck to Samus) ;;;
 {
 $86:8CFD A9 CA 8D    LDA #$8DCA             ;\
 $86:8D00 9D 03 1A    STA $1A03,x            ;} Enemy projectile pre-instruction = $8DCA (Draygon goop - stuck to Samus)
@@ -2267,13 +2267,13 @@ $86:8D54 60          RTS
 
 ;;; $8D55: Unused. Delete enemy projectile [Y] ;;;
 {
-$86:8D55 A9 00 00    LDA #$0000
-$86:8D58 99 97 19    STA $1997,y
+$86:8D55 A9 00 00    LDA #$0000             ;\
+$86:8D58 99 97 19    STA $1997,y            ;} Enemy projectile ID = 0
 $86:8D5B 60          RTS
 }
 
 
-;;; $8D5C: Enemy projectile / power bomb collision detection ;;;
+;;; $8D5C: Delete enemy projectile if power bombed ;;;
 {
 $86:8D5C 5A          PHY                    ;\
 $86:8D5D DA          PHX                    ;} >_<;
@@ -2314,7 +2314,7 @@ $86:8D98 60          RTS
 
 ;;; $8D99: Instruction - Draygon goop / Samus collision ;;;
 {
-$86:8D99 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Enemy projectile / power bomb collision detection
+$86:8D99 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8D9C AD 66 0A    LDA $0A66  [$7E:0A66]  ;\
 $86:8D9F 1A          INC A                  ;|
 $86:8DA0 C9 06 00    CMP #$0006             ;} If [Samus X speed divisor] >= 5: return
@@ -2338,7 +2338,7 @@ $86:8DC9 60          RTS
 
 ;;; $8DCA: Pre-instruction - Draygon goop - stuck to Samus ;;;
 {
-$86:8DCA 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Enemy projectile / power bomb collision detection
+$86:8DCA 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8DCD AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $86:8DD0 D0 1E       BNE $1E    [$8DF0]     ;} If [Samus contact damage index] = normal:
 $86:8DD2 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -2365,9 +2365,9 @@ $86:8DFE 60          RTS
 }
 
 
-;;; $8DFF: Pre-instruction - enemy projectile $8E5E (Draygon's wall turret projectile) ;;;
+;;; $8DFF: Pre-instruction - Draygon's wall turret projectile - fired ;;;
 {
-$86:8DFF 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Enemy projectile / power bomb collision detection
+$86:8DFF 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8E02 20 3E E7    JSR $E73E  [$86:E73E]  ; Move enemy projectile according to enemy projectile angle and speed
 $86:8E05 20 22 E7    JSR $E722  [$86:E722]  ;\
 $86:8E08 D0 01       BNE $01    [$8E0B]     ;} If enemy projectile is in Draygon room boundaries:
@@ -2380,7 +2380,7 @@ $86:8E0E 60          RTS
 
 ;;; $8E0F: Pre-instruction - enemy projectile $8E50 (Draygon goop) ;;;
 {
-$86:8E0F 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Enemy projectile / power bomb collision detection
+$86:8E0F 20 5C 8D    JSR $8D5C  [$86:8D5C]  ; Delete enemy projectile if power bombed
 $86:8E12 20 3E E7    JSR $E73E  [$86:E73E]  ; Move enemy projectile according to enemy projectile angle and speed
 $86:8E15 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $86:8E18 38          SEC                    ;|
@@ -2417,9 +2417,13 @@ $86:8E4F 60          RTS
 
 ;;; $8E50: Enemy projectiles - Draygon ;;;
 {
+; Enemy projectile $8E6C is partially coded, small sprite with a fairly short animation loop that travels towards Draygon
+; It doesn't collide with Samus, but it is shootable
+; Uses the last row of mini-Draygon tiles ($B1:9400), though I doubt those are the correct graphics for this enemy projectile
+
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -2427,8 +2431,8 @@ $86:8E4F 60          RTS
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
 $86:8E50             dx 8D04,8E0F,8C3A,08,08,D000,8C38,8C58 ; Draygon goop
-$86:8E5E             dx 8D40,8DFF,8CA4,08,08,1080,0000,E138 ; Draygon's wall turret projectile
-$86:8E6C             dx 8E7A,8E99,8CA4,08,08,7000,0000,E138 ; Unused
+$86:8E5E             dx 8D40,8DFF,8CA4,08,08,1080,0000,E138 ; Draygon's wall turret projectile. Initial pre-instruction ignored
+$86:8E6C             dx 8E7A,8E99,8CA4,08,08,7000,0000,E138 ; Unused. Initial instruction list ignored
 }
 
 
@@ -2576,8 +2580,8 @@ $86:8F7F             dw 8EDF, 8EF3, 8F07, 8F1B, 8F2F, 8F43, 8F57, 8F6B
 ;;; $8F8F: Enemy projectiles - Crocomire ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -2736,8 +2740,8 @@ $86:90C0 60          RTS
 ;;; $90C1: Enemy projectile - Crocomire spike wall pieces ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -3461,8 +3465,8 @@ $86:9633 60          RTS
 ;;; $9634: Enemy projectiles - Ridley ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -3534,8 +3538,8 @@ $86:9733 60          RTS
 ;;; $9734: Enemy projectiles - Ceres falling debris ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -4224,8 +4228,8 @@ $86:9C28 60          RTS
 ;;; $9C29: Phantoon flame enemy projectiles ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -4243,8 +4247,8 @@ $86:9C37             dx 993A,9B29,97E8,08,10,4028,0000,975C ; Phantoon starting 
 ;;; $9C45: Kraid rock enemy projectiles ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -4439,8 +4443,8 @@ $86:9DAF 60          RTS
 ;;; $9DB0: Enemy projectiles - mini Kraid ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -4581,8 +4585,8 @@ $86:9E8F 60          RTS
 ;;; $9E90: Enemy projectile - walking lava seahorse fireball ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -4969,8 +4973,8 @@ $86:A17A 60          RTS
 ;;; $A17B: Enemy projectiles - pirate ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -5223,8 +5227,8 @@ $86:A378 60          RTS
 ;;; $A379: Enemy projectiles - gunship liftoff dust clouds / Ceres elevator ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -5258,8 +5262,8 @@ $86:A3AA             dw 0020,8000,
 ;;; $A3B0: Enemy projectile - pre-Phantoon room ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -5956,8 +5960,8 @@ $86:A95A 60          RTS
 ;;; $A95B: Enemy projectiles - torizo ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -6118,8 +6122,8 @@ $86:AAF2             dx 8312,0D,    ; Queue sound Dh, sound library 2, max queue
 ;;; $AB07: Unused. Enemy projectile $AB07 ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -6428,8 +6432,8 @@ $86:AD5D 60          RTS
 ;;; $AD5E: Enemy projectiles - torizo chozo orbs ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -6597,8 +6601,8 @@ $86:AEA7 60          RTS
 ;;; $AEA8: Enemy projectiles - torizo sonic boom ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -6704,8 +6708,8 @@ $86:AF67 60          RTS
 ;;; $AF68: Enemy projectiles ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -6772,8 +6776,8 @@ $86:AFE4 60          RTS
 ;;; $AFE5: Enemy projectiles - torizo landing dust cloud ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -7035,8 +7039,8 @@ $86:B1A8             dx 816A,       ; Clear pre-instruction
 ;;; $B1C0: Enemy projectile - Golden Torizo egg ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -7226,8 +7230,8 @@ $86:B2EF             dx 8298,10,10, ; X radius = 10h, Y radius = 10h
 ;;; $B31A: Enemy projectile - Golden Torizo super missile ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -7375,8 +7379,8 @@ $86:B410             dx 0001,8DE5,
 ;;; $B428: Enemy projectile - Golden Torizo eye beam ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -7468,8 +7472,8 @@ $86:B4B0 60          RTS
 ;;; $B4B1: Enemy projectile - old Tourian escape shaft fake wall explosion ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -7633,8 +7637,8 @@ $86:B5CA 60          RTS
 ;;; $B5CB: Enemy projectile - lava seahorse fireball ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -7839,8 +7843,8 @@ $86:B742 60          RTS
 ;;; $B743: Enemy projectiles - eye door ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -8272,8 +8276,8 @@ $86:BA5B 60          RTS
 ;;; $BA5C: Enemy projectiles - Tourian statue ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -8378,8 +8382,8 @@ $86:BB4F 60          RTS
 ;;; $BB50: Unused. Enemy projectile $BB50 ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -8446,8 +8450,8 @@ $86:BBC6 60          RTS
 ;;; $BBC7: Enemy projectile - nuclear waffle body ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -8694,8 +8698,8 @@ $86:BD59 60          RTS
 ;;; $BD5A: Enemy projectile - Norfair lavaquake rocks ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -8811,8 +8815,8 @@ $86:BE24 60          RTS
 ;;; $BE25: Enemy projectiles - Shaktool's attack ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -9225,8 +9229,8 @@ $86:C17D 60          RTS
 ;;; $C17E: Enemy projectiles - Mother Brain's room turrets ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -10574,8 +10578,8 @@ $86:CB0D             dx 0001,970B,
 ;;; $CB13: Enemy projectiles - Mother Brain ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -10698,8 +10702,8 @@ $86:CC55             dx 0001,83DF,
 ;;; $CC5B: Enemy projectiles - Mother Brain's top tube falling ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -10988,8 +10992,8 @@ $86:CEFB 60          RTS
 ;;; $CEFC: Enemy projectiles - Mother Brain's glass shattering ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -11007,8 +11011,8 @@ $86:CF0A             dx CE6D,84FB,CDB3,00,00,3000,0000,84FC ; Mother Brain's gla
 ;;; $CF18: Enemy projectiles - ki hunter acid spit ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -11169,8 +11173,8 @@ $86:D02D 60          RTS
 ;;; $D02E: Enemy projectile - kago's bugs ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -11545,8 +11549,8 @@ $86:D297 60          RTS
 ;;; $D298: Enemy projectile - Maridia floater's spikes ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -11563,8 +11567,8 @@ $86:D298             dx D23A,D263,D208,04,04,0014,0000,D218 ; Maridia floater's 
 ;;; $D2A6: Enemy projectiles - Wrecked Ship robot laser ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -12281,8 +12285,8 @@ $86:D903 60          RTS
 ;;; $D904: Enemy projectiles - n00b tube ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -12626,8 +12630,8 @@ $86:DAFD 60          RTS
 ;;; $DAFE: Enemy projectile - spike shooting plant spikes ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -12777,8 +12781,8 @@ $86:DBF1 60          RTS                    ;} Return A = 1
 ;;; $DBF2: Enemy projectile - mini-Crocomire projectile ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -13042,8 +13046,8 @@ $86:DD6C             db 00,01, 01,00, 00,01, 01,00, 00,01, 01,00, 00,01, 01,00,
 ;;; $DE6C: Enemy projectiles - Spore Spawn ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -13212,8 +13216,8 @@ $86:DFBB 60          RTS
 ;;; $DFBC: Enemy projectiles - nami/fune fireball ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -13393,8 +13397,8 @@ $86:E0DF 60          RTS
 ;;; $E0E0: Enemy projectile - lava thrown by lavaman ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -13881,8 +13885,8 @@ $86:E508 60          RTS
 ;;; $E509: Enemy projectiles - explosion / dust / smoke ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -14067,8 +14071,8 @@ $86:E64A 60          RTS
 ;;; $E64B: Enemy projectiles - shot gates ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -14134,8 +14138,8 @@ $86:E6D1 60          RTS
 ;;; $E6D2: Enemy projectile - save station electricity ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -14872,8 +14876,8 @@ $86:EB9F 60          RTS
 ;;; $EBA0: Enemy projectile - Botwoon's body ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -14981,8 +14985,8 @@ $86:EC47 60          RTS
 ;;; $EC48: Enemy projectile - Botwoon's spit ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -15046,8 +15050,8 @@ $86:EC94 60          RTS
 ;;; $EC95: Enemy projectile - yapping maw's body ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -16002,8 +16006,8 @@ $86:F334 DC 84 17    JML [$1784][$B3:883B]  ; Go to [enemy AI pointer]
 ;;; $F337: Enemy projectiles - enemy death explosion / pickup ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
@@ -16158,8 +16162,8 @@ $86:F497 60          RTS
 ;;; $F498: Enemy projectile - sparks ;;;
 {
 ;                        __________________________________ Initialisation AI
-;                       |     _____________________________ Pre-instruction
-;                       |    |     ________________________ Instruction list
+;                       |     _____________________________ Initial pre-instruction
+;                       |    |     ________________________ Initial instruction list
 ;                       |    |    |     ___________________ X radius
 ;                       |    |    |    |   ________________ Y radius
 ;                       |    |    |    |  |   _____________ Properties
