@@ -2589,7 +2589,7 @@ $86:8F7F             dw 8EDF, 8EF3, 8F07, 8F1B, 8F2F, 8F43, 8F57, 8F6B
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
 $86:8F8F             dx 9023,906B,8FCF,08,08,8014,0000,9007 ; Crocomire's projectile
-$86:8F9D             dx 9286,92BA,8FEB,04,04,8000,0000,84FC ; Crocomire bridge crumbling
+$86:8F9D             dx 9286,92BA,8FEB,04,04,8000,0000,84FC ; Crocomire bridge crumbling (see $A4:9136)
 }
 
 
@@ -2658,80 +2658,93 @@ $86:9007             dx 0004,8D9C,
                         0004,8DB9,
                         0004,8DCF,
                         0004,8DE5,
-                        9270,
-                        81AB,84FC,  ; Go to $84FC
+                        9270,       ; Spawn enemy drops with Crocomire's drop chances
+                        81AB,84FC,  ; Go to delete
                         8154        ; Delete
 }
 
 
 ;;; $9023: Initialisation AI - enemy projectile $8F8F (Crocomire's projectile) ;;;
 {
-$86:9023 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:9026 A9 00 FE    LDA #$FE00
-$86:9029 99 B7 1A    STA $1AB7,y[$7E:1AD5]
-$86:902C A9 01 00    LDA #$0001
-$86:902F 99 DB 1A    STA $1ADB,y[$7E:1AF9]
-$86:9032 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:9035 38          SEC
-$86:9036 E9 20 00    SBC #$0020
-$86:9039 99 4B 1A    STA $1A4B,y[$7E:1A69]
-$86:903C BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:903F 38          SEC
-$86:9040 E9 10 00    SBC #$0010
-$86:9043 99 93 1A    STA $1A93,y[$7E:1AB1]
-$86:9046 A9 00 00    LDA #$0000
-$86:9049 99 DF 19    STA $19DF,y[$7E:19FD]
-$86:904C 99 27 1A    STA $1A27,y[$7E:1A45]
-$86:904F 99 6F 1A    STA $1A6F,y[$7E:1A8D]
+$86:9023 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:9026 A9 00 FE    LDA #$FE00             ;\
+$86:9029 99 B7 1A    STA $1AB7,y[$7E:1AD5]  ;} Enemy projectile X velocity = -200h
+$86:902C A9 01 00    LDA #$0001             ;\
+$86:902F 99 DB 1A    STA $1ADB,y[$7E:1AF9]  ;} Enemy projectile $1ADB = 1
+$86:9032 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:9035 38          SEC                    ;|
+$86:9036 E9 20 00    SBC #$0020             ;} Enemy projectile X position = [enemy X position] - 20h
+$86:9039 99 4B 1A    STA $1A4B,y[$7E:1A69]  ;/
+$86:903C BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:903F 38          SEC                    ;|
+$86:9040 E9 10 00    SBC #$0010             ;} Enemy projectile Y position = [enemy Y position] - 10h
+$86:9043 99 93 1A    STA $1A93,y[$7E:1AB1]  ;/
+$86:9046 A9 00 00    LDA #$0000             ;\
+$86:9049 99 DF 19    STA $19DF,y[$7E:19FD]  ;} Enemy projectile $19DF = 0
+$86:904C 99 27 1A    STA $1A27,y[$7E:1A45]  ; Enemy projectile X subposition = 0
+$86:904F 99 6F 1A    STA $1A6F,y[$7E:1A8D]  ; Enemy projectile Y subposition = 0
 $86:9052 A9 00 0A    LDA #$0A00             ;\
 $86:9055 99 BB 19    STA $19BB,y[$7E:19D9]  ;} Enemy projectile VRAM graphics index = 0, palette 5
 $86:9058 60          RTS
 }
 
 
-$86:9059             dw FFF0,0000,0020, FFF0,0000,0020, FFF0,0000,0020
+;;; $9059: Crocomire's projectile gradients ;;;
+{
+; Signed values v such that v / -40h is the actual gradient (so v = 40h is the down-left diagonal, v = 0 is straight left, v = FFC0h is the up-left diagonal)
+; Indexed by [enemy 0 $0FB2]
+$86:9059             dw FFF0,0000,0020,
+                        FFF0,0000,0020, 
+                        FFF0,0000,0020
+}
 
 
-;;; $906B: Pre-instruction - enemy projectile $8F8F (Crocomire's projectile) ;;;
+;;; $906B: Pre-instruction - Crocomire's projectile - setup ;;;
 {
 $86:906B 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:906E A9 00 0A    LDA #$0A00             ;\
 $86:9071 8D BB 19    STA $19BB  [$7E:19BB]  ;} Enemy projectile 0 VRAM graphics index = 0, palette 5 <-- bug (would be a no-op if fixed >_>)
-$86:9074 BD DF 19    LDA $19DF,x[$7E:19FD]
-$86:9077 18          CLC
-$86:9078 7D B7 1A    ADC $1AB7,x[$7E:1AD5]
-$86:907B 9D DF 19    STA $19DF,x[$7E:19FD]
+$86:9074 BD DF 19    LDA $19DF,x[$7E:19FD]  ;\
+$86:9077 18          CLC                    ;|
+$86:9078 7D B7 1A    ADC $1AB7,x[$7E:1AD5]  ;} Enemy projectile $19DF += [enemy projectile X velocity]
+$86:907B 9D DF 19    STA $19DF,x[$7E:19FD]  ;/
 $86:907E A9 C0 FF    LDA #$FFC0             ;\
 $86:9081 85 12       STA $12    [$7E:0012]  ;} $12 = -40h
 $86:9083 DA          PHX                    ;\
 $86:9084 AE B2 0F    LDX $0FB2  [$7E:0FB2]  ;|
-$86:9087 BD 59 90    LDA $9059,x[$86:905B]  ;} $14 = [$9059 + [enemy $0FB2]]
+$86:9087 BD 59 90    LDA $9059,x[$86:905B]  ;} $14 = [$9059 + [enemy 0 $0FB2]]
 $86:908A 85 14       STA $14    [$7E:0014]  ;|
 $86:908C FA          PLX                    ;/
-$86:908D 9B          TXY                    ; Y = [enemy $0FB2]
+$86:908D 9B          TXY                    ; Y = [enemy projectile index]
 $86:908E 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; A = angle of ([$12], [$14]) offset
-$86:9092 0A          ASL A
-$86:9093 AA          TAX
-$86:9094 18          CLC
-$86:9095 BF 43 B4 A0 LDA $A0B443,x[$A0:B5C3]
-$86:9099 85 12       STA $12    [$7E:0012]
-$86:909B 0A          ASL A
-$86:909C 0A          ASL A
-$86:909D 99 B7 1A    STA $1AB7,y[$7E:1AD5]
-$86:90A0 18          CLC
-$86:90A1 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B543]
-$86:90A5 85 12       STA $12    [$7E:0012]
-$86:90A7 0A          ASL A
-$86:90A8 0A          ASL A
-$86:90A9 99 DB 1A    STA $1ADB,y[$7E:1AF9]
-$86:90AC A9 B3 90    LDA #$90B3
-$86:90AF 99 03 1A    STA $1A03,y[$7E:1A21]
+$86:9092 0A          ASL A                  ;\
+$86:9093 AA          TAX                    ;} X = [A] * 2
+$86:9094 18          CLC                    ; >_<;
+$86:9095 BF 43 B4 A0 LDA $A0B443,x[$A0:B5C3];\
+$86:9099 85 12       STA $12    [$7E:0012]  ;|
+$86:909B 0A          ASL A                  ;} Enemy projectile X velocity = 400h * sin([A] * pi / 80h)
+$86:909C 0A          ASL A                  ;|
+$86:909D 99 B7 1A    STA $1AB7,y[$7E:1AD5]  ;/
+$86:90A0 18          CLC                    ; >_<;
+$86:90A1 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B543];\
+$86:90A5 85 12       STA $12    [$7E:0012]  ;|
+$86:90A7 0A          ASL A                  ;} Enemy projectile Y velocity = 400h * -cos([A] * pi / 80h)
+$86:90A8 0A          ASL A                  ;|
+$86:90A9 99 DB 1A    STA $1ADB,y[$7E:1AF9]  ;/
+$86:90AC A9 B3 90    LDA #$90B3             ;\
+$86:90AF 99 03 1A    STA $1A03,y[$7E:1A21]  ;} Enemy projectile pre-instruction = $90B3 (fired)
 $86:90B2 60          RTS
+}
+
+
+;;; $90B3: Pre-instruction - Crocomire's projectile - fired ;;;
+{
 $86:90B3 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:90B6 B0 05       BCS $05    [$90BD]
+$86:90B6 B0 05       BCS $05    [$90BD]     ; If no collision:
 $86:90B8 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:90BB 90 03       BCC $03    [$90C0]
-$86:90BD 9E 97 19    STZ $1997,x
+$86:90BB 90 03       BCC $03    [$90C0]     ; If no collision: return
+
+$86:90BD 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
 
 $86:90C0 60          RTS
 }
@@ -2890,15 +2903,15 @@ $86:926F 60          RTS
 }
 
 
-;;; $9270: Instruction ;;;
+;;; $9270: Instruction - spawn enemy drops with Crocomire's drop chances ;;;
 {
 $86:9270 5A          PHY
 $86:9271 DA          PHX
-$86:9272 BD 4B 1A    LDA $1A4B,x[$7E:1A69]
-$86:9275 85 12       STA $12    [$7E:0012]
-$86:9277 BD 93 1A    LDA $1A93,x[$7E:1AB1]
-$86:927A 85 14       STA $14    [$7E:0014]
-$86:927C A9 BF DD    LDA #$DDBF
+$86:9272 BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
+$86:9275 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:9277 BD 93 1A    LDA $1A93,x[$7E:1AB1]  ;\
+$86:927A 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$86:927C A9 BF DD    LDA #$DDBF             ; A = $DDBF (Crocomire)
 $86:927F 22 0E 92 A0 JSL $A0920E[$A0:920E]  ; Spawn enemy drops
 $86:9283 FA          PLX
 $86:9284 7A          PLY

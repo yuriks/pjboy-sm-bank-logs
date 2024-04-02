@@ -1386,6 +1386,10 @@ $A4:914C A0 9D 8F    LDY #$8F9D             ;\
 $A4:914F 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Crocomire bridge crumbling enemy projectile
 $A4:9153 4C BA 91    JMP $91BA  [$A4:91BA]
 
+; Crocomire bridge crumbling enemy projectile X positions
+; Note that these are all on the screen to the right of the one Crocomire dies on,
+; and they use the normal floor graphics, not the bridge graphics
+; I would guess that this is a leftover effect from a previous room design
 $A4:9156             dw 0780, 0730, 0790, 0740, 07B0, 0760, 07A0, 0770, 0710, 0750, 0720
 }
 
