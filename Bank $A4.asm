@@ -2423,6 +2423,8 @@ $A4:99BE D0 F2       BNE $F2    [$99B2]
 $A4:99C0 A9 30 00    LDA #$0030             ;\
 $A4:99C3 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 30h, sound library 2, max queued sounds allowed = 6 (Crocomire destroys wall)
 $A4:99C7 4C B3 9B    JMP $9BB3  [$A4:9BB3]
+
+; Nothing points here
 $A4:99CA 60          RTS
 
 $A4:99CB             dw 1600, 1700, 1800, 1900, 1E00, 1F00, FFFF

@@ -10935,7 +10935,7 @@ $84:D1A5 C9 1D 00    CMP #$001D             ;} If [Samus pose] != facing right -
 $84:D1A8 F0 0A       BEQ $0A    [$D1B4]     ;/
 $84:D1AA C9 79 00    CMP #$0079             ;\
 $84:D1AD F0 05       BEQ $05    [$D1B4]     ;|
-$84:D1AF C9 7A 00    CMP #$007A             ;} If Samus is not in morph ball with spring ball on ground: go to BRANCH_RETURN
+$84:D1AF C9 7A 00    CMP #$007A             ;} If [Samus pose] != morph ball - spring ball - on ground: go to BRANCH_RETURN
 $84:D1B2 D0 2A       BNE $2A    [$D1DE]     ;/
 
 $84:D1B4 A9 0C 00    LDA #$000C             ;\
@@ -10980,44 +10980,44 @@ $84:D201 60          RTS
 
 ;;; $D202: Instruction list - PLM $D6DE (Mother Brain's glass) ;;;
 {
-$84:D202             dx 880E,01,D2ED,               ; Go to $D2ED if any of the boss bits 01h are set
-                        882D,0002,D2F3,             ; Go to $D2F3 if the event 0002h is set
+$84:D202             dx 880E,01,D2ED,               ; Go to $D2ED if the area boss is dead
+                        882D,0002,D2F3,             ; Go to $D2F3 if the event 2 is set (Mother Brain's glass is broken)
                         86C1,D1E6                   ; Pre-instruction = increment PLM room argument if shot by (super) missile
 $84:D211             dx 0001,9717,
-                        D2F9,0002,D211              ; Go to $D211 if [room argument] < 0002h
+                        D2F9,0002,D211              ; Go to $D211 if [room argument] < 2
 $84:D21B             dx 0001,971D,
-                        D2F9,0004,D21B              ; Go to $D21B if [room argument] < 0004h
+                        D2F9,0004,D21B              ; Go to $D21B if [room argument] < 4
 $84:D225             dx 0001,9731,
-                        D2F9,0006,D225,             ; Go to $D225 if [room argument] < 0006h
-                        D30B,0000,0000,0000,0000,   ; Spawn four Mother Brain's glass shattering shards with arguments 0000h, 0000h, 0000h, 0000h
+                        D2F9,0006,D225,             ; Go to $D225 if [room argument] < 6
+                        D30B,0000,0000,0000,0000,   ; Spawn four Mother Brain's glass shattering shards with arguments 0, 0, 0, 0
                         0004,9745,
-                        D30B,0000,0000,0000,0000    ; Spawn four Mother Brain's glass shattering shards with arguments 0000h, 0000h, 0000h, 0000h
+                        D30B,0000,0000,0000,0000    ; Spawn four Mother Brain's glass shattering shards with arguments 0, 0, 0, 0
 $84:D247             dx 0001,9745,
-                        D2F9,0008,D247              ; Go to $D247 if [room argument] < 0008h
+                        D2F9,0008,D247              ; Go to $D247 if [room argument] < 8
 $84:D251             dx 0001,974F,
-                        D2F9,000A,D251              ; Go to $D251 if [room argument] < 000Ah
+                        D2F9,000A,D251              ; Go to $D251 if [room argument] < Ah
 $84:D25B             dx 0001,9769,
-                        D2F9,000C,D25B,             ; Go to $D25B if [room argument] < 000Ch
-                        D30B,0002,0002,0002,0002,   ; Spawn four Mother Brain's glass shattering shards with arguments 0002h, 0002h, 0002h, 0002h
+                        D2F9,000C,D25B,             ; Go to $D25B if [room argument] < Ch
+                        D30B,0002,0002,0002,0002,   ; Spawn four Mother Brain's glass shattering shards with arguments 2, 2, 2, 2
                         0004,9781,
-                        D30B,0002,0002,0002,0002    ; Spawn four Mother Brain's glass shattering shards with arguments 0002h, 0002h, 0002h, 0002h
+                        D30B,0002,0002,0002,0002    ; Spawn four Mother Brain's glass shattering shards with arguments 2, 2, 2, 2
 $84:D27D             dx 0001,9781,
-                        D2F9,000E,D27D,             ; Go to $D27D if [room argument] < 000Eh
-                        D30B,0000,0000,0002,0002,   ; Spawn four Mother Brain's glass shattering shards with arguments 0000h, 0000h, 0002h, 0002h
+                        D2F9,000E,D27D,             ; Go to $D27D if [room argument] < Eh
+                        D30B,0000,0000,0002,0002,   ; Spawn four Mother Brain's glass shattering shards with arguments 0, 0, 2, 2
                         0004,978F,
-                        D30B,0004,0004,0004,0004    ; Spawn four Mother Brain's glass shattering shards with arguments 0004h, 0004h, 0004h, 0004h
+                        D30B,0004,0004,0004,0004    ; Spawn four Mother Brain's glass shattering shards with arguments 4, 4, 4, 4
 $84:D29F             dx 0001,978F,
-                        D2F9,0010,D29F,             ; Go to $D29F if [room argument] < 0010h
-                        D30B,0002,0002,0004,0004,   ; Spawn four Mother Brain's glass shattering shards with arguments 0002h, 0002h, 0004h, 0004h
+                        D2F9,0010,D29F,             ; Go to $D29F if [room argument] < 10h
+                        D30B,0002,0002,0004,0004,   ; Spawn four Mother Brain's glass shattering shards with arguments 2, 2, 4, 4
                         0004,97B7,
-                        D30B,0002,0002,0004,0004    ; Spawn four Mother Brain's glass shattering shards with arguments 0002h, 0002h, 0004h, 0004h
+                        D30B,0002,0002,0004,0004    ; Spawn four Mother Brain's glass shattering shards with arguments 2, 2, 4, 4
 $84:D2C1             dx 0001,97B7,
-                        D2F9,0012,D2C1,             ; Go to $D2C1 if [room argument] < 0012h
-                        D30B,0002,0002,0004,0004,   ; Spawn four Mother Brain's glass shattering shards with arguments 0002h, 0002h, 0004h, 0004h
+                        D2F9,0012,D2C1,             ; Go to $D2C1 if [room argument] < 12h
+                        D30B,0002,0002,0004,0004,   ; Spawn four Mother Brain's glass shattering shards with arguments 2, 2, 4, 4
                         0004,97E7,
-                        D30B,0002,0002,0004,0004,   ; Spawn four Mother Brain's glass shattering shards with arguments 0002h, 0002h, 0004h, 0004h
+                        D30B,0002,0002,0004,0004,   ; Spawn four Mother Brain's glass shattering shards with arguments 2, 2, 4, 4
                         0030,97E7,
-                        883E,0002,                  ; Set the event 0002h
+                        883E,0002,                  ; Set the event 2 (Mother Brain's glass is broken)
                         86BC                        ; Delete
 }
 
@@ -11493,7 +11493,7 @@ $84:D637 C9 1D 00    CMP #$001D             ;} If [Samus pose] != facing right -
 $84:D63A F0 0A       BEQ $0A    [$D646]     ;/
 $84:D63C C9 79 00    CMP #$0079             ;\
 $84:D63F F0 05       BEQ $05    [$D646]     ;|
-$84:D641 C9 7A 00    CMP #$007A             ;} If Samus is not in morph ball with spring ball on ground: go to BRANCH_RETURN
+$84:D641 C9 7A 00    CMP #$007A             ;} If [Samus pose] != morph ball - spring ball - on ground: go to BRANCH_RETURN
 $84:D644 D0 31       BNE $31    [$D677]     ;/
 
 $84:D646 A9 01 00    LDA #$0001             ;\
