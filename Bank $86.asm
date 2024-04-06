@@ -2593,7 +2593,7 @@ $86:8F9D             dx 9286,92BA,8FEB,04,04,8000,0000,84FC ; Crocomire bridge c
 }
 
 
-;;; $8FAB: Unused. Instruction list ;;;
+;;; $8FAB: Unused. Instruction list - Crocomire's projectile - part 1/3 ;;;
 {
 $86:8FAB             dx 0005,802A,
                         0005,8040,
@@ -2601,7 +2601,7 @@ $86:8FAB             dx 0005,802A,
 }
 
 
-;;; $8FB7: Unused. Instruction list ;;;
+;;; $8FB7: Unused. Instruction list - Crocomire's projectile - part 2/3 ;;;
 {
 $86:8FB7             dx 0005,8056,
                         0005,806C,
@@ -2611,6 +2611,7 @@ $86:8FB7             dx 0005,8056,
 
 ;;; $8FC3: Unused. Instruction list ;;;
 {
+; Might have been an old version of Crocomire's projectile that uses enemy graphics
 $86:8FC3             dx 0005,8082,
                         0005,8098,
                         81AB,8FC3   ; Go to $8FC3
@@ -2645,6 +2646,8 @@ $86:8FF3             dx 7FFF,8110,
 
 ;;; $8FFB: Unused. Instruction list ;;;
 {
+; Referenced by unused routine $922F (move enemy projectile up for 6 frames and then delete)
+; Looks vaguely related to Crocomire bridge crumbling
 $86:8FFB             dx 0002,8132,
                         0002,813E,
                         7FFF,815E
@@ -2779,18 +2782,19 @@ $86:90DA 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:90DD A9 10 02    LDA #$0210             ;\
 $86:90E0 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = 210h
 $86:90E3 A9 00 00    LDA #$0000             ;\
-$86:90E6 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile $1AB7 = 0
+$86:90E6 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = 0
 $86:90E9 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ; >_<;
-$86:90EC 99 FF 1A    STA $1AFF,y[$7E:1B21]  ; Enemy projectile $1AFF = 0
+$86:90EC 99 FF 1A    STA $1AFF,y[$7E:1B21]  ; Enemy projectile X acceleration = 0
 $86:90EF 99 23 1B    STA $1B23,y[$7E:1B45]  ; >_<;
-$86:90F2 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile $1A27 = 0
+$86:90F2 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile X subposition = 0
 $86:90F5 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F = 0
 $86:90F8 A9 FB FF    LDA #$FFFB             ;\
-$86:90FB 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile $1ADB = -5
-$86:90FE A9 00 88    LDA #$8800             ;\
-$86:9101 99 23 1B    STA $1B23,y[$7E:1B45]  ;} Enemy projectile $1B23 = 8800h
+$86:90FB 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;|
+$86:90FE A9 00 88    LDA #$8800             ;} Enemy projectile Y velocity = -4.8800h
+$86:9101 99 23 1B    STA $1B23,y[$7E:1B45]  ;/
 $86:9104 60          RTS
 
+; Y positions, indexed by [enemy projectile index] - 14h
 $86:9105             dw 0038, 0048, 0058, 0068, 0078, 0088, 0098, 00A8
 }
 
@@ -2869,39 +2873,45 @@ $86:91BE 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 25h, sound library 2,
 
 $86:91C2 60          RTS
 
+; Indexed by enemy projectile index
 ;                        _________________________Unused_________________________
 ;                       /                                                        \
-$86:91C3             dw 0000, 0000, 0FF0, 0EE0, 0CC0, 0AA0, 0880, 0660, 0440, 0220, 0FF0, 0EE0, 0CC0, 0AA0, 0880, 0660, 0440, 0220 ; X acceleration delta
-$86:91E7             dw 0000, 0000, FF00, EE00, CC00, AA00, 8800, 6600, 4400, 2200, FF00, EE00, CC00, AA00, 8800, 6600, 4400, 2200 ; Max X acceleration
-$86:920B             dw 0000, 0000, 0004, 0004, 0003, 0003, 0002, 0002, 0001, 0001, 0006, 0005, 0004, 0003, 0002, 0002, 0001, 0001 ; Max X velocity
+$86:91C3             dw 0000, 0000, 0FF0, 0EE0, 0CC0, 0AA0, 0880, 0660, 0440, 0220, 0FF0, 0EE0, 0CC0, 0AA0, 0880, 0660, 0440, 0220 ; X acceleration delta (unit 1/10000h px/frame^3)
+$86:91E7             dw 0000, 0000, FF00, EE00, CC00, AA00, 8800, 6600, 4400, 2200, FF00, EE00, CC00, AA00, 8800, 6600, 4400, 2200 ; Max X acceleration (unit 1/10000h px/frame^2)
+$86:920B             dw 0000, 0000, 0004, 0004, 0003, 0003, 0002, 0002, 0001, 0001, 0006, 0005, 0004, 0003, 0002, 0002, 0001, 0001 ; Max X velocity (unit 1/100h px/frame)
 }
 
 
-;;; $922F: Unused ;;;
+;;; $922F: Unused. Move enemy projectile up for 6 frames and then delete ;;;
 {
 $86:922F BD 64 0B    LDA $0B64,x            ; >_<;
-$86:9232 A9 01 00    LDA #$0001
-$86:9235 9D 8F 1B    STA $1B8F,x
-$86:9238 A9 FB 8F    LDA #$8FFB
-$86:923B 9D 47 1B    STA $1B47,x
-$86:923E A9 59 92    LDA #$9259
-$86:9241 9D 03 1A    STA $1A03,x
-$86:9244 A9 00 00    LDA #$0000
-$86:9247 9D B7 1A    STA $1AB7,x
-$86:924A A9 02 00    LDA #$0002
-$86:924D 9D DB 1A    STA $1ADB,x
-$86:9250 A9 06 00    LDA #$0006
-$86:9253 9D FF 1A    STA $1AFF,x
-$86:9256 9D 23 1B    STA $1B23,x
-$86:9259 BD 93 1A    LDA $1A93,x
-$86:925C 38          SEC
-$86:925D FD DB 1A    SBC $1ADB,x
-$86:9260 9D 93 1A    STA $1A93,x
-$86:9263 BD FF 1A    LDA $1AFF,x
-$86:9266 3A          DEC A
-$86:9267 9D FF 1A    STA $1AFF,x
-$86:926A D0 03       BNE $03    [$926F]
-$86:926C 9E 97 19    STZ $1997,x
+$86:9232 A9 01 00    LDA #$0001             ;\
+$86:9235 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
+$86:9238 A9 FB 8F    LDA #$8FFB             ;\
+$86:923B 9D 47 1B    STA $1B47,x            ;} Enemy projectile instruction list pointer = $8FFB
+$86:923E A9 59 92    LDA #$9259             ;\
+$86:9241 9D 03 1A    STA $1A03,x            ;} Enemy projectile pre-instruction = $9259
+$86:9244 A9 00 00    LDA #$0000             ;\
+$86:9247 9D B7 1A    STA $1AB7,x            ;} Enemy projectile $1AB7 = 0
+$86:924A A9 02 00    LDA #$0002             ;\
+$86:924D 9D DB 1A    STA $1ADB,x            ;} Enemy projectile Y speed = 2
+$86:9250 A9 06 00    LDA #$0006             ;\
+$86:9253 9D FF 1A    STA $1AFF,x            ;} Enemy projectile timer = 6
+$86:9256 9D 23 1B    STA $1B23,x            ; Enemy projectile $1B23 = 0
+}
+
+
+;;; $9259: Unused. Pre-instruction - moving up ;;;
+{
+$86:9259 BD 93 1A    LDA $1A93,x            ;\
+$86:925C 38          SEC                    ;|
+$86:925D FD DB 1A    SBC $1ADB,x            ;} Enemy projectile Y position -= [enemy projectile Y speed]
+$86:9260 9D 93 1A    STA $1A93,x            ;/
+$86:9263 BD FF 1A    LDA $1AFF,x            ;\
+$86:9266 3A          DEC A                  ;} Decrement enemy projectile timer
+$86:9267 9D FF 1A    STA $1AFF,x            ;/
+$86:926A D0 03       BNE $03    [$926F]     ; If [enemy projectile timer] = 0:
+$86:926C 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
 
 $86:926F 60          RTS
 }
@@ -3035,75 +3045,80 @@ $86:932E 60          RTS
 
 ;;; $932F..96DB: Ridley ;;;
 {
-;;; $932F:  ;;;
+;;; $932F: Set Ridley's fireball damage ;;;
 {
-$86:932F AD 9F 07    LDA $079F  [$7E:079F]
-$86:9332 C9 02 00    CMP #$0002
-$86:9335 F0 0F       BEQ $0F    [$9346]
-$86:9337 C9 05 00    CMP #$0005
-$86:933A F0 05       BEQ $05    [$9341]
-$86:933C BD 00 00    LDA $0000,x
-$86:933F 80 08       BRA $08    [$9349]
+;; Parameters:
+;;     X: Pointer to enemy projectile properties values
+;;     Y: Enemy projectile index
+$86:932F AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$86:9332 C9 02 00    CMP #$0002             ;} If [area index] = Norfair: go to BRANCH_NORFAIR
+$86:9335 F0 0F       BEQ $0F    [$9346]     ;/
+$86:9337 C9 05 00    CMP #$0005             ;\
+$86:933A F0 05       BEQ $05    [$9341]     ;} If [area index] = Tourian: go to BRANCH_TOURIAN
+$86:933C BD 00 00    LDA $0000,x            ; Enemy projectile properties = [[X]]
+$86:933F 80 08       BRA $08    [$9349]     ; Return
 
-$86:9341 BD 04 00    LDA $0004,x[$86:940C]
-$86:9344 80 03       BRA $03    [$9349]
+; BRANCH_TOURIAN
+$86:9341 BD 04 00    LDA $0004,x[$86:940C]  ; Enemy projectile properties = [[X] + 4]
+$86:9344 80 03       BRA $03    [$9349]     ; Return
 
-$86:9346 BD 02 00    LDA $0002,x[$86:940A]
+; BRANCH_NORFAIR
+$86:9346 BD 02 00    LDA $0002,x[$86:940A]  ; Enemy projectile properties = [[X] + 2]
 
 $86:9349 99 D7 1B    STA $1BD7,y[$7E:1BF7]
 $86:934C 60          RTS
 }
 
 
-;;; $934D: Initialisation AI - enemy projectile $9634 ;;;
+;;; $934D: Initialisation AI - enemy projectile $9634 (unused) ;;;
 {
-$86:934D A9 00 00    LDA #$0000
-$86:9350 99 FF 1A    STA $1AFF,y
-$86:9353 99 23 1B    STA $1B23,y
-$86:9356 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$86:9359 18          CLC
-$86:935A 69 E3 FF    ADC #$FFE3
-$86:935D 99 4B 1A    STA $1A4B,y
-$86:9360 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$86:9363 18          CLC
-$86:9364 69 DD FF    ADC #$FFDD
-$86:9367 99 93 1A    STA $1A93,y
+$86:934D A9 00 00    LDA #$0000             ;\
+$86:9350 99 FF 1A    STA $1AFF,y            ;} Enemy projectile life timer = 0
+$86:9353 99 23 1B    STA $1B23,y            ; Enemy projectile $1B23 = 0
+$86:9356 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$86:9359 18          CLC                    ;|
+$86:935A 69 E3 FF    ADC #$FFE3             ;} Enemy projectile X position = [enemy 0 X position] - 1Dh
+$86:935D 99 4B 1A    STA $1A4B,y            ;/
+$86:9360 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$86:9363 18          CLC                    ;|
+$86:9364 69 DD FF    ADC #$FFDD             ;} Enemy projectile Y position = [enemy 0 Y position] - 23h
+$86:9367 99 93 1A    STA $1A93,y            ;/
 $86:936A A9 00 0A    LDA #$0A00             ;\
 $86:936D 99 BB 19    STA $19BB,y            ;} Enemy projectile VRAM graphics index = 0, palette 5
-$86:9370 AD B4 0F    LDA $0FB4  [$7E:0FB4]
-$86:9373 0A          ASL A
-$86:9374 AA          TAX
-$86:9375 BD 82 93    LDA $9382,x
-$86:9378 99 B7 1A    STA $1AB7,y
-$86:937B BD 8A 93    LDA $938A,x
-$86:937E 99 DB 1A    STA $1ADB,y
+$86:9370 AD B4 0F    LDA $0FB4  [$7E:0FB4]  ;\
+$86:9373 0A          ASL A                  ;} X = [enemy 0 $0FB4] * 2
+$86:9374 AA          TAX                    ;/
+$86:9375 BD 82 93    LDA $9382,x            ;\
+$86:9378 99 B7 1A    STA $1AB7,y            ;} Enemy projectile X velocity = [$9382 + [X]]
+$86:937B BD 8A 93    LDA $938A,x            ;\
+$86:937E 99 DB 1A    STA $1ADB,y            ;} Enemy projectile Y velocity = [$938A + [X]]
 $86:9381 60          RTS
 
-$86:9382             dw FE00, FE10, FE44, FE96
-$86:938A             dw 0000, 0088, 00FC, 016A
+$86:9382             dw FE00, FE10, FE44, FE96 ; X velocities
+$86:938A             dw 0000, 0088, 00FC, 016A ; Y velocities
 }
 
 
-;;; $9392: Pre-instruction - enemy projectile $9634 ;;;
+;;; $9392: Pre-instruction - enemy projectile $9634 (unused) ;;;
 {
-$86:9392 BD FF 1A    LDA $1AFF,x
-$86:9395 C9 08 00    CMP #$0008
-$86:9398 B0 04       BCS $04    [$939E]
-$86:939A FE FF 1A    INC $1AFF,x
-$86:939D 60          RTS
+$86:9392 BD FF 1A    LDA $1AFF,x            ;\
+$86:9395 C9 08 00    CMP #$0008             ;} If [enemy projectile life timer] < 8:
+$86:9398 B0 04       BCS $04    [$939E]     ;/
+$86:939A FE FF 1A    INC $1AFF,x            ; Increment enemy projectile life timer
+$86:939D 60          RTS                    ; Return
 
-$86:939E 20 D6 92    JSR $92D6  [$86:92D6]
+$86:939E 20 D6 92    JSR $92D6  [$86:92D6]  ; Move enemy projectile according to enemy projectile velocity
 $86:93A1 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:93A4 B0 01       BCS $01    [$93A7]
-$86:93A6 60          RTS
+$86:93A4 B0 01       BCS $01    [$93A7]     ; If no collision:
+$86:93A6 60          RTS                    ; Return
 
-$86:93A7 A9 74 95    LDA #$9574
-$86:93AA 9D 47 1B    STA $1B47,x
-$86:93AD FE FF 1A    INC $1AFF,x
-$86:93B0 A9 01 00    LDA #$0001
-$86:93B3 9D 8F 1B    STA $1B8F,x
-$86:93B6 9E B7 1A    STZ $1AB7,x
-$86:93B9 9E DB 1A    STZ $1ADB,x
+$86:93A7 A9 74 95    LDA #$9574             ;\
+$86:93AA 9D 47 1B    STA $1B47,x            ;} Enemy projectile instruction list pointer = $9574
+$86:93AD FE FF 1A    INC $1AFF,x            ; Increment enemy projectile life timer
+$86:93B0 A9 01 00    LDA #$0001             ;\
+$86:93B3 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
+$86:93B6 9E B7 1A    STZ $1AB7,x            ; Enemy projectile X velocity = 0
+$86:93B9 9E DB 1A    STZ $1ADB,x            ; Enemy projectile Y velocity = 0
 $86:93BC A9 00 0A    LDA #$0A00             ;\
 $86:93BF 9D BB 19    STA $19BB,x            ;} Enemy projectile VRAM graphics index = 0, palette 5
 $86:93C2 A9 2B 00    LDA #$002B             ;\
@@ -3114,56 +3129,70 @@ $86:93C9 60          RTS
 
 ;;; $93CA: Initialisation AI - enemy projectile $9642 (Ridley's fireball) ;;;
 {
-$86:93CA AD 95 19    LDA $1995  [$7E:1995]
-$86:93CD 99 23 1B    STA $1B23,y[$7E:1B43]
-$86:93D0 AD 93 19    LDA $1993  [$7E:1993]
-$86:93D3 D0 05       BNE $05    [$93DA]
-$86:93D5 A9 E7 FF    LDA #$FFE7
+$86:93CA AD 95 19    LDA $1995  [$7E:1995]  ;\
+$86:93CD 99 23 1B    STA $1B23,y[$7E:1B43]  ;} Enemy projectile $1B23 = [enemy projectile initialisation parameter 1]
+$86:93D0 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:93D3 D0 05       BNE $05    [$93DA]     ;} If [enemy projectile initialisation parameter 0] = 0:
+$86:93D5 A9 E7 FF    LDA #$FFE7             ; A = -19h
 $86:93D8 80 03       BRA $03    [$93DD]
+                                            ; Else ([enemy projectile initialisation parameter 0] != 0):
+$86:93DA A9 19 00    LDA #$0019             ; A = 19h
 
-$86:93DA A9 19 00    LDA #$0019
-$86:93DD 18          CLC
-$86:93DE 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$86:93E1 99 4B 1A    STA $1A4B,y[$7E:1A6B]
-$86:93E4 A9 D5 FF    LDA #$FFD5
-$86:93E7 18          CLC
-$86:93E8 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$86:93EB 99 93 1A    STA $1A93,y[$7E:1AB3]
+$86:93DD 18          CLC                    ;\
+$86:93DE 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy projectile X position = [enemy 0 X position] + [A]
+$86:93E1 99 4B 1A    STA $1A4B,y[$7E:1A6B]  ;/
+$86:93E4 A9 D5 FF    LDA #$FFD5             ;\
+$86:93E7 18          CLC                    ;|
+$86:93E8 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy projectile Y position = [enemy 0 Y position] - 2Bh
+$86:93EB 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
 $86:93EE A9 00 0A    LDA #$0A00             ;\
 $86:93F1 99 BB 19    STA $19BB,y[$7E:19DB]  ;} Enemy projectile VRAM graphics index = 0, palette 5
-$86:93F4 AF 32 78 7E LDA $7E7832[$7E:7832]
-$86:93F8 99 B7 1A    STA $1AB7,y[$7E:1AD7]
-$86:93FB AF 34 78 7E LDA $7E7834[$7E:7834]
-$86:93FF 99 DB 1A    STA $1ADB,y[$7E:1AFB]
+$86:93F4 AF 32 78 7E LDA $7E7832[$7E:7832]  ;\
+$86:93F8 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = [$7E:7832]
+$86:93FB AF 34 78 7E LDA $7E7834[$7E:7834]  ;\
+$86:93FF 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile Y velocity = [$7E:7834]
+}
 
-$86:9402 A2 08 94    LDX #$9408
-$86:9405 4C 2F 93    JMP $932F  [$86:932F]
 
-$86:9408             dw 5003, 503C, 5050
+;;; $9402: Set Ridley's fireball properties ;;;
+{
+;; Parameters:
+;;     Y: Enemy projectile index
+$86:9402 A2 08 94    LDX #$9408             ; X = $9408
+$86:9405 4C 2F 93    JMP $932F  [$86:932F]  ; Go to set Ridley's fireball damage
+
+; Enemy projectile properties values
+; 5000h = don't detect collisions with projectiles, don't die on contact, enable collisions with Samus, high priority
+$86:9408             dw 5003, ; Default
+                        503C, ; Norfair
+                        5050  ; Tourian
 }
 
 
 ;;; $940E: Pre-instruction - enemy projectile $9642 (Ridley's fireball) ;;;
 {
 $86:940E 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:9411 B0 0B       BCS $0B    [$941E]
+$86:9411 B0 0B       BCS $0B    [$941E]     ; If collision: go to BRANCH_HIT_WALL
 $86:9413 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:9416 B0 01       BCS $01    [$9419]
-$86:9418 60          RTS
+$86:9416 B0 01       BCS $01    [$9419]     ; If no collision:
+$86:9418 60          RTS                    ; Return
 
-$86:9419 A0 50 96    LDY #$9650
-$86:941C 80 03       BRA $03    [$9421]
+$86:9419 A0 50 96    LDY #$9650             ; Y = $9650 (horizontal explosion - centre)
+$86:941C 80 03       BRA $03    [$9421]     ; Go to BRANCH_MERGE
 
-$86:941E A0 5E 96    LDY #$965E
-$86:9421 9E 97 19    STZ $1997,x[$7E:19B7]
-$86:9424 BD 23 1B    LDA $1B23,x[$7E:1B43]
-$86:9427 D0 18       BNE $18    [$9441]
-$86:9429 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]
-$86:942C 85 12       STA $12    [$7E:0012]
-$86:942E BD 93 1A    LDA $1A93,x[$7E:1AB3]
-$86:9431 85 14       STA $14    [$7E:0014]
-$86:9433 A9 03 00    LDA #$0003
-$86:9436 22 97 80 86 JSL $868097[$86:8097]  ; Spawn Ridley's fireball vertical explosion - centre enemy projectile
+; BRANCH_HIT_WALL
+$86:941E A0 5E 96    LDY #$965E             ; Y = $965E (vertical explosion - centre)
+
+; BRANCH_MERGE
+$86:9421 9E 97 19    STZ $1997,x[$7E:19B7]  ; Enemy projectile ID = 0
+$86:9424 BD 23 1B    LDA $1B23,x[$7E:1B43]  ;\
+$86:9427 D0 18       BNE $18    [$9441]     ;} If [enemy projectile $1B23] = 0:
+$86:9429 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;\
+$86:942C 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:942E BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;\
+$86:9431 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$86:9433 A9 03 00    LDA #$0003             ; A = 3
+$86:9436 22 97 80 86 JSL $868097[$86:8097]  ; Spawn enemy projectile [Y]
 $86:943A A9 2B 00    LDA #$002B             ;\
 $86:943D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 2Bh, sound library 2, max queued sounds allowed = 6 (Ridley's fireball hit surface)
 
@@ -3171,23 +3200,23 @@ $86:9441 60          RTS
 }
 
 
-;;; $9442: Unused ;;;
+;;; $9442: Unused. Do fireball damage to Samus and turn into smoke ;;;
 {
-$86:9442 A9 5F 94    LDA #$945F
-$86:9445 9D 47 1B    STA $1B47,x
-$86:9448 A9 01 00    LDA #$0001
-$86:944B 9D 8F 1B    STA $1B8F,x
-$86:944E A9 03 00    LDA #$0003
-$86:9451 AC 9F 07    LDY $079F  [$7E:079F]
-$86:9454 C0 02 00    CPY #$0002
-$86:9457 D0 03       BNE $03    [$945C]
-$86:9459 A9 3C 00    LDA #$003C
+$86:9442 A9 5F 94    LDA #$945F             ;\
+$86:9445 9D 47 1B    STA $1B47,x            ;} Enemy projectile instruction list pointer = $945F
+$86:9448 A9 01 00    LDA #$0001             ;\
+$86:944B 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
+$86:944E A9 03 00    LDA #$0003             ; A = 3
+$86:9451 AC 9F 07    LDY $079F  [$7E:079F]  ;\
+$86:9454 C0 02 00    CPY #$0002             ;} If [area index] = Norfair:
+$86:9457 D0 03       BNE $03    [$945C]     ;/
+$86:9459 A9 3C 00    LDA #$003C             ; A = 60
 
-$86:945C 4C 5C C3    JMP $C35C  [$86:C35C]
+$86:945C 4C 5C C3    JMP $C35C  [$86:C35C]  ; Go to hurt Samus
 }
 
 
-;;; $945F: Unused. Instruction list ;;;
+;;; $945F: Unused. Instruction list - smoke ;;;
 {
 $86:945F             dx 9475,       ; Disable collisions with Samus
                         816A,       ; Clear pre-instruction
@@ -3212,81 +3241,85 @@ $86:947E 60          RTS
 {
 ; $9650: Ridley's fireball / Mother Brain's bomb horizontal explosion - centre
 ; $965E: Ridley's fireball vertical explosion - centre
-$86:947F BB          TYX
+$86:947F BB          TYX                    ; X = [enemy projectile index]
 $86:9480 A9 00 0A    LDA #$0A00             ;\
 $86:9483 9D BB 19    STA $19BB,x[$7E:19DB]  ;} Enemy projectile VRAM graphics index = 0, palette 5
-$86:9486 A5 12       LDA $12    [$7E:0012]
-$86:9488 9D 4B 1A    STA $1A4B,x[$7E:1A6B]
-$86:948B A5 14       LDA $14    [$7E:0014]
-$86:948D 9D 93 1A    STA $1A93,x[$7E:1AB3]
-$86:9490 AD 93 19    LDA $1993  [$7E:1993]
-$86:9493 9D FF 1A    STA $1AFF,x[$7E:1B1F]
-$86:9496 9E 23 1B    STZ $1B23,x[$7E:1B43]
-$86:9499 9E B7 1A    STZ $1AB7,x[$7E:1AD7]
-$86:949C 9E DB 1A    STZ $1ADB,x[$7E:1AFB]
+$86:9486 A5 12       LDA $12    [$7E:0012]  ;\
+$86:9488 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;} Enemy projectile X position = [$12]
+$86:948B A5 14       LDA $14    [$7E:0014]  ;\
+$86:948D 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;} Enemy projectile Y position = [$14]
+$86:9490 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:9493 9D FF 1A    STA $1AFF,x[$7E:1B1F]  ;} Enemy projectile $1AFF = [enemy projectile initialisation parameter 0]
+$86:9496 9E 23 1B    STZ $1B23,x[$7E:1B43]  ; Enemy projectile $1B23 = 0
+$86:9499 9E B7 1A    STZ $1AB7,x[$7E:1AD7]  ; Enemy projectile $1AB7 = 0
+$86:949C 9E DB 1A    STZ $1ADB,x[$7E:1AFB]  ; Enemy projectile $1ADB = 0
 $86:949F 60          RTS
 }
 
 
 ;;; $94A0: Initialisation AI - enemy projectile $9688/$96C0 ;;;
 {
-$86:94A0 AE 93 19    LDX $1993  [$7E:1993]
-$86:94A3 A9 00 00    LDA #$0000
-$86:94A6 99 B7 1A    STA $1AB7,y[$7E:1AD1]
-$86:94A9 A9 00 F2    LDA #$F200
-$86:94AC 99 DB 1A    STA $1ADB,y[$7E:1AF5]
-$86:94AF A9 88 96    LDA #$9688
-$86:94B2 80 3A       BRA $3A    [$94EE]
+$86:94A0 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
+$86:94A3 A9 00 00    LDA #$0000             ;\
+$86:94A6 99 B7 1A    STA $1AB7,y[$7E:1AD1]  ;} Enemy projectile X velocity = 0
+$86:94A9 A9 00 F2    LDA #$F200             ;\
+$86:94AC 99 DB 1A    STA $1ADB,y[$7E:1AF5]  ;} Enemy projectile Y velocity = -E00h
+$86:94AF A9 88 96    LDA #$9688             ; A = $9688
+$86:94B2 80 3A       BRA $3A    [$94EE]     ; Go to $94EE
 }
 
 
 ;;; $94B4: Initialisation AI - enemy projectile $9696/$96CE ;;;
 {
-$86:94B4 AE 93 19    LDX $1993  [$7E:1993]
-$86:94B7 A9 00 00    LDA #$0000
-$86:94BA 99 B7 1A    STA $1AB7,y[$7E:1ACF]
-$86:94BD A9 00 0E    LDA #$0E00
-$86:94C0 99 DB 1A    STA $1ADB,y[$7E:1AF3]
-$86:94C3 A9 96 96    LDA #$9696
-$86:94C6 80 26       BRA $26    [$94EE]
+$86:94B4 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
+$86:94B7 A9 00 00    LDA #$0000             ;\
+$86:94BA 99 B7 1A    STA $1AB7,y[$7E:1ACF]  ;} Enemy projectile X velocity = 0
+$86:94BD A9 00 0E    LDA #$0E00             ;\
+$86:94C0 99 DB 1A    STA $1ADB,y[$7E:1AF3]  ;} Enemy projectile Y velocity = E00h
+$86:94C3 A9 96 96    LDA #$9696             ; A = $9696
+$86:94C6 80 26       BRA $26    [$94EE]     ; Go to $94EE
 }
 
 
 ;;; $94C8: Initialisation AI - enemy projectile $966C/$96A4 ;;;
 {
-$86:94C8 AE 93 19    LDX $1993  [$7E:1993]
-$86:94CB A9 00 0E    LDA #$0E00
-$86:94CE 99 B7 1A    STA $1AB7,y[$7E:1AD3]
-$86:94D1 A9 00 00    LDA #$0000
-$86:94D4 99 DB 1A    STA $1ADB,y[$7E:1AF7]
-$86:94D7 A9 6C 96    LDA #$966C
-$86:94DA 80 12       BRA $12    [$94EE]
+$86:94C8 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
+$86:94CB A9 00 0E    LDA #$0E00             ;\
+$86:94CE 99 B7 1A    STA $1AB7,y[$7E:1AD3]  ;} Enemy projectile X velocity = E00h
+$86:94D1 A9 00 00    LDA #$0000             ;\
+$86:94D4 99 DB 1A    STA $1ADB,y[$7E:1AF7]  ;} Enemy projectile Y velocity = 0
+$86:94D7 A9 6C 96    LDA #$966C             ; A = $966C
+$86:94DA 80 12       BRA $12    [$94EE]     ; Go to $94EE
 }
 
 
 ;;; $94DC: Initialisation AI - enemy projectile $967A/$96B2 ;;;
 {
-$86:94DC AE 93 19    LDX $1993  [$7E:1993]
-$86:94DF A9 00 F2    LDA #$F200
-$86:94E2 99 B7 1A    STA $1AB7,y[$7E:1AD1]
-$86:94E5 A9 00 00    LDA #$0000
-$86:94E8 99 DB 1A    STA $1ADB,y[$7E:1AF5]
-$86:94EB A9 7A 96    LDA #$967A
+$86:94DC AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
+$86:94DF A9 00 F2    LDA #$F200             ;\
+$86:94E2 99 B7 1A    STA $1AB7,y[$7E:1AD1]  ;} Enemy projectile X velocity = -E00h
+$86:94E5 A9 00 00    LDA #$0000             ;\
+$86:94E8 99 DB 1A    STA $1ADB,y[$7E:1AF5]  ;} Enemy projectile Y velocity = 0
+$86:94EB A9 7A 96    LDA #$967A             ; A = $967A
 }
 
 
 ;;; $94EE:  ;;;
 {
-$86:94EE 99 23 1B    STA $1B23,y[$7E:1B3D]
-$86:94F1 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]
-$86:94F4 99 4B 1A    STA $1A4B,y[$7E:1A65]
-$86:94F7 BD 93 1A    LDA $1A93,x[$7E:1AB3]
-$86:94FA 99 93 1A    STA $1A93,y[$7E:1AAD]
-$86:94FD BD FF 1A    LDA $1AFF,x[$7E:1B1F]
-$86:9500 99 FF 1A    STA $1AFF,y[$7E:1B19]
+;; Parameters:
+;;     A: 
+;;     X: Old enemy projectile index
+;;     Y: Enemy projectile index
+$86:94EE 99 23 1B    STA $1B23,y[$7E:1B3D]  ; Enemy projectile $1B23 = [A]
+$86:94F1 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;\
+$86:94F4 99 4B 1A    STA $1A4B,y[$7E:1A65]  ;} Enemy projectile X position = [old enemy projectile X position]
+$86:94F7 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;\
+$86:94FA 99 93 1A    STA $1A93,y[$7E:1AAD]  ;} Enemy projectile Y position = [old enemy projectile Y position]
+$86:94FD BD FF 1A    LDA $1AFF,x[$7E:1B1F]  ;\
+$86:9500 99 FF 1A    STA $1AFF,y[$7E:1B19]  ;} Enemy projectile $1AFF = [old enemy projectile $1AFF]
 $86:9503 A9 00 0A    LDA #$0A00             ;\
 $86:9506 99 BB 19    STA $19BB,y[$7E:19D5]  ;} Enemy projectile VRAM graphics index = 0, palette 5
-$86:9509 4C 02 94    JMP $9402  [$86:9402]
+$86:9509 4C 02 94    JMP $9402  [$86:9402]  ; Go to set Ridley's fireball properties
 }
 
 
@@ -3314,7 +3347,7 @@ $86:9521 60          RTS
 
 ;;; $9522: Pre-instruction - enemy projectile $9688/$9696 ;;;
 {
-$86:9522 20 F3 92    JSR $92F3  [$86:92F3]
+$86:9522 20 F3 92    JSR $92F3  [$86:92F3]  ; Move enemy projectile according to enemy projectile Y velocity
 $86:9525 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:9528 90 0C       BCC $0C    [$9536]
 $86:952A A9 74 95    LDA #$9574
@@ -3491,7 +3524,7 @@ $86:9633 60          RTS
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
 $86:9634             dx 934D,9392,9552,06,06,1003,0000,84FC
-$86:9642             dx 93CA,940E,9552,06,06,5003,0000,84FC ; Ridley's fireball
+$86:9642             dx 93CA,940E,9552,06,06,5003,0000,84FC ; Ridley's fireball. Properties ignored
 $86:9650             dx 947F,950C,95A0,06,06,5003,0000,84FC ; Ridley's fireball / Mother Brain's bomb horizontal explosion - centre
 $86:965E             dx 947F,950C,95D3,06,06,5003,0000,84FC ; Ridley's fireball vertical explosion - centre
 $86:966C             dx 94C8,950D,9606,06,06,5003,0000,84FC ; Ridley's fireball / Mother Brain's bomb horizontal explosion - right
