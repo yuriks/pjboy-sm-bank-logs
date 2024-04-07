@@ -2438,6 +2438,10 @@ $86:8E6C             dx 8E7A,8E99,8CA4,08,08,7000,0000,E138 ; Unused. Initial in
 
 ;;; $8E7A: Initialisation AI - enemy projectile $8E6C ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $12: X position
+;;     $14: Y position
 $86:8E7A DA          PHX                    ; >_<;
 $86:8E7B A9 F0 03    LDA #$03F0             ;\
 $86:8E7E 99 BB 19    STA $19BB,y            ;} Enemy projectile VRAM graphics index = 1F0h, palette 1
@@ -2935,6 +2939,9 @@ $86:9285 60          RTS
 
 ;;; $9286: Initialisation AI - enemy projectile $8F9D (Crocomire bridge crumbling) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: X position
 $86:9286 DA          PHX                    ;\
 $86:9287 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} >_<;
 $86:928A AD 93 19    LDA $1993  [$7E:1993]  ;\
@@ -2944,7 +2951,7 @@ $86:9293 99 93 1A    STA $1A93,y[$7E:1AA3]  ;} Enemy projectile Y position = BBh
 $86:9296 A9 00 00    LDA #$0000             ;\
 $86:9299 99 6F 1A    STA $1A6F,y[$7E:1A7F]  ;} Enemy projectile Y subposition = 0
 $86:929C 99 27 1A    STA $1A27,y[$7E:1A37]  ; Enemy projectile $1A27 = 0
-$86:929F A9 00 00    LDA #$0000
+$86:929F A9 00 00    LDA #$0000             ; >_<;
 $86:92A2 99 B7 1A    STA $1AB7,y[$7E:1AC7]  ; Enemy projectile $1AB7 = 0
 $86:92A5 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:92A8 29 3F 00    AND #$003F             ;|
@@ -3129,6 +3136,10 @@ $86:93C9 60          RTS
 
 ;;; $93CA: Initialisation AI - enemy projectile $9642 (Ridley's fireball) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Ridley facing direction. 0 = left, otherwise = right
+;;     $1995: Afterburn flag. 0 = spawn afterburn
 $86:93CA AD 95 19    LDA $1995  [$7E:1995]  ;\
 $86:93CD 99 23 1B    STA $1B23,y[$7E:1B43]  ;} Enemy projectile $1B23 = [enemy projectile initialisation parameter 1]
 $86:93D0 AD 93 19    LDA $1993  [$7E:1993]  ;\
@@ -3237,7 +3248,7 @@ $86:947E 60          RTS
 }
 
 
-;;; $947F: Initialisation AI - enemy projectile $9650/$965E (fireball explosion centre enemy projectile) ;;;
+;;; $947F: Initialisation AI - enemy projectile $9650/$965E (afterburn - centre) ;;;
 {
 ; $9650: Ridley's fireball / Mother Brain's bomb horizontal explosion - centre
 ; $965E: Ridley's fireball vertical explosion - centre
@@ -3257,7 +3268,7 @@ $86:949F 60          RTS
 }
 
 
-;;; $94A0: Initialisation AI - enemy projectile $9688/$96C0 ;;;
+;;; $94A0: Initialisation AI - enemy projectile $9688/$96C0 (vertical afterburn - up) ;;;
 {
 $86:94A0 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:94A3 A9 00 00    LDA #$0000             ;\
@@ -3269,7 +3280,7 @@ $86:94B2 80 3A       BRA $3A    [$94EE]     ; Go to $94EE
 }
 
 
-;;; $94B4: Initialisation AI - enemy projectile $9696/$96CE ;;;
+;;; $94B4: Initialisation AI - enemy projectile $9696/$96CE (vertical afterburn - down) ;;;
 {
 $86:94B4 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:94B7 A9 00 00    LDA #$0000             ;\
@@ -3281,7 +3292,7 @@ $86:94C6 80 26       BRA $26    [$94EE]     ; Go to $94EE
 }
 
 
-;;; $94C8: Initialisation AI - enemy projectile $966C/$96A4 ;;;
+;;; $94C8: Initialisation AI - enemy projectile $966C/$96A4 (horizontal afterburn - right) ;;;
 {
 $86:94C8 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:94CB A9 00 0E    LDA #$0E00             ;\
@@ -3293,7 +3304,7 @@ $86:94DA 80 12       BRA $12    [$94EE]     ; Go to $94EE
 }
 
 
-;;; $94DC: Initialisation AI - enemy projectile $967A/$96B2 ;;;
+;;; $94DC: Initialisation AI - enemy projectile $967A/$96B2 (horizontal afterburn - left) ;;;
 {
 $86:94DC AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:94DF A9 00 F2    LDA #$F200             ;\
@@ -3307,7 +3318,7 @@ $86:94EB A9 7A 96    LDA #$967A             ; A = $967A
 ;;; $94EE:  ;;;
 {
 ;; Parameters:
-;;     A: 
+;;     A: Next explosion enemy projectile ID
 ;;     X: Old enemy projectile index
 ;;     Y: Enemy projectile index
 $86:94EE 99 23 1B    STA $1B23,y[$7E:1B3D]  ; Enemy projectile $1B23 = [A]
@@ -3323,7 +3334,7 @@ $86:9509 4C 02 94    JMP $9402  [$86:9402]  ; Go to set Ridley's fireball proper
 }
 
 
-;;; $950C: RTS. Pre-instruction - enemy projectile $9650/$965E (fireball explosion centre enemy projectile) ;;;
+;;; $950C: RTS. Pre-instruction - enemy projectile $9650/$965E (afterburn - centre) ;;;
 {
 ; $9650: Ridley's fireball / Mother Brain's bomb horizontal explosion - centre
 ; $965E: Ridley's fireball vertical explosion - centre
@@ -3331,29 +3342,29 @@ $86:950C 60          RTS
 }
 
 
-;;; $950D: Pre-instruction - enemy projectile $966C/$967A ;;;
+;;; $950D: Pre-instruction - enemy projectile $966C/$967A (horizontal afterburn - right/left) ;;;
 {
-$86:950D 20 11 93    JSR $9311  [$86:9311]
+$86:950D 20 11 93    JSR $9311  [$86:9311]  ; Move enemy projectile according to enemy projectile X velocity
 $86:9510 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:9513 90 0C       BCC $0C    [$9521]
-$86:9515 A9 74 95    LDA #$9574
-$86:9518 9D 47 1B    STA $1B47,x[$7E:1B5F]
-$86:951B A9 01 00    LDA #$0001
-$86:951E 9D 8F 1B    STA $1B8F,x[$7E:1BA7]
+$86:9513 90 0C       BCC $0C    [$9521]     ; If collision:
+$86:9515 A9 74 95    LDA #$9574             ;\
+$86:9518 9D 47 1B    STA $1B47,x[$7E:1B5F]  ;} Enemy projectile instruction list pointer = $9574
+$86:951B A9 01 00    LDA #$0001             ;\
+$86:951E 9D 8F 1B    STA $1B8F,x[$7E:1BA7]  ;} Enemy projectile instruction timer = 1
 
 $86:9521 60          RTS
 }
 
 
-;;; $9522: Pre-instruction - enemy projectile $9688/$9696 ;;;
+;;; $9522: Pre-instruction - enemy projectile $9688/$9696 (vertical afterburn - up/down) ;;;
 {
 $86:9522 20 F3 92    JSR $92F3  [$86:92F3]  ; Move enemy projectile according to enemy projectile Y velocity
 $86:9525 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:9528 90 0C       BCC $0C    [$9536]
-$86:952A A9 74 95    LDA #$9574
-$86:952D 9D 47 1B    STA $1B47,x
-$86:9530 A9 01 00    LDA #$0001
-$86:9533 9D 8F 1B    STA $1B8F,x
+$86:9528 90 0C       BCC $0C    [$9536]     ; If collision:
+$86:952A A9 74 95    LDA #$9574             ;\
+$86:952D 9D 47 1B    STA $1B47,x            ;} Enemy projectile instruction list pointer = $9574
+$86:9530 A9 01 00    LDA #$0001             ;\
+$86:9533 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
 
 $86:9536 60          RTS
 }
@@ -3362,8 +3373,8 @@ $86:9536 60          RTS
 ;;; $9537: Pre-instruction - enemy projectile $96A4/$96B2 ;;;
 {
 $86:9537 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:953A 90 03       BCC $03    [$953F]
-$86:953C 9E 97 19    STZ $1997,x
+$86:953A 90 03       BCC $03    [$953F]     ; If collision:
+$86:953C 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
 
 $86:953F 60          RTS
 }
@@ -3372,8 +3383,8 @@ $86:953F 60          RTS
 ;;; $9540: Pre-instruction - enemy projectile $96C0 ;;;
 {
 $86:9540 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:9543 90 03       BCC $03    [$9548]
-$86:9545 9E 97 19    STZ $1997,x
+$86:9543 90 03       BCC $03    [$9548]     ; If collision:
+$86:9545 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
 
 $86:9548 60          RTS
 }
@@ -3381,9 +3392,10 @@ $86:9548 60          RTS
 
 ;;; $9549: Pre-instruction - enemy projectile $96CE ;;;
 {
+; Clone of $9540
 $86:9549 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:954C 90 03       BCC $03    [$9551]
-$86:954E 9E 97 19    STZ $1997,x
+$86:954C 90 03       BCC $03    [$9551]     ; If collision:
+$86:954E 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
 
 $86:9551 60          RTS
 }
@@ -3425,11 +3437,11 @@ $86:958C             dx 0002,80AE,
 }
 
 
-;;; $95A0: Instruction list - enemy projectile $9650 ;;;
+;;; $95A0: Instruction list - enemy projectile $9650 (horizontal afterburn - centre) ;;;
 {
 $86:95A0             dx 816A,       ; Clear pre-instruction
                         0005,80E6,
-                        95BA,
+                        95BA,       ; Spawn left and right Ridley's fireball horizontal explosion enemy projectiles
                         0005,80ED,
                         0005,80F4,
                         0005,80FB,
@@ -3438,15 +3450,15 @@ $86:95A0             dx 816A,       ; Clear pre-instruction
 }
 
 
-;;; $95BA: Instruction ;;;
+;;; $95BA: Instruction - spawn left and right Ridley's fireball horizontal explosion enemy projectiles ;;;
 {
 $86:95BA 5A          PHY
-$86:95BB 9C 95 19    STZ $1995  [$7E:1995]
-$86:95BE 8A          TXA
+$86:95BB 9C 95 19    STZ $1995  [$7E:1995]  ; Enemy projectile initialisation parameter 1 = 0
+$86:95BE 8A          TXA                    ; A = [enemy projectile index]
 $86:95BF A0 6C 96    LDY #$966C             ;\
 $86:95C2 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Ridley's fireball horizontal explosion - right enemy projectile
-$86:95C6 9C 95 19    STZ $1995  [$7E:1995]
-$86:95C9 8A          TXA
+$86:95C6 9C 95 19    STZ $1995  [$7E:1995]  ; Enemy projectile initialisation parameter 1 = 0
+$86:95C9 8A          TXA                    ; A = [enemy projectile index]
 $86:95CA A0 7A 96    LDY #$967A             ;\
 $86:95CD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Ridley's fireball horizontal explosion - left enemy projectile
 $86:95D1 7A          PLY
@@ -3454,11 +3466,11 @@ $86:95D2 60          RTS
 }
 
 
-;;; $95D3: Instruction list - enemy projectile $965E ;;;
+;;; $95D3: Instruction list - enemy projectile $965E (vertical afterburn - centre) ;;;
 {
 $86:95D3             dx 816A,       ; Clear pre-instruction
                         0005,80E6,
-                        95ED,
+                        95ED,       ; Spawn up and down Ridley's fireball horizontal explosion enemy projectiles
                         0005,80ED,
                         0005,80F4,
                         0005,80FB,
@@ -3467,15 +3479,15 @@ $86:95D3             dx 816A,       ; Clear pre-instruction
 }
 
 
-;;; $95ED: Instruction ;;;
+;;; $95ED: Instruction - spawn up and down Ridley's fireball horizontal explosion enemy projectiles ;;;
 {
 $86:95ED 5A          PHY
-$86:95EE 9C 95 19    STZ $1995  [$7E:1995]
-$86:95F1 8A          TXA
+$86:95EE 9C 95 19    STZ $1995  [$7E:1995]  ; Enemy projectile initialisation parameter 1 = 0
+$86:95F1 8A          TXA                    ; A = [enemy projectile index]
 $86:95F2 A0 88 96    LDY #$9688             ;\
 $86:95F5 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Ridley's fireball vertical explosion - up enemy projectile
-$86:95F9 9C 95 19    STZ $1995  [$7E:1995]
-$86:95FC 8A          TXA
+$86:95F9 9C 95 19    STZ $1995  [$7E:1995]  ; Enemy projectile initialisation parameter 1 = 0
+$86:95FC 8A          TXA                    ; A = [enemy projectile index]
 $86:95FD A0 96 96    LDY #$9696             ;\
 $86:9600 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Ridley's fireball vertical explosion - down enemy projectile
 $86:9604 7A          PLY
@@ -3483,11 +3495,11 @@ $86:9605 60          RTS
 }
 
 
-;;; $9606: Instruction list - enemy projectile $966C/$967A/$9688/$9696 ;;;
+;;; $9606: Instruction list - enemy projectile $966C/$967A/$9688/$9696/$96A4/$96B2/$96C0/$96CE (afterburn - right/left/up/down) ;;;
 {
 $86:9606             dx 816A,       ; Clear pre-instruction
                         0005,80E6,
-                        9620,
+                        9620,       ; Spawn next explosion enemy projectile
                         0005,80ED,
                         0005,80F4,
                         0005,80FB,
@@ -3496,14 +3508,14 @@ $86:9606             dx 816A,       ; Clear pre-instruction
 }
 
 
-;;; $9620: Instruction ;;;
+;;; $9620: Instruction - spawn next explosion enemy projectile ;;;
 {
 $86:9620 E2 20       SEP #$20
-$86:9622 DE FF 1A    DEC $1AFF,x[$7E:1B19]
+$86:9622 DE FF 1A    DEC $1AFF,x[$7E:1B19]  ; Decrement enemy projectile $1AFF
 $86:9625 C2 20       REP #$20
-$86:9627 30 0A       BMI $0A    [$9633]
+$86:9627 30 0A       BMI $0A    [$9633]     ; If [enemy projectile $1AFF] >= 0:
 $86:9629 5A          PHY
-$86:962A 8A          TXA
+$86:962A 8A          TXA                    ; A = [enemy projectile index]
 $86:962B BC 23 1B    LDY $1B23,x[$7E:1B3D]  ;\
 $86:962E 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn enemy projectile [enemy projectile $1B23]
 $86:9632 7A          PLY
@@ -3525,12 +3537,12 @@ $86:9633 60          RTS
 ;                       |    |    |    |  |  |    |    |
 $86:9634             dx 934D,9392,9552,06,06,1003,0000,84FC
 $86:9642             dx 93CA,940E,9552,06,06,5003,0000,84FC ; Ridley's fireball. Properties ignored
-$86:9650             dx 947F,950C,95A0,06,06,5003,0000,84FC ; Ridley's fireball / Mother Brain's bomb horizontal explosion - centre
-$86:965E             dx 947F,950C,95D3,06,06,5003,0000,84FC ; Ridley's fireball vertical explosion - centre
-$86:966C             dx 94C8,950D,9606,06,06,5003,0000,84FC ; Ridley's fireball / Mother Brain's bomb horizontal explosion - right
-$86:967A             dx 94DC,950D,9606,06,06,5003,0000,84FC ; Ridley's fireball / Mother Brain's bomb horizontal explosion - left
-$86:9688             dx 94A0,9522,9606,06,06,5003,0000,84FC ; Ridley's fireball vertical explosion - up
-$86:9696             dx 94B4,9522,9606,06,06,5003,0000,84FC ; Ridley's fireball vertical explosion - down
+$86:9650             dx 947F,950C,95A0,06,06,5003,0000,84FC ; Horizontal afterburn - centre
+$86:965E             dx 947F,950C,95D3,06,06,5003,0000,84FC ; Vertical afterburn - centre
+$86:966C             dx 94C8,950D,9606,06,06,5003,0000,84FC ; Horizontal afterburn - right
+$86:967A             dx 94DC,950D,9606,06,06,5003,0000,84FC ; Horizontal afterburn - left
+$86:9688             dx 94A0,9522,9606,06,06,5003,0000,84FC ; Vertical afterburn - up
+$86:9696             dx 94B4,9522,9606,06,06,5003,0000,84FC ; Vertical afterburn - down
 $86:96A4             dx 94C8,9537,9606,06,06,5003,0000,84FC
 $86:96B2             dx 94DC,9537,9606,06,06,5003,0000,84FC
 $86:96C0             dx 94A0,9540,9606,06,06,5003,0000,84FC
