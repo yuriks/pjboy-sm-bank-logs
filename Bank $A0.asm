@@ -540,7 +540,7 @@ $A0:8692 F0 79       BEQ $79    [$870D]     ;} If [earthquake timer] = 0: go to 
 $A0:8694 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $A0:8697 D0 74       BNE $74    [$870D]     ;} If time is frozen: go to BRANCH_RETURN
 $A0:8699 AD 3E 18    LDA $183E  [$7E:183E]  ;\
-$A0:869C C9 24 00    CMP #$0024             ;} If [earthquake type] >= 24: go to BRANCH_RETURN
+$A0:869C C9 24 00    CMP #$0024             ;} If [earthquake type] >= 24h: go to BRANCH_RETURN
 $A0:869F 10 6C       BPL $6C    [$870D]     ;/
 $A0:86A1 0A          ASL A                  ;\
 $A0:86A2 0A          ASL A                  ;|

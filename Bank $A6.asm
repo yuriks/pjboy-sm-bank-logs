@@ -10984,7 +10984,7 @@ $A6:F6F4 20 39 F7    JSR $F739  [$A6:F739]  ; Load Ceres door elevator room tile
 $A6:F6F7 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $A6:F6FA D0 1B       BNE $1B    [$F717]     ;} If not before Ridley escape: go to BRANCH_RIDLEY_ESCAPE
 $A6:F6FC BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A6:F6FF C9 03 00    CMP #$0003             ;} If enemy parameter 1 = 3:
+$A6:F6FF C9 03 00    CMP #$0003             ;} If [enemy parameter 1] = 3:
 $A6:F702 D0 0E       BNE $0E    [$F712]     ;/
 $A6:F704 A0 EE F4    LDY #$F4EE             ;\
 $A6:F707 A2 42 01    LDX #$0142             ;|
@@ -10993,11 +10993,12 @@ $A6:F70D 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A6:F711 6B          RTL                    ; Return
 
 $A6:F712 A0 EE F4    LDY #$F4EE             ; Y = $F4EE
-$A6:F715 80 03       BRA $03    [$F71A]
+$A6:F715 80 03       BRA $03    [$F71A]     ; Go to BRANCH_MERGE
 
 ; BRANCH_RIDLEY_ESCAPE
 $A6:F717 A0 0E F5    LDY #$F50E             ; Y = $F50E
 
+; BRANCH_MERGE
 $A6:F71A A9 00 0E    LDA #$0E00             ;\
 $A6:F71D 9D 96 0F    STA $0F96,x[$7E:0F96]  ;} Enemy palette index = E00h (palette 7)
 $A6:F720 A2 E2 01    LDX #$01E2             ;\
@@ -11006,7 +11007,13 @@ $A6:F726 22 F6 D2 A9 JSL $A9D2F6[$A9:D2F6]  ;/
 $A6:F72A 6B          RTL
 
 ; Function pointers, indexed by [enemy parameter 1]
-$A6:F72B             dw F76B, F76B, F7BD, F770, F76B, F7A5, F7A5
+$A6:F72B             dw F76B, ; 0: Normal facing right
+                        F76B, ; 1: Normal facing left
+                        F7BD, ; 2: Exploding overlay (facing left)
+                        F770, ; 3: Ridley's room (facing right)
+                        F76B, ; 4: 
+                        F7A5, ; 5: 
+                        F7A5  ; 6: 
 }
 
 
@@ -11041,54 +11048,56 @@ $A6:F768 7C A8 0F    JMP ($0FA8,x)[$A6:F7BD]
 }
 
 
-;;; $F76B:  ;;;
+;;; $F76B: Ceres door function - earthquake during escape ;;;
 {
-$A6:F76B A0 14 00    LDY #$0014
+$A6:F76B A0 14 00    LDY #$0014             ; Y = 14h (BG1, BG2 and enemies, 1 pixel displacement, diagonal)
 $A6:F76E 80 03       BRA $03    [$F773]
 }
 
 
-;;; $F770:  ;;;
+;;; $F770: Ceres door function - earthquake during escape in Ridley's room ;;;
 {
-$A6:F770 A0 1D 00    LDY #$001D
+$A6:F770 A0 1D 00    LDY #$001D             ; Y = 1Dh (BG2 only and enemies, 1 pixel displacement, diagonal)
 }
 
 
-;;; $F773:  ;;;
+;;; $F773: Ceres door earthquake ;;;
 {
-$A6:F773 AD 3F 09    LDA $093F  [$7E:093F]
-$A6:F776 C9 02 00    CMP #$0002
-$A6:F779 90 29       BCC $29    [$F7A4]
-$A6:F77B AD 40 18    LDA $1840  [$7E:1840]
-$A6:F77E D0 24       BNE $24    [$F7A4]
-$A6:F780 AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:F783 29 FF 0F    AND #$0FFF
-$A6:F786 C9 80 00    CMP #$0080
-$A6:F789 90 0B       BCC $0B    [$F796]
+;; Parameters:
+;;     Y: Earthquake type. Must have 1 pixel displacement
+$A6:F773 AD 3F 09    LDA $093F  [$7E:093F]  ;\
+$A6:F776 C9 02 00    CMP #$0002             ;} If [Ceres status] < 2 (before escape sequence): return
+$A6:F779 90 29       BCC $29    [$F7A4]     ;/
+$A6:F77B AD 40 18    LDA $1840  [$7E:1840]  ;\
+$A6:F77E D0 24       BNE $24    [$F7A4]     ;} If [earthquake timer] != 0: return
+$A6:F780 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:F783 29 FF 0F    AND #$0FFF             ;|
+$A6:F786 C9 80 00    CMP #$0080             ;} If [random number] % 1000h >= 80h:
+$A6:F789 90 0B       BCC $0B    [$F796]     ;/
 $A6:F78B A9 02 00    LDA #$0002             ;\
-$A6:F78E 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake type = BG1 only, 1 pixel displacement, diagonal
+$A6:F78E 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 2
 $A6:F791 98          TYA                    ;\
-$A6:F792 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake timer = [Y]
+$A6:F792 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = [Y]
 $A6:F795 6B          RTL                    ; Return
 
 $A6:F796 A9 04 00    LDA #$0004             ;\
-$A6:F799 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake type = BG1 only, 2 pixel displacement, vertical
+$A6:F799 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 4
 $A6:F79C 98          TYA                    ;\
 $A6:F79D 18          CLC                    ;|
-$A6:F79E 69 06 00    ADC #$0006             ;} Earthquake timer = [Y] + 6
+$A6:F79E 69 06 00    ADC #$0006             ;} Earthquake type = [Y] + 6 (adjust from 1 pixel displacement to 3 pixel displacement)
 $A6:F7A1 8D 3E 18    STA $183E  [$7E:183E]  ;/
 
 $A6:F7A4 6B          RTL
 }
 
 
-;;; $F7A5:  ;;;
+;;; $F7A5: Ceres door function ;;;
 {
 $A6:F7A5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:F7A8 22 A6 F6 A6 JSL $A6F6A6[$A6:F6A6]
-$A6:F7AC AD 3F 09    LDA $093F  [$7E:093F]
-$A6:F7AF 4A          LSR A
-$A6:F7B0 90 0A       BCC $0A    [$F7BC]
+$A6:F7AC AD 3F 09    LDA $093F  [$7E:093F]  ;\
+$A6:F7AF 4A          LSR A                  ;} If [Ceres status] = 1 (during Ridley escape cutscene):
+$A6:F7B0 90 0A       BCC $0A    [$F7BC]     ;/
 $A6:F7B2 A9 00 0E    LDA #$0E00
 $A6:F7B5 9D 96 0F    STA $0F96,x[$7E:1016]
 $A6:F7B8 22 B3 F6 A6 JSL $A6F6B3[$A6:F6B3]
@@ -11097,12 +11106,12 @@ $A6:F7BC 6B          RTL
 }
 
 
-;;; $F7BD:  ;;;
+;;; $F7BD: Ceres door function ;;;
 {
 $A6:F7BD 22 50 F8 A6 JSL $A6F850[$A6:F850]
-$A6:F7C1 AD 3F 09    LDA $093F  [$7E:093F]
-$A6:F7C4 C9 02 00    CMP #$0002
-$A6:F7C7 90 12       BCC $12    [$F7DB]
+$A6:F7C1 AD 3F 09    LDA $093F  [$7E:093F]  ;\
+$A6:F7C4 C9 02 00    CMP #$0002             ;} If [Ceres status] < 2 (before escape sequence): return
+$A6:F7C7 90 12       BCC $12    [$F7DB]     ;/
 $A6:F7C9 A9 DC F7    LDA #$F7DC
 $A6:F7CC 9D A8 0F    STA $0FA8,x[$7E:0FA8]
 $A6:F7CF A9 30 00    LDA #$0030
