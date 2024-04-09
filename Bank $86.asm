@@ -2677,7 +2677,7 @@ $86:9023 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:9026 A9 00 FE    LDA #$FE00             ;\
 $86:9029 99 B7 1A    STA $1AB7,y[$7E:1AD5]  ;} Enemy projectile X velocity = -200h
 $86:902C A9 01 00    LDA #$0001             ;\
-$86:902F 99 DB 1A    STA $1ADB,y[$7E:1AF9]  ;} Enemy projectile $1ADB = 1
+$86:902F 99 DB 1A    STA $1ADB,y[$7E:1AF9]  ;} Enemy projectile $1ADB = 1 (never read)
 $86:9032 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:9035 38          SEC                    ;|
 $86:9036 E9 20 00    SBC #$0020             ;} Enemy projectile X position = [enemy X position] - 20h
@@ -2687,7 +2687,7 @@ $86:903F 38          SEC                    ;|
 $86:9040 E9 10 00    SBC #$0010             ;} Enemy projectile Y position = [enemy Y position] - 10h
 $86:9043 99 93 1A    STA $1A93,y[$7E:1AB1]  ;/
 $86:9046 A9 00 00    LDA #$0000             ;\
-$86:9049 99 DF 19    STA $19DF,y[$7E:19FD]  ;} Enemy projectile $19DF = 0
+$86:9049 99 DF 19    STA $19DF,y[$7E:19FD]  ;} Enemy projectile $19DF = 0 (never read)
 $86:904C 99 27 1A    STA $1A27,y[$7E:1A45]  ; Enemy projectile X subposition = 0
 $86:904F 99 6F 1A    STA $1A6F,y[$7E:1A8D]  ; Enemy projectile Y subposition = 0
 $86:9052 A9 00 0A    LDA #$0A00             ;\
@@ -2791,7 +2791,7 @@ $86:90E9 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ; >_<;
 $86:90EC 99 FF 1A    STA $1AFF,y[$7E:1B21]  ; Enemy projectile X acceleration = 0
 $86:90EF 99 23 1B    STA $1B23,y[$7E:1B45]  ; >_<;
 $86:90F2 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile X subposition = 0
-$86:90F5 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F = 0
+$86:90F5 99 6F 1A    STA $1A6F,y[$7E:1A91]
 $86:90F8 A9 FB FF    LDA #$FFFB             ;\
 $86:90FB 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;|
 $86:90FE A9 00 88    LDA #$8800             ;} Enemy projectile Y velocity = -4.8800h
@@ -2950,9 +2950,9 @@ $86:9290 A9 BB 00    LDA #$00BB             ;\
 $86:9293 99 93 1A    STA $1A93,y[$7E:1AA3]  ;} Enemy projectile Y position = BBh
 $86:9296 A9 00 00    LDA #$0000             ;\
 $86:9299 99 6F 1A    STA $1A6F,y[$7E:1A7F]  ;} Enemy projectile Y subposition = 0
-$86:929C 99 27 1A    STA $1A27,y[$7E:1A37]  ; Enemy projectile $1A27 = 0
+$86:929C 99 27 1A    STA $1A27,y[$7E:1A37]
 $86:929F A9 00 00    LDA #$0000             ; >_<;
-$86:92A2 99 B7 1A    STA $1AB7,y[$7E:1AC7]  ; Enemy projectile $1AB7 = 0
+$86:92A2 99 B7 1A    STA $1AB7,y[$7E:1AC7]
 $86:92A5 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:92A8 29 3F 00    AND #$003F             ;|
 $86:92AB 18          CLC                    ;} Enemy projectile Y velocity = 40h + [random number] % 40h
@@ -3081,7 +3081,7 @@ $86:934C 60          RTS
 {
 $86:934D A9 00 00    LDA #$0000             ;\
 $86:9350 99 FF 1A    STA $1AFF,y            ;} Enemy projectile movement delay timer = 0
-$86:9353 99 23 1B    STA $1B23,y            ; Enemy projectile $1B23 = 0
+$86:9353 99 23 1B    STA $1B23,y
 $86:9356 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $86:9359 18          CLC                    ;|
 $86:935A 69 E3 FF    ADC #$FFE3             ;} Enemy projectile X position = [enemy 0 X position] - 1Dh
@@ -3264,9 +3264,9 @@ $86:948B A5 14       LDA $14    [$7E:0014]  ;\
 $86:948D 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;} Enemy projectile Y position = [$14]
 $86:9490 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:9493 9D FF 1A    STA $1AFF,x[$7E:1B1F]  ;} Enemy projectile remaining afterburn enemy projectiles = [enemy projectile initialisation parameter 0]
-$86:9496 9E 23 1B    STZ $1B23,x[$7E:1B43]  ; Enemy projectile $1B23 = 0
-$86:9499 9E B7 1A    STZ $1AB7,x[$7E:1AD7]  ; Enemy projectile $1AB7 = 0
-$86:949C 9E DB 1A    STZ $1ADB,x[$7E:1AFB]  ; Enemy projectile $1ADB = 0
+$86:9496 9E 23 1B    STZ $1B23,x[$7E:1B43]
+$86:9499 9E B7 1A    STZ $1AB7,x[$7E:1AD7]
+$86:949C 9E DB 1A    STZ $1ADB,x[$7E:1AFB]
 $86:949F 60          RTS
 }
 
@@ -3582,39 +3582,42 @@ $86:96CE             dx 94B4,9549,9606,06,06,5003,0000,84FC ; Unused. Proto vert
 {
 ;;; $96DC: Initialisation AI - enemy projectile $9734/$9742 (Ceres falling debris) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: X position
 $86:96DC A9 00 00    LDA #$0000
 $86:96DF 99 FF 1A    STA $1AFF,y[$7E:1B21]
 $86:96E2 99 23 1B    STA $1B23,y[$7E:1B45]
 $86:96E5 99 B7 1A    STA $1AB7,y[$7E:1AD9]
 $86:96E8 A9 00 0E    LDA #$0E00             ;\
 $86:96EB 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 7
-$86:96EE AD 93 19    LDA $1993  [$7E:1993]
-$86:96F1 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:96F4 A9 2A 00    LDA #$002A
-$86:96F7 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:96FA A9 10 00    LDA #$0010
-$86:96FD 99 DB 1A    STA $1ADB,y[$7E:1AFD]
+$86:96EE AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:96F1 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = [enemy projectile initialisation parameter 0]
+$86:96F4 A9 2A 00    LDA #$002A             ;\
+$86:96F7 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = 2Ah
+$86:96FA A9 10 00    LDA #$0010             ;\
+$86:96FD 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = 10h
 $86:9700 60          RTS
 }
 
 
 ;;; $9701: Pre-instruction - enemy projectile $9734/$9742 (Ceres falling debris) ;;;
 {
-$86:9701 A9 10 00    LDA #$0010
-$86:9704 18          CLC
-$86:9705 7D DB 1A    ADC $1ADB,x[$7E:1AFD]
-$86:9708 9D DB 1A    STA $1ADB,x[$7E:1AFD]
+$86:9701 A9 10 00    LDA #$0010             ;\
+$86:9704 18          CLC                    ;|
+$86:9705 7D DB 1A    ADC $1ADB,x[$7E:1AFD]  ;} Enemy projectile Y velocity += 10h
+$86:9708 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
 $86:970B 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:970E B0 01       BCS $01    [$9711]
-$86:9710 60          RTS
+$86:970E B0 01       BCS $01    [$9711]     ; If no collision:
+$86:9710 60          RTS                    ; Return
 
-$86:9711 9E 97 19    STZ $1997,x[$7E:19B9]
-$86:9714 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:9717 85 12       STA $12    [$7E:0012]
-$86:9719 BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:971C 18          CLC
-$86:971D 69 00 00    ADC #$0000
-$86:9720 85 14       STA $14    [$7E:0014]
+$86:9711 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
+$86:9714 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
+$86:9717 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:9719 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
+$86:971C 18          CLC                    ;|
+$86:971D 69 00 00    ADC #$0000             ;} $14 = [enemy projectile Y position]
+$86:9720 85 14       STA $14    [$7E:0014]  ;/
 $86:9722 A9 09 00    LDA #$0009             ; A = 9
 $86:9725 A0 09 E5    LDY #$E509             ;\
 $86:9728 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
@@ -3772,11 +3775,22 @@ $86:9823 60          RTS
 
 ;;; $9824: Initialisation AI - enemy projectile $9C29 (Phantoon destroyable flames) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993:
+;;         0000: Casual flame
+;;         020i: Enraged flame
+;;             i: Direction index. 0..7 are clockwise with initial angle 10h + i * 10h, 8..Fh are anti-clockwise with initial angle F0h - (i - 8) * 10h
+;;         04dx: Flame rain
+;;             x: X position index. X position = 30h + x * 14h
+;;             d: Fall delay. Fall timer = d * 8
+;;         060v: Flame spiral
+;;             i: Direction index. Initial angle = i * 20h
 $86:9824 08          PHP
 $86:9825 C2 30       REP #$30
 $86:9827 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:982A 29 00 FF    AND #$FF00             ;|
-$86:982D EB          XBA                    ;} Go to [$9832 + ([enemy initialisation parameter] >> 8)]
+$86:982D EB          XBA                    ;} Go to [$9832 + [enemy initialisation parameter high]]
 $86:982E AA          TAX                    ;|
 $86:982F 7C 32 98    JMP ($9832,x)[$86:983A];/
 
@@ -3815,7 +3829,7 @@ $86:9870 99 27 1A    STA $1A27,y
 $86:9873 99 6F 1A    STA $1A6F,y
 $86:9876 99 DB 1A    STA $1ADB,y            ; Enemy projectile radius = 0
 $86:9879 AD 93 19    LDA $1993  [$7E:1993]  ;\
-$86:987C 29 FF 00    AND #$00FF             ;} X = [enemy projectile initialisation parameter]
+$86:987C 29 FF 00    AND #$00FF             ;} X = [enemy projectile initialisation parameter low]
 $86:987F AA          TAX                    ;/
 $86:9880 E0 08 00    CPX #$0008             ;\
 $86:9883 10 08       BPL $08    [$988D]     ;} If [X] < 8:
@@ -3827,7 +3841,7 @@ $86:988D A9 FE FF    LDA #$FFFE             ;\ Else ([X] >= 8):
 $86:9890 99 B7 1A    STA $1AB7,y            ;} Enemy projectile angle delta = -2
 
 $86:9893 BD B4 98    LDA $98B4,x            ;\
-$86:9896 29 FF 00    AND #$00FF             ;} Enemy projectile angle = 10h + 10h * [X]
+$86:9896 29 FF 00    AND #$00FF             ;} Enemy projectile angle = [$98B4 + [X]]
 $86:9899 99 FF 1A    STA $1AFF,y            ;/
 $86:989C AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $86:989F 99 4B 1A    STA $1A4B,y            ;} Enemy projectile X position = [Phantoon body X position]
@@ -3840,7 +3854,8 @@ $86:98AF 99 03 1A    STA $1A03,y            ;} Enemy projectile pre-instruction 
 $86:98B2 28          PLP
 $86:98B3 60          RTS
 
-$86:98B4             db 10, 20, 30, 40, 50, 60, 70, 80, F0, E0, D0, C0, B0, A0, 90, 80
+$86:98B4             db 10, 20, 30, 40, 50, 60, 70, 80,
+                        F0, E0, D0, C0, B0, A0, 90, 80
 }
 
 
@@ -3852,11 +3867,11 @@ $86:98CA 99 6F 1A    STA $1A6F,y[$7E:1A8D]  ; Enemy projectile Y subposition = 0
 $86:98CD 99 DB 1A    STA $1ADB,y[$7E:1AF9]  ; Enemy projectile Y velocity = 0
 $86:98D0 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:98D3 48          PHA                    ;|
-$86:98D4 29 0F 00    AND #$000F             ;} X = [enemy projectile initialisation parameter] & Fh
+$86:98D4 29 0F 00    AND #$000F             ;} X = [enemy projectile initialisation parameter low] & Fh
 $86:98D7 AA          TAX                    ;|
 $86:98D8 68          PLA                    ;/
 $86:98D9 29 F0 00    AND #$00F0             ;\
-$86:98DC 4A          LSR A                  ;} Enemy projectile fall timer = ([enemy projectile initialisation parameter] >> 4) * 8
+$86:98DC 4A          LSR A                  ;} Enemy projectile fall timer = ([enemy projectile initialisation parameter low] >> 4) * 8
 $86:98DD 99 B7 1A    STA $1AB7,y[$7E:1AD5]  ;/
 $86:98E0 BD F7 98    LDA $98F7,x[$86:98F7]  ;\
 $86:98E3 29 FF 00    AND #$00FF             ;} Enemy projectile X position = 30h + 14h * [X]
@@ -3883,7 +3898,7 @@ $86:990F 99 B7 1A    STA $1AB7,y[$7E:1AD5]  ;} Enemy projectile X velocity = 80h
 $86:9912 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:9915 29 FF 00    AND #$00FF             ;|
 $86:9918 AA          TAX                    ;|
-$86:9919 BD 79 99    LDA $9979,x[$86:9980]  ;} Enemy projectile angle = 20h * [enemy projectile initialisation parameter]
+$86:9919 BD 79 99    LDA $9979,x[$86:9980]  ;} Enemy projectile angle = 20h * [enemy projectile initialisation parameter low]
 $86:991C 29 FF 00    AND #$00FF             ;|
 $86:991F 99 FF 1A    STA $1AFF,y[$7E:1B1D]  ;/
 $86:9922 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
@@ -3912,7 +3927,7 @@ $86:9949 99 DB 1A    STA $1ADB,y[$7E:1AFD]
 $86:994C 5A          PHY
 $86:994D AE 93 19    LDX $1993  [$7E:1993]  ;\
 $86:9950 BD 79 99    LDA $9979,x[$86:9979]  ;|
-$86:9953 29 FF 00    AND #$00FF             ;} Enemy projectile angle = 20h * [enemy projectile initialisation parameter]
+$86:9953 29 FF 00    AND #$00FF             ;} Enemy projectile angle = 20h * [enemy projectile initialisation parameter low]
 $86:9956 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;|
 $86:9959 A8          TAY                    ;\
 $86:995A A9 30 00    LDA #$0030             ;} Calculate X/Y components of radius 30h, angle [enemy projectile angle]
