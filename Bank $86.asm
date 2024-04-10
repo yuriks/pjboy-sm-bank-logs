@@ -3660,7 +3660,7 @@ $86:9756             dx 0001,8AC6,
 
 ;;; $975C..9C44: Phantoon flames ;;;
 {
-;;; $975C: Instruction list - enemy projectile $9C29 (Phantoon destroyable flames) ;;;
+;;; $975C: Instruction list - Phantoon destroyable flame - idle ;;;
 {
 $86:975C             dx 0005,819C,
                         0005,81A8,
@@ -3916,7 +3916,9 @@ $86:9939 60          RTS
 
 ;;; $993A: Initialisation AI - enemy projectile $9C37 (Phantoon starting flames) ;;;
 {
-; Initialisation parameter is flame index
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Direction index. Initial angle = i * 20h
 $86:993A 08          PHP
 $86:993B C2 30       REP #$30
 $86:993D A9 00 00    LDA #$0000
@@ -3928,7 +3930,7 @@ $86:994C 5A          PHY
 $86:994D AE 93 19    LDX $1993  [$7E:1993]  ;\
 $86:9950 BD 79 99    LDA $9979,x[$86:9979]  ;|
 $86:9953 29 FF 00    AND #$00FF             ;} Enemy projectile angle = 20h * [enemy projectile initialisation parameter low]
-$86:9956 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;|
+$86:9956 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;/
 $86:9959 A8          TAY                    ;\
 $86:995A A9 30 00    LDA #$0030             ;} Calculate X/Y components of radius 30h, angle [enemy projectile angle]
 $86:995D 20 A2 9B    JSR $9BA2  [$86:9BA2]  ;/
@@ -4394,6 +4396,9 @@ $86:9C89             dx 8161,9DA5,  ; Pre-instruction = $9DA5 (use palette 0)
 
 ;;; $9CA3: Initialisation AI - enemy projectile $9C45 (rocks Kraid spits at you) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: X velocity
 $86:9CA3 DA          PHX
 $86:9CA4 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:9CA7 BD 7A 0F    LDA $0F7A,x            ;\
@@ -4420,6 +4425,9 @@ $86:9CD7 60          RTS
 
 ;;; $9CD8: Initialisation AI - enemy projectile $9C53 (rocks that fall when Kraid's ceiling crumbles) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: X position
 $86:9CD8 DA          PHX
 $86:9CD9 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index] (>_<;)
 $86:9CDC AD 93 19    LDA $1993  [$7E:1993]  ;\
@@ -4445,6 +4453,9 @@ $86:9D0B 60          RTS
 
 ;;; $9D0C: Initialisation AI - enemy projectile $9C61/$9C6F (rocks when Kraid rises) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: X velocity
 $86:9D0C DA          PHX
 $86:9D0D AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:9D10 29 3F 00    AND #$003F             ;} A = [random number] % 40h
@@ -4585,22 +4596,22 @@ $86:9DE6             dx 7FFF,842E,
 ;;; $9DEC: Initialisation AI - enemy projectile $9DB0 (mini Kraid spit) ;;;
 {
 $86:9DEC DA          PHX
-$86:9DED AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:9DF0 BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$86:9DF3 18          CLC
-$86:9DF4 7F 04 78 7E ADC $7E7804,x[$7E:78C4]
-$86:9DF8 99 4B 1A    STA $1A4B,y[$7E:1A65]
-$86:9DFB BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$86:9DFE 38          SEC
-$86:9DFF E9 10 00    SBC #$0010
-$86:9E02 99 93 1A    STA $1A93,y[$7E:1AAD]
-$86:9E05 A9 00 00    LDA #$0000
-$86:9E08 99 6F 1A    STA $1A6F,y[$7E:1A89]
-$86:9E0B 99 27 1A    STA $1A27,y[$7E:1A41]
-$86:9E0E BF 00 78 7E LDA $7E7800,x[$7E:78C0]
-$86:9E12 99 B7 1A    STA $1AB7,y[$7E:1AD1]
-$86:9E15 BF 02 78 7E LDA $7E7802,x[$7E:78C2]
-$86:9E19 99 DB 1A    STA $1ADB,y[$7E:1AF5]
+$86:9DED AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:9DF0 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
+$86:9DF3 18          CLC                    ;|
+$86:9DF4 7F 04 78 7E ADC $7E7804,x[$7E:78C4];} Enemy projectile X position = [enemy X position] + [enemy $7E:7804]
+$86:9DF8 99 4B 1A    STA $1A4B,y[$7E:1A65]  ;/
+$86:9DFB BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$86:9DFE 38          SEC                    ;|
+$86:9DFF E9 10 00    SBC #$0010             ;} Enemy projectile Y position = [enemy Y position] - 10h
+$86:9E02 99 93 1A    STA $1A93,y[$7E:1AAD]  ;/
+$86:9E05 A9 00 00    LDA #$0000             ;\
+$86:9E08 99 6F 1A    STA $1A6F,y[$7E:1A89]  ;} Enemy projectile Y subposition = 0
+$86:9E0B 99 27 1A    STA $1A27,y[$7E:1A41]  ; Enemy projectile X subposition = 0
+$86:9E0E BF 00 78 7E LDA $7E7800,x[$7E:78C0];\
+$86:9E12 99 B7 1A    STA $1AB7,y[$7E:1AD1]  ;} Enemy projectile X velocity = [enemy $7E:7800]
+$86:9E15 BF 02 78 7E LDA $7E7802,x[$7E:78C2];\
+$86:9E19 99 DB 1A    STA $1ADB,y[$7E:1AF5]  ;} Enemy projectile Y velocity = [enemy $7E:7802]
 $86:9E1C FA          PLX
 $86:9E1D 60          RTS
 }
@@ -4611,22 +4622,23 @@ $86:9E1D 60          RTS
 $86:9E1E 08          PHP
 $86:9E1F C2 20       REP #$20
 $86:9E21 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:9E24 B0 1B       BCS $1B    [$9E41]
+$86:9E24 B0 1B       BCS $1B    [$9E41]     ; If collision: go to BRANCH_DELETE
 $86:9E26 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:9E29 B0 16       BCS $16    [$9E41]
-$86:9E2B BD DB 1A    LDA $1ADB,x[$7E:1AF5]
-$86:9E2E 18          CLC
-$86:9E2F 69 40 00    ADC #$0040
-$86:9E32 30 08       BMI $08    [$9E3C]
-$86:9E34 C9 00 04    CMP #$0400
-$86:9E37 30 03       BMI $03    [$9E3C]
-$86:9E39 A9 00 04    LDA #$0400
-
-$86:9E3C 9D DB 1A    STA $1ADB,x[$7E:1AF5]
+$86:9E29 B0 16       BCS $16    [$9E41]     ; If collision: go to BRANCH_DELETE
+$86:9E2B BD DB 1A    LDA $1ADB,x[$7E:1AF5]  ;\
+$86:9E2E 18          CLC                    ;|
+$86:9E2F 69 40 00    ADC #$0040             ;|
+$86:9E32 30 08       BMI $08    [$9E3C]     ;|
+$86:9E34 C9 00 04    CMP #$0400             ;} Enemy projectile Y velocity = min(400h, [enemy projectile Y velocity] + 40h)
+$86:9E37 30 03       BMI $03    [$9E3C]     ;|
+$86:9E39 A9 00 04    LDA #$0400             ;|
+                                            ;|
+$86:9E3C 9D DB 1A    STA $1ADB,x[$7E:1AF5]  ;/
 $86:9E3F 28          PLP
-$86:9E40 60          RTS
+$86:9E40 60          RTS                    ; Return
 
-$86:9E41 9E 97 19    STZ $1997,x[$7E:19B1]
+; BRANCH_DELETE
+$86:9E41 9E 97 19    STZ $1997,x[$7E:19B1]  ; Enemy projectile ID = 0
 $86:9E44 28          PLP
 $86:9E45 60          RTS
 }
@@ -4634,35 +4646,35 @@ $86:9E45 60          RTS
 
 ;;; $9E46: Initialisation AI - enemy projectile $9DBE (mini Kraid spikes - left) ;;;
 {
-$86:9E46 A9 00 FE    LDA #$FE00
-$86:9E49 80 03       BRA $03    [$9E4E]
+$86:9E46 A9 00 FE    LDA #$FE00             ; Enemy projectile X velocity = -200h
+$86:9E49 80 03       BRA $03    [$9E4E]     ; Go to mini Kraid spikes common initialisation
 }
 
 
 ;;; $9E4B: Initialisation AI - enemy projectile $9DCC (mini Kraid spikes - right) ;;;
 {
-$86:9E4B A9 00 02    LDA #$0200
+$86:9E4B A9 00 02    LDA #$0200             ; Enemy projectile X velocity = 200h
 }
 
 
-;;; $9E4E:  ;;;
+;;; $9E4E: Mini Kraid spikes common initialisation ;;;
 {
 $86:9E4E 99 B7 1A    STA $1AB7,y[$7E:1AD5]
-$86:9E51 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:9E54 BF 0C 78 7E LDA $7E780C,x[$7E:78CC]
-$86:9E58 AA          TAX
-$86:9E59 BD 7D 9E    LDA $9E7D,x[$86:9E81]
-$86:9E5C 85 12       STA $12    [$7E:0012]
-$86:9E5E AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:9E61 BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$86:9E64 99 4B 1A    STA $1A4B,y[$7E:1A69]
-$86:9E67 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$86:9E6A 18          CLC
-$86:9E6B 65 12       ADC $12    [$7E:0012]
-$86:9E6D 99 93 1A    STA $1A93,y[$7E:1AB1]
+$86:9E51 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$86:9E54 BF 0C 78 7E LDA $7E780C,x[$7E:78CC];|
+$86:9E58 AA          TAX                    ;} $12 = [$9E7D + [enemy $7E:780C]]
+$86:9E59 BD 7D 9E    LDA $9E7D,x[$86:9E81]  ;|
+$86:9E5C 85 12       STA $12    [$7E:0012]  ;/
+$86:9E5E AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:9E61 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
+$86:9E64 99 4B 1A    STA $1A4B,y[$7E:1A69]  ;} Enemy projectile X position = [enemy X position]
+$86:9E67 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$86:9E6A 18          CLC                    ;|
+$86:9E6B 65 12       ADC $12    [$7E:0012]  ;} Enemy projectile Y position = [enemy Y position] + [$12]
+$86:9E6D 99 93 1A    STA $1A93,y[$7E:1AB1]  ;/
 $86:9E70 A9 00 00    LDA #$0000
 $86:9E73 99 6F 1A    STA $1A6F,y[$7E:1A8D]
-$86:9E76 99 27 1A    STA $1A27,y[$7E:1A45]
+$86:9E76 99 27 1A    STA $1A27,y[$7E:1A45]  ; Enemy projectile X subposition = 0
 $86:9E79 99 DB 1A    STA $1ADB,y[$7E:1AF9]
 $86:9E7C 60          RTS
 
@@ -4675,8 +4687,8 @@ $86:9E7D             dw FFFE, 000C, 0018
 $86:9E83 08          PHP
 $86:9E84 C2 20       REP #$20
 $86:9E86 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:9E89 90 03       BCC $03    [$9E8E]
-$86:9E8B 9E 97 19    STZ $1997,x[$7E:19A9]
+$86:9E89 90 03       BCC $03    [$9E8E]     ; If collision:
+$86:9E8B 9E 97 19    STZ $1997,x[$7E:19A9]  ; Enemy projectile ID = 0
 
 $86:9E8E 28          PLP
 $86:9E8F 60          RTS
@@ -4714,35 +4726,36 @@ $86:9E9E             dx 0003,8404,
 ;;; $9EB2: Initialisation AI - enemy projectile $9E90 (walking lava seahorse fireball) ;;;
 {
 $86:9EB2 DA          PHX
-$86:9EB3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:9EB6 BD 7E 0F    LDA $0F7E,x[$7E:10BE]
-$86:9EB9 38          SEC
-$86:9EBA E9 0C 00    SBC #$000C
-$86:9EBD 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:9EC0 A9 00 FC    LDA #$FC00
-$86:9EC3 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:9EC6 BD 7A 0F    LDA $0F7A,x[$7E:10BA]
-$86:9EC9 38          SEC
-$86:9ECA E9 10 00    SBC #$0010
-$86:9ECD 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:9ED0 BD AE 0F    LDA $0FAE,x[$7E:10EE]
-$86:9ED3 30 10       BMI $10    [$9EE5]
-$86:9ED5 A9 00 04    LDA #$0400
-$86:9ED8 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:9EDB BD 7A 0F    LDA $0F7A,x[$7E:107A]
-$86:9EDE 18          CLC
-$86:9EDF 69 10 00    ADC #$0010
-$86:9EE2 99 4B 1A    STA $1A4B,y[$7E:1A6D]
+$86:9EB3 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:9EB6 BD 7E 0F    LDA $0F7E,x[$7E:10BE]  ;\
+$86:9EB9 38          SEC                    ;|
+$86:9EBA E9 0C 00    SBC #$000C             ;} Enemy projectile Y position = [enemy Y position] - Ch
+$86:9EBD 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
+$86:9EC0 A9 00 FC    LDA #$FC00             ;\
+$86:9EC3 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = -400h
+$86:9EC6 BD 7A 0F    LDA $0F7A,x[$7E:10BA]  ;\
+$86:9EC9 38          SEC                    ;|
+$86:9ECA E9 10 00    SBC #$0010             ;} Enemy projectile X position = [enemy X position] - 10h
+$86:9ECD 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:9ED0 BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
+$86:9ED3 30 10       BMI $10    [$9EE5]     ;} If [enemy $0FAE] >= 0:
+$86:9ED5 A9 00 04    LDA #$0400             ;\
+$86:9ED8 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = 400h
+$86:9EDB BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;\
+$86:9EDE 18          CLC                    ;|
+$86:9EDF 69 10 00    ADC #$0010             ;} Enemy projectile X position = [enemy X position] + 10h
+$86:9EE2 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
 
-$86:9EE5 AE 93 19    LDX $1993  [$7E:1993]
-$86:9EE8 BD F9 9E    LDA $9EF9,x[$86:9EFB]
-$86:9EEB 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:9EEE A9 00 00    LDA #$0000
-$86:9EF1 99 6F 1A    STA $1A6F,y[$7E:1A91]
-$86:9EF4 99 27 1A    STA $1A27,y[$7E:1A49]
+$86:9EE5 AE 93 19    LDX $1993  [$7E:1993]  ;\
+$86:9EE8 BD F9 9E    LDA $9EF9,x[$86:9EFB]  ;} Enemy projectile Y velocity = [$9EF9 + [enemy projectile initialisation parameter 0]]
+$86:9EEB 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;/
+$86:9EEE A9 00 00    LDA #$0000             ;\
+$86:9EF1 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;} Enemy projectile Y subposition = 0
+$86:9EF4 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile X subposition = 0
 $86:9EF7 FA          PLX
 $86:9EF8 60          RTS
 
+; Y velocities
 $86:9EF9             dw FF00, 0000, 0100
 }
 
@@ -4751,33 +4764,34 @@ $86:9EF9             dw FF00, 0000, 0100
 {
 $86:9EFF C2 30       REP #$30
 $86:9F01 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:9F04 B0 34       BCS $34    [$9F3A]
+$86:9F04 B0 34       BCS $34    [$9F3A]     ; If collision: go to BRANCH_DELETE
 $86:9F06 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:9F09 B0 2F       BCS $2F    [$9F3A]
-$86:9F0B BD B7 1A    LDA $1AB7,x[$7E:1AD9]
-$86:9F0E 10 14       BPL $14    [$9F24]
-$86:9F10 BD B7 1A    LDA $1AB7,x[$7E:1AD9]
-$86:9F13 18          CLC
-$86:9F14 69 40 00    ADC #$0040
-$86:9F17 9D B7 1A    STA $1AB7,x[$7E:1AD9]
-$86:9F1A C9 00 FE    CMP #$FE00
-$86:9F1D 30 17       BMI $17    [$9F36]
-$86:9F1F A9 00 FE    LDA #$FE00
+$86:9F09 B0 2F       BCS $2F    [$9F3A]     ; If collision: go to BRANCH_DELETE
+$86:9F0B BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
+$86:9F0E 10 14       BPL $14    [$9F24]     ;} If [enemy projectile X velocity] < 0:
+$86:9F10 BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
+$86:9F13 18          CLC                    ;|
+$86:9F14 69 40 00    ADC #$0040             ;|
+$86:9F17 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile X velocity = min(-200h, [enemy projectile X velocity] + 40h)
+$86:9F1A C9 00 FE    CMP #$FE00             ;|
+$86:9F1D 30 17       BMI $17    [$9F36]     ;|
+$86:9F1F A9 00 FE    LDA #$FE00             ;/
 $86:9F22 80 12       BRA $12    [$9F36]
 
-$86:9F24 BD B7 1A    LDA $1AB7,x[$7E:1AD9]
-$86:9F27 38          SEC
-$86:9F28 E9 40 00    SBC #$0040
-$86:9F2B 9D B7 1A    STA $1AB7,x[$7E:1AD9]
-$86:9F2E C9 00 02    CMP #$0200
-$86:9F31 10 03       BPL $03    [$9F36]
-$86:9F33 A9 00 02    LDA #$0200
+$86:9F24 BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\ Else ([enemy projectile X velocity] >= 0):
+$86:9F27 38          SEC                    ;|
+$86:9F28 E9 40 00    SBC #$0040             ;|
+$86:9F2B 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile X velocity = max(200h, [enemy projectile X velocity] - 40h)
+$86:9F2E C9 00 02    CMP #$0200             ;|
+$86:9F31 10 03       BPL $03    [$9F36]     ;|
+$86:9F33 A9 00 02    LDA #$0200             ;/
 
 $86:9F36 9D B7 1A    STA $1AB7,x[$7E:1AD9]
-$86:9F39 60          RTS
+$86:9F39 60          RTS                    ; Return
 
-$86:9F3A A9 00 00    LDA #$0000
-$86:9F3D 9D 97 19    STA $1997,x[$7E:19B7]
+; BRANCH_DELETE
+$86:9F3A A9 00 00    LDA #$0000             ;\
+$86:9F3D 9D 97 19    STA $1997,x[$7E:19B7]  ;} Enemy projectile ID = 0
 $86:9F40 60          RTS
 }
 }
@@ -4910,7 +4924,7 @@ $86:A05A 60          RTS
 }
 
 
-;;; $A05B: RTS. Pre-instruction - enemy projectile $A189 (pirate claw) ;;;
+;;; $A05B: RTS ;;;
 {
 $86:A05B 60          RTS
 }
@@ -5085,8 +5099,8 @@ $86:A17A 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:A17B             dx A009,A05C,9F41,10,04,100A,0000,84FC ; Pirate / Mother Brain laser
-$86:A189             dx A098,A05B,0000,08,08,1014,0000,84FC ; Pirate claw
+$86:A17B             dx A009,A05C,9F41,10,04,100A,0000,84FC ; Pirate / Mother Brain laser. Initial pre-instruction and instruction list ignored
+$86:A189             dx A098,A05B,0000,08,08,1014,0000,84FC ; Pirate claw. Initial pre-instruction and instruction list ignored
 }
 }
 

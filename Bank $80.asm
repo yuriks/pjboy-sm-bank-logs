@@ -4580,7 +4580,7 @@ $80:9E46 AD 48 09    LDA $0948  [$7E:0948]  ;\
 $80:9E49 C9 60       CMP #$60               ;} If [timer status counter] >= 60h:
 $80:9E4B 90 06       BCC $06    [$9E53]     ;/
 $80:9E4D 9C 48 09    STZ $0948  [$7E:0948]  ; Timer X position = 0
-$80:9E50 EE 43 09    INC $0943  [$7E:0943]  ; Timer status = timer running, movement delayed
+$80:9E50 EE 43 09    INC $0943  [$7E:0943]  ; Timer status = timer running, moving into place
 
 $80:9E53 C2 20       REP #$20
 $80:9E55 4C A9 9E    JMP $9EA9  [$80:9EA9]  ; Go to decrement timer

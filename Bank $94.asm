@@ -2157,7 +2157,7 @@ $94:90CA 60          RTS
 
 $94:90CB AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:90CE BF 01 64 7F LDA $7F6401,x[$7F:6475];|
-$94:90D2 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
+$94:90D2 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDENT
 $94:90D5 EB          XBA                    ;|
 $94:90D6 30 0F       BMI $0F    [$90E7]     ;/
 $94:90D8 0A          ASL A                  ;\
@@ -2169,7 +2169,7 @@ $94:90E3 4C 49 8F    JMP $8F49  [$94:8F49]  ; Go to Samus block collision reacti
 
 $94:90E6 60          RTS
 
-; BRANCH_AREA_DEPENDANT
+; BRANCH_AREA_DEPENDENT
 $94:90E7 29 7F 00    AND #$007F             ;\
 $94:90EA 0A          ASL A                  ;|
 $94:90EB A8          TAY                    ;|
@@ -2198,7 +2198,7 @@ $94:9101 60          RTS
 
 $94:9102 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9105 BF 01 64 7F LDA $7F6401,x[$7F:78C6];|
-$94:9109 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
+$94:9109 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDENT
 $94:910C EB          XBA                    ;|
 $94:910D 30 0F       BMI $0F    [$911E]     ;/
 $94:910F 0A          ASL A                  ;\
@@ -2210,7 +2210,7 @@ $94:911A 4C 82 8F    JMP $8F82  [$94:8F82]  ; Go to Samus block collision reacti
 
 $94:911D 60          RTS
 
-; BRANCH_AREA_DEPENDANT
+; BRANCH_AREA_DEPENDENT
 $94:911E 29 7F 00    AND #$007F             ;\
 $94:9121 0A          ASL A                  ;|
 $94:9122 A8          TAY                    ;|
@@ -2237,7 +2237,7 @@ $94:9139             dw D044, D048, D04C, D050, D054, D058, D05C, D060, B62F, B6
                         B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F,
                         B62F, B62F, B62F, B62F, C83E, EED3, B6FF, B6D7, B6DB, B6E3, B6E7, B6EF, B6F3, B76B, B62F, B62F
 
-; Area dependant
+; Area dependent
 $94:91D9             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; Crateria
 $94:91F9             dw B633, B633, D030, D034, D03C, D040, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; Brinstar
 $94:9219             dw B62F, B62F, B62F, D6DA, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; Norfair
@@ -3432,6 +3432,11 @@ $94:9955 60          RTS
 ; This routine is weird, block collision should have already spawned the scroll PLM trigger PLM,
 ; and the check here means the PLM is only spawned here if Samus' bottom boundary is in a different block than her centre,
 ; which seems a bit random. As far as I can tell, this reaction can just be replaced with the default $98E3
+
+; Note that this routine doesn't set the Samus X speed table pointer,
+; so spawning Samus in a scroll PLM will cause calculations to be done with a garbage pointer,
+; which can cause Samus to get flung horizontally (notably in quickmet, this never happens in vanilla)
+
 $94:9956 AD 73 1E    LDA $1E73  [$7E:1E73]  ;\
 $94:9959 C9 01 00    CMP #$0001             ;} If [inside block reaction Samus point] = centre:
 $94:995C D0 07       BNE $07    [$9965]     ;/
@@ -3454,7 +3459,7 @@ $94:9966             dw 98E3, 98E3, 98E3, 98E3, 98E3, 98E3, 98E3, 98E3, 98EA, 99
 
 ;;; $9A06: Block inside reaction - special air - PLM table ;;;
 {
-; Region dependant
+; Region dependent
 $94:9A06             dw B70F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F  ; 0: Crateria
 $94:9A26             dw B6CB, B6CF, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F  ; 1: Brinstar
 $94:9A46             dw B653, B657, B65B, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F  ; 2: Norfair
@@ -3885,7 +3890,7 @@ $94:9D70 60          RTS                    ;} Return carry set
 {
 $94:9D71 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9D74 BF 01 64 7F LDA $7F6401,x[$7F:6668];|
-$94:9D78 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
+$94:9D78 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDENT
 $94:9D7B EB          XBA                    ;|
 $94:9D7C 30 0D       BMI $0D    [$9D8B]     ;/
 $94:9D7E 0A          ASL A                  ;\
@@ -3896,7 +3901,7 @@ $94:9D87 C2 40       REP #$40
 $94:9D89 38          SEC
 $94:9D8A 60          RTS                    ; Return
 
-; BRANCH_AREA_DEPENDANT
+; BRANCH_AREA_DEPENDENT
 $94:9D8B 29 7F 00    AND #$007F             ;\
 $94:9D8E 0A          ASL A                  ;|
 $94:9D8F A8          TAY                    ;|
@@ -3918,7 +3923,7 @@ $94:9DA3 60          RTS
 ; Region independent
 $94:9DA4             dw CFFC, D000, D004, D008, CFFC, D000, D004, D008, B62F, B62F, B62F, B62F, B62F, B62F, D024, D024
 
-; Region dependant
+; Region dependent
 $94:9DC4             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 0: Crateria
 $94:9DD4             dw B62F, B62F, D024, D024, D024, D024, B62F, B62F ; 1: Brinstar
 $94:9DE4             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 2: Norfair
@@ -3969,7 +3974,7 @@ $94:9E72 60          RTS
 ;;     Overflow: Clear. Cancel grapple beam
 $94:9E73 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
 $94:9E76 BF 01 64 7F LDA $7F6401,x[$7F:8B62];|
-$94:9E7A 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDANT
+$94:9E7A 29 00 FF    AND #$FF00             ;} If [block BTS] & 80h != 0: go to BRANCH_AREA_DEPENDENT
 $94:9E7D EB          XBA                    ;|
 $94:9E7E 30 0D       BMI $0D    [$9E8D]     ;/
 $94:9E80 0A          ASL A                  ;\
@@ -3980,7 +3985,7 @@ $94:9E89 C2 40       REP #$40               ;\
 $94:9E8B 38          SEC                    ;} Return carry set, overflow clear
 $94:9E8C 60          RTS                    ;/
 
-; BRANCH_AREA_DEPENDANT
+; BRANCH_AREA_DEPENDENT
 $94:9E8D 29 7F 00    AND #$007F             ;\
 $94:9E90 0A          ASL A                  ;|
 $94:9E91 A8          TAY                    ;|
@@ -4006,7 +4011,7 @@ $94:9EA6             dw D064, D068, D06C, D070, D074, D078, D07C, D080, D084, D0
                         B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F,
                         C8A2, C8A8, C8AE, C8B4, C83E, EED3, C816, C81A, C80E, C812, C806, C80A, C81E, C822, B62F, B9C1
 
-; Region dependant. Shootable block only
+; Region dependent. Shootable block only
 $94:9F46             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 0: Crateria
 $94:9F56             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 1: Brinstar
 $94:9F66             dw B62F, B62F, B62F, B62F, B62F, B62F, B62F, B62F ; 2: Norfair

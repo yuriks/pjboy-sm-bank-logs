@@ -10688,7 +10688,7 @@ $82:E5D8 60          RTS                    ;} Return carry set
 }
 
 
-;;; $E5D9: Load library background - command Eh: door dependant transfer to VRAM ;;;
+;;; $E5D9: Load library background - command Eh: door dependent transfer to VRAM ;;;
 {
 ; Command Eh is only used by landing site, WS entrance and WS back door
 $82:E5D9 AD 8D 07    LDA $078D  [$7E:078D]  ;\
@@ -11331,7 +11331,7 @@ $82:E9E6 60          RTS                    ;} Return carry set
 }
 
 
-;;; $E9E7: Load library background - command Eh: door dependant transfer to VRAM ;;;
+;;; $E9E7: Load library background - command Eh: door dependent transfer to VRAM ;;;
 {
 ; Command Eh is only used by landing site, WS entrance and WS back door
 $82:E9E7 AD 8D 07    LDA $078D  [$7E:078D]  ;\
