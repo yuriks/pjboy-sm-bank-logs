@@ -16328,7 +16328,7 @@ $90:F222 9C FA 0A    STZ $0AFA  [$7E:0AFA]  ; Samus Y position = 0
 $90:F225 A0 87 A3    LDY #$A387             ;\
 $90:F228 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Ceres elevator pad enemy projectile
 $90:F22C A0 95 A3    LDY #$A395             ;\
-$90:F22F 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Ceres elevator platform enemy projectile
+$90:F22F 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Ceres elevator pad level data concealer enemy projectile
 $90:F233 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
 $90:F236 22 18 E1 82 JSL $82E118[$82:E118]  ; Play room music track after [A] frames (A happens to be 20h here, index of the 2nd enemy projectile)
 $90:F23A 38          SEC                    ;\

@@ -156,7 +156,7 @@ $8D:8458             dx 0001, 01FC,FC,2128
 $8D:845F             dx 0001, 01FC,FC,2129
 $8D:8466             dx 0001, 01FC,FC,212A
 
-; Enemy projectile $A395 (Ceres elevator platform)
+; Enemy projectile $A395 (Ceres elevator pad level data concealer)
 $8D:846D             dx 0004, 0008,FC,3A20, 0000,FC,3A20, 01F8,FC,3A20, 01F0,FC,3A20
 
 ; Enemy projectile $A379 (gunship liftoff dust clouds)

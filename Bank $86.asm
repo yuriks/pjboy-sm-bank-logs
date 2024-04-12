@@ -1768,8 +1768,8 @@ $86:89C7 30 06       BMI $06    [$89CF]     ;} If [$14] >= 0: (moving down)
 $86:89C9 18          CLC                    ;\
 $86:89CA 65 1E       ADC $1E    [$7E:001E]  ;} $22 = [$18] + [enemy projectile Y radius] - 1 (target front boundary)
 $86:89CC 3A          DEC A                  ;/
-$86:89CD 80 03       BRA $03    [$89D2]     
-                                            
+$86:89CD 80 03       BRA $03    [$89D2]
+
 $86:89CF 38          SEC                    ;\ Else ([$14] < 0): (moving up)
 $86:89D0 E5 1E       SBC $1E    [$7E:001E]  ;} $22 = [$18] - [enemy projectile Y radius] (target front boundary)
 
@@ -1802,7 +1802,7 @@ $86:89FA E8          INX                    ;\
 $86:89FB E8          INX                    ;} X += 2
 $86:89FC C6 1A       DEC $1A    [$7E:001A]  ; Decrement $1A
 $86:89FE 10 F5       BPL $F5    [$89F5]     ; If [$1A] >= 0: go to LOOP
-$86:8A00 FA          PLX                    
+$86:8A00 FA          PLX
 $86:8A01 A5 16       LDA $16    [$7E:0016]  ;\
 $86:8A03 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;|
 $86:8A06 A5 18       LDA $18    [$7E:0018]  ;} Enemy Y position = [$18].[$16]
@@ -2701,7 +2701,7 @@ $86:9058 60          RTS
 ; Signed values v such that v / -40h is the actual gradient (so v = 40h is the down-left diagonal, v = 0 is straight left, v = FFC0h is the up-left diagonal)
 ; Indexed by [enemy 0 $0FB2]
 $86:9059             dw FFF0,0000,0020,
-                        FFF0,0000,0020, 
+                        FFF0,0000,0020,
                         FFF0,0000,0020
 }
 
@@ -4804,7 +4804,7 @@ $86:9F40 60          RTS
 $86:9F41             dx 0002,8C29,
                         0002,8C30,
                         0002,8C37,
-                        A050,A05C,  ; Pre-instruction = $A05C, execute $A05C
+                        A050,A05C,  ; Pre-instruction = $A05C, execute $A05C (move left)
                         0001,8BB5,
                         0001,8BBC,
                         0001,8BC3,
@@ -4824,7 +4824,7 @@ $86:9F71             dx 0001,8BFD,
 $86:9F7D             dx 0002,8C29,
                         0002,8C30,
                         0002,8C37,
-                        A050,A07A,  ; Pre-instruction = $A07A, execute $A07A
+                        A050,A07A,  ; Pre-instruction = $A07A, execute $A07A (move right)
                         0001,8BB5,
                         0001,8BBC,
                         0001,8BC3,
@@ -4841,7 +4841,7 @@ $86:9FAD             dx 0001,8BFD,
 
 ;;; $9FB9: Instruction list - pirate claw - thrown left ;;;
 {
-$86:9FB9             dx 8161,A0D1,  ; Pre-instruction = $A0D1
+$86:9FB9             dx 8161,A0D1,  ; Pre-instruction = $A0D1 (thrown left)
 $86:9FBD             dx 0001,8ACD,
                         0001,8ADE,
                         0001,8AEA,
@@ -4856,7 +4856,7 @@ $86:9FBD             dx 0001,8ACD,
 
 ;;; $9FE1: Instruction list - pirate claw - thrown right ;;;
 {
-$86:9FE1             dx 8161,A124,  ; Pre-instruction = $A124
+$86:9FE1             dx 8161,A124,  ; Pre-instruction = $A124 (thrown right)
 $86:9FE5             dx 0001,8B41,
                         0001,8B52,
                         0001,8B5E,
@@ -4872,6 +4872,7 @@ $86:9FE5             dx 0001,8B41,
 ;;; $A009: Initialisation AI - enemy projectile $A17B (pirate / Mother Brain laser) ;;;
 {
 ;; Parameters:
+;;     Y: Enemy projectile index
 ;;     $12: X position
 ;;     $14: Y position
 ;;     $16: Direction. 0 = left, otherwise right
@@ -4903,7 +4904,7 @@ $86:A037 09 00 10    ORA #$1000             ;|
 $86:A03A 99 D7 1B    STA $1BD7,y[$7E:1BF7]  ;/
 $86:A03D AE 54 0E    LDX $0E54  [$7E:0E54]
 $86:A040 BD B4 0F    LDA $0FB4,x[$7E:1074]  ;\
-$86:A043 99 FF 1A    STA $1AFF,y[$7E:1B1F]  ;} Enemy projectile $1AFF = [enemy parameter 1] (half-speed flag)
+$86:A043 99 FF 1A    STA $1AFF,y[$7E:1B1F]  ;} Enemy projectile half-speed flag = [enemy parameter 1]
 $86:A046 A9 67 00    LDA #$0067             ;\
 $86:A049 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 67h, sound library 2, max queued sounds allowed = 6 (pirate laser)
 $86:A04D FA          PLX
@@ -4935,17 +4936,17 @@ $86:A05B 60          RTS
 $86:A05C DE 4B 1A    DEC $1A4B,x[$7E:1A6D]  ;\
 $86:A05F DE 4B 1A    DEC $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position -= 2
 $86:A062 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
-$86:A065 89 00 80    BIT #$8000             ;} If [enemy projectile $1AFF] & 8000h = 0:
+$86:A065 89 00 80    BIT #$8000             ;} If [enemy projectile half-speed flag] & 8000h = 0:
 $86:A068 D0 06       BNE $06    [$A070]     ;/
 $86:A06A DE 4B 1A    DEC $1A4B,x[$7E:1A6B]  ;\
 $86:A06D DE 4B 1A    DEC $1A4B,x[$7E:1A6B]  ;} Enemy projectile X position -= 2
 
 $86:A070 20 E0 E6    JSR $E6E0  [$86:E6E0]  ;\
-$86:A073 D0 01       BNE $01    [$A076]     ;|
-$86:A075 60          RTS                    ;|
-                                            ;} If enemy projectile off screen, delete it
-$86:A076 9E 97 19    STZ $1997,x[$7E:19B9]  ;|
-$86:A079 60          RTS                    ;/
+$86:A073 D0 01       BNE $01    [$A076]     ;} If enemy projectile is not off-screen:
+$86:A075 60          RTS                    ; Return
+
+$86:A076 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
+$86:A079 60          RTS
 }
 
 
@@ -4954,22 +4955,29 @@ $86:A079 60          RTS                    ;/
 $86:A07A FE 4B 1A    INC $1A4B,x[$7E:1A6B]  ;\
 $86:A07D FE 4B 1A    INC $1A4B,x[$7E:1A6B]  ;} Enemy projectile X position += 2
 $86:A080 BD FF 1A    LDA $1AFF,x[$7E:1B1F]  ;\
-$86:A083 89 00 80    BIT #$8000             ;} If [enemy projectile $1AFF] & 8000h = 0:
+$86:A083 89 00 80    BIT #$8000             ;} If [enemy projectile half-speed flag] & 8000h = 0:
 $86:A086 D0 06       BNE $06    [$A08E]     ;/
 $86:A088 FE 4B 1A    INC $1A4B,x[$7E:1A69]  ;\
 $86:A08B FE 4B 1A    INC $1A4B,x[$7E:1A69]  ;} Enemy projectile X position += 2
 
 $86:A08E 20 E0 E6    JSR $E6E0  [$86:E6E0]  ;\
-$86:A091 D0 01       BNE $01    [$A094]     ;|
-$86:A093 60          RTS                    ;|
-                                            ;} If enemy projectile off screen, delete it
-$86:A094 9E 97 19    STZ $1997,x[$7E:19B3]  ;|
-$86:A097 60          RTS                    ;/
+$86:A091 D0 01       BNE $01    [$A094]     ;} If enemy projectile is not off-screen:
+$86:A093 60          RTS                    ; Return
+
+$86:A094 9E 97 19    STZ $1997,x[$7E:19B3]  ; Enemy projectile ID = 0
+$86:A097 60          RTS
 }
 
 
 ;;; $A098: Initialisation AI - enemy projectile $A189 (pirate claw) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $12: X position
+;;     $14: Y position
+;;     $16: X offset
+;;     $18: Y offset
+;;     $1993: Direction. 0 = left, otherwise right
 $86:A098 5A          PHY
 $86:A099 DA          PHX
 $86:A09A A5 14       LDA $14    [$7E:0014]  ;\
@@ -4991,9 +4999,9 @@ $86:A0B9 99 47 1B    STA $1B47,y[$7E:1B69]
 $86:A0BC A9 5B A0    LDA #$A05B             ;\
 $86:A0BF 99 03 1A    STA $1A03,y[$7E:1A25]  ;} Enemy projectile pre-instruction = RTS
 $86:A0C2 A9 00 08    LDA #$0800             ;\
-$86:A0C5 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile $1AFF = 800h (X speed)
+$86:A0C5 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile X speed = 800h
 $86:A0C8 A9 01 00    LDA #$0001             ;\
-$86:A0CB 99 23 1B    STA $1B23,y[$7E:1B45]  ;} Enemy projectile $1B23 = 1 (deceleration flag)
+$86:A0CB 99 23 1B    STA $1B23,y[$7E:1B45]  ;} Enemy projectile deceleration flag = 1
 $86:A0CE FA          PLX
 $86:A0CF 7A          PLY
 $86:A0D0 60          RTS
@@ -5003,32 +5011,32 @@ $86:A0D0 60          RTS
 ;;; $A0D1: Pre-instruction - pirate claw - thrown left ;;;
 {
 $86:A0D1 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
-$86:A0D4 F0 23       BEQ $23    [$A0F9]     ;} If [enemy projectile $1B23] != 0 (decelerating):
+$86:A0D4 F0 23       BEQ $23    [$A0F9]     ;} If [enemy projectile deceleration flag] != 0:
 $86:A0D6 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:A0D9 EB          XBA                    ;|
 $86:A0DA 29 FF 00    AND #$00FF             ;|
 $86:A0DD 85 12       STA $12    [$7E:0012]  ;|
-$86:A0DF BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position -= [enemy projectile $1AFF] / 100h
+$86:A0DF BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position -= [enemy projectile X speed] / 100h
 $86:A0E2 38          SEC                    ;|
 $86:A0E3 E5 12       SBC $12    [$7E:0012]  ;|
 $86:A0E5 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 $86:A0E8 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:A0EB 38          SEC                    ;|
-$86:A0EC E9 20 00    SBC #$0020             ;} Enemy projectile $1AFF -= 20h
+$86:A0EC E9 20 00    SBC #$0020             ;} Enemy projectile X speed -= 20h
 $86:A0EF 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;/
-$86:A0F2 D0 1D       BNE $1D    [$A111]     ; If [enemy projectile $1AFF] = 0:
-$86:A0F4 9E 23 1B    STZ $1B23,x[$7E:1B45]  ; Enemy projectile $1B23 = 0
+$86:A0F2 D0 1D       BNE $1D    [$A111]     ; If [enemy projectile X speed] = 0:
+$86:A0F4 9E 23 1B    STZ $1B23,x[$7E:1B45]  ; Enemy projectile deceleration flag = 0
 $86:A0F7 80 18       BRA $18    [$A111]
 
-$86:A0F9 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\ Else ([enemy projectile $1B23] = 0) (accelerating):
+$86:A0F9 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\ Else ([enemy projectile deceleration flag] = 0):
 $86:A0FC EB          XBA                    ;|
 $86:A0FD 29 FF 00    AND #$00FF             ;|
-$86:A100 18          CLC                    ;} Enemy projectile X position += [enemy projectile $1AFF] / 100h
+$86:A100 18          CLC                    ;} Enemy projectile X position += [enemy projectile X speed] / 100h
 $86:A101 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]  ;|
 $86:A104 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 $86:A107 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:A10A 18          CLC                    ;|
-$86:A10B 69 20 00    ADC #$0020             ;} Enemy projectile $1AFF += 20h
+$86:A10B 69 20 00    ADC #$0020             ;} Enemy projectile X speed += 20h
 $86:A10E 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;/
 
 $86:A111 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
@@ -5036,8 +5044,8 @@ $86:A114 18          CLC                    ;|
 $86:A115 69 01 00    ADC #$0001             ;} Enemy projectile Y position += 1
 $86:A118 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:A11B 20 E0 E6    JSR $E6E0  [$86:E6E0]  ;\
-$86:A11E F0 03       BEQ $03    [$A123]     ;} If enemy projectile off screen, delete it
-$86:A120 9E 97 19    STZ $1997,x[$7E:19B9]  ;/
+$86:A11E F0 03       BEQ $03    [$A123]     ;} If enemy projectile is off-screen:
+$86:A120 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
 
 $86:A123 60          RTS
 }
@@ -5046,34 +5054,34 @@ $86:A123 60          RTS
 ;;; $A124: Pre-instruction - pirate claw - thrown right ;;;
 {
 $86:A124 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
-$86:A127 F0 23       BEQ $23    [$A14C]     ;} If [enemy projectile $1B23] != 0 (decelerating):
+$86:A127 F0 23       BEQ $23    [$A14C]     ;} If [enemy projectile deceleration flag] != 0:
 $86:A129 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:A12C EB          XBA                    ;|
 $86:A12D 29 FF 00    AND #$00FF             ;|
 $86:A130 85 12       STA $12    [$7E:0012]  ;|
-$86:A132 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position += [enemy projectile $1AFF] / 100h
+$86:A132 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position += [enemy projectile X speed] / 100h
 $86:A135 18          CLC                    ;|
 $86:A136 65 12       ADC $12    [$7E:0012]  ;|
 $86:A138 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 $86:A13B BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:A13E 38          SEC                    ;|
-$86:A13F E9 20 00    SBC #$0020             ;} Enemy projectile $1AFF -= 20h
+$86:A13F E9 20 00    SBC #$0020             ;} Enemy projectile X speed -= 20h
 $86:A142 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;/
-$86:A145 D0 21       BNE $21    [$A168]     ; If [enemy projectile $1AFF] = 0:
-$86:A147 9E 23 1B    STZ $1B23,x[$7E:1B45]  ; Enemy projectile $1B23 = 0
+$86:A145 D0 21       BNE $21    [$A168]     ; If [enemy projectile X speed] = 0:
+$86:A147 9E 23 1B    STZ $1B23,x[$7E:1B45]  ; Enemy projectile deceleration flag = 0
 $86:A14A 80 1C       BRA $1C    [$A168]
 
-$86:A14C BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\ Else ([enemy projectile $1B23] = 0) (accelerating):
+$86:A14C BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\ Else ([enemy projectile deceleration flag] = 0):
 $86:A14F EB          XBA                    ;|
 $86:A150 29 FF 00    AND #$00FF             ;|
 $86:A153 85 12       STA $12    [$7E:0012]  ;|
-$86:A155 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position -= [enemy projectile $1AFF] / 100h
+$86:A155 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position -= [enemy projectile X speed] / 100h
 $86:A158 38          SEC                    ;|
 $86:A159 E5 12       SBC $12    [$7E:0012]  ;|
 $86:A15B 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 $86:A15E BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:A161 18          CLC                    ;|
-$86:A162 69 20 00    ADC #$0020             ;} Enemy projectile $1AFF += 20h
+$86:A162 69 20 00    ADC #$0020             ;} Enemy projectile X speed += 20h
 $86:A165 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;/
 
 $86:A168 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
@@ -5081,8 +5089,8 @@ $86:A16B 18          CLC                    ;|
 $86:A16C 69 01 00    ADC #$0001             ;} Enemy projectile Y position += 1
 $86:A16F 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:A172 20 E0 E6    JSR $E6E0  [$86:E6E0]  ;\
-$86:A175 F0 03       BEQ $03    [$A17A]     ;} If enemy projectile off screen, delete it
-$86:A177 9E 97 19    STZ $1997,x[$7E:19B9]  ;/
+$86:A175 F0 03       BEQ $03    [$A17A]     ;} If enemy projectile is off-screen:
+$86:A177 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
 
 $86:A17A 60          RTS
 }
@@ -5217,7 +5225,7 @@ $86:A28D             dx 0001,B1BA,
 }
 
 
-;;; $A299: Instruction list / shot instruction list - enemy projectile $A395 (Ceres elevator platform) ;;;
+;;; $A299: Instruction list / shot instruction list - enemy projectile $A395 (Ceres elevator pad level data concealer) ;;;
 {
 $86:A299             dx 0001,846D,
                         81AB,A299   ; Go to $A299
@@ -5226,13 +5234,16 @@ $86:A299             dx 0001,846D,
 
 ;;; $A2A1: Initialisation AI - enemy projectile $A379 (gunship liftoff dust clouds) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Index. Multiple of 2, range 0..Ah. 0/2/4 are on the right side, 6/8/Ah on the left side
 $86:A2A1 08          PHP
 $86:A2A2 C2 30       REP #$30
-$86:A2A4 A9 00 00    LDA #$0000             ;\
-$86:A2A7 99 27 1A    STA $1A27,y[$7E:1A49]  ;} Enemy projectile $1A27 = 0
-$86:A2AA 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F = 0
-$86:A2AD 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ; Enemy projectile $1AB7 = 0
-$86:A2B0 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ; Enemy projectile $1ADB = 0
+$86:A2A4 A9 00 00    LDA #$0000
+$86:A2A7 99 27 1A    STA $1A27,y[$7E:1A49]
+$86:A2AA 99 6F 1A    STA $1A6F,y[$7E:1A91]
+$86:A2AD 99 B7 1A    STA $1AB7,y[$7E:1AD9]
+$86:A2B0 99 DB 1A    STA $1ADB,y[$7E:1AFD]
 $86:A2B3 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter]
 $86:A2B6 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $86:A2B9 18          CLC                    ;|
@@ -5245,7 +5256,7 @@ $86:A2C7 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:A2CA BD E2 A2    LDA $A2E2,x[$86:A2E2]  ;\
 $86:A2CD 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = [$A2E2 + [X]]
 $86:A2D0 8A          TXA                    ;\
-$86:A2D1 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile $1AFF = [X]
+$86:A2D1 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile $1AFF = [X] (never read)
 $86:A2D4 28          PLP
 $86:A2D5 60          RTS
 
@@ -5263,17 +5274,17 @@ $86:A2F4 18          CLC                    ;|
 $86:A2F5 69 1C 00    ADC #$001C             ;} Enemy projectile Y position = [Samus Y position] + 1Ch
 $86:A2F8 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:A2FB A9 3C 00    LDA #$003C             ;\
-$86:A2FE 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile timer = 3Ch
+$86:A2FE 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile timer = 60
 }
 
 
-;;; $A301:  ;;;
+;;; $A301: Ceres elevator common initialisation ;;;
 {
-$86:A301 A9 00 00    LDA #$0000             ;\
-$86:A304 99 27 1A    STA $1A27,y[$7E:1A49]  ;} Enemy projectile $1A27 = 0
-$86:A307 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F = 0
-$86:A30A 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ; Enemy projectile $1AB7 = 0
-$86:A30D 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ; Enemy projectile $1ADB = 0
+$86:A301 A9 00 00    LDA #$0000
+$86:A304 99 27 1A    STA $1A27,y[$7E:1A49]
+$86:A307 99 6F 1A    STA $1A6F,y[$7E:1A91]
+$86:A30A 99 B7 1A    STA $1AB7,y[$7E:1AD9]
+$86:A30D 99 DB 1A    STA $1ADB,y[$7E:1AFD]
 $86:A310 99 BB 19    STA $19BB,y[$7E:19DD]  ; Enemy projectile graphics indices = 0
 $86:A313 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $86:A316 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = [Samus X position]
@@ -5282,13 +5293,13 @@ $86:A31A 60          RTS
 }
 
 
-;;; $A31B: Initialisation AI - enemy projectile $A395 (Ceres elevator platform) ;;;
+;;; $A31B: Initialisation AI - enemy projectile $A395 (Ceres elevator pad level data concealer) ;;;
 {
 $86:A31B 08          PHP
 $86:A31C C2 30       REP #$30
-$86:A31E A9 61 00    LDA #$0061
-$86:A321 99 93 1A    STA $1A93,y[$7E:1AB3]
-$86:A324 4C 01 A3    JMP $A301  [$86:A301]
+$86:A31E A9 61 00    LDA #$0061             ;\
+$86:A321 99 93 1A    STA $1A93,y[$7E:1AB3]  ;} Enemy projectile Y position = 61h
+$86:A324 4C 01 A3    JMP $A301  [$86:A301]  ; Go to Ceres elevator common initialisation
 }
 
 
@@ -5328,7 +5339,7 @@ $86:A363 60          RTS
 }
 
 
-;;; $A364: Pre-instruction - enemy projectile $A395 (Ceres elevator platform) ;;;
+;;; $A364: Pre-instruction - enemy projectile $A395 (Ceres elevator pad level data concealer) ;;;
 {
 $86:A364 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $86:A367 C9 48 00    CMP #$0048             ;} If [Samus Y position] = 48h:
@@ -5353,9 +5364,9 @@ $86:A378 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:A379             dx A2A1,A327,A197,08,08,3000,0000,A197 ; Gunship liftoff dust clouds
+$86:A379             dx A2A1,A327,A197,08,08,3000,0000,A197 ; Gunship liftoff dust clouds. Initial instruction list ignored
 $86:A387             dx A2EE,A328,A28D,01,01,3000,0000,A28D ; Ceres elevator pad
-$86:A395             dx A31B,A364,A299,01,01,3000,0000,A299 ; Ceres elevator platform
+$86:A395             dx A31B,A364,A299,01,01,3000,0000,A299 ; Ceres elevator pad level data concealer 
 }
 }
 
