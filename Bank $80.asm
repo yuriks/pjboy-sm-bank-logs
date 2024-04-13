@@ -4836,9 +4836,9 @@ $80:A0E9 22 7C E9 82 JSL $82E97C[$82:E97C]  ; Load library background
 $80:A0ED 20 F9 A2    JSR $A2F9  [$80:A2F9]  ; Calculate layer 2 X position
 $80:A0F0 20 3A A3    JSR $A33A  [$80:A33A]  ; Calculate layer 2 Y position
 $80:A0F3 AD 17 09    LDA $0917  [$7E:0917]  ;\
-$80:A0F6 8D 21 09    STA $0921  [$7E:0921]  ;} BG2 X scroll offset = [layer 2 X position]
+$80:A0F6 8D 21 09    STA $0921  [$7E:0921]  ;} BG2 X offset = [layer 2 X position]
 $80:A0F9 AD 19 09    LDA $0919  [$7E:0919]  ;\
-$80:A0FC 8D 23 09    STA $0923  [$7E:0923]  ;} BG2 Y scroll offset = [layer 2 Y position]
+$80:A0FC 8D 23 09    STA $0923  [$7E:0923]  ;} BG2 Y offset = [layer 2 Y position]
 $80:A0FF 20 7B A3    JSR $A37B  [$80:A37B]  ; Calculate BG scrolls
 $80:A102 22 76 A1 80 JSL $80A176[$80:A176]  ; Display the viewable part of the room
 $80:A106 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
@@ -5242,19 +5242,19 @@ $80:A37A 60          RTS                    ;/
 ;     $A3A0: Calculate BG scrolls and update BG graphics when scrolling (door transition)
 $80:A37B AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:A37E 18          CLC                    ;|
-$80:A37F 6D 1D 09    ADC $091D  [$7E:091D]  ;} BG1 X scroll = [layer 1 X position] + [BG1 X scroll offset]
+$80:A37F 6D 1D 09    ADC $091D  [$7E:091D]  ;} BG1 X scroll = [layer 1 X position] + [BG1 X offset]
 $80:A382 85 B1       STA $B1    [$7E:00B1]  ;/
 $80:A384 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A387 18          CLC                    ;|
-$80:A388 6D 1F 09    ADC $091F  [$7E:091F]  ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y scroll offset]
+$80:A388 6D 1F 09    ADC $091F  [$7E:091F]  ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y offset]
 $80:A38B 85 B3       STA $B3    [$7E:00B3]  ;/
 $80:A38D AD 17 09    LDA $0917  [$7E:0917]  ;\
 $80:A390 18          CLC                    ;|
-$80:A391 6D 21 09    ADC $0921  [$7E:0921]  ;} BG2 X scroll = [layer 2 X position] + [BG2 X scroll offset]
+$80:A391 6D 21 09    ADC $0921  [$7E:0921]  ;} BG2 X scroll = [layer 2 X position] + [BG2 X offset]
 $80:A394 85 B5       STA $B5    [$7E:00B5]  ;/
 $80:A396 AD 19 09    LDA $0919  [$7E:0919]  ;\
 $80:A399 18          CLC                    ;|
-$80:A39A 6D 23 09    ADC $0923  [$7E:0923]  ;} BG2 Y scroll = [layer 2 Y position] + [BG2 Y scroll offset]
+$80:A39A 6D 23 09    ADC $0923  [$7E:0923]  ;} BG2 Y scroll = [layer 2 Y position] + [BG2 Y offset]
 $80:A39D 85 B7       STA $B7    [$7E:00B7]  ;/
 $80:A39F 60          RTS
 }
@@ -5294,22 +5294,22 @@ $80:A3B4 AB          PLB
 $80:A3B5 C2 30       REP #$30
 $80:A3B7 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:A3BA 18          CLC                    ;|
-$80:A3BB 6D 1D 09    ADC $091D  [$7E:091D]  ;} BG1 X scroll = [layer 1 X position] + [BG1 X scroll offset]
+$80:A3BB 6D 1D 09    ADC $091D  [$7E:091D]  ;} BG1 X scroll = [layer 1 X position] + [BG1 X offset]
 $80:A3BE 85 B1       STA $B1    [$7E:00B1]  ;/
 $80:A3C0 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:A3C3 18          CLC                    ;|
-$80:A3C4 6D 1F 09    ADC $091F  [$7E:091F]  ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y scroll offset]
+$80:A3C4 6D 1F 09    ADC $091F  [$7E:091F]  ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y offset]
 $80:A3C7 85 B3       STA $B3    [$7E:00B3]  ;/
 $80:A3C9 20 F9 A2    JSR $A2F9  [$80:A2F9]  ; Calculate layer 2 X position
 $80:A3CC B0 06       BCS $06    [$A3D4]     ; If BG2 needs to be scrolled:
 $80:A3CE 18          CLC                    ;\
-$80:A3CF 6D 21 09    ADC $0921  [$7E:0921]  ;} BG2 X scroll = [layer 2 X position] + [BG2 X scroll offset]
+$80:A3CF 6D 21 09    ADC $0921  [$7E:0921]  ;} BG2 X scroll = [layer 2 X position] + [BG2 X offset]
 $80:A3D2 85 B5       STA $B5    [$7E:00B5]  ;/
 
 $80:A3D4 20 3A A3    JSR $A33A  [$80:A33A]  ; Calculate layer 2 Y position
 $80:A3D7 B0 06       BCS $06    [$A3DF]     ; If BG2 needs to be scrolled:
 $80:A3D9 18          CLC                    ;\
-$80:A3DA 6D 23 09    ADC $0923  [$7E:0923]  ;} BG2 Y scroll = [layer 2 Y position] + [BG2 Y scroll offset]
+$80:A3DA 6D 23 09    ADC $0923  [$7E:0923]  ;} BG2 Y scroll = [layer 2 Y position] + [BG2 Y offset]
 $80:A3DD 85 B7       STA $B7    [$7E:00B7]  ;/
 }
 
@@ -6782,19 +6782,19 @@ $80:AE28 60          RTS
 ; Called by door transition scrolling setup
 $80:AE29 A5 B1       LDA $B1    [$7E:00B1]  ;\
 $80:AE2B 38          SEC                    ;|
-$80:AE2C ED 11 09    SBC $0911  [$7E:0911]  ;} BG1 X scroll offset = [BG1 X scroll] - [layer 1 X position]
+$80:AE2C ED 11 09    SBC $0911  [$7E:0911]  ;} BG1 X offset = [BG1 X scroll] - [layer 1 X position]
 $80:AE2F 8D 1D 09    STA $091D  [$7E:091D]  ;/
 $80:AE32 A5 B3       LDA $B3    [$7E:00B3]  ;\
 $80:AE34 38          SEC                    ;|
-$80:AE35 ED 15 09    SBC $0915  [$7E:0915]  ;} BG1 Y scroll offset = [BG1 Y scroll] - [layer 1 Y position]
+$80:AE35 ED 15 09    SBC $0915  [$7E:0915]  ;} BG1 Y offset = [BG1 Y scroll] - [layer 1 Y position]
 $80:AE38 8D 1F 09    STA $091F  [$7E:091F]  ;/
 $80:AE3B A5 B5       LDA $B5    [$7E:00B5]  ;\
 $80:AE3D 38          SEC                    ;|
-$80:AE3E ED 11 09    SBC $0911  [$7E:0911]  ;} BG2 X scroll offset = [BG2 X scroll] - [layer 1 X position]
+$80:AE3E ED 11 09    SBC $0911  [$7E:0911]  ;} BG2 X offset = [BG2 X scroll] - [layer 1 X position]
 $80:AE41 8D 21 09    STA $0921  [$7E:0921]  ;/
 $80:AE44 A5 B7       LDA $B7    [$7E:00B7]  ;\
 $80:AE46 38          SEC                    ;|
-$80:AE47 ED 15 09    SBC $0915  [$7E:0915]  ;} BG2 Y scroll offset = [BG2 Y scroll] - [layer 1 Y position]
+$80:AE47 ED 15 09    SBC $0915  [$7E:0915]  ;} BG2 Y offset = [BG2 Y scroll] - [layer 1 Y position]
 $80:AE4A 8D 23 09    STA $0923  [$7E:0923]  ;/
 $80:AE4D 60          RTS
 }
@@ -7040,19 +7040,19 @@ $80:AFF5 E0 05 00    CPX #$0005             ;\
 $80:AFF8 B0 26       BCS $26    [$B020]     ;} If [door transition frame counter] <= 4:
 $80:AFFA AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:AFFD 18          CLC                    ;|
-$80:AFFE 6D 1D 09    ADC $091D  [$7E:091D]  ;} BG1 X scroll = [layer 1 X position] + [BG1 X scroll offset]
+$80:AFFE 6D 1D 09    ADC $091D  [$7E:091D]  ;} BG1 X scroll = [layer 1 X position] + [BG1 X offset]
 $80:B001 85 B1       STA $B1    [$7E:00B1]  ;/
 $80:B003 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $80:B006 18          CLC                    ;|
-$80:B007 6D 1F 09    ADC $091F  [$7E:091F]  ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y scroll offset]
+$80:B007 6D 1F 09    ADC $091F  [$7E:091F]  ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y offset]
 $80:B00A 85 B3       STA $B3    [$7E:00B3]  ;/
 $80:B00C AD 17 09    LDA $0917  [$7E:0917]  ;\
 $80:B00F 18          CLC                    ;|
-$80:B010 6D 21 09    ADC $0921  [$7E:0921]  ;} BG2 X scroll = [layer 2 X position] + [BG2 X scroll offset]
+$80:B010 6D 21 09    ADC $0921  [$7E:0921]  ;} BG2 X scroll = [layer 2 X position] + [BG2 X offset]
 $80:B013 85 B5       STA $B5    [$7E:00B5]  ;/
 $80:B015 AD 19 09    LDA $0919  [$7E:0919]  ;\
 $80:B018 18          CLC                    ;|
-$80:B019 6D 23 09    ADC $0923  [$7E:0923]  ;} BG2 Y scroll = [layer 2 Y position] + [BG2 Y scroll offset]
+$80:B019 6D 23 09    ADC $0923  [$7E:0923]  ;} BG2 Y scroll = [layer 2 Y position] + [BG2 Y offset]
 $80:B01C 85 B7       STA $B7    [$7E:00B7]  ;/
 $80:B01E 80 04       BRA $04    [$B024]     ; Go to BRANCH_DONE
 

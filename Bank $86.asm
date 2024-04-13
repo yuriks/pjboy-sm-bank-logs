@@ -146,7 +146,7 @@ $86:80B2 6B          RTL                    ;} Return carry set
 
 ; BRANCH_FOUND
 $86:80B3 A9 00 00    LDA #$0000             ;\
-$86:80B6 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile graphics indices = 0
+$86:80B6 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:80B9 8A          TXA                    ;\
 $86:80BA 99 97 19    STA $1997,y[$7E:19B9]  ;} Enemy projectile ID = [X]
 $86:80BD BD 02 00    LDA $0002,x[$86:9736]  ;\
@@ -5285,7 +5285,7 @@ $86:A304 99 27 1A    STA $1A27,y[$7E:1A49]
 $86:A307 99 6F 1A    STA $1A6F,y[$7E:1A91]
 $86:A30A 99 B7 1A    STA $1AB7,y[$7E:1AD9]
 $86:A30D 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:A310 99 BB 19    STA $19BB,y[$7E:19DD]  ; Enemy projectile graphics indices = 0
+$86:A310 99 BB 19    STA $19BB,y[$7E:19DD]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:A313 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $86:A316 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = [Samus X position]
 $86:A319 28          PLP
@@ -5376,7 +5376,7 @@ $86:A395             dx A31B,A364,A299,01,01,3000,0000,A299 ; Ceres elevator pad
 ;;; $A3A3: Initialisation AI / pre-instruction - enemy projectile $A3B0 (pre-Phantoon room) ;;;
 {
 $86:A3A3 A9 00 00    LDA #$0000             ;\
-$86:A3A6 8D 23 09    STA $0923  [$7E:0923]  ;} BG2 Y scroll offset = 0
+$86:A3A6 8D 23 09    STA $0923  [$7E:0923]  ;} BG2 Y offset = 0
 $86:A3A9 60          RTS
 }
 
@@ -5390,6 +5390,10 @@ $86:A3AA             dw 0020,8000,
 
 ;;; $A3B0: Enemy projectile - pre-Phantoon room ;;;
 {
+; Scrolls BG2 up 32 pixels
+; Normally, the top of the BG2 of a room is drawn after the HUD, this modification causes BG2 to be drawn under the HUD
+; ...which I guess only mattered for this *one* room
+
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
 ;                       |    |     ________________________ Initial instruction list
@@ -5705,82 +5709,84 @@ $86:A5C2             dx 0040,8E64,
 
 ;;; $A5D3: Initialisation AI - enemy projectile $A95B (Bomb Torizo low-health continuous drool) ;;;
 {
-$86:A5D3 A9 00 00    LDA #$0000
-$86:A5D6 99 BB 19    STA $19BB,y[$7E:19D7]
-$86:A5D9 22 11 81 80 JSL $808111[$80:8111]
-$86:A5DD 4A          LSR A
-$86:A5DE 29 0E 00    AND #$000E
-$86:A5E1 AA          TAX
-$86:A5E2 BD 4D A6    LDA $A64D,x[$86:A659]
-$86:A5E5 99 47 1B    STA $1B47,y[$7E:1B63]
-$86:A5E8 22 11 81 80 JSL $808111[$80:8111]
-$86:A5EC AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:A5EF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:A5F2 18          CLC
-$86:A5F3 69 FB FF    ADC #$FFFB
-$86:A5F6 99 93 1A    STA $1A93,y[$7E:1AAF]
-$86:A5F9 3C B4 0F    BIT $0FB4,x[$7E:0FB4]
-$86:A5FC 50 08       BVC $08    [$A606]
-$86:A5FE AD E5 05    LDA $05E5  [$7E:05E5]
-$86:A601 29 FE 01    AND #$01FE
-$86:A604 80 1A       BRA $1A    [$A620]
+$86:A5D3 A9 00 00    LDA #$0000             ;\
+$86:A5D6 99 BB 19    STA $19BB,y[$7E:19D7]  ;} Enemy projectile VRAM graphics index = 0, palette 0
+$86:A5D9 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:A5DD 4A          LSR A                  ;\
+$86:A5DE 29 0E 00    AND #$000E             ;|
+$86:A5E1 AA          TAX                    ;} Enemy projectile instruction list pointer = [$A64D + [random number] / 4 % 8 * 2]
+$86:A5E2 BD 4D A6    LDA $A64D,x[$86:A659]  ;|
+$86:A5E5 99 47 1B    STA $1B47,y[$7E:1B63]  ;/
+$86:A5E8 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:A5EC AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:A5EF BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:A5F2 18          CLC                    ;|
+$86:A5F3 69 FB FF    ADC #$FFFB             ;} Enemy projectile Y position = [enemy Y position] - 5
+$86:A5F6 99 93 1A    STA $1A93,y[$7E:1AAF]  ;/
+$86:A5F9 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
+$86:A5FC 50 08       BVC $08    [$A606]     ;} If [enemy $0FB4] & 4000h != 0:
+$86:A5FE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:A601 29 FE 01    AND #$01FE             ;} X = [random number] / 2 % 100h * 2
+$86:A604 80 1A       BRA $1A    [$A620]     ; Go to BRANCH_ANGLE_DETERMINED
 
-$86:A606 30 05       BMI $05    [$A60D]
-$86:A608 A9 E0 00    LDA #$00E0
+$86:A606 30 05       BMI $05    [$A60D]     ; If [enemy $0FB4] & 8000h = 0:
+$86:A608 A9 E0 00    LDA #$00E0             ; $12 = E0h
 $86:A60B 80 03       BRA $03    [$A610]
-
-$86:A60D A9 20 00    LDA #$0020
+                                            ; Else ([enemy $0FB4] & 8000h != 0):
+$86:A60D A9 20 00    LDA #$0020             ; $12 = 20h
 
 $86:A610 85 12       STA $12    [$7E:0012]
-$86:A612 AD E5 05    LDA $05E5  [$7E:05E5]
-$86:A615 29 0F 00    AND #$000F
-$86:A618 38          SEC
-$86:A619 E9 08 00    SBC #$0008
-$86:A61C 18          CLC
-$86:A61D 65 12       ADC $12    [$7E:0012]
-$86:A61F 0A          ASL A
+$86:A612 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:A615 29 0F 00    AND #$000F             ;|
+$86:A618 38          SEC                    ;|
+$86:A619 E9 08 00    SBC #$0008             ;} X = ([$12] + [random number] % 10h - 8) * 2
+$86:A61C 18          CLC                    ;|
+$86:A61D 65 12       ADC $12    [$7E:0012]  ;|
+$86:A61F 0A          ASL A                  ;/
 
+; BRANCH_ANGLE_DETERMINED
 $86:A620 AA          TAX
-$86:A621 BF 43 B4 A0 LDA $A0B443,x[$A0:B605]
-$86:A625 99 B7 1A    STA $1AB7,y[$7E:1AD3]
-$86:A628 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B585]
-$86:A62C 99 DB 1A    STA $1ADB,y[$7E:1AF7]
-$86:A62F AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:A632 3C B4 0F    BIT $0FB4,x[$7E:0FB4]
-$86:A635 30 0B       BMI $0B    [$A642]
-$86:A637 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:A63A 18          CLC
-$86:A63B 69 F8 FF    ADC #$FFF8
-$86:A63E 99 4B 1A    STA $1A4B,y[$7E:1A67]
-$86:A641 60          RTS
+$86:A621 BF 43 B4 A0 LDA $A0B443,x[$A0:B605];\
+$86:A625 99 B7 1A    STA $1AB7,y[$7E:1AD3]  ;} Enemy projectile X velocity = sin([X] / 2 * pi / 80h) * 100h
+$86:A628 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B585];\
+$86:A62C 99 DB 1A    STA $1ADB,y[$7E:1AF7]  ;} Enemy projectile Y velocity = -cos([X] / 2 * pi / 80h) * 100h
+$86:A62F AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:A632 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
+$86:A635 30 0B       BMI $0B    [$A642]     ;} If [enemy $0FB4] & 8000h = 0:
+$86:A637 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:A63A 18          CLC                    ;|
+$86:A63B 69 F8 FF    ADC #$FFF8             ;} Enemy projectile X position = [enemy X position] - 8
+$86:A63E 99 4B 1A    STA $1A4B,y[$7E:1A67]  ;/
+$86:A641 60          RTS                    ; Return
 
-$86:A642 BD 7A 0F    LDA $0F7A,x
-$86:A645 18          CLC
-$86:A646 69 08 00    ADC #$0008
-$86:A649 99 4B 1A    STA $1A4B,y
+$86:A642 BD 7A 0F    LDA $0F7A,x            ;\
+$86:A645 18          CLC                    ;|
+$86:A646 69 08 00    ADC #$0008             ;} Enemy projectile X position = [enemy X position] + 8
+$86:A649 99 4B 1A    STA $1A4B,y            ;/
 $86:A64C 60          RTS
 
+; Instruction list pointers
 $86:A64D             dw A472, A46E, A46A, A472, A46E, A46A, A472, A46E
 }
 
 
 ;;; $A65D: Initialisation AI - enemy projectile $A969 (Bomb Torizo low-health initial drool) ;;;
 {
-$86:A65D A9 00 00    LDA #$0000
-$86:A660 99 BB 19    STA $19BB,y[$7E:19CB]
-$86:A663 22 11 81 80 JSL $808111[$80:8111]
-$86:A667 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:A66A AD E5 05    LDA $05E5  [$7E:05E5]
-$86:A66D 29 03 00    AND #$0003
-$86:A670 18          CLC
-$86:A671 7D 7E 0F    ADC $0F7E,x[$7E:0F7E]
-$86:A674 69 FB FF    ADC #$FFFB
-$86:A677 99 93 1A    STA $1A93,y[$7E:1AA3]
-$86:A67A AD E5 05    LDA $05E5  [$7E:05E5]
-$86:A67D 29 1F 00    AND #$001F
-$86:A680 69 30 00    ADC #$0030
-$86:A683 99 DB 1A    STA $1ADB,y[$7E:1AEB]
-$86:A686 22 11 81 80 JSL $808111[$80:8111]
+$86:A65D A9 00 00    LDA #$0000             ;\
+$86:A660 99 BB 19    STA $19BB,y[$7E:19CB]  ;} Enemy projectile VRAM graphics index = 0, palette 0
+$86:A663 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:A667 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:A66A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:A66D 29 03 00    AND #$0003             ;|
+$86:A670 18          CLC                    ;|
+$86:A671 7D 7E 0F    ADC $0F7E,x[$7E:0F7E]  ;} Enemy projectile Y position = [enemy Y position] - 5 + [random number] % 4
+$86:A674 69 FB FF    ADC #$FFFB             ;|
+$86:A677 99 93 1A    STA $1A93,y[$7E:1AA3]  ;/
+$86:A67A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:A67D 29 1F 00    AND #$001F             ;|
+$86:A680 69 30 00    ADC #$0030             ;} Enemy projectile Y velocity = 30h + [random number]
+$86:A683 99 DB 1A    STA $1ADB,y[$7E:1AEB]  ;/
+$86:A686 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:A68A AD E5 05    LDA $05E5  [$7E:05E5]
 $86:A68D 29 03 00    AND #$0003
 $86:A690 3C B4 0F    BIT $0FB4,x[$7E:0FB4]
@@ -5813,8 +5819,8 @@ $86:A6C6 60          RTS
 
 ;;; $A6C7: Initialisation AI - enemy projectile $A977 ;;;
 {
-$86:A6C7 A9 00 00    LDA #$0000
-$86:A6CA 99 BB 19    STA $19BB,y
+$86:A6C7 A9 00 00    LDA #$0000             ;\
+$86:A6CA 99 BB 19    STA $19BB,y            ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:A6CD AE 27 1C    LDX $1C27  [$7E:1C27]
 $86:A6D0 22 90 82 84 JSL $848290[$84:8290]
 $86:A6D4 AD 29 1C    LDA $1C29  [$7E:1C29]
@@ -5966,7 +5972,7 @@ $86:A886 60          RTS
 }
 
 
-;;; $A887:  ;;;
+;;; $A887: Pre-instruction ;;;
 {
 $86:A887 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:A88A B0 3F       BCS $3F    [$A8CB]
@@ -6099,7 +6105,7 @@ $86:A95A 60          RTS
 ;                       |    |    |    |  |  |    |    |
 $86:A95B             dx A5D3,84FB,A472,01,02,3000,0000,84FC ; Bomb Torizo low-health continuous drool
 $86:A969             dx A65D,84FB,A472,01,02,2000,0000,84FC ; Bomb Torizo low-health initial drool
-$86:A977             dx A6C7,A8EF,A49E,00,00,3000,0000,84FC ; Unused. Seems status breaking esque, also seems like drool (maybe statue drool?)
+$86:A977             dx A6C7,A8EF,A49E,00,00,3000,0000,84FC ; Unused. Seems statue breaking esque, also seems like drool (maybe statue drool?)
 $86:A985             dx A6F6,A919,A4AA,10,10,500A,0000,84FC ; Bomb Torizo explosive swipe
 $86:A993             dx A764,84FB,A54B,08,08,3000,0000,84FC ; Bomb Torizo statue breaking
 $86:A9A1             dx A81B,84FB,A3CB,04,10,3000,0000,84FC ; Bomb Torizo low-health explosion
@@ -9840,7 +9846,7 @@ $86:C42A 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 13h, sound library 3,
 
 ;;; $C42E: Instruction - use palette 0 ;;;
 {
-$86:C42E 9E BB 19    STZ $19BB,x[$7E:19D9]  ; Enemy projectile graphics indices = 0
+$86:C42E 9E BB 19    STZ $19BB,x[$7E:19D9]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C431 60          RTS
 }
 
@@ -10274,7 +10280,7 @@ $86:C809 6B          RTL
 ;;; $C80A: Initialisation AI - enemy projectile $CB83 (Mother Brain's rainbow beam charging) ;;;
 {
 $86:C80A BB          TYX
-$86:C80B 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile graphics indices = 0
+$86:C80B 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C80E 9E B7 1A    STZ $1AB7,x[$7E:1AD7]  ; Enemy projectile $1AB7 = 0
 $86:C811 9E DB 1A    STZ $1ADB,x[$7E:1AFB]  ; Enemy projectile $1ADB = 0
 }
@@ -10312,7 +10318,7 @@ $86:C829             dx 0005,94B7,
 ;;; $C843: Initialisation AI - enemy projectile $CB91/$CB9F (Mother Brain's drool) ;;;
 {
 $86:C843 BB          TYX
-$86:C844 9E BB 19    STZ $19BB,x[$7E:19DD]  ; Enemy projectile graphics indices = 0
+$86:C844 9E BB 19    STZ $19BB,x[$7E:19DD]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C847 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:C84A 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile $1AFF = [enemy projectile initialisation parameter]
 }
@@ -10424,7 +10430,7 @@ $86:C8FB B9 29 C9    LDA $C929,y[$86:C92B]  ;|
 $86:C8FE 9D 47 1B    STA $1B47,x[$7E:1B63]  ;/
 $86:C901 A9 01 00    LDA #$0001             ;\
 $86:C904 9D 8F 1B    STA $1B8F,x[$7E:1BAB]  ;} Enemy projectile instruction timer = 1
-$86:C907 9E BB 19    STZ $19BB,x[$7E:19D7]  ; Enemy projectile graphics indices = 0
+$86:C907 9E BB 19    STZ $19BB,x[$7E:19D7]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C90A A5 12       LDA $12    [$7E:0012]  ;\
 $86:C90C 9D B7 1A    STA $1AB7,x[$7E:1AD3]  ;} Enemy projectile X offset = [$12]
 $86:C90F A5 14       LDA $14    [$7E:0014]  ;\
@@ -10458,7 +10464,7 @@ $86:C929             dw E138, E1EA, E208
 ;;; $C92F: Initialisation AI - enemy projectile $CBAD (Mother Brain's rainbow beam explosion) ;;;
 {
 $86:C92F BB          TYX
-$86:C930 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile graphics indices = 0
+$86:C930 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C933 A5 12       LDA $12    [$7E:0012]  ;\
 $86:C935 9D B7 1A    STA $1AB7,x[$7E:1AD7]  ;} Enemy projectile X offset = [$12]
 $86:C938 18          CLC                    ;\
@@ -10493,7 +10499,7 @@ $86:C960 60          RTS
 ;;; $C961: Initialisation AI - enemy projectile $CB21 (Mother Brain's exploded escape door particles) ;;;
 {
 $86:C961 BB          TYX
-$86:C962 9E BB 19    STZ $19BB,x[$7E:19D1]  ; Enemy projectile graphics indices = 0
+$86:C962 9E BB 19    STZ $19BB,x[$7E:19D1]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C965 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:C968 0A          ASL A                  ;|
 $86:C969 0A          ASL A                  ;} Y = [enemy projectile initialisation parameter] * 4
@@ -10598,7 +10604,7 @@ $86:CA46             dx 0001,96D3,
 ;;; $CA6A: Initialisation AI - enemy projectile $CB2F (Mother Brain's purple breath - big) ;;;
 {
 $86:CA6A BB          TYX
-$86:CA6B 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile graphics indices = 0
+$86:CA6B 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:CA6E AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:CA71 18          CLC                    ;|
 $86:CA72 69 06 00    ADC #$0006             ;} Enemy projectile X position = [Mother Brain's brain X position] + 6
@@ -10614,7 +10620,7 @@ $86:CA82 60          RTS
 ;;; $CA83: Initialisation AI - enemy projectile $CB3D (Mother Brain's purple breath - small) ;;;
 {
 $86:CA83 BB          TYX
-$86:CA84 9E BB 19    STZ $19BB,x[$7E:19DD]  ; Enemy projectile graphics indices = 0
+$86:CA84 9E BB 19    STZ $19BB,x[$7E:19DD]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:CA87 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:CA8A 18          CLC                    ;|
 $86:CA8B 69 06 00    ADC #$0006             ;} Enemy projectile X position = [Mother Brain's brain X position] + 6
@@ -10680,7 +10686,7 @@ $86:CAF5 60          RTS
 ;;; $CAF6: Initialisation AI - enemy projectile $CBBB (time bomb set Japanese text) ;;;
 {
 $86:CAF6 BB          TYX
-$86:CAF7 9E BB 19    STZ $19BB,x            ; Enemy projectile graphics indices = 0
+$86:CAF7 9E BB 19    STZ $19BB,x            ; Enemy projectile VRAM graphics index = 0, palette 0
 }
 
 
@@ -11550,10 +11556,10 @@ $86:D1C6 60          RTS
 }
 
 
-;;; $D1C7: Instruction ;;;
+;;; $D1C7: Instruction - use palette 0 ;;;
 {
 $86:D1C7 A9 00 00    LDA #$0000             ;\
-$86:D1CA 9D BB 19    STA $19BB,x[$7E:19D9]  ;} Enemy projectile graphics indices = 0
+$86:D1CA 9D BB 19    STA $19BB,x[$7E:19D9]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:D1CD 60          RTS
 }
 
@@ -11740,7 +11746,7 @@ $86:D31D 69 00 01    ADC #$0100
 $86:D320 A9 80 00    LDA #$0080
 $86:D323 99 DB 1A    STA $1ADB,y[$7E:1AFD]
 $86:D326 A9 00 00    LDA #$0000             ;\
-$86:D329 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile graphics indices = 0
+$86:D329 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:D32C 80 2D       BRA $2D    [$D35B]
 }
 
@@ -11831,7 +11837,7 @@ $86:D3BE 60          RTS
 $86:D3BF 08          PHP
 $86:D3C0 C2 20       REP #$20
 $86:D3C2 A9 00 00    LDA #$0000             ;\
-$86:D3C5 9D BB 19    STA $19BB,x[$7E:19DD]  ;} Enemy projectile graphics indices = 0
+$86:D3C5 9D BB 19    STA $19BB,x[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:D3C8 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:D3CB B0 05       BCS $05    [$D3D2]
 $86:D3CD 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -15562,7 +15568,7 @@ $86:EF2D 99 4B 1A    STA $1A4B,y[$7E:1A4D]  ;} Enemy projectile X position = [$1
 $86:EF30 A5 14       LDA $14    [$7E:0014]  ;\
 $86:EF32 99 93 1A    STA $1A93,y[$7E:1A95]  ;} Enemy projectile Y position = [$14]
 $86:EF35 A9 00 00    LDA #$0000             ;\
-$86:EF38 99 BB 19    STA $19BB,y[$7E:19BD]  ;} Enemy projectile graphics indices = 0
+$86:EF38 99 BB 19    STA $19BB,y[$7E:19BD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:EF3B AD 24 0E    LDA $0E24  [$7E:0E24]  ;\
 $86:EF3E 9F C8 F3 7E STA $7EF3C8,x[$7E:E6FF];} Enemy projectile $7E:F3C8 = [$0E24]
 $86:EF42 20 06 F1    JSR $F106  [$86:F106]  ; Random drop routine
@@ -15629,7 +15635,7 @@ $86:EFB0 9F 10 F4 7E STA $7EF410,x[$7E:F432];/
 $86:EFB4 B9 78 0F    LDA $0F78,y[$7E:0FB8]  ;\
 $86:EFB7 9F C8 F3 7E STA $7EF3C8,x[$7E:F3EA];} Enemy projectile $7E:F3C8 = [enemy ID]
 $86:EFBB A9 00 00    LDA #$0000             ;\
-$86:EFBE 9D BB 19    STA $19BB,x[$7E:19DD]  ;} Enemy projectile graphics indices = 0
+$86:EFBE 9D BB 19    STA $19BB,x[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:EFC1 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:EFC4 0A          ASL A                  ;|
 $86:EFC5 A8          TAY                    ;} Enemy projectile instruction list pointer = [$EFD5 + [enemy projectile initialisation parameter] * 2]
