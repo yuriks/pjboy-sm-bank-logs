@@ -805,7 +805,7 @@ $8F:91F5 60          RTS
 ; Room $AFCE. Boring near-Crocomire hall
 ; Room $AFFB. Norfair grapple ceiling spike floor hall
 ; Room $B026. Norfair energy station
-; Room $B051. Norfair pointerless infinite enemy room
+; Room $B051. Norfair pointless infinite enemy room
 ; Room $B07A. Pre speed booster lavaquake room
 ; Room $B0B4. Norfair map room
 ; Room $B0DD. Bubble Norfair save room
@@ -7133,7 +7133,7 @@ $8F:E5EA 6B          RTL
 }
 
 
-;;; $E5EB: Room state check: door ;;;
+;;; $E5EB: Unused. Room state check: door ;;;
 {
 $8F:E5EB BD 00 00    LDA $0000,x            ;\
 $8F:E5EE CD 8D 07    CMP $078D  [$7E:078D]  ;} If [[X]] = [door pointer]:

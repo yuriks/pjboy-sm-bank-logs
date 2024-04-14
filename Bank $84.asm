@@ -6286,7 +6286,7 @@ $84:B08A 60          RTS
 ;;; $B08B: Unused. Load FX entry 0 if PLM is in leftmost screen column ;;;
 {
 $84:B08B AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
-$84:B08E 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinate
+$84:B08E 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
 $84:B092 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $84:B095 4A          LSR A                  ;|
 $84:B096 4A          LSR A                  ;|
@@ -6305,7 +6305,7 @@ $84:B0A5 60          RTS
 ;;; $B0A6: Unused. Load FX entry 1 if PLM is in leftmost screen column ;;;
 {
 $84:B0A6 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
-$84:B0A9 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinate
+$84:B0A9 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
 $84:B0AD AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $84:B0B0 4A          LSR A                  ;|
 $84:B0B1 4A          LSR A                  ;|
@@ -6324,7 +6324,7 @@ $84:B0C0 60          RTS
 ;;; $B0C1: Unused. Load FX entry 2 if PLM is in leftmost screen column ;;;
 {
 $84:B0C1 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
-$84:B0C4 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinate
+$84:B0C4 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
 $84:B0C8 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $84:B0CB 4A          LSR A                  ;|
 $84:B0CC 4A          LSR A                  ;|
@@ -6413,7 +6413,7 @@ $84:B152 80 2F       BRA $2F    [$B183]     ; Go to BRANCH_DELETE
 ; BRANCH_FOUND
 $84:B154 DA          PHX                    ;\
 $84:B155 AE 27 1C    LDX $1C27  [$7E:1C27]  ;|
-$84:B158 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM co-ordinates
+$84:B158 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
 $84:B15C FA          PLX                    ;/
 $84:B15D AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
 $84:B160 0A          ASL A                  ;|
@@ -11104,7 +11104,7 @@ $84:D356 60          RTS
 {
 $84:D357 DA          PHX
 $84:D358 5A          PHY
-$84:D359 B9 00 00    LDA $0000,y[$84:D385]
+$84:D359 B9 00 00    LDA $0000,y[$84:D385]  ; A = [[Y]]
 $84:D35C A0 93 A9    LDY #$A993             ;\
 $84:D35F 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Bomb Torizo statue breaking enemy projectile
 $84:D363 7A          PLY
@@ -11123,21 +11123,21 @@ $84:D368             dx 0001,9877,
                         0078,9877,
                         87E5,0400,ADB200,6E00,; Transfer 400h bytes from $AD:B200 to VRAM $6E00
                         0060,9877,
-                        D357,0000,            ; Spawn Bomb Torizo statue breaking with argument 0000h
+                        D357,0000,            ; Spawn Bomb Torizo statue breaking with argument 0
                         0030,9877,
-                        D357,0002,            ; Spawn Bomb Torizo statue breaking with argument 0002h
+                        D357,0002,            ; Spawn Bomb Torizo statue breaking with argument 2
                         000F,9877,
-                        D357,0004,            ; Spawn Bomb Torizo statue breaking with argument 0004h
+                        D357,0004,            ; Spawn Bomb Torizo statue breaking with argument 4
                         000E,9877,
-                        D357,0006,            ; Spawn Bomb Torizo statue breaking with argument 0006h
+                        D357,0006,            ; Spawn Bomb Torizo statue breaking with argument 6
                         000D,9877,
-                        D357,0008,            ; Spawn Bomb Torizo statue breaking with argument 0008h
+                        D357,0008,            ; Spawn Bomb Torizo statue breaking with argument 8
                         000C,9877,
-                        D357,000A,            ; Spawn Bomb Torizo statue breaking with argument 000Ah
+                        D357,000A,            ; Spawn Bomb Torizo statue breaking with argument Ah
                         000B,9877,
-                        D357,000C,            ; Spawn Bomb Torizo statue breaking with argument 000Ch
+                        D357,000C,            ; Spawn Bomb Torizo statue breaking with argument Ch
                         000A,9877,
-                        D357,000E,            ; Spawn Bomb Torizo statue breaking with argument 000Eh
+                        D357,000E,            ; Spawn Bomb Torizo statue breaking with argument Eh
                         0001,989D,
                         D3C7,                 ; Queue song 1 music track
                         86BC                  ; Delete

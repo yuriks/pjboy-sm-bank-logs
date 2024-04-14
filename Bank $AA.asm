@@ -390,7 +390,7 @@ $AA:B0A5             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 00
 {
 $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
                         C2C9,                   ; Enemy $7E:7808 = 7777h
-                        C303,0000,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter $0000 and sleep for 28h i-frames
+                        C303,0000,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter 0 and sleep for 28h i-frames
                         B11D,                   ; Spawn 6 Bomb Torizo low-health continuous drool enemy projectiles
                         814B,0040,AAB479,7300,  ; Transfer 40h bytes from $AA:B479 to VRAM $7300
                         814B,0040,AAB679,7400,  ; Transfer 40h bytes from $AA:B679 to VRAM $7400
@@ -829,7 +829,7 @@ $AA:BA46             dx 806B,C828,  ; Enemy $0FB2 = $C828
 ;;; $BA88: Instruction list -  ;;;
 {
 $AA:BA88             dx 806B,C828,  ; Enemy $0FB2 = $C828
-                        8123,0004,  ; Timer = 0004h
+                        8123,0004,  ; Timer = 4
                         0006,A64E,
                         0006,A786,
                         0006,A7A0,
@@ -838,7 +838,7 @@ $AA:BA88             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0006,A806,
                         0002,A7E4,
                         0002,A7C2,
-                        C5E3,0000,  ; Spawn Bomb Torizo sonic boom with parameter 0000h
+                        C5E3,0000,  ; Spawn Bomb Torizo sonic boom with parameter 0
                         0002,A7A0,
                         0018,A786,
                         0006,A64E,
@@ -849,7 +849,7 @@ $AA:BA88             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0006,A8B0,
                         0002,A88E,
                         0002,A86C,
-                        C5E3,0001,  ; Spawn Bomb Torizo sonic boom with parameter 0001h
+                        C5E3,0001,  ; Spawn Bomb Torizo sonic boom with parameter 1
                         0002,A84A,
                         0038,A828,
                         8110,BA90,  ; Decrement timer and go to $BA90 if non-zero
@@ -861,7 +861,7 @@ $AA:BA88             dx 806B,C828,  ; Enemy $0FB2 = $C828
 ;;; $BAF2: Instruction list -  ;;;
 {
 $AA:BAF2             dx 806B,C828,  ; Enemy $0FB2 = $C828
-                        8123,0004,  ; Timer = 0004h
+                        8123,0004,  ; Timer = 4
                         0006,A6EA,
                         0006,A8D2,
                         0006,A8EC,
@@ -870,7 +870,7 @@ $AA:BAF2             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0006,A93A,
                         0002,A920,
                         0002,A906,
-                        C5E3,0000,  ; Spawn Bomb Torizo sonic boom with parameter 0000h
+                        C5E3,0000,  ; Spawn Bomb Torizo sonic boom with parameter 0
                         0002,A8EC,
                         0018,A8D2,
                         0006,A6EA,
@@ -881,7 +881,7 @@ $AA:BAF2             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0006,A9DC,
                         0002,A9BA,
                         0002,A998,
-                        C5E3,0001,  ; Spawn Bomb Torizo sonic boom with parameter 0001h
+                        C5E3,0001,  ; Spawn Bomb Torizo sonic boom with parameter 1
                         0002,A976,
                         0038,A954,
                         8110,BAFA,  ; Decrement timer and go to $BAFA if non-zero
@@ -898,29 +898,29 @@ $AA:BB5C             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0003,A7A0,
                         0003,A7C2,
                         0003,A7E4,
-                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0000h
+                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0
                         0003,A806,
-                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 0002h
+                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 2
                         0001,A7E4,
-                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 0004h
+                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 4
                         0001,A7C2,
-                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 0006h
+                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 6
                         0001,A7A0,
-                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 0008h
+                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 8
                         0001,A786,
-                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ah
+                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter Ah
                         0003,A64E,
                         0003,A828,
                         0003,A84A,
                         0003,A86C,
                         0003,A88E,
-                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ch
+                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter Ch
                         0003,A8B0,
-                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter 000Eh
+                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter Eh
                         0001,A88E,
-                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 0010h
+                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 10h
                         0001,A86C,
-                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 0012h
+                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 12h
                         0001,A84A,
                         0010,A828,
                         806B,C752,  ; Enemy $0FB2 = $C752
@@ -936,29 +936,29 @@ $AA:BBDE             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0003,A8EC,
                         0003,A906,
                         0003,A920,
-                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0000h
+                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0
                         0003,A93A,
-                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 0002h
+                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 2
                         0001,A920,
-                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 0004h
+                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 4
                         0001,A906,
-                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 0006h
+                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 6
                         0001,A8EC,
-                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 0008h
+                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 8
                         0001,A8D2,
-                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ah
+                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter Ah
                         0003,A6EA,
                         0003,A954,
                         0003,A976,
                         0003,A998,
                         0003,A9BA,
-                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ch
+                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter Ch
                         0003,A9DC,
-                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter 000Eh
+                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter Eh
                         0001,A9BA,
-                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 0010h
+                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 10h
                         0001,A998,
-                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 0012h
+                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 12h
                         0001,A976,
                         0010,A954,
                         806B,C752,  ; Enemy $0FB2 = $C752
@@ -1278,29 +1278,29 @@ $AA:BFD6             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0003,AD3E,
                         0003,AD60,
                         0003,AD82,
-                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0000h
+                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0
                         0003,ADA4,
-                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 0002h
+                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 2
                         0001,AD82,
-                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 0004h
+                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 4
                         0001,AD60,
-                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 0006h
+                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 6
                         0001,AD3E,
-                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 0008h
+                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 8
                         0001,AD24,
-                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ah
+                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter Ah
                         0003,ABEC,
                         0003,ADC6,
                         0003,ADE8,
                         0003,AE0A,
                         0003,AE2C,
-                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ch
+                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter Ch
                         0003,AE4E,
-                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter 000Eh
+                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter Eh
                         0001,AE2C,
-                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 0010h
+                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 10h
                         0001,AE0A,
-                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 0012h
+                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 12h
                         0001,ADE8,
                         0010,ADC6,
                         806B,C752,  ; Enemy $0FB2 = $C752
@@ -1316,29 +1316,29 @@ $AA:C058             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0003,AE8A,
                         0003,AEA4,
                         0003,AEBE,
-                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0000h
+                        C601,0000,  ; Spawn Bomb Torizo explosive swipe with parameter 0
                         0003,AED8,
-                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 0002h
+                        C601,0002,  ; Spawn Bomb Torizo explosive swipe with parameter 2
                         0001,AEBE,
-                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 0004h
+                        C601,0004,  ; Spawn Bomb Torizo explosive swipe with parameter 4
                         0001,AEA4,
-                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 0006h
+                        C601,0006,  ; Spawn Bomb Torizo explosive swipe with parameter 6
                         0001,AE8A,
-                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 0008h
+                        C601,0008,  ; Spawn Bomb Torizo explosive swipe with parameter 8
                         0001,AE70,
-                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ah
+                        C601,000A,  ; Spawn Bomb Torizo explosive swipe with parameter Ah
                         0003,AC88,
                         0003,AEF2,
                         0003,AF14,
                         0003,AF36,
                         0003,AF58,
-                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter 000Ch
+                        C601,000C,  ; Spawn Bomb Torizo explosive swipe with parameter Ch
                         0003,AF7A,
-                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter 000Eh
+                        C601,000E,  ; Spawn Bomb Torizo explosive swipe with parameter Eh
                         0001,AF58,
-                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 0010h
+                        C601,0010,  ; Spawn Bomb Torizo explosive swipe with parameter 10h
                         0001,AF36,
-                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 0012h
+                        C601,0012,  ; Spawn Bomb Torizo explosive swipe with parameter 12h
                         0001,AF14,
                         0010,AEF2,
                         806B,C752,  ; Enemy $0FB2 = $C752
@@ -2060,7 +2060,7 @@ $AA:C600 6B          RTL
 ;;; $C601: Instruction - spawn Bomb Torizo explosive swipe with parameter [[Y]] ;;;
 {
 $AA:C601 5A          PHY
-$AA:C602 B9 00 00    LDA $0000,y[$AA:BBF8]
+$AA:C602 B9 00 00    LDA $0000,y[$AA:BBF8]  ; A = [[Y]]
 $AA:C605 A0 85 A9    LDY #$A985             ;\
 $AA:C608 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Bomb Torizo explosive swipe enemy projectile
 $AA:C60C 7A          PLY
