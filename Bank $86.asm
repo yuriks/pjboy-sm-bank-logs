@@ -6300,14 +6300,14 @@ $86:AB07             dx AA3D,AA8C,AADB,00,00,B000,0000,AAF2
 
 ;;; $AB15..AD87: Torizo chozo orbs ;;;
 {
-;;; $AB15: Instruction list - enemy projectile $AD5E/$AD6C/$AD7A (torizo chozo orbs) ;;;
+;;; $AB15: Instruction list - torizo chozo orbs - leftwards ;;;
 {
 $86:AB15             dx 0055,8C70,
                         81AB,AB15   ; Go to $AB15
 }
 
 
-;;; $AB1D: Instruction list ;;;
+;;; $AB1D: Instruction list - torizo chozo orbs - rightwards ;;;
 {
 $86:AB1D             dx 0055,8C77,
                         81AB,AB1D   ; Go to $AB1D
@@ -6317,7 +6317,7 @@ $86:AB1D             dx 0055,8C77,
 ;;; $AB25: Instruction list - enemy projectile $B1C0 (Golden Torizo egg) ;;;
 {
 $86:AB25             dx 816A,       ; Clear pre-instruction
-                        8230,5000,  ; Enemy projectile properties |= 5000h
+                        8230,5000,  ; Enemy projectile properties |= 5000h (don't die on contact, high priority)
                         0004,8D9C,
                         0004,8DA3,
                         0004,8DB9,
@@ -6330,8 +6330,8 @@ $86:AB25             dx 816A,       ; Clear pre-instruction
 ;;; $AB41: Instruction list ;;;
 {
 $86:AB41             dx 816A,       ; Clear pre-instruction
-                        823C,DFFF,  ; Enemy projectile properties &= DFFFh
-                        8230,5000,  ; Enemy projectile properties |= 5000h
+                        823C,DFFF,  ; Enemy projectile properties &= DFFFh (enable collisions with Samus)
+                        8230,5000,  ; Enemy projectile properties |= 5000h (don't die on contact, high priority)
                         831B,13,    ; Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / Torizo's projectile hits surface / Shitroid exploding)
                         0004,8C7E,
                         0005,8C85,
@@ -6383,35 +6383,37 @@ $86:ABAD 60          RTS
 }
 
 
-;;; $ABAE:  ;;;
+;;; $ABAE: Torizo chozo orbs common initialisation ;;;
 {
 ;; Parameters:
-;;     X: 
+;;     X: Pointer to constants (see $AC08/$AC99)
 ;;     Y: Enemy projectile index
+;;     $12: Enemy X position
+;;     $14: Enemy Y position
 $86:ABAE BD 00 00    LDA $0000,x[$86:AC12]  ;\
 $86:ABB1 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = [[X]]
-$86:ABB4 A5 12       LDA $12    [$7E:0012]
-$86:ABB6 18          CLC
-$86:ABB7 7D 02 00    ADC $0002,x[$86:AC14]
-$86:ABBA 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:ABBD 22 11 81 80 JSL $808111[$80:8111]
-$86:ABC1 29 FF 00    AND #$00FF
-$86:ABC4 38          SEC
-$86:ABC5 E9 80 00    SBC #$0080
-$86:ABC8 18          CLC
-$86:ABC9 7D 04 00    ADC $0004,x[$86:AC16]
-$86:ABCC 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:ABCF A5 14       LDA $14    [$7E:0014]
-$86:ABD1 18          CLC
-$86:ABD2 7D 06 00    ADC $0006,x[$86:AC18]
-$86:ABD5 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:ABD8 22 11 81 80 JSL $808111[$80:8111]
-$86:ABDC 29 FF 00    AND #$00FF
-$86:ABDF 38          SEC
-$86:ABE0 E9 80 00    SBC #$0080
-$86:ABE3 18          CLC
-$86:ABE4 7D 08 00    ADC $0008,x[$86:AC1A]
-$86:ABE7 99 DB 1A    STA $1ADB,y[$7E:1AFD]
+$86:ABB4 A5 12       LDA $12    [$7E:0012]  ;\
+$86:ABB6 18          CLC                    ;|
+$86:ABB7 7D 02 00    ADC $0002,x[$86:AC14]  ;} Enemy projectile X position = [$12] + [[X] + 2]
+$86:ABBA 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:ABBD 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:ABC1 29 FF 00    AND #$00FF             ;\
+$86:ABC4 38          SEC                    ;|
+$86:ABC5 E9 80 00    SBC #$0080             ;|
+$86:ABC8 18          CLC                    ;} Enemy projectile X velocity = [[X] + 4] + [random number] % 100h - 80h
+$86:ABC9 7D 04 00    ADC $0004,x[$86:AC16]  ;|
+$86:ABCC 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
+$86:ABCF A5 14       LDA $14    [$7E:0014]  ;\
+$86:ABD1 18          CLC                    ;|
+$86:ABD2 7D 06 00    ADC $0006,x[$86:AC18]  ;} Enemy projectile Y position = [$14] + [[X] + 6]
+$86:ABD5 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
+$86:ABD8 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:ABDC 29 FF 00    AND #$00FF             ;\
+$86:ABDF 38          SEC                    ;|
+$86:ABE0 E9 80 00    SBC #$0080             ;|
+$86:ABE3 18          CLC                    ;} Enemy projectile Y velocity = [[X] + 8] + [random number] % 100h - 80h
+$86:ABE4 7D 08 00    ADC $0008,x[$86:AC1A]  ;|
+$86:ABE7 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;/
 $86:ABEA 60          RTS
 }
 
@@ -6430,10 +6432,16 @@ $86:AC00 80 03       BRA $03    [$AC05]
                                             ; Else ([enemy $0FB4] < 0):
 $86:AC02 A2 08 AC    LDX #$AC08             ; X = $AC08
 
-$86:AC05 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to $ABAE
+$86:AC05 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to torizo chozo orbs common initialisation
 
-$86:AC08             dw AB1D,001B,0190,FFD8,FE60
-$86:AC12             dw AB15,FFE5,FE70,FFD8,FE60
+;                        _______________________ Instruction list pointer
+;                       |     __________________ X offset
+;                       |    |     _____________ X velocity (unit 1/100h px/frame)
+;                       |    |    |     ________ Y offset
+;                       |    |    |    |     ___ Y velocity (unit 1/100h px/frame)
+;                       |    |    |    |    |
+$86:AC08             dw AB1D,001B,0190,FFD8,FE60 ; Rightwards
+$86:AC12             dw AB15,FFE5,FE70,FFD8,FE60 ; Leftwards
 }
 
 
@@ -6496,10 +6504,16 @@ $86:AC91 80 03       BRA $03    [$AC96]
                                             ; Else ([enemy $0FB4] < 0):
 $86:AC93 A2 99 AC    LDX #$AC99             ; X = $AC99
 
-$86:AC96 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to $ABAE
+$86:AC96 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to torizo chozo orbs common initialisation
 
-$86:AC99             dw AB1D,001B,0100,FFD8,FE40
-$86:ACA3             dw AB15,FFE5,FF00,FFD8,FE40
+;                        _______________________ Instruction list pointer
+;                       |     __________________ X offset
+;                       |    |     _____________ X velocity (unit 1/100h px/frame)
+;                       |    |    |     ________ Y offset
+;                       |    |    |    |     ___ Y velocity (unit 1/100h px/frame)
+;                       |    |    |    |    |
+$86:AC99             dw AB1D,001B,0100,FFD8,FE40 ; Rightwards
+$86:ACA3             dw AB15,FFE5,FF00,FFD8,FE40 ; Leftwards
 }
 
 
@@ -6606,9 +6620,9 @@ $86:AD5D 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:AD5E             dx ABEB,ACAD,AB15,07,07,9008,0000,AB68 ; Bomb Torizo's chozo orbs
-$86:AD6C             dx ABEB,ACAD,AB15,07,07,900A,0000,AB68 ; Same as above but slightly more damage
-$86:AD7A             dx AC7C,ACFA,AB15,07,07,B050,0000,AB68 ; Golden Torizo's chozo orbs
+$86:AD5E             dx ABEB,ACAD,AB15,07,07,9008,0000,AB68 ; Bomb Torizo's chozo orbs. Initial instruction list ignored
+$86:AD6C             dx ABEB,ACAD,AB15,07,07,900A,0000,AB68 ; Same as above but slightly more damage. Initial instruction list ignored
+$86:AD7A             dx AC7C,ACFA,AB15,07,07,B050,0000,AB68 ; Golden Torizo's chozo orbs. Initial instruction list ignored
 }
 }
 
