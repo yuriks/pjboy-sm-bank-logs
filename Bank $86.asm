@@ -6352,7 +6352,7 @@ $86:AB68             dx 816A,           ; Clear pre-instruction
                         0004,8DB9,
                         0004,8DCF,
                         0004,8DE5,
-                        AB8A,EF3F,EFBF
+                        AB8A,EF3F,EFBF  ; ???
                         8154            ; Delete
 }
 

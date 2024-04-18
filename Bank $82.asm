@@ -10887,7 +10887,7 @@ $82:E6E0 69 08 00    ADC #$0008             ;|
 $82:E6E3 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $82:E6E6 80 03       BRA $03    [$E6EB]
 
-$82:E6E8 C9 E0 00    CMP #$00E0             ; Uhh, I'll finish writing this routine tomorrow... >_<;
+$82:E6E8 C9 E0 00    CMP #$00E0             ; "Uhh, I'll finish writing this routine tomorrow... >_<;"
 
 $82:E6EB 8B          PHB                    ;\
 $82:E6EC F4 00 7E    PEA $7E00              ;|
