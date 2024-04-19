@@ -6346,7 +6346,7 @@ $86:AB41             dx 816A,       ; Clear pre-instruction
 ;;; $AB68: Shot instruction list - enemy projectile $AD5E/$AD6C/$AD7A (torizo chozo orbs) ;;;
 {
 $86:AB68             dx 816A,           ; Clear pre-instruction
-                        8230,5000,      ; Enemy projectile properties |= 5000h
+                        8230,5000,      ; Enemy projectile properties |= 5000h (don't die on contact, high priority)
                         0004,8D9C,
                         0004,8DA3,
                         0004,8DB9,
@@ -6447,10 +6447,10 @@ $86:AC12             dw AB15,FFE5,FE70,FFD8,FE60 ; Leftwards
 
 ;;; $AC1C: Unused ;;;
 {
-$86:AC1C 22 11 81 80 JSL $808111[$80:8111]
-$86:AC20 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:AC23 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
-$86:AC27 85 12       STA $12    [$7E:0012]
+$86:AC1C 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:AC20 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:AC23 22 66 C0 A0 JSL $A0C066[$A0:C066]  ;\
+$86:AC27 85 12       STA $12    [$7E:0012]  ;} $12 = angle of Samus from enemy
 $86:AC29 AD E5 05    LDA $05E5  [$7E:05E5]
 $86:AC2C 29 0F 00    AND #$000F
 $86:AC2F 38          SEC
@@ -6520,39 +6520,41 @@ $86:ACA3             dw AB15,FFE5,FF00,FFD8,FE40 ; Leftwards
 ;;; $ACAD: Pre-instruction - enemy projectile $AD5E/$AD6C (Bomb Torizo's chozo orbs) ;;;
 {
 $86:ACAD 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:ACB0 B0 20       BCS $20    [$ACD2]
+$86:ACB0 B0 20       BCS $20    [$ACD2]     ; If collision: go to BRANCH_HIT_WALL
 $86:ACB2 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:ACB5 3C DB 1A    BIT $1ADB,x[$7E:1AFD]
-$86:ACB8 30 02       BMI $02    [$ACBC]
-$86:ACBA B0 23       BCS $23    [$ACDF]
+$86:ACB5 3C DB 1A    BIT $1ADB,x[$7E:1AFD]  ;\
+$86:ACB8 30 02       BMI $02    [$ACBC]     ;} If [enemy projectile Y velocity] >= 0:
+$86:ACBA B0 23       BCS $23    [$ACDF]     ; If collision detected: go to BRANCH_HIT_FLOOR
 
-$86:ACBC BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:ACBF 18          CLC
-$86:ACC0 69 12 00    ADC #$0012
-$86:ACC3 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:ACC6 29 00 F0    AND #$F000
-$86:ACC9 C9 00 10    CMP #$1000
-$86:ACCC D0 03       BNE $03    [$ACD1]
-$86:ACCE 9E 97 19    STZ $1997,x
+$86:ACBC BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:ACBF 18          CLC                    ;|
+$86:ACC0 69 12 00    ADC #$0012             ;} Enemy projectile Y velocity += 12h
+$86:ACC3 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:ACC6 29 00 F0    AND #$F000             ;\
+$86:ACC9 C9 00 10    CMP #$1000             ;} If [enemy projectile Y velocity] / 1000h = 1:
+$86:ACCC D0 03       BNE $03    [$ACD1]     ;/
+$86:ACCE 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
+                                            
+$86:ACD1 60          RTS                    ; Return
 
-$86:ACD1 60          RTS
+; BRANCH_HIT_WALL
+$86:ACD2 A9 25 AB    LDA #$AB25             ;\
+$86:ACD5 9D 47 1B    STA $1B47,x[$7E:1B61]  ;} Enemy projectile instruction list pointer = $AB25
+$86:ACD8 A9 01 00    LDA #$0001             ;\
+$86:ACDB 9D 8F 1B    STA $1B8F,x[$7E:1BA9]  ;} Enemy projectile instruction timer = 1
+$86:ACDE 60          RTS                    ; Return
 
-$86:ACD2 A9 25 AB    LDA #$AB25
-$86:ACD5 9D 47 1B    STA $1B47,x[$7E:1B61]
-$86:ACD8 A9 01 00    LDA #$0001
-$86:ACDB 9D 8F 1B    STA $1B8F,x[$7E:1BA9]
-$86:ACDE 60          RTS
-
-$86:ACDF BD 93 1A    LDA $1A93,x[$7E:1AB3]
-$86:ACE2 29 F0 FF    AND #$FFF0
-$86:ACE5 09 08 00    ORA #$0008
-$86:ACE8 3A          DEC A
-$86:ACE9 3A          DEC A
-$86:ACEA 9D 93 1A    STA $1A93,x[$7E:1AB3]
-$86:ACED A9 41 AB    LDA #$AB41
-$86:ACF0 9D 47 1B    STA $1B47,x[$7E:1B67]
-$86:ACF3 A9 01 00    LDA #$0001
-$86:ACF6 9D 8F 1B    STA $1B8F,x[$7E:1BAF]
+; BRANCH_HIT_FLOOR
+$86:ACDF BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;\
+$86:ACE2 29 F0 FF    AND #$FFF0             ;|
+$86:ACE5 09 08 00    ORA #$0008             ;|
+$86:ACE8 3A          DEC A                  ;} Enemy projectile Y position = [enemy projectile Y position] rounded to pixel 6 of 16x16 block
+$86:ACE9 3A          DEC A                  ;|
+$86:ACEA 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
+$86:ACED A9 41 AB    LDA #$AB41             ;\
+$86:ACF0 9D 47 1B    STA $1B47,x[$7E:1B67]  ;} Enemy projectile instruction list pointer = $AB41
+$86:ACF3 A9 01 00    LDA #$0001             ;\
+$86:ACF6 9D 8F 1B    STA $1B8F,x[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
 $86:ACF9 60          RTS
 }
 
@@ -6560,51 +6562,53 @@ $86:ACF9 60          RTS
 ;;; $ACFA: Pre-instruction - enemy projectile $AD7A (Golden Torizo's chozo orbs) ;;;
 {
 $86:ACFA 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:ACFD 90 0A       BCC $0A    [$AD09]
-$86:ACFF BD B7 1A    LDA $1AB7,x
-$86:AD02 49 FF FF    EOR #$FFFF
-$86:AD05 1A          INC A
-$86:AD06 9D B7 1A    STA $1AB7,x
+$86:ACFD 90 0A       BCC $0A    [$AD09]     ; If collision:
+$86:ACFF BD B7 1A    LDA $1AB7,x            ;\
+$86:AD02 49 FF FF    EOR #$FFFF             ;|
+$86:AD05 1A          INC A                  ;} Negate enemy projectile X velocity
+$86:AD06 9D B7 1A    STA $1AB7,x            ;/
 
 $86:AD09 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:AD0C 90 2A       BCC $2A    [$AD38]
-$86:AD0E 3C DB 1A    BIT $1ADB,x[$7E:1AFD]
-$86:AD11 30 25       BMI $25    [$AD38]
-$86:AD13 BD B7 1A    LDA $1AB7,x[$7E:1AD9]
-$86:AD16 10 06       BPL $06    [$AD1E]
-$86:AD18 18          CLC
-$86:AD19 69 40 00    ADC #$0040
-$86:AD1C 80 04       BRA $04    [$AD22]
+$86:AD0C 90 2A       BCC $2A    [$AD38]     ; If no collision: go to BRANCH_BOUNCE_END
+$86:AD0E 3C DB 1A    BIT $1ADB,x[$7E:1AFD]  ;\
+$86:AD11 30 25       BMI $25    [$AD38]     ;} If [enemy projectile Y velocity] < 0: go to BRANCH_BOUNCE_END
+$86:AD13 BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
+$86:AD16 10 06       BPL $06    [$AD1E]     ;|
+$86:AD18 18          CLC                    ;|
+$86:AD19 69 40 00    ADC #$0040             ;|
+$86:AD1C 80 04       BRA $04    [$AD22]     ;|
+                                            ;} Enemy projectile X velocity -= 40h * sgn([enemy projectile X velocity])
+$86:AD1E 38          SEC                    ;|
+$86:AD1F E9 40 00    SBC #$0040             ;|
+                                            ;|
+$86:AD22 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;/
+$86:AD25 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:AD28 4A          LSR A                  ;|
+$86:AD29 49 FF FF    EOR #$FFFF             ;} Enemy projectile Y velocity = -[enemy projectile Y velocity] / 2
+$86:AD2C 1A          INC A                  ;|
+$86:AD2D 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:AD30 29 80 FF    AND #$FF80             ;\
+$86:AD33 C9 80 FF    CMP #$FF80             ;} If [enemy projectile Y velocity] / 80h = -1: go to BRANCH_BREAK
+$86:AD36 F0 0B       BEQ $0B    [$AD43]     ;/
 
-$86:AD1E 38          SEC
-$86:AD1F E9 40 00    SBC #$0040
+; BRANCH_BOUNCE_END
+$86:AD38 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:AD3B 18          CLC                    ;|
+$86:AD3C 69 18 00    ADC #$0018             ;} Enemy projectile Y velocity += 18h
+$86:AD3F 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:AD42 60          RTS                    ; Return
 
-$86:AD22 9D B7 1A    STA $1AB7,x[$7E:1AD9]
-$86:AD25 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:AD28 4A          LSR A
-$86:AD29 49 FF FF    EOR #$FFFF
-$86:AD2C 1A          INC A
-$86:AD2D 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:AD30 29 80 FF    AND #$FF80
-$86:AD33 C9 80 FF    CMP #$FF80
-$86:AD36 F0 0B       BEQ $0B    [$AD43]
-
-$86:AD38 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:AD3B 18          CLC
-$86:AD3C 69 18 00    ADC #$0018
-$86:AD3F 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:AD42 60          RTS
-
-$86:AD43 BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:AD46 29 F0 FF    AND #$FFF0
-$86:AD49 09 08 00    ORA #$0008
-$86:AD4C 3A          DEC A
-$86:AD4D 3A          DEC A
-$86:AD4E 9D 93 1A    STA $1A93,x[$7E:1AB5]
-$86:AD51 A9 41 AB    LDA #$AB41
-$86:AD54 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:AD57 A9 01 00    LDA #$0001
-$86:AD5A 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
+; BRANCH_BREAK
+$86:AD43 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
+$86:AD46 29 F0 FF    AND #$FFF0             ;|
+$86:AD49 09 08 00    ORA #$0008             ;|
+$86:AD4C 3A          DEC A                  ;} Enemy projectile Y position = [enemy projectile Y position] rounded to pixel 6 of 16x16 block
+$86:AD4D 3A          DEC A                  ;|
+$86:AD4E 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
+$86:AD51 A9 41 AB    LDA #$AB41             ;\
+$86:AD54 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $AB41
+$86:AD57 A9 01 00    LDA #$0001             ;\
+$86:AD5A 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:AD5D 60          RTS
 }
 
