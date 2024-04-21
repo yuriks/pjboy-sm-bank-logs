@@ -5729,10 +5729,10 @@ $86:A5FE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:A601 29 FE 01    AND #$01FE             ;} X = [random number] / 2 % 100h * 2
 $86:A604 80 1A       BRA $1A    [$A620]     ; Go to BRANCH_ANGLE_DETERMINED
 
-$86:A606 30 05       BMI $05    [$A60D]     ; If [enemy $0FB4] & 8000h = 0:
+$86:A606 30 05       BMI $05    [$A60D]     ; If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:A608 A9 E0 00    LDA #$00E0             ; $12 = E0h
 $86:A60B 80 03       BRA $03    [$A610]
-                                            ; Else ([enemy $0FB4] & 8000h != 0):
+                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
 $86:A60D A9 20 00    LDA #$0020             ; $12 = 20h
 
 $86:A610 85 12       STA $12    [$7E:0012]
@@ -5752,7 +5752,7 @@ $86:A628 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B585];\
 $86:A62C 99 DB 1A    STA $1ADB,y[$7E:1AF7]  ;} Enemy projectile Y velocity = -cos([X] / 2 * pi / 80h) * 100h
 $86:A62F AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:A632 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A635 30 0B       BMI $0B    [$A642]     ;} If [enemy $0FB4] & 8000h = 0:
+$86:A635 30 0B       BMI $0B    [$A642]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:A637 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:A63A 18          CLC                    ;|
 $86:A63B 69 F8 FF    ADC #$FFF8             ;} Enemy projectile X position = [enemy X position] - 8
@@ -5800,7 +5800,7 @@ $86:A69C A9 00 00    LDA #$0000             ;\
 $86:A69F 99 B7 1A    STA $1AB7,y[$7E:1ACD]  ;} Enemy projectile X velocity = 0
 $86:A6A2 60          RTS                    ; Return
 
-$86:A6A3 30 11       BMI $11    [$A6B6]     ; If [enemy $0FB4] & 8000h = 0:
+$86:A6A3 30 11       BMI $11    [$A6B6]     ; If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:A6A5 18          CLC                    ;\
 $86:A6A6 7D 7A 0F    ADC $0F7A,x[$7E:0F7A]  ;|
 $86:A6A9 69 F8 FF    ADC #$FFF8             ;} Enemy projectile X position = [enemy X position] - 8 + [random number] % 4
@@ -5857,7 +5857,7 @@ $86:A6FC 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:A6FE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:A701 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:A703 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A706 30 16       BMI $16    [$A71E]     ;} If [enemy $0FB4] >= 0:
+$86:A706 30 16       BMI $16    [$A71E]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:A708 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:A70B BD 38 A7    LDA $A738,x[$86:A738]  ;\
 $86:A70E 18          CLC                    ;|
@@ -5950,14 +5950,14 @@ $86:A80B             dw 0010,0010,0010,0010,0010,0010,0010,0010
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
-;;     $1993: Index. Multiple of 2, range -2..6 (only 0 and 6 are used)
+;;     $1993: Index. 0 or 6
 $86:A81B AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:A81E BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:A821 99 4B 1A    STA $1A4B,y[$7E:1A59]  ;} Enemy projectile X position = [enemy X position]
 $86:A824 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:A827 99 93 1A    STA $1A93,y[$7E:1AA1]  ;} Enemy projectile Y position = [enemy Y position]
 $86:A82A 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A82D 30 06       BMI $06    [$A835]     ;} If [enemy $0FB4] >= 0:
+$86:A82D 30 06       BMI $06    [$A835]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:A82F EE 93 19    INC $1993  [$7E:1993]  ;\
 $86:A832 EE 93 19    INC $1993  [$7E:1993]  ;} Enemy projectile initialisation parameter 0 += 2
 
@@ -5976,8 +5976,17 @@ $86:A852 99 93 1A    STA $1A93,y[$7E:1AA1]  ;/
 $86:A855 99 23 1B    STA $1B23,y[$7E:1B31]  ; Enemy projectile reset Y position = [enemy projectile Y position]
 $86:A858 60          RTS
 
-$86:A859             dw 0000, 000C, FFF4, 0000, 0010, FFF0 ; X offsets
-$86:A865             dw FFF8, FFF8, FFF8, FFEC, FFEC, FFEC ; Y offsets
+;                        _____________ Unused
+;                       |     ________ Facing right
+;                       |    |     ___ Facing left
+;                       |    |    |
+; X offsets
+$86:A859             dw 0000,000C,FFF4,
+                        0000,0010,FFF0
+
+; Y offsets
+$86:A865             dw FFF8,FFF8,FFF8,
+                        FFEC,FFEC,FFEC
 }
 
 
@@ -6426,10 +6435,10 @@ $86:ABF1 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:ABF3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:ABF6 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:ABF8 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:ABFB 30 05       BMI $05    [$AC02]     ;} If [enemy $0FB4] >= 0:
+$86:ABFB 30 05       BMI $05    [$AC02]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:ABFD A2 12 AC    LDX #$AC12             ; X = $AC12
 $86:AC00 80 03       BRA $03    [$AC05]
-                                            ; Else ([enemy $0FB4] < 0):
+                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
 $86:AC02 A2 08 AC    LDX #$AC08             ; X = $AC08
 
 $86:AC05 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to torizo chozo orbs / egg / eye beam common initialisation
@@ -6471,7 +6480,7 @@ $86:AC4E 18          CLC                    ;|
 $86:AC4F 69 D8 FF    ADC #$FFD8             ;} Enemy projectile Y position = [enemy Y position] - 28h
 $86:AC52 99 93 1A    STA $1A93,y            ;/
 $86:AC55 3C B4 0F    BIT $0FB4,x            ;\
-$86:AC58 30 11       BMI $11    [$AC6B]     ;} If [enemy $0FB4] >= 0:
+$86:AC58 30 11       BMI $11    [$AC6B]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:AC5A BD 7A 0F    LDA $0F7A,x            ;\
 $86:AC5D 18          CLC                    ;|
 $86:AC5E 69 E5 FF    ADC #$FFE5             ;} Enemy projectile X position = [enemy X position] - 1Bh
@@ -6498,10 +6507,10 @@ $86:AC82 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:AC84 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:AC87 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:AC89 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:AC8C 30 05       BMI $05    [$AC93]     ;} If [enemy $0FB4] >= 0:
+$86:AC8C 30 05       BMI $05    [$AC93]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:AC8E A2 A3 AC    LDX #$ACA3             ; X = $ACA3
 $86:AC91 80 03       BRA $03    [$AC96]
-                                            ; Else ([enemy $0FB4] < 0):
+                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
 $86:AC93 A2 99 AC    LDX #$AC99             ; X = $AC99
 
 $86:AC96 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to torizo chozo orbs / egg / eye beam common initialisation
@@ -6737,7 +6746,7 @@ $86:AE30 99 93 1A    STA $1A93,y[$7E:1AA1]  ;/
 $86:AE33 A9 00 00    LDA #$0000
 $86:AE36 99 DB 1A    STA $1ADB,y[$7E:1AE9]
 $86:AE39 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:AE3C 30 17       BMI $17    [$AE55]     ;} If [enemy $0FB4] >= 0:
+$86:AE3C 30 17       BMI $17    [$AE55]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
 $86:AE3E BD 7A 0F    LDA $0F7A,x            ;\
 $86:AE41 18          CLC                    ;|
 $86:AE42 69 E0 FF    ADC #$FFE0             ;} Enemy projectile X position -= 20h
@@ -7003,15 +7012,15 @@ $86:B009 BD 7E 0F    LDA $0F7E,x            ;\
 $86:B00C 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:B00E AF 11 81 80 LDA $808111[$80:8111]  ;\ <-- typo >_<;
 $86:B012 29 1F 00    AND #$001F             ;|
-$86:B015 18          CLC                    ;} Enemy projectile $1B23 = 42h
+$86:B015 18          CLC                    ;} Enemy projectile egg hatch timer = 42h
 $86:B016 69 40 00    ADC #$0040             ;|
 $86:B019 99 23 1B    STA $1B23,y            ;/
 $86:B01C BD B4 0F    LDA $0FB4,x            ;\
-$86:B01F 99 FF 1A    STA $1AFF,y            ;} Enemy projectile $1AFF = [enemy $0FB4]
-$86:B022 30 05       BMI $05    [$B029]     ; If [enemy $0FB4] >= 0:
+$86:B01F 99 FF 1A    STA $1AFF,y            ;} Enemy projectile direction = [enemy $0FB4]
+$86:B022 30 05       BMI $05    [$B029]     ; If [enemy projectile direction] = leftwards:
 $86:B024 A2 39 B0    LDX #$B039             ; X = $B039
 $86:B027 80 03       BRA $03    [$B02C]
-                                            ; Else ([enemy $0FB4] < 0):
+                                            ; Else ([enemy projectile direction] = rightwards):
 $86:B029 A2 2F B0    LDX #$B02F             ; X = $B02F
 
 $86:B02C 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to torizo chozo orbs / egg / eye beam common initialisation
@@ -7027,114 +7036,117 @@ $86:B039             dw B104,FFF0,FF80,FFFF,FE80 ; Leftwards
 }
 
 
-;;; $B043: Pre-instruction - enemy projectile $B1C0 (Golden Torizo egg) ;;;
+;;; $B043: Pre-instruction - Golden Torizo egg - bouncing ;;;
 {
-$86:B043 DE 23 1B    DEC $1B23,x
-$86:B046 30 54       BMI $54    [$B09C]
+$86:B043 DE 23 1B    DEC $1B23,x            ; Decrement enemy projectile egg hatch timer
+$86:B046 30 54       BMI $54    [$B09C]     ; If [enemy projectile egg hatch timer] < 0: go to BRANCH_HATCH
 $86:B048 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:B04B 90 13       BCC $13    [$B060]
-$86:B04D BD B7 1A    LDA $1AB7,x
-$86:B050 49 FF FF    EOR #$FFFF
-$86:B053 1A          INC A
-$86:B054 9D B7 1A    STA $1AB7,x
-$86:B057 BD FF 1A    LDA $1AFF,x
-$86:B05A 49 00 80    EOR #$8000
-$86:B05D 9D FF 1A    STA $1AFF,x
+$86:B04B 90 13       BCC $13    [$B060]     ; If collision:
+$86:B04D BD B7 1A    LDA $1AB7,x            ;\
+$86:B050 49 FF FF    EOR #$FFFF             ;|
+$86:B053 1A          INC A                  ;} Negate enemy projectile X velocity
+$86:B054 9D B7 1A    STA $1AB7,x            ;/
+$86:B057 BD FF 1A    LDA $1AFF,x            ;\
+$86:B05A 49 00 80    EOR #$8000             ;} Toggle enemy projectile direction
+$86:B05D 9D FF 1A    STA $1AFF,x            ;/
 
 $86:B060 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:B063 90 21       BCC $21    [$B086]
-$86:B065 3C DB 1A    BIT $1ADB,x
-$86:B068 30 1C       BMI $1C    [$B086]
-$86:B06A BD B7 1A    LDA $1AB7,x
-$86:B06D 10 06       BPL $06    [$B075]
-$86:B06F 18          CLC
-$86:B070 69 20 00    ADC #$0020
-$86:B073 80 04       BRA $04    [$B079]
+$86:B063 90 21       BCC $21    [$B086]     ; If no collision: go to BRANCH_BOUNCE_END
+$86:B065 3C DB 1A    BIT $1ADB,x            ;\
+$86:B068 30 1C       BMI $1C    [$B086]     ;} If [enemy projectile Y velocity] < 0: go to BRANCH_BOUNCE_END
+$86:B06A BD B7 1A    LDA $1AB7,x            ;\
+$86:B06D 10 06       BPL $06    [$B075]     ;|
+$86:B06F 18          CLC                    ;|
+$86:B070 69 20 00    ADC #$0020             ;|
+$86:B073 80 04       BRA $04    [$B079]     ;|
+                                            ;} Enemy projectile X velocity -= 20h * sgn([enemy projectile X velocity])
+$86:B075 38          SEC                    ;|
+$86:B076 E9 20 00    SBC #$0020             ;|
+                                            ;|
+$86:B079 9D B7 1A    STA $1AB7,x            ;/
+$86:B07C BD DB 1A    LDA $1ADB,x            ;\
+$86:B07F 49 FF FF    EOR #$FFFF             ;|
+$86:B082 1A          INC A                  ;} Negate enemy projectile Y velocity
+$86:B083 9D DB 1A    STA $1ADB,x            ;/
 
-$86:B075 38          SEC
-$86:B076 E9 20 00    SBC #$0020
+; BRANCH_BOUNCE_END
+$86:B086 BD DB 1A    LDA $1ADB,x            ;\
+$86:B089 18          CLC                    ;|
+$86:B08A 69 30 00    ADC #$0030             ;} Enemy projectile Y velocity += 30h
+$86:B08D 9D DB 1A    STA $1ADB,x            ;/
+$86:B090 29 00 F0    AND #$F000             ;\
+$86:B093 C9 00 10    CMP #$1000             ;} If [enemy projectile Y velocity] / 1000h = 1:
+$86:B096 D0 03       BNE $03    [$B09B]     ;/
+$86:B098 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
 
-$86:B079 9D B7 1A    STA $1AB7,x
-$86:B07C BD DB 1A    LDA $1ADB,x
-$86:B07F 49 FF FF    EOR #$FFFF
-$86:B082 1A          INC A
-$86:B083 9D DB 1A    STA $1ADB,x
+$86:B09B 60          RTS                    ; Return
 
-$86:B086 BD DB 1A    LDA $1ADB,x
-$86:B089 18          CLC
-$86:B08A 69 30 00    ADC #$0030
-$86:B08D 9D DB 1A    STA $1ADB,x
-$86:B090 29 00 F0    AND #$F000
-$86:B093 C9 00 10    CMP #$1000
-$86:B096 D0 03       BNE $03    [$B09B]
-$86:B098 9E 97 19    STZ $1997,x
-
-$86:B09B 60          RTS
-
-$86:B09C FE 47 1B    INC $1B47,x
-$86:B09F FE 47 1B    INC $1B47,x
-$86:B0A2 A9 01 00    LDA #$0001
-$86:B0A5 9D 8F 1B    STA $1B8F,x
-$86:B0A8 3C FF 1A    BIT $1AFF,x
-$86:B0AB 30 05       BMI $05    [$B0B2]
-$86:B0AD A9 00 FF    LDA #$FF00
+; BRANCH_HATCH
+$86:B09C FE 47 1B    INC $1B47,x            ;\
+$86:B09F FE 47 1B    INC $1B47,x            ;} Enemy projectile instruction list pointer += 2 (wake up)
+$86:B0A2 A9 01 00    LDA #$0001             ;\
+$86:B0A5 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
+$86:B0A8 3C FF 1A    BIT $1AFF,x            ;\
+$86:B0AB 30 05       BMI $05    [$B0B2]     ;} If [enemy projectile direction] = leftwards:
+$86:B0AD A9 00 FF    LDA #$FF00             ; Enemy projectile X velocity = -100h
 $86:B0B0 80 03       BRA $03    [$B0B5]
-
-$86:B0B2 A9 00 01    LDA #$0100
+                                            ; Else ([enemy projectile direction] = rightwards):
+$86:B0B2 A9 00 01    LDA #$0100             ; Enemy projectile X velocity = 100h
 
 $86:B0B5 9D B7 1A    STA $1AB7,x
 $86:B0B8 60          RTS
 }
 
 
-;;; $B0B9:  ;;;
+;;; $B0B9: Pre-instruction - Golden Torizo egg - hatched ;;;
 {
 $86:B0B9 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:B0BC B0 15       BCS $15    [$B0D3]
-$86:B0BE 3C FF 1A    BIT $1AFF,x
-$86:B0C1 30 05       BMI $05    [$B0C8]
-$86:B0C3 A9 D0 FF    LDA #$FFD0
+$86:B0BC B0 15       BCS $15    [$B0D3]     ; If collision: go to BRANCH_HIT_WALL
+$86:B0BE 3C FF 1A    BIT $1AFF,x            ;\
+$86:B0C1 30 05       BMI $05    [$B0C8]     ;} If [enemy projectile direction] = leftwards:
+$86:B0C3 A9 D0 FF    LDA #$FFD0             ; A = -30h
 $86:B0C6 80 03       BRA $03    [$B0CB]
+                                            ; Else ([enemy projectile direction] = rightwards):
+$86:B0C8 A9 30 00    LDA #$0030             ; A = 30h
 
-$86:B0C8 A9 30 00    LDA #$0030
+$86:B0CB 18          CLC                    ;\
+$86:B0CC 7D B7 1A    ADC $1AB7,x            ;} Enemy projectile X velocity += [A]
+$86:B0CF 9D B7 1A    STA $1AB7,x            ;/
+$86:B0D2 60          RTS                    ; Return
 
-$86:B0CB 18          CLC
-$86:B0CC 7D B7 1A    ADC $1AB7,x
-$86:B0CF 9D B7 1A    STA $1AB7,x
-$86:B0D2 60          RTS
-
-$86:B0D3 A9 DD B0    LDA #$B0DD
-$86:B0D6 9D 03 1A    STA $1A03,x
-$86:B0D9 9E DB 1A    STZ $1ADB,x
+; BRANCH_HIT_WALL
+$86:B0D3 A9 DD B0    LDA #$B0DD             ;\
+$86:B0D6 9D 03 1A    STA $1A03,x            ;} Enemy projectile pre-instruction = $B0DD (hit wall)
+$86:B0D9 9E DB 1A    STZ $1ADB,x            ; Enemy projectile Y velocity = 0
 $86:B0DC 60          RTS
 }
 
 
-;;; $B0DD:  ;;;
+;;; $B0DD: Pre-instruction - Golden Torizo egg - hit wall ;;;
 {
 $86:B0DD 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:B0E0 B0 0B       BCS $0B    [$B0ED]
-$86:B0E2 A9 30 00    LDA #$0030
-$86:B0E5 18          CLC
-$86:B0E6 7D DB 1A    ADC $1ADB,x
-$86:B0E9 9D DB 1A    STA $1ADB,x
-$86:B0EC 60          RTS
+$86:B0E0 B0 0B       BCS $0B    [$B0ED]     ; If no collision:
+$86:B0E2 A9 30 00    LDA #$0030             ;\
+$86:B0E5 18          CLC                    ;|
+$86:B0E6 7D DB 1A    ADC $1ADB,x            ;} Enemy projectile Y velocity += 30h
+$86:B0E9 9D DB 1A    STA $1ADB,x            ;/
+$86:B0EC 60          RTS                    ; Return
 
-$86:B0ED 3C FF 1A    BIT $1AFF,x
-$86:B0F0 30 05       BMI $05    [$B0F7]
-$86:B0F2 A9 90 B1    LDA #$B190
+$86:B0ED 3C FF 1A    BIT $1AFF,x            ;\
+$86:B0F0 30 05       BMI $05    [$B0F7]     ;} If [enemy projectile direction] = leftwards:
+$86:B0F2 A9 90 B1    LDA #$B190             ; Enemy projectile instruction list pointer = $B190 (break - facing left)
 $86:B0F5 80 03       BRA $03    [$B0FA]
-
-$86:B0F7 A9 A8 B1    LDA #$B1A8
+                                            ; Else ([enemy projectile direction] = rightwards):
+$86:B0F7 A9 A8 B1    LDA #$B1A8             ; Enemy projectile instruction list pointer = $B1A8 (break - facing right)
 
 $86:B0FA 9D 47 1B    STA $1B47,x
-$86:B0FD A9 01 00    LDA #$0001
-$86:B100 9D 8F 1B    STA $1B8F,x
+$86:B0FD A9 01 00    LDA #$0001             ;\
+$86:B100 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
 $86:B103 60          RTS
 }
 
 
-;;; $B104: Instruction list - Golden Torizo egg - leftwards ;;;
+;;; $B104: Instruction list - Golden Torizo egg - bouncing - leftwards ;;;
 {
 $86:B104             dx 0030,8F17,
                         8159,       ; Sleep
@@ -7142,11 +7154,11 @@ $86:B104             dx 0030,8F17,
                         0004,8F1E,
                         0004,8F25,
                         0004,8F2C,
-                        81AB,B134   ; Go to $B134
+                        81AB,B134   ; Go to $B134 (hatch)
 }
 
 
-;;; $B11C: Instruction list - Golden Torizo egg - rightwards ;;;
+;;; $B11C: Instruction list - Golden Torizo egg - bouncing - rightwards ;;;
 {
 $86:B11C             dx 0030,8F75,
                         8159,       ; Sleep
@@ -7154,34 +7166,34 @@ $86:B11C             dx 0030,8F75,
                         0004,8F7C,
                         0004,8F83,
                         0004,8F8A,
-                        81AB,B134   ; Go to $B134
+                        81AB,B134   ; Go to $B134 (hatch)
 }
 
 
-;;; $B134: Instruction list ;;;
+;;; $B134: Instruction list - Golden Torizo egg - hatch ;;;
 {
-$86:B134             dx 823C,DFFF,  ; Enemy projectile properties &= DFFFh
-                        8230,8000,  ; Enemy projectile properties |= 8000h
-                        B13E
+$86:B134             dx 823C,DFFF,  ; Enemy projectile properties &= DFFFh (enable collisions with Samus)
+                        8230,8000,  ; Enemy projectile properties |= 8000h (detect collisions with projectiles)
+                        B13E        ; Go to hatched
 }
 
 
-;;; $B13E: Instruction ;;;
+;;; $B13E: Instruction - go to hatched ;;;
 {
-$86:B13E 3C FF 1A    BIT $1AFF,x
-$86:B141 30 04       BMI $04    [$B147]
-$86:B143 A0 4B B1    LDY #$B14B
-$86:B146 60          RTS
+$86:B13E 3C FF 1A    BIT $1AFF,x            ;\
+$86:B141 30 04       BMI $04    [$B147]     ;} If [enemy projectile direction] = leftwards:
+$86:B143 A0 4B B1    LDY #$B14B             ; Y = $B14B (hatched - leftwards)
+$86:B146 60          RTS                    ; Return
 
-$86:B147 A0 66 B1    LDY #$B166
+$86:B147 A0 66 B1    LDY #$B166             ; Y = $B166 (hatched - rightwards)
 $86:B14A 60          RTS
 }
 
 
-;;; $B14B: Instruction list ;;;
+;;; $B14B: Instruction list - Golden Torizo egg - hatched - leftwards ;;;
 {
 $86:B14B             dx 8312,22,    ; Queue sound 22h, sound library 2, max queued sounds allowed = 6 (Golden Torizo egg hatches)
-                        8161,B0B9   ; Pre-instruction = $B0B9
+                        8161,B0B9   ; Pre-instruction = $B0B9 (hatched)
 $86:B152             dx 0006,8F33,
                         0006,8F3A,
                         0006,8F41,
@@ -7190,10 +7202,10 @@ $86:B152             dx 0006,8F33,
 }
 
 
-;;; $B166: Instruction list ;;;
+;;; $B166: Instruction list - Golden Torizo egg - hatched - rightwards ;;;
 {
 $86:B166             dx 8312,22,    ; Queue sound 22h, sound library 2, max queued sounds allowed = 6 (Golden Torizo egg hatches)
-                        8161,B0B9   ; Pre-instruction = $B0B9
+                        8161,B0B9   ; Pre-instruction = $B0B9 (hatched)
 $86:B16D             dx 0006,8F91,
                         0006,8F98,
                         0006,8F9F,
@@ -7202,25 +7214,26 @@ $86:B16D             dx 0006,8F91,
 }
 
 
-;;; $B181: Unused. Instruction list ;;;
+;;; $B181: Unused. Instruction list - break ;;;
 {
-$86:B181             dw B183
+$86:B181             dw B183        ; Go to break
 }
 
 
-;;; $B183: Unused. Instruction ;;;
+;;; $B183: Unused. Instruction - go to break ;;;
 {
-$86:B183 BD FF 1A    LDA $1AFF,x
-$86:B186 30 04       BMI $04    [$B18C]
-$86:B188 A0 90 B1    LDY #$B190
-$86:B18B 60          RTS
-
-$86:B18C A0 A8 B1    LDY #$B1A8
+; Used by unused instruction list $B181
+$86:B183 BD FF 1A    LDA $1AFF,x            ;\
+$86:B186 30 04       BMI $04    [$B18C]     ;} If [enemy projectile direction] = leftwards:
+$86:B188 A0 90 B1    LDY #$B190             ; Y = $B190 (break - facing left)
+$86:B18B 60          RTS                    ; Return
+                                            
+$86:B18C A0 A8 B1    LDY #$B1A8             ; Y = $B1A8 (break - facing right)
 $86:B18F 60          RTS
 }
 
 
-;;; $B190: Instruction list ;;;
+;;; $B190: Instruction list - Golden Torizo egg - break - facing left ;;;
 {
 $86:B190             dx 816A,       ; Clear pre-instruction
                         0004,8F48,
@@ -7232,7 +7245,7 @@ $86:B190             dx 816A,       ; Clear pre-instruction
 }
 
 
-;;; $B1A8: Instruction list ;;;
+;;; $B1A8: Instruction list - Golden Torizo egg - break - facing right ;;;
 {
 $86:B1A8             dx 816A,       ; Clear pre-instruction
                         0004,8FA6,
@@ -7264,86 +7277,90 @@ $86:B1C0             dx B001,B043,B104,07,07,6064,0000,AB25 ; Golden Torizo egg.
 {
 ;;; $B1CE: Initialisation AI - enemy projectile $B31A (Golden Torizo super missile) ;;;
 {
-$86:B1CE AD 54 0E    LDA $0E54  [$7E:0E54]
-$86:B1D1 99 FF 1A    STA $1AFF,y
-$86:B1D4 AA          TAX
-$86:B1D5 BD 7A 0F    LDA $0F7A,x
-$86:B1D8 85 12       STA $12    [$7E:0012]
-$86:B1DA BD 7E 0F    LDA $0F7E,x
-$86:B1DD 85 14       STA $14    [$7E:0014]
-$86:B1DF 3C B4 0F    BIT $0FB4,x
-$86:B1E2 30 05       BMI $05    [$B1E9]
-$86:B1E4 A2 00 00    LDX #$0000
+$86:B1CE AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
+$86:B1D1 99 FF 1A    STA $1AFF,y            ;} X = enemy projectile enemy index = [enemy index]
+$86:B1D4 AA          TAX                    ;/
+$86:B1D5 BD 7A 0F    LDA $0F7A,x            ;\
+$86:B1D8 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$86:B1DA BD 7E 0F    LDA $0F7E,x            ;\
+$86:B1DD 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
+$86:B1DF 3C B4 0F    BIT $0FB4,x            ;\
+$86:B1E2 30 05       BMI $05    [$B1E9]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B1E4 A2 00 00    LDX #$0000             ; X = 0
 $86:B1E7 80 03       BRA $03    [$B1EC]
+                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+$86:B1E9 A2 02 00    LDX #$0002             ; X = 2
 
-$86:B1E9 A2 02 00    LDX #$0002
-
-$86:B1EC BD 05 B2    LDA $B205,x
-$86:B1EF 18          CLC
-$86:B1F0 65 12       ADC $12    [$7E:0012]
-$86:B1F2 99 4B 1A    STA $1A4B,y
-$86:B1F5 A9 CC FF    LDA #$FFCC
-$86:B1F8 18          CLC
-$86:B1F9 65 14       ADC $14    [$7E:0014]
-$86:B1FB 99 93 1A    STA $1A93,y
-$86:B1FE BD 09 B2    LDA $B209,x
-$86:B201 99 47 1B    STA $1B47,y
+$86:B1EC BD 05 B2    LDA $B205,x            ;\
+$86:B1EF 18          CLC                    ;|
+$86:B1F0 65 12       ADC $12    [$7E:0012]  ;} Enemy projectile X position = [enemy X position] + [$B205 + [X]]
+$86:B1F2 99 4B 1A    STA $1A4B,y            ;/
+$86:B1F5 A9 CC FF    LDA #$FFCC             ;\
+$86:B1F8 18          CLC                    ;|
+$86:B1F9 65 14       ADC $14    [$7E:0014]  ;} Enemy projectile Y position = [enemy Y position] - 34h
+$86:B1FB 99 93 1A    STA $1A93,y            ;/
+$86:B1FE BD 09 B2    LDA $B209,x            ;\
+$86:B201 99 47 1B    STA $1B47,y            ;} Enemy projectile instruction list pointer = [$B209 + [X]]
 $86:B204 60          RTS
 
-$86:B205             dw FFE2, 001E
-$86:B209             dw B2C1, B293
+;                        _________ Leftwards
+;                       |      ___ Rightwards
+;                       |     |
+$86:B205             dw FFE2, 001E ; X offsets
+$86:B209             dw B2C1, B293 ; Instruction list pointers
 }
 
 
-;;; $B20D: Pre-instruction - enemy projectile $B31A (Golden Torizo super missile) ;;;
+;;; $B20D: Pre-instruction - Golden Torizo super missile - held ;;;
 {
-$86:B20D BC FF 1A    LDY $1AFF,x
-$86:B210 B9 7A 0F    LDA $0F7A,y
-$86:B213 85 12       STA $12    [$7E:0012]
-$86:B215 B9 7E 0F    LDA $0F7E,y
-$86:B218 85 14       STA $14    [$7E:0014]
-$86:B21A B9 B4 0F    LDA $0FB4,y
-$86:B21D 30 05       BMI $05    [$B224]
-$86:B21F A9 E0 FF    LDA #$FFE0
-$86:B222 80 03       BRA $03    [$B227]
+$86:B20D BC FF 1A    LDY $1AFF,x            ; Y = [enemy projectile enemy index]
+$86:B210 B9 7A 0F    LDA $0F7A,y            ;\
+$86:B213 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$86:B215 B9 7E 0F    LDA $0F7E,y            ;\
+$86:B218 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
+$86:B21A B9 B4 0F    LDA $0FB4,y            ;\
+$86:B21D 30 05       BMI $05    [$B224]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B21F A9 E0 FF    LDA #$FFE0             ; A = -20h
+$86:B222 80 03       BRA $03    [$B227]     
+                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+$86:B224 A9 20 00    LDA #$0020             ; A = 20h
 
-$86:B224 A9 20 00    LDA #$0020
-
-$86:B227 18          CLC
-$86:B228 65 12       ADC $12    [$7E:0012]
-$86:B22A 9D 4B 1A    STA $1A4B,x
-$86:B22D A9 CC FF    LDA #$FFCC
-$86:B230 18          CLC
-$86:B231 65 14       ADC $14    [$7E:0014]
-$86:B233 9D 93 1A    STA $1A93,x
+$86:B227 18          CLC                    ;\
+$86:B228 65 12       ADC $12    [$7E:0012]  ;} Enemy projectile X position = [enemy X position] + 20h
+$86:B22A 9D 4B 1A    STA $1A4B,x            ;/
+$86:B22D A9 CC FF    LDA #$FFCC             ;\
+$86:B230 18          CLC                    ;|
+$86:B231 65 14       ADC $14    [$7E:0014]  ;} Enemy projectile Y position = [enemy Y position] - 34h
+$86:B233 9D 93 1A    STA $1A93,x            ;/
 $86:B236 60          RTS
 }
 
 
-;;; $B237: Pre-instruction ;;;
+;;; $B237: Pre-instruction - Golden Torizo super missile - thrown ;;;
 {
 $86:B237 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:B23A B0 20       BCS $20    [$B25C]
+$86:B23A B0 20       BCS $20    [$B25C]     ; If collision: go to BRANCH_COLLISION
 $86:B23C 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:B23F 3C DB 1A    BIT $1ADB,x
-$86:B242 30 02       BMI $02    [$B246]
-$86:B244 B0 16       BCS $16    [$B25C]
+$86:B23F 3C DB 1A    BIT $1ADB,x            ;\
+$86:B242 30 02       BMI $02    [$B246]     ;} If [enemy projectile Y velocity] >= 0:
+$86:B244 B0 16       BCS $16    [$B25C]     ; If collision: go to BRANCH_COLLISION
 
-$86:B246 BD DB 1A    LDA $1ADB,x
-$86:B249 18          CLC
-$86:B24A 69 10 00    ADC #$0010
-$86:B24D 9D DB 1A    STA $1ADB,x
-$86:B250 29 00 F0    AND #$F000
-$86:B253 C9 00 10    CMP #$1000
-$86:B256 D0 03       BNE $03    [$B25B]
-$86:B258 9E 97 19    STZ $1997,x
+$86:B246 BD DB 1A    LDA $1ADB,x            ;\
+$86:B249 18          CLC                    ;|
+$86:B24A 69 10 00    ADC #$0010             ;} Enemy projectile Y velocity += 10h
+$86:B24D 9D DB 1A    STA $1ADB,x            ;/
+$86:B250 29 00 F0    AND #$F000             ;\
+$86:B253 C9 00 10    CMP #$1000             ;} If [enemy projectile Y velocity] / 1000h = 1:
+$86:B256 D0 03       BNE $03    [$B25B]     ;/
+$86:B258 9E 97 19    STZ $1997,x            ; Enemy projectile ID = 0
 
-$86:B25B 60          RTS
+$86:B25B 60          RTS                    ; Return
 
-$86:B25C A9 EF B2    LDA #$B2EF
-$86:B25F 9D 47 1B    STA $1B47,x
-$86:B262 A9 01 00    LDA #$0001
-$86:B265 9D 8F 1B    STA $1B8F,x
+; BRANCH_COLLISION
+$86:B25C A9 EF B2    LDA #$B2EF             ;\
+$86:B25F 9D 47 1B    STA $1B47,x            ;} Enemy projectile instruction list pointer = $B2EF (explode)
+$86:B262 A9 01 00    LDA #$0001             ;\
+$86:B265 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
 $86:B268 60          RTS
 }
 
@@ -7384,7 +7401,7 @@ $86:B292 60          RTS
 }
 
 
-;;; $B293: Instruction list - enemy projectile $B31A (Golden Torizo super missile) ;;;
+;;; $B293: Instruction list - Golden Torizo super missile - rightwards ;;;
 {
 $86:B293             dx 0030,8EC2,
                         B269,       ; ???
@@ -7401,7 +7418,7 @@ $86:B29D             dx 0002,8EB1,
 }
 
 
-;;; $B2C1: Instruction list ;;;
+;;; $B2C1: Instruction list - Golden Torizo super missile - leftwards ;;;
 {
 $86:B2C1             dx 0030,8EC2,
                         B272,       ; ???
@@ -7418,12 +7435,12 @@ $86:B2CB             dx 0002,8ECE,
 }
 
 
-;;; $B2EF: Shot instruction list - enemy projectile $B31A (Golden Torizo super missile) ;;;
+;;; $B2EF: Instruction list - Golden Torizo super missile - explode / shot instruction list - enemy projectile $B31A (Golden Torizo super missile) ;;;
 {
 $86:B2EF             dx 8298,10,10, ; X radius = 10h, Y radius = 10h
                         816A,       ; Clear pre-instruction
-                        8230,5000,  ; Enemy projectile properties |= 5000h
-                        823C,5FFF,  ; Enemy projectile properties &= 5FFFh
+                        8230,5000,  ; Enemy projectile properties |= 5000h (don't die on contact, high priority)
+                        823C,5FFF,  ; Enemy projectile properties &= 5FFFh (don't detect collisions with projectiles, enable collisions with Samus)
                         8312,24,    ; Queue sound 24h, sound library 2, max queued sounds allowed = 6 (small explosion)
                         0005,B406,
                         0005,B41C,
@@ -7446,7 +7463,7 @@ $86:B2EF             dx 8298,10,10, ; X radius = 10h, Y radius = 10h
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:B31A             dx B1CE,B20D,B293,04,04,A0C8,0000,B2EF ; Golden Torizo super missile
+$86:B31A             dx B1CE,B20D,B293,04,04,A0C8,0000,B2EF ; Golden Torizo super missile. Initial instruction list ignored
 }
 }
 
