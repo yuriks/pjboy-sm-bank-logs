@@ -7365,36 +7365,38 @@ $86:B268 60          RTS
 }
 
 
-;;; $B269: Instruction ;;;
+;;; $B269: Instruction - aim super missile - rightwards ;;;
 {
 $86:B269 22 4E C0 A0 JSL $A0C04E[$A0:C04E]  ; A = angle of Samus from enemy projectile
 $86:B26D 29 7F 00    AND #$007F             ; If angle >= 80h: invert angle
-$86:B270 80 07       BRA $07    [$B279]     ; Go to $B279
+$86:B270 80 07       BRA $07    [$B279]     ; Go to calculate Golden Torizo super missile velocities from angle
 }
 
 
-;;; $B272: Instruction ;;;
+;;; $B272: Instruction - aim super missile - leftwards ;;;
 {
 $86:B272 22 4E C0 A0 JSL $A0C04E[$A0:C04E]  ; A = angle of Samus from enemy projectile
 $86:B276 09 80 00    ORA #$0080             ; If angle < 80h: invert angle
 }
 
 
-;;; $B279:  ;;;
+;;; $B279: Calculate Golden Torizo super missile velocities from angle ;;;
 {
+;; Parameters:
+;;     A: Angle
 $86:B279 DA          PHX
 $86:B27A 5A          PHY
-$86:B27B 9B          TXY
-$86:B27C 0A          ASL A
-$86:B27D AA          TAX
-$86:B27E BF 43 B4 A0 LDA $A0B443,x
-$86:B282 0A          ASL A
-$86:B283 0A          ASL A
-$86:B284 99 B7 1A    STA $1AB7,y
-$86:B287 BF C3 B3 A0 LDA $A0B3C3,x
-$86:B28B 0A          ASL A
-$86:B28C 0A          ASL A
-$86:B28D 99 DB 1A    STA $1ADB,y
+$86:B27B 9B          TXY                    ;\
+$86:B27C 0A          ASL A                  ;|
+$86:B27D AA          TAX                    ;|
+$86:B27E BF 43 B4 A0 LDA $A0B443,x          ;} Enemy projectile X velocity = 400h * sin([A] * pi / 80h)
+$86:B282 0A          ASL A                  ;|
+$86:B283 0A          ASL A                  ;|
+$86:B284 99 B7 1A    STA $1AB7,y            ;/
+$86:B287 BF C3 B3 A0 LDA $A0B3C3,x          ;\
+$86:B28B 0A          ASL A                  ;|
+$86:B28C 0A          ASL A                  ;} Enemy projectile Y velocity = 400h * -cos([A] * pi / 80h)
+$86:B28D 99 DB 1A    STA $1ADB,y            ;/
 $86:B290 7A          PLY
 $86:B291 FA          PLX
 $86:B292 60          RTS
@@ -7404,7 +7406,7 @@ $86:B292 60          RTS
 ;;; $B293: Instruction list - Golden Torizo super missile - rightwards ;;;
 {
 $86:B293             dx 0030,8EC2,
-                        B269,       ; ???
+                        B269,       ; Aim super missile - rightwards
                         8161,B237   ; Pre-instruction = $B237
 $86:B29D             dx 0002,8EB1,
                         0002,8EA5,
@@ -7421,7 +7423,7 @@ $86:B29D             dx 0002,8EB1,
 ;;; $B2C1: Instruction list - Golden Torizo super missile - leftwards ;;;
 {
 $86:B2C1             dx 0030,8EC2,
-                        B272,       ; ???
+                        B272,       ; Aim super missile - leftwards
                         8161,B237   ; Pre-instruction = $B237
 $86:B2CB             dx 0002,8ECE,
                         0002,8E6B,
