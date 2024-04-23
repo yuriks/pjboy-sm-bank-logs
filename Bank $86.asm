@@ -542,7 +542,7 @@ $86:82A4 60          RTS
 
 ;;; $82A5: Instruction - calculate direction towards Samus ;;;
 {
-; Used only by eye door
+; Used only by eye door projectile
 $86:82A5 5A          PHY
 $86:82A6 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $86:82A9 38          SEC                    ;|
@@ -554,7 +554,7 @@ $86:82B3 FD 93 1A    SBC $1A93,x[$7E:1AB5]  ;|
 $86:82B6 85 14       STA $14    [$7E:0014]  ;|
 $86:82B8 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ;/
 $86:82BC 0A          ASL A                  ;\
-$86:82BD AC 91 19    LDY $1991  [$7E:1991]  ;} Enemy projectile $1AFF = [A] * 2 (angle * 2)
+$86:82BD AC 91 19    LDY $1991  [$7E:1991]  ;} Enemy projectile angle to Samus = [A] * 2 (angle * 2)
 $86:82C0 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;/
 $86:82C3 AA          TAX                    ;\
 $86:82C4 BF 43 B4 A0 LDA $A0B443,x[$A0:B5B3];} Enemy projectile X velocity = sin([A] * pi / 80h)
@@ -6880,10 +6880,11 @@ $86:AF18             dx AF36,               ; Reset position
 
 ;;; $AF36: Instruction - reset position ;;;
 {
-$86:AF36 BD FF 1A    LDA $1AFF,x[$7E:1B1B]  ;\
-$86:AF39 9D 4B 1A    STA $1A4B,x[$7E:1A67]  ;} Enemy projectile X position = [enemy projectile reset X position]
-$86:AF3C BD 23 1B    LDA $1B23,x[$7E:1B3F]  ;\
-$86:AF3F 9D 93 1A    STA $1A93,x[$7E:1AAF]  ;} Enemy projectile Y position = [enemy projectile reset Y position]
+; Clone of $A3BE
+$86:AF36 BD FF 1A    LDA $1AFF,x[$7E:1B1B]
+$86:AF39 9D 4B 1A    STA $1A4B,x[$7E:1A67]
+$86:AF3C BD 23 1B    LDA $1B23,x[$7E:1B3F]
+$86:AF3F 9D 93 1A    STA $1A93,x[$7E:1AAF]
 $86:AF42 60          RTS
 }
 
@@ -7474,98 +7475,107 @@ $86:B31A             dx B1CE,B20D,B293,04,04,A0C8,0000,B2EF ; Golden Torizo supe
 {
 ;;; $B328: Initialisation AI - enemy projectile $B428 (Golden Torizo eye beam) ;;;
 {
-$86:B328 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:B32B BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:B32E 85 12       STA $12    [$7E:0012]
-$86:B330 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:B333 85 14       STA $14    [$7E:0014]
-$86:B335 3C B4 0F    BIT $0FB4,x[$7E:0FB4]
-$86:B338 30 05       BMI $05    [$B33F]
-$86:B33A A2 80 B3    LDX #$B380
+$86:B328 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:B32B BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:B32E 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$86:B330 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:B333 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
+$86:B335 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
+$86:B338 30 05       BMI $05    [$B33F]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B33A A2 80 B3    LDX #$B380             ; X = $B380
 $86:B33D 80 03       BRA $03    [$B342]
-
-$86:B33F A2 76 B3    LDX #$B376
+                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+$86:B33F A2 76 B3    LDX #$B376             ; X = $B376
 
 $86:B342 20 AE AB    JSR $ABAE  [$86:ABAE]  ; Execute torizo chozo orbs / egg / eye beam common initialisation
-$86:B345 22 11 81 80 JSL $808111[$80:8111]
-$86:B349 29 1E 00    AND #$001E
-$86:B34C 38          SEC
-$86:B34D E9 10 00    SBC #$0010
-$86:B350 18          CLC
-$86:B351 69 C0 00    ADC #$00C0
-$86:B354 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:B357 3C B4 0F    BIT $0FB4,x[$7E:0FB4]
-$86:B35A 30 04       BMI $04    [$B360]
-$86:B35C 18          CLC
-$86:B35D 69 80 00    ADC #$0080
+$86:B345 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:B349 29 1E 00    AND #$001E             ;\
+$86:B34C 38          SEC                    ;} A = ([random number] / 2 % 10h - 8) * 2 (random angle variance)
+$86:B34D E9 10 00    SBC #$0010             ;/
+$86:B350 18          CLC                    ;\
+$86:B351 69 C0 00    ADC #$00C0             ;} X = 60h * 2 + [A] (down-right + variance)
+$86:B354 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$86:B357 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B35A 30 04       BMI $04    [$B360]     ;/
+$86:B35C 18          CLC                    ;\
+$86:B35D 69 80 00    ADC #$0080             ;} X = A0h * 2 + [A] (down-left + variance)
 
 $86:B360 AA          TAX
-$86:B361 BF 43 B4 A0 LDA $A0B443,x[$A0:B581]
-$86:B365 0A          ASL A
-$86:B366 0A          ASL A
-$86:B367 0A          ASL A
-$86:B368 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:B36B BF C3 B3 A0 LDA $A0B3C3,x[$A0:B501]
-$86:B36F 0A          ASL A
-$86:B370 0A          ASL A
-$86:B371 0A          ASL A
-$86:B372 99 DB 1A    STA $1ADB,y[$7E:1AFD]
+$86:B361 BF 43 B4 A0 LDA $A0B443,x[$A0:B581];\
+$86:B365 0A          ASL A                  ;|
+$86:B366 0A          ASL A                  ;} Enemy projectile X velocity = 800h * sin([X] / 2 * pi / 80h)
+$86:B367 0A          ASL A                  ;|
+$86:B368 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
+$86:B36B BF C3 B3 A0 LDA $A0B3C3,x[$A0:B501];\
+$86:B36F 0A          ASL A                  ;|
+$86:B370 0A          ASL A                  ;} Enemy projectile Y velocity = 800h * -cos([X] / 2 * pi / 80h)
+$86:B371 0A          ASL A                  ;|
+$86:B372 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;/
 $86:B375 60          RTS
 
-$86:B376             dw B410,0014,0400,FFE2,0400
-$86:B380             dw B410,FFEC,FC00,FFE2,0400
+;                        _______________________ Instruction list pointer
+;                       |     __________________ X offset
+;                       |    |     _____________ X velocity (unit 1/100h px/frame)
+;                       |    |    |     ________ Y offset
+;                       |    |    |    |     ___ Y velocity (unit 1/100h px/frame)
+;                       |    |    |    |    |
+$86:B376             dw B410,0014,0400,FFE2,0400 ; Rightwards
+$86:B380             dw B410,FFEC,FC00,FFE2,0400 ; Leftwards
 }
 
 
 ;;; $B38A: Pre-instruction - enemy projectile $B428 (Golden Torizo eye beam) ;;;
 {
 $86:B38A 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:B38D B0 06       BCS $06    [$B395]
+$86:B38D B0 06       BCS $06    [$B395]     ; If no collision:
 $86:B38F 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:B392 B0 09       BCS $09    [$B39D]
-$86:B394 60          RTS
+$86:B392 B0 09       BCS $09    [$B39D]     ; If collision: go to BRANCH_HIT_FLOOR
+$86:B394 60          RTS                    ; Return
 
-$86:B395 A9 CD B3    LDA #$B3CD
-$86:B398 9D 47 1B    STA $1B47,x
-$86:B39B 80 14       BRA $14    [$B3B1]
+$86:B395 A9 CD B3    LDA #$B3CD             ;\
+$86:B398 9D 47 1B    STA $1B47,x            ;} Enemy projectile instruction list pointer = $B3CD (hit wall)
+$86:B39B 80 14       BRA $14    [$B3B1]     ; Go to BRANCH_INSTRUCTION_LIST_SET
 
-$86:B39D BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:B3A0 29 F0 FF    AND #$FFF0
-$86:B3A3 09 08 00    ORA #$0008
-$86:B3A6 3A          DEC A
-$86:B3A7 3A          DEC A
-$86:B3A8 9D 93 1A    STA $1A93,x[$7E:1AB5]
-$86:B3AB A9 E5 B3    LDA #$B3E5
-$86:B3AE 9D 47 1B    STA $1B47,x[$7E:1B69]
+; BRANCH_HIT_FLOOR
+$86:B39D BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
+$86:B3A0 29 F0 FF    AND #$FFF0             ;|
+$86:B3A3 09 08 00    ORA #$0008             ;|
+$86:B3A6 3A          DEC A                  ;} Enemy projectile Y position = [enemy projectile Y position] rounded to pixel 6 of 16x16 block
+$86:B3A7 3A          DEC A                  ;|
+$86:B3A8 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
+$86:B3AB A9 E5 B3    LDA #$B3E5             ;\
+$86:B3AE 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $B3E5 (hit floor)
 
-$86:B3B1 A9 01 00    LDA #$0001
-$86:B3B4 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
+; BRANCH_INSTRUCTION_LIST_SET
+$86:B3B1 A9 01 00    LDA #$0001             ;\
+$86:B3B4 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:B3B7 60          RTS
 }
 
 
-;;; $B3B8:  ;;;
+;;; $B3B8: Instruction - go to [[Y]] if eye beam explosions are disabled ;;;
 {
+; I'm guessing that enemy projectile $1B23 is enemy index here, it's never actually initialised, but 0 is correct for vanilla anyway
 $86:B3B8 DA          PHX
-$86:B3B9 BD 23 1B    LDA $1B23,x[$7E:1B45]
-$86:B3BC AA          TAX
-$86:B3BD BF 0C 78 7E LDA $7E780C,x[$7E:780C]
-$86:B3C1 10 04       BPL $04    [$B3C7]
+$86:B3B9 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
+$86:B3BC AA          TAX                    ;} X = [enemy projectile $1B23] (enemy index)
+$86:B3BD BF 0C 78 7E LDA $7E780C,x[$7E:780C];\
+$86:B3C1 10 04       BPL $04    [$B3C7]     ;} If [enemy $7E:780C] & 8000h != 0 (eye beam explosions enabled):
 $86:B3C3 FA          PLX
-$86:B3C4 C8          INY
-$86:B3C5 C8          INY
-$86:B3C6 60          RTS
+$86:B3C4 C8          INY                    ;\
+$86:B3C5 C8          INY                    ;} Y += 2
+$86:B3C6 60          RTS                    ; Return
 
 $86:B3C7 FA          PLX
-$86:B3C8 B9 00 00    LDA $0000,y[$86:B3ED]
-$86:B3CB A8          TAY
+$86:B3C8 B9 00 00    LDA $0000,y[$86:B3ED]  ;\
+$86:B3CB A8          TAY                    ;} Y = [[Y]]
 $86:B3CC 60          RTS
 }
 
 
-;;; $B3CD: Instruction list ;;;
+;;; $B3CD: Instruction list - Golden Torizo eye beam - hit wall ;;;
 {
-$86:B3CD             dx 816A,       ; Clear pre-instruction
+$86:B3CD             dw 816A,       ; Clear pre-instruction
                         0004,8D9C,
                         0004,8DA3,
                         0004,8DB9,
@@ -7575,15 +7585,15 @@ $86:B3CD             dx 816A,       ; Clear pre-instruction
 }
 
 
-;;; $B3E5: Instruction list ;;;
+;;; $B3E5: Instruction list - Golden Torizo eye beam - hit floor ;;;
 {
-$86:B3E5             dx 816A        ; Clear pre-instruction
+$86:B3E5             dw 816A        ; Clear pre-instruction
 $86:B3E7             dx 0008,8000,
-                        B3B8,B3E7,
-                        831B,13,    ; Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / Torizo's projectile hits surface / Shitroid exploding)
+                        B3B8,B3E7,  ; Go to $B3E7 if eye beam explosions are disabled
+                        831B,13,    ; Queue sound 13h, sound library 3, max queued sounds allowed = 6 (Mother Brain's / torizo's projectile hits surface / Shitroid exploding)
                         0004,8C7E,
                         0005,8C85,
-                        823C,DFFF,  ; Enemy projectile properties &= DFFFh
+                        823C,DFFF,  ; Enemy projectile properties &= DFFFh (enable collisions with Samus)
                         0006,8C91,
                         0007,8CA7,
                         0008,8CB8,
@@ -7592,7 +7602,7 @@ $86:B3E7             dx 0008,8000,
 }
 
 
-;;; $B410: Instruction list - enemy projectile $B428 (Golden Torizo eye beam) ;;;
+;;; $B410: Instruction list - Golden Torizo eye beam - normal ;;;
 {
 $86:B410             dx 0001,8DE5,
                         0001,8DCF,
@@ -7614,15 +7624,16 @@ $86:B410             dx 0001,8DE5,
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:B428             dx B328,B38A,B410,03,03,700A,0000,84FC ; Golden Torizo eye beam
+$86:B428             dx B328,B38A,B410,03,03,700A,0000,84FC ; Golden Torizo eye beam. Initial instruction list ignored
 }
 }
 
 
 ;;; $B436..B4BE: Old Tourian escape shaft fake wall explosion ;;;
 {
-;;; $B436:  ;;;
+;;; $B436: Unused. Instruction - reset position ;;;
 {
+; Clone of $A3BE
 $86:B436 BD FF 1A    LDA $1AFF,x
 $86:B439 9D 4B 1A    STA $1A4B,x
 $86:B43C BD 23 1B    LDA $1B23,x
@@ -7633,8 +7644,8 @@ $86:B442 60          RTS
 
 ;;; $B443: Instruction list - enemy projectile $B4B1 (old Tourian escape shaft fake wall explosion) ;;;
 {
-$86:B443             dx 816A,               ; Clear pre-instruction
-                        81D5,0001           ; Timer = 0001h
+$86:B443             dw 816A,               ; Clear pre-instruction
+                        81D5,0001           ; Timer = 1
 $86:B449             dx 81DF,07,00,0F,00,   ; Move randomly within X radius 7 and Y radius Fh
                         8312,24,            ; Queue sound 24h, sound library 2, max queued sounds allowed = 6 (small explosion)
                         0004,B023,
@@ -7680,12 +7691,12 @@ $86:B49C 60          RTS
 ;;; $B49D: Initialisation AI - enemy projectile $B4B1 (old Tourian escape shaft fake wall explosion) ;;;
 {
 ; Set position to middle of wall that breaks
-$86:B49D A9 10 01    LDA #$0110
-$86:B4A0 99 4B 1A    STA $1A4B,y[$7E:1A69]
-$86:B4A3 99 FF 1A    STA $1AFF,y[$7E:1B1D]
-$86:B4A6 A9 88 08    LDA #$0888
-$86:B4A9 99 93 1A    STA $1A93,y[$7E:1AB1]
-$86:B4AC 99 23 1B    STA $1B23,y[$7E:1B41]
+$86:B49D A9 10 01    LDA #$0110             ;\
+$86:B4A0 99 4B 1A    STA $1A4B,y[$7E:1A69]  ;} Enemy projectile X position = 110h
+$86:B4A3 99 FF 1A    STA $1AFF,y[$7E:1B1D]  ; Enemy projectile reset X position = [enemy projectile X position] (never read)
+$86:B4A6 A9 88 08    LDA #$0888             ;\
+$86:B4A9 99 93 1A    STA $1A93,y[$7E:1AB1]  ;} Enemy projectile Y position = 888h
+$86:B4AC 99 23 1B    STA $1B23,y[$7E:1B41]  ; Enemy projectile reset Y position = [enemy projectile Y position] (never read)
 $86:B4AF 60          RTS
 }
 
@@ -7714,7 +7725,7 @@ $86:B4B1             dx B49D,B4B0,B443,00,00,3000,0000,84FC ; Old Tourian escape
 
 ;;; $B4BF..B5D8: Lava seahorse fireball ;;;
 {
-;;; $B4BF: Instruction list - enemy projectile $B5CB (lava seahorse fireball) ;;;
+;;; $B4BF: Instruction list - lava seahorse fireball - rising - leftwards ;;;
 {
 $86:B4BF             dx 0005,8FD3,
                         0005,8FDA,
@@ -7722,7 +7733,7 @@ $86:B4BF             dx 0005,8FD3,
 }
 
 
-;;; $B4CB: Instruction list ;;;
+;;; $B4CB: Instruction list - lava seahorse fireball - rising - rightwards ;;;
 {
 $86:B4CB             dx 0005,8FEF,
                         0005,8FF6,
@@ -7730,7 +7741,7 @@ $86:B4CB             dx 0005,8FEF,
 }
 
 
-;;; $B4D7: Instruction list ;;;
+;;; $B4D7: Instruction list - lava seahorse fireball - falling - leftwards ;;;
 {
 $86:B4D7             dx 0005,8FE1,
                         0005,8FE8,
@@ -7738,7 +7749,7 @@ $86:B4D7             dx 0005,8FE1,
 }
 
 
-;;; $B4E3: Instruction list ;;;
+;;; $B4E3: Instruction list - lava seahorse fireball - falling - rightwards ;;;
 {
 $86:B4E3             dx 0005,8FFD,
                         0005,9004,
@@ -7748,101 +7759,103 @@ $86:B4E3             dx 0005,8FFD,
 
 ;;; $B4EF: Initialisation AI - enemy projectile $B5CB (lava seahorse fireball) ;;;
 {
-$86:B4EF AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:B4F2 BD 7E 0F    LDA $0F7E,x[$7E:11BE]
-$86:B4F5 38          SEC
-$86:B4F6 E9 1C 00    SBC #$001C
-$86:B4F9 99 93 1A    STA $1A93,y[$7E:1AB3]
-$86:B4FC A9 3F FC    LDA #$FC3F
-$86:B4FF 99 DB 1A    STA $1ADB,y[$7E:1AFB]
-$86:B502 3C A8 0F    BIT $0FA8,x[$7E:11E8]
-$86:B505 10 17       BPL $17    [$B51E]
-$86:B507 BD 7A 0F    LDA $0F7A,x[$7E:11BA]
-$86:B50A 18          CLC
-$86:B50B 69 F4 FF    ADC #$FFF4
-$86:B50E 99 4B 1A    STA $1A4B,y[$7E:1A6B]
-$86:B511 A9 40 FD    LDA #$FD40
-$86:B514 99 B7 1A    STA $1AB7,y[$7E:1AD7]
-$86:B517 A9 BF B4    LDA #$B4BF
-$86:B51A 99 47 1B    STA $1B47,y[$7E:1B67]
-$86:B51D 60          RTS
+$86:B4EF AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:B4F2 BD 7E 0F    LDA $0F7E,x[$7E:11BE]  ;\
+$86:B4F5 38          SEC                    ;|
+$86:B4F6 E9 1C 00    SBC #$001C             ;} Enemy projectile Y position = [enemy Y position] - 1Ch
+$86:B4F9 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
+$86:B4FC A9 3F FC    LDA #$FC3F             ;\
+$86:B4FF 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile Y velocity = -3C1h
+$86:B502 3C A8 0F    BIT $0FA8,x[$7E:11E8]  ;\
+$86:B505 10 17       BPL $17    [$B51E]     ;} If [enemy $0FA8] & 8000h != 0:
+$86:B507 BD 7A 0F    LDA $0F7A,x[$7E:11BA]  ;\
+$86:B50A 18          CLC                    ;|
+$86:B50B 69 F4 FF    ADC #$FFF4             ;} Enemy projectile X position = [enemy X position] - Ch
+$86:B50E 99 4B 1A    STA $1A4B,y[$7E:1A6B]  ;/
+$86:B511 A9 40 FD    LDA #$FD40             ;\
+$86:B514 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = -2C0h
+$86:B517 A9 BF B4    LDA #$B4BF             ;\
+$86:B51A 99 47 1B    STA $1B47,y[$7E:1B67]  ;} Enemy projectile instruction list pointer = $B4BF (rising - leftwards)
+$86:B51D 60          RTS                    ; Return
 
-$86:B51E BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$86:B521 18          CLC
-$86:B522 69 0C 00    ADC #$000C
-$86:B525 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:B528 A9 C0 02    LDA #$02C0
-$86:B52B 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:B52E A9 CB B4    LDA #$B4CB
-$86:B531 99 47 1B    STA $1B47,y[$7E:1B69]
+$86:B51E BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$86:B521 18          CLC                    ;|
+$86:B522 69 0C 00    ADC #$000C             ;} Enemy projectile X position = [enemy X position] + Ch
+$86:B525 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:B528 A9 C0 02    LDA #$02C0             ;\
+$86:B52B 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = 2C0h
+$86:B52E A9 CB B4    LDA #$B4CB             ;\
+$86:B531 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $B4CB (rising - rightwards)
 $86:B534 60          RTS
 }
 
 
 ;;; $B535: Pre-instruction - enemy projectile $B5CB (lava seahorse fireball) ;;;
 {
-$86:B535 BD B6 1A    LDA $1AB6,x[$7E:1AD6]
-$86:B538 29 00 FF    AND #$FF00
-$86:B53B 85 14       STA $14    [$7E:0014]
-$86:B53D BD B7 1A    LDA $1AB7,x[$7E:1AD7]
-$86:B540 EB          XBA
-$86:B541 10 05       BPL $05    [$B548]
-$86:B543 09 00 FF    ORA #$FF00
-$86:B546 80 03       BRA $03    [$B54B]
+$86:B535 BD B6 1A    LDA $1AB6,x[$7E:1AD6]  ;\
+$86:B538 29 00 FF    AND #$FF00             ;|
+$86:B53B 85 14       STA $14    [$7E:0014]  ;|
+$86:B53D BD B7 1A    LDA $1AB7,x[$7E:1AD7]  ;|
+$86:B540 EB          XBA                    ;|
+$86:B541 10 05       BPL $05    [$B548]     ;|
+$86:B543 09 00 FF    ORA #$FF00             ;|
+$86:B546 80 03       BRA $03    [$B54B]     ;|
+                                            ;|
+$86:B548 29 FF 00    AND #$00FF             ;} Enemy projectile X position += [enemy projectile X velocity] / 100h
+                                            ;|
+$86:B54B 85 12       STA $12    [$7E:0012]  ;|
+$86:B54D BD 27 1A    LDA $1A27,x[$7E:1A47]  ;|
+$86:B550 18          CLC                    ;|
+$86:B551 65 14       ADC $14    [$7E:0014]  ;|
+$86:B553 9D 27 1A    STA $1A27,x[$7E:1A47]  ;|
+$86:B556 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;|
+$86:B559 65 12       ADC $12    [$7E:0012]  ;|
+$86:B55B 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;/
+$86:B55E BD DA 1A    LDA $1ADA,x[$7E:1AFA]  ;\
+$86:B561 29 00 FF    AND #$FF00             ;|
+$86:B564 85 14       STA $14    [$7E:0014]  ;|
+$86:B566 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;|
+$86:B569 EB          XBA                    ;|
+$86:B56A 10 05       BPL $05    [$B571]     ;|
+$86:B56C 09 00 FF    ORA #$FF00             ;|
+$86:B56F 80 03       BRA $03    [$B574]     ;|
+                                            ;|
+$86:B571 29 FF 00    AND #$00FF             ;} Enemy projectile Y position += [enemy projectile Y velocity] / 100h
+                                            ;|
+$86:B574 85 12       STA $12    [$7E:0012]  ;|
+$86:B576 BD 6F 1A    LDA $1A6F,x[$7E:1A8F]  ;|
+$86:B579 18          CLC                    ;|
+$86:B57A 65 14       ADC $14    [$7E:0014]  ;|
+$86:B57C 9D 6F 1A    STA $1A6F,x[$7E:1A8F]  ;|
+$86:B57F BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;|
+$86:B582 65 12       ADC $12    [$7E:0012]  ;|
+$86:B584 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
+$86:B587 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;\
+$86:B58A 10 18       BPL $18    [$B5A4]     ;} If [enemy projectile Y velocity] >= 0: go to BRANCH_MOVING_DOWN
+$86:B58C 18          CLC                    ;\
+$86:B58D 69 20 00    ADC #$0020             ;} Enemy projectile Y velocity += 20h
+$86:B590 9D DB 1A    STA $1ADB,x[$7E:1AFB]  ;/
+$86:B593 30 19       BMI $19    [$B5AE]     ; If [enemy projectile Y velocity] < 0: return
+$86:B595 3C B7 1A    BIT $1AB7,x[$7E:1AD7]  ;\
+$86:B598 10 05       BPL $05    [$B59F]     ;} If [enemy projectile X velocity] < 0:
+$86:B59A A9 D7 B4    LDA #$B4D7             ; Enemy projectile instruction list pointer = $B4D7 (falling - leftwards)
+$86:B59D 80 10       BRA $10    [$B5AF]     ; Go to 
 
-$86:B548 29 FF 00    AND #$00FF
-
-$86:B54B 85 12       STA $12    [$7E:0012]
-$86:B54D BD 27 1A    LDA $1A27,x[$7E:1A47]
-$86:B550 18          CLC
-$86:B551 65 14       ADC $14    [$7E:0014]
-$86:B553 9D 27 1A    STA $1A27,x[$7E:1A47]
-$86:B556 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]
-$86:B559 65 12       ADC $12    [$7E:0012]
-$86:B55B 9D 4B 1A    STA $1A4B,x[$7E:1A6B]
-$86:B55E BD DA 1A    LDA $1ADA,x[$7E:1AFA]
-$86:B561 29 00 FF    AND #$FF00
-$86:B564 85 14       STA $14    [$7E:0014]
-$86:B566 BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:B569 EB          XBA
-$86:B56A 10 05       BPL $05    [$B571]
-$86:B56C 09 00 FF    ORA #$FF00
-$86:B56F 80 03       BRA $03    [$B574]
-
-$86:B571 29 FF 00    AND #$00FF
-
-$86:B574 85 12       STA $12    [$7E:0012]
-$86:B576 BD 6F 1A    LDA $1A6F,x[$7E:1A8F]
-$86:B579 18          CLC
-$86:B57A 65 14       ADC $14    [$7E:0014]
-$86:B57C 9D 6F 1A    STA $1A6F,x[$7E:1A8F]
-$86:B57F BD 93 1A    LDA $1A93,x[$7E:1AB3]
-$86:B582 65 12       ADC $12    [$7E:0012]
-$86:B584 9D 93 1A    STA $1A93,x[$7E:1AB3]
-$86:B587 BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:B58A 10 18       BPL $18    [$B5A4]
-$86:B58C 18          CLC
-$86:B58D 69 20 00    ADC #$0020
-$86:B590 9D DB 1A    STA $1ADB,x[$7E:1AFB]
-$86:B593 30 19       BMI $19    [$B5AE]
-$86:B595 3C B7 1A    BIT $1AB7,x[$7E:1AD7]
-$86:B598 10 05       BPL $05    [$B59F]
-$86:B59A A9 D7 B4    LDA #$B4D7
-$86:B59D 80 10       BRA $10    [$B5AF]
-
-$86:B59F A9 E3 B4    LDA #$B4E3
+$86:B59F A9 E3 B4    LDA #$B4E3             ; Enemy projectile instruction list pointer = $B4E3 (falling - rightwards)
 $86:B5A2 80 0B       BRA $0B    [$B5AF]
 
-$86:B5A4 18          CLC
-$86:B5A5 69 20 00    ADC #$0020
-$86:B5A8 9D DB 1A    STA $1ADB,x[$7E:1AFB]
+; BRANCH_MOVING_DOWN
+$86:B5A4 18          CLC                    ;\
+$86:B5A5 69 20 00    ADC #$0020             ;} Enemy projectile Y velocity += 20h
+$86:B5A8 9D DB 1A    STA $1ADB,x[$7E:1AFB]  ;/
 $86:B5AB 20 B9 B5    JSR $B5B9  [$86:B5B9]  ; Delete enemy projectile if off-screen
 
-$86:B5AE 60          RTS
+$86:B5AE 60          RTS                    ; Return
 
+; BRANCH_INSTRUCTION_LIST_SET
 $86:B5AF 9D 47 1B    STA $1B47,x[$7E:1B67]
-$86:B5B2 A9 01 00    LDA #$0001
-$86:B5B5 9D 8F 1B    STA $1B8F,x[$7E:1BAF]
+$86:B5B2 A9 01 00    LDA #$0001             ;\
+$86:B5B5 9D 8F 1B    STA $1B8F,x[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
 $86:B5B8 60          RTS
 }
 
@@ -7872,28 +7885,28 @@ $86:B5CA 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:B5CB             dx B4EF,B535,B4BF,02,02,000A,0000,84FC ; Lava seahorse fireball
+$86:B5CB             dx B4EF,B535,B4BF,02,02,000A,0000,84FC ; Lava seahorse fireball. Initial instruction list ignored
 }
 }
 
 
 ;;; $B5D9..B75E: Eye door ;;;
 {
-;;; $B5D9: Instruction list - enemy projectile $B743 (eye door projectile) ;;;
+;;; $B5D9: Instruction list - eye door projectile - normal ;;;
 {
-$86:B5D9             dx 0004,900B,
+$86:B5D9             dw 0004,900B,
                         0003,9021,
                         0002,9037,
                         82A5,       ; Calculate direction towards Samus
-                        8161,B6B9   ; Pre-instruction = $B6B9
-$86:B5EB             dx 0010,904D,
+                        8161,B6B9   ; Pre-instruction = $B6B9 (moving)
+$86:B5EB             dw 0010,904D,
                         81AB,B5EB   ; Go to $B5EB
 }
 
 
-;;; $B5F3: Instruction list ;;;
+;;; $B5F3: Instruction list - eye door projectile - explode ;;;
 {
-$86:B5F3             dx 816A,       ; Clear pre-instruction
+$86:B5F3             dw 816A,       ; Clear pre-instruction
                         0002,9037,
                         0003,9021,
                         0004,900B,
@@ -7911,14 +7924,14 @@ $86:B603             dx 0004,8007,
 }
 
 
-;;; $B615: Instruction list - enemy projectile $B751 (eye door sweat) ;;;
+;;; $B615: Instruction list - eye door sweat - falling ;;;
 {
 $86:B615             dx 0006,9063,
                         81AB,B615   ; Go to $B615
 }
 
 
-;;; $B61D: Instruction list ;;;
+;;; $B61D: Instruction list - eye door sweat - hit floor ;;;
 {
 $86:B61D             dx 816A,       ; Clear pre-instruction
                         0006,906A,
@@ -7930,113 +7943,124 @@ $86:B61D             dx 816A,       ; Clear pre-instruction
 
 ;;; $B62D: Initialisation AI - enemy projectile $B743 (eye door projectile) ;;;
 {
-$86:B62D AE 27 1C    LDX $1C27  [$7E:1C27]
-$86:B630 BD C7 1D    LDA $1DC7,x[$7E:1E0D]
-$86:B633 99 23 1B    STA $1B23,y[$7E:1B45]
-$86:B636 22 90 82 84 JSL $848290[$84:8290]
-$86:B63A AE 93 19    LDX $1993  [$7E:1993]
-$86:B63D AD 29 1C    LDA $1C29  [$7E:1C29]
-$86:B640 38          SEC
-$86:B641 2A          ROL A
-$86:B642 0A          ASL A
-$86:B643 0A          ASL A
-$86:B644 0A          ASL A
-$86:B645 18          CLC
-$86:B646 7D 5B B6    ADC $B65B,x[$86:B65B]
-$86:B649 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:B64C AD 2B 1C    LDA $1C2B  [$7E:1C2B]
-$86:B64F 0A          ASL A
-$86:B650 0A          ASL A
-$86:B651 0A          ASL A
-$86:B652 0A          ASL A
-$86:B653 18          CLC
-$86:B654 7D 5D B6    ADC $B65D,x[$86:B65D]
-$86:B657 99 93 1A    STA $1A93,y[$7E:1AB5]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Index. Multiple of 4, range 0..24h. Only 0 and 14h are used
+$86:B62D AE 27 1C    LDX $1C27  [$7E:1C27]  ; X = [PLM ID]
+$86:B630 BD C7 1D    LDA $1DC7,x[$7E:1E0D]  ;\
+$86:B633 99 23 1B    STA $1B23,y[$7E:1B45]  ;} Enemy projectile PLM room argument = [PLM room argument]
+$86:B636 22 90 82 84 JSL $848290[$84:8290]  ; Calculate PLM block co-ordinates
+$86:B63A AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter]
+$86:B63D AD 29 1C    LDA $1C29  [$7E:1C29]  ;\
+$86:B640 38          SEC                    ;|
+$86:B641 2A          ROL A                  ;|
+$86:B642 0A          ASL A                  ;|
+$86:B643 0A          ASL A                  ;} Enemy projectile X position = [PLM X block] * 10h + 8 + [$B65B + [X]]
+$86:B644 0A          ASL A                  ;|
+$86:B645 18          CLC                    ;|
+$86:B646 7D 5B B6    ADC $B65B,x[$86:B65B]  ;|
+$86:B649 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:B64C AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
+$86:B64F 0A          ASL A                  ;|
+$86:B650 0A          ASL A                  ;|
+$86:B651 0A          ASL A                  ;|
+$86:B652 0A          ASL A                  ;} Enemy projectile Y position = [PLM Y block] * 10h + [$B65B + [X] + 2]
+$86:B653 18          CLC                    ;|
+$86:B654 7D 5D B6    ADC $B65D,x[$86:B65D]  ;|
+$86:B657 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:B65A 60          RTS
 
-$86:B65B             dw FFF0,0010, FFA0,FFC0, FF80,FFE0, FFA0,0040, FF80,0020, 0010,0010, 0060,FFC0, 0070,FFC0,
-                        0080,FFC0, 0090,FFC0
+$86:B65B             dw FFF0,0010, FFA0,FFC0, FF80,FFE0, FFA0,0040, FF80,0020,
+                        0010,0010, 0060,FFC0, 0070,FFC0, 0080,FFC0, 0090,FFC0
 }
 
 
 ;;; $B683: Initialisation AI - enemy projectile $B751 (eye door sweat) ;;;
 {
-$86:B683 AE 27 1C    LDX $1C27  [$7E:1C27]
-$86:B686 22 90 82 84 JSL $848290[$84:8290]
-$86:B68A AD 29 1C    LDA $1C29  [$7E:1C29]
-$86:B68D 3A          DEC A
-$86:B68E 38          SEC
-$86:B68F 2A          ROL A
-$86:B690 0A          ASL A
-$86:B691 0A          ASL A
-$86:B692 0A          ASL A
-$86:B693 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:B696 AD 2B 1C    LDA $1C2B  [$7E:1C2B]
-$86:B699 1A          INC A
-$86:B69A 0A          ASL A
-$86:B69B 0A          ASL A
-$86:B69C 0A          ASL A
-$86:B69D 0A          ASL A
-$86:B69E 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:B6A1 AE 93 19    LDX $1993  [$7E:1993]
-$86:B6A4 BD B1 B6    LDA $B6B1,x[$86:B6B1]
-$86:B6A7 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:B6AA BD B3 B6    LDA $B6B3,x[$86:B6B3]
-$86:B6AD 99 DB 1A    STA $1ADB,y[$7E:1AFD]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Direction. 0 = left, 4 = right
+$86:B683 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
+$86:B686 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
+$86:B68A AD 29 1C    LDA $1C29  [$7E:1C29]  ;\
+$86:B68D 3A          DEC A                  ;|
+$86:B68E 38          SEC                    ;|
+$86:B68F 2A          ROL A                  ;|
+$86:B690 0A          ASL A                  ;} Enemy projectile X position = [PLM X block] * 10h - 8
+$86:B691 0A          ASL A                  ;|
+$86:B692 0A          ASL A                  ;|
+$86:B693 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:B696 AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
+$86:B699 1A          INC A                  ;|
+$86:B69A 0A          ASL A                  ;|
+$86:B69B 0A          ASL A                  ;} Enemy projectile Y position = [PLM Y block] * 10h + 10h
+$86:B69C 0A          ASL A                  ;|
+$86:B69D 0A          ASL A                  ;|
+$86:B69E 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
+$86:B6A1 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter]
+$86:B6A4 BD B1 B6    LDA $B6B1,x[$86:B6B1]  ;\
+$86:B6A7 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = [$B6B1 + [X]]
+$86:B6AA BD B3 B6    LDA $B6B3,x[$86:B6B3]  ;\
+$86:B6AD 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = 200h
 $86:B6B0 60          RTS
 
 $86:B6B1             dw FFC0,0200, 0040,0200
 }
 
 
-;;; $B6B9: Pre-instruction - eye door projectile ;;;
+;;; $B6B9: Pre-instruction - eye door projectile - moving ;;;
 {
 ; BUG: the $B707 branch assumes the enemy projectile index is in X, but this is only true if the branch on $B6BC/C1 is taken,
 ; otherwise the enemy projectile index is in Y, and the door bit array index is in X,
 ; causing misaligned writes to enemy projectile RAM if X is odd, eventually causing a crash when the garbage instruction pointer gets executed
 ; (which happens after a delay of 100h+ frames due to the misaligned write to the instruction timer)
+
+; The X/Y velocity calculations were already done as a part of calculating the angle to Samus in $82A5,
+; they don't need to be here
+
 $86:B6B9 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:B6BC B0 49       BCS $49    [$B707]
+$86:B6BC B0 49       BCS $49    [$B707]     ; If collision: go to BRANCH_COLLISION
 $86:B6BE 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:B6C1 B0 44       BCS $44    [$B707]
-$86:B6C3 9B          TXY
-$86:B6C4 BD FF 1A    LDA $1AFF,x[$7E:1B21]
-$86:B6C7 AA          TAX
-$86:B6C8 BF 43 B4 A0 LDA $A0B443,x[$A0:B5B3]
-$86:B6CC 4A          LSR A
-$86:B6CD 4A          LSR A
-$86:B6CE 4A          LSR A
-$86:B6CF 4A          LSR A
-$86:B6D0 89 00 08    BIT #$0800
-$86:B6D3 F0 03       BEQ $03    [$B6D8]
-$86:B6D5 09 00 F0    ORA #$F000
+$86:B6C1 B0 44       BCS $44    [$B707]     ; If collision: go to BRANCH_COLLISION
+$86:B6C3 9B          TXY                    ; Y = [enemy projectile index]
+$86:B6C4 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
+$86:B6C7 AA          TAX                    ;} X = [enemy projectile angle to Samus]
+$86:B6C8 BF 43 B4 A0 LDA $A0B443,x[$A0:B5B3];\
+$86:B6CC 4A          LSR A                  ;|
+$86:B6CD 4A          LSR A                  ;|
+$86:B6CE 4A          LSR A                  ;|
+$86:B6CF 4A          LSR A                  ;|
+$86:B6D0 89 00 08    BIT #$0800             ;|
+$86:B6D3 F0 03       BEQ $03    [$B6D8]     ;} Enemy projectile X velocity = 10h * sin([A] * pi / 80h)
+$86:B6D5 09 00 F0    ORA #$F000             ;|
+                                            ;|
+$86:B6D8 18          CLC                    ;|
+$86:B6D9 79 B7 1A    ADC $1AB7,y[$7E:1AD9]  ;|
+$86:B6DC 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
+$86:B6DF BF C3 B3 A0 LDA $A0B3C3,x[$A0:B533];\
+$86:B6E3 4A          LSR A                  ;|
+$86:B6E4 4A          LSR A                  ;|
+$86:B6E5 4A          LSR A                  ;|
+$86:B6E6 4A          LSR A                  ;|
+$86:B6E7 89 00 08    BIT #$0800             ;|
+$86:B6EA F0 03       BEQ $03    [$B6EF]     ;} Enemy projectile Y velocity = 10h * -cos([A] * pi / 80h)
+$86:B6EC 09 00 F0    ORA #$F000             ;|
+                                            ;|
+$86:B6EF 18          CLC                    ;|
+$86:B6F0 79 DB 1A    ADC $1ADB,y[$7E:1AFD]  ;|
+$86:B6F3 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;/
+$86:B6F6 B9 23 1B    LDA $1B23,y[$7E:1B45]  ;\
+$86:B6F9 22 8E 81 80 JSL $80818E[$80:818E]  ;|
+$86:B6FD BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B8];} If enemy projectile PLM room argument door is not marked:
+$86:B701 2D E7 05    AND $05E7  [$7E:05E7]  ;|
+$86:B704 D0 01       BNE $01    [$B707]     ;/
+$86:B706 60          RTS                    ; Return
 
-$86:B6D8 18          CLC
-$86:B6D9 79 B7 1A    ADC $1AB7,y[$7E:1AD9]
-$86:B6DC 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:B6DF BF C3 B3 A0 LDA $A0B3C3,x[$A0:B533]
-$86:B6E3 4A          LSR A
-$86:B6E4 4A          LSR A
-$86:B6E5 4A          LSR A
-$86:B6E6 4A          LSR A
-$86:B6E7 89 00 08    BIT #$0800
-$86:B6EA F0 03       BEQ $03    [$B6EF]
-$86:B6EC 09 00 F0    ORA #$F000
-
-$86:B6EF 18          CLC
-$86:B6F0 79 DB 1A    ADC $1ADB,y[$7E:1AFD]
-$86:B6F3 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:B6F6 B9 23 1B    LDA $1B23,y[$7E:1B45]
-$86:B6F9 22 8E 81 80 JSL $80818E[$80:818E]
-$86:B6FD BF B0 D8 7E LDA $7ED8B0,x[$7E:D8B8]
-$86:B701 2D E7 05    AND $05E7  [$7E:05E7]
-$86:B704 D0 01       BNE $01    [$B707]
-$86:B706 60          RTS
-
-$86:B707 A9 F3 B5    LDA #$B5F3
-$86:B70A 9D 47 1B    STA $1B47,x[$7E:1B67]
-$86:B70D A9 01 00    LDA #$0001
-$86:B710 9D 8F 1B    STA $1B8F,x[$7E:1BAF]
+; BRANCH_COLLISION
+$86:B707 A9 F3 B5    LDA #$B5F3             ;\
+$86:B70A 9D 47 1B    STA $1B47,x[$7E:1B67]  ;} Enemy projectile instruction list pointer = $B5F3 (explode)
+$86:B70D A9 01 00    LDA #$0001             ;\
+$86:B710 9D 8F 1B    STA $1B8F,x[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
 $86:B713 60          RTS
 }
 
@@ -8045,24 +8069,25 @@ $86:B713 60          RTS
 {
 $86:B714 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
 $86:B717 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:B71A 3C DB 1A    BIT $1ADB,x[$7E:1AFD]
-$86:B71D 30 02       BMI $02    [$B721]
-$86:B71F B0 0B       BCS $0B    [$B72C]
+$86:B71A 3C DB 1A    BIT $1ADB,x[$7E:1AFD]  ;\
+$86:B71D 30 02       BMI $02    [$B721]     ;} If [enemy projectile Y velocity] >= 0:
+$86:B71F B0 0B       BCS $0B    [$B72C]     ; If collision: go to BRANCH_HIT_FLOOR
 
-$86:B721 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:B724 18          CLC
-$86:B725 69 0C 00    ADC #$000C
-$86:B728 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:B72B 60          RTS
+$86:B721 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:B724 18          CLC                    ;|
+$86:B725 69 0C 00    ADC #$000C             ;} Enemy projectile Y velocity += Ch
+$86:B728 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:B72B 60          RTS                    ; Return
 
-$86:B72C BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:B72F 38          SEC
-$86:B730 E9 04 00    SBC #$0004
-$86:B733 9D 93 1A    STA $1A93,x[$7E:1AB5]
-$86:B736 A9 1D B6    LDA #$B61D
-$86:B739 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:B73C A9 01 00    LDA #$0001
-$86:B73F 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
+; BRANCH_HIT_FLOOR
+$86:B72C BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
+$86:B72F 38          SEC                    ;|
+$86:B730 E9 04 00    SBC #$0004             ;} Enemy projectile Y position -= 4
+$86:B733 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
+$86:B736 A9 1D B6    LDA #$B61D             ;\
+$86:B739 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $B61D (hit floor)
+$86:B73C A9 01 00    LDA #$0001             ;\
+$86:B73F 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:B742 60          RTS
 }
 
@@ -8130,18 +8155,18 @@ $86:B7B3             dx 0008,910F,
                         0030,8000,
                         8312,19,    ; Queue sound 19h, sound library 2, max queued sounds allowed = 6 (Tourian statue unlocking particle)
                         B7F5,
-                        B7EA,
-                        B7EA,
-                        B7EA,
-                        B7EA,
+                        B7EA,       ; Spawn Tourian statue unlocking particle enemy projectile
+                        B7EA,       ; Spawn Tourian statue unlocking particle enemy projectile
+                        B7EA,       ; Spawn Tourian statue unlocking particle enemy projectile
+                        B7EA,       ; Spawn Tourian statue unlocking particle enemy projectile
                         8154        ; Delete
 }
 
 
-;;; $B7EA: Instruction ;;;
+;;; $B7EA: Instruction - spawn Tourian statue unlocking particle enemy projectile ;;;
 {
 $86:B7EA 5A          PHY
-$86:B7EB 8A          TXA
+$86:B7EB 8A          TXA                    ; A = [enemy projectile index]
 $86:B7EC A0 78 BA    LDY #$BA78             ;\
 $86:B7EF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian statue unlocking particle enemy projectile
 $86:B7F3 7A          PLY
@@ -8239,45 +8264,58 @@ $86:B872             dx 0777,9207,
 
 ;;; $B87A: Initialisation AI - enemy projectile $BA5C (Tourian statue unlocking particle water splash) ;;;
 {
-$86:B87A AE 93 19    LDX $1993  [$7E:1993]
-$86:B87D BD 4B 1A    LDA $1A4B,x[$7E:1A5F]
-$86:B880 99 4B 1A    STA $1A4B,y[$7E:1A4F]
-$86:B883 AD 5E 19    LDA $195E  [$7E:195E]
-$86:B886 38          SEC
-$86:B887 E9 04 00    SBC #$0004
-$86:B88A 99 93 1A    STA $1A93,y[$7E:1A97]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Tourian statue unlocking particle enemy projectile index
+$86:B87A AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
+$86:B87D BD 4B 1A    LDA $1A4B,x[$7E:1A5F]  ;\
+$86:B880 99 4B 1A    STA $1A4B,y[$7E:1A4F]  ;} Enemy projectile X position = [enemy projectile [X] X position]
+$86:B883 AD 5E 19    LDA $195E  [$7E:195E]  ;\
+$86:B886 38          SEC                    ;|
+$86:B887 E9 04 00    SBC #$0004             ;} Enemy projectile Y position = [FX Y position] - 4
+$86:B88A 99 93 1A    STA $1A93,y[$7E:1A97]  ;/
 $86:B88D 60          RTS
 }
 
 
 ;;; $B88E: Initialisation AI - enemy projectile $BA6A (Tourian statue eye glow) ;;;
 {
-$86:B88E AE 93 19    LDX $1993  [$7E:1993]
-$86:B891 BD 0E B9    LDA $B90E,x[$86:B914]
-$86:B894 99 4B 1A    STA $1A4B,y[$7E:1A67]
-$86:B897 BD 16 B9    LDA $B916,x[$86:B91C]
-$86:B89A 99 93 1A    STA $1A93,y[$7E:1AAF]
-$86:B89D 8A          TXA
-$86:B89E 0A          ASL A
-$86:B89F 0A          ASL A
-$86:B8A0 A8          TAY
-$86:B8A1 A2 F2 01    LDX #$01F2
-
-$86:B8A4 B9 1E B9    LDA $B91E,y[$86:B936]
-$86:B8A7 9F 00 C0 7E STA $7EC000,x[$7E:C1F2]
-$86:B8AB C8          INY
-$86:B8AC C8          INY
-$86:B8AD E8          INX
-$86:B8AE E8          INX
-$86:B8AF E0 FA 01    CPX #$01FA
-$86:B8B2 D0 F0       BNE $F0    [$B8A4]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Boss
+;;         0: Phantoon
+;;         2: Ridley
+;;         4: Draygon
+;;         6: Kraid
+$86:B88E AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
+$86:B891 BD 0E B9    LDA $B90E,x[$86:B914]  ;\
+$86:B894 99 4B 1A    STA $1A4B,y[$7E:1A67]  ;} Enemy projectile X position = [$B90E + [X]]
+$86:B897 BD 16 B9    LDA $B916,x[$86:B91C]  ;\
+$86:B89A 99 93 1A    STA $1A93,y[$7E:1AAF]  ;} Enemy projectile Y position = [$B916 + [X]]
+$86:B89D 8A          TXA                    ;\
+$86:B89E 0A          ASL A                  ;|
+$86:B89F 0A          ASL A                  ;|
+$86:B8A0 A8          TAY                    ;|
+$86:B8A1 A2 F2 01    LDX #$01F2             ;|
+                                            ;|
+$86:B8A4 B9 1E B9    LDA $B91E,y[$86:B936]  ;|
+$86:B8A7 9F 00 C0 7E STA $7EC000,x[$7E:C1F2];} Sprite palette 7 colours 9..Ch = 8 bytes from $B91E + [X] * 4
+$86:B8AB C8          INY                    ;|
+$86:B8AC C8          INY                    ;|
+$86:B8AD E8          INX                    ;|
+$86:B8AE E8          INX                    ;|
+$86:B8AF E0 FA 01    CPX #$01FA             ;|
+$86:B8B2 D0 F0       BNE $F0    [$B8A4]     ;/
 $86:B8B4 60          RTS
 }
 
 
 ;;; $B8B5: Initialisation AI - enemy projectile $BA78 (Tourian statue unlocking particle) ;;;
 {
-$86:B8B5 AE 93 19    LDX $1993  [$7E:1993]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: 
+$86:B8B5 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:B8B8 BD 4B 1A    LDA $1A4B,x[$7E:1A67]
 $86:B8BB 99 4B 1A    STA $1A4B,y[$7E:1A65]
 $86:B8BE BD 93 1A    LDA $1A93,x[$7E:1AAF]
@@ -8302,7 +8340,10 @@ $86:B8E7 60          RTS
 
 ;;; $B8E8: Initialisation AI - enemy projectile $BA86 (Tourian statue unlocking particle tail) ;;;
 {
-$86:B8E8 AE 93 19    LDX $1993  [$7E:1993]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: 
+$86:B8E8 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:B8EB BD 4B 1A    LDA $1A4B,x[$7E:1A65]
 $86:B8EE 99 4B 1A    STA $1A4B,y[$7E:1A67]
 $86:B8F1 BD 93 1A    LDA $1A93,x[$7E:1AAD]
@@ -8313,26 +8354,40 @@ $86:B8F7 60          RTS
 
 ;;; $B8F8: Initialisation AI - enemy projectile $BA94 (Tourian statue's soul) ;;;
 {
-$86:B8F8 AE 93 19    LDX $1993  [$7E:1993]
-$86:B8FB BD 0E B9    LDA $B90E,x[$86:B914]
-$86:B8FE 99 4B 1A    STA $1A4B,y[$7E:1A4F]
-$86:B901 BD 16 B9    LDA $B916,x[$86:B91C]
-$86:B904 99 93 1A    STA $1A93,y[$7E:1A97]
-$86:B907 A9 00 FC    LDA #$FC00
-$86:B90A 99 DB 1A    STA $1ADB,y[$7E:1ADF]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Boss
+;;         0: Phantoon
+;;         2: Ridley
+;;         4: Draygon
+;;         6: Kraid
+$86:B8F8 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
+$86:B8FB BD 0E B9    LDA $B90E,x[$86:B914]  ;\
+$86:B8FE 99 4B 1A    STA $1A4B,y[$7E:1A4F]  ;} Enemy projectile X position = [$B90E + [X]]
+$86:B901 BD 16 B9    LDA $B916,x[$86:B91C]  ;\
+$86:B904 99 93 1A    STA $1A93,y[$7E:1A97]  ;} Enemy projectile Y position = [$B916 + [X]]
+$86:B907 A9 00 FC    LDA #$FC00             ;\
+$86:B90A 99 DB 1A    STA $1ADB,y[$7E:1ADF]  ;} Enemy projectile Y velocity = -400h
 $86:B90D 60          RTS
 }
 
 
-;;; $B90E:  ;;;
+;;; $B90E: Tourian statue eye data ;;;
 {
-$86:B90E             dw 0084,007A,009E,0068
-$86:B916             dw 0090,0051,0080,0072
+; Tourian statue eye/soul positions
+;                        __________________ Phantoon
+;                       |     _____________ Ridley
+;                       |    |     ________ Draygon
+;                       |    |    |     ___ Kraid
+;                       |    |    |    |
+$86:B90E             dw 0084,007A,009E,0068 ; X position
+$86:B916             dw 0090,0051,0080,0072 ; Y position
 
-$86:B91E             dw 6BFF,033B,0216,0173
-                        7F5F,7C1F,5816,300C
-                        7F5A,7EC0,6DE0,54E0
-                        6BFA,3BE0,2680,1580
+; Sprite palette 7 colours 9..Ch. Eye glow colours
+$86:B91E             dw 6BFF,033B,0216,0173 ; Phantoon (yellow)
+                        7F5F,7C1F,5816,300C ; Ridley (red)
+                        7F5A,7EC0,6DE0,54E0 ; Draygon (blue)
+                        6BFA,3BE0,2680,1580 ; Kraid (green)
 }
 
 

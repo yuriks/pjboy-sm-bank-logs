@@ -526,7 +526,7 @@ $84:84D3 9E 77 1D    STZ $1D77,x[$7E:1DC5]  ; PLM $1D77 = 0
 $84:84D6 8E 27 1C    STX $1C27  [$7E:1C27]  ;\
 $84:84D9 BB          TYX                    ;} PLM index = [Y]
 $84:84DA AC 27 1C    LDY $1C27  [$7E:1C27]  ;/
-$84:84DD FC 00 00    JSR ($0000,x)[$84:B371]; Execute [PLM ID] (PLM setup)
+$84:84DD FC 00 00    JSR ($0000,x)[$84:B371]; Execute [[PLM ID]] (PLM setup)
 $84:84E0 FA          PLX
 $84:84E1 7A          PLY
 $84:84E2 AB          PLB
@@ -584,7 +584,7 @@ $84:852B 9F 0C DF 7E STA $7EDF0C,x[$7E:DF54]; PLM $7E:DF0C = 0
 $84:852F 8E 27 1C    STX $1C27  [$7E:1C27]  ;\
 $84:8532 BB          TYX                    ;} PLM index = [Y]
 $84:8533 AC 27 1C    LDY $1C27  [$7E:1C27]  ;/
-$84:8536 FC 00 00    JSR ($0000,x)[$84:C7BB]; Execute [PLM ID] (PLM setup)
+$84:8536 FC 00 00    JSR ($0000,x)[$84:C7BB]; Execute [[PLM ID]] (PLM setup)
 $84:8539 FA          PLX
 $84:853A 7A          PLY
 $84:853B AB          PLB
@@ -658,7 +658,7 @@ $84:85A1 9F 0C DF 7E STA $7EDF0C,x          ; PLM $7E:DF0C = 0
 $84:85A5 8E 27 1C    STX $1C27  [$7E:1C27]  ;\
 $84:85A8 BB          TYX                    ;} PLM index = [Y]
 $84:85A9 AC 27 1C    LDY $1C27  [$7E:1C27]  ;/
-$84:85AC FC 00 00    JSR ($0000,x)          ; Execute [PLM ID] (PLM setup)
+$84:85AC FC 00 00    JSR ($0000,x)          ; Execute [[PLM ID]] (PLM setup)
 $84:85AF FA          PLX
 $84:85B0 7A          PLY
 $84:85B1 AB          PLB
@@ -5743,7 +5743,7 @@ $84:ACB7 60          RTS
 ;;; $ACB8: Instruction list - PLM $B6CB (inside reaction, special air, BTS Brinstar 80h. Floor plant) ;;;
 {
 $84:ACB8             dx 86C1,AC89,  ; Pre-instruction = position Samus and give at least 10h frames of invincibility
-                        874E,04     ; Timer = 04h
+                        874E,04     ; Timer = 4
 $84:ACBF             dx 0005,9E61,
                         0005,9E45,
                         0005,9E61,
@@ -6350,7 +6350,7 @@ $84:B0E4 29 0F 00    AND #$000F             ;|
 $84:B0E7 C9 0F 00    CMP #$000F             ;|
 $84:B0EA F0 08       BEQ $08    [$B0F4]     ;/
 $84:B0EC A9 00 00    LDA #$0000             ;\
-$84:B0EF 99 37 1C    STA $1C37,y[$7E:1C85]  ;} Delete PLM
+$84:B0EF 99 37 1C    STA $1C37,y[$7E:1C85]  ;} PLM ID = 0
 $84:B0F2 18          CLC
 $84:B0F3 60          RTS                    ; Return
 
@@ -6377,7 +6377,7 @@ $84:B117 ED 00 0B    SBC $0B00  [$7E:0B00]  ;} If Samus top boundary is not bloc
 $84:B11A 29 0F 00    AND #$000F             ;|
 $84:B11D F0 08       BEQ $08    [$B127]     ;/
 $84:B11F A9 00 00    LDA #$0000             ;\
-$84:B122 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:B122 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:B125 18          CLC
 $84:B126 60          RTS                    ; Return
 
@@ -6434,7 +6434,7 @@ $84:B182 60          RTS                    ;} Return carry set
 
 ; BRANCH_DELETE
 $84:B183 A9 00 00    LDA #$0000             ;\
-$84:B186 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:B186 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:B189 38          SEC                    ;\
 $84:B18A 60          RTS                    ;} Return carry set
 }
@@ -6490,7 +6490,7 @@ $84:B1E4 3A          DEC A                  ;} Go to activate the station at the
 $84:B1E5 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B1E8 A9 00 00    LDA #$0000             ;\
-$84:B1EB 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:B1EB 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:B1EE 38          SEC                    ;\
 $84:B1EF 60          RTS                    ;} Return carry set
 }
@@ -6518,7 +6518,7 @@ $84:B211 1A          INC A                  ;|
 $84:B212 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B215 A9 00 00    LDA #$0000             ;\
-$84:B218 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:B218 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:B21B 38          SEC                    ;\
 $84:B21C 60          RTS                    ;} Return carry set
 }
@@ -6588,7 +6588,7 @@ $84:B291 3A          DEC A                  ;} Go to activate the station at the
 $84:B292 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B295 A9 00 00    LDA #$0000             ;\
-$84:B298 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:B298 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:B29B 38          SEC                    ;\
 $84:B29C 60          RTS                    ;} Return carry set
 }
@@ -6617,7 +6617,7 @@ $84:B2C4 1A          INC A                  ;} Go to activate the station at the
 $84:B2C5 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B2C8 A9 00 00    LDA #$0000             ;\
-$84:B2CB 99 37 1C    STA $1C37,y[$7E:1C81]  ;} Delete PLM
+$84:B2CB 99 37 1C    STA $1C37,y[$7E:1C81]  ;} PLM ID = 0
 $84:B2CE 38          SEC                    ;\
 $84:B2CF 60          RTS                    ;} Return carry set
 }
@@ -6645,7 +6645,7 @@ $84:B2F4 3A          DEC A                  ;} Go to activate the station at the
 $84:B2F5 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B2F8 A9 00 00    LDA #$0000             ;\
-$84:B2FB 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:B2FB 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:B2FE 38          SEC                    ;\
 $84:B2FF 60          RTS                    ;} Return carry set
 }
@@ -6674,7 +6674,7 @@ $84:B327 1A          INC A                  ;} Go to activate the station at the
 $84:B328 4C 46 B1    JMP $B146  [$84:B146]  ;/
 
 $84:B32B A9 00 00    LDA #$0000             ;\
-$84:B32E 99 37 1C    STA $1C37,y[$7E:1C81]  ;} Delete PLM
+$84:B32E 99 37 1C    STA $1C37,y[$7E:1C81]  ;} PLM ID = 0
 $84:B331 38          SEC                    ;\
 $84:B332 60          RTS                    ;} Return carry set
 }
@@ -7189,7 +7189,7 @@ $84:B5C5 D0 25       BNE $25    [$B5EC]     ;/
 $84:B5C7 BB          TYX                    ;\
 $84:B5C8 BD 87 1C    LDA $1C87,x[$7E:1CD3]  ;} A = [PLM block index]
 $84:B5CB 9E 87 1C    STZ $1C87,x[$7E:1CD3]  ; PLM block index = 0
-$84:B5CE 9E 37 1C    STZ $1C37,x[$7E:1C83]  ; Delete PLM
+$84:B5CE 9E 37 1C    STZ $1C37,x[$7E:1C83]  ; PLM ID = 0
 $84:B5D1 A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
 ; LOOP
@@ -7400,7 +7400,7 @@ $84:B7DC 60          RTS
 $84:B7DD DE 77 1D    DEC $1D77,x[$7E:1DC5]  ; Decrement PLM timer
 $84:B7E0 D0 06       BNE $06    [$B7E8]     ; If [PLM timer] = 0:
 $84:B7E2 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
-$84:B7E5 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; Delete PLM
+$84:B7E5 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; PLM ID = 0
 
 $84:B7E8 60          RTS
 }
@@ -7429,7 +7429,7 @@ $84:B7FA 8D 7A 19    STA $197A  [$7E:197A]  ;} FX target Y position = FFFFh
 $84:B7FD 9C 7C 19    STZ $197C  [$7E:197C]  ; FX Y velocity = 0
 $84:B800 9C 80 19    STZ $1980  [$7E:1980]  ; FX timer = 0
 $84:B803 9C 40 18    STZ $1840  [$7E:1840]  ; Screen shaking duration = 0
-$84:B806 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; Delete PLM
+$84:B806 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; PLM ID = 0
 $84:B809 60          RTS                    ; Return
 
 $84:B80A AD 7A 19    LDA $197A  [$7E:197A]  ;\
@@ -7443,7 +7443,7 @@ $84:B81F FE 27 1D    INC $1D27,x[$7E:1D75]  ;} PLM instruction list pointer += 2
 $84:B822 9E 77 1D    STZ $1D77,x[$7E:1DC5]  ; PLM timer = 0
 $84:B825 60          RTS                    ; Return
 
-$84:B826 9E 37 1C    STZ $1C37,x            ; Delete PLM
+$84:B826 9E 37 1C    STZ $1C37,x            ; PLM ID = 0
 $84:B829 60          RTS
 }
 
@@ -7521,7 +7521,7 @@ $84:B89C A9 15 00    LDA #$0015             ;\
 $84:B89F 22 33 82 80 JSL $808233[$80:8233]  ;} If speed booster lavaquake event is set:
 $84:B8A3 90 06       BCC $06    [$B8AB]     ;/
 $84:B8A5 A9 00 00    LDA #$0000             ;\
-$84:B8A8 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:B8A8 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 
 $84:B8AB 60          RTS
 }
@@ -7548,7 +7548,7 @@ $84:B8C6 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [Samus X position] <= 348h: re
 $84:B8C9 B0 0A       BCS $0A    [$B8D5]     ;/
 $84:B8CB A9 0D 00    LDA #$000D             ;\
 $84:B8CE 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Set Shaktool event
-$84:B8D2 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; Delete PLM
+$84:B8D2 9E 37 1C    STZ $1C37,x[$7E:1C85]  ; PLM ID = 0
 
 $84:B8D5 60          RTS
 }
@@ -7708,7 +7708,7 @@ $84:B97B BD 18 0C    LDA $0C18,x[$7E:0C1A]  ;} If [projectile type] = 0: (not su
 $84:B97E D0 0A       BNE $0A    [$B98A]     ;/
 $84:B980 29 00 0F    AND #$0F00             ; >_<;
 $84:B983 A9 00 00    LDA #$0000             ;\
-$84:B986 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:B986 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:B989 60          RTS                    ; Return
 
 $84:B98A BE 87 1C    LDX $1C87,y[$7E:1CD1]  ;\
@@ -7930,7 +7930,7 @@ $84:BB09 A9 0F 00    LDA #$000F             ;\
 $84:BB0C 22 33 82 80 JSL $808233[$80:8233]  ;} If critters not escaped:
 $84:BB10 B0 06       BCS $06    [$BB18]     ;/
 $84:BB12 A9 00 00    LDA #$0000             ;\
-$84:BB15 99 37 1C    STA $1C37,y[$7E:1C65]  ;} Delete PLM
+$84:BB15 99 37 1C    STA $1C37,y[$7E:1C65]  ;} PLM ID = 0
 
 $84:BB18 60          RTS
 }
@@ -9226,7 +9226,7 @@ $84:C55B 4C 3F C6    JMP $C63F  [$84:C63F]  ; Go to trigger PLM of block to the 
 $84:C55E A9 57 00    LDA #$0057             ;\
 $84:C561 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
 $84:C565 A9 00 00    LDA #$0000             ;\
-$84:C568 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:C568 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:C56B 60          RTS
 }
 
@@ -9243,7 +9243,7 @@ $84:C57A 4C 47 C6    JMP $C647  [$84:C647]  ; Go to trigger PLM of block to the 
 $84:C57D A9 57 00    LDA #$0057             ;\
 $84:C580 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
 $84:C584 A9 00 00    LDA #$0000             ;\
-$84:C587 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:C587 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:C58A 60          RTS
 }
 
@@ -9263,7 +9263,7 @@ $84:C59E 4C 3F C6    JMP $C63F  [$84:C63F]  ; Go to trigger PLM of block to the 
 $84:C5A1 A9 57 00    LDA #$0057             ;\
 $84:C5A4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
 $84:C5A8 A9 00 00    LDA #$0000             ;\
-$84:C5AB 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:C5AB 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:C5AE 60          RTS
 }
 
@@ -9283,7 +9283,7 @@ $84:C5C2 4C 47 C6    JMP $C647  [$84:C647]  ; Go to trigger PLM of block to the 
 $84:C5C5 A9 57 00    LDA #$0057             ;\
 $84:C5C8 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
 $84:C5CC A9 00 00    LDA #$0000             ;\
-$84:C5CF 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:C5CF 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:C5D2 60          RTS
 }
 
@@ -9300,7 +9300,7 @@ $84:C5E1 4C 3F C6    JMP $C63F  [$84:C63F]  ; Go to trigger PLM of block to the 
 $84:C5E4 A9 57 00    LDA #$0057             ;\
 $84:C5E7 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
 $84:C5EB A9 00 00    LDA #$0000             ;\
-$84:C5EE 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:C5EE 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 }
 
 
@@ -9316,7 +9316,7 @@ $84:C5FF 4C 47 C6    JMP $C647  [$84:C647]  ; Go to trigger PLM of block to the 
 $84:C602 A9 57 00    LDA #$0057             ;\
 $84:C605 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot door/gate with dud shot)
 $84:C609 A9 00 00    LDA #$0000             ;\
-$84:C60C 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:C60C 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:C60F 60          RTS
 }
 
@@ -9331,7 +9331,7 @@ $84:C61C F0 03       BEQ $03    [$C621]     ;/
 $84:C61E 4C 3F C6    JMP $C63F  [$84:C63F]  ; Go to trigger PLM of block to the right
 
 $84:C621 A9 00 00    LDA #$0000             ;\
-$84:C624 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:C624 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 }
 
 
@@ -9345,7 +9345,7 @@ $84:C633 F0 03       BEQ $03    [$C638]     ;/
 $84:C635 4C 47 C6    JMP $C647  [$84:C647]  ; Go to trigger PLM of block to the left
 
 $84:C638 A9 00 00    LDA #$0000             ;\
-$84:C63B 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:C63B 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:C63E 60          RTS
 }
 
@@ -9386,7 +9386,7 @@ $84:C65F FE 77 1D    INC $1D77,x[$7E:1DC5]  ; Trigger PLM [X]
 
 ; BRANCH_RETURN
 $84:C662 A9 00 00    LDA #$0000             ;\
-$84:C665 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:C665 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:C668 38          SEC
 $84:C669 60          RTS
 }
@@ -9593,7 +9593,7 @@ $84:C7C1 29 00 0F    AND #$0F00             ;} If current projectile is power bo
 $84:C7C4 C9 00 03    CMP #$0300             ;|
 $84:C7C7 D0 07       BNE $07    [$C7D0]     ;/
 $84:C7C9 A9 00 00    LDA #$0000             ;\
-$84:C7CC 99 37 1C    STA $1C37,y[$7E:1C79]  ;} Delete PLM
+$84:C7CC 99 37 1C    STA $1C37,y[$7E:1C79]  ;} PLM ID = 0
 $84:C7CF 60          RTS                    ; Return
 
 $84:C7D0 BE 87 1C    LDX $1C87,y[$7E:1CCF]  ;\
@@ -10420,7 +10420,7 @@ $84:CDE0 18          CLC
 $84:CDE1 60          RTS                    ; Return
 
 $84:CDE2 A9 00 00    LDA #$0000             ;\
-$84:CDE5 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:CDE5 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:CDE8 38          SEC
 $84:CDE9 60          RTS
 }
@@ -10448,7 +10448,7 @@ $84:CE0F F0 0D       BEQ $0D    [$CE1E]     ;|
 $84:CE11 C9 CE 00    CMP #$00CE             ;|
 $84:CE14 F0 08       BEQ $08    [$CE1E]     ;/
 $84:CE16 A9 00 00    LDA #$0000             ;\
-$84:CE19 99 37 1C    STA $1C37,y[$7E:1C7F]  ;} Delete PLM
+$84:CE19 99 37 1C    STA $1C37,y[$7E:1C7F]  ;} PLM ID = 0
 $84:CE1C 38          SEC                    ;\
 $84:CE1D 60          RTS                    ;} Return carry set
 
@@ -10486,7 +10486,7 @@ $84:CE61 38          SEC                    ;\
 $84:CE62 60          RTS                    ;} Return carry set
 
 $84:CE63 A9 00 00    LDA #$0000             ;\
-$84:CE66 99 37 1C    STA $1C37,y[$7E:1C77]  ;} Delete PLM
+$84:CE66 99 37 1C    STA $1C37,y[$7E:1C77]  ;} PLM ID = 0
 $84:CE69 38          SEC                    ;\
 $84:CE6A 60          RTS                    ;} Return carry set
 }
@@ -10530,7 +10530,7 @@ $84:CEB2 F0 0D       BEQ $0D    [$CEC1]     ;|
 $84:CEB4 C9 CE 00    CMP #$00CE             ;|
 $84:CEB7 F0 08       BEQ $08    [$CEC1]     ;/
 $84:CEB9 A9 00 00    LDA #$0000             ;\
-$84:CEBC 99 37 1C    STA $1C37,y[$7E:1C7B]  ;} Delete PLM
+$84:CEBC 99 37 1C    STA $1C37,y[$7E:1C7B]  ;} PLM ID = 0
 $84:CEBF 38          SEC
 $84:CEC0 60          RTS                    ; Return
 
@@ -10556,7 +10556,7 @@ $84:CEE6 F0 24       BEQ $24    [$CF0C]     ;/
 $84:CEE8 C9 00 03    CMP #$0300             ;\
 $84:CEEB F0 07       BEQ $07    [$CEF4]     ;} If current projectile is power bomb: go to BRANCH_POWER_BOMB
 $84:CEED A9 00 00    LDA #$0000             ;\
-$84:CEF0 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:CEF0 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:CEF3 60          RTS                    ; Return
 
 ; BRANCH_POWER_BOMB
@@ -10595,7 +10595,7 @@ $84:CF3A F0 24       BEQ $24    [$CF60]     ;/
 $84:CF3C C9 00 03    CMP #$0300             ;\
 $84:CF3F F0 07       BEQ $07    [$CF48]     ;} If current projectile is power bomb: go to BRANCH_POWER_BOMB
 $84:CF41 A9 00 00    LDA #$0000             ;\
-$84:CF44 99 37 1C    STA $1C37,y[$7E:1C85]  ;} Delete PLM
+$84:CF44 99 37 1C    STA $1C37,y[$7E:1C85]  ;} PLM ID = 0
 $84:CF47 60          RTS                    ; Return
 
 ; BRANCH_POWER_BOMB
@@ -10625,7 +10625,7 @@ $84:CF73 F0 24       BEQ $24    [$CF99]     ;/
 $84:CF75 C9 00 02    CMP #$0200             ;\
 $84:CF78 F0 07       BEQ $07    [$CF81]     ;} If current projectile is super missile: go to BRANCH_SUPER_MISSILE
 $84:CF7A A9 00 00    LDA #$0000             ;\
-$84:CF7D 99 37 1C    STA $1C37,y[$7E:1C83]  ;} Delete PLM
+$84:CF7D 99 37 1C    STA $1C37,y[$7E:1C83]  ;} PLM ID = 0
 $84:CF80 60          RTS                    ; Return
 
 ; BRANCH_SUPER_MISSILE
@@ -10653,7 +10653,7 @@ $84:CFA6 29 00 0F    AND #$0F00             ;} If current projectile is not bomb
 $84:CFA9 C9 00 05    CMP #$0500             ;|
 $84:CFAC F0 06       BEQ $06    [$CFB4]     ;/
 $84:CFAE A9 00 00    LDA #$0000             ;\
-$84:CFB1 99 37 1C    STA $1C37,y[$7E:1C71]  ;} Delete PLM
+$84:CFB1 99 37 1C    STA $1C37,y[$7E:1C71]  ;} PLM ID = 0
 
 $84:CFB4 60          RTS
 }
@@ -10904,7 +10904,7 @@ $84:D17E D0 0C       BNE $0C    [$D18C]     ;/
 $84:D180 A9 83 B0    LDA #$B083             ;\
 $84:D183 20 B4 82    JSR $82B4  [$84:82B4]  ;} PLM block = Lower Norfair chozo hand trigger
 $84:D186 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
-$84:D189 9E 37 1C    STZ $1C37,x[$7E:1C7F]  ;} Delete PLM
+$84:D189 9E 37 1C    STZ $1C37,x[$7E:1C7F]  ;} PLM ID = 0
 
 $84:D18C FA          PLX
 $84:D18D 60          RTS
@@ -10953,7 +10953,7 @@ $84:D1DA             dx 0C, 1D, D113        ;} Spawn PLM $D113 (crumble Lower No
 
 ; BRANCH_RETURN
 $84:D1DE A9 00 00    LDA #$0000             ;\
-$84:D1E1 99 37 1C    STA $1C37,y[$7E:1C81]  ;} Delete PLM
+$84:D1E1 99 37 1C    STA $1C37,y[$7E:1C81]  ;} PLM ID = 0
 $84:D1E4 38          SEC                    ;\
 $84:D1E5 60          RTS                    ;} Return carry set
 }
@@ -11513,7 +11513,7 @@ $84:D673             dx 17, 1D, D6F8        ;} Spawn PLM $D6F8 (clear slope acce
 
 ; BRANCH_RETURN
 $84:D677 A9 00 00    LDA #$0000             ;\
-$84:D67A 99 37 1C    STA $1C37,y[$7E:1C7B]  ;} Delete PLM
+$84:D67A 99 37 1C    STA $1C37,y[$7E:1C7B]  ;} PLM ID = 0
 $84:D67D 38          SEC                    ;\
 $84:D67E 60          RTS                    ;} Return carry set
 }
@@ -11794,33 +11794,33 @@ $84:D81D 60          RTS
 {
 ;;; $D81E: Instruction list - PLM $DB56 (eye door eye, facing left) ;;;
 {
-$84:D81E             dx 8A72,D8E3,      ; Go to $D8E3 if the room argument door is set
+$84:D81E             dw 8A72,D8E3       ; Go to $D8E3 if the room argument door is set
 $84:D822             dx 0004,9C03,
-                        8D41,06,04,D830,; Go to $D830 if Samus is within 06h columns and 04h rows of PLM
-                        8724,D822,      ; Go to $D822
-$84:D830             dx 8A24,D880,      ; Link instruction = $D880
+                        8D41,06,04,D830,; Go to $D830 if Samus is within 6 columns and 4 rows of PLM
+                        8724,D822       ; Go to $D822
+$84:D830             dw 8A24,D880,      ; Link instruction = $D880
                         86C1,BD50,      ; Pre-instruction = go to link instruction if shot with a (super) missile
-                        0008,9C0B,
-$84:D83C             dx 8D41,01,04,D878,; Go to $D878 if Samus is within 01h columns and 04h rows of PLM
+                        0008,9C0B 
+$84:D83C             dx 8D41,01,04,D878,; Go to $D878 if Samus is within 1 column and 4 rows of PLM
                         0040,9C13,
-                        D77A,0000,      ; Shoot eye door projectile with enemy projectile argument 0000h
+                        D77A,0000,      ; Shoot eye door projectile with enemy projectile argument 0
                         0020,9C13,
-                        D77A,0000,      ; Shoot eye door projectile with enemy projectile argument 0000h
+                        D77A,0000,      ; Shoot eye door projectile with enemy projectile argument 0
                         0020,9C13,
-                        D77A,0000,      ; Shoot eye door projectile with enemy projectile argument 0000h
+                        D77A,0000,      ; Shoot eye door projectile with enemy projectile argument 0
                         0040,9C13,
                         0006,9C0B,
                         0030,9C03,
                         0030,9C03,
                         0006,9C0B,
-                        8D41,06,04,D83C,; Go to $D83C if Samus is within 06h columns and 04h rows of PLM
-                        8724,D822,      ; Go to $D822
-$84:D878             dx 0004,9C03,
-                        8724,D83C,      ; Go to $D83C
+                        8D41,06,04,D83C,; Go to $D83C if Samus is within 6 columns and 4 rows of PLM
+                        8724,D822       ; Go to $D822
+$84:D878             dw 0004,9C03,
+                        8724,D83C       ; Go to $D83C
 $84:D880             dx 8C10,09,        ; Queue sound 9, sound library 2, max queued sounds allowed = 6 (enemy killed)
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D79F,           ; Spawn two eye door smoke enemy projectiles
-                        8A91,03,D8C4,   ; Increment door hit counter; Set room argument door and go to $D8C4 if [door hit counter] >= 03h
+                        8A91,03,D8C4,   ; Increment door hit counter; Set room argument door and go to $D8C4 if [door hit counter] >= 3
                         0002,9C1B,
                         0002,9C23,
                         D79F,           ; Spawn two eye door smoke enemy projectiles
@@ -11831,31 +11831,31 @@ $84:D880             dx 8C10,09,        ; Queue sound 9, sound library 2, max qu
                         0002,9C23,
                         0004,9C0B,
                         0008,9C03,
-                        D790,0000,      ; Spawn eye door sweat enemy projectile with argument 0000h
+                        D790,0000,      ; Spawn eye door sweat enemy projectile with argument 0
                         0038,9C03,
                         0004,9C0B,
                         0004,9C23,
-                        8724,D83C,      ; Go to $D83C
+                        8724,D83C       ; Go to $D83C
 $84:D8C4             dx 86CA,           ; Clear pre-instruction
                         D7B6,           ; Spawn eye door smoke projectile
                         D7B6,           ; Spawn eye door smoke projectile
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D7DA,           ; Move PLM up one row and make a blue door facing left
-                        874E,0A,        ; Timer = 0Ah
-$84:D8D3             dx 0003,9BF7,
+                        874E,0A         ; Timer = Ah
+$84:D8D3             dw 0003,9BF7,
                         0004,A9A7,
                         873F,D8D3,      ; Decrement timer and go to $D8D3 if non-zero
-                        8724,C4B1,      ; Go to $C4B1
-$84:D8E3             dx D7DA,           ; Move PLM up one row and make a blue door facing left
-                        8724,C4B1,      ; Go to $C4B1
+                        8724,C4B1       ; Go to $C4B1
+$84:D8E3             dw D7DA,           ; Move PLM up one row and make a blue door facing left
+                        8724,C4B1       ; Go to $C4B1
 }
 
 
 ;;; $D8E9: Instruction list - door $DB5A (eye door, facing left) ;;;
 {
 $84:D8E9             dx 8A72,D91D,      ; Go to $D91D if the room argument door is set
-$84:D8ED             dx 8D41,06,10,D8FB,; Go to $D8FB if Samus is within 06h columns and 10h rows of PLM
+$84:D8ED             dx 8D41,06,10,D8FB,; Go to $D8FB if Samus is within 6 columns and 10h rows of PLM
                         0008,9C2B,
                         8724,D8ED,      ; Go to $D8ED
 $84:D8FB             dx 8A24,D91D,      ; Link instruction = $D91D
@@ -11864,7 +11864,7 @@ $84:D903             dx 0008,9C2B,
                         0008,9C31,
                         0008,9C37,
                         0008,9C31,
-                        8D41,06,10,D903,; Go to $D903 if Samus is within 06h columns and 10h rows of PLM
+                        8D41,06,10,D903,; Go to $D903 if Samus is within 6 columns and 10h rows of PLM
                         8724,D8ED,      ; Go to $D8ED
 $84:D91D             dx 86BC            ; Delete
 }
@@ -11873,7 +11873,7 @@ $84:D91D             dx 86BC            ; Delete
 ;;; $D91F: Instruction list - PLM $DB60 (eye door bottom, facing left) ;;;
 {
 $84:D91F             dx 8A72,D953,      ; Go to $D953 if the room argument door is set
-$84:D923             dx 8D41,06,10,D931,; Go to $D931 if Samus is within 06h columns and 10h rows of PLM
+$84:D923             dx 8D41,06,10,D931,; Go to $D931 if Samus is within 6 columns and 10h rows of PLM
                         0008,9C3D,
                         8724,D923,      ; Go to $D923
 $84:D931             dx 8A24,D953,      ; Link instruction = $D953
@@ -11882,7 +11882,7 @@ $84:D939             dx 0008,9C3D,
                         0008,9C43,
                         0008,9C49,
                         0008,9C43,
-                        8D41,06,10,D939,; Go to $D939 if Samus is within 06h columns and 10h rows of PLM
+                        8D41,06,10,D939,; Go to $D939 if Samus is within 6 columns and 10h rows of PLM
                         8724,D923,      ; Go to $D923
 $84:D953             dx 86BC            ; Delete
 }
@@ -11892,31 +11892,31 @@ $84:D953             dx 86BC            ; Delete
 {
 $84:D955             dx 8A72,DA1A,      ; Go to $DA1A if the room argument door is set
 $84:D959             dx 0004,9C5B,
-                        8D41,06,04,D967,; Go to $D967 if Samus is within 06h columns and 04h rows of PLM
+                        8D41,06,04,D967,; Go to $D967 if Samus is within 6 columns and 4 rows of PLM
                         8724,D959,      ; Go to $D959
 $84:D967             dx 8A24,D9B7,      ; Link instruction = $D9B7
                         86C1,BD50,      ; Pre-instruction = go to link instruction if shot with a (super) missile
                         0008,9C63,
-$84:D973             dx 8D41,01,04,D9AF,; Go to $D9AF if Samus is within 01h columns and 04h rows of PLM
+$84:D973             dx 8D41,01,04,D9AF,; Go to $D9AF if Samus is within 1 columns and 4 rows of PLM
                         0040,9C6B,
-                        D77A,0014,      ; Shoot eye door projectile with enemy projectile argument 0014h
+                        D77A,0014,      ; Shoot eye door projectile with enemy projectile argument 14h
                         0020,9C6B,
-                        D77A,0014,      ; Shoot eye door projectile with enemy projectile argument 0014h
+                        D77A,0014,      ; Shoot eye door projectile with enemy projectile argument 14h
                         0020,9C6B,
-                        D77A,0014,      ; Shoot eye door projectile with enemy projectile argument 0014h
+                        D77A,0014,      ; Shoot eye door projectile with enemy projectile argument 14h
                         0040,9C6B,
                         0006,9C63,
                         0030,9C5B,
                         0030,9C5B,
                         0006,9C63,
-                        8D41,06,04,D973,; Go to $D973 if Samus is within 06h columns and 04h rows of PLM
+                        8D41,06,04,D973,; Go to $D973 if Samus is within 6 columns and 4 rows of PLM
                         8724,D959,      ; Go to $D959
 $84:D9AF             dx 0004,9C5B,
                         8724,D973,      ; Go to $D973
 $84:D9B7             dx 8C10,09,        ; Queue sound 9, sound library 2, max queued sounds allowed = 6 (enemy killed)
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D79F,           ; Spawn two eye door smoke enemy projectiles
-                        8A91,03,D9FB,   ; Increment door hit counter; Set room argument door and go to $D9FB if [door hit counter] >= 03h
+                        8A91,03,D9FB,   ; Increment door hit counter; Set room argument door and go to $D9FB if [door hit counter] >= 3
                         0002,9C73,
                         0002,9C7B,
                         D79F,           ; Spawn two eye door smoke enemy projectiles
@@ -11927,7 +11927,7 @@ $84:D9B7             dx 8C10,09,        ; Queue sound 9, sound library 2, max qu
                         0002,9C7B,
                         0004,9C63,
                         0008,9C5B,
-                        D790,0004,      ; Spawn eye door sweat enemy projectile with argument 0004h
+                        D790,0004,      ; Spawn eye door sweat enemy projectile with argument 4
                         0038,9C5B,
                         0004,9C63,
                         0004,9C7B,
@@ -11951,7 +11951,7 @@ $84:DA1A             dx D7C3,           ; Move PLM up one row and make a blue do
 ;;; $DA20: Instruction list - door $DB4C (eye door, facing right) ;;;
 {
 $84:DA20             dx 8A72,DA54,      ; Go to $DA54 if the room argument door is set
-$84:DA24             dx 8D41,06,10,DA32,; Go to $DA32 if Samus is within 06h columns and 10h rows of PLM
+$84:DA24             dx 8D41,06,10,DA32,; Go to $DA32 if Samus is within 6 columns and 10h rows of PLM
                         0008,9C83,
                         8724,DA24,      ; Go to $DA24
 $84:DA32             dx 8A24,DA54,      ; Link instruction = $DA54
@@ -11960,7 +11960,7 @@ $84:DA3A             dx 0006,9C83,
                         0006,9C89,
                         0006,9C8F,
                         0006,9C89,
-                        8D41,06,10,DA3A,; Go to $DA3A if Samus is within 06h columns and 10h rows of PLM
+                        8D41,06,10,DA3A,; Go to $DA3A if Samus is within 6 columns and 10h rows of PLM
                         8724,DA24,      ; Go to $DA24
 $84:DA54             dx 86BC            ; Delete
 }
@@ -11969,7 +11969,7 @@ $84:DA54             dx 86BC            ; Delete
 ;;; $DA56: Instruction list - PLM $DB52 (eye door bottom, facing right) ;;;
 {
 $84:DA56             dx 8A72,DA8A,      ; Go to $DA8A if the room argument door is set
-$84:DA5A             dx 8D41,06,10,DA68,; Go to $DA68 if Samus is within 06h columns and 10h rows of PLM
+$84:DA5A             dx 8D41,06,10,DA68,; Go to $DA68 if Samus is within 6 columns and 10h rows of PLM
                         0008,9C95,
                         8724,DA5A,      ; Go to $DA5A
 $84:DA68             dx 8A24,DA8A,      ; Link instruction = $DA8A
@@ -11978,7 +11978,7 @@ $84:DA70             dx 0006,9C95,
                         0006,9C9B,
                         0006,9CA1,
                         0006,9C9B,
-                        8D41,06,10,DA70,; Go to $DA70 if Samus is within 06h columns and 10h rows of PLM
+                        8D41,06,10,DA70,; Go to $DA70 if Samus is within 6 columns and 10h rows of PLM
                         8724,DA5A,      ; Go to $DA5A
 $84:DA8A             dx 86BC            ; Delete
 }
@@ -14169,7 +14169,7 @@ $84:EECB 60          RTS                    ;} Return carry clear
 
 ; BRANCH_DELETE
 $84:EECC A9 00 00    LDA #$0000             ;\
-$84:EECF 99 37 1C    STA $1C37,y            ;} Delete PLM
+$84:EECF 99 37 1C    STA $1C37,y            ;} PLM ID = 0
 $84:EED2 60          RTS
 }
 }

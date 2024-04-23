@@ -3194,38 +3194,38 @@ $AA:D10C 6B          RTL
 }
 
 
-;;; $D10D: Instruction list -  ;;;
+;;; $D10D: Instruction list - Golden Torizo eye beam attack ;;;
 {
-$AA:D10D             dx B09C,D5DF,              ; Enemy function = $D5DF
-                        D17B,                   ; Enemy $7E:780C &= 7FFFh
+$AA:D10D             dw B09C,D5DF,              ; Enemy function = $D5DF
+                        D17B,                   ; Disable eye beam explosions
                         C2C9,                   ; Enemy $7E:7808 = 7777h
-                        813A,0008,              ; Wait 0008h frames
-                        8123,0004,              ; Timer = 0004h
-                        D397,                   ; Play laser sound effect
-                        D436,0000,              ; Spawn Golden Torizo eye beam with parameter 0000h
-                        813A,0004,              ; Wait 0004h frames
+                        813A,0008,              ; Wait 8 frames
+                        8123,0004,              ; Timer = 4
+                        D397                    ; Play laser sound effect
+$AA:D11F             dw D436,0000,              ; Spawn Golden Torizo eye beam
+                        813A,0004,              ; Wait 4 frames
                         8110,D11F,              ; Decrement timer and go to $D11F if non-zero
-                        813A,0008,              ; Wait 0008h frames
-                        8123,0002,              ; Timer = 0002h
-                        813A,0003,              ; Wait 0003h frames
-                        814B,0040,AAB279,7D80,  ; Transfer 0040h bytes from $AAB279 to VRAM $7D80
-                        813A,0003,              ; Wait 0003h frames
-                        814B,0040,AAB2B9,7D80,  ; Transfer 0040h bytes from $AAB2B9 to VRAM $7D80
-                        813A,0003,              ; Wait 0003h frames
-                        814B,0040,AAB2F9,7D80,  ; Transfer 0040h bytes from $AAB2F9 to VRAM $7D80
-                        813A,0003,              ; Wait 0003h frames
-                        814B,0040,AAB339,7D80,  ; Transfer 0040h bytes from $AAB339 to VRAM $7D80
+                        813A,0008,              ; Wait 8 frames
+                        8123,0002               ; Timer = 2
+$AA:D133             dx 813A,0003,              ; Wait 3 frames
+                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
+                        813A,0003,              ; Wait 3 frames
+                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B2B9 to VRAM $7D80
+                        813A,0003,              ; Wait 3 frames
+                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B2F9 to VRAM $7D80
+                        813A,0003,              ; Wait 3 frames
+                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
                         8110,D133,              ; Decrement timer and go to $D133 if non-zero
-                        D187,                   ; Enemy $7E:780C |= 8000h
-                        813A,0008,              ; Wait 0008h frames
-                        D17B,                   ; Enemy $7E:780C &= 7FFFh
+                        D187,                   ; Enable eye beam explosions
+                        813A,0008,              ; Wait 8 frames
+                        D17B,                   ; Disable eye beam explosions
                         C2D1,                   ; Enemy $7E:7808 = 0
                         B09C,D5E6,              ; Enemy function = $D5E6
                         C2F7                    ; Go to [enemy $7E:7800]
 }
 
 
-;;; $D17B: Instruction - enemy $7E:780C &= 7FFFh ;;;
+;;; $D17B: Instruction - disable eye beam explosions ;;;
 {
 $AA:D17B BF 0C 78 7E LDA $7E780C,x[$7E:780C]
 $AA:D17F 29 FF 7F    AND #$7FFF
@@ -3234,7 +3234,7 @@ $AA:D186 6B          RTL
 }
 
 
-;;; $D187: Instruction - enemy $7E:780C |= 8000h ;;;
+;;; $D187: Instruction - enable eye beam explosions ;;;
 {
 $AA:D187 BF 0C 78 7E LDA $7E780C,x[$7E:780C]
 $AA:D18B 09 00 80    ORA #$8000
@@ -3534,10 +3534,10 @@ $AA:D435 6B          RTL
 }
 
 
-;;; $D436: Instruction - spawn Golden Torizo eye beam with parameter [[Y]] ;;;
+;;; $D436: Instruction - spawn Golden Torizo eye beam ;;;
 {
 $AA:D436 5A          PHY
-$AA:D437 B9 00 00    LDA $0000,y[$AA:D121]
+$AA:D437 B9 00 00    LDA $0000,y[$AA:D121]  ; A = [[Y]] (ignored by enemy projectile)
 $AA:D43A A0 28 B4    LDY #$B428             ;\
 $AA:D43D 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Golden Torizo eye beam enemy projectile
 $AA:D441 7A          PLY
