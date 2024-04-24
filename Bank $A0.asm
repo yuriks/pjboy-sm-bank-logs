@@ -9742,9 +9742,9 @@ $A0:C9BE 6B          RTL
 }
 
 
-;;; $C9BF: Common enemy speeds - linearly increasing ;;;
+;;; $C9BF: Unused. Common enemy projectile speeds - linearly increasing ;;;
 {
-; Copy of $8187
+; Clone of $8187
 
 ; Subspeed, speed, negated subspeed, negated speed
 $A0:C9BF             dw 0000,0000,0000,0000, 0000,1000,FFFF,F000, 0000,2000,FFFF,E000, 0000,3000,FFFF,D000, 0000,4000,FFFF,C000, 0000,5000,FFFF,B000, 0000,6000,FFFF,A000, 0000,7000,FFFF,9000, 0000,8000,FFFF,8000, 0000,9000,FFFF,7000, 0000,A000,FFFF,6000, 0000,B000,FFFF,5000, 0000,C000,FFFF,4000, 0000,D000,FFFF,3000, 0000,E000,FFFF,2000, 0000,F000,FFFF,1000,
@@ -9755,10 +9755,10 @@ $A0:C9BF             dw 0000,0000,0000,0000, 0000,1000,FFFF,F000, 0000,2000,FFFF
 }
 
 
-;;; $CBC7: Common enemy speeds - quadratically increasing ;;;
+;;; $CBC7: Common enemy projectile speeds - quadratically increasing ;;;
 {
-; Copy of $838F
-; Used by Botwoon's body when dying and falling to the floor
+; Clone of $838F
+; Used by Botwoon's body when dying and falling to the floor, and Norfair lavaquake rocks
 
 ; Subspeed, speed, negated subspeed, negated speed
 $A0:CBC7             dw 0000,0000,0000,0000, 0109,0000,FEF7,FFFF, 031B,0000,FCE5,FFFF, 0636,0000,F9CA,FFFF,
@@ -9822,7 +9822,7 @@ $A0:CBC7             dw 0000,0000,0000,0000, 0109,0000,FEF7,FFFF, 031B,0000,FCE5
 ;                       |     |     |     |     |     |     |   |   |     |     |     |     |     |     |     |     |     |     |     |         |     |     |         |     |     |     |       |   |      _______ 3Ch: Vulnerabilities ($B4)
 ;                       |     |     |     |     |     |     |   |   |     |     |     |     |     |     |     |     |     |     |     |         |     |     |         |     |     |     |       |   |     |      _ 3Eh: Enemy name ($B4)
 ;                       |     |     |     |     |     |     |   |   |     |     |     |     |     |     |     |     |     |     |     |         |     |     |         |     |     |     |       |   |     |     |
-;                       00    02    04    06    08    0A    0C  0D  0E    10    12    14    16    18    1A    1C    1E    20    22    24        28    2A    2C        30    32    34    36      39  3A    3C    3E
+;                       0     2     4     6     8     Ah    Ch  Dh  Eh    10h   12h   14h   16h   18h   1Ah   1Ch   1Eh   20h   22h   24h       28h   2Ah   2Ch       30h   32h   34h   36h     39h 3Ah   3Ch   3Eh
 $A0:CEBF             dx 0400, 8687, 03E8, 000A, 0008, 0008, A2, 00, 0000, 0000, 871C, 0001, 0000, 879C, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 802D, 0000, ACB600, 05, F320, EDA8, DDEB
 $A0:CEFF             dx 0400, 8912, 0014, 0028, 0008, 0008, A2, 00, 0053, 0000, 89AD, 0001, 0000, 89F0, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 802D, 0000, ACD000, 05, F3B6, EC1C, E15D
 $A0:CF3F             dx 0C00, 8B60, 4E20, 00C8, 0014, 0010, A2, 00, 0000, 0000, 8D6C, 0005, 0000, 8DD2, 800F, 804C, 8041, 0000, 0004, 00000000, 0000, 0000, 00000000, 9281, 802D, 0000, ACD400, 05, F3BC, EEC6, DF11
