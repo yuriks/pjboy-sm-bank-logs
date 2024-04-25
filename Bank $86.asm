@@ -9215,9 +9215,11 @@ $86:BF51             db 01,01,01,01,00, 00,00,00
 
 ;;; $BF59: Initialisation AI - enemy projectile $C18C (Mother Brain's room turret bullets) ;;;
 {
-; Initialisation parameter is the index of the source turret enemy projectile
-$86:BF59 A9 00 00    LDA #$0000             ;\
-$86:BF5C 99 23 1B    STA $1B23,y[$7E:1B2D]  ;} Enemy projectile $1B23 = 0
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Mother Brain's room turrets enemy projectile index
+$86:BF59 A9 00 00    LDA #$0000
+$86:BF5C 99 23 1B    STA $1B23,y[$7E:1B2D]
 $86:BF5F A9 00 04    LDA #$0400             ;\
 $86:BF62 99 BB 19    STA $19BB,y[$7E:19C5]  ;} Enemy projectile VRAM graphics index = 0, palette 2
 $86:BF65 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter]
@@ -9357,7 +9359,7 @@ $86:C08E 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:C092 29 FF 00    AND #$00FF             ;\
 $86:C095 C9 20 00    CMP #$0020             ;|
 $86:C098 10 03       BPL $03    [$C09D]     ;|
-$86:C09A A9 20 00    LDA #$0020             ;} Enemy projectile rotation timer = min(20h, [random number] & FFh)
+$86:C09A A9 20 00    LDA #$0020             ;} Enemy projectile rotation timer = max(20h, [random number] % 100h)
                                             ;|
 $86:C09D 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;/
 $86:C0A0 60          RTS
@@ -9370,7 +9372,7 @@ $86:C0A1 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:C0A5 29 FF 00    AND #$00FF             ;\
 $86:C0A8 C9 80 00    CMP #$0080             ;|
 $86:C0AB 10 03       BPL $03    [$C0B0]     ;|
-$86:C0AD A9 80 00    LDA #$0080             ;} Enemy projectile cooldown timer = min(80h, [random number] & FFh)
+$86:C0AD A9 80 00    LDA #$0080             ;} Enemy projectile cooldown timer = max(80h, [random number] % 100h)
                                             ;|
 $86:C0B0 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
 $86:C0B3 60          RTS
@@ -9725,18 +9727,18 @@ $86:C26B 60          RTS
 
 ;;; $C26C: A *= sin([$12] * pi / 80h) ;;;
 {
-$86:C26C 85 26       STA $26    [$7E:0026]
-$86:C26E A5 12       LDA $12    [$7E:0012]
-$86:C270 80 08       BRA $08    [$C27A]
+$86:C26C 85 26       STA $26    [$7E:0026]  ; $26 = [A]
+$86:C26E A5 12       LDA $12    [$7E:0012]  ; A = [$12]
+$86:C270 80 08       BRA $08    [$C27A]     ; Go to A = [$26] * sin([A] * pi / 80h)
 }
 
 
 ;;; $C272: A *= cos([$12] * pi / 80h) ;;;
 {
-$86:C272 85 26       STA $26    [$7E:0026]
-$86:C274 A5 12       LDA $12    [$7E:0012]
-$86:C276 18          CLC
-$86:C277 69 40 00    ADC #$0040
+$86:C272 85 26       STA $26    [$7E:0026]  ; $26 = [A]
+$86:C274 A5 12       LDA $12    [$7E:0012]  ;\
+$86:C276 18          CLC                    ;} A = [$12] + 40h
+$86:C277 69 40 00    ADC #$0040             ;/
 }
 
 
@@ -9823,11 +9825,14 @@ $86:C2F2 60          RTS
 {
 ;;; $C2F3: Initialisation AI - enemy projectile $CB4B (Mother Brain's blue ring lasers) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Angle. Anti-clockwise where 0 = down
 ; The initial delay is good for some marginal telegraphing, but also gives time for the next ring to spawn under the current one
 $86:C2F3 BB          TYX                    ; X = [enemy projectile index]
 $86:C2F4 A9 08 00    LDA #$0008             ;\
 $86:C2F7 9D FF 1A    STA $1AFF,x[$7E:1B1D]  ;} Enemy projectile initial delay timer = 8
-$86:C2FA 9E 23 1B    STZ $1B23,x[$7E:1B41]  ; Enemy projectile $1B23 = 0
+$86:C2FA 9E 23 1B    STZ $1B23,x[$7E:1B41]
 $86:C2FD A9 00 04    LDA #$0400             ;\
 $86:C300 9D BB 19    STA $19BB,x[$7E:19D9]  ;} Enemy projectile VRAM graphics index = 0, palette 2
 $86:C303 AD 93 19    LDA $1993  [$7E:1993]  ;\
@@ -9946,7 +9951,7 @@ $86:C3BE AA          TAX                    ;} If collided with Shitroid: set ca
 $86:C3BF 20 09 C2    JSR $C209  [$86:C209]  ;|
 $86:C3C2 FA          PLX                    ;/
 
-$86:C3C3 60          RTS
+$86:C3C3 60          RTS                    ; Return
 
 ; BRANCH_DELETE
 $86:C3C4 68          PLA                    ; Set to return to caller's caller
@@ -10005,7 +10010,7 @@ $86:C40D 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pix
 
 ;;; $C410: Blue ring contact explosion ;;;
 {
-$86:C410 9E 97 19    STZ $1997,x[$7E:19B5]  ; Enemy projectile index = 0
+$86:C410 9E 97 19    STZ $1997,x[$7E:19B5]  ; Enemy projectile ID = 0
 $86:C413 BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
 $86:C416 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
 $86:C418 BD 93 1A    LDA $1A93,x[$7E:1AB1]  ;\
@@ -10062,9 +10067,12 @@ $86:C464             dx C42E,       ; Use palette 0
 {
 ;;; $C482: Initialisation AI - enemy projectile $CB59 (Mother Brain's bomb) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Number of afterburn enemy projectiles
 $86:C482 E2 20       SEP #$20               ;\
 $86:C484 AD 93 19    LDA $1993  [$7E:1993]  ;|
-$86:C487 99 27 1A    STA $1A27,y[$7E:1A47]  ;} Enemy projectile $1A27 = [enemy projectile initialisation parameter] (forwarded as parameter to bomb explosion)
+$86:C487 99 27 1A    STA $1A27,y[$7E:1A47]  ;} Enemy projectile number of afterburn enemy projectiles = [enemy projectile initialisation parameter]
 $86:C48A C2 20       REP #$20               ;/
 $86:C48C A9 00 01    LDA #$0100             ;\
 $86:C48F 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile Y velocity = 100h
@@ -10120,7 +10128,7 @@ $86:C4F4 90 06       BCC $06    [$C4FC]     ; If didn't bounce: return
 $86:C4F6 FE 23 1B    INC $1B23,x[$7E:1B43]  ;\
 $86:C4F9 FE 23 1B    INC $1B23,x[$7E:1B43]  ;} Enemy projectile bounce counter += 2
 
-$86:C4FC 60          RTS
+$86:C4FC 60          RTS                    ; Return
 
 ; BRANCH_HAVE_BOUNCED
 $86:C4FD BC 23 1B    LDY $1B23,x[$7E:1B43]  ;\
@@ -10141,9 +10149,9 @@ $86:C520 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X positio
 $86:C522 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;\
 $86:C525 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
 $86:C527 BD 27 1A    LDA $1A27,x[$7E:1A47]  ;\
-$86:C52A 29 FF 00    AND #$00FF             ;} A = [enemy projectile $1A27]
+$86:C52A 29 FF 00    AND #$00FF             ;} A = [enemy projectile number of afterburn enemy projectiles]
 $86:C52D A0 50 96    LDY #$9650             ;\
-$86:C530 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's bomb horizontal explosion - centre enemy projectile
+$86:C530 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn horizontal afterburn - centre enemy projectile
 $86:C534 BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;\
 $86:C537 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
 $86:C539 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;\
@@ -10251,12 +10259,12 @@ $86:C604 60          RTS
 ;;; $C605: Initialisation AI - enemy projectile $CB67 (Mother Brain's death beam - charging) ;;;
 {
 $86:C605 A9 00 00    LDA #$0000
-$86:C608 99 FF 1A    STA $1AFF,y[$7E:1B0F]  ; Enemy projectile $1AFF = 0
-$86:C60B 99 23 1B    STA $1B23,y[$7E:1B33]  ; Enemy projectile $1B23 = 0
-$86:C60E 99 B7 1A    STA $1AB7,y[$7E:1AC7]  ; Enemy projectile $1AB7 = 0
-$86:C611 99 DB 1A    STA $1ADB,y[$7E:1AEB]  ; Enemy projectile $1ADB = 0
-$86:C614 99 27 1A    STA $1A27,y[$7E:1A37]  ; Enemy projectile $1A27 = 0
-$86:C617 99 6F 1A    STA $1A6F,y[$7E:1A7F]  ; Enemy projectile $1A6F = 0
+$86:C608 99 FF 1A    STA $1AFF,y[$7E:1B0F]
+$86:C60B 99 23 1B    STA $1B23,y[$7E:1B33]
+$86:C60E 99 B7 1A    STA $1AB7,y[$7E:1AC7]
+$86:C611 99 DB 1A    STA $1ADB,y[$7E:1AEB]
+$86:C614 99 27 1A    STA $1A27,y[$7E:1A37]
+$86:C617 99 6F 1A    STA $1A6F,y[$7E:1A7F]
 $86:C61A 8F 06 80 7E STA $7E8006[$7E:8006]  ; Mother Brain's death beam next X subposition = 0
 $86:C61E 8F 0A 80 7E STA $7E800A[$7E:800A]  ; Mother Brain's death beam next Y subposition = 0
 $86:C622 A9 00 04    LDA #$0400             ;\
@@ -10324,7 +10332,7 @@ $86:C6CA 8F 0A 80 7E STA $7E800A[$7E:800A]  ;} Mother Brain's death beam next Y 
 $86:C6CE 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:C6D2 29 FF 00    AND #$00FF             ;\
 $86:C6D5 18          CLC                    ;|
-$86:C6D6 6F 12 80 7E ADC $7E8012[$7E:8012]  ;} $12 = [Mother Brain's death beam next angle] + ([random number] & FFh)
+$86:C6D6 6F 12 80 7E ADC $7E8012[$7E:8012]  ;} $12 = [Mother Brain's death beam next angle] + [random number] % 100h
 $86:C6DA 29 FF 00    AND #$00FF             ;|
 $86:C6DD 85 12       STA $12    [$7E:0012]  ;/
 $86:C6DF 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
@@ -10352,10 +10360,10 @@ $86:C716 C9 EE 00    CMP #$00EE             ;|
 $86:C719 10 17       BPL $17    [$C732]     ;/
 $86:C71B BD FF 1A    LDA $1AFF,x[$7E:1B0D]  ;\
 $86:C71E 1A          INC A                  ;|
-$86:C71F 29 03 00    AND #$0003             ;} Enemy projectile $1AFF = ([enemy projectile $1AFF] + 1) % 4
+$86:C71F 29 03 00    AND #$0003             ;} Enemy projectile $1AFF = ([enemy projectile $1AFF] + 1) % 4 (never read)
 $86:C722 9D FF 1A    STA $1AFF,x[$7E:1B0D]  ;/
 $86:C725 A9 00 00    LDA #$0000
-$86:C728 9D 23 1B    STA $1B23,x[$7E:1B31]  ; Enemy projectile $1B23 = 0
+$86:C728 9D 23 1B    STA $1B23,x[$7E:1B31]
 $86:C72B 9D B7 1A    STA $1AB7,x[$7E:1AC5]  ; Enemy projectile X velocity = 0
 $86:C72E 9D DB 1A    STA $1ADB,x[$7E:1AE9]  ; Enemy projectile Y velocity = 0
 $86:C731 60          RTS                    ; Return
@@ -10375,11 +10383,8 @@ $86:C753 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10
 $86:C756 A9 05 00    LDA #$0005             ;\
 $86:C759 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 2 pixel displacement, diagonal
 $86:C75C 60          RTS
-}
 
-
-;;; $C75D: Unused. ;;;
-{
+; Unused. Guessing that [enemy projectile $1AFF] was used to index this table at one point
 $86:C75D             dw 0002,FFFE, 0002,FFFE, FFFE,0002, FFFE,0002
 }
 
@@ -10393,7 +10398,7 @@ $86:C76D 60          RTS
 
 ;;; $C76E: Instruction list - enemy projectile $CB59 (Mother Brain's bomb) ;;;
 {
-$86:C76E             dx 0006,82DC,
+$86:C76E             dw 0006,82DC,
                         0005,82E8,
                         0004,82F4,
                         0003,8300,
@@ -10440,7 +10445,7 @@ $86:C796             dx 0003,835D,
 {
 $86:C7FB DA          PHX
 $86:C7FC 5A          PHY
-$86:C7FD BD FF 1A    LDA $1AFF,x[$7E:1B0F]  ; A = [enemy projectile $1AFF]
+$86:C7FD BD FF 1A    LDA $1AFF,x[$7E:1B0F]  ; A = [enemy projectile $1AFF] (ignored)
 $86:C800 A0 75 CB    LDY #$CB75             ;\
 $86:C803 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's death beam - fired enemy projectile
 $86:C807 7A          PLY
@@ -10455,8 +10460,8 @@ $86:C809 6B          RTL
 {
 $86:C80A BB          TYX
 $86:C80B 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile VRAM graphics index = 0, palette 0
-$86:C80E 9E B7 1A    STZ $1AB7,x[$7E:1AD7]  ; Enemy projectile $1AB7 = 0
-$86:C811 9E DB 1A    STZ $1ADB,x[$7E:1AFB]  ; Enemy projectile $1ADB = 0
+$86:C80E 9E B7 1A    STZ $1AB7,x[$7E:1AD7]
+$86:C811 9E DB 1A    STZ $1ADB,x[$7E:1AFB]
 }
 
 
@@ -10491,18 +10496,21 @@ $86:C829             dx 0005,94B7,
 {
 ;;; $C843: Initialisation AI - enemy projectile $CB91/$CB9F (Mother Brain's drool) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Attached position offset index. Range 0..5 (see $C86E)
 $86:C843 BB          TYX
 $86:C844 9E BB 19    STZ $19BB,x[$7E:19DD]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C847 AD 93 19    LDA $1993  [$7E:1993]  ;\
-$86:C84A 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile $1AFF = [enemy projectile initialisation parameter]
+$86:C84A 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile attached position offset index = [enemy projectile initialisation parameter]
 }
 
 
-;;; $C84D: Pre-instruction - enemy projectile $CB91/$CB9F (Mother Brain's drool) ;;;
+;;; $C84D: Pre-instruction - Mother Brain's drool - attached to Mother Brain ;;;
 {
 $86:C84D BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:C850 0A          ASL A                  ;|
-$86:C851 0A          ASL A                  ;} Y = [enemy projectile $1AFF] * 4
+$86:C851 0A          ASL A                  ;} Y = [enemy projectile attached position offset index] * 4
 $86:C852 A8          TAY                    ;/
 $86:C853 B9 6E C8    LDA $C86E,y[$86:C872]  ;\
 $86:C856 18          CLC                    ;|
@@ -10512,7 +10520,7 @@ $86:C85D B9 70 C8    LDA $C870,y[$86:C874]  ;\
 $86:C860 18          CLC                    ;|
 $86:C861 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} Enemy projectile Y position = [Mother Brain's brain Y position] + [$C86E + [Y] + 2]
 $86:C864 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
-$86:C867 9E B7 1A    STZ $1AB7,x[$7E:1AD9]  ; Enemy projectile $1AB7 = 0
+$86:C867 9E B7 1A    STZ $1AB7,x[$7E:1AD9]
 $86:C86A 9E DB 1A    STZ $1ADB,x[$7E:1AFD]  ; Enemy projectile Y velocity = 0
 $86:C86D 60          RTS
 
@@ -10542,7 +10550,7 @@ $86:C89C 18          CLC                    ;|
 $86:C89D 69 FC FF    ADC #$FFFC             ;} Enemy projectile Y position -= 4
 $86:C8A0 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:C8A3 A9 E1 C8    LDA #$C8E1             ;\
-$86:C8A6 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $C8E1
+$86:C8A6 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $C8E1 (hit floor)
 $86:C8A9 A9 01 00    LDA #$0001             ;\
 $86:C8AC 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:C8AF 60          RTS
@@ -10596,6 +10604,12 @@ $86:C8E1             dx 816A,       ; Clear pre-instruction
 {
 ;;; $C8F5: Initialisation AI - enemy projectile $CB13 (Mother Brain's death explosion) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Explosion type
+;;         0: Small explosion
+;;         1: Smoke
+;;         2: Big explosion
 $86:C8F5 BB          TYX                    ; X = [enemy projectile index]
 $86:C8F6 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:C8F9 0A          ASL A                  ;|
@@ -10628,7 +10642,9 @@ $86:C928 60          RTS
 
 ;;; $C929: Mother Brain's death explosion instruction list pointers ;;;
 {
-$86:C929             dw E138, E1EA, E208
+$86:C929             dw E138, ; Small explosion
+                        E1EA, ; Smoke
+                        E208  ; Big explosion
 }
 }
 
@@ -10672,6 +10688,9 @@ $86:C960 60          RTS
 {
 ;;; $C961: Initialisation AI - enemy projectile $CB21 (Mother Brain's exploded escape door particles) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Index. Range 0..7. Determines Y offset and Y velocity
 $86:C961 BB          TYX
 $86:C962 9E BB 19    STZ $19BB,x[$7E:19D1]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:C965 AD 93 19    LDA $1993  [$7E:1993]  ;\
@@ -10680,14 +10699,14 @@ $86:C969 0A          ASL A                  ;} Y = [enemy projectile initialisat
 $86:C96A A8          TAY                    ;/
 $86:C96B B9 92 C9    LDA $C992,y[$86:C992]  ;\
 $86:C96E 18          CLC                    ;|
-$86:C96F 69 10 00    ADC #$0010             ;} Enemy projectile X position = 10h + [$C992 + [Y]]
+$86:C96F 69 10 00    ADC #$0010             ;} Enemy projectile X position = 10h
 $86:C972 9D 4B 1A    STA $1A4B,x[$7E:1A61]  ;/
 $86:C975 B9 94 C9    LDA $C994,y[$86:C994]  ;\
 $86:C978 18          CLC                    ;|
 $86:C979 69 80 00    ADC #$0080             ;} Enemy projectile Y position = 80h + [$C992 + [Y] + 2]
 $86:C97C 9D 93 1A    STA $1A93,x[$7E:1AA9]  ;/
 $86:C97F B9 B2 C9    LDA $C9B2,y[$86:C9B2]  ;\
-$86:C982 9D B7 1A    STA $1AB7,x[$7E:1ACD]  ;} Enemy projectile X velocity = [$C9B2 + [Y]]
+$86:C982 9D B7 1A    STA $1AB7,x[$7E:1ACD]  ;} Enemy projectile X velocity = 500h
 $86:C985 B9 B4 C9    LDA $C9B4,y[$86:C9B4]  ;\
 $86:C988 9D DB 1A    STA $1ADB,x[$7E:1AF1]  ;} Enemy projectile Y velocity = [$C9B2 + [Y] + 2]
 $86:C98B A9 20 00    LDA #$0020             ;\
@@ -10866,8 +10885,8 @@ $86:CAF7 9E BB 19    STZ $19BB,x            ; Enemy projectile VRAM graphics ind
 
 ;;; $CAFA: Pre-instruction - enemy projectile $CBBB (time bomb set Japanese text) ;;;
 {
-$86:CAFA 9E B7 1A    STZ $1AB7,x    ; Enemy projectile $1AB7 = 0
-$86:CAFD 9E DB 1A    STZ $1ADB,x    ; Enemy projectile $1ADB = 0
+$86:CAFA 9E B7 1A    STZ $1AB7,x
+$86:CAFD 9E DB 1A    STZ $1ADB,x
 $86:CB00 A9 80 00    LDA #$0080     ;\
 $86:CB03 9D 4B 1A    STA $1A4B,x    ;} Enemy projectile X position = 80h
 $86:CB06 A9 C0 00    LDA #$00C0     ;\
@@ -10895,7 +10914,7 @@ $86:CB0D             dx 0001,970B,
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:CB13             dx C8F5,C914,0000,00,00,2000,0000,84FC ; Mother Brain's death explosion
+$86:CB13             dx C8F5,C914,0000,00,00,2000,0000,84FC ; Mother Brain's death explosion. Initial instruction list ignored
 $86:CB21             dx C961,C9D2,CA22,00,00,3000,0000,84FC ; Mother Brain's exploded escape door particles
 $86:CB2F             dx CA6A,CAA3,CAA4,00,00,3000,0000,84FC ; Mother Brain's purple breath - big
 $86:CB3D             dx CA83,CAA3,CAC8,00,00,3000,0000,84FC ; Mother Brain's purple breath - small
@@ -10918,14 +10937,14 @@ $86:CBBB             dx CAF6,CAFA,CB0D,00,00,1000,0000,84FC ; Time bomb set Japa
 $86:CBC9 BB          TYX
 $86:CBCA A9 00 0E    LDA #$0E00             ;\
 $86:CBCD 9D BB 19    STA $19BB,x[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 7
-$86:CBD0 9E B7 1A    STZ $1AB7,x[$7E:1AD9]  ; Enemy projectile $1AB7
+$86:CBD0 9E B7 1A    STZ $1AB7,x[$7E:1AD9]
 $86:CBD3 9E DB 1A    STZ $1ADB,x[$7E:1AFD]  ; Enemy projectile Y velocity = 0
 $86:CBD6 A5 12       LDA $12    [$7E:0012]  ;\
 $86:CBD8 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position = [$12]
 $86:CBDB A5 14       LDA $14    [$7E:0014]  ;\
 $86:CBDD 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;} Enemy projectile Y position = [$14]
 $86:CBE0 A9 EA CB    LDA #$CBEA             ;\
-$86:CBE3 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile function = $CBEA
+$86:CBE3 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile function = $CBEA (generate explosion)
 $86:CBE6 60          RTS
 }
 
@@ -10948,7 +10967,7 @@ $86:CBF8 A9 09 00    LDA #$0009             ; A = 9
 $86:CBFB A0 09 E5    LDY #$E509             ;\
 $86:CBFE 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:CC02 A9 08 CC    LDA #$CC08             ;\
-$86:CC05 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile function = $CC08
+$86:CC05 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile function = $CC08 (falling)
 }
 
 
@@ -11156,10 +11175,16 @@ $86:CDB3             dx 0006,9909,
 
 ;;; $CDC5: Initialisation AI - enemy projectile $CEFC (Mother Brain's glass shattering - shard) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: X offset index
+;;         0: 8
+;;         2: -28h
+;;         4: -10h
 $86:CDC5 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:CDC9 0A          ASL A                  ;\
 $86:CDCA 29 FE 01    AND #$01FE             ;|
-$86:CDCD 99 FF 1A    STA $1AFF,y[$7E:1B09]  ;} X = enemy projectile $1AFF = [random number] % 100h * 2
+$86:CDCD 99 FF 1A    STA $1AFF,y[$7E:1B09]  ;} X = enemy projectile angle = [random number] % 100h * 2
 $86:CDD0 AA          TAX                    ;/
 $86:CDD1 BF 43 B4 A0 LDA $A0B443,x[$A0:B4E9];\
 $86:CDD5 99 B7 1A    STA $1AB7,y[$7E:1AC1]  ;} Enemy projectile X velocity = sin([X] / 2 * pi / 80h)
@@ -11193,7 +11218,7 @@ $86:CE0E AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
 $86:CE11 0A          ASL A                  ;|
 $86:CE12 0A          ASL A                  ;|
 $86:CE13 0A          ASL A                  ;|
-$86:CE14 0A          ASL A                  ;} Enemy projectile Y position = [PLM Y block] * 10h + [$CE67 + [X]]
+$86:CE14 0A          ASL A                  ;} Enemy projectile Y position = [PLM Y block] * 10h + 20h
 $86:CE15 18          CLC                    ;|
 $86:CE16 7D 67 CE    ADC $CE67,x[$86:CE67]  ;|
 $86:CE19 99 93 1A    STA $1A93,y[$7E:1A9D]  ;/
@@ -11226,6 +11251,9 @@ $86:CE67             dw 0020, 0020, 0020
 
 ;;; $CE6D: Initialisation AI - enemy projectile $CF0A (Mother Brain's glass shattering - sparkle) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Shard enemy projectile index
 $86:CE6D AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter]
 $86:CE70 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:CE74 29 1F 00    AND #$001F             ;\
@@ -11286,11 +11314,11 @@ $86:CEE3 9D DB 1A    STA $1ADB,x[$7E:1AE5]  ;/
 $86:CEE6 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:CEEA 29 20 04    AND #$0420             ;\
 $86:CEED D0 08       BNE $08    [$CEF7]     ;} If [random number] & 420h = 0:
-$86:CEEF 8A          TXA                    ; A = [X]
+$86:CEEF 8A          TXA                    ; A = [enemy projectile index]
 $86:CEF0 A0 0A CF    LDY #$CF0A             ;\
 $86:CEF3 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's glass shattering - sparkle enemy projectile
 
-$86:CEF7 60          RTS
+$86:CEF7 60          RTS                    ; Return
 
 ; BRANCH_DELETE
 $86:CEF8 9E 97 19    STZ $1997,x[$7E:199F]  ; Enemy projectile ID = 0
@@ -11309,7 +11337,7 @@ $86:CEFB 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:CEFC             dx CDC5,CE9B,CC93,00,00,3000,0000,84FC ; Mother Brain's glass shattering - shard
+$86:CEFC             dx CDC5,CE9B,CC93,00,00,3000,0000,84FC ; Mother Brain's glass shattering - shard. Initial instruction list ignored
 $86:CF0A             dx CE6D,84FB,CDB3,00,00,3000,0000,84FC ; Mother Brain's glass shattering - sparkle
 }
 }
@@ -11340,14 +11368,14 @@ $86:CF34             dx 0003,9925,
                         0004,9938,
                         0003,993F,
                         0001,994B,
-                        8161,CFD5,  ; Pre-instruction = $CFD5
+                        8161,CFD5,  ; Pre-instruction = $CFD5 (start moving)
                         0001,994B,
                         0001,9957,
                         8159        ; Sleep
 }
 
 
-;;; $CF56: Instruction list ;;;
+;;; $CF56: Instruction list - ki hunter acid spit - hit floor ;;;
 {
 $86:CF56             dx 816A,       ; Clear pre-instruction
                         000C,995E,
@@ -11366,7 +11394,7 @@ $86:CF6E             dx 0003,99AE,
                         0004,99C1,
                         0003,99C8,
                         0001,99D4,
-                        8161,CFE6,  ; Pre-instruction = $CFE6
+                        8161,CFE6,  ; Pre-instruction = $CFE6 (start moving)
                         0001,99D4,
                         0001,99E0,
                         8159        ; Sleep
@@ -11376,66 +11404,67 @@ $86:CF6E             dx 0003,99AE,
 ;;; $CF90: Initialisation AI - enemy projectile $CF18 (ki hunter acid spit - left) ;;;
 {
 $86:CF90 DA          PHX
-$86:CF91 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:CF94 A9 00 FD    LDA #$FD00
-$86:CF97 99 B7 1A    STA $1AB7,y[$7E:1AD7]
-$86:CF9A BD 7A 0F    LDA $0F7A,x[$7E:11FA]
-$86:CF9D 38          SEC
-$86:CF9E E9 16 00    SBC #$0016
-$86:CFA1 99 4B 1A    STA $1A4B,y[$7E:1A6B]
-$86:CFA4 80 14       BRA $14    [$CFBA]
+$86:CF91 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:CF94 A9 00 FD    LDA #$FD00             ;\
+$86:CF97 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = -300h
+$86:CF9A BD 7A 0F    LDA $0F7A,x[$7E:11FA]  ;\
+$86:CF9D 38          SEC                    ;|
+$86:CF9E E9 16 00    SBC #$0016             ;} Enemy projectile X position = [enemy X position] - 16h
+$86:CFA1 99 4B 1A    STA $1A4B,y[$7E:1A6B]  ;/
+$86:CFA4 80 14       BRA $14    [$CFBA]     ; Go to ki hunter acid spit common initialisation
 }
 
 
 ;;; $CFA6: Initialisation AI - enemy projectile $CF26 (ki hunter acid spit - right) ;;;
 {
 $86:CFA6 DA          PHX
-$86:CFA7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:CFAA A9 00 03    LDA #$0300
-$86:CFAD 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:CFB0 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:CFB3 18          CLC
-$86:CFB4 69 16 00    ADC #$0016
-$86:CFB7 99 4B 1A    STA $1A4B,y[$7E:1A6D]
+$86:CFA7 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:CFAA A9 00 03    LDA #$0300             ;\
+$86:CFAD 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile X velocity = 300h
+$86:CFB0 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:CFB3 18          CLC                    ;|
+$86:CFB4 69 16 00    ADC #$0016             ;} Enemy projectile X position = [enemy X position] + 16h
+$86:CFB7 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
 }
 
 
-;;; $CFBA:  ;;;
+;;; $CFBA: Ki hunter acid spit common initialisation ;;;
 {
-$86:CFBA A9 00 00    LDA #$0000
-$86:CFBD 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:CFC0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:CFC3 38          SEC
-$86:CFC4 E9 10 00    SBC #$0010
-$86:CFC7 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:CFCA A9 00 00    LDA #$0000
-$86:CFCD 99 6F 1A    STA $1A6F,y[$7E:1A91]
-$86:CFD0 99 27 1A    STA $1A27,y[$7E:1A49]
+; Expects a pushed X
+$86:CFBA A9 00 00    LDA #$0000             ;\
+$86:CFBD 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = 0
+$86:CFC0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:CFC3 38          SEC                    ;|
+$86:CFC4 E9 10 00    SBC #$0010             ;} Enemy projectile Y position = [enemy Y position] - 10h
+$86:CFC7 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
+$86:CFCA A9 00 00    LDA #$0000             ;\
+$86:CFCD 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;} Enemy projectile Y subposition = 0
+$86:CFD0 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile X subposition = 0
 $86:CFD3 FA          PLX
 $86:CFD4 60          RTS
 }
 
 
-;;; $CFD5:  ;;;
+;;; $CFD5: Pre-instruction - ki hunter acid spit - left - start moving ;;;
 {
-$86:CFD5 A9 F8 CF    LDA #$CFF8
-$86:CFD8 9D 03 1A    STA $1A03,x[$7E:1A23]
-$86:CFDB BD 4B 1A    LDA $1A4B,x[$7E:1A6B]
-$86:CFDE 38          SEC
-$86:CFDF E9 13 00    SBC #$0013
-$86:CFE2 9D 4B 1A    STA $1A4B,x[$7E:1A6B]
+$86:CFD5 A9 F8 CF    LDA #$CFF8             ;\
+$86:CFD8 9D 03 1A    STA $1A03,x[$7E:1A23]  ;} Enemy projectile pre-instruction = $CFF8 (moving)
+$86:CFDB BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;\
+$86:CFDE 38          SEC                    ;|
+$86:CFDF E9 13 00    SBC #$0013             ;} Enemy projectile X position -= 13h
+$86:CFE2 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;/
 $86:CFE5 60          RTS
 }
 
 
-;;; $CFE6:  ;;;
+;;; $CFE6: Pre-instruction - ki hunter acid spit - right - start moving ;;;
 {
-$86:CFE6 A9 F8 CF    LDA #$CFF8
-$86:CFE9 9D 03 1A    STA $1A03,x[$7E:1A25]
-$86:CFEC BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:CFEF 18          CLC
-$86:CFF0 69 13 00    ADC #$0013
-$86:CFF3 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
+$86:CFE6 A9 F8 CF    LDA #$CFF8             ;\
+$86:CFE9 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $CFF8 (moving)
+$86:CFEC BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
+$86:CFEF 18          CLC                    ;|
+$86:CFF0 69 13 00    ADC #$0013             ;} Enemy projectile X position += 13h
+$86:CFF3 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 $86:CFF6 60          RTS
 }
 
@@ -11446,32 +11475,34 @@ $86:CFF7 60          RTS
 }
 
 
-;;; $CFF8:  ;;;
+;;; $CFF8: Pre-instruction - ki hunter acid spit - moving ;;;
 {
 $86:CFF8 C2 30       REP #$30
 $86:CFFA 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:CFFD B0 1B       BCS $1B    [$D01A]
+$86:CFFD B0 1B       BCS $1B    [$D01A]     ; If collision detected: go to BRANCH_HIT_FLOOR
 $86:CFFF 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:D002 B0 23       BCS $23    [$D027]
-$86:D004 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:D007 18          CLC
-$86:D008 69 10 00    ADC #$0010
-$86:D00B 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:D00E C9 00 02    CMP #$0200
-$86:D011 30 03       BMI $03    [$D016]
-$86:D013 A9 00 02    LDA #$0200
+$86:D002 B0 23       BCS $23    [$D027]     ; If collision: go to BRANCH_HIT_WALL
+$86:D004 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:D007 18          CLC                    ;|
+$86:D008 69 10 00    ADC #$0010             ;|
+$86:D00B 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;|
+$86:D00E C9 00 02    CMP #$0200             ;} Enemy projectile Y velocity = min(200h, [enemy projectile Y velocity] + 10h)
+$86:D011 30 03       BMI $03    [$D016]     ;|
+$86:D013 A9 00 02    LDA #$0200             ;|
+                                            ;|
+$86:D016 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:D019 60          RTS                    ; Return
 
-$86:D016 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:D019 60          RTS
+; BRANCH_HIT_FLOOR
+$86:D01A A9 56 CF    LDA #$CF56             ;\
+$86:D01D 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $CF56 (hit floor)
+$86:D020 A9 01 00    LDA #$0001             ;\
+$86:D023 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
+$86:D026 60          RTS                    ; Return
 
-$86:D01A A9 56 CF    LDA #$CF56
-$86:D01D 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:D020 A9 01 00    LDA #$0001
-$86:D023 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
-$86:D026 60          RTS
-
-$86:D027 A9 00 00    LDA #$0000
-$86:D02A 9D B7 1A    STA $1AB7,x
+; BRANCH_HIT_WALL
+$86:D027 A9 00 00    LDA #$0000             ;\
+$86:D02A 9D B7 1A    STA $1AB7,x            ;} Enemy projectile X velocity = 0
 $86:D02D 60          RTS
 }
 }
