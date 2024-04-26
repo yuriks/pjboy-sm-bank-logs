@@ -2686,8 +2686,8 @@ $86:903C BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:903F 38          SEC                    ;|
 $86:9040 E9 10 00    SBC #$0010             ;} Enemy projectile Y position = [enemy Y position] - 10h
 $86:9043 99 93 1A    STA $1A93,y[$7E:1AB1]  ;/
-$86:9046 A9 00 00    LDA #$0000             ;\
-$86:9049 99 DF 19    STA $19DF,y[$7E:19FD]  ;} Enemy projectile $19DF = 0 (never read)
+$86:9046 A9 00 00    LDA #$0000
+$86:9049 99 DF 19    STA $19DF,y[$7E:19FD]
 $86:904C 99 27 1A    STA $1A27,y[$7E:1A45]  ; Enemy projectile X subposition = 0
 $86:904F 99 6F 1A    STA $1A6F,y[$7E:1A8D]  ; Enemy projectile Y subposition = 0
 $86:9052 A9 00 0A    LDA #$0A00             ;\
@@ -4368,7 +4368,7 @@ $86:9C6F             dx 9D0C,9D56,9C83,04,04,A000,0000,84FC ; Rocks when Kraid r
 }
 
 
-;;; $9C7D: Instruction list - enemy projectile $9C45/$9C53/$9C61/$D02E (Kraid rocks / Kago's bugs) ;;;
+;;; $9C7D: Instruction list - enemy projectile $9C45/$9C53/$9C61/$D02E (Kraid rocks / kago bug) ;;;
 {
 $86:9C7D             dx 7FFF,8268,
                         8159        ; Sleep
@@ -4429,7 +4429,7 @@ $86:9CD7 60          RTS
 ;;     Y: Enemy projectile index
 ;;     $1993: X position
 $86:9CD8 DA          PHX
-$86:9CD9 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index] (>_<;)
+$86:9CD9 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index] >_<;
 $86:9CDC AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:9CDF 99 4B 1A    STA $1A4B,y            ;} Enemy projectile X position = [enemy projectile initialisation parameter 0]
 $86:9CE2 A9 38 01    LDA #$0138             ;\
@@ -7317,6 +7317,7 @@ $86:B209             dw B2C1, B293 ; Instruction list pointers
 
 ;;; $B20D: Pre-instruction - Golden Torizo super missile - held ;;;
 {
+; If Golden Torizo is killed, its Y position will be 0, so this projectile will teleport off-screen
 $86:B20D BC FF 1A    LDY $1AFF,x            ; Y = [enemy projectile enemy index]
 $86:B210 B9 7A 0F    LDA $0F7A,y            ;\
 $86:B213 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
@@ -7330,7 +7331,7 @@ $86:B222 80 03       BRA $03    [$B227]
 $86:B224 A9 20 00    LDA #$0020             ; A = 20h
 
 $86:B227 18          CLC                    ;\
-$86:B228 65 12       ADC $12    [$7E:0012]  ;} Enemy projectile X position = [enemy X position] + 20h
+$86:B228 65 12       ADC $12    [$7E:0012]  ;} Enemy projectile X position = [enemy X position] + [A]
 $86:B22A 9D 4B 1A    STA $1A4B,x            ;/
 $86:B22D A9 CC FF    LDA #$FFCC             ;\
 $86:B230 18          CLC                    ;|
@@ -11508,9 +11509,9 @@ $86:D02D 60          RTS
 }
 
 
-;;; $D02E..D207: Kago's bugs ;;;
+;;; $D02E..D207: Kago bug ;;;
 {
-;;; $D02E: Enemy projectile - kago's bugs ;;;
+;;; $D02E: Enemy projectile - kago bug ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -11521,39 +11522,39 @@ $86:D02D 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:D02E             dx D088,D0EB,9C7D,04,04,0014,0000,D064 ; Kago's bugs
+$86:D02E             dx D088,D0EB,9C7D,04,04,0014,0000,D064 ; Kago bug. Initial pre-instruction ignored
 }
 
 
-;;; $D03C: Instruction list ;;;
+;;; $D03C: Instruction list - kago bug - hit floor ;;;
 {
-$86:D03C             dx 0005,8466,
-                        D1B6,
+$86:D03C             dw 0005,8466,
+                        D1B6,       ; Start idling
                         7FFF,845F,
                         81AB,D03C   ; Go to $D03C
 }
 
 
-;;; $D04A: Instruction list ;;;
+;;; $D04A: Instruction list - kago bug - falling ;;;
 {
-$86:D04A             dx 7FFF,845F,
+$86:D04A             dw 7FFF,845F,
                         81AB,D04A   ; Go to $D04A
 }
 
 
-;;; $D052: Instruction list ;;;
+;;; $D052: Instruction list - kago bug - jump ;;;
 {
-$86:D052             dx 0010,8466,
+$86:D052             dw 0010,8466,
                         0005,845F,
-                        D15C
-$86:D05C             dx 7FFF,8458,
+                        D15C        ; Start jumping
+$86:D05C             dw 7FFF,8458,
                         81AB,D05C   ; Go to $D05C
 }
 
 
-;;; $D064: Shot instruction list - enemy projectile $D02E (kago's bugs) ;;;
+;;; $D064: Shot instruction list - enemy projectile $D02E (kago bug) ;;;
 {
-$86:D064             dx D1C7,
+$86:D064             dw D1C7,       ; Use palette 0
                         0004,8D9C,
                         0004,8DA3,
                         0004,8DB9,
@@ -11570,40 +11571,45 @@ $86:D080             dx 8154        ; Delete
 }
 
 
-$86:D082             dw 00E0, 0030, 0200
-
-
-;;; $D088: Initialisation AI - enemy projectile $D02E (kago's bugs) ;;;
+;;; $D082: Kago bug constants ;;;
 {
-$86:D088 AD 54 0E    LDA $0E54  [$7E:0E54]
-$86:D08B 99 23 1B    STA $1B23,y[$7E:1B45]
-$86:D08E AA          TAX
-$86:D08F BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$86:D092 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:D095 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$86:D098 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:D09B AD E5 05    LDA $05E5  [$7E:05E5]
-$86:D09E 29 07 00    AND #$0007
-$86:D0A1 1A          INC A
-$86:D0A2 99 FB 1B    STA $1BFB,y[$7E:1C1D]
-$86:D0A5 18          CLC
-$86:D0A6 69 04 00    ADC #$0004
-$86:D0A9 99 FF 1A    STA $1AFF,y[$7E:1B21]
-$86:D0AC A9 CA D0    LDA #$D0CA
-$86:D0AF 99 03 1A    STA $1A03,y[$7E:1A25]
+$86:D082             dw 00E0 ; Y acceleration. Unit 1/100h px/frame²
+$86:D084             dw 0030 ; X proximity. Kago bug will jump towards kago if it's at least this many pixels away
+$86:D086             dw 0200 ; X velocity. Unit 1/100h px/frame
+}
+
+
+;;; $D088: Initialisation AI - enemy projectile $D02E (kago bug) ;;;
+{
+$86:D088 AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
+$86:D08B 99 23 1B    STA $1B23,y[$7E:1B45]  ;} X = enemy projectile enemy index = [enemy index]
+$86:D08E AA          TAX                    ;/
+$86:D08F BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$86:D092 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = [enemy X position]
+$86:D095 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$86:D098 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = [enemy Y position]
+$86:D09B AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:D09E 29 07 00    AND #$0007             ;|
+$86:D0A1 1A          INC A                  ;} Enemy projectile $1BFB = 1 + [random number] % 8
+$86:D0A2 99 FB 1B    STA $1BFB,y[$7E:1C1D]  ;/
+$86:D0A5 18          CLC                    ;\
+$86:D0A6 69 04 00    ADC #$0004             ;} Enemy projectile sound effect timer = [enemy projectile $1BFB] + 4
+$86:D0A9 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;/
+$86:D0AC A9 CA D0    LDA #$D0CA             ;\
+$86:D0AF 99 03 1A    STA $1A03,y[$7E:1A25]  ;} Enemy projectile pre-instruction = $D0CA (idling)
 $86:D0B2 60          RTS
 }
 
 
-;;; $D0B3:  ;;;
+;;; $D0B3: Handle kago bug sound effect ;;;
 {
 $86:D0B3 DA          PHX
 $86:D0B4 5A          PHY
-$86:D0B5 BD FF 1A    LDA $1AFF,x[$7E:1B21]
-$86:D0B8 F0 0D       BEQ $0D    [$D0C7]
-$86:D0BA 3A          DEC A
-$86:D0BB 9D FF 1A    STA $1AFF,x[$7E:1B21]
-$86:D0BE D0 07       BNE $07    [$D0C7]
+$86:D0B5 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
+$86:D0B8 F0 0D       BEQ $0D    [$D0C7]     ;} If [enemy projectile sound effect timer] != 0:
+$86:D0BA 3A          DEC A                  ;\
+$86:D0BB 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Decrement enemy projectile sound effect timer
+$86:D0BE D0 07       BNE $07    [$D0C7]     ; If [enemy projectile sound effect timer] = 0:
 $86:D0C0 A9 6C 00    LDA #$006C             ;\
 $86:D0C3 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 6Ch, sound library 2, max queued sounds allowed = 6 (kago bug)
 
@@ -11613,150 +11619,154 @@ $86:D0C9 60          RTS
 }
 
 
-;;; $D0CA:  ;;;
+;;; $D0CA: Pre-instruction - kago bug - idling ;;;
 {
-$86:D0CA 20 B3 D0    JSR $D0B3  [$86:D0B3]
-$86:D0CD 20 E4 D1    JSR $D1E4  [$86:D1E4]
-$86:D0D0 BD FB 1B    LDA $1BFB,x[$7E:1C1D]
-$86:D0D3 F0 04       BEQ $04    [$D0D9]
-$86:D0D5 DE FB 1B    DEC $1BFB,x[$7E:1C1D]
-$86:D0D8 60          RTS
+$86:D0CA 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
+$86:D0CD 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
+$86:D0D0 BD FB 1B    LDA $1BFB,x[$7E:1C1D]  ;\
+$86:D0D3 F0 04       BEQ $04    [$D0D9]     ;} If [enemy projectile $1BFB] != 0:
+$86:D0D5 DE FB 1B    DEC $1BFB,x[$7E:1C1D]  ; Decrement enemy projectile $1BFB
+$86:D0D8 60          RTS                    ; Return
 
-$86:D0D9 A9 52 D0    LDA #$D052
-$86:D0DC 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:D0DF A9 01 00    LDA #$0001
-$86:D0E2 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
-$86:D0E5 A9 EB D0    LDA #$D0EB
-$86:D0E8 9D 03 1A    STA $1A03,x[$7E:1A25]
-}
-
-
-;;; $D0EB: RTS. Initialisation AI - enemy projectile $D02E (kago's bugs) ;;;
-{
+$86:D0D9 A9 52 D0    LDA #$D052             ;\
+$86:D0DC 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $D052 (jump)
+$86:D0DF A9 01 00    LDA #$0001             ;\
+$86:D0E2 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
+$86:D0E5 A9 EB D0    LDA #$D0EB             ;\
+$86:D0E8 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = RTS
 $86:D0EB 60          RTS
 }
 
 
-;;; $D0EC:  ;;;
+;;; $D0EC: Pre-instruction - kago bug - jumping ;;;
 {
-$86:D0EC 20 B3 D0    JSR $D0B3  [$86:D0B3]
-$86:D0EF 20 E4 D1    JSR $D1E4  [$86:D1E4]
+$86:D0EC 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
+$86:D0EF 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
 $86:D0F2 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:D0F5 B0 12       BCS $12    [$D109]
+$86:D0F5 B0 12       BCS $12    [$D109]     ; If collision: go to BRANCH_HIT_WALL
 $86:D0F7 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:D0FA B0 13       BCS $13    [$D10F]
-$86:D0FC BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:D0FF 18          CLC
-$86:D100 6D 82 D0    ADC $D082  [$86:D082]
-$86:D103 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:D106 10 0D       BPL $0D    [$D115]
-$86:D108 60          RTS
+$86:D0FA B0 13       BCS $13    [$D10F]     ; If collision: go to BRANCH_HIT_CEILING
+$86:D0FC BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:D0FF 18          CLC                    ;|
+$86:D100 6D 82 D0    ADC $D082  [$86:D082]  ;} Enemy projectile Y velocity += E0h
+$86:D103 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:D106 10 0D       BPL $0D    [$D115]     ; If [enemy projectile Y velocity] >= 0: go to BRANCH_FALLING
+$86:D108 60          RTS                    ; Return
 
-$86:D109 A9 00 00    LDA #$0000
-$86:D10C 9D B7 1A    STA $1AB7,x[$7E:1AD1]
+; BRANCH_HIT_WALL
+$86:D109 A9 00 00    LDA #$0000             ;\
+$86:D10C 9D B7 1A    STA $1AB7,x[$7E:1AD1]  ;} Enemy projectile X velocity = 0
 
-$86:D10F A9 00 01    LDA #$0100
-$86:D112 9D DB 1A    STA $1ADB,x[$7E:1AFD]
+; BRANCH_HIT_CEILING
+$86:D10F A9 00 01    LDA #$0100             ;\
+$86:D112 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;} Enemy projectile Y velocity = 100h
 
-$86:D115 A9 28 D1    LDA #$D128
-$86:D118 9D 03 1A    STA $1A03,x[$7E:1A25]
-$86:D11B A9 4A D0    LDA #$D04A
-$86:D11E 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:D121 A9 01 00    LDA #$0001
-$86:D124 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
+; BRANCH_FALLING
+$86:D115 A9 28 D1    LDA #$D128             ;\
+$86:D118 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $D128 (falling)
+$86:D11B A9 4A D0    LDA #$D04A             ;\
+$86:D11E 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $D04A
+$86:D121 A9 01 00    LDA #$0001             ;\
+$86:D124 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:D127 60          RTS
 }
 
 
-;;; $D128:  ;;;
+;;; $D128: Pre-instruction - kago bug - falling ;;;
 {
-$86:D128 20 B3 D0    JSR $D0B3  [$86:D0B3]
-$86:D12B 20 E4 D1    JSR $D1E4  [$86:D1E4]
+$86:D128 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
+$86:D12B 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
 $86:D12E 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:D131 B0 0F       BCS $0F    [$D142]
+$86:D131 B0 0F       BCS $0F    [$D142]     ; If collision: go to BRANCH_HIT_WALL
 $86:D133 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:D136 B0 11       BCS $11    [$D149]
-$86:D138 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:D13B 6D 82 D0    ADC $D082  [$86:D082]
-$86:D13E 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:D141 60          RTS
+$86:D136 B0 11       BCS $11    [$D149]     ; If collision: go to BRANCH_HIT_FLOOR
+$86:D138 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:D13B 6D 82 D0    ADC $D082  [$86:D082]  ;} Enemy projectile Y velocity += E0h
+$86:D13E 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:D141 60          RTS                    ; Return
 
-$86:D142 A9 00 00    LDA #$0000
-$86:D145 9D B7 1A    STA $1AB7,x[$7E:1AD5]
-$86:D148 60          RTS
+; BRANCH_HIT_WALL
+$86:D142 A9 00 00    LDA #$0000             ;\
+$86:D145 9D B7 1A    STA $1AB7,x[$7E:1AD5]  ;} Enemy projectile X velocity = 0
+$86:D148 60          RTS                    ; Return
 
-$86:D149 A9 EB D0    LDA #$D0EB
-$86:D14C 9D 03 1A    STA $1A03,x[$7E:1A25]
-$86:D14F A9 3C D0    LDA #$D03C
-$86:D152 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:D155 A9 01 00    LDA #$0001
-$86:D158 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
+; BRANCH_HIT_FLOOR
+$86:D149 A9 EB D0    LDA #$D0EB             ;\
+$86:D14C 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = RTS
+$86:D14F A9 3C D0    LDA #$D03C             ;\
+$86:D152 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $D03C (hit floor)
+$86:D155 A9 01 00    LDA #$0001             ;\
+$86:D158 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:D15B 60          RTS
 }
 
 
-;;; $D15C:  ;;;
+;;; $D15C: Instruction - start jumping ;;;
 {
-$86:D15C 20 B3 D0    JSR $D0B3  [$86:D0B3]
-$86:D15F 20 E4 D1    JSR $D1E4  [$86:D1E4]
-$86:D162 AD E5 05    LDA $05E5  [$7E:05E5]
-$86:D165 29 00 03    AND #$0300
-$86:D168 18          CLC
-$86:D169 69 00 08    ADC #$0800
-$86:D16C 89 00 01    BIT #$0100
-$86:D16F 08          PHP
-$86:D170 49 FF FF    EOR #$FFFF
-$86:D173 1A          INC A
-$86:D174 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:D177 DA          PHX
-$86:D178 BD 23 1B    LDA $1B23,x[$7E:1B45]
-$86:D17B AA          TAX
-$86:D17C BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$86:D17F FA          PLX
-$86:D180 38          SEC
-$86:D181 FD 4B 1A    SBC $1A4B,x[$7E:1A6D]
-$86:D184 08          PHP
-$86:D185 10 04       BPL $04    [$D18B]
-$86:D187 49 FF FF    EOR #$FFFF
-$86:D18A 1A          INC A
+; Keeping the X direction flag on the stack was... not the least awkward approach
+; If the kago is killed, its X position will be 0, which will cause the bugs to (usually) jump left
+$86:D15C 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
+$86:D15F 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
+$86:D162 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:D165 29 00 03    AND #$0300             ;|
+$86:D168 18          CLC                    ;} A = 800h + [random number] / 100h % 4 * 100h
+$86:D169 69 00 08    ADC #$0800             ;/
+$86:D16C 89 00 01    BIT #$0100             ;\
+$86:D16F 08          PHP                    ;} (X direction) = [A] / 100h % 2
+$86:D170 49 FF FF    EOR #$FFFF             ;\
+$86:D173 1A          INC A                  ;} Enemy projectile Y velocity = -[A]
+$86:D174 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:D177 DA          PHX                    ;\
+$86:D178 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;} X = [enemy projectile enemy index]
+$86:D17B AA          TAX                    ;/
+$86:D17C BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$86:D17F FA          PLX                    ;|
+$86:D180 38          SEC                    ;|
+$86:D181 FD 4B 1A    SBC $1A4B,x[$7E:1A6D]  ;|
+$86:D184 08          PHP                    ;|
+$86:D185 10 04       BPL $04    [$D18B]     ;} If |[enemy X position] - [enemy projectile X position]| < 30h: go to BRANCH_NEAR_KAGO
+$86:D187 49 FF FF    EOR #$FFFF             ;|
+$86:D18A 1A          INC A                  ;|
+                                            ;|
+$86:D18B CD 84 D0    CMP $D084  [$86:D084]  ;|
+$86:D18E 30 11       BMI $11    [$D1A1]     ;/
+$86:D190 28          PLP                    ;\
+$86:D191 10 07       BPL $07    [$D19A]     ;} If [enemy X position] < [enemy projectile X position]:
+$86:D193 28          PLP                    ;\
+$86:D194 A9 01 00    LDA #$0001             ;} (X direction) = 1 (left)
+$86:D197 08          PHP                    ;/
+$86:D198 80 08       BRA $08    [$D1A2]     ; Go to BRANCH_DIRECTION_DETERMINED
 
-$86:D18B CD 84 D0    CMP $D084  [$86:D084]
-$86:D18E 30 11       BMI $11    [$D1A1]
-$86:D190 28          PLP
-$86:D191 10 07       BPL $07    [$D19A]
-$86:D193 28          PLP
-$86:D194 A9 01 00    LDA #$0001
-$86:D197 08          PHP
-$86:D198 80 08       BRA $08    [$D1A2]
+$86:D19A 28          PLP                    ;\
+$86:D19B A9 00 00    LDA #$0000             ;} (X direction) = 0 (right)
+$86:D19E 08          PHP                    ;/
+$86:D19F 80 01       BRA $01    [$D1A2]     ; Go to BRANCH_DIRECTION_DETERMINED
 
-$86:D19A 28          PLP
-$86:D19B A9 00 00    LDA #$0000
-$86:D19E 08          PHP
-$86:D19F 80 01       BRA $01    [$D1A2]
-
+; BRANCH_NEAR_KAGO
 $86:D1A1 28          PLP
 
-$86:D1A2 AD 86 D0    LDA $D086  [$86:D086]
-$86:D1A5 28          PLP
-$86:D1A6 F0 04       BEQ $04    [$D1AC]
-$86:D1A8 49 FF FF    EOR #$FFFF
-$86:D1AB 1A          INC A
+; BRANCH_DIRECTION_DETERMINED
+$86:D1A2 AD 86 D0    LDA $D086  [$86:D086]  ; Enemy projectile X velocity = 200h
+$86:D1A5 28          PLP                    ;\
+$86:D1A6 F0 04       BEQ $04    [$D1AC]     ;} If (X direction) != 0:
+$86:D1A8 49 FF FF    EOR #$FFFF             ;\
+$86:D1AB 1A          INC A                  ;} Negate enemy projectile X velocity
 
 $86:D1AC 9D B7 1A    STA $1AB7,x[$7E:1AD9]
-$86:D1AF A9 EC D0    LDA #$D0EC
-$86:D1B2 9D 03 1A    STA $1A03,x[$7E:1A25]
+$86:D1AF A9 EC D0    LDA #$D0EC             ;\
+$86:D1B2 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $D0EC (jumping)
 $86:D1B5 60          RTS
 }
 
 
-;;; $D1B6:  ;;;
+;;; $D1B6: Instruction - start idling ;;;
 {
-$86:D1B6 AD E5 05    LDA $05E5  [$7E:05E5]
-$86:D1B9 29 1F 00    AND #$001F
-$86:D1BC 1A          INC A
-$86:D1BD 9D FB 1B    STA $1BFB,x[$7E:1C1D]
-$86:D1C0 A9 CA D0    LDA #$D0CA
-$86:D1C3 9D 03 1A    STA $1A03,x[$7E:1A25]
+$86:D1B6 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:D1B9 29 1F 00    AND #$001F             ;|
+$86:D1BC 1A          INC A                  ;} Enemy projectile $1BFB = 1 + [random number] % 20h
+$86:D1BD 9D FB 1B    STA $1BFB,x[$7E:1C1D]  ;/
+$86:D1C0 A9 CA D0    LDA #$D0CA             ;\
+$86:D1C3 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $D0CA (idling)
 $86:D1C6 60          RTS
 }
 
@@ -11785,24 +11795,25 @@ $86:D1E3 60          RTS
 }
 
 
-;;; $D1E4:  ;;;
+;;; $D1E4: Enable kago bug collision with Samus projectiles if far enough from kago ;;;
 {
+; If the kago is killed, its X position will be 0, which will (usually) cause the Samus projectile collision to be enabled
 $86:D1E4 DA          PHX
 $86:D1E5 5A          PHY
-$86:D1E6 BD 23 1B    LDA $1B23,x[$7E:1B45]
-$86:D1E9 A8          TAY
-$86:D1EA B9 7A 0F    LDA $0F7A,y[$7E:0FBA]
-$86:D1ED 38          SEC
-$86:D1EE FD 4B 1A    SBC $1A4B,x[$7E:1A6D]
-$86:D1F1 10 04       BPL $04    [$D1F7]
-$86:D1F3 49 FF FF    EOR #$FFFF
-$86:D1F6 1A          INC A
-
-$86:D1F7 C9 17 00    CMP #$0017
-$86:D1FA 30 09       BMI $09    [$D205]
-$86:D1FC BD D7 1B    LDA $1BD7,x[$7E:1BF9]
-$86:D1FF 09 00 80    ORA #$8000
-$86:D202 9D D7 1B    STA $1BD7,x[$7E:1BF9]
+$86:D1E6 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
+$86:D1E9 A8          TAY                    ;} Y = [enemy projectile enemy index]
+$86:D1EA B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;\
+$86:D1ED 38          SEC                    ;|
+$86:D1EE FD 4B 1A    SBC $1A4B,x[$7E:1A6D]  ;|
+$86:D1F1 10 04       BPL $04    [$D1F7]     ;|
+$86:D1F3 49 FF FF    EOR #$FFFF             ;} If |[enemy X position] - [enemy projectile X position]| >= 17h:
+$86:D1F6 1A          INC A                  ;|
+                                            ;|
+$86:D1F7 C9 17 00    CMP #$0017             ;|
+$86:D1FA 30 09       BMI $09    [$D205]     ;/
+$86:D1FC BD D7 1B    LDA $1BD7,x[$7E:1BF9]  ;\
+$86:D1FF 09 00 80    ORA #$8000             ;} Enable enemy projectile collision with Samus projectiles
+$86:D202 9D D7 1B    STA $1BD7,x[$7E:1BF9]  ;/
 
 $86:D205 7A          PLY
 $86:D206 FA          PLX
@@ -11815,23 +11826,32 @@ $86:D207 60          RTS
 {
 ;;; $D208: Instruction list - enemy projectile $D298 (Maridia floater's spikes) ;;;
 {
-$86:D208             dx 0006,99E7,
+$86:D208             dw 0006,99E7,
                         0006,99EE,
                         0006,99F5,
                         81AB,D208   ; Go to $D208
 }
 
 
-;;; $D218: Shot instruction list - enemy projectile $D298 (Maridia floater's spikes) ;;;
+;;; $D218: Instruction - delete / shot instruction list - enemy projectile $D298 (Maridia floater's spikes) ;;;
 {
-$86:D218             dx 8154        ; Delete
+$86:D218             dw 8154        ; Delete
 }
 
 
-;;; $D21A:  ;;;
+;;; $D21A: Maridia floater's spike velocity table ;;;
 {
-$86:D21A             dw 0000, 0020, 0020, 0020, 0000, FFE0, FFE0, FFE0
-$86:D22A             dw FFE0, FFE0, 0000, 0020, 0020, 0020, 0000, FFE0
+;                        _____________________________________________ 0: Up
+;                       |      _______________________________________ 1: Up-right
+;                       |     |      _________________________________ 2: Right
+;                       |     |     |      ___________________________ 3: Down-right
+;                       |     |     |     |      _____________________ 4: Down
+;                       |     |     |     |     |      _______________ 5: Down-left
+;                       |     |     |     |     |     |      _________ 6: Left
+;                       |     |     |     |     |     |     |      ___ 7: Up-left
+;                       |     |     |     |     |     |     |     |
+$86:D21A             dw 0000, 0020, 0020, 0020, 0000, FFE0, FFE0, FFE0 ; X velocity
+$86:D22A             dw FFE0, FFE0, 0000, 0020, 0020, 0020, 0000, FFE0 ; Y velocity
 }
 
 
@@ -11842,15 +11862,15 @@ $86:D23B C2 30       REP #$30
 $86:D23D A9 00 00    LDA #$0000
 $86:D240 99 27 1A    STA $1A27,y
 $86:D243 99 6F 1A    STA $1A6F,y
-$86:D246 99 B7 1A    STA $1AB7,y
-$86:D249 99 DB 1A    STA $1ADB,y
-$86:D24C AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:D24F BD 7A 0F    LDA $0F7A,x
-$86:D252 99 4B 1A    STA $1A4B,y
-$86:D255 BD 7E 0F    LDA $0F7E,x
-$86:D258 99 93 1A    STA $1A93,y
-$86:D25B AD 93 19    LDA $1993  [$7E:1993]
-$86:D25E 99 FF 1A    STA $1AFF,y
+$86:D246 99 B7 1A    STA $1AB7,y            ; Enemy projectile X velocity = 0
+$86:D249 99 DB 1A    STA $1ADB,y            ; Enemy projectile Y velocity = 0
+$86:D24C AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:D24F BD 7A 0F    LDA $0F7A,x            ;\
+$86:D252 99 4B 1A    STA $1A4B,y            ;} Enemy projectile X position = [enemy X position]
+$86:D255 BD 7E 0F    LDA $0F7E,x            ;\
+$86:D258 99 93 1A    STA $1A93,y            ;} Enemy projectile Y position = [enemy Y position]
+$86:D25B AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:D25E 99 FF 1A    STA $1AFF,y            ;} Enemy projectile $1AFF = [enemy projectile initialisation parameter 0]
 $86:D261 28          PLP
 $86:D262 60          RTS
 }
@@ -11858,29 +11878,29 @@ $86:D262 60          RTS
 
 ;;; $D263: Pre-instruction - enemy projectile $D298 (Maridia floater's spikes) ;;;
 {
-$86:D263 BD FF 1A    LDA $1AFF,x
-$86:D266 0A          ASL A
-$86:D267 A8          TAY
-$86:D268 BD B7 1A    LDA $1AB7,x
-$86:D26B 18          CLC
-$86:D26C 79 1A D2    ADC $D21A,y
-$86:D26F 9D B7 1A    STA $1AB7,x
+$86:D263 BD FF 1A    LDA $1AFF,x            ;\
+$86:D266 0A          ASL A                  ;|
+$86:D267 A8          TAY                    ;|
+$86:D268 BD B7 1A    LDA $1AB7,x            ;} Enemy projectile X velocity += [$D21A + [enemy projectile $1AFF] * 2]
+$86:D26B 18          CLC                    ;|
+$86:D26C 79 1A D2    ADC $D21A,y            ;|
+$86:D26F 9D B7 1A    STA $1AB7,x            ;/
 $86:D272 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:D275 B0 14       BCS $14    [$D28B]
-$86:D277 BD FF 1A    LDA $1AFF,x
-$86:D27A 0A          ASL A
-$86:D27B A8          TAY
-$86:D27C BD DB 1A    LDA $1ADB,x
-$86:D27F 18          CLC
-$86:D280 79 2A D2    ADC $D22A,y
-$86:D283 9D DB 1A    STA $1ADB,x
+$86:D275 B0 14       BCS $14    [$D28B]     ; If no collision:
+$86:D277 BD FF 1A    LDA $1AFF,x            ;\
+$86:D27A 0A          ASL A                  ;|
+$86:D27B A8          TAY                    ;|
+$86:D27C BD DB 1A    LDA $1ADB,x            ;} Enemy projectile Y velocity += [$D22A + [enemy projectile $1AFF] * 2]
+$86:D27F 18          CLC                    ;|
+$86:D280 79 2A D2    ADC $D22A,y            ;|
+$86:D283 9D DB 1A    STA $1ADB,x            ;/
 $86:D286 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:D289 90 0C       BCC $0C    [$D297]
+$86:D289 90 0C       BCC $0C    [$D297]     ; If no collision: return
 
-$86:D28B A9 18 D2    LDA #$D218
-$86:D28E 9D 47 1B    STA $1B47,x
-$86:D291 A9 01 00    LDA #$0001
-$86:D294 9D 8F 1B    STA $1B8F,x
+$86:D28B A9 18 D2    LDA #$D218             ;\
+$86:D28E 9D 47 1B    STA $1B47,x            ;} Enemy projectile instruction list pointer = $D218 (delete)
+$86:D291 A9 01 00    LDA #$0001             ;\
+$86:D294 9D 8F 1B    STA $1B8F,x            ;} Enemy projectile instruction timer = 1
 
 $86:D297 60          RTS
 }

@@ -6898,7 +6898,7 @@ $A0:B9B9 85 12       STA $12    [$7E:0012]  ;/
 $A0:B9BB AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:B9BE 29 00 3F    AND #$3F00             ;|
 $A0:B9C1 EB          XBA                    ;|
-$A0:B9C2 18          CLC                    ;} $12 = 140h + ([random number] >> 8) % 40h (Y position)
+$A0:B9C2 18          CLC                    ;} $14 = 140h + ([random number] >> 8) % 40h (Y position)
 $A0:B9C3 69 40 01    ADC #$0140             ;|
 $A0:B9C6 85 14       STA $14    [$7E:0014]  ;/
 $A0:B9C8 A9 7F E1    LDA #$E17F             ;\
@@ -6929,7 +6929,7 @@ $A0:B9EC 85 12       STA $12    [$7E:0012]  ;/
 $A0:B9EE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:B9F1 29 00 3F    AND #$3F00             ;|
 $A0:B9F4 EB          XBA                    ;|
-$A0:B9F5 18          CLC                    ;} $12 = 60h + ([random number] >> 8) % 40h (Y position)
+$A0:B9F5 18          CLC                    ;} $14 = 60h + ([random number] >> 8) % 40h (Y position)
 $A0:B9F6 69 60 00    ADC #$0060             ;|
 $A0:B9F9 85 14       STA $14    [$7E:0014]  ;/
 $A0:B9FB A9 BF DD    LDA #$DDBF             ;\
@@ -6960,7 +6960,7 @@ $A0:BA1F 85 12       STA $12    [$7E:0012]  ;/
 $A0:BA21 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BA24 29 00 3F    AND #$3F00             ;|
 $A0:BA27 EB          XBA                    ;|
-$A0:BA28 18          CLC                    ;} $12 = 60h + ([random number] >> 8) % 40h (Y position)
+$A0:BA28 18          CLC                    ;} $14 = 60h + ([random number] >> 8) % 40h (Y position)
 $A0:BA29 69 60 00    ADC #$0060             ;|
 $A0:BA2C 85 14       STA $14    [$7E:0014]  ;/
 $A0:BA2E A9 BF E4    LDA #$E4BF             ;\
@@ -6991,7 +6991,7 @@ $A0:BA52 85 12       STA $12    [$7E:0012]  ;/
 $A0:BA54 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BA57 29 00 3F    AND #$3F00             ;|
 $A0:BA5A EB          XBA                    ;|
-$A0:BA5B 18          CLC                    ;} $12 = 80h + ([random number] >> 8) % 40h (Y position)
+$A0:BA5B 18          CLC                    ;} $14 = 80h + ([random number] >> 8) % 40h (Y position)
 $A0:BA5C 69 80 00    ADC #$0080             ;|
 $A0:BA5F 85 14       STA $14    [$7E:0014]  ;/
 $A0:BA61 A9 93 F2    LDA #$F293             ;\
@@ -7022,7 +7022,7 @@ $A0:BA85 85 12       STA $12    [$7E:0012]  ;/
 $A0:BA87 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BA8A 29 00 3F    AND #$3F00             ;|
 $A0:BA8D EB          XBA                    ;|
-$A0:BA8E 18          CLC                    ;} $12 = 160h + ([random number] >> 8) % 40h (Y position)
+$A0:BA8E 18          CLC                    ;} $14 = 160h + ([random number] >> 8) % 40h (Y position)
 $A0:BA8F 69 60 01    ADC #$0160             ;|
 $A0:BA92 85 14       STA $14    [$7E:0014]  ;/
 $A0:BA94 A9 BF E2    LDA #$E2BF             ;\
@@ -7053,7 +7053,7 @@ $A0:BAB8 85 12       STA $12    [$7E:0012]  ;/
 $A0:BABA AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BABD 29 00 3F    AND #$3F00             ;|
 $A0:BAC0 EB          XBA                    ;|
-$A0:BAC1 18          CLC                    ;} $12 = 60h + ([random number] >> 8) % 40h (Y position)
+$A0:BAC1 18          CLC                    ;} $14 = 60h + ([random number] >> 8) % 40h (Y position)
 $A0:BAC2 69 60 00    ADC #$0060             ;|
 $A0:BAC5 85 14       STA $14    [$7E:0014]  ;/
 $A0:BAC7 A9 FF EE    LDA #$EEFF             ;\
@@ -7084,7 +7084,7 @@ $A0:BAEB 85 12       STA $12    [$7E:0012]  ;/
 $A0:BAED AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BAF0 29 00 3F    AND #$3F00             ;|
 $A0:BAF3 EB          XBA                    ;|
-$A0:BAF4 18          CLC                    ;} $12 = 120h + ([random number] >> 8) % 40h (Y position)
+$A0:BAF4 18          CLC                    ;} $14 = 120h + ([random number] >> 8) % 40h (Y position)
 $A0:BAF5 69 20 01    ADC #$0120             ;|
 $A0:BAF8 85 14       STA $14    [$7E:0014]  ;/
 $A0:BAFA A9 FF EE    LDA #$EEFF             ;\
@@ -7115,7 +7115,7 @@ $A0:BB1E 85 12       STA $12    [$7E:0012]  ;/
 $A0:BB20 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BB23 29 00 3F    AND #$3F00             ;|
 $A0:BB26 EB          XBA                    ;|
-$A0:BB27 18          CLC                    ;} $12 = 210h + ([random number] >> 8) % 40h (Y position)
+$A0:BB27 18          CLC                    ;} $14 = 210h + ([random number] >> 8) % 40h (Y position)
 $A0:BB28 69 10 02    ADC #$0210             ;|
 $A0:BB2B 85 14       STA $14    [$7E:0014]  ;/
 $A0:BB2D A9 3F DF    LDA #$DF3F             ;\
@@ -7146,7 +7146,7 @@ $A0:BB51 85 12       STA $12    [$7E:0012]  ;/
 $A0:BB53 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A0:BB56 29 00 3F    AND #$3F00             ;|
 $A0:BB59 EB          XBA                    ;|
-$A0:BB5A 18          CLC                    ;} $12 = 160h + ([random number] >> 8) % 40h (Y position)
+$A0:BB5A 18          CLC                    ;} $14 = 160h + ([random number] >> 8) % 40h (Y position)
 $A0:BB5B 69 60 01    ADC #$0160             ;|
 $A0:BB5E 85 14       STA $14    [$7E:0014]  ;/
 $A0:BB60 A9 3F DE    LDA #$DE3F             ;\

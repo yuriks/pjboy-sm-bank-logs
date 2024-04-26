@@ -9186,6 +9186,8 @@ $90:BE61 6B          RTL
 
 ;;; $BE62: HUD selection handler - missiles / super missiles ;;;
 {
+; The checks at $BE8D and $BE94 *should* be useless, due to (super) missiles getting deselected when they reach 0
+; But actually, crystal flash can reduce the ammo count to zero and does *not* deselect the weapon, so the checks aren't quite useless
 $90:BE62 08          PHP
 $90:BE63 C2 30       REP #$30
 $90:BE65 A5 8F       LDA $8F    [$7E:008F]  ;\
@@ -9213,11 +9215,11 @@ $90:BE82 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
 $90:BE85 C9 02 00    CMP #$0002             ;} If [HUD item index] != super missiles:
 $90:BE88 F0 07       BEQ $07    [$BE91]     ;/
 $90:BE8A AD C6 09    LDA $09C6  [$7E:09C6]  ;\
-$90:BE8D F0 EE       BEQ $EE    [$BE7D]     ;} If [Samus missiles] = 0: go to BRANCH_CANNOT_FIRE (unnecessary check)
+$90:BE8D F0 EE       BEQ $EE    [$BE7D]     ;} If [Samus missiles] = 0: go to BRANCH_CANNOT_FIRE
 $90:BE8F 80 05       BRA $05    [$BE96]
 
 $90:BE91 AD CA 09    LDA $09CA  [$7E:09CA]  ;\ Else ([HUD item index] = super missiles):
-$90:BE94 F0 E7       BEQ $E7    [$BE7D]     ;} If [Samus super missiles] = 0: go to BRANCH_CANNOT_FIRE (unnecessary check)
+$90:BE94 F0 E7       BEQ $E7    [$BE7D]     ;} If [Samus super missiles] = 0: go to BRANCH_CANNOT_FIRE
 
 $90:BE96 A2 00 00    LDX #$0000             ; X = 0 (projectile index)
 
@@ -9242,7 +9244,6 @@ $90:BEBA C9 02 00    CMP #$0002             ;} If [HUD item index] != super miss
 $90:BEBD F0 05       BEQ $05    [$BEC4]     ;/
 $90:BEBF CE C6 09    DEC $09C6  [$7E:09C6]  ; Decrement Samus missiles
 $90:BEC2 80 03       BRA $03    [$BEC7]
-
                                             ; Else ([HUD item index] = super missiles):
 $90:BEC4 CE CA 09    DEC $09CA  [$7E:09CA]  ; Decrement Samus super missiles
 
@@ -9300,7 +9301,7 @@ $90:BF38 D0 0A       BNE $0A    [$BF44]     ;} If [Samus missiles] != 0: return
 $90:BF3A 80 05       BRA $05    [$BF41]
 
 $90:BF3C AD CA 09    LDA $09CA  [$7E:09CA]  ;\ Else ([HUD item index] = super missiles):
-$90:BF3F D0 03       BNE $03    [$BF44]     ; If [Samus super missiles] != 0: return
+$90:BF3F D0 03       BNE $03    [$BF44]     ;} If [Samus super missiles] != 0: return
 
 $90:BF41 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
 
