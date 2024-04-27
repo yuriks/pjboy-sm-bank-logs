@@ -7852,7 +7852,7 @@ $86:B5A2 80 0B       BRA $0B    [$B5AF]
 $86:B5A4 18          CLC                    ;\
 $86:B5A5 69 20 00    ADC #$0020             ;} Enemy projectile Y velocity += 20h
 $86:B5A8 9D DB 1A    STA $1ADB,x[$7E:1AFB]  ;/
-$86:B5AB 20 B9 B5    JSR $B5B9  [$86:B5B9]  ; Delete enemy projectile if off-screen
+$86:B5AB 20 B9 B5    JSR $B5B9  [$86:B5B9]  ; Delete enemy projectile if vertically off-screen
 
 $86:B5AE 60          RTS                    ; Return
 
@@ -7864,7 +7864,7 @@ $86:B5B8 60          RTS
 }
 
 
-;;; $B5B9: Delete enemy projectile if off-screen ;;;
+;;; $B5B9: Delete enemy projectile if vertically off-screen ;;;
 {
 $86:B5B9 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;\
 $86:B5BC 38          SEC                    ;|
@@ -11822,9 +11822,9 @@ $86:D207 60          RTS
 }
 
 
-;;; $D208..A5: Maridia floater's spikes ;;;
+;;; $D208..A5: Maridia floater spike ;;;
 {
-;;; $D208: Instruction list - enemy projectile $D298 (Maridia floater's spikes) ;;;
+;;; $D208: Instruction list - enemy projectile $D298 (Maridia floater spike) ;;;
 {
 $86:D208             dw 0006,99E7,
                         0006,99EE,
@@ -11833,7 +11833,7 @@ $86:D208             dw 0006,99E7,
 }
 
 
-;;; $D218: Instruction - delete / shot instruction list - enemy projectile $D298 (Maridia floater's spikes) ;;;
+;;; $D218: Instruction - delete / shot instruction list - enemy projectile $D298 (Maridia floater spike) ;;;
 {
 $86:D218             dw 8154        ; Delete
 }
@@ -11855,8 +11855,19 @@ $86:D22A             dw FFE0, FFE0, 0000, 0020, 0020, 0020, 0000, FFE0 ; Y veloc
 }
 
 
-;;; $D23A: Initialisation AI - enemy projectile $D298 (Maridia floater's spikes) ;;;
+;;; $D23A: Initialisation AI - enemy projectile $D298 (Maridia floater spike) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Direction
+;;         0: Up
+;;         1: Up-right
+;;         2: Right
+;;         3: Down-right
+;;         4: Down
+;;         5: Down-left
+;;         6: Left
+;;         7: Up-left
 $86:D23A 08          PHP
 $86:D23B C2 30       REP #$30
 $86:D23D A9 00 00    LDA #$0000
@@ -11870,18 +11881,18 @@ $86:D252 99 4B 1A    STA $1A4B,y            ;} Enemy projectile X position = [en
 $86:D255 BD 7E 0F    LDA $0F7E,x            ;\
 $86:D258 99 93 1A    STA $1A93,y            ;} Enemy projectile Y position = [enemy Y position]
 $86:D25B AD 93 19    LDA $1993  [$7E:1993]  ;\
-$86:D25E 99 FF 1A    STA $1AFF,y            ;} Enemy projectile $1AFF = [enemy projectile initialisation parameter 0]
+$86:D25E 99 FF 1A    STA $1AFF,y            ;} Enemy projectile direction = [enemy projectile initialisation parameter 0]
 $86:D261 28          PLP
 $86:D262 60          RTS
 }
 
 
-;;; $D263: Pre-instruction - enemy projectile $D298 (Maridia floater's spikes) ;;;
+;;; $D263: Pre-instruction - enemy projectile $D298 (Maridia floater spike) ;;;
 {
 $86:D263 BD FF 1A    LDA $1AFF,x            ;\
 $86:D266 0A          ASL A                  ;|
 $86:D267 A8          TAY                    ;|
-$86:D268 BD B7 1A    LDA $1AB7,x            ;} Enemy projectile X velocity += [$D21A + [enemy projectile $1AFF] * 2]
+$86:D268 BD B7 1A    LDA $1AB7,x            ;} Enemy projectile X velocity += [$D21A + [enemy projectile direction] * 2]
 $86:D26B 18          CLC                    ;|
 $86:D26C 79 1A D2    ADC $D21A,y            ;|
 $86:D26F 9D B7 1A    STA $1AB7,x            ;/
@@ -11890,7 +11901,7 @@ $86:D275 B0 14       BCS $14    [$D28B]     ; If no collision:
 $86:D277 BD FF 1A    LDA $1AFF,x            ;\
 $86:D27A 0A          ASL A                  ;|
 $86:D27B A8          TAY                    ;|
-$86:D27C BD DB 1A    LDA $1ADB,x            ;} Enemy projectile Y velocity += [$D22A + [enemy projectile $1AFF] * 2]
+$86:D27C BD DB 1A    LDA $1ADB,x            ;} Enemy projectile Y velocity += [$D22A + [enemy projectile direction] * 2]
 $86:D27F 18          CLC                    ;|
 $86:D280 79 2A D2    ADC $D22A,y            ;|
 $86:D283 9D DB 1A    STA $1ADB,x            ;/
@@ -11906,7 +11917,7 @@ $86:D297 60          RTS
 }
 
 
-;;; $D298: Enemy projectile - Maridia floater's spikes ;;;
+;;; $D298: Enemy projectile - Maridia floater spike ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -11917,7 +11928,7 @@ $86:D297 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:D298             dx D23A,D263,D208,04,04,0014,0000,D218 ; Maridia floater's spikes
+$86:D298             dx D23A,D263,D208,04,04,0014,0000,D218 ; Maridia floater spike
 }
 }
 
@@ -11945,10 +11956,10 @@ $86:D2DE             dx D30C,D3BF,D2EC,0C,0C,0004,0000,84FC ; Wrecked Ship robot
 
 ;;; $D2EC: Instruction list - enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (Wrecked Ship robot laser) ;;;
 {
-$86:D2EC             dx 0004,99FC,
+$86:D2EC             dw 0004,99FC,
                         0004,9A03,
                         0004,9A0A
-$86:D2F8             dx 0004,9A20,
+$86:D2F8             dw 0004,9A20,
                         0004,9A36,
                         0004,9A4C,
                         0004,9A36,
@@ -11959,96 +11970,98 @@ $86:D2F8             dx 0004,9A20,
 ;;; $D30C: Initialisation AI - enemy projectile $D2C2/$D2DE (Wrecked Ship robot laser - down-left/right) ;;;
 {
 $86:D30C DA          PHX
-$86:D30D AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:D310 BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$86:D313 08          PHP
-$86:D314 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:D317 10 07       BPL $07    [$D320]
-$86:D319 49 00 FF    EOR #$FF00
-$86:D31C 18          CLC
-$86:D31D 69 00 01    ADC #$0100
+$86:D30D AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:D310 BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
+$86:D313 08          PHP                    ;} Enemy projectile X velocity = [enemy $0FA8]
+$86:D314 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
+$86:D317 10 07       BPL $07    [$D320]     ;\
+$86:D319 49 00 FF    EOR #$FF00             ;|
+$86:D31C 18          CLC                    ;} >_<;
+$86:D31D 69 00 01    ADC #$0100             ;/
 
-$86:D320 A9 80 00    LDA #$0080
-$86:D323 99 DB 1A    STA $1ADB,y[$7E:1AFD]
+$86:D320 A9 80 00    LDA #$0080             ;\
+$86:D323 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = 80h
 $86:D326 A9 00 00    LDA #$0000             ;\
 $86:D329 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
-$86:D32C 80 2D       BRA $2D    [$D35B]
+$86:D32C 80 2D       BRA $2D    [$D35B]     ; Go to Wrecked Ship robot laser common initialisation
 }
 
 
 ;;; $D32E: Initialisation AI - enemy projectile $D2B4 (Wrecked Ship robot laser - horizontal) ;;;
 {
 $86:D32E DA          PHX
-$86:D32F AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:D332 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$86:D335 08          PHP
-$86:D336 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:D339 A9 00 00    LDA #$0000
-$86:D33C 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:D33F 80 1A       BRA $1A    [$D35B]
+$86:D32F AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:D332 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$86:D335 08          PHP                    ;} Enemy projectile X velocity = [enemy $0FA8]
+$86:D336 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
+$86:D339 A9 00 00    LDA #$0000             ;\
+$86:D33C 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = 0
+$86:D33F 80 1A       BRA $1A    [$D35B]     ; Go to Wrecked Ship robot laser common initialisation
 }
 
 
 ;;; $D341: Initialisation AI - enemy projectile $D2A6/$D2D0 (Wrecked Ship robot laser - up-left/right) ;;;
 {
 $86:D341 DA          PHX
-$86:D342 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:D345 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$86:D348 08          PHP
-$86:D349 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:D34C 30 07       BMI $07    [$D355]
-$86:D34E 49 00 FF    EOR #$FF00
-$86:D351 18          CLC
-$86:D352 69 00 01    ADC #$0100
+$86:D342 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:D345 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$86:D348 08          PHP                    ;} Enemy projectile X velocity = [enemy $0FA8]
+$86:D349 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
+$86:D34C 30 07       BMI $07    [$D355]     ;\
+$86:D34E 49 00 FF    EOR #$FF00             ;|
+$86:D351 18          CLC                    ;} >_<;
+$86:D352 69 00 01    ADC #$0100             ;/
 
-$86:D355 A9 80 FF    LDA #$FF80
-$86:D358 99 DB 1A    STA $1ADB,y[$7E:1AFD]
+$86:D355 A9 80 FF    LDA #$FF80             ;\
+$86:D358 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = -80h
 }
 
 
-;;; $D35B:  ;;;
+;;; $D35B: Wrecked Ship robot laser common initialisation ;;;
 {
-$86:D35B BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:D35E 38          SEC
-$86:D35F E9 10 00    SBC #$0010
-$86:D362 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:D365 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:D368 28          PLP
-$86:D369 30 06       BMI $06    [$D371]
-$86:D36B 18          CLC
-$86:D36C 69 04 00    ADC #$0004
-$86:D36F 80 04       BRA $04    [$D375]
-
-$86:D371 38          SEC
-$86:D372 E9 04 00    SBC #$0004
-
-$86:D375 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:D378 A9 00 00    LDA #$0000
-$86:D37B 99 6F 1A    STA $1A6F,y[$7E:1A91]
-$86:D37E 99 27 1A    STA $1A27,y[$7E:1A49]
-$86:D381 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:D384 18          CLC
-$86:D385 7D 82 0F    ADC $0F82,x[$7E:0F82]
-$86:D388 CD 11 09    CMP $0911  [$7E:0911]
-$86:D38B 30 30       BMI $30    [$D3BD]
-$86:D38D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:D390 38          SEC
-$86:D391 FD 82 0F    SBC $0F82,x[$7E:0F82]
-$86:D394 38          SEC
-$86:D395 E9 01 01    SBC #$0101
-$86:D398 CD 11 09    CMP $0911  [$7E:0911]
-$86:D39B 10 20       BPL $20    [$D3BD]
-$86:D39D BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:D3A0 18          CLC
-$86:D3A1 7D 84 0F    ADC $0F84,x[$7E:0F84]
-$86:D3A4 CD 15 09    CMP $0915  [$7E:0915]
-$86:D3A7 30 14       BMI $14    [$D3BD]
-$86:D3A9 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:D3AC 38          SEC
-$86:D3AD FD 84 0F    SBC $0F84,x[$7E:0F84]
-$86:D3B0 38          SEC
-$86:D3B1 E9 E0 00    SBC #$00E0
-$86:D3B4 10 07       BPL $07    [$D3BD]
+; Expects a pushed PSR and X
+; BUG: Missing `CMP $0915` at $D3B4 causes laser sound effect to only play if the robot is in the top row of scrolls
+$86:D35B BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:D35E 38          SEC                    ;|
+$86:D35F E9 10 00    SBC #$0010             ;} Enemy projectile Y position = [enemy Y position] - 10h
+$86:D362 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
+$86:D365 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:D368 28          PLP                    ;|
+$86:D369 30 06       BMI $06    [$D371]     ;|
+$86:D36B 18          CLC                    ;|
+$86:D36C 69 04 00    ADC #$0004             ;|
+$86:D36F 80 04       BRA $04    [$D375]     ;} Enemy projectile X position = [enemy X position] + 4 * sgn([enemy projectile X velocity])
+                                            ;|
+$86:D371 38          SEC                    ;|
+$86:D372 E9 04 00    SBC #$0004             ;|
+                                            ;|
+$86:D375 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:D378 A9 00 00    LDA #$0000             ;\
+$86:D37B 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;} Enemy projectile Y subposition = 0
+$86:D37E 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile X subposition = 0
+$86:D381 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:D384 18          CLC                    ;|
+$86:D385 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;} If (enemy right boundary) + 1 >= [layer 1 X position]:
+$86:D388 CD 11 09    CMP $0911  [$7E:0911]  ;|
+$86:D38B 30 30       BMI $30    [$D3BD]     ;/
+$86:D38D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:D390 38          SEC                    ;|
+$86:D391 FD 82 0F    SBC $0F82,x[$7E:0F82]  ;|
+$86:D394 38          SEC                    ;} If (enemy left boundary) <= [layer 1 X position] + 100h:
+$86:D395 E9 01 01    SBC #$0101             ;|
+$86:D398 CD 11 09    CMP $0911  [$7E:0911]  ;|
+$86:D39B 10 20       BPL $20    [$D3BD]     ;/
+$86:D39D BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:D3A0 18          CLC                    ;|
+$86:D3A1 7D 84 0F    ADC $0F84,x[$7E:0F84]  ;} If (enemy bottom boundary) + 1 >= [layer 1 Y position]:
+$86:D3A4 CD 15 09    CMP $0915  [$7E:0915]  ;|
+$86:D3A7 30 14       BMI $14    [$D3BD]     ;/
+$86:D3A9 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:D3AC 38          SEC                    ;|
+$86:D3AD FD 84 0F    SBC $0F84,x[$7E:0F84]  ;|
+$86:D3B0 38          SEC                    ;} If (enemy top boundary) < E0h:
+$86:D3B1 E9 E0 00    SBC #$00E0             ;|
+$86:D3B4 10 07       BPL $07    [$D3BD]     ;/
 $86:D3B6 A9 67 00    LDA #$0067             ;\
 $86:D3B9 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 67h, sound library 2, max queued sounds allowed = 6 (pirate laser)
 
@@ -12064,11 +12077,11 @@ $86:D3C0 C2 20       REP #$20
 $86:D3C2 A9 00 00    LDA #$0000             ;\
 $86:D3C5 9D BB 19    STA $19BB,x[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:D3C8 20 B6 88    JSR $88B6  [$86:88B6]  ; Move enemy projectile horizontally
-$86:D3CB B0 05       BCS $05    [$D3D2]
+$86:D3CB B0 05       BCS $05    [$D3D2]     ; If no collision:
 $86:D3CD 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:D3D0 90 03       BCC $03    [$D3D5]
+$86:D3D0 90 03       BCC $03    [$D3D5]     ; If no collision: return
 
-$86:D3D2 9E 97 19    STZ $1997,x[$7E:19B9]
+$86:D3D2 9E 97 19    STZ $1997,x[$7E:19B9]  ; Enemy projectile ID = 0
 
 $86:D3D5 28          PLP
 $86:D3D6 60          RTS
@@ -12076,17 +12089,19 @@ $86:D3D6 60          RTS
 }
 
 
-;;; $D3D7..D92D: n00b tube crack ;;;
+;;; $D3D7..D92D: n00b tube ;;;
+{
+;;; $D3D7..D6A4: Instruction lists ;;;
 {
 ;;; $D3D7: Instruction list - enemy projectile $D904 (n00b tube crack) ;;;
 {
-$86:D3D7             dx 000C,9A62,
+$86:D3D7             dw 000C,9A62,
                         000A,9A8C,
                         0008,9AD4,
                         0006,9B6C,
                         0006,9C31,
                         0006,9D2D,
-                        8161,D7BF,  ; Pre-instruction = $D7BF
+                        8161,D7BF,  ; Pre-instruction = $D7BF (flickering)
                         0001,9E71,
                         0001,9EB9,
                         0001,9F01,
@@ -12097,7 +12112,7 @@ $86:D3D7             dx 000C,9A62,
                         0006,A069,
                         0009,A0B1,
                         0008,A0F9,
-                        8161,D7DE,  ; Pre-instruction = $D7DE
+                        8161,D7DE,  ; Pre-instruction = $D7DE (falling)
                         0007,A141,
                         0007,A189,
                         0007,A1D1,
@@ -12117,8 +12132,8 @@ $86:D3D7             dx 000C,9A62,
                         0007,A5C1,
                         0007,A609,
                         0010,A651,
-                        81D5,0006   ; Timer = 0006h
-$86:D46F             dx 0010,A699,
+                        81D5,0006   ; Timer = 6
+$86:D46F             dw 0010,A699,
                         0010,A651,
                         81C6,D46F,  ; Decrement timer and go to $D46F if non-zero
                         8154        ; Delete
@@ -12127,162 +12142,165 @@ $86:D46F             dx 0010,A699,
 
 ;;; $D47D: Instruction list - n00b tube shard - parameter = 0 ;;;
 {
-$86:D47D             dx 81D5,0020   ; Timer = 0020h
-$86:D481             dx D5F2,A6E1,A6ED,
-                        81C6,D481,  ; Decrement timer and go to $D481 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D495             dx D5F2,A6E1,A6ED,
-                        81C6,D495,  ; Decrement timer and go to $D495 if non-zero
-                        8154        ; Delete
+$86:D47D             dw 81D5,0020       ; Timer = 20h
+$86:D481             dw D5F2,A6E1,A6ED, ; Reflect-flicker n00b tube shard with left-side spritemap $A6E1 or right-side spritemap $A6ED
+                        81C6,D481,      ; Decrement timer and go to $D481 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D495             dw D5F2,A6E1,A6ED, ; Reflect-flicker n00b tube shard with left-side spritemap $A6E1 or right-side spritemap $A6ED
+                        81C6,D495,      ; Decrement timer and go to $D495 if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D4A1: Instruction list - n00b tube shard - parameter = 2 ;;;
 {
-$86:D4A1             dx 81D5,0020   ; Timer = 0020h
-$86:D4A5             dx D5F2,A6F9,A705,
-                        81C6,D4A5,  ; Decrement timer and go to $D4A5 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D4B9             dx D5F2,A6F9,A705,
-                        81C6,D4B9,  ; Decrement timer and go to $D4B9 if non-zero
-                        8154        ; Delete
+$86:D4A1             dw 81D5,0020       ; Timer = 20h
+$86:D4A5             dw D5F2,A6F9,A705, ; Reflect-flicker n00b tube shard with left-side spritemap $A6F9 or right-side spritemap $A705
+                        81C6,D4A5,      ; Decrement timer and go to $D4A5 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D4B9             dw D5F2,A6F9,A705, ; Reflect-flicker n00b tube shard with left-side spritemap $A6F9 or right-side spritemap $A705
+                        81C6,D4B9,      ; Decrement timer and go to $D4B9 if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D4C5: Instruction list - n00b tube shard - parameter = 4 ;;;
 {
-$86:D4C5             dx 81D5,0020   ; Timer = 0020h
-$86:D4C9             dx D5F2,A711,A718,
-                        81C6,D4C9,  ; Decrement timer and go to $D4C9 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D4DD             dx D5F2,A711,A718,
-                        81C6,D4DD,  ; Decrement timer and go to $D4DD if non-zero
-                        8154        ; Delete
+$86:D4C5             dw 81D5,0020       ; Timer = 20h
+$86:D4C9             dw D5F2,A711,A718, ; Reflect-flicker n00b tube shard with left-side spritemap $A711 or right-side spritemap $A718
+                        81C6,D4C9,      ; Decrement timer and go to $D4C9 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D4DD             dw D5F2,A711,A718, ; Reflect-flicker n00b tube shard with left-side spritemap $A711 or right-side spritemap $A718
+                        81C6,D4DD,      ; Decrement timer and go to $D4DD if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D4E9: Instruction list - n00b tube shard - parameter = 6 ;;;
 {
-$86:D4E9             dx 81D5,0020   ; Timer = 0020h
-$86:D4ED             dx D5F2,A71F,A72B,
-                        81C6,D4ED,  ; Decrement timer and go to $D4ED if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D501             dx D5F2,A71F,A72B,
-                        81C6,D501,  ; Decrement timer and go to $D501 if non-zero
-                        8154        ; Delete
+$86:D4E9             dw 81D5,0020       ; Timer = 20h
+$86:D4ED             dw D5F2,A71F,A72B, ; Reflect-flicker n00b tube shard with left-side spritemap $A71F or right-side spritemap $A72B
+                        81C6,D4ED,      ; Decrement timer and go to $D4ED if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D501             dw D5F2,A71F,A72B, ; Reflect-flicker n00b tube shard with left-side spritemap $A71F or right-side spritemap $A72B
+                        81C6,D501,      ; Decrement timer and go to $D501 if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D50D: Instruction list - n00b tube shard - parameter = 8 ;;;
 {
-$86:D50D             dx 81D5,0020   ; Timer = 0020h
-$86:D511             dx D5F2,A737,A743,
-                        81C6,D511,  ; Decrement timer and go to $D511 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D525             dx D5F2,A737,A743,
-                        81C6,D525,  ; Decrement timer and go to $D525 if non-zero
-                        8154        ; Delete
+$86:D50D             dw 81D5,0020       ; Timer = 20h
+$86:D511             dw D5F2,A737,A743, ; Reflect-flicker n00b tube shard with left-side spritemap $A737 or right-side spritemap $A743
+                        81C6,D511,      ; Decrement timer and go to $D511 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D525             dw D5F2,A737,A743, ; Reflect-flicker n00b tube shard with left-side spritemap $A737 or right-side spritemap $A743
+                        81C6,D525,      ; Decrement timer and go to $D525 if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D531: Instruction list - n00b tube shard - parameter = Ah ;;;
 {
-$86:D531             dx 81D5,0020   ; Timer = 0020h
-$86:D535             dx D5F2,A74F,A75B,
-                        81C6,D535,  ; Decrement timer and go to $D535 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D549             dx D5F2,A74F,A75B,
-                        81C6,D549,  ; Decrement timer and go to $D549 if non-zero
-                        8154        ; Delete
+$86:D531             dw 81D5,0020       ; Timer = 20h
+$86:D535             dw D5F2,A74F,A75B, ; Reflect-flicker n00b tube shard with left-side spritemap $A74F or right-side spritemap $A75B
+                        81C6,D535,      ; Decrement timer and go to $D535 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D549             dw D5F2,A74F,A75B, ; Reflect-flicker n00b tube shard with left-side spritemap $A74F or right-side spritemap $A75B
+                        81C6,D549,      ; Decrement timer and go to $D549 if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D555: Instruction list - n00b tube shard - parameter = Ch ;;;
 {
-$86:D555             dx 81D5,0020   ; Timer = 0020h
-$86:D559             dx D5F2,A767,A773,
-                        81C6,D559,  ; Decrement timer and go to $D559 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D56D             dx D5F2,A767,A773,
-                        81C6,D56D,  ; Decrement timer and go to $D56D if non-zero
-                        8154        ; Delete
+$86:D555             dw 81D5,0020       ; Timer = 20h
+$86:D559             dw D5F2,A767,A773, ; Reflect-flicker n00b tube shard with left-side spritemap $A767 or right-side spritemap $A773
+                        81C6,D559,      ; Decrement timer and go to $D559 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D56D             dw D5F2,A767,A773, ; Reflect-flicker n00b tube shard with left-side spritemap $A767 or right-side spritemap $A773
+                        81C6,D56D,      ; Decrement timer and go to $D56D if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D579: Instruction list - n00b tube shard - parameter = Eh ;;;
 {
-$86:D579             dx 81D5,0020   ; Timer = 0020h
-$86:D57D             dx D5F2,A77F,A78B,
-                        81C6,D57D,  ; Decrement timer and go to $D57D if non-zero
-                        D5E1
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D591             dx D5F2,A77F,A78B,
-                        81C6,D591,  ; Decrement timer and go to $D591 if non-zero
-                        8154        ; Delete
+$86:D579             dw 81D5,0020       ; Timer = 20h
+$86:D57D             dw D5F2,A77F,A78B, ; Reflect-flicker n00b tube shard with left-side spritemap $A77F or right-side spritemap $A78B
+                        81C6,D57D,      ; Decrement timer and go to $D57D if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D591             dw D5F2,A77F,A78B, ; Reflect-flicker n00b tube shard with left-side spritemap $A77F or right-side spritemap $A78B
+                        81C6,D591,      ; Decrement timer and go to $D591 if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D59D: Instruction list - n00b tube shard - parameter = 10h ;;;
 {
-$86:D59D             dx 81D5,0020   ; Timer = 0020h
-$86:D5A1             dx D62A,A797,
-                        81C6,D5A1,  ; Decrement timer and go to $D5A1 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D5B3             dx D62A,A797,
-                        81C6,D5B3,  ; Decrement timer and go to $D5B3 if non-zero
-                        8154        ; Delete
+$86:D59D             dw 81D5,0020       ; Timer = 20h
+$86:D5A1             dw D62A,A797,      ; Flicker n00b tube shard with spritemap $A797
+                        81C6,D5A1,      ; Decrement timer and go to $D5A1 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D5B3             dw D62A,A797,      ; Flicker n00b tube shard with spritemap $A797
+                        81C6,D5B3,      ; Decrement timer and go to $D5B3 if non-zero
+                        8154            ; Delete
 }
 
 
 ;;; $D5BD: Instruction list - n00b tube shard - parameter = 12h ;;;
 {
-$86:D5BD             dx 81D5,0020   ; Timer = 0020h
-$86:D5C1             dx D5F2,A7A3,A7AF,
-                        81C6,D5C1,  ; Decrement timer and go to $D5C1 if non-zero
-                        D5E1,
-                        8161,D83D,  ; Pre-instruction = $D83D
-                        81D5,0110   ; Timer = 0110h
-$86:D5D5             dx D5F2,A7A3,A7AF,
-                        81C6,D5D5,  ; Decrement timer and go to $D5D5 if non-zero
-                        8154        ; Delete
+$86:D5BD             dw 81D5,0020       ; Timer = 20h
+$86:D5C1             dw D5F2,A7A3,A7AF, ; Reflect-flicker n00b tube shard with left-side spritemap $A7A3 or right-side spritemap $A7AF
+                        81C6,D5C1,      ; Decrement timer and go to $D5C1 if non-zero
+                        D5E1,           ; Assign n00b tube shard falling angle
+                        8161,D83D,      ; Pre-instruction = $D83D (falling)
+                        81D5,0110       ; Timer = 110h
+$86:D5D5             dw D5F2,A7A3,A7AF, ; Reflect-flicker n00b tube shard with left-side spritemap $A7A3 or right-side spritemap $A7AF
+                        81C6,D5D5,      ; Decrement timer and go to $D5D5 if non-zero
+                        8154            ; Delete
 }
 
 
-;;; $D5E1: Instruction - assign new n00b tube shard velocity ;;;
+;;; $D5E1: Instruction - assign n00b tube shard falling angle ;;;
 {
+; TODO: seems that $05E7 (the bitmask result of $80:818E) is assumed to be 0 (or the low byte at least),
+;       need to check if that's actually true (due to the n00b tube event check?)
+;       Related: $D69A
 $86:D5E1 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:D5E5 AD E6 05    LDA $05E6  [$7E:05E6]  ;\
-$86:D5E8 9D B7 1A    STA $1AB7,x[$7E:1AD7]  ;} n00b tube shard X velocity = [random number]
+$86:D5E8 9D B7 1A    STA $1AB7,x[$7E:1AD7]  ;} Enemy projectile falling angle = [random number] / 100h | [$05E7] * 100h
 $86:D5EB A9 C0 00    LDA #$00C0             ;\
-$86:D5EE 9D DB 1A    STA $1ADB,x[$7E:1AFB]  ;} n00b tube shard Y velocity = C0h
+$86:D5EE 9D DB 1A    STA $1ADB,x[$7E:1AFB]  ;} Enemy projectile Y velocity = C0h
 $86:D5F1 60          RTS
 }
 
 
-;;; $D5F2: Instruction - set n00b tube shard X position and set spritemap pointer to [[Y]] or [[Y] + 2] ;;;
+;;; $D5F2: Instruction - reflect-flicker n00b tube shard with left-side spritemap [[Y]] or right-side spritemap [[Y] + 2] ;;;
 {
 $86:D5F2 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $86:D5F5 4A          LSR A                  ;} If [frame counter] % 2 != 0:
 $86:D5F6 90 0E       BCC $0E    [$D606]     ;/
 $86:D5F8 BD 23 1B    LDA $1B23,x[$7E:1B43]  ;\
-$86:D5FB 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;} Enemy projectile X position = [enemy projectile $1B23]
+$86:D5FB 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;} Enemy projectile X position = [enemy projectile on-screen X position]
 $86:D5FE B9 00 00    LDA $0000,y[$86:D483]  ;\
 $86:D601 9D 6B 1B    STA $1B6B,x[$7E:1B8B]  ;} Enemy projectile spritemap pointer = [[Y]]
 $86:D604 80 14       BRA $14    [$D61A]
@@ -12290,7 +12308,7 @@ $86:D604 80 14       BRA $14    [$D61A]
 $86:D606 A9 80 00    LDA #$0080             ;\ Else ([frame counter] % 2 = 0):
 $86:D609 38          SEC                    ;|
 $86:D60A FD 23 1B    SBC $1B23,x[$7E:1B43]  ;|
-$86:D60D 18          CLC                    ;} Enemy projectile X position = 100h - [enemy projectile $1B23]
+$86:D60D 18          CLC                    ;} Enemy projectile X position = 100h - [enemy projectile on-screen X position]
 $86:D60E 69 80 00    ADC #$0080             ;|
 $86:D611 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;/
 $86:D614 B9 02 00    LDA $0002,y[$86:D485]  ;\
@@ -12309,40 +12327,40 @@ $86:D629 60          RTS
 }
 
 
-;;; $D62A: Instruction ;;;
+;;; $D62A: Instruction - flicker n00b tube shard with spritemap [[Y]] ;;;
 {
-$86:D62A AD B6 05    LDA $05B6  [$7E:05B6]
-$86:D62D 4A          LSR A
-$86:D62E 90 08       BCC $08    [$D638]
-$86:D630 BD 23 1B    LDA $1B23,x[$7E:1B33]
-$86:D633 9D 4B 1A    STA $1A4B,x[$7E:1A5B]
+$86:D62A AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$86:D62D 4A          LSR A                  ;} If [frame counter] % 2 != 0:
+$86:D62E 90 08       BCC $08    [$D638]     ;/
+$86:D630 BD 23 1B    LDA $1B23,x[$7E:1B33]  ;\
+$86:D633 9D 4B 1A    STA $1A4B,x[$7E:1A5B]  ;} Enemy projectile X position = [enemy projectile on-screen X position]
 $86:D636 80 06       BRA $06    [$D63E]
 
-$86:D638 A9 00 EE    LDA #$EE00
-$86:D63B 9D 4B 1A    STA $1A4B,x[$7E:1A5B]
+$86:D638 A9 00 EE    LDA #$EE00             ;\ Else ([frame counter] % 2 = 0):
+$86:D63B 9D 4B 1A    STA $1A4B,x[$7E:1A5B]  ;} Enemy projectile X position = EE00h
 
-$86:D63E B9 00 00    LDA $0000,y[$86:D5A3]
-$86:D641 9D 6B 1B    STA $1B6B,x[$7E:1B7B]
-$86:D644 C8          INY
-$86:D645 C8          INY
-$86:D646 98          TYA
-$86:D647 9D 47 1B    STA $1B47,x[$7E:1B57]
-$86:D64A A9 01 00    LDA #$0001
-$86:D64D 9D 8F 1B    STA $1B8F,x[$7E:1B9F]
-$86:D650 68          PLA
+$86:D63E B9 00 00    LDA $0000,y[$86:D5A3]  ;\
+$86:D641 9D 6B 1B    STA $1B6B,x[$7E:1B7B]  ;} Enemy projectile spritemap pointer = [[Y]]
+$86:D644 C8          INY                    ;\
+$86:D645 C8          INY                    ;} Y += 2
+$86:D646 98          TYA                    ;\
+$86:D647 9D 47 1B    STA $1B47,x[$7E:1B57]  ;} Enemy projectile instruction list pointer = [Y]
+$86:D64A A9 01 00    LDA #$0001             ;\
+$86:D64D 9D 8F 1B    STA $1B8F,x[$7E:1B9F]  ;} Enemy projectile instruction timer = 1
+$86:D650 68          PLA                    ; End instruction list processing
 $86:D651 60          RTS
 }
 
 
 ;;; $D652: Instruction list - enemy projectile $D920 (n00b tube released air bubbles) ;;;
 {
-$86:D652             dx 8161,D8DF,  ; Pre-instruction = $D8DF
+$86:D652             dw 8161,D8DF,  ; Pre-instruction = $D8DF (flying)
                         0002,A7BB,
                         0002,A7C2,
                         0002,A7CE,
                         0002,A7DF,
-                        D69A,
-                        8161,D89F,  ; Pre-instruction = $D89F
+                        D69A,       ; Assign n00b tube released air bubbles falling angle
+                        8161,D89F,  ; Pre-instruction = $D89F (falling)
                         0002,A7DF,
                         0002,A7FA,
                         0002,A81F,
@@ -12358,41 +12376,45 @@ $86:D652             dx 8161,D8DF,  ; Pre-instruction = $D8DF
 }
 
 
-;;; $D69A: Instruction ;;;
+;;; $D69A: Instruction - assign n00b tube released air bubbles falling angle ;;;
 {
-$86:D69A 22 11 81 80 JSL $808111[$80:8111]
-$86:D69E AD E6 05    LDA $05E6  [$7E:05E6]
-$86:D6A1 9D B7 1A    STA $1AB7,x[$7E:1AC3]
+$86:D69A 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:D69E AD E6 05    LDA $05E6  [$7E:05E6]  ;\
+$86:D6A1 9D B7 1A    STA $1AB7,x[$7E:1AC3]  ;} Enemy projectile falling angle = [random number] / 100h | [$05E7] * 100h
 $86:D6A4 60          RTS
+}
 }
 
 
 ;;; $D6A5: Initialisation AI - enemy projectile $D904 (n00b tube crack) ;;;
 {
-$86:D6A5 AE 27 1C    LDX $1C27  [$7E:1C27]
-$86:D6A8 22 90 82 84 JSL $848290[$84:8290]
-$86:D6AC AD 29 1C    LDA $1C29  [$7E:1C29]
-$86:D6AF 0A          ASL A
-$86:D6B0 0A          ASL A
-$86:D6B1 0A          ASL A
-$86:D6B2 0A          ASL A
-$86:D6B3 18          CLC
-$86:D6B4 69 60 00    ADC #$0060
-$86:D6B7 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:D6BA AD 2B 1C    LDA $1C2B  [$7E:1C2B]
-$86:D6BD 0A          ASL A
-$86:D6BE 0A          ASL A
-$86:D6BF 0A          ASL A
-$86:D6C0 0A          ASL A
-$86:D6C1 18          CLC
-$86:D6C2 69 30 00    ADC #$0030
-$86:D6C5 99 93 1A    STA $1A93,y[$7E:1AB5]
+$86:D6A5 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
+$86:D6A8 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
+$86:D6AC AD 29 1C    LDA $1C29  [$7E:1C29]  ;\
+$86:D6AF 0A          ASL A                  ;|
+$86:D6B0 0A          ASL A                  ;|
+$86:D6B1 0A          ASL A                  ;|
+$86:D6B2 0A          ASL A                  ;} Enemy projectile X position = [PLM X block] * 10h + 60h
+$86:D6B3 18          CLC                    ;|
+$86:D6B4 69 60 00    ADC #$0060             ;|
+$86:D6B7 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:D6BA AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
+$86:D6BD 0A          ASL A                  ;|
+$86:D6BE 0A          ASL A                  ;|
+$86:D6BF 0A          ASL A                  ;|
+$86:D6C0 0A          ASL A                  ;} Enemy projectile Y position = [PLM Y block] * 10h + 30h
+$86:D6C1 18          CLC                    ;|
+$86:D6C2 69 30 00    ADC #$0030             ;|
+$86:D6C5 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:D6C8 60          RTS
 }
 
 
-;;; $D6C9: Initialisation AI - enemy projectile $D912 (n00b tube shards) ;;;
+;;; $D6C9: Initialisation AI - enemy projectile $D912 (n00b tube shard) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Index. Multiple of 2, range 0..12h
 $86:D6C9 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
 $86:D6CC 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
 $86:D6D0 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter]
@@ -12401,13 +12423,13 @@ $86:D6D6 0A          ASL A                  ;|
 $86:D6D7 0A          ASL A                  ;|
 $86:D6D8 0A          ASL A                  ;|
 $86:D6D9 0A          ASL A                  ;|
-$86:D6DA 18          CLC                    ;} Enemy projectile $1B23 = [PLM X block] * 10h + 60h + [$D710 + [X]]
+$86:D6DA 18          CLC                    ;} Enemy projectile on-screen X position = [PLM X block] * 10h + 60h + [$D710 + [X]]
 $86:D6DB 69 60 00    ADC #$0060             ;|
 $86:D6DE 18          CLC                    ;|
 $86:D6DF 7D 10 D7    ADC $D710,x[$86:D710]  ;|
 $86:D6E2 99 23 1B    STA $1B23,y[$7E:1B43]  ;/
 $86:D6E5 A9 00 00    LDA #$0000             ;\
-$86:D6E8 99 FF 1A    STA $1AFF,y[$7E:1B1F]  ;} Enemy projectile $1AFF = 0
+$86:D6E8 99 FF 1A    STA $1AFF,y[$7E:1B1F]  ;} Enemy projectile on-screen X subposition = 0
 $86:D6EB AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
 $86:D6EE 0A          ASL A                  ;|
 $86:D6EF 0A          ASL A                  ;|
@@ -12421,92 +12443,99 @@ $86:D6FA 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
 $86:D6FD BD 60 D7    LDA $D760,x[$86:D760]  ;\
 $86:D700 99 47 1B    STA $1B47,y[$7E:1B67]  ;} Enemy projectile instruction list pointer = [$D760 + [X]]
 $86:D703 BD 38 D7    LDA $D738,x[$86:D738]  ;\
-$86:D706 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile $1AB7 = [$D738 + [X]]
+$86:D706 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = [$D738 + [X]]
 $86:D709 BD 4C D7    LDA $D74C,x[$86:D74C]  ;\
-$86:D70C 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile $1ADB = [$D74C + [X]]
+$86:D70C 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile Y velocity = [$D74C + [X]]
 $86:D70F 60          RTS
 
 $86:D710             dw FFC8,FFC0,FFEC,FFD8,FFC0,FFD0,FFE8,FFD8,0000,FFF8 ; X offset
 $86:D724             dw 0008,FFF4,FFE6,FFE8,FFE0,001C,0010,FFF8,FFE8,0010 ; Y offset
-$86:D738             dw FE80,FE80,FF60,FEE0,FEE0,FEC0,FFA0,FEA0,0000,FFC0 ; X velocity * 100h
-$86:D74C             dw 0140,FF00,FE60,FEE0,FEE0,01C0,0240,FFA0,FEE0,0180 ; Y velocity * 100h
+$86:D738             dw FE80,FE80,FF60,FEE0,FEE0,FEC0,FFA0,FEA0,0000,FFC0 ; X velocity. Unit 1/100h px/frame
+$86:D74C             dw 0140,FF00,FE60,FEE0,FEE0,01C0,0240,FFA0,FEE0,0180 ; Y velocity. Unit 1/100h px/frame
 $86:D760             dw D47D,D4A1,D4C5,D4E9,D50D,D531,D555,D579,D59D,D5BD ; Instruction list pointer
 }
 
 
 ;;; $D774: Initialisation AI - enemy projectile $D920 (n00b tube released air bubbles) ;;;
 {
-$86:D774 AE 27 1C    LDX $1C27  [$7E:1C27]
-$86:D777 22 90 82 84 JSL $848290[$84:8290]
-$86:D77B AE 93 19    LDX $1993  [$7E:1993]
-$86:D77E AD 29 1C    LDA $1C29  [$7E:1C29]
-$86:D781 0A          ASL A
-$86:D782 0A          ASL A
-$86:D783 0A          ASL A
-$86:D784 0A          ASL A
-$86:D785 18          CLC
-$86:D786 7D A7 D7    ADC $D7A7,x[$86:D7A7]
-$86:D789 99 23 1B    STA $1B23,y[$7E:1B2F]
-$86:D78C A9 00 00    LDA #$0000
-$86:D78F 99 FF 1A    STA $1AFF,y[$7E:1B0B]
-$86:D792 AD 2B 1C    LDA $1C2B  [$7E:1C2B]
-$86:D795 0A          ASL A
-$86:D796 0A          ASL A
-$86:D797 0A          ASL A
-$86:D798 0A          ASL A
-$86:D799 18          CLC
-$86:D79A 7D B3 D7    ADC $D7B3,x[$86:D7B3]
-$86:D79D 99 93 1A    STA $1A93,y[$7E:1A9F]
-$86:D7A0 A9 00 FB    LDA #$FB00
-$86:D7A3 99 DB 1A    STA $1ADB,y[$7E:1AE7]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Position table index. Multiple of 2, range 0..Ah
+$86:D774 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
+$86:D777 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
+$86:D77B AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter]
+$86:D77E AD 29 1C    LDA $1C29  [$7E:1C29]  ;\
+$86:D781 0A          ASL A                  ;|
+$86:D782 0A          ASL A                  ;|
+$86:D783 0A          ASL A                  ;|
+$86:D784 0A          ASL A                  ;} Enemy projectile on-screen X position = [PLM X block] * 10h + [$D7A7 + [X]]
+$86:D785 18          CLC                    ;|
+$86:D786 7D A7 D7    ADC $D7A7,x[$86:D7A7]  ;|
+$86:D789 99 23 1B    STA $1B23,y[$7E:1B2F]  ;/
+$86:D78C A9 00 00    LDA #$0000             ;\
+$86:D78F 99 FF 1A    STA $1AFF,y[$7E:1B0B]  ;} Enemy projectile on-screen X subposition = 0
+$86:D792 AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
+$86:D795 0A          ASL A                  ;|
+$86:D796 0A          ASL A                  ;|
+$86:D797 0A          ASL A                  ;|
+$86:D798 0A          ASL A                  ;|
+$86:D799 18          CLC                    ;} Enemy projectile Y position = [PLM Y block] * 10h - 500h + [$D7B3 + [X]]
+$86:D79A 7D B3 D7    ADC $D7B3,x[$86:D7B3]  ;|
+$86:D79D 99 93 1A    STA $1A93,y[$7E:1A9F]  ;|
+$86:D7A0 A9 00 FB    LDA #$FB00             ;|
+$86:D7A3 99 DB 1A    STA $1ADB,y[$7E:1AE7]  ;/
 $86:D7A6 60          RTS
 
-$86:D7A7             dw 0028,0050,0068,0078,0098,00B8
-$86:D7B3             dw 0050,0048,0054,0020,0040,0054
+$86:D7A7             dw 0028,0050,0068,0078,0098,00B8 ; X offset
+$86:D7B3             dw 0050,0048,0054,0020,0040,0054 ; Y offset
 }
 
 
-;;; $D7BF:  ;;;
+;;; $D7BF: Pre-instruction - n00b tube crack - flickering ;;;
 {
-$86:D7BF BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:D7C2 C9 00 EE    CMP #$EE00
-$86:D7C5 F0 03       BEQ $03    [$D7CA]
-$86:D7C7 9D FF 1A    STA $1AFF,x[$7E:1B21]
+$86:D7BF BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
+$86:D7C2 C9 00 EE    CMP #$EE00             ;} If [enemy projectile X position] != EE00h:
+$86:D7C5 F0 03       BEQ $03    [$D7CA]     ;/
+$86:D7C7 9D FF 1A    STA $1AFF,x[$7E:1B21]  ; Enemy projectile on-screen X position = [enemy projectile X position]
 
-$86:D7CA AD B6 05    LDA $05B6  [$7E:05B6]
-$86:D7CD 4A          LSR A
-$86:D7CE 90 07       BCC $07    [$D7D7]
-$86:D7D0 A9 00 EE    LDA #$EE00
-$86:D7D3 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
-$86:D7D6 60          RTS
+$86:D7CA AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$86:D7CD 4A          LSR A                  ;} If [frame counter] % 2 != 0:
+$86:D7CE 90 07       BCC $07    [$D7D7]     ;/
+$86:D7D0 A9 00 EE    LDA #$EE00             ;\
+$86:D7D3 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position = EE00h
+$86:D7D6 60          RTS                    ; Return
 
-$86:D7D7 BD FF 1A    LDA $1AFF,x[$7E:1B21]
-$86:D7DA 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
+$86:D7D7 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
+$86:D7DA 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position = [enemy projectile on-screen X position]
 $86:D7DD 60          RTS
 }
 
 
-;;; $D7DE:  ;;;
+;;; $D7DE: Pre-instruction - n00b tube crack - falling ;;;
 {
-$86:D7DE 64 12       STZ $12    [$7E:0012]
-$86:D7E0 64 14       STZ $14    [$7E:0014]
-$86:D7E2 A9 C0 00    LDA #$00C0
-$86:D7E5 10 02       BPL $02    [$D7E9]
-$86:D7E7 C6 14       DEC $14    [$7E:0014]
-
-$86:D7E9 85 13       STA $13    [$7E:0013]
-$86:D7EB BD 6F 1A    LDA $1A6F,x[$7E:1A91]
-$86:D7EE 18          CLC
-$86:D7EF 65 12       ADC $12    [$7E:0012]
-$86:D7F1 9D 6F 1A    STA $1A6F,x[$7E:1A91]
-$86:D7F4 BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:D7F7 65 14       ADC $14    [$7E:0014]
-$86:D7F9 9D 93 1A    STA $1A93,x[$7E:1AB5]
+; >_<;
+; Here's my optimisation:
+;     LDA $1A6F,x : CLC : ADC #$C000 : STA $1A6F,x
+;     LDA $1A93,x : ADC #$0000 : STA $1A93,x
+$86:D7DE 64 12       STZ $12    [$7E:0012]  ;\
+$86:D7E0 64 14       STZ $14    [$7E:0014]  ;|
+$86:D7E2 A9 C0 00    LDA #$00C0             ;|
+$86:D7E5 10 02       BPL $02    [$D7E9]     ;|
+$86:D7E7 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$86:D7E9 85 13       STA $13    [$7E:0013]  ;|
+$86:D7EB BD 6F 1A    LDA $1A6F,x[$7E:1A91]  ;} Enemy Y position += 0.C000h
+$86:D7EE 18          CLC                    ;|
+$86:D7EF 65 12       ADC $12    [$7E:0012]  ;|
+$86:D7F1 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;|
+$86:D7F4 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;|
+$86:D7F7 65 14       ADC $14    [$7E:0014]  ;|
+$86:D7F9 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:D7FC 60          RTS
 }
 
 
-;;; $D7FD: Pre-instruction - enemy projectile $D912 (n00b tube shards) ;;;
+;;; $D7FD: Pre-instruction - n00b tube shard - flying ;;;
 {
 $86:D7FD 64 12       STZ $12    [$7E:0012]  ;\
 $86:D7FF 64 14       STZ $14    [$7E:0014]  ;|
@@ -12515,7 +12544,7 @@ $86:D804 10 02       BPL $02    [$D808]     ;|
 $86:D806 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $86:D808 85 13       STA $13    [$7E:0013]  ;|
-$86:D80A BD FF 1A    LDA $1AFF,x[$7E:1B1F]  ;} Enemy projectile $1B23.$1AFF += [enemy projectile $1AB7] / 100h (X position)
+$86:D80A BD FF 1A    LDA $1AFF,x[$7E:1B1F]  ;} Enemy projectile on-screen X position += [enemy projectile X velocity] / 100h
 $86:D80D 18          CLC                    ;|
 $86:D80E 65 12       ADC $12    [$7E:0012]  ;|
 $86:D810 9D FF 1A    STA $1AFF,x[$7E:1B1F]  ;|
@@ -12529,115 +12558,122 @@ $86:D822 10 02       BPL $02    [$D826]     ;|
 $86:D824 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $86:D826 85 13       STA $13    [$7E:0013]  ;|
-$86:D828 BD 6F 1A    LDA $1A6F,x[$7E:1A8F]  ;} Enemy projectile $1A93.$1A6F += [enemy projectile $1ADB] / 100h (Y position)
+$86:D828 BD 6F 1A    LDA $1A6F,x[$7E:1A8F]  ;} Enemy projectile Y position += [enemy projectile Y velocity] / 100h
 $86:D82B 18          CLC                    ;|
 $86:D82C 65 12       ADC $12    [$7E:0012]  ;|
 $86:D82E 9D 6F 1A    STA $1A6F,x[$7E:1A8F]  ;|
 $86:D831 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;|
 $86:D834 65 14       ADC $14    [$7E:0014]  ;|
 $86:D836 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
-$86:D839 20 B9 B5    JSR $B5B9  [$86:B5B9]  ; Delete enemy projectile if off-screen
+$86:D839 20 B9 B5    JSR $B5B9  [$86:B5B9]  ; Delete enemy projectile if vertically off-screen
 $86:D83C 60          RTS
 }
 
 
-;;; $D83D:  ;;;
+;;; $D83D: Pre-instruction - n00b tube shard - falling ;;;
 {
-$86:D83D BD B7 1A    LDA $1AB7,x[$7E:1AD7]
-$86:D840 29 FE 01    AND #$01FE
-$86:D843 09 80 00    ORA #$0080
-$86:D846 AA          TAX
-$86:D847 64 12       STZ $12    [$7E:0012]
-$86:D849 64 14       STZ $14    [$7E:0014]
-$86:D84B 18          CLC
-$86:D84C BF 43 B4 A0 LDA $A0B443,x[$A0:B517]
-$86:D850 29 FE FF    AND #$FFFE
-$86:D853 10 06       BPL $06    [$D85B]
-$86:D855 C6 14       DEC $14    [$7E:0014]
-$86:D857 38          SEC
-$86:D858 09 01 00    ORA #$0001
-
-$86:D85B 6A          ROR A
-$86:D85C 6A          ROR A
-$86:D85D 85 13       STA $13    [$7E:0013]
-$86:D85F AE 91 19    LDX $1991  [$7E:1991]
-$86:D862 BD FF 1A    LDA $1AFF,x[$7E:1B1F]
-$86:D865 18          CLC
-$86:D866 65 12       ADC $12    [$7E:0012]
-$86:D868 9D FF 1A    STA $1AFF,x[$7E:1B1F]
-$86:D86B BD 23 1B    LDA $1B23,x[$7E:1B43]
-$86:D86E 65 14       ADC $14    [$7E:0014]
-$86:D870 9D 23 1B    STA $1B23,x[$7E:1B43]
-$86:D873 BD B7 1A    LDA $1AB7,x[$7E:1AD7]
-$86:D876 18          CLC
-$86:D877 69 02 00    ADC #$0002
-$86:D87A 9D B7 1A    STA $1AB7,x[$7E:1AD7]
-$86:D87D 64 12       STZ $12    [$7E:0012]
-$86:D87F 64 14       STZ $14    [$7E:0014]
-$86:D881 BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:D884 10 02       BPL $02    [$D888]
-$86:D886 C6 14       DEC $14    [$7E:0014]
-
-$86:D888 85 13       STA $13    [$7E:0013]
-$86:D88A BD 6F 1A    LDA $1A6F,x[$7E:1A8F]
-$86:D88D 18          CLC
-$86:D88E 65 12       ADC $12    [$7E:0012]
-$86:D890 9D 6F 1A    STA $1A6F,x[$7E:1A8F]
-$86:D893 BD 93 1A    LDA $1A93,x[$7E:1AB3]
-$86:D896 65 14       ADC $14    [$7E:0014]
-$86:D898 9D 93 1A    STA $1A93,x[$7E:1AB3]
-$86:D89B 20 B9 B5    JSR $B5B9  [$86:B5B9]
+; The `ORA #$0080` seems random/pointless. Given that the angle is chosen randomly, it has no real effect
+$86:D83D BD B7 1A    LDA $1AB7,x[$7E:1AD7]  ;\
+$86:D840 29 FE 01    AND #$01FE             ;|
+$86:D843 09 80 00    ORA #$0080             ;} X = ([enemy projectile falling angle] / 2 % 100h | 40h) * 2
+$86:D846 AA          TAX                    ;/
+$86:D847 64 12       STZ $12    [$7E:0012]  ;\
+$86:D849 64 14       STZ $14    [$7E:0014]  ;|
+$86:D84B 18          CLC                    ;|
+$86:D84C BF 43 B4 A0 LDA $A0B443,x[$A0:B517];|
+$86:D850 29 FE FF    AND #$FFFE             ;|
+$86:D853 10 06       BPL $06    [$D85B]     ;|
+$86:D855 C6 14       DEC $14    [$7E:0014]  ;|
+$86:D857 38          SEC                    ;|
+$86:D858 09 01 00    ORA #$0001             ;|
+                                            ;|
+$86:D85B 6A          ROR A                  ;} Enemy projectile on-screen X position += 40h * sin([X] / 2 * pi / 80h)
+$86:D85C 6A          ROR A                  ;|
+$86:D85D 85 13       STA $13    [$7E:0013]  ;|
+$86:D85F AE 91 19    LDX $1991  [$7E:1991]  ;|
+$86:D862 BD FF 1A    LDA $1AFF,x[$7E:1B1F]  ;|
+$86:D865 18          CLC                    ;|
+$86:D866 65 12       ADC $12    [$7E:0012]  ;|
+$86:D868 9D FF 1A    STA $1AFF,x[$7E:1B1F]  ;|
+$86:D86B BD 23 1B    LDA $1B23,x[$7E:1B43]  ;|
+$86:D86E 65 14       ADC $14    [$7E:0014]  ;|
+$86:D870 9D 23 1B    STA $1B23,x[$7E:1B43]  ;/
+$86:D873 BD B7 1A    LDA $1AB7,x[$7E:1AD7]  ;\
+$86:D876 18          CLC                    ;|
+$86:D877 69 02 00    ADC #$0002             ;} Enemy projectile falling angle += 2
+$86:D87A 9D B7 1A    STA $1AB7,x[$7E:1AD7]  ;/
+$86:D87D 64 12       STZ $12    [$7E:0012]  ;\
+$86:D87F 64 14       STZ $14    [$7E:0014]  ;|
+$86:D881 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;|
+$86:D884 10 02       BPL $02    [$D888]     ;|
+$86:D886 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$86:D888 85 13       STA $13    [$7E:0013]  ;|
+$86:D88A BD 6F 1A    LDA $1A6F,x[$7E:1A8F]  ;} Enemy projectile Y position += [enemy projectile Y velocity] / 100h
+$86:D88D 18          CLC                    ;|
+$86:D88E 65 12       ADC $12    [$7E:0012]  ;|
+$86:D890 9D 6F 1A    STA $1A6F,x[$7E:1A8F]  ;|
+$86:D893 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;|
+$86:D896 65 14       ADC $14    [$7E:0014]  ;|
+$86:D898 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
+$86:D89B 20 B9 B5    JSR $B5B9  [$86:B5B9]  ; Delete enemy projectile if vertically off-screen
 $86:D89E 60          RTS
 }
 
 
-;;; $D89F:  ;;;
+;;; $D89F: Pre-instruction - n00b tube released air bubbles - falling ;;;
 {
-$86:D89F BD B7 1A    LDA $1AB7,x[$7E:1AC3]
-$86:D8A2 29 FE 01    AND #$01FE
-$86:D8A5 09 80 00    ORA #$0080
-$86:D8A8 AA          TAX
-$86:D8A9 64 12       STZ $12    [$7E:0012]
-$86:D8AB 64 14       STZ $14    [$7E:0014]
-$86:D8AD 18          CLC
-$86:D8AE BF 43 B4 A0 LDA $A0B443,x[$A0:B531]
-$86:D8B2 29 FE FF    AND #$FFFE
-$86:D8B5 10 06       BPL $06    [$D8BD]
-$86:D8B7 C6 14       DEC $14    [$7E:0014]
-$86:D8B9 38          SEC
-$86:D8BA 09 01 00    ORA #$0001
+; The `ORA #$0080` seems random/pointless. Given that the angle is chosen randomly, it has no real effect
+$86:D89F BD B7 1A    LDA $1AB7,x[$7E:1AC3]  ;\
+$86:D8A2 29 FE 01    AND #$01FE             ;|
+$86:D8A5 09 80 00    ORA #$0080             ;} X = ([enemy projectile falling angle] / 2 % 100h | 40h) * 2
+$86:D8A8 AA          TAX                    ;/
+$86:D8A9 64 12       STZ $12    [$7E:0012]  ;\
+$86:D8AB 64 14       STZ $14    [$7E:0014]  ;|
+$86:D8AD 18          CLC                    ;|
+$86:D8AE BF 43 B4 A0 LDA $A0B443,x[$A0:B531];|
+$86:D8B2 29 FE FF    AND #$FFFE             ;|
+$86:D8B5 10 06       BPL $06    [$D8BD]     ;|
+$86:D8B7 C6 14       DEC $14    [$7E:0014]  ;|
+$86:D8B9 38          SEC                    ;|
+$86:D8BA 09 01 00    ORA #$0001             ;|
+                                            ;|
+$86:D8BD 6A          ROR A                  ;} Enemy projectile on-screen X position += 40h * sin([X] / 2 * pi / 80h)
+$86:D8BE 6A          ROR A                  ;|
+$86:D8BF 85 13       STA $13    [$7E:0013]  ;|
+$86:D8C1 AE 91 19    LDX $1991  [$7E:1991]  ;|
+$86:D8C4 BD FF 1A    LDA $1AFF,x[$7E:1B0B]  ;|
+$86:D8C7 18          CLC                    ;|
+$86:D8C8 65 12       ADC $12    [$7E:0012]  ;|
+$86:D8CA 9D FF 1A    STA $1AFF,x[$7E:1B0B]  ;|
+$86:D8CD BD 23 1B    LDA $1B23,x[$7E:1B2F]  ;|
+$86:D8D0 65 14       ADC $14    [$7E:0014]  ;|
+$86:D8D2 9D 23 1B    STA $1B23,x[$7E:1B2F]  ;/
+$86:D8D5 BD B7 1A    LDA $1AB7,x[$7E:1AC3]  ;\
+$86:D8D8 18          CLC                    ;|
+$86:D8D9 69 04 00    ADC #$0004             ;} Enemy projectile falling angle += 4
+$86:D8DC 9D B7 1A    STA $1AB7,x[$7E:1AC3]  ;/
+}
 
-$86:D8BD 6A          ROR A
-$86:D8BE 6A          ROR A
-$86:D8BF 85 13       STA $13    [$7E:0013]
-$86:D8C1 AE 91 19    LDX $1991  [$7E:1991]
-$86:D8C4 BD FF 1A    LDA $1AFF,x[$7E:1B0B]
-$86:D8C7 18          CLC
-$86:D8C8 65 12       ADC $12    [$7E:0012]
-$86:D8CA 9D FF 1A    STA $1AFF,x[$7E:1B0B]
-$86:D8CD BD 23 1B    LDA $1B23,x[$7E:1B2F]
-$86:D8D0 65 14       ADC $14    [$7E:0014]
-$86:D8D2 9D 23 1B    STA $1B23,x[$7E:1B2F]
-$86:D8D5 BD B7 1A    LDA $1AB7,x[$7E:1AC3]
-$86:D8D8 18          CLC
-$86:D8D9 69 04 00    ADC #$0004
-$86:D8DC 9D B7 1A    STA $1AB7,x[$7E:1AC3]
-$86:D8DF 64 12       STZ $12    [$7E:0012]
-$86:D8E1 64 14       STZ $14    [$7E:0014]
-$86:D8E3 BD DB 1A    LDA $1ADB,x[$7E:1AE7]
-$86:D8E6 10 02       BPL $02    [$D8EA]
-$86:D8E8 C6 14       DEC $14    [$7E:0014]
 
-$86:D8EA 85 13       STA $13    [$7E:0013]
-$86:D8EC BD 6F 1A    LDA $1A6F,x[$7E:1A7B]
-$86:D8EF 18          CLC
-$86:D8F0 65 12       ADC $12    [$7E:0012]
-$86:D8F2 9D 6F 1A    STA $1A6F,x[$7E:1A7B]
-$86:D8F5 BD 93 1A    LDA $1A93,x[$7E:1A9F]
-$86:D8F8 65 14       ADC $14    [$7E:0014]
-$86:D8FA 9D 93 1A    STA $1A93,x[$7E:1A9F]
-$86:D8FD BD 23 1B    LDA $1B23,x[$7E:1B2F]
-$86:D900 9D 4B 1A    STA $1A4B,x[$7E:1A57]
+;;; $D8DF: Pre-instruction - n00b tube released air bubbles - flying ;;;
+{
+$86:D8DF 64 12       STZ $12    [$7E:0012]  ;\
+$86:D8E1 64 14       STZ $14    [$7E:0014]  ;|
+$86:D8E3 BD DB 1A    LDA $1ADB,x[$7E:1AE7]  ;|
+$86:D8E6 10 02       BPL $02    [$D8EA]     ;|
+$86:D8E8 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$86:D8EA 85 13       STA $13    [$7E:0013]  ;|
+$86:D8EC BD 6F 1A    LDA $1A6F,x[$7E:1A7B]  ;} Enemy projectile Y position += [enemy projectile Y velocity] / 100h
+$86:D8EF 18          CLC                    ;|
+$86:D8F0 65 12       ADC $12    [$7E:0012]  ;|
+$86:D8F2 9D 6F 1A    STA $1A6F,x[$7E:1A7B]  ;|
+$86:D8F5 BD 93 1A    LDA $1A93,x[$7E:1A9F]  ;|
+$86:D8F8 65 14       ADC $14    [$7E:0014]  ;|
+$86:D8FA 9D 93 1A    STA $1A93,x[$7E:1A9F]  ;/
+$86:D8FD BD 23 1B    LDA $1B23,x[$7E:1B2F]  ;\
+$86:D900 9D 4B 1A    STA $1A4B,x[$7E:1A57]  ;} Enemy projectile X position = [enemy projectile on-screen X position]
 $86:D903 60          RTS
 }
 
@@ -12654,13 +12690,15 @@ $86:D903 60          RTS
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
 $86:D904             dx D6A5,84FB,D3D7,00,00,3000,0000,84FC ; n00b tube crack
-$86:D912             dx D6C9,D7FD,D47D,00,00,3000,0000,84FC ; n00b tube shards
+$86:D912             dx D6C9,D7FD,D47D,00,00,3000,0000,84FC ; n00b tube shard. Initial instruction list ignored
 $86:D920             dx D774,84FB,D652,00,00,3000,0000,84FC ; n00b tube released air bubbles
 }
 }
 
 
 ;;; $D92E..DB0B: Spike shooting plant spikes ;;;
+{
+;;; $D92E..69: Instruction lists ;;;
 {
 ;;; $D92E: Instruction list - enemy projectile $DAFE (spike shooting plant spikes) ;;;
 {
@@ -12729,6 +12767,7 @@ $86:D95E             dx 0001,A940,
 {
 $86:D964             dx 0001,A947,
                         8159        ; Sleep
+}
 }
 
 
