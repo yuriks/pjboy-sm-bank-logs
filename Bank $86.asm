@@ -97,7 +97,7 @@ $86:807D 99 23 1B    STA $1B23,y[$7E:1B45]  ; Enemy projectile $1B23 = 0
 $86:8080 99 DF 19    STA $19DF,y[$7E:1A01]  ; Enemy projectile timer = 0
 $86:8083 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile $1A27 = 0
 $86:8086 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F = 0
-$86:8089 99 FB 1B    STA $1BFB,y[$7E:1C1D]  ; Enemy projectile $1BFB = 0
+$86:8089 99 FB 1B    STA $1BFB,y[$7E:1C1D]  ; Enemy projectile collided projectile type = 0
 $86:808C 5A          PHY
 $86:808D FC 00 00    JSR ($0000,x)[$86:A2EE]; Execute [[X]] (initialisation AI)
 $86:8090 68          PLA
@@ -168,7 +168,7 @@ $86:80EA 99 DF 19    STA $19DF,y[$7E:1A01]  ; Enemy projectile timer = 0
 $86:80ED 99 DF 19    STA $19DF,y[$7E:1A01]  ; >_<;
 $86:80F0 99 27 1A    STA $1A27,y[$7E:1A49]  ; Enemy projectile $1A27 = 0
 $86:80F3 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F = 0
-$86:80F6 99 FB 1B    STA $1BFB,y[$7E:1C1D]  ; Enemy projectile $1BFB = 0
+$86:80F6 99 FB 1B    STA $1BFB,y[$7E:1C1D]  ; Enemy projectile collided projectile type = 0
 $86:80F9 5A          PHY
 $86:80FA FC 00 00    JSR ($0000,x)[$86:96DC]; Execute [[X]] (initialisation AI)
 $86:80FD 68          PLA
@@ -11590,10 +11590,10 @@ $86:D095 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
 $86:D098 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = [enemy Y position]
 $86:D09B AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:D09E 29 07 00    AND #$0007             ;|
-$86:D0A1 1A          INC A                  ;} Enemy projectile $1BFB = 1 + [random number] % 8
+$86:D0A1 1A          INC A                  ;} Enemy projectile jump timer = 1 + [random number] % 8
 $86:D0A2 99 FB 1B    STA $1BFB,y[$7E:1C1D]  ;/
 $86:D0A5 18          CLC                    ;\
-$86:D0A6 69 04 00    ADC #$0004             ;} Enemy projectile sound effect timer = [enemy projectile $1BFB] + 4
+$86:D0A6 69 04 00    ADC #$0004             ;} Enemy projectile sound effect timer = [enemy projectile jump timer] + 4
 $86:D0A9 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;/
 $86:D0AC A9 CA D0    LDA #$D0CA             ;\
 $86:D0AF 99 03 1A    STA $1A03,y[$7E:1A25]  ;} Enemy projectile pre-instruction = $D0CA (idling)
@@ -11624,8 +11624,8 @@ $86:D0C9 60          RTS
 $86:D0CA 20 B3 D0    JSR $D0B3  [$86:D0B3]  ; Handle kago bug sound effect
 $86:D0CD 20 E4 D1    JSR $D1E4  [$86:D1E4]  ; Enable kago bug collision with Samus projectiles if far enough from kago
 $86:D0D0 BD FB 1B    LDA $1BFB,x[$7E:1C1D]  ;\
-$86:D0D3 F0 04       BEQ $04    [$D0D9]     ;} If [enemy projectile $1BFB] != 0:
-$86:D0D5 DE FB 1B    DEC $1BFB,x[$7E:1C1D]  ; Decrement enemy projectile $1BFB
+$86:D0D3 F0 04       BEQ $04    [$D0D9]     ;} If [enemy projectile jump timer] != 0:
+$86:D0D5 DE FB 1B    DEC $1BFB,x[$7E:1C1D]  ; Decrement enemy projectile jump timer
 $86:D0D8 60          RTS                    ; Return
 
 $86:D0D9 A9 52 D0    LDA #$D052             ;\
@@ -11763,7 +11763,7 @@ $86:D1B5 60          RTS
 {
 $86:D1B6 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:D1B9 29 1F 00    AND #$001F             ;|
-$86:D1BC 1A          INC A                  ;} Enemy projectile $1BFB = 1 + [random number] % 20h
+$86:D1BC 1A          INC A                  ;} Enemy projectile jump timer = 1 + [random number] % 20h
 $86:D1BD 9D FB 1B    STA $1BFB,x[$7E:1C1D]  ;/
 $86:D1C0 A9 CA D0    LDA #$D0CA             ;\
 $86:D1C3 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $D0CA (idling)
@@ -12696,74 +12696,74 @@ $86:D920             dx D774,84FB,D652,00,00,3000,0000,84FC ; n00b tube released
 }
 
 
-;;; $D92E..DB0B: Spike shooting plant spikes ;;;
+;;; $D92E..DB0B: Spike shooting plant spike ;;;
 {
 ;;; $D92E..69: Instruction lists ;;;
 {
-;;; $D92E: Instruction list - enemy projectile $DAFE (spike shooting plant spikes) ;;;
+;;; $D92E: Instruction list - spike shooting plant spike - left - facing up ;;;
 {
 $86:D92E             dx 0001,A908,
                         8159        ; Sleep
 }
 
 
-;;; $D934: Instruction list ;;;
+;;; $D934: Instruction list - spike shooting plant spike - up-left ;;;
 {
 $86:D934             dx 0001,A90F,
                         8159        ; Sleep
 }
 
 
-;;; $D93A: Instruction list ;;;
+;;; $D93A: Instruction list - spike shooting plant spike - up ;;;
 {
 $86:D93A             dx 0001,A916,
                         8159        ; Sleep
 }
 
 
-;;; $D940: Instruction list ;;;
+;;; $D940: Instruction list - spike shooting plant spike - up-right ;;;
 {
 $86:D940             dx 0001,A91D,
                         8159        ; Sleep
 }
 
 
-;;; $D946: Instruction list ;;;
+;;; $D946: Instruction list - spike shooting plant spike - right - facing up ;;;
 {
 $86:D946             dx 0001,A924,
                         8159        ; Sleep
 }
 
 
-;;; $D94C: Instruction list ;;;
+;;; $D94C: Instruction list - spike shooting plant spike - left - facing down ;;;
 {
 $86:D94C             dx 0001,A92B,
                         8159        ; Sleep
 }
 
 
-;;; $D952: Instruction list ;;;
+;;; $D952: Instruction list - spike shooting plant spike - down-left ;;;
 {
 $86:D952             dx 0001,A932,
                         8159        ; Sleep
 }
 
 
-;;; $D958: Instruction list ;;;
+;;; $D958: Instruction list - spike shooting plant spike - down ;;;
 {
 $86:D958             dx 0001,A939,
                         8159        ; Sleep
 }
 
 
-;;; $D95E: Instruction list ;;;
+;;; $D95E: Instruction list - spike shooting plant spike - down-right ;;;
 {
 $86:D95E             dx 0001,A940,
                         8159        ; Sleep
 }
 
 
-;;; $D964: Instruction list ;;;
+;;; $D964: Instruction list - spike shooting plant spike - right - facing down ;;;
 {
 $86:D964             dx 0001,A947,
                         8159        ; Sleep
@@ -12773,218 +12773,241 @@ $86:D964             dx 0001,A947,
 
 ;;; $D96A: Spike shooting plant instruction list pointers ;;;
 {
-$86:D96A             dw D92E, D93A, D946, D94C, D958, D964, D934, D940, D952, D95E
+$86:D96A             dw D92E, D93A, D946, D94C, D958, D964,
+                        D934, D940, D952, D95E
 }
 
 
 ;;; $D97E: Spike shooting plant function pointers ;;;
 {
-$86:D97E             dw DA8E, DA98, DA93, DA8E, DA9D, DA93, DAA2, DAB2, DAAA, DABA
+$86:D97E             dw DA8E, DA98, DA93, DA8E, DA9D, DA93,
+                        DAA2, DAB2, DAAA, DABA
 }
 
 
-;;; $D992: Initialisation AI - enemy projectile $DAFE (spike shooting plant spikes) ;;;
+;;; $D992: Initialisation AI - enemy projectile $DAFE (spike shooting plant spike) ;;;
 {
-$86:D992 AD 93 19    LDA $1993  [$7E:1993]
-$86:D995 99 FF 1A    STA $1AFF,y[$7E:1B21]
-$86:D998 AA          TAX
-$86:D999 BD 6A D9    LDA $D96A,x[$86:D96A]
-$86:D99C 99 47 1B    STA $1B47,y[$7E:1B69]
-$86:D99F AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:D9A2 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$86:D9A5 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:D9A8 BD 7C 0F    LDA $0F7C,x[$7E:0F7C]
-$86:D9AB 99 27 1A    STA $1A27,y[$7E:1A49]
-$86:D9AE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$86:D9B1 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:D9B4 BD 80 0F    LDA $0F80,x[$7E:0F80]
-$86:D9B7 99 6F 1A    STA $1A6F,y[$7E:1A91]
-$86:D9BA A9 00 FE    LDA #$FE00
-$86:D9BD 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:D9C0 A9 00 02    LDA #$0200
-$86:D9C3 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:D9C6 AD 93 19    LDA $1993  [$7E:1993]
-$86:D9C9 C9 0C 00    CMP #$000C
-$86:D9CC 30 0C       BMI $0C    [$D9DA]
-$86:D9CE A9 80 FE    LDA #$FE80
-$86:D9D1 99 DB 1A    STA $1ADB,y[$7E:1AFB]
-$86:D9D4 A9 80 01    LDA #$0180
-$86:D9D7 99 B7 1A    STA $1AB7,y[$7E:1AD7]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Direction
+;;         0: Left - facing up
+;;         2: Up
+;;         4: Right - facing up
+;;         6: Left - facing down
+;;         8: Down
+;;         Ah: Right - facing down
+;;         Ch: Up-left
+;;         Eh: Up-right
+;;         10h: Down-left
+;;         12h: Down-right
+$86:D992 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:D995 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} X = enemy projectile direction = [enemy projectile initialisation parameter 0]
+$86:D998 AA          TAX                    ;/
+$86:D999 BD 6A D9    LDA $D96A,x[$86:D96A]  ;\
+$86:D99C 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = [$D96A + [X]]
+$86:D99F AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:D9A2 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$86:D9A5 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;|
+$86:D9A8 BD 7C 0F    LDA $0F7C,x[$7E:0F7C]  ;} Enemy projectile X position = [enemy X position]
+$86:D9AB 99 27 1A    STA $1A27,y[$7E:1A49]  ;/
+$86:D9AE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$86:D9B1 99 93 1A    STA $1A93,y[$7E:1AB5]  ;|
+$86:D9B4 BD 80 0F    LDA $0F80,x[$7E:0F80]  ;} Enemy projectile Y position = [enemy Y position]
+$86:D9B7 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;/
+$86:D9BA A9 00 FE    LDA #$FE00             ;\
+$86:D9BD 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile negated speed = -200h
+$86:D9C0 A9 00 02    LDA #$0200             ;\ 
+$86:D9C3 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile speed = 200h
+$86:D9C6 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:D9C9 C9 0C 00    CMP #$000C             ;} If [enemy projectile direction] >= Ch:
+$86:D9CC 30 0C       BMI $0C    [$D9DA]     ;/
+$86:D9CE A9 80 FE    LDA #$FE80             ;\
+$86:D9D1 99 DB 1A    STA $1ADB,y[$7E:1AFB]  ;} Enemy projectile negated speed = -180h
+$86:D9D4 A9 80 01    LDA #$0180             ;\
+$86:D9D7 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile speed = 180h
 
 $86:D9DA 60          RTS
 }
 
 
-;;; $D9DB: Pre-instruction - enemy projectile $DAFE (spike shooting plant spikes) ;;;
+;;; $D9DB: Pre-instruction - enemy projectile $DAFE (spike shooting plant spike) ;;;
 {
-$86:D9DB 9B          TXY
-$86:D9DC BE FF 1A    LDX $1AFF,y[$7E:1B21]
-$86:D9DF FC 7E D9    JSR ($D97E,x)[$86:DA8E]
-$86:D9E2 20 C2 DA    JSR $DAC2  [$86:DAC2]
+$86:D9DB 9B          TXY                    ;\
+$86:D9DC BE FF 1A    LDX $1AFF,y[$7E:1B21]  ;} Execute [$D97E + [enemy projectile direction]]
+$86:D9DF FC 7E D9    JSR ($D97E,x)[$86:DA8E];/
+$86:D9E2 20 C2 DA    JSR $DAC2  [$86:DAC2]  ; Delete enemy projectile if off screen
 $86:D9E5 60          RTS
 }
 
 
-;;; $D9E6:  ;;;
+;;; $D9E6: Move spike shooting plant spike up ;;;
 {
-$86:D9E6 BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:D9E9 29 00 FF    AND #$FF00
-$86:D9EC EB          XBA
-$86:D9ED 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:D9F1 18          CLC
-$86:D9F2 7D 93 1A    ADC $1A93,x[$7E:1AB3]
-$86:D9F5 9D 93 1A    STA $1A93,x[$7E:1AB3]
-$86:D9F8 BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:D9FB 29 FF 00    AND #$00FF
-$86:D9FE EB          XBA
-$86:D9FF 18          CLC
-$86:DA00 7D 6F 1A    ADC $1A6F,x[$7E:1A8F]
-$86:DA03 9D 6F 1A    STA $1A6F,x[$7E:1A8F]
-$86:DA06 90 07       BCC $07    [$DA0F]
-$86:DA08 BD 93 1A    LDA $1A93,x[$7E:1AB3]
-$86:DA0B 1A          INC A
-$86:DA0C 9D 93 1A    STA $1A93,x[$7E:1AB3]
+;; Parameters:
+;;     X: Enemy projectile index
+$86:D9E6 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;\
+$86:D9E9 29 00 FF    AND #$FF00             ;|
+$86:D9EC EB          XBA                    ;|
+$86:D9ED 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:D9F1 18          CLC                    ;|
+$86:D9F2 7D 93 1A    ADC $1A93,x[$7E:1AB3]  ;|
+$86:D9F5 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;|
+$86:D9F8 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;|
+$86:D9FB 29 FF 00    AND #$00FF             ;} Enemy projectile Y position += [enemy projectile negated speed] / 100h
+$86:D9FE EB          XBA                    ;|
+$86:D9FF 18          CLC                    ;|
+$86:DA00 7D 6F 1A    ADC $1A6F,x[$7E:1A8F]  ;|
+$86:DA03 9D 6F 1A    STA $1A6F,x[$7E:1A8F]  ;|
+$86:DA06 90 07       BCC $07    [$DA0F]     ;|
+$86:DA08 BD 93 1A    LDA $1A93,x[$7E:1AB3]  ;|
+$86:DA0B 1A          INC A                  ;|
+$86:DA0C 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
 
 $86:DA0F 60          RTS
 }
 
 
-;;; $DA10:  ;;;
+;;; $DA10: Move spike shooting plant spike down ;;;
 {
-$86:DA10 BD B7 1A    LDA $1AB7,x[$7E:1AD5]
-$86:DA13 29 00 FF    AND #$FF00
-$86:DA16 EB          XBA
-$86:DA17 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:DA1B 18          CLC
-$86:DA1C 7D 93 1A    ADC $1A93,x[$7E:1AB1]
-$86:DA1F 9D 93 1A    STA $1A93,x[$7E:1AB1]
-$86:DA22 BD B7 1A    LDA $1AB7,x[$7E:1AD5]
-$86:DA25 29 FF 00    AND #$00FF
-$86:DA28 EB          XBA
-$86:DA29 18          CLC
-$86:DA2A 7D 6F 1A    ADC $1A6F,x[$7E:1A8D]
-$86:DA2D 9D 6F 1A    STA $1A6F,x[$7E:1A8D]
-$86:DA30 90 07       BCC $07    [$DA39]
-$86:DA32 BD 93 1A    LDA $1A93,x[$7E:1AB1]
-$86:DA35 1A          INC A
-$86:DA36 9D 93 1A    STA $1A93,x[$7E:1AB1]
+;; Parameters:
+;;     X: Enemy projectile index
+$86:DA10 BD B7 1A    LDA $1AB7,x[$7E:1AD5]  ;\
+$86:DA13 29 00 FF    AND #$FF00             ;|
+$86:DA16 EB          XBA                    ;|
+$86:DA17 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DA1B 18          CLC                    ;|
+$86:DA1C 7D 93 1A    ADC $1A93,x[$7E:1AB1]  ;|
+$86:DA1F 9D 93 1A    STA $1A93,x[$7E:1AB1]  ;|
+$86:DA22 BD B7 1A    LDA $1AB7,x[$7E:1AD5]  ;|
+$86:DA25 29 FF 00    AND #$00FF             ;} Enemy projectile Y position += [enemy projectile speed] / 100h
+$86:DA28 EB          XBA                    ;|
+$86:DA29 18          CLC                    ;|
+$86:DA2A 7D 6F 1A    ADC $1A6F,x[$7E:1A8D]  ;|
+$86:DA2D 9D 6F 1A    STA $1A6F,x[$7E:1A8D]  ;|
+$86:DA30 90 07       BCC $07    [$DA39]     ;|
+$86:DA32 BD 93 1A    LDA $1A93,x[$7E:1AB1]  ;|
+$86:DA35 1A          INC A                  ;|
+$86:DA36 9D 93 1A    STA $1A93,x[$7E:1AB1]  ;/
 
 $86:DA39 60          RTS
 }
 
 
-;;; $DA3A:  ;;;
+;;; $DA3A: Move spike shooting plant spike left ;;;
 {
-$86:DA3A BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:DA3D 29 00 FF    AND #$FF00
-$86:DA40 EB          XBA
-$86:DA41 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:DA45 18          CLC
-$86:DA46 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]
-$86:DA49 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
-$86:DA4C BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:DA4F 29 FF 00    AND #$00FF
-$86:DA52 EB          XBA
-$86:DA53 18          CLC
-$86:DA54 7D 27 1A    ADC $1A27,x[$7E:1A49]
-$86:DA57 9D 27 1A    STA $1A27,x[$7E:1A49]
-$86:DA5A 90 07       BCC $07    [$DA63]
-$86:DA5C BD 4B 1A    LDA $1A4B,x[$7E:1A6B]
-$86:DA5F 1A          INC A
-$86:DA60 9D 4B 1A    STA $1A4B,x[$7E:1A6B]
+;; Parameters:
+;;     X: Enemy projectile index
+$86:DA3A BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:DA3D 29 00 FF    AND #$FF00             ;|
+$86:DA40 EB          XBA                    ;|
+$86:DA41 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DA45 18          CLC                    ;|
+$86:DA46 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]  ;|
+$86:DA49 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;|
+$86:DA4C BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;|
+$86:DA4F 29 FF 00    AND #$00FF             ;} Enemy projectile X position += [enemy projectile negated speed] / 100h
+$86:DA52 EB          XBA                    ;|
+$86:DA53 18          CLC                    ;|
+$86:DA54 7D 27 1A    ADC $1A27,x[$7E:1A49]  ;|
+$86:DA57 9D 27 1A    STA $1A27,x[$7E:1A49]  ;|
+$86:DA5A 90 07       BCC $07    [$DA63]     ;|
+$86:DA5C BD 4B 1A    LDA $1A4B,x[$7E:1A6B]  ;|
+$86:DA5F 1A          INC A                  ;|
+$86:DA60 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;/
 
 $86:DA63 60          RTS
 }
 
 
-;;; $DA64:  ;;;
+;;; $DA64: Move spike shooting plant spike right ;;;
 {
-$86:DA64 BD B7 1A    LDA $1AB7,x[$7E:1AD3]
-$86:DA67 29 00 FF    AND #$FF00
-$86:DA6A EB          XBA
-$86:DA6B 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:DA6F 18          CLC
-$86:DA70 7D 4B 1A    ADC $1A4B,x[$7E:1A67]
-$86:DA73 9D 4B 1A    STA $1A4B,x[$7E:1A67]
-$86:DA76 BD B7 1A    LDA $1AB7,x[$7E:1AD3]
-$86:DA79 29 FF 00    AND #$00FF
-$86:DA7C EB          XBA
-$86:DA7D 18          CLC
-$86:DA7E 7D 27 1A    ADC $1A27,x[$7E:1A43]
-$86:DA81 9D 27 1A    STA $1A27,x[$7E:1A43]
-$86:DA84 90 07       BCC $07    [$DA8D]
-$86:DA86 BD 4B 1A    LDA $1A4B,x[$7E:1A67]
-$86:DA89 1A          INC A
-$86:DA8A 9D 4B 1A    STA $1A4B,x[$7E:1A67]
+;; Parameters:
+;;     X: Enemy projectile index
+$86:DA64 BD B7 1A    LDA $1AB7,x[$7E:1AD3]  ;\
+$86:DA67 29 00 FF    AND #$FF00             ;|
+$86:DA6A EB          XBA                    ;|
+$86:DA6B 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DA6F 18          CLC                    ;|
+$86:DA70 7D 4B 1A    ADC $1A4B,x[$7E:1A67]  ;|
+$86:DA73 9D 4B 1A    STA $1A4B,x[$7E:1A67]  ;|
+$86:DA76 BD B7 1A    LDA $1AB7,x[$7E:1AD3]  ;|
+$86:DA79 29 FF 00    AND #$00FF             ;} Enemy projectile X position += [enemy projectile speed] / 100h
+$86:DA7C EB          XBA                    ;|
+$86:DA7D 18          CLC                    ;|
+$86:DA7E 7D 27 1A    ADC $1A27,x[$7E:1A43]  ;|
+$86:DA81 9D 27 1A    STA $1A27,x[$7E:1A43]  ;|
+$86:DA84 90 07       BCC $07    [$DA8D]     ;|
+$86:DA86 BD 4B 1A    LDA $1A4B,x[$7E:1A67]  ;|
+$86:DA89 1A          INC A                  ;|
+$86:DA8A 9D 4B 1A    STA $1A4B,x[$7E:1A67]  ;/
 
 $86:DA8D 60          RTS
 }
 
 
-;;; $DA8E:  ;;;
+;;; $DA8E: Move spike shooting plant spike left ;;;
 {
 $86:DA8E BB          TYX
-$86:DA8F 20 3A DA    JSR $DA3A  [$86:DA3A]
+$86:DA8F 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move spike shooting plant spike left
 $86:DA92 60          RTS
 }
 
 
-;;; $DA93:  ;;;
+;;; $DA93: Move spike shooting plant spike right ;;;
 {
 $86:DA93 BB          TYX
-$86:DA94 20 64 DA    JSR $DA64  [$86:DA64]
+$86:DA94 20 64 DA    JSR $DA64  [$86:DA64]  ; Move spike shooting plant spike right
 $86:DA97 60          RTS
 }
 
 
-;;; $DA98:  ;;;
+;;; $DA98: Move spike shooting plant spike up ;;;
 {
 $86:DA98 BB          TYX
-$86:DA99 20 E6 D9    JSR $D9E6  [$86:D9E6]
+$86:DA99 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move spike shooting plant spike up
 $86:DA9C 60          RTS
 }
 
 
-;;; $DA9D:  ;;;
+;;; $DA9D: Move spike shooting plant spike down ;;;
 {
 $86:DA9D BB          TYX
-$86:DA9E 20 10 DA    JSR $DA10  [$86:DA10]
+$86:DA9E 20 10 DA    JSR $DA10  [$86:DA10]  ; Move spike shooting plant spike down
 $86:DAA1 60          RTS
 }
 
 
-;;; $DAA2:  ;;;
+;;; $DAA2: Move spike shooting plant spike up-left ;;;
 {
 $86:DAA2 BB          TYX
-$86:DAA3 20 3A DA    JSR $DA3A  [$86:DA3A]
-$86:DAA6 20 E6 D9    JSR $D9E6  [$86:D9E6]
+$86:DAA3 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move spike shooting plant spike left
+$86:DAA6 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move spike shooting plant spike up
 $86:DAA9 60          RTS
 }
 
 
-;;; $DAAA:  ;;;
+;;; $DAAA: Move spike shooting plant spike down-left ;;;
 {
 $86:DAAA BB          TYX
-$86:DAAB 20 3A DA    JSR $DA3A  [$86:DA3A]
-$86:DAAE 20 10 DA    JSR $DA10  [$86:DA10]
+$86:DAAB 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move spike shooting plant spike left
+$86:DAAE 20 10 DA    JSR $DA10  [$86:DA10]  ; Move spike shooting plant spike down
 $86:DAB1 60          RTS
 }
 
 
-;;; $DAB2:  ;;;
+;;; $DAB2: Move spike shooting plant spike up-right ;;;
 {
 $86:DAB2 BB          TYX
-$86:DAB3 20 64 DA    JSR $DA64  [$86:DA64]
-$86:DAB6 20 E6 D9    JSR $D9E6  [$86:D9E6]
+$86:DAB3 20 64 DA    JSR $DA64  [$86:DA64]  ; Move spike shooting plant spike right
+$86:DAB6 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move spike shooting plant spike up
 $86:DAB9 60          RTS
 }
 
 
-;;; $DABA:  ;;;
+;;; $DABA: Move spike shooting plant spike down-right ;;;
 {
 $86:DABA BB          TYX
-$86:DABB 20 64 DA    JSR $DA64  [$86:DA64]
-$86:DABE 20 10 DA    JSR $DA10  [$86:DA10]
+$86:DABB 20 64 DA    JSR $DA64  [$86:DA64]  ; Move spike shooting plant spike right
+$86:DABE 20 10 DA    JSR $DA10  [$86:DA10]  ; Move spike shooting plant spike down
 $86:DAC1 60          RTS
 }
 
@@ -13031,7 +13054,7 @@ $86:DAFD 60          RTS
 }
 
 
-;;; $DAFE: Enemy projectile - spike shooting plant spikes ;;;
+;;; $DAFE: Enemy projectile - spike shooting plant spike ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -13042,7 +13065,7 @@ $86:DAFD 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:DAFE             dx D992,D9DB,D92E,02,02,0005,0000,84FC ; Spike shooting plant spikes
+$86:DAFE             dx D992,D9DB,D92E,02,02,0005,0000,84FC ; Spike shooting plant spike. Initial instruction list ignored
 }
 }
 
@@ -13059,6 +13082,9 @@ $86:DB0C             dx 0010,A94E,
 
 ;;; $DB18: Initialisation AI - mini-Crocomire projectile ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Direction. 0 = left, otherwise = right
 $86:DB18 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:DB1B A9 0C DB    LDA #$DB0C             ;\
 $86:DB1E 99 47 1B    STA $1B47,y            ;} Enemy projectile instruction list pointer = $DB0C
@@ -13196,21 +13222,21 @@ $86:DBF1 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:DBF2             dx DB18,DB5B,DB0C,02,02,0005,0000,84FC
+$86:DBF2             dx DB18,DB5B,DB0C,02,02,0005,0000,84FC ; Initial instruction list ignored
 }
 }
 
 
 ;;; $DC00..DE95: Spore Spawn ;;;
 {
-;;; $DC00: (Shot) instruction list - enemy projectile $DE88 (spore spawners) ;;;
+;;; $DC00: (Shot) instruction list - enemy projectile $DE88 (spore spawner) ;;;
 {
 $86:DC00             dx 0001,A99B,
                         8159        ; Sleep
 }
 
 
-;;; $DC06: Instruction list ;;;
+;;; $DC06: Instruction list - spore spawner - spawn spore ;;;
 {
 $86:DC06             dx 0001,A99B,
                         0006,A9A2,
@@ -13240,8 +13266,8 @@ $86:DC2E             dx 0005,A994,
 
 ;;; $DC34: Shot instruction list - enemy projectile $DE7A (spores) ;;;
 {
-$86:DC34             dx 0001,B023,
-                        DC5A,       ; Enemy projectile properties = 3000h
+$86:DC34             dw 0001,B023,
+                        DC5A,       ; Enemy projectile properties = 3000h (disable collisions, high priority)
                         0003,B023,
                         0006,B02A,
                         0005,B040,
@@ -13262,15 +13288,15 @@ $86:DC60 60          RTS
 }
 
 
-;;; $DC61: Spawn enemy drops with Spore Spawn's drop chances ;;;
+;;; $DC61: Instruction - spawn enemy drops with Spore Spawn's drop chances ;;;
 {
 $86:DC61 DA          PHX
 $86:DC62 5A          PHY
-$86:DC63 BD 4B 1A    LDA $1A4B,x[$7E:1A5D]
-$86:DC66 85 12       STA $12    [$7E:0012]
-$86:DC68 BD 93 1A    LDA $1A93,x[$7E:1AA5]
-$86:DC6B 85 14       STA $14    [$7E:0014]
-$86:DC6D A9 7F DF    LDA #$DF7F
+$86:DC63 BD 4B 1A    LDA $1A4B,x[$7E:1A5D]  ;\
+$86:DC66 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:DC68 BD 93 1A    LDA $1A93,x[$7E:1AA5]  ;\
+$86:DC6B 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$86:DC6D A9 7F DF    LDA #$DF7F             ; A = $DF7F (Spore Spawn)
 $86:DC70 22 0E 92 A0 JSL $A0920E[$A0:920E]  ; Spawn enemy drops
 $86:DC74 7A          PLY
 $86:DC75 FA          PLX
@@ -13278,14 +13304,14 @@ $86:DC76 60          RTS
 }
 
 
-;;; $DC77: Instruction - spawn spores enemy projectile ;;;
+;;; $DC77: Instruction - spawn spore enemy projectile ;;;
 {
 $86:DC77 DA          PHX
 $86:DC78 5A          PHY
-$86:DC79 BD 4B 1A    LDA $1A4B,x[$7E:1A65]
-$86:DC7C 85 12       STA $12    [$7E:0012]
-$86:DC7E BD 93 1A    LDA $1A93,x[$7E:1AAD]
-$86:DC81 85 14       STA $14    [$7E:0014]
+$86:DC79 BD 4B 1A    LDA $1A4B,x[$7E:1A65]  ;\
+$86:DC7C 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:DC7E BD 93 1A    LDA $1A93,x[$7E:1AAD]  ;\
+$86:DC81 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
 $86:DC83 A0 7A DE    LDY #$DE7A             ;\
 $86:DC86 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn spores enemy projectile
 $86:DC8A 7A          PLY
@@ -13296,12 +13322,16 @@ $86:DC8C 60          RTS
 
 ;;; $DC8D: Initialisation AI - enemy projectile $DE7A (spores) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $12: X position
+;;     $14: Y position
 $86:DC8D DA          PHX
-$86:DC8E A5 12       LDA $12    [$7E:0012]
-$86:DC90 99 4B 1A    STA $1A4B,y[$7E:1A5D]
-$86:DC93 99 23 1B    STA $1B23,y[$7E:1B35]
-$86:DC96 A5 14       LDA $14    [$7E:0014]
-$86:DC98 99 93 1A    STA $1A93,y[$7E:1AA5]
+$86:DC8E A5 12       LDA $12    [$7E:0012]  ;\
+$86:DC90 99 4B 1A    STA $1A4B,y[$7E:1A5D]  ;} Enemy projectile X position = [$12]
+$86:DC93 99 23 1B    STA $1B23,y[$7E:1B35]  ; Enemy projectile spawn X position = [$12]
+$86:DC96 A5 14       LDA $14    [$7E:0014]  ;\
+$86:DC98 99 93 1A    STA $1A93,y[$7E:1AA5]  ;} Enemy projectile Y position = [$14]
 $86:DC9B A9 00 02    LDA #$0200             ;\
 $86:DC9E 99 BB 19    STA $19BB,y[$7E:19CD]  ;} Enemy projectile VRAM graphics index = 0, palette 1
 $86:DCA1 FA          PLX
@@ -13311,42 +13341,50 @@ $86:DCA2 60          RTS
 
 ;;; $DCA3: Initialisation AI - enemy projectile $DE6C (Spore Spawn's stalk) ;;;
 {
-$86:DCA3 AD 93 19    LDA $1993  [$7E:1993]
-$86:DCA6 0A          ASL A
-$86:DCA7 AA          TAX
-$86:DCA8 BD B9 DC    LDA $DCB9,x[$86:DCB9]
-$86:DCAB 18          CLC
-$86:DCAC 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$86:DCAF 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:DCB2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$86:DCB5 99 4B 1A    STA $1A4B,y[$7E:1A6D]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Y offset. Unit 8px
+$86:DCA3 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:DCA6 0A          ASL A                  ;|
+$86:DCA7 AA          TAX                    ;|
+$86:DCA8 BD B9 DC    LDA $DCB9,x[$86:DCB9]  ;} Enemy projectile Y position = [enemy 0 Y position] - 40h + [enemy projectile initialisation parameter] * 8
+$86:DCAB 18          CLC                    ;|
+$86:DCAC 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;|
+$86:DCAF 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
+$86:DCB2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$86:DCB5 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = [enemy 0 X position]
 $86:DCB8 60          RTS
 
 $86:DCB9             dw FFC0, FFC8, FFD0, FFD8, FFE0
 }
 
 
-;;; $DCC3:  ;;;
+;;; $DCC3: Unused. Alternate Spore Spawn stalk initialisation AI ;;;
 {
-$86:DCC3 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$86:DCC6 18          CLC
-$86:DCC7 69 A0 FF    ADC #$FFA0
-$86:DCCA 99 93 1A    STA $1A93,y
-$86:DCCD AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$86:DCD0 99 4B 1A    STA $1A4B,y
+; Spawns 20h px above the highest Spore Spawn stalk
+; Could maybe be an abandoned version of the breaking of the ceiling, but I'm going with the unused stalk guess
+$86:DCC3 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$86:DCC6 18          CLC                    ;|
+$86:DCC7 69 A0 FF    ADC #$FFA0             ;} Enemy projectile Y position = [enemy 0 Y position] - 60h
+$86:DCCA 99 93 1A    STA $1A93,y            ;/
+$86:DCCD AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$86:DCD0 99 4B 1A    STA $1A4B,y            ;} Enemy projectile X position = [enemy 0 X position]
 $86:DCD3 60          RTS
 }
 
 
-;;; $DCD4: Initialisation AI - enemy projectile $DE88 (spore spawners) ;;;
+;;; $DCD4: Initialisation AI - enemy projectile $DE88 (spore spawner) ;;;
 {
-$86:DCD4 AD 93 19    LDA $1993  [$7E:1993]
-$86:DCD7 0A          ASL A
-$86:DCD8 AA          TAX
-$86:DCD9 BD E6 DC    LDA $DCE6,x[$86:DCE6]
-$86:DCDC 99 4B 1A    STA $1A4B,y[$7E:1A65]
-$86:DCDF A9 08 02    LDA #$0208
-$86:DCE2 99 93 1A    STA $1A93,y[$7E:1AAD]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: X offset. Unit 40px
+$86:DCD4 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:DCD7 0A          ASL A                  ;|
+$86:DCD8 AA          TAX                    ;} Enemy projectile X position = 20h + [enemy projectile initialisation parameter] * 40h
+$86:DCD9 BD E6 DC    LDA $DCE6,x[$86:DCE6]  ;|
+$86:DCDC 99 4B 1A    STA $1A4B,y[$7E:1A65]  ;/
+$86:DCDF A9 08 02    LDA #$0208             ;\
+$86:DCE2 99 93 1A    STA $1A93,y[$7E:1AAD]  ;} Enemy projectile Y position = 208h
 $86:DCE5 60          RTS
 
 $86:DCE6             dw 0020, 0060, 00A0, 00E0
@@ -13355,43 +13393,43 @@ $86:DCE6             dw 0020, 0060, 00A0, 00E0
 
 ;;; $DCEE: Pre-instruction - enemy projectile $DE7A (spores) ;;;
 {
-$86:DCEE BD FF 1A    LDA $1AFF,x[$7E:1B11]
-$86:DCF1 29 FF 00    AND #$00FF
-$86:DCF4 A8          TAY
-$86:DCF5 B9 6C DD    LDA $DD6C,y[$86:DD6C]
-$86:DCF8 29 FF 00    AND #$00FF
-$86:DCFB 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:DCFF 85 12       STA $12    [$7E:0012]
-$86:DD01 BD 23 1B    LDA $1B23,x[$7E:1B35]
-$86:DD04 89 80 00    BIT #$0080
-$86:DD07 F0 08       BEQ $08    [$DD11]
-$86:DD09 A5 12       LDA $12    [$7E:0012]
-$86:DD0B 49 FF FF    EOR #$FFFF
-$86:DD0E 1A          INC A
-$86:DD0F 85 12       STA $12    [$7E:0012]
+$86:DCEE BD FF 1A    LDA $1AFF,x[$7E:1B11]  ;\
+$86:DCF1 29 FF 00    AND #$00FF             ;} Y = [enemy projectile movement table index]
+$86:DCF4 A8          TAY                    ;/
+$86:DCF5 B9 6C DD    LDA $DD6C,y[$86:DD6C]  ;\
+$86:DCF8 29 FF 00    AND #$00FF             ;|
+$86:DCFB 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;} $12 = ±[$DD6C + [Y]]
+$86:DCFF 85 12       STA $12    [$7E:0012]  ;/
+$86:DD01 BD 23 1B    LDA $1B23,x[$7E:1B35]  ;\
+$86:DD04 89 80 00    BIT #$0080             ;} If [enemy projectile spawn X position] >= 80h:
+$86:DD07 F0 08       BEQ $08    [$DD11]     ;/
+$86:DD09 A5 12       LDA $12    [$7E:0012]  ;\
+$86:DD0B 49 FF FF    EOR #$FFFF             ;|
+$86:DD0E 1A          INC A                  ;} Negate $12
+$86:DD0F 85 12       STA $12    [$7E:0012]  ;/
 
-$86:DD11 A5 12       LDA $12    [$7E:0012]
-$86:DD13 18          CLC
-$86:DD14 7D 4B 1A    ADC $1A4B,x[$7E:1A5D]
-$86:DD17 9D 4B 1A    STA $1A4B,x[$7E:1A5D]
-$86:DD1A B9 6D DD    LDA $DD6D,y[$86:DD6D]
-$86:DD1D 29 FF 00    AND #$00FF
-$86:DD20 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:DD24 85 12       STA $12    [$7E:0012]
-$86:DD26 18          CLC
-$86:DD27 7D 93 1A    ADC $1A93,x[$7E:1AA5]
-$86:DD2A 18          CLC
-$86:DD2B 65 12       ADC $12    [$7E:0012]
-$86:DD2D 9D 93 1A    STA $1A93,x[$7E:1AA5]
-$86:DD30 C9 00 03    CMP #$0300
-$86:DD33 30 03       BMI $03    [$DD38]
-$86:DD35 9E 97 19    STZ $1997,x[$7E:19A1]
+$86:DD11 A5 12       LDA $12    [$7E:0012]  ;\
+$86:DD13 18          CLC                    ;|
+$86:DD14 7D 4B 1A    ADC $1A4B,x[$7E:1A5D]  ;} Enemy projectile X position += [$12]
+$86:DD17 9D 4B 1A    STA $1A4B,x[$7E:1A5D]  ;/
+$86:DD1A B9 6D DD    LDA $DD6D,y[$86:DD6D]  ;\
+$86:DD1D 29 FF 00    AND #$00FF             ;|
+$86:DD20 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DD24 85 12       STA $12    [$7E:0012]  ;|
+$86:DD26 18          CLC                    ;} Enemy projectile Y position += ±[$DD6C + [Y] + 1] * 2
+$86:DD27 7D 93 1A    ADC $1A93,x[$7E:1AA5]  ;|
+$86:DD2A 18          CLC                    ;|
+$86:DD2B 65 12       ADC $12    [$7E:0012]  ;|
+$86:DD2D 9D 93 1A    STA $1A93,x[$7E:1AA5]  ;/
+$86:DD30 C9 00 03    CMP #$0300             ;\
+$86:DD33 30 03       BMI $03    [$DD38]     ;} If [enemy projectile Y position] >= 300h:
+$86:DD35 9E 97 19    STZ $1997,x[$7E:19A1]  ; Enemy projectile ID = 0
 
-$86:DD38 BD FF 1A    LDA $1AFF,x[$7E:1B11]
-$86:DD3B 1A          INC A
-$86:DD3C 1A          INC A
-$86:DD3D 29 FF 00    AND #$00FF
-$86:DD40 9D FF 1A    STA $1AFF,x[$7E:1B11]
+$86:DD38 BD FF 1A    LDA $1AFF,x[$7E:1B11]  ;\
+$86:DD3B 1A          INC A                  ;|
+$86:DD3C 1A          INC A                  ;} Enemy projectile movement table index = ([enemy projectile movement table index] + 2) % 100h
+$86:DD3D 29 FF 00    AND #$00FF             ;|
+$86:DD40 9D FF 1A    STA $1AFF,x[$7E:1B11]  ;/
 $86:DD43 60          RTS
 }
 
@@ -13408,23 +13446,23 @@ $86:DD45 60          RTS
 }
 
 
-;;; $DD46: Pre-instruction - enemy projectile $DE88 (spore spawners) ;;;
+;;; $DD46: Pre-instruction - enemy projectile $DE88 (spore spawner) ;;;
 {
-$86:DD46 AF 00 90 7E LDA $7E9000[$7E:9000]
-$86:DD4A F0 01       BEQ $01    [$DD4D]
-$86:DD4C 60          RTS
+$86:DD46 AF 00 90 7E LDA $7E9000[$7E:9000]  ;\
+$86:DD4A F0 01       BEQ $01    [$DD4D]     ;} If spore generation disabled:
+$86:DD4C 60          RTS                    ; Return
 
-$86:DD4D BD 23 1B    LDA $1B23,x[$7E:1B3D]
-$86:DD50 D0 16       BNE $16    [$DD68]
-$86:DD52 A9 06 DC    LDA #$DC06
-$86:DD55 9D 47 1B    STA $1B47,x[$7E:1B61]
-$86:DD58 A9 01 00    LDA #$0001
-$86:DD5B 9D 8F 1B    STA $1B8F,x[$7E:1BA9]
-$86:DD5E 22 11 81 80 JSL $808111[$80:8111]
-$86:DD62 29 FF 01    AND #$01FF
-$86:DD65 9D 23 1B    STA $1B23,x[$7E:1B3D]
+$86:DD4D BD 23 1B    LDA $1B23,x[$7E:1B3D]  ;\
+$86:DD50 D0 16       BNE $16    [$DD68]     ;} If [enemy projectile spore spawn timer] = 0:
+$86:DD52 A9 06 DC    LDA #$DC06             ;\
+$86:DD55 9D 47 1B    STA $1B47,x[$7E:1B61]  ;} Enemy projectile instruction list pointer = $DC06 (spawn spore)
+$86:DD58 A9 01 00    LDA #$0001             ;\
+$86:DD5B 9D 8F 1B    STA $1B8F,x[$7E:1BA9]  ;} Enemy projectile instruction timer = 1
+$86:DD5E 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:DD62 29 FF 01    AND #$01FF             ;\
+$86:DD65 9D 23 1B    STA $1B23,x[$7E:1B3D]  ;} Enemy projectile spore spawn timer = [random number] % 200h
 
-$86:DD68 DE 23 1B    DEC $1B23,x[$7E:1B3D]
+$86:DD68 DE 23 1B    DEC $1B23,x[$7E:1B3D]  ; Decrement enemy projectile spore spawn timer
 $86:DD6B 60          RTS
 }
 
@@ -13463,14 +13501,14 @@ $86:DD6C             db 00,01, 01,00, 00,01, 01,00, 00,01, 01,00, 00,01, 01,00,
 ;                       |    |    |    |  |  |    |    |
 $86:DE6C             dx DCA3,DD44,DC2E,08,08,2000,0000,DC2E ; Spore Spawn's stalk
 $86:DE7A             dx DC8D,DCEE,DC1E,02,02,8004,0000,DC34 ; Spores
-$86:DE88             dx DCD4,DD46,DC00,02,02,2000,0000,DC00 ; Spore spawners
+$86:DE88             dx DCD4,DD46,DC00,02,02,2000,0000,DC00 ; Spore spawner
 }
 }
 
 
 ;;; $DE96..DFD7: Nami/fune fireball ;;;
 {
-;;; $DE96: Instruction list - enemy projectile $DFBC/$DFCA (nami/fune fireball) ;;;
+;;; $DE96: Instruction list - nami/fune fireball - left ;;;
 {
 $86:DE96             dx 0005,AAB9,
                         0005,AAC0,
@@ -13479,7 +13517,7 @@ $86:DE96             dx 0005,AAB9,
 }
 
 
-;;; $DEA6: Instruction list ;;;
+;;; $DEA6: Instruction list - nami/fune fireball - right ;;;
 {
 $86:DEA6             dx 0005,AACE,
                         0005,AAD5,
@@ -13488,48 +13526,55 @@ $86:DEA6             dx 0005,AACE,
 }
 
 
+;;; $DEB6: Nami/fune fireball X velocity table ;;;
+{
+; Left velocity, right velocity
 $86:DEB6             dw FFC0,0040, FF80,0080, FF40,00C0, FF00,0100, FEC0,0140, FE80,0180, FE40,01C0, FE00,0200
+}
 
 
 ;;; $DED6: Initialisation AI - enemy projectile $DFBC/$DFCA (nami/fune fireball) ;;;
 {
-$86:DED6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:DED9 A9 96 DE    LDA #$DE96
-$86:DEDC 99 47 1B    STA $1B47,y[$7E:1B69]
-$86:DEDF A9 40 DF    LDA #$DF40
-$86:DEE2 99 FF 1A    STA $1AFF,y[$7E:1B21]
-$86:DEE5 AD 93 19    LDA $1993  [$7E:1993]
-$86:DEE8 F0 0C       BEQ $0C    [$DEF6]
-$86:DEEA A9 A6 DE    LDA #$DEA6
-$86:DEED 99 47 1B    STA $1B47,y[$7E:1B69]
-$86:DEF0 A9 6A DF    LDA #$DF6A
-$86:DEF3 99 FF 1A    STA $1AFF,y[$7E:1B21]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Direction. 0 = left, otherwise = right
+$86:DED6 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:DED9 A9 96 DE    LDA #$DE96             ;\
+$86:DEDC 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DE96 (left)
+$86:DEDF A9 40 DF    LDA #$DF40             ;\
+$86:DEE2 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $DF40 (left)
+$86:DEE5 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:DEE8 F0 0C       BEQ $0C    [$DEF6]     ;} If [enemy projectile initialisation parameter 0] != 0:
+$86:DEEA A9 A6 DE    LDA #$DEA6             ;\
+$86:DEED 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DEA6 (right)
+$86:DEF0 A9 6A DF    LDA #$DF6A             ;\
+$86:DEF3 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $DF6A (right)
 
-$86:DEF6 BD 7A 0F    LDA $0F7A,x[$7E:10FA]
-$86:DEF9 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:DEFC BD 7C 0F    LDA $0F7C,x[$7E:10FC]
-$86:DEFF 99 27 1A    STA $1A27,y[$7E:1A49]
-$86:DF02 BD 7E 0F    LDA $0F7E,x[$7E:10FE]
-$86:DF05 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:DF08 BD 80 0F    LDA $0F80,x[$7E:1100]
-$86:DF0B 99 6F 1A    STA $1A6F,y[$7E:1A91]
-$86:DF0E BD B4 0F    LDA $0FB4,x[$7E:1134]
-$86:DF11 29 0F 00    AND #$000F
-$86:DF14 F0 0A       BEQ $0A    [$DF20]
-$86:DF16 B9 93 1A    LDA $1A93,y[$7E:1AB5]
-$86:DF19 18          CLC
-$86:DF1A 69 04 00    ADC #$0004
-$86:DF1D 99 93 1A    STA $1A93,y[$7E:1AB5]
+$86:DEF6 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;\
+$86:DEF9 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;|
+$86:DEFC BD 7C 0F    LDA $0F7C,x[$7E:10FC]  ;} Enemy projectile X position = [enemy X position]
+$86:DEFF 99 27 1A    STA $1A27,y[$7E:1A49]  ;/
+$86:DF02 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
+$86:DF05 99 93 1A    STA $1A93,y[$7E:1AB5]  ;|
+$86:DF08 BD 80 0F    LDA $0F80,x[$7E:1100]  ;} Enemy projectile Y position = [enemy Y position]
+$86:DF0B 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;/
+$86:DF0E BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$86:DF11 29 0F 00    AND #$000F             ;} If [enemy $0FB4] & Fh != 0:
+$86:DF14 F0 0A       BEQ $0A    [$DF20]     ;/
+$86:DF16 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
+$86:DF19 18          CLC                    ;|
+$86:DF1A 69 04 00    ADC #$0004             ;} Enemy projectile Y position += 4
+$86:DF1D 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 
-$86:DF20 BD B6 0F    LDA $0FB6,x[$7E:1136]
-$86:DF23 29 FF 00    AND #$00FF
-$86:DF26 0A          ASL A
-$86:DF27 0A          ASL A
-$86:DF28 AA          TAX
-$86:DF29 BD B6 DE    LDA $DEB6,x[$86:DED2]
-$86:DF2C 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:DF2F BD B8 DE    LDA $DEB8,x[$86:DED4]
-$86:DF32 99 B7 1A    STA $1AB7,y[$7E:1AD9]
+$86:DF20 BD B6 0F    LDA $0FB6,x[$7E:1136]  ;\
+$86:DF23 29 FF 00    AND #$00FF             ;|
+$86:DF26 0A          ASL A                  ;} X = [enemy $0FB6 low] * 4
+$86:DF27 0A          ASL A                  ;|
+$86:DF28 AA          TAX                    ;/
+$86:DF29 BD B6 DE    LDA $DEB6,x[$86:DED2]  ;\
+$86:DF2C 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile left velocity = [$DEB6 + [X]]
+$86:DF2F BD B8 DE    LDA $DEB8,x[$86:DED4]  ;\
+$86:DF32 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile right velocity = [$DEB6 + [X] + 2]
 $86:DF35 AE 54 0E    LDX $0E54  [$7E:0E54]
 $86:DF38 60          RTS
 }
@@ -13537,55 +13582,55 @@ $86:DF38 60          RTS
 
 ;;; $DF39: Pre-instruction - enemy projectile $DFBC/$DFCA (nami/fune fireball) ;;;
 {
-$86:DF39 FC FF 1A    JSR ($1AFF,x)[$86:DF6A]
-$86:DF3C 20 94 DF    JSR $DF94  [$86:DF94]
+$86:DF39 FC FF 1A    JSR ($1AFF,x)[$86:DF6A]; Execute [enemy projectile function]
+$86:DF3C 20 94 DF    JSR $DF94  [$86:DF94]  ; Delete enemy projectile if horizontally off screen
 $86:DF3F 60          RTS
 }
 
 
-;;; $DF40:  ;;;
+;;; $DF40: Nami/fune fireball function - left ;;;
 {
-$86:DF40 BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:DF43 29 00 FF    AND #$FF00
-$86:DF46 EB          XBA
-$86:DF47 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:DF4B 18          CLC
-$86:DF4C 7D 4B 1A    ADC $1A4B,x[$7E:1A6B]
-$86:DF4F 9D 4B 1A    STA $1A4B,x[$7E:1A6B]
-$86:DF52 BD DB 1A    LDA $1ADB,x[$7E:1AFB]
-$86:DF55 29 FF 00    AND #$00FF
-$86:DF58 EB          XBA
-$86:DF59 18          CLC
-$86:DF5A 7D 27 1A    ADC $1A27,x[$7E:1A47]
-$86:DF5D 9D 27 1A    STA $1A27,x[$7E:1A47]
-$86:DF60 90 07       BCC $07    [$DF69]
-$86:DF62 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:DF65 1A          INC A
-$86:DF66 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
+$86:DF40 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;\
+$86:DF43 29 00 FF    AND #$FF00             ;|
+$86:DF46 EB          XBA                    ;|
+$86:DF47 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DF4B 18          CLC                    ;|
+$86:DF4C 7D 4B 1A    ADC $1A4B,x[$7E:1A6B]  ;|
+$86:DF4F 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;|
+$86:DF52 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;|
+$86:DF55 29 FF 00    AND #$00FF             ;} Enemy projectile X position += [enemy projectile left X velocity] / 100h
+$86:DF58 EB          XBA                    ;|
+$86:DF59 18          CLC                    ;|
+$86:DF5A 7D 27 1A    ADC $1A27,x[$7E:1A47]  ;|
+$86:DF5D 9D 27 1A    STA $1A27,x[$7E:1A47]  ;|
+$86:DF60 90 07       BCC $07    [$DF69]     ;|
+$86:DF62 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;|
+$86:DF65 1A          INC A                  ;|
+$86:DF66 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 
 $86:DF69 60          RTS
 }
 
 
-;;; $DF6A:  ;;;
+;;; $DF6A: Nami/fune fireball function - right ;;;
 {
-$86:DF6A BD B7 1A    LDA $1AB7,x[$7E:1AD9]
-$86:DF6D 29 00 FF    AND #$FF00
-$86:DF70 EB          XBA
-$86:DF71 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$86:DF75 18          CLC
-$86:DF76 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]
-$86:DF79 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
-$86:DF7C BD B7 1A    LDA $1AB7,x[$7E:1AD9]
-$86:DF7F 29 FF 00    AND #$00FF
-$86:DF82 EB          XBA
-$86:DF83 18          CLC
-$86:DF84 7D 27 1A    ADC $1A27,x[$7E:1A49]
-$86:DF87 9D 27 1A    STA $1A27,x[$7E:1A49]
-$86:DF8A 90 07       BCC $07    [$DF93]
-$86:DF8C BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:DF8F 1A          INC A
-$86:DF90 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
+$86:DF6A BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
+$86:DF6D 29 00 FF    AND #$FF00             ;|
+$86:DF70 EB          XBA                    ;|
+$86:DF71 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$86:DF75 18          CLC                    ;|
+$86:DF76 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]  ;|
+$86:DF79 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;|
+$86:DF7C BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;|
+$86:DF7F 29 FF 00    AND #$00FF             ;} Enemy projectile X position += [enemy projectile right X velocity] / 100h
+$86:DF82 EB          XBA                    ;|
+$86:DF83 18          CLC                    ;|
+$86:DF84 7D 27 1A    ADC $1A27,x[$7E:1A49]  ;|
+$86:DF87 9D 27 1A    STA $1A27,x[$7E:1A49]  ;|
+$86:DF8A 90 07       BCC $07    [$DF93]     ;|
+$86:DF8C BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;|
+$86:DF8F 1A          INC A                  ;|
+$86:DF90 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 
 $86:DF93 60          RTS
 }
@@ -13633,8 +13678,8 @@ $86:DFBB 60          RTS                    ;} Return A = 1
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:DFBC             dx DED6,DF39,DE96,04,08,00C8,0000,84FC ; Nami fireball
-$86:DFCA             dx DED6,DF39,DE96,04,08,003C,0000,84FC ; Fune fireball
+$86:DFBC             dx DED6,DF39,DE96,04,08,00C8,0000,84FC ; Nami fireball. Initial instruction list ignored
+$86:DFCA             dx DED6,DF39,DE96,04,08,003C,0000,84FC ; Fune fireball. Initial instruction list ignored
 }
 }
 
@@ -13643,34 +13688,34 @@ $86:DFCA             dx DED6,DF39,DE96,04,08,003C,0000,84FC ; Fune fireball
 {
 ;;; $DFD8: Instruction list - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
 {
-$86:DFD8             dx 0001,AB0F,
+$86:DFD8             dw 0001,AB0F,
                         8159        ; Sleep
 }
 
 
 ;;; $DFDE: Instruction list ;;;
 {
-$86:DFDE             dx 0001,AB25,
+$86:DFDE             dw 0001,AB25,
                         8159        ; Sleep
 }
 
 
 ;;; $DFE4: Shot instruction list - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
 {
-$86:DFE4             dx DFEA,
+$86:DFE4             dw DFEA,       ; Spawn enemy drops with Norfair lava creature's drop chances
                         81AB,84FC   ; Go to $84FC
 }
 
 
-;;; $DFEA:  ;;;
+;;; $DFEA: Instruction - spawn enemy drops with Norfair lava creature's drop chances ;;;
 {
 $86:DFEA 5A          PHY
 $86:DFEB DA          PHX
-$86:DFEC BD 4B 1A    LDA $1A4B,x[$7E:1A69]
-$86:DFEF 85 12       STA $12    [$7E:0012]
-$86:DFF1 BD 93 1A    LDA $1A93,x[$7E:1AB1]
-$86:DFF4 85 14       STA $14    [$7E:0014]
-$86:DFF6 A9 3F E8    LDA #$E83F
+$86:DFEC BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
+$86:DFEF 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:DFF1 BD 93 1A    LDA $1A93,x[$7E:1AB1]  ;\
+$86:DFF4 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$86:DFF6 A9 3F E8    LDA #$E83F             ; A = $E83F (Norfair lava creature)
 $86:DFF9 22 0E 92 A0 JSL $A0920E[$A0:920E]  ; Spawn enemy drops
 $86:DFFD FA          PLX
 $86:DFFE 7A          PLY
@@ -13680,50 +13725,54 @@ $86:DFFF 60          RTS
 
 ;;; $E000: Initialisation AI - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
 {
-$86:E000 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:E003 A9 D8 DF    LDA #$DFD8
-$86:E006 99 47 1B    STA $1B47,y[$7E:1B69]
-$86:E009 A9 50 E0    LDA #$E050
-$86:E00C 99 FF 1A    STA $1AFF,y[$7E:1B21]
-$86:E00F AD 93 19    LDA $1993  [$7E:1993]
-$86:E012 F0 0C       BEQ $0C    [$E020]
-$86:E014 A9 DE DF    LDA #$DFDE
-$86:E017 99 47 1B    STA $1B47,y[$7E:1B69]
-$86:E01A A9 7A E0    LDA #$E07A
-$86:E01D 99 FF 1A    STA $1AFF,y[$7E:1B21]
-
-$86:E020 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$86:E023 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:E026 BD 7C 0F    LDA $0F7C,x[$7E:0FFC]
-$86:E029 99 27 1A    STA $1A27,y[$7E:1A49]
-$86:E02C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$86:E02F 18          CLC
-$86:E030 69 02 00    ADC #$0002
-$86:E033 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:E036 BD 80 0F    LDA $0F80,x[$7E:1000]
-$86:E039 99 6F 1A    STA $1A6F,y[$7E:1A91]
-$86:E03C A9 00 FD    LDA #$FD00
-$86:E03F 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:E042 A9 00 03    LDA #$0300
-$86:E045 99 B7 1A    STA $1AB7,y[$7E:1AD9]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Direction. 0 = left, otherwise = right
+$86:E000 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:E003 A9 D8 DF    LDA #$DFD8             ;\
+$86:E006 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DE96 (left)
+$86:E009 A9 50 E0    LDA #$E050             ;\
+$86:E00C 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $DF40 (left)
+$86:E00F AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:E012 F0 0C       BEQ $0C    [$E020]     ;} If [enemy projectile initialisation parameter 0] != 0:
+$86:E014 A9 DE DF    LDA #$DFDE             ;\
+$86:E017 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DEA6 (right)
+$86:E01A A9 7A E0    LDA #$E07A             ;\
+$86:E01D 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $DF6A (right)
+                                            
+$86:E020 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$86:E023 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;|
+$86:E026 BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;} Enemy projectile X position = [enemy X position]
+$86:E029 99 27 1A    STA $1A27,y[$7E:1A49]  ;/
+$86:E02C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$86:E02F 18          CLC                    ;|
+$86:E030 69 02 00    ADC #$0002             ;|
+$86:E033 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = [enemy Y position] + 2.0
+$86:E036 BD 80 0F    LDA $0F80,x[$7E:1000]  ;|
+$86:E039 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;/
+$86:E03C A9 00 FD    LDA #$FD00             ;\
+$86:E03F 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile left velocity = -300h
+$86:E042 A9 00 03    LDA #$0300             ;\
+$86:E045 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile right velocity = 300h
 $86:E048 60          RTS
 }
 
 
 ;;; $E049: Pre-instruction - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
 {
-$86:E049 FC FF 1A    JSR ($1AFF,x)[$86:E07A]
-$86:E04C 20 A4 E0    JSR $E0A4  [$86:E0A4]
+$86:E049 FC FF 1A    JSR ($1AFF,x)[$86:E07A]; Execute [enemy projectile function]
+$86:E04C 20 A4 E0    JSR $E0A4  [$86:E0A4]  ; Delete enemy projectile if off screen
 $86:E04F 60          RTS
 }
 
 
-;;; $E050:  ;;;
+;;; $E050: Lava thrown by lavaman function - left ;;;
 {
-$86:E050 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
+; Clone of $DF40
+$86:E050 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  
 $86:E053 29 00 FF    AND #$FF00
 $86:E056 EB          XBA
-$86:E057 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
+$86:E057 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
 $86:E05B 18          CLC
 $86:E05C 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]
 $86:E05F 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
@@ -13742,12 +13791,13 @@ $86:E079 60          RTS
 }
 
 
-;;; $E07A:  ;;;
+;;; $E07A: Lava thrown by lavaman function - right ;;;
 {
+; Clone of $DF6A
 $86:E07A BD B7 1A    LDA $1AB7,x[$7E:1AD9]
 $86:E07D 29 00 FF    AND #$FF00
 $86:E080 EB          XBA
-$86:E081 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
+$86:E081 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
 $86:E085 18          CLC
 $86:E086 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]
 $86:E089 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
@@ -13825,6 +13875,8 @@ $86:E0E0             dx E000,E049,DFD8,02,02,8028,0000,DFE4 ; Lava thrown by lav
 
 
 ;;; $E0EE..E532: Explosion / dust / smoke ;;;
+{
+;;; $E0EE..E42B: Instruction lists ;;;
 {
 ;;; $E0EE: Instruction list - enemy projectile $E509 (dust cloud / explosion) ;;;
 {
@@ -14195,6 +14247,7 @@ $86:E40A             dx 0004,AF16,
                         0004,AEBF,
                         0004,AEB3,
                         8154        ; Delete
+}
 }
 
 

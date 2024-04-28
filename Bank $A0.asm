@@ -3061,7 +3061,7 @@ $A0:9A0E C9 01 00    CMP #$0001             ;} If enemy projectile buggy dud sho
 $A0:9A11 F0 2A       BEQ $2A    [$9A3D]     ;/
 $A0:9A13 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:9A16 5A          PHY                    ;|
-$A0:9A17 9B          TXY                    ;} Enemy projectile $1BFB = [projectile type]
+$A0:9A17 9B          TXY                    ;} Enemy projectile collided projectile type = [projectile type]
 $A0:9A18 99 FB 1B    STA $1BFB,y[$7E:1C11]  ;/
 $A0:9A1B BE 97 19    LDX $1997,y[$7E:19AD]  ;\
 $A0:9A1E BF 0C 00 86 LDA $86000C,x[$86:AD6A];} Enemy projectile instruction list pointer = (enemy projectile shot instruction list)

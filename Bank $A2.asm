@@ -2814,16 +2814,16 @@ $A2:A0A6 6B          RTL
 }
 
 
-;;; $A0A7: Instruction ;;;
+;;; $A0A7: Instruction - spawn spike shooting plant spike enemy projectile with parameter [[Y]] ;;;
 {
 $A2:A0A7 5A          PHY
-$A2:A0A8 B9 00 00    LDA $0000,y[$A2:9EC4]
-$A2:A0AB AE 54 0E    LDX $0E54  [$7E:0E54]
+$A2:A0A8 B9 00 00    LDA $0000,y[$A2:9EC4]  ; A = [[Y]] (direction)
+$A2:A0AB AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $A2:A0AE A0 FE DA    LDY #$DAFE             ;\
-$A2:A0B1 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn spike shooting plant spikes enemy projectile
+$A2:A0B1 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn spike shooting plant spike enemy projectile
 $A2:A0B5 7A          PLY
-$A2:A0B6 C8          INY
-$A2:A0B7 C8          INY
+$A2:A0B6 C8          INY                    ;\
+$A2:A0B7 C8          INY                    ;} Y += 2
 $A2:A0B8 6B          RTL
 }
 
