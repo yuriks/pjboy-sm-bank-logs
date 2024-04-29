@@ -3933,9 +3933,9 @@ $A5:C49E AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A5:C4A1 38          SEC                    ;|
 $A5:C4A2 E9 20 00    SBC #$0020             ;} $14 = [Draygon Y position] - 20h
 $A5:C4A5 85 14       STA $14    [$7E:0014]  ;/
-$A5:C4A7 A9 18 00    LDA #$0018             ;\
-$A5:C4AA A0 09 E5    LDY #$E509             ;} Spawn long breath bubbles enemy projectile
-$A5:C4AD 22 97 80 86 JSL $868097[$86:8097]  ;/
+$A5:C4A7 A9 18 00    LDA #$0018             ; A = 18h (long Draygon breath bubbles)
+$A5:C4AA A0 09 E5    LDY #$E509             ;\
+$A5:C4AD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
 $A5:C4B1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:C4B4 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
@@ -3995,9 +3995,9 @@ $A5:C524 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A5:C527 38          SEC                    ;|
 $A5:C528 E9 20 00    SBC #$0020             ;} $14 = [Draygon Y position] - 20h
 $A5:C52B 85 14       STA $14    [$7E:0014]  ;/
-$A5:C52D A9 18 00    LDA #$0018             ;\
-$A5:C530 A0 09 E5    LDY #$E509             ;} Spawn long breath bubbles enemy projectile
-$A5:C533 22 97 80 86 JSL $868097[$86:8097]  ;/
+$A5:C52D A9 18 00    LDA #$0018             ; A = 18h (long Draygon breath bubbles)
+$A5:C530 A0 09 E5    LDY #$E509             ;\
+$A5:C533 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
 $A5:C537 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:C53A AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\

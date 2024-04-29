@@ -3196,7 +3196,7 @@ $A4:B979 BD 18 0C    LDA $0C18,x[$7E:0C18]
 $A4:B97C A0 1D 00    LDY #$001D             ; A = 1Dh (big explosion)
 $A4:B97F 89 00 02    BIT #$0200             ;\
 $A4:B982 D0 03       BNE $03    [$B987]     ;} If [projectile type] & 200h = 0 (beam or missile or bomb):
-$A4:B984 A0 06 00    LDY #$0006             ; A = 6
+$A4:B984 A0 06 00    LDY #$0006             ; A = 6 (dud shot)
 
 $A4:B987 98          TYA
 $A4:B988 A0 09 E5    LDY #$E509             ;\
@@ -3359,7 +3359,7 @@ $A4:BAC5 BD 18 0C    LDA $0C18,x[$7E:0C18]
 $A4:BAC8 A0 1D 00    LDY #$001D             ; A = 1Dh (big explosion)
 $A4:BACB 89 00 02    BIT #$0200             ;\
 $A4:BACE D0 03       BNE $03    [$BAD3]     ;} If [projectile type] & 200h = 0 (beam or missile or bomb):
-$A4:BAD0 A0 06 00    LDY #$0006             ; A = 6
+$A4:BAD0 A0 06 00    LDY #$0006             ; A = 6 (dud shot)
                                             
 $A4:BAD3 98          TYA                    
 $A4:BAD4 A0 09 E5    LDY #$E509             ;\

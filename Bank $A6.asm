@@ -267,7 +267,7 @@ $A6:88C1 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
 $A6:88C4 85 12       STA $12    [$7E:0012]
 $A6:88C6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
 $A6:88C9 85 14       STA $14    [$7E:0014]
-$A6:88CB A9 11 00    LDA #$0011             ; A = 11h
+$A6:88CB A9 11 00    LDA #$0011             ; A = 11h (rock particles)
 $A6:88CE A0 09 E5    LDY #$E509             ;\
 $A6:88D1 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:88D5 A9 43 00    LDA #$0043             ;\
@@ -373,7 +373,7 @@ $A6:89A2 BD 7A 0F    LDA $0F7A,x[$7E:113A]
 $A6:89A5 85 12       STA $12    [$7E:0012]
 $A6:89A7 BD 7E 0F    LDA $0F7E,x[$7E:113E]
 $A6:89AA 85 14       STA $14    [$7E:0014]
-$A6:89AC A9 11 00    LDA #$0011             ; A = 11h
+$A6:89AC A9 11 00    LDA #$0011             ; A = 11h (rock particles)
 $A6:89AF A0 09 E5    LDY #$E509             ;\
 $A6:89B2 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:89B6 A9 43 00    LDA #$0043             ;\
@@ -4395,7 +4395,7 @@ $A6:B738 AF A6 20 7E LDA $7E20A6[$7E:20A6]
 $A6:B73C 18          CLC
 $A6:B73D 69 0C 00    ADC #$000C
 $A6:B740 85 14       STA $14    [$7E:0014]
-$A6:B742 A9 09 00    LDA #$0009             ; A = 9
+$A6:B742 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $A6:B745 A0 09 E5    LDY #$E509             ;\
 $A6:B748 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:B74C A9 76 00    LDA #$0076             ;\
@@ -9568,7 +9568,7 @@ $A6:E139 3A          DEC A                  ;\
 $A6:E13A D0 0A       BNE $0A    [$E146]     ;} If projectile is missile:
 $A6:E13C A9 3D 00    LDA #$003D             ;\
 $A6:E13F 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 3Dh, sound library 1, max queued sounds allowed = 6 (dud shot)
-$A6:E143 A0 06 00    LDY #$0006             ; A = 6
+$A6:E143 A0 06 00    LDY #$0006             ; A = 6 (dud shot)
 
 $A6:E146 98          TYA
 $A6:E147 A0 09 E5    LDY #$E509             ;\

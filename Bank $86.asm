@@ -3618,7 +3618,7 @@ $86:9719 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
 $86:971C 18          CLC                    ;|
 $86:971D 69 00 00    ADC #$0000             ;} $14 = [enemy projectile Y position]
 $86:9720 85 14       STA $14    [$7E:0014]  ;/
-$86:9722 A9 09 00    LDA #$0009             ; A = 9
+$86:9722 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $86:9725 A0 09 E5    LDY #$E509             ;\
 $86:9728 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:972C A9 6D 00    LDA #$006D             ;\
@@ -10197,7 +10197,7 @@ $86:C598 BD 4B 1A    LDA $1A4B,x            ;\
 $86:C59B 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
 $86:C59D BD 93 1A    LDA $1A93,x            ;\
 $86:C5A0 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
-$86:C5A2 A9 09 00    LDA #$0009             ; A = 9
+$86:C5A2 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $86:C5A5 A0 09 E5    LDY #$E509             ;\
 $86:C5A8 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:C5AC BD 4B 1A    LDA $1A4B,x            ;\
@@ -10757,7 +10757,7 @@ $86:CA0D 9D 93 1A    STA $1A93,x[$7E:1AA9]  ;/
 $86:CA10 85 14       STA $14    [$7E:0014]  ; $14 = [enemy projectile Y position]
 $86:CA12 BD 4B 1A    LDA $1A4B,x[$7E:1A61]  ;\
 $86:CA15 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
-$86:CA17 A9 09 00    LDA #$0009             ; A = 9
+$86:CA17 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $86:CA1A A0 09 E5    LDY #$E509             ;\
 $86:CA1D 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:CA21 60          RTS
@@ -10964,7 +10964,7 @@ $86:CBEF BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
 $86:CBF2 18          CLC                    ;|
 $86:CBF3 69 08 00    ADC #$0008             ;} $14 = [enemy projectile Y position] + 8
 $86:CBF6 85 14       STA $14    [$7E:0014]  ;/
-$86:CBF8 A9 09 00    LDA #$0009             ; A = 9
+$86:CBF8 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $86:CBFB A0 09 E5    LDY #$E509             ;\
 $86:CBFE 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $86:CC02 A9 08 CC    LDA #$CC08             ;\
@@ -12816,7 +12816,7 @@ $86:D9B4 BD 80 0F    LDA $0F80,x[$7E:0F80]  ;} Enemy projectile Y position = [en
 $86:D9B7 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;/
 $86:D9BA A9 00 FE    LDA #$FE00             ;\
 $86:D9BD 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile negated speed = -200h
-$86:D9C0 A9 00 02    LDA #$0200             ;\ 
+$86:D9C0 A9 00 02    LDA #$0200             ;\
 $86:D9C3 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile speed = 200h
 $86:D9C6 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:D9C9 C9 0C 00    CMP #$000C             ;} If [enemy projectile direction] >= Ch:
@@ -13739,7 +13739,7 @@ $86:E014 A9 DE DF    LDA #$DFDE             ;\
 $86:E017 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $DEA6 (right)
 $86:E01A A9 7A E0    LDA #$E07A             ;\
 $86:E01D 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile function = $DF6A (right)
-                                            
+
 $86:E020 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
 $86:E023 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;|
 $86:E026 BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;} Enemy projectile X position = [enemy X position]
@@ -13769,7 +13769,7 @@ $86:E04F 60          RTS
 ;;; $E050: Lava thrown by lavaman function - left ;;;
 {
 ; Clone of $DF40
-$86:E050 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  
+$86:E050 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
 $86:E053 29 00 FF    AND #$FF00
 $86:E056 EB          XBA
 $86:E057 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]
@@ -13878,7 +13878,7 @@ $86:E0E0             dx E000,E049,DFD8,02,02,8028,0000,DFE4 ; Lava thrown by lav
 {
 ;;; $E0EE..E42B: Instruction lists ;;;
 {
-;;; $E0EE: Instruction list - enemy projectile $E509 (dust cloud / explosion) ;;;
+;;; $E0EE: Instruction list - dust cloud / explosion - index = 0 (unused. Beam charge) ;;;
 {
 $86:E0EE             dx 0003,AF2C,
                         0003,AF33,
@@ -13888,7 +13888,7 @@ $86:E0EE             dx 0003,AF2C,
 }
 
 
-;;; $E100: Instruction list ;;;
+;;; $E100: Instruction list - dust cloud / explosion - index = 1 (Mother Brain elbow charge particles) ;;;
 {
 $86:E100             dx 0005,AF57,
                         0004,AF68,
@@ -13900,7 +13900,7 @@ $86:E100             dx 0005,AF57,
 }
 
 
-;;; $E11A: Instruction list ;;;
+;;; $E11A: Instruction list - dust cloud / explosion - index = 2 (Mother Brain elbow charge energy) ;;;
 {
 $86:E11A             dx 0004,AFBD,
                         0003,AFCE,
@@ -13913,7 +13913,7 @@ $86:E11A             dx 0004,AFBD,
 }
 
 
-;;; $E138: Instruction list - small explosion. Enemy projectile $E517/$E525 (eye door smoke) ;;;
+;;; $E138: Instruction list - dust cloud / explosion - index = 3 (small explosion) ;;;
 {
 $86:E138             dx 0004,B023,
                         0006,B02A,
@@ -13925,7 +13925,7 @@ $86:E138             dx 0004,B023,
 }
 
 
-;;; $E152: Instruction list - enemy projectile $CBAD (Mother Brain's rainbow beam explosion) ;;;
+;;; $E152: Instruction list - dust cloud / explosion - index = 4 (unused. Bomb explosion) / enemy projectile $CBAD (Mother Brain's rainbow beam explosion) ;;;
 {
 $86:E152             dx 0003,B098,
                         0003,B0AE,
@@ -13936,7 +13936,7 @@ $86:E152             dx 0003,B098,
 }
 
 
-;;; $E168: Instruction list ;;;
+;;; $E168: Instruction list - dust cloud / explosion - index = 5 (unused. Beam trail) ;;;
 {
 $86:E168             dx 0008,B11C,
                         0008,B123,
@@ -13947,7 +13947,7 @@ $86:E168             dx 0008,B11C,
 }
 
 
-;;; $E17E: Instruction list ;;;
+;;; $E17E: Instruction list - dust cloud / explosion - index = 6 (dud shot / tiny explosion) ;;;
 {
 $86:E17E             dx 0004,B154,
                         0004,B15B,
@@ -13959,7 +13959,7 @@ $86:E17E             dx 0004,B154,
 }
 
 
-;;; $E198: Instruction list ;;;
+;;; $E198: Instruction list - dust cloud / explosion - index = 7 (unused. Power bomb) ;;;
 {
 $86:E198             dx 0005,B138,
                         0005,B13F,
@@ -13968,7 +13968,7 @@ $86:E198             dx 0005,B138,
 }
 
 
-;;; $E1A6: Instruction list ;;;
+;;; $E1A6: Instruction list - dust cloud / explosion - index = 8 (unused. Elevator pad) ;;;
 {
 $86:E1A6             dx 0001,B1BA,
                         0001,B1D0,
@@ -13976,7 +13976,7 @@ $86:E1A6             dx 0001,B1BA,
 }
 
 
-;;; $E1B0: Instruction list ;;;
+;;; $E1B0: Instruction list - dust cloud / explosion - index = 9 (small dust cloud) ;;;
 {
 $86:E1B0             dx 0005,B218,
                         0005,B1FC,
@@ -13987,7 +13987,7 @@ $86:E1B0             dx 0005,B218,
 }
 
 
-;;; $E1C6: Instruction list ;;;
+;;; $E1C6: Instruction list - dust cloud / explosion - index = Ah (corpse dust cloud) ;;;
 {
 $86:E1C6             dx 0003,B218,
                         0003,B21F,
@@ -13997,7 +13997,7 @@ $86:E1C6             dx 0003,B218,
 }
 
 
-;;; $E1D8: Instruction list ;;;
+;;; $E1D8: Instruction list - dust cloud / explosion - index = Bh (eye door sweat drop) ;;;
 {
 $86:E1D8             dx 0005,B234,
                         0005,B23B,
@@ -14007,7 +14007,7 @@ $86:E1D8             dx 0005,B234,
 }
 
 
-;;; $E1EA: Instruction list - smoke ;;;
+;;; $E1EA: Instruction list - dust cloud / explosion - index = Ch (smoke) ;;;
 {
 $86:E1EA             dx 0008,B250,
                         0008,B257,
@@ -14017,7 +14017,7 @@ $86:E1EA             dx 0008,B250,
 }
 
 
-;;; $E1FC: Instruction list ;;;
+;;; $E1FC: Instruction list - dust cloud / explosion - index = 1Ch (unused. Elevator pad) ;;;
 {
 $86:E1FC             dx 0001,B1BA,
                         0001,B1D0,
@@ -14025,7 +14025,7 @@ $86:E1FC             dx 0001,B1BA,
 }
 
 
-;;; $E208: Instruction list - big explosion ;;;
+;;; $E208: Instruction list - dust cloud / explosion - index = 1Dh (big explosion) ;;;
 {
 $86:E208             dx 0005,B406,
                         0005,B41C,
@@ -14037,7 +14037,7 @@ $86:E208             dx 0005,B406,
 }
 
 
-;;; $E222: Instruction list ;;;
+;;; $E222: Instruction list - dust cloud / explosion - index = Dh (unused. Small health drop) ;;;
 {
 $86:E222             dx 0008,B281,
                         0008,B288,
@@ -14047,7 +14047,7 @@ $86:E222             dx 0008,B281,
 }
 
 
-;;; $E234: Instruction list ;;;
+;;; $E234: Instruction list - dust cloud / explosion - index = Eh (unused. Big health drop) ;;;
 {
 $86:E234             dx 0008,B29D,
                         0008,B2B3,
@@ -14057,7 +14057,7 @@ $86:E234             dx 0008,B29D,
 }
 
 
-;;; $E246: Instruction list ;;;
+;;; $E246: Instruction list - dust cloud / explosion - index = Fh (unused. Bomb) ;;;
 {
 $86:E246             dx 0005,B2E6,
                         0005,B2ED,
@@ -14067,7 +14067,7 @@ $86:E246             dx 0005,B2E6,
 }
 
 
-;;; $E258: Instruction list ;;;
+;;; $E258: Instruction list - dust cloud / explosion - index = 10h (unused. Weird small health drop) ;;;
 {
 $86:E258             dx 0010,B3EA,
                         0010,B3F1,
@@ -14076,7 +14076,7 @@ $86:E258             dx 0010,B3EA,
 }
 
 
-;;; $E266: Instruction list ;;;
+;;; $E266: Instruction list - dust cloud / explosion - index = 11h (rock particles) ;;;
 {
 $86:E266             dx 0002,AB3B,
                         0002,AB51,
@@ -14098,7 +14098,7 @@ $86:E266             dx 0002,AB3B,
 }
 
 
-;;; $E2A8: Instruction list ;;;
+;;; $E2A8: Instruction list - dust cloud / explosion - index = 12h (short big dust cloud) ;;;
 {
 $86:E2A8             dx 0002,AC9B,
                         0002,ACA2,
@@ -14108,7 +14108,7 @@ $86:E2A8             dx 0002,AC9B,
 }
 
 
-;;; $E2BA: Instruction list ;;;
+;;; $E2BA: Instruction list - dust cloud / explosion - index = 13h (unused. Short big dust cloud with weird short beam) ;;;
 {
 $86:E2BA             dx 0003,ACD5,
                         0003,ACEB,
@@ -14120,7 +14120,7 @@ $86:E2BA             dx 0003,ACD5,
 }
 
 
-;;; $E2D4: Instruction list ;;;
+;;; $E2D4: Instruction list - dust cloud / explosion - index = 14h (unused. Short big dust cloud with weird medium beam) ;;;
 {
 $86:E2D4             dx 0003,ACD5,
                         0003,ACEB,
@@ -14133,7 +14133,7 @@ $86:E2D4             dx 0003,ACD5,
 }
 
 
-;;; $E2F2: Instruction list - big dust cloud ;;;
+;;; $E2F2: Instruction list - dust cloud / explosion - index = 15h (big dust cloud) ;;;
 {
 $86:E2F2             dx 0005,AC9B,
                         0005,ACA2,
@@ -14147,7 +14147,7 @@ $86:E2F2             dx 0005,AC9B,
 }
 
 
-;;; $E314: Instruction list ;;;
+;;; $E314: Instruction list - dust cloud / explosion - index = 16h (unused. Weird long beam) ;;;
 {
 $86:E314             dx 0001,AD0F,
                         0001,AD16,
@@ -14184,7 +14184,7 @@ $86:E314             dx 0001,AD0F,
 }
 
 
-;;; $E392: Instruction list ;;;
+;;; $E392: Instruction list - dust cloud / explosion - index = 17h (unused. Weird long flickering beam) ;;;
 {
 $86:E392             dx 0001,AD57,
                         0001,AD6D,
@@ -14193,7 +14193,7 @@ $86:E392             dx 0001,AD57,
 }
 
 
-;;; $E3A0: Instruction list - long Draygon breath bubbles ;;;
+;;; $E3A0: Instruction list - dust cloud / explosion - index = 18h (long Draygon breath bubbles) ;;;
 {
 $86:E3A0             dx 0008,AD83,
                         0008,AD8A,
@@ -14208,7 +14208,7 @@ $86:E3A0             dx 0008,AD83,
 }
 
 
-;;; $E3C6: Instruction list ;;;
+;;; $E3C6: Instruction list - dust cloud / explosion - index = 19h (unused. Save station electricity) ;;;
 {
 $86:E3C6             dx 0001,AE03,
                         0001,AE19,
@@ -14222,7 +14222,7 @@ $86:E3C6             dx 0001,AE03,
 }
 
 
-;;; $E3E8: Instruction list ;;;
+;;; $E3E8: Instruction list - dust cloud / explosion - index = 1Ah (unused. Expanding vertical gate) ;;;
 {
 $86:E3E8             dx 0010,AEB3,
                         0010,AEBF,
@@ -14236,7 +14236,7 @@ $86:E3E8             dx 0010,AEB3,
 }
 
 
-;;; $E40A: Instruction list ;;;
+;;; $E40A: Instruction list - dust cloud / explosion - index = 1Bh (unused. Contracting vertical gate) ;;;
 {
 $86:E40A             dx 0004,AF16,
                         0004,AF00,
@@ -14260,6 +14260,43 @@ $86:E42C             dw E0EE, E100, E11A, E138, E152, E168, E17E, E198, E1A6, E1
 
 ;;; $E468: Initialisation AI - enemy projectile $E509/$E525 (dust cloud / explosion) ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993: Index. Range 0..1Dh
+       {
+;;         0: Unused. Beam charge
+;;         1: Mother Brain elbow charge particles
+;;         2: Mother Brain elbow charge energy
+;;         3: Small explosion
+;;         4: Unused. Bomb explosion
+;;         5: Unused. Beam trail
+;;         6: Dud shot / tiny explosion
+;;         7: Unused. Power bomb
+;;         8: Unused. Elevator pad (same as 1Ch)
+;;         9: Small dust cloud
+;;         Ah: Corpse dust cloud
+;;         Bh: Eye door sweat drop
+;;         Ch: Smoke
+;;         Dh: Unused. Small health drop
+;;         Eh: Unused. Big health drop
+;;         Fh: Unused. Bomb
+;;         10h: Unused. Weird small health drop
+;;         11h: Rock particles
+;;         12h: Short big dust cloud
+;;         13h: Unused. Short big dust cloud with weird short beam
+;;         14h: Unused. Short big dust cloud with weird medium beam
+;;         15h: Big dust cloud
+;;         16h: Unused. Weird long beam
+;;         17h: Unused. Weird long flickering beam
+;;         18h: Long Draygon breath bubbles
+;;         19h: Unused. Save station electricity
+;;         1Ah: Unused. Expanding vertical gate
+;;         1Bh: Unused. Contracting vertical gate
+;;         1Ch: Unused. Elevator pad (same as 8)
+;;         1Dh: Big explosion
+       }
+;;     $12: X position
+;;     $14: Y position
 $86:E468 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:E46B 0A          ASL A                  ;|
 $86:E46C AA          TAX                    ;} Enemy projectile instruction list pointer = [$E42C + [enemy projectile initialisation parameter] * 2]
@@ -14273,8 +14310,13 @@ $86:E47D 60          RTS
 }
 
 
-;;; $E47E:  ;;;
+;;; $E47E: PLM dust cloud / explosion X/Y offset table ;;;
 {
+;                        __________________ Random X offset range
+;                       |     _____________ Random Y offset range
+;                       |    |     ________ Minimum X offset
+;                       |    |    |     ___ Minimum Y offset
+;                       |    |    |    |
 $86:E47E             dw 0000,0000,0000,0000,
                         0007,0007,FFFC,FFFC,
                         000F,000F,FFF8,FFF8,
@@ -14283,51 +14325,55 @@ $86:E47E             dw 0000,0000,0000,0000,
 }
 
 
-;;; $E4A6: Initialisation AI - enemy projectile $E517 (eye door smoke) ;;;
+;;; $E4A6: Initialisation AI - enemy projectile $E517 (PLM dust cloud / explosion) ;;;
 {
-$86:E4A6 AD 93 19    LDA $1993  [$7E:1993]
-$86:E4A9 29 FF 00    AND #$00FF
-$86:E4AC 0A          ASL A
-$86:E4AD AA          TAX
-$86:E4AE BD 2C E4    LDA $E42C,x[$86:E440]
-$86:E4B1 99 47 1B    STA $1B47,y[$7E:1B69]
-$86:E4B4 AD 94 19    LDA $1994  [$7E:1994]
-$86:E4B7 29 FF 00    AND #$00FF
-$86:E4BA 0A          ASL A
-$86:E4BB 0A          ASL A
-$86:E4BC 0A          ASL A
-$86:E4BD AA          TAX
-$86:E4BE AD E5 05    LDA $05E5  [$7E:05E5]
-$86:E4C1 3D 7E E4    AND $E47E,x[$86:E496]
-$86:E4C4 18          CLC
-$86:E4C5 7D 82 E4    ADC $E482,x[$86:E49A]
-$86:E4C8 85 12       STA $12    [$7E:0012]
-$86:E4CA AD E6 05    LDA $05E6  [$7E:05E6]
-$86:E4CD 3D 80 E4    AND $E480,x[$86:E498]
-$86:E4D0 18          CLC
-$86:E4D1 7D 84 E4    ADC $E484,x[$86:E49C]
-$86:E4D4 85 14       STA $14    [$7E:0014]
-$86:E4D6 AE 27 1C    LDX $1C27  [$7E:1C27]
-$86:E4D9 22 90 82 84 JSL $848290[$84:8290]
-$86:E4DD AD 29 1C    LDA $1C29  [$7E:1C29]
-$86:E4E0 38          SEC
-$86:E4E1 2A          ROL A
-$86:E4E2 0A          ASL A
-$86:E4E3 0A          ASL A
-$86:E4E4 0A          ASL A
-$86:E4E5 18          CLC
-$86:E4E6 65 12       ADC $12    [$7E:0012]
-$86:E4E8 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:E4EB AD 2B 1C    LDA $1C2B  [$7E:1C2B]
-$86:E4EE 38          SEC
-$86:E4EF 2A          ROL A
-$86:E4F0 0A          ASL A
-$86:E4F1 0A          ASL A
-$86:E4F2 0A          ASL A
-$86:E4F3 18          CLC
-$86:E4F4 65 14       ADC $14    [$7E:0014]
-$86:E4F6 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:E4F9 22 11 81 80 JSL $808111[$80:8111]
+;; Parameters:
+;;     Y: Enemy projectile index
+;;     $1993 low: Index. Range 0..1Dh. Only Ah (corpse dust cloud) and Bh (eye door sweat drop) are used. See $E468 for other values
+;;     $1993 high: X/Y offset table index. Range 0..4. Only 0 and 3 are used
+$86:E4A6 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$86:E4A9 29 FF 00    AND #$00FF             ;|
+$86:E4AC 0A          ASL A                  ;|
+$86:E4AD AA          TAX                    ;} Enemy projectile instruction list pointer = [$E42C + [enemy projectile initialisation parameter low] * 2]
+$86:E4AE BD 2C E4    LDA $E42C,x[$86:E440]  ;|
+$86:E4B1 99 47 1B    STA $1B47,y[$7E:1B69]  ;/
+$86:E4B4 AD 94 19    LDA $1994  [$7E:1994]  ;\
+$86:E4B7 29 FF 00    AND #$00FF             ;|
+$86:E4BA 0A          ASL A                  ;|
+$86:E4BB 0A          ASL A                  ;} X = [enemy projectile initialisation parameter high] * 8
+$86:E4BC 0A          ASL A                  ;|
+$86:E4BD AA          TAX                    ;/
+$86:E4BE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:E4C1 3D 7E E4    AND $E47E,x[$86:E496]  ;|
+$86:E4C4 18          CLC                    ;} $12 = [$E47E + [X] + 4] + [random number low] % ([$E47E + [X]] + 1)
+$86:E4C5 7D 82 E4    ADC $E482,x[$86:E49A]  ;|
+$86:E4C8 85 12       STA $12    [$7E:0012]  ;/
+$86:E4CA AD E6 05    LDA $05E6  [$7E:05E6]  ;\
+$86:E4CD 3D 80 E4    AND $E480,x[$86:E498]  ;|
+$86:E4D0 18          CLC                    ;} $14 = [$E47E + [X] + 6] + [random number high] % ([$E47E + [X] + 2] + 1)
+$86:E4D1 7D 84 E4    ADC $E484,x[$86:E49C]  ;|
+$86:E4D4 85 14       STA $14    [$7E:0014]  ;/
+$86:E4D6 AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
+$86:E4D9 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
+$86:E4DD AD 29 1C    LDA $1C29  [$7E:1C29]  ;\
+$86:E4E0 38          SEC                    ;|
+$86:E4E1 2A          ROL A                  ;|
+$86:E4E2 0A          ASL A                  ;|
+$86:E4E3 0A          ASL A                  ;} Enemy projectile X position = [PLM X block] * 10h + 8 + [$12]
+$86:E4E4 0A          ASL A                  ;|
+$86:E4E5 18          CLC                    ;|
+$86:E4E6 65 12       ADC $12    [$7E:0012]  ;|
+$86:E4E8 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:E4EB AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
+$86:E4EE 38          SEC                    ;|
+$86:E4EF 2A          ROL A                  ;|
+$86:E4F0 0A          ASL A                  ;|
+$86:E4F1 0A          ASL A                  ;} Enemy projectile Y position = [PLM Y block] * 10h + 8 + [$14]
+$86:E4F2 0A          ASL A                  ;|
+$86:E4F3 18          CLC                    ;|
+$86:E4F4 65 14       ADC $14    [$7E:0014]  ;|
+$86:E4F6 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
+$86:E4F9 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:E4FD 60          RTS
 }
 
@@ -14335,22 +14381,26 @@ $86:E4FD 60          RTS
 ;;; $E4FE: Pre-instruction - enemy projectile $E509 (dust cloud / explosion) ;;;
 {
 $86:E4FE 20 E0 E6    JSR $E6E0  [$86:E6E0]  ;\
-$86:E501 D0 01       BNE $01    [$E504]     ;|
-$86:E503 60          RTS                    ;|
-                                            ;} If enemy projectile off screen, delete it
-$86:E504 9E 97 19    STZ $1997,x[$7E:19B5]  ;|
-$86:E507 60          RTS                    ;/
+$86:E501 D0 01       BNE $01    [$E504]     ;} If enemy projectile is not off screen:
+$86:E503 60          RTS                    ; Return
+
+$86:E504 9E 97 19    STZ $1997,x[$7E:19B5]  ; Enemy projectile ID = 0
+$86:E507 60          RTS
 }
 
 
-;;; $E508: RTS. Pre-instruction - enemy projectile $E517 (eye door smoke) ;;;
+;;; $E508: RTS. Pre-instruction - enemy projectile $E517 (PLM dust cloud / explosion) ;;;
 {
 $86:E508 60          RTS
 }
 
 
-;;; $E509: Enemy projectiles - explosion / dust / smoke ;;;
+;;; $E509: Enemy projectiles - dust cloud / explosion ;;;
 {
+; Enemy projectile $E525 is broken due to its bogus pre-instruction pointer and is otherwise just a low priority version of $E509
+; Only difference between $E509 and $E517 is the former deletes itself once off-screen and takes position parameters in $12/$14,
+; and the latter places itself at the current PLM block and takes a random X/Y offset parameter
+
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
 ;                       |    |     ________________________ Initial instruction list
@@ -14360,29 +14410,29 @@ $86:E508 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:E509             dx E468,E4FE,E0EE,00,00,1000,0000,84FC ; Dust cloud / explosion (Ceres tile hits ground, boulder enemies collide/die, shoot Kraid in the face or he blocks a shot, when Crocomire stomps, when Ridley shakes the room, during Mother Brain's death, etc.)
-$86:E517             dx E4A6,E508,E138,00,00,0000,0000,84FC ; Eye door smoke
-$86:E525             dx E468,A197,E138,00,00,0000,0000,84FC
+$86:E509             dx E468,E4FE,E0EE,00,00,1000,0000,84FC ; Dust cloud / explosion. Initial instruction list ignored
+$86:E517             dx E4A6,E508,E138,00,00,0000,0000,84FC ; PLM dust cloud / explosion. Initial instruction list ignored
+$86:E525             dx E468,A197,E138,00,00,0000,0000,84FC ; Unused. Initial instruction list ignored
 }
 }
 
 
 ;;; $E533..E682: Shot gates ;;;
 {
-;;; $E533: Instruction ;;;
+;;; $E533: Instruction - enemy projectile Y velocity = [[Y]] ;;;
 {
-$86:E533 B9 00 00    LDA $0000,y[$86:E560]
-$86:E536 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:E539 C8          INY
-$86:E53A C8          INY
+$86:E533 B9 00 00    LDA $0000,y[$86:E560]  ;\
+$86:E536 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;} Enemy projectile Y velocity = [[Y]]
+$86:E539 C8          INY                    ;\
+$86:E53A C8          INY                    ;} Y += 2
 $86:E53B 60          RTS
 }
 
 
 ;;; $E53C: Instruction list - enemy projectile $E64B (spawned downwards shot gate) ;;;
 {
-$86:E53C             dx E533,0100,
-                        8161,E605,  ; Pre-instruction = $E605
+$86:E53C             dx E533,0100,  ; Enemy projectile Y velocity = 100h
+                        8161,E605,  ; Pre-instruction = $E605 (moving)
                         0001,B4EE,
                         8159,       ; Sleep
                         0001,B4F5,
@@ -14397,10 +14447,10 @@ $86:E53C             dx E533,0100,
 
 ;;; $E55E: Instruction list - enemy projectile $E659 (initial closed downwards shot gate) ;;;
 {
-$86:E55E             dx E533,FF00,
+$86:E55E             dx E533,FF00,  ; Enemy projectile Y velocity = -100h
                         0001,B512,
                         8159,       ; Sleep
-                        8161,E605,  ; Pre-instruction = $E605
+                        8161,E605,  ; Pre-instruction = $E605 (moving)
                         0001,B512,
                         8159,       ; Sleep
                         0001,B501,
@@ -14415,8 +14465,8 @@ $86:E55E             dx E533,FF00,
 
 ;;; $E586: Instruction list - enemy projectile $E667 (spawned upwards shot gate) ;;;
 {
-$86:E586             dx E533,FF00,
-                        8161,E605,  ; Pre-instruction = $E605
+$86:E586             dx E533,FF00,  ; Enemy projectile Y velocity = -100h
+                        8161,E605,  ; Pre-instruction = $E605 (moving)
                         0001,B528,
                         8159,       ; Sleep
                         0001,B52F,
@@ -14431,10 +14481,10 @@ $86:E586             dx E533,FF00,
 
 ;;; $E5A8: Instruction list - enemy projectile $E675 (initial closed upwards shot gate) ;;;
 {
-$86:E5A8             dx E533,0100,
+$86:E5A8             dx E533,0100,  ; Enemy projectile Y velocity = 100h
                         0001,B54C,
                         8159,       ; Sleep
-                        8161,E605,  ; Pre-instruction = $E605
+                        8161,E605,  ; Pre-instruction = $E605 (moving)
                         0001,B54C,
                         8159,       ; Sleep
                         0001,B53B,
@@ -14449,31 +14499,31 @@ $86:E5A8             dx E533,0100,
 
 ;;; $E5D0: Initialisation AI - enemy projectile $E64B/$E667 (spawned shot gate) ;;;
 {
-$86:E5D0 A9 00 00    LDA #$0000
-$86:E5D3 80 08       BRA $08    [$E5DD]
+$86:E5D0 A9 00 00    LDA #$0000             ; A = 0 (Y offset)
+$86:E5D3 80 08       BRA $08    [$E5DD]     ; Go to shot gate common initialisation
 }
 
 
 ;;; $E5D5: Initialisation AI - enemy projectile $E659 (initial closed downwards shot gate) ;;;
 {
-$86:E5D5 A9 40 00    LDA #$0040
-$86:E5D8 80 03       BRA $03    [$E5DD]
+$86:E5D5 A9 40 00    LDA #$0040             ; A = 40h (Y offset)
+$86:E5D8 80 03       BRA $03    [$E5DD]     ; Go to shot gate common initialisation
 }
 
 
 ;;; $E5DA: Initialisation AI - enemy projectile $E675 (initial closed upwards shot gate) ;;;
 {
-$86:E5DA A9 C0 FF    LDA #$FFC0
+$86:E5DA A9 C0 FF    LDA #$FFC0             ; A = -40h (Y offset)
 }
 
 
-;;; $E5DD:  ;;;
+;;; $E5DD: Shot gate common initialisation ;;;
 {
 $86:E5DD 85 12       STA $12    [$7E:0012]  ; $12 = [A]
 $86:E5DF AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
 $86:E5E2 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
 $86:E5E6 BD 87 1C    LDA $1C87,x[$7E:1CD5]  ;\
-$86:E5E9 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile $1AFF = [PLM block index]
+$86:E5E9 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile PLM block index = [PLM block index]
 $86:E5EC AD 29 1C    LDA $1C29  [$7E:1C29]  ;\
 $86:E5EF 0A          ASL A                  ;|
 $86:E5F0 0A          ASL A                  ;|
@@ -14498,35 +14548,35 @@ $86:E604 60          RTS
 }
 
 
-;;; $E605: Pre-instruction ;;;
+;;; $E605: Pre-instruction - moving ;;;
 {
 $86:E605 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:E608 10 04       BPL $04    [$E60E]     ;|
 $86:E60A 49 FF FF    EOR #$FFFF             ;|
-$86:E60D 1A          INC A                  ;} A = |[projectile $1ADB]| + [projectile $19DF]
+$86:E60D 1A          INC A                  ;} Enemy projectile segment distance moved += |[enemy projectile Y velocity]|
                                             ;|
 $86:E60E 18          CLC                    ;|
 $86:E60F 7D DF 19    ADC $19DF,x[$7E:1A01]  ;/
 $86:E612 C9 00 10    CMP #$1000             ;\
-$86:E615 90 0F       BCC $0F    [$E626]     ;} If [A] >= 1000h:
+$86:E615 90 0F       BCC $0F    [$E626]     ;} If [enemy projectile segment distance moved] >= 1000h:
 $86:E617 A9 01 00    LDA #$0001             ;\
 $86:E61A 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Projectile instruction delay = 1
 $86:E61D FE 47 1B    INC $1B47,x[$7E:1B69]  ;\
 $86:E620 FE 47 1B    INC $1B47,x[$7E:1B69]  ;} Projectile instruction += 2 (break from wait)
-$86:E623 A9 00 00    LDA #$0000             ; A = 0
+$86:E623 A9 00 00    LDA #$0000             ; Enemy projectile segment distance moved = 0
 
-$86:E626 9D DF 19    STA $19DF,x[$7E:1A01]  ; Projectile $19DF = [A]
+$86:E626 9D DF 19    STA $19DF,x[$7E:1A01]
 $86:E629 BD DA 1A    LDA $1ADA,x[$7E:1AFC]  ;\
 $86:E62C 29 00 FF    AND #$FF00             ;|
-$86:E62F 18          CLC                    ;|
+$86:E62F 18          CLC                    ;} Enemy projectile Y subposition += [enemy projectile Y velocity] * 100h <-- always 0
 $86:E630 7D 6F 1A    ADC $1A6F,x[$7E:1A91]  ;|
-$86:E633 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;|
-$86:E636 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;|
+$86:E633 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;/
+$86:E636 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:E639 EB          XBA                    ;|
-$86:E63A 10 05       BPL $05    [$E641]     ;} Projectile X position += [projectile $1ADB] / 100h (no carry)
+$86:E63A 10 05       BPL $05    [$E641]     ;|
 $86:E63C 09 00 FF    ORA #$FF00             ;|
 $86:E63F 80 03       BRA $03    [$E644]     ;|
-                                            ;|
+                                            ;} Enemy projectile Y position += [enemy projectile Y velocity] / 100h
 $86:E641 29 FF 00    AND #$00FF             ;|
                                             ;|
 $86:E644 7D 93 1A    ADC $1A93,x[$7E:1AB5]  ;|
@@ -14558,7 +14608,7 @@ $86:E675             dx E5DA,E604,E5A8,00,00,2000,0000,84FC ; Initial closed upw
 {
 ;;; $E683: Instruction list - enemy projectile $E6D2 (save station electricity) ;;;
 {
-$86:E683             dx 81D5,0014   ; Timer = 0014h
+$86:E683             dx 81D5,0014   ; Timer = 14h
 $86:E687             dx 0001,B562,
                         0001,B578,
                         0001,B58E,
@@ -14574,24 +14624,24 @@ $86:E687             dx 0001,B562,
 
 ;;; $E6AD: Initialisation AI - enemy projectile $E6D2 (save station electricity) ;;;
 {
-$86:E6AD AE 27 1C    LDX $1C27  [$7E:1C27]
-$86:E6B0 22 90 82 84 JSL $848290[$84:8290]
-$86:E6B4 AD 29 1C    LDA $1C29  [$7E:1C29]
-$86:E6B7 18          CLC
-$86:E6B8 69 01 00    ADC #$0001
-$86:E6BB 0A          ASL A
-$86:E6BC 0A          ASL A
-$86:E6BD 0A          ASL A
-$86:E6BE 0A          ASL A
-$86:E6BF 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:E6C2 AD 2B 1C    LDA $1C2B  [$7E:1C2B]
-$86:E6C5 38          SEC
-$86:E6C6 E9 02 00    SBC #$0002
-$86:E6C9 0A          ASL A
-$86:E6CA 0A          ASL A
-$86:E6CB 0A          ASL A
-$86:E6CC 0A          ASL A
-$86:E6CD 99 93 1A    STA $1A93,y[$7E:1AB5]
+$86:E6AD AE 27 1C    LDX $1C27  [$7E:1C27]  ;\
+$86:E6B0 22 90 82 84 JSL $848290[$84:8290]  ;} Calculate PLM block co-ordinates
+$86:E6B4 AD 29 1C    LDA $1C29  [$7E:1C29]  ;\
+$86:E6B7 18          CLC                    ;|
+$86:E6B8 69 01 00    ADC #$0001             ;|
+$86:E6BB 0A          ASL A                  ;|
+$86:E6BC 0A          ASL A                  ;} Enemy projectile X position = ([PLM X block] + 1) * 10h
+$86:E6BD 0A          ASL A                  ;|
+$86:E6BE 0A          ASL A                  ;|
+$86:E6BF 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
+$86:E6C2 AD 2B 1C    LDA $1C2B  [$7E:1C2B]  ;\
+$86:E6C5 38          SEC                    ;|
+$86:E6C6 E9 02 00    SBC #$0002             ;|
+$86:E6C9 0A          ASL A                  ;|
+$86:E6CA 0A          ASL A                  ;} Enemy projectile Y position = ([PLM Y block] - 2) * 10h
+$86:E6CB 0A          ASL A                  ;|
+$86:E6CC 0A          ASL A                  ;|
+$86:E6CD 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:E6D0 60          RTS
 }
 
@@ -14658,19 +14708,21 @@ $86:E721 60          RTS                    ;} Return A = 1
 
 ;;; $E722: Check if enemy projectile is in Draygon room boundaries ;;;
 {
+;; Returns:
+;;     A: 1 if out of Draygon room boundaries, 0 otherwise
 $86:E722 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
-$86:E725 30 13       BMI $13    [$E73A]     ;} If [enemy projectile X position] >= 0:
-$86:E727 C9 00 02    CMP #$0200             ;\
-$86:E72A 10 0E       BPL $0E    [$E73A]     ;} If [enemy projectile X position] < 200h:
+$86:E725 30 13       BMI $13    [$E73A]     ;|
+$86:E727 C9 00 02    CMP #$0200             ;} If 0 <= [enemy projectile X position] < 200h:
+$86:E72A 10 0E       BPL $0E    [$E73A]     ;/
 $86:E72C BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
-$86:E72F 30 09       BMI $09    [$E73A]     ;} If [enemy projectile Y position] >= 0:
-$86:E731 C9 00 02    CMP #$0200             ;\
-$86:E734 10 04       BPL $04    [$E73A]     ;} If [enemy projectile Y position] < 200h:
-$86:E736 A9 00 00    LDA #$0000             ; A = 0
-$86:E739 60          RTS                    ; Return
+$86:E72F 30 09       BMI $09    [$E73A]     ;|
+$86:E731 C9 00 02    CMP #$0200             ;} If 0 <= [enemy projectile Y position] < 200h:
+$86:E734 10 04       BPL $04    [$E73A]     ;/
+$86:E736 A9 00 00    LDA #$0000             ;\
+$86:E739 60          RTS                    ;} Return A = 0
 
-$86:E73A A9 01 00    LDA #$0001             ; A = 1
-$86:E73D 60          RTS
+$86:E73A A9 01 00    LDA #$0001             ;\
+$86:E73D 60          RTS                    ;} Return A = 1
 }
 
 
@@ -14762,7 +14814,7 @@ $86:E7C8 22 AE C0 A0 JSL $A0C0AE[$A0:C0AE]  ; A = angle of ([$12], [$14]) offset
 $86:E7CC 49 FF 00    EOR #$00FF             ;\
 $86:E7CF 1A          INC A                  ;|
 $86:E7D0 18          CLC                    ;|
-$86:E7D1 69 40 00    ADC #$0040             ;} $12 = enemy projectile $7E:97DC = (40h - [A]) % 100h
+$86:E7D1 69 40 00    ADC #$0040             ;} $12 = enemy projectile angle = (40h - [A]) % 100h
 $86:E7D4 29 FF 00    AND #$00FF             ;|
 $86:E7D7 9F DC 97 7E STA $7E97DC,x[$7E:97FE];|
 $86:E7DB 85 12       STA $12    [$7E:0012]  ;/
@@ -15136,7 +15188,7 @@ $86:EA34 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = [Bo
 $86:EA37 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $86:EA3A 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = [Botwoon Y position]
 $86:EA3D A9 00 00    LDA #$0000             ;\
-$86:EA40 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile $1ADB = 0
+$86:EA40 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile falling time counter = 0
 $86:EA43 5A          PHY
 $86:EA44 A0 10 00    LDY #$0010             ; $12 = 10h
 $86:EA47 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
@@ -15147,11 +15199,11 @@ $86:EA4F 84 12       STY $12    [$7E:0012]
 $86:EA51 B9 F1 E9    LDA $E9F1,y[$86:EA01]  ;\
 $86:EA54 7A          PLY                    ;} Enemy projectile instruction list pointer = [$E9F1 + [$12]]
 $86:EA55 99 47 1B    STA $1B47,y[$7E:1B69]  ;/
-$86:EA58 99 23 1B    STA $1B23,y[$7E:1B45]  ; Enemy projectile $1B23 = [enemy projectile instruction list pointer]
+$86:EA58 99 23 1B    STA $1B23,y[$7E:1B45]  ; Enemy projectile instruction list = [enemy projectile instruction list pointer]
 $86:EA5B A5 12       LDA $12    [$7E:0012]  ;\
-$86:EA5D 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile $1AFF = [$12]
+$86:EA5D 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;} Enemy projectile instruction list table index = [$12]
 $86:EA60 A9 98 EA    LDA #$EA98             ;\
-$86:EA63 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile function = $EA98
+$86:EA63 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile function = $EA98 (main)
 $86:EA66 AE A8 0F    LDX $0FA8  [$7E:0FA8]  ;\
 $86:EA69 98          TYA                    ;} $7E:7800 + [Botwoon body projectile index] = [enemy projectile index] (Botwoon enemy projectile indices)
 $86:EA6A 9F 00 78 7E STA $7E7800,x[$7E:7818];/
@@ -15174,7 +15226,7 @@ $86:EA86 BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
 $86:EA89 C9 98 EA    CMP #$EA98             ;} If [enemy projectile function] = $EA98 (main):
 $86:EA8C D0 06       BNE $06    [$EA94]     ;/
 $86:EA8E A9 F4 EA    LDA #$EAF4             ;\
-$86:EA91 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = dying
+$86:EA91 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = $EAF4 (dying)
 
 $86:EA94 FC B7 1A    JSR ($1AB7,x)[$86:EA98]; Execute [enemy projectile function]
 $86:EA97 60          RTS
@@ -15183,14 +15235,14 @@ $86:EA97 60          RTS
 
 ;;; $EA98: Botwoon's body function - main ;;;
 {
-; Enemy projectile $1AFF is set by Botwoon, see $B3:9D4D
+; Enemy projectile instruction list table index ($1AFF,x) is set by Botwoon, see $B3:9D4D
 $86:EA98 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
 $86:EA9B A8          TAY                    ;|
-$86:EA9C B9 F1 E9    LDA $E9F1,y[$86:EA01]  ;} If [$E9F1 + [enemy projectile $1AFF]] != [enemy projectile $1B23]:
+$86:EA9C B9 F1 E9    LDA $E9F1,y[$86:EA01]  ;} If [enemy projectile instruction list] != [$E9F1 + [enemy projectile instruction list table index]]:
 $86:EA9F DD 23 1B    CMP $1B23,x[$7E:1B45]  ;|
 $86:EAA2 F0 0C       BEQ $0C    [$EAB0]     ;/
-$86:EAA4 9D 47 1B    STA $1B47,x[$7E:1B69]  ; Enemy projectile instruction list pointer = [$E9F1 + [enemy projectile $1AFF]]
-$86:EAA7 9D 23 1B    STA $1B23,x[$7E:1B45]  ; Enemy projectile $1B23 = [enemy projectile instruction list pointer]
+$86:EAA4 9D 47 1B    STA $1B47,x[$7E:1B69]  ; Enemy projectile instruction list pointer = [$E9F1 + [enemy projectile instruction list table index]]
+$86:EAA7 9D 23 1B    STA $1B23,x[$7E:1B45]  ; Enemy projectile instruction list = [enemy projectile instruction list pointer]
 $86:EAAA A9 01 00    LDA #$0001             ;\
 $86:EAAD 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 
@@ -15220,17 +15272,17 @@ $86:EAD3 60          RTS
 ;;; $EAD4: Botwoon's body hurt flash handling ;;;
 {
 ; Clone of $EAB4
-$86:EAD4 B9 BB 19    LDA $19BB,y[$7E:19DD]  ;\
-$86:EAD7 09 00 0E    ORA #$0E00             ;} Enemy projectile palette index = 7
-$86:EADA 99 BB 19    STA $19BB,y[$7E:19DD]  ;/
-$86:EADD AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
-$86:EAE0 F0 11       BEQ $11    [$EAF3]     ;} If [Botwoon flash timer] = 0: return
-$86:EAE2 AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
-$86:EAE5 89 02 00    BIT #$0002             ;} If [number of times main enemy routine has been executed] % 4 >= 2:
-$86:EAE8 F0 09       BEQ $09    [$EAF3]     ;/
-$86:EAEA B9 BB 19    LDA $19BB,y            ;\
-$86:EAED 29 FF F1    AND #$F1FF             ;} Enemy projectile palette index = 0
-$86:EAF0 99 BB 19    STA $19BB,y            ;/
+$86:EAD4 B9 BB 19    LDA $19BB,y[$7E:19DD]
+$86:EAD7 09 00 0E    ORA #$0E00
+$86:EADA 99 BB 19    STA $19BB,y[$7E:19DD]
+$86:EADD AD 9C 0F    LDA $0F9C  [$7E:0F9C]
+$86:EAE0 F0 11       BEQ $11    [$EAF3]
+$86:EAE2 AD 44 0E    LDA $0E44  [$7E:0E44]
+$86:EAE5 89 02 00    BIT #$0002
+$86:EAE8 F0 09       BEQ $09    [$EAF3]
+$86:EAEA B9 BB 19    LDA $19BB,y
+$86:EAED 29 FF F1    AND #$F1FF
+$86:EAF0 99 BB 19    STA $19BB,y
 
 $86:EAF3 60          RTS
 }
@@ -15241,22 +15293,22 @@ $86:EAF3 60          RTS
 $86:EAF4 8A          TXA                    ;\
 $86:EAF5 0A          ASL A                  ;|
 $86:EAF6 0A          ASL A                  ;|
-$86:EAF7 18          CLC                    ;} Enemy projectile $1AFF = [enemy projectile index] * 4 + 60h
+$86:EAF7 18          CLC                    ;} Enemy projectile pre-fall wait counter = [enemy projectile index] * 4 + 60h
 $86:EAF8 69 60 00    ADC #$0060             ;|
 $86:EAFB 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;/
 $86:EAFE A9 04 EB    LDA #$EB04             ;\
-$86:EB01 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = dying - waiting
+$86:EB01 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = $EB04 (dying - waiting)
 }
 
 
 ;;; $EB04: Botwoon's body function - dying - waiting ;;;
 {
-$86:EB04 FE FF 1A    INC $1AFF,x[$7E:1B21]  ; Increment enemy projectile $1AFF
+$86:EB04 FE FF 1A    INC $1AFF,x[$7E:1B21]  ; Increment enemy projectile pre-fall wait counter
 $86:EB07 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
-$86:EB0A C9 00 01    CMP #$0100             ;} If [enemy projectile $1AFF] >= 100h:
+$86:EB0A C9 00 01    CMP #$0100             ;} If [enemy projectile pre-fall wait counter] >= 100h:
 $86:EB0D 30 06       BMI $06    [$EB15]     ;/
 $86:EB0F A9 1F EB    LDA #$EB1F             ;\
-$86:EB12 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = dying - falling
+$86:EB12 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile function = $EB1F (dying - falling)
 
 $86:EB15 A9 00 00    LDA #$0000             ;\
 $86:EB18 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 0
@@ -15271,24 +15323,24 @@ $86:EB1F 9B          TXY                    ;\
 $86:EB20 B9 DB 1A    LDA $1ADB,y[$7E:1AFD]  ;|
 $86:EB23 29 00 FF    AND #$FF00             ;|
 $86:EB26 EB          XBA                    ;|
-$86:EB27 0A          ASL A                  ;} X = [enemy projectile $1ADB] / 100h * 8
+$86:EB27 0A          ASL A                  ;} X = [enemy projectile falling time counter] / 100h * 8 (quadratic speed table index)
 $86:EB28 0A          ASL A                  ;|
 $86:EB29 0A          ASL A                  ;|
 $86:EB2A AA          TAX                    ;/
 $86:EB2B B9 6F 1A    LDA $1A6F,y[$7E:1A91]  ;\
 $86:EB2E 18          CLC                    ;|
-$86:EB2F 7F C7 CB A0 ADC $A0CBC7,x[$A0:CBC7];} If [enemy projectile $1A6F] + [$A0:CBC7 + [X]] >= 10000h:
-$86:EB33 90 09       BCC $09    [$EB3E]     ;/
-$86:EB35 48          PHA                    ;\
+$86:EB2F 7F C7 CB A0 ADC $A0CBC7,x[$A0:CBC7];|
+$86:EB33 90 09       BCC $09    [$EB3E]     ;|
+$86:EB35 48          PHA                    ;|
 $86:EB36 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;|
-$86:EB39 1A          INC A                  ;} Increment enemy projectile Y position
-$86:EB3A 99 93 1A    STA $1A93,y[$7E:1AB5]  ;|
-$86:EB3D 68          PLA                    ;/
-
-$86:EB3E 99 6F 1A    STA $1A6F,y[$7E:1A91]  ; Enemy projectile $1A6F += [$A0:CBC7 + [X]]
-$86:EB41 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
+$86:EB39 1A          INC A                  ;|
+$86:EB3A 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position += [$A0:CBC7 + [X] + 2].[$A0:CBC7 + [X]]
+$86:EB3D 68          PLA                    ;|
+                                            ;|
+$86:EB3E 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;|
+$86:EB41 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;|
 $86:EB44 18          CLC                    ;|
-$86:EB45 7F C9 CB A0 ADC $A0CBC9,x[$A0:CBC9];} Enemy projectile Y position += [$A0:CBC7 + [X] + 2]
+$86:EB45 7F C9 CB A0 ADC $A0CBC9,x[$A0:CBC9];|
 $86:EB49 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $86:EB4C C9 C8 00    CMP #$00C8             ;\
 $86:EB4F 30 2E       BMI $2E    [$EB7F]     ;} If [enemy projectile Y position] < C8h: go to BRANCH_FALLING
@@ -15297,7 +15349,7 @@ $86:EB54 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = C8h
 $86:EB57 A9 93 EB    LDA #$EB93             ;\
 $86:EB5A 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile function = RTS
 $86:EB5D A9 08 E2    LDA #$E208             ;\
-$86:EB60 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $E208
+$86:EB60 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $E208 (big explosion)
 $86:EB63 A9 00 0A    LDA #$0A00             ;\
 $86:EB66 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile VRAM tiles index = 0, palette index = 5
 $86:EB69 A9 01 00    LDA #$0001             ;\
@@ -15308,12 +15360,12 @@ $86:EB75 D0 07       BNE $07    [$EB7E]     ;} If [enemy projectile index] = Ah:
 $86:EB77 A9 01 00    LDA #$0001             ;\
 $86:EB7A 8F 3E 88 7E STA $7E883E[$7E:883E]  ;} Botwoon body death flag = 1
 
-$86:EB7E 60          RTS
+$86:EB7E 60          RTS                    ; Return
 
 ; BRANCH_FALLING
 $86:EB7F B9 DB 1A    LDA $1ADB,y[$7E:1AFD]  ;\
 $86:EB82 18          CLC                    ;|
-$86:EB83 69 C0 00    ADC #$00C0             ;} Enemy projectile $1ADB += C0h
+$86:EB83 69 C0 00    ADC #$00C0             ;} Enemy projectile falling time counter += C0h
 $86:EB86 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;/
 $86:EB89 A9 00 00    LDA #$0000             ;\
 $86:EB8C 99 8F 1B    STA $1B8F,y[$7E:1BB1]  ;}
@@ -15351,7 +15403,7 @@ $86:EB9F 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:EBA0             dx EA31,EA80,E8F3,02,02,E080,0000,84FC ; Botwoon's body
+$86:EBA0             dx EA31,EA80,E8F3,02,02,E080,0000,84FC ; Botwoon's body. Initial instruction list ignored
 }
 }
 
@@ -15372,6 +15424,7 @@ $86:EBAE             dx 0003,B8B4,
 ;;; $EBC6: Initialisation AI - enemy projectile $EC48 (Botwoon's spit) ;;;
 {
 ;; Parameters:
+;;     Y: Enemy projectile index
 ;;     $1993: Speed
 ;;     $060B: Angle
 $86:EBC6 DA          PHX
@@ -15384,7 +15437,7 @@ $86:EBD6 A9 AE EB    LDA #$EBAE             ;\
 $86:EBD9 99 47 1B    STA $1B47,y[$7E:1B4F]  ;} Enemy projectile instruction list pointer = $EBAE
 $86:EBDC BB          TYX                    ;\
 $86:EBDD AD 0B 06    LDA $060B  [$7E:060B]  ;|
-$86:EBE0 9F DC 97 7E STA $7E97DC,x[$7E:97E4];} $12 = enemy projectile $7E:97DC = [$060B]
+$86:EBE0 9F DC 97 7E STA $7E97DC,x[$7E:97E4];} $12 = enemy projectile angle = [$060B]
 $86:EBE4 85 12       STA $12    [$7E:0012]  ;/
 $86:EBE6 AD 93 19    LDA $1993  [$7E:1993]  ;\
 $86:EBE9 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile initialisation parameter]
@@ -15463,7 +15516,7 @@ $86:EC47 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:EC48             dx EBC6,EC05,EBAE,02,02,1060,0000,84FC ; Botwoon's spit
+$86:EC48             dx EBC6,EC05,EBAE,02,02,1060,0000,84FC ; Botwoon's spit. Initial instruction list ignored
 }
 }
 
@@ -15492,11 +15545,11 @@ $86:EC68 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;} Enemy projectile X position = [en
 $86:EC6B BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:EC6E 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = [enemy Y position]
 $86:EC71 A9 5C EC    LDA #$EC5C             ;\
-$86:EC74 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $EC5C
+$86:EC74 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $EC5C (facing up)
 $86:EC77 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $86:EC7A D0 06       BNE $06    [$EC82]     ;} If [enemy parameter 2] = 0 (facing down):
 $86:EC7C A9 56 EC    LDA #$EC56             ;\
-$86:EC7F 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $EC56
+$86:EC7F 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $EC56 (facing down)
 
 $86:EC82 DA          PHX
 $86:EC83 BF 08 88 7E LDA $7E8808,x[$7E:8808];\
@@ -15528,7 +15581,7 @@ $86:EC94 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:EC95             dx EC62,EC94,EC56,02,02,2005,0000,84FC ; Yapping maw's body
+$86:EC95             dx EC62,EC94,EC56,02,02,2005,0000,84FC ; Yapping maw's body. Initial instruction list ignored
 }
 }
 

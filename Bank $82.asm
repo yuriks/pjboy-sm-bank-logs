@@ -9150,7 +9150,7 @@ $82:DAF6 60          RTS
 {
 ;; Parameters:
 ;;     A: Bitset of palettes to advance
-{
+       {
 ;;         1: BG palette 0
 ;;         2: BG palette 1
 ;;         4: BG palette 2
@@ -9167,7 +9167,7 @@ $82:DAF6 60          RTS
 ;;         2000h: Sprite palette 5
 ;;         4000h: Sprite palette 6
 ;;         8000h: Sprite palette 7
-}
+       }
 ;; Returns:
 ;;     Carry: Set if reached target colour, clear otherwise
 
@@ -9192,7 +9192,7 @@ $82:DB0B 6B          RTL
 {
 ;; Parameters:
 ;;     A: Bitset of palettes to advance
-{
+       {
 ;;         1: BG palette 0
 ;;         2: BG palette 1
 ;;         4: BG palette 2
@@ -9209,7 +9209,7 @@ $82:DB0B 6B          RTL
 ;;         2000h: Sprite palette 5
 ;;         4000h: Sprite palette 6
 ;;         8000h: Sprite palette 7
-}
+       }
 ;; Returns:
 ;;     Carry: Set if reached target colour, clear otherwise
 

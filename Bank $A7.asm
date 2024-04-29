@@ -2035,8 +2035,8 @@ $A7:B0D3 85 14       STA $14    [$7E:0014]  ;} $14 = [projectile Y position]
 $A7:B0D5 BD 18 0C    LDA $0C18,x[$7E:0C18]
 $A7:B0D8 A0 1D 00    LDY #$001D             ; A = 1Dh (big explosion)
 $A7:B0DB 89 00 02    BIT #$0200             ;\
-$A7:B0DE D0 03       BNE $03    [$B0E3]     ;} If projectile is super missile:
-$A7:B0E0 A0 06 00    LDY #$0006             ; A = 6
+$A7:B0DE D0 03       BNE $03    [$B0E3]     ;} If projectile is not super missile:
+$A7:B0E0 A0 06 00    LDY #$0006             ; A = 6 (dud shot)
 
 $A7:B0E3 98          TYA
 $A7:B0E4 A0 09 E5    LDY #$E509             ;\

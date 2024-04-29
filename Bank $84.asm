@@ -11709,23 +11709,28 @@ $84:D79E 60          RTS
 ;;; $D79F: Instruction - spawn two eye door smoke enemy projectiles ;;;
 {
 $84:D79F 5A          PHY
-$84:D7A0 A9 0A 03    LDA #$030A
+$84:D7A0 A9 0A 03    LDA #$030A             ; A low = Ah (corpse dust cloud), A high = 3 (random X/Y offset in eye)
 $84:D7A3 A0 17 E5    LDY #$E517             ;\
-$84:D7A6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn eye door smoke enemy projectile
-$84:D7AA A9 0A 03    LDA #$030A
+$84:D7A6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn PLM dust cloud / explosion enemy projectile
+$84:D7AA A9 0A 03    LDA #$030A             ; A low = Ah (corpse dust cloud), A high = 3 (random X/Y offset in eye)
 $84:D7AD A0 17 E5    LDY #$E517             ;\
-$84:D7B0 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn eye door smoke enemy projectile
+$84:D7B0 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn PLM dust cloud / explosion enemy projectile
 $84:D7B4 7A          PLY
 $84:D7B5 60          RTS
 }
 
 
-;;; $D7B6: Instruction - spawn eye door smoke projectile ;;;
+;;; $D7B6: Instruction - spawn eye door sweat drop projectile ;;;
 {
+; This enemy projectile is pretty pointless,
+; it's a tiny graphic that lasts 14h frames that will almost certainly be hidden by the missile explosion or other smoke enemy projectiles
+; It's use the non-random positioning argument (always spawns to the same place, the centre of the door),
+; so there's no reason to call this instruction multiple times in a row
+; It's also just strange to draw a sweat drop in the centre of the door as part of the fatal hit
 $84:D7B6 5A          PHY
-$84:D7B7 A9 0B 00    LDA #$000B
+$84:D7B7 A9 0B 00    LDA #$000B             ; A low = Bh (eye door sweat drop), A high = 0 (non-random X/Y offset)
 $84:D7BA A0 17 E5    LDY #$E517             ;\
-$84:D7BD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn eye door smoke enemy projectile
+$84:D7BD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn PLM dust cloud / explosion enemy projectile
 $84:D7C1 7A          PLY
 $84:D7C2 60          RTS
 }
@@ -11837,8 +11842,8 @@ $84:D880             dx 8C10,09,        ; Queue sound 9, sound library 2, max qu
                         0004,9C23,
                         8724,D83C       ; Go to $D83C
 $84:D8C4             dx 86CA,           ; Clear pre-instruction
-                        D7B6,           ; Spawn eye door smoke projectile
-                        D7B6,           ; Spawn eye door smoke projectile
+                        D7B6,           ; Spawn eye door sweat drop projectile
+                        D7B6,           ; Spawn eye door sweat drop projectile
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D7DA,           ; Move PLM up one row and make a blue door facing left
@@ -11933,8 +11938,8 @@ $84:D9B7             dx 8C10,09,        ; Queue sound 9, sound library 2, max qu
                         0004,9C7B,
                         8724,D973,      ; Go to $D973
 $84:D9FB             dx 86CA,           ; Clear pre-instruction
-                        D7B6,           ; Spawn eye door smoke projectile
-                        D7B6,           ; Spawn eye door smoke projectile
+                        D7B6,           ; Spawn eye door sweat drop projectile
+                        D7B6,           ; Spawn eye door sweat drop projectile
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D7C3,           ; Move PLM up one row and make a blue door facing right

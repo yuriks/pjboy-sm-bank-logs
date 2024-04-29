@@ -798,7 +798,7 @@ $A9:8C4C 7D 7A 0F    ADC $0F7A,x[$7E:0FFA]  ;|
 $A9:8C4F 85 12       STA $12    [$7E:0012]  ;/
 $A9:8C51 A9 D0 00    LDA #$00D0             ;\
 $A9:8C54 85 14       STA $14    [$7E:0014]  ;} $14 = D0h
-$A9:8C56 A9 09 00    LDA #$0009             ; A = 9
+$A9:8C56 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $A9:8C59 A0 09 E5    LDY #$E509             ;\
 $A9:8C5C 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A9:8C60 60          RTS
@@ -1213,7 +1213,10 @@ $A9:8F75 A9 29 00    LDA #$0029             ;\
 $A9:8F78 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 29h, sound library 2, max queued sounds allowed = 3 (Mother Brain rising into phase 2)
 $A9:8F7C 60          RTS
 
+; Explosion type. 9 = small dust cloud, Ch = smoke
 $A9:8F7D             db 09, 12
+
+; Explosion X positions
 $A9:8F7F             dw 003D, 0054, 0020, 0035, 005A, 0043, 0067, 0029
 }
 }
@@ -2608,21 +2611,21 @@ $A9:9A42             dx 9720,                   ; Mother Brain's pose = death be
                         0001,9FA0,
                         0001,A384,
                         0001,A3CE,
-                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, FFD8h) with parameter 1
+                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, -28h) with parameter 1 (Mother Brain elbow charge particles)
                         0001,A3CE,
-                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, FFD6h) with parameter 2
+                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, -2Ah) with parameter 2 (Mother Brain elbow charge energy)
                         0001,A3CE,
-                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, FFD8h) with parameter 1
+                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, -28h) with parameter 1 (Mother Brain elbow charge particles)
                         0001,A3CE,
-                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, FFD6h) with parameter 2
+                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, -2Ah) with parameter 2 (Mother Brain elbow charge energy)
                         0001,A3CE,
-                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, FFD8h) with parameter 1
+                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, -28h) with parameter 1 (Mother Brain elbow charge particles)
                         0001,A3CE,
-                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, FFD6h) with parameter 2
+                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, -2Ah) with parameter 2 (Mother Brain elbow charge energy)
                         0001,A3CE,
-                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, FFD8h) with parameter 1
+                        9AC8,0024,FFD8,0001,    ; Spawn enemy projectile $E509 to offset (24h, -28h) with parameter 1 (Mother Brain elbow charge particles)
                         0001,A3CE,
-                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, FFD6h) with parameter 2
+                        9AC8,0022,FFD6,0002,    ; Spawn enemy projectile $E509 to offset (22h, -2Ah) with parameter 2 (Mother Brain elbow charge energy)
                         0001,A3CE,
                         0001,A3CE,
                         9AEF,                   ; Spawn death beam enemy projectile
@@ -3954,7 +3957,7 @@ $A9:B234 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:B237 18          CLC                    ;|
 $A9:B238 69 10 00    ADC #$0010             ;} $14 = [Mother Brain's brain Y position] + 10h
 $A9:B23B 85 14       STA $14    [$7E:0014]  ;/
-$A9:B23D A9 0A 00    LDA #$000A             ; A = Ah
+$A9:B23D A9 0A 00    LDA #$000A             ; A = Ah (corpse dust cloud)
 $A9:B240 A0 09 E5    LDY #$E509             ;\
 $A9:B243 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A9:B247 AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
@@ -7347,7 +7350,7 @@ $A9:C9B0 A5 14       LDA $14    [$7E:0014]  ;\
 $A9:C9B2 18          CLC                    ;|
 $A9:C9B3 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} $14 += [Mother Brain's brain Y position]
 $A9:C9B6 85 14       STA $14    [$7E:0014]  ;/
-$A9:C9B8 A9 09 00    LDA #$0009             ; A = 9
+$A9:C9B8 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $A9:C9BB A0 09 E5    LDY #$E509             ;\
 $A9:C9BE 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A9:C9C2 60          RTS
@@ -8879,7 +8882,7 @@ $A9:D5C5 69 10 01    ADC #$0110             ;|
 $A9:D5C8 85 12       STA $12    [$7E:0012]  ;/
 $A9:D5CA A9 BC 00    LDA #$00BC             ;\
 $A9:D5CD 85 14       STA $14    [$7E:0014]  ;} $14 = BCh (Y position)
-$A9:D5CF A9 0A 00    LDA #$000A             ; A = Ah
+$A9:D5CF A9 0A 00    LDA #$000A             ; A = Ah (corpse dust cloud)
 $A9:D5D2 A0 09 E5    LDY #$E509             ;\
 $A9:D5D5 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A9:D5D9 AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
@@ -9744,7 +9747,7 @@ $A9:DC1C BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;\
 $A9:DC1F 18          CLC                    ;|
 $A9:DC20 69 10 00    ADC #$0010             ;} $14 = [enemy Y position] + 10h
 $A9:DC23 85 14       STA $14    [$7E:0014]  ;/
-$A9:DC25 A9 0A 00    LDA #$000A             ; A = Ah
+$A9:DC25 A9 0A 00    LDA #$000A             ; A = Ah (corpse dust cloud)
 $A9:DC28 A0 09 E5    LDY #$E509             ;\
 $A9:DC2B 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A9:DC2F AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
