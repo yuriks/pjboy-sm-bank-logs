@@ -9001,7 +9001,7 @@ $A8:E6E5 6B          RTL
 
 $A8:E6E6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E6E9 A0 98 F4    LDY #$F498             ;\
-$A8:E6EC 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn sparks enemy projectile
+$A8:E6EC 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn falling spark enemy projectile
 $A8:E6F0 64 12       STZ $12    [$7E:0012]
 $A8:E6F2 20 F6 E6    JSR $E6F6  [$A8:E6F6]
 $A8:E6F5 6B          RTL

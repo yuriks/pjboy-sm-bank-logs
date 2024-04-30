@@ -1805,7 +1805,7 @@ $86:89FE 10 F5       BPL $F5    [$89F5]     ; If [$1A] >= 0: go to LOOP
 $86:8A00 FA          PLX
 $86:8A01 A5 16       LDA $16    [$7E:0016]  ;\
 $86:8A03 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;|
-$86:8A06 A5 18       LDA $18    [$7E:0018]  ;} Enemy Y position = [$18].[$16]
+$86:8A06 A5 18       LDA $18    [$7E:0018]  ;} Enemy projectile Y position = [$18].[$16]
 $86:8A08 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:8A0B 18          CLC                    ;\
 $86:8A0C 60          RTS                    ;} Return carry clear
@@ -15588,7 +15588,9 @@ $86:EC95             dx EC62,EC94,EC56,02,02,2005,0000,84FC ; Yapping maw's body
 
 ;;; $ECA3..F352: Enemy death explosion / pickup ;;;
 {
-;;; $ECA3: Instruction list ;;;
+;;; $ECA3..EF28: Instruction lists ;;;
+{
+;;; $ECA3: Instruction list - handle respawning enemy ;;;
 {
 $86:ECA3             dx 0040,8000,
                         EF10,       ; Handle respawning enemy
@@ -15596,34 +15598,34 @@ $86:ECA3             dx 0040,8000,
 }
 
 
-;;; $ECAB: Instruction list - enemy death explosion - type 4 ;;;
+;;; $ECAB: Instruction list - enemy death explosion - type 4 (big explosion) ;;;
 {
 $86:ECAB             dx 81D5,0005   ; Timer = 5
-$86:ECAF             dx ED17,0003,
-                        ED17,000C,
+$86:ECAF             dx ED17,0003,  ; ???
+                        ED17,000C,  ; ???
                         0008,8000,
-                        EE97,       ; ???
+                        EE97,       ; Queue small explosion sound effect
                         81C6,ECAF,  ; Decrement timer and go to $ECAF if non-zero
                         EEAF,       ; ???
                         8154        ; Delete
 }
 
 
-;;; $ECC5: Instruction list - enemy death explosion - type 3 ;;;
+;;; $ECC5: Instruction list - enemy death explosion - type 3 (mini-Kraid explosion) ;;;
 {
 $86:ECC5             dx 81D5,0010   ; Timer = 10h
-$86:ECC9             dx ECE3,0003,
-                        ECE3,000C,
-                        ECE3,0015,
+$86:ECC9             dx ECE3,0003,  ; ???
+                        ECE3,000C,  ; ???
+                        ECE3,0015,  ; ???
                         0008,8000,
-                        EE97,       ; ???
+                        EE97,       ; Queue small explosion sound effect
                         81C6,ECC9,  ; Decrement timer and go to $ECC9 if non-zero
                         EEAF,       ; ???
                         8154        ; Delete
 }
 
 
-;;; $ECE3:  ;;;
+;;; $ECE3: Instruction ;;;
 {
 $86:ECE3 DA          PHX
 $86:ECE4 5A          PHY
@@ -15654,7 +15656,7 @@ $86:ED16 60          RTS
 }
 
 
-;;; $ED17:  ;;;
+;;; $ED17: Instruction ;;;
 {
 $86:ED17 DA          PHX
 $86:ED18 5A          PHY
@@ -15685,30 +15687,30 @@ $86:ED4A 60          RTS
 }
 
 
-;;; $ED4B: Instruction list - enemy death explosion - type 2 ;;;
+;;; $ED4B: Instruction list - enemy death explosion - type 2 (normal explosion) ;;;
 {
 $86:ED4B             dx 0005,B406,
                         0005,B41C,
                         0005,B432,
-                        EE8B,       ; ???
+                        EE8B,       ; Queue enemy killed sound effect
                         0005,B448,
                         0005,B486,
                         0005,B4B0,
-                        EEAF,
+                        EEAF,       ; ???
                         8154        ; Delete
 }
 
 
-;;; $ED69: Instruction list - enemy death explosion - type 0 ;;;
+;;; $ED69: Instruction list - enemy death explosion - type 0 (small explosion) ;;;
 {
 $86:ED69             dx 0004,BDFF,
                         0006,BE06,
                         0005,BE1C,
-                        EE8B,       ; ???
+                        EE8B,       ; Queue enemy killed sound effect
                         0005,BE32,
                         0005,BE48,
                         0006,BE5E,
-                        EEAF,
+                        EEAF,       ; ???
                         8154        ; Delete
 }
 
@@ -15786,9 +15788,8 @@ $86:EDEB             dx 0005,BF14,
 }
 
 
-;;; $EDFF: Instruction list - enemy death explosion - type 1 ;;;
+;;; $EDFF: Instruction list - enemy death explosion - type 1 (killed by Samus contact) ;;;
 {
-; Used for death due to contact damage
 $86:EDFF             dx 0002,C2E9,
                         0002,C2FF,
                         0002,C329,
@@ -15796,7 +15797,7 @@ $86:EDFF             dx 0002,C2E9,
                         0002,C37D,
                         0002,C3A7,
                         0002,C3D1,
-                        EEA3,       ; ???
+                        EEA3,       ; Queue enemy killed by contact damage sound effect
                         0002,C3E7,
                         0002,C3FD,
                         0002,C413,
@@ -15820,7 +15821,7 @@ $86:EE45             dx 0002,B8E5,
                         0002,B951,
                         0002,B976,
                         0002,B99B,
-                        EEA3,
+                        EEA3,       ; Queue enemy killed by contact damage sound effect
                         0002,B9B1,
                         0002,B9C7,
                         0002,B9DD,
@@ -15830,7 +15831,7 @@ $86:EE45             dx 0002,B8E5,
                         0002,BA35,
                         0002,BA4B,
                         0002,BA61,
-                        EEAF,
+                        EEAF,       ; ???
                         8154        ; Delete
 }
 
@@ -15847,7 +15848,7 @@ $86:EE96 60          RTS
 }
 
 
-;;; $EE97:  ;;;
+;;; $EE97: Instruction - queue small explosion sound effect ;;;
 {
 $86:EE97 DA          PHX
 $86:EE98 5A          PHY
@@ -15859,7 +15860,7 @@ $86:EEA2 60          RTS
 }
 
 
-;;; $EEA3: Instruction ;;;
+;;; $EEA3: Instruction - queue enemy killed by contact damage sound effect ;;;
 {
 $86:EEA3 DA          PHX
 $86:EEA4 5A          PHY
@@ -15930,16 +15931,17 @@ $86:EF04             dw 0000,
 $86:EF10 5A          PHY
 $86:EF11 DA          PHX
 $86:EF12 BF 10 F4 7E LDA $7EF410,x[$7E:F430];\
-$86:EF16 C9 FF FF    CMP #$FFFF             ;} If [enemy projectile $7E:F410] = FFFFh: return
+$86:EF16 C9 FF FF    CMP #$FFFF             ;} If [enemy projectile killed enemy index] = FFFFh: return
 $86:EF19 F0 0B       BEQ $0B    [$EF26]     ;/
 $86:EF1B 89 00 80    BIT #$8000             ;\
-$86:EF1E F0 06       BEQ $06    [$EF26]     ;} If [enemy projectile $7E:F410] & 8000h = 0: return
-$86:EF20 29 FF 7F    AND #$7FFF             ; A = [enemy projectile $7E:F410] & ~8000h
+$86:EF1E F0 06       BEQ $06    [$EF26]     ;} If [enemy projectile killed enemy index] & 8000h = 0: return
+$86:EF20 29 FF 7F    AND #$7FFF             ; A = [enemy projectile killed enemy index] & ~8000h
 $86:EF23 20 64 F2    JSR $F264  [$86:F264]  ; Respawn enemy
 
 $86:EF26 FA          PLX
 $86:EF27 7A          PLY
 $86:EF28 60          RTS
+}
 }
 
 
@@ -15958,22 +15960,22 @@ $86:EF32 99 93 1A    STA $1A93,y[$7E:1A95]  ;} Enemy projectile Y position = [$1
 $86:EF35 A9 00 00    LDA #$0000             ;\
 $86:EF38 99 BB 19    STA $19BB,y[$7E:19BD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:EF3B AD 24 0E    LDA $0E24  [$7E:0E24]  ;\
-$86:EF3E 9F C8 F3 7E STA $7EF3C8,x[$7E:E6FF];} Enemy projectile $7E:F3C8 = [$0E24]
+$86:EF3E 9F C8 F3 7E STA $7EF3C8,x[$7E:E6FF];} Enemy projectile enemy header pointer = [$0E24]
 $86:EF42 20 06 F1    JSR $F106  [$86:F106]  ; Random drop routine
-$86:EF45 F0 27       BEQ $27    [$EF6E]
+$86:EF45 F0 27       BEQ $27    [$EF6E]     ; If [enemy projectile index] = 0: go to BRANCH_NOTHING
 $86:EF47 C9 06 00    CMP #$0006             ;\
 $86:EF4A 10 22       BPL $22    [$EF6E]     ;} If [A] = 6: go to BRANCH_NOTHING
 $86:EF4C 0A          ASL A                  ;\
-$86:EF4D 99 FF 1A    STA $1AFF,y[$7E:1B01]  ;} Enemy projectile $1AFF = [A] * 2
+$86:EF4D 99 FF 1A    STA $1AFF,y[$7E:1B01]  ;} Enemy projectile type = [A] * 2
 $86:EF50 AA          TAX                    ;\
 $86:EF51 BD 04 EF    LDA $EF04,x[$86:EF0C]  ;} Enemy projectile instruction pointer list = [$EF04 + [A] * 2]
 $86:EF54 99 47 1B    STA $1B47,y[$7E:1B49]  ;/
 $86:EF57 A9 01 00    LDA #$0001             ;\
 $86:EF5A 99 8F 1B    STA $1B8F,y[$7E:1B91]  ;} Enemy projectile instruction timer = 1
 $86:EF5D A9 90 01    LDA #$0190             ;\
-$86:EF60 99 23 1B    STA $1B23,y[$7E:1B25]  ;} Enemy projectile $1B23 = 400 (expiration timer?)
+$86:EF60 99 23 1B    STA $1B23,y[$7E:1B25]  ;} Enemy projectile projectile expiration timer = 400
 $86:EF63 BB          TYX                    ;\
-$86:EF64 A9 FF FF    LDA #$FFFF             ;} Enemy projectile $7E:F410 = FFFFh
+$86:EF64 A9 FF FF    LDA #$FFFF             ;} Enemy projectile killed enemy index = FFFFh
 $86:EF67 9F 10 F4 7E STA $7EF410,x[$7E:F412];/
 $86:EF6B 7A          PLY
 $86:EF6C FA          PLX
@@ -15981,7 +15983,7 @@ $86:EF6D 60          RTS                    ; Return
 
 ; BRANCH_NOTHING
 $86:EF6E A9 A3 EC    LDA #$ECA3             ;\
-$86:EF71 99 47 1B    STA $1B47,y[$7E:1B67]  ;} Enemy projectile instruction pointer list = $ECA3
+$86:EF71 99 47 1B    STA $1B47,y[$7E:1B67]  ;} Enemy projectile instruction pointer list = $ECA3 (handle respawning enemy)
 $86:EF74 A9 01 00    LDA #$0001             ;\
 $86:EF77 99 8F 1B    STA $1B8F,y[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
 $86:EF7A A9 00 30    LDA #$3000             ;\
@@ -15996,7 +15998,8 @@ $86:EF88 60          RTS
 
 ;;; $EF89: Initialisation AI - enemy projectile $F345 (enemy death explosion) ;;;
 {
-;; Parameter:
+;; Parameters:
+;;     Y: Enemy projectile index
 ;;     $1993: Death animation. Range 0..4
 ;;         0: Small explosion
 ;;         1: Killed by Samus contact
@@ -16005,23 +16008,23 @@ $86:EF88 60          RTS
 ;;         4: Big explosion
 $86:EF89 DA          PHX
 $86:EF8A 5A          PHY
-$86:EF8B BB          TYX                    ; X = [Y]
+$86:EF8B BB          TYX                    ; X = [enemy projectile index]
 $86:EF8C AC 54 0E    LDY $0E54  [$7E:0E54]  ; Y = [enemy index]
 $86:EF8F B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;\
 $86:EF92 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;} Enemy projectile X position = [enemy X position]
 $86:EF95 B9 7E 0F    LDA $0F7E,y[$7E:0FBE]  ;\
 $86:EF98 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;} Enemy projectile Y position = [enemy Y position]
 $86:EF9B AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
-$86:EF9E 9F 10 F4 7E STA $7EF410,x[$7E:F432];} Enemy projectile $7E:F410 = [enemy index]
+$86:EF9E 9F 10 F4 7E STA $7EF410,x[$7E:F432];} Enemy projectile killed enemy index = [enemy index]
 $86:EFA2 B9 86 0F    LDA $0F86,y[$7E:0FC6]  ;\
 $86:EFA5 89 00 40    BIT #$4000             ;} If enemy respawns if killed:
 $86:EFA8 F0 0A       BEQ $0A    [$EFB4]     ;/
 $86:EFAA AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
-$86:EFAD 09 00 80    ORA #$8000             ;} Enemy projectile $7E:F410 = [enemy index] | 8000h
+$86:EFAD 09 00 80    ORA #$8000             ;} Enemy projectile killed enemy index |= 8000h
 $86:EFB0 9F 10 F4 7E STA $7EF410,x[$7E:F432];/
 
 $86:EFB4 B9 78 0F    LDA $0F78,y[$7E:0FB8]  ;\
-$86:EFB7 9F C8 F3 7E STA $7EF3C8,x[$7E:F3EA];} Enemy projectile $7E:F3C8 = [enemy ID]
+$86:EFB7 9F C8 F3 7E STA $7EF3C8,x[$7E:F3EA];} Enemy projectile enemy header pointer = [enemy ID]
 $86:EFBB A9 00 00    LDA #$0000             ;\
 $86:EFBE 9D BB 19    STA $19BB,x[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
 $86:EFC1 AD 93 19    LDA $1993  [$7E:1993]  ;\
@@ -16050,15 +16053,15 @@ $86:EFDF 60          RTS
 {
 $86:EFE0 DA          PHX
 $86:EFE1 5A          PHY
-$86:EFE2 DE 23 1B    DEC $1B23,x[$7E:1B45]  ; Decrement enemy projectile $1B23
+$86:EFE2 DE 23 1B    DEC $1B23,x[$7E:1B45]  ; Decrement enemy projectile expiration timer
 $86:EFE5 BD 23 1B    LDA $1B23,x[$7E:1B45]  ;\
-$86:EFE8 F0 41       BEQ $41    [$F02B]     ;} If [enemy projectile $1B23] = 0: go to BRANCH_TIMER_EXPIRED
+$86:EFE8 F0 41       BEQ $41    [$F02B]     ;} If [enemy projectile expiration timer] = 0: go to BRANCH_TIMER_EXPIRED
 $86:EFEA A9 0D 00    LDA #$000D             ;\
 $86:EFED 22 84 F0 90 JSL $90F084[$90:F084]  ;|
 $86:EFF1 29 FF FF    AND #$FFFF             ;} If grapple beam is inactive: go to BRANCH_NOT_GRAPPLED
 $86:EFF4 F0 4F       BEQ $4F    [$F045]     ;/
 $86:EFF6 BD 23 1B    LDA $1B23,x[$7E:1B2D]  ;\
-$86:EFF9 C9 80 01    CMP #$0180             ;} If [enemy projectile $1B23] >= 180h: go to BRANCH_NOT_GRAPPLED
+$86:EFF9 C9 80 01    CMP #$0180             ;} If [enemy projectile expiration timer] >= 180h: go to BRANCH_NOT_GRAPPLED
 $86:EFFC 10 47       BPL $47    [$F045]     ;/
 $86:EFFE BD 4B 1A    LDA $1A4B,x[$7E:1A55]  ;\
 $86:F001 38          SEC                    ;|
@@ -16080,19 +16083,19 @@ $86:F01D C9 10 00    CMP #$0010             ;|
 $86:F020 10 23       BPL $23    [$F045]     ;/
 $86:F022 DA          PHX                    ;\
 $86:F023 BD FF 1A    LDA $1AFF,x            ;|
-$86:F026 AA          TAX                    ;} Execute [$F0AD + [enemy projectile $1AFF]]
+$86:F026 AA          TAX                    ;} Execute [$F0AD + [enemy projectile type]]
 $86:F027 FC AD F0    JSR ($F0AD,x)          ;|
 $86:F02A FA          PLX                    ;/
 
 ; BRANCH_TIMER_EXPIRED
 $86:F02B A9 A3 EC    LDA #$ECA3             ;\
-$86:F02E 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $ECA3
+$86:F02E 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $ECA3 (handle respawning enemy)
 $86:F031 A9 01 00    LDA #$0001             ;\
 $86:F034 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:F037 A9 00 30    LDA #$3000             ;\
 $86:F03A 9D D7 1B    STA $1BD7,x[$7E:1BF9]  ;} Enemy projectile properties = 3000h (disable collisions with Samus, high priority)
 $86:F03D A9 DF EF    LDA #$EFDF             ;\
-$86:F040 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $EFDF
+$86:F040 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = RTS
 $86:F043 80 65       BRA $65    [$F0AA]     ; Return
 
 ; BRANCH_NOT_GRAPPLED
@@ -16131,76 +16134,76 @@ $86:F087 80 21       BRA $21    [$F0AA]     ;/
 
 $86:F089 DA          PHX                    ;\
 $86:F08A BD FF 1A    LDA $1AFF,x[$7E:1B1F]  ;|
-$86:F08D AA          TAX                    ;} Execute [$F0AD + [enemy projectile $1AFF]]
+$86:F08D AA          TAX                    ;} Execute [$F0AD + [enemy projectile type]]
 $86:F08E FC AD F0    JSR ($F0AD,x)[$86:F0E8];|
 $86:F091 FA          PLX                    ;/
 $86:F092 A9 A3 EC    LDA #$ECA3             ;\
-$86:F095 9D 47 1B    STA $1B47,x[$7E:1B67]  ;} Enemy projectile instruction list pointer = $ECA3
+$86:F095 9D 47 1B    STA $1B47,x[$7E:1B67]  ;} Enemy projectile instruction list pointer = $ECA3 (handle respawning enemy)
 $86:F098 A9 01 00    LDA #$0001             ;\
 $86:F09B 9D 8F 1B    STA $1B8F,x[$7E:1BAF]  ;} Enemy projectile instruction timer = 1
 $86:F09E A9 00 30    LDA #$3000             ;\
 $86:F0A1 9D D7 1B    STA $1BD7,x[$7E:1BF7]  ;} Enemy projectile properties = 3000h (disable collisions with Samus, high priority)
 $86:F0A4 A9 DF EF    LDA #$EFDF             ;\
-$86:F0A7 9D 03 1A    STA $1A03,x[$7E:1A23]  ;} Enemy projectile pre-instruction = $EFDF
+$86:F0A7 9D 03 1A    STA $1A03,x[$7E:1A23]  ;} Enemy projectile pre-instruction = RTS
 
 $86:F0AA 7A          PLY
 $86:F0AB FA          PLX
 $86:F0AC 60          RTS
 
 $86:F0AD             dw 0000,
-                        F0BB, ; Small health
-                        F0CA, ; Big health
-                        F0D9, ; Power bombs
-                        F0E8, ; Missiles
-                        F0F7, ; Super missiles
+                        F0BB, ; 2: Small health
+                        F0CA, ; 4: Big health
+                        F0D9, ; 6: Power bombs
+                        F0E8, ; 8: Missiles
+                        F0F7, ; Ah: Super missiles
                         0000
 }
 
 
-;;; $F0BB:  ;;;
+;;; $F0BB: Apply pickup to Samus - small health ;;;
 {
-$86:F0BB A9 05 00    LDA #$0005
-$86:F0BE 22 12 DF 91 JSL $91DF12[$91:DF12]
+$86:F0BB A9 05 00    LDA #$0005             ;\
+$86:F0BE 22 12 DF 91 JSL $91DF12[$91:DF12]  ;} Restore 5 health to Samus
 $86:F0C2 A9 01 00    LDA #$0001             ;\
 $86:F0C5 22 C1 90 80 JSL $8090C1[$80:90C1]  ;} Queue sound 1, sound library 2, max queued sounds allowed = 1 (collected small health drop)
 $86:F0C9 60          RTS
 }
 
 
-;;; $F0CA:  ;;;
+;;; $F0CA: Apply pickup to Samus - big health ;;;
 {
-$86:F0CA A9 14 00    LDA #$0014
-$86:F0CD 22 12 DF 91 JSL $91DF12[$91:DF12]
+$86:F0CA A9 14 00    LDA #$0014             ;\
+$86:F0CD 22 12 DF 91 JSL $91DF12[$91:DF12]  ;} Restore 5 health to Samus
 $86:F0D1 A9 02 00    LDA #$0002             ;\
 $86:F0D4 22 C1 90 80 JSL $8090C1[$80:90C1]  ;} Queue sound 2, sound library 2, max queued sounds allowed = 1 (collected big health drop)
 $86:F0D8 60          RTS
 }
 
 
-;;; $F0D9:  ;;;
+;;; $F0D9: Apply pickup to Samus - power bombs ;;;
 {
-$86:F0D9 A9 01 00    LDA #$0001
-$86:F0DC 22 F0 DF 91 JSL $91DFF0[$91:DFF0]
+$86:F0D9 A9 01 00    LDA #$0001             ;\
+$86:F0DC 22 F0 DF 91 JSL $91DFF0[$91:DFF0]  ;} Restore 1 power bomb to Samus
 $86:F0E0 A9 05 00    LDA #$0005             ;\
 $86:F0E3 22 C1 90 80 JSL $8090C1[$80:90C1]  ;} Queue sound 5, sound library 2, max queued sounds allowed = 1 (collected power bomb drop)
 $86:F0E7 60          RTS
 }
 
 
-;;; $F0E8:  ;;;
+;;; $F0E8: Apply pickup to Samus - missiles ;;;
 {
-$86:F0E8 A9 02 00    LDA #$0002
-$86:F0EB 22 80 DF 91 JSL $91DF80[$91:DF80]
+$86:F0E8 A9 02 00    LDA #$0002             ;\
+$86:F0EB 22 80 DF 91 JSL $91DF80[$91:DF80]  ;} Restore 2 missiles to Samus
 $86:F0EF A9 03 00    LDA #$0003             ;\
 $86:F0F2 22 C1 90 80 JSL $8090C1[$80:90C1]  ;} Queue sound 3, sound library 2, max queued sounds allowed = 1 (collected missile drop)
 $86:F0F6 60          RTS
 }
 
 
-;;; $F0F7:  ;;;
+;;; $F0F7: Apply pickup to Samus - super missiles ;;;
 {
-$86:F0F7 A9 01 00    LDA #$0001
-$86:F0FA 22 D3 DF 91 JSL $91DFD3[$91:DFD3]
+$86:F0F7 A9 01 00    LDA #$0001             ;\
+$86:F0FA 22 D3 DF 91 JSL $91DFD3[$91:DFD3]  ;} Restore 1 super missile to Samus
 $86:F0FE A9 04 00    LDA #$0004             ;\
 $86:F101 22 C1 90 80 JSL $8090C1[$80:90C1]  ;} Queue sound 4, sound library 2, max queued sounds allowed = 1 (collected super missile drop)
 $86:F105 60          RTS
@@ -16513,7 +16516,7 @@ $86:F31F 22 27 F3 86 JSL $86F327[$86:F327]  ; Execute enemy AI
 $86:F323 7A          PLY
 $86:F324 FA          PLX
 $86:F325 AB          PLB
-$86:F326 60          RTS
+$86:F326 60          RTS                    ; Return
 
 $86:F327 AE 54 0E    LDX $0E54  [$7E:0E54]
 $86:F32A BD A6 0F    LDA $0FA6,x[$7E:11E6]
@@ -16537,15 +16540,15 @@ $86:F334 DC 84 17    JML [$1784][$B3:883B]  ; Go to [enemy AI pointer]
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:F337             dx EF29,EFE0,ED8D,10,10,3000,84FC,84FC ; Pickup (from bosses and enemy projectiles)
-$86:F345             dx EF89,EFDF,ED8D,10,10,7000,84FC,84FC ; Enemy death explosion / pickup
+$86:F337             dx EF29,EFE0,ED8D,10,10,3000,84FC,84FC ; Pickup (from bosses and enemy projectiles). Initial instruction list ignored
+$86:F345             dx EF89,EFDF,ED8D,10,10,7000,84FC,84FC ; Enemy death explosion / pickup. Initial instruction list ignored
 }
 }
 
 
-;;; $F353..F4A5: Sparks ;;;
+;;; $F353..F4A5: Falling spark ;;;
 {
-;;; $F353: Instruction list - enemy projectile $F498 (sparks) ;;;
+;;; $F353: Instruction list - falling spark - falling ;;;
 {
 $86:F353             dx 0003,C4AD,
                         0003,C4B4,
@@ -16554,7 +16557,7 @@ $86:F353             dx 0003,C4AD,
 }
 
 
-;;; $F363: Instruction list ;;;
+;;; $F363: Instruction list - falling spark - hit floor ;;;
 {
 $86:F363             dx 0001,C4AD,
                         0001,8000,
@@ -16571,31 +16574,31 @@ $86:F363             dx 0001,C4AD,
 }
 
 
-;;; $F391: Initialisation AI - enemy projectile $F498 (sparks) ;;;
+;;; $F391: Initialisation AI - enemy projectile $F498 (falling spark) ;;;
 {
-$86:F391 AE 54 0E    LDX $0E54  [$7E:0E54]
-$86:F394 A9 53 F3    LDA #$F353
-$86:F397 99 47 1B    STA $1B47,y[$7E:1B69]
-$86:F39A BD 7A 0F    LDA $0F7A,x[$7E:10FA]
-$86:F39D 99 4B 1A    STA $1A4B,y[$7E:1A6D]
-$86:F3A0 BD 7C 0F    LDA $0F7C,x[$7E:10FC]
-$86:F3A3 99 27 1A    STA $1A27,y[$7E:1A49]
-$86:F3A6 BD 7E 0F    LDA $0F7E,x[$7E:10FE]
-$86:F3A9 18          CLC
-$86:F3AA 69 08 00    ADC #$0008
-$86:F3AD 99 93 1A    STA $1A93,y[$7E:1AB5]
-$86:F3B0 BD 80 0F    LDA $0F80,x[$7E:1100]
-$86:F3B3 99 6F 1A    STA $1A6F,y[$7E:1A91]
-$86:F3B6 A9 00 00    LDA #$0000
-$86:F3B9 99 B7 1A    STA $1AB7,y[$7E:1AD9]
-$86:F3BC 99 DB 1A    STA $1ADB,y[$7E:1AFD]
-$86:F3BF 22 11 81 80 JSL $808111[$80:8111]
-$86:F3C3 29 1C 00    AND #$001C
-$86:F3C6 AA          TAX
-$86:F3C7 BD D4 F3    LDA $F3D4,x[$86:F3D8]
-$86:F3CA 99 23 1B    STA $1B23,y[$7E:1B45]
-$86:F3CD BD D6 F3    LDA $F3D6,x[$86:F3DA]
-$86:F3D0 99 FF 1A    STA $1AFF,y[$7E:1B21]
+$86:F391 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
+$86:F394 A9 53 F3    LDA #$F353             ;\
+$86:F397 99 47 1B    STA $1B47,y[$7E:1B69]  ;} Enemy projectile instruction list pointer = $F353 (falling)
+$86:F39A BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;\
+$86:F39D 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;|
+$86:F3A0 BD 7C 0F    LDA $0F7C,x[$7E:10FC]  ;} Enemy projectile X position = [enemy X position]
+$86:F3A3 99 27 1A    STA $1A27,y[$7E:1A49]  ;/
+$86:F3A6 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
+$86:F3A9 18          CLC                    ;|
+$86:F3AA 69 08 00    ADC #$0008             ;|
+$86:F3AD 99 93 1A    STA $1A93,y[$7E:1AB5]  ;} Enemy projectile Y position = [enemy Y position] + 8.0
+$86:F3B0 BD 80 0F    LDA $0F80,x[$7E:1100]  ;|
+$86:F3B3 99 6F 1A    STA $1A6F,y[$7E:1A91]  ;/
+$86:F3B6 A9 00 00    LDA #$0000             ;\
+$86:F3B9 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;} Enemy projectile Y velocity = 0.0
+$86:F3BC 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;/
+$86:F3BF 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:F3C3 29 1C 00    AND #$001C             ;\
+$86:F3C6 AA          TAX                    ;} X = [random number] / 4 % 8 * 4
+$86:F3C7 BD D4 F3    LDA $F3D4,x[$86:F3D8]  ;\
+$86:F3CA 99 23 1B    STA $1B23,y[$7E:1B45]  ;|
+$86:F3CD BD D6 F3    LDA $F3D6,x[$86:F3DA]  ;} Enemy projectile X velocity + [$F3D4 + [X]].[$F3D4 + [X] + 2]
+$86:F3D0 99 FF 1A    STA $1AFF,y[$7E:1B21]  ;/
 $86:F3D3 60          RTS
 
 ; This table is one entry too short to be indexed with 1Ch >_<;
@@ -16609,80 +16612,81 @@ $86:F3D4             dw FFFF,B800,
 }
 
 
-;;; $F3F0: Pre-instruction - enemy projectile $F498 (sparks) ;;;
+;;; $F3F0: Pre-instruction - enemy projectile $F498 (falling spark) ;;;
 {
-$86:F3F0 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:F3F3 30 1D       BMI $1D    [$F412]
-$86:F3F5 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
-$86:F3F8 B0 5F       BCS $5F    [$F459]
-$86:F3FA 18          CLC
-$86:F3FB BD B7 1A    LDA $1AB7,x[$7E:1AD9]
-$86:F3FE 69 00 40    ADC #$4000
-$86:F401 9D B7 1A    STA $1AB7,x[$7E:1AD9]
-$86:F404 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
-$86:F407 69 00 00    ADC #$0000
-$86:F40A C9 04 00    CMP #$0004
-$86:F40D B0 03       BCS $03    [$F412]
-$86:F40F 9D DB 1A    STA $1ADB,x[$7E:1AFD]
+$86:F3F0 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:F3F3 30 1D       BMI $1D    [$F412]     ;} If [enemy projectile Y velocity] >= 0:
+$86:F3F5 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically <-- moves enemy projectile by [enemy projectile Y velocity] / 100h
+$86:F3F8 B0 5F       BCS $5F    [$F459]     ; If collision: go to BRANCH_HIT_FLOOR
+$86:F3FA 18          CLC                    ;\
+$86:F3FB BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;|
+$86:F3FE 69 00 40    ADC #$4000             ;} Enemy projectile Y subvelocity += 4000h
+$86:F401 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;/
+$86:F404 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
+$86:F407 69 00 00    ADC #$0000             ;|
+$86:F40A C9 04 00    CMP #$0004             ;} Enemy projectile Y velocity = min(3, [enemy projectile Y velocity] + carry)
+$86:F40D B0 03       BCS $03    [$F412]     ;|
+$86:F40F 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
 
-$86:F412 18          CLC
-$86:F413 BD 6F 1A    LDA $1A6F,x[$7E:1A91]
-$86:F416 7D B7 1A    ADC $1AB7,x[$7E:1AD9]
-$86:F419 9D 6F 1A    STA $1A6F,x[$7E:1A91]
-$86:F41C BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:F41F 7D DB 1A    ADC $1ADB,x[$7E:1AFD]
-$86:F422 9D 93 1A    STA $1A93,x[$7E:1AB5]
-$86:F425 18          CLC
-$86:F426 BD 27 1A    LDA $1A27,x[$7E:1A49]
-$86:F429 7D FF 1A    ADC $1AFF,x[$7E:1B21]
-$86:F42C 9D 27 1A    STA $1A27,x[$7E:1A49]
-$86:F42F BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:F432 7D 23 1B    ADC $1B23,x[$7E:1B45]
-$86:F435 9D 4B 1A    STA $1A4B,x[$7E:1A6D]
-$86:F438 AD B5 05    LDA $05B5  [$7E:05B5]
-$86:F43B 89 03 00    BIT #$0003
-$86:F43E D0 18       BNE $18    [$F458]
-$86:F440 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]
-$86:F443 85 12       STA $12    [$7E:0012]
-$86:F445 BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:F448 85 14       STA $14    [$7E:0014]
-$86:F44A A9 30 00    LDA #$0030
-$86:F44D 85 16       STA $16    [$7E:0016]
-$86:F44F BD BB 19    LDA $19BB,x[$7E:19DD]
-$86:F452 85 18       STA $18    [$7E:0018]
-$86:F454 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$86:F412 18          CLC                    ;\
+$86:F413 BD 6F 1A    LDA $1A6F,x[$7E:1A91]  ;|
+$86:F416 7D B7 1A    ADC $1AB7,x[$7E:1AD9]  ;|
+$86:F419 9D 6F 1A    STA $1A6F,x[$7E:1A91]  ;} Enemy projectile Y position += [enemy projectile Y velocity]
+$86:F41C BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;|
+$86:F41F 7D DB 1A    ADC $1ADB,x[$7E:1AFD]  ;|
+$86:F422 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
+$86:F425 18          CLC                    ;\
+$86:F426 BD 27 1A    LDA $1A27,x[$7E:1A49]  ;|
+$86:F429 7D FF 1A    ADC $1AFF,x[$7E:1B21]  ;|
+$86:F42C 9D 27 1A    STA $1A27,x[$7E:1A49]  ;} Enemy projectile X position += [enemy projectile X velocity]
+$86:F42F BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;|
+$86:F432 7D 23 1B    ADC $1B23,x[$7E:1B45]  ;|
+$86:F435 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
+$86:F438 AD B5 05    LDA $05B5  [$7E:05B5]  ;\
+$86:F43B 89 03 00    BIT #$0003             ;} If [8-bit frame counter] % 4 = 0:
+$86:F43E D0 18       BNE $18    [$F458]     ;/
+$86:F440 BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
+$86:F443 85 12       STA $12    [$7E:0012]  ;|
+$86:F445 BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;|
+$86:F448 85 14       STA $14    [$7E:0014]  ;|
+$86:F44A A9 30 00    LDA #$0030             ;} Create sprite object 30h (falling spark trail) at enemy projectile position with enemy projectile palette
+$86:F44D 85 16       STA $16    [$7E:0016]  ;|
+$86:F44F BD BB 19    LDA $19BB,x[$7E:19DD]  ;|
+$86:F452 85 18       STA $18    [$7E:0018]  ;|
+$86:F454 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
-$86:F458 60          RTS
+$86:F458 60          RTS                    ; Return
 
-$86:F459 A9 63 F3    LDA #$F363
-$86:F45C 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:F45F A9 01 00    LDA #$0001
-$86:F462 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
-$86:F465 BD FF 1A    LDA $1AFF,x[$7E:1B21]
-$86:F468 0A          ASL A
-$86:F469 9D FF 1A    STA $1AFF,x[$7E:1B21]
-$86:F46C BD 23 1B    LDA $1B23,x[$7E:1B45]
-$86:F46F 2A          ROL A
-$86:F470 9D 23 1B    STA $1B23,x[$7E:1B45]
-$86:F473 BD FF 1A    LDA $1AFF,x[$7E:1B21]
-$86:F476 0A          ASL A
-$86:F477 9D FF 1A    STA $1AFF,x[$7E:1B21]
-$86:F47A BD 23 1B    LDA $1B23,x[$7E:1B45]
-$86:F47D 2A          ROL A
-$86:F47E 9D 23 1B    STA $1B23,x[$7E:1B45]
-$86:F481 A9 00 80    LDA #$8000
-$86:F484 9D B7 1A    STA $1AB7,x[$7E:1AD9]
-$86:F487 A9 FF FF    LDA #$FFFF
-$86:F48A 9D DB 1A    STA $1ADB,x[$7E:1AFD]
-$86:F48D BD 93 1A    LDA $1A93,x[$7E:1AB5]
-$86:F490 38          SEC
-$86:F491 E9 02 00    SBC #$0002
-$86:F494 9D 93 1A    STA $1A93,x[$7E:1AB5]
+; BRANCH_HIT_FLOOR
+$86:F459 A9 63 F3    LDA #$F363             ;\
+$86:F45C 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction list pointer = $F363 (hit floor)
+$86:F45F A9 01 00    LDA #$0001             ;\
+$86:F462 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
+$86:F465 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;\
+$86:F468 0A          ASL A                  ;|
+$86:F469 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;|
+$86:F46C BD 23 1B    LDA $1B23,x[$7E:1B45]  ;|
+$86:F46F 2A          ROL A                  ;|
+$86:F470 9D 23 1B    STA $1B23,x[$7E:1B45]  ;|
+$86:F473 BD FF 1A    LDA $1AFF,x[$7E:1B21]  ;} Enemy projectile X velocity *= 4
+$86:F476 0A          ASL A                  ;|
+$86:F477 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;|
+$86:F47A BD 23 1B    LDA $1B23,x[$7E:1B45]  ;|
+$86:F47D 2A          ROL A                  ;|
+$86:F47E 9D 23 1B    STA $1B23,x[$7E:1B45]  ;/
+$86:F481 A9 00 80    LDA #$8000             ;\
+$86:F484 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;|
+$86:F487 A9 FF FF    LDA #$FFFF             ;} Enemy projectile Y velocity = -0.8000h
+$86:F48A 9D DB 1A    STA $1ADB,x[$7E:1AFD]  ;/
+$86:F48D BD 93 1A    LDA $1A93,x[$7E:1AB5]  ;\
+$86:F490 38          SEC                    ;|
+$86:F491 E9 02 00    SBC #$0002             ;} Enemy projectile Y position -= 2
+$86:F494 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:F497 60          RTS
 }
 
 
-;;; $F498: Enemy projectile - sparks ;;;
+;;; $F498: Enemy projectile - falling spark ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -16693,7 +16697,7 @@ $86:F497 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:F498             dx F391,F3F0,F353,04,04,0005,0000,84FC ; Sparks
+$86:F498             dx F391,F3F0,F353,04,04,0005,0000,84FC ; Falling spark. Initial instruction list ignored
 }
 }
 
