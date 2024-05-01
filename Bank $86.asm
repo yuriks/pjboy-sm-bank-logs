@@ -14262,7 +14262,7 @@ $86:E42C             dw E0EE, E100, E11A, E138, E152, E168, E17E, E198, E1A6, E1
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
-;;     $1993: Index. Range 0..1Dh
+;;     $1993: Index. Range 0..1Dh. Same animations as sprite objects 0..1Dh
        {
 ;;         0: Unused. Beam charge
 ;;         1: Mother Brain elbow charge particles
@@ -14270,7 +14270,7 @@ $86:E42C             dw E0EE, E100, E11A, E138, E152, E168, E17E, E198, E1A6, E1
 ;;         3: Small explosion
 ;;         4: Unused. Bomb explosion
 ;;         5: Unused. Beam trail
-;;         6: Dud shot / tiny explosion
+;;         6: Dud shot
 ;;         7: Unused. Power bomb
 ;;         8: Unused. Elevator pad (same as 1Ch)
 ;;         9: Small dust cloud
@@ -15601,12 +15601,12 @@ $86:ECA3             dx 0040,8000,
 ;;; $ECAB: Instruction list - enemy death explosion - type 4 (big explosion) ;;;
 {
 $86:ECAB             dx 81D5,0005   ; Timer = 5
-$86:ECAF             dx ED17,0003,  ; ???
-                        ED17,000C,  ; ???
+$86:ECAF             dx ED17,0003,  ; Spawn sprite object 3 (small explosion) randomly within radius 10h
+                        ED17,000C,  ; Spawn sprite object Ch (smoke) randomly within radius 10h
                         0008,8000,
                         EE97,       ; Queue small explosion sound effect
                         81C6,ECAF,  ; Decrement timer and go to $ECAF if non-zero
-                        EEAF,       ; ???
+                        EEAF,       ; Become pickup
                         8154        ; Delete
 }
 
@@ -15614,75 +15614,75 @@ $86:ECAF             dx ED17,0003,  ; ???
 ;;; $ECC5: Instruction list - enemy death explosion - type 3 (mini-Kraid explosion) ;;;
 {
 $86:ECC5             dx 81D5,0010   ; Timer = 10h
-$86:ECC9             dx ECE3,0003,  ; ???
-                        ECE3,000C,  ; ???
-                        ECE3,0015,  ; ???
+$86:ECC9             dx ECE3,0003,  ; Spawn sprite object 3 (small explosion) randomly within radius 20h
+                        ECE3,000C,  ; Spawn sprite object Ch (smoke) randomly within radius 20h
+                        ECE3,0015,  ; Spawn sprite object 15h (big dust cloud) randomly within radius 20h
                         0008,8000,
                         EE97,       ; Queue small explosion sound effect
                         81C6,ECC9,  ; Decrement timer and go to $ECC9 if non-zero
-                        EEAF,       ; ???
+                        EEAF,       ; Become pickup
                         8154        ; Delete
 }
 
 
-;;; $ECE3: Instruction ;;;
+;;; $ECE3: Instruction - spawn sprite object [[Y]] randomly within radius 20h ;;;
 {
 $86:ECE3 DA          PHX
 $86:ECE4 5A          PHY
-$86:ECE5 22 11 81 80 JSL $808111[$80:8111]
-$86:ECE9 29 3F 00    AND #$003F
-$86:ECEC 38          SEC
-$86:ECED E9 20 00    SBC #$0020
-$86:ECF0 18          CLC
-$86:ECF1 7D 4B 1A    ADC $1A4B,x[$7E:1A5B]
-$86:ECF4 85 12       STA $12    [$7E:0012]
-$86:ECF6 AD E5 05    LDA $05E5  [$7E:05E5]
-$86:ECF9 29 00 3F    AND #$3F00
-$86:ECFC EB          XBA
-$86:ECFD 38          SEC
-$86:ECFE E9 20 00    SBC #$0020
-$86:ED01 18          CLC
-$86:ED02 7D 93 1A    ADC $1A93,x[$7E:1AA3]
-$86:ED05 85 14       STA $14    [$7E:0014]
-$86:ED07 B9 00 00    LDA $0000,y[$86:ECCB]
-$86:ED0A 85 16       STA $16    [$7E:0016]
-$86:ED0C 64 18       STZ $18    [$7E:0018]
-$86:ED0E 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$86:ECE5 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:ECE9 29 3F 00    AND #$003F             ;\
+$86:ECEC 38          SEC                    ;|
+$86:ECED E9 20 00    SBC #$0020             ;|
+$86:ECF0 18          CLC                    ;} $12 = [enemy projectile X position] + [random number low] % 40h - 20h
+$86:ECF1 7D 4B 1A    ADC $1A4B,x[$7E:1A5B]  ;|
+$86:ECF4 85 12       STA $12    [$7E:0012]  ;/
+$86:ECF6 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:ECF9 29 00 3F    AND #$3F00             ;|
+$86:ECFC EB          XBA                    ;|
+$86:ECFD 38          SEC                    ;|
+$86:ECFE E9 20 00    SBC #$0020             ;} $14 = [enemy projectile Y position] + [random number high] % 40h - 20h
+$86:ED01 18          CLC                    ;|
+$86:ED02 7D 93 1A    ADC $1A93,x[$7E:1AA3]  ;|
+$86:ED05 85 14       STA $14    [$7E:0014]  ;/
+$86:ED07 B9 00 00    LDA $0000,y[$86:ECCB]  ;\
+$86:ED0A 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]]
+$86:ED0C 64 18       STZ $18    [$7E:0018]  ; $18 = 0
+$86:ED0E 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object at position ([$12], [$14])
 $86:ED12 7A          PLY
 $86:ED13 FA          PLX
-$86:ED14 C8          INY
-$86:ED15 C8          INY
+$86:ED14 C8          INY                    ;\
+$86:ED15 C8          INY                    ;} Y += 2
 $86:ED16 60          RTS
 }
 
 
-;;; $ED17: Instruction ;;;
+;;; $ED17: Instruction - spawn sprite object [[Y]] randomly within radius 10h ;;;
 {
 $86:ED17 DA          PHX
 $86:ED18 5A          PHY
-$86:ED19 22 11 81 80 JSL $808111[$80:8111]
-$86:ED1D 29 1F 00    AND #$001F
-$86:ED20 38          SEC
-$86:ED21 E9 10 00    SBC #$0010
-$86:ED24 18          CLC
-$86:ED25 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]
-$86:ED28 85 12       STA $12    [$7E:0012]
-$86:ED2A AD E5 05    LDA $05E5  [$7E:05E5]
-$86:ED2D 29 00 1F    AND #$1F00
-$86:ED30 EB          XBA
-$86:ED31 38          SEC
-$86:ED32 E9 10 00    SBC #$0010
-$86:ED35 18          CLC
-$86:ED36 7D 93 1A    ADC $1A93,x[$7E:1AB5]
-$86:ED39 85 14       STA $14    [$7E:0014]
-$86:ED3B B9 00 00    LDA $0000,y[$86:ECB1]
-$86:ED3E 85 16       STA $16    [$7E:0016]
-$86:ED40 64 18       STZ $18    [$7E:0018]
-$86:ED42 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$86:ED46 7A          PLY
-$86:ED47 FA          PLX
-$86:ED48 C8          INY
-$86:ED49 C8          INY
+$86:ED19 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$86:ED1D 29 1F 00    AND #$001F             ;\
+$86:ED20 38          SEC                    ;|
+$86:ED21 E9 10 00    SBC #$0010             ;|
+$86:ED24 18          CLC                    ;} $12 = [enemy projectile X position] + [random number low] % 20h - 10h
+$86:ED25 7D 4B 1A    ADC $1A4B,x[$7E:1A6D]  ;|
+$86:ED28 85 12       STA $12    [$7E:0012]  ;/
+$86:ED2A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$86:ED2D 29 00 1F    AND #$1F00             ;|
+$86:ED30 EB          XBA                    ;|
+$86:ED31 38          SEC                    ;|
+$86:ED32 E9 10 00    SBC #$0010             ;} $14 = [enemy projectile Y position] + [random number high] % 20h - 10h
+$86:ED35 18          CLC                    ;|
+$86:ED36 7D 93 1A    ADC $1A93,x[$7E:1AB5]  ;|
+$86:ED39 85 14       STA $14    [$7E:0014]  ;/
+$86:ED3B B9 00 00    LDA $0000,y[$86:ECB1]  ;\
+$86:ED3E 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y]]
+$86:ED40 64 18       STZ $18    [$7E:0018]  ; $18 = 0
+$86:ED42 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object at position ([$12], [$14])
+$86:ED46 7A          PLY                    
+$86:ED47 FA          PLX                    
+$86:ED48 C8          INY                    ;\
+$86:ED49 C8          INY                    ;} Y += 2
 $86:ED4A 60          RTS
 }
 
@@ -15696,7 +15696,7 @@ $86:ED4B             dx 0005,B406,
                         0005,B448,
                         0005,B486,
                         0005,B4B0,
-                        EEAF,       ; ???
+                        EEAF,       ; Become pickup
                         8154        ; Delete
 }
 
@@ -15710,7 +15710,7 @@ $86:ED69             dx 0004,BDFF,
                         0005,BE32,
                         0005,BE48,
                         0006,BE5E,
-                        EEAF,       ; ???
+                        EEAF,       ; Become pickup
                         8154        ; Delete
 }
 
@@ -15807,7 +15807,7 @@ $86:EDFF             dx 0002,C2E9,
                         0002,C46B,
                         0002,C481,
                         0002,C497,
-                        EEAF,       ; ???
+                        EEAF,       ; Become pickup
                         8154        ; Delete
 }
 
@@ -15831,7 +15831,7 @@ $86:EE45             dx 0002,B8E5,
                         0002,BA35,
                         0002,BA4B,
                         0002,BA61,
-                        EEAF,       ; ???
+                        EEAF,       ; Become pickup
                         8154        ; Delete
 }
 
@@ -15872,45 +15872,46 @@ $86:EEAE 60          RTS
 }
 
 
-;;; $EEAF: Instruction ;;;
+;;; $EEAF: Instruction - become pickup ;;;
 {
 $86:EEAF DA          PHX
 $86:EEB0 5A          PHY
-$86:EEB1 20 06 F1    JSR $F106  [$86:F106]
-$86:EEB4 F0 32       BEQ $32    [$EEE8]
-$86:EEB6 C9 06 00    CMP #$0006
-$86:EEB9 10 2D       BPL $2D    [$EEE8]
-$86:EEBB 0A          ASL A
-$86:EEBC 9D FF 1A    STA $1AFF,x[$7E:1B21]
-$86:EEBF A8          TAY
-$86:EEC0 B9 04 EF    LDA $EF04,y[$86:EF0C]
-$86:EEC3 9D 47 1B    STA $1B47,x[$7E:1B69]
-$86:EEC6 A9 01 00    LDA #$0001
-$86:EEC9 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
-$86:EECC A9 90 01    LDA #$0190
-$86:EECF 9D 23 1B    STA $1B23,x[$7E:1B45]
-$86:EED2 A9 E0 EF    LDA #$EFE0
-$86:EED5 9D 03 1A    STA $1A03,x[$7E:1A25]
-$86:EED8 BD D7 1B    LDA $1BD7,x[$7E:1BF9]
-$86:EEDB 29 FF BF    AND #$BFFF
-$86:EEDE 9D D7 1B    STA $1BD7,x[$7E:1BF9]
-$86:EEE1 BD 47 1B    LDA $1B47,x[$7E:1B69]
-$86:EEE4 7A          PLY
-$86:EEE5 FA          PLX
-$86:EEE6 A8          TAY
-$86:EEE7 60          RTS
+$86:EEB1 20 06 F1    JSR $F106  [$86:F106]  ; Random drop routine
+$86:EEB4 F0 32       BEQ $32    [$EEE8]     ; If [enemy projectile index] = 0: go to BRANCH_NOTHING
+$86:EEB6 C9 06 00    CMP #$0006             ;\
+$86:EEB9 10 2D       BPL $2D    [$EEE8]     ;} If [A] = 6: go to BRANCH_NOTHING
+$86:EEBB 0A          ASL A                  ;\
+$86:EEBC 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile type = [A] * 2
+$86:EEBF A8          TAY                    ;\
+$86:EEC0 B9 04 EF    LDA $EF04,y[$86:EF0C]  ;} Enemy projectile instruction pointer list = [$EF04 + [A] * 2]
+$86:EEC3 9D 47 1B    STA $1B47,x[$7E:1B69]  ;/
+$86:EEC6 A9 01 00    LDA #$0001             ;\
+$86:EEC9 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
+$86:EECC A9 90 01    LDA #$0190             ;\
+$86:EECF 9D 23 1B    STA $1B23,x[$7E:1B45]  ;} Enemy projectile projectile expiration timer = 400
+$86:EED2 A9 E0 EF    LDA #$EFE0             ;\
+$86:EED5 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $EFE0 (pickup)
+$86:EED8 BD D7 1B    LDA $1BD7,x[$7E:1BF9]  ;\
+$86:EEDB 29 FF BF    AND #$BFFF             ;} Enemy projectile properties &= ~4000h (die on contact)
+$86:EEDE 9D D7 1B    STA $1BD7,x[$7E:1BF9]  ;/
+$86:EEE1 BD 47 1B    LDA $1B47,x[$7E:1B69]  ;\
+$86:EEE4 7A          PLY                    ;|
+$86:EEE5 FA          PLX                    ;} Y = [enemy projectile instruction pointer list]
+$86:EEE6 A8          TAY                    ;/
+$86:EEE7 60          RTS                    ; Return
 
-$86:EEE8 A9 01 00    LDA #$0001
-$86:EEEB 9D 8F 1B    STA $1B8F,x[$7E:1BB1]
-$86:EEEE A9 00 30    LDA #$3000
-$86:EEF1 9D D7 1B    STA $1BD7,x[$7E:1BF9]
-$86:EEF4 A9 DF EF    LDA #$EFDF
-$86:EEF7 9D 03 1A    STA $1A03,x[$7E:1A25]
-$86:EEFA A9 A3 EC    LDA #$ECA3
-$86:EEFD 9D 47 1B    STA $1B47,x[$7E:1B69]
+; BRANCH_NOTHING
+$86:EEE8 A9 01 00    LDA #$0001             ;\
+$86:EEEB 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
+$86:EEEE A9 00 30    LDA #$3000             ;\
+$86:EEF1 9D D7 1B    STA $1BD7,x[$7E:1BF9]  ;} Enemy projectile properties = 3000h (disable collisions, high priority)
+$86:EEF4 A9 DF EF    LDA #$EFDF             ;\
+$86:EEF7 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = RTS
+$86:EEFA A9 A3 EC    LDA #$ECA3             ;\
+$86:EEFD 9D 47 1B    STA $1B47,x[$7E:1B69]  ;} Enemy projectile instruction pointer list = $ECA3 (handle respawning enemy)
 $86:EF00 7A          PLY
 $86:EF01 FA          PLX
-$86:EF02 A8          TAY
+$86:EF02 A8          TAY                    ; Y = [enemy projectile instruction pointer list]
 $86:EF03 60          RTS
 }
 
@@ -16173,7 +16174,7 @@ $86:F0C9 60          RTS
 ;;; $F0CA: Apply pickup to Samus - big health ;;;
 {
 $86:F0CA A9 14 00    LDA #$0014             ;\
-$86:F0CD 22 12 DF 91 JSL $91DF12[$91:DF12]  ;} Restore 5 health to Samus
+$86:F0CD 22 12 DF 91 JSL $91DF12[$91:DF12]  ;} Restore 20 health to Samus
 $86:F0D1 A9 02 00    LDA #$0002             ;\
 $86:F0D4 22 C1 90 80 JSL $8090C1[$80:90C1]  ;} Queue sound 2, sound library 2, max queued sounds allowed = 1 (collected big health drop)
 $86:F0D8 60          RTS

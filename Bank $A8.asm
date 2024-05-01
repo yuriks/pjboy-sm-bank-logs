@@ -2274,7 +2274,7 @@ $A8:A189 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy $0FB0 = 40h
 $A8:A18C A9 6F 9F    LDA #$9F6F             ;\
 $A8:A18F 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9F6F
 $A8:A192 A9 39 00    LDA #$0039             ;\
-$A8:A195 85 24       STA $24    [$7E:0024]  ;} $24 = 39h (sprite object ID)
+$A8:A195 85 24       STA $24    [$7E:0024]  ;} $24 = 39h (yapping maw base - facing up)
 $A8:A197 A9 08 00    LDA #$0008             ;\
 $A8:A19A 85 22       STA $22    [$7E:0022]  ;} $22 = 8 (base Y offset)
 $A8:A19C BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
@@ -2282,7 +2282,7 @@ $A8:A19F D0 10       BNE $10    [$A1B1]     ;} If [enemy parameter 1] = 0 (facin
 $A8:A1A1 A9 C7 9F    LDA #$9FC7             ;\
 $A8:A1A4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9FC7
 $A8:A1A7 A9 38 00    LDA #$0038             ;\
-$A8:A1AA 85 24       STA $24    [$7E:0024]  ;} $24 = 38h (sprite object ID)
+$A8:A1AA 85 24       STA $24    [$7E:0024]  ;} $24 = 38h (yapping maw base - facing down)
 $A8:A1AC A9 F8 FF    LDA #$FFF8             ;\
 $A8:A1AF 85 22       STA $22    [$7E:0022]  ;} $22 = -8 (base Y offset)
 

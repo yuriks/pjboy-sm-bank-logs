@@ -4968,7 +4968,7 @@ $A7:C9C2 38          SEC                    ;|
 $A7:C9C3 E5 14       SBC $14    [$7E:0014]  ;|
 $A7:C9C5 85 14       STA $14    [$7E:0014]  ;/
 $A7:C9C7 A9 15 00    LDA #$0015             ;\
-$A7:C9CA 85 16       STA $16    [$7E:0016]  ;} $16 = 15h (smoke)
+$A7:C9CA 85 16       STA $16    [$7E:0016]  ;} $16 = 15h (big dust cloud)
 $A7:C9CC 64 18       STZ $18    [$7E:0018]  ; $18 = 0
 $A7:C9CE 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
 $A7:C9D2 A0 61 9C    LDY #$9C61             ;\

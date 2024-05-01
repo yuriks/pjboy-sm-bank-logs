@@ -4375,7 +4375,7 @@ $8F:C1D1 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object at position (
 
 $8F:C1D5 60          RTS
 
-; Sprite object IDs
+; Sprite object IDs. 3 = small explosion, 9 = small dust cloud, Ch = smoke, 12h = short big dust cloud, 15h = big dust cloud
 $8F:C1D6             db 03, 03, 09, 0C, 0C, 12, 12, 15
 
 ; Explosion sound effects

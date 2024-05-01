@@ -2541,7 +2541,7 @@ $B3:9B94 18          CLC                    ;} $14 = [enemy death counter] - 8 +
 $B3:9B95 7F 06 80 7E ADC $7E8006,x[$7E:8006];|
 $B3:9B99 85 14       STA $14    [$7E:0014]  ;/
 $B3:9B9B A9 09 00    LDA #$0009             ;\
-$B3:9B9E 85 16       STA $16    [$7E:0016]  ;} $16 = 9 (smoke)
+$B3:9B9E 85 16       STA $16    [$7E:0016]  ;} $16 = 9 (small dust cloud)
 $B3:9BA0 A9 00 0A    LDA #$0A00             ;\
 $B3:9BA3 85 18       STA $18    [$7E:0018]  ;} $18 = A00h (palette 5)
 $B3:9BA5 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object

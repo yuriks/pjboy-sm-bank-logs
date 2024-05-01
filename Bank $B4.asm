@@ -4713,7 +4713,7 @@ $B4:BC0B             dx 0005, 0000,E0,30D2, 01F8,E0,30C0, 01F0,E0,30B1, 01E8,E0,
 ;; Parameters:
 ;;     $12: X position
 ;;     $14: Y position
-;;     $16: Sprite object ID
+;;     $16: Sprite object ID. See "Sprite objects.asm"
 ;;     $18: Base tile number and palette bits
 ;; Returns:
 ;;     $12: Index of created sprite object if successful
@@ -4981,14 +4981,14 @@ $B4:BE46             dx 0005,DD3C,
 }
 
 
-;;; $BE54: Instruction list - sprite object 2Fh ;;;
+;;; $BE54: Instruction list - sprite object 2Fh (unused) ;;;
 {
 $B4:BE54             dx 0001,D594,
                         BCF0        ; Go back 4 bytes
 }
 
 
-;;; $BE5A: Instruction list - sprite object 0 ;;;
+;;; $BE5A: Instruction list - sprite object 0 (unused. Beam charge) ;;;
 {
 $B4:BE5A             dx 0003,CAC9,
                         0003,CAD0,
@@ -4998,7 +4998,7 @@ $B4:BE5A             dx 0003,CAC9,
 }
 
 
-;;; $BE6C: Instruction list - sprite object 1 ;;;
+;;; $BE6C: Instruction list - sprite object 1 (unused. Mother Brain elbow charge particles) ;;;
 {
 $B4:BE6C             dx 0005,CAF4,
                         0004,CB05,
@@ -5010,7 +5010,7 @@ $B4:BE6C             dx 0005,CAF4,
 }
 
 
-;;; $BE86: Instruction list - sprite object 2 ;;;
+;;; $BE86: Instruction list - sprite object 2 (unused. Mother Brain elbow charge energy) ;;;
 {
 $B4:BE86             dx 0004,CB5A,
                         0003,CB6B,
@@ -5035,7 +5035,7 @@ $B4:BEA4             dx 0004,CBC0,
 }
 
 
-;;; $BEBE: Instruction list - sprite object 4 ;;;
+;;; $BEBE: Instruction list - sprite object 4 (unused. Bomb explosion) ;;;
 {
 $B4:BEBE             dx 0003,CC35,
                         0003,CC4B,
@@ -5046,7 +5046,7 @@ $B4:BEBE             dx 0003,CC35,
 }
 
 
-;;; $BED4: Instruction list - sprite object 5 ;;;
+;;; $BED4: Instruction list - sprite object 5 (unused. Beam trail) ;;;
 {
 $B4:BED4             dx 0008,CCB9,
                         0008,CCC0,
@@ -5069,7 +5069,7 @@ $B4:BEEA             dx 0004,CCF1,
 }
 
 
-;;; $BF04: Instruction list - sprite object 7 ;;;
+;;; $BF04: Instruction list - sprite object 7 (unused. Power bomb) ;;;
 {
 $B4:BF04             dx 0005,CCD5,
                         0005,CCDC,
@@ -5078,7 +5078,7 @@ $B4:BF04             dx 0005,CCD5,
 }
 
 
-;;; $BF12: Instruction list - sprite object 8 ;;;
+;;; $BF12: Instruction list - sprite object 8 (unused. Elevator pad) ;;;
 {
 $B4:BF12             dx 0001,CD57,
                         0001,CD6D,
@@ -5086,7 +5086,7 @@ $B4:BF12             dx 0001,CD57,
 }
 
 
-;;; $BF1C: Instruction list - sprite object 9 (smoke) ;;;
+;;; $BF1C: Instruction list - sprite object 9 (small dust cloud) ;;;
 {
 $B4:BF1C             dx 0005,CDB5,
                         0005,CD99,
@@ -5097,7 +5097,7 @@ $B4:BF1C             dx 0005,CDB5,
 }
 
 
-;;; $BF32: Instruction list - sprite object Ah ;;;
+;;; $BF32: Instruction list - sprite object Ah (ninja space pirate landing dust cloud) ;;;
 {
 $B4:BF32             dx 0003,CDB5,
                         0003,CDBC,
@@ -5107,7 +5107,7 @@ $B4:BF32             dx 0003,CDB5,
 }
 
 
-;;; $BF44: Instruction list - sprite object Bh ;;;
+;;; $BF44: Instruction list - sprite object Bh (unused. Eye door sweat drop) ;;;
 {
 $B4:BF44             dx 0005,CDD1,
                         0005,CDD8,
@@ -5117,7 +5117,7 @@ $B4:BF44             dx 0005,CDD1,
 }
 
 
-;;; $BF56: Instruction list - sprite object Ch (yellow smoke) ;;;
+;;; $BF56: Instruction list - sprite object Ch (smoke) ;;;
 {
 $B4:BF56             dx 0008,CDED,
                         0008,CDF4,
@@ -5127,7 +5127,7 @@ $B4:BF56             dx 0008,CDED,
 }
 
 
-;;; $BF68: Instruction list - sprite object 1Ch ;;;
+;;; $BF68: Instruction list - sprite object 1Ch (unused. Elevator pad) ;;;
 {
 $B4:BF68             dx 0001,CD57,
                         0001,CD6D,
@@ -5147,7 +5147,7 @@ $B4:BF74             dx 0005,CFA3,
 }
 
 
-;;; $BF8E: Instruction list - sprite object Dh ;;;
+;;; $BF8E: Instruction list - sprite object Dh (unused. Small health drop) ;;;
 {
 $B4:BF8E             dx 0008,CE1E,
                         0008,CE25,
@@ -5157,7 +5157,7 @@ $B4:BF8E             dx 0008,CE1E,
 }
 
 
-;;; $BFA0: Instruction list - sprite object Eh ;;;
+;;; $BFA0: Instruction list - sprite object Eh (unused. Big health drop) ;;;
 {
 $B4:BFA0             dx 0008,CE3A,
                         0008,CE50,
@@ -5167,7 +5167,7 @@ $B4:BFA0             dx 0008,CE3A,
 }
 
 
-;;; $BFB2: Instruction list - sprite object Fh ;;;
+;;; $BFB2: Instruction list - sprite object Fh (unused. Bomb) ;;;
 {
 $B4:BFB2             dx 0005,CE83,
                         0005,CE8A,
@@ -5177,7 +5177,7 @@ $B4:BFB2             dx 0005,CE83,
 }
 
 
-;;; $BFC4: Instruction list - sprite object 10h ;;;
+;;; $BFC4: Instruction list - sprite object 10h (unused. Weird small health drop) ;;;
 {
 $B4:BFC4             dx 0010,CF87,
                         0010,CF8E,
@@ -5186,7 +5186,7 @@ $B4:BFC4             dx 0010,CF87,
 }
 
 
-;;; $BFD2: Instruction list - sprite object 11h ;;;
+;;; $BFD2: Instruction list - sprite object 11h (unused. Rock particles) ;;;
 {
 $B4:BFD2             dx 0002,C6D8,
                         0002,C6EE,
@@ -5208,7 +5208,7 @@ $B4:BFD2             dx 0002,C6D8,
 }
 
 
-;;; $C014: Instruction list - sprite object 12h (smoke) ;;;
+;;; $C014: Instruction list - sprite object 12h (short big dust cloud) ;;;
 {
 $B4:C014             dx 0002,C838,
                         0002,C83F,
@@ -5218,7 +5218,7 @@ $B4:C014             dx 0002,C838,
 }
 
 
-;;; $C026: Instruction list - sprite object 13h ;;;
+;;; $C026: Instruction list - sprite object 13h (unused. Short big dust cloud with weird short beam) ;;;
 {
 $B4:C026             dx 0003,C872,
                         0003,C888,
@@ -5230,7 +5230,7 @@ $B4:C026             dx 0003,C872,
 }
 
 
-;;; $C040: Instruction list - sprite object 14h ;;;
+;;; $C040: Instruction list - sprite object 14h (unused. Short big dust cloud with weird medium beam) ;;;
 {
 $B4:C040             dx 0003,C872,
                         0003,C888,
@@ -5243,7 +5243,7 @@ $B4:C040             dx 0003,C872,
 }
 
 
-;;; $C05E: Instruction list - sprite object 15h (smoke) ;;;
+;;; $C05E: Instruction list - sprite object 15h (big dust cloud) ;;;
 {
 $B4:C05E             dx 0005,C838,
                         0005,C83F,
@@ -5257,7 +5257,7 @@ $B4:C05E             dx 0005,C838,
 }
 
 
-;;; $C080: Instruction list - sprite object 16h ;;;
+;;; $C080: Instruction list - sprite object 16h (unused. Weird long beam) ;;;
 {
 $B4:C080             dx 0001,C8AC,
                         0001,C8B3,
@@ -5294,7 +5294,7 @@ $B4:C080             dx 0001,C8AC,
 }
 
 
-;;; $C0FE: Instruction list - sprite object 17h ;;;
+;;; $C0FE: Instruction list - sprite object 17h (unused. Weird long flickering beam) ;;;
 {
 $B4:C0FE             dx 0001,C8F4,
                         0001,C90A,
@@ -5318,7 +5318,7 @@ $B4:C10C             dx 0003,C920,
 }
 
 
-;;; $C132: Instruction list - sprite object 19h ;;;
+;;; $C132: Instruction list - sprite object 19h (unused. Save station electricity) ;;;
 {
 $B4:C132             dx 0001,C9A0,
                         0001,C9B6,
@@ -5332,7 +5332,7 @@ $B4:C132             dx 0001,C9A0,
 }
 
 
-;;; $C154: Instruction list - sprite object 1Ah ;;;
+;;; $C154: Instruction list - sprite object 1Ah (unused. Expanding vertical gate) ;;;
 {
 $B4:C154             dx 0010,CA50,
                         0010,CA5C,
@@ -5346,7 +5346,7 @@ $B4:C154             dx 0010,CA50,
 }
 
 
-;;; $C176: Instruction list - sprite object 1Bh ;;;
+;;; $C176: Instruction list - sprite object 1Bh (unused. Contracting vertical gate) ;;;
 {
 $B4:C176             dx 0004,CAB3,
                         0004,CA9D,
@@ -5360,7 +5360,7 @@ $B4:C176             dx 0004,CAB3,
 }
 
 
-;;; $C198: Instruction list - sprite object 1Eh ;;;
+;;; $C198: Instruction list - sprite object 1Eh (unused) ;;;
 {
 $B4:C198             dx 0005,C630,
                         0005,C637,
@@ -5370,7 +5370,7 @@ $B4:C198             dx 0005,C630,
 }
 
 
-;;; $C1AC: Instruction list - sprite object 1Fh ;;;
+;;; $C1AC: Instruction list - sprite object 1Fh (unused) ;;;
 {
 $B4:C1AC             dx 0005,C645,
                         0005,C64C,
@@ -5380,7 +5380,7 @@ $B4:C1AC             dx 0005,C645,
 }
 
 
-;;; $C1C0: Instruction list - sprite object 20h ;;;
+;;; $C1C0: Instruction list - sprite object 20h (unused) ;;;
 {
 $B4:C1C0             dx 0005,C65A,
                         0005,C661,
@@ -5390,7 +5390,7 @@ $B4:C1C0             dx 0005,C65A,
 }
 
 
-;;; $C1D4: Instruction list - sprite object 21h ;;;
+;;; $C1D4: Instruction list - sprite object 21h (unused) ;;;
 {
 $B4:C1D4             dx 0005,C66F,
                         0005,C676,
@@ -5400,7 +5400,7 @@ $B4:C1D4             dx 0005,C66F,
 }
 
 
-;;; $C1E8: Instruction list - sprite object 22h ;;;
+;;; $C1E8: Instruction list - sprite object 22h (unused) ;;;
 {
 $B4:C1E8             dx 0005,C684,
                         0005,C68B,
@@ -5410,7 +5410,7 @@ $B4:C1E8             dx 0005,C684,
 }
 
 
-;;; $C1FC: Instruction list - sprite object 23h ;;;
+;;; $C1FC: Instruction list - sprite object 23h (unused) ;;;
 {
 $B4:C1FC             dx 0005,C699,
                         0005,C6A0,
@@ -5420,7 +5420,7 @@ $B4:C1FC             dx 0005,C699,
 }
 
 
-;;; $C210: Instruction list - sprite object 24h ;;;
+;;; $C210: Instruction list - sprite object 24h (unused) ;;;
 {
 $B4:C210             dx 0005,C6AE,
                         0005,C6B5,
@@ -5430,7 +5430,7 @@ $B4:C210             dx 0005,C6AE,
 }
 
 
-;;; $C224: Instruction list - sprite object 25h ;;;
+;;; $C224: Instruction list - sprite object 25h (unused) ;;;
 {
 $B4:C224             dx 0005,C6C3,
                         0005,C6CA,
@@ -5440,7 +5440,7 @@ $B4:C224             dx 0005,C6C3,
 }
 
 
-;;; $C238: Instruction list - sprite object 26h ;;;
+;;; $C238: Instruction list - sprite object 26h (unused) ;;;
 {
 $B4:C238             dx 000A,D08B,
                         000A,D08B,
@@ -5453,7 +5453,7 @@ $B4:C238             dx 000A,D08B,
 }
 
 
-;;; $C258: Instruction list - sprite object 27h ;;;
+;;; $C258: Instruction list - sprite object 27h (unused) ;;;
 {
 $B4:C258             dx 000A,D1D4,
                         000A,D1EF,
@@ -5476,7 +5476,7 @@ $B4:C258             dx 000A,D1D4,
 }
 
 
-;;; $C2A0: Instruction list - sprite object 28h ;;;
+;;; $C2A0: Instruction list - sprite object 28h (unused) ;;;
 {
 $B4:C2A0             dx 000A,D2B3,
                         000A,D2E2,
@@ -5488,7 +5488,7 @@ $B4:C2A0             dx 000A,D2B3,
 }
 
 
-;;; $C2BC: Instruction list - sprite object 29h ;;;
+;;; $C2BC: Instruction list - sprite object 29h (unused) ;;;
 {
 $B4:C2BC             dx 000A,D3FC,
                         000A,D417,
@@ -5511,14 +5511,14 @@ $B4:C2BC             dx 000A,D3FC,
 }
 
 
-;;; $C304: Instruction list - sprite object 2Ah ;;;
+;;; $C304: Instruction list - sprite object 2Ah (unused) ;;;
 {
 $B4:C304             dx 0001,D2AC,
                         BCF0        ; Go back 4 bytes
 }
 
 
-;;; $C30A: Instruction list - sprite object 2Bh ;;;
+;;; $C30A: Instruction list - sprite object 2Bh (nuclear waffle related) ;;;
 {
 $B4:C30A             dx 0003,D4BE,
                         0003,D4C5,
@@ -5536,7 +5536,7 @@ $B4:C30A             dx 0003,D4BE,
 }
 
 
-;;; $C33E: Instruction list - sprite object 2Ch ;;;
+;;; $C33E: Instruction list - sprite object 2Ch (nuclear waffle related) ;;;
 {
 $B4:C33E             dx 0002,D4F6,
                         0002,D4FD,
@@ -5549,7 +5549,7 @@ $B4:C33E             dx 0002,D4F6,
 }
 
 
-;;; $C35C: Instruction list - sprite object 2Dh ;;;
+;;; $C35C: Instruction list - sprite object 2Dh (nuclear waffle related) ;;;
 {
 $B4:C35C             dx 0002,D527,
                         0002,D52E,
@@ -5562,7 +5562,7 @@ $B4:C35C             dx 0002,D527,
 }
 
 
-;;; $C37A: Instruction list - sprite object 2Eh ;;;
+;;; $C37A: Instruction list - sprite object 2Eh (nuclear waffle related) ;;;
 {
 $B4:C37A             dx 0002,D558,
                         0002,D558,
@@ -5573,7 +5573,7 @@ $B4:C37A             dx 0002,D558,
 }
 
 
-;;; $C390: Instruction list - sprite object 30h ;;;
+;;; $C390: Instruction list - sprite object 30h (falling spark trail) ;;;
 {
 $B4:C390             dx 0003,D59B,
                         0003,D5A2,
@@ -5583,7 +5583,7 @@ $B4:C390             dx 0003,D59B,
 }
 
 
-;;; $C3A2: Instruction list - sprite object 31h ;;;
+;;; $C3A2: Instruction list - sprite object 31h (unused. Metroid insides) ;;;
 {
 $B4:C3A2             dx 0010,D653,
                         0010,D67D,
@@ -5630,7 +5630,7 @@ $B4:C3BA             dx 0002,D6F1,
 }
 
 
-;;; $C436: Instruction list - sprite object 33h ;;;
+;;; $C436: Instruction list - sprite object 33h (unused) ;;;
 {
 $B4:C436             dx 0002,D766,
                         0003,D777,
@@ -5704,7 +5704,7 @@ $B4:C4B6             dx 0001,D5B7,
 }
 
 
-;;; $C536: Instruction list - sprite object 35h ;;;
+;;; $C536: Instruction list - sprite object 35h (unused) ;;;
 {
 $B4:C536             dx 0001,D5B7,
                         0001,BDA6,
@@ -5740,7 +5740,7 @@ $B4:C536             dx 0001,D5B7,
 }
 
 
-;;; $C5B2: Instruction list - sprite object 36h ;;;
+;;; $C5B2: Instruction list - sprite object 36h (unused) ;;;
 {
 $B4:C5B2             dx 0010,D5B7,
                         0010,D5EB,
@@ -5774,7 +5774,7 @@ $B4:C5DE             dx 0001,D8B6,
 }
 
 
-;;; $C5E4: Instruction list - sprite object 3Ah ;;;
+;;; $C5E4: Instruction list - sprite object 3Ah (unused) ;;;
 {
 $B4:C5E4             dx 000A,D8BD,
                         000A,D905,
@@ -5811,47 +5811,47 @@ $B4:C61C             dx 000A,DC3F,
 
 ;;; $C630: Sprite object spritemaps ;;;
 {
-; Sprite object 1Eh
+; Sprite object 1Eh (unused)
 $B4:C630             dx 0001, 01FC,FC,0100
 $B4:C637             dx 0001, 01FC,FC,0101
 $B4:C63E             dx 0001, 01FC,FC,0102
 
-; Sprite object 1Fh
+; Sprite object 1Fh (unused)
 $B4:C645             dx 0001, 01FC,FC,0103
 $B4:C64C             dx 0001, 01FC,FC,0104
 $B4:C653             dx 0001, 01FC,FC,0105
 
-; Sprite object 20h
+; Sprite object 20h (unused)
 $B4:C65A             dx 0001, 01FC,FC,0106
 $B4:C661             dx 0001, 01FC,FC,0107
 $B4:C668             dx 0001, 01FC,FC,0108
 
-; Sprite object 21h
+; Sprite object 21h (unused)
 $B4:C66F             dx 0001, 01FC,FC,8103
 $B4:C676             dx 0001, 01FC,FC,8104
 $B4:C67D             dx 0001, 01FC,FC,8105
 
-; Sprite object 22h
+; Sprite object 22h (unused)
 $B4:C684             dx 0001, 01FC,FC,8100
 $B4:C68B             dx 0001, 01FC,FC,8101
 $B4:C692             dx 0001, 01FC,FC,8102
 
-; Sprite object 23h
+; Sprite object 23h (unused)
 $B4:C699             dx 0001, 01FC,FC,C103
 $B4:C6A0             dx 0001, 01FC,FC,C104
 $B4:C6A7             dx 0001, 01FC,FC,C105
 
-; Sprite object 24h
+; Sprite object 24h (unused)
 $B4:C6AE             dx 0001, 01FC,FC,4106
 $B4:C6B5             dx 0001, 01FC,FC,4107
 $B4:C6BC             dx 0001, 01FC,FC,4108
 
-; Sprite object 25h
+; Sprite object 25h (unused)
 $B4:C6C3             dx 0001, 01FC,FC,4103
 $B4:C6CA             dx 0001, 01FC,FC,4104
 $B4:C6D1             dx 0001, 01FC,FC,4105
 
-; Sprite object 11h
+; Sprite object 11h (unused. Rock particles)
 $B4:C6D8             dx 0004, 0000,F8,7A2B, 0000,00,7A2B, 01F8,00,3A2B, 01F8,F8,3A2B
 $B4:C6EE             dx 0004, 0002,F3,7A2B, 0001,FF,7A2B, 01F7,FF,3A2B, 01F6,F3,3A2B
 $B4:C704             dx 0004, 0005,EE,7A2B, 0003,FD,7A2B, 01F5,FD,3A2B, 01F3,EE,3A2B
@@ -5869,7 +5869,7 @@ $B4:C7F6             dx 0004, 0016,F9,7A28, 0010,0B,7A28, 01E2,F9,3A28, 01E8,0B,
 $B4:C80C             dx 0004, 0017,03,7A28, 0011,11,7A28, 01E1,03,3A28, 01E7,11,3A28
 $B4:C822             dx 0004, 0018,0A,7A28, 0012,18,7A28, 01E0,0A,3A28, 01E6,18,3A28
 
-; Sprite object 12h/13h/14h/15h/16h/17h (smoke)
+; Sprite object 12h/13h/14h/15h/16h/17h (dust cloud / weird beam)
 $B4:C838             dx 0001, 01F7,F7,3A48                                           ; Sprite object 12h/        15h
 $B4:C83F             dx 0002, 0001,01,3A48, 81F3,F3,3A7C                             ; Sprite object 12h/        15h
 $B4:C84B             dx 0003, 81FD,FD,3A7C, 01F7,01,3A48, 81F3,F3,3A7E               ; Sprite object 12h/        15h
@@ -5898,7 +5898,7 @@ $B4:C97C             dx 0003, 0000,EE,3A40, 01FC,F2,3A40, 01FA,EC,3A40
 $B4:C98D             dx 0002, 0000,EC,3A40, 01FC,F0,3A40
 $B4:C999             dx 0001, 01FC,EE,3A40
 
-; Sprite object 19h
+; Sprite object 19h (unused. Save station electricity)
 $B4:C9A0             dx 0004, 0008,E0,3A6F, 0000,E0,3A6F, 01F8,E0,3A6F, 01F0,E0,3A6F
 $B4:C9B6             dx 0004, 0008,E8,3A6F, 0000,E8,3A6F, 01F8,E8,3A6F, 01F0,E8,3A6F
 $B4:C9CC             dx 0004, 0008,F0,3A6F, 0000,F0,3A6F, 01F8,F0,3A6F, 01F0,F0,3A6F
@@ -5908,7 +5908,7 @@ $B4:CA0E             dx 0004, 0008,08,3A6F, 0000,08,3A6F, 01F8,08,3A6F, 01F0,08,
 $B4:CA24             dx 0004, 0008,10,3A6F, 0000,10,3A6F, 01F8,10,3A6F, 01F0,10,3A6F
 $B4:CA3A             dx 0004, 0008,18,3A6F, 0000,18,3A6F, 01F8,18,3A6F, 01F0,18,3A6F
 
-; Sprite object 1Ah/1Bh
+; Sprite object 1Ah/1Bh (unused. Vertical gate)
 $B4:CA50             dx 0002, 0000,FC,3ABF, 01F8,FC,3ABE
 $B4:CA5C             dx 0001, 81F8,F8,3ABE
 $B4:CA63             dx 0002, 81F8,FC,3ABE, 81F8,F4,3ABE
@@ -5918,13 +5918,13 @@ $B4:CA8C             dx 0003, 81F8,08,3ABE, 81F8,F8,3ABE, 81F8,E8,3ABE
 $B4:CA9D             dx 0004, 81F8,0C,3ABE, 81F8,00,3ABE, 81F8,F0,3ABE, 81F8,E4,3ABE
 $B4:CAB3             dx 0004, 81F8,10,3ABE, 81F8,00,3ABE, 81F8,F0,3ABE, 81F8,E0,3ABE
 
-; Sprite object 0
+; Sprite object 0 (unused. Beam charge)
 $B4:CAC9             dx 0001, 01FC,FC,3C53
 $B4:CAD0             dx 0001, 01FC,FC,3C52
 $B4:CAD7             dx 0001, 01FC,FC,3C51
 $B4:CADE             dx 0004, 01F8,00,BC50, 0000,00,FC50, 0000,F8,7C50, 01F8,F8,3C50
 
-; Sprite object 1
+; Sprite object 1 (unused. Mother Brain elbow charge particles)
 $B4:CAF4             dx 0003, 0000,0C,3A5B, 0008,EC,3A5B, 01F0,F4,3A5B
 $B4:CB05             dx 0003, 01FD,0A,3A5C, 0006,EE,3A5C, 01F2,F6,3A5C
 $B4:CB16             dx 0003, 01FC,08,3A5C, 0004,F0,3A5C, 01F4,F8,3A5C
@@ -5932,7 +5932,7 @@ $B4:CB27             dx 0003, 0002,F2,3A5D, 01FB,06,3A5D, 01F6,FA,3A5D
 $B4:CB38             dx 0003, 01FB,04,3A5D, 01F8,FB,3A5D, 0000,F4,3A5D
 $B4:CB49             dx 0003, 01FB,02,3A5D, 01FA,FA,3A5D, 0000,F6,3A5D
 
-; Sprite object 2
+; Sprite object 2 (unused. Mother Brain elbow charge energy)
 $B4:CB5A             dx 0003, 0000,EC,BA5B, 0008,0C,BA5B, 01F0,04,BA5B
 $B4:CB6B             dx 0003, 01FE,EE,BA5C, 0006,0A,BA5C, 01F2,02,BA5C
 $B4:CB7C             dx 0003, 0004,08,BA5C, 01F4,00,BA5C, 01FD,F0,BA5C
@@ -5948,7 +5948,7 @@ $B4:CBF3             dx 0004, 8000,00,FA92, 81F0,00,BA92, 8000,F0,7A92, 81F0,F0,
 $B4:CC09             dx 0004, 8000,00,FA94, 81F0,00,BA94, 8000,F0,7A94, 81F0,F0,3A94
 $B4:CC1F             dx 0004, 8000,00,FA96, 81F0,00,BA96, 8000,F0,7A96, 81F0,F0,3A96
 
-; Sprite object 4
+; Sprite object 4 (unused. Bomb explosion)
 $B4:CC35             dx 0004, 0000,00,FA8B, 01F8,00,BA8B, 0000,F8,7A8B, 01F8,F8,3A8B
 $B4:CC4B             dx 0004, 0000,00,FA7A, 01F8,00,BA7A, 0000,F8,7A7A, 01F8,F8,3A7A
 $B4:CC61             dx 0004, 8000,00,FA70, 81F0,00,BA70, 8000,F0,7A70, 81F0,F0,3A70
@@ -5958,13 +5958,13 @@ $B4:CC8D             dx 0004, 8000,00,FA74, 81F0,00,BA74, 8000,F0,7A74, 81F0,F0,
 ; Unused
 $B4:CCA3             dx 0004, 01F8,00,3A5E, 0000,00,3A5E, 0000,F8,3A5E, 01F8,F8,3A5E
 
-; Sprite object 5
+; Sprite object 5 (unused. Beam trail)
 $B4:CCB9             dx 0001, 01FC,FC,3C38
 $B4:CCC0             dx 0001, 01FC,FC,3C39
 $B4:CCC7             dx 0001, 01FC,FC,3C3A
 $B4:CCCE             dx 0001, 01FC,FC,3C3B
 
-; Sprite object 7
+; Sprite object 7 (unused. Power bomb)
 $B4:CCD5             dx 0001, 01FC,FC,3A26
 $B4:CCDC             dx 0001, 01FC,FC,3A27
 $B4:CCE3             dx 0001, 01FC,FC,3A7B
@@ -5980,32 +5980,32 @@ $B4:CD15             dx 0004, 0000,00,FA61, 0000,F8,7A61, 01F8,00,BA61, 01F8,F8,
 $B4:CD2B             dx 0004, 0000,00,FA62, 0000,F8,7A62, 01F8,00,BA62, 01F8,F8,3A62
 $B4:CD41             dx 0004, 0000,00,FA63, 0000,F8,7A63, 01F8,00,BA63, 01F8,F8,3A63
 
-; Sprite object 8/1Ch
+; Sprite object 8/1Ch (unused. Elevator pad)
 $B4:CD57             dx 0004, 01F2,FC,7A6C, 0006,FC,7A6C, 0000,FC,7A6C, 01F8,FC,3A6C
 $B4:CD6D             dx 0004, 0000,FC,7A6E, 0008,FC,7A6D, 01F8,FC,3A6E, 01F0,FC,3A6D
 
 ; Unused
 $B4:CD83             dx 0004, 01F0,FE,3A6F, 0008,FE,3A6F, 0000,FE,3A6F, 01F8,FE,3A6F
 
-; Sprite object 9 (smoke)
+; Sprite object 9 (small dust cloud)
 $B4:CD99             dx 0001, 81F8,F8,3A7C
 $B4:CDA0             dx 0001, 81F8,F6,3A7E
 $B4:CDA7             dx 0001, 81F8,F4,3A9A
 $B4:CDAE             dx 0001, 81F8,F2,3A9C
 
-; Sprite object Ah
+; Sprite object Ah (ninja space pirate landing dust cloud)
 $B4:CDB5             dx 0001, 01FC,FC,3A48 ; Used by sprite object 9
 $B4:CDBC             dx 0001, 01FC,FA,3A49
 $B4:CDC3             dx 0001, 01FC,F8,3A4A
 $B4:CDCA             dx 0001, 01FC,F6,3A4B
 
-; Sprite object Bh
+; Sprite object Bh (unused. Eye door sweat drop)
 $B4:CDD1             dx 0001, 01FC,FC,3A2C
 $B4:CDD8             dx 0001, 01FC,FC,3A2D
 $B4:CDDF             dx 0001, 01FC,FC,3A2E
 $B4:CDE6             dx 0001, 01FC,FC,3A2F
 
-; Sprite object Ch (yellow smoke)
+; Sprite object Ch (smoke)
 $B4:CDED             dx 0001, 81F8,F6,3A76
 $B4:CDF4             dx 0001, 81F8,F4,3A78
 $B4:CDFB             dx 0001, 81F8,F2,3A98
@@ -6016,19 +6016,19 @@ $B4:CE09             dx 0001, 01FC,FC,3A25
 $B4:CE10             dx 0001, 01FC,FC,3A43
 $B4:CE17             dx 0001, 01FC,FC,3A40
 
-; Sprite object Dh
+; Sprite object Dh (unused. Small health drop)
 $B4:CE1E             dx 0001, 01FC,FC,3A3E
 $B4:CE25             dx 0001, 01FC,FC,3A3D
 $B4:CE2C             dx 0001, 01FC,FC,3A41
 $B4:CE33             dx 0001, 01FC,FC,3A42
 
-; Sprite object Eh
+; Sprite object Eh (unused. Big health drop)
 $B4:CE3A             dx 0004, 0000,00,FA44, 01F8,00,BA44, 0000,F8,7A44, 01F8,F8,3A44
 $B4:CE50             dx 0004, 0000,00,FA45, 0000,F8,7A45, 01F8,00,BA45, 01F8,F8,3A45
 $B4:CE66             dx 0004, 01F8,00,BA46, 0000,00,FA46, 0000,F8,7A46, 01F8,F8,3A46
 $B4:CE7C             dx 0001, 01FC,FC,3A42
 
-; Sprite object Fh
+; Sprite object Fh (unused. Bomb)
 $B4:CE83             dx 0001, 01FC,FC,3A4C
 $B4:CE8A             dx 0001, 01FC,FC,3A4D
 $B4:CE91             dx 0001, 01FC,FC,3A4E
@@ -6052,7 +6052,7 @@ $B4:CF59             dx 0003, 01F6,FA,FA68, 01FE,FA,FA67, 01FE,02,FA66
 $B4:CF6A             dx 0002, 01FC,00,BA69, 01FC,F8,BA6A
 $B4:CF76             dx 0003, 0002,FA,BA68, 01FA,FA,BA67, 01FA,02,BA66
 
-; Sprite object 10h
+; Sprite object 10h (unused. Weird small health drop)
 $B4:CF87             dx 0001, 01FC,FC,3A3C
 $B4:CF8E             dx 0001, 01FC,FC,3A3D
 $B4:CF95             dx 0001, 01FC,FC,3A3E
@@ -6068,7 +6068,7 @@ $B4:CFE5             dx 000C, 0010,00,FAC2, 0010,F8,7AC2, 0000,10,FAB2, 01F8,10,
 $B4:D023             dx 0008, C208,00,FAB5, C200,08,FAB3, C3E8,00,BAB5, C3F0,08,BAB3, C208,F0,7AB5, C200,E8,7AB3, C3E8,F0,3AB5, C3F0,E8,3AB3
 $B4:D04D             dx 000C, 0000,10,FABB, 01F8,10,BABB, 0000,E8,7ABB, 01F8,E8,3ABB, 0010,00,FAB7, 0010,F8,7AB7, 01E8,00,BAB7, 01E8,F8,3AB7, C208,08,FAB8, C3E8,08,BAB8, C208,E8,7AB8, C3E8,E8,3AB8
 
-; Sprite object 26h
+; Sprite object 26h (unused)
 $B4:D08B             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20D8, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
 $B4:D0BA             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FC,20D8, 8001,02,20D8, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
 $B4:D0E9             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FD,20D8, 8001,03,20D8, 81FF,08,20DC, 01FE,11,20F6, 01FE,09,20F5
@@ -6079,7 +6079,7 @@ $B4:D176             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,
 ; Unused
 $B4:D1A5             dx 0009, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20D8, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
 
-; Sprite object 27h
+; Sprite object 27h (unused)
 $B4:D1D4             dx 0005, 0000,F8,20F3, 01F8,F8,20F2, 0002,FC,20F4, 01FE,F4,20F1, 01F6,F4,20F0
 $B4:D1EF             dx 0005, 01FE,F4,20F3, 01F6,F4,20F2, 0000,F8,20F4, 0002,FC,20F3, 01FA,FC,20F2
 $B4:D20A             dx 0005, 01FE,F4,20F4, 01F8,F8,20F2, 0000,F8,20F3, 0002,FC,20F1, 01FA,FC,20F0
@@ -6091,10 +6091,10 @@ $B4:D256             dx 0006, 01FE,F4,20F3, 01F6,F4,20F2, 01F8,F8,20F2, 0000,F8,
 $B4:D276             dx 0006, 01FE,F4,20F1, 01F6,F4,20F0, 0000,F8,20F1, 01F8,F8,20F0, 0002,FC,20F1, 01FA,FC,20F0
 $B4:D296             dx 0004, 0000,00,A0F8, 01F8,00,A0F7, 0000,F8,20F8, 01F8,F8,20F7
 
-; Sprite object 2Ah
+; Sprite object 2Ah (unused)
 $B4:D2AC             dx 0001, 81F8,F8,20DE
 
-; Sprite object 28h
+; Sprite object 28h (unused)
 $B4:D2B3             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FB,60D8, 81EF,01,60D8, 81F1,07,60DC, 01FA,10,60F6, 01FA,08,60F5
 $B4:D2E2             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FC,60D8, 81EF,02,60D8, 81F1,07,60DC, 01FA,10,60F6, 01FA,08,60F5
 $B4:D311             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FD,60D8, 81EF,03,60D8, 81F1,08,60DC, 01FA,11,60F6, 01FA,09,60F5
@@ -6105,7 +6105,7 @@ $B4:D39E             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,
 ; Unused
 $B4:D3CD             dx 0009, 81F2,FB,60D6, 8002,FB,60D4, 81F2,EB,60D2, 8002,EB,60D0, 81EE,FB,60D8, 81EF,01,60D8, 81F1,07,60DC, 01FA,10,60F6, 01FA,08,60F5
 
-; Sprite object 29h
+; Sprite object 29h (unused)
 $B4:D3FC             dx 0005, 01F8,F8,60F3, 0000,F8,60F2, 01FA,F4,60F1, 0002,F4,60F0, 01F6,FC,60F4
 $B4:D417             dx 0005, 01FA,F4,60F3, 0002,F4,60F2, 01F8,F8,60F4, 01F6,FC,60F3, 01FE,FC,60F2
 $B4:D432             dx 0005, 01FA,F4,60F4, 01F8,F8,60F3, 0000,F8,60F2, 01F6,FC,60F1, 01FE,FC,60F0
@@ -6116,7 +6116,7 @@ $B4:D46D             dx 0003, 01F6,FC,60F4, 01F8,F8,60F4, 01FA,F4,60F4
 $B4:D47E             dx 0006, 01FA,F4,60F3, 0002,F4,60F2, 01F8,F8,60F3, 0000,F8,60F2, 01F6,FC,60F3, 01FE,FC,60F2
 $B4:D49E             dx 0006, 01FA,F4,60F1, 0002,F4,60F0, 0000,F8,60F0, 01F8,F8,60F1, 01F6,FC,60F1, 01FE,FC,60F0
 
-; Sprite object 2Bh
+; Sprite object 2Bh (nuclear waffle related)
 $B4:D4BE             dx 0001, 81F9,F8,230A
 $B4:D4C5             dx 0001, 81F9,F8,2308
 $B4:D4CC             dx 0001, 81F8,F8,E30A
@@ -6126,7 +6126,7 @@ $B4:D4E1             dx 0001, 81F9,F8,2322
 $B4:D4E8             dx 0001, 81F8,F8,E306
 $B4:D4EF             dx 0001, 81F8,F8,E322
 
-; Sprite object 2Ch
+; Sprite object 2Ch (nuclear waffle related)
 $B4:D4F6             dx 0001, 81F9,F9,230E
 $B4:D4FD             dx 0001, 81FD,F5,2320
 $B4:D504             dx 0001, 8003,EE,2304
@@ -6135,7 +6135,7 @@ $B4:D512             dx 0001, 8005,EC,230C
 $B4:D519             dx 0001, 8005,EC,2326
 $B4:D520             dx 0001, 8005,EC,232E
 
-; Sprite object 2Dh
+; Sprite object 2Dh (nuclear waffle related)
 $B4:D527             dx 0001, 81F8,F9,630E
 $B4:D52E             dx 0001, 81F4,F5,6320
 $B4:D535             dx 0001, 81EE,EE,6304
@@ -6144,17 +6144,17 @@ $B4:D543             dx 0001, 81EC,EC,630C
 $B4:D54A             dx 0001, 81EC,EC,6326
 $B4:D551             dx 0001, 81EB,EC,232E
 
-; Sprite object 2Eh
+; Sprite object 2Eh (nuclear waffle related)
 $B4:D558             dx 0002, 01F1,F8,6334, 0008,F8,2334
 $B4:D564             dx 0002, 01F1,F8,6324, 0008,F8,2324
 $B4:D570             dx 0002, 81E9,F0,6328, 8008,F0,2328
 $B4:D57C             dx 0002, 81E9,F0,632C, 8008,F0,232C
 $B4:D588             dx 0002, 81E8,F0,632A, 8009,F0,232A
 
-; Sprite object 2Fh
+; Sprite object 2Fh (unused)
 $B4:D594             dx 0001, 81F8,F8,3340
 
-; Sprite object 30h
+; Sprite object 30h (falling spark trail)
 $B4:D59B             dx 0001, 01FC,FC,2107
 $B4:D5A2             dx 0001, 01FC,FC,2108
 $B4:D5A9             dx 0001, 01FC,FC,2109
@@ -6209,7 +6209,7 @@ $B4:D8AF             dx 0001, 81F8,F8,210A
 ; Sprite object 39h (yapping maw base - facing up)
 $B4:D8B6             dx 0001, 81F8,F8,A10A
 
-; Sprite object 3Ah
+; Sprite object 3Ah (unused)
 $B4:D8BD             dx 000E, 01FB,00,20F3, 01F3,00,20F2, 01FD,04,20F4, 01F9,FD,20F1, 01F1,FD,20F0, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FB,20D8, 8001,01,20DA, 81FF,07,20DC, 01FE,10,20F6, 01FE,08,20F5
 $B4:D905             dx 0010, 01F9,FC,20F3, 01F1,FC,20F2, 01FB,00,20F4, 01FD,04,20F3, 01F5,04,20F2, 01EE,FB,20F9, 01F6,F3,20FC, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FC,20D8, 8001,02,20DA, 81FF,07,20DC, 01FE,11,20F6, 01FE,09,20F5
 $B4:D957             dx 0010, 01FC,04,20F1, 01FC,00,20F3, 01F4,04,20F0, 01F4,00,20F2, 01F8,FC,20F4, 01EE,FB,20FA, 01F6,F3,20FB, 81FE,FB,20D6, 81EE,FB,20D4, 81FE,EB,20D2, 81EE,EB,20D0, 8002,FD,20D8, 8001,03,20DA, 81FF,08,20DC, 01FE,12,20F6, 01FE,0A,20F5

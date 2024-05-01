@@ -1478,7 +1478,7 @@ $A5:9309 69 90 01    ADC #$0190             ;|
 $A5:930C 85 14       STA $14    [$7E:0014]  ;/
 $A5:930E A9 15 00    LDA #$0015             ;\
 $A5:9311 85 16       STA $16    [$7E:0016]  ;|
-$A5:9313 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
+$A5:9313 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (big dust cloud) at position ([$12], [$14])
 $A5:9315 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A5:9319 FA          PLX
@@ -2006,14 +2006,14 @@ $A5:973E 6B          RTL
 }
 
 
-;;; $973F: Instruction - spawn dying Draygon sprite object - smoke ;;;
+;;; $973F: Instruction - spawn dying Draygon sprite object - big dust cloud ;;;
 {
 $A5:973F 5A          PHY
 $A5:9740 DA          PHX
 $A5:9741 20 8B 97    JSR $978B  [$A5:978B]  ; Generate random Draygon death drift sprite object position
 $A5:9744 A9 15 00    LDA #$0015             ;\
 $A5:9747 85 16       STA $16    [$7E:0016]  ;|
-$A5:9749 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
+$A5:9749 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (big dust cloud) at position ([$12], [$14])
 $A5:974B 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:974F FA          PLX
 $A5:9750 7A          PLY
@@ -2222,7 +2222,7 @@ $A5:989B             dx 9F6E,001B,  ; Queue sound 1Bh, sound library 3, max queu
 $A5:98A5             dx 813A,000C,  ; Wait Ch frames
                         9765,       ; Spawn dying Draygon sprite object - big explosion
                         9752,       ; Spawn dying Draygon sprite object - small explosion
-                        973F,       ; Spawn dying Draygon sprite object - smoke
+                        973F,       ; Spawn dying Draygon sprite object - big dust cloud
                         9778,       ; Spawn dying Draygon sprite object - breath bubbles
                         9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         8110,98A5,  ; Decrement timer and go to $98A5 if non-zero
@@ -2231,7 +2231,7 @@ $A5:98A5             dx 813A,000C,  ; Wait Ch frames
 $A5:98BF             dx 813A,0010,  ; Wait 10h frames
                         9765,       ; Spawn dying Draygon sprite object - big explosion
                         9752,       ; Spawn dying Draygon sprite object - small explosion
-                        973F,       ; Spawn dying Draygon sprite object - smoke
+                        973F,       ; Spawn dying Draygon sprite object - big dust cloud
                         9778,       ; Spawn dying Draygon sprite object - breath bubbles
                         9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
                         80ED,98BF   ; Go to $98BF
@@ -2530,7 +2530,7 @@ $A5:9BC7 69 10 00    ADC #$0010             ;} $14 = [Samus Y position] + 10h
 $A5:9BCA 85 14       STA $14    [$7E:0014]  ;/
 $A5:9BCC A9 15 00    LDA #$0015             ;\
 $A5:9BCF 85 16       STA $16    [$7E:0016]  ;|
-$A5:9BD1 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
+$A5:9BD1 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (big dust cloud) at position ([$12], [$14])
 $A5:9BD3 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:9BD7 7A          PLY
 $A5:9BD8 FA          PLX
@@ -5123,7 +5123,7 @@ $A5:E9F4 6B          RTL
 }
 
 
-;;; $E9F5: Spawn Spore Spawn ceiling smoke ;;;
+;;; $E9F5: Spawn Spore Spawn ceiling dust cloud ;;;
 {
 $A5:E9F5 5A          PHY
 $A5:E9F6 DA          PHX
@@ -5144,7 +5144,7 @@ $A5:EA17 69 E0 01    ADC #$01E0             ;|
 $A5:EA1A 85 14       STA $14    [$7E:0014]  ;/
 $A5:EA1C A9 15 00    LDA #$0015             ;\
 $A5:EA1F 85 16       STA $16    [$7E:0016]  ;|
-$A5:EA21 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (smoke) at position ([$12], [$14])
+$A5:EA21 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (big dust cloud) at position ([$12], [$14])
 $A5:EA23 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A5:EA27 FA          PLX
@@ -5376,7 +5376,7 @@ $A5:EC3B A9 1A EB    LDA #$EB1A             ;\
 $A5:EC3E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Spore Spawn function = RTS
 
 $A5:EC41 20 49 EC    JSR $EC49  [$A5:EC49]  ; Update Spore Spawn stalk segment positions
-$A5:EC44 22 F5 E9 A5 JSL $A5E9F5[$A5:E9F5]  ; Spawn Spore Spawn ceiling smoke
+$A5:EC44 22 F5 E9 A5 JSL $A5E9F5[$A5:E9F5]  ; Spawn Spore Spawn ceiling dust cloud
 $A5:EC48 60          RTS
 }
 

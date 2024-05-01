@@ -3082,7 +3082,7 @@ $A0:9A3D BD 64 0B    LDA $0B64,x[$7E:0B86]  ;\
 $A0:9A40 85 12       STA $12    [$7E:0012]  ;|
 $A0:9A42 BD 78 0B    LDA $0B78,x[$7E:0B9A]  ;|
 $A0:9A45 85 14       STA $14    [$7E:0014]  ;|
-$A0:9A47 A9 06 00    LDA #$0006             ;} Create sprite object 6 at projectile [enemy projectile index] position >_<;
+$A0:9A47 A9 06 00    LDA #$0006             ;} Create sprite object 6 (dud shot) at projectile [enemy projectile index] position >_<;
 $A0:9A4A 85 16       STA $16    [$7E:0016]  ;|
 $A0:9A4C 64 18       STZ $18    [$7E:0018]  ;|
 $A0:9A4E 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
