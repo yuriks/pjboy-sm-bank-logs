@@ -3646,9 +3646,9 @@ $A2:A98C 10 2E       BPL $2E    [$A9BC]     ;} If [enemy 0 function timer] > 0: 
 $A2:A98E A9 BD A9    LDA #$A9BD             ;\
 $A2:A991 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $A9BD
 $A2:A994 A9 95 E6    LDA #$E695             ;\
-$A2:A997 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$A2:A997 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $A2:A99A A9 25 E7    LDA #$E725             ;\
-$A2:A99D 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
+$A2:A99D 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E725 (normal)
 $A2:A9A0 A9 05 00    LDA #$0005             ;\
 $A2:A9A3 8F 14 D9 7E STA $7ED914[$7E:D914]  ;} Loading game state = main (prevents landing sequence from happening again)
 $A2:A9A7 AF F8 D8 7E LDA $7ED8F8[$7E:D8F8]  ;\
@@ -3668,7 +3668,7 @@ $A2:A9BD AD 98 09    LDA $0998  [$7E:0998]  ;\
 $A2:A9C0 C9 08 00    CMP #$0008             ;} If [game state] != main gameplay: return
 $A2:A9C3 D0 43       BNE $43    [$AA08]     ;/
 $A2:A9C5 AD 42 0A    LDA $0A42  [$7E:0A42]  ;\
-$A2:A9C8 C9 95 E6    CMP #$E695             ;} If [$0A42] != $E695 (normal): return
+$A2:A9C8 C9 95 E6    CMP #$E695             ;} If [Samus current state handler] != $E695 (normal): return
 $A2:A9CB D0 3B       BNE $3B    [$AA08]     ;/
 $A2:A9CD BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A2:A9D0 38          SEC                    ;|
@@ -3913,9 +3913,9 @@ $A2:ABB2 AD 98 09    LDA $0998  [$7E:0998]  ;\
 $A2:ABB5 C9 28 00    CMP #$0028             ;} If in demo: return
 $A2:ABB8 10 0C       BPL $0C    [$ABC6]     ;/
 $A2:ABBA A9 95 E6    LDA #$E695             ;\
-$A2:ABBD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$A2:ABBD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $A2:ABC0 A9 25 E7    LDA #$E725             ;\
-$A2:ABC3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
+$A2:ABC3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E725 (normal)
 
 $A2:ABC6 6B          RTL
 }

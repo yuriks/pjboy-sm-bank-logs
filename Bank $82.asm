@@ -1336,13 +1336,13 @@ $82:8B4B 22 09 98 B4 JSL $B49809[$B4:9809]  ; Debug handler
 $82:8B4F 29 FF FF    AND #$FFFF             ;\
 $82:8B52 D0 4C       BNE $4C    [$8BA0]     ;} If [A] != 0: go to BRANCH_SKIP_PROCESSING
 $82:8B54 22 27 C5 8D JSL $8DC527[$8D:C527]  ; Palette FX object handler
-$82:8B58 22 92 E6 90 JSL $90E692[$90:E692]  ; JSR ($0A42) - handles controller input for game physics
+$82:8B58 22 92 E6 90 JSL $90E692[$90:E692]  ; Samus current state handler
 $82:8B5C AD 12 0E    LDA $0E12  [$7E:0E12]  ;\
 $82:8B5F D0 04       BNE $04    [$8B65]     ;} If sprite interactions enabled:
 $82:8B61 22 85 97 A0 JSL $A09785[$A0:9785]  ; Samus / projectile interaction handling
 
 $82:8B65 22 D4 8F A0 JSL $A08FD4[$A0:8FD4]  ; Main enemy routine
-$82:8B69 22 22 E7 90 JSL $90E722[$90:E722]  ; Handles Samus movements and pausing? JSR ($0A44)
+$82:8B69 22 22 E7 90 JSL $90E722[$90:E722]  ; Samus new state handler
 $82:8B6D 22 04 81 86 JSL $868104[$86:8104]  ; Enemy projectile handler
 $82:8B71 22 B4 85 84 JSL $8485B4[$84:85B4]  ; PLM handler
 $82:8B75 22 64 80 87 JSL $878064[$87:8064]  ; Animated tiles objects handler

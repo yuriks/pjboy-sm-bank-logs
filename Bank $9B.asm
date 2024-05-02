@@ -3115,7 +3115,7 @@ $9B:C693 A9 05 00    LDA #$0005             ;\
 $9B:C696 22 3F 90 80 JSL $80903F[$80:903F]  ;} Queue sound 5, sound library 1, max queued sounds allowed = 1 (grapple start)
 $9B:C69A A9 01 00    LDA #$0001             ;\
 $9B:C69D 8D D0 0C    STA $0CD0  [$7E:0CD0]  ;} Beam charge counter = 1
-$9B:C6A0 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Clear flag to resume charging beam sound effect
+$9B:C6A0 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
 $9B:C6A3 AD 58 0A    LDA $0A58  [$7E:0A58]  ;\
 $9B:C6A6 C9 6E 94    CMP #$946E             ;} If [Samus movement handler] = $946E (released from grapple swing):
 $9B:C6A9 D0 06       BNE $06    [$C6B1]     ;/

@@ -1947,8 +1947,8 @@ $8B:8E0C 60          RTS
 {
 $8B:8E0D AD 57 1A    LDA $1A57  [$7E:1A57]  ;\
 $8B:8E10 F0 1A       BEQ $1A    [$8E2C]     ;} If [intro Samus display flag] = 0: return
-$8B:8E12 22 92 E6 90 JSL $90E692[$90:E692]  ; Execute $90:E692
-$8B:8E16 22 22 E7 90 JSL $90E722[$90:E722]  ; Execute $90:E722
+$8B:8E12 22 92 E6 90 JSL $90E692[$90:E692]  ; Samus current state handler
+$8B:8E16 22 22 E7 90 JSL $90E722[$90:E722]  ; Samus new state handler
 $8B:8E1A AD A8 18    LDA $18A8  [$7E:18A8]  ;\
 $8B:8E1D F0 04       BEQ $04    [$8E23]     ;|
 $8B:8E1F 3A          DEC A                  ;} Samus invincibility timer = max(0, [Samus invincibility timer] - 1)
@@ -6128,9 +6128,9 @@ $8B:AF3F 30 F5       BMI $F5    [$AF36]     ;/
 $8B:AF41 A9 01 00    LDA #$0001             ;\
 $8B:AF44 8D D2 09    STA $09D2  [$7E:09D2]  ;} HUD item index = missiles
 $8B:AF47 A9 C9 E6    LDA #$E6C9             ;\
-$8B:AF4A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E6C9 (demo)
+$8B:AF4A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E6C9 (demo)
 $8B:AF4D A9 33 E8    LDA #$E833             ;\
-$8B:AF50 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E833 (intro demo)
+$8B:AF50 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E833 (intro demo)
 $8B:AF53 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
 $8B:AF57 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
 $8B:AF5B A0 84 87    LDY #$8784             ;\
@@ -6203,9 +6203,9 @@ $8B:AFEC E0 00 03    CPX #$0300             ;|
 $8B:AFEF 30 F1       BMI $F1    [$AFE2]     ;/
 $8B:AFF1 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
 $8B:AFF4 A9 C9 E6    LDA #$E6C9             ;\
-$8B:AFF7 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E6C9 (demo)
+$8B:AFF7 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E6C9 (demo)
 $8B:AFFA A9 33 E8    LDA #$E833             ;\
-$8B:AFFD 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E833 (intro demo)
+$8B:AFFD 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E833 (intro demo)
 $8B:B000 22 70 83 91 JSL $918370[$91:8370]  ; Clear demo input RAM
 $8B:B004 22 4E 83 91 JSL $91834E[$91:834E]  ; Enable demo input
 $8B:B008 A0 7E 87    LDY #$877E             ;\

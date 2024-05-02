@@ -8365,7 +8365,7 @@ $90:B89A 10 02       BPL $02    [$B89E]     ;/
 $90:B89C 28          PLP
 $90:B89D 60          RTS                    ; Return
 
-$90:B89E 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
+$90:B89E 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
 $90:B8A1 A9 02 00    LDA #$0002             ;\
 $90:B8A4 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 $90:B8A8 28          PLP
@@ -8400,7 +8400,7 @@ $90:B8DC 0A          ASL A                  ;|
 $90:B8DD A8          TAY                    ;} Queue sound [$C2A7 + ([projectile type] & Fh) * 2], sound library 1, max queued sounds = 15
 $90:B8DE B9 8F C2    LDA $C28F,y[$90:C28F]  ;|
 $90:B8E1 22 21 90 80 JSL $809021[$80:9021]  ;/
-$90:B8E5 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
+$90:B8E5 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
 $90:B8E8 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:B8EC AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $90:B8EF 89 00 10    BIT #$1000             ;} If charge beam not equipped:
@@ -8491,7 +8491,7 @@ $90:B991 10 02       BPL $02    [$B995]     ;/
 $90:B993 28          PLP
 $90:B994 60          RTS                    ; Return
 
-$90:B995 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
+$90:B995 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
 $90:B998 A9 02 00    LDA #$0002             ;\
 $90:B99B 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 15 (silence)
 $90:B99F 28          PLP
@@ -8527,7 +8527,7 @@ $90:B9D6 0A          ASL A                  ;|
 $90:B9D7 A8          TAY                    ;} Queue sound [$C2A7 + ([projectile type] & Fh) * 2], sound library 1, max queued sounds = 15
 $90:B9D8 B9 A7 C2    LDA $C2A7,y[$90:C2AF]  ;|
 $90:B9DB 22 21 90 80 JSL $809021[$80:9021]  ;/
-$90:B9DF 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
+$90:B9DF 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
 $90:B9E2 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:B9E6 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:B9E9 48          PHA                    ;|
@@ -8971,7 +8971,7 @@ $90:BD02 0A          ASL A                  ;|
 $90:BD03 AA          TAX                    ;} Queue sound 1Fh, sound library 1, max queued sounds = 15 (charged plasma beam / hyper beam)
 $90:BD04 BD A7 C2    LDA $C2A7,x[$90:C2B7]  ;|
 $90:BD07 22 21 90 80 JSL $809021[$80:9021]  ;/
-$90:BD0B 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0 (don't resume charging beam sound effect)
+$90:BD0B 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
 $90:BD0E FA          PLX
 $90:BD0F 22 00 80 93 JSL $938000[$93:8000]  ; Initialise projectile
 $90:BD13 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X speed = 0
@@ -14469,15 +14469,15 @@ $90:E676             db 04, ; 0: Standing
 }
 
 
-;;; $E692..E721: $0A42 handler ;;;
+;;; $E692..E721: Samus current state handler ($0A42) ;;;
 {
-;;; $E692: $0A42 handler ;;;
+;;; $E692: Samus current state handler ;;;
 {
-$90:E692 6C 42 0A    JMP ($0A42)[$90:E6C9]
+$90:E692 6C 42 0A    JMP ($0A42)[$90:E6C9]  ; Go to [Samus current state handler]
 }
 
 
-;;; $E695: $0A42 handler - normal ;;;
+;;; $E695: Samus current state handler - normal ;;;
 {
 $90:E695 08          PHP
 $90:E696 8B          PHB
@@ -14497,14 +14497,14 @@ $90:E6B6 20 B6 EC    JSR $ECB6  [$90:ECB6]  ; Determine Samus suit palette index
 $90:E6B9 20 5B 9C    JSR $9C5B  [$90:9C5B]  ; Determine Samus Y acceleration
 $90:E6BC 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside handling
 $90:E6C0 20 DD DC    JSR $DCDD  [$90:DCDD]  ; Handle HUD specific behaviour and projectiles
-$90:E6C3 20 02 EB    JSR $EB02  [$90:EB02]  ; Execute $EB02
+$90:E6C3 20 02 EB    JSR $EB02  [$90:EB02]  ; Reset movement and pose change variables
 $90:E6C6 AB          PLB
 $90:E6C7 28          PLP
 $90:E6C8 6B          RTL
 }
 
 
-;;; $E6C9: $0A42 handler - demo ;;;
+;;; $E6C9: Samus current state handler - demo ;;;
 {
 $90:E6C9 08          PHP
 $90:E6CA 8B          PHB
@@ -14532,14 +14532,14 @@ $90:E700 20 0F E9    JSR $E90F  [$90:E90F]  ; Execute [Samus pose input handler]
 $90:E703 20 5B 9C    JSR $9C5B  [$90:9C5B]  ; Determine Samus Y acceleration
 $90:E706 22 60 9B 94 JSL $949B60[$94:9B60]  ; Samus block inside handling
 $90:E70A 20 DD DC    JSR $DCDD  [$90:DCDD]  ; Handle HUD specific behaviour and projectiles
-$90:E70D 20 02 EB    JSR $EB02  [$90:EB02]  ; Execute $EB02
+$90:E70D 20 02 EB    JSR $EB02  [$90:EB02]  ; Reset movement and pose change variables
 $90:E710 AB          PLB
 $90:E711 28          PLP
 $90:E712 6B          RTL
 }
 
 
-;;; $E713: $0A42 handler - Samus is locked ;;;
+;;; $E713: Samus current state handler - Samus is locked ;;;
 {
 $90:E713 08          PHP
 $90:E714 8B          PHB
@@ -14547,7 +14547,7 @@ $90:E715 4B          PHK                    ;\
 $90:E716 AB          PLB                    ;} DB = $90
 $90:E717 C2 30       REP #$30
 $90:E719 20 CE AE    JSR $AECE  [$90:AECE]  ; Handle projectiles
-$90:E71C 20 02 EB    JSR $EB02  [$90:EB02]  ; Execute $EB02
+$90:E71C 20 02 EB    JSR $EB02  [$90:EB02]  ; Reset movement and pose change variables
 $90:E71F AB          PLB
 $90:E720 28          PLP
 $90:E721 6B          RTL
@@ -14555,15 +14555,15 @@ $90:E721 6B          RTL
 }
 
 
-;;; $E722..E90D: $0A44 handler ;;;
+;;; $E722..E90D: Samus new state handler ($0A44) ;;;
 {
-;;; $E722: $0A44 handler ;;;
+;;; $E722: Samus new state handler ;;;
 {
-$90:E722 6C 44 0A    JMP ($0A44)[$90:E833]
+$90:E722 6C 44 0A    JMP ($0A44)[$90:E833]  ; Go to [Samus new state handler]
 }
 
 
-;;; $E725: $0A44 handler - normal ;;;
+;;; $E725: Samus new state handler - normal ;;;
 {
 ; The return at $E756 was added to make the demo recorder handling inaccessible.
 ; On the PAL version the return was removed, exposing the demo recorder in debug mode
@@ -14642,16 +14642,16 @@ $90:E7BA 22 0B 80 86 JSL $86800B[$86:800B]  ; Disable enemy projectiles
 $90:E7BE A9 01 00    LDA #$0001             ;\
 $90:E7C1 8D 78 0A    STA $0A78  [$7E:0A78]  ;} Freeze time
 $90:E7C4 A9 CD E8    LDA #$E8CD             ;\
-$90:E7C7 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = RTL
+$90:E7C7 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = RTL
 $90:E7CA A9 D2 E7    LDA #$E7D2             ;\
-$90:E7CD 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E7D2 (debug, do nothing until controller 2 presses A)
+$90:E7CD 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E7D2 (debug, do nothing until controller 2 presses A)
 
 $90:E7D0 28          PLP
 $90:E7D1 60          RTS
 }
 
 
-;;; $E7D2: $0A44 handler - debug ;;;
+;;; $E7D2: Samus new state handler - debug ;;;
 {
 $90:E7D2 08          PHP
 $90:E7D3 8B          PHB
@@ -14662,9 +14662,9 @@ $90:E7D8 A5 91       LDA $91    [$7E:0091]  ;\
 $90:E7DA 89 80 00    BIT #$0080             ;} If controller 2 not newly pressed A: return
 $90:E7DD F0 13       BEQ $13    [$E7F2]     ;/
 $90:E7DF A9 95 E6    LDA #$E695             ;\
-$90:E7E2 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$90:E7E2 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $90:E7E5 A9 25 E7    LDA #$E725             ;\
-$90:E7E8 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
+$90:E7E8 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E725 (normal)
 $90:E7EB 22 00 80 86 JSL $868000[$86:8000]  ; Enable enemy projectiles
 $90:E7EF 9C 78 0A    STZ $0A78  [$7E:0A78]  ; Unfreeze time
 
@@ -14674,7 +14674,7 @@ $90:E7F4 6B          RTL
 }
 
 
-;;; $E7F5: $0A44 handler - title demo ;;;
+;;; $E7F5: Samus new state handler - title demo ;;;
 {
 $90:E7F5 08          PHP
 $90:E7F6 8B          PHB
@@ -14704,7 +14704,7 @@ $90:E832 6B          RTL
 }
 
 
-;;; $E833: $0A44 handler - intro demo ;;;
+;;; $E833: Samus new state handler - intro demo ;;;
 {
 $90:E833 08          PHP
 $90:E834 8B          PHB
@@ -14732,7 +14732,7 @@ $90:E869 6B          RTL
 }
 
 
-;;; $E86A: $0A44 handler - Samus appearance ;;;
+;;; $E86A: Samus new state handler - Samus appearance ;;;
 {
 $90:E86A 08          PHP
 $90:E86B 8B          PHB
@@ -14758,9 +14758,9 @@ $90:E898 9C E0 0D    STZ $0DE0  [$7E:0DE0]  ; Disable debug invincibility
 
 ; BRANCH_KEEP_DEBUG_INVINCIBILITY
 $90:E89B A9 95 E6    LDA #$E695             ;\
-$90:E89E 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$90:E89E 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $90:E8A1 A9 25 E7    LDA #$E725             ;\
-$90:E8A4 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
+$90:E8A4 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E725 (normal)
 
 $90:E8A7 AB          PLB
 $90:E8A8 28          PLP
@@ -14768,14 +14768,14 @@ $90:E8A9 6B          RTL
 }
 
 
-;;; $E8AA: $0A44 handler - Ceres ;;;
+;;; $E8AA: Samus new state handler - Ceres ;;;
 {
 $90:E8AA 08          PHP
 $90:E8AB 8B          PHB
 $90:E8AC 4B          PHK                    ;\
 $90:E8AD AB          PLB                    ;} DB = $90
 $90:E8AE C2 30       REP #$30
-$90:E8B0 22 25 E7 90 JSL $90E725[$90:E725]  ; $0A44 handler - normal
+$90:E8B0 22 25 E7 90 JSL $90E725[$90:E725]  ; Samus new state handler - normal
 $90:E8B4 AD 5A 0A    LDA $0A5A  [$7E:0A5A]  ;\
 $90:E8B7 C9 14 E1    CMP #$E114             ;} If [timer / Samus hack handler] = $E114 (draw timer):
 $90:E8BA D0 0E       BNE $0E    [$E8CA]     ;/
@@ -14804,19 +14804,19 @@ $90:E8D5 6B          RTL
 }
 
 
-;;; $E8D6: RTL. $0A44 handler - Samus is locked into station ;;;
+;;; $E8D6: RTL. Samus new state handler - Samus is locked into station ;;;
 {
 $90:E8D6 4C CD E8    JMP $E8CD  [$90:E8CD]  ; Go to RTL
 }
 
 
-;;; $E8D9: RTL. $0A44 handler - Samus is being drained ;;;
+;;; $E8D9: RTL. Samus new state handler - Samus is being drained ;;;
 {
 $90:E8D9 4C CD E8    JMP $E8CD  [$90:E8CD]  ; Go to RTL
 }
 
 
-;;; $E8DC: $0A44 handler - Samus is locked ;;;
+;;; $E8DC: Samus new state handler - Samus is locked ;;;
 {
 $90:E8DC 08          PHP
 $90:E8DD 8B          PHB
@@ -14831,7 +14831,7 @@ $90:E8EB 6B          RTL
 }
 
 
-;;; $E8EC: $0A44 handler - riding elevator ;;;
+;;; $E8EC: Samus new state handler - riding elevator ;;;
 {
 $90:E8EC 08          PHP
 $90:E8ED 8B          PHB
@@ -14848,7 +14848,7 @@ $90:E901 6B          RTL
 }
 
 
-;;; $E902: $0A44 handler - entering/exiting gunship ;;;
+;;; $E902: Samus new state handler - entering/exiting gunship ;;;
 {
 $90:E902 08          PHP
 $90:E903 8B          PHB
@@ -15181,7 +15181,7 @@ $90:EB01 60          RTS
 }
 
 
-;;; $EB02:  ;;;
+;;; $EB02: Reset movement and pose change variables ;;;
 {
 $90:EB02 08          PHP
 $90:EB03 C2 30       REP #$30
@@ -15218,7 +15218,7 @@ $90:EB39 C2 30       REP #$30
 $90:EB3B 20 4B EB    JSR $EB4B  [$90:EB4B]  ; Draw Samus sprites
 $90:EB3E 22 54 82 93 JSL $938254[$93:8254]  ; Draw projectiles
 $90:EB42 20 B3 EA    JSR $EAB3  [$90:EAB3]  ; Handle auto-jump timer and Samus hurt flash counter, update previous input and Samus health
-$90:EB45 20 76 F5    JSR $F576  [$90:F576]  ; Execute $F576
+$90:EB45 20 76 F5    JSR $F576  [$90:F576]  ; Handle unspin sound effects, cancelling echo sound and setting time up game state
 $90:EB48 AB          PLB
 $90:EB49 28          PLP
 $90:EB4A 6B          RTL
@@ -15911,7 +15911,7 @@ $90:EF5D 6B          RTL
 $90:EF5E A9 0E E9    LDA #$E90E             ;\
 $90:EF61 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = RTS
 $90:EF64 A9 13 E7    LDA #$E713             ;\
-$90:EF67 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
+$90:EF67 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E713 (Samus is locked)
 $90:EF6A A9 FF FF    LDA #$FFFF             ;\
 $90:EF6D 8D 28 0A    STA $0A28  [$7E:0A28]  ;} Prospective pose = FFFFh
 $90:EF70 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ; Special prospective pose = FFFFh
@@ -16031,7 +16031,7 @@ $90:F071 60          RTS
 $90:F072 AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
 $90:F075 D0 0C       BNE $0C    [$F083]     ;} If [special Samus palette timer] != 0: return
 $90:F077 A9 95 E6    LDA #$E695             ;\
-$90:F07A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$90:F07A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $90:F07D A9 37 A3    LDA #$A337             ;\
 $90:F080 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 
@@ -16145,9 +16145,9 @@ $90:F108 60          RTS
 ;     $A9:8829: Mother Brain body function - fake death - descent - lock Samus and set scroll region
 
 $90:F109 A9 13 E7    LDA #$E713             ;\
-$90:F10C 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
+$90:F10C 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E713 (Samus is locked)
 $90:F10F A9 DC E8    LDA #$E8DC             ;\
-$90:F112 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8DC (Samus is locked)
+$90:F112 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E8DC (Samus is locked)
 $90:F115 38          SEC                    ;\
 $90:F116 60          RTS                    ;} Return carry set
 }
@@ -16172,9 +16172,9 @@ $90:F116 60          RTS                    ;} Return carry set
 ;     $AA:E6F0: Instruction - release Samus
 
 $90:F117 A9 95 E6    LDA #$E695             ;\
-$90:F11A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$90:F11A 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $90:F11D A9 25 E7    LDA #$E725             ;\
-$90:F120 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
+$90:F120 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E725 (normal)
 $90:F123 38          SEC                    ;\
 $90:F124 60          RTS                    ;} Return carry set
 }
@@ -16270,9 +16270,9 @@ $90:F1A9 60          RTS                    ;} Return carry clear
 ; Called by:
 ;     $84:B146: Activate the station at block index [A] if Samus arm cannon is lined up
 $90:F1AA A9 13 E7    LDA #$E713             ;\
-$90:F1AD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
+$90:F1AD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E713 (Samus is locked)
 $90:F1B0 A9 D6 E8    LDA #$E8D6             ;\
-$90:F1B3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8D6 (RTL)
+$90:F1B3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E8D6 (RTL)
 $90:F1B6 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
 $90:F1B9 C9 0F 00    CMP #$000F             ;} If [flare counter] >= Fh:
 $90:F1BC 30 07       BMI $07    [$F1C5]     ;/
@@ -16290,7 +16290,7 @@ $90:F1C5 4C 9E F1    JMP $F19E  [$90:F19E]  ; Go to end charge beam
 ;     $A3:9548: Elevator AI - elevator status = 0: inactive
 $90:F1C8 22 F6 E3 91 JSL $91E3F6[$91:E3F6]  ; Make Samus face forward
 $90:F1CC A9 EC E8    LDA #$E8EC             ;\
-$90:F1CF 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8EC (riding elevator)
+$90:F1CF 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E8EC (riding elevator)
 $90:F1D2 A9 37 A3    LDA #$A337             ;\
 $90:F1D5 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (normal)
 $90:F1D8 A9 14 EC    LDA #$EC14             ;\
@@ -16308,9 +16308,9 @@ $90:F1E8 60          RTS                    ;} Return carry set
 ; Called by:
 ;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
 $90:F1E9 A9 CD E8    LDA #$E8CD             ;\
-$90:F1EC 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = RTL
+$90:F1EC 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = RTL
 $90:F1EF A9 DC E8    LDA #$E8DC             ;\
-$90:F1F2 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8DC (Samus is locked)
+$90:F1F2 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E8DC (Samus is locked)
 $90:F1F5 A9 00 00    LDA #$0000             ;\
 $90:F1F8 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - power suit
 $90:F1FB 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
@@ -16409,12 +16409,12 @@ $90:F29B 4C 17 F1    JMP $F117  [$90:F117]  ; Go to unlock Samus
 
 $90:F29E 22 33 E6 91 JSL $91E633[$91:E633]  ; Update Samus pose due to change of equipment
 $90:F2A2 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
-$90:F2A5 C9 D6 E8    CMP #$E8D6             ;} If [$0A44] = $E8D6 (RTL):
+$90:F2A5 C9 D6 E8    CMP #$E8D6             ;} If [Samus new state handler] = $E8D6 (RTL):
 $90:F2A8 D0 0C       BNE $0C    [$F2B6]     ;/
 $90:F2AA A9 95 E6    LDA #$E695             ;\
-$90:F2AD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$90:F2AD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $90:F2B0 A9 25 E7    LDA #$E725             ;\
-$90:F2B3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
+$90:F2B3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E725 (normal)
 
 $90:F2B6 38          SEC                    ;\
 $90:F2B7 60          RTS                    ;} Return carry set
@@ -16445,9 +16445,9 @@ $90:F2C9 60          RTS                    ;} Return carry clear
 ; Called by:
 ;     $86:A328: Pre-instruction - enemy projectile $A387 (Ceres elevator pad)
 $90:F2CA A9 95 E6    LDA #$E695             ;\
-$90:F2CD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$90:F2CD 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $90:F2D0 A9 AA E8    LDA #$E8AA             ;\
-$90:F2D3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8AA (Ceres)
+$90:F2D3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E8AA (Ceres)
 $90:F2D6 38          SEC                    ;\
 $90:F2D7 60          RTS                    ;} Return carry set
 }
@@ -16469,15 +16469,15 @@ $90:F2DF 60          RTS                    ;} Return carry clear
 ; Called by:
 ;     $82:DC10: Game state 1Bh (reserve tank auto)
 $90:F2E0 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
-$90:F2E3 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] = $E8D9 (Samus is being drained by rainbow beam):
+$90:F2E3 C9 D9 E8    CMP #$E8D9             ;} If [Samus new state handler] = $E8D9 (Samus is being drained by rainbow beam):
 $90:F2E6 D0 02       BNE $02    [$F2EA]     ;/
 $90:F2E8 38          SEC                    ;\
 $90:F2E9 60          RTS                    ;} Return carry set
 
 $90:F2EA A9 95 E6    LDA #$E695             ;\
-$90:F2ED 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E695 (normal)
+$90:F2ED 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E695 (normal)
 $90:F2F0 A9 25 E7    LDA #$E725             ;\
-$90:F2F3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E725 (normal)
+$90:F2F3 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E725 (normal)
 $90:F2F6 38          SEC                    ;\
 $90:F2F7 60          RTS                    ;} Return carry set
 }
@@ -16494,9 +16494,9 @@ $90:F2F8 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]  ; Disable palette FX objects
 ;;; $F2FC: Lock Samus and set inanimate Samus drawing handler ;;;
 {
 $90:F2FC A9 13 E7    LDA #$E713             ;\
-$90:F2FF 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
+$90:F2FF 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E713 (Samus is locked)
 $90:F302 A9 CD E8    LDA #$E8CD             ;\
-$90:F305 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = RTL
+$90:F305 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = RTL
 $90:F308 A9 1D EC    LDA #$EC1D             ;\
 $90:F30B 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = inanimate Samus
 $90:F30E 38          SEC                    ;\
@@ -16619,9 +16619,9 @@ $90:F3A8 9C D0 0C    STZ $0CD0  [$7E:0CD0]  ; Flare counter = 0
 $90:F3AB 20 BE BC    JSR $BCBE  [$90:BCBE]  ; Clear charge beam animation state
 $90:F3AE 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $90:F3B2 A9 13 E7    LDA #$E713             ;\
-$90:F3B5 8D 42 0A    STA $0A42  [$7E:0A42]  ;} $0A42 = $E713 (Samus is locked)
+$90:F3B5 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = $E713 (Samus is locked)
 $90:F3B8 A9 D9 E8    LDA #$E8D9             ;\
-$90:F3BB 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E8D9 (RTL)
+$90:F3BB 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E8D9 (RTL)
 $90:F3BE 38          SEC                    ;\
 $90:F3BF 60          RTS                    ;} Return carry set
 }
@@ -16689,7 +16689,7 @@ $90:F408 60          RTS                    ;} Return carry set
 ; Called by:
 ;     $A2:A9BD: Gunship function - handle letting Samus enter
 $90:F409 A9 02 E9    LDA #$E902             ;\
-$90:F40C 8D 44 0A    STA $0A44  [$7E:0A44]  ;} $0A44 = $E902 (entering/exiting gunship)
+$90:F40C 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E902 (entering/exiting gunship)
 $90:F40F 18          CLC                    ;\
 $90:F410 60          RTS                    ;} Return carry clear
 }
@@ -16700,7 +16700,7 @@ $90:F410 60          RTS                    ;} Return carry clear
 ; Called by:
 ;     $82:DB69: Handle Samus running out of health and increment game time
 $90:F411 AD 44 0A    LDA $0A44  [$7E:0A44]  ;\
-$90:F414 C9 D9 E8    CMP #$E8D9             ;} If [$0A44] != $E8D9 (Samus is being drained by rainbow beam):
+$90:F414 C9 D9 E8    CMP #$E8D9             ;} If [Samus new state handler] != $E8D9 (Samus is being drained by rainbow beam):
 $90:F417 F0 03       BEQ $03    [$F41C]     ;/
 $90:F419 4C 09 F1    JMP $F109  [$90:F109]  ; Go to lock Samus
 
@@ -16942,25 +16942,20 @@ $90:F575 60          RTS
 }
 
 
-;;; $F576:  ;;;
+;;; $F576: Handle unspin sound effects, cancelling echo sound and setting time up game state ;;;
 {
-; Checks to play sounds:
-;     Continue charge sound,
-;     end(?) blue suit sound,
-;     end spin jump,
-;     and game over if escaping Zebes and 0A5A = E114?
 $90:F576 08          PHP
 $90:F577 C2 30       REP #$30
 $90:F579 AD C0 0D    LDA $0DC0  [$7E:0DC0]  ;\
-$90:F57C 30 60       BMI $60    [$F5DE]     ;} If [$0DC0] & 8000h != 0: go to BRANCH_NEGATIVE
-$90:F57E F0 11       BEQ $11    [$F591]     ; If [$0DC0] != 0:
+$90:F57C 30 60       BMI $60    [$F5DE]     ;} If [resume charging beam sound effect flag] & 8000h != 0 (never true): go to BRANCH_NEGATIVE
+$90:F57E F0 11       BEQ $11    [$F591]     ; If [resume charging beam sound effect flag] != 0:
 $90:F580 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:F582 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If pressing shoot:
 $90:F585 F0 07       BEQ $07    [$F58E]     ;/
 $90:F587 A9 41 00    LDA #$0041             ;\
 $90:F58A 22 2B 90 80 JSL $80902B[$80:902B]  ;} Queue sound 41h, sound library 1, max queued sounds allowed = 9 (resume charging beam)
 
-$90:F58E 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; $0DC0 = 0
+$90:F58E 9C C0 0D    STZ $0DC0  [$7E:0DC0]  ; Resume charging beam sound effect flag = 0
 
 $90:F591 AD 40 0B    LDA $0B40  [$7E:0B40]  ;\
 $90:F594 F0 12       BEQ $12    [$F5A8]     ;} If Samus echoes sound is playing:
@@ -16987,16 +16982,17 @@ $90:F5C6 F0 1C       BEQ $1C    [$F5E4]     ;} If [Samus movement type] = wall j
 $90:F5C8 A9 32 00    LDA #$0032             ;\
 $90:F5CB 22 21 90 80 JSL $809021[$80:9021]  ;} Queue sound 32h, sound library 1, max queued sounds allowed = 15 (spin jump end)
 $90:F5CF AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
-$90:F5D2 C9 10 00    CMP #$0010             ;} If [beam charge counter] < 10h: go to BRANCH_NOT_UNSPINNING
+$90:F5D2 C9 10 00    CMP #$0010             ;} If [beam charge counter] < 10h: go to BRANCH_NOT_RESUMING_CHARGE
 $90:F5D5 30 0D       BMI $0D    [$F5E4]     ;/
 $90:F5D7 A5 8B       LDA $8B    [$7E:008B]  ;\
-$90:F5D9 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: go to BRANCH_NOT_UNSPINNING
+$90:F5D9 2C B2 09    BIT $09B2  [$7E:09B2]  ;} If not pressing shoot: go to BRANCH_NOT_RESUMING_CHARGE
 $90:F5DC F0 06       BEQ $06    [$F5E4]     ;/
 
 ; BRANCH_NEGATIVE
 $90:F5DE A9 01 00    LDA #$0001             ;\
-$90:F5E1 8D C0 0D    STA $0DC0  [$7E:0DC0]  ;} $0DC0 = 1
+$90:F5E1 8D C0 0D    STA $0DC0  [$7E:0DC0]  ;} Resume charging beam sound effect flag = 1
 
+; BRANCH_NOT_RESUMING_CHARGE
 ; BRANCH_NOT_UNSPINNING
 $90:F5E4 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
 $90:F5E7 F0 30       BEQ $30    [$F619]     ;} If debug not enabled: go to BRANCH_DEBUG_END
@@ -17032,10 +17028,10 @@ $90:F622 AD 5A 0A    LDA $0A5A  [$7E:0A5A]  ;\
 $90:F625 C9 14 E1    CMP #$E114             ;} If [timer / Samus hack handler] = $E114 (draw timer):
 $90:F628 D0 0E       BNE $0E    [$F638]     ;/
 $90:F62A AD 98 09    LDA $0998  [$7E:0998]  ;\
-$90:F62D C9 23 00    CMP #$0023             ;} If [game state] != 23h (time up):
-$90:F630 F0 06       BEQ $06    [$F638]     ;/
-$90:F632 A9 23 00    LDA #$0023             ;\
-$90:F635 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 23h (time up)
+$90:F62D C9 23 00    CMP #$0023             ;|
+$90:F630 F0 06       BEQ $06    [$F638]     ;} Game state = 23h (time up)
+$90:F632 A9 23 00    LDA #$0023             ;|
+$90:F635 8D 98 09    STA $0998  [$7E:0998]  ;/
 
 $90:F638 28          PLP
 $90:F639 60          RTS
