@@ -1389,10 +1389,10 @@ $A3:965B             dw 3800, 3EDF, 0018, 000F, 0005, 01DD, 0118, 0093, 002F, 7F
 }
 
 
-;;; $967B: Instruction list -  ;;;
+;;; $967B: Instruction list - upside right ;;;
 {
-$A3:967B             dx E660,E6C8   ; Enemy $0FB2 = $E6C8
-$A3:967F             dx 0008,9745,
+$A3:967B             dw E660,E6C8   ; Enemy function = crawling vertically
+$A3:967F             dw 0008,9745,
                         0008,975B,
                         0008,9771,
                         0008,975B,
@@ -1400,10 +1400,10 @@ $A3:967F             dx 0008,9745,
 }
 
 
-;;; $9693: Instruction list -  ;;;
+;;; $9693: Instruction list - upside left ;;;
 {
-$A3:9693             dx E660,E6C8   ; Enemy $0FB2 = $E6C8
-$A3:9697             dx 0008,97C9,
+$A3:9693             dw E660,E6C8   ; Enemy function = crawling vertically
+$A3:9697             dw 0008,97C9,
                         0008,97DF,
                         0008,97F5,
                         0008,97DF,
@@ -1411,10 +1411,10 @@ $A3:9697             dx 0008,97C9,
 }
 
 
-;;; $96AB: Instruction list -  ;;;
+;;; $96AB: Instruction list - upside down ;;;
 {
-$A3:96AB             dx E660,E7F2   ; Enemy $0FB2 = $E7F2
-$A3:96AF             dx 0008,9787,
+$A3:96AB             dw E660,E7F2   ; Enemy function = crawling horizontally
+$A3:96AF             dw 0008,9787,
                         0008,979D,
                         0008,97B3,
                         0008,979D,
@@ -1422,10 +1422,10 @@ $A3:96AF             dx 0008,9787,
 }
 
 
-;;; $96C3: Instruction list -  ;;;
+;;; $96C3: Instruction list - upside up ;;;
 {
-$A3:96C3             dx E660,E7F2   ; Enemy $0FB2 = $E7F2
-$A3:96C7             dx 0008,9703,
+$A3:96C3             dw E660,E7F2   ; Enemy function = crawling horizontally
+$A3:96C7             dw 0008,9703,
                         0008,9719,
                         0008,972F,
                         0008,9719,
@@ -1433,28 +1433,32 @@ $A3:96C7             dx 0008,9703,
 }
 
 
-;;; $96DB: Instruction list pointers ;;;
+;;; $96DB: Initial instruction list pointers ;;;
 {
-$A3:96DB             dw 967B, 9693, 96AB, 96C3
+; Indexed by [enemy initialisation parameter] * 2
+$A3:96DB             dw 967B, ; 0: Upside right
+                        9693, ; 1: Upside left
+                        96AB, ; 2: Upside down
+                        96C3  ; 3: Upside up
 }
 
 
 ;;; $96E3: Initialisation AI - enemy $D77F (crab) ;;;
 {
 $A3:96E3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:96E6 A9 08 00    LDA #$0008
-$A3:96E9 9D B6 0F    STA $0FB6,x[$7E:10B6]
-$A3:96EC BD 92 0F    LDA $0F92,x[$7E:1092]
-$A3:96EF 29 03 00    AND #$0003
-$A3:96F2 0A          ASL A
-$A3:96F3 A8          TAY
-$A3:96F4 B9 DB 96    LDA $96DB,y[$A3:96E1]
-$A3:96F7 9D 92 0F    STA $0F92,x[$7E:1092]
+$A3:96E6 A9 08 00    LDA #$0008             ;\
+$A3:96E9 9D B6 0F    STA $0FB6,x[$7E:10B6]  ;} Enemy parameter 2 = 8
+$A3:96EC BD 92 0F    LDA $0F92,x[$7E:1092]  ;\
+$A3:96EF 29 03 00    AND #$0003             ;|
+$A3:96F2 0A          ASL A                  ;|
+$A3:96F3 A8          TAY                    ;} Enemy instruction list pointer = [$96DB + ([enemy initialisation parameter] & 3) * 2]
+$A3:96F4 B9 DB 96    LDA $96DB,y[$A3:96E1]  ;|
+$A3:96F7 9D 92 0F    STA $0F92,x[$7E:1092]  ;/
 $A3:96FA 4C 7A E6    JMP $E67A  [$A3:E67A]  ; Go to creepy crawly common initialisation AI
 }
 
 
-;;; $96FD:  ;;;
+;;; $96FD: Unused. RTL ;;;
 {
 $A3:96FD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:9700 6B          RTL
@@ -1475,15 +1479,22 @@ $A3:9702 6B          RTL
 
 ;;; $9703: Crab spritemaps ;;;
 {
+; Upside up
 $A3:9703             dx 0004, 81FF,F3,6106, 81F3,F4,2106, 8000,FC,6104, 81F0,FC,2100
 $A3:9719             dx 0004, 81FE,F3,6106, 81F2,F3,2106, 8000,FB,6102, 81F0,FB,2102
 $A3:972F             dx 0004, 81FD,F4,6106, 81F1,F3,2106, 8000,FC,6100, 81F0,FC,2104
+
+; Upside right
 $A3:9745             dx 0004, 81FD,FF,A10E, 81FC,F3,210E, 81F4,00,A10C, 81F4,F0,2108
 $A3:975B             dx 0004, 81FD,FE,A10E, 81FD,F2,210E, 81F5,00,A10A, 81F5,F0,210A
 $A3:9771             dx 0004, 81FC,FD,A10E, 81FD,F1,210E, 81F4,00,A108, 81F4,F0,210C
+
+; Upside down
 $A3:9787             dx 0004, 81FF,FD,E106, 81F3,FC,A106, 8000,F4,E104, 81F0,F4,A100
 $A3:979D             dx 0004, 81FE,FD,E106, 81F2,FD,A106, 8000,F5,E102, 81F0,F5,A102
 $A3:97B3             dx 0004, 81FD,FC,E106, 81F1,FD,A106, 8000,F4,E100, 81F0,F4,A104
+
+; Upside left
 $A3:97C9             dx 0004, 81F3,FF,E10E, 81F4,F3,610E, 81FC,00,E10C, 81FC,F0,6108
 $A3:97DF             dx 0004, 81F3,FE,E10E, 81F3,F2,610E, 81FB,00,E10A, 81FB,F0,610A
 $A3:97F5             dx 0004, 81F4,FD,E10E, 81F3,F1,610E, 81FC,00,E108, 81FC,F0,610C
@@ -8643,17 +8654,17 @@ $A3:E5D0             dw 3800, 7FFF, 4ED3, 1926, 0481, 5F57, 4691, 360D, 2DCB, 6B
 }
 
 
-;;; $E5F0:  ;;;
+;;; $E5F0: Creepy crawly constants ;;;
 {
 ; Speed. Unit is 1/100h px/frame. Indexed by [enemy parameter 1] * 2
 $A3:E5F0             dw 0040, 0080, 00C0, 0100, 0140, 0180, 01C0, 0200, 0240, 0280, 02C0, 0300, 0340, 0380, 0400, 0440,
                         0540, 0580, 05C0, 0600, 0640, 0680, 06C0, 0700, 0740, 0780, 07C0, 0800, 0840, 0880, 0800, 0000
 
-; Instruction list pointers
-$A3:E630             dw E294, E294, E294, B5D3, 96AB, 98AB
-$A3:E63C             dw E2B0, E2B0, E2B0, B5DB, 96C3, 990B
-$A3:E648             dw E25C, E25C, E25C, B5E3, 967B, 984B
-$A3:E654             dw E278, E278, E278, B5EB, 9693, 988B
+; Instruction list pointers. Indexed by [enemy parameter 2]
+$A3:E630             dw E294, E294, E294, B5D3, 96AB, 98AB ; Upside down
+$A3:E63C             dw E2B0, E2B0, E2B0, B5DB, 96C3, 990B ; Upside up
+$A3:E648             dw E25C, E25C, E25C, B5E3, 967B, 984B ; Upside right
+$A3:E654             dw E278, E278, E278, B5EB, 9693, 988B ; Upside left
 }
 
 
@@ -8689,7 +8700,7 @@ $A3:E683 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A3:E686 A9 C1 E6    LDA #$E6C1             ;\
 $A3:E689 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = RTL
 $A3:E68C BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A3:E68F C9 FF 00    CMP #$00FF             ;} If [enemy parameter 2] != FFh:
+$A3:E68F C9 FF 00    CMP #$00FF             ;} If [enemy parameter 1] != FFh:
 $A3:E692 F0 0B       BEQ $0B    [$E69F]     ;/
 $A3:E694 0A          ASL A                  ;\
 $A3:E695 A8          TAY                    ;|
@@ -8720,22 +8731,22 @@ $A3:E6C1 6B          RTL
 ;;; $E6C2: Main AI - enemy $D77F/$D7BF/$DABF/$DC7F/$DCBF/$DCFF/$DD3F (crab / slug / Norfair slow fireball / big eye bugs / zoomer) ;;;
 {
 $A3:E6C2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:E6C5 7C B2 0F    JMP ($0FB2,x)[$A3:E6C1]
+$A3:E6C5 7C B2 0F    JMP ($0FB2,x)[$A3:E6C1]; Go to [enemy function]
 }
 
 
-;;; $E6C8:  ;;;
+;;; $E6C8: Creepy crawly function - crawling vertically ;;;
 {
-$A3:E6C8 AD 40 18    LDA $1840  [$7E:1840]
-$A3:E6CB C9 1E 00    CMP #$001E
-$A3:E6CE D0 15       BNE $15    [$E6E5]
-$A3:E6D0 AD 3E 18    LDA $183E  [$7E:183E]
-$A3:E6D3 C9 14 00    CMP #$0014
-$A3:E6D6 D0 0D       BNE $0D    [$E6E5]
-$A3:E6D8 BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A3:E6DB 9F 06 78 7E STA $7E7806,x[$7E:7846]
-$A3:E6DF A9 85 E7    LDA #$E785
-$A3:E6E2 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A3:E6C8 AD 40 18    LDA $1840  [$7E:1840]  ;\
+$A3:E6CB C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:E6CE D0 15       BNE $15    [$E6E5]     ;/
+$A3:E6D0 AD 3E 18    LDA $183E  [$7E:183E]  ;\
+$A3:E6D3 C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):
+$A3:E6D6 D0 0D       BNE $0D    [$E6E5]     ;/
+$A3:E6D8 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
+$A3:E6DB 9F 06 78 7E STA $7E7806,x[$7E:7846];} Enemy $7E:7806 = $E6C8 (crawling vertically)
+$A3:E6DF A9 85 E7    LDA #$E785             ;\
+$A3:E6E2 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $E785 (falling)
 
 $A3:E6E5 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E6E7 64 14       STZ $14    [$7E:0014]  ;|
@@ -8745,17 +8756,17 @@ $A3:E6EE C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:E6F0 85 13       STA $13    [$7E:0013]  ;/
 $A3:E6F2 A5 14       LDA $14    [$7E:0014]  ;\
-$A3:E6F4 10 03       BPL $03    [$E6F9]     ;} If [$14] < 0:
-$A3:E6F6 3A          DEC A                  ; $14 -= 1
-$A3:E6F7 80 01       BRA $01    [$E6FA]
-                                            ; Else ([$14] >= 0):
-$A3:E6F9 1A          INC A                  ; $14 += 1
-
-$A3:E6FA 85 14       STA $14    [$7E:0014]
+$A3:E6F4 10 03       BPL $03    [$E6F9]     ;|
+$A3:E6F6 3A          DEC A                  ;|
+$A3:E6F7 80 01       BRA $01    [$E6FA]     ;|
+                                            ;} $14 += 1 * sgn([enemy X velocity])
+$A3:E6F9 1A          INC A                  ;|
+                                            ;|
+$A3:E6FA 85 14       STA $14    [$7E:0014]  ;/
 $A3:E6FC 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
-$A3:E700 90 43       BCC $43    [$E745]     ; If not collided with wall: go to BRANCH_NO_COLLISION
-$A3:E702 A9 00 00    LDA #$0000
-$A3:E705 9F 08 78 7E STA $7E7808,x[$7E:7848]
+$A3:E700 90 43       BCC $43    [$E745]     ; If not collided with wall: go to BRANCH_OUTSIDE_TURN
+$A3:E702 A9 00 00    LDA #$0000             ;\
+$A3:E705 9F 08 78 7E STA $7E7808,x[$7E:7848];} Enemy consecutive turn counter = 0
 $A3:E709 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $A3:E70D 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E70F 64 14       STZ $14    [$7E:0014]  ;|
@@ -8765,53 +8776,54 @@ $A3:E716 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:E718 85 13       STA $13    [$7E:0013]  ;/
 $A3:E71A 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$A3:E71E B0 01       BCS $01    [$E721]     ; If not collided with block:
+$A3:E71E B0 01       BCS $01    [$E721]     ; If collision: go to BRANCH_INSIDE_TURN
 $A3:E720 6B          RTL                    ; Return
 
-$A3:E721 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A3:E724 49 FF FF    EOR #$FFFF
-$A3:E727 1A          INC A
-$A3:E728 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A3:E72B BC B6 0F    LDY $0FB6,x[$7E:0FB6]
-$A3:E72E BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$A3:E731 10 05       BPL $05    [$E738]
-$A3:E733 B9 30 E6    LDA $E630,y[$A3:E630]
-$A3:E736 80 03       BRA $03    [$E73B]
+; BRANCH_INSIDE_TURN
+$A3:E721 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A3:E724 49 FF FF    EOR #$FFFF             ;|
+$A3:E727 1A          INC A                  ;} Negate enemy X velocity
+$A3:E728 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
+$A3:E72B BC B6 0F    LDY $0FB6,x[$7E:0FB6]  ; Y = [enemy parameter 2]
+$A3:E72E BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$A3:E731 10 05       BPL $05    [$E738]     ;} If [enemy Y velocity] < 0:
+$A3:E733 B9 30 E6    LDA $E630,y[$A3:E630]  ; Enemy instruction list pointer = [$E630 + [Y]] (upside down)
+$A3:E736 80 03       BRA $03    [$E73B]     
+                                            ; Else ([enemy Y velocity] >= 0):
+$A3:E738 B9 3C E6    LDA $E63C,y[$A3:E63C]  ; Enemy instruction list pointer = [$E63C + [Y]] (upside up)
+                                            
+$A3:E73B 9D 92 0F    STA $0F92,x[$7E:0F92]  
+$A3:E73E A9 01 00    LDA #$0001             ;\
+$A3:E741 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:E744 6B          RTL                    ; Return
 
-$A3:E738 B9 3C E6    LDA $E63C,y[$A3:E63C]
+; BRANCH_OUTSIDE_TURN
+$A3:E745 BF 08 78 7E LDA $7E7808,x[$7E:7848];\
+$A3:E749 1A          INC A                  ;} Increment enemy consecutive turn counter
+$A3:E74A 9F 08 78 7E STA $7E7808,x[$7E:7848];/
+$A3:E74E C9 04 00    CMP #$0004             ;\
+$A3:E751 30 0E       BMI $0E    [$E761]     ;} If [enemy consecutive turn counter] >= 4:
+$A3:E753 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
+$A3:E756 9F 06 78 7E STA $7E7806,x[$7E:7946];} Enemy $7E:7806 = $E6C8 (crawling vertically)
+$A3:E75A A9 85 E7    LDA #$E785             ;\
+$A3:E75D 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy function = $E785 (falling)
+$A3:E760 6B          RTL                    ; Return
 
-$A3:E73B 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:E73E A9 01 00    LDA #$0001
-$A3:E741 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:E744 6B          RTL
-
-; BRANCH_NO_COLLISION
-$A3:E745 BF 08 78 7E LDA $7E7808,x[$7E:7848]
-$A3:E749 1A          INC A
-$A3:E74A 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A3:E74E C9 04 00    CMP #$0004
-$A3:E751 30 0E       BMI $0E    [$E761]
-$A3:E753 BD B2 0F    LDA $0FB2,x[$7E:10F2]
-$A3:E756 9F 06 78 7E STA $7E7806,x[$7E:7946]
-$A3:E75A A9 85 E7    LDA #$E785
-$A3:E75D 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A3:E760 6B          RTL
-
-$A3:E761 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A3:E764 49 FF FF    EOR #$FFFF
-$A3:E767 1A          INC A
-$A3:E768 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A3:E76B BC B6 0F    LDY $0FB6,x[$7E:0FF6]
-$A3:E76E BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A3:E771 10 05       BPL $05    [$E778]
-$A3:E773 B9 30 E6    LDA $E630,y[$A3:E630]
-$A3:E776 80 03       BRA $03    [$E77B]
-
-$A3:E778 B9 3C E6    LDA $E63C,y[$A3:E63C]
-
-$A3:E77B 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:E77E A9 01 00    LDA #$0001
-$A3:E781 9D 94 0F    STA $0F94,x[$7E:0FD4]
+$A3:E761 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A3:E764 49 FF FF    EOR #$FFFF             ;|
+$A3:E767 1A          INC A                  ;} Negate enemy Y velocity
+$A3:E768 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
+$A3:E76B BC B6 0F    LDY $0FB6,x[$7E:0FF6]  ; Y = [enemy parameter 2]
+$A3:E76E BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A3:E771 10 05       BPL $05    [$E778]     ;} If [enemy Y velocity] < 0:
+$A3:E773 B9 30 E6    LDA $E630,y[$A3:E630]  ; Enemy instruction list pointer = [$E630 + [Y]] (upside down)
+$A3:E776 80 03       BRA $03    [$E77B]     
+                                            ; Else ([enemy Y velocity] >= 0):
+$A3:E778 B9 3C E6    LDA $E63C,y[$A3:E63C]  ; Enemy instruction list pointer = [$E63C + [Y]] (upside up)
+                                            
+$A3:E77B 9D 92 0F    STA $0F92,x[$7E:0FD2]  
+$A3:E77E A9 01 00    LDA #$0001             ;\
+$A3:E781 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A3:E784 6B          RTL
 }
 
@@ -8862,18 +8874,18 @@ $A3:E7F1 6B          RTL
 }
 
 
-;;; $E7F2:  ;;;
+;;; $E7F2: Creepy crawly function - crawling horizontally ;;;
 {
-$A3:E7F2 AD 40 18    LDA $1840  [$7E:1840]
-$A3:E7F5 C9 1E 00    CMP #$001E
-$A3:E7F8 D0 15       BNE $15    [$E80F]
-$A3:E7FA AD 3E 18    LDA $183E  [$7E:183E]
-$A3:E7FD C9 14 00    CMP #$0014
-$A3:E800 D0 0D       BNE $0D    [$E80F]
-$A3:E802 BD B2 0F    LDA $0FB2,x[$7E:10B2]
-$A3:E805 9F 06 78 7E STA $7E7806,x[$7E:7906]
-$A3:E809 A9 85 E7    LDA #$E785
-$A3:E80C 9D B2 0F    STA $0FB2,x[$7E:10B2]
+$A3:E7F2 AD 40 18    LDA $1840  [$7E:1840]  ;\
+$A3:E7F5 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:E7F8 D0 15       BNE $15    [$E80F]     ;/
+$A3:E7FA AD 3E 18    LDA $183E  [$7E:183E]  ;\
+$A3:E7FD C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):
+$A3:E800 D0 0D       BNE $0D    [$E80F]     ;/
+$A3:E802 BD B2 0F    LDA $0FB2,x[$7E:10B2]  ;\
+$A3:E805 9F 06 78 7E STA $7E7806,x[$7E:7906];} Enemy $7E:7806 = $E7F2 (crawling horizontally)
+$A3:E809 A9 85 E7    LDA #$E785             ;\
+$A3:E80C 9D B2 0F    STA $0FB2,x[$7E:10B2]  ;} Enemy function = $E785 (falling)
 
 $A3:E80F 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E811 64 14       STZ $14    [$7E:0014]  ;|
@@ -8883,67 +8895,68 @@ $A3:E818 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:E81A 85 13       STA $13    [$7E:0013]  ;/
 $A3:E81C A5 14       LDA $14    [$7E:0014]  ;\
-$A3:E81E 10 03       BPL $03    [$E823]     ;} If [$14] < 0:
-$A3:E820 3A          DEC A                  ; $14 -= 1
-$A3:E821 80 01       BRA $01    [$E824]
-                                            ; Else ([$14] >= 0):
-$A3:E823 1A          INC A                  ; $14 += 1
-
-$A3:E824 85 14       STA $14    [$7E:0014]
+$A3:E81E 10 03       BPL $03    [$E823]     ;|
+$A3:E820 3A          DEC A                  ;|
+$A3:E821 80 01       BRA $01    [$E824]     ;|
+                                            ;} $14 += 1 * sgn([enemy Y velocity])
+$A3:E823 1A          INC A                  ;|
+                                            ;|
+$A3:E824 85 14       STA $14    [$7E:0014]  ;/
 $A3:E826 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$A3:E82A 90 39       BCC $39    [$E865]     ; If not collided with block: go to BRANCH_NO_COLLISION
-$A3:E82C A9 00 00    LDA #$0000
-$A3:E82F 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A3:E833 20 A5 E8    JSR $E8A5  [$A3:E8A5]
+$A3:E82A 90 39       BCC $39    [$E865]     ; If not collided with block: go to BRANCH_OUTSIDE_TURN
+$A3:E82C A9 00 00    LDA #$0000             ;\
+$A3:E82F 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy consecutive turn counter = 0
+$A3:E833 20 A5 E8    JSR $E8A5  [$A3:E8A5]  ; Execute $E8A5
 $A3:E836 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
-$A3:E83A B0 05       BCS $05    [$E841]     ; If not collided with wall:
+$A3:E83A B0 05       BCS $05    [$E841]     ; If collision: go to BRANCH_INSIDE_TURN
 $A3:E83C 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$A3:E840 6B          RTL
+$A3:E840 6B          RTL                    ; Return
 
-$A3:E841 BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$A3:E844 49 FF FF    EOR #$FFFF
-$A3:E847 1A          INC A
-$A3:E848 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A3:E84B BC B6 0F    LDY $0FB6,x[$7E:0FB6]
-$A3:E84E BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A3:E851 10 05       BPL $05    [$E858]
-$A3:E853 B9 48 E6    LDA $E648,y[$A3:E648]
-$A3:E856 80 03       BRA $03    [$E85B]
+; BRANCH_INSIDE_TURN
+$A3:E841 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$A3:E844 49 FF FF    EOR #$FFFF             ;|
+$A3:E847 1A          INC A                  ;} Negate enemy Y velocity
+$A3:E848 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
+$A3:E84B BC B6 0F    LDY $0FB6,x[$7E:0FB6]  ; Y = [enemy parameter 2]
+$A3:E84E BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A3:E851 10 05       BPL $05    [$E858]     ;} If [enemy X velocity] < 0:
+$A3:E853 B9 48 E6    LDA $E648,y[$A3:E648]  ; Enemy instruction list pointer = [$E648 + [Y]] (upside right)
+$A3:E856 80 03       BRA $03    [$E85B]     
+                                            ; Else ([enemy X velocity] >= 0):
+$A3:E858 B9 54 E6    LDA $E654,y[$A3:E654]  ; Enemy instruction list pointer = [$E654 + [Y]] (upside left)
+                                            
+$A3:E85B 9D 92 0F    STA $0F92,x[$7E:0F92]  
+$A3:E85E A9 01 00    LDA #$0001             ;\
+$A3:E861 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:E864 6B          RTL                    ; Return
 
-$A3:E858 B9 54 E6    LDA $E654,y[$A3:E654]
+; BRANCH_OUTSIDE_TURN
+$A3:E865 BF 08 78 7E LDA $7E7808,x[$7E:7848];\
+$A3:E869 1A          INC A                  ;} Increment enemy consecutive turn counter
+$A3:E86A 9F 08 78 7E STA $7E7808,x[$7E:7848];/
+$A3:E86E C9 04 00    CMP #$0004             ;\
+$A3:E871 30 0E       BMI $0E    [$E881]     ;} If [enemy consecutive turn counter] >= 4:
+$A3:E873 BD B2 0F    LDA $0FB2,x[$7E:11B2]  ;\
+$A3:E876 9F 06 78 7E STA $7E7806,x[$7E:7A06];} Enemy $7E:7806 = $E7F2 (crawling horizontally)
+$A3:E87A A9 85 E7    LDA #$E785             ;\
+$A3:E87D 9D B2 0F    STA $0FB2,x[$7E:11B2]  ;} Enemy function = $E785 (falling)
+$A3:E880 6B          RTL                    ; Return
 
-$A3:E85B 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:E85E A9 01 00    LDA #$0001
-$A3:E861 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:E864 6B          RTL
-
-; BRANCH_NO_COLLISION
-$A3:E865 BF 08 78 7E LDA $7E7808,x[$7E:7848]
-$A3:E869 1A          INC A
-$A3:E86A 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A3:E86E C9 04 00    CMP #$0004
-$A3:E871 30 0E       BMI $0E    [$E881]
-$A3:E873 BD B2 0F    LDA $0FB2,x[$7E:11B2]
-$A3:E876 9F 06 78 7E STA $7E7806,x[$7E:7A06]
-$A3:E87A A9 85 E7    LDA #$E785
-$A3:E87D 9D B2 0F    STA $0FB2,x[$7E:11B2]
-$A3:E880 6B          RTL
-
-$A3:E881 BD A8 0F    LDA $0FA8,x[$7E:0FE8]
-$A3:E884 49 FF FF    EOR #$FFFF
-$A3:E887 1A          INC A
-$A3:E888 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A3:E88B BC B6 0F    LDY $0FB6,x[$7E:0FF6]
-$A3:E88E BD A8 0F    LDA $0FA8,x[$7E:0FE8]
-$A3:E891 10 05       BPL $05    [$E898]
-$A3:E893 B9 48 E6    LDA $E648,y[$A3:E648]
-$A3:E896 80 03       BRA $03    [$E89B]
-
-$A3:E898 B9 54 E6    LDA $E654,y[$A3:E654]
-
-$A3:E89B 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:E89E A9 01 00    LDA #$0001
-$A3:E8A1 9D 94 0F    STA $0F94,x[$7E:0FD4]
+$A3:E881 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
+$A3:E884 49 FF FF    EOR #$FFFF             ;|
+$A3:E887 1A          INC A                  ;} Negate enemy X velocity
+$A3:E888 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
+$A3:E88B BC B6 0F    LDY $0FB6,x[$7E:0FF6]  ; Y = [enemy parameter 2]
+$A3:E88E BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;\
+$A3:E891 10 05       BPL $05    [$E898]     ;} If [enemy X velocity] < 0:
+$A3:E893 B9 48 E6    LDA $E648,y[$A3:E648]  ; Enemy instruction list pointer = [$E648 + [Y]] (upside right)
+$A3:E896 80 03       BRA $03    [$E89B]     
+                                            ; Else ([enemy X velocity] >= 0):
+$A3:E898 B9 54 E6    LDA $E654,y[$A3:E654]  ; Enemy instruction list pointer = [$E654 + [Y]] (upside left)
+                                            
+$A3:E89B 9D 92 0F    STA $0F92,x[$7E:0FD2]  
+$A3:E89E A9 01 00    LDA #$0001             ;\
+$A3:E8A1 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A3:E8A4 6B          RTL
 }
 
@@ -8955,24 +8968,24 @@ $A3:E8A5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $A3:E8A8 48          PHA
 $A3:E8A9 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A3:E8AC 3C AA 0F    BIT $0FAA,x[$7E:0FAA]  ;\
-$A3:E8AF 10 06       BPL $06    [$E8B7]     ;} If [enemy $0FAA] < 0:
+$A3:E8AF 10 06       BPL $06    [$E8B7]     ;} If [enemy Y velocity] < 0:
 $A3:E8B1 38          SEC                    ;\
 $A3:E8B2 FD 84 0F    SBC $0F84,x[$7E:0FC4]  ;} A = (enemy top boundary)
 $A3:E8B5 80 05       BRA $05    [$E8BC]
 
-$A3:E8B7 18          CLC                    ;\ Else ([enemy $0FAA] >= 0):
+$A3:E8B7 18          CLC                    ;\ Else ([enemy Y velocity] >= 0):
 $A3:E8B8 7D 84 0F    ADC $0F84,x[$7E:0F84]  ;} A = (enemy bottom boundary)
 $A3:E8BB 3A          DEC A                  ;/
 
 $A3:E8BC 48          PHA                    ;\
 $A3:E8BD 22 70 BB A0 JSL $A0BB70[$A0:BB70]  ;} Calculate the block containing ([enemy X position], [A])
-$A3:E8C1 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$A3:E8C4 0A          ASL A
-$A3:E8C5 AA          TAX
-$A3:E8C6 BF 02 00 7F LDA $7F0002,x[$7F:00EC]
-$A3:E8CA 29 00 F0    AND #$F000
-$A3:E8CD C9 00 10    CMP #$1000
-$A3:E8D0 D0 4C       BNE $4C    [$E91E]
+$A3:E8C1 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$A3:E8C4 0A          ASL A                  ;|
+$A3:E8C5 AA          TAX                    ;|
+$A3:E8C6 BF 02 00 7F LDA $7F0002,x[$7F:00EC];} If (block type) != slope: go to BRANCH_NORMAL_SPEED
+$A3:E8CA 29 00 F0    AND #$F000             ;|
+$A3:E8CD C9 00 10    CMP #$1000             ;|
+$A3:E8D0 D0 4C       BNE $4C    [$E91E]     ;/
 $A3:E8D2 AE C4 0D    LDX $0DC4  [$7E:0DC4]
 $A3:E8D5 BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
 $A3:E8D9 29 1F 00    AND #$001F
@@ -9006,21 +9019,52 @@ $A3:E918 AD F3 05    LDA $05F3  [$7E:05F3]
 $A3:E91B 85 14       STA $14    [$7E:0014]
 $A3:E91D 60          RTS
 
+; BRANCH_NORMAL_SPEED
 $A3:E91E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:E921 64 12       STZ $12    [$7E:0012]
-$A3:E923 64 14       STZ $14    [$7E:0014]
-$A3:E925 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A3:E928 10 02       BPL $02    [$E92C]
-$A3:E92A C6 14       DEC $14    [$7E:0014]
-
-$A3:E92C 85 13       STA $13    [$7E:0013]
+$A3:E921 64 12       STZ $12    [$7E:0012]  ;\
+$A3:E923 64 14       STZ $14    [$7E:0014]  ;|
+$A3:E925 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;|
+$A3:E928 10 02       BPL $02    [$E92C]     ;} $14.$12 = [enemy Y velocity] / 100h
+$A3:E92A C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$A3:E92C 85 13       STA $13    [$7E:0013]  ;/
 $A3:E92E 60          RTS
 
-$A3:E92F             dw 0000
-$A3:E931             dw 0100, 0000, 0100, 0000, 0100, 0000, 0100, 0000, 0100, 0000, 0100, 0000, 0100, 0000, 0100, 0000,
-                        0100, 0000, 0100, 0000, 0100, 0000, 0100, 0000, 0100, 0000, 0100, 1000, 00B0, 1000, 00B0, 0000,
-                        0100, 0000, 0100, 1000, 00C0, 0000, 0100, 1000, 00C0, 1000, 00C0, 0800, 00D8, 0800, 00D8, 0600,
-                        00F0, 0600, 00F0, 0600, 00F0, 4000, 0080, 4000, 0080, 6000, 0050, 6000, 0050, 6000, 0050
+;                        ________ Unused. Seem to be additive speed modifiers in the $94:8586 version of this table
+;                       |     ___ Adjusted distance multiplier * 100h
+;                       |    |
+$A3:E92F             dw 0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100,
+                        0000,0100, ; 5: Unused. Half height isosceles triangle
+                        0000,0100, ; 6: Unused. Isosceles triangle
+                        0000,0100, ; 7: Half height rectangle
+                        0000,0100, ; 8: Unused. Rectangle
+                        0000,0100, ; 9: Unused. Rectangle
+                        0000,0100, ; Ah: Unused. Rectangle
+                        0000,0100, ; Bh: Unused. Rectangle
+                        0000,0100, ; Ch: Unused. Rectangle
+                        0000,0100, ; Dh: Unused. Rectangle
+                        1000,00B0, ; Eh: Unused. Very bumpy triangle
+                        1000,00B0, ; Fh: Bumpy triangle
+                        0000,0100, ; 10h: Unused
+                        0000,0100, ; 11h: Unused
+                        1000,00C0, ; 12h: Triangle
+                        0000,0100, ; 13h: Rectangle
+                        1000,00C0, ; 14h: Quarter triangle
+                        1000,00C0, ; 15h: Three quarter triangle
+                        0800,00D8, ; 16h: Lower half-height triangle
+                        0800,00D8, ; 17h: Upper half-height triangle
+                        0600,00F0, ; 18h: Unused. Lower third-height triangle
+                        0600,00F0, ; 19h: Unused. Middle third-height triangle
+                        0600,00F0, ; 1Ah: Unused. Upper third-height triangle
+                        4000,0080, ; 1Bh: Upper half-width triangle
+                        4000,0080, ; 1Ch: Lower half-width triangle
+                        6000,0050, ; 1Dh: Unused. Upper third-width triangle
+                        6000,0050, ; 1Eh: Unused. Middle third-width triangle
+                        6000,0050  ; 1Fh: Unused. Lower third-width triangle
 }
 }
 

@@ -1502,13 +1502,13 @@ $A0:8EFB 89 04 00    BIT #$0004             ;} If enemy is not frozen:
 $A0:8EFE D0 34       BNE $34    [$8F34]     ;/
 $A0:8F00 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
 $A0:8F03 18          CLC                    ;|
-$A0:8F04 7D 82 0F    ADC $0F82,x[$7E:1002]  ;} If (enemy left boundary) < [layer 1 X position]: go to BRANCH_NEXT
+$A0:8F04 7D 82 0F    ADC $0F82,x[$7E:1002]  ;} If (enemy right boundary) + 1 < [layer 1 X position]: go to BRANCH_NEXT
 $A0:8F07 CD 11 09    CMP $0911  [$7E:0911]  ;|
 $A0:8F0A 30 48       BMI $48    [$8F54]     ;/
 $A0:8F0C AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A0:8F0F 18          CLC                    ;|
 $A0:8F10 69 00 01    ADC #$0100             ;|
-$A0:8F13 18          CLC                    ;} If [layer 1 X position] + FFh < (enemy right boundary): go to BRANCH_NEXT
+$A0:8F13 18          CLC                    ;} If [layer 1 X position] + 100h < (enemy left boundary): go to BRANCH_NEXT
 $A0:8F14 7D 82 0F    ADC $0F82,x[$7E:1002]  ;|
 $A0:8F17 DD 7A 0F    CMP $0F7A,x[$7E:0FFA]  ;|
 $A0:8F1A 30 38       BMI $38    [$8F54]     ;/
@@ -7163,8 +7163,12 @@ $A0:BB6F 6B          RTL
 
 ;;; $BB70: Calculate the block containing a pixel position ;;;
 {
-; Call after pushing a X then Y pixel position onto the stack (2 bytes each).
-; 0DC4 is set with block #, and stack is also cleaned up (do not try to pull Y and X position from stack)
+;; Parameters:
+;;     [S] + 4: Y position
+;;     [S] + 6: X position
+
+; Call after pushing a X then Y pixel position onto the stack (2 bytes each)
+; $0DC4 is set to the block index. The stack is cleaned up (do not try to pop Y and X position from stack)
 $A0:BB70 A3 04       LDA $04,s  [$7E:1FEB]  ;\
 $A0:BB72 4A          LSR A                  ;|
 $A0:BB73 4A          LSR A                  ;|
