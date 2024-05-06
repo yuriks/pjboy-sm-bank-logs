@@ -8661,6 +8661,13 @@ $A3:E5F0             dw 0040, 0080, 00C0, 0100, 0140, 0180, 01C0, 0200, 0240, 02
                         0540, 0580, 05C0, 0600, 0640, 0680, 06C0, 0700, 0740, 0780, 07C0, 0800, 0840, 0880, 0800, 0000
 
 ; Instruction list pointers. Indexed by [enemy parameter 2]
+;                        _________________________________ 0: (Stone) zoomer
+;                       |      ___________________________ 2: Big eye bugs
+;                       |     |      _____________________ 4: Fire zoomer
+;                       |     |     |      _______________ 6: Norfair slow fireball
+;                       |     |     |     |      _________ 8: Crab
+;                       |     |     |     |     |      ___ Ah: Slug
+;                       |     |     |     |     |     |
 $A3:E630             dw E294, E294, E294, B5D3, 96AB, 98AB ; Upside down
 $A3:E63C             dw E2B0, E2B0, E2B0, B5DB, 96C3, 990B ; Upside up
 $A3:E648             dw E25C, E25C, E25C, B5E3, 967B, 984B ; Upside right
@@ -8906,7 +8913,7 @@ $A3:E826 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A3:E82A 90 39       BCC $39    [$E865]     ; If not collided with block: go to BRANCH_OUTSIDE_TURN
 $A3:E82C A9 00 00    LDA #$0000             ;\
 $A3:E82F 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy consecutive turn counter = 0
-$A3:E833 20 A5 E8    JSR $E8A5  [$A3:E8A5]  ; Execute $E8A5
+$A3:E833 20 A5 E8    JSR $E8A5  [$A3:E8A5]  ; Adjust enemy X velocity for slopes
 $A3:E836 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A3:E83A B0 05       BCS $05    [$E841]     ; If collision: go to BRANCH_INSIDE_TURN
 $A3:E83C 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
@@ -8961,9 +8968,8 @@ $A3:E8A4 6B          RTL
 }
 
 
-;;; $E8A5:  ;;;
+;;; $E8A5: Adjust enemy X velocity for slopes ;;;
 {
-; Used by geemers... adjusts horizontal speed according to current slope being traversed
 $A3:E8A5 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $A3:E8A8 48          PHA
 $A3:E8A9 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
@@ -8986,38 +8992,38 @@ $A3:E8C6 BF 02 00 7F LDA $7F0002,x[$7F:00EC];} If (block type) != slope: go to B
 $A3:E8CA 29 00 F0    AND #$F000             ;|
 $A3:E8CD C9 00 10    CMP #$1000             ;|
 $A3:E8D0 D0 4C       BNE $4C    [$E91E]     ;/
-$A3:E8D2 AE C4 0D    LDX $0DC4  [$7E:0DC4]
-$A3:E8D5 BF 02 64 7F LDA $7F6402,x[$7F:6A6C]
-$A3:E8D9 29 1F 00    AND #$001F
-$A3:E8DC C9 05 00    CMP #$0005
-$A3:E8DF 90 3D       BCC $3D    [$E91E]
-$A3:E8E1 0A          ASL A
-$A3:E8E2 0A          ASL A
-$A3:E8E3 AA          TAX
-$A3:E8E4 BC 31 E9    LDY $E931,x[$A3:E979]
-$A3:E8E7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:E8EA BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A3:E8ED 10 20       BPL $20    [$E90F]
-$A3:E8EF 49 FF FF    EOR #$FFFF
-$A3:E8F2 1A          INC A
-$A3:E8F3 22 D6 82 80 JSL $8082D6[$80:82D6]
-$A3:E8F7 AD F1 05    LDA $05F1  [$7E:05F1]
-$A3:E8FA 49 FF FF    EOR #$FFFF
-$A3:E8FD 18          CLC
-$A3:E8FE 69 01 00    ADC #$0001
-$A3:E901 85 12       STA $12    [$7E:0012]
-$A3:E903 AD F3 05    LDA $05F3  [$7E:05F3]
-$A3:E906 49 FF FF    EOR #$FFFF
-$A3:E909 69 00 00    ADC #$0000
-$A3:E90C 85 14       STA $14    [$7E:0014]
-$A3:E90E 60          RTS
-
-$A3:E90F 22 D6 82 80 JSL $8082D6[$80:82D6]
-$A3:E913 AD F1 05    LDA $05F1  [$7E:05F1]
-$A3:E916 85 12       STA $12    [$7E:0012]
-$A3:E918 AD F3 05    LDA $05F3  [$7E:05F3]
-$A3:E91B 85 14       STA $14    [$7E:0014]
-$A3:E91D 60          RTS
+$A3:E8D2 AE C4 0D    LDX $0DC4  [$7E:0DC4]  ;\
+$A3:E8D5 BF 02 64 7F LDA $7F6402,x[$7F:6A6C];|
+$A3:E8D9 29 1F 00    AND #$001F             ;} If [block BTS] & 1Fh < 5 (square slope): go to BRANCH_NORMAL_SPEED
+$A3:E8DC C9 05 00    CMP #$0005             ;|
+$A3:E8DF 90 3D       BCC $3D    [$E91E]     ;/
+$A3:E8E1 0A          ASL A                  ;\
+$A3:E8E2 0A          ASL A                  ;|
+$A3:E8E3 AA          TAX                    ;|
+$A3:E8E4 BC 31 E9    LDY $E931,x[$A3:E979]  ;|
+$A3:E8E7 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
+$A3:E8EA BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;|
+$A3:E8ED 10 20       BPL $20    [$E90F]     ;|
+$A3:E8EF 49 FF FF    EOR #$FFFF             ;|
+$A3:E8F2 1A          INC A                  ;|
+$A3:E8F3 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
+$A3:E8F7 AD F1 05    LDA $05F1  [$7E:05F1]  ;|
+$A3:E8FA 49 FF FF    EOR #$FFFF             ;|
+$A3:E8FD 18          CLC                    ;|
+$A3:E8FE 69 01 00    ADC #$0001             ;} $14.$12 = [enemy X velocity] * [$E92F + ([block BTS] & 1Fh) * 4 + 2]
+$A3:E901 85 12       STA $12    [$7E:0012]  ;|
+$A3:E903 AD F3 05    LDA $05F3  [$7E:05F3]  ;|
+$A3:E906 49 FF FF    EOR #$FFFF             ;|
+$A3:E909 69 00 00    ADC #$0000             ;|
+$A3:E90C 85 14       STA $14    [$7E:0014]  ;|
+$A3:E90E 60          RTS                    ;|
+                                            ;|
+$A3:E90F 22 D6 82 80 JSL $8082D6[$80:82D6]  ;|
+$A3:E913 AD F1 05    LDA $05F1  [$7E:05F1]  ;|
+$A3:E916 85 12       STA $12    [$7E:0012]  ;|
+$A3:E918 AD F3 05    LDA $05F3  [$7E:05F3]  ;|
+$A3:E91B 85 14       STA $14    [$7E:0014]  ;/
+$A3:E91D 60          RTS                    ; Return
 
 ; BRANCH_NORMAL_SPEED
 $A3:E91E AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -9031,7 +9037,7 @@ $A3:E92C 85 13       STA $13    [$7E:0013]  ;/
 $A3:E92E 60          RTS
 
 ;                        ________ Unused. Seem to be additive speed modifiers in the $94:8586 version of this table
-;                       |     ___ Adjusted distance multiplier * 100h
+;                       |     ___ Adjusted speed multiplier * 100h
 ;                       |    |
 $A3:E92F             dw 0000,0100,
                         0000,0100,
