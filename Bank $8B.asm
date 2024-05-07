@@ -11551,7 +11551,7 @@ $8B:DC4B 60          RTS
 }
 
 
-;;; $DC4C:  ;;;
+;;; $DC4C: Fade out Zebes explosion afterglow ;;;
 {
 $8B:DC4C 08          PHP
 $8B:DC4D C2 30       REP #$30
@@ -11560,48 +11560,48 @@ $8B:DC52 F0 02       BEQ $02    [$DC56]     ;\
 $8B:DC54 10 4D       BPL $4D    [$DCA3]     ;} If [cinematic function timer] > 0: return
 
 $8B:DC56 E2 20       SEP #$20
-$8B:DC58 A5 74       LDA $74    [$7E:0074]
-$8B:DC5A 38          SEC
-$8B:DC5B E9 01       SBC #$01
-$8B:DC5D 85 74       STA $74    [$7E:0074]
-$8B:DC5F C9 20       CMP #$20
-$8B:DC61 10 04       BPL $04    [$DC67]
-$8B:DC63 A9 20       LDA #$20
-$8B:DC65 85 74       STA $74    [$7E:0074]
+$8B:DC58 A5 74       LDA $74    [$7E:0074]  ;\
+$8B:DC5A 38          SEC                    ;|
+$8B:DC5B E9 01       SBC #$01               ;|
+$8B:DC5D 85 74       STA $74    [$7E:0074]  ;|
+$8B:DC5F C9 20       CMP #$20               ;} Colour math subscreen backdrop colour 0 = max(20h, [colour math subscreen backdrop colour 0] - 1)
+$8B:DC61 10 04       BPL $04    [$DC67]     ;|
+$8B:DC63 A9 20       LDA #$20               ;|
+$8B:DC65 85 74       STA $74    [$7E:0074]  ;/
 
-$8B:DC67 A5 75       LDA $75    [$7E:0075]
-$8B:DC69 38          SEC
-$8B:DC6A E9 01       SBC #$01
-$8B:DC6C 85 75       STA $75    [$7E:0075]
-$8B:DC6E C9 40       CMP #$40
-$8B:DC70 10 04       BPL $04    [$DC76]
-$8B:DC72 A9 40       LDA #$40
-$8B:DC74 85 75       STA $75    [$7E:0075]
+$8B:DC67 A5 75       LDA $75    [$7E:0075]  ;\
+$8B:DC69 38          SEC                    ;|
+$8B:DC6A E9 01       SBC #$01               ;|
+$8B:DC6C 85 75       STA $75    [$7E:0075]  ;|
+$8B:DC6E C9 40       CMP #$40               ;} Colour math subscreen backdrop colour 1 = max(40h, [colour math subscreen backdrop colour 0] - 1)
+$8B:DC70 10 04       BPL $04    [$DC76]     ;|
+$8B:DC72 A9 40       LDA #$40               ;|
+$8B:DC74 85 75       STA $75    [$7E:0075]  ;/
 
-$8B:DC76 A5 76       LDA $76    [$7E:0076]
-$8B:DC78 38          SEC
-$8B:DC79 E9 01       SBC #$01
-$8B:DC7B 85 76       STA $76    [$7E:0076]
-$8B:DC7D C9 80       CMP #$80
-$8B:DC7F 10 04       BPL $04    [$DC85]
-$8B:DC81 A9 80       LDA #$80
-$8B:DC83 85 76       STA $76    [$7E:0076]
+$8B:DC76 A5 76       LDA $76    [$7E:0076]  ;\
+$8B:DC78 38          SEC                    ;|
+$8B:DC79 E9 01       SBC #$01               ;|
+$8B:DC7B 85 76       STA $76    [$7E:0076]  ;|
+$8B:DC7D C9 80       CMP #$80               ;} Colour math subscreen backdrop colour 2 = max(80h, [colour math subscreen backdrop colour 0] - 1)
+$8B:DC7F 10 04       BPL $04    [$DC85]     ;|
+$8B:DC81 A9 80       LDA #$80               ;|
+$8B:DC83 85 76       STA $76    [$7E:0076]  ;/
 
-$8B:DC85 A5 74       LDA $74    [$7E:0074]
-$8B:DC87 C9 20       CMP #$20
-$8B:DC89 D0 10       BNE $10    [$DC9B]
-$8B:DC8B A5 75       LDA $75    [$7E:0075]
-$8B:DC8D C9 40       CMP #$40
-$8B:DC8F D0 0A       BNE $0A    [$DC9B]
-$8B:DC91 A5 76       LDA $76    [$7E:0076]
-$8B:DC93 C9 80       CMP #$80
-$8B:DC95 D0 04       BNE $04    [$DC9B]
-$8B:DC97 64 6F       STZ $6F    [$7E:006F]
-$8B:DC99 64 72       STZ $72    [$7E:0072]
+$8B:DC85 A5 74       LDA $74    [$7E:0074]  ;\
+$8B:DC87 C9 20       CMP #$20               ;} If [colour math subscreen backdrop colour 0] = 20h:
+$8B:DC89 D0 10       BNE $10    [$DC9B]     ;/
+$8B:DC8B A5 75       LDA $75    [$7E:0075]  ;\
+$8B:DC8D C9 40       CMP #$40               ;} If [colour math subscreen backdrop colour 1] = 40h:
+$8B:DC8F D0 0A       BNE $0A    [$DC9B]     ;/
+$8B:DC91 A5 76       LDA $76    [$7E:0076]  ;\
+$8B:DC93 C9 80       CMP #$80               ;} If [colour math subscreen backdrop colour 2] = 80h:
+$8B:DC95 D0 04       BNE $04    [$DC9B]     ;/
+$8B:DC97 64 6F       STZ $6F    [$7E:006F]  ;\
+$8B:DC99 64 72       STZ $72    [$7E:0072]  ;} Disable colour math
 
 $8B:DC9B C2 20       REP #$20
-$8B:DC9D A9 08 00    LDA #$0008
-$8B:DCA0 8D 49 1A    STA $1A49  [$7E:1A49]
+$8B:DC9D A9 08 00    LDA #$0008             ;\
+$8B:DCA0 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 8
 
 $8B:DCA3 28          PLP
 $8B:DCA4 60          RTS
@@ -11610,45 +11610,45 @@ $8B:DCA4 60          RTS
 
 ;;; $DCA5: Cinematic function - ending - space view - gunship emergence -  ;;;
 {
-$8B:DCA5 AD 4B 1A    LDA $1A4B  [$7E:1A4B]
-$8B:DCA8 F0 06       BEQ $06    [$DCB0]
-$8B:DCAA 3A          DEC A
-$8B:DCAB 8D 4B 1A    STA $1A4B  [$7E:1A4B]
+$8B:DCA5 AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
+$8B:DCA8 F0 06       BEQ $06    [$DCB0]     ;} If [$1A4B] != 0:
+$8B:DCAA 3A          DEC A                  ;\
+$8B:DCAB 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} Decrement $1A4B
 $8B:DCAE 80 03       BRA $03    [$DCB3]
+                                            ; Else ([$1A4B] = 0):
+$8B:DCB0 20 4C DC    JSR $DC4C  [$8B:DC4C]  ; Fade out Zebes explosion afterglow
 
-$8B:DCB0 20 4C DC    JSR $DC4C  [$8B:DC4C]
-
-$8B:DCB3 AD 8D 19    LDA $198D  [$7E:198D]
-$8B:DCB6 38          SEC
-$8B:DCB7 E9 04 00    SBC #$0004
-$8B:DCBA 29 FF 00    AND #$00FF
-$8B:DCBD 8D 8D 19    STA $198D  [$7E:198D]
-$8B:DCC0 AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:DCC3 0A          ASL A
-$8B:DCC4 0A          ASL A
-$8B:DCC5 AA          TAX
-$8B:DCC6 AD 91 19    LDA $1991  [$7E:1991]
-$8B:DCC9 18          CLC
-$8B:DCCA 7D 04 DD    ADC $DD04,x[$8B:DD04]
-$8B:DCCD 8D 91 19    STA $1991  [$7E:1991]
-$8B:DCD0 AD 93 19    LDA $1993  [$7E:1993]
-$8B:DCD3 7D 02 DD    ADC $DD02,x[$8B:DD02]
-$8B:DCD6 8D 93 19    STA $1993  [$7E:1993]
-$8B:DCD9 AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:DCDC 1A          INC A
-$8B:DCDD 29 0F 00    AND #$000F
-$8B:DCE0 8D 4D 1A    STA $1A4D  [$7E:1A4D]
-$8B:DCE3 AD 8F 19    LDA $198F  [$7E:198F]
-$8B:DCE6 38          SEC
-$8B:DCE7 E9 08 00    SBC #$0008
-$8B:DCEA 8D 8F 19    STA $198F  [$7E:198F]
-$8B:DCED C9 B0 05    CMP #$05B0
-$8B:DCF0 10 0F       BPL $0F    [$DD01]
-$8B:DCF2 A9 01 00    LDA #$0001
-$8B:DCF5 8D 4B 1A    STA $1A4B  [$7E:1A4B]
-$8B:DCF8 9C 4D 1A    STZ $1A4D  [$7E:1A4D]
-$8B:DCFB A9 42 DD    LDA #$DD42
-$8B:DCFE 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:DCB3 AD 8D 19    LDA $198D  [$7E:198D]  ;\
+$8B:DCB6 38          SEC                    ;|
+$8B:DCB7 E9 04 00    SBC #$0004             ;} Mode 7 transformation angle = ([mode 7 transformation angle] - 4) % 100h
+$8B:DCBA 29 FF 00    AND #$00FF             ;|
+$8B:DCBD 8D 8D 19    STA $198D  [$7E:198D]  ;/
+$8B:DCC0 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
+$8B:DCC3 0A          ASL A                  ;|
+$8B:DCC4 0A          ASL A                  ;} X = [$1A4D] * 4
+$8B:DCC5 AA          TAX                    ;/
+$8B:DCC6 AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:DCC9 18          CLC                    ;|
+$8B:DCCA 7D 04 DD    ADC $DD04,x[$8B:DD04]  ;|
+$8B:DCCD 8D 91 19    STA $1991  [$7E:1991]  ;} Mode 7 X position += [$DD02 + [X]].[$DD02 + [X] + 2]
+$8B:DCD0 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:DCD3 7D 02 DD    ADC $DD02,x[$8B:DD02]  ;|
+$8B:DCD6 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:DCD9 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
+$8B:DCDC 1A          INC A                  ;|
+$8B:DCDD 29 0F 00    AND #$000F             ;} $1A4D = ([$1A4D] + 1) % 10h
+$8B:DCE0 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;/
+$8B:DCE3 AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:DCE6 38          SEC                    ;|
+$8B:DCE7 E9 08 00    SBC #$0008             ;} Mode 7 transformation zoom level -= 8
+$8B:DCEA 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:DCED C9 B0 05    CMP #$05B0             ;\
+$8B:DCF0 10 0F       BPL $0F    [$DD01]     ;} If [mode 7 transformation zoom level] < 4A0h:
+$8B:DCF2 A9 01 00    LDA #$0001             ;\
+$8B:DCF5 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} $1A4B = 1 (never read)
+$8B:DCF8 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; $1A4D = 0
+$8B:DCFB A9 42 DD    LDA #$DD42             ;\
+$8B:DCFE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DD42
 
 $8B:DD01 60          RTS
 
@@ -11659,41 +11659,41 @@ $8B:DD02             dw 0000,8000, 0000,8000, 0000,8000, 0000,8000, FFFF,8000, F
 
 ;;; $DD42: Cinematic function - ending - space view - gunship emergence -  ;;;
 {
-$8B:DD42 20 4C DC    JSR $DC4C  [$8B:DC4C]
-$8B:DD45 AD 8D 19    LDA $198D  [$7E:198D]
-$8B:DD48 C9 E0 00    CMP #$00E0
-$8B:DD4B F0 0A       BEQ $0A    [$DD57]
-$8B:DD4D 38          SEC
-$8B:DD4E E9 01 00    SBC #$0001
-$8B:DD51 29 FF 00    AND #$00FF
-$8B:DD54 8D 8D 19    STA $198D  [$7E:198D]
+$8B:DD42 20 4C DC    JSR $DC4C  [$8B:DC4C]  ; Fade out Zebes explosion afterglow
+$8B:DD45 AD 8D 19    LDA $198D  [$7E:198D]  ;\
+$8B:DD48 C9 E0 00    CMP #$00E0             ;} If [mode 7 transformation angle] != E0h:
+$8B:DD4B F0 0A       BEQ $0A    [$DD57]     ;/
+$8B:DD4D 38          SEC                    ;\
+$8B:DD4E E9 01 00    SBC #$0001             ;|
+$8B:DD51 29 FF 00    AND #$00FF             ;} Mode 7 transformation angle = ([mode 7 transformation angle] - 1) % 100h
+$8B:DD54 8D 8D 19    STA $198D  [$7E:198D]  ;/
 
-$8B:DD57 AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:DD5A 0A          ASL A
-$8B:DD5B 0A          ASL A
-$8B:DD5C AA          TAX
-$8B:DD5D AD 91 19    LDA $1991  [$7E:1991]
-$8B:DD60 18          CLC
-$8B:DD61 7D AF DD    ADC $DDAF,x[$8B:DDAF]
-$8B:DD64 8D 91 19    STA $1991  [$7E:1991]
-$8B:DD67 AD 93 19    LDA $1993  [$7E:1993]
-$8B:DD6A 7D AD DD    ADC $DDAD,x[$8B:DDAD]
-$8B:DD6D 8D 93 19    STA $1993  [$7E:1993]
-$8B:DD70 AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:DD73 1A          INC A
-$8B:DD74 29 07 00    AND #$0007
-$8B:DD77 8D 4D 1A    STA $1A4D  [$7E:1A4D]
-$8B:DD7A AD 8F 19    LDA $198F  [$7E:198F]
-$8B:DD7D 38          SEC
-$8B:DD7E E9 02 00    SBC #$0002
-$8B:DD81 8D 8F 19    STA $198F  [$7E:198F]
-$8B:DD84 C9 A0 04    CMP #$04A0
-$8B:DD87 10 23       BPL $23    [$DDAC]
-$8B:DD89 A9 CD DD    LDA #$DDCD
-$8B:DD8C 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:DD8F A9 00 80    LDA #$8000
-$8B:DD92 8D 4D 1A    STA $1A4D  [$7E:1A4D]
-$8B:DD95 9C 4B 1A    STZ $1A4B  [$7E:1A4B]
+$8B:DD57 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
+$8B:DD5A 0A          ASL A                  ;|
+$8B:DD5B 0A          ASL A                  ;} X = [$1A4D] * 4
+$8B:DD5C AA          TAX                    ;/
+$8B:DD5D AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:DD60 18          CLC                    ;|
+$8B:DD61 7D AF DD    ADC $DDAF,x[$8B:DDAF]  ;|
+$8B:DD64 8D 91 19    STA $1991  [$7E:1991]  ;} Mode 7 X position += [$DDAD + [X]].[$DDAD + [X] + 2]
+$8B:DD67 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:DD6A 7D AD DD    ADC $DDAD,x[$8B:DDAD]  ;|
+$8B:DD6D 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:DD70 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
+$8B:DD73 1A          INC A                  ;|
+$8B:DD74 29 07 00    AND #$0007             ;} $1A4D = ([$1A4D] + 1) % 8
+$8B:DD77 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;/
+$8B:DD7A AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:DD7D 38          SEC                    ;|
+$8B:DD7E E9 02 00    SBC #$0002             ;} Mode 7 transformation zoom level -= 2
+$8B:DD81 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:DD84 C9 A0 04    CMP #$04A0             ;\
+$8B:DD87 10 23       BPL $23    [$DDAC]     ;} If [mode 7 transformation zoom level] < 4A0h:
+$8B:DD89 A9 CD DD    LDA #$DDCD             ;\
+$8B:DD8C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DDCD
+$8B:DD8F A9 00 80    LDA #$8000             ;\
+$8B:DD92 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} $1A4B.$1A4D = 0.8000h
+$8B:DD95 9C 4B 1A    STZ $1A4B  [$7E:1A4B]  ;/
 $8B:DD98 A9 0F 00    LDA #$000F             ;\
 $8B:DD9B 22 33 82 80 JSL $808233[$80:8233]  ;} If critters escaped:
 $8B:DD9F 90 0B       BCC $0B    [$DDAC]     ;/
@@ -11710,56 +11710,57 @@ $8B:DDAD             dw 0001,0000, 0001,0000, 0001,0000, FFFF,0000, FFFF,0000, 0
 
 ;;; $DDCD: Cinematic function - ending - space view - gunship emergence -  ;;;
 {
-$8B:DDCD 20 4C DC    JSR $DC4C  [$8B:DC4C]
-$8B:DDD0 AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:DDD3 38          SEC
-$8B:DDD4 E9 00 01    SBC #$0100
-$8B:DDD7 8D 4D 1A    STA $1A4D  [$7E:1A4D]
-$8B:DDDA AD 4B 1A    LDA $1A4B  [$7E:1A4B]
-$8B:DDDD E9 00 00    SBC #$0000
-$8B:DDE0 8D 4B 1A    STA $1A4B  [$7E:1A4B]
-$8B:DDE3 AD 91 19    LDA $1991  [$7E:1991]
-$8B:DDE6 18          CLC
-$8B:DDE7 6D 4D 1A    ADC $1A4D  [$7E:1A4D]
-$8B:DDEA 8D 91 19    STA $1991  [$7E:1991]
-$8B:DDED AD 93 19    LDA $1993  [$7E:1993]
-$8B:DDF0 6D 4B 1A    ADC $1A4B  [$7E:1A4B]
-$8B:DDF3 8D 93 19    STA $1993  [$7E:1993]
-$8B:DDF6 AD 8F 19    LDA $198F  [$7E:198F]
-$8B:DDF9 C9 80 01    CMP #$0180
-$8B:DDFC 10 1A       BPL $1A    [$DE18]
-$8B:DDFE AD 51 1A    LDA $1A51  [$7E:1A51]
-$8B:DE01 89 03 00    BIT #$0003
-$8B:DE04 D0 12       BNE $12    [$DE18]
-$8B:DE06 AD 8D 19    LDA $198D  [$7E:198D]
-$8B:DE09 C9 10 00    CMP #$0010
-$8B:DE0C F0 0A       BEQ $0A    [$DE18]
-$8B:DE0E 18          CLC
-$8B:DE0F 69 02 00    ADC #$0002
-$8B:DE12 29 FF 00    AND #$00FF
-$8B:DE15 8D 8D 19    STA $198D  [$7E:198D]
+$8B:DDCD 20 4C DC    JSR $DC4C  [$8B:DC4C]  ; Fade out Zebes explosion afterglow
+$8B:DDD0 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
+$8B:DDD3 38          SEC                    ;|
+$8B:DDD4 E9 00 01    SBC #$0100             ;|
+$8B:DDD7 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} $1A4B.$1A4D -= 0.0100h
+$8B:DDDA AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;|
+$8B:DDDD E9 00 00    SBC #$0000             ;|
+$8B:DDE0 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;/
+$8B:DDE3 AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:DDE6 18          CLC                    ;|
+$8B:DDE7 6D 4D 1A    ADC $1A4D  [$7E:1A4D]  ;|
+$8B:DDEA 8D 91 19    STA $1991  [$7E:1991]  ;} Mode 7 X position += [$1A4B].[$1A4D]
+$8B:DDED AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:DDF0 6D 4B 1A    ADC $1A4B  [$7E:1A4B]  ;|
+$8B:DDF3 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:DDF6 AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:DDF9 C9 80 01    CMP #$0180             ;} If [mode 7 transformation zoom level] < 180h:
+$8B:DDFC 10 1A       BPL $1A    [$DE18]     ;/
+$8B:DDFE AD 51 1A    LDA $1A51  [$7E:1A51]  ;\
+$8B:DE01 89 03 00    BIT #$0003             ;} If [cinematic frame counter] % 4 = 0:
+$8B:DE04 D0 12       BNE $12    [$DE18]     ;/
+$8B:DE06 AD 8D 19    LDA $198D  [$7E:198D]  ;\
+$8B:DE09 C9 10 00    CMP #$0010             ;} If [mode 7 transformation angle] != 10h:
+$8B:DE0C F0 0A       BEQ $0A    [$DE18]     ;/
+$8B:DE0E 18          CLC                    ;\
+$8B:DE0F 69 02 00    ADC #$0002             ;|
+$8B:DE12 29 FF 00    AND #$00FF             ;} Mode 7 transformation angle = ([mode 7 transformation angle] + 2) % 100h
+$8B:DE15 8D 8D 19    STA $198D  [$7E:198D]  ;/
 
-$8B:DE18 AD 8F 19    LDA $198F  [$7E:198F]
-$8B:DE1B C9 20 00    CMP #$0020
-$8B:DE1E 30 08       BMI $08    [$DE28]
-$8B:DE20 38          SEC
-$8B:DE21 E9 04 00    SBC #$0004
-$8B:DE24 8D 8F 19    STA $198F  [$7E:198F]
-$8B:DE27 60          RTS
+$8B:DE18 AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:DE1B C9 20 00    CMP #$0020             ;} If [mode 7 transformation zoom level] >= 20h:
+$8B:DE1E 30 08       BMI $08    [$DE28]     ;/
+$8B:DE20 38          SEC                    ;\
+$8B:DE21 E9 04 00    SBC #$0004             ;} Mode 7 transformation zoom level -= 4
+$8B:DE24 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:DE27 60          RTS                    ; Return
 
 $8B:DE28 A0 C7 EE    LDY #$EEC7             ;\
 $8B:DE2B 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $EEC7 ('THE OPERATION WAS')
 $8B:DE2E A9 63 DE    LDA #$DE63             ;\
 $8B:DE31 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
-$8B:DE34 A2 1E 00    LDX #$001E
-
-$8B:DE37 BD 43 DE    LDA $DE43,x[$8B:DE61]
-$8B:DE3A 9F A0 C0 7E STA $7EC0A0,x[$7E:C0BE]
-$8B:DE3E CA          DEX
-$8B:DE3F CA          DEX
-$8B:DE40 10 F5       BPL $F5    [$DE37]
+$8B:DE34 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$8B:DE37 BD 43 DE    LDA $DE43,x[$8B:DE61]  ;|
+$8B:DE3A 9F A0 C0 7E STA $7EC0A0,x[$7E:C0BE];} BG1/2 palette 5 = [$DE43..62]
+$8B:DE3E CA          DEX                    ;|
+$8B:DE3F CA          DEX                    ;|
+$8B:DE40 10 F5       BPL $F5    [$DE37]     ;/
 $8B:DE42 60          RTS
 
+; Grey gunship palette
 $8B:DE43             dw 0000, 6F7B, 4A52, 1CE7, 0000, 5AD6, 4A52, 35AD, 2529, 7FFF, 56B5, 294A, 4210, 2D6B, 18C6, 7FFF
 }
 
