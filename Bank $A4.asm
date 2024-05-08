@@ -29,13 +29,15 @@ $A4:86A4             dw 0640
 }
 
 
+;;; $86A6..8A39:  ;;;
+{
 ;;; $86A6: Instruction ;;;
 {
 $A4:86A6 DA          PHX
 $A4:86A7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:86AA BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A4:86AD AA          TAX
-$A4:86AE FC B3 86    JSR ($86B3,x)[$A4:86F2]
+$A4:86AA BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A4:86AD AA          TAX                    ;} Execute [$86B3 + [enemy $0FAC]]
+$A4:86AE FC B3 86    JSR ($86B3,x)[$A4:86F2];/
 $A4:86B1 FA          PLX
 $A4:86B2 6B          RTL
 
@@ -52,39 +54,39 @@ $A4:86DD 60          RTS
 
 ;;; $86DE:  ;;;
 {
-$A4:86DE A0 DE BA    LDY #$BADE
-$A4:86E1 A9 01 00    LDA #$0001
-$A4:86E4 9D 94 0F    STA $0F94,x
+$A4:86DE A0 DE BA    LDY #$BADE             ; Y = $BADE
+$A4:86E1 A9 01 00    LDA #$0001             ;\
+$A4:86E4 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A4:86E7 60          RTS
 }
 
 
 ;;; $86E8:  ;;;
 {
-$A4:86E8 A9 04 00    LDA #$0004
-$A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A4:86EE A0 CE BB    LDY #$BBCE
+$A4:86E8 A9 04 00    LDA #$0004             ;\
+$A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 4
+$A4:86EE A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 $A4:86F1 60          RTS
 }
 
 
 ;;; $86F2:  ;;;
 {
-$A4:86F2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:86F5 38          SEC
-$A4:86F6 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A4:86F9 10 04       BPL $04    [$86FF]
-$A4:86FB 49 FF FF    EOR #$FFFF
-$A4:86FE 1A          INC A
-
-$A4:86FF C9 E0 00    CMP #$00E0
-$A4:8702 10 12       BPL $12    [$8716]
-$A4:8704 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8707 09 00 80    ORA #$8000
-$A4:870A 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:870D A0 56 BC    LDY #$BC56
-$A4:8710 A9 12 00    LDA #$0012
-$A4:8713 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:86F2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:86F5 38          SEC                    ;|
+$A4:86F6 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A4:86F9 10 04       BPL $04    [$86FF]     ;|
+$A4:86FB 49 FF FF    EOR #$FFFF             ;} If |[Crocomire X position] - [Samus X position]| < E0h:
+$A4:86FE 1A          INC A                  ;|
+                                            ;|
+$A4:86FF C9 E0 00    CMP #$00E0             ;|
+$A4:8702 10 12       BPL $12    [$8716]     ;/
+$A4:8704 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8707 09 00 80    ORA #$8000             ;} $0FAA |= 8000h
+$A4:870A 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
+$A4:870D A0 56 BC    LDY #$BC56             ; Y = $BC56
+$A4:8710 A9 12 00    LDA #$0012             ;\
+$A4:8713 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 12h
 
 $A4:8716 60          RTS
 }
@@ -100,9 +102,9 @@ $A4:8722 29 FF F7    AND #$F7FF
 $A4:8725 8D AA 0F    STA $0FAA  [$7E:0FAA]
 $A4:8728 AD AE 0F    LDA $0FAE  [$7E:0FAE]
 $A4:872B F0 0A       BEQ $0A    [$8737]
-$A4:872D A0 30 BC    LDY #$BC30
-$A4:8730 A9 0C 00    LDA #$000C
-$A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:872D A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:8730 A9 0C 00    LDA #$000C             ;\
+$A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 $A4:8736 60          RTS
 
 $A4:8737 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
@@ -110,13 +112,13 @@ $A4:873A CD A2 86    CMP $86A2  [$A4:86A2]
 $A4:873D 30 09       BMI $09    [$8748]
 $A4:873F C0 34 BC    CPY #$BC34
 $A4:8742 30 03       BMI $03    [$8747]
-$A4:8744 A0 CE BB    LDY #$BBCE
+$A4:8744 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:8747 60          RTS
 
-$A4:8748 A0 7E BE    LDY #$BE7E
-$A4:874B A9 0A 00    LDA #$000A
-$A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8748 A0 7E BE    LDY #$BE7E             ; Y = $BE7E
+$A4:874B A9 0A 00    LDA #$000A             ;\
+$A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ah
 $A4:8751 60          RTS
 }
 
@@ -128,10 +130,10 @@ $A4:8753 AD E5 05    LDA $05E5  [$7E:05E5]
 $A4:8756 29 FF 0F    AND #$0FFF
 $A4:8759 C9 00 04    CMP #$0400
 $A4:875C 10 0C       BPL $0C    [$876A]
-$A4:875E A9 08 00    LDA #$0008
-$A4:8761 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:875E A9 08 00    LDA #$0008             ;\
+$A4:8761 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 8
 $A4:8764 9C B2 0F    STZ $0FB2  [$7E:0FB2]
-$A4:8767 A0 36 BB    LDY #$BB36
+$A4:8767 A0 36 BB    LDY #$BB36             ; Y = $BB36
 
 $A4:876A FA          PLX
 $A4:876B 6B          RTL
@@ -145,9 +147,9 @@ $A4:876F 89 00 08    BIT #$0800
 $A4:8772 F0 10       BEQ $10    [$8784]
 $A4:8774 29 FF F7    AND #$F7FF
 $A4:8777 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:877A A0 30 BC    LDY #$BC30
-$A4:877D A9 0C 00    LDA #$000C
-$A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:877A A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:877D A9 0C 00    LDA #$000C             ;\
+$A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 $A4:8783 60          RTS
 
 $A4:8784 AD B2 0F    LDA $0FB2  [$7E:0FB2]
@@ -166,9 +168,9 @@ $A4:87A5 7A          PLY
 $A4:87A6 FA          PLX
 $A4:87A7 60          RTS
 
-$A4:87A8 A0 CA BB    LDY #$BBCA
-$A4:87AB A9 06 00    LDA #$0006
-$A4:87AE 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:87A8 A0 CA BB    LDY #$BBCA             ; Y = $BBCA
+$A4:87AB A9 06 00    LDA #$0006             ;\
+$A4:87AE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
 $A4:87B1 60          RTS
 }
 
@@ -180,9 +182,9 @@ $A4:87B5 89 00 08    BIT #$0800
 $A4:87B8 F0 0F       BEQ $0F    [$87C9]
 $A4:87BA 29 FF F7    AND #$F7FF
 $A4:87BD 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:87C0 A0 30 BC    LDY #$BC30
-$A4:87C3 A9 0C 00    LDA #$000C
-$A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:87C0 A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:87C3 A9 0C 00    LDA #$000C             ;\
+$A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 
 $A4:87C9 60          RTS
 }
@@ -195,14 +197,14 @@ $A4:87CD F0 10       BEQ $10    [$87DF]
 $A4:87CF 3A          DEC A
 $A4:87D0 8D AE 0F    STA $0FAE  [$7E:0FAE]
 $A4:87D3 F0 0A       BEQ $0A    [$87DF]
-$A4:87D5 A0 34 BC    LDY #$BC34
-$A4:87D8 A9 0C 00    LDA #$000C
-$A4:87DB 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:87D5 A0 34 BC    LDY #$BC34             ; Y = $BC34
+$A4:87D8 A9 0C 00    LDA #$000C             ;\
+$A4:87DB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 $A4:87DE 60          RTS
 
-$A4:87DF A9 06 00    LDA #$0006
-$A4:87E2 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A4:87E5 A0 CE BB    LDY #$BBCE
+$A4:87DF A9 06 00    LDA #$0006             ;\
+$A4:87E2 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:87E5 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 $A4:87E8 60          RTS
 }
 
@@ -212,9 +214,9 @@ $A4:87E8 60          RTS
 $A4:87E9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
 $A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]
 $A4:87EF 30 09       BMI $09    [$87FA]
-$A4:87F1 A9 06 00    LDA #$0006
-$A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A4:87F7 A0 CE BB    LDY #$BBCE
+$A4:87F1 A9 06 00    LDA #$0006             ;\
+$A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:87F7 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:87FA 60          RTS
 }
@@ -222,16 +224,16 @@ $A4:87FA 60          RTS
 
 ;;; $87FB:  ;;;
 {
-$A4:87FB A9 06 00    LDA #$0006
-$A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A4:8801 A0 2A BD    LDY #$BD2A
+$A4:87FB A9 06 00    LDA #$0006             ;\
+$A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:8801 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 $A4:8804 60          RTS
 }
 
 
 ;;; $8805:  ;;;
 {
-$A4:8805 A0 D8 BC    LDY #$BCD8
+$A4:8805 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:8808 AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:880B 29 FF FB    AND #$FBFF
 $A4:880E 8D AA 0F    STA $0FAA  [$7E:0FAA]
@@ -247,14 +249,14 @@ $A4:8818 F0 13       BEQ $13    [$882D]
 $A4:881A AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:881D 29 FF F7    AND #$F7FF
 $A4:8820 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:8823 A0 30 BC    LDY #$BC30
-$A4:8826 A9 14 00    LDA #$0014
-$A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8823 A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:8826 A9 14 00    LDA #$0014             ;\
+$A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 14h
 $A4:882C 60          RTS
 
 $A4:882D C0 A2 BD    CPY #$BDA2
 $A4:8830 30 03       BMI $03    [$8835]
-$A4:8832 A0 2A BD    LDY #$BD2A
+$A4:8832 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 
 $A4:8835 60          RTS
 }
@@ -268,14 +270,14 @@ $A4:883C F0 13       BEQ $13    [$8851]
 $A4:883E AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:8841 29 FF F7    AND #$F7FF
 $A4:8844 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:8847 A0 30 BC    LDY #$BC30
-$A4:884A A9 0C 00    LDA #$000C
-$A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8847 A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:884A A9 0C 00    LDA #$000C             ;\
+$A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 $A4:8850 60          RTS
 
 $A4:8851 C0 A2 BD    CPY #$BDA2
 $A4:8854 30 03       BMI $03    [$8859]
-$A4:8856 A0 2A BD    LDY #$BD2A
+$A4:8856 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 
 $A4:8859 60          RTS
 }
@@ -289,14 +291,14 @@ $A4:8860 F0 13       BEQ $13    [$8875]
 $A4:8862 AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:8865 29 FF F7    AND #$F7FF
 $A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:886B A0 30 BC    LDY #$BC30
-$A4:886E A9 0C 00    LDA #$000C
-$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:886B A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:886E A9 0C 00    LDA #$000C             ;\
+$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 $A4:8874 60          RTS
 
 $A4:8875 C0 A2 BD    CPY #$BDA2
 $A4:8878 30 03       BMI $03    [$887D]
-$A4:887A A0 2A BD    LDY #$BD2A
+$A4:887A A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 
 $A4:887D 60          RTS
 }
@@ -311,9 +313,9 @@ $A4:8885 8D AE 0F    STA $0FAE  [$7E:0FAE]
 $A4:8888 C9 02 00    CMP #$0002
 $A4:888B 10 0C       BPL $0C    [$8899]
 $A4:888D 9C AE 0F    STZ $0FAE  [$7E:0FAE]
-$A4:8890 A9 06 00    LDA #$0006
-$A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A4:8896 A0 CE BB    LDY #$BBCE
+$A4:8890 A9 06 00    LDA #$0006             ;\
+$A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:8896 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:8899 60          RTS
 }
@@ -325,9 +327,9 @@ $A4:889A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:889D AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:88A0 89 00 08    BIT #$0800
 $A4:88A3 D0 0A       BNE $0A    [$88AF]
-$A4:88A5 A9 0A 00    LDA #$000A
-$A4:88A8 9D AC 0F    STA $0FAC,x
-$A4:88AB A0 8E BD    LDY #$BD8E
+$A4:88A5 A9 0A 00    LDA #$000A             ;\
+$A4:88A8 9D AC 0F    STA $0FAC,x            ;} Enemy $0FAC = Ah
+$A4:88AB A0 8E BD    LDY #$BD8E             ; Y = $BD8E
 $A4:88AE 60          RTS
 
 $A4:88AF 29 00 BF    AND #$BF00
@@ -337,8 +339,8 @@ $A4:88B8 A9 01 00    LDA #$0001
 $A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]
 $A4:88BE A9 0A 00    LDA #$000A
 $A4:88C1 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A4:88C4 A9 0C 00    LDA #$000C
-$A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:88C4 A9 0C 00    LDA #$000C             ;\
+$A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 $A4:88CA A9 54 00    LDA #$0054             ;\
 $A4:88CD 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 54h, sound library 2, max queued sounds allowed = 6
 $A4:88D1 60          RTS
@@ -354,8 +356,8 @@ $A4:88DB 09 00 02    ORA #$0200
 $A4:88DE 8D AA 0F    STA $0FAA  [$7E:0FAA]
 $A4:88E1 A9 20 00    LDA #$0020
 $A4:88E4 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:88E7 A9 1E 00    LDA #$001E
-$A4:88EA 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:88E7 A9 1E 00    LDA #$001E             ;\
+$A4:88EA 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 1Eh
 $A4:88ED 60          RTS
 }
 
@@ -371,8 +373,8 @@ $A4:88FC D0 0C       BNE $0C    [$890A]
 
 $A4:88FE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8901 20 0B 89    JSR $890B  [$A4:890B]
-$A4:8904 A9 20 00    LDA #$0020
-$A4:8907 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8904 A9 20 00    LDA #$0020             ;\
+$A4:8907 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 20h
 
 $A4:890A 60          RTS
 }
@@ -380,11 +382,11 @@ $A4:890A 60          RTS
 
 ;;; $890B:  ;;;
 {
-$A4:890B A9 14 00    LDA #$0014
-$A4:890E 9D AC 0F    STA $0FAC,x
+$A4:890B A9 14 00    LDA #$0014             ;\
+$A4:890E 9D AC 0F    STA $0FAC,x            ;} Enemy $0FAC = 14h
 $A4:8911 AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:8914 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:8917 A0 EA BA    LDY #$BAEA
+$A4:8917 A0 EA BA    LDY #$BAEA             ; Y = $BAEA
 $A4:891A 60          RTS
 }
 
@@ -396,15 +398,15 @@ $A4:891E AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:8921 89 00 01    BIT #$0100
 $A4:8924 D0 0A       BNE $0A    [$8930]
 $A4:8926 20 0B 89    JSR $890B  [$A4:890B]
-$A4:8929 A9 20 00    LDA #$0020
-$A4:892C 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8929 A9 20 00    LDA #$0020             ;\
+$A4:892C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 20h
 $A4:892F 60          RTS
 
 $A4:8930 20 DE 86    JSR $86DE  [$A4:86DE]
 $A4:8933 A9 10 00    LDA #$0010
 $A4:8936 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:8939 A9 22 00    LDA #$0022
-$A4:893C 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8939 A9 22 00    LDA #$0022             ;\
+$A4:893C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 22h
 $A4:893F 60          RTS
 }
 
@@ -419,8 +421,8 @@ $A4:894B AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:894E 09 00 20    ORA #$2000
 $A4:8951 8D AA 0F    STA $0FAA  [$7E:0FAA]
 $A4:8954 20 E8 86    JSR $86E8  [$A4:86E8]
-$A4:8957 A9 24 00    LDA #$0024
-$A4:895A 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8957 A9 24 00    LDA #$0024             ;\
+$A4:895A 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 24h
 
 $A4:895D 60          RTS
 }
@@ -433,8 +435,8 @@ $A4:8961 C9 A0 02    CMP #$02A0
 $A4:8964 10 13       BPL $13    [$8979]
 $A4:8966 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8969 20 E8 86    JSR $86E8  [$A4:86E8]
-$A4:896C A9 24 00    LDA #$0024
-$A4:896F 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:896C A9 24 00    LDA #$0024             ;\
+$A4:896F 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 24h
 $A4:8972 A9 03 00    LDA #$0003
 $A4:8975 8D AE 0F    STA $0FAE  [$7E:0FAE]
 $A4:8978 60          RTS
@@ -442,8 +444,8 @@ $A4:8978 60          RTS
 $A4:8979 AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:897C 89 00 40    BIT #$4000
 $A4:897F D0 09       BNE $09    [$898A]
-$A4:8981 A9 26 00    LDA #$0026
-$A4:8984 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8981 A9 26 00    LDA #$0026             ;\
+$A4:8984 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 26h
 $A4:8987 20 05 88    JSR $8805  [$A4:8805]
 
 $A4:898A AD AA 0F    LDA $0FAA  [$7E:0FAA]
@@ -451,11 +453,11 @@ $A4:898D 89 00 40    BIT #$4000
 $A4:8990 F0 15       BEQ $15    [$89A7]
 $A4:8992 A9 05 00    LDA #$0005
 $A4:8995 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:8998 A0 D8 BC    LDY #$BCD8
+$A4:8998 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:899B AD AC 0F    LDA $0FAC  [$7E:0FAC]
 $A4:899E 8D B2 0F    STA $0FB2  [$7E:0FB2]
-$A4:89A1 A9 2A 00    LDA #$002A
-$A4:89A4 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:89A1 A9 2A 00    LDA #$002A             ;\
+$A4:89A4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 2Ah
 
 $A4:89A7 60          RTS
 }
@@ -468,18 +470,18 @@ $A4:89AB AD AE 0F    LDA $0FAE  [$7E:0FAE]
 $A4:89AE F0 1B       BEQ $1B    [$89CB]
 $A4:89B0 CE AE 0F    DEC $0FAE  [$7E:0FAE]
 $A4:89B3 F0 16       BEQ $16    [$89CB]
-$A4:89B5 A9 24 00    LDA #$0024
-$A4:89B8 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:89B5 A9 24 00    LDA #$0024             ;\
+$A4:89B8 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 24h
 $A4:89BB 9C EE 0F    STZ $0FEE  [$7E:0FEE]
 $A4:89BE AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:89C1 09 00 04    ORA #$0400
 $A4:89C4 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:89C7 A0 D8 BC    LDY #$BCD8
+$A4:89C7 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:89CA 60          RTS
 
 $A4:89CB 20 E8 86    JSR $86E8  [$A4:86E8]
-$A4:89CE A9 28 00    LDA #$0028
-$A4:89D1 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:89CE A9 28 00    LDA #$0028             ;\
+$A4:89D1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 28h
 $A4:89D4 AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A4:89D7 29 FF FB    AND #$FBFF
 $A4:89DA 8D AA 0F    STA $0FAA  [$7E:0FAA]
@@ -497,8 +499,8 @@ $A4:89E9 8D AA 0F    STA $0FAA  [$7E:0FAA]
 
 $A4:89EC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:89EF 20 E8 86    JSR $86E8  [$A4:86E8]
-$A4:89F2 A9 28 00    LDA #$0028
-$A4:89F5 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:89F2 A9 28 00    LDA #$0028             ;\
+$A4:89F5 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 28h
 $A4:89F8 60          RTS
 }
 
@@ -514,7 +516,7 @@ $A4:8A07 A9 01 00    LDA #$0001
 $A4:8A0A 8D 94 0F    STA $0F94  [$7E:0F94]
 $A4:8A0D AD B2 0F    LDA $0FB2  [$7E:0FB2]
 $A4:8A10 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A4:8A13 A0 D8 BC    LDY #$BCD8
+$A4:8A13 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:8A16 60          RTS
 
 $A4:8A17 AD AA 0F    LDA $0FAA  [$7E:0FAA]
@@ -523,14 +525,15 @@ $A4:8A1D F0 0E       BEQ $0E    [$8A2D]
 $A4:8A1F CE AE 0F    DEC $0FAE  [$7E:0FAE]
 $A4:8A22 A9 3B 00    LDA #$003B             ;\
 $A4:8A25 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Bh, sound library 2, max queued sounds allowed = 6 (dachora shinespark)
-$A4:8A29 A0 D8 BC    LDY #$BCD8
+$A4:8A29 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:8A2C 60          RTS
 
 $A4:8A2D 29 FF BF    AND #$BFFF
 $A4:8A30 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:8A33 A9 0C 00    LDA #$000C
-$A4:8A36 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8A33 A9 0C 00    LDA #$000C             ;\
+$A4:8A36 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
 $A4:8A39 60          RTS
+}
 }
 
 
@@ -1237,9 +1240,9 @@ $A4:904E 6B          RTL
 
 ; BRANCH_HIT_WALL
 $A4:904F 7A          PLY
-$A4:9050 A0 3C BF    LDY #$BF3C
-$A4:9053 A9 0E 00    LDA #$000E
-$A4:9056 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:9050 A0 3C BF    LDY #$BF3C             ; Y = $BF3C
+$A4:9053 A9 0E 00    LDA #$000E             ;\
+$A4:9056 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Eh
 $A4:9059 FA          PLX
 $A4:905A 6B          RTL
 }
@@ -3231,8 +3234,8 @@ $A4:B9C0 8D 9C 0F    STA $0F9C  [$7E:0F9C]
 $A4:B9C3 AD 8A 0F    LDA $0F8A  [$7E:0F8A]
 $A4:B9C6 09 02 00    ORA #$0002
 $A4:B9C9 8D 8A 0F    STA $0F8A  [$7E:0F8A]
-$A4:B9CC A9 18 00    LDA #$0018
-$A4:B9CF 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:B9CC A9 18 00    LDA #$0018             ;\
+$A4:B9CF 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 18h
 $A4:B9D2 AE 8E 0F    LDX $0F8E  [$7E:0F8E]
 $A4:B9D5 BD 00 00    LDA $0000,x
 $A4:B9D8 85 12       STA $12    [$7E:0012]

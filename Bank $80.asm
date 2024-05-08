@@ -2579,7 +2579,7 @@ $80:904F A9 06       LDA #$06
 ;;     A low: Max queued sounds allowed
 ;;     A high: Sound to queue
 
-; Checks whether sound can be queued; returns if queue threshold is exceeded, sounds are disable, in a demo or a power bomb is exploding.
+; Checks whether sound can be queued; returns if queue threshold is exceeded, sounds are disabled, in a demo or a power bomb is exploding.
 ; If it can be queued and the following slot is empty, queues the sound, sets the 'next index' and returns.
 ; If the following slot is not empty, the sound with the lower ID gets priority and the 'next index' is unchanged.
 $80:9051 8D 53 06    STA $0653  [$7E:0653]  ; Max queued sounds allowed = [A low]
@@ -2803,7 +2803,7 @@ $80:9153 A9 06       LDA #$06
 ;;     A low: Max queued sounds allowed
 ;;     A high: Sound to queue
 
-; Checks whether sound can be queued; returns if queue threshold is exceeded, sounds are disable, in a demo or a power bomb is exploding.
+; Checks whether sound can be queued; returns if queue threshold is exceeded, sounds are disabled, in a demo or a power bomb is exploding.
 ; If it can be queued and the following slot is empty, queues the sound, sets the 'next index' and returns.
 ; If the following slot is not empty, the sound with the lower ID gets priority and the 'next index' is unchanged.
 $80:9155 8D 55 06    STA $0655  [$7E:0655]  ; Max queued sounds allowed = [A low]
