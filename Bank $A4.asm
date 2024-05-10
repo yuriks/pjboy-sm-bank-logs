@@ -29,14 +29,14 @@ $A4:86A4             dw 0640
 }
 
 
-;;; $86A6..8A39:  ;;;
+;;; $86A6..8A39: Fight AI ;;;
 {
-;;; $86A6: Instruction ;;;
+;;; $86A6: Instruction - fight AI ;;;
 {
 $A4:86A6 DA          PHX
 $A4:86A7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:86AA BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A4:86AD AA          TAX                    ;} Execute [$86B3 + [enemy $0FAC]]
+$A4:86AD AA          TAX                    ;} Execute [$86B3 + [Crocomire fight function index]]
 $A4:86AE FC B3 86    JSR ($86B3,x)[$A4:86F2];/
 $A4:86B1 FA          PLX
 $A4:86B2 6B          RTL
@@ -52,7 +52,7 @@ $A4:86DD 60          RTS
 }
 
 
-;;; $86DE:  ;;;
+;;; $86DE: Fight AI - index 0 ;;;
 {
 $A4:86DE A0 DE BA    LDY #$BADE             ; Y = $BADE
 $A4:86E1 A9 01 00    LDA #$0001             ;\
@@ -61,16 +61,16 @@ $A4:86E7 60          RTS
 }
 
 
-;;; $86E8:  ;;;
+;;; $86E8: Fight AI - index 2 ;;;
 {
 $A4:86E8 A9 04 00    LDA #$0004             ;\
-$A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 4
+$A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 4
 $A4:86EE A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 $A4:86F1 60          RTS
 }
 
 
-;;; $86F2:  ;;;
+;;; $86F2: Fight AI - index 4 - asleep ;;;
 {
 $A4:86F2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:86F5 38          SEC                    ;|
@@ -86,39 +86,40 @@ $A4:8707 09 00 80    ORA #$8000             ;} $0FAA |= 8000h
 $A4:870A 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:870D A0 56 BC    LDY #$BC56             ; Y = $BC56
 $A4:8710 A9 12 00    LDA #$0012             ;\
-$A4:8713 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 12h
+$A4:8713 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 12h
 
 $A4:8716 60          RTS
 }
 
 
-;;; $8717:  ;;;
+;;; $8717: Fight AI - index 6 ;;;
 {
-$A4:8717 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:871A 89 00 08    BIT #$0800
-$A4:871D F0 18       BEQ $18    [$8737]
-$A4:871F AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8722 29 FF F7    AND #$F7FF
-$A4:8725 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:8728 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:872B F0 0A       BEQ $0A    [$8737]
+$A4:8717 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:871A 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:871D F0 18       BEQ $18    [$8737]     ;/
+$A4:871F AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
+$A4:8722 29 FF F7    AND #$F7FF             ;\
+$A4:8725 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
+$A4:8728 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:872B F0 0A       BEQ $0A    [$8737]     ;} If [$0FAE] != 0:
 $A4:872D A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:8730 A9 0C 00    LDA #$000C             ;\
-$A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
-$A4:8736 60          RTS
+$A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8736 60          RTS                    ; Return
 
-$A4:8737 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:873A CD A2 86    CMP $86A2  [$A4:86A2]
-$A4:873D 30 09       BMI $09    [$8748]
-$A4:873F C0 34 BC    CPY #$BC34
-$A4:8742 30 03       BMI $03    [$8747]
+$A4:8737 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:873A CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] < 300h: go to BRANCH_8748
+$A4:873D 30 09       BMI $09    [$8748]     ;/
+$A4:873F C0 34 BC    CPY #$BC34             ;\
+$A4:8742 30 03       BMI $03    [$8747]     ;} If [Y] >= $BC34:
 $A4:8744 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
-$A4:8747 60          RTS
+$A4:8747 60          RTS                    ; Return
 
+; BRANCH_8748
 $A4:8748 A0 7E BE    LDY #$BE7E             ; Y = $BE7E
 $A4:874B A9 0A 00    LDA #$000A             ;\
-$A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ah
+$A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ah
 $A4:8751 60          RTS
 }
 
@@ -126,13 +127,13 @@ $A4:8751 60          RTS
 ;;; $8752:  ;;;
 {
 $A4:8752 DA          PHX
-$A4:8753 AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:8756 29 FF 0F    AND #$0FFF
-$A4:8759 C9 00 04    CMP #$0400
-$A4:875C 10 0C       BPL $0C    [$876A]
+$A4:8753 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A4:8756 29 FF 0F    AND #$0FFF             ;|
+$A4:8759 C9 00 04    CMP #$0400             ;} If [random number] % 1000h < 400h:
+$A4:875C 10 0C       BPL $0C    [$876A]     ;/
 $A4:875E A9 08 00    LDA #$0008             ;\
-$A4:8761 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 8
-$A4:8764 9C B2 0F    STZ $0FB2  [$7E:0FB2]
+$A4:8761 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 8
+$A4:8764 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; $0FB2 = 0
 $A4:8767 A0 36 BB    LDY #$BB36             ; Y = $BB36
 
 $A4:876A FA          PLX
@@ -140,23 +141,23 @@ $A4:876B 6B          RTL
 }
 
 
-;;; $876C:  ;;;
+;;; $876C: Fight AI - index 8 ;;;
 {
-$A4:876C AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:876F 89 00 08    BIT #$0800
-$A4:8772 F0 10       BEQ $10    [$8784]
-$A4:8774 29 FF F7    AND #$F7FF
-$A4:8777 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:876C AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:876F 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:8772 F0 10       BEQ $10    [$8784]     ;/
+$A4:8774 29 FF F7    AND #$F7FF             ;\
+$A4:8777 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:877A A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:877D A9 0C 00    LDA #$000C             ;\
-$A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
-$A4:8783 60          RTS
+$A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8783 60          RTS                    ; Return
 
-$A4:8784 AD B2 0F    LDA $0FB2  [$7E:0FB2]
-$A4:8787 C9 12 00    CMP #$0012
-$A4:878A 10 1C       BPL $1C    [$87A8]
-$A4:878C EE B2 0F    INC $0FB2  [$7E:0FB2]
-$A4:878F EE B2 0F    INC $0FB2  [$7E:0FB2]
+$A4:8784 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
+$A4:8787 C9 12 00    CMP #$0012             ;} If [$0FB2] < 12h:
+$A4:878A 10 1C       BPL $1C    [$87A8]     ;/
+$A4:878C EE B2 0F    INC $0FB2  [$7E:0FB2]  ;\
+$A4:878F EE B2 0F    INC $0FB2  [$7E:0FB2]  ;} $0FB2 += 2
 $A4:8792 DA          PHX
 $A4:8793 5A          PHY
 $A4:8794 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -166,66 +167,66 @@ $A4:879E A9 1C 00    LDA #$001C             ;\
 $A4:87A1 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 1Ch, sound library 3, max queued sounds allowed = 6 (Crocomire spit)
 $A4:87A5 7A          PLY
 $A4:87A6 FA          PLX
-$A4:87A7 60          RTS
+$A4:87A7 60          RTS                    ; Return
 
 $A4:87A8 A0 CA BB    LDY #$BBCA             ; Y = $BBCA
 $A4:87AB A9 06 00    LDA #$0006             ;\
-$A4:87AE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:87AE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
 $A4:87B1 60          RTS
 }
 
 
-;;; $87B2:  ;;;
+;;; $87B2: Fight AI - index Ah ;;;
 {
-$A4:87B2 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:87B5 89 00 08    BIT #$0800
-$A4:87B8 F0 0F       BEQ $0F    [$87C9]
-$A4:87BA 29 FF F7    AND #$F7FF
-$A4:87BD 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:87B2 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:87B5 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:87B8 F0 0F       BEQ $0F    [$87C9]     ;/
+$A4:87BA 29 FF F7    AND #$F7FF             ;\
+$A4:87BD 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:87C0 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:87C3 A9 0C 00    LDA #$000C             ;\
-$A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
+$A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
 
 $A4:87C9 60          RTS
 }
 
 
-;;; $87CA:  ;;;
+;;; $87CA: Fight AI - index Ch ;;;
 {
-$A4:87CA AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:87CD F0 10       BEQ $10    [$87DF]
-$A4:87CF 3A          DEC A
-$A4:87D0 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:87D3 F0 0A       BEQ $0A    [$87DF]
+$A4:87CA AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:87CD F0 10       BEQ $10    [$87DF]     ;} If [$0FAE] != 0:
+$A4:87CF 3A          DEC A                  ;\
+$A4:87D0 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement $0FAE
+$A4:87D3 F0 0A       BEQ $0A    [$87DF]     ; If [$0FAE] != 0:
 $A4:87D5 A0 34 BC    LDY #$BC34             ; Y = $BC34
 $A4:87D8 A9 0C 00    LDA #$000C             ;\
-$A4:87DB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
-$A4:87DE 60          RTS
+$A4:87DB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:87DE 60          RTS                    ; Return
 
 $A4:87DF A9 06 00    LDA #$0006             ;\
-$A4:87E2 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:87E2 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
 $A4:87E5 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 $A4:87E8 60          RTS
 }
 
 
-;;; $87E9:  ;;;
+;;; $87E9: Fight AI - index Eh ;;;
 {
-$A4:87E9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]
-$A4:87EF 30 09       BMI $09    [$87FA]
+$A4:87E9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] >= 300h: 
+$A4:87EF 30 09       BMI $09    [$87FA]     ;/
 $A4:87F1 A9 06 00    LDA #$0006             ;\
-$A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
 $A4:87F7 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:87FA 60          RTS
 }
 
 
-;;; $87FB:  ;;;
+;;; $87FB: Fight AI - index 10h ;;;
 {
 $A4:87FB A9 06 00    LDA #$0006             ;\
-$A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
 $A4:8801 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 $A4:8804 60          RTS
 }
@@ -234,130 +235,130 @@ $A4:8804 60          RTS
 ;;; $8805:  ;;;
 {
 $A4:8805 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
-$A4:8808 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:880B 29 FF FB    AND #$FBFF
-$A4:880E 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:8808 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:880B 29 FF FB    AND #$FBFF             ;} $0FAA &= ~400h
+$A4:880E 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:8811 60          RTS
 }
 
 
-;;; $8812:  ;;;
+;;; $8812: Fight AI - index 12h ;;;
 {
-$A4:8812 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8815 89 00 08    BIT #$0800
-$A4:8818 F0 13       BEQ $13    [$882D]
-$A4:881A AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:881D 29 FF F7    AND #$F7FF
-$A4:8820 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:8812 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8815 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:8818 F0 13       BEQ $13    [$882D]     ;/
+$A4:881A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
+$A4:881D 29 FF F7    AND #$F7FF             ;\
+$A4:8820 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:8823 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:8826 A9 14 00    LDA #$0014             ;\
-$A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 14h
-$A4:882C 60          RTS
+$A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 14h
+$A4:882C 60          RTS                    ; Return
 
-$A4:882D C0 A2 BD    CPY #$BDA2
-$A4:8830 30 03       BMI $03    [$8835]
+$A4:882D C0 A2 BD    CPY #$BDA2             ;\
+$A4:8830 30 03       BMI $03    [$8835]     ;} If [Y] >= $BDA2:
 $A4:8832 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 
 $A4:8835 60          RTS
 }
 
 
-;;; $8836:  ;;;
+;;; $8836: Fight AI - index 14h ;;;
 {
-$A4:8836 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8839 89 00 08    BIT #$0800
-$A4:883C F0 13       BEQ $13    [$8851]
-$A4:883E AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8841 29 FF F7    AND #$F7FF
-$A4:8844 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:8836 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8839 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:883C F0 13       BEQ $13    [$8851]     ;/
+$A4:883E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
+$A4:8841 29 FF F7    AND #$F7FF             ;\
+$A4:8844 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:8847 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:884A A9 0C 00    LDA #$000C             ;\
-$A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
-$A4:8850 60          RTS
+$A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8850 60          RTS                    ; Return
 
-$A4:8851 C0 A2 BD    CPY #$BDA2
-$A4:8854 30 03       BMI $03    [$8859]
+$A4:8851 C0 A2 BD    CPY #$BDA2             ;\
+$A4:8854 30 03       BMI $03    [$8859]     ;} If [Y] >= $BDA2:
 $A4:8856 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 
 $A4:8859 60          RTS
 }
 
 
-;;; $885A:  ;;;
+;;; $885A: Fight AI - index 16h ;;;
 {
-$A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:885D 89 00 08    BIT #$0800
-$A4:8860 F0 13       BEQ $13    [$8875]
-$A4:8862 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8865 29 FF F7    AND #$F7FF
-$A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:885D 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:8860 F0 13       BEQ $13    [$8875]     ;/
+$A4:8862 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
+$A4:8865 29 FF F7    AND #$F7FF             ;\
+$A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:886B A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:886E A9 0C 00    LDA #$000C             ;\
-$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
-$A4:8874 60          RTS
+$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8874 60          RTS                    ; Return
 
-$A4:8875 C0 A2 BD    CPY #$BDA2
-$A4:8878 30 03       BMI $03    [$887D]
+$A4:8875 C0 A2 BD    CPY #$BDA2             ;\
+$A4:8878 30 03       BMI $03    [$887D]     ;} If [Y] >= $BDA2:
 $A4:887A A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 
 $A4:887D 60          RTS
 }
 
 
-;;; $887E:  ;;;
+;;; $887E: Fight AI - index 18h ;;;
 {
 $A4:887E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8881 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:8884 3A          DEC A
-$A4:8885 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:8888 C9 02 00    CMP #$0002
-$A4:888B 10 0C       BPL $0C    [$8899]
-$A4:888D 9C AE 0F    STZ $0FAE  [$7E:0FAE]
+$A4:8881 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:8884 3A          DEC A                  ;} Decrement $0FAE
+$A4:8885 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
+$A4:8888 C9 02 00    CMP #$0002             ;\
+$A4:888B 10 0C       BPL $0C    [$8899]     ;} If [$0FAE] < 2:
+$A4:888D 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; $0FAE = 0
 $A4:8890 A9 06 00    LDA #$0006             ;\
-$A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 6
+$A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
 $A4:8896 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:8899 60          RTS
 }
 
 
-;;; $889A:  ;;;
+;;; $889A: Fight AI - index 1Ah ;;;
 {
 $A4:889A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:889D AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:88A0 89 00 08    BIT #$0800
-$A4:88A3 D0 0A       BNE $0A    [$88AF]
+$A4:889D AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:88A0 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
+$A4:88A3 D0 0A       BNE $0A    [$88AF]     ;/
 $A4:88A5 A9 0A 00    LDA #$000A             ;\
-$A4:88A8 9D AC 0F    STA $0FAC,x            ;} Enemy $0FAC = Ah
+$A4:88A8 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = Ah
 $A4:88AB A0 8E BD    LDY #$BD8E             ; Y = $BD8E
-$A4:88AE 60          RTS
+$A4:88AE 60          RTS                    ; Return
 
-$A4:88AF 29 00 BF    AND #$BF00
-$A4:88B2 09 00 A0    ORA #$A000
-$A4:88B5 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:88B8 A9 01 00    LDA #$0001
-$A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:88BE A9 0A 00    LDA #$000A
-$A4:88C1 8D B0 0F    STA $0FB0  [$7E:0FB0]
+$A4:88AF 29 00 BF    AND #$BF00             ; $0FAA &= ~40FFh
+$A4:88B2 09 00 A0    ORA #$A000             ;\
+$A4:88B5 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA |= A000h
+$A4:88B8 A9 01 00    LDA #$0001             ;\
+$A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 1
+$A4:88BE A9 0A 00    LDA #$000A             ;\
+$A4:88C1 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
 $A4:88C4 A9 0C 00    LDA #$000C             ;\
-$A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
+$A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
 $A4:88CA A9 54 00    LDA #$0054             ;\
 $A4:88CD 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 54h, sound library 2, max queued sounds allowed = 6
 $A4:88D1 60          RTS
 }
 
 
-;;; $88D2:  ;;;
+;;; $88D2: Fight AI - index 1Ch ;;;
 {
 $A4:88D2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:88D5 20 DE 86    JSR $86DE  [$A4:86DE]
-$A4:88D8 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:88DB 09 00 02    ORA #$0200
-$A4:88DE 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:88E1 A9 20 00    LDA #$0020
-$A4:88E4 8D AE 0F    STA $0FAE  [$7E:0FAE]
+$A4:88D5 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:88D8 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:88DB 09 00 02    ORA #$0200             ;} $0FAA |= 200h
+$A4:88DE 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
+$A4:88E1 A9 20 00    LDA #$0020             ;\
+$A4:88E4 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 20h
 $A4:88E7 A9 1E 00    LDA #$001E             ;\
-$A4:88EA 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 1Eh
+$A4:88EA 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 1Eh
 $A4:88ED 60          RTS
 }
 
@@ -365,16 +366,16 @@ $A4:88ED 60          RTS
 ;;; $88EE:  ;;;
 {
 $A4:88EE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:88F1 20 DE 86    JSR $86DE  [$A4:86DE]
-$A4:88F4 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:88F7 F0 05       BEQ $05    [$88FE]
-$A4:88F9 CE AE 0F    DEC $0FAE  [$7E:0FAE]
-$A4:88FC D0 0C       BNE $0C    [$890A]
+$A4:88F1 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:88F4 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:88F7 F0 05       BEQ $05    [$88FE]     ;} If [$0FAE] != 0:
+$A4:88F9 CE AE 0F    DEC $0FAE  [$7E:0FAE]  ; Decrement $0FAE
+$A4:88FC D0 0C       BNE $0C    [$890A]     ; If [$0FAE] != 0: return
 
 $A4:88FE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8901 20 0B 89    JSR $890B  [$A4:890B]
+$A4:8901 20 0B 89    JSR $890B  [$A4:890B]  ; Execute $890B
 $A4:8904 A9 20 00    LDA #$0020             ;\
-$A4:8907 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 20h
+$A4:8907 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 20h
 
 $A4:890A 60          RTS
 }
@@ -383,155 +384,155 @@ $A4:890A 60          RTS
 ;;; $890B:  ;;;
 {
 $A4:890B A9 14 00    LDA #$0014             ;\
-$A4:890E 9D AC 0F    STA $0FAC,x            ;} Enemy $0FAC = 14h
-$A4:8911 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8914 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:890E 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = 14h
+$A4:8911 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8914 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} >_<;
 $A4:8917 A0 EA BA    LDY #$BAEA             ; Y = $BAEA
 $A4:891A 60          RTS
 }
 
 
-;;; $891B:  ;;;
+;;; $891B: Fight AI - index 1Eh ;;;
 {
 $A4:891B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:891E AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8921 89 00 01    BIT #$0100
-$A4:8924 D0 0A       BNE $0A    [$8930]
-$A4:8926 20 0B 89    JSR $890B  [$A4:890B]
+$A4:891E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8921 89 00 01    BIT #$0100             ;} If [$0FAA] & 100h = 0:
+$A4:8924 D0 0A       BNE $0A    [$8930]     ;/
+$A4:8926 20 0B 89    JSR $890B  [$A4:890B]  ; Execute $890B
 $A4:8929 A9 20 00    LDA #$0020             ;\
-$A4:892C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 20h
-$A4:892F 60          RTS
+$A4:892C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 20h
+$A4:892F 60          RTS                    ; Return
 
-$A4:8930 20 DE 86    JSR $86DE  [$A4:86DE]
-$A4:8933 A9 10 00    LDA #$0010
-$A4:8936 8D AE 0F    STA $0FAE  [$7E:0FAE]
+$A4:8930 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:8933 A9 10 00    LDA #$0010             ;\
+$A4:8936 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 10h
 $A4:8939 A9 22 00    LDA #$0022             ;\
-$A4:893C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 22h
+$A4:893C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 22h
 $A4:893F 60          RTS
 }
 
 
-;;; $8940:  ;;;
+;;; $8940: Fight AI - index 20h ;;;
 {
 $A4:8940 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8943 20 DE 86    JSR $86DE  [$A4:86DE]
-$A4:8946 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:8949 D0 12       BNE $12    [$895D]
-$A4:894B AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:894E 09 00 20    ORA #$2000
-$A4:8951 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:8954 20 E8 86    JSR $86E8  [$A4:86E8]
+$A4:8943 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:8946 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:8949 D0 12       BNE $12    [$895D]     ;} If [$0FAE] = 0:
+$A4:894B AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:894E 09 00 20    ORA #$2000             ;} $0FAA |= 2000h
+$A4:8951 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
+$A4:8954 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
 $A4:8957 A9 24 00    LDA #$0024             ;\
-$A4:895A 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 24h
+$A4:895A 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h
 
 $A4:895D 60          RTS
 }
 
 
-;;; $895E:  ;;;
+;;; $895E: Fight AI - index 22h ;;;
 {
-$A4:895E AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:8961 C9 A0 02    CMP #$02A0
-$A4:8964 10 13       BPL $13    [$8979]
+$A4:895E AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:8961 C9 A0 02    CMP #$02A0             ;} If [Crocomire X position] < 2A0h:
+$A4:8964 10 13       BPL $13    [$8979]     ;/
 $A4:8966 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8969 20 E8 86    JSR $86E8  [$A4:86E8]
+$A4:8969 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
 $A4:896C A9 24 00    LDA #$0024             ;\
-$A4:896F 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 24h
-$A4:8972 A9 03 00    LDA #$0003
-$A4:8975 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:8978 60          RTS
+$A4:896F 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h
+$A4:8972 A9 03 00    LDA #$0003             ;\
+$A4:8975 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 3
+$A4:8978 60          RTS                    ; Return
 
-$A4:8979 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:897C 89 00 40    BIT #$4000
-$A4:897F D0 09       BNE $09    [$898A]
+$A4:8979 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:897C 89 00 40    BIT #$4000             ;} If [$0FAA] & 4000h = 0:
+$A4:897F D0 09       BNE $09    [$898A]     ;/
 $A4:8981 A9 26 00    LDA #$0026             ;\
-$A4:8984 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 26h
-$A4:8987 20 05 88    JSR $8805  [$A4:8805]
+$A4:8984 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 26h
+$A4:8987 20 05 88    JSR $8805  [$A4:8805]  ; Execute $8805
 
-$A4:898A AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:898D 89 00 40    BIT #$4000
-$A4:8990 F0 15       BEQ $15    [$89A7]
-$A4:8992 A9 05 00    LDA #$0005
-$A4:8995 8D AE 0F    STA $0FAE  [$7E:0FAE]
+$A4:898A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:898D 89 00 40    BIT #$4000             ;} If [$0FAA] & 4000h != 0:
+$A4:8990 F0 15       BEQ $15    [$89A7]     ;/
+$A4:8992 A9 05 00    LDA #$0005             ;\
+$A4:8995 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 5
 $A4:8998 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
-$A4:899B AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A4:899E 8D B2 0F    STA $0FB2  [$7E:0FB2]
+$A4:899B AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A4:899E 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} $0FB2 = [Crocomire fight function index]
 $A4:89A1 A9 2A 00    LDA #$002A             ;\
-$A4:89A4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 2Ah
+$A4:89A4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 2Ah
 
 $A4:89A7 60          RTS
 }
 
 
-;;; $89A8:  ;;;
+;;; $89A8: Fight AI - index 24h ;;;
 {
 $A4:89A8 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:89AB AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:89AE F0 1B       BEQ $1B    [$89CB]
-$A4:89B0 CE AE 0F    DEC $0FAE  [$7E:0FAE]
-$A4:89B3 F0 16       BEQ $16    [$89CB]
+$A4:89AB AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:89AE F0 1B       BEQ $1B    [$89CB]     ;} If [$0FAE] != 0:
+$A4:89B0 CE AE 0F    DEC $0FAE  [$7E:0FAE]  ; Decrement $0FAE
+$A4:89B3 F0 16       BEQ $16    [$89CB]     ; If [$0FAE] != 0:
 $A4:89B5 A9 24 00    LDA #$0024             ;\
-$A4:89B8 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 24h
-$A4:89BB 9C EE 0F    STZ $0FEE  [$7E:0FEE]
-$A4:89BE AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:89C1 09 00 04    ORA #$0400
-$A4:89C4 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:89B8 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h
+$A4:89BB 9C EE 0F    STZ $0FEE  [$7E:0FEE]  ; $0FEE = 0
+$A4:89BE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:89C1 09 00 04    ORA #$0400             ;} $0FAA |= 400h
+$A4:89C4 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:89C7 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
-$A4:89CA 60          RTS
+$A4:89CA 60          RTS                    ; Return
 
-$A4:89CB 20 E8 86    JSR $86E8  [$A4:86E8]
+$A4:89CB 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
 $A4:89CE A9 28 00    LDA #$0028             ;\
-$A4:89D1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 28h
-$A4:89D4 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:89D7 29 FF FB    AND #$FBFF
-$A4:89DA 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:89D1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 28h
+$A4:89D4 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:89D7 29 FF FB    AND #$FBFF             ;} $0FAA &= ~400h
+$A4:89DA 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:89DD 60          RTS
 }
 
 
-;;; $89DE:  ;;;
+;;; $89DE: Fight AI - index 26h ;;;
 {
-$A4:89DE AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:89E1 89 00 20    BIT #$2000
-$A4:89E4 D0 06       BNE $06    [$89EC]
-$A4:89E6 29 FF FC    AND #$FCFF
-$A4:89E9 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:89DE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:89E1 89 00 20    BIT #$2000             ;} If [$0FAA] & 2000h = 0:
+$A4:89E4 D0 06       BNE $06    [$89EC]     ;/
+$A4:89E6 29 FF FC    AND #$FCFF             ;\
+$A4:89E9 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA ^= ~300h
 
 $A4:89EC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:89EF 20 E8 86    JSR $86E8  [$A4:86E8]
+$A4:89EF 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
 $A4:89F2 A9 28 00    LDA #$0028             ;\
-$A4:89F5 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 28h
+$A4:89F5 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 28h
 $A4:89F8 60          RTS
 }
 
 
-;;; $89F9:  ;;;
+;;; $89F9: Fight AI - index 28h ;;;
 {
-$A4:89F9 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:89FC D0 19       BNE $19    [$8A17]
-$A4:89FE AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8A01 29 FF BF    AND #$BFFF
-$A4:8A04 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:8A07 A9 01 00    LDA #$0001
-$A4:8A0A 8D 94 0F    STA $0F94  [$7E:0F94]
-$A4:8A0D AD B2 0F    LDA $0FB2  [$7E:0FB2]
-$A4:8A10 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:89F9 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:89FC D0 19       BNE $19    [$8A17]     ;} If [$0FAE] = 0:
+$A4:89FE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8A01 29 FF BF    AND #$BFFF             ;} $0FAA &= ~4000h
+$A4:8A04 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
+$A4:8A07 A9 01 00    LDA #$0001             ;\
+$A4:8A0A 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
+$A4:8A0D AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
+$A4:8A10 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = [$0FB2]
 $A4:8A13 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
-$A4:8A16 60          RTS
+$A4:8A16 60          RTS                    ; Return
 
-$A4:8A17 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8A1A 89 00 40    BIT #$4000
-$A4:8A1D F0 0E       BEQ $0E    [$8A2D]
-$A4:8A1F CE AE 0F    DEC $0FAE  [$7E:0FAE]
+$A4:8A17 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8A1A 89 00 40    BIT #$4000             ;} If [$0FAA] & 4000h != 0:
+$A4:8A1D F0 0E       BEQ $0E    [$8A2D]     ;/
+$A4:8A1F CE AE 0F    DEC $0FAE  [$7E:0FAE]  ; Decrement $0FAE
 $A4:8A22 A9 3B 00    LDA #$003B             ;\
 $A4:8A25 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Bh, sound library 2, max queued sounds allowed = 6 (dachora shinespark)
 $A4:8A29 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
-$A4:8A2C 60          RTS
+$A4:8A2C 60          RTS                    ; Return
 
-$A4:8A2D 29 FF BF    AND #$BFFF
-$A4:8A30 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:8A2D 29 FF BF    AND #$BFFF             ;\
+$A4:8A30 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~4000h
 $A4:8A33 A9 0C 00    LDA #$000C             ;\
-$A4:8A36 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Ch
+$A4:8A36 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
 $A4:8A39 60          RTS
 }
 }
@@ -552,7 +553,7 @@ $A4:8A62 A2 00 00    LDX #$0000             ;\
 $A4:8A65 A9 38 03    LDA #$0338             ;|
                                             ;|
 $A4:8A68 9F 00 20 7E STA $7E2000,x[$7E:2000];|
-$A4:8A6C E8          INX                    ;} $7E:2000..2FFF = 338h
+$A4:8A6C E8          INX                    ;} $7E:2000..2FFF = 338h (BG2 tilemap)
 $A4:8A6D E8          INX                    ;|
 $A4:8A6E E0 00 10    CPX #$1000             ;|
 $A4:8A71 30 F5       BMI $F5    [$8A68]     ;/
@@ -578,7 +579,7 @@ $A4:8AA8 CA          DEX                    ;|
 $A4:8AA9 10 EE       BPL $EE    [$8A99]     ;/
 $A4:8AAB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8AAE A9 04 00    LDA #$0004             ;\
-$A4:8AB1 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = 4
+$A4:8AB1 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Crocomire fight function index = 4
 $A4:8AB4 A9 10 00    LDA #$0010             ;\
 $A4:8AB7 8D 9E 17    STA $179E  [$7E:179E]  ;} $179E = 10h (never read)
 $A4:8ABA A9 02 00    LDA #$0002             ;\
@@ -647,50 +648,53 @@ $A4:8B5A 6B          RTL
 $A4:8B5B BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A4:8B5E 38          SEC                    ;|
 $A4:8B5F E9 43 00    SBC #$0043             ;|
-$A4:8B62 49 FF FF    EOR #$FFFF             ;} BG2 Y scroll = 43h - [enemy Y position]
+$A4:8B62 49 FF FF    EOR #$FFFF             ;} BG2 Y scroll = 43h - [Crocomire Y position]
 $A4:8B65 1A          INC A                  ;|
 $A4:8B66 85 B7       STA $B7    [$7E:00B7]  ;/
 $A4:8B68 A2 20 00    LDX #$0020             ; X = 20h
 
 ; LOOP
 $A4:8B6B AD 8E 0F    LDA $0F8E  [$7E:0F8E]  ;\
-$A4:8B6E DD 79 8B    CMP $8B79,x[$A4:8B99]  ;} If [$8B79 + [X]] = [enemy spritemap pointer]: go to BRANCH_FOUND
+$A4:8B6E DD 79 8B    CMP $8B79,x[$A4:8B99]  ;} If [$8B79 + [X]] = [Crocomire spritemap pointer]: go to BRANCH_FOUND
 $A4:8B71 F0 28       BEQ $28    [$8B9B]     ;/
 $A4:8B73 CA          DEX                    ;\
 $A4:8B74 CA          DEX                    ;} X -= 2
 $A4:8B75 10 F4       BPL $F4    [$8B6B]     ; If [X] >= 0: go to LOOP
-$A4:8B77 80 2B       BRA $2B    [$8BA4]     ; Go to BRANCH_NOT_FOUND
+$A4:8B77 80 2B       BRA $2B    [$8BA4]     ; Go to update Crocomire BG2 X scroll
 
 $A4:8B79             dw BFC4, BFF6, C028, C05A, C08C, C0BE, C0F0, C122, C154, C186, C1B8, C1EA, C47A, C4AC, C4DE, C510, C542
 
 ; BRANCH_FOUND
 $A4:8B9B A8          TAY                    ;\
 $A4:8B9C B9 1C 00    LDA $001C,y[$A4:C496]  ;|
-$A4:8B9F 18          CLC                    ;} BG2 Y scroll += [enemy spritemap entry 3 Y offset]
+$A4:8B9F 18          CLC                    ;} BG2 Y scroll += [Crocomire spritemap entry 3 Y offset]
 $A4:8BA0 65 B7       ADC $B7    [$7E:00B7]  ;|
 $A4:8BA2 85 B7       STA $B7    [$7E:00B7]  ;/
+}
 
-; BRANCH_NOT_FOUND
+
+;;; $8BA4: Update Crocomire BG2 X scroll ;;;
+{
 $A4:8BA4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8BA7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A4:8BAA 18          CLC                    ;|
-$A4:8BAB 7D E8 0F    ADC $0FE8,x[$7E:0FE8]  ;} Enemy ([X] + 1) X position = [enemy X position] + [enemy ([X] + 1) $0FA8]
+$A4:8BAB 7D E8 0F    ADC $0FE8,x[$7E:0FE8]  ;} Crocomire's tongue X position = [Crocomire X position] + [Crocomire's tongue X offset]
 $A4:8BAE 9D BA 0F    STA $0FBA,x[$7E:0FBA]  ;/
 $A4:8BB1 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A4:8BB4 9D BE 0F    STA $0FBE,x[$7E:0FBE]  ;} Enemy ([X] + 1) Y position = [enemy Y position]
+$A4:8BB4 9D BE 0F    STA $0FBE,x[$7E:0FBE]  ;} Crocomire's tongue Y position = [Crocomire Y position]
 $A4:8BB7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A4:8BBA CD 11 09    CMP $0911  [$7E:0911]  ;} If [enemy X position] >= [layer 1 X position]: go to BRANCH_RIGHT_OFF_SCREEN_CHECK
+$A4:8BBA CD 11 09    CMP $0911  [$7E:0911]  ;} If [Crocomire X position] >= [layer 1 X position]: go to BRANCH_RIGHT_OFF_SCREEN_CHECK
 $A4:8BBD 10 2F       BPL $2F    [$8BEE]     ;/
 $A4:8BBF 18          CLC                    ;\
 $A4:8BC0 69 80 00    ADC #$0080             ;|
-$A4:8BC3 CD 11 09    CMP $0911  [$7E:0911]  ;} If [enemy X position] + 80h < [layer 1 X position]: go to BRANCH_OFF_SCREEN
+$A4:8BC3 CD 11 09    CMP $0911  [$7E:0911]  ;} If [Crocomire X position] + 80h < [layer 1 X position]: go to BRANCH_OFF_SCREEN
 $A4:8BC6 30 20       BMI $20    [$8BE8]     ;/
 
 ; BRANCH_ON_SCREEN
 $A4:8BC8 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A4:8BCB 38          SEC                    ;|
 $A4:8BCC FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;|
-$A4:8BCF 18          CLC                    ;} BG2 X scroll = [layer 1 X position] + 33h - [enemy X position]
+$A4:8BCF 18          CLC                    ;} BG2 X scroll = [layer 1 X position] + 33h - [Crocomire X position]
 $A4:8BD0 69 33 00    ADC #$0033             ;|
 $A4:8BD3 48          PHA                    ;/
 $A4:8BD4 10 04       BPL $04    [$8BDA]     ;\
@@ -717,7 +721,7 @@ $A4:8BEE AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A4:8BF1 18          CLC                    ;|
 $A4:8BF2 69 00 01    ADC #$0100             ;|
 $A4:8BF5 85 12       STA $12    [$7E:0012]  ;|
-$A4:8BF7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;} If [enemy X position] - 80h >= [layer 1 X position] + 100h: go to BRANCH_OFF_SCREEN
+$A4:8BF7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;} If [Crocomire X position] - 80h >= [layer 1 X position] + 100h: go to BRANCH_OFF_SCREEN
 $A4:8BFA 38          SEC                    ;|
 $A4:8BFB E9 80 00    SBC #$0080             ;|
 $A4:8BFE C5 12       CMP $12    [$7E:0012]  ;|
@@ -743,16 +747,16 @@ $A4:8C14             dw 8C6E, 9136, 8D3F, 92CE, 91BA, 8D3F, 92CE, 91BA, 9341, 94
 }
 
 
-;;; $8C6E: Crocomire main AI - death sequence index 0: death sequence not started ;;;
+;;; $8C6E: Crocomire main AI - death sequence index 0 - death sequence not started ;;;
 {
-$A4:8C6E 22 5E 8D A4 JSL $A48D5E[$A4:8D5E]
-$A4:8C72 A9 01 01    LDA #$0101
-$A4:8C75 8F 24 CD 7E STA $7ECD24[$7E:CD24]
-$A4:8C79 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A4:8C7C C9 20 05    CMP #$0520
-$A4:8C7F 30 07       BMI $07    [$8C88]
-$A4:8C81 A9 00 01    LDA #$0100
-$A4:8C84 8F 24 CD 7E STA $7ECD24[$7E:CD24]
+$A4:8C6E 22 5E 8D A4 JSL $A48D5E[$A4:8D5E]  ; Handle Crocomire's bridge
+$A4:8C72 A9 01 01    LDA #$0101             ;\
+$A4:8C75 8F 24 CD 7E STA $7ECD24[$7E:CD24]  ;} Scrolls 4/5 = blue
+$A4:8C79 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A4:8C7C C9 20 05    CMP #$0520             ;} If [Samus X position] >= 520h:
+$A4:8C7F 30 07       BMI $07    [$8C88]     ;/
+$A4:8C81 A9 00 01    LDA #$0100             ;\
+$A4:8C84 8F 24 CD 7E STA $7ECD24[$7E:CD24]  ;} Scroll 4 = red
 
 $A4:8C88 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8C8B 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
@@ -767,8 +771,8 @@ $A4:8C8F 60          RTS
 
 ;;; $8C90: Crocomire main AI - death sequence index 56h ;;;
 {
-$A4:8C90 64 B5       STZ $B5    [$7E:00B5]
-$A4:8C92 64 B7       STZ $B7    [$7E:00B7]
+$A4:8C90 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
+$A4:8C92 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
 $A4:8C94 60          RTS
 }
 
@@ -807,7 +811,7 @@ $A4:8CCE D0 2A       BNE $2A    [$8CFA]     ;} If door transition active: return
 $A4:8CD0 AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
 $A4:8CD3 F0 17       BEQ $17    [$8CEC]     ;} If [enemy flash timer] != 0:
 $A4:8CD5 AD 44 0E    LDA $0E44  [$7E:0E44]  ;\
-$A4:8CD8 89 02 00    BIT #$0002             ;} If [number of times main enemy routine has been executed] & 2 != 0:
+$A4:8CD8 89 02 00    BIT #$0002             ;} If [number of times main enemy routine has been executed] / 2 % 2 != 0:
 $A4:8CDB F0 0F       BEQ $0F    [$8CEC]     ;/
 $A4:8CDD A9 FF 7F    LDA #$7FFF             ;\
 $A4:8CE0 A2 0E 00    LDX #$000E             ;|
@@ -830,7 +834,7 @@ $A4:8CFA 60          RTS
 }
 
 
-;;; $8CFB:  ;;;
+;;; $8CFB: Instruction - queue Crocomire's cry sound effect ;;;
 {
 $A4:8CFB DA          PHX
 $A4:8CFC 5A          PHY
@@ -842,7 +846,7 @@ $A4:8D06 6B          RTL
 }
 
 
-;;; $8D07:  ;;;
+;;; $8D07: Instruction - queue big explosion sound effect ;;;
 {
 $A4:8D07 DA          PHX
 $A4:8D08 5A          PHY
@@ -854,7 +858,7 @@ $A4:8D12 6B          RTL
 }
 
 
-;;; $8D13:  ;;;
+;;; $8D13: Instruction - queue Crocomire's skeleton collapses sound effect ;;;
 {
 $A4:8D13 DA          PHX
 $A4:8D14 5A          PHY
@@ -866,17 +870,17 @@ $A4:8D1E 6B          RTL
 }
 
 
-;;; $8D1F:  ;;;
+;;; $8D1F: Handle playing Crocomire acid damage sound effect ;;;
 {
 $A4:8D1F DA          PHX
 $A4:8D20 5A          PHY
-$A4:8D21 AF 00 80 7E LDA $7E8000[$7E:8000]
-$A4:8D25 F0 15       BEQ $15    [$8D3C]
-$A4:8D27 3A          DEC A
-$A4:8D28 8F 00 80 7E STA $7E8000[$7E:8000]
-$A4:8D2C D0 0E       BNE $0E    [$8D3C]
-$A4:8D2E A9 20 00    LDA #$0020
-$A4:8D31 8F 00 80 7E STA $7E8000[$7E:8000]
+$A4:8D21 AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
+$A4:8D25 F0 15       BEQ $15    [$8D3C]     ;} If [Crocomire acid damage sound effect timer] != 0:
+$A4:8D27 3A          DEC A                  ;\
+$A4:8D28 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Decrement Crocomire acid damage sound effect timer
+$A4:8D2C D0 0E       BNE $0E    [$8D3C]     ; If [Crocomire acid damage sound effect timer] = 0:
+$A4:8D2E A9 20 00    LDA #$0020             ;\
+$A4:8D31 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Crocomire acid damage sound effect timer = 20h
 $A4:8D35 A9 22 00    LDA #$0022             ;\
 $A4:8D38 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 22h, sound library 3, max queued sounds allowed = 6 (Crocomire acid damage)
 
@@ -888,80 +892,83 @@ $A4:8D3E 6B          RTL
 
 ;;; $8D3F: Crocomire main AI - death sequence index 4/Ah ;;;
 {
-$A4:8D3F 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]
-$A4:8D43 22 A4 8B A4 JSL $A48BA4[$A4:8BA4]
+$A4:8D3F 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]  ; Handle playing Crocomire acid damage sound effect
+$A4:8D43 22 A4 8B A4 JSL $A48BA4[$A4:8BA4]  ; Update Crocomire BG2 X scroll
 }
 
 
 ;;; $8D47: Crocomire main AI - death sequence index 20h/26h ;;;
 {
-$A4:8D47 AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:8D4A F0 05       BEQ $05    [$8D51]
-$A4:8D4C 3A          DEC A
-$A4:8D4D 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:8D50 60          RTS
+$A4:8D47 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:8D4A F0 05       BEQ $05    [$8D51]     ;} If [$0FAE] != 0
+$A4:8D4C 3A          DEC A                  ;\
+$A4:8D4D 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement $0FAE
+$A4:8D50 60          RTS                    ; Return
 
-$A4:8D51 EE A8 0F    INC $0FA8  [$7E:0FA8]
-$A4:8D54 EE A8 0F    INC $0FA8  [$7E:0FA8]
-$A4:8D57 A9 00 03    LDA #$0300
-$A4:8D5A 8D B0 0F    STA $0FB0  [$7E:0FB0]
+$A4:8D51 EE A8 0F    INC $0FA8  [$7E:0FA8]  ;\
+$A4:8D54 EE A8 0F    INC $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index += 2
+$A4:8D57 A9 00 03    LDA #$0300             ;\
+$A4:8D5A 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = 300h
 $A4:8D5D 60          RTS
 }
 
 
-;;; $8D5E:  ;;;
+;;; $8D5E: Handle Crocomire's bridge ;;;
 {
 $A4:8D5E 5A          PHY
-$A4:8D5F AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:8D62 C9 00 06    CMP #$0600
-$A4:8D65 30 28       BMI $28    [$8D8F]
-$A4:8D67 C9 10 06    CMP #$0610
-$A4:8D6A 10 38       BPL $38    [$8DA4]
-$A4:8D6C AF 00 90 7E LDA $7E9000[$7E:9000]
-$A4:8D70 D0 1B       BNE $1B    [$8D8D]
-$A4:8D72 A9 01 00    LDA #$0001
-$A4:8D75 8F 00 90 7E STA $7E9000[$7E:9000]
-$A4:8D79 A9 00 06    LDA #$0600
-$A4:8D7C 85 12       STA $12    [$7E:0012]
-$A4:8D7E A9 B0 00    LDA #$00B0
-$A4:8D81 85 14       STA $14    [$7E:0014]
+$A4:8D5F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:8D62 C9 00 06    CMP #$0600             ;} If [Crocomire X position] < 600h: go to BRANCH_NOT_ON_BRIDGE
+$A4:8D65 30 28       BMI $28    [$8D8F]     ;/
+$A4:8D67 C9 10 06    CMP #$0610             ;\
+$A4:8D6A 10 38       BPL $38    [$8DA4]     ;} If [Crocomire X position] >= 610h: go to BRANCH_8DA4
+$A4:8D6C AF 00 90 7E LDA $7E9000[$7E:9000]  ;\
+$A4:8D70 D0 1B       BNE $1B    [$8D8D]     ;} If [Crocomire pre-bridge block dust cloud spawned flag] = 0:
+$A4:8D72 A9 01 00    LDA #$0001             ;\
+$A4:8D75 8F 00 90 7E STA $7E9000[$7E:9000]  ;} Crocomire pre-bridge block dust cloud spawned flag = 1
+$A4:8D79 A9 00 06    LDA #$0600             ;\
+$A4:8D7C 85 12       STA $12    [$7E:0012]  ;} $12 = 600h (X position)
+$A4:8D7E A9 B0 00    LDA #$00B0             ;\
+$A4:8D81 85 14       STA $14    [$7E:0014]  ;} $14 = B0h (Y position)
 $A4:8D83 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8D86 A0 09 E5    LDY #$E509             ;\
 $A4:8D89 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
 $A4:8D8D 7A          PLY
-$A4:8D8E 6B          RTL
+$A4:8D8E 6B          RTL                    ; Return
 
-$A4:8D8F A9 00 00    LDA #$0000
-$A4:8D92 8F 00 90 7E STA $7E9000[$7E:9000]
-$A4:8D96 8F 02 90 7E STA $7E9002[$7E:9002]
-$A4:8D9A 8F 06 90 7E STA $7E9006[$7E:9006]
-$A4:8D9E 8F 0A 90 7E STA $7E900A[$7E:900A]
+; BRANCH_NOT_ON_BRIDGE
+$A4:8D8F A9 00 00    LDA #$0000             ;\
+$A4:8D92 8F 00 90 7E STA $7E9000[$7E:9000]  ;} Crocomire pre-bridge block dust cloud spawned flag = 0
+$A4:8D96 8F 02 90 7E STA $7E9002[$7E:9002]  ; Crocomire bridge part 1 crumbled flag = 0
+$A4:8D9A 8F 06 90 7E STA $7E9006[$7E:9006]  ; Crocomire bridge part 2 crumbled flag = 0
+$A4:8D9E 8F 0A 90 7E STA $7E900A[$7E:900A]  ; $7E:900A = 0
 $A4:8DA2 7A          PLY
-$A4:8DA3 6B          RTL
+$A4:8DA3 6B          RTL                    ; Return
 
-$A4:8DA4 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:8DA7 C9 10 06    CMP #$0610
-$A4:8DAA 30 30       BMI $30    [$8DDC]
-$A4:8DAC C9 20 06    CMP #$0620
-$A4:8DAF 10 3C       BPL $3C    [$8DED]
-$A4:8DB1 AF 02 90 7E LDA $7E9002[$7E:9002]
-$A4:8DB5 D0 23       BNE $23    [$8DDA]
-$A4:8DB7 A9 01 00    LDA #$0001
-$A4:8DBA 8F 02 90 7E STA $7E9002[$7E:9002]
-$A4:8DBE 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8DC2             dx 61,0B,B74B
-$A4:8DC6 A9 20 06    LDA #$0620
-$A4:8DC9 85 12       STA $12    [$7E:0012]
-$A4:8DCB A9 B0 00    LDA #$00B0
-$A4:8DCE 85 14       STA $14    [$7E:0014]
+; BRANCH_8DA4
+$A4:8DA4 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:8DA7 C9 10 06    CMP #$0610             ;} >_<;
+$A4:8DAA 30 30       BMI $30    [$8DDC]     ;/
+$A4:8DAC C9 20 06    CMP #$0620             ;\
+$A4:8DAF 10 3C       BPL $3C    [$8DED]     ;} If [Crocomire X position] >= 620h: go to BRANCH_8DED
+$A4:8DB1 AF 02 90 7E LDA $7E9002[$7E:9002]  ;\
+$A4:8DB5 D0 23       BNE $23    [$8DDA]     ;} If [Crocomire bridge part 1 crumbled flag] = 0:
+$A4:8DB7 A9 01 00    LDA #$0001             ;\
+$A4:8DBA 8F 02 90 7E STA $7E9002[$7E:9002]  ;} Crocomire bridge part 1 crumbled flag = 1
+$A4:8DBE 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8DC2             dx 61,0B,B74B          ;} Spawn PLM to crumble a block of Crocomire's bridge at (61h, Bh)
+$A4:8DC6 A9 20 06    LDA #$0620             ;\
+$A4:8DC9 85 12       STA $12    [$7E:0012]  ;} $12 = 620h (X position)
+$A4:8DCB A9 B0 00    LDA #$00B0             ;\
+$A4:8DCE 85 14       STA $14    [$7E:0014]  ;} $14 = B0h (Y position)
 $A4:8DD0 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8DD3 A0 09 E5    LDY #$E509             ;\
 $A4:8DD6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
 $A4:8DDA 7A          PLY
-$A4:8DDB 6B          RTL
+$A4:8DDB 6B          RTL                    ; Return
 
+; This branch is never be executed
 $A4:8DDC A9 00 00    LDA #$0000
 $A4:8DDF 8F 02 90 7E STA $7E9002[$7E:9002]
 $A4:8DE3 8F 06 90 7E STA $7E9006[$7E:9006]
@@ -969,162 +976,165 @@ $A4:8DE7 8F 0A 90 7E STA $7E900A[$7E:900A]
 $A4:8DEB 7A          PLY
 $A4:8DEC 6B          RTL
 
-$A4:8DED AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:8DF0 C9 20 06    CMP #$0620
-$A4:8DF3 30 38       BMI $38    [$8E2D]
-$A4:8DF5 C9 30 06    CMP #$0630
-$A4:8DF8 10 40       BPL $40    [$8E3A]
-$A4:8DFA AF 06 90 7E LDA $7E9006[$7E:9006]
-$A4:8DFE D0 2B       BNE $2B    [$8E2B]
-$A4:8E00 A9 01 00    LDA #$0001
-$A4:8E03 8F 06 90 7E STA $7E9006[$7E:9006]
-$A4:8E07 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8E0B             dx 62,0B,B74B
-$A4:8E0F 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8E13             dx 63,0B,B74B
-$A4:8E17 A9 30 06    LDA #$0630
-$A4:8E1A 85 12       STA $12    [$7E:0012]
-$A4:8E1C A9 B0 00    LDA #$00B0
-$A4:8E1F 85 14       STA $14    [$7E:0014]
+; BRANCH_8DED
+$A4:8DED AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:8DF0 C9 20 06    CMP #$0620             ;} >_<;
+$A4:8DF3 30 38       BMI $38    [$8E2D]     ;/
+$A4:8DF5 C9 30 06    CMP #$0630             ;\
+$A4:8DF8 10 40       BPL $40    [$8E3A]     ;} If [Crocomire X position] >= 630h: go to BRANCH_8E3A
+$A4:8DFA AF 06 90 7E LDA $7E9006[$7E:9006]  ;\
+$A4:8DFE D0 2B       BNE $2B    [$8E2B]     ;} If [Crocomire bridge part 2 crumbled flag] = 0:
+$A4:8E00 A9 01 00    LDA #$0001             ;\
+$A4:8E03 8F 06 90 7E STA $7E9006[$7E:9006]  ;} Crocomire bridge part 2 crumbled flag = 1
+$A4:8E07 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8E0B             dx 62,0B,B74B          ;} Spawn PLM to crumble a block of Crocomire's bridge at (62h, Bh)
+$A4:8E0F 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8E13             dx 63,0B,B74B          ;} Spawn PLM to crumble a block of Crocomire's bridge at (63h, Bh)
+$A4:8E17 A9 30 06    LDA #$0630             ;\
+$A4:8E1A 85 12       STA $12    [$7E:0012]  ;} $12 = 630h (X position)
+$A4:8E1C A9 B0 00    LDA #$00B0             ;\
+$A4:8E1F 85 14       STA $14    [$7E:0014]  ;} $14 = B0h (Y position)
 $A4:8E21 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8E24 A0 09 E5    LDY #$E509             ;\
 $A4:8E27 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 
 $A4:8E2B 7A          PLY
-$A4:8E2C 6B          RTL
+$A4:8E2C 6B          RTL                    ; Return
 
+; This branch is never be executed
 $A4:8E2D A9 00 00    LDA #$0000
 $A4:8E30 8F 06 90 7E STA $7E9006[$7E:9006]
 $A4:8E34 8F 0A 90 7E STA $7E900A[$7E:900A]
 $A4:8E38 7A          PLY
-$A4:8E39 6B          RTL
+$A4:8E39 6B          RTL                    ; Return
 
-$A4:8E3A CD A4 86    CMP $86A4  [$A4:86A4]
-$A4:8E3D 10 02       BPL $02    [$8E41]
+; BRANCH_8E3A
+$A4:8E3A CD A4 86    CMP $86A4  [$A4:86A4]  ;\
+$A4:8E3D 10 02       BPL $02    [$8E41]     ;} If [Crocomire X position] < 640h:
 $A4:8E3F 7A          PLY
-$A4:8E40 6B          RTL
+$A4:8E40 6B          RTL                    ; Return
 
-$A4:8E41 20 E5 8E    JSR $8EE5  [$A4:8EE5]
-$A4:8E44 A9 01 00    LDA #$0001
-$A4:8E47 8F 00 80 7E STA $7E8000[$7E:8000]
-$A4:8E4B A9 01 00    LDA #$0001
-$A4:8E4E 8F 18 90 7E STA $7E9018[$7E:9018]
+$A4:8E41 20 E5 8E    JSR $8EE5  [$A4:8EE5]  ; Collapse Crocomire's bridge
+$A4:8E44 A9 01 00    LDA #$0001             ;\
+$A4:8E47 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Crocomire acid damage sound effect timer = 1
+$A4:8E4B A9 01 00    LDA #$0001             ;\
+$A4:8E4E 8F 18 90 7E STA $7E9018[$7E:9018]  ;} $7E:9018 = 1
 $A4:8E52 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8E55 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:8E58 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:8E5B A9 02 00    LDA #$0002
-$A4:8E5E 8F 00 78 7E STA $7E7800[$7E:7800]
-$A4:8E62 8F 40 78 7E STA $7E7840[$7E:7840]
-$A4:8E66 8F 80 78 7E STA $7E7880[$7E:7880]
-$A4:8E6A 8F C0 78 7E STA $7E78C0[$7E:78C0]
-$A4:8E6E 8F 00 79 7E STA $7E7900[$7E:7900]
-$A4:8E72 8F 40 79 7E STA $7E7940[$7E:7940]
-$A4:8E76 A9 00 00    LDA #$0000
-$A4:8E79 8F 02 78 7E STA $7E7802[$7E:7802]
-$A4:8E7D 8F 42 78 7E STA $7E7842[$7E:7842]
-$A4:8E81 8F 82 78 7E STA $7E7882[$7E:7882]
-$A4:8E85 8F C2 78 7E STA $7E78C2[$7E:78C2]
-$A4:8E89 8F 02 79 7E STA $7E7902[$7E:7902]
-$A4:8E8D 8F 42 79 7E STA $7E7942[$7E:7942]
+$A4:8E55 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:8E58 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
+$A4:8E5B A9 02 00    LDA #$0002             ;\
+$A4:8E5E 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 2
+$A4:8E62 8F 40 78 7E STA $7E7840[$7E:7840]  ; $7E:7840 = 2
+$A4:8E66 8F 80 78 7E STA $7E7880[$7E:7880]  ; $7E:7880 = 2
+$A4:8E6A 8F C0 78 7E STA $7E78C0[$7E:78C0]  ; $7E:78C0 = 2
+$A4:8E6E 8F 00 79 7E STA $7E7900[$7E:7900]  ; $7E:7900 = 2
+$A4:8E72 8F 40 79 7E STA $7E7940[$7E:7940]  ; $7E:7940 = 2
+$A4:8E76 A9 00 00    LDA #$0000             ;\
+$A4:8E79 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
+$A4:8E7D 8F 42 78 7E STA $7E7842[$7E:7842]  ; $7E:7842 = 0
+$A4:8E81 8F 82 78 7E STA $7E7882[$7E:7882]  ; $7E:7882 = 0
+$A4:8E85 8F C2 78 7E STA $7E78C2[$7E:78C2]  ; $7E:78C2 = 0
+$A4:8E89 8F 02 79 7E STA $7E7902[$7E:7902]  ; $7E:7902 = 0
+$A4:8E8D 8F 42 79 7E STA $7E7942[$7E:7942]  ; $7E:7942 = 0
 $A4:8E91 A9 3B 00    LDA #$003B             ;\
 $A4:8E94 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Bh, sound library 2, max queued sounds allowed = 6 (dachora shinespark)
-$A4:8E98 A9 00 00    LDA #$0000
-$A4:8E9B 8F 16 90 7E STA $7E9016[$7E:9016]
-$A4:8E9F 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8EA3             dx 4E,03,B757
-$A4:8EA7 A9 B0 BF    LDA #$BFB0
-$A4:8EAA 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A4:8EAD A9 01 00    LDA #$0001
-$A4:8EB0 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A4:8EB3 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A4:8EB6 09 00 04    ORA #$0400
-$A4:8EB9 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A4:8EBC A9 FF 7F    LDA #$7FFF
-$A4:8EBF 9D D4 0F    STA $0FD4,x[$7E:0FD4]
-$A4:8EC2 A9 62 BF    LDA #$BF62
-$A4:8EC5 9D D2 0F    STA $0FD2,x[$7E:0FD2]
-$A4:8EC8 AD C6 0F    LDA $0FC6  [$7E:0FC6]
-$A4:8ECB 09 00 01    ORA #$0100
-$A4:8ECE 8D C6 0F    STA $0FC6  [$7E:0FC6]
-$A4:8ED1 9E B0 0F    STZ $0FB0,x[$7E:0FB0]
-$A4:8ED4 9E B2 0F    STZ $0FB2,x[$7E:0FB2]
-$A4:8ED7 A9 00 08    LDA #$0800
-$A4:8EDA 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A4:8EDD A9 10 00    LDA #$0010
-$A4:8EE0 8D 84 0F    STA $0F84  [$7E:0F84]
+$A4:8E98 A9 00 00    LDA #$0000             ;\
+$A4:8E9B 8F 16 90 7E STA $7E9016[$7E:9016]  ;} $7E:9016 = 0
+$A4:8E9F 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8EA3             dx 4E,03,B757          ;} Spawn PLM to create Crocomire invisible wall at (4Eh, 3)
+$A4:8EA7 A9 B0 BF    LDA #$BFB0             ;\
+$A4:8EAA 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BFB0
+$A4:8EAD A9 01 00    LDA #$0001             ;\
+$A4:8EB0 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
+$A4:8EB3 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A4:8EB6 09 00 04    ORA #$0400             ;} Set Crocomire as intangible
+$A4:8EB9 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A4:8EBC A9 FF 7F    LDA #$7FFF             ;\
+$A4:8EBF 9D D4 0F    STA $0FD4,x[$7E:0FD4]  ;} Crocomire's tongue instruction timer = 7FFFh
+$A4:8EC2 A9 62 BF    LDA #$BF62             ;\
+$A4:8EC5 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire's tongue instruction list pointer = $BF62 (sleep)
+$A4:8EC8 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
+$A4:8ECB 09 00 01    ORA #$0100             ;} Set Crocomire's tongue to be invisible
+$A4:8ECE 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
+$A4:8ED1 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0
+$A4:8ED4 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; $0FB2 = 0
+$A4:8ED7 A9 00 08    LDA #$0800             ;\
+$A4:8EDA 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} $0FAE = 800h
+$A4:8EDD A9 10 00    LDA #$0010             ;\
+$A4:8EE0 8D 84 0F    STA $0F84  [$7E:0F84]  ;} Crocomire Y radius = 10h
 $A4:8EE3 7A          PLY
 $A4:8EE4 6B          RTL
 }
 
 
-;;; $8EE5:  ;;;
+;;; $8EE5: Collapse Crocomire's bridge ;;;
 {
-$A4:8EE5 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8EE9             dx 61,0B,B74F
-$A4:8EED 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8EF1             dx 62,0B,B74F
-$A4:8EF5 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8EF9             dx 63,0B,B74F
-$A4:8EFD 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8F01             dx 64,0B,B74F
-$A4:8F05 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8F09             dx 65,0B,B74F
-$A4:8F0D 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8F11             dx 66,0B,B74F
-$A4:8F15 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8F19             dx 67,0B,B74F
-$A4:8F1D 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8F21             dx 68,0B,B74F
-$A4:8F25 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8F29             dx 69,0B,B74F
-$A4:8F2D 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:8F31             dx 6A,0B,B74F
-$A4:8F35 A9 00 06    LDA #$0600
-$A4:8F38 85 12       STA $12    [$7E:0012]
-$A4:8F3A A9 B0 00    LDA #$00B0
-$A4:8F3D 85 14       STA $14    [$7E:0014]
+$A4:8EE5 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8EE9             dx 61,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (61h, Bh)
+$A4:8EED 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8EF1             dx 62,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (62h, Bh)
+$A4:8EF5 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8EF9             dx 63,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (63h, Bh)
+$A4:8EFD 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8F01             dx 64,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (64h, Bh)
+$A4:8F05 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8F09             dx 65,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (65h, Bh)
+$A4:8F0D 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8F11             dx 66,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (66h, Bh)
+$A4:8F15 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8F19             dx 67,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (67h, Bh)
+$A4:8F1D 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8F21             dx 68,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (68h, Bh)
+$A4:8F25 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8F29             dx 69,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (69h, Bh)
+$A4:8F2D 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:8F31             dx 6A,0B,B74F          ;} Spawn PLM to clear a block of Crocomire's bridge at (6Ah, Bh)
+$A4:8F35 A9 00 06    LDA #$0600             ;\
+$A4:8F38 85 12       STA $12    [$7E:0012]  ;} $12 = 600h (X position)
+$A4:8F3A A9 B0 00    LDA #$00B0             ;\
+$A4:8F3D 85 14       STA $14    [$7E:0014]  ;} $14 = B0h (Y position)
 $A4:8F3F A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F42 A0 09 E5    LDY #$E509             ;\
 $A4:8F45 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
-$A4:8F49 A9 10 06    LDA #$0610
-$A4:8F4C 85 12       STA $12    [$7E:0012]
-$A4:8F4E A9 C0 00    LDA #$00C0
-$A4:8F51 85 14       STA $14    [$7E:0014]
+$A4:8F49 A9 10 06    LDA #$0610             ;\
+$A4:8F4C 85 12       STA $12    [$7E:0012]  ;} $12 = 610h (X position)
+$A4:8F4E A9 C0 00    LDA #$00C0             ;\
+$A4:8F51 85 14       STA $14    [$7E:0014]  ;} $14 = C0h (Y position)
 $A4:8F53 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F56 A0 09 E5    LDY #$E509             ;\
 $A4:8F59 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
-$A4:8F5D A9 20 06    LDA #$0620
-$A4:8F60 85 12       STA $12    [$7E:0012]
-$A4:8F62 A9 B0 00    LDA #$00B0
-$A4:8F65 85 14       STA $14    [$7E:0014]
+$A4:8F5D A9 20 06    LDA #$0620             ;\
+$A4:8F60 85 12       STA $12    [$7E:0012]  ;} $12 = 620h (X position)
+$A4:8F62 A9 B0 00    LDA #$00B0             ;\
+$A4:8F65 85 14       STA $14    [$7E:0014]  ;} $14 = B0h (Y position)
 $A4:8F67 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F6A A0 09 E5    LDY #$E509             ;\
 $A4:8F6D 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
-$A4:8F71 A9 30 06    LDA #$0630
-$A4:8F74 85 12       STA $12    [$7E:0012]
-$A4:8F76 A9 C0 00    LDA #$00C0
-$A4:8F79 85 14       STA $14    [$7E:0014]
+$A4:8F71 A9 30 06    LDA #$0630             ;\
+$A4:8F74 85 12       STA $12    [$7E:0012]  ;} $12 = 630h (X position)
+$A4:8F76 A9 C0 00    LDA #$00C0             ;\
+$A4:8F79 85 14       STA $14    [$7E:0014]  ;} $14 = C0h (Y position)
 $A4:8F7B A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F7E A0 09 E5    LDY #$E509             ;\
 $A4:8F81 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
-$A4:8F85 A9 40 06    LDA #$0640
-$A4:8F88 85 12       STA $12    [$7E:0012]
-$A4:8F8A A9 C0 00    LDA #$00C0
-$A4:8F8D 85 14       STA $14    [$7E:0014]
+$A4:8F85 A9 40 06    LDA #$0640             ;\
+$A4:8F88 85 12       STA $12    [$7E:0012]  ;} $12 = 640h (X position)
+$A4:8F8A A9 C0 00    LDA #$00C0             ;\
+$A4:8F8D 85 14       STA $14    [$7E:0014]  ;} $14 = C0h (Y position)
 $A4:8F8F A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8F92 A0 09 E5    LDY #$E509             ;\
 $A4:8F95 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
-$A4:8F99 A9 50 06    LDA #$0650
-$A4:8F9C 85 12       STA $12    [$7E:0012]
-$A4:8F9E A9 C0 00    LDA #$00C0
-$A4:8FA1 85 14       STA $14    [$7E:0014]
+$A4:8F99 A9 50 06    LDA #$0650             ;\
+$A4:8F9C 85 12       STA $12    [$7E:0012]  ;} $12 = 650h (X position)
+$A4:8F9E A9 C0 00    LDA #$00C0             ;\
+$A4:8FA1 85 14       STA $14    [$7E:0014]  ;} $14 = C0h (Y position)
 $A4:8FA3 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8FA6 A0 09 E5    LDY #$E509             ;\
 $A4:8FA9 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
-$A4:8FAD A9 60 06    LDA #$0660
-$A4:8FB0 85 12       STA $12    [$7E:0012]
-$A4:8FB2 A9 C0 00    LDA #$00C0
-$A4:8FB5 85 14       STA $14    [$7E:0014]
+$A4:8FAD A9 60 06    LDA #$0660             ;\
+$A4:8FB0 85 12       STA $12    [$7E:0012]  ;} $12 = 660h (X position)
+$A4:8FB2 A9 C0 00    LDA #$00C0             ;\
+$A4:8FB5 85 14       STA $14    [$7E:0014]  ;} $14 = C0h (Y position)
 $A4:8FB7 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:8FBA A0 09 E5    LDY #$E509             ;\
 $A4:8FBD 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
@@ -1134,14 +1144,7 @@ $A4:8FC1 60          RTS
 
 ;;; $8FC2: Unused. Move enemy down by [$14].[$12] ;;;
 {
-;; Parameters:
-;;     X: Enemy index
-;;     $12: Y suboffset to move by
-;;     $14: Y offset to move by
-;; Returns:
-;;     Carry: Set if collided with wall
-
-$A4:8FC2 22 86 C7 A0 JSL $A0C786[$A0:C786]
+$A4:8FC2 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A4:8FC6 6B          RTL
 }
 
@@ -1242,7 +1245,7 @@ $A4:904E 6B          RTL
 $A4:904F 7A          PLY
 $A4:9050 A0 3C BF    LDY #$BF3C             ; Y = $BF3C
 $A4:9053 A9 0E 00    LDA #$000E             ;\
-$A4:9056 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = Eh
+$A4:9056 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Eh
 $A4:9059 FA          PLX
 $A4:905A 6B          RTL
 }
@@ -1440,7 +1443,7 @@ $A4:91B9 60          RTS
 
 ;;; $91BA: Crocomire main AI - death sequence index 8/Eh ;;;
 {
-$A4:91BA 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]
+$A4:91BA 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]  ; Handle playing Crocomire acid damage sound effect
 $A4:91BE 20 6C 91    JSR $916C  [$A4:916C]
 }
 
@@ -1456,8 +1459,8 @@ $A4:91D0 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
 $A4:91D4 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A4:91D7 C9 18 01    CMP #$0118
 $A4:91DA 30 0D       BMI $0D    [$91E9]
-$A4:91DC FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:91DF FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:91DC FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:91DF FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:91E2 A9 30 00    LDA #$0030
 $A4:91E5 8D AE 0F    STA $0FAE  [$7E:0FAE]
 $A4:91E8 60          RTS
@@ -1576,7 +1579,7 @@ $A4:92CC 80 0A       BRA $0A    [$92D8]
 
 ;;; $92CE: Crocomire main AI - death sequence index 6/Ch ;;;
 {
-$A4:92CE 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]
+$A4:92CE 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]  ; Handle playing Crocomire acid damage sound effect
 $A4:92D2 20 6C 91    JSR $916C  [$A4:916C]
 $A4:92D5 AE 54 0E    LDX $0E54  [$7E:0E54]
 }
@@ -1590,8 +1593,8 @@ $A4:92DE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A4:92E1 C9 DA 00    CMP #$00DA
 $A4:92E4 10 0A       BPL $0A    [$92F0]
 $A4:92E6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:92E9 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:92EC FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:92E9 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:92EC FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:92EF 60          RTS
 
 $A4:92F0 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
@@ -1638,8 +1641,8 @@ $A4:9341 A9 30 00    LDA #$0030
 $A4:9344 8D 8C 06    STA $068C  [$7E:068C]
 $A4:9347 8D 88 06    STA $0688  [$7E:0688]
 $A4:934A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:934D FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:9350 FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:934D FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:9350 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:9353 A9 64 BF    LDA #$BF64
 $A4:9356 9D 92 0F    STA $0F92,x[$7E:0F92]
 $A4:9359 A9 01 00    LDA #$0001
@@ -1726,8 +1729,8 @@ $A4:93EC 60          RTS
 {
 $A4:93ED 20 DF 93    JSR $93DF  [$A4:93DF]
 $A4:93F0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:93F3 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:93F6 FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:93F3 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:93F6 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:93F9 A9 01 00    LDA #$0001
 $A4:93FC 9D 94 0F    STA $0F94,x[$7E:0F94]
 $A4:93FF A9 30 00    LDA #$0030
@@ -1767,8 +1770,8 @@ $A4:943C 6B          RTL
 $A4:943D C2 30       REP #$30
 $A4:943F 8B          PHB
 $A4:9440 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:9443 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:9446 FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:9443 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:9446 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:9449 A9 00 01    LDA #$0100
 $A4:944C 8D 92 06    STA $0692  [$7E:0692]
 $A4:944F 9C 90 06    STZ $0690  [$7E:0690]
@@ -1861,8 +1864,8 @@ $A4:94EA 60          RTS
 
 $A4:94EB 8C 30 03    STY $0330  [$7E:0330]
 $A4:94EE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:94F1 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:94F4 FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:94F1 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:94F4 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:94F7 9C 8A 06    STZ $068A  [$7E:068A]
 $A4:94FA 60          RTS
 }
@@ -1899,8 +1902,8 @@ $A4:951E CA          DEX
 $A4:951F CA          DEX
 $A4:9520 10 F8       BPL $F8    [$951A]
 $A4:9522 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:9525 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:9528 FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:9525 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:9528 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:952B AD 7A 0F    LDA $0F7A  [$7E:0F7A]
 $A4:952E 8D 2E 10    STA $102E  [$7E:102E]
 $A4:9531 08          PHP
@@ -1935,8 +1938,8 @@ $A4:956E             dx 7777,CAE0,
 ;;; $9576: Crocomire main AI - death sequence index 32h ;;;
 {
 $A4:9576 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:9579 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:957C FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:9579 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:957C FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:957F 60          RTS
 }
 
@@ -1961,8 +1964,8 @@ $A4:95A0 C9 00 00    CMP #$0000
 $A4:95A3 D0 2D       BNE $2D    [$95D2]
 
 $A4:95A5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:95A8 FE A8 0F    INC $0FA8,x[$7E:0FA8]
-$A4:95AB FE A8 0F    INC $0FA8,x[$7E:0FA8]
+$A4:95A8 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
+$A4:95AB FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:95AE AE 9A 06    LDX $069A  [$7E:069A]
 
 $A4:95B1 BD C5 9B    LDA $9BC5,x[$A4:9BE7]
@@ -2720,8 +2723,8 @@ $A4:9BAF 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]
 
 ;;; $9BB3:  ;;;
 {
-$A4:9BB3 EE A8 0F    INC $0FA8  [$7E:0FA8]
-$A4:9BB6 EE A8 0F    INC $0FA8  [$7E:0FA8]
+$A4:9BB3 EE A8 0F    INC $0FA8  [$7E:0FA8]  ;\
+$A4:9BB6 EE A8 0F    INC $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:9BB9 60          RTS
 }
 
@@ -3235,7 +3238,7 @@ $A4:B9C3 AD 8A 0F    LDA $0F8A  [$7E:0F8A]
 $A4:B9C6 09 02 00    ORA #$0002
 $A4:B9C9 8D 8A 0F    STA $0F8A  [$7E:0F8A]
 $A4:B9CC A9 18 00    LDA #$0018             ;\
-$A4:B9CF 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} $0FAC = 18h
+$A4:B9CF 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 18h
 $A4:B9D2 AE 8E 0F    LDX $0F8E  [$7E:0F8E]
 $A4:B9D5 BD 00 00    LDA $0000,x
 $A4:B9D8 85 12       STA $12    [$7E:0012]
@@ -3375,10 +3378,10 @@ $A4:BADD 6B          RTL
 
 ;;; $BADE..BFC3: Crocomire instruction lists ;;;
 {
-;;; $BADE: Instruction list ;;;
+;;; $BADE: Instruction list - Crocomire - initial ;;;
 {
 $A4:BADE             dx 0001,C2EC,
-                        86A6,
+                        86A6,       ; Fight AI
                         80ED,BADE   ; Go to $BADE
 }
 
@@ -3416,7 +3419,7 @@ $A4:BAEA             dx 0008,BFC4,
                         0008,C1B8,
                         8FDF,
                         0008,C1EA,
-                        86A6,
+                        86A6,       ; Fight AI
                         9AAA,
                         0005,C47A,
                         0005,C4AC,
@@ -3424,7 +3427,7 @@ $A4:BAEA             dx 0008,BFC4,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9A9B,
                         0005,C47A,
                         0005,C4AC,
@@ -3432,7 +3435,7 @@ $A4:BAEA             dx 0008,BFC4,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9AA0,
                         0005,C47A,
                         0005,C4AC,
@@ -3440,13 +3443,13 @@ $A4:BAEA             dx 0008,BFC4,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9AA5,
                         0005,C574,
-                        8CFB,
+                        8CFB,       ; Queue Crocomire's cry sound effect
                         0005,C5AE,
                         0005,C5E8
-$A4:BB94             dx 86A6,
+$A4:BB94             dx 86A6,       ; Fight AI
                         0008,C95C,
                         0007,C996,
                         0007,C9D0,
@@ -3461,50 +3464,50 @@ $A4:BB94             dx 86A6,
 $A4:BBAE             dx 0004,C6A4,
                         8FC7,       ; Shake screen
                         8FFA,
-                        86A6,
+                        86A6,       ; Fight AI
                         8752,
                         0004,C6DE,
                         8FDF,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C718,
                         8FFA,
-                        86A6,
+                        86A6,       ; Fight AI
                         00B4,C6A4,
 $A4:BBCE             dx 8752,
                         0005,C574,
-                        86A6,
+                        86A6,       ; Fight AI
                         0005,C5AE,
-                        8CFB,
-                        86A6,
+                        8CFB,       ; Queue Crocomire's cry sound effect
+                        86A6,       ; Fight AI
                         0005,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0010,C752,
                         8FFA,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C78C,
                         8FDF,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C7C6,
                         8FDF,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C800,
                         8FC7,       ; Shake screen
                         8FFA,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C83A,
                         8FDF,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C874,
                         8FDF,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C8AE,
                         8FFA,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C8E8,
                         8FDF,
-                        86A6,
+                        86A6,       ; Fight AI
                         0004,C922,
-                        86A6,
+                        86A6,       ; Fight AI
                         80ED,BBCE   ; Go to $BBCE
 }
 
@@ -3523,8 +3526,13 @@ $A4:BC30             dx 0002,C5AE,
                         0008,C122,
                         8FC7,       ; Shake screen
                         905B,
-                        86A6,
-                        0022,C448,
+                        86A6        ; Fight AI
+}
+
+
+;;; $BC56: Instruction list ;;;
+{
+$A4:BC56             dx 0022,C448,
                         0002,C40E,
                         0002,C3D4,
                         0002,C39A,
@@ -3556,7 +3564,7 @@ $A4:BC30             dx 0002,C5AE,
                         0001,C360,
                         0001,C326,
                         0001,C2EC,
-                        86A6,
+                        86A6,       ; Fight AI
                         9AAA,
                         0005,C47A,
                         0005,C4AC,
@@ -3564,7 +3572,7 @@ $A4:BC30             dx 0002,C5AE,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9A9B,
                         0005,C47A,
                         0005,C4AC,
@@ -3572,7 +3580,7 @@ $A4:BC30             dx 0002,C5AE,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9AA0,
                         0005,C47A,
                         0005,C4AC,
@@ -3580,57 +3588,57 @@ $A4:BC30             dx 0002,C5AE,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9AA5,
-                        86A6
+                        86A6        ; Fight AI
 }
 
 
 ;;; $BD2A: Instruction list ;;;
 {
 $A4:BD2A             dx 0030,C574,
-                        8CFB,
+                        8CFB,       ; Queue Crocomire's cry sound effect
                         0005,C5AE,
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0020,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0001,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0020,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0005,C5AE,
-                        86A6,
+                        86A6,       ; Fight AI
                         0008,C5AE,
                         0002,C574,
                         0001,C574,
-                        86A6,
+                        86A6,       ; Fight AI
                         0001,C574,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5AE,
                         0002,C574,
                         9AAA,
@@ -3640,7 +3648,7 @@ $A4:BD2A             dx 0030,C574,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9A9B,
                         0005,C47A,
                         0005,C4AC,
@@ -3648,7 +3656,7 @@ $A4:BD2A             dx 0030,C574,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9AA0,
                         0005,C47A,
                         0005,C4AC,
@@ -3656,7 +3664,7 @@ $A4:BD2A             dx 0030,C574,
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         9AA5,
 $A4:BE06             dx 0004,BFC4,
                         8FC7,       ; Shake screen
@@ -3683,12 +3691,12 @@ $A4:BE06             dx 0004,BFC4,
                         0004,C1B8,
                         8FDF,
                         0004,C1EA,
-                        86A6,
+                        86A6,       ; Fight AI
                         80ED,BE06   ; Go to $BE06
 }
 
 
-;;; $BE56: Instruction list ;;;
+;;; $BE56: Instruction list - Crocomire's tongue - initial ;;;
 {
 $A4:BE56             dx 0005,C65E,
                         0005,C668,
@@ -3711,42 +3719,42 @@ $A4:BE6A             dx 0005,C67C,
 ;;; $BE7E: Instruction list ;;;
 {
 $A4:BE7E             dx 0005,C574,
-                        8CFB,
-                        86A6,
+                        8CFB,       ; Queue Crocomire's cry sound effect
+                        86A6,       ; Fight AI
                         0005,C5AE,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C5E8,
-                        86A6,
+                        86A6,       ; Fight AI
                         0005,C5AE,
-                        86A6,
+                        86A6,       ; Fight AI
                         0008,C5AE,
-                        86A6,
+                        86A6,       ; Fight AI
                         0002,C574,
-                        86A6,
+                        86A6,       ; Fight AI
 $A4:BEEC             dx 0003,BFC4,
                         8FC7,       ; Shake screen
                         8FFF,
@@ -3772,7 +3780,7 @@ $A4:BEEC             dx 0003,BFC4,
                         0003,C1B8,
                         901D,
                         0003,C1EA,
-                        86A6,
+                        86A6,       ; Fight AI
                         80ED,BEEC   ; Go to $BEEC
 }
 
@@ -3790,12 +3798,12 @@ $A4:BF3C             dx 0008,C1EA,
                         0008,C122,
                         8FC7,       ; Shake screen
                         907F,
-                        86A6,
+                        86A6,       ; Fight AI
                         80ED,BF3C   ; Go to $BF3C
 }
 
 
-;;; $BF62: Instruction list ;;;
+;;; $BF62: Instruction list - sleep ;;;
 {
 $A4:BF62             dx 812F        ; Sleep
 }
@@ -3868,11 +3876,11 @@ $A4:BF98             dx 0005,CACE,
 }
 
 
-;;; $BFB0: Instruction list ;;;
+;;; $BFB0: Instruction list - Crocomire - bridge collapsed ;;;
 {
 $A4:BFB0             dx 0005,C5AE,
                         0005,C574,
-                        8CFB,
+                        8CFB,       ; Queue Crocomire's cry sound effect
                         0005,C5AE,
                         0005,C5E8,
                         812F        ; Sleep
@@ -4208,7 +4216,7 @@ $A4:E158             dx 000A,E27C,
                         000A,E2FA,
                         0020,E324,
                         0010,E34E,
-                        8D13,
+                        8D13,       ; Queue Crocomire's skeleton collapses sound effect
                         000A,E378,
                         0009,E3A2,
                         0009,E3CC,
@@ -4229,14 +4237,14 @@ $A4:E158             dx 000A,E27C,
                         9AD2,
                         0005,E65C,
                         9AD7,
-                        8D07,
+                        8D07,       ; Queue big explosion sound effect
                         0005,E68E,
                         7FFF,E6A8,
                         812F        ; Sleep
 }
 
 
-;;; $E1CC: Instruction list ;;;
+;;; $E1CC: Instruction list - Crocomire - dead ;;;
 {
 $A4:E1CC             dx 7FFF,E6B2,
                         812F        ; Sleep
@@ -4489,34 +4497,35 @@ $A4:F673             dx 0001, 01FC,EE,0A40
 
 ;;; $F67A: Initialisation AI - enemy $DDFF (Crocomire's tongue) ;;;
 {
-$A4:F67A AE 9F 07    LDX $079F  [$7E:079F]
-$A4:F67D BF 28 D8 7E LDA $7ED828,x[$7E:D82A]
-$A4:F681 89 02 00    BIT #$0002
-$A4:F684 D0 25       BNE $25    [$F6AB]
+$A4:F67A AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$A4:F67D BF 28 D8 7E LDA $7ED828,x[$7E:D82A];|
+$A4:F681 89 02 00    BIT #$0002             ;} If area mini-boss dead: go to BRANCH_DEAD
+$A4:F684 D0 25       BNE $25    [$F6AB]     ;/
 $A4:F686 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:F689 A9 56 BE    LDA #$BE56
-$A4:F68C 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A4:F68F BD 88 0F    LDA $0F88,x[$7E:0FC8]
-$A4:F692 09 04 04    ORA #$0404
-$A4:F695 9D 88 0F    STA $0F88,x[$7E:0FC8]
-$A4:F698 A9 01 00    LDA #$0001
-$A4:F69B 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A4:F69E A9 17 00    LDA #$0017
-$A4:F6A1 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A4:F6A4 A9 00 0E    LDA #$0E00
-$A4:F6A7 9D 96 0F    STA $0F96,x[$7E:0FD6]
-$A4:F6AA 6B          RTL
+$A4:F689 A9 56 BE    LDA #$BE56             ;\
+$A4:F68C 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $BE56
+$A4:F68F BD 88 0F    LDA $0F88,x[$7E:0FC8]  ;\
+$A4:F692 09 04 04    ORA #$0404             ;} Set enemy to use extended spritemap format (and set unused bit 400h)
+$A4:F695 9D 88 0F    STA $0F88,x[$7E:0FC8]  ;/
+$A4:F698 A9 01 00    LDA #$0001             ;\
+$A4:F69B 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A4:F69E A9 17 00    LDA #$0017             ;\
+$A4:F6A1 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy X offset = 17h
+$A4:F6A4 A9 00 0E    LDA #$0E00             ;\
+$A4:F6A7 9D 96 0F    STA $0F96,x[$7E:0FD6]  ;} Enemy palette index = E00h (palette 7)
+$A4:F6AA 6B          RTL                    ; Return
 
+; BRANCH_DEAD
 $A4:F6AB AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:F6AE BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A4:F6B1 09 00 03    ORA #$0300
-$A4:F6B4 29 FF DF    AND #$DFFF
-$A4:F6B7 9D 86 0F    STA $0F86,x[$7E:0FC6]
+$A4:F6AE BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A4:F6B1 09 00 03    ORA #$0300             ;|
+$A4:F6B4 29 FF DF    AND #$DFFF             ;} Set enemy to not process instructions, mark for deletion and be invisible
+$A4:F6B7 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
 $A4:F6BA 6B          RTL
 }
 
 
-;;; $F6BB: Main AI - enemy $DDFF (Crocomire's tongue) ;;;
+;;; $F6BB: RTL. Main AI - enemy $DDFF (Crocomire's tongue) ;;;
 {
 $A4:F6BB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:F6BE 6B          RTL
