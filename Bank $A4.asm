@@ -54,6 +54,8 @@ $A4:86DD 60          RTS
 
 ;;; $86DE: Fight AI - index 0 ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:86DE A0 DE BA    LDY #$BADE             ; Y = $BADE
 $A4:86E1 A9 01 00    LDA #$0001             ;\
 $A4:86E4 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
@@ -63,6 +65,8 @@ $A4:86E7 60          RTS
 
 ;;; $86E8: Fight AI - index 2 ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:86E8 A9 04 00    LDA #$0004             ;\
 $A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 4
 $A4:86EE A0 CE BB    LDY #$BBCE             ; Y = $BBCE
@@ -72,6 +76,8 @@ $A4:86F1 60          RTS
 
 ;;; $86F2: Fight AI - index 4 - asleep ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:86F2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:86F5 38          SEC                    ;|
 $A4:86F6 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
@@ -94,6 +100,8 @@ $A4:8716 60          RTS
 
 ;;; $8717: Fight AI - index 6 ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:8717 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:871A 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
 $A4:871D F0 18       BEQ $18    [$8737]     ;/
@@ -143,6 +151,8 @@ $A4:876B 6B          RTL
 
 ;;; $876C: Fight AI - index 8 ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:876C AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:876F 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
 $A4:8772 F0 10       BEQ $10    [$8784]     ;/
@@ -178,6 +188,8 @@ $A4:87B1 60          RTS
 
 ;;; $87B2: Fight AI - index Ah ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:87B2 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:87B5 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
 $A4:87B8 F0 0F       BEQ $0F    [$87C9]     ;/
@@ -193,6 +205,8 @@ $A4:87C9 60          RTS
 
 ;;; $87CA: Fight AI - index Ch ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:87CA AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:87CD F0 10       BEQ $10    [$87DF]     ;} If [$0FAE] != 0:
 $A4:87CF 3A          DEC A                  ;\
@@ -212,6 +226,8 @@ $A4:87E8 60          RTS
 
 ;;; $87E9: Fight AI - index Eh ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:87E9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] >= 300h: 
 $A4:87EF 30 09       BMI $09    [$87FA]     ;/
@@ -225,6 +241,8 @@ $A4:87FA 60          RTS
 
 ;;; $87FB: Fight AI - index 10h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:87FB A9 06 00    LDA #$0006             ;\
 $A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
 $A4:8801 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
@@ -242,8 +260,10 @@ $A4:8811 60          RTS
 }
 
 
-;;; $8812: Fight AI - index 12h ;;;
+;;; $8812: Fight AI - index 12h - wait for first damage ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:8812 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8815 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
 $A4:8818 F0 13       BEQ $13    [$882D]     ;/
@@ -265,6 +285,8 @@ $A4:8835 60          RTS
 
 ;;; $8836: Fight AI - index 14h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:8836 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8839 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
 $A4:883C F0 13       BEQ $13    [$8851]     ;/
@@ -286,6 +308,8 @@ $A4:8859 60          RTS
 
 ;;; $885A: Fight AI - index 16h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:885D 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
 $A4:8860 F0 13       BEQ $13    [$8875]     ;/
@@ -307,6 +331,8 @@ $A4:887D 60          RTS
 
 ;;; $887E: Fight AI - index 18h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:887E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8881 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:8884 3A          DEC A                  ;} Decrement $0FAE
@@ -324,6 +350,8 @@ $A4:8899 60          RTS
 
 ;;; $889A: Fight AI - index 1Ah ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:889A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:889D AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:88A0 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
@@ -350,6 +378,8 @@ $A4:88D1 60          RTS
 
 ;;; $88D2: Fight AI - index 1Ch ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:88D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:88D5 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
 $A4:88D8 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -394,6 +424,8 @@ $A4:891A 60          RTS
 
 ;;; $891B: Fight AI - index 1Eh ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:891B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:891E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8921 89 00 01    BIT #$0100             ;} If [$0FAA] & 100h = 0:
@@ -414,6 +446,8 @@ $A4:893F 60          RTS
 
 ;;; $8940: Fight AI - index 20h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:8940 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8943 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
 $A4:8946 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
@@ -431,6 +465,8 @@ $A4:895D 60          RTS
 
 ;;; $895E: Fight AI - index 22h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:895E AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:8961 C9 A0 02    CMP #$02A0             ;} If [Crocomire X position] < 2A0h:
 $A4:8964 10 13       BPL $13    [$8979]     ;/
@@ -466,6 +502,8 @@ $A4:89A7 60          RTS
 
 ;;; $89A8: Fight AI - index 24h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:89A8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:89AB AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:89AE F0 1B       BEQ $1B    [$89CB]     ;} If [$0FAE] != 0:
@@ -492,6 +530,8 @@ $A4:89DD 60          RTS
 
 ;;; $89DE: Fight AI - index 26h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:89DE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:89E1 89 00 20    BIT #$2000             ;} If [$0FAA] & 2000h = 0:
 $A4:89E4 D0 06       BNE $06    [$89EC]     ;/
@@ -508,6 +548,8 @@ $A4:89F8 60          RTS
 
 ;;; $89F9: Fight AI - index 28h ;;;
 {
+;; Returns:
+;;     Y: Instruction list pointer
 $A4:89F9 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:89FC D0 19       BNE $19    [$8A17]     ;} If [$0FAE] = 0:
 $A4:89FE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -564,8 +606,8 @@ $A4:8A7D D0 5D       BNE $5D    [$8ADC]     ;/
 $A4:8A7F 22 E2 A7 90 JSL $90A7E2[$90:A7E2]  ; Disable mini-map and mark boss room map tiles as explored
 $A4:8A83 9C 9A 06    STZ $069A  [$7E:069A]  ; $069A = 0
 $A4:8A86 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8A89 9E A8 0F    STZ $0FA8,x[$7E:0FA8]  ; Enemy death sequence index = 0
-$A4:8A8C 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy $0FB0 = 0
+$A4:8A89 9E A8 0F    STZ $0FA8,x[$7E:0FA8]  ; Crocomire death sequence index = 0
+$A4:8A8C 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0
 $A4:8A8F A9 00 00    LDA #$0000             ;\
 $A4:8A92 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scrolls 0..1 = red
 $A4:8A96 A2 20 00    LDX #$0020             ;\
@@ -1307,13 +1349,13 @@ $A4:9097 80 E6       BRA $E6    [$907F]
 $A4:9099 20 DF 90    JSR $90DF  [$A4:90DF]
 $A4:909C 20 6C 91    JSR $916C  [$A4:916C]
 $A4:909F 20 C1 91    JSR $91C1  [$A4:91C1]
-$A4:90A2 AD A8 0F    LDA $0FA8  [$7E:0FA8]
-$A4:90A5 C9 3E 00    CMP #$003E
-$A4:90A8 D0 34       BNE $34    [$90DE]
+$A4:90A2 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A4:90A5 C9 3E 00    CMP #$003E             ;} If [Crocomire death sequence index] = 3Eh:
+$A4:90A8 D0 34       BNE $34    [$90DE]     ;/
 $A4:90AA A9 06 00    LDA #$0006             ;\
 $A4:90AD 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 1 music track
-$A4:90B1 A9 58 00    LDA #$0058
-$A4:90B4 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A4:90B1 A9 58 00    LDA #$0058             ;\
+$A4:90B4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 58h
 $A4:90B7 A9 D2 E1    LDA #$E1D2
 $A4:90BA 8D 92 0F    STA $0F92  [$7E:0F92]
 $A4:90BD A9 01 01    LDA #$0101
@@ -2277,8 +2319,8 @@ $A4:9846 A9 E0 01    LDA #$01E0
 $A4:9849 8D 7A 0F    STA $0F7A  [$7E:0F7A]
 $A4:984C A9 36 00    LDA #$0036
 $A4:984F 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A4:9852 A9 3E 00    LDA #$003E
-$A4:9855 8D A8 0F    STA $0FA8  [$7E:0FA8]
+$A4:9852 A9 3E 00    LDA #$003E             ;\
+$A4:9855 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 3Eh
 $A4:9858 60          RTS
 }
 
@@ -3157,15 +3199,15 @@ $A4:B91D             dw 3800, 02DF, 01D7, 00AC, 5A73, 41AD, 2D08, 1863, 0BB1, 48
 ;;; $B93D:  ;;;
 {
 $A4:B93D 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
-$A4:B941 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:B944 09 00 40    ORA #$4000
-$A4:B947 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:B941 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:B944 09 00 40    ORA #$4000             ;} $0FAA |= 4000h
+$A4:B947 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:B94A A9 FC FF    LDA #$FFFC             ;\
 $A4:B94D 8D 58 0B    STA $0B58  [$7E:0B58]  ;} Extra Samus X displacement = -4
 }
 
 
-;;; $B950: Enemy touch - enemy $DDBF (Crocomire) ;;;
+;;; $B950: RTL. Enemy touch - enemy $DDBF (Crocomire) ;;;
 {
 $A4:B950 6B          RTL
 }
@@ -3173,16 +3215,16 @@ $A4:B950 6B          RTL
 
 ;;; $B951:  ;;;
 {
-$A4:B951 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:B954 29 0F 00    AND #$000F
-$A4:B957 C9 0F 00    CMP #$000F
-$A4:B95A 10 01       BPL $01    [$B95D]
-$A4:B95C 1A          INC A
-
-$A4:B95D 85 12       STA $12    [$7E:0012]
-$A4:B95F AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:B962 05 12       ORA $12    [$7E:0012]
-$A4:B964 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:B951 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:B954 29 0F 00    AND #$000F             ;|
+$A4:B957 C9 0F 00    CMP #$000F             ;|
+$A4:B95A 10 01       BPL $01    [$B95D]     ;|
+$A4:B95C 1A          INC A                  ;|
+                                            ;} $0FAA |= min(Fh, ([$0FAA] & Fh) + 1)
+$A4:B95D 85 12       STA $12    [$7E:0012]  ;|
+$A4:B95F AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;|
+$A4:B962 05 12       ORA $12    [$7E:0012]  ;|
+$A4:B964 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:B967 6B          RTL
 }
 
@@ -3216,52 +3258,53 @@ $A4:B991 6B          RTL
 ;;; $B992: Power bomb reaction - enemy $DDBF (Crocomire) ;;;
 {
 ; This was recorded as data in the log. Was that my error or is something fishy going on?
-$A4:B992 AD A8 0F    LDA $0FA8  [$7E:0FA8]
-$A4:B995 D0 6D       BNE $6D    [$BA04]
-$A4:B997 AD 9E 86    LDA $869E  [$A4:869E]
-$A4:B99A F0 68       BEQ $68    [$BA04]
-$A4:B99C 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:B99F AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A4:B9A2 C9 18 00    CMP #$0018
-$A4:B9A5 F0 5D       BEQ $5D    [$BA04]
-$A4:B9A7 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:B9AA 29 F0 BF    AND #$BFF0
-$A4:B9AD 09 00 80    ORA #$8000
-$A4:B9B0 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:B9B3 A9 0A 00    LDA #$000A
-$A4:B9B6 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A4:B9B9 AD 9C 0F    LDA $0F9C  [$7E:0F9C]
-$A4:B9BC 18          CLC
-$A4:B9BD 69 04 00    ADC #$0004
-$A4:B9C0 8D 9C 0F    STA $0F9C  [$7E:0F9C]
-$A4:B9C3 AD 8A 0F    LDA $0F8A  [$7E:0F8A]
-$A4:B9C6 09 02 00    ORA #$0002
-$A4:B9C9 8D 8A 0F    STA $0F8A  [$7E:0F8A]
+$A4:B992 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
+$A4:B995 D0 6D       BNE $6D    [$BA04]     ;} If [Crocomire death sequence index] != 0: return
+$A4:B997 AD 9E 86    LDA $869E  [$A4:869E]  ;\
+$A4:B99A F0 68       BEQ $68    [$BA04]     ;} If 3 = 0: return (>_<;)
+$A4:B99C 8D AE 0F    STA $0FAE  [$7E:0FAE]  ; $0FAE = 3
+$A4:B99F AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A4:B9A2 C9 18 00    CMP #$0018             ;} If [Crocomire fight function index] = 18h: return
+$A4:B9A5 F0 5D       BEQ $5D    [$BA04]     ;/
+$A4:B9A7 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:B9AA 29 F0 BF    AND #$BFF0             ;} $0FAA &= ~400Fh
+$A4:B9AD 09 00 80    ORA #$8000             ;\
+$A4:B9B0 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA |= 8000h
+$A4:B9B3 A9 0A 00    LDA #$000A             ;\
+$A4:B9B6 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
+$A4:B9B9 AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
+$A4:B9BC 18          CLC                    ;|
+$A4:B9BD 69 04 00    ADC #$0004             ;} Crocomire flash timer += 4
+$A4:B9C0 8D 9C 0F    STA $0F9C  [$7E:0F9C]  ;/
+$A4:B9C3 AD 8A 0F    LDA $0F8A  [$7E:0F8A]  ;\
+$A4:B9C6 09 02 00    ORA #$0002             ;} Crocomire AI handler = hurt AI
+$A4:B9C9 8D 8A 0F    STA $0F8A  [$7E:0F8A]  ;/
 $A4:B9CC A9 18 00    LDA #$0018             ;\
 $A4:B9CF 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 18h
-$A4:B9D2 AE 8E 0F    LDX $0F8E  [$7E:0F8E]
-$A4:B9D5 BD 00 00    LDA $0000,x
-$A4:B9D8 85 12       STA $12    [$7E:0012]
+$A4:B9D2 AE 8E 0F    LDX $0F8E  [$7E:0F8E]  ; X = [spritemap pointer]
+$A4:B9D5 BD 00 00    LDA $0000,x            ;\
+$A4:B9D8 85 12       STA $12    [$7E:0012]  ;} $12 = [[X]] (number of entries)
 
-$A4:B9DA BD 06 00    LDA $0006,x
-$A4:B9DD A0 AE BD    LDY #$BDAE
-$A4:B9E0 C9 00 D6    CMP #$D600
-$A4:B9E3 F0 15       BEQ $15    [$B9FA]
-$A4:B9E5 A0 B2 BD    LDY #$BDB2
-$A4:B9E8 C9 1C D5    CMP #$D51C
-$A4:B9EB F0 0D       BEQ $0D    [$B9FA]
-$A4:B9ED 8A          TXA
-$A4:B9EE 18          CLC
-$A4:B9EF 69 08 00    ADC #$0008
-$A4:B9F2 AA          TAX
-$A4:B9F3 C6 12       DEC $12    [$7E:0012]
-$A4:B9F5 D0 E3       BNE $E3    [$B9DA]
-$A4:B9F7 A0 B6 BD    LDY #$BDB6
+; LOOP
+$A4:B9DA BD 06 00    LDA $0006,x            ; A = [[X] + 6] (hitbox pointer)
+$A4:B9DD A0 AE BD    LDY #$BDAE             ; Crocomire instruction list pointer = $BDAE
+$A4:B9E0 C9 00 D6    CMP #$D600             ;\
+$A4:B9E3 F0 15       BEQ $15    [$B9FA]     ;} If (hitbox pointer) != $D600:
+$A4:B9E5 A0 B2 BD    LDY #$BDB2             ; Crocomire instruction list pointer = $BDB2
+$A4:B9E8 C9 1C D5    CMP #$D51C             ;\
+$A4:B9EB F0 0D       BEQ $0D    [$B9FA]     ;} If (hitbox pointer) != $D51C:
+$A4:B9ED 8A          TXA                    ;\
+$A4:B9EE 18          CLC                    ;|
+$A4:B9EF 69 08 00    ADC #$0008             ;} X += 8 (next spritemap entry)
+$A4:B9F2 AA          TAX                    ;/
+$A4:B9F3 C6 12       DEC $12    [$7E:0012]  ; Decrement $12
+$A4:B9F5 D0 E3       BNE $E3    [$B9DA]     ; If [$12] != 0: go to LOOP
+$A4:B9F7 A0 B6 BD    LDY #$BDB6             ; Crocomire instruction list pointer = $BDB6
 
 $A4:B9FA 98          TYA
 $A4:B9FB 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:B9FE A9 01 00    LDA #$0001
-$A4:BA01 8D 94 0F    STA $0F94  [$7E:0F94]
+$A4:B9FE A9 01 00    LDA #$0001             ;\
+$A4:BA01 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 
 $A4:BA04 6B          RTL
 }
@@ -3269,29 +3312,29 @@ $A4:BA04 6B          RTL
 
 ;;; $BA05:  ;;;
 {
-$A4:BA05 A9 00 00    LDA #$0000
-$A4:BA08 8D A0 0F    STA $0FA0  [$7E:0FA0]
-$A4:BA0B AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:BA0E 38          SEC
-$A4:BA0F ED 82 0F    SBC $0F82  [$7E:0F82]
-$A4:BA12 38          SEC
-$A4:BA13 E9 00 01    SBC #$0100
-$A4:BA16 38          SEC
-$A4:BA17 ED 11 09    SBC $0911  [$7E:0911]
-$A4:BA1A 10 44       BPL $44    [$BA60]
-$A4:BA1C AD A6 18    LDA $18A6  [$7E:18A6]
-$A4:BA1F 0A          ASL A
-$A4:BA20 AA          TAX
-$A4:BA21 BD 18 0C    LDA $0C18,x[$7E:0C18]
-$A4:BA24 89 00 0F    BIT #$0F00
-$A4:BA27 D0 14       BNE $14    [$BA3D]
-$A4:BA29 AE 98 86    LDX $8698  [$A4:8698]
-$A4:BA2C 89 10 00    BIT #$0010
-$A4:BA2F D0 22       BNE $22    [$BA53]
-$A4:BA31 AD A0 86    LDA $86A0  [$A4:86A0]
-$A4:BA34 8D 94 0F    STA $0F94  [$7E:0F94]
-$A4:BA37 AE 96 86    LDX $8696  [$A4:8696]
-$A4:BA3A 4C B4 BA    JMP $BAB4  [$A4:BAB4]
+$A4:BA05 A9 00 00    LDA #$0000             ;
+$A4:BA08 8D A0 0F    STA $0FA0  [$7E:0FA0]  ;
+$A4:BA0B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;
+$A4:BA0E 38          SEC                    ;
+$A4:BA0F ED 82 0F    SBC $0F82  [$7E:0F82]  ;
+$A4:BA12 38          SEC                    ;
+$A4:BA13 E9 00 01    SBC #$0100             ;
+$A4:BA16 38          SEC                    ;
+$A4:BA17 ED 11 09    SBC $0911  [$7E:0911]  ;
+$A4:BA1A 10 44       BPL $44    [$BA60]     ;
+$A4:BA1C AD A6 18    LDA $18A6  [$7E:18A6]  ;
+$A4:BA1F 0A          ASL A                  ;
+$A4:BA20 AA          TAX                    ;
+$A4:BA21 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;
+$A4:BA24 89 00 0F    BIT #$0F00             ;
+$A4:BA27 D0 14       BNE $14    [$BA3D]     ;
+$A4:BA29 AE 98 86    LDX $8698  [$A4:8698]  ;
+$A4:BA2C 89 10 00    BIT #$0010             ;
+$A4:BA2F D0 22       BNE $22    [$BA53]     ;
+$A4:BA31 AD A0 86    LDA $86A0  [$A4:86A0]  ;
+$A4:BA34 8D 94 0F    STA $0F94  [$7E:0F94]  ;
+$A4:BA37 AE 96 86    LDX $8696  [$A4:8696]  ; X = 0 (never read)
+$A4:BA3A 4C B4 BA    JMP $BAB4  [$A4:BAB4]  ; Go to $BAB4
 
 $A4:BA3D 29 00 0F    AND #$0F00
 $A4:BA40 AE 9A 86    LDX $869A  [$A4:869A]
@@ -3419,8 +3462,13 @@ $A4:BAEA             dx 0008,BFC4,
                         0008,C1B8,
                         8FDF,
                         0008,C1EA,
-                        86A6,       ; Fight AI
-                        9AAA,
+                        86A6        ; Fight AI
+}
+
+
+;;; $BB36: Instruction list ;;;
+{
+$A4:BB36             dx 9AAA,       ; ???
                         0005,C47A,
                         0005,C4AC,
                         9AA0,
@@ -3471,8 +3519,18 @@ $A4:BBAE             dx 0004,C6A4,
                         86A6,       ; Fight AI
                         0004,C718,
                         8FFA,
-                        86A6,       ; Fight AI
-                        00B4,C6A4,
+                        86A6        ; Fight AI
+}
+
+
+;;; $BBCA: Instruction list ;;;
+{
+$A4:BBCA             dx 00B4,C6A4
+}
+
+
+;;; $BBCE: Instruction list ;;;
+{
 $A4:BBCE             dx 8752,
                         0005,C574,
                         86A6,       ; Fight AI
@@ -3514,8 +3572,13 @@ $A4:BBCE             dx 8752,
 
 ;;; $BC30: Instruction list ;;;
 {
-$A4:BC30             dx 0002,C5AE,
-                        0008,C1EA,
+$A4:BC30             dx 0002,C5AE
+}
+
+
+;;; $BC34: Instruction list ;;;
+{
+$A4:BC34             dx 0008,C1EA,
                         908F,
                         0008,C1B8,
                         905B,
@@ -3530,7 +3593,7 @@ $A4:BC30             dx 0002,C5AE,
 }
 
 
-;;; $BC56: Instruction list ;;;
+;;; $BC56: Instruction list - Crocomire - waiting for first damage ;;;
 {
 $A4:BC56             dx 0022,C448,
                         0002,C40E,
@@ -3564,8 +3627,13 @@ $A4:BC56             dx 0022,C448,
                         0001,C360,
                         0001,C326,
                         0001,C2EC,
-                        86A6,       ; Fight AI
-                        9AAA,
+                        86A6        ; Fight AI
+}
+
+
+;;; $BCD8: Instruction list ;;;
+{
+$A4:BCD8             dx 9AAA,       ; ???
                         0005,C47A,
                         0005,C4AC,
                         9AA0,
@@ -3628,8 +3696,13 @@ $A4:BD2A             dx 0030,C574,
                         0020,C5E8,
                         86A6,       ; Fight AI
                         0001,C5E8,
-                        86A6,       ; Fight AI
-                        0020,C5E8,
+                        86A6        ; Fight AI
+}
+
+
+;;; $BD8E: Instruction list ;;;
+{
+$A4:BD8E             dx 0020,C5E8,
                         86A6,       ; Fight AI
                         0005,C5AE,
                         86A6,       ; Fight AI
@@ -3638,10 +3711,25 @@ $A4:BD2A             dx 0030,C574,
                         0001,C574,
                         86A6,       ; Fight AI
                         0001,C574,
-                        86A6,       ; Fight AI
-                        0002,C5AE,
-                        0002,C574,
-                        9AAA,
+                        86A6        ; Fight AI
+}
+
+
+;;; $BDAE: Instruction list - power bomb reaction -  ;;;
+{
+$A4:BDAE             dx 0002,C5AE
+}
+
+
+;;; $BDB2: Instruction list - power bomb reaction -  ;;;
+{
+$A4:BDB2             dx 0002,C574
+}
+
+
+;;; $BDB6: Instruction list - power bomb reaction -  ;;;
+{
+$A4:BDB6             dx 9AAA,       ; ???
                         0005,C47A,
                         0005,C4AC,
                         9AA0,
@@ -3665,7 +3753,7 @@ $A4:BD2A             dx 0030,C574,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9AA5,
+                        9AA5
 $A4:BE06             dx 0004,BFC4,
                         8FC7,       ; Shake screen
                         8FFA,

@@ -1061,7 +1061,7 @@ $A7:A92A C2 30       REP #$30
 
 ;;; $A92C: Check if Kraid has died ;;;
 {
-;; Return:
+;; Returns:
 ;;     A: 0 if Kraid is alive, 1 if Kraid is dead
 $A7:A92C DA          PHX
 $A7:A92D AE 9F 07    LDX $079F  [$7E:079F]

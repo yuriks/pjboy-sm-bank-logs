@@ -6431,7 +6431,7 @@ $90:AC38 60          RTS
 
 ;;; $AC39: Check if Samus can fire beam ;;;
 {
-;; Returns
+;; Returns:
 ;;     Carry: Set if Samus can fire beam, clear otherwise
 
 ; Increments projectile counter(!)
@@ -6457,7 +6457,7 @@ $90:AC59 60          RTS                    ;} Return carry clear
 
 ;;; $AC5A: Check if Samus can fire (super) missile ;;;
 {
-;; Returns
+;; Returns:
 ;;     Carry: Set if Samus can fire (super) missile
 
 ; Increments projectile counter(!)

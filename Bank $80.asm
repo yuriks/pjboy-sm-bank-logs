@@ -218,7 +218,7 @@ $80:8110 60          RTS
 
 ;;; $8111: Generate random number ;;;
 {
-;; Returns
+;; Returns:
 ;;     A: New random number
 
 ; r(t+1) = r(t) * 5 + 0x111 (roughly; if the adding of x * 100h causes overflow, then a further 1 is added)
