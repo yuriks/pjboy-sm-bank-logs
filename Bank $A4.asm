@@ -229,7 +229,7 @@ $A4:87E8 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:87E9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] >= 300h: 
+$A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] >= 300h:
 $A4:87EF 30 09       BMI $09    [$87FA]     ;/
 $A4:87F1 A9 06 00    LDA #$0006             ;\
 $A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
@@ -3229,7 +3229,7 @@ $A4:B967 6B          RTL
 }
 
 
-;;; $B968:  ;;;
+;;; $B968: Spawn shot explosion ;;;
 {
 $A4:B968 DA          PHX
 $A4:B969 5A          PHY
@@ -3312,87 +3312,90 @@ $A4:BA04 6B          RTL
 
 ;;; $BA05:  ;;;
 {
-$A4:BA05 A9 00 00    LDA #$0000             ;
-$A4:BA08 8D A0 0F    STA $0FA0  [$7E:0FA0]  ;
-$A4:BA0B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;
-$A4:BA0E 38          SEC                    ;
-$A4:BA0F ED 82 0F    SBC $0F82  [$7E:0F82]  ;
-$A4:BA12 38          SEC                    ;
-$A4:BA13 E9 00 01    SBC #$0100             ;
-$A4:BA16 38          SEC                    ;
-$A4:BA17 ED 11 09    SBC $0911  [$7E:0911]  ;
-$A4:BA1A 10 44       BPL $44    [$BA60]     ;
-$A4:BA1C AD A6 18    LDA $18A6  [$7E:18A6]  ;
-$A4:BA1F 0A          ASL A                  ;
-$A4:BA20 AA          TAX                    ;
-$A4:BA21 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;
-$A4:BA24 89 00 0F    BIT #$0F00             ;
-$A4:BA27 D0 14       BNE $14    [$BA3D]     ;
-$A4:BA29 AE 98 86    LDX $8698  [$A4:8698]  ;
-$A4:BA2C 89 10 00    BIT #$0010             ;
-$A4:BA2F D0 22       BNE $22    [$BA53]     ;
-$A4:BA31 AD A0 86    LDA $86A0  [$A4:86A0]  ;
-$A4:BA34 8D 94 0F    STA $0F94  [$7E:0F94]  ;
+$A4:BA05 A9 00 00    LDA #$0000             ;\
+$A4:BA08 8D A0 0F    STA $0FA0  [$7E:0FA0]  ;} Crocomire invincibility timer = 0
+$A4:BA0B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:BA0E 38          SEC                    ;|
+$A4:BA0F ED 82 0F    SBC $0F82  [$7E:0F82]  ;|
+$A4:BA12 38          SEC                    ;|
+$A4:BA13 E9 00 01    SBC #$0100             ;} If (Crocomire left boundary) >= [layer 1 X position] + 100h: go to BRANCH_OFF_SCREEN
+$A4:BA16 38          SEC                    ;|
+$A4:BA17 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$A4:BA1A 10 44       BPL $44    [$BA60]     ;/
+$A4:BA1C AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A4:BA1F 0A          ASL A                  ;} X = (collided projectile index)
+$A4:BA20 AA          TAX                    ;/
+$A4:BA21 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$A4:BA24 89 00 0F    BIT #$0F00             ;} If (projectile type) = beam:
+$A4:BA27 D0 14       BNE $14    [$BA3D]     ;/
+$A4:BA29 AE 98 86    LDX $8698  [$A4:8698]  ; X = 2
+$A4:BA2C 89 10 00    BIT #$0010             ;\
+$A4:BA2F D0 22       BNE $22    [$BA53]     ;} If projectile is charged beam: go to BRANCH_DAMAGE
+$A4:BA31 AD A0 86    LDA $86A0  [$A4:86A0]  ;\
+$A4:BA34 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 8
 $A4:BA37 AE 96 86    LDX $8696  [$A4:8696]  ; X = 0 (never read)
-$A4:BA3A 4C B4 BA    JMP $BAB4  [$A4:BAB4]  ; Go to $BAB4
+$A4:BA3A 4C B4 BA    JMP $BAB4  [$A4:BAB4]  ; Go to spawn shot explosion
 
 $A4:BA3D 29 00 0F    AND #$0F00
-$A4:BA40 AE 9A 86    LDX $869A  [$A4:869A]
-$A4:BA43 C9 00 01    CMP #$0100
-$A4:BA46 F0 0B       BEQ $0B    [$BA53]
-$A4:BA48 AE 9C 86    LDX $869C  [$A4:869C]
-$A4:BA4B C9 00 02    CMP #$0200
-$A4:BA4E F0 03       BEQ $03    [$BA53]
-$A4:BA50 A2 00 00    LDX #$0000
+$A4:BA40 AE 9A 86    LDX $869A  [$A4:869A]  ; X = 1
+$A4:BA43 C9 00 01    CMP #$0100             ;\
+$A4:BA46 F0 0B       BEQ $0B    [$BA53]     ;} If (projectile type) != missile:
+$A4:BA48 AE 9C 86    LDX $869C  [$A4:869C]  ; X = 3
+$A4:BA4B C9 00 02    CMP #$0200             ;\
+$A4:BA4E F0 03       BEQ $03    [$BA53]     ;} If (projectile type) != super missile:
+$A4:BA50 A2 00 00    LDX #$0000             ; Go to BRANCH_FLASH
 
+; BRANCH_DAMAGE
 $A4:BA53 8A          TXA
 $A4:BA54 C9 00 00    CMP #$0000
 $A4:BA57 F0 47       BEQ $47    [$BAA0]
-$A4:BA59 18          CLC
-$A4:BA5A 6D AE 0F    ADC $0FAE  [$7E:0FAE]
-$A4:BA5D 8D AE 0F    STA $0FAE  [$7E:0FAE]
+$A4:BA59 18          CLC                    ;\
+$A4:BA5A 6D AE 0F    ADC $0FAE  [$7E:0FAE]  ;} $0FAE += [X]
+$A4:BA5D 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
 
-$A4:BA60 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:BA63 29 0F 00    AND #$000F
-$A4:BA66 C9 0F 00    CMP #$000F
-$A4:BA69 10 01       BPL $01    [$BA6C]
-$A4:BA6B 1A          INC A
+; BRANCH_OFF_SCREEN
+$A4:BA60 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:BA63 29 0F 00    AND #$000F             ;|
+$A4:BA66 C9 0F 00    CMP #$000F             ;|
+$A4:BA69 10 01       BPL $01    [$BA6C]     ;} $12 = min(Fh, ([$0FAA] & Fh) + 1)
+$A4:BA6B 1A          INC A                  ;|
+                                            ;|
+$A4:BA6C 85 12       STA $12    [$7E:0012]  ;/
+$A4:BA6E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:BA71 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
+$A4:BA74 D0 16       BNE $16    [$BA8C]     ;/
+$A4:BA76 AE 92 86    LDX $8692  [$A4:8692]  ;\
+$A4:BA79 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
+$A4:BA7C C9 08 00    CMP #$0008             ;|
+$A4:BA7F D0 03       BNE $03    [$BA84]     ;|
+$A4:BA81 AE 94 86    LDX $8694  [$A4:8694]  ;|
+                                            ;} Crocomire instruction timer += 8
+$A4:BA84 8A          TXA                    ;|
+$A4:BA85 18          CLC                    ;|
+$A4:BA86 6D 94 0F    ADC $0F94  [$7E:0F94]  ;|
+$A4:BA89 8D 94 0F    STA $0F94  [$7E:0F94]  ;/
 
-$A4:BA6C 85 12       STA $12    [$7E:0012]
-$A4:BA6E AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:BA71 89 00 08    BIT #$0800
-$A4:BA74 D0 16       BNE $16    [$BA8C]
-$A4:BA76 AE 92 86    LDX $8692  [$A4:8692]
-$A4:BA79 AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A4:BA7C C9 08 00    CMP #$0008
-$A4:BA7F D0 03       BNE $03    [$BA84]
-$A4:BA81 AE 94 86    LDX $8694  [$A4:8694]
+$A4:BA8C AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:BA8F 29 F0 BF    AND #$BFF0             ;} $0FAA &= ~400Fh
+$A4:BA92 09 00 08    ORA #$0800             ; $0FAA |= 8000h
+$A4:BA95 05 12       ORA $12    [$7E:0012]  ;\
+$A4:BA97 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA |= [$12]
+$A4:BA9A A9 0A 00    LDA #$000A             ;\
+$A4:BA9D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
 
-$A4:BA84 8A          TXA
-$A4:BA85 18          CLC
-$A4:BA86 6D 94 0F    ADC $0F94  [$7E:0F94]
-$A4:BA89 8D 94 0F    STA $0F94  [$7E:0F94]
-
-$A4:BA8C AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:BA8F 29 F0 BF    AND #$BFF0
-$A4:BA92 09 00 08    ORA #$0800
-$A4:BA95 05 12       ORA $12    [$7E:0012]
-$A4:BA97 8D AA 0F    STA $0FAA  [$7E:0FAA]
-$A4:BA9A A9 0A 00    LDA #$000A
-$A4:BA9D 8D B0 0F    STA $0FB0  [$7E:0FB0]
-
-$A4:BAA0 AD 9C 0F    LDA $0F9C  [$7E:0F9C]
-$A4:BAA3 18          CLC
-$A4:BAA4 69 0E 00    ADC #$000E
-$A4:BAA7 8D 9C 0F    STA $0F9C  [$7E:0F9C]
-$A4:BAAA AD 8A 0F    LDA $0F8A  [$7E:0F8A]
-$A4:BAAD 09 02 00    ORA #$0002
-$A4:BAB0 8D 8A 0F    STA $0F8A  [$7E:0F8A]
+; BRANCH_FLASH
+$A4:BAA0 AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
+$A4:BAA3 18          CLC                    ;|
+$A4:BAA4 69 0E 00    ADC #$000E             ;} Crocomire flash timer += Eh
+$A4:BAA7 8D 9C 0F    STA $0F9C  [$7E:0F9C]  ;/
+$A4:BAAA AD 8A 0F    LDA $0F8A  [$7E:0F8A]  ;\
+$A4:BAAD 09 02 00    ORA #$0002             ;} Crocomire AI handler = hurt AI
+$A4:BAB0 8D 8A 0F    STA $0F8A  [$7E:0F8A]  ;/
 $A4:BAB3 6B          RTL
 }
 
 
-;;; $BAB4:  ;;;
+;;; $BAB4: Spawn shot explosion ;;;
 {
 ; Clone of $B968
 $A4:BAB4 DA          PHX
@@ -3404,13 +3407,13 @@ $A4:BABB BD 64 0B    LDA $0B64,x[$7E:0B64]  ;\
 $A4:BABE 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile X position]
 $A4:BAC0 BD 78 0B    LDA $0B78,x[$7E:0B78]  ;\
 $A4:BAC3 85 14       STA $14    [$7E:0014]  ;} $14 = [projectile Y position]
-$A4:BAC5 BD 18 0C    LDA $0C18,x[$7E:0C18]  
+$A4:BAC5 BD 18 0C    LDA $0C18,x[$7E:0C18]
 $A4:BAC8 A0 1D 00    LDY #$001D             ; A = 1Dh (big explosion)
 $A4:BACB 89 00 02    BIT #$0200             ;\
 $A4:BACE D0 03       BNE $03    [$BAD3]     ;} If [projectile type] & 200h = 0 (beam or missile or bomb):
 $A4:BAD0 A0 06 00    LDY #$0006             ; A = 6 (dud shot)
-                                            
-$A4:BAD3 98          TYA                    
+
+$A4:BAD3 98          TYA
 $A4:BAD4 A0 09 E5    LDY #$E509             ;\
 $A4:BAD7 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:BADB 7A          PLY
