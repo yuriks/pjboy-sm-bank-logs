@@ -2127,7 +2127,7 @@ $A7:B161             dw 03FF,FFD0,
 ; See projectile loop note in $AFAA
 $A7:B181 DA          PHX
 $A7:B182 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
-$A7:B185 C9 37 C5    CMP #$C537             ;} If [Kraid function] >= $C537: return
+$A7:B185 C9 37 C5    CMP #$C537             ;} If [Kraid function] >= $C537 (fade in regular background or Kraid sinks through floor): return
 $A7:B188 30 02       BMI $02    [$B18C]     ;/
 $A7:B18A FA          PLX
 $A7:B18B 60          RTS                    ; Return
@@ -2241,7 +2241,7 @@ $A7:B25F 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
 $A7:B262 38          SEC                    ;} If (projectile right boundary) < [Kraid X position] + [$B163 + [Y]]: go to BRANCH_NEXT
 $A7:B263 E5 12       SBC $12    [$7E:0012]  ;|
 $A7:B265 10 A6       BPL $A6    [$B20D]     ;/
-$A7:B267 80 83       BRA $83    [$B1EC]     ; Branch to BRANCH_HIT
+$A7:B267 80 83       BRA $83    [$B1EC]     ; Go to BRANCH_HIT
 }
 
 

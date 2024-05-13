@@ -68,7 +68,7 @@ $A4:86E7 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:86E8 A9 04 00    LDA #$0004             ;\
-$A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 4
+$A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 4 (asleep)
 $A4:86EE A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 $A4:86F1 60          RTS
 }
@@ -92,7 +92,7 @@ $A4:8707 09 00 80    ORA #$8000             ;} $0FAA |= 8000h
 $A4:870A 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:870D A0 56 BC    LDY #$BC56             ; Y = $BC56
 $A4:8710 A9 12 00    LDA #$0012             ;\
-$A4:8713 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 12h
+$A4:8713 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 12h (wait for first damage)
 
 $A4:8716 60          RTS
 }
@@ -112,7 +112,7 @@ $A4:8728 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:872B F0 0A       BEQ $0A    [$8737]     ;} If [$0FAE] != 0:
 $A4:872D A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:8730 A9 0C 00    LDA #$000C             ;\
-$A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8736 60          RTS                    ; Return
 
 $A4:8737 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
@@ -127,7 +127,7 @@ $A4:8747 60          RTS                    ; Return
 ; BRANCH_8748
 $A4:8748 A0 7E BE    LDY #$BE7E             ; Y = $BE7E
 $A4:874B A9 0A 00    LDA #$000A             ;\
-$A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ah
+$A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ah (near spike wall charge)
 $A4:8751 60          RTS
 }
 
@@ -140,7 +140,7 @@ $A4:8756 29 FF 0F    AND #$0FFF             ;|
 $A4:8759 C9 00 04    CMP #$0400             ;} If [random number] % 1000h < 400h:
 $A4:875C 10 0C       BPL $0C    [$876A]     ;/
 $A4:875E A9 08 00    LDA #$0008             ;\
-$A4:8761 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 8
+$A4:8761 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 8 (projectile attack)
 $A4:8764 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; $0FB2 = 0
 $A4:8767 A0 36 BB    LDY #$BB36             ; Y = $BB36
 
@@ -149,7 +149,7 @@ $A4:876B 6B          RTL
 }
 
 
-;;; $876C: Fight AI - index 8 ;;;
+;;; $876C: Fight AI - index 8 - projectile attack ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -160,7 +160,7 @@ $A4:8774 29 FF F7    AND #$F7FF             ;\
 $A4:8777 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:877A A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:877D A9 0C 00    LDA #$000C             ;\
-$A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8783 60          RTS                    ; Return
 
 $A4:8784 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
@@ -181,12 +181,12 @@ $A4:87A7 60          RTS                    ; Return
 
 $A4:87A8 A0 CA BB    LDY #$BBCA             ; Y = $BBCA
 $A4:87AB A9 06 00    LDA #$0006             ;\
-$A4:87AE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
+$A4:87AE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:87B1 60          RTS
 }
 
 
-;;; $87B2: Fight AI - index Ah ;;;
+;;; $87B2: Fight AI - index Ah - near spike wall charge ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -197,13 +197,13 @@ $A4:87BA 29 FF F7    AND #$F7FF             ;\
 $A4:87BD 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:87C0 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:87C3 A9 0C 00    LDA #$000C             ;\
-$A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 
 $A4:87C9 60          RTS
 }
 
 
-;;; $87CA: Fight AI - index Ch ;;;
+;;; $87CA: Fight AI - index Ch - stepping back ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -214,17 +214,17 @@ $A4:87D0 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement $0FAE
 $A4:87D3 F0 0A       BEQ $0A    [$87DF]     ; If [$0FAE] != 0:
 $A4:87D5 A0 34 BC    LDY #$BC34             ; Y = $BC34
 $A4:87D8 A9 0C 00    LDA #$000C             ;\
-$A4:87DB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:87DB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (>_<;)
 $A4:87DE 60          RTS                    ; Return
 
 $A4:87DF A9 06 00    LDA #$0006             ;\
-$A4:87E2 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
+$A4:87E2 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:87E5 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 $A4:87E8 60          RTS
 }
 
 
-;;; $87E9: Fight AI - index Eh ;;;
+;;; $87E9: Fight AI - index Eh - back off from spike wall ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -232,7 +232,7 @@ $A4:87E9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] >= 300h:
 $A4:87EF 30 09       BMI $09    [$87FA]     ;/
 $A4:87F1 A9 06 00    LDA #$0006             ;\
-$A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
+$A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:87F7 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:87FA 60          RTS
@@ -244,7 +244,7 @@ $A4:87FA 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:87FB A9 06 00    LDA #$0006             ;\
-$A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
+$A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:8801 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
 $A4:8804 60          RTS
 }
@@ -272,7 +272,7 @@ $A4:881D 29 FF F7    AND #$F7FF             ;\
 $A4:8820 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:8823 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:8826 A9 14 00    LDA #$0014             ;\
-$A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 14h
+$A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 14h (wait for second damage)
 $A4:882C 60          RTS                    ; Return
 
 $A4:882D C0 A2 BD    CPY #$BDA2             ;\
@@ -283,7 +283,7 @@ $A4:8835 60          RTS
 }
 
 
-;;; $8836: Fight AI - index 14h ;;;
+;;; $8836: Fight AI - index 14h - wait for second damage ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -295,7 +295,7 @@ $A4:8841 29 FF F7    AND #$F7FF             ;\
 $A4:8844 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:8847 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:884A A9 0C 00    LDA #$000C             ;\
-$A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8850 60          RTS                    ; Return
 
 $A4:8851 C0 A2 BD    CPY #$BDA2             ;\
@@ -318,7 +318,7 @@ $A4:8865 29 FF F7    AND #$F7FF             ;\
 $A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
 $A4:886B A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:886E A9 0C 00    LDA #$000C             ;\
-$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8874 60          RTS                    ; Return
 
 $A4:8875 C0 A2 BD    CPY #$BDA2             ;\
@@ -329,7 +329,7 @@ $A4:887D 60          RTS
 }
 
 
-;;; $887E: Fight AI - index 18h ;;;
+;;; $887E: Fight AI - index 18h - power bombed charge ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -341,7 +341,7 @@ $A4:8888 C9 02 00    CMP #$0002             ;\
 $A4:888B 10 0C       BPL $0C    [$8899]     ;} If [$0FAE] < 2:
 $A4:888D 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; $0FAE = 0
 $A4:8890 A9 06 00    LDA #$0006             ;\
-$A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6
+$A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:8896 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:8899 60          RTS
@@ -357,7 +357,7 @@ $A4:889D AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:88A0 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
 $A4:88A3 D0 0A       BNE $0A    [$88AF]     ;/
 $A4:88A5 A9 0A 00    LDA #$000A             ;\
-$A4:88A8 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = Ah
+$A4:88A8 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = Ah (near spike wall charge)
 $A4:88AB A0 8E BD    LDY #$BD8E             ; Y = $BD8E
 $A4:88AE 60          RTS                    ; Return
 
@@ -369,7 +369,7 @@ $A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 1
 $A4:88BE A9 0A 00    LDA #$000A             ;\
 $A4:88C1 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
 $A4:88C4 A9 0C 00    LDA #$000C             ;\
-$A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:88CA A9 54 00    LDA #$0054             ;\
 $A4:88CD 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 54h, sound library 2, max queued sounds allowed = 6
 $A4:88D1 60          RTS
@@ -414,7 +414,7 @@ $A4:890A 60          RTS
 ;;; $890B:  ;;;
 {
 $A4:890B A9 14 00    LDA #$0014             ;\
-$A4:890E 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = 14h
+$A4:890E 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = 14h (wait for second damage)
 $A4:8911 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8914 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} >_<;
 $A4:8917 A0 EA BA    LDY #$BAEA             ; Y = $BAEA
@@ -574,7 +574,7 @@ $A4:8A2C 60          RTS                    ; Return
 $A4:8A2D 29 FF BF    AND #$BFFF             ;\
 $A4:8A30 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~4000h
 $A4:8A33 A9 0C 00    LDA #$000C             ;\
-$A4:8A36 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch
+$A4:8A36 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8A39 60          RTS
 }
 }
@@ -629,7 +629,7 @@ $A4:8ABD 8D 41 09    STA $0941  [$7E:0941]  ;} Camera distance index = 2 (camera
 $A4:8AC0 A9 00 04    LDA #$0400             ;\
 $A4:8AC3 8D 9A 17    STA $179A  [$7E:179A]  ;} Enemy BG2 tilemap size = 400h
 $A4:8AC6 A9 DE BA    LDA #$BADE             ;\
-$A4:8AC9 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $BADE
+$A4:8AC9 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BADE
 $A4:8ACC BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
 $A4:8ACF 09 04 00    ORA #$0004             ;} Enable enemy extended spritemap format
 $A4:8AD2 9D 88 0F    STA $0F88,x[$7E:0F88]  ;/
@@ -1063,7 +1063,7 @@ $A4:8E4B A9 01 00    LDA #$0001             ;\
 $A4:8E4E 8F 18 90 7E STA $7E9018[$7E:9018]  ;} $7E:9018 = 1
 $A4:8E52 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8E55 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
-$A4:8E58 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
+$A4:8E58 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index = 2
 $A4:8E5B A9 02 00    LDA #$0002             ;\
 $A4:8E5E 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 2
 $A4:8E62 8F 40 78 7E STA $7E7840[$7E:7840]  ; $7E:7840 = 2
