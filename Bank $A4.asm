@@ -98,7 +98,7 @@ $A4:8716 60          RTS
 }
 
 
-;;; $8717: Fight AI - index 6 ;;;
+;;; $8717: Fight AI - index 6 - stepping forward ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -116,7 +116,7 @@ $A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 
 $A4:8736 60          RTS                    ; Return
 
 $A4:8737 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A4:873A CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] < 300h: go to BRANCH_8748
+$A4:873A CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] < 300h: go to BRANCH_NEAR_SPIKE_WALL
 $A4:873D 30 09       BMI $09    [$8748]     ;/
 $A4:873F C0 34 BC    CPY #$BC34             ;\
 $A4:8742 30 03       BMI $03    [$8747]     ;} If [Y] >= $BC34:
@@ -124,7 +124,7 @@ $A4:8744 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
 
 $A4:8747 60          RTS                    ; Return
 
-; BRANCH_8748
+; BRANCH_NEAR_SPIKE_WALL
 $A4:8748 A0 7E BE    LDY #$BE7E             ; Y = $BE7E
 $A4:874B A9 0A 00    LDA #$000A             ;\
 $A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ah (near spike wall charge)
@@ -132,7 +132,7 @@ $A4:8751 60          RTS
 }
 
 
-;;; $8752:  ;;;
+;;; $8752: Instruction - maybe start projectile attack ;;;
 {
 $A4:8752 DA          PHX
 $A4:8753 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -310,6 +310,8 @@ $A4:8859 60          RTS
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
+
+; Clone of $8836
 $A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:885D 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
 $A4:8860 F0 13       BEQ $13    [$8875]     ;/
@@ -413,6 +415,7 @@ $A4:890A 60          RTS
 
 ;;; $890B:  ;;;
 {
+; Both callers of this function immediately overwrite $0FAC
 $A4:890B A9 14 00    LDA #$0014             ;\
 $A4:890E 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = 14h (wait for second damage)
 $A4:8911 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -1207,14 +1210,14 @@ $A4:8FDE 6B          RTL
 }
 
 
-;;; $8FDF:  ;;;
+;;; $8FDF: Instruction ;;;
 {
 $A4:8FDF DA          PHX
 $A4:8FE0 5A          PHY
 $A4:8FE1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8FE4 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:8FE7 89 00 08    BIT #$0800
-$A4:8FEA D0 0B       BNE $0B    [$8FF7]
+$A4:8FE4 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:8FE7 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
+$A4:8FEA D0 0B       BNE $0B    [$8FF7]     ;/
 $A4:8FEC 64 12       STZ $12    [$7E:0012]  ;\
 $A4:8FEE A9 FC FF    LDA #$FFFC             ;|
 $A4:8FF1 85 14       STA $14    [$7E:0014]  ;} Move enemy left by 4.0
@@ -1226,32 +1229,32 @@ $A4:8FF9 6B          RTL
 }
 
 
-;;; $8FFA:  ;;;
+;;; $8FFA: Instruction ;;;
 {
-$A4:8FFA 20 04 90    JSR $9004  [$A4:9004]
-$A4:8FFD 80 E0       BRA $E0    [$8FDF]
+$A4:8FFA 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
+$A4:8FFD 80 E0       BRA $E0    [$8FDF]     ; Go to $8FDF
 }
 
 
-;;; $8FFF:  ;;;
+;;; $8FFF: Instruction ;;;
 {
-$A4:8FFF 20 04 90    JSR $9004  [$A4:9004]
-$A4:9002 80 DB       BRA $DB    [$8FDF]
+$A4:8FFF 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
+$A4:9002 80 DB       BRA $DB    [$8FDF]     ; Go to $8FDF
 }
 
 
-;;; $9004:  ;;;
+;;; $9004: Spawn big dust cloud enemy projectile with random X offset ;;;
 {
 $A4:9004 DA          PHX
-$A4:9005 AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:9008 29 1F 00    AND #$001F
-$A4:900B AE E5 05    LDX $05E5  [$7E:05E5]
-$A4:900E E0 00 10    CPX #$1000
-$A4:9011 30 04       BMI $04    [$9017]
-$A4:9013 49 FF FF    EOR #$FFFF
-$A4:9016 1A          INC A
+$A4:9005 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A4:9008 29 1F 00    AND #$001F             ;} A = [random number] % 20h
+$A4:900B AE E5 05    LDX $05E5  [$7E:05E5]  ;\
+$A4:900E E0 00 10    CPX #$1000             ;} If [random number] - 1000h & 8000h = 0:
+$A4:9011 30 04       BMI $04    [$9017]     ;/
+$A4:9013 49 FF FF    EOR #$FFFF             ;\
+$A4:9016 1A          INC A                  ;} Negate A
 
-$A4:9017 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]
+$A4:9017 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]  ; Spawn big dust cloud enemy projectile
 $A4:901B FA          PLX
 $A4:901C 60          RTS
 }
@@ -1293,21 +1296,21 @@ $A4:905A 6B          RTL
 }
 
 
-;;; $905B:  ;;;
+;;; $905B: Instruction - move right 4px if on-screen ;;;
 {
 $A4:905B DA          PHX
 $A4:905C 5A          PHY
 $A4:905D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:9060 64 12       STZ $12    [$7E:0012]
-$A4:9062 A9 04 00    LDA #$0004
-$A4:9065 85 14       STA $14    [$7E:0014]
-$A4:9067 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:906A 38          SEC
-$A4:906B ED 82 0F    SBC $0F82  [$7E:0F82]
-$A4:906E E9 00 01    SBC #$0100
-$A4:9071 E5 14       SBC $14    [$7E:0014]
-$A4:9073 CD 11 09    CMP $0911  [$7E:0911]
-$A4:9076 10 04       BPL $04    [$907C]
+$A4:9060 64 12       STZ $12    [$7E:0012]  ;\
+$A4:9062 A9 04 00    LDA #$0004             ;} $14.$12 = 4.0
+$A4:9065 85 14       STA $14    [$7E:0014]  ;/
+$A4:9067 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:906A 38          SEC                    ;|
+$A4:906B ED 82 0F    SBC $0F82  [$7E:0F82]  ;|
+$A4:906E E9 00 01    SBC #$0100             ;} If (Crocomire left boundary) < [layer 1 X position] + 100h:
+$A4:9071 E5 14       SBC $14    [$7E:0014]  ;|
+$A4:9073 CD 11 09    CMP $0911  [$7E:0911]  ;|
+$A4:9076 10 04       BPL $04    [$907C]     ;/
 $A4:9078 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 
 $A4:907C 7A          PLY
@@ -1316,31 +1319,31 @@ $A4:907E 6B          RTL
 }
 
 
-;;; $907F: Move enemy right by 4.0 ;;;
+;;; $907F: Instruction - move right 4px ;;;
 {
 $A4:907F DA          PHX
 $A4:9080 5A          PHY
-$A4:9081 64 12       STZ $12    [$7E:0012]
-$A4:9083 A9 04 00    LDA #$0004
-$A4:9086 85 14       STA $14    [$7E:0014]
-$A4:9088 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]
+$A4:9081 64 12       STZ $12    [$7E:0012]  ;\
+$A4:9083 A9 04 00    LDA #$0004             ;} $14.$12 = 4.0
+$A4:9086 85 14       STA $14    [$7E:0014]  ;/
+$A4:9088 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A4:908C 7A          PLY
 $A4:908D FA          PLX
 $A4:908E 6B          RTL
 }
 
 
-;;; $908F:  ;;;
+;;; $908F: Instruction - move right 4px if on-screen and spawn big dust cloud ;;;
 {
-$A4:908F 20 04 90    JSR $9004  [$A4:9004]
-$A4:9092 80 C7       BRA $C7    [$905B]
+$A4:908F 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
+$A4:9092 80 C7       BRA $C7    [$905B]     ; Move right 4px if on-screen
 }
 
 
-;;; $9094:  ;;;
+;;; $9094: Instruction - move right 4px and spawn big dust cloud ;;;
 {
-$A4:9094 20 04 90    JSR $9004  [$A4:9004]
-$A4:9097 80 E6       BRA $E6    [$907F]
+$A4:9094 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
+$A4:9097 80 E6       BRA $E6    [$907F]     ; Move right 4px
 }
 
 
@@ -2562,119 +2565,124 @@ $A4:9A9A 60          RTS
 }
 
 
-;;; $9A9B:  ;;;
+;;; $9A9B..9B05: Spawn big dust cloud enemy projectile instructions ;;;
 {
-$A4:9A9B A9 E0 FF    LDA #$FFE0
-$A4:9A9E 80 3A       BRA $3A    [$9ADA]
+;;; $9A9B: Instruction - Spawn big dust cloud enemy projectile - X offset -20h ;;;
+{
+$A4:9A9B A9 E0 FF    LDA #$FFE0         ; A = -20h
+$A4:9A9E 80 3A       BRA $3A    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AA0:  ;;;
+;;; $9AA0: Instruction - Spawn big dust cloud enemy projectile - X offset 0 ;;;
 {
-$A4:9AA0 A9 00 00    LDA #$0000
-$A4:9AA3 80 35       BRA $35    [$9ADA]
+$A4:9AA0 A9 00 00    LDA #$0000         ; A = 0
+$A4:9AA3 80 35       BRA $35    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AA5:  ;;;
+;;; $9AA5: Instruction - Spawn big dust cloud enemy projectile - X offset -10h ;;;
 {
-$A4:9AA5 A9 F0 FF    LDA #$FFF0
-$A4:9AA8 80 30       BRA $30    [$9ADA]
+$A4:9AA5 A9 F0 FF    LDA #$FFF0         ; A = -10h
+$A4:9AA8 80 30       BRA $30    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AAA:  ;;;
+;;; $9AAA: Instruction - Spawn big dust cloud enemy projectile - X offset 10h ;;;
 {
-$A4:9AAA A9 10 00    LDA #$0010
-$A4:9AAD 80 2B       BRA $2B    [$9ADA]
+$A4:9AAA A9 10 00    LDA #$0010         ; A = 10h
+$A4:9AAD 80 2B       BRA $2B    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AAF:  ;;;
+;;; $9AAF: Instruction - Spawn big dust cloud enemy projectile - X offset 0 ;;;
 {
-$A4:9AAF A9 00 00    LDA #$0000
-$A4:9AB2 80 26       BRA $26    [$9ADA]
+$A4:9AAF A9 00 00    LDA #$0000         ; A = 0
+$A4:9AB2 80 26       BRA $26    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AB4:  ;;;
+;;; $9AB4: Instruction - Spawn big dust cloud enemy projectile - X offset 8 ;;;
 {
-$A4:9AB4 A9 08 00    LDA #$0008
-$A4:9AB7 80 21       BRA $21    [$9ADA]
+$A4:9AB4 A9 08 00    LDA #$0008         ; A = 8
+$A4:9AB7 80 21       BRA $21    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AB9:  ;;;
+;;; $9AB9: Instruction - Spawn big dust cloud enemy projectile - X offset 10h ;;;
 {
-$A4:9AB9 A9 10 00    LDA #$0010
-$A4:9ABC 80 1C       BRA $1C    [$9ADA]
+$A4:9AB9 A9 10 00    LDA #$0010         ; A = 10h
+$A4:9ABC 80 1C       BRA $1C    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9ABE:  ;;;
+;;; $9ABE: Instruction - Spawn big dust cloud enemy projectile - X offset 18h ;;;
 {
-$A4:9ABE A9 18 00    LDA #$0018
-$A4:9AC1 80 17       BRA $17    [$9ADA]
+$A4:9ABE A9 18 00    LDA #$0018         ; A = 18h
+$A4:9AC1 80 17       BRA $17    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AC3:  ;;;
+;;; $9AC3: Instruction - Spawn big dust cloud enemy projectile - X offset 20h ;;;
 {
-$A4:9AC3 A9 20 00    LDA #$0020
-$A4:9AC6 80 12       BRA $12    [$9ADA]
+$A4:9AC3 A9 20 00    LDA #$0020         ; A = 20h
+$A4:9AC6 80 12       BRA $12    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AC8:  ;;;
+;;; $9AC8: Instruction - Spawn big dust cloud enemy projectile - X offset 28h ;;;
 {
-$A4:9AC8 A9 28 00    LDA #$0028
-$A4:9ACB 80 0D       BRA $0D    [$9ADA]
+$A4:9AC8 A9 28 00    LDA #$0028         ; A = 28h
+$A4:9ACB 80 0D       BRA $0D    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9ACD:  ;;;
+;;; $9ACD: Instruction - Spawn big dust cloud enemy projectile - X offset 30h ;;;
 {
-$A4:9ACD A9 30 00    LDA #$0030
-$A4:9AD0 80 08       BRA $08    [$9ADA]
+$A4:9ACD A9 30 00    LDA #$0030         ; A = 30h
+$A4:9AD0 80 08       BRA $08    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AD2:  ;;;
+;;; $9AD2: Instruction - Spawn big dust cloud enemy projectile - X offset 38h ;;;
 {
-$A4:9AD2 A9 38 00    LDA #$0038
-$A4:9AD5 80 03       BRA $03    [$9ADA]
+$A4:9AD2 A9 38 00    LDA #$0038         ; A = 38h
+$A4:9AD5 80 03       BRA $03    [$9ADA] ; Go to spawn big dust cloud enemy projectile
 }
 
 
-;;; $9AD7:  ;;;
+;;; $9AD7: Instruction - Spawn big dust cloud enemy projectile - X offset 40h ;;;
 {
-$A4:9AD7 A9 40 00    LDA #$0040
+$A4:9AD7 A9 40 00    LDA #$0040         ; A = 40h
 }
 
 
-;;; $9ADA:  ;;;
+;;; $9ADA: Spawn big dust cloud enemy projectile ;;;
 {
+;; Parameters:
+;;     A: X offset
 $A4:9ADA DA          PHX
 $A4:9ADB 5A          PHY
-$A4:9ADC 85 12       STA $12    [$7E:0012]
-$A4:9ADE AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:9AE1 29 07 00    AND #$0007
-$A4:9AE4 18          CLC
-$A4:9AE5 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A4:9AE8 65 12       ADC $12    [$7E:0012]
-$A4:9AEA 85 12       STA $12    [$7E:0012]
-$A4:9AEC AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A4:9AEF 18          CLC
-$A4:9AF0 6D 84 0F    ADC $0F84  [$7E:0F84]
-$A4:9AF3 38          SEC
-$A4:9AF4 E9 10 00    SBC #$0010
-$A4:9AF7 85 14       STA $14    [$7E:0014]
+$A4:9ADC 85 12       STA $12    [$7E:0012]  ;\
+$A4:9ADE AD E5 05    LDA $05E5  [$7E:05E5]  ;|
+$A4:9AE1 29 07 00    AND #$0007             ;|
+$A4:9AE4 18          CLC                    ;} $12 = [Crocomire X position] + [A] + [random number] % 8
+$A4:9AE5 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;|
+$A4:9AE8 65 12       ADC $12    [$7E:0012]  ;|
+$A4:9AEA 85 12       STA $12    [$7E:0012]  ;/
+$A4:9AEC AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A4:9AEF 18          CLC                    ;|
+$A4:9AF0 6D 84 0F    ADC $0F84  [$7E:0F84]  ;|
+$A4:9AF3 38          SEC                    ;} $14 = (Crocomire bottom boundary) - Fh
+$A4:9AF4 E9 10 00    SBC #$0010             ;|
+$A4:9AF7 85 14       STA $14    [$7E:0014]  ;/
 $A4:9AF9 A9 15 00    LDA #$0015             ; A = 15h (big dust cloud)
 $A4:9AFC A0 09 E5    LDY #$E509             ;\
 $A4:9AFF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A4:9B03 7A          PLY
 $A4:9B04 FA          PLX
 $A4:9B05 6B          RTL
+}
 }
 
 
@@ -3471,31 +3479,31 @@ $A4:BAEA             dx 0008,BFC4,
 
 ;;; $BB36: Instruction list ;;;
 {
-$A4:BB36             dx 9AAA,       ; ???
+$A4:BB36             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,C47A,
                         0005,C4AC,
-                        9AA0,
+                        9AA0,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9A9B,
+                        9A9B,       ; Spawn big dust cloud enemy projectile - X offset -20h
                         0005,C47A,
                         0005,C4AC,
-                        9AA5,
+                        9AA5,       ; Spawn big dust cloud enemy projectile - X offset -10h
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9AA0,
+                        9AA0,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0005,C47A,
                         0005,C4AC,
-                        9AC8,
+                        9AC8,       ; Spawn big dust cloud enemy projectile - X offset 28h
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9AA5,
+                        9AA5,       ; Spawn big dust cloud enemy projectile - X offset -10h
                         0005,C574,
                         8CFB,       ; Queue Crocomire's cry sound effect
                         0005,C5AE,
@@ -3516,7 +3524,7 @@ $A4:BBAE             dx 0004,C6A4,
                         8FC7,       ; Shake screen
                         8FFA,
                         86A6,       ; Fight AI
-                        8752,
+                        8752,       ; Maybe start projectile attack
                         0004,C6DE,
                         8FDF,
                         86A6,       ; Fight AI
@@ -3526,15 +3534,15 @@ $A4:BBAE             dx 0004,C6A4,
 }
 
 
-;;; $BBCA: Instruction list ;;;
+;;; $BBCA: Instruction list - step forward after delay ;;;
 {
 $A4:BBCA             dx 00B4,C6A4
 }
 
 
-;;; $BBCE: Instruction list ;;;
+;;; $BBCE: Instruction list - step forward ;;;
 {
-$A4:BBCE             dx 8752,
+$A4:BBCE             dx 8752,       ; Maybe start projectile attack
                         0005,C574,
                         86A6,       ; Fight AI
                         0005,C5AE,
@@ -3573,30 +3581,30 @@ $A4:BBCE             dx 8752,
 }
 
 
-;;; $BC30: Instruction list ;;;
+;;; $BC30: Instruction list - step back ;;;
 {
 $A4:BC30             dx 0002,C5AE
 }
 
 
-;;; $BC34: Instruction list ;;;
+;;; $BC34: Instruction list - stepping back ;;;
 {
 $A4:BC34             dx 0008,C1EA,
-                        908F,
+                        908F,       ; Move right 4px if on-screen and spawn big dust cloud
                         0008,C1B8,
-                        905B,
+                        905B,       ; Move right 4px if on-screen
                         0008,C186,
-                        905B,
+                        905B,       ; Move right 4px if on-screen
                         0008,C154,
-                        908F,
+                        908F,       ; Move right 4px if on-screen and spawn big dust cloud
                         0008,C122,
                         8FC7,       ; Shake screen
-                        905B,
+                        905B,       ; Move right 4px if on-screen
                         86A6        ; Fight AI
 }
 
 
-;;; $BC56: Instruction list - Crocomire - waiting for first damage ;;;
+;;; $BC56: Instruction list - Crocomire - wait for first/second damage ;;;
 {
 $A4:BC56             dx 0022,C448,
                         0002,C40E,
@@ -3636,31 +3644,31 @@ $A4:BC56             dx 0022,C448,
 
 ;;; $BCD8: Instruction list ;;;
 {
-$A4:BCD8             dx 9AAA,       ; ???
+$A4:BCD8             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,C47A,
                         0005,C4AC,
-                        9AA0,
+                        9AA0,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9A9B,
+                        9A9B,       ; Spawn big dust cloud enemy projectile - X offset -20h
                         0005,C47A,
                         0005,C4AC,
-                        9AA5,
+                        9AA5,       ; Spawn big dust cloud enemy projectile - X offset -10h
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9AA0,
+                        9AA0,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0005,C47A,
                         0005,C4AC,
-                        9AC8,
+                        9AC8,       ; Spawn big dust cloud enemy projectile - X offset 28h
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9AA5,
+                        9AA5,       ; Spawn big dust cloud enemy projectile - X offset -10h
                         86A6        ; Fight AI
 }
 
@@ -3710,8 +3718,8 @@ $A4:BD8E             dx 0020,C5E8,
                         0005,C5AE,
                         86A6,       ; Fight AI
                         0008,C5AE,
-                        0002,C574,
-                        0001,C574,
+                        0002,C574
+$A4:BDA2             dx 0001,C574,
                         86A6,       ; Fight AI
                         0001,C574,
                         86A6        ; Fight AI
@@ -3732,31 +3740,31 @@ $A4:BDB2             dx 0002,C574
 
 ;;; $BDB6: Instruction list - power bomb reaction -  ;;;
 {
-$A4:BDB6             dx 9AAA,       ; ???
+$A4:BDB6             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,C47A,
                         0005,C4AC,
-                        9AA0,
+                        9AA0,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9A9B,
+                        9A9B,       ; Spawn big dust cloud enemy projectile - X offset -20h
                         0005,C47A,
                         0005,C4AC,
-                        9AA5,
+                        9AA5,       ; Spawn big dust cloud enemy projectile - X offset -10h
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9AA0,
+                        9AA0,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0005,C47A,
                         0005,C4AC,
-                        9AC8,
+                        9AC8,       ; Spawn big dust cloud enemy projectile - X offset 28h
                         0005,C4DE,
                         0005,C510,
                         0005,C542,
                         8D07,       ; Queue big explosion sound effect
-                        9AA5
+                        9AA5        ; Spawn big dust cloud enemy projectile - X offset -10h
 $A4:BE06             dx 0004,BFC4,
                         8FC7,       ; Shake screen
                         8FFA,
@@ -3879,16 +3887,16 @@ $A4:BEEC             dx 0003,BFC4,
 ;;; $BF3C: Instruction list ;;;
 {
 $A4:BF3C             dx 0008,C1EA,
-                        9094,
+                        9094,       ; Move right 4px and spawn big dust cloud
                         0008,C1B8,
-                        907F,
+                        907F,       ; Move right 4px
                         0008,C186,
-                        907F,
+                        907F,       ; Move right 4px
                         0008,C154,
-                        9094,
+                        9094,       ; Move right 4px and spawn big dust cloud
                         0008,C122,
                         8FC7,       ; Shake screen
-                        907F,
+                        907F,       ; Move right 4px
                         86A6,       ; Fight AI
                         80ED,BF3C   ; Go to $BF3C
 }
@@ -4296,13 +4304,13 @@ $A4:E14A             dx 000A,E1FE,
 ;;; $E158: Instruction list ;;;
 {
 $A4:E158             dx 000A,E27C,
-                        9A9B,
+                        9A9B,       ; Spawn big dust cloud enemy projectile - X offset -20h
                         0005,E2A6,
-                        9AA0,
+                        9AA0,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0005,E2A6,
-                        9AA5,
+                        9AA5,       ; Spawn big dust cloud enemy projectile - X offset -10h
                         0005,E2D0,
-                        9AAA,
+                        9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,E2D0,
                         000A,E2FA,
                         0020,E324,
@@ -4311,23 +4319,23 @@ $A4:E158             dx 000A,E27C,
                         000A,E378,
                         0009,E3A2,
                         0009,E3CC,
-                        9AAF,
+                        9AAF,       ; Spawn big dust cloud enemy projectile - X offset 0
                         0008,E3F6,
-                        9AB4,
+                        9AB4,       ; Spawn big dust cloud enemy projectile - X offset 8
                         0008,E420,
-                        9AB9,
+                        9AB9,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0007,E46A,
-                        9ABE,
+                        9ABE,       ; Spawn big dust cloud enemy projectile - X offset 18h
                         0007,E4D4,
-                        9AC3,
+                        9AC3,       ; Spawn big dust cloud enemy projectile - X offset 20h
                         0006,E53E,
-                        9AC8,
+                        9AC8,       ; Spawn big dust cloud enemy projectile - X offset 28h
                         0006,E5A8,
-                        9ACD,
+                        9ACD,       ; Spawn big dust cloud enemy projectile - X offset 30h
                         0006,E60A,
-                        9AD2,
+                        9AD2,       ; Spawn big dust cloud enemy projectile - X offset 38h
                         0005,E65C,
-                        9AD7,
+                        9AD7,       ; Spawn big dust cloud enemy projectile - X offset 40h
                         8D07,       ; Queue big explosion sound effect
                         0005,E68E,
                         7FFF,E6A8,
