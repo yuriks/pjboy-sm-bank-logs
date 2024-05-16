@@ -4591,23 +4591,23 @@ $80:9E55 4C A9 9E    JMP $9EA9  [$80:9EA9]  ; Go to decrement timer
 {
 $80:9E58 A0 00 00    LDY #$0000             ; Y = 0
 $80:9E5B A9 E0 00    LDA #$00E0             ;\
-$80:9E5E 18          CLC                    ;} Timer X position = min(DCh, [timer X position] + 0.E0h)
+$80:9E5E 18          CLC                    ;} A = [timer X position] + 0.E0h
 $80:9E5F 6D 48 09    ADC $0948  [$7E:0948]  ;/
 $80:9E62 C9 00 DC    CMP #$DC00             ;\
-$80:9E65 90 04       BCC $04    [$9E6B]     ;} If [timer X position] + 0.E0h >= DCh:
+$80:9E65 90 04       BCC $04    [$9E6B]     ;} If [A] >= DCh:
 $80:9E67 C8          INY                    ; Increment Y
-$80:9E68 A9 00 DC    LDA #$DC00
+$80:9E68 A9 00 DC    LDA #$DC00             ; A = DCh.0
 
-$80:9E6B 8D 48 09    STA $0948  [$7E:0948]
+$80:9E6B 8D 48 09    STA $0948  [$7E:0948]  ; Timer X position = [A]
 $80:9E6E A9 3F FF    LDA #$FF3F             ;\
-$80:9E71 18          CLC                    ;} Timer Y position = max(30h, [timer Y position] - 0.C1h)
+$80:9E71 18          CLC                    ;} A = [timer Y position] - 0.C1h
 $80:9E72 6D 4A 09    ADC $094A  [$7E:094A]  ;/
 $80:9E75 C9 00 30    CMP #$3000             ;\
-$80:9E78 B0 04       BCS $04    [$9E7E]     ;} If [timer X position] + 0.E0h >= DCh:
+$80:9E78 B0 04       BCS $04    [$9E7E]     ;} If [A] < 30h:
 $80:9E7A C8          INY                    ; Increment Y
-$80:9E7B A9 00 30    LDA #$3000
+$80:9E7B A9 00 30    LDA #$3000             ; A = 30h.0
 
-$80:9E7E 8D 4A 09    STA $094A  [$7E:094A]
+$80:9E7E 8D 4A 09    STA $094A  [$7E:094A]  ; Timer Y position = [A]
 $80:9E81 C0 02 00    CPY #$0002             ;\
 $80:9E84 D0 03       BNE $03    [$9E89]     ;} If [Y] = 2 (in place):
 $80:9E86 EE 43 09    INC $0943  [$7E:0943]  ; Timer status = timer running, moved into place
