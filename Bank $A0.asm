@@ -5114,7 +5114,7 @@ $A0:A92A E5 14       SBC $14    [$7E:0014]  ;|
 $A0:A92C B0 03       BCS $03    [$A931]     ;|
 $A0:A92E CE 9A 18    DEC $189A  [$7E:189A]  ;/
 
-$A0:A931 F0 03       BEQ $03    [$A936]     ; If [Samus X subposition] - [$14] != 0 or [Samus target X position] != 0:
+$A0:A931 F0 03       BEQ $03    [$A936]     ; If [Samus target X subposition] != 0 and ([Samus target X position] != 0 or [$14] < [Samus X subposition]):
 $A0:A933 CE 9A 18    DEC $189A  [$7E:189A]  ; Decrement Samus target X position
 
 $A0:A936 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\

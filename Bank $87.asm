@@ -351,7 +351,7 @@ $87:8192             dw 000A,8564,
 }
 
 
-;;; $81A6: Instruction list - animated tiles object $8263, 8269 (Crateria lava) ;;;
+;;; $81A6: Instruction list - animated tiles object $8263/$8269 (Crateria lava) ;;;
 {
 ; LOOP
 $87:81A6             dw 000A,8B64,
