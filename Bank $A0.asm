@@ -5101,6 +5101,21 @@ $A0:A90E 7C 11 A9    JMP ($A911,x)[$A0:A945];/
 $A0:A911             dw A919, A945, A96C, A993
 
 {
+; Condition for $A933
+;     [Samus X subposition] - [$14] >= 0 and [Samus X subposition] - [$14] != 0 or [Samus X subposition] - [$14] < 0 and [Samus target X position] != 0
+; Lets just assume [Samus target X position] != 0
+;     [Samus X subposition] - [$14] >= 0 and [Samus X subposition] - [$14] != 0 or [Samus X subposition] - [$14] < 0
+;     [Samus X subposition] - [$14] > 0 or [Samus X subposition] - [$14] < 0
+;     [Samus X subposition] - [$14] != 0
+;     [Samus target X subposition] != 0
+
+; Condition for $A95B
+;     [Samus X subposition] + [$14] < 10000h and [Samus X subposition] + [$14] != 0 or [Samus X subposition] + [$14] >= 10000h and [Samus target X position] != 0
+; Lets just assume [Samus target X position] != 0
+;     [Samus X subposition] + [$14] < 10000h and [Samus X subposition] + [$14] != 0 or [Samus X subposition] + [$14] >= 10000h
+;     [Samus X subposition] + [$14] != 0
+;     [Samus X subposition] != 0 or [$14] != 0
+
 ; Collision direction = left
 $A0:A919 A5 12       LDA $12    [$7E:0012]  ;\
 $A0:A91B 49 FF FF    EOR #$FFFF             ;|
@@ -5114,7 +5129,7 @@ $A0:A92A E5 14       SBC $14    [$7E:0014]  ;|
 $A0:A92C B0 03       BCS $03    [$A931]     ;|
 $A0:A92E CE 9A 18    DEC $189A  [$7E:189A]  ;/
 
-$A0:A931 F0 03       BEQ $03    [$A936]     ; If [Samus target X subposition] != 0 and ([Samus target X position] != 0 or [$14] < [Samus X subposition]):
+$A0:A931 F0 03       BEQ $03    [$A936]     ; If [Samus target X subposition] != 0:
 $A0:A933 CE 9A 18    DEC $189A  [$7E:189A]  ; Decrement Samus target X position
 
 $A0:A936 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -5134,7 +5149,7 @@ $A0:A951 6D F8 0A    ADC $0AF8  [$7E:0AF8]  ;|
 $A0:A954 90 03       BCC $03    [$A959]     ;|
 $A0:A956 EE 9A 18    INC $189A  [$7E:189A]  ;/
 
-$A0:A959 F0 03       BEQ $03    [$A95E]     ; If [Samus X subposition] + [$14] != 10000h or [Samus target X position] != 0:
+$A0:A959 F0 03       BEQ $03    [$A95E]     ; If [Samus X subposition] != 0 or [$14] != 0:
 $A0:A95B EE 9A 18    INC $189A  [$7E:189A]  ; Increment Samus target X position
 
 $A0:A95E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -5154,7 +5169,7 @@ $A0:A979 E5 14       SBC $14    [$7E:0014]  ;|
 $A0:A97B B0 03       BCS $03    [$A980]     ;|
 $A0:A97D CE 9E 18    DEC $189E  [$7E:189E]  ;/
 
-$A0:A980 F0 03       BEQ $03    [$A985]     ; If [Samus Y subposition] - [$14] != 0 or [Samus target Y position] != 0:
+$A0:A980 F0 03       BEQ $03    [$A985]     ; If [Samus target Y subposition] != 0:
 $A0:A982 CE 9E 18    DEC $189E  [$7E:189E]  ; Decrement Samus target Y position
 
 $A0:A985 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -5174,7 +5189,7 @@ $A0:A99F 6D FC 0A    ADC $0AFC  [$7E:0AFC]  ;|
 $A0:A9A2 90 03       BCC $03    [$A9A7]     ;|
 $A0:A9A4 EE 9E 18    INC $189E  [$7E:189E]  ;/
 
-$A0:A9A7 F0 03       BEQ $03    [$A9AC]     ; If [Samus Y subposition] + [$14] != 10000h or [Samus target Y position] != 0:
+$A0:A9A7 F0 03       BEQ $03    [$A9AC]     ; If [Samus Y subposition] != 0 or [$14] != 0:
 $A0:A9A9 EE 9E 18    INC $189E  [$7E:189E]  ; Increment Samus target Y position
 
 $A0:A9AC AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
