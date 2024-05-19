@@ -4772,7 +4772,7 @@ $90:9EAB             dw 0000    ; Samus Y acceleration in acid/lava
 $90:9EAD             dw 0001    ; Camera X offset from Samus when turning
 $90:9EAF             dw 0000    ; Camera X suboffset from Samus when turning
 $90:9EB1             dw 0001    ; Camera Y offset from Samus when turning
-$90:9EB3             dw 0000    ; Camera X suboffset from Samus when turning
+$90:9EB3             dw 0000    ; Camera Y suboffset from Samus when turning
 $90:9EB5             dw 0001    ; Samus Y speed when bouncing in morph ball
 $90:9EB7             dw 0000    ; Samus Y subspeed when bouncing in morph ball
 

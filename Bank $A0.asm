@@ -5068,6 +5068,9 @@ $A0:A8EF 6B          RTL
 ; (otherwise if this routine were called with [$12].[$14] = 0.0, no collision would be detected even if the enemy is moving towards Samus)
 ; If you NOP'd out the INC at $A9A9 for example, you can do a short hop on one of the rising platform enemies and fall straight through
 
+; The BEQs at $A931/A959/A980/A9A7 I can't make sense of based on the above logic. Seems like the increments/decrements should be unconditional
+; Perhaps it affects the logic for choosing between BRANCH_TOUCHING and BRANCH_NOT_TOUCHING(?) Didn't notice any jank when NOP'ing the BEQs
+
 ; On the zebetite skip:
 ; The way this behaviour is implemented is effectively just incrementing the $12 parameter (unfortunately not written so straight forwardly)
 ; Consequently, Samus can collide with enemies one pixel further than she should be able to reach (i.e. one pixel further than in block collision),
@@ -5075,8 +5078,6 @@ $A0:A8EF 6B          RTL
 ; Because a collision is reported in this case, no Samus block collision detection is done, meaning Samus doesn't collide with the wall,
 ; and because the zebetite's right boundary is aligned with the wall (one pixel further right than the rinka's),
 ; Samus is now horizontally inside the zebetite, and so no horizontal collision will be detected due to the zebetite
-
-; The BEQs at $A931/A959/A980/A9A7 I can't make sense of
 
 $A0:A8F0 08          PHP
 $A0:A8F1 8B          PHB
@@ -5115,6 +5116,9 @@ $A0:A911             dw A919, A945, A96C, A993
 ;     [Samus X subposition] + [$14] < 10000h and [Samus X subposition] + [$14] != 0 or [Samus X subposition] + [$14] >= 10000h
 ;     [Samus X subposition] + [$14] != 0
 ;     [Samus X subposition] != 0 or [$14] != 0
+
+; One might speculate that it wasn't realised that the `INC/DEC $189A` would affect the following `BEQ $03`,
+; in which case the intended condition for $A933/$A95B was [Samus target X subposition] != 0
 
 ; Collision direction = left
 $A0:A919 A5 12       LDA $12    [$7E:0012]  ;\

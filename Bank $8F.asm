@@ -7031,6 +7031,7 @@ $8F:E549 BD 51 E5    LDA $E551,x[$8F:E56B]  ;|
 $8F:E54C 22 97 80 86 JSL $868097[$86:8097]  ;/
 $8F:E550 60          RTS
 
+; Debris X positions
 $8F:E551             dw 0050, 0060, 0070, 0080, 0090, 00A0, 00B0, 00C0, 00D0, 00E0, 00F0, 0110, 0130, 0150, 0170, 0190
 }
 
@@ -7049,23 +7050,25 @@ $8F:E57B 60          RTS
 
 ;;; $E57C: Main ASM: shake screen switching between light horizontal and medium diagonal ;;;
 {
-; Set screen shaking every 2Ah frames with a 1/8 chance of being medium diagonal
 ; Room $DE7A. Escape room 2
+; Horizontal screen shaking with a 1/80h chance of becoming medium diagonal for 2Ah frames
 $8F:E57C AD E1 07    LDA $07E1  [$7E:07E1]  ;\
 $8F:E57F F0 0A       BEQ $0A    [$E58B]     ;} If [main ASM timer] != 0:
 $8F:E581 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer
-$8F:E584 D0 1A       BNE $1A    [$E5A0]     ; If [main ASM timer] = 0:
-$8F:E586 A9 12 00    LDA #$0012             ;\
-$8F:E589 80 12       BRA $12    [$E59D]     ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
-
-$8F:E58B 22 11 81 80 JSL $808111[$80:8111]  ;\ Else ([main ASM timer] != 0):
-$8F:E58F C9 00 02    CMP #$0200             ;} If [random number] < 200h
-$8F:E592 B0 0C       BCS $0C    [$E5A0]     ;/
+$8F:E584 D0 1A       BNE $1A    [$E5A0]     ; If [main ASM timer] != 0: go to BRANCH_NO_EARTHQUAKE_CHANGE
+$8F:E586 A9 12 00    LDA #$0012             ; Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
+$8F:E589 80 12       BRA $12    [$E59D]
+                                            ; Else ([main ASM timer] = 0):
+$8F:E58B 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$8F:E58F C9 00 02    CMP #$0200             ;\
+$8F:E592 B0 0C       BCS $0C    [$E5A0]     ;} If [random number] >= 200h: go to BRANCH_NO_EARTHQUAKE_CHANGE
 $8F:E594 A9 2A 00    LDA #$002A             ;\
 $8F:E597 8D E1 07    STA $07E1  [$7E:07E1]  ;} Main ASM timer = 2Ah
 $8F:E59A A9 17 00    LDA #$0017             ; Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, diagonal
 
 $8F:E59D 8D 3E 18    STA $183E  [$7E:183E]
+
+; BRANCH_NO_EARTHQUAKE_CHANGE
 }
 
 
@@ -7081,22 +7084,24 @@ $8F:E5A3 60          RTS
 ;;; $E5A4: Main ASM: shake screen switching between medium horizontal and strong diagonal ;;;
 {
 ; Room $DEDE. Escape room 4
+; Horizontal screen shaking with a 3/200h chance of becoming medium diagonal for 2Ah frames
 $8F:E5A4 AD E1 07    LDA $07E1  [$7E:07E1]  ;\
 $8F:E5A7 F0 0A       BEQ $0A    [$E5B3]     ;} If [main ASM timer] != 0:
 $8F:E5A9 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer
-$8F:E5AC D0 1A       BNE $1A    [$E5C8]     ; If [main ASM timer] = 0:
+$8F:E5AC D0 1A       BNE $1A    [$E5C8]     ; If [main ASM timer] != 0: go to BRANCH_NO_EARTHQUAKE_CHANGE
 $8F:E5AE A9 15 00    LDA #$0015             ; $07E3 = 15h (BG1, BG2 and enemies, 2 pixel displacement, horizontal)
 $8F:E5B1 80 12       BRA $12    [$E5C5]
-
-$8F:E5B3 22 11 81 80 JSL $808111[$80:8111]  ;\ Else ([main ASM timer] != 0):
-$8F:E5B7 C9 80 01    CMP #$0180             ;} If [random number] < 200h
-$8F:E5BA B0 0C       BCS $0C    [$E5C8]     ;/
+                                            ; Else ([main ASM timer] = 0):
+$8F:E5B3 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$8F:E5B7 C9 80 01    CMP #$0180             ;\
+$8F:E5BA B0 0C       BCS $0C    [$E5C8]     ;} If [random number] < 180h
 $8F:E5BC A9 2A 00    LDA #$002A             ;\
 $8F:E5BF 8D E1 07    STA $07E1  [$7E:07E1]  ;} Main ASM timer = 2Ah
 $8F:E5C2 A9 1A 00    LDA #$001A             ; $07E3 = 1Ah (BG1, BG2 and enemies, 3 pixel displacement, diagonal)
 
 $8F:E5C5 8D E3 07    STA $07E3  [$7E:07E3]
 
+; BRANCH_NO_EARTHQUAKE_CHANGE
 $8F:E5C8 AD E3 07    LDA $07E3  [$7E:07E3]  ;\
 $8F:E5CB 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = [$07E3]
 $8F:E5CE 20 83 C1    JSR $C183  [$8F:C183]  ; Generate random explosion on every fourth frame

@@ -88,7 +88,7 @@ $A4:86FE 1A          INC A                  ;|
 $A4:86FF C9 E0 00    CMP #$00E0             ;|
 $A4:8702 10 12       BPL $12    [$8716]     ;/
 $A4:8704 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:8707 09 00 80    ORA #$8000             ;} $0FAA |= 8000h
+$A4:8707 09 00 80    ORA #$8000             ;} Crocomire fight flags |= 8000h (awake)
 $A4:870A 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:870D A0 56 BC    LDY #$BC56             ; Y = $BC56
 $A4:8710 A9 12 00    LDA #$0012             ;\
@@ -103,11 +103,11 @@ $A4:8716 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:8717 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:871A 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:871A 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:871D F0 18       BEQ $18    [$8737]     ;/
 $A4:871F AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
 $A4:8722 29 FF F7    AND #$F7FF             ;\
-$A4:8725 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
+$A4:8725 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:8728 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:872B F0 0A       BEQ $0A    [$8737]     ;} If [$0FAE] != 0:
 $A4:872D A0 30 BC    LDY #$BC30             ; Y = $BC30
@@ -154,10 +154,10 @@ $A4:876B 6B          RTL
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:876C AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:876F 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:876F 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:8772 F0 10       BEQ $10    [$8784]     ;/
 $A4:8774 29 FF F7    AND #$F7FF             ;\
-$A4:8777 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
+$A4:8777 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:877A A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:877D A9 0C 00    LDA #$000C             ;\
 $A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
@@ -191,10 +191,10 @@ $A4:87B1 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:87B2 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:87B5 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:87B5 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:87B8 F0 0F       BEQ $0F    [$87C9]     ;/
 $A4:87BA 29 FF F7    AND #$F7FF             ;\
-$A4:87BD 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
+$A4:87BD 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:87C0 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:87C3 A9 0C 00    LDA #$000C             ;\
 $A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
@@ -254,7 +254,7 @@ $A4:8804 60          RTS
 {
 $A4:8805 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:8808 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:880B 29 FF FB    AND #$FBFF             ;} $0FAA &= ~400h
+$A4:880B 29 FF FB    AND #$FBFF             ;} Crocomire fight flags &= ~400h
 $A4:880E 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:8811 60          RTS
 }
@@ -265,11 +265,11 @@ $A4:8811 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:8812 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:8815 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:8815 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:8818 F0 13       BEQ $13    [$882D]     ;/
 $A4:881A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
 $A4:881D 29 FF F7    AND #$F7FF             ;\
-$A4:8820 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
+$A4:8820 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:8823 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:8826 A9 14 00    LDA #$0014             ;\
 $A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 14h (wait for second damage)
@@ -288,11 +288,11 @@ $A4:8835 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:8836 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:8839 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:8839 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:883C F0 13       BEQ $13    [$8851]     ;/
 $A4:883E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
 $A4:8841 29 FF F7    AND #$F7FF             ;\
-$A4:8844 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
+$A4:8844 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:8847 A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:884A A9 0C 00    LDA #$000C             ;\
 $A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
@@ -313,11 +313,11 @@ $A4:8859 60          RTS
 
 ; Clone of $8836
 $A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:885D 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h != 0:
+$A4:885D 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
 $A4:8860 F0 13       BEQ $13    [$8875]     ;/
 $A4:8862 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
 $A4:8865 29 FF F7    AND #$F7FF             ;\
-$A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~800h
+$A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:886B A0 30 BC    LDY #$BC30             ; Y = $BC30
 $A4:886E A9 0C 00    LDA #$000C             ;\
 $A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
@@ -356,16 +356,16 @@ $A4:8899 60          RTS
 ;;     Y: Instruction list pointer
 $A4:889A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:889D AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:88A0 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
+$A4:88A0 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h = 0 (not damaged):
 $A4:88A3 D0 0A       BNE $0A    [$88AF]     ;/
 $A4:88A5 A9 0A 00    LDA #$000A             ;\
 $A4:88A8 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = Ah (near spike wall charge)
 $A4:88AB A0 8E BD    LDY #$BD8E             ; Y = $BD8E
 $A4:88AE 60          RTS                    ; Return
 
-$A4:88AF 29 00 BF    AND #$BF00             ; $0FAA &= ~40FFh
+$A4:88AF 29 00 BF    AND #$BF00             ; Crocomire fight flags &= ~40FFh (Samus not hit by claw)
 $A4:88B2 09 00 A0    ORA #$A000             ;\
-$A4:88B5 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA |= A000h
+$A4:88B5 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= A000h (awake, ?)
 $A4:88B8 A9 01 00    LDA #$0001             ;\
 $A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 1
 $A4:88BE A9 0A 00    LDA #$000A             ;\
@@ -385,7 +385,7 @@ $A4:88D1 60          RTS
 $A4:88D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:88D5 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
 $A4:88D8 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:88DB 09 00 02    ORA #$0200             ;} $0FAA |= 200h
+$A4:88DB 09 00 02    ORA #$0200             ;} Crocomire fight flags |= 200h
 $A4:88DE 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:88E1 A9 20 00    LDA #$0020             ;\
 $A4:88E4 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 20h
@@ -431,7 +431,7 @@ $A4:891A 60          RTS
 ;;     Y: Instruction list pointer
 $A4:891B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:891E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:8921 89 00 01    BIT #$0100             ;} If [$0FAA] & 100h = 0:
+$A4:8921 89 00 01    BIT #$0100             ;} If [Crocomire fight flags] & 100h = 0:
 $A4:8924 D0 0A       BNE $0A    [$8930]     ;/
 $A4:8926 20 0B 89    JSR $890B  [$A4:890B]  ; Execute $890B
 $A4:8929 A9 20 00    LDA #$0020             ;\
@@ -456,7 +456,7 @@ $A4:8943 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
 $A4:8946 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:8949 D0 12       BNE $12    [$895D]     ;} If [$0FAE] = 0:
 $A4:894B AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:894E 09 00 20    ORA #$2000             ;} $0FAA |= 2000h
+$A4:894E 09 00 20    ORA #$2000             ;} Crocomire fight flags |= 2000h
 $A4:8951 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:8954 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
 $A4:8957 A9 24 00    LDA #$0024             ;\
@@ -482,14 +482,14 @@ $A4:8975 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 3
 $A4:8978 60          RTS                    ; Return
 
 $A4:8979 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:897C 89 00 40    BIT #$4000             ;} If [$0FAA] & 4000h = 0:
+$A4:897C 89 00 40    BIT #$4000             ;} If [Crocomire fight flags] & 4000h = 0 (Samus not hit by claw):
 $A4:897F D0 09       BNE $09    [$898A]     ;/
 $A4:8981 A9 26 00    LDA #$0026             ;\
 $A4:8984 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 26h
 $A4:8987 20 05 88    JSR $8805  [$A4:8805]  ; Execute $8805
 
 $A4:898A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:898D 89 00 40    BIT #$4000             ;} If [$0FAA] & 4000h != 0:
+$A4:898D 89 00 40    BIT #$4000             ;} If [Crocomire fight flags] & 4000h != 0 (Samus hit by claw):
 $A4:8990 F0 15       BEQ $15    [$89A7]     ;/
 $A4:8992 A9 05 00    LDA #$0005             ;\
 $A4:8995 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 5
@@ -516,7 +516,7 @@ $A4:89B5 A9 24 00    LDA #$0024             ;\
 $A4:89B8 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h
 $A4:89BB 9C EE 0F    STZ $0FEE  [$7E:0FEE]  ; $0FEE = 0
 $A4:89BE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:89C1 09 00 04    ORA #$0400             ;} $0FAA |= 400h
+$A4:89C1 09 00 04    ORA #$0400             ;} Crocomire fight flags |= 400h
 $A4:89C4 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:89C7 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:89CA 60          RTS                    ; Return
@@ -525,7 +525,7 @@ $A4:89CB 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
 $A4:89CE A9 28 00    LDA #$0028             ;\
 $A4:89D1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 28h
 $A4:89D4 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:89D7 29 FF FB    AND #$FBFF             ;} $0FAA &= ~400h
+$A4:89D7 29 FF FB    AND #$FBFF             ;} Crocomire fight flags &= ~400h
 $A4:89DA 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:89DD 60          RTS
 }
@@ -536,10 +536,10 @@ $A4:89DD 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:89DE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:89E1 89 00 20    BIT #$2000             ;} If [$0FAA] & 2000h = 0:
+$A4:89E1 89 00 20    BIT #$2000             ;} If [Crocomire fight flags] & 2000h = 0:
 $A4:89E4 D0 06       BNE $06    [$89EC]     ;/
 $A4:89E6 29 FF FC    AND #$FCFF             ;\
-$A4:89E9 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA ^= ~300h
+$A4:89E9 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~300h
 
 $A4:89EC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:89EF 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
@@ -556,7 +556,7 @@ $A4:89F8 60          RTS
 $A4:89F9 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:89FC D0 19       BNE $19    [$8A17]     ;} If [$0FAE] = 0:
 $A4:89FE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:8A01 29 FF BF    AND #$BFFF             ;} $0FAA &= ~4000h
+$A4:8A01 29 FF BF    AND #$BFFF             ;} Crocomire fight flags &= ~4000h (Samus not hit by claw)
 $A4:8A04 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:8A07 A9 01 00    LDA #$0001             ;\
 $A4:8A0A 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
@@ -566,7 +566,7 @@ $A4:8A13 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:8A16 60          RTS                    ; Return
 
 $A4:8A17 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:8A1A 89 00 40    BIT #$4000             ;} If [$0FAA] & 4000h != 0:
+$A4:8A1A 89 00 40    BIT #$4000             ;} If [Crocomire fight flags] & 4000h != 0 (Samus hit by claw):
 $A4:8A1D F0 0E       BEQ $0E    [$8A2D]     ;/
 $A4:8A1F CE AE 0F    DEC $0FAE  [$7E:0FAE]  ; Decrement $0FAE
 $A4:8A22 A9 3B 00    LDA #$003B             ;\
@@ -575,7 +575,7 @@ $A4:8A29 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
 $A4:8A2C 60          RTS                    ; Return
 
 $A4:8A2D 29 FF BF    AND #$BFFF             ;\
-$A4:8A30 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA &= ~4000h
+$A4:8A30 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~4000h (Samus not hit by claw)
 $A4:8A33 A9 0C 00    LDA #$000C             ;\
 $A4:8A36 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8A39 60          RTS
@@ -1210,13 +1210,13 @@ $A4:8FDE 6B          RTL
 }
 
 
-;;; $8FDF: Instruction ;;;
+;;; $8FDF: Instruction - move left 4px ;;;
 {
 $A4:8FDF DA          PHX
 $A4:8FE0 5A          PHY
 $A4:8FE1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8FE4 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:8FE7 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
+$A4:8FE7 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h = 0 (not damaged):
 $A4:8FEA D0 0B       BNE $0B    [$8FF7]     ;/
 $A4:8FEC 64 12       STZ $12    [$7E:0012]  ;\
 $A4:8FEE A9 FC FF    LDA #$FFFC             ;|
@@ -1229,17 +1229,18 @@ $A4:8FF9 6B          RTL
 }
 
 
-;;; $8FFA: Instruction ;;;
+;;; $8FFA: Instruction - move left 4px and spawn big dust cloud ;;;
 {
 $A4:8FFA 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
 $A4:8FFD 80 E0       BRA $E0    [$8FDF]     ; Go to $8FDF
 }
 
 
-;;; $8FFF: Instruction ;;;
+;;; $8FFF: Instruction - move left 4px and spawn big dust cloud ;;;
 {
-$A4:8FFF 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
-$A4:9002 80 DB       BRA $DB    [$8FDF]     ; Go to $8FDF
+; Clone of $8FFA
+$A4:8FFF 20 04 90    JSR $9004  [$A4:9004]
+$A4:9002 80 DB       BRA $DB    [$8FDF]
 }
 
 
@@ -1260,7 +1261,7 @@ $A4:901C 60          RTS
 }
 
 
-;;; $901D:  ;;;
+;;; $901D: Instruction - move left 4px and spawn big dust cloud and handle spike wall collision ;;;
 {
 $A4:901D DA          PHX
 $A4:901E 5A          PHY
@@ -1270,21 +1271,21 @@ $A4:9024 A9 FC FF    LDA #$FFFC             ;|
 $A4:9027 85 14       STA $14    [$7E:0014]  ;} Move enemy left by 4.0
 $A4:9029 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A4:902D B0 20       BCS $20    [$904F]     ; If collided with wall: go to BRANCH_HIT_WALL
-$A4:902F A2 20 00    LDX #$0020
-$A4:9032 AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:9035 C9 00 08    CMP #$0800
-$A4:9038 30 03       BMI $03    [$903D]
-$A4:903A A2 E0 FF    LDX #$FFE0
+$A4:902F A2 20 00    LDX #$0020             ; X = 20h
+$A4:9032 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A4:9035 C9 00 08    CMP #$0800             ;} If [random number] >= 800h:
+$A4:9038 30 03       BMI $03    [$903D]     ;/
+$A4:903A A2 E0 FF    LDX #$FFE0             ; X = -20h
 
-$A4:903D AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:9040 29 0F 00    AND #$000F
-$A4:9043 86 12       STX $12    [$7E:0012]
-$A4:9045 18          CLC
-$A4:9046 65 12       ADC $12    [$7E:0012]
-$A4:9048 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]
+$A4:903D AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A4:9040 29 0F 00    AND #$000F             ;|
+$A4:9043 86 12       STX $12    [$7E:0012]  ;} A = [X] + [random number] % 10h (X offset)
+$A4:9045 18          CLC                    ;|
+$A4:9046 65 12       ADC $12    [$7E:0012]  ;/
+$A4:9048 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]  ; Spawn big dust cloud enemy projectile
 $A4:904C 7A          PLY
 $A4:904D FA          PLX
-$A4:904E 6B          RTL
+$A4:904E 6B          RTL                    ; Return
 
 ; BRANCH_HIT_WALL
 $A4:904F 7A          PLY
@@ -1496,9 +1497,9 @@ $A4:91BE 20 6C 91    JSR $916C  [$A4:916C]
 ;;; $91C1:  ;;;
 {
 $A4:91C1 20 DF 93    JSR $93DF  [$A4:93DF]
-$A4:91C4 AD AA 0F    LDA $0FAA  [$7E:0FAA]
-$A4:91C7 29 FF F7    AND #$F7FF
-$A4:91CA 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:91C4 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
+$A4:91C7 29 FF F7    AND #$F7FF             ;} Crocomire fight flags &= ~800h (not damaged)
+$A4:91CA 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:91CD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:91D0 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
 $A4:91D4 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
@@ -2297,7 +2298,7 @@ $A4:9817 A9 0A 00    LDA #$000A
 $A4:981A 8D 2E 10    STA $102E  [$7E:102E]
 $A4:981D A9 01 00    LDA #$0001
 $A4:9820 8D 6E 10    STA $106E  [$7E:106E]
-$A4:9823 9C AA 0F    STZ $0FAA  [$7E:0FAA]
+$A4:9823 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Crocomire fight flags = 0
 $A4:9826 A9 38 00    LDA #$0038
 $A4:9829 8D 84 0F    STA $0F84  [$7E:0F84]
 $A4:982C 4C B3 9B    JMP $9BB3  [$A4:9BB3]
@@ -3204,11 +3205,12 @@ $A4:B91D             dw 3800, 02DF, 01D7, 00AC, 5A73, 41AD, 2D08, 1863, 0BB1, 48
 }
 
 
-;;; $B93D:  ;;;
+;;; $B93D: Enemy touch - Crocomire - claws ;;;
 {
+; Used for some other hitboxes, but those are placed behind Crocomire's invisible wall ($8C95)
 $A4:B93D 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A4:B941 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:B944 09 00 40    ORA #$4000             ;} $0FAA |= 4000h
+$A4:B944 09 00 40    ORA #$4000             ;} $0FAA |= 4000h (Samus hit by claw)
 $A4:B947 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:B94A A9 FC FF    LDA #$FFFC             ;\
 $A4:B94D 8D 58 0B    STA $0B58  [$7E:0B58]  ;} Extra Samus X displacement = -4
@@ -3221,14 +3223,18 @@ $A4:B950 6B          RTL
 }
 
 
-;;; $B951:  ;;;
+;;; $B951: Enemy shot - Crocomire - nothing ;;;
 {
+; Used for the claws during (most of) Crocomire's projectile attack, used for the lower half of Crocomire's body
+; This function has no effect, as the low byte of $0FAA is never meaningfully read
+; Looks like it was supposed to be a normal increment operation up to a cap of Fh,
+; but fails to be one because it doesn't mask off the existing bits before doing the OR
 $A4:B951 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:B954 29 0F 00    AND #$000F             ;|
 $A4:B957 C9 0F 00    CMP #$000F             ;|
 $A4:B95A 10 01       BPL $01    [$B95D]     ;|
 $A4:B95C 1A          INC A                  ;|
-                                            ;} $0FAA |= min(Fh, ([$0FAA] & Fh) + 1)
+                                            ;} Crocomire fight flags |= min(Fh, ([Crocomire fight flags] & Fh) + 1)
 $A4:B95D 85 12       STA $12    [$7E:0012]  ;|
 $A4:B95F AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;|
 $A4:B962 05 12       ORA $12    [$7E:0012]  ;|
@@ -3237,7 +3243,7 @@ $A4:B967 6B          RTL
 }
 
 
-;;; $B968: Spawn shot explosion ;;;
+;;; $B968: Enemy shot - Crocomire - spawn shot explosion ;;;
 {
 $A4:B968 DA          PHX
 $A4:B969 5A          PHY
@@ -3275,9 +3281,9 @@ $A4:B99F AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
 $A4:B9A2 C9 18 00    CMP #$0018             ;} If [Crocomire fight function index] = 18h: return
 $A4:B9A5 F0 5D       BEQ $5D    [$BA04]     ;/
 $A4:B9A7 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:B9AA 29 F0 BF    AND #$BFF0             ;} $0FAA &= ~400Fh
+$A4:B9AA 29 F0 BF    AND #$BFF0             ;} Crocomire fight flags &= ~400Fh (Samus not hit by claw)
 $A4:B9AD 09 00 80    ORA #$8000             ;\
-$A4:B9B0 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA |= 8000h
+$A4:B9B0 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= 8000h (awake)
 $A4:B9B3 A9 0A 00    LDA #$000A             ;\
 $A4:B9B6 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
 $A4:B9B9 AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
@@ -3318,7 +3324,7 @@ $A4:BA04 6B          RTL
 }
 
 
-;;; $BA05:  ;;;
+;;; $BA05: Enemy shot - Crocomire - open mouth ;;;
 {
 $A4:BA05 A9 00 00    LDA #$0000             ;\
 $A4:BA08 8D A0 0F    STA $0FA0  [$7E:0FA0]  ;} Crocomire invincibility timer = 0
@@ -3365,12 +3371,12 @@ $A4:BA5D 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
 $A4:BA60 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:BA63 29 0F 00    AND #$000F             ;|
 $A4:BA66 C9 0F 00    CMP #$000F             ;|
-$A4:BA69 10 01       BPL $01    [$BA6C]     ;} $12 = min(Fh, ([$0FAA] & Fh) + 1)
+$A4:BA69 10 01       BPL $01    [$BA6C]     ;} $12 = min(Fh, ([Crocomire fight flags] & Fh) + 1)
 $A4:BA6B 1A          INC A                  ;|
                                             ;|
 $A4:BA6C 85 12       STA $12    [$7E:0012]  ;/
 $A4:BA6E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:BA71 89 00 08    BIT #$0800             ;} If [$0FAA] & 800h = 0:
+$A4:BA71 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h = 0 (not damaged):
 $A4:BA74 D0 16       BNE $16    [$BA8C]     ;/
 $A4:BA76 AE 92 86    LDX $8692  [$A4:8692]  ;\
 $A4:BA79 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;|
@@ -3384,10 +3390,10 @@ $A4:BA86 6D 94 0F    ADC $0F94  [$7E:0F94]  ;|
 $A4:BA89 8D 94 0F    STA $0F94  [$7E:0F94]  ;/
 
 $A4:BA8C AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:BA8F 29 F0 BF    AND #$BFF0             ;} $0FAA &= ~400Fh
-$A4:BA92 09 00 08    ORA #$0800             ; $0FAA |= 8000h
+$A4:BA8F 29 F0 BF    AND #$BFF0             ;} Crocomire fight flags &= ~400Fh (Samus not hit by claw)
+$A4:BA92 09 00 08    ORA #$0800             ; Crocomire fight flags |= 800h (damaged)
 $A4:BA95 05 12       ORA $12    [$7E:0012]  ;\
-$A4:BA97 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} $0FAA |= [$12]
+$A4:BA97 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= [$12] (this low byte is never meaningfully read)
 $A4:BA9A A9 0A 00    LDA #$000A             ;\
 $A4:BA9D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
 
@@ -3403,9 +3409,10 @@ $A4:BAB3 6B          RTL
 }
 
 
-;;; $BAB4: Spawn shot explosion ;;;
+;;; $BAB4: Enemy shot - Crocomire - spawn shot explosion ;;;
 {
 ; Clone of $B968
+; Used for claws
 $A4:BAB4 DA          PHX
 $A4:BAB5 5A          PHY
 $A4:BAB6 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
@@ -3450,28 +3457,28 @@ $A4:BAE8             dx 812F        ; Sleep
 {
 $A4:BAEA             dx 0008,BFC4,
                         8FC7,       ; Shake screen
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0008,BFF6,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0008,C028,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0008,C05A,
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0008,C08C,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0008,C0BE,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0008,C0F0,
                         8FC7,       ; Shake screen
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0008,C122,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0008,C154,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0008,C186,
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0008,C1B8,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0008,C1EA,
                         86A6        ; Fight AI
 }
@@ -3522,14 +3529,14 @@ $A4:BB94             dx 86A6,       ; Fight AI
 {
 $A4:BBAE             dx 0004,C6A4,
                         8FC7,       ; Shake screen
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         86A6,       ; Fight AI
                         8752,       ; Maybe start projectile attack
                         0004,C6DE,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         86A6,       ; Fight AI
                         0004,C718,
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         86A6        ; Fight AI
 }
 
@@ -3551,29 +3558,29 @@ $A4:BBCE             dx 8752,       ; Maybe start projectile attack
                         0005,C5E8,
                         86A6,       ; Fight AI
                         0010,C752,
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         86A6,       ; Fight AI
                         0004,C78C,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         86A6,       ; Fight AI
                         0004,C7C6,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         86A6,       ; Fight AI
                         0004,C800,
                         8FC7,       ; Shake screen
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         86A6,       ; Fight AI
                         0004,C83A,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         86A6,       ; Fight AI
                         0004,C874,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         86A6,       ; Fight AI
                         0004,C8AE,
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         86A6,       ; Fight AI
                         0004,C8E8,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         86A6,       ; Fight AI
                         0004,C922,
                         86A6,       ; Fight AI
@@ -3767,28 +3774,28 @@ $A4:BDB6             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X 
                         9AA5        ; Spawn big dust cloud enemy projectile - X offset -10h
 $A4:BE06             dx 0004,BFC4,
                         8FC7,       ; Shake screen
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0004,BFF6,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0004,C028,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0004,C05A,
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0004,C08C,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0004,C0BE,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0004,C0F0,
                         8FC7,       ; Shake screen
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0004,C122,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0004,C154,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0004,C186,
-                        8FFA,
+                        8FFA,       ; Move left 4px and spawn big dust cloud
                         0004,C1B8,
-                        8FDF,
+                        8FDF,       ; Move left 4px
                         0004,C1EA,
                         86A6,       ; Fight AI
                         80ED,BE06   ; Go to $BE06
@@ -3853,31 +3860,31 @@ $A4:BE7E             dx 0005,C574,
                         0008,C5AE,
                         86A6,       ; Fight AI
                         0002,C574,
-                        86A6,       ; Fight AI
+                        86A6        ; Fight AI
 $A4:BEEC             dx 0003,BFC4,
                         8FC7,       ; Shake screen
-                        8FFF,
+                        8FFF,       ; Move left 4px and spawn big dust cloud
                         0003,BFF6,
-                        901D,
+                        901D,       ; Move left 4px and spawn big dust cloud and handle spike wall collision
                         0003,C028,
-                        901D,
+                        901D,       ; Move left 4px and spawn big dust cloud and handle spike wall collision
                         0003,C05A,
-                        8FFF,
+                        8FFF,       ; Move left 4px and spawn big dust cloud
                         0003,C08C,
-                        901D,
+                        901D,       ; Move left 4px and spawn big dust cloud and handle spike wall collision
                         0003,C0BE,
-                        901D,
+                        901D,       ; Move left 4px and spawn big dust cloud and handle spike wall collision
                         0003,C0F0,
                         8FC7,       ; Shake screen
-                        8FFF,
+                        8FFF,       ; Move left 4px and spawn big dust cloud
                         0003,C122,
-                        901D,
+                        901D,       ; Move left 4px and spawn big dust cloud and handle spike wall collision
                         0003,C154,
-                        901D,
+                        901D,       ; Move left 4px and spawn big dust cloud and handle spike wall collision
                         0003,C186,
-                        8FFF,
+                        8FFF,       ; Move left 4px and spawn big dust cloud
                         0003,C1B8,
-                        901D,
+                        901D,       ; Move left 4px and spawn big dust cloud and handle spike wall collision
                         0003,C1EA,
                         86A6,       ; Fight AI
                         80ED,BEEC   ; Go to $BEEC
@@ -3987,7 +3994,7 @@ $A4:BFB0             dx 0005,C5AE,
 }
 
 
-;;; $BFC4: Extended spritemaps ;;;
+;;; $BFC4: Crocomire extended spritemaps ;;;
 {
 $A4:BFC4             dx 0006, 0003,000B,CF15,CB31, 0000,0026,D065,CB4D, FFE3,0026,CF69,CB4D, 0000,0000,D7B6,CC1F, 0000,0000,D8BE,CC1F, 0000,FFFF,D852,CC1F
 $A4:BFF6             dx 0006, 0001,000B,CF44,CB3F, 0000,0026,D08F,CB4D, FFE3,0026,CF93,CB4D, 0000,FFFE,D7EA,CC1F, 0000,FFFE,D8BE,CC1F, 0000,FFFE,D876,CC1F
@@ -4001,11 +4008,10 @@ $A4:C154             dx 0006, 0001,000A,CEC1,CB15, 0000,0026,CFBD,CB4D, FFE3,002
 $A4:C186             dx 0006, 0001,000C,CE92,CB07, 0000,0026,CFE7,CB4D, FFE3,0026,D0E3,CB4D, 0000,0000,D7EA,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D876,CC1F
 $A4:C1B8             dx 0006, 0001,000D,CE92,CB07, 0000,0026,D011,CB4D, FFE3,0026,D10D,CB4D, 0000,0000,D81E,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D89A,CC1F
 $A4:C1EA             dx 0006, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D7EA,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D876,CC1F
-
-$A4:C21C             dx 0006, 0001,000A,CE92,CB07, 0000,0029,D18B,CB4D, FFE3,0029,D18B,CB4D, 0000,FFFE,D7B6,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D852,CC1F
-$A4:C24E             dx 0006, 0001,0008,CE92,CB07, 0000,0029,D1B5,CB4D, FFE3,0029,D1B5,CB4D, 0000,FFFC,D7EA,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D876,CC1F
-$A4:C280             dx 0006, 0001,0006,CE92,CB07, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,FFFA,D81E,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D89A,CC1F
-$A4:C2B2             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D4B3,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
+$A4:C21C             dx 0006, 0001,000A,CE92,CB07, 0000,0029,D18B,CB4D, FFE3,0029,D18B,CB4D, 0000,FFFE,D7B6,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D852,CC1F ; Unused
+$A4:C24E             dx 0006, 0001,0008,CE92,CB07, 0000,0029,D1B5,CB4D, FFE3,0029,D1B5,CB4D, 0000,FFFC,D7EA,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D876,CC1F ; Unused
+$A4:C280             dx 0006, 0001,0006,CE92,CB07, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,FFFA,D81E,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D89A,CC1F ; Unused
+$A4:C2B2             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D4B3,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F ; Unused
 $A4:C2EC             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D493,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
 $A4:C326             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D4B3,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
 $A4:C360             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D4D3,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
@@ -4013,29 +4019,27 @@ $A4:C39A             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D4F3,CBC3, 0000,002
 $A4:C3D4             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D509,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
 $A4:C40E             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D515,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
 $A4:C448             dx 0006, 0000,000B,CEF0,CB23, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
-
 $A4:C47A             dx 0006, 0001,000B,D388,CB5F, 0000,0025,D18B,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D7B6,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D852,CC1F
 $A4:C4AC             dx 0006, 0000,0008,D3B7,CB6D, 0000,0027,D1B5,CB4D, FFE3,0027,D1B5,CB4D, 0000,FFFE,D7EA,CC1F, 0000,FFFE,D8BE,CC1F, 0000,FFFE,D876,CC1F
 $A4:C4DE             dx 0006, 0001,0008,D2BB,CB4F, 0000,0029,D1DF,CB4D, FFE3,0020,D18B,CB4D, 0000,FFFC,D81E,CC1F, 0000,FFFC,D8BE,CC1F, 0000,FFFC,D89A,CC1F
 $A4:C510             dx 0006, 0000,000A,CEC1,CB15, 0000,0027,D1B5,CB4D, FFE3,0025,D1B5,CB4D, 0000,FFFE,D7EA,CC1F, 0000,FFFE,D8BE,CC1F, 0000,FFFE,D876,CC1F
 $A4:C542             dx 0006, 0001,000C,CE92,CB07, 0000,0025,D18B,CB4D, FFE3,0028,D1DF,CB4D, 0000,FFFF,D7B6,CC1F, 0000,FFFF,D8BE,CC1F, 0000,FFFF,D852,CC1F
-
 $A4:C574             dx 0007, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D6DA,CC11, 0000,0000,D7EA,CC1F, 0000,0000,DA4A,CC2D, 0000,0000,D876,CC1F
 $A4:C5AE             dx 0007, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D51C,CBC5, 0000,0000,D7EA,CC1F, 0000,0000,DA4A,CC2D, 0000,0000,D876,CC1F
 $A4:C5E8             dx 0007, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D600,CBEB, 0000,0000,D7EA,CC1F, 0000,0000,DA4A,CC2D, 0000,0000,D876,CC1F
-$A4:C622             dx 0001, 0000,0000,D7B6,CC1F
-$A4:C62C             dx 0001, 0000,0000,D7EA,CC1F
-$A4:C636             dx 0001, 0000,0000,D81E,CC1F
-$A4:C640             dx 0001, 0000,0000,D852,CC1F
-$A4:C64A             dx 0001, 0000,0000,D876,CC1F
-$A4:C654             dx 0001, 0000,0000,D89A,CC1F
+$A4:C622             dx 0001, 0000,0000,D7B6,CC1F ; Unused
+$A4:C62C             dx 0001, 0000,0000,D7EA,CC1F ; Unused
+$A4:C636             dx 0001, 0000,0000,D81E,CC1F ; Unused
+$A4:C640             dx 0001, 0000,0000,D852,CC1F ; Unused
+$A4:C64A             dx 0001, 0000,0000,D876,CC1F ; Unused
+$A4:C654             dx 0001, 0000,0000,D89A,CC1F ; Unused
 $A4:C65E             dx 0001, FFE0,FFE8,D43E,CBB3
 $A4:C668             dx 0001, FFE0,FFE8,D454,CBB3
 $A4:C672             dx 0001, FFE0,FFE8,D465,CBB3
 $A4:C67C             dx 0001, FFE0,FFE8,D47B,CBB3
-$A4:C686             dx 0001, 0000,0000,D48C,CBB5
-$A4:C690             dx 0001, 0000,0000,D8BE,CC1F
-$A4:C69A             dx 0001, 0000,0000,DA4A,CC2D
+$A4:C686             dx 0001, 0000,0000,D48C,CBB5 ; Unused
+$A4:C690             dx 0001, 0000,0000,D8BE,CC1F ; Unused
+$A4:C69A             dx 0001, 0000,0000,DA4A,CC2D ; Unused
 $A4:C6A4             dx 0007, 0003,000B,CF15,CB31, 0000,0026,D065,CB4D, FFE3,0026,CF69,CB4D, 0000,0000,D6DA,CC11, 0000,0000,D7B6,CC1F, 0000,0000,DA4A,CC2D, 0000,FFFF,D852,CC1F
 $A4:C6DE             dx 0007, 0001,000B,CF44,CB3F, 0000,0026,D08F,CB4D, FFE3,0026,CF93,CB4D, 0000,0000,D7EA,CC1F, 0000,0000,D51C,CBC5, 0000,0000,DA4A,CC2D, 0000,FFFE,D876,CC1F
 $A4:C718             dx 0007, 0000,0008,CEC1,CB15, 0000,0026,D0B9,CB4D, FFE3,0026,CFBD,CB4D, 0000,FFFF,D81E,CC1F, 0000,0000,D600,CBEB, 0000,0000,DA4A,CC2D, 0000,FFFE,D89A,CC1F
@@ -4075,7 +4079,7 @@ $A4:CB00 6B          RTL
 }
 
 
-;;; $CB01:  ;;;
+;;; $CB01: RTL ;;;
 {
 $A4:CB01 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:CB04 6B          RTL
@@ -4084,7 +4088,7 @@ $A4:CB04 6B          RTL
 
 ;;; $CB05: Crocomire hitboxes ;;;
 {
-$A4:CB05             dx 0000
+$A4:CB05             dx 0000 ; Unused
 $A4:CB07             dx 0001, FFB2,0020,FFF0,002B,B93D,BAB4
 $A4:CB15             dx 0001, FFA1,000B,FFF0,000B,B93D,BAB4
 $A4:CB23             dx 0001, FFBB,001F,FFF0,002C,B93D,BAB4
@@ -4092,13 +4096,13 @@ $A4:CB31             dx 0001, FFC4,0012,FFF0,0020,B93D,BAB4
 $A4:CB3F             dx 0001, FFB0,000D,FFF0,001B,B93D,BAB4
 $A4:CB4D             dx 0000
 $A4:CB4F             dx 0001, FFA1,FFFA,FFF0,001B,B93D,B951
-$A4:CB5D             dx 0000
+$A4:CB5D             dx 0000 ; Unused
 $A4:CB5F             dx 0001, FFC5,FFF7,FFF0,0005,B93D,B951
 $A4:CB6D             dx 0001, FFA3,FFDC,FFE2,FFF3,B93D,B951
-$A4:CB7B             dx 0001, FFFB,FFFB,0004,0004,B93D,B951
-$A4:CB89             dx 0001, FFFA,FFF9,0005,0006,B93D,B951
-$A4:CB97             dx 0001, FFF8,FFF8,0007,0007,B93D,B951
-$A4:CBA5             dx 0001, FFF7,FFF8,0008,0007,B93D,B951
+$A4:CB7B             dx 0001, FFFB,FFFB,0004,0004,B93D,B951 ; Unused
+$A4:CB89             dx 0001, FFFA,FFF9,0005,0006,B93D,B951 ; Unused
+$A4:CB97             dx 0001, FFF8,FFF8,0007,0007,B93D,B951 ; Unused
+$A4:CBA5             dx 0001, FFF7,FFF8,0008,0007,B93D,B951 ; Unused
 $A4:CBB3             dx 0000
 $A4:CBB5             dx 0001, FFF7,FFF7,0008,0007,B93D,B951
 $A4:CBC3             dx 0000
@@ -4113,27 +4117,27 @@ $A4:CC3B             dx 0000
 
 ;;; $CC3D: Crocomire spritemaps / extended tilemaps ;;;
 {
-$A4:CC3D             dx 0011, 01E4,18,31A6, 01F4,18,31BF, 01EC,18,31AF, 801C,10,31CA, 800C,10,31C8, 81FC,10,31C6, 801C,00,31C4, 800C,00,31C2, 81FC,00,31C0, 000C,E8,31B6, 801C,F0,31AD, 800C,F0,31AB, 81FC,F0,31A9, 81EC,F0,31A7, 81FC,E0,31A4, 81EC,E0,31A2, 81DC,E0,31A0
-$A4:CC94             dx 0011, 0014,18,71A6, 0004,18,71BF, 000C,18,71AF, 81D4,10,71CA, 81E4,10,71C8, 81F4,10,71C6, 81D4,00,71C4, 81E4,00,71C2, 81F4,00,71C0, 01EC,E8,71B6, 81D4,F0,71AD, 81E4,F0,71AB, 81F4,F0,71A9, 8004,F0,71A7, 81F4,E0,71A4, 8004,E0,71A2, 8014,E0,71A0
-$A4:CCEB             dx 000A, 0018,0C,316B, 0010,0C,316A, 8010,FC,3168, 8010,EC,3166, 8000,00,3164, 81F0,00,3162, 8000,F0,3164, 81F0,F0,3162, 81E0,FC,3180, 81E0,EC,3160
-$A4:CD1F             dx 000A, 01E0,0C,716B, 01E8,0C,716A, 81E0,FC,7168, 81E0,EC,7166, 81F0,00,7164, 8000,00,7162, 81F0,F0,7164, 8000,F0,7162, 8010,FC,7180, 8010,EC,7160
-$A4:CD53             dx 000F, 8020,10,318E, 8000,10,318A, 8010,10,318C, 01F8,18,317B, 01F0,10,310F, 01F8,10,311F, 01E7,18,717A, 01E0,18,317A, 01D0,10,3188, 01D8,10,3189, 01E0,10,3198, 01E8,10,3199, 81F0,00,3186, 81E0,00,3184, 81D0,00,3182
-$A4:CDA0             dx 000F, 81D0,10,718E, 81F0,10,718A, 81E0,10,718C, 0000,18,717B, 0008,10,710F, 0000,10,711F, 0011,18,317A, 0018,18,717A, 0028,10,7188, 0020,10,7189, 0018,10,7198, 0010,10,7199, 8000,00,7186, 8010,00,7184, 8020,00,7182
-$A4:CDED             dx 0002, 8000,F8,316E, 81F0,F8,316C
-$A4:CDF9             dx 0002, 81F0,F8,716E, 8000,F8,716C
-$A4:CE05             dx 0001, 81F8,F8,7160
-$A4:CE0C             dx 0001, 81F8,F8,7180
-$A4:CE13             dx 0001, 81F8,F8,7162
-$A4:CE1A             dx 0001, 81F8,F8,7164
-$A4:CE21             dx 0001, 81F8,F8,7166
-$A4:CE28             dx 0001, 81F8,F8,7168
-$A4:CE2F             dx 0002, 01F8,FC,716B, 0000,FC,716A
-$A4:CE3B             dx 0003, 0000,04,7188, 01F8,04,7189, 81F8,F4,7182
-$A4:CE4C             dx 0005, 01F9,08,317A, 0000,08,717A, 0000,00,7198, 01F8,00,7199, 81F8,F0,7184
-$A4:CE67             dx 0004, 0000,05,710F, 01F8,0D,717B, 01F8,05,711F, 81F8,F5,7186
-$A4:CE7D             dx 0001, 81F8,F8,718A
-$A4:CE84             dx 0001, 81F8,F8,718C
-$A4:CE8B             dx 0001, 81F8,F8,718E
+$A4:CC3D             dx 0011, 01E4,18,31A6, 01F4,18,31BF, 01EC,18,31AF, 801C,10,31CA, 800C,10,31C8, 81FC,10,31C6, 801C,00,31C4, 800C,00,31C2, 81FC,00,31C0, 000C,E8,31B6, 801C,F0,31AD, 800C,F0,31AB, 81FC,F0,31A9, 81EC,F0,31A7, 81FC,E0,31A4, 81EC,E0,31A2, 81DC,E0,31A0 ; Unused
+$A4:CC94             dx 0011, 0014,18,71A6, 0004,18,71BF, 000C,18,71AF, 81D4,10,71CA, 81E4,10,71C8, 81F4,10,71C6, 81D4,00,71C4, 81E4,00,71C2, 81F4,00,71C0, 01EC,E8,71B6, 81D4,F0,71AD, 81E4,F0,71AB, 81F4,F0,71A9, 8004,F0,71A7, 81F4,E0,71A4, 8004,E0,71A2, 8014,E0,71A0 ; Unused
+$A4:CCEB             dx 000A, 0018,0C,316B, 0010,0C,316A, 8010,FC,3168, 8010,EC,3166, 8000,00,3164, 81F0,00,3162, 8000,F0,3164, 81F0,F0,3162, 81E0,FC,3180, 81E0,EC,3160 ; Unused
+$A4:CD1F             dx 000A, 01E0,0C,716B, 01E8,0C,716A, 81E0,FC,7168, 81E0,EC,7166, 81F0,00,7164, 8000,00,7162, 81F0,F0,7164, 8000,F0,7162, 8010,FC,7180, 8010,EC,7160 ; Unused
+$A4:CD53             dx 000F, 8020,10,318E, 8000,10,318A, 8010,10,318C, 01F8,18,317B, 01F0,10,310F, 01F8,10,311F, 01E7,18,717A, 01E0,18,317A, 01D0,10,3188, 01D8,10,3189, 01E0,10,3198, 01E8,10,3199, 81F0,00,3186, 81E0,00,3184, 81D0,00,3182 ; Unused
+$A4:CDA0             dx 000F, 81D0,10,718E, 81F0,10,718A, 81E0,10,718C, 0000,18,717B, 0008,10,710F, 0000,10,711F, 0011,18,317A, 0018,18,717A, 0028,10,7188, 0020,10,7189, 0018,10,7198, 0010,10,7199, 8000,00,7186, 8010,00,7184, 8020,00,7182 ; Unused
+$A4:CDED             dx 0002, 8000,F8,316E, 81F0,F8,316C ; Unused
+$A4:CDF9             dx 0002, 81F0,F8,716E, 8000,F8,716C ; Unused
+$A4:CE05             dx 0001, 81F8,F8,7160 ; Unused
+$A4:CE0C             dx 0001, 81F8,F8,7180 ; Unused
+$A4:CE13             dx 0001, 81F8,F8,7162 ; Unused
+$A4:CE1A             dx 0001, 81F8,F8,7164 ; Unused
+$A4:CE21             dx 0001, 81F8,F8,7166 ; Unused
+$A4:CE28             dx 0001, 81F8,F8,7168 ; Unused
+$A4:CE2F             dx 0002, 01F8,FC,716B, 0000,FC,716A ; Unused
+$A4:CE3B             dx 0003, 0000,04,7188, 01F8,04,7189, 81F8,F4,7182 ; Unused
+$A4:CE4C             dx 0005, 01F9,08,317A, 0000,08,717A, 0000,00,7198, 01F8,00,7199, 81F8,F0,7184 ; Unused
+$A4:CE67             dx 0004, 0000,05,710F, 01F8,0D,717B, 01F8,05,711F, 81F8,F5,7186 ; Unused
+$A4:CE7D             dx 0001, 81F8,F8,718A ; Unused
+$A4:CE84             dx 0001, 81F8,F8,718C ; Unused
+$A4:CE8B             dx 0001, 81F8,F8,718E ; Unused
 $A4:CE92             dx 0009, 81C3,1A,30E4, 81B3,1E,3100, 0000,07,3108, 01F0,FF,30F6, 81F0,07,3106, 81F8,F7,30E7, 81EC,0B,30E0, 81DE,12,30E0, 81D0,19,30E0
 $A4:CEC1             dx 0009, 81B1,13,30E4, 81A1,13,3100, 01F8,09,30FF, 01F0,F9,30EF, 81E8,01,30ED, 81F8,F9,310D, 81DE,05,3102, 81CE,0F,3104, 81C0,0F,3102
 $A4:CEF0             dx 0007, 81CC,1C,30E4, 81BC,1E,3100, 81F8,08,3109, 81F8,F8,30E9, 81F6,0D,30E0, 81E8,14,30E0, 81DA,1B,30E0
@@ -4151,25 +4155,25 @@ $A4:D0B9             dx 0008, 8003,F5,312D, 8002,F5,714B, 0011,06,30DF, 0009,05,
 $A4:D0E3             dx 0008, 000C,06,30DF, 0004,05,30DE, 01FC,05,30DD, 01F4,07,30DC, 01EC,07,30DB, 81FC,F5,312D, 81FC,F5,314B, 8000,F9,312B
 $A4:D10D             dx 0008, 0008,06,30DF, 0000,05,30DE, 01F8,05,30DD, 01F0,07,30DC, 01E8,07,30DB, 81F8,F5,312D, 81F9,F5,314B, 8000,F9,312B
 $A4:D137             dx 0008, 0005,07,30DF, 01FD,06,30DE, 01F5,06,30DD, 01ED,08,30DC, 01E5,08,30DB, 81F5,F6,312D, 81F7,F6,314B, 8001,F9,312B
-$A4:D161             dx 0008, 0002,08,30DF, 01FA,07,30DE, 01F2,07,30DD, 01EA,08,30DC, 01E2,08,30DB, 81F2,F7,312D, 81F6,F7,314B, 8001,F9,312B
+$A4:D161             dx 0008, 0002,08,30DF, 01FA,07,30DE, 01F2,07,30DD, 01EA,08,30DC, 01E2,08,30DB, 81F2,F7,312D, 81F6,F7,314B, 8001,F9,312B ; Unused
 $A4:D18B             dx 0008, 000C,04,30DF, 0004,05,30DE, 01FC,05,30DD, 01F4,05,30DC, 01EC,05,30DB, 81FC,F5,312D, 81FC,F5,314B, 8000,F9,312B
 $A4:D1B5             dx 0008, 000C,04,30DF, 0004,05,30DE, 01FC,05,30DD, 01F4,05,30DC, 01EC,05,30DB, 81FC,F5,312D, 81FC,F3,314B, 8000,F5,312B
 $A4:D1DF             dx 0008, 000C,04,30DF, 0004,05,30DE, 01FC,05,30DD, 01F4,05,30DC, 01EC,05,30DB, 81FC,F5,312D, 81FC,F1,314B, 8000,F1,312B
-$A4:D209             dx 0009, 802D,1A,70E4, 803D,1E,7100, 01F8,07,7108, 0008,FF,70F6, 8000,07,7106, 81F8,F7,70E7, 8004,0B,70E0, 8012,12,70E0, 8020,19,70E0
-$A4:D238             dx 0009, 803F,13,70E4, 804F,13,7100, 0000,09,70FF, 0008,F9,70EF, 8008,01,70ED, 81F8,F9,710D, 8012,05,7102, 8022,0F,7104, 8030,0F,7102
-$A4:D267             dx 0007, 8024,1C,70E4, 8034,1E,7100, 81F8,08,7109, 81F8,F8,70E9, 81FA,0D,70E0, 8008,14,70E0, 8016,1B,70E0
-$A4:D28C             dx 0009, 01F8,08,30FF, 01F0,F8,30EF, 81E8,00,30ED, 81F8,F8,310D, 801B,11,70E4, 802B,11,7100, 81EE,03,7102, 81FE,0D,7104, 800C,0D,7102
+$A4:D209             dx 0009, 802D,1A,70E4, 803D,1E,7100, 01F8,07,7108, 0008,FF,70F6, 8000,07,7106, 81F8,F7,70E7, 8004,0B,70E0, 8012,12,70E0, 8020,19,70E0 ; Unused
+$A4:D238             dx 0009, 803F,13,70E4, 804F,13,7100, 0000,09,70FF, 0008,F9,70EF, 8008,01,70ED, 81F8,F9,710D, 8012,05,7102, 8022,0F,7104, 8030,0F,7102 ; Unused
+$A4:D267             dx 0007, 8024,1C,70E4, 8034,1E,7100, 81F8,08,7109, 81F8,F8,70E9, 81FA,0D,70E0, 8008,14,70E0, 8016,1B,70E0 ; Unused
+$A4:D28C             dx 0009, 01F8,08,30FF, 01F0,F8,30EF, 81E8,00,30ED, 81F8,F8,310D, 801B,11,70E4, 802B,11,7100, 81EE,03,7102, 81FE,0D,7104, 800C,0D,7102 ; Unused
 $A4:D2BB             dx 0007, 81E6,FA,30EB, 81F6,FA,310B, 81AD,FA,30E4, 819D,FA,3100, 81DD,FA,30E2, 81CD,FA,30E2, 81BD,FA,30E2
-$A4:D2E0             dx 0009, 0000,F0,F0FF, 0008,00,F0EF, 8008,F0,F0ED, 81F8,F8,F10D, 803D,DB,70E4, 804D,DB,7100, 8010,EC,F102, 8020,E2,F104, 802E,E2,F102
-$A4:D30F             dx 0007, 800A,FA,70EB, 81FA,FA,710B, 8043,FA,70E4, 8053,FA,7100, 8013,FA,70E2, 8023,FA,70E2, 8033,FA,70E2
-$A4:D334             dx 0009, 01F8,08,30FF, 01F0,F8,30EF, 81E8,00,30ED, 81F8,F8,310D, 801B,F6,70E4, 802B,F6,7100, 81EE,07,F102, 81FE,FD,F104, 800C,FD,F102
-$A4:D363             dx 0007, 81F8,08,7109, 81F8,F8,70E9, 802A,FA,70E4, 803A,FA,7100, 81FD,0B,F102, 800D,01,F104, 801B,01,F102
+$A4:D2E0             dx 0009, 0000,F0,F0FF, 0008,00,F0EF, 8008,F0,F0ED, 81F8,F8,F10D, 803D,DB,70E4, 804D,DB,7100, 8010,EC,F102, 8020,E2,F104, 802E,E2,F102 ; Unused
+$A4:D30F             dx 0007, 800A,FA,70EB, 81FA,FA,710B, 8043,FA,70E4, 8053,FA,7100, 8013,FA,70E2, 8023,FA,70E2, 8033,FA,70E2 ; Unused
+$A4:D334             dx 0009, 01F8,08,30FF, 01F0,F8,30EF, 81E8,00,30ED, 81F8,F8,310D, 801B,F6,70E4, 802B,F6,7100, 81EE,07,F102, 81FE,FD,F104, 800C,FD,F102 ; Unused
+$A4:D363             dx 0007, 81F8,08,7109, 81F8,F8,70E9, 802A,FA,70E4, 803A,FA,7100, 81FD,0B,F102, 800D,01,F104, 801B,01,F102 ; Unused
 $A4:D388             dx 0009, 0000,08,70FF, 0008,F8,70EF, 8008,00,70ED, 81F8,F8,710D, 81D5,F6,30E4, 81C5,F6,3100, 8002,07,B102, 81F2,FD,B104, 81E4,FD,B102
 $A4:D3B7             dx 0009, 01F8,F0,B0FF, 01F0,00,B0EF, 81E8,F0,B0ED, 81F8,F8,B10D, 81B3,DB,30E4, 81A3,DB,3100, 81E0,EC,B102, 81D0,E2,B104, 81C2,E2,B102
-$A4:D3E6             dx 0004, 0000,F8,70D0, 0000,00,F0D0, 01F8,00,B0D0, 01F8,F8,30D0
-$A4:D3FC             dx 0004, 0000,F8,70D1, 0000,00,F0D1, 01F8,00,B0D1, 01F8,F8,30D1
-$A4:D412             dx 0004, 0000,00,F0D2, 0000,F8,70D2, 01F8,00,B0D2, 01F8,F8,30D2
-$A4:D428             dx 0004, 0000,00,F0D3, 0000,F8,70D3, 01F8,00,B0D3, 01F8,F8,30D3
+$A4:D3E6             dx 0004, 0000,F8,70D0, 0000,00,F0D0, 01F8,00,B0D0, 01F8,F8,30D0 ; Unused
+$A4:D3FC             dx 0004, 0000,F8,70D1, 0000,00,F0D1, 01F8,00,B0D1, 01F8,F8,30D1 ; Unused
+$A4:D412             dx 0004, 0000,00,F0D2, 0000,F8,70D2, 01F8,00,B0D2, 01F8,F8,30D2 ; Unused
+$A4:D428             dx 0004, 0000,00,F0D3, 0000,F8,70D3, 01F8,00,B0D3, 01F8,F8,30D3 ; Unused
 $A4:D43E             dx 0004, 0008,00,20D7, 0000,00,20D6, 01F8,00,20D5, 01F8,F8,20D4
 $A4:D454             dx 0003, 0008,00,20DA, 0000,00,20D9, 01F8,00,20D8
 $A4:D465             dx 0004, 0008,F8,A0D7, 0000,F8,A0D6, 01F8,F8,A0D5, 01F8,00,A0D4
@@ -4290,7 +4294,7 @@ $A4:E030             dx 0038, 0010,F0,2FED, 0008,F0,2FEC, 0020,F0,2FFD, 0018,F0,
 }
 
 
-;;; $E14A..E1FD: Crocomire instruction lists ;;;
+;;; $E14A..E1FD: Crocomire corpse instruction lists ;;;
 {
 ;;; $E14A: Instruction list ;;;
 {
@@ -4367,11 +4371,12 @@ $A4:E1D2             dx 0004,E6BC,
 }
 
 
-;;; $E1FE: Crocomire extended spritemaps ;;;
+;;; $E1FE: Crocomire corpse extended spritemaps ;;;
 {
 $A4:E1FE             dx 0005, FFF0,0007,EE41,E748, FFFC,FFD1,E7A1,E72E, FFE7,FFF8,E8FA,E748, FFFF,0005,E82C,E748, FFE4,0014,E8AD,E748
 $A4:E228             dx 0005, FFF0,0004,EE70,E748, FFFD,FFCF,E7A1,E72E, FFE7,FFF8,E8FA,E748, FFFF,0003,E82C,E748, FFE2,0014,E8AD,E748
 $A4:E252             dx 0005, FFF5,FFFF,EDED,E748, FFFF,FFCE,E7A1,E72E, FFE7,FFF6,E8FA,E748, FFFF,0002,E82C,E748, FFE1,0014,E8AD,E748
+
 $A4:E27C             dx 0005, FFF0,0003,EE1C,E748, 0000,FFCD,E7A1,E72E, FFE7,FFF8,E8FA,E748, FFFF,0001,E82C,E748, FFE0,0014,E8AD,E748
 $A4:E2A6             dx 0005, FFF4,0007,ED16,E748, 0002,FFD0,E7A1,E72E, FFE7,FFFB,E8FA,E748, FFFF,0004,E82C,E748, FFDF,0014,E8AD,E748
 $A4:E2D0             dx 0005, FFF4,0006,ED16,E748, 0002,FFD4,E7A1,E72E, FFE7,FFFB,E8FA,E748, FFFF,0006,E82C,E748, FFDE,0014,E8AD,E748
@@ -4391,6 +4396,7 @@ $A4:E60A             dx 000A, 0040,0014,E7A1,E72E, 0029,0036,E919,E748, FFF6,002
 $A4:E65C             dx 0006, 0040,0013,E7A1,E72E, FFF3,002E,E92E,E748, 001D,0033,E920,E748, 0014,002F,E920,E748, 0002,0031,E935,E748, 000C,002C,E927,E748
 $A4:E68E             dx 0003, 0040,0014,E7A1,E72E, FFF3,0031,E92E,E748, 000E,0030,E927,E748
 $A4:E6A8             dx 0001, 0040,0015,E7A1,E72E
+
 $A4:E6B2             dx 0001, 0000,0000,E7A1,E72E
 $A4:E6BC             dx 0001, 0000,0000,F5F3,E748
 $A4:E6C6             dx 0001, 0000,0000,F5FA,E748
@@ -4405,25 +4411,25 @@ $A4:E716             dx 0001, 0020,0020,F673,E748
 }
 
 
-;;; $E720: Crocomire hitboxes ;;;
+;;; $E720: Crocomire corpse hitboxes ;;;
 {
-$A4:E720             dx 0001, FFE6,FFE2,0026,001D,B950,B968
+$A4:E720             dx 0001, FFE6,FFE2,0026,001D,B950,B968 ; Unused
 $A4:E72E             dx 0002, FFDA,FFF0,0000,001F,B950,B968, 0000,FFE3,001A,001C,B950,B968
 $A4:E748             dx 0000
 }
 
 
-;;; $E74A: Crocomire spritemaps / extended tilemaps ;;;
+;;; $E74A: Crocomire corpse spritemaps / extended tilemaps ;;;
 {
-$A4:E74A             dx 0011, 01E4,18,2FA6, 01F4,18,2FBF, 01EC,18,2FAF, 801C,10,2FCA, 800C,10,2FC8, 81FC,10,2FC6, 801C,00,2FC4, 800C,00,2FC2, 81FC,00,2FC0, 000C,E8,2FB6, 801C,F0,2FAD, 800C,F0,2FAB, 81FC,F0,2FA9, 81EC,F0,2FA7, 81FC,E0,2FA4, 81EC,E0,2FA2, 81DC,E0,2FA0
+$A4:E74A             dx 0011, 01E4,18,2FA6, 01F4,18,2FBF, 01EC,18,2FAF, 801C,10,2FCA, 800C,10,2FC8, 81FC,10,2FC6, 801C,00,2FC4, 800C,00,2FC2, 81FC,00,2FC0, 000C,E8,2FB6, 801C,F0,2FAD, 800C,F0,2FAB, 81FC,F0,2FA9, 81EC,F0,2FA7, 81FC,E0,2FA4, 81EC,E0,2FA2, 81DC,E0,2FA0 ; Unused
 $A4:E7A1             dx 0011, 0014,18,6FA6, 0004,18,6FBF, 000C,18,6FAF, 81D4,10,6FCA, 81E4,10,6FC8, 81F4,10,6FC6, 81D4,00,6FC4, 81E4,00,6FC2, 81F4,00,6FC0, 01EC,E8,6FB6, 81D4,F0,6FAD, 81E4,F0,6FAB, 81F4,F0,6FA9, 8004,F0,6FA7, 81F4,E0,6FA4, 8004,E0,6FA2, 8014,E0,6FA0
-$A4:E7F8             dx 000A, 0018,0C,2F6B, 0010,0C,2F6A, 8010,FC,2F68, 8010,EC,2F66, 8000,00,2F64, 81F0,00,2F62, 8000,F0,2F64, 81F0,F0,2F62, 81E0,FC,2F80, 81E0,EC,2F60
+$A4:E7F8             dx 000A, 0018,0C,2F6B, 0010,0C,2F6A, 8010,FC,2F68, 8010,EC,2F66, 8000,00,2F64, 81F0,00,2F62, 8000,F0,2F64, 81F0,F0,2F62, 81E0,FC,2F80, 81E0,EC,2F60 ; Unused
 $A4:E82C             dx 000A, 01E0,0C,6F6B, 01E8,0C,6F6A, 81E0,FC,6F68, 81E0,EC,6F66, 81F0,00,6F64, 8000,00,6F62, 81F0,F0,6F64, 8000,F0,6F62, 8010,FC,6F80, 8010,EC,6F60
-$A4:E860             dx 000F, 8020,10,2F8E, 8000,10,2F8A, 8010,10,2F8C, 01F8,18,2F7B, 01F0,10,2F0F, 01F8,10,2F1F, 01E7,18,6F7A, 01E0,18,2F7A, 01D0,10,2F88, 01D8,10,2F89, 01E0,10,2F98, 01E8,10,2F99, 81F0,00,2F86, 81E0,00,2F84, 81D0,00,2F82
+$A4:E860             dx 000F, 8020,10,2F8E, 8000,10,2F8A, 8010,10,2F8C, 01F8,18,2F7B, 01F0,10,2F0F, 01F8,10,2F1F, 01E7,18,6F7A, 01E0,18,2F7A, 01D0,10,2F88, 01D8,10,2F89, 01E0,10,2F98, 01E8,10,2F99, 81F0,00,2F86, 81E0,00,2F84, 81D0,00,2F82 ; Unused
 $A4:E8AD             dx 000F, 81D0,10,6F8E, 81F0,10,6F8A, 81E0,10,6F8C, 0000,18,6F7B, 0008,10,6F0F, 0000,10,6F1F, 0011,18,2F7A, 0018,18,6F7A, 0028,10,6F88, 0020,10,6F89, 0018,10,6F98, 0010,10,6F99, 8000,00,6F86, 8010,00,6F84, 8020,00,6F82
 $A4:E8FA             dx 0002, 8000,F8,2F6E, 81F0,F8,2F6C
-$A4:E906             dx 0002, 81F0,F8,6F6E, 8000,F8,6F6C
-$A4:E912             dx 0001, 81F8,F8,6F60
+$A4:E906             dx 0002, 81F0,F8,6F6E, 8000,F8,6F6C ; Unused
+$A4:E912             dx 0001, 81F8,F8,6F60 ; Unused
 $A4:E919             dx 0001, 81F8,F8,6F80
 $A4:E920             dx 0001, 81F8,F8,6F62
 $A4:E927             dx 0001, 81F8,F8,6F64
@@ -4436,54 +4442,55 @@ $A4:E974             dx 0004, 0000,05,6F0F, 01F8,0D,6F7B, 01F8,05,6F1F, 81F8,F5,
 $A4:E98A             dx 0001, 81F8,F8,6F8A
 $A4:E991             dx 0001, 81F8,F8,6F8C
 $A4:E998             dx 0001, 81F8,F8,6F8E
-$A4:E99F             dx 0009, 81C3,1A,20E4, 81B3,1E,2100, 0000,07,2108, 01F0,FF,20F6, 81F0,07,2106, 81F8,F7,20E7, 81EC,0B,20E0, 81DE,12,20E0, 81D0,19,20E0
-$A4:E9CE             dx 0009, 81B1,13,20E4, 81A1,13,2100, 01F8,09,20FF, 01F0,F9,20EF, 81E8,01,20ED, 81F8,F9,210D, 81DE,05,2102, 81CE,0F,2104, 81C0,0F,2102
-$A4:E9FD             dx 0007, 81CC,1C,20E4, 81BC,1E,2100, 81F8,08,2109, 81F8,F8,20E9, 81F6,0D,20E0, 81E8,14,20E0, 81DA,1B,20E0
-$A4:EA22             dx 0009, 0000,08,60FF, 0008,F8,60EF, 8008,00,60ED, 81F8,F8,610D, 81D5,11,20E4, 81C5,11,2100, 8002,03,2102, 81F2,0D,2104, 81E4,0D,2102
-$A4:EA51             dx 0007, 81C0,0C,20E4, 81B0,0C,2100, 81F8,08,2109, 81F8,F8,20E9, 81F0,0C,20E2, 81E0,0C,20E2, 81D0,0C,20E2
-$A4:EA76             dx 0008, 0002,09,20DF, 01FA,09,20DE, 01F2,09,20DD, 01EA,09,20DC, 01E2,09,20DB, 81F2,F9,212D, 81F6,F9,214B, 8001,F9,212B
-$A4:EAA0             dx 0008, 0005,09,20DF, 01FD,09,20DE, 01F5,09,20DD, 01ED,09,20DC, 01E5,09,20DB, 81F5,F9,212D, 81F7,F9,214B, 8001,F9,212B
-$A4:EACA             dx 0008, 0008,09,20DF, 0000,09,20DE, 01F8,09,20DD, 01F0,09,20DC, 01E8,09,20DB, 81F8,F9,212D, 81F9,F9,214B, 8000,F9,212B
-$A4:EAF4             dx 0008, 000C,09,20DF, 0004,09,20DE, 01FC,09,20DD, 01F4,09,20DC, 01EC,09,20DB, 81FC,F9,212D, 81FC,F9,214B, 8000,F9,212B
-$A4:EB1E             dx 0008, 8003,F9,212D, 8002,F9,614B, 0011,09,20DF, 0009,09,20DE, 0001,09,20DD, 01F9,09,20DC, 01F1,09,20DB, 8001,F9,612B
-$A4:EB48             dx 0008, 8009,F9,212D, 8006,F9,614B, 0018,09,20DF, 0010,09,20DE, 0008,09,20DD, 0000,09,20DC, 01F8,09,20DB, 8001,F9,612B
-$A4:EB72             dx 0008, 8010,F9,212D, 800B,F9,614B, 0020,09,20DF, 0018,09,20DE, 0010,09,20DD, 0008,09,20DC, 0000,09,20DB, 8003,F9,612B
-$A4:EB9C             dx 0008, 8009,F8,212D, 8006,F8,614B, 0018,09,20DF, 0010,08,20DE, 0008,08,20DD, 0000,09,20DC, 01F8,09,20DB, 8001,F9,612B
-$A4:EBC6             dx 0008, 8003,F5,212D, 8002,F5,614B, 0011,06,20DF, 0009,05,20DE, 0001,05,20DD, 01F9,07,20DC, 01F1,07,20DB, 8001,F9,612B
-$A4:EBF0             dx 0008, 000C,06,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,07,20DC, 01EC,07,20DB, 81FC,F5,212D, 81FC,F5,214B, 8000,F9,212B
-$A4:EC1A             dx 0008, 0008,06,20DF, 0000,05,20DE, 01F8,05,20DD, 01F0,07,20DC, 01E8,07,20DB, 81F8,F5,212D, 81F9,F5,214B, 8000,F9,212B
-$A4:EC44             dx 0008, 0005,07,20DF, 01FD,06,20DE, 01F5,06,20DD, 01ED,08,20DC, 01E5,08,20DB, 81F5,F6,212D, 81F7,F6,214B, 8001,F9,212B
-$A4:EC6E             dx 0008, 0002,08,20DF, 01FA,07,20DE, 01F2,07,20DD, 01EA,08,20DC, 01E2,08,20DB, 81F2,F7,212D, 81F6,F7,214B, 8001,F9,212B
-$A4:EC98             dx 0008, 000C,04,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,05,20DC, 01EC,05,20DB, 81FC,F5,212D, 81FC,F5,214B, 8000,F9,212B
-$A4:ECC2             dx 0008, 000C,04,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,05,20DC, 01EC,05,20DB, 81FC,F5,212D, 81FC,F3,214B, 8000,F5,212B
-$A4:ECEC             dx 0008, 000C,04,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,05,20DC, 01EC,05,20DB, 81FC,F5,212D, 81FC,F1,214B, 8000,F1,212B
+$A4:E99F             dx 0009, 81C3,1A,20E4, 81B3,1E,2100, 0000,07,2108, 01F0,FF,20F6, 81F0,07,2106, 81F8,F7,20E7, 81EC,0B,20E0, 81DE,12,20E0, 81D0,19,20E0 ; Unused
+$A4:E9CE             dx 0009, 81B1,13,20E4, 81A1,13,2100, 01F8,09,20FF, 01F0,F9,20EF, 81E8,01,20ED, 81F8,F9,210D, 81DE,05,2102, 81CE,0F,2104, 81C0,0F,2102 ; Unused
+$A4:E9FD             dx 0007, 81CC,1C,20E4, 81BC,1E,2100, 81F8,08,2109, 81F8,F8,20E9, 81F6,0D,20E0, 81E8,14,20E0, 81DA,1B,20E0 ; Unused
+$A4:EA22             dx 0009, 0000,08,60FF, 0008,F8,60EF, 8008,00,60ED, 81F8,F8,610D, 81D5,11,20E4, 81C5,11,2100, 8002,03,2102, 81F2,0D,2104, 81E4,0D,2102 ; Unused
+$A4:EA51             dx 0007, 81C0,0C,20E4, 81B0,0C,2100, 81F8,08,2109, 81F8,F8,20E9, 81F0,0C,20E2, 81E0,0C,20E2, 81D0,0C,20E2 ; Unused
+$A4:EA76             dx 0008, 0002,09,20DF, 01FA,09,20DE, 01F2,09,20DD, 01EA,09,20DC, 01E2,09,20DB, 81F2,F9,212D, 81F6,F9,214B, 8001,F9,212B ; Unused
+$A4:EAA0             dx 0008, 0005,09,20DF, 01FD,09,20DE, 01F5,09,20DD, 01ED,09,20DC, 01E5,09,20DB, 81F5,F9,212D, 81F7,F9,214B, 8001,F9,212B ; Unused
+$A4:EACA             dx 0008, 0008,09,20DF, 0000,09,20DE, 01F8,09,20DD, 01F0,09,20DC, 01E8,09,20DB, 81F8,F9,212D, 81F9,F9,214B, 8000,F9,212B ; Unused
+$A4:EAF4             dx 0008, 000C,09,20DF, 0004,09,20DE, 01FC,09,20DD, 01F4,09,20DC, 01EC,09,20DB, 81FC,F9,212D, 81FC,F9,214B, 8000,F9,212B ; Unused
+$A4:EB1E             dx 0008, 8003,F9,212D, 8002,F9,614B, 0011,09,20DF, 0009,09,20DE, 0001,09,20DD, 01F9,09,20DC, 01F1,09,20DB, 8001,F9,612B ; Unused
+$A4:EB48             dx 0008, 8009,F9,212D, 8006,F9,614B, 0018,09,20DF, 0010,09,20DE, 0008,09,20DD, 0000,09,20DC, 01F8,09,20DB, 8001,F9,612B ; Unused
+$A4:EB72             dx 0008, 8010,F9,212D, 800B,F9,614B, 0020,09,20DF, 0018,09,20DE, 0010,09,20DD, 0008,09,20DC, 0000,09,20DB, 8003,F9,612B ; Unused
+$A4:EB9C             dx 0008, 8009,F8,212D, 8006,F8,614B, 0018,09,20DF, 0010,08,20DE, 0008,08,20DD, 0000,09,20DC, 01F8,09,20DB, 8001,F9,612B ; Unused
+$A4:EBC6             dx 0008, 8003,F5,212D, 8002,F5,614B, 0011,06,20DF, 0009,05,20DE, 0001,05,20DD, 01F9,07,20DC, 01F1,07,20DB, 8001,F9,612B ; Unused
+$A4:EBF0             dx 0008, 000C,06,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,07,20DC, 01EC,07,20DB, 81FC,F5,212D, 81FC,F5,214B, 8000,F9,212B ; Unused
+$A4:EC1A             dx 0008, 0008,06,20DF, 0000,05,20DE, 01F8,05,20DD, 01F0,07,20DC, 01E8,07,20DB, 81F8,F5,212D, 81F9,F5,214B, 8000,F9,212B ; Unused
+$A4:EC44             dx 0008, 0005,07,20DF, 01FD,06,20DE, 01F5,06,20DD, 01ED,08,20DC, 01E5,08,20DB, 81F5,F6,212D, 81F7,F6,214B, 8001,F9,212B ; Unused
+$A4:EC6E             dx 0008, 0002,08,20DF, 01FA,07,20DE, 01F2,07,20DD, 01EA,08,20DC, 01E2,08,20DB, 81F2,F7,212D, 81F6,F7,214B, 8001,F9,212B ; Unused
+$A4:EC98             dx 0008, 000C,04,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,05,20DC, 01EC,05,20DB, 81FC,F5,212D, 81FC,F5,214B, 8000,F9,212B ; Unused
+$A4:ECC2             dx 0008, 000C,04,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,05,20DC, 01EC,05,20DB, 81FC,F5,212D, 81FC,F3,214B, 8000,F5,212B ; Unused
+$A4:ECEC             dx 0008, 000C,04,20DF, 0004,05,20DE, 01FC,05,20DD, 01F4,05,20DC, 01EC,05,20DB, 81FC,F5,212D, 81FC,F1,214B, 8000,F1,212B ; Unused
 $A4:ED16             dx 0009, 802D,1A,62E4, 803D,1E,6300, 01F8,07,6308, 0008,FF,62F6, 8000,07,6306, 81F8,F7,62E7, 8004,0B,62E0, 8012,12,62E0, 8020,19,62E0
 $A4:ED45             dx 0009, 803F,13,62E4, 804F,13,6300, 0000,09,62FF, 0008,F9,62EF, 8008,01,62ED, 81F8,F9,630D, 8012,05,6302, 8022,0F,6304, 8030,0F,6302
-$A4:ED74             dx 0007, 8024,1C,62E4, 8034,1E,6300, 81F8,08,6309, 81F8,F8,62E9, 81FA,0D,62E0, 8008,14,62E0, 8016,1B,62E0
-$A4:ED99             dx 0009, 01F8,08,22FF, 01F0,F8,22EF, 81E8,00,22ED, 81F8,F8,230D, 801B,11,62E4, 802B,11,6300, 81EE,03,6302, 81FE,0D,6304, 800C,0D,6302
-$A4:EDC8             dx 0007, 81E6,FA,20EB, 81F6,FA,210B, 81AD,FA,20E4, 819D,FA,2100, 81DD,FA,20E2, 81CD,FA,20E2, 81BD,FA,20E2
+$A4:ED74             dx 0007, 8024,1C,62E4, 8034,1E,6300, 81F8,08,6309, 81F8,F8,62E9, 81FA,0D,62E0, 8008,14,62E0, 8016,1B,62E0 ; Unused
+$A4:ED99             dx 0009, 01F8,08,22FF, 01F0,F8,22EF, 81E8,00,22ED, 81F8,F8,230D, 801B,11,62E4, 802B,11,6300, 81EE,03,6302, 81FE,0D,6304, 800C,0D,6302 ; Unused
+$A4:EDC8             dx 0007, 81E6,FA,20EB, 81F6,FA,210B, 81AD,FA,20E4, 819D,FA,2100, 81DD,FA,20E2, 81CD,FA,20E2, 81BD,FA,20E2 ; Unused
 $A4:EDED             dx 0009, 0000,F0,E2FF, 0008,00,E2EF, 8008,F0,E2ED, 81F8,F8,E30D, 803D,DB,62E4, 804D,DB,6300, 8010,EC,E302, 8020,E2,E304, 802E,E2,E302
 $A4:EE1C             dx 0007, 800A,FA,62EB, 81FA,FA,630B, 8043,FA,62E4, 8053,FA,6300, 8013,FA,62E2, 8023,FA,62E2, 8033,FA,62E2
 $A4:EE41             dx 0009, 01F8,08,22FF, 01F0,F8,22EF, 81E8,00,22ED, 81F8,F8,230D, 801B,F6,62E4, 802B,F6,6300, 81EE,07,E302, 81FE,FD,E304, 800C,FD,E302
 $A4:EE70             dx 0007, 81F8,08,6309, 81F8,F8,62E9, 802A,FA,62E4, 803A,FA,6300, 81FD,0B,E302, 800D,01,E304, 801B,01,E302
-$A4:EE95             dx 0009, 0000,08,60FF, 0008,F8,60EF, 8008,00,60ED, 81F8,F8,610D, 81D5,F6,20E4, 81C5,F6,2100, 8002,07,A102, 81F2,FD,A104, 81E4,FD,A102
-$A4:EEC4             dx 0009, 01F8,F0,A0FF, 01F0,00,A0EF, 81E8,F0,A0ED, 81F8,F8,A10D, 81B3,DB,20E4, 81A3,DB,2100, 81E0,EC,A102, 81D0,E2,A104, 81C2,E2,A102
-$A4:EEF3             dx 0004, 0000,F8,60D0, 0000,00,E0D0, 01F8,00,A0D0, 01F8,F8,20D0
-$A4:EF09             dx 0004, 0000,F8,60D1, 0000,00,E0D1, 01F8,00,A0D1, 01F8,F8,20D1
-$A4:EF1F             dx 0004, 0000,00,E0D2, 0000,F8,60D2, 01F8,00,A0D2, 01F8,F8,20D2
-$A4:EF35             dx 0004, 0000,00,E0D3, 0000,F8,60D3, 01F8,00,A0D3, 01F8,F8,20D3
-$A4:EF4B             dx 0004, 0008,00,20D7, 0000,00,20D6, 01F8,00,20D5, 01F8,F8,20D4
-$A4:EF61             dx 0003, 0008,00,20DA, 0000,00,20D9, 01F8,00,20D8
-$A4:EF72             dx 0004, 0008,F8,A0D7, 0000,F8,A0D6, 01F8,F8,A0D5, 01F8,00,A0D4
-$A4:EF88             dx 0003, 0008,F8,A0DA, 0000,F8,A0D9, 01F8,F8,A0D8
-$A4:EF99             dx 0001, 81F8,F8,21CC
-$A4:EFA0             dx 0006, 01E0,00,21DE, 01E0,F8,21CE, 01E8,00,215D, 01E8,F8,214D, 81F0,F0,21E6, 8000,F0,21E0
-$A4:EFC0             dx 0006, 01E0,00,21DF, 01E0,F8,21CF, 01E8,00,215D, 01E8,F8,214D, 81F0,F0,21E6, 8000,F0,21E0
-$A4:EFE0             dx 0006, 01E8,00,215E, 01E8,F8,214E, 01E0,00,213F, 01E0,F8,212F, 81F0,F0,21E6, 8000,F0,21E0
-$A4:F000             dx 0004, 8000,F0,21E0, 81F0,F0,21E8, 01E8,00,215F, 01E8,F8,214F
-$A4:F016             dx 0002, 8000,F0,21E2, 81F0,F0,21EA
-$A4:F022             dx 0001, 8000,F0,21E4
+$A4:EE95             dx 0009, 0000,08,60FF, 0008,F8,60EF, 8008,00,60ED, 81F8,F8,610D, 81D5,F6,20E4, 81C5,F6,2100, 8002,07,A102, 81F2,FD,A104, 81E4,FD,A102 ; Unused
+$A4:EEC4             dx 0009, 01F8,F0,A0FF, 01F0,00,A0EF, 81E8,F0,A0ED, 81F8,F8,A10D, 81B3,DB,20E4, 81A3,DB,2100, 81E0,EC,A102, 81D0,E2,A104, 81C2,E2,A102 ; Unused
+$A4:EEF3             dx 0004, 0000,F8,60D0, 0000,00,E0D0, 01F8,00,A0D0, 01F8,F8,20D0 ; Unused
+$A4:EF09             dx 0004, 0000,F8,60D1, 0000,00,E0D1, 01F8,00,A0D1, 01F8,F8,20D1 ; Unused
+$A4:EF1F             dx 0004, 0000,00,E0D2, 0000,F8,60D2, 01F8,00,A0D2, 01F8,F8,20D2 ; Unused
+$A4:EF35             dx 0004, 0000,00,E0D3, 0000,F8,60D3, 01F8,00,A0D3, 01F8,F8,20D3 ; Unused
+$A4:EF4B             dx 0004, 0008,00,20D7, 0000,00,20D6, 01F8,00,20D5, 01F8,F8,20D4 ; Unused
+$A4:EF61             dx 0003, 0008,00,20DA, 0000,00,20D9, 01F8,00,20D8 ; Unused
+$A4:EF72             dx 0004, 0008,F8,A0D7, 0000,F8,A0D6, 01F8,F8,A0D5, 01F8,00,A0D4 ; Unused
+$A4:EF88             dx 0003, 0008,F8,A0DA, 0000,F8,A0D9, 01F8,F8,A0D8 ; Unused
+$A4:EF99             dx 0001, 81F8,F8,21CC ; Unused
+$A4:EFA0             dx 0006, 01E0,00,21DE, 01E0,F8,21CE, 01E8,00,215D, 01E8,F8,214D, 81F0,F0,21E6, 8000,F0,21E0 ; Unused
+$A4:EFC0             dx 0006, 01E0,00,21DF, 01E0,F8,21CF, 01E8,00,215D, 01E8,F8,214D, 81F0,F0,21E6, 8000,F0,21E0 ; Unused
+$A4:EFE0             dx 0006, 01E8,00,215E, 01E8,F8,214E, 01E0,00,213F, 01E0,F8,212F, 81F0,F0,21E6, 8000,F0,21E0 ; Unused
+$A4:F000             dx 0004, 8000,F0,21E0, 81F0,F0,21E8, 01E8,00,215F, 01E8,F8,214F ; Unused
+$A4:F016             dx 0002, 8000,F0,21E2, 81F0,F0,21EA ; Unused
+$A4:F022             dx 0001, 8000,F0,21E4 ; Unused
 
+; Unused
 $A4:F029             dx FFFE,
                         2000,000C,01FF,01FF,01FF,01FF,01FF,01FF,01FF,01FF,01FF,01FF,01FF,01FF,
                         2040,000C,01FF,01FF,1CA2,1CA3,1CA4,1CA5,1CA6,1CA7,1CA8,1CA9,1CAA,01FF,
@@ -4495,6 +4502,7 @@ $A4:F029             dx FFFE,
                         21C0,000C,01FF,01FF,1C43,1C44,1C45,1C46,1C8D,1C8E,1C8F,1C9D,1C9E,1C9F,
                         FFFF
 
+; Unused
 $A4:F10D             dx FFFE,
                         2002,0007,1CE0,1CE1,1CE2,1CE3,1CE4,1CE5,1CE6,
                         2042,000A,1CF0,1CF1,1CF2,1CF3,1CF4,1CF5,1CF6,1CF7,1CF8,01FF,
@@ -4506,6 +4514,7 @@ $A4:F10D             dx FFFE,
                         21C4,000A,1D1C,1D1D,1D1E,1D1F,1D30,1D31,1D32,1D33,1D34,1D35,
                         FFFF
 
+; Unused
 $A4:F1D3             dx FFFE,
                         2002,0007,01FF,01FF,01FF,01FF,01FF,01FF,01FF,
                         2042,000A,01FF,01FF,01FF,01FF,1C02,1C03,1C04,1C05,1C06,1C07,
@@ -4518,6 +4527,7 @@ $A4:F1D3             dx FFFE,
                         21C4,000A,1C43,1C44,1C45,1C46,1C47,1C48,1C49,1C4A,1C4B,1C4C,
                         FFFF
 
+; Unused
 $A4:F2A5             dx FFFE,
                         2246,0004,1C4F,1C60,1C61,1C62,
                         2286,0004,1C5F,1C70,1C71,1C72,
@@ -4525,6 +4535,7 @@ $A4:F2A5             dx FFFE,
                         2306,0004,1C7A,1C7B,1C7C,1C7D,
                         FFFF
 
+; Unused
 $A4:F2D9             dx FFFE,
                         2246,0004,1D46,1D47,1D48,1D49,
                         2286,0004,1D56,1D57,1D58,1D59,
@@ -4532,6 +4543,7 @@ $A4:F2D9             dx FFFE,
                         2306,0004,1D5A,1D5B,1D5C,1D5D,
                         FFFF
 
+; Unused
 $A4:F30D             dx FFFE,
                         2246,0004,1D4E,1D4F,1D02,1D0B,
                         2286,0004,1D13,1D1B,1C42,1C51,
@@ -4539,21 +4551,25 @@ $A4:F30D             dx FFFE,
                         2306,0004,1C01,1C08,1C09,1C41,
                         FFFF
 
+; Unused
 $A4:F341             dx FFFE,
                         2354,0006,1D40,1D41,1D42,1D43,1D44,1D45,
                         2394,0006,1D50,1D51,1D52,1D53,1D54,1D55,
                         FFFF
 
+; Unused
 $A4:F365             dx FFFE,
                         2354,0006,1D26,1D27,1D28,1D29,1D2A,1D2B,
                         2394,0006,1D36,1D37,1D38,1D39,1D3A,1D3B,
                         FFFF
 
+; Unused
 $A4:F389             dx FFFE,
                         2354,0006,1D2C,1D2D,1D2E,1D2F,1CC8,1CC9,
                         2394,0006,1D3C,1D3D,1D3E,1D3F,1CE7,1CE8,
                         FFFF
 
+; Unused
 $A4:F3AD             dx FFFE,
                         2040,000C,01FF,01FF,01FF,01FF,01FF,1C02,1C03,1C04,1C05,1C06,1C07,01FF,
                         2080,000C,01FF,01FF,01FF,1C10,1C11,1C12,1C13,1C14,1C15,1C16,1C17,1C18,
@@ -4571,6 +4587,7 @@ $A4:F3AD             dx FFFE,
                         2380,000C,01FF,01FF,1C93,1C94,1C95,1C96,1C97,1C98,1C99,1C9A,0150,0151,
                         FFFF
 
+; Unused
 $A4:F539             dx FFFE,
                         2202,000B,01FF,1C53,1C54,1C55,1C56,1C57,1C58,1C59,1C5A,1C5B,1C5C,
                         2242,000B,1C4D,1C4E,1C4F,1C60,1C61,1C62,1C63,1C64,1C65,1C66,1C67,
