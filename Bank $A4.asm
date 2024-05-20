@@ -141,8 +141,8 @@ $A4:8759 C9 00 04    CMP #$0400             ;} If [random number] % 1000h < 400h
 $A4:875C 10 0C       BPL $0C    [$876A]     ;/
 $A4:875E A9 08 00    LDA #$0008             ;\
 $A4:8761 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 8 (projectile attack)
-$A4:8764 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; $0FB2 = 0
-$A4:8767 A0 36 BB    LDY #$BB36             ; Y = $BB36
+$A4:8764 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Crocomire projectile counter = 0
+$A4:8767 A0 36 BB    LDY #$BB36             ; Y = $BB36 (projectile attack)
 
 $A4:876A FA          PLX
 $A4:876B 6B          RTL
@@ -158,16 +158,16 @@ $A4:876F 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h
 $A4:8772 F0 10       BEQ $10    [$8784]     ;/
 $A4:8774 29 FF F7    AND #$F7FF             ;\
 $A4:8777 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
-$A4:877A A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:877A A0 30 BC    LDY #$BC30             ; Y = $BC30 (step back)
 $A4:877D A9 0C 00    LDA #$000C             ;\
 $A4:8780 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8783 60          RTS                    ; Return
 
-$A4:8784 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
-$A4:8787 C9 12 00    CMP #$0012             ;} If [$0FB2] < 12h:
-$A4:878A 10 1C       BPL $1C    [$87A8]     ;/
+$A4:8784 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ; A = [Crocomire projectile counter]
+$A4:8787 C9 12 00    CMP #$0012             ;\
+$A4:878A 10 1C       BPL $1C    [$87A8]     ;} If [Crocomire projectile counter] < 12h:
 $A4:878C EE B2 0F    INC $0FB2  [$7E:0FB2]  ;\
-$A4:878F EE B2 0F    INC $0FB2  [$7E:0FB2]  ;} $0FB2 += 2
+$A4:878F EE B2 0F    INC $0FB2  [$7E:0FB2]  ;} Crocomire projectile counter += 2
 $A4:8792 DA          PHX
 $A4:8793 5A          PHY
 $A4:8794 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -179,7 +179,7 @@ $A4:87A5 7A          PLY
 $A4:87A6 FA          PLX
 $A4:87A7 60          RTS                    ; Return
 
-$A4:87A8 A0 CA BB    LDY #$BBCA             ; Y = $BBCA
+$A4:87A8 A0 CA BB    LDY #$BBCA             ; Y = $BBCA (step forward after delay)
 $A4:87AB A9 06 00    LDA #$0006             ;\
 $A4:87AE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:87B1 60          RTS
@@ -233,7 +233,7 @@ $A4:87EC CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] >= 300h
 $A4:87EF 30 09       BMI $09    [$87FA]     ;/
 $A4:87F1 A9 06 00    LDA #$0006             ;\
 $A4:87F4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
-$A4:87F7 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
+$A4:87F7 A0 CE BB    LDY #$BBCE             ; Y = $BBCE (step forward)
 
 $A4:87FA 60          RTS
 }
@@ -344,7 +344,7 @@ $A4:888B 10 0C       BPL $0C    [$8899]     ;} If [$0FAE] < 2:
 $A4:888D 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; $0FAE = 0
 $A4:8890 A9 06 00    LDA #$0006             ;\
 $A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
-$A4:8896 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
+$A4:8896 A0 CE BB    LDY #$BBCE             ; Y = $BBCE (step forward)
 
 $A4:8899 60          RTS
 }
@@ -1194,6 +1194,8 @@ $A4:8FC6 6B          RTL
 }
 
 
+;;; $8FC7..9098: Instructions ;;;
+{
 ;;; $8FC7: Instruction - shake screen ;;;
 {
 $A4:8FC7 DA          PHX
@@ -1291,7 +1293,7 @@ $A4:904E 6B          RTL                    ; Return
 $A4:904F 7A          PLY
 $A4:9050 A0 3C BF    LDY #$BF3C             ; Y = $BF3C
 $A4:9053 A9 0E 00    LDA #$000E             ;\
-$A4:9056 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Eh
+$A4:9056 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Eh (back off from spike wall)
 $A4:9059 FA          PLX
 $A4:905A 6B          RTL
 }
@@ -1345,6 +1347,7 @@ $A4:9092 80 C7       BRA $C7    [$905B]     ; Move right 4px if on-screen
 {
 $A4:9094 20 04 90    JSR $9004  [$A4:9004]  ; Spawn big dust cloud enemy projectile with random X offset
 $A4:9097 80 E6       BRA $E6    [$907F]     ; Move right 4px
+}
 }
 
 
@@ -3271,14 +3274,13 @@ $A4:B991 6B          RTL
 
 ;;; $B992: Power bomb reaction - enemy $DDBF (Crocomire) ;;;
 {
-; This was recorded as data in the log. Was that my error or is something fishy going on?
 $A4:B992 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
 $A4:B995 D0 6D       BNE $6D    [$BA04]     ;} If [Crocomire death sequence index] != 0: return
 $A4:B997 AD 9E 86    LDA $869E  [$A4:869E]  ;\
 $A4:B99A F0 68       BEQ $68    [$BA04]     ;} If 3 = 0: return (>_<;)
 $A4:B99C 8D AE 0F    STA $0FAE  [$7E:0FAE]  ; $0FAE = 3
 $A4:B99F AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
-$A4:B9A2 C9 18 00    CMP #$0018             ;} If [Crocomire fight function index] = 18h: return
+$A4:B9A2 C9 18 00    CMP #$0018             ;} If [Crocomire fight function index] = 18h (power bombed charge): return
 $A4:B9A5 F0 5D       BEQ $5D    [$BA04]     ;/
 $A4:B9A7 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:B9AA 29 F0 BF    AND #$BFF0             ;} Crocomire fight flags &= ~400Fh (Samus not hit by claw)
@@ -3294,26 +3296,26 @@ $A4:B9C3 AD 8A 0F    LDA $0F8A  [$7E:0F8A]  ;\
 $A4:B9C6 09 02 00    ORA #$0002             ;} Crocomire AI handler = hurt AI
 $A4:B9C9 8D 8A 0F    STA $0F8A  [$7E:0F8A]  ;/
 $A4:B9CC A9 18 00    LDA #$0018             ;\
-$A4:B9CF 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 18h
+$A4:B9CF 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 18h (power bombed charge)
 $A4:B9D2 AE 8E 0F    LDX $0F8E  [$7E:0F8E]  ; X = [spritemap pointer]
 $A4:B9D5 BD 00 00    LDA $0000,x            ;\
 $A4:B9D8 85 12       STA $12    [$7E:0012]  ;} $12 = [[X]] (number of entries)
 
 ; LOOP
-$A4:B9DA BD 06 00    LDA $0006,x            ; A = [[X] + 6] (hitbox pointer)
-$A4:B9DD A0 AE BD    LDY #$BDAE             ; Crocomire instruction list pointer = $BDAE
+$A4:B9DA BD 06 00    LDA $0006,x            ; A = [[X] + 2 + 4] (spritemap pointer)
+$A4:B9DD A0 AE BD    LDY #$BDAE             ; Crocomire instruction list pointer = $BDAE (power bomb reaction - mouth fully open)
 $A4:B9E0 C9 00 D6    CMP #$D600             ;\
-$A4:B9E3 F0 15       BEQ $15    [$B9FA]     ;} If (hitbox pointer) != $D600:
-$A4:B9E5 A0 B2 BD    LDY #$BDB2             ; Crocomire instruction list pointer = $BDB2
+$A4:B9E3 F0 15       BEQ $15    [$B9FA]     ;} If (spritemap pointer) != $D600 (mouth fully open):
+$A4:B9E5 A0 B2 BD    LDY #$BDB2             ; Crocomire instruction list pointer = $BDB2 (power bomb reaction - mouth partially open)
 $A4:B9E8 C9 1C D5    CMP #$D51C             ;\
-$A4:B9EB F0 0D       BEQ $0D    [$B9FA]     ;} If (hitbox pointer) != $D51C:
+$A4:B9EB F0 0D       BEQ $0D    [$B9FA]     ;} If (spritemap pointer) != $D51C (mouth partially open):
 $A4:B9ED 8A          TXA                    ;\
 $A4:B9EE 18          CLC                    ;|
 $A4:B9EF 69 08 00    ADC #$0008             ;} X += 8 (next spritemap entry)
 $A4:B9F2 AA          TAX                    ;/
 $A4:B9F3 C6 12       DEC $12    [$7E:0012]  ; Decrement $12
 $A4:B9F5 D0 E3       BNE $E3    [$B9DA]     ; If [$12] != 0: go to LOOP
-$A4:B9F7 A0 B6 BD    LDY #$BDB6             ; Crocomire instruction list pointer = $BDB6
+$A4:B9F7 A0 B6 BD    LDY #$BDB6             ; Crocomire instruction list pointer = $BDB6 (power bomb reaction - mouth not open)
 
 $A4:B9FA 98          TYA
 $A4:B9FB 8D 92 0F    STA $0F92  [$7E:0F92]
@@ -3484,7 +3486,7 @@ $A4:BAEA             dx 0008,BFC4,
 }
 
 
-;;; $BB36: Instruction list ;;;
+;;; $BB36: Instruction list - Crocomire - projectile attack ;;;
 {
 $A4:BB36             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,C47A,
@@ -3525,7 +3527,7 @@ $A4:BB94             dx 86A6,       ; Fight AI
 }
 
 
-;;; $BBAE: Instruction list ;;;
+;;; $BBAE: Unused. Instruction list ;;;
 {
 $A4:BBAE             dx 0004,C6A4,
                         8FC7,       ; Shake screen
@@ -3541,13 +3543,13 @@ $A4:BBAE             dx 0004,C6A4,
 }
 
 
-;;; $BBCA: Instruction list - step forward after delay ;;;
+;;; $BBCA: Instruction list - Crocomire - step forward after delay ;;;
 {
 $A4:BBCA             dx 00B4,C6A4
 }
 
 
-;;; $BBCE: Instruction list - step forward ;;;
+;;; $BBCE: Instruction list - Crocomire - step forward ;;;
 {
 $A4:BBCE             dx 8752,       ; Maybe start projectile attack
                         0005,C574,
@@ -3588,13 +3590,13 @@ $A4:BBCE             dx 8752,       ; Maybe start projectile attack
 }
 
 
-;;; $BC30: Instruction list - step back ;;;
+;;; $BC30: Instruction list - Crocomire - step back ;;;
 {
 $A4:BC30             dx 0002,C5AE
 }
 
 
-;;; $BC34: Instruction list - stepping back ;;;
+;;; $BC34: Instruction list - Crocomire - stepping back ;;;
 {
 $A4:BC34             dx 0008,C1EA,
                         908F,       ; Move right 4px if on-screen and spawn big dust cloud
@@ -3613,6 +3615,7 @@ $A4:BC34             dx 0008,C1EA,
 
 ;;; $BC56: Instruction list - Crocomire - wait for first/second damage ;;;
 {
+; Blinking in disbelief
 $A4:BC56             dx 0022,C448,
                         0002,C40E,
                         0002,C3D4,
@@ -3651,6 +3654,7 @@ $A4:BC56             dx 0022,C448,
 
 ;;; $BCD8: Instruction list ;;;
 {
+; Moving claws
 $A4:BCD8             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,C47A,
                         0005,C4AC,
@@ -3682,6 +3686,7 @@ $A4:BCD8             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X 
 
 ;;; $BD2A: Instruction list ;;;
 {
+; Rawr, open mouth
 $A4:BD2A             dx 0030,C574,
                         8CFB,       ; Queue Crocomire's cry sound effect
                         0005,C5AE,
@@ -3720,6 +3725,7 @@ $A4:BD2A             dx 0030,C574,
 
 ;;; $BD8E: Instruction list ;;;
 {
+; Rawr, close mouth
 $A4:BD8E             dx 0020,C5E8,
                         86A6,       ; Fight AI
                         0005,C5AE,
@@ -3728,24 +3734,25 @@ $A4:BD8E             dx 0020,C5E8,
                         0002,C574
 $A4:BDA2             dx 0001,C574,
                         86A6,       ; Fight AI
+; TODO: is this part of the instruction list ever accessible?
                         0001,C574,
                         86A6        ; Fight AI
 }
 
 
-;;; $BDAE: Instruction list - power bomb reaction -  ;;;
+;;; $BDAE: Instruction list - Crocomire - power bomb reaction - mouth fully open ;;;
 {
 $A4:BDAE             dx 0002,C5AE
 }
 
 
-;;; $BDB2: Instruction list - power bomb reaction -  ;;;
+;;; $BDB2: Instruction list - Crocomire - power bomb reaction - mouth partially open ;;;
 {
 $A4:BDB2             dx 0002,C574
 }
 
 
-;;; $BDB6: Instruction list - power bomb reaction -  ;;;
+;;; $BDB6: Instruction list - Crocomire - power bomb reaction - mouth not open ;;;
 {
 $A4:BDB6             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,C47A,
@@ -3822,7 +3829,7 @@ $A4:BE6A             dx 0005,C67C,
 }
 
 
-;;; $BE7E: Instruction list ;;;
+;;; $BE7E: Instruction list - Crocomire - near spike wall charge ;;;
 {
 $A4:BE7E             dx 0005,C574,
                         8CFB,       ; Queue Crocomire's cry sound effect
@@ -3891,7 +3898,7 @@ $A4:BEEC             dx 0003,BFC4,
 }
 
 
-;;; $BF3C: Instruction list ;;;
+;;; $BF3C: Instruction list - Crocomire - back off from spike wall ;;;
 {
 $A4:BF3C             dx 0008,C1EA,
                         9094,       ; Move right 4px and spawn big dust cloud

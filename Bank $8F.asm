@@ -7084,7 +7084,7 @@ $8F:E5A3 60          RTS
 ;;; $E5A4: Main ASM: shake screen switching between medium horizontal and strong diagonal ;;;
 {
 ; Room $DEDE. Escape room 4
-; Horizontal screen shaking with a 3/200h chance of becoming medium diagonal for 2Ah frames
+; Horizontal screen shaking with a 3/200h chance of becoming strong diagonal for 2Ah frames
 $8F:E5A4 AD E1 07    LDA $07E1  [$7E:07E1]  ;\
 $8F:E5A7 F0 0A       BEQ $0A    [$E5B3]     ;} If [main ASM timer] != 0:
 $8F:E5A9 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer

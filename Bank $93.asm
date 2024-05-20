@@ -394,7 +394,7 @@ $93:826B D0 39       BNE $39    [$82A6]     ;/
 $93:826D 89 0C 00    BIT #$000C             ;\
 $93:8270 D0 1A       BNE $1A    [$828C]     ;} If beam is spazer or plasma: go to BRANCH_SPAZER_PLASMA
 $93:8272 8A          TXA                    ;\
-$93:8273 89 02 00    BIT #$0002             ;} If [projectile index] & 2 = 0:
+$93:8273 89 02 00    BIT #$0002             ;} If [projectile index] / 2 % 2 = 0:
 $93:8276 D0 0A       BNE $0A    [$8282]     ;/
 $93:8278 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $93:827B 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0: go to BRANCH_DRAW
@@ -408,7 +408,7 @@ $93:828A 80 22       BRA $22    [$82AE]     ; Go to BRANCH_DRAW
 
 ; BRANCH_SPAZER_PLASMA
 $93:828C 8A          TXA                    ;\
-$93:828D 89 02 00    BIT #$0002             ;} If [projectile index] & 2 = 0:
+$93:828D 89 02 00    BIT #$0002             ;} If [projectile index] / 2 % 2 = 0:
 $93:8290 D0 0A       BNE $0A    [$829C]     ;/
 $93:8292 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $93:8295 89 02 00    BIT #$0002             ;} If [frame counter] & 2 != 0: go to BRANCH_NEXT
