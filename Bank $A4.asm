@@ -52,24 +52,26 @@ $A4:86DD 60          RTS
 }
 
 
-;;; $86DE: Fight AI - index 0 ;;;
+;;; $86DE: Fight AI - index 0 - lock up (unused) / set initial Crocomire instruction list ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
-$A4:86DE A0 DE BA    LDY #$BADE             ; Y = $BADE
+$A4:86DE A0 DE BA    LDY #$BADE             ; Y = $BADE (initial)
 $A4:86E1 A9 01 00    LDA #$0001             ;\
-$A4:86E4 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A4:86E4 9D 94 0F    STA $0F94,x            ;} Crocomire instruction timer = 1
 $A4:86E7 60          RTS
 }
 
 
-;;; $86E8: Fight AI - index 2 ;;;
+;;; $86E8: Fight AI - index 2 - step forward until on screen (unused) / step forward ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
+
+; Skips the "wait for damage" stage if Crocomire happens to perform a projectile attack during its stepping forward
 $A4:86E8 A9 04 00    LDA #$0004             ;\
 $A4:86EB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 4 (asleep)
-$A4:86EE A0 CE BB    LDY #$BBCE             ; Y = $BBCE
+$A4:86EE A0 CE BB    LDY #$BBCE             ; Y = $BBCE (step forward)
 $A4:86F1 60          RTS
 }
 
@@ -90,7 +92,7 @@ $A4:8702 10 12       BPL $12    [$8716]     ;/
 $A4:8704 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8707 09 00 80    ORA #$8000             ;} Crocomire fight flags |= 8000h (awake)
 $A4:870A 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
-$A4:870D A0 56 BC    LDY #$BC56             ; Y = $BC56
+$A4:870D A0 56 BC    LDY #$BC56             ; Y = $BC56 (wait for first/second damage)
 $A4:8710 A9 12 00    LDA #$0012             ;\
 $A4:8713 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 12h (wait for first damage)
 
@@ -109,8 +111,8 @@ $A4:871F AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
 $A4:8722 29 FF F7    AND #$F7FF             ;\
 $A4:8725 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:8728 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
-$A4:872B F0 0A       BEQ $0A    [$8737]     ;} If [$0FAE] != 0:
-$A4:872D A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:872B F0 0A       BEQ $0A    [$8737]     ;} If [Crocomire step back counter] != 0:
+$A4:872D A0 30 BC    LDY #$BC30             ; Y = $BC30 (step back)
 $A4:8730 A9 0C 00    LDA #$000C             ;\
 $A4:8733 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8736 60          RTS                    ; Return
@@ -120,12 +122,12 @@ $A4:873A CD A2 86    CMP $86A2  [$A4:86A2]  ;} If [Crocomire X position] < 300h:
 $A4:873D 30 09       BMI $09    [$8748]     ;/
 $A4:873F C0 34 BC    CPY #$BC34             ;\
 $A4:8742 30 03       BMI $03    [$8747]     ;} If [Y] >= $BC34:
-$A4:8744 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
+$A4:8744 A0 CE BB    LDY #$BBCE             ; Y = $BBCE (step forward)
 
 $A4:8747 60          RTS                    ; Return
 
 ; BRANCH_NEAR_SPIKE_WALL
-$A4:8748 A0 7E BE    LDY #$BE7E             ; Y = $BE7E
+$A4:8748 A0 7E BE    LDY #$BE7E             ; Y = $BE7E (near spike wall charge)
 $A4:874B A9 0A 00    LDA #$000A             ;\
 $A4:874E 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ah (near spike wall charge)
 $A4:8751 60          RTS
@@ -195,7 +197,7 @@ $A4:87B5 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h
 $A4:87B8 F0 0F       BEQ $0F    [$87C9]     ;/
 $A4:87BA 29 FF F7    AND #$F7FF             ;\
 $A4:87BD 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
-$A4:87C0 A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:87C0 A0 30 BC    LDY #$BC30             ; Y = $BC30 (step back)
 $A4:87C3 A9 0C 00    LDA #$000C             ;\
 $A4:87C6 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 
@@ -208,18 +210,18 @@ $A4:87C9 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:87CA AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
-$A4:87CD F0 10       BEQ $10    [$87DF]     ;} If [$0FAE] != 0:
+$A4:87CD F0 10       BEQ $10    [$87DF]     ;} If [Crocomire step back counter] != 0:
 $A4:87CF 3A          DEC A                  ;\
-$A4:87D0 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement $0FAE
-$A4:87D3 F0 0A       BEQ $0A    [$87DF]     ; If [$0FAE] != 0:
-$A4:87D5 A0 34 BC    LDY #$BC34             ; Y = $BC34
+$A4:87D0 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement Crocomire step back counter
+$A4:87D3 F0 0A       BEQ $0A    [$87DF]     ; If [Crocomire step back counter] != 0:
+$A4:87D5 A0 34 BC    LDY #$BC34             ; Y = $BC34 (stepping back)
 $A4:87D8 A9 0C 00    LDA #$000C             ;\
 $A4:87DB 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (>_<;)
 $A4:87DE 60          RTS                    ; Return
 
 $A4:87DF A9 06 00    LDA #$0006             ;\
 $A4:87E2 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
-$A4:87E5 A0 CE BB    LDY #$BBCE             ; Y = $BBCE
+$A4:87E5 A0 CE BB    LDY #$BBCE             ; Y = $BBCE (step forward)
 $A4:87E8 60          RTS
 }
 
@@ -239,20 +241,20 @@ $A4:87FA 60          RTS
 }
 
 
-;;; $87FB: Fight AI - index 10h ;;;
+;;; $87FB: Fight AI - index 10h - roar and step forwards (unused) ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:87FB A9 06 00    LDA #$0006             ;\
 $A4:87FE 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
-$A4:8801 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
+$A4:8801 A0 2A BD    LDY #$BD2A             ; Y = $BD2A (wait for first/second damage - roar)
 $A4:8804 60          RTS
 }
 
 
 ;;; $8805:  ;;;
 {
-$A4:8805 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
+$A4:8805 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second damage - moving claws)
 $A4:8808 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:880B 29 FF FB    AND #$FBFF             ;} Crocomire fight flags &= ~400h
 $A4:880E 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
@@ -270,14 +272,14 @@ $A4:8818 F0 13       BEQ $13    [$882D]     ;/
 $A4:881A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
 $A4:881D 29 FF F7    AND #$F7FF             ;\
 $A4:8820 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
-$A4:8823 A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:8823 A0 30 BC    LDY #$BC30             ; Y = $BC30 (step back)
 $A4:8826 A9 14 00    LDA #$0014             ;\
 $A4:8829 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 14h (wait for second damage)
 $A4:882C 60          RTS                    ; Return
 
 $A4:882D C0 A2 BD    CPY #$BDA2             ;\
 $A4:8830 30 03       BMI $03    [$8835]     ;} If [Y] >= $BDA2:
-$A4:8832 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
+$A4:8832 A0 2A BD    LDY #$BD2A             ; Y = $BD2A (wait for first/second damage - roar)
 
 $A4:8835 60          RTS
 }
@@ -293,39 +295,39 @@ $A4:883C F0 13       BEQ $13    [$8851]     ;/
 $A4:883E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
 $A4:8841 29 FF F7    AND #$F7FF             ;\
 $A4:8844 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
-$A4:8847 A0 30 BC    LDY #$BC30             ; Y = $BC30
+$A4:8847 A0 30 BC    LDY #$BC30             ; Y = $BC30 (step back)
 $A4:884A A9 0C 00    LDA #$000C             ;\
 $A4:884D 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:8850 60          RTS                    ; Return
 
 $A4:8851 C0 A2 BD    CPY #$BDA2             ;\
 $A4:8854 30 03       BMI $03    [$8859]     ;} If [Y] >= $BDA2:
-$A4:8856 A0 2A BD    LDY #$BD2A             ; Y = $BD2A
+$A4:8856 A0 2A BD    LDY #$BD2A             ; Y = $BD2A (wait for first/second damage - roar)
 
 $A4:8859 60          RTS
 }
 
 
-;;; $885A: Fight AI - index 16h ;;;
+;;; $885A: Fight AI - index 16h - wait for second damage (unused) ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
 
 ; Clone of $8836
-$A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$A4:885D 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h != 0 (damaged):
-$A4:8860 F0 13       BEQ $13    [$8875]     ;/
-$A4:8862 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ; >_<;
-$A4:8865 29 FF F7    AND #$F7FF             ;\
-$A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~800h (not damaged)
-$A4:886B A0 30 BC    LDY #$BC30             ; Y = $BC30
-$A4:886E A9 0C 00    LDA #$000C             ;\
-$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
-$A4:8874 60          RTS                    ; Return
+$A4:885A AD AA 0F    LDA $0FAA  [$7E:0FAA]
+$A4:885D 89 00 08    BIT #$0800
+$A4:8860 F0 13       BEQ $13    [$8875]
+$A4:8862 AD AA 0F    LDA $0FAA  [$7E:0FAA]
+$A4:8865 29 FF F7    AND #$F7FF
+$A4:8868 8D AA 0F    STA $0FAA  [$7E:0FAA]
+$A4:886B A0 30 BC    LDY #$BC30
+$A4:886E A9 0C 00    LDA #$000C
+$A4:8871 8D AC 0F    STA $0FAC  [$7E:0FAC]
+$A4:8874 60          RTS
 
-$A4:8875 C0 A2 BD    CPY #$BDA2             ;\
-$A4:8878 30 03       BMI $03    [$887D]     ;} If [Y] >= $BDA2:
-$A4:887A A0 2A BD    LDY #$BD2A             ; Y = $BD2A
+$A4:8875 C0 A2 BD    CPY #$BDA2
+$A4:8878 30 03       BMI $03    [$887D]
+$A4:887A A0 2A BD    LDY #$BD2A
 
 $A4:887D 60          RTS
 }
@@ -337,11 +339,11 @@ $A4:887D 60          RTS
 ;;     Y: Instruction list pointer
 $A4:887E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8881 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
-$A4:8884 3A          DEC A                  ;} Decrement $0FAE
+$A4:8884 3A          DEC A                  ;} Decrement Crocomire step forward counter
 $A4:8885 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
 $A4:8888 C9 02 00    CMP #$0002             ;\
-$A4:888B 10 0C       BPL $0C    [$8899]     ;} If [$0FAE] < 2:
-$A4:888D 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; $0FAE = 0
+$A4:888B 10 0C       BPL $0C    [$8899]     ;} If [Crocomire step forward counter] < 2:
+$A4:888D 9C AE 0F    STZ $0FAE  [$7E:0FAE]  ; Crocomire step forward counter = 0
 $A4:8890 A9 06 00    LDA #$0006             ;\
 $A4:8893 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 6 (stepping forward)
 $A4:8896 A0 CE BB    LDY #$BBCE             ; Y = $BBCE (step forward)
@@ -350,30 +352,32 @@ $A4:8899 60          RTS
 }
 
 
-;;; $889A: Fight AI - index 1Ah ;;;
+;;; $889A: Fight AI - index 1Ah - do near spike wall charge unless damaged (unused) ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
+
+; The sound effect played here sound a bit like skree (sound 5Bh)
 $A4:889A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:889D AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:88A0 89 00 08    BIT #$0800             ;} If [Crocomire fight flags] & 800h = 0 (not damaged):
 $A4:88A3 D0 0A       BNE $0A    [$88AF]     ;/
 $A4:88A5 A9 0A 00    LDA #$000A             ;\
 $A4:88A8 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = Ah (near spike wall charge)
-$A4:88AB A0 8E BD    LDY #$BD8E             ; Y = $BD8E
+$A4:88AB A0 8E BD    LDY #$BD8E             ; Y = $BD8E (wait for first/second damage - roar - close mouth)
 $A4:88AE 60          RTS                    ; Return
 
 $A4:88AF 29 00 BF    AND #$BF00             ; Crocomire fight flags &= ~40FFh (Samus not hit by claw)
 $A4:88B2 09 00 A0    ORA #$A000             ;\
-$A4:88B5 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= A000h (awake, ?)
+$A4:88B5 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= A000h (awake, unused bit)
 $A4:88B8 A9 01 00    LDA #$0001             ;\
-$A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 1
+$A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Crocomire step back counter = 1
 $A4:88BE A9 0A 00    LDA #$000A             ;\
 $A4:88C1 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
 $A4:88C4 A9 0C 00    LDA #$000C             ;\
 $A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:88CA A9 54 00    LDA #$0054             ;\
-$A4:88CD 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 54h, sound library 2, max queued sounds allowed = 6
+$A4:88CD 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 54h, sound library 2, max queued sounds allowed = 6 (shot Crocomire)
 $A4:88D1 60          RTS
 }
 
@@ -383,7 +387,7 @@ $A4:88D1 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:88D2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:88D5 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:88D5 20 DE 86    JSR $86DE  [$A4:86DE]  ; Set initial Crocomire instruction list
 $A4:88D8 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:88DB 09 00 02    ORA #$0200             ;} Crocomire fight flags |= 200h
 $A4:88DE 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
@@ -395,17 +399,17 @@ $A4:88ED 60          RTS
 }
 
 
-;;; $88EE:  ;;;
+;;; $88EE: Unused. Charge Crocomire forward one step after delay ;;;
 {
 $A4:88EE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:88F1 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:88F1 20 DE 86    JSR $86DE  [$A4:86DE]  ; Set initial Crocomire instruction list
 $A4:88F4 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:88F7 F0 05       BEQ $05    [$88FE]     ;} If [$0FAE] != 0:
 $A4:88F9 CE AE 0F    DEC $0FAE  [$7E:0FAE]  ; Decrement $0FAE
 $A4:88FC D0 0C       BNE $0C    [$890A]     ; If [$0FAE] != 0: return
 
 $A4:88FE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8901 20 0B 89    JSR $890B  [$A4:890B]  ; Execute $890B
+$A4:8901 20 0B 89    JSR $890B  [$A4:890B]  ; Charge Crocomire forward one step
 $A4:8904 A9 20 00    LDA #$0020             ;\
 $A4:8907 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 20h
 
@@ -413,14 +417,14 @@ $A4:890A 60          RTS
 }
 
 
-;;; $890B:  ;;;
+;;; $890B: Charge Crocomire forward one step ;;;
 {
 ; Both callers of this function immediately overwrite $0FAC
 $A4:890B A9 14 00    LDA #$0014             ;\
 $A4:890E 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = 14h (wait for second damage)
 $A4:8911 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8914 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} >_<;
-$A4:8917 A0 EA BA    LDY #$BAEA             ; Y = $BAEA
+$A4:8917 A0 EA BA    LDY #$BAEA             ; Y = $BAEA (charge forward one step)
 $A4:891A 60          RTS
 }
 
@@ -433,12 +437,12 @@ $A4:891B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:891E AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:8921 89 00 01    BIT #$0100             ;} If [Crocomire fight flags] & 100h = 0:
 $A4:8924 D0 0A       BNE $0A    [$8930]     ;/
-$A4:8926 20 0B 89    JSR $890B  [$A4:890B]  ; Execute $890B
+$A4:8926 20 0B 89    JSR $890B  [$A4:890B]  ; Charge Crocomire forward one step
 $A4:8929 A9 20 00    LDA #$0020             ;\
 $A4:892C 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 20h
 $A4:892F 60          RTS                    ; Return
 
-$A4:8930 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:8930 20 DE 86    JSR $86DE  [$A4:86DE]  ; Set initial Crocomire instruction list
 $A4:8933 A9 10 00    LDA #$0010             ;\
 $A4:8936 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 10h
 $A4:8939 A9 22 00    LDA #$0022             ;\
@@ -452,13 +456,13 @@ $A4:893F 60          RTS
 ;; Returns:
 ;;     Y: Instruction list pointer
 $A4:8940 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8943 20 DE 86    JSR $86DE  [$A4:86DE]  ; Execute $86DE
+$A4:8943 20 DE 86    JSR $86DE  [$A4:86DE]  ; Set initial Crocomire instruction list
 $A4:8946 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:8949 D0 12       BNE $12    [$895D]     ;} If [$0FAE] = 0:
 $A4:894B AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:894E 09 00 20    ORA #$2000             ;} Crocomire fight flags |= 2000h
 $A4:8951 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
-$A4:8954 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
+$A4:8954 20 E8 86    JSR $86E8  [$A4:86E8]  ; Step forward
 $A4:8957 A9 24 00    LDA #$0024             ;\
 $A4:895A 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h
 
@@ -474,7 +478,7 @@ $A4:895E AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:8961 C9 A0 02    CMP #$02A0             ;} If [Crocomire X position] < 2A0h:
 $A4:8964 10 13       BPL $13    [$8979]     ;/
 $A4:8966 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:8969 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
+$A4:8969 20 E8 86    JSR $86E8  [$A4:86E8]  ; Step forward
 $A4:896C A9 24 00    LDA #$0024             ;\
 $A4:896F 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h
 $A4:8972 A9 03 00    LDA #$0003             ;\
@@ -493,7 +497,7 @@ $A4:898D 89 00 40    BIT #$4000             ;} If [Crocomire fight flags] & 4000
 $A4:8990 F0 15       BEQ $15    [$89A7]     ;/
 $A4:8992 A9 05 00    LDA #$0005             ;\
 $A4:8995 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 5
-$A4:8998 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
+$A4:8998 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second damage - moving claws)
 $A4:899B AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
 $A4:899E 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} $0FB2 = [Crocomire fight function index]
 $A4:89A1 A9 2A 00    LDA #$002A             ;\
@@ -518,10 +522,10 @@ $A4:89BB 9C EE 0F    STZ $0FEE  [$7E:0FEE]  ; $0FEE = 0
 $A4:89BE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:89C1 09 00 04    ORA #$0400             ;} Crocomire fight flags |= 400h
 $A4:89C4 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
-$A4:89C7 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
+$A4:89C7 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second damage - moving claws)
 $A4:89CA 60          RTS                    ; Return
 
-$A4:89CB 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
+$A4:89CB 20 E8 86    JSR $86E8  [$A4:86E8]  ; Step forward
 $A4:89CE A9 28 00    LDA #$0028             ;\
 $A4:89D1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 28h
 $A4:89D4 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -542,7 +546,7 @@ $A4:89E6 29 FF FC    AND #$FCFF             ;\
 $A4:89E9 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags &= ~300h
 
 $A4:89EC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:89EF 20 E8 86    JSR $86E8  [$A4:86E8]  ; Execute $86E8
+$A4:89EF 20 E8 86    JSR $86E8  [$A4:86E8]  ; Step forward
 $A4:89F2 A9 28 00    LDA #$0028             ;\
 $A4:89F5 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 28h
 $A4:89F8 60          RTS
@@ -562,7 +566,7 @@ $A4:8A07 A9 01 00    LDA #$0001             ;\
 $A4:8A0A 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:8A0D AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
 $A4:8A10 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = [$0FB2]
-$A4:8A13 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
+$A4:8A13 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second damage - moving claws)
 $A4:8A16 60          RTS                    ; Return
 
 $A4:8A17 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -571,7 +575,7 @@ $A4:8A1D F0 0E       BEQ $0E    [$8A2D]     ;/
 $A4:8A1F CE AE 0F    DEC $0FAE  [$7E:0FAE]  ; Decrement $0FAE
 $A4:8A22 A9 3B 00    LDA #$003B             ;\
 $A4:8A25 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Bh, sound library 2, max queued sounds allowed = 6 (dachora shinespark)
-$A4:8A29 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8
+$A4:8A29 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second damage - moving claws)
 $A4:8A2C 60          RTS                    ; Return
 
 $A4:8A2D 29 FF BF    AND #$BFFF             ;\
@@ -965,7 +969,7 @@ $A4:8D5F AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:8D62 C9 00 06    CMP #$0600             ;} If [Crocomire X position] < 600h: go to BRANCH_NOT_ON_BRIDGE
 $A4:8D65 30 28       BMI $28    [$8D8F]     ;/
 $A4:8D67 C9 10 06    CMP #$0610             ;\
-$A4:8D6A 10 38       BPL $38    [$8DA4]     ;} If [Crocomire X position] >= 610h: go to BRANCH_8DA4
+$A4:8D6A 10 38       BPL $38    [$8DA4]     ;} If [Crocomire X position] >= 610h: go to BRANCH_1_BLOCK_DEEP
 $A4:8D6C AF 00 90 7E LDA $7E9000[$7E:9000]  ;\
 $A4:8D70 D0 1B       BNE $1B    [$8D8D]     ;} If [Crocomire pre-bridge block dust cloud spawned flag] = 0:
 $A4:8D72 A9 01 00    LDA #$0001             ;\
@@ -986,16 +990,16 @@ $A4:8D8F A9 00 00    LDA #$0000             ;\
 $A4:8D92 8F 00 90 7E STA $7E9000[$7E:9000]  ;} Crocomire pre-bridge block dust cloud spawned flag = 0
 $A4:8D96 8F 02 90 7E STA $7E9002[$7E:9002]  ; Crocomire bridge part 1 crumbled flag = 0
 $A4:8D9A 8F 06 90 7E STA $7E9006[$7E:9006]  ; Crocomire bridge part 2 crumbled flag = 0
-$A4:8D9E 8F 0A 90 7E STA $7E900A[$7E:900A]  ; $7E:900A = 0
+$A4:8D9E 8F 0A 90 7E STA $7E900A[$7E:900A]  ; $7E:900A = 0 (never read)
 $A4:8DA2 7A          PLY
 $A4:8DA3 6B          RTL                    ; Return
 
-; BRANCH_8DA4
+; BRANCH_1_BLOCK_DEEP
 $A4:8DA4 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:8DA7 C9 10 06    CMP #$0610             ;} >_<;
 $A4:8DAA 30 30       BMI $30    [$8DDC]     ;/
 $A4:8DAC C9 20 06    CMP #$0620             ;\
-$A4:8DAF 10 3C       BPL $3C    [$8DED]     ;} If [Crocomire X position] >= 620h: go to BRANCH_8DED
+$A4:8DAF 10 3C       BPL $3C    [$8DED]     ;} If [Crocomire X position] >= 620h: go to BRANCH_2_BLOCKS_DEEP
 $A4:8DB1 AF 02 90 7E LDA $7E9002[$7E:9002]  ;\
 $A4:8DB5 D0 23       BNE $23    [$8DDA]     ;} If [Crocomire bridge part 1 crumbled flag] = 0:
 $A4:8DB7 A9 01 00    LDA #$0001             ;\
@@ -1013,7 +1017,7 @@ $A4:8DD6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enem
 $A4:8DDA 7A          PLY
 $A4:8DDB 6B          RTL                    ; Return
 
-; This branch is never be executed
+; This branch is never executed
 $A4:8DDC A9 00 00    LDA #$0000
 $A4:8DDF 8F 02 90 7E STA $7E9002[$7E:9002]
 $A4:8DE3 8F 06 90 7E STA $7E9006[$7E:9006]
@@ -1021,12 +1025,12 @@ $A4:8DE7 8F 0A 90 7E STA $7E900A[$7E:900A]
 $A4:8DEB 7A          PLY
 $A4:8DEC 6B          RTL
 
-; BRANCH_8DED
+; BRANCH_2_BLOCKS_DEEP
 $A4:8DED AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A4:8DF0 C9 20 06    CMP #$0620             ;} >_<;
 $A4:8DF3 30 38       BMI $38    [$8E2D]     ;/
 $A4:8DF5 C9 30 06    CMP #$0630             ;\
-$A4:8DF8 10 40       BPL $40    [$8E3A]     ;} If [Crocomire X position] >= 630h: go to BRANCH_8E3A
+$A4:8DF8 10 40       BPL $40    [$8E3A]     ;} If [Crocomire X position] >= 630h: go to BRANCH_3_BLOCKS_DEEP
 $A4:8DFA AF 06 90 7E LDA $7E9006[$7E:9006]  ;\
 $A4:8DFE D0 2B       BNE $2B    [$8E2B]     ;} If [Crocomire bridge part 2 crumbled flag] = 0:
 $A4:8E00 A9 01 00    LDA #$0001             ;\
@@ -1046,14 +1050,14 @@ $A4:8E27 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enem
 $A4:8E2B 7A          PLY
 $A4:8E2C 6B          RTL                    ; Return
 
-; This branch is never be executed
+; This branch is never executed
 $A4:8E2D A9 00 00    LDA #$0000
 $A4:8E30 8F 06 90 7E STA $7E9006[$7E:9006]
 $A4:8E34 8F 0A 90 7E STA $7E900A[$7E:900A]
 $A4:8E38 7A          PLY
 $A4:8E39 6B          RTL                    ; Return
 
-; BRANCH_8E3A
+; BRANCH_3_BLOCKS_DEEP
 $A4:8E3A CD A4 86    CMP $86A4  [$A4:86A4]  ;\
 $A4:8E3D 10 02       BPL $02    [$8E41]     ;} If [Crocomire X position] < 640h:
 $A4:8E3F 7A          PLY
@@ -1291,7 +1295,7 @@ $A4:904E 6B          RTL                    ; Return
 
 ; BRANCH_HIT_WALL
 $A4:904F 7A          PLY
-$A4:9050 A0 3C BF    LDY #$BF3C             ; Y = $BF3C
+$A4:9050 A0 3C BF    LDY #$BF3C             ; Y = $BF3C (back off from spike wall)
 $A4:9053 A9 0E 00    LDA #$000E             ;\
 $A4:9056 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Eh (back off from spike wall)
 $A4:9059 FA          PLX
@@ -3278,7 +3282,7 @@ $A4:B992 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
 $A4:B995 D0 6D       BNE $6D    [$BA04]     ;} If [Crocomire death sequence index] != 0: return
 $A4:B997 AD 9E 86    LDA $869E  [$A4:869E]  ;\
 $A4:B99A F0 68       BEQ $68    [$BA04]     ;} If 3 = 0: return (>_<;)
-$A4:B99C 8D AE 0F    STA $0FAE  [$7E:0FAE]  ; $0FAE = 3
+$A4:B99C 8D AE 0F    STA $0FAE  [$7E:0FAE]  ; Crocomire step forward counter = 3
 $A4:B99F AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
 $A4:B9A2 C9 18 00    CMP #$0018             ;} If [Crocomire fight function index] = 18h (power bombed charge): return
 $A4:B9A5 F0 5D       BEQ $5D    [$BA04]     ;/
@@ -3366,7 +3370,7 @@ $A4:BA53 8A          TXA
 $A4:BA54 C9 00 00    CMP #$0000
 $A4:BA57 F0 47       BEQ $47    [$BAA0]
 $A4:BA59 18          CLC                    ;\
-$A4:BA5A 6D AE 0F    ADC $0FAE  [$7E:0FAE]  ;} $0FAE += [X]
+$A4:BA5A 6D AE 0F    ADC $0FAE  [$7E:0FAE]  ;} Crocomire step back counter += [X]
 $A4:BA5D 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
 
 ; BRANCH_OFF_SCREEN
@@ -3445,17 +3449,12 @@ $A4:BADD 6B          RTL
 {
 $A4:BADE             dx 0001,C2EC,
                         86A6,       ; Fight AI
-                        80ED,BADE   ; Go to $BADE
+                        80ED,BADE,  ; Go to $BADE
+                        812F        ; Sleep
 }
 
 
-;;; $BAE8: Instruction list ;;;
-{
-$A4:BAE8             dx 812F        ; Sleep
-}
-
-
-;;; $BAEA: Instruction list ;;;
+;;; $BAEA: Instruction list - Crocomire - charge forward one step (unused) ;;;
 {
 $A4:BAEA             dx 0008,BFC4,
                         8FC7,       ; Shake screen
@@ -3652,7 +3651,7 @@ $A4:BC56             dx 0022,C448,
 }
 
 
-;;; $BCD8: Instruction list ;;;
+;;; $BCD8: Instruction list - Crocomire - wait for first/second damage - moving claws ;;;
 {
 ; Moving claws
 $A4:BCD8             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
@@ -3684,7 +3683,7 @@ $A4:BCD8             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X 
 }
 
 
-;;; $BD2A: Instruction list ;;;
+;;; $BD2A: Instruction list - Crocomire - wait for first/second damage - roar ;;;
 {
 ; Rawr, open mouth
 $A4:BD2A             dx 0030,C574,
@@ -3723,7 +3722,7 @@ $A4:BD2A             dx 0030,C574,
 }
 
 
-;;; $BD8E: Instruction list ;;;
+;;; $BD8E: Instruction list - Crocomire - wait for first/second damage - roar - close mouth ;;;
 {
 ; Rawr, close mouth
 $A4:BD8E             dx 0020,C5E8,

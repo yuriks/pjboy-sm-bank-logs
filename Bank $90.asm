@@ -4797,14 +4797,14 @@ $90:9EF5             dw 0002,0000,0000, C000,1000,1000 ; During bomb jump
 ;                       |    |    |     |     ________ X subacceleration in water
 ;                       |    |    |     |    |     ___ X subacceleration in lava/acid
 ;                       |    |    |     |    |    |
-$90:9F01             dw 0000,0000,0000, 1000,0400,0400 ; When running
+$90:9F01             dw 0000,0000,0000, 1000,0400,0400 ; Extra run speed when running (due to holding the run button)
 
-;                        _____________________________ Max X speed in air
-;                       |     ________________________ Max X speed in water
-;                       |    |     ___________________ Max X speed in lava/acid
-;                       |    |    |      _____________ Max X subspeed in air
-;                       |    |    |     |     ________ Max X subspeed in water
-;                       |    |    |     |    |     ___ Max X subspeed in lava/acid
+;                        _____________________________ Max X extra run speed in air
+;                       |     ________________________ Max X extra run speed in water
+;                       |    |     ___________________ Max X extra run speed in lava/acid
+;                       |    |    |      _____________ Max X extra run subspeed in air
+;                       |    |    |     |     ________ Max X extra run subspeed in water
+;                       |    |    |     |    |     ___ Max X extra run subspeed in lava/acid
 ;                       |    |    |     |    |    |
 $90:9F0D             dw 0007,0004,0004, 0000,0000,0000 ; With speed booster
 $90:9F19             dw 0002,0001,0000, 0000,0000,0000 ; Without speed booster
@@ -4825,6 +4825,8 @@ $90:9F49             dw 0000,3000, 000F,0000, 0000,1000 ; When disconnecting gra
 
 ;;; $9F55: Samus X speed table - normal ;;;
 {
+; Used for Samus X base speed (due to general movement)
+
 ;                        ______________________________ X acceleration
 ;                       |     _________________________ X subacceleration
 ;                       |    |      ___________________ Max X speed
@@ -4863,6 +4865,8 @@ $90:9F55             dw 0000,C000,0000,0000,0000,8000, ; 0: Standing
 
 ;;; $A08D: Samus X speed table - in water ;;;
 {
+; Used for Samus X base speed (due to general movement)
+
 ;                        ______________________________ X acceleration
 ;                       |     _________________________ X subacceleration
 ;                       |    |      ___________________ Max X speed
@@ -4903,6 +4907,8 @@ $90:A08D             dw 0000,C000,0000,0000,0000,0800,  ; 0: Standing
 
 ;;; $A1DD: Samus X speed table - in lava/acid ;;;
 {
+; Used for Samus X base speed (due to general movement)
+
 ;                        ______________________________ X acceleration
 ;                       |     _________________________ X subacceleration
 ;                       |    |      ___________________ Max X speed
