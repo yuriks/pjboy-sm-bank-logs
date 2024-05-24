@@ -1067,7 +1067,7 @@ $A4:8E41 20 E5 8E    JSR $8EE5  [$A4:8EE5]  ; Collapse Crocomire's bridge
 $A4:8E44 A9 01 00    LDA #$0001             ;\
 $A4:8E47 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Crocomire acid damage sound effect timer = 1
 $A4:8E4B A9 01 00    LDA #$0001             ;\
-$A4:8E4E 8F 18 90 7E STA $7E9018[$7E:9018]  ;} $7E:9018 = 1
+$A4:8E4E 8F 18 90 7E STA $7E9018[$7E:9018]  ;} Crocomire acid damage smoke timer = 1
 $A4:8E52 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8E55 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:8E58 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index = 2
@@ -1088,7 +1088,7 @@ $A4:8E8D 8F 42 79 7E STA $7E7942[$7E:7942]  ; $7E:7942 = 0
 $A4:8E91 A9 3B 00    LDA #$003B             ;\
 $A4:8E94 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Bh, sound library 2, max queued sounds allowed = 6 (dachora shinespark)
 $A4:8E98 A9 00 00    LDA #$0000             ;\
-$A4:8E9B 8F 16 90 7E STA $7E9016[$7E:9016]  ;} $7E:9016 = 0
+$A4:8E9B 8F 16 90 7E STA $7E9016[$7E:9016]  ;} Crocomire death sequence crumbling bridge index = 0
 $A4:8E9F 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A4:8EA3             dx 4E,03,B757          ;} Spawn PLM to create Crocomire invisible wall at (4Eh, 3)
 $A4:8EA7 A9 B0 BF    LDA #$BFB0             ;\
@@ -1358,7 +1358,7 @@ $A4:9097 80 E6       BRA $E6    [$907F]     ; Move right 4px
 ;;; $9099: Crocomire main AI - death sequence index 3Ch ;;;
 {
 $A4:9099 20 DF 90    JSR $90DF  [$A4:90DF]
-$A4:909C 20 6C 91    JSR $916C  [$A4:916C]
+$A4:909C 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:909F 20 C1 91    JSR $91C1  [$A4:91C1]
 $A4:90A2 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
 $A4:90A5 C9 3E 00    CMP #$003E             ;} If [Crocomire death sequence index] = 3Eh:
@@ -1408,7 +1408,7 @@ $A4:9107 60          RTS
 
 ;;; $9108: Crocomire main AI - death sequence index 1Eh/24h/2Ah ;;;
 {
-$A4:9108 20 6C 91    JSR $916C  [$A4:916C]
+$A4:9108 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:910B AD 7E 0F    LDA $0F7E  [$7E:0F7E]
 $A4:910E A0 64 BF    LDY #$BF64
 $A4:9111 C9 18 01    CMP #$0118
@@ -1429,21 +1429,21 @@ $A4:9133 4C C1 91    JMP $91C1  [$A4:91C1]
 }
 
 
-;;; $9136: Crocomire main AI - death sequence index 2 ;;;
+;;; $9136: Crocomire main AI - death sequence index 2 - bridge crumbling ;;;
 {
-$A4:9136 AF 16 90 7E LDA $7E9016[$7E:9016]
-$A4:913A C9 16 00    CMP #$0016
-$A4:913D 30 03       BMI $03    [$9142]
-$A4:913F 4C BA 91    JMP $91BA  [$A4:91BA]
+$A4:9136 AF 16 90 7E LDA $7E9016[$7E:9016]  ;\
+$A4:913A C9 16 00    CMP #$0016             ;} If [Crocomire death sequence crumbling bridge index] >= 16h:
+$A4:913D 30 03       BMI $03    [$9142]     ;/
+$A4:913F 4C BA 91    JMP $91BA  [$A4:91BA]  ; Go to $91BA
 
-$A4:9142 AA          TAX
-$A4:9143 1A          INC A
-$A4:9144 1A          INC A
-$A4:9145 8F 16 90 7E STA $7E9016[$7E:9016]
-$A4:9149 BD 56 91    LDA $9156,x[$A4:9156]
+$A4:9142 AA          TAX                    ; X = [Crocomire death sequence crumbling bridge index]
+$A4:9143 1A          INC A                  ;\
+$A4:9144 1A          INC A                  ;} Crocomire death sequence crumbling bridge index += 2
+$A4:9145 8F 16 90 7E STA $7E9016[$7E:9016]  ;/
+$A4:9149 BD 56 91    LDA $9156,x[$A4:9156]  ; A = [$9156 + [X]] (X position)
 $A4:914C A0 9D 8F    LDY #$8F9D             ;\
 $A4:914F 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Crocomire bridge crumbling enemy projectile
-$A4:9153 4C BA 91    JMP $91BA  [$A4:91BA]
+$A4:9153 4C BA 91    JMP $91BA  [$A4:91BA]  ; Go to $91BA
 
 ; Crocomire bridge crumbling enemy projectile X positions
 ; Note that these are all on the screen to the right of the one Crocomire dies on,
@@ -1453,42 +1453,42 @@ $A4:9156             dw 0780, 0730, 0790, 0740, 07B0, 0760, 07A0, 0770, 0710, 07
 }
 
 
-;;; $916C:  ;;;
+;;; $916C: Handle Crocomire acid damage smoke ;;;
 {
-$A4:916C AF 18 90 7E LDA $7E9018[$7E:9018]
-$A4:9170 3A          DEC A
-$A4:9171 8F 18 90 7E STA $7E9018[$7E:9018]
-$A4:9175 D0 42       BNE $42    [$91B9]
-$A4:9177 A9 06 00    LDA #$0006
-$A4:917A 8F 18 90 7E STA $7E9018[$7E:9018]
-$A4:917E AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:9181 29 3F 00    AND #$003F
-$A4:9184 AA          TAX
-$A4:9185 AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:9188 89 02 00    BIT #$0002
-$A4:918B D0 05       BNE $05    [$9192]
-$A4:918D 8A          TXA
-$A4:918E 49 FF FF    EOR #$FFFF
-$A4:9191 AA          TAX
+$A4:916C AF 18 90 7E LDA $7E9018[$7E:9018]  ;\
+$A4:9170 3A          DEC A                  ;} Decrement Crocomire acid damage smoke timer
+$A4:9171 8F 18 90 7E STA $7E9018[$7E:9018]  ;/
+$A4:9175 D0 42       BNE $42    [$91B9]     ; If [Crocomire acid damage smoke timer] != 0: return
+$A4:9177 A9 06 00    LDA #$0006             ;\
+$A4:917A 8F 18 90 7E STA $7E9018[$7E:9018]  ;} Crocomire acid damage smoke timer = 6
+$A4:917E AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A4:9181 29 3F 00    AND #$003F             ;} X = [random number] % 40h
+$A4:9184 AA          TAX                    ;/
+$A4:9185 AD E5 05    LDA $05E5  [$7E:05E5]  ; >_<;
+$A4:9188 89 02 00    BIT #$0002             ;\
+$A4:918B D0 05       BNE $05    [$9192]     ;} If [X] / 2 % 2 = 0:
+$A4:918D 8A          TXA                    ;\
+$A4:918E 49 FF FF    EOR #$FFFF             ;} X = -1 - [X]
+$A4:9191 AA          TAX                    ;/
 
-$A4:9192 8A          TXA
-$A4:9193 18          CLC
-$A4:9194 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A4:9197 85 12       STA $12    [$7E:0012]
-$A4:9199 AD E5 05    LDA $05E5  [$7E:05E5]
-$A4:919C 29 00 1F    AND #$1F00
-$A4:919F EB          XBA
-$A4:91A0 85 14       STA $14    [$7E:0014]
-$A4:91A2 AD 62 19    LDA $1962  [$7E:1962]
-$A4:91A5 18          CLC
-$A4:91A6 69 10 00    ADC #$0010
-$A4:91A9 38          SEC
-$A4:91AA E5 14       SBC $14    [$7E:0014]
-$A4:91AC 85 14       STA $14    [$7E:0014]
-$A4:91AE A9 15 00    LDA #$0015
-$A4:91B1 85 16       STA $16    [$7E:0016]
-$A4:91B3 64 18       STZ $18    [$7E:0018]
-$A4:91B5 22 26 BC B4 JSL $B4BC26[$B4:BC26]
+$A4:9192 8A          TXA                    ;\
+$A4:9193 18          CLC                    ;|
+$A4:9194 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} $12 = [Crocomire X position] + [X]
+$A4:9197 85 12       STA $12    [$7E:0012]  ;/
+$A4:9199 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A4:919C 29 00 1F    AND #$1F00             ;|
+$A4:919F EB          XBA                    ;|
+$A4:91A0 85 14       STA $14    [$7E:0014]  ;|
+$A4:91A2 AD 62 19    LDA $1962  [$7E:1962]  ;|
+$A4:91A5 18          CLC                    ;} $14 = [lava/acid Y position] + 10h - [random number high] % 20h
+$A4:91A6 69 10 00    ADC #$0010             ;|
+$A4:91A9 38          SEC                    ;|
+$A4:91AA E5 14       SBC $14    [$7E:0014]  ;|
+$A4:91AC 85 14       STA $14    [$7E:0014]  ;/
+$A4:91AE A9 15 00    LDA #$0015             ;\
+$A4:91B1 85 16       STA $16    [$7E:0016]  ;|
+$A4:91B3 64 18       STZ $18    [$7E:0018]  ;} Create sprite object 15h (big dust cloud) at position ([$12], [$14])
+$A4:91B5 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 
 $A4:91B9 60          RTS
 }
@@ -1497,53 +1497,53 @@ $A4:91B9 60          RTS
 ;;; $91BA: Crocomire main AI - death sequence index 8/Eh ;;;
 {
 $A4:91BA 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]  ; Handle playing Crocomire acid damage sound effect
-$A4:91BE 20 6C 91    JSR $916C  [$A4:916C]
+$A4:91BE 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 }
 
 
 ;;; $91C1:  ;;;
 {
-$A4:91C1 20 DF 93    JSR $93DF  [$A4:93DF]
+$A4:91C1 20 DF 93    JSR $93DF  [$A4:93DF]  ; Reset Crocomire BG2 Y scroll HDMA data table
 $A4:91C4 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:91C7 29 FF F7    AND #$F7FF             ;} Crocomire fight flags &= ~800h (not damaged)
 $A4:91CA 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;/
 $A4:91CD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:91D0 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
-$A4:91D4 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A4:91D7 C9 18 01    CMP #$0118
-$A4:91DA 30 0D       BMI $0D    [$91E9]
+$A4:91D4 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A4:91D7 C9 18 01    CMP #$0118             ;} If [Crocomire Y position] >= 118h:
+$A4:91DA 30 0D       BMI $0D    [$91E9]     ;/
 $A4:91DC FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:91DF FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
-$A4:91E2 A9 30 00    LDA #$0030
-$A4:91E5 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:91E8 60          RTS
+$A4:91E2 A9 30 00    LDA #$0030             ;\
+$A4:91E5 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} $0FAE = 30h
+$A4:91E8 60          RTS                    ; Return
 
-$A4:91E9 A5 B7       LDA $B7    [$7E:00B7]
-$A4:91EB 49 FF FF    EOR #$FFFF
-$A4:91EE 1A          INC A
-$A4:91EF 85 12       STA $12    [$7E:0012]
-$A4:91F1 A9 20 01    LDA #$0120
-$A4:91F4 38          SEC
-$A4:91F5 E5 12       SBC $12    [$7E:0012]
-$A4:91F7 29 F8 FF    AND #$FFF8
-$A4:91FA 0A          ASL A
-$A4:91FB 0A          ASL A
-$A4:91FC 0A          ASL A
-$A4:91FD AA          TAX
-$A4:91FE A9 20 00    LDA #$0020
-$A4:9201 85 12       STA $12    [$7E:0012]
-$A4:9203 A9 38 03    LDA #$0338
-
-$A4:9206 9F 00 20 7E STA $7E2000,x[$7E:2740]
-$A4:920A E8          INX
-$A4:920B E8          INX
-$A4:920C C6 12       DEC $12    [$7E:0012]
-$A4:920E D0 F6       BNE $F6    [$9206]
-$A4:9210 A9 01 00    LDA #$0001
-$A4:9213 8D 1E 0E    STA $0E1E  [$7E:0E1E]
-$A4:9216 AD 88 0F    LDA $0F88  [$7E:0F88]
-$A4:9219 29 FF 7F    AND #$7FFF
-$A4:921C 8D 88 0F    STA $0F88  [$7E:0F88]
+$A4:91E9 A5 B7       LDA $B7    [$7E:00B7]  ;\
+$A4:91EB 49 FF FF    EOR #$FFFF             ;|
+$A4:91EE 1A          INC A                  ;|
+$A4:91EF 85 12       STA $12    [$7E:0012]  ;|
+$A4:91F1 A9 20 01    LDA #$0120             ;|
+$A4:91F4 38          SEC                    ;|
+$A4:91F5 E5 12       SBC $12    [$7E:0012]  ;} X = ([BG2 Y scroll] + 120h) / 8 * 40h (tilemap row offset)
+$A4:91F7 29 F8 FF    AND #$FFF8             ;|
+$A4:91FA 0A          ASL A                  ;|
+$A4:91FB 0A          ASL A                  ;|
+$A4:91FC 0A          ASL A                  ;|
+$A4:91FD AA          TAX                    ;/
+$A4:91FE A9 20 00    LDA #$0020             ;\
+$A4:9201 85 12       STA $12    [$7E:0012]  ;|
+$A4:9203 A9 38 03    LDA #$0338             ;|
+                                            ;|
+$A4:9206 9F 00 20 7E STA $7E2000,x[$7E:2740];} Write 40h bytes of 338h to $7E:2000 + [X]
+$A4:920A E8          INX                    ;|
+$A4:920B E8          INX                    ;|
+$A4:920C C6 12       DEC $12    [$7E:0012]  ;|
+$A4:920E D0 F6       BNE $F6    [$9206]     ;/
+$A4:9210 A9 01 00    LDA #$0001             ;\
+$A4:9213 8D 1E 0E    STA $0E1E  [$7E:0E1E]  ;} Request enemy BG2 tilemap VRAM transfer
+$A4:9216 AD 88 0F    LDA $0F88  [$7E:0F88]  ;\
+$A4:9219 29 FF 7F    AND #$7FFF             ;} Clear enemy graphic updated flag
+$A4:921C 8D 88 0F    STA $0F88  [$7E:0F88]  ;/
 $A4:921F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9222 E2 20       SEP #$20
 $A4:9224 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
@@ -1601,14 +1601,14 @@ $A4:928F 98          TYA
 $A4:9290 9D 92 0F    STA $0F92,x[$7E:0F92]
 $A4:9293 A9 01 00    LDA #$0001
 $A4:9296 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A4:9299 20 6C 91    JSR $916C  [$A4:916C]
+$A4:9299 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:929C 80 3A       BRA $3A    [$92D8]
 }
 
 
 ;;; $929E: Crocomire main AI - death sequence index 16h/22h/28h ;;;
 {
-$A4:929E 20 6C 91    JSR $916C  [$A4:916C]
+$A4:929E 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:92A1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:92A4 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A4:92A7 A0 64 BF    LDY #$BF64
@@ -1633,14 +1633,14 @@ $A4:92CC 80 0A       BRA $0A    [$92D8]
 ;;; $92CE: Crocomire main AI - death sequence index 6/Ch ;;;
 {
 $A4:92CE 22 1F 8D A4 JSL $A48D1F[$A4:8D1F]  ; Handle playing Crocomire acid damage sound effect
-$A4:92D2 20 6C 91    JSR $916C  [$A4:916C]
+$A4:92D2 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:92D5 AE 54 0E    LDX $0E54  [$7E:0E54]
 }
 
 
 ;;; $92D8:  ;;;
 {
-$A4:92D8 20 DF 93    JSR $93DF  [$A4:93DF]
+$A4:92D8 20 DF 93    JSR $93DF  [$A4:93DF]  ; Reset Crocomire BG2 Y scroll HDMA data table
 $A4:92DB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:92DE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A4:92E1 C9 DA 00    CMP #$00DA
@@ -1765,22 +1765,22 @@ $A4:93DE 60          RTS
 }
 
 
-;;; $93DF:  ;;;
+;;; $93DF: Reset Crocomire BG2 Y scroll HDMA data table ;;;
 {
-$A4:93DF A5 B7       LDA $B7    [$7E:00B7]
-$A4:93E1 A2 FE 01    LDX #$01FE
-
-$A4:93E4 9F F0 CA 7E STA $7ECAF0,x[$7E:CCEE]
-$A4:93E8 CA          DEX
-$A4:93E9 CA          DEX
-$A4:93EA 10 F8       BPL $F8    [$93E4]
+$A4:93DF A5 B7       LDA $B7    [$7E:00B7]  ;\
+$A4:93E1 A2 FE 01    LDX #$01FE             ;|
+                                            ;|
+$A4:93E4 9F F0 CA 7E STA $7ECAF0,x[$7E:CCEE];} Crocomire BG2 Y scroll HDMA data table = [BG2 Y scroll]
+$A4:93E8 CA          DEX                    ;|
+$A4:93E9 CA          DEX                    ;|
+$A4:93EA 10 F8       BPL $F8    [$93E4]     ;/
 $A4:93EC 60          RTS
 }
 
 
 ;;; $93ED: Crocomire main AI - death sequence index 2Ch ;;;
 {
-$A4:93ED 20 DF 93    JSR $93DF  [$A4:93DF]
+$A4:93ED 20 DF 93    JSR $93DF  [$A4:93DF]  ; Reset Crocomire BG2 Y scroll HDMA data table
 $A4:93F0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:93F3 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:93F6 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
@@ -2000,7 +2000,7 @@ $A4:957F 60          RTS
 ;;; $9580: Crocomire main AI - death sequence index 1Ah/38h ;;;
 {
 $A4:9580 C2 30       REP #$30
-$A4:9582 20 6C 91    JSR $916C  [$A4:916C]
+$A4:9582 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:9585 AE 2E 10    LDX $102E  [$7E:102E]
 $A4:9588 CE EE 0F    DEC $0FEE  [$7E:0FEE]
 $A4:958B AD EE 0F    LDA $0FEE  [$7E:0FEE]

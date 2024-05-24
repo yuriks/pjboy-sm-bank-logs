@@ -6038,7 +6038,7 @@ $84:AF1E             dw 0010,A275,
 }
 
 
-;;; $AF62: Draw instructions ;;;
+;;; $AF62: Debug. Scroll PLM draw instructions ;;;
 {
 ; Used by instruction list $AF86: PLM $B703 (scroll PLM)
 $84:AF62             dw 0001,3074,
@@ -6048,19 +6048,19 @@ $84:AF62             dw 0001,3074,
 $84:AF68             dw 0001,B074,
                         0000
 
-; Used by instruction list $AF9E: PLM $B63F (rightwards extension)
+; Used by instruction list $AF9E: PLM $B63F (leftwards extension)
 $84:AF6E             dw 0001,5011,
                         0000
 
-; Used by instruction list $AFA4: PLM $B63B (leftwards extension)
+; Used by instruction list $AFA4: PLM $B63B (rightwards extension)
 $84:AF74             dw 0001,5411,
                         0000
 
-; Used by instruction list $AFAA: PLM $B647 (downwards extension)
+; Used by instruction list $AFAA: PLM $B647 (upwards extension)
 $84:AF7A             dw 0001,D800,
                         0000
 
-; Used by instruction list $AFB0: PLM $B643 (upwards extension)
+; Used by instruction list $AFB0: PLM $B643 (downwards extension)
 $84:AF80             dw 0001,D000,
                         0000
 }
@@ -6084,28 +6084,28 @@ $84:AF96             dx 86B4,       ; Sleep
 }
 
 
-;;; $AF9E: Instruction list - PLM $B63F (rightwards extension) ;;;
+;;; $AF9E: Debug. Instruction list - PLM $B63F (leftwards extension) ;;;
 {
 $84:AF9E             dx 0001,AF6E,
                         86BC        ; Delete
 }
 
 
-;;; $AFA4: Instruction list - PLM $B63B (leftwards extension) ;;;
+;;; $AFA4: Debug. Instruction list - PLM $B63B (rightwards extension) ;;;
 {
 $84:AFA4             dx 0001,AF74,
                         86BC        ; Delete
 }
 
 
-;;; $AFAA: Instruction list - PLM $B647 (downwards extension) ;;;
+;;; $AFAA: Debug. Instruction list - PLM $B647 (upwards extension) ;;;
 {
 $84:AFAA             dx 0001,AF7A,
                         86BC        ; Delete
 }
 
 
-;;; $AFB0: Instruction list - PLM $B643 (upwards extension) ;;;
+;;; $AFB0: Debug. Instruction list - PLM $B643 (downwards extension) ;;;
 {
 $84:AFB0             dx 0001,AF80,
                         86BC        ; Delete
