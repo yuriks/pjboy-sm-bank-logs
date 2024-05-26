@@ -4670,7 +4670,7 @@ $88:B057 6B          RTL
 }
 
 
-;;; $B058..B11D: Fireflea ;;;
+;;; $B058..B11D: FX type 24h: fireflea ;;;
 {
 ;;; $B058: Fireflea flashing shades ;;;
 {
@@ -6617,7 +6617,7 @@ $88:DB77 6D 11 09    ADC $0911  [$7E:0911]  ;|
 $88:DB7A 8F DC CA 7E STA $7ECADC[$7E:CADC]  ;/
 $88:DB7E BD 20 19    LDA $1920,x[$7E:1920]  ;\
 $88:DB81 18          CLC                    ;|
-$88:DB82 69 50 00    ADC #$0050             ;} HDMA object BG3 X offset -= 40h
+$88:DB82 69 50 00    ADC #$0050             ;} HDMA object BG3 X offset += 50h
 $88:DB85 9D 20 19    STA $1920,x[$7E:1920]  ;/
 $88:DB88 AB          PLB
 $88:DB89 6B          RTL
@@ -6844,6 +6844,7 @@ $88:DD42 6B          RTL
 ;;; $DD43: Pre-instruction - Bomb Torizo haze colour math subscreen backdrop colour ;;;
 {
 ; Colour math doesn't take effect when BG3 is enabled, even though BG3 is fully transparent... what is up with that?
+; TODO: re-evaluate after being informed that the blank tile $4270 is fully colour 3 (black), not fully colour 0 (transparent)
 $88:DD43 A9 2C 00    LDA #$002C             ;\
 $88:DD46 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 2Ch (normal, but BG3 is disabled)
 $88:DD49 6B          RTL
