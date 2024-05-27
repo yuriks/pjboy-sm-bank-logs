@@ -949,7 +949,7 @@ $A4:8D43 22 A4 8B A4 JSL $A48BA4[$A4:8BA4]  ; Update Crocomire BG2 X scroll
 ;;; $8D47: Crocomire main AI - death sequence index 20h/26h ;;;
 {
 $A4:8D47 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
-$A4:8D4A F0 05       BEQ $05    [$8D51]     ;} If [$0FAE] != 0
+$A4:8D4A F0 05       BEQ $05    [$8D51]     ;} If [$0FAE] != 0:
 $A4:8D4C 3A          DEC A                  ;\
 $A4:8D4D 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement $0FAE
 $A4:8D50 60          RTS                    ; Return
@@ -1546,37 +1546,37 @@ $A4:9219 29 FF 7F    AND #$7FFF             ;} Clear enemy graphic updated flag
 $A4:921C 8D 88 0F    STA $0F88  [$7E:0F88]  ;/
 $A4:921F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9222 E2 20       SEP #$20
-$A4:9224 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A4:9227 18          CLC
-$A4:9228 69 80       ADC #$80
-$A4:922A 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A4:922D BD AF 0F    LDA $0FAF,x[$7E:0FAF]
-$A4:9230 69 03       ADC #$03
-$A4:9232 C9 30       CMP #$30
-$A4:9234 30 02       BMI $02    [$9238]
-$A4:9236 A9 30       LDA #$30
-
-$A4:9238 9D AF 0F    STA $0FAF,x[$7E:0FAF]
-$A4:923B 18          CLC
-$A4:923C 7D B0 0F    ADC $0FB0,x[$7E:0FB0]
-$A4:923F 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A4:9242 BD B1 0F    LDA $0FB1,x[$7E:0FB1]
-$A4:9245 69 00       ADC #$00
-$A4:9247 C9 03       CMP #$03
-$A4:9249 30 02       BMI $02    [$924D]
-$A4:924B A9 03       LDA #$03
-
-$A4:924D 9D B1 0F    STA $0FB1,x[$7E:0FB1]
-$A4:9250 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A4:9253 18          CLC
-$A4:9254 7D B3 0F    ADC $0FB3,x[$7E:0FB3]
-$A4:9257 9D B3 0F    STA $0FB3,x[$7E:0FB3]
-$A4:925A BD B1 0F    LDA $0FB1,x[$7E:0FB1]
-$A4:925D 7D 7E 0F    ADC $0F7E,x[$7E:0F7E]
-$A4:9260 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A4:9263 BD 7F 0F    LDA $0F7F,x[$7E:0F7F]
-$A4:9266 69 00       ADC #$00
-$A4:9268 9D 7F 0F    STA $0F7F,x[$7E:0F7F]
+$A4:9224 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A4:9227 18          CLC                    ;|
+$A4:9228 69 80       ADC #$80               ;|
+$A4:922A 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Crocomire Y acceleration += 3.80h
+$A4:922D BD AF 0F    LDA $0FAF,x[$7E:0FAF]  ;|
+$A4:9230 69 03       ADC #$03               ;/
+$A4:9232 C9 30       CMP #$30               ;\
+$A4:9234 30 02       BMI $02    [$9238]     ;|
+$A4:9236 A9 30       LDA #$30               ;} Crocomire Y acceleration = min([Crocomire Y acceleration], 30h)
+                                            ;|
+$A4:9238 9D AF 0F    STA $0FAF,x[$7E:0FAF]  ;/
+$A4:923B 18          CLC                    ;\
+$A4:923C 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;|
+$A4:923F 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Crocomire Y velocity += [Crocomire Y acceleration] / 100h
+$A4:9242 BD B1 0F    LDA $0FB1,x[$7E:0FB1]  ;|
+$A4:9245 69 00       ADC #$00               ;/
+$A4:9247 C9 03       CMP #$03               ;\
+$A4:9249 30 02       BMI $02    [$924D]     ;|
+$A4:924B A9 03       LDA #$03               ;} Crocomire Y velocity = min([Crocomire Y velocity], 3)
+                                            ;|
+$A4:924D 9D B1 0F    STA $0FB1,x[$7E:0FB1]  ;/
+$A4:9250 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A4:9253 18          CLC                    ;|
+$A4:9254 7D B3 0F    ADC $0FB3,x[$7E:0FB3]  ;|
+$A4:9257 9D B3 0F    STA $0FB3,x[$7E:0FB3]  ;|
+$A4:925A BD B1 0F    LDA $0FB1,x[$7E:0FB1]  ;|
+$A4:925D 7D 7E 0F    ADC $0F7E,x[$7E:0F7E]  ;} Crocomire Y position += [Crocomire Y velocity] / 100h (with $0FB3 as Y subposition...)
+$A4:9260 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;|
+$A4:9263 BD 7F 0F    LDA $0F7F,x[$7E:0F7F]  ;|
+$A4:9266 69 00       ADC #$00               ;|
+$A4:9268 9D 7F 0F    STA $0F7F,x[$7E:0F7F]  ;/
 $A4:926B C2 20       REP #$20
 $A4:926D 60          RTS
 }
