@@ -4365,7 +4365,7 @@ $A8:B65E             dw 3800, 57FF, 42F7, 158C, 00A5, 4F5A, 36B5, 2610, 1DCE, 1C
 ;;; $B67E: Unused. Beetom eye colours ;;;
 {
 ; Colours Ah..Ch
-$A8:B67E             db 4FE0, 3B20, 2A20,
+$A8:B67E             dw 4FE0, 3B20, 2A20,
                         3BE0, 2680, 1580,
                         2740, 11E0, 00E0,
                         12A0, 0140, 0040
