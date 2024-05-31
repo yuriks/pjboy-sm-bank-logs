@@ -1863,7 +1863,7 @@ $A4:9484 AD 8E 06    LDA $068E  [$7E:068E]  ;|
 $A4:9487 85 12       STA $12    [$7E:0012]  ;|
                                             ;|
 $A4:9489 B7 00       LDA [$00],y[$A4:A07D]  ;|
-$A4:948B 9F 00 00 7E STA $7E0000,x[$7E:4000];} Copy 400h bytes from $A7:0000 + [$9BC5 + [X]] to $7E:0000 + [$9BC5 + [X] + 2]
+$A4:948B 9F 00 00 7E STA $7E0000,x[$7E:4000];} Copy 400h bytes from $A7:0000 + [$9BC5 + [X]] to $7E:4000 + [X] / 4 * 200h
 $A4:948F E8          INX                    ;|
 $A4:9490 E8          INX                    ;|
 $A4:9491 C8          INY                    ;|
@@ -1953,36 +1953,37 @@ $A4:950B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 2Dh, sound library 2,
 
 ;;; $950F:  ;;;
 {
-$A4:950F AD BE 0F    LDA $0FBE  [$7E:0FBE]
-$A4:9512 38          SEC
-$A4:9513 E9 48 00    SBC #$0048
-$A4:9516 0A          ASL A
-$A4:9517 AA          TAX
+$A4:950F AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
+$A4:9512 38          SEC                    ;|
+$A4:9513 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2
+$A4:9516 0A          ASL A                  ;|
+$A4:9517 AA          TAX                    ;/
 $A4:9518 A5 B7       LDA $B7    [$7E:00B7]
 
-$A4:951A 9F F0 CA 7E STA $7ECAF0,x[$7E:CC18]
-$A4:951E CA          DEX
-$A4:951F CA          DEX
-$A4:9520 10 F8       BPL $F8    [$951A]
+; LOOP
+$A4:951A 9F F0 CA 7E STA $7ECAF0,x[$7E:CC18]; $7E:CAF0 + [X] = [BG2 Y scroll]
+$A4:951E CA          DEX                    ;\
+$A4:951F CA          DEX                    ;} X -= 2
+$A4:9520 10 F8       BPL $F8    [$951A]     ; If [X] >= 0: go to LOOP
 $A4:9522 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9525 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:9528 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
-$A4:952B AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:952E 8D 2E 10    STA $102E  [$7E:102E]
+$A4:952B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:952E 8D 2E 10    STA $102E  [$7E:102E]  ;} $102E (!) = [Crocomire X position]
 $A4:9531 08          PHP
-$A4:9532 A9 FF 00    LDA #$00FF
-$A4:9535 8F E0 CA 7E STA $7ECAE0[$7E:CAE0]
-$A4:9539 A9 F0 CA    LDA #$CAF0
-$A4:953C 8F E1 CA 7E STA $7ECAE1[$7E:CAE1]
-$A4:9540 A9 E1 00    LDA #$00E1
-$A4:9543 8F E3 CA 7E STA $7ECAE3[$7E:CAE3]
-$A4:9547 A9 EE CB    LDA #$CBEE
-$A4:954A 8F E4 CA 7E STA $7ECAE4[$7E:CAE4]
-$A4:954E A9 00 00    LDA #$0000
-$A4:9551 8F E6 CA 7E STA $7ECAE6[$7E:CAE6]
+$A4:9532 A9 FF 00    LDA #$00FF             ;\
+$A4:9535 8F E0 CA 7E STA $7ECAE0[$7E:CAE0]  ;|
+$A4:9539 A9 F0 CA    LDA #$CAF0             ;|
+$A4:953C 8F E1 CA 7E STA $7ECAE1[$7E:CAE1]  ;|
+$A4:9540 A9 E1 00    LDA #$00E1             ;|
+$A4:9543 8F E3 CA 7E STA $7ECAE3[$7E:CAE3]  ;} $7E:CAE0..E7 = FFh,$CAF0, E1h,$CBEE, 0,0
+$A4:9547 A9 EE CB    LDA #$CBEE             ;|
+$A4:954A 8F E4 CA 7E STA $7ECAE4[$7E:CAE4]  ;|
+$A4:954E A9 00 00    LDA #$0000             ;|
+$A4:9551 8F E6 CA 7E STA $7ECAE6[$7E:CAE6]  ;/
 $A4:9555 22 35 84 88 JSL $888435[$88:8435]  ;\
 $A4:9559             dx 42, 10, 9563        ;} Spawn indirect HDMA object for BG2 Y scroll with instruction list $9563
-$A4:955D 8F 3E 78 7E STA $7E783E[$7E:783E]
+$A4:955D 8F 3E 78 7E STA $7E783E[$7E:783E]  ; $7E:783E = [A] (HDMA object index)
 $A4:9561 28          PLP
 $A4:9562 60          RTS
 }

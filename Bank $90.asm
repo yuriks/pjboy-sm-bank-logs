@@ -15261,13 +15261,13 @@ $90:EB62 20 4C 8A    JSR $8A4C  [$90:8A4C]  ; Handle atmospheric effects
 $90:EB65 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EB68 20 63 C6    JSR $C663  [$90:C663]  ; Draw arm cannon
 $90:EB6B 20 BD 87    JSR $87BD  [$90:87BD]  ; Draw Samus echoes
-$90:EB6E 60          RTS
+$90:EB6E 60          RTS                    ; Return
 
 $90:EB6F 20 4C 8A    JSR $8A4C  [$90:8A4C]  ; Handle atmospheric effects
 $90:EB72 20 63 C6    JSR $C663  [$90:C663]  ; Draw arm cannon
 $90:EB75 20 E2 85    JSR $85E2  [$90:85E2]  ; Draw Samus
 $90:EB78 20 BD 87    JSR $87BD  [$90:87BD]  ; Draw Samus echoes
-$90:EB7B 60          RTS
+$90:EB7B 60          RTS                    ; Return
 
 ; BRANCH_NO_ARM_CANNON
 $90:EB7C 20 4C 8A    JSR $8A4C  [$90:8A4C]  ; Handle atmospheric effects
