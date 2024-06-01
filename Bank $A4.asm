@@ -957,7 +957,7 @@ $A4:8D50 60          RTS                    ; Return
 $A4:8D51 EE A8 0F    INC $0FA8  [$7E:0FA8]  ;\
 $A4:8D54 EE A8 0F    INC $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:8D57 A9 00 03    LDA #$0300             ;\
-$A4:8D5A 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = 300h
+$A4:8D5A 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Crocomire Y velocity = 3.0
 $A4:8D5D 60          RTS
 }
 
@@ -1357,7 +1357,7 @@ $A4:9097 80 E6       BRA $E6    [$907F]     ; Move right 4px
 
 ;;; $9099: Crocomire main AI - death sequence index 3Ch - hop 6 - sinking ;;;
 {
-$A4:9099 20 DF 90    JSR $90DF  [$A4:90DF]
+$A4:9099 20 DF 90    JSR $90DF  [$A4:90DF]  ; Execute $90DF
 $A4:909C 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:909F 20 C1 91    JSR $91C1  [$A4:91C1]  ; Sink Crocomire down
 $A4:90A2 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
@@ -1367,18 +1367,18 @@ $A4:90AA A9 06 00    LDA #$0006             ;\
 $A4:90AD 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 1 music track
 $A4:90B1 A9 58 00    LDA #$0058             ;\
 $A4:90B4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 58h
-$A4:90B7 A9 D2 E1    LDA #$E1D2
-$A4:90BA 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:90BD A9 01 01    LDA #$0101
-$A4:90C0 8F 24 CD 7E STA $7ECD24[$7E:CD24]
-$A4:90C4 9C F7 05    STZ $05F7  [$7E:05F7]
-$A4:90C7 AD C6 0F    LDA $0FC6  [$7E:0FC6]
-$A4:90CA 09 00 02    ORA #$0200
-$A4:90CD 8D C6 0F    STA $0FC6  [$7E:0FC6]
-$A4:90D0 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:90D4             dx 4E,03,B753
-$A4:90D8 9C 41 09    STZ $0941  [$7E:0941]
-$A4:90DB 9C 88 06    STZ $0688  [$7E:0688]
+$A4:90B7 A9 D2 E1    LDA #$E1D2             ;\
+$A4:90BA 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E1D2
+$A4:90BD A9 01 01    LDA #$0101             ;\
+$A4:90C0 8F 24 CD 7E STA $7ECD24[$7E:CD24]  ;} Scrolls 4/5 = blue
+$A4:90C4 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
+$A4:90C7 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
+$A4:90CA 09 00 02    ORA #$0200             ;} Mark Crocomire's tongue for deletion
+$A4:90CD 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
+$A4:90D0 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:90D4             dx 4E,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (4Eh, 3)
+$A4:90D8 9C 41 09    STZ $0941  [$7E:0941]  ; Camera distance index = 0 (normal)
+$A4:90DB 9C 88 06    STZ $0688  [$7E:0688]  ; $0688 = 0
 
 $A4:90DE 60          RTS
 }
@@ -1387,21 +1387,21 @@ $A4:90DE 60          RTS
 ;;; $90DF:  ;;;
 {
 $A4:90DF AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A4:90E2 A0 7E BF    LDY #$BF7E
-$A4:90E5 C9 18 01    CMP #$0118
-$A4:90E8 10 13       BPL $13    [$90FD]
-$A4:90EA A0 86 BF    LDY #$BF86
-$A4:90ED C9 08 01    CMP #$0108
-$A4:90F0 10 0B       BPL $0B    [$90FD]
-$A4:90F2 A0 8C BF    LDY #$BF8C
-$A4:90F5 C9 F8 00    CMP #$00F8
-$A4:90F8 10 03       BPL $03    [$90FD]
-$A4:90FA A0 92 BF    LDY #$BF92
-
-$A4:90FD 98          TYA
-$A4:90FE 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:9101 A9 01 00    LDA #$0001
-$A4:9104 8D 94 0F    STA $0F94  [$7E:0F94]
+$A4:90E2 A0 7E BF    LDY #$BF7E             ; Crocomire instruction list pointer = $BF7E
+$A4:90E5 C9 18 01    CMP #$0118             ;\
+$A4:90E8 10 13       BPL $13    [$90FD]     ;} If [Crocomire Y position] < 118h:
+$A4:90EA A0 86 BF    LDY #$BF86             ; Crocomire instruction list pointer = $BF86
+$A4:90ED C9 08 01    CMP #$0108             ;\
+$A4:90F0 10 0B       BPL $0B    [$90FD]     ;} If [Crocomire Y position] < 108h:
+$A4:90F2 A0 8C BF    LDY #$BF8C             ; Crocomire instruction list pointer = $BF8C
+$A4:90F5 C9 F8 00    CMP #$00F8             ;\
+$A4:90F8 10 03       BPL $03    [$90FD]     ;} If [Crocomire Y position] < F8h:
+$A4:90FA A0 92 BF    LDY #$BF92             ; Crocomire instruction list pointer = $BF92
+                                            
+$A4:90FD 98          TYA                    
+$A4:90FE 8D 92 0F    STA $0F92  [$7E:0F92]  
+$A4:9101 A9 01 00    LDA #$0001             ;\
+$A4:9104 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:9107 60          RTS
 }
 
@@ -1410,21 +1410,21 @@ $A4:9107 60          RTS
 {
 $A4:9108 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:910B AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A4:910E A0 64 BF    LDY #$BF64
-$A4:9111 C9 18 01    CMP #$0118
-$A4:9114 10 13       BPL $13    [$9129]
-$A4:9116 A0 6C BF    LDY #$BF6C
-$A4:9119 C9 08 01    CMP #$0108
-$A4:911C 10 0B       BPL $0B    [$9129]
-$A4:911E A0 72 BF    LDY #$BF72
-$A4:9121 C9 F8 00    CMP #$00F8
-$A4:9124 10 03       BPL $03    [$9129]
-$A4:9126 A0 78 BF    LDY #$BF78
+$A4:910E A0 64 BF    LDY #$BF64             ; Crocomire instruction list pointer = $BF64
+$A4:9111 C9 18 01    CMP #$0118             ;\
+$A4:9114 10 13       BPL $13    [$9129]     ;} If [Crocomire Y position] < 118h:
+$A4:9116 A0 6C BF    LDY #$BF6C             ; Crocomire instruction list pointer = $BF6C
+$A4:9119 C9 08 01    CMP #$0108             ;\
+$A4:911C 10 0B       BPL $0B    [$9129]     ;} If [Crocomire Y position] < 108h:
+$A4:911E A0 72 BF    LDY #$BF72             ; Crocomire instruction list pointer = $BF72
+$A4:9121 C9 F8 00    CMP #$00F8             ;\
+$A4:9124 10 03       BPL $03    [$9129]     ;} If [Crocomire Y position] < F8h:
+$A4:9126 A0 78 BF    LDY #$BF78             ; Crocomire instruction list pointer = $BF78
 
 $A4:9129 98          TYA
 $A4:912A 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:912D A9 01 00    LDA #$0001
-$A4:9130 8D 94 0F    STA $0F94  [$7E:0F94]
+$A4:912D A9 01 00    LDA #$0001             ;\
+$A4:9130 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:9133 4C C1 91    JMP $91C1  [$A4:91C1]  ; Go to sink Crocomire down
 }
 
@@ -1588,21 +1588,21 @@ $A4:926D 60          RTS
 {
 $A4:926E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9271 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A4:9274 A0 7E BF    LDY #$BF7E
-$A4:9277 C9 18 01    CMP #$0118
-$A4:927A 10 13       BPL $13    [$928F]
-$A4:927C A0 86 BF    LDY #$BF86
-$A4:927F C9 08 01    CMP #$0108
-$A4:9282 10 0B       BPL $0B    [$928F]
-$A4:9284 A0 8C BF    LDY #$BF8C
-$A4:9287 C9 F8 00    CMP #$00F8
-$A4:928A 10 03       BPL $03    [$928F]
-$A4:928C A0 92 BF    LDY #$BF92
-
-$A4:928F 98          TYA
-$A4:9290 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A4:9293 A9 01 00    LDA #$0001
-$A4:9296 9D 94 0F    STA $0F94,x[$7E:0F94]
+$A4:9274 A0 7E BF    LDY #$BF7E             ; Crocomire instruction list pointer = $BF7E
+$A4:9277 C9 18 01    CMP #$0118             ;\
+$A4:927A 10 13       BPL $13    [$928F]     ;} If [Crocomire Y position] < 118h:
+$A4:927C A0 86 BF    LDY #$BF86             ; Crocomire instruction list pointer = $BF86
+$A4:927F C9 08 01    CMP #$0108             ;\
+$A4:9282 10 0B       BPL $0B    [$928F]     ;} If [Crocomire Y position] < 108h:
+$A4:9284 A0 8C BF    LDY #$BF8C             ; Crocomire instruction list pointer = $BF8C
+$A4:9287 C9 F8 00    CMP #$00F8             ;\
+$A4:928A 10 03       BPL $03    [$928F]     ;} If [Crocomire Y position] < F8h:
+$A4:928C A0 92 BF    LDY #$BF92             ; Crocomire instruction list pointer = $BF92
+                                            
+$A4:928F 98          TYA                    
+$A4:9290 9D 92 0F    STA $0F92,x[$7E:0F92]  
+$A4:9293 A9 01 00    LDA #$0001             ;\
+$A4:9296 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:9299 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:929C 80 3A       BRA $3A    [$92D8]     ; Go to rise Crocomire up
 }
@@ -1613,21 +1613,21 @@ $A4:929C 80 3A       BRA $3A    [$92D8]     ; Go to rise Crocomire up
 $A4:929E 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:92A1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:92A4 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A4:92A7 A0 64 BF    LDY #$BF64
-$A4:92AA C9 18 01    CMP #$0118
-$A4:92AD 10 13       BPL $13    [$92C2]
-$A4:92AF A0 6C BF    LDY #$BF6C
-$A4:92B2 C9 08 01    CMP #$0108
-$A4:92B5 10 0B       BPL $0B    [$92C2]
-$A4:92B7 A0 72 BF    LDY #$BF72
-$A4:92BA C9 F8 00    CMP #$00F8
-$A4:92BD 10 03       BPL $03    [$92C2]
-$A4:92BF A0 78 BF    LDY #$BF78
+$A4:92A7 A0 64 BF    LDY #$BF64             ; Crocomire instruction list pointer = $BF64
+$A4:92AA C9 18 01    CMP #$0118             ;\
+$A4:92AD 10 13       BPL $13    [$92C2]     ;} If [Crocomire Y position] < 118h:
+$A4:92AF A0 6C BF    LDY #$BF6C             ; Crocomire instruction list pointer = $BF6C
+$A4:92B2 C9 08 01    CMP #$0108             ;\
+$A4:92B5 10 0B       BPL $0B    [$92C2]     ;} If [Crocomire Y position] < 108h:
+$A4:92B7 A0 72 BF    LDY #$BF72             ; Crocomire instruction list pointer = $BF72
+$A4:92BA C9 F8 00    CMP #$00F8             ;\
+$A4:92BD 10 03       BPL $03    [$92C2]     ;} If [Crocomire Y position] < F8h:
+$A4:92BF A0 78 BF    LDY #$BF78             ; Crocomire instruction list pointer = $BF78
 
 $A4:92C2 98          TYA
 $A4:92C3 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A4:92C6 A9 01 00    LDA #$0001
-$A4:92C9 9D 94 0F    STA $0F94,x[$7E:0F94]
+$A4:92C6 A9 01 00    LDA #$0001             ;\
+$A4:92C9 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:92CC 80 0A       BRA $0A    [$92D8]     ; Go to rise Crocomire up
 }
 
@@ -1939,7 +1939,7 @@ $A4:94FA 60          RTS
 $A4:94FB C2 30       REP #$30
 $A4:94FD A9 77 00    LDA #$0077             ;\
 $A4:9500 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 77h, sound library 2, max queued sounds allowed = 6 (Crocomire melting cry)
-$A4:9504 80 09       BRA $09    [$950F]
+$A4:9504 80 09       BRA $09    [$950F]     ; Go to $950F
 }
 
 
@@ -1999,7 +1999,7 @@ $A4:956E             dx 7777,CAE0,
 }
 
 
-;;; $9576: Crocomire main AI - death sequence index 32h ;;;
+;;; $9576: Crocomire main AI - death sequence index 32h - hop 6 - set rising state ;;;
 {
 $A4:9576 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9579 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
@@ -2024,8 +2024,8 @@ $A4:9598 AA          TAX
 
 $A4:9599 8E 7A 0F    STX $0F7A  [$7E:0F7A]
 $A4:959C 22 C8 96 A4 JSL $A496C8[$A4:96C8]
-$A4:95A0 C9 00 00    CMP #$0000
-$A4:95A3 D0 2D       BNE $2D    [$95D2]
+$A4:95A0 C9 00 00    CMP #$0000             ;\
+$A4:95A3 D0 2D       BNE $2D    [$95D2]     ;} If [A] != 0: go to BRANCH_95D2
 
 $A4:95A5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95A8 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
@@ -2050,6 +2050,7 @@ $A4:95CB A9 00 00    LDA #$0000
 $A4:95CE 9D B4 18    STA $18B4,x[$7E:18B8]
 $A4:95D1 60          RTS
 
+; BRANCH_95D2
 $A4:95D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95D5 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
 $A4:95D9 AD 92 06    LDA $0692  [$7E:0692]
@@ -2163,126 +2164,134 @@ $A4:9697             db 2B, 28, 21, 1F, 2C, 10, 16, 17, 0F, 00, 06, 07, 0B, 08, 
 
 ;;; $96C8:  ;;;
 {
+;; Parameters:
+;;     A: 
+;; Returns:
+;;     A: 
 $A4:96C8 08          PHP
 $A4:96C9 E2 20       SEP #$20
 $A4:96CB C2 10       REP #$10
-$A4:96CD EB          XBA
-$A4:96CE AD 8C 06    LDA $068C  [$7E:068C]
-$A4:96D1 85 12       STA $12    [$7E:0012]
-$A4:96D3 64 13       STZ $13    [$7E:0013]
-$A4:96D5 64 14       STZ $14    [$7E:0014]
-$A4:96D7 64 15       STZ $15    [$7E:0015]
-$A4:96D9 64 16       STZ $16    [$7E:0016]
-$A4:96DB 64 17       STZ $17    [$7E:0017]
-$A4:96DD AE 90 06    LDX $0690  [$7E:0690]
+$A4:96CD EB          XBA                    ; A high = [A low]
+$A4:96CE AD 8C 06    LDA $068C  [$7E:068C]  ;\
+$A4:96D1 85 12       STA $12    [$7E:0012]  ;} $12 = [$068C]
+$A4:96D3 64 13       STZ $13    [$7E:0013]  ;/
+$A4:96D5 64 14       STZ $14    [$7E:0014]  ;\
+$A4:96D7 64 15       STZ $15    [$7E:0015]  ;} $14 = 0
+$A4:96D9 64 16       STZ $16    [$7E:0016]  ;\
+$A4:96DB 64 17       STZ $17    [$7E:0017]  ;} $16 = 0
+$A4:96DD AE 90 06    LDX $0690  [$7E:0690]  ; X = [$0690]
 
-$A4:96E0 BD 97 96    LDA $9697,x[$A4:9697]
-$A4:96E3 A8          TAY
-$A4:96E4 B9 9C 06    LDA $069C,y[$7E:4AC7]
-$A4:96E7 CD 88 06    CMP $0688  [$7E:0688]
-$A4:96EA 30 0D       BMI $0D    [$96F9]
-$A4:96EC E8          INX
-$A4:96ED E0 80 00    CPX #$0080
-$A4:96F0 30 EE       BMI $EE    [$96E0]
-$A4:96F2 9C 90 06    STZ $0690  [$7E:0690]
-$A4:96F5 A9 00 28    LDA #$2800
-$A4:96F8 6B          RTL
+; LOOP_96E0
+$A4:96E0 BD 97 96    LDA $9697,x[$A4:9697]  ;\
+$A4:96E3 A8          TAY                    ;|
+$A4:96E4 B9 9C 06    LDA $069C,y[$7E:4AC7]  ;} If [$069C + [$9697 + [X]]] >= [$0688]:
+$A4:96E7 CD 88 06    CMP $0688  [$7E:0688]  ;|
+$A4:96EA 30 0D       BMI $0D    [$96F9]     ;/
+$A4:96EC E8          INX                    ; Increment X
+$A4:96ED E0 80 00    CPX #$0080             ;\
+$A4:96F0 30 EE       BMI $EE    [$96E0]     ;} If [X] < 80h: go to LOOP_96E0
+$A4:96F2 9C 90 06    STZ $0690  [$7E:0690]  ; $0690 = 0
+$A4:96F5 A9 00       LDA #$00               ; A = 0
+$A4:96F7 28          PLP
+$A4:96F8 6B          RTL                    ; Return
 
-$A4:96F9 8E 90 06    STX $0690  [$7E:0690]
-$A4:96FC 8A          TXA
-$A4:96FD 29 07       AND #$07
-$A4:96FF A8          TAY
+$A4:96F9 8E 90 06    STX $0690  [$7E:0690]  ; $0690 = [X]
+$A4:96FC 8A          TXA                    ;\
+$A4:96FD 29 07       AND #$07               ;} A low = [X] % 8
+$A4:96FF A8          TAY                    ; Y = [A]
 $A4:9700 C2 20       REP #$20
 
-$A4:9702 AE 90 06    LDX $0690  [$7E:0690]
-$A4:9705 BD 97 96    LDA $9697,x[$A4:9697]
-$A4:9708 29 FF 00    AND #$00FF
-$A4:970B AA          TAX
-$A4:970C 29 F8 FF    AND #$FFF8
-$A4:970F 0A          ASL A
-$A4:9710 0A          ASL A
-$A4:9711 85 14       STA $14    [$7E:0014]
-$A4:9713 BD 9C 06    LDA $069C,x[$7E:06C7]
-$A4:9716 29 07 00    AND #$0007
-$A4:9719 0A          ASL A
-$A4:971A 18          CLC
-$A4:971B 65 14       ADC $14    [$7E:0014]
-$A4:971D 85 14       STA $14    [$7E:0014]
-$A4:971F BD 9C 06    LDA $069C,x[$7E:06C7]
-$A4:9722 29 F8 FF    AND #$FFF8
-$A4:9725 0A          ASL A
-$A4:9726 0A          ASL A
-$A4:9727 0A          ASL A
-$A4:9728 0A          ASL A
-$A4:9729 0A          ASL A
-$A4:972A 0A          ASL A
-$A4:972B 18          CLC
-$A4:972C 65 14       ADC $14    [$7E:0014]
-$A4:972E AA          TAX
+; LOOP_9702
+$A4:9702 AE 90 06    LDX $0690  [$7E:0690]  ;\
+$A4:9705 BD 97 96    LDA $9697,x[$A4:9697]  ;|
+$A4:9708 29 FF 00    AND #$00FF             ;} X = [$9697 + [$0690]]
+$A4:970B AA          TAX                    ;/
+$A4:970C 29 F8 FF    AND #$FFF8             ;\
+$A4:970F 0A          ASL A                  ;|
+$A4:9710 0A          ASL A                  ;|
+$A4:9711 85 14       STA $14    [$7E:0014]  ;|
+$A4:9713 BD 9C 06    LDA $069C,x[$7E:06C7]  ;|
+$A4:9716 29 07 00    AND #$0007             ;|
+$A4:9719 0A          ASL A                  ;|
+$A4:971A 18          CLC                    ;|
+$A4:971B 65 14       ADC $14    [$7E:0014]  ;|
+$A4:971D 85 14       STA $14    [$7E:0014]  ;|
+$A4:971F BD 9C 06    LDA $069C,x[$7E:06C7]  ;} X = [$069C + [X]] / 8 * 200h + [X] / 8 * 20h + [$069C + [X]] % 8 * 2
+$A4:9722 29 F8 FF    AND #$FFF8             ;|
+$A4:9725 0A          ASL A                  ;|
+$A4:9726 0A          ASL A                  ;|
+$A4:9727 0A          ASL A                  ;|
+$A4:9728 0A          ASL A                  ;|
+$A4:9729 0A          ASL A                  ;|
+$A4:972A 0A          ASL A                  ;|
+$A4:972B 18          CLC                    ;|
+$A4:972C 65 14       ADC $14    [$7E:0014]  ;|
+$A4:972E AA          TAX                    ;/
 $A4:972F E2 20       SEP #$20
-$A4:9731 BF 00 40 7E LDA $7E4000,x[$7E:40A0]
-$A4:9735 39 BD 9B    AND $9BBD,y[$A4:DFBD]
-$A4:9738 9F 00 40 7E STA $7E4000,x[$7E:40A0]
-$A4:973C BF 01 40 7E LDA $7E4001,x[$7E:40A1]
-$A4:9740 39 BD 9B    AND $9BBD,y[$A4:DFBD]
-$A4:9743 9F 01 40 7E STA $7E4001,x[$7E:40A1]
-$A4:9747 BF 10 40 7E LDA $7E4010,x[$7E:40B0]
-$A4:974B 39 BD 9B    AND $9BBD,y[$A4:DFBD]
-$A4:974E 9F 10 40 7E STA $7E4010,x[$7E:40B0]
-$A4:9752 BF 11 40 7E LDA $7E4011,x[$7E:40B1]
-$A4:9756 39 BD 9B    AND $9BBD,y[$A4:DFBD]
-$A4:9759 9F 11 40 7E STA $7E4011,x[$7E:40B1]
-$A4:975D A9 00       LDA #$00
-$A4:975F EB          XBA
-$A4:9760 AE 90 06    LDX $0690  [$7E:0690]
-$A4:9763 BD 97 96    LDA $9697,x[$A4:9697]
-$A4:9766 AA          TAX
-$A4:9767 BD 9C 06    LDA $069C,x[$7E:06C7]
-$A4:976A C9 30       CMP #$30
-$A4:976C F0 11       BEQ $11    [$977F]
+$A4:9731 BF 00 40 7E LDA $7E4000,x[$7E:40A0];\
+$A4:9735 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] &= [$9BBD + [Y]]
+$A4:9738 9F 00 40 7E STA $7E4000,x[$7E:40A0];/
+$A4:973C BF 01 40 7E LDA $7E4001,x[$7E:40A1];\
+$A4:9740 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 1 &= [$9BBD + [Y]]
+$A4:9743 9F 01 40 7E STA $7E4001,x[$7E:40A1];/
+$A4:9747 BF 10 40 7E LDA $7E4010,x[$7E:40B0];\
+$A4:974B 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 10h &= [$9BBD + [Y]]
+$A4:974E 9F 10 40 7E STA $7E4010,x[$7E:40B0];/
+$A4:9752 BF 11 40 7E LDA $7E4011,x[$7E:40B1];\
+$A4:9756 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 11h &= [$9BBD + [Y]]
+$A4:9759 9F 11 40 7E STA $7E4011,x[$7E:40B1];/
+$A4:975D A9 00       LDA #$00               ;\
+$A4:975F EB          XBA                    ;|
+$A4:9760 AE 90 06    LDX $0690  [$7E:0690]  ;} X = [$9697 + [$0690]]
+$A4:9763 BD 97 96    LDA $9697,x[$A4:9697]  ;|
+$A4:9766 AA          TAX                    ;/
+$A4:9767 BD 9C 06    LDA $069C,x[$7E:06C7]  ;\
+$A4:976A C9 30       CMP #$30               ;} If [$069C] != 30h:
+$A4:976C F0 11       BEQ $11    [$977F]     ;/
 $A4:976E C2 20       REP #$20
-$A4:9770 FE 9C 06    INC $069C,x[$7E:06C7]
-$A4:9773 BD 9C 06    LDA $069C,x[$7E:06C7]
-$A4:9776 29 FF 00    AND #$00FF
-$A4:9779 85 16       STA $16    [$7E:0016]
-$A4:977B C6 12       DEC $12    [$7E:0012]
-$A4:977D D0 83       BNE $83    [$9702]
+$A4:9770 FE 9C 06    INC $069C,x[$7E:06C7]  ; Increment $069C + [X]
+$A4:9773 BD 9C 06    LDA $069C,x[$7E:06C7]  ;\
+$A4:9776 29 FF 00    AND #$00FF             ;} $16 = [$069C + [X]]
+$A4:9779 85 16       STA $16    [$7E:0016]  ;/
+$A4:977B C6 12       DEC $12    [$7E:0012]  ; Decrement $12
+$A4:977D D0 83       BNE $83    [$9702]     ; If [$12] != 0: go to LOOP_9702
 
 $A4:977F C2 30       REP #$30
 
-$A4:9781 AD 9A 06    LDA $069A  [$7E:069A]
-$A4:9784 18          CLC
-$A4:9785 6D 8A 06    ADC $068A  [$7E:068A]
-$A4:9788 AA          TAX
-$A4:9789 AC 30 03    LDY $0330  [$7E:0330]
-$A4:978C BD C5 9B    LDA $9BC5,x[$A4:9BE7]
-$A4:978F C9 FF FF    CMP #$FFFF
-$A4:9792 D0 05       BNE $05    [$9799]
-$A4:9794 9C 8A 06    STZ $068A  [$7E:068A]
-$A4:9797 80 E8       BRA $E8    [$9781]
+; LOOP_9781
+$A4:9781 AD 9A 06    LDA $069A  [$7E:069A]  ;\
+$A4:9784 18          CLC                    ;|
+$A4:9785 6D 8A 06    ADC $068A  [$7E:068A]  ;} X = [$069A] + [$068A]
+$A4:9788 AA          TAX                    ;/
+$A4:9789 AC 30 03    LDY $0330  [$7E:0330]  ; Y = [VRAM write table stack pointer]
+$A4:978C BD C5 9B    LDA $9BC5,x[$A4:9BE7]  ;\
+$A4:978F C9 FF FF    CMP #$FFFF             ;} If [$9BC5 + [X]] = FFFFh:
+$A4:9792 D0 05       BNE $05    [$9799]     ;/
+$A4:9794 9C 8A 06    STZ $068A  [$7E:068A]  ; $068A = 0
+$A4:9797 80 E8       BRA $E8    [$9781]     ; Go to LOOP_9781
 
-$A4:9799 99 D0 00    STA $00D0,y[$7E:00D0]
-$A4:979C BD CB 9B    LDA $9BCB,x[$A4:9BED]
-$A4:979F 99 D2 00    STA $00D2,y[$7E:00D2]
-$A4:97A2 BD C9 9B    LDA $9BC9,x[$A4:9BEB]
-$A4:97A5 99 D4 00    STA $00D4,y[$7E:00D4]
-$A4:97A8 BD C7 9B    LDA $9BC7,x[$A4:9BE9]
-$A4:97AB 99 D5 00    STA $00D5,y[$7E:00D5]
-$A4:97AE 98          TYA
-$A4:97AF 18          CLC
-$A4:97B0 69 07 00    ADC #$0007
-$A4:97B3 8D 30 03    STA $0330  [$7E:0330]
-$A4:97B6 AD 8A 06    LDA $068A  [$7E:068A]
-$A4:97B9 18          CLC
-$A4:97BA 69 08 00    ADC #$0008
-$A4:97BD 8D 8A 06    STA $068A  [$7E:068A]
-$A4:97C0 AD 90 06    LDA $0690  [$7E:0690]
-$A4:97C3 C9 80 00    CMP #$0080
-$A4:97C6 30 03       BMI $03    [$97CB]
-$A4:97C8 9C 90 06    STZ $0690  [$7E:0690]
-
-$A4:97CB 8D 90 06    STA $0690  [$7E:0690]
-$A4:97CE A9 01 00    LDA #$0001
+$A4:9799 99 D0 00    STA $00D0,y[$7E:00D0]  ;\
+$A4:979C BD CB 9B    LDA $9BCB,x[$A4:9BED]  ;|
+$A4:979F 99 D2 00    STA $00D2,y[$7E:00D2]  ;|
+$A4:97A2 BD C9 9B    LDA $9BC9,x[$A4:9BEB]  ;|
+$A4:97A5 99 D4 00    STA $00D4,y[$7E:00D4]  ;|
+$A4:97A8 BD C7 9B    LDA $9BC7,x[$A4:9BE9]  ;} Queue transfer of [$9BC5 + [X]] bytes from [$9BCB + [X]] to VRAM [$9BC7 + [X]]
+$A4:97AB 99 D5 00    STA $00D5,y[$7E:00D5]  ;|
+$A4:97AE 98          TYA                    ;|
+$A4:97AF 18          CLC                    ;|
+$A4:97B0 69 07 00    ADC #$0007             ;|
+$A4:97B3 8D 30 03    STA $0330  [$7E:0330]  ;/
+$A4:97B6 AD 8A 06    LDA $068A  [$7E:068A]  ;\
+$A4:97B9 18          CLC                    ;|
+$A4:97BA 69 08 00    ADC #$0008             ;} $068A += 8
+$A4:97BD 8D 8A 06    STA $068A  [$7E:068A]  ;/
+$A4:97C0 AD 90 06    LDA $0690  [$7E:0690]  ;\
+$A4:97C3 C9 80 00    CMP #$0080             ;|
+$A4:97C6 30 03       BMI $03    [$97CB]     ;|
+$A4:97C8 9C 90 06    STZ $0690  [$7E:0690]  ;} >_<;
+                                            ;|
+$A4:97CB 8D 90 06    STA $0690  [$7E:0690]  ;/
+$A4:97CE A9 01 00    LDA #$0001             ; A = 1
 $A4:97D1 28          PLP
 $A4:97D2 6B          RTL
 }
