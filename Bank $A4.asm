@@ -680,7 +680,7 @@ $A4:8B40 A9 00 20    LDA #$2000             ;|
 $A4:8B43 95 D2       STA $D2,x  [$7E:00D2]  ;|
 $A4:8B45 A9 7E 00    LDA #$007E             ;|
 $A4:8B48 95 D4       STA $D4,x  [$7E:00D4]  ;|
-$A4:8B4A A5 59       LDA $59    [$7E:0059]  ;} Queue transfer of $7E:2000..7FFF to VRAM BG2 tilemap
+$A4:8B4A A5 59       LDA $59    [$7E:0059]  ;} Queue transfer of $7E:2000..27FF to VRAM BG2 tilemap
 $A4:8B4C 29 FC 00    AND #$00FC             ;|
 $A4:8B4F EB          XBA                    ;|
 $A4:8B50 95 D5       STA $D5,x  [$7E:00D5]  ;|
@@ -2012,108 +2012,112 @@ $A4:957F 60          RTS
 {
 $A4:9580 C2 30       REP #$30
 $A4:9582 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
-$A4:9585 AE 2E 10    LDX $102E  [$7E:102E]
-$A4:9588 CE EE 0F    DEC $0FEE  [$7E:0FEE]
-$A4:958B AD EE 0F    LDA $0FEE  [$7E:0FEE]
-$A4:958E 29 02 00    AND #$0002
-$A4:9591 F0 06       BEQ $06    [$9599]
-$A4:9593 8A          TXA
-$A4:9594 18          CLC
-$A4:9595 69 04 00    ADC #$0004
-$A4:9598 AA          TAX
+$A4:9585 AE 2E 10    LDX $102E  [$7E:102E]  ; Crocomire X position = [$102E]
+$A4:9588 CE EE 0F    DEC $0FEE  [$7E:0FEE]  ; Decrement $0FEE
+$A4:958B AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
+$A4:958E 29 02 00    AND #$0002             ;} A = [$0FEE] & 2
+$A4:9591 F0 06       BEQ $06    [$9599]     ; If [A] != 0:
+$A4:9593 8A          TXA                    ;\
+$A4:9594 18          CLC                    ;} A = [X] + 4
+$A4:9595 69 04 00    ADC #$0004             ;/
+$A4:9598 AA          TAX                    ; Crocomire X position += 4
 
 $A4:9599 8E 7A 0F    STX $0F7A  [$7E:0F7A]
-$A4:959C 22 C8 96 A4 JSL $A496C8[$A4:96C8]
+$A4:959C 22 C8 96 A4 JSL $A496C8[$A4:96C8]  ; Execute $96C8
 $A4:95A0 C9 00 00    CMP #$0000             ;\
 $A4:95A3 D0 2D       BNE $2D    [$95D2]     ;} If [A] != 0: go to BRANCH_95D2
 
+; BRANCH_95A5
 $A4:95A5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95A8 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:95AB FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
-$A4:95AE AE 9A 06    LDX $069A  [$7E:069A]
+$A4:95AE AE 9A 06    LDX $069A  [$7E:069A]  ; X = [Crocomire melting tiles loading table base index]
 
-$A4:95B1 BD C5 9B    LDA $9BC5,x[$A4:9BE7]
-$A4:95B4 C9 FF FF    CMP #$FFFF
-$A4:95B7 F0 08       BEQ $08    [$95C1]
-$A4:95B9 8A          TXA
-$A4:95BA 18          CLC
-$A4:95BB 69 08 00    ADC #$0008
-$A4:95BE AA          TAX
-$A4:95BF 80 F0       BRA $F0    [$95B1]
+; LOOP_95B1
+$A4:95B1 BD C5 9B    LDA $9BC5,x[$A4:9BE7]  ;\
+$A4:95B4 C9 FF FF    CMP #$FFFF             ;} If [$9BC5 + [X]] != FFFFh:
+$A4:95B7 F0 08       BEQ $08    [$95C1]     ;/
+$A4:95B9 8A          TXA                    ;\
+$A4:95BA 18          CLC                    ;|
+$A4:95BB 69 08 00    ADC #$0008             ;} X += 8
+$A4:95BE AA          TAX                    ;/
+$A4:95BF 80 F0       BRA $F0    [$95B1]     ; Go to LOOP_95B1
 
-$A4:95C1 E8          INX
-$A4:95C2 E8          INX
-$A4:95C3 8E 9A 06    STX $069A  [$7E:069A]
-$A4:95C6 AF 3E 78 7E LDA $7E783E[$7E:783E]
-$A4:95CA AA          TAX
-$A4:95CB A9 00 00    LDA #$0000
-$A4:95CE 9D B4 18    STA $18B4,x[$7E:18B8]
-$A4:95D1 60          RTS
+$A4:95C1 E8          INX                    ;\
+$A4:95C2 E8          INX                    ;} Crocomire melting tiles loading table base index = [X] + 2
+$A4:95C3 8E 9A 06    STX $069A  [$7E:069A]  ;/
+$A4:95C6 AF 3E 78 7E LDA $7E783E[$7E:783E]  ;\
+$A4:95CA AA          TAX                    ;} X = [$7E:783E] (HDMA object index)
+$A4:95CB A9 00 00    LDA #$0000             ;\
+$A4:95CE 9D B4 18    STA $18B4,x[$7E:18B8]  ;} Delete HDMA object
+$A4:95D1 60          RTS                    ; Return
 
 ; BRANCH_95D2
 $A4:95D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95D5 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
-$A4:95D9 AD 92 06    LDA $0692  [$7E:0692]
-$A4:95DC AA          TAX
-$A4:95DD 29 00 FF    AND #$FF00
-$A4:95E0 EB          XBA
-$A4:95E1 85 12       STA $12    [$7E:0012]
-$A4:95E3 AD 94 06    LDA $0694  [$7E:0694]
-$A4:95E6 38          SEC
-$A4:95E7 E9 03 00    SBC #$0003
-$A4:95EA C9 10 00    CMP #$0010
-$A4:95ED 10 08       BPL $08    [$95F7]
-$A4:95EF E0 00 50    CPX #$5000
-$A4:95F2 10 B1       BPL $B1    [$95A5]
-$A4:95F4 A9 10 00    LDA #$0010
+$A4:95D9 AD 92 06    LDA $0692  [$7E:0692]  ;\
+$A4:95DC AA          TAX                    ;} X = [$0692]
+$A4:95DD 29 00 FF    AND #$FF00             ;\
+$A4:95E0 EB          XBA                    ;} $12 = [X] / 100h
+$A4:95E1 85 12       STA $12    [$7E:0012]  ;/
+$A4:95E3 AD 94 06    LDA $0694  [$7E:0694]  ;\
+$A4:95E6 38          SEC                    ;} A = [$0694] - 3
+$A4:95E7 E9 03 00    SBC #$0003             ;/
+$A4:95EA C9 10 00    CMP #$0010             ;\
+$A4:95ED 10 08       BPL $08    [$95F7]     ;} If [A] < 10h:
+$A4:95EF E0 00 50    CPX #$5000             ;\
+$A4:95F2 10 B1       BPL $B1    [$95A5]     ;} If [X] >= 5000h: go to BRANCH_95A5
+$A4:95F4 A9 10 00    LDA #$0010             ; A = 10h
 
-$A4:95F7 8D 94 06    STA $0694  [$7E:0694]
-$A4:95FA AD 92 06    LDA $0692  [$7E:0692]
-$A4:95FD 18          CLC
-$A4:95FE 69 80 01    ADC #$0180
-$A4:9601 C9 00 50    CMP #$5000
-$A4:9604 30 03       BMI $03    [$9609]
-$A4:9606 A9 00 50    LDA #$5000
+$A4:95F7 8D 94 06    STA $0694  [$7E:0694]  ; $0694 = [A]
+$A4:95FA AD 92 06    LDA $0692  [$7E:0692]  ;\
+$A4:95FD 18          CLC                    ;|
+$A4:95FE 69 80 01    ADC #$0180             ;|
+$A4:9601 C9 00 50    CMP #$5000             ;|
+$A4:9604 30 03       BMI $03    [$9609]     ;} $0692 = min(5000h, [$0692] + 180h)
+$A4:9606 A9 00 50    LDA #$5000             ;|
+                                            ;|
+$A4:9609 8D 92 06    STA $0692  [$7E:0692]  ;/
+$A4:960C 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$A4:960E AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
+$A4:9611 38          SEC                    ;|
+$A4:9612 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2
+$A4:9615 0A          ASL A                  ;|
+$A4:9616 AA          TAX                    ;/
+$A4:9617 AD 94 06    LDA $0694  [$7E:0694]  ;\
+$A4:961A A8          TAY                    ;} Y = $05A6 = [$0694]
+$A4:961B 8D A6 05    STA $05A6  [$7E:05A6]  ;/
+$A4:961E 0A          ASL A                  ; >_<;
 
-$A4:9609 8D 92 06    STA $0692  [$7E:0692]
-$A4:960C 64 12       STZ $12    [$7E:0012]
-$A4:960E AD BE 0F    LDA $0FBE  [$7E:0FBE]
-$A4:9611 38          SEC
-$A4:9612 E9 48 00    SBC #$0048
-$A4:9615 0A          ASL A
-$A4:9616 AA          TAX
-$A4:9617 AD 94 06    LDA $0694  [$7E:0694]
-$A4:961A A8          TAY
-$A4:961B 8D A6 05    STA $05A6  [$7E:05A6]
-$A4:961E 0A          ASL A
+; LOOP_961F
+$A4:961F 98          TYA                    ;\
+$A4:9620 38          SEC                    ;|
+$A4:9621 ED A6 05    SBC $05A6  [$7E:05A6]  ;|
+$A4:9624 18          CLC                    ;} $7E:CAF0 + [X] = [BG2 Y scroll] + [Y] - [$05A6]
+$A4:9625 65 B7       ADC $B7    [$7E:00B7]  ;|
+$A4:9627 9F F0 CA 7E STA $7ECAF0,x[$7E:CC12];/
+$A4:962B A5 12       LDA $12    [$7E:0012]  ;\
+$A4:962D 18          CLC                    ;|
+$A4:962E 6D 92 06    ADC $0692  [$7E:0692]  ;} $12 += [$0692]
+$A4:9631 85 12       STA $12    [$7E:0012]  ;/
+$A4:9633 B0 01       BCS $01    [$9636]     ; If carry was not set:
+$A4:9635 C8          INY                    ; Increment Y
 
-$A4:961F 98          TYA
-$A4:9620 38          SEC
-$A4:9621 ED A6 05    SBC $05A6  [$7E:05A6]
-$A4:9624 18          CLC
-$A4:9625 65 B7       ADC $B7    [$7E:00B7]
-$A4:9627 9F F0 CA 7E STA $7ECAF0,x[$7E:CC12]
-$A4:962B A5 12       LDA $12    [$7E:0012]
-$A4:962D 18          CLC
-$A4:962E 6D 92 06    ADC $0692  [$7E:0692]
-$A4:9631 85 12       STA $12    [$7E:0012]
-$A4:9633 B0 01       BCS $01    [$9636]
-$A4:9635 C8          INY
-
-$A4:9636 EE A6 05    INC $05A6  [$7E:05A6]
-$A4:9639 E8          INX
-$A4:963A E8          INX
-$A4:963B CC 98 06    CPY $0698  [$7E:0698]
-$A4:963E 30 DF       BMI $DF    [$961F]
-$A4:9640 E0 00 02    CPX #$0200
-$A4:9643 10 0D       BPL $0D    [$9652]
+$A4:9636 EE A6 05    INC $05A6  [$7E:05A6]  ; Increment $05A6
+$A4:9639 E8          INX                    ;\
+$A4:963A E8          INX                    ;} X += 2
+$A4:963B CC 98 06    CPY $0698  [$7E:0698]  ;\
+$A4:963E 30 DF       BMI $DF    [$961F]     ;} If [Y] < [$0698]: go to LOOP_961F
+$A4:9640 E0 00 02    CPX #$0200             ;\
+$A4:9643 10 0D       BPL $0D    [$9652]     ;} If [X] >= 200h: return
 $A4:9645 A5 B7       LDA $B7    [$7E:00B7]
 
-$A4:9647 9F F0 CA 7E STA $7ECAF0,x[$7E:CC18]
-$A4:964B E8          INX
-$A4:964C E8          INX
-$A4:964D E0 00 02    CPX #$0200
-$A4:9650 30 F5       BMI $F5    [$9647]
+; LOOP_9647
+$A4:9647 9F F0 CA 7E STA $7ECAF0,x[$7E:CC18]; $7E:CAF0 + [X] = [BG2 Y scroll]
+$A4:964B E8          INX                    ;\
+$A4:964C E8          INX                    ;} X += 2
+$A4:964D E0 00 02    CPX #$0200             ;\
+$A4:9650 30 F5       BMI $F5    [$9647]     ;} If [X] < 200h: go to LOOP_9647
 
 $A4:9652 60          RTS
 }
@@ -2123,32 +2127,32 @@ $A4:9652 60          RTS
 {
 $A4:9653 C2 30       REP #$30
 $A4:9655 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:9658 9E B0 0F    STZ $0FB0,x[$7E:0FB0]
-$A4:965B 9E B2 0F    STZ $0FB2,x[$7E:0FB2]
-$A4:965E A9 00 08    LDA #$0800
-$A4:9661 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A4:9664 A9 38 03    LDA #$0338
-$A4:9667 A2 FE 0F    LDX #$0FFE
-
-$A4:966A 9F 00 20 7E STA $7E2000,x[$7E:2FFE]
-$A4:966E CA          DEX
-$A4:966F CA          DEX
-$A4:9670 10 F8       BPL $F8    [$966A]
-$A4:9672 AE 30 03    LDX $0330  [$7E:0330]
-$A4:9675 A9 00 08    LDA #$0800
-$A4:9678 95 D0       STA $D0,x  [$7E:00D0]
-$A4:967A A9 00 20    LDA #$2000
-$A4:967D 95 D2       STA $D2,x  [$7E:00D2]
-$A4:967F A9 7E 00    LDA #$007E
-$A4:9682 95 D4       STA $D4,x  [$7E:00D4]
-$A4:9684 A5 59       LDA $59    [$7E:0059]
-$A4:9686 29 FE 00    AND #$00FE
-$A4:9689 EB          XBA
-$A4:968A 95 D5       STA $D5,x  [$7E:00D5]
-$A4:968C 8A          TXA
-$A4:968D 18          CLC
-$A4:968E 69 07 00    ADC #$0007
-$A4:9691 8D 30 03    STA $0330  [$7E:0330]
+$A4:9658 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0
+$A4:965B 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; $0FB2 = 0
+$A4:965E A9 00 08    LDA #$0800             ;\
+$A4:9661 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} $0FAE = 800h
+$A4:9664 A9 38 03    LDA #$0338             ;\
+$A4:9667 A2 FE 0F    LDX #$0FFE             ;|
+                                            ;|
+$A4:966A 9F 00 20 7E STA $7E2000,x[$7E:2FFE];} $7E:2000..2FFF = 338h
+$A4:966E CA          DEX                    ;|
+$A4:966F CA          DEX                    ;|
+$A4:9670 10 F8       BPL $F8    [$966A]     ;/
+$A4:9672 AE 30 03    LDX $0330  [$7E:0330]  ;\
+$A4:9675 A9 00 08    LDA #$0800             ;|
+$A4:9678 95 D0       STA $D0,x  [$7E:00D0]  ;|
+$A4:967A A9 00 20    LDA #$2000             ;|
+$A4:967D 95 D2       STA $D2,x  [$7E:00D2]  ;|
+$A4:967F A9 7E 00    LDA #$007E             ;|
+$A4:9682 95 D4       STA $D4,x  [$7E:00D4]  ;|
+$A4:9684 A5 59       LDA $59    [$7E:0059]  ;} Queue transfer of $7E:2000..27FF to VRAM BG2 tilemap
+$A4:9686 29 FE 00    AND #$00FE             ;| <-- should be `AND #$00FC`
+$A4:9689 EB          XBA                    ;|
+$A4:968A 95 D5       STA $D5,x  [$7E:00D5]  ;|
+$A4:968C 8A          TXA                    ;|
+$A4:968D 18          CLC                    ;|
+$A4:968E 69 07 00    ADC #$0007             ;|
+$A4:9691 8D 30 03    STA $0330  [$7E:0330]  ;/
 $A4:9694 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 }
 
@@ -2261,13 +2265,13 @@ $A4:977F C2 30       REP #$30
 ; LOOP_9781
 $A4:9781 AD 9A 06    LDA $069A  [$7E:069A]  ;\
 $A4:9784 18          CLC                    ;|
-$A4:9785 6D 8A 06    ADC $068A  [$7E:068A]  ;} X = [$069A] + [$068A]
+$A4:9785 6D 8A 06    ADC $068A  [$7E:068A]  ;} X = [Crocomire melting tiles loading table base index] + [Crocomire melting tiles loading table subindex]
 $A4:9788 AA          TAX                    ;/
 $A4:9789 AC 30 03    LDY $0330  [$7E:0330]  ; Y = [VRAM write table stack pointer]
 $A4:978C BD C5 9B    LDA $9BC5,x[$A4:9BE7]  ;\
 $A4:978F C9 FF FF    CMP #$FFFF             ;} If [$9BC5 + [X]] = FFFFh:
 $A4:9792 D0 05       BNE $05    [$9799]     ;/
-$A4:9794 9C 8A 06    STZ $068A  [$7E:068A]  ; $068A = 0
+$A4:9794 9C 8A 06    STZ $068A  [$7E:068A]  ; Crocomire melting tiles loading table subindex = 0
 $A4:9797 80 E8       BRA $E8    [$9781]     ; Go to LOOP_9781
 
 $A4:9799 99 D0 00    STA $00D0,y[$7E:00D0]  ;\
@@ -2275,7 +2279,7 @@ $A4:979C BD CB 9B    LDA $9BCB,x[$A4:9BED]  ;|
 $A4:979F 99 D2 00    STA $00D2,y[$7E:00D2]  ;|
 $A4:97A2 BD C9 9B    LDA $9BC9,x[$A4:9BEB]  ;|
 $A4:97A5 99 D4 00    STA $00D4,y[$7E:00D4]  ;|
-$A4:97A8 BD C7 9B    LDA $9BC7,x[$A4:9BE9]  ;} Queue transfer of [$9BC5 + [X]] bytes from [$9BCB + [X]] to VRAM [$9BC7 + [X]]
+$A4:97A8 BD C7 9B    LDA $9BC7,x[$A4:9BE9]  ;} Queue transfer of 160h bytes from $7E:4000 + [Crocomire melting tiles loading table subindex] / 8 * 200h to VRAM [Crocomire melting tiles loading table subindex] / 8 * 100h
 $A4:97AB 99 D5 00    STA $00D5,y[$7E:00D5]  ;|
 $A4:97AE 98          TYA                    ;|
 $A4:97AF 18          CLC                    ;|
@@ -2283,7 +2287,7 @@ $A4:97B0 69 07 00    ADC #$0007             ;|
 $A4:97B3 8D 30 03    STA $0330  [$7E:0330]  ;/
 $A4:97B6 AD 8A 06    LDA $068A  [$7E:068A]  ;\
 $A4:97B9 18          CLC                    ;|
-$A4:97BA 69 08 00    ADC #$0008             ;} $068A += 8
+$A4:97BA 69 08 00    ADC #$0008             ;} Crocomire melting tiles loading table subindex += 8
 $A4:97BD 8D 8A 06    STA $068A  [$7E:068A]  ;/
 $A4:97C0 AD 90 06    LDA $0690  [$7E:0690]  ;\
 $A4:97C3 C9 80 00    CMP #$0080             ;|
