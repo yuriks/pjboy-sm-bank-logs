@@ -16,16 +16,16 @@ $A4:8691 6B          RTL
 
 ;;; $8692: Crocomire constants ;;;
 {
-$A4:8692             dw 0008
-$A4:8694             dw 0008
-$A4:8696             dw 0000
-$A4:8698             dw 0002
-$A4:869A             dw 0001
-$A4:869C             dw 0003
-$A4:869E             dw 0003
-$A4:86A0             dw 0008
-$A4:86A2             dw 0300
-$A4:86A4             dw 0640
+$A4:8692             dw 0008 ; Mouth close delay when damaged not during projectile attack
+$A4:8694             dw 0008 ; Mouth close delay when damaged during projectile attack
+$A4:8696             dw 0000 ; Crocomire enemy index when leaving enemy shot when shot by uncharged beam whilst mouth is open. Not read meaningfully
+$A4:8698             dw 0002 ; Number of steps taken back when damaged by charged beam
+$A4:869A             dw 0001 ; Number of steps taken back when damaged by missile
+$A4:869C             dw 0003 ; Number of steps taken back when damaged by super missile
+$A4:869E             dw 0003 ; Power bomb reaction enable flag
+$A4:86A0             dw 0008 ; Mouth open instruction timer when shot by uncharged beam
+$A4:86A2             dw 0300 ; Crocomire X position threshold being near spike wall (to start spike wall charge and finish backing away from spike wall)
+$A4:86A4             dw 0640 ; Crocomire X position threshold for bridge to collapse
 }
 
 
@@ -611,7 +611,7 @@ $A4:8A76 BF 28 D8 7E LDA $7ED828,x[$7E:D82A];|
 $A4:8A7A 89 02 00    BIT #$0002             ;} If area mini-boss dead: go to BRANCH_DEAD
 $A4:8A7D D0 5D       BNE $5D    [$8ADC]     ;/
 $A4:8A7F 22 E2 A7 90 JSL $90A7E2[$90:A7E2]  ; Disable mini-map and mark boss room map tiles as explored
-$A4:8A83 9C 9A 06    STZ $069A  [$7E:069A]  ; $069A = 0
+$A4:8A83 9C 9A 06    STZ $069A  [$7E:069A]  ; Crocomire melting tiles loading table index = 0
 $A4:8A86 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8A89 9E A8 0F    STZ $0FA8,x[$7E:0FA8]  ; Crocomire death sequence index = 0
 $A4:8A8C 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0
@@ -636,7 +636,7 @@ $A4:8ABD 8D 41 09    STA $0941  [$7E:0941]  ;} Camera distance index = 2 (camera
 $A4:8AC0 A9 00 04    LDA #$0400             ;\
 $A4:8AC3 8D 9A 17    STA $179A  [$7E:179A]  ;} Enemy BG2 tilemap size = 400h
 $A4:8AC6 A9 DE BA    LDA #$BADE             ;\
-$A4:8AC9 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BADE
+$A4:8AC9 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BADE (initial)
 $A4:8ACC BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
 $A4:8ACF 09 04 00    ORA #$0004             ;} Enable enemy extended spritemap format
 $A4:8AD2 9D 88 0F    STA $0F88,x[$7E:0F88]  ;/
@@ -662,7 +662,7 @@ $A4:8B0A             dx 61,0B,B747          ;} Spawn PLM to clear Crocomire's br
 $A4:8B0E A9 54 00    LDA #$0054             ;\
 $A4:8B11 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 54h
 $A4:8B14 A9 CC E1    LDA #$E1CC             ;\
-$A4:8B17 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E1CC
+$A4:8B17 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E1CC (dead)
 $A4:8B1A A9 01 00    LDA #$0001             ;\
 $A4:8B1D 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:8B20 A9 40 02    LDA #$0240             ;\
@@ -818,7 +818,7 @@ $A4:8C8F 60          RTS
 }
 
 
-;;; $8C90: Crocomire main AI - death sequence index 56h - dead (on room entry, final state) ;;;
+;;; $8C90: Crocomire main AI - death sequence index 56h - dead (due to room entry, final state) ;;;
 {
 $A4:8C90 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
 $A4:8C92 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
@@ -1357,7 +1357,7 @@ $A4:9097 80 E6       BRA $E6    [$907F]     ; Move right 4px
 
 ;;; $9099: Crocomire main AI - death sequence index 3Ch - hop 6 - sinking ;;;
 {
-$A4:9099 20 DF 90    JSR $90DF  [$A4:90DF]  ; Execute $90DF
+$A4:9099 20 DF 90    JSR $90DF  [$A4:90DF]  ; Set melting 2 instruction list pointer
 $A4:909C 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:909F 20 C1 91    JSR $91C1  [$A4:91C1]  ; Sink Crocomire down
 $A4:90A2 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
@@ -1366,9 +1366,9 @@ $A4:90A8 D0 34       BNE $34    [$90DE]     ;/
 $A4:90AA A9 06 00    LDA #$0006             ;\
 $A4:90AD 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 1 music track
 $A4:90B1 A9 58 00    LDA #$0058             ;\
-$A4:90B4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 58h
+$A4:90B4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 58h (flowing down the river)
 $A4:90B7 A9 D2 E1    LDA #$E1D2             ;\
-$A4:90BA 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E1D2
+$A4:90BA 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E1D2 (skeleton - flowing down the river)
 $A4:90BD A9 01 01    LDA #$0101             ;\
 $A4:90C0 8F 24 CD 7E STA $7ECD24[$7E:CD24]  ;} Scrolls 4/5 = blue
 $A4:90C4 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
@@ -1378,28 +1378,28 @@ $A4:90CD 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A4:90D0 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A4:90D4             dx 4E,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (4Eh, 3)
 $A4:90D8 9C 41 09    STZ $0941  [$7E:0941]  ; Camera distance index = 0 (normal)
-$A4:90DB 9C 88 06    STZ $0688  [$7E:0688]  ; $0688 = 0
+$A4:90DB 9C 88 06    STZ $0688  [$7E:0688]  ; Crocomire skeleton loading index = 0
 
 $A4:90DE 60          RTS
 }
 
 
-;;; $90DF:  ;;;
+;;; $90DF: Set melting 2 instruction list pointer ;;;
 {
 $A4:90DF AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A4:90E2 A0 7E BF    LDY #$BF7E             ; Crocomire instruction list pointer = $BF7E
+$A4:90E2 A0 7E BF    LDY #$BF7E             ; Crocomire instruction list pointer = $BF7E (melting 2 - top row)
 $A4:90E5 C9 18 01    CMP #$0118             ;\
 $A4:90E8 10 13       BPL $13    [$90FD]     ;} If [Crocomire Y position] < 118h:
-$A4:90EA A0 86 BF    LDY #$BF86             ; Crocomire instruction list pointer = $BF86
+$A4:90EA A0 86 BF    LDY #$BF86             ; Crocomire instruction list pointer = $BF86 (melting 2 - top 2 rows)
 $A4:90ED C9 08 01    CMP #$0108             ;\
 $A4:90F0 10 0B       BPL $0B    [$90FD]     ;} If [Crocomire Y position] < 108h:
-$A4:90F2 A0 8C BF    LDY #$BF8C             ; Crocomire instruction list pointer = $BF8C
+$A4:90F2 A0 8C BF    LDY #$BF8C             ; Crocomire instruction list pointer = $BF8C (melting 2 - top 3 rows)
 $A4:90F5 C9 F8 00    CMP #$00F8             ;\
 $A4:90F8 10 03       BPL $03    [$90FD]     ;} If [Crocomire Y position] < F8h:
-$A4:90FA A0 92 BF    LDY #$BF92             ; Crocomire instruction list pointer = $BF92
-                                            
-$A4:90FD 98          TYA                    
-$A4:90FE 8D 92 0F    STA $0F92  [$7E:0F92]  
+$A4:90FA A0 92 BF    LDY #$BF92             ; Crocomire instruction list pointer = $BF92 (melting 2 - top 4 rows)
+
+$A4:90FD 98          TYA
+$A4:90FE 8D 92 0F    STA $0F92  [$7E:0F92]
 $A4:9101 A9 01 00    LDA #$0001             ;\
 $A4:9104 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:9107 60          RTS
@@ -1410,16 +1410,16 @@ $A4:9107 60          RTS
 {
 $A4:9108 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:910B AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A4:910E A0 64 BF    LDY #$BF64             ; Crocomire instruction list pointer = $BF64
+$A4:910E A0 64 BF    LDY #$BF64             ; Crocomire instruction list pointer = $BF64 (melting 1 - top row)
 $A4:9111 C9 18 01    CMP #$0118             ;\
 $A4:9114 10 13       BPL $13    [$9129]     ;} If [Crocomire Y position] < 118h:
-$A4:9116 A0 6C BF    LDY #$BF6C             ; Crocomire instruction list pointer = $BF6C
+$A4:9116 A0 6C BF    LDY #$BF6C             ; Crocomire instruction list pointer = $BF6C (melting 1 - top 2 rows)
 $A4:9119 C9 08 01    CMP #$0108             ;\
 $A4:911C 10 0B       BPL $0B    [$9129]     ;} If [Crocomire Y position] < 108h:
-$A4:911E A0 72 BF    LDY #$BF72             ; Crocomire instruction list pointer = $BF72
+$A4:911E A0 72 BF    LDY #$BF72             ; Crocomire instruction list pointer = $BF72 (melting 1 - top 3 rows)
 $A4:9121 C9 F8 00    CMP #$00F8             ;\
 $A4:9124 10 03       BPL $03    [$9129]     ;} If [Crocomire Y position] < F8h:
-$A4:9126 A0 78 BF    LDY #$BF78             ; Crocomire instruction list pointer = $BF78
+$A4:9126 A0 78 BF    LDY #$BF78             ; Crocomire instruction list pointer = $BF78 (melting 1 - top 4 rows)
 
 $A4:9129 98          TYA
 $A4:912A 8D 92 0F    STA $0F92  [$7E:0F92]
@@ -1588,19 +1588,19 @@ $A4:926D 60          RTS
 {
 $A4:926E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9271 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A4:9274 A0 7E BF    LDY #$BF7E             ; Crocomire instruction list pointer = $BF7E
-$A4:9277 C9 18 01    CMP #$0118             ;\
-$A4:927A 10 13       BPL $13    [$928F]     ;} If [Crocomire Y position] < 118h:
-$A4:927C A0 86 BF    LDY #$BF86             ; Crocomire instruction list pointer = $BF86
-$A4:927F C9 08 01    CMP #$0108             ;\
-$A4:9282 10 0B       BPL $0B    [$928F]     ;} If [Crocomire Y position] < 108h:
-$A4:9284 A0 8C BF    LDY #$BF8C             ; Crocomire instruction list pointer = $BF8C
-$A4:9287 C9 F8 00    CMP #$00F8             ;\
-$A4:928A 10 03       BPL $03    [$928F]     ;} If [Crocomire Y position] < F8h:
-$A4:928C A0 92 BF    LDY #$BF92             ; Crocomire instruction list pointer = $BF92
-                                            
-$A4:928F 98          TYA                    
-$A4:9290 9D 92 0F    STA $0F92,x[$7E:0F92]  
+$A4:9274 A0 7E BF    LDY #$BF7E             ; Crocomire instruction list pointer = $BF7E (melting 2 - top row)
+$A4:9277 C9 18 01    CMP #$0118             ;\                                          
+$A4:927A 10 13       BPL $13    [$928F]     ;} If [Crocomire Y position] < 118h:        
+$A4:927C A0 86 BF    LDY #$BF86             ; Crocomire instruction list pointer = $BF86 (melting 2 - top 2 rows)
+$A4:927F C9 08 01    CMP #$0108             ;\                                          
+$A4:9282 10 0B       BPL $0B    [$928F]     ;} If [Crocomire Y position] < 108h:        
+$A4:9284 A0 8C BF    LDY #$BF8C             ; Crocomire instruction list pointer = $BF8C (melting 2 - top 3 rows)
+$A4:9287 C9 F8 00    CMP #$00F8             ;\                                          
+$A4:928A 10 03       BPL $03    [$928F]     ;} If [Crocomire Y position] < F8h:         
+$A4:928C A0 92 BF    LDY #$BF92             ; Crocomire instruction list pointer = $BF92 (melting 2 - top 4 rows)
+
+$A4:928F 98          TYA
+$A4:9290 9D 92 0F    STA $0F92,x[$7E:0F92]
 $A4:9293 A9 01 00    LDA #$0001             ;\
 $A4:9296 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:9299 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
@@ -1613,16 +1613,16 @@ $A4:929C 80 3A       BRA $3A    [$92D8]     ; Go to rise Crocomire up
 $A4:929E 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
 $A4:92A1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:92A4 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A4:92A7 A0 64 BF    LDY #$BF64             ; Crocomire instruction list pointer = $BF64
+$A4:92A7 A0 64 BF    LDY #$BF64             ; Crocomire instruction list pointer = $BF64 (melting 1 - top row)
 $A4:92AA C9 18 01    CMP #$0118             ;\
 $A4:92AD 10 13       BPL $13    [$92C2]     ;} If [Crocomire Y position] < 118h:
-$A4:92AF A0 6C BF    LDY #$BF6C             ; Crocomire instruction list pointer = $BF6C
+$A4:92AF A0 6C BF    LDY #$BF6C             ; Crocomire instruction list pointer = $BF6C (melting 1 - top 2 rows)
 $A4:92B2 C9 08 01    CMP #$0108             ;\
 $A4:92B5 10 0B       BPL $0B    [$92C2]     ;} If [Crocomire Y position] < 108h:
-$A4:92B7 A0 72 BF    LDY #$BF72             ; Crocomire instruction list pointer = $BF72
+$A4:92B7 A0 72 BF    LDY #$BF72             ; Crocomire instruction list pointer = $BF72 (melting 1 - top 3 rows)
 $A4:92BA C9 F8 00    CMP #$00F8             ;\
 $A4:92BD 10 03       BPL $03    [$92C2]     ;} If [Crocomire Y position] < F8h:
-$A4:92BF A0 78 BF    LDY #$BF78             ; Crocomire instruction list pointer = $BF78
+$A4:92BF A0 78 BF    LDY #$BF78             ; Crocomire instruction list pointer = $BF78 (melting 1 - top 4 rows)
 
 $A4:92C2 98          TYA
 $A4:92C3 9D 92 0F    STA $0F92,x[$7E:0F92]
@@ -1689,7 +1689,7 @@ $A4:9340 60          RTS
 }
 
 
-;;; $9341: Crocomire main AI - death sequence index 10h ;;;
+;;; $9341: Crocomire main AI - death sequence index 10h - hop 3 - load melting tilemap ;;;
 {
 $A4:9341 A9 30 00    LDA #$0030             ;\
 $A4:9344 8D 8C 06    STA $068C  [$7E:068C]  ;} $068C = 30h
@@ -1698,13 +1698,13 @@ $A4:934A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:934D FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:9350 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:9353 A9 64 BF    LDA #$BF64             ;\
-$A4:9356 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BF64
+$A4:9356 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BF64 (melting 1 - top row)
 $A4:9359 A9 01 00    LDA #$0001             ;\
 $A4:935C 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:935F A9 01 00    LDA #$0001             ;\
 $A4:9362 8D 1E 0E    STA $0E1E  [$7E:0E1E]  ;} Request enemy BG2 tilemap VRAM transfer
 $A4:9365 A9 98 BF    LDA #$BF98             ;\
-$A4:9368 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire's tongue instruction list pointer = $BF98
+$A4:9368 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire's tongue instruction list pointer = $BF98 (melting)
 $A4:936B A9 01 00    LDA #$0001             ;\
 $A4:936E 9D D4 0F    STA $0FD4,x[$7E:0FD4]  ;} Crocomire's tongue instruction timer = 1
 $A4:9371 BD C6 0F    LDA $0FC6,x[$7E:0FC6]  ;\
@@ -1722,7 +1722,7 @@ $A4:9390 A9 38 03    LDA #$0338             ;|
                                             ;|
 $A4:9393 9F 00 20 7E STA $7E2000,x[$7E:2000];|
 $A4:9397 9F 02 20 7E STA $7E2002,x[$7E:2002];|
-$A4:939B E8          INX                    ;} $7E:2000..23FF = 338h
+$A4:939B E8          INX                    ;} $7E:2000..23FF = 338h (clear BG2 tilemap)
 $A4:939C E8          INX                    ;|
 $A4:939D E8          INX                    ;|
 $A4:939E E8          INX                    ;|
@@ -1732,7 +1732,7 @@ $A4:93A4 A2 00 00    LDX #$0000             ;\
                                             ;|
 $A4:93A7 BF 79 9C A4 LDA $A49C79,x[$A4:9C79];|
 $A4:93AB C9 FF FF    CMP #$FFFF             ;|
-$A4:93AE F0 08       BEQ $08    [$93B8]     ;} $7E:2040..223F = [$A4:9C79..9E78]
+$A4:93AE F0 08       BEQ $08    [$93B8]     ;} $7E:2040..223F = [$A4:9C79..9E78] (Crocomire tilemap - melting 1)
 $A4:93B0 9F 40 20 7E STA $7E2040,x[$7E:2040];|
 $A4:93B4 E8          INX                    ;|
 $A4:93B5 E8          INX                    ;|
@@ -1748,7 +1748,7 @@ $A4:93BD AA          TAX                    ;/
 ;;; $93BE: Write Crocomire BG2 tilemap ;;;
 {
 ;; Parameters:
-;;     X: BG2 tilemap size. 600h
+;;     X: BG2 tilemap size. 600h (little excessive...)
 $A4:93BE 9B          TXY                    ;\
 $A4:93BF AE 30 03    LDX $0330  [$7E:0330]  ;|
 $A4:93C2 94 D0       STY $D0,x  [$7E:00D0]  ;|
@@ -1781,7 +1781,7 @@ $A4:93EC 60          RTS
 }
 
 
-;;; $93ED: Crocomire main AI - death sequence index 2Ch ;;;
+;;; $93ED: Crocomire main AI - death sequence index 2Ch - hop 6 - load melting tilemap ;;;
 {
 $A4:93ED 20 DF 93    JSR $93DF  [$A4:93DF]  ; Reset Crocomire BG2 Y scroll HDMA data table
 $A4:93F0 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1793,12 +1793,12 @@ $A4:93FF A9 30 00    LDA #$0030             ;\
 $A4:9402 8D 8C 06    STA $068C  [$7E:068C]  ;} $068C = 30h
 $A4:9405 8D 88 06    STA $0688  [$7E:0688]  ; $0688 = 30h
 $A4:9408 A9 7E BF    LDA #$BF7E             ;\
-$A4:940B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BF7E
+$A4:940B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BF7E (melting 2 - top row)
 $A4:940E A2 00 00    LDX #$0000             ;\
 $A4:9411 A9 38 03    LDA #$0338             ;|
                                             ;|
 $A4:9414 9F 00 20 7E STA $7E2000,x[$7E:2000];|
-$A4:9418 E8          INX                    ;} $7E:2000..27FF = 338h
+$A4:9418 E8          INX                    ;} $7E:2000..27FF = 338h (clear BG2 tilemap)
 $A4:9419 E8          INX                    ;|
 $A4:941A E0 00 08    CPX #$0800             ;|
 $A4:941D 30 F5       BMI $F5    [$9414]     ;/
@@ -1806,12 +1806,12 @@ $A4:941F A2 00 00    LDX #$0000             ;\
                                             ;|
 $A4:9422 BF 7B 9E A4 LDA $A49E7B,x[$A4:9E7B];|
 $A4:9426 C9 FF FF    CMP #$FFFF             ;|
-$A4:9429 F0 08       BEQ $08    [$9433]     ;} $7E:2040..223F = [$A4:9E7B..A07A]
+$A4:9429 F0 08       BEQ $08    [$9433]     ;} $7E:2040..223F = [$A4:9E7B..A07A] (Crocomire tilemap - melting 2)
 $A4:942B 9F 40 20 7E STA $7E2040,x[$7E:2040];|
 $A4:942F E8          INX                    ;|
 $A4:9430 E8          INX                    ;|
 $A4:9431 80 EF       BRA $EF    [$9422]     ;/
-                                            
+
 $A4:9433 8A          TXA                    ;\
 $A4:9434 18          CLC                    ;|
 $A4:9435 69 00 04    ADC #$0400             ;} X = 600h
@@ -1826,7 +1826,7 @@ $A4:943C 6B          RTL
 }
 
 
-;;; $943D: Crocomire main AI - death sequence index 12h/2Eh ;;;
+;;; $943D: Crocomire main AI - death sequence index 12h/2Eh - hop 3/6 - load melting tiles ;;;
 {
 $A4:943D C2 30       REP #$30
 $A4:943F 8B          PHB
@@ -1836,7 +1836,7 @@ $A4:9446 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index +=
 $A4:9449 A9 00 01    LDA #$0100             ;\
 $A4:944C 8D 92 06    STA $0692  [$7E:0692]  ;} $0692 = 100h
 $A4:944F 9C 90 06    STZ $0690  [$7E:0690]  ; $0690 = 0
-$A4:9452 AE 9A 06    LDX $069A  [$7E:069A]  ; X = [$069A]
+$A4:9452 AE 9A 06    LDX $069A  [$7E:069A]  ; X = [Crocomire melting tiles loading table index]
 $A4:9455 BD C5 9B    LDA $9BC5,x[$A4:9BC5]  ;\
 $A4:9458 8D 98 06    STA $0698  [$7E:0698]  ;} $0698 = 58h
 $A4:945B 8D 94 06    STA $0694  [$7E:0694]  ; $0694 = 58h
@@ -1845,7 +1845,7 @@ $A4:9461 8D 96 06    STA $0696  [$7E:0696]  ;} $0696 = 30h
 $A4:9464 BD C9 9B    LDA $9BC9,x[$A4:9BC9]  ;\
 $A4:9467 8D 8E 06    STA $068E  [$7E:068E]  ;} $068E = 200h
 $A4:946A 64 00       STZ $00    [$7E:0000]  ;\
-$A4:946C BD CB 9B    LDA $9BCB,x[$A4:9BCB]  ;} $00 = $A7:0000
+$A4:946C BD CB 9B    LDA $9BCB,x[$A4:9BCB]  ;} $00 = $A4:0000
 $A4:946F 85 02       STA $02    [$7E:0002]  ;/
 $A4:9471 8A          TXA                    ;\
 $A4:9472 18          CLC                    ;|
@@ -1863,7 +1863,7 @@ $A4:9484 AD 8E 06    LDA $068E  [$7E:068E]  ;|
 $A4:9487 85 12       STA $12    [$7E:0012]  ;|
                                             ;|
 $A4:9489 B7 00       LDA [$00],y[$A4:A07D]  ;|
-$A4:948B 9F 00 00 7E STA $7E0000,x[$7E:4000];} Copy 400h bytes from $A7:0000 + [$9BC5 + [X]] to $7E:4000 + [X] / 4 * 200h
+$A4:948B 9F 00 00 7E STA $7E0000,x[$7E:4000];} Copy 400h bytes from $A4:0000 + [$9BC5 + [X]] to $7E:4000 + [X] / 4 * 200h
 $A4:948F E8          INX                    ;|
 $A4:9490 E8          INX                    ;|
 $A4:9491 C8          INY                    ;|
@@ -1879,9 +1879,9 @@ $A4:949C 80 D9       BRA $D9    [$9477]     ; Go to LOOP
 
 ; BRANCH_DONE
 $A4:949E E8          INX                    ;\
-$A4:949F E8          INX                    ;} $069A = [X] + 2
+$A4:949F E8          INX                    ;} Crocomire melting tiles loading table base index = [X] + 2
 $A4:94A0 8E 9A 06    STX $069A  [$7E:069A]  ;/
-$A4:94A3 8E 8A 06    STX $068A  [$7E:068A]  ; $068A = [$069A]
+$A4:94A3 8E 8A 06    STX $068A  [$7E:068A]  ; Crocomire melting tiles loading table index = [X] + 2
 $A4:94A6 A2 80 00    LDX #$0080             ;\ <-- should be 7Eh?
                                             ;|
 $A4:94A9 9E 9C 06    STZ $069C,x[$7E:071C]  ;|
@@ -1900,9 +1900,9 @@ $A4:94B5 60          RTS
 }
 
 
-;;; $94B6: Crocomire main AI - death sequence index 14h/30h ;;;
+;;; $94B6: Crocomire main AI - death sequence index 14h/30h - hop 3/6 - uploading to VRAM ;;;
 {
-$A4:94B6 AE 8A 06    LDX $068A  [$7E:068A]  ; X = [$068A]
+$A4:94B6 AE 8A 06    LDX $068A  [$7E:068A]  ; X = [Crocomire melting tiles loading table index]
 $A4:94B9 AC 30 03    LDY $0330  [$7E:0330]  ; Y = [VRAM write table stack pointer]
 $A4:94BC BD C5 9B    LDA $9BC5,x[$A4:9BE7]  ;\
 $A4:94BF C9 FF FF    CMP #$FFFF             ;} If [$9BC5 + [X]] != FFFFh:
@@ -1920,7 +1920,7 @@ $A4:94DB 69 07 00    ADC #$0007             ;} Y += 7
 $A4:94DE A8          TAY                    ;/
 $A4:94DF 8A          TXA                    ;\
 $A4:94E0 18          CLC                    ;|
-$A4:94E1 69 08 00    ADC #$0008             ;} $068A += 8
+$A4:94E1 69 08 00    ADC #$0008             ;} Crocomire melting tiles loading table index += 8
 $A4:94E4 8D 8A 06    STA $068A  [$7E:068A]  ;/
 $A4:94E7 8C 30 03    STY $0330  [$7E:0330]  ; VRAM write table stack pointer = [Y]
 $A4:94EA 60          RTS                    ; Return
@@ -1929,21 +1929,21 @@ $A4:94EB 8C 30 03    STY $0330  [$7E:0330]
 $A4:94EE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:94F1 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:94F4 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
-$A4:94F7 9C 8A 06    STZ $068A  [$7E:068A]  ; $068A = 0
+$A4:94F7 9C 8A 06    STZ $068A  [$7E:068A]  ; Crocomire melting tiles loading table subindex = 0
 $A4:94FA 60          RTS
 }
 
 
-;;; $94FB: Crocomire main AI - death sequence index 18h ;;;
+;;; $94FB: Crocomire main AI - death sequence index 18h - hop 3 - queue cry and create Crocomire melting HDMA object ;;;
 {
 $A4:94FB C2 30       REP #$30
 $A4:94FD A9 77 00    LDA #$0077             ;\
 $A4:9500 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 77h, sound library 2, max queued sounds allowed = 6 (Crocomire melting cry)
-$A4:9504 80 09       BRA $09    [$950F]     ; Go to $950F
+$A4:9504 80 09       BRA $09    [$950F]     ; Go to create Crocomire melting HDMA object
 }
 
 
-;;; $9506: Crocomire main AI - death sequence index 36h ;;;
+;;; $9506: Crocomire main AI - death sequence index 36h - hop 6 - queue cry and create Crocomire melting HDMA object ;;;
 {
 $A4:9506 C2 30       REP #$30
 $A4:9508 A9 2D 00    LDA #$002D             ;\
@@ -1951,7 +1951,7 @@ $A4:950B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 2Dh, sound library 2,
 }
 
 
-;;; $950F:  ;;;
+;;; $950F: Create Crocomire melting HDMA object ;;;
 {
 $A4:950F AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A4:9512 38          SEC                    ;|
@@ -1976,20 +1976,20 @@ $A4:9535 8F E0 CA 7E STA $7ECAE0[$7E:CAE0]  ;|
 $A4:9539 A9 F0 CA    LDA #$CAF0             ;|
 $A4:953C 8F E1 CA 7E STA $7ECAE1[$7E:CAE1]  ;|
 $A4:9540 A9 E1 00    LDA #$00E1             ;|
-$A4:9543 8F E3 CA 7E STA $7ECAE3[$7E:CAE3]  ;} $7E:CAE0..E7 = FFh,$CAF0, E1h,$CBEE, 0,0
+$A4:9543 8F E3 CA 7E STA $7ECAE3[$7E:CAE3]  ;} $7E:CAE0..E7 = FFh,$CAF0, E1h,$CBEE, 0,0 (Crocomire BG2 Y scroll indirect HDMA table)
 $A4:9547 A9 EE CB    LDA #$CBEE             ;|
 $A4:954A 8F E4 CA 7E STA $7ECAE4[$7E:CAE4]  ;|
 $A4:954E A9 00 00    LDA #$0000             ;|
 $A4:9551 8F E6 CA 7E STA $7ECAE6[$7E:CAE6]  ;/
 $A4:9555 22 35 84 88 JSL $888435[$88:8435]  ;\
 $A4:9559             dx 42, 10, 9563        ;} Spawn indirect HDMA object for BG2 Y scroll with instruction list $9563
-$A4:955D 8F 3E 78 7E STA $7E783E[$7E:783E]  ; $7E:783E = [A] (HDMA object index)
+$A4:955D 8F 3E 78 7E STA $7E783E[$7E:783E]  ; Crocomire melting HDMA object index = [A]
 $A4:9561 28          PLP
 $A4:9562 60          RTS
 }
 
 
-;;; $9563: HDMA object instruction list ;;;
+;;; $9563: Crocomire melting HDMA object instruction list ;;;
 {
 $A4:9563             dx 8655,7E,    ; HDMA table bank = $7E
                         866A,7E,    ; Indirect HDMA data bank = $7E
@@ -1999,7 +1999,7 @@ $A4:956E             dx 7777,CAE0,
 }
 
 
-;;; $9576: Crocomire main AI - death sequence index 32h - hop 6 - set rising state ;;;
+;;; $9576: Crocomire main AI - death sequence index 32h - set index 34h ;;;
 {
 $A4:9576 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9579 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
@@ -2025,15 +2025,15 @@ $A4:9598 AA          TAX                    ; Crocomire X position += 4
 $A4:9599 8E 7A 0F    STX $0F7A  [$7E:0F7A]
 $A4:959C 22 C8 96 A4 JSL $A496C8[$A4:96C8]  ; Execute $96C8
 $A4:95A0 C9 00 00    CMP #$0000             ;\
-$A4:95A3 D0 2D       BNE $2D    [$95D2]     ;} If [A] != 0: go to BRANCH_95D2
+$A4:95A3 D0 2D       BNE $2D    [$95D2]     ;} If [A] != 0: go to BRANCH_NOT_FINISHED
 
-; BRANCH_95A5
+; BRANCH_FINISHED
 $A4:95A5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95A8 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:95AB FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:95AE AE 9A 06    LDX $069A  [$7E:069A]  ; X = [Crocomire melting tiles loading table base index]
 
-; LOOP_95B1
+; LOOP_FIND_TERMINATOR
 $A4:95B1 BD C5 9B    LDA $9BC5,x[$A4:9BE7]  ;\
 $A4:95B4 C9 FF FF    CMP #$FFFF             ;} If [$9BC5 + [X]] != FFFFh:
 $A4:95B7 F0 08       BEQ $08    [$95C1]     ;/
@@ -2041,18 +2041,18 @@ $A4:95B9 8A          TXA                    ;\
 $A4:95BA 18          CLC                    ;|
 $A4:95BB 69 08 00    ADC #$0008             ;} X += 8
 $A4:95BE AA          TAX                    ;/
-$A4:95BF 80 F0       BRA $F0    [$95B1]     ; Go to LOOP_95B1
+$A4:95BF 80 F0       BRA $F0    [$95B1]     ; Go to LOOP_FIND_TERMINATOR
 
 $A4:95C1 E8          INX                    ;\
-$A4:95C2 E8          INX                    ;} Crocomire melting tiles loading table base index = [X] + 2
+$A4:95C2 E8          INX                    ;} Crocomire melting tiles loading table index = [X] + 2
 $A4:95C3 8E 9A 06    STX $069A  [$7E:069A]  ;/
 $A4:95C6 AF 3E 78 7E LDA $7E783E[$7E:783E]  ;\
-$A4:95CA AA          TAX                    ;} X = [$7E:783E] (HDMA object index)
+$A4:95CA AA          TAX                    ;} X = [Crocomire melting HDMA object index]
 $A4:95CB A9 00 00    LDA #$0000             ;\
 $A4:95CE 9D B4 18    STA $18B4,x[$7E:18B8]  ;} Delete HDMA object
 $A4:95D1 60          RTS                    ; Return
 
-; BRANCH_95D2
+; BRANCH_NOT_FINISHED
 $A4:95D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95D5 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
 $A4:95D9 AD 92 06    LDA $0692  [$7E:0692]  ;\
@@ -2066,7 +2066,7 @@ $A4:95E7 E9 03 00    SBC #$0003             ;/
 $A4:95EA C9 10 00    CMP #$0010             ;\
 $A4:95ED 10 08       BPL $08    [$95F7]     ;} If [A] < 10h:
 $A4:95EF E0 00 50    CPX #$5000             ;\
-$A4:95F2 10 B1       BPL $B1    [$95A5]     ;} If [X] >= 5000h: go to BRANCH_95A5
+$A4:95F2 10 B1       BPL $B1    [$95A5]     ;} If [X] >= 5000h: go to BRANCH_FINISHED
 $A4:95F4 A9 10 00    LDA #$0010             ; A = 10h
 
 $A4:95F7 8D 94 06    STA $0694  [$7E:0694]  ; $0694 = [A]
@@ -2123,7 +2123,7 @@ $A4:9652 60          RTS
 }
 
 
-;;; $9653: Crocomire main AI - death sequence index 1Ch/3Ah ;;;
+;;; $9653: Crocomire main AI - death sequence index 1Ch/3Ah - hop 3/6 - clear tilemap ;;;
 {
 $A4:9653 C2 30       REP #$30
 $A4:9655 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2134,7 +2134,7 @@ $A4:9661 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} $0FAE = 800h
 $A4:9664 A9 38 03    LDA #$0338             ;\
 $A4:9667 A2 FE 0F    LDX #$0FFE             ;|
                                             ;|
-$A4:966A 9F 00 20 7E STA $7E2000,x[$7E:2FFE];} $7E:2000..2FFF = 338h
+$A4:966A 9F 00 20 7E STA $7E2000,x[$7E:2FFE];} $7E:2000..2FFF = 338h (clear BG2 tilemap)
 $A4:966E CA          DEX                    ;|
 $A4:966F CA          DEX                    ;|
 $A4:9670 10 F8       BPL $F8    [$966A]     ;/
@@ -2169,9 +2169,9 @@ $A4:9697             db 2B, 28, 21, 1F, 2C, 10, 16, 17, 0F, 00, 06, 07, 0B, 08, 
 ;;; $96C8:  ;;;
 {
 ;; Parameters:
-;;     A: 
+;;     A:
 ;; Returns:
-;;     A: 
+;;     A:
 $A4:96C8 08          PHP
 $A4:96C9 E2 20       SEP #$20
 $A4:96CB C2 10       REP #$10
@@ -2202,7 +2202,7 @@ $A4:96F8 6B          RTL                    ; Return
 $A4:96F9 8E 90 06    STX $0690  [$7E:0690]  ; $0690 = [X]
 $A4:96FC 8A          TXA                    ;\
 $A4:96FD 29 07       AND #$07               ;} A low = [X] % 8
-$A4:96FF A8          TAY                    ; Y = [A]
+$A4:96FF A8          TAY                    ; Y = [A low] (pixel column of tile to erase) | [A high] << 8 (the function parameter... bug?)
 $A4:9700 C2 20       REP #$20
 
 ; LOOP_9702
@@ -2233,16 +2233,16 @@ $A4:972C 65 14       ADC $14    [$7E:0014]  ;|
 $A4:972E AA          TAX                    ;/
 $A4:972F E2 20       SEP #$20
 $A4:9731 BF 00 40 7E LDA $7E4000,x[$7E:40A0];\
-$A4:9735 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] &= [$9BBD + [Y]]
+$A4:9735 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] &= ~(1 << 7 - [Y])
 $A4:9738 9F 00 40 7E STA $7E4000,x[$7E:40A0];/
 $A4:973C BF 01 40 7E LDA $7E4001,x[$7E:40A1];\
-$A4:9740 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 1 &= [$9BBD + [Y]]
+$A4:9740 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 1 &= ~(1 << 7 - [Y])
 $A4:9743 9F 01 40 7E STA $7E4001,x[$7E:40A1];/
 $A4:9747 BF 10 40 7E LDA $7E4010,x[$7E:40B0];\
-$A4:974B 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 10h &= [$9BBD + [Y]]
+$A4:974B 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 10h &= ~(1 << 7 - [Y])
 $A4:974E 9F 10 40 7E STA $7E4010,x[$7E:40B0];/
 $A4:9752 BF 11 40 7E LDA $7E4011,x[$7E:40B1];\
-$A4:9756 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 11h &= [$9BBD + [Y]]
+$A4:9756 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 11h &= ~(1 << 7 - [Y])
 $A4:9759 9F 11 40 7E STA $7E4011,x[$7E:40B1];/
 $A4:975D A9 00       LDA #$00               ;\
 $A4:975F EB          XBA                    ;|
@@ -2304,34 +2304,34 @@ $A4:97D2 6B          RTL
 ;;; $97D3: Crocomire main AI - death sequence index 3Eh - behind wall - wait for Samus ;;;
 {
 $A4:97D3 C2 20       REP #$20
-$A4:97D5 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A4:97D8 C9 80 02    CMP #$0280
-$A4:97DB 10 52       BPL $52    [$982F]
+$A4:97D5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A4:97D8 C9 80 02    CMP #$0280             ;} If [Samus X position] >= 280h: return
+$A4:97DB 10 52       BPL $52    [$982F]     ;/
 $A4:97DD A9 05 00    LDA #$0005             ;\
 $A4:97E0 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 0 music track
-$A4:97E4 A9 00 01    LDA #$0100
-$A4:97E7 8F 23 CD 7E STA $7ECD23[$7E:CD23]
-$A4:97EB 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:97EF             dx 30,03,B757
-$A4:97F3 A9 06 00    LDA #$0006
-$A4:97F6 8D 41 09    STA $0941  [$7E:0941]
-$A4:97F9 AD 86 0F    LDA $0F86  [$7E:0F86]
-$A4:97FC 29 FF 7F    AND #$7FFF
-$A4:97FF 09 00 04    ORA #$0400
-$A4:9802 8D 86 0F    STA $0F86  [$7E:0F86]
-$A4:9805 AD C6 0F    LDA $0FC6  [$7E:0FC6]
-$A4:9808 09 00 05    ORA #$0500
-$A4:980B 8D C6 0F    STA $0FC6  [$7E:0FC6]
-$A4:980E A9 04 00    LDA #$0004
-$A4:9811 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:9814 9C EE 0F    STZ $0FEE  [$7E:0FEE]
-$A4:9817 A9 0A 00    LDA #$000A
-$A4:981A 8D 2E 10    STA $102E  [$7E:102E]
-$A4:981D A9 01 00    LDA #$0001
-$A4:9820 8D 6E 10    STA $106E  [$7E:106E]
+$A4:97E4 A9 00 01    LDA #$0100             ;\
+$A4:97E7 8F 23 CD 7E STA $7ECD23[$7E:CD23]  ;} Scroll 3 = red
+$A4:97EB 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:97EF             dx 30,03,B757          ;} Spawn PLM to create Crocomire invisible wall at (30h, 3)
+$A4:97F3 A9 06 00    LDA #$0006             ;\
+$A4:97F6 8D 41 09    STA $0941  [$7E:0941]  ;} Camera distance index = 6 (camera is E0h pixels to the left of Samus)
+$A4:97F9 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
+$A4:97FC 29 FF 7F    AND #$7FFF             ;|
+$A4:97FF 09 00 04    ORA #$0400             ;} Set Crocomire as intangible
+$A4:9802 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
+$A4:9805 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
+$A4:9808 09 00 05    ORA #$0500             ;} Set Crocomire's tongue as intangible and invisible
+$A4:980B 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
+$A4:980E A9 04 00    LDA #$0004             ;\
+$A4:9811 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Crocomire rumble table index = 4
+$A4:9814 9C EE 0F    STZ $0FEE  [$7E:0FEE]  ; Crocomire rumbling Y offset = 0
+$A4:9817 A9 0A 00    LDA #$000A             ;\
+$A4:981A 8D 2E 10    STA $102E  [$7E:102E]  ;} Crocomire rumble timer = Ah
+$A4:981D A9 01 00    LDA #$0001             ;\
+$A4:9820 8D 6E 10    STA $106E  [$7E:106E]  ;} Crocomire rumbling Y offset delta = 1
 $A4:9823 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Crocomire fight flags = 0
-$A4:9826 A9 38 00    LDA #$0038
-$A4:9829 8D 84 0F    STA $0F84  [$7E:0F84]
+$A4:9826 A9 38 00    LDA #$0038             ;\
+$A4:9829 8D 84 0F    STA $0F84  [$7E:0F84]  ;} Crocomire Y radius = 38h
 $A4:982C 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 
 $A4:982F 60          RTS
@@ -2341,169 +2341,196 @@ $A4:982F 60          RTS
 ;;; $9830: Crocomire main AI - death sequence index 58h - flowing down the river ;;;
 {
 ; Strangely, sequenced between 3Ch and 3Eh
-$A4:9830 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:9833 38          SEC
-$A4:9834 E9 02 00    SBC #$0002
-$A4:9837 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A4:983A C9 E0 01    CMP #$01E0
-$A4:983D 30 07       BMI $07    [$9846]
-$A4:983F A9 DC 00    LDA #$00DC
-$A4:9842 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A4:9845 60          RTS
+$A4:9830 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:9833 38          SEC                    ;|
+$A4:9834 E9 02 00    SBC #$0002             ;} Crocomire X position -= 2
+$A4:9837 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A4:983A C9 E0 01    CMP #$01E0             ;\
+$A4:983D 30 07       BMI $07    [$9846]     ;} If [Crocomire X position] >= 1E0h:
+$A4:983F A9 DC 00    LDA #$00DC             ;\
+$A4:9842 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Crocomire Y position = DCh
+$A4:9845 60          RTS                    ; Return
 
-$A4:9846 A9 E0 01    LDA #$01E0
-$A4:9849 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A4:984C A9 36 00    LDA #$0036
-$A4:984F 8D 7E 0F    STA $0F7E  [$7E:0F7E]
+$A4:9846 A9 E0 01    LDA #$01E0             ;\
+$A4:9849 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Crocomire X position = 1E0h
+$A4:984C A9 36 00    LDA #$0036             ;\
+$A4:984F 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Crocomire Y position = 36h
 $A4:9852 A9 3E 00    LDA #$003E             ;\
-$A4:9855 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 3Eh
+$A4:9855 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 3Eh (behind wall)
 $A4:9858 60          RTS
 }
 
 
 ;;; $9859: Crocomire main AI - death sequence index 40h - behind wall - rumbling ;;;
 {
-$A4:9859 AE AE 0F    LDX $0FAE  [$7E:0FAE]
-$A4:985C BD CA 98    LDA $98CA,x[$A4:98CE]
-$A4:985F C9 80 80    CMP #$8080
-$A4:9862 D0 1A       BNE $1A    [$987E]
-$A4:9864 8D EE 0F    STA $0FEE  [$7E:0FEE]
-$A4:9867 A9 80 00    LDA #$0080
-$A4:986A 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:986D A2 1E 00    LDX #$001E
-
-$A4:9870 BD 1D B9    LDA $B91D,x[$A4:B93B]
-$A4:9873 9F 60 C1 7E STA $7EC160,x[$7E:C17E]
-$A4:9877 CA          DEX
-$A4:9878 CA          DEX
-$A4:9879 10 F5       BPL $F5    [$9870]
+; Screen shaking is done by room main ASM ($8F:E8CD)
+$A4:9859 AE AE 0F    LDX $0FAE  [$7E:0FAE]  ;\
+$A4:985C BD CA 98    LDA $98CA,x[$A4:98CE]  ;|
+$A4:985F C9 80 80    CMP #$8080             ;} If [$98CA + [Crocomire rumble table index]] = 8080h:
+$A4:9862 D0 1A       BNE $1A    [$987E]     ;/
+$A4:9864 8D EE 0F    STA $0FEE  [$7E:0FEE]  ; Crocomire rumbling Y offset = 8080h
+$A4:9867 A9 80 00    LDA #$0080             ;\
+$A4:986A 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Crocomire post-rumbling delay timer = 80h
+$A4:986D A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$A4:9870 BD 1D B9    LDA $B91D,x[$A4:B93B]  ;|
+$A4:9873 9F 60 C1 7E STA $7EC160,x[$7E:C17E];} Sprite palette 3 = [$B91D..3C]
+$A4:9877 CA          DEX                    ;|
+$A4:9878 CA          DEX                    ;|
+$A4:9879 10 F5       BPL $F5    [$9870]     ;/
 $A4:987B 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 
-$A4:987E AE AE 0F    LDX $0FAE  [$7E:0FAE]
-$A4:9881 AD EE 0F    LDA $0FEE  [$7E:0FEE]
-$A4:9884 DD CA 98    CMP $98CA,x[$A4:98CE]
-$A4:9887 F0 10       BEQ $10    [$9899]
-$A4:9889 10 08       BPL $08    [$9893]
-$A4:988B 18          CLC
-$A4:988C 6D 6E 10    ADC $106E  [$7E:106E]
+$A4:987E AE AE 0F    LDX $0FAE  [$7E:0FAE]  ; X = [Crocomire rumble table index]
+$A4:9881 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
+$A4:9884 DD CA 98    CMP $98CA,x[$A4:98CE]  ;} If [Crocomire rumbling Y offset] = [$98CA + [X]]: go to BRANCH_EQUAL
+$A4:9887 F0 10       BEQ $10    [$9899]     ;/
+$A4:9889 10 08       BPL $08    [$9893]     ; If [Crocomire rumbling Y offset] < [$98CA + [X]]:
+$A4:988B 18          CLC                    ;\
+$A4:988C 6D 6E 10    ADC $106E  [$7E:106E]  ;} Crocomire rumbling Y offset += [Crocomire rumbling Y offset delta]
 
 $A4:988F 8D EE 0F    STA $0FEE  [$7E:0FEE]
-$A4:9892 60          RTS
+$A4:9892 60          RTS                    ; Return
 
-$A4:9893 38          SEC
-$A4:9894 ED 6E 10    SBC $106E  [$7E:106E]
-$A4:9897 80 F6       BRA $F6    [$988F]
+$A4:9893 38          SEC                    ;\
+$A4:9894 ED 6E 10    SBC $106E  [$7E:106E]  ;} Crocomire rumbling Y offset -= [Crocomire rumbling Y offset delta]
+$A4:9897 80 F6       BRA $F6    [$988F]     ; Return
 
-$A4:9899 BD CA 98    LDA $98CA,x[$A4:98CE]
-$A4:989C 10 26       BPL $26    [$98C4]
-$A4:989E AD 2E 10    LDA $102E  [$7E:102E]
-$A4:98A1 F0 11       BEQ $11    [$98B4]
-$A4:98A3 3A          DEC A
-$A4:98A4 8D 2E 10    STA $102E  [$7E:102E]
-$A4:98A7 CA          DEX
-$A4:98A8 CA          DEX
-$A4:98A9 8E AE 0F    STX $0FAE  [$7E:0FAE]
+; BRANCH_EQUAL
+$A4:9899 BD CA 98    LDA $98CA,x[$A4:98CE]  ;\
+$A4:989C 10 26       BPL $26    [$98C4]     ;} If [$98CA + [X]] >= 0: go to BRANCH_POSITIVE
+$A4:989E AD 2E 10    LDA $102E  [$7E:102E]  ;\
+$A4:98A1 F0 11       BEQ $11    [$98B4]     ;} If [Crocomire rumble timer] != 0:
+$A4:98A3 3A          DEC A                  ;\
+$A4:98A4 8D 2E 10    STA $102E  [$7E:102E]  ;} Decrement Crocomire rumble timer
+$A4:98A7 CA          DEX                    ;\
+$A4:98A8 CA          DEX                    ;} Crocomire rumble table index = [X] - 2
+$A4:98A9 8E AE 0F    STX $0FAE  [$7E:0FAE]  ;/
 $A4:98AC A9 2B 00    LDA #$002B             ;\
 $A4:98AF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 2Bh, sound library 2, max queued sounds allowed = 6 (Crocomire post-death rumble)
-$A4:98B3 60          RTS
+$A4:98B3 60          RTS                    ; Return
 
-$A4:98B4 E8          INX
-$A4:98B5 E8          INX
-$A4:98B6 BD CA 98    LDA $98CA,x[$A4:98D2]
-$A4:98B9 8D 2E 10    STA $102E  [$7E:102E]
-$A4:98BC E8          INX
-$A4:98BD E8          INX
-$A4:98BE BD CA 98    LDA $98CA,x[$A4:98D4]
-$A4:98C1 8D 6E 10    STA $106E  [$7E:106E]
+$A4:98B4 E8          INX                    ;\
+$A4:98B5 E8          INX                    ;} X += 2
+$A4:98B6 BD CA 98    LDA $98CA,x[$A4:98D2]  ;\
+$A4:98B9 8D 2E 10    STA $102E  [$7E:102E]  ;} Crocomire rumble timer = [$98CA + [X]]
+$A4:98BC E8          INX                    ;\
+$A4:98BD E8          INX                    ;} X += 2
+$A4:98BE BD CA 98    LDA $98CA,x[$A4:98D4]  ;\
+$A4:98C1 8D 6E 10    STA $106E  [$7E:106E]  ;} Crocomire rumbling Y offset delta = [$98CA + [X]]
 
-$A4:98C4 E8          INX
-$A4:98C5 E8          INX
-$A4:98C6 8E AE 0F    STX $0FAE  [$7E:0FAE]
+; BRANCH_POSITIVE
+$A4:98C4 E8          INX                    ;\
+$A4:98C5 E8          INX                    ;} Crocomire rumble table index = [X] + 2
+$A4:98C6 8E AE 0F    STX $0FAE  [$7E:0FAE]  ;/
 $A4:98C9 60          RTS
 
-$A4:98CA             dw 0004, 0001, 0000, FFFF, 0008, 0001, 0001, FFFF, 000C, 0001, 0001, FFFE, 0010, 0002, 0002, FFFE,
-                        0010, 0002, 0002, FFFC, 0008, 0001, 0001, FFFE, 0003, 0001, 0001, FFFF, 8080, 8080, 8080, 8080
+; Rumble table
+;                        _____________ Target Y offset. 8080h = terminator
+;                       |     ________ Rumble cooldown
+;                       |    |     ___ Y offset delta
+;                       |    |    |
+$A4:98CA             dw 0004,
+                        0001,
+                        0000,
+                        FFFF,0008,0001,
+                        0001,
+                        FFFF,000C,0001,
+                        0001,
+                        FFFE,0010,0002,
+                        0002,
+                        FFFE,0010,0002,
+                        0002,
+                        FFFC,0008,0001,
+                        0001,
+                        FFFE,0003,0001,
+                        0001,
+                        FFFF,8080,8080,
+                        8080,8080
 }
 
 
 ;;; $990A: Crocomire main AI - death sequence index 42h - behind wall - no more rumbling ;;;
 {
-$A4:990A AD AE 0F    LDA $0FAE  [$7E:0FAE]
-$A4:990D F0 43       BEQ $43    [$9952]
-$A4:990F 3A          DEC A
-$A4:9910 8D AE 0F    STA $0FAE  [$7E:0FAE]
-$A4:9913 AC 88 06    LDY $0688  [$7E:0688]
-$A4:9916 B9 CB 99    LDA $99CB,y[$A4:99CB]
-$A4:9919 C9 FF FF    CMP #$FFFF
-$A4:991C D0 01       BNE $01    [$991F]
-$A4:991E 60          RTS
+; Not sure why there's a call to spawn the PLM for clearing Crocomire's bridge here at $997A
+; It spawns it Fh blocks to the right of where the bridge is, and the bridge was already cleared ages ago when Crocomire fell through it
+$A4:990A AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
+$A4:990D F0 43       BEQ $43    [$9952]     ;} If [Crocomire post-rumbling delay timer] = 0: go to BRANCH_ZERO
+$A4:990F 3A          DEC A                  ;\
+$A4:9910 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement Crocomire post-rumbling delay timer
+$A4:9913 AC 88 06    LDY $0688  [$7E:0688]  ; Y = [Crocomire skeleton loading index]
+$A4:9916 B9 CB 99    LDA $99CB,y[$A4:99CB]  ;\
+$A4:9919 C9 FF FF    CMP #$FFFF             ;} If [$99CB + [Y]] = FFFFh:
+$A4:991C D0 01       BNE $01    [$991F]     ;/
+$A4:991E 60          RTS                    ; Return
 
-$A4:991F AE 30 03    LDX $0330  [$7E:0330]
-$A4:9922 A9 00 02    LDA #$0200
-$A4:9925 95 D0       STA $D0,x  [$7E:00D0]
-$A4:9927 B9 D9 99    LDA $99D9,y[$A4:99D9]
-$A4:992A 95 D2       STA $D2,x  [$7E:00D2]
-$A4:992C A9 AD 00    LDA #$00AD
-$A4:992F 95 D4       STA $D4,x  [$7E:00D4]
-$A4:9931 A5 52       LDA $52    [$7E:0052]
-$A4:9933 29 07 00    AND #$0007
-$A4:9936 EB          XBA
-$A4:9937 0A          ASL A
-$A4:9938 0A          ASL A
-$A4:9939 0A          ASL A
-$A4:993A 0A          ASL A
-$A4:993B 0A          ASL A
-$A4:993C 85 12       STA $12    [$7E:0012]
-$A4:993E 18          CLC
-$A4:993F 79 CB 99    ADC $99CB,y[$A4:99CB]
-$A4:9942 95 D5       STA $D5,x  [$7E:00D5]
-$A4:9944 8A          TXA
-$A4:9945 18          CLC
-$A4:9946 69 07 00    ADC #$0007
-$A4:9949 8D 30 03    STA $0330  [$7E:0330]
-$A4:994C C8          INY
-$A4:994D C8          INY
-$A4:994E 8C 88 06    STY $0688  [$7E:0688]
-$A4:9951 60          RTS
+$A4:991F AE 30 03    LDX $0330  [$7E:0330]  ;\
+$A4:9922 A9 00 02    LDA #$0200             ;|
+$A4:9925 95 D0       STA $D0,x  [$7E:00D0]  ;|
+$A4:9927 B9 D9 99    LDA $99D9,y[$A4:99D9]  ;|
+$A4:992A 95 D2       STA $D2,x  [$7E:00D2]  ;|
+$A4:992C A9 AD 00    LDA #$00AD             ;|
+$A4:992F 95 D4       STA $D4,x  [$7E:00D4]  ;|
+$A4:9931 A5 52       LDA $52    [$7E:0052]  ;|
+$A4:9933 29 07 00    AND #$0007             ;|
+$A4:9936 EB          XBA                    ;|
+$A4:9937 0A          ASL A                  ;|
+$A4:9938 0A          ASL A                  ;} Queue transfer of 200h bytes from $AD:0000 + [$99D9 + [Y]] to VRAM sprite tiles base address + [$99CB + [Y]]
+$A4:9939 0A          ASL A                  ;|
+$A4:993A 0A          ASL A                  ;|
+$A4:993B 0A          ASL A                  ;|
+$A4:993C 85 12       STA $12    [$7E:0012]  ;|
+$A4:993E 18          CLC                    ;|
+$A4:993F 79 CB 99    ADC $99CB,y[$A4:99CB]  ;|
+$A4:9942 95 D5       STA $D5,x  [$7E:00D5]  ;|
+$A4:9944 8A          TXA                    ;|
+$A4:9945 18          CLC                    ;|
+$A4:9946 69 07 00    ADC #$0007             ;|
+$A4:9949 8D 30 03    STA $0330  [$7E:0330]  ;/
+$A4:994C C8          INY                    ;\
+$A4:994D C8          INY                    ;} Crocomire skeleton loading index += 2
+$A4:994E 8C 88 06    STY $0688  [$7E:0688]  ;/
+$A4:9951 60          RTS                    ; Return
 
-$A4:9952 A9 E0 01    LDA #$01E0
-$A4:9955 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A4:9958 A9 36 00    LDA #$0036
-$A4:995B 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A4:995E A9 50 00    LDA #$0050
-$A4:9961 8D 2E 10    STA $102E  [$7E:102E]
-$A4:9964 9C B0 0F    STZ $0FB0  [$7E:0FB0]
-$A4:9967 9C B2 0F    STZ $0FB2  [$7E:0FB2]
+; BRANCH_ZERO
+$A4:9952 A9 E0 01    LDA #$01E0             ;\
+$A4:9955 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Crocomire X position = 1E0h
+$A4:9958 A9 36 00    LDA #$0036             ;\
+$A4:995B 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Crocomire Y position = 36h
+$A4:995E A9 50 00    LDA #$0050             ;\
+$A4:9961 8D 2E 10    STA $102E  [$7E:102E]  ;} Crocomire falling apart timer = 50h
+$A4:9964 9C B0 0F    STZ $0FB0  [$7E:0FB0]  ;\
+$A4:9967 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ;} Crocomire skeleton X velocity = 0.0
 $A4:996A 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A4:996E             dx 20,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (20h, 3)
 $A4:9972 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A4:9976             dx 1E,03,B757          ;} Spawn PLM to clear Crocomire invisible wall at (1Eh, 3)
 $A4:997A 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
-$A4:997E             dx 70,0B,B747          ;} Spawn PLM to clear Crocomire's bridge at (70h, Bh) <-- ok but the bridge is Fh blocks to the left... so this does nothing
+$A4:997E             dx 70,0B,B747          ;} Spawn PLM to clear Crocomire's bridge at (70h, Bh)
 $A4:9982 A9 29 00    LDA #$0029             ;\
 $A4:9985 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 29h, sound library 2, max queued sounds allowed = 6 (Crocomire's wall explodes)
-$A4:9989 A9 58 E1    LDA #$E158
-$A4:998C 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:998F A9 01 00    LDA #$0001
-$A4:9992 8D 94 0F    STA $0F94  [$7E:0F94]
-$A4:9995 A9 00 00    LDA #$0000
-$A4:9998 8D 96 0F    STA $0F96  [$7E:0F96]
-$A4:999B A2 1E 00    LDX #$001E
+$A4:9989 A9 58 E1    LDA #$E158             ;\
+$A4:998C 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E158 (skeleton - falls apart) <-- strange, but gets overwritten next frame
+$A4:998F A9 01 00    LDA #$0001             ;\
+$A4:9992 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
+$A4:9995 A9 00 00    LDA #$0000             ;\
+$A4:9998 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Crocomire palette index = 0
+$A4:999B A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$A4:999E BD FD B8    LDA $B8FD,x[$A4:B91B]  ;|
+$A4:99A1 9F 20 C1 7E STA $7EC120,x[$7E:C13E];} Sprite palette 1 = [$B8FD..B91C]
+$A4:99A5 CA          DEX                    ;|
+$A4:99A6 CA          DEX                    ;|
+$A4:99A7 10 F5       BPL $F5    [$999E]     ;/
+$A4:99A9 22 16 80 86 JSL $868016[$86:8016]  ; Clear enemy projectiles
+$A4:99AD A9 08 00    LDA #$0008             ;\
+$A4:99B0 85 12       STA $12    [$7E:0012]  ;} $12 = 8 (loop counter)
 
-$A4:999E BD FD B8    LDA $B8FD,x[$A4:B91B]
-$A4:99A1 9F 20 C1 7E STA $7EC120,x[$7E:C13E]
-$A4:99A5 CA          DEX
-$A4:99A6 CA          DEX
-$A4:99A7 10 F5       BPL $F5    [$999E]
-$A4:99A9 22 16 80 86 JSL $868016[$86:8016]
-$A4:99AD A9 08 00    LDA #$0008
-$A4:99B0 85 12       STA $12    [$7E:0012]
-
+; LOOP
 $A4:99B2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:99B5 A0 C1 90    LDY #$90C1             ;\
 $A4:99B8 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Crocomire spike wall pieces enemy projectile
-$A4:99BC C6 12       DEC $12    [$7E:0012]
-$A4:99BE D0 F2       BNE $F2    [$99B2]
+$A4:99BC C6 12       DEC $12    [$7E:0012]  ; Decrement [$12]
+$A4:99BE D0 F2       BNE $F2    [$99B2]     ; If [$12] != 0: go to LOOP
 $A4:99C0 A9 30 00    LDA #$0030             ;\
 $A4:99C3 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 30h, sound library 2, max queued sounds allowed = 6 (Crocomire destroys wall)
 $A4:99C7 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
@@ -2511,44 +2538,49 @@ $A4:99C7 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence ind
 ; Nothing points here
 $A4:99CA 60          RTS
 
+; VRAM sprite tiles offsets. FFFFh = terminator
 $A4:99CB             dw 1600, 1700, 1800, 1900, 1E00, 1F00, FFFF
+
+; Skeleton sprite tiles source addresses. Bank $AD
 $A4:99D9             dw A600, A800, AA00, AC00, AE00, B000
 }
 
 
 ;;; $99E5: Crocomire main AI - death sequence index 44h - breaks down wall ;;;
 {
-$A4:99E5 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:99E8 C9 E0 00    CMP #$00E0
-$A4:99EB 10 2E       BPL $2E    [$9A1B]
-$A4:99ED AD B0 0F    LDA $0FB0  [$7E:0FB0]
-$A4:99F0 18          CLC
-$A4:99F1 69 00 80    ADC #$8000
-$A4:99F4 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A4:99F7 AD B2 0F    LDA $0FB2  [$7E:0FB2]
-$A4:99FA 69 00 00    ADC #$0000
-$A4:99FD C9 02 00    CMP #$0002
-$A4:9A00 30 03       BMI $03    [$9A05]
-$A4:9A02 A9 02 00    LDA #$0002
+; Crocomire's X position coming into this function is 1E0h (set by $9830)
+$A4:99E5 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:99E8 C9 E0 00    CMP #$00E0             ;} If [Crocomire X position] >= E0h (always true): go to BRANCH
+$A4:99EB 10 2E       BPL $2E    [$9A1B]     ;/
+$A4:99ED AD B0 0F    LDA $0FB0  [$7E:0FB0]  ;\
+$A4:99F0 18          CLC                    ;|
+$A4:99F1 69 00 80    ADC #$8000             ;|
+$A4:99F4 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Crocomire skeleton X velocity += 0.8000h
+$A4:99F7 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;|
+$A4:99FA 69 00 00    ADC #$0000             ;/
+$A4:99FD C9 02 00    CMP #$0002             ;\
+$A4:9A00 30 03       BMI $03    [$9A05]     ;} Crocomire skeleton X velocity = min([Crocomire skeleton X velocity], 2)
+$A4:9A02 A9 02 00    LDA #$0002             ;/
 
 $A4:9A05 8D B2 0F    STA $0FB2  [$7E:0FB2]
-$A4:9A08 AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A4:9A0B 18          CLC
-$A4:9A0C 6D B0 0F    ADC $0FB0  [$7E:0FB0]
-$A4:9A0F 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A4:9A12 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:9A15 6D B2 0F    ADC $0FB2  [$7E:0FB2]
-$A4:9A18 8D 7A 0F    STA $0F7A  [$7E:0F7A]
+$A4:9A08 AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A4:9A0B 18          CLC                    ;|
+$A4:9A0C 6D B0 0F    ADC $0FB0  [$7E:0FB0]  ;|
+$A4:9A0F 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Crocomire X position += [Crocomire skeleton X velocity]
+$A4:9A12 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A4:9A15 6D B2 0F    ADC $0FB2  [$7E:0FB2]  ;|
+$A4:9A18 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 
-$A4:9A1B AD 2E 10    LDA $102E  [$7E:102E]
-$A4:9A1E F0 17       BEQ $17    [$9A37]
-$A4:9A20 CE 2E 10    DEC $102E  [$7E:102E]
-$A4:9A23 D0 12       BNE $12    [$9A37]
-$A4:9A25 9C B0 0F    STZ $0FB0  [$7E:0FB0]
-$A4:9A28 A9 4A E1    LDA #$E14A
-$A4:9A2B 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:9A2E A9 01 00    LDA #$0001
-$A4:9A31 8D 94 0F    STA $0F94  [$7E:0F94]
+; BRANCH
+$A4:9A1B AD 2E 10    LDA $102E  [$7E:102E]  ;\
+$A4:9A1E F0 17       BEQ $17    [$9A37]     ;} If [Crocomire falling apart timer] = 0: return
+$A4:9A20 CE 2E 10    DEC $102E  [$7E:102E]  ; Decrement Crocomire falling apart timer
+$A4:9A23 D0 12       BNE $12    [$9A37]     ; If [Crocomire falling apart timer] != 0: return
+$A4:9A25 9C B0 0F    STZ $0FB0  [$7E:0FB0]  ; Crocomire skeleton X subvelocity = 0
+$A4:9A28 A9 4A E1    LDA #$E14A             ;\
+$A4:9A2B 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E14A (skeleton - falling)
+$A4:9A2E A9 01 00    LDA #$0001             ;\
+$A4:9A31 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:9A34 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 
 $A4:9A37 60          RTS
@@ -2557,41 +2589,41 @@ $A4:9A37 60          RTS
 
 ;;; $9A38: Crocomire main AI - death sequence index 46h - skeleton falls ;;;
 {
-$A4:9A38 AD B0 0F    LDA $0FB0  [$7E:0FB0]
-$A4:9A3B 18          CLC
-$A4:9A3C 69 00 08    ADC #$0800
-$A4:9A3F 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A4:9A42 AD B2 0F    LDA $0FB2  [$7E:0FB2]
-$A4:9A45 69 00 00    ADC #$0000
-$A4:9A48 C9 05 00    CMP #$0005
-$A4:9A4B 30 03       BMI $03    [$9A50]
-$A4:9A4D A9 05 00    LDA #$0005
+$A4:9A38 AD B0 0F    LDA $0FB0  [$7E:0FB0]  ;\
+$A4:9A3B 18          CLC                    ;|
+$A4:9A3C 69 00 08    ADC #$0800             ;|
+$A4:9A3F 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Crocomire skeleton X velocity += 0.0800h
+$A4:9A42 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;|
+$A4:9A45 69 00 00    ADC #$0000             ;/
+$A4:9A48 C9 05 00    CMP #$0005             ;\
+$A4:9A4B 30 03       BMI $03    [$9A50]     ;} Crocomire skeleton X velocity = min([Crocomire skeleton X velocity], 5)
+$A4:9A4D A9 05 00    LDA #$0005             ;/
 
 $A4:9A50 8D B2 0F    STA $0FB2  [$7E:0FB2]
-$A4:9A53 A9 00 E0    LDA #$E000
-$A4:9A56 18          CLC
-$A4:9A57 6D 80 0F    ADC $0F80  [$7E:0F80]
-$A4:9A5A 8D 80 0F    STA $0F80  [$7E:0F80]
-$A4:9A5D AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A4:9A60 69 00 00    ADC #$0000
-$A4:9A63 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A4:9A66 AD 7C 0F    LDA $0F7C  [$7E:0F7C]
-$A4:9A69 18          CLC
-$A4:9A6A 6D B0 0F    ADC $0FB0  [$7E:0FB0]
-$A4:9A6D 8D 7C 0F    STA $0F7C  [$7E:0F7C]
-$A4:9A70 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:9A73 6D B2 0F    ADC $0FB2  [$7E:0FB2]
-$A4:9A76 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A4:9A79 C9 40 02    CMP #$0240
-$A4:9A7C 30 1C       BMI $1C    [$9A9A]
+$A4:9A53 A9 00 E0    LDA #$E000             ;\
+$A4:9A56 18          CLC                    ;|
+$A4:9A57 6D 80 0F    ADC $0F80  [$7E:0F80]  ;|
+$A4:9A5A 8D 80 0F    STA $0F80  [$7E:0F80]  ;} Crocomire Y position += 0.E000h
+$A4:9A5D AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;|
+$A4:9A60 69 00 00    ADC #$0000             ;|
+$A4:9A63 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A4:9A66 AD 7C 0F    LDA $0F7C  [$7E:0F7C]  ;\
+$A4:9A69 18          CLC                    ;|
+$A4:9A6A 6D B0 0F    ADC $0FB0  [$7E:0FB0]  ;|
+$A4:9A6D 8D 7C 0F    STA $0F7C  [$7E:0F7C]  ;} Crocomire X position += [Crocomire skeleton X velocity]
+$A4:9A70 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
+$A4:9A73 6D B2 0F    ADC $0FB2  [$7E:0FB2]  ;|
+$A4:9A76 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A4:9A79 C9 40 02    CMP #$0240             ;\
+$A4:9A7C 30 1C       BMI $1C    [$9A9A]     ;} If [Crocomire X position] < 240h: return
 $A4:9A7E A9 25 00    LDA #$0025             ;\
 $A4:9A81 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
-$A4:9A85 AD 96 0F    LDA $0F96  [$7E:0F96]
-$A4:9A88 8D D6 0F    STA $0FD6  [$7E:0FD6]
-$A4:9A8B A9 58 E1    LDA #$E158
-$A4:9A8E 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:9A91 A9 01 00    LDA #$0001
-$A4:9A94 8D 94 0F    STA $0F94  [$7E:0F94]
+$A4:9A85 AD 96 0F    LDA $0F96  [$7E:0F96]  ;\
+$A4:9A88 8D D6 0F    STA $0FD6  [$7E:0FD6]  ;} Crocomire's tongue palette index = [Crocomire palette index]
+$A4:9A8B A9 58 E1    LDA #$E158             ;\
+$A4:9A8E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E158 (skeleton - falls apart)
+$A4:9A91 A9 01 00    LDA #$0001             ;\
+$A4:9A94 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:9A97 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 
 $A4:9A9A 60          RTS
@@ -2721,86 +2753,87 @@ $A4:9B05 6B          RTL
 
 ;;; $9B06: Crocomire main AI - death sequence index 48h - skeleton falls apart ;;;
 {
-$A4:9B06 AD 92 0F    LDA $0F92  [$7E:0F92]
-$A4:9B09 C9 C6 E1    CMP #$E1C6
-$A4:9B0C 30 3B       BMI $3B    [$9B49]
-$A4:9B0E A9 CC E1    LDA #$E1CC
-$A4:9B11 8D 92 0F    STA $0F92  [$7E:0F92]
-$A4:9B14 A9 01 00    LDA #$0001
-$A4:9B17 8D 94 0F    STA $0F94  [$7E:0F94]
-$A4:9B1A AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A4:9B1D 18          CLC
-$A4:9B1E 69 40 00    ADC #$0040
-$A4:9B21 8D 7A 0F    STA $0F7A  [$7E:0F7A]
-$A4:9B24 AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A4:9B27 18          CLC
-$A4:9B28 69 15 00    ADC #$0015
-$A4:9B2B 8D 7E 0F    STA $0F7E  [$7E:0F7E]
-$A4:9B2E A9 1C 00    LDA #$001C
-$A4:9B31 8D 84 0F    STA $0F84  [$7E:0F84]
-$A4:9B34 A9 28 00    LDA #$0028
-$A4:9B37 8D 82 0F    STA $0F82  [$7E:0F82]
-$A4:9B3A 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:9B3E             dx 30,03,B753
+$A4:9B06 AD 92 0F    LDA $0F92  [$7E:0F92]  ;\
+$A4:9B09 C9 C6 E1    CMP #$E1C6             ;} If [Crocomire instruction list pointer] >= $E1C6:
+$A4:9B0C 30 3B       BMI $3B    [$9B49]     ;/
+$A4:9B0E A9 CC E1    LDA #$E1CC             ;\
+$A4:9B11 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E1CC (dead)
+$A4:9B14 A9 01 00    LDA #$0001             ;\
+$A4:9B17 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Crocomire instruction timer = 1
+$A4:9B1A AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A4:9B1D 18          CLC                    ;|
+$A4:9B1E 69 40 00    ADC #$0040             ;} Crocomire X position += 40h
+$A4:9B21 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
+$A4:9B24 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A4:9B27 18          CLC                    ;|
+$A4:9B28 69 15 00    ADC #$0015             ;} Crocomire Y position += 15h
+$A4:9B2B 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
+$A4:9B2E A9 1C 00    LDA #$001C             ;\
+$A4:9B31 8D 84 0F    STA $0F84  [$7E:0F84]  ;} Crocomire Y radius = 1Ch
+$A4:9B34 A9 28 00    LDA #$0028             ;\
+$A4:9B37 8D 82 0F    STA $0F82  [$7E:0F82]  ;} Crocomire X radius = 28h
+$A4:9B3A 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:9B3E             dx 30,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (30h, 3)
 $A4:9B42 22 D8 B9 A0 JSL $A0B9D8[$A0:B9D8]  ; Crocomire death item drop routine
 $A4:9B46 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 
-$A4:9B49 AD B0 0F    LDA $0FB0  [$7E:0FB0]
-$A4:9B4C 18          CLC
-$A4:9B4D 69 00 10    ADC #$1000
-$A4:9B50 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A4:9B53 AD B2 0F    LDA $0FB2  [$7E:0FB2]
-$A4:9B56 69 00 00    ADC #$0000
-$A4:9B59 C9 06 00    CMP #$0006
-$A4:9B5C 30 03       BMI $03    [$9B61]
-$A4:9B5E A9 06 00    LDA #$0006
+$A4:9B49 AD B0 0F    LDA $0FB0  [$7E:0FB0]  ;\
+$A4:9B4C 18          CLC                    ;|
+$A4:9B4D 69 00 10    ADC #$1000             ;|
+$A4:9B50 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Crocomire skeleton X velocity += 0.1000h (but this X velocity isn't used? >_<;)
+$A4:9B53 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;|
+$A4:9B56 69 00 00    ADC #$0000             ;/
+$A4:9B59 C9 06 00    CMP #$0006             ;\
+$A4:9B5C 30 03       BMI $03    [$9B61]     ;} Crocomire skeleton X velocity = min([Crocomire skeleton X velocity], 6)
+$A4:9B5E A9 06 00    LDA #$0006             ;/
 
 $A4:9B61 8D B2 0F    STA $0FB2  [$7E:0FB2]
 $A4:9B64 60          RTS
 }
 
 
-;;; $9B65: Crocomire main AI - death sequence index 4Ah ;;;
+;;; $9B65: Crocomire main AI - death sequence index 4Ah - unlock camera ;;;
 {
-$A4:9B65 A9 01 01    LDA #$0101
-$A4:9B68 8F 20 CD 7E STA $7ECD20[$7E:CD20]
-$A4:9B6C 8F 22 CD 7E STA $7ECD22[$7E:CD22]
-$A4:9B70 22 D7 83 84 JSL $8483D7[$84:83D7]
-$A4:9B74             dx 1E,03,B753
+$A4:9B65 A9 01 01    LDA #$0101             ;\
+$A4:9B68 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scrolls 0..3 = blue
+$A4:9B6C 8F 22 CD 7E STA $7ECD22[$7E:CD22]  ;/
+$A4:9B70 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
+$A4:9B74             dx 1E,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (1Eh, 3)
 $A4:9B78 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 }
 
 
-;;; $9B7B: Crocomire main AI - death sequence index 4Eh ;;;
+;;; $9B7B: Crocomire main AI - death sequence index 4Eh - set index 50h ;;;
 {
 $A4:9B7B 80 36       BRA $36    [$9BB3]     ; Go to Crocomire death sequence index += 2
 }
 
 
-;;; $9B7D: Crocomire main AI - death sequence index 4Ch ;;;
+;;; $9B7D: Crocomire main AI - death sequence index 4Ch - set index 4Eh ;;;
 {
-$A4:9B7D AD 92 0F    LDA $0F92  [$7E:0F92]
-$A4:9B80 C9 C6 E1    CMP #$E1C6
+; Crocomire instruction list pointer coming into this function is $E1D0 (last set to $E1CC by $9B06)
+$A4:9B7D AD 92 0F    LDA $0F92  [$7E:0F92]  ;\
+$A4:9B80 C9 C6 E1    CMP #$E1C6             ;} If [Crocomire instruction list pointer] >= $E1C6 (always true):
 $A4:9B83 10 2E       BPL $2E    [$9BB3]     ; Go to Crocomire death sequence index += 2
 $A4:9B85 60          RTS
 }
 
 
-;;; $9B86: Crocomire main AI - death sequence index 50h ;;;
+;;; $9B86: Crocomire main AI - death sequence index 50h - mark event and start post-death music ;;;
 {
 $A4:9B86 A9 06 00    LDA #$0006             ;\
 $A4:9B89 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 1 music track
-$A4:9B8D 9C 41 09    STZ $0941  [$7E:0941]
-$A4:9B90 AE 9F 07    LDX $079F  [$7E:079F]
-$A4:9B93 BF 28 D8 7E LDA $7ED828,x[$7E:D82A]
-$A4:9B97 09 02 00    ORA #$0002
-$A4:9B9A 9F 28 D8 7E STA $7ED828,x[$7E:D82A]
+$A4:9B8D 9C 41 09    STZ $0941  [$7E:0941]  ; Camera distance index = 0 (normal)
+$A4:9B90 AE 9F 07    LDX $079F  [$7E:079F]  ;\
+$A4:9B93 BF 28 D8 7E LDA $7ED828,x[$7E:D82A];|
+$A4:9B97 09 02 00    ORA #$0002             ;} Set area mini-boss as dead
+$A4:9B9A 9F 28 D8 7E STA $7ED828,x[$7E:D82A];/
 $A4:9B9E A9 06 00    LDA #$0006             ;\
 $A4:9BA1 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 1 music track
-$A4:9BA5 A9 F0 FF    LDA #$FFF0
-$A4:9BA8 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]
-$A4:9BAC A9 10 00    LDA #$0010
-$A4:9BAF 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]
+$A4:9BA5 A9 F0 FF    LDA #$FFF0             ;\
+$A4:9BA8 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]  ;} Spawn big dust cloud enemy projectile with X offset -10h
+$A4:9BAC A9 10 00    LDA #$0010             ;\
+$A4:9BAF 22 DA 9A A4 JSL $A49ADA[$A4:9ADA]  ;} Spawn big dust cloud enemy projectile with X offset 10h
 }
 
 
@@ -2812,15 +2845,23 @@ $A4:9BB9 60          RTS
 }
 
 
-;;; $9BBA: Crocomire main AI - death sequence index 54h - set dead state ;;;
+;;; $9BBA: Crocomire main AI - death sequence index 54h - set index 56h ;;;
 {
 $A4:9BBA 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence index += 2
 }
 
 
-;;; $9BBD:  ;;;
+;;; $9BBD: Tile pixel column bitmasks ;;;
 {
-$A4:9BBD             dw BF7F, EFDF, FBF7, FEFD
+; ~(1 << x)
+$A4:9BBD             db 7F, ; ~80h. Pixel column 0
+                        BF, ; ~40h. Pixel column 1
+                        DF, ; ~20h. Pixel column 2
+                        EF, ; ~10h. Pixel column 3
+                        F7, ; ~8. Pixel column 4
+                        FB, ; ~4. Pixel column 5
+                        FD, ; ~2. Pixel column 6
+                        FE  ; ~1. Pixel column 7
 }
 
 
@@ -2888,7 +2929,7 @@ $A4:9C3F             dw 0160,0000,007E,4000,
 }
 
 
-;;; $9C79:  ;;;
+;;; $9C79: Crocomire tilemap - melting 1 ;;;
 {
 $A4:9C79             dw 3C00,3C20,3C30,3C40,3C50,3C01,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,
                         3C10,3C11,3C04,3C33,3C43,3C23,3C41,3C51,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,
@@ -2902,7 +2943,7 @@ $A4:9C79             dw 3C00,3C20,3C30,3C40,3C50,3C01,0338,0338,0338,0338,0338,0
 }
 
 
-;;; $9E7B:  ;;;
+;;; $9E7B: Crocomire tilemap - melting 2 ;;;
 {
 $A4:9E7B             dw 3C00,3C10,3C20,3C30,0338,0338,0338,0338,0338,3C00,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,
                         3C40,3C11,3C21,3C50,3C23,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,0338,
@@ -2916,7 +2957,7 @@ $A4:9E7B             dw 3C00,3C10,3C20,3C30,0338,0338,0338,0338,0338,3C00,0338,0
 }
 
 
-;;; $A07D: Crocomire melting tiles ;;;
+;;; $A07D: Crocomire tiles - melting 1 ;;;
 {
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 ; |      66|        |     F6F|5F      |54566666|FFBB9878|666FBA98|24444455|55433223|55443333|55554245|F5525   |        |        |        |        |
@@ -3073,7 +3114,7 @@ $A4:A07D             db 00,03,00,07,02,0D,19,1E,32,3C,26,38,36,39,6F,71,03,00,07
 }
 
 
-;;; $AC7D: Crocomire tiles ;;;
+;;; $AC7D: Crocomire tiles - melting 2 ;;;
 {
 ; Pointed to by table $A4:9C19
 
@@ -3562,7 +3603,7 @@ $A4:BB94             dx 86A6,       ; Fight AI
 }
 
 
-;;; $BBAE: Unused. Instruction list ;;;
+;;; $BBAE: Unused. Instruction list - Crocomire ;;;
 {
 $A4:BBAE             dx 0004,C6A4,
                         8FC7,       ; Shake screen
@@ -3844,7 +3885,7 @@ $A4:BE06             dx 0004,BFC4,
 }
 
 
-;;; $BE56: Instruction list - Crocomire's tongue - initial ;;;
+;;; $BE56: Instruction list - Crocomire's tongue - fight ;;;
 {
 $A4:BE56             dx 0005,C65E,
                         0005,C668,
@@ -3854,7 +3895,7 @@ $A4:BE56             dx 0005,C65E,
 }
 
 
-;;; $BE6A: Instruction list ;;;
+;;; $BE6A: Unused. Instruction list - Crocomire's tongue - reversed version of fight ;;;
 {
 $A4:BE6A             dx 0005,C67C,
                         0005,C672,
@@ -3957,63 +3998,63 @@ $A4:BF62             dx 812F        ; Sleep
 }
 
 
-;;; $BF64: Instruction list ;;;
+;;; $BF64: Instruction list - Crocomire - melting 1 - top row ;;;
 {
 $A4:BF64             dx 7FFF,CA7E,
                         80ED,BF64   ; Go to $BF64
 }
 
 
-;;; $BF6C: Instruction list ;;;
+;;; $BF6C: Instruction list - Crocomire - melting 1 - top 2 rows ;;;
 {
 $A4:BF6C             dx 7FFF,CA88,
                         812F        ; Sleep
 }
 
 
-;;; $BF72: Instruction list ;;;
+;;; $BF72: Instruction list - Crocomire - melting 1 - top 3 rows ;;;
 {
 $A4:BF72             dx 7FFF,CA92,
                         812F        ; Sleep
 }
 
 
-;;; $BF78: Instruction list ;;;
+;;; $BF78: Instruction list - Crocomire - melting 1 - top 4 rows ;;;
 {
 $A4:BF78             dx 7FFF,CA9C,
                         812F        ; Sleep
 }
 
 
-;;; $BF7E: Instruction list ;;;
+;;; $BF7E: Instruction list - Crocomire - melting 2 - top row ;;;
 {
 $A4:BF7E             dx 7FFF,CAA6,
                         80ED,BF7E   ; Go to $BF7E
 }
 
 
-;;; $BF86: Instruction list ;;;
+;;; $BF86: Instruction list - Crocomire - melting 2 - top 2 rows ;;;
 {
 $A4:BF86             dx 7FFF,CAB0,
                         812F        ; Sleep
 }
 
 
-;;; $BF8C: Instruction list ;;;
+;;; $BF8C: Instruction list - Crocomire - melting 2 - top 3 rows ;;;
 {
 $A4:BF8C             dx 7FFF,CABA,
                         812F        ; Sleep
 }
 
 
-;;; $BF92: Instruction list ;;;
+;;; $BF92: Instruction list - Crocomire - melting 2 - top 4 rows ;;;
 {
 $A4:BF92             dx 7FFF,CAC4,
                         812F        ; Sleep
 }
 
 
-;;; $BF98: Instruction list ;;;
+;;; $BF98: Instruction list - Crocomire's tongue - melting ;;;
 {
 $A4:BF98             dx 0005,CACE,
                         0005,CAD8,
@@ -4338,7 +4379,7 @@ $A4:E030             dx 0038, 0010,F0,2FED, 0008,F0,2FEC, 0020,F0,2FFD, 0018,F0,
 
 ;;; $E14A..E1FD: Crocomire corpse instruction lists ;;;
 {
-;;; $E14A: Instruction list ;;;
+;;; $E14A: Instruction list - Crocomire - skeleton - falling ;;;
 {
 $A4:E14A             dx 000A,E1FE,
                         000A,E228,
@@ -4347,7 +4388,7 @@ $A4:E14A             dx 000A,E1FE,
 }
 
 
-;;; $E158: Instruction list ;;;
+;;; $E158: Instruction list - Crocomire - skeleton - falls apart ;;;
 {
 $A4:E158             dx 000A,E27C,
                         9A9B,       ; Spawn big dust cloud enemy projectile - X offset -20h
@@ -4383,8 +4424,8 @@ $A4:E158             dx 000A,E27C,
                         0005,E65C,
                         9AD7,       ; Spawn big dust cloud enemy projectile - X offset 40h
                         8D07,       ; Queue big explosion sound effect
-                        0005,E68E,
-                        7FFF,E6A8,
+                        0005,E68E 
+$A4:E1C6             dx 7FFF,E6A8,
                         812F        ; Sleep
 }
 
@@ -4396,7 +4437,7 @@ $A4:E1CC             dx 7FFF,E6B2,
 }
 
 
-;;; $E1D2: Instruction list ;;;
+;;; $E1D2: Instruction list - Crocomire - skeleton - flowing down the river ;;;
 {
 $A4:E1D2             dx 0004,E6BC,
                         0004,E6C6,
@@ -4661,7 +4702,7 @@ $A4:F681 89 02 00    BIT #$0002             ;} If area mini-boss dead: go to BRA
 $A4:F684 D0 25       BNE $25    [$F6AB]     ;/
 $A4:F686 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:F689 A9 56 BE    LDA #$BE56             ;\
-$A4:F68C 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $BE56
+$A4:F68C 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $BE56 (fight)
 $A4:F68F BD 88 0F    LDA $0F88,x[$7E:0FC8]  ;\
 $A4:F692 09 04 04    ORA #$0404             ;} Set enemy to use extended spritemap format (and set unused bit 400h)
 $A4:F695 9D 88 0F    STA $0F88,x[$7E:0FC8]  ;/

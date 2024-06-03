@@ -7449,33 +7449,28 @@ $8F:E8CC 6B          RTL
 ;;; $E8CD: Main ASM: Crocomire's room shaking ;;;
 {
 ; Room $A98D. Crocomire's room
-; $0FAE seems to be a timer for when Crocomire's underneath the screen
-; [$0FAA] & 400h always seems to be 0, [$0FAC] never seems to be 22h
-; If [$0FAC] = 22h, then the screen shakes horizontally; seems standard enough
-; If [$0FAA] & 400h, then BG1 is scrolled down, whilst BG2's Y position is set
-; BG2 being set also seems standard enough, as that's Crocomire's GFX, but scrolling BG1 seems bizarre
 $8F:E8CD AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$8F:E8D0 89 00 02    BIT #$0200             ;} If Crocomire is deleted: return
+$8F:E8D0 89 00 02    BIT #$0200             ;} If Crocomire is marked for deletion: return
 $8F:E8D3 D0 40       BNE $40    [$E915]     ;/
 $8F:E8D5 AD A8 0F    LDA $0FA8  [$7E:0FA8]  ;\
-$8F:E8D8 C9 40 00    CMP #$0040             ;} If [Crocomire death sequence stage] = 40h (screen shaking bit): go to BRANCH_E942
+$8F:E8D8 C9 40 00    CMP #$0040             ;} If [Crocomire death sequence index] = 40h (behind wall - rumbling): go to BRANCH_BEHIND_WALL_RUMBLING
 $8F:E8DB F0 65       BEQ $65    [$E942]     ;/
 $8F:E8DD AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
-$8F:E8E0 89 00 04    BIT #$0400             ;} If [$0FAA] & 400h = 0: go to BRANCH_E916
+$8F:E8E0 89 00 04    BIT #$0400             ;} If [$0FAA] & 400h = 0 (always true): go to BRANCH_E916
 $8F:E8E3 F0 31       BEQ $31    [$E916]     ;/
 $8F:E8E5 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
-$8F:E8E8 3A          DEC A                  ;} Decrement Crocomire melting timer
+$8F:E8E8 3A          DEC A                  ;} Decrement $0FEE
 $8F:E8E9 8D EE 0F    STA $0FEE  [$7E:0FEE]  ;/
 $8F:E8EC C9 F9 FF    CMP #$FFF9             ;\
-$8F:E8EF 30 05       BMI $05    [$E8F6]     ;} If [Crocomire melting timer] >= -7:
-$8F:E8F1 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ; $12 = [Crocomire melting timer]
+$8F:E8EF 30 05       BMI $05    [$E8F6]     ;} If [$0FEE] >= -7:
+$8F:E8F1 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ; $12 = [$0FEE]
 $8F:E8F4 80 10       BRA $10    [$E906]
 
-$8F:E8F6 A9 07 00    LDA #$0007             ;\ Else ([Crocomire melting timer] < -7):
+$8F:E8F6 A9 07 00    LDA #$0007             ;\ Else ([$0FEE] < -7):
 $8F:E8F9 18          CLC                    ;|
 $8F:E8FA 6D EE 0F    ADC $0FEE  [$7E:0FEE]  ;|
 $8F:E8FD 0A          ASL A                  ;|
-$8F:E8FE 85 12       STA $12    [$7E:0012]  ;} $12 = -14 - [Crocomire melting timer]
+$8F:E8FE 85 12       STA $12    [$7E:0012]  ;} $12 = -14 - [$0FEE]
 $8F:E900 AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;|
 $8F:E903 38          SEC                    ;|
 $8F:E904 E5 12       SBC $12    [$7E:0012]  ;/
@@ -7493,14 +7488,14 @@ $8F:E915 60          RTS                    ; Return
 
 ; BRANCH_E916
 $8F:E916 AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
-$8F:E919 C9 22 00    CMP #$0022             ;} If Crocomire's action != 22h (unknown, never seems to happen): return
+$8F:E919 C9 22 00    CMP #$0022             ;} If [Crocomire fight function index] != 22h (unused): return
 $8F:E91C D0 F7       BNE $F7    [$E915]     ;/
 $8F:E91E AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $8F:E921 F0 F2       BEQ $F2    [$E915]     ;} If [$0FAE] = 0: return
 $8F:E923 3A          DEC A                  ;\
 $8F:E924 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Decrement $0FAE
 $8F:E927 89 01 00    BIT #$0001             ;\
-$8F:E92A D0 0B       BNE $0B    [$E937]     ;} If [$0FAE] is even:
+$8F:E92A D0 0B       BNE $0B    [$E937]     ;} If [$0FAE] % 2 = 0:
 $8F:E92C AD 11 09    LDA $0911  [$7E:0911]  ;\
 $8F:E92F 18          CLC                    ;|
 $8F:E930 69 04 00    ADC #$0004             ;} Layer 1 X position += 4
@@ -7513,11 +7508,11 @@ $8F:E93B E9 04 00    SBC #$0004             ;} Layer 1 X position -= 4
 $8F:E93E 8D 11 09    STA $0911  [$7E:0911]  ;/
 $8F:E941 60          RTS                    ; Return
 
-; BRANCH_E942
+; BRANCH_BEHIND_WALL_RUMBLING
 $8F:E942 AD 15 09    LDA $0915  [$7E:0915]  ;\
 $8F:E945 18          CLC                    ;|
 $8F:E946 6D 1F 09    ADC $091F  [$7E:091F]  ;|
-$8F:E949 18          CLC                    ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y scroll offset] + [Crocomire's tongue shake offset]
+$8F:E949 18          CLC                    ;} BG1 Y scroll = [layer 1 Y position] + [BG1 Y scroll offset] + [Crocomire rumbling Y offset]
 $8F:E94A 6D EE 0F    ADC $0FEE  [$7E:0FEE]  ;|
 $8F:E94D 85 B3       STA $B3    [$7E:00B3]  ;/
 $8F:E94F 60          RTS
