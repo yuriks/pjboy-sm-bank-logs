@@ -3592,7 +3592,7 @@ $94:9BE3 4D 02 0E    EOR $0E02  [$7E:0E02]  ;} If (Samus top boundary) / 10h != 
 $94:9BE6 29 F0 FF    AND #$FFF0             ;|
 $94:9BE9 F0 30       BEQ $30    [$9C1B]     ;/
 $94:9BEB 4D FA 0A    EOR $0AFA  [$7E:0AFA]  ;\
-$94:9BEE 29 F0 FF    AND #$FFF0             ;} If ((Samus top boundary) ^ [Samus bottom boundary position]) / 10h != [Samus X position] / 10h:
+$94:9BEE 29 F0 FF    AND #$FFF0             ;} If ((Samus top boundary) ^ [Samus bottom boundary position]) / 10h != [Samus Y position] / 10h:
 $94:9BF1 F0 28       BEQ $28    [$9C1B]     ;/
 $94:9BF3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $94:9BF6 85 1A       STA $1A    [$7E:001A]  ;} $1A = [Samus X position]
