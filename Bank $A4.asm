@@ -2182,7 +2182,7 @@ $A4:96C9 E2 20       SEP #$20
 $A4:96CB C2 10       REP #$10
 $A4:96CD EB          XBA                    ; A high = [A low]
 $A4:96CE AD 8C 06    LDA $068C  [$7E:068C]  ;\
-$A4:96D1 85 12       STA $12    [$7E:0012]  ;} $12 = 30h
+$A4:96D1 85 12       STA $12    [$7E:0012]  ;} $12 = 30h (number of pixels to erase)
 $A4:96D3 64 13       STZ $13    [$7E:0013]  ;/
 $A4:96D5 64 14       STZ $14    [$7E:0014]  ;\
 $A4:96D7 64 15       STZ $15    [$7E:0015]  ;} $14 = 0
@@ -2190,7 +2190,7 @@ $A4:96D9 64 16       STZ $16    [$7E:0016]  ;\
 $A4:96DB 64 17       STZ $17    [$7E:0017]  ;} $16 = 0 (never read)
 $A4:96DD AE 90 06    LDX $0690  [$7E:0690]  ; X = [Crocomire melting X pixel]
 
-; LOOP_96E0
+; LOOP_FIND_COLUMN_TO_ERASE
 $A4:96E0 BD 97 96    LDA $9697,x[$A4:9697]  ;\
 $A4:96E3 A8          TAY                    ;} Y = [$9697 + [X]] (melting Y pixel table index) | [A high] << 8 (>_<;)
 $A4:96E4 B9 9C 06    LDA $069C,y[$7E:4AC7]  ;\
@@ -2198,7 +2198,7 @@ $A4:96E7 CD 88 06    CMP $0688  [$7E:0688]  ;} If [$069C + [Y]] (Crocomire melti
 $A4:96EA 30 0D       BMI $0D    [$96F9]     ;/
 $A4:96EC E8          INX                    ; Increment X
 $A4:96ED E0 80 00    CPX #$0080             ;\
-$A4:96F0 30 EE       BMI $EE    [$96E0]     ;} If [X] < 80h: go to LOOP_96E0
+$A4:96F0 30 EE       BMI $EE    [$96E0]     ;} If [X] < 80h: go to LOOP_FIND_COLUMN_TO_ERASE
 $A4:96F2 9C 90 06    STZ $0690  [$7E:0690]  ; Crocomire melting X pixel = 0
 $A4:96F5 A9 00       LDA #$00               ; A = 0 (error, this should never happen, X should never even exceed 31h)
 $A4:96F7 28          PLP
@@ -2210,7 +2210,7 @@ $A4:96FD 29 07       AND #$07               ;} A low = [X] % 8
 $A4:96FF A8          TAY                    ; Y = [A low] (pixel column of tile to erase) | [A high] << 8 (>_<;)
 $A4:9700 C2 20       REP #$20
 
-; LOOP_9702
+; LOOP_ERASE_COLUMN
 $A4:9702 AE 90 06    LDX $0690  [$7E:0690]  ;\
 $A4:9705 BD 97 96    LDA $9697,x[$A4:9697]  ;|
 $A4:9708 29 FF 00    AND #$00FF             ;} X = [$9697 + [Crocomire melting X pixel]] (melting Y pixel table index)
@@ -2263,7 +2263,7 @@ $A4:9773 BD 9C 06    LDA $069C,x[$7E:06C7]  ;\
 $A4:9776 29 FF 00    AND #$00FF             ;} $16 = [$069C + [X]] (never read)
 $A4:9779 85 16       STA $16    [$7E:0016]  ;/
 $A4:977B C6 12       DEC $12    [$7E:0012]  ; Decrement $12
-$A4:977D D0 83       BNE $83    [$9702]     ; If [$12] != 0: go to LOOP_9702
+$A4:977D D0 83       BNE $83    [$9702]     ; If [$12] != 0: go to LOOP_ERASE_COLUMN
 
 $A4:977F C2 30       REP #$30
 
