@@ -1692,8 +1692,8 @@ $A4:9340 60          RTS
 ;;; $9341: Crocomire main AI - death sequence index 10h - hop 3 - load melting tilemap ;;;
 {
 $A4:9341 A9 30 00    LDA #$0030             ;\
-$A4:9344 8D 8C 06    STA $068C  [$7E:068C]  ;} $068C = 30h
-$A4:9347 8D 88 06    STA $0688  [$7E:0688]  ; $0688 = 30h
+$A4:9344 8D 8C 06    STA $068C  [$7E:068C]  ;} $068C = 30h (number of pixels to erase per column per frame)
+$A4:9347 8D 88 06    STA $0688  [$7E:0688]  ; $0688 = 30h (target number of pixels to erase per column)
 $A4:934A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:934D FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:9350 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
@@ -1790,8 +1790,8 @@ $A4:93F6 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index +=
 $A4:93F9 A9 01 00    LDA #$0001             ;\
 $A4:93FC 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:93FF A9 30 00    LDA #$0030             ;\
-$A4:9402 8D 8C 06    STA $068C  [$7E:068C]  ;} $068C = 30h
-$A4:9405 8D 88 06    STA $0688  [$7E:0688]  ; $0688 = 30h
+$A4:9402 8D 8C 06    STA $068C  [$7E:068C]  ;} $068C = 30h (number of pixels to erase per column per frame)
+$A4:9405 8D 88 06    STA $0688  [$7E:0688]  ; $0688 = 30h (target number of pixels to erase per column)
 $A4:9408 A9 7E BF    LDA #$BF7E             ;\
 $A4:940B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BF7E (melting 2 - top row)
 $A4:940E A2 00 00    LDX #$0000             ;\
@@ -1828,6 +1828,8 @@ $A4:943C 6B          RTL
 
 ;;; $943D: Crocomire main AI - death sequence index 12h/2Eh - hop 3/6 - load melting tiles ;;;
 {
+; The loop at $94A6 seems to accidentally clear the "transfer Samus' top half tiles to VRAM" flag,
+; but this is harmless, as the Samus drawing code is executed after enemy AI is processed
 $A4:943D C2 30       REP #$30
 $A4:943F 8B          PHB
 $A4:9440 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1835,7 +1837,7 @@ $A4:9443 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:9446 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:9449 A9 00 01    LDA #$0100             ;\
 $A4:944C 8D 92 06    STA $0692  [$7E:0692]  ;} $0692 = 100h
-$A4:944F 9C 90 06    STZ $0690  [$7E:0690]  ; $0690 = 0
+$A4:944F 9C 90 06    STZ $0690  [$7E:0690]  ; Crocomire melting X offset table index = 0
 $A4:9452 AE 9A 06    LDX $069A  [$7E:069A]  ; X = [Crocomire melting tiles loading table index]
 $A4:9455 BD C5 9B    LDA $9BC5,x[$A4:9BC5]  ;\
 $A4:9458 8D 98 06    STA $0698  [$7E:0698]  ;} $0698 = 58h
@@ -1885,7 +1887,7 @@ $A4:94A3 8E 8A 06    STX $068A  [$7E:068A]  ; Crocomire melting tiles loading ta
 $A4:94A6 A2 80 00    LDX #$0080             ;\ <-- should be 7Eh?
                                             ;|
 $A4:94A9 9E 9C 06    STZ $069C,x[$7E:071C]  ;|
-$A4:94AC CA          DEX                    ;} $069C..071D = 0
+$A4:94AC CA          DEX                    ;} $069C..071D = 0 (Crocomire melting Y offsets)
 $A4:94AD CA          DEX                    ;|
 $A4:94AE 10 F9       BPL $F9    [$94A9]     ;/
 $A4:94B0 AB          PLB
@@ -2018,14 +2020,14 @@ $A4:958B AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
 $A4:958E 29 02 00    AND #$0002             ;} A = [$0FEE] & 2
 $A4:9591 F0 06       BEQ $06    [$9599]     ; If [A] != 0:
 $A4:9593 8A          TXA                    ;\
-$A4:9594 18          CLC                    ;} A = [Crocomire X position] + 4
+$A4:9594 18          CLC                    ;} A = [Crocomire X position] + 4 (causes $96C8 subroutine to be buggy)
 $A4:9595 69 04 00    ADC #$0004             ;/
 $A4:9598 AA          TAX                    ; Crocomire X position += 4
 
 $A4:9599 8E 7A 0F    STX $0F7A  [$7E:0F7A]
-$A4:959C 22 C8 96 A4 JSL $A496C8[$A4:96C8]  ; Execute $96C8
+$A4:959C 22 C8 96 A4 JSL $A496C8[$A4:96C8]  ; Erase melting Crocomire pixel column
 $A4:95A0 C9 00 00    CMP #$0000             ;\
-$A4:95A3 D0 2D       BNE $2D    [$95D2]     ;} If [A] != 0: go to BRANCH_NOT_FINISHED
+$A4:95A3 D0 2D       BNE $2D    [$95D2]     ;} If [A] != 0: go to BRANCH_NO_ERROR
 
 ; BRANCH_FINISHED
 $A4:95A5 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2052,13 +2054,13 @@ $A4:95CB A9 00 00    LDA #$0000             ;\
 $A4:95CE 9D B4 18    STA $18B4,x[$7E:18B8]  ;} Delete HDMA object
 $A4:95D1 60          RTS                    ; Return
 
-; BRANCH_NOT_FINISHED
+; BRANCH_NO_ERROR
 $A4:95D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95D5 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
 $A4:95D9 AD 92 06    LDA $0692  [$7E:0692]  ;\
 $A4:95DC AA          TAX                    ;} X = [$0692]
 $A4:95DD 29 00 FF    AND #$FF00             ;\
-$A4:95E0 EB          XBA                    ;} $12 = [X] / 100h
+$A4:95E0 EB          XBA                    ;} $12 = [$0692] / 100h
 $A4:95E1 85 12       STA $12    [$7E:0012]  ;/
 $A4:95E3 AD 94 06    LDA $0694  [$7E:0694]  ;\
 $A4:95E6 38          SEC                    ;} A = [$0694] - 3
@@ -2066,7 +2068,7 @@ $A4:95E7 E9 03 00    SBC #$0003             ;/
 $A4:95EA C9 10 00    CMP #$0010             ;\
 $A4:95ED 10 08       BPL $08    [$95F7]     ;} If [A] < 10h:
 $A4:95EF E0 00 50    CPX #$5000             ;\
-$A4:95F2 10 B1       BPL $B1    [$95A5]     ;} If [X] >= 5000h: go to BRANCH_FINISHED
+$A4:95F2 10 B1       BPL $B1    [$95A5]     ;} If [$0692] >= 5000h: go to BRANCH_FINISHED
 $A4:95F4 A9 10 00    LDA #$0010             ; A = 10h
 
 $A4:95F7 8D 94 06    STA $0694  [$7E:0694]  ; $0694 = [A]
@@ -2157,17 +2159,24 @@ $A4:9694 4C B3 9B    JMP $9BB3  [$A4:9BB3]  ; Go to Crocomire death sequence ind
 }
 
 
-;;; $9697: Crocomire melting target Y pixels ;;;
+;;; $9697: Crocomire melting X offset table ;;;
 {
-; Indexed by X pixel ($0690)
-$A4:9697             db 2B, 28, 21, 1F, 2C, 10, 16, 17, 0F, 00, 06, 07, 0B, 08, 01, 2A,
-                        0C, 24, 2E, 2D, 1A, 14, 1D, 23, 1E, 29, 25, 22, 13, 19, 15, 12,
-                        30, 03, 09, 02, 1B, 05, 18, 1C, 11, 0A, 04, 0D, 2F, 0E, 20, 26,
+; Indexed by $0690
+; Provides the pixel X offsets of melting Crocomire to erase in chronological order
+; Due (presumably) to a programming error, this table is only used to determine the tile to modify, but not the pixel within the tile
+; This pixel within the tile that gets erased is instead determined by the table index % 8
+;                       0   1   2   3   4   5   6   7
+$A4:9697             db 2B, 28, 21, 1F, 2C, 10, 16, 17,
+                        0F, 00, 06, 07, 0B, 08, 01, 2A,
+                        0C, 24, 2E, 2D, 1A, 14, 1D, 23,
+                        1E, 29, 25, 22, 13, 19, 15, 12,
+                        30, 03, 09, 02, 1B, 05, 18, 1C,
+                        11, 0A, 04, 0D, 2F, 0E, 20, 26,
                         27
 }
 
 
-;;; $96C8:  ;;;
+;;; $96C8: Erase melting Crocomire pixel column ;;;
 {
 ;; Parameters:
 ;;     A: Bug flag. Buggy if non-zero
@@ -2176,11 +2185,17 @@ $A4:9697             db 2B, 28, 21, 1F, 2C, 10, 16, 17, 0F, 00, 06, 07, 0B, 08, 
 
 ; The Y-indexed loads at $96E0 and $9735 are buggy due to the A parameter of this function being put into the high byte of Y!
 ; This code is only working as intended if A = 0 coming into this function
+; For the calculation of the X pixel placed into Y at $96FF, aside from the buggy high byte,
+; it looks like it should be using [$9697 + [X]] % 8 (the X offset), not [X] % 8 (the table index)
+
+; Looks like the melting effect was supposed to be able to melt some of the 30h pixels of a tile column and then resume melting that column later,
+; or maybe even erase a different number of pixels per column, but with $0688 and $068C always being 30h (and also the hardcoded 30h at $976A),
+; seems like the idea was abandoned (I would guess due to these bugs)
 
 $A4:96C8 08          PHP
 $A4:96C9 E2 20       SEP #$20
 $A4:96CB C2 10       REP #$10
-$A4:96CD EB          XBA                    ; A high = [A low]
+$A4:96CD EB          XBA                    ; A high = [A low] (!)
 $A4:96CE AD 8C 06    LDA $068C  [$7E:068C]  ;\
 $A4:96D1 85 12       STA $12    [$7E:0012]  ;} $12 = 30h (number of pixels to erase)
 $A4:96D3 64 13       STZ $13    [$7E:0013]  ;/
@@ -2188,23 +2203,23 @@ $A4:96D5 64 14       STZ $14    [$7E:0014]  ;\
 $A4:96D7 64 15       STZ $15    [$7E:0015]  ;} $14 = 0
 $A4:96D9 64 16       STZ $16    [$7E:0016]  ;\
 $A4:96DB 64 17       STZ $17    [$7E:0017]  ;} $16 = 0 (never read)
-$A4:96DD AE 90 06    LDX $0690  [$7E:0690]  ; X = [Crocomire melting X pixel]
+$A4:96DD AE 90 06    LDX $0690  [$7E:0690]  ; X = [Crocomire melting X offset table index]
 
 ; LOOP_FIND_COLUMN_TO_ERASE
 $A4:96E0 BD 97 96    LDA $9697,x[$A4:9697]  ;\
-$A4:96E3 A8          TAY                    ;} Y = [$9697 + [X]] (melting Y pixel table index) | [A high] << 8 (>_<;)
+$A4:96E3 A8          TAY                    ;} Y = [$9697 + [X]] (melting X offset) | [A high] << 8 (>_<;)
 $A4:96E4 B9 9C 06    LDA $069C,y[$7E:4AC7]  ;\
-$A4:96E7 CD 88 06    CMP $0688  [$7E:0688]  ;} If [$069C + [Y]] (Crocomire melting Y pixel) >= 30h:
+$A4:96E7 CD 88 06    CMP $0688  [$7E:0688]  ;} If [$069C + [Y]] (Crocomire melting Y offset) >= 30h:
 $A4:96EA 30 0D       BMI $0D    [$96F9]     ;/
 $A4:96EC E8          INX                    ; Increment X
 $A4:96ED E0 80 00    CPX #$0080             ;\
 $A4:96F0 30 EE       BMI $EE    [$96E0]     ;} If [X] < 80h: go to LOOP_FIND_COLUMN_TO_ERASE
-$A4:96F2 9C 90 06    STZ $0690  [$7E:0690]  ; Crocomire melting X pixel = 0
+$A4:96F2 9C 90 06    STZ $0690  [$7E:0690]  ; Crocomire melting X offset table index = 0
 $A4:96F5 A9 00       LDA #$00               ; A = 0 (error, this should never happen, X should never even exceed 31h)
 $A4:96F7 28          PLP
 $A4:96F8 6B          RTL                    ; Return
 
-$A4:96F9 8E 90 06    STX $0690  [$7E:0690]  ; Crocomire melting X pixel = [X]
+$A4:96F9 8E 90 06    STX $0690  [$7E:0690]  ; Crocomire melting X offset table index = [X]
 $A4:96FC 8A          TXA                    ;\
 $A4:96FD 29 07       AND #$07               ;} A low = [X] % 8
 $A4:96FF A8          TAY                    ; Y = [A low] (pixel column of tile to erase) | [A high] << 8 (>_<;)
@@ -2213,7 +2228,7 @@ $A4:9700 C2 20       REP #$20
 ; LOOP_ERASE_COLUMN
 $A4:9702 AE 90 06    LDX $0690  [$7E:0690]  ;\
 $A4:9705 BD 97 96    LDA $9697,x[$A4:9697]  ;|
-$A4:9708 29 FF 00    AND #$00FF             ;} X = [$9697 + [Crocomire melting X pixel]] (melting Y pixel table index)
+$A4:9708 29 FF 00    AND #$00FF             ;} X = [$9697 + [Crocomire melting X offset table index]] (melting X offset)
 $A4:970B AA          TAX                    ;/
 $A4:970C 29 F8 FF    AND #$FFF8             ;\
 $A4:970F 0A          ASL A                  ;|
@@ -2224,9 +2239,9 @@ $A4:9716 29 07 00    AND #$0007             ;|
 $A4:9719 0A          ASL A                  ;|
 $A4:971A 18          CLC                    ;|
 $A4:971B 65 14       ADC $14    [$7E:0014]  ;|
-$A4:971D 85 14       STA $14    [$7E:0014]  ;} X = [$069C + [X]] / 8 * 200h (tile row offset of melting Y pixel)
-$A4:971F BD 9C 06    LDA $069C,x[$7E:06C7]  ;}   + [X] / 8 * 20h (tile column offset of ?)
-$A4:9722 29 F8 FF    AND #$FFF8             ;}   + [$069C + [X]] % 8 * 2 (pixel row offset of melting Y pixel)
+$A4:971D 85 14       STA $14    [$7E:0014]  ;} X = [$069C + [X]] / 8 * 200h (tile row offset of melting Y offset)
+$A4:971F BD 9C 06    LDA $069C,x[$7E:06C7]  ;}   + [X] / 8 * 20h (tile column offset of melting X offset)
+$A4:9722 29 F8 FF    AND #$FFF8             ;}   + [$069C + [X]] % 8 * 2 (pixel row offset of melting Y offset)
 $A4:9725 0A          ASL A                  ;|
 $A4:9726 0A          ASL A                  ;|
 $A4:9727 0A          ASL A                  ;|
@@ -2251,7 +2266,7 @@ $A4:9756 39 BD 9B    AND $9BBD,y[$A4:DFBD]  ;} $7E:4000 + [X] + 11h &= ~(1 << 7 
 $A4:9759 9F 11 40 7E STA $7E4011,x[$7E:40B1];/
 $A4:975D A9 00       LDA #$00               ;\
 $A4:975F EB          XBA                    ;|
-$A4:9760 AE 90 06    LDX $0690  [$7E:0690]  ;} X = [$9697 + [Crocomire melting X pixel]] (melting Y pixel table index)
+$A4:9760 AE 90 06    LDX $0690  [$7E:0690]  ;} X = [$9697 + [Crocomire melting X offset table index]] (melting Y pixel table index)
 $A4:9763 BD 97 96    LDA $9697,x[$A4:9697]  ;|
 $A4:9766 AA          TAX                    ;/
 $A4:9767 BD 9C 06    LDA $069C,x[$7E:06C7]  ;\
