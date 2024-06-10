@@ -252,7 +252,7 @@ $A4:8804 60          RTS
 }
 
 
-;;; $8805:  ;;;
+;;; $8805: Set fight intro moving claws instruction list (unused) ;;;
 {
 $A4:8805 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second damage - moving claws)
 $A4:8808 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -490,7 +490,7 @@ $A4:897C 89 00 40    BIT #$4000             ;} If [Crocomire fight flags] & 4000
 $A4:897F D0 09       BNE $09    [$898A]     ;/
 $A4:8981 A9 26 00    LDA #$0026             ;\
 $A4:8984 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 26h
-$A4:8987 20 05 88    JSR $8805  [$A4:8805]  ; Execute $8805
+$A4:8987 20 05 88    JSR $8805  [$A4:8805]  ; Set fight intro moving claws instruction list
 
 $A4:898A AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:898D 89 00 40    BIT #$4000             ;} If [Crocomire fight flags] & 4000h != 0 (Samus hit by claw):
@@ -1836,16 +1836,16 @@ $A4:9440 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9443 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:9446 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:9449 A9 00 01    LDA #$0100             ;\
-$A4:944C 8D 92 06    STA $0692  [$7E:0692]  ;} $0692 = 100h
+$A4:944C 8D 92 06    STA $0692  [$7E:0692]  ;} Crocomire melting displacement coefficient = 100h
 $A4:944F 9C 90 06    STZ $0690  [$7E:0690]  ; Crocomire melting X offset table index = 0
 $A4:9452 AE 9A 06    LDX $069A  [$7E:069A]  ; X = [Crocomire melting tiles loading table index]
 $A4:9455 BD C5 9B    LDA $9BC5,x[$A4:9BC5]  ;\
-$A4:9458 8D 98 06    STA $0698  [$7E:0698]  ;} $0698 = 58h
-$A4:945B 8D 94 06    STA $0694  [$7E:0694]  ; $0694 = 58h
+$A4:9458 8D 98 06    STA $0698  [$7E:0698]  ;} $0698 = 58h (max adjusted destination Y offset during melting)
+$A4:945B 8D 94 06    STA $0694  [$7E:0694]  ; $0694 = 58h (initial adjusted destination Y offset during melting)
 $A4:945E BD C7 9B    LDA $9BC7,x[$A4:9BC7]  ;\
-$A4:9461 8D 96 06    STA $0696  [$7E:0696]  ;} $0696 = 30h
+$A4:9461 8D 96 06    STA $0696  [$7E:0696]  ;} $0696 = 30h (never read)
 $A4:9464 BD C9 9B    LDA $9BC9,x[$A4:9BC9]  ;\
-$A4:9467 8D 8E 06    STA $068E  [$7E:068E]  ;} $068E = 200h
+$A4:9467 8D 8E 06    STA $068E  [$7E:068E]  ;} $068E = 200h (number of words to copy)
 $A4:946A 64 00       STZ $00    [$7E:0000]  ;\
 $A4:946C BD CB 9B    LDA $9BCB,x[$A4:9BCB]  ;} $00 = $A4:0000
 $A4:946F 85 02       STA $02    [$7E:0002]  ;/
@@ -1884,7 +1884,7 @@ $A4:949E E8          INX                    ;\
 $A4:949F E8          INX                    ;} Crocomire melting tiles loading table base index = [X] + 2
 $A4:94A0 8E 9A 06    STX $069A  [$7E:069A]  ;/
 $A4:94A3 8E 8A 06    STX $068A  [$7E:068A]  ; Crocomire melting tiles loading table index = [X] + 2
-$A4:94A6 A2 80 00    LDX #$0080             ;\ <-- should be 7Eh?
+$A4:94A6 A2 80 00    LDX #$0080             ;\ <-- should be 7Eh
                                             ;|
 $A4:94A9 9E 9C 06    STZ $069C,x[$7E:071C]  ;|
 $A4:94AC CA          DEX                    ;} $069C..071D = 0 (Crocomire melting Y offsets)
@@ -1895,9 +1895,9 @@ $A4:94B1 60          RTS
 }
 
 
-;;; $94B2:  ;;;
+;;; $94B2: Unused. Upload melting tiles to VRAM ;;;
 {
-$A4:94B2 20 B6 94    JSR $94B6  [$A4:94B6]
+$A4:94B2 20 B6 94    JSR $94B6  [$A4:94B6]  ; Crocomire main AI - death sequence index 14h/30h - hop 3/6 - uploading to VRAM
 $A4:94B5 60          RTS
 }
 
@@ -1957,7 +1957,7 @@ $A4:950B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 2Dh, sound library 2,
 {
 $A4:950F AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A4:9512 38          SEC                    ;|
-$A4:9513 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2
+$A4:9513 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2 (HDMA data table index)
 $A4:9516 0A          ASL A                  ;|
 $A4:9517 AA          TAX                    ;/
 $A4:9518 A5 B7       LDA $B7    [$7E:00B7]
@@ -1965,13 +1965,13 @@ $A4:9518 A5 B7       LDA $B7    [$7E:00B7]
 ; LOOP
 $A4:951A 9F F0 CA 7E STA $7ECAF0,x[$7E:CC18]; $7E:CAF0 + [X] = [BG2 Y scroll]
 $A4:951E CA          DEX                    ;\
-$A4:951F CA          DEX                    ;} X -= 2
+$A4:951F CA          DEX                    ;} X -= 2 (previous HDMA data table index)
 $A4:9520 10 F8       BPL $F8    [$951A]     ; If [X] >= 0: go to LOOP
 $A4:9522 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:9525 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:9528 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index += 2
 $A4:952B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A4:952E 8D 2E 10    STA $102E  [$7E:102E]  ;} $102E (!) = [Crocomire X position]
+$A4:952E 8D 2E 10    STA $102E  [$7E:102E]  ;} Crocomire melting X position = [Crocomire X position]
 $A4:9531 08          PHP
 $A4:9532 A9 FF 00    LDA #$00FF             ;\
 $A4:9535 8F E0 CA 7E STA $7ECAE0[$7E:CAE0]  ;|
@@ -2012,9 +2012,14 @@ $A4:957F 60          RTS
 
 ;;; $9580: Crocomire main AI - death sequence index 1Ah/38h - hop 3/6 - melting ;;;
 {
+; Copy+paste from RAM map:
+;     $05A6: Adjusted source Y offset. [$0694] + y
+;     $0692: Crocomire melting displacement coefficient. Displacement = y * [$0692] / 10000h. Initialised to 100h. Incremented by 180h up to 5000h, finishing the melting
+;     $0694: Initial adjusted destination Y offset during melting. Initialised to 58h ($9BC5/$9C19). Decremented by 3 until 10h
+;     $0698: Max adjusted destination Y offset (58h) during melting. HDMA data table is processed until [$0694] + y - displacement(y) >= [$0698]
 $A4:9580 C2 30       REP #$30
 $A4:9582 20 6C 91    JSR $916C  [$A4:916C]  ; Handle Crocomire acid damage smoke
-$A4:9585 AE 2E 10    LDX $102E  [$7E:102E]  ; Crocomire X position = [$102E]
+$A4:9585 AE 2E 10    LDX $102E  [$7E:102E]  ; Crocomire X position = [Crocomire melting X position]
 $A4:9588 CE EE 0F    DEC $0FEE  [$7E:0FEE]  ; Decrement $0FEE
 $A4:958B AD EE 0F    LDA $0FEE  [$7E:0FEE]  ;\
 $A4:958E 29 02 00    AND #$0002             ;} A = [$0FEE] & 2
@@ -2058,10 +2063,10 @@ $A4:95D1 60          RTS                    ; Return
 $A4:95D2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:95D5 22 5B 8B A4 JSL $A48B5B[$A4:8B5B]  ; Update Crocomire BG2 scroll
 $A4:95D9 AD 92 06    LDA $0692  [$7E:0692]  ;\
-$A4:95DC AA          TAX                    ;} X = [$0692]
-$A4:95DD 29 00 FF    AND #$FF00             ;\
-$A4:95E0 EB          XBA                    ;} $12 = [$0692] / 100h
-$A4:95E1 85 12       STA $12    [$7E:0012]  ;/
+$A4:95DC AA          TAX                    ;} X = [$0692] (melting displacement coefficient)
+$A4:95DD 29 00 FF    AND #$FF00
+$A4:95E0 EB          XBA
+$A4:95E1 85 12       STA $12    [$7E:0012]
 $A4:95E3 AD 94 06    LDA $0694  [$7E:0694]  ;\
 $A4:95E6 38          SEC                    ;} A = [$0694] - 3
 $A4:95E7 E9 03 00    SBC #$0003             ;/
@@ -2080,22 +2085,22 @@ $A4:9604 30 03       BMI $03    [$9609]     ;} $0692 = min(5000h, [$0692] + 180h
 $A4:9606 A9 00 50    LDA #$5000             ;|
                                             ;|
 $A4:9609 8D 92 06    STA $0692  [$7E:0692]  ;/
-$A4:960C 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$A4:960C 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (melting subpixel displacement)
 $A4:960E AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A4:9611 38          SEC                    ;|
-$A4:9612 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2
+$A4:9612 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2 (HDMA data table index)
 $A4:9615 0A          ASL A                  ;|
 $A4:9616 AA          TAX                    ;/
 $A4:9617 AD 94 06    LDA $0694  [$7E:0694]  ;\
-$A4:961A A8          TAY                    ;} Y = $05A6 = [$0694]
-$A4:961B 8D A6 05    STA $05A6  [$7E:05A6]  ;/
+$A4:961A A8          TAY                    ;} Y = [$0694] (adjusted destination Y offset)
+$A4:961B 8D A6 05    STA $05A6  [$7E:05A6]  ; $05A6 = [$0694] (adjusted source Y offset)
 $A4:961E 0A          ASL A                  ; >_<;
 
-; LOOP_961F
+; LOOP_MELTING_ROWS
 $A4:961F 98          TYA                    ;\
 $A4:9620 38          SEC                    ;|
 $A4:9621 ED A6 05    SBC $05A6  [$7E:05A6]  ;|
-$A4:9624 18          CLC                    ;} $7E:CAF0 + [X] = [BG2 Y scroll] + [Y] - [$05A6]
+$A4:9624 18          CLC                    ;} $7E:CAF0 + [X] = [BG2 Y scroll] - ([$05A6] - [Y])
 $A4:9625 65 B7       ADC $B7    [$7E:00B7]  ;|
 $A4:9627 9F F0 CA 7E STA $7ECAF0,x[$7E:CC12];/
 $A4:962B A5 12       LDA $12    [$7E:0012]  ;\
@@ -2107,19 +2112,19 @@ $A4:9635 C8          INY                    ; Increment Y
 
 $A4:9636 EE A6 05    INC $05A6  [$7E:05A6]  ; Increment $05A6
 $A4:9639 E8          INX                    ;\
-$A4:963A E8          INX                    ;} X += 2
+$A4:963A E8          INX                    ;} X += 2 (next HDMA data table entry)
 $A4:963B CC 98 06    CPY $0698  [$7E:0698]  ;\
-$A4:963E 30 DF       BMI $DF    [$961F]     ;} If [Y] < [$0698]: go to LOOP_961F
+$A4:963E 30 DF       BMI $DF    [$961F]     ;} If [Y] < 58h: go to LOOP_MELTING_ROWS
 $A4:9640 E0 00 02    CPX #$0200             ;\
 $A4:9643 10 0D       BPL $0D    [$9652]     ;} If [X] >= 200h: return
 $A4:9645 A5 B7       LDA $B7    [$7E:00B7]
 
-; LOOP_9647
+; LOOP_TABLE_PADDING
 $A4:9647 9F F0 CA 7E STA $7ECAF0,x[$7E:CC18]; $7E:CAF0 + [X] = [BG2 Y scroll]
 $A4:964B E8          INX                    ;\
-$A4:964C E8          INX                    ;} X += 2
+$A4:964C E8          INX                    ;} X += 2 (next HDMA data table entry)
 $A4:964D E0 00 02    CPX #$0200             ;\
-$A4:9650 30 F5       BMI $F5    [$9647]     ;} If [X] < 200h: go to LOOP_9647
+$A4:9650 30 F5       BMI $F5    [$9647]     ;} If [X] < 200h: go to LOOP_TABLE_PADDING
 
 $A4:9652 60          RTS
 }
@@ -2129,10 +2134,10 @@ $A4:9652 60          RTS
 {
 $A4:9653 C2 30       REP #$30
 $A4:9655 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A4:9658 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0
-$A4:965B 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; $0FB2 = 0
+$A4:9658 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Crocomire Y velocity = 0.0
+$A4:965B 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Crocomire Y subposition = 0
 $A4:965E A9 00 08    LDA #$0800             ;\
-$A4:9661 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} $0FAE = 800h
+$A4:9661 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Crocomire Y acceleration = 8.00h
 $A4:9664 A9 38 03    LDA #$0338             ;\
 $A4:9667 A2 FE 0F    LDX #$0FFE             ;|
                                             ;|
@@ -2890,11 +2895,13 @@ $A4:9BBD             db 7F, ; ~80h. Pixel column 0
 ; Tables for loading Crocomire melting tiles
 
 ; Format:
-;     ????,????,nnnn,bbbb
+;     mmmm,uuuu,nnnn,bbbb
 ;     ssss,dddd
 ;     [...]
 ;     FFFF
 ; where
+;     m: Max adjusted destination Y offset (it's weird, see $9580)
+;     u: Unused
 ;     n: Number of words to copy
 ;     b: Source bank
 ;     s: Source address
@@ -3750,7 +3757,6 @@ $A4:BC56             dx 0022,C448,
 
 ;;; $BCD8: Instruction list - Crocomire - wait for first/second damage - moving claws ;;;
 {
-; Moving claws
 $A4:BCD8             dx 9AAA,       ; Spawn big dust cloud enemy projectile - X offset 10h
                         0005,C47A,
                         0005,C4AC,
