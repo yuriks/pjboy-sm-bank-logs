@@ -373,7 +373,7 @@ $A4:88B5 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= A000h (a
 $A4:88B8 A9 01 00    LDA #$0001             ;\
 $A4:88BB 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Crocomire step back counter = 1
 $A4:88BE A9 0A 00    LDA #$000A             ;\
-$A4:88C1 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
+$A4:88C1 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah (never read)
 $A4:88C4 A9 0C 00    LDA #$000C             ;\
 $A4:88C7 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = Ch (stepping back)
 $A4:88CA A9 54 00    LDA #$0054             ;\
@@ -382,7 +382,7 @@ $A4:88D1 60          RTS
 }
 
 
-;;; $88D2: Fight AI - index 1Ch ;;;
+;;; $88D2: Fight AI - index 1Ch - unused sequence - set initial instruction list ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -419,7 +419,7 @@ $A4:890A 60          RTS
 
 ;;; $890B: Charge Crocomire forward one step ;;;
 {
-; Both callers of this function immediately overwrite $0FAC
+; Both callers of this function (which are both unused) immediately overwrite $0FAC
 $A4:890B A9 14 00    LDA #$0014             ;\
 $A4:890E 9D AC 0F    STA $0FAC,x            ;} Crocomire fight function index = 14h (wait for second damage)
 $A4:8911 AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -429,7 +429,7 @@ $A4:891A 60          RTS
 }
 
 
-;;; $891B: Fight AI - index 1Eh ;;;
+;;; $891B: Fight AI - index 1Eh - unused sequence - choose forward moving attack ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -451,7 +451,7 @@ $A4:893F 60          RTS
 }
 
 
-;;; $8940: Fight AI - index 20h ;;;
+;;; $8940: Fight AI - index 20h - unused sequence - do nothing and step forward ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -470,7 +470,7 @@ $A4:895D 60          RTS
 }
 
 
-;;; $895E: Fight AI - index 22h ;;;
+;;; $895E: Fight AI - index 22h - unused sequence - move forward until hit Samus with claw ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -501,23 +501,25 @@ $A4:8998 A0 D8 BC    LDY #$BCD8             ; Y = $BCD8 (wait for first/second d
 $A4:899B AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
 $A4:899E 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} $0FB2 = [Crocomire fight function index]
 $A4:89A1 A9 2A 00    LDA #$002A             ;\
-$A4:89A4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 2Ah
+$A4:89A4 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 2Ah (there is no implementation for index 2Ah)
 
 $A4:89A7 60          RTS
 }
 
 
-;;; $89A8: Fight AI - index 24h ;;;
+;;; $89A8: Fight AI - index 24h - unused sequence - move claws and step forward ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
+
+; $0FAE is remaining number of times to do moving claws action
 $A4:89A8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:89AB AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:89AE F0 1B       BEQ $1B    [$89CB]     ;} If [$0FAE] != 0:
 $A4:89B0 CE AE 0F    DEC $0FAE  [$7E:0FAE]  ; Decrement $0FAE
 $A4:89B3 F0 16       BEQ $16    [$89CB]     ; If [$0FAE] != 0:
 $A4:89B5 A9 24 00    LDA #$0024             ;\
-$A4:89B8 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h
+$A4:89B8 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Crocomire fight function index = 24h (>_<;)
 $A4:89BB 9C EE 0F    STZ $0FEE  [$7E:0FEE]  ; $0FEE = 0
 $A4:89BE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
 $A4:89C1 09 00 04    ORA #$0400             ;} Crocomire fight flags |= 400h
@@ -535,7 +537,7 @@ $A4:89DD 60          RTS
 }
 
 
-;;; $89DE: Fight AI - index 26h ;;;
+;;; $89DE: Fight AI - index 26h - unused sequence - step forward ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
@@ -553,10 +555,13 @@ $A4:89F8 60          RTS
 }
 
 
-;;; $89F9: Fight AI - index 28h ;;;
+;;; $89F9: Fight AI - index 28h - unused sequence - moving claws ;;;
 {
 ;; Returns:
 ;;     Y: Instruction list pointer
+
+; $0FAE is remaining number of times to do moving claws action
+; $0FB2 is the fight function index to change to when done moving claws (set by index 22h handler before advancing to unwritten 2Ah index)
 $A4:89F9 AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
 $A4:89FC D0 19       BNE $19    [$8A17]     ;} If [$0FAE] = 0:
 $A4:89FE AD AA 0F    LDA $0FAA  [$7E:0FAA]  ;\
@@ -614,7 +619,7 @@ $A4:8A7F 22 E2 A7 90 JSL $90A7E2[$90:A7E2]  ; Disable mini-map and mark boss roo
 $A4:8A83 9C 9A 06    STZ $069A  [$7E:069A]  ; Crocomire melting tiles loading table index = 0
 $A4:8A86 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8A89 9E A8 0F    STZ $0FA8,x[$7E:0FA8]  ; Crocomire death sequence index = 0
-$A4:8A8C 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0
+$A4:8A8C 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0 (no effect)
 $A4:8A8F A9 00 00    LDA #$0000             ;\
 $A4:8A92 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scrolls 0..1 = red
 $A4:8A96 A2 20 00    LDX #$0020             ;\
@@ -648,7 +653,7 @@ $A4:8ADB 6B          RTL                    ; Return
 $A4:8ADC A9 01 01    LDA #$0101             ;\
 $A4:8ADF 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scrolls 0..3 = blue
 $A4:8AE3 8F 22 CD 7E STA $7ECD22[$7E:CD22]  ;/
-$A4:8AE7 9C 88 06    STZ $0688  [$7E:0688]  ; $0688 = 0
+$A4:8AE7 9C 88 06    STZ $0688  [$7E:0688]  ; $0688 = 0 (never read)
 $A4:8AEA AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A4:8AED 09 00 04    ORA #$0400             ;|
 $A4:8AF0 29 FF 7F    AND #$7FFF             ;} Set Crocomire as intangible and not solid
@@ -660,7 +665,7 @@ $A4:8B02             dx 1E,03,B753          ;} Spawn PLM to clear Crocomire invi
 $A4:8B06 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A4:8B0A             dx 61,0B,B747          ;} Spawn PLM to clear Crocomire's bridge
 $A4:8B0E A9 54 00    LDA #$0054             ;\
-$A4:8B11 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 54h
+$A4:8B11 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Crocomire death sequence index = 54h (set index 56h, dead)
 $A4:8B14 A9 CC E1    LDA #$E1CC             ;\
 $A4:8B17 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E1CC (dead)
 $A4:8B1A A9 01 00    LDA #$0001             ;\
@@ -711,7 +716,8 @@ $A4:8B74 CA          DEX                    ;} X -= 2
 $A4:8B75 10 F4       BPL $F4    [$8B6B]     ; If [X] >= 0: go to LOOP
 $A4:8B77 80 2B       BRA $2B    [$8BA4]     ; Go to update Crocomire BG2 X scroll
 
-$A4:8B79             dw BFC4, BFF6, C028, C05A, C08C, C0BE, C0F0, C122, C154, C186, C1B8, C1EA, C47A, C4AC, C4DE, C510, C542
+$A4:8B79             dw BFC4, BFF6, C028, C05A, C08C, C0BE, C0F0, C122, C154, C186, C1B8, C1EA, ; Charge forward / step back
+                        C47A, C4AC, C4DE, C510, C542 ; Moving claws
 
 ; BRANCH_FOUND
 $A4:8B9B A8          TAY                    ;\
@@ -1072,19 +1078,19 @@ $A4:8E52 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8E55 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;\
 $A4:8E58 FE A8 0F    INC $0FA8,x[$7E:0FA8]  ;} Crocomire death sequence index = 2
 $A4:8E5B A9 02 00    LDA #$0002             ;\
-$A4:8E5E 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 2
-$A4:8E62 8F 40 78 7E STA $7E7840[$7E:7840]  ; $7E:7840 = 2
-$A4:8E66 8F 80 78 7E STA $7E7880[$7E:7880]  ; $7E:7880 = 2
-$A4:8E6A 8F C0 78 7E STA $7E78C0[$7E:78C0]  ; $7E:78C0 = 2
-$A4:8E6E 8F 00 79 7E STA $7E7900[$7E:7900]  ; $7E:7900 = 2
-$A4:8E72 8F 40 79 7E STA $7E7940[$7E:7940]  ; $7E:7940 = 2
+$A4:8E5E 8F 00 78 7E STA $7E7800[$7E:7800]  ;} $7E:7800 = 2 (never read)
+$A4:8E62 8F 40 78 7E STA $7E7840[$7E:7840]  ; $7E:7840 = 2 (never read)
+$A4:8E66 8F 80 78 7E STA $7E7880[$7E:7880]  ; $7E:7880 = 2 (never read)
+$A4:8E6A 8F C0 78 7E STA $7E78C0[$7E:78C0]  ; $7E:78C0 = 2 (never read)
+$A4:8E6E 8F 00 79 7E STA $7E7900[$7E:7900]  ; $7E:7900 = 2 (never read)
+$A4:8E72 8F 40 79 7E STA $7E7940[$7E:7940]  ; $7E:7940 = 2 (never read)
 $A4:8E76 A9 00 00    LDA #$0000             ;\
-$A4:8E79 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0
-$A4:8E7D 8F 42 78 7E STA $7E7842[$7E:7842]  ; $7E:7842 = 0
-$A4:8E81 8F 82 78 7E STA $7E7882[$7E:7882]  ; $7E:7882 = 0
-$A4:8E85 8F C2 78 7E STA $7E78C2[$7E:78C2]  ; $7E:78C2 = 0
-$A4:8E89 8F 02 79 7E STA $7E7902[$7E:7902]  ; $7E:7902 = 0
-$A4:8E8D 8F 42 79 7E STA $7E7942[$7E:7942]  ; $7E:7942 = 0
+$A4:8E79 8F 02 78 7E STA $7E7802[$7E:7802]  ;} $7E:7802 = 0 (never read)
+$A4:8E7D 8F 42 78 7E STA $7E7842[$7E:7842]  ; $7E:7842 = 0 (never read)
+$A4:8E81 8F 82 78 7E STA $7E7882[$7E:7882]  ; $7E:7882 = 0 (never read)
+$A4:8E85 8F C2 78 7E STA $7E78C2[$7E:78C2]  ; $7E:78C2 = 0 (never read)
+$A4:8E89 8F 02 79 7E STA $7E7902[$7E:7902]  ; $7E:7902 = 0 (never read)
+$A4:8E8D 8F 42 79 7E STA $7E7942[$7E:7942]  ; $7E:7942 = 0 (never read)
 $A4:8E91 A9 3B 00    LDA #$003B             ;\
 $A4:8E94 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Bh, sound library 2, max queued sounds allowed = 6 (dachora shinespark)
 $A4:8E98 A9 00 00    LDA #$0000             ;\
@@ -1092,7 +1098,7 @@ $A4:8E9B 8F 16 90 7E STA $7E9016[$7E:9016]  ;} Crocomire death sequence crumblin
 $A4:8E9F 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A4:8EA3             dx 4E,03,B757          ;} Spawn PLM to create Crocomire invisible wall at (4Eh, 3)
 $A4:8EA7 A9 B0 BF    LDA #$BFB0             ;\
-$A4:8EAA 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BFB0
+$A4:8EAA 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Crocomire instruction list pointer = $BFB0 (bridge collapsed)
 $A4:8EAD A9 01 00    LDA #$0001             ;\
 $A4:8EB0 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:8EB3 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
@@ -1105,10 +1111,10 @@ $A4:8EC5 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire's tongue instruction li
 $A4:8EC8 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
 $A4:8ECB 09 00 01    ORA #$0100             ;} Set Crocomire's tongue to be invisible
 $A4:8ECE 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
-$A4:8ED1 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; $0FB0 = 0
-$A4:8ED4 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; $0FB2 = 0
+$A4:8ED1 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Crocomire Y velocity = 0.0
+$A4:8ED4 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Crocomire Y subposition = 0
 $A4:8ED7 A9 00 08    LDA #$0800             ;\
-$A4:8EDA 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} $0FAE = 800h
+$A4:8EDA 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Crocomire Y acceleration = 8.00h
 $A4:8EDD A9 10 00    LDA #$0010             ;\
 $A4:8EE0 8D 84 0F    STA $0F84  [$7E:0F84]  ;} Crocomire Y radius = 10h
 $A4:8EE3 7A          PLY
@@ -1830,6 +1836,8 @@ $A4:943C 6B          RTL
 {
 ; The loop at $94A6 seems to accidentally clear the "transfer Samus' top half tiles to VRAM" flag,
 ; but this is harmless, as the Samus drawing code is executed after enemy AI is processed
+
+; The loop that does the copying from ROM to WRAM seems to be copying twice as many bytes as it needs to (missing LSR before writing to $12)
 $A4:943D C2 30       REP #$30
 $A4:943F 8B          PHB
 $A4:9440 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3395,7 +3403,7 @@ $A4:B9AA 29 F0 BF    AND #$BFF0             ;} Crocomire fight flags &= ~400Fh (
 $A4:B9AD 09 00 80    ORA #$8000             ;\
 $A4:B9B0 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= 8000h (awake)
 $A4:B9B3 A9 0A 00    LDA #$000A             ;\
-$A4:B9B6 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
+$A4:B9B6 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah (never read)
 $A4:B9B9 AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
 $A4:B9BC 18          CLC                    ;|
 $A4:B9BD 69 04 00    ADC #$0004             ;} Crocomire flash timer += 4
@@ -3505,7 +3513,7 @@ $A4:BA92 09 00 08    ORA #$0800             ; Crocomire fight flags |= 800h (dam
 $A4:BA95 05 12       ORA $12    [$7E:0012]  ;\
 $A4:BA97 8D AA 0F    STA $0FAA  [$7E:0FAA]  ;} Crocomire fight flags |= [$12] (this low byte is never meaningfully read)
 $A4:BA9A A9 0A 00    LDA #$000A             ;\
-$A4:BA9D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah
+$A4:BA9D 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} $0FB0 = Ah (never read)
 
 ; BRANCH_FLASH
 $A4:BAA0 AD 9C 0F    LDA $0F9C  [$7E:0F9C]  ;\
@@ -3836,7 +3844,6 @@ $A4:BD8E             dx 0020,C5E8,
                         0002,C574
 $A4:BDA2             dx 0001,C574,
                         86A6,       ; Fight AI
-; TODO: is this part of the instruction list ever accessible?
                         0001,C574,
                         86A6        ; Fight AI
 }
@@ -4105,6 +4112,7 @@ $A4:BFB0             dx 0005,C5AE,
 
 ;;; $BFC4: Crocomire extended spritemaps ;;;
 {
+; Charge forward / step back
 $A4:BFC4             dx 0006, 0003,000B,CF15,CB31, 0000,0026,D065,CB4D, FFE3,0026,CF69,CB4D, 0000,0000,D7B6,CC1F, 0000,0000,D8BE,CC1F, 0000,FFFF,D852,CC1F
 $A4:BFF6             dx 0006, 0001,000B,CF44,CB3F, 0000,0026,D08F,CB4D, FFE3,0026,CF93,CB4D, 0000,FFFE,D7EA,CC1F, 0000,FFFE,D8BE,CC1F, 0000,FFFE,D876,CC1F
 $A4:C028             dx 0006, 0000,0008,CEC1,CB15, 0000,0026,D0B9,CB4D, FFE3,0026,CFBD,CB4D, 0000,FFFE,D81E,CC1F, 0000,FFFE,D8BE,CC1F, 0000,FFFE,D89A,CC1F
@@ -4117,6 +4125,7 @@ $A4:C154             dx 0006, 0001,000A,CEC1,CB15, 0000,0026,CFBD,CB4D, FFE3,002
 $A4:C186             dx 0006, 0001,000C,CE92,CB07, 0000,0026,CFE7,CB4D, FFE3,0026,D0E3,CB4D, 0000,0000,D7EA,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D876,CC1F
 $A4:C1B8             dx 0006, 0001,000D,CE92,CB07, 0000,0026,D011,CB4D, FFE3,0026,D10D,CB4D, 0000,0000,D81E,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D89A,CC1F
 $A4:C1EA             dx 0006, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D7EA,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D876,CC1F
+
 $A4:C21C             dx 0006, 0001,000A,CE92,CB07, 0000,0029,D18B,CB4D, FFE3,0029,D18B,CB4D, 0000,FFFE,D7B6,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D852,CC1F ; Unused
 $A4:C24E             dx 0006, 0001,0008,CE92,CB07, 0000,0029,D1B5,CB4D, FFE3,0029,D1B5,CB4D, 0000,FFFC,D7EA,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D876,CC1F ; Unused
 $A4:C280             dx 0006, 0001,0006,CE92,CB07, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,FFFA,D81E,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D89A,CC1F ; Unused
@@ -4128,11 +4137,14 @@ $A4:C39A             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D4F3,CBC3, 0000,002
 $A4:C3D4             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D509,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
 $A4:C40E             dx 0007, 0000,000B,CEF0,CB23, FFFD,FFE4,D515,CBC3, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
 $A4:C448             dx 0006, 0000,000B,CEF0,CB23, 0000,0029,D1DF,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D6DA,CC11, 0000,0000,DA4A,CC2D, 0000,0000,D852,CC1F
+
+; Moving claws
 $A4:C47A             dx 0006, 0001,000B,D388,CB5F, 0000,0025,D18B,CB4D, FFE3,0029,D1DF,CB4D, 0000,0000,D7B6,CC1F, 0000,0000,D8BE,CC1F, 0000,0000,D852,CC1F
 $A4:C4AC             dx 0006, 0000,0008,D3B7,CB6D, 0000,0027,D1B5,CB4D, FFE3,0027,D1B5,CB4D, 0000,FFFE,D7EA,CC1F, 0000,FFFE,D8BE,CC1F, 0000,FFFE,D876,CC1F
 $A4:C4DE             dx 0006, 0001,0008,D2BB,CB4F, 0000,0029,D1DF,CB4D, FFE3,0020,D18B,CB4D, 0000,FFFC,D81E,CC1F, 0000,FFFC,D8BE,CC1F, 0000,FFFC,D89A,CC1F
 $A4:C510             dx 0006, 0000,000A,CEC1,CB15, 0000,0027,D1B5,CB4D, FFE3,0025,D1B5,CB4D, 0000,FFFE,D7EA,CC1F, 0000,FFFE,D8BE,CC1F, 0000,FFFE,D876,CC1F
 $A4:C542             dx 0006, 0001,000C,CE92,CB07, 0000,0025,D18B,CB4D, FFE3,0028,D1DF,CB4D, 0000,FFFF,D7B6,CC1F, 0000,FFFF,D8BE,CC1F, 0000,FFFF,D852,CC1F
+
 $A4:C574             dx 0007, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D6DA,CC11, 0000,0000,D7EA,CC1F, 0000,0000,DA4A,CC2D, 0000,0000,D876,CC1F
 $A4:C5AE             dx 0007, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D51C,CBC5, 0000,0000,D7EA,CC1F, 0000,0000,DA4A,CC2D, 0000,0000,D876,CC1F
 $A4:C5E8             dx 0007, 0001,000B,CEF0,CB23, 0000,0026,D03B,CB4D, FFE3,0026,D137,CB4D, 0000,0000,D600,CBEB, 0000,0000,D7EA,CC1F, 0000,0000,DA4A,CC2D, 0000,0000,D876,CC1F
@@ -4735,7 +4747,7 @@ $A4:F695 9D 88 0F    STA $0F88,x[$7E:0FC8]  ;/
 $A4:F698 A9 01 00    LDA #$0001             ;\
 $A4:F69B 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A4:F69E A9 17 00    LDA #$0017             ;\
-$A4:F6A1 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy X offset = 17h
+$A4:F6A1 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Crocomire tongue X offset = 17h
 $A4:F6A4 A9 00 0E    LDA #$0E00             ;\
 $A4:F6A7 9D 96 0F    STA $0F96,x[$7E:0FD6]  ;} Enemy palette index = E00h (palette 7)
 $A4:F6AA 6B          RTL                    ; Return
