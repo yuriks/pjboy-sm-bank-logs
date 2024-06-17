@@ -576,7 +576,7 @@ $8B:84F6 D0 07       BNE $07    [$84FF]     ;/
 $8B:84F8 89 40 00    BIT #$0040             ;\
 $8B:84FB D0 10       BNE $10    [$850D]     ;} If pressing X: go to BRANCH_ZOOM_IN
 $8B:84FD 28          PLP
-$8B:84FE 60          RTS
+$8B:84FE 60          RTS                    ; Return
 
 ; BRANCH_ZOOM_OUT
 $8B:84FF AD 8F 19    LDA $198F  [$7E:198F]  ;\
@@ -686,14 +686,14 @@ $8B:85B0 49 FF FF    EOR #$FFFF             ;|
 $8B:85B3 69 00 00    ADC #$0000             ;|
 $8B:85B6 85 2A       STA $2A    [$7E:002A]  ;/
 $8B:85B8 28          PLP
-$8B:85B9 60          RTS
+$8B:85B9 60          RTS                    ; Return
 
 $8B:85BA 49 FF FF    EOR #$FFFF             ;\
 $8B:85BD 1A          INC A                  ;} $28 = -[$28]
 $8B:85BE 85 28       STA $28    [$7E:0028]  ;/
 $8B:85C0 20 EE 85    JSR $85EE  [$8B:85EE]  ; $2A.$2C = [$26] * [$28] / 10000h
 $8B:85C3 28          PLP
-$8B:85C4 60          RTS
+$8B:85C4 60          RTS                    ; Return
 
 ; BRANCH_LEFT_POSITIVE_RIGHT_NEGATIVE
 $8B:85C5 49 FF FF    EOR #$FFFF             ;\
@@ -710,7 +710,7 @@ $8B:85DB 49 FF FF    EOR #$FFFF             ;|
 $8B:85DE 69 00 00    ADC #$0000             ;|
 $8B:85E1 85 2A       STA $2A    [$7E:002A]  ;/
 $8B:85E3 28          PLP
-$8B:85E4 60          RTS
+$8B:85E4 60          RTS                    ; Return
 
 ; BRANCH_LEFT_POSITIVE
 $8B:85E5 A5 28       LDA $28    [$7E:0028]  ;\
@@ -2124,7 +2124,7 @@ $8B:8F1F E2 30       SEP #$30               ;|
 $8B:8F21 6C 12 00    JMP ($0012)[$8B:8FF6]  ;/
 
 $8B:8F24 28          PLP
-$8B:8F25 60          RTS
+$8B:8F25 60          RTS                    ; Return
 
 $8B:8F26             dw 5555, ; Sprites 0..7 high X position bits
                         5554, ; Sprites 1..7 high X position bits
@@ -3534,7 +3534,7 @@ $8B:9800 CA          DEX                    ;\
 $8B:9801 CA          DEX                    ;} X -= 2
 $8B:9802 10 F7       BPL $F7    [$97FB]     ; If [X] >= 0: go to LOOP
 $8B:9804 FA          PLX
-$8B:9805 60          RTS
+$8B:9805 60          RTS                    ; Return
 
 $8B:9806 98          TYA                    ;\
 $8B:9807 9D F7 19    STA $19F7,x[$7E:1A05]  ;} Text glow object indirect instruction pointer = [Y]
@@ -3648,7 +3648,7 @@ $8B:98D2 69 00 04    ADC #$0400             ;} Text glow object palette index +=
 $8B:98D5 9D 37 1A    STA $1A37,x[$7E:1A45]  ;/
 $8B:98D8 A9 05 00    LDA #$0005             ;\
 $8B:98DB 9D 07 1A    STA $1A07,x[$7E:1A15]  ;} Text glow object timer = 5
-$8B:98DE 60          RTS
+$8B:98DE 60          RTS                    ; Return
 
 $8B:98DF 9E F7 19    STZ $19F7,x[$7E:1A05]  ; Text glow object indirect instruction pointer = 0
 $8B:98E2 60          RTS
@@ -6059,7 +6059,7 @@ $8B:AEA8 A0 0D D4    LDY #$D40D             ;\
 $8B:AEAB 20 E4 94    JSR $94E4  [$8B:94E4]  ;} Spawn mode 7 object $D40D (Japanese text page 2 part 2)
 $8B:AEAE 7A          PLY
 $8B:AEAF AB          PLB
-$8B:AEB0 60          RTS
+$8B:AEB0 60          RTS                    ; Return
 
 $8B:AEB1 A9 6C AF    LDA #$AF6C             ;\
 $8B:AEB4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AF6C
@@ -6073,7 +6073,7 @@ $8B:AEB8 AD A3 1B    LDA $1BA3  [$7E:1BA3]  ;\
 $8B:AEBB F0 05       BEQ $05    [$AEC2]     ;} If [intro Japanese text timer] != 0:
 $8B:AEBD 3A          DEC A                  ;\
 $8B:AEBE 8D A3 1B    STA $1BA3  [$7E:1BA3]  ;} Decrement intro Japanese text timer
-$8B:AEC1 60          RTS
+$8B:AEC1 60          RTS                    ; Return
 
 $8B:AEC2 A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:AEC4 D0 01       BNE $01    [$AEC7]     ;} If not newly pressed anything:
@@ -6153,7 +6153,7 @@ $8B:AF6C AD A3 1B    LDA $1BA3  [$7E:1BA3]  ;\
 $8B:AF6F F0 05       BEQ $05    [$AF76]     ;} If [intro Japanese text timer] != 0:
 $8B:AF71 3A          DEC A                  ;\
 $8B:AF72 8D A3 1B    STA $1BA3  [$7E:1BA3]  ;} Decrement intro Japanese text timer
-$8B:AF75 60          RTS
+$8B:AF75 60          RTS                    ; Return
 
 $8B:AF76 A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:AF78 D0 01       BNE $01    [$AF7B]     ;} If not newly pressed anything:

@@ -2459,7 +2459,7 @@ $A0:95D7 8D 86 17    STA $1786  [$7E:1786]  ;} Enemy AI bank = [enemy bank]
 $A0:95DA 22 E1 95 A0 JSL $A095E1[$A0:95E1]  ; Execute enemy AI pointer
 $A0:95DE 28          PLP
 $A0:95DF AB          PLB
-$A0:95E0 6B          RTL
+$A0:95E0 6B          RTL                    ; Return
 
 ; Execute enemy AI pointer
 $A0:95E1 AE 54 0E    LDX $0E54  [$7E:0E54]

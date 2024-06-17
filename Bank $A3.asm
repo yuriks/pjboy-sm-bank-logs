@@ -4427,7 +4427,7 @@ $A3:B4BA 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instructi
 $A3:B4BD 9E B2 0F    STZ $0FB2,x[$7E:0FF2]
 $A3:B4C0 A9 D6 B4    LDA #$B4D6             ;\
 $A3:B4C3 9D B4 0F    STA $0FB4,x[$7E:0FF4]  ;} Enemy function = $B4D6 (shooting)
-$A3:B4C6 6B          RTL
+$A3:B4C6 6B          RTL                    ; Return
 
 $A3:B4C7 A9 00 00    LDA #$0000             ;\
 $A3:B4CA 85 14       STA $14    [$7E:0014]  ;|
@@ -4452,7 +4452,7 @@ $A3:B4EA 22 6C AF A0 JSL $A0AF6C[$A0:AF6C]  ;/
 $A3:B4EE 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A3:B4F2 D0 21       BNE $21    [$B515]     ;} If enemy centre is off-screen: go to BRANCH_OFF_SCREEN
 $A3:B4F4 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
-$A3:B4F7 6B          RTL
+$A3:B4F7 6B          RTL                    ; Return
 
 $A3:B4F8 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $A3:B4FC A8          TAY                    ;} Y = [enemy X speed table index]
@@ -4464,7 +4464,7 @@ $A3:B507 22 5A AF A0 JSL $A0AF5A[$A0:AF5A]  ;/
 $A3:B50B 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A3:B50F D0 04       BNE $04    [$B515]     ;} If enemy centre is off-screen: go to BRANCH_OFF_SCREEN
 $A3:B511 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
-$A3:B514 6B          RTL
+$A3:B514 6B          RTL                    ; Return
 
 ; BRANCH_OFF_SCREEN
 $A3:B515 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\

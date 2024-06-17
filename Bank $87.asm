@@ -58,7 +58,7 @@ $87:8038 FA          PLX
 $87:8039 AB          PLB
 $87:803A 28          PLP
 $87:803B 38          SEC
-$87:803C 6B          RTL
+$87:803C 6B          RTL                    ; Return
 
 ; BRANCH_FOUND
 $87:803D 98          TYA

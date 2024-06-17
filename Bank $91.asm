@@ -12908,7 +12908,7 @@ $91:F35B C9 2A 00    CMP #$002A             ;} If [game state] != playing demo:
 $91:F35E F0 07       BEQ $07    [$F367]     ;/
 $91:F360 A9 13 E9    LDA #$E913             ;\
 $91:F363 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E913 (normal)
-$91:F366 60          RTS
+$91:F366 60          RTS                    ; Return
 
 $91:F367 A9 1D E9    LDA #$E91D             ;\ Else ([game state] = playing demo):
 $91:F36A 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E91D (demo)

@@ -1994,7 +1994,7 @@ $9B:BC0E F0 08       BEQ $08    [$BC18]     ;/
 $9B:BC10 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
 $9B:BC13 4A          LSR A                  ;} Grapple swing angular acceleration due to button input = 6
 $9B:BC14 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;/
-$9B:BC17 60          RTS
+$9B:BC17 60          RTS                    ; Return
 
 $9B:BC18 AD 1A C1    LDA $C11A  [$9B:C11A]  ;\
 $9B:BC1B 8D 2A 0D    STA $0D2A  [$7E:0D2A]  ;} Grapple swing angular acceleration due to button input = Ch
@@ -2047,7 +2047,7 @@ $9B:BC6A F0 08       BEQ $08    [$BC74]     ;/
 $9B:BC6C AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BC6F 4A          LSR A                  ;} Grapple swing angular acceleration due to angle of swing = Ch
 $9B:BC70 8D 28 0D    STA $0D28  [$7E:0D28]  ;/
-$9B:BC73 60          RTS
+$9B:BC73 60          RTS                    ; Return
 
 $9B:BC74 AD 18 C1    LDA $C118  [$9B:C118]  ;\
 $9B:BC77 8D 28 0D    STA $0D28  [$7E:0D28]  ;} Grapple swing angular acceleration due to angle of swing = 18h

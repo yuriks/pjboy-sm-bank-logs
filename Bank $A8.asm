@@ -2371,7 +2371,7 @@ $A8:A279 9F 14 78 7E STA $7E7814,x[$7E:7854];} Enemy $7E:7814 = [$0E3A] (angle o
 $A8:A27D A9 8C A2    LDA #$A28C             ;\
 $A8:A280 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $A28C
 
-$A8:A283 60          RTS
+$A8:A283 60          RTS                    ; Return
 
 ; BRANCH_POINT_BLANK
 $A8:A284 A9 30 00    LDA #$0030             ;\
@@ -6846,7 +6846,7 @@ $A8:CCB3 69 0A 00    ADC #$000A             ;} Wrecked Ship robot palette animat
 $A8:CCB6 8F 56 D6 7E STA $7ED656[$7E:D656]  ;/
 $A8:CCBA FA          PLX
 
-$A8:CCBB 6B          RTL
+$A8:CCBB 6B          RTL                    ; Return
 
 ; BRANCH_ZERO
 $A8:CCBC A0 00 00    LDY #$0000             ; Y = 0
@@ -7465,7 +7465,7 @@ $A8:D15C AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Spawn enemy projectile [$30]
 $A8:D15F 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:D163 A4 32       LDY $32    [$7E:0032]  ; Y = [$32]
 $A8:D165 FA          PLX
-$A8:D166 6B          RTL
+$A8:D166 6B          RTL                    ; Return
 
 $A8:D167 20 FF CC    JSR $CCFF  [$A8:CCFF]  ; Decrement enemy laser cooldown
 $A8:D16A 6B          RTL
@@ -7551,7 +7551,7 @@ $A8:D1E3 69 40 00    ADC #$0040             ;} Enemy laser cooldown += 40h
 $A8:D1E6 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A8:D1E9 7A          PLY
 $A8:D1EA FA          PLX
-$A8:D1EB 6B          RTL
+$A8:D1EB 6B          RTL                    ; Return
 
 ; BRANCH_FACING_LEFT_SAMUS_BEHIND
 $A8:D1EC A9 33 C8    LDA #$C833             ; Enemy instruction list pointer = $C833 (facing left, Samus is behind)

@@ -6784,9 +6784,9 @@ $A7:D849 C9 80 00    CMP #$0080             ;} If [Phantoon X position] >= 80h:
 $A7:D84C 30 07       BMI $07    [$D855]     ;/
 $A7:D84E A9 02 00    LDA #$0002             ;\
 $A7:D851 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} Spawn flame rain enemy projectiles with pattern 2
-$A7:D854 60          RTS
+$A7:D854 60          RTS                    ; Return
 
-$A7:D855 A9 00 00    LDA #$0000             ;\ Else ([Phantoon X position] < 80h):
+$A7:D855 A9 00 00    LDA #$0000             ;\
 $A7:D858 20 8B CF    JSR $CF8B  [$A7:CF8B]  ;} Spawn flame rain enemy projectiles with pattern 0
 
 $A7:D85B 60          RTS
@@ -7691,7 +7691,7 @@ $A7:DE91 6B          RTL                    ; Return
 $A7:DE92 A9 02 00    LDA #$0002             ;\
 $A7:DE95 8D 36 10    STA $1036  [$7E:1036]  ;} $1036 = 2, Phantoon hurt flash palette loaded flag = 0
 $A7:DE98 AB          PLB
-$A7:DE99 6B          RTL
+$A7:DE99 6B          RTL                    ; Return
 
 ; BRANCH_NEXT_ROUND
 $A7:DE9A A9 B9 D6    LDA #$D6B9             ;\

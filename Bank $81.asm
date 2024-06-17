@@ -144,7 +144,7 @@ $81:80F7 7A          PLY
 $81:80F8 FA          PLX
 $81:80F9 18          CLC                    ; Return carry clear
 $81:80FA AB          PLB
-$81:80FB 6B          RTL
+$81:80FB 6B          RTL                    ; Return
 
 ; BRANCH_CORRUPT
 $81:80FC 64 14       STZ $14    [$7E:0014]  ; $14 = 0
@@ -2001,12 +2001,12 @@ $81:9164 F0 0B       BEQ $0B    [$9171]     ;/
 $81:9166 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 5
 $81:9169 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:916C 22 85 80 81 JSL $818085[$81:8085]  ;} Load current save slot from SRAM
-$81:9170 60          RTS
+$81:9170 60          RTS                    ; Return
 
 $81:9171 8D 98 09    STA $0998  [$7E:0998]  ; Game state = 1Fh (set up new game)
 $81:9174 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $81:9177 22 85 80 81 JSL $818085[$81:8085]  ;} Load current save slot from SRAM
-$81:917B 60          RTS
+$81:917B 60          RTS                    ; Return
 
 ; BRANCH_TOGGLE_SELECTION
 $81:917C A9 37 00    LDA #$0037             ;\
@@ -2966,7 +2966,7 @@ $81:99C7 AD B9 19    LDA $19B9  [$7E:19B9]  ;\
 $81:99CA 8D B5 19    STA $19B5  [$7E:19B5]  ;} File copy menu selection = [file copy destination slot]
 $81:99CD A9 37 00    LDA #$0037             ;\
 $81:99D0 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
-$81:99D4 60          RTS
+$81:99D4 60          RTS                    ; Return
 
 ; BRANCH_YES
 $81:99D5 EE 27 07    INC $0727  [$7E:0727]  ; Menu index = Dh (do file copy)
@@ -5656,7 +5656,7 @@ $81:AF18 22 0A B9 82 JSL $82B90A[$82:B90A]  ; Draw map scroll arrow and check to
 
 $81:AF1C AB          PLB
 $81:AF1D 28          PLP
-$81:AF1E 60          RTS
+$81:AF1E 60          RTS                    ; Return
 
 ; BRANCH_CANCEL_SCROLL_DOWN
 $81:AF1F AD FD 05    LDA $05FD  [$7E:05FD]  ;\

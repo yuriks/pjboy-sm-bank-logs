@@ -11337,9 +11337,9 @@ $A6:FBF0 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
 $A6:FBF3 F0 07       BEQ $07    [$FBFC]     ;} If [enemy parameter 1] != 0:
 $A6:FBF5 B9 2B FC    LDA $FC2B,y[$A6:FC2D]  ;\
 $A6:FBF8 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = [$FC2B + [Y]]
-$A6:FBFB 6B          RTL
+$A6:FBFB 6B          RTL                    ; Return
 
-$A6:FBFC B9 23 FC    LDA $FC23,y[$A6:FC23]  ;\ Else ([enemy parameter 1] = 0):
+$A6:FBFC B9 23 FC    LDA $FC23,y[$A6:FC23]  ;\
 $A6:FBFF 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [$FC23 + [Y]]
 $A6:FC02 6B          RTL
 

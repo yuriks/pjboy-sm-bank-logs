@@ -181,7 +181,7 @@ $80:80E7 9C 41 21    STZ $2141              ;\
 $80:80EA 9C 42 21    STZ $2142              ;} These stores have no effect (because DB is set to some hirom bank), but there's also no reason to do these stores anyway
 $80:80ED 9C 43 21    STZ $2143              ;/
 $80:80F0 28          PLP
-$80:80F1 60          RTS
+$80:80F1 60          RTS                    ; Return
 
 $80:80F2 E2 20       SEP #$20
 $80:80F4 9C 41 21    STZ $2141
@@ -552,7 +552,7 @@ $80:828E CA          DEX                    ;|
 $80:828F CA          DEX                    ;|
 $80:8290 10 F4       BPL $F4    [$8286]     ;/
 $80:8292 FA          PLX
-$80:8293 6B          RTL
+$80:8293 6B          RTL                    ; Return
 
 ; BRANCH_NON_CORRUPT
 $80:8294 A2 0A 00    LDX #$000A             ;\
@@ -1276,7 +1276,7 @@ $80:86DE CA          DEX                    ;|
 $80:86DF 10 F4       BPL $F4    [$86D5]     ;/
 
 $80:86E1 28          PLP
-$80:86E2 60          RTS
+$80:86E2 60          RTS                    ; Return
 
 ; BRANCH_FAILED_SRAM_CHECK
 $80:86E3 E2 20       SEP #$20
@@ -1843,7 +1843,7 @@ $80:8B5A 70 06       BVS $06    [$8B62]     ; If [[X]] & 40h != 0: go to BRANCH_
 $80:8B5C 8C 34 03    STY $0334  [$7E:0334]  ; Mode 7 transfers stack pointer = [Y]
 $80:8B5F 7A          PLY
 $80:8B60 FA          PLX
-$80:8B61 6B          RTL
+$80:8B61 6B          RTL                    ; Return
 
 ; BRANCH_CGRAM
 $80:8B62 BD 01 00    LDA $0001,x            ;\
@@ -1921,7 +1921,7 @@ $80:8BD9 30 36       BMI $36    [$8C11]     ;} If [[X]] & 80h: go to BRANCH_VRAM
 $80:8BDB 0A          ASL A                  ;\
 $80:8BDC 30 02       BMI $02    [$8BE0]     ;} If [[X]] & 40h: go to BRANCH_CGRAM
 $80:8BDE 28          PLP
-$80:8BDF 6B          RTL
+$80:8BDF 6B          RTL                    ; Return
 
 ; BRANCH_CGRAM
 $80:8BE0 4A          LSR A                  ;\
@@ -2243,7 +2243,7 @@ $80:8EA3 E2 30       SEP #$30
 $80:8EA5 AE 60 03    LDX $0360  [$7E:0360]  ;\
 $80:8EA8 D0 02       BNE $02    [$8EAC]     ;} If [VRAM read table stack pointer] = 0:
 $80:8EAA 28          PLP
-$80:8EAB 6B          RTL
+$80:8EAB 6B          RTL                    ; Return
 
 $80:8EAC 9E 40 03    STZ $0340,x[$7E:0349]  ; $0340 + [VRAM read table stack pointer] = 0 (table terminator)
 $80:8EAF A2 00       LDX #$00               ; X = 0 (VRAM read table index)
@@ -2607,7 +2607,7 @@ $80:9080 90 02       BCC $02    [$9084]     ;|
 $80:9082 A2 00       LDX #$00               ;/
 
 $80:9084 EC 43 06    CPX $0643  [$7E:0643]  ;\
-$80:9087 F0 0D       BEQ $0D    [$9096]     ;} If [X] != [sound queue start index]:
+$80:9087 F0 0D       BEQ $0D    [$9096]     ;} If [X] = [sound queue start index]: go to BRANCH_QUEUE_FULL
 $80:9089 99 56 06    STA $0656,y[$7E:0656]  ; Sound queue + [sound queue next index] = [A]
 $80:908C 8E 46 06    STX $0646  [$7E:0646]  ; Sound queue next index = [X]
 $80:908F 9E 56 06    STZ $0656,x[$7E:0657]  ; Sound queue + [X] = 0
@@ -2615,9 +2615,9 @@ $80:908F 9E 56 06    STZ $0656,x[$7E:0657]  ; Sound queue + [X] = 0
 $80:9092 28          PLP
 $80:9093 7A          PLY
 $80:9094 FA          PLX
-$80:9095 6B          RTL
+$80:9095 6B          RTL                    ; Return
 
-; Else ([X] = [sound queue start index]):
+; BRANCH_QUEUE_FULL
 $80:9096 20 A7 91    JSR $91A7  [$80:91A7]  ; NOP : RTS
 $80:9099 D9 56 06    CMP $0656,y            ;\
 $80:909C B0 F4       BCS $F4    [$9092]     ;} If [A] < [sound queue + [sound queue next index]]:
@@ -2719,7 +2719,7 @@ $80:9102 90 02       BCC $02    [$9106]     ;|
 $80:9104 A2 00       LDX #$00               ;/
 
 $80:9106 EC 44 06    CPX $0644  [$7E:0644]  ;\
-$80:9109 F0 0D       BEQ $0D    [$9118]     ;} If [X] != [sound queue start index]:
+$80:9109 F0 0D       BEQ $0D    [$9118]     ;} If [X] = [sound queue start index]: go to BRANCH_QUEUE_FULL
 $80:910B 99 66 06    STA $0666,y[$7E:0666]  ; Sound queue + [sound queue next index] = [A]
 $80:910E 8E 47 06    STX $0647  [$7E:0647]  ; Sound queue next index = [X]
 $80:9111 9E 66 06    STZ $0666,x[$7E:0667]  ; Sound queue + [X] = 0
@@ -2727,9 +2727,9 @@ $80:9111 9E 66 06    STZ $0666,x[$7E:0667]  ; Sound queue + [X] = 0
 $80:9114 28          PLP
 $80:9115 7A          PLY
 $80:9116 FA          PLX
-$80:9117 6B          RTL
+$80:9117 6B          RTL                    ; Return
 
-; Else ([X] = [sound queue start index]):
+; BRANCH_QUEUE_FULL
 $80:9118 20 A7 91    JSR $91A7  [$80:91A7]  ; NOP : RTS
 $80:911B D9 66 06    CMP $0666,y            ;\
 $80:911E B0 F4       BCS $F4    [$9114]     ;} If [A] < [sound queue + [sound queue next index]]:
@@ -2831,7 +2831,7 @@ $80:9184 90 02       BCC $02    [$9188]     ;|
 $80:9186 A2 00       LDX #$00               ;/
 
 $80:9188 EC 45 06    CPX $0645  [$7E:0645]  ;\
-$80:918B F0 0D       BEQ $0D    [$919A]     ;} If [X] != [sound queue start index]:
+$80:918B F0 0D       BEQ $0D    [$919A]     ;} If [X] = [sound queue start index]: go to BRANCH_QUEUE_FULL
 $80:918D 99 76 06    STA $0676,y[$7E:0676]  ; Sound queue + [sound queue next index] = [A]
 $80:9190 8E 48 06    STX $0648  [$7E:0648]  ; Sound queue next index = [X]
 $80:9193 9E 76 06    STZ $0676,x[$7E:0677]  ; Sound queue + [X] = 0
@@ -2839,9 +2839,9 @@ $80:9193 9E 76 06    STZ $0676,x[$7E:0677]  ; Sound queue + [X] = 0
 $80:9196 28          PLP
 $80:9197 7A          PLY
 $80:9198 FA          PLX
-$80:9199 6B          RTL
+$80:9199 6B          RTL                    ; Return
 
-; Else ([X] = [sound queue start index]):
+; BRANCH_QUEUE_FULL
 $80:919A 20 A7 91    JSR $91A7  [$80:91A7]  ; NOP : RTS
 $80:919D D9 76 06    CMP $0676,y            ;\
 $80:91A0 B0 F4       BCS $F4    [$9196]     ;} If [A] < [sound queue + [sound queue next index]]:
@@ -3013,11 +3013,11 @@ $80:92E8 A5 55       LDA $55    [$7E:0055]  ;\
 $80:92EA 29 07 00    AND #$0007             ;|
 $80:92ED C9 07 00    CMP #$0007             ;|
 $80:92F0 F0 0B       BEQ $0B    [$92FD]     ;|
-$80:92F2 A5 56       LDA $56    [$7E:0056]  ;} If not mode 7: return
+$80:92F2 A5 56       LDA $56    [$7E:0056]  ;} If not mode 7:
 $80:92F4 29 07 00    AND #$0007             ;|
 $80:92F7 C9 07 00    CMP #$0007             ;|
 $80:92FA F0 01       BEQ $01    [$92FD]     ;/
-$80:92FC 60          RTS
+$80:92FC 60          RTS                    ; Return
 
 $80:92FD A6 78       LDX $78    [$7E:0078]  ;\
 $80:92FF 8E 1B 21    STX $211B  [$7E:211B]  ;|

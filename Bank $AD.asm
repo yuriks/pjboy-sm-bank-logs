@@ -1397,7 +1397,7 @@ $AD:DF56 C8          INY                    ; Increment Y
 $AD:DF57 C0 E8 00    CPY #$00E8             ;\
 $AD:DF5A D0 E5       BNE $E5    [$DF41]     ;} If [Y] != E8h: go to LOOP_RIGHT_EDGE
 $AD:DF5C AB          PLB
-$AD:DF5D 60          RTS
+$AD:DF5D 60          RTS                    ; Return
 
 $AD:DF5E A9 FF 00    LDA #$00FF
 
@@ -1459,7 +1459,7 @@ $AD:DFD8 69 04 9D    ADC #$9D04             ;|
 $AD:DFDB 8F 0A 9C 7E STA $7E9C0A[$7E:9C0A]  ;|
 $AD:DFDF A9 00 00    LDA #$0000             ;|
 $AD:DFE2 8F 0C 9C 7E STA $7E9C0C[$7E:9C0C]  ;/
-$AD:DFE6 60          RTS
+$AD:DFE6 60          RTS                    ; Return
 
 $AD:DFE7 38          SEC                    ;\
 $AD:DFE8 E9 7F 00    SBC #$007F             ;|
@@ -2607,7 +2607,7 @@ $AD:F427 85 69       STA $69    [$7E:0069]  ;/
 $AD:F429 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $AD:F42C 29 FF FE    AND #$FEFF             ;} Set Mother Brain's body as visible
 $AD:F42F 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
-$AD:F432 6B          RTL
+$AD:F432 6B          RTL                    ; Return
 
 $AD:F433 A5 69       LDA $69    [$7E:0069]  ;\ Else ([Mother Brain's body frame 0 counter] % 2 = 0):
 $AD:F435 29 FD FF    AND #$FFFD             ;} Disable BG2

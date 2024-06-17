@@ -4009,9 +4009,9 @@ $86:99EE 89 01 00    BIT #$0001             ;} If [frame counter] % 2 = 0:
 $86:99F1 D0 07       BNE $07    [$99FA]     ;/
 $86:99F3 A9 80 00    LDA #$0080             ;\
 $86:99F6 9D B7 1A    STA $1AB7,x[$7E:1AD7]  ;} Enemy projectile X velocity = 80h
-$86:99F9 60          RTS
+$86:99F9 60          RTS                    ; Return
 
-$86:99FA A9 80 FF    LDA #$FF80             ;\ Else ([frame counter] % 2 != 0):
+$86:99FA A9 80 FF    LDA #$FF80             ;\
 $86:99FD 9D B7 1A    STA $1AB7,x[$7E:1AD9]  ;} Enemy projectile X velocity = -80h
 
 $86:9A00 60          RTS

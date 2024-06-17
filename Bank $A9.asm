@@ -1323,7 +1323,7 @@ $A9:90A1 60          RTS
 ;;; $90A2: Handle Mother Brain's neck - lower - movement index = 4: bob up ;;;
 {
 $A9:90A2 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
-$A9:90A5 C9 3C 00    CMP #$003C             ;} If [Mother Brain's brain Y position] < 3Ch: go to BRANCH_90C7
+$A9:90A5 C9 3C 00    CMP #$003C             ;} If [Mother Brain's brain Y position] < 3Ch: go to BRANCH_BOB_DOWN
 $A9:90A8 30 1D       BMI $1D    [$90C7]     ;/
 $A9:90AA AF 40 80 7E LDA $7E8040[$7E:8040]  ;\
 $A9:90AE 18          CLC                    ;} Mother Brain's lower neck angle += [Mother Brain neck angle delta]
@@ -1335,9 +1335,9 @@ $A9:90BB 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement 
 $A9:90BF A9 00 90    LDA #$9000             ; Mother Brain's lower neck angle = 9000h
 
 $A9:90C2 8F 40 80 7E STA $7E8040[$7E:8040]
-$A9:90C6 60          RTS
+$A9:90C6 60          RTS                    ; Return
 
-; BRANCH_90C7
+; BRANCH_BOB_DOWN
 $A9:90C7 A9 02 00    LDA #$0002             ;\
 $A9:90CA 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 2 (bob down)
 $A9:90CE 60          RTS
@@ -1402,7 +1402,7 @@ $A9:9126 30 0C       BMI $0C    [$9134]     ;/
 $A9:9128 A9 04 00    LDA #$0004             ;\
 $A9:912B 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 4 (bob up)
 $A9:912F 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement index = 4 (bob up)
-$A9:9133 60          RTS
+$A9:9133 60          RTS                    ; Return
 
 $A9:9134 AF 42 80 7E LDA $7E8042[$7E:8042]  ;\
 $A9:9138 38          SEC                    ;} Mother Brain's upper neck angle -= [Mother Brain neck angle delta]
@@ -1571,15 +1571,15 @@ $A9:92B4 AF 02 80 7E LDA $7E8002[$7E:8002]  ;\
 $A9:92B8 30 0D       BMI $0D    [$92C7]     ;} If [Mother Brain's brain instruction list pointer] & 8000h != 0: go to BRANCH_PROCESS_INSTRUCTION_LIST
 
 ; BRANCH_NO_DRAW
-$A9:92BA 68          PLA
-$A9:92BB 60          RTS
+$A9:92BA 68          PLA                    ;\
+$A9:92BB 60          RTS                    ;} Return out of caller routine
 
 ; BRANCH_FROZEN_TIME
 $A9:92BC AF 02 80 7E LDA $7E8002[$7E:8002]  ;\
 $A9:92C0 10 F8       BPL $F8    [$92BA]     ;} If [Mother Brain's brain instruction list pointer] & 8000h = 0: go to BRANCH_NO_DRAW
 $A9:92C2 AA          TAX                    ;\
 $A9:92C3 BC 02 00    LDY $0002,x            ;} Y = [[Mother Brain's brain instruction list pointer] + 2]
-$A9:92C6 60          RTS
+$A9:92C6 60          RTS                    ; Return
 
 ; BRANCH_PROCESS_INSTRUCTION_LIST
 $A9:92C7 AA          TAX                    ; X = [Mother Brain's brain instruction list pointer]
@@ -1609,7 +1609,7 @@ $A9:92E9 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Mother Brain's brain instruction 
 $A9:92ED 8A          TXA                    ;\
 $A9:92EE 8F 02 80 7E STA $7E8002[$7E:8002]  ;} Mother Brain's brain instruction list pointer = [X]
 $A9:92F2 BC 02 00    LDY $0002,x[$A9:9C23]  ; Y = [[X] + 2]
-$A9:92F5 60          RTS
+$A9:92F5 60          RTS                    ; Return
 
 ; BRANCH_TICK
 $A9:92F6 AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
@@ -1683,7 +1683,6 @@ $A9:9386 F0 07       BEQ $07    [$938F]     ;} If [Mother Brain's brain main sha
 $A9:9388 3A          DEC A                  ;\
 $A9:9389 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Decrement Mother Brain's brain main shake timer
 $A9:938D 80 08       BRA $08    [$9397]
-
                                             ; Else ([Mother Brain's brain main shake timer] = 0):
 $A9:938F AD DC 0F    LDA $0FDC  [$7E:0FDC]  ; A = [Mother Brain brain invincibility timer]
 $A9:9392 D0 03       BNE $03    [$9397]     ; If [Mother Brain brain invincibility timer] = 0:
@@ -3656,7 +3655,7 @@ $A9:AFD1 3A          DEC A                  ; A = [Mother Brain grey transition 
 $A9:AFD2 22 B4 E9 AD JSL $ADE9B4[$AD:E9B4]  ; Fade Mother Brain palette to black
 $A9:AFD6 B0 01       BCS $01    [$AFD9]     ; If finished fading to black: go to BRANCH_FADED_TO_BLACK
 
-$A9:AFD8 60          RTS
+$A9:AFD8 60          RTS                    ; Return
 
 ; BRANCH_FADED_TO_BLACK
 $A9:AFD9 A9 C6 02    LDA #$02C6             ;\
@@ -3874,7 +3873,7 @@ $A9:B19C B0 07       BCS $07    [$B1A5]     ; If finished transitioning: go to B
 $A9:B19E A9 10 00    LDA #$0010             ;\
 $A9:B1A1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
 
-$A9:B1A4 60          RTS
+$A9:B1A4 60          RTS                    ; Return
 
 ; BRANCH_FINISHED_TRAMSITION
 $A9:B1A5 A9 25 9D    LDA #$9D25             ;\
@@ -4271,7 +4270,6 @@ $A9:B490 1A          INC A                  ;} $18 = [hitbox X position] - [Samu
 $A9:B491 85 18       STA $18    [$7E:0018]  ;/
 $A9:B493 BD 00 00    LDA $0000,x            ; A = [[X]]
 $A9:B496 80 05       BRA $05    [$B49D]
-
                                             ; Else ([Samus X position] >= [hitbox X position]):
 $A9:B498 85 18       STA $18    [$7E:0018]  ; $18 = [Samus X position] - [hitbox X position]
 $A9:B49A BD 04 00    LDA $0004,x[$A9:B447]  ; A = [[X] + 4]
@@ -4605,7 +4603,7 @@ $A9:B6B0 C9 34 9F    CMP #$9F34             ;\
 $A9:B6B3 F0 16       BEQ $16    [$B6CB]     ;} If [$B6D4 + [Y]] = $9F34: go to BRANCH_LASER
 $A9:B6B5 20 47 C4    JSR $C447  [$A9:C447]  ; Set Mother Brain's brain instruction list to [$B6D4 + [Y]]
 
-$A9:B6B8 60          RTS
+$A9:B6B8 60          RTS                    ; Return
 
 ; BRANCH_BOMB
 $A9:B6B9 AF 4A 78 7E LDA $7E784A[$7E:784A]  ;\
@@ -6208,7 +6206,7 @@ $A9:C209 AD CC 0F    LDA $0FCC  [$7E:0FCC]  ;\
 $A9:C20C D0 07       BNE $07    [$C215]     ;} If [Mother Brain's brain health] = 0:
 $A9:C20E A9 E1 AE    LDA #$AEE1             ;\
 $A9:C211 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $AEE1 (death sequence)
-$A9:C214 60          RTS
+$A9:C214 60          RTS                    ; Return
 
 $A9:C215 20 27 C3    JSR $C327  [$A9:C327]  ; Mother Brain third phase neck handler
 $A9:C218 20 5A C2    JSR $C25A  [$A9:C25A]  ; Mother Brain third phase walking handler
@@ -6280,7 +6278,7 @@ $A9:C297 90 07       BCC $07    [$C2A0]     ; If not reached target X position: 
 $A9:C299 A9 80 00    LDA #$0080             ;\
 $A9:C29C 8F 0E 78 7E STA $7E780E[$7E:780E]  ;} Mother Brain walk counter = 80h
 
-$A9:C2A0 60          RTS
+$A9:C2A0 60          RTS                    ; Return
 
 ; BRANCH_WALK_LEFT
 $A9:C2A1 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
@@ -7398,7 +7396,7 @@ $A9:CA17 18          CLC                    ;|
 $A9:CA18 69 08 00    ADC #$0008             ;} Enemy movement table pointer += 8
 $A9:CA1B 9F 1C 78 7E STA $7E781C,x[$7E:789C];/
 
-$A9:CA1F 60          RTS
+$A9:CA1F 60          RTS                    ; Return
 
 ; BRANCH_FUNCTION
 $A9:CA20 9D A8 0F    STA $0FA8,x[$7E:1028]  ; Enemy function = [[Y] + 8]
@@ -7927,7 +7925,7 @@ $A9:CE2A F0 0A       BEQ $0A    [$CE36]     ;/
 $A9:CE2C BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
 $A9:CE2F 29 FF FE    AND #$FEFF             ;} Set enemy as visible
 $A9:CE32 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
-$A9:CE35 60          RTS
+$A9:CE35 60          RTS                    ; Return
 
 $A9:CE36 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
 $A9:CE39 09 00 01    ORA #$0100             ;} Set enemy as invisible
@@ -8436,7 +8434,7 @@ $A9:D214 3A          DEC A                  ;\
 $A9:D215 8D AF 0F    STA $0FAF  [$7E:0FAF]  ;} Decrement Mother Brain's brain palette timer
 
 $A9:D218 C2 20       REP #$20
-$A9:D21A 60          RTS
+$A9:D21A 60          RTS                    ; Return
 
 ; BRANCH_ZERO
 $A9:D21B EB          XBA                    ; >_<;

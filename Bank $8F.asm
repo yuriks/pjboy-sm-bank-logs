@@ -5006,7 +5006,7 @@ $8F:C96D 60          RTS
 }
 
 
-;;; $C96E: Setup ASM: turn Ceres door to solid blocks and spawn haze ;;;
+;;; $C96E: Setup ASM: turn Ceres door to solid blocks and spawn Ceres haze ;;;
 {
 ; Room $DF45, state $DF71. Ceres elevator, Ceres Ridley dead
 $8F:C96E 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -5014,19 +5014,19 @@ $8F:C972             dx  0F, 26, BA48       ;} Spawn PLM to turn Ceres elevator 
 }
 
 
-;;; $C976: Setup ASM: Spawn haze ;;;
+;;; $C976: Setup ASM: Spawn Ceres haze ;;;
 {
 ; Room $DF45, state $DF57. Ceres elevator default
 ; Room $DF8D. Ceres pre elevator hall
 ; Room $DFD7. Ceres shaft
 ; Room $E021. Ceres baby Metroid hall
 ; Room $E06B. Pre Ceres Ridley hall
-$8F:C976 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; FX type 2Ch: haze
+$8F:C976 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; FX type 2Ch: Ceres haze
 $8F:C97A 60          RTS
 }
 
 
-;;; $C97B: Setup ASM: Set BG1/2 tiles base address and spawn haze ;;;
+;;; $C97B: Setup ASM: Set BG1/2 tiles base address and spawn Ceres haze ;;;
 {
 ; Room $E0B5. Ceres Ridley's room
 $8F:C97B 08          PHP                    ;\
@@ -5034,7 +5034,7 @@ $8F:C97C E2 20       SEP #$20               ;|
 $8F:C97E A9 66       LDA #$66               ;} BG1 tiles base address = BG2 tiles base address = $6000
 $8F:C980 85 5D       STA $5D    [$7E:005D]  ;|
 $8F:C982 28          PLP                    ;/
-$8F:C983 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; FX type 2Ch: haze
+$8F:C983 22 C7 DD 88 JSL $88DDC7[$88:DDC7]  ; FX type 2Ch: Ceres haze
 $8F:C987 A9 09 00    LDA #$0009             ;\
 $8F:C98A 8D EB 07    STA $07EB  [$7E:07EB]  ;} Video mode for HUD and floor = 9 (mode 1 with BG3 priority)
 $8F:C98D 60          RTS

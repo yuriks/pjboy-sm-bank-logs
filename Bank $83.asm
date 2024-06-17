@@ -2875,7 +2875,7 @@ $83:AC18             dw B278, ; 0: None
                         DB8A, ; 26h: Tourian entrance statue
                         D8DE, ; 28h: Ceres Ridley
                         D928, ; 2Ah: Ceres elevator
-                        DDC7  ; 2Ch: Haze
+                        DDC7  ; 2Ch: Ceres haze
 }
 
 

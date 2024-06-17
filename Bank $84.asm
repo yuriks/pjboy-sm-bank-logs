@@ -2473,8 +2473,8 @@ $84:905F E5 12       SBC $12    [$7E:0012]  ;} Draw length -= [number of blocks 
 $84:9061 85 14       STA $14    [$7E:0014]  ;/
 
 $84:9063 30 FE       BMI $FE    [$9063]     ; If [draw length] < 0: crash (!) (TODO: check if this is possible)
-$84:9065 D0 05       BNE $05    [$906C]     ; If [draw length] = 0: return
-$84:9067 60          RTS
+$84:9065 D0 05       BNE $05    [$906C]     ; If [draw length] = 0:
+$84:9067 60          RTS                    ; Return
 
 $84:9068 A5 20       LDA $20    [$7E:0020]  ;\ Else ([PLM draw Y block] > [screen Y block]):
 $84:906A 85 1A       STA $1A    [$7E:001A]  ;} $1A = [PLM draw Y block]
@@ -2637,8 +2637,8 @@ $84:9197 65 03       ADC $03    [$7E:0003]  ;} Y += [number of blocks truncated]
 $84:9199 A8          TAY                    ;/
 
 $84:919A B9 00 00    LDA $0000,y[$84:AA05]  ;\
-$84:919D D0 01       BNE $01    [$91A0]     ;} If [[Y]] = 0: return
-$84:919F 60          RTS
+$84:919D D0 01       BNE $01    [$91A0]     ;} If [[Y]] = 0:
+$84:919F 60          RTS                    ; Return
 
 $84:91A0 29 FF 00    AND #$00FF             ;\
 $84:91A3 89 80 00    BIT #$0080             ;|

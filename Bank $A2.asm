@@ -3497,7 +3497,7 @@ $A2:A854 9D 80 0F    STA $0F80,x[$7E:0F80]  ;} Enemy Y position += 4.8000h
 $A2:A857 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
 $A2:A85A 69 04 00    ADC #$0004             ;|
 $A2:A85D 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
-$A2:A860 6B          RTL
+$A2:A860 6B          RTL                    ; Return
 
 $A2:A861 AD FC 0A    LDA $0AFC  [$7E:0AFC]  ;\
 $A2:A864 18          CLC                    ;|
@@ -4018,7 +4018,7 @@ $A2:AC89 30 0A       BMI $0A    [$AC95]     ;} If [enemy ([X] + 1) $0FB0] >= 80h
 $A2:AC8B A9 D7 AC    LDA #$ACD7             ;\
 $A2:AC8E 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $ACD7
 $A2:AC91 9C A8 0F    STZ $0FA8  [$7E:0FA8]  ; Enemy 0 function timer = 0
-$A2:AC94 6B          RTL
+$A2:AC94 6B          RTL                    ; Return
 
 $A2:AC95 C9 40 00    CMP #$0040             ;\
 $A2:AC98 D0 3C       BNE $3C    [$ACD6]     ;} If [enemy ([X] + 1) $0FB0] != 40h: return

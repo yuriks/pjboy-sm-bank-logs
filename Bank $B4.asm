@@ -2563,8 +2563,8 @@ $B4:9329 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:932B 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:932E F0 07       BEQ $07    [$9337]     ;/
 $B4:9330 9C 5C 18    STZ $185C  [$7E:185C]  ; Debug index = 0
-$B4:9333 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:9336 60          RTS
+$B4:9333 A9 01 00    LDA #$0001             ;\
+$B4:9336 60          RTS                    ;} Return A = 1
 
 $B4:9337 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9339 89 00 20    BIT #$2000             ;} If controller 2 newly pressed select:
@@ -2587,8 +2587,8 @@ $B4:9361 F0 06       BEQ $06    [$9369]     ;/
 $B4:9363 EE 5C 18    INC $185C  [$7E:185C]  ;\
 $B4:9366 EE 5C 18    INC $185C  [$7E:185C]  ;} Debug index = 9
 
-$B4:9369 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:936C 60          RTS
+$B4:9369 A9 01 00    LDA #$0001             ;\
+$B4:936C 60          RTS                    ;} Return A = 1
 }
 
 
@@ -3063,8 +3063,8 @@ $B4:9758 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:975A 89 00 20    BIT #$2000             ;} If controller 2 newly pressed select:
 $B4:975D F0 07       BEQ $07    [$9766]     ;/
 $B4:975F 9C 5C 18    STZ $185C  [$7E:185C]  ; Debug index = 0
-$B4:9762 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9765 60          RTS
+$B4:9762 A9 00 00    LDA #$0000             ;\
+$B4:9765 60          RTS                    ;} Return A = 0
 
 $B4:9766 AD D1 07    LDA $07D1  [$7E:07D1]  ;\
 $B4:9769 AA          TAX                    ;} $0E26 = [enemy set pointer] (enemy set entry pointer)
@@ -3172,12 +3172,12 @@ $B4:9853 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ;/
 $B4:9857 AD C5 05    LDA $05C5  [$7E:05C5]  ;\
 $B4:985A 89 40 00    BIT #$0040             ;} If not newly pressed X whilst select + L is pressed:
 $B4:985D D0 04       BNE $04    [$9863]     ;/
-$B4:985F A9 01 00    LDA #$0001             ; Return A = 1
-$B4:9862 60          RTS
+$B4:985F A9 01 00    LDA #$0001             ;\
+$B4:9862 60          RTS                    ;} Return A = 1
 
 $B4:9863 9C 5C 18    STZ $185C  [$7E:185C]  ; Debug index = 0
-$B4:9866 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:9869 60          RTS
+$B4:9866 A9 01 00    LDA #$0001             ;\
+$B4:9869 60          RTS                    ;} Return A = 1
 }
 
 
@@ -3229,12 +3229,12 @@ $B4:98C3 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ;/
 $B4:98C7 AD C5 05    LDA $05C5  [$7E:05C5]  ;\
 $B4:98CA 89 40 00    BIT #$0040             ;} If not newly pressed X whilst select + L is pressed:
 $B4:98CD D0 04       BNE $04    [$98D3]     ;/
-$B4:98CF A9 01 00    LDA #$0001             ; Return A = 1
-$B4:98D2 60          RTS
+$B4:98CF A9 01 00    LDA #$0001             ;\
+$B4:98D2 60          RTS                    ;} Return A = 1
 
 $B4:98D3 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 4
-$B4:98D6 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:98D9 60          RTS
+$B4:98D6 A9 01 00    LDA #$0001             ;\
+$B4:98D9 60          RTS                    ;} Return A = 1
 }
 
 
@@ -3262,8 +3262,8 @@ $B4:98FF 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ;/
 $B4:9903 AD C5 05    LDA $05C5  [$7E:05C5]  ;\
 $B4:9906 89 80 00    BIT #$0080             ;} If not newly pressed A whilst select + L is pressed:
 $B4:9909 D0 04       BNE $04    [$990F]     ;/
-$B4:990B A9 01 00    LDA #$0001             ; Return A = 1
-$B4:990E 60          RTS
+$B4:990B A9 01 00    LDA #$0001             ;\
+$B4:990E 60          RTS                    ;} Return A = 1
 
 $B4:990F A2 FE 00    LDX #$00FE             ;\
                                             ;|
@@ -3273,8 +3273,8 @@ $B4:991A CA          DEX                    ;|
 $B4:991B CA          DEX                    ;|
 $B4:991C D0 F4       BNE $F4    [$9912]     ;/
 $B4:991E EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 2
-$B4:9921 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:9924 60          RTS
+$B4:9921 A9 01 00    LDA #$0001             ;\
+$B4:9924 60          RTS                    ;} Return A = 1
 }
 
 
@@ -3298,12 +3298,12 @@ $B4:994A 22 1D A0 B4 JSL $B4A01D[$B4:A01D]  ;/
 $B4:994E AD C5 05    LDA $05C5  [$7E:05C5]  ;\
 $B4:9951 89 80 00    BIT #$0080             ;} If not newly pressed A whilst select + L is pressed:
 $B4:9954 D0 04       BNE $04    [$995A]     ;/
-$B4:9956 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:9959 60          RTS
+$B4:9956 A9 01 00    LDA #$0001             ;\
+$B4:9959 60          RTS                    ;} Return A = 1
 
 $B4:995A 9C 5C 18    STZ $185C  [$7E:185C]  ; Debug index = 0
-$B4:995D A9 01 00    LDA #$0001             ; Return A = 1
-$B4:9960 60          RTS
+$B4:995D A9 01 00    LDA #$0001             ;\
+$B4:9960 60          RTS                    ;} Return A = 1
 }
 
 
@@ -3341,8 +3341,8 @@ $B4:999F A5 91       LDA $91    [$7E:0091]  ;\
 $B4:99A1 89 80 00    BIT #$0080             ;} If controller 2 newly pressed A: go to BRANCH_P2_A
 $B4:99A4 D0 07       BNE $07    [$99AD]     ;/
 $B4:99A6 9C 5C 18    STZ $185C  [$7E:185C]
-$B4:99A9 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:99AC 60          RTS
+$B4:99A9 A9 00 00    LDA #$0000             ;\
+$B4:99AC 60          RTS                    ;} Return A = 0
 
 ; BRANCH_P2_A
 $B4:99AD A0 01 00    LDY #$0001             ;\
@@ -3352,21 +3352,21 @@ $B4:99B5 A0 00 00    LDY #$0000             ;} Toggle sprite interactions flag
                                             ;|
 $B4:99B8 98          TYA                    ;|
 $B4:99B9 8D 12 0E    STA $0E12  [$7E:0E12]  ;/
-$B4:99BC A9 00 00    LDA #$0000             ; Return A = 0
-$B4:99BF 60          RTS
+$B4:99BC A9 00 00    LDA #$0000             ;\
+$B4:99BF 60          RTS                    ;} Return A = 0
 
 ; BRANCH_P2_SELECT
 $B4:99C0 A9 10 00    LDA #$0010             ;\
 $B4:99C3 8D 5C 18    STA $185C  [$7E:185C]  ;} Debug index = 10h
-$B4:99C6 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:99C9 60          RTS
+$B4:99C6 A9 00 00    LDA #$0000             ;\
+$B4:99C9 60          RTS                    ;} Return A = 0
 
 ; BRANCH_SELECT_L_X
 $B4:99CA EE 5C 18    INC $185C  [$7E:185C]  ;\
 $B4:99CD EE 5C 18    INC $185C  [$7E:185C]  ;} Debug index = 3
 $B4:99D0 EE 5C 18    INC $185C  [$7E:185C]  ;/
-$B4:99D3 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:99D6 60          RTS
+$B4:99D3 A9 01 00    LDA #$0001             ;\
+$B4:99D6 60          RTS                    ;} Return A = 1
 
 ; BRANCH_P2_R
 $B4:99D7 EE 5C 18    INC $185C  [$7E:185C]  ;\
@@ -3374,8 +3374,8 @@ $B4:99DA EE 5C 18    INC $185C  [$7E:185C]  ;|
 $B4:99DD EE 5C 18    INC $185C  [$7E:185C]  ;} Debug index = 5
 $B4:99E0 EE 5C 18    INC $185C  [$7E:185C]  ;|
 $B4:99E3 EE 5C 18    INC $185C  [$7E:185C]  ;/
-$B4:99E6 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:99E9 60          RTS
+$B4:99E6 A9 00 00    LDA #$0000             ;\
+$B4:99E9 60          RTS                    ;} Return A = 0
 
 ; BRANCH_SELECT_L_A
 $B4:99EA E2 20       SEP #$20
@@ -3394,8 +3394,8 @@ $B4:9A0E 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $B4:9A11 9C 00 21    STZ $2100  [$7E:2100]  ; Disable forced blank
 $B4:9A14 C2 20       REP #$20
 $B4:9A16 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 1
-$B4:9A19 A9 01 00    LDA #$0001             ; Return A = 1
-$B4:9A1C 60          RTS
+$B4:9A19 A9 01 00    LDA #$0001             ;\
+$B4:9A1C 60          RTS                    ;} Return A = 1
 }
 
 
@@ -3435,8 +3435,8 @@ $B4:9A59 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9A5B 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:9A5E F0 07       BEQ $07    [$9A67]     ;/
 $B4:9A60 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 7
-$B4:9A63 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9A66 60          RTS
+$B4:9A63 A9 00 00    LDA #$0000             ;\
+$B4:9A66 60          RTS                    ;} Return A = 0
 
 $B4:9A67 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9A69 89 00 20    BIT #$2000             ;} If controller 2 not newly pressed select: go to BRANCH_NO_P2_SELECT
@@ -3605,8 +3605,8 @@ $B4:9BD5 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9BD7 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:9BDA F0 07       BEQ $07    [$9BE3]     ;/
 $B4:9BDC EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = Bh
-$B4:9BDF A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9BE2 60          RTS
+$B4:9BDF A9 00 00    LDA #$0000             ;\
+$B4:9BE2 60          RTS                    ;} Return A = 0
 
 $B4:9BE3 A9 B0 00    LDA #$00B0             ;\
 $B4:9BE6 85 14       STA $14    [$7E:0014]  ;|
@@ -3648,8 +3648,8 @@ $B4:9C4D 8D 20 0E    STA $0E20  [$7E:0E20]  ;} Draw hex value [debug enemy bank]
 $B4:9C50 A9 50 00    LDA #$0050             ;|
 $B4:9C53 8D 22 0E    STA $0E22  [$7E:0E22]  ;|
 $B4:9C56 20 7E 9F    JSR $9F7E  [$B4:9F7E]  ;/
-$B4:9C59 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9C5C 60          RTS
+$B4:9C59 A9 00 00    LDA #$0000             ;\
+$B4:9C5C 60          RTS                    ;} Return A = 0
 }
 
 
@@ -3667,8 +3667,8 @@ $B4:9C5D A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9C5F 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:9C62 F0 07       BEQ $07    [$9C6B]     ;/
 $B4:9C64 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = Ch
-$B4:9C67 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9C6A 60          RTS
+$B4:9C67 A9 00 00    LDA #$0000             ;\
+$B4:9C6A 60          RTS                    ;} Return A = 0
 
 $B4:9C6B A9 B0 00    LDA #$00B0             ;\
 $B4:9C6E 85 14       STA $14    [$7E:0014]  ;|
@@ -3710,8 +3710,8 @@ $B4:9CD5 8D 20 0E    STA $0E20  [$7E:0E20]  ;} Draw hex value [debug enemy VRAM 
 $B4:9CD8 A9 50 00    LDA #$0050             ;|
 $B4:9CDB 8D 22 0E    STA $0E22  [$7E:0E22]  ;|
 $B4:9CDE 20 7E 9F    JSR $9F7E  [$B4:9F7E]  ;/
-$B4:9CE1 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9CE4 60          RTS
+$B4:9CE1 A9 00 00    LDA #$0000             ;\
+$B4:9CE4 60          RTS                    ;} Return A = 0
 }
 
 
@@ -3729,8 +3729,8 @@ $B4:9CE5 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9CE7 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:9CEA F0 07       BEQ $07    [$9CF3]     ;/
 $B4:9CEC EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = Dh
-$B4:9CEF A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9CF2 60          RTS
+$B4:9CEF A9 00 00    LDA #$0000             ;\
+$B4:9CF2 60          RTS                    ;} Return A = 0
 
 $B4:9CF3 A9 B0 00    LDA #$00B0             ;\
 $B4:9CF6 85 14       STA $14    [$7E:0014]  ;|
@@ -3772,8 +3772,8 @@ $B4:9D5D 8D 20 0E    STA $0E20  [$7E:0E20]  ;} Draw hex value [debug enemy sprit
 $B4:9D60 A9 50 00    LDA #$0050             ;|
 $B4:9D63 8D 22 0E    STA $0E22  [$7E:0E22]  ;|
 $B4:9D66 20 7E 9F    JSR $9F7E  [$B4:9F7E]  ;/
-$B4:9D69 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9D6C 60          RTS
+$B4:9D69 A9 00 00    LDA #$0000             ;\
+$B4:9D6C 60          RTS                    ;} Return A = 0
 }
 
 
@@ -3791,8 +3791,8 @@ $B4:9D6D A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9D6F 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:9D72 F0 07       BEQ $07    [$9D7B]     ;/
 $B4:9D74 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = Eh
-$B4:9D77 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9D7A 60          RTS
+$B4:9D77 A9 00 00    LDA #$0000             ;\
+$B4:9D7A 60          RTS                    ;} Return A = 0
 
 $B4:9D7B A9 B0 00    LDA #$00B0             ;\
 $B4:9D7E 85 14       STA $14    [$7E:0014]  ;|
@@ -3834,8 +3834,8 @@ $B4:9DE5 8D 20 0E    STA $0E20  [$7E:0E20]  ;} Draw hex value [debug enemy shake
 $B4:9DE8 A9 50 00    LDA #$0050             ;|
 $B4:9DEB 8D 22 0E    STA $0E22  [$7E:0E22]  ;|
 $B4:9DEE 20 7E 9F    JSR $9F7E  [$B4:9F7E]  ;/
-$B4:9DF1 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9DF4 60          RTS
+$B4:9DF1 A9 00 00    LDA #$0000             ;\
+$B4:9DF4 60          RTS                    ;} Return A = 0
 }
 
 
@@ -3853,8 +3853,8 @@ $B4:9DF5 A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9DF7 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:9DFA F0 07       BEQ $07    [$9E03]     ;/
 $B4:9DFC EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = Fh
-$B4:9DFF A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9E02 60          RTS
+$B4:9DFF A9 00 00    LDA #$0000             ;\
+$B4:9E02 60          RTS                    ;} Return A = 0
 
 $B4:9E03 A9 B0 00    LDA #$00B0             ;\
 $B4:9E06 85 14       STA $14    [$7E:0014]  ;|
@@ -3896,8 +3896,8 @@ $B4:9E6D 8D 20 0E    STA $0E20  [$7E:0E20]  ;} Draw hex value [debug enemy $0FAE
 $B4:9E70 A9 50 00    LDA #$0050             ;|
 $B4:9E73 8D 22 0E    STA $0E22  [$7E:0E22]  ;|
 $B4:9E76 20 7E 9F    JSR $9F7E  [$B4:9F7E]  ;/
-$B4:9E79 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9E7C 60          RTS
+$B4:9E79 A9 00 00    LDA #$0000             ;\
+$B4:9E7C 60          RTS                    ;} Return A = 0
 }
 
 
@@ -3915,8 +3915,8 @@ $B4:9E7D A5 91       LDA $91    [$7E:0091]  ;\
 $B4:9E7F 89 10 00    BIT #$0010             ;} If controller 2 newly pressed R:
 $B4:9E82 F0 07       BEQ $07    [$9E8B]     ;/
 $B4:9E84 EE 5C 18    INC $185C  [$7E:185C]  ; Debug index = 10h
-$B4:9E87 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9E8A 60          RTS
+$B4:9E87 A9 00 00    LDA #$0000             ;\
+$B4:9E8A 60          RTS                    ;} Return A = 0
 
 $B4:9E8B A9 B0 00    LDA #$00B0             ;\
 $B4:9E8E 85 14       STA $14    [$7E:0014]  ;|
@@ -3958,8 +3958,8 @@ $B4:9EF5 8D 20 0E    STA $0E20  [$7E:0E20]  ;} Draw hex value [debug enemy $0FB6
 $B4:9EF8 A9 50 00    LDA #$0050             ;|
 $B4:9EFB 8D 22 0E    STA $0E22  [$7E:0E22]  ;|
 $B4:9EFE 20 7E 9F    JSR $9F7E  [$B4:9F7E]  ;/
-$B4:9F01 A9 00 00    LDA #$0000             ; Return A = 0
-$B4:9F04 60          RTS
+$B4:9F01 A9 00 00    LDA #$0000             ;\
+$B4:9F04 60          RTS                    ;} Return A = 0
 }
 
 

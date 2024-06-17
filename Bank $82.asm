@@ -798,7 +798,7 @@ $82:8666 A9 00 00    LDA #$0000             ;|
 $82:8669 8D 55 1F    STA $1F55  [$7E:1F55]  ;/
 $82:866C 9C 57 1F    STZ $1F57  [$7E:1F57]  ; Demo scene = 0
 $82:866F 28          PLP
-$82:8670 60          RTS
+$82:8670 60          RTS                    ; Return
 
 ; BRANCH_NEXT_DEMO_SCENE
 $82:8671 A9 00 80    LDA #$8000             ;\
@@ -5349,7 +5349,7 @@ $82:ACAA A2 00 00    LDX #$0000             ;\
 $82:ACAD 20 11 B5    JSR $B511  [$82:B511]  ;} Move to boots
 
 $82:ACB0 28          PLP
-$82:ACB1 60          RTS
+$82:ACB1 60          RTS                    ; Return
 
 ; BRANCH_NOT_RIGHT
 $82:ACB2 89 00 08    BIT #$0800             ;\
@@ -7272,7 +7272,7 @@ $82:B986 22 0A B9 82 JSL $82B90A[$82:B90A]  ; Draw map scroll arrow and check to
 
 $82:B98A AB          PLB
 $82:B98B 28          PLP
-$82:B98C 6B          RTL
+$82:B98C 6B          RTL                    ; Return
 
 ; BRANCH_CANCEL_SCROLL_DOWN
 ; I have no idea what this check is for
@@ -9097,13 +9097,13 @@ $82:DAA5 60          RTS
 $82:DAA6 C9 00 00    CMP #$0000             ;\
 $82:DAA9 D0 02       BNE $02    [$DAAD]     ;} If [A] = 0:
 $82:DAAB 8A          TXA                    ; A = [X]
-$82:DAAC 60          RTS
+$82:DAAC 60          RTS                    ; Return
 
 $82:DAAD 3A          DEC A                  ;\
 $82:DAAE CD 02 C4    CMP $C402  [$7E:C402]  ;} If [A] = [palette change denominator] + 1
 $82:DAB1 D0 02       BNE $02    [$DAB5]     ;/
 $82:DAB3 98          TYA                    ; A = [Y]
-$82:DAB4 60          RTS
+$82:DAB4 60          RTS                    ; Return
 
 $82:DAB5 DA          PHX
 $82:DAB6 1A          INC A
@@ -11693,7 +11693,7 @@ $82:EC03 D0 09       BNE $09    [$EC0E]     ;/
 $82:EC05 C2 20       REP #$20
 $82:EC07 A0 D6 F4    LDY #$F4D6             ;\
 $82:EC0A 20 CB 8B    JSR $8BCB  [$82:8BCB]  ;} Spawn border around SAMUS DATA
-$82:EC0D 60          RTS
+$82:EC0D 60          RTS                    ; Return
 
 $82:EC0E C2 20       REP #$20
 $82:EC10 60          RTS
@@ -11903,7 +11903,7 @@ $82:ED99 AA          TAX                    ;} Execute [$EDA7 + [menu option ind
 $82:ED9A FC A7 ED    JSR ($EDA7,x)[$82:EE55];/
 
 $82:ED9D 28          PLP
-$82:ED9E 60          RTS
+$82:ED9E 60          RTS                    ; Return
 
 ; BRANCH_CANCEL
 $82:ED9F A9 0B 00    LDA #$000B             ;\
@@ -12375,7 +12375,7 @@ $82:F0FD AA          TAX                    ;|
 $82:F0FE A0 0C 00    LDY #$000C             ;} Set 6 game options menu tiles from (17h, 8 + [menu option index] * 6) to palette 0
 $82:F101 A9 00 00    LDA #$0000             ;|
 $82:F104 20 28 ED    JSR $ED28  [$82:ED28]  ;/
-$82:F107 60          RTS
+$82:F107 60          RTS                    ; Return
 
 $82:F108 AD 9E 09    LDA $099E  [$7E:099E]  ;\ Else (setting is on):
 $82:F10B 0A          ASL A                  ;|
@@ -12441,7 +12441,7 @@ $82:F176 A9 08 00    LDA #$0008             ;\
 $82:F179 8D 9E 09    STA $099E  [$7E:099E]  ;} Menu option index = 8
 $82:F17C 80 25       BRA $25    [$F1A3]     ; Go to BRANCH_SCROLL_DOWN
 
-$82:F17E 60          RTS
+$82:F17E 60          RTS                    ; Return
 
 ; BRANCH_UP_END
 $82:F17F A5 8F       LDA $8F    [$7E:008F]  ;\

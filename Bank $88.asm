@@ -4443,7 +4443,7 @@ $88:AE62 A9 B5 00    LDA #$00B5             ;|
 $88:AE65 9F 01 9F 7E STA $7E9F01,x[$7E:9F1C];} $7E:9F00 + [X] = [$18],(BG2 X scroll), 00h
 $88:AE69 A9 00 00    LDA #$0000             ;|
 $88:AE6C 9F 03 9F 7E STA $7E9F03,x[$7E:9F1E];/
-$88:AE70 6B          RTL
+$88:AE70 6B          RTL                    ; Return
 
 ; BRANCH_SCROLLING_SECTION
 $88:AE71 B9 C9 AE    LDA $AEC9,y[$88:AED1]  ;\
@@ -4575,7 +4575,7 @@ $88:AFA3 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $88:AFA6 F0 08       BEQ $08    [$AFB0]     ;} If time is frozen:
 $88:AFA8 A9 00 00    LDA #$0000             ;\
 $88:AFAB 8F 00 9F 7E STA $7E9F00[$7E:9F00]  ;} Scrolling sky BG2 X scroll indirect HDMA table = 0
-$88:AFAF 6B          RTL
+$88:AFAF 6B          RTL                    ; Return
 
 $88:AFB0 C2 30       REP #$30
 $88:AFB2 AD 15 09    LDA $0915  [$7E:0915]  ;\
@@ -6790,7 +6790,7 @@ $88:DCE1 A9 01 00    LDA #$0001             ;\
 $88:DCE4 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;} Scroll 0 = blue
 $88:DCE8 C8          INY                    ;\
 $88:DCE9 C8          INY                    ;} Y += 2
-$88:DCEA 60          RTS
+$88:DCEA 60          RTS                    ; Return
 
 $88:DCEB A9 10 FF    LDA #$FF10             ;\
 $88:DCEE 9D 20 19    STA $1920,x            ;} $7E:9E00 = HDMA object $1920 = FF10h
@@ -6843,8 +6843,8 @@ $88:DD42 6B          RTL
 
 ;;; $DD43: Pre-instruction - Bomb Torizo haze colour math subscreen backdrop colour ;;;
 {
-; Colour math doesn't take effect when BG3 is enabled, even though BG3 is fully transparent... what is up with that?
-; TODO: re-evaluate after being informed that the blank tile $4270 is fully colour 3 (black), not fully colour 0 (transparent)
+; By default, empty space in BG3 is blank tiles, not transparent tiles, to support the blending of foregrounds like water
+; Hence, the colour math backdrop has no effect when BG3 is enabled for colour math, hence why it's disabled here
 $88:DD43 A9 2C 00    LDA #$002C             ;\
 $88:DD46 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 2Ch (normal, but BG3 is disabled)
 $88:DD49 6B          RTL
@@ -6929,9 +6929,9 @@ $88:DDA6             db 48,80,
 }
 
 
-;;; $DDC7..DF33: FX type 2Ch: haze ;;;
+;;; $DDC7..DF33: FX type 2Ch: Ceres haze ;;;
 {
-;;; $DDC7: FX type 2Ch: haze ;;;
+;;; $DDC7: FX type 2Ch: Ceres haze ;;;
 {
 $88:DDC7 A9 01 00    LDA #$0001             ;\
 $88:DDCA 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If Ceres Ridley's not dead:
@@ -6946,14 +6946,14 @@ $88:DDE1 6B          RTL
 }
 
 
-;;; $DDE2: Unused. Set haze pre-instruction for no fade ;;;
+;;; $DDE2: Unused. Set Ceres haze pre-instruction for no fade ;;;
 {
 $88:DDE2 A9 E8 DD    LDA #$DDE8             ;\
 $88:DDE5 9D F0 18    STA $18F0,x            ;} HDMA object pre-instruction = $DDE8
 }
 
 
-;;; $DDE8: Unused. Pre-instruction - haze colour math subscreen backdrop colour - no fade ;;;
+;;; $DDE8: Unused. Pre-instruction - Ceres haze colour math subscreen backdrop colour - no fade ;;;
 {
 ; I assume this routine was used before they realised they needed to handle door transition fade
 $88:DDE8 A0 20       LDY #$20               ;\
@@ -6981,20 +6981,20 @@ $88:DE0F 6B          RTL
 }
 
 
-;;; $DE10: Pre-instruction - haze colour math subscreen backdrop colour - Ceres Ridley alive ;;;
+;;; $DE10: Pre-instruction - Ceres haze colour math subscreen backdrop colour - Ceres Ridley alive ;;;
 {
 $88:DE10 A9 80 00    LDA #$0080             ; A = 80h (blue intensity)
-$88:DE13 80 03       BRA $03    [$DE18]     ; Go to set up haze colour math subscreen backdrop colour HDMA object pre-instruction for fading in
+$88:DE13 80 03       BRA $03    [$DE18]     ; Go to set up Ceres haze colour math subscreen backdrop colour HDMA object pre-instruction for fading in
 }
 
 
-;;; $DE15: Pre-instruction - haze colour math subscreen backdrop colour - Ceres Ridley dead ;;;
+;;; $DE15: Pre-instruction - Ceres haze colour math subscreen backdrop colour - Ceres Ridley dead ;;;
 {
 $88:DE15 A9 20 00    LDA #$0020             ; A = 20h (red intensity)
 }
 
 
-;;; $DE18: Set up haze colour math subscreen backdrop colour HDMA object pre-instruction for fading in ;;;
+;;; $DE18: Set up Ceres haze colour math subscreen backdrop colour HDMA object pre-instruction for fading in ;;;
 {
 $88:DE18 9D 20 19    STA $1920,x[$7E:1920]  ; HDMA object colour component flags = [A]
 $88:DE1B 9E 14 19    STZ $1914,x[$7E:1914]  ; HDMA object max colour intensity = 0
@@ -7008,7 +7008,7 @@ $88:DE2A 9D F0 18    STA $18F0,x[$7E:18F0]  ;} HDMA object pre-instruction = $DE
 }
 
 
-;;; $DE2D: Pre-instruction - haze colour math subscreen backdrop colour - fading in ;;;
+;;; $DE2D: Pre-instruction - Ceres haze colour math subscreen backdrop colour - fading in ;;;
 {
 $88:DE2D A0 20       LDY #$20               ;\
 $88:DE2F 84 74       STY $74    [$7E:0074]  ;|
@@ -7052,7 +7052,7 @@ $88:DE73 6B          RTL
 }
 
 
-;;; $DE74: Pre-instruction - haze colour math subscreen backdrop colour - faded in ;;;
+;;; $DE74: Pre-instruction - Ceres haze colour math subscreen backdrop colour - faded in ;;;
 {
 $88:DE74 A0 20       LDY #$20               ;\
 $88:DE76 84 74       STY $74    [$7E:0074]  ;|
@@ -7073,7 +7073,7 @@ $88:DE95 6B          RTL
 }
 
 
-;;; $DE96: Pre-instruction - haze colour math subscreen backdrop colour - fading out ;;;
+;;; $DE96: Pre-instruction - Ceres haze colour math subscreen backdrop colour - fading out ;;;
 {
 $88:DE96 A0 20       LDY #$20               ;\
 $88:DE98 84 74       STY $74    [$7E:0074]  ;|
@@ -7112,7 +7112,7 @@ $88:DED2 6B          RTL
 }
 
 
-;;; $DED3: Instruction list - haze colour math subscreen backdrop colour - Ceres Ridley not dead ;;;
+;;; $DED3: Instruction list - Ceres haze colour math subscreen backdrop colour - Ceres Ridley not dead ;;;
 {
 $88:DED3             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
@@ -7129,7 +7129,7 @@ $88:DEEA             db 00
 }
 
 
-;;; $DEEB: Instruction list - haze colour math subscreen backdrop colour - Ceres Ridley dead ;;;
+;;; $DEEB: Instruction list - Ceres haze colour math subscreen backdrop colour - Ceres Ridley dead ;;;
 {
 $88:DEEB             dx 8655,88,    ; HDMA table bank = $88
                         866A,7E,    ; Indirect HDMA data bank = $7E
@@ -7146,7 +7146,7 @@ $88:DF02             dx 00
 }
 
 
-;;; $DF03: Indirect HDMA table - haze colour math subscreen backdrop colour ;;;
+;;; $DF03: Indirect HDMA table - Ceres haze colour math subscreen backdrop colour ;;;
 {
 $88:DF03             dx 40,9D00,
                         08,9D01,

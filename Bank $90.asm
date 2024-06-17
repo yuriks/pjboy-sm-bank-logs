@@ -557,12 +557,12 @@ $90:8373 C9 1D E9    CMP #$E91D             ;} If [Samus pose input handler] != 
 $90:8376 F0 1D       BEQ $1D    [$8395]     ;/
 $90:8378 AD 28 0A    LDA $0A28  [$7E:0A28]  ;\
 $90:837B C9 4B 00    CMP #$004B             ;|
-$90:837E F0 18       BEQ $18    [$8398]     ;} If [prospective pose] = normal jump transition: return
+$90:837E F0 18       BEQ $18    [$8398]     ;} If [prospective pose] = normal jump transition: return carry clear
 $90:8380 C9 4C 00    CMP #$004C             ;|
 $90:8383 F0 13       BEQ $13    [$8398]     ;/
 $90:8385 C9 19 00    CMP #$0019             ;\
 $90:8388 F0 0E       BEQ $0E    [$8398]     ;|
-$90:838A C9 1A 00    CMP #$001A             ;} If [prospective pose] = spin jump: return
+$90:838A C9 1A 00    CMP #$001A             ;} If [prospective pose] = spin jump: return carry clear
 $90:838D F0 09       BEQ $09    [$8398]     ;/
 $90:838F A9 26 E9    LDA #$E926             ;\
 $90:8392 8D 60 0A    STA $0A60  [$7E:0A60]  ;} Samus pose input handler = $E926 (auto-jump hack)
@@ -641,8 +641,8 @@ $90:83EB 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;/
 ; BRANCH_RETURN
 $90:83EE A9 03 00    LDA #$0003             ;\
 $90:83F1 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose change command = transition animation finished
-$90:83F4 18          CLC
-$90:83F5 60          RTS
+$90:83F4 18          CLC                    ;\
+$90:83F5 60          RTS                    ;} Return carry clear
 }
 
 
@@ -666,8 +666,8 @@ $90:8412 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;/
 
 $90:8415 A9 03 00    LDA #$0003             ;\
 $90:8418 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose change command = transition animation finished
-$90:841B 18          CLC
-$90:841C 60          RTS
+$90:841B 18          CLC                    ;\
+$90:841C 60          RTS                    ;} Return carry clear
 }
 
 
@@ -709,8 +709,8 @@ $90:8459 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:845C 1A          INC A                  ;} Increment Samus animation frame
 $90:845D 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 $90:8460 A8          TAY                    ; Y = [Samus animation frame]
-$90:8461 38          SEC
-$90:8462 60          RTS
+$90:8461 38          SEC                    ;\
+$90:8462 60          RTS                    ;} Return carry set
 
 ; BRANCH_SPACE_JUMP
 $90:8463 A9 3E 00    LDA #$003E             ;\
@@ -720,8 +720,8 @@ $90:846D 18          CLC                    ;|
 $90:846E 69 0B 00    ADC #$000B             ;} Samus animation frame += Bh
 $90:8471 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 $90:8474 A8          TAY                    ; Y = [Samus animation frame]
-$90:8475 38          SEC
-$90:8476 60          RTS
+$90:8475 38          SEC                    ;\
+$90:8476 60          RTS                    ;} Return carry set
 
 ; BRANCH_SCREW_ATTACK
 $90:8477 A9 33 00    LDA #$0033             ;\
@@ -731,8 +731,8 @@ $90:8481 18          CLC                    ;|
 $90:8482 69 15 00    ADC #$0015             ;} Samus animation frame += 15h
 $90:8485 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 $90:8488 A8          TAY                    ; Y = [Samus animation frame]
-$90:8489 38          SEC
-$90:848A 60          RTS
+$90:8489 38          SEC                    ;\
+$90:848A 60          RTS                    ;} Return carry set
 }
 
 
@@ -770,8 +770,8 @@ $90:84AB 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;/
 ; BRANCH_RETURN
 $90:84AE A9 03 00    LDA #$0003             ;\
 $90:84B1 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose change command = transition animation finished
-$90:84B4 18          CLC
-$90:84B5 60          RTS
+$90:84B4 18          CLC                    ;\
+$90:84B5 60          RTS                    ;} Return carry clear
 }
 
 
@@ -827,8 +827,8 @@ $90:84B9 29 FF 00    AND #$00FF             ;} Super special prospective pose = 
 $90:84BC 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ;/
 $90:84BF A9 03 00    LDA #$0003             ;\
 $90:84C2 8D 32 0A    STA $0A32  [$7E:0A32]  ;} Super special prospective pose change command = transition animation finished
-$90:84C5 18          CLC
-$90:84C6 60          RTS
+$90:84C5 18          CLC                    ;\
+$90:84C6 60          RTS                    ;} Return carry clear
 }
 
 
@@ -1204,8 +1204,8 @@ $90:86DB F0 05       BEQ $05    [$86E2]     ;/
 $90:86DD AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:86E0 D0 02       BNE $02    [$86E4]     ;} If [Samus animation frame] != 0: go to BRANCH_SPINNING
 
-$90:86E2 38          SEC
-$90:86E3 60          RTS
+$90:86E2 38          SEC                    ;\
+$90:86E3 60          RTS                    ;} Return carry set
 
 ; BRANCH_SPINNING
 $90:86E4 C9 0B 00    CMP #$000B             ;\
@@ -1874,7 +1874,7 @@ $90:8B0A 18          CLC                    ;|
 $90:8B0B 69 04 00    ADC #$0004             ;} OAM stack pointer += 4
 $90:8B0E 8D 90 05    STA $0590  [$7E:0590]  ;/
 $90:8B11 7A          PLY
-$90:8B12 60          RTS
+$90:8B12 60          RTS                    ; Return
 
 $90:8B13 7A          PLY
 $90:8B14 7A          PLY
@@ -1972,7 +1972,7 @@ $90:8B88 A8          TAY                    ; Spritemap Y position = [atmospheri
 $90:8B89 68          PLA
 $90:8B8A 22 AE 89 81 JSL $8189AE[$81:89AE]  ; Add Samus spritemap to OAM
 $90:8B8E 7A          PLY
-$90:8B8F 60          RTS
+$90:8B8F 60          RTS                    ; Return
 
 $90:8B90 68          PLA
 $90:8B91 7A          PLY
@@ -2170,7 +2170,7 @@ $90:8CFE ED 11 09    SBC $0911  [$7E:0911]  ;} X = Samus spritemap X position = 
 $90:8D01 8D 04 0B    STA $0B04  [$7E:0B04]  ;|
 $90:8D04 AA          TAX                    ;/
 $90:8D05 AB          PLB
-$90:8D06 60          RTS
+$90:8D06 60          RTS                    ; Return
 
 $90:8D07 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:8D0A C9 02 00    CMP #$0002             ;} If [Samus animation frame] < 2: go to calculate usual Samus spritemap position
@@ -2347,7 +2347,7 @@ $90:8E2A             dw 8E3A ; 4: Acid / 24h: Fireflea
 $90:8E2C             dw 8E4A ; 6: Water / 26h: Tourian entrance statue
 $90:8E2E             dw 8E36 ; 8: Spores / 28h: Ceres Ridley
 $90:8E30             dw 8E36 ; Ah: Rain / 2Ah: Ceres elevator
-$90:8E32             dw 8E36 ; Ch: Fog / 2Ch: Unused haze
+$90:8E32             dw 8E36 ; Ch: Fog / 2Ch: Ceres haze
 $90:8E34             dw 8E36
 }
 
@@ -12998,7 +12998,7 @@ $90:DDC8 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:DDCA 2C B6 09    BIT $09B6  [$7E:09B6]  ;} If not holding run:
 $90:DDCD D0 04       BNE $04    [$DDD3]     ;/
 $90:DDCF 20 0D B8    JSR $B80D  [$90:B80D]  ; HUD selection handler - nothing / power bombs
-$90:DDD2 60          RTS
+$90:DDD2 60          RTS                    ; Return
 
 $90:DDD3 22 D6 CA 91 JSL $91CAD6[$91:CAD6]  ; Execute x-ray handler
 $90:DDD7 60          RTS
@@ -15501,12 +15501,12 @@ $90:ECBC D0 10       BNE $10    [$ECCE]     ;/
 $90:ECBE 89 01 00    BIT #$0001             ;\
 $90:ECC1 D0 04       BNE $04    [$ECC7]     ;} If varia suit equipped: go to BRANCH_VARIA
 $90:ECC3 9C 74 0A    STZ $0A74  [$7E:0A74]  ; Samus suit palette index = 0
-$90:ECC6 60          RTS
+$90:ECC6 60          RTS                    ; Return
 
 ; BRANCH_VARIA
 $90:ECC7 A9 02 00    LDA #$0002             ;\
 $90:ECCA 8D 74 0A    STA $0A74  [$7E:0A74]  ;} Samus suit palette index = 2
-$90:ECCD 60          RTS
+$90:ECCD 60          RTS                    ; Return
 
 ; BRANCH_GRAVITY
 $90:ECCE A9 04 00    LDA #$0004             ;\
