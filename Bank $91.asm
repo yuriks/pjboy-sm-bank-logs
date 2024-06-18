@@ -429,7 +429,7 @@ $91:81A8 60          RTS
 ; $14: The controller 1 input bits *not* pressed (not including start/select)
 ; [[Y]]: Required newly pressed input
 ; [[Y] + 2]: Required input
-; If [[Y]] & [$12/14] != 0 then there we some buttons specified in [[Y]] that are not being pressed
+; If [[Y]] & [$12/14] != 0 then there were some buttons specified in [[Y]] that are not being pressed
 
 $91:81A9 A5 8B       LDA $8B    [$7E:008B]  ;\
 $91:81AB F0 2E       BEQ $2E    [$81DB]     ;} If pressing nothing: go to BRANCH_NO_INPUT
@@ -464,7 +464,7 @@ $91:81D8 1A          INC A                  ;} If [[Y]] != FFFFh: go to LOOP
 $91:81D9 D0 E4       BNE $E4    [$81BF]     ;/
 
 ; BRANCH_NO_INPUT
-$91:81DB 9C 18 0A    STZ $0A18  [$7E:0A18]  ; $0A18 = 0
+$91:81DB 9C 18 0A    STZ $0A18  [$7E:0A18]  ; $0A18 = 0 (never read)
 $91:81DE 22 D9 82 91 JSL $9182D9[$91:82D9]  ; Handle transition table lookup failure
 
 $91:81E2 18          CLC                    ;\
