@@ -789,11 +789,27 @@ $A3:8E6A 6B          RTL
 
 ;;; $8E6B: Enemy touch - enemy $D6BF (fireflea) ;;;
 {
+; This code is pretty buggy
+
+; If the enemy is killed by $8023, then it will run the enemy death routine, which clears enemy RAM
+; The call at $8E6F then runs the enemy death routine *again*,
+; where the enemy death explosion enemy projectile will be referencing this cleared enemy RAM,
+; which will cause the explosion to spawn to position (0, 0) with garbage drop chances
+; The number of enemies killed will also be incremented one extra time
+
+; If the enemy is not killed by $8023, then the enemy death routine will be run with A = [enemy health] (from $A0:A480),
+; in death animation > 4, which gets corrected to 0 (small explosion), so that works out fine by chance
+
+; $177E is used to index $88:B070 by FX code, the table is 6 entries long, so the max index should be Ah
+; If you do place 6 fireflea in a room (which vanilla does not do) and kill them all,
+; the screen will get bright again because it reads beyond the table,
+; which happens to result in a large value that results in the backdrop colour not being solid white
+
 $A3:8E6B 22 23 80 A3 JSL $A38023[$A3:8023]  ; Normal enemy touch AI
 $A3:8E6F 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
 $A3:8E73 AD 7E 17    LDA $177E  [$7E:177E]  ;\
 $A3:8E76 18          CLC                    ;|
-$A3:8E77 69 02 00    ADC #$0002             ;} If [fireflea darkness level] < Ch: (this should actually be compared to Ah, Ch causes table overread)
+$A3:8E77 69 02 00    ADC #$0002             ;} If [fireflea darkness level] < Ch:
 $A3:8E7A C9 0E 00    CMP #$000E             ;|
 $A3:8E7D 10 03       BPL $03    [$8E82]     ;/
 $A3:8E7F 8D 7E 17    STA $177E  [$7E:177E]  ; Fireflea darkness level += 2
@@ -804,28 +820,29 @@ $A3:8E82 6B          RTL
 
 ;;; $8E83: Power bomb reaction - enemy $D6BF (fireflea) ;;;
 {
-$A3:8E83 22 37 80 A3 JSL $A38037[$A3:8037]
-$A3:8E87 80 04       BRA $04    [$8E8D]
+$A3:8E83 22 37 80 A3 JSL $A38037[$A3:8037]  ; Normal enemy power bomb AI
+$A3:8E87 80 04       BRA $04    [$8E8D]     ; Go to fireflea shared shot reaction
 }
 
 
 ;;; $8E89: Enemy shot - enemy $D6BF (fireflea) ;;;
 {
-$A3:8E89 22 2D 80 A3 JSL $A3802D[$A3:802D]
+$A3:8E89 22 2D 80 A3 JSL $A3802D[$A3:802D]  ; Normal enemy shot AI
 }
 
 
-;;; $8E8D:  ;;;
+;;; $8E8D: Fireflea shared shot reaction ;;;
 {
+; See $8E6B for note about fireflea darkness level
 $A3:8E8D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8E90 BD 8C 0F    LDA $0F8C,x[$7E:100C]
-$A3:8E93 D0 0F       BNE $0F    [$8EA4]
-$A3:8E95 AD 7E 17    LDA $177E  [$7E:177E]
-$A3:8E98 18          CLC
-$A3:8E99 69 02 00    ADC #$0002
-$A3:8E9C C9 0E 00    CMP #$000E
-$A3:8E9F 10 03       BPL $03    [$8EA4]
-$A3:8EA1 8D 7E 17    STA $177E  [$7E:177E]
+$A3:8E90 BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
+$A3:8E93 D0 0F       BNE $0F    [$8EA4]     ;} If [enemy health] = 0:
+$A3:8E95 AD 7E 17    LDA $177E  [$7E:177E]  ;\
+$A3:8E98 18          CLC                    ;|
+$A3:8E99 69 02 00    ADC #$0002             ;} If [fireflea darkness level] < Ch:
+$A3:8E9C C9 0E 00    CMP #$000E             ;|
+$A3:8E9F 10 03       BPL $03    [$8EA4]     ;/
+$A3:8EA1 8D 7E 17    STA $177E  [$7E:177E]  ; Fireflea darkness level += 2
 
 $A3:8EA4 6B          RTL
 }

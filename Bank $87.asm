@@ -685,7 +685,7 @@ $87:839C             dw 3800, 7F58, 6ED5, 5A71, 49EE, 356A, 24E7, 1083
 ;;; $83AC: Instruction list - animated tiles object $854C (Tourian statue - Phantoon) ;;;
 {
 $87:83AC             dw 8349,0001,       ; Set Tourian statue to process Phantoon
-                        813F,0006,840A,  ; Go to BRANCH_STATUE_IS_GREY if Phantoon statue is grey, go to BRANCH_STATUE_IS_GREY
+                        813F,0006,840A,  ; Go to BRANCH_STATUE_IS_GREY if Phantoon statue is grey
                         0006,9364
 ; LOOP
 $87:83BA             dx 000C,93E4,
@@ -719,7 +719,7 @@ $87:840A             dw 8352,8001,       ; Set Tourian statue not processing Pha
 ;;; $8414: Instruction list - animated tiles object $8552 (Tourian statue - Ridley) ;;;
 {
 $87:8414             dw 8349,0002,       ; Set Tourian statue to process Ridley
-                        813F,0007,8472,  ; Go to BRANCH_STATUE_IS_GREY if Ridley statue is grey, go to BRANCH_STATUE_IS_GREY
+                        813F,0007,8472,  ; Go to BRANCH_STATUE_IS_GREY if Ridley statue is grey
                         000A,94E4        
 ; LOOP_WAIT                              
 $87:8422             dx 000C,9524,       
@@ -753,7 +753,7 @@ $87:8472             dw 8352,8002,       ; Set Tourian statue not processing Rid
 ;;; $847C: Instruction list - animated tiles object $8558 (Tourian statue - Kraid) ;;;
 {
 $87:847C             dw 8349,0004,       ; Set Tourian statue to process Kraid
-                        813F,0009,84DA,  ; Go to BRANCH_STATUE_IS_GREY if Kraid statue is grey, go to BRANCH_STATUE_IS_GREY
+                        813F,0009,84DA,  ; Go to BRANCH_STATUE_IS_GREY if Kraid statue is grey
                         0004,9724        
 ; LOOP_WAIT                              
 $87:848A             dx 000C,9764,       
@@ -787,7 +787,7 @@ $87:84DA             dw 8352,8004,       ; Set Tourian statue not processing Kra
 ;;; $84E4: Instruction list - animated tiles object $855E (Tourian statue - Draygon) ;;;
 {
 $87:84E4             dw 8349,0008,       ; Set Tourian statue to process Draygon
-                        813F,0008,8542,  ; Go to BRANCH_STATUE_IS_GREY if Draygon statue is grey, go to BRANCH_STATUE_IS_GREY
+                        813F,0008,8542,  ; Go to BRANCH_STATUE_IS_GREY if Draygon statue is grey
                         0008,95A4        
 ; LOOP_WAIT                              
 $87:84F2             dx 000C,9624,       
