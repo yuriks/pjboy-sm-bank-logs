@@ -3819,7 +3819,7 @@ $8F:BE24 60          RTS
 }
 
 
-;;; $BE25: Door ASM: scroll 0 = green, 2 = blue ;;;
+;;; $BE25: Door ASM: scroll 0 = green, 1 = blue ;;;
 {
 ; Room $A107, door list index 0: Door
 $8F:BE25 08          PHP
