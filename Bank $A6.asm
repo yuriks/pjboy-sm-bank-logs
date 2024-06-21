@@ -2491,12 +2491,13 @@ $A6:A2F1 6B          RTL
 
 ;;; $A2F2: Enemy graphics drawn hook - Ceres Ridley - draw Baby Metroid and door ;;;
 {
+; Enemy 1 is the Ceres door
 $A6:A2F2 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $A6:A2F5 D0 03       BNE $03    [$A2FA]     ;} If [Ceres status] = before Ridley escape:
 $A6:A2F7 20 1A BF    JSR $BF1A  [$A6:BF1A]  ; Draw Baby Metroid
 
 $A6:A2FA AD EA 0F    LDA $0FEA  [$7E:0FEA]  ;\
-$A6:A2FD F0 21       BEQ $21    [$A320]     ;} If [enemy 1 $0FAA] = 0: return
+$A6:A2FD F0 21       BEQ $21    [$A320]     ;} If [enemy 1 drawn by Ridley flag] = 0: return
 $A6:A2FF AD 40 18    LDA $1840  [$7E:1840]  ;\
 $A6:A302 29 03 00    AND #$0003             ;|
 $A6:A305 AA          TAX                    ;|
@@ -2508,7 +2509,7 @@ $A6:A30F AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A6:A312 85 12       STA $12    [$7E:0012]  ;} Spritemap X position = [enemy 1 Y position]
 $A6:A314 A9 00 04    LDA #$0400             ;\
 $A6:A317 85 16       STA $16    [$7E:0016]  ;} Spritemap palette bits = 400h (palette 2)
-$A6:A319 A0 29 A3    LDY #$A329             ; Spritemap address = Ceres Ridley door
+$A6:A319 A0 29 A3    LDY #$A329             ; Spritemap address = $A329 (Ceres Ridley door)
 $A6:A31C 22 9F 87 81 JSL $81879F[$81:879F]  ; Add spritemap to OAM
 
 $A6:A320 6B          RTL
@@ -10401,62 +10402,62 @@ $A6:EF91             dx 0006, 8008,03,71CC, 8000,F8,7120, 81F0,F8,7122, 81F2,06,
 ;;; $EFB1: Initialisation AI - enemy $E1FF (Ceres steam) ;;;
 {
 $A6:EFB1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:EFB4 9E 98 0F    STZ $0F98,x[$7E:1018]
-$A6:EFB7 BD 86 0F    LDA $0F86,x[$7E:1006]
-$A6:EFBA 09 00 20    ORA #$2000
-$A6:EFBD 9D 86 0F    STA $0F86,x[$7E:1006]
-$A6:EFC0 BD 88 0F    LDA $0F88,x[$7E:1008]
-$A6:EFC3 09 04 00    ORA #$0004
-$A6:EFC6 9D 88 0F    STA $0F88,x[$7E:1008]
-$A6:EFC9 A9 01 00    LDA #$0001
-$A6:EFCC 9D 94 0F    STA $0F94,x[$7E:1014]
-$A6:EFCF 9E 90 0F    STZ $0F90,x[$7E:1010]
-$A6:EFD2 A9 00 0A    LDA #$0A00
-$A6:EFD5 9D 96 0F    STA $0F96,x[$7E:1016]
-$A6:EFD8 22 11 81 80 JSL $808111[$80:8111]
-$A6:EFDC 29 1F 00    AND #$001F
-$A6:EFDF 1A          INC A
-$A6:EFE0 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A6:EFE3 BD B4 0F    LDA $0FB4,x[$7E:1034]
-$A6:EFE6 0A          ASL A
-$A6:EFE7 A8          TAY
-$A6:EFE8 B9 F5 EF    LDA $EFF5,y[$A6:EFF5]
-$A6:EFEB 9D 92 0F    STA $0F92,x[$7E:1012]
-$A6:EFEE B9 01 F0    LDA $F001,y[$A6:F001]
-$A6:EFF1 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A6:EFB4 9E 98 0F    STZ $0F98,x[$7E:1018]  ; Enemy VRAM tiles index = 0
+$A6:EFB7 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A6:EFBA 09 00 20    ORA #$2000             ;} Set enemy to process instruction
+$A6:EFBD 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
+$A6:EFC0 BD 88 0F    LDA $0F88,x[$7E:1008]  ;\
+$A6:EFC3 09 04 00    ORA #$0004             ;} Enable enemy extended spritemap format
+$A6:EFC6 9D 88 0F    STA $0F88,x[$7E:1008]  ;/
+$A6:EFC9 A9 01 00    LDA #$0001             ;\
+$A6:EFCC 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
+$A6:EFCF 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
+$A6:EFD2 A9 00 0A    LDA #$0A00             ;\
+$A6:EFD5 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = A00h (palette 5)
+$A6:EFD8 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A6:EFDC 29 1F 00    AND #$001F             ;\
+$A6:EFDF 1A          INC A                  ;} Enemy activation timer = 1 + [random number] % 20h
+$A6:EFE0 9D AE 0F    STA $0FAE,x[$7E:102E]  ;/
+$A6:EFE3 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
+$A6:EFE6 0A          ASL A                  ;} Y = [enemy parameter 1] * 2
+$A6:EFE7 A8          TAY                    ;/
+$A6:EFE8 B9 F5 EF    LDA $EFF5,y[$A6:EFF5]  ;\
+$A6:EFEB 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = [$EFF5 + [Y]]
+$A6:EFEE B9 01 F0    LDA $F001,y[$A6:F001]  ;\
+$A6:EFF1 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = [$F001 + [Y]]
 $A6:EFF4 6B          RTL
 
-$A6:EFF5             dw F04D, F081, F0B5, F0E9, F081, F0E9
-
-$A6:F001             dw EFF4, EFF4, EFF4, EFF4, F019, F019
+; Indexed by [enemy parameter 1] * 2
+$A6:EFF5             dw F04D, F081, F0B5, F0E9, F081, F0E9 ; Instruction list pointers
+$A6:F001             dw EFF4, EFF4, EFF4, EFF4, F019, F019 ; Initial function pointers
 }
 
 
 ;;; $F00D: Main AI - enemy $E1FF (Ceres steam) ;;;
 {
 $A6:F00D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:F010 A9 FF 7F    LDA #$7FFF
-$A6:F013 9D 8C 0F    STA $0F8C,x[$7E:108C]
-$A6:F016 7C A8 0F    JMP ($0FA8,x)[$A6:EFF4]
+$A6:F010 A9 FF 7F    LDA #$7FFF             ;\
+$A6:F013 9D 8C 0F    STA $0F8C,x[$7E:108C]  ;} Enemy health = 7FFFh
+$A6:F016 7C A8 0F    JMP ($0FA8,x)[$A6:EFF4]; Go to [enemy function]
 }
 
 
-;;; $F019: Calculate graphical offset in rotating elevator room ;;;
+;;; $F019: Ceres steam function - calculate graphical offset in rotating elevator room ;;;
 {
-$A6:F019 BD 7A 0F    LDA $0F7A,x[$7E:11FA]
-$A6:F01C 85 12       STA $12    [$7E:0012]
-$A6:F01E BD 7E 0F    LDA $0F7E,x[$7E:11FE]
-$A6:F021 85 14       STA $14    [$7E:0014]
+$A6:F019 BD 7A 0F    LDA $0F7A,x[$7E:11FA]  ;\
+$A6:F01C 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A6:F01E BD 7E 0F    LDA $0F7E,x[$7E:11FE]  ;\
+$A6:F021 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:F023 22 66 8B 8B JSL $8B8B66[$8B:8B66]  ; Calculate position of Ceres steam in rotating elevator room
 $A6:F027 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:F02A A5 12       LDA $12    [$7E:0012]
-$A6:F02C 38          SEC
-$A6:F02D FD 7A 0F    SBC $0F7A,x[$7E:11FA]
-$A6:F030 9F 10 70 7E STA $7E7010,x[$7E:7290]
-$A6:F034 A5 14       LDA $14    [$7E:0014]
-$A6:F036 38          SEC
-$A6:F037 FD 7E 0F    SBC $0F7E,x[$7E:11FE]
-$A6:F03A 9F 12 70 7E STA $7E7012,x[$7E:7292]
+$A6:F02A A5 12       LDA $12    [$7E:0012]  ;\
+$A6:F02C 38          SEC                    ;|
+$A6:F02D FD 7A 0F    SBC $0F7A,x[$7E:11FA]  ;} Enemy graphical X offset = [$12] - [enemy X position]
+$A6:F030 9F 10 70 7E STA $7E7010,x[$7E:7290];/
+$A6:F034 A5 14       LDA $14    [$7E:0014]  ;\
+$A6:F036 38          SEC                    ;|
+$A6:F037 FD 7E 0F    SBC $0F7E,x[$7E:11FE]  ;} Enemy graphical Y offset = [$14] - [enemy Y position]
+$A6:F03A 9F 12 70 7E STA $7E7012,x[$7E:7292];/
 $A6:F03E 6B          RTL
 }
 
@@ -10464,22 +10465,22 @@ $A6:F03E 6B          RTL
 ;;; $F03F: Enemy touch - enemy $E1FF (Ceres steam) ;;;
 {
 $A6:F03F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:F042 A9 FF 7F    LDA #$7FFF
-$A6:F045 9D 8C 0F    STA $0F8C,x[$7E:108C]
+$A6:F042 A9 FF 7F    LDA #$7FFF             ;\
+$A6:F045 9D 8C 0F    STA $0F8C,x[$7E:108C]  ;} Enemy health = 7FFFh
 $A6:F048 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 $A6:F04C 6B          RTL
 }
 
 
-;;; $F04D: Instruction list -  ;;;
+;;; $F04D: Instruction list - Ceres steam - up ;;;
 {
-$A6:F04D             dx F11D,           ; ???
+$A6:F04D             dw F11D,           ; Hide enemy
                         0001,F142,
-                        F127,F04D,F061, ; ???
-                        F11D,           ; ???
+                        F127,F04D,F061  ; Decrement activation timer and go to $F04D if non-zero, otherwise show enemy and go to $F061
+$A6:F059             dw F11D,           ; Hide enemy
                         0040,F142,
-                        F135            ; ???
-$A6:F061             dx 0003,F142,
+                        F135            ; Show enemy
+$A6:F061             dw 0003,F142,
                         0003,F14C,
                         0003,F156,
                         0003,F160,
@@ -10490,15 +10491,15 @@ $A6:F061             dx 0003,F142,
 }
 
 
-;;; $F081: Instruction list -  ;;;
+;;; $F081: Instruction list - Ceres steam - left ;;;
 {
-$A6:F081             dx F11D,           ; ???
+$A6:F081             dw F11D,           ; Hide enemy
                         0001,F188,
-                        F127,F081,F095, ; ???
-                        F11D,           ; ???
+                        F127,F081,F095  ; Decrement activation timer and go to $F081 if non-zero, otherwise show enemy and go to $F095
+$A6:F08D             dw F11D,           ; Hide enemy
                         0040,F188,
-                        F135            ; ???
-$A6:F095             dx 0003,F188,
+                        F135            ; Show enemy
+$A6:F095             dw 0003,F188,
                         0003,F192,
                         0003,F19C,
                         0003,F1A6,
@@ -10509,15 +10510,15 @@ $A6:F095             dx 0003,F188,
 }
 
 
-;;; $F0B5: Instruction list -  ;;;
+;;; $F0B5: Instruction list - Ceres steam - down ;;;
 {
-$A6:F0B5             dx F11D,           ; ???
+$A6:F0B5             dw F11D,           ; Hide enemy
                         0001,F1CE,
-                        F127,F0B5,F0C9, ; ???
-                        F11D,           ; ???
+                        F127,F0B5,F0C9  ; Decrement activation timer and go to $F0B5 if non-zero, otherwise show enemy and go to $F0C9
+$A6:F0C1             dw F11D,           ; Hide enemy
                         0040,F1CE,
-                        F135            ; ???
-$A6:F0C9             dx 0003,F1CE,
+                        F135            ; Show enemy
+$A6:F0C9             dw 0003,F1CE,
                         0003,F1D8,
                         0003,F1E2,
                         0003,F1EC,
@@ -10528,15 +10529,15 @@ $A6:F0C9             dx 0003,F1CE,
 }
 
 
-;;; $F0E9: Instruction list -  ;;;
+;;; $F0E9: Instruction list - Ceres steam - right ;;;
 {
-$A6:F0E9             dx F11D,           ; ???
+$A6:F0E9             dw F11D,           ; Hide enemy
                         0001,F214,
-                        F127,F0E9,F0FD, ; ???
-                        F11D,           ; ???
+                        F127,F0E9,F0FD  ; Decrement activation timer and go to $F0E9 if non-zero, otherwise show enemy and go to $F0FD
+$A6:F0F5             dw F11D,           ; Hide enemy
                         0040,F214,
-                        F135            ; ???
-$A6:F0FD             dx 0003,F214,
+                        F135            ; Show enemy
+$A6:F0FD             dw 0003,F214,
                         0003,F21E,
                         0003,F228,
                         0003,F232,
@@ -10547,34 +10548,34 @@ $A6:F0FD             dx 0003,F214,
 }
 
 
-;;; $F11D: Instruction ;;;
+;;; $F11D: Instruction - hide enemy ;;;
 {
-$A6:F11D BD 86 0F    LDA $0F86,x[$7E:1086]
-$A6:F120 09 00 05    ORA #$0500
-$A6:F123 9D 86 0F    STA $0F86,x[$7E:1086]
+$A6:F11D BD 86 0F    LDA $0F86,x[$7E:1086]  ;\
+$A6:F120 09 00 05    ORA #$0500             ;} Set enemy to be intangible and invisible
+$A6:F123 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
 $A6:F126 6B          RTL
 }
 
 
-;;; $F127: Instruction ;;;
+;;; $F127: Instruction - decrement activation timer and go to [[Y]] if non-zero, otherwise show enemy and go to [[Y] + 2] ;;;
 {
-$A6:F127 DE AE 0F    DEC $0FAE,x[$7E:10AE]
-$A6:F12A F0 05       BEQ $05    [$F131]
-$A6:F12C B9 00 00    LDA $0000,y[$A6:F055]
-$A6:F12F A8          TAY
-$A6:F130 6B          RTL
+$A6:F127 DE AE 0F    DEC $0FAE,x[$7E:10AE]  ; Decrement enemy activation timer
+$A6:F12A F0 05       BEQ $05    [$F131]     ; If [enemy activation timer] != 0:
+$A6:F12C B9 00 00    LDA $0000,y[$A6:F055]  ;\
+$A6:F12F A8          TAY                    ;} Y = [[Y]]
+$A6:F130 6B          RTL                    ; Return
 
-$A6:F131 B9 02 00    LDA $0002,y[$A6:F057]
-$A6:F134 A8          TAY
+$A6:F131 B9 02 00    LDA $0002,y[$A6:F057]  ;\
+$A6:F134 A8          TAY                    ;} Y = [[Y] + 2]
 }
 
 
-;;; $F135: Instruction ;;;
+;;; $F135: Instruction - show enemy ;;;
 {
-$A6:F135 BD 86 0F    LDA $0F86,x[$7E:1106]
-$A6:F138 29 FF FB    AND #$FBFF
-$A6:F13B 29 FF FE    AND #$FEFF
-$A6:F13E 9D 86 0F    STA $0F86,x[$7E:1106]
+$A6:F135 BD 86 0F    LDA $0F86,x[$7E:1106]  ;\
+$A6:F138 29 FF FB    AND #$FBFF             ;|
+$A6:F13B 29 FF FE    AND #$FEFF             ;} Set enemy to tangible and visible
+$A6:F13E 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
 $A6:F141 6B          RTL
 }
 
@@ -10582,6 +10583,8 @@ $A6:F141 6B          RTL
 ;;; $F142: Ceres steam extended spritemaps ;;;
 {
 ; Top byte of extended spritemap size is ignored...
+
+; Up
 $A6:F142             dx 1001, 0000,0000,F374,F25C
 $A6:F14C             dx 1001, 0000,0000,F37B,F26A
 $A6:F156             dx 1001, 0000,0000,F387,F278
@@ -10589,6 +10592,8 @@ $A6:F160             dx 1001, 0000,0000,F398,F286
 $A6:F16A             dx 1001, 0000,0000,F3AE,F294
 $A6:F174             dx 1001, 0000,0000,F3BF,F25A
 $A6:F17E             dx 1001, 0000,0000,F3CB,F25A
+
+; Left
 $A6:F188             dx 1001, 0000,0000,F3D2,F2A2
 $A6:F192             dx 1001, 0000,0000,F3D9,F2B0
 $A6:F19C             dx 1001, 0000,0000,F3E5,F2BE
@@ -10596,6 +10601,8 @@ $A6:F1A6             dx 1001, 0000,0000,F3F6,F2CC
 $A6:F1B0             dx 1001, 0000,0000,F40C,F2DA
 $A6:F1BA             dx 1001, 0000,0000,F41D,F25A
 $A6:F1C4             dx 1001, 0000,0000,F429,F25A
+
+; Down
 $A6:F1CE             dx 1001, 0000,0000,F430,F2E8
 $A6:F1D8             dx 1001, 0000,0000,F437,F2F6
 $A6:F1E2             dx 1001, 0000,0000,F443,F304
@@ -10603,6 +10610,8 @@ $A6:F1EC             dx 1001, 0000,0000,F454,F312
 $A6:F1F6             dx 1001, 0000,0000,F46A,F320
 $A6:F200             dx 1001, 0000,0000,F47B,F25A
 $A6:F20A             dx 1001, 0000,0000,F487,F25A
+
+; Right
 $A6:F214             dx 1001, 0000,0000,F48E,F32E
 $A6:F21E             dx 1001, 0000,0000,F495,F33C
 $A6:F228             dx 1001, 0000,0000,F4A1,F34A
@@ -10616,21 +10625,29 @@ $A6:F250             dx 1001, 0000,0000,F4E5,F25A
 ;;; $F25A: Ceres steam hitboxes ;;;
 {
 $A6:F25A             dx 0000
+
+; Up
 $A6:F25C             dx 0001, FFF8,FFF0,0007,FFFF,F03F,804C
 $A6:F26A             dx 0001, FFF8,FFE9,0007,FFFE,F03F,804C
 $A6:F278             dx 0001, FFF8,FFE0,0007,FFF8,F03F,804C
 $A6:F286             dx 0001, FFF8,FFD8,0007,FFF0,F03F,804C
 $A6:F294             dx 0001, FFF8,FFD8,0006,FFE8,F03F,804C
+
+; Left
 $A6:F2A2             dx 0001, FFF0,FFF8,FFFF,0007,F03F,804C
 $A6:F2B0             dx 0001, FFE8,FFF8,FFFE,0007,F03F,804C
 $A6:F2BE             dx 0001, FFE0,FFF9,FFF7,0007,F03F,804C
 $A6:F2CC             dx 0001, FFD8,FFF7,FFEF,0005,F03F,804C
 $A6:F2DA             dx 0001, FFD8,FFF5,FFE6,0002,F03F,804C
+
+; Down
 $A6:F2E8             dx 0001, FFF8,0000,0007,000E,F03F,804C
 $A6:F2F6             dx 0001, FFF8,0000,0007,0017,F03F,804C
 $A6:F304             dx 0001, FFF8,0008,0007,001F,F03F,804C
 $A6:F312             dx 0001, FFF8,000F,0007,0027,F03F,804C
 $A6:F320             dx 0001, FFF8,0017,0006,0026,F03F,804C
+
+; Right
 $A6:F32E             dx 0001, 0000,FFF8,000F,0007,F03F,804C
 $A6:F33C             dx 0001, 0001,FFF8,0017,0007,F03F,804C
 $A6:F34A             dx 0001, 0009,FFF8,001F,0007,F03F,804C
@@ -10641,6 +10658,7 @@ $A6:F366             dx 0001, 0019,FFF5,0028,0003,F03F,804C
 
 ;;; $F374: Ceres steam spritemaps ;;;
 {
+; Up
 $A6:F374             dx 0001, 81F8,F0,207C
 $A6:F37B             dx 0002, 81F8,E8,207C, 81F8,F0,207E
 $A6:F387             dx 0003, 81F8,E0,207C, 81F8,E8,207E, 81F8,F0,209A
@@ -10648,6 +10666,8 @@ $A6:F398             dx 0004, 81F8,D7,207C, 81F8,E0,207E, 81F8,E8,209A, 81F8,F0,
 $A6:F3AE             dx 0003, 81F8,D6,207E, 81F8,E0,209A, 81F8,E8,209C
 $A6:F3BF             dx 0002, 81F8,D5,209A, 81F8,E0,209C
 $A6:F3CB             dx 0001, 81F8,D3,209C
+
+; Left
 $A6:F3D2             dx 0001, 81F0,F8,207C
 $A6:F3D9             dx 0002, 81E8,F8,207C, 81F0,F8,207E
 $A6:F3E5             dx 0003, 81E0,F8,207C, 81E8,F8,207E, 81F0,F8,209A
@@ -10655,6 +10675,8 @@ $A6:F3F6             dx 0004, 81D8,F6,207C, 81E0,F8,207E, 81E8,F8,209A, 81F0,F8,
 $A6:F40C             dx 0003, 81D7,F4,207E, 81E0,F6,209A, 81E8,F8,209C
 $A6:F41D             dx 0002, 81D6,F2,209A, 81E0,F4,209C
 $A6:F429             dx 0001, 81D5,F0,209C
+
+; Down
 $A6:F430             dx 0001, 81F8,00,A07C
 $A6:F437             dx 0002, 81F8,08,A07C, 81F8,00,A07E
 $A6:F443             dx 0003, 81F8,10,A07C, 81F8,08,A07E, 81F8,00,A09A
@@ -10662,6 +10684,8 @@ $A6:F454             dx 0004, 81F8,18,A07C, 81F8,10,A07E, 81F8,08,A09A, 81F8,00,
 $A6:F46A             dx 0003, 81F8,18,A07E, 81F8,10,A09A, 81F8,08,A09C
 $A6:F47B             dx 0002, 81F8,18,A09A, 81F8,10,A09C
 $A6:F487             dx 0001, 81F8,18,A09C
+
+; Right
 $A6:F48E             dx 0001, 8000,F8,607C
 $A6:F495             dx 0002, 8008,F8,607C, 8000,F8,607E
 $A6:F4A1             dx 0003, 8010,F8,607C, 8008,F8,607E, 8000,F8,609A
@@ -10675,172 +10699,154 @@ $A6:F4E5             dx 0001, 801B,F0,609C
 
 ;;; $F4EC..FB71: Ceres door ;;;
 {
-;;; $F4EC: Palette - enemy $E23F (Ceres door) ;;;
+;;; $F4EC: Ceres door palettes ;;;
 {
+; Before escape sequence
 $A6:F4EC             dw 0000, 7E20, 6560, 2060, 1000, 7940, 5D00, 4CA0, 3CA0, 43FF, 0113, 000F, 175C, 0299, 01D6, 57E0
-}
 
-
-;;; $F50C: Palette ;;;
-{
+; During escape sequence
 $A6:F50C             dw 3800, 6B5A, 5652, 28E7, 1863, 62B5, 4A10, 396B, 3129, 43FF, 0113, 000F, 175C, 0299, 01D6, 3BE0
 }
 
 
 ;;; $F52C: Ceres door instruction list pointers ;;;
 {
-; Instruction pointers, indexed by [enemy parameter 1]
+; Indexed by [enemy parameter 1]
 $A6:F52C             dw F56C, F5BE, F610, F53A, F61A, F62A, F634
 }
 
 
 ;;; $F53A..F63D: Instruction lists - Ceres door ;;;
 {
-;;; $F53A: Instruction list - parameter 1 = 3 (door in Ceres Ridley's room) ;;;
+;;; $F53A: Instruction list - parameter 1 = 3 (Ridley's room facing right) ;;;
 {
-; Initialisation
-$A6:F53A             dw F68B,        ; Set enemy to ignore Samus/projectiles
-                        F6A6,        ; Set enemy to invisible
+$A6:F53A             dw F68B,        ; Set enemy as intangible
+                        F6A6,        ; Set enemy as invisible
                         0002,FAA7,
-; Start closing
-                        F695,        ; Set enemy to not ignore Samus/projectiles
-                        F6B3,        ; Set enemy to visible
+                        F695,        ; Set enemy as tangible
+                        F6B3,        ; Set enemy as visible
                         0002,FAA7,
                         0002,FA87,
                         0002,FA67,
                         0002,FA3D,
-                        F69F,        ; Enemy $0FAA = 1
+                        F69F,        ; Set drawn by Ridley flag
                         0001,FA13,
-                        F6A6,        ; Set enemy to invisible
-; LOOP_CLOSED
+                        F6A6,        ; Set enemy as invisible
 $A6:F55E             dw 0002,FA13,
-                        F66A,F55E,   ; If area boss is not dead: go to LOOP_CLOSED
-; End LOOP_CLOSED
-                        F6B0,        ; Set enemy to visible, $0FAA = 0
-                        80ED,F598    ; Go to Speed = 0 BRANCH_CLOSE
+                        F66A,F55E,   ; Go to $F55E if area boss is alive
+                        F6B0,        ; Set enemy as visible, clear drawn by Ridley flag
+                        80ED,F598    ; Go to $F598 (Ceres door facing right - closed)
 }
 
 
-;;; $F56C: Instruction list - parameter 1 = 0 (facing right) ;;;
+;;; $F56C: Instruction list - parameter 1 = 0 (normal facing right) ;;;
 {
-; Initialisation: set to door open/closed state depending on Samus relative position
-$A6:F56C             dw F68B,        ; Set enemy to ignore Samus/projectiles
-                        F6A6,        ; Set enemy to invisible
+$A6:F56C             dw F68B,        ; Set enemy as intangible
+                        F6A6,        ; Set enemy as invisible
                         0002,FA13,
-                        F63E,F598    ; If Samus is not within 30h pixels: go to BRANCH_CLOSED
-; LOOP_OPEN
+                        F63E,F598    ; Go to $F598 (Ceres door facing right - closed) if Samus is not within 30h pixels
+}
+
+
+;;; $F578: Instruction list - Ceres door facing right - open ;;;
+{
 $A6:F578             dw 0002,FAA7,
-                        F63E,F584,   ;\
-                        80ED,F578    ;} If Samus is within 30h pixels: go to LOOP_OPEN
-; End LOOP_OPEN
-; Samus is not within 30h pixels, start closing
-$A6:F584             dw F695,        ; Set enemy to not ignore Samus/projectiles
-                        F6B3,        ; Set enemy to visible
+                        F63E,F584,   ; Go to $F584 if Samus is not within 30h pixels
+                        80ED,F578    ; Go to $F578
+$A6:F584             dw F695,        ; Set enemy as tangible
+                        F6B3,        ; Set enemy as visible
                         0005,FAA7,
                         0005,FA87,
                         0005,FA67,
                         0005,FA3D
-; BRANCH_CLOSED
-$A6:F598             dw F695,        ; Set enemy to not ignore Samus/projectiles
-                        F6B3         ; Set enemy to visible
-; LOOP_CLOSED
+}
+
+
+;;; $F598: Instruction list - Ceres door facing right - closed ;;;
+{
+$A6:F598             dw F695,        ; Set enemy as tangible
+                        F6B3         ; Set enemy as visible
 $A6:F59C             dw 0002,FA13,
-                        F63E,F59C,   ; If Samus is not within 30h pixels: go to LOOP_CLOSED
-; End LOOP_CLOSED
-; Samus is within 30h pixels, start opening
+                        F63E,F59C,   ; Go to $F59C if Samus is not within 30h pixels
                         F6BD,        ; Queue sound 2Ch, sound library 3, max queued sounds allowed = 6 (Ceres door opening)
                         0005,FA3D,
                         0005,FA67,
                         0005,FA87,
                         0005,FAA7,
-                        F68B,        ; Set enemy to ignore Samus/projectiles
-                        F6A6,        ; Set enemy to invisible
-                        80ED,F578    ; Go to LOOP_OPEN
+                        F68B,        ; Set enemy as intangible
+                        F6A6,        ; Set enemy as invisible
+                        80ED,F578    ; Go to $F578 (Ceres door facing right - open)
 }
 
 
-;;; $F5BE: Instruction list - parameter 1 = 1 (facing left) ;;;
+;;; $F5BE: Instruction list - parameter 1 = 1 (normal facing left) ;;;
 {
-; Initialisation: set to door open/closed state depending on Samus relative position
-$A6:F5BE             dw F68B,        ; Set enemy to ignore Samus/projectiles
-                        F6A6,        ; Set enemy to invisible
+$A6:F5BE             dw F68B,        ; Set enemy as intangible
+                        F6A6,        ; Set enemy as invisible
                         0002,FA13,
-                        F63E,F5EA    ; If Samus is not within 30h pixels: go to BRANCH_CLOSED
-; LOOP_OPEN
+                        F63E,F5EA    ; Go to $F5EA if Samus is not within 30h pixels
 $A6:F5CA             dw 0002,F95F,
-                        F63E,F5D6,   ;\
-                        80ED,F5CA    ;} If Samus is within 30h pixels: go to LOOP_OPEN
-; End LOOP_OPEN
-; Samus is not within 30h pixels, start closing
-$A6:F5D6             dw F695,        ; Set enemy to not ignore Samus/projectiles
-                        F6B3,        ; Set enemy to visible
+                        F63E,F5D6,   ; Go to $F5D6 if Samus is not within 30h pixels
+                        80ED,F5CA    ; Go to $F5CA
+$A6:F5D6             dw F695,        ; Set enemy as tangible
+                        F6B3,        ; Set enemy as visible
                         0005,F9F3,
                         0005,F9D3,
                         0005,F9B3,
                         0005,F989
-; BRANCH_CLOSED
-$A6:F5EA             dw F695,        ; Set enemy to not ignore Samus/projectiles
-                        F6B3         ; Set enemy to visible
-; LOOP_CLOSED
+$A6:F5EA             dw F695,        ; Set enemy as tangible
+                        F6B3         ; Set enemy as visible
 $A6:F5EE             dw 0002,F95F,
-                        F63E,F5EE,   ; If Samus is not within 30h pixels: go to LOOP_CLOSED
-; End LOOP_CLOSED
-; Samus is within 30h pixels, start opening
+                        F63E,F5EE,   ; Go to $F5EE if Samus is not within 30h pixels
                         F6BD,        ; Queue sound 2Ch, sound library 3, max queued sounds allowed = 6 (Ceres door opening)
                         0005,F989,
                         0005,F9B3,
                         0005,F9D3,
                         0005,F9F3,
-                        F68B,        ; Set enemy to ignore Samus/projectiles
-                        F6A6,        ; Set enemy to invisible
-                        80ED,F5CA    ; Go to LOOP_OPEN
+                        F68B,        ; Set enemy as intangible
+                        F6A6,        ; Set enemy as invisible
+                        80ED,F5CA    ; Go to $F5CA
 }
 
 
-;;; $F610: Instruction list - parameter 1 = 2 (overlay on top of door in Ceres elevator room) ;;;
+;;; $F610: Instruction list - parameter 1 = 2 (rotating elevator room pre-explosion door overlay) ;;;
 {
-$A6:F610             dw F68B         ; Set enemy to ignore Samus/projectiles
-; LOOP_ALPHA
+$A6:F610             dw F68B         ; Set enemy as intangible
 $A6:F612             dw 0001,F921,
-                        80ED,F612    ; Go to LOOP_ALPHA
-; End LOOP_ALPHA
+                        80ED,F612    ; Go to $F612
 }
 
 
-;;; $F61A: Instruction list - parameter 1 = 4 (invisible wall in Ceres elevator room during escape) ;;;
+;;; $F61A: Instruction list - parameter 1 = 4 (rotating elevator room invisible wall) ;;;
 {
-$A6:F61A             dw F678,F5BE,   ; Go to Speed = 1 if Ceres Ridley has not escaped
-                        F695,        ; Set enemy to not ignore Samus/projectiles
-                        F6A6,        ; Set enemy to invisible
-; LOOP_OPEN
+$A6:F61A             dw F678,F5BE,   ; Go to $F5BE if Ceres Ridley has not escaped
+                        F695,        ; Set enemy as tangible
+                        F6A6,        ; Set enemy as invisible
 $A6:F622             dw 0001,F95F,
-                        80ED,F622    ; Go to LOOP_OPEN
-; End LOOP_OPEN
+                        80ED,F622    ; Go to $F622
 }
 
 
-;;; $F62A: Instruction list - parameter 1 = 5 (left wall during Ridley escape mode 7) ;;;
+;;; $F62A: Instruction list - parameter 1 = 5 (Ridley escape mode 7 left wall) ;;;
 {
-$A6:F62A             dw F68B         ; Set enemy to ignore Samus/projectiles
-; LOOP_ALPHA
+$A6:F62A             dw F68B         ; Set enemy as intangible
 $A6:F62C             dw 0001,FACE,
-                        80ED,F62C    ; Go to LOOP_ALPHA
-; End LOOP_ALPHA
+                        80ED,F62C    ; Go to $F62C
 }
 
 
-;;; $F634: Instruction list - parameter 1 = 6 (right wall during Ridley escape mode 7) ;;;
+;;; $F634: Instruction list - parameter 1 = 6 (Ridley escape mode 7 right wall) ;;;
 {
-$A6:F634             dw F68B         ; Set enemy to ignore Samus/projectiles
-; LOOP_ALPHA
+$A6:F634             dw F68B         ; Set enemy as intangible
 $A6:F636             dw 0001,FB2F,
-                        80ED,F636    ; Go to LOOP_ALPHA
-; End LOOP_ALPHA
+                        80ED,F636    ; Go to $F636
 }
 }
 
 
-;;; $F63E: Instruction - go to parameter if Samus is not within 30h pixels ;;;
+;;; $F63E..C4: Instructions ;;;
+{
+;;; $F63E: Instruction - go to [[Y]] if Samus is not within 30h pixels ;;;
 {
 ; Measure with taxicab distance
 $A6:F63E BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
@@ -10872,7 +10878,7 @@ $A6:F669 6B          RTL
 }
 
 
-;;; $F66A: Instruction - go to parameter if area boss is not dead ;;;
+;;; $F66A: Instruction - go to [[Y]] if area boss is alive ;;;
 {
 $A6:F66A DA          PHX
 $A6:F66B AE 9F 07    LDX $079F  [$7E:079F]  ;\
@@ -10884,7 +10890,7 @@ $A6:F676 80 EA       BRA $EA    [$F662]     ; Else (area boss dead): go to next 
 }
 
 
-;;; $F678: Instruction - go to parameter if Ceres Ridley has not escaped ;;;
+;;; $F678: Instruction - go to [[Y]] if Ceres Ridley has not escaped ;;;
 {
 $A6:F678 AD 3F 09    LDA $093F  [$7E:093F]
 $A6:F67B F0 E8       BEQ $E8    [$F665]
@@ -10903,7 +10909,7 @@ $A6:F68A 6B          RTL
 }
 
 
-;;; $F68B: Instruction - set enemy to ignore Samus/projectiles ;;;
+;;; $F68B: Instruction - set enemy as intangible ;;;
 {
 $A6:F68B BD 86 0F    LDA $0F86,x[$7E:0F86]
 $A6:F68E 09 00 04    ORA #$0400
@@ -10912,7 +10918,7 @@ $A6:F694 6B          RTL
 }
 
 
-;;; $F695: Instruction - set enemy to not ignore Samus/projectiles ;;;
+;;; $F695: Instruction - set enemy as tangible ;;;
 {
 $A6:F695 BD 86 0F    LDA $0F86,x[$7E:0FC6]
 $A6:F698 29 FF FB    AND #$FBFF
@@ -10921,7 +10927,7 @@ $A6:F69E 6B          RTL
 }
 
 
-;;; $F69F: Instruction - enemy $0FAA = 1 ;;;
+;;; $F69F: Instruction - set drawn by Ridley flag ;;;
 {
 $A6:F69F A9 01 00    LDA #$0001
 $A6:F6A2 9D AA 0F    STA $0FAA,x[$7E:0FEA]
@@ -10929,7 +10935,7 @@ $A6:F6A5 6B          RTL
 }
 
 
-;;; $F6A6: Instruction - set enemy to invisible ;;;
+;;; $F6A6: Instruction - set enemy as invisible ;;;
 {
 $A6:F6A6 BD 86 0F    LDA $0F86,x[$7E:0FC6]
 $A6:F6A9 09 00 01    ORA #$0100
@@ -10938,13 +10944,13 @@ $A6:F6AF 6B          RTL
 }
 
 
-;;; $F6B0: Instruction - set enemy to visible, $0FAA = 0 ;;;
+;;; $F6B0: Instruction - set enemy as visible, clear drawn by Ridley flag ;;;
 {
 $A6:F6B0 9E AA 0F    STZ $0FAA,x[$7E:0FEA]
 }
 
 
-;;; $F6B3: Instruction - set enemy to visible ;;;
+;;; $F6B3: Instruction - set enemy as visible ;;;
 {
 $A6:F6B3 BD 86 0F    LDA $0F86,x[$7E:0FC6]
 $A6:F6B6 29 FF FE    AND #$FEFF
@@ -10958,6 +10964,7 @@ $A6:F6BC 6B          RTL
 $A6:F6BD A9 2C 00    LDA #$002C             ;\
 $A6:F6C0 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Ch, sound library 3, max queued sounds allowed = 6 (Ceres door opening)
 $A6:F6C4 6B          RTL
+}
 }
 
 
@@ -10973,18 +10980,18 @@ $A6:F6D7 9E 98 0F    STZ $0F98,x[$7E:0F98]  ; Enemy VRAM tiles index = 0
 $A6:F6DA A9 00 04    LDA #$0400             ;\
 $A6:F6DD 9D 96 0F    STA $0F96,x[$7E:0F96]  ;} Enemy palette index = 400h (palette 2)
 $A6:F6E0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A6:F6E3 0A          ASL A                  ;} Y = [enemy parameter 1]
+$A6:F6E3 0A          ASL A                  ;} Y = [enemy parameter 1] * 2
 $A6:F6E4 A8          TAY                    ;/
 $A6:F6E5 B9 2B F7    LDA $F72B,y[$A6:F72F]  ;\
 $A6:F6E8 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = [$F72B + [Y]]
 $A6:F6EB B9 2C F5    LDA $F52C,y[$A6:F530]  ;\
 $A6:F6EE 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Instruction pointer = [$F52C + [Y]]
-$A6:F6F1 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = 0
-$A6:F6F4 20 39 F7    JSR $F739  [$A6:F739]  ; Load Ceres door elevator room tiles if needed
+$A6:F6F1 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy drawn by Ridley flag = 0
+$A6:F6F4 20 39 F7    JSR $F739  [$A6:F739]  ; Load rotating elevator room pre-explosion door overlay tiles if needed
 $A6:F6F7 AD 3F 09    LDA $093F  [$7E:093F]  ;\
-$A6:F6FA D0 1B       BNE $1B    [$F717]     ;} If not before Ridley escape: go to BRANCH_RIDLEY_ESCAPE
+$A6:F6FA D0 1B       BNE $1B    [$F717]     ;} If not before Ridley escape: go to BRANCH_ESCAPE_SEQUENCE
 $A6:F6FC BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A6:F6FF C9 03 00    CMP #$0003             ;} If [enemy parameter 1] = 3:
+$A6:F6FF C9 03 00    CMP #$0003             ;} If [enemy parameter 1] = 3 (Ridley's room facing right):
 $A6:F702 D0 0E       BNE $0E    [$F712]     ;/
 $A6:F704 A0 EE F4    LDY #$F4EE             ;\
 $A6:F707 A2 42 01    LDX #$0142             ;|
@@ -10995,7 +11002,7 @@ $A6:F711 6B          RTL                    ; Return
 $A6:F712 A0 EE F4    LDY #$F4EE             ; Y = $F4EE
 $A6:F715 80 03       BRA $03    [$F71A]     ; Go to BRANCH_MERGE
 
-; BRANCH_RIDLEY_ESCAPE
+; BRANCH_ESCAPE_SEQUENCE
 $A6:F717 A0 0E F5    LDY #$F50E             ; Y = $F50E
 
 ; BRANCH_MERGE
@@ -11009,19 +11016,18 @@ $A6:F72A 6B          RTL
 ; Function pointers, indexed by [enemy parameter 1]
 $A6:F72B             dw F76B, ; 0: Normal facing right
                         F76B, ; 1: Normal facing left
-                        F7BD, ; 2: Exploding overlay (facing left)
+                        F7BD, ; 2: Rotating elevator room pre-explosion door overlay
                         F770, ; 3: Ridley's room (facing right)
-                        F76B, ; 4: 
-                        F7A5, ; 5: 
-                        F7A5  ; 6: 
+                        F76B, ; 4: Rotating elevator room invisible wall
+                        F7A5, ; 5: Ridley escape mode 7 left wall
+                        F7A5  ; 6: Ridley escape mode 7 right wall
 }
 
 
-;;; $F739: Load Ceres door elevator room tiles if needed ;;;
+;;; $F739: Load rotating elevator room pre-explosion door overlay tiles if needed ;;;
 {
-; Used for level design via sprites during mode 7
 $A6:F739 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A6:F73C C9 02 00    CMP #$0002             ;} If [enemy parameter 1] != 2: return
+$A6:F73C C9 02 00    CMP #$0002             ;} If [enemy parameter 1] != 2 (rotating elevator room pre-explosion door overlay): return
 $A6:F73F D0 23       BNE $23    [$F764]     ;/
 $A6:F741 AC 30 03    LDY $0330  [$7E:0330]  ;\
 $A6:F744 A9 00 04    LDA #$0400             ;|
@@ -11029,7 +11035,7 @@ $A6:F747 99 D0 00    STA $00D0,y[$7E:00D0]  ;|
 $A6:F74A A9 00 B0    LDA #$B000             ;|
 $A6:F74D 99 D3 00    STA $00D3,y[$7E:00D3]  ;|
 $A6:F750 A9 00 C4    LDA #$C400             ;|
-$A6:F753 99 D2 00    STA $00D2,y[$7E:00D2]  ;} Queue transfer of $B0:C400..C7FF to VRAM $7000..73FF
+$A6:F753 99 D2 00    STA $00D2,y[$7E:00D2]  ;} Queue transfer of $B0:C400..C7FF to VRAM $7000..71FF
 $A6:F756 A9 00 70    LDA #$7000             ;|
 $A6:F759 99 D5 00    STA $00D5,y[$7E:00D5]  ;|
 $A6:F75C 98          TYA                    ;|
@@ -11044,24 +11050,24 @@ $A6:F764 60          RTS
 ;;; $F765: Main AI - enemy $E23F (Ceres door) ;;;
 {
 $A6:F765 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:F768 7C A8 0F    JMP ($0FA8,x)[$A6:F7BD]
+$A6:F768 7C A8 0F    JMP ($0FA8,x)[$A6:F7BD]; Go to [enemy function]
 }
 
 
-;;; $F76B: Ceres door function - earthquake during escape ;;;
+;;; $F76B: Ceres door function - handle earthquake during escape ;;;
 {
 $A6:F76B A0 14 00    LDY #$0014             ; Y = 14h (BG1, BG2 and enemies, 1 pixel displacement, diagonal)
-$A6:F76E 80 03       BRA $03    [$F773]
+$A6:F76E 80 03       BRA $03    [$F773]     ; Go to handle Ceres door earthquake
 }
 
 
-;;; $F770: Ceres door function - earthquake during escape in Ridley's room ;;;
+;;; $F770: Ceres door function - handle earthquake during escape in Ridley's room ;;;
 {
 $A6:F770 A0 1D 00    LDY #$001D             ; Y = 1Dh (BG2 only and enemies, 1 pixel displacement, diagonal)
 }
 
 
-;;; $F773: Ceres door earthquake ;;;
+;;; $F773: Handle Ceres door earthquake during escape ;;;
 {
 ;; Parameters:
 ;;     Y: Earthquake type. Must have 1 pixel displacement
@@ -11091,74 +11097,74 @@ $A6:F7A4 6B          RTL
 }
 
 
-;;; $F7A5: Ceres door function ;;;
+;;; $F7A5: Ceres door function - Ridley escape mode 7 wall ;;;
 {
 $A6:F7A5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:F7A8 22 A6 F6 A6 JSL $A6F6A6[$A6:F6A6]
+$A6:F7A8 22 A6 F6 A6 JSL $A6F6A6[$A6:F6A6]  ; Set enemy as invisible
 $A6:F7AC AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $A6:F7AF 4A          LSR A                  ;} If [Ceres status] = 1 (during Ridley escape cutscene):
 $A6:F7B0 90 0A       BCC $0A    [$F7BC]     ;/
-$A6:F7B2 A9 00 0E    LDA #$0E00
-$A6:F7B5 9D 96 0F    STA $0F96,x[$7E:1016]
-$A6:F7B8 22 B3 F6 A6 JSL $A6F6B3[$A6:F6B3]
+$A6:F7B2 A9 00 0E    LDA #$0E00             ;\
+$A6:F7B5 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = E00h (palette 7)
+$A6:F7B8 22 B3 F6 A6 JSL $A6F6B3[$A6:F6B3]  ; Set enemy as visible
 
 $A6:F7BC 6B          RTL
 }
 
 
-;;; $F7BD: Ceres door function ;;;
+;;; $F7BD: Ceres door function - rotating elevator room - default ;;;
 {
-$A6:F7BD 22 50 F8 A6 JSL $A6F850[$A6:F850]
+$A6:F7BD 22 50 F8 A6 JSL $A6F850[$A6:F850]  ; Handle Ceres elevator animations
 $A6:F7C1 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $A6:F7C4 C9 02 00    CMP #$0002             ;} If [Ceres status] < 2 (before escape sequence): return
 $A6:F7C7 90 12       BCC $12    [$F7DB]     ;/
-$A6:F7C9 A9 DC F7    LDA #$F7DC
-$A6:F7CC 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A6:F7CF A9 30 00    LDA #$0030
-$A6:F7D2 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A6:F7D5 9C B0 0F    STZ $0FB0  [$7E:0FB0]
-$A6:F7D8 9C B2 0F    STZ $0FB2  [$7E:0FB2]
+$A6:F7C9 A9 DC F7    LDA #$F7DC             ;\
+$A6:F7CC 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F7DC (rumbling and explosions)
+$A6:F7CF A9 30 00    LDA #$0030             ;\
+$A6:F7D2 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy rumbling timer = 30h
+$A6:F7D5 9C B0 0F    STZ $0FB0  [$7E:0FB0]  ; Ceres door rumble timer = 0
+$A6:F7D8 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Ceres door rumble index = 0
 
 $A6:F7DB 6B          RTL
 }
 
 
-;;; $F7DC:  ;;;
+;;; $F7DC: Ceres door function - rotating elevator room - rumbling and explosions ;;;
 {
-$A6:F7DC DE AE 0F    DEC $0FAE,x[$7E:0FAE]
-$A6:F7DF 10 12       BPL $12    [$F7F3]
-$A6:F7E1 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A6:F7E4 09 00 01    ORA #$0100
-$A6:F7E7 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A6:F7EA A9 50 F8    LDA #$F850
-$A6:F7ED 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A6:F7F0 4C 7F F6    JMP $F67F  [$A6:F67F]
+$A6:F7DC DE AE 0F    DEC $0FAE,x[$7E:0FAE]  ; Decrement enemy rumbling timer
+$A6:F7DF 10 12       BPL $12    [$F7F3]     ; If [enemy rumbling timer] < 0:
+$A6:F7E1 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A6:F7E4 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A6:F7E7 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A6:F7EA A9 50 F8    LDA #$F850             ;\
+$A6:F7ED 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F850 (handle Ceres elevator animations)
+$A6:F7F0 4C 7F F6    JMP $F67F  [$A6:F67F]  ; Go to set Ceres elevator room to rotate if Ridley has escaped
 
-$A6:F7F3 CE B0 0F    DEC $0FB0  [$7E:0FB0]
-$A6:F7F6 10 47       BPL $47    [$F83F]
-$A6:F7F8 A9 04 00    LDA #$0004
-$A6:F7FB 8D B0 0F    STA $0FB0  [$7E:0FB0]
-$A6:F7FE CE B2 0F    DEC $0FB2  [$7E:0FB2]
-$A6:F801 10 06       BPL $06    [$F809]
-$A6:F803 A9 03 00    LDA #$0003
-$A6:F806 8D B2 0F    STA $0FB2  [$7E:0FB2]
+$A6:F7F3 CE B0 0F    DEC $0FB0  [$7E:0FB0]  ; Decrement Ceres door rumble timer
+$A6:F7F6 10 47       BPL $47    [$F83F]     ; If [Ceres door rumble timer] >= 0: return
+$A6:F7F8 A9 04 00    LDA #$0004             ;\
+$A6:F7FB 8D B0 0F    STA $0FB0  [$7E:0FB0]  ;} Ceres door rumble timer = 4
+$A6:F7FE CE B2 0F    DEC $0FB2  [$7E:0FB2]  ;\
+$A6:F801 10 06       BPL $06    [$F809]     ;|
+$A6:F803 A9 03 00    LDA #$0003             ;} Ceres door rumble index = ([Ceres door rumble index] - 1) % 4
+$A6:F806 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;/
 
-$A6:F809 AD B2 0F    LDA $0FB2  [$7E:0FB2]
-$A6:F80C 0A          ASL A
-$A6:F80D 0A          ASL A
-$A6:F80E A8          TAY
-$A6:F80F B9 40 F8    LDA $F840,y[$A6:F84C]
-$A6:F812 18          CLC
-$A6:F813 7D 7A 0F    ADC $0F7A,x[$7E:0F7A]
-$A6:F816 85 12       STA $12    [$7E:0012]
-$A6:F818 B9 42 F8    LDA $F842,y[$A6:F84E]
-$A6:F81B 18          CLC
-$A6:F81C 7D 7E 0F    ADC $0F7E,x[$7E:0F7E]
-$A6:F81F 85 14       STA $14    [$7E:0014]
+$A6:F809 AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
+$A6:F80C 0A          ASL A                  ;|
+$A6:F80D 0A          ASL A                  ;} Y = [Ceres door rumble index] * 4
+$A6:F80E A8          TAY                    ;/
+$A6:F80F B9 40 F8    LDA $F840,y[$A6:F84C]  ;\
+$A6:F812 18          CLC                    ;|
+$A6:F813 7D 7A 0F    ADC $0F7A,x[$7E:0F7A]  ;} $12 = [enemy X position] + [$F840 + [Y]]
+$A6:F816 85 12       STA $12    [$7E:0012]  ;/
+$A6:F818 B9 42 F8    LDA $F842,y[$A6:F84E]  ;\
+$A6:F81B 18          CLC                    ;|
+$A6:F81C 7D 7E 0F    ADC $0F7E,x[$7E:0F7E]  ;} $14 = [enemy Y position] + [$F840 + [Y] + 2]
+$A6:F81F 85 14       STA $14    [$7E:0014]  ;/
 $A6:F821 A0 03 00    LDY #$0003             ; A = 3 (small explosion)
-$A6:F824 22 11 81 80 JSL $808111[$80:8111]
-$A6:F828 C9 00 40    CMP #$4000
-$A6:F82B B0 03       BCS $03    [$F830]
+$A6:F824 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A6:F828 C9 00 40    CMP #$4000             ;\
+$A6:F82B B0 03       BCS $03    [$F830]     ;} If [random number] < 4000h:
 $A6:F82D A0 0C 00    LDY #$000C             ; A = Ch (smoke)
 
 $A6:F830 98          TYA
@@ -11169,65 +11175,73 @@ $A6:F83B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 25h, sound library 2,
 
 $A6:F83F 6B          RTL
 
-$A6:F840             dw FFFC,FFF8, 0000,0004, FFFE,0016, 0002,000C
+; Rumble offsets
+;                        ________ X offset
+;                       |     ___ Y offset
+;                       |    |
+$A6:F840             dw FFFC,FFF8,
+                        0000,0004, 
+                        FFFE,0016, 
+                        0002,000C
 }
 
 
-;;; $F850:  ;;;
+;;; $F850: Ceres door function - rotating elevator room - handle Ceres elevator animations ;;;
 {
 $A6:F850 DA          PHX
-$A6:F851 20 F1 F8    JSR $F8F1  [$A6:F8F1]
-$A6:F854 AF 00 C4 7E LDA $7EC400[$7E:C400]
-$A6:F858 D0 15       BNE $15    [$F86F]
-$A6:F85A AD B6 05    LDA $05B6  [$7E:05B6]
-$A6:F85D 29 38 00    AND #$0038
-$A6:F860 0A          ASL A
-$A6:F861 69 71 F8    ADC #$F871
-$A6:F864 A8          TAY
-$A6:F865 A2 52 00    LDX #$0052
-$A6:F868 A9 06 00    LDA #$0006
-$A6:F86B 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]
+$A6:F851 20 F1 F8    JSR $F8F1  [$A6:F8F1]  ; Animate Ceres elevator platform
+$A6:F854 AF 00 C4 7E LDA $7EC400[$7E:C400]  ;\
+$A6:F858 D0 15       BNE $15    [$F86F]     ;} If [palette change numerator] != 0: return
+$A6:F85A AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$A6:F85D 29 38 00    AND #$0038             ;|
+$A6:F860 0A          ASL A                  ;} Y = $F871 + [frame counter] / 8 % 8 * 10h
+$A6:F861 69 71 F8    ADC #$F871             ;|
+$A6:F864 A8          TAY                    ;/
+$A6:F865 A2 52 00    LDX #$0052             ;\
+$A6:F868 A9 06 00    LDA #$0006             ;} BG1/2 palette 2 colours 9..Eh = Ch bytes from [Y]
+$A6:F86B 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 
 $A6:F86F FA          PLX
 $A6:F870 6B          RTL
 
-$A6:F871             dw 5BFF,15B8,14B4,17DF,02FC,0239,0000,0000,
-                        47FF,0113,000F,175C,0299,01D6,0000,0000,
-                        335A,006E,000A,02B7,01F4,0131,0000,0000,
-                        1EB5,0009,0005,0212,014E,008C,0000,0000,
-                        1EB5,0009,0005,0212,014E,008C,0000,0000,
-                        335A,006E,000A,02B7,01F4,0131,0000,0000,
-                        47FF,0113,000F,175C,0299,01D6,0000,0000,
-                        5BFF,15B8,14B4,17DF,02FC,0239,0000,0000
+; Elevator beacon palette animation
+$A6:F871             dw 5BFF,15B8,14B4,17DF,02FC,0239, 0000,0000,
+                        47FF,0113,000F,175C,0299,01D6, 0000,0000,
+                        335A,006E,000A,02B7,01F4,0131, 0000,0000,
+                        1EB5,0009,0005,0212,014E,008C, 0000,0000,
+                        1EB5,0009,0005,0212,014E,008C, 0000,0000,
+                        335A,006E,000A,02B7,01F4,0131, 0000,0000,
+                        47FF,0113,000F,175C,0299,01D6, 0000,0000,
+                        5BFF,15B8,14B4,17DF,02FC,0239, 0000,0000
 }
 
 
-;;; $F8F1:  ;;;
+;;; $F8F1: Animate Ceres elevator platform ;;;
 {
-$A6:F8F1 AD B6 05    LDA $05B6  [$7E:05B6]
-$A6:F8F4 29 02 00    AND #$0002
-$A6:F8F7 A8          TAY
-$A6:F8F8 BE 00 F9    LDX $F900,y[$A6:F900]
-$A6:F8FB 22 4F 8B 80 JSL $808B4F[$80:8B4F]
+$A6:F8F1 AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$A6:F8F4 29 02 00    AND #$0002             ;|
+$A6:F8F7 A8          TAY                    ;} X = [$F900 + [frame counter] / 2 % 2 * 2]
+$A6:F8F8 BE 00 F9    LDX $F900,y[$A6:F900]  ;/
+$A6:F8FB 22 4F 8B 80 JSL $808B4F[$80:8B4F]  ; Queue mode 7 transfers
 $A6:F8FF 60          RTS
 
 $A6:F900             dw F904, F90E
 
-;                        ______________________ Control. 80h = write to VRAM tilemap
+;                        ______________________ Control. 80h = write to VRAM tilemap. 0 = terminator
 ;                       |   ___________________ Source address
 ;                       |  |       ____________ Size
 ;                       |  |      |     _______ Destination address (VRAM)
 ;                       |  |      |    |     __ VRAM address increment mode
 ;                       |  |      |    |    |
-$A6:F904             dx 80,A6F918,0004,060E,00, 00
-$A6:F90E             dx 80,A6F91C,0004,060E,00, 00
+$A6:F904             dx 80,A6F918,0004,060E,00, 00 ; Light
+$A6:F90E             dx 80,A6F91C,0004,060E,00, 00 ; Dark
 
-$A6:F918             db 68, 69, 69, 78
-$A6:F91C             db 8D, 8E, 8E, 79
+$A6:F918             db 68, 69, 69, 78 ; Light
+$A6:F91C             db 8D, 8E, 8E, 79 ; Dark
 }
 
 
-;;; $F920: Enemy touch / enemy shot - enemy $E23F (Ceres door) ;;;
+;;; $F920: RTL. Enemy touch / enemy shot - enemy $E23F (Ceres door) ;;;
 {
 $A6:F920 6B          RTL
 }
@@ -11235,46 +11249,46 @@ $A6:F920 6B          RTL
 
 ;;; $F921: Ceres door spritemaps ;;;
 {
-; Ceres door overlay in Ceres elevator room
+; Rotating elevator room pre-explosion door overlay
 $A6:F921             dx 000C, 81F8,18,E0E0, 81F8,08,60E4, 81F8,F8,60E4, 81F8,E8,60E0, C208,28,210A, C3F8,28,2108, C208,18,A104, C208,08,A106, C208,F8,2106, C208,E8,2104, C208,D8,2102, C3F8,D8,2100
 
-; Ceres door facing left - closed
+; Facing left - closed
 $A6:F95F             dx 0008, 01F8,18,E0D1, 01F8,10,E0D3, 01F8,E0,60D1, 01F8,E8,60D3, 01F8,00,E0F2, 01F8,08,E0E2, 01F8,F8,60F2, 01F8,F0,60E2
 
-; Ceres door facing left - opening frame 1
+; Facing left - opening frame 1
 $A6:F989             dx 0008, 01F8,10,E0F3, 01F8,18,E0E3, 01F8,E8,60F3, 01F8,E0,60E3, 01FA,00,E0F2, 01FA,08,E0E2, 01FA,F8,60F2, 01FA,F0,60E2
 
-; Ceres door facing left - opening frame 2
+; Facing left - opening frame 2
 $A6:F9B3             dx 0006, 01F8,18,E0D0, 01F8,E0,60D0, 01FC,00,E0F2, 01FC,08,E0E2, 01FC,F8,60F2, 01FC,F0,60E2
 
-; Ceres door facing left - opening frame 3
+; Facing left - opening frame 3
 $A6:F9D3             dx 0006, 01F8,E0,60D2, 01F8,18,E0D2, 01FE,00,E0F2, 01FE,08,E0E2, 01FE,F8,60F2, 01FE,F0,60E2
 
-; Ceres door facing left - open
+; Facing left - open
 $A6:F9F3             dx 0006, 01FA,18,E0D2, 01FA,E0,60D2, 01FF,00,E0F2, 01FF,08,E0E2, 01FF,F8,60F2, 01FF,F0,60E2
 
-; Ceres door facing right - closed
+; Facing right - closed
 $A6:FA13             dx 0008, 0000,18,A0D1, 0000,E0,20D1, 0000,10,A0D3, 0000,E8,20D3, 0000,00,A0F2, 0000,08,A0E2, 0000,F8,20F2, 0000,F0,20E2
 
-; Ceres door facing right - opening frame 1
+; Facing right - opening frame 1
 $A6:FA3D             dx 0008, 0000,10,A0F3, 0000,18,A0E3, 0000,E8,20F3, 0000,E0,20E3, 01FE,00,A0F2, 01FE,08,A0E2, 01FE,F8,20F2, 01FE,F0,20E2
 
-; Ceres door facing right - opening frame 2
+; Facing right - opening frame 2
 $A6:FA67             dx 0006, 0000,18,A0D0, 0000,E0,20D0, 01FC,00,A0F2, 01FC,08,A0E2, 01FC,F8,20F2, 01FC,F0,20E2
 
-; Ceres door facing right - opening frame 3
+; Facing right - opening frame 3
 $A6:FA87             dx 0006, 0000,18,A0D2, 0000,E0,20D2, 01FA,00,A0F2, 01FA,08,A0E2, 01FA,F8,20F2, 01FA,F0,20E2
 
-; Ceres door facing right - open
+; Facing right - open
 $A6:FAA7             dx 0006, 01FE,18,A0D2, 01FE,E0,20D2, 01F9,00,A0F2, 01F9,08,A0E2, 01F9,F8,20F2, 01F9,F0,20E2
 
-; Ceres door placeholder
+; Placeholder
 $A6:FAC7             dx 0001, 0008,08,2020
 
-; Ceres door left wall during Ridley escape mode 7
+; Ridley escape mode 7 left wall
 $A6:FACE             dx 0013, C3F8,40,04E6, C3F8,20,04E8, C3F8,D0,84E8, C218,20,04EE, C3F8,80,04E6, C3F8,A0,04E6, C3F8,B0,04E6, C3F8,90,04E6, C3F8,C0,04E6, C218,40,04EE, C218,30,04EE, C208,40,04EE, C208,30,04EE, C208,20,04EE, C3F8,30,04E6, C3F8,00,84E4, C3F8,10,84E0, C3F8,F0,04E4, C3F8,E0,04E0
 
-; Ceres door right wall during Ridley escape mode 7
+; Ridley escape mode 7 right wall
 $A6:FB2F             dx 000D, C3F8,80,04E6, C3F8,90,04E6, C3F8,A0,04E6, C3F8,B0,04E6, C3F8,C0,04E6, C3F8,D0,04E6, C3F8,E0,04E6, C3F8,F0,04E6, C3F8,00,04E6, C3F8,10,04E6, C3F8,20,04E6, C3F8,40,84E8, C3F8,30,04E6
 }
 }

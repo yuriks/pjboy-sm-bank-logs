@@ -1812,7 +1812,7 @@ $80:8B4E 6B          RTL
 ;     $8B:C345 with DB:X = $8B:C3E6 (front of gunship leaving Ceres) / $8B:C3F0/C3FA (clear Ceres tilemap)
 ;     $A6:ACBC (Ceres Ridley)
 ;     $A6:AD27 (Ceres Ridley)
-;     $A6:F8F1 (Ceres door)
+;     $A6:F8F1: Animate Ceres elevator platform
 
 ; CGRAM transfers are supported, but no mode 7 transfers data actually define any CGRAM transfers, so $8B62..8B8A is dead code
 
