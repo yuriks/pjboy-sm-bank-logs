@@ -420,9 +420,9 @@ $80:81F9 6B          RTL
 ;;         0   - Zebes is awake
 ;;         1   - Shitroid ate sidehopper
 ;;         2   - Mother Brain's glass is destroyed
-;;         3   - zebetite 1 is destroyed
-;;         4   - zebetite 2 is destroyed
-;;         5   - zebetite 3 is destroyed
+;;         3   - zebetite destroyed bit 0 (true if 1 or 3 zebetites are destroyed)
+;;         4   - zebetite destroyed bit 1 (true if 2 or 3 zebetites are destroyed)
+;;         5   - zebetite destroyed bit 2 (true if all 4 zebetites are destroyed)
 ;;         6   - Phantoon statue is grey
 ;;         7   - Ridley statue is grey
 ;;         8   - Draygon statue is grey
@@ -462,7 +462,7 @@ $80:8211 6B          RTL
 ;;     A: Event number
 
 ; Called by:
-;     $A6:FCD3 (Zebetites)
+;     $A6:FCCB: Mark/unmark zebetite destroyed counter event
 $80:8212 DA          PHX
 $80:8213 5A          PHY
 $80:8214 08          PHP
@@ -930,7 +930,7 @@ $80:8449 C2 30       REP #$30
 $80:844B A2 FE 1F    LDX #$1FFE             ;\
                                             ;|
 $80:844E 9E 00 00    STZ $0000,x[$7E:1FFE]  ;|
-$80:8451 CA          DEX                    ;} Clear $7E:0000..1FFF
+$80:8451 CA          DEX                    ;} Clear $0000..1FFF
 $80:8452 CA          DEX                    ;|
 $80:8453 10 F9       BPL $F9    [$844E]     ;/
 $80:8455 22 46 91 8B JSL $8B9146[$8B:9146]  ; Initialise IO registers and display Nintendo logo

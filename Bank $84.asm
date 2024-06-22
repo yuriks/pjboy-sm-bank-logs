@@ -4520,7 +4520,7 @@ $84:A4E7             dw 0001, C057
 $84:A4ED             dw 0001, C09F
                         0000
 
-; Used by instruction list $C928: PLM $D024 (bomb reaction, special block, BTS 0Eh/0Fh / Brinstar 82h/83h/84h/85h. Speed block)
+; Used by instruction list $C928: PLM $D024 (bomb reaction, special block, BTS Eh/Fh / Brinstar 82h/83h/84h/85h. Speed block)
 $84:A4F3             dw 0001, B0B6
                         0000
 
@@ -5767,7 +5767,7 @@ $84:ACBF             dx 0005,9E61,
 ;;; $ACF8: Instruction list - PLM $B6CF (inside reaction, special air, BTS Brinstar 81h. Ceiling plant) ;;;
 {
 $84:ACF8             dx 86C1,AC89,  ; Pre-instruction = position Samus and give at least 10h frames of invincibility
-                        874E,08,    ; Timer = 08h
+                        874E,08,    ; Timer = 8
 $84:ACFF             dx 0005,9EED,
                         0005,9ED1,
                         0005,9EED,
@@ -5790,7 +5790,7 @@ $84:ACFF             dx 0005,9EED,
 
 ;;; $AD38: Instruction list - PLM $B64B (Wrecked Ship entrance treadmill from west) ;;;
 {
-$84:AD38             dx 880E,01,AD3F,   ; Go to $AD3F if any of the boss bits 01h are set
+$84:AD38             dx 880E,01,AD3F,   ; Go to $AD3F if any of the boss bits 1 are set
                         86BC            ; Delete
 $84:AD3F             dw AD43,           ; Draw 38h tiles of blank rightwards treadmill
                         86BC            ; Delete
@@ -5807,7 +5807,7 @@ $84:AD4C 60          RTS
 
 ;;; $AD4D: Instruction list - PLM $B64F (Wrecked Ship entrance treadmill from east) ;;;
 {
-$84:AD4D             dx 880E,01,AD54,   ; Go to $AD54 if any of the boss bits 01h are set
+$84:AD4D             dx 880E,01,AD54,   ; Go to $AD54 if any of the boss bits 1 are set
                         86BC            ; Delete
 $84:AD54             dw AD58,           ; Draw 38h tiles of blank leftwards treadmill
                         86BC            ; Delete
@@ -7868,7 +7868,7 @@ $84:BA9B             dx 0003,A9EF,
                         0003,A9EF,
                         0004,A6D7,
                         8724,BA9B,      ; Go to $BA9B
-$84:BAB7             dx 8A91,01,BABC,   ; Increment door hit counter; Set room argument door and go to $BABC if [door hit counter] >= 01h
+$84:BAB7             dx 8A91,01,BABC,   ; Increment door hit counter; Set room argument door and go to $BABC if [door hit counter] >= 1
 $84:BABC             dx 8C19,07,        ; Queue sound 7, sound library 3, max queued sounds allowed = 6 (door opened)
                         0004,A6E3,
                         0004,A6EF,
@@ -8544,7 +8544,7 @@ $84:BE8C             dx 0003,A9B3,
                         0003,A9B3,
                         0004,A6A7,
                         8724,BE8C,      ; Go to $BE8C
-$84:BEA8             dx 8A91,01,BEAD,   ; Increment door hit counter; Set room argument door and go to $BEAD if [door hit counter] >= 01h
+$84:BEA8             dx 8A91,01,BEAD,   ; Increment door hit counter; Set room argument door and go to $BEAD if [door hit counter] >= 1
 $84:BEAD             dx 8C19,07,        ; Queue sound 7, sound library 3, max queued sounds allowed = 6 (door opened)
                         0004,A6B3,
                         0004,A6BF,
@@ -8582,7 +8582,7 @@ $84:BEF5             dx 0003,A9EF,
                         0003,A9EF,
                         0004,A6D7,
                         8724,BEF5,      ; Go to $BEF5
-$84:BF11             dx 8A91,01,BF16,   ; Increment door hit counter; Set room argument door and go to $BF16 if [door hit counter] >= 01h
+$84:BF11             dx 8A91,01,BF16,   ; Increment door hit counter; Set room argument door and go to $BF16 if [door hit counter] >= 1
 $84:BF16             dx 8C19,07,        ; Queue sound 7, sound library 3, max queued sounds allowed = 6 (door opened)
                         0004,A6E3,
                         0004,A6EF,
@@ -8620,7 +8620,7 @@ $84:BF5E             dx 0003,AA2B,
                         0003,AA2B,
                         0004,A707,
                         8724,BF5E,      ; Go to $BF5E
-$84:BF7A             dx 8A91,01,BF7F,   ; Increment door hit counter; Set room argument door and go to $BF7F if [door hit counter] >= 01h
+$84:BF7A             dx 8A91,01,BF7F,   ; Increment door hit counter; Set room argument door and go to $BF7F if [door hit counter] >= 1
 $84:BF7F             dx 8C19,07,        ; Queue sound 7, sound library 3, max queued sounds allowed = 6 (door opened)
                         0004,A713,
                         0004,A71F,
@@ -8658,7 +8658,7 @@ $84:BFC7             dx 0003,AA67,
                         0003,AA67,
                         0004,A737,
                         8724,BFC7,      ; Go to $BFC7
-$84:BFE3             dx 8A91,01,BFE8,   ; Increment door hit counter; Set room argument door and go to $BFE8 if [door hit counter] >= 01h
+$84:BFE3             dx 8A91,01,BFE8,   ; Increment door hit counter; Set room argument door and go to $BFE8 if [door hit counter] >= 1
 $84:BFE8             dx 8C19,07,        ; Queue sound 7, sound library 3, max queued sounds allowed = 6 (door opened)
                         0004,A743,
                         0004,A74F,
@@ -8687,7 +8687,7 @@ $84:C014             dx 8A72,C4B1,      ; Go to $C4B1 if the room argument door 
                         0001,A767,
 $84:C024             dx 86B4,           ; Sleep
                         8724,C024,      ; Go to $C024
-$84:C02A             dx 8A91,01,C04B,   ; Increment door hit counter; Set room argument door and go to $C04B if [door hit counter] >= 01h
+$84:C02A             dx 8A91,01,C04B,   ; Increment door hit counter; Set room argument door and go to $C04B if [door hit counter] >= 1
                         0003,A9B3,
                         0004,A767,
                         0003,A9B3,
@@ -8723,7 +8723,7 @@ $84:C077             dx 8A72,C4E2,      ; Go to $C4E2 if the room argument door 
                         0001,A797,
 $84:C087             dx 86B4,           ; Sleep
                         8724,C087,      ; Go to $C087
-$84:C08D             dx 8A91,01,C0AE,   ; Increment door hit counter; Set room argument door and go to $C0AE if [door hit counter] >= 01h
+$84:C08D             dx 8A91,01,C0AE,   ; Increment door hit counter; Set room argument door and go to $C0AE if [door hit counter] >= 1
                         0003,A9EF,
                         0004,A797,
                         0003,A9EF,
@@ -8758,7 +8758,7 @@ $84:C0DA             dx 8A72,C513,      ; Go to $C513 if the room argument door 
                         86C1,BD26,      ; Pre-instruction = go to link instruction if shot with a power bomb
                         0001,A7C7,
 $84:C0EA             dx 86B4,           ; Sleep
-$84:C0EC             dx 8A91,01,C10D,   ; Increment door hit counter; Set room argument door and go to $C10D if [door hit counter] >= 01h
+$84:C0EC             dx 8A91,01,C10D,   ; Increment door hit counter; Set room argument door and go to $C10D if [door hit counter] >= 1
                         0003,AA2B,
                         0004,A7C7,
                         0003,AA2B,
@@ -8794,7 +8794,7 @@ $84:C139             dx 8A72,C544,      ; Go to $C544 if the room argument door 
                         0002,A7F7,
                         0001,A7F7,
 $84:C14D             dx 86B4,           ; Sleep
-$84:C14F             dx 8A91,01,C170,   ; Increment door hit counter; Set room argument door and go to $C170 if [door hit counter] >= 01h
+$84:C14F             dx 8A91,01,C170,   ; Increment door hit counter; Set room argument door and go to $C170 if [door hit counter] >= 1
                         0003,AA67,
                         0004,A7F7,
                         0003,AA67,
@@ -8829,7 +8829,7 @@ $84:C19C             dx 8A72,C4B1,      ; Go to $C4B1 if the room argument door 
                         86C1,BD88,      ; Pre-instruction = go to link instruction if shot with a super missile
                         0001,A827,
 $84:C1AC             dx 86B4,           ; Sleep
-$84:C1AE             dx 8A91,01,C1CF,   ; Increment door hit counter; Set room argument door and go to $C1CF if [door hit counter] >= 01h
+$84:C1AE             dx 8A91,01,C1CF,   ; Increment door hit counter; Set room argument door and go to $C1CF if [door hit counter] >= 1
                         0003,A9B3,
                         0004,A827,
                         0003,A9B3,
@@ -8864,7 +8864,7 @@ $84:C1FB             dx 8A72,C4E2,      ; Go to $C4E2 if the room argument door 
                         86C1,BD88,      ; Pre-instruction = go to link instruction if shot with a super missile
                         0001,A857,
 $84:C20B             dx 86B4,           ; Sleep
-$84:C20D             dx 8A91,01,C22E,   ; Increment door hit counter; Set room argument door and go to $C22E if [door hit counter] >= 01h
+$84:C20D             dx 8A91,01,C22E,   ; Increment door hit counter; Set room argument door and go to $C22E if [door hit counter] >= 1
                         0003,A9EF,
                         0004,A857,
                         0003,A9EF,
@@ -8899,7 +8899,7 @@ $84:C25A             dx 8A72,C513,      ; Go to $C513 if the room argument door 
                         86C1,BD88,      ; Pre-instruction = go to link instruction if shot with a super missile
                         0001,A887,
 $84:C26A             dx 86B4,           ; Sleep
-$84:C26C             dx 8A91,01,C28D,   ; Increment door hit counter; Set room argument door and go to $C28D if [door hit counter] >= 01h
+$84:C26C             dx 8A91,01,C28D,   ; Increment door hit counter; Set room argument door and go to $C28D if [door hit counter] >= 1
                         0003,AA2B,
                         0004,A887,
                         0003,AA2B,
@@ -8934,7 +8934,7 @@ $84:C2B9             dx 8A72,C544,      ; Go to $C544 if the room argument door 
                         86C1,BD88,      ; Pre-instruction = go to link instruction if shot with a super missile
                         0001,A8B7,
 $84:C2C9             dx 86B4,           ; Sleep
-$84:C2CB             dx 8A91,01,C2EC,   ; Increment door hit counter; Set room argument door and go to $C2EC if [door hit counter] >= 01h
+$84:C2CB             dx 8A91,01,C2EC,   ; Increment door hit counter; Set room argument door and go to $C2EC if [door hit counter] >= 1
                         0003,AA67,
                         0004,A8B7,
                         0003,AA67,
@@ -8969,7 +8969,7 @@ $84:C318             dx 8A72,C4B1,      ; Go to $C4B1 if the room argument door 
                         86C1,BD50,      ; Pre-instruction = go to link instruction if shot with a (super) missile
                         0001,A8E7,
 $84:C328             dx 86B4,           ; Sleep
-$84:C32A             dx 8A91,05,C34E,   ; Increment door hit counter; Set room argument door and go to $C34E if [door hit counter] >= 05h
+$84:C32A             dx 8A91,05,C34E,   ; Increment door hit counter; Set room argument door and go to $C34E if [door hit counter] >= 5
                         8C19,09,        ; Queue sound 9, sound library 3, max queued sounds allowed = 6 (missile door shot with missile)
                         0003,A9B3,
                         0004,A8E7,
@@ -9005,7 +9005,7 @@ $84:C37A             dx 8A72,C4E2,      ; Go to $C4E2 if the room argument door 
                         86C1,BD50,      ; Pre-instruction = go to link instruction if shot with a (super) missile
                         0001,A917,
 $84:C38A             dx 86B4,           ; Sleep
-$84:C38C             dx 8A91,05,C3B0,   ; Increment door hit counter; Set room argument door and go to $C3B0 if [door hit counter] >= 05h
+$84:C38C             dx 8A91,05,C3B0,   ; Increment door hit counter; Set room argument door and go to $C3B0 if [door hit counter] >= 5
                         8C19,09,        ; Queue sound 9, sound library 3, max queued sounds allowed = 6 (missile door shot with missile)
                         0003,A9EF,
                         0004,A917,
@@ -9041,7 +9041,7 @@ $84:C3DC             dx 8A72,C513,      ; Go to $C513 if the room argument door 
                         86C1,BD50,      ; Pre-instruction = go to link instruction if shot with a (super) missile
                         0001,A947,
 $84:C3EC             dx 86B4,           ; Sleep
-$84:C3EE             dx 8A91,05,C412,   ; Increment door hit counter; Set room argument door and go to $C412 if [door hit counter] >= 05h
+$84:C3EE             dx 8A91,05,C412,   ; Increment door hit counter; Set room argument door and go to $C412 if [door hit counter] >= 5
                         8C19,09,        ; Queue sound 9, sound library 3, max queued sounds allowed = 6 (missile door shot with missile)
                         0003,AA2B,
                         0004,A947,
@@ -9077,7 +9077,7 @@ $84:C43E             dx 8A72,C544,      ; Go to $C544 if the room argument door 
                         86C1,BD50,      ; Pre-instruction = go to link instruction if shot with a (super) missile
                         0001,A977,
 $84:C44E             dx 86B4,           ; Sleep
-$84:C450             dx 8A91,05,C474,   ; Increment door hit counter; Set room argument door and go to $C474 if [door hit counter] >= 05h
+$84:C450             dx 8A91,05,C474,   ; Increment door hit counter; Set room argument door and go to $C474 if [door hit counter] >= 5
                         8C19,09,        ; Queue sound 9, sound library 3, max queued sounds allowed = 6 (missile door shot with missile)
                         0003,AA67,
                         0004,A977,
@@ -9779,7 +9779,7 @@ $84:C922             dx 0001,A4ED,
 }
 
 
-;;; $C928: Instruction list - PLM $D024 (bomb reaction, special block, BTS 0Eh/0Fh / Brinstar 82h/83h/84h/85h. Speed block) ;;;
+;;; $C928: Instruction list - PLM $D024 (bomb reaction, special block, BTS Eh/Fh / Brinstar 82h/83h/84h/85h. Speed block) ;;;
 {
 $84:C928             dx 0001,A4F3,
                         86BC            ; Delete
@@ -10540,7 +10540,7 @@ $84:CEC8 29 00 F0    AND #$F000             ;} PLM respawn block = [PLM block] &
 $84:CECB 09 58 00    ORA #$0058             ;|
 $84:CECE 99 17 1E    STA $1E17,y[$7E:1E5F]  ;/
 $84:CED1 29 FF 0F    AND #$0FFF             ;\
-$84:CED4 9F 02 00 7F STA $7F0002,x[$7F:5428];} PLM block = 0058h
+$84:CED4 9F 02 00 7F STA $7F0002,x[$7F:5428];} PLM block = 58h
 $84:CED8 18          CLC
 $84:CED9 60          RTS
 }
@@ -10862,7 +10862,7 @@ $84:D13B             dw D12B,D135   ; Unused. Grapple block
 {
 ;;; $D13F: Instruction list - PLM $D6D6 (Lower Norfair chozo hand) ;;;
 {
-$84:D13F             dx 882D,000C,D14D, ; Go to $D14D if the event 000Ch is set
+$84:D13F             dx 882D,000C,D14D, ; Go to $D14D if the event Ch is set
                         86C1,D15C,      ; Pre-instruction = delete PLM and spawn trigger block if block (4, 8) is a blank air block
                         86B4,           ; Sleep
                         86BC            ; Delete
@@ -11231,14 +11231,14 @@ $84:D448             dx 0004,9DE9,
 
 ;;; $D44E: Unused. Instruction list - PLM $D704 (alternate Lower Norfair chozo hand) ;;;
 {
-$84:D44E             dx 882D,000C,D46E, ; Go to $D46E if the event 000Ch is set
+$84:D44E             dx 882D,000C,D46E, ; Go to $D46E if the event Ch is set
                         8A24,D462,      ; Link instruction = $D462
                         86C1,BD26,      ; Pre-instruction = go to link instruction if shot with a power bomb
                         0001,9CA7,
                         86B4,           ; Sleep
 $84:D462             dx 0001,9CBF,
                         D476,           ; Drain acid lake
-                        883E,000C,      ; Set the event 000Ch
+                        883E,000C,      ; Set the event Ch
                         86BC            ; Delete
 $84:D46E             dx D489,           ; FX base Y position = 2D2h
                         0001,9CBF,
@@ -11943,7 +11943,7 @@ $84:D9FB             dx 86CA,           ; Clear pre-instruction
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D79F,           ; Spawn two eye door smoke enemy projectiles
                         D7C3,           ; Move PLM up one row and make a blue door facing right
-                        874E,0A,        ; Timer = 0Ah
+                        874E,0A,        ; Timer = Ah
 $84:DA0A             dx 0003,9C4F,
                         0004,A9E3,
                         873F,DA0A,      ; Decrement timer and go to $DA0A if non-zero
@@ -13126,7 +13126,7 @@ $84:E3AB             dx E04F,                               ; Draw item frame 0
                         8724,E3AB,                          ; Go to $E3AB
 $84:E3B3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0200,0C,                       ; Pick up equipment 0200h and display message box Ch
+                        88F3,0200,0C,                       ; Pick up equipment 200h and display message box Ch
 $84:E3BD             dx 8724,DFA9,                          ; Go to $DFA9
 }
 
@@ -13174,7 +13174,7 @@ $84:E435             dx E04F,                               ; Draw item frame 0
                         8724,E435,                          ; Go to $E435
 $84:E43D             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        8986,0064,                          ; Collect 0064h health reserve tank
+                        8986,0064,                          ; Collect 100 health reserve tank
 $84:E446             dx 8724,DFA9,                          ; Go to $DFA9
 }
 
@@ -13192,7 +13192,7 @@ $84:E461             dx 0004,A2DF,
                         8724,E461,  ; Go to $E461
 $84:E46D             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        8968,0064,  ; Collect 0064h health energy tank
+                        8968,0064,  ; Collect 100 health energy tank
 $84:E476             dx 0001,A2B5,
                         86BC        ; Delete
 }
@@ -13211,7 +13211,7 @@ $84:E493             dx 0004,A2EB,
                         8724,E493,  ; Go to $E493
 $84:E49F             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        89A9,0005,  ; Collect 0005h ammo missile tank
+                        89A9,0005,  ; Collect 5 ammo missile tank
 $84:E4A8             dx 0001,A2B5,
                         86BC        ; Delete
 }
@@ -13230,7 +13230,7 @@ $84:E4C5             dx 0004,A2F7,
                         8724,E4C5,  ; Go to $E4C5
 $84:E4D1             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        89D2,0005,  ; Collect 0005h ammo super missile tank
+                        89D2,0005,  ; Collect 5 ammo super missile tank
 $84:E4DA             dx 0001,A2B5,
                         86BC        ; Delete
 }
@@ -13249,7 +13249,7 @@ $84:E4F7             dx 0004,A303,
                         8724,E4F7,  ; Go to $E4F7
 $84:E503             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        89FB,0005,  ; Collect 0005h ammo power bomb tank
+                        89FB,0005,  ; Collect 5 ammo power bomb tank
 $84:E50C             dx 0001,A2B5,
                         86BC        ; Delete
 }
@@ -13289,7 +13289,7 @@ $84:E570             dx E04F,                               ; Draw item frame 0
                         8724,E570,                          ; Go to $E570
 $84:E578             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,1000,0E,                       ; Pick up beam 1000h and display message box 0Eh
+                        88B0,1000,0E,                       ; Pick up beam 1000h and display message box Eh
 $84:E582             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13309,7 +13309,7 @@ $84:E5AB             dx E04F,                               ; Draw item frame 0
                         8724,E5AB,                          ; Go to $E5AB
 $84:E5B3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0002,0F,                       ; Pick up beam 0002h and display message box 0Fh
+                        88B0,0002,0F,                       ; Pick up beam 2 and display message box Fh
 $84:E5BD             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13329,7 +13329,7 @@ $84:E5E6             dx E04F,                               ; Draw item frame 0
                         8724,E5E6,                          ; Go to $E5E6
 $84:E5EE             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0100,0B,                       ; Pick up equipment 0100h and display message box 0Bh
+                        88F3,0100,0B,                       ; Pick up equipment 100h and display message box Bh
 $84:E5F8             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13349,7 +13349,7 @@ $84:E621             dx E04F,                               ; Draw item frame 0
                         8724,E621,                          ; Go to $E621
 $84:E629             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,2000,0D,                       ; Pick up equipment 2000h and display message box 0Dh
+                        88F3,2000,0D,                       ; Pick up equipment 2000h and display message box Dh
 $84:E633             dx E63B,                               ; FX Y velocity = FFE0h
                         0001,A2B5,
                         86BC                                ; Delete
@@ -13378,7 +13378,7 @@ $84:E665             dx E04F,                               ; Draw item frame 0
                         8724,E665,                          ; Go to $E665
 $84:E66D             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0001,10,                       ; Pick up beam 0001h and display message box 10h
+                        88B0,0001,10,                       ; Pick up beam 1 and display message box 10h
 $84:E677             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13398,7 +13398,7 @@ $84:E6A0             dx E04F,                               ; Draw item frame 0
                         8724,E6A0,                          ; Go to $E6A0
 $84:E6A8             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0004,11,                       ; Pick up beam 0004h and display message box 11h
+                        88B0,0004,11,                       ; Pick up beam 4 and display message box 11h
 $84:E6B2             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13418,7 +13418,7 @@ $84:E6DB             dx E04F,                               ; Draw item frame 0
                         8724,E6DB,                          ; Go to $E6DB
 $84:E6E3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0002,08,                       ; Pick up equipment 0002h and display message box 08h
+                        88F3,0002,08,                       ; Pick up equipment 2 and display message box 8
 $84:E6ED             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13439,7 +13439,7 @@ $84:E716             dx E04F,                               ; Draw item frame 0
 $84:E71E             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
-                        88F3,0001,07,                       ; Pick up equipment 0001h and display message box 07h
+                        88F3,0001,07,                       ; Pick up equipment 1 and display message box 7
                         870B,91D4E4,                        ; Call function varia suit pick up
 $84:E72F             dx 0001,A2B5,
                         86BC                                ; Delete
@@ -13461,7 +13461,7 @@ $84:E758             dx E04F,                               ; Draw item frame 0
 $84:E760             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
-                        88F3,0020,1A,                       ; Pick up equipment 0020h and display message box 1Ah
+                        88F3,0020,1A,                       ; Pick up equipment 20h and display message box 1Ah
                         870B,91D5BA,                        ; Call function gravity suit pick up
 $84:E771             dx 0001,A2B5,
                         86BC                                ; Delete
@@ -13502,7 +13502,7 @@ $84:E7D4             dx E04F,                               ; Draw item frame 0
                         8724,E7D4,                          ; Go to $E7D4
 $84:E7DC             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0008,12,                       ; Pick up beam 0008h and display message box 12h
+                        88B0,0008,12,                       ; Pick up beam 8 and display message box 12h
 $84:E7E6             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13542,7 +13542,7 @@ $84:E849             dx E04F,                               ; Draw item frame 0
                         8724,E849,                          ; Go to $E849
 $84:E851             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0200,0C,                       ; Pick up equipment 0200h and display message box 0Ch
+                        88F3,0200,0C,                       ; Pick up equipment 200h and display message box Ch
 $84:E85B             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13562,7 +13562,7 @@ $84:E884             dx E04F,                               ; Draw item frame 0
                         8724,E884,                          ; Go to $E884
 $84:E88C             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0008,0A,                       ; Pick up equipment 0008h and display message box 0Ah
+                        88F3,0008,0A,                       ; Pick up equipment 8 and display message box Ah
 $84:E896             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13582,7 +13582,7 @@ $84:E8BF             dx E04F,                               ; Draw item frame 0
                         8724,E8BF,                          ; Go to $E8BF
 $84:E8C7             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0002,09,                       ; Pick up equipment 0002h and display message box 09h
+                        88F3,0002,09,                       ; Pick up equipment 2 and display message box 9
 $84:E8D1             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13602,7 +13602,7 @@ $84:E8FA             dx E04F,                               ; Draw item frame 0
                         8724,E8FA,                          ; Go to $E8FA
 $84:E902             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        8986,0064,                          ; Collect 0064h health reserve tank
+                        8986,0064,                          ; Collect 100 health reserve tank
 $84:E90B             dx 0001,A2B5,
                         86BC                                ; Delete
 }
@@ -13622,7 +13622,7 @@ $84:E924             dx 0004,A2DF,
                         8724,E911,  ; Go to $E911
 $84:E938             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        8968,0064,  ; Collect 0064h health energy tank
+                        8968,0064,  ; Collect 100 health energy tank
 $84:E941             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
                         8724,E911,  ; Go to $E911
 }
@@ -13642,7 +13642,7 @@ $84:E95C             dx 0004,A2EB,
                         8724,E949,  ; Go to $E949
 $84:E970             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        89A9,0005,  ; Collect 0005h ammo missile tank
+                        89A9,0005,  ; Collect 5 ammo missile tank
 $84:E979             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
                         8724,E949,  ; Go to $E949
 }
@@ -13662,7 +13662,7 @@ $84:E994             dx 0004,A2F7,
                         8724,E981,  ; Go to $E981
 $84:E9A8             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        89D2,0005,  ; Collect 0005h ammo super missile tank
+                        89D2,0005,  ; Collect 5 ammo super missile tank
 $84:E9B1             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
                         8724,E981,  ; Go to $E981
 }
@@ -13682,7 +13682,7 @@ $84:E9CC             dx 0004,A303,
                         8724,E9B9,  ; Go to $E9B9
 $84:E9E0             dx 8899,       ; Set the room argument item collected
                         8BDD,02,    ; Clear music queue and queue item fanfare music track
-                        89FB,0005,  ; Collect 0005h ammo power bomb tank
+                        89FB,0005,  ; Collect 5 ammo power bomb tank
 $84:E9E9             dx 8A2E,E032,  ; Call $E032 (empty item shot block reconcealing)
                         8724,E9B9,  ; Go to $E9B9
 }
@@ -13724,7 +13724,7 @@ $84:EA51             dx E04F,                               ; Draw item frame 0
                         8724,EA3E,                          ; Go to $EA3E
 $84:EA61             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,1000,0E,                       ; Pick up beam 1000h and display message box 0Eh
+                        88B0,1000,0E,                       ; Pick up beam 1000h and display message box Eh
 $84:EA6B             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EA3E,                          ; Go to $EA3E
 }
@@ -13745,7 +13745,7 @@ $84:EA92             dx E04F,                               ; Draw item frame 0
                         8724,EA7F,                          ; Go to $EA7F
 $84:EAA2             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0002,0F,                       ; Pick up beam 0002h and display message box 0Fh
+                        88B0,0002,0F,                       ; Pick up beam 2 and display message box Fh
 $84:EAAC             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EA7F,                          ; Go to $EA7F
 }
@@ -13766,7 +13766,7 @@ $84:EAD3             dx E04F,                               ; Draw item frame 0
                         8724,EAC0,                          ; Go to $EAC0
 $84:EAE3             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0100,0B,                       ; Pick up equipment 0100h and display message box 0Bh
+                        88F3,0100,0B,                       ; Pick up equipment 100h and display message box Bh
 $84:EAED             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EAC0,                          ; Go to $EAC0
 }
@@ -13787,7 +13787,7 @@ $84:EB14             dx E04F,                               ; Draw item frame 0
                         8724,EB01,                          ; Go to $EB01
 $84:EB24             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,2000,0D,                       ; Pick up equipment 2000h and display message box 0Dh
+                        88F3,2000,0D,                       ; Pick up equipment 2000h and display message box Dh
 $84:EB2E             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EB01,                          ; Go to $EB01
 }
@@ -13808,7 +13808,7 @@ $84:EB55             dx E04F,                               ; Draw item frame 0
                         8724,EB42,                          ; Go to $EB42
 $84:EB65             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0001,10,                       ; Pick up beam 0001h and display message box 10h
+                        88B0,0001,10,                       ; Pick up beam 1 and display message box 10h
 $84:EB6F             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EB42,                          ; Go to $EB42
 }
@@ -13829,7 +13829,7 @@ $84:EB96             dx E04F,                               ; Draw item frame 0
                         8724,EB83,                          ; Go to $EB83
 $84:EBA6             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0004,11,                       ; Pick up beam 0004h and display message box 11h
+                        88B0,0004,11,                       ; Pick up beam 4 and display message box 11h
 $84:EBB0             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EB83,                          ; Go to $EB83
 }
@@ -13850,7 +13850,7 @@ $84:EBD7             dx E04F,                               ; Draw item frame 0
                         8724,EBC4,                          ; Go to $EBC4
 $84:EBE7             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0002,08,                       ; Pick up equipment 0002h and display message box 08h
+                        88F3,0002,08,                       ; Pick up equipment 2 and display message box 8
 $84:EBF1             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EBC4,                          ; Go to $EBC4
 }
@@ -13872,7 +13872,7 @@ $84:EC18             dx E04F,                               ; Draw item frame 0
 $84:EC28             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
-                        88F3,0001,07,                       ; Pick up equipment 0001h and display message box 07h
+                        88F3,0001,07,                       ; Pick up equipment 1 and display message box 7
                         870B,91D4E4,                        ; Call function varia suit pick up
 $84:EC39             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EC05,                          ; Go to $EC05
@@ -13895,7 +13895,7 @@ $84:EC60             dx E04F,                               ; Draw item frame 0
 $84:EC70             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
                         E29D,                               ; Clear charge beam counter
-                        88F3,0020,1A,                       ; Pick up equipment 0020h and display message box 1Ah
+                        88F3,0020,1A,                       ; Pick up equipment 20h and display message box 1Ah
                         870B,91D5BA,                        ; Call function gravity suit pick up
 $84:EC81             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EC4D,                          ; Go to $EC4D
@@ -13938,7 +13938,7 @@ $84:ECE8             dx E04F,                               ; Draw item frame 0
                         8724,ECD5,                          ; Go to $ECD5
 $84:ECF8             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88B0,0008,12,                       ; Pick up beam 0008h and display message box 12h
+                        88B0,0008,12,                       ; Pick up beam 8 and display message box 12h
 $84:ED02             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,ECD5,                          ; Go to $ECD5
 }
@@ -13980,7 +13980,7 @@ $84:ED69             dx E04F,                               ; Draw item frame 0
                         8724,ED56,                          ; Go to $ED56
 $84:ED79             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0200,0C,                       ; Pick up equipment 0200h and display message box 0Ch
+                        88F3,0200,0C,                       ; Pick up equipment 200h and display message box Ch
 $84:ED83             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,ED56,                          ; Go to $ED56
 }
@@ -14001,7 +14001,7 @@ $84:EDAA             dx E04F,                               ; Draw item frame 0
                         8724,ED97,                          ; Go to $ED97
 $84:EDBA             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0008,0A,                       ; Pick up equipment 0008h and display message box 0Ah
+                        88F3,0008,0A,                       ; Pick up equipment 8 and display message box Ah
 $84:EDC4             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,ED97,                          ; Go to $ED97
 }
@@ -14022,7 +14022,7 @@ $84:EDEB             dx E04F,                               ; Draw item frame 0
                         8724,EDD8,                          ; Go to $EDD8
 $84:EDFB             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        88F3,0002,09,                       ; Pick up equipment 0002h and display message box 09h
+                        88F3,0002,09,                       ; Pick up equipment 2 and display message box 9
 $84:EE05             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EDD8,                          ; Go to $EDD8
 }
@@ -14043,7 +14043,7 @@ $84:EE2C             dx E04F,                               ; Draw item frame 0
                         8724,EE19,                          ; Go to $EE19
 $84:EE3C             dx 8899,                               ; Set the room argument item collected
                         8BDD,02,                            ; Clear music queue and queue item fanfare music track
-                        8986,0064,                          ; Collect 0064h health reserve tank
+                        8986,0064,                          ; Collect 100 health reserve tank
 $84:EE45             dx 8A2E,E032,                          ; Call $E032 (empty item shot block reconcealing)
                         8724,EE19,                          ; Go to $EE19
 }

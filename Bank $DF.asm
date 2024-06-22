@@ -33,7 +33,7 @@ $DF:8055/$5858       dw 5B33, 5B6C, 5B99, 5BC6, 5BDA, 0000, 0000, 0000
 ; Tracker 0, track set $5838, track 0 commands
 {
 $DF:8065/$5868       db FA,25,       ; Percussion instruments base index = 25h
-                        EF,5C11,01,  ; Repeat subsection $5C11 0 times
+                        EF,5C11,01,  ; Repeat subsection $5C11 1 time
                         E0,1B,       ; Select instrument 1Bh
                         F4,28,       ; Set subtranspose of 28h / 100h semitones
                         EA,00,       ; Set transpose of 0 semitones
@@ -395,7 +395,7 @@ $DF:81C4/$59C7       db E0,18,       ; Select instrument 18h
 
 ; Tracker 0, track set $5848, track 0 commands
 {
-$DF:821E/$5A21       db EF,5C11,01,  ; Repeat subsection $5C11 0 times
+$DF:821E/$5A21       db EF,5C11,01,  ; Repeat subsection $5C11 1 time
                         E0,1B,       ; Select instrument 1Bh
                         F4,28,       ; Set subtranspose of 28h / 100h semitones
                         ED,C8,       ; Static volume with volume multiplier = C8h / 100h
@@ -603,7 +603,7 @@ $DF:8309/$5B0C       db E0,18,       ; Select instrument 18h
 
 ; Tracker 0, track set $5858, track 0 commands
 {
-$DF:8330/$5B33       db EF,5C11,01,  ; Repeat subsection $5C11 0 times
+$DF:8330/$5B33       db EF,5C11,01,  ; Repeat subsection $5C11 1 time
                         E0,18,       ; Select instrument 18h
                         F4,32,       ; Set subtranspose of 32h / 100h semitones
                         ED,A5,       ; Static volume with volume multiplier = A5h / 100h
@@ -616,7 +616,7 @@ $DF:8330/$5B33       db EF,5C11,01,  ; Repeat subsection $5C11 0 times
                         98,          ; Note C_3
                         30,          ; Note length = 30h tics
                         8F,          ; Note Eb_2
-                        EF,5C1E,04,  ; Repeat subsection $5C1E 3 times
+                        EF,5C1E,04,  ; Repeat subsection $5C1E 4 times
                         0C,          ; Note length = Ch tics
                         C8,          ; Tie
                         ED,A5,       ; Static volume with volume multiplier = A5h / 100h
@@ -719,7 +719,7 @@ $DF:83C3/$5BC6       db E0,19,       ; Select instrument 19h
                         93,          ; Note G_2
                         18,          ; Note length = 18h tics
                         93,          ; Note G_2
-                        EF,5C26,07,  ; Repeat subsection $5C26 6 times
+                        EF,5C26,07,  ; Repeat subsection $5C26 7 times
 }
 
 ; Tracker 0, track set $5858, track 4 commands
@@ -737,7 +737,7 @@ $DF:83D7/$5BDA       db E0,1B,       ; Select instrument 1Bh
                         98,          ; Note C_3
                         30,          ; Note length = 30h tics
                         8F,          ; Note Eb_2
-                        EF,5C1E,04,  ; Repeat subsection $5C1E 3 times
+                        EF,5C1E,04,  ; Repeat subsection $5C1E 4 times
                         0C,          ; Note length = Ch tics
                         C8,          ; Tie
                         ED,C8,       ; Static volume with volume multiplier = C8h / 100h
@@ -816,7 +816,7 @@ $DF:8457/$5C5A       db FA,25,       ; Percussion instruments base index = 25h
                         E5,C8,       ; Music volume multiplier = C8h / 100h
                         F5,01,0A,0A, ; Static echo on voices 0 with echo volume left = Ah and echo volume right = Ah
                         F7,02,0A,0A, ; Set echo parameters: echo delay = 2, echo feedback volume = Ah, echo FIR filter index = Ah
-                        EF,5CBD,01,  ; Repeat subsection $5CBD 0 times
+                        EF,5CBD,01,  ; Repeat subsection $5CBD 1 time
                         C8,          ; Tie
                         9A,          ; Note D_3
                         C8,          ; Tie
@@ -829,12 +829,12 @@ $DF:846D/$5C70       db E0,1A,       ; Select instrument 1Ah
                         EA,00,       ; Set transpose of 0 semitones
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         E1,0A,       ; Panning bias = Ah / 14h with no phase inversion
-                        EF,5CCB,01,  ; Repeat subsection $5CCB 0 times
+                        EF,5CCB,01,  ; Repeat subsection $5CCB 1 time
 }
 
 ; Tracker 1, track set $5C3A, track 2 commands
 {
-$DF:8479/$5C7C       db EF,5CE6,01,  ; Repeat subsection $5CE6 0 times
+$DF:8479/$5C7C       db EF,5CE6,01,  ; Repeat subsection $5CE6 1 time
 }
 
 ; Tracker 1, track set $5C4A, track 0 commands
@@ -843,7 +843,7 @@ $DF:847D/$5C80       db E7,19,       ; Music tempo = 48.828125 tics per second
                         E5,C8,       ; Music volume multiplier = C8h / 100h
                         F5,01,0A,0A, ; Static echo on voices 0 with echo volume left = Ah and echo volume right = Ah
                         F7,02,0A,00, ; Set echo parameters: echo delay = 2, echo feedback volume = Ah, echo FIR filter index = 0
-                        EF,5CBD,01,  ; Repeat subsection $5CBD 0 times
+                        EF,5CBD,01,  ; Repeat subsection $5CBD 1 time
                         C8,          ; Tie
                         9A,          ; Note D_3
                         C8,          ; Tie
@@ -856,12 +856,12 @@ $DF:8491/$5C94       db E0,1A,       ; Select instrument 1Ah
                         EA,00,       ; Set transpose of 0 semitones
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         E1,0A,       ; Panning bias = Ah / 14h with no phase inversion
-                        EF,5CCB,01,  ; Repeat subsection $5CCB 0 times
+                        EF,5CCB,01,  ; Repeat subsection $5CCB 1 time
 }
 
 ; Tracker 1, track set $5C4A, track 2 commands
 {
-$DF:849D/$5CA0       db EF,5CE6,01,  ; Repeat subsection $5CE6 0 times
+$DF:849D/$5CA0       db EF,5CE6,01,  ; Repeat subsection $5CE6 1 time
 }
 
 ; Tracker 1, track set $5C4A, track 3 commands
@@ -870,7 +870,7 @@ $DF:84A1/$5CA4       db E0,1A,       ; Select instrument 1Ah
                         EA,0C,       ; Set transpose of Ch semitones
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         E1,0A,       ; Panning bias = Ah / 14h with no phase inversion
-                        EF,5CCB,01,  ; Repeat subsection $5CCB 0 times
+                        EF,5CCB,01,  ; Repeat subsection $5CCB 1 time
 }
 
 ; Tracker 1, track set $5C4A, track 4 commands
@@ -879,7 +879,7 @@ $DF:84AD/$5CB0       db E0,1A,       ; Select instrument 1Ah
                         EA,06,       ; Set transpose of 6 semitones
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         E1,0A,       ; Panning bias = Ah / 14h with no phase inversion
-                        EF,5CCB,01,  ; Repeat subsection $5CCB 0 times
+                        EF,5CCB,01,  ; Repeat subsection $5CCB 1 time
                         00
 }
 
@@ -1034,7 +1034,7 @@ $DF:C5E7/$58F2       db FA,26,       ; Percussion instruments base index = 26h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         80,          ; Note C_1
                         C8,          ; Tie
-                        EF,646E,01,  ; Repeat subsection $646E 0 times
+                        EF,646E,01,  ; Repeat subsection $646E 1 time
                         ED,5A,       ; Static volume with volume multiplier = 5Ah / 100h
                         EE,3C,D2,    ; Dynamic volume over 3Ch tics with target volume multiplier D2h / 100h
                         88,          ; Note Ab_1
@@ -1043,7 +1043,7 @@ $DF:C5E7/$58F2       db FA,26,       ; Percussion instruments base index = 26h
                         EE,50,D2,    ; Dynamic volume over 50h tics with target volume multiplier D2h / 100h
                         80,          ; Note C_1
                         C8,          ; Tie
-                        EF,646E,01,  ; Repeat subsection $646E 0 times
+                        EF,646E,01,  ; Repeat subsection $646E 1 time
                         00
 }
 
@@ -1065,7 +1065,7 @@ $DF:C615/$5920       db E0,18,       ; Select instrument 18h
                         18,2F,       ; Note length = 18h tics, note volume multiplier = FCh / 100h, note ring length multiplier = 7Fh / 100h
                         98,          ; Note C_3
                         9D,          ; Note F_3
-                        EF,647D,01,  ; Repeat subsection $647D 0 times
+                        EF,647D,01,  ; Repeat subsection $647D 1 time
                         60,          ; Note length = 60h tics
                         C9,          ; Rest
                         0C,2F,       ; Note length = Ch tics, note volume multiplier = FCh / 100h, note ring length multiplier = 7Fh / 100h
@@ -1078,7 +1078,7 @@ $DF:C615/$5920       db E0,18,       ; Select instrument 18h
                         18,2F,       ; Note length = 18h tics, note volume multiplier = FCh / 100h, note ring length multiplier = 7Fh / 100h
                         98,          ; Note C_3
                         9D,          ; Note F_3
-                        EF,647D,01,  ; Repeat subsection $647D 0 times
+                        EF,647D,01,  ; Repeat subsection $647D 1 time
 }
 
 ; Tracker 0, track set $5842, track 2 commands
@@ -1089,13 +1089,13 @@ $DF:C642/$594D       db E0,18,       ; Select instrument 18h
                         E1,08,       ; Panning bias = 8 / 14h with no phase inversion
                         48,          ; Note length = 48h tics
                         C9,          ; Rest
-                        EF,648A,01,  ; Repeat subsection $648A 0 times
+                        EF,648A,01,  ; Repeat subsection $648A 1 time
                         A4,          ; Note C_4
                         A9,          ; Note F_4
                         B0,          ; Note C_5
                         48,6F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = E5h / 100h
                         AB,          ; Note G_4
-                        EF,648A,01,  ; Repeat subsection $648A 0 times
+                        EF,648A,01,  ; Repeat subsection $648A 1 time
 }
 
 ; Tracker 0, track set $5842, track 3 commands
@@ -1110,7 +1110,7 @@ $DF:C65A/$5965       db E0,19,       ; Select instrument 19h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         87,          ; Note G_1
                         C8,          ; Tie
-                        EF,64A5,01,  ; Repeat subsection $64A5 0 times
+                        EF,64A5,01,  ; Repeat subsection $64A5 1 time
                         ED,5A,       ; Static volume with volume multiplier = 5Ah / 100h
                         EE,3C,D2,    ; Dynamic volume over 3Ch tics with target volume multiplier D2h / 100h
                         8F,          ; Note Eb_2
@@ -1119,7 +1119,7 @@ $DF:C65A/$5965       db E0,19,       ; Select instrument 19h
                         EE,50,D2,    ; Dynamic volume over 50h tics with target volume multiplier D2h / 100h
                         87,          ; Note G_1
                         C8,          ; Tie
-                        EF,64A5,01,  ; Repeat subsection $64A5 0 times
+                        EF,64A5,01,  ; Repeat subsection $64A5 1 time
 }
 
 ; Tracker 0, track set $5842, track 4 commands
@@ -1143,7 +1143,7 @@ $DF:C681/$598C       db E0,19,       ; Select instrument 19h
                         82,          ; Note D_1
                         82,          ; Note D_1
                         82,          ; Note D_1
-                        EF,64B4,03,  ; Repeat subsection $64B4 2 times
+                        EF,64B4,03,  ; Repeat subsection $64B4 3 times
 }
 
 ; Tracker 0, track set $5842, track 5 commands
@@ -1161,7 +1161,7 @@ $DF:C69D/$59A8       db E0,1A,       ; Select instrument 1Ah
                         48,          ; Note length = 48h tics
                         8E,          ; Note D_2
                         8E,          ; Note D_2
-                        EF,64C9,03,  ; Repeat subsection $64C9 2 times
+                        EF,64C9,03,  ; Repeat subsection $64C9 3 times
 }
 
 ; Tracker 0, track set $5852, track 0 commands
@@ -1183,8 +1183,8 @@ $DF:C6B4/$59BF       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         B7,          ; Note G_5
                         18,1F,       ; Note length = 18h tics, note volume multiplier = FCh / 100h, note ring length multiplier = 65h / 100h
                         B7,          ; Note G_5
-                        EF,64D6,02,  ; Repeat subsection $64D6 1 times
-                        EF,64E7,02,  ; Repeat subsection $64E7 1 times
+                        EF,64D6,02,  ; Repeat subsection $64D6 2 times
+                        EF,64E7,02,  ; Repeat subsection $64E7 2 times
                         18,4F,       ; Note length = 18h tics, note volume multiplier = FCh / 100h, note ring length multiplier = B2h / 100h
                         BA,          ; Note Bb_5
                         0C,1F,       ; Note length = Ch tics, note volume multiplier = FCh / 100h, note ring length multiplier = 65h / 100h
@@ -1237,7 +1237,7 @@ $DF:C714/$5A1F       db E0,18,       ; Select instrument 18h
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         ED,FA,       ; Static volume with volume multiplier = FAh / 100h
                         E1,0C,       ; Panning bias = Ch / 14h with no phase inversion
-                        EF,64F6,02,  ; Repeat subsection $64F6 1 times
+                        EF,64F6,02,  ; Repeat subsection $64F6 2 times
                         48,          ; Note length = 48h tics
                         C9,          ; Rest
                         C9,          ; Rest
@@ -1255,13 +1255,13 @@ $DF:C723/$5A2E       db E0,18,       ; Select instrument 18h
                         B0,          ; Note C_5
                         48,6F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = E5h / 100h
                         AB,          ; Note G_4
-                        EF,6512,01,  ; Repeat subsection $6512 0 times
+                        EF,6512,01,  ; Repeat subsection $6512 1 time
                         A7,          ; Note Eb_4
                         AC,          ; Note Ab_4
                         B3,          ; Note Eb_5
                         48,6F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = E5h / 100h
                         AE,          ; Note Bb_4
-                        EF,6512,01,  ; Repeat subsection $6512 0 times
+                        EF,6512,01,  ; Repeat subsection $6512 1 time
                         A7,          ; Note Eb_4
                         AC,          ; Note Ab_4
                         B3,          ; Note Eb_5
@@ -1279,12 +1279,12 @@ $DF:C746/$5A51       db E0,19,       ; Select instrument 19h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         8A,          ; Note Bb_1
                         C8,          ; Tie
-                        EF,652D,01,  ; Repeat subsection $652D 0 times
+                        EF,652D,01,  ; Repeat subsection $652D 1 time
                         ED,5A,       ; Static volume with volume multiplier = 5Ah / 100h
                         EE,14,D2,    ; Dynamic volume over 14h tics with target volume multiplier D2h / 100h
                         8B,          ; Note B_1
                         C8,          ; Tie
-                        EF,652D,01,  ; Repeat subsection $652D 0 times
+                        EF,652D,01,  ; Repeat subsection $652D 1 time
                         C9,          ; Rest
                         C9,          ; Rest
 }
@@ -1299,12 +1299,12 @@ $DF:C766/$5A71       db E0,19,       ; Select instrument 19h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         8F,          ; Note Eb_2
                         C8,          ; Tie
-                        EF,6543,01,  ; Repeat subsection $6543 0 times
+                        EF,6543,01,  ; Repeat subsection $6543 1 time
                         ED,5A,       ; Static volume with volume multiplier = 5Ah / 100h
                         EE,14,D2,    ; Dynamic volume over 14h tics with target volume multiplier D2h / 100h
                         92,          ; Note Gb_2
                         C8,          ; Tie
-                        EF,6543,01,  ; Repeat subsection $6543 0 times
+                        EF,6543,01,  ; Repeat subsection $6543 1 time
                         C9,          ; Rest
                         C9,          ; Rest
 }
@@ -1336,7 +1336,7 @@ $DF:C786/$5A91       db E0,19,       ; Select instrument 19h
                         85,          ; Note F_1
                         85,          ; Note F_1
                         86,          ; Note Gb_1
-                        EF,6559,03,  ; Repeat subsection $6559 2 times
+                        EF,6559,03,  ; Repeat subsection $6559 3 times
                         85,          ; Note F_1
                         0C,          ; Note length = Ch tics
                         85,          ; Note F_1
@@ -1364,7 +1364,7 @@ $DF:C7B2/$5ABD       db E0,1A,       ; Select instrument 1Ah
                         91,          ; Note F_2
                         ED,E6,       ; Static volume with volume multiplier = E6h / 100h
                         92,          ; Note Gb_2
-                        EF,656E,03,  ; Repeat subsection $656E 2 times
+                        EF,656E,03,  ; Repeat subsection $656E 3 times
                         ED,DC,       ; Static volume with volume multiplier = DCh / 100h
                         48,          ; Note length = 48h tics
                         91,          ; Note F_2
@@ -1600,7 +1600,7 @@ $DF:C8E1/$5BEC       db E0,1A,       ; Select instrument 1Ah
                         48,          ; Note length = 48h tics
                         8E,          ; Note D_2
                         8E,          ; Note D_2
-                        EF,657B,03,  ; Repeat subsection $657B 2 times
+                        EF,657B,03,  ; Repeat subsection $657B 3 times
 }
 
 ; Tracker 0, track set $5872, track 0 commands
@@ -1622,19 +1622,19 @@ $DF:C908/$5C13       db E5,B4,       ; Music volume multiplier = B4h / 100h
                         B7,          ; Note G_5
                         18,1F,       ; Note length = 18h tics, note volume multiplier = FCh / 100h, note ring length multiplier = 65h / 100h
                         B7,          ; Note G_5
-                        EF,64D6,02,  ; Repeat subsection $64D6 1 times
-                        EF,6588,01,  ; Repeat subsection $6588 0 times
+                        EF,64D6,02,  ; Repeat subsection $64D6 2 times
+                        EF,6588,01,  ; Repeat subsection $6588 1 time
                         00
 }
 
 ; Tracker 0, track set $5872, track 1 commands
 {
-$DF:C92E/$5C39       db EF,65E7,01,  ; Repeat subsection $65E7 0 times
+$DF:C92E/$5C39       db EF,65E7,01,  ; Repeat subsection $65E7 1 time
                         C8,          ; Tie
                         C8,          ; Tie
                         C9,          ; Rest
                         C9,          ; Rest
-                        EF,6604,01,  ; Repeat subsection $6604 0 times
+                        EF,6604,01,  ; Repeat subsection $6604 1 time
                         C8,          ; Tie
                         C8,          ; Tie
                         C9,          ; Rest
@@ -1649,7 +1649,7 @@ $DF:C93D/$5C48       db E0,18,       ; Select instrument 18h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         AD,          ; Note A_4
                         C8,          ; Tie
-                        EF,6616,01,  ; Repeat subsection $6616 0 times
+                        EF,6616,01,  ; Repeat subsection $6616 1 time
 }
 
 ; Tracker 0, track set $5872, track 3 commands
@@ -1740,8 +1740,8 @@ $DF:C9CF/$5CDA       db E0,19,       ; Select instrument 19h
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         ED,FA,       ; Static volume with volume multiplier = FAh / 100h
                         E1,0A,       ; Panning bias = Ah / 14h with no phase inversion
-                        EF,6644,01,  ; Repeat subsection $6644 0 times
-                        EF,6559,03,  ; Repeat subsection $6559 2 times
+                        EF,6644,01,  ; Repeat subsection $6644 1 time
+                        EF,6559,03,  ; Repeat subsection $6559 3 times
                         85,          ; Note F_1
                         30,          ; Note length = 30h tics
                         C9,          ; Rest
@@ -1749,7 +1749,7 @@ $DF:C9CF/$5CDA       db E0,19,       ; Select instrument 19h
 
 ; Tracker 0, track set $5872, track 6 commands
 {
-$DF:C9E2/$5CED       db EF,6654,01,  ; Repeat subsection $6654 0 times
+$DF:C9E2/$5CED       db EF,6654,01,  ; Repeat subsection $6654 1 time
                         ED,F0,       ; Static volume with volume multiplier = F0h / 100h
                         91,          ; Note F_2
                         0C,          ; Note length = Ch tics
@@ -1759,7 +1759,7 @@ $DF:C9E2/$5CED       db EF,6654,01,  ; Repeat subsection $6654 0 times
                         18,          ; Note length = 18h tics
                         91,          ; Note F_2
                         92,          ; Note Gb_2
-                        EF,6661,03,  ; Repeat subsection $6661 2 times
+                        EF,6661,03,  ; Repeat subsection $6661 3 times
                         ED,FA,       ; Static volume with volume multiplier = FAh / 100h
                         48,          ; Note length = 48h tics
                         91,          ; Note F_2
@@ -1804,8 +1804,8 @@ $DF:C9F9/$5D04       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         A2,          ; Note Bb_3
                         18,          ; Note length = 18h tics
                         A7,          ; Note Eb_4
-                        EF,6672,02,  ; Repeat subsection $6672 1 times
-                        EF,6685,01,  ; Repeat subsection $6685 0 times
+                        EF,6672,02,  ; Repeat subsection $6672 2 times
+                        EF,6685,01,  ; Repeat subsection $6685 1 time
                         00
 }
 
@@ -2052,9 +2052,9 @@ $DF:CB5B/$5E66       db E0,1A,       ; Select instrument 1Ah
                         91,          ; Note F_2
                         8D,          ; Note Db_2
                         91,          ; Note F_2
-                        EF,66BC,02,  ; Repeat subsection $66BC 1 times
-                        EF,66C6,01,  ; Repeat subsection $66C6 0 times
-                        EF,66BC,02,  ; Repeat subsection $66BC 1 times
+                        EF,66BC,02,  ; Repeat subsection $66BC 2 times
+                        EF,66C6,01,  ; Repeat subsection $66C6 1 time
+                        EF,66BC,02,  ; Repeat subsection $66BC 2 times
                         8F,          ; Note Eb_2
                         87,          ; Note G_1
                         8F,          ; Note Eb_2
@@ -2102,8 +2102,8 @@ $DF:CB80/$5E8B       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         A5,          ; Note Db_4
                         18,          ; Note length = 18h tics
                         AA,          ; Note Gb_4
-                        EF,66D6,02,  ; Repeat subsection $66D6 1 times
-                        EF,66E9,01,  ; Repeat subsection $66E9 0 times
+                        EF,66D6,02,  ; Repeat subsection $66D6 2 times
+                        EF,66E9,01,  ; Repeat subsection $66E9 1 time
                         00
 }
 
@@ -2112,14 +2112,14 @@ $DF:CB80/$5E8B       db E5,C8,       ; Music volume multiplier = C8h / 100h
 $DF:CBBA/$5EC5       db E0,18,       ; Select instrument 18h
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         E1,05,       ; Panning bias = 5 / 14h with no phase inversion
-                        EF,6720,01,  ; Repeat subsection $6720 0 times
+                        EF,6720,01,  ; Repeat subsection $6720 1 time
                         ED,DC,       ; Static volume with volume multiplier = DCh / 100h
                         EE,90,64,    ; Dynamic volume over 90h tics with target volume multiplier 64h / 100h
                         C8,          ; Tie
                         C8,          ; Tie
                         C9,          ; Rest
                         C9,          ; Rest
-                        EF,6720,01,  ; Repeat subsection $6720 0 times
+                        EF,6720,01,  ; Repeat subsection $6720 1 time
                         ED,DC,       ; Static volume with volume multiplier = DCh / 100h
                         EE,90,64,    ; Dynamic volume over 90h tics with target volume multiplier 64h / 100h
                         C8,          ; Tie
@@ -2313,9 +2313,9 @@ $DF:CCA9/$5FB4       db E0,1A,       ; Select instrument 1Ah
                         94,          ; Note Ab_2
                         90,          ; Note E_2
                         94,          ; Note Ab_2
-                        EF,6736,02,  ; Repeat subsection $6736 1 times
-                        EF,6740,01,  ; Repeat subsection $6740 0 times
-                        EF,6736,02,  ; Repeat subsection $6736 1 times
+                        EF,6736,02,  ; Repeat subsection $6736 2 times
+                        EF,6740,01,  ; Repeat subsection $6740 1 time
+                        EF,6736,02,  ; Repeat subsection $6736 2 times
                         92,          ; Note Gb_2
                         8A,          ; Note Bb_1
                         92,          ; Note Gb_2
@@ -2346,8 +2346,8 @@ $DF:CCCE/$5FD9       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         A2,          ; Note Bb_3
                         18,          ; Note length = 18h tics
                         A7,          ; Note Eb_4
-                        EF,6685,01,  ; Repeat subsection $6685 0 times
-                        EF,6672,04,  ; Repeat subsection $6672 3 times
+                        EF,6685,01,  ; Repeat subsection $6685 1 time
+                        EF,6672,04,  ; Repeat subsection $6672 4 times
                         00
 }
 
@@ -2589,9 +2589,9 @@ $DF:CE15/$6120       db E0,1A,       ; Select instrument 1Ah
                         91,          ; Note F_2
                         8D,          ; Note Db_2
                         91,          ; Note F_2
-                        EF,66BC,02,  ; Repeat subsection $66BC 1 times
-                        EF,66C6,01,  ; Repeat subsection $66C6 0 times
-                        EF,66BC,02,  ; Repeat subsection $66BC 1 times
+                        EF,66BC,02,  ; Repeat subsection $66BC 2 times
+                        EF,66C6,01,  ; Repeat subsection $66C6 1 time
+                        EF,66BC,02,  ; Repeat subsection $66BC 2 times
                         8F,          ; Note Eb_2
                         87,          ; Note G_1
                         8F,          ; Note Eb_2
@@ -2670,12 +2670,12 @@ $DF:CE78/$6183       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         C9,          ; Rest
                         C9,          ; Rest
                         C9,          ; Rest
-                        EF,6750,01,  ; Repeat subsection $6750 0 times
+                        EF,6750,01,  ; Repeat subsection $6750 1 time
                         C8,          ; Tie
                         C8,          ; Tie
                         C9,          ; Rest
                         C9,          ; Rest
-                        EF,6750,01,  ; Repeat subsection $6750 0 times
+                        EF,6750,01,  ; Repeat subsection $6750 1 time
                         C8,          ; Tie
                         C8,          ; Tie
                         00
@@ -2693,13 +2693,13 @@ $DF:CE96/$61A1       db E0,18,       ; Select instrument 18h
                         C9,          ; Rest
                         C9,          ; Rest
                         C9,          ; Rest
-                        EF,6769,01,  ; Repeat subsection $6769 0 times
+                        EF,6769,01,  ; Repeat subsection $6769 1 time
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         A6,          ; Note D_4
                         C8,          ; Tie
                         C8,          ; Tie
                         C8,          ; Tie
-                        EF,6769,01,  ; Repeat subsection $6769 0 times
+                        EF,6769,01,  ; Repeat subsection $6769 1 time
 }
 
 ; Tracker 0, track set $58C2, track 2 commands
@@ -2717,7 +2717,7 @@ $DF:CEB1/$61BC       db E0,19,       ; Select instrument 19h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         80,          ; Note C_1
                         C8,          ; Tie
-                        EF,677E,01,  ; Repeat subsection $677E 0 times
+                        EF,677E,01,  ; Repeat subsection $677E 1 time
                         ED,32,       ; Static volume with volume multiplier = 32h / 100h
                         EE,50,AA,    ; Dynamic volume over 50h tics with target volume multiplier AAh / 100h
                         88,          ; Note Ab_1
@@ -2726,7 +2726,7 @@ $DF:CEB1/$61BC       db E0,19,       ; Select instrument 19h
                         EE,64,AA,    ; Dynamic volume over 64h tics with target volume multiplier AAh / 100h
                         80,          ; Note C_1
                         C8,          ; Tie
-                        EF,677E,01,  ; Repeat subsection $677E 0 times
+                        EF,677E,01,  ; Repeat subsection $677E 1 time
 }
 
 ; Tracker 0, track set $58C2, track 3 commands
@@ -2744,7 +2744,7 @@ $DF:CEDB/$61E6       db E0,19,       ; Select instrument 19h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         87,          ; Note G_1
                         C8,          ; Tie
-                        EF,678D,01,  ; Repeat subsection $678D 0 times
+                        EF,678D,01,  ; Repeat subsection $678D 1 time
                         ED,32,       ; Static volume with volume multiplier = 32h / 100h
                         EE,50,AA,    ; Dynamic volume over 50h tics with target volume multiplier AAh / 100h
                         8F,          ; Note Eb_2
@@ -2753,7 +2753,7 @@ $DF:CEDB/$61E6       db E0,19,       ; Select instrument 19h
                         EE,64,AA,    ; Dynamic volume over 64h tics with target volume multiplier AAh / 100h
                         87,          ; Note G_1
                         C8,          ; Tie
-                        EF,678D,01,  ; Repeat subsection $678D 0 times
+                        EF,678D,01,  ; Repeat subsection $678D 1 time
 }
 
 ; Tracker 0, track set $58C2, track 4 commands
@@ -2773,7 +2773,7 @@ $DF:CF05/$6210       db E0,19,       ; Select instrument 19h
                         82,          ; Note D_1
                         82,          ; Note D_1
                         82,          ; Note D_1
-                        EF,64B4,04,  ; Repeat subsection $64B4 3 times
+                        EF,64B4,04,  ; Repeat subsection $64B4 4 times
 }
 
 ; Tracker 0, track set $58C2, track 5 commands
@@ -2805,7 +2805,7 @@ $DF:CF1D/$6228       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         48,          ; Note length = 48h tics
                         8E,          ; Note D_2
                         8E,          ; Note D_2
-                        EF,679C,03,  ; Repeat subsection $679C 2 times
+                        EF,679C,03,  ; Repeat subsection $679C 3 times
 }
 
 ; Tracker 0, track set $58D2, track 0 commands
@@ -2831,8 +2831,8 @@ $DF:CF49/$6254       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         A5,          ; Note Db_4
                         18,          ; Note length = 18h tics
                         AA,          ; Note Gb_4
-                        EF,66E9,01,  ; Repeat subsection $66E9 0 times
-                        EF,66D6,04,  ; Repeat subsection $66D6 3 times
+                        EF,66E9,01,  ; Repeat subsection $66E9 1 time
+                        EF,66D6,04,  ; Repeat subsection $66D6 4 times
                         00
 }
 
@@ -3077,9 +3077,9 @@ $DF:D094/$639F       db E0,1A,       ; Select instrument 1Ah
                         94,          ; Note Ab_2
                         90,          ; Note E_2
                         94,          ; Note Ab_2
-                        EF,6736,02,  ; Repeat subsection $6736 1 times
-                        EF,6740,01,  ; Repeat subsection $6740 0 times
-                        EF,6736,02,  ; Repeat subsection $6736 1 times
+                        EF,6736,02,  ; Repeat subsection $6736 2 times
+                        EF,6740,01,  ; Repeat subsection $6740 1 time
+                        EF,6736,02,  ; Repeat subsection $6736 2 times
                         92,          ; Note Gb_2
                         8A,          ; Note Bb_1
                         92,          ; Note Gb_2
@@ -3107,19 +3107,19 @@ $DF:D0B9/$63C4       db E5,C8,       ; Music volume multiplier = C8h / 100h
                         B7,          ; Note G_5
                         18,1F,       ; Note length = 18h tics, note volume multiplier = FCh / 100h, note ring length multiplier = 65h / 100h
                         B7,          ; Note G_5
-                        EF,64D6,02,  ; Repeat subsection $64D6 1 times
-                        EF,6588,01,  ; Repeat subsection $6588 0 times
+                        EF,64D6,02,  ; Repeat subsection $64D6 2 times
+                        EF,6588,01,  ; Repeat subsection $6588 1 time
                         00
 }
 
 ; Tracker 0, track set $58E2, track 1 commands
 {
-$DF:D0DF/$63EA       db EF,65E7,01,  ; Repeat subsection $65E7 0 times
+$DF:D0DF/$63EA       db EF,65E7,01,  ; Repeat subsection $65E7 1 time
                         C8,          ; Tie
                         C8,          ; Tie
                         C9,          ; Rest
                         C9,          ; Rest
-                        EF,6604,01,  ; Repeat subsection $6604 0 times
+                        EF,6604,01,  ; Repeat subsection $6604 1 time
                         C8,          ; Tie
                         C8,          ; Tie
                         C9,          ; Rest
@@ -3134,7 +3134,7 @@ $DF:D0EE/$63F9       db E0,18,       ; Select instrument 18h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         A6,          ; Note D_4
                         C8,          ; Tie
-                        EF,6616,01,  ; Repeat subsection $6616 0 times
+                        EF,6616,01,  ; Repeat subsection $6616 1 time
 }
 
 ; Tracker 0, track set $58E2, track 3 commands
@@ -3147,12 +3147,12 @@ $DF:D0FE/$6409       db E0,19,       ; Select instrument 19h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         88,          ; Note Ab_1
                         C8,          ; Tie
-                        EF,67AB,01,  ; Repeat subsection $67AB 0 times
+                        EF,67AB,01,  ; Repeat subsection $67AB 1 time
                         ED,32,       ; Static volume with volume multiplier = 32h / 100h
                         EE,50,AA,    ; Dynamic volume over 50h tics with target volume multiplier AAh / 100h
                         8B,          ; Note B_1
                         C8,          ; Tie
-                        EF,67AB,01,  ; Repeat subsection $67AB 0 times
+                        EF,67AB,01,  ; Repeat subsection $67AB 1 time
                         C9,          ; Rest
 }
 
@@ -3166,12 +3166,12 @@ $DF:D11D/$6428       db E0,19,       ; Select instrument 19h
                         48,7F,       ; Note length = 48h tics, note volume multiplier = FCh / 100h, note ring length multiplier = FCh / 100h
                         8F,          ; Note Eb_2
                         C8,          ; Tie
-                        EF,67C1,01,  ; Repeat subsection $67C1 0 times
+                        EF,67C1,01,  ; Repeat subsection $67C1 1 time
                         ED,32,       ; Static volume with volume multiplier = 32h / 100h
                         EE,50,AA,    ; Dynamic volume over 50h tics with target volume multiplier AAh / 100h
                         92,          ; Note Gb_2
                         C8,          ; Tie
-                        EF,67C1,01,  ; Repeat subsection $67C1 0 times
+                        EF,67C1,01,  ; Repeat subsection $67C1 1 time
                         C9,          ; Rest
 }
 
@@ -3181,8 +3181,8 @@ $DF:D13C/$6447       db E0,19,       ; Select instrument 19h
                         F4,46,       ; Set subtranspose of 46h / 100h semitones
                         ED,E6,       ; Static volume with volume multiplier = E6h / 100h
                         E1,0A,       ; Panning bias = Ah / 14h with no phase inversion
-                        EF,6644,01,  ; Repeat subsection $6644 0 times
-                        EF,6559,03,  ; Repeat subsection $6559 2 times
+                        EF,6644,01,  ; Repeat subsection $6644 1 time
+                        EF,6559,03,  ; Repeat subsection $6559 3 times
                         85,          ; Note F_1
                         30,          ; Note length = 30h tics
                         C9,          ; Rest
@@ -3190,7 +3190,7 @@ $DF:D13C/$6447       db E0,19,       ; Select instrument 19h
 
 ; Tracker 0, track set $58E2, track 6 commands
 {
-$DF:D14F/$645A       db EF,6654,01,  ; Repeat subsection $6654 0 times
+$DF:D14F/$645A       db EF,6654,01,  ; Repeat subsection $6654 1 time
                         91,          ; Note F_2
                         ED,DC,       ; Static volume with volume multiplier = DCh / 100h
                         18,          ; Note length = 18h tics
@@ -3198,7 +3198,7 @@ $DF:D14F/$645A       db EF,6654,01,  ; Repeat subsection $6654 0 times
                         91,          ; Note F_2
                         ED,F0,       ; Static volume with volume multiplier = F0h / 100h
                         92,          ; Note Gb_2
-                        EF,67D7,03,  ; Repeat subsection $67D7 2 times
+                        EF,67D7,03,  ; Repeat subsection $67D7 3 times
                         48,          ; Note length = 48h tics
                         91,          ; Note F_2
                         00

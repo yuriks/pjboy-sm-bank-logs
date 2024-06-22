@@ -1878,8 +1878,13 @@ $A6:998C             dw 3800, 559D, 1816, 100D, 4B9F, 3F37, 36D0, 2E69, 2608, 1D
 {
 ;;; $99AC: Instruction list -  ;;;
 {
-$A6:99AC             dx 9B74,       ; ???
-                        0010,9C64,
+$A6:99AC             dw 9B74        ; ???
+}
+
+
+;;; $99AE: Instruction list - initial - facing right ;;;
+{
+$A6:99AE             dw 0010,9C64,
                         000C,9CB6,
                         0008,9D08,
                         000C,9D5A,
@@ -1890,8 +1895,13 @@ $A6:99AC             dx 9B74,       ; ???
 
 ;;; $99C4: Instruction list -  ;;;
 {
-$A6:99C4             dx 9B74,       ; ???
-                        0010,9C64,
+$A6:99C4             dw 9B74        ; ???
+}
+
+
+;;; $99C6: Instruction list -  ;;;
+{
+$A6:99C6             dw 0010,9C64,
                         9B26,       ; ???
                         000C,9D5A,
                         0008,9D08,
@@ -1900,12 +1910,12 @@ $A6:99C4             dx 9B74,       ; ???
 }
 
 
-;;; $99DC: Instruction list -  ;;;
+;;; $99DC: Instruction list - fire spit - facing left ;;;
 {
 $A6:99DC             dx 0010,9DAC,
-                        9BB2,       ; ???
+                        9BB2,       ; Play fake Kraid cry
                         0008,9DFE,
-                        9BC4,       ; ???
+                        9BC4,       ; Fire spit left
                         0010,9E50,
                         0008,9DFE,
                         80ED,99AC   ; Go to $99AC
@@ -1921,8 +1931,13 @@ $A6:99F4             dx 7FFF,9DAC,
 
 ;;; $99FA: Instruction list -  ;;;
 {
-$A6:99FA             dx 9B74,       ; ???
-                        0010,9EA2,
+$A6:99FA             dw 9B74        ; ???
+}
+
+
+;;; $99FC: Instruction list - initial - facing left ;;;
+{
+$A6:99FC             dw 0010,9EA2,
                         000C,9EF4,
                         0008,9F46,
                         000C,9F98,
@@ -1933,8 +1948,13 @@ $A6:99FA             dx 9B74,       ; ???
 
 ;;; $9A12: Instruction list -  ;;;
 {
-$A6:9A12             dx 9B74,       ; ???
-                        0010,9EA2,
+$A6:9A12             dw 9B74        ; ???
+}
+
+
+;;; $9A14: Instruction list -  ;;;
+{
+$A6:9A14             dw 0010,9EA2,
                         9B26,       ; ???
                         000C,9F98,
                         0008,9F46,
@@ -1943,12 +1963,12 @@ $A6:9A12             dx 9B74,       ; ???
 }
 
 
-;;; $9A2A: Instruction list -  ;;;
+;;; $9A2A: Instruction list - fire spit - facing right ;;;
 {
 $A6:9A2A             dx 0010,9FEA,
-                        9BB2,       ; ???
+                        9BB2,       ; Play fake Kraid cry
                         0008,A03C,
-                        9C02,       ; ???
+                        9C02,       ; Fire spit right
                         0010,A08E,
                         0008,A03C,
                         80ED,99FA   ; Go to $99FA
@@ -1963,53 +1983,56 @@ $A6:9A42             dx 7FFF,9FEA,
 }
 
 
-;;; $9A48: Fake Kraid constants ;;;
+;;; $9A48: Fake Kraid spit velocity table ;;;
 {
-$A6:9A48             dw FE00,FB00
-$A6:9A4C             dw FC00,FB00
-$A6:9A50             dw 0200,FB00
-$A6:9A54             dw 0400,FB00
+;                        ___________________ Spit 1 X velocity
+;                       |     ______________ Spit 1 Y velocity
+;                       |    |      ________ Spit 2 X velocity
+;                       |    |     |     ___ Spit 2 Y velocity
+;                       |    |     |    |
+$A6:9A48             dw FE00,FB00, FC00,FB00 ; Leftwards
+$A6:9A50             dw 0200,FB00, 0400,FB00 ; Rightwards
 }
 
 
 ;;; $9A58: Initialisation AI - enemy $E0FF (fake Kraid) ;;;
 {
 $A6:9A58 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9A5B AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:9A5E 29 03 00    AND #$0003
-$A6:9A61 18          CLC
-$A6:9A62 69 02 00    ADC #$0002
-$A6:9A65 9D AE 0F    STA $0FAE,x[$7E:106E]
-$A6:9A68 9D B0 0F    STA $0FB0,x[$7E:1070]
-$A6:9A6B 18          CLC
-$A6:9A6C 69 40 00    ADC #$0040
-$A6:9A6F 9F 06 78 7E STA $7E7806,x[$7E:78C6]
-$A6:9A73 18          CLC
-$A6:9A74 69 20 00    ADC #$0020
-$A6:9A77 9F 08 78 7E STA $7E7808,x[$7E:78C8]
-$A6:9A7B 18          CLC
-$A6:9A7C 69 D0 FF    ADC #$FFD0
-$A6:9A7F 9F 0A 78 7E STA $7E780A,x[$7E:78CA]
-$A6:9A83 A9 00 00    LDA #$0000
-$A6:9A86 9F 0E 78 7E STA $7E780E,x[$7E:78CE]
-$A6:9A8A BD 86 0F    LDA $0F86,x[$7E:1046]
-$A6:9A8D 09 00 20    ORA #$2000
-$A6:9A90 9D 86 0F    STA $0F86,x[$7E:1046]
-$A6:9A93 A9 01 00    LDA #$0001
-$A6:9A96 9D 94 0F    STA $0F94,x[$7E:1054]
-$A6:9A99 9E 90 0F    STZ $0F90,x[$7E:1050]
-$A6:9A9C A9 FC FF    LDA #$FFFC
-$A6:9A9F 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A6:9AA2 9D AC 0F    STA $0FAC,x[$7E:106C]
-$A6:9AA5 A0 AE 99    LDY #$99AE
-$A6:9AA8 BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$A6:9AAB 38          SEC
-$A6:9AAC ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A6:9AAF 10 0C       BPL $0C    [$9ABD]
-$A6:9AB1 A9 04 00    LDA #$0004
-$A6:9AB4 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A6:9AB7 9D AC 0F    STA $0FAC,x[$7E:106C]
-$A6:9ABA A0 FC 99    LDY #$99FC
+$A6:9A5B AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:9A5E 29 03 00    AND #$0003             ;|
+$A6:9A61 18          CLC                    ;} Enemy $0FAE = 2 + [random number] % 4
+$A6:9A62 69 02 00    ADC #$0002             ;|
+$A6:9A65 9D AE 0F    STA $0FAE,x[$7E:106E]  ;/
+$A6:9A68 9D B0 0F    STA $0FB0,x[$7E:1070]  ; Enemy spit timer = [enemy $0FAE]
+$A6:9A6B 18          CLC                    ;\
+$A6:9A6C 69 40 00    ADC #$0040             ;} Enemy top spike timer = [enemy $0FAE] + 40h
+$A6:9A6F 9F 06 78 7E STA $7E7806,x[$7E:78C6];/
+$A6:9A73 18          CLC                    ;\
+$A6:9A74 69 20 00    ADC #$0020             ;} Enemy middle spike timer = [enemy $0FAE] + 60h
+$A6:9A77 9F 08 78 7E STA $7E7808,x[$7E:78C8];/
+$A6:9A7B 18          CLC                    ;\
+$A6:9A7C 69 D0 FF    ADC #$FFD0             ;} Enemy bottom spike timer = [enemy $0FAE] + 30h
+$A6:9A7F 9F 0A 78 7E STA $7E780A,x[$7E:78CA];/
+$A6:9A83 A9 00 00    LDA #$0000             ;\
+$A6:9A86 9F 0E 78 7E STA $7E780E,x[$7E:78CE];} Enemy $7E:780E = 0
+$A6:9A8A BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
+$A6:9A8D 09 00 20    ORA #$2000             ;} Set enemy to process instructions
+$A6:9A90 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
+$A6:9A93 A9 01 00    LDA #$0001             ;\
+$A6:9A96 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
+$A6:9A99 9E 90 0F    STZ $0F90,x[$7E:1050]  ; Enemy timer = 0
+$A6:9A9C A9 FC FF    LDA #$FFFC             ;\
+$A6:9A9F 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy X velocity = -4
+$A6:9AA2 9D AC 0F    STA $0FAC,x[$7E:106C]  ; Enemy $0FAC = -4
+$A6:9AA5 A0 AE 99    LDY #$99AE             ; Enemy instruction list pointer = $99AE
+$A6:9AA8 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
+$A6:9AAB 38          SEC                    ;|
+$A6:9AAC ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
+$A6:9AAF 10 0C       BPL $0C    [$9ABD]     ;/
+$A6:9AB1 A9 04 00    LDA #$0004             ;\
+$A6:9AB4 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy X velocity = 4
+$A6:9AB7 9D AC 0F    STA $0FAC,x[$7E:106C]  ; Enemy $0FAC = 4
+$A6:9ABA A0 FC 99    LDY #$99FC             ; Enemy instruction list pointer = $99FC
 
 $A6:9ABD 98          TYA
 $A6:9ABE 9D 92 0F    STA $0F92,x[$7E:1052]
@@ -2020,47 +2043,54 @@ $A6:9AC1 6B          RTL
 ;;; $9AC2: Main AI - enemy $E0FF (fake Kraid) ;;;
 {
 $A6:9AC2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9AC5 BF 0E 78 7E LDA $7E780E,x[$7E:78CE]
-$A6:9AC9 A8          TAY
-$A6:9ACA 1A          INC A
-$A6:9ACB 1A          INC A
-$A6:9ACC C9 06 00    CMP #$0006
-$A6:9ACF 30 03       BMI $03    [$9AD4]
-$A6:9AD1 A9 00 00    LDA #$0000
-
-$A6:9AD4 9F 0E 78 7E STA $7E780E,x[$7E:78CE]
-$A6:9AD8 20 DC 9A    JSR $9ADC  [$A6:9ADC]
+$A6:9AC5 BF 0E 78 7E LDA $7E780E,x[$7E:78CE];\
+$A6:9AC9 A8          TAY                    ;} Y = [enemy spike timer index]
+$A6:9ACA 1A          INC A                  ;\
+$A6:9ACB 1A          INC A                  ;|
+$A6:9ACC C9 06 00    CMP #$0006             ;|
+$A6:9ACF 30 03       BMI $03    [$9AD4]     ;} Enemy spike timer index = ([Y] + 2) % 6
+$A6:9AD1 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$A6:9AD4 9F 0E 78 7E STA $7E780E,x[$7E:78CE];/
+$A6:9AD8 20 DC 9A    JSR $9ADC  [$A6:9ADC]  ; Handle fake Kraid spike timer
 $A6:9ADB 6B          RTL
 }
 
 
-;;; $9ADC:  ;;;
+;;; $9ADC: Handle fake Kraid spike timer ;;;
 {
-; Typo at $9B18 >_<;
-$A6:9ADC DA          PHX
-$A6:9ADD 98          TYA
-$A6:9ADE 86 12       STX $12    [$7E:0012]
-$A6:9AE0 18          CLC
-$A6:9AE1 65 12       ADC $12    [$7E:0012]
-$A6:9AE3 AA          TAX
-$A6:9AE4 BF 06 78 7E LDA $7E7806,x[$7E:78C6]
-$A6:9AE8 F0 07       BEQ $07    [$9AF1]
-$A6:9AEA 3A          DEC A
-$A6:9AEB 9F 06 78 7E STA $7E7806,x[$7E:78C6]
-$A6:9AEF FA          PLX
-$A6:9AF0 60          RTS
+;; Parameters:
+;;     Y: Spike timer index
 
-$A6:9AF1 AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:9AF4 29 3F 00    AND #$003F
-$A6:9AF7 18          CLC
-$A6:9AF8 69 10 00    ADC #$0010
-$A6:9AFB 9F 06 78 7E STA $7E7806,x[$7E:78CA]
-$A6:9AFF 98          TYA
-$A6:9B00 FA          PLX
-$A6:9B01 9F 0C 78 7E STA $7E780C,x[$7E:78CC]
+; Typo at $9B18 >_<;
+; LDA $00FFFF will load the low byte from $80:FFFF (85h) and the high byte from $7E:0000 (garbage)
+; There's no reason to do this `AND` at all, the zero flag is set appropriately by the call to $A0:AD70
+; But because the return value in A is 0 or 1, and because bit 0 of [$80:FFFF] is set, this code happens to work out fine
+
+$A6:9ADC DA          PHX
+$A6:9ADD 98          TYA                    ;\
+$A6:9ADE 86 12       STX $12    [$7E:0012]  ;|
+$A6:9AE0 18          CLC                    ;} X = [enemy index] + [Y]
+$A6:9AE1 65 12       ADC $12    [$7E:0012]  ;|
+$A6:9AE3 AA          TAX                    ;/
+$A6:9AE4 BF 06 78 7E LDA $7E7806,x[$7E:78C6];\
+$A6:9AE8 F0 07       BEQ $07    [$9AF1]     ;} If [enemy spike timer] != 0:
+$A6:9AEA 3A          DEC A                  ;\
+$A6:9AEB 9F 06 78 7E STA $7E7806,x[$7E:78C6];} Decrement enemy spike timer
+$A6:9AEF FA          PLX
+$A6:9AF0 60          RTS                    ; Return
+
+$A6:9AF1 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:9AF4 29 3F 00    AND #$003F             ;|
+$A6:9AF7 18          CLC                    ;} Enemy spike timer = 10h + [random number] % 40h
+$A6:9AF8 69 10 00    ADC #$0010             ;|
+$A6:9AFB 9F 06 78 7E STA $7E7806,x[$7E:78CA];/
+$A6:9AFF 98          TYA                    ;\
+$A6:9B00 FA          PLX                    ;} Enemy spike index = [Y]
+$A6:9B01 9F 0C 78 7E STA $7E780C,x[$7E:78CC];/
 $A6:9B05 A0 BE 9D    LDY #$9DBE             ; Y = $9DBE (mini Kraid spikes - left)
 $A6:9B08 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
-$A6:9B0B 30 03       BMI $03    [$9B10]     ;} If [enemy $0FAC] & 8000h = 0:
+$A6:9B0B 30 03       BMI $03    [$9B10]     ;} If [enemy $0FAC] >= 0:
 $A6:9B0D A0 CC 9D    LDY #$9DCC             ; Y = $9DCC (mini Kraid spikes - right)
 
 $A6:9B10 22 27 80 86 JSL $868027[$86:8027]  ; Spawn enemy projectile
@@ -2078,39 +2108,39 @@ $A6:9B25 60          RTS
 {
 $A6:9B26 5A          PHY
 $A6:9B27 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9B2A BD B0 0F    LDA $0FB0,x[$7E:1070]
-$A6:9B2D F0 03       BEQ $03    [$9B32]
-$A6:9B2F DE B0 0F    DEC $0FB0,x[$7E:1070]
+$A6:9B2A BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
+$A6:9B2D F0 03       BEQ $03    [$9B32]     ;} Enemy spit timer = max(0, [enemy spit timer] - 1)
+$A6:9B2F DE B0 0F    DEC $0FB0,x[$7E:1070]  ;/
 
-$A6:9B32 DE AE 0F    DEC $0FAE,x[$7E:106E]
-$A6:9B35 D0 0F       BNE $0F    [$9B46]
-$A6:9B37 AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:9B3A 29 03 00    AND #$0003
-$A6:9B3D 18          CLC
-$A6:9B3E 69 07 00    ADC #$0007
-$A6:9B41 9D AE 0F    STA $0FAE,x[$7E:106E]
+$A6:9B32 DE AE 0F    DEC $0FAE,x[$7E:106E]  ; Decrement enemy $0FAE
+$A6:9B35 D0 0F       BNE $0F    [$9B46]     ; If [enemy $0FAE] = 0:
+$A6:9B37 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:9B3A 29 03 00    AND #$0003             ;|
+$A6:9B3D 18          CLC                    ;} Enemy $0FAE = 7 + [random number] % 4
+$A6:9B3E 69 07 00    ADC #$0007             ;|
+$A6:9B41 9D AE 0F    STA $0FAE,x[$7E:106E]  ;/
 $A6:9B44 80 0D       BRA $0D    [$9B53]
 
-$A6:9B46 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
+$A6:9B46 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\ Else ([enemy $0FAE] != 0):
 $A6:9B49 85 14       STA $14    [$7E:0014]  ;|
 $A6:9B4B 64 12       STZ $12    [$7E:0012]  ;} Move enemy right by [enemy X velocity]
 $A6:9B4D 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A6:9B51 90 0A       BCC $0A    [$9B5D]     ; If not collided with wall: go to BRANCH_NO_COLLISION
 
-$A6:9B53 BD AA 0F    LDA $0FAA,x[$7E:106A]
-$A6:9B56 49 FF FF    EOR #$FFFF
-$A6:9B59 1A          INC A
-$A6:9B5A 9D AA 0F    STA $0FAA,x[$7E:106A]
+$A6:9B53 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
+$A6:9B56 49 FF FF    EOR #$FFFF             ;|
+$A6:9B59 1A          INC A                  ;} Negate enemy X velocity
+$A6:9B5A 9D AA 0F    STA $0FAA,x[$7E:106A]  ;/
 
 ; BRANCH_NO_COLLISION
-$A6:9B5D A9 FC FF    LDA #$FFFC
-$A6:9B60 9D AC 0F    STA $0FAC,x[$7E:106C]
-$A6:9B63 BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$A6:9B66 38          SEC
-$A6:9B67 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A6:9B6A 10 06       BPL $06    [$9B72]
-$A6:9B6C A9 04 00    LDA #$0004
-$A6:9B6F 9D AC 0F    STA $0FAC,x[$7E:106C]
+$A6:9B5D A9 FC FF    LDA #$FFFC             ;\
+$A6:9B60 9D AC 0F    STA $0FAC,x[$7E:106C]  ;} Enemy $0FAC = -4
+$A6:9B63 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
+$A6:9B66 38          SEC                    ;|
+$A6:9B67 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
+$A6:9B6A 10 06       BPL $06    [$9B72]     ;/
+$A6:9B6C A9 04 00    LDA #$0004             ;\
+$A6:9B6F 9D AC 0F    STA $0FAC,x[$7E:106C]  ;} Enemy $0FAC = 4
 
 $A6:9B72 7A          PLY
 $A6:9B73 6B          RTL
@@ -2120,39 +2150,40 @@ $A6:9B73 6B          RTL
 ;;; $9B74: Instruction ;;;
 {
 $A6:9B74 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9B77 BD B0 0F    LDA $0FB0,x[$7E:1070]
-$A6:9B7A D0 19       BNE $19    [$9B95]
-$A6:9B7C AD E5 05    LDA $05E5  [$7E:05E5]
-$A6:9B7F 29 03 00    AND #$0003
-$A6:9B82 18          CLC
-$A6:9B83 69 03 00    ADC #$0003
-$A6:9B86 9D B0 0F    STA $0FB0,x[$7E:1070]
-$A6:9B89 A0 2A 9A    LDY #$9A2A
-$A6:9B8C BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A6:9B8F 10 14       BPL $14    [$9BA5]
-$A6:9B91 A0 DC 99    LDY #$99DC
-$A6:9B94 6B          RTL
+$A6:9B77 BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
+$A6:9B7A D0 19       BNE $19    [$9B95]     ;} If [enemy spit timer] = 0:
+$A6:9B7C AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A6:9B7F 29 03 00    AND #$0003             ;|
+$A6:9B82 18          CLC                    ;} Enemy spit timer = 3 + [random number] % 4
+$A6:9B83 69 03 00    ADC #$0003             ;|
+$A6:9B86 9D B0 0F    STA $0FB0,x[$7E:1070]  ;/
+$A6:9B89 A0 2A 9A    LDY #$9A2A             ; Y = $9A2A (fire spit - facing right)
+$A6:9B8C BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
+$A6:9B8F 10 14       BPL $14    [$9BA5]     ;} If [enemy $0FAC] < 0: return
+$A6:9B91 A0 DC 99    LDY #$99DC             ; Y = $99DC (fire spit - facing left)
+$A6:9B94 6B          RTL                    ; Return
 
-$A6:9B95 BD AC 0F    LDA $0FAC,x[$7E:106C]
-$A6:9B98 30 0C       BMI $0C    [$9BA6]
-$A6:9B9A A0 FC 99    LDY #$99FC
-$A6:9B9D BD AA 0F    LDA $0FAA,x[$7E:106A]
-$A6:9BA0 10 03       BPL $03    [$9BA5]
-$A6:9BA2 A0 14 9A    LDY #$9A14
+$A6:9B95 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
+$A6:9B98 30 0C       BMI $0C    [$9BA6]     ;} If [enemy $0FAC] < 0: go to BRANCH_LEFT
+$A6:9B9A A0 FC 99    LDY #$99FC             ; Y = $99FC
+$A6:9B9D BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
+$A6:9BA0 10 03       BPL $03    [$9BA5]     ;} If [enemy X velocity] < 0:
+$A6:9BA2 A0 14 9A    LDY #$9A14             ; Y = $9A14
 
-$A6:9BA5 6B          RTL
+$A6:9BA5 6B          RTL                    ; Return
 
-$A6:9BA6 A0 AE 99    LDY #$99AE
-$A6:9BA9 BD AA 0F    LDA $0FAA,x[$7E:106A]
-$A6:9BAC 30 F7       BMI $F7    [$9BA5]
-$A6:9BAE A0 C6 99    LDY #$99C6
+; BRANCH_LEFT
+$A6:9BA6 A0 AE 99    LDY #$99AE             ; Y = $99AE
+$A6:9BA9 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
+$A6:9BAC 30 F7       BMI $F7    [$9BA5]     ;} If [enemy X velocity] < 0: return
+$A6:9BAE A0 C6 99    LDY #$99C6             ; Y = $99C6
 $A6:9BB1 6B          RTL
 }
 
 
-;;; $9BB2: Instruction ;;;
+;;; $9BB2: Instruction - play fake Kraid cry ;;;
 {
-; Another AND instruction typo
+; Another AND instruction typo (see $9ADC)
 $A6:9BB2 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A6:9BB6 2F FF FF 00 AND $00FFFF[$00:FFFF]  ;} If enemy centre is on screen:
 $A6:9BBA D0 07       BNE $07    [$9BC3]     ;/
@@ -2163,32 +2194,35 @@ $A6:9BC3 6B          RTL
 }
 
 
-;;; $9BC4: Instruction ;;;
+;;; $9BC4: Instruction - fire spit left ;;;
 {
 $A6:9BC4 5A          PHY
-$A6:9BC5 A0 00 00    LDY #$0000
-$A6:9BC8 A9 FC FF    LDA #$FFFC
+$A6:9BC5 A0 00 00    LDY #$0000             ; Y = 0 (spit velocity table index)
+$A6:9BC8 A9 FC FF    LDA #$FFFC             ; A = -4 (spit X offset)
 }
 
 
-;;; $9BCB:  ;;;
+;;; $9BCB: Fire fake Kraid spit ;;;
 {
+;; Parameters:
+;;     A: Spit X offset
+;;     Y: Spit velocity table index
 $A6:9BCB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9BCE 5A          PHY
 $A6:9BCF DA          PHX
-$A6:9BD0 9F 04 78 7E STA $7E7804,x[$7E:78C4]
-$A6:9BD4 B9 48 9A    LDA $9A48,y[$A6:9A48]
-$A6:9BD7 9F 00 78 7E STA $7E7800,x[$7E:78C0]
-$A6:9BDB B9 4A 9A    LDA $9A4A,y[$A6:9A4A]
-$A6:9BDE 9F 02 78 7E STA $7E7802,x[$7E:78C2]
+$A6:9BD0 9F 04 78 7E STA $7E7804,x[$7E:78C4]; Enemy spite X offset = [A]
+$A6:9BD4 B9 48 9A    LDA $9A48,y[$A6:9A48]  ;\
+$A6:9BD7 9F 00 78 7E STA $7E7800,x[$7E:78C0];} Enemy spit X velocity = [$9A48 + [Y]]
+$A6:9BDB B9 4A 9A    LDA $9A4A,y[$A6:9A4A]  ;\
+$A6:9BDE 9F 02 78 7E STA $7E7802,x[$7E:78C2];} Enemy spit Y velocity = [$9A48 + [Y] + 2]
 $A6:9BE2 A0 B0 9D    LDY #$9DB0             ;\
 $A6:9BE5 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn mini Kraid spit enemy projectile
 $A6:9BE9 FA          PLX
 $A6:9BEA 7A          PLY
-$A6:9BEB B9 4C 9A    LDA $9A4C,y[$A6:9A4C]
-$A6:9BEE 9F 00 78 7E STA $7E7800,x[$7E:78C0]
-$A6:9BF2 B9 4E 9A    LDA $9A4E,y[$A6:9A4E]
-$A6:9BF5 9F 02 78 7E STA $7E7802,x[$7E:78C2]
+$A6:9BEB B9 4C 9A    LDA $9A4C,y[$A6:9A4C]  ;\
+$A6:9BEE 9F 00 78 7E STA $7E7800,x[$7E:78C0];} Enemy spit X velocity = [$9A48 + [Y] + 4]
+$A6:9BF2 B9 4E 9A    LDA $9A4E,y[$A6:9A4E]  ;\
+$A6:9BF5 9F 02 78 7E STA $7E7802,x[$7E:78C2];} Enemy spit Y velocity = [$9A48 + [Y] + 6]
 $A6:9BF9 A0 B0 9D    LDY #$9DB0             ;\
 $A6:9BFC 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn mini Kraid spit enemy projectile
 $A6:9C00 7A          PLY
@@ -2196,46 +2230,46 @@ $A6:9C01 6B          RTL
 }
 
 
-;;; $9C02: Instruction ;;;
+;;; $9C02: Instruction - fire spit right ;;;
 {
 $A6:9C02 5A          PHY
-$A6:9C03 A0 08 00    LDY #$0008
-$A6:9C06 A9 04 00    LDA #$0004
-$A6:9C09 80 C0       BRA $C0    [$9BCB]
+$A6:9C03 A0 08 00    LDY #$0008             ; Y = 8 (spit velocity table index)
+$A6:9C06 A9 04 00    LDA #$0004             ; A = 4 (spit X offset)
+$A6:9C09 80 C0       BRA $C0    [$9BCB]     ; Go to fire fake Kraid spit
 }
 
 
-;;; $9C0B:  ;;;
+;;; $9C0B: Unused. Fake Kraid Power bomb reaction ;;;
 {
 $A6:9C0B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9C0E BD 7A 0F    LDA $0F7A,x
-$A6:9C11 8F 34 F4 7E STA $7EF434[$7E:F434]
-$A6:9C15 BD 7E 0F    LDA $0F7E,x
-$A6:9C18 8F 36 F4 7E STA $7EF436[$7E:F436]
+$A6:9C0E BD 7A 0F    LDA $0F7A,x            ;\
+$A6:9C11 8F 34 F4 7E STA $7EF434[$7E:F434]  ;} Special death item drop X origin position = [enemy X position]
+$A6:9C15 BD 7E 0F    LDA $0F7E,x            ;\
+$A6:9C18 8F 36 F4 7E STA $7EF436[$7E:F436]  ;} Special death item drop Y origin position = [enemy Y position]
 $A6:9C1C 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no death check
-$A6:9C20 80 2E       BRA $2E    [$9C50]
+$A6:9C20 80 2E       BRA $2E    [$9C50]     ; Go to fake Kraid reaction
 }
 
 
 ;;; $9C22: Enemy touch - enemy $E0FF (fake Kraid) ;;;
 {
 $A6:9C22 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9C25 BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$A6:9C28 8F 34 F4 7E STA $7EF434[$7E:F434]
-$A6:9C2C BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A6:9C2F 8F 36 F4 7E STA $7EF436[$7E:F436]
+$A6:9C25 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
+$A6:9C28 8F 34 F4 7E STA $7EF434[$7E:F434]  ;} Special death item drop X origin position = [enemy X position]
+$A6:9C2C BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$A6:9C2F 8F 36 F4 7E STA $7EF436[$7E:F436]  ;} Special death item drop Y origin position = [enemy Y position]
 $A6:9C33 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
-$A6:9C37 80 17       BRA $17    [$9C50]
+$A6:9C37 80 17       BRA $17    [$9C50]     ; Go to fake Kraid reaction
 }
 
 
 ;;; $9C39: Power bomb reaction / enemy shot - enemy $E0FF (fake Kraid) ;;;
 {
 $A6:9C39 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9C3C BD 7A 0F    LDA $0F7A,x[$7E:103A]
-$A6:9C3F 8F 34 F4 7E STA $7EF434[$7E:F434]
-$A6:9C43 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A6:9C46 8F 36 F4 7E STA $7EF436[$7E:F436]
+$A6:9C3C BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
+$A6:9C3F 8F 34 F4 7E STA $7EF434[$7E:F434]  ;} Special death item drop X origin position = [enemy X position]
+$A6:9C43 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$A6:9C46 8F 36 F4 7E STA $7EF436[$7E:F436]  ;} Special death item drop Y origin position = [enemy Y position]
 $A6:9C4A 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A6:9C4E 80 00       BRA $00    [$9C50]
 }
@@ -2244,8 +2278,8 @@ $A6:9C4E 80 00       BRA $00    [$9C50]
 ;;; $9C50: Fake Kraid reaction ;;;
 {
 $A6:9C50 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9C53 BD 8C 0F    LDA $0F8C,x[$7E:104C]
-$A6:9C56 D0 0B       BNE $0B    [$9C63]
+$A6:9C53 BD 8C 0F    LDA $0F8C,x[$7E:104C]  ;\
+$A6:9C56 D0 0B       BNE $0B    [$9C63]     ;} If [enemy health] = 0:
 $A6:9C58 A9 03 00    LDA #$0003             ; A = 3 (mini-Kraid explosion)
 $A6:9C5B 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A6:9C5F 22 EE B8 A0 JSL $A0B8EE[$A0:B8EE]  ; Mini-Kraid death item drop routine
@@ -11310,7 +11344,7 @@ $A6:FB87 A9 00 04    LDA #$0400             ;\
 $A6:FB8A 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = 400h (palette 2)
 $A6:FB8D A9 80 00    LDA #$0080             ;\
 $A6:FB90 9D 98 0F    STA $0F98,x[$7E:1018]  ;} Enemy VRAM tiles index = 80h
-$A6:FB93 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy $0FAC = 0
+$A6:FB93 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy $0FAC = 0 (supposed to be palette animation index)
 $A6:FB96 A0 41 FC    LDY #$FC41             ; Enemy function = $FC41
 $A6:FB99 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
 $A6:FB9C F0 03       BEQ $03    [$FBA1]     ;} If [enemy parameter 1] != 0:
@@ -11324,23 +11358,23 @@ $A6:FBAA 22 33 82 80 JSL $808233[$80:8233]  ;|
 $A6:FBAE 26 12       ROL $12    [$7E:0012]  ;|
 $A6:FBB0 A9 04 00    LDA #$0004             ;|
 $A6:FBB3 22 33 82 80 JSL $808233[$80:8233]  ;|
-$A6:FBB7 26 12       ROL $12    [$7E:0012]  ;} Enemy $0FAE = bitflags for each Zebetite being destroyed
+$A6:FBB7 26 12       ROL $12    [$7E:0012]  ;} Enemy destroyed counter = [$7E:D820] >> 3 & 7 (the three zebetite destroyed bits)
 $A6:FBB9 A9 03 00    LDA #$0003             ;|
 $A6:FBBC 22 33 82 80 JSL $808233[$80:8233]  ;|
 $A6:FBC0 26 12       ROL $12    [$7E:0012]  ;|
 $A6:FBC2 A5 12       LDA $12    [$7E:0012]  ;|
 $A6:FBC4 9D AE 0F    STA $0FAE,x[$7E:102E]  ;/
 $A6:FBC7 C9 04 00    CMP #$0004             ;\
-$A6:FBCA 30 0A       BMI $0A    [$FBD6]     ;} If zebetite 3 destroyed:
+$A6:FBCA 30 0A       BMI $0A    [$FBD6]     ;} If [enemy destroyed counter] >= 4:
 $A6:FBCC BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
-$A6:FBCF 09 00 02    ORA #$0200             ;} Set enemy to delete
+$A6:FBCF 09 00 02    ORA #$0200             ;} Mark enemy for deletion
 $A6:FBD2 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A6:FBD5 6B          RTL                    ; Return
 
 $A6:FBD6 0A          ASL A                  ;\
-$A6:FBD7 A8          TAY                    ;} Y = [enemy $0FAE] * 2
+$A6:FBD7 A8          TAY                    ;} Y = [enemy destroyed counter] * 2
 $A6:FBD8 B9 03 FC    LDA $FC03,y[$A6:FC03]  ;\
-$A6:FBDB 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy $0FB2 = [$FC03 + [Y]]
+$A6:FBDB 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy multipart flag = [$FC03 + [Y]]
 $A6:FBDE B9 0B FC    LDA $FC0B,y[$A6:FC0B]  ;\
 $A6:FBE1 9D 84 0F    STA $0F84,x[$7E:1004]  ;} Enemy Y radius = [$FC0B + [Y]]
 $A6:FBE4 B9 13 FC    LDA $FC13,y[$A6:FC13]  ;\
@@ -11357,8 +11391,9 @@ $A6:FBFC B9 23 FC    LDA $FC23,y[$A6:FC23]  ;\
 $A6:FBFF 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [$FC23 + [Y]]
 $A6:FC02 6B          RTL
 
-; Zebetites destroyed:  None 1    2    1+2
-$A6:FC03             dw 0000,8000,0000,8000 ; $0FB2
+; Indexed by zebetites destroyed counter
+;                       0    1    2    3
+$A6:FC03             dw 0000,8000,0000,8000 ; Multipart flag
 $A6:FC0B             dw 0018,0008,0018,0008 ; Height
 $A6:FC13             dw FDCC,FDEA,FDCC,FDEA ; Instruction list pointer
 $A6:FC1B             dw 0338,0278,01B8,00F8 ; X position
@@ -11372,97 +11407,117 @@ $A6:FC2B             dw 006F,0097,006F,0097 ; Y position - [enemy parameter 1] !
 $A6:FC33 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:FC36 AD 40 18    LDA $1840  [$7E:1840]  ;\
 $A6:FC39 D0 03       BNE $03    [$FC3E]     ;} If [earthquake timer] = 0:
-$A6:FC3B 9E A2 0F    STZ $0FA2,x[$7E:1022]  ; Enemy $0FA2 = 0
+$A6:FC3B 9E A2 0F    STZ $0FA2,x[$7E:1022]  ; Enemy shake timer = 0
 
 $A6:FC3E 7C A8 0F    JMP ($0FA8,x)[$A6:FC41]; Execute [enemy function]
 }
 
 
-;;; $FC41:  ;;;
+;;; $FC41: Zebetites function - spawn bottom zebetite if needed ;;;
 {
-$A6:FC41 BD B2 0F    LDA $0FB2,x[$7E:1032]
-$A6:FC44 10 0F       BPL $0F    [$FC55]
-$A6:FC46 20 F1 FC    JSR $FCF1  [$A6:FCF1]
-$A6:FC49 AD 54 0E    LDA $0E54  [$7E:0E54]
-$A6:FC4C 9D B6 0F    STA $0FB6,x[$7E:1136]
-$A6:FC4F A8          TAY
-$A6:FC50 8A          TXA
-$A6:FC51 BB          TYX
-$A6:FC52 9D B6 0F    STA $0FB6,x[$7E:1036]
+$A6:FC41 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
+$A6:FC44 10 0F       BPL $0F    [$FC55]     ;} If [enemy multipart flag] & 8000h != 0:
+$A6:FC46 20 F1 FC    JSR $FCF1  [$A6:FCF1]  ; Spawn bottom zebetite
+$A6:FC49 AD 54 0E    LDA $0E54  [$7E:0E54]  ;\
+$A6:FC4C 9D B6 0F    STA $0FB6,x[$7E:1136]  ;} New enemy other part enemy index = [enemy index]
+$A6:FC4F A8          TAY                    ;\
+$A6:FC50 8A          TXA                    ;|
+$A6:FC51 BB          TYX                    ;} Enemy other part enemy index = (new enemy index)
+$A6:FC52 9D B6 0F    STA $0FB6,x[$7E:1036]  ;/
 
-$A6:FC55 A9 5B FC    LDA #$FC5B
-$A6:FC58 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A6:FC5B AD 95 07    LDA $0795  [$7E:0795]
-$A6:FC5E F0 01       BEQ $01    [$FC61]
-$A6:FC60 6B          RTL
+$A6:FC55 A9 5B FC    LDA #$FC5B             ;\
+$A6:FC58 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $FC5B
+}
 
-$A6:FC61 A9 67 FC    LDA #$FC67
-$A6:FC64 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A6:FC67 20 5E FD    JSR $FD5E  [$A6:FD5E]
-$A6:FC6A 20 09 FD    JSR $FD09  [$A6:FD09]
+
+;;; $FC5B: Zebetites function - wait for door transition to finish ;;;
+{
+$A6:FC5B AD 95 07    LDA $0795  [$7E:0795]  ;\
+$A6:FC5E F0 01       BEQ $01    [$FC61]     ;} If door transition active:
+$A6:FC60 6B          RTL                    ; Return
+
+$A6:FC61 A9 67 FC    LDA #$FC67             ;\
+$A6:FC64 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $FC67
+}
+
+
+;;; $FC67: Zebetites function ;;;
+{
+$A6:FC67 20 5E FD    JSR $FD5E  [$A6:FD5E]  ; Handle zebetites palette animation
+$A6:FC6A 20 09 FD    JSR $FD09  [$A6:FD09]  ; Set zebetite instruction list
 $A6:FC6D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:FC70 BD 8C 0F    LDA $0F8C,x[$7E:100C]
-$A6:FC73 F0 10       BEQ $10    [$FC85]
-$A6:FC75 18          CLC
-$A6:FC76 69 01 00    ADC #$0001
-$A6:FC79 C9 E8 03    CMP #$03E8
-$A6:FC7C 30 03       BMI $03    [$FC81]
-$A6:FC7E A9 E8 03    LDA #$03E8
+$A6:FC70 BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
+$A6:FC73 F0 10       BEQ $10    [$FC85]     ;} If [enemy health] = 0: go to BRANCH_DESTROYED
+$A6:FC75 18          CLC                    ;\
+$A6:FC76 69 01 00    ADC #$0001             ;|
+$A6:FC79 C9 E8 03    CMP #$03E8             ;|
+$A6:FC7C 30 03       BMI $03    [$FC81]     ;} Enemy health = min(1000, [enemy health] + 1)
+$A6:FC7E A9 E8 03    LDA #$03E8             ;|
+                                            ;|
+$A6:FC81 9D 8C 0F    STA $0F8C,x[$7E:100C]  ;/
+$A6:FC84 6B          RTL                    ; Return
 
-$A6:FC81 9D 8C 0F    STA $0F8C,x[$7E:100C]
-$A6:FC84 6B          RTL
+; BRANCH_DESTROYED
+$A6:FC85 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
+$A6:FC88 F0 07       BEQ $07    [$FC91]     ;} If [enemy parameter 1] = 0: go to BRANCH_SINGLE_PART
 
-$A6:FC85 BD B4 0F    LDA $0FB4,x[$7E:1034]
-$A6:FC88 F0 07       BEQ $07    [$FC91]
-
+; BRANCH_NO_MORE
 $A6:FC8A A9 00 00    LDA #$0000             ; A = 0 (small explosion)
 $A6:FC8D 5C AF A3 A0 JML $A0A3AF[$A0:A3AF]  ; Go to enemy death
 
-$A6:FC91 20 AA FC    JSR $FCAA  [$A6:FCAA]
+; BRANCH_SINGLE_PART
+$A6:FC91 20 AA FC    JSR $FCAA  [$A6:FCAA]  ; Mark zebetite destroyed event
 $A6:FC94 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:FC97 BD AE 0F    LDA $0FAE,x[$7E:102E]
-$A6:FC9A C9 04 00    CMP #$0004
-$A6:FC9D 10 EB       BPL $EB    [$FC8A]
+$A6:FC97 BD AE 0F    LDA $0FAE,x[$7E:102E]  ;\
+$A6:FC9A C9 04 00    CMP #$0004             ;} If [enemy destroyed counter] >= 4: go to BRANCH_NO_MORE
+$A6:FC9D 10 EB       BPL $EB    [$FC8A]     ;/
 $A6:FC9F A9 00 00    LDA #$0000             ; A = 0 (small explosion)
 $A6:FCA2 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
-$A6:FCA6 20 D9 FC    JSR $FCD9  [$A6:FCD9]
+$A6:FCA6 20 D9 FC    JSR $FCD9  [$A6:FCD9]  ; Spawn top zebetite
 $A6:FCA9 6B          RTL
 }
 
 
-;;; $FCAA:  ;;;
+;;; $FCAA: Mark zebetite destroyed event ;;;
 {
+; Increment destroyed counter and painstakingly convert this to mark/unmark event routine calls,
+; which are a long-winded way of writing `$7E:D820 = [$7E:D820] & ~(7 << 3) | [enemy $0FAE] << 3`
 $A6:FCAA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:FCAD BD AE 0F    LDA $0FAE,x[$7E:102E]
-$A6:FCB0 1A          INC A
-$A6:FCB1 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A6:FCB4 85 12       STA $12    [$7E:0012]
-$A6:FCB6 A0 03 00    LDY #$0003
-$A6:FCB9 66 12       ROR $12    [$7E:0012]
-$A6:FCBB 20 CB FC    JSR $FCCB  [$A6:FCCB]
-$A6:FCBE A0 04 00    LDY #$0004
-$A6:FCC1 66 12       ROR $12    [$7E:0012]
-$A6:FCC3 20 CB FC    JSR $FCCB  [$A6:FCCB]
-$A6:FCC6 A0 05 00    LDY #$0005
-$A6:FCC9 66 12       ROR $12    [$7E:0012]
+$A6:FCAD BD AE 0F    LDA $0FAE,x[$7E:102E]  ;\
+$A6:FCB0 1A          INC A                  ;} Increment enemy destroyed counter
+$A6:FCB1 9D AE 0F    STA $0FAE,x[$7E:102E]  ;/
+$A6:FCB4 85 12       STA $12    [$7E:0012]  ; $12 = [enemy destroyed counter]
+$A6:FCB6 A0 03 00    LDY #$0003             ; Y = 3
+$A6:FCB9 66 12       ROR $12    [$7E:0012]  ; Carry = [enemy destroyed counter bit 0]
+$A6:FCBB 20 CB FC    JSR $FCCB  [$A6:FCCB]  ; Mark/unmark zebetite destroyed counter event
+$A6:FCBE A0 04 00    LDY #$0004             ; Y = 4
+$A6:FCC1 66 12       ROR $12    [$7E:0012]  ; Carry = [enemy destroyed counter bit 1]
+$A6:FCC3 20 CB FC    JSR $FCCB  [$A6:FCCB]  ; Mark/unmark zebetite destroyed counter event
+$A6:FCC6 A0 05 00    LDY #$0005             ; Y = 5
+$A6:FCC9 66 12       ROR $12    [$7E:0012]  ; Carry = [enemy destroyed counter bit 2]
 }
 
 
-;;; $FCCB:  ;;;
+;;; $FCCB: Mark/unmark zebetite destroyed counter event ;;;
 {
-$A6:FCCB 90 06       BCC $06    [$FCD3]
-$A6:FCCD 98          TYA
-$A6:FCCE 22 FA 81 80 JSL $8081FA[$80:81FA]
-$A6:FCD2 60          RTS
+;; Parameters:
+;;     Y: Event number. 3 + (destroyed counter bit index)
+;;     Carry: Zebetite bit
+$A6:FCCB 90 06       BCC $06    [$FCD3]     ; If carry set:
+$A6:FCCD 98          TYA                    ;\
+$A6:FCCE 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event [Y]
+$A6:FCD2 60          RTS                    ; Return
 
-$A6:FCD3 98          TYA
-$A6:FCD4 22 12 82 80 JSL $808212[$80:8212]
+$A6:FCD3 98          TYA                    ;\
+$A6:FCD4 22 12 82 80 JSL $808212[$80:8212]  ;} Unmark event [Y]
 $A6:FCD8 60          RTS
 }
 
 
 ;;; $FCD9: Spawn top zebetite ;;;
 {
+;; Returns:
+;;     X: New enemy index
 $A6:FCD9 A2 E1 FC    LDX #$FCE1             ;\
 $A6:FCDC 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn top zebetite
 $A6:FCE0 60          RTS
@@ -11482,6 +11537,8 @@ $A6:FCE1             dw E27F, 0000, 0000, 0000, 2000, 0000, 0000, 0000 ; Zebetit
 
 ;;; $FCF1: Spawn bottom zebetite ;;;
 {
+;; Returns:
+;;     X: New enemy index
 $A6:FCF1 A2 F9 FC    LDX #$FCF9             ;\
 $A6:FCF4 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn bottom zebetite
 $A6:FCF8 60          RTS
@@ -11499,57 +11556,66 @@ $A6:FCF9             dw E27F, 0000, 0000, 0000, 2000, 0000, 0002, 0000 ; Zebetit
 }
 
 
-;;; $FD09:  ;;;
+;;; $FD09: Set zebetite instruction list ;;;
 {
 $A6:FD09 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:FD0C A0 00 00    LDY #$0000
-$A6:FD0F BD 8C 0F    LDA $0F8C,x[$7E:100C]
-$A6:FD12 C9 20 03    CMP #$0320
-$A6:FD15 10 1B       BPL $1B    [$FD32]
-$A6:FD17 A0 02 00    LDY #$0002
-$A6:FD1A C9 58 02    CMP #$0258
-$A6:FD1D 10 13       BPL $13    [$FD32]
-$A6:FD1F A0 04 00    LDY #$0004
-$A6:FD22 C9 90 01    CMP #$0190
-$A6:FD25 10 0B       BPL $0B    [$FD32]
-$A6:FD27 A0 06 00    LDY #$0006
-$A6:FD2A C9 C8 00    CMP #$00C8
-$A6:FD2D 10 03       BPL $03    [$FD32]
-$A6:FD2F A0 08 00    LDY #$0008
+$A6:FD0C A0 00 00    LDY #$0000             ; Y = 0
+$A6:FD0F BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
+$A6:FD12 C9 20 03    CMP #$0320             ;} If [enemy health] < 800:
+$A6:FD15 10 1B       BPL $1B    [$FD32]     ;/
+$A6:FD17 A0 02 00    LDY #$0002             ; Y = 2
+$A6:FD1A C9 58 02    CMP #$0258             ;\
+$A6:FD1D 10 13       BPL $13    [$FD32]     ;} If [enemy health] < 600:
+$A6:FD1F A0 04 00    LDY #$0004             ; Y = 4
+$A6:FD22 C9 90 01    CMP #$0190             ;\
+$A6:FD25 10 0B       BPL $0B    [$FD32]     ;} If [enemy health] < 400:
+$A6:FD27 A0 06 00    LDY #$0006             ; Y = 6
+$A6:FD2A C9 C8 00    CMP #$00C8             ;\
+$A6:FD2D 10 03       BPL $03    [$FD32]     ;} If [enemy health] < 200:
+$A6:FD2F A0 08 00    LDY #$0008             ; Y = 8
 
-$A6:FD32 B9 4A FD    LDA $FD4A,y[$A6:FD4A]
-$A6:FD35 3C B2 0F    BIT $0FB2,x[$7E:1032]
-$A6:FD38 10 03       BPL $03    [$FD3D]
-$A6:FD3A B9 54 FD    LDA $FD54,y[$A6:FD54]
+$A6:FD32 B9 4A FD    LDA $FD4A,y[$A6:FD4A]  ; Enemy instruction list pointer = [$FD54 + [Y]]
+$A6:FD35 3C B2 0F    BIT $0FB2,x[$7E:1032]  ;\
+$A6:FD38 10 03       BPL $03    [$FD3D]     ;} If [enemy multipart flag] & 8000h != 0:
+$A6:FD3A B9 54 FD    LDA $FD54,y[$A6:FD54]  ; Enemy instruction list pointer = [$FD54 + [Y]]
 
 $A6:FD3D 9D 92 0F    STA $0F92,x[$7E:1012]
-$A6:FD40 A9 01 00    LDA #$0001
-$A6:FD43 9D 94 0F    STA $0F94,x[$7E:1014]
-$A6:FD46 9E 90 0F    STZ $0F90,x[$7E:1010]
+$A6:FD40 A9 01 00    LDA #$0001             ;\
+$A6:FD43 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
+$A6:FD46 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
 $A6:FD49 60          RTS
 
-$A6:FD4A             dw FDCC, FDD2, FDD8, FDDE, FDE4
-$A6:FD54             dw FDEA, FDF0, FDF6, FDFC, FE02
+;                        ___________________________ HP >= 800
+;                       |      _____________________ HP < 800
+;                       |     |      _______________ HP < 600
+;                       |     |     |      _________ HP < 400
+;                       |     |     |     |      ___ HP < 200
+;                       |     |     |     |     |
+$A6:FD4A             dw FDCC, FDD2, FDD8, FDDE, FDE4 ; Big zebetite
+$A6:FD54             dw FDEA, FDF0, FDF6, FDFC, FE02 ; Small zebetite pair
 }
 
 
-;;; $FD5E:  ;;;
+;;; $FD5E: Handle zebetites palette animation ;;;
 {
-$A6:FD5E AF 00 C4 7E LDA $7EC400[$7E:C400]
-$A6:FD62 D0 22       BNE $22    [$FD86]
+; $0FAC is Mother Brain's RAM >_<;
+; Presumably this was supposed to be `$0FAC,x`, MB doesn't use that RAM address (possibly because this routine was causing an inexplicable bug),
+; so it's fine, but zebetites initialisation does use `$0FAC,x`, so one of two routines has to be wrong
+$A6:FD5E AF 00 C4 7E LDA $7EC400[$7E:C400]  ;\
+$A6:FD62 D0 22       BNE $22    [$FD86]     ;} If [palette change numerator] != 0: return
 $A6:FD64 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:FD67 BD B4 0F    LDA $0FB4,x[$7E:1034]
-$A6:FD6A D0 1A       BNE $1A    [$FD86]
-$A6:FD6C AD AC 0F    LDA $0FAC  [$7E:0FAC]
-$A6:FD6F 1A          INC A
-$A6:FD70 29 07 00    AND #$0007
-$A6:FD73 8D AC 0F    STA $0FAC  [$7E:0FAC]
-$A6:FD76 0A          ASL A
-$A6:FD77 0A          ASL A
-$A6:FD78 69 87 FD    ADC #$FD87
-$A6:FD7B A8          TAY
+$A6:FD67 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
+$A6:FD6A D0 1A       BNE $1A    [$FD86]     ;} If [enemy parameter 1] != 0: return
+$A6:FD6C AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
+$A6:FD6F 1A          INC A                  ;|
+$A6:FD70 29 07 00    AND #$0007             ;} Zebetites palette animation index = ([zebetites palette animation index] + 1) % 8
+$A6:FD73 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
+$A6:FD76 0A          ASL A                  ;\
+$A6:FD77 0A          ASL A                  ;|
+$A6:FD78 69 87 FD    ADC #$FD87             ;} Y = $FD87 + [zebetites palette animation index] * 4
+$A6:FD7B A8          TAY                    ;/
 $A6:FD7C A2 58 01    LDX #$0158             ;\
-$A6:FD7F A9 02 00    LDA #$0002             ;} Sprite palette 2 colours Ch..Dh = 4 bytes from $A6:[Y]
+$A6:FD7F A9 02 00    LDA #$0002             ;} Sprite palette 2 colours Ch..Dh = 4 bytes from $A6:0000 + [Y]
 $A6:FD82 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 
 $A6:FD86 60          RTS
@@ -11574,17 +11640,18 @@ $A6:FDAB 6B          RTL
 
 ;;; $FDAC: Enemy shot - enemy $E27F (zebetites) ;;;
 {
+; This code should probably check that the zebetite is a multipart one before doing this code with the other part
 $A6:FDAC 48          PHA                    ;\
 $A6:FDAD A9 09 00    LDA #$0009             ;|
 $A6:FDB0 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 9, sound library 3, max queued sounds allowed = 6 (shot zebetite)
 $A6:FDB4 68          PLA                    ;/
 $A6:FDB5 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A6:FDB9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:FDBC BC B6 0F    LDY $0FB6,x[$7E:1036]
-$A6:FDBF BD 8C 0F    LDA $0F8C,x[$7E:100C]
-$A6:FDC2 99 8C 0F    STA $0F8C,y[$7E:0F8C]
-$A6:FDC5 BD 9C 0F    LDA $0F9C,x[$7E:101C]
-$A6:FDC8 99 9C 0F    STA $0F9C,y[$7E:0F9C]
+$A6:FDBC BC B6 0F    LDY $0FB6,x[$7E:1036]  ; Y = [enemy other part enemy index]
+$A6:FDBF BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
+$A6:FDC2 99 8C 0F    STA $0F8C,y[$7E:0F8C]  ;} Other part enemy health = [enemy health]
+$A6:FDC5 BD 9C 0F    LDA $0F9C,x[$7E:101C]  ;\
+$A6:FDC8 99 9C 0F    STA $0F9C,y[$7E:0F9C]  ;} Other part enemy flash timer = [enemy flash timer]
 $A6:FDCB 6B          RTL
 }
 

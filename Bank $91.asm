@@ -7797,7 +7797,7 @@ $91:CE8C 85 2E       STA $2E    [$7E:002E]  ;/
 ;;     $24: Block index
 ;;     $2A: X block co-ordinate
 ;;     $2C: Y block co-ordinate
-;;     $2E: Block BTS (signed extended)
+;;     $2E: Block BTS (sign extended)
 
 ; LOOP
 $91:CE8E A5 2C       LDA $2C    [$7E:002C]  ;\
@@ -7853,7 +7853,7 @@ $91:CECE 85 2E       STA $2E    [$7E:002E]  ;/
 ;;     $24: Block index
 ;;     $2A: X block co-ordinate
 ;;     $2C: Y block co-ordinate
-;;     $2E: Block BTS (signed extended)
+;;     $2E: Block BTS (sign extended)
 
 ; LOOP
 $91:CED0 A5 2A       LDA $2A    [$7E:002A]  ;\
@@ -8196,11 +8196,11 @@ $91:D08D A5 28       LDA $28    [$7E:0028]  ;\
 $91:D08F 89 00 08    BIT #$0800             ;} If block is not Y flipped:
 $91:D092 D0 08       BNE $08    [$D09C]     ;/
 $91:D094 29 FF 03    AND #$03FF             ; A = (level data block) & 3FFh
-$91:D097 20 C1 CF    JSR $CFC1  [$91:CFC1]  ; Copy block to x-ray BG1 tilemap
+$91:D097 20 C1 CF    JSR $CFC1  [$91:CFC1]  ; Copy block to x-ray BG2 tilemap
 $91:D09A 80 06       BRA $06    [$D0A2]
                                             ; Else (block is Y flipped):
 $91:D09C 29 FF 03    AND #$03FF             ; A = (level data block) & 3FFh
-$91:D09F 20 A6 D0    JSR $D0A6  [$91:D0A6]  ; Copy Y flipped block to x-ray BG1 tilemap
+$91:D09F 20 A6 D0    JSR $D0A6  [$91:D0A6]  ; Copy Y flipped block to x-ray BG2 tilemap
 
 $91:D0A2 7A          PLY
 $91:D0A3 FA          PLX

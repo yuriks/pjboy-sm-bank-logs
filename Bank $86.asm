@@ -4599,7 +4599,7 @@ $86:9DEC DA          PHX
 $86:9DED AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:9DF0 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
 $86:9DF3 18          CLC                    ;|
-$86:9DF4 7F 04 78 7E ADC $7E7804,x[$7E:78C4];} Enemy projectile X position = [enemy X position] + [enemy $7E:7804]
+$86:9DF4 7F 04 78 7E ADC $7E7804,x[$7E:78C4];} Enemy projectile X position = [enemy X position] + [enemy spit X offset]
 $86:9DF8 99 4B 1A    STA $1A4B,y[$7E:1A65]  ;/
 $86:9DFB BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
 $86:9DFE 38          SEC                    ;|
@@ -4609,9 +4609,9 @@ $86:9E05 A9 00 00    LDA #$0000             ;\
 $86:9E08 99 6F 1A    STA $1A6F,y[$7E:1A89]  ;} Enemy projectile Y subposition = 0
 $86:9E0B 99 27 1A    STA $1A27,y[$7E:1A41]  ; Enemy projectile X subposition = 0
 $86:9E0E BF 00 78 7E LDA $7E7800,x[$7E:78C0];\
-$86:9E12 99 B7 1A    STA $1AB7,y[$7E:1AD1]  ;} Enemy projectile X velocity = [enemy $7E:7800]
+$86:9E12 99 B7 1A    STA $1AB7,y[$7E:1AD1]  ;} Enemy projectile X velocity = [enemy spit X velocity]
 $86:9E15 BF 02 78 7E LDA $7E7802,x[$7E:78C2];\
-$86:9E19 99 DB 1A    STA $1ADB,y[$7E:1AF5]  ;} Enemy projectile Y velocity = [enemy $7E:7802]
+$86:9E19 99 DB 1A    STA $1ADB,y[$7E:1AF5]  ;} Enemy projectile Y velocity = [enemy spit Y velocity]
 $86:9E1C FA          PLX
 $86:9E1D 60          RTS
 }
@@ -4662,7 +4662,7 @@ $86:9E4B A9 00 02    LDA #$0200             ; Enemy projectile X velocity = 200h
 $86:9E4E 99 B7 1A    STA $1AB7,y[$7E:1AD5]
 $86:9E51 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $86:9E54 BF 0C 78 7E LDA $7E780C,x[$7E:78CC];|
-$86:9E58 AA          TAX                    ;} $12 = [$9E7D + [enemy $7E:780C]]
+$86:9E58 AA          TAX                    ;} $12 = [$9E7D + [enemy spike index]]
 $86:9E59 BD 7D 9E    LDA $9E7D,x[$86:9E81]  ;|
 $86:9E5C 85 12       STA $12    [$7E:0012]  ;/
 $86:9E5E AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
