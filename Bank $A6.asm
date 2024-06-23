@@ -1882,13 +1882,13 @@ $A6:99AC             dw 9B74        ; ???
 }
 
 
-;;; $99AE: Instruction list - initial - facing right ;;;
+;;; $99AE: Instruction list - step forwards - facing left ;;;
 {
 $A6:99AE             dw 0010,9C64,
                         000C,9CB6,
                         0008,9D08,
                         000C,9D5A,
-                        9B26,       ; ???
+                        9B26,       ; Move
                         80ED,99AC   ; Go to $99AC
 }
 
@@ -1899,10 +1899,10 @@ $A6:99C4             dw 9B74        ; ???
 }
 
 
-;;; $99C6: Instruction list -  ;;;
+;;; $99C6: Instruction list - step backwards - facing left ;;;
 {
 $A6:99C6             dw 0010,9C64,
-                        9B26,       ; ???
+                        9B26,       ; Move
                         000C,9D5A,
                         0008,9D08,
                         000C,9CB6,
@@ -1922,7 +1922,7 @@ $A6:99DC             dx 0010,9DAC,
 }
 
 
-;;; $99F4: Instruction list -  ;;;
+;;; $99F4: Unused. Instruction list -  ;;;
 {
 $A6:99F4             dx 7FFF,9DAC,
                         812F        ; Sleep
@@ -1935,13 +1935,13 @@ $A6:99FA             dw 9B74        ; ???
 }
 
 
-;;; $99FC: Instruction list - initial - facing left ;;;
+;;; $99FC: Instruction list - step forwards - facing right ;;;
 {
 $A6:99FC             dw 0010,9EA2,
                         000C,9EF4,
                         0008,9F46,
                         000C,9F98,
-                        9B26,       ; ???
+                        9B26,       ; Move
                         80ED,99FA   ; Go to $99FA
 }
 
@@ -1952,10 +1952,10 @@ $A6:9A12             dw 9B74        ; ???
 }
 
 
-;;; $9A14: Instruction list -  ;;;
+;;; $9A14: Instruction list - step backwards - facing right ;;;
 {
 $A6:9A14             dw 0010,9EA2,
-                        9B26,       ; ???
+                        9B26,       ; Move
                         000C,9F98,
                         0008,9F46,
                         000C,9EF4,
@@ -1975,7 +1975,7 @@ $A6:9A2A             dx 0010,9FEA,
 }
 
 
-;;; $9A42: Instruction list -  ;;;
+;;; $9A42: Unused. Instruction list -  ;;;
 {
 $A6:9A42             dx 7FFF,9FEA,
                         812F        ; Sleep
@@ -2000,21 +2000,21 @@ $A6:9A50             dw 0200,FB00, 0400,FB00 ; Rightwards
 $A6:9A58 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9A5B AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A6:9A5E 29 03 00    AND #$0003             ;|
-$A6:9A61 18          CLC                    ;} Enemy $0FAE = 2 + [random number] % 4
+$A6:9A61 18          CLC                    ;} Enemy step counter = 2 + [random number] % 4
 $A6:9A62 69 02 00    ADC #$0002             ;|
 $A6:9A65 9D AE 0F    STA $0FAE,x[$7E:106E]  ;/
-$A6:9A68 9D B0 0F    STA $0FB0,x[$7E:1070]  ; Enemy spit timer = [enemy $0FAE]
+$A6:9A68 9D B0 0F    STA $0FB0,x[$7E:1070]  ; Enemy spit timer = [enemy step counter]
 $A6:9A6B 18          CLC                    ;\
-$A6:9A6C 69 40 00    ADC #$0040             ;} Enemy top spike timer = [enemy $0FAE] + 40h
+$A6:9A6C 69 40 00    ADC #$0040             ;} Enemy top spike timer = [enemy spit timer] + 40h
 $A6:9A6F 9F 06 78 7E STA $7E7806,x[$7E:78C6];/
 $A6:9A73 18          CLC                    ;\
-$A6:9A74 69 20 00    ADC #$0020             ;} Enemy middle spike timer = [enemy $0FAE] + 60h
+$A6:9A74 69 20 00    ADC #$0020             ;} Enemy middle spike timer = [enemy spit timer] + 60h
 $A6:9A77 9F 08 78 7E STA $7E7808,x[$7E:78C8];/
 $A6:9A7B 18          CLC                    ;\
-$A6:9A7C 69 D0 FF    ADC #$FFD0             ;} Enemy bottom spike timer = [enemy $0FAE] + 30h
+$A6:9A7C 69 D0 FF    ADC #$FFD0             ;} Enemy bottom spike timer = [enemy spit timer] + 30h
 $A6:9A7F 9F 0A 78 7E STA $7E780A,x[$7E:78CA];/
 $A6:9A83 A9 00 00    LDA #$0000             ;\
-$A6:9A86 9F 0E 78 7E STA $7E780E,x[$7E:78CE];} Enemy $7E:780E = 0
+$A6:9A86 9F 0E 78 7E STA $7E780E,x[$7E:78CE];} Enemy spike timer index = 0 (top)
 $A6:9A8A BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
 $A6:9A8D 09 00 20    ORA #$2000             ;} Set enemy to process instructions
 $A6:9A90 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
@@ -2023,7 +2023,7 @@ $A6:9A96 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
 $A6:9A99 9E 90 0F    STZ $0F90,x[$7E:1050]  ; Enemy timer = 0
 $A6:9A9C A9 FC FF    LDA #$FFFC             ;\
 $A6:9A9F 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy X velocity = -4
-$A6:9AA2 9D AC 0F    STA $0FAC,x[$7E:106C]  ; Enemy $0FAC = -4
+$A6:9AA2 9D AC 0F    STA $0FAC,x[$7E:106C]  ; Enemy direction = left
 $A6:9AA5 A0 AE 99    LDY #$99AE             ; Enemy instruction list pointer = $99AE
 $A6:9AA8 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
 $A6:9AAB 38          SEC                    ;|
@@ -2031,7 +2031,7 @@ $A6:9AAC ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X 
 $A6:9AAF 10 0C       BPL $0C    [$9ABD]     ;/
 $A6:9AB1 A9 04 00    LDA #$0004             ;\
 $A6:9AB4 9D AA 0F    STA $0FAA,x[$7E:106A]  ;} Enemy X velocity = 4
-$A6:9AB7 9D AC 0F    STA $0FAC,x[$7E:106C]  ; Enemy $0FAC = 4
+$A6:9AB7 9D AC 0F    STA $0FAC,x[$7E:106C]  ; Enemy direction = right
 $A6:9ABA A0 FC 99    LDY #$99FC             ; Enemy instruction list pointer = $99FC
 
 $A6:9ABD 98          TYA
@@ -2052,12 +2052,12 @@ $A6:9ACF 30 03       BMI $03    [$9AD4]     ;} Enemy spike timer index = ([Y] + 
 $A6:9AD1 A9 00 00    LDA #$0000             ;|
                                             ;|
 $A6:9AD4 9F 0E 78 7E STA $7E780E,x[$7E:78CE];/
-$A6:9AD8 20 DC 9A    JSR $9ADC  [$A6:9ADC]  ; Handle fake Kraid spike timer
+$A6:9AD8 20 DC 9A    JSR $9ADC  [$A6:9ADC]  ; Handle fake Kraid spike
 $A6:9ADB 6B          RTL
 }
 
 
-;;; $9ADC: Handle fake Kraid spike timer ;;;
+;;; $9ADC: Handle fake Kraid spike ;;;
 {
 ;; Parameters:
 ;;     Y: Spike timer index
@@ -2090,7 +2090,7 @@ $A6:9B00 FA          PLX                    ;} Enemy spike index = [Y]
 $A6:9B01 9F 0C 78 7E STA $7E780C,x[$7E:78CC];/
 $A6:9B05 A0 BE 9D    LDY #$9DBE             ; Y = $9DBE (mini Kraid spikes - left)
 $A6:9B08 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
-$A6:9B0B 30 03       BMI $03    [$9B10]     ;} If [enemy $0FAC] >= 0:
+$A6:9B0B 30 03       BMI $03    [$9B10]     ;} If [enemy direction] = right:
 $A6:9B0D A0 CC 9D    LDY #$9DCC             ; Y = $9DCC (mini Kraid spikes - right)
 
 $A6:9B10 22 27 80 86 JSL $868027[$86:8027]  ; Spawn enemy projectile
@@ -2104,7 +2104,7 @@ $A6:9B25 60          RTS
 }
 
 
-;;; $9B26: Instruction ;;;
+;;; $9B26: Instruction - move ;;;
 {
 $A6:9B26 5A          PHY
 $A6:9B27 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2112,16 +2112,16 @@ $A6:9B2A BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
 $A6:9B2D F0 03       BEQ $03    [$9B32]     ;} Enemy spit timer = max(0, [enemy spit timer] - 1)
 $A6:9B2F DE B0 0F    DEC $0FB0,x[$7E:1070]  ;/
 
-$A6:9B32 DE AE 0F    DEC $0FAE,x[$7E:106E]  ; Decrement enemy $0FAE
-$A6:9B35 D0 0F       BNE $0F    [$9B46]     ; If [enemy $0FAE] = 0:
+$A6:9B32 DE AE 0F    DEC $0FAE,x[$7E:106E]  ; Decrement enemy step counter
+$A6:9B35 D0 0F       BNE $0F    [$9B46]     ; If [enemy step counter] = 0:
 $A6:9B37 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A6:9B3A 29 03 00    AND #$0003             ;|
-$A6:9B3D 18          CLC                    ;} Enemy $0FAE = 7 + [random number] % 4
+$A6:9B3D 18          CLC                    ;} Enemy step counter = 7 + [random number] % 4
 $A6:9B3E 69 07 00    ADC #$0007             ;|
 $A6:9B41 9D AE 0F    STA $0FAE,x[$7E:106E]  ;/
 $A6:9B44 80 0D       BRA $0D    [$9B53]
 
-$A6:9B46 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\ Else ([enemy $0FAE] != 0):
+$A6:9B46 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\ Else ([enemy step counter] != 0):
 $A6:9B49 85 14       STA $14    [$7E:0014]  ;|
 $A6:9B4B 64 12       STZ $12    [$7E:0012]  ;} Move enemy right by [enemy X velocity]
 $A6:9B4D 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
@@ -2134,20 +2134,20 @@ $A6:9B5A 9D AA 0F    STA $0FAA,x[$7E:106A]  ;/
 
 ; BRANCH_NO_COLLISION
 $A6:9B5D A9 FC FF    LDA #$FFFC             ;\
-$A6:9B60 9D AC 0F    STA $0FAC,x[$7E:106C]  ;} Enemy $0FAC = -4
+$A6:9B60 9D AC 0F    STA $0FAC,x[$7E:106C]  ;} Enemy direction = left
 $A6:9B63 BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
 $A6:9B66 38          SEC                    ;|
 $A6:9B67 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
 $A6:9B6A 10 06       BPL $06    [$9B72]     ;/
 $A6:9B6C A9 04 00    LDA #$0004             ;\
-$A6:9B6F 9D AC 0F    STA $0FAC,x[$7E:106C]  ;} Enemy $0FAC = 4
+$A6:9B6F 9D AC 0F    STA $0FAC,x[$7E:106C]  ;} Enemy direction = right
 
 $A6:9B72 7A          PLY
 $A6:9B73 6B          RTL
 }
 
 
-;;; $9B74: Instruction ;;;
+;;; $9B74: Instruction -  ;;;
 {
 $A6:9B74 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9B77 BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
@@ -2159,24 +2159,24 @@ $A6:9B83 69 03 00    ADC #$0003             ;|
 $A6:9B86 9D B0 0F    STA $0FB0,x[$7E:1070]  ;/
 $A6:9B89 A0 2A 9A    LDY #$9A2A             ; Y = $9A2A (fire spit - facing right)
 $A6:9B8C BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
-$A6:9B8F 10 14       BPL $14    [$9BA5]     ;} If [enemy $0FAC] < 0: return
+$A6:9B8F 10 14       BPL $14    [$9BA5]     ;} If [enemy direction] = right: return
 $A6:9B91 A0 DC 99    LDY #$99DC             ; Y = $99DC (fire spit - facing left)
 $A6:9B94 6B          RTL                    ; Return
 
 $A6:9B95 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
-$A6:9B98 30 0C       BMI $0C    [$9BA6]     ;} If [enemy $0FAC] < 0: go to BRANCH_LEFT
-$A6:9B9A A0 FC 99    LDY #$99FC             ; Y = $99FC
+$A6:9B98 30 0C       BMI $0C    [$9BA6]     ;} If [enemy direction] = left: go to BRANCH_LEFT
+$A6:9B9A A0 FC 99    LDY #$99FC             ; Y = $99FC (step forwards - facing right)
 $A6:9B9D BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $A6:9BA0 10 03       BPL $03    [$9BA5]     ;} If [enemy X velocity] < 0:
-$A6:9BA2 A0 14 9A    LDY #$9A14             ; Y = $9A14
+$A6:9BA2 A0 14 9A    LDY #$9A14             ; Y = $9A14 (step backwards - facing right)
 
 $A6:9BA5 6B          RTL                    ; Return
 
 ; BRANCH_LEFT
-$A6:9BA6 A0 AE 99    LDY #$99AE             ; Y = $99AE
+$A6:9BA6 A0 AE 99    LDY #$99AE             ; Y = $99AE (step forwards - facing left)
 $A6:9BA9 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $A6:9BAC 30 F7       BMI $F7    [$9BA5]     ;} If [enemy X velocity] < 0: return
-$A6:9BAE A0 C6 99    LDY #$99C6             ; Y = $99C6
+$A6:9BAE A0 C6 99    LDY #$99C6             ; Y = $99C6 (step backwards - facing left)
 $A6:9BB1 6B          RTL
 }
 
@@ -2265,6 +2265,8 @@ $A6:9C37 80 17       BRA $17    [$9C50]     ; Go to fake Kraid reaction
 
 ;;; $9C39: Power bomb reaction / enemy shot - enemy $E0FF (fake Kraid) ;;;
 {
+; Bug: the power bomb reaction should be pointing to $9C0B
+; When this routine is called for power bomb reaction, $A0:A6A7 is called with garbage for the projectile index ($18A6)
 $A6:9C39 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9C3C BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
 $A6:9C3F 8F 34 F4 7E STA $7EF434[$7E:F434]  ;} Special death item drop X origin position = [enemy X position]
