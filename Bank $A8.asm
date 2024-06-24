@@ -172,9 +172,9 @@ $A8:87F2 0A          ASL A                  ;} Y = [enemy parameter 2 low] * 8
 $A8:87F3 0A          ASL A                  ;|
 $A8:87F4 A8          TAY                    ;/
 $A8:87F5 B9 87 81    LDA $8187,y[$A8:81C7]  ;\
-$A8:87F8 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy $7E:7808 = [$8187 + [Y]] (palette index?)
+$A8:87F8 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy $7E:7808 = [$8187 + [Y]]
 $A8:87FC B9 89 81    LDA $8189,y[$A8:81C9]  ;\
-$A8:87FF 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = [$8187 + [Y] + 2] (VRAM tiles index?)
+$A8:87FF 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = [$8187 + [Y] + 2]
 $A8:8803 B9 8B 81    LDA $818B,y[$A8:81CB]  ;\
 $A8:8806 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Enemy $7E:780C = [$8187 + [Y] + 4]
 $A8:880A B9 8D 81    LDA $818D,y[$A8:81CD]  ;\

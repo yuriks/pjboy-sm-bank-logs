@@ -433,13 +433,15 @@ $A6:8A1C 60          RTS
 
 ;;; $8A1D:  ;;;
 {
+;; Parameters:
+;;     Y: Linear speed table index
 $A6:8A1D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8A20 BD 7C 0F    LDA $0F7C,x            ;\
 $A6:8A23 18          CLC                    ;|
 $A6:8A24 79 89 81    ADC $8189,y            ;|
 $A6:8A27 90 03       BCC $03    [$8A2C]     ;|
 $A6:8A29 FE 7A 0F    INC $0F7A,x            ;|
-                                            ;} Enemy X position += [$8187 + [Y] + 2].[$8187 + [Y]]
+                                            ;} Enemy X position += [$8187 + [Y]].[$8187 + [Y] + 2]
 $A6:8A2C 9D 7C 0F    STA $0F7C,x            ;|
 $A6:8A2F BD 7A 0F    LDA $0F7A,x            ;|
 $A6:8A32 18          CLC                    ;|
@@ -1324,7 +1326,7 @@ $A6:9470             dw 3800, 3E7F, 2DFD, 10FB, 0097, 73FF, 53FF, 37FF, 17FF, 24
 }
 
 
-;;; $9490: Instruction list -  ;;;
+;;; $9490: Instruction list ;;;
 {
 $A6:9490             dx 0003,9954,
                         0003,995B,
@@ -1345,60 +1347,60 @@ $A6:9490             dx 0003,9954,
 ;;; $94C4: Initialisation AI - enemy $E0BF (nuclear waffle) ;;;
 {
 $A6:94C4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:94C7 A9 90 94    LDA #$9490
-$A6:94CA 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A6:94CD BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A6:94D0 29 FF 00    AND #$00FF
-$A6:94D3 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A6:94D6 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A6:94D9 29 FF 00    AND #$00FF
-$A6:94DC 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A6:94DF BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A6:94E2 29 FF 00    AND #$00FF
-$A6:94E5 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A6:94E8 BD B7 0F    LDA $0FB7,x[$7E:0FB7]
-$A6:94EB 29 FF 00    AND #$00FF
-$A6:94EE 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A6:94F1 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A6:94F4 A9 15 96    LDA #$9615
-$A6:94F7 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A6:94FA BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A6:94FD 0A          ASL A
-$A6:94FE 0A          ASL A
-$A6:94FF A8          TAY
-$A6:9500 B9 F6 95    LDA $95F6,y[$A6:95FA]
-$A6:9503 9F 06 80 7E STA $7E8006,x[$7E:8006]
-$A6:9507 9F 02 80 7E STA $7E8002,x[$7E:8002]
-$A6:950B B9 F8 95    LDA $95F8,y[$A6:95FC]
-$A6:950E 9F 1C 80 7E STA $7E801C,x[$7E:801C]
-$A6:9512 B9 FE 95    LDA $95FE,y[$A6:9602]
-$A6:9515 9F 16 80 7E STA $7E8016,x[$7E:8016]
-$A6:9519 B9 00 96    LDA $9600,y[$A6:9604]
-$A6:951C 9F 18 80 7E STA $7E8018,x[$7E:8018]
-$A6:9520 B9 06 96    LDA $9606,y[$A6:960A]
-$A6:9523 9F 20 80 7E STA $7E8020,x[$7E:8020]
-$A6:9527 B9 08 96    LDA $9608,y[$A6:960C]
-$A6:952A 9F 1E 80 7E STA $7E801E,x[$7E:801E]
-$A6:952E BD AC 0F    LDA $0FAC,x[$7E:0FAC]
-$A6:9531 0A          ASL A
-$A6:9532 0A          ASL A
-$A6:9533 0A          ASL A
-$A6:9534 A8          TAY
-$A6:9535 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A6:9538 D0 04       BNE $04    [$953E]
-$A6:953A C8          INY
-$A6:953B C8          INY
-$A6:953C C8          INY
-$A6:953D C8          INY
+$A6:94C7 A9 90 94    LDA #$9490             ;\
+$A6:94CA 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9490
+$A6:94CD BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A6:94D0 29 FF 00    AND #$00FF             ;} Enemy $0FAC = [enemy parameter 1 low]
+$A6:94D3 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
+$A6:94D6 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A6:94D9 29 FF 00    AND #$00FF             ;} Enemy $0FAE = [enemy parameter 1 high]
+$A6:94DC 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
+$A6:94DF BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A6:94E2 29 FF 00    AND #$00FF             ;} Enemy $0FB0 = [enemy parameter 2 low]
+$A6:94E5 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
+$A6:94E8 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
+$A6:94EB 29 FF 00    AND #$00FF             ;} Enemy $0FB2 = [enemy parameter 2 high]
+$A6:94EE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
+$A6:94F1 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy inactive timer = [enemy inactive timer reset value]
+$A6:94F4 A9 15 96    LDA #$9615             ;\
+$A6:94F7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9615
+$A6:94FA BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A6:94FD 0A          ASL A                  ;|
+$A6:94FE 0A          ASL A                  ;} Y = [enemy $0FB0] * 4
+$A6:94FF A8          TAY                    ;/
+$A6:9500 B9 F6 95    LDA $95F6,y[$A6:95FA]  ;\
+$A6:9503 9F 06 80 7E STA $7E8006,x[$7E:8006];} Enemy $7E:8006 = [$95F6 + [Y]]
+$A6:9507 9F 02 80 7E STA $7E8002,x[$7E:8002]; Enemy $7E:8002 = [enemy $7E:8006]
+$A6:950B B9 F8 95    LDA $95F8,y[$A6:95FC]  ;\
+$A6:950E 9F 1C 80 7E STA $7E801C,x[$7E:801C];} Enemy $7E:801C = [$95F6 + [Y] + 2]
+$A6:9512 B9 FE 95    LDA $95FE,y[$A6:9602]  ;\
+$A6:9515 9F 16 80 7E STA $7E8016,x[$7E:8016];} Enemy $7E:8016 = [$95F6 + [Y] + 8]
+$A6:9519 B9 00 96    LDA $9600,y[$A6:9604]  ;\
+$A6:951C 9F 18 80 7E STA $7E8018,x[$7E:8018];} Enemy $7E:8018 = [$95F6 + [Y] + Ah]
+$A6:9520 B9 06 96    LDA $9606,y[$A6:960A]  ;\
+$A6:9523 9F 20 80 7E STA $7E8020,x[$7E:8020];} Enemy $7E:8020 = [$95F6 + [Y] + 10h]
+$A6:9527 B9 08 96    LDA $9608,y[$A6:960C]  ;\
+$A6:952A 9F 1E 80 7E STA $7E801E,x[$7E:801E];} Enemy $7E:801E = [$95F6 + [Y] + 12h]
+$A6:952E BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
+$A6:9531 0A          ASL A                  ;|
+$A6:9532 0A          ASL A                  ;} Y = [enemy $0FAC] * 8 (linear speed table index)
+$A6:9533 0A          ASL A                  ;|
+$A6:9534 A8          TAY                    ;/
+$A6:9535 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A6:9538 D0 04       BNE $04    [$953E]     ;} If [enemy $0FB0] = 0:
+$A6:953A C8          INY                    ;\
+$A6:953B C8          INY                    ;|
+$A6:953C C8          INY                    ;} Y += 4 (negated speed)
+$A6:953D C8          INY                    ;/
 
-$A6:953E B9 87 81    LDA $8187,y[$A6:8207]
-$A6:9541 9F 0A 80 7E STA $7E800A,x[$7E:800A]
-$A6:9545 B9 89 81    LDA $8189,y[$A6:8209]
-$A6:9548 9F 08 80 7E STA $7E8008,x[$7E:8008]
-$A6:954C BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A6:954F 9F 0C 80 7E STA $7E800C,x[$7E:800C]
-$A6:9553 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A6:9556 9F 0E 80 7E STA $7E800E,x[$7E:800E]
+$A6:953E B9 87 81    LDA $8187,y[$A6:8207]  ;\
+$A6:9541 9F 0A 80 7E STA $7E800A,x[$7E:800A];|
+$A6:9545 B9 89 81    LDA $8189,y[$A6:8209]  ;} Enemy $7E:800A.$7E:8008 = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A6:9548 9F 08 80 7E STA $7E8008,x[$7E:8008];/
+$A6:954C BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A6:954F 9F 0C 80 7E STA $7E800C,x[$7E:800C];} Enemy $7E:800C = [enemy X position]
+$A6:9553 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A6:9556 9F 0E 80 7E STA $7E800E,x[$7E:800E];} Enemy $7E:800E = [enemy Y position]
 $A6:955A BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $A6:955D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A6:9560 BF 06 80 7E LDA $7E8006,x[$7E:8006];|
@@ -1406,7 +1408,7 @@ $A6:9564 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy $7E:8010 = [enemy $7E:800C]
 $A6:9568 18          CLC                    ;|
 $A6:9569 7F 0C 80 7E ADC $7E800C,x[$7E:800C];|
 $A6:956D 9F 10 80 7E STA $7E8010,x[$7E:8010];/
-$A6:9571 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  
+$A6:9571 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ; Enemy X position = [enemy $7E:8010]
 $A6:9574 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $A6:9577 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A6:957A BF 06 80 7E LDA $7E8006,x[$7E:8006];|
@@ -1414,75 +1416,77 @@ $A6:957E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy $7E:8012 = [enemy $7E:800E]
 $A6:9582 18          CLC                    ;|
 $A6:9583 7F 0E 80 7E ADC $7E800E,x[$7E:800E];|
 $A6:9587 9F 12 80 7E STA $7E8012,x[$7E:8012];/
-$A6:958B 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A6:958E A9 08 00    LDA #$0008
-$A6:9591 9F 14 80 7E STA $7E8014,x[$7E:8014]
+$A6:958B 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ; Enemy Y position = [enemy $7E:8012]
+$A6:958E A9 08 00    LDA #$0008             ;\
+$A6:9591 9F 14 80 7E STA $7E8014,x[$7E:8014];} Enemy body index = 8
 
+; LOOP_ENEMY_PROJECTILES
 $A6:9595 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9598 A0 C7 BB    LDY #$BBC7             ;\
 $A6:959B 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn nuclear waffle body enemy projectile
-$A6:959F BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A6:95A3 38          SEC
-$A6:95A4 E9 02 00    SBC #$0002
-$A6:95A7 9F 14 80 7E STA $7E8014,x[$7E:8014]
-$A6:95AB D0 E8       BNE $E8    [$9595]
-$A6:95AD A9 06 00    LDA #$0006
-$A6:95B0 9F 14 80 7E STA $7E8014,x[$7E:8014]
+$A6:959F BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$A6:95A3 38          SEC                    ;|
+$A6:95A4 E9 02 00    SBC #$0002             ;} Enemy body index -= 2
+$A6:95A7 9F 14 80 7E STA $7E8014,x[$7E:8014];/
+$A6:95AB D0 E8       BNE $E8    [$9595]     ; If [enemy body index] != 0: go to LOOP_ENEMY_PROJECTILES
+$A6:95AD A9 06 00    LDA #$0006             ;\
+$A6:95B0 9F 14 80 7E STA $7E8014,x[$7E:8014];} Enemy body index = 6
 
+; LOOP_SPRITE_OBJECTS
 $A6:95B4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:95B7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A6:95BA 85 12       STA $12    [$7E:0012]
-$A6:95BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A6:95BF 85 14       STA $14    [$7E:0014]
-$A6:95C1 A9 2B 00    LDA #$002B
-$A6:95C4 85 16       STA $16    [$7E:0016]
-$A6:95C6 BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A6:95C9 1D 98 0F    ORA $0F98,x[$7E:0F98]
-$A6:95CC 9F 28 80 7E STA $7E8028,x[$7E:8028]
-$A6:95D0 85 18       STA $18    [$7E:0018]
-$A6:95D2 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A6:95D6 DA          PHX
-$A6:95D7 BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A6:95DB 18          CLC
-$A6:95DC 6D 54 0E    ADC $0E54  [$7E:0E54]
-$A6:95DF AA          TAX
-$A6:95E0 A5 12       LDA $12    [$7E:0012]
-$A6:95E2 9F 20 78 7E STA $7E7820,x[$7E:7826]
-$A6:95E6 FA          PLX
-$A6:95E7 BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A6:95EB 38          SEC
-$A6:95EC E9 02 00    SBC #$0002
-$A6:95EF 9F 14 80 7E STA $7E8014,x[$7E:8014]
-$A6:95F3 D0 BF       BNE $BF    [$95B4]
+$A6:95B7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A6:95BA 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A6:95BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A6:95BF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
+$A6:95C1 A9 2B 00    LDA #$002B             ;\
+$A6:95C4 85 16       STA $16    [$7E:0016]  ;} $16 = 2Bh ()
+$A6:95C6 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A6:95C9 1D 98 0F    ORA $0F98,x[$7E:0F98]  ;| 
+$A6:95CC 9F 28 80 7E STA $7E8028,x[$7E:8028];} $18 = enemy graphics indices = [enemy palette index] | [enemy VRAM tiles index]
+$A6:95D0 85 18       STA $18    [$7E:0018]  ;/
+$A6:95D2 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
+$A6:95D6 DA          PHX                    ;\
+$A6:95D7 BF 14 80 7E LDA $7E8014,x[$7E:8014];|
+$A6:95DB 18          CLC                    ;|
+$A6:95DC 6D 54 0E    ADC $0E54  [$7E:0E54]  ;|
+$A6:95DF AA          TAX                    ;} Enemy sprite object indices + [enemy body index] = [$12]
+$A6:95E0 A5 12       LDA $12    [$7E:0012]  ;|
+$A6:95E2 9F 20 78 7E STA $7E7820,x[$7E:7826];|
+$A6:95E6 FA          PLX                    ;/
+$A6:95E7 BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$A6:95EB 38          SEC                    ;|
+$A6:95EC E9 02 00    SBC #$0002             ;} Enemy body index -= 2
+$A6:95EF 9F 14 80 7E STA $7E8014,x[$7E:8014];/
+$A6:95F3 D0 BF       BNE $BF    [$95B4]     ; If [enemy body index] != 0: go to LOOP_SPRITE_OBJECTS
 $A6:95F5 6B          RTL
 
 $A6:95F6             dw 0190,00F0, 00F0,0190
-$A6:95FE             dw FFE8,FFF4, 0018,000C
-$A6:9606             dw 0180,0100, 0100,0180
+                        FFE8,FFF4, 0018,000C
+                        0180,0100, 0100,0180
 }
 
 
 ;;; $960E: Main AI - enemy $E0BF (nuclear waffle) ;;;
 {
 $A6:960E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9611 FC A8 0F    JSR ($0FA8,x)[$A6:9615]
+$A6:9611 FC A8 0F    JSR ($0FA8,x)[$A6:9615]; Execute [enemy function]
 $A6:9614 6B          RTL
 }
 
 
-;;; $9615:  ;;;
+;;; $9615: Nuclear waffle function - inactive ;;;
 {
 $A6:9615 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9618 DE AA 0F    DEC $0FAA,x[$7E:0FAA]
-$A6:961B 10 64       BPL $64    [$9681]
-$A6:961D BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A6:9620 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A6:9623 BF 06 80 7E LDA $7E8006,x[$7E:8006]
-$A6:9627 9F 02 80 7E STA $7E8002,x[$7E:8002]
-$A6:962B A9 82 96    LDA #$9682
-$A6:962E 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A6:9631 A9 00 00    LDA #$0000
-$A6:9634 9F 26 80 7E STA $7E8026,x[$7E:8026]
+$A6:9618 DE AA 0F    DEC $0FAA,x[$7E:0FAA]  ; Decrement enemy inactive timer
+$A6:961B 10 64       BPL $64    [$9681]     ; If [enemy inactive timer] >= 0: return
+$A6:961D BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A6:9620 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy inactive timer = [enemy inactive timer reset value]
+$A6:9623 BF 06 80 7E LDA $7E8006,x[$7E:8006];\
+$A6:9627 9F 02 80 7E STA $7E8002,x[$7E:8002];} Enemy $7E:8002 = [enemy $7E:8006]
+$A6:962B A9 82 96    LDA #$9682             ;\
+$A6:962E 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9682 (active)
+$A6:9631 A9 00 00    LDA #$0000             ;\
+$A6:9634 9F 26 80 7E STA $7E8026,x[$7E:8026];} Enemy $7E:8026 = 0
 $A6:9638 9F 10 78 7E STA $7E7810,x[$7E:7810]
 $A6:963C 9F 12 78 7E STA $7E7812,x[$7E:7812]
 $A6:9640 9F 14 78 7E STA $7E7814,x[$7E:7814]
@@ -1499,71 +1503,71 @@ $A6:9668 9F 38 78 7E STA $7E7838,x[$7E:7838]
 $A6:966C 9F 3A 78 7E STA $7E783A,x[$7E:783A]
 $A6:9670 9F 3C 78 7E STA $7E783C,x[$7E:783C]
 $A6:9674 9F 3E 78 7E STA $7E783E,x[$7E:783E]
-$A6:9678 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A6:967B 09 00 08    ORA #$0800
-$A6:967E 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A6:9678 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A6:967B 09 00 08    ORA #$0800             ;} Set enemy to process whilst off-screen
+$A6:967E 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 
 $A6:9681 60          RTS
 }
 
 
-;;; $9682:  ;;;
+;;; $9682: Nuclear waffle function - active ;;;
 {
 $A6:9682 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9685 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A6:9688 8D 32 0E    STA $0E32  [$7E:0E32]
-$A6:968B BF 02 80 7E LDA $7E8002,x[$7E:8002]
-$A6:968F 20 E7 98    JSR $98E7  [$A6:98E7]
-$A6:9692 85 1E       STA $1E    [$7E:001E]
+$A6:9685 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A6:9688 8D 32 0E    STA $0E32  [$7E:0E32]  ;} $0E32 = [enemy $0FAE]
+$A6:968B BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy $7E:8002]
+$A6:968F 20 E7 98    JSR $98E7  [$A6:98E7]  ; Execute $98E7 (sets A and $1A)
+$A6:9692 85 1E       STA $1E    [$7E:001E]  ; $1E = [A]
 $A6:9694 48          PHA
-$A6:9695 DF 26 80 7E CMP $7E8026,x[$7E:8026]
-$A6:9699 F0 3B       BEQ $3B    [$96D6]
+$A6:9695 DF 26 80 7E CMP $7E8026,x[$7E:8026];\
+$A6:9699 F0 3B       BEQ $3B    [$96D6]     ;} If [$1E] != [enemy $7E:8026]
 $A6:969B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:969E BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A6:96A1 85 12       STA $12    [$7E:0012]
-$A6:96A3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A6:96A6 85 14       STA $14    [$7E:0014]
-$A6:96A8 A9 2E 00    LDA #$002E
-$A6:96AB 85 16       STA $16    [$7E:0016]
-$A6:96AD BF 28 80 7E LDA $7E8028,x[$7E:8028]
-$A6:96B1 85 18       STA $18    [$7E:0018]
-$A6:96B3 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A6:96B7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A6:96BA 85 12       STA $12    [$7E:0012]
-$A6:96BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A6:96BF 85 14       STA $14    [$7E:0014]
-$A6:96C1 A5 1A       LDA $1A    [$7E:001A]
-$A6:96C3 18          CLC
-$A6:96C4 69 2C 00    ADC #$002C
-$A6:96C7 85 16       STA $16    [$7E:0016]
-$A6:96C9 BF 28 80 7E LDA $7E8028,x[$7E:8028]
-$A6:96CD 85 18       STA $18    [$7E:0018]
-$A6:96CF 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A6:96D3 20 3F 99    JSR $993F  [$A6:993F]
+$A6:969E BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A6:96A1 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A6:96A3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A6:96A6 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
+$A6:96A8 A9 2E 00    LDA #$002E             ;\
+$A6:96AB 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh ()
+$A6:96AD BF 28 80 7E LDA $7E8028,x[$7E:8028];\
+$A6:96B1 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
+$A6:96B3 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
+$A6:96B7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A6:96BA 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A6:96BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A6:96BF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
+$A6:96C1 A5 1A       LDA $1A    [$7E:001A]  ;\
+$A6:96C3 18          CLC                    ;|
+$A6:96C4 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] ()
+$A6:96C7 85 16       STA $16    [$7E:0016]  ;/
+$A6:96C9 BF 28 80 7E LDA $7E8028,x[$7E:8028];\
+$A6:96CD 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
+$A6:96CF 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
+$A6:96D3 20 3F 99    JSR $993F  [$A6:993F]  ; Execute $993F
 
 $A6:96D6 68          PLA
-$A6:96D7 9F 26 80 7E STA $7E8026,x[$7E:8026]
-$A6:96DB BF 02 80 7E LDA $7E8002,x[$7E:8002]
-$A6:96DF 20 AD 98    JSR $98AD  [$A6:98AD]
+$A6:96D7 9F 26 80 7E STA $7E8026,x[$7E:8026]; Enemy $7E:8026 = [$1E]
+$A6:96DB BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy $7E:8002]
+$A6:96DF 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD (sets A and $1C)
 $A6:96E2 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:96E6 18          CLC                    ;|
 $A6:96E7 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy X position = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
 $A6:96EB 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
-$A6:96EE BF 02 80 7E LDA $7E8002,x[$7E:8002]
-$A6:96F2 20 AD 98    JSR $98AD  [$A6:98AD]
+$A6:96EE BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy $7E:8002]
+$A6:96F2 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD (sets A and $1C)
 $A6:96F5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:96F9 18          CLC                    ;|
 $A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy Y position = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
 $A6:96FE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
-$A6:9701 20 21 97    JSR $9721  [$A6:9721]
-$A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]
-$A6:9707 18          CLC
-$A6:9708 BF 00 80 7E LDA $7E8000,x[$7E:8000]
-$A6:970C 7F 08 80 7E ADC $7E8008,x[$7E:8008]
-$A6:9710 9F 00 80 7E STA $7E8000,x[$7E:8000]
-$A6:9714 BF 02 80 7E LDA $7E8002,x[$7E:8002]
-$A6:9718 7F 0A 80 7E ADC $7E800A,x[$7E:800A]
-$A6:971C 9F 02 80 7E STA $7E8002,x[$7E:8002]
+$A6:9701 20 21 97    JSR $9721  [$A6:9721]  ; Execute $9721
+$A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]  ; Execute $97E9
+$A6:9707 18          CLC                    ;\
+$A6:9708 BF 00 80 7E LDA $7E8000,x[$7E:8000];|
+$A6:970C 7F 08 80 7E ADC $7E8008,x[$7E:8008];|
+$A6:9710 9F 00 80 7E STA $7E8000,x[$7E:8000];} Enemy $7E:8002.$7E:8000 += [enemy $7E:800A.$7E:8008]
+$A6:9714 BF 02 80 7E LDA $7E8002,x[$7E:8002];|
+$A6:9718 7F 0A 80 7E ADC $7E800A,x[$7E:800A];|
+$A6:971C 9F 02 80 7E STA $7E8002,x[$7E:8002];/
 $A6:9720 60          RTS
 }
 
@@ -1571,85 +1575,86 @@ $A6:9720 60          RTS
 ;;; $9721:  ;;;
 {
 $A6:9721 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9724 A9 08 00    LDA #$0008
-$A6:9727 9F 14 80 7E STA $7E8014,x[$7E:8014]
-$A6:972B BF 02 80 7E LDA $7E8002,x[$7E:8002]
-$A6:972F 18          CLC
-$A6:9730 7F 18 80 7E ADC $7E8018,x[$7E:8018]
-$A6:9734 85 24       STA $24    [$7E:0024]
+$A6:9724 A9 08 00    LDA #$0008             ;\
+$A6:9727 9F 14 80 7E STA $7E8014,x[$7E:8014];} Enemy body index = 8
+$A6:972B BF 02 80 7E LDA $7E8002,x[$7E:8002];\
+$A6:972F 18          CLC                    ;|
+$A6:9730 7F 18 80 7E ADC $7E8018,x[$7E:8018];} $24 = [enemy $7E:8002] + [enemy $7E:8018]
+$A6:9734 85 24       STA $24    [$7E:0024]  ;/
 
+; LOOP
 $A6:9736 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9739 A5 24       LDA $24    [$7E:0024]
-$A6:973B 38          SEC
-$A6:973C FF 16 80 7E SBC $7E8016,x[$7E:8016]
-$A6:9740 85 24       STA $24    [$7E:0024]
+$A6:9739 A5 24       LDA $24    [$7E:0024]  ;\
+$A6:973B 38          SEC                    ;|
+$A6:973C FF 16 80 7E SBC $7E8016,x[$7E:8016];} $24 -= [enemy $7E:8016]
+$A6:9740 85 24       STA $24    [$7E:0024]  ;/
 $A6:9742 DA          PHX
-$A6:9743 BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A6:9747 18          CLC
-$A6:9748 6D 54 0E    ADC $0E54  [$7E:0E54]
-$A6:974B AA          TAX
-$A6:974C BF 00 78 7E LDA $7E7800,x[$7E:7808]
-$A6:9750 A8          TAY
-$A6:9751 A5 24       LDA $24    [$7E:0024]
-$A6:9753 20 E7 98    JSR $98E7  [$A6:98E7]
-$A6:9756 85 1E       STA $1E    [$7E:001E]
+$A6:9743 BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$A6:9747 18          CLC                    ;|
+$A6:9748 6D 54 0E    ADC $0E54  [$7E:0E54]  ;} X = [enemy index] + [enemy body index]
+$A6:974B AA          TAX                    ;/
+$A6:974C BF 00 78 7E LDA $7E7800,x[$7E:7808];\
+$A6:9750 A8          TAY                    ;} Y = [enemy enemy projectile indices + [enemy body index]] (enemy projectile index)
+$A6:9751 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
+$A6:9753 20 E7 98    JSR $98E7  [$A6:98E7]  ; Execute $98E7
+$A6:9756 85 1E       STA $1E    [$7E:001E]  ; $1E = [A]
 $A6:9758 48          PHA
-$A6:9759 DF 10 78 7E CMP $7E7810,x[$7E:7818]
-$A6:975D F0 3D       BEQ $3D    [$979C]
+$A6:9759 DF 10 78 7E CMP $7E7810,x[$7E:7818];\
+$A6:975D F0 3D       BEQ $3D    [$979C]     ;} If [$1E] != [enemy $7E:7810 + [enemy body index]]
 $A6:975F DA          PHX
 $A6:9760 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9763 B9 4B 1A    LDA $1A4B,y[$7E:1A6D]
-$A6:9766 85 12       STA $12    [$7E:0012]
-$A6:9768 B9 93 1A    LDA $1A93,y[$7E:1AB5]
-$A6:976B 85 14       STA $14    [$7E:0014]
-$A6:976D A9 2E 00    LDA #$002E
-$A6:9770 85 16       STA $16    [$7E:0016]
-$A6:9772 BF 28 80 7E LDA $7E8028,x[$7E:8028]
-$A6:9776 85 18       STA $18    [$7E:0018]
-$A6:9778 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A6:977C B9 4B 1A    LDA $1A4B,y[$7E:1A6D]
-$A6:977F 85 12       STA $12    [$7E:0012]
-$A6:9781 B9 93 1A    LDA $1A93,y[$7E:1AB5]
-$A6:9784 85 14       STA $14    [$7E:0014]
-$A6:9786 A5 1A       LDA $1A    [$7E:001A]
-$A6:9788 18          CLC
-$A6:9789 69 2C 00    ADC #$002C
-$A6:978C 85 16       STA $16    [$7E:0016]
-$A6:978E BF 28 80 7E LDA $7E8028,x[$7E:8028]
-$A6:9792 85 18       STA $18    [$7E:0018]
-$A6:9794 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A6:9798 20 3F 99    JSR $993F  [$A6:993F]
+$A6:9763 B9 4B 1A    LDA $1A4B,y[$7E:1A6D]  ;\
+$A6:9766 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$A6:9768 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
+$A6:976B 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$A6:976D A9 2E 00    LDA #$002E             ;\
+$A6:9770 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh ()
+$A6:9772 BF 28 80 7E LDA $7E8028,x[$7E:8028];\
+$A6:9776 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
+$A6:9778 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
+$A6:977C B9 4B 1A    LDA $1A4B,y[$7E:1A6D]  ;\
+$A6:977F 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$A6:9781 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
+$A6:9784 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$A6:9786 A5 1A       LDA $1A    [$7E:001A]  ;\
+$A6:9788 18          CLC                    ;|
+$A6:9789 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] ()
+$A6:978C 85 16       STA $16    [$7E:0016]  ;/
+$A6:978E BF 28 80 7E LDA $7E8028,x[$7E:8028];\
+$A6:9792 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
+$A6:9794 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
+$A6:9798 20 3F 99    JSR $993F  [$A6:993F]  ; Execute $993F
 $A6:979B FA          PLX
 
 $A6:979C 68          PLA
-$A6:979D 9F 10 78 7E STA $7E7810,x[$7E:7818]
+$A6:979D 9F 10 78 7E STA $7E7810,x[$7E:7818]; Enemy $7E:7810 + [enemy body index] = [$1E]
 $A6:97A1 FA          PLX
-$A6:97A2 A5 24       LDA $24    [$7E:0024]
-$A6:97A4 20 AD 98    JSR $98AD  [$A6:98AD]
+$A6:97A2 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
+$A6:97A4 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD
 $A6:97A7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:97AB 18          CLC                    ;|
 $A6:97AC 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy projectile X position = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
 $A6:97B0 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
-$A6:97B3 A5 24       LDA $24    [$7E:0024]
-$A6:97B5 20 AD 98    JSR $98AD  [$A6:98AD]
+$A6:97B3 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
+$A6:97B5 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD
 $A6:97B8 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:97BC 18          CLC                    ;|
 $A6:97BD 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy projectile Y position = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
 $A6:97C1 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
-$A6:97C4 BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A6:97C8 38          SEC
-$A6:97C9 E9 02 00    SBC #$0002
-$A6:97CC 9F 14 80 7E STA $7E8014,x[$7E:8014]
-$A6:97D0 F0 03       BEQ $03    [$97D5]
-$A6:97D2 4C 36 97    JMP $9736  [$A6:9736]
+$A6:97C4 BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$A6:97C8 38          SEC                    ;|
+$A6:97C9 E9 02 00    SBC #$0002             ;} Enemy body index -= 2
+$A6:97CC 9F 14 80 7E STA $7E8014,x[$7E:8014];/
+$A6:97D0 F0 03       BEQ $03    [$97D5]     ; If [enemy body index] != 0: <-- not BMI?
+$A6:97D2 4C 36 97    JMP $9736  [$A6:9736]  ; Go to LOOP
 
-$A6:97D5 A5 1C       LDA $1C    [$7E:001C]
-$A6:97D7 F0 0F       BEQ $0F    [$97E8]
-$A6:97D9 A9 15 96    LDA #$9615
-$A6:97DC 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A6:97DF BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A6:97E2 29 FF F7    AND #$F7FF
-$A6:97E5 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A6:97D5 A5 1C       LDA $1C    [$7E:001C]  ;\
+$A6:97D7 F0 0F       BEQ $0F    [$97E8]     ;} If [$1C] != 0:
+$A6:97D9 A9 15 96    LDA #$9615             ;\
+$A6:97DC 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9615 (inactive)
+$A6:97DF BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A6:97E2 29 FF F7    AND #$F7FF             ;} Set enemy to not process off-screen
+$A6:97E5 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 
 $A6:97E8 60          RTS
 }
@@ -1663,6 +1668,7 @@ $A6:97EF 9F 14 80 7E STA $7E8014,x[$7E:8014]
 $A6:97F3 BF 02 80 7E LDA $7E8002,x[$7E:8002]
 $A6:97F7 85 24       STA $24    [$7E:0024]
 
+; LOOP
 $A6:97F9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:97FC A5 24       LDA $24    [$7E:0024]
 $A6:97FE 38          SEC
@@ -1744,31 +1750,38 @@ $A6:98AC 60          RTS
 
 ;;; $98AD:  ;;;
 {
+;; Parameters:
+;;     A: 
+;; Returns:
+;;     A: 
+;;     $1C: 
 $A6:98AD DA          PHX
 $A6:98AE 48          PHA
 $A6:98AF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:98B2 64 1C       STZ $1C    [$7E:001C]
-$A6:98B4 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A6:98B7 D0 0F       BNE $0F    [$98C8]
+$A6:98B2 64 1C       STZ $1C    [$7E:001C]  ; $1C = 0
+$A6:98B4 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A6:98B7 D0 0F       BNE $0F    [$98C8]     ;} If [enemy $0FB0] = 0:
 $A6:98B9 68          PLA
-$A6:98BA DF 1C 80 7E CMP $7E801C,x
-$A6:98BE 30 17       BMI $17    [$98D7]
-$A6:98C0 DF 06 80 7E CMP $7E8006,x
-$A6:98C4 10 19       BPL $19    [$98DF]
-$A6:98C6 80 1D       BRA $1D    [$98E5]
+$A6:98BA DF 1C 80 7E CMP $7E801C,x          ;\
+$A6:98BE 30 17       BMI $17    [$98D7]     ;} If [A] < [enemy $7E:801C]: go to BRANCH_98D7
+$A6:98C0 DF 06 80 7E CMP $7E8006,x          ;\
+$A6:98C4 10 19       BPL $19    [$98DF]     ;} If [A] >= [enemy $7E:8006]: go to BRANCH_98DF
+$A6:98C6 80 1D       BRA $1D    [$98E5]     ; Return
 
 $A6:98C8 68          PLA
-$A6:98C9 DF 1C 80 7E CMP $7E801C,x[$7E:801C]
-$A6:98CD 10 08       BPL $08    [$98D7]
-$A6:98CF DF 06 80 7E CMP $7E8006,x[$7E:8006]
-$A6:98D3 30 0A       BMI $0A    [$98DF]
-$A6:98D5 80 0E       BRA $0E    [$98E5]
+$A6:98C9 DF 1C 80 7E CMP $7E801C,x[$7E:801C];\
+$A6:98CD 10 08       BPL $08    [$98D7]     ;} If [A] >= [enemy $7E:801C]: go to BRANCH_98D7
+$A6:98CF DF 06 80 7E CMP $7E8006,x[$7E:8006];\
+$A6:98D3 30 0A       BMI $0A    [$98DF]     ;} If [A] < [enemy $7E:8006]: go to BRANCH_98DF
+$A6:98D5 80 0E       BRA $0E    [$98E5]     ; Return
 
-$A6:98D7 E6 1C       INC $1C    [$7E:001C]
-$A6:98D9 BF 1C 80 7E LDA $7E801C,x[$7E:801C]
-$A6:98DD 80 06       BRA $06    [$98E5]
+; BRANCH_98D7
+$A6:98D7 E6 1C       INC $1C    [$7E:001C]  ; $1C = 1
+$A6:98D9 BF 1C 80 7E LDA $7E801C,x[$7E:801C]; A = [enemy $7E:801C]
+$A6:98DD 80 06       BRA $06    [$98E5]     ; Return
 
-$A6:98DF BF 06 80 7E LDA $7E8006,x[$7E:8006]
+; BRANCH_98DF
+$A6:98DF BF 06 80 7E LDA $7E8006,x[$7E:8006]; A = [enemy $7E:8006]
 $A6:98E3 80 00       BRA $00    [$98E5]
 
 $A6:98E5 FA          PLX
@@ -1778,45 +1791,54 @@ $A6:98E6 60          RTS
 
 ;;; $98E7:  ;;;
 {
+;; Parameters:
+;;     A: 
+;; Returns:
+;;     A: 
+;;     $1A: If returning [A] != 0, 
 $A6:98E7 DA          PHX
 $A6:98E8 48          PHA
 $A6:98E9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:98EC BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A6:98EF D0 12       BNE $12    [$9903]
+$A6:98EC BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A6:98EF D0 12       BNE $12    [$9903]     ;} If [enemy $0FB0] = 0:
 $A6:98F1 68          PLA
-$A6:98F2 DF 1E 80 7E CMP $7E801E,x
-$A6:98F6 30 27       BMI $27    [$991F]
-$A6:98F8 DF 20 80 7E CMP $7E8020,x
-$A6:98FC 30 17       BMI $17    [$9915]
-$A6:98FE A9 00 00    LDA #$0000
-$A6:9901 80 3A       BRA $3A    [$993D]
+$A6:98F2 DF 1E 80 7E CMP $7E801E,x          ;\
+$A6:98F6 30 27       BMI $27    [$991F]     ;} If [A] < [enemy $7E:801E]: go to BRANCH_991F
+$A6:98F8 DF 20 80 7E CMP $7E8020,x          ;\
+$A6:98FC 30 17       BMI $17    [$9915]     ;} If [A] < [enemy $7E:8020]: go to BRANCH_9915
+$A6:98FE A9 00 00    LDA #$0000             ;\
+$A6:9901 80 3A       BRA $3A    [$993D]     ;} Return A = 0
 
 $A6:9903 68          PLA
-$A6:9904 DF 1E 80 7E CMP $7E801E,x[$7E:801E]
-$A6:9908 10 29       BPL $29    [$9933]
-$A6:990A DF 20 80 7E CMP $7E8020,x[$7E:8020]
-$A6:990E 10 19       BPL $19    [$9929]
-$A6:9910 A9 00 00    LDA #$0000
-$A6:9913 80 28       BRA $28    [$993D]
+$A6:9904 DF 1E 80 7E CMP $7E801E,x[$7E:801E];\
+$A6:9908 10 29       BPL $29    [$9933]     ;} If [A] >= [enemy $7E:801E]: go to BRANCH_9933
+$A6:990A DF 20 80 7E CMP $7E8020,x[$7E:8020];\
+$A6:990E 10 19       BPL $19    [$9929]     ;} If [A] >= [enemy $7E:8020]: go to BRANCH_9929
+$A6:9910 A9 00 00    LDA #$0000             ;\
+$A6:9913 80 28       BRA $28    [$993D]     ;} Return A = 0
 
-$A6:9915 A9 01 00    LDA #$0001
-$A6:9918 85 1A       STA $1A    [$7E:001A]
-$A6:991A A9 01 00    LDA #$0001
-$A6:991D 80 1E       BRA $1E    [$993D]
+; BRANCH_9915
+$A6:9915 A9 01 00    LDA #$0001             ;\
+$A6:9918 85 1A       STA $1A    [$7E:001A]  ;} $1A = 1
+$A6:991A A9 01 00    LDA #$0001             ; A = 1
+$A6:991D 80 1E       BRA $1E    [$993D]     ; Return
 
-$A6:991F A9 00 00    LDA #$0000
-$A6:9922 85 1A       STA $1A    [$7E:001A]
-$A6:9924 A9 02 00    LDA #$0002
-$A6:9927 80 14       BRA $14    [$993D]
+; BRANCH_991F
+$A6:991F A9 00 00    LDA #$0000             ;\
+$A6:9922 85 1A       STA $1A    [$7E:001A]  ;} $1A = 0
+$A6:9924 A9 02 00    LDA #$0002             ; A = 2
+$A6:9927 80 14       BRA $14    [$993D]     ; Return
 
-$A6:9929 A9 00 00    LDA #$0000
-$A6:992C 85 1A       STA $1A    [$7E:001A]
-$A6:992E A9 01 00    LDA #$0001
-$A6:9931 80 0A       BRA $0A    [$993D]
+; BRANCH_9929
+$A6:9929 A9 00 00    LDA #$0000             ;\
+$A6:992C 85 1A       STA $1A    [$7E:001A]  ;} $1A = 0
+$A6:992E A9 01 00    LDA #$0001             ; A = 1
+$A6:9931 80 0A       BRA $0A    [$993D]     ; Return
 
-$A6:9933 A9 01 00    LDA #$0001
-$A6:9936 85 1A       STA $1A    [$7E:001A]
-$A6:9938 A9 02 00    LDA #$0002
+; BRANCH_9933
+$A6:9933 A9 01 00    LDA #$0001             ;\
+$A6:9936 85 1A       STA $1A    [$7E:001A]  ;} $1A = 1
+$A6:9938 A9 02 00    LDA #$0002             ; A = 2
 $A6:993B 80 00       BRA $00    [$993D]
 
 $A6:993D FA          PLX
@@ -1826,11 +1848,13 @@ $A6:993E 60          RTS
 
 ;;; $993F:  ;;;
 {
+;; Parameters:
+;;     $1E: 
 $A6:993F 5A          PHY
 $A6:9940 DA          PHX
-$A6:9941 A5 1E       LDA $1E    [$7E:001E]
-$A6:9943 C9 02 00    CMP #$0002
-$A6:9946 F0 07       BEQ $07    [$994F]
+$A6:9941 A5 1E       LDA $1E    [$7E:001E]  ;\
+$A6:9943 C9 02 00    CMP #$0002             ;} If [$1E] != 2:
+$A6:9946 F0 07       BEQ $07    [$994F]     ;/
 $A6:9948 A9 5E 00    LDA #$005E             ;\
 $A6:994B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (nuclear waffle part spawns)
 
@@ -1876,9 +1900,9 @@ $A6:998C             dw 3800, 559D, 1816, 100D, 4B9F, 3F37, 36D0, 2E69, 2608, 1D
 
 ;;; $99AC..9A47: Instruction lists - fake Kraid ;;;
 {
-;;; $99AC: Instruction list -  ;;;
+;;; $99AC: Instruction list - choose action ;;;
 {
-$A6:99AC             dw 9B74        ; ???
+$A6:99AC             dw 9B74        ; Choose action
 }
 
 
@@ -1893,9 +1917,9 @@ $A6:99AE             dw 0010,9C64,
 }
 
 
-;;; $99C4: Instruction list -  ;;;
+;;; $99C4: Instruction list - choose action ;;;
 {
-$A6:99C4             dw 9B74        ; ???
+$A6:99C4             dw 9B74        ; Choose action
 }
 
 
@@ -1922,16 +1946,16 @@ $A6:99DC             dx 0010,9DAC,
 }
 
 
-;;; $99F4: Unused. Instruction list -  ;;;
+;;; $99F4: Unused. Instruction list - standing - facing left ;;;
 {
 $A6:99F4             dx 7FFF,9DAC,
                         812F        ; Sleep
 }
 
 
-;;; $99FA: Instruction list -  ;;;
+;;; $99FA: Instruction list - choose action ;;;
 {
-$A6:99FA             dw 9B74        ; ???
+$A6:99FA             dw 9B74        ; Choose action
 }
 
 
@@ -1946,9 +1970,9 @@ $A6:99FC             dw 0010,9EA2,
 }
 
 
-;;; $9A12: Instruction list -  ;;;
+;;; $9A12: Instruction list - choose action ;;;
 {
-$A6:9A12             dw 9B74        ; ???
+$A6:9A12             dw 9B74        ; Choose action
 }
 
 
@@ -1975,7 +1999,7 @@ $A6:9A2A             dx 0010,9FEA,
 }
 
 
-;;; $9A42: Unused. Instruction list -  ;;;
+;;; $9A42: Unused. Instruction list - standing - facing right ;;;
 {
 $A6:9A42             dx 7FFF,9FEA,
                         812F        ; Sleep
@@ -2104,6 +2128,8 @@ $A6:9B25 60          RTS
 }
 
 
+;;; $9B26..9C0A: Instructions ;;;
+{
 ;;; $9B26: Instruction - move ;;;
 {
 $A6:9B26 5A          PHY
@@ -2147,7 +2173,7 @@ $A6:9B73 6B          RTL
 }
 
 
-;;; $9B74: Instruction -  ;;;
+;;; $9B74: Instruction - choose action ;;;
 {
 $A6:9B74 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9B77 BD B0 0F    LDA $0FB0,x[$7E:1070]  ;\
@@ -2237,6 +2263,7 @@ $A6:9C03 A0 08 00    LDY #$0008             ; Y = 8 (spit velocity table index)
 $A6:9C06 A9 04 00    LDA #$0004             ; A = 4 (spit X offset)
 $A6:9C09 80 C0       BRA $C0    [$9BCB]     ; Go to fire fake Kraid spit
 }
+}
 
 
 ;;; $9C0B: Unused. Fake Kraid Power bomb reaction ;;;
@@ -2292,20 +2319,29 @@ $A6:9C63 6B          RTL
 
 ;;; $9C64: Fake Kraid spritemaps ;;;
 {
+; Stepping - facing left
 $A6:9C64             dx 0010, 01E2,17,2125, 81EA,0F,2116, 81EA,07,2106, 81FB,0F,2163, 8001,0F,2100, 000D,17,2120, 01E8,F2,211E, 0014,15,2130, 81F0,DF,2102, 81F8,DF,2103, 81F8,EF,2123, 81E8,EF,2121, 81F3,0F,2162, 81E3,0F,2160, 81F3,FF,2142, 81E3,FF,2140
 $A6:9CB6             dx 0010, 81EA,0F,2119, 81EA,07,2109, 01E4,17,2125, 81FB,0E,2163, 8002,0D,2100, 000D,15,2120, 01E8,F1,211E, 0013,17,2130, 81F0,DE,2102, 81F8,DE,2103, 81F8,EE,2123, 81E8,EE,2121, 81F3,0E,2162, 81E3,0E,2160, 81F3,FE,2142, 81E3,FE,2140
 $A6:9D08             dx 0010, 01E1,14,212B, 81E9,0C,211C, 81E9,04,210C, 81FB,0D,2163, 8001,0F,2100, 000D,15,2120, 01E8,F0,211E, 0014,14,2130, 81F0,DD,2102, 81F8,DD,2103, 81F8,ED,2123, 81E8,ED,2121, 81F3,0D,2162, 81E3,0D,2160, 81F3,FD,2142, 81E3,FD,2140
 $A6:9D5A             dx 0010, 01DA,17,2154, 81E2,0F,2145, 81EA,07,2136, 81FB,0D,2163, 8002,10,2100, 000D,12,2120, 01E8,F0,211E, 0013,0F,2130, 81F0,DD,2102, 81F8,DD,2103, 81F8,ED,2123, 81E8,ED,2121, 81F3,0D,2162, 81E3,0D,2160, 81F3,FD,2142, 81E3,FD,2140
+
+; Firing spit - facing left
 $A6:9DAC             dx 0010, 01E8,F2,210E, 01E2,17,2125, 81EA,0F,2116, 81EA,07,2106, 81FB,0F,2163, 8002,12,2100, 000F,17,2120, 0016,18,2130, 81F0,DF,2102, 81F8,DF,2103, 81F8,EF,2123, 81E8,EF,2121, 81F3,0F,2162, 81E3,0F,2160, 81F3,FF,2142, 81E3,FF,2140
 $A6:9DFE             dx 0010, 81F8,EF,215A, 01E8,F2,210E, 81F8,DF,213A, 81E8,EF,2158, 81F0,DF,2139, 01E2,17,2125, 81EA,0F,2116, 81EA,07,2106, 81FB,0F,2163, 8002,12,2100, 000F,17,2120, 0016,18,2130, 81F3,0F,2162, 81E3,0F,2160, 81F3,FF,2142, 81E3,FF,2140
 $A6:9E50             dx 0010, 81F0,DF,213D, 81F8,EF,215E, 81F8,DF,213E, 01E8,F2,210E, 81E8,EF,2158, 01E2,17,2125, 81EA,0F,2116, 81EA,07,2106, 81FB,0F,2163, 8002,12,2100, 000F,17,2120, 0016,18,2130, 81F3,0F,2162, 81E3,0F,2160, 81F3,FF,2142, 81E3,FF,2140
+
+; Stepping - facing right
 $A6:9EA2             dx 0010, 0016,17,6125, 8006,0F,6116, 8006,07,6106, 81F5,0F,6163, 81EF,0F,6100, 01EB,17,6120, 0010,F2,611E, 01E4,15,6130, 8000,DF,6102, 81F8,DF,6103, 81F8,EF,6123, 8008,EF,6121, 81FD,0F,6162, 800D,0F,6160, 81FD,FF,6142, 800D,FF,6140
 $A6:9EF4             dx 0010, 8006,0F,6119, 8006,07,6109, 0014,17,6125, 81F5,0E,6163, 81EE,0D,6100, 01EB,15,6120, 0010,F1,611E, 01E5,17,6130, 8000,DE,6102, 81F8,DE,6103, 81F8,EE,6123, 8008,EE,6121, 81FD,0E,6162, 800D,0E,6160, 81FD,FE,6142, 800D,FE,6140
 $A6:9F46             dx 0010, 0017,14,612B, 8007,0C,611C, 8007,04,610C, 81F5,0D,6163, 81EF,0F,6100, 01EB,15,6120, 0010,F0,611E, 01E4,14,6130, 8000,DD,6102, 81F8,DD,6103, 81F8,ED,6123, 8008,ED,6121, 81FD,0D,6162, 800D,0D,6160, 81FD,FD,6142, 800D,FD,6140
 $A6:9F98             dx 0010, 001E,17,6154, 800E,0F,6145, 8006,07,6136, 81F5,0D,6163, 81EE,10,6100, 01EB,12,6120, 0010,F0,611E, 01E5,0F,6130, 8000,DD,6102, 81F8,DD,6103, 81F8,ED,6123, 8008,ED,6121, 81FD,0D,6162, 800D,0D,6160, 81FD,FD,6142, 800D,FD,6140
+
+; Firing spit - facing right
 $A6:9FEA             dx 0010, 0010,F2,610E, 0016,17,6125, 8006,0F,6116, 8006,07,6106, 81F5,0F,6163, 81EE,12,6100, 01E9,17,6120, 01E2,18,6130, 8000,DF,6102, 81F8,DF,6103, 81F8,EF,6123, 8008,EF,6121, 81FD,0F,6162, 800D,0F,6160, 81FD,FF,6142, 800D,FF,6140
 $A6:A03C             dx 0010, 81F8,EF,615A, 0010,F2,610E, 81F8,DF,613A, 8008,EF,6158, 8000,DF,6139, 0016,17,6125, 8006,0F,6116, 8006,07,6106, 81F5,0F,6163, 81EE,12,6100, 01E9,17,6120, 01E2,18,6130, 81FD,0F,6162, 800D,0F,6160, 81FD,FF,6142, 800D,FF,6140
 $A6:A08E             dx 0010, 8000,DF,613D, 81F8,EF,615E, 81F8,DF,613E, 0010,F2,610E, 8008,EF,6158, 0016,17,6125, 8006,0F,6116, 8006,07,6106, 81F5,0F,6163, 81EE,12,6100, 01E9,17,6120, 01E2,18,6130, 81FD,0F,6162, 800D,0F,6160, 81FD,FF,6142, 800D,FF,6140
+
+; Unused
 $A6:A0E0             dx 0001, 01FD,FD,211F
 $A6:A0E7             dx 0001, 01FC,FC,210F
 $A6:A0EE             dx 0001, 01FC,FC,610F

@@ -8726,7 +8726,7 @@ $86:BBAD DA          PHX
 $86:BBAE BF 14 80 7E LDA $7E8014,x[$7E:8014];\
 $86:BBB2 18          CLC                    ;|
 $86:BBB3 6D 54 0E    ADC $0E54  [$7E:0E54]  ;|
-$86:BBB6 AA          TAX                    ;} Enemy $7E:8000 + [enemy $7E:8014] = [enemy projectile index]
+$86:BBB6 AA          TAX                    ;} Enemy enemy projectile indices + [enemy body index] = [enemy projectile index]
 $86:BBB7 98          TYA                    ;|
 $86:BBB8 9F 00 78 7E STA $7E7800,x[$7E:7808];/
 $86:BBBC BB          TYX                    ;\
