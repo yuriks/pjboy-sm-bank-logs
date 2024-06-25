@@ -2146,7 +2146,7 @@ $84:8E09 85 12       STA $12    [$7E:0012]  ; Number of blocks skipped = [block 
 $84:8E0B A5 14       LDA $14    [$7E:0014]  ;\
 $84:8E0D 18          CLC                    ;|
 $84:8E0E 65 1E       ADC $1E    [$7E:001E]  ;|
-$84:8E10 C5 16       CMP $16    [$7E:0016]  ;} If [draw length] + [PLM draw X block] <= 0: return
+$84:8E10 C5 16       CMP $16    [$7E:0016]  ;} If [draw length] + [PLM draw X block] <= [block left of screen]: return
 $84:8E12 F0 1B       BEQ $1B    [$8E2F]     ;|
 $84:8E14 30 19       BMI $19    [$8E2F]     ;/
 $84:8E16 A5 14       LDA $14    [$7E:0014]  ; >_<;
@@ -7387,7 +7387,7 @@ $84:B7CE 80 03       BRA $03    [$B7D3]
                                             ; Else ([area index] != Ceres):
 $84:B7D0 A9 F0 00    LDA #$00F0             ; A = F0h
 
-$84:B7D3 99 77 1D    STA $1D77,y[$7E:1DC5]  ; PLM timer = F0h
+$84:B7D3 99 77 1D    STA $1D77,y[$7E:1DC5]  ; PLM timer = [A]
 $84:B7D6 A9 DD B7    LDA #$B7DD             ;\
 $84:B7D9 99 D7 1C    STA $1CD7,y[$7E:1D25]  ;} PLM pre-instruction = decrement timer, enable sounds and delete PLM if zero
 $84:B7DC 60          RTS
