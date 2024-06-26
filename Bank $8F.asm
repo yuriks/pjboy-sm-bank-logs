@@ -4957,6 +4957,8 @@ $8F:C91E 60          RTS
 ;;; $C91F: Setup ASM: set Zebes timebomb event and set light horizontal room shaking ;;;
 {
 ; Room $DE4D. Escape room 1
+; The Zebes timebomb set event was already marked by Mother Brain when she started the time ($A9:B313),
+; no reason to do it here
 $8F:C91F A9 0E 00    LDA #$000E             ;\
 $8F:C922 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark Zebes timebomb set event
 $8F:C926 A9 12 00    LDA #$0012             ;\

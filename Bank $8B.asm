@@ -9042,6 +9042,7 @@ $8B:C626 60          RTS
 
 ;;; $C627:  ;;;
 {
+; Similar to $82:8431/DCE0
 $8B:C627 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $8B:C62B E2 20       SEP #$20
 $8B:C62D A5 51       LDA $51    [$7E:0051]  ;\
@@ -9080,12 +9081,12 @@ $8B:C67E 85 55       STA $55    [$7E:0055]
 $8B:C680 C2 20       REP #$20
 $8B:C682 9C E2 0D    STZ $0DE2  [$7E:0DE2]
 $8B:C685 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = 0
-$8B:C688 A2 FE 00    LDX #$00FE
-
-$8B:C68B 9E 8D 1A    STZ $1A8D,x
-$8B:C68E CA          DEX
-$8B:C68F CA          DEX
-$8B:C690 10 F9       BPL $F9    [$C68B]
+$8B:C688 A2 FE 00    LDX #$00FE             ;\
+                                            ;|
+$8B:C68B 9E 8D 1A    STZ $1A8D,x            ;|
+$8B:C68E CA          DEX                    ;} $1A8D..1B8C = 0 (?)
+$8B:C68F CA          DEX                    ;|
+$8B:C690 10 F9       BPL $F9    [$C68B]     ;/
 $8B:C692 A9 19 00    LDA #$0019             ;\
 $8B:C695 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 19h (death sequence, black out)
 

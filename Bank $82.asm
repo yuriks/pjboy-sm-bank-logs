@@ -546,7 +546,7 @@ $82:849A 9C 27 07    STZ $0727  [$7E:0727]  ; Menu index = 0
 $82:849D A2 FE 00    LDX #$00FE             ;\
                                             ;|
 $82:84A0 9E 8D 1A    STZ $1A8D,x            ;|
-$82:84A3 CA          DEX                    ;} $1A8D..1B8C = 00FEh
+$82:84A3 CA          DEX                    ;} $1A8D..1B8C = 0 (?)
 $82:84A4 CA          DEX                    ;|
 $82:84A5 10 F9       BPL $F9    [$84A0]     ;/
 $82:84A7 A9 19 00    LDA #$0019             ;\
@@ -9504,7 +9504,7 @@ $82:DD1D 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $82:DD20 A2 FE 00    LDX #$00FE             ;\
                                             ;|
 $82:DD23 9E 8D 1A    STZ $1A8D,x[$7E:1B8B]  ;|
-$82:DD26 CA          DEX                    ;} $1A8D..1B8C = 0
+$82:DD26 CA          DEX                    ;} $1A8D..1B8C = 0 (?)
 $82:DD27 CA          DEX                    ;|
 $82:DD28 10 F9       BPL $F9    [$DD23]     ;/
 $82:DD2A A9 10 00    LDA #$0010             ;\

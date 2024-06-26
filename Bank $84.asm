@@ -2087,11 +2087,13 @@ $84:8DA9 6B          RTL
 {
 ;; Parameter:
 ;;     X: PLM index
+
+; Devs opted to pre-subtract 20h when setting $0C, rather than take ANDing [$18] with Fh before summing at $8E8C
 $84:8DAA C2 30       REP #$30
 $84:8DAC A9 00 50    LDA #$5000             ;\
-$84:8DAF 85 09       STA $09    [$7E:0009]  ;} $09 = VRAM map 1st screen base address
+$84:8DAF 85 09       STA $09    [$7E:0009]  ;} $09 = $5000 (BG1 tilemap 1st screen base address)
 $84:8DB1 A9 E0 53    LDA #$53E0             ;\
-$84:8DB4 85 0C       STA $0C    [$7E:000C]  ;} $0C = VRAM map 2nd screen base address - 20h (devs opted to subtract 20h here, rather than take $18 & Fh before summing)
+$84:8DB4 85 0C       STA $0C    [$7E:000C]  ;} $0C = $5400 - 20h (BG1 tilemap 2nd screen base address - 20h)
 $84:8DB6 BF 6C DE 7E LDA $7EDE6C,x[$7E:DEB8];\
 $84:8DBA A8          TAY                    ;} Y = [PLM draw instruction pointer]
 
@@ -2114,7 +2116,7 @@ $84:8DD4 10 01       BPL $01    [$8DD7]     ;|
 $84:8DD6 60          RTS                    ;/
 
 $84:8DD7 B9 00 00    LDA $0000,y[$84:A9FB]  ;\
-$84:8DDA 10 03       BPL $03    [$8DDF]     ;} If [[Y]] & 8000h:
+$84:8DDA 10 03       BPL $03    [$8DDF]     ;} If [[Y]] & 8000h != 0:
 $84:8DDC 4C 1F 90    JMP $901F  [$84:901F]  ; Go to BRANCH_VERTICAL
 
 ; Horizontal
@@ -8448,7 +8450,7 @@ $84:BDFE 4C C4 BD    JMP $BDC4  [$84:BDC4]
 }
 
 
-;;; $BE01: Pre-instruction - go to link instruction and set grey door event if enemy death quota is met else play dud sound ;;;
+;;; $BE01: Pre-instruction - go to link instruction and set Zebes is awake event if enemy death quota is met else play dud sound ;;;
 {
 $84:BE01 5A          PHY
 $84:BE02 DA          PHX
@@ -9290,6 +9292,7 @@ $84:C5D2 60          RTS
 
 ;;; $C5D3: Setup - PLM $C81E (shot/bombed/grappled reaction, shootable, BTS 4Ch. Left yellow gate trigger) ;;;
 {
+; Missing RTS, causes dud shot sound effect to be queued twice >_<;
 $84:C5D3 AE DE 0D    LDX $0DDE  [$7E:0DDE]  ;\
 $84:C5D6 BD 18 0C    LDA $0C18,x            ;|
 $84:C5D9 29 FF 0F    AND #$0FFF             ;} If current projectile is power bomb:
@@ -9323,6 +9326,7 @@ $84:C60F 60          RTS
 
 ;;; $C610: Setup - PLM $C816 (shot/bombed/grappled reaction, shootable, BTS 46h. Left blue gate trigger) ;;;
 {
+; (Harmless) missing RTS >_<;
 $84:C610 AE DE 0D    LDX $0DDE  [$7E:0DDE]  ;\
 $84:C613 BD 18 0C    LDA $0C18,x[$7E:0C18]  ;|
 $84:C616 29 FF 0F    AND #$0FFF             ;} If current projectile is not power bomb:
