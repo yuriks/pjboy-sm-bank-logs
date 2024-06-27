@@ -10813,9 +10813,12 @@ $84:D0F6             dx 0004,A345,
 
 ;;; $D108: Setup - PLM $D113 (crumble Lower Norfair chozo room plug) ;;;
 {
+; This setup routine is pointless, as the block is off-screen and the instruction list draws over the block next frame
+; Alternatively, the instruction list is pointless, as you'll never see the off-screen block crumbling animation,
+; but this setup routine fails to set the block to air correctly (missing LDA), so I guess it's just as well the instruction list is there
 $84:D108 BE 87 1C    LDX $1C87,y[$7E:1CCB]
-$84:D10B 29 FF 0F    AND #$0FFF
-$84:D10E 9F 02 00 7F STA $7F0002,x[$7F:158C]
+$84:D10B 29 FF 0F    AND #$0FFF             ;\
+$84:D10E 9F 02 00 7F STA $7F0002,x[$7F:158C];} PLM block = (garbage) air block
 $84:D112 60          RTS
 }
 
