@@ -2111,9 +2111,9 @@ $84:8DCB 4A          LSR A                  ;|
 $84:8DCC 85 1A       STA $1A    [$7E:001A]  ;/
 $84:8DCE 18          CLC                    ;\
 $84:8DCF 69 0F 00    ADC #$000F             ;|
-$84:8DD2 C5 20       CMP $20    [$7E:0020]  ;} If [screen Y block] + Fh < [PLM draw Y block]: return
+$84:8DD2 C5 20       CMP $20    [$7E:0020]  ;} If [PLM draw Y block] > [screen Y block] + Fh:
 $84:8DD4 10 01       BPL $01    [$8DD7]     ;|
-$84:8DD6 60          RTS                    ;/
+$84:8DD6 60          RTS                    ; Return
 
 $84:8DD7 B9 00 00    LDA $0000,y[$84:A9FB]  ;\
 $84:8DDA 10 03       BPL $03    [$8DDF]     ;} If [[Y]] & 8000h != 0:
@@ -2148,7 +2148,7 @@ $84:8E09 85 12       STA $12    [$7E:0012]  ; Number of blocks skipped = [block 
 $84:8E0B A5 14       LDA $14    [$7E:0014]  ;\
 $84:8E0D 18          CLC                    ;|
 $84:8E0E 65 1E       ADC $1E    [$7E:001E]  ;|
-$84:8E10 C5 16       CMP $16    [$7E:0016]  ;} If [draw length] + [PLM draw X block] <= [block left of screen]: return
+$84:8E10 C5 16       CMP $16    [$7E:0016]  ;} If [PLM draw X block] + [draw length] <= [block left of screen]: return
 $84:8E12 F0 1B       BEQ $1B    [$8E2F]     ;|
 $84:8E14 30 19       BMI $19    [$8E2F]     ;/
 $84:8E16 A5 14       LDA $14    [$7E:0014]  ; >_<;
@@ -2183,7 +2183,7 @@ $84:8E44 F0 E9       BEQ $E9    [$8E2F]     ; If [draw length] = 0: return
 
 $84:8E46 DA          PHX
 $84:8E47 AE 30 03    LDX $0330  [$7E:0330]  ;\
-$84:8E4A E0 E0 01    CPX #$01E0             ;} If [VRAM write table stack pointer] >= 1E0h: return (this number seems pretty random, it's not even a multiple of 7)
+$84:8E4A E0 E0 01    CPX #$01E0             ;} If [VRAM write table stack pointer] >= 1E0h: (this number seems pretty random, it's not even a multiple of 7)
 $84:8E4D 30 02       BMI $02    [$8E51]     ;/
 $84:8E4F FA          PLX
 $84:8E50 60          RTS                    ; Return
@@ -2432,30 +2432,30 @@ $84:901D 80 8D       BRA $8D    [$8FAC]     ; Go to BRANCH_HORIZONTAL_NEXT_BLOCK
 ; BRANCH_VERTICAL
 {
 $84:901F 29 FF 7F    AND #$7FFF             ;\
-$84:9022 85 14       STA $14    [$7E:0014]  ;} Draw length = [[Y]] & 7FFFh
+$84:9022 85 14       STA $14    [$7E:0014]  ;} $14 = [[Y]] & 7FFFh (draw length)
 $84:9024 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $84:9027 4A          LSR A                  ;|
 $84:9028 4A          LSR A                  ;|
 $84:9029 4A          LSR A                  ;|
-$84:902A 4A          LSR A                  ;} If (screen X block) > [PLM draw X block]: return
+$84:902A 4A          LSR A                  ;|
 $84:902B C5 1E       CMP $1E    [$7E:001E]  ;|
 $84:902D F0 02       BEQ $02    [$9031]     ;|
-$84:902F 10 0A       BPL $0A    [$903B]     ;/
-
-$84:9031 18          CLC                    ;\
+$84:902F 10 0A       BPL $0A    [$903B]     ;|
+                                            ;} If not (screen X block) <= [PLM draw X block] < (screen X block) + 11h: return
+$84:9031 18          CLC                    ;|
 $84:9032 69 11 00    ADC #$0011             ;|
-$84:9035 C5 1E       CMP $1E    [$7E:001E]  ;} If (screen X block) + 11h <= [PLM draw X block]: return
+$84:9035 C5 1E       CMP $1E    [$7E:001E]  ;|
 $84:9037 F0 02       BEQ $02    [$903B]     ;|
-$84:9039 10 01       BPL $01    [$903C]     ;/
-
-$84:903B 60          RTS
+$84:9039 10 01       BPL $01    [$903C]     ;|
+                                            ;|
+$84:903B 60          RTS                    ;/
 
 $84:903C A5 1E       LDA $1E    [$7E:001E]  ;\
-$84:903E 85 18       STA $18    [$7E:0018]  ;} $18 = [PLM draw X block]
-$84:9040 64 12       STZ $12    [$7E:0012]  ; Number of blocks skipped = 0
+$84:903E 85 18       STA $18    [$7E:0018]  ;} $18 = [PLM draw X block] (PLM draw X block)
+$84:9040 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (number of blocks skipped)
 $84:9042 A5 1A       LDA $1A    [$7E:001A]  ;\
 $84:9044 18          CLC                    ;|
-$84:9045 69 10 00    ADC #$0010             ;} Block below screen = [screen Y block] + 10h
+$84:9045 69 10 00    ADC #$0010             ;} $16 = [screen Y block] + 10h (block below screen)
 $84:9048 85 16       STA $16    [$7E:0016]  ;/
 $84:904A A5 1A       LDA $1A    [$7E:001A]  ;\
 $84:904C 38          SEC                    ;|
@@ -2471,18 +2471,17 @@ $84:905C A5 14       LDA $14    [$7E:0014]  ;\
 $84:905E 38          SEC                    ;|
 $84:905F E5 12       SBC $12    [$7E:0012]  ;} Draw length -= [number of blocks skipped]
 $84:9061 85 14       STA $14    [$7E:0014]  ;/
-
-$84:9063 30 FE       BMI $FE    [$9063]     ; If [draw length] < 0: crash (!) (TODO: check if this is possible)
+$84:9063 30 FE       BMI $FE    [$9063]     ; If [draw length] < 0: crash (this cannot happen)
 $84:9065 D0 05       BNE $05    [$906C]     ; If [draw length] = 0:
 $84:9067 60          RTS                    ; Return
 
 $84:9068 A5 20       LDA $20    [$7E:0020]  ;\ Else ([PLM draw Y block] > [screen Y block]):
-$84:906A 85 1A       STA $1A    [$7E:001A]  ;} $1A = [PLM draw Y block]
+$84:906A 85 1A       STA $1A    [$7E:001A]  ;} $1A = [PLM draw Y block] (PLM draw Y block. Retains the value [screen Y block] in the other branch)
 
 $84:906C A5 1A       LDA $1A    [$7E:001A]  ;\
 $84:906E 18          CLC                    ;|
 $84:906F 65 14       ADC $14    [$7E:0014]  ;|
-$84:9071 38          SEC                    ;} Number of blocks truncated = [PLM draw Y block] + [draw length] - [block below screen]
+$84:9071 38          SEC                    ;} $16 = [PLM draw Y block] + [draw length] - [block below screen] (number of blocks truncated)
 $84:9072 E5 16       SBC $16    [$7E:0016]  ;|
 $84:9074 85 16       STA $16    [$7E:0016]  ;/
 $84:9076 30 0B       BMI $0B    [$9083]     ; If [number of blocks truncated] >= 0:
@@ -2490,16 +2489,15 @@ $84:9078 A5 14       LDA $14    [$7E:0014]  ;\
 $84:907A 38          SEC                    ;|
 $84:907B E5 16       SBC $16    [$7E:0016]  ;} Draw length -= [number of blocks truncated]
 $84:907D 85 14       STA $14    [$7E:0014]  ;/
-$84:907F F0 BA       BEQ $BA    [$903B]     ; If [draw length] = 0: return
-$84:9081 30 09       BMI $09    [$908C]     ; If [draw length] < 0: pull X and return (TODO: check if this is possible; if so, makes draw PLM block instruction *not* terminate PLM handling)
+$84:907F F0 BA       BEQ $BA    [$903B]     ; If [draw length] = 0: return (this cannot happen)
+$84:9081 30 09       BMI $09    [$908C]     ; If [draw length] < 0: pull X and return (this cannot happen, but if it did, it would make the draw PLM block instruction *not* terminate PLM handling, which would be a weird bug)
 
 $84:9083 DA          PHX
 $84:9084 AE 30 03    LDX $0330  [$7E:0330]  ;\
-$84:9087 E0 F0 00    CPX #$00F0             ;} If [VRAM write table stack pointer] >= F0h: return
+$84:9087 E0 F0 00    CPX #$00F0             ;} If [VRAM write table stack pointer] >= F0h: (why is the limit F0h this time? It was 1E0h in the horizontal case)
 $84:908A 30 02       BMI $02    [$908E]     ;/
-
 $84:908C FA          PLX
-$84:908D 60          RTS
+$84:908D 60          RTS                    ; Return
 
 $84:908E A9 00 02    LDA #$0200             ;\
 $84:9091 38          SEC                    ;|
@@ -2510,7 +2508,7 @@ $84:9097 4A          LSR A                  ;|
 $84:9098 C5 14       CMP $14    [$7E:0014]  ;|
 $84:909A 30 F0       BMI $F0    [$908C]     ;/
 $84:909C A9 00 80    LDA #$8000             ;\
-$84:909F 85 1C       STA $1C    [$7E:001C]  ;} Set 32-byte increment mode flag
+$84:909F 85 1C       STA $1C    [$7E:001C]  ;} $1C = 8000h (32-byte increment mode flag)
 $84:90A1 20 DC 91    JSR $91DC  [$84:91DC]  ; Calculate PLM draw tilemap VRAM destination
 $84:90A4 B5 D5       LDA $D5,x  [$7E:00D5]  ;\
 $84:90A6 1A          INC A                  ;} VRAM write table entry 1 destination + [X] = [VRAM write table entry 0 destination + [X]] + 1
