@@ -1719,7 +1719,7 @@ $90:89FF 6B          RTL
 ;     Door transition
 ;     Using elevator
 ;     Taken fatal damage
-;     Game state 15h
+;     Game state 15h (death sequence, pre-flashing)
 
 ; Compared to $85E2, this routine doesn't update $0A96/$0ACA for speed echo drawing,
 ; and doesn't have the checks for being invisible
@@ -16312,7 +16312,7 @@ $90:F1E8 60          RTS                    ;} Return carry set
 ;;; $F1E9: Samus command 8: set up Samus for Ceres start ;;;
 {
 ; Called by:
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
+;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / load demo game data)
 $90:F1E9 A9 CD E8    LDA #$E8CD             ;\
 $90:F1EC 8D 42 0A    STA $0A42  [$7E:0A42]  ;} Samus current state handler = RTL
 $90:F1EF A9 DC E8    LDA #$E8DC             ;\
@@ -16346,7 +16346,7 @@ $90:F23B 60          RTS                    ;} Return carry set
 ;;; $F23C: Samus command 9: set up Samus for Zebes start ;;;
 {
 ; Called by:
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
+;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / load demo game data)
 $90:F23C AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $90:F23F 89 20 00    BIT #$0020             ;} If equipped gravity suit: go to BRANCH_GRAVITY
 $90:F242 D0 23       BNE $23    [$F267]     ;/

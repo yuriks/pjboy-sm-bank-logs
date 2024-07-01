@@ -4654,7 +4654,7 @@ $8B:9FFC CA          DEX
 $8B:9FFD CA          DEX
 $8B:9FFE 10 F8       BPL $F8    [$9FF8]
 $8B:A000 A9 28 00    LDA #$0028             ;\
-$8B:A003 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 28h (transition to demo)
+$8B:A003 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 28h (load demo game data)
 $8B:A006 9C 57 1F    STZ $1F57  [$7E:1F57]
 
 $8B:A009 60          RTS

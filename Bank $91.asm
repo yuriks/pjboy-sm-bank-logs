@@ -10163,7 +10163,7 @@ $91:E023 E0 02 0A    CPX #$0A02             ;|
 $91:E026 10 F7       BPL $F7    [$E01F]     ;|
 $91:E028 C2 20       REP #$20               ;/
 $91:E02A AD 98 09    LDA $0998  [$7E:0998]  ;\
-$91:E02D C9 28 00    CMP #$0028             ;} If [game state] = 28h (transition to demo): go to BRANCH_DEMO
+$91:E02D C9 28 00    CMP #$0028             ;} If [game state] = 28h (load demo game data): go to BRANCH_DEMO
 $91:E030 F0 59       BEQ $59    [$E08B]     ;/
 $91:E032 AF 14 D9 7E LDA $7ED914[$7E:D914]  ;\
 $91:E036 C9 22 00    CMP #$0022             ;} If landing on Zebes:
@@ -10273,7 +10273,7 @@ $91:E150 9C AA 18    STZ $18AA  [$7E:18AA]  ; Samus knockback timer = 0
 $91:E153 9C 48 0A    STZ $0A48  [$7E:0A48]  ; Samus hurt flash counter = 0 (again)
 $91:E156 9C E0 0D    STZ $0DE0  [$7E:0DE0]  ; Disable debug invincibility
 $91:E159 AD 98 09    LDA $0998  [$7E:0998]  ;\
-$91:E15C C9 28 00    CMP #$0028             ;} If [game state] = 28h (transition to demo):
+$91:E15C C9 28 00    CMP #$0028             ;} If [game state] = 28h (load demo game data):
 $91:E15F D0 03       BNE $03    [$E164]     ;/
 $91:E161 20 90 87    JSR $8790  [$91:8790]  ; Load demo data
 

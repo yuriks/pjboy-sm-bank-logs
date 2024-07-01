@@ -3239,7 +3239,7 @@ $A2:A65C 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = 
 $A2:A65F A9 00 0E    LDA #$0E00             ;\
 $A2:A662 9D 96 0F    STA $0F96,x[$7E:0F96]  ;} Enemy palette index = E00h (palette 7)
 $A2:A665 AD 98 09    LDA $0998  [$7E:0998]  ;\
-$A2:A668 C9 28 00    CMP #$0028             ;} If [game state] = 28h (transition to demo): go to BRANCH_DEMO_TRANSITION
+$A2:A668 C9 28 00    CMP #$0028             ;} If [game state] = 28h (load demo game data): go to BRANCH_DEMO_TRANSITION
 $A2:A66B F0 30       BEQ $30    [$A69D]     ;/
 
 ; BRANCH_LANDING_ON_ZEBES
@@ -3336,7 +3336,7 @@ $A2:A732 BD FE 0E    LDA $0EFE,x[$7E:0F7E]  ;\
 $A2:A735 3A          DEC A                  ;} Enemy Y position = [enemy ([X] - 2) Y position] - 1
 $A2:A736 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A2:A739 AD 98 09    LDA $0998  [$7E:0998]  ;\
-$A2:A73C C9 28 00    CMP #$0028             ;} If [game state] = 28h (transition to demo):
+$A2:A73C C9 28 00    CMP #$0028             ;} If [game state] = 28h (load demo game data):
 $A2:A73F D0 11       BNE $11    [$A752]     ;/
 $A2:A741 AD 55 1F    LDA $1F55  [$7E:1F55]  ;\
 $A2:A744 D0 0C       BNE $0C    [$A752]     ;} If [demo set] = 0:

@@ -1,9 +1,9 @@
-;;; $8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo) ;;;
+;;; $8000: Game state 6/1Fh/28h (loading game data / set up new game / load demo game data) ;;;
 {
 $82:8000 08          PHP
 $82:8001 C2 30       REP #$30
 $82:8003 AD 98 09    LDA $0998  [$7E:0998]  ;\
-$82:8006 C9 28 00    CMP #$0028             ;} If [game state] = 28h (transition to demo):
+$82:8006 C9 28 00    CMP #$0028             ;} If [game state] = 28h (load demo game data):
 $82:8009 D0 12       BNE $12    [$801D]     ;/
 $82:800B 20 9B 81    JSR $819B  [$82:819B]  ; Initialise IO registers for gameplay
 $82:800E 20 E2 82    JSR $82E2  [$82:82E2]  ; Load standard BG3 tiles and sprite tiles, clear tilemaps
@@ -69,7 +69,7 @@ $82:809C 22 88 82 88 JSL $888288[$88:8288]  ; Enable HDMA objects
 $82:80A0 22 00 80 87 JSL $878000[$87:8000]  ; Enable animated tile objects
 $82:80A4 22 0F 8E 90 JSL $908E0F[$90:8E0F]  ; Set liquid physics type
 $82:80A8 AD 98 09    LDA $0998  [$7E:0998]  ;\
-$82:80AB C9 28 00    CMP #$0028             ;} If [game state] = 28h (transition to demo):
+$82:80AB C9 28 00    CMP #$0028             ;} If [game state] = 28h (load demo game data):
 $82:80AE D0 03       BNE $03    [$80B3]     ;/
 $82:80B0 4C 46 81    JMP $8146  [$82:8146]  ; Go to BRANCH_DEMO
 
@@ -86,7 +86,7 @@ $82:80C9 22 D7 8C A0 JSL $A08CD7[$A0:8CD7]  ; Transfer enemy tiles to VRAM and i
 $82:80CD 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
 $82:80D1 CE A0 0D    DEC $0DA0  [$7E:0DA0]  ; Decrement $0DA0
 $82:80D4 10 F3       BPL $F3    [$80C9]     ; If [$0DA0] > 0: go to LOOP_ALPHA
-$82:80D6 EE 98 09    INC $0998  [$7E:0998]  ; Increment game state (loading game data -> setting game up after loading the game)
+$82:80D6 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 7 (main gameplay fading in)
 $82:80D9 08          PHP                    ;\
 $82:80DA C2 30       REP #$30               ;|
 $82:80DC A0 00 02    LDY #$0200             ;|
@@ -113,7 +113,7 @@ $82:80FD 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
 $82:8101 CE A0 0D    DEC $0DA0  [$7E:0DA0]  ; Decrement $0DA0
 $82:8104 10 F3       BPL $F3    [$80F9]     ; If [$0DA0] > 0: go to LOOP_BETA
 $82:8106 A9 07 00    LDA #$0007             ;\
-$82:8109 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 7 (setting game up after loading the game)
+$82:8109 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 7 (main gameplay fading in)
 $82:810C 08          PHP                    ;\
 $82:810D C2 30       REP #$30               ;|
 $82:810F A0 00 02    LDY #$0200             ;|
@@ -761,7 +761,7 @@ $82:862E 60          RTS                    ; Return
 
 ; BRANCH_NEXT_DEMO_SCENE
 $82:862F A9 28 00    LDA #$0028             ;\
-$82:8632 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 28h (transition to demo)
+$82:8632 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 28h (load demo game data)
 $82:8635 28          PLP
 $82:8636 60          RTS
 }
@@ -1264,7 +1264,6 @@ $82:8B07 60          RTS
 
 ;;; $8B08: Game state 1 (opening) ;;;
 {
-; Opening
 $82:8B08 22 22 9A 8B JSL $8B9A22[$8B:9A22]
 $82:8B0C 60          RTS
 }
@@ -11232,7 +11231,7 @@ $82:E93E A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
 ; LOOP
 $82:E941 DD 87 1C    CMP $1C87,x[$7E:1CD5]  ;\
-$82:E944 F0 06       BEQ $06    [$E94C]     ;} If [PLM block index] = 0: go to BRANCH_FOUND
+$82:E944 F0 06       BEQ $06    [$E94C]     ;} If [PLM block index] = [A]: go to BRANCH_FOUND
 $82:E946 CA          DEX                    ;\
 $82:E947 CA          DEX                    ;} X -= 2
 $82:E948 10 F7       BPL $F7    [$E941]     ; If [X] >= 0: go to LOOP
@@ -11669,7 +11668,7 @@ $82:EBC1             dw EBDB, ; 0: Finish fading out
 }
 
 
-;;; $EBDB: Game state 2 (game options menu) - [$0DE2] = 0 (finish fading out) ;;;
+;;; $EBDB: Game options menu - [menu index] = 0 (finish fading out) ;;;
 {
 $82:EBDB 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EBDF E2 20       SEP #$20
@@ -11700,7 +11699,7 @@ $82:EC10 60          RTS
 }
 
 
-;;; $EC11: Game state 2 (game options menu) - [$0DE2] = 1 (loading options menu) ;;;
+;;; $EC11: Game options menu - [menu index] = 1 (loading options menu) ;;;
 {
 ; Assumes forced blank
 $82:EC11 08          PHP
@@ -11789,7 +11788,7 @@ $82:ECE3 60          RTS
 }
 
 
-;;; $ECE4: Game state 2 (game options menu) - [$0DE2] = 2 (fading in options menu) ;;;
+;;; $ECE4: Game options menu - [menu index] = 2 (fading in options menu) ;;;
 {
 $82:ECE4 22 4D 89 80 JSL $80894D[$80:894D]  ; Handle fading in
 $82:ECE8 E2 20       SEP #$20
@@ -11860,7 +11859,7 @@ $82:ED41 60          RTS
 }
 
 
-;;; $ED42: Game state 2 (game options menu) - [$0DE2] = 3 (options menu) ;;;
+;;; $ED42: Game options menu - [menu index] = 3 (options menu) ;;;
 {
 $82:ED42 08          PHP
 $82:ED43 C2 30       REP #$30
@@ -12015,7 +12014,7 @@ $82:EE69 60          RTS
 }
 
 
-;;; $EE6A: Game state 2 (game options menu) - [$0DE2] = Bh (transition back to file select) ;;;
+;;; $EE6A: Game options menu - [menu index] = Bh (transition back to file select) ;;;
 {
 $82:EE6A 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EE6E E2 20       SEP #$20
@@ -12037,7 +12036,7 @@ $82:EE91 60          RTS
 }
 
 
-;;; $EE92: Game state 2 (game options menu) - [$0DE2] = Ch (fading out options menu to start game) ;;;
+;;; $EE92: Game options menu - [menu index] = Ch (fading out options menu to start game) ;;;
 {
 $82:EE92 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EE96 E2 20       SEP #$20
@@ -12057,7 +12056,7 @@ $82:EEB3 60          RTS
 }
 
 
-;;; $EEB4: Game state 2 (game options menu) - [$0DE2] = 4 (start game) ;;;
+;;; $EEB4: Game options menu - [menu index] = 4 (start game) ;;;
 {
 $82:EEB4 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options menu index = 0
 $82:EEB7 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
@@ -12093,19 +12092,19 @@ $82:EEF6 AF 14 D9 7E LDA $7ED914[$7E:D914]  ;\
 $82:EEFA C9 05 00    CMP #$0005             ;} If [loading game state] != 5 (main):
 $82:EEFD F0 12       BEQ $12    [$EF11]     ;/
 $82:EEFF A9 05 00    LDA #$0005             ;\
-$82:EF02 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (loading game map view)
+$82:EF02 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (file select map)
 $82:EF05 8F 14 D9 7E STA $7ED914[$7E:D914]  ; Loading game state = 5 (main)
 $82:EF09 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $82:EF0C 22 00 80 81 JSL $818000[$81:8000]  ;} Save current save slot to SRAM
 $82:EF10 60          RTS                    ; Return
 
 $82:EF11 A9 05 00    LDA #$0005             ;\
-$82:EF14 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (loading game map view)
+$82:EF14 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (file select map)
 $82:EF17 60          RTS
 }
 
 
-;;; $EF18: Game state 2 (game options menu) - [$0DE2] = 5 (dissolve out screen) ;;;
+;;; $EF18: Game options menu - [menu index] = 5 (dissolve out screen) ;;;
 {
 $82:EF18 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $82:EF1C E2 20       SEP #$20
@@ -12205,7 +12204,7 @@ $82:EFDA 60          RTS
 }
 
 
-;;; $EFDB: Game state 2 (game options menu) - [$0DE2] = 6 (dissolve in screen) ;;;
+;;; $EFDB: Game options menu - [menu index] = 6 (dissolve in screen) ;;;
 {
 $82:EFDB 22 4D 89 80 JSL $80894D[$80:894D]  ; Handle fading in
 $82:EFDF E2 20       SEP #$20
@@ -12250,7 +12249,7 @@ $82:F023 60          RTS
 
 ;;; $F024..F158: Special settings ;;;
 {
-;;; $F024: Game state 2 (game options menu) - [$0DE2] = 8 (special settings) ;;;
+;;; $F024: Game options menu - [menu index] = 8 (special settings) ;;;
 {
 $82:F024 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F026 29 00 08    AND #$0800             ;} If newly pressed up:
@@ -12422,7 +12421,7 @@ $82:F151             dw 01EE,022E, 036E,03AE ; Right option tilemap indices
 
 ;;; $F159..F295: Controller settings ;;;
 {
-;;; $F159: Game state 2 (game options menu) - [$0DE2] = 7 (controller settings) ;;;
+;;; $F159: Game options menu - [menu index] = 7 (controller settings) ;;;
 {
 $82:F159 A5 8F       LDA $8F    [$7E:008F]  ;\
 $82:F15B 29 00 08    AND #$0800             ;} If not newly pressed up: go to BRANCH_UP_END
@@ -12558,7 +12557,7 @@ $82:F270 60          RTS
 }
 
 
-;;; $F271: Game state 2 (game options menu) - [$0DE2] = 9 (scroll controller settings down) ;;;
+;;; $F271: Game options menu - [menu index] = 9 (scroll controller settings down) ;;;
 {
 $82:F271 A5 B3       LDA $B3    [$7E:00B3]  ;\
 $82:F273 18          CLC                    ;|
@@ -12573,7 +12572,7 @@ $82:F284 60          RTS
 }
 
 
-;;; $F285: Game state 2 (game options menu) - [$0DE2] = Ah (scroll controller settings up) ;;;
+;;; $F285: Game options menu - [menu index] = Ah (scroll controller settings up) ;;;
 {
 $82:F285 A5 B3       LDA $B3    [$7E:00B3]  ;\
 $82:F287 38          SEC                    ;|

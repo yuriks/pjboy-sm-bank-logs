@@ -4797,7 +4797,7 @@ $80:A060             dx 0005, 01F0,F0,3BF8, 01E8,F0,3BF7, 01E0,F0,3BF6, 0008,F8,
 ;;; $A07B: Start gameplay ;;;
 {
 ; Called by:
-;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / transition to demo)
+;     $82:8000: Game state 6/1Fh/28h (loading game data / set up new game / load demo game data)
 $80:A07B 08          PHP
 $80:A07C 8B          PHB
 $80:A07D 4B          PHK                    ;\

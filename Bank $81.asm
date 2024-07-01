@@ -1966,7 +1966,7 @@ $81:9112 5C 62 84 80 JML $808462[$80:8462]  ; Go to soft reset
 $81:9116 22 93 82 88 JSL $888293[$88:8293]  ; Disable HDMA objects
 $81:911A 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
 $81:911E A9 05 00    LDA #$0005             ;\
-$81:9121 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (loading game map view)
+$81:9121 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 5 (file select map)
 $81:9124 A9 00 00    LDA #$0000             ;\
 $81:9127 8D 27 07    STA $0727  [$7E:0727]  ;} Menu index = 0
 $81:912A 60          RTS

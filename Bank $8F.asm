@@ -4973,9 +4973,9 @@ $8F:C932 60          RTS
 {
 ; Room $DE7A. Escape room 2
 $8F:C933 A9 12 00    LDA #$0012             ;\
-$8F:C936 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
-$8F:C939 8D E3 07    STA $07E3  [$7E:07E3]  ; $07E3 = 12h
-$8F:C93C 9C E1 07    STZ $07E1  [$7E:07E1]  ; $07E1 = 0
+$8F:C936 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = room earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
+$8F:C939 8D E3 07    STA $07E3  [$7E:07E3]  ;/
+$8F:C93C 9C E1 07    STZ $07E1  [$7E:07E1]  ; Room diagonal shake timer = 0
 $8F:C93F A9 FF FF    LDA #$FFFF             ;\
 $8F:C942 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 $8F:C945 60          RTS
@@ -4999,9 +4999,9 @@ $8F:C952 60          RTS
 $8F:C953 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $8F:C957             dx  10, 10, B968       ;} Spawn PLM to raise acid in escape room before old Tourian escape shaft
 $8F:C95B A9 15 00    LDA #$0015             ;\
-$8F:C95E 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
-$8F:C961 8D E3 07    STA $07E3  [$7E:07E3]  ; $07E3 = 15h
-$8F:C964 9C E1 07    STZ $07E1  [$7E:07E1]  ; $07E1 = 0
+$8F:C95E 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = room earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
+$8F:C961 8D E3 07    STA $07E3  [$7E:07E3]  ;/
+$8F:C964 9C E1 07    STZ $07E1  [$7E:07E1]  ; Room diagonal shake timer = 0
 $8F:C967 A9 FF FF    LDA #$FFFF             ;\
 $8F:C96A 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = FFFFh
 $8F:C96D 60          RTS
@@ -6589,12 +6589,12 @@ $8F:E25A             dx 0004,BAA69F,4000, 0002,7E4000,4800,1000, 0000
 {
 ; Room $D48E, door list index 2: Door
 $8F:E26C A9 00 FF    LDA #$FF00             ;\
-$8F:E26F 8D E5 07    STA $07E5  [$7E:07E5]  ;} Elevatube velocity = -100h
+$8F:E26F 8D E5 07    STA $07E5  [$7E:07E5]  ;} Room elevatube velocity = -100h
 $8F:E272 9C E3 07    STZ $07E3  [$7E:07E3]  ; >_<;
 $8F:E275 A9 C0 09    LDA #$09C0             ;\
-$8F:E278 8D E3 07    STA $07E3  [$7E:07E3]  ;} Elevatube position = 9C0h
+$8F:E278 8D E3 07    STA $07E3  [$7E:07E3]  ;} Room elevatube position = 9C0h
 $8F:E27B A9 E0 FF    LDA #$FFE0             ;\
-$8F:E27E 8D E7 07    STA $07E7  [$7E:07E7]  ;} Elevatube acceleration = -20h
+$8F:E27E 8D E7 07    STA $07E7  [$7E:07E7]  ;} Room elevatube acceleration = -20h
 $8F:E281 A9 00 00    LDA #$0000             ;\
 $8F:E284 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $8F:E288 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -6607,12 +6607,12 @@ $8F:E290 60          RTS
 {
 ; Room $D340, door list index 1: Door
 $8F:E291 A9 00 01    LDA #$0100             ;\
-$8F:E294 8D E5 07    STA $07E5  [$7E:07E5]  ;} Elevatube velocity = 100h
+$8F:E294 8D E5 07    STA $07E5  [$7E:07E5]  ;} Room elevatube velocity = 100h
 $8F:E297 9C E3 07    STZ $07E3  [$7E:07E3]  ; >_<;
 $8F:E29A A9 40 00    LDA #$0040             ;\
-$8F:E29D 8D E3 07    STA $07E3  [$7E:07E3]  ;} Elevatube position = 40h
+$8F:E29D 8D E3 07    STA $07E3  [$7E:07E3]  ;} Room elevatube position = 40h
 $8F:E2A0 A9 20 00    LDA #$0020             ;\
-$8F:E2A3 8D E7 07    STA $07E7  [$7E:07E7]  ;} Elevatube acceleration = 20h
+$8F:E2A3 8D E7 07    STA $07E7  [$7E:07E7]  ;} Room elevatube acceleration = 20h
 $8F:E2A6 A9 00 00    LDA #$0000             ;\
 $8F:E2A9 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $8F:E2AD 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -6631,14 +6631,14 @@ $8F:E2BC 9C F8 0A    STZ $0AF8  [$7E:0AF8]  ;/
 $8F:E2BF 64 12       STZ $12    [$7E:0012]  ;\
 $8F:E2C1 64 14       STZ $14    [$7E:0014]  ;|
 $8F:E2C3 AD E5 07    LDA $07E5  [$7E:07E5]  ;|
-$8F:E2C6 10 02       BPL $02    [$E2CA]     ;} $14.$12 = ±[elevatube velocity] / 100h
+$8F:E2C6 10 02       BPL $02    [$E2CA]     ;} $14.$12 = ±[eoom elevatube velocity] / 100h
 $8F:E2C8 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $8F:E2CA 85 13       STA $13    [$7E:0013]  ;/
 $8F:E2CC AD E1 07    LDA $07E1  [$7E:07E1]  ;\
 $8F:E2CF 18          CLC                    ;|
 $8F:E2D0 65 12       ADC $12    [$7E:0012]  ;|
-$8F:E2D2 8D E1 07    STA $07E1  [$7E:07E1]  ;} Elevatube position += [$14].[$12]
+$8F:E2D2 8D E1 07    STA $07E1  [$7E:07E1]  ;} Room elevatube position += [$14].[$12]
 $8F:E2D5 AD E3 07    LDA $07E3  [$7E:07E3]  ;|
 $8F:E2D8 65 14       ADC $14    [$7E:0014]  ;|
 $8F:E2DA 8D E3 07    STA $07E3  [$7E:07E3]  ;/
@@ -6650,12 +6650,12 @@ $8F:E2E5 22 63 97 94 JSL $949763[$94:9763]  ; Move Samus down by [$12].[$14], no
 $8F:E2E9 AD E5 07    LDA $07E5  [$7E:07E5]  ;\
 $8F:E2EC 18          CLC                    ;|
 $8F:E2ED 6D E7 07    ADC $07E7  [$7E:07E7]  ;|
-$8F:E2F0 18          CLC                    ;} If [elevatube velocity] + [elevatube acceleration] <= E20h:
+$8F:E2F0 18          CLC                    ;} If [room elevatube velocity] + [room elevatube acceleration] <= E20h:
 $8F:E2F1 69 20 0E    ADC #$0E20             ;|
 $8F:E2F4 C9 41 1C    CMP #$1C41             ;|
 $8F:E2F7 B0 07       BCS $07    [$E300]     ;/
 $8F:E2F9 38          SEC                    ;\
-$8F:E2FA E9 20 0E    SBC #$0E20             ;} Elevatube velocity += [elevatube acceleration]
+$8F:E2FA E9 20 0E    SBC #$0E20             ;} Room elevatube velocity += [room elevatube acceleration]
 $8F:E2FD 8D E5 07    STA $07E5  [$7E:07E5]  ;/
 
 $8F:E300 60          RTS
@@ -6970,9 +6970,9 @@ $8F:E4FE 85 82       STA $82    [$7E:0082]  ;/
 $8F:E500 A9 01 00    LDA #$0001             ;\
 $8F:E503 8D 83 07    STA $0783  [$7E:0783]  ;} Set mode 7
 $8F:E506 A9 22 00    LDA #$0022             ;\
-$8F:E509 8D E1 07    STA $07E1  [$7E:07E1]  ;} Rotation matrix index = 22h
+$8F:E509 8D E1 07    STA $07E1  [$7E:07E1]  ;} Room rotation matrix index = 22h
 $8F:E50C A9 3C 00    LDA #$003C             ;\
-$8F:E50F 8D E3 07    STA $07E3  [$7E:07E3]  ;} Rotation matrix timer = 60
+$8F:E50F 8D E3 07    STA $07E3  [$7E:07E3]  ;} Room rotation matrix timer = 60
 $8F:E512 60          RTS
 }
 
@@ -7015,10 +7015,10 @@ $8F:E524 60          RTS
 ; Room $DF8D. Ceres pre elevator hall
 $8F:E525 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $8F:E528 F0 FA       BEQ $FA    [$E524]     ;} If [Ceres status] = before Ridley escape: return
-$8F:E52A CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement debris delay timer
-$8F:E52D 10 F5       BPL $F5    [$E524]     ; If [debris delay timer] >= 0: return
+$8F:E52A CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement room debris delay timer
+$8F:E52D 10 F5       BPL $F5    [$E524]     ; If [room debris delay timer] >= 0: return
 $8F:E52F A9 08 00    LDA #$0008             ;\
-$8F:E532 8D E1 07    STA $07E1  [$7E:07E1]  ;} Debris delay timer = 8
+$8F:E532 8D E1 07    STA $07E1  [$7E:07E1]  ;} Room debris delay timer = 8
 $8F:E535 A0 34 97    LDY #$9734             ; Y = $9734 (light coloured debris)
 $8F:E538 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $8F:E53B 0A          ASL A                  ;} If [random number] >= 8000h:
@@ -7055,17 +7055,17 @@ $8F:E57B 60          RTS
 ; Room $DE7A. Escape room 2
 ; Horizontal screen shaking with a 1/80h chance of becoming medium diagonal for 2Ah frames
 $8F:E57C AD E1 07    LDA $07E1  [$7E:07E1]  ;\
-$8F:E57F F0 0A       BEQ $0A    [$E58B]     ;} If [main ASM timer] != 0:
-$8F:E581 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer
-$8F:E584 D0 1A       BNE $1A    [$E5A0]     ; If [main ASM timer] != 0: go to BRANCH_NO_EARTHQUAKE_CHANGE
+$8F:E57F F0 0A       BEQ $0A    [$E58B]     ;} If [room diagonal quake timer] != 0:
+$8F:E581 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement room diagonal quake timer
+$8F:E584 D0 1A       BNE $1A    [$E5A0]     ; If [room diagonal quake timer] != 0: go to BRANCH_NO_EARTHQUAKE_CHANGE
 $8F:E586 A9 12 00    LDA #$0012             ; Earthquake type = BG1, BG2 and enemies, 1 pixel displacement, horizontal
 $8F:E589 80 12       BRA $12    [$E59D]
-                                            ; Else ([main ASM timer] = 0):
+                                            ; Else ([room diagonal quake timer] = 0):
 $8F:E58B 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $8F:E58F C9 00 02    CMP #$0200             ;\
 $8F:E592 B0 0C       BCS $0C    [$E5A0]     ;} If [random number] >= 200h: go to BRANCH_NO_EARTHQUAKE_CHANGE
 $8F:E594 A9 2A 00    LDA #$002A             ;\
-$8F:E597 8D E1 07    STA $07E1  [$7E:07E1]  ;} Main ASM timer = 2Ah
+$8F:E597 8D E1 07    STA $07E1  [$7E:07E1]  ;} Room diagonal quake timer = 2Ah
 $8F:E59A A9 17 00    LDA #$0017             ; Earthquake type = BG1, BG2 and enemies, 2 pixel displacement, diagonal
 
 $8F:E59D 8D 3E 18    STA $183E  [$7E:183E]
@@ -7088,24 +7088,24 @@ $8F:E5A3 60          RTS
 ; Room $DEDE. Escape room 4
 ; Horizontal screen shaking with a 3/200h chance of becoming strong diagonal for 2Ah frames
 $8F:E5A4 AD E1 07    LDA $07E1  [$7E:07E1]  ;\
-$8F:E5A7 F0 0A       BEQ $0A    [$E5B3]     ;} If [main ASM timer] != 0:
-$8F:E5A9 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement main ASM timer
-$8F:E5AC D0 1A       BNE $1A    [$E5C8]     ; If [main ASM timer] != 0: go to BRANCH_NO_EARTHQUAKE_CHANGE
-$8F:E5AE A9 15 00    LDA #$0015             ; $07E3 = 15h (BG1, BG2 and enemies, 2 pixel displacement, horizontal)
+$8F:E5A7 F0 0A       BEQ $0A    [$E5B3]     ;} If [room diagonal quake timer] != 0:
+$8F:E5A9 CE E1 07    DEC $07E1  [$7E:07E1]  ; Decrement room diagonal quake timer
+$8F:E5AC D0 1A       BNE $1A    [$E5C8]     ; If [room diagonal quake timer] != 0: go to BRANCH_NO_EARTHQUAKE_CHANGE
+$8F:E5AE A9 15 00    LDA #$0015             ; Room earthquake type = BG1, BG2 and enemies, 2 pixel displacement, horizontal
 $8F:E5B1 80 12       BRA $12    [$E5C5]
-                                            ; Else ([main ASM timer] = 0):
+                                            ; Else ([room diagonal quake timer] = 0):
 $8F:E5B3 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $8F:E5B7 C9 80 01    CMP #$0180             ;\
-$8F:E5BA B0 0C       BCS $0C    [$E5C8]     ;} If [random number] < 180h
+$8F:E5BA B0 0C       BCS $0C    [$E5C8]     ;} If [random number] >= 180h: go to BRANCH_NO_EARTHQUAKE_CHANGE
 $8F:E5BC A9 2A 00    LDA #$002A             ;\
-$8F:E5BF 8D E1 07    STA $07E1  [$7E:07E1]  ;} Main ASM timer = 2Ah
-$8F:E5C2 A9 1A 00    LDA #$001A             ; $07E3 = 1Ah (BG1, BG2 and enemies, 3 pixel displacement, diagonal)
+$8F:E5BF 8D E1 07    STA $07E1  [$7E:07E1]  ;} Room diagonal quake timer = 2Ah
+$8F:E5C2 A9 1A 00    LDA #$001A             ; Room earthquake type = BG1, BG2 and enemies, 3 pixel displacement, diagonal
 
 $8F:E5C5 8D E3 07    STA $07E3  [$7E:07E3]
 
 ; BRANCH_NO_EARTHQUAKE_CHANGE
 $8F:E5C8 AD E3 07    LDA $07E3  [$7E:07E3]  ;\
-$8F:E5CB 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = [$07E3]
+$8F:E5CB 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = [room earthquake type]
 $8F:E5CE 20 83 C1    JSR $C183  [$8F:C183]  ; Generate random explosion on every fourth frame
 $8F:E5D1 60          RTS
 }
