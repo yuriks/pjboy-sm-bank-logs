@@ -1350,44 +1350,44 @@ $A6:94C4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:94C7 A9 90 94    LDA #$9490             ;\
 $A6:94CA 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9490
 $A6:94CD BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A6:94D0 29 FF 00    AND #$00FF             ;} Enemy $0FAC = [enemy parameter 1 low]
+$A6:94D0 29 FF 00    AND #$00FF             ;} Enemy speed table index = [enemy parameter 1 low]
 $A6:94D3 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
 $A6:94D6 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
-$A6:94D9 29 FF 00    AND #$00FF             ;} Enemy $0FAE = [enemy parameter 1 high]
+$A6:94D9 29 FF 00    AND #$00FF             ;} Enemy arc radius = [enemy parameter 1 high]
 $A6:94DC 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
 $A6:94DF BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
-$A6:94E2 29 FF 00    AND #$00FF             ;} Enemy $0FB0 = [enemy parameter 2 low]
+$A6:94E2 29 FF 00    AND #$00FF             ;} Enemy direction = [enemy parameter 2 low]
 $A6:94E5 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 $A6:94E8 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
-$A6:94EB 29 FF 00    AND #$00FF             ;} Enemy $0FB2 = [enemy parameter 2 high]
+$A6:94EB 29 FF 00    AND #$00FF             ;} Enemy inactive timer reset value = [enemy parameter 2 high]
 $A6:94EE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
 $A6:94F1 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy inactive timer = [enemy inactive timer reset value]
 $A6:94F4 A9 15 96    LDA #$9615             ;\
-$A6:94F7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9615
+$A6:94F7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9615 (inactive)
 $A6:94FA BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A6:94FD 0A          ASL A                  ;|
-$A6:94FE 0A          ASL A                  ;} Y = [enemy $0FB0] * 4
+$A6:94FE 0A          ASL A                  ;} Y = [enemy direction] * 4
 $A6:94FF A8          TAY                    ;/
 $A6:9500 B9 F6 95    LDA $95F6,y[$A6:95FA]  ;\
-$A6:9503 9F 06 80 7E STA $7E8006,x[$7E:8006];} Enemy $7E:8006 = [$95F6 + [Y]]
-$A6:9507 9F 02 80 7E STA $7E8002,x[$7E:8002]; Enemy $7E:8002 = [enemy $7E:8006]
+$A6:9503 9F 06 80 7E STA $7E8006,x[$7E:8006];} Enemy start angle = [$95F6 + [Y]]
+$A6:9507 9F 02 80 7E STA $7E8002,x[$7E:8002]; Enemy angle = [enemy start angle]
 $A6:950B B9 F8 95    LDA $95F8,y[$A6:95FC]  ;\
-$A6:950E 9F 1C 80 7E STA $7E801C,x[$7E:801C];} Enemy $7E:801C = [$95F6 + [Y] + 2]
+$A6:950E 9F 1C 80 7E STA $7E801C,x[$7E:801C];} Enemy finish angle = [$95F6 + [Y] + 2]
 $A6:9512 B9 FE 95    LDA $95FE,y[$A6:9602]  ;\
-$A6:9515 9F 16 80 7E STA $7E8016,x[$7E:8016];} Enemy $7E:8016 = [$95F6 + [Y] + 8]
+$A6:9515 9F 16 80 7E STA $7E8016,x[$7E:8016];} Enemy angle between body parts * 2 = [$95F6 + [Y] + 8]
 $A6:9519 B9 00 96    LDA $9600,y[$A6:9604]  ;\
-$A6:951C 9F 18 80 7E STA $7E8018,x[$7E:8018];} Enemy $7E:8018 = [$95F6 + [Y] + Ah]
+$A6:951C 9F 18 80 7E STA $7E8018,x[$7E:8018];} Enemy angle between body parts = [$95F6 + [Y] + Ah]
 $A6:9520 B9 06 96    LDA $9606,y[$A6:960A]  ;\
-$A6:9523 9F 20 80 7E STA $7E8020,x[$7E:8020];} Enemy $7E:8020 = [$95F6 + [Y] + 10h]
+$A6:9523 9F 20 80 7E STA $7E8020,x[$7E:8020];} Enemy rising explosion angle = [$95F6 + [Y] + 10h]
 $A6:9527 B9 08 96    LDA $9608,y[$A6:960C]  ;\
-$A6:952A 9F 1E 80 7E STA $7E801E,x[$7E:801E];} Enemy $7E:801E = [$95F6 + [Y] + 12h]
+$A6:952A 9F 1E 80 7E STA $7E801E,x[$7E:801E];} Enemy falling explosion angle = [$95F6 + [Y] + 12h]
 $A6:952E BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A6:9531 0A          ASL A                  ;|
-$A6:9532 0A          ASL A                  ;} Y = [enemy $0FAC] * 8 (linear speed table index)
+$A6:9532 0A          ASL A                  ;} Y = [enemy speed table index] * 8 (linear speed table index)
 $A6:9533 0A          ASL A                  ;|
 $A6:9534 A8          TAY                    ;/
 $A6:9535 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
-$A6:9538 D0 04       BNE $04    [$953E]     ;} If [enemy $0FB0] = 0:
+$A6:9538 D0 04       BNE $04    [$953E]     ;} If [enemy direction] = 0:
 $A6:953A C8          INY                    ;\
 $A6:953B C8          INY                    ;|
 $A6:953C C8          INY                    ;} Y += 4 (negated speed)
@@ -1395,28 +1395,28 @@ $A6:953D C8          INY                    ;/
 
 $A6:953E B9 87 81    LDA $8187,y[$A6:8207]  ;\
 $A6:9541 9F 0A 80 7E STA $7E800A,x[$7E:800A];|
-$A6:9545 B9 89 81    LDA $8189,y[$A6:8209]  ;} Enemy $7E:800A.$7E:8008 = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A6:9545 B9 89 81    LDA $8189,y[$A6:8209]  ;} Enemy angle delta = [$8187 + [Y]].[$8187 + [Y] + 2]
 $A6:9548 9F 08 80 7E STA $7E8008,x[$7E:8008];/
 $A6:954C BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A6:954F 9F 0C 80 7E STA $7E800C,x[$7E:800C];} Enemy $7E:800C = [enemy X position]
+$A6:954F 9F 0C 80 7E STA $7E800C,x[$7E:800C];} Enemy arc origin X position = [enemy X position]
 $A6:9553 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A6:9556 9F 0E 80 7E STA $7E800E,x[$7E:800E];} Enemy $7E:800E = [enemy Y position]
+$A6:9556 9F 0E 80 7E STA $7E800E,x[$7E:800E];} Enemy arc origin Y position = [enemy Y position]
 $A6:955A BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $A6:955D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A6:9560 BF 06 80 7E LDA $7E8006,x[$7E:8006];|
-$A6:9564 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy $7E:8010 = [enemy $7E:800C] + [enemy $0FAE] * cos([enemy $7E:8006] * pi / 80h) * FFh / 100h
+$A6:9564 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy body part spawn X position = [enemy arc origin X position] + [enemy arc radius] * cos([enemy start angle] * pi / 80h) * FFh / 100h
 $A6:9568 18          CLC                    ;|
 $A6:9569 7F 0C 80 7E ADC $7E800C,x[$7E:800C];|
 $A6:956D 9F 10 80 7E STA $7E8010,x[$7E:8010];/
-$A6:9571 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ; Enemy X position = [enemy $7E:8010]
+$A6:9571 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ; Enemy X position = [enemy body part spawn X position]
 $A6:9574 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
 $A6:9577 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A6:957A BF 06 80 7E LDA $7E8006,x[$7E:8006];|
-$A6:957E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy $7E:8012 = [enemy $7E:800E] + [enemy $0FAE] * cos([enemy $7E:8006] * pi / 80h) * FFh / 100h
+$A6:957E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy body part spawn Y position = [enemy arc origin Y position] + [enemy arc radius] * -sin([enemy start angle] * pi / 80h) * FFh / 100h
 $A6:9582 18          CLC                    ;|
 $A6:9583 7F 0E 80 7E ADC $7E800E,x[$7E:800E];|
 $A6:9587 9F 12 80 7E STA $7E8012,x[$7E:8012];/
-$A6:958B 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ; Enemy Y position = [enemy $7E:8012]
+$A6:958B 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ; Enemy Y position = [enemy body part spawn Y position]
 $A6:958E A9 08 00    LDA #$0008             ;\
 $A6:9591 9F 14 80 7E STA $7E8014,x[$7E:8014];} Enemy body index = 8
 
@@ -1439,7 +1439,7 @@ $A6:95BA 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A6:95BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A6:95BF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:95C1 A9 2B 00    LDA #$002B             ;\
-$A6:95C4 85 16       STA $16    [$7E:0016]  ;} $16 = 2Bh ()
+$A6:95C4 85 16       STA $16    [$7E:0016]  ;} $16 = 2Bh (nuclear waffle body)
 $A6:95C6 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
 $A6:95C9 1D 98 0F    ORA $0F98,x[$7E:0F98]  ;| 
 $A6:95CC 9F 28 80 7E STA $7E8028,x[$7E:8028];} $18 = enemy graphics indices = [enemy palette index] | [enemy VRAM tiles index]
@@ -1460,9 +1460,12 @@ $A6:95EF 9F 14 80 7E STA $7E8014,x[$7E:8014];/
 $A6:95F3 D0 BF       BNE $BF    [$95B4]     ; If [enemy body index] != 0: go to LOOP_SPRITE_OBJECTS
 $A6:95F5 6B          RTL
 
-$A6:95F6             dw 0190,00F0, 00F0,0190
-                        FFE8,FFF4, 0018,000C
-                        0180,0100, 0100,0180
+;                        ___________________ Clockwise
+;                       |           ________ Anticlockwise
+;                       |          |
+$A6:95F6             dw 0190,00F0, 00F0,0190 ; Start angle, finish angle
+                        FFE8,FFF4, 0018,000C ; Angle between body parts * 2, angle between body parts
+                        0180,0100, 0100,0180 ; Rising explosion angle, falling explosion angle
 }
 
 
@@ -1482,27 +1485,27 @@ $A6:961B 10 64       BPL $64    [$9681]     ; If [enemy inactive timer] >= 0: re
 $A6:961D BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
 $A6:9620 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy inactive timer = [enemy inactive timer reset value]
 $A6:9623 BF 06 80 7E LDA $7E8006,x[$7E:8006];\
-$A6:9627 9F 02 80 7E STA $7E8002,x[$7E:8002];} Enemy $7E:8002 = [enemy $7E:8006]
+$A6:9627 9F 02 80 7E STA $7E8002,x[$7E:8002];} Enemy angle = [enemy start angle]
 $A6:962B A9 82 96    LDA #$9682             ;\
 $A6:962E 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9682 (active)
 $A6:9631 A9 00 00    LDA #$0000             ;\
-$A6:9634 9F 26 80 7E STA $7E8026,x[$7E:8026];} Enemy $7E:8026 = 0
-$A6:9638 9F 10 78 7E STA $7E7810,x[$7E:7810]
-$A6:963C 9F 12 78 7E STA $7E7812,x[$7E:7812]
-$A6:9640 9F 14 78 7E STA $7E7814,x[$7E:7814]
-$A6:9644 9F 16 78 7E STA $7E7816,x[$7E:7816]
-$A6:9648 9F 18 78 7E STA $7E7818,x[$7E:7818]
-$A6:964C 9F 1A 78 7E STA $7E781A,x[$7E:781A]
-$A6:9650 9F 1C 78 7E STA $7E781C,x[$7E:781C]
-$A6:9654 9F 1E 78 7E STA $7E781E,x[$7E:781E]
-$A6:9658 9F 30 78 7E STA $7E7830,x[$7E:7830]
-$A6:965C 9F 32 78 7E STA $7E7832,x[$7E:7832]
-$A6:9660 9F 34 78 7E STA $7E7834,x[$7E:7834]
-$A6:9664 9F 36 78 7E STA $7E7836,x[$7E:7836]
-$A6:9668 9F 38 78 7E STA $7E7838,x[$7E:7838]
-$A6:966C 9F 3A 78 7E STA $7E783A,x[$7E:783A]
-$A6:9670 9F 3C 78 7E STA $7E783C,x[$7E:783C]
-$A6:9674 9F 3E 78 7E STA $7E783E,x[$7E:783E]
+$A6:9634 9F 26 80 7E STA $7E8026,x[$7E:8026];} Enemy head explosion = 0 (no explosion)
+$A6:9638 9F 10 78 7E STA $7E7810,x[$7E:7810];\
+$A6:963C 9F 12 78 7E STA $7E7812,x[$7E:7812];|
+$A6:9640 9F 14 78 7E STA $7E7814,x[$7E:7814];} Enemy enemy projectile explosion reasons = 0 (no explosion)
+$A6:9644 9F 16 78 7E STA $7E7816,x[$7E:7816];|
+$A6:9648 9F 18 78 7E STA $7E7818,x[$7E:7818];/
+$A6:964C 9F 1A 78 7E STA $7E781A,x[$7E:781A];\
+$A6:9650 9F 1C 78 7E STA $7E781C,x[$7E:781C];} Enemy $7E:781A..1F = 0 (never read)
+$A6:9654 9F 1E 78 7E STA $7E781E,x[$7E:781E];/
+$A6:9658 9F 30 78 7E STA $7E7830,x[$7E:7830];\
+$A6:965C 9F 32 78 7E STA $7E7832,x[$7E:7832];|
+$A6:9660 9F 34 78 7E STA $7E7834,x[$7E:7834];} Enemy sprite object explosion reasons = 0 (no explosion)
+$A6:9664 9F 36 78 7E STA $7E7836,x[$7E:7836];/
+$A6:9668 9F 38 78 7E STA $7E7838,x[$7E:7838];\
+$A6:966C 9F 3A 78 7E STA $7E783A,x[$7E:783A];|
+$A6:9670 9F 3C 78 7E STA $7E783C,x[$7E:783C];} Enemy $7E:7838..3F = 0 (never read)
+$A6:9674 9F 3E 78 7E STA $7E783E,x[$7E:783E];/
 $A6:9678 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $A6:967B 09 00 08    ORA #$0800             ;} Set enemy to process whilst off-screen
 $A6:967E 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
@@ -1515,20 +1518,20 @@ $A6:9681 60          RTS
 {
 $A6:9682 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9685 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
-$A6:9688 8D 32 0E    STA $0E32  [$7E:0E32]  ;} $0E32 = [enemy $0FAE]
-$A6:968B BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy $7E:8002]
-$A6:968F 20 E7 98    JSR $98E7  [$A6:98E7]  ; Execute $98E7 (sets A and $1A)
-$A6:9692 85 1E       STA $1E    [$7E:001E]  ; $1E = [A]
+$A6:9688 8D 32 0E    STA $0E32  [$7E:0E32]  ;} $0E32 = [enemy arc radius]
+$A6:968B BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy angle]
+$A6:968F 20 E7 98    JSR $98E7  [$A6:98E7]  ; Check explosion condition
+$A6:9692 85 1E       STA $1E    [$7E:001E]  ; $1E = [A] (explosion reason)
 $A6:9694 48          PHA
 $A6:9695 DF 26 80 7E CMP $7E8026,x[$7E:8026];\
-$A6:9699 F0 3B       BEQ $3B    [$96D6]     ;} If [$1E] != [enemy $7E:8026]
+$A6:9699 F0 3B       BEQ $3B    [$96D6]     ;} If (explosion reason) != [enemy head explosion reason]:
 $A6:969B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:969E BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A6:96A1 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A6:96A3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A6:96A6 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:96A8 A9 2E 00    LDA #$002E             ;\
-$A6:96AB 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh ()
+$A6:96AB 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (nuclear waffle splash)
 $A6:96AD BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:96B1 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:96B3 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
@@ -1538,33 +1541,33 @@ $A6:96BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A6:96BF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:96C1 A5 1A       LDA $1A    [$7E:001A]  ;\
 $A6:96C3 18          CLC                    ;|
-$A6:96C4 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] ()
+$A6:96C4 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] (nuclear waffle explosion)
 $A6:96C7 85 16       STA $16    [$7E:0016]  ;/
 $A6:96C9 BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:96CD 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:96CF 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
-$A6:96D3 20 3F 99    JSR $993F  [$A6:993F]  ; Execute $993F
+$A6:96D3 20 3F 99    JSR $993F  [$A6:993F]  ; Play nuclear waffle explosion sound effect
 
 $A6:96D6 68          PLA
-$A6:96D7 9F 26 80 7E STA $7E8026,x[$7E:8026]; Enemy $7E:8026 = [$1E]
-$A6:96DB BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy $7E:8002]
-$A6:96DF 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD (sets A and $1C)
+$A6:96D7 9F 26 80 7E STA $7E8026,x[$7E:8026]; Enemy head explosion reason = [$1E] (explosion reason)
+$A6:96DB BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy angle]
+$A6:96DF 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:96E2 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:96E6 18          CLC                    ;|
-$A6:96E7 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy X position = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:96E7 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy X position = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
 $A6:96EB 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
-$A6:96EE BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy $7E:8002]
-$A6:96F2 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD (sets A and $1C)
+$A6:96EE BF 02 80 7E LDA $7E8002,x[$7E:8002]; A = [enemy angle]
+$A6:96F2 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:96F5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:96F9 18          CLC                    ;|
-$A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy Y position = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy Y position = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
 $A6:96FE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
-$A6:9701 20 21 97    JSR $9721  [$A6:9721]  ; Execute $9721
-$A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]  ; Execute $97E9
+$A6:9701 20 21 97    JSR $9721  [$A6:9721]  ; Handle nuclear waffle enemy projectiles
+$A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]  ; Handle nuclear waffle sprite objects
 $A6:9707 18          CLC                    ;\
 $A6:9708 BF 00 80 7E LDA $7E8000,x[$7E:8000];|
 $A6:970C 7F 08 80 7E ADC $7E8008,x[$7E:8008];|
-$A6:9710 9F 00 80 7E STA $7E8000,x[$7E:8000];} Enemy $7E:8002.$7E:8000 += [enemy $7E:800A.$7E:8008]
+$A6:9710 9F 00 80 7E STA $7E8000,x[$7E:8000];} Enemy angle += [enemy angle delta]
 $A6:9714 BF 02 80 7E LDA $7E8002,x[$7E:8002];|
 $A6:9718 7F 0A 80 7E ADC $7E800A,x[$7E:800A];|
 $A6:971C 9F 02 80 7E STA $7E8002,x[$7E:8002];/
@@ -1572,21 +1575,21 @@ $A6:9720 60          RTS
 }
 
 
-;;; $9721:  ;;;
+;;; $9721: Handle nuclear waffle enemy projectiles ;;;
 {
 $A6:9721 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9724 A9 08 00    LDA #$0008             ;\
 $A6:9727 9F 14 80 7E STA $7E8014,x[$7E:8014];} Enemy body index = 8
 $A6:972B BF 02 80 7E LDA $7E8002,x[$7E:8002];\
 $A6:972F 18          CLC                    ;|
-$A6:9730 7F 18 80 7E ADC $7E8018,x[$7E:8018];} $24 = [enemy $7E:8002] + [enemy $7E:8018]
+$A6:9730 7F 18 80 7E ADC $7E8018,x[$7E:8018];} $24 = [enemy angle] + [enemy angle between body parts]
 $A6:9734 85 24       STA $24    [$7E:0024]  ;/
 
 ; LOOP
 $A6:9736 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9739 A5 24       LDA $24    [$7E:0024]  ;\
 $A6:973B 38          SEC                    ;|
-$A6:973C FF 16 80 7E SBC $7E8016,x[$7E:8016];} $24 -= [enemy $7E:8016]
+$A6:973C FF 16 80 7E SBC $7E8016,x[$7E:8016];} $24 -= [enemy angle between body parts * 2]
 $A6:9740 85 24       STA $24    [$7E:0024]  ;/
 $A6:9742 DA          PHX
 $A6:9743 BF 14 80 7E LDA $7E8014,x[$7E:8014];\
@@ -1596,11 +1599,11 @@ $A6:974B AA          TAX                    ;/
 $A6:974C BF 00 78 7E LDA $7E7800,x[$7E:7808];\
 $A6:9750 A8          TAY                    ;} Y = [enemy enemy projectile indices + [enemy body index]] (enemy projectile index)
 $A6:9751 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
-$A6:9753 20 E7 98    JSR $98E7  [$A6:98E7]  ; Execute $98E7
-$A6:9756 85 1E       STA $1E    [$7E:001E]  ; $1E = [A]
+$A6:9753 20 E7 98    JSR $98E7  [$A6:98E7]  ; Check explosion condition
+$A6:9756 85 1E       STA $1E    [$7E:001E]  ; $1E = [A] (explosion reason)
 $A6:9758 48          PHA
 $A6:9759 DF 10 78 7E CMP $7E7810,x[$7E:7818];\
-$A6:975D F0 3D       BEQ $3D    [$979C]     ;} If [$1E] != [enemy $7E:7810 + [enemy body index]]
+$A6:975D F0 3D       BEQ $3D    [$979C]     ;} If (explosion reason) != [enemy $7E:7810 + [enemy body index]] (enemy projectile explosion reason):
 $A6:975F DA          PHX
 $A6:9760 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9763 B9 4B 1A    LDA $1A4B,y[$7E:1A6D]  ;\
@@ -1608,7 +1611,7 @@ $A6:9766 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X positio
 $A6:9768 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
 $A6:976B 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
 $A6:976D A9 2E 00    LDA #$002E             ;\
-$A6:9770 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh ()
+$A6:9770 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (nuclear waffle splash)
 $A6:9772 BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:9776 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:9778 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
@@ -1618,28 +1621,28 @@ $A6:9781 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
 $A6:9784 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
 $A6:9786 A5 1A       LDA $1A    [$7E:001A]  ;\
 $A6:9788 18          CLC                    ;|
-$A6:9789 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] ()
+$A6:9789 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] (nuclear waffle explosion)
 $A6:978C 85 16       STA $16    [$7E:0016]  ;/
 $A6:978E BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:9792 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:9794 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
-$A6:9798 20 3F 99    JSR $993F  [$A6:993F]  ; Execute $993F
+$A6:9798 20 3F 99    JSR $993F  [$A6:993F]  ; Play nuclear waffle explosion sound effect
 $A6:979B FA          PLX
 
 $A6:979C 68          PLA
-$A6:979D 9F 10 78 7E STA $7E7810,x[$7E:7818]; Enemy $7E:7810 + [enemy body index] = [$1E]
+$A6:979D 9F 10 78 7E STA $7E7810,x[$7E:7818]; Enemy $7E:7810 + [enemy body index] (enemy projectile explosion reason) = [$1E] (explosion reason)
 $A6:97A1 FA          PLX
 $A6:97A2 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
-$A6:97A4 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD
+$A6:97A4 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:97A7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:97AB 18          CLC                    ;|
-$A6:97AC 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy projectile X position = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:97AC 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} Enemy projectile X position = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
 $A6:97B0 99 4B 1A    STA $1A4B,y[$7E:1A6D]  ;/
 $A6:97B3 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
-$A6:97B5 20 AD 98    JSR $98AD  [$A6:98AD]  ; Execute $98AD
+$A6:97B5 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:97B8 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:97BC 18          CLC                    ;|
-$A6:97BD 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy projectile Y position = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:97BD 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy projectile Y position = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
 $A6:97C1 99 93 1A    STA $1A93,y[$7E:1AB5]  ;/
 $A6:97C4 BF 14 80 7E LDA $7E8014,x[$7E:8014];\
 $A6:97C8 38          SEC                    ;|
@@ -1649,7 +1652,7 @@ $A6:97D0 F0 03       BEQ $03    [$97D5]     ; If [enemy body index] != 0: <-- no
 $A6:97D2 4C 36 97    JMP $9736  [$A6:9736]  ; Go to LOOP
 
 $A6:97D5 A5 1C       LDA $1C    [$7E:001C]  ;\
-$A6:97D7 F0 0F       BEQ $0F    [$97E8]     ;} If [$1C] != 0:
+$A6:97D7 F0 0F       BEQ $0F    [$97E8]     ;} If [$1C] (inactivity flag) != 0:
 $A6:97D9 A9 15 96    LDA #$9615             ;\
 $A6:97DC 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9615 (inactive)
 $A6:97DF BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
@@ -1660,128 +1663,128 @@ $A6:97E8 60          RTS
 }
 
 
-;;; $97E9:  ;;;
+;;; $97E9: Handle nuclear waffle sprite objects ;;;
 {
 $A6:97E9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:97EC A9 06 00    LDA #$0006
-$A6:97EF 9F 14 80 7E STA $7E8014,x[$7E:8014]
-$A6:97F3 BF 02 80 7E LDA $7E8002,x[$7E:8002]
-$A6:97F7 85 24       STA $24    [$7E:0024]
+$A6:97EC A9 06 00    LDA #$0006             ;\
+$A6:97EF 9F 14 80 7E STA $7E8014,x[$7E:8014];} Enemy body index = 6
+$A6:97F3 BF 02 80 7E LDA $7E8002,x[$7E:8002];\
+$A6:97F7 85 24       STA $24    [$7E:0024]  ;} $24 = [enemy angle]
 
 ; LOOP
 $A6:97F9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:97FC A5 24       LDA $24    [$7E:0024]
-$A6:97FE 38          SEC
-$A6:97FF FF 16 80 7E SBC $7E8016,x[$7E:8016]
-$A6:9803 85 24       STA $24    [$7E:0024]
+$A6:97FC A5 24       LDA $24    [$7E:0024]  ;\
+$A6:97FE 38          SEC                    ;|
+$A6:97FF FF 16 80 7E SBC $7E8016,x[$7E:8016];} $24 -= [enemy angle between body parts * 2]
+$A6:9803 85 24       STA $24    [$7E:0024]  ;/
 $A6:9805 DA          PHX
-$A6:9806 BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A6:980A 18          CLC
-$A6:980B 6D 54 0E    ADC $0E54  [$7E:0E54]
-$A6:980E AA          TAX
-$A6:980F BF 20 78 7E LDA $7E7820,x[$7E:7826]
-$A6:9813 A8          TAY
-$A6:9814 A5 24       LDA $24    [$7E:0024]
-$A6:9816 20 E7 98    JSR $98E7  [$A6:98E7]
-$A6:9819 85 1E       STA $1E    [$7E:001E]
+$A6:9806 BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$A6:980A 18          CLC                    ;|
+$A6:980B 6D 54 0E    ADC $0E54  [$7E:0E54]  ;} X = [enemy index] + [enemy body index]
+$A6:980E AA          TAX                    ;/
+$A6:980F BF 20 78 7E LDA $7E7820,x[$7E:7826];\
+$A6:9813 A8          TAY                    ;} Y = [enemy sprite object indices + [enemy body index]] (sprite object index)
+$A6:9814 A5 24       LDA $24    [$7E:0024]  ; A = [$24]
+$A6:9816 20 E7 98    JSR $98E7  [$A6:98E7]  ; Check explosion condition
+$A6:9819 85 1E       STA $1E    [$7E:001E]  ; $1E = [A] (explosion reason)
 $A6:981B 48          PHA
-$A6:981C DF 30 78 7E CMP $7E7830,x[$7E:7836]
-$A6:9820 F0 44       BEQ $44    [$9866]
+$A6:981C DF 30 78 7E CMP $7E7830,x[$7E:7836];\
+$A6:9820 F0 44       BEQ $44    [$9866]     ;} If (explosion reason) != [enemy $7E:7830 + [enemy body index]] (sprite object explosion reason):
 $A6:9822 DA          PHX
 $A6:9823 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9826 BF 28 80 7E LDA $7E8028,x[$7E:8028]
-$A6:982A 85 26       STA $26    [$7E:0026]
-$A6:982C BB          TYX
-$A6:982D BF F8 F0 7E LDA $7EF0F8,x[$7E:F136]
-$A6:9831 85 12       STA $12    [$7E:0012]
-$A6:9833 BF F8 F1 7E LDA $7EF1F8,x[$7E:F236]
-$A6:9837 85 14       STA $14    [$7E:0014]
-$A6:9839 A9 2E 00    LDA #$002E
-$A6:983C 85 16       STA $16    [$7E:0016]
-$A6:983E A5 26       LDA $26    [$7E:0026]
-$A6:9840 85 18       STA $18    [$7E:0018]
-$A6:9842 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A6:9846 BF F8 F0 7E LDA $7EF0F8,x[$7E:F136]
-$A6:984A 85 12       STA $12    [$7E:0012]
-$A6:984C BF F8 F1 7E LDA $7EF1F8,x[$7E:F236]
-$A6:9850 85 14       STA $14    [$7E:0014]
-$A6:9852 A9 2C 00    LDA #$002C
-$A6:9855 18          CLC
-$A6:9856 65 1A       ADC $1A    [$7E:001A]
-$A6:9858 85 16       STA $16    [$7E:0016]
-$A6:985A A5 26       LDA $26    [$7E:0026]
-$A6:985C 85 18       STA $18    [$7E:0018]
-$A6:985E 22 26 BC B4 JSL $B4BC26[$B4:BC26]
-$A6:9862 20 3F 99    JSR $993F  [$A6:993F]
+$A6:9826 BF 28 80 7E LDA $7E8028,x[$7E:8028];\
+$A6:982A 85 26       STA $26    [$7E:0026]  ;} $26 = [enemy graphics indices]
+$A6:982C BB          TYX                    ;\
+$A6:982D BF F8 F0 7E LDA $7EF0F8,x[$7E:F136];} $12 = [sprite object X position]
+$A6:9831 85 12       STA $12    [$7E:0012]  ;/
+$A6:9833 BF F8 F1 7E LDA $7EF1F8,x[$7E:F236];\
+$A6:9837 85 14       STA $14    [$7E:0014]  ;} $14 = [sprite object Y position]
+$A6:9839 A9 2E 00    LDA #$002E             ;\
+$A6:983C 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (nuclear waffle splash)
+$A6:983E A5 26       LDA $26    [$7E:0026]  ;\
+$A6:9840 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
+$A6:9842 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
+$A6:9846 BF F8 F0 7E LDA $7EF0F8,x[$7E:F136];\
+$A6:984A 85 12       STA $12    [$7E:0012]  ;} $12 = [sprite object X position]
+$A6:984C BF F8 F1 7E LDA $7EF1F8,x[$7E:F236];\
+$A6:9850 85 14       STA $14    [$7E:0014]  ;} $14 = [sprite object Y position]
+$A6:9852 A9 2C 00    LDA #$002C             ;\
+$A6:9855 18          CLC                    ;|
+$A6:9856 65 1A       ADC $1A    [$7E:001A]  ;} $16 = 2Ch + [$1A] (nuclear waffle explosion)
+$A6:9858 85 16       STA $16    [$7E:0016]  ;/
+$A6:985A A5 26       LDA $26    [$7E:0026]  ;\
+$A6:985C 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
+$A6:985E 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
+$A6:9862 20 3F 99    JSR $993F  [$A6:993F]  ; Play nuclear waffle explosion sound effect
 $A6:9865 FA          PLX
 
 $A6:9866 68          PLA
-$A6:9867 9F 30 78 7E STA $7E7830,x[$7E:7836]
+$A6:9867 9F 30 78 7E STA $7E7830,x[$7E:7836]; Enemy $7E:7830 + [enemy body index] (sprite object explosion reason) = (explosion reason)
 $A6:986B FA          PLX
-$A6:986C A5 24       LDA $24    [$7E:0024]
-$A6:986E 20 AD 98    JSR $98AD  [$A6:98AD]
+$A6:986C A5 24       LDA $24    [$7E:0024]  ; A = [$24]
+$A6:986E 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:9871 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;\
 $A6:9875 18          CLC                    ;|
-$A6:9876 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} $20 = [enemy $7E:800C] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
+$A6:9876 7F 0C 80 7E ADC $7E800C,x[$7E:800C];} $20 = [enemy arc origin X position] + [$0E32] * cos([A] * pi / 80h) * FFh / 100h
 $A6:987A 85 20       STA $20    [$7E:0020]  ;/
-$A6:987C A5 24       LDA $24    [$7E:0024]
-$A6:987E 20 AD 98    JSR $98AD  [$A6:98AD]
+$A6:987C A5 24       LDA $24    [$7E:0024]  ; A = [$24]
+$A6:987E 20 AD 98    JSR $98AD  [$A6:98AD]  ; Clamp angle and check inactivity condition
 $A6:9881 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:9885 18          CLC                    ;|
-$A6:9886 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} $22 = [enemy $7E:800E] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
+$A6:9886 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} $22 = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
 $A6:988A 85 22       STA $22    [$7E:0022]  ;/
 $A6:988C DA          PHX
-$A6:988D BB          TYX
-$A6:988E A5 20       LDA $20    [$7E:0020]
-$A6:9890 9F F8 F0 7E STA $7EF0F8,x[$7E:F136]
-$A6:9894 A5 22       LDA $22    [$7E:0022]
-$A6:9896 9F F8 F1 7E STA $7EF1F8,x[$7E:F236]
+$A6:988D BB          TYX                    ;\
+$A6:988E A5 20       LDA $20    [$7E:0020]  ;} Sprite object X position = [$20]
+$A6:9890 9F F8 F0 7E STA $7EF0F8,x[$7E:F136];/
+$A6:9894 A5 22       LDA $22    [$7E:0022]  ;\
+$A6:9896 9F F8 F1 7E STA $7EF1F8,x[$7E:F236];} Sprite object Y position = [$22]
 $A6:989A FA          PLX
-$A6:989B BF 14 80 7E LDA $7E8014,x[$7E:8014]
-$A6:989F 38          SEC
-$A6:98A0 E9 02 00    SBC #$0002
-$A6:98A3 9F 14 80 7E STA $7E8014,x[$7E:8014]
-$A6:98A7 F0 03       BEQ $03    [$98AC]
-$A6:98A9 4C F9 97    JMP $97F9  [$A6:97F9]
+$A6:989B BF 14 80 7E LDA $7E8014,x[$7E:8014];\
+$A6:989F 38          SEC                    ;|
+$A6:98A0 E9 02 00    SBC #$0002             ;} Enemy body index -= 2
+$A6:98A3 9F 14 80 7E STA $7E8014,x[$7E:8014];/
+$A6:98A7 F0 03       BEQ $03    [$98AC]     ; If [enemy body index] != 0: <-- not BMI?
+$A6:98A9 4C F9 97    JMP $97F9  [$A6:97F9]  ; Go to LOOP
 
 $A6:98AC 60          RTS
 }
 
 
-;;; $98AD:  ;;;
+;;; $98AD: Clamp angle and check inactivity condition ;;;
 {
 ;; Parameters:
-;;     A: 
+;;     A: Angle
 ;; Returns:
-;;     A: 
-;;     $1C: 
+;;     A: Clamped angle
+;;     $1C: Inactivity flag. Matters only for the last body enemy projectile. 0 = activity, 1 = inactivity
 $A6:98AD DA          PHX
 $A6:98AE 48          PHA
 $A6:98AF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:98B2 64 1C       STZ $1C    [$7E:001C]  ; $1C = 0
 $A6:98B4 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
-$A6:98B7 D0 0F       BNE $0F    [$98C8]     ;} If [enemy $0FB0] = 0:
+$A6:98B7 D0 0F       BNE $0F    [$98C8]     ;} If [enemy direction] = 0 (clockwise):
 $A6:98B9 68          PLA
 $A6:98BA DF 1C 80 7E CMP $7E801C,x          ;\
-$A6:98BE 30 17       BMI $17    [$98D7]     ;} If [A] < [enemy $7E:801C]: go to BRANCH_98D7
+$A6:98BE 30 17       BMI $17    [$98D7]     ;} If [A] < [enemy finish angle]: go to BRANCH_AFTER_FINISH
 $A6:98C0 DF 06 80 7E CMP $7E8006,x          ;\
-$A6:98C4 10 19       BPL $19    [$98DF]     ;} If [A] >= [enemy $7E:8006]: go to BRANCH_98DF
+$A6:98C4 10 19       BPL $19    [$98DF]     ;} If [A] >= [enemy start angle]: go to BRANCH_BEFORE_START
 $A6:98C6 80 1D       BRA $1D    [$98E5]     ; Return
 
 $A6:98C8 68          PLA
 $A6:98C9 DF 1C 80 7E CMP $7E801C,x[$7E:801C];\
-$A6:98CD 10 08       BPL $08    [$98D7]     ;} If [A] >= [enemy $7E:801C]: go to BRANCH_98D7
+$A6:98CD 10 08       BPL $08    [$98D7]     ;} If [A] >= [enemy finish angle]: go to BRANCH_AFTER_FINISH
 $A6:98CF DF 06 80 7E CMP $7E8006,x[$7E:8006];\
-$A6:98D3 30 0A       BMI $0A    [$98DF]     ;} If [A] < [enemy $7E:8006]: go to BRANCH_98DF
+$A6:98D3 30 0A       BMI $0A    [$98DF]     ;} If [A] < [enemy start angle]: go to BRANCH_BEFORE_START
 $A6:98D5 80 0E       BRA $0E    [$98E5]     ; Return
 
-; BRANCH_98D7
+; BRANCH_AFTER_FINISH
 $A6:98D7 E6 1C       INC $1C    [$7E:001C]  ; $1C = 1
-$A6:98D9 BF 1C 80 7E LDA $7E801C,x[$7E:801C]; A = [enemy $7E:801C]
+$A6:98D9 BF 1C 80 7E LDA $7E801C,x[$7E:801C]; A = [enemy finish angle]
 $A6:98DD 80 06       BRA $06    [$98E5]     ; Return
 
-; BRANCH_98DF
-$A6:98DF BF 06 80 7E LDA $7E8006,x[$7E:8006]; A = [enemy $7E:8006]
+; BRANCH_BEFORE_START
+$A6:98DF BF 06 80 7E LDA $7E8006,x[$7E:8006]; A = [enemy start angle]
 $A6:98E3 80 00       BRA $00    [$98E5]
 
 $A6:98E5 FA          PLX
@@ -1789,55 +1792,55 @@ $A6:98E6 60          RTS
 }
 
 
-;;; $98E7:  ;;;
+;;; $98E7: Check explosion condition ;;;
 {
 ;; Parameters:
-;;     A: 
+;;     A: Angle
 ;; Returns:
-;;     A: 
-;;     $1A: If returning [A] != 0, 
+;;     A: Explosion reason. 0 = no explosion, 1 = rising, 2 = falling
+;;     $1A: If returning [A] != 0, explosion side. 0 = right, 1 = left
 $A6:98E7 DA          PHX
 $A6:98E8 48          PHA
 $A6:98E9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:98EC BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
-$A6:98EF D0 12       BNE $12    [$9903]     ;} If [enemy $0FB0] = 0:
+$A6:98EF D0 12       BNE $12    [$9903]     ;} If [enemy direction] = 0 (clockwise):
 $A6:98F1 68          PLA
 $A6:98F2 DF 1E 80 7E CMP $7E801E,x          ;\
-$A6:98F6 30 27       BMI $27    [$991F]     ;} If [A] < [enemy $7E:801E]: go to BRANCH_991F
+$A6:98F6 30 27       BMI $27    [$991F]     ;} If [A] < [enemy falling explosion angle]: go to BRANCH_CLOCKWISE_FALLING
 $A6:98F8 DF 20 80 7E CMP $7E8020,x          ;\
-$A6:98FC 30 17       BMI $17    [$9915]     ;} If [A] < [enemy $7E:8020]: go to BRANCH_9915
+$A6:98FC 30 17       BMI $17    [$9915]     ;} If [A] < [enemy rising explosion angle]: go to BRANCH_CLOCKWISE_RISING
 $A6:98FE A9 00 00    LDA #$0000             ;\
 $A6:9901 80 3A       BRA $3A    [$993D]     ;} Return A = 0
 
 $A6:9903 68          PLA
 $A6:9904 DF 1E 80 7E CMP $7E801E,x[$7E:801E];\
-$A6:9908 10 29       BPL $29    [$9933]     ;} If [A] >= [enemy $7E:801E]: go to BRANCH_9933
+$A6:9908 10 29       BPL $29    [$9933]     ;} If [A] >= [enemy falling explosion angle]: go to BRANCH_ANTICLOCKWISE_FALLING
 $A6:990A DF 20 80 7E CMP $7E8020,x[$7E:8020];\
-$A6:990E 10 19       BPL $19    [$9929]     ;} If [A] >= [enemy $7E:8020]: go to BRANCH_9929
+$A6:990E 10 19       BPL $19    [$9929]     ;} If [A] >= [enemy rising explosion angle]: go to BRANCH_ANTICLOCKWISE_RISING
 $A6:9910 A9 00 00    LDA #$0000             ;\
 $A6:9913 80 28       BRA $28    [$993D]     ;} Return A = 0
 
-; BRANCH_9915
+; BRANCH_CLOCKWISE_RISING
 $A6:9915 A9 01 00    LDA #$0001             ;\
-$A6:9918 85 1A       STA $1A    [$7E:001A]  ;} $1A = 1
+$A6:9918 85 1A       STA $1A    [$7E:001A]  ;} $1A = 1 (left)
 $A6:991A A9 01 00    LDA #$0001             ; A = 1
 $A6:991D 80 1E       BRA $1E    [$993D]     ; Return
 
-; BRANCH_991F
+; BRANCH_CLOCKWISE_FALLING
 $A6:991F A9 00 00    LDA #$0000             ;\
-$A6:9922 85 1A       STA $1A    [$7E:001A]  ;} $1A = 0
+$A6:9922 85 1A       STA $1A    [$7E:001A]  ;} $1A = 0 (right)
 $A6:9924 A9 02 00    LDA #$0002             ; A = 2
 $A6:9927 80 14       BRA $14    [$993D]     ; Return
 
-; BRANCH_9929
+; BRANCH_ANTICLOCKWISE_RISING
 $A6:9929 A9 00 00    LDA #$0000             ;\
-$A6:992C 85 1A       STA $1A    [$7E:001A]  ;} $1A = 0
+$A6:992C 85 1A       STA $1A    [$7E:001A]  ;} $1A = 0 (right)
 $A6:992E A9 01 00    LDA #$0001             ; A = 1
 $A6:9931 80 0A       BRA $0A    [$993D]     ; Return
 
-; BRANCH_9933
+; BRANCH_ANTICLOCKWISE_FALLING
 $A6:9933 A9 01 00    LDA #$0001             ;\
-$A6:9936 85 1A       STA $1A    [$7E:001A]  ;} $1A = 1
+$A6:9936 85 1A       STA $1A    [$7E:001A]  ;} $1A = 1 (left)
 $A6:9938 A9 02 00    LDA #$0002             ; A = 2
 $A6:993B 80 00       BRA $00    [$993D]
 
@@ -1846,14 +1849,14 @@ $A6:993E 60          RTS
 }
 
 
-;;; $993F:  ;;;
+;;; $993F: Play nuclear waffle explosion sound effect ;;;
 {
 ;; Parameters:
-;;     $1E: 
+;;     $1E: Explosion reason. 0 = no explosion, 1 = rising, 2 = falling
 $A6:993F 5A          PHY
 $A6:9940 DA          PHX
 $A6:9941 A5 1E       LDA $1E    [$7E:001E]  ;\
-$A6:9943 C9 02 00    CMP #$0002             ;} If [$1E] != 2:
+$A6:9943 C9 02 00    CMP #$0002             ;} If [$1E] != 2 (falling):
 $A6:9946 F0 07       BEQ $07    [$994F]     ;/
 $A6:9948 A9 5E 00    LDA #$005E             ;\
 $A6:994B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (nuclear waffle part spawns)

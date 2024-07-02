@@ -6631,7 +6631,7 @@ $8F:E2BC 9C F8 0A    STZ $0AF8  [$7E:0AF8]  ;/
 $8F:E2BF 64 12       STZ $12    [$7E:0012]  ;\
 $8F:E2C1 64 14       STZ $14    [$7E:0014]  ;|
 $8F:E2C3 AD E5 07    LDA $07E5  [$7E:07E5]  ;|
-$8F:E2C6 10 02       BPL $02    [$E2CA]     ;} $14.$12 = ±[eoom elevatube velocity] / 100h
+$8F:E2C6 10 02       BPL $02    [$E2CA]     ;} $14.$12 = ±[room elevatube velocity] / 100h
 $8F:E2C8 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $8F:E2CA 85 13       STA $13    [$7E:0013]  ;/

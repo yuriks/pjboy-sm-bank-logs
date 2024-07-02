@@ -5518,7 +5518,7 @@ $B4:C304             dx 0001,D2AC,
 }
 
 
-;;; $C30A: Instruction list - sprite object 2Bh (nuclear waffle related) ;;;
+;;; $C30A: Instruction list - sprite object 2Bh (nuclear waffle body) ;;;
 {
 $B4:C30A             dx 0003,D4BE,
                         0003,D4C5,
@@ -5536,7 +5536,7 @@ $B4:C30A             dx 0003,D4BE,
 }
 
 
-;;; $C33E: Instruction list - sprite object 2Ch (nuclear waffle related) ;;;
+;;; $C33E: Instruction list - sprite object 2Ch (nuclear waffle right explosion) ;;;
 {
 $B4:C33E             dx 0002,D4F6,
                         0002,D4FD,
@@ -5549,7 +5549,7 @@ $B4:C33E             dx 0002,D4F6,
 }
 
 
-;;; $C35C: Instruction list - sprite object 2Dh (nuclear waffle related) ;;;
+;;; $C35C: Instruction list - sprite object 2Dh (nuclear waffle left explosion) ;;;
 {
 $B4:C35C             dx 0002,D527,
                         0002,D52E,
@@ -5562,7 +5562,7 @@ $B4:C35C             dx 0002,D527,
 }
 
 
-;;; $C37A: Instruction list - sprite object 2Eh (nuclear waffle related) ;;;
+;;; $C37A: Instruction list - sprite object 2Eh (nuclear waffle splash) ;;;
 {
 $B4:C37A             dx 0002,D558,
                         0002,D558,
