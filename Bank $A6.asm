@@ -768,60 +768,60 @@ $A6:8CFB             dw 3800, 3E7F, 2DFD, 10FB, 0097, 73FF, 53FF, 37FF, 17FF, 24
 }
 
 
-;;; $8D1B: Instruction list -  ;;;
+;;; $8D1B: Instruction list - graphics part ;;;
 {
 $A6:8D1B             dx 8DAF,       ; Play fire geyser sound effect
                         0002,9082,
-                        8E13,       ; ???
+                        8E13,       ; Activity frame 0
                         0002,9089,
-                        8E2D,       ; ???
+                        8E2D,       ; Activity frame 1
                         0002,909F,
-                        8E41,       ; ???
+                        8E41,       ; Activity frame 2
                         0002,90BA,
-                        8E55,       ; ???
+                        8E55,       ; Activity frame 3
                         0001,90DA,
-                        8E69,       ; ???
+                        8E69,       ; Activity frame 4
                         0001,90FF,
-                        8E7D,       ; ???
+                        8E7D,       ; Activity frame 5
                         0001,9124,
-                        8E91,       ; ???
+                        8E91,       ; Activity frame 6
                         0001,9149,
-                        8EA5,       ; ???
+                        8EA5,       ; Activity frame 7
                         0002,916E,
-                        8EB9,       ; ???
+                        8EB9,       ; Activity frame 8
                         0002,9198,
-                        8ECD,       ; ???
+                        8ECD,       ; Activity frame 9
                         0002,91C2,
-                        8EE1,       ; ???
+                        8EE1,       ; Activity frame Ah
                         0002,91F1,
-                        8EF5,       ; ???
+                        8EF5,       ; Activity frame Bh
                         0002,9234,
-                        8F09,       ; ???
+                        8F09,       ; Activity frame Ch
                         0002,927C,
-                        8F1D,       ; ???
+                        8F1D,       ; Activity frame Dh
                         0002,92C4,
-                        8F31,       ; ???
+                        8F31,       ; Activity frame Eh
                         0002,9302,
-                        8F45,       ; ???
+                        8F45,       ; Activity frame Fh
                         0004,934A,
-                        8F59,       ; ???
+                        8F59,       ; Activity frame 10h
                         0004,938D,
-                        8F6D,       ; ???
+                        8F6D,       ; Activity frame 11h
                         0004,93CB,
-                        8F81,       ; ???
+                        8F81,       ; Activity frame 12h
                         0004,9404,
-                        8F95,       ; ???
+                        8F95,       ; Activity frame 13h
                         0004,942E,
-                        8FA9,       ; ???
+                        8FA9,       ; Activity frame 14h
                         0004,944E,
-                        8FBD,       ; ???
+                        8FBD,       ; Activity frame 15h
                         0004,9469,
-                        8FD1,       ; ???
+                        8FD1,       ; Finish activity
                         812F        ; Sleep
 }
 
 
-;;; $8DA9: Instruction list -  ;;;
+;;; $8DA9: Instruction list - hitbox part ;;;
 {
 $A6:8DA9             dx 0002,9082,
                         812F        ; Sleep
@@ -896,310 +896,310 @@ $A6:8E11             dw 0008
 
 ;;; $8E13..8FFB: Fire geyser instructions ;;;
 {
-;;; $8E13: Instruction ;;;
+;;; $8E13: Instruction - activity frame 0 ;;;
 {
 $A6:8E13 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8E16 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8E19 38          SEC
-$A6:8E1A ED BB 8D    SBC $8DBB  [$A6:8DBB]
-$A6:8E1D 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8E20 AD E7 8D    LDA $8DE7  [$A6:8DE7]
-$A6:8E23 9D C4 0F    STA $0FC4,x[$7E:1284]
-$A6:8E26 A9 08 00    LDA #$0008
-$A6:8E29 9D C2 0F    STA $0FC2,x[$7E:1282]
+$A6:8E16 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8E19 38          SEC                    ;|
+$A6:8E1A ED BB 8D    SBC $8DBB  [$A6:8DBB]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 5
+$A6:8E1D 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8E20 AD E7 8D    LDA $8DE7  [$A6:8DE7]  ;\
+$A6:8E23 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
+$A6:8E26 A9 08 00    LDA #$0008             ;\
+$A6:8E29 9D C2 0F    STA $0FC2,x[$7E:1282]  ;} Enemy ([X] + 1) radius = 8
 $A6:8E2C 6B          RTL
 }
 
 
-;;; $8E2D: Instruction ;;;
+;;; $8E2D: Instruction - activity frame 1 ;;;
 {
 $A6:8E2D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8E30 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8E33 38          SEC
-$A6:8E34 ED BD 8D    SBC $8DBD  [$A6:8DBD]
-$A6:8E37 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8E3A AD E9 8D    LDA $8DE9  [$A6:8DE9]
-$A6:8E3D 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8E30 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8E33 38          SEC                    ;|
+$A6:8E34 ED BD 8D    SBC $8DBD  [$A6:8DBD]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - Ah
+$A6:8E37 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8E3A AD E9 8D    LDA $8DE9  [$A6:8DE9]  ;\
+$A6:8E3D 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8E40 6B          RTL
 }
 
 
-;;; $8E41: Instruction ;;;
+;;; $8E41: Instruction - activity frame 2 ;;;
 {
 $A6:8E41 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8E44 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8E47 38          SEC
-$A6:8E48 ED BF 8D    SBC $8DBF  [$A6:8DBF]
-$A6:8E4B 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8E4E AD EB 8D    LDA $8DEB  [$A6:8DEB]
-$A6:8E51 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8E44 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8E47 38          SEC                    ;|
+$A6:8E48 ED BF 8D    SBC $8DBF  [$A6:8DBF]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - Fh
+$A6:8E4B 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8E4E AD EB 8D    LDA $8DEB  [$A6:8DEB]  ;\
+$A6:8E51 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8E54 6B          RTL
 }
 
 
-;;; $8E55: Instruction ;;;
+;;; $8E55: Instruction - activity frame 3 ;;;
 {
 $A6:8E55 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8E58 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8E5B 38          SEC
-$A6:8E5C ED C1 8D    SBC $8DC1  [$A6:8DC1]
-$A6:8E5F 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8E62 AD ED 8D    LDA $8DED  [$A6:8DED]
-$A6:8E65 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8E58 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8E5B 38          SEC                    ;|
+$A6:8E5C ED C1 8D    SBC $8DC1  [$A6:8DC1]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 14h
+$A6:8E5F 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8E62 AD ED 8D    LDA $8DED  [$A6:8DED]  ;\
+$A6:8E65 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8E68 6B          RTL
 }
 
 
-;;; $8E69: Instruction ;;;
+;;; $8E69: Instruction - activity frame 4 ;;;
 {
 $A6:8E69 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8E6C BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8E6F 38          SEC
-$A6:8E70 ED C3 8D    SBC $8DC3  [$A6:8DC3]
-$A6:8E73 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8E76 AD EF 8D    LDA $8DEF  [$A6:8DEF]
-$A6:8E79 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8E6C BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8E6F 38          SEC                    ;|
+$A6:8E70 ED C3 8D    SBC $8DC3  [$A6:8DC3]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 19h
+$A6:8E73 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8E76 AD EF 8D    LDA $8DEF  [$A6:8DEF]  ;\
+$A6:8E79 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8E7C 6B          RTL
 }
 
 
-;;; $8E7D: Instruction ;;;
+;;; $8E7D: Instruction - activity frame 5 ;;;
 {
 $A6:8E7D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8E80 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8E83 38          SEC
-$A6:8E84 ED C5 8D    SBC $8DC5  [$A6:8DC5]
-$A6:8E87 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8E8A AD F1 8D    LDA $8DF1  [$A6:8DF1]
-$A6:8E8D 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8E80 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8E83 38          SEC                    ;|
+$A6:8E84 ED C5 8D    SBC $8DC5  [$A6:8DC5]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 1Eh
+$A6:8E87 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8E8A AD F1 8D    LDA $8DF1  [$A6:8DF1]  ;\
+$A6:8E8D 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8E90 6B          RTL
 }
 
 
-;;; $8E91: Instruction ;;;
+;;; $8E91: Instruction - activity frame 6 ;;;
 {
 $A6:8E91 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8E94 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8E97 38          SEC
-$A6:8E98 ED C7 8D    SBC $8DC7  [$A6:8DC7]
-$A6:8E9B 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8E9E AD F3 8D    LDA $8DF3  [$A6:8DF3]
-$A6:8EA1 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8E94 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8E97 38          SEC                    ;|
+$A6:8E98 ED C7 8D    SBC $8DC7  [$A6:8DC7]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 23h
+$A6:8E9B 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8E9E AD F3 8D    LDA $8DF3  [$A6:8DF3]  ;\
+$A6:8EA1 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8EA4 6B          RTL
 }
 
 
-;;; $8EA5: Instruction ;;;
+;;; $8EA5: Instruction - activity frame 7 ;;;
 {
 $A6:8EA5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8EA8 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8EAB 38          SEC
-$A6:8EAC ED C9 8D    SBC $8DC9  [$A6:8DC9]
-$A6:8EAF 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8EB2 AD F5 8D    LDA $8DF5  [$A6:8DF5]
-$A6:8EB5 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8EA8 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8EAB 38          SEC                    ;|
+$A6:8EAC ED C9 8D    SBC $8DC9  [$A6:8DC9]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 28h
+$A6:8EAF 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8EB2 AD F5 8D    LDA $8DF5  [$A6:8DF5]  ;\
+$A6:8EB5 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8EB8 6B          RTL
 }
 
 
-;;; $8EB9: Instruction ;;;
+;;; $8EB9: Instruction - activity frame 8 ;;;
 {
 $A6:8EB9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8EBC BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8EBF 38          SEC
-$A6:8EC0 ED CB 8D    SBC $8DCB  [$A6:8DCB]
-$A6:8EC3 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8EC6 AD F7 8D    LDA $8DF7  [$A6:8DF7]
-$A6:8EC9 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8EBC BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8EBF 38          SEC                    ;|
+$A6:8EC0 ED CB 8D    SBC $8DCB  [$A6:8DCB]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 2Dh
+$A6:8EC3 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8EC6 AD F7 8D    LDA $8DF7  [$A6:8DF7]  ;\
+$A6:8EC9 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8ECC 6B          RTL
 }
 
 
-;;; $8ECD: Instruction ;;;
+;;; $8ECD: Instruction - activity frame 9 ;;;
 {
 $A6:8ECD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8ED0 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8ED3 38          SEC
-$A6:8ED4 ED CD 8D    SBC $8DCD  [$A6:8DCD]
-$A6:8ED7 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8EDA AD F9 8D    LDA $8DF9  [$A6:8DF9]
-$A6:8EDD 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8ED0 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8ED3 38          SEC                    ;|
+$A6:8ED4 ED CD 8D    SBC $8DCD  [$A6:8DCD]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 32h
+$A6:8ED7 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8EDA AD F9 8D    LDA $8DF9  [$A6:8DF9]  ;\
+$A6:8EDD 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8EE0 6B          RTL
 }
 
 
-;;; $8EE1: Instruction ;;;
+;;; $8EE1: Instruction - activity frame Ah ;;;
 {
 $A6:8EE1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8EE4 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8EE7 38          SEC
-$A6:8EE8 ED CF 8D    SBC $8DCF  [$A6:8DCF]
-$A6:8EEB 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8EEE AD FB 8D    LDA $8DFB  [$A6:8DFB]
-$A6:8EF1 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8EE4 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8EE7 38          SEC                    ;|
+$A6:8EE8 ED CF 8D    SBC $8DCF  [$A6:8DCF]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 37h
+$A6:8EEB 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8EEE AD FB 8D    LDA $8DFB  [$A6:8DFB]  ;\
+$A6:8EF1 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8EF4 6B          RTL
 }
 
 
-;;; $8EF5: Instruction ;;;
+;;; $8EF5: Instruction - activity frame Bh ;;;
 {
 $A6:8EF5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8EF8 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8EFB 38          SEC
-$A6:8EFC ED D1 8D    SBC $8DD1  [$A6:8DD1]
-$A6:8EFF 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F02 AD FD 8D    LDA $8DFD  [$A6:8DFD]
-$A6:8F05 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8EF8 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8EFB 38          SEC                    ;|
+$A6:8EFC ED D1 8D    SBC $8DD1  [$A6:8DD1]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 3Ch
+$A6:8EFF 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F02 AD FD 8D    LDA $8DFD  [$A6:8DFD]  ;\
+$A6:8F05 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8F08 6B          RTL
 }
 
 
-;;; $8F09: Instruction ;;;
+;;; $8F09: Instruction - activity frame Ch ;;;
 {
 $A6:8F09 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F0C BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F0F 38          SEC
-$A6:8F10 ED D3 8D    SBC $8DD3  [$A6:8DD3]
-$A6:8F13 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F16 AD FF 8D    LDA $8DFF  [$A6:8DFF]
-$A6:8F19 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F0C BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F0F 38          SEC                    ;|
+$A6:8F10 ED D3 8D    SBC $8DD3  [$A6:8DD3]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 41h
+$A6:8F13 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F16 AD FF 8D    LDA $8DFF  [$A6:8DFF]  ;\
+$A6:8F19 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8F1C 6B          RTL
 }
 
 
-;;; $8F1D: Instruction ;;;
+;;; $8F1D: Instruction - activity frame Dh ;;;
 {
 $A6:8F1D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F20 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F23 38          SEC
-$A6:8F24 ED D5 8D    SBC $8DD5  [$A6:8DD5]
-$A6:8F27 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F2A AD 01 8E    LDA $8E01  [$A6:8E01]
-$A6:8F2D 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F20 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F23 38          SEC                    ;|
+$A6:8F24 ED D5 8D    SBC $8DD5  [$A6:8DD5]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 46h
+$A6:8F27 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F2A AD 01 8E    LDA $8E01  [$A6:8E01]  ;\
+$A6:8F2D 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8F30 6B          RTL
 }
 
 
-;;; $8F31: Instruction ;;;
+;;; $8F31: Instruction - activity frame Eh ;;;
 {
 $A6:8F31 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F34 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F37 38          SEC
-$A6:8F38 ED D7 8D    SBC $8DD7  [$A6:8DD7]
-$A6:8F3B 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F3E AD 03 8E    LDA $8E03  [$A6:8E03]
-$A6:8F41 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F34 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F37 38          SEC                    ;|
+$A6:8F38 ED D7 8D    SBC $8DD7  [$A6:8DD7]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 4Bh
+$A6:8F3B 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F3E AD 03 8E    LDA $8E03  [$A6:8E03]  ;\
+$A6:8F41 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8F44 6B          RTL
 }
 
 
-;;; $8F45: Instruction ;;;
+;;; $8F45: Instruction - activity frame Fh ;;;
 {
 $A6:8F45 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F48 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F4B 38          SEC
-$A6:8F4C ED D9 8D    SBC $8DD9  [$A6:8DD9]
-$A6:8F4F 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F52 AD 05 8E    LDA $8E05  [$A6:8E05]
-$A6:8F55 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F48 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F4B 38          SEC                    ;|
+$A6:8F4C ED D9 8D    SBC $8DD9  [$A6:8DD9]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 50h
+$A6:8F4F 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F52 AD 05 8E    LDA $8E05  [$A6:8E05]  ;\
+$A6:8F55 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8F58 6B          RTL
 }
 
 
-;;; $8F59: Instruction ;;;
+;;; $8F59: Instruction - activity frame 10h ;;;
 {
 $A6:8F59 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F5C BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F5F 38          SEC
-$A6:8F60 ED DB 8D    SBC $8DDB  [$A6:8DDB]
-$A6:8F63 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F66 AD 07 8E    LDA $8E07  [$A6:8E07]
-$A6:8F69 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F5C BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F5F 38          SEC                    ;|
+$A6:8F60 ED DB 8D    SBC $8DDB  [$A6:8DDB]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 55h
+$A6:8F63 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F66 AD 07 8E    LDA $8E07  [$A6:8E07]  ;\
+$A6:8F69 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8F6C 6B          RTL
 }
 
 
-;;; $8F6D: Instruction ;;;
+;;; $8F6D: Instruction - activity frame 11h ;;;
 {
 $A6:8F6D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F70 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F73 38          SEC
-$A6:8F74 ED DD 8D    SBC $8DDD  [$A6:8DDD]
-$A6:8F77 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F7A AD 09 8E    LDA $8E09  [$A6:8E09]
-$A6:8F7D 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F70 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F73 38          SEC                    ;|
+$A6:8F74 ED DD 8D    SBC $8DDD  [$A6:8DDD]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 5Ah
+$A6:8F77 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F7A AD 09 8E    LDA $8E09  [$A6:8E09]  ;\
+$A6:8F7D 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 18h
 $A6:8F80 6B          RTL
 }
 
 
-;;; $8F81: Instruction ;;;
+;;; $8F81: Instruction - activity frame 12h ;;;
 {
 $A6:8F81 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F84 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F87 38          SEC
-$A6:8F88 ED DF 8D    SBC $8DDF  [$A6:8DDF]
-$A6:8F8B 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8F8E AD 0B 8E    LDA $8E0B  [$A6:8E0B]
-$A6:8F91 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F84 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F87 38          SEC                    ;|
+$A6:8F88 ED DF 8D    SBC $8DDF  [$A6:8DDF]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 5Fh
+$A6:8F8B 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8F8E AD 0B 8E    LDA $8E0B  [$A6:8E0B]  ;\
+$A6:8F91 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 14h
 $A6:8F94 6B          RTL
 }
 
 
-;;; $8F95: Instruction ;;;
+;;; $8F95: Instruction - activity frame 13h ;;;
 {
 $A6:8F95 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8F98 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8F9B 38          SEC
-$A6:8F9C ED E1 8D    SBC $8DE1  [$A6:8DE1]
-$A6:8F9F 9D BE 0F    STA $0FBE,x[$7E:127E]
-$A6:8FA2 AD 0D 8E    LDA $8E0D  [$A6:8E0D]
-$A6:8FA5 9D C4 0F    STA $0FC4,x[$7E:1284]
+$A6:8F98 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8F9B 38          SEC                    ;|
+$A6:8F9C ED E1 8D    SBC $8DE1  [$A6:8DE1]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 64h
+$A6:8F9F 9D BE 0F    STA $0FBE,x[$7E:127E]  ;/
+$A6:8FA2 AD 0D 8E    LDA $8E0D  [$A6:8E0D]  ;\
+$A6:8FA5 9D C4 0F    STA $0FC4,x[$7E:1284]  ;} Enemy ([X] + 1) Y radius = 10h
 $A6:8FA8 6B          RTL
 }
 
 
-;;; $8FA9: Instruction ;;;
+;;; $8FA9: Instruction - activity frame 14h ;;;
 {
 $A6:8FA9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8FAC BD AE 0F    LDA $0FAE,x[$7E:10EE]
-$A6:8FAF 38          SEC
-$A6:8FB0 ED E3 8D    SBC $8DE3  [$A6:8DE3]
-$A6:8FB3 9D BE 0F    STA $0FBE,x[$7E:10FE]
-$A6:8FB6 AD 0F 8E    LDA $8E0F  [$A6:8E0F]
-$A6:8FB9 9D C4 0F    STA $0FC4,x[$7E:1104]
+$A6:8FAC BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
+$A6:8FAF 38          SEC                    ;|
+$A6:8FB0 ED E3 8D    SBC $8DE3  [$A6:8DE3]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 69h
+$A6:8FB3 9D BE 0F    STA $0FBE,x[$7E:10FE]  ;/
+$A6:8FB6 AD 0F 8E    LDA $8E0F  [$A6:8E0F]  ;\
+$A6:8FB9 9D C4 0F    STA $0FC4,x[$7E:1104]  ;} Enemy ([X] + 1) Y radius = Ch
 $A6:8FBC 6B          RTL
 }
 
 
-;;; $8FBD: Instruction ;;;
+;;; $8FBD: Instruction - activity frame 15h ;;;
 {
 $A6:8FBD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8FC0 BD AE 0F    LDA $0FAE,x[$7E:10EE]
-$A6:8FC3 38          SEC
-$A6:8FC4 ED E5 8D    SBC $8DE5  [$A6:8DE5]
-$A6:8FC7 9D BE 0F    STA $0FBE,x[$7E:10FE]
-$A6:8FCA AD 11 8E    LDA $8E11  [$A6:8E11]
-$A6:8FCD 9D C4 0F    STA $0FC4,x[$7E:1104]
+$A6:8FC0 BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
+$A6:8FC3 38          SEC                    ;|
+$A6:8FC4 ED E5 8D    SBC $8DE5  [$A6:8DE5]  ;} Enemy ([X] + 1) Y position = [enemy spawn Y position] - 6Eh
+$A6:8FC7 9D BE 0F    STA $0FBE,x[$7E:10FE]  ;/
+$A6:8FCA AD 11 8E    LDA $8E11  [$A6:8E11]  ;\
+$A6:8FCD 9D C4 0F    STA $0FC4,x[$7E:1104]  ;} Enemy ([X] + 1) Y radius = 8
 $A6:8FD0 6B          RTL
 }
 
 
-;;; $8FD1: Instruction ;;;
+;;; $8FD1: Instruction - finish activity ;;;
 {
 $A6:8FD1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8FD4 A9 01 00    LDA #$0001
-$A6:8FD7 9D AC 0F    STA $0FAC,x[$7E:10EC]
-$A6:8FDA A9 00 00    LDA #$0000
-$A6:8FDD 9D C2 0F    STA $0FC2,x[$7E:1102]
-$A6:8FE0 9D C4 0F    STA $0FC4,x[$7E:1104]
-$A6:8FE3 BD AE 0F    LDA $0FAE,x[$7E:10EE]
-$A6:8FE6 9D 7E 0F    STA $0F7E,x[$7E:10BE]
-$A6:8FE9 BD 86 0F    LDA $0F86,x[$7E:10C6]
-$A6:8FEC 09 00 01    ORA #$0100
-$A6:8FEF 9D 86 0F    STA $0F86,x[$7E:10C6]
-$A6:8FF2 BD C6 0F    LDA $0FC6,x[$7E:1106]
-$A6:8FF5 09 00 04    ORA #$0400
-$A6:8FF8 9D C6 0F    STA $0FC6,x[$7E:1106]
+$A6:8FD4 A9 01 00    LDA #$0001             ;\
+$A6:8FD7 9D AC 0F    STA $0FAC,x[$7E:10EC]  ;} Enemy finished activity flag = 1
+$A6:8FDA A9 00 00    LDA #$0000             ;\
+$A6:8FDD 9D C2 0F    STA $0FC2,x[$7E:1102]  ;} Enemy ([X] + 1) X radius = 0
+$A6:8FE0 9D C4 0F    STA $0FC4,x[$7E:1104]  ; Enemy ([X] + 1) Y radius = 0
+$A6:8FE3 BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
+$A6:8FE6 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;} Enemy Y position = [enemy spawn Y position]
+$A6:8FE9 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
+$A6:8FEC 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A6:8FEF 9D 86 0F    STA $0F86,x[$7E:10C6]  ;/
+$A6:8FF2 BD C6 0F    LDA $0FC6,x[$7E:1106]  ;\
+$A6:8FF5 09 00 04    ORA #$0400             ;} Set enemy ([X] + 1) as intangible
+$A6:8FF8 9D C6 0F    STA $0FC6,x[$7E:1106]  ;/
 $A6:8FFB 6B          RTL
 }
 }
@@ -1208,18 +1208,18 @@ $A6:8FFB 6B          RTL
 ;;; $8FFC: Initialisation AI - enemy $E07F (fire geyser) ;;;
 {
 $A6:8FFC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8FFF A9 A9 8D    LDA #$8DA9
-$A6:9002 9D 92 0F    STA $0F92,x[$7E:10D2]
-$A6:9005 BD B6 0F    LDA $0FB6,x[$7E:10F6]
-$A6:9008 D0 18       BNE $18    [$9022]
-$A6:900A A9 1B 8D    LDA #$8D1B
-$A6:900D 9D 92 0F    STA $0F92,x[$7E:10D2]
-$A6:9010 A9 2F 90    LDA #$902F
-$A6:9013 9D A8 0F    STA $0FA8,x[$7E:10E8]
-$A6:9016 BD 7E 0F    LDA $0F7E,x[$7E:10BE]
-$A6:9019 9D AE 0F    STA $0FAE,x[$7E:10EE]
-$A6:901C A9 00 00    LDA #$0000
-$A6:901F 9D 82 0F    STA $0F82,x[$7E:10C2]
+$A6:8FFF A9 A9 8D    LDA #$8DA9             ;\
+$A6:9002 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $8DA9
+$A6:9005 BD B6 0F    LDA $0FB6,x[$7E:10F6]  ;\
+$A6:9008 D0 18       BNE $18    [$9022]     ;} If [enemy parameter 2] = 0 (graphics part):
+$A6:900A A9 1B 8D    LDA #$8D1B             ;\
+$A6:900D 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $8D1B
+$A6:9010 A9 2F 90    LDA #$902F             ;\
+$A6:9013 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $902F (inactive)
+$A6:9016 BD 7E 0F    LDA $0F7E,x[$7E:10BE]  ;\
+$A6:9019 9D AE 0F    STA $0FAE,x[$7E:10EE]  ;} Enemy spawn Y position = [enemy Y position]
+$A6:901C A9 00 00    LDA #$0000             ;\
+$A6:901F 9D 82 0F    STA $0F82,x[$7E:10C2]  ;} Enemy X radius = 0
 
 $A6:9022 6B          RTL
 }
@@ -1228,50 +1228,50 @@ $A6:9022 6B          RTL
 ;;; $9023: Main AI - enemy $E07F (fire geyser) ;;;
 {
 $A6:9023 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9026 BD B6 0F    LDA $0FB6,x[$7E:12B6]
-$A6:9029 D0 03       BNE $03    [$902E]
-$A6:902B FC A8 0F    JSR ($0FA8,x)[$A6:902F]
+$A6:9026 BD B6 0F    LDA $0FB6,x[$7E:12B6]  ;\
+$A6:9029 D0 03       BNE $03    [$902E]     ;} If [enemy parameter 2] = 0 (graphics part):
+$A6:902B FC A8 0F    JSR ($0FA8,x)[$A6:902F]; Execute [enemy function]
 
 $A6:902E 6B          RTL
 }
 
 
-;;; $902F:  ;;;
+;;; $902F: Fire geyser function - inactive ;;;
 {
 $A6:902F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9032 DE AA 0F    DEC $0FAA,x[$7E:126A]
-$A6:9035 10 2A       BPL $2A    [$9061]
-$A6:9037 A9 62 90    LDA #$9062
-$A6:903A 9D A8 0F    STA $0FA8,x[$7E:1268]
-$A6:903D 9E AC 0F    STZ $0FAC,x[$7E:126C]
-$A6:9040 A9 01 00    LDA #$0001
-$A6:9043 9D 94 0F    STA $0F94,x[$7E:1254]
-$A6:9046 9E 90 0F    STZ $0F90,x[$7E:1250]
-$A6:9049 A9 1B 8D    LDA #$8D1B
-$A6:904C 9D 92 0F    STA $0F92,x[$7E:1252]
-$A6:904F BD 86 0F    LDA $0F86,x[$7E:1246]
-$A6:9052 29 FF FE    AND #$FEFF
-$A6:9055 9D 86 0F    STA $0F86,x[$7E:1246]
-$A6:9058 BD C6 0F    LDA $0FC6,x[$7E:1286]
-$A6:905B 29 FF FB    AND #$FBFF
-$A6:905E 9D C6 0F    STA $0FC6,x[$7E:1286]
+$A6:9032 DE AA 0F    DEC $0FAA,x[$7E:126A]  ; Decrement enemy inactive timer
+$A6:9035 10 2A       BPL $2A    [$9061]     ; If [enemy inactive timer] < 0:
+$A6:9037 A9 62 90    LDA #$9062             ;\
+$A6:903A 9D A8 0F    STA $0FA8,x[$7E:1268]  ;} Enemy function = $9062 (active)
+$A6:903D 9E AC 0F    STZ $0FAC,x[$7E:126C]  ; Enemy finished activity flag = 0
+$A6:9040 A9 01 00    LDA #$0001             ;\
+$A6:9043 9D 94 0F    STA $0F94,x[$7E:1254]  ;} Enemy instruction timer = 1
+$A6:9046 9E 90 0F    STZ $0F90,x[$7E:1250]  ; Enemy timer = 0
+$A6:9049 A9 1B 8D    LDA #$8D1B             ;\
+$A6:904C 9D 92 0F    STA $0F92,x[$7E:1252]  ;} Enemy instruction list pointer = $8D1B
+$A6:904F BD 86 0F    LDA $0F86,x[$7E:1246]  ;\
+$A6:9052 29 FF FE    AND #$FEFF             ;} Set enemy as visible
+$A6:9055 9D 86 0F    STA $0F86,x[$7E:1246]  ;/
+$A6:9058 BD C6 0F    LDA $0FC6,x[$7E:1286]  ;\
+$A6:905B 29 FF FB    AND #$FBFF             ;} Set enemy ([X] + 1) as tangible
+$A6:905E 9D C6 0F    STA $0FC6,x[$7E:1286]  ;/
 
 $A6:9061 60          RTS
 }
 
 
-;;; $9062:  ;;;
+;;; $9062: Fire geyser function - active ;;;
 {
 $A6:9062 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:9065 BD AC 0F    LDA $0FAC,x[$7E:126C]
-$A6:9068 F0 15       BEQ $15    [$907F]
-$A6:906A BD B4 0F    LDA $0FB4,x[$7E:1174]
-$A6:906D 9D AA 0F    STA $0FAA,x[$7E:116A]
-$A6:9070 BD 86 0F    LDA $0F86,x[$7E:1146]
-$A6:9073 09 00 01    ORA #$0100
-$A6:9076 9D 86 0F    STA $0F86,x[$7E:1146]
-$A6:9079 A9 2F 90    LDA #$902F
-$A6:907C 9D A8 0F    STA $0FA8,x[$7E:1168]
+$A6:9065 BD AC 0F    LDA $0FAC,x[$7E:126C]  ;\
+$A6:9068 F0 15       BEQ $15    [$907F]     ;} If [enemy finished activity flag] != 0:
+$A6:906A BD B4 0F    LDA $0FB4,x[$7E:1174]  ;\
+$A6:906D 9D AA 0F    STA $0FAA,x[$7E:116A]  ;} Enemy inactive timer = [enemy parameter 1]
+$A6:9070 BD 86 0F    LDA $0F86,x[$7E:1146]  ;\
+$A6:9073 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A6:9076 9D 86 0F    STA $0F86,x[$7E:1146]  ;/
+$A6:9079 A9 2F 90    LDA #$902F             ;\
+$A6:907C 9D A8 0F    STA $0FA8,x[$7E:1168]  ;} Enemy function = $902F (inactive)
 
 $A6:907F 60          RTS
 }
