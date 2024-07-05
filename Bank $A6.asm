@@ -503,7 +503,7 @@ $A6:8B09             dw 3800, 62BA, 49F3, 2D4D, 0C44, 49F3, 356E, 20C9, 1486, 24
 }
 
 
-;;; $8B29: Instruction list -  ;;;
+;;; $8B29: Instruction list  ;;;
 {
 $A6:8B29             dx 0001,8CE5,
                         812F        ; Sleep
@@ -625,15 +625,15 @@ $A6:8C00 DD AE 0F    CMP $0FAE,x[$7E:126E]
 $A6:8C03 30 1A       BMI $1A    [$8C1F]
 $A6:8C05 A9 40 00    LDA #$0040
 $A6:8C08 9F 06 78 7E STA $7E7806,x[$7E:7AC6]
-$A6:8C0C A9 4A 8C    LDA #$8C4A
-$A6:8C0F 9D A8 0F    STA $0FA8,x[$7E:1268]
+$A6:8C0C A9 4A 8C    LDA #$8C4A             ;\
+$A6:8C0F 9D A8 0F    STA $0FA8,x[$7E:1268]  ;} Enemy function = $8C4A
 $A6:8C12 BD AE 0F    LDA $0FAE,x[$7E:126E]
 $A6:8C15 9D 7E 0F    STA $0F7E,x[$7E:123E]
 $A6:8C18 A9 1B 00    LDA #$001B             ;\
 $A6:8C1B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Bh, sound library 2, max queued sounds allowed = 6 (spikey platform stops)
 
-$A6:8C1F 22 A1 8C A6 JSL $A68CA1[$A6:8CA1]
-$A6:8C23 F0 0F       BEQ $0F    [$8C34]
+$A6:8C1F 22 A1 8C A6 JSL $A68CA1[$A6:8CA1]  ;\
+$A6:8C23 F0 0F       BEQ $0F    [$8C34]     ;} If spikey platform is touching Samus from below:
 $A6:8C25 BD 7E 0F    LDA $0F7E,x[$7E:13BE]  ;\
 $A6:8C28 38          SEC                    ;|
 $A6:8C29 FF 02 78 7E SBC $7E7802,x[$7E:7C42];|
@@ -656,14 +656,14 @@ $A6:8C49 60          RTS
 
 ;;; $8C4A: Spikey platform function -  ;;;
 {
-$A6:8C4A BF 06 78 7E LDA $7E7806,x[$7E:7AC6]
-$A6:8C4E 3A          DEC A
-$A6:8C4F 9F 06 78 7E STA $7E7806,x[$7E:7AC6]
-$A6:8C53 F0 01       BEQ $01    [$8C56]
-$A6:8C55 60          RTS
+$A6:8C4A BF 06 78 7E LDA $7E7806,x[$7E:7AC6];\
+$A6:8C4E 3A          DEC A                  ;} Decrement enemy $7E:7806
+$A6:8C4F 9F 06 78 7E STA $7E7806,x[$7E:7AC6];/
+$A6:8C53 F0 01       BEQ $01    [$8C56]     ; If [enemy $7E:7806] != 0:
+$A6:8C55 60          RTS                    ; Return
 
-$A6:8C56 A9 5D 8C    LDA #$8C5D
-$A6:8C59 9D A8 0F    STA $0FA8,x[$7E:12E8]
+$A6:8C56 A9 5D 8C    LDA #$8C5D             ;\
+$A6:8C59 9D A8 0F    STA $0FA8,x[$7E:12E8]  ;} Enemy function = $8C5D
 $A6:8C5C 60          RTS
 }
 
@@ -682,13 +682,13 @@ $A6:8C72 22 7E AF A0 JSL $A0AF7E[$A0:AF7E]  ;/
 $A6:8C76 BD 7E 0F    LDA $0F7E,x[$7E:12BE]
 $A6:8C79 DD AC 0F    CMP $0FAC,x[$7E:12EC]
 $A6:8C7C 10 0C       BPL $0C    [$8C8A]
-$A6:8C7E A9 B4 8B    LDA #$8BB4
-$A6:8C81 9D A8 0F    STA $0FA8,x[$7E:13E8]
+$A6:8C7E A9 B4 8B    LDA #$8BB4             ;\
+$A6:8C81 9D A8 0F    STA $0FA8,x[$7E:13E8]  ;} Enemy function = $8BB4
 $A6:8C84 BD AC 0F    LDA $0FAC,x[$7E:13EC]
 $A6:8C87 9D 7E 0F    STA $0F7E,x[$7E:13BE]
 
-$A6:8C8A 22 A1 8C A6 JSL $A68CA1[$A6:8CA1]
-$A6:8C8E F0 0F       BEQ $0F    [$8C9F]
+$A6:8C8A 22 A1 8C A6 JSL $A68CA1[$A6:8CA1]  ;\
+$A6:8C8E F0 0F       BEQ $0F    [$8C9F]     ;} If spikey platform is touching Samus from below:
 $A6:8C90 BD 7E 0F    LDA $0F7E,x[$7E:12BE]  ;\
 $A6:8C93 38          SEC                    ;|
 $A6:8C94 FF 02 78 7E SBC $7E7802,x[$7E:7B42];|
@@ -701,40 +701,44 @@ $A6:8CA0 60          RTS
 }
 
 
-;;; $8CA1:  ;;;
+;;; $8CA1: Check if spikey platform is touching Samus from below ;;;
 {
-$A6:8CA1 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A6:8CA4 38          SEC
-$A6:8CA5 FD 7A 0F    SBC $0F7A,x[$7E:123A]
-$A6:8CA8 10 04       BPL $04    [$8CAE]
-$A6:8CAA 49 FF FF    EOR #$FFFF
-$A6:8CAD 1A          INC A
+;; Returns:
+;;     Zero: clear if touching Samus, otherwise set
 
-$A6:8CAE 38          SEC
-$A6:8CAF ED FE 0A    SBC $0AFE  [$7E:0AFE]
-$A6:8CB2 90 09       BCC $09    [$8CBD]
-$A6:8CB4 DD 82 0F    CMP $0F82,x[$7E:1242]
-$A6:8CB7 90 04       BCC $04    [$8CBD]
-$A6:8CB9 A9 00 00    LDA #$0000
-$A6:8CBC 6B          RTL
-
-$A6:8CBD AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A6:8CC0 18          CLC
-$A6:8CC1 69 05 00    ADC #$0005
-$A6:8CC4 38          SEC
-$A6:8CC5 FD 7E 0F    SBC $0F7E,x[$7E:12BE]
-$A6:8CC8 10 11       BPL $11    [$8CDB]
-$A6:8CCA 49 FF FF    EOR #$FFFF
-$A6:8CCD 1A          INC A
-$A6:8CCE 38          SEC
-$A6:8CCF ED 00 0B    SBC $0B00  [$7E:0B00]
-$A6:8CD2 90 0B       BCC $0B    [$8CDF]
-$A6:8CD4 DD 84 0F    CMP $0F84,x[$7E:12C4]
-$A6:8CD7 F0 06       BEQ $06    [$8CDF]
-$A6:8CD9 90 04       BCC $04    [$8CDF]
-
-$A6:8CDB A9 00 00    LDA #$0000
-$A6:8CDE 6B          RTL
+; This is a copy+paste of $A0:ABE7 with the Y delta threshold changed from 3 to 5
+$A6:8CA1 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A6:8CA4 38          SEC                    ;|
+$A6:8CA5 FD 7A 0F    SBC $0F7A,x[$7E:123A]  ;|
+$A6:8CA8 10 04       BPL $04    [$8CAE]     ;|
+$A6:8CAA 49 FF FF    EOR #$FFFF             ;|
+$A6:8CAD 1A          INC A                  ;|
+                                            ;} If |[Samus X position] - [enemy X position]| >= [Samus X radius] + [enemy X radius]:
+$A6:8CAE 38          SEC                    ;|
+$A6:8CAF ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
+$A6:8CB2 90 09       BCC $09    [$8CBD]     ;|
+$A6:8CB4 DD 82 0F    CMP $0F82,x[$7E:1242]  ;|
+$A6:8CB7 90 04       BCC $04    [$8CBD]     ;/
+$A6:8CB9 A9 00 00    LDA #$0000             ;\
+$A6:8CBC 6B          RTL                    ;} Return zero set
+                                            
+$A6:8CBD AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A6:8CC0 18          CLC                    ;|
+$A6:8CC1 69 05 00    ADC #$0005             ;|
+$A6:8CC4 38          SEC                    ;} If [Samus Y position] + 5 >= [enemy Y position]: return zero set
+$A6:8CC5 FD 7E 0F    SBC $0F7E,x[$7E:12BE]  ;|
+$A6:8CC8 10 11       BPL $11    [$8CDB]     ;/
+$A6:8CCA 49 FF FF    EOR #$FFFF             ;\
+$A6:8CCD 1A          INC A                  ;|
+$A6:8CCE 38          SEC                    ;|
+$A6:8CCF ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
+$A6:8CD2 90 0B       BCC $0B    [$8CDF]     ;} If [enemy Y position] - ([Samus Y position] + 3) <= [Samus Y radius] + [enemy Y radius]: return zero clear
+$A6:8CD4 DD 84 0F    CMP $0F84,x[$7E:12C4]  ;|
+$A6:8CD7 F0 06       BEQ $06    [$8CDF]     ;|
+$A6:8CD9 90 04       BCC $04    [$8CDF]     ;/
+                                            
+$A6:8CDB A9 00 00    LDA #$0000             ;\
+$A6:8CDE 6B          RTL                    ;} Return zero set
 
 $A6:8CDF A9 FF FF    LDA #$FFFF
 $A6:8CE2 6B          RTL
