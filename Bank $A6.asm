@@ -49,59 +49,59 @@ $A6:86EF             dw 0000, 1000, 1800
 ;;; $86F5: Initialisation AI - enemy $DFBF (boulder) ;;;
 {
 $A6:86F5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:86F8 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A6:86FB A9 00 00    LDA #$0000
-$A6:86FE 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A6:8701 A9 02 00    LDA #$0002
-$A6:8704 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A6:8707 A9 9A 87    LDA #$879A
-$A6:870A 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A6:870D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A6:8710 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A6:8714 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A6:8717 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A6:871B 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$A6:871F BD 80 0F    LDA $0F80,x[$7E:0F80]
-$A6:8722 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A6:8726 BD B7 0F    LDA $0FB7,x[$7E:0FB7]
-$A6:8729 29 FF 00    AND #$00FF
-$A6:872C D0 07       BNE $07    [$8735]
-$A6:872E A9 01 00    LDA #$0001
-$A6:8731 9F 0E 78 7E STA $7E780E,x[$7E:794E]
+$A6:86F8 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y speed table index = 0
+$A6:86FB A9 00 00    LDA #$0000             ;\
+$A6:86FE 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy X speed table index = 0
+$A6:8701 A9 02 00    LDA #$0002             ;\
+$A6:8704 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = 2
+$A6:8707 A9 9A 87    LDA #$879A             ;\
+$A6:870A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $879A (wait for Samus to get near)
+$A6:870D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A6:8710 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy $7E:7808 = [enemy X position]
+$A6:8714 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A6:8717 9F 0A 78 7E STA $7E780A,x[$7E:780A];} Enemy falling target Y position = [enemy Y position]
+$A6:871B 9F 06 78 7E STA $7E7806,x[$7E:7806]; Enemy $7E:7806 = [enemy Y position]
+$A6:871F BD 80 0F    LDA $0F80,x[$7E:0F80]  ;\
+$A6:8722 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy $7E:7804 = [enemy Y subposition]
+$A6:8726 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
+$A6:8729 29 FF 00    AND #$00FF             ;} A = [enemy parameter 2 high]
+$A6:872C D0 07       BNE $07    [$8735]     ; If [A] = 0:
+$A6:872E A9 01 00    LDA #$0001             ; A = 1
+$A6:8731 9F 0E 78 7E STA $7E780E,x[$7E:794E]; Enemy type = rolling
 
-$A6:8735 49 FF FF    EOR #$FFFF
-$A6:8738 1A          INC A
-$A6:8739 18          CLC
-$A6:873A 7F 0A 78 7E ADC $7E780A,x[$7E:780A]
-$A6:873E 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$A6:8741 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A6:8744 29 FF 00    AND #$00FF
-$A6:8747 49 FF FF    EOR #$FFFF
-$A6:874A 1A          INC A
-$A6:874B 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A6:874F BD 92 0F    LDA $0F92,x[$7E:0F92]
-$A6:8752 29 FF 00    AND #$00FF
-$A6:8755 9F 0C 78 7E STA $7E780C,x[$7E:780C]
-$A6:8759 A9 A7 86    LDA #$86A7
-$A6:875C 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A6:875F BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A6:8762 29 FF 00    AND #$00FF
-$A6:8765 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A6:8768 D0 12       BNE $12    [$877C]
-$A6:876A BF 00 78 7E LDA $7E7800,x[$7E:7940]
-$A6:876E 49 FF FF    EOR #$FFFF
-$A6:8771 1A          INC A
-$A6:8772 9F 00 78 7E STA $7E7800,x[$7E:7940]
-$A6:8776 A9 CB 86    LDA #$86CB
-$A6:8779 9D 92 0F    STA $0F92,x[$7E:10D2]
+$A6:8735 49 FF FF    EOR #$FFFF             ;\
+$A6:8738 1A          INC A                  ;|
+$A6:8739 18          CLC                    ;} Enemy Y position -= [A]
+$A6:873A 7F 0A 78 7E ADC $7E780A,x[$7E:780A];|
+$A6:873E 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$A6:8741 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A6:8744 29 FF 00    AND #$00FF             ;|
+$A6:8747 49 FF FF    EOR #$FFFF             ;} Enemy X proximity = -[enemy parameter 2 low]
+$A6:874A 1A          INC A                  ;|
+$A6:874B 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$A6:874F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
+$A6:8752 29 FF 00    AND #$00FF             ;} Enemy Y proximity = [enemy initialisation parameter] & FFh
+$A6:8755 9F 0C 78 7E STA $7E780C,x[$7E:780C];/
+$A6:8759 A9 A7 86    LDA #$86A7             ;\
+$A6:875C 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7
+$A6:875F BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A6:8762 29 FF 00    AND #$00FF             ;} Enemy direction = [enemy parameter 1 high]
+$A6:8765 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
+$A6:8768 D0 12       BNE $12    [$877C]     ; If [enemy direction] = right:
+$A6:876A BF 00 78 7E LDA $7E7800,x[$7E:7940];\
+$A6:876E 49 FF FF    EOR #$FFFF             ;|
+$A6:8771 1A          INC A                  ;} Negate enemy X proximity
+$A6:8772 9F 00 78 7E STA $7E7800,x[$7E:7940];/
+$A6:8776 A9 CB 86    LDA #$86CB             ;\
+$A6:8779 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $86CB
 
-$A6:877C A9 02 00    LDA #$0002
-$A6:877F 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A6:8783 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A6:8786 29 FF 00    AND #$00FF
-$A6:8789 F0 07       BEQ $07    [$8792]
-$A6:878B A9 05 00    LDA #$0005
-$A6:878E 9F 02 78 7E STA $7E7802,x
+$A6:877C A9 02 00    LDA #$0002             ;\
+$A6:877F 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = 2
+$A6:8783 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A6:8786 29 FF 00    AND #$00FF             ;} If [enemy parameter 1 low] != 0:
+$A6:8789 F0 07       BEQ $07    [$8792]     ;/
+$A6:878B A9 05 00    LDA #$0005             ;\
+$A6:878E 9F 02 78 7E STA $7E7802,x          ;} Enemy $7E:7802 = 5
 
 $A6:8792 6B          RTL
 }
@@ -110,142 +110,142 @@ $A6:8792 6B          RTL
 ;;; $8793: Main AI - enemy $DFBF (boulder) ;;;
 {
 $A6:8793 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8796 FC A8 0F    JSR ($0FA8,x)[$A6:879A]
+$A6:8796 FC A8 0F    JSR ($0FA8,x)[$A6:879A]; Execute [enemy function]
 $A6:8799 6B          RTL
 }
 
 
-;;; $879A:  ;;;
+;;; $879A: Boulder function - wait for Samus to get near ;;;
 {
 $A6:879A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:879D 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
-$A6:87A1 30 49       BMI $49    [$87EC]     ;} If [Samus Y position] < [enemy Y position]: return
-$A6:87A3 DF 0C 78 7E CMP $7E780C,x[$7E:780C]
-$A6:87A7 10 43       BPL $43    [$87EC]
-$A6:87A9 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A6:87AC D0 20       BNE $20    [$87CE]
+$A6:87A1 30 49       BMI $49    [$87EC]     ;|
+$A6:87A3 DF 0C 78 7E CMP $7E780C,x[$7E:780C];} If not 0 <= [Samus Y position] - [enemy Y position] < [enemy Y proximity]: return
+$A6:87A7 10 43       BPL $43    [$87EC]     ;/
+$A6:87A9 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A6:87AC D0 20       BNE $20    [$87CE]     ;} If [enemy direction] = right:
 $A6:87AE 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
-$A6:87B2 30 38       BMI $38    [$87EC]     ;} If [Samus X position] < [enemy X position]: return
-$A6:87B4 DF 00 78 7E CMP $7E7800,x[$7E:79C0]
-$A6:87B8 10 32       BPL $32    [$87EC]
-$A6:87BA A9 ED 87    LDA #$87ED
-$A6:87BD 9D A8 0F    STA $0FA8,x[$7E:1168]
-$A6:87C0 BF 0E 78 7E LDA $7E780E,x[$7E:79CE]
-$A6:87C4 F0 26       BEQ $26    [$87EC]
-$A6:87C6 A9 42 89    LDA #$8942
-$A6:87C9 9D A8 0F    STA $0FA8,x[$7E:1168]
-$A6:87CC 80 1E       BRA $1E    [$87EC]
+$A6:87B2 30 38       BMI $38    [$87EC]     ;|
+$A6:87B4 DF 00 78 7E CMP $7E7800,x[$7E:79C0];} If not 0 <= [Samus X position] - [enemy X position] < [enemy X proximity]: return
+$A6:87B8 10 32       BPL $32    [$87EC]     ;/
+$A6:87BA A9 ED 87    LDA #$87ED             ;\
+$A6:87BD 9D A8 0F    STA $0FA8,x[$7E:1168]  ;} Enemy function = $87ED (falling)
+$A6:87C0 BF 0E 78 7E LDA $7E780E,x[$7E:79CE];\
+$A6:87C4 F0 26       BEQ $26    [$87EC]     ;} If [enemy type] = falling: return
+$A6:87C6 A9 42 89    LDA #$8942             ;\
+$A6:87C9 9D A8 0F    STA $0FA8,x[$7E:1168]  ;} Enemy function = $8942 (rolling)
+$A6:87CC 80 1E       BRA $1E    [$87EC]     ; Return
 
 $A6:87CE 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
-$A6:87D2 10 18       BPL $18    [$87EC]     ;} If [Samus X position] >= [enemy X position]: return
-$A6:87D4 DF 00 78 7E CMP $7E7800,x[$7E:7800]
-$A6:87D8 30 12       BMI $12    [$87EC]
-$A6:87DA A9 ED 87    LDA #$87ED
-$A6:87DD 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A6:87E0 BF 0E 78 7E LDA $7E780E,x[$7E:788E]
-$A6:87E4 F0 06       BEQ $06    [$87EC]
-$A6:87E6 A9 42 89    LDA #$8942
-$A6:87E9 9D A8 0F    STA $0FA8,x[$7E:1128]
+$A6:87D2 10 18       BPL $18    [$87EC]     ;|
+$A6:87D4 DF 00 78 7E CMP $7E7800,x[$7E:7800];} If not [enemy X proximity] <= [Samus X position] - [enemy X position] < 0: return
+$A6:87D8 30 12       BMI $12    [$87EC]     ;/
+$A6:87DA A9 ED 87    LDA #$87ED             ;\
+$A6:87DD 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $87ED (falling)
+$A6:87E0 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
+$A6:87E4 F0 06       BEQ $06    [$87EC]     ;} If [enemy type] = falling: return
+$A6:87E6 A9 42 89    LDA #$8942             ;\
+$A6:87E9 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $8942 (rolling)
 
 $A6:87EC 60          RTS
 }
 
 
-;;; $87ED:  ;;;
+;;; $87ED: Boulder function - falling ;;;
 {
 $A6:87ED AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:87F0 BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A6:87F3 29 00 FF    AND #$FF00
-$A6:87F6 EB          XBA
-$A6:87F7 0A          ASL A
-$A6:87F8 0A          ASL A
-$A6:87F9 0A          ASL A
-$A6:87FA A8          TAY
-$A6:87FB 20 3A 8A    JSR $8A3A  [$A6:8A3A]
-$A6:87FE BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A6:8801 DF 0A 78 7E CMP $7E780A,x[$7E:788A]
-$A6:8805 30 15       BMI $15    [$881C]
-$A6:8807 BF 0A 78 7E LDA $7E780A,x[$7E:788A]
-$A6:880B 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A6:880E A9 32 88    LDA #$8832
-$A6:8811 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A6:8814 A9 00 20    LDA #$2000
-$A6:8817 9D AC 0F    STA $0FAC,x[$7E:102C]
-$A6:881A 80 15       BRA $15    [$8831]
+$A6:87F0 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A6:87F3 29 00 FF    AND #$FF00             ;|
+$A6:87F6 EB          XBA                    ;|
+$A6:87F7 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
+$A6:87F8 0A          ASL A                  ;|
+$A6:87F9 0A          ASL A                  ;|
+$A6:87FA A8          TAY                    ;/
+$A6:87FB 20 3A 8A    JSR $8A3A  [$A6:8A3A]  ; Move boulder vertically
+$A6:87FE BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A6:8801 DF 0A 78 7E CMP $7E780A,x[$7E:788A];} If [enemy Y position] >= [enemy falling target Y position]:
+$A6:8805 30 15       BMI $15    [$881C]     ;/
+$A6:8807 BF 0A 78 7E LDA $7E780A,x[$7E:788A];\
+$A6:880B 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [enemy falling target Y position]
+$A6:880E A9 32 88    LDA #$8832             ;\
+$A6:8811 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $8832 (bounce - rising)
+$A6:8814 A9 00 20    LDA #$2000             ;\
+$A6:8817 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy Y speed table index = 20h
+$A6:881A 80 15       BRA $15    [$8831]     ; Return
 
-$A6:881C BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A6:881F 18          CLC
-$A6:8820 69 00 01    ADC #$0100
-$A6:8823 9D AC 0F    STA $0FAC,x[$7E:102C]
-$A6:8826 C9 00 50    CMP #$5000
-$A6:8829 30 06       BMI $06    [$8831]
-$A6:882B A9 00 50    LDA #$5000
-$A6:882E 9D AC 0F    STA $0FAC,x
+$A6:881C BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A6:881F 18          CLC                    ;|
+$A6:8820 69 00 01    ADC #$0100             ;|
+$A6:8823 9D AC 0F    STA $0FAC,x[$7E:102C]  ;|
+$A6:8826 C9 00 50    CMP #$5000             ;} Enemy Y speed table index = min(50h, [enemy Y speed table index] + 1)
+$A6:8829 30 06       BMI $06    [$8831]     ;|
+$A6:882B A9 00 50    LDA #$5000             ;|
+$A6:882E 9D AC 0F    STA $0FAC,x            ;/
 
 $A6:8831 60          RTS
 }
 
 
-;;; $8832:  ;;;
+;;; $8832: Boulder function - bounce - rising ;;;
 {
 $A6:8832 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8835 BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A6:8838 29 00 FF    AND #$FF00
-$A6:883B EB          XBA
-$A6:883C 0A          ASL A
-$A6:883D 0A          ASL A
-$A6:883E 0A          ASL A
-$A6:883F 1A          INC A
-$A6:8840 1A          INC A
-$A6:8841 1A          INC A
-$A6:8842 1A          INC A
-$A6:8843 A8          TAY
-$A6:8844 20 3A 8A    JSR $8A3A  [$A6:8A3A]
-$A6:8847 BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A6:884A 38          SEC
-$A6:884B E9 00 01    SBC #$0100
-$A6:884E 9D AC 0F    STA $0FAC,x[$7E:102C]
-$A6:8851 10 0B       BPL $0B    [$885E]
-$A6:8853 9E AC 0F    STZ $0FAC,x[$7E:102C]
-$A6:8856 A9 8B 88    LDA #$888B
-$A6:8859 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A6:885C 80 2C       BRA $2C    [$888A]
+$A6:8835 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A6:8838 29 00 FF    AND #$FF00             ;|
+$A6:883B EB          XBA                    ;|
+$A6:883C 0A          ASL A                  ;|
+$A6:883D 0A          ASL A                  ;|
+$A6:883E 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 + 4 (negated quadratic speed table index)
+$A6:883F 1A          INC A                  ;|
+$A6:8840 1A          INC A                  ;|
+$A6:8841 1A          INC A                  ;|
+$A6:8842 1A          INC A                  ;|
+$A6:8843 A8          TAY                    ;/
+$A6:8844 20 3A 8A    JSR $8A3A  [$A6:8A3A]  ; Move boulder vertically
+$A6:8847 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A6:884A 38          SEC                    ;|
+$A6:884B E9 00 01    SBC #$0100             ;} Enemy Y speed table index -= 1
+$A6:884E 9D AC 0F    STA $0FAC,x[$7E:102C]  ;/
+$A6:8851 10 0B       BPL $0B    [$885E]     ; If [enemy Y speed table index] < 0:
+$A6:8853 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy Y speed table index = 0
+$A6:8856 A9 8B 88    LDA #$888B             ;\
+$A6:8859 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $888B (bounce - falling)
+$A6:885C 80 2C       BRA $2C    [$888A]     ; Return
 
-$A6:885E BD AA 0F    LDA $0FAA,x[$7E:102A]
-$A6:8861 29 00 FF    AND #$FF00
-$A6:8864 EB          XBA
-$A6:8865 0A          ASL A
-$A6:8866 0A          ASL A
-$A6:8867 0A          ASL A
-$A6:8868 A8          TAY
-$A6:8869 BD B0 0F    LDA $0FB0,x[$7E:1030]
-$A6:886C F0 04       BEQ $04    [$8872]
-$A6:886E C8          INY
-$A6:886F C8          INY
-$A6:8870 C8          INY
-$A6:8871 C8          INY
+$A6:885E BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
+$A6:8861 29 00 FF    AND #$FF00             ;|
+$A6:8864 EB          XBA                    ;|
+$A6:8865 0A          ASL A                  ;} Y = [enemy X speed table index] * 8 (quadratic speed table index)
+$A6:8866 0A          ASL A                  ;|
+$A6:8867 0A          ASL A                  ;|
+$A6:8868 A8          TAY                    ;/
+$A6:8869 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
+$A6:886C F0 04       BEQ $04    [$8872]     ;} If [enemy direction] != right:
+$A6:886E C8          INY                    ;\
+$A6:886F C8          INY                    ;|
+$A6:8870 C8          INY                    ;} Y += 4 (negated speed)
+$A6:8871 C8          INY                    ;/
 
-$A6:8872 20 00 8A    JSR $8A00  [$A6:8A00]
-$A6:8875 BD AA 0F    LDA $0FAA,x[$7E:102A]
-$A6:8878 18          CLC
-$A6:8879 69 20 00    ADC #$0020
-$A6:887C 9D AA 0F    STA $0FAA,x[$7E:102A]
-$A6:887F C9 00 50    CMP #$5000
-$A6:8882 30 06       BMI $06    [$888A]
-$A6:8884 A9 00 50    LDA #$5000
-$A6:8887 9D AA 0F    STA $0FAA,x
+$A6:8872 20 00 8A    JSR $8A00  [$A6:8A00]  ; Move boulder horizontally
+$A6:8875 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
+$A6:8878 18          CLC                    ;|
+$A6:8879 69 20 00    ADC #$0020             ;|
+$A6:887C 9D AA 0F    STA $0FAA,x[$7E:102A]  ;|
+$A6:887F C9 00 50    CMP #$5000             ;} Enemy X speed table index = min(50.00h, [enemy X speed table index] + 0.20h)
+$A6:8882 30 06       BMI $06    [$888A]     ;|
+$A6:8884 A9 00 50    LDA #$5000             ;|
+$A6:8887 9D AA 0F    STA $0FAA,x            ;/
 
 $A6:888A 60          RTS
 }
 
 
-;;; $888B:  ;;;
+;;; $888B: Boulder function - bounce - falling ;;;
 {
 $A6:888B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:888E BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
 $A6:8891 29 00 FF    AND #$FF00             ;|
 $A6:8894 EB          XBA                    ;|
-$A6:8895 0A          ASL A                  ;} Y = [enemy $0FAC] / 100h * 8 (quadratic speed table index)
+$A6:8895 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (quadratic speed table index)
 $A6:8896 0A          ASL A                  ;|
 $A6:8897 0A          ASL A                  ;|
 $A6:8898 A8          TAY                    ;/
@@ -257,16 +257,16 @@ $A6:88A3 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A6:88A7 90 62       BCC $62    [$890B]     ; If not collided with block: go to BRANCH_NO_COLLISION
 $A6:88A9 A9 42 00    LDA #$0042             ;\
 $A6:88AC 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 42h, sound library 2, max queued sounds allowed = 6 (boulder explodes - initial)
-$A6:88B0 BD B0 0F    LDA $0FB0,x[$7E:1030]
-$A6:88B3 C9 02 00    CMP #$0002
-$A6:88B6 D0 26       BNE $26    [$88DE]
-$A6:88B8 BD 86 0F    LDA $0F86,x[$7E:1006]
-$A6:88BB 09 00 02    ORA #$0200
-$A6:88BE 9D 86 0F    STA $0F86,x[$7E:1006]
-$A6:88C1 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A6:88C4 85 12       STA $12    [$7E:0012]
-$A6:88C6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A6:88C9 85 14       STA $14    [$7E:0014]
+$A6:88B0 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
+$A6:88B3 C9 02 00    CMP #$0002             ;} If [enemy direction] = 2:
+$A6:88B6 D0 26       BNE $26    [$88DE]     ;/
+$A6:88B8 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A6:88BB 09 00 02    ORA #$0200             ;} Mark enemy for deletion
+$A6:88BE 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
+$A6:88C1 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A6:88C4 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A6:88C6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A6:88C9 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:88CB A9 11 00    LDA #$0011             ; A = 11h (rock particles)
 $A6:88CE A0 09 E5    LDY #$E509             ;\
 $A6:88D1 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
@@ -274,8 +274,8 @@ $A6:88D5 A9 43 00    LDA #$0043             ;\
 $A6:88D8 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 43h, sound library 2, max queued sounds allowed = 6 (boulder explodes - continued)
 $A6:88DC 80 63       BRA $63    [$8941]
 
-$A6:88DE A9 32 88    LDA #$8832
-$A6:88E1 9D A8 0F    STA $0FA8,x
+$A6:88DE A9 32 88    LDA #$8832             ;\
+$A6:88E1 9D A8 0F    STA $0FA8,x            ;} Enemy function = $8832 (bounce - rising)
 $A6:88E4 BD AE 0F    LDA $0FAE,x
 $A6:88E7 3A          DEC A
 $A6:88E8 0A          ASL A
@@ -288,8 +288,8 @@ $A6:88F5 BD 7E 0F    LDA $0F7E,x
 $A6:88F8 9F 06 78 7E STA $7E7806,x
 $A6:88FC BD 80 0F    LDA $0F80,x
 $A6:88FF 9F 04 78 7E STA $7E7804,x
-$A6:8903 A9 42 89    LDA #$8942
-$A6:8906 9D A8 0F    STA $0FA8,x
+$A6:8903 A9 42 89    LDA #$8942             ;\
+$A6:8906 9D A8 0F    STA $0FA8,x            ;} Enemy function = $8942 (rolling)
 $A6:8909 80 36       BRA $36    [$8941]
 
 ; BRANCH_NO_COLLISION
@@ -311,7 +311,7 @@ $A6:8926 C8          INY
 $A6:8927 C8          INY
 $A6:8928 C8          INY
 
-$A6:8929 20 00 8A    JSR $8A00  [$A6:8A00]
+$A6:8929 20 00 8A    JSR $8A00  [$A6:8A00]  ; Move boulder horizontally
 $A6:892C BD AA 0F    LDA $0FAA,x[$7E:102A]
 $A6:892F 18          CLC
 $A6:8930 69 20 00    ADC #$0020
@@ -325,7 +325,7 @@ $A6:8941 60          RTS
 }
 
 
-;;; $8942:  ;;;
+;;; $8942: Boulder function - rolling ;;;
 {
 $A6:8942 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8945 BD AA 0F    LDA $0FAA,x[$7E:116A]  ;\
@@ -365,8 +365,8 @@ $A6:8989 BD 86 0F    LDA $0F86,x[$7E:1146]
 $A6:898C 09 00 01    ORA #$0100
 $A6:898F 09 00 02    ORA #$0200
 $A6:8992 9D 86 0F    STA $0F86,x[$7E:1146]
-$A6:8995 A9 FC 89    LDA #$89FC
-$A6:8998 9D A8 0F    STA $0FA8,x[$7E:1168]
+$A6:8995 A9 FC 89    LDA #$89FC             ;\
+$A6:8998 9D A8 0F    STA $0FA8,x[$7E:1168]  ;} Enemy function = RTS
 $A6:899B A9 42 00    LDA #$0042             ;\
 $A6:899E 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 42h, sound library 2, max queued sounds allowed = 6 (boulder explodes - initial)
 $A6:89A2 BD 7A 0F    LDA $0F7A,x[$7E:113A]
@@ -406,15 +406,17 @@ $A6:89FB 60          RTS
 }
 
 
-;;; $89FC:  ;;;
+;;; $89FC: RTS ;;;
 {
 $A6:89FC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:89FF 60          RTS
 }
 
 
-;;; $8A00:  ;;;
+;;; $8A00: Move boulder horizontally ;;;
 {
+;; Parameters:
+;;     Y: Quadratic speed table index
 $A6:8A00 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8A03 BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;\
 $A6:8A06 18          CLC                    ;|
@@ -431,7 +433,7 @@ $A6:8A1C 60          RTS
 }
 
 
-;;; $8A1D:  ;;;
+;;; $8A1D: Unused. Move boulder horizontally with linear speed table ;;;
 {
 ;; Parameters:
 ;;     Y: Linear speed table index
@@ -451,8 +453,10 @@ $A6:8A39 60          RTS
 }
 
 
-;;; $8A3A:  ;;;
+;;; $8A3A: Move boulder vertically ;;;
 {
+;; Parameters:
+;;     Y: Quadratic speed table index
 $A6:8A3A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8A3D BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
 $A6:8A40 18          CLC                    ;|
@@ -503,7 +507,7 @@ $A6:8B09             dw 3800, 62BA, 49F3, 2D4D, 0C44, 49F3, 356E, 20C9, 1486, 24
 }
 
 
-;;; $8B29: Instruction list  ;;;
+;;; $8B29: Instruction list ;;;
 {
 $A6:8B29             dx 0001,8CE5,
                         812F        ; Sleep
@@ -516,19 +520,19 @@ $A6:8B2F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8B32 A9 29 8B    LDA #$8B29             ;\
 $A6:8B35 9D 92 0F    STA $0F92,x[$7E:14D2]  ;} Enemy instruction list pointer = $8B29
 $A6:8B38 A9 B4 8B    LDA #$8BB4             ;\
-$A6:8B3B 9D A8 0F    STA $0FA8,x[$7E:14E8]  ;} Enemy function = $8BB4
+$A6:8B3B 9D A8 0F    STA $0FA8,x[$7E:14E8]  ;} Enemy function = $8BB4 (waiting to fall)
 $A6:8B3E BD B4 0F    LDA $0FB4,x[$7E:14F4]  ;\
 $A6:8B41 29 FF 00    AND #$00FF             ;|
 $A6:8B44 0A          ASL A                  ;|
-$A6:8B45 0A          ASL A                  ;} Enemy $7E:7804 = [enemy parameter 1 low] * 8
+$A6:8B45 0A          ASL A                  ;} Enemy falling Y speed table index = [enemy parameter 1 low] * 8
 $A6:8B46 0A          ASL A                  ;|
 $A6:8B47 9F 04 78 7E STA $7E7804,x[$7E:7D44];/
 $A6:8B4B AA          TAX                    ;\
 $A6:8B4C BD 87 81    LDA $8187,x[$A6:8187]  ;|
 $A6:8B4F 85 12       STA $12    [$7E:0012]  ;|
 $A6:8B51 BD 89 81    LDA $8189,x[$A6:8189]  ;|
-$A6:8B54 85 14       STA $14    [$7E:0014]  ;} Enemy $0FB0 = [$8189 + [enemy $7E:7804]]
-$A6:8B56 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Enemy $0FB2 = [$8187 + [enemy $7E:7804]]
+$A6:8B54 85 14       STA $14    [$7E:0014]  ;} Enemy $0FB0 = [$8187 + [enemy falling Y speed table index] + 2] (never read)
+$A6:8B56 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Enemy $0FB2 = [$8187 + [enemy falling Y speed table index]] (never read)
 $A6:8B59 A5 14       LDA $14    [$7E:0014]  ;|
 $A6:8B5B 9D B0 0F    STA $0FB0,x[$7E:14F0]  ;|
 $A6:8B5E A5 12       LDA $12    [$7E:0012]  ;|
@@ -536,15 +540,15 @@ $A6:8B60 9D B2 0F    STA $0FB2,x[$7E:14F2]  ;/
 $A6:8B63 BD B6 0F    LDA $0FB6,x[$7E:14F6]  ;\
 $A6:8B66 29 00 FF    AND #$FF00             ;|
 $A6:8B69 EB          XBA                    ;|
-$A6:8B6A 18          CLC                    ;} Enemy $0FAE = [enemy Y position] + [enemy parameter 2 high]
+$A6:8B6A 18          CLC                    ;} Enemy falling target Y position = [enemy Y position] + [enemy parameter 2 high]
 $A6:8B6B 7D 7E 0F    ADC $0F7E,x[$7E:14BE]  ;|
 $A6:8B6E 9D AE 0F    STA $0FAE,x[$7E:14EE]  ;/
 $A6:8B71 BD 7E 0F    LDA $0F7E,x[$7E:14BE]  ;\
-$A6:8B74 9D AC 0F    STA $0FAC,x[$7E:14EC]  ;} Enemy $0FAC = [enemy Y position]
+$A6:8B74 9D AC 0F    STA $0FAC,x[$7E:14EC]  ;} Enemy rising target Y position = [enemy Y position]
 $A6:8B77 BD B6 0F    LDA $0FB6,x[$7E:14F6]  ;\
 $A6:8B7A 29 FF 00    AND #$00FF             ;|
-$A6:8B7D 9F 00 78 7E STA $7E7800,x[$7E:7D40];} Enemy $0FAA = enemy $7E:7800 = [enemy parameter 2 low]
-$A6:8B81 9D AA 0F    STA $0FAA,x[$7E:14EA]  ;/
+$A6:8B7D 9F 00 78 7E STA $7E7800,x[$7E:7D40];} Enemy fall wait timer reset value = [enemy parameter 2 low]
+$A6:8B81 9D AA 0F    STA $0FAA,x[$7E:14EA]  ; Enemy fall wait timer = [enemy fall wait timer reset value]
 $A6:8B84 6B          RTL
 }
 
@@ -583,52 +587,52 @@ $A6:8BB3 6B          RTL
 }
 
 
-;;; $8BB4: Spikey platform function -  ;;;
+;;; $8BB4: Spikey platform function - waiting to fall ;;;
 {
 $A6:8BB4 DA          PHX
 $A6:8BB5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8BB8 DE AA 0F    DEC $0FAA,x[$7E:126A]  ; Decrement enemy $0FAA
+$A6:8BB8 DE AA 0F    DEC $0FAA,x[$7E:126A]  ; Decrement enemy fall wait timer
 $A6:8BBB BD AA 0F    LDA $0FAA,x[$7E:126A]  ;\
-$A6:8BBE D0 1A       BNE $1A    [$8BDA]     ;} If [enemy $0FAA] != 0: return
+$A6:8BBE D0 1A       BNE $1A    [$8BDA]     ;} If [enemy fall wait timer] != 0: return
 $A6:8BC0 BF 00 78 7E LDA $7E7800,x[$7E:7AC0];\
-$A6:8BC4 9D AA 0F    STA $0FAA,x[$7E:126A]  ;} Enemy $0FAA = [enemy $7E:7800]
+$A6:8BC4 9D AA 0F    STA $0FAA,x[$7E:126A]  ;} Enemy fall wait timer = [enemy fall wait timer reset value]
 $A6:8BC7 BD B4 0F    LDA $0FB4,x[$7E:1274]  ;\
 $A6:8BCA 29 FF 00    AND #$00FF             ;|
 $A6:8BCD 0A          ASL A                  ;|
-$A6:8BCE 0A          ASL A                  ;} Enemy $7E:7804 = [enemy parameter 1 low] * 8
+$A6:8BCE 0A          ASL A                  ;} Enemy falling Y speed table index = [enemy parameter 1 low] * 8
 $A6:8BCF 0A          ASL A                  ;|
 $A6:8BD0 9F 04 78 7E STA $7E7804,x[$7E:7AC4];/
 $A6:8BD4 A9 DC 8B    LDA #$8BDC             ;\
-$A6:8BD7 9D A8 0F    STA $0FA8,x[$7E:1268]  ;} Enemy function = $8BDC
+$A6:8BD7 9D A8 0F    STA $0FA8,x[$7E:1268]  ;} Enemy function = $8BDC (falling)
 
 $A6:8BDA FA          PLX
 $A6:8BDB 60          RTS
 }
 
 
-;;; $8BDC: Spikey platform function -  ;;;
+;;; $8BDC: Spikey platform function - falling ;;;
 {
 $A6:8BDC DA          PHX
 $A6:8BDD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8BE0 BD 7E 0F    LDA $0F7E,x[$7E:123E]
-$A6:8BE3 9F 02 78 7E STA $7E7802,x[$7E:7AC2]
-$A6:8BE7 BF 04 78 7E LDA $7E7804,x[$7E:7AC4]
-$A6:8BEB AA          TAX
+$A6:8BE0 BD 7E 0F    LDA $0F7E,x[$7E:123E]  ;\
+$A6:8BE3 9F 02 78 7E STA $7E7802,x[$7E:7AC2];} Enemy previous Y position = [enemy Y position]
+$A6:8BE7 BF 04 78 7E LDA $7E7804,x[$7E:7AC4];\
+$A6:8BEB AA          TAX                    ;} X = [enemy falling Y speed table index] (linear speed table index)
 $A6:8BEC BD 87 81    LDA $8187,x[$A6:8287]  ;\
 $A6:8BEF 85 14       STA $14    [$7E:0014]  ;|
 $A6:8BF1 BD 89 81    LDA $8189,x[$A6:8289]  ;|
-$A6:8BF4 85 12       STA $12    [$7E:0012]  ;} Enemy Y position += [$8187 + [X]].[$8187 + [X] + 2]
+$A6:8BF4 85 12       STA $12    [$7E:0012]  ;} Enemy Y position += [$8187 + [X]].[$8187 + [X] + 2] (speed)
 $A6:8BF6 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
 $A6:8BF9 22 90 AF A0 JSL $A0AF90[$A0:AF90]  ;/
-$A6:8BFD BD 7E 0F    LDA $0F7E,x[$7E:123E]
-$A6:8C00 DD AE 0F    CMP $0FAE,x[$7E:126E]
-$A6:8C03 30 1A       BMI $1A    [$8C1F]
-$A6:8C05 A9 40 00    LDA #$0040
-$A6:8C08 9F 06 78 7E STA $7E7806,x[$7E:7AC6]
+$A6:8BFD BD 7E 0F    LDA $0F7E,x[$7E:123E]  ;\
+$A6:8C00 DD AE 0F    CMP $0FAE,x[$7E:126E]  ;} If [enemy Y position] >= [enemy falling target Y position]:
+$A6:8C03 30 1A       BMI $1A    [$8C1F]     ;/
+$A6:8C05 A9 40 00    LDA #$0040             ;\
+$A6:8C08 9F 06 78 7E STA $7E7806,x[$7E:7AC6];} Enemy rise wait timer = 40h
 $A6:8C0C A9 4A 8C    LDA #$8C4A             ;\
-$A6:8C0F 9D A8 0F    STA $0FA8,x[$7E:1268]  ;} Enemy function = $8C4A
-$A6:8C12 BD AE 0F    LDA $0FAE,x[$7E:126E]
-$A6:8C15 9D 7E 0F    STA $0F7E,x[$7E:123E]
+$A6:8C0F 9D A8 0F    STA $0FA8,x[$7E:1268]  ;} Enemy function = $8C4A (waiting to rise)
+$A6:8C12 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
+$A6:8C15 9D 7E 0F    STA $0F7E,x[$7E:123E]  ;} Enemy Y position = [enemy falling target Y position]
 $A6:8C18 A9 1B 00    LDA #$001B             ;\
 $A6:8C1B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Bh, sound library 2, max queued sounds allowed = 6 (spikey platform stops)
 
@@ -637,62 +641,62 @@ $A6:8C23 F0 0F       BEQ $0F    [$8C34]     ;} If spikey platform is touching Sa
 $A6:8C25 BD 7E 0F    LDA $0F7E,x[$7E:13BE]  ;\
 $A6:8C28 38          SEC                    ;|
 $A6:8C29 FF 02 78 7E SBC $7E7802,x[$7E:7C42];|
-$A6:8C2D 18          CLC                    ;} Extra Samus Y displacement += [enemy Y position] - [enemy $7E:7802]
+$A6:8C2D 18          CLC                    ;} Extra Samus Y displacement += [enemy Y position] - [enemy previous Y position]
 $A6:8C2E 6D 5C 0B    ADC $0B5C  [$7E:0B5C]  ;|
 $A6:8C31 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
-$A6:8C34 BF 04 78 7E LDA $7E7804,x[$7E:7AC4]
-$A6:8C38 18          CLC
-$A6:8C39 69 08 00    ADC #$0008
-$A6:8C3C C9 00 02    CMP #$0200
-$A6:8C3F 30 03       BMI $03    [$8C44]
-$A6:8C41 A9 00 02    LDA #$0200
-
-$A6:8C44 9F 04 78 7E STA $7E7804,x[$7E:7AC4]
+$A6:8C34 BF 04 78 7E LDA $7E7804,x[$7E:7AC4];\
+$A6:8C38 18          CLC                    ;|
+$A6:8C39 69 08 00    ADC #$0008             ;|
+$A6:8C3C C9 00 02    CMP #$0200             ;|
+$A6:8C3F 30 03       BMI $03    [$8C44]     ;} Enemy falling Y speed table index = min(200h, [enemy falling Y speed table index] + 8)
+$A6:8C41 A9 00 02    LDA #$0200             ;|
+                                            ;|
+$A6:8C44 9F 04 78 7E STA $7E7804,x[$7E:7AC4];/
 $A6:8C48 FA          PLX
 $A6:8C49 60          RTS
 }
 
 
-;;; $8C4A: Spikey platform function -  ;;;
+;;; $8C4A: Spikey platform function - waiting to rise ;;;
 {
 $A6:8C4A BF 06 78 7E LDA $7E7806,x[$7E:7AC6];\
-$A6:8C4E 3A          DEC A                  ;} Decrement enemy $7E:7806
+$A6:8C4E 3A          DEC A                  ;} Decrement enemy rise wait timer
 $A6:8C4F 9F 06 78 7E STA $7E7806,x[$7E:7AC6];/
-$A6:8C53 F0 01       BEQ $01    [$8C56]     ; If [enemy $7E:7806] != 0:
+$A6:8C53 F0 01       BEQ $01    [$8C56]     ; If [enemy rise wait timer] != 0:
 $A6:8C55 60          RTS                    ; Return
 
 $A6:8C56 A9 5D 8C    LDA #$8C5D             ;\
-$A6:8C59 9D A8 0F    STA $0FA8,x[$7E:12E8]  ;} Enemy function = $8C5D
+$A6:8C59 9D A8 0F    STA $0FA8,x[$7E:12E8]  ;} Enemy function = $8C5D (rising)
 $A6:8C5C 60          RTS
 }
 
 
-;;; $8C5D: Spikey platform function -  ;;;
+;;; $8C5D: Spikey platform function - rising ;;;
 {
 $A6:8C5D DA          PHX
 $A6:8C5E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:8C61 BD 7E 0F    LDA $0F7E,x[$7E:12BE]
-$A6:8C64 9F 02 78 7E STA $7E7802,x[$7E:7B42]
+$A6:8C61 BD 7E 0F    LDA $0F7E,x[$7E:12BE]  ;\
+$A6:8C64 9F 02 78 7E STA $7E7802,x[$7E:7B42];} Enemy previous Y position = [enemy Y position]
 $A6:8C68 A9 00 80    LDA #$8000             ;\
 $A6:8C6B 85 12       STA $12    [$7E:0012]  ;|
 $A6:8C6D A9 00 00    LDA #$0000             ;} Enemy Y position -= 0.8000h
 $A6:8C70 85 14       STA $14    [$7E:0014]  ;|
 $A6:8C72 22 7E AF A0 JSL $A0AF7E[$A0:AF7E]  ;/
-$A6:8C76 BD 7E 0F    LDA $0F7E,x[$7E:12BE]
-$A6:8C79 DD AC 0F    CMP $0FAC,x[$7E:12EC]
-$A6:8C7C 10 0C       BPL $0C    [$8C8A]
+$A6:8C76 BD 7E 0F    LDA $0F7E,x[$7E:12BE]  ;\
+$A6:8C79 DD AC 0F    CMP $0FAC,x[$7E:12EC]  ;} If [enemy Y position] < [enemy rising target Y position]:
+$A6:8C7C 10 0C       BPL $0C    [$8C8A]     ;/
 $A6:8C7E A9 B4 8B    LDA #$8BB4             ;\
-$A6:8C81 9D A8 0F    STA $0FA8,x[$7E:13E8]  ;} Enemy function = $8BB4
-$A6:8C84 BD AC 0F    LDA $0FAC,x[$7E:13EC]
-$A6:8C87 9D 7E 0F    STA $0F7E,x[$7E:13BE]
+$A6:8C81 9D A8 0F    STA $0FA8,x[$7E:13E8]  ;} Enemy function = $8BB4 (waiting to fall)
+$A6:8C84 BD AC 0F    LDA $0FAC,x[$7E:13EC]  ;\
+$A6:8C87 9D 7E 0F    STA $0F7E,x[$7E:13BE]  ;} Enemy Y position = [enemy rising target Y position]
 
 $A6:8C8A 22 A1 8C A6 JSL $A68CA1[$A6:8CA1]  ;\
 $A6:8C8E F0 0F       BEQ $0F    [$8C9F]     ;} If spikey platform is touching Samus from below:
 $A6:8C90 BD 7E 0F    LDA $0F7E,x[$7E:12BE]  ;\
 $A6:8C93 38          SEC                    ;|
 $A6:8C94 FF 02 78 7E SBC $7E7802,x[$7E:7B42];|
-$A6:8C98 18          CLC                    ;} Extra Samus Y displacement += [enemy Y position] - [enemy $7E:7802]
+$A6:8C98 18          CLC                    ;} Extra Samus Y displacement += [enemy Y position] - [enemy previous Y position]
 $A6:8C99 6D 5C 0B    ADC $0B5C  [$7E:0B5C]  ;|
 $A6:8C9C 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
