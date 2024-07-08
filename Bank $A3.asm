@@ -1239,7 +1239,7 @@ $A3:94F8 A9 D6 94    LDA #$94D6             ;\
 $A3:94FB 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $94D6
 $A3:94FE 1E B4 0F    ASL $0FB4,x[$7E:0FB4]  ; Enemy parameter 1 *= 2
 $A3:9501 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A3:9504 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = [enemy Y position]
+$A3:9504 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy target Y position = [enemy Y position]
 $A3:9507 AD 18 0E    LDA $0E18  [$7E:0E18]  ;\
 $A3:950A C9 02 00    CMP #$0002             ;} If [elevator status] != door transition:
 $A3:950D F0 06       BEQ $06    [$9515]     ;/
@@ -1349,7 +1349,7 @@ $A3:95CE BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
 $A3:95D1 69 01 00    ADC #$0001             ;|
 $A3:95D4 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A3:95D7 DD A8 0F    CMP $0FA8,x[$7E:1028]  ;\
-$A3:95DA B0 1C       BCS $1C    [$95F8]     ;} If [enemy Y position] < [enemy $0FA8]:
+$A3:95DA B0 1C       BCS $1C    [$95F8]     ;} If [enemy Y position] < [enemy target Y position]:
 $A3:95DC 80 34       BRA $34    [$9612]     ; Go to place Samus on top of elevator
 
 $A3:95DE BD 80 0F    LDA $0F80,x[$7E:0F80]  ;\ Else ([enemy parameter 1] = 0):
@@ -1360,7 +1360,7 @@ $A3:95E8 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;|
 $A3:95EB E9 01 00    SBC #$0001             ;|
 $A3:95EE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A3:95F1 DD A8 0F    CMP $0FA8,x[$7E:0FA8]  ;\
-$A3:95F4 90 02       BCC $02    [$95F8]     ;} If [enemy Y position] >= [enemy $0FA8]:
+$A3:95F4 90 02       BCC $02    [$95F8]     ;} If [enemy Y position] >= [enemy target Y position]:
 $A3:95F6 80 1A       BRA $1A    [$9612]     ; Go to place Samus on top of elevator
 
 $A3:95F8 9C 18 0E    STZ $0E18  [$7E:0E18]  ; Elevator status = inactive
@@ -1368,7 +1368,7 @@ $A3:95FB 9C 16 0E    STZ $0E16  [$7E:0E16]  ; Elevator properties = 0
 $A3:95FE A9 25 00    LDA #$0025             ;\
 $A3:9601 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 25h, sound library 3, max queued sounds allowed = 6 (silence)
 $A3:9605 BD A8 0F    LDA $0FA8,x[$7E:1028]  ;\
-$A3:9608 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [enemy $0FA8]
+$A3:9608 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [enemy target Y position]
 $A3:960B A9 0B 00    LDA #$000B             ;\
 $A3:960E 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus from facing forward
 }
@@ -3129,7 +3129,7 @@ $A3:A759             dx 0005,AA06,
 }
 
 
-;;; $A76D: Mochtroid constants ;;;
+;;; $A76D: Mochtroid shake velocity table ;;;
 {
 ; Velocities for unused main AI function $A88F
 ; Indexed by [enemy $0FB0]
@@ -3145,7 +3145,7 @@ $A3:A77D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A780 A9 02 00    LDA #$0002             ;\
 $A3:A783 9D 9A 0F    STA $0F9A,x[$7E:0F9A]  ;} Enemy layer = 2
 $A3:A786 A9 45 A7    LDA #$A745             ;\
-$A3:A789 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list to $A745
+$A3:A789 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list to $A745 (not touching Samus)
 $A3:A78C 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy function index = 0
 $A3:A78F 6B          RTL
 }
@@ -3159,7 +3159,7 @@ $A3:A796 0A          ASL A                  ;} X = [enemy function index] * 2
 $A3:A797 AA          TAX                    ;/
 $A3:A798 DA          PHX                    ;\
 $A3:A799 AE 54 0E    LDX $0E54  [$7E:0E54]  ;|
-$A3:A79C 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ;} Enemy function index = 0
+$A3:A79C 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ;} Enemy function index = 0 (not touching Samus)
 $A3:A79F FA          PLX                    ;/
 $A3:A7A0 FC A4 A7    JSR ($A7A4,x)[$A3:A7AA]; Execute [$A7A4 + [X]]
 $A3:A7A3 6B          RTL
@@ -3168,7 +3168,7 @@ $A3:A7A4             dw A7AA, A8C8, A88F
 }
 
 
-;;; $A7AA: Mochtroid main AI - [enemy $0FB2] = 0: not touching Samus ;;;
+;;; $A7AA: Mochtroid function index 0 - not touching Samus ;;;
 {
 $A3:A7AA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A7AD 64 12       STZ $12    [$7E:0012]  ;\
@@ -3273,16 +3273,16 @@ $A3:A882 9E A8 0F    STZ $0FA8,x[$7E:0FA8]  ;\
 $A3:A885 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ;} Enemy X velocity = 0.0
 
 $A3:A888 A9 45 A7    LDA #$A745             ;\
-$A3:A88B 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list to $A745
+$A3:A88B 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list to $A745 (not touching Samus)
 $A3:A88E 60          RTS
 }
 
 
-;;; $A88F: Unused. Mochtroid main AI - [enemy $0FB2] = 2 ;;;
+;;; $A88F: Unused. Mochtroid function index 2 - shaking ;;;
 {
 $A3:A88F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A892 BD B0 0F    LDA $0FB0,x            ;\
-$A3:A895 29 06 00    AND #$0006             ;} Y = [enemy $0FB0] & 6
+$A3:A895 29 06 00    AND #$0006             ;} Y = [enemy shake timer] / 2 % 4 * 2
 $A3:A898 A8          TAY                    ;/
 $A3:A899 BD 7A 0F    LDA $0F7A,x            ;\
 $A3:A89C 18          CLC                    ;|
@@ -3296,17 +3296,17 @@ $A3:A8AD 9E A8 0F    STZ $0FA8,x            ;\
 $A3:A8B0 9E AA 0F    STZ $0FAA,x            ;} Enemy X velocity = 0.0
 $A3:A8B3 9E AC 0F    STZ $0FAC,x            ;\
 $A3:A8B6 9E AE 0F    STZ $0FAE,x            ;} Enemy Y velocity = 0.0
-$A3:A8B9 DE B0 0F    DEC $0FB0,x            ; Decrement enemy $0FB0
-$A3:A8BC D0 03       BNE $03    [$A8C1]     ; If [enemy $0FB0] = 0:
-$A3:A8BE 9E B2 0F    STZ $0FB2,x            ; Enemy function index = 0
+$A3:A8B9 DE B0 0F    DEC $0FB0,x            ; Decrement enemy shake timer
+$A3:A8BC D0 03       BNE $03    [$A8C1]     ; If [enemy shake timer] = 0:
+$A3:A8BE 9E B2 0F    STZ $0FB2,x            ; Enemy function index = 0 (not touching Samus)
 
 $A3:A8C1 A9 45 A7    LDA #$A745             ;\
-$A3:A8C4 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list = $A745
+$A3:A8C4 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list = $A745 (not touching Samus)
 $A3:A8C7 60          RTS
 }
 
 
-;;; $A8C8: Mochtroid main AI - [enemy $0FB2] = 1: touching Samus ;;;
+;;; $A8C8: Mochtroid function index 1 - touching Samus ;;;
 {
 $A3:A8C8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A8CB BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
@@ -3378,8 +3378,8 @@ $A3:A93B 60          RTS
 ; causing garbage instructions to be processed.
 
 $A3:A93C DF 02 78 7E CMP $7E7802,x[$7E:7802];\
-$A3:A940 F0 10       BEQ $10    [$A952]     ;} If [A] = [enemy $7E:7802]: return
-$A3:A942 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy $7E:7802 = [A]
+$A3:A940 F0 10       BEQ $10    [$A952]     ;} If [A] = [enemy instruction list]: return
+$A3:A942 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy instruction list = [A]
 $A3:A946 9D 92 0F    STA $0F92,x[$7E:0F92]  ; Enemy instruction list pointer = [A]
 $A3:A949 A9 01 00    LDA #$0001             ;\
 $A3:A94C 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
@@ -3395,9 +3395,9 @@ $A3:A953 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A956 A9 01 00    LDA #$0001             ;\
 $A3:A959 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function index = 1
 $A3:A95C A9 59 A7    LDA #$A759             ;\
-$A3:A95F 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list = $A759
+$A3:A95F 20 3C A9    JSR $A93C  [$A3:A93C]  ;} Set enemy instruction list = $A759 (touching Samus)
 $A3:A962 BF 00 80 7E LDA $7E8000,x[$7E:8040];\
-$A3:A966 1A          INC A                  ;} Increment enemy $7E:8000
+$A3:A966 1A          INC A                  ;} Increment enemy damage timer
 $A3:A967 9F 00 80 7E STA $7E8000,x[$7E:8040];/
 $A3:A96B AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $A3:A96E D0 2A       BNE $2A    [$A99A]     ;} If [Samus contact damage index] != normal: go to BRANCH_DAMAGE
@@ -3412,10 +3412,10 @@ $A3:A983 A9 2D 00    LDA #$002D             ;\
 $A3:A986 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Dh, sound library 3, max queued sounds allowed = 6 (gaining/losing incremental health)
 
 $A3:A98A BF 00 80 7E LDA $7E8000,x[$7E:8040];\
-$A3:A98E C9 50 00    CMP #$0050             ;} If [enemy $7E:8000] < 50h: return
+$A3:A98E C9 50 00    CMP #$0050             ;} If [enemy damage timer] < 50h: return
 $A3:A991 30 14       BMI $14    [$A9A7]     ;/
 $A3:A993 A9 00 00    LDA #$0000             ;\
-$A3:A996 9F 00 80 7E STA $7E8000,x[$7E:8180];} Enemy $7E:8000 = 0
+$A3:A996 9F 00 80 7E STA $7E8000,x[$7E:8180];} Enemy damage timer = 0
 
 ; BRANCH_DAMAGE
 $A3:A99A 22 23 80 A3 JSL $A38023[$A3:8023]  ; Normal enemy touch AI
@@ -4392,7 +4392,7 @@ $A3:B456 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy instruction list table inde
 $A3:B459 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ; Enemy previous instruction list table index = 0
 $A3:B45C 9F 00 78 7E STA $7E7800,x[$7E:7840]; Enemy X speed table index = 0
 $A3:B460 A9 C1 B3    LDA #$B3C1             ;\
-$A3:B463 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $B3C1
+$A3:B463 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $B3C1 (facing left - shooting)
 $A3:B466 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A3:B469 09 00 01    ORA #$0100             ;} Set enemy to be invisible
 $A3:B46C 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
@@ -4417,10 +4417,10 @@ $A3:B482 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B485 A9 80 00    LDA #$0080             ;\
 $A3:B488 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is not within 80h pixel columns of enemy: return
 $A3:B48C F0 19       BEQ $19    [$B4A7]     ;/
-$A3:B48E A0 01 00    LDY #$0001             ; Enemy instruction list table index = 1
+$A3:B48E A0 01 00    LDY #$0001             ; Enemy instruction list table index = 1 (facing left - rising)
 $A3:B491 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $A3:B495 30 03       BMI $03    [$B49A]     ;} If [Samus X position] >= [enemy X position]:
-$A3:B497 A0 03 00    LDY #$0003             ; Enemy instruction list table index = 3
+$A3:B497 A0 03 00    LDY #$0003             ; Enemy instruction list table index = 3 (facing right - rising)
 
 $A3:B49A 98          TYA
 $A3:B49B 9D AE 0F    STA $0FAE,x[$7E:0FEE]
@@ -4439,7 +4439,7 @@ $A3:B4AB 29 FF FE    AND #$FEFF             ;} Set enemy to be visible
 $A3:B4AE 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
 $A3:B4B1 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
 $A3:B4B5 30 10       BMI $10    [$B4C7]     ;} If [Samus Y position] >= [enemy Y position]:
-$A3:B4B7 DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Enemy instruction list table index -= 1
+$A3:B4B7 DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Enemy instruction list table index -= 1 (rising -> shooting)
 $A3:B4BA 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
 $A3:B4BD 9E B2 0F    STZ $0FB2,x[$7E:0FF2]
 $A3:B4C0 A9 D6 B4    LDA #$B4D6             ;\
@@ -4491,7 +4491,7 @@ $A3:B51E BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A3:B521 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy spawn X position]
 $A3:B524 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:B527 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy spawn Y position]
-$A3:B52A 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ; Enemy instruction list table index = 0
+$A3:B52A 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ; Enemy instruction list table index = 0 (facing left - shooting)
 $A3:B52D 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
 $A3:B530 A9 82 B4    LDA #$B482             ;\
 $A3:B533 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy function = $B482 (wait for Samus to get near)
@@ -9404,7 +9404,7 @@ $A3:EC09             dw EC11, ECDC, ED8F, EDAB
 }
 
 
-;;; $EC11: Metroid function - chase Samus ;;;
+;;; $EC11: Metroid function index 0 - chase Samus ;;;
 {
 ;; Parameter:
 ;;     $0E32: [Samus Y position] - 8
@@ -9504,7 +9504,7 @@ $A3:ECDB 60          RTS
 }
 
 
-;;; $ECDC: Metroid function - latch onto Samus ;;;
+;;; $ECDC: Metroid function index 1 - latch onto Samus ;;;
 {
 ;; Parameter:
 ;;     $0E32: [Samus Y position] - 8
@@ -9603,7 +9603,7 @@ $A3:ED8E 60          RTS
 }
 
 
-;;; $ED8F: Metroid function - latched onto Samus ;;;
+;;; $ED8F: Metroid function index 2 - latched onto Samus ;;;
 {
 ;; Parameter:
 ;;     $0E32: [Samus Y position] - 8
@@ -9620,7 +9620,7 @@ $A3:EDAA 60          RTS
 }
 
 
-;;; $EDAB: Metroid function - bombed off Samus ;;;
+;;; $EDAB: Metroid function index 3 - bombed off Samus ;;;
 {
 $A3:EDAB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EDAE BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
@@ -9643,7 +9643,7 @@ $A3:EDD6 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy bombed off Samus c
 $A3:EDD9 D0 0F       BNE $0F    [$EDEA]     ; If [enemy bombed off Samus cooldown timer] = 0:
 $A3:EDDB 9E B2 0F    STZ $0FB2,x[$7E:0FF2]  ; Enemy function index = chase Samus
 $A3:EDDE A9 CF E9    LDA #$E9CF             ;\
-$A3:EDE1 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $E9CF
+$A3:EDE1 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $E9CF (chasing Samus)
 $A3:EDE4 A9 01 00    LDA #$0001             ;\
 $A3:EDE7 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 
@@ -9703,7 +9703,7 @@ $A3:EE43 0A          ASL A                  ;|
 $A3:EE44 9D AD 0F    STA $0FAD,x            ;/
 $A3:EE47 9E B2 0F    STZ $0FB2,x            ; Enemy function index = chase Samus
 $A3:EE4A A9 CF E9    LDA #$E9CF             ;\
-$A3:EE4D 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E9CF
+$A3:EE4D 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E9CF (chasing Samus)
 $A3:EE50 A9 01 00    LDA #$0001             ;\
 $A3:EE53 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 
@@ -9757,7 +9757,7 @@ $A3:EEB9 9D B2 0F    STA $0FB2,x[$7E:0FF2]
 $A3:EEBC C9 02 00    CMP #$0002             ;\
 $A3:EEBF D0 95       BNE $95    [$EE56]     ;} If [enemy function index] != latched onto Samus: return
 $A3:EEC1 A9 25 EA    LDA #$EA25             ;\
-$A3:EEC4 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $EA25
+$A3:EEC4 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $EA25 (draining Samus)
 $A3:EEC7 A9 01 00    LDA #$0001             ;\
 $A3:EECA 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A3:EECD 6B          RTL
@@ -9857,7 +9857,7 @@ $A3:EF8F 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy bombed off Samus cooldown t
 $A3:EF92 A9 03 00    LDA #$0003             ;\
 $A3:EF95 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function index = bombed off Samus
 $A3:EF98 A9 CF E9    LDA #$E9CF             ;\
-$A3:EF9B 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction pointer list = $E9CF
+$A3:EF9B 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $E9CF (chasing Samus)
 $A3:EF9E A9 01 00    LDA #$0001             ;\
 $A3:EFA1 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A3:EFA4 A9 13 00    LDA #$0013             ;\
@@ -9904,7 +9904,7 @@ $A3:EFE8 0A          ASL A                  ;|
 $A3:EFE9 9D AD 0F    STA $0FAD,x[$7E:106D]  ;/
 $A3:EFEC 9E B2 0F    STZ $0FB2,x[$7E:1072]  ; Enemy function index = chase Samus
 $A3:EFEF A9 CF E9    LDA #$E9CF             ;\
-$A3:EFF2 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $E9CF
+$A3:EFF2 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $E9CF (chasing Samus)
 $A3:EFF5 A9 01 00    LDA #$0001             ;\
 $A3:EFF8 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
 $A3:EFFB AD A6 18    LDA $18A6  [$7E:18A6]  ;\

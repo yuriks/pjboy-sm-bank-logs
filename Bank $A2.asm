@@ -1875,15 +1875,15 @@ $A2:9959             dx 000A, 01F8,08,215F, 01F8,00,215E, 0000,08,615F, 0000,00,
 }
 
 
-;;; $998D..9E69: Thin hopping blobs ;;;
+;;; $998D..9E69: Thin hopping blob ;;;
 {
-;;; $998D: Palette - enemy $CFBF (thin hopping blobs) ;;;
+;;; $998D: Palette - enemy $CFBF (thin hopping blob) ;;;
 {
 $A2:998D             dw 3800, 4B9C, 2610, 0CC6, 0C63, 42F7, 2A52, 19AD, 0D29, 5617, 3D72, 1C48, 0C05, 033B, 0216, 0113
 }
 
 
-;;; $99AD..9A06: Instruction lists - thin hopping blobs ;;;
+;;; $99AD..9A06: Instruction lists ;;;
 {
 ;;; $99AD: Instruction list - grounded/dropping - fast ;;;
 {
@@ -1968,7 +1968,7 @@ $A2:9A07             dw 0010,0100,0200,9D0B, ; 0: Normal - small hop
 }
 
 
-;;; $9A3F: Initialisation AI - enemy $CFBF (thin hopping blobs) ;;;
+;;; $9A3F: Initialisation AI - enemy $CFBF (thin hopping blob) ;;;
 {
 $A2:9A3F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9A42 A9 4D 80    LDA #$804D             ;\
@@ -2005,7 +2005,7 @@ $A2:9A7C 60          RTS
 }
 
 
-;;; $9A7D: Main AI - enemy $CFBF (thin hopping blobs) ;;;
+;;; $9A7D: Main AI - enemy $CFBF (thin hopping blob) ;;;
 {
 $A2:9A7D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9A80 FC AE 0F    JSR ($0FAE,x)[$A2:9B65]
@@ -2501,7 +2501,7 @@ $A2:9DF5 6B          RTL
 }
 
 
-;;; $9DF6: Spritemaps - thin hopping blobs ;;;
+;;; $9DF6: Spritemaps - thin hopping blob ;;;
 {
 $A2:9DF6             dx 0002, 0000,FC,6100, 01F8,FC,2100
 $A2:9E02             dx 0002, 0000,FC,6101, 01F8,FC,2101
@@ -3251,7 +3251,7 @@ $A2:A679 38          SEC                    ;|
 $A2:A67A E9 11 00    SBC #$0011             ;} Enemy Y position = [Samus Y position] - 11h
 $A2:A67D 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A2:A680 A9 0C A8    LDA #$A80C             ;\
-$A2:A683 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $A80C
+$A2:A683 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $A80C (landing on Zebes)
 $A2:A686 80 39       BRA $39    [$A6C1]     ; Go to BRANCH_MERGE
 
 $A2:A688 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
@@ -3260,7 +3260,7 @@ $A2:A68C E9 19 00    SBC #$0019             ;} Enemy Y position -= 19h
 $A2:A68F 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A2:A692 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ; Enemy fixed Y position = [enemy Y position]
 $A2:A695 A9 BD A9    LDA #$A9BD             ;\
-$A2:A698 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $A9BD
+$A2:A698 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $A9BD (handle letting Samus enter)
 $A2:A69B 80 24       BRA $24    [$A6C1]     ; Go to BRANCH_MERGE
 
 ; BRANCH_DEMO_TRANSITION
@@ -3274,7 +3274,7 @@ $A2:A6AC E9 19 00    SBC #$0019             ;} Enemy Y position -= 19h
 $A2:A6AF 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A2:A6B2 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ; Enemy fixed Y position = [enemy Y position]
 $A2:A6B5 A9 60 AB    LDA #$AB60             ;\
-$A2:A6B8 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $AB60
+$A2:A6B8 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $AB60 (wait for entrance pad to open)
 $A2:A6BB A9 90 00    LDA #$0090             ;\
 $A2:A6BE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Enemy function timer = 90h
 
@@ -3302,11 +3302,11 @@ $A2:A6E4 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
 $A2:A6E7 BD B6 0F    LDA $0FB6,x[$7E:0FF6]  ;\
 $A2:A6EA F0 08       BEQ $08    [$A6F4]     ;} If [enemy parameter 2] != 0:
 $A2:A6EC A9 0E A6    LDA #$A60E             ;\
-$A2:A6EF 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $A60E
+$A2:A6EF 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $A60E (gunship entrance pad - closed)
 $A2:A6F2 80 06       BRA $06    [$A6FA]
 
 $A2:A6F4 A9 1C A6    LDA #$A61C             ;\ Else ([enemy parameter 2] = 0):
-$A2:A6F7 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $A61C
+$A2:A6F7 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $A61C (gunship bottom)
 
 $A2:A6FA BD 58 0F    LDA $0F58,x[$7E:0F98]  ;\
 $A2:A6FD 9D 98 0F    STA $0F98,x[$7E:0FD8]  ;} Enemy VRAM tiles index = [enemy ([X] - 1) VRAM tiles index]
@@ -3343,7 +3343,7 @@ $A2:A744 D0 0C       BNE $0C    [$A752]     ;} If [demo set] = 0:
 $A2:A746 A9 01 00    LDA #$0001             ;\
 $A2:A749 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A2:A74C A9 BE A5    LDA #$A5BE             ;\
-$A2:A74F 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $A5BE
+$A2:A74F 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $A5BE (gunship entrance pad - opening)
 
 ; BRANCH_MERGE
 $A2:A752 A9 D7 A7    LDA #$A7D7             ;\
@@ -4170,7 +4170,7 @@ $A2:AFF3             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 2F
 }
 
 
-;;; $B013: Instruction list - flies ;;;
+;;; $B013: Instruction list ;;;
 {
 $A2:B013             dw 0002,B1E8,
                         0002,B1EF,
@@ -4193,15 +4193,15 @@ $A2:B027             dw 0002, FFFC, FFFE, 0004, 0002, FFFE, 0002, 0004, 0002, FF
 $A2:B06B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:B06E 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy angle = 0
 $A2:B071 A9 4E B1    LDA #$B14E             ;\
-$A2:B074 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B14E
+$A2:B074 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B14E (idle movement - clockwise circle)
 $A2:B077 A9 13 B0    LDA #$B013             ;\
 $A2:B07A 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B013
 $A2:B07D A9 4D 80    LDA #$804D             ;\
-$A2:B080 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
+$A2:B080 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
 $A2:B083 A9 01 00    LDA #$0001             ;\
 $A2:B086 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$A2:B089 A9 4D 80    LDA #$804D
-$A2:B08C 9D 8E 0F    STA $0F8E,x[$7E:0F8E]
+$A2:B089 A9 4D 80    LDA #$804D             ;\
+$A2:B08C 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} >_<;
 $A2:B08F 6B          RTL
 }
 
@@ -4217,7 +4217,7 @@ $A2:B09C 79 7C 0F    ADC $0F7C,y[$7E:0FBC]  ;|
 $A2:B09F 99 7C 0F    STA $0F7C,y[$7E:0FBC]  ;|
 $A2:B0A2 BF 43 B4 A0 LDA $A0B443,x[$A0:B443];|
 $A2:B0A6 EB          XBA                    ;|
-$A2:B0A7 10 05       BPL $05    [$B0AE]     ;} Enemy X position += sin([enemy $0FB0] / 2 * pi / 80h)
+$A2:B0A7 10 05       BPL $05    [$B0AE]     ;} Enemy X position += sin([enemy angle] / 2 * pi / 80h)
 $A2:B0A9 09 00 FF    ORA #$FF00             ;|
 $A2:B0AC 80 03       BRA $03    [$B0B1]     ;|
                                             ;|
@@ -4232,7 +4232,7 @@ $A2:B0BF 79 80 0F    ADC $0F80,y[$7E:0FC0]  ;|
 $A2:B0C2 99 80 0F    STA $0F80,y[$7E:0FC0]  ;|
 $A2:B0C5 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B3C3];|
 $A2:B0C9 EB          XBA                    ;|
-$A2:B0CA 10 05       BPL $05    [$B0D1]     ;} Enemy Y position += -cos([enemy $0FB0] / 2 * pi / 80h)
+$A2:B0CA 10 05       BPL $05    [$B0D1]     ;} Enemy Y position += -cos([enemy angle] / 2 * pi / 80h)
 $A2:B0CC 09 00 FF    ORA #$FF00             ;|
 $A2:B0CF 80 03       BRA $03    [$B0D4]     ;|
                                             ;|
@@ -4308,7 +4308,7 @@ $A2:B13E 99 AC 0F    STA $0FAC,y[$7E:0FEC]  ;/
 $A2:B141 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A2:B144 99 AE 0F    STA $0FAE,y[$7E:0FEE]  ;} Enemy target Y position = [Samus Y position]
 $A2:B147 A9 AA B1    LDA #$B1AA             ;\
-$A2:B14A 99 B2 0F    STA $0FB2,y[$7E:0FF2]  ;} Enemy function = $B1AA
+$A2:B14A 99 B2 0F    STA $0FB2,y[$7E:0FF2]  ;} Enemy function = $B1AA (attack Samus)
 $A2:B14D 6B          RTL
 }
 
@@ -4335,7 +4335,7 @@ $A2:B172 F0 01       BEQ $01    [$B175]     ; If [enemy angle] != 0:
 $A2:B174 6B          RTL                    ; Return
 
 $A2:B175 A9 7C B1    LDA #$B17C             ;\
-$A2:B178 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $B17C
+$A2:B178 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $B17C (anti-clockwise circle)
 $A2:B17B 6B          RTL
 }
 
@@ -4362,7 +4362,7 @@ $A2:B1A0 F0 01       BEQ $01    [$B1A3]     ; If [enemy angle] != 0:
 $A2:B1A2 6B          RTL                    ; Return
 
 $A2:B1A3 A9 4E B1    LDA #$B14E             ;\
-$A2:B1A6 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $B14E
+$A2:B1A6 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy function = $B14E (clockwise circle)
 $A2:B1A9 6B          RTL
 }
 
@@ -4386,7 +4386,7 @@ $A2:B1C4 49 FF FF    EOR #$FFFF             ;|
 $A2:B1C7 1A          INC A                  ;} Negate enemy Y velocity
 $A2:B1C8 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
 $A2:B1CB A9 D2 B1    LDA #$B1D2             ;\
-$A2:B1CE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B1D2
+$A2:B1CE 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B1D2 (retreat)
 $A2:B1D1 6B          RTL
 }
 
@@ -4401,7 +4401,7 @@ $A2:B1DA 6B          RTL                    ; Return
 $A2:B1DB A9 18 00    LDA #$0018             ;\
 $A2:B1DE 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy retreat timer = 18h
 $A2:B1E1 A9 4E B1    LDA #$B14E             ;\
-$A2:B1E4 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B14E
+$A2:B1E4 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $B14E (idle movement - clockwise circle)
 $A2:B1E7 6B          RTL
 }
 
@@ -4807,19 +4807,22 @@ $A2:B60A 20 9B B6    JSR $B69B  [$A2:B69B]  ; Spawn Mother Brain's room rinka
 $A2:B60D AF 3A 78 7E LDA $7E783A[$7E:783A]  ; >_<;
 $A2:B611 BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
 $A2:B614 09 00 2C    ORA #$2C00             ;|
-$A2:B617 29 FF BF    AND #$BFFF             ;} Set enemy to not respawn if killed, process instructions, process whilst off-screen, and as tangible
+$A2:B617 29 FF BF    AND #$BFFF             ;} Set enemy to not respawn if killed, process instructions, process whilst off-screen, and as intangible
 $A2:B61A 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
-$A2:B61D 80 17       BRA $17    [$B636]
-$A2:B61F BD 86 0F    LDA $0F86,x
-$A2:B622 09 00 2C    ORA #$2C00
-$A2:B625 9D 86 0F    STA $0F86,x
-$A2:B628 80 0C       BRA $0C    [$B636]
+$A2:B61D 80 17       BRA $17    [$B636]     ; Go to BRANCH_PROPERTIES_SET
+
+; Nothing points here
+$A2:B61F BD 86 0F    LDA $0F86,x            ;\
+$A2:B622 09 00 2C    ORA #$2C00             ;} Set process instructions, process whilst off-screen, and as intangible
+$A2:B625 9D 86 0F    STA $0F86,x            ;/
+$A2:B628 80 0C       BRA $0C    [$B636]     ; Go to BRANCH_PROPERTIES_SET
 
 $A2:B62A BD 86 0F    LDA $0F86,x[$7E:1086]  ;\ Else ([enemy parameter 1] = 0):
 $A2:B62D 09 00 64    ORA #$6400             ;|
-$A2:B630 29 FF F7    AND #$F7FF             ;} Set enemy to respawn if killed, process instructions, to not process whilst off-screen, and as tangible
+$A2:B630 29 FF F7    AND #$F7FF             ;} Set enemy to respawn if killed, process instructions, to not process whilst off-screen, and as intangible
 $A2:B633 9D 86 0F    STA $0F86,x[$7E:1086]  ;/
 
+; BRANCH_PROPERTIES_SET
 $A2:B636 A9 00 04    LDA #$0400             ;\
 $A2:B639 9D 96 0F    STA $0F96,x[$7E:1096]  ;} Enemy palette index = 400h (palette 2)
 $A2:B63C 80 16       BRA $16    [$B654]     ; Go to reset rinka
@@ -4842,7 +4845,7 @@ $A2:B651 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = [enemy spawn Y
 ;;; $B654: Reset rinka ;;;
 {
 $A2:B654 A9 52 B8    LDA #$B852             ;\
-$A2:B657 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $B852
+$A2:B657 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $B852 (waiting to fire)
 $A2:B65A A9 1A 00    LDA #$001A             ;\
 $A2:B65D 9D B2 0F    STA $0FB2,x[$7E:10B2]  ;} Enemy function timer = 1Ah
 $A2:B660 9E AA 0F    STZ $0FAA,x[$7E:10AA]  ; Enemy X velocity = 0
@@ -4850,7 +4853,7 @@ $A2:B663 9E AC 0F    STZ $0FAC,x[$7E:10AC]  ; Enemy Y velocity = 0
 $A2:B666 BD B4 0F    LDA $0FB4,x[$7E:10B4]  ;\
 $A2:B669 D0 10       BNE $10    [$B67B]     ;} If [enemy parameter 1] = 0 (not Mother Brain's room):
 $A2:B66B A9 E0 B9    LDA #$B9E0             ;\
-$A2:B66E 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $B9E0
+$A2:B66E 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $B9E0 (not Mother Brain's room)
 $A2:B671 A9 01 00    LDA #$0001             ;\
 $A2:B674 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
 $A2:B677 9E 90 0F    STZ $0F90,x[$7E:1090]  ; Enemy timer = 0
@@ -4864,7 +4867,7 @@ $A2:B687 9D 86 0F    STA $0F86,x            ;/
 $A2:B68A 6B          RTL                    ; Return
 
 $A2:B68B A9 0C BA    LDA #$BA0C             ;\
-$A2:B68E 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $BA0C
+$A2:B68E 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $BA0C (Mother Brain's room)
 $A2:B691 A9 01 00    LDA #$0001             ;\
 $A2:B694 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
 $A2:B697 9E 90 0F    STZ $0F90,x[$7E:1050]  ; Enemy timer = 0
@@ -5048,7 +5051,7 @@ $A2:B7DC 7C A8 0F    JMP ($0FA8,x)[$A2:B852]; Go to [enemy function]
 $A2:B7DF DE B2 0F    DEC $0FB2,x[$7E:1132]  ; Decrement enemy function timer
 $A2:B7E2 10 5F       BPL $5F    [$B843]     ; If [enemy function timer] >= 0: return
 $A2:B7E4 A9 5B B8    LDA #$B85B             ;\
-$A2:B7E7 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $B85B
+$A2:B7E7 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $B85B (moving)
 $A2:B7EA BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $A2:B7ED F0 0B       BEQ $0B    [$B7FA]     ;} If [enemy parameter 1] != 0 (Mother Brain's room):
 $A2:B7EF BD 86 0F    LDA $0F86,x[$7E:1046]  ;\
@@ -5312,9 +5315,9 @@ $A2:B98B A0 09 E5    LDY #$E509
 $A2:B98E A9 03 00    LDA #$0003             ; A = 3 (small explosion)
 $A2:B991 22 97 80 86 JSL $868097[$86:8097]  ; Spawn dust cloud / explosion enemy projectile
 $A2:B995 A9 44 B8    LDA #$B844             ;\
-$A2:B998 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $B844
+$A2:B998 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $B844 (killed)
 $A2:B99B A9 01 00    LDA #$0001             ;\
-$A2:B99E 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy $0FB2 = 1
+$A2:B99E 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy function timer = 1
 $A2:B9A1 6B          RTL
 }
 
@@ -5358,7 +5361,7 @@ $A2:B9C7 BD 86 0F    LDA $0F86,x[$7E:1106]  ;\
 $A2:B9CA 29 FF FA    AND #$FAFF             ;} Set enemy as tangible and visible
 $A2:B9CD 9D 86 0F    STA $0F86,x[$7E:1106]  ;/
 $A2:B9D0 A9 DF B7    LDA #$B7DF             ;\
-$A2:B9D3 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $B7DF
+$A2:B9D3 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $B7DF (fire)
 $A2:B9D6 AF 3C 78 7E LDA $7E783C[$7E:783C]  ;\
 $A2:B9DA 1A          INC A                  ;} Increment rinka counter
 $A2:B9DB 8F 3C 78 7E STA $7E783C[$7E:783C]  ;/
@@ -6077,9 +6080,11 @@ $A2:C0D1             dw 3800, 4E7F, 3975, 0C0A, 0006, 45D8, 2D33, 1C8E, 102B, 53
 }
 
 
+;;; $C0F1..C1B6: Instruction lists ;;;
+{
 ;;; $C0F1: Instruction list - main - idle ;;;
 {
-$A2:C0F1             dx C1DF,       ; ???
+$A2:C0F1             dx C1DF,       ; Flames Y offset = 8
                         000D,C442,
                         0012,C427,
                         000D,C442,
@@ -6090,26 +6095,26 @@ $A2:C0F1             dx C1DF,       ; ???
 
 ;;; $C107: Instruction list - main - swoop - start descending ;;;
 {
-$A2:C107             dx C1D4,       ; ???
+$A2:C107             dx C1D4,       ; Flames Y offset = 8
                         0001,C427,
-                        C200,       ; ???
+                        C200,       ; Flames Y offset = 4
                         0001,C508,
-                        C20B,       ; ???
+                        C20B,       ; Flames Y offset = 0
                         0001,C523,
-                        C216,       ; ???
+                        C216,       ; Flames Y offset = -4
                         0001,C534,
-                        C221,       ; ???
+                        C221,       ; Flames Y offset = -Ch
                         0001,C54F,
-                        C22C,       ; ???
+                        C22C,       ; Flames Y offset = -10h
                         0001,C56A,
-                        C1C9,       ; ???
+                        C1C9,       ; Set enemy finished swoop start animation flag
                         812F        ; Sleep
 }
 
 
 ;;; $C12F: Instruction list - main - swoop - descending ;;;
 {
-$A2:C12F             dx C1F5,       ; ???
+$A2:C12F             dx C1F5,       ; Flames Y offset = -Ch
                         0006,C4B7,
                         0005,C4D2,
                         0008,C4ED,
@@ -6120,30 +6125,30 @@ $A2:C12F             dx C1F5,       ; ???
 
 ;;; $C145: Instruction list - main - swoop - start ascending ;;;
 {
-$A2:C145             dx C22C,       ; ???
+$A2:C145             dx C22C,       ; Flames Y offset = -10h
                         0001,C56A,
-                        C221,       ; ???
+                        C221,       ; Flames Y offset = -Ch
                         0001,C54F,
-                        C216,       ; ???
+                        C216,       ; Flames Y offset = -4
                         0001,C534,
-                        C20B,       ; ???
+                        C20B,       ; Flames Y offset = 0
                         0001,C523,
-                        C200,       ; ???
+                        C200,       ; Flames Y offset = 4
                         0001,C508,
-                        C1D4,       ; ???
+                        C1D4,       ; Flames Y offset = 8
                         0001,C427,
-                        C1DF,       ; ???
+                        C1DF,       ; Flames Y offset = 8
                         0001,C442,
-                        C1EA,       ; ???
+                        C1EA,       ; Flames Y offset = Ch
                         0001,C45D,
-                        C1C9,       ; ???
+                        C1C9,       ; Set enemy finished swoop start animation flag
                         812F        ; Sleep
 }
 
 
 ;;; $C179: Instruction list - main - swoop - ascending ;;;
 {
-$A2:C179             dx C237,       ; ???
+$A2:C179             dx C237,       ; Flames Y offset = Ch
                         0006,C585,
                         0005,C5A0,
                         0008,C5BB,
@@ -6170,11 +6175,12 @@ $A2:C1A3             dx 0006,C5D6,
                         0006,C5E2,
                         80ED,C1A3   ; Go to $C1A3
 }
+}
 
 
 ;;; $C1B7: Norfair rio constants ;;;
 {
-; Unused?
+; Unused
 $A2:C1B7             dw 0000, 000E, 000C, 000E, 0010
 
 ; Swoop Y speeds
@@ -6188,6 +6194,8 @@ $A2:C1C7             dw 0100
 }
 
 
+;;; $C1C9..C241: Instructions ;;;
+{
 ;;; $C1C9: Instruction - set enemy finished swoop start animation flag ;;;
 {
 $A2:C1C9 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6284,6 +6292,7 @@ $A2:C237 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C23A A9 0C 00    LDA #$000C
 $A2:C23D 9F 04 78 7E STA $7E7804,x[$7E:7804]
 $A2:C241 6B          RTL
+}
 }
 
 

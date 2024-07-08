@@ -3824,7 +3824,7 @@ $A7:C061 8D D2 10    STA $10D2  [$7E:10D2]  ;} Kraid foot instruction list point
 $A7:C064 A9 01 00    LDA #$0001             ;\
 $A7:C067 8D D4 10    STA $10D4  [$7E:10D4]  ;} Kraid foot instruction timer = 1
 $A7:C06A A9 2D BA    LDA #$BA2D             ;\
-$A7:C06D 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = RTS
+$A7:C06D 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = RTL
 $A7:C070 A9 F3 89    LDA #$89F3             ;\
 $A7:C073 8D D2 0F    STA $0FD2  [$7E:0FD2]  ;} Kraid arm instruction list pointer = $89F3 (normal)
 $A7:C076 A9 01 00    LDA #$0001             ;\
@@ -4190,13 +4190,13 @@ $A7:C3A1 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Kraid instruction timer = 25
 $A7:C3A4 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A7:C3A7 DA          PHX                    ;} Save enemy index
 $A7:C3A8 AD 06 11    LDA $1106  [$7E:1106]  ;\
-$A7:C3AB 29 FF BF    AND #$BFFF             ;} Set Kraid good fingernail to not respawn or be solid to Samus
+$A7:C3AB 29 FF BF    AND #$BFFF             ;} Set Kraid good fingernail to not respawn
 $A7:C3AE 8D 06 11    STA $1106  [$7E:1106]  ;/
 $A7:C3B1 A9 80 01    LDA #$0180             ;\
 $A7:C3B4 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid good fingernail
 $A7:C3B7 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ;/
 $A7:C3BB AD 46 11    LDA $1146  [$7E:1146]  ;\
-$A7:C3BE 29 FF BF    AND #$BFFF             ;} Set Kraid bad fingernail to not respawn or be solid to Samus
+$A7:C3BE 29 FF BF    AND #$BFFF             ;} Set Kraid bad fingernail to not respawn
 $A7:C3C1 8D 46 11    STA $1146  [$7E:1146]  ;/
 $A7:C3C4 A9 C0 01    LDA #$01C0             ;\
 $A7:C3C7 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy death on Kraid bad fingernail

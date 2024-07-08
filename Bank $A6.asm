@@ -12,7 +12,7 @@ $A6:8687             dw 3800, 49EF, 45CE, 3D8C, 396B, 3529, 2D08, 28C6, 20A5, 1C
 }
 
 
-;;; $86A7: Instruction list -  ;;;
+;;; $86A7: Instruction list - facing left ;;;
 {
 $A6:86A7             dx 0008,8A59,
                         0008,8A6F,
@@ -26,7 +26,7 @@ $A6:86A7             dx 0008,8A59,
 }
 
 
-;;; $86CB: Instruction list -  ;;;
+;;; $86CB: Instruction list - facing right ;;;
 {
 $A6:86CB             dx 0008,8A59,
                         0008,8AF3,
@@ -40,8 +40,9 @@ $A6:86CB             dx 0008,8A59,
 }
 
 
-;;; $86EF:  ;;;
+;;; $86EF: Bounce speed table indices ;;;
 {
+; Y speed table index * 100h. Indexed by [enemy bounce index] * 2
 $A6:86EF             dw 0000, 1000, 1800
 }
 
@@ -53,16 +54,16 @@ $A6:86F8 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy Y speed table index = 0
 $A6:86FB A9 00 00    LDA #$0000             ;\
 $A6:86FE 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy X speed table index = 0
 $A6:8701 A9 02 00    LDA #$0002             ;\
-$A6:8704 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = 2
+$A6:8704 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy bounce index = 2
 $A6:8707 A9 9A 87    LDA #$879A             ;\
 $A6:870A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $879A (wait for Samus to get near)
 $A6:870D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A6:8710 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy $7E:7808 = [enemy X position]
+$A6:8710 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy $7E:7808 = [enemy X position] (never read)
 $A6:8714 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A6:8717 9F 0A 78 7E STA $7E780A,x[$7E:780A];} Enemy falling target Y position = [enemy Y position]
-$A6:871B 9F 06 78 7E STA $7E7806,x[$7E:7806]; Enemy $7E:7806 = [enemy Y position]
+$A6:871B 9F 06 78 7E STA $7E7806,x[$7E:7806]; Enemy previous enemy Y position = [enemy Y position]
 $A6:871F BD 80 0F    LDA $0F80,x[$7E:0F80]  ;\
-$A6:8722 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy $7E:7804 = [enemy Y subposition]
+$A6:8722 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy previous enemy Y subposition = [enemy Y subposition]
 $A6:8726 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
 $A6:8729 29 FF 00    AND #$00FF             ;} A = [enemy parameter 2 high]
 $A6:872C D0 07       BNE $07    [$8735]     ; If [A] = 0:
@@ -83,7 +84,7 @@ $A6:874F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
 $A6:8752 29 FF 00    AND #$00FF             ;} Enemy Y proximity = [enemy initialisation parameter] & FFh
 $A6:8755 9F 0C 78 7E STA $7E780C,x[$7E:780C];/
 $A6:8759 A9 A7 86    LDA #$86A7             ;\
-$A6:875C 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7
+$A6:875C 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7 (facing left)
 $A6:875F BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A6:8762 29 FF 00    AND #$00FF             ;} Enemy direction = [enemy parameter 1 high]
 $A6:8765 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
@@ -93,15 +94,15 @@ $A6:876E 49 FF FF    EOR #$FFFF             ;|
 $A6:8771 1A          INC A                  ;} Negate enemy X proximity
 $A6:8772 9F 00 78 7E STA $7E7800,x[$7E:7940];/
 $A6:8776 A9 CB 86    LDA #$86CB             ;\
-$A6:8779 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $86CB
+$A6:8779 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $86CB (facing right)
 
 $A6:877C A9 02 00    LDA #$0002             ;\
-$A6:877F 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = 2
+$A6:877F 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy minimum distance from ground = 2
 $A6:8783 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A6:8786 29 FF 00    AND #$00FF             ;} If [enemy parameter 1 low] != 0:
+$A6:8786 29 FF 00    AND #$00FF             ;} If [enemy parameter 1 low] != 0: (never true in vanilla)
 $A6:8789 F0 07       BEQ $07    [$8792]     ;/
 $A6:878B A9 05 00    LDA #$0005             ;\
-$A6:878E 9F 02 78 7E STA $7E7802,x          ;} Enemy $7E:7802 = 5
+$A6:878E 9F 02 78 7E STA $7E7802,x          ;} Enemy minimum distance from ground = 5
 
 $A6:8792 6B          RTL
 }
@@ -256,9 +257,9 @@ $A6:88A1 85 14       STA $14    [$7E:0014]  ;/
 $A6:88A3 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A6:88A7 90 62       BCC $62    [$890B]     ; If not collided with block: go to BRANCH_NO_COLLISION
 $A6:88A9 A9 42 00    LDA #$0042             ;\
-$A6:88AC 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 42h, sound library 2, max queued sounds allowed = 6 (boulder explodes - initial)
+$A6:88AC 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 42h, sound library 2, max queued sounds allowed = 6 (boulder bounces)
 $A6:88B0 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
-$A6:88B3 C9 02 00    CMP #$0002             ;} If [enemy direction] = 2:
+$A6:88B3 C9 02 00    CMP #$0002             ;} If [enemy direction] = 2 (left - destroy after bounce): (always true in vanilla)
 $A6:88B6 D0 26       BNE $26    [$88DE]     ;/
 $A6:88B8 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
 $A6:88BB 09 00 02    ORA #$0200             ;} Mark enemy for deletion
@@ -271,55 +272,55 @@ $A6:88CB A9 11 00    LDA #$0011             ; A = 11h (rock particles)
 $A6:88CE A0 09 E5    LDY #$E509             ;\
 $A6:88D1 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:88D5 A9 43 00    LDA #$0043             ;\
-$A6:88D8 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 43h, sound library 2, max queued sounds allowed = 6 (boulder explodes - continued)
-$A6:88DC 80 63       BRA $63    [$8941]
+$A6:88D8 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 43h, sound library 2, max queued sounds allowed = 6 (boulder explodes)
+$A6:88DC 80 63       BRA $63    [$8941]     ; Return
 
 $A6:88DE A9 32 88    LDA #$8832             ;\
 $A6:88E1 9D A8 0F    STA $0FA8,x            ;} Enemy function = $8832 (bounce - rising)
-$A6:88E4 BD AE 0F    LDA $0FAE,x
-$A6:88E7 3A          DEC A
-$A6:88E8 0A          ASL A
-$A6:88E9 A8          TAY
-$A6:88EA B9 F1 86    LDA $86F1,y
-$A6:88ED 9D AC 0F    STA $0FAC,x
-$A6:88F0 DE AE 0F    DEC $0FAE,x
-$A6:88F3 10 4C       BPL $4C    [$8941]
-$A6:88F5 BD 7E 0F    LDA $0F7E,x
-$A6:88F8 9F 06 78 7E STA $7E7806,x
-$A6:88FC BD 80 0F    LDA $0F80,x
-$A6:88FF 9F 04 78 7E STA $7E7804,x
+$A6:88E4 BD AE 0F    LDA $0FAE,x            ;\
+$A6:88E7 3A          DEC A                  ;|
+$A6:88E8 0A          ASL A                  ;|
+$A6:88E9 A8          TAY                    ;} Enemy Y speed table index = [$86EF + [enemy bounce index] * 2] / 100h
+$A6:88EA B9 F1 86    LDA $86F1,y            ;|
+$A6:88ED 9D AC 0F    STA $0FAC,x            ;/
+$A6:88F0 DE AE 0F    DEC $0FAE,x            ; Decrement enemy bounce index
+$A6:88F3 10 4C       BPL $4C    [$8941]     ; If [enemy bounce index] >= 0: return
+$A6:88F5 BD 7E 0F    LDA $0F7E,x            ;\
+$A6:88F8 9F 06 78 7E STA $7E7806,x          ;} Enemy previous enemy Y position = [enemy Y position]
+$A6:88FC BD 80 0F    LDA $0F80,x            ;\
+$A6:88FF 9F 04 78 7E STA $7E7804,x          ;} Enemy previous enemy Y subposition = [enemy Y subposition]
 $A6:8903 A9 42 89    LDA #$8942             ;\
 $A6:8906 9D A8 0F    STA $0FA8,x            ;} Enemy function = $8942 (rolling)
-$A6:8909 80 36       BRA $36    [$8941]
+$A6:8909 80 36       BRA $36    [$8941]     ; Return
 
 ; BRANCH_NO_COLLISION
-$A6:890B BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A6:890E 18          CLC
-$A6:890F 69 00 01    ADC #$0100
-$A6:8912 9D AC 0F    STA $0FAC,x[$7E:102C]
-$A6:8915 BD AA 0F    LDA $0FAA,x[$7E:102A]
-$A6:8918 29 00 FF    AND #$FF00
-$A6:891B EB          XBA
-$A6:891C 0A          ASL A
-$A6:891D 0A          ASL A
-$A6:891E 0A          ASL A
-$A6:891F A8          TAY
-$A6:8920 BD B0 0F    LDA $0FB0,x[$7E:1030]
-$A6:8923 F0 04       BEQ $04    [$8929]
-$A6:8925 C8          INY
-$A6:8926 C8          INY
-$A6:8927 C8          INY
-$A6:8928 C8          INY
+$A6:890B BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A6:890E 18          CLC                    ;|
+$A6:890F 69 00 01    ADC #$0100             ;} Enemy Y speed table index += 1
+$A6:8912 9D AC 0F    STA $0FAC,x[$7E:102C]  ;/
+$A6:8915 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
+$A6:8918 29 00 FF    AND #$FF00             ;|
+$A6:891B EB          XBA                    ;|
+$A6:891C 0A          ASL A                  ;} Y = [enemy X speed table index] * 8 (quadratic speed table index)
+$A6:891D 0A          ASL A                  ;|
+$A6:891E 0A          ASL A                  ;|
+$A6:891F A8          TAY                    ;/
+$A6:8920 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
+$A6:8923 F0 04       BEQ $04    [$8929]     ;} If [enemy direction] != right:
+$A6:8925 C8          INY                    ;\
+$A6:8926 C8          INY                    ;|
+$A6:8927 C8          INY                    ;} Y += 4 (negated speed)
+$A6:8928 C8          INY                    ;/
 
 $A6:8929 20 00 8A    JSR $8A00  [$A6:8A00]  ; Move boulder horizontally
-$A6:892C BD AA 0F    LDA $0FAA,x[$7E:102A]
-$A6:892F 18          CLC
-$A6:8930 69 20 00    ADC #$0020
-$A6:8933 9D AA 0F    STA $0FAA,x[$7E:102A]
-$A6:8936 C9 00 50    CMP #$5000
-$A6:8939 30 06       BMI $06    [$8941]
-$A6:893B A9 00 50    LDA #$5000
-$A6:893E 9D AA 0F    STA $0FAA,x
+$A6:892C BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
+$A6:892F 18          CLC                    ;|
+$A6:8930 69 20 00    ADC #$0020             ;|
+$A6:8933 9D AA 0F    STA $0FAA,x[$7E:102A]  ;|
+$A6:8936 C9 00 50    CMP #$5000             ;} Enemy X speed table index = min(50.00h, [enemy X speed table index] + 0.20h)
+$A6:8939 30 06       BMI $06    [$8941]     ;|
+$A6:893B A9 00 50    LDA #$5000             ;|
+$A6:893E 9D AA 0F    STA $0FAA,x            ;/
 
 $A6:8941 60          RTS
 }
@@ -331,14 +332,14 @@ $A6:8942 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8945 BD AA 0F    LDA $0FAA,x[$7E:116A]  ;\
 $A6:8948 29 00 FF    AND #$FF00             ;|
 $A6:894B EB          XBA                    ;|
-$A6:894C 0A          ASL A                  ;} Y = [enemy $0FAA] / 100h * 8 (quadratic speed table index)
+$A6:894C 0A          ASL A                  ;} Y = [enemy X speed table index] * 8 (quadratic speed table index)
 $A6:894D 0A          ASL A                  ;|
 $A6:894E 0A          ASL A                  ;|
 $A6:894F A8          TAY                    ;/
 $A6:8950 B9 8F 83    LDA $838F,y[$A6:838F]  ;\
 $A6:8953 85 12       STA $12    [$7E:0012]  ;|
 $A6:8955 B9 91 83    LDA $8391,y[$A6:8391]  ;|
-$A6:8958 18          CLC                    ;} $14.$12 = [$838F + [Y] + 2].[$838F + [Y]] + [enemy $7E:7802]
+$A6:8958 18          CLC                    ;} $14.$12 = [$838F + [Y] + 2].[$838F + [Y]] + [enemy minimum distance from ground]
 $A6:8959 7F 02 78 7E ADC $7E7802,x[$7E:79C2];|
 $A6:895D 85 14       STA $14    [$7E:0014]  ;/
 $A6:895F 5A          PHY
@@ -346,14 +347,14 @@ $A6:8960 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
 $A6:8964 7A          PLY
 $A6:8965 BD 7E 0F    LDA $0F7E,x[$7E:113E]  ;\
 $A6:8968 38          SEC                    ;|
-$A6:8969 FF 02 78 7E SBC $7E7802,x[$7E:79C2];} Enemy Y position -= [enemy $7E:7802]
+$A6:8969 FF 02 78 7E SBC $7E7802,x[$7E:79C2];} Enemy Y position -= [enemy minimum distance from ground]
 $A6:896D 9D 7E 0F    STA $0F7E,x[$7E:113E]  ;/
-$A6:8970 BD B0 0F    LDA $0FB0,x[$7E:1170]  
-$A6:8973 F0 04       BEQ $04    [$8979]
-$A6:8975 C8          INY
-$A6:8976 C8          INY
-$A6:8977 C8          INY
-$A6:8978 C8          INY
+$A6:8970 BD B0 0F    LDA $0FB0,x[$7E:1170]  ;\
+$A6:8973 F0 04       BEQ $04    [$8979]     ;} If [enemy direction] != right:
+$A6:8975 C8          INY                    ;\
+$A6:8976 C8          INY                    ;|
+$A6:8977 C8          INY                    ;} Y += 4 (negated speed)
+$A6:8978 C8          INY                    ;/
 
 $A6:8979 B9 8F 83    LDA $838F,y[$A6:838F]  ;\
 $A6:897C 85 12       STA $12    [$7E:0012]  ;|
@@ -361,47 +362,48 @@ $A6:897E B9 91 83    LDA $8391,y[$A6:8391]  ;} Move enemy right by [$838F + [Y] 
 $A6:8981 85 14       STA $14    [$7E:0014]  ;|
 $A6:8983 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A6:8987 90 36       BCC $36    [$89BF]     ; If collided with wall:
-$A6:8989 BD 86 0F    LDA $0F86,x[$7E:1146]
-$A6:898C 09 00 01    ORA #$0100
-$A6:898F 09 00 02    ORA #$0200
-$A6:8992 9D 86 0F    STA $0F86,x[$7E:1146]
+$A6:8989 BD 86 0F    LDA $0F86,x[$7E:1146]  ;\
+$A6:898C 09 00 01    ORA #$0100             ;|
+$A6:898F 09 00 02    ORA #$0200             ;} Set enemy as invisible and mark for deletion
+$A6:8992 9D 86 0F    STA $0F86,x[$7E:1146]  ;/
 $A6:8995 A9 FC 89    LDA #$89FC             ;\
 $A6:8998 9D A8 0F    STA $0FA8,x[$7E:1168]  ;} Enemy function = RTS
 $A6:899B A9 42 00    LDA #$0042             ;\
-$A6:899E 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 42h, sound library 2, max queued sounds allowed = 6 (boulder explodes - initial)
-$A6:89A2 BD 7A 0F    LDA $0F7A,x[$7E:113A]
-$A6:89A5 85 12       STA $12    [$7E:0012]
-$A6:89A7 BD 7E 0F    LDA $0F7E,x[$7E:113E]
-$A6:89AA 85 14       STA $14    [$7E:0014]
+$A6:899E 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 42h, sound library 2, max queued sounds allowed = 6 (boulder bounces)
+$A6:89A2 BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
+$A6:89A5 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
+$A6:89A7 BD 7E 0F    LDA $0F7E,x[$7E:113E]  ;\
+$A6:89AA 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:89AC A9 11 00    LDA #$0011             ; A = 11h (rock particles)
 $A6:89AF A0 09 E5    LDY #$E509             ;\
 $A6:89B2 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn dust cloud / explosion enemy projectile
 $A6:89B6 A9 43 00    LDA #$0043             ;\
-$A6:89B9 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 43h, sound library 2, max queued sounds allowed = 6 (boulder explodes - continued)
-$A6:89BD 80 2E       BRA $2E    [$89ED]
+$A6:89B9 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 43h, sound library 2, max queued sounds allowed = 6 (boulder explodes)
+$A6:89BD 80 2E       BRA $2E    [$89ED]     ; Go to BRANCH_RETURN
 
-$A6:89BF BD AA 0F    LDA $0FAA,x[$7E:116A]
-$A6:89C2 18          CLC
-$A6:89C3 69 40 00    ADC #$0040
-$A6:89C6 9D AA 0F    STA $0FAA,x[$7E:116A]
-$A6:89C9 C9 00 40    CMP #$4000
-$A6:89CC 30 06       BMI $06    [$89D4]
-$A6:89CE A9 00 40    LDA #$4000
-$A6:89D1 9D AA 0F    STA $0FAA,x
+$A6:89BF BD AA 0F    LDA $0FAA,x[$7E:116A]  ;\
+$A6:89C2 18          CLC                    ;|
+$A6:89C3 69 40 00    ADC #$0040             ;|
+$A6:89C6 9D AA 0F    STA $0FAA,x[$7E:116A]  ;|
+$A6:89C9 C9 00 40    CMP #$4000             ;} Enemy X speed table index = min(40.00h, [enemy X speed table index] + 0.40h)
+$A6:89CC 30 06       BMI $06    [$89D4]     ;|
+$A6:89CE A9 00 40    LDA #$4000             ;|
+$A6:89D1 9D AA 0F    STA $0FAA,x            ;/
 
-$A6:89D4 BD 7E 0F    LDA $0F7E,x[$7E:113E]
-$A6:89D7 DF 06 78 7E CMP $7E7806,x[$7E:79C6]
-$A6:89DB D0 10       BNE $10    [$89ED]
-$A6:89DD BD 80 0F    LDA $0F80,x[$7E:1140]
-$A6:89E0 DF 04 78 7E CMP $7E7804,x[$7E:79C4]
-$A6:89E4 D0 07       BNE $07    [$89ED]
-$A6:89E6 A9 00 00    LDA #$0000
-$A6:89E9 9F 02 78 7E STA $7E7802,x[$7E:79C2]
+$A6:89D4 BD 7E 0F    LDA $0F7E,x[$7E:113E]  ;\
+$A6:89D7 DF 06 78 7E CMP $7E7806,x[$7E:79C6];} If [enemy Y position] = [enemy previous enemy Y position]:
+$A6:89DB D0 10       BNE $10    [$89ED]     ;/
+$A6:89DD BD 80 0F    LDA $0F80,x[$7E:1140]  ;\
+$A6:89E0 DF 04 78 7E CMP $7E7804,x[$7E:79C4];} If [enemy Y subposition] = [enemy previous enemy Y subposition]:
+$A6:89E4 D0 07       BNE $07    [$89ED]     ;/
+$A6:89E6 A9 00 00    LDA #$0000             ;\
+$A6:89E9 9F 02 78 7E STA $7E7802,x[$7E:79C2];} Enemy minimum distance from ground = 0
 
-$A6:89ED BD 7E 0F    LDA $0F7E,x[$7E:113E]
-$A6:89F0 9F 06 78 7E STA $7E7806,x[$7E:79C6]
-$A6:89F4 BD 80 0F    LDA $0F80,x[$7E:1140]
-$A6:89F7 9F 04 78 7E STA $7E7804,x[$7E:79C4]
+; BRANCH_RETURN
+$A6:89ED BD 7E 0F    LDA $0F7E,x[$7E:113E]  ;\
+$A6:89F0 9F 06 78 7E STA $7E7806,x[$7E:79C6];} Enemy previous enemy Y position = [enemy Y position]
+$A6:89F4 BD 80 0F    LDA $0F80,x[$7E:1140]  ;\
+$A6:89F7 9F 04 78 7E STA $7E7804,x[$7E:79C4];} Enemy previous enemy Y subposition = [enemy Y subposition]
 $A6:89FB 60          RTS
 }
 
@@ -11394,10 +11396,10 @@ $A6:FB8A 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = 400h (palet
 $A6:FB8D A9 80 00    LDA #$0080             ;\
 $A6:FB90 9D 98 0F    STA $0F98,x[$7E:1018]  ;} Enemy VRAM tiles index = 80h
 $A6:FB93 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy $0FAC = 0 (supposed to be palette animation index)
-$A6:FB96 A0 41 FC    LDY #$FC41             ; Enemy function = $FC41
+$A6:FB96 A0 41 FC    LDY #$FC41             ; Enemy function = $FC41 (spawn bottom zebetite if needed)
 $A6:FB99 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
 $A6:FB9C F0 03       BEQ $03    [$FBA1]     ;} If [enemy parameter 1] != 0:
-$A6:FB9E A0 5B FC    LDY #$FC5B             ; Enemy function = $FC5B
+$A6:FB9E A0 5B FC    LDY #$FC5B             ; Enemy function = $FC5B (wait for door transition to finish)
 
 $A6:FBA1 98          TYA
 $A6:FBA2 9D A8 0F    STA $0FA8,x[$7E:1028]
@@ -11475,7 +11477,7 @@ $A6:FC51 BB          TYX                    ;} Enemy other part enemy index = (n
 $A6:FC52 9D B6 0F    STA $0FB6,x[$7E:1036]  ;/
 
 $A6:FC55 A9 5B FC    LDA #$FC5B             ;\
-$A6:FC58 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $FC5B
+$A6:FC58 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $FC5B (wait for door transition to finish)
 }
 
 
@@ -11486,11 +11488,11 @@ $A6:FC5E F0 01       BEQ $01    [$FC61]     ;} If door transition active:
 $A6:FC60 6B          RTL                    ; Return
 
 $A6:FC61 A9 67 FC    LDA #$FC67             ;\
-$A6:FC64 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $FC67
+$A6:FC64 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $FC67 (active)
 }
 
 
-;;; $FC67: Zebetites function ;;;
+;;; $FC67: Zebetites function - active ;;;
 {
 $A6:FC67 20 5E FD    JSR $FD5E  [$A6:FD5E]  ; Handle zebetites palette animation
 $A6:FC6A 20 09 FD    JSR $FD09  [$A6:FD09]  ; Set zebetite instruction list
@@ -11571,14 +11573,14 @@ $A6:FCD9 A2 E1 FC    LDX #$FCE1             ;\
 $A6:FCDC 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn top zebetite
 $A6:FCE0 60          RTS
 
-;                        ___________________________________________ Enemy ID
-;                       |      _____________________________________ X position
-;                       |     |      _______________________________ Y position
-;                       |     |     |      _________________________ Initialisation parameter (orientation in SMILE)
-;                       |     |     |     |      ___________________ Properties (special in SMILE)
-;                       |     |     |     |     |      _____________ Extra properties (special graphics bitset in SMILE)
-;                       |     |     |     |     |     |      _______ General purpose parameter (speed in SMILE)
-;                       |     |     |     |     |     |     |      _ General purpose parameter (speed2 in SMILE)
+;                        _____________________________________________ Enemy ID
+;                       |      _______________________________________ X position
+;                       |     |      _________________________________ Y position
+;                       |     |     |      ___________________________ Initialisation parameter
+;                       |     |     |     |      _____________________ Properties
+;                       |     |     |     |     |      _______________ Extra properties
+;                       |     |     |     |     |     |      _________ Parameter 1
+;                       |     |     |     |     |     |     |      ___ Parameter 2
 ;                       |     |     |     |     |     |     |     |
 $A6:FCE1             dw E27F, 0000, 0000, 0000, 2000, 0000, 0000, 0000 ; Zebetites
 }
@@ -11592,14 +11594,14 @@ $A6:FCF1 A2 F9 FC    LDX #$FCF9             ;\
 $A6:FCF4 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn bottom zebetite
 $A6:FCF8 60          RTS
 
-;                        ___________________________________________ Enemy ID
-;                       |      _____________________________________ X position
-;                       |     |      _______________________________ Y position
-;                       |     |     |      _________________________ Initialisation parameter (orientation in SMILE)
-;                       |     |     |     |      ___________________ Properties (special in SMILE)
-;                       |     |     |     |     |      _____________ Extra properties (special graphics bitset in SMILE)
-;                       |     |     |     |     |     |      _______ General purpose parameter (speed in SMILE)
-;                       |     |     |     |     |     |     |      _ General purpose parameter (speed2 in SMILE)
+;                        _____________________________________________ Enemy ID
+;                       |      _______________________________________ X position
+;                       |     |      _________________________________ Y position
+;                       |     |     |      ___________________________ Initialisation parameter
+;                       |     |     |     |      _____________________ Properties
+;                       |     |     |     |     |      _______________ Extra properties
+;                       |     |     |     |     |     |      _________ Parameter 1
+;                       |     |     |     |     |     |     |      ___ Parameter 2
 ;                       |     |     |     |     |     |     |     |
 $A6:FCF9             dw E27F, 0000, 0000, 0000, 2000, 0000, 0002, 0000 ; Zebetites
 }

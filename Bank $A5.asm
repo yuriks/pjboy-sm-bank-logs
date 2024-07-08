@@ -5190,7 +5190,7 @@ $A5:EA80 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A5:EA83 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy X origin = [enemy X position]
 $A5:EA86 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A5:EA89 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy Y origin = [enemy Y position]
-$A5:EA8C 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy $0FB2 = 0 (unused)
+$A5:EA8C 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy $0FB2 = 0 (never read)
 $A5:EA8F AE 9F 07    LDX $079F  [$7E:079F]  ;\
 $A5:EA92 BF 28 D8 7E LDA $7ED828,x[$7E:D829];|
 $A5:EA96 29 02 00    AND #$0002             ;} If area mini-boss is dead:
@@ -5593,7 +5593,7 @@ $A5:EDF6 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $A5:EDF9 D0 4E       BNE $4E    [$EE49]     ;} If [enemy health] != 0: return
 $A5:EDFB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A5:EDFE A9 00 00    LDA #$0000             ;\
-$A5:EE01 8F 1C 78 7E STA $7E781C[$7E:781C]  ;} $7E:781C = 0 (unused)
+$A5:EE01 8F 1C 78 7E STA $7E781C[$7E:781C]  ;} $7E:781C = 0 (never read)
 $A5:EE05 9E A0 0F    STZ $0FA0,x[$7E:0FA0]  ; Enemy invincibility timer = 0
 $A5:EE08 9E 9C 0F    STZ $0F9C,x[$7E:0F9C]  ; Enemy flash timer = 0
 $A5:EE0B 9E 8A 0F    STZ $0F8A,x[$7E:0F8A]  ; Enemy AI handler = main AI

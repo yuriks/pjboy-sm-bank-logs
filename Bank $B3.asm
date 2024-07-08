@@ -3446,7 +3446,7 @@ $B3:E55A             dw 0005,E736,
 
 ;;; $E56E: Instruction list - running left - high tide ;;;
 {
-$B3:E56E             dx 0003,E736,
+$B3:E56E             dw 0003,E736,
                         0003,E747,
                         0003,E753,
                         0003,E747,
@@ -3467,7 +3467,7 @@ $B3:E586             dw 0006,E75F,
 
 ;;; $E59A: Instruction list - running right - high tide ;;;
 {
-$B3:E59A             dx 0003,E75F,
+$B3:E59A             dw 0003,E75F,
                         0003,E770,
                         0003,E77C,
                         0003,E770,
@@ -3488,7 +3488,7 @@ $B3:E5B2             dw 0003,E75F,
 
 ;;; $E5C6: Instruction list - stationary ;;;
 {
-$B3:E5C6             dx 0040,E8B0,
+$B3:E5C6             dw 0040,E8B0,
                         0008,E8D5,
                         0040,E91F,
                         0008,E8FA,
@@ -3529,14 +3529,14 @@ $B3:E61C 6B          RTL
 
 ;;; $E61D: Unused. Instruction list ;;;
 {
-$B3:E61D             dx 0001,E788,
+$B3:E61D             dw 0001,E788,
                         812F        ; Sleep
 }
 
 
 ;;; $E623: Unused. Instruction list ;;;
 {
-$B3:E623             dx 000C,E7AD,
+$B3:E623             dw 000C,E7AD,
                         000C,E7D2,
                         0006,E7F7,
                         000C,E7D2,
@@ -3547,14 +3547,14 @@ $B3:E623             dx 000C,E7AD,
 
 ;;; $E639: Unused. Instruction list ;;;
 {
-$B3:E639             dx 0001,E81C,
+$B3:E639             dw 0001,E81C,
                         812F        ; Sleep
 }
 
 
-;;; $E63F: Unused. Instruction list -  ;;;
+;;; $E63F: Unused. Instruction list ;;;
 {
-$B3:E63F             dx 000C,E841,
+$B3:E63F             dw 000C,E841,
                         000C,E866,
                         0006,E88B,
                         000C,E866,
@@ -3809,7 +3809,7 @@ $B3:EA38             dw 005A,EC49,
                         EAD7,       ; Enemy X position += 6
                         0002,ED3E,
                         EAD7        ; Enemy X position += 6
-$B3:EA80             dx 0001,EC49,
+$B3:EA80             dw 0001,EC49,
                         EAD7,       ; Enemy X position += 6
                         0001,EC78,
                         EAD7,       ; Enemy X position += 6
@@ -3897,7 +3897,7 @@ $B3:EB0A A9 01 00    LDA #$0001             ;\
 $B3:EB0D 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $B3:EB10 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $B3:EB13 A9 64 E9    LDA #$E964             ;\
-$B3:EB16 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E964
+$B3:EB16 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E964 (running around aimlessly - low tide)
 $B3:EB19 6B          RTL
 }
 
