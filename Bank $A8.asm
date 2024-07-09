@@ -6911,9 +6911,9 @@ $A8:CD46 A9 FC FF    LDA #$FFFC             ;} Extra Samus X displacement = -4.0
 $A8:CD49 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
 
 $A8:CD4C BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A8:CD4F 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = [enemy Y position]
+$A8:CD4F 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy Y position backup = [enemy Y position]
 $A8:CD52 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A8:CD55 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [enemy X position]
+$A8:CD55 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy X position backup = [enemy X position]
 $A8:CD58 38          SEC                    ;\
 $A8:CD59 FD 82 0F    SBC $0F82,x[$7E:0F82]  ;|
 $A8:CD5C 38          SEC                    ;} Enemy X position -= [enemy X radius] * 2
@@ -6929,9 +6929,9 @@ $A8:CD73 18          CLC                    ;|
 $A8:CD74 69 08 00    ADC #$0008             ;} Enemy laser cooldown += 8
 $A8:CD77 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A8:CD7A BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
-$A8:CD7D 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy $0FAC]
+$A8:CD7D 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy X position backup]
 $A8:CD80 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
-$A8:CD83 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy $0FAE]
+$A8:CD83 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy Y position backup]
 $A8:CD86 7A          PLY
 $A8:CD87 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:CD8A A9 00 02    LDA #$0200             ;\
@@ -6941,9 +6941,9 @@ $A8:CD93 FA          PLX
 $A8:CD94 6B          RTL                    ; Return
 
 $A8:CD95 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A8:CD98 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy $0FAC]
+$A8:CD98 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy X position backup]
 $A8:CD9B BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
-$A8:CD9E 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy $0FAE]
+$A8:CD9E 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy Y position backup]
 $A8:CDA1 7A          PLY
 $A8:CDA2 FA          PLX
 $A8:CDA3 6B          RTL
@@ -7019,9 +7019,9 @@ $A8:CE27 A9 04 00    LDA #$0004             ;} Extra Samus X displacement = 4.0
 $A8:CE2A 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
 
 $A8:CE2D BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A8:CE30 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = [enemy Y position]
+$A8:CE30 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy Y position backup = [enemy Y position]
 $A8:CE33 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A8:CE36 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [enemy X position]
+$A8:CE36 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy X position backup = [enemy X position]
 $A8:CE39 18          CLC                    ;\
 $A8:CE3A 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;|
 $A8:CE3D 18          CLC                    ;} Enemy X position += [enemy X radius] * 2
@@ -7037,9 +7037,9 @@ $A8:CE54 18          CLC                    ;|
 $A8:CE55 69 08 00    ADC #$0008             ;} Enemy laser cooldown += 8
 $A8:CE58 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $A8:CE5B BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
-$A8:CE5E 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy $0FAC]
+$A8:CE5E 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy X position backup]
 $A8:CE61 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
-$A8:CE64 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy $0FAE]
+$A8:CE64 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy Y position backup]
 $A8:CE67 7A          PLY
 $A8:CE68 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:CE6B A9 00 FE    LDA #$FE00             ;\
@@ -7049,9 +7049,9 @@ $A8:CE74 FA          PLX
 $A8:CE75 6B          RTL                    ; Return
 
 $A8:CE76 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A8:CE79 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy $0FAC]
+$A8:CE79 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy X position backup]
 $A8:CE7C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
-$A8:CE7F 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy $0FAE]
+$A8:CE7F 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy Y position backup]
 $A8:CE82 7A          PLY
 $A8:CE83 FA          PLX
 $A8:CE84 6B          RTL
@@ -7134,9 +7134,9 @@ $A8:CF0C A9 04 00    LDA #$0004             ;} Extra Samus X displacement = 4.0
 $A8:CF0F 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
 
 $A8:CF12 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A8:CF15 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = [enemy Y position]
+$A8:CF15 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy Y position backup = [enemy Y position]
 $A8:CF18 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A8:CF1B 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [enemy X position]
+$A8:CF1B 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy X position backup = [enemy X position]
 $A8:CF1E 18          CLC                    ;\
 $A8:CF1F 7D 82 0F    ADC $0F82,x[$7E:0F82]  ;|
 $A8:CF22 18          CLC                    ;} Enemy X position += [enemy X radius] * 2
@@ -7152,9 +7152,9 @@ $A8:CF39 18          CLC                    ;|
 $A8:CF3A 69 08 00    ADC #$0008             ;} Enemy laser cooldown += 8
 $A8:CF3D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
 $A8:CF40 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A8:CF43 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy $0FAC]
+$A8:CF43 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy X position backup]
 $A8:CF46 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
-$A8:CF49 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy $0FAE]
+$A8:CF49 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy Y position backup]
 $A8:CF4C 7A          PLY
 $A8:CF4D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:CF50 A9 00 FE    LDA #$FE00             ;\
@@ -7164,9 +7164,9 @@ $A8:CF59 FA          PLX
 $A8:CF5A 6B          RTL                    ; Return
 
 $A8:CF5B BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A8:CF5E 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy $0FAC]
+$A8:CF5E 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy X position backup]
 $A8:CF61 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
-$A8:CF64 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy $0FAE]
+$A8:CF64 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy Y position backup]
 $A8:CF67 7A          PLY
 $A8:CF68 FA          PLX
 $A8:CF69 6B          RTL
@@ -7242,9 +7242,9 @@ $A8:CFED A9 FC FF    LDA #$FFFC             ;} Extra Samus X displacement = -4.0
 $A8:CFF0 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
 
 $A8:CFF3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A8:CFF6 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE = [enemy Y position]
+$A8:CFF6 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;} Enemy Y position backup = [enemy Y position]
 $A8:CFF9 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A8:CFFC 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [enemy X position]
+$A8:CFFC 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy X position backup = [enemy X position]
 $A8:CFFF 38          SEC                    ;\
 $A8:D000 FD 82 0F    SBC $0F82,x[$7E:0F82]  ;|
 $A8:D003 38          SEC                    ;} Enemy X position -= [enemy X radius] * 2
@@ -7260,9 +7260,9 @@ $A8:D01A 18          CLC                    ;|
 $A8:D01B 69 08 00    ADC #$0008             ;} Enemy laser cooldown += 8
 $A8:D01E 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
 $A8:D021 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
-$A8:D024 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy X position = [enemy $0FAC]
+$A8:D024 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy X position = [enemy X position backup]
 $A8:D027 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A8:D02A 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy Y position = [enemy $0FAE]
+$A8:D02A 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy Y position = [enemy Y position backup]
 $A8:D02D 7A          PLY
 $A8:D02E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D031 A9 00 02    LDA #$0200             ;\
@@ -7272,9 +7272,9 @@ $A8:D03A FA          PLX
 $A8:D03B 6B          RTL                    ; Return
 
 $A8:D03C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
-$A8:D03F 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy X position = [enemy $0FAC]
+$A8:D03F 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy X position = [enemy X position backup]
 $A8:D042 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
-$A8:D045 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy Y position = [enemy $0FAE]
+$A8:D045 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy Y position = [enemy Y position backup]
 $A8:D048 7A          PLY
 $A8:D049 FA          PLX
 $A8:D04A 6B          RTL

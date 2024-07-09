@@ -3215,7 +3215,7 @@ $A7:BB7C AD D2 10    LDA $10D2  [$7E:10D2]  ;\
 $A7:BB7F C9 39 89    CMP #$8939             ;} If [Kraid foot instruction list pointer] >= $8939 (last frame of walking backwards animation):
 $A7:BB82 30 1F       BMI $1F    [$BBA3]     ;/
 $A7:BB84 A9 2D B9    LDA #$B92D             ;\
-$A7:BB87 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = decrement enemy function timer
+$A7:BB87 8D E8 10    STA $10E8  [$7E:10E8]  ;} Kraid foot function = handle Kraid enemy function timer
 $A7:BB8A A9 B4 00    LDA #$00B4             ;\
 $A7:BB8D 8D F2 10    STA $10F2  [$7E:10F2]  ;} Kraid foot function timer = 180
 $A7:BB90 A9 A4 BB    LDA #$BBA4             ;\
@@ -3430,7 +3430,7 @@ $A7:BD16 9D 8E 0F    STA $0F8E,x[$7E:110E]  ;} Enemy spritemap pointer = $A617 (
 $A7:BD19 A9 60 BD    LDA #$BD60             ;\
 $A7:BD1C 9F 00 78 7E STA $7E7800,x[$7E:7980];} Enemy next function = initialise fingernail
 $A7:BD20 A9 2D B9    LDA #$B92D             ;\
-$A7:BD23 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = decrement enemy function timer
+$A7:BD23 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = handle Kraid enemy function timer
 $A7:BD26 A9 40 00    LDA #$0040             ;\
 $A7:BD29 9D B2 0F    STA $0FB2,x[$7E:1132]  ;} Enemy function timer = 40h
 $A7:BD2C 6B          RTL

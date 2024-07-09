@@ -4971,7 +4971,7 @@ $AA:E23D              dw F401, F401, F404, F409, F40F, F418, F422, F42E, F43C, F
 }
 
 
-;;; $E2BD..F7D2: n00b tube cracks ;;;
+;;; $E2BD..F7D2: n00b tube cracks / chozo statue ;;;
 {
 ;;; $E2BD: Palette - enemy $F0BF (n00b tube cracks) ;;;
 {

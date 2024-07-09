@@ -26,7 +26,7 @@ $B3:86A7             dx 000A,8714,
 }
 
 
-;;; $86CB: Instruction list ;;;
+;;; $86CB: Unused. Instruction list ;;;
 {
 $B3:86CB             dx 0008,874C,
                         0008,8753,
@@ -35,7 +35,7 @@ $B3:86CB             dx 0008,874C,
 }
 
 
-;;; $86DB: Instruction list ;;;
+;;; $86DB: Unused. Instruction list ;;;
 {
 $B3:86DB             dx 0008,8761,
                         0008,8768,
@@ -44,7 +44,7 @@ $B3:86DB             dx 0008,8761,
 }
 
 
-;;; $86EB: Instruction list ;;;
+;;; $86EB: Unused. Instruction list ;;;
 {
 $B3:86EB             dx 0008,8776,
                         0008,877D,
@@ -3590,7 +3590,7 @@ $B3:E670 A9 0F 00    LDA #$000F             ;\
 $B3:E673 22 33 82 80 JSL $808233[$80:8233]  ;} If critters escaped:
 $B3:E677 90 06       BCC $06    [$E67F]     ;/
 $B3:E679 A9 DA E5    LDA #$E5DA             ;\
-$B3:E67C 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $E5DA
+$B3:E67C 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $E5DA (express gratitude then escape)
 
 $B3:E67F 60          RTS
 }
@@ -3616,7 +3616,6 @@ $B3:E6A0 9D A8 0F    STA $0FA8,x[$7E:1028]  ;/
 $B3:E6A3 10 05       BPL $05    [$E6AA]     ; If [enemy X velocity] < 0:
 $B3:E6A5 A9 56 E5    LDA #$E556             ; Enemy instruction list pointer = $E556
 $B3:E6A8 80 03       BRA $03    [$E6AD]
-
                                             ; Else ([enemy X velocity] >= 0):
 $B3:E6AA A9 82 E5    LDA #$E582             ; Enemy instruction list pointer = $E582
 
