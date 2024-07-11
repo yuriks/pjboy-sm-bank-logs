@@ -3167,7 +3167,7 @@ $B2:FAEC 18          CLC                    ;|
 $B2:FAED 69 02 00    ADC #$0002             ;} Enemy X position += 2
 $B2:FAF0 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 $B2:FAF3 DD B2 0F    CMP $0FB2,x[$7E:0FF2]  ;\
-$B2:FAF6 30 18       BMI $18    [$FB10]     ;} If [enemy X position] >= [enemy right post X position]: return
+$B2:FAF6 30 18       BMI $18    [$FB10]     ;} If [enemy X position] < [enemy right post X position]: return
 $B2:FAF8 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
 $B2:FAFB 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy right post X position]
 $B2:FAFE A9 EA F4    LDA #$F4EA             ;\

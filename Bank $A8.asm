@@ -9278,7 +9278,7 @@ $A8:E9DA             dw 3800, 5ADF, 3975, 0C0A, 0006, 4E1A, 2D33, 1C8E, 102B, 6F
 
 ;;; $E9FA..EB2D: Instruction lists - ki-hunter ;;;
 {
-;;; $E9FA: Instruction list -  ;;;
+;;; $E9FA: Instruction list - ki-hunter -  ;;;
 {
 $A8:E9FA             dx 0002,EB2E,
                         0002,EB58,
@@ -9310,7 +9310,7 @@ $A8:EA24             dx 0002,EBF7,
 }
 
 
-;;; $EA4E: Instruction list -  ;;;
+;;; $EA4E: Instruction list - ki-hunter wings -  ;;;
 {
 $A8:EA4E             dx 0002,EBAC,
                         0002,EBC2,
@@ -9363,7 +9363,7 @@ $A8:EA8A             dx 0008,EE64,
                         000B,EEB8,
                         0002,EE8E,
                         0002,EE64,
-                        F5E4,       ; ???
+                        F5E4,       ; Enemy function = $F5F0
                         0001,EEE2,
                         812F        ; Sleep
 }
@@ -9376,7 +9376,7 @@ $A8:EAA6             dx 0008,EF0C,
                         000B,EF60,
                         0002,EF36,
                         0002,EF0C,
-                        F5E4,       ; ???
+                        F5E4,       ; Enemy function = $F5F0
                         0001,EF8A,
                         812F        ; Sleep
 }
@@ -9388,7 +9388,7 @@ $A8:EAC2             dx 0008,EE64,
                         0008,EE8E,
                         000B,EEB8,
                         0008,EE8E,
-                        F67F,       ; ???
+                        F67F,       ; Enemy function = $F68B
                         0001,EE64,
                         812F        ; Sleep
 }
@@ -9400,7 +9400,7 @@ $A8:EADA             dx 0008,EF0C,
                         0008,EF36,
                         000B,EF60,
                         0008,EF36,
-                        F67F,       ; ???
+                        F67F,       ; Enemy function = $F68B
                         0001,EF0C,
                         812F        ; Sleep
 }
@@ -9414,7 +9414,7 @@ $A8:EAF2             dx 0020,EFB4,
                         0002,F03C,
                         F6D2,       ; ???
                         0018,F06B,
-                        F67F,       ; ???
+                        F67F,       ; Enemy function = $F68B
                         0001,EFB4,
                         812F        ; Sleep
 }
@@ -9428,7 +9428,7 @@ $A8:EB10             dx 0020,F09A,
                         0002,F122,
                         F6D8,       ; ???
                         0018,F151,
-                        F67F,       ; ???
+                        F67F,       ; Enemy function = $F68B
                         0001,F09A,
                         812F        ; Sleep
 }
@@ -9536,7 +9536,7 @@ $A8:F1F6 10 1B       BPL $1B    [$F213]     ;} If [enemy parameter 1] & 8000h !=
 $A8:F1F8 A9 01 00    LDA #$0001             ;\
 $A8:F1FB 9F 28 78 7E STA $7E7828,x[$7E:7828];} Enemy $7E:7828 = 1
 $A8:F1FF A9 5A F5    LDA #$F55A             ;\
-$A8:F202 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F55A
+$A8:F202 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F55A (wingless - initial falling)
 $A8:F205 A9 00 00    LDA #$0000             ;\
 $A8:F208 9F 10 78 7E STA $7E7810,x[$7E:7810];|
 $A8:F20C A9 01 00    LDA #$0001             ;} >_<;
@@ -9549,29 +9549,29 @@ $A8:F213 6B          RTL
 ;;; $F214: Initialisation AI - enemy $EAFF/$EB7F/$EBFF (ki-hunter wings) ;;;
 {
 $A8:F214 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:F217 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A8:F21A 09 00 20    ORA #$2000
-$A8:F21D 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A8:F220 A9 01 00    LDA #$0001
-$A8:F223 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A8:F226 9E 90 0F    STZ $0F90,x[$7E:0FD0]
-$A8:F229 A9 4E EA    LDA #$EA4E
-$A8:F22C 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A8:F22F BD 3E 0F    LDA $0F3E,x[$7E:0F7E]
-$A8:F232 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A8:F235 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]
-$A8:F238 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A8:F23B A9 F3 F6    LDA #$F6F3
-$A8:F23E 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A8:F241 BD 56 0F    LDA $0F56,x[$7E:0F96]
-$A8:F244 9D 96 0F    STA $0F96,x[$7E:0FD6]
-$A8:F247 BD 58 0F    LDA $0F58,x[$7E:0F98]
-$A8:F24A 9D 98 0F    STA $0F98,x[$7E:0FD8]
-$A8:F24D BD 74 0F    LDA $0F74,x[$7E:0FB4]
-$A8:F250 10 09       BPL $09    [$F25B]
-$A8:F252 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A8:F255 09 00 02    ORA #$0200
-$A8:F258 9D 86 0F    STA $0F86,x[$7E:0FC6]
+$A8:F217 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A8:F21A 09 00 20    ORA #$2000             ;} Set enemy to process instructions
+$A8:F21D 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A8:F220 A9 01 00    LDA #$0001             ;\
+$A8:F223 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A8:F226 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
+$A8:F229 A9 4E EA    LDA #$EA4E             ;\
+$A8:F22C 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $EA4E
+$A8:F22F BD 3E 0F    LDA $0F3E,x[$7E:0F7E]  ;\
+$A8:F232 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy ([X] - 1) Y position]
+$A8:F235 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\
+$A8:F238 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy ([X] - 1) X position]
+$A8:F23B A9 F3 F6    LDA #$F6F3             ;\
+$A8:F23E 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $F6F3
+$A8:F241 BD 56 0F    LDA $0F56,x[$7E:0F96]  ;\
+$A8:F244 9D 96 0F    STA $0F96,x[$7E:0FD6]  ;} Enemy palette index = [enemy ([X] - 1) palette index]
+$A8:F247 BD 58 0F    LDA $0F58,x[$7E:0F98]  ;\
+$A8:F24A 9D 98 0F    STA $0F98,x[$7E:0FD8]  ;} Enemy VRAM tiles index = [enemy ([X] - 1) VRAM tiles index]
+$A8:F24D BD 74 0F    LDA $0F74,x[$7E:0FB4]  ;\
+$A8:F250 10 09       BPL $09    [$F25B]     ;} If [enemy ([X] - 1) parameter 1] & 8000h != 0 (no wings):
+$A8:F252 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A8:F255 09 00 02    ORA #$0200             ;} Mark enemy for deletion
+$A8:F258 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
 
 $A8:F25B 6B          RTL
 }
@@ -9580,7 +9580,7 @@ $A8:F25B 6B          RTL
 ;;; $F25C: Main AI - enemy $EABF/$EB3F/$EBBF (ki-hunter) ;;;
 {
 $A8:F25C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:F25F 7C A8 0F    JMP ($0FA8,x)[$A8:F268]
+$A8:F25F 7C A8 0F    JMP ($0FA8,x)[$A8:F268]; Execute [enemy function]
 }
 
 
@@ -9591,7 +9591,7 @@ $A8:F265 7C A8 0F    JMP ($0FA8,x)[$A8:F6F3]
 }
 
 
-;;; $F268:  ;;;
+;;; $F268: Ki-hunter function -  ;;;
 {
 $A8:F268 BF 10 78 7E LDA $7E7810,x[$7E:7810];\
 $A8:F26C 85 12       STA $12    [$7E:0012]  ;|
@@ -9872,7 +9872,7 @@ $A8:F525 6B          RTL
 }
 
 
-;;; $F526:  ;;;
+;;; $F526: Instruction ;;;
 {
 $A8:F526 A0 FA E9    LDY #$E9FA
 $A8:F529 A9 4E EA    LDA #$EA4E
@@ -9899,7 +9899,7 @@ $A8:F559 6B          RTL
 }
 
 
-;;; $F55A:  ;;;
+;;; $F55A: Ki-hunter function - wingless - initial falling ;;;
 {
 $A8:F55A BF 10 78 7E LDA $7E7810,x[$7E:7910];\
 $A8:F55E 85 12       STA $12    [$7E:0012]  ;|
@@ -9958,7 +9958,7 @@ $A8:F5E3 6B          RTL
 }
 
 
-;;; $F5E4:  ;;;
+;;; $F5E4: Instruction - enemy function = $F5F0 ;;;
 {
 $A8:F5E4 DA          PHX
 $A8:F5E5 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -10029,7 +10029,7 @@ $A8:F67E 6B          RTL
 }
 
 
-;;; $F67F: Instruction ;;;
+;;; $F67F: Instruction - enemy function = $F68B ;;;
 {
 $A8:F67F DA          PHX
 $A8:F680 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -10083,7 +10083,7 @@ $A8:F6D1 6B          RTL
 }
 
 
-;;; $F6D2:  ;;;
+;;; $F6D2: Instruction ;;;
 {
 $A8:F6D2 5A          PHY
 $A8:F6D3 A0 18 CF    LDY #$CF18             ; Y = $CF18 (ki hunter acid spit - left)
@@ -10091,7 +10091,7 @@ $A8:F6D6 80 04       BRA $04    [$F6DC]
 }
 
 
-;;; $F6D8:  ;;;
+;;; $F6D8: Instruction ;;;
 {
 $A8:F6D8 5A          PHY
 $A8:F6D9 A0 26 CF    LDY #$CF26             ; Y = $CF26 (ki hunter acid spit - right)
@@ -10111,12 +10111,12 @@ $A8:F6F2 6B          RTL
 }
 
 
-;;; $F6F3:  ;;;
+;;; $F6F3: Ki-hunter wings function - attached ;;;
 {
-$A8:F6F3 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]
-$A8:F6F6 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A8:F6F9 BD 3E 0F    LDA $0F3E,x[$7E:0F7E]
-$A8:F6FC 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
+$A8:F6F3 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\
+$A8:F6F6 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [enemy ([X] - 1) X position]
+$A8:F6F9 BD 3E 0F    LDA $0F3E,x[$7E:0F7E]  ;\
+$A8:F6FC 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy ([X] - 1) Y position]
 $A8:F6FF 6B          RTL
 }
 
@@ -10131,93 +10131,96 @@ $A8:F700 6B          RTL
 {
 $A8:F701 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A8:F705 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:F708 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$A8:F70B F0 20       BEQ $20    [$F72D]
-$A8:F70D DD F4 0F    CMP $0FF4,x[$7E:10F4]
-$A8:F710 F0 22       BEQ $22    [$F734]
-$A8:F712 30 20       BMI $20    [$F734]
-$A8:F714 BD 8A 0F    LDA $0F8A,x[$7E:108A]
-$A8:F717 9D CA 0F    STA $0FCA,x[$7E:10CA]
-$A8:F71A BD 9E 0F    LDA $0F9E,x[$7E:109E]
-$A8:F71D 9D DE 0F    STA $0FDE,x[$7E:10DE]
-$A8:F720 BD A0 0F    LDA $0FA0,x[$7E:10A0]
-$A8:F723 9D E0 0F    STA $0FE0,x[$7E:10E0]
-$A8:F726 BD 9C 0F    LDA $0F9C,x[$7E:109C]
-$A8:F729 9D DC 0F    STA $0FDC,x[$7E:10DC]
+$A8:F708 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$A8:F70B F0 20       BEQ $20    [$F72D]     ;} If [enemy health] = 0: go to BRANCH_DEAD
+$A8:F70D DD F4 0F    CMP $0FF4,x[$7E:10F4]  ;\
+$A8:F710 F0 22       BEQ $22    [$F734]     ;} If [enemy health] <= [enemy ([X] + 1) parameter 1]: go to BRANCH_CLIP_WINGS
+$A8:F712 30 20       BMI $20    [$F734]     ;/
+$A8:F714 BD 8A 0F    LDA $0F8A,x[$7E:108A]  ;\
+$A8:F717 9D CA 0F    STA $0FCA,x[$7E:10CA]  ;} Enemy ([X] + 1) AI handler = [enemy AI handler]
+$A8:F71A BD 9E 0F    LDA $0F9E,x[$7E:109E]  ;\
+$A8:F71D 9D DE 0F    STA $0FDE,x[$7E:10DE]  ;} Enemy ([X] + 1) frozen timer = [enemy frozen timer]
+$A8:F720 BD A0 0F    LDA $0FA0,x[$7E:10A0]  ;\
+$A8:F723 9D E0 0F    STA $0FE0,x[$7E:10E0]  ;} Enemy ([X] + 1) invincibility timer = [enemy invincibility timer]
+$A8:F726 BD 9C 0F    LDA $0F9C,x[$7E:109C]  ;\
+$A8:F729 9D DC 0F    STA $0FDC,x[$7E:10DC]  ;} Enemy ([X] + 1) flash timer = [enemy flash timer]
 
-$A8:F72C 6B          RTL
+$A8:F72C 6B          RTL                    ; Return
 
-$A8:F72D A9 00 02    LDA #$0200
-$A8:F730 9D C6 0F    STA $0FC6,x[$7E:0FC6]
-$A8:F733 6B          RTL
+; BRANCH_DEAD
+$A8:F72D A9 00 02    LDA #$0200             ;\
+$A8:F730 9D C6 0F    STA $0FC6,x[$7E:0FC6]  ;} Mark enemy ([X] + 1) for deletion
+$A8:F733 6B          RTL                    ; Return
 
-$A8:F734 BF 28 78 7E LDA $7E7828,x[$7E:7928]
-$A8:F738 D0 F2       BNE $F2    [$F72C]
-$A8:F73A A9 01 00    LDA #$0001
-$A8:F73D 9F 28 78 7E STA $7E7828,x[$7E:7928]
-$A8:F741 A9 5A F5    LDA #$F55A
-$A8:F744 9D A8 0F    STA $0FA8,x[$7E:10A8]
-$A8:F747 A9 00 00    LDA #$0000
-$A8:F74A 9F 10 78 7E STA $7E7810,x[$7E:7910]
-$A8:F74E A9 01 00    LDA #$0001
-$A8:F751 9F 12 78 7E STA $7E7812,x[$7E:7912]
+; BRANCH_CLIP_WINGS
+$A8:F734 BF 28 78 7E LDA $7E7828,x[$7E:7928];\
+$A8:F738 D0 F2       BNE $F2    [$F72C]     ;} If [enemy wingless flag] != 0: return
+$A8:F73A A9 01 00    LDA #$0001             ;\
+$A8:F73D 9F 28 78 7E STA $7E7828,x[$7E:7928];} Enemy wingless flag = 1
+$A8:F741 A9 5A F5    LDA #$F55A             ;\
+$A8:F744 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $F55A (wingless - initial falling)
+$A8:F747 A9 00 00    LDA #$0000             ;\
+$A8:F74A 9F 10 78 7E STA $7E7810,x[$7E:7910];|
+$A8:F74E A9 01 00    LDA #$0001             ;} Enemy Y velocity = 1.0
+$A8:F751 9F 12 78 7E STA $7E7812,x[$7E:7912];/
 $A8:F755 DA          PHX
-$A8:F756 8A          TXA
-$A8:F757 18          CLC
-$A8:F758 69 40 00    ADC #$0040
-$A8:F75B 8D 54 0E    STA $0E54  [$7E:0E54]
-$A8:F75E AA          TAX
-$A8:F75F BD A8 0F    LDA $0FA8,x[$7E:10E8]
-$A8:F762 C9 CF F7    CMP #$F7CF
-$A8:F765 F0 63       BEQ $63    [$F7CA]
-$A8:F767 BD 7E 0F    LDA $0F7E,x[$7E:10BE]
-$A8:F76A 9F 0E 78 7E STA $7E780E,x[$7E:794E]
-$A8:F76E BD 7A 0F    LDA $0F7A,x[$7E:10BA]
-$A8:F771 9F 10 78 7E STA $7E7810,x[$7E:7950]
-$A8:F775 20 8D F9    JSR $F98D  [$A8:F98D]
-$A8:F778 20 51 F8    JSR $F851  [$A8:F851]
-$A8:F77B 20 7F F8    JSR $F87F  [$A8:F87F]
-$A8:F77E A9 00 E0    LDA #$E000
-$A8:F781 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A8:F784 A9 CF F7    LDA #$F7CF
-$A8:F787 9D A8 0F    STA $0FA8,x[$7E:10E8]
-$A8:F78A A9 DB F7    LDA #$F7DB
-$A8:F78D 9F 00 78 7E STA $7E7800,x[$7E:7940]
-$A8:F791 BF 0E 78 7E LDA $7E780E,x[$7E:794E]
-$A8:F795 38          SEC
-$A8:F796 FF 16 78 7E SBC $7E7816,x[$7E:7956]
-$A8:F79A 9F 0C 78 7E STA $7E780C,x[$7E:794C]
-$A8:F79E BD 7A 0F    LDA $0F7A,x[$7E:10BA]
-$A8:F7A1 9F 0A 78 7E STA $7E780A,x[$7E:794A]
-$A8:F7A5 BF 14 78 7E LDA $7E7814,x[$7E:7954]
-$A8:F7A9 9D AA 0F    STA $0FAA,x[$7E:10EA]
-$A8:F7AC A9 7E EA    LDA #$EA7E
-$A8:F7AF 9D 92 0F    STA $0F92,x[$7E:10D2]
-$A8:F7B2 A9 4D 80    LDA #$804D
-$A8:F7B5 9D 8E 0F    STA $0F8E,x[$7E:10CE]
-$A8:F7B8 A9 01 00    LDA #$0001
-$A8:F7BB 9D 94 0F    STA $0F94,x[$7E:10D4]
-$A8:F7BE 9E 90 0F    STZ $0F90,x[$7E:10D0]
-$A8:F7C1 BD 86 0F    LDA $0F86,x[$7E:10C6]
-$A8:F7C4 09 00 08    ORA #$0800
-$A8:F7C7 9D 86 0F    STA $0F86,x[$7E:10C6]
+$A8:F756 8A          TXA                    ;\
+$A8:F757 18          CLC                    ;|
+$A8:F758 69 40 00    ADC #$0040             ;} Enemy index += 40h (wings enemy)
+$A8:F75B 8D 54 0E    STA $0E54  [$7E:0E54]  ;|
+$A8:F75E AA          TAX                    ;/
+$A8:F75F BD A8 0F    LDA $0FA8,x[$7E:10E8]  ;\
+$A8:F762 C9 CF F7    CMP #$F7CF             ;} If [enemy function] = $F7CF: go to BRANCH_RETURN
+$A8:F765 F0 63       BEQ $63    [$F7CA]     ;/
+$A8:F767 BD 7E 0F    LDA $0F7E,x[$7E:10BE]  ;\
+$A8:F76A 9F 0E 78 7E STA $7E780E,x[$7E:794E];} Enemy $7E:780E = [enemy Y position]
+$A8:F76E BD 7A 0F    LDA $0F7A,x[$7E:10BA]  ;\
+$A8:F771 9F 10 78 7E STA $7E7810,x[$7E:7950];} Enemy $7E:7810 = [enemy X position]
+$A8:F775 20 8D F9    JSR $F98D  [$A8:F98D]  ; Execute $F98D
+$A8:F778 20 51 F8    JSR $F851  [$A8:F851]  ; Execute $F851
+$A8:F77B 20 7F F8    JSR $F87F  [$A8:F87F]  ; Execute $F87F
+$A8:F77E A9 00 E0    LDA #$E000             ;\
+$A8:F781 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy $0FB2 = E000h
+$A8:F784 A9 CF F7    LDA #$F7CF             ;\
+$A8:F787 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $F7CF
+$A8:F78A A9 DB F7    LDA #$F7DB             ;\
+$A8:F78D 9F 00 78 7E STA $7E7800,x[$7E:7940];} Enemy $7E:7800 = $F7DB
+$A8:F791 BF 0E 78 7E LDA $7E780E,x[$7E:794E];\
+$A8:F795 38          SEC                    ;|
+$A8:F796 FF 16 78 7E SBC $7E7816,x[$7E:7956];} Enemy $7E:780C = [enemy $7E:780E] - [enemy $7E:7816]
+$A8:F79A 9F 0C 78 7E STA $7E780C,x[$7E:794C];/
+$A8:F79E BD 7A 0F    LDA $0F7A,x[$7E:10BA]  ;\
+$A8:F7A1 9F 0A 78 7E STA $7E780A,x[$7E:794A];} Enemy $7E:780A = [enemy X position]
+$A8:F7A5 BF 14 78 7E LDA $7E7814,x[$7E:7954];\
+$A8:F7A9 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy $0FAA = [$7E:7814]
+$A8:F7AC A9 7E EA    LDA #$EA7E             ;\
+$A8:F7AF 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $EA7E
+$A8:F7B2 A9 4D 80    LDA #$804D             ;\
+$A8:F7B5 9D 8E 0F    STA $0F8E,x[$7E:10CE]  ;} Enemy spritemap pointer = $804D
+$A8:F7B8 A9 01 00    LDA #$0001             ;\
+$A8:F7BB 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction list timer = 1
+$A8:F7BE 9E 90 0F    STZ $0F90,x[$7E:10D0]  ; Enemy timer = 0
+$A8:F7C1 BD 86 0F    LDA $0F86,x[$7E:10C6]  ;\
+$A8:F7C4 09 00 08    ORA #$0800             ;} Set enemy to process whilst off-screen
+$A8:F7C7 9D 86 0F    STA $0F86,x[$7E:10C6]  ;/
 
-$A8:F7CA 68          PLA
-$A8:F7CB 8D 54 0E    STA $0E54  [$7E:0E54]
+; BRANCH_RETURN
+$A8:F7CA 68          PLA                    ;\
+$A8:F7CB 8D 54 0E    STA $0E54  [$7E:0E54]  ;} Enemy index -= 40h (ki-hunter enemy)
 $A8:F7CE 6B          RTL
 }
 
 
-;;; $F7CF:  ;;;
+;;; $F7CF: Ki-hunter wings function - falling ;;;
 {
 $A8:F7CF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:F7D2 BF 00 78 7E LDA $7E7800,x[$7E:7940]
-$A8:F7D6 85 12       STA $12    [$7E:0012]
-$A8:F7D8 6C 12 00    JMP ($0012)[$A8:F7DB]
+$A8:F7D2 BF 00 78 7E LDA $7E7800,x[$7E:7940];\
+$A8:F7D6 85 12       STA $12    [$7E:0012]  ;} Go to [enemy falling function]
+$A8:F7D8 6C 12 00    JMP ($0012)[$A8:F7DB]  ;/
 }
 
 
-;;; $F7DB:  ;;;
+;;; $F7DB: Ki-hunter wings falling function - drifting left ;;;
 {
 $A8:F7DB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F7DE BD AA 0F    LDA $0FAA,x[$7E:10EA]
@@ -10314,7 +10317,7 @@ $A8:F8AC 60          RTS
 }
 
 
-;;; $F8AD:  ;;;
+;;; $F8AD: Ki-hunter wings falling function - drifting right ;;;
 {
 $A8:F8AD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F8B0 BD AA 0F    LDA $0FAA,x[$7E:10EA]
