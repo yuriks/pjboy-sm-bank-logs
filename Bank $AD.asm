@@ -1224,10 +1224,10 @@ $AD:DE1A 65 12       ADC $12    [$7E:0012]  ;} Mother Brain rainbow beam left ed
 $AD:DE1C 8F 36 80 7E STA $7E8036[$7E:8036]  ;/
 $AD:DE20 AD B9 0F    LDA $0FB9  [$7E:0FB9]  ;\
 $AD:DE23 18          CLC                    ;|
-$AD:DE24 69 00 0E    ADC #$0E00             ;} Mother Brain rainbow beam right edge origin X position = ([Mother Brain's brain X position] + Eh) * 100h
+$AD:DE24 69 00 0E    ADC #$0E00             ;} Mother Brain rainbow beam left origin X position = ([Mother Brain's brain X position] + Eh) * 100h
 $AD:DE27 29 00 FF    AND #$FF00             ;|
 $AD:DE2A 8F 38 80 7E STA $7E8038[$7E:8038]  ;/
-$AD:DE2E 8F 3C 80 7E STA $7E803C[$7E:803C]  ; Mother Brain rainbow beam left edge origin X position = [Mother Brain rainbow beam right edge origin X position]
+$AD:DE2E 8F 3C 80 7E STA $7E803C[$7E:803C]  ; Mother Brain rainbow beam right origin X position = [Mother Brain rainbow beam left origin X position]
 $AD:DE32 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $AD:DE35 18          CLC                    ;|
 $AD:DE36 69 05 00    ADC #$0005             ;} Mother Brain rainbow beam origin Y position = [Mother Brain's brain Y position] + 5
@@ -1285,9 +1285,9 @@ $AD:DE5F             dw E1A6, DE7F, 0000, 0000, ; Bottom-right
 ;;; $DE7F: Calculate Mother Brain rainbow beam HDMA tables - beam is aimed right ;;;
 {
 $AD:DE7F AF 38 80 7E LDA $7E8038[$7E:8038]  ;\
-$AD:DE83 85 16       STA $16    [$7E:0016]  ;} $16 = [Mother Brain rainbow beam right edge origin X position]
+$AD:DE83 85 16       STA $16    [$7E:0016]  ;} $16 = [Mother Brain rainbow beam left origin X position]
 $AD:DE85 AF 3C 80 7E LDA $7E803C[$7E:803C]  ;\
-$AD:DE89 85 18       STA $18    [$7E:0018]  ;} $18 = [Mother Brain rainbow beam left edge origin X position]
+$AD:DE89 85 18       STA $18    [$7E:0018]  ;} $18 = [Mother Brain rainbow beam right origin X position]
 $AD:DE8B 20 CE DE    JSR $DECE  [$AD:DECE]  ; Calculate Mother Brain rainbow beam HDMA data table - beam is aimed right
 $AD:DE8E A9 10 00    LDA #$0010             ;\
 $AD:DE91 8F 00 9C 7E STA $7E9C00[$7E:9C00]  ;|
@@ -1314,8 +1314,8 @@ $AD:DECD 60          RTS
 ;;; $DECE: Calculate Mother Brain rainbow beam HDMA data table - beam is aimed right ;;;
 {
 ;; Parameters:
-;;     $16: [$7E:8038] (right edge origin X position)
-;;     $18: [$7E:803C] (left edge origin X position)
+;;     $16: Right edge origin X position ([$7E:8038])
+;;     $18: Left edge origin X position ([$7E:803C])
 
 ; Recall that SM gradients are dx/dy
 $AD:DECE 8B          PHB
@@ -1389,7 +1389,7 @@ $AD:DF46 B0 16       BCS $16    [$DF5E]     ;/
 $AD:DF48 85 16       STA $16    [$7E:0016]  ; $16 += [$12]
 $AD:DF4A EB          XBA                    ;\
 $AD:DF4B 29 FF 00    AND #$00FF             ;|
-$AD:DF4E 09 00 FF    ORA #$FF00             ;} [X] = [$18] / 100h, FFh
+$AD:DF4E 09 00 FF    ORA #$FF00             ;} [X] = [$16] / 100h, FFh
 $AD:DF51 9D 00 00    STA $0000,x            ;/
 $AD:DF54 E8          INX                    ;\
 $AD:DF55 E8          INX                    ;} X += 2
@@ -1416,9 +1416,9 @@ $AD:DF6D 60          RTS
 ;;; $DF6E: Calculate Mother Brain rainbow beam HDMA tables - beam is aimed upwards ;;;
 {
 $AD:DF6E AF 38 80 7E LDA $7E8038[$7E:8038]  ;\
-$AD:DF72 85 16       STA $16    [$7E:0016]  ;} $16 = [Mother Brain rainbow beam right edge origin X position]
+$AD:DF72 85 16       STA $16    [$7E:0016]  ;} $16 = [Mother Brain rainbow beam left origin X position]
 $AD:DF74 AF 3C 80 7E LDA $7E803C[$7E:803C]  ;\
-$AD:DF78 85 18       STA $18    [$7E:0018]  ;} $18 = [Mother Brain rainbow beam left edge origin X position]
+$AD:DF78 85 18       STA $18    [$7E:0018]  ;} $18 = [Mother Brain rainbow beam right origin X position]
 $AD:DF7A E2 20       SEP #$20               ;\
 $AD:DF7C AF 34 80 7E LDA $7E8034[$7E:8034]  ;|
 $AD:DF80 0A          ASL A                  ;|
@@ -1497,8 +1497,8 @@ $AD:E024             dw E02C, E0A6, ; Right edge angle is right half
 ;;; $E02C: Calculate Mother Brain rainbow beam HDMA data table - beam is aimed upwards - beam is aimed up-right ;;;
 {
 ;; Parameters:
-;;     $16: [$7E:8038] (right edge origin X position)
-;;     $18: [$7E:803C] (left edge origin X position)
+;;     $16: Left edge origin X position ([$7E:8038])
+;;     $18: Right edge origin X position ([$7E:803C])
 
 ; Recall that SM gradients are dx/dy
 $AD:E02C 8B          PHB
@@ -1506,21 +1506,21 @@ $AD:E02D F4 7E 7E    PEA $7E7E              ;\
 $AD:E030 AB          PLB                    ;} DB = $7E
 $AD:E031 AB          PLB                    ;/
 $AD:E032 A9 FF 00    LDA #$00FF             ;\
-$AD:E035 8D 00 9D    STA $9D00  [$AD:9D00]  ;} $9D00 = FFh, 00h
-$AD:E038 8D 02 9D    STA $9D02  [$AD:9D02]  ; $9D02 = FFh, 00h
-$AD:E03B AD 36 80    LDA $8036  [$AD:8036]  ;\
+$AD:E035 8D 00 9D    STA $9D00  [$7E:9D00]  ;} $9D00 = FFh, 00h
+$AD:E038 8D 02 9D    STA $9D02  [$7E:9D02]  ; $9D02 = FFh, 00h
+$AD:E03B AD 36 80    LDA $8036  [$7E:8036]  ;\
 $AD:E03E 29 FF 00    AND #$00FF             ;|
 $AD:E041 0A          ASL A                  ;|
-$AD:E042 AA          TAX                    ;} $12 = |tan([Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
+$AD:E042 AA          TAX                    ;} $12 = |tan([Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
 $AD:E043 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E047 85 12       STA $12    [$7E:0012]  ;/
-$AD:E049 AD 34 80    LDA $8034  [$AD:8034]  ;\
+$AD:E049 AD 34 80    LDA $8034  [$7E:8034]  ;\
 $AD:E04C 29 FF 00    AND #$00FF             ;|
 $AD:E04F 0A          ASL A                  ;|
-$AD:E050 AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
+$AD:E050 AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
 $AD:E051 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E055 85 14       STA $14    [$7E:0014]  ;/
-$AD:E057 AD 3A 80    LDA $803A  [$AD:803A]  ;\
+$AD:E057 AD 3A 80    LDA $803A  [$7E:803A]  ;\
 $AD:E05A A8          TAY                    ;} Y = [Mother Brain rainbow beam origin Y position]
 $AD:E05B 38          SEC                    ;\
 $AD:E05C E9 20 00    SBC #$0020             ;|
@@ -1570,8 +1570,8 @@ $AD:E0A5 60          RTS
 ;;; $E0A6: Calculate Mother Brain rainbow beam HDMA data table - beam is aimed upwards - beam is aimed up ;;;
 {
 ;; Parameters:
-;;     $16: [$7E:8038] (right edge origin X position)
-;;     $18: [$7E:803C] (left edge origin X position)
+;;     $16: Left edge origin X position ([$7E:8038])
+;;     $18: Right edge origin X position ([$7E:803C])
 
 ; Recall that SM gradients are dx/dy
 $AD:E0A6 8B          PHB
@@ -1585,14 +1585,14 @@ $AD:E0B5 AD 36 80    LDA $8036  [$AD:8036]  ;\
 $AD:E0B8 49 FF FF    EOR #$FFFF             ;|
 $AD:E0BB 1A          INC A                  ;|
 $AD:E0BC 29 FF 00    AND #$00FF             ;|
-$AD:E0BF 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
+$AD:E0BF 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
 $AD:E0C0 AA          TAX                    ;|
 $AD:E0C1 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E0C5 85 12       STA $12    [$7E:0012]  ;/
 $AD:E0C7 AD 34 80    LDA $8034  [$AD:8034]  ;\
 $AD:E0CA 29 FF 00    AND #$00FF             ;|
 $AD:E0CD 0A          ASL A                  ;|
-$AD:E0CE AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
+$AD:E0CE AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
 $AD:E0CF BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E0D3 85 14       STA $14    [$7E:0014]  ;/
 $AD:E0D5 AD 3A 80    LDA $803A  [$AD:803A]  ;\
@@ -1645,8 +1645,8 @@ $AD:E123 60          RTS
 ;;; $E124: Calculate Mother Brain rainbow beam HDMA data table - beam is aimed upwards - beam is aimed up-left ;;;
 {
 ;; Parameters:
-;;     $16: [$7E:8038] (right edge origin X position)
-;;     $18: [$7E:803C] (left edge origin X position)
+;;     $16: Left edge origin X position ([$7E:8038])
+;;     $18: Right edge origin X position ([$7E:803C])
 
 ; Recall that SM gradients are dx/dy
 $AD:E124 8B          PHB
@@ -1660,7 +1660,7 @@ $AD:E133 AD 36 80    LDA $8036  [$AD:8036]  ;\
 $AD:E136 49 FF FF    EOR #$FFFF             ;|
 $AD:E139 1A          INC A                  ;|
 $AD:E13A 29 FF 00    AND #$00FF             ;|
-$AD:E13D 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
+$AD:E13D 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
 $AD:E13E AA          TAX                    ;|
 $AD:E13F BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E143 85 12       STA $12    [$7E:0012]  ;/
@@ -1668,7 +1668,7 @@ $AD:E145 AD 34 80    LDA $8034  [$AD:8034]  ;\
 $AD:E148 49 FF FF    EOR #$FFFF             ;|
 $AD:E14B 1A          INC A                  ;|
 $AD:E14C 29 FF 00    AND #$00FF             ;|
-$AD:E14F 0A          ASL A                  ;} $14 = |tan(-[Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
+$AD:E14F 0A          ASL A                  ;} $14 = |tan(-[Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
 $AD:E150 AA          TAX                    ;|
 $AD:E151 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E155 85 14       STA $14    [$7E:0014]  ;/
@@ -1722,9 +1722,9 @@ $AD:E1A5 60          RTS
 ;;; $E1A6: Calculate Mother Brain rainbow beam HDMA tables - beam is aimed downwards ;;;
 {
 $AD:E1A6 AF 38 80 7E LDA $7E8038[$7E:8038]  ;\
-$AD:E1AA 85 16       STA $16    [$7E:0016]  ;} $16 = [Mother Brain rainbow beam right edge origin X position]
+$AD:E1AA 85 16       STA $16    [$7E:0016]  ;} $16 = [Mother Brain rainbow beam left origin X position]
 $AD:E1AC AF 3C 80 7E LDA $7E803C[$7E:803C]  ;\
-$AD:E1B0 85 18       STA $18    [$7E:0018]  ;} $18 = [Mother Brain rainbow beam left edge origin X position]
+$AD:E1B0 85 18       STA $18    [$7E:0018]  ;} $18 = [Mother Brain rainbow beam right origin X position]
 $AD:E1B2 E2 20       SEP #$20               ;\
 $AD:E1B4 AF 34 80 7E LDA $7E8034[$7E:8034]  ;|
 $AD:E1B8 0A          ASL A                  ;|
@@ -1771,8 +1771,8 @@ $AD:E20E             dw E216, 0000, ; Right edge angle is right half
 ;;; $E216: Calculate Mother Brain rainbow beam HDMA data table - beam is aimed downwards - beam is aimed down-right ;;;
 {
 ;; Parameters:
-;;     $16: [$7E:8038] (right edge origin X position)
-;;     $18: [$7E:803C] (left edge origin X position)
+;;     $16: Right edge origin X position ([$7E:8038])
+;;     $18: Left edge origin X position ([$7E:803C])
 
 ; Recall that SM gradients are dx/dy
 $AD:E216 8B          PHB
@@ -1785,13 +1785,13 @@ $AD:E222 8D 02 9D    STA $9D02  [$7E:9D02]  ; $9D02 = FFh, 00h
 $AD:E225 AD 34 80    LDA $8034  [$7E:8034]  ;\
 $AD:E228 29 FF 00    AND #$00FF             ;|
 $AD:E22B 0A          ASL A                  ;|
-$AD:E22C AA          TAX                    ;} $12 = |tan([Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
+$AD:E22C AA          TAX                    ;} $12 = |tan([Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
 $AD:E22D BF D4 C9 91 LDA $91C9D4,x[$91:CA10];|
 $AD:E231 85 12       STA $12    [$7E:0012]  ;/
 $AD:E233 AD 36 80    LDA $8036  [$7E:8036]  ;\
 $AD:E236 29 FF 00    AND #$00FF             ;|
 $AD:E239 0A          ASL A                  ;|
-$AD:E23A AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
+$AD:E23A AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
 $AD:E23B BF D4 C9 91 LDA $91C9D4,x[$91:CA14];|
 $AD:E23F 85 14       STA $14    [$7E:0014]  ;/
 $AD:E241 AD 3A 80    LDA $803A  [$7E:803A]  ;\
@@ -1848,8 +1848,8 @@ $AD:E292 60          RTS
 ;;; $E293: Calculate Mother Brain rainbow beam HDMA data table - beam is aimed downwards - beam is aimed down ;;;
 {
 ;; Parameters:
-;;     $16: [$7E:8038] (right edge origin X position)
-;;     $18: [$7E:803C] (left edge origin X position)
+;;     $16: Right edge origin X position ([$7E:8038])
+;;     $18: Left edge origin X position ([$7E:803C])
 
 ; Recall that SM gradients are dx/dy
 $AD:E293 8B          PHB
@@ -1863,14 +1863,14 @@ $AD:E2A2 AD 34 80    LDA $8034  [$AD:8034]  ;\
 $AD:E2A5 49 FF FF    EOR #$FFFF             ;|
 $AD:E2A8 1A          INC A                  ;|
 $AD:E2A9 29 FF 00    AND #$00FF             ;|
-$AD:E2AC 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
+$AD:E2AC 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
 $AD:E2AD AA          TAX                    ;|
 $AD:E2AE BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E2B2 85 12       STA $12    [$7E:0012]  ;/
 $AD:E2B4 AD 36 80    LDA $8036  [$AD:8036]  ;\
 $AD:E2B7 29 FF 00    AND #$00FF             ;|
 $AD:E2BA 0A          ASL A                  ;|
-$AD:E2BB AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
+$AD:E2BB AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
 $AD:E2BC BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E2C0 85 14       STA $14    [$7E:0014]  ;/
 $AD:E2C2 AD 3A 80    LDA $803A  [$AD:803A]  ;\
@@ -1927,8 +1927,8 @@ $AD:E313 60          RTS
 ;;; $E314: Calculate Mother Brain rainbow beam HDMA data table - beam is aimed downwards - beam is aimed down-left ;;;
 {
 ;; Parameters:
-;;     $16: [$7E:8038] (right edge origin X position)
-;;     $18: [$7E:803C] (left edge origin X position)
+;;     $16: Right edge origin X position ([$7E:8038])
+;;     $18: Left edge origin X position ([$7E:803C])
 
 ; Recall that SM gradients are dx/dy
 $AD:E314 8B          PHB
@@ -1942,7 +1942,7 @@ $AD:E323 AD 34 80    LDA $8034  [$AD:8034]  ;\
 $AD:E326 49 FF FF    EOR #$FFFF             ;|
 $AD:E329 1A          INC A                  ;|
 $AD:E32A 29 FF 00    AND #$00FF             ;|
-$AD:E32D 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
+$AD:E32D 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
 $AD:E32E AA          TAX                    ;|
 $AD:E32F BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E333 85 12       STA $12    [$7E:0012]  ;/
@@ -1950,7 +1950,7 @@ $AD:E335 AD 36 80    LDA $8036  [$AD:8036]  ;\
 $AD:E338 49 FF FF    EOR #$FFFF             ;|
 $AD:E33B 1A          INC A                  ;|
 $AD:E33C 29 FF 00    AND #$00FF             ;|
-$AD:E33F 0A          ASL A                  ;} $14 = |tan(-[Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
+$AD:E33F 0A          ASL A                  ;} $14 = |tan(-[Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
 $AD:E340 AA          TAX                    ;|
 $AD:E341 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E345 85 14       STA $14    [$7E:0014]  ;/
@@ -2483,7 +2483,7 @@ $AD:F0F7 AB          PLB                    ;} DB = $AD
 $AD:F0F8 AB          PLB                    ;/
 $AD:F0F9 A8          TAY                    ;\
 $AD:F0FA A2 E2 01    LDX #$01E2             ;|
-$AD:F0FD A9 0F 00    LDA #$000F             ;} Write Fh colours from [A] to BG1/2 palette 3 colours 1..Eh
+$AD:F0FD A9 0F 00    LDA #$000F             ;} Write Fh colours from [A] to sprite palette 7 colours 1..Eh
 $AD:F100 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 $AD:F104 AB          PLB
 $AD:F105 18          CLC

@@ -9310,7 +9310,7 @@ $A8:EA24             dx 0002,EBF7,
 }
 
 
-;;; $EA4E: Instruction list - ki-hunter wings -  ;;;
+;;; $EA4E: Instruction list - ki-hunter wings - facing left ;;;
 {
 $A8:EA4E             dx 0002,EBAC,
                         0002,EBC2,
@@ -9319,7 +9319,7 @@ $A8:EA4E             dx 0002,EBAC,
 }
 
 
-;;; $EA5E: Instruction list -  ;;;
+;;; $EA5E: Instruction list - ki-hunter wings - facing right ;;;
 {
 $A8:EA5E             dx 0002,EC75,
                         0002,EC8B,
@@ -9342,7 +9342,7 @@ $A8:EA76             dx 0010,EBEB,
 }
 
 
-;;; $EA7E: Instruction list -  ;;;
+;;; $EA7E: Instruction list - ki-hunter wings - falling ;;;
 {
 $A8:EA7E             dx 0001,ECA8,
                         812F        ; Sleep
@@ -10173,12 +10173,12 @@ $A8:F75F BD A8 0F    LDA $0FA8,x[$7E:10E8]  ;\
 $A8:F762 C9 CF F7    CMP #$F7CF             ;} If [enemy function] = $F7CF (falling): go to BRANCH_RETURN
 $A8:F765 F0 63       BEQ $63    [$F7CA]     ;/
 $A8:F767 BD 7E 0F    LDA $0F7E,x[$7E:10BE]  ;\
-$A8:F76A 9F 0E 78 7E STA $7E780E,x[$7E:794E];} Enemy $7E:780E = [enemy Y position]
+$A8:F76A 9F 0E 78 7E STA $7E780E,x[$7E:794E];} Enemy fall start Y position = [enemy Y position]
 $A8:F76E BD 7A 0F    LDA $0F7A,x[$7E:10BA]  ;\
-$A8:F771 9F 10 78 7E STA $7E7810,x[$7E:7950];} Enemy $7E:7810 = [enemy X position]
-$A8:F775 20 8D F9    JSR $F98D  [$A8:F98D]  ; Execute $F98D
-$A8:F778 20 51 F8    JSR $F851  [$A8:F851]  ; Execute $F851
-$A8:F77B 20 7F F8    JSR $F87F  [$A8:F87F]  ; Execute $F87F
+$A8:F771 9F 10 78 7E STA $7E7810,x[$7E:7950];} Enemy fall start X position = [enemy X position]
+$A8:F775 20 8D F9    JSR $F98D  [$A8:F98D]  ; Determine speed table index reset value
+$A8:F778 20 51 F8    JSR $F851  [$A8:F851]  ; Determine left arc centre offsets
+$A8:F77B 20 7F F8    JSR $F87F  [$A8:F87F]  ; Determine right arc centre offsets
 $A8:F77E A9 00 E0    LDA #$E000             ;\
 $A8:F781 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy arc angle = -2000h
 $A8:F784 A9 CF F7    LDA #$F7CF             ;\
@@ -10187,14 +10187,14 @@ $A8:F78A A9 DB F7    LDA #$F7DB             ;\
 $A8:F78D 9F 00 78 7E STA $7E7800,x[$7E:7940];} Enemy falling function = $F7DB (drifting left)
 $A8:F791 BF 0E 78 7E LDA $7E780E,x[$7E:794E];\
 $A8:F795 38          SEC                    ;|
-$A8:F796 FF 16 78 7E SBC $7E7816,x[$7E:7956];} Enemy $7E:780C = [enemy $7E:780E] - [enemy $7E:7816]
+$A8:F796 FF 16 78 7E SBC $7E7816,x[$7E:7956];} Enemy arc start Y position = [enemy fall start Y position] - [enemy $7E:7816]
 $A8:F79A 9F 0C 78 7E STA $7E780C,x[$7E:794C];/
 $A8:F79E BD 7A 0F    LDA $0F7A,x[$7E:10BA]  ;\
-$A8:F7A1 9F 0A 78 7E STA $7E780A,x[$7E:794A];} Enemy $7E:780A = [enemy X position]
+$A8:F7A1 9F 0A 78 7E STA $7E780A,x[$7E:794A];} Enemy arc start X position = [enemy X position]
 $A8:F7A5 BF 14 78 7E LDA $7E7814,x[$7E:7954];\
-$A8:F7A9 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy speed table index = [$7E:7814]
+$A8:F7A9 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy speed table index = [speed table index reset value]
 $A8:F7AC A9 7E EA    LDA #$EA7E             ;\
-$A8:F7AF 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $EA7E
+$A8:F7AF 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $EA7E (falling)
 $A8:F7B2 A9 4D 80    LDA #$804D             ;\
 $A8:F7B5 9D 8E 0F    STA $0F8E,x[$7E:10CE]  ;} Enemy spritemap pointer = $804D
 $A8:F7B8 A9 01 00    LDA #$0001             ;\
@@ -10240,7 +10240,7 @@ $A8:F7F9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F7FC BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F7FF EB          XBA                    ;|
 $A8:F800 29 FF 00    AND #$00FF             ;|
-$A8:F803 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy $7E:780C] - [enemy $7E:7808] + 30h * -sin([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F803 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy arc start Y position] - [enemy left arc centre Y offset] + 30h * -sin([enemy arc angle] * pi / 8000h) * FFh / 100h
 $A8:F807 38          SEC                    ;|
 $A8:F808 FF 08 78 7E SBC $7E7808,x[$7E:7948];|
 $A8:F80C 18          CLC                    ;|
@@ -10252,7 +10252,7 @@ $A8:F81A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F81D BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F820 EB          XBA                    ;|
 $A8:F821 29 FF 00    AND #$00FF             ;|
-$A8:F824 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy $7E:780A] - [enemy $7E:7806] + 30h * cos([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F824 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy arc start X position] - [enemy left arc centre X offset] + 30h * cos([enemy arc angle] * pi / 8000h) * FFh / 100h
 $A8:F828 38          SEC                    ;|
 $A8:F829 FF 06 78 7E SBC $7E7806,x[$7E:7946];|
 $A8:F82D 18          CLC                    ;|
@@ -10261,7 +10261,7 @@ $A8:F832 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;/
 $A8:F835 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
 $A8:F838 C9 00 C0    CMP #$C000             ;} If [enemy arc angle] < -4000h:
 $A8:F83B 10 04       BPL $04    [$F841]     ;/
-$A8:F83D 20 6A F9    JSR $F96A  [$A8:F96A]  ; Execute $F96A
+$A8:F83D 20 6A F9    JSR $F96A  [$A8:F96A]  ; Set up drifting right
 $A8:F840 6B          RTL                    ; Return
 
 $A8:F841 BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;\
@@ -10275,20 +10275,20 @@ $A8:F850 6B          RTL
 }
 
 
-;;; $F851:  ;;;
+;;; $F851: Determine left arc centre offsets ;;;
 {
 $A8:F851 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F854 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F857 29 FF 00    AND #$00FF             ;|
 $A8:F85A 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F85D A9 00 E0    LDA #$E000             ;} Enemy $7E:7806 = 30h * cos(E0h * pi / 80h) * FFh / 100h
+$A8:F85D A9 00 E0    LDA #$E000             ;} Enemy left arc centre X offset = 30h * cos(-20h * pi / 80h) * FFh / 100h
 $A8:F860 EB          XBA                    ;|
 $A8:F861 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A8:F865 9F 06 78 7E STA $7E7806,x[$7E:7946];/
 $A8:F869 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F86C 29 FF 00    AND #$00FF             ;|
 $A8:F86F 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F872 A9 00 E0    LDA #$E000             ;} Enemy $7E:7808 = 30h * -sin(E0h * pi / 80h) * FFh / 100h
+$A8:F872 A9 00 E0    LDA #$E000             ;} Enemy left arc centre Y offset = 30h * -sin(-20h * pi / 80h) * FFh / 100h
 $A8:F875 EB          XBA                    ;|
 $A8:F876 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A8:F87A 9F 08 78 7E STA $7E7808,x[$7E:7948];/
@@ -10296,20 +10296,20 @@ $A8:F87E 60          RTS
 }
 
 
-;;; $F87F:  ;;;
+;;; $F87F: Determine right arc centre offsets ;;;
 {
 $A8:F87F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F882 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F885 29 FF 00    AND #$00FF             ;|
 $A8:F888 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F88B A9 00 A0    LDA #$A000             ;} Enemy $7E:7802 = 30h * cos(A0h * pi / 80h) * FFh / 100h
+$A8:F88B A9 00 A0    LDA #$A000             ;} Enemy right arc centre X offset = 30h * cos(-60h * pi / 80h) * FFh / 100h
 $A8:F88E EB          XBA                    ;|
 $A8:F88F 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A8:F893 9F 02 78 7E STA $7E7802,x[$7E:7942];/
 $A8:F897 AD 86 F1    LDA $F186  [$A8:F186]  ;\
 $A8:F89A 29 FF 00    AND #$00FF             ;|
 $A8:F89D 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A8:F8A0 A9 00 A0    LDA #$A000             ;} Enemy $7E:7804 = 30h * -sin(A0h * pi / 80h) * FFh / 100h
+$A8:F8A0 A9 00 A0    LDA #$A000             ;} Enemy right arc centre Y offset = 30h * -sin(-60h * pi / 80h) * FFh / 100h
 $A8:F8A3 EB          XBA                    ;|
 $A8:F8A4 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A8:F8A8 9F 04 78 7E STA $7E7804,x[$7E:7944];/
@@ -10336,7 +10336,7 @@ $A8:F8C8 29 FF 00    AND #$00FF             ;|
 $A8:F8CB 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F8CE BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F8D1 EB          XBA                    ;|
-$A8:F8D2 29 FF 00    AND #$00FF             ;} A = [enemy $7E:780C] - [enemy $7E:7804] + 30h * -sin([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F8D2 29 FF 00    AND #$00FF             ;} A = [enemy arc start Y position] - [enemy right arc centre Y offset] + 30h * -sin([enemy arc angle] * pi / 8000h) * FFh / 100h
 $A8:F8D5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A8:F8D9 38          SEC                    ;|
 $A8:F8DA FF 04 78 7E SBC $7E7804,x[$7E:7944];|
@@ -10354,7 +10354,7 @@ $A8:F8F7 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A8:F8FA BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;|
 $A8:F8FD EB          XBA                    ;|
 $A8:F8FE 29 FF 00    AND #$00FF             ;|
-$A8:F901 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy $7E:780A] - [enemy $7E:7802] + 30h * cos([enemy arc angle] * pi / 8000h) * FFh / 100h
+$A8:F901 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy arc start X position] - [enemy right arc centre X offset] + 30h * cos([enemy arc angle] * pi / 8000h) * FFh / 100h
 $A8:F905 38          SEC                    ;|
 $A8:F906 FF 02 78 7E SBC $7E7802,x[$7E:7942];|
 $A8:F90A 18          CLC                    ;|
@@ -10363,7 +10363,7 @@ $A8:F90F 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;/
 $A8:F912 BD B2 0F    LDA $0FB2,x[$7E:10F2]  ;\
 $A8:F915 C9 00 C0    CMP #$C000             ;} If [enemy arc angle] >= -4000h:
 $A8:F918 30 04       BMI $04    [$F91E]     ;/
-$A8:F91A 20 47 F9    JSR $F947  [$A8:F947]  ; Execute $F947
+$A8:F91A 20 47 F9    JSR $F947  [$A8:F947]  ; Set up drifting left
 $A8:F91D 6B          RTL                    ; Return
                                             
 $A8:F91E BD AA 0F    LDA $0FAA,x[$7E:10EA]  ;\
@@ -10380,69 +10380,69 @@ $A8:F92E BD 86 0F    LDA $0F86,x[$7E:1146]  ;\
 $A8:F931 09 00 02    ORA #$0200             ;} Mark enemy for deletion
 $A8:F934 9D 86 0F    STA $0F86,x[$7E:1146]  ;/
 $A8:F937 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
-$A8:F93B 9D 7A 0F    STA $0F7A,x[$7E:113A]  ;} Enemy X position = [enemy $7E:7810]
+$A8:F93B 9D 7A 0F    STA $0F7A,x[$7E:113A]  ;} Enemy X position = [enemy fall start X position]
 $A8:F93E BF 0E 78 7E LDA $7E780E,x[$7E:79CE];\
-$A8:F942 9D 7E 0F    STA $0F7E,x[$7E:113E]  ;} Enemy Y position = [enemy $7E:780E]
+$A8:F942 9D 7E 0F    STA $0F7E,x[$7E:113E]  ;} Enemy Y position = [enemy fall start Y position]
 $A8:F945 80 E3       BRA $E3    [$F92A]     ; Return (the store to $0FAA,x doesn't matter, so not sure why this isn't just an RTL)
 }
 
 
-;;; $F947:  ;;;
+;;; $F947: Set up drifting left ;;;
 {
 $A8:F947 A9 DB F7    LDA #$F7DB             ;\
 $A8:F94A 9F 00 78 7E STA $7E7800,x          ;} Enemy falling function = $F7DB (drifting left)
 $A8:F94E BF 14 78 7E LDA $7E7814,x          ;\
-$A8:F952 9D AA 0F    STA $0FAA,x            ;} Enemy speed table index = [enemy $7E:7814]
+$A8:F952 9D AA 0F    STA $0FAA,x            ;} Enemy speed table index = [enemy speed table index reset value]
 $A8:F955 A9 00 E0    LDA #$E000             ;\
 $A8:F958 9D B2 0F    STA $0FB2,x            ;} Enemy arc angle = -2000h
 $A8:F95B BD 7A 0F    LDA $0F7A,x            ;\
-$A8:F95E 9F 0A 78 7E STA $7E780A,x          ;} Enemy $7E:780A = [enemy X position]
+$A8:F95E 9F 0A 78 7E STA $7E780A,x          ;} Enemy arc start X position = [enemy X position]
 $A8:F962 BD 7E 0F    LDA $0F7E,x            ;\
-$A8:F965 9F 0C 78 7E STA $7E780C,x          ;} Enemy $7E:780C = [enemy Y position]
+$A8:F965 9F 0C 78 7E STA $7E780C,x          ;} Enemy arc start Y position = [enemy Y position]
 $A8:F969 60          RTS
 }
 
 
-;;; $F96A:  ;;;
+;;; $F96A: Set up drifting right ;;;
 {
 $A8:F96A A9 AD F8    LDA #$F8AD             ;\
 $A8:F96D 9F 00 78 7E STA $7E7800,x[$7E:7940];} Enemy falling function = $F8AD (drifting right)
 $A8:F971 BF 14 78 7E LDA $7E7814,x[$7E:7954];\
-$A8:F975 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy speed table index = [enemy $7E:7814]
+$A8:F975 9D AA 0F    STA $0FAA,x[$7E:10EA]  ;} Enemy speed table index = [enemy speed table index reset value]
 $A8:F978 A9 00 A0    LDA #$A000             ;\
 $A8:F97B 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy arc angle = -6000h
 $A8:F97E BD 7A 0F    LDA $0F7A,x[$7E:10BA]  ;\
-$A8:F981 9F 0A 78 7E STA $7E780A,x[$7E:794A];} Enemy $7E:780A = [enemy X position]
+$A8:F981 9F 0A 78 7E STA $7E780A,x[$7E:794A];} Enemy arc start X position = [enemy X position]
 $A8:F985 BD 7E 0F    LDA $0F7E,x[$7E:10BE]  ;\
-$A8:F988 9F 0C 78 7E STA $7E780C,x[$7E:794C];} Enemy $7E:780C = [enemy Y position]
+$A8:F988 9F 0C 78 7E STA $7E780C,x[$7E:794C];} Enemy arc start Y position = [enemy Y position]
 $A8:F98C 60          RTS
 }
 
 
-;;; $F98D:  ;;;
+;;; $F98D: Determine speed table index reset value ;;;
 {
 $A8:F98D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:F990 A9 00 00    LDA #$0000             ;\
-$A8:F993 9F 14 78 7E STA $7E7814,x[$7E:7954];} Enemy $7E:7814 = 0
+$A8:F993 9F 14 78 7E STA $7E7814,x[$7E:7954];} Enemy speed table index reset value = 0
 $A8:F997 9D AA 0F    STA $0FAA,x[$7E:10EA]  ; Enemy speed table index = 0
 
 ; LOOP
 $A8:F99A BF 14 78 7E LDA $7E7814,x[$7E:7954];\
 $A8:F99E 18          CLC                    ;|
-$A8:F99F 69 80 01    ADC #$0180             ;} Enemy $7E:7814 += 180h
+$A8:F99F 69 80 01    ADC #$0180             ;} Enemy speed table index reset value += 180h
 $A8:F9A2 9F 14 78 7E STA $7E7814,x[$7E:7954];/
 $A8:F9A6 29 00 FF    AND #$FF00             ;\
 $A8:F9A9 EB          XBA                    ;|
 $A8:F9AA 0A          ASL A                  ;|
-$A8:F9AB 0A          ASL A                  ;} Y = [enemy $7E:7814] / 100h * 8 (quadratic speed table index)
+$A8:F9AB 0A          ASL A                  ;} Y = [enemy speed table index reset value] / 100h * 8 (quadratic speed table index)
 $A8:F9AC 0A          ASL A                  ;|
 $A8:F9AD A8          TAY                    ;/
 $A8:F9AE BD AE 0F    LDA $0FAE,x[$7E:10EE]  ;\
 $A8:F9B1 18          CLC                    ;|
-$A8:F9B2 79 90 83    ADC $8390,y[$A8:8398]  ;} Enemy $0FAE += [$838F + [Y] + 1] (speed * 100h)
+$A8:F9B2 79 90 83    ADC $8390,y[$A8:8398]  ;} Enemy angle accumulator += [$838F + [Y] + 1] (speed * 100h)
 $A8:F9B5 9D AE 0F    STA $0FAE,x[$7E:10EE]  ;/
 $A8:F9B8 C9 00 20    CMP #$2000             ;\
-$A8:F9BB 30 DD       BMI $DD    [$F99A]     ;} If [enemy $0FAE] < 2000h: go to LOOP
+$A8:F9BB 30 DD       BMI $DD    [$F99A]     ;} If [enemy angle accumulator] < 2000h: go to LOOP
 $A8:F9BD 60          RTS
 }
 }
