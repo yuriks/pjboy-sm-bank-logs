@@ -10110,21 +10110,21 @@ $82:E139 C2 30       REP #$30
 $82:E13B A2 1E 00    LDX #$001E             ;\
                                             ;|
 $82:E13E BF A0 81 9A LDA $9A81A0,x[$9A:81BE];|
-$82:E142 9F A0 C3 7E STA $7EC3A0,x[$7E:C3BE];} Target sprite palette 5 = [$9A:81BE..DD]
+$82:E142 9F A0 C3 7E STA $7EC3A0,x[$7E:C3BE];} Target sprite palette 5 = [$9A:81BE..DD] (common sprites palette)
 $82:E146 CA          DEX                    ;|
 $82:E147 CA          DEX                    ;|
 $82:E148 10 F4       BPL $F4    [$E13E]     ;/
 $82:E14A A2 1E 00    LDX #$001E             ;\
                                             ;|
 $82:E14D BF C0 C1 7E LDA $7EC1C0,x[$7E:C1DE];|
-$82:E151 9F C0 C3 7E STA $7EC3C0,x[$7E:C3DE];} Target sprite palette 6 = [sprite palette 6]
+$82:E151 9F C0 C3 7E STA $7EC3C0,x[$7E:C3DE];} Target sprite palette 6 = [sprite palette 6] (beam palette)
 $82:E155 CA          DEX                    ;|
 $82:E156 CA          DEX                    ;|
 $82:E157 10 F4       BPL $F4    [$E14D]     ;/
 $82:E159 A2 1E 00    LDX #$001E             ;\
                                             ;|
 $82:E15C BF 00 FC 9A LDA $9AFC00,x[$9A:FC1E];|
-$82:E160 9F 00 C3 7E STA $7EC300,x[$7E:C31E];} Target sprite palette 0 = [$9A:FC00..1F]
+$82:E160 9F 00 C3 7E STA $7EC300,x[$7E:C31E];} Target sprite palette 0 = [$9A:FC00..1F] (white palette for flashing enemies)
 $82:E164 CA          DEX                    ;|
 $82:E165 CA          DEX                    ;|
 $82:E166 10 F4       BPL $F4    [$E15C]     ;/

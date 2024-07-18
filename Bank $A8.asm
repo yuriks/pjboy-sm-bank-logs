@@ -9406,13 +9406,13 @@ $A8:EADA             dx 0008,EF0C,
 }
 
 
-;;; $EAF2: Instruction list -  ;;;
+;;; $EAF2: Instruction list - acid spit attack - facing left ;;;
 {
 $A8:EAF2             dx 0020,EFB4,
                         0006,EFDE,
                         0010,F00D,
                         0002,F03C,
-                        F6D2,       ; ???
+                        F6D2,       ; Fire acid spit left
                         0018,F06B,
                         F67F,       ; Enemy function = $F68B
                         0001,EFB4,
@@ -9420,13 +9420,13 @@ $A8:EAF2             dx 0020,EFB4,
 }
 
 
-;;; $EB10: Instruction list -  ;;;
+;;; $EB10: Instruction list - acid spit attack - facing right ;;;
 {
 $A8:EB10             dx 0020,F09A,
                         0006,F0C4,
                         0010,F0F3,
                         0002,F122,
-                        F6D8,       ; ???
+                        F6D8,       ; Fire acid spit right
                         0018,F151,
                         F67F,       ; Enemy function = $F68B
                         0001,F09A,
@@ -9511,7 +9511,7 @@ $A8:F1A7 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = 
 $A8:F1AA A9 00 00    LDA #$0000             ;\
 $A8:F1AD 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy $0FB2 = 0
 $A8:F1B0 A9 68 F2    LDA #$F268             ;\
-$A8:F1B3 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F268
+$A8:F1B3 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F268 (winged - idle flying)
 $A8:F1B6 A9 00 00    LDA #$0000             ;\
 $A8:F1B9 9F 10 78 7E STA $7E7810,x[$7E:7810];|
 $A8:F1BD A9 01 00    LDA #$0001             ;} Enemy Y velocity = 1.0
@@ -9591,7 +9591,7 @@ $A8:F265 7C A8 0F    JMP ($0FA8,x)[$A8:F6F3]
 }
 
 
-;;; $F268: Ki-hunter function -  ;;;
+;;; $F268: Ki-hunter function - winged - idle flying ;;;
 {
 $A8:F268 BF 10 78 7E LDA $7E7810,x[$7E:7810];\
 $A8:F26C 85 12       STA $12    [$7E:0012]  ;|
@@ -9599,131 +9599,139 @@ $A8:F26E BF 12 78 7E LDA $7E7812,x[$7E:7812];} Move enemy down by [enemy Y veloc
 $A8:F272 85 14       STA $14    [$7E:0014]  ;|
 $A8:F274 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:F278 B0 14       BCS $14    [$F28E]     ; If not collided with block:
-$A8:F27A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A8:F27D DF 14 78 7E CMP $7E7814,x[$7E:7814]
-$A8:F281 30 15       BMI $15    [$F298]
-$A8:F283 DF 16 78 7E CMP $7E7816,x[$7E:7816]
-$A8:F287 30 16       BMI $16    [$F29F]
-$A8:F289 A9 FF FF    LDA #$FFFF
-$A8:F28C 80 0D       BRA $0D    [$F29B]
+$A8:F27A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A8:F27D DF 14 78 7E CMP $7E7814,x[$7E:7814];} If [enemy Y position] < [enemy $7E:7814]: go to BRANCH_IDLE_DOWN
+$A8:F281 30 15       BMI $15    [$F298]     ;/
+$A8:F283 DF 16 78 7E CMP $7E7816,x[$7E:7816];\
+$A8:F287 30 16       BMI $16    [$F29F]     ;} If [enemy Y position] < [enemy $7E:7816]: go to BRANCH_NO_CHANGE_Y
+$A8:F289 A9 FF FF    LDA #$FFFF             ; Enemy Y velocity = -1
+$A8:F28C 80 0D       BRA $0D    [$F29B]     ; Go to BRANCH_CHANGE_Y
 
-$A8:F28E BF 12 78 7E LDA $7E7812,x[$7E:7892]
-$A8:F292 49 FF FF    EOR #$FFFF
-$A8:F295 1A          INC A
-$A8:F296 80 03       BRA $03    [$F29B]
+$A8:F28E BF 12 78 7E LDA $7E7812,x[$7E:7892];\
+$A8:F292 49 FF FF    EOR #$FFFF             ;} Negate enemy Y velocity
+$A8:F295 1A          INC A                  ;/
+$A8:F296 80 03       BRA $03    [$F29B]     ; Go to BRANCH_CHANGE_Y
 
-$A8:F298 A9 01 00    LDA #$0001
+; BRANCH_IDLE_DOWN
+$A8:F298 A9 01 00    LDA #$0001             ; Enemy Y velocity = 1
 
+; BRANCH_CHANGE_Y
 $A8:F29B 9F 12 78 7E STA $7E7812,x[$7E:7812]
 
+; BRANCH_NO_CHANGE_Y
 $A8:F29F BF 0C 78 7E LDA $7E780C,x[$7E:780C];\
 $A8:F2A3 85 12       STA $12    [$7E:0012]  ;|
 $A8:F2A5 BF 0E 78 7E LDA $7E780E,x[$7E:780E];} Move enemy right by [enemy X velocity]
 $A8:F2A9 85 14       STA $14    [$7E:0014]  ;|
 $A8:F2AB 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A8:F2AF 90 29       BCC $29    [$F2DA]     ; If not collided with wall: go to BRANCH_NO_COLLISION
-$A8:F2B1 A0 00 00    LDY #$0000
-$A8:F2B4 BF 0E 78 7E LDA $7E780E,x[$7E:798E]
-$A8:F2B8 49 FF FF    EOR #$FFFF
-$A8:F2BB 1A          INC A
-$A8:F2BC 9F 0E 78 7E STA $7E780E,x[$7E:798E]
-$A8:F2C0 30 03       BMI $03    [$F2C5]
-$A8:F2C2 A0 04 00    LDY #$0004
+$A8:F2B1 A0 00 00    LDY #$0000             ; Y = 0
+$A8:F2B4 BF 0E 78 7E LDA $7E780E,x[$7E:798E];\
+$A8:F2B8 49 FF FF    EOR #$FFFF             ;|
+$A8:F2BB 1A          INC A                  ;} Negate enemy X velocity
+$A8:F2BC 9F 0E 78 7E STA $7E780E,x[$7E:798E];/
+$A8:F2C0 30 03       BMI $03    [$F2C5]     ; If [enemy X velocity] >= 0:
+$A8:F2C2 A0 04 00    LDY #$0004             ; Y = 4
 
-$A8:F2C5 B9 B0 F3    LDA $F3B0,y[$A8:F3B4]
-$A8:F2C8 9D 92 0F    STA $0F92,x[$7E:1112]
-$A8:F2CB B9 B2 F3    LDA $F3B2,y[$A8:F3B6]
-$A8:F2CE 9D D2 0F    STA $0FD2,x[$7E:1152]
-$A8:F2D1 A9 01 00    LDA #$0001
-$A8:F2D4 9D 94 0F    STA $0F94,x[$7E:1114]
-$A8:F2D7 9D D4 0F    STA $0FD4,x[$7E:1154]
+$A8:F2C5 B9 B0 F3    LDA $F3B0,y[$A8:F3B4]  ;\
+$A8:F2C8 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = [$F3B0 + [Y]]
+$A8:F2CB B9 B2 F3    LDA $F3B2,y[$A8:F3B6]  ;\
+$A8:F2CE 9D D2 0F    STA $0FD2,x[$7E:1152]  ;} Enemy ([X] + 1) instruction list pointer = [$F3B0 + [Y] + 2]
+$A8:F2D1 A9 01 00    LDA #$0001             ;\
+$A8:F2D4 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
+$A8:F2D7 9D D4 0F    STA $0FD4,x[$7E:1154]  ; Enemy ([X] + 1) instruction timer = 1
 
 ; BRANCH_NO_COLLISION
 $A8:F2DA 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$A8:F2DE AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A8:F2E1 38          SEC
-$A8:F2E2 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$A8:F2E5 85 12       STA $12    [$7E:0012]
-$A8:F2E7 10 04       BPL $04    [$F2ED]
-$A8:F2E9 49 FF FF    EOR #$FFFF
-$A8:F2EC 1A          INC A
+$A8:F2DE AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A8:F2E1 38          SEC                    ;|
+$A8:F2E2 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;} $12 = [Samus X position] - [enemy X position]
+$A8:F2E5 85 12       STA $12    [$7E:0012]  ;/
+$A8:F2E7 10 04       BPL $04    [$F2ED]     ;\
+$A8:F2E9 49 FF FF    EOR #$FFFF             ;|
+$A8:F2EC 1A          INC A                  ;} $14 = |[Samus X position] - [enemy X position]|
+                                            ;|
+$A8:F2ED 85 14       STA $14    [$7E:0014]  ;/
+$A8:F2EF CD 80 F1    CMP $F180  [$A8:F180]  ;\
+$A8:F2F2 30 01       BMI $01    [$F2F5]     ;} If |[Samus X position] - [enemy X position]| >= 60h
+$A8:F2F4 6B          RTL                    ; Return
 
-$A8:F2ED 85 14       STA $14    [$7E:0014]
-$A8:F2EF CD 80 F1    CMP $F180  [$A8:F180]
-$A8:F2F2 30 01       BMI $01    [$F2F5]
-$A8:F2F4 6B          RTL
+$A8:F2F5 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A8:F2F8 38          SEC                    ;|
+$A8:F2F9 FD 7E 0F    SBC $0F7E,x[$7E:0F7E]  ;} If [Samus Y position] - [enemy Y position] < 20h:
+$A8:F2FC C9 20 00    CMP #$0020             ;|
+$A8:F2FF 10 01       BPL $01    [$F302]     ;/
+$A8:F301 6B          RTL                    ; Return
 
-$A8:F2F5 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A8:F2F8 38          SEC
-$A8:F2F9 FD 7E 0F    SBC $0F7E,x[$7E:0F7E]
-$A8:F2FC C9 20 00    CMP #$0020
-$A8:F2FF 10 01       BPL $01    [$F302]
-$A8:F301 6B          RTL
-
-$A8:F302 85 18       STA $18    [$7E:0018]
-$A8:F304 A5 12       LDA $12    [$7E:0012]
-$A8:F306 30 36       BMI $36    [$F33E]
-$A8:F308 A9 02 00    LDA #$0002
-$A8:F30B 9F 00 78 7E STA $7E7800,x[$7E:7980]
-$A8:F30F A9 00 00    LDA #$0000
-$A8:F312 9F 04 78 7E STA $7E7804,x[$7E:7984]
-$A8:F316 9F 06 78 7E STA $7E7806,x[$7E:7986]
-$A8:F31A 9F 08 78 7E STA $7E7808,x[$7E:7988]
-$A8:F31E A9 00 20    LDA #$2000
-$A8:F321 9F 0A 78 7E STA $7E780A,x[$7E:798A]
-$A8:F325 A9 80 00    LDA #$0080
-$A8:F328 9D B2 0F    STA $0FB2,x[$7E:1132]
-$A8:F32B A9 01 00    LDA #$0001
-$A8:F32E 9F 0E 78 7E STA $7E780E,x[$7E:798E]
-$A8:F332 A9 90 00    LDA #$0090
-$A8:F335 9F 1C 78 7E STA $7E781C,x[$7E:799C]
-$A8:F339 A0 04 00    LDY #$0004
+$A8:F302 85 18       STA $18    [$7E:0018]  ; $18 = [Samus Y position] - [enemy Y position]
+$A8:F304 A5 12       LDA $12    [$7E:0012]  ;\
+$A8:F306 30 36       BMI $36    [$F33E]     ;} If [Samus X position] >= [enemy X position]:
+$A8:F308 A9 02 00    LDA #$0002             ;\
+$A8:F30B 9F 00 78 7E STA $7E7800,x[$7E:7980];} Enemy $7E:7800 = 2
+$A8:F30F A9 00 00    LDA #$0000             ;\
+$A8:F312 9F 04 78 7E STA $7E7804,x[$7E:7984];} Enemy $7E:7804 = 0
+$A8:F316 9F 06 78 7E STA $7E7806,x[$7E:7986]; Enemy $7E:7806 = 0
+$A8:F31A 9F 08 78 7E STA $7E7808,x[$7E:7988]; Enemy $7E:7808 = 0
+$A8:F31E A9 00 20    LDA #$2000             ;\
+$A8:F321 9F 0A 78 7E STA $7E780A,x[$7E:798A];} Enemy $7E:780A = 2000h
+$A8:F325 A9 80 00    LDA #$0080             ;\
+$A8:F328 9D B2 0F    STA $0FB2,x[$7E:1132]  ;} Enemy $0FB2 = 80h
+$A8:F32B A9 01 00    LDA #$0001             ;\
+$A8:F32E 9F 0E 78 7E STA $7E780E,x[$7E:798E];} Enemy X velocity = 1
+$A8:F332 A9 90 00    LDA #$0090             ;\
+$A8:F335 9F 1C 78 7E STA $7E781C,x[$7E:799C];} Enemy $7E:781C = 90h
+$A8:F339 A0 04 00    LDY #$0004             ; Y = 4
 $A8:F33C 80 34       BRA $34    [$F372]
 
-$A8:F33E A9 FE FF    LDA #$FFFE
-$A8:F341 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A8:F345 A9 00 00    LDA #$0000
-$A8:F348 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A8:F34C 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$A8:F350 A9 FF FF    LDA #$FFFF
-$A8:F353 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A8:F357 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A8:F35B A9 00 E0    LDA #$E000
-$A8:F35E 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A8:F362 A9 FF 00    LDA #$00FF
-$A8:F365 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A8:F368 A9 F0 00    LDA #$00F0
-$A8:F36B 9F 1C 78 7E STA $7E781C,x[$7E:781C]
-$A8:F36F A0 00 00    LDY #$0000
+$A8:F33E A9 FE FF    LDA #$FFFE             ;\ Else ([Samus X position] < [enemy X position]):
+$A8:F341 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = -2
+$A8:F345 A9 00 00    LDA #$0000             ;\
+$A8:F348 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy $7E:7804 = 0
+$A8:F34C 9F 06 78 7E STA $7E7806,x[$7E:7806]; Enemy $7E:7806 = 0
+$A8:F350 A9 FF FF    LDA #$FFFF             ;\
+$A8:F353 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy $7E:7808 = -1
+$A8:F357 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy X velocity = -1
+$A8:F35B A9 00 E0    LDA #$E000             ;\
+$A8:F35E 9F 0A 78 7E STA $7E780A,x[$7E:780A];} Enemy $7E:780A = -2000h
+$A8:F362 A9 FF 00    LDA #$00FF             ;\
+$A8:F365 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy $0FB2 = FFh
+$A8:F368 A9 F0 00    LDA #$00F0             ;\
+$A8:F36B 9F 1C 78 7E STA $7E781C,x[$7E:781C];} Enemy $7E:781C = F0h
+$A8:F36F A0 00 00    LDY #$0000             ; Y = 0
 
-$A8:F372 B9 B0 F3    LDA $F3B0,y[$A8:F3B0]
-$A8:F375 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A8:F378 B9 B2 F3    LDA $F3B2,y[$A8:F3B2]
-$A8:F37B 9D D2 0F    STA $0FD2,x[$7E:0FD2]
-$A8:F37E A9 01 00    LDA #$0001
-$A8:F381 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A8:F384 9D D4 0F    STA $0FD4,x[$7E:0FD4]
-$A8:F387 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A8:F38A 18          CLC
-$A8:F38B 65 12       ADC $12    [$7E:0012]
-$A8:F38D 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A8:F390 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A8:F393 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A8:F396 A9 B8 F3    LDA #$F3B8
-$A8:F399 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A8:F39C A5 18       LDA $18    [$7E:0018]
-$A8:F39E 9F 24 78 7E STA $7E7824,x[$7E:7824]
-$A8:F3A2 A5 14       LDA $14    [$7E:0014]
-$A8:F3A4 9F 22 78 7E STA $7E7822,x[$7E:7822]
-$A8:F3A8 A9 00 00    LDA #$0000
-$A8:F3AB 9F 20 78 7E STA $7E7820,x[$7E:7820]
+$A8:F372 B9 B0 F3    LDA $F3B0,y[$A8:F3B0]  ;\
+$A8:F375 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = [$F3B0 + [Y]]
+$A8:F378 B9 B2 F3    LDA $F3B2,y[$A8:F3B2]  ;\
+$A8:F37B 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Enemy ([X] + 1) instruction list pointer = [$F3B0 + [Y] + 2]
+$A8:F37E A9 01 00    LDA #$0001             ;\
+$A8:F381 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A8:F384 9D D4 0F    STA $0FD4,x[$7E:0FD4]  ; Enemy ([X] + 1) instruction timer = 1
+$A8:F387 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A8:F38A 18          CLC                    ;|
+$A8:F38B 65 12       ADC $12    [$7E:0012]  ;} Enemy $0FAA = [Samus X position]
+$A8:F38D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
+$A8:F390 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A8:F393 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [enemy Y position]
+$A8:F396 A9 B8 F3    LDA #$F3B8             ;\
+$A8:F399 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F3B8
+$A8:F39C A5 18       LDA $18    [$7E:0018]  ;\
+$A8:F39E 9F 24 78 7E STA $7E7824,x[$7E:7824];} Enemy $7E:7824 = [Samus Y position] - [enemy Y position]
+$A8:F3A2 A5 14       LDA $14    [$7E:0014]  ;\
+$A8:F3A4 9F 22 78 7E STA $7E7822,x[$7E:7822];} Enemy $7E:7822 = |[Samus X position] - [enemy X position]|
+$A8:F3A8 A9 00 00    LDA #$0000             ;\
+$A8:F3AB 9F 20 78 7E STA $7E7820,x[$7E:7820];} Enemy $7E:7820 = 0
 $A8:F3AF 6B          RTL
 
-$A8:F3B0             dw E9FA,EA4E, EA24,EA5E
+; Instruction list pointers
+;                        ________ Ki-hunter
+;                       |     ___ Ki-hunter wings
+;                       |    |
+$A8:F3B0             dw E9FA,EA4E, ; Facing left
+                        EA24,EA5E  ; Facing right
 }
 
 
-;;; $F3B8:  ;;;
+;;; $F3B8: Ki-hunter function - winged - swoop ;;;
 {
 $A8:F3B8 BF 08 78 7E LDA $7E7808,x[$7E:7808]
 $A8:F3BC 10 0B       BPL $0B    [$F3C9]
@@ -9769,8 +9777,8 @@ $A8:F422 7F 04 78 7E ADC $7E7804,x[$7E:7804]
 $A8:F426 9D B2 0F    STA $0FB2,x[$7E:0FB2]
 $A8:F429 C9 80 00    CMP #$0080
 $A8:F42C 10 41       BPL $41    [$F46F]
-$A8:F42E A9 68 F2    LDA #$F268
-$A8:F431 9D A8 0F    STA $0FA8,x[$7E:1128]
+$A8:F42E A9 68 F2    LDA #$F268             ;\
+$A8:F431 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $F268 (winged - idle flying)
 $A8:F434 6B          RTL
 
 $A8:F435 BF 06 78 7E LDA $7E7806,x[$7E:7986]
@@ -9790,8 +9798,8 @@ $A8:F45C 7F 04 78 7E ADC $7E7804,x[$7E:7984]
 $A8:F460 9D B2 0F    STA $0FB2,x[$7E:1132]
 $A8:F463 C9 00 01    CMP #$0100
 $A8:F466 30 07       BMI $07    [$F46F]
-$A8:F468 A9 68 F2    LDA #$F268
-$A8:F46B 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:F468 A9 68 F2    LDA #$F268             ;\
+$A8:F46B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F268 (winged - idle flying)
 $A8:F46E 6B          RTL
 
 $A8:F46F BF 22 78 7E LDA $7E7822,x[$7E:7822];\
@@ -9846,7 +9854,7 @@ $A8:F4EC 6B          RTL
 }
 
 
-;;; $F4ED:  ;;;
+;;; $F4ED: Ki-hunter function - winged - back off ;;;
 {
 $A8:F4ED BF 0C 78 7E LDA $7E780C,x[$7E:798C];\
 $A8:F4F1 85 12       STA $12    [$7E:0012]  ;|
@@ -9861,13 +9869,13 @@ $A8:F509 BF 12 78 7E LDA $7E7812,x[$7E:7992];} Move enemy down by [enemy Y veloc
 $A8:F50D 85 14       STA $14    [$7E:0014]  ;|
 $A8:F50F 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A8:F513 B0 0A       BCS $0A    [$F51F]     ; If not collided with block:
-$A8:F515 BD 7E 0F    LDA $0F7E,x[$7E:10FE]
-$A8:F518 DF 1A 78 7E CMP $7E781A,x[$7E:799A]
-$A8:F51C 30 01       BMI $01    [$F51F]
-$A8:F51E 6B          RTL
+$A8:F515 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
+$A8:F518 DF 1A 78 7E CMP $7E781A,x[$7E:799A];} If [enemy Y position] >= [enemy $7E:781A]:
+$A8:F51C 30 01       BMI $01    [$F51F]     ;/
+$A8:F51E 6B          RTL                    ; Return
 
-$A8:F51F A9 68 F2    LDA #$F268
-$A8:F522 9D A8 0F    STA $0FA8,x[$7E:1128]
+$A8:F51F A9 68 F2    LDA #$F268             ;\
+$A8:F522 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $F268 (winged - idle flying)
 $A8:F525 6B          RTL
 }
 
@@ -9922,7 +9930,7 @@ $A8:F58A 6B          RTL
 }
 
 
-;;; $F58B:  ;;;
+;;; $F58B: Ki-hunter function - wingless - prepare to hop ;;;
 {
 $A8:F58B A9 E3 F5    LDA #$F5E3             ;\
 $A8:F58E 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = RTL
@@ -9969,7 +9977,7 @@ $A8:F5EF 6B          RTL
 }
 
 
-;;; $F5F0:  ;;;
+;;; $F5F0: Ki-hunter function - wingless - hop ;;;
 {
 $A8:F5F0 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A8:F5F4 85 12       STA $12    [$7E:0012]  ;|
@@ -10040,7 +10048,7 @@ $A8:F68A 6B          RTL
 }
 
 
-;;; $F68B:  ;;;
+;;; $F68B: Ki-hunter function - wingless - thinking ;;;
 {
 $A8:F68B BF 1E 78 7E LDA $7E781E,x[$7E:781E]
 $A8:F68F 3A          DEC A
@@ -10065,52 +10073,58 @@ $A8:F6B2 6B          RTL
 }
 
 
-;;; $F6B3:  ;;;
+;;; $F6B3: Ki-hunter function - wingless - fire acid spit ;;;
 {
-$A8:F6B3 A0 F2 EA    LDY #$EAF2
-$A8:F6B6 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A8:F6B9 CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$A8:F6BC 10 03       BPL $03    [$F6C1]
-$A8:F6BE A0 10 EB    LDY #$EB10
+$A8:F6B3 A0 F2 EA    LDY #$EAF2             ; Enemy instruction list pointer = $EAF2 (acid spit attack - facing left)
+$A8:F6B6 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A8:F6B9 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
+$A8:F6BC 10 03       BPL $03    [$F6C1]     ;/
+$A8:F6BE A0 10 EB    LDY #$EB10             ; Enemy instruction list pointer = $EB10 (acid spit attack - facing right)
 
 $A8:F6C1 98          TYA
 $A8:F6C2 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A8:F6C5 A9 01 00    LDA #$0001
-$A8:F6C8 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A8:F6CB A9 E3 F5    LDA #$F5E3
-$A8:F6CE 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A8:F6C5 A9 01 00    LDA #$0001             ;\
+$A8:F6C8 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A8:F6CB A9 E3 F5    LDA #$F5E3             ;\
+$A8:F6CE 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTL
 $A8:F6D1 6B          RTL
 }
 
 
-;;; $F6D2: Instruction ;;;
+;;; $F6D2: Instruction - fire acid spit left ;;;
 {
 $A8:F6D2 5A          PHY
 $A8:F6D3 A0 18 CF    LDY #$CF18             ; Y = $CF18 (ki hunter acid spit - left)
-$A8:F6D6 80 04       BRA $04    [$F6DC]
+$A8:F6D6 80 04       BRA $04    [$F6DC]     ; Go to fire acid spit
 }
 
 
-;;; $F6D8: Instruction ;;;
+;;; $F6D8: Instruction - fire acid spit right ;;;
 {
 $A8:F6D8 5A          PHY
 $A8:F6D9 A0 26 CF    LDY #$CF26             ; Y = $CF26 (ki hunter acid spit - right)
 }
 
 
-;;; $F6DC:  ;;;
+;;; $F6DC: Fire acid spit ;;;
 {
+;; Parameters:
+;;     Y: Enemy projectile ID
+
+; Expects a pushed instruction list pointer
 $A8:F6DC A9 4C 00    LDA #$004C             ;\
 $A8:F6DF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 4Ch, sound library 2, max queued sounds allowed = 6 (ki-hunter spit)
 $A8:F6E3 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
 $A8:F6E6 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn enemy projectile [Y]
-$A8:F6EA A9 18 00    LDA #$0018
-$A8:F6ED 9F 1E 78 7E STA $7E781E,x[$7E:781E]
+$A8:F6EA A9 18 00    LDA #$0018             ;\
+$A8:F6ED 9F 1E 78 7E STA $7E781E,x[$7E:781E];} Enemy $7E:781E = 18h
 $A8:F6F1 7A          PLY
 $A8:F6F2 6B          RTL
 }
 
 
+;;; $F6F3..F9BD: Ki-hunter wings ;;;
+{
 ;;; $F6F3: Ki-hunter wings function - attached ;;;
 {
 $A8:F6F3 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\
@@ -10444,6 +10458,7 @@ $A8:F9B5 9D AE 0F    STA $0FAE,x[$7E:10EE]  ;/
 $A8:F9B8 C9 00 20    CMP #$2000             ;\
 $A8:F9BB 30 DD       BMI $DD    [$F99A]     ;} If [enemy angle accumulator] < 2000h: go to LOOP
 $A8:F9BD 60          RTS
+}
 }
 }
 
