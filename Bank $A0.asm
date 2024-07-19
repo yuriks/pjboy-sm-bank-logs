@@ -8539,7 +8539,7 @@ $A0:C298 B9 02 00    LDA $0002,y[$A6:F614]  ;\
 $A0:C29B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Set enemy spritemap pointer = [[Y] + 2]
 $A0:C29E 98          TYA                    ;\
 $A0:C29F 18          CLC                    ;|
-$A0:C2A0 69 04 00    ADC #$0004             ;} Enemy instruction list pointer += 4
+$A0:C2A0 69 04 00    ADC #$0004             ;} Enemy instruction list pointer = [Y] + 4
 $A0:C2A3 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
 $A0:C2A6 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
 $A0:C2A9 09 00 80    ORA #$8000             ;} Set enemy graphic updated flag
