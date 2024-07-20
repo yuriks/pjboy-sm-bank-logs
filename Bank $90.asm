@@ -2152,7 +2152,7 @@ $90:8CDC 38          SEC                    ;\
 $90:8CDD E9 A4 00    SBC #$00A4             ;|
 $90:8CE0 0A          ASL A                  ;|
 $90:8CE1 0A          ASL A                  ;|
-$90:8CE2 18          CLC                    ;} $12 = [$8D28 + ([Y] / 2 - A4h) * 4 + [Samus animation frame]]
+$90:8CE2 18          CLC                    ;} $12 = [$8D28 + ((Samus pose) - A4h) * 4 + [Samus animation frame]]
 $90:8CE3 6D 96 0A    ADC $0A96  [$7E:0A96]  ;|
 $90:8CE6 AA          TAX                    ;|
 $90:8CE7 BD 28 8D    LDA $8D28,x[$90:8D2C]  ;|
@@ -2225,7 +2225,7 @@ $90:8D4F 0A          ASL A                  ;|
 $90:8D50 18          CLC                    ;|
 $90:8D51 6D 96 0A    ADC $0A96  [$7E:0A96]  ;|
 $90:8D54 AA          TAX                    ;|
-$90:8D55 BD 80 8D    LDA $8D80,x[$90:8D80]  ;} $12 = ±[$8D80 + ([Y] / 2 - 35h) * 2 + [Samus animation frame]]
+$90:8D55 BD 80 8D    LDA $8D80,x[$90:8D80]  ;} $12 = ±[$8D80 + ((Samus pose) - 35h) * 2 + [Samus animation frame]]
 $90:8D58 29 FF 00    AND #$00FF             ;|
 $90:8D5B 89 80 00    BIT #$0080             ;|
 $90:8D5E F0 03       BEQ $03    [$8D63]     ;|
@@ -3528,7 +3528,7 @@ $90:9600 8D 0A 0B    STA $0B0A  [$7E:0B0A]  ;/
 $90:9603 AD 0A 0B    LDA $0B0A  [$7E:0B0A]  ;\
 $90:9606 CD 11 09    CMP $0911  [$7E:0911]  ;} If [ideal layer 1 X position] = [layer 1 X position]: return
 $90:9609 F0 32       BEQ $32    [$963D]     ;/
-$90:960B 30 19       BMI $19    [$9626]     ; If [ideal layer 1 X position] >= [layer 1 X position]:
+$90:960B 30 19       BMI $19    [$9626]     ; If [ideal layer 1 X position] > [layer 1 X position]:
 $90:960D AD 0F 09    LDA $090F  [$7E:090F]  ;\
 $90:9610 18          CLC                    ;|
 $90:9611 6D A4 0D    ADC $0DA4  [$7E:0DA4]  ;|
@@ -3539,7 +3539,7 @@ $90:961D 8D 11 09    STA $0911  [$7E:0911]  ;/
 $90:9620 22 41 A6 80 JSL $80A641[$80:A641]  ; Handle scroll zones - scrolling right
 $90:9624 80 17       BRA $17    [$963D]
 
-$90:9626 AD 0F 09    LDA $090F  [$7E:090F]  ;\ Else ([ideal layer 1 X position] >= [layer 1 X position]):
+$90:9626 AD 0F 09    LDA $090F  [$7E:090F]  ;\ Else ([ideal layer 1 X position] < [layer 1 X position]):
 $90:9629 38          SEC                    ;|
 $90:962A ED A4 0D    SBC $0DA4  [$7E:0DA4]  ;|
 $90:962D 8D 0F 09    STA $090F  [$7E:090F]  ;} Layer 1 X position -= [camera X speed]

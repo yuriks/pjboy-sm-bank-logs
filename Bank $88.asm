@@ -5457,7 +5457,7 @@ $88:B5D7 29 1E 00    AND #$001E             ;|
 $88:B5DA A8          TAY                    ;/
 $88:B5DB 68          PLA                    ;\
 $88:B5DC 18          CLC                    ;|
-$88:B5DD 69 1E 00    ADC #$001E             ;} X = ([BG2 Y scroll] % 10h * 2 + 1Eh) % 20h (HDMA data table end index)
+$88:B5DD 69 1E 00    ADC #$001E             ;} X = ([BG2 Y scroll] % 10h * 2 - 1Eh) % 20h (HDMA data table end index)
 $88:B5E0 29 1E 00    AND #$001E             ;|
 $88:B5E3 AA          TAX                    ;/
 $88:B5E4 A9 0F 00    LDA #$000F             ;\

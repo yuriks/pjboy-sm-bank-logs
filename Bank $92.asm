@@ -83,1349 +83,442 @@ $92:808C 6B          RTL
 ;;; $808D: Samus spritemap table ;;;
 {
 ; Indexed by [$92:9263/945D + [Samus pose] * 2] + [Samus animation frame]
-$92:808D             dw 90ED ; 0000
-                        90F4 ; 0001
+$92:808D             dw 90ED, 90F4, 
 
-; Top half - 00: Facing forward - power suit
-                        9A6F ; 0002
-                        0000 ; 0003
-                        A13A ; 0004
-                        A12C ; 0005
-                        A169 ; 0006
-                        A12C ; 0007
-                        A18E ; 0008
-                        A12C ; 0009
-                        A13A ; 000A
-                        A12C ; 000B
-                        A169 ; 000C
-                        A12C ; 000D
-                        A18E ; 000E
-                        A12C ; 000F
-                        A13A ; 0010
-                        A12C ; 0011
-                        A169 ; 0012
-                        A12C ; 0013
-                        A18E ; 0014
-                        A12C ; 0015
-                        A13A ; 0016
-                        A12C ; 0017
-                        A169 ; 0018
-                        A12C ; 0019
-                        A18E ; 001A
-                        A12C ; 001B
-                        A13A ; 001C
-                        A12C ; 001D
-                        A169 ; 001E
-                        A12C ; 001F
-                        A18E ; 0020
-                        A12C ; 0021
-                        A13A ; 0022
-                        A12C ; 0023
-                        A169 ; 0024
-                        A12C ; 0025
-                        A18E ; 0026
-                        A12C ; 0027
-                        A13A ; 0028
-                        A12C ; 0029
-                        A169 ; 002A
-                        A12C ; 002B
-                        A18E ; 002C
-                        A12C ; 002D
-                        A13A ; 002E
-                        A12C ; 002F
-                        A169 ; 0030
-                        A12C ; 0031
-                        A18E ; 0032
-                        A12C ; 0033
-                        A13A ; 0034
-                        A12C ; 0035
-                        A169 ; 0036
-                        A12C ; 0037
-                        A18E ; 0038
-                        A12C ; 0039
-                        A13A ; 003A
-                        A12C ; 003B
-                        A169 ; 003C
-                        A12C ; 003D
-                        A18E ; 003E
-                        A12C ; 003F
-                        A13A ; 0040
-                        A12C ; 0041
-                        A169 ; 0042
-                        A12C ; 0043
-                        A18E ; 0044
-                        A12C ; 0045
-                        A13A ; 0046
-                        A12C ; 0047
-                        A169 ; 0048
-                        A12C ; 0049
-                        A18E ; 004A
-                        A12C ; 004B
-                        A13A ; 004C
-                        A12C ; 004D
-                        A169 ; 004E
-                        A12C ; 004F
-                        A18E ; 0050
-                        A12C ; 0051
-                        A1C7 ; 0052
-                        A12C ; 0053
-                        A214 ; 0054
-                        A12C ; 0055
-                        A23E ; 0056
-                        A12C ; 0057
-                        A272 ; 0058
-                        A12C ; 0059
-                        A2AB ; 005A
-                        A12C ; 005B
-                        A23E ; 005C
-                        A12C ; 005D
-                        A272 ; 005E
-                        A12C ; 005F
-                        A2AB ; 0060
-                        A12C ; 0061
+; 0002. Top half - 00: Facing forward - power suit
+                        9A6F, 0000, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, 
+                        A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, 
+                        A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, 
+                        A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, 
+                        A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, 
+                        A1C7, A12C, A214, A12C, A23E, A12C, A272, A12C, A2AB, A12C, A23E, A12C, A272, A12C, A2AB, A12C, 
 
-; Bottom half - 00: Facing forward - power suit
-                        AE44 ; 0062
-                        0000 ; 0063
-                        B24E ; 0064
-                        B24E ; 0065
-                        B24E ; 0066
-                        B24E ; 0067
-                        B24E ; 0068
-                        B24E ; 0069
-                        B24E ; 006A
-                        B24E ; 006B
-                        B24E ; 006C
-                        B24E ; 006D
-                        B24E ; 006E
-                        B24E ; 006F
-                        B24E ; 0070
-                        B24E ; 0071
-                        B24E ; 0072
-                        B24E ; 0073
-                        B24E ; 0074
-                        B24E ; 0075
-                        B24E ; 0076
-                        B24E ; 0077
-                        B24E ; 0078
-                        B24E ; 0079
-                        B24E ; 007A
-                        B24E ; 007B
-                        B24E ; 007C
-                        B24E ; 007D
-                        B24E ; 007E
-                        B24E ; 007F
-                        B24E ; 0080
-                        B24E ; 0081
-                        B24E ; 0082
-                        B24E ; 0083
-                        B24E ; 0084
-                        B24E ; 0085
-                        B24E ; 0086
-                        B24E ; 0087
-                        B24E ; 0088
-                        B24E ; 0089
-                        B24E ; 008A
-                        B24E ; 008B
-                        B24E ; 008C
-                        B24E ; 008D
-                        B24E ; 008E
-                        B24E ; 008F
-                        B24E ; 0090
-                        B24E ; 0091
-                        B24E ; 0092
-                        B24E ; 0093
-                        B24E ; 0094
-                        B24E ; 0095
-                        B24E ; 0096
-                        B24E ; 0097
-                        B24E ; 0098
-                        B24E ; 0099
-                        B24E ; 009A
-                        B24E ; 009B
-                        B24E ; 009C
-                        B24E ; 009D
-                        B24E ; 009E
-                        B24E ; 009F
-                        B24E ; 00A0
-                        B24E ; 00A1
-                        B24E ; 00A2
-                        B24E ; 00A3
-                        B24E ; 00A4
-                        B24E ; 00A5
-                        B24E ; 00A6
-                        B24E ; 00A7
-                        B24E ; 00A8
-                        B24E ; 00A9
-                        B24E ; 00AA
-                        B24E ; 00AB
-                        B24E ; 00AC
-                        B24E ; 00AD
-                        B24E ; 00AE
-                        B24E ; 00AF
-                        B24E ; 00B0
-                        B24E ; 00B1
-                        B24E ; 00B2
-                        B24E ; 00B3
-                        B24E ; 00B4
-                        B24E ; 00B5
-                        B24E ; 00B6
-                        B24E ; 00B7
-                        B24E ; 00B8
-                        B24E ; 00B9
-                        B24E ; 00BA
-                        B24E ; 00BB
-                        B24E ; 00BC
-                        B24E ; 00BD
-                        B24E ; 00BE
-                        B24E ; 00BF
-                        B24E ; 00C0
-                        B24E ; 00C1
-
-; Top half - 9B: Facing forward - varia/gravity suit
-                        9976 ; 00C2
-                        0000 ; 00C3
-                        A13A ; 00C4
-                        A12C ; 00C5
-                        A169 ; 00C6
-                        A12C ; 00C7
-                        A18E ; 00C8
-                        A12C ; 00C9
-                        A13A ; 00CA
-                        A12C ; 00CB
-                        A169 ; 00CC
-                        A12C ; 00CD
-                        A18E ; 00CE
-                        A12C ; 00CF
-                        A13A ; 00D0
-                        A12C ; 00D1
-                        A169 ; 00D2
-                        A12C ; 00D3
-                        A18E ; 00D4
-                        A12C ; 00D5
-                        A13A ; 00D6
-                        A12C ; 00D7
-                        A169 ; 00D8
-                        A12C ; 00D9
-                        A18E ; 00DA
-                        A12C ; 00DB
-                        A13A ; 00DC
-                        A12C ; 00DD
-                        A169 ; 00DE
-                        A12C ; 00DF
-                        A18E ; 00E0
-                        A12C ; 00E1
-                        A13A ; 00E2
-                        A12C ; 00E3
-                        A169 ; 00E4
-                        A12C ; 00E5
-                        A18E ; 00E6
-                        A12C ; 00E7
-                        A13A ; 00E8
-                        A12C ; 00E9
-                        A169 ; 00EA
-                        A12C ; 00EB
-                        A18E ; 00EC
-                        A12C ; 00ED
-                        A13A ; 00EE
-                        A12C ; 00EF
-                        A169 ; 00F0
-                        A12C ; 00F1
-                        A18E ; 00F2
-                        A12C ; 00F3
-                        A13A ; 00F4
-                        A12C ; 00F5
-                        A169 ; 00F6
-                        A12C ; 00F7
-                        A18E ; 00F8
-                        A12C ; 00F9
-                        A13A ; 00FA
-                        A12C ; 00FB
-                        A169 ; 00FC
-                        A12C ; 00FD
-                        A18E ; 00FE
-                        A12C ; 00FF
-                        A13A ; 0100
-                        A12C ; 0101
-                        A169 ; 0102
-                        A12C ; 0103
-                        A18E ; 0104
-                        A12C ; 0105
-                        A13A ; 0106
-                        A12C ; 0107
-                        A169 ; 0108
-                        A12C ; 0109
-                        A18E ; 010A
-                        A12C ; 010B
-                        A13A ; 010C
-                        A12C ; 010D
-                        A169 ; 010E
-                        A12C ; 010F
-                        A18E ; 0110
-                        A12C ; 0111
-                        A1C7 ; 0112
-                        A12C ; 0113
-                        A214 ; 0114
-                        A12C ; 0115
-                        A23E ; 0116
-                        A12C ; 0117
-                        A272 ; 0118
-                        A12C ; 0119
-                        A2AB ; 011A
-                        A12C ; 011B
-                        A23E ; 011C
-                        A12C ; 011D
-                        A272 ; 011E
-                        A12C ; 011F
-                        A2AB ; 0120
-                        A12C ; 0121
-
-; Bottom half - 9B: Facing forward - varia/gravity suit
-                        AE6E ; 0122
-                        0000 ; 0123
-                        B26E ; 0124
-                        B26E ; 0125
-                        B26E ; 0126
-                        B26E ; 0127
-                        B26E ; 0128
-                        B26E ; 0129
-                        B26E ; 012A
-                        B26E ; 012B
-                        B26E ; 012C
-                        B26E ; 012D
-                        B26E ; 012E
-                        B26E ; 012F
-                        B26E ; 0130
-                        B26E ; 0131
-                        B26E ; 0132
-                        B26E ; 0133
-                        B26E ; 0134
-                        B26E ; 0135
-                        B26E ; 0136
-                        B26E ; 0137
-                        B26E ; 0138
-                        B26E ; 0139
-                        B26E ; 013A
-                        B26E ; 013B
-                        B26E ; 013C
-                        B26E ; 013D
-                        B26E ; 013E
-                        B26E ; 013F
-                        B26E ; 0140
-                        B26E ; 0141
-                        B26E ; 0142
-                        B26E ; 0143
-                        B26E ; 0144
-                        B26E ; 0145
-                        B26E ; 0146
-                        B26E ; 0147
-                        B26E ; 0148
-                        B26E ; 0149
-                        B26E ; 014A
-                        B26E ; 014B
-                        B26E ; 014C
-                        B26E ; 014D
-                        B26E ; 014E
-                        B26E ; 014F
-                        B26E ; 0150
-                        B26E ; 0151
-                        B26E ; 0152
-                        B26E ; 0153
-                        B26E ; 0154
-                        B26E ; 0155
-                        B26E ; 0156
-                        B26E ; 0157
-                        B26E ; 0158
-                        B26E ; 0159
-                        B26E ; 015A
-                        B26E ; 015B
-                        B26E ; 015C
-                        B26E ; 015D
-                        B26E ; 015E
-                        B26E ; 015F
-                        B26E ; 0160
-                        B26E ; 0161
-                        B26E ; 0162
-                        B26E ; 0163
-                        B26E ; 0164
-                        B26E ; 0165
-                        B26E ; 0166
-                        B26E ; 0167
-                        B26E ; 0168
-                        B26E ; 0169
-                        B26E ; 016A
-                        B26E ; 016B
-                        B26E ; 016C
-                        B26E ; 016D
-                        B26E ; 016E
-                        B26E ; 016F
-                        B26E ; 0170
-                        B26E ; 0171
-                        B26E ; 0172
-                        B26E ; 0173
-                        B26E ; 0174
-                        B26E ; 0175
-                        B26E ; 0176
-                        B26E ; 0177
-                        B26E ; 0178
-                        B26E ; 0179
-                        B26E ; 017A
-                        B26E ; 017B
-                        B26E ; 017C
-                        B26E ; 017D
-                        B26E ; 017E
-                        B26E ; 017F
-                        B26E ; 0180
-                        B26E ; 0181
-
-; Samus tile viewer - Samus top half
-                        917A ; 0182
-; Samus tile viewer - Samus bottom half
-                        91CC ; 0183
-; Samus tile viewer - beam
-                        921E ; 0184
-; Samus tile viewer - grapple beam
-                        9248 ; 0185
-
-; Bubbles
-                        D7D3 ; 0186
-                        D7DF ; 0187
-                        D7F0 ; 0188
-                        D801 ; 0189
-                        D812 ; 018A
-                        D823 ; 018B
-                        D834 ; 018C
-                        D845 ; 018D
-                        D851 ; 018E
+; 0062. Bottom half - 00: Facing forward - power suit
+                        AE44, 0000, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, 
+                        B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, 
+                        B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, 
+                        B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, 
+                        B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, 
+                        B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, B24E, 
                         
-; Diving splash
-                        D858 ; 018F
-                        D869 ; 0190
-                        D87A ; 0191
-                        D895 ; 0192
-                        D8B0 ; 0193
-                        D8D5 ; 0194
-                        D8F0 ; 0195
-                        D906 ; 0196
-                        D912 ; 0197
-
-                        9657 ; 0198
-                        9657 ; 0199
-
+; 00C2. Top half - 9B: Facing forward - varia/gravity suit
+                        9976, 0000, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, 
+                        A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, 
+                        A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, 
+                        A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, 
+                        A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, A13A, A12C, A169, A12C, A18E, A12C, 
+                        A1C7, A12C, A214, A12C, A23E, A12C, A272, A12C, A2AB, A12C, A23E, A12C, A272, A12C, A2AB, A12C, 
+                        
+; 0122. Bottom half - 9B: Facing forward - varia/gravity suit
+                        AE6E, 0000, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, 
+                        B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, 
+                        B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, 
+                        B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, 
+                        B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, 
+                        B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, B26E, 
+                        
+; 0182. Samus tile viewer - Samus top half
+                        917A, 
+                        
+; 0183. Samus tile viewer - Samus bottom half
+                        91CC, 
+                        
+; 0184. Samus tile viewer - beam
+                        921E, 
+                        
+; 0185. Samus tile viewer - grapple beam
+                        9248, 
+                        
+; 0186. Bubbles
+                        D7D3, D7DF, D7F0, D801, D812, D823, D834, D845, D851, 
+                        
+; 018F. Diving splash
+                        D858, D869, D87A, D895, D8B0, D8D5, D8F0, D906, D912, 
+                        
+; 0198
+                        9657, 9657, 
+                        
 ; Top half - 01: Facing right - normal
 ; Top half - 47: Unused
 ; Top half - 89: Facing right - ran into a wall
-; Top half - A8: Unused
-                        A072 ; 019A
-                        A088 ; 019B
-                        A09E ; 019C
-                        A088 ; 019D
-                        0000 ; 019E
-                        A072 ; 019F
-                        A088 ; 01A0
-                        A0F6 ; 01A1
-                        A088 ; 01A2
-
+; 019A. Top half - A8: Unused
+                        A072, A088, A09E, A088, 0000, A072, A088, A0F6, A088, 
+                        
 ; Top half - 02: Facing left  - normal
 ; Top half - 48: Unused
 ; Top half - 8A: Facing left  - ran into a wall
-; Top half - A9: Unused
-                        A0B4 ; 01A3
-                        A0CA ; 01A4
-                        A0E0 ; 01A5
-                        A0CA ; 01A6
-                        0000 ; 01A7
-                        A0B4 ; 01A8
-                        A0CA ; 01A9
-                        A111 ; 01AA
-                        A0CA ; 01AB
-                        9657 ; 01AC
-
-; Top half - 03: Facing right - aiming up
-                        97B1 ; 01AD
-                        97FF ; 01AE
-
-; Top half - 04: Facing left  - aiming up
-                        97C7 ; 01AF
-                        981A ; 01B0
-
+; 01A3. Top half - A9: Unused
+                        A0B4, A0CA, A0E0, A0CA, 0000, A0B4, A0CA, A111, A0CA, 9657, 
+                        
+; 01AD. Top half - 03: Facing right - aiming up
+                        97B1, 97FF, 
+                        
+; 01AF. Top half - 04: Facing left  - aiming up
+                        97C7, 981A, 
+                        
 ; Top half - 05: Facing right - aiming up-right
 ; Top half - 57: Facing right - normal jump transition - aiming up-right
 ; Top half - CF: Facing right - ran into a wall - aiming up-right
 ; Top half - E2: Facing right - landing from normal jump - aiming up-right
 ; Top half - F3: Facing right - crouching transition - aiming up-right
-; Top half - F9: Facing right - standing transition - aiming up-right
-                        97B1 ; 01B1
-                        97B1 ; 01B2
-
+; 01B1. Top half - F9: Facing right - standing transition - aiming up-right
+                        97B1, 97B1, 
+                        
 ; Top half - 06: Facing left  - aiming up-left
 ; Top half - 58: Facing left  - normal jump transition - aiming up-left
 ; Top half - D0: Facing left  - ran into a wall - aiming up-left
 ; Top half - E3: Facing left  - landing from normal jump - aiming up-left
 ; Top half - F4: Facing left  - crouching transition - aiming up-left
-; Top half - FA: Facing left  - standing transition - aiming up-left
-                        97C7 ; 01B3
-                        97C7 ; 01B4
-
+; 01B3. Top half - FA: Facing left  - standing transition - aiming up-left
+                        97C7, 97C7, 
+                        
 ; Top half - 07: Facing right - aiming down-right
 ; Top half - 59: Facing right - normal jump transition - aiming down-right
 ; Top half - AA: Unused
 ; Top half - D1: Facing right - ran into a wall - aiming down-right
 ; Top half - E4: Facing right - landing from normal jump - aiming down-right
 ; Top half - F5: Facing right - crouching transition - aiming down-right
-; Top half - FB: Facing right - standing transition - aiming down-right
-                        9745 ; 01B5
-                        9745 ; 01B6
-
+; 01B5. Top half - FB: Facing right - standing transition - aiming down-right
+                        9745, 9745, 
+                        
 ; Top half - 08: Facing left  - aiming down-left
 ; Top half - 5A: Facing left  - normal jump transition - aiming down-left
 ; Top half - AB: Unused
 ; Top half - D2: Facing left  - ran into a wall - aiming down-left
 ; Top half - E5: Facing left  - landing from normal jump - aiming down-left
 ; Top half - F6: Facing left  - crouching transition - aiming down-left
-; Top half - FC: Facing left  - standing transition - aiming down-left
-                        9760 ; 01B7
-                        9760 ; 01B8
-
-; Top half - A4: Facing right - landing from normal jump
-                        9B6F ; 01B9
-                        9BAE ; 01BA
-
-; Top half - A5: Facing left  - landing from normal jump
-                        9B80 ; 01BB
-                        9BBF ; 01BC
-
-; Top half - A6: Facing right - landing from spin jump
-                        9BAE ; 01BD
-                        9B6F ; 01BE
-                        9BAE ; 01BF
-
-; Top half - A7: Facing left  - landing from spin jump
-                        9BBF ; 01C0
-                        9B80 ; 01C1
-                        9BBF ; 01C2
-
+; 01B7. Top half - FC: Facing left  - standing transition - aiming down-left
+                        9760, 9760, 
+                        
+; 01B9. Top half - A4: Facing right - landing from normal jump
+                        9B6F, 9BAE, 
+                        
+; 01BB. Top half - A5: Facing left  - landing from normal jump
+                        9B80, 9BBF, 
+                        
+; 01BD. Top half - A6: Facing right - landing from spin jump
+                        9BAE, 9B6F, 9BAE, 
+                        
+; 01C0. Top half - A7: Facing left  - landing from spin jump
+                        9BBF, 9B80, 9BBF, 
+                        
 ; Top half - D5: Facing right - x-ray - standing
-; Top half - D9: Facing right - x-ray - crouching
-                        9C26 ; 01C3
-                        9C0B ; 01C4
-                        977B ; 01C5
-                        9C41 ; 01C6
-                        9C5C ; 01C7
-
+; 01C3. Top half - D9: Facing right - x-ray - crouching
+                        9C26, 9C0B, 977B, 9C41, 9C5C, 
+                        
 ; Top half - D6: Facing left  - x-ray - standing
-; Top half - DA: Facing left  - x-ray - crouching
-                        9C92 ; 01C8
-                        9C77 ; 01C9
-                        9796 ; 01CA
-                        9CAD ; 01CB
-                        9CC8 ; 01CC
-
+; 01C8. Top half - DA: Facing left  - x-ray - crouching
+                        9C92, 9C77, 9796, 9CAD, 9CC8, 
+                        
 ; Top half - 55: Facing right - normal jump transition - aiming up
 ; Top half - E0: Facing right - landing from normal jump - aiming up
 ; Top half - F1: Facing right - crouching transition - aiming up
-; Top half - F7: Facing right - standing transition - aiming up
-                        97FF ; 01CD
-                        97FF ; 01CE
-
+; 01CD. Top half - F7: Facing right - standing transition - aiming up
+                        97FF, 97FF, 
+                        
 ; Top half - 56: Facing left  - normal jump transition - aiming up
 ; Top half - E1: Facing left  - landing from normal jump - aiming up
 ; Top half - F2: Facing left  - crouching transition - aiming up
-; Top half - F8: Facing left  - standing transition - aiming up
-                        981A ; 01CF
-                        981A ; 01D0
+; 01CF. Top half - F8: Facing left  - standing transition - aiming up
+                        981A, 981A, 
+                        
+; 01D1. Top half - E6: Facing right - landing from normal jump - firing
+                        977B, 977B, 
+                        
+; 01D3. Top half - E7: Facing left  - landing from normal jump - firing
+                        9796, 9796, 
+                        
+; 01D5. Top half - 49: Facing left  - moonwalk
+                        9796, 9E48, 9E48, 9796, 9E48, 9E48, 
+                        
+; 01DB. Top half - 4A: Facing right - moonwalk
+                        977B, 9E2D, 9E2D, 977B, 9E2D, 9E2D, 
+                        
+; 01E1. Top half - 75: Facing left  - moonwalk - aiming up-left
+                        9872, 9CFE, 9CFE, 9872, 9CFE, 9CFE, 
+                        
+; 01E7. Top half - 76: Facing right - moonwalk - aiming up-right
+                        9857, 9CE3, 9CE3, 9857, 9CE3, 9CE3, 
+                        
+; 01ED. Top half - 77: Facing left  - moonwalk - aiming down-left
+                        9725, 9BEB, 9BEB, 9725, 9BEB, 9BEB, 
+                        
+; 01F3. Top half - 78: Facing right - moonwalk - aiming down-right
+                        9705, 9BCB, 9BCB, 9705, 9BCB, 9BCB, 
+                        
+; 01F9. Top half - 09: Moving right - not aiming
+                        9657, 9A3F, 966F, 9680, 9663, 9657, 9A4B, 969D, 9835, 9691, 
+                        
+; 0203. Top half - 0A: Moving left  - not aiming
+                        96AE, 9A57, 96C6, 96D7, 96BA, 96AE, 9A63, 96F4, 9846, 96E8,
 
-; Top half - E6: Facing right - landing from normal jump - firing
-                        977B ; 01D1
-                        977B ; 01D2
+; 020D. Top half - 0B: Moving right - gun extended
+                        A2D0, A440, A2F2, A308, A2E1, A2D0, A323, A334, A400, A323, 
+                        
+; 0217. Top half - 0C: Moving left  - gun extended
+                        A34A, A451, A3A0, A380, A365, A34A, A3C0, A41B, A3DB, A3C0, 
+                        
+; 0221. Top half - 0D: Moving right - aiming up (unused)
+                        97FF, 97FF, 9CAD, 9E9E, 9CAD, 97FF, 97FF, 9CAD, 9E9E, 9CAD, 
+                        
+; 022B. Top half - 0E: Moving left  - aiming up (unused)
+                        981A, 981A, 9CC8, 9EB9, 9CC8, 981A, 981A, 9CC8, 9EB9, 9CC8, 
+                        
+; 0235. Top half - 0F: Moving right - aiming up-right
+                        9857, 9857, 9CE3, 9DB2, 9CE3, 9857, 9857, 9CE3, 9DB2, 9CE3, 
+                        
+; 023F. Top half - 10: Moving left  - aiming up-left
+                        9872, 9872, 9CFE, 9DCD, 9CFE, 9872, 9872, 9CFE, 9DCD, 9CFE, 
+                        
+; 0249. Top half - 11: Moving right - aiming down-right
+                        9705, 9705, 9BCB, 9DED, 9BCB, 9705, 9705, 9BCB, 9DED, 9BCB, 
 
-; Top half - E7: Facing left  - landing from normal jump - firing
-                        9796 ; 01D3
-                        9796 ; 01D4
-
-; Top half - 49: Facing left  - moonwalk
-                        9796 ; 01D5
-                        9E48 ; 01D6
-                        9E48 ; 01D7
-                        9796 ; 01D8
-                        9E48 ; 01D9
-                        9E48 ; 01DA
-
-; Top half - 4A: Facing right - moonwalk
-                        977B ; 01DB
-                        9E2D ; 01DC
-                        9E2D ; 01DD
-                        977B ; 01DE
-                        9E2D ; 01DF
-                        9E2D ; 01E0
-
-; Top half - 75: Facing left  - moonwalk - aiming up-left
-                        9872 ; 01E1
-                        9CFE ; 01E2
-                        9CFE ; 01E3
-                        9872 ; 01E4
-                        9CFE ; 01E5
-                        9CFE ; 01E6
-
-; Top half - 76: Facing right - moonwalk - aiming up-right
-                        9857 ; 01E7
-                        9CE3 ; 01E8
-                        9CE3 ; 01E9
-                        9857 ; 01EA
-                        9CE3 ; 01EB
-                        9CE3 ; 01EC
-
-; Top half - 77: Facing left  - moonwalk - aiming down-left
-                        9725 ; 01ED
-                        9BEB ; 01EE
-                        9BEB ; 01EF
-                        9725 ; 01F0
-                        9BEB ; 01F1
-                        9BEB ; 01F2
-
-; Top half - 78: Facing right - moonwalk - aiming down-right
-                        9705 ; 01F3
-                        9BCB ; 01F4
-                        9BCB ; 01F5
-                        9705 ; 01F6
-                        9BCB ; 01F7
-                        9BCB ; 01F8
-
-; Top half - 09: Moving right - not aiming
-                        9657 ; 01F9
-                        9A3F ; 01FA
-                        966F ; 01FB
-                        9680 ; 01FC
-                        9663 ; 01FD
-                        9657 ; 01FE
-                        9A4B ; 01FF
-                        969D ; 0200
-                        9835 ; 0201
-                        9691 ; 0202
-
-; Top half - 0A: Moving left  - not aiming
-                        96AE ; 0203
-                        9A57 ; 0204
-                        96C6 ; 0205
-                        96D7 ; 0206
-                        96BA ; 0207
-                        96AE ; 0208
-                        9A63 ; 0209
-                        96F4 ; 020A
-                        9846 ; 020B
-                        96E8 ; 020C
-
-; Top half - 0B: Moving right - gun extended
-                        A2D0 ; 020D
-                        A440 ; 020E
-                        A2F2 ; 020F
-                        A308 ; 0210
-                        A2E1 ; 0211
-                        A2D0 ; 0212
-                        A323 ; 0213
-                        A334 ; 0214
-                        A400 ; 0215
-                        A323 ; 0216
-
-; Top half - 0C: Moving left  - gun extended
-                        A34A ; 0217
-                        A451 ; 0218
-                        A3A0 ; 0219
-                        A380 ; 021A
-                        A365 ; 021B
-                        A34A ; 021C
-                        A3C0 ; 021D
-                        A41B ; 021E
-                        A3DB ; 021F
-                        A3C0 ; 0220
-
-; Top half - 0D: Moving right - aiming up (unused)
-                        97FF ; 0221
-                        97FF ; 0222
-                        9CAD ; 0223
-                        9E9E ; 0224
-                        9CAD ; 0225
-                        97FF ; 0226
-                        97FF ; 0227
-                        9CAD ; 0228
-                        9E9E ; 0229
-                        9CAD ; 022A
-
-; Top half - 0E: Moving left  - aiming up (unused)
-                        981A ; 022B
-                        981A ; 022C
-                        9CC8 ; 022D
-                        9EB9 ; 022E
-                        9CC8 ; 022F
-                        981A ; 0230
-                        981A ; 0231
-                        9CC8 ; 0232
-                        9EB9 ; 0233
-                        9CC8 ; 0234
-
-; Top half - 0F: Moving right - aiming up-right
-                        9857 ; 0235
-                        9857 ; 0236
-                        9CE3 ; 0237
-                        9DB2 ; 0238
-                        9CE3 ; 0239
-                        9857 ; 023A
-                        9857 ; 023B
-                        9CE3 ; 023C
-                        9DB2 ; 023D
-                        9CE3 ; 023E
-
-; Top half - 10: Moving left  - aiming up-left
-                        9872 ; 023F
-                        9872 ; 0240
-                        9CFE ; 0241
-                        9DCD ; 0242
-                        9CFE ; 0243
-                        9872 ; 0244
-                        9872 ; 0245
-                        9CFE ; 0246
-                        9DCD ; 0247
-                        9CFE ; 0248
-
-; Top half - 11: Moving right - aiming down-right
-                        9705 ; 0249
-                        9705 ; 024A
-                        9BCB ; 024B
-                        9DED ; 024C
-                        9BCB ; 024D
-                        9705 ; 024E
-                        9705 ; 024F
-                        9BCB ; 0250
-                        9DED ; 0251
-                        9BCB ; 0252
-
-; Top half - 12: Moving left  - aiming down-left
-                        9725 ; 0253
-                        9725 ; 0254
-                        9BEB ; 0255
-                        9E0D ; 0256
-                        9BEB ; 0257
-                        9725 ; 0258
-                        9725 ; 0259
-                        9BEB ; 025A
-                        9E0D ; 025B
-                        9BEB ; 025C
-
-; Top half - 45: Unused
-                        97EE ; 025D
-                        97EE ; 025E
-                        9C92 ; 025F
-                        9E83 ; 0260
-                        9C92 ; 0261
-                        97EE ; 0262
-                        97EE ; 0263
-                        9C92 ; 0264
-                        9E83 ; 0265
-                        9C92 ; 0266
-
-; Top half - 46: Unused
-                        97DD ; 0267
-                        97DD ; 0268
-                        9C77 ; 0269
-                        9E63 ; 026A
-                        9C77 ; 026B
-                        97DD ; 026C
-                        97DD ; 026D
-                        9C77 ; 026E
-                        9E63 ; 026F
-                        9C77 ; 0270
-
+; 0253. Top half - 12: Moving left  - aiming down-left
+                        9725, 9725, 9BEB, 9E0D, 9BEB, 9725, 9725, 9BEB, 9E0D, 9BEB, 
+                        
+; 025D. Top half - 45: Unused
+                        97EE, 97EE, 9C92, 9E83, 9C92, 97EE, 97EE, 9C92, 9E83, 9C92, 
+                        
+; 0267. Top half - 46: Unused
+                        97DD, 97DD, 9C77, 9E63, 9C77, 97DD, 97DD, 9C77, 9E63, 9C77, 
+                        
 ; Top half - 17: Facing right - normal jump - aiming down
-; Top half - AE: Unused
-                        9705 ; 0271
-                        9B17 ; 0272
-
+; 0271. Top half - AE: Unused
+                        9705, 9B17, 
+                        
 ; Top half - 18: Facing left  - normal jump - aiming down
-; Top half - AF: Unused
-                        9725 ; 0273
-                        9B2D ; 0274
-
+; 0273. Top half - AF: Unused
+                        9725, 9B2D, 
+                        
 ; Top half - 13: Facing right - normal jump - not aiming - not moving - gun extended
-; Top half - AC: Unused
-                        977B ; 0275
-                        977B ; 0276
-
+; 0275. Top half - AC: Unused
+                        977B, 977B, 
+                        
 ; Top half - 14: Facing left  - normal jump - not aiming - not moving - gun extended
-; Top half - AD: Unused
-                        9796 ; 0277
-                        9796 ; 0278
-
-; Top half - 15: Facing right - normal jump - aiming up
-                        97B1 ; 0279
-                        97FF ; 027A
-
-; Top half - 16: Facing left  - normal jump - aiming up
-                        97C7 ; 027B
-                        981A ; 027C
-
-; Top half - 69: Facing right - normal jump - aiming up-right
-                        9857 ; 027D
-                        9857 ; 027E
-
-; Top half - 6A: Facing left  - normal jump - aiming up-left
-                        9872 ; 027F
-                        9872 ; 0280
-
+; 0277. Top half - AD: Unused
+                        9796, 9796, 
+                        
+; 0279. Top half - 15: Facing right - normal jump - aiming up
+                        97B1, 97FF, 
+                        
+; 027B. Top half - 16: Facing left  - normal jump - aiming up
+                        97C7, 981A, 
+                        
+; 027D. Top half - 69: Facing right - normal jump - aiming up-right
+                        9857, 9857, 
+                        
+; 027F. Top half - 6A: Facing left  - normal jump - aiming up-left
+                        9872, 9872, 
+                        
 ; Top half - 6B: Facing right - normal jump - aiming down-right
-; Top half - B0: Unused
-                        9705 ; 0281
-                        9705 ; 0282
-
+; 0281. Top half - B0: Unused
+                        9705, 9705, 
+                        
 ; Top half - 6C: Facing left  - normal jump - aiming down-left
-; Top half - B1: Unused
-                        9725 ; 0283
-                        9725 ; 0284
-
-; Top half - 51: Facing right - normal jump - not aiming - moving forward
-                        977B ; 0285
-                        977B ; 0286
-
-; Top half - 52: Facing left  - normal jump - not aiming - moving forward
-                        9796 ; 0287
-                        9796 ; 0288
-
-; Top half - 4B: Facing right - normal jump transition
-                        9B6F ; 0289
-
-; Top half - 4C: Facing left  - normal jump transition
-                        9B80 ; 028A
-
+; 0283. Top half - B1: Unused
+                        9725, 9725, 
+                        
+; 0285. Top half - 51: Facing right - normal jump - not aiming - moving forward
+                        977B, 977B, 
+                        
+; 0287. Top half - 52: Facing left  - normal jump - not aiming - moving forward
+                        9796, 9796, 
+                        
+; 0289. Top half - 4B: Facing right - normal jump transition
+                        9B6F, 
+                        
+; 028A. Top half - 4C: Facing left  - normal jump transition
+                        9B80, 
+                        
 ; Top half - 4D: Facing right - normal jump - not aiming - not moving - gun not extended
-; Top half - C7: Facing right - vertical shinespark windup
-                        9691 ; 028B
-                        969D ; 028C
-                        9691 ; 028D
-                        9657 ; 028E
-                        9663 ; 028F
-                        97DD ; 0290
-
+; 028B. Top half - C7: Facing right - vertical shinespark windup
+                        9691, 969D, 9691, 9657, 9663, 97DD, 
+                        
 ; Top half - 4E: Facing left  - normal jump - not aiming - not moving - gun not extended
-; Top half - C8: Facing left  - vertical shinespark windup
-                        96E8 ; 0291
-                        96F4 ; 0292
-                        96E8 ; 0293
-                        96AE ; 0294
-                        96BA ; 0295
-                        97EE ; 0296
-
-; Top half - 4F: Facing left  - damage boost
-                        9BBF ; 0297
-                        9BBF ; 0298
-                        BB94 ; 0299
-                        BB88 ; 029A
-                        BB72 ; 029B
-                        BB66 ; 029C
-                        BB50 ; 029D
-                        BB44 ; 029E
-                        BB2E ; 029F
-                        9EB9 ; 02A0
-
-; Top half - 50: Facing right - damage boost
-                        9BAE ; 02A1
-                        9BAE ; 02A2
-                        BDD9 ; 02A3
-                        BDCD ; 02A4
-                        BDB7 ; 02A5
-                        BDAB ; 02A6
-                        BD95 ; 02A7
-                        BD89 ; 02A8
-                        BD73 ; 02A9
-                        9E83 ; 02AA
-
-; Top half - 63: Unused
-                        9A93 ; 02AB
-                        9A1F ; 02AC
-
-; Top half - 64: Unused
-                        9AAE ; 02AD
-                        99FF ; 02AE
-
-; Top half - 65: Unused
-                        9A7B ; 02AF
-                        BD67 ; 02B0
-                        BD73 ; 02B1
-                        BD89 ; 02B2
-                        BD95 ; 02B3
-                        BDAB ; 02B4
-                        BDB7 ; 02B5
-                        BDCD ; 02B6
-                        BDD9 ; 02B7
-
-; Top half - 66: Unused
-                        9A87 ; 02B8
-                        BB22 ; 02B9
-                        BB2E ; 02BA
-                        BB44 ; 02BB
-                        BB50 ; 02BC
-                        BB66 ; 02BD
-                        BB72 ; 02BE
-                        BB88 ; 02BF
-                        BB94 ; 02C0
-
-; Top half - 83: Facing right - wall jump
-                        9A7B ; 02C1
-                        9BAE ; 02C2
-                        0000 ; 02C3
-                        BD67 ; 02C4
-                        BD73 ; 02C5
-                        BD89 ; 02C6
-                        BD95 ; 02C7
-                        BDAB ; 02C8
-                        BDB7 ; 02C9
-                        BDCD ; 02CA
-                        BDD9 ; 02CB
-                        0000 ; 02CC
-                        0000 ; 02CD
-                        BEBF ; 02CE
-                        BEBF ; 02CF
-                        BEBF ; 02D0
-                        BEBF ; 02D1
-                        BEBF ; 02D2
-                        BEBF ; 02D3
-                        BEBF ; 02D4
-                        BEBF ; 02D5
-                        0000 ; 02D6
-                        0000 ; 02D7
-                        BDEF ; 02D8
-                        BDEF ; 02D9
-                        BDEF ; 02DA
-                        BEBF ; 02DB
-                        BEBF ; 02DC
-                        BEBF ; 02DD
-                        BE23 ; 02DE
-                        BE23 ; 02DF
-                        BE23 ; 02E0
-                        BEBF ; 02E1
-                        BEBF ; 02E2
-                        BEBF ; 02E3
-                        BE5C ; 02E4
-                        BE5C ; 02E5
-                        BE5C ; 02E6
-                        BEBF ; 02E7
-                        BEBF ; 02E8
-                        BEBF ; 02E9
-                        BE95 ; 02EA
-                        BE95 ; 02EB
-                        BE95 ; 02EC
-                        BEBF ; 02ED
-                        BEBF ; 02EE
-                        BEBF ; 02EF
-
-; Top half - 84: Facing left  - wall jump
-                        9A87 ; 02F0
-                        9BBF ; 02F1
-                        0000 ; 02F2
-                        BB22 ; 02F3
-                        BB2E ; 02F4
-                        BB44 ; 02F5
-                        BB50 ; 02F6
-                        BB66 ; 02F7
-                        BB72 ; 02F8
-                        BB88 ; 02F9
-                        BB94 ; 02FA
-                        0000 ; 02FB
-                        0000 ; 02FC
-                        BC7A ; 02FD
-                        BC7A ; 02FE
-                        BC7A ; 02FF
-                        BC7A ; 0300
-                        BC7A ; 0301
-                        BC7A ; 0302
-                        BC7A ; 0303
-                        BC7A ; 0304
-                        0000 ; 0305
-                        0000 ; 0306
-                        BBAA ; 0307
-                        BBAA ; 0308
-                        BBAA ; 0309
-                        BC7A ; 030A
-                        BC7A ; 030B
-                        BC7A ; 030C
-                        BBDE ; 030D
-                        BBDE ; 030E
-                        BBDE ; 030F
-                        BC7A ; 0310
-                        BC7A ; 0311
-                        BC7A ; 0312
-                        BC17 ; 0313
-                        BC17 ; 0314
-                        BC17 ; 0315
-                        BC7A ; 0316
-                        BC7A ; 0317
-                        BC7A ; 0318
-                        BC50 ; 0319
-                        BC50 ; 031A
-                        BC50 ; 031B
-                        BC7A ; 031C
-                        BC7A ; 031D
-                        BC7A ; 031E
-
-; Top half - 53: Facing right - knockback
-                        98AD ; 031F
-                        98AD ; 0320
-
-; Top half - 54: Facing left  - knockback
-                        9892 ; 0321
-                        9892 ; 0322
-                        9892 ; 0323
-                        98AD ; 0324
-                        9928 ; 0325
-                        9928 ; 0326
-                        9976 ; 0327
-                        9912 ; 0328
-                        9912 ; 0329
-                        996F ; 032A
-                        9998 ; 032B
-                        99CE ; 032C
-                        9982 ; 032D
-                        99AE ; 032E
-
+; 0291. Top half - C8: Facing left  - vertical shinespark windup
+                        96E8, 96F4, 96E8, 96AE, 96BA, 97EE, 
+                        
+; 0297. Top half - 4F: Facing left  - damage boost
+                        9BBF, 9BBF, BB94, BB88, BB72, BB66, BB50, BB44, BB2E, 9EB9, 
+                        
+; 02A1. Top half - 50: Facing right - damage boost
+                        9BAE, 9BAE, BDD9, BDCD, BDB7, BDAB, BD95, BD89, BD73, 9E83, 
+                        
+; 02AB. Top half - 63: Unused
+                        9A93, 9A1F, 
+                        
+; 02AD. Top half - 64: Unused
+                        9AAE, 99FF, 
+                        
+; 02AF. Top half - 65: Unused
+                        9A7B, BD67, BD73, BD89, BD95, BDAB, BDB7, BDCD, BDD9, 
+                        
+; 02B8. Top half - 66: Unused
+                        9A87, BB22, BB2E, BB44, BB50, BB66, BB72, BB88, BB94, 
+                        
+; 02C1. Top half - 83: Facing right - wall jump
+                        9A7B, 9BAE, 0000, BD67, BD73, BD89, BD95, BDAB, BDB7, BDCD, BDD9, 0000, 0000, BEBF, BEBF, BEBF, 
+                        BEBF, BEBF, BEBF, BEBF, BEBF, 0000, 0000, BDEF, BDEF, BDEF, BEBF, BEBF, BEBF, BE23, BE23, BE23, 
+                        BEBF, BEBF, BEBF, BE5C, BE5C, BE5C, BEBF, BEBF, BEBF, BE95, BE95, BE95, BEBF, BEBF, BEBF, 
+                        
+; 02F0. Top half - 84: Facing left  - wall jump
+                        9A87, 9BBF, 0000, BB22, BB2E, BB44, BB50, BB66, BB72, BB88, BB94, 0000, 0000, BC7A, BC7A, BC7A, 
+                        BC7A, BC7A, BC7A, BC7A, BC7A, 0000, 0000, BBAA, BBAA, BBAA, BC7A, BC7A, BC7A, BBDE, BBDE, BBDE, 
+                        BC7A, BC7A, BC7A, BC17, BC17, BC17, BC7A, BC7A, BC7A, BC50, BC50, BC50, BC7A, BC7A, BC7A, 
+                        
+; 031F. Top half - 53: Facing right - knockback
+                        98AD, 98AD, 
+                        
+; 0321. Top half - 54: Facing left  - knockback
+                        9892, 9892, 9892, 98AD, 9928, 9928, 9976, 9912, 9912, 996F, 9998, 99CE, 9982, 99AE, 
+                        
 ; Top half - 5B: Unused
-; Top half - B8: Facing left  - grapple wall jump pose
-                        9A1F ; 032F
-
+; 032F. Top half - B8: Facing left  - grapple wall jump pose
+                        9A1F, 
+                        
 ; Top half - 5C: Unused
-; Top half - B9: Facing right - grapple wall jump pose
-                        99FF ; 0330
-
+; 0330. Top half - B9: Facing right - grapple wall jump pose
+                        99FF, 
+                        
 ; Top half - 5D: Unused
 ; Top half - 5E: Unused
-; Top half - 5F: Unused
-                        9B2D ; 0331
-
-; Top half - 60: Unused
-                        9B17 ; 0332
-
+; 0331. Top half - 5F: Unused
+                        9B2D, 
+                        
+; 0332. Top half - 60: Unused
+                        9B17, 
+                        
 ; Top half - 61: Unused
-; Top half - B2: Facing clockwise     - grapple
-                        A96B ; 0333
-                        A955 ; 0334
-                        A944 ; 0335
-                        A933 ; 0336
-                        A922 ; 0337
-                        A911 ; 0338
-                        A900 ; 0339
-                        A8EA ; 033A
-                        A8D4 ; 033B
-                        A584 ; 033C
-                        A573 ; 033D
-                        A562 ; 033E
-                        A551 ; 033F
-                        A540 ; 0340
-                        A52F ; 0341
-                        A519 ; 0342
-                        A503 ; 0343
-                        A4ED ; 0344
-                        A4DC ; 0345
-                        A4CB ; 0346
-                        A4BA ; 0347
-                        A4A9 ; 0348
-                        A498 ; 0349
-                        A482 ; 034A
-                        A46C ; 034B
-                        A9EC ; 034C
-                        A9DB ; 034D
-                        A9CA ; 034E
-                        A9B9 ; 034F
-                        A9A8 ; 0350
-                        A997 ; 0351
-                        A981 ; 0352
-                        A96B ; 0353
-                        A955 ; 0354
-                        A944 ; 0355
-                        A933 ; 0356
-                        A922 ; 0357
-                        A911 ; 0358
-                        A900 ; 0359
-                        A8EA ; 035A
-                        A8D4 ; 035B
-                        A584 ; 035C
-                        A573 ; 035D
-                        A562 ; 035E
-                        A551 ; 035F
-                        A540 ; 0360
-                        A52F ; 0361
-                        A519 ; 0362
-                        A503 ; 0363
-                        A4ED ; 0364
-                        A4DC ; 0365
-                        A4CB ; 0366
-                        A4BA ; 0367
-                        A4A9 ; 0368
-                        A498 ; 0369
-                        A482 ; 036A
-                        A46C ; 036B
-                        A9EC ; 036C
-                        A9DB ; 036D
-                        A9CA ; 036E
-                        A9B9 ; 036F
-                        A9A8 ; 0370
-                        A997 ; 0371
-                        A981 ; 0372
-                        A503 ; 0373
-                        A503 ; 0374
-
+; 0333. Top half - B2: Facing clockwise     - grapple
+                        A96B, A955, A944, A933, A922, A911, A900, A8EA, A8D4, A584, A573, A562, A551, A540, A52F, A519, 
+                        A503, A4ED, A4DC, A4CB, A4BA, A4A9, A498, A482, A46C, A9EC, A9DB, A9CA, A9B9, A9A8, A997, A981, 
+                        A96B, A955, A944, A933, A922, A911, A900, A8EA, A8D4, A584, A573, A562, A551, A540, A52F, A519, 
+                        A503, A4ED, A4DC, A4CB, A4BA, A4A9, A498, A482, A46C, A9EC, A9DB, A9CA, A9B9, A9A8, A997, A981, 
+                        A503, A503, 
+                        
 ; Top half - 62: Unused
-; Top half - B3: Facing anticlockwise - grapple
-                        AB8B ; 0375
-                        ABB5 ; 0376
-                        ABDF ; 0377
-                        AC0E ; 0378
-                        AC42 ; 0379
-                        AC76 ; 037A
-                        ACAA ; 037B
-                        ACDE ; 037C
-                        A5B0 ; 037D
-                        A5DA ; 037E
-                        A604 ; 037F
-                        A638 ; 0380
-                        A66C ; 0381
-                        A69B ; 0382
-                        A6CA ; 0383
-                        A6F9 ; 0384
-                        A723 ; 0385
-                        A74D ; 0386
-                        A777 ; 0387
-                        A7A6 ; 0388
-                        A7DA ; 0389
-                        A80E ; 038A
-                        A842 ; 038B
-                        A876 ; 038C
-                        AA18 ; 038D
-                        AA42 ; 038E
-                        AA6C ; 038F
-                        AAA0 ; 0390
-                        AAD4 ; 0391
-                        AB03 ; 0392
-                        AB32 ; 0393
-                        AB61 ; 0394
-                        AB8B ; 0395
-                        ABB5 ; 0396
-                        ABDF ; 0397
-                        AC0E ; 0398
-                        AC42 ; 0399
-                        AC76 ; 039A
-                        ACAA ; 039B
-                        ACDE ; 039C
-                        A5B0 ; 039D
-                        A5DA ; 039E
-                        A604 ; 039F
-                        A638 ; 03A0
-                        A66C ; 03A1
-                        A69B ; 03A2
-                        A6CA ; 03A3
-                        A6F9 ; 03A4
-                        A723 ; 03A5
-                        A74D ; 03A6
-                        A777 ; 03A7
-                        A7A6 ; 03A8
-                        A7DA ; 03A9
-                        A80E ; 03AA
-                        A842 ; 03AB
-                        A876 ; 03AC
-                        AA18 ; 03AD
-                        AA42 ; 03AE
-                        AA6C ; 03AF
-                        AAA0 ; 03B0
-                        AAD4 ; 03B1
-                        AB03 ; 03B2
-                        AB32 ; 03B3
-                        AB61 ; 03B4
-                        A723 ; 03B5
-                        A723 ; 03B6
-
-; Top half - 29: Facing right - falling
-                        9BAE ; 03B7
-                        9E63 ; 03B8
-                        9E83 ; 03B9
-                        0000 ; 03BA
-                        0000 ; 03BB
-                        9E63 ; 03BC
-                        9BAE ; 03BD
-
-; Top half - 2A: Facing left  - falling
-                        9BBF ; 03BE
-                        9E9E ; 03BF
-                        9EB9 ; 03C0
-                        0000 ; 03C1
-                        0000 ; 03C2
-                        9E9E ; 03C3
-                        9BBF ; 03C4
-
-; Top half - 67: Facing right - falling - gun extended
-                        977B ; 03C5
-                        977B ; 03C6
-                        977B ; 03C7
-                        0000 ; 03C8
-                        0000 ; 03C9
-                        977B ; 03CA
-                        977B ; 03CB
-
-; Top half - 68: Facing left  - falling - gun extended
-                        9796 ; 03CC
-                        9796 ; 03CD
-                        9796 ; 03CE
-                        0000 ; 03CF
-                        0000 ; 03D0
-                        9796 ; 03D1
-                        9796 ; 03D2
-
-; Top half - 2B: Facing right - falling - aiming up
-                        97B1 ; 03D3
-                        97FF ; 03D4
-                        97FF ; 03D5
-
-; Top half - 2C: Facing left  - falling - aiming up
-                        97C7 ; 03D6
-                        981A ; 03D7
-                        981A ; 03D8
-
-; Top half - 2D: Facing right - falling - aiming down
-                        9705 ; 03D9
-                        9B17 ; 03DA
-
-; Top half - 2E: Facing left  - falling - aiming down
-                        9725 ; 03DB
-                        9B2D ; 03DC
-
-; Top half - 6D: Facing right - falling - aiming up-right
-                        9857 ; 03DD
-                        9857 ; 03DE
-                        9857 ; 03DF
-
-; Top half - 6E: Facing left  - falling - aiming up-left
-                        9872 ; 03E0
-                        9872 ; 03E1
-                        9872 ; 03E2
-
-; Top half - 6F: Facing right - falling - aiming down-right
-                        9705 ; 03E3
-                        9705 ; 03E4
-                        9705 ; 03E5
-
-; Top half - 70: Facing left  - falling - aiming down-left
-                        9725 ; 03E6
-                        9725 ; 03E7
-                        9725 ; 03E8
-
-; Top half - 71: Facing right - crouching - aiming up-right
-                        97B1 ; 03E9
-
-; Top half - 72: Facing left  - crouching - aiming up-left
-                        97C7 ; 03EA
-
+; 0375. Top half - B3: Facing anticlockwise - grapple
+                        AB8B, ABB5, ABDF, AC0E, AC42, AC76, ACAA, ACDE, A5B0, A5DA, A604, A638, A66C, A69B, A6CA, A6F9, 
+                        A723, A74D, A777, A7A6, A7DA, A80E, A842, A876, AA18, AA42, AA6C, AAA0, AAD4, AB03, AB32, AB61, 
+                        AB8B, ABB5, ABDF, AC0E, AC42, AC76, ACAA, ACDE, A5B0, A5DA, A604, A638, A66C, A69B, A6CA, A6F9, 
+                        A723, A74D, A777, A7A6, A7DA, A80E, A842, A876, AA18, AA42, AA6C, AAA0, AAD4, AB03, AB32, AB61, 
+                        A723, A723, 
+                        
+; 03B7. Top half - 29: Facing right - falling
+                        9BAE, 9E63, 9E83, 0000, 0000, 9E63, 9BAE, 
+                        
+; 03BE. Top half - 2A: Facing left  - falling
+                        9BBF, 9E9E, 9EB9, 0000, 0000, 9E9E, 9BBF, 
+                        
+; 03C5. Top half - 67: Facing right - falling - gun extended
+                        977B, 977B, 977B, 0000, 0000, 977B, 977B, 
+                        
+; 03CC. Top half - 68: Facing left  - falling - gun extended
+                        9796, 9796, 9796, 0000, 0000, 9796, 9796, 
+                        
+; 03D3. Top half - 2B: Facing right - falling - aiming up
+                        97B1, 97FF, 97FF, 
+                        
+; 03D6. Top half - 2C: Facing left  - falling - aiming up
+                        97C7, 981A, 981A, 
+                        
+; 03D9. Top half - 2D: Facing right - falling - aiming down
+                        9705, 9B17, 
+                        
+; 03DB. Top half - 2E: Facing left  - falling - aiming down
+                        9725, 9B2D, 
+                        
+; 03DD. Top half - 6D: Facing right - falling - aiming up-right
+                        9857, 9857, 9857, 
+                        
+; 03E0. Top half - 6E: Facing left  - falling - aiming up-left
+                        9872, 9872, 9872, 
+                        
+; 03E3. Top half - 6F: Facing right - falling - aiming down-right
+                        9705, 9705, 9705, 
+                        
+; 03E6. Top half - 70: Facing left  - falling - aiming down-left
+                        9725, 9725, 9725, 
+                        
+; 03E9. Top half - 71: Facing right - crouching - aiming up-right
+                        97B1, 
+                        
+; 03EA. Top half - 72: Facing left  - crouching - aiming up-left
+                        97C7, 
+                        
 ; Top half - 73: Facing right - crouching - aiming down-right
-; Top half - B6: Unused
-                        9745 ; 03EB
-
+; 03EB. Top half - B6: Unused
+                        9745, 
+                        
 ; Top half - 74: Facing left  - crouching - aiming down-left
-; Top half - B7: Unused
-                        9760 ; 03EC
-
-; Top half - 85: Facing right - crouching - aiming up
-                        97B1 ; 03ED
-                        97FF ; 03EE
-
-; Top half - 86: Facing left  - crouching - aiming up
-                        97C7 ; 03EF
-                        981A ; 03F0
-
+; 03EC. Top half - B7: Unused
+                        9760, 
+                        
+; 03ED. Top half - 85: Facing right - crouching - aiming up
+                        97B1, 97FF, 
+                        
+; 03EF. Top half - 86: Facing left  - crouching - aiming up
+                        97C7, 981A, 
+                        
 ; Top half - 27: Facing right - crouching
-; Top half - B4: Unused
-                        A072 ; 03F1
-                        A088 ; 03F2
-                        A09E ; 03F3
-                        A088 ; 03F4
-                        0000 ; 03F5
-                        A072 ; 03F6
-                        A088 ; 03F7
-                        A0F6 ; 03F8
-                        A088 ; 03F9
-
+; 03F1. Top half - B4: Unused
+                        A072, A088, A09E, A088, 0000, A072, A088, A0F6, A088, 
+                        
 ; Top half - 28: Facing left  - crouching
-; Top half - B5: Unused
-                        A0B4 ; 03FA
-                        A0CA ; 03FB
-                        A0E0 ; 03FC
-                        A0CA ; 03FD
-                        0000 ; 03FE
-                        A0B4 ; 03FF
-                        A0CA ; 0400
-                        A111 ; 0401
-                        A0CA ; 0402
-
+; 03FA. Top half - B5: Unused
+                        A0B4, A0CA, A0E0, A0CA, 0000, A0B4, A0CA, A111, A0CA, 
+                        
 ; Top half - 35: Facing right - crouching transition
-; Top half - 3B: Facing right - standing transition
-                        977B ; 0403
-
+; 0403. Top half - 3B: Facing right - standing transition
+                        977B, 
+                        
 ; Top half - 36: Facing left  - crouching transition
-; Top half - 3C: Facing left  - standing transition
-                        9796 ; 0404
-
+; 0404. Top half - 3C: Facing left  - standing transition
+                        9796, 
+                        
 ; Bottom half - 37: Facing right - morphing transition
-; Top half - 37: Facing right - morphing transition
-                        BCDD ; 0405
-                        BCCC ; 0406
-
+; 0405. Top half - 37: Facing right - morphing transition
+                        BCDD, BCCC, 
+                        
 ; Bottom half - 38: Facing left  - morphing transition
-; Top half - 38: Facing left  - morphing transition
-                        BCB1 ; 0407
-                        BCA0 ; 0408
-
+; 0407. Top half - 38: Facing left  - morphing transition
+                        BCB1, BCA0, 
+                        
 ; Bottom half - 3D: Facing right - unmorphing transition
-; Top half - 3D: Facing right - unmorphing transition
-                        BCCC ; 0409
-                        BCDD ; 040A
-
+; 0409. Top half - 3D: Facing right - unmorphing transition
+                        BCCC, BCDD, 
+                        
 ; Bottom half - 3E: Facing left  - unmorphing transition
-; Top half - 3E: Facing left  - unmorphing transition
-                        BCA0 ; 040B
-                        BCB1 ; 040C
-
-; Top half - DB: Unused
-                        977B ; 040D
-                        BCDD ; 040E
-                        BCCC ; 040F
-
-; Top half - DC: Unused
-                        9796 ; 0410
-                        BCB1 ; 0411
-                        BCA0 ; 0412
-
-; Top half - DD: Unused
-                        BCCC ; 0413
-                        BCDD ; 0414
-                        977B ; 0415
-
-; Top half - DE: Unused
-                        BCA0 ; 0416
-                        BCB1 ; 0417
-                        9796 ; 0418
-
+; 040B. Top half - 3E: Facing left  - unmorphing transition
+                        BCA0, BCB1, 
+                        
+; 040D. Top half - DB: Unused
+                        977B, BCDD, BCCC, 
+                        
+; 0410. Top half - DC: Unused
+                        9796, BCB1, BCA0, 
+                        
+; 0413. Top half - DD: Unused
+                        BCCC, BCDD, 977B, 
+                        
+; 0416. Top half - DE: Unused
+                        BCA0, BCB1, 9796, 
+                        
 ; Top half - 25: Facing right - turning - standing
 ; Top half - 2F: Facing right - turning - jumping
 ; Top half - 43: Facing right - turning - crouching
 ; Top half - 87: Facing right - turning - falling
 ; Top half - BF: Facing right - moonwalking - turn/jump left
-; Top half - C6: Unused
-                        9998 ; 0419
-                        99E9 ; 041A
-                        9982 ; 041B
-
+; 0419. Top half - C6: Unused
+                        9998, 99E9, 9982, 
+                        
 ; Top half - 26: Facing left  - turning - standing
 ; Top half - 30: Facing left  - turning - jumping
 ; Top half - 44: Facing left  - turning - crouching
 ; Top half - 88: Facing left  - turning - falling
-; Top half - C0: Facing left  - moonwalking - turn/jump right
-                        9982 ; 041C
-                        99E9 ; 041D
-                        9998 ; 041E
-
+; 041C. Top half - C0: Facing left  - moonwalking - turn/jump right
+                        9982, 99E9, 9998, 
+                        
 ; Top half - 8B: Facing right - turning - standing - aiming up
 ; Top half - 8F: Facing right - turning - in air - aiming up
 ; Top half - 93: Facing right - turning - falling - aiming up
@@ -1434,11 +527,9 @@ $92:808D             dw 90ED ; 0000
 ; Top half - 9E: Facing right - turning - in air - aiming up-right
 ; Top half - A0: Facing right - turning - falling - aiming up-right
 ; Top half - A2: Facing right - turning - crouching - aiming up-right
-; Top half - C1: Facing right - moonwalking - turn/jump left  - aiming up-right
-                        99CE ; 041F
-                        993E ; 0420
-                        99AE ; 0421
-
+; 041F. Top half - C1: Facing right - moonwalking - turn/jump left  - aiming up-right
+                        99CE, 993E, 99AE, 
+                        
 ; Top half - 8C: Facing left  - turning - standing - aiming up
 ; Top half - 90: Facing left  - turning - in air - aiming up
 ; Top half - 94: Facing left  - turning - falling - aiming up
@@ -1447,857 +538,360 @@ $92:808D             dw 90ED ; 0000
 ; Top half - 9F: Facing left  - turning - in air - aiming up-left
 ; Top half - A1: Facing left  - turning - falling - aiming up-left
 ; Top half - A3: Facing left  - turning - crouching - aiming up-left
-; Top half - C2: Facing left  - moonwalking - turn/jump right - aiming up-left
-                        99AE ; 0422
-                        993E ; 0423
-                        99CE ; 0424
-
+; 0422. Top half - C2: Facing left  - moonwalking - turn/jump right - aiming up-left
+                        99AE, 993E, 99CE, 
+                        
 ; Top half - 8D: Facing right - turning - standing - aiming down-right
 ; Top half - 91: Facing right - turning - in air - aiming down/down-right
 ; Top half - 95: Facing right - turning - falling - aiming down/down-right
 ; Top half - 99: Facing right - turning - crouching - aiming down/down-right
-; Top half - C3: Facing right - moonwalking - turn/jump left  - aiming down-right
-                        9AF7 ; 0425
-                        9954 ; 0426
-                        9AD7 ; 0427
-
+; 0425. Top half - C3: Facing right - moonwalking - turn/jump left  - aiming down-right
+                        9AF7, 9954, 9AD7, 
+                        
 ; Top half - 8E: Facing left  - turning - standing - aiming down-left
 ; Top half - 92: Facing left  - turning - in air - aiming down/down-left
 ; Top half - 96: Facing left  - turning - falling - aiming down/down-left
 ; Top half - 9A: Facing left  - turning - crouching - aiming down/down-left
-; Top half - C4: Facing left  - moonwalking - turn/jump right - aiming down-left
-                        9AD7 ; 0428
-                        9954 ; 0429
-                        9AF7 ; 042A
+; 0428. Top half - C4: Facing left  - moonwalking - turn/jump right - aiming down-left
+                        9AD7, 9954, 9AF7, 
+                        
+; 042B. Top half - EC: Facing right - grabbed by Draygon - not moving - not aiming
+                        9BAE, 
+                        
+; 042C. Top half - ED: Facing right - grabbed by Draygon - not moving - aiming up-right
+                        9857, 
+                        
+; 042D. Top half - EE: Facing right - grabbed by Draygon - firing
+                        977B, 
+                        
+; 042E. Top half - EF: Facing right - grabbed by Draygon - not moving - aiming down-right
+                        9705,
 
-; Top half - EC: Facing right - grabbed by Draygon - not moving - not aiming
-                        9BAE ; 042B
+; 042F. Top half - BA: Facing left  - grabbed by Draygon - not moving - not aiming
+                        9BBF,
 
-; Top half - ED: Facing right - grabbed by Draygon - not moving - aiming up-right
-                        9857 ; 042C
+; 0430. Top half - BB: Facing left  - grabbed by Draygon - not moving - aiming up-left
+                        9872,
 
-; Top half - EE: Facing right - grabbed by Draygon - firing
-                        977B ; 042D
+; 0431. Top half - BC: Facing left  - grabbed by Draygon - firing
+                        9796,
 
-; Top half - EF: Facing right - grabbed by Draygon - not moving - aiming down-right
-                        9705 ; 042E
+; 0432. Top half - BD: Facing left  - grabbed by Draygon - not moving - aiming down-left
+                        9725,
 
-; Top half - BA: Facing left  - grabbed by Draygon - not moving - not aiming
-                        9BBF ; 042F
-
-; Top half - BB: Facing left  - grabbed by Draygon - not moving - aiming up-left
-                        9872 ; 0430
-
-; Top half - BC: Facing left  - grabbed by Draygon - firing
-                        9796 ; 0431
-
-; Top half - BD: Facing left  - grabbed by Draygon - not moving - aiming down-left
-                        9725 ; 0432
-
-; Top half - F0: Facing right - grabbed by Draygon - moving
-                        9663 ; 0433
-                        966F ; 0434
-                        9657 ; 0435
-                        9691 ; 0436
-                        969D ; 0437
-                        9657 ; 0438
-
-; Top half - BE: Facing left  - grabbed by Draygon - moving
-                        96BA ; 0439
-                        96C6 ; 043A
-                        96AE ; 043B
-                        96E8 ; 043C
-                        96F4 ; 043D
-                        96AE ; 043E
-
-; Top half - C9: Facing right - shinespark - horizontal
-                        9A93 ; 043F
-
-; Top half - CA: Facing left  - shinespark - horizontal
-                        9AAE ; 0440
-
-; Top half - CD: Facing right - shinespark - diagonal
-                        9A93 ; 0441
-
-; Top half - CE: Facing left  - shinespark - diagonal
-                        9AAE ; 0442
-
-; Top half - D3: Facing right - crystal flash
-                        BCCC ; 0443
-                        BCDD ; 0444
-                        C207 ; 0445
-                        BCDD ; 0446
-                        0000 ; 0447
-                        0000 ; 0448
-                        C207 ; 0449
-                        C22C ; 044A
-                        C251 ; 044B
-                        C22C ; 044C
-                        0000 ; 044D
-                        0000 ; 044E
-                        BCDD ; 044F
-                        BCDD ; 0450
-                        977B ; 0451
-
-; Top half - D4: Facing left  - crystal flash
-                        BCA0 ; 0452
-                        BCB1 ; 0453
-                        C198 ; 0454
-                        BCB1 ; 0455
-                        0000 ; 0456
-                        0000 ; 0457
-                        C198 ; 0458
-                        C1BD ; 0459
-                        C1E2 ; 045A
-                        C1BD ; 045B
-                        0000 ; 045C
-                        0000 ; 045D
-                        BCB1 ; 045E
-                        BCB1 ; 045F
-                        9796 ; 0460
-
-; Top half - D7: Facing right - crystal flash ending
-                        BAB3 ; 0461
-                        BCCC ; 0462
-                        BCDD ; 0463
-                        977B ; 0464
-                        98AD ; 0465
-                        98AD ; 0466
-
-; Top half - D8: Facing left  - crystal flash ending
-                        BB16 ; 0467
-                        BCA0 ; 0468
-                        BCB1 ; 0469
-                        9796 ; 046A
-                        9892 ; 046B
-                        9892 ; 046C
-
-; Top half - E8: Facing right - Samus drained - crouching
-                        BAB3 ; 046D
-                        BCCC ; 046E
-                        BCDD ; 046F
-                        98AD ; 0470
-                        98AD ; 0471
-                        98AD ; 0472
-                        98AD ; 0473
-                        98AD ; 0474
-                        9F34 ; 0475
-                        9F59 ; 0476
-                        9F7E ; 0477
-                        9F59 ; 0478
-                        0000 ; 0479
-                        0000 ; 047A
-                        977B ; 047B
-
-; Top half - E9: Facing left  - Samus drained - crouching
-                        BCA0 ; 047C
-                        BCB1 ; 047D
-                        9892 ; 047E
-                        9892 ; 047F
-                        9892 ; 0480
-                        9892 ; 0481
-                        9892 ; 0482
-                        9EF4 ; 0483
-                        9ED4 ; 0484
-                        9EF4 ; 0485
-                        9F14 ; 0486
-                        9EF4 ; 0487
-                        0000 ; 0488
-                        0000 ; 0489
-                        9EF4 ; 048A
-                        9FC3 ; 048B
-                        9BA2 ; 048C
-                        0000 ; 048D
-                        0000 ; 048E
-                        9EF4 ; 048F
-                        9FC3 ; 0490
-                        9BA2 ; 0491
-                        9FC3 ; 0492
-                        9EF4 ; 0493
-                        0000 ; 0494
-                        0000 ; 0495
-                        9ED4 ; 0496
-                        0000 ; 0497
-                        0000 ; 0498
-                        9ED4 ; 0499
-                        0000 ; 049A
-                        0000 ; 049B
-
-; Top half - EA: Facing right - Samus drained - standing
-                        A003 ; 049C
-                        A028 ; 049D
-                        A04D ; 049E
-                        A028 ; 049F
-                        0000 ; 04A0
-                        977B ; 04A1
-
-; Top half - EB: Facing left  - Samus drained - standing
-                        9FA3 ; 04A2
-                        9FC3 ; 04A3
-                        9FE3 ; 04A4
-                        9FC3 ; 04A5
-                        0000 ; 04A6
-                        9796 ; 04A7
-                        AD3C ; 04A8
-                        AD3C ; 04A9
-
+; 0433. Top half - F0: Facing right - grabbed by Draygon - moving
+                        9663, 966F, 9657, 9691, 969D, 9657, 
+                        
+; 0439. Top half - BE: Facing left  - grabbed by Draygon - moving
+                        96BA, 96C6, 96AE, 96E8, 96F4, 96AE, 
+                        
+; 043F. Top half - C9: Facing right - shinespark - horizontal
+                        9A93, 
+                        
+; 0440. Top half - CA: Facing left  - shinespark - horizontal
+                        9AAE, 
+                        
+; 0441. Top half - CD: Facing right - shinespark - diagonal
+                        9A93, 
+                        
+; 0442. Top half - CE: Facing left  - shinespark - diagonal
+                        9AAE, 
+                        
+; 0443. Top half - D3: Facing right - crystal flash
+                        BCCC, BCDD, C207, BCDD, 0000, 0000, C207, C22C, C251, C22C, 0000, 0000, BCDD, BCDD, 977B, 
+                        
+; 0452. Top half - D4: Facing left  - crystal flash
+                        BCA0, BCB1, C198, BCB1, 0000, 0000, C198, C1BD, C1E2, C1BD, 0000, 0000, BCB1, BCB1, 9796, 
+                        
+; 0461. Top half - D7: Facing right - crystal flash ending
+                        BAB3, BCCC, BCDD, 977B, 98AD, 98AD, 
+                        
+; 0467. Top half - D8: Facing left  - crystal flash ending
+                        BB16, BCA0, BCB1, 9796, 9892, 9892, 
+                        
+; 046D. Top half - E8: Facing right - Samus drained - crouching
+                        BAB3, BCCC, BCDD, 98AD, 98AD, 98AD, 98AD, 98AD, 9F34, 9F59, 9F7E, 9F59, 0000, 0000, 977B, 
+                        
+; 047C. Top half - E9: Facing left  - Samus drained - crouching
+                        BCA0, BCB1, 9892, 9892, 9892, 9892, 9892, 9EF4, 9ED4, 9EF4, 9F14, 9EF4, 0000, 0000, 9EF4, 9FC3, 
+                        9BA2, 0000, 0000, 9EF4, 9FC3, 9BA2, 9FC3, 9EF4, 0000, 0000, 9ED4, 0000, 0000, 9ED4, 0000, 0000, 
+                        
+; 049C. Top half - EA: Facing right - Samus drained - standing
+                        A003, A028, A04D, A028, 0000, 977B, 
+                        
+; 04A2. Top half - EB: Facing left  - Samus drained - standing
+                        9FA3, 9FC3, 9FE3, 9FC3, 0000, 9796, AD3C, AD3C, 
+                        
 ; Bottom half - 01: Facing right - normal
 ; Bottom half - 47: Unused
 ; Bottom half - 89: Facing right - ran into a wall
-; Bottom half - A8: Unused
-                        ADBB ; 04AA
-                        AE98 ; 04AB
-                        AEA9 ; 04AC
-                        AE98 ; 04AD
-                        0000 ; 04AE
-                        ADBB ; 04AF
-                        AE98 ; 04B0
-                        AEA9 ; 04B1
-                        AE98 ; 04B2
-
+; 04AA. Bottom half - A8: Unused
+                        ADBB, AE98, AEA9, AE98, 0000, ADBB, AE98, AEA9, AE98, 
+                        
 ; Bottom half - 02: Facing left  - normal
 ; Bottom half - 48: Unused
 ; Bottom half - 8A: Facing left  - ran into a wall
-; Bottom half - A9: Unused
-                        B340 ; 04B3
-                        AEBA ; 04B4
-                        AFA1 ; 04B5
-                        AEBA ; 04B6
-                        0000 ; 04B7
-                        B340 ; 04B8
-                        AEBA ; 04B9
-                        AFA1 ; 04BA
-                        AEBA ; 04BB
-                        ADBB ; 04BC
-                        ADBB ; 04BD
-                        B340 ; 04BE
-                        B340 ; 04BF
-
+; 04B3. Bottom half - A9: Unused
+                        B340, AEBA, AFA1, AEBA, 0000, B340, AEBA, AFA1, AEBA, ADBB, ADBB, B340, B340, 
+                        
 ; Bottom half - 03: Facing right - aiming up
 ; Bottom half - 05: Facing right - aiming up-right
 ; Bottom half - 07: Facing right - aiming down-right
 ; Bottom half - AA: Unused
 ; Bottom half - CF: Facing right - ran into a wall - aiming up-right
-; Bottom half - D1: Facing right - ran into a wall - aiming down-right
-                        B295 ; 04C0
-                        B295 ; 04C1
-
+; 04C0. Bottom half - D1: Facing right - ran into a wall - aiming down-right
+                        B295, B295, 
+                        
 ; Bottom half - 04: Facing left  - aiming up
 ; Bottom half - 06: Facing left  - aiming up-left
 ; Bottom half - 08: Facing left  - aiming down-left
 ; Bottom half - AB: Unused
 ; Bottom half - D0: Facing left  - ran into a wall - aiming up-left
-; Bottom half - D2: Facing left  - ran into a wall - aiming down-left
-                        B2AB ; 04C2
-                        B2AB ; 04C3
-                        AD3C ; 04C4
-
+; 04C2. Bottom half - D2: Facing left  - ran into a wall - aiming down-left
+                        B2AB, B2AB, AD3C, 
+                        
 ; Bottom half - A4: Facing right - landing from normal jump
 ; Bottom half - E0: Facing right - landing from normal jump - aiming up
 ; Bottom half - E2: Facing right - landing from normal jump - aiming up-right
 ; Bottom half - E4: Facing right - landing from normal jump - aiming down-right
-; Bottom half - E6: Facing right - landing from normal jump - firing
-                        B021 ; 04C5
-                        ADBB ; 04C6
-
+; 04C5. Bottom half - E6: Facing right - landing from normal jump - firing
+                        B021, ADBB, 
+                        
 ; Bottom half - A5: Facing left  - landing from normal jump
 ; Bottom half - E1: Facing left  - landing from normal jump - aiming up
 ; Bottom half - E3: Facing left  - landing from normal jump - aiming up-left
 ; Bottom half - E5: Facing left  - landing from normal jump - aiming down-left
-; Bottom half - E7: Facing left  - landing from normal jump - firing
-                        B037 ; 04C7
-                        B340 ; 04C8
-
-; Bottom half - A6: Facing right - landing from spin jump
-                        B1C8 ; 04C9
-                        B021 ; 04CA
-                        ADBB ; 04CB
-
-; Bottom half - A7: Facing left  - landing from spin jump
-                        B1E3 ; 04CC
-                        B037 ; 04CD
-                        B340 ; 04CE
-
-; Bottom half - D5: Facing right - x-ray - standing
-                        ADBB ; 04CF
-                        ADBB ; 04D0
-                        ADBB ; 04D1
-                        ADBB ; 04D2
-                        ADBB ; 04D3
-
-; Bottom half - D6: Facing left  - x-ray - standing
-                        B340 ; 04D4
-                        B340 ; 04D5
-                        B340 ; 04D6
-                        B340 ; 04D7
-                        B340 ; 04D8
-
-; Bottom half - D9: Facing right - x-ray - crouching
-                        B351 ; 04D9
-                        B351 ; 04DA
-                        B351 ; 04DB
-                        B351 ; 04DC
-                        B351 ; 04DD
-
-; Bottom half - DA: Facing left  - x-ray - crouching
-                        ADCC ; 04DE
-                        ADCC ; 04DF
-                        ADCC ; 04E0
-                        ADCC ; 04E1
-                        ADCC ; 04E2
-
+; 04C7. Bottom half - E7: Facing left  - landing from normal jump - firing
+                        B037, B340, 
+                        
+; 04C9. Bottom half - A6: Facing right - landing from spin jump
+                        B1C8, B021, ADBB, 
+                        
+; 04CC. Bottom half - A7: Facing left  - landing from spin jump
+                        B1E3, B037, B340, 
+                        
+; 04CF. Bottom half - D5: Facing right - x-ray - standing
+                        ADBB, ADBB, ADBB, ADBB, ADBB, 
+                        
+; 04D4. Bottom half - D6: Facing left  - x-ray - standing
+                        B340, B340, B340, B340, B340, 
+                        
+; 04D9. Bottom half - D9: Facing right - x-ray - crouching
+                        B351, B351, B351, B351, B351, 
+                        
+; 04DE. Bottom half - DA: Facing left  - x-ray - crouching
+                        ADCC, ADCC, ADCC, ADCC, ADCC, 
+                        
 ; Bottom half - 09: Moving right - not aiming
 ; Bottom half - 0B: Moving right - gun extended
 ; Bottom half - 0D: Moving right - aiming up (unused)
 ; Bottom half - 0F: Moving right - aiming up-right
 ; Bottom half - 11: Moving right - aiming down-right
-; Bottom half - 45: Unused
-                        AD3C ; 04E3
-                        ADD8 ; 04E4
-                        AD48 ; 04E5
-                        ADEE ; 04E6
-                        AD63 ; 04E7
-                        AD79 ; 04E8
-                        AE0E ; 04E9
-                        AD85 ; 04EA
-                        AE24 ; 04EB
-                        ADA5 ; 04EC
-
+; 04E3. Bottom half - 45: Unused
+                        AD3C, ADD8, AD48, ADEE, AD63, AD79, AE0E, AD85, AE24, ADA5, 
+                        
 ; Bottom half - 0A: Moving left  - not aiming
 ; Bottom half - 0C: Moving left  - gun extended
 ; Bottom half - 0E: Moving left  - aiming up (unused)
 ; Bottom half - 10: Moving left  - aiming up-left
 ; Bottom half - 12: Moving left  - aiming down-left
-; Bottom half - 46: Unused
-                        B2C1 ; 04ED
-                        B35D ; 04EE
-                        B2CD ; 04EF
-                        B373 ; 04F0
-                        B2E8 ; 04F1
-                        B2FE ; 04F2
-                        B393 ; 04F3
-                        B30A ; 04F4
-                        B3A9 ; 04F5
-                        B32A ; 04F6
-
+; 04ED. Bottom half - 46: Unused
+                        B2C1, B35D, B2CD, B373, B2E8, B2FE, B393, B30A, B3A9, B32A, 
+                        
 ; Bottom half - 49: Facing left  - moonwalk
 ; Bottom half - 75: Facing left  - moonwalk - aiming up-left
-; Bottom half - 77: Facing left  - moonwalk - aiming down-left
-                        B3ED ; 04F7
-                        B403 ; 04F8
-                        B184 ; 04F9
-                        B3C9 ; 04FA
-                        B40F ; 04FB
-                        B195 ; 04FC
-
+; 04F7. Bottom half - 77: Facing left  - moonwalk - aiming down-left
+                        B3ED, B403, B184, B3C9, B40F, B195, 
+                        
 ; Bottom half - 4A: Facing right - moonwalk
 ; Bottom half - 76: Facing right - moonwalk - aiming up-right
-; Bottom half - 78: Facing right - moonwalk - aiming down-right
-                        AFF3 ; 04FD
-                        B009 ; 04FE
-                        B1A6 ; 04FF
-                        AFCA ; 0500
-                        B015 ; 0501
-                        B1B7 ; 0502
-
+; 04FD. Bottom half - 78: Facing right - moonwalk - aiming down-right
+                        AFF3, B009, B1A6, AFCA, B015, B1B7, 
+                        
 ; Bottom half - 17: Facing right - normal jump - aiming down
-; Bottom half - AE: Unused
-                        B08D ; 0503
-                        B104 ; 0504
-
+; 0503. Bottom half - AE: Unused
+                        B08D, B104, 
+                        
 ; Bottom half - 18: Facing left  - normal jump - aiming down
-; Bottom half - AF: Unused
-                        B09E ; 0505
-                        B124 ; 0506
-
+; 0505. Bottom half - AF: Unused
+                        B09E, B124, 
+                        
 ; Bottom half - 13: Facing right - normal jump - not aiming - not moving - gun extended
-; Bottom half - AC: Unused
-                        B08D ; 0507
-                        B1C8 ; 0508
-
+; 0507. Bottom half - AC: Unused
+                        B08D, B1C8, 
+                        
 ; Bottom half - 14: Facing left  - normal jump - not aiming - not moving - gun extended
-; Bottom half - AD: Unused
-                        B09E ; 0509
-                        B1E3 ; 050A
-
-; Bottom half - 15: Facing right - normal jump - aiming up
-                        B08D ; 050B
-                        AEF7 ; 050C
-
-; Bottom half - 16: Facing left  - normal jump - aiming up
-                        B09E ; 050D
-                        AF08 ; 050E
-
-; Bottom half - 51: Facing right - normal jump - not aiming - moving forward
-                        B08D ; 050F
-                        B1C8 ; 0510
-
-; Bottom half - 52: Facing left  - normal jump - not aiming - moving forward
-                        B09E ; 0511
-                        B1E3 ; 0512
-
-; Bottom half - 69: Facing right - normal jump - aiming up-right
-                        B08D ; 0513
-                        AEF7 ; 0514
-
-; Bottom half - 6A: Facing left  - normal jump - aiming up-left
-                        B09E ; 0515
-                        AF08 ; 0516
-
+; 0509. Bottom half - AD: Unused
+                        B09E, B1E3, 
+                        
+; 050B. Bottom half - 15: Facing right - normal jump - aiming up
+                        B08D, AEF7, 
+                        
+; 050D. Bottom half - 16: Facing left  - normal jump - aiming up
+                        B09E, AF08, 
+                        
+; 050F. Bottom half - 51: Facing right - normal jump - not aiming - moving forward
+                        B08D, B1C8, 
+                        
+; 0511. Bottom half - 52: Facing left  - normal jump - not aiming - moving forward
+                        B09E, B1E3, 
+                        
+; 0513. Bottom half - 69: Facing right - normal jump - aiming up-right
+                        B08D, AEF7, 
+                        
+; 0515. Bottom half - 6A: Facing left  - normal jump - aiming up-left
+                        B09E, AF08, 
+                        
 ; Bottom half - 6B: Facing right - normal jump - aiming down-right
-; Bottom half - B0: Unused
-                        B08D ; 0517
-                        B1C8 ; 0518
-
+; 0517. Bottom half - B0: Unused
+                        B08D, B1C8, 
+                        
 ; Bottom half - 6C: Facing left  - normal jump - aiming down-left
-; Bottom half - B1: Unused
-                        B09E ; 0519
-                        B1E3 ; 051A
-
+; 0519. Bottom half - B1: Unused
+                        B09E, B1E3, 
+                        
 ; Bottom half - 4B: Facing right - normal jump transition
 ; Bottom half - 55: Facing right - normal jump transition - aiming up
 ; Bottom half - 57: Facing right - normal jump transition - aiming up-right
-; Bottom half - 59: Facing right - normal jump transition - aiming down-right
-                        B021 ; 051B
-
+; 051B. Bottom half - 59: Facing right - normal jump transition - aiming down-right
+                        B021, 
+                        
 ; Bottom half - 4C: Facing left  - normal jump transition
 ; Bottom half - 56: Facing left  - normal jump transition - aiming up
 ; Bottom half - 58: Facing left  - normal jump transition - aiming up-left
-; Bottom half - 5A: Facing left  - normal jump transition - aiming down-left
-                        B037 ; 051C
-
+; 051C. Bottom half - 5A: Facing left  - normal jump transition - aiming down-left
+                        B037, 
+                        
 ; Bottom half - 4D: Facing right - normal jump - not aiming - not moving - gun not extended
-; Bottom half - C7: Facing right - vertical shinespark windup
-                        AD79 ; 051D
-                        B0C7 ; 051E
-                        B04D ; 051F
-                        B04D ; 0520
-                        B08D ; 0521
-                        B0AF ; 0522
-
+; 051D. Bottom half - C7: Facing right - vertical shinespark windup
+                        AD79, B0C7, B04D, B04D, B08D, B0AF, 
+                        
 ; Bottom half - 4E: Facing left  - normal jump - not aiming - not moving - gun not extended
-; Bottom half - C8: Facing left  - vertical shinespark windup
-                        B2FE ; 0523
-                        B0E2 ; 0524
-                        B06D ; 0525
-                        B06D ; 0526
-                        B09E ; 0527
-                        B0BB ; 0528
-
-; Bottom half - 4F: Facing left  - damage boost
-                        AECB ; 0529
-                        B09E ; 052A
-                        0000 ; 052B
-                        0000 ; 052C
-                        0000 ; 052D
-                        0000 ; 052E
-                        0000 ; 052F
-                        0000 ; 0530
-                        0000 ; 0531
-                        B1E3 ; 0532
-
-; Bottom half - 50: Facing right - damage boost
-                        AEE1 ; 0533
-                        B08D ; 0534
-                        0000 ; 0535
-                        0000 ; 0536
-                        0000 ; 0537
-                        0000 ; 0538
-                        0000 ; 0539
-                        0000 ; 053A
-                        0000 ; 053B
-                        B1C8 ; 053C
-
-; Bottom half - 63: Unused
-                        B184 ; 053D
-                        AF69 ; 053E
-
-; Bottom half - 64: Unused
-                        B195 ; 053F
-                        AF5D ; 0540
-
-; Bottom half - 65: Unused
-                        B144 ; 0541
-                        BB22 ; 0542
-                        BB2E ; 0543
-                        BB44 ; 0544
-                        BB50 ; 0545
-                        BB66 ; 0546
-                        BB72 ; 0547
-                        BB88 ; 0548
-                        BB94 ; 0549
-
-; Bottom half - 66: Unused
-                        B169 ; 054A
-                        BD67 ; 054B
-                        BD73 ; 054C
-                        BD89 ; 054D
-                        BD95 ; 054E
-                        BDAB ; 054F
-                        BDB7 ; 0550
-                        BDCD ; 0551
-                        BDD9 ; 0552
-
-; Bottom half - 83: Facing right - wall jump
-                        B144 ; 0553
-                        B1C8 ; 0554
-                        0000 ; 0555
-                        0000 ; 0556
-                        0000 ; 0557
-                        0000 ; 0558
-                        0000 ; 0559
-                        0000 ; 055A
-                        0000 ; 055B
-                        0000 ; 055C
-                        0000 ; 055D
-                        0000 ; 055E
-                        0000 ; 055F
-                        C458 ; 0560
-                        C46E ; 0561
-                        C4A2 ; 0562
-                        C4B8 ; 0563
-                        C4EC ; 0564
-                        C502 ; 0565
-                        C536 ; 0566
-                        C54C ; 0567
-                        0000 ; 0568
-                        0000 ; 0569
-                        C458 ; 056A
-                        C46E ; 056B
-                        C4A2 ; 056C
-                        C4B8 ; 056D
-                        C4EC ; 056E
-                        C502 ; 056F
-                        C536 ; 0570
-                        C54C ; 0571
-                        C458 ; 0572
-                        C46E ; 0573
-                        C4A2 ; 0574
-                        C4B8 ; 0575
-                        C4EC ; 0576
-                        C502 ; 0577
-                        C536 ; 0578
-                        C54C ; 0579
-                        C458 ; 057A
-                        C46E ; 057B
-                        C4A2 ; 057C
-                        C4B8 ; 057D
-                        C4EC ; 057E
-                        C502 ; 057F
-                        C536 ; 0580
-                        C54C ; 0581
-
-; Bottom half - 84: Facing left  - wall jump
-                        B169 ; 0582
-                        B1E3 ; 0583
-                        0000 ; 0584
-                        0000 ; 0585
-                        0000 ; 0586
-                        0000 ; 0587
-                        0000 ; 0588
-                        0000 ; 0589
-                        0000 ; 058A
-                        0000 ; 058B
-                        0000 ; 058C
-                        0000 ; 058D
-                        0000 ; 058E
-                        C330 ; 058F
-                        C346 ; 0590
-                        C37A ; 0591
-                        C390 ; 0592
-                        C3C4 ; 0593
-                        C3DA ; 0594
-                        C40E ; 0595
-                        C424 ; 0596
-                        0000 ; 0597
-                        0000 ; 0598
-                        C330 ; 0599
-                        C346 ; 059A
-                        C37A ; 059B
-                        C390 ; 059C
-                        C3C4 ; 059D
-                        C3DA ; 059E
-                        C40E ; 059F
-                        C424 ; 05A0
-                        C330 ; 05A1
-                        C346 ; 05A2
-                        C37A ; 05A3
-                        C390 ; 05A4
-                        C3C4 ; 05A5
-                        C3DA ; 05A6
-                        C40E ; 05A7
-                        C424 ; 05A8
-                        C330 ; 05A9
-                        C346 ; 05AA
-                        C37A ; 05AB
-                        C390 ; 05AC
-                        C3C4 ; 05AD
-                        C3DA ; 05AE
-                        C40E ; 05AF
-                        C424 ; 05B0
-
-; Bottom half - 53: Facing right - knockback
-                        B0AF ; 05B1
-                        B1FE ; 05B2
-
-; Bottom half - 54: Facing left  - knockback
-                        B0BB ; 05B3
-                        B214 ; 05B4
-
+; 0523. Bottom half - C8: Facing left  - vertical shinespark windup
+                        B2FE, B0E2, B06D, B06D, B09E, B0BB, 
+                        
+; 0529. Bottom half - 4F: Facing left  - damage boost
+                        AECB, B09E, 0000, 0000, 0000, 0000, 0000, 0000, 0000, B1E3, 
+                        
+; 0533. Bottom half - 50: Facing right - damage boost
+                        AEE1, B08D, 0000, 0000, 0000, 0000, 0000, 0000, 0000, B1C8, 
+                        
+; 053D. Bottom half - 63: Unused
+                        B184, AF69, 
+                        
+; 053F. Bottom half - 64: Unused
+                        B195, AF5D, 
+                        
+; 0541. Bottom half - 65: Unused
+                        B144, BB22, BB2E, BB44, BB50, BB66, BB72, BB88, BB94, 
+                        
+; 054A. Bottom half - 66: Unused
+                        B169, BD67, BD73, BD89, BD95, BDAB, BDB7, BDCD, BDD9, 
+                        
+; 0553. Bottom half - 83: Facing right - wall jump
+                        B144, B1C8, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, C458, C46E, C4A2, 
+                        C4B8, C4EC, C502, C536, C54C, 0000, 0000, C458, C46E, C4A2, C4B8, C4EC, C502, C536, C54C, C458, 
+                        C46E, C4A2, C4B8, C4EC, C502, C536, C54C, C458, C46E, C4A2, C4B8, C4EC, C502, C536, C54C, 
+                        
+; 0582. Bottom half - 84: Facing left  - wall jump
+                        B169, B1E3, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, C330, C346, C37A, 
+                        C390, C3C4, C3DA, C40E, C424, 0000, 0000, C330, C346, C37A, C390, C3C4, C3DA, C40E, C424, C330, 
+                        C346, C37A, C390, C3C4, C3DA, C40E, C424, C330, C346, C37A, C390, C3C4, C3DA, C40E, C424, 
+                        
+; 05B1. Bottom half - 53: Facing right - knockback
+                        B0AF, B1FE, 
+                        
+; 05B3. Bottom half - 54: Facing left  - knockback
+                        B0BB, B214, 
+                        
 ; Bottom half - 5B: Unused
-; Bottom half - B8: Facing left  - grapple wall jump pose
-                        AF69 ; 05B5
-
+; 05B5. Bottom half - B8: Facing left  - grapple wall jump pose
+                        AF69, 
+                        
 ; Bottom half - 5C: Unused
-; Bottom half - B9: Facing right - grapple wall jump pose
-                        AF5D ; 05B6
-
+; 05B6. Bottom half - B9: Facing right - grapple wall jump pose
+                        AF5D, 
+                        
 ; Bottom half - 5D: Unused
 ; Bottom half - 5E: Unused
 ; Bottom half - 5F: Unused
 ; Bottom half - 60: Unused
 ; Bottom half - 61: Unused
-; Bottom half - B2: Facing clockwise     - grapple
-                        B63F ; 05B7
-                        B624 ; 05B8
-                        B60E ; 05B9
-                        B5FD ; 05BA
-                        B5FD ; 05BB
-                        B5DD ; 05BC
-                        B5DD ; 05BD
-                        B5CC ; 05BE
-                        B5CC ; 05BF
-                        B5CC ; 05C0
-                        B4E6 ; 05C1
-                        B4E6 ; 05C2
-                        B4D0 ; 05C3
-                        B4D0 ; 05C4
-                        B4BA ; 05C5
-                        B4A9 ; 05C6
-                        B48E ; 05C7
-                        B473 ; 05C8
-                        B45D ; 05C9
-                        B44C ; 05CA
-                        B44C ; 05CB
-                        B42C ; 05CC
-                        B42C ; 05CD
-                        B41B ; 05CE
-                        B41B ; 05CF
-                        B41B ; 05D0
-                        B697 ; 05D1
-                        B697 ; 05D2
-                        B681 ; 05D3
-                        B681 ; 05D4
-                        B66B ; 05D5
-                        B65A ; 05D6
-                        B72B ; 05D7
-                        B715 ; 05D8
-                        B709 ; 05D9
-                        B6FD ; 05DA
-                        B6FD ; 05DB
-                        B6E7 ; 05DC
-                        B6E7 ; 05DD
-                        B6DB ; 05DE
-                        B6DB ; 05DF
-                        B6DB ; 05E0
-                        B5B4 ; 05E1
-                        B5B4 ; 05E2
-                        B59E ; 05E3
-                        B59E ; 05E4
-                        B592 ; 05E5
-                        B586 ; 05E6
-                        B57A ; 05E7
-                        B564 ; 05E8
-                        B558 ; 05E9
-                        B54C ; 05EA
-                        B54C ; 05EB
-                        B536 ; 05EC
-                        B536 ; 05ED
-                        B52A ; 05EE
-                        B52A ; 05EF
-                        B52A ; 05F0
-                        B74F ; 05F1
-                        B74F ; 05F2
-                        B743 ; 05F3
-                        B743 ; 05F4
-                        B737 ; 05F5
-                        B72B ; 05F6
-                        B512 ; 05F7
-                        B51E ; 05F8
-
+; 05B7. Bottom half - B2: Facing clockwise     - grapple
+                        B63F, B624, B60E, B5FD, B5FD, B5DD, B5DD, B5CC, B5CC, B5CC, B4E6, B4E6, B4D0, B4D0, B4BA, B4A9, 
+                        B48E, B473, B45D, B44C, B44C, B42C, B42C, B41B, B41B, B41B, B697, B697, B681, B681, B66B, B65A, 
+                        B72B, B715, B709, B6FD, B6FD, B6E7, B6E7, B6DB, B6DB, B6DB, B5B4, B5B4, B59E, B59E, B592, B586, 
+                        B57A, B564, B558, B54C, B54C, B536, B536, B52A, B52A, B52A, B74F, B74F, B743, B743, B737, B72B, 
+                        B512, B51E, 
+                        
 ; Bottom half - 62: Unused
-; Bottom half - B3: Facing anticlockwise - grapple
-                        B98B ; 05F9
-                        B9A6 ; 05FA
-                        B9B7 ; 05FB
-                        B9CD ; 05FC
-                        B9CD ; 05FD
-                        B9E3 ; 05FE
-                        B9E3 ; 05FF
-                        B767 ; 0600
-                        B767 ; 0601
-                        B767 ; 0602
-                        B778 ; 0603
-                        B778 ; 0604
-                        B798 ; 0605
-                        B798 ; 0606
-                        B7A9 ; 0607
-                        B7BF ; 0608
-                        B7DA ; 0609
-                        B7F5 ; 060A
-                        B806 ; 060B
-                        B81C ; 060C
-                        B81C ; 060D
-                        B832 ; 060E
-                        B832 ; 060F
-                        B918 ; 0610
-                        B918 ; 0611
-                        B918 ; 0612
-                        B929 ; 0613
-                        B929 ; 0614
-                        B949 ; 0615
-                        B949 ; 0616
-                        B95A ; 0617
-                        B970 ; 0618
-                        BA77 ; 0619
-                        BA83 ; 061A
-                        BA8F ; 061B
-                        BA9B ; 061C
-                        BA9B ; 061D
-                        BAA7 ; 061E
-                        BAA7 ; 061F
-                        B876 ; 0620
-                        B876 ; 0621
-                        B876 ; 0622
-                        B882 ; 0623
-                        B882 ; 0624
-                        B898 ; 0625
-                        B898 ; 0626
-                        B8A4 ; 0627
-                        B8B0 ; 0628
-                        B8C6 ; 0629
-                        B8D2 ; 062A
-                        B8DE ; 062B
-                        B8EA ; 062C
-                        B8EA ; 062D
-                        B900 ; 062E
-                        B900 ; 062F
-                        BA27 ; 0630
-                        BA27 ; 0631
-                        BA27 ; 0632
-                        BA33 ; 0633
-                        BA33 ; 0634
-                        BA49 ; 0635
-                        BA49 ; 0636
-                        BA55 ; 0637
-                        BA61 ; 0638
-                        B85E ; 0639
-                        B86A ; 063A
-
+; 05F9. Bottom half - B3: Facing anticlockwise - grapple
+                        B98B, B9A6, B9B7, B9CD, B9CD, B9E3, B9E3, B767, B767, B767, B778, B778, B798, B798, B7A9, B7BF, 
+                        B7DA, B7F5, B806, B81C, B81C, B832, B832, B918, B918, B918, B929, B929, B949, B949, B95A, B970, 
+                        BA77, BA83, BA8F, BA9B, BA9B, BAA7, BAA7, B876, B876, B876, B882, B882, B898, B898, B8A4, B8B0, 
+                        B8C6, B8D2, B8DE, B8EA, B8EA, B900, B900, BA27, BA27, BA27, BA33, BA33, BA49, BA49, BA55, BA61, 
+                        B85E, B86A, 
+                        
 ; Bottom half - 29: Facing right - falling
-; Bottom half - 67: Facing right - falling - gun extended
-                        B08D ; 063B
-                        B0AF ; 063C
-                        B0AF ; 063D
-                        0000 ; 063E
-                        0000 ; 063F
-                        B08D ; 0640
-                        B1C8 ; 0641
-
+; 063B. Bottom half - 67: Facing right - falling - gun extended
+                        B08D, B0AF, B0AF, 0000, 0000, B08D, B1C8, 
+                        
 ; Bottom half - 2A: Facing left  - falling
-; Bottom half - 68: Facing left  - falling - gun extended
-                        B09E ; 0642
-                        B0BB ; 0643
-                        B0BB ; 0644
-                        0000 ; 0645
-                        0000 ; 0646
-                        B09E ; 0647
-                        B1E3 ; 0648
-
-; Bottom half - 2D: Facing right - falling - aiming down
-                        B08D ; 0649
-                        B104 ; 064A
-
-; Bottom half - 2E: Facing left  - falling - aiming down
-                        B09E ; 064B
-                        B124 ; 064C
-
-; Bottom half - 2B: Facing right - falling - aiming up
-                        B08D ; 064D
-                        B0AF ; 064E
-                        B1C8 ; 064F
-
-; Bottom half - 2C: Facing left  - falling - aiming up
-                        B09E ; 0650
-                        B0BB ; 0651
-                        B1E3 ; 0652
-
-; Bottom half - 6D: Facing right - falling - aiming up-right
-                        B08D ; 0653
-                        B0AF ; 0654
-                        B1C8 ; 0655
-
-; Bottom half - 6E: Facing left  - falling - aiming up-left
-                        B09E ; 0656
-                        B0BB ; 0657
-                        B1E3 ; 0658
-
-; Bottom half - 6F: Facing right - falling - aiming down-right
-                        B08D ; 0659
-                        B0AF ; 065A
-                        B1C8 ; 065B
-
-; Bottom half - 70: Facing left  - falling - aiming down-left
-                        B09E ; 065C
-                        B0BB ; 065D
-                        B1E3 ; 065E
-
+; 0642. Bottom half - 68: Facing left  - falling - gun extended
+                        B09E, B0BB, B0BB, 0000, 0000, B09E, B1E3, 
+                        
+; 0649. Bottom half - 2D: Facing right - falling - aiming down
+                        B08D, B104, 
+                        
+; 064B. Bottom half - 2E: Facing left  - falling - aiming down
+                        B09E, B124, 
+                        
+; 064D. Bottom half - 2B: Facing right - falling - aiming up
+                        B08D, B0AF, B1C8, 
+                        
+; 0650. Bottom half - 2C: Facing left  - falling - aiming up
+                        B09E, B0BB, B1E3, 
+                        
+; 0653. Bottom half - 6D: Facing right - falling - aiming up-right
+                        B08D, B0AF, B1C8, 
+                        
+; 0656. Bottom half - 6E: Facing left  - falling - aiming up-left
+                        B09E, B0BB, B1E3, 
+                        
+; 0659. Bottom half - 6F: Facing right - falling - aiming down-right
+                        B08D, B0AF, B1C8, 
+                        
+; 065C. Bottom half - 70: Facing left  - falling - aiming down-left
+                        B09E, B0BB, B1E3, 
+                        
 ; Bottom half - 27: Facing right - crouching
-; Bottom half - B4: Unused
-                        B351 ; 065F
-                        B351 ; 0660
-                        B351 ; 0661
-                        B351 ; 0662
-                        0000 ; 0663
-                        B351 ; 0664
-                        B351 ; 0665
-                        B351 ; 0666
-                        B351 ; 0667
-
+; 065F. Bottom half - B4: Unused
+                        B351, B351, B351, B351, 0000, B351, B351, B351, B351, 
+                        
 ; Bottom half - 28: Facing left  - crouching
-; Bottom half - B5: Unused
-                        ADCC ; 0668
-                        ADCC ; 0669
-                        ADCC ; 066A
-                        ADCC ; 066B
-                        0000 ; 066C
-                        ADCC ; 066D
-                        ADCC ; 066E
-                        ADCC ; 066F
-                        ADCC ; 0670
-
-; Bottom half - 71: Facing right - crouching - aiming up-right
-                        B351 ; 0671
-
-; Bottom half - 72: Facing left  - crouching - aiming up-left
-                        ADCC ; 0672
-
+; 0668. Bottom half - B5: Unused
+                        ADCC, ADCC, ADCC, ADCC, 0000, ADCC, ADCC, ADCC, ADCC, 
+                        
+; 0671. Bottom half - 71: Facing right - crouching - aiming up-right
+                        B351, 
+                        
+; 0672. Bottom half - 72: Facing left  - crouching - aiming up-left
+                        ADCC, 
+                        
 ; Bottom half - 73: Facing right - crouching - aiming down-right
-; Bottom half - B6: Unused
-                        B351 ; 0673
-
+; 0673. Bottom half - B6: Unused
+                        B351, 
+                        
 ; Bottom half - 74: Facing left  - crouching - aiming down-left
-; Bottom half - B7: Unused
-                        ADCC ; 0674
-
-; Bottom half - 85: Facing right - crouching - aiming up
-                        B351 ; 0675
-                        B351 ; 0676
-
-; Bottom half - 86: Facing left  - crouching - aiming up
-                        ADCC ; 0677
-                        ADCC ; 0678
-
+; 0674. Bottom half - B7: Unused
+                        ADCC, 
+                        
+; 0675. Bottom half - 85: Facing right - crouching - aiming up
+                        B351, B351, 
+                        
+; 0677. Bottom half - 86: Facing left  - crouching - aiming up
+                        ADCC, ADCC, 
+                        
 ; Bottom half - 35: Facing right - crouching transition
 ; Bottom half - 3B: Facing right - standing transition
 ; Bottom half - F1: Facing right - crouching transition - aiming up
@@ -2305,9 +899,9 @@ $92:808D             dw 90ED ; 0000
 ; Bottom half - F5: Facing right - crouching transition - aiming down-right
 ; Bottom half - F7: Facing right - standing transition - aiming up
 ; Bottom half - F9: Facing right - standing transition - aiming up-right
-; Bottom half - FB: Facing right - standing transition - aiming down-right
-                        B021 ; 0679
-
+; 0679. Bottom half - FB: Facing right - standing transition - aiming down-right
+                        B021, 
+                        
 ; Bottom half - 36: Facing left  - crouching transition
 ; Bottom half - 3C: Facing left  - standing transition
 ; Bottom half - F2: Facing left  - crouching transition - aiming up
@@ -2315,29 +909,21 @@ $92:808D             dw 90ED ; 0000
 ; Bottom half - F6: Facing left  - crouching transition - aiming down-left
 ; Bottom half - F8: Facing left  - standing transition - aiming up
 ; Bottom half - FA: Facing left  - standing transition - aiming up-left
-; Bottom half - FC: Facing left  - standing transition - aiming down-left
-                        B037 ; 067A
-                        0000 ; 067B
-                        0000 ; 067C
-
-; Bottom half - DB: Unused
-                        B021 ; 067D
-                        0000 ; 067E
-                        0000 ; 067F
-
-; Bottom half - DC: Unused
-                        B021 ; 0680
-
-; Bottom half - DD: Unused
-                        0000 ; 0681
-                        0000 ; 0682
-                        B021 ; 0683
-
-; Bottom half - DE: Unused
-                        0000 ; 0684
-                        0000 ; 0685
-                        B021 ; 0686
-
+; 067A. Bottom half - FC: Facing left  - standing transition - aiming down-left
+                        B037, 0000, 0000, 
+                        
+; 067D. Bottom half - DB: Unused
+                        B021, 0000, 0000, 
+                        
+; 0680. Bottom half - DC: Unused
+                        B021, 
+                        
+; 0681. Bottom half - DD: Unused
+                        0000, 0000, B021, 
+                        
+; 0684. Bottom half - DE: Unused
+                        0000, 0000, B021, 
+                        
 ; Bottom half - 25: Facing right - turning - standing
 ; Bottom half - 8B: Facing right - turning - standing - aiming up
 ; Bottom half - 8D: Facing right - turning - standing - aiming down-right
@@ -2345,22 +931,18 @@ $92:808D             dw 90ED ; 0000
 ; Bottom half - BF: Facing right - moonwalking - turn/jump left
 ; Bottom half - C1: Facing right - moonwalking - turn/jump left  - aiming up-right
 ; Bottom half - C3: Facing right - moonwalking - turn/jump left  - aiming down-right
-; Bottom half - C6: Unused
-                        AF2A ; 0687
-                        AFE0 ; 0688
-                        AF19 ; 0689
-
+; 0687. Bottom half - C6: Unused
+                        AF2A, AFE0, AF19, 
+                        
 ; Bottom half - 26: Facing left  - turning - standing
 ; Bottom half - 8C: Facing left  - turning - standing - aiming up
 ; Bottom half - 8E: Facing left  - turning - standing - aiming down-left
 ; Bottom half - 9D: Facing left  - turning - standing - aiming up-left
 ; Bottom half - C0: Facing left  - moonwalking - turn/jump right
 ; Bottom half - C2: Facing left  - moonwalking - turn/jump right - aiming up-left
-; Bottom half - C4: Facing left  - moonwalking - turn/jump right - aiming down-left
-                        AF19 ; 068A
-                        AFE0 ; 068B
-                        AF2A ; 068C
-
+; 068A. Bottom half - C4: Facing left  - moonwalking - turn/jump right - aiming down-left
+                        AF19, AFE0, AF2A, 
+                        
 ; Bottom half - 2F: Facing right - turning - jumping
 ; Bottom half - 43: Facing right - turning - crouching
 ; Bottom half - 87: Facing right - turning - falling
@@ -2372,11 +954,9 @@ $92:808D             dw 90ED ; 0000
 ; Bottom half - 99: Facing right - turning - crouching - aiming down/down-right
 ; Bottom half - 9E: Facing right - turning - in air - aiming up-right
 ; Bottom half - A0: Facing right - turning - falling - aiming up-right
-; Bottom half - A2: Facing right - turning - crouching - aiming up-right
-                        AF4C ; 068D
-                        AFEC ; 068E
-                        AF3B ; 068F
-
+; 068D. Bottom half - A2: Facing right - turning - crouching - aiming up-right
+                        AF4C, AFEC, AF3B, 
+                        
 ; Bottom half - 30: Facing left  - turning - jumping
 ; Bottom half - 44: Facing left  - turning - crouching
 ; Bottom half - 90: Facing left  - turning - in air - aiming up
@@ -2384,179 +964,70 @@ $92:808D             dw 90ED ; 0000
 ; Bottom half - 98: Facing left  - turning - crouching - aiming up
 ; Bottom half - 9A: Facing left  - turning - crouching - aiming down/down-left
 ; Bottom half - 9F: Facing left  - turning - in air - aiming up-left
-; Bottom half - A3: Facing left  - turning - crouching - aiming up-left
-                        AF3B ; 0690
-                        AFEC ; 0691
-                        AF4C ; 0692
-                        AF4C ; 0693
-                        AFEC ; 0694
-                        AF3B ; 0695
-
+; 0690. Bottom half - A3: Facing left  - turning - crouching - aiming up-left
+                        AF3B, AFEC, AF4C, AF4C, AFEC, AF3B, 
+                        
 ; Bottom half - 88: Facing left  - turning - falling
 ; Bottom half - 94: Facing left  - turning - falling - aiming up
 ; Bottom half - 96: Facing left  - turning - falling - aiming down/down-left
-; Bottom half - A1: Facing left  - turning - falling - aiming up-left
-                        AF3B ; 0696
-                        AFEC ; 0697
-                        AF4C ; 0698
-
+; 0696. Bottom half - A1: Facing left  - turning - falling - aiming up-left
+                        AF3B, AFEC, AF4C, 
+                        
 ; Bottom half - EC: Facing right - grabbed by Draygon - not moving - not aiming
 ; Bottom half - ED: Facing right - grabbed by Draygon - not moving - aiming up-right
 ; Bottom half - EE: Facing right - grabbed by Draygon - firing
-; Bottom half - EF: Facing right - grabbed by Draygon - not moving - aiming down-right
-                        B1FE ; 0699
-
+; 0699. Bottom half - EF: Facing right - grabbed by Draygon - not moving - aiming down-right
+                        B1FE, 
+                        
 ; Bottom half - BA: Facing left  - grabbed by Draygon - not moving - not aiming
 ; Bottom half - BB: Facing left  - grabbed by Draygon - not moving - aiming up-left
 ; Bottom half - BC: Facing left  - grabbed by Draygon - firing
-; Bottom half - BD: Facing left  - grabbed by Draygon - not moving - aiming down-left
-                        B214 ; 069A
-
-; Bottom half - F0: Facing right - grabbed by Draygon - moving
-                        B0AF ; 069B
-                        B1FE ; 069C
-                        B1C8 ; 069D
-                        B0AF ; 069E
-                        B0C7 ; 069F
-                        B04D ; 06A0
-
-; Bottom half - BE: Facing left  - grabbed by Draygon - moving
-                        B0BB ; 06A1
-                        B214 ; 06A2
-                        B1E3 ; 06A3
-                        B0BB ; 06A4
-                        B0E2 ; 06A5
-                        B06D ; 06A6
-
-; Bottom half - C9: Facing right - shinespark - horizontal
-                        AF75 ; 06A7
-
-; Bottom half - CA: Facing left  - shinespark - horizontal
-                        AF8B ; 06A8
-
-; Bottom half - CD: Facing right - shinespark - diagonal
-                        AF75 ; 06A9
-
-; Bottom half - CE: Facing left  - shinespark - diagonal
-                        AF8B ; 06AA
-
-; Bottom half - D3: Facing right - crystal flash
-                        C276 ; 06AB
-                        C28C ; 06AC
-                        C2DE ; 06AD
-                        C2DE ; 06AE
-                        0000 ; 06AF
-                        0000 ; 06B0
-                        C2DE ; 06B1
-                        C2DE ; 06B2
-                        C2DE ; 06B3
-                        C2DE ; 06B4
-                        0000 ; 06B5
-                        0000 ; 06B6
-                        C28C ; 06B7
-                        C276 ; 06B8
-                        B021 ; 06B9
-
-; Bottom half - D4: Facing left  - crystal flash
-                        C276 ; 06BA
-                        C28C ; 06BB
-                        C2DE ; 06BC
-                        C2DE ; 06BD
-                        0000 ; 06BE
-                        0000 ; 06BF
-                        C2DE ; 06C0
-                        C2DE ; 06C1
-                        C2DE ; 06C2
-                        C2DE ; 06C3
-                        0000 ; 06C4
-                        0000 ; 06C5
-                        C28C ; 06C6
-                        C276 ; 06C7
-                        B037 ; 06C8
-
-; Bottom half - D7: Facing right - crystal flash ending
-                        0000 ; 06C9
-                        0000 ; 06CA
-                        0000 ; 06CB
-                        B021 ; 06CC
-                        B0AF ; 06CD
-                        B1FE ; 06CE
-
-; Bottom half - D8: Facing left  - crystal flash ending
-                        0000 ; 06CF
-                        0000 ; 06D0
-                        0000 ; 06D1
-                        B037 ; 06D2
-                        B0BB ; 06D3
-                        B214 ; 06D4
-
-; Bottom half - E8: Facing right - Samus drained - crouching
-                        0000 ; 06D5
-                        0000 ; 06D6
-                        0000 ; 06D7
-                        B0AF ; 06D8
-                        B0AF ; 06D9
-                        B0AF ; 06DA
-                        B0AF ; 06DB
-                        B0AF ; 06DC
-                        B242 ; 06DD
-                        B242 ; 06DE
-                        B242 ; 06DF
-                        B242 ; 06E0
-                        0000 ; 06E1
-                        0000 ; 06E2
-                        B021 ; 06E3
-
-; Bottom half - E9: Facing left  - Samus drained - crouching
-                        0000 ; 06E4
-                        0000 ; 06E5
-                        B0BB ; 06E6
-                        B0BB ; 06E7
-                        B0BB ; 06E8
-                        B0BB ; 06E9
-                        B0BB ; 06EA
-                        B037 ; 06EB
-                        B236 ; 06EC
-                        B236 ; 06ED
-                        B236 ; 06EE
-                        B236 ; 06EF
-                        0000 ; 06F0
-                        0000 ; 06F1
-                        B1E3 ; 06F2
-                        B037 ; 06F3
-                        B2AB ; 06F4
-                        0000 ; 06F5
-                        0000 ; 06F6
-                        B1E3 ; 06F7
-                        B037 ; 06F8
-                        B2AB ; 06F9
-                        B037 ; 06FA
-                        B1E3 ; 06FB
-                        0000 ; 06FC
-                        0000 ; 06FD
-                        B236 ; 06FE
-                        0000 ; 06FF
-                        0000 ; 0700
-                        B236 ; 0701
-                        0000 ; 0702
-                        0000 ; 0703
-
-; Bottom half - EA: Facing right - Samus drained - standing
-                        B242 ; 0704
-                        B242 ; 0705
-                        B242 ; 0706
-                        B242 ; 0707
-                        0000 ; 0708
-                        B021 ; 0709
-
-; Bottom half - EB: Facing left  - Samus drained - standing
-                        B236 ; 070A
-                        B236 ; 070B
-                        B236 ; 070C
-                        B236 ; 070D
-                        0000 ; 070E
-                        B037 ; 070F
-
+; 069A. Bottom half - BD: Facing left  - grabbed by Draygon - not moving - aiming down-left
+                        B214, 
+                        
+; 069B. Bottom half - F0: Facing right - grabbed by Draygon - moving
+                        B0AF, B1FE, B1C8, B0AF, B0C7, B04D, 
+                        
+; 06A1. Bottom half - BE: Facing left  - grabbed by Draygon - moving
+                        B0BB, B214, B1E3, B0BB, B0E2, B06D, 
+                        
+; 06A7. Bottom half - C9: Facing right - shinespark - horizontal
+                        AF75, 
+                        
+; 06A8. Bottom half - CA: Facing left  - shinespark - horizontal
+                        AF8B, 
+                        
+; 06A9. Bottom half - CD: Facing right - shinespark - diagonal
+                        AF75, 
+                        
+; 06AA. Bottom half - CE: Facing left  - shinespark - diagonal
+                        AF8B, 
+                        
+; 06AB. Bottom half - D3: Facing right - crystal flash
+                        C276, C28C, C2DE, C2DE, 0000, 0000, C2DE, C2DE, C2DE, C2DE, 0000, 0000, C28C, C276, B021, 
+                        
+; 06BA. Bottom half - D4: Facing left  - crystal flash
+                        C276, C28C, C2DE, C2DE, 0000, 0000, C2DE, C2DE, C2DE, C2DE, 0000, 0000, C28C, C276, B037, 
+                        
+; 06C9. Bottom half - D7: Facing right - crystal flash ending
+                        0000, 0000, 0000, B021, B0AF, B1FE, 
+                        
+; 06CF. Bottom half - D8: Facing left  - crystal flash ending
+                        0000, 0000, 0000, B037, B0BB, B214, 
+                        
+; 06D5. Bottom half - E8: Facing right - Samus drained - crouching
+                        0000, 0000, 0000, B0AF, B0AF, B0AF, B0AF, B0AF, B242, B242, B242, B242, 0000, 0000, B021, 
+                        
+; 06E4. Bottom half - E9: Facing left  - Samus drained - crouching
+                        0000, 0000, B0BB, B0BB, B0BB, B0BB, B0BB, B037, B236, B236, B236, B236, 0000, 0000, B1E3, B037, 
+                        B2AB, 0000, 0000, B1E3, B037, B2AB, B037, B1E3, 0000, 0000, B236, 0000, 0000, B236, 0000, 0000, 
+                        
+; 0704. Bottom half - EA: Facing right - Samus drained - standing
+                        B242, B242, B242, B242, 0000, B021, 
+                        
+; 070A. Bottom half - EB: Facing left  - Samus drained - standing
+                        B236, B236, B236, B236, 0000, B037, 
+                        
 ; Bottom half - 1D: Facing right - morph ball - no springball - on ground
 ; Bottom half - 31: Facing right - morph ball - no springball - in air
 ; Bottom half - 32: Facing left  - morph ball - no springball - in air
@@ -2566,61 +1037,25 @@ $92:808D             dw 90ED ; 0000
 ; Top half - 31: Facing right - morph ball - no springball - in air
 ; Top half - 32: Facing left  - morph ball - no springball - in air
 ; Top half - 3F: Unused
-; Top half - 40: Unused
-                        BAB3 ; 0710
-                        BAE3 ; 0711
-                        BABF ; 0712
-                        BAFE ; 0713
-                        BACB ; 0714
-                        BB0A ; 0715
-                        BAD7 ; 0716
-                        BB16 ; 0717
-                        0000 ; 0718
-                        BC88 ; 0719
-
+; 0710. Top half - 40: Unused
+                        BAB3, BAE3, BABF, BAFE, BACB, BB0A, BAD7, BB16, 0000, BC88, 
+                        
 ; Bottom half - 41: Facing left  - morph ball - no springball - on ground
 ; Bottom half - C5: Unused
 ; Bottom half - DF: Unused
 ; Top half - 41: Facing left  - morph ball - no springball - on ground
 ; Top half - C5: Unused
-; Top half - DF: Unused
-                        BB16 ; 071A
-                        BAD7 ; 071B
-                        BB0A ; 071C
-                        BACB ; 071D
-                        BAFE ; 071E
-                        BABF ; 071F
-                        BAE3 ; 0720
-                        BAB3 ; 0721
-                        0000 ; 0722
-                        BC88 ; 0723
-
+; 071A. Top half - DF: Unused
+                        BB16, BAD7, BB0A, BACB, BAFE, BABF, BAE3, BAB3, 0000, BC88, 
+                        
 ; Bottom half - 1E: Moving right - morph ball - no springball - on ground
-; Top half - 1E: Moving right - morph ball - no springball - on ground
-                        BAB3 ; 0724
-                        BAE3 ; 0725
-                        BABF ; 0726
-                        BAFE ; 0727
-                        BACB ; 0728
-                        BB0A ; 0729
-                        BAD7 ; 072A
-                        BB16 ; 072B
-                        0000 ; 072C
-                        BC88 ; 072D
-
+; 0724. Top half - 1E: Moving right - morph ball - no springball - on ground
+                        BAB3, BAE3, BABF, BAFE, BACB, BB0A, BAD7, BB16, 0000, BC88, 
+                        
 ; Bottom half - 1F: Moving left  - morph ball - no springball - on ground
-; Top half - 1F: Moving left  - morph ball - no springball - on ground
-                        BB16 ; 072E
-                        BAD7 ; 072F
-                        BB0A ; 0730
-                        BACB ; 0731
-                        BAFE ; 0732
-                        BABF ; 0733
-                        BAE3 ; 0734
-                        BAB3 ; 0735
-                        0000 ; 0736
-                        BC88 ; 0737
-
+; 072E. Top half - 1F: Moving left  - morph ball - no springball - on ground
+                        BB16, BAD7, BB0A, BACB, BAFE, BABF, BAE3, BAB3, 0000, BC88, 
+                        
 ; Bottom half - 79: Facing right - morph ball - spring ball - on ground
 ; Bottom half - 7B: Moving right - morph ball - spring ball - on ground
 ; Bottom half - 7D: Facing right - morph ball - spring ball - falling
@@ -2628,18 +1063,9 @@ $92:808D             dw 90ED ; 0000
 ; Top half - 79: Facing right - morph ball - spring ball - on ground
 ; Top half - 7B: Moving right - morph ball - spring ball - on ground
 ; Top half - 7D: Facing right - morph ball - spring ball - falling
-; Top half - 7F: Facing right - morph ball - spring ball - in air
-                        BAB3 ; 0738
-                        BAE3 ; 0739
-                        BABF ; 073A
-                        BAFE ; 073B
-                        BACB ; 073C
-                        BB0A ; 073D
-                        BAD7 ; 073E
-                        BB16 ; 073F
-                        0000 ; 0740
-                        BC88 ; 0741
-
+; 0738. Top half - 7F: Facing right - morph ball - spring ball - in air
+                        BAB3, BAE3, BABF, BAFE, BACB, BB0A, BAD7, BB16, 0000, BC88, 
+                        
 ; Bottom half - 7A: Facing left  - morph ball - spring ball - on ground
 ; Bottom half - 7C: Moving left  - morph ball - spring ball - on ground
 ; Bottom half - 7E: Facing left  - morph ball - spring ball - falling
@@ -2647,18 +1073,9 @@ $92:808D             dw 90ED ; 0000
 ; Top half - 7A: Facing left  - morph ball - spring ball - on ground
 ; Top half - 7C: Moving left  - morph ball - spring ball - on ground
 ; Top half - 7E: Facing left  - morph ball - spring ball - falling
-; Top half - 80: Facing left  - morph ball - spring ball - in air
-                        BB16 ; 0742
-                        BAD7 ; 0743
-                        BB0A ; 0744
-                        BACB ; 0745
-                        BAFE ; 0746
-                        BABF ; 0747
-                        BAE3 ; 0748
-                        BAB3 ; 0749
-                        0000 ; 074A
-                        BC88 ; 074B
-
+; 0742. Top half - 80: Facing left  - morph ball - spring ball - in air
+                        BB16, BAD7, BB0A, BACB, BAFE, BABF, BAE3, BAB3, 0000, BC88, 
+                        
 ; Bottom half - 20: Unused
 ; Bottom half - 21: Unused
 ; Bottom half - 22: Unused
@@ -2679,267 +1096,59 @@ $92:808D             dw 90ED ; 0000
 ; Top half - 34: Unused
 ; Top half - 39: Unused
 ; Top half - 3A: Unused
-; Top half - 42: Unused
-                        9BAE ; 074C
-                        BD67 ; 074D
-                        BD73 ; 074E
-                        BD89 ; 074F
-                        BD95 ; 0750
-                        BDAB ; 0751
-                        BDB7 ; 0752
-                        BDCD ; 0753
-                        BDD9 ; 0754
-                        0000 ; 0755
-                        0000 ; 0756
-                        9B43 ; 0757
-
-; Bottom half - 19: Facing right - spin jump
-                        B1C8 ; 0758
-                        0000 ; 0759
-                        0000 ; 075A
-                        0000 ; 075B
-                        0000 ; 075C
-                        0000 ; 075D
-                        0000 ; 075E
-                        0000 ; 075F
-                        0000 ; 0760
-                        0000 ; 0761
-                        0000 ; 0762
-                        AFB2 ; 0763
-
-; Top half - 1A: Facing left  - spin jump
-                        9BBF ; 0764
-                        BB22 ; 0765
-                        BB2E ; 0766
-                        BB44 ; 0767
-                        BB50 ; 0768
-                        BB66 ; 0769
-                        BB72 ; 076A
-                        BB88 ; 076B
-                        BB94 ; 076C
-                        0000 ; 076D
-                        0000 ; 076E
-                        9B59 ; 076F
-
-; Bottom half - 1A: Facing left  - spin jump
-                        B1E3 ; 0770
-                        0000 ; 0771
-                        0000 ; 0772
-                        0000 ; 0773
-                        0000 ; 0774
-                        0000 ; 0775
-                        0000 ; 0776
-                        0000 ; 0777
-                        0000 ; 0778
-                        0000 ; 0779
-                        0000 ; 077A
-                        AFBE ; 077B
-
-; Top half - 1B: Facing right - space jump
-                        9BAE ; 077C
-                        BEBF ; 077D
-                        BEBF ; 077E
-                        BEBF ; 077F
-                        BEBF ; 0780
-                        BEBF ; 0781
-                        BEBF ; 0782
-                        BEBF ; 0783
-                        BEBF ; 0784
-                        0000 ; 0785
-                        0000 ; 0786
-                        9B43 ; 0787
-
-; Bottom half - 1B: Facing right - space jump
-                        B1C8 ; 0788
-                        C458 ; 0789
-                        C46E ; 078A
-                        C4A2 ; 078B
-                        C4B8 ; 078C
-                        C4EC ; 078D
-                        C502 ; 078E
-                        C536 ; 078F
-                        C54C ; 0790
-                        0000 ; 0791
-                        0000 ; 0792
-                        AFB2 ; 0793
-
-; Top half - 1C: Facing left  - space jump
-                        9BBF ; 0794
-                        BC7A ; 0795
-                        BC7A ; 0796
-                        BC7A ; 0797
-                        BC7A ; 0798
-                        BC7A ; 0799
-                        BC7A ; 079A
-                        BC7A ; 079B
-                        BC7A ; 079C
-                        0000 ; 079D
-                        0000 ; 079E
-                        9B59 ; 079F
-
-; Bottom half - 1C: Facing left  - space jump
-                        B1E3 ; 07A0
-                        C330 ; 07A1
-                        C346 ; 07A2
-                        C37A ; 07A3
-                        C390 ; 07A4
-                        C3C4 ; 07A5
-                        C3DA ; 07A6
-                        C40E ; 07A7
-                        C424 ; 07A8
-                        0000 ; 07A9
-                        0000 ; 07AA
-                        AFBE ; 07AB
-
-; Top half - 81: Facing right - screw attack
-                        9BAE ; 07AC
-                        BDEF ; 07AD
-                        BDEF ; 07AE
-                        BDEF ; 07AF
-                        BEBF ; 07B0
-                        BEBF ; 07B1
-                        BEBF ; 07B2
-                        BE23 ; 07B3
-                        BE23 ; 07B4
-                        BE23 ; 07B5
-                        BEBF ; 07B6
-                        BEBF ; 07B7
-                        BEBF ; 07B8
-                        BE5C ; 07B9
-                        BE5C ; 07BA
-                        BE5C ; 07BB
-                        BEBF ; 07BC
-                        BEBF ; 07BD
-                        BEBF ; 07BE
-                        BE95 ; 07BF
-                        BE95 ; 07C0
-                        BE95 ; 07C1
-                        BEBF ; 07C2
-                        BEBF ; 07C3
-                        BEBF ; 07C4
-                        0000 ; 07C5
-                        0000 ; 07C6
-                        9B43 ; 07C7
-
-; Bottom half - 81: Facing right - screw attack
-                        B1C8 ; 07C8
-                        C458 ; 07C9
-                        C46E ; 07CA
-                        C4A2 ; 07CB
-                        C4B8 ; 07CC
-                        C4EC ; 07CD
-                        C502 ; 07CE
-                        C536 ; 07CF
-                        C54C ; 07D0
-                        C458 ; 07D1
-                        C46E ; 07D2
-                        C4A2 ; 07D3
-                        C4B8 ; 07D4
-                        C4EC ; 07D5
-                        C502 ; 07D6
-                        C536 ; 07D7
-                        C54C ; 07D8
-                        C458 ; 07D9
-                        C46E ; 07DA
-                        C4A2 ; 07DB
-                        C4B8 ; 07DC
-                        C4EC ; 07DD
-                        C502 ; 07DE
-                        C536 ; 07DF
-                        C54C ; 07E0
-                        0000 ; 07E1
-                        0000 ; 07E2
-                        AFB2 ; 07E3
-
-; Top half - 82: Facing left  - screw attack
-                        9BBF ; 07E4
-                        BBAA ; 07E5
-                        BBAA ; 07E6
-                        BBAA ; 07E7
-                        BC7A ; 07E8
-                        BC7A ; 07E9
-                        BC7A ; 07EA
-                        BBDE ; 07EB
-                        BBDE ; 07EC
-                        BBDE ; 07ED
-                        BC7A ; 07EE
-                        BC7A ; 07EF
-                        BC7A ; 07F0
-                        BC17 ; 07F1
-                        BC17 ; 07F2
-                        BC17 ; 07F3
-                        BC7A ; 07F4
-                        BC7A ; 07F5
-                        BC7A ; 07F6
-                        BC50 ; 07F7
-                        BC50 ; 07F8
-                        BC50 ; 07F9
-                        BC7A ; 07FA
-                        BC7A ; 07FB
-                        BC7A ; 07FC
-                        0000 ; 07FD
-                        0000 ; 07FE
-                        9B59 ; 07FF
-
-; Bottom half - 82: Facing left  - screw attack
-                        B1E3 ; 0800
-                        C330 ; 0801
-                        C346 ; 0802
-                        C37A ; 0803
-                        C390 ; 0804
-                        C3C4 ; 0805
-                        C3DA ; 0806
-                        C40E ; 0807
-                        C424 ; 0808
-                        C330 ; 0809
-                        C346 ; 080A
-                        C37A ; 080B
-                        C390 ; 080C
-                        C3C4 ; 080D
-                        C3DA ; 080E
-                        C40E ; 080F
-                        C424 ; 0810
-                        C330 ; 0811
-                        C346 ; 0812
-                        C37A ; 0813
-                        C390 ; 0814
-                        C3C4 ; 0815
-                        C3DA ; 0816
-                        C40E ; 0817
-                        C424 ; 0818
-                        0000 ; 0819
-                        0000 ; 081A
-                        AFBE ; 081B
-
-; Samus' suit exploding - facing right
-                        C8B7 ; 081C
-                        C8E6 ; 081D
-                        C956 ; 081E
-                        C9DA ; 081F
-                        CA54 ; 0820
-                        CAD3 ; 0821
-                        CB52 ; 0822
-                        CB7C ; 0823
-                        CBB5 ; 0824
-
-; Samus' suit exploding - facing right
-                        C580 ; 0825
-                        C5AF ; 0826
-                        C61F ; 0827
-                        C6A3 ; 0828
-                        C71D ; 0829
-                        C79C ; 082A
-                        C81B ; 082B
-                        C845 ; 082C
-                        C87E ; 082D
-
+; 074C. Top half - 42: Unused
+                        9BAE, BD67, BD73, BD89, BD95, BDAB, BDB7, BDCD, BDD9, 0000, 0000, 9B43, 
+                        
+; 0758. Bottom half - 19: Facing right - spin jump
+                        B1C8, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, AFB2, 
+                        
+; 0764. Top half - 1A: Facing left  - spin jump
+                        9BBF, BB22, BB2E, BB44, BB50, BB66, BB72, BB88, BB94, 0000, 0000, 9B59, 
+                        
+; 0770. Bottom half - 1A: Facing left  - spin jump
+                        B1E3, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, AFBE, 
+                        
+; 077C. Top half - 1B: Facing right - space jump
+                        9BAE, BEBF, BEBF, BEBF, BEBF, BEBF, BEBF, BEBF, BEBF, 0000, 0000, 9B43, 
+                        
+; 0788. Bottom half - 1B: Facing right - space jump
+                        B1C8, C458, C46E, C4A2, C4B8, C4EC, C502, C536, C54C, 0000, 0000, AFB2, 
+                        
+; 0794. Top half - 1C: Facing left  - space jump
+                        9BBF, BC7A, BC7A, BC7A, BC7A, BC7A, BC7A, BC7A, BC7A, 0000, 0000, 9B59, 
+                        
+; 07A0. Bottom half - 1C: Facing left  - space jump
+                        B1E3, C330, C346, C37A, C390, C3C4, C3DA, C40E, C424, 0000, 0000, AFBE, 
+                        
+; 07AC. Top half - 81: Facing right - screw attack
+                        9BAE, BDEF, BDEF, BDEF, BEBF, BEBF, BEBF, BE23, BE23, BE23, BEBF, BEBF, BEBF, BE5C, BE5C, BE5C, 
+                        BEBF, BEBF, BEBF, BE95, BE95, BE95, BEBF, BEBF, BEBF, 0000, 0000, 9B43, 
+                        
+; 07C8. Bottom half - 81: Facing right - screw attack
+                        B1C8, C458, C46E, C4A2, C4B8, C4EC, C502, C536, C54C, C458, C46E, C4A2, C4B8, C4EC, C502, C536, 
+                        C54C, C458, C46E, C4A2, C4B8, C4EC, C502, C536, C54C, 0000, 0000, AFB2, 
+                        
+; 07E4. Top half - 82: Facing left  - screw attack
+                        9BBF, BBAA, BBAA, BBAA, BC7A, BC7A, BC7A, BBDE, BBDE, BBDE, BC7A, BC7A, BC7A, BC17, BC17, BC17, 
+                        BC7A, BC7A, BC7A, BC50, BC50, BC50, BC7A, BC7A, BC7A, 0000, 0000, 9B59, 
+                        
+; 0800. Bottom half - 82: Facing left  - screw attack
+                        B1E3, C330, C346, C37A, C390, C3C4, C3DA, C40E, C424, C330, C346, C37A, C390, C3C4, C3DA, C40E, 
+                        C424, C330, C346, C37A, C390, C3C4, C3DA, C40E, C424, 0000, 0000, AFBE, 
+                        
+; 081C. Samus' suit exploding - facing right
+                        C8B7, C8E6, C956, C9DA, CA54, CAD3, CB52, CB7C, CBB5, 
+                        
+; 0825. Samus' suit exploding - facing right
+                        C580, C5AF, C61F, C6A3, C71D, C79C, C81B, C845, C87E, 
+                        
 ; Bottom half - CB: Facing right - shinespark - vertical
-; Top half - CB: Facing right - shinespark - vertical
-                        C162 ; 082E
-
+; 082E. Top half - CB: Facing right - shinespark - vertical
+                        C162, 
+                        
 ; Bottom half - CC: Facing left  - shinespark - vertical
-; Top half - CC: Facing left  - shinespark - vertical
-                        C17D ; 082F
+; 082F. Top half - CC: Facing left  - shinespark - vertical
+                        C17D
 }
 
 
