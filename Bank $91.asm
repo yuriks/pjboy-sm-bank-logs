@@ -3960,6 +3960,18 @@ $91:B010             dw B56F, B298, B298, B222, B222, B2B4, B2B4, B2B4, B2B4, B2
                         B23F, B243, B247, B24B, B24F, B253, B22D, B231, B257, B268, B288, B290, B2B4, B2B4, B2B4, B2B4,
                         B53C, B518, B51B, B51E, B521, B524, B527, B52A, B52D, B530, B533, B536, B539
 
+; Positive values are animation delay durations, negative values are instructions (first nybble ignored):
+;     F6:                  Go to beginning if [Samus health] >= 30
+;     F7:                  Set drained Samus movement handler
+;     F8 pp:               Enable auto-jump hack and transition to pose p if not jumping
+;     F9 eeee gg aa GG AA: Transition to pose G/A if item e equipped, otherwise g/a, and to pose g/G if Y speed = 0, otherwise a/A
+;     FA gg aa:            Transition to pose g if Y speed = 0, otherwise a
+;     FB:                  Select animation delay sequence for wall-jump
+;     FC eeee pp PP:       Transition to pose P if item e equipped, otherwise p
+;     FD pp:               Transition to pose p
+;     FE nn:               Go back n bytes
+;     FF:                  Go to beginning
+
 ; 9: Moving right - not aiming
 ; Ah: Moving left  - not aiming
 ; Bh: Moving right - gun extended
@@ -4195,13 +4207,13 @@ $91:B346             db 02,
 ; 2Ah: Facing left  - falling
 $91:B34A             db 08, 06,
                         06, FE,01, 08,
-                        10, FE, 01
+                        10, FE,01
 
 ; 67h: Facing right - falling - gun extended
 ; 68h: Facing left  - falling - gun extended
 $91:B353             db 08, 06,
                         06, FE,01, 08,
-                        10, FE, 01
+                        10, FE,01
 
 ; 2Bh: Facing right - falling - aiming up
 ; 2Ch: Facing left  - falling - aiming up
@@ -4411,7 +4423,7 @@ $91:B486             db 03,
 
 ; 83h: Facing right - wall jump
 ; 84h: Facing left  - wall jump
-$91:B491             db 05, 05, FB,
+$91:B491             db 05, 05, FB, ; Wall jump start-up
                         03, 02, 03, 02, 03, 02, 03, 02, FE,08, ; Normal
                         02, 01, 02, 01, 02, 01, 02, 01, FE,08, ; Space jump
                         01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, FE,18 ; Screw attack
@@ -10231,7 +10243,7 @@ $91:E0D3 30 F3       BMI $F3    [$E0C8]     ;/
 $91:E0D5 A9 F0 C4    LDA #$C4F0             ;\
 $91:E0D8 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Grapple beam function = inactive
 $91:E0DB A9 03 00    LDA #$0003             ;\
-$91:E0DE 8D 46 0A    STA $0A46  [$7E:0A46]  ;} $0A46 = 3
+$91:E0DE 8D 46 0A    STA $0A46  [$7E:0A46]  ;} Enable horizontal slope detection
 $91:E0E1 9C 48 0A    STZ $0A48  [$7E:0A48]  ; Samus hurt flash counter = 0
 $91:E0E4 9C 4A 0A    STZ $0A4A  [$7E:0A4A]  ; Super special Samus palette flags = 0 (normal)
 $91:E0E7 AF AF 9E 90 LDA $909EAF[$90:9EAF]  ;\
@@ -12749,7 +12761,7 @@ $91:F252 60          RTS                    ;} Return carry clear
 {
 $91:F253 9C 20 0B    STZ $0B20  [$7E:0B20]  ; Morph ball bounce state = not bouncing
 $91:F256 A9 03 00    LDA #$0003             ;\
-$91:F259 8D 46 0A    STA $0A46  [$7E:0A46]  ;} $0A46 = 3
+$91:F259 8D 46 0A    STA $0A46  [$7E:0A46]  ;} Enable horizontal slope detection
 $91:F25C 18          CLC                    ;\
 $91:F25D 60          RTS                    ;} Return carry clear
 }
@@ -12847,6 +12859,9 @@ $91:F2EF 60          RTS
 
 ;;; $F2F0: Solid vertical collision - [Samus solid vertical collision result] = 6 ;;;
 {
+; Only code in the game that sets $0A46 to a non-3 value,
+; the only code in the game that checks this variable only cares if the 2 bit is set or not,
+; so it's not known what the intended difference between 0 and 1 is here
 $91:F2F0 AD CE 0D    LDA $0DCE  [$7E:0DCE]  ;\
 $91:F2F3 F0 23       BEQ $23    [$F318]     ;} If Samus X speed not killed: return
 $91:F2F5 AD 23 0A    LDA $0A23  [$7E:0A23]  ;\
@@ -12858,10 +12873,10 @@ $91:F303 29 FF 00    AND #$00FF             ;|
 $91:F306 C9 04 00    CMP #$0004             ;} If facing right:
 $91:F309 F0 08       BEQ $08    [$F313]     ;/
 $91:F30B A9 01 00    LDA #$0001             ;\
-$91:F30E 8D 46 0A    STA $0A46  [$7E:0A46]  ;} $0A46 = 1
+$91:F30E 8D 46 0A    STA $0A46  [$7E:0A46]  ;} Disable horizontal slope detection
 $91:F311 80 06       BRA $06    [$F319]     ; Go to BRANCH_RETURN
 
-$91:F313 9C 46 0A    STZ $0A46  [$7E:0A46]  ; $0A46 = 0
+$91:F313 9C 46 0A    STZ $0A46  [$7E:0A46]  ; Disable horizontal slope detection
 $91:F316 80 01       BRA $01    [$F319]     ; Go to BRANCH_RETURN
 
 $91:F318 60          RTS

@@ -1157,7 +1157,6 @@ $90:868C 60          RTS
 ;;; $868D: Determine if Samus bottom half is drawn - standing ;;;
 {
 ; If Samus is facing forward without varia/suit, spawns an extra sprite to cover the left part of her chest
-
 $90:868D AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:8690 C9 00 00    CMP #$0000             ;} If [Samus pose] = facing forward - power suit: go to BRANCH_FACING_FORWARD
 $90:8693 F0 02       BEQ $02    [$8697]     ;/
@@ -1192,6 +1191,7 @@ $90:86C4 80 CF       BRA $CF    [$8695]     ; Return carry set
 ;;; $86C6: Determine if Samus bottom half is drawn - spin jumping ;;;
 {
 ; Samus animation frame is 0 during the spin jump start-up
+; Samus animation frame is >= Bh during the wall jump eligible animation
 $90:86C6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:86C9 C9 81 00    CMP #$0081             ;|
 $90:86CC F0 14       BEQ $14    [$86E2]     ;} If [Samus pose] = screw attack: return carry set
@@ -1241,11 +1241,13 @@ $90:870B 60          RTS                    ;} Return carry clear
 
 ;;; $870C: Determine if Samus bottom half is drawn - crouching/standing/morphing/unmorphing transition ;;;
 {
+; BRANCH_NO_BOTTOM is used for poses 37h..3Ah / 3Dh..40h (morphing/unmorphing transition and some unused poses)
+; BRANCH_UNUSED is used for poses DBh..DEh (unused)
 $90:870C AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:870F C9 F1 00    CMP #$00F1             ;} If [Samus pose] = standing/crouching transition - aiming: return carry set
 $90:8712 10 1B       BPL $1B    [$872F]     ;/
 $90:8714 C9 DB 00    CMP #$00DB             ;\
-$90:8717 10 1D       BPL $1D    [$8736]     ;} If [Samus pose] >= DBh: go to BRANCH_8736
+$90:8717 10 1D       BPL $1D    [$8736]     ;} If [Samus pose] >= DBh: go to BRANCH_UNUSED
 $90:8719 C9 35 00    CMP #$0035             ;\
 $90:871C F0 11       BEQ $11    [$872F]     ;|
 $90:871E C9 36 00    CMP #$0036             ;|
@@ -1264,7 +1266,7 @@ $90:8731 9C CA 0A    STZ $0ACA  [$7E:0ACA]  ; Samus' bottom half spritemap index
 $90:8734 18          CLC                    ;\
 $90:8735 60          RTS                    ;} Return carry clear
 
-; BRANCH_8736
+; BRANCH_UNUSED
 $90:8736 C9 DD 00    CMP #$00DD             ;\
 $90:8739 10 07       BPL $07    [$8742]     ;} If [Samus pose] < DDh:
 $90:873B AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
@@ -1311,7 +1313,7 @@ $90:8771 60          RTS                    ;} Return carry set
 
 ; BRANCH_SPINNING
 $90:8772 C9 0D 00    CMP #$000D             ;\
-$90:8775 10 F9       BPL $F9    [$8770]     ;} If [Samus animation frame] >= Dh: return carry set
+$90:8775 10 F9       BPL $F9    [$8770]     ;} If [Samus animation frame] >= Dh (space jump / screw attack): return carry set
 $90:8777 9C CA 0A    STZ $0ACA  [$7E:0ACA]  ; Samus' bottom half spritemap index = 0
 $90:877A 18          CLC                    ;\
 $90:877B 60          RTS                    ;} Return carry clear
@@ -5439,11 +5441,11 @@ $90:A671 60          RTS
 }
 
 
-;;; $A672:  ;;;
+;;; $A672: Enable horizontal slope detection ;;;
 {
 $90:A672 A9 03 00    LDA #$0003             ;\
-$90:A675 8D 46 0A    STA $0A46  [$7E:0A46]  ;} $0A46 = 3
-$90:A678 9C A4 0A    STZ $0AA4  [$7E:0AA4]  ; $0AA4 = 0
+$90:A675 8D 46 0A    STA $0A46  [$7E:0A46]  ;} Enable horizontal slope detection
+$90:A678 9C A4 0A    STZ $0AA4  [$7E:0AA4]  ; $0AA4 = 0 (never read)
 $90:A67B 60          RTS
 }
 
@@ -6655,7 +6657,7 @@ $90:AD5D 30 C9       BMI $C9    [$AD28]     ;} If [X] < 14h: go to LOOP
 $90:AD5F 9C D2 0C    STZ $0CD2  [$7E:0CD2]  ; Bomb counter = 0
 $90:AD62 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ; Cooldown timer = 0
 $90:AD65 9C CE 0C    STZ $0CCE  [$7E:0CCE]  ; Projectile counter = 0
-$90:AD68 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag
+$90:AD68 9C EE 0C    STZ $0CEE  [$7E:0CEE]  ; Power bomb flag = 0
 $90:AD6B AD EA 09    LDA $09EA  [$7E:09EA]  ;\
 $90:AD6E F0 06       BEQ $06    [$AD76]     ;} If [icon cancel flag] != 0:
 $90:AD70 9C D2 09    STZ $09D2  [$7E:09D2]  ; HUD item index = nothing
