@@ -15888,7 +15888,7 @@ $86:EEC3 9D 47 1B    STA $1B47,x[$7E:1B69]  ;/
 $86:EEC6 A9 01 00    LDA #$0001             ;\
 $86:EEC9 9D 8F 1B    STA $1B8F,x[$7E:1BB1]  ;} Enemy projectile instruction timer = 1
 $86:EECC A9 90 01    LDA #$0190             ;\
-$86:EECF 9D 23 1B    STA $1B23,x[$7E:1B45]  ;} Enemy projectile projectile expiration timer = 400
+$86:EECF 9D 23 1B    STA $1B23,x[$7E:1B45]  ;} Enemy projectile expiration timer = 400
 $86:EED2 A9 E0 EF    LDA #$EFE0             ;\
 $86:EED5 9D 03 1A    STA $1A03,x[$7E:1A25]  ;} Enemy projectile pre-instruction = $EFE0 (pickup)
 $86:EED8 BD D7 1B    LDA $1BD7,x[$7E:1BF9]  ;\
@@ -15974,7 +15974,7 @@ $86:EF54 99 47 1B    STA $1B47,y[$7E:1B49]  ;/
 $86:EF57 A9 01 00    LDA #$0001             ;\
 $86:EF5A 99 8F 1B    STA $1B8F,y[$7E:1B91]  ;} Enemy projectile instruction timer = 1
 $86:EF5D A9 90 01    LDA #$0190             ;\
-$86:EF60 99 23 1B    STA $1B23,y[$7E:1B25]  ;} Enemy projectile projectile expiration timer = 400
+$86:EF60 99 23 1B    STA $1B23,y[$7E:1B25]  ;} Enemy projectile expiration timer = 400
 $86:EF63 BB          TYX                    ;\
 $86:EF64 A9 FF FF    LDA #$FFFF             ;} Enemy projectile killed enemy index = FFFFh
 $86:EF67 9F 10 F4 7E STA $7EF410,x[$7E:F412];/
