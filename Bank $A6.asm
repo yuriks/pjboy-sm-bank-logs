@@ -3327,14 +3327,14 @@ $A6:AA62 E2 20       SEP #$20               ;\
 $A6:AA64 A9 80       LDA #$80               ;|
 $A6:AA66 85 5F       STA $5F    [$7E:005F]  ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
 $A6:AA68 C2 20       REP #$20               ;/
-$A6:AA6A A9 00 01    LDA #$0100
-$A6:AA6D 85 78       STA $78    [$7E:0078]
-$A6:AA6F 85 7A       STA $7A    [$7E:007A]
-$A6:AA71 85 7C       STA $7C    [$7E:007C]
-$A6:AA73 85 7E       STA $7E    [$7E:007E]
-$A6:AA75 A9 40 00    LDA #$0040
-$A6:AA78 85 80       STA $80    [$7E:0080]
-$A6:AA7A 85 82       STA $82    [$7E:0082]
+$A6:AA6A A9 00 01    LDA #$0100             ;\
+$A6:AA6D 85 78       STA $78    [$7E:0078]  ;|
+$A6:AA6F 85 7A       STA $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$A6:AA71 85 7C       STA $7C    [$7E:007C]  ;|
+$A6:AA73 85 7E       STA $7E    [$7E:007E]  ;/
+$A6:AA75 A9 40 00    LDA #$0040             ;\
+$A6:AA78 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (40h, 40h)
+$A6:AA7A 85 82       STA $82    [$7E:0082]  ;/
 $A6:AA7C A9 00 00    LDA #$0000
 $A6:AA7F 8F 24 80 7E STA $7E8024[$7E:8024]
 $A6:AA83 8F 26 80 7E STA $7E8026[$7E:8026]
@@ -3423,14 +3423,14 @@ $A6:AB3D C2 20       REP #$20
 $A6:AB3F E2 20       SEP #$20
 $A6:AB41 64 5F       STZ $5F    [$7E:005F]
 $A6:AB43 C2 20       REP #$20
-$A6:AB45 64 78       STZ $78    [$7E:0078]
-$A6:AB47 64 7A       STZ $7A    [$7E:007A]
-$A6:AB49 64 7C       STZ $7C    [$7E:007C]
-$A6:AB4B 64 7E       STZ $7E    [$7E:007E]
-$A6:AB4D 64 80       STZ $80    [$7E:0080]
-$A6:AB4F 64 82       STZ $82    [$7E:0082]
-$A6:AB51 64 B1       STZ $B1    [$7E:00B1]
-$A6:AB53 64 B3       STZ $B3    [$7E:00B3]
+$A6:AB45 64 78       STZ $78    [$7E:0078]  ;\
+$A6:AB47 64 7A       STZ $7A    [$7E:007A]  ;|
+$A6:AB49 64 7C       STZ $7C    [$7E:007C]  ;} Mode 7 transformation matrix = 0
+$A6:AB4B 64 7E       STZ $7E    [$7E:007E]  ;/
+$A6:AB4D 64 80       STZ $80    [$7E:0080]  ;\
+$A6:AB4F 64 82       STZ $82    [$7E:0082]  ;} Mode 7 transformation origin = (0, 0)
+$A6:AB51 64 B1       STZ $B1    [$7E:00B1]  ; BG1 X scroll = 0
+$A6:AB53 64 B3       STZ $B3    [$7E:00B3]  ; BG1 Y scroll = 0
 $A6:AB55 A9 4E C0    LDA #$C04E
 $A6:AB58 8D A8 0F    STA $0FA8  [$7E:0FA8]
 $A6:AB5B 9C B2 0F    STZ $0FB2  [$7E:0FB2]
@@ -3440,6 +3440,7 @@ $A6:AB5E 60          RTS
 
 ;;; $AB5F:  ;;;
 {
+; >_<;
 $A6:AB5F AF 14 78 7E LDA $7E7814[$7E:7814]
 $A6:AB63 EB          XBA
 $A6:AB64 29 FF 00    AND #$00FF
@@ -3482,46 +3483,46 @@ $A6:ABB3 49 FF FF    EOR #$FFFF
 $A6:ABB6 1A          INC A
 
 $A6:ABB7 85 7A       STA $7A    [$7E:007A]
-$A6:ABB9 A9 00 01    LDA #$0100
-$A6:ABBC 22 0E AC A6 JSL $A6AC0E[$A6:AC0E]
-$A6:ABC0 49 FF FF    EOR #$FFFF
-$A6:ABC3 1A          INC A
-$A6:ABC4 85 18       STA $18    [$7E:0018]
-$A6:ABC6 24 18       BIT $18    [$7E:0018]
-$A6:ABC8 10 04       BPL $04    [$ABCE]
-$A6:ABCA 49 FF FF    EOR #$FFFF
-$A6:ABCD 1A          INC A
-
-$A6:ABCE 85 26       STA $26    [$7E:0026]
-$A6:ABD0 AF 20 80 7E LDA $7E8020[$7E:8020]
-$A6:ABD4 85 28       STA $28    [$7E:0028]
-$A6:ABD6 20 58 AC    JSR $AC58  [$A6:AC58]
-$A6:ABD9 A5 2B       LDA $2B    [$7E:002B]
-$A6:ABDB 24 18       BIT $18    [$7E:0018]
-$A6:ABDD 10 04       BPL $04    [$ABE3]
-$A6:ABDF 49 FF FF    EOR #$FFFF
-$A6:ABE2 1A          INC A
-
-$A6:ABE3 85 7C       STA $7C    [$7E:007C]
-$A6:ABE5 A9 00 01    LDA #$0100
-$A6:ABE8 22 1E AC A6 JSL $A6AC1E[$A6:AC1E]
-$A6:ABEC 85 18       STA $18    [$7E:0018]
-$A6:ABEE 24 18       BIT $18    [$7E:0018]
-$A6:ABF0 10 04       BPL $04    [$ABF6]
-$A6:ABF2 49 FF FF    EOR #$FFFF
-$A6:ABF5 1A          INC A
-
-$A6:ABF6 85 26       STA $26    [$7E:0026]
-$A6:ABF8 AF 20 80 7E LDA $7E8020[$7E:8020]
-$A6:ABFC 85 28       STA $28    [$7E:0028]
-$A6:ABFE 20 58 AC    JSR $AC58  [$A6:AC58]
-$A6:AC01 A5 2B       LDA $2B    [$7E:002B]
-$A6:AC03 24 18       BIT $18    [$7E:0018]
-$A6:AC05 10 04       BPL $04    [$AC0B]
-$A6:AC07 49 FF FF    EOR #$FFFF
-$A6:AC0A 1A          INC A
-
-$A6:AC0B 85 7E       STA $7E    [$7E:007E]
+$A6:ABB9 A9 00 01    LDA #$0100             ;\
+$A6:ABBC 22 0E AC A6 JSL $A6AC0E[$A6:AC0E]  ;|
+$A6:ABC0 49 FF FF    EOR #$FFFF             ;|
+$A6:ABC3 1A          INC A                  ;|
+$A6:ABC4 85 18       STA $18    [$7E:0018]  ;|
+$A6:ABC6 24 18       BIT $18    [$7E:0018]  ;|
+$A6:ABC8 10 04       BPL $04    [$ABCE]     ;|
+$A6:ABCA 49 FF FF    EOR #$FFFF             ;|
+$A6:ABCD 1A          INC A                  ;|
+                                            ;|
+$A6:ABCE 85 26       STA $26    [$7E:0026]  ;} Mode 7 transformation matrix parameter C = -[mode 7 transformation matrix parameter B]
+$A6:ABD0 AF 20 80 7E LDA $7E8020[$7E:8020]  ;|
+$A6:ABD4 85 28       STA $28    [$7E:0028]  ;|
+$A6:ABD6 20 58 AC    JSR $AC58  [$A6:AC58]  ;|
+$A6:ABD9 A5 2B       LDA $2B    [$7E:002B]  ;|
+$A6:ABDB 24 18       BIT $18    [$7E:0018]  ;|
+$A6:ABDD 10 04       BPL $04    [$ABE3]     ;|
+$A6:ABDF 49 FF FF    EOR #$FFFF             ;|
+$A6:ABE2 1A          INC A                  ;|
+                                            ;|
+$A6:ABE3 85 7C       STA $7C    [$7E:007C]  ;/
+$A6:ABE5 A9 00 01    LDA #$0100             ;\
+$A6:ABE8 22 1E AC A6 JSL $A6AC1E[$A6:AC1E]  ;|
+$A6:ABEC 85 18       STA $18    [$7E:0018]  ;|
+$A6:ABEE 24 18       BIT $18    [$7E:0018]  ;|
+$A6:ABF0 10 04       BPL $04    [$ABF6]     ;|
+$A6:ABF2 49 FF FF    EOR #$FFFF             ;|
+$A6:ABF5 1A          INC A                  ;|
+                                            ;|
+$A6:ABF6 85 26       STA $26    [$7E:0026]  ;|
+$A6:ABF8 AF 20 80 7E LDA $7E8020[$7E:8020]  ;} Mode 7 transformation matrix parameter D = [mode 7 transformation matrix parameter A]
+$A6:ABFC 85 28       STA $28    [$7E:0028]  ;|
+$A6:ABFE 20 58 AC    JSR $AC58  [$A6:AC58]  ;|
+$A6:AC01 A5 2B       LDA $2B    [$7E:002B]  ;|
+$A6:AC03 24 18       BIT $18    [$7E:0018]  ;|
+$A6:AC05 10 04       BPL $04    [$AC0B]     ;|
+$A6:AC07 49 FF FF    EOR #$FFFF             ;|
+$A6:AC0A 1A          INC A                  ;|
+                                            ;|
+$A6:AC0B 85 7E       STA $7E    [$7E:007E]  ;/
 $A6:AC0D 60          RTS
 }
 

@@ -489,19 +489,19 @@ $8B:843E 85 76       STA $76    [$7E:0076]  ;/
 $8B:8440 C2 30       REP #$30
 $8B:8442 9C 90 05    STZ $0590  [$7E:0590]  ; OAM data index = 0
 $8B:8445 A9 00 01    LDA #$0100             ;\
-$8B:8448 8D 1B 21    STA $211B  [$7E:211B]  ;} Mode 7 transformation matrix parameter A = 100h
-$8B:844B 85 78       STA $78    [$7E:0078]  ;/
-$8B:844D 9C 1C 21    STZ $211C  [$7E:211C]  ;\
-$8B:8450 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix parameter B = 0
-$8B:8452 9C 1D 21    STZ $211D  [$7E:211D]  ;\
-$8B:8455 64 7C       STZ $7C    [$7E:007C]  ;} Mode 7 transformation matrix parameter C = 0
-$8B:8457 8D 1E 21    STA $211E  [$7E:211E]  ;\
-$8B:845A 85 7E       STA $7E    [$7E:007E]  ;} Mode 7 transformation matrix parameter D = 100h
+$8B:8448 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:844B 85 78       STA $78    [$7E:0078]  ;|
+$8B:844D 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:8450 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:8452 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:8455 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:8457 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:845A 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:845C A9 80 00    LDA #$0080             ;\
-$8B:845F 8D 1F 21    STA $211F  [$7E:211F]  ;} Mode 7 transformation origin co-ordinate X = 80h
-$8B:8462 85 80       STA $80    [$7E:0080]  ;/
-$8B:8464 8D 20 21    STA $2120  [$7E:2120]  ;\
-$8B:8467 85 82       STA $82    [$7E:0082]  ;} Mode 7 transformation origin co-ordinate Y = 80h
+$8B:845F 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:8462 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
+$8B:8464 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:8467 85 82       STA $82    [$7E:0082]  ;/
 $8B:8469 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
 $8B:846C A9 01 00    LDA #$0001             ;\
 $8B:846F 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 1
@@ -601,15 +601,15 @@ $8B:8517 60          RTS
 {
 $8B:8518 08          PHP
 $8B:8519 C2 30       REP #$30
-$8B:851B AD 8F 19    LDA $198F  [$7E:198F]
-$8B:851E 85 78       STA $78    [$7E:0078]
-$8B:8520 85 7E       STA $7E    [$7E:007E]
-$8B:8522 64 7A       STZ $7A    [$7E:007A]
-$8B:8524 64 7C       STZ $7C    [$7E:007C]
-$8B:8526 AD 93 19    LDA $1993  [$7E:1993]
-$8B:8529 85 B1       STA $B1    [$7E:00B1]
-$8B:852B AD 97 19    LDA $1997  [$7E:1997]
-$8B:852E 85 B3       STA $B3    [$7E:00B3]
+$8B:851B AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:851E 85 78       STA $78    [$7E:0078]  ;} Mode 7 transformation matrix parameter A/D = [mode 7 transformation zoom level]
+$8B:8520 85 7E       STA $7E    [$7E:007E]  ;/
+$8B:8522 64 7A       STZ $7A    [$7E:007A]  ;\
+$8B:8524 64 7C       STZ $7C    [$7E:007C]  ;} Mode 7 transformation matrix parameter B/C = 0
+$8B:8526 AD 93 19    LDA $1993  [$7E:1993]  ;\
+$8B:8529 85 B1       STA $B1    [$7E:00B1]  ;} BG1 X scroll = [mode 7 X position]
+$8B:852B AD 97 19    LDA $1997  [$7E:1997]  ;\
+$8B:852E 85 B3       STA $B3    [$7E:00B3]  ;} BG1 Y scroll = [mode 7 Y position]
 $8B:8530 28          PLP
 $8B:8531 60          RTS
 }
@@ -633,7 +633,7 @@ $8B:854C 20 8F 85    JSR $858F  [$8B:858F]  ; $2A.$2C = ±[$26] * ±[$28] / 1000
 $8B:854F E2 20       SEP #$20               ;\
 $8B:8551 A5 2A       LDA $2A    [$7E:002A]  ;|
 $8B:8553 EB          XBA                    ;|
-$8B:8554 A5 2D       LDA $2D    [$7E:002D]  ;} Mode 7 transformation matrix parameter A/D = [$2A].[$2C] * 100h & FFFFh
+$8B:8554 A5 2D       LDA $2D    [$7E:002D]  ;} Mode 7 transformation matrix parameter A/D = [$2A].[$2C] * 100h
 $8B:8556 C2 20       REP #$20               ;|
 $8B:8558 85 78       STA $78    [$7E:0078]  ;|
 $8B:855A 85 7E       STA $7E    [$7E:007E]  ;/
@@ -649,7 +649,7 @@ $8B:856F 20 8F 85    JSR $858F  [$8B:858F]  ; $2A.$2C = ±[$26] * ±[$28] / 1000
 $8B:8572 E2 20       SEP #$20               ;\
 $8B:8574 A5 2A       LDA $2A    [$7E:002A]  ;|
 $8B:8576 EB          XBA                    ;|
-$8B:8577 A5 2D       LDA $2D    [$7E:002D]  ;} Mode 7 transformation matrix parameter B = [$2A].[$2C] * 100h & FFFFh
+$8B:8577 A5 2D       LDA $2D    [$7E:002D]  ;} Mode 7 transformation matrix parameter B = [$2A].[$2C] * 100h
 $8B:8579 C2 20       REP #$20               ;|
 $8B:857B 85 7A       STA $7A    [$7E:007A]  ;/
 $8B:857D 49 FF FF    EOR #$FFFF             ;\
@@ -3036,7 +3036,7 @@ $8B:9571 60          RTS
 }
 
 
-;;; $9572: Instruction - pre-instruction = [[Y]] ;;;
+;;; $9572: Unused. Instruction - pre-instruction = [[Y]] ;;;
 {
 $8B:9572 C2 30       REP #$30
 $8B:9574 B9 00 00    LDA $0000,y
@@ -3047,7 +3047,7 @@ $8B:957C 60          RTS
 }
 
 
-;;; $957D: Instruction - clear pre-instruction ;;;
+;;; $957D: Unused. Instruction - clear pre-instruction ;;;
 {
 $8B:957D C2 30       REP #$30
 $8B:957F A9 85 95    LDA #$9585
@@ -4071,119 +4071,119 @@ $8B:9B86 60          RTS
 ;;; $9B87: Load title sequence graphics ;;;
 {
 ; Called by:
-;     $9B68: Load title sequence
+;     $9B68: Cinematic function - load title sequence
 ;     $82:85FB: Game state 2Ch (transition from demo)
 $8B:9B87 08          PHP
 $8B:9B88 8B          PHB
-$8B:9B89 4B          PHK
-$8B:9B8A AB          PLB
+$8B:9B89 4B          PHK                    ;\
+$8B:9B8A AB          PLB                    ;} DB = $8B
 $8B:9B8B C2 30       REP #$30
-$8B:9B8D 20 00 80    JSR $8000  [$8B:8000]
-$8B:9B90 64 AB       STZ $AB    [$7E:00AB]
-$8B:9B92 64 A7       STZ $A7    [$7E:00A7]
+$8B:9B8D 20 00 80    JSR $8000  [$8B:8000]  ; Set up PPU for title sequence
+$8B:9B90 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = nothing
+$8B:9B92 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
 $8B:9B94 A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:9B97 BF E9 E1 8C LDA $8CE1E9,x[$8C:E1E9];|
 $8B:9B9B 9F 00 C0 7E STA $7EC000,x[$7E:C000];|
-$8B:9B9F E8          INX                    ;} Load title palettes
+$8B:9B9F E8          INX                    ;} Palettes = [$8C:E1E9..E3E8] (title palettes)
 $8B:9BA0 E8          INX                    ;|
 $8B:9BA1 E0 00 02    CPX #$0200             ;|
 $8B:9BA4 30 F1       BMI $F1    [$9B97]     ;/
 $8B:9BA6 A9 00 94    LDA #$9400             ;\
 $8B:9BA9 85 48       STA $48    [$7E:0048]  ;|
 $8B:9BAB A9 00 E0    LDA #$E000             ;|
-$8B:9BAE 85 47       STA $47    [$7E:0047]  ;} Decompress title BG tiles to $7F:0000
+$8B:9BAE 85 47       STA $47    [$7E:0047]  ;} Decompress $94:E000 (title BG tiles) to $7F:0000
 $8B:9BB0 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:9BB4             dl 7F0000              ;/
 $8B:9BB7 A9 00 96    LDA #$9600             ;\
 $8B:9BBA 85 48       STA $48    [$7E:0048]  ;|
 $8B:9BBC A9 04 FC    LDA #$FC04             ;|
-$8B:9BBF 85 47       STA $47    [$7E:0047]  ;} Decompress title tilemap to $7F:4000
+$8B:9BBF 85 47       STA $47    [$7E:0047]  ;} Decompress $96:FC04 (title tilemap) to $7F:4000
 $8B:9BC1 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:9BC5             dl 7F4000              ;/
 $8B:9BC8 A9 00 95    LDA #$9500             ;\
 $8B:9BCB 85 48       STA $48    [$7E:0048]  ;|
 $8B:9BCD A9 D8 80    LDA #$80D8             ;|
-$8B:9BD0 85 47       STA $47    [$7E:0047]  ;} Decompress title sprite tiles to $7F:5000
+$8B:9BD0 85 47       STA $47    [$7E:0047]  ;} Decompress $95:80D8 (title sprite tiles) to $7F:5000
 $8B:9BD2 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:9BD6             dl 7F5000              ;/
 $8B:9BD9 A9 00 95    LDA #$9500             ;\
 $8B:9BDC 85 48       STA $48    [$7E:0048]  ;|
 $8B:9BDE A9 E1 A5    LDA #$A5E1             ;|
-$8B:9BE1 85 47       STA $47    [$7E:0047]  ;} Decompress baby metroid tiles to $7F:9000
+$8B:9BE1 85 47       STA $47    [$7E:0047]  ;} Decompress $95:A5E1 (baby metroid tiles) to $7F:9000
 $8B:9BE3 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:9BE7             dl 7F9000              ;/
 $8B:9BEA E2 30       SEP #$30
-$8B:9BEC A9 00       LDA #$00
-$8B:9BEE 8D 16 21    STA $2116  [$7E:2116]
-$8B:9BF1 A9 00       LDA #$00
-$8B:9BF3 8D 17 21    STA $2117  [$7E:2117]
-$8B:9BF6 A9 80       LDA #$80
-$8B:9BF8 8D 15 21    STA $2115  [$7E:2115]
-$8B:9BFB 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:9BFF             dx 01,00,19,7F0000,4000
-$8B:9C07 A9 02       LDA #$02
-$8B:9C09 8D 0B 42    STA $420B  [$7E:420B]
+$8B:9BEC A9 00       LDA #$00               ;\
+$8B:9BEE 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:9BF1 A9 00       LDA #$00               ;|
+$8B:9BF3 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:9BF6 A9 80       LDA #$80               ;|
+$8B:9BF8 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (title BG tiles)
+$8B:9BFB 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:9BFF             dx 01,00,19,7F0000,4000;|
+$8B:9C07 A9 02       LDA #$02               ;|
+$8B:9C09 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $8B:9C0C C2 10       REP #$10
-$8B:9C0E 9C 15 21    STZ $2115  [$7E:2115]
-$8B:9C11 9C 16 21    STZ $2116  [$7E:2116]
-$8B:9C14 9C 17 21    STZ $2117  [$7E:2117]
-$8B:9C17 A2 00 40    LDX #$4000
-$8B:9C1A A9 FF       LDA #$FF
-
-$8B:9C1C 8D 18 21    STA $2118  [$7E:2118]
-$8B:9C1F CA          DEX
-$8B:9C20 D0 FA       BNE $FA    [$9C1C]
+$8B:9C0E 9C 15 21    STZ $2115  [$7E:2115]  ;\
+$8B:9C11 9C 16 21    STZ $2116  [$7E:2116]  ;|
+$8B:9C14 9C 17 21    STZ $2117  [$7E:2117]  ;|
+$8B:9C17 A2 00 40    LDX #$4000             ;|
+$8B:9C1A A9 FF       LDA #$FF               ;} VRAM $0000..3FFF low bytes = FFh
+                                            ;|
+$8B:9C1C 8D 18 21    STA $2118  [$7E:2118]  ;|
+$8B:9C1F CA          DEX                    ;|
+$8B:9C20 D0 FA       BNE $FA    [$9C1C]     ;/
 $8B:9C22 E2 10       SEP #$10
-$8B:9C24 A9 00       LDA #$00
-$8B:9C26 8D 16 21    STA $2116  [$7E:2116]
-$8B:9C29 A9 00       LDA #$00
-$8B:9C2B 8D 17 21    STA $2117  [$7E:2117]
-$8B:9C2E A9 00       LDA #$00
-$8B:9C30 8D 15 21    STA $2115  [$7E:2115]
-$8B:9C33 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:9C37             dx 01,00,18,7F4000,1000
-$8B:9C3F A9 02       LDA #$02
-$8B:9C41 8D 0B 42    STA $420B  [$7E:420B]
-$8B:9C44 A9 00       LDA #$00
-$8B:9C46 8D 16 21    STA $2116  [$7E:2116]
-$8B:9C49 A9 60       LDA #$60
-$8B:9C4B 8D 17 21    STA $2117  [$7E:2117]
-$8B:9C4E A9 80       LDA #$80
-$8B:9C50 8D 15 21    STA $2115  [$7E:2115]
-$8B:9C53 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:9C57             dx 01,01,18,7F5000,4000
-$8B:9C5F A9 02       LDA #$02
-$8B:9C61 8D 0B 42    STA $420B  [$7E:420B]
+$8B:9C24 A9 00       LDA #$00               ;\
+$8B:9C26 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:9C29 A9 00       LDA #$00               ;|
+$8B:9C2B 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:9C2E A9 00       LDA #$00               ;|
+$8B:9C30 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..0FFF low bytes = [$7F:4000..4FFF] (title tilemap)
+$8B:9C33 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:9C37             dx 01,00,18,7F4000,1000;|
+$8B:9C3F A9 02       LDA #$02               ;|
+$8B:9C41 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:9C44 A9 00       LDA #$00               ;\
+$8B:9C46 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:9C49 A9 60       LDA #$60               ;|
+$8B:9C4B 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:9C4E A9 80       LDA #$80               ;|
+$8B:9C50 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (title sprite tiles)
+$8B:9C53 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:9C57             dx 01,01,18,7F5000,4000;|
+$8B:9C5F A9 02       LDA #$02               ;|
+$8B:9C61 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $8B:9C64 C2 30       REP #$30
-$8B:9C66 A9 00 01    LDA #$0100
-$8B:9C69 8D 1B 21    STA $211B  [$7E:211B]
-$8B:9C6C 85 78       STA $78    [$7E:0078]
-$8B:9C6E 9C 1C 21    STZ $211C  [$7E:211C]
-$8B:9C71 64 7A       STZ $7A    [$7E:007A]
-$8B:9C73 9C 1D 21    STZ $211D  [$7E:211D]
-$8B:9C76 64 7C       STZ $7C    [$7E:007C]
-$8B:9C78 8D 1E 21    STA $211E  [$7E:211E]
-$8B:9C7B 85 7E       STA $7E    [$7E:007E]
-$8B:9C7D A9 80 00    LDA #$0080
-$8B:9C80 8D 1F 21    STA $211F  [$7E:211F]
-$8B:9C83 85 80       STA $80    [$7E:0080]
-$8B:9C85 8D 20 21    STA $2120  [$7E:2120]
-$8B:9C88 85 82       STA $82    [$7E:0082]
-$8B:9C8A 22 4B 83 80 JSL $80834B[$80:834B]
-$8B:9C8E A9 01 00    LDA #$0001
-$8B:9C91 8D 23 07    STA $0723  [$7E:0723]
-$8B:9C94 8D 25 07    STA $0725  [$7E:0725]
-$8B:9C97 22 88 82 88 JSL $888288[$88:8288]
-$8B:9C9B 22 C2 C4 8D JSL $8DC4C2[$8D:C4C2]
-$8B:9C9F A9 00 00    LDA #$0000
-$8B:9CA2 8D 82 19    STA $1982  [$7E:1982]
+$8B:9C66 A9 00 01    LDA #$0100             ;\
+$8B:9C69 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:9C6C 85 78       STA $78    [$7E:0078]  ;|
+$8B:9C6E 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:9C71 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:9C73 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:9C76 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:9C78 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:9C7B 85 7E       STA $7E    [$7E:007E]  ;/
+$8B:9C7D A9 80 00    LDA #$0080             ;\
+$8B:9C80 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:9C83 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
+$8B:9C85 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:9C88 85 82       STA $82    [$7E:0082]  ;/
+$8B:9C8A 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
+$8B:9C8E A9 01 00    LDA #$0001             ;\
+$8B:9C91 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
+$8B:9C94 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
+$8B:9C97 22 88 82 88 JSL $888288[$88:8288]  ; Enable HDMA objects
+$8B:9C9B 22 C2 C4 8D JSL $8DC4C2[$8D:C4C2]  ; Enable palette FX objects
+$8B:9C9F A9 00 00    LDA #$0000             ;\
+$8B:9CA2 8D 82 19    STA $1982  [$7E:1982]  ;} Default layer blending configuration = 0
 $8B:9CA5 A0 A0 E1    LDY #$E1A0             ;\
 $8B:9CA8 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A0 (title screen baby metroid tube light)
 $8B:9CAC A0 A4 E1    LDY #$E1A4             ;\
 $8B:9CAF 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A4 (title screen flickering displays)
 $8B:9CB3 A0 55 A3    LDY #$A355             ;\
-$8B:9CB6 20 E4 94    JSR $94E4  [$8B:94E4]  ;} Spawn mode 7 object $A355 (baby metroid in title sequence)
+$8B:9CB6 20 E4 94    JSR $94E4  [$8B:94E4]  ;} Spawn mode 7 object $A355 (title sequence baby metroid)
 $8B:9CB9 AB          PLB
 $8B:9CBA 28          PLP
 $8B:9CBB 6B          RTL
@@ -4192,8 +4192,8 @@ $8B:9CBB 6B          RTL
 
 ;;; $9CBC: Initialisation function - cinematic sprite object $A0EF ('1994' scrolling text) ;;;
 {
-$8B:9CBC A9 81 00    LDA #$0081
-$8B:9CBF 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:9CBC A9 81 00    LDA #$0081             ;\
+$8B:9CBF 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
 $8B:9CC2 A9 70 00    LDA #$0070
 $8B:9CC5 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:9CC8 A9 00 02    LDA #$0200
@@ -4274,8 +4274,8 @@ $8B:9D49 60          RTS
 
 ;;; $9D4A: Initialisation function - cinematic sprite object $A0F5 ('NINTENDO' scrolling text) ;;;
 {
-$8B:9D4A A9 81 00    LDA #$0081
-$8B:9D4D 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:9D4A A9 81 00    LDA #$0081             ;\
+$8B:9D4D 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
 $8B:9D50 A9 70 00    LDA #$0070
 $8B:9D53 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:9D56 A9 00 02    LDA #$0200
@@ -4336,8 +4336,8 @@ $8B:9DC2 60          RTS
 
 ;;; $9DC3: Initialisation function - cinematic sprite object $A0FB ('PRESENTS' scrolling text) ;;;
 {
-$8B:9DC3 A9 81 00    LDA #$0081
-$8B:9DC6 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:9DC3 A9 81 00    LDA #$0081             ;\
+$8B:9DC6 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
 $8B:9DC9 A9 70 00    LDA #$0070
 $8B:9DCC 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:9DCF A9 00 02    LDA #$0200
@@ -4401,8 +4401,8 @@ $8B:9E44 60          RTS
 
 ;;; $9E45: Initialisation function - cinematic sprite object $A101 ('METROID 3' scrolling text) ;;;
 {
-$8B:9E45 A9 81 00    LDA #$0081
-$8B:9E48 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:9E45 A9 81 00    LDA #$0081             ;\
+$8B:9E48 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
 $8B:9E4B A9 70 00    LDA #$0070
 $8B:9E4E 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:9E51 A9 00 02    LDA #$0200
@@ -4461,8 +4461,8 @@ $8B:9EB2 60          RTS
 
 ;;; $9EB3: Initialisation function - cinematic sprite object $A107 (Super Metroid title logo - fade in) ;;;
 {
-$8B:9EB3 A9 80 00    LDA #$0080
-$8B:9EB6 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:9EB3 A9 80 00    LDA #$0080             ;\
+$8B:9EB6 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 80h
 $8B:9EB9 A9 30 00    LDA #$0030
 $8B:9EBC 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:9EBF A9 00 04    LDA #$0400
@@ -4485,8 +4485,8 @@ $8B:9ED5 60          RTS
 
 ;;; $9ED6: Initialisation function - cinematic sprite object $A10D (unused. Nintendo boot logo - fade in) ;;;
 {
-$8B:9ED6 A9 80 00    LDA #$0080
-$8B:9ED9 99 7D 1A    STA $1A7D,y
+$8B:9ED6 A9 80 00    LDA #$0080             ;\
+$8B:9ED9 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
 $8B:9EDC A9 51 00    LDA #$0051
 $8B:9EDF 99 9D 1A    STA $1A9D,y
 $8B:9EE2 A9 00 02    LDA #$0200
@@ -4511,8 +4511,8 @@ $8B:9EFE 60          RTS
 
 ;;; $9EFF: Initialisation function - cinematic sprite object $A113 (Nintendo copyright - fade in) ;;;
 {
-$8B:9EFF A9 80 00    LDA #$0080
-$8B:9F02 99 7D 1A    STA $1A7D,y[$7E:1A99]
+$8B:9EFF A9 80 00    LDA #$0080             ;\
+$8B:9F02 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 80h
 $8B:9F05 A9 C4 00    LDA #$00C4
 $8B:9F08 99 9D 1A    STA $1A9D,y[$7E:1AB9]
 $8B:9F0B A9 00 08    LDA #$0800
@@ -4833,110 +4833,111 @@ $8B:A125             dw 9B40,93D9,A0E7 ; Nintendo copyright - immediate
 }
 
 
-;;; $A12B: Mode 7 object instruction list ;;;
+;;; $A12B..A35A: Title sequence baby metroid ;;;
 {
-$8B:A12B             dw A273,
-                        9597,0002,
+;;; $A12B: Mode 7 object instruction list - title sequence baby metroid ;;;
+{
+$8B:A12B             dw A273,       ; Load baby metroid colours 0
+                        9597,0002,  ; Timer = 2
 $8B:A131             dw 000A,A337,
                         000A,A341,
                         000A,A34B,
                         000A,A341,
-                        958D,A131,
-                        A25B,
-                        A284,
+                        958D,A131,  ; Decrement timer and go to $A131 if non-zero
+                        A25B,       ; Play baby metroid cry 1
+                        A284,       ; Load baby metroid colours 1
                         0006,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0005,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0004,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0003,A341,
-                        A284,
+                        A284,       ; Load baby metroid colours 1
                         0002,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0003,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0004,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0005,A341,
-                        A284,
+                        A284,       ; Load baby metroid colours 1
                         0006,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0007,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0008,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0009,A341,
-                        A273,
-                        9597,0004,
+                        A273,       ; Load baby metroid colours 0
+                        9597,0004,  ; Timer = 4
 $8B:A195             dw 000A,A337,
                         000A,A341,
                         000A,A34B,
                         000A,A341,
-                        958D,A195,
-                        A263,
-                        A284,
+                        958D,A195,  ; Decrement timer and go to $A195 if non-zero
+                        A263,       ; Play baby metroid cry 2
+                        A284,       ; Load baby metroid colours 1
                         0006,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0005,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0004,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0003,A341,
-                        A284,
+                        A284,       ; Load baby metroid colours 1
                         0002,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0003,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0004,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0005,A341,
-                        A284,
+                        A284,       ; Load baby metroid colours 1
                         0006,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0007,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0008,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0009,A341,
-                        A273,
-                        9597,0003,
+                        A273,       ; Load baby metroid colours 0
+                        9597,0003,  ; Timer = 3
 $8B:A1F9             dw 000A,A337,
                         000A,A341,
                         000A,A34B,
                         000A,A341,
-                        958D,A1F9,
-                        A26B,
-                        A284,
+                        958D,A1F9,  ; Decrement timer and go to $A1F9 if non-zero
+                        A26B,       ; Play baby metroid cry 3
+                        A284,       ; Load baby metroid colours 1
                         0006,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0005,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0004,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0003,A341,
-                        A284,
+                        A284,       ; Load baby metroid colours 1
                         0002,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0003,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0004,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0005,A341,
-                        A284,
+                        A284,       ; Load baby metroid colours 1
                         0006,A337,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0007,A341,
-                        A2A6,
+                        A2A6,       ; Load baby metroid colours 3
                         0008,A34B,
-                        A295,
+                        A295,       ; Load baby metroid colours 2
                         0009,A341,
-                        9586,
-                        A12B
+                        9586,A12B   ; Go to $A12B
 }
 
 
-;;; $A25B: Play Baby Metroid cry 1 ;;;
+;;; $A25B: Instruction - play baby metroid cry 1 ;;;
 {
 $8B:A25B A9 23 00    LDA #$0023             ;\
 $8B:A25E 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 23h, sound library 3, max queued sounds allowed = 6 (baby metroid cry 1)
@@ -4944,7 +4945,7 @@ $8B:A262 60          RTS
 }
 
 
-;;; $A263: Play Baby Metroid cry 2 ;;;
+;;; $A263: Instruction - play baby metroid cry 2 ;;;
 {
 $8B:A263 A9 26 00    LDA #$0026             ;\
 $8B:A266 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 26h, sound library 3, max queued sounds allowed = 6 (baby metroid cry 2)
@@ -4952,7 +4953,7 @@ $8B:A26A 60          RTS
 }
 
 
-;;; $A26B: Play Baby Metroid cry 3 ;;;
+;;; $A26B: Instruction - play baby metroid cry 3 ;;;
 {
 $8B:A26B A9 27 00    LDA #$0027             ;\
 $8B:A26E 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 27h, sound library 3, max queued sounds allowed = 6 (baby metroid cry 3)
@@ -4960,10 +4961,11 @@ $8B:A272 60          RTS
 }
 
 
-;;; $A273:  ;;;
+;;; $A273: Instruction - load baby metroid colours 0 ;;;
 {
+; BG palette colours 30h..3Fh = [$A2B7..D6]
 $8B:A273 DA          PHX
-$8B:A274 A2 1E 00    LDX #$001E
+$8B:A274 A2 1E 00    LDX #$001E             
 
 $8B:A277 BD B7 A2    LDA $A2B7,x[$8B:A2D5]
 $8B:A27A 9F 60 C0 7E STA $7EC060,x[$7E:C07E]
@@ -4975,8 +4977,9 @@ $8B:A283 60          RTS
 }
 
 
-;;; $A284:  ;;;
+;;; $A284: Instruction - load baby metroid colours 1 ;;;
 {
+; BG palette colours 30h..3Fh = [$A2D7..F6]
 $8B:A284 DA          PHX
 $8B:A285 A2 1E 00    LDX #$001E
 
@@ -4990,8 +4993,9 @@ $8B:A294 60          RTS
 }
 
 
-;;; $A295:  ;;;
+;;; $A295: Instruction - load baby metroid colours 2 ;;;
 {
+; BG palette colours 30h..3Fh = [$A2F7..A316]
 $8B:A295 DA          PHX
 $8B:A296 A2 1E 00    LDX #$001E
 
@@ -5005,8 +5009,9 @@ $8B:A2A5 60          RTS
 }
 
 
-;;; $A2A6:  ;;;
+;;; $A2A6: Instruction - load baby metroid colours 3 ;;;
 {
+; BG palette colours 30h..3Fh = [$A317..36]
 $8B:A2A6 DA          PHX
 $8B:A2A7 A2 1E 00    LDX #$001E
 
@@ -5020,8 +5025,9 @@ $8B:A2B6 60          RTS
 }
 
 
-;;; $A2B7: Palettes ;;;
+;;; $A2B7: Title sequence baby metroid colours ;;;
 {
+; Game over baby metroid palettes are at $82:BD97
 $8B:A2B7             dw 1000,6BF5,2E41,2DA1,2D01,5E5F,183F,1014,080A,0404,4F9F,3ED8,2E12,6F70,7FFF,5EE0
 $8B:A2D7             dw 3800,6BF5,06E1,0641,05A1,5E5F,183F,1014,080A,0404,4F9F,3ED8,2E12,6F70,7FFF,5EE0
 $8B:A2F7             dw 3800,77F8,1344,12A4,1204,6ABF,249F,1C77,146D,1067,5BFF,4B38,3A72,7BD3,7FFF,6B43
@@ -5029,7 +5035,7 @@ $8B:A317             dw 3800,7FFB,1FA7,1F07,1E67,771F,30FF,28DA,20D0,1CCA,67FF,5
 }
 
 
-;;; $A337: Mode 7 transfer data ;;;
+;;; $A337: Mode 7 transfer data - title sequence baby metroid ;;;
 {
 ;                        ______________________ Control. C0h = write to VRAM tiles
 ;                       |   ___________________ Source address
@@ -5043,13 +5049,14 @@ $8B:A34B             dx C0,7F9200,0100,3800,80, 00
 }
 
 
-;;; $A355: Mode 7 object - baby metroid in title sequence ;;;
+;;; $A355: Mode 7 object - title sequence baby metroid ;;;
 {
 ;                        _______________ Initialisation function
 ;                       |      _________ Pre-instruction
 ;                       |     |      ___ Instruction list pointer
 ;                       |     |     |
 $8B:A355             dw 93D9, 93D9, A12B
+}
 }
 
 
@@ -5579,8 +5586,8 @@ $8B:A8C0 60          RTS
 
 ;;; $A8C1:  ;;;
 {
-$8B:A8C1 A9 08 00    LDA #$0008
-$8B:A8C4 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:A8C1 A9 08 00    LDA #$0008             ;\
+$8B:A8C4 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 8
 $8B:A8C7 A9 18 00    LDA #$0018
 $8B:A8CA 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:A8CD A9 00 0C    LDA #$0C00
@@ -5597,8 +5604,8 @@ $8B:A8D4 60          RTS
 
 ;;; $A8D5:  ;;;
 {
-$8B:A8D5 A9 70 00    LDA #$0070
-$8B:A8D8 99 7D 1A    STA $1A7D,y[$7E:1A99]
+$8B:A8D5 A9 70 00    LDA #$0070             ;\
+$8B:A8D8 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 70h
 $8B:A8DB A9 9B 00    LDA #$009B
 $8B:A8DE 99 9D 1A    STA $1A9D,y[$7E:1AB9]
 $8B:A8E1 A9 00 0E    LDA #$0E00
@@ -5841,8 +5848,8 @@ $8B:AC41             dw FFFD,0000, FFFD,C000, FFFD,A000, FFFD,8000, FFFD,6000, F
 
 ;;; $AD55:  ;;;
 {
-$8B:AD55 A9 54 00    LDA #$0054
-$8B:AD58 99 7D 1A    STA $1A7D,y[$7E:1A99]
+$8B:AD55 A9 54 00    LDA #$0054             ;\
+$8B:AD58 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 54h
 $8B:AD5B A9 8B 00    LDA #$008B
 $8B:AD5E 99 9D 1A    STA $1A9D,y[$7E:1AB9]
 $8B:AD61 A9 00 0C    LDA #$0C00
@@ -5878,8 +5885,8 @@ $8B:AD92 60          RTS
 
 ;;; $AD93:  ;;;
 {
-$8B:AD93 A9 70 00    LDA #$0070
-$8B:AD96 99 7D 1A    STA $1A7D,y[$7E:1A99]
+$8B:AD93 A9 70 00    LDA #$0070             ;\
+$8B:AD96 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 70h
 $8B:AD99 A9 6F 00    LDA #$006F
 $8B:AD9C 99 9D 1A    STA $1A9D,y[$7E:1AB9]
 $8B:AD9F A9 00 0C    LDA #$0C00
@@ -5950,8 +5957,8 @@ $8B:AE06 60          RTS
 
 ;;; $AE07:  ;;;
 {
-$8B:AE07 A9 80 00    LDA #$0080
-$8B:AE0A 99 7D 1A    STA $1A7D,y
+$8B:AE07 A9 80 00    LDA #$0080             ;\
+$8B:AE0A 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
 $8B:AE0D A9 D8 00    LDA #$00D8
 $8B:AE10 99 9D 1A    STA $1A9D,y
 $8B:AE13 A9 00 0C    LDA #$0C00
@@ -7249,8 +7256,8 @@ $8B:B772 60          RTS
 
 ;;; $B773:  ;;;
 {
-$8B:B773 A9 38 00    LDA #$0038
-$8B:B776 99 7D 1A    STA $1A7D,y[$7E:1A7D]
+$8B:B773 A9 38 00    LDA #$0038             ;\
+$8B:B776 99 7D 1A    STA $1A7D,y[$7E:1A7D]  ;} Cinematic sprite object X position = 38h
 $8B:B779 A9 6F 00    LDA #$006F
 $8B:B77C 99 9D 1A    STA $1A9D,y[$7E:1A9D]
 $8B:B77F A9 00 0E    LDA #$0E00
@@ -7620,8 +7627,8 @@ $8B:BA4A 60          RTS
 
 ;;; $BA4B:  ;;;
 {
-$8B:BA4B A9 70 00    LDA #$0070
-$8B:BA4E 99 7D 1A    STA $1A7D,y[$7E:1A97]
+$8B:BA4B A9 70 00    LDA #$0070             ;\
+$8B:BA4E 99 7D 1A    STA $1A7D,y[$7E:1A97]  ;} Cinematic sprite object X position = 70h
 $8B:BA51 A9 9B 00    LDA #$009B
 $8B:BA54 99 9D 1A    STA $1A9D,y[$7E:1AB7]
 $8B:BA57 A9 00 0E    LDA #$0E00
@@ -7976,29 +7983,29 @@ $8B:BD5C             dx 01,01,18,7F5000,4000
 $8B:BD64 A9 02       LDA #$02
 $8B:BD66 8D 0B 42    STA $420B  [$7E:420B]
 $8B:BD69 C2 30       REP #$30
-$8B:BD6B A9 00 01    LDA #$0100
-$8B:BD6E 8D 1B 21    STA $211B  [$7E:211B]
-$8B:BD71 85 78       STA $78    [$7E:0078]
-$8B:BD73 9C 1C 21    STZ $211C  [$7E:211C]
-$8B:BD76 64 7A       STZ $7A    [$7E:007A]
-$8B:BD78 9C 1D 21    STZ $211D  [$7E:211D]
-$8B:BD7B 64 7C       STZ $7C    [$7E:007C]
-$8B:BD7D 8D 1E 21    STA $211E  [$7E:211E]
-$8B:BD80 85 7E       STA $7E    [$7E:007E]
-$8B:BD82 A9 38 00    LDA #$0038
-$8B:BD85 8D 1F 21    STA $211F  [$7E:211F]
-$8B:BD88 85 80       STA $80    [$7E:0080]
-$8B:BD8A A9 18 00    LDA #$0018
-$8B:BD8D 8D 20 21    STA $2120  [$7E:2120]
-$8B:BD90 85 82       STA $82    [$7E:0082]
-$8B:BD92 A9 B8 FF    LDA #$FFB8
-$8B:BD95 8D 93 19    STA $1993  [$7E:1993]
-$8B:BD98 A9 98 FF    LDA #$FF98
-$8B:BD9B 8D 97 19    STA $1997  [$7E:1997]
-$8B:BD9E A9 E0 00    LDA #$00E0
-$8B:BDA1 8D 8D 19    STA $198D  [$7E:198D]
-$8B:BDA4 A9 00 02    LDA #$0200
-$8B:BDA7 8D 8F 19    STA $198F  [$7E:198F]
+$8B:BD6B A9 00 01    LDA #$0100             ;\
+$8B:BD6E 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:BD71 85 78       STA $78    [$7E:0078]  ;|
+$8B:BD73 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:BD76 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:BD78 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:BD7B 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:BD7D 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:BD80 85 7E       STA $7E    [$7E:007E]  ;/
+$8B:BD82 A9 38 00    LDA #$0038             ;\
+$8B:BD85 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:BD88 85 80       STA $80    [$7E:0080]  ;|
+$8B:BD8A A9 18 00    LDA #$0018             ;} Mode 7 transformation origin = (38h, 18h)
+$8B:BD8D 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:BD90 85 82       STA $82    [$7E:0082]  ;/
+$8B:BD92 A9 B8 FF    LDA #$FFB8             ;\
+$8B:BD95 8D 93 19    STA $1993  [$7E:1993]  ;} Mode 7 X position = -48h
+$8B:BD98 A9 98 FF    LDA #$FF98             ;\
+$8B:BD9B 8D 97 19    STA $1997  [$7E:1997]  ;} Mode 7 Y position = -68h
+$8B:BD9E A9 E0 00    LDA #$00E0             ;\
+$8B:BDA1 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = E0h
+$8B:BDA4 A9 00 02    LDA #$0200             ;\
+$8B:BDA7 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 200h
 $8B:BDAA 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
 $8B:BDAE 22 C2 C4 8D JSL $8DC4C2[$8D:C4C2]
 $8B:BDB2 A9 00 00    LDA #$0000
@@ -8102,8 +8109,8 @@ $8B:BE7E AD 9D 1B    LDA $1B9D  [$7E:1B9D]
 $8B:BE81 D0 19       BNE $19    [$BE9C]
 $8B:BE83 A9 00 FC    LDA #$FC00
 $8B:BE86 99 7D 1B    STA $1B7D,y[$7E:1B9B]
-$8B:BE89 A9 70 00    LDA #$0070
-$8B:BE8C 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:BE89 A9 70 00    LDA #$0070             ;\
+$8B:BE8C 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 70h
 $8B:BE8F A9 57 00    LDA #$0057
 $8B:BE92 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:BE95 A9 00 08    LDA #$0800
@@ -8112,8 +8119,8 @@ $8B:BE9B 60          RTS
 
 $8B:BE9C A9 C6 BF    LDA #$BFC6
 $8B:BE9F 99 3D 1B    STA $1B3D,y[$7E:1B53]
-$8B:BEA2 A9 E0 FF    LDA #$FFE0
-$8B:BEA5 99 7D 1A    STA $1A7D,y[$7E:1A93]
+$8B:BEA2 A9 E0 FF    LDA #$FFE0             ;\
+$8B:BEA5 99 7D 1A    STA $1A7D,y[$7E:1A93]  ;} Cinematic sprite object X position = -20h
 $8B:BEA8 A9 57 00    LDA #$0057
 $8B:BEAB 99 9D 1A    STA $1A9D,y[$7E:1AB3]
 $8B:BEAE A9 00 08    LDA #$0800
@@ -8178,8 +8185,8 @@ $8B:BF21 60          RTS
 
 ;;; $BF22:  ;;;
 {
-$8B:BF22 A9 50 00    LDA #$0050
-$8B:BF25 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:BF22 A9 50 00    LDA #$0050             ;\
+$8B:BF25 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 50h
 $8B:BF28 A9 9F 00    LDA #$009F
 $8B:BF2B 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:BF2E A9 00 08    LDA #$0800
@@ -8204,8 +8211,8 @@ $8B:BF4B 60          RTS
 
 ;;; $BF4C:  ;;;
 {
-$8B:BF4C A9 74 00    LDA #$0074
-$8B:BF4F 99 7D 1A    STA $1A7D,y[$7E:1A99]
+$8B:BF4C A9 74 00    LDA #$0074             ;\
+$8B:BF4F 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 74h
 $8B:BF52 A9 A0 00    LDA #$00A0
 $8B:BF55 99 9D 1A    STA $1A9D,y[$7E:1AB9]
 $8B:BF58 A9 00 0C    LDA #$0C00
@@ -8230,8 +8237,8 @@ $8B:BF75 60          RTS
 
 ;;; $BF76:  ;;;
 {
-$8B:BF76 A9 80 00    LDA #$0080
-$8B:BF79 99 7D 1A    STA $1A7D,y[$7E:1A97]
+$8B:BF76 A9 80 00    LDA #$0080             ;\
+$8B:BF79 99 7D 1A    STA $1A7D,y[$7E:1A97]  ;} Cinematic sprite object X position = 80h
 $8B:BF7C A9 60 00    LDA #$0060
 $8B:BF7F 99 9D 1A    STA $1A9D,y[$7E:1AB7]
 $8B:BF82 A9 00 08    LDA #$0800
@@ -8258,14 +8265,14 @@ $8B:BF9F 60          RTS
 {
 $8B:BFA0 AD 9D 1B    LDA $1B9D  [$7E:1B9D]
 $8B:BFA3 D0 0E       BNE $0E    [$BFB3]
-$8B:BFA5 A9 70 00    LDA #$0070
-$8B:BFA8 99 7D 1A    STA $1A7D,y[$7E:1A7D]
+$8B:BFA5 A9 70 00    LDA #$0070             ;\
+$8B:BFA8 99 7D 1A    STA $1A7D,y[$7E:1A7D]  ;} Cinematic sprite object X position = 70h
 $8B:BFAB A9 D9 BF    LDA #$BFD9
 $8B:BFAE 99 3D 1B    STA $1B3D,y[$7E:1B3D]
 $8B:BFB1 80 06       BRA $06    [$BFB9]
 
-$8B:BFB3 A9 E0 00    LDA #$00E0
-$8B:BFB6 99 7D 1A    STA $1A7D,y[$7E:1A95]
+$8B:BFB3 A9 E0 00    LDA #$00E0             ;\
+$8B:BFB6 99 7D 1A    STA $1A7D,y[$7E:1A95]  ;} Cinematic sprite object X position = E0h
 
 $8B:BFB9 A9 57 00    LDA #$0057
 $8B:BFBC 99 9D 1A    STA $1A9D,y[$7E:1AB5]
@@ -8374,8 +8381,8 @@ $8B:C082 60          RTS
 
 ;;; $C083:  ;;;
 {
-$8B:C083 A9 7C 00    LDA #$007C
-$8B:C086 99 7D 1A    STA $1A7D,y
+$8B:C083 A9 7C 00    LDA #$007C             ;\
+$8B:C086 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 7Ch
 $8B:C089 A9 BA 00    LDA #$00BA
 $8B:C08C 99 9D 1A    STA $1A9D,y
 $8B:C08F A9 00 00    LDA #$0000
@@ -8410,8 +8417,8 @@ $8B:C0B1 60          RTS
 
 ;;; $C0B2:  ;;;
 {
-$8B:C0B2 A9 7C 00    LDA #$007C
-$8B:C0B5 99 7D 1A    STA $1A7D,y
+$8B:C0B2 A9 7C 00    LDA #$007C             ;\
+$8B:C0B5 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 7Ch
 $8B:C0B8 A9 CC 00    LDA #$00CC
 $8B:C0BB 99 9D 1A    STA $1A9D,y
 $8B:C0BE A9 00 00    LDA #$0000
@@ -8569,28 +8576,28 @@ $8B:C214             dx 01,01,18,9AD200,1A00
 $8B:C21C A9 02       LDA #$02
 $8B:C21E 8D 0B 42    STA $420B  [$7E:420B]
 $8B:C221 C2 30       REP #$30
-$8B:C223 A9 00 01    LDA #$0100
-$8B:C226 8D 1B 21    STA $211B  [$7E:211B]
-$8B:C229 85 78       STA $78    [$7E:0078]
-$8B:C22B 9C 1C 21    STZ $211C  [$7E:211C]
-$8B:C22E 64 7A       STZ $7A    [$7E:007A]
-$8B:C230 9C 1D 21    STZ $211D  [$7E:211D]
-$8B:C233 64 7C       STZ $7C    [$7E:007C]
-$8B:C235 8D 1E 21    STA $211E  [$7E:211E]
-$8B:C238 85 7E       STA $7E    [$7E:007E]
-$8B:C23A A9 34 00    LDA #$0034
-$8B:C23D 8D 1F 21    STA $211F  [$7E:211F]
-$8B:C240 85 80       STA $80    [$7E:0080]
-$8B:C242 A9 30 00    LDA #$0030
-$8B:C245 8D 20 21    STA $2120  [$7E:2120]
-$8B:C248 85 82       STA $82    [$7E:0082]
-$8B:C24A A9 D4 FF    LDA #$FFD4
-$8B:C24D 8D 93 19    STA $1993  [$7E:1993]
-$8B:C250 A9 90 FF    LDA #$FF90
-$8B:C253 8D 97 19    STA $1997  [$7E:1997]
-$8B:C256 9C 8D 19    STZ $198D  [$7E:198D]
-$8B:C259 A9 00 01    LDA #$0100
-$8B:C25C 8D 8F 19    STA $198F  [$7E:198F]
+$8B:C223 A9 00 01    LDA #$0100             ;\
+$8B:C226 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:C229 85 78       STA $78    [$7E:0078]  ;|
+$8B:C22B 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:C22E 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:C230 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:C233 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:C235 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:C238 85 7E       STA $7E    [$7E:007E]  ;/
+$8B:C23A A9 34 00    LDA #$0034             ;\
+$8B:C23D 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:C240 85 80       STA $80    [$7E:0080]  ;|
+$8B:C242 A9 30 00    LDA #$0030             ;} Mode 7 transformation origin = (34h, 30h)
+$8B:C245 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:C248 85 82       STA $82    [$7E:0082]  ;/
+$8B:C24A A9 D4 FF    LDA #$FFD4             ;\
+$8B:C24D 8D 93 19    STA $1993  [$7E:1993]  ;} Mode 7 X position = -2Ch
+$8B:C250 A9 90 FF    LDA #$FF90             ;\
+$8B:C253 8D 97 19    STA $1997  [$7E:1997]  ;} Mode 7 Y position = -70h
+$8B:C256 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
+$8B:C259 A9 00 01    LDA #$0100             ;\
+$8B:C25C 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 100h
 $8B:C25F 22 93 82 88 JSL $888293[$88:8293]
 $8B:C263 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
 $8B:C267 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
@@ -9152,26 +9159,26 @@ $8B:C724             dx 01,01,18,7F5000,4000
 $8B:C72C A9 02       LDA #$02
 $8B:C72E 8D 0B 42    STA $420B  [$7E:420B]
 $8B:C731 C2 30       REP #$30
-$8B:C733 A9 00 01    LDA #$0100
-$8B:C736 8D 1B 21    STA $211B  [$7E:211B]
-$8B:C739 85 78       STA $78    [$7E:0078]
-$8B:C73B 9C 1C 21    STZ $211C  [$7E:211C]
-$8B:C73E 64 7A       STZ $7A    [$7E:007A]
-$8B:C740 9C 1D 21    STZ $211D  [$7E:211D]
-$8B:C743 64 7C       STZ $7C    [$7E:007C]
-$8B:C745 8D 1E 21    STA $211E  [$7E:211E]
-$8B:C748 85 7E       STA $7E    [$7E:007E]
-$8B:C74A A9 38 00    LDA #$0038
-$8B:C74D 8D 1F 21    STA $211F  [$7E:211F]
-$8B:C750 85 80       STA $80    [$7E:0080]
-$8B:C752 A9 18 00    LDA #$0018
-$8B:C755 8D 20 21    STA $2120  [$7E:2120]
-$8B:C758 85 82       STA $82    [$7E:0082]
-$8B:C75A 9C 93 19    STZ $1993  [$7E:1993]
-$8B:C75D 9C 97 19    STZ $1997  [$7E:1997]
-$8B:C760 9C 8D 19    STZ $198D  [$7E:198D]
-$8B:C763 A9 00 01    LDA #$0100
-$8B:C766 8D 8F 19    STA $198F  [$7E:198F]
+$8B:C733 A9 00 01    LDA #$0100             ;\
+$8B:C736 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:C739 85 78       STA $78    [$7E:0078]  ;|
+$8B:C73B 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:C73E 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:C740 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:C743 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:C745 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:C748 85 7E       STA $7E    [$7E:007E]  ;/
+$8B:C74A A9 38 00    LDA #$0038             ;\
+$8B:C74D 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:C750 85 80       STA $80    [$7E:0080]  ;|
+$8B:C752 A9 18 00    LDA #$0018             ;} Mode 7 transformation origin = (38h, 18h)
+$8B:C755 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:C758 85 82       STA $82    [$7E:0082]  ;/
+$8B:C75A 9C 93 19    STZ $1993  [$7E:1993]  ; Mode 7 X position = 0
+$8B:C75D 9C 97 19    STZ $1997  [$7E:1997]  ; Mode 7 Y position = 0
+$8B:C760 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
+$8B:C763 A9 00 01    LDA #$0100             ;\
+$8B:C766 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 100h
 $8B:C769 22 93 82 88 JSL $888293[$88:8293]
 $8B:C76D 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
 $8B:C771 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
@@ -9274,8 +9281,8 @@ $8B:C83A 60          RTS
 
 ;;; $C83B:  ;;;
 {
-$8B:C83B A9 88 00    LDA #$0088
-$8B:C83E 99 7D 1A    STA $1A7D,y[$7E:1A9B]
+$8B:C83B A9 88 00    LDA #$0088             ;\
+$8B:C83E 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 88h
 $8B:C841 A9 6F 00    LDA #$006F
 $8B:C844 99 9D 1A    STA $1A9D,y[$7E:1ABB]
 $8B:C847 A9 00 0E    LDA #$0E00
@@ -9329,8 +9336,8 @@ $8B:C896 60          RTS
 
 ;;; $C897:  ;;;
 {
-$8B:C897 A9 80 00    LDA #$0080
-$8B:C89A 99 7D 1A    STA $1A7D,y
+$8B:C897 A9 80 00    LDA #$0080             ;\
+$8B:C89A 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
 $8B:C89D A9 7F 00    LDA #$007F
 $8B:C8A0 99 9D 1A    STA $1A9D,y
 $8B:C8A3 A9 00 08    LDA #$0800
@@ -9429,9 +9436,9 @@ $8B:C941 60          RTS
 
 ;;; $C942:  ;;;
 {
-$8B:C942 EA          NOP
-$8B:C943 A9 30 00    LDA #$0030
-$8B:C946 99 7D 1A    STA $1A7D,y[$7E:1A99]
+$8B:C942 EA          NOP                    ; Wild NOP appears!
+$8B:C943 A9 30 00    LDA #$0030             ;\
+$8B:C946 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 30h
 $8B:C949 A9 2F 00    LDA #$002F
 $8B:C94C 99 9D 1A    STA $1A9D,y[$7E:1AB9]
 $8B:C94F A9 00 08    LDA #$0800
@@ -9443,8 +9450,8 @@ $8B:C955 60          RTS
 ;;; $C956:  ;;;
 {
 $8B:C956 EA          NOP
-$8B:C957 A9 D0 00    LDA #$00D0
-$8B:C95A 99 7D 1A    STA $1A7D,y[$7E:1A97]
+$8B:C957 A9 D0 00    LDA #$00D0             ;\
+$8B:C95A 99 7D 1A    STA $1A7D,y[$7E:1A97]  ;} Cinematic sprite object X position = D0h
 $8B:C95D A9 2F 00    LDA #$002F
 $8B:C960 99 9D 1A    STA $1A9D,y[$7E:1AB7]
 $8B:C963 A9 00 08    LDA #$0800
@@ -9456,8 +9463,8 @@ $8B:C969 60          RTS
 ;;; $C96A:  ;;;
 {
 $8B:C96A EA          NOP
-$8B:C96B A9 30 00    LDA #$0030
-$8B:C96E 99 7D 1A    STA $1A7D,y[$7E:1A95]
+$8B:C96B A9 30 00    LDA #$0030             ;\
+$8B:C96E 99 7D 1A    STA $1A7D,y[$7E:1A95]  ;} Cinematic sprite object X position = 30h
 $8B:C971 A9 CF 00    LDA #$00CF
 $8B:C974 99 9D 1A    STA $1A9D,y[$7E:1AB5]
 $8B:C977 A9 00 08    LDA #$0800
@@ -9469,8 +9476,8 @@ $8B:C97D 60          RTS
 ;;; $C97E:  ;;;
 {
 $8B:C97E EA          NOP
-$8B:C97F A9 D0 00    LDA #$00D0
-$8B:C982 99 7D 1A    STA $1A7D,y[$7E:1A93]
+$8B:C97F A9 D0 00    LDA #$00D0             ;\
+$8B:C982 99 7D 1A    STA $1A7D,y[$7E:1A93]  ;} Cinematic sprite object X position = D0h
 $8B:C985 A9 CF 00    LDA #$00CF
 $8B:C988 99 9D 1A    STA $1A9D,y[$7E:1AB3]
 $8B:C98B A9 00 08    LDA #$0800
@@ -9481,8 +9488,8 @@ $8B:C991 60          RTS
 
 ;;; $C992:  ;;;
 {
-$8B:C992 A9 80 00    LDA #$0080
-$8B:C995 99 7D 1A    STA $1A7D,y[$7E:1A91]
+$8B:C992 A9 80 00    LDA #$0080             ;\
+$8B:C995 99 7D 1A    STA $1A7D,y[$7E:1A91]  ;} Cinematic sprite object X position = 80h
 $8B:C998 A9 BA 00    LDA #$00BA
 $8B:C99B 99 9D 1A    STA $1A9D,y[$7E:1AB1]
 $8B:C99E A9 00 00    LDA #$0000
@@ -9542,8 +9549,8 @@ $8B:C9E5 60          RTS
 
 ;;; $C9E6:  ;;;
 {
-$8B:C9E6 A9 80 00    LDA #$0080
-$8B:C9E9 99 7D 1A    STA $1A7D,y
+$8B:C9E6 A9 80 00    LDA #$0080             ;\
+$8B:C9E9 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
 $8B:C9EC A9 CC 00    LDA #$00CC
 $8B:C9EF 99 9D 1A    STA $1A9D,y
 $8B:C9F2 A9 00 00    LDA #$0000
@@ -10911,19 +10918,19 @@ $8B:D61D 85 47       STA $47    [$7E:0047]  ;} Decompress clear BG tiles for big
 $8B:D61F 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D623             dl 7E6000              ;/
 $8B:D626 A9 00 01    LDA #$0100             ;\
-$8B:D629 8D 1B 21    STA $211B  [$7E:211B]  ;} Mode 7 transformation matrix parameter A = 100h
-$8B:D62C 85 78       STA $78    [$7E:0078]  ;/
-$8B:D62E 9C 1C 21    STZ $211C  [$7E:211C]  ;\
-$8B:D631 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix parameter B = 0
-$8B:D633 9C 1D 21    STZ $211D  [$7E:211D]  ;\
-$8B:D636 64 7C       STZ $7C    [$7E:007C]  ;} Mode 7 transformation matrix parameter C = 0
-$8B:D638 8D 1E 21    STA $211E  [$7E:211E]  ;\
-$8B:D63B 85 7E       STA $7E    [$7E:007E]  ;} Mode 7 transformation matrix parameter D = 100h
+$8B:D629 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:D62C 85 78       STA $78    [$7E:0078]  ;|
+$8B:D62E 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:D631 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:D633 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:D636 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:D638 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:D63B 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:D63D A9 80 00    LDA #$0080             ;\
-$8B:D640 8D 1F 21    STA $211F  [$7E:211F]  ;} Mode 7 transformation origin co-ordinate X = 80h
-$8B:D643 85 80       STA $80    [$7E:0080]  ;/
-$8B:D645 8D 20 21    STA $2120  [$7E:2120]  ;\
-$8B:D648 85 82       STA $82    [$7E:0082]  ;} Mode 7 transformation origin co-ordinate Y = 80h
+$8B:D640 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:D643 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
+$8B:D645 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:D648 85 82       STA $82    [$7E:0082]  ;/
 $8B:D64A A9 20 00    LDA #$0020             ;\
 $8B:D64D 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = 20h
 $8B:D650 A9 40 00    LDA #$0040             ;\
@@ -11264,13 +11271,13 @@ $8B:D9A5 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
 $8B:D9A8 A9 40 00    LDA #$0040             ;\
 $8B:D9AB 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 40h
 $8B:D9AE A9 00 01    LDA #$0100             ;\
-$8B:D9B1 85 78       STA $78    [$7E:0078]  ;} Mode 7 transformation matrix parameter A = 100h
-$8B:D9B3 64 7A       STZ $7A    [$7E:007A]  ; Mode 7 transformation matrix parameter B = 0
-$8B:D9B5 64 7C       STZ $7C    [$7E:007C]  ; Mode 7 transformation matrix parameter C = 0
-$8B:D9B7 85 7E       STA $7E    [$7E:007E]  ; Mode 7 transformation matrix parameter D = 100h
+$8B:D9B1 85 78       STA $78    [$7E:0078]  ;|
+$8B:D9B3 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:D9B5 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:D9B7 85 7E       STA $7E    [$7E:007E]  ;/
 $8B:D9B9 A9 80 00    LDA #$0080             ;\
-$8B:D9BC 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin co-ordinate X = 80h
-$8B:D9BE 85 82       STA $82    [$7E:0082]  ; Mode 7 transformation origin co-ordinate Y = 80h
+$8B:D9BC 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
+$8B:D9BE 85 82       STA $82    [$7E:0082]  ;/
 $8B:D9C0 9C 93 19    STZ $1993  [$7E:1993]  ;\
 $8B:D9C3 9C 97 19    STZ $1997  [$7E:1997]  ;} Mode 7 X position = 0
 $8B:D9C6 E2 20       SEP #$20               ; Mode 7 Y position = 0
@@ -11952,28 +11959,28 @@ $8B:E053 A9 02       LDA #$02
 $8B:E055 8D 0B 42    STA $420B  [$7E:420B]
 
 $8B:E058 C2 30       REP #$30
-$8B:E05A A9 00 01    LDA #$0100
-$8B:E05D 8D 1B 21    STA $211B  [$7E:211B]
-$8B:E060 85 78       STA $78    [$7E:0078]
-$8B:E062 9C 1C 21    STZ $211C  [$7E:211C]
-$8B:E065 64 7A       STZ $7A    [$7E:007A]
-$8B:E067 9C 1D 21    STZ $211D  [$7E:211D]
-$8B:E06A 64 7C       STZ $7C    [$7E:007C]
-$8B:E06C 8D 1E 21    STA $211E  [$7E:211E]
-$8B:E06F 85 7E       STA $7E    [$7E:007E]
-$8B:E071 A9 68 00    LDA #$0068
-$8B:E074 8D 1F 21    STA $211F  [$7E:211F]
-$8B:E077 85 80       STA $80    [$7E:0080]
-$8B:E079 A9 70 00    LDA #$0070
-$8B:E07C 8D 20 21    STA $2120  [$7E:2120]
-$8B:E07F 85 82       STA $82    [$7E:0082]
-$8B:E081 A9 F8 FF    LDA #$FFF8
-$8B:E084 8D 93 19    STA $1993  [$7E:1993]
-$8B:E087 A9 E8 FF    LDA #$FFE8
-$8B:E08A 8D 97 19    STA $1997  [$7E:1997]
-$8B:E08D 9C 8D 19    STZ $198D  [$7E:198D]
-$8B:E090 A9 00 09    LDA #$0900
-$8B:E093 8D 8F 19    STA $198F  [$7E:198F]
+$8B:E05A A9 00 01    LDA #$0100             ;\
+$8B:E05D 8D 1B 21    STA $211B  [$7E:211B]  ;|
+$8B:E060 85 78       STA $78    [$7E:0078]  ;|
+$8B:E062 9C 1C 21    STZ $211C  [$7E:211C]  ;|
+$8B:E065 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = identity
+$8B:E067 9C 1D 21    STZ $211D  [$7E:211D]  ;|
+$8B:E06A 64 7C       STZ $7C    [$7E:007C]  ;|
+$8B:E06C 8D 1E 21    STA $211E  [$7E:211E]  ;|
+$8B:E06F 85 7E       STA $7E    [$7E:007E]  ;/
+$8B:E071 A9 68 00    LDA #$0068             ;\
+$8B:E074 8D 1F 21    STA $211F  [$7E:211F]  ;|
+$8B:E077 85 80       STA $80    [$7E:0080]  ;|
+$8B:E079 A9 70 00    LDA #$0070             ;} Mode 7 transformation origin = (68h, 70h)
+$8B:E07C 8D 20 21    STA $2120  [$7E:2120]  ;|
+$8B:E07F 85 82       STA $82    [$7E:0082]  ;/
+$8B:E081 A9 F8 FF    LDA #$FFF8             ;\
+$8B:E084 8D 93 19    STA $1993  [$7E:1993]  ;} Mode 7 X position = -8
+$8B:E087 A9 E8 FF    LDA #$FFE8             ;\
+$8B:E08A 8D 97 19    STA $1997  [$7E:1997]  ;} Mode 7 Y position = -18h
+$8B:E08D 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
+$8B:E090 A9 00 09    LDA #$0900             ;\
+$8B:E093 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 900h
 $8B:E096 22 4B 83 80 JSL $80834B[$80:834B]
 $8B:E09A E2 20       SEP #$20
 $8B:E09C A9 0F       LDA #$0F

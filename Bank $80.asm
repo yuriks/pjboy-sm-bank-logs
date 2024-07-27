@@ -7091,7 +7091,7 @@ $80:B04C A9 00 19    LDA #$1900             ;|
 $80:B04F 8D 10 43    STA $4310  [$7E:4310]  ;|
 $80:B052 A9 00 80    LDA #$8000             ;|
 $80:B055 8D 12 43    STA $4312  [$7E:4312]  ;|
-$80:B058 A9 00 40    LDA #$4000             ;} VRAM $0000..3FFF high bytes (mode 7 tiles) = [$98:8000..BFFF]
+$80:B058 A9 00 40    LDA #$4000             ;} VRAM $0000..3FFF high bytes = [$98:8000..BFFF] (mode 7 tiles)
 $80:B05B 8D 15 43    STA $4315  [$7E:4315]  ;|
 $80:B05E E2 20       SEP #$20               ;|
 $80:B060 A9 98       LDA #$98               ;|
@@ -7102,7 +7102,7 @@ $80:B06A 9C 15 21    STZ $2115  [$7E:2115]  ;\
 $80:B06D 9C 16 21    STZ $2116  [$7E:2116]  ;|
 $80:B070 9C 17 21    STZ $2117  [$7E:2117]  ;|
 $80:B073 A2 00 40    LDX #$4000             ;|
-                                            ;} VRAM $0000..3FFF low bytes (mode 7 tilemap) = 0
+                                            ;} VRAM $0000..3FFF low bytes = 0 (mode 7 tilemap)
 $80:B076 9C 18 21    STZ $2118  [$7E:2118]  ;|
 $80:B079 CA          DEX                    ;|
 $80:B07A D0 FA       BNE $FA    [$B076]     ;/
@@ -7114,7 +7114,7 @@ $80:B080 8C 16 21    STY $2116  [$7E:2116]  ;\
 $80:B083 5A          PHY                    ;|
 $80:B084 A0 20 00    LDY #$0020             ;|
                                             ;|
-$80:B087 BF 00 C0 98 LDA $98C000,x          ;} Copy 20h bytes from $98:C000 + [X] to VRAM [Y] low bytes
+$80:B087 BF 00 C0 98 LDA $98C000,x          ;} Copy 20h bytes from $98:C000 + [X] to VRAM [Y] low bytes (mode 7 tilemap)
 $80:B08B 8D 18 21    STA $2118  [$7E:2118]  ;} X += 20h
 $80:B08E E8          INX                    ;|
 $80:B08F 88          DEY                    ;|
@@ -7122,7 +7122,7 @@ $80:B090 D0 F5       BNE $F5    [$B087]     ;/
 $80:B092 C2 20       REP #$20               ;\
 $80:B094 68          PLA                    ;|
 $80:B095 18          CLC                    ;|
-$80:B096 69 80 00    ADC #$0080             ;} Y += 80h
+$80:B096 69 80 00    ADC #$0080             ;} Y += 80h (next VRAM tilemap row)
 $80:B099 A8          TAY                    ;|
 $80:B09A E2 20       SEP #$20               ;/
 $80:B09C E0 00 04    CPX #$0400             ;\
@@ -7136,7 +7136,7 @@ $80:B0AC 64 7A       STZ $7A    [$7E:007A]  ;} Mode 7 transformation matrix = id
 $80:B0AE 64 7C       STZ $7C    [$7E:007C]  ;|
 $80:B0B0 85 7E       STA $7E    [$7E:007E]  ;/
 $80:B0B2 A9 80 00    LDA #$0080             ;\
-$80:B0B5 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation centre = (80h, 80h)
+$80:B0B5 85 80       STA $80    [$7E:0080]  ;} Mode 7 transformation origin = (80h, 80h)
 $80:B0B7 85 82       STA $82    [$7E:0082]  ;/
 $80:B0B9 9C 85 07    STZ $0785  [$7E:0785]  ; Mode 7 rotation angle = 0
 $80:B0BC 22 82 83 80 JSL $808382[$80:8382]  ; Clear force blank and wait for NMI
@@ -7157,17 +7157,17 @@ $80:B0D0 D0 2B       BNE $2B    [$B0FD]     ;/
 $80:B0D2 AD 85 07    LDA $0785  [$7E:0785]  ;\
 $80:B0D5 29 FF 00    AND #$00FF             ;|
 $80:B0D8 0A          ASL A                  ;|
-$80:B0D9 AA          TAX                    ;} Mode 7 matrix B = sin([mode 7 rotation angle] * pi / 80h) * 100h
+$80:B0D9 AA          TAX                    ;} Mode 7 transformation matrix parameter B = sin([mode 7 rotation angle] * pi / 80h) * 100h
 $80:B0DA BF 43 B4 A0 LDA $A0B443,x          ;|
 $80:B0DE 85 7A       STA $7A    [$7E:007A]  ;/
 $80:B0E0 49 FF FF    EOR #$FFFF             ;\
-$80:B0E3 1A          INC A                  ;} Mode 7 matrix C = -[mode 7 matrix B]
+$80:B0E3 1A          INC A                  ;} Mode 7 transformation matrix parameter C = -[mode 7 transformation matrix parameter B]
 $80:B0E4 85 7C       STA $7C    [$7E:007C]  ;/
 $80:B0E6 AD 85 07    LDA $0785  [$7E:0785]  ;\
 $80:B0E9 18          CLC                    ;|
 $80:B0EA 69 40 00    ADC #$0040             ;|
 $80:B0ED 29 FF 00    AND #$00FF             ;|
-$80:B0F0 0A          ASL A                  ;} Mode 7 matrix A = mode 7 matrix D = cos([mode 7 rotation angle] * pi / 80h) * 100h
+$80:B0F0 0A          ASL A                  ;} Mode 7 transformation matrix parameter A/D = cos([mode 7 rotation angle] * pi / 80h) * 100h
 $80:B0F1 AA          TAX                    ;|
 $80:B0F2 BF 43 B4 A0 LDA $A0B443,x          ;|
 $80:B0F6 85 78       STA $78    [$7E:0078]  ;|

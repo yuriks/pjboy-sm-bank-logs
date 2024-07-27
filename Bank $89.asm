@@ -1294,12 +1294,12 @@ $89:AD28 AA          TAX                    ;/
 $89:AD29 BD 5F AD    LDA $AD5F,x[$89:AE2B]  ;\
 $89:AD2C 8D E3 07    STA $07E3  [$7E:07E3]  ;} Rotation matrix timer = [$AD5F + [X]]
 $89:AD2F BD 61 AD    LDA $AD61,x[$89:AE2D]  ; A = [$AD5F + [X] + 2]
-$89:AD32 85 7A       STA $7A    [$7E:007A]  ;} Mode 7 matrix B = [A]
+$89:AD32 85 7A       STA $7A    [$7E:007A]  ;} Mode 7 transformation matrix parameter B = [A]
 $89:AD34 49 FF FF    EOR #$FFFF             ;\
-$89:AD37 1A          INC A                  ;} Mode 7 matrix C = -[A]
+$89:AD37 1A          INC A                  ;} Mode 7 transformation matrix parameter C = -[A]
 $89:AD38 85 7C       STA $7C    [$7E:007C]  ;/
 $89:AD3A BD 63 AD    LDA $AD63,x[$89:AE2F]  ;\
-$89:AD3D 85 78       STA $78    [$7E:0078]  ;} Mode 7 matrix A = mode 7 matrix D = [$AD5F + [X] + 4]
+$89:AD3D 85 78       STA $78    [$7E:0078]  ;} Mode 7 transformation matrix parameter A = mode 7 transformation matrix parameter D = [$AD5F + [X] + 4]
 $89:AD3F 85 7E       STA $7E    [$7E:007E]  ;/
 $89:AD41 AD E1 07    LDA $07E1  [$7E:07E1]  ;\
 $89:AD44 30 0B       BMI $0B    [$AD51]     ;} If [rotation matrix index] & 8000h = 0:
