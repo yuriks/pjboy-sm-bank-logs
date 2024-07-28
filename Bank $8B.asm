@@ -803,9 +803,8 @@ $8B:866A 60          RTS
 }
 
 
-;;; $866B:  ;;;
+;;; $866B: Activate title sequence blue light ;;;
 {
-; Blue light effect for title sequence
 $8B:866B 08          PHP
 $8B:866C E2 20       SEP #$20
 $8B:866E 64 6F       STZ $6F    [$7E:006F]  ; Disable subscreen layers
@@ -822,9 +821,8 @@ $8B:8681 60          RTS
 }
 
 
-;;; $8682:  ;;;
+;;; $8682: Deactivate title sequence blue light ;;;
 {
-; Undoes $866B
 $8B:8682 08          PHP
 $8B:8683 E2 20       SEP #$20
 $8B:8685 64 6F       STZ $6F    [$7E:006F]  ;\
@@ -847,7 +845,7 @@ $8B:8696 60          RTS
 ;     'Ver.03.30.10.00  00' on PAL
 
 ; Last byte there is the game header version number
-; Also displays and 'S' if audio is disabled by $80:8008
+; Also displays an 'S' if audio is disabled by $80:8008
 
 $8B:8697 60          RTS
 
@@ -2575,7 +2573,7 @@ $8B:9302 80 E7       BRA $E7    [$92EB]     ; Go to LOOP_FADE_IN
 $8B:9304 22 6E 89 80 JSL $80896E[$80:896E]  ; Finalise OAM
 $8B:9308 22 38 83 80 JSL $808338[$80:8338]  ; Wait for NMI
 $8B:930C A9 78 00    LDA #$0078             ;\
-$8B:930F 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Nintendo logo timer = 78h
+$8B:930F 8D E2 0D    STA $0DE2  [$7E:0DE2]  ;} Nintendo logo timer = 120
 
 ; LOOP_NINTENDO_LOGO
 $8B:9312 22 1A 8B 80 JSL $808B1A[$80:8B1A]  ; Clear high OAM
@@ -2637,6 +2635,8 @@ $8B:9389 60          RTS
 }
 
 
+;;; $938A..94E0: Cinematic sprite objects ;;;
+{
 ;;; $938A: Spawn cinematic sprite object [Y] ;;;
 {
 ;; Parameters:
@@ -2920,9 +2920,10 @@ $8B:94DF C8          INY
 $8B:94E0 60          RTS
 }
 }
+}
 
 
-;;; $94E1: RTS ;;;
+;;; $94E1: Unused. RTS ;;;
 {
 $8B:94E1 C2 30       REP #$30
 $8B:94E3 60          RTS
@@ -3088,6 +3089,8 @@ $8B:95A1 60          RTS
 }
 
 
+;;; $95A2..9742: Cinematic BG objects ;;;
+{
 ;;; $95A2: Enable cinematic BG objects ;;;
 {
 $8B:95A2 08          PHP
@@ -3410,16 +3413,17 @@ $8B:9741 C8          INY
 $8B:9742 60          RTS
 }
 }
+}
 
 
-;;; $9743: RTS ;;;
+;;; $9743: Unused. RTS ;;;
 {
 $8B:9743 C2 30       REP #$30
 $8B:9745 60          RTS
 }
 
 
-;;; $9746: Draw cinematic sprite objects - intro/opening ;;;
+;;; $9746: Draw cinematic sprite objects - intro/title sequence ;;;
 {
 $8B:9746 08          PHP
 $8B:9747 C2 30       REP #$30
@@ -3655,6 +3659,8 @@ $8B:98E2 60          RTS
 }
 
 
+;;; $98E3..9A21: Credits object ;;;
+{
 ;;; $98E3: Enable credits object ;;;
 {
 $8B:98E3 08          PHP
@@ -3707,7 +3713,7 @@ $8B:9931 60          RTS
 }
 
 
-;;; $9932:  ;;;
+;;; $9932: Spawn credits object ;;;
 {
 $8B:9932 08          PHP
 $8B:9933 C2 30       REP #$30
@@ -3871,9 +3877,12 @@ $8B:9A1F C8          INY
 $8B:9A20 C8          INY
 $8B:9A21 60          RTS
 }
+}
 
 
-;;; $9A22: Game state 1 - opening ;;;
+;;; $9A22..A35A: Title sequence ;;;
+{
+;;; $9A22: Game state 1 - title sequence ;;;
 {
 $8B:9A22 08          PHP
 $8B:9A23 8B          PHB
@@ -3883,12 +3892,12 @@ $8B:9A26 C2 30       REP #$30
 $8B:9A28 F4 2D 9A    PEA $9A2D              ;\
 $8B:9A2B 6C 51 1F    JMP ($1F51)[$8B:9B68]  ;} Execute [cinematic function]
 
-$8B:9A2E 20 EF 93    JSR $93EF  [$8B:93EF]  ; Handle cinematic sprite objects
-$8B:9A31 20 1D 95    JSR $951D  [$8B:951D]  ; Handle mode 7 objects (baby Metroid)
+$8B:9A2E 20 EF 93    JSR $93EF  [$8B:93EF]  ; Handle cinematic sprite objects (scrolling text, SM logo, copyright)
+$8B:9A31 20 1D 95    JSR $951D  [$8B:951D]  ; Handle mode 7 objects (baby metroid)
 $8B:9A34 22 27 C5 8D JSL $8DC527[$8D:C527]  ; Palette FX object handler
 $8B:9A38 20 46 97    JSR $9746  [$8B:9746]  ; Draw cinematic sprite objects
-$8B:9A3B 20 48 9A    JSR $9A48  [$8B:9A48]  ; Code suggests it handles button input to skip to title screen, but in practice, it has no effect
-$8B:9A3E 20 6C 9A    JSR $9A6C  [$8B:9A6C]  ; Code suggests it handles transitions
+$8B:9A3B 20 48 9A    JSR $9A48  [$8B:9A48]  ; Skip to title screen check
+$8B:9A3E 20 6C 9A    JSR $9A6C  [$8B:9A6C]  ; Skip to title screen handler
 $8B:9A41 20 18 85    JSR $8518  [$8B:8518]  ; Handle mode 7 transformation matrix - no rotation
 $8B:9A44 AB          PLB
 $8B:9A45 28          PLP
@@ -3902,35 +3911,35 @@ $8B:9A47 60          RTS
 }
 
 
-;;; $9A48:  ;;;
+;;; $9A48: Skip to title screen check ;;;
 {
 $8B:9A48 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
-$8B:9A4B C9 28 9F    CMP #$9F28             ;} If [cinematic function] >= $9F28: return
+$8B:9A4B C9 28 9F    CMP #$9F28             ;} If [cinematic function] < $9F28 (title sequence scene):
 $8B:9A4E 10 1B       BPL $1B    [$9A6B]     ;/
 $8B:9A50 A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:9A52 89 80 90    BIT #$9080             ;} If not newly pressed A, B or start: return
 $8B:9A55 F0 14       BEQ $14    [$9A6B]     ;/
-$8B:9A57 AD 53 1A    LDA $1A53  [$7E:1A53]
-$8B:9A5A D0 0F       BNE $0F    [$9A6B]
-$8B:9A5C A9 01 00    LDA #$0001
-$8B:9A5F 8D 53 1A    STA $1A53  [$7E:1A53]
-$8B:9A62 9C 23 07    STZ $0723  [$7E:0723]
-$8B:9A65 A9 02 00    LDA #$0002
-$8B:9A68 8D 25 07    STA $0725  [$7E:0725]
+$8B:9A57 AD 53 1A    LDA $1A53  [$7E:1A53]  ;\
+$8B:9A5A D0 0F       BNE $0F    [$9A6B]     ;} If [skip to title screen index] = 0:
+$8B:9A5C A9 01 00    LDA #$0001             ;\
+$8B:9A5F 8D 53 1A    STA $1A53  [$7E:1A53]  ;} Skip to title screen index = 1 (fade out)
+$8B:9A62 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:9A65 A9 02 00    LDA #$0002             ;\
+$8B:9A68 8D 25 07    STA $0725  [$7E:0725]  ;} Screen fade counter = 2
 
 $8B:9A6B 60          RTS
 }
 
 
-;;; $9A6C:  ;;;
+;;; $9A6C: Skip to title screen handler ;;;
 {
 $8B:9A6C 08          PHP
 $8B:9A6D C2 30       REP #$30
-$8B:9A6F AD 53 1A    LDA $1A53  [$7E:1A53]
-$8B:9A72 F0 05       BEQ $05    [$9A79]
-$8B:9A74 0A          ASL A
-$8B:9A75 AA          TAX
-$8B:9A76 FC 7B 9A    JSR ($9A7B,x)[$8B:9A83]
+$8B:9A6F AD 53 1A    LDA $1A53  [$7E:1A53]  ;\
+$8B:9A72 F0 05       BEQ $05    [$9A79]     ;} If [skip to title screen index] != 0:
+$8B:9A74 0A          ASL A                  ;\
+$8B:9A75 AA          TAX                    ;} Execute [$9A7B + [skip to title screen index] * 2]
+$8B:9A76 FC 7B 9A    JSR ($9A7B,x)[$8B:9A83];/
 
 $8B:9A79 28          PLP
 $8B:9A7A 60          RTS
@@ -3939,14 +3948,14 @@ $8B:9A7B             dw 0000, 9A83, 9A9C, 9B53
 }
 
 
-;;; $9A83:  ;;;
+;;; $9A83: Skip to title screen handler - 1 (fade out) ;;;
 {
 $8B:9A83 20 B8 90    JSR $90B8  [$8B:90B8]  ; Advance fast screen fade out
 $8B:9A86 90 13       BCC $13    [$9A9B]     ; If not reached zero brightness: return
-$8B:9A88 A9 02 00    LDA #$0002
-$8B:9A8B 8D 53 1A    STA $1A53  [$7E:1A53]
-$8B:9A8E A9 28 9F    LDA #$9F28
-$8B:9A91 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:9A88 A9 02 00    LDA #$0002             ;\
+$8B:9A8B 8D 53 1A    STA $1A53  [$7E:1A53]  ;} Skip to title screen index = 2 (prepare title screen)
+$8B:9A8E A9 28 9F    LDA #$9F28             ;\
+$8B:9A91 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 $8B:9A94 A9 06 00    LDA #$0006             ;\
 $8B:9A97 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 1 music track
 
@@ -3954,28 +3963,28 @@ $8B:9A9B 60          RTS
 }
 
 
-;;; $9A9C:  ;;;
+;;; $9A9C: Skip to title screen handler - 2 (prepare title screen) ;;;
 {
 $8B:9A9C 20 DA 93    JSR $93DA  [$8B:93DA]  ; Clear cinematic sprite objects
 $8B:9A9F A0 19 A1    LDY #$A119             ;\
 $8B:9AA2 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $A119 (Super Metroid title logo - immediate)
 $8B:9AA5 A0 25 A1    LDY #$A125             ;\
 $8B:9AA8 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $A125 (Nintendo copyright - immediate)
-$8B:9AAB 9C 23 07    STZ $0723  [$7E:0723]
-$8B:9AAE A9 02 00    LDA #$0002
-$8B:9AB1 8D 25 07    STA $0725  [$7E:0725]
-$8B:9AB4 A9 00 01    LDA #$0100
-$8B:9AB7 8D 8F 19    STA $198F  [$7E:198F]
-$8B:9ABA 9C 93 19    STZ $1993  [$7E:1993]
-$8B:9ABD 9C 91 19    STZ $1991  [$7E:1991]
-$8B:9AC0 9C 97 19    STZ $1997  [$7E:1997]
-$8B:9AC3 9C 95 19    STZ $1995  [$7E:1995]
-$8B:9AC6 9C 9B 19    STZ $199B  [$7E:199B]
-$8B:9AC9 9C 99 19    STZ $1999  [$7E:1999]
-$8B:9ACC 9C 9F 19    STZ $199F  [$7E:199F]
-$8B:9ACF 9C 9D 19    STZ $199D  [$7E:199D]
-$8B:9AD2 A9 03 00    LDA #$0003
-$8B:9AD5 8D 53 1A    STA $1A53  [$7E:1A53]
+$8B:9AAB 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:9AAE A9 02 00    LDA #$0002             ;\
+$8B:9AB1 8D 25 07    STA $0725  [$7E:0725]  ;} Screen fade counter = 2
+$8B:9AB4 A9 00 01    LDA #$0100             ;\
+$8B:9AB7 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 100h
+$8B:9ABA 9C 93 19    STZ $1993  [$7E:1993]  ;\
+$8B:9ABD 9C 91 19    STZ $1991  [$7E:1991]  ;} Mode 7 X position = 0.0
+$8B:9AC0 9C 97 19    STZ $1997  [$7E:1997]  ;\
+$8B:9AC3 9C 95 19    STZ $1995  [$7E:1995]  ;} Mode 7 Y position = 0.0
+$8B:9AC6 9C 9B 19    STZ $199B  [$7E:199B]  ;\
+$8B:9AC9 9C 99 19    STZ $1999  [$7E:1999]  ;} Mode 7 X speed = 0.0
+$8B:9ACC 9C 9F 19    STZ $199F  [$7E:199F]  ;\
+$8B:9ACF 9C 9D 19    STZ $199D  [$7E:199D]  ;} Mode 7 Y speed = 0.0
+$8B:9AD2 A9 03 00    LDA #$0003             ;\
+$8B:9AD5 8D 53 1A    STA $1A53  [$7E:1A53]  ;} Skip to title screen index = 3 (fade in)
 $8B:9AD8 A2 00 01    LDX #$0100             ;\
                                             ;|
 $8B:9ADB BF E9 E1 8C LDA $8CE1E9,x[$8C:E2E9];|
@@ -3984,20 +3993,20 @@ $8B:9AE3 E8          INX                    ;} Load sprite palettes from title s
 $8B:9AE4 E8          INX                    ;|
 $8B:9AE5 E0 00 02    CPX #$0200             ;|
 $8B:9AE8 30 F1       BMI $F1    [$9ADB]     ;/
-$8B:9AEA A9 FF 7F    LDA #$7FFF
-$8B:9AED 8F 92 C1 7E STA $7EC192[$7E:C192]
-$8B:9AF1 A9 80 7D    LDA #$7D80
-$8B:9AF4 8F 94 C1 7E STA $7EC194[$7E:C194]
-$8B:9AF8 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
+$8B:9AEA A9 FF 7F    LDA #$7FFF             ;\
+$8B:9AED 8F 92 C1 7E STA $7EC192[$7E:C192]  ;} BG colour C9h = 7FFFh
+$8B:9AF1 A9 80 7D    LDA #$7D80             ;\
+$8B:9AF4 8F 94 C1 7E STA $7EC194[$7E:C194]  ;} BG colour CAh = 7D80h
+$8B:9AF8 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
 $8B:9AFC A0 A0 E1    LDY #$E1A0             ;\
 $8B:9AFF 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A0 (title screen baby metroid tube light)
 $8B:9B03 A0 A4 E1    LDY #$E1A4             ;\
 $8B:9B06 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A4 (title screen flickering displays)
-$8B:9B0A 20 82 86    JSR $8682  [$8B:8682]
-$8B:9B0D E2 20       SEP #$20
-$8B:9B0F A9 11       LDA #$11
-$8B:9B11 85 69       STA $69    [$7E:0069]
-$8B:9B13 C2 20       REP #$20
+$8B:9B0A 20 82 86    JSR $8682  [$8B:8682]  ; Deactivate title sequence blue light
+$8B:9B0D E2 20       SEP #$20               ;\
+$8B:9B0F A9 11       LDA #$11               ;|
+$8B:9B11 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
+$8B:9B13 C2 20       REP #$20               ;/
 $8B:9B15 22 58 EB 88 JSL $88EB58[$88:EB58]  ; Spawn title sequence gradient HDMA objects
 $8B:9B19 60          RTS
 }
@@ -4005,49 +4014,49 @@ $8B:9B19 60          RTS
 
 ;;; $9B1A: Initialisation function - cinematic sprite object $A119 (Super Metroid title logo - immediate) ;;;
 {
-$8B:9B1A A9 80 00    LDA #$0080
-$8B:9B1D 99 7D 1A    STA $1A7D,y[$7E:1A9B]
-$8B:9B20 A9 30 00    LDA #$0030
-$8B:9B23 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:9B26 A9 00 04    LDA #$0400
-$8B:9B29 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:9B1A A9 80 00    LDA #$0080             ;\
+$8B:9B1D 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 80h
+$8B:9B20 A9 30 00    LDA #$0030             ;\
+$8B:9B23 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 30h
+$8B:9B26 A9 00 04    LDA #$0400             ;\
+$8B:9B29 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 400h (palette 2)
 $8B:9B2C 60          RTS
 }
 
 
 ;;; $9B2D: Initialisation function - cinematic sprite object $A11F (unused. Nintendo boot logo - immediate) ;;;
 {
-$8B:9B2D A9 80 00    LDA #$0080
-$8B:9B30 99 7D 1A    STA $1A7D,y
-$8B:9B33 A9 51 00    LDA #$0051
-$8B:9B36 99 9D 1A    STA $1A9D,y
-$8B:9B39 A9 00 00    LDA #$0000
-$8B:9B3C 99 BD 1A    STA $1ABD,y
+$8B:9B2D A9 80 00    LDA #$0080             ;\
+$8B:9B30 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
+$8B:9B33 A9 51 00    LDA #$0051             ;\
+$8B:9B36 99 9D 1A    STA $1A9D,y            ;} Cinematic sprite object Y position = 51h
+$8B:9B39 A9 00 00    LDA #$0000             ;\
+$8B:9B3C 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = 0
 $8B:9B3F 60          RTS
 }
 
 
 ;;; $9B40: Initialisation function - cinematic sprite object $A125 (Nintendo copyright - immediate) ;;;
 {
-$8B:9B40 A9 80 00    LDA #$0080
-$8B:9B43 99 7D 1A    STA $1A7D,y[$7E:1A99]
-$8B:9B46 A9 C4 00    LDA #$00C4
-$8B:9B49 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:9B4C A9 00 08    LDA #$0800
-$8B:9B4F 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:9B40 A9 80 00    LDA #$0080             ;\
+$8B:9B43 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 80h
+$8B:9B46 A9 C4 00    LDA #$00C4             ;\
+$8B:9B49 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = C4h
+$8B:9B4C A9 00 08    LDA #$0800             ;\
+$8B:9B4F 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:9B52 60          RTS
 }
 
 
-;;; $9B53:  ;;;
+;;; $9B53: Skip to title screen handler - 3 (fade in) ;;;
 {
 $8B:9B53 20 00 91    JSR $9100  [$8B:9100]  ; Advance fast screen fade in
 $8B:9B56 90 0F       BCC $0F    [$9B67]     ; If not reached max brightness: return
-$8B:9B58 9C 53 1A    STZ $1A53  [$7E:1A53]
-$8B:9B5B A9 84 03    LDA #$0384
-$8B:9B5E 8D 53 1F    STA $1F53  [$7E:1F53]
-$8B:9B61 A9 29 9F    LDA #$9F29
-$8B:9B64 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:9B58 9C 53 1A    STZ $1A53  [$7E:1A53]  ; Skip to title screen index = 0
+$8B:9B5B A9 84 03    LDA #$0384             ;\
+$8B:9B5E 8D 53 1F    STA $1F53  [$7E:1F53]  ;} Demo timer = 900
+$8B:9B61 A9 29 9F    LDA #$9F29             ;\
+$8B:9B64 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F29 (title screen)
 
 $8B:9B67 60          RTS
 }
@@ -4194,22 +4203,22 @@ $8B:9CBB 6B          RTL
 {
 $8B:9CBC A9 81 00    LDA #$0081             ;\
 $8B:9CBF 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
-$8B:9CC2 A9 70 00    LDA #$0070
-$8B:9CC5 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:9CC8 A9 00 02    LDA #$0200
-$8B:9CCB 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:9CC2 A9 70 00    LDA #$0070             ;\
+$8B:9CC5 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 70h
+$8B:9CC8 A9 00 02    LDA #$0200             ;\
+$8B:9CCB 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 200h (palette 1)
 $8B:9CCE 60          RTS
 }
 
 
 ;;; $9CCF: Pre-instruction - cinematic sprite object $A0EF ('1994' scrolling text) ;;;
 {
-$8B:9CCF E2 20       SEP #$20
-$8B:9CD1 A9 0F       LDA #$0F
-$8B:9CD3 85 51       STA $51    [$7E:0051]
-$8B:9CD5 C2 20       REP #$20
-$8B:9CD7 A9 D9 93    LDA #$93D9
-$8B:9CDA 9D 3D 1B    STA $1B3D,x[$7E:1B5B]
+$8B:9CCF E2 20       SEP #$20               ;\
+$8B:9CD1 A9 0F       LDA #$0F               ;|
+$8B:9CD3 85 51       STA $51    [$7E:0051]  ;} Screen brightness = Fh, disable forced blank
+$8B:9CD5 C2 20       REP #$20               ;/
+$8B:9CD7 A9 D9 93    LDA #$93D9             ;\
+$8B:9CDA 9D 3D 1B    STA $1B3D,x[$7E:1B5B]  ;} Cinematic sprite object pre-instruction = RTS
 $8B:9CDD 60          RTS
 }
 
@@ -4223,51 +4232,51 @@ $8B:9CE0 60          RTS
 
 ;;; $9CE1: Instruction - trigger title sequence scene 0 ;;;
 {
-$8B:9CE1 E2 20       SEP #$20
-$8B:9CE3 A9 11       LDA #$11
-$8B:9CE5 85 69       STA $69    [$7E:0069]
-$8B:9CE7 C2 20       REP #$20
-$8B:9CE9 A9 17 9D    LDA #$9D17
-$8B:9CEC 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:9CEF A9 48 00    LDA #$0048
-$8B:9CF2 8D 8F 19    STA $198F  [$7E:198F]
-$8B:9CF5 A9 3B 01    LDA #$013B
-$8B:9CF8 8D 93 19    STA $1993  [$7E:1993]
-$8B:9CFB 9C 91 19    STZ $1991  [$7E:1991]
-$8B:9CFE A9 E1 00    LDA #$00E1
-$8B:9D01 8D 97 19    STA $1997  [$7E:1997]
-$8B:9D04 9C 95 19    STZ $1995  [$7E:1995]
-$8B:9D07 A9 FE FF    LDA #$FFFE
-$8B:9D0A 8D 9B 19    STA $199B  [$7E:199B]
-$8B:9D0D A9 00 80    LDA #$8000
-$8B:9D10 8D 99 19    STA $1999  [$7E:1999]
-$8B:9D13 20 6B 86    JSR $866B  [$8B:866B]
+$8B:9CE1 E2 20       SEP #$20               ;\
+$8B:9CE3 A9 11       LDA #$11               ;|
+$8B:9CE5 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
+$8B:9CE7 C2 20       REP #$20               ;/
+$8B:9CE9 A9 17 9D    LDA #$9D17             ;\
+$8B:9CEC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9D17 (title sequence scene 0)
+$8B:9CEF A9 48 00    LDA #$0048             ;\
+$8B:9CF2 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 48h
+$8B:9CF5 A9 3B 01    LDA #$013B             ;\
+$8B:9CF8 8D 93 19    STA $1993  [$7E:1993]  ;} Mode 7 X position = 13B.0h
+$8B:9CFB 9C 91 19    STZ $1991  [$7E:1991]  ;/
+$8B:9CFE A9 E1 00    LDA #$00E1             ;\
+$8B:9D01 8D 97 19    STA $1997  [$7E:1997]  ;} Mode 7 Y position = E1.0h
+$8B:9D04 9C 95 19    STZ $1995  [$7E:1995]  ;/
+$8B:9D07 A9 FE FF    LDA #$FFFE             ;\
+$8B:9D0A 8D 9B 19    STA $199B  [$7E:199B]  ;|
+$8B:9D0D A9 00 80    LDA #$8000             ;} Mode 7 X speed = -1.8000h
+$8B:9D10 8D 99 19    STA $1999  [$7E:1999]  ;/
+$8B:9D13 20 6B 86    JSR $866B  [$8B:866B]  ; Activate title sequence blue light
 $8B:9D16 60          RTS
 }
 
 
 ;;; $9D17: Cinematic function - title sequence scene 0 - panning left - lower ;;;
 {
-$8B:9D17 AD 91 19    LDA $1991  [$7E:1991]
-$8B:9D1A 18          CLC
-$8B:9D1B 6D 99 19    ADC $1999  [$7E:1999]
-$8B:9D1E 8D 91 19    STA $1991  [$7E:1991]
-$8B:9D21 AD 93 19    LDA $1993  [$7E:1993]
-$8B:9D24 6D 9B 19    ADC $199B  [$7E:199B]
-$8B:9D27 8D 93 19    STA $1993  [$7E:1993]
-$8B:9D2A C9 F9 FF    CMP #$FFF9
-$8B:9D2D 10 17       BPL $17    [$9D46]
-$8B:9D2F E2 20       SEP #$20
-$8B:9D31 A9 10       LDA #$10
-$8B:9D33 85 69       STA $69    [$7E:0069]
-$8B:9D35 C2 20       REP #$20
-$8B:9D37 A9 47 9A    LDA #$9A47
-$8B:9D3A 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:9D17 AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:9D1A 18          CLC                    ;|
+$8B:9D1B 6D 99 19    ADC $1999  [$7E:1999]  ;|
+$8B:9D1E 8D 91 19    STA $1991  [$7E:1991]  ;} Mode 7 X position += [mode 7 X speed]
+$8B:9D21 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:9D24 6D 9B 19    ADC $199B  [$7E:199B]  ;|
+$8B:9D27 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:9D2A C9 F9 FF    CMP #$FFF9             ;\
+$8B:9D2D 10 17       BPL $17    [$9D46]     ;} If [mode 7 X position] < -7:
+$8B:9D2F E2 20       SEP #$20               ;\
+$8B:9D31 A9 10       LDA #$10               ;|
+$8B:9D33 85 69       STA $69    [$7E:0069]  ;} Main screen layers = sprites
+$8B:9D35 C2 20       REP #$20               ;/
+$8B:9D37 A9 47 9A    LDA #$9A47             ;\
+$8B:9D3A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 $8B:9D3D A0 F5 A0    LDY #$A0F5             ;\
 $8B:9D40 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $A0F5 ('NINTENDO' scrolling text)
-$8B:9D43 20 82 86    JSR $8682  [$8B:8682]
+$8B:9D43 20 82 86    JSR $8682  [$8B:8682]  ; Deactivate title sequence blue light
 
-$8B:9D46 20 48 9A    JSR $9A48  [$8B:9A48]
+$8B:9D46 20 48 9A    JSR $9A48  [$8B:9A48]  ; Skip to title screen check
 $8B:9D49 60          RTS
 }
 
@@ -4276,60 +4285,60 @@ $8B:9D49 60          RTS
 {
 $8B:9D4A A9 81 00    LDA #$0081             ;\
 $8B:9D4D 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
-$8B:9D50 A9 70 00    LDA #$0070
-$8B:9D53 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:9D56 A9 00 02    LDA #$0200
-$8B:9D59 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:9D50 A9 70 00    LDA #$0070             ;\
+$8B:9D53 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 70h
+$8B:9D56 A9 00 02    LDA #$0200             ;\
+$8B:9D59 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 200h (palette 1)
 $8B:9D5C 60          RTS
 }
 
 
 ;;; $9D5D: Instruction - trigger title sequence scene 1 ;;;
 {
-$8B:9D5D E2 20       SEP #$20
-$8B:9D5F A9 11       LDA #$11
-$8B:9D61 85 69       STA $69    [$7E:0069]
-$8B:9D63 C2 20       REP #$20
-$8B:9D65 A9 90 9D    LDA #$9D90
-$8B:9D68 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:9D6B A9 60 00    LDA #$0060
-$8B:9D6E 8D 8F 19    STA $198F  [$7E:198F]
-$8B:9D71 A9 2C 00    LDA #$002C
-$8B:9D74 8D 93 19    STA $1993  [$7E:1993]
-$8B:9D77 9C 91 19    STZ $1991  [$7E:1991]
-$8B:9D7A A9 65 FF    LDA #$FF65
-$8B:9D7D 8D 97 19    STA $1997  [$7E:1997]
-$8B:9D80 9C 95 19    STZ $1995  [$7E:1995]
-$8B:9D83 A9 FE FF    LDA #$FFFE
-$8B:9D86 8D 9B 19    STA $199B  [$7E:199B]
-$8B:9D89 A9 00 80    LDA #$8000
-$8B:9D8C 8D 99 19    STA $1999  [$7E:1999]
+$8B:9D5D E2 20       SEP #$20               ;\
+$8B:9D5F A9 11       LDA #$11               ;|
+$8B:9D61 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
+$8B:9D63 C2 20       REP #$20               ;/
+$8B:9D65 A9 90 9D    LDA #$9D90             ;\
+$8B:9D68 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9D90 (title sequence scene 1)
+$8B:9D6B A9 60 00    LDA #$0060             ;\
+$8B:9D6E 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 60h
+$8B:9D71 A9 2C 00    LDA #$002C             ;\
+$8B:9D74 8D 93 19    STA $1993  [$7E:1993]  ;} Mode 7 X position = 2C.0h
+$8B:9D77 9C 91 19    STZ $1991  [$7E:1991]  ;/
+$8B:9D7A A9 65 FF    LDA #$FF65             ;\
+$8B:9D7D 8D 97 19    STA $1997  [$7E:1997]  ;} Mode 7 Y position = -9B.0h
+$8B:9D80 9C 95 19    STZ $1995  [$7E:1995]  ;/
+$8B:9D83 A9 FE FF    LDA #$FFFE             ;\
+$8B:9D86 8D 9B 19    STA $199B  [$7E:199B]  ;|
+$8B:9D89 A9 00 80    LDA #$8000             ;} Mode 7 X speed = -1.8000h
+$8B:9D8C 8D 99 19    STA $1999  [$7E:1999]  ;/
 $8B:9D8F 60          RTS
 }
 
 
 ;;; $9D90: Cinematic function - title sequence scene 1 - panning left - upper ;;;
 {
-$8B:9D90 AD 91 19    LDA $1991  [$7E:1991]
-$8B:9D93 18          CLC
-$8B:9D94 6D 99 19    ADC $1999  [$7E:1999]
-$8B:9D97 8D 91 19    STA $1991  [$7E:1991]
-$8B:9D9A AD 93 19    LDA $1993  [$7E:1993]
-$8B:9D9D 6D 9B 19    ADC $199B  [$7E:199B]
-$8B:9DA0 8D 93 19    STA $1993  [$7E:1993]
-$8B:9DA3 C9 50 FF    CMP #$FF50
-$8B:9DA6 10 17       BPL $17    [$9DBF]
-$8B:9DA8 E2 20       SEP #$20
-$8B:9DAA A9 10       LDA #$10
-$8B:9DAC 85 69       STA $69    [$7E:0069]
-$8B:9DAE C2 20       REP #$20
-$8B:9DB0 A9 47 9A    LDA #$9A47
-$8B:9DB3 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:9D90 AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:9D93 18          CLC                    ;|
+$8B:9D94 6D 99 19    ADC $1999  [$7E:1999]  ;|
+$8B:9D97 8D 91 19    STA $1991  [$7E:1991]  ;} Mode 7 X position += [mode 7 X speed]
+$8B:9D9A AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:9D9D 6D 9B 19    ADC $199B  [$7E:199B]  ;|
+$8B:9DA0 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:9DA3 C9 50 FF    CMP #$FF50             ;\
+$8B:9DA6 10 17       BPL $17    [$9DBF]     ;} If [mode 7 X position] < -B0h:
+$8B:9DA8 E2 20       SEP #$20               ;\
+$8B:9DAA A9 10       LDA #$10               ;|
+$8B:9DAC 85 69       STA $69    [$7E:0069]  ;} Main screen layers = sprites
+$8B:9DAE C2 20       REP #$20               ;/
+$8B:9DB0 A9 47 9A    LDA #$9A47             ;\
+$8B:9DB3 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 $8B:9DB6 A0 FB A0    LDY #$A0FB             ;\
 $8B:9DB9 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $A0FB ('PRESENTS' scrolling text)
-$8B:9DBC 20 82 86    JSR $8682  [$8B:8682]
+$8B:9DBC 20 82 86    JSR $8682  [$8B:8682]  ; Deactivate title sequence blue light
 
-$8B:9DBF 20 48 9A    JSR $9A48  [$8B:9A48]
+$8B:9DBF 20 48 9A    JSR $9A48  [$8B:9A48]  ; Skip to title screen check
 $8B:9DC2 60          RTS
 }
 
@@ -4338,63 +4347,63 @@ $8B:9DC2 60          RTS
 {
 $8B:9DC3 A9 81 00    LDA #$0081             ;\
 $8B:9DC6 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
-$8B:9DC9 A9 70 00    LDA #$0070
-$8B:9DCC 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:9DCF A9 00 02    LDA #$0200
-$8B:9DD2 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:9DC9 A9 70 00    LDA #$0070             ;\
+$8B:9DCC 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 70h
+$8B:9DCF A9 00 02    LDA #$0200             ;\
+$8B:9DD2 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 200h (palette 1)
 $8B:9DD5 60          RTS
 }
 
 
 ;;; $9DD6: Instruction - trigger title sequence scene 2 ;;;
 {
-$8B:9DD6 E2 20       SEP #$20
-$8B:9DD8 A9 11       LDA #$11
-$8B:9DDA 85 69       STA $69    [$7E:0069]
-$8B:9DDC C2 20       REP #$20
-$8B:9DDE A9 12 9E    LDA #$9E12
-$8B:9DE1 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:9DE4 A9 60 00    LDA #$0060
-$8B:9DE7 8D 8F 19    STA $198F  [$7E:198F]
-$8B:9DEA A9 4F FF    LDA #$FF4F
-$8B:9DED 8D 93 19    STA $1993  [$7E:1993]
-$8B:9DF0 9C 91 19    STZ $1991  [$7E:1991]
-$8B:9DF3 A9 60 FF    LDA #$FF60
-$8B:9DF6 8D 97 19    STA $1997  [$7E:1997]
-$8B:9DF9 9C 95 19    STZ $1995  [$7E:1995]
-$8B:9DFC 9C 9B 19    STZ $199B  [$7E:199B]
-$8B:9DFF 9C 99 19    STZ $1999  [$7E:1999]
-$8B:9E02 A9 01 00    LDA #$0001
-$8B:9E05 8D 9F 19    STA $199F  [$7E:199F]
-$8B:9E08 A9 00 80    LDA #$8000
-$8B:9E0B 8D 9D 19    STA $199D  [$7E:199D]
-$8B:9E0E 20 6B 86    JSR $866B  [$8B:866B]
+$8B:9DD6 E2 20       SEP #$20               ;\
+$8B:9DD8 A9 11       LDA #$11               ;|
+$8B:9DDA 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
+$8B:9DDC C2 20       REP #$20               ;/
+$8B:9DDE A9 12 9E    LDA #$9E12             ;\
+$8B:9DE1 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9E12 (title sequence scene 2)
+$8B:9DE4 A9 60 00    LDA #$0060             ;\
+$8B:9DE7 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 60h
+$8B:9DEA A9 4F FF    LDA #$FF4F             ;\
+$8B:9DED 8D 93 19    STA $1993  [$7E:1993]  ;} Mode 7 X position = -B1.0h
+$8B:9DF0 9C 91 19    STZ $1991  [$7E:1991]  ;/
+$8B:9DF3 A9 60 FF    LDA #$FF60             ;\
+$8B:9DF6 8D 97 19    STA $1997  [$7E:1997]  ;} Mode 7 Y position = -A0.0h
+$8B:9DF9 9C 95 19    STZ $1995  [$7E:1995]  ;/
+$8B:9DFC 9C 9B 19    STZ $199B  [$7E:199B]  ;\
+$8B:9DFF 9C 99 19    STZ $1999  [$7E:1999]  ;} Mode 7 X speed = 0.0
+$8B:9E02 A9 01 00    LDA #$0001             ;\
+$8B:9E05 8D 9F 19    STA $199F  [$7E:199F]  ;|
+$8B:9E08 A9 00 80    LDA #$8000             ;} Mode 7 Y speed = 1.8000h
+$8B:9E0B 8D 9D 19    STA $199D  [$7E:199D]  ;/
+$8B:9E0E 20 6B 86    JSR $866B  [$8B:866B]  ; Activate title sequence blue light
 $8B:9E11 60          RTS
 }
 
 
 ;;; $9E12: Cinematic function - title sequence scene 2 - panning down ;;;
 {
-$8B:9E12 AD 95 19    LDA $1995  [$7E:1995]
-$8B:9E15 18          CLC
-$8B:9E16 6D 9D 19    ADC $199D  [$7E:199D]
-$8B:9E19 8D 95 19    STA $1995  [$7E:1995]
-$8B:9E1C AD 97 19    LDA $1997  [$7E:1997]
-$8B:9E1F 6D 9F 19    ADC $199F  [$7E:199F]
-$8B:9E22 8D 97 19    STA $1997  [$7E:1997]
-$8B:9E25 C9 A3 00    CMP #$00A3
-$8B:9E28 30 17       BMI $17    [$9E41]
-$8B:9E2A E2 20       SEP #$20
-$8B:9E2C A9 10       LDA #$10
-$8B:9E2E 85 69       STA $69    [$7E:0069]
-$8B:9E30 C2 20       REP #$20
-$8B:9E32 A9 47 9A    LDA #$9A47
-$8B:9E35 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:9E12 AD 95 19    LDA $1995  [$7E:1995]  ;\
+$8B:9E15 18          CLC                    ;|
+$8B:9E16 6D 9D 19    ADC $199D  [$7E:199D]  ;|
+$8B:9E19 8D 95 19    STA $1995  [$7E:1995]  ;} Mode 7 Y position += [mode 7 Y speed]
+$8B:9E1C AD 97 19    LDA $1997  [$7E:1997]  ;|
+$8B:9E1F 6D 9F 19    ADC $199F  [$7E:199F]  ;|
+$8B:9E22 8D 97 19    STA $1997  [$7E:1997]  ;/
+$8B:9E25 C9 A3 00    CMP #$00A3             ;\
+$8B:9E28 30 17       BMI $17    [$9E41]     ;} If [mode 7 Y position] >= A3h:
+$8B:9E2A E2 20       SEP #$20               ;\
+$8B:9E2C A9 10       LDA #$10               ;|
+$8B:9E2E 85 69       STA $69    [$7E:0069]  ;} Main screen layers = sprites
+$8B:9E30 C2 20       REP #$20               ;/
+$8B:9E32 A9 47 9A    LDA #$9A47             ;\
+$8B:9E35 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 $8B:9E38 A0 01 A1    LDY #$A101             ;\
 $8B:9E3B 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $A101 ('METROID 3' scrolling text)
-$8B:9E3E 20 82 86    JSR $8682  [$8B:8682]
+$8B:9E3E 20 82 86    JSR $8682  [$8B:8682]  ; Deactivate title sequence blue light
 
-$8B:9E41 20 48 9A    JSR $9A48  [$8B:9A48]
+$8B:9E41 20 48 9A    JSR $9A48  [$8B:9A48]  ; Skip to title screen check
 $8B:9E44 60          RTS
 }
 
@@ -4403,32 +4412,32 @@ $8B:9E44 60          RTS
 {
 $8B:9E45 A9 81 00    LDA #$0081             ;\
 $8B:9E48 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 81h
-$8B:9E4B A9 70 00    LDA #$0070
-$8B:9E4E 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:9E51 A9 00 02    LDA #$0200
-$8B:9E54 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:9E4B A9 70 00    LDA #$0070             ;\
+$8B:9E4E 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 70h
+$8B:9E51 A9 00 02    LDA #$0200             ;\
+$8B:9E54 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 200h (palette 1)
 $8B:9E57 60          RTS
 }
 
 
 ;;; $9E58: Instruction - trigger title sequence scene 3 ;;;
 {
-$8B:9E58 E2 20       SEP #$20
-$8B:9E5A A9 11       LDA #$11
-$8B:9E5C 85 69       STA $69    [$7E:0069]
-$8B:9E5E C2 20       REP #$20
-$8B:9E60 A9 8B 9E    LDA #$9E8B
-$8B:9E63 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:9E66 A9 43 00    LDA #$0043
-$8B:9E69 8D 8F 19    STA $198F  [$7E:198F]
-$8B:9E6C 9C 93 19    STZ $1993  [$7E:1993]
-$8B:9E6F 9C 91 19    STZ $1991  [$7E:1991]
-$8B:9E72 9C 97 19    STZ $1997  [$7E:1997]
-$8B:9E75 9C 95 19    STZ $1995  [$7E:1995]
-$8B:9E78 9C 9B 19    STZ $199B  [$7E:199B]
-$8B:9E7B 9C 99 19    STZ $1999  [$7E:1999]
-$8B:9E7E 9C 9F 19    STZ $199F  [$7E:199F]
-$8B:9E81 9C 9D 19    STZ $199D  [$7E:199D]
+$8B:9E58 E2 20       SEP #$20               ;\
+$8B:9E5A A9 11       LDA #$11               ;|
+$8B:9E5C 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
+$8B:9E5E C2 20       REP #$20               ;/
+$8B:9E60 A9 8B 9E    LDA #$9E8B             ;\
+$8B:9E63 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9E8B (title sequence scene 3)
+$8B:9E66 A9 43 00    LDA #$0043             ;\
+$8B:9E69 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 43h
+$8B:9E6C 9C 93 19    STZ $1993  [$7E:1993]  ;\
+$8B:9E6F 9C 91 19    STZ $1991  [$7E:1991]  ;} Mode 7 X position = 0.0
+$8B:9E72 9C 97 19    STZ $1997  [$7E:1997]  ;\
+$8B:9E75 9C 95 19    STZ $1995  [$7E:1995]  ;} Mode 7 Y position = 0.0
+$8B:9E78 9C 9B 19    STZ $199B  [$7E:199B]  ;\
+$8B:9E7B 9C 99 19    STZ $1999  [$7E:1999]  ;} Mode 7 X speed = 0.0
+$8B:9E7E 9C 9F 19    STZ $199F  [$7E:199F]  ;\
+$8B:9E81 9C 9D 19    STZ $199D  [$7E:199D]  ;} Mode 7 Y speed = 0.0
 $8B:9E84 5A          PHY
 $8B:9E85 22 58 EB 88 JSL $88EB58[$88:EB58]  ; Spawn title sequence gradient HDMA objects
 $8B:9E89 7A          PLY
@@ -4438,21 +4447,22 @@ $8B:9E8A 60          RTS
 
 ;;; $9E8B: Cinematic function - title sequence scene 3 - zooming out ;;;
 {
-$8B:9E8B AD B6 05    LDA $05B6  [$7E:05B6]
-$8B:9E8E 89 01 00    BIT #$0001
-$8B:9E91 D0 0C       BNE $0C    [$9E9F]
-$8B:9E93 AD 8F 19    LDA $198F  [$7E:198F]
-$8B:9E96 C9 00 01    CMP #$0100
-$8B:9E99 10 05       BPL $05    [$9EA0]
-$8B:9E9B 1A          INC A
-$8B:9E9C 8D 8F 19    STA $198F  [$7E:198F]
+$8B:9E8B AD B6 05    LDA $05B6  [$7E:05B6]  ;\
+$8B:9E8E 89 01 00    BIT #$0001             ;} If [frame counter] % 2 != 0: return
+$8B:9E91 D0 0C       BNE $0C    [$9E9F]     ;/
+$8B:9E93 AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:9E96 C9 00 01    CMP #$0100             ;} If [mode 7 transformation zoom level] >= 100h: go to BRANCH_FINISH
+$8B:9E99 10 05       BPL $05    [$9EA0]     ;/
+$8B:9E9B 1A          INC A                  ;\
+$8B:9E9C 8D 8F 19    STA $198F  [$7E:198F]  ;} Increment mode 7 transformation zoom level
 
-$8B:9E9F 60          RTS
+$8B:9E9F 60          RTS                    ; Return
 
-$8B:9EA0 A9 00 01    LDA #$0100
-$8B:9EA3 8D 8F 19    STA $198F  [$7E:198F]
-$8B:9EA6 A9 28 9F    LDA #$9F28
-$8B:9EA9 8D 51 1F    STA $1F51  [$7E:1F51]
+; BRANCH_FINISH
+$8B:9EA0 A9 00 01    LDA #$0100             ;\
+$8B:9EA3 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 100h
+$8B:9EA6 A9 28 9F    LDA #$9F28             ;\
+$8B:9EA9 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 $8B:9EAC A0 07 A1    LDY #$A107             ;\
 $8B:9EAF 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $A107 (Super Metroid title logo - fade in)
 $8B:9EB2 60          RTS
@@ -4463,10 +4473,10 @@ $8B:9EB2 60          RTS
 {
 $8B:9EB3 A9 80 00    LDA #$0080             ;\
 $8B:9EB6 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 80h
-$8B:9EB9 A9 30 00    LDA #$0030
-$8B:9EBC 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:9EBF A9 00 04    LDA #$0400
-$8B:9EC2 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:9EB9 A9 30 00    LDA #$0030             ;\
+$8B:9EBC 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 30h
+$8B:9EBF A9 00 04    LDA #$0400             ;\
+$8B:9EC2 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 400h (palette 2)
 $8B:9EC5 A0 94 E1    LDY #$E194             ;\
 $8B:9EC8 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E194 (fade in Super Metroid title logo)
 $8B:9ECC 60          RTS
@@ -4487,10 +4497,10 @@ $8B:9ED5 60          RTS
 {
 $8B:9ED6 A9 80 00    LDA #$0080             ;\
 $8B:9ED9 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
-$8B:9EDC A9 51 00    LDA #$0051
-$8B:9EDF 99 9D 1A    STA $1A9D,y
-$8B:9EE2 A9 00 02    LDA #$0200
-$8B:9EE5 99 BD 1A    STA $1ABD,y
+$8B:9EDC A9 51 00    LDA #$0051             ;\
+$8B:9EDF 99 9D 1A    STA $1A9D,y            ;} Cinematic sprite object Y position = 51h
+$8B:9EE2 A9 00 02    LDA #$0200             ;\
+$8B:9EE5 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = 200h (palette 1)
 $8B:9EE8 A0 98 E1    LDY #$E198             ;\
 $8B:9EEB 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E198 (fade in Nintendo boot logo)
 $8B:9EEF 60          RTS
@@ -4499,8 +4509,8 @@ $8B:9EEF 60          RTS
 
 ;;; $9EF0: Instruction - use palette 0 and fade in Nintendo copyright ;;;
 {
-$8B:9EF0 A9 00 00    LDA #$0000
-$8B:9EF3 9D BD 1A    STA $1ABD,x
+$8B:9EF0 A9 00 00    LDA #$0000             ;\
+$8B:9EF3 9D BD 1A    STA $1ABD,x            ;} Cinematic sprite object palette index = 0
 $8B:9EF6 5A          PHY
 $8B:9EF7 A0 13 A1    LDY #$A113             ;\
 $8B:9EFA 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $A113 (Nintendo copyright - fade in)
@@ -4513,10 +4523,10 @@ $8B:9EFE 60          RTS
 {
 $8B:9EFF A9 80 00    LDA #$0080             ;\
 $8B:9F02 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 80h
-$8B:9F05 A9 C4 00    LDA #$00C4
-$8B:9F08 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:9F0B A9 00 08    LDA #$0800
-$8B:9F0E 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:9F05 A9 C4 00    LDA #$00C4             ;\
+$8B:9F08 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = C4h
+$8B:9F0B A9 00 08    LDA #$0800             ;\
+$8B:9F0E 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:9F11 A0 9C E1    LDY #$E19C             ;\
 $8B:9F14 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E19C (fade in Nintendo copyright)
 $8B:9F18 60          RTS
@@ -4526,10 +4536,10 @@ $8B:9F18 60          RTS
 ;;; $9F19: Instruction - start demo countdown ;;;
 {
 $8B:9F19 5A          PHY
-$8B:9F1A A9 84 03    LDA #$0384
-$8B:9F1D 8D 53 1F    STA $1F53  [$7E:1F53]
-$8B:9F20 A9 29 9F    LDA #$9F29
-$8B:9F23 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:9F1A A9 84 03    LDA #$0384             ;\
+$8B:9F1D 8D 53 1F    STA $1F53  [$7E:1F53]  ;} Demo timer = 900
+$8B:9F20 A9 29 9F    LDA #$9F29             ;\
+$8B:9F23 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F29 (title screen)
 $8B:9F26 7A          PLY
 $8B:9F27 60          RTS
 }
@@ -4543,25 +4553,27 @@ $8B:9F28 60          RTS
 
 ;;; $9F29: Cinematic function - title screen ;;;
 {
-$8B:9F29 CE 53 1F    DEC $1F53  [$7E:1F53]
-$8B:9F2C F0 02       BEQ $02    [$9F30]
-$8B:9F2E 10 08       BPL $08    [$9F38]
+$8B:9F29 CE 53 1F    DEC $1F53  [$7E:1F53]  ; Decrement demo timer
+$8B:9F2C F0 02       BEQ $02    [$9F30]     ;\
+$8B:9F2E 10 08       BPL $08    [$9F38]     ;} If [demo timer] > 0: go to BRANCH_NOT_DEMO
 
 $8B:9F30 A9 AE 9F    LDA #$9FAE             ;\
-$8B:9F33 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9FAE
-$8B:9F36 80 0D       BRA $0D    [$9F45]
+$8B:9F33 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9FAE (transition to demos)
+$8B:9F36 80 0D       BRA $0D    [$9F45]     ; Go to BRANCH_TRANSITION
 
+; BRANCH_NOT_DEMO
 $8B:9F38 A5 8F       LDA $8F    [$7E:008F]  ;\
-$8B:9F3A 89 80 90    BIT #$9080             ;} If not newly pressed A, B or start: go to BRANCH_9F4E
+$8B:9F3A 89 80 90    BIT #$9080             ;} If not newly pressed A, B or start: go to BRANCH_MERGE
 $8B:9F3D F0 0F       BEQ $0F    [$9F4E]     ;/
 $8B:9F3F A9 52 9F    LDA #$9F52             ;\
-$8B:9F42 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F52
+$8B:9F42 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9F52 (transition to file select menu)
 
-$8B:9F45 A9 02 00    LDA #$0002
-$8B:9F48 8D 23 07    STA $0723  [$7E:0723]
-$8B:9F4B 8D 25 07    STA $0725  [$7E:0725]
+; BRANCH_TRANSITION
+$8B:9F45 A9 02 00    LDA #$0002             ;\
+$8B:9F48 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 2
+$8B:9F4B 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 2
 
-; BRANCH_9F4E
+; BRANCH_MERGE
 $8B:9F4E 20 97 86    JSR $8697  [$8B:8697]  ; Debug. Display version info
 $8B:9F51 60          RTS
 }
@@ -4572,43 +4584,43 @@ $8B:9F51 60          RTS
 $8B:9F52 20 97 86    JSR $8697  [$8B:8697]  ; Debug. Display version info
 $8B:9F55 20 D5 90    JSR $90D5  [$8B:90D5]  ; Advance slow screen fade out
 $8B:9F58 90 53       BCC $53    [$9FAD]     ; If not reached zero brightness: return
-$8B:9F5A 22 4B 83 80 JSL $80834B[$80:834B]
-$8B:9F5E E2 20       SEP #$20
-$8B:9F60 A9 01       LDA #$01
-$8B:9F62 85 55       STA $55    [$7E:0055]
-$8B:9F64 C2 20       REP #$20
-$8B:9F66 9C 23 07    STZ $0723  [$7E:0723]
-$8B:9F69 9C 25 07    STZ $0725  [$7E:0725]
-$8B:9F6C 64 B5       STZ $B5    [$7E:00B5]
-$8B:9F6E 64 B9       STZ $B9    [$7E:00B9]
-$8B:9F70 64 B7       STZ $B7    [$7E:00B7]
-$8B:9F72 64 BB       STZ $BB    [$7E:00BB]
-$8B:9F74 9C 8D 19    STZ $198D  [$7E:198D]
-$8B:9F77 A9 68 9B    LDA #$9B68
-$8B:9F7A 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:9F7D 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]
-$8B:9F81 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
-$8B:9F85 A9 1F 1C    LDA #$1C1F
-$8B:9F88 3A          DEC A
-$8B:9F89 3A          DEC A
-$8B:9F8A 38          SEC
-$8B:9F8B E9 8D 19    SBC #$198D
-$8B:9F8E AA          TAX
-
-$8B:9F8F 9E 8D 19    STZ $198D,x[$7E:1C1D]
-$8B:9F92 CA          DEX
-$8B:9F93 CA          DEX
-$8B:9F94 10 F9       BPL $F9    [$9F8F]
-$8B:9F96 A2 FE 01    LDX #$01FE
-$8B:9F99 A9 00 00    LDA #$0000
-
-$8B:9F9C 9F 00 98 7E STA $7E9800,x[$7E:99FE]
-$8B:9FA0 CA          DEX
-$8B:9FA1 CA          DEX
-$8B:9FA2 10 F8       BPL $F8    [$9F9C]
+$8B:9F5A 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
+$8B:9F5E E2 20       SEP #$20               ;\
+$8B:9F60 A9 01       LDA #$01               ;|
+$8B:9F62 85 55       STA $55    [$7E:0055]  ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
+$8B:9F64 C2 20       REP #$20               ;/
+$8B:9F66 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:9F69 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$8B:9F6C 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
+$8B:9F6E 64 B9       STZ $B9    [$7E:00B9]  ; BG3 X scroll = 0
+$8B:9F70 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
+$8B:9F72 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
+$8B:9F74 9C 8D 19    STZ $198D  [$7E:198D]  ; >_<;
+$8B:9F77 A9 68 9B    LDA #$9B68             ;\
+$8B:9F7A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
+$8B:9F7D 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]  ; Disable palette FX objects
+$8B:9F81 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
+$8B:9F85 A9 1F 1C    LDA #$1C1F             ;\
+$8B:9F88 3A          DEC A                  ;|
+$8B:9F89 3A          DEC A                  ;|
+$8B:9F8A 38          SEC                    ;|
+$8B:9F8B E9 8D 19    SBC #$198D             ;|
+$8B:9F8E AA          TAX                    ;} Clear non-gameplay use RAM
+                                            ;|
+$8B:9F8F 9E 8D 19    STZ $198D,x[$7E:1C1D]  ;|
+$8B:9F92 CA          DEX                    ;|
+$8B:9F93 CA          DEX                    ;|
+$8B:9F94 10 F9       BPL $F9    [$9F8F]     ;/
+$8B:9F96 A2 FE 01    LDX #$01FE             ;\
+$8B:9F99 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$8B:9F9C 9F 00 98 7E STA $7E9800,x[$7E:99FE];} $7E:9800..99FF = 0
+$8B:9FA0 CA          DEX                    ;|
+$8B:9FA1 CA          DEX                    ;|
+$8B:9FA2 10 F8       BPL $F8    [$9F9C]     ;/
 $8B:9FA4 A9 04 00    LDA #$0004             ;\
 $8B:9FA7 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 4 (file select menus)
-$8B:9FAA 9C E2 0D    STZ $0DE2  [$7E:0DE2]
+$8B:9FAA 9C E2 0D    STZ $0DE2  [$7E:0DE2]  ; Game options menu index = 0 <-- think this is supposed to be $0727 (file select menu index)
 
 $8B:9FAD 60          RTS
 }
@@ -4619,43 +4631,43 @@ $8B:9FAD 60          RTS
 $8B:9FAE 20 97 86    JSR $8697  [$8B:8697]  ; Debug. Display version info
 $8B:9FB1 20 D5 90    JSR $90D5  [$8B:90D5]  ; Advance slow screen fade out
 $8B:9FB4 90 53       BCC $53    [$A009]     ; If not reached zero brightness: return
-$8B:9FB6 22 4B 83 80 JSL $80834B[$80:834B]
-$8B:9FBA E2 20       SEP #$20
-$8B:9FBC A9 01       LDA #$01
-$8B:9FBE 85 55       STA $55    [$7E:0055]
-$8B:9FC0 C2 20       REP #$20
-$8B:9FC2 9C 23 07    STZ $0723  [$7E:0723]
-$8B:9FC5 9C 25 07    STZ $0725  [$7E:0725]
-$8B:9FC8 64 B5       STZ $B5    [$7E:00B5]
-$8B:9FCA 64 B9       STZ $B9    [$7E:00B9]
-$8B:9FCC 64 B7       STZ $B7    [$7E:00B7]
-$8B:9FCE 64 BB       STZ $BB    [$7E:00BB]
-$8B:9FD0 9C 8D 19    STZ $198D  [$7E:198D]
-$8B:9FD3 A9 68 9B    LDA #$9B68
-$8B:9FD6 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:9FD9 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]
-$8B:9FDD 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
-$8B:9FE1 A9 1F 1C    LDA #$1C1F
-$8B:9FE4 3A          DEC A
-$8B:9FE5 3A          DEC A
-$8B:9FE6 38          SEC
-$8B:9FE7 E9 8D 19    SBC #$198D
-$8B:9FEA AA          TAX
-
-$8B:9FEB 9E 8D 19    STZ $198D,x[$7E:1C1D]
-$8B:9FEE CA          DEX
-$8B:9FEF CA          DEX
-$8B:9FF0 10 F9       BPL $F9    [$9FEB]
-$8B:9FF2 A2 FE 01    LDX #$01FE
-$8B:9FF5 A9 00 00    LDA #$0000
-
-$8B:9FF8 9F 00 98 7E STA $7E9800,x[$7E:99FE]
-$8B:9FFC CA          DEX
-$8B:9FFD CA          DEX
-$8B:9FFE 10 F8       BPL $F8    [$9FF8]
+$8B:9FB6 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
+$8B:9FBA E2 20       SEP #$20               ;\
+$8B:9FBC A9 01       LDA #$01               ;|
+$8B:9FBE 85 55       STA $55    [$7E:0055]  ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
+$8B:9FC0 C2 20       REP #$20               ;/
+$8B:9FC2 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:9FC5 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$8B:9FC8 64 B5       STZ $B5    [$7E:00B5]  ; BG2 X scroll = 0
+$8B:9FCA 64 B9       STZ $B9    [$7E:00B9]  ; BG3 X scroll = 0
+$8B:9FCC 64 B7       STZ $B7    [$7E:00B7]  ; BG2 Y scroll = 0
+$8B:9FCE 64 BB       STZ $BB    [$7E:00BB]  ; BG3 Y scroll = 0
+$8B:9FD0 9C 8D 19    STZ $198D  [$7E:198D]  ; >_<;
+$8B:9FD3 A9 68 9B    LDA #$9B68             ;\
+$8B:9FD6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $9B68 (load title sequence)
+$8B:9FD9 22 CD C4 8D JSL $8DC4CD[$8D:C4CD]  ; Disable palette FX objects
+$8B:9FDD 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
+$8B:9FE1 A9 1F 1C    LDA #$1C1F             ;\
+$8B:9FE4 3A          DEC A                  ;|
+$8B:9FE5 3A          DEC A                  ;|
+$8B:9FE6 38          SEC                    ;|
+$8B:9FE7 E9 8D 19    SBC #$198D             ;|
+$8B:9FEA AA          TAX                    ;} Clear non-gameplay use RAM
+                                            ;|
+$8B:9FEB 9E 8D 19    STZ $198D,x[$7E:1C1D]  ;|
+$8B:9FEE CA          DEX                    ;|
+$8B:9FEF CA          DEX                    ;|
+$8B:9FF0 10 F9       BPL $F9    [$9FEB]     ;/
+$8B:9FF2 A2 FE 01    LDX #$01FE             ;\
+$8B:9FF5 A9 00 00    LDA #$0000             ;|
+                                            ;|
+$8B:9FF8 9F 00 98 7E STA $7E9800,x[$7E:99FE];} $7E:9800..99FF = 0
+$8B:9FFC CA          DEX                    ;|
+$8B:9FFD CA          DEX                    ;|
+$8B:9FFE 10 F8       BPL $F8    [$9FF8]     ;/
 $8B:A000 A9 28 00    LDA #$0028             ;\
 $8B:A003 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 28h (load demo game data)
-$8B:A006 9C 57 1F    STZ $1F57  [$7E:1F57]
+$8B:A006 9C 57 1F    STZ $1F57  [$7E:1F57]  ; Demo scene = 0
 
 $8B:A009 60          RTS
 }
@@ -4838,7 +4850,7 @@ $8B:A125             dw 9B40,93D9,A0E7 ; Nintendo copyright - immediate
 ;;; $A12B: Mode 7 object instruction list - title sequence baby metroid ;;;
 {
 $8B:A12B             dw A273,       ; Load baby metroid colours 0
-                        9597,0002,  ; Timer = 2
+                        9597,0002   ; Timer = 2
 $8B:A131             dw 000A,A337,
                         000A,A341,
                         000A,A34B,
@@ -4870,7 +4882,7 @@ $8B:A131             dw 000A,A337,
                         A295,       ; Load baby metroid colours 2
                         0009,A341,
                         A273,       ; Load baby metroid colours 0
-                        9597,0004,  ; Timer = 4
+                        9597,0004   ; Timer = 4
 $8B:A195             dw 000A,A337,
                         000A,A341,
                         000A,A34B,
@@ -4902,7 +4914,7 @@ $8B:A195             dw 000A,A337,
                         A295,       ; Load baby metroid colours 2
                         0009,A341,
                         A273,       ; Load baby metroid colours 0
-                        9597,0003,  ; Timer = 3
+                        9597,0003   ; Timer = 3
 $8B:A1F9             dw 000A,A337,
                         000A,A341,
                         000A,A34B,
@@ -5058,6 +5070,7 @@ $8B:A34B             dx C0,7F9200,0100,3800,80, 00
 $8B:A355             dw 93D9, 93D9, A12B
 }
 }
+}
 
 
 ;;; $A35B: Game state 1Eh/22h/25h (intro / Ceres goes boom, Samus goes to Zebes / Ceres goes boom with Samus) ;;;
@@ -5071,13 +5084,13 @@ $8B:A361 F4 66 A3    PEA $A366              ;\
 $8B:A364 6C 51 1F    JMP ($1F51)[$8B:A395]  ;} Execute [cinematic function]
 
 $8B:A367 AD 9F 1B    LDA $1B9F  [$7E:1B9F]  ;\
-$8B:A36A 30 04       BMI $04    [$A370]     ;} If [$1B9F] >= 0:
+$8B:A36A 30 04       BMI $04    [$A370]     ;} If [intro frame counter] >= 0:
 $8B:A36C 1A          INC A                  ;\
-$8B:A36D 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} Increment $1B9F
+$8B:A36D 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} Increment intro frame counter (never read)
 
 $8B:A370 EE 51 1A    INC $1A51  [$7E:1A51]  ; Increment cinematic frame counter
 $8B:A373 20 0D 8E    JSR $8E0D  [$8B:8E0D]  ; Handle Samus during intro
-$8B:A376 20 EF 93    JSR $93EF  [$8B:93EF]  ; Handle cinematic sprite objects (rinkas, MB, Ceres + space, next-page arrow)
+$8B:A376 20 EF 93    JSR $93EF  [$8B:93EF]  ; Handle cinematic sprite objects (rinkas, MB, baby metroid, Ceres + space, text caret, next-page arrow)
 $8B:A379 20 1D 95    JSR $951D  [$8B:951D]  ; Handle mode 7 objects (Japanese text)
 $8B:A37C 20 2F 96    JSR $962F  [$8B:962F]  ; Handle cinematic BG objects (text, Samus blinking)
 $8B:A37F 20 28 98    JSR $9828  [$8B:9828]  ; Handle text glow objects
@@ -5288,7 +5301,7 @@ $8B:A588 CA          DEX                    ;|
 $8B:A589 CA          DEX                    ;|
 $8B:A58A 10 F4       BPL $F4    [$A580]     ;/
 $8B:A58C A9 FF FF    LDA #$FFFF             ;\
-$8B:A58F 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} $1B9F = FFFFh
+$8B:A58F 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} Disable intro frame counter
 $8B:A592 A9 A7 A5    LDA #$A5A7             ;\
 $8B:A595 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A5A7
 $8B:A598 A9 00 00    LDA #$0000             ;\
@@ -5524,7 +5537,7 @@ $8B:A849 60          RTS
 $8B:A84A 20 1B 91    JSR $911B  [$8B:911B]  ; Advance slow screen fade in
 $8B:A84D 90 06       BCC $06    [$A855]     ; If not reached max brightness: return
 $8B:A84F A9 91 A3    LDA #$A391             ;\
-$8B:A852 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = nothing
+$8B:A852 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A391 (nothing)
 
 $8B:A855 60          RTS
 }
@@ -5588,10 +5601,10 @@ $8B:A8C0 60          RTS
 {
 $8B:A8C1 A9 08 00    LDA #$0008             ;\
 $8B:A8C4 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 8
-$8B:A8C7 A9 18 00    LDA #$0018
-$8B:A8CA 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:A8CD A9 00 0C    LDA #$0C00
-$8B:A8D0 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:A8C7 A9 18 00    LDA #$0018             ;\
+$8B:A8CA 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 18h
+$8B:A8CD A9 00 0C    LDA #$0C00             ;\
+$8B:A8D0 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = C00h (palette 6)
 $8B:A8D3 60          RTS
 }
 
@@ -5606,10 +5619,10 @@ $8B:A8D4 60          RTS
 {
 $8B:A8D5 A9 70 00    LDA #$0070             ;\
 $8B:A8D8 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 70h
-$8B:A8DB A9 9B 00    LDA #$009B
-$8B:A8DE 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:A8E1 A9 00 0E    LDA #$0E00
-$8B:A8E4 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:A8DB A9 9B 00    LDA #$009B             ;\
+$8B:A8DE 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = 9Bh
+$8B:A8E1 A9 00 0E    LDA #$0E00             ;\
+$8B:A8E4 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:A8E7 60          RTS
 }
 
@@ -5623,8 +5636,8 @@ $8B:A8F0 A9 01 00    LDA #$0001
 $8B:A8F3 9D 5D 1B    STA $1B5D,x[$7E:1B79]
 $8B:A8F6 A9 3B CB    LDA #$CB3B
 $8B:A8F9 9D 1D 1B    STA $1B1D,x[$7E:1B39]
-$8B:A8FC A9 D9 93    LDA #$93D9
-$8B:A8FF 9D 3D 1B    STA $1B3D,x[$7E:1B59]
+$8B:A8FC A9 D9 93    LDA #$93D9             ;\
+$8B:A8FF 9D 3D 1B    STA $1B3D,x[$7E:1B59]  ;} Cinematic sprite object pre-instruction = RTS
 
 $8B:A902 60          RTS
 }
@@ -5688,8 +5701,8 @@ $8B:A96B BD 7E A9    LDA $A97E,x[$8B:A97E]
 $8B:A96E 18          CLC
 $8B:A96F 69 3B 00    ADC #$003B
 $8B:A972 99 9D 1A    STA $1A9D,y[$7E:1AB5]
-$8B:A975 A9 00 0E    LDA #$0E00
-$8B:A978 99 BD 1A    STA $1ABD,y[$7E:1AD5]
+$8B:A975 A9 00 0E    LDA #$0E00             ;\
+$8B:A978 99 BD 1A    STA $1ABD,y[$7E:1AD5]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:A97B 60          RTS
 
 $8B:A97C             dw 005C,0058, 0063,0058, 0059,005D, 0060,005B, 0066,005E, 0063,0060
@@ -5755,8 +5768,8 @@ $8B:AAA0 AD 97 1A    LDA $1A97  [$7E:1A97]
 $8B:AAA3 99 7D 1A    STA $1A7D,y[$7E:1A89]
 $8B:AAA6 AD B7 1A    LDA $1AB7  [$7E:1AB7]
 $8B:AAA9 99 9D 1A    STA $1A9D,y[$7E:1AA9]
-$8B:AAAC A9 00 0E    LDA #$0E00
-$8B:AAAF 99 BD 1A    STA $1ABD,y[$7E:1AC9]
+$8B:AAAC A9 00 0E    LDA #$0E00             ;\
+$8B:AAAF 99 BD 1A    STA $1ABD,y[$7E:1AC9]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:AAB2 60          RTS
 }
 
@@ -5813,8 +5826,8 @@ $8B:AB17 A9 01 00    LDA #$0001
 $8B:AB1A 9D 5D 1B    STA $1B5D,x[$7E:1B67]
 $8B:AB1D A9 71 CD    LDA #$CD71
 $8B:AB20 9D 1D 1B    STA $1B1D,x[$7E:1B27]
-$8B:AB23 A9 D9 93    LDA #$93D9
-$8B:AB26 9D 3D 1B    STA $1B3D,x[$7E:1B47]
+$8B:AB23 A9 D9 93    LDA #$93D9             ;\
+$8B:AB26 9D 3D 1B    STA $1B3D,x[$7E:1B47]  ;} Cinematic sprite object pre-instruction = RTS
 $8B:AB29 60          RTS
 
 $8B:AB2A BD 7D 1B    LDA $1B7D,x[$7E:1B89]
@@ -5850,10 +5863,10 @@ $8B:AC41             dw FFFD,0000, FFFD,C000, FFFD,A000, FFFD,8000, FFFD,6000, F
 {
 $8B:AD55 A9 54 00    LDA #$0054             ;\
 $8B:AD58 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 54h
-$8B:AD5B A9 8B 00    LDA #$008B
-$8B:AD5E 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:AD61 A9 00 0C    LDA #$0C00
-$8B:AD64 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:AD5B A9 8B 00    LDA #$008B             ;\
+$8B:AD5E 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = 8Bh
+$8B:AD61 A9 00 0C    LDA #$0C00             ;\
+$8B:AD64 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = C00h (palette 6)
 $8B:AD67 60          RTS
 }
 
@@ -5887,10 +5900,10 @@ $8B:AD92 60          RTS
 {
 $8B:AD93 A9 70 00    LDA #$0070             ;\
 $8B:AD96 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 70h
-$8B:AD99 A9 6F 00    LDA #$006F
-$8B:AD9C 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:AD9F A9 00 0C    LDA #$0C00
-$8B:ADA2 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:AD99 A9 6F 00    LDA #$006F             ;\
+$8B:AD9C 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = 6Fh
+$8B:AD9F A9 00 0C    LDA #$0C00             ;\
+$8B:ADA2 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = C00h (palette 6)
 $8B:ADA5 60          RTS
 }
 
@@ -5959,10 +5972,10 @@ $8B:AE06 60          RTS
 {
 $8B:AE07 A9 80 00    LDA #$0080             ;\
 $8B:AE0A 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
-$8B:AE0D A9 D8 00    LDA #$00D8
-$8B:AE10 99 9D 1A    STA $1A9D,y
-$8B:AE13 A9 00 0C    LDA #$0C00
-$8B:AE16 99 BD 1A    STA $1ABD,y
+$8B:AE0D A9 D8 00    LDA #$00D8             ;\
+$8B:AE10 99 9D 1A    STA $1A9D,y            ;} Cinematic sprite object Y position = D8h
+$8B:AE13 A9 00 0C    LDA #$0C00             ;\
+$8B:AE16 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = C00h (palette 6)
 $8B:AE19 60          RTS
 }
 
@@ -6199,7 +6212,7 @@ $8B:AFD0 A0 5B CE    LDY #$CE5B             ;\
 $8B:AFD3 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CE5B (metroid egg)
 $8B:AFD6 A0 79 CE    LDY #$CE79             ;\
 $8B:AFD9 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CE79 (confused baby metroid)
-$8B:AFDC 9C 9F 1B    STZ $1B9F  [$7E:1B9F]  ; $1B9F = 0
+$8B:AFDC 9C 9F 1B    STZ $1B9F  [$7E:1B9F]  ; Intro frame counter = 0
 $8B:AFDF A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:AFE2 BF 83 C0 8C LDA $8CC083,x[$8C:C083];|
@@ -6304,8 +6317,8 @@ $8B:B0A9 7A          PLY
 $8B:B0AA AB          PLB
 $8B:B0AB 60          RTS
 
-$8B:B0AC A9 F2 B0    LDA #$B0F2
-$8B:B0AF 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B0AC A9 F2 B0    LDA #$B0F2             ;\
+$8B:B0AF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B0F2
 $8B:B0B2 60          RTS
 }
 
@@ -6349,8 +6362,8 @@ $8B:B0E8 7A          PLY
 $8B:B0E9 AB          PLB
 $8B:B0EA 60          RTS
 
-$8B:B0EB A9 23 B1    LDA #$B123
-$8B:B0EE 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B0EB A9 23 B1    LDA #$B123             ;\
+$8B:B0EE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B123
 $8B:B0F1 60          RTS
 }
 
@@ -6423,8 +6436,8 @@ $8B:B15F 64 72       STZ $72    [$7E:0072]
 $8B:B161 22 F0 EB 88 JSL $88EBF0[$88:EBF0]
 $8B:B165 C2 20       REP #$20
 $8B:B167 20 E1 AD    JSR $ADE1  [$8B:ADE1]
-$8B:B16A A9 D2 B2    LDA #$B2D2
-$8B:B16D 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B16A A9 D2 B2    LDA #$B2D2             ;\
+$8B:B16D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B2D2
 $8B:B170 A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:B173 BF E9 E3 8C LDA $8CE3E9,x[$8C:E3E9];|
@@ -6484,8 +6497,8 @@ $8B:B1D0 7A          PLY
 $8B:B1D1 AB          PLB
 $8B:B1D2 60          RTS
 
-$8B:B1D3 A9 DA B1    LDA #$B1DA
-$8B:B1D6 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B1D3 A9 DA B1    LDA #$B1DA             ;\
+$8B:B1D6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B1DA
 $8B:B1D9 60          RTS
 }
 
@@ -6505,8 +6518,8 @@ $8B:B1EB A9 7F 00    LDA #$007F
 $8B:B1EE 8D 4B 1A    STA $1A4B  [$7E:1A4B]
 $8B:B1F1 AD E2 09    LDA $09E2  [$7E:09E2]
 $8B:B1F4 F0 11       BEQ $11    [$B207]
-$8B:B1F6 A9 07 B2    LDA #$B207
-$8B:B1F9 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B1F6 A9 07 B2    LDA #$B207             ;\
+$8B:B1F9 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B207
 $8B:B1FC 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
 $8B:B200 20 6A A8    JSR $A86A  [$8B:A86A]  ; Blank out Japanese text tiles
 $8B:B203 20 E6 8D    JSR $8DE6  [$8B:8DE6]  ; Transfer Japanese text tiles to VRAM
@@ -6522,8 +6535,8 @@ $8B:B20B 20 56 A8    JSR $A856  [$8B:A856]
 $8B:B20E A0 5D CF    LDY #$CF5D             ;\
 $8B:B211 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 6 cinematic BG object for VRAM $4C00
 $8B:B214 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
-$8B:B217 A9 90 A3    LDA #$A390
-$8B:B21A 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B217 A9 90 A3    LDA #$A390             ;\
+$8B:B21A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A390
 $8B:B21D 20 EE AD    JSR $ADEE  [$8B:ADEE]
 $8B:B220 A9 00 00    LDA #$0000             ;\
 $8B:B223 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
@@ -6608,7 +6621,7 @@ $8B:B2B7 E0 00 06    CPX #$0600             ;|
 $8B:B2BA 30 F5       BMI $F5    [$B2B1]     ;/
 $8B:B2BC 20 6A A8    JSR $A86A  [$8B:A86A]  ; Blank out Japanese text tiles
 $8B:B2BF A9 91 A3    LDA #$A391             ;\
-$8B:B2C2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = nothing
+$8B:B2C2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A391 (nothing)
 $8B:B2C5 AD 57 1A    LDA $1A57  [$7E:1A57]  ;\
 $8B:B2C8 10 07       BPL $07    [$B2D1]     ;} If Samus/projectiles displayed over cinematic sprite objects:
 $8B:B2CA A0 BC E1    LDY #$E1BC             ;\
@@ -6658,7 +6671,7 @@ $8B:B327 E0 00 06    CPX #$0600             ;|
 $8B:B32A 30 F5       BMI $F5    [$B321]     ;/
 $8B:B32C 20 6A A8    JSR $A86A  [$8B:A86A]  ; Blank out Japanese text tiles
 $8B:B32F A9 91 A3    LDA #$A391             ;\
-$8B:B332 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = nothing
+$8B:B332 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A391 (nothing)
 
 $8B:B335 60          RTS
 }
@@ -6709,8 +6722,8 @@ $8B:B35E 60          RTS
 $8B:B35F A0 45 CF    LDY #$CF45             ;\
 $8B:B362 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 2 cinematic BG object for VRAM $4C00
 $8B:B365 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
-$8B:B368 A9 F4 B3    LDA #$B3F4
-$8B:B36B 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B368 A9 F4 B3    LDA #$B3F4             ;\
+$8B:B36B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B3F4
 $8B:B36E 80 31       BRA $31    [$B3A1]
 }
 
@@ -6720,8 +6733,8 @@ $8B:B36E 80 31       BRA $31    [$B3A1]
 $8B:B370 A0 4B CF    LDY #$CF4B             ;\
 $8B:B373 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 3 cinematic BG object for VRAM $4C00
 $8B:B376 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
-$8B:B379 A9 F4 B3    LDA #$B3F4
-$8B:B37C 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B379 A9 F4 B3    LDA #$B3F4             ;\
+$8B:B37C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B3F4
 $8B:B37F 80 20       BRA $20    [$B3A1]
 }
 
@@ -6731,8 +6744,8 @@ $8B:B37F 80 20       BRA $20    [$B3A1]
 $8B:B381 A0 51 CF    LDY #$CF51             ;\
 $8B:B384 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 4 cinematic BG object for VRAM $4C00
 $8B:B387 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
-$8B:B38A A9 58 B4    LDA #$B458
-$8B:B38D 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B38A A9 58 B4    LDA #$B458             ;\
+$8B:B38D 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B458
 $8B:B390 80 0F       BRA $0F    [$B3A1]
 }
 
@@ -6742,8 +6755,8 @@ $8B:B390 80 0F       BRA $0F    [$B3A1]
 $8B:B392 A0 57 CF    LDY #$CF57             ;\
 $8B:B395 A9 00 4C    LDA #$4C00             ;} Spawn intro text page 5 cinematic BG object for VRAM $4C00
 $8B:B398 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
-$8B:B39B A9 58 B4    LDA #$B458
-$8B:B39E 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B39B A9 58 B4    LDA #$B458             ;\
+$8B:B39E 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B458
 }
 
 
@@ -6822,8 +6835,8 @@ $8B:B449 64 6B       STZ $6B    [$7E:006B]
 $8B:B44B 64 6F       STZ $6F    [$7E:006F]
 $8B:B44D 64 72       STZ $72    [$7E:0072]
 $8B:B44F C2 20       REP #$20
-$8B:B451 A9 91 A3    LDA #$A391
-$8B:B454 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B451 A9 91 A3    LDA #$A391             ;\
+$8B:B454 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A391
 
 $8B:B457 60          RTS
 }
@@ -6868,8 +6881,8 @@ $8B:B4AE E8          INX
 $8B:B4AF E8          INX
 $8B:B4B0 E0 0E 00    CPX #$000E
 $8B:B4B3 30 F1       BMI $F1    [$B4A6]
-$8B:B4B5 A9 91 A3    LDA #$A391
-$8B:B4B8 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B4B5 A9 91 A3    LDA #$A391             ;\
+$8B:B4B8 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A391
 
 $8B:B4BB 60          RTS
 }
@@ -6934,7 +6947,7 @@ $8B:B51D 60          RTS
 }
 
 
-;;; $B51E:  ;;;
+;;; $B51E: Instruction - load Japanese intro text - page 1 ;;;
 {
 $8B:B51E 5A          PHY
 $8B:B51F 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
@@ -6955,14 +6968,14 @@ $8B:B54E 60          RTS
 }
 
 
-;;; $B54F:  ;;;
+;;; $B54F: Instruction - enable cinematic BG tilemap updates ;;;
 {
 $8B:B54F 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
 $8B:B553 60          RTS
 }
 
 
-;;; $B554:  ;;;
+;;; $B554: Instruction - load Japanese intro text - page 2 - subpage 1 ;;;
 {
 $8B:B554 5A          PHY
 $8B:B555 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
@@ -6983,7 +6996,7 @@ $8B:B584 60          RTS
 }
 
 
-;;; $B585:  ;;;
+;;; $B585: Pre-instruction - mode 7 object $D40D (page 2 - subpage 2) ;;;
 {
 $8B:B585 A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:B587 F0 2E       BEQ $2E    [$B5B7]     ;} If not newly pressed anything: return
@@ -7010,13 +7023,13 @@ $8B:B5B7 60          RTS
 ;;; $B5B8:  ;;;
 {
 $8B:B5B8 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
-$8B:B5BC A9 6C AF    LDA #$AF6C
-$8B:B5BF 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B5BC A9 6C AF    LDA #$AF6C             ;\
+$8B:B5BF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $AF6C
 $8B:B5C2 60          RTS
 }
 
 
-;;; $B5C3:  ;;;
+;;; $B5C3: Instruction - load Japanese intro text - page 3 - subpage 1 ;;;
 {
 $8B:B5C3 5A          PHY
 $8B:B5C4 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
@@ -7035,7 +7048,7 @@ $8B:B5ED 60          RTS
 }
 
 
-;;; $B5EE:  ;;;
+;;; $B5EE: Pre-instruction - mode 7 object $D419 (page 3 - subpage 2) ;;;
 {
 $8B:B5EE A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:B5F0 F0 28       BEQ $28    [$B61A]     ;} If not newly pressed anything: return
@@ -7060,13 +7073,13 @@ $8B:B61A 60          RTS
 ;;; $B61B:  ;;;
 {
 $8B:B61B 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
-$8B:B61F A9 F2 B0    LDA #$B0F2
-$8B:B622 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B61F A9 F2 B0    LDA #$B0F2             ;\
+$8B:B622 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B0F2
 $8B:B625 60          RTS
 }
 
 
-;;; $B626:  ;;;
+;;; $B626: Instruction - load Japanese intro text - page 4 - subpage 1 ;;;
 {
 $8B:B626 5A          PHY
 $8B:B627 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
@@ -7087,7 +7100,7 @@ $8B:B656 60          RTS
 }
 
 
-;;; $B657:  ;;;
+;;; $B657: Pre-instruction - mode 7 object $D425 (page 4 - subpage 2) ;;;
 {
 $8B:B657 A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:B659 F0 2E       BEQ $2E    [$B689]     ;} If not newly pressed anything: return
@@ -7114,13 +7127,13 @@ $8B:B689 60          RTS
 ;;; $B68A:  ;;;
 {
 $8B:B68A 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
-$8B:B68E A9 23 B1    LDA #$B123
-$8B:B691 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B68E A9 23 B1    LDA #$B123             ;\
+$8B:B691 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B123
 $8B:B694 60          RTS
 }
 
 
-;;; $B695:  ;;;
+;;; $B695: Instruction - load Japanese intro text - page 5 - subpage 1 ;;;
 {
 $8B:B695 5A          PHY
 $8B:B696 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
@@ -7139,7 +7152,7 @@ $8B:B6BF 60          RTS
 }
 
 
-;;; $B6C0:  ;;;
+;;; $B6C0: Pre-instruction - mode 7 object $D431 (page 5 - subpage 2) ;;;
 {
 $8B:B6C0 A5 8F       LDA $8F    [$7E:008F]  ;\
 $8B:B6C2 F0 28       BEQ $28    [$B6EC]     ;} If not newly pressed anything: return
@@ -7164,13 +7177,13 @@ $8B:B6EC 60          RTS
 ;;; $B6ED:  ;;;
 {
 $8B:B6ED 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
-$8B:B6F1 A9 DA B1    LDA #$B1DA
-$8B:B6F4 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:B6F1 A9 DA B1    LDA #$B1DA             ;\
+$8B:B6F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $B1DA
 $8B:B6F7 60          RTS
 }
 
 
-;;; $B6F8:  ;;;
+;;; $B6F8: Instruction - load Japanese intro text - page 6 ;;;
 {
 $8B:B6F8 5A          PHY
 $8B:B6F9 22 C3 95 8B JSL $8B95C3[$8B:95C3]  ; Disable cinematic BG tilemap updates
@@ -7258,10 +7271,10 @@ $8B:B772 60          RTS
 {
 $8B:B773 A9 38 00    LDA #$0038             ;\
 $8B:B776 99 7D 1A    STA $1A7D,y[$7E:1A7D]  ;} Cinematic sprite object X position = 38h
-$8B:B779 A9 6F 00    LDA #$006F
-$8B:B77C 99 9D 1A    STA $1A9D,y[$7E:1A9D]
-$8B:B77F A9 00 0E    LDA #$0E00
-$8B:B782 99 BD 1A    STA $1ABD,y[$7E:1ABD]
+$8B:B779 A9 6F 00    LDA #$006F             ;\
+$8B:B77C 99 9D 1A    STA $1A9D,y[$7E:1A9D]  ;} Cinematic sprite object Y position = 6Fh
+$8B:B77F A9 00 0E    LDA #$0E00             ;\
+$8B:B782 99 BD 1A    STA $1ABD,y[$7E:1ABD]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:B785 60          RTS
 }
 
@@ -7425,8 +7438,8 @@ $8B:B8A4 BD BD B8    LDA $B8BD,x[$8B:B8BD]
 $8B:B8A7 38          SEC
 $8B:B8A8 E9 08 00    SBC #$0008
 $8B:B8AB 99 9D 1A    STA $1A9D,y[$7E:1AB7]
-$8B:B8AE A9 00 0E    LDA #$0E00
-$8B:B8B1 99 BD 1A    STA $1ABD,y[$7E:1AD7]
+$8B:B8AE A9 00 0E    LDA #$0E00             ;\
+$8B:B8B1 99 BD 1A    STA $1ABD,y[$7E:1AD7]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:B8B4 60          RTS
 
 $8B:B8B5             dw 0070, 00C0, 0080, 00E8
@@ -7548,8 +7561,8 @@ $8B:B9A3 7D C0 B9    ADC $B9C0,x[$8B:B9C0]
 $8B:B9A6 99 9D 1A    STA $1A9D,y[$7E:1AAD]
 $8B:B9A9 BD CA B9    LDA $B9CA,x[$8B:B9CA]
 $8B:B9AC 99 5D 1B    STA $1B5D,y[$7E:1B6D]
-$8B:B9AF A9 00 0A    LDA #$0A00
-$8B:B9B2 99 BD 1A    STA $1ABD,y[$7E:1ACD]
+$8B:B9AF A9 00 0A    LDA #$0A00             ;\
+$8B:B9B2 99 BD 1A    STA $1ABD,y[$7E:1ACD]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:B9B5 60          RTS
 
 $8B:B9B6             dw 0000, 0010, FFF0, FFF8, 0008
@@ -7574,8 +7587,8 @@ $8B:B9EA 7D 03 BA    ADC $BA03,x[$8B:BA03]
 $8B:B9ED 99 9D 1A    STA $1A9D,y[$7E:1AB9]
 $8B:B9F0 BD 09 BA    LDA $BA09,x[$8B:BA09]
 $8B:B9F3 99 5D 1B    STA $1B5D,y[$7E:1B79]
-$8B:B9F6 A9 00 0A    LDA #$0A00
-$8B:B9F9 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:B9F6 A9 00 0A    LDA #$0A00             ;\
+$8B:B9F9 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:B9FC 60          RTS
 
 $8B:B9FD             dw 0010, FFF0, FFF0
@@ -7629,10 +7642,10 @@ $8B:BA4A 60          RTS
 {
 $8B:BA4B A9 70 00    LDA #$0070             ;\
 $8B:BA4E 99 7D 1A    STA $1A7D,y[$7E:1A97]  ;} Cinematic sprite object X position = 70h
-$8B:BA51 A9 9B 00    LDA #$009B
-$8B:BA54 99 9D 1A    STA $1A9D,y[$7E:1AB7]
-$8B:BA57 A9 00 0E    LDA #$0E00
-$8B:BA5A 99 BD 1A    STA $1ABD,y[$7E:1AD7]
+$8B:BA51 A9 9B 00    LDA #$009B             ;\
+$8B:BA54 99 9D 1A    STA $1A9D,y[$7E:1AB7]  ;} Cinematic sprite object Y position = 9Bh
+$8B:BA57 A9 00 0E    LDA #$0E00             ;\
+$8B:BA5A 99 BD 1A    STA $1ABD,y[$7E:1AD7]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:BA5D 60          RTS
 }
 
@@ -8016,8 +8029,8 @@ $8B:BDBF 22 4B 83 80 JSL $80834B[$80:834B]
 $8B:BDC3 A0 0F CF    LDY #$CF0F             ;\
 $8B:BDC6 A9 00 00    LDA #$0000             ;} Spawn cinematic sprite object $CF0F (Ceres stars)
 $8B:BDC9 20 8A 93    JSR $938A  [$8B:938A]  ;/
-$8B:BDCC A9 E4 BD    LDA #$BDE4
-$8B:BDCF 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:BDCC A9 E4 BD    LDA #$BDE4             ;\
+$8B:BDCF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDE4
 $8B:BDD2 A9 2D FF    LDA #$FF2D             ;\
 $8B:BDD5 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue Ceres music data
 $8B:BDD9 A9 05 00    LDA #$0005             ;\
@@ -8035,8 +8048,8 @@ $8B:BDEA E2 20       SEP #$20
 $8B:BDEC A9 0F       LDA #$0F
 $8B:BDEE 85 51       STA $51    [$7E:0051]
 $8B:BDF0 C2 20       REP #$20
-$8B:BDF2 A9 F9 BD    LDA #$BDF9
-$8B:BDF5 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:BDF2 A9 F9 BD    LDA #$BDF9             ;\
+$8B:BDF5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDF9
 
 $8B:BDF8 60          RTS
 }
@@ -8084,8 +8097,8 @@ $8B:BE53 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BE56 A0 0F CF    LDY #$CF0F             ;\
 $8B:BE59 A9 01 00    LDA #$0001             ;} Spawn cinematic sprite object $CF0F (Ceres stars)
 $8B:BE5C 20 8A 93    JSR $938A  [$8B:938A]  ;/
-$8B:BE5F A9 DA BF    LDA #$BFDA
-$8B:BE62 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:BE5F A9 DA BF    LDA #$BFDA             ;\
+$8B:BE62 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BFDA
 $8B:BE65 A0 A8 E1    LDY #$E1A8             ;\
 $8B:BE68 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A8 (cutscene gunship engine flicker)
 $8B:BE6C A0 AC E1    LDY #$E1AC             ;\
@@ -8111,20 +8124,20 @@ $8B:BE83 A9 00 FC    LDA #$FC00
 $8B:BE86 99 7D 1B    STA $1B7D,y[$7E:1B9B]
 $8B:BE89 A9 70 00    LDA #$0070             ;\
 $8B:BE8C 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 70h
-$8B:BE8F A9 57 00    LDA #$0057
-$8B:BE92 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:BE95 A9 00 08    LDA #$0800
-$8B:BE98 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:BE8F A9 57 00    LDA #$0057             ;\
+$8B:BE92 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 57h
+$8B:BE95 A9 00 08    LDA #$0800             ;\
+$8B:BE98 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:BE9B 60          RTS
 
 $8B:BE9C A9 C6 BF    LDA #$BFC6
 $8B:BE9F 99 3D 1B    STA $1B3D,y[$7E:1B53]
 $8B:BEA2 A9 E0 FF    LDA #$FFE0             ;\
 $8B:BEA5 99 7D 1A    STA $1A7D,y[$7E:1A93]  ;} Cinematic sprite object X position = -20h
-$8B:BEA8 A9 57 00    LDA #$0057
-$8B:BEAB 99 9D 1A    STA $1A9D,y[$7E:1AB3]
-$8B:BEAE A9 00 08    LDA #$0800
-$8B:BEB1 99 BD 1A    STA $1ABD,y[$7E:1AD3]
+$8B:BEA8 A9 57 00    LDA #$0057             ;\
+$8B:BEAB 99 9D 1A    STA $1A9D,y[$7E:1AB3]  ;} Cinematic sprite object Y position = 57h
+$8B:BEAE A9 00 08    LDA #$0800             ;\
+$8B:BEB1 99 BD 1A    STA $1ABD,y[$7E:1AD3]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:BEB4 60          RTS
 }
 
@@ -8187,10 +8200,10 @@ $8B:BF21 60          RTS
 {
 $8B:BF22 A9 50 00    LDA #$0050             ;\
 $8B:BF25 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 50h
-$8B:BF28 A9 9F 00    LDA #$009F
-$8B:BF2B 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:BF2E A9 00 08    LDA #$0800
-$8B:BF31 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:BF28 A9 9F 00    LDA #$009F             ;\
+$8B:BF2B 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 9Fh
+$8B:BF2E A9 00 08    LDA #$0800             ;\
+$8B:BF31 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:BF34 60          RTS
 }
 
@@ -8213,10 +8226,10 @@ $8B:BF4B 60          RTS
 {
 $8B:BF4C A9 74 00    LDA #$0074             ;\
 $8B:BF4F 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 74h
-$8B:BF52 A9 A0 00    LDA #$00A0
-$8B:BF55 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:BF58 A9 00 0C    LDA #$0C00
-$8B:BF5B 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:BF52 A9 A0 00    LDA #$00A0             ;\
+$8B:BF55 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = A0h
+$8B:BF58 A9 00 0C    LDA #$0C00             ;\
+$8B:BF5B 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = C00h (palette 6)
 $8B:BF5E 60          RTS
 }
 
@@ -8239,10 +8252,10 @@ $8B:BF75 60          RTS
 {
 $8B:BF76 A9 80 00    LDA #$0080             ;\
 $8B:BF79 99 7D 1A    STA $1A7D,y[$7E:1A97]  ;} Cinematic sprite object X position = 80h
-$8B:BF7C A9 60 00    LDA #$0060
-$8B:BF7F 99 9D 1A    STA $1A9D,y[$7E:1AB7]
-$8B:BF82 A9 00 08    LDA #$0800
-$8B:BF85 99 BD 1A    STA $1ABD,y[$7E:1AD7]
+$8B:BF7C A9 60 00    LDA #$0060             ;\
+$8B:BF7F 99 9D 1A    STA $1A9D,y[$7E:1AB7]  ;} Cinematic sprite object Y position = 60h
+$8B:BF82 A9 00 08    LDA #$0800             ;\
+$8B:BF85 99 BD 1A    STA $1ABD,y[$7E:1AD7]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:BF88 60          RTS
 }
 
@@ -8274,10 +8287,10 @@ $8B:BFB1 80 06       BRA $06    [$BFB9]
 $8B:BFB3 A9 E0 00    LDA #$00E0             ;\
 $8B:BFB6 99 7D 1A    STA $1A7D,y[$7E:1A95]  ;} Cinematic sprite object X position = E0h
 
-$8B:BFB9 A9 57 00    LDA #$0057
-$8B:BFBC 99 9D 1A    STA $1A9D,y[$7E:1AB5]
-$8B:BFBF A9 00 08    LDA #$0800
-$8B:BFC2 99 BD 1A    STA $1ABD,y[$7E:1AD5]
+$8B:BFB9 A9 57 00    LDA #$0057             ;\
+$8B:BFBC 99 9D 1A    STA $1A9D,y[$7E:1AB5]  ;} Cinematic sprite object Y position = 57h
+$8B:BFBF A9 00 08    LDA #$0800             ;\
+$8B:BFC2 99 BD 1A    STA $1ABD,y[$7E:1AD5]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:BFC5 60          RTS
 }
 
@@ -8373,8 +8386,8 @@ $8B:C06F 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap update
 $8B:C073 A0 69 CF    LDY #$CF69             ;\
 $8B:C076 A9 00 5C    LDA #$5C00             ;} Spawn space colony cinematic BG object for VRAM $4C00
 $8B:C079 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
-$8B:C07C A9 8F A3    LDA #$A38F
-$8B:C07F 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C07C A9 8F A3    LDA #$A38F             ;\
+$8B:C07F 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A38F
 $8B:C082 60          RTS
 }
 
@@ -8383,10 +8396,10 @@ $8B:C082 60          RTS
 {
 $8B:C083 A9 7C 00    LDA #$007C             ;\
 $8B:C086 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 7Ch
-$8B:C089 A9 BA 00    LDA #$00BA
-$8B:C08C 99 9D 1A    STA $1A9D,y
-$8B:C08F A9 00 00    LDA #$0000
-$8B:C092 99 BD 1A    STA $1ABD,y
+$8B:C089 A9 BA 00    LDA #$00BA             ;\
+$8B:C08C 99 9D 1A    STA $1A9D,y            ;} Cinematic sprite object Y position = BAh
+$8B:C08F A9 00 00    LDA #$0000             ;\
+$8B:C092 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = 0
 $8B:C095 60          RTS
 }
 
@@ -8406,11 +8419,11 @@ $8B:C0A1 60          RTS
 
 ;;; $C0A2: Instruction - finish intro ;;;
 {
-$8B:C0A2 A9 C5 C0    LDA #$C0C5
-$8B:C0A5 8D 51 1F    STA $1F51  [$7E:1F51]
-$8B:C0A8 A9 01 00    LDA #$0001
-$8B:C0AB 8D 23 07    STA $0723  [$7E:0723]
-$8B:C0AE 8D 25 07    STA $0725  [$7E:0725]
+$8B:C0A2 A9 C5 C0    LDA #$C0C5             ;\
+$8B:C0A5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C0C5
+$8B:C0A8 A9 01 00    LDA #$0001             ;\
+$8B:C0AB 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
+$8B:C0AE 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $8B:C0B1 60          RTS
 }
 
@@ -8419,10 +8432,10 @@ $8B:C0B1 60          RTS
 {
 $8B:C0B2 A9 7C 00    LDA #$007C             ;\
 $8B:C0B5 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 7Ch
-$8B:C0B8 A9 CC 00    LDA #$00CC
-$8B:C0BB 99 9D 1A    STA $1A9D,y
-$8B:C0BE A9 00 00    LDA #$0000
-$8B:C0C1 99 BD 1A    STA $1ABD,y
+$8B:C0B8 A9 CC 00    LDA #$00CC             ;\
+$8B:C0BB 99 9D 1A    STA $1A9D,y            ;} Cinematic sprite object Y position = CCh
+$8B:C0BE A9 00 00    LDA #$0000             ;\
+$8B:C0C1 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = 0
 $8B:C0C4 60          RTS
 }
 
@@ -8436,8 +8449,8 @@ $8B:C0CD C9 80       CMP #$80               ;} If not finished fading out: retur
 $8B:C0CF D0 2E       BNE $2E    [$C0FF]     ;/
 $8B:C0D1 22 4B 83 80 JSL $80834B[$80:834B]
 $8B:C0D5 C2 20       REP #$20
-$8B:C0D7 9C 23 07    STZ $0723  [$7E:0723]
-$8B:C0DA 9C 25 07    STZ $0725  [$7E:0725]
+$8B:C0D7 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:C0DA 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:C0DD 64 B5       STZ $B5    [$7E:00B5]
 $8B:C0DF 64 B9       STZ $B9    [$7E:00B9]
 $8B:C0E1 64 B7       STZ $B7    [$7E:00B7]
@@ -8454,8 +8467,8 @@ $8B:C0F2 9E 8D 19    STZ $198D,x[$7E:1C1D]
 $8B:C0F5 CA          DEX
 $8B:C0F6 CA          DEX
 $8B:C0F7 10 F9       BPL $F9    [$C0F2]
-$8B:C0F9 A9 00 C1    LDA #$C100
-$8B:C0FC 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C0F9 A9 00 C1    LDA #$C100             ;\
+$8B:C0FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C100
 
 $8B:C0FF 60          RTS
 }
@@ -8621,11 +8634,11 @@ $8B:C29B 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CF
 $8B:C29E A0 B8 E1    LDY #$E1B8             ;\
 $8B:C2A1 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1B8 (cutscene Ceres navigation lights - BG Ceres)
 $8B:C2A5 22 4B 83 80 JSL $80834B[$80:834B]
-$8B:C2A9 A9 01 00    LDA #$0001
-$8B:C2AC 8D 23 07    STA $0723  [$7E:0723]
-$8B:C2AF 8D 25 07    STA $0725  [$7E:0725]
-$8B:C2B2 A9 E4 C2    LDA #$C2E4
-$8B:C2B5 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C2A9 A9 01 00    LDA #$0001             ;\
+$8B:C2AC 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
+$8B:C2AF 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
+$8B:C2B2 A9 E4 C2    LDA #$C2E4             ;\
+$8B:C2B5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C2E4
 $8B:C2B8 A9 00 00    LDA #$0000             ;\
 $8B:C2BB 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $8B:C2BF A9 2D FF    LDA #$FF2D             ;\
@@ -8649,8 +8662,8 @@ $8B:C2E3 60          RTS
 {
 $8B:C2E4 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $8B:C2E8 B0 06       BCS $06    [$C2F0]     ;} If music is queued: return
-$8B:C2EA A9 F1 C2    LDA #$C2F1
-$8B:C2ED 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C2EA A9 F1 C2    LDA #$C2F1             ;\
+$8B:C2ED 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C2F1
 
 $8B:C2F0 60          RTS
 }
@@ -8682,10 +8695,10 @@ $8B:C327 A5 51       LDA $51    [$7E:0051]
 $8B:C329 C9 0F       CMP #$0F
 $8B:C32B D0 17       BNE $17    [$C344]
 $8B:C32D C2 20       REP #$20
-$8B:C32F 9C 23 07    STZ $0723  [$7E:0723]
-$8B:C332 9C 25 07    STZ $0725  [$7E:0725]
-$8B:C335 A9 45 C3    LDA #$C345
-$8B:C338 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C32F 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:C332 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$8B:C335 A9 45 C3    LDA #$C345             ;\
+$8B:C338 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C345
 $8B:C33B A9 01 00    LDA #$0001
 $8B:C33E 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:C341 9C 4B 1A    STZ $1A4B  [$7E:1A4B]
@@ -8763,8 +8776,8 @@ $8B:C3D4 22 4F 8B 80 JSL $808B4F[$80:8B4F]
 
 $8B:C3D8 A2 F0 C3    LDX #$C3F0
 $8B:C3DB 22 4F 8B 80 JSL $808B4F[$80:8B4F]
-$8B:C3DF A9 CA C5    LDA #$C5CA
-$8B:C3E2 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C3DF A9 CA C5    LDA #$C5CA             ;\
+$8B:C3E2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C5CA
 $8B:C3E5 60          RTS
 
 ; Mode 7 transfers data
@@ -8827,8 +8840,8 @@ $8B:C45B 65 82       ADC $82    [$7E:0082]
 $8B:C45D 18          CLC
 $8B:C45E 7D 7F C4    ADC $C47F,x[$8B:C47F]
 $8B:C461 99 9D 1A    STA $1A9D,y[$7E:1AB7]
-$8B:C464 A9 00 0A    LDA #$0A00
-$8B:C467 99 BD 1A    STA $1ABD,y[$7E:1AD7]
+$8B:C464 A9 00 0A    LDA #$0A00             ;\
+$8B:C467 99 BD 1A    STA $1ABD,y[$7E:1AD7]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:C46A 60          RTS
 
 $8B:C46B             dw 0001, 0010, 0020, 0030, 0040
@@ -8841,11 +8854,11 @@ $8B:C47F             dw FFF0, 0010, 0010, FFF0, 0000
 {
 ; Used by cinematic sprite object $CF33 (Ceres explosion spawner)
 $8B:C489 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
-$8B:C48C C9 CA C5    CMP #$C5CA             ;} If [$1F51] = $C5CA:
+$8B:C48C C9 CA C5    CMP #$C5CA             ;} If [cinematic function] = $C5CA:
 $8B:C48F D0 07       BNE $07    [$C498]     ;/
-$8B:C491 A9 D9 93    LDA #$93D9
-$8B:C494 9D 3D 1B    STA $1B3D,x
-$8B:C497 60          RTS
+$8B:C491 A9 D9 93    LDA #$93D9             ;\
+$8B:C494 9D 3D 1B    STA $1B3D,x            ;} Cinematic sprite object pre-instruction = RTS
+$8B:C497 60          RTS                    ; Return
 
 $8B:C498 CE 49 1A    DEC $1A49  [$7E:1A49]
 $8B:C49B F0 02       BEQ $02    [$C49F]
@@ -8888,8 +8901,8 @@ $8B:C4DB 65 82       ADC $82    [$7E:0082]
 $8B:C4DD 18          CLC
 $8B:C4DE 7D ED C4    ADC $C4ED,x[$8B:C4ED]
 $8B:C4E1 99 9D 1A    STA $1A9D,y[$7E:1AB7]
-$8B:C4E4 A9 00 0A    LDA #$0A00
-$8B:C4E7 99 BD 1A    STA $1ABD,y[$7E:1AD7]
+$8B:C4E4 A9 00 0A    LDA #$0A00             ;\
+$8B:C4E7 99 BD 1A    STA $1ABD,y[$7E:1AD7]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:C4EA 60          RTS
 
 $8B:C4EB             dw 000E,FFF8, 0008,000C, FFF0,000C, FFF8,FFF2, 0000,0000, 0010,000E, FFF4,0004, FFF8,FFF0
@@ -8946,8 +8959,8 @@ $8B:C55A 65 82       ADC $82    [$7E:0082]
 $8B:C55C 18          CLC
 $8B:C55D 7D 7A C5    ADC $C57A,x[$8B:C57A]
 $8B:C560 99 9D 1A    STA $1A9D,y[$7E:1AAB]
-$8B:C563 A9 00 0A    LDA #$0A00
-$8B:C566 99 BD 1A    STA $1ABD,y[$7E:1ACB]
+$8B:C563 A9 00 0A    LDA #$0A00             ;\
+$8B:C566 99 BD 1A    STA $1ABD,y[$7E:1ACB]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:C569 60          RTS
 
 $8B:C56A             dw 0001, 0004, 0008, 0010
@@ -8990,8 +9003,8 @@ $8B:C5BC 1A          INC A
 $8B:C5BD 18          CLC
 $8B:C5BE 65 82       ADC $82    [$7E:0082]
 $8B:C5C0 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:C5C3 A9 00 0A    LDA #$0A00
-$8B:C5C6 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:C5C3 A9 00 0A    LDA #$0A00             ;\
+$8B:C5C6 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:C5C9 60          RTS
 }
 
@@ -9023,8 +9036,8 @@ $8B:C5FC E9 10 00    SBC #$0010
 $8B:C5FF 8D 8F 19    STA $198F  [$7E:198F]
 $8B:C602 60          RTS
 
-$8B:C603 A9 10 C6    LDA #$C610
-$8B:C606 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C603 A9 10 C6    LDA #$C610             ;\
+$8B:C606 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C610
 $8B:C609 A9 C0 00    LDA #$00C0
 $8B:C60C 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:C60F 60          RTS
@@ -9037,11 +9050,11 @@ $8B:C610 CE 49 1A    DEC $1A49  [$7E:1A49]
 $8B:C613 F0 02       BEQ $02    [$C617]
 $8B:C615 10 0F       BPL $0F    [$C626]
 
-$8B:C617 A9 01 00    LDA #$0001
-$8B:C61A 8D 23 07    STA $0723  [$7E:0723]
-$8B:C61D 8D 25 07    STA $0725  [$7E:0725]
-$8B:C620 A9 27 C6    LDA #$C627
-$8B:C623 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C617 A9 01 00    LDA #$0001             ;\
+$8B:C61A 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
+$8B:C61D 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
+$8B:C620 A9 27 C6    LDA #$C627             ;\
+$8B:C623 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C627
 
 $8B:C626 60          RTS
 }
@@ -9057,13 +9070,13 @@ $8B:C62F C9 80       CMP #$80               ;} If not finished fading out: retur
 $8B:C631 D0 65       BNE $65    [$C698]     ;/
 $8B:C633 22 4B 83 80 JSL $80834B[$80:834B]
 $8B:C637 C2 20       REP #$20
-$8B:C639 9C 23 07    STZ $0723  [$7E:0723]
-$8B:C63C 9C 25 07    STZ $0725  [$7E:0725]
+$8B:C639 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:C63C 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:C63F AD 98 09    LDA $0998  [$7E:0998]
 $8B:C642 C9 25 00    CMP #$0025
 $8B:C645 F0 07       BEQ $07    [$C64E]
-$8B:C647 A9 99 C6    LDA #$C699
-$8B:C64A 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C647 A9 99 C6    LDA #$C699             ;\
+$8B:C64A 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C699
 $8B:C64D 60          RTS
 
 $8B:C64E A9 00 00    LDA #$0000
@@ -9189,12 +9202,12 @@ $8B:C77D 85 57       STA $57    [$7E:0057]
 $8B:C77F C2 20       REP #$20
 $8B:C781 A0 A8 E1    LDY #$E1A8             ;\
 $8B:C784 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A8 (cutscene gunship engine flicker)
-$8B:C788 A9 9C C7    LDA #$C79C
-$8B:C78B 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C788 A9 9C C7    LDA #$C79C             ;\
+$8B:C78B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C79C
 $8B:C78E 22 4B 83 80 JSL $80834B[$80:834B]
-$8B:C792 A9 01 00    LDA #$0001
-$8B:C795 8D 23 07    STA $0723  [$7E:0723]
-$8B:C798 8D 25 07    STA $0725  [$7E:0725]
+$8B:C792 A9 01 00    LDA #$0001             ;\
+$8B:C795 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
+$8B:C798 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
 $8B:C79B 60          RTS
 }
 
@@ -9217,10 +9230,10 @@ $8B:C7B5 A5 51       LDA $51    [$7E:0051]
 $8B:C7B7 C9 0F       CMP #$0F
 $8B:C7B9 D0 0E       BNE $0E    [$C7C9]
 $8B:C7BB C2 20       REP #$20
-$8B:C7BD 9C 23 07    STZ $0723  [$7E:0723]
-$8B:C7C0 9C 25 07    STZ $0725  [$7E:0725]
-$8B:C7C3 A9 CA C7    LDA #$C7CA
-$8B:C7C6 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C7BD 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:C7C0 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$8B:C7C3 A9 CA C7    LDA #$C7CA             ;\
+$8B:C7C6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C7CA
 
 $8B:C7C9 60          RTS
 }
@@ -9272,8 +9285,8 @@ $8B:C828 A0 09 CF    LDY #$CF09             ;\
 $8B:C82B 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CF09 (Zebes stars 5)
 $8B:C82E A0 AF CE    LDY #$CEAF             ;\
 $8B:C831 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEAF (planet Zebes text)
-$8B:C834 A9 8F A3    LDA #$A38F
-$8B:C837 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C834 A9 8F A3    LDA #$A38F             ;\
+$8B:C837 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A38F
 
 $8B:C83A 60          RTS
 }
@@ -9283,10 +9296,10 @@ $8B:C83A 60          RTS
 {
 $8B:C83B A9 88 00    LDA #$0088             ;\
 $8B:C83E 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 88h
-$8B:C841 A9 6F 00    LDA #$006F
-$8B:C844 99 9D 1A    STA $1A9D,y[$7E:1ABB]
-$8B:C847 A9 00 0E    LDA #$0E00
-$8B:C84A 99 BD 1A    STA $1ABD,y[$7E:1ADB]
+$8B:C841 A9 6F 00    LDA #$006F             ;\
+$8B:C844 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 6Fh
+$8B:C847 A9 00 0E    LDA #$0E00             ;\
+$8B:C84A 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:C84D 60          RTS
 }
 
@@ -9338,10 +9351,10 @@ $8B:C896 60          RTS
 {
 $8B:C897 A9 80 00    LDA #$0080             ;\
 $8B:C89A 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
-$8B:C89D A9 7F 00    LDA #$007F
-$8B:C8A0 99 9D 1A    STA $1A9D,y
-$8B:C8A3 A9 00 08    LDA #$0800
-$8B:C8A6 99 BD 1A    STA $1ABD,y
+$8B:C89D A9 7F 00    LDA #$007F             ;\
+$8B:C8A0 99 9D 1A    STA $1A9D,y            ;} Cinematic sprite object Y position = 7Fh
+$8B:C8A3 A9 00 08    LDA #$0800             ;\
+$8B:C8A6 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:C8A9 60          RTS
 }
 
@@ -9384,8 +9397,8 @@ $8B:C8E6 A9 01 00    LDA #$0001
 $8B:C8E9 9D 5D 1B    STA $1B5D,x[$7E:1B73]
 $8B:C8EC A9 53 CE    LDA #$CE53
 $8B:C8EF 9D 1D 1B    STA $1B1D,x[$7E:1B33]
-$8B:C8F2 A9 DF CA    LDA #$CADF
-$8B:C8F5 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C8F2 A9 DF CA    LDA #$CADF             ;\
+$8B:C8F5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADF
 
 $8B:C8F8 60          RTS
 }
@@ -9439,10 +9452,10 @@ $8B:C941 60          RTS
 $8B:C942 EA          NOP                    ; Wild NOP appears!
 $8B:C943 A9 30 00    LDA #$0030             ;\
 $8B:C946 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;} Cinematic sprite object X position = 30h
-$8B:C949 A9 2F 00    LDA #$002F
-$8B:C94C 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:C94F A9 00 08    LDA #$0800
-$8B:C952 99 BD 1A    STA $1ABD,y[$7E:1AD9]
+$8B:C949 A9 2F 00    LDA #$002F             ;\
+$8B:C94C 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = 2Fh
+$8B:C94F A9 00 08    LDA #$0800             ;\
+$8B:C952 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:C955 60          RTS
 }
 
@@ -9452,10 +9465,10 @@ $8B:C955 60          RTS
 $8B:C956 EA          NOP
 $8B:C957 A9 D0 00    LDA #$00D0             ;\
 $8B:C95A 99 7D 1A    STA $1A7D,y[$7E:1A97]  ;} Cinematic sprite object X position = D0h
-$8B:C95D A9 2F 00    LDA #$002F
-$8B:C960 99 9D 1A    STA $1A9D,y[$7E:1AB7]
-$8B:C963 A9 00 08    LDA #$0800
-$8B:C966 99 BD 1A    STA $1ABD,y[$7E:1AD7]
+$8B:C95D A9 2F 00    LDA #$002F             ;\
+$8B:C960 99 9D 1A    STA $1A9D,y[$7E:1AB7]  ;} Cinematic sprite object Y position = 2Fh
+$8B:C963 A9 00 08    LDA #$0800             ;\
+$8B:C966 99 BD 1A    STA $1ABD,y[$7E:1AD7]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:C969 60          RTS
 }
 
@@ -9465,10 +9478,10 @@ $8B:C969 60          RTS
 $8B:C96A EA          NOP
 $8B:C96B A9 30 00    LDA #$0030             ;\
 $8B:C96E 99 7D 1A    STA $1A7D,y[$7E:1A95]  ;} Cinematic sprite object X position = 30h
-$8B:C971 A9 CF 00    LDA #$00CF
-$8B:C974 99 9D 1A    STA $1A9D,y[$7E:1AB5]
-$8B:C977 A9 00 08    LDA #$0800
-$8B:C97A 99 BD 1A    STA $1ABD,y[$7E:1AD5]
+$8B:C971 A9 CF 00    LDA #$00CF             ;\
+$8B:C974 99 9D 1A    STA $1A9D,y[$7E:1AB5]  ;} Cinematic sprite object Y position = CFh
+$8B:C977 A9 00 08    LDA #$0800             ;\
+$8B:C97A 99 BD 1A    STA $1ABD,y[$7E:1AD5]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:C97D 60          RTS
 }
 
@@ -9478,10 +9491,10 @@ $8B:C97D 60          RTS
 $8B:C97E EA          NOP
 $8B:C97F A9 D0 00    LDA #$00D0             ;\
 $8B:C982 99 7D 1A    STA $1A7D,y[$7E:1A93]  ;} Cinematic sprite object X position = D0h
-$8B:C985 A9 CF 00    LDA #$00CF
-$8B:C988 99 9D 1A    STA $1A9D,y[$7E:1AB3]
-$8B:C98B A9 00 08    LDA #$0800
-$8B:C98E 99 BD 1A    STA $1ABD,y[$7E:1AD3]
+$8B:C985 A9 CF 00    LDA #$00CF             ;\
+$8B:C988 99 9D 1A    STA $1A9D,y[$7E:1AB3]  ;} Cinematic sprite object Y position = CFh
+$8B:C98B A9 00 08    LDA #$0800             ;\
+$8B:C98E 99 BD 1A    STA $1ABD,y[$7E:1AD3]  ;} Cinematic sprite object palette index = 800h (palette 4)
 $8B:C991 60          RTS
 }
 
@@ -9490,10 +9503,10 @@ $8B:C991 60          RTS
 {
 $8B:C992 A9 80 00    LDA #$0080             ;\
 $8B:C995 99 7D 1A    STA $1A7D,y[$7E:1A91]  ;} Cinematic sprite object X position = 80h
-$8B:C998 A9 BA 00    LDA #$00BA
-$8B:C99B 99 9D 1A    STA $1A9D,y[$7E:1AB1]
-$8B:C99E A9 00 00    LDA #$0000
-$8B:C9A1 99 BD 1A    STA $1ABD,y[$7E:1AD1]
+$8B:C998 A9 BA 00    LDA #$00BA             ;\
+$8B:C99B 99 9D 1A    STA $1A9D,y[$7E:1AB1]  ;} Cinematic sprite object Y position = BAh
+$8B:C99E A9 00 00    LDA #$0000             ;\
+$8B:C9A1 99 BD 1A    STA $1ABD,y[$7E:1AD1]  ;} Cinematic sprite object palette index = 0
 $8B:C9A4 60          RTS
 }
 
@@ -9541,8 +9554,8 @@ $8B:C9D3 A9 20 00    LDA #$0020
 $8B:C9D6 8D 8D 19    STA $198D  [$7E:198D]
 $8B:C9D9 A9 10 00    LDA #$0010
 $8B:C9DC 8D 8F 19    STA $198F  [$7E:198F]
-$8B:C9DF A9 F9 C9    LDA #$C9F9
-$8B:C9E2 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:C9DF A9 F9 C9    LDA #$C9F9             ;\
+$8B:C9E2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C9F9
 $8B:C9E5 60          RTS
 }
 
@@ -9551,10 +9564,10 @@ $8B:C9E5 60          RTS
 {
 $8B:C9E6 A9 80 00    LDA #$0080             ;\
 $8B:C9E9 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
-$8B:C9EC A9 CC 00    LDA #$00CC
-$8B:C9EF 99 9D 1A    STA $1A9D,y
-$8B:C9F2 A9 00 00    LDA #$0000
-$8B:C9F5 99 BD 1A    STA $1ABD,y
+$8B:C9EC A9 CC 00    LDA #$00CC             ;\
+$8B:C9EF 99 9D 1A    STA $1A9D,y            ;} Cinematic sprite object Y position = CCh
+$8B:C9F2 A9 00 00    LDA #$0000             ;\
+$8B:C9F5 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = 0
 $8B:C9F8 60          RTS
 }
 
@@ -9583,8 +9596,8 @@ $8B:CA28 69 04 00    ADC #$0004
 $8B:CA2B 8D 8F 19    STA $198F  [$7E:198F]
 $8B:CA2E 60          RTS
 
-$8B:CA2F A9 36 CA    LDA #$CA36
-$8B:CA32 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:CA2F A9 36 CA    LDA #$CA36             ;\
+$8B:CA32 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA36
 $8B:CA35 60          RTS
 }
 
@@ -9621,8 +9634,8 @@ $8B:CA7A 8D 8D 19    STA $198D  [$7E:198D]
 
 $8B:CA7D 60          RTS
 
-$8B:CA7E A9 85 CA    LDA #$CA85
-$8B:CA81 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:CA7E A9 85 CA    LDA #$CA85             ;\
+$8B:CA81 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA85
 $8B:CA84 60          RTS
 }
 
@@ -9655,8 +9668,8 @@ $8B:CABB E2 20       SEP #$20
 $8B:CABD A9 10       LDA #$10
 $8B:CABF 85 69       STA $69    [$7E:0069]
 $8B:CAC1 C2 20       REP #$20
-$8B:CAC3 A9 D0 CA    LDA #$CAD0
-$8B:CAC6 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:CAC3 A9 D0 CA    LDA #$CAD0             ;\
+$8B:CAC6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CAD0
 $8B:CAC9 A9 40 00    LDA #$0040
 $8B:CACC 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:CACF 60          RTS
@@ -9669,8 +9682,8 @@ $8B:CAD0 CE 49 1A    DEC $1A49  [$7E:1A49]
 $8B:CAD3 F0 02       BEQ $02    [$CAD7]
 $8B:CAD5 10 06       BPL $06    [$CADD]
 
-$8B:CAD7 A9 DE CA    LDA #$CADE
-$8B:CADA 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:CAD7 A9 DE CA    LDA #$CADE             ;\
+$8B:CADA 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADE
 
 $8B:CADD 60          RTS
 }
@@ -10593,99 +10606,114 @@ $8B:D371             dw 0090,0005,
 
 ;;; $D389..D400: Mode 7 object instruction lists - Japanese intro text ;;;
 {
-;;; $D389: Instruction list - mode 7 object $D401 (yyyy) ;;;
+;;; $D389: Instruction list - mode 7 object $D401 (page 1) ;;;
 {
-$8B:D389             dx B51E,       ; ???
+$8B:D389             dw B51E,       ; Load Japanese intro text - page 1
                         0001,D3FF,
-                        B54F,       ; ???
+                        B54F,       ; Enable cinematic BG tilemap updates
                         956B        ; Delete
 }
 
 
-;;; $D393: Instruction list - mode 7 object $D407 (yyyy) ;;;
+;;; $D393: Instruction list - mode 7 object $D407 (page 2 - subpage 1) ;;;
 {
-$8B:D393             dx B554,       ; ???
+$8B:D393             dw B554,       ; Load Japanese intro text - page 2 - subpage 1
                         0001,D3FF,
-                        B54F,       ; ???
+                        B54F,       ; Enable cinematic BG tilemap updates
                         956B        ; Delete
 }
 
 
-;;; $D39D: Instruction list - mode 7 object $D40D (yyyy) ;;;
+;;; $D39D: Instruction list - mode 7 object $D40D (page 2 - subpage 2) ;;;
 {
-$8B:D39D             dx 0001,D3FF,
-                        9586,D39D,  ; Go to $D39D
-                        B5B8,       ; ???
+$8B:D39D             dw 0001,D3FF,
+                        9586,D39D   ; Go to $D39D
+}
+
+
+;;; $D3A5: Instruction list ;;;
+{
+$8B:D3A5             dw B5B8,       ; ???
                         956B        ; Delete
 }
 
 
-;;; $D3A9: Instruction list - mode 7 object $D413 (yyyy) ;;;
+;;; $D3A9: Instruction list - mode 7 object $D413 (page 3 - subpage 1) ;;;
 {
-$8B:D3A9             dx B5C3,       ; ???
+$8B:D3A9             dw B5C3,       ; Load Japanese intro text - page 3 - subpage 1
                         0001,D3FF,
-                        B54F,       ; ???
+                        B54F,       ; Enable cinematic BG tilemap updates
                         956B        ; Delete
 }
 
 
-;;; $D3B3: Instruction list - mode 7 object $D419 (yyyy) ;;;
+;;; $D3B3: Instruction list - mode 7 object $D419 (page 3 - subpage 2) ;;;
 {
-$8B:D3B3             dx 0001,D3FF,
-                        9586,D3B3,  ; Go to $D3B3
-                        B61B,       ; ???
+$8B:D3B3             dw 0001,D3FF,
+                        9586,D3B3   ; Go to $D3B3
+}
+
+
+;;; $D3BB: Instruction list ;;;
+{
+$8B:D3BB             dw B61B,       ; ???
                         956B        ; Delete
 }
 
 
-;;; $D3BF: Instruction list - mode 7 object $D41F (yyyy) ;;;
+;;; $D3BF: Instruction list - mode 7 object $D41F (page 4 - subpage 1) ;;;
 {
-$8B:D3BF             dx B626,       ; ???
+$8B:D3BF             dw B626,       ; Load Japanese intro text - page 4 - subpage 1
                         0001,D3FF,
-                        B54F,       ; ???
+                        B54F,       ; Enable cinematic BG tilemap updates
                         956B        ; Delete
 }
 
 
-;;; $D3C9: Instruction list - mode 7 object $D425 (yyyy) ;;;
+;;; $D3C9: Instruction list - mode 7 object $D425 (page 4 - subpage 2) ;;;
 {
-$8B:D3C9             dx 0001,D3FF,
-                        9586,D3C9,  ; Go to $D3C9
-                        B68A,       ; ???
+$8B:D3C9             dw 0001,D3FF,
+                        9586,D3C9   ; Go to $D3C9
+}
+
+
+;;; $D3D1: Instruction list ;;;
+{
+$8B:D3D1             dw B68A,       ; ???
                         956B        ; Delete
 }
 
 
-;;; $D3D5: Instruction list - mode 7 object $D42B (yyyy) ;;;
+;;; $D3D5: Instruction list - mode 7 object $D42B (page 5 - subpage 1) ;;;
 {
-$8B:D3D5             dx B695,       ; ???
+$8B:D3D5             dw B695,       ; Load Japanese intro text - page 5 - subpage 1
                         0001,D3FF,
-                        B54F,       ; ???
+                        B54F,       ; Enable cinematic BG tilemap updates
                         956B        ; Delete
 }
 
 
-;;; $D3DF: Instruction list - mode 7 object $D431 (yyyy) ;;;
+;;; $D3DF: Instruction list - mode 7 object $D431 (page 5 - subpage 2) ;;;
 {
-$8B:D3DF             dx 0001,D3FF,
-                        9586,D3DF,  ; Go to $D3DF
+$8B:D3DF             dw 0001,D3FF,
+                        9586,D3DF   ; Go to $D3DF
                         B6ED,       ; ???
                         956B        ; Delete
 }
 
 
-;;; $D3EB: Instruction list - mode 7 object $D437 (yyyy) ;;;
+;;; $D3EB: Instruction list - mode 7 object $D437 (page 6) ;;;
 {
-$8B:D3EB             dx B6F8,       ; ???
+$8B:D3EB             dw B6F8,       ; Load Japanese intro text - page 6
                         0001,D3FF,
                         B70B,       ; ???
                         956B        ; Delete
 }
 
 
-;;; $D3F5: Instruction list - mode 7 object $D43D (yyyy) ;;;
+;;; $D3F5: Instruction list - mode 7 object $D43D (unused, broken) ;;;
 {
-$8B:D3F5             dx B4EB,       ; ???
+$8B:D3F5             dw B4EB,       ; ???
                         0001,D3FF,
                         B519,       ; ???
                         956B        ; Delete
@@ -10705,16 +10733,16 @@ $8B:D3FF             db 00, 00
 ;                       |     ________ Pre-instruction
 ;                       |    |     ___ Instruction list pointer
 ;                       |    |    |
-$8B:D401             dw 93D9,93D9,D389
-$8B:D407             dw 93D9,93D9,D393
-$8B:D40D             dw 93D9,B585,D39D
-$8B:D413             dw 93D9,93D9,D3A9
-$8B:D419             dw 93D9,B5EE,D3B3
-$8B:D41F             dw 93D9,93D9,D3BF
-$8B:D425             dw 93D9,B657,D3C9
-$8B:D42B             dw 93D9,93D9,D3D5
-$8B:D431             dw 93D9,B6C0,D3DF
-$8B:D437             dw 93D9,93D9,D3EB
+$8B:D401             dw 93D9,93D9,D389 ; Page 1
+$8B:D407             dw 93D9,93D9,D393 ; Page 2 - subpage 1
+$8B:D40D             dw 93D9,B585,D39D ; Page 2 - subpage 2
+$8B:D413             dw 93D9,93D9,D3A9 ; Page 3 - subpage 1
+$8B:D419             dw 93D9,B5EE,D3B3 ; Page 3 - subpage 2
+$8B:D41F             dw 93D9,93D9,D3BF ; Page 4 - subpage 1
+$8B:D425             dw 93D9,B657,D3C9 ; Page 4 - subpage 2
+$8B:D42B             dw 93D9,93D9,D3D5 ; Page 5 - subpage 1
+$8B:D431             dw 93D9,B6C0,D3DF ; Page 5 - subpage 2
+$8B:D437             dw 93D9,93D9,D3EB ; Page 6
 $8B:D43D             dw 93D9,93D9,D3F5 ; Unused, broken
 }
 
@@ -10730,9 +10758,9 @@ $8B:D449 F4 4E D4    PEA $D44E              ;\
 $8B:D44C 6C 51 1F    JMP ($1F51)[$8B:D480]  ;} Execute [cinematic function]
 
 $8B:D44F AD 9F 1B    LDA $1B9F  [$7E:1B9F]  ;\
-$8B:D452 30 04       BMI $04    [$D458]     ;} If [$1B9F] >= 0:
+$8B:D452 30 04       BMI $04    [$D458]     ;} If [ending frame counter] >= 0:
 $8B:D454 1A          INC A                  ;\
-$8B:D455 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} Increment $1B9F
+$8B:D455 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} Increment ending frame counter (never read)
 
 $8B:D458 EE 51 1A    INC $1A51  [$7E:1A51]  ; Increment cinematic frame counter
 $8B:D45B 20 EF 93    JSR $93EF  [$8B:93EF]  ; Handle cinematic sprite objects
@@ -11786,10 +11814,10 @@ $8B:DE67 8D 25 07    STA $0725  [$7E:0725]
 $8B:DE6A 20 B8 90    JSR $90B8  [$8B:90B8]  ; Advance fast screen fade out
 $8B:DE6D 90 10       BCC $10    [$DE7F]     ; If not reached zero brightness: return
 $8B:DE6F 22 4B 83 80 JSL $80834B[$80:834B]
-$8B:DE73 9C 23 07    STZ $0723  [$7E:0723]
-$8B:DE76 9C 25 07    STZ $0725  [$7E:0725]
-$8B:DE79 A9 80 DE    LDA #$DE80
-$8B:DE7C 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:DE73 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:DE76 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
+$8B:DE79 A9 80 DE    LDA #$DE80             ;\
+$8B:DE7C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DE80
 
 $8B:DE7F 60          RTS
 }
@@ -11989,13 +12017,13 @@ $8B:E0A0 C2 20       REP #$20
 $8B:E0A2 9C 11 09    STZ $0911  [$7E:0911]
 $8B:E0A5 9C 15 09    STZ $0915  [$7E:0915]
 $8B:E0A8 22 88 82 88 JSL $888288[$88:8288]
-$8B:E0AC A2 FE 01    LDX #$01FE
-$8B:E0AF A9 00 00    LDA #$0000
-
-$8B:E0B2 9F 00 98 7E STA $7E9800,x[$7E:99FE]
-$8B:E0B6 CA          DEX
-$8B:E0B7 CA          DEX
-$8B:E0B8 10 F8       BPL $F8    [$E0B2]
+$8B:E0AC A2 FE 01    LDX #$01FE             ;\
+$8B:E0AF A9 00 00    LDA #$0000             ;|
+                                            ;|
+$8B:E0B2 9F 00 98 7E STA $7E9800,x[$7E:99FE];} $7E:9800..99FF = 0
+$8B:E0B6 CA          DEX                    ;|
+$8B:E0B7 CA          DEX                    ;|
+$8B:E0B8 10 F8       BPL $F8    [$E0B2]     ;/
 $8B:E0BA 20 BB E7    JSR $E7BB  [$8B:E7BB]
 $8B:E0BD A9 00 97    LDA #$9700             ;\
 $8B:E0C0 85 48       STA $48    [$7E:0048]  ;|
@@ -12008,13 +12036,13 @@ $8B:E0D1 22 CE 95 8B JSL $8B95CE[$8B:95CE]
 $8B:E0D5 A9 7F 00    LDA #$007F
 $8B:E0D8 20 F9 98    JSR $98F9  [$8B:98F9]
 $8B:E0DB 20 E3 98    JSR $98E3  [$8B:98E3]
-$8B:E0DE A9 03 00    LDA #$0003
-$8B:E0E1 8D 23 07    STA $0723  [$7E:0723]
-$8B:E0E4 8D 25 07    STA $0725  [$7E:0725]
-$8B:E0E7 A0 F8 F6    LDY #$F6F8
-$8B:E0EA 20 32 99    JSR $9932  [$8B:9932]
-$8B:E0ED A9 9D DB    LDA #$DB9D
-$8B:E0F0 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E0DE A9 03 00    LDA #$0003             ;\
+$8B:E0E1 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 3
+$8B:E0E4 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 3
+$8B:E0E7 A0 F8 F6    LDY #$F6F8             ;\
+$8B:E0EA 20 32 99    JSR $9932  [$8B:9932]  ;} Spawn credits object
+$8B:E0ED A9 9D DB    LDA #$DB9D             ;\
+$8B:E0F0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DB9D
 $8B:E0F3 60          RTS
 }
 
@@ -12025,8 +12053,8 @@ $8B:E0F4 CE 49 1A    DEC $1A49  [$7E:1A49]
 $8B:E0F7 F0 02       BEQ $02    [$E0FB]
 $8B:E0F9 10 14       BPL $14    [$E10F]
 
-$8B:E0FB A9 10 E1    LDA #$E110
-$8B:E0FE 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E0FB A9 10 E1    LDA #$E110             ;\
+$8B:E0FE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E110
 $8B:E101 A9 78 00    LDA #$0078
 $8B:E104 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:E107 E2 20       SEP #$20
@@ -12058,8 +12086,8 @@ $8B:E12B 85 6F       STA $6F    [$7E:006F]
 $8B:E12D A9 22       LDA #$22
 $8B:E12F 85 72       STA $72    [$7E:0072]
 $8B:E131 C2 20       REP #$20
-$8B:E133 9C 23 07    STZ $0723  [$7E:0723]
-$8B:E136 9C 25 07    STZ $0725  [$7E:0725]
+$8B:E133 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
+$8B:E136 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:E139 20 E9 8B    JSR $8BE9  [$8B:8BE9]  ; Copy current palettes to fading palettes
 $8B:E13C 20 09 8C    JSR $8C09  [$8B:8C09]  ; Decompose fading palette data
 $8B:E13F A2 40 00    LDX #$0040             ;\
@@ -12068,8 +12096,8 @@ $8B:E145 20 5E 8C    JSR $8C5E  [$8B:8C5E]  ;/
 $8B:E148 20 EA 8C    JSR $8CEA  [$8B:8CEA]  ; Compose fading palettes
 $8B:E14B A9 20 00    LDA #$0020
 $8B:E14E 8D 49 1A    STA $1A49  [$7E:1A49]
-$8B:E151 A9 58 E1    LDA #$E158
-$8B:E154 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E151 A9 58 E1    LDA #$E158             ;\
+$8B:E154 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E158
 $8B:E157 60          RTS
 }
 
@@ -12096,8 +12124,8 @@ $8B:E17B 85 72       STA $72    [$7E:0072]
 $8B:E17D C2 20       REP #$20
 $8B:E17F A9 B4 00    LDA #$00B4
 $8B:E182 8D 49 1A    STA $1A49  [$7E:1A49]
-$8B:E185 A9 90 E1    LDA #$E190
-$8B:E188 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E185 A9 90 E1    LDA #$E190             ;\
+$8B:E188 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E190
 $8B:E18B 22 3B EC 88 JSL $88EC3B[$88:EC3B]
 
 $8B:E18F 60          RTS
@@ -12133,8 +12161,8 @@ $8B:E1BE 64 72       STZ $72    [$7E:0072]
 $8B:E1C0 C2 20       REP #$20
 $8B:E1C2 A9 B4 00    LDA #$00B4
 $8B:E1C5 8D 49 1A    STA $1A49  [$7E:1A49]
-$8B:E1C8 A9 D2 E1    LDA #$E1D2
-$8B:E1CB 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E1C8 A9 D2 E1    LDA #$E1D2             ;\
+$8B:E1CB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E1D2
 $8B:E1CE 9C 9C 0D    STZ $0D9C  [$7E:0D9C]
 
 $8B:E1D1 60          RTS
@@ -12158,8 +12186,8 @@ $8B:E1ED A0 4B EF    LDY #$EF4B             ;\
 $8B:E1F0 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $EF4B
 $8B:E1F3 A0 45 EF    LDY #$EF45             ;\
 $8B:E1F6 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $EF45
-$8B:E1F9 A9 93 E2    LDA #$E293
-$8B:E1FC 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E1F9 A9 93 E2    LDA #$E293             ;\
+$8B:E1FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E293
 $8B:E1FF E2 20       SEP #$20
 $8B:E201 A9 10       LDA #$10
 $8B:E203 85 69       STA $69    [$7E:0069]
@@ -12204,8 +12232,8 @@ $8B:E256 85 6F       STA $6F    [$7E:006F]
 $8B:E258 A9 22       LDA #$22
 $8B:E25A 85 72       STA $72    [$7E:0072]
 $8B:E25C C2 20       REP #$20
-$8B:E25E A9 65 E2    LDA #$E265
-$8B:E261 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E25E A9 65 E2    LDA #$E265             ;\
+$8B:E261 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E265
 
 $8B:E264 60          RTS
 }
@@ -12261,8 +12289,8 @@ $8B:E2CC 64 72       STZ $72    [$7E:0072]
 $8B:E2CE C2 20       REP #$20
 $8B:E2D0 A9 B4 00    LDA #$00B4
 $8B:E2D3 8D 4B 1A    STA $1A4B  [$7E:1A4B]
-$8B:E2D6 A9 DD E2    LDA #$E2DD
-$8B:E2D9 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E2D6 A9 DD E2    LDA #$E2DD             ;\
+$8B:E2D9 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E2DD
 
 $8B:E2DC 60          RTS
 }
@@ -12279,8 +12307,8 @@ $8B:E2E7 C9 03 00    CMP #$0003             ;} >_<;
 $8B:E2EA 30 0D       BMI $0D    [$E2F9]     ;/
 $8B:E2EC C9 0A 00    CMP #$000A             ;\
 $8B:E2EF 30 08       BMI $08    [$E2F9]     ;} If [game time hours] >= 10:
-$8B:E2F1 A9 42 E3    LDA #$E342
-$8B:E2F4 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E2F1 A9 42 E3    LDA #$E342             ;\
+$8B:E2F4 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E342
 $8B:E2F7 80 1A       BRA $1A    [$E313]
 
 $8B:E2F9 E2 20       SEP #$20
@@ -12293,8 +12321,8 @@ $8B:E305 85 6F       STA $6F    [$7E:006F]
 $8B:E307 A9 22       LDA #$22
 $8B:E309 85 72       STA $72    [$7E:0072]
 $8B:E30B C2 20       REP #$20
-$8B:E30D A9 14 E3    LDA #$E314
-$8B:E310 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E30D A9 14 E3    LDA #$E314             ;\
+$8B:E310 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E314
 
 $8B:E313 60          RTS
 }
@@ -12336,8 +12364,8 @@ $8B:E35B A9 00       LDA #$00
 $8B:E35D 85 58       STA $58    [$7E:0058]
 $8B:E35F 64 5D       STZ $5D    [$7E:005D]
 $8B:E361 C2 20       REP #$20
-$8B:E363 A9 9D DB    LDA #$DB9D
-$8B:E366 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E363 A9 9D DB    LDA #$DB9D             ;\
+$8B:E366 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DB9D
 $8B:E369 9C 4D 1A    STZ $1A4D  [$7E:1A4D]
 $8B:E36C AD E0 09    LDA $09E0  [$7E:09E0]  ;\
 $8B:E36F C9 03 00    CMP #$0003             ;} If [game time hours] < 3: go to BRANCH_BEST_ENDING
@@ -12407,8 +12435,8 @@ $8B:E3F2 60          RTS
 
 $8B:E3F3 A9 18 00    LDA #$0018
 $8B:E3F6 8D 8F 19    STA $198F  [$7E:198F]
-$8B:E3F9 A9 8A E4    LDA #$E48A
-$8B:E3FC 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E3F9 A9 8A E4    LDA #$E48A             ;\
+$8B:E3FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E48A
 $8B:E3FF A9 B4 00    LDA #$00B4
 $8B:E402 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:E405 9C 4D 1A    STZ $1A4D  [$7E:1A4D]
@@ -12515,8 +12543,8 @@ $8B:E4CD E0 A0 01    CPX #$01A0
 $8B:E4D0 30 F1       BMI $F1    [$E4C3]
 $8B:E4D2 9C 93 19    STZ $1993  [$7E:1993]
 $8B:E4D5 9C 97 19    STZ $1997  [$7E:1997]
-$8B:E4D8 A9 04 E5    LDA #$E504
-$8B:E4DB 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E4D8 A9 04 E5    LDA #$E504             ;\
+$8B:E4DB 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E504
 $8B:E4DE A9 20 00    LDA #$0020
 $8B:E4E1 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:E4E4 22 A2 95 8B JSL $8B95A2[$8B:95A2]
@@ -12570,8 +12598,8 @@ $8B:E535 CE 49 1A    DEC $1A49  [$7E:1A49]
 $8B:E538 F0 02       BEQ $02    [$E53C]
 $8B:E53A 10 4D       BPL $4D    [$E589]
 
-$8B:E53C A9 BA E7    LDA #$E7BA
-$8B:E53F 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E53C A9 BA E7    LDA #$E7BA             ;\
+$8B:E53F 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E7BA
 $8B:E542 A9 00 50    LDA #$5000
 $8B:E545 8D F5 19    STA $19F5  [$7E:19F5]
 $8B:E548 20 06 88    JSR $8806  [$8B:8806]
@@ -12646,8 +12674,8 @@ $8B:E5C4 1A          INC A
 $8B:E5C5 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:E5C8 C9 10 00    CMP #$0010
 $8B:E5CB 30 16       BMI $16    [$E5E3]
-$8B:E5CD A9 BA E7    LDA #$E7BA
-$8B:E5D0 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E5CD A9 BA E7    LDA #$E7BA             ;\
+$8B:E5D0 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E7BA
 $8B:E5D3 20 DA 93    JSR $93DA  [$8B:93DA]  ; Clear cinematic sprite objects
 $8B:E5D6 AB          PLB
 $8B:E5D7 A0 4E F7    LDY #$F74E             ;\
@@ -12860,8 +12888,8 @@ $8B:E787 9F C0 35 7E STA $7E35C0,x[$7E:363E]
 $8B:E78B CA          DEX
 $8B:E78C CA          DEX
 $8B:E78D 10 F8       BPL $F8    [$E787]
-$8B:E78F A9 97 E7    LDA #$E797
-$8B:E792 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E78F A9 97 E7    LDA #$E797             ;\
+$8B:E792 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E797
 $8B:E795 FA          PLX
 $8B:E796 60          RTS
 }
@@ -12878,8 +12906,8 @@ $8B:E7A4 10 13       BPL $13    [$E7B9]
 $8B:E7A6 A0 48 F7    LDY #$F748             ;\
 $8B:E7A9 A9 00 4C    LDA #$4C00             ;} Spawn see you next mission cinematic BG object for VRAM $4C00
 $8B:E7AC 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
-$8B:E7AF A9 BA E7    LDA #$E7BA
-$8B:E7B2 8D 51 1F    STA $1F51  [$7E:1F51]
+$8B:E7AF A9 BA E7    LDA #$E7BA             ;\
+$8B:E7B2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E7BA
 $8B:E7B5 22 4F 82 80 JSL $80824F[$80:824F]
 
 $8B:E7B9 60          RTS
@@ -13854,7 +13882,7 @@ $8B:F050 60          RTS
 $8B:F051 A9 A0 00    LDA #$00A0             ;\
 $8B:F054 99 9D 1A    STA $1A9D,y[$7E:1AB5]  ;} Cinematic sprite object Y position = A0h
 $8B:F057 A9 00 00    LDA #$0000             ;\
-$8B:F05A 99 BD 1A    STA $1ABD,y[$7E:1AD5]  ;} Cinematic sprite object palette index = 0 (palette 0)
+$8B:F05A 99 BD 1A    STA $1ABD,y[$7E:1AD5]  ;} Cinematic sprite object palette index = 0
 $8B:F05D 60          RTS
 }
 

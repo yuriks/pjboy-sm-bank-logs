@@ -739,7 +739,7 @@ $82:85FA 60          RTS
 $82:85FB 08          PHP
 $82:85FC C2 30       REP #$30
 $82:85FE A9 01 00    LDA #$0001             ;\
-$82:8601 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 1 (opening)
+$82:8601 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 1 (title sequence)
 $82:8604 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
 $82:8607 30 26       BMI $26    [$862F]     ;} If [$0DEC] & 8000h != 0: go to BRANCH_NEXT_DEMO_SCENE
 $82:8609 D0 12       BNE $12    [$861D]     ; If [$0DEC] = 0:
@@ -1257,12 +1257,12 @@ $82:8AFC D0 06       BNE $06    [$8B04]     ;/
 $82:8AFE A9 03 00    LDA #$0003             ;\
 $82:8B01 8D 55 1F    STA $1F55  [$7E:1F55]  ;} Demo set = 3 (play the newly unlocked demo first)
 
-$82:8B04 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 1 (opening)
+$82:8B04 EE 98 09    INC $0998  [$7E:0998]  ; Game state = 1 (title sequence)
 $82:8B07 60          RTS
 }
 
 
-;;; $8B08: Game state 1 (opening) ;;;
+;;; $8B08: Game state 1 (title sequence) ;;;
 {
 $82:8B08 22 22 9A 8B JSL $8B9A22[$8B:9A22]
 $82:8B0C 60          RTS

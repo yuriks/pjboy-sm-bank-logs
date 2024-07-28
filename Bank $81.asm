@@ -708,7 +708,7 @@ $81:8852 6B          RTL
 ;;     $16     = palette bits of sprite (palette * 200h)
 
 ; Called by:
-;    $8B:9746: Draw opening sprites (including scrolled text)
+;    $8B:9746: Draw title sequence sprites (including scrolled text)
 ;    $8B:9799: Draw ending and credits sprites
 
 ; See $879F for spritemap format
