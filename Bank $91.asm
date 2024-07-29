@@ -10257,7 +10257,7 @@ $91:E100 8D A6 0D    STA $0DA6  [$7E:0DA6]  ;/
 $91:E103 A2 FE 01    LDX #$01FE             ;\
 $91:E106 A9 FF 00    LDA #$00FF             ;|
                                             ;|
-$91:E109 9F 00 98 7E STA $7E9800,x[$7E:99FE];} $7E:9800..99FF = 00FFh
+$91:E109 9F 00 98 7E STA $7E9800,x[$7E:99FE];} $7E:9800..99FF = FFh,0 (x-ray / suit pickup window HDMA data table)
 $91:E10D CA          DEX                    ;|
 $91:E10E CA          DEX                    ;|
 $91:E10F 10 F8       BPL $F8    [$E109]     ;/

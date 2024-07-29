@@ -5711,8 +5711,6 @@ $8C:D7F7             dx 88B7,08,02,21BA,21BB,21B3,21BA,21BC,20E0,20E1,21B3,20E2,
 
 ;;; $D81B: Initial intro Japanese text tilemap ;;;
 {
-; ? This might even be used for all of the Japanese text, in the intro at least
-
 ; 最後のメトロイドが 獲えられ (the last metroid was captured)
 ; 銀河宇宙に平和が訪れた... (peace came to the Milky Way...)
 $8C:D81B             dw 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 105A, 105B, 105C, 105D, 105E, 105F, 1070, 1071, 1072, 002F, 1073, 1074, 1075, 1076, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F,
