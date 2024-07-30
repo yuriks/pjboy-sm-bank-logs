@@ -2640,12 +2640,12 @@ $8B:9389 60          RTS
 ;;; $938A: Spawn cinematic sprite object [Y] ;;;
 {
 ;; Parameters:
-;;     A: Initialisation parameter(?)
+;;     A: Initialisation parameter
 ;;     Y: Pointer to cinematic sprite object definition
 $8B:938A 08          PHP
 $8B:938B C2 30       REP #$30
 $8B:938D DA          PHX
-$8B:938E 8D 9D 1B    STA $1B9D  [$7E:1B9D]  ; $1B9D = [A]
+$8B:938E 8D 9D 1B    STA $1B9D  [$7E:1B9D]  ; Cinematic sprite object initialisation parameter = [A]
 $8B:9391 BB          TYX                    ; X = [Y]
 $8B:9392 A0 1E 00    LDY #$001E             ; Y = 1Eh
 
@@ -2664,10 +2664,14 @@ $8B:93A1 60          RTS                    ;} Return carry set
 
 ;;; $93A2: Spawn cinematic sprite object [Y] to index [$12] ;;;
 {
+;; Parameters:
+;;     A: Initialisation parameter
+;;     Y: Pointer to cinematic sprite object definition
+;;     $12: Cinematic sprite object index
 $8B:93A2 08          PHP
 $8B:93A3 C2 30       REP #$30
 $8B:93A5 DA          PHX
-$8B:93A6 8D 9D 1B    STA $1B9D  [$7E:1B9D]  ; $1B9D = [A]
+$8B:93A6 8D 9D 1B    STA $1B9D  [$7E:1B9D]  ; Cinematic sprite object initialisation parameter = [A]
 $8B:93A9 BB          TYX                    ; X = [Y]
 $8B:93AA A4 12       LDY $12    [$7E:0012]  ; Y = [$12]
 }
@@ -5614,7 +5618,7 @@ $8B:A8D3 60          RTS
 }
 
 
-;;; $A8D4: RTS ;;;
+;;; $A8D4: RTS. Pre-instruction - cinematic sprite object $CE6D (intro text caret) ;;;
 {
 $8B:A8D4 60          RTS
 }
@@ -5632,15 +5636,15 @@ $8B:A8E7 60          RTS
 }
 
 
-;;; $A8E8:  ;;;
+;;; $A8E8: Pre-instruction - cinematic sprite object $CE5B (metroid egg) ;;;
 {
-$8B:A8E8 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$8B:A8EB C9 A9 00    CMP #$00A9
-$8B:A8EE 10 12       BPL $12    [$A902]
-$8B:A8F0 A9 01 00    LDA #$0001
-$8B:A8F3 9D 5D 1B    STA $1B5D,x[$7E:1B79]
-$8B:A8F6 A9 3B CB    LDA #$CB3B
-$8B:A8F9 9D 1D 1B    STA $1B1D,x[$7E:1B39]
+$8B:A8E8 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$8B:A8EB C9 A9 00    CMP #$00A9             ;} If [Samus X position] < A9h:
+$8B:A8EE 10 12       BPL $12    [$A902]     ;/
+$8B:A8F0 A9 01 00    LDA #$0001             ;\
+$8B:A8F3 9D 5D 1B    STA $1B5D,x[$7E:1B79]  ;} Cinematic sprite object instruction timer = 1
+$8B:A8F6 A9 3B CB    LDA #$CB3B             ;\
+$8B:A8F9 9D 1D 1B    STA $1B1D,x[$7E:1B39]  ;} Cinematic sprite object instruction list pointer = $CB3B (metroid egg hatching)
 $8B:A8FC A9 D9 93    LDA #$93D9             ;\
 $8B:A8FF 9D 3D 1B    STA $1B3D,x[$7E:1B59]  ;} Cinematic sprite object pre-instruction = RTS
 
@@ -5648,16 +5652,16 @@ $8B:A902 60          RTS
 }
 
 
-;;; $A903: Pre-instruction ;;;
+;;; $A903: Pre-instruction - metroid egg - delete after cross-fade ;;;
 {
 ; Used by cinematic sprite object $CE5B (metroid egg)
-$8B:A903 AD 4B 1A    LDA $1A4B  [$7E:1A4B]
-$8B:A906 D0 0F       BNE $0F    [$A917]
-$8B:A908 A9 01 00    LDA #$0001
-$8B:A90B 9D 5D 1B    STA $1B5D,x[$7E:1B79]
-$8B:A90E A9 53 CE    LDA #$CE53
-$8B:A911 9D 1D 1B    STA $1B1D,x[$7E:1B39]
-$8B:A914 9C 57 1A    STZ $1A57  [$7E:1A57]
+$8B:A903 AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
+$8B:A906 D0 0F       BNE $0F    [$A917]     ;} If [intro cross-fade timer] = 0:
+$8B:A908 A9 01 00    LDA #$0001             ;\
+$8B:A90B 9D 5D 1B    STA $1B5D,x[$7E:1B79]  ;} Cinematic sprite object instruction timer = 1
+$8B:A90E A9 53 CE    LDA #$CE53             ;\
+$8B:A911 9D 1D 1B    STA $1B1D,x[$7E:1B39]  ;} Cinematic sprite object instruction list pointer = $CE53 (delete)
+$8B:A914 9C 57 1A    STZ $1A57  [$7E:1A57]  ; Intro Samus display flag = 0 (Samus/projectiles not displayed)
 
 $8B:A917 60          RTS
 }
@@ -5666,24 +5670,24 @@ $8B:A917 60          RTS
 ;;; $A918: Instruction - spawn metroid egg particles ;;;
 {
 $8B:A918 5A          PHY
-$8B:A919 A9 00 00    LDA #$0000
-$8B:A91C A0 CD CE    LDY #$CECD             ;\
-$8B:A91F 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CECD (metroid egg particle 1)
-$8B:A922 A9 01 00    LDA #$0001
-$8B:A925 A0 D3 CE    LDY #$CED3             ;\
-$8B:A928 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CED3 (metroid egg particle 2)
-$8B:A92B A9 02 00    LDA #$0002
-$8B:A92E A0 D9 CE    LDY #$CED9             ;\
-$8B:A931 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CED9 (metroid egg particle 3)
-$8B:A934 A9 03 00    LDA #$0003
-$8B:A937 A0 DF CE    LDY #$CEDF             ;\
-$8B:A93A 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEDF (metroid egg particle 4)
-$8B:A93D A9 04 00    LDA #$0004
-$8B:A940 A0 E5 CE    LDY #$CEE5             ;\
-$8B:A943 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEE5 (metroid egg particle 5)
-$8B:A946 A9 05 00    LDA #$0005
-$8B:A949 A0 EB CE    LDY #$CEEB             ;\
-$8B:A94C 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEEB (metroid egg particle 6)
+$8B:A919 A9 00 00    LDA #$0000             ;\
+$8B:A91C A0 CD CE    LDY #$CECD             ;} Spawn cinematic sprite object $CECD (metroid egg particle 1) with parameter 0
+$8B:A91F 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:A922 A9 01 00    LDA #$0001             ;\
+$8B:A925 A0 D3 CE    LDY #$CED3             ;} Spawn cinematic sprite object $CED3 (metroid egg particle 2) with parameter 1
+$8B:A928 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:A92B A9 02 00    LDA #$0002             ;\
+$8B:A92E A0 D9 CE    LDY #$CED9             ;} Spawn cinematic sprite object $CED9 (metroid egg particle 3) with parameter 2
+$8B:A931 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:A934 A9 03 00    LDA #$0003             ;\
+$8B:A937 A0 DF CE    LDY #$CEDF             ;} Spawn cinematic sprite object $CEDF (metroid egg particle 4) with parameter 3
+$8B:A93A 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:A93D A9 04 00    LDA #$0004             ;\
+$8B:A940 A0 E5 CE    LDY #$CEE5             ;} Spawn cinematic sprite object $CEE5 (metroid egg particle 5) with parameter 4
+$8B:A943 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:A946 A9 05 00    LDA #$0005             ;\
+$8B:A949 A0 EB CE    LDY #$CEEB             ;} Spawn cinematic sprite object $CEEB (metroid egg particle 6) with parameter 5
+$8B:A94C 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:A94F A9 0B 00    LDA #$000B             ;\
 $8B:A952 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound Bh, sound library 2, max queued sounds allowed = 6 (enemy killed by contact damage)
 $8B:A956 7A          PLY
@@ -5693,70 +5697,80 @@ $8B:A957 60          RTS
 
 ;;; $A958: Initialisation function - cinematic sprite object $CECD/$CED3/$CED9/$CEDF/$CEE5/$CEEB (metroid egg particle) ;;;
 {
-$8B:A958 AD 9D 1B    LDA $1B9D  [$7E:1B9D]
-$8B:A95B 99 7D 1B    STA $1B7D,y[$7E:1B95]
-$8B:A95E 0A          ASL A
-$8B:A95F 0A          ASL A
-$8B:A960 AA          TAX
-$8B:A961 BD 7C A9    LDA $A97C,x[$8B:A97C]
-$8B:A964 18          CLC
-$8B:A965 69 10 00    ADC #$0010
-$8B:A968 99 7D 1A    STA $1A7D,y[$7E:1A95]
-$8B:A96B BD 7E A9    LDA $A97E,x[$8B:A97E]
-$8B:A96E 18          CLC
-$8B:A96F 69 3B 00    ADC #$003B
-$8B:A972 99 9D 1A    STA $1A9D,y[$7E:1AB5]
+$8B:A958 AD 9D 1B    LDA $1B9D  [$7E:1B9D]  ;\
+$8B:A95B 99 7D 1B    STA $1B7D,y[$7E:1B95]  ;} Cinematic sprite object index = [cinematic sprite object initialisation parameter]
+$8B:A95E 0A          ASL A                  ;\
+$8B:A95F 0A          ASL A                  ;} X = [cinematic sprite object index] * 4
+$8B:A960 AA          TAX                    ;/
+$8B:A961 BD 7C A9    LDA $A97C,x[$8B:A97C]  ;\
+$8B:A964 18          CLC                    ;|
+$8B:A965 69 10 00    ADC #$0010             ;} Cinematic sprite object X position = [$A97C + [X]] + 10h
+$8B:A968 99 7D 1A    STA $1A7D,y[$7E:1A95]  ;/
+$8B:A96B BD 7E A9    LDA $A97E,x[$8B:A97E]  ;\
+$8B:A96E 18          CLC                    ;|
+$8B:A96F 69 3B 00    ADC #$003B             ;} Cinematic sprite object Y position = [$A97C + [X] + 2] + 3Bh
+$8B:A972 99 9D 1A    STA $1A9D,y[$7E:1AB5]  ;/
 $8B:A975 A9 00 0E    LDA #$0E00             ;\
 $8B:A978 99 BD 1A    STA $1ABD,y[$7E:1AD5]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:A97B 60          RTS
 
-$8B:A97C             dw 005C,0058, 0063,0058, 0059,005D, 0060,005B, 0066,005E, 0063,0060
+;                        ________ X position - 10h
+;                       |     ___ Y position - 3Bh
+;                       |    |
+$8B:A97C             dw 005C,0058,
+                        0063,0058, 
+                        0059,005D, 
+                        0060,005B, 
+                        0066,005E, 
+                        0063,0060
 }
 
 
-;;; $A994:  ;;;
+;;; $A994: Pre-instruction - cinematic sprite object $CECD/$CED3/$CED9/$CEDF/$CEE5/$CEEB (metroid egg particle) ;;;
 {
-$8B:A994 BD 7D 1B    LDA $1B7D,x[$7E:1B95]
-$8B:A997 29 FF 00    AND #$00FF
-$8B:A99A 0A          ASL A
-$8B:A99B 0A          ASL A
-$8B:A99C A8          TAY
-$8B:A99D BD DD 1A    LDA $1ADD,x[$7E:1AF5]
-$8B:A9A0 18          CLC
-$8B:A9A1 79 EC A9    ADC $A9EC,y[$8B:A9EC]
-$8B:A9A4 9D DD 1A    STA $1ADD,x[$7E:1AF5]
-$8B:A9A7 BD 7D 1A    LDA $1A7D,x[$7E:1A95]
-$8B:A9AA 79 EA A9    ADC $A9EA,y[$8B:A9EA]
-$8B:A9AD 9D 7D 1A    STA $1A7D,x[$7E:1A95]
-$8B:A9B0 BD 7D 1B    LDA $1B7D,x[$7E:1B95]
-$8B:A9B3 EB          XBA
-$8B:A9B4 29 FF 00    AND #$00FF
-$8B:A9B7 0A          ASL A
-$8B:A9B8 0A          ASL A
-$8B:A9B9 A8          TAY
-$8B:A9BA BD FD 1A    LDA $1AFD,x[$7E:1B15]
-$8B:A9BD 18          CLC
-$8B:A9BE 79 04 AA    ADC $AA04,y[$8B:AA04]
-$8B:A9C1 9D FD 1A    STA $1AFD,x[$7E:1B15]
-$8B:A9C4 BD 9D 1A    LDA $1A9D,x[$7E:1AB5]
-$8B:A9C7 79 02 AA    ADC $AA02,y[$8B:AA02]
-$8B:A9CA 9D 9D 1A    STA $1A9D,x[$7E:1AB5]
-$8B:A9CD C9 A8 00    CMP #$00A8
-$8B:A9D0 30 0D       BMI $0D    [$A9DF]
-$8B:A9D2 A9 01 00    LDA #$0001
-$8B:A9D5 9D 5D 1B    STA $1B5D,x[$7E:1B6B]
-$8B:A9D8 A9 53 CE    LDA #$CE53
-$8B:A9DB 9D 1D 1B    STA $1B1D,x[$7E:1B2B]
-$8B:A9DE 60          RTS
+$8B:A994 BD 7D 1B    LDA $1B7D,x[$7E:1B95]  ;\
+$8B:A997 29 FF 00    AND #$00FF             ;|
+$8B:A99A 0A          ASL A                  ;} Y = [cinematic sprite object index] * 4
+$8B:A99B 0A          ASL A                  ;|
+$8B:A99C A8          TAY                    ;/
+$8B:A99D BD DD 1A    LDA $1ADD,x[$7E:1AF5]  ;\
+$8B:A9A0 18          CLC                    ;|
+$8B:A9A1 79 EC A9    ADC $A9EC,y[$8B:A9EC]  ;|
+$8B:A9A4 9D DD 1A    STA $1ADD,x[$7E:1AF5]  ;} Cinematic sprite object X position += [$A9EA + [Y]].[$A9EA + [Y] + 2]
+$8B:A9A7 BD 7D 1A    LDA $1A7D,x[$7E:1A95]  ;|
+$8B:A9AA 79 EA A9    ADC $A9EA,y[$8B:A9EA]  ;|
+$8B:A9AD 9D 7D 1A    STA $1A7D,x[$7E:1A95]  ;/
+$8B:A9B0 BD 7D 1B    LDA $1B7D,x[$7E:1B95]  ;\
+$8B:A9B3 EB          XBA                    ;|
+$8B:A9B4 29 FF 00    AND #$00FF             ;|
+$8B:A9B7 0A          ASL A                  ;} Y = [cinematic sprite object counter] * 4
+$8B:A9B8 0A          ASL A                  ;|
+$8B:A9B9 A8          TAY                    ;/
+$8B:A9BA BD FD 1A    LDA $1AFD,x[$7E:1B15]  ;\
+$8B:A9BD 18          CLC                    ;|
+$8B:A9BE 79 04 AA    ADC $AA04,y[$8B:AA04]  ;|
+$8B:A9C1 9D FD 1A    STA $1AFD,x[$7E:1B15]  ;} Cinematic sprite object Y position += [$AA02 + [Y]].[$AA02 + [Y] + 2]
+$8B:A9C4 BD 9D 1A    LDA $1A9D,x[$7E:1AB5]  ;|
+$8B:A9C7 79 02 AA    ADC $AA02,y[$8B:AA02]  ;|
+$8B:A9CA 9D 9D 1A    STA $1A9D,x[$7E:1AB5]  ;/
+$8B:A9CD C9 A8 00    CMP #$00A8             ;\
+$8B:A9D0 30 0D       BMI $0D    [$A9DF]     ;} If [cinematic sprite object Y position] >= A8h:
+$8B:A9D2 A9 01 00    LDA #$0001             ;\
+$8B:A9D5 9D 5D 1B    STA $1B5D,x[$7E:1B6B]  ;} Cinematic sprite object instruction timer = 1
+$8B:A9D8 A9 53 CE    LDA #$CE53             ;\
+$8B:A9DB 9D 1D 1B    STA $1B1D,x[$7E:1B2B]  ;} Cinematic sprite object instruction list pointer = $CE53 (delete)
+$8B:A9DE 60          RTS                    ; Return
 
-$8B:A9DF BD 7D 1B    LDA $1B7D,x[$7E:1B95]
-$8B:A9E2 18          CLC
-$8B:A9E3 69 00 01    ADC #$0100
-$8B:A9E6 9D 7D 1B    STA $1B7D,x[$7E:1B95]
+$8B:A9DF BD 7D 1B    LDA $1B7D,x[$7E:1B95]  ;\
+$8B:A9E2 18          CLC                    ;|
+$8B:A9E3 69 00 01    ADC #$0100             ;} Increment cinematic sprite object counter
+$8B:A9E6 9D 7D 1B    STA $1B7D,x[$7E:1B95]  ;/
 $8B:A9E9 60          RTS
 
+; X velocities. Indexed by [cinematic sprite object index] * 4
 $8B:A9EA             dw FFFF,4000, 0000,4000, FFFF,8000, FFFF,2000, 0000,8000, 0000,2000
 
+; Y velocities. Indexed by [cinematic sprite object counter] * 4
 $8B:AA02             dw FFFE,0000, FFFE,C000, FFFE,A000, FFFE,8000, FFFE,6000, FFFE,4000, FFFE,2000, FFFF,0000,
                         FFFF,C000, FFFF,A000, FFFF,8000, FFFF,6000, FFFF,4000, FFFF,2000, 0000,0000, 0000,2000,
                         0000,4000, 0000,6000, 0000,8000, 0000,A000, 0000,C000, 0000,E000, 0001,0000, 0001,2000,
@@ -5767,82 +5781,86 @@ $8B:AA02             dw FFFE,0000, FFFE,C000, FFFE,A000, FFFE,8000, FFFE,6000, F
 
 ;;; $AA9A: Initialisation function - cinematic sprite object $CEF1 (metroid egg slime drops) ;;;
 {
-$8B:AA9A AD 9D 1B    LDA $1B9D  [$7E:1B9D]
-$8B:AA9D 99 7D 1B    STA $1B7D,y[$7E:1B89]
-$8B:AAA0 AD 97 1A    LDA $1A97  [$7E:1A97]
-$8B:AAA3 99 7D 1A    STA $1A7D,y[$7E:1A89]
-$8B:AAA6 AD B7 1A    LDA $1AB7  [$7E:1AB7]
-$8B:AAA9 99 9D 1A    STA $1A9D,y[$7E:1AA9]
+; Cinematic sprite object 5 here is confused baby metroid
+$8B:AA9A AD 9D 1B    LDA $1B9D  [$7E:1B9D]  ;\
+$8B:AA9D 99 7D 1B    STA $1B7D,y[$7E:1B89]  ;} Cinematic sprite object index = [cinematic sprite object initialisation parameter]
+$8B:AAA0 AD 97 1A    LDA $1A97  [$7E:1A97]  ;\
+$8B:AAA3 99 7D 1A    STA $1A7D,y[$7E:1A89]  ;} Cinematic sprite object X position = [cinematic sprite object 5 X position]
+$8B:AAA6 AD B7 1A    LDA $1AB7  [$7E:1AB7]  ;\
+$8B:AAA9 99 9D 1A    STA $1A9D,y[$7E:1AA9]  ;} Cinematic sprite object Y position = [cinematic sprite object 5 Y position]
 $8B:AAAC A9 00 0E    LDA #$0E00             ;\
 $8B:AAAF 99 BD 1A    STA $1ABD,y[$7E:1AC9]  ;} Cinematic sprite object palette index = E00h (palette 7)
 $8B:AAB2 60          RTS
 }
 
 
-;;; $AAB3:  ;;;
+;;; $AAB3: Pre-instruction - cinematic sprite object $CEF1 (metroid egg slime drops) ;;;
 {
-$8B:AAB3 BD 7D 1B    LDA $1B7D,x[$7E:1B89]
-$8B:AAB6 29 FF 00    AND #$00FF
-$8B:AAB9 0A          ASL A
-$8B:AABA 0A          ASL A
-$8B:AABB A8          TAY
-$8B:AABC BD DD 1A    LDA $1ADD,x[$7E:1AE9]
-$8B:AABF 18          CLC
-$8B:AAC0 79 37 AB    ADC $AB37,y[$8B:AB37]
-$8B:AAC3 9D DD 1A    STA $1ADD,x[$7E:1AE9]
-$8B:AAC6 BD 7D 1A    LDA $1A7D,x[$7E:1A89]
-$8B:AAC9 79 35 AB    ADC $AB35,y[$8B:AB35]
-$8B:AACC 9D 7D 1A    STA $1A7D,x[$7E:1A89]
-$8B:AACF BD 7D 1B    LDA $1B7D,x[$7E:1B89]
-$8B:AAD2 89 01 00    BIT #$0001
-$8B:AAD5 D0 21       BNE $21    [$AAF8]
-$8B:AAD7 EB          XBA
-$8B:AAD8 29 FF 00    AND #$00FF
-$8B:AADB 0A          ASL A
-$8B:AADC 0A          ASL A
-$8B:AADD A8          TAY
-$8B:AADE BD FD 1A    LDA $1AFD,x[$7E:1B09]
-$8B:AAE1 18          CLC
-$8B:AAE2 79 43 AC    ADC $AC43,y[$8B:AC43]
-$8B:AAE5 9D FD 1A    STA $1AFD,x[$7E:1B09]
-$8B:AAE8 BD 9D 1A    LDA $1A9D,x[$7E:1AA9]
-$8B:AAEB 79 41 AC    ADC $AC41,y[$8B:AC41]
-$8B:AAEE 9D 9D 1A    STA $1A9D,x[$7E:1AA9]
-$8B:AAF1 C9 A8 00    CMP #$00A8
-$8B:AAF4 30 34       BMI $34    [$AB2A]
+$8B:AAB3 BD 7D 1B    LDA $1B7D,x[$7E:1B89]  ;\
+$8B:AAB6 29 FF 00    AND #$00FF             ;|
+$8B:AAB9 0A          ASL A                  ;} Y = [cinematic sprite object index] * 4
+$8B:AABA 0A          ASL A                  ;|
+$8B:AABB A8          TAY                    ;/
+$8B:AABC BD DD 1A    LDA $1ADD,x[$7E:1AE9]  ;\
+$8B:AABF 18          CLC                    ;|
+$8B:AAC0 79 37 AB    ADC $AB37,y[$8B:AB37]  ;|
+$8B:AAC3 9D DD 1A    STA $1ADD,x[$7E:1AE9]  ;} Cinematic sprite object X position += [$AB35 + [Y]].[$AB35 + [Y] + 2]
+$8B:AAC6 BD 7D 1A    LDA $1A7D,x[$7E:1A89]  ;|
+$8B:AAC9 79 35 AB    ADC $AB35,y[$8B:AB35]  ;|
+$8B:AACC 9D 7D 1A    STA $1A7D,x[$7E:1A89]  ;/
+$8B:AACF BD 7D 1B    LDA $1B7D,x[$7E:1B89]  ;\
+$8B:AAD2 89 01 00    BIT #$0001             ;} If [cinematic sprite object index] % 2 = 0:
+$8B:AAD5 D0 21       BNE $21    [$AAF8]     ;/
+$8B:AAD7 EB          XBA                    ;\
+$8B:AAD8 29 FF 00    AND #$00FF             ;|
+$8B:AADB 0A          ASL A                  ;} Y = [cinematic sprite object counter] * 4
+$8B:AADC 0A          ASL A                  ;|
+$8B:AADD A8          TAY                    ;/
+$8B:AADE BD FD 1A    LDA $1AFD,x[$7E:1B09]  ;\
+$8B:AAE1 18          CLC                    ;|
+$8B:AAE2 79 43 AC    ADC $AC43,y[$8B:AC43]  ;|
+$8B:AAE5 9D FD 1A    STA $1AFD,x[$7E:1B09]  ;} Cinematic sprite object Y position += [$AC41 + [Y]].[$AC41 + [Y] + 2]
+$8B:AAE8 BD 9D 1A    LDA $1A9D,x[$7E:1AA9]  ;|
+$8B:AAEB 79 41 AC    ADC $AC41,y[$8B:AC41]  ;|
+$8B:AAEE 9D 9D 1A    STA $1A9D,x[$7E:1AA9]  ;/
+$8B:AAF1 C9 A8 00    CMP #$00A8             ;\
+$8B:AAF4 30 34       BMI $34    [$AB2A]     ;} If [cinematic sprite object Y position] < A8h: go to BRANCH_NOT_HIT_GROUND
 $8B:AAF6 80 1F       BRA $1F    [$AB17]
 
-$8B:AAF8 EB          XBA
-$8B:AAF9 29 FF 00    AND #$00FF
-$8B:AAFC 0A          ASL A
-$8B:AAFD 0A          ASL A
-$8B:AAFE A8          TAY
-$8B:AAFF BD FD 1A    LDA $1AFD,x[$7E:1B07]
-$8B:AB02 18          CLC
-$8B:AB03 79 4B AB    ADC $AB4B,y[$8B:AB4B]
-$8B:AB06 9D FD 1A    STA $1AFD,x[$7E:1B07]
-$8B:AB09 BD 9D 1A    LDA $1A9D,x[$7E:1AA7]
-$8B:AB0C 79 49 AB    ADC $AB49,y[$8B:AB49]
-$8B:AB0F 9D 9D 1A    STA $1A9D,x[$7E:1AA7]
-$8B:AB12 C9 A8 00    CMP #$00A8
-$8B:AB15 30 13       BMI $13    [$AB2A]
+$8B:AAF8 EB          XBA                    ;\ Else ([cinematic sprite object index] % 2 != 0):
+$8B:AAF9 29 FF 00    AND #$00FF             ;|
+$8B:AAFC 0A          ASL A                  ;} Y = [cinematic sprite object counter] * 4
+$8B:AAFD 0A          ASL A                  ;|
+$8B:AAFE A8          TAY                    ;/
+$8B:AAFF BD FD 1A    LDA $1AFD,x[$7E:1B07]  ;\
+$8B:AB02 18          CLC                    ;|
+$8B:AB03 79 4B AB    ADC $AB4B,y[$8B:AB4B]  ;|
+$8B:AB06 9D FD 1A    STA $1AFD,x[$7E:1B07]  ;} Cinematic sprite object Y position += [$AB49 + [Y]].[$AB49 + [Y] + 2]
+$8B:AB09 BD 9D 1A    LDA $1A9D,x[$7E:1AA7]  ;|
+$8B:AB0C 79 49 AB    ADC $AB49,y[$8B:AB49]  ;|
+$8B:AB0F 9D 9D 1A    STA $1A9D,x[$7E:1AA7]  ;/
+$8B:AB12 C9 A8 00    CMP #$00A8             ;\
+$8B:AB15 30 13       BMI $13    [$AB2A]     ;} If [cinematic sprite object Y position] < A8h: go to BRANCH_NOT_HIT_GROUND
 
-$8B:AB17 A9 01 00    LDA #$0001
-$8B:AB1A 9D 5D 1B    STA $1B5D,x[$7E:1B67]
-$8B:AB1D A9 71 CD    LDA #$CD71
-$8B:AB20 9D 1D 1B    STA $1B1D,x[$7E:1B27]
+$8B:AB17 A9 01 00    LDA #$0001             ;\
+$8B:AB1A 9D 5D 1B    STA $1B5D,x[$7E:1B67]  ;} Cinematic sprite object instruction timer = 1
+$8B:AB1D A9 71 CD    LDA #$CD71             ;\
+$8B:AB20 9D 1D 1B    STA $1B1D,x[$7E:1B27]  ;} Cinematic sprite object instruction list pointer = $CD71 (hit ground)
 $8B:AB23 A9 D9 93    LDA #$93D9             ;\
 $8B:AB26 9D 3D 1B    STA $1B3D,x[$7E:1B47]  ;} Cinematic sprite object pre-instruction = RTS
-$8B:AB29 60          RTS
+$8B:AB29 60          RTS                    ; Return
 
-$8B:AB2A BD 7D 1B    LDA $1B7D,x[$7E:1B89]
-$8B:AB2D 18          CLC
-$8B:AB2E 69 00 01    ADC #$0100
-$8B:AB31 9D 7D 1B    STA $1B7D,x[$7E:1B89]
+; BRANCH_NOT_HIT_GROUND
+$8B:AB2A BD 7D 1B    LDA $1B7D,x[$7E:1B89]  ;\
+$8B:AB2D 18          CLC                    ;|
+$8B:AB2E 69 00 01    ADC #$0100             ;} Increment cinematic sprite object counter
+$8B:AB31 9D 7D 1B    STA $1B7D,x[$7E:1B89]  ;/
 $8B:AB34 60          RTS
 
+; X velocities. Indexed by [cinematic sprite object index] * 4
 $8B:AB35             dw FFFF,0000, FFFF,8000, 0001,0000, 0000,8000, FFFF,8000
 
+; Y velocities for odd index slime drops. Indexed by [cinematic sprite object counter] * 4
 $8B:AB49             dw FFFE,0000, FFFE,C000, FFFE,A000, FFFE,8000, FFFE,6000, FFFE,4000, FFFE,2000, FFFF,0000,
                         FFFF,C000, FFFF,A000, FFFF,8000, FFFF,6000, FFFF,4000, FFFF,2000, 0000,0000, 0000,2000,
                         0000,4000, 0000,6000, 0000,8000, 0000,A000, 0000,C000, 0000,E000, 0001,0000, 0001,2000,
@@ -5852,6 +5870,7 @@ $8B:AB49             dw FFFE,0000, FFFE,C000, FFFE,A000, FFFE,8000, FFFE,6000, F
                         0004,4000, 0004,6000, 0004,8000, 0004,A000, 0004,C000, 0004,E000, 0005,0000, 0005,2000,
                         0005,4000, 0005,6000, 0005,8000, 0005,A000, 0005,C000, 0005,E000
 
+; Y velocities for even index slime drops. Indexed by [cinematic sprite object counter] * 4
 $8B:AC41             dw FFFD,0000, FFFD,C000, FFFD,A000, FFFD,8000, FFFD,6000, FFFD,4000, FFFD,2000, FFFE,0000,
                         FFFE,C000, FFFE,A000, FFFE,8000, FFFE,6000, FFFE,4000, FFFE,2000, FFFF,0000, FFFF,C000,
                         FFFF,A000, FFFF,8000, FFFF,6000, FFFF,4000, FFFF,2000, 0000,0000, 0000,2000, 0000,4000,
@@ -5876,7 +5895,7 @@ $8B:AD67 60          RTS
 }
 
 
-;;; $AD68:  ;;;
+;;; $AD68: Pre-instruction - cinematic sprite object $CE61 (baby metroid being delivered) ;;;
 {
 $8B:AD68 AD 4B 1A    LDA $1A4B  [$7E:1A4B]
 $8B:AD6B D0 0D       BNE $0D    [$AD7A]
@@ -5913,7 +5932,7 @@ $8B:ADA5 60          RTS
 }
 
 
-;;; $ADA6:  ;;;
+;;; $ADA6: Pre-instruction - cinematic sprite object $CE67 (baby metroid being examined) ;;;
 {
 $8B:ADA6 AD 4B 1A    LDA $1A4B  [$7E:1A4B]
 $8B:ADA9 D0 0D       BNE $0D    [$ADB8]
@@ -5985,7 +6004,7 @@ $8B:AE19 60          RTS
 }
 
 
-;;; $AE1A:  ;;;
+;;; $AE1A: Pre-instruction - cinematic sprite object $CE73 (intro Japanese text next-page arrow) ;;;
 {
 $8B:AE1A AD A3 1B    LDA $1BA3  [$7E:1BA3]
 $8B:AE1D C9 3B 00    CMP #$003B
@@ -6893,7 +6912,7 @@ $8B:B4BB 60          RTS
 }
 
 
-;;; $B4BC: Pre-instruction - Samus blinking cinematic BG object ;;;
+;;; $B4BC: Pre-instruction - cinematic BG object $CF63 (Samus blinking) ;;;
 {
 ; Switches Samus blinking pattern on page 6 to deadpan stare
 $8B:B4BC AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
@@ -7280,7 +7299,7 @@ $8B:B785 60          RTS
 }
 
 
-;;; $B786:  ;;;
+;;; $B786: Pre-instruction - cinematic sprite object $CE55 (intro Mother Brain) ;;;
 {
 $8B:B786 20 46 B8    JSR $B846  [$8B:B846]
 $8B:B789 A0 08 00    LDY #$0008
@@ -7598,7 +7617,7 @@ $8B:BA09             dw 0001, 0008, 0010
 }
 
 
-;;; $BA0F:  ;;;
+;;; $BA0F: Pre-instruction - cinematic sprite object $CF15/$CF1B (intro Mother Brain explosion) ;;;
 {
 $8B:BA0F AD 4B 1A    LDA $1A4B  [$7E:1A4B]
 $8B:BA12 D0 0C       BNE $0C    [$BA20]
@@ -7651,7 +7670,7 @@ $8B:BA5D 60          RTS
 }
 
 
-;;; $BA5E:  ;;;
+;;; $BA5E: Pre-instruction - cinematic sprite object $CE79 (confused baby metroid) ;;;
 {
 $8B:BA5E BD 1F 1B    LDA $1B1F,x[$7E:1B39]
 $8B:BA61 C9 79 CB    CMP #$CB79
@@ -8143,7 +8162,7 @@ $8B:BEB4 60          RTS
 }
 
 
-;;; $BEB5:  ;;;
+;;; $BEB5: Pre-instruction - cinematic sprite object $CF0F (Ceres stars) ;;;
 {
 $8B:BEB5 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
 $8B:BEB8 C9 F9 BD    CMP #$BDF9             ;} If [$1F51] != $BDF9:
@@ -8209,7 +8228,7 @@ $8B:BF34 60          RTS
 }
 
 
-;;; $BF35:  ;;;
+;;; $BF35: Pre-instruction - cinematic sprite object $CF39 (Ceres explosion large asteroids) ;;;
 {
 $8B:BF35 BD DD 1A    LDA $1ADD,x[$7E:1AFB]
 $8B:BF38 18          CLC
@@ -8235,7 +8254,7 @@ $8B:BF5E 60          RTS
 }
 
 
-;;; $BF5F:  ;;;
+;;; $BF5F: Pre-instruction - cinematic sprite object $CE85 (Ceres under attack) ;;;
 {
 $8B:BF5F BD DD 1A    LDA $1ADD,x[$7E:1AF9]
 $8B:BF62 18          CLC
@@ -8261,7 +8280,7 @@ $8B:BF88 60          RTS
 }
 
 
-;;; $BF89:  ;;;
+;;; $BF89: Pre-instruction - cinematic sprite object $CE8B (Ceres small asteroids) ;;;
 {
 $8B:BF89 BD DD 1A    LDA $1ADD,x[$7E:1AF7]
 $8B:BF8C 18          CLC
@@ -8296,7 +8315,7 @@ $8B:BFC5 60          RTS
 }
 
 
-;;; $BFC6:  ;;;
+;;; $BFC6: Pre-instruction - cinematic sprite object $CE91 (Ceres purple space vortex) ;;;
 {
 $8B:BFC6 BD DD 1A    LDA $1ADD,x[$7E:1AF5]
 $8B:BFC9 38          SEC
@@ -8865,9 +8884,9 @@ $8B:C498 CE 49 1A    DEC $1A49  [$7E:1A49]
 $8B:C49B F0 02       BEQ $02    [$C49F]
 $8B:C49D 10 19       BPL $19    [$C4B8]
 
-$8B:C49F AD 4B 1A    LDA $1A4B  [$7E:1A4B]
-$8B:C4A2 A0 C1 CE    LDY #$CEC1             ;\
-$8B:C4A5 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEC1 (Ceres explosion 2)
+$8B:C49F AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
+$8B:C4A2 A0 C1 CE    LDY #$CEC1             ;} Spawn cinematic sprite object $CEC1 (Ceres explosion 2) with parameter [$1A4B]
+$8B:C4A5 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:C4A8 A9 0C 00    LDA #$000C
 $8B:C4AB 8D 49 1A    STA $1A49  [$7E:1A49]
 $8B:C4AE AD 4B 1A    LDA $1A4B  [$7E:1A4B]
@@ -8906,7 +8925,17 @@ $8B:C4E4 A9 00 0A    LDA #$0A00             ;\
 $8B:C4E7 99 BD 1A    STA $1ABD,y[$7E:1AD7]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:C4EA 60          RTS
 
-$8B:C4EB             dw 000E,FFF8, 0008,000C, FFF0,000C, FFF8,FFF2, 0000,0000, 0010,000E, FFF4,0004, FFF8,FFF0
+;                        ________ X offset
+;                       |     ___ Y offset
+;                       |    |
+$8B:C4EB             dw 000E,FFF8,
+                        0008,000C, 
+                        FFF0,000C, 
+                        FFF8,FFF2, 
+                        0000,0000, 
+                        0010,000E, 
+                        FFF4,0004, 
+                        FFF8,FFF0
 }
 
 
@@ -8970,7 +8999,7 @@ $8B:C57A             dw FFFC, 0008, FFF6, 000C
 }
 
 
-;;; $C582:  ;;;
+;;; $C582: Pre-instruction - cinematic sprite object $CEBB/$CEC1/$CEC7/$CF2D (Ceres explosion) ;;;
 {
 $8B:C582 BD FD 1A    LDA $1AFD,x[$7E:1B17]
 $8B:C585 38          SEC
@@ -9305,7 +9334,7 @@ $8B:C84D 60          RTS
 }
 
 
-;;; $C84E:  ;;;
+;;; $C84E: Pre-instruction - cinematic sprite object $CEA3 (Zebes) ;;;
 {
 $8B:C84E AD 51 1F    LDA $1F51  [$7E:1F51]
 $8B:C851 C9 DE CA    CMP #$CADE
@@ -9348,7 +9377,7 @@ $8B:C896 60          RTS
 }
 
 
-;;; $C897: Initialisation function - cinematic sprite object $CEA9 (Unused. Zebes stars 1) ;;;
+;;; $C897: Initialisation function - cinematic sprite object $CEA9 (unused. Zebes stars 1) ;;;
 {
 $8B:C897 A9 80 00    LDA #$0080             ;\
 $8B:C89A 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
@@ -9360,7 +9389,7 @@ $8B:C8A9 60          RTS
 }
 
 
-;;; $C8AA:  ;;;
+;;; $C8AA: Pre-instruction - cinematic sprite object $CEA9/$CF09 (Zebes stars 5) ;;;
 {
 $8B:C8AA AD 51 1F    LDA $1F51  [$7E:1F51]
 $8B:C8AD C9 DE CA    CMP #$CADE
@@ -9405,7 +9434,7 @@ $8B:C8F8 60          RTS
 }
 
 
-;;; $C8F9:  ;;;
+;;; $C8F9: Pre-instruction - cinematic sprite object $CEF7/$CEFD/$CF03 (Zebes stars 2/3/4) ;;;
 {
 $8B:C8F9 AD 51 1F    LDA $1F51  [$7E:1F51]
 $8B:C8FC C9 DE CA    CMP #$CADE
@@ -9777,7 +9806,7 @@ $8B:CB43             dx 0005,8D6F,
                         000A,8F5C,
                         0140,8F6D,
                         B33E,       ; Start intro page 3
-                        944C,A903   ; Pre-instruction = $A903
+                        944C,A903   ; Pre-instruction = $A903 (delete after cross-fade)
 $8B:CB97             dx 0050,8F6D,
                         94BC,CB97   ; Go to $CB97
 }
@@ -10041,7 +10070,7 @@ $8B:CD69             dx 0001,8FA8,
 }
 
 
-;;; $CD71: Instruction list - metroid egg slime drops ;;;
+;;; $CD71: Instruction list - metroid egg slime drops - hit ground ;;;
 {
 $8B:CD71             dx 000A,8FAF,
                         000A,8FB6,
@@ -10167,7 +10196,7 @@ $8B:CE4B             dx 000A,94F7,
 }
 
 
-;;; $CE53: Instruction list - nothing ;;;
+;;; $CE53: Instruction list - delete ;;;
 {
 $8B:CE53             dx 9438        ; Delete
 }
