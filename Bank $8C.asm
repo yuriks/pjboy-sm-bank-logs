@@ -5594,8 +5594,8 @@ $8C:D511             dx B228, ; Handle creating Japanese text - page 6
 }
                         ADD4, ; Set cursor to blink
                         0080,01,01,D683,
-                        B240,
-                        9698 ; Delete
+                        B240, ; Finish intro
+                        9698  ; Delete
 }
 
 

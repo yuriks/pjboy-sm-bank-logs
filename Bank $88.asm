@@ -5457,7 +5457,7 @@ $88:B5D7 29 1E 00    AND #$001E             ;|
 $88:B5DA A8          TAY                    ;/
 $88:B5DB 68          PLA                    ;\
 $88:B5DC 18          CLC                    ;|
-$88:B5DD 69 1E 00    ADC #$001E             ;} X = ([BG2 Y scroll] % 10h * 2 - 1Eh) % 20h (HDMA data table end index)
+$88:B5DD 69 1E 00    ADC #$001E             ;} X = ([BG2 Y scroll] % 10h * 2 + 1Eh) % 20h (HDMA data table end index)
 $88:B5E0 29 1E 00    AND #$001E             ;|
 $88:B5E3 AA          TAX                    ;/
 $88:B5E4 A9 0F 00    LDA #$000F             ;\
@@ -8918,7 +8918,7 @@ $88:EC13             db 17,02, ; Enable colour math on BG2
 $88:EC1D 08          PHP
 $88:EC1E C2 30       REP #$30
 $88:EC20 AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
-$88:EC23 C9 01 00    CMP #$0001             ;} If [$1A4B] = 1:
+$88:EC23 C9 01 00    CMP #$0001             ;} If [intro cross-fade timer] = 1:
 $88:EC26 D0 11       BNE $11    [$EC39]     ;/
 $88:EC28 AE B2 18    LDX $18B2  [$7E:18B2]
 $88:EC2B BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
