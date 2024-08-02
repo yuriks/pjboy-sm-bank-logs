@@ -1616,6 +1616,8 @@ $8B:8BE8 6B          RTL
 }
 
 
+;;; $8BE9..8D22: Palette cross-fading ;;;
+{
 ;;; $8BE9: Copy current palettes to fading palettes ;;;
 {
 $8B:8BE9 08          PHP
@@ -1806,6 +1808,7 @@ $8B:8D1E 88          DEY                    ; Decrement Y
 $8B:8D1F D0 D0       BNE $D0    [$8CF1]     ; If [Y] != 0: go to LOOP
 $8B:8D21 28          PLP
 $8B:8D22 60          RTS
+}
 }
 
 
@@ -2934,6 +2937,8 @@ $8B:94E3 60          RTS
 }
 
 
+;;; $94E4..95A1: Mode 7 objects ;;;
+{
 ;;; $94E4: Spawn mode 7 object ;;;
 {
 ;; Parameters:
@@ -3030,8 +3035,6 @@ $8B:956A 60          RTS
 }
 
 
-;;; $956B..95A1: Mode 7 object instructions ;;;
-{
 ;;; $956B: Instruction - delete ;;;
 {
 $8B:956B C2 30       REP #$30
@@ -4093,7 +4096,7 @@ $8B:9B8A AB          PLB                    ;} DB = $8B
 $8B:9B8B C2 30       REP #$30
 $8B:9B8D 20 00 80    JSR $8000  [$8B:8000]  ; Set up PPU for title sequence
 $8B:9B90 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = nothing
-$8B:9B92 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = 0
+$8B:9B92 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = nothing
 $8B:9B94 A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:9B97 BF E9 E1 8C LDA $8CE1E9,x[$8C:E1E9];|
@@ -7278,7 +7281,7 @@ $8B:B75F CA          DEX                    ;|
 $8B:B760 CA          DEX                    ;|
 $8B:B761 10 F9       BPL $F9    [$B75C]     ;/
 $8B:B763 A9 A0 BC    LDA #$BCA0             ;\
-$8B:B766 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BCA0
+$8B:B766 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BCA0 (fly to Ceres - initial)
 $8B:B769 20 75 BC    JSR $BC75  [$8B:BC75]  ; Recover previous button assignments
 $8B:B76C 9C C8 09    STZ $09C8  [$7E:09C8]  ; Max missiles = 0
 $8B:B76F 9C C6 09    STZ $09C6  [$7E:09C6]  ; Current missiles = 0
@@ -7570,53 +7573,53 @@ $8B:B985             dw 0000, FFFF, 0000, FFFF
 
 ;;; $B98D: Initialisation function - cinematic sprite object $CF15 (intro Mother Brain explosion - big) ;;;
 {
-$8B:B98D AD 9D 1B    LDA $1B9D  [$7E:1B9D]
-$8B:B990 99 7D 1B    STA $1B7D,y[$7E:1B8D]
-$8B:B993 0A          ASL A
-$8B:B994 AA          TAX
-$8B:B995 A9 38 00    LDA #$0038
-$8B:B998 18          CLC
-$8B:B999 7D B6 B9    ADC $B9B6,x[$8B:B9B6]
-$8B:B99C 99 7D 1A    STA $1A7D,y[$7E:1A8D]
-$8B:B99F A9 6F 00    LDA #$006F
-$8B:B9A2 18          CLC
-$8B:B9A3 7D C0 B9    ADC $B9C0,x[$8B:B9C0]
-$8B:B9A6 99 9D 1A    STA $1A9D,y[$7E:1AAD]
-$8B:B9A9 BD CA B9    LDA $B9CA,x[$8B:B9CA]
-$8B:B9AC 99 5D 1B    STA $1B5D,y[$7E:1B6D]
+$8B:B98D AD 9D 1B    LDA $1B9D  [$7E:1B9D]  ;\
+$8B:B990 99 7D 1B    STA $1B7D,y[$7E:1B8D]  ;} Cinematic sprite object $1B7D = [cinematic sprite object initialisation parameter] (never read)
+$8B:B993 0A          ASL A                  ;\
+$8B:B994 AA          TAX                    ;} X = [cinematic sprite object initialisation parameter] * 2
+$8B:B995 A9 38 00    LDA #$0038             ;\
+$8B:B998 18          CLC                    ;|
+$8B:B999 7D B6 B9    ADC $B9B6,x[$8B:B9B6]  ;} Cinematic sprite object X position = 38h + [$B9B6 + [X]]
+$8B:B99C 99 7D 1A    STA $1A7D,y[$7E:1A8D]  ;/
+$8B:B99F A9 6F 00    LDA #$006F             ;\
+$8B:B9A2 18          CLC                    ;|
+$8B:B9A3 7D C0 B9    ADC $B9C0,x[$8B:B9C0]  ;} Cinematic sprite object Y position = 6Fh + [$B9C0 + [X]]
+$8B:B9A6 99 9D 1A    STA $1A9D,y[$7E:1AAD]  ;/
+$8B:B9A9 BD CA B9    LDA $B9CA,x[$8B:B9CA]  ;\
+$8B:B9AC 99 5D 1B    STA $1B5D,y[$7E:1B6D]  ;} Cinematic sprite object instruction timer = [$B9CA + [X]]
 $8B:B9AF A9 00 0A    LDA #$0A00             ;\
 $8B:B9B2 99 BD 1A    STA $1ABD,y[$7E:1ACD]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:B9B5 60          RTS
 
-$8B:B9B6             dw 0000, 0010, FFF0, FFF8, 0008
-$8B:B9C0             dw 0000, FFF0, 0008, FFF0, 0008
-$8B:B9CA             dw 0001, 0010, 0020, 0030, 0040
+$8B:B9B6             dw 0000, 0010, FFF0, FFF8, 0008 ; X position
+$8B:B9C0             dw 0000, FFF0, 0008, FFF0, 0008 ; Y position
+$8B:B9CA             dw 0001, 0010, 0020, 0030, 0040 ; Instruction timer
 }
 
 
 ;;; $B9D4: Initialisation function - cinematic sprite object $CF1B (intro Mother Brain explosion - small) ;;;
 {
-$8B:B9D4 AD 9D 1B    LDA $1B9D  [$7E:1B9D]
-$8B:B9D7 99 7D 1B    STA $1B7D,y[$7E:1B99]
-$8B:B9DA 0A          ASL A
-$8B:B9DB AA          TAX
-$8B:B9DC A9 38 00    LDA #$0038
-$8B:B9DF 18          CLC
-$8B:B9E0 7D FD B9    ADC $B9FD,x[$8B:B9FD]
-$8B:B9E3 99 7D 1A    STA $1A7D,y[$7E:1A99]
-$8B:B9E6 A9 6F 00    LDA #$006F
-$8B:B9E9 18          CLC
-$8B:B9EA 7D 03 BA    ADC $BA03,x[$8B:BA03]
-$8B:B9ED 99 9D 1A    STA $1A9D,y[$7E:1AB9]
-$8B:B9F0 BD 09 BA    LDA $BA09,x[$8B:BA09]
-$8B:B9F3 99 5D 1B    STA $1B5D,y[$7E:1B79]
+$8B:B9D4 AD 9D 1B    LDA $1B9D  [$7E:1B9D]  ;\
+$8B:B9D7 99 7D 1B    STA $1B7D,y[$7E:1B99]  ;} Cinematic sprite object $1B7D = [cinematic sprite object initialisation parameter] (never read)
+$8B:B9DA 0A          ASL A                  ;\
+$8B:B9DB AA          TAX                    ;} X = [cinematic sprite object initialisation parameter] * 2
+$8B:B9DC A9 38 00    LDA #$0038             ;\
+$8B:B9DF 18          CLC                    ;|
+$8B:B9E0 7D FD B9    ADC $B9FD,x[$8B:B9FD]  ;} Cinematic sprite object X position = 38h + [$B9FD + [X]]
+$8B:B9E3 99 7D 1A    STA $1A7D,y[$7E:1A99]  ;/
+$8B:B9E6 A9 6F 00    LDA #$006F             ;\
+$8B:B9E9 18          CLC                    ;|
+$8B:B9EA 7D 03 BA    ADC $BA03,x[$8B:BA03]  ;} Cinematic sprite object Y position = 6Fh + [$BA03 + [X]]
+$8B:B9ED 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;/
+$8B:B9F0 BD 09 BA    LDA $BA09,x[$8B:BA09]  ;\
+$8B:B9F3 99 5D 1B    STA $1B5D,y[$7E:1B79]  ;} Cinematic sprite object instruction timer = [$BA09 + [X]]
 $8B:B9F6 A9 00 0A    LDA #$0A00             ;\
 $8B:B9F9 99 BD 1A    STA $1ABD,y[$7E:1AD9]  ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:B9FC 60          RTS
 
-$8B:B9FD             dw 0010, FFF0, FFF0
-$8B:BA03             dw 0000, 0004, FFF8
-$8B:BA09             dw 0001, 0008, 0010
+$8B:B9FD             dw 0010, FFF0, FFF0 ; X position
+$8B:BA03             dw 0000, 0004, FFF8 ; Y position
+$8B:BA09             dw 0001, 0008, 0010 ; Instruction timer
 }
 
 
@@ -7675,105 +7678,106 @@ $8B:BA5D 60          RTS
 
 ;;; $BA5E: Pre-instruction - cinematic sprite object $CE79 (confused baby metroid) ;;;
 {
-$8B:BA5E BD 1F 1B    LDA $1B1F,x[$7E:1B39]
-$8B:BA61 C9 79 CB    CMP #$CB79
-$8B:BA64 30 0C       BMI $0C    [$BA72]
-$8B:BA66 A9 73 BA    LDA #$BA73
-$8B:BA69 9D 3D 1B    STA $1B3D,x[$7E:1B57]
-$8B:BA6C 9C 4D 1A    STZ $1A4D  [$7E:1A4D]
-$8B:BA6F 9C 4F 1A    STZ $1A4F  [$7E:1A4F]
+; Cinematic sprite object ([X] + 1) here is metroid egg
+$8B:BA5E BD 1F 1B    LDA $1B1F,x[$7E:1B39]  ;\
+$8B:BA61 C9 79 CB    CMP #$CB79             ;} If [cinematic sprite object ([X] + 1) instruction list pointer] >= $CB79:
+$8B:BA64 30 0C       BMI $0C    [$BA72]     ;/
+$8B:BA66 A9 73 BA    LDA #$BA73             ;\
+$8B:BA69 9D 3D 1B    STA $1B3D,x[$7E:1B57]  ;} Cinematic sprite object pre-instruction = $BA73
+$8B:BA6C 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; $1A4D = 0 (never read)
+$8B:BA6F 9C 4F 1A    STZ $1A4F  [$7E:1A4F]  ; Intro baby metroid Y velocity = 0
 
 $8B:BA72 60          RTS
 }
 
 
-;;; $BA73:  ;;;
+;;; $BA73: Pre-instruction - confused baby metroid - hatched ;;;
 {
-$8B:BA73 BD 9D 1A    LDA $1A9D,x[$7E:1AB7]
-$8B:BA76 C9 91 00    CMP #$0091
-$8B:BA79 D0 2B       BNE $2B    [$BAA6]
-$8B:BA7B A9 00 00    LDA #$0000
-$8B:BA7E A0 F1 CE    LDY #$CEF1             ;\
-$8B:BA81 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops)
-$8B:BA84 A9 01 00    LDA #$0001
-$8B:BA87 A0 F1 CE    LDY #$CEF1             ;\
-$8B:BA8A 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops)
-$8B:BA8D A9 02 00    LDA #$0002
-$8B:BA90 A0 F1 CE    LDY #$CEF1             ;\
-$8B:BA93 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops)
-$8B:BA96 A9 03 00    LDA #$0003
-$8B:BA99 A0 F1 CE    LDY #$CEF1             ;\
-$8B:BA9C 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops)
+$8B:BA73 BD 9D 1A    LDA $1A9D,x[$7E:1AB7]  ;\
+$8B:BA76 C9 91 00    CMP #$0091             ;} If [cinematic sprite object Y position] = 91h:
+$8B:BA79 D0 2B       BNE $2B    [$BAA6]     ;/
+$8B:BA7B A9 00 00    LDA #$0000             ;\
+$8B:BA7E A0 F1 CE    LDY #$CEF1             ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops) with parameter 0
+$8B:BA81 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:BA84 A9 01 00    LDA #$0001             ;\
+$8B:BA87 A0 F1 CE    LDY #$CEF1             ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops) with parameter 1
+$8B:BA8A 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:BA8D A9 02 00    LDA #$0002             ;\
+$8B:BA90 A0 F1 CE    LDY #$CEF1             ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops) with parameter 2
+$8B:BA93 20 8A 93    JSR $938A  [$8B:938A]  ;/
+$8B:BA96 A9 03 00    LDA #$0003             ;\
+$8B:BA99 A0 F1 CE    LDY #$CEF1             ;} Spawn cinematic sprite object $CEF1 (metroid egg slime drops) with parameter 3
+$8B:BA9C 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BA9F A9 23 00    LDA #$0023             ;\
 $8B:BAA2 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 23h, sound library 3, max queued sounds allowed = 6 (baby metroid cry 1)
 
-$8B:BAA6 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$8B:BAA9 38          SEC
-$8B:BAAA E9 20 00    SBC #$0020
-$8B:BAAD DD 9D 1A    CMP $1A9D,x[$7E:1AB7]
-$8B:BAB0 30 11       BMI $11    [$BAC3]
-$8B:BAB2 AD 4F 1A    LDA $1A4F  [$7E:1A4F]
-$8B:BAB5 C9 20 02    CMP #$0220
-$8B:BAB8 10 18       BPL $18    [$BAD2]
-$8B:BABA 18          CLC
-$8B:BABB 69 20 00    ADC #$0020
-$8B:BABE 8D 4F 1A    STA $1A4F  [$7E:1A4F]
+$8B:BAA6 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$8B:BAA9 38          SEC                    ;|
+$8B:BAAA E9 20 00    SBC #$0020             ;} If [Samus Y position] - 20h >= [cinematic sprite object Y position]:
+$8B:BAAD DD 9D 1A    CMP $1A9D,x[$7E:1AB7]  ;|
+$8B:BAB0 30 11       BMI $11    [$BAC3]     ;/
+$8B:BAB2 AD 4F 1A    LDA $1A4F  [$7E:1A4F]  ;\
+$8B:BAB5 C9 20 02    CMP #$0220             ;} If [intro baby metroid Y velocity] < 220h:
+$8B:BAB8 10 18       BPL $18    [$BAD2]     ;/
+$8B:BABA 18          CLC                    ;\
+$8B:BABB 69 20 00    ADC #$0020             ;} Intro baby metroid Y velocity += 20h
+$8B:BABE 8D 4F 1A    STA $1A4F  [$7E:1A4F]  ;/
 $8B:BAC1 80 0F       BRA $0F    [$BAD2]
 
-$8B:BAC3 AD 4F 1A    LDA $1A4F  [$7E:1A4F]
-$8B:BAC6 C9 E1 FD    CMP #$FDE1
-$8B:BAC9 30 07       BMI $07    [$BAD2]
-$8B:BACB 38          SEC
-$8B:BACC E9 20 00    SBC #$0020
-$8B:BACF 8D 4F 1A    STA $1A4F  [$7E:1A4F]
+$8B:BAC3 AD 4F 1A    LDA $1A4F  [$7E:1A4F]  ;\ Else ([Samus Y position] - 20h < [cinematic sprite object Y position]):
+$8B:BAC6 C9 E1 FD    CMP #$FDE1             ;} If [intro baby metroid Y velocity] >= -21Fh:
+$8B:BAC9 30 07       BMI $07    [$BAD2]     ;/
+$8B:BACB 38          SEC                    ;\
+$8B:BACC E9 20 00    SBC #$0020             ;} Intro baby metroid Y velocity -= 20h
+$8B:BACF 8D 4F 1A    STA $1A4F  [$7E:1A4F]  ;/
 
-$8B:BAD2 AD 4F 1A    LDA $1A4F  [$7E:1A4F]
-$8B:BAD5 EB          XBA
-$8B:BAD6 48          PHA
-$8B:BAD7 29 00 FF    AND #$FF00
-$8B:BADA 85 14       STA $14    [$7E:0014]
-$8B:BADC 68          PLA
-$8B:BADD 29 FF 00    AND #$00FF
-$8B:BAE0 89 80 00    BIT #$0080
-$8B:BAE3 F0 03       BEQ $03    [$BAE8]
-$8B:BAE5 09 00 FF    ORA #$FF00
-
-$8B:BAE8 85 12       STA $12    [$7E:0012]
-$8B:BAEA BD FD 1A    LDA $1AFD,x[$7E:1B17]
-$8B:BAED 18          CLC
-$8B:BAEE 65 14       ADC $14    [$7E:0014]
-$8B:BAF0 9D FD 1A    STA $1AFD,x[$7E:1B17]
-$8B:BAF3 BD 9D 1A    LDA $1A9D,x[$7E:1AB7]
-$8B:BAF6 65 12       ADC $12    [$7E:0012]
-$8B:BAF8 9D 9D 1A    STA $1A9D,x[$7E:1AB7]
-$8B:BAFB AD 4F 1A    LDA $1A4F  [$7E:1A4F]
-$8B:BAFE 30 0C       BMI $0C    [$BB0C]
-$8B:BB00 A9 80 00    LDA #$0080
-$8B:BB03 8D 4D 1A    STA $1A4D  [$7E:1A4D]
-$8B:BB06 A9 0D BB    LDA #$BB0D
-$8B:BB09 9D 3D 1B    STA $1B3D,x[$7E:1B57]
+$8B:BAD2 AD 4F 1A    LDA $1A4F  [$7E:1A4F]  ;\
+$8B:BAD5 EB          XBA                    ;|
+$8B:BAD6 48          PHA                    ;|
+$8B:BAD7 29 00 FF    AND #$FF00             ;|
+$8B:BADA 85 14       STA $14    [$7E:0014]  ;|
+$8B:BADC 68          PLA                    ;|
+$8B:BADD 29 FF 00    AND #$00FF             ;} $12.$14 = ±[intro baby metroid Y velocity] / 100h
+$8B:BAE0 89 80 00    BIT #$0080             ;|
+$8B:BAE3 F0 03       BEQ $03    [$BAE8]     ;|
+$8B:BAE5 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$8B:BAE8 85 12       STA $12    [$7E:0012]  ;/
+$8B:BAEA BD FD 1A    LDA $1AFD,x[$7E:1B17]  ;\
+$8B:BAED 18          CLC                    ;|
+$8B:BAEE 65 14       ADC $14    [$7E:0014]  ;|
+$8B:BAF0 9D FD 1A    STA $1AFD,x[$7E:1B17]  ;} Cinematic sprite object Y position += [$12].[$14]
+$8B:BAF3 BD 9D 1A    LDA $1A9D,x[$7E:1AB7]  ;|
+$8B:BAF6 65 12       ADC $12    [$7E:0012]  ;|
+$8B:BAF8 9D 9D 1A    STA $1A9D,x[$7E:1AB7]  ;/
+$8B:BAFB AD 4F 1A    LDA $1A4F  [$7E:1A4F]  ;\
+$8B:BAFE 30 0C       BMI $0C    [$BB0C]     ;} If [intro baby metroid Y velocity] >= 0:
+$8B:BB00 A9 80 00    LDA #$0080             ;\
+$8B:BB03 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} Intro baby metroid idle timer = 80h
+$8B:BB06 A9 0D BB    LDA #$BB0D             ;\
+$8B:BB09 9D 3D 1B    STA $1B3D,x[$7E:1B57]  ;} Cinematic sprite object pre-instruction = $BB0D
 
 $8B:BB0C 60          RTS
 }
 
 
-;;; $BB0D:  ;;;
+;;; $BB0D: Pre-instruction - confused baby metroid - idling ;;;
 {
-$8B:BB0D CE 4D 1A    DEC $1A4D  [$7E:1A4D]
-$8B:BB10 F0 02       BEQ $02    [$BB14]
-$8B:BB12 10 0F       BPL $0F    [$BB23]
+$8B:BB0D CE 4D 1A    DEC $1A4D  [$7E:1A4D]  ; Decrement intro baby metroid idle timer
+$8B:BB10 F0 02       BEQ $02    [$BB14]     ;\
+$8B:BB12 10 0F       BPL $0F    [$BB23]     ;} If [intro baby metroid idle timer] > 0: return
 
-$8B:BB14 A9 24 BB    LDA #$BB24
-$8B:BB17 9D 3D 1B    STA $1B3D,x[$7E:1B57]
-$8B:BB1A 9C 4D 1A    STZ $1A4D  [$7E:1A4D]
-$8B:BB1D 9C 4F 1A    STZ $1A4F  [$7E:1A4F]
-$8B:BB20 9E 7D 1B    STZ $1B7D,x[$7E:1B97]
+$8B:BB14 A9 24 BB    LDA #$BB24             ;\
+$8B:BB17 9D 3D 1B    STA $1B3D,x[$7E:1B57]  ;} Cinematic sprite object pre-instruction = $BB24
+$8B:BB1A 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; Intro baby metroid X velocity = 0
+$8B:BB1D 9C 4F 1A    STZ $1A4F  [$7E:1A4F]  ; Intro baby metroid Y velocity = 0
+$8B:BB20 9E 7D 1B    STZ $1B7D,x[$7E:1B97]  ; Cinematic sprite object sound effect timer = 0
 
 $8B:BB23 60          RTS
 }
 
 
-;;; $BB24:  ;;;
+;;; $BB24: Pre-instruction - confused baby metroid - dancing ;;;
 {
 $8B:BB24 AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
 $8B:BB27 D0 10       BNE $10    [$BB39]     ;} If [intro cross-fade timer] = 0:
@@ -7781,103 +7785,103 @@ $8B:BB29 A9 01 00    LDA #$0001             ;\
 $8B:BB2C 9D 5D 1B    STA $1B5D,x[$7E:1B77]  ;} Cinematic sprite object instruction timer = 1
 $8B:BB2F A9 53 CE    LDA #$CE53             ;\
 $8B:BB32 9D 1D 1B    STA $1B1D,x[$7E:1B37]  ;} Cinematic sprite object instruction list pointer = $CE53 (delete)
-$8B:BB35 9C 57 1A    STZ $1A57  [$7E:1A57]
-$8B:BB38 60          RTS
+$8B:BB35 9C 57 1A    STZ $1A57  [$7E:1A57]  ; Intro Samus display flag = 0 (Samus/projectiles not displayed)
+$8B:BB38 60          RTS                    ; Return
 
-$8B:BB39 BD 7D 1B    LDA $1B7D,x[$7E:1B97]
-$8B:BB3C C9 80 00    CMP #$0080
-$8B:BB3F 10 10       BPL $10    [$BB51]
-$8B:BB41 1A          INC A
-$8B:BB42 9D 7D 1B    STA $1B7D,x[$7E:1B97]
-$8B:BB45 89 3F 00    BIT #$003F
-$8B:BB48 D0 07       BNE $07    [$BB51]
+$8B:BB39 BD 7D 1B    LDA $1B7D,x[$7E:1B97]  ;\
+$8B:BB3C C9 80 00    CMP #$0080             ;} If [cinematic sprite object sound effect timer] < 80h:
+$8B:BB3F 10 10       BPL $10    [$BB51]     ;/
+$8B:BB41 1A          INC A                  ;\
+$8B:BB42 9D 7D 1B    STA $1B7D,x[$7E:1B97]  ;} Increment cinematic sprite object sound effect timer
+$8B:BB45 89 3F 00    BIT #$003F             ;\
+$8B:BB48 D0 07       BNE $07    [$BB51]     ;} If [cinematic sprite object sound effect timer] % 40h = 0:
 $8B:BB4A A9 23 00    LDA #$0023             ;\
 $8B:BB4D 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 23h, sound library 3, max queued sounds allowed = 6 (baby metroid cry 1)
 
-$8B:BB51 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$8B:BB54 DD 7D 1A    CMP $1A7D,x[$7E:1A97]
-$8B:BB57 30 11       BMI $11    [$BB6A]
-$8B:BB59 AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:BB5C C9 80 02    CMP #$0280
-$8B:BB5F 10 18       BPL $18    [$BB79]
-$8B:BB61 18          CLC
-$8B:BB62 69 20 00    ADC #$0020
-$8B:BB65 8D 4D 1A    STA $1A4D  [$7E:1A4D]
-$8B:BB68 80 0F       BRA $0F    [$BB79]
+$8B:BB51 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$8B:BB54 DD 7D 1A    CMP $1A7D,x[$7E:1A97]  ;} If [Samus X position] >= [cinematic sprite object X position]:
+$8B:BB57 30 11       BMI $11    [$BB6A]     ;/
+$8B:BB59 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
+$8B:BB5C C9 80 02    CMP #$0280             ;} If [intro baby metroid X velocity] < 280h:
+$8B:BB5F 10 18       BPL $18    [$BB79]     ;/
+$8B:BB61 18          CLC                    ;\
+$8B:BB62 69 20 00    ADC #$0020             ;} Intro baby metroid X velocity += 20h
+$8B:BB65 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;/
+$8B:BB68 80 0F       BRA $0F    [$BB79]     
+                                            
+$8B:BB6A AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\ Else ([Samus X position] < [cinematic sprite object X position]):
+$8B:BB6D C9 81 FD    CMP #$FD81             ;} If [intro baby metroid X velocity] >= -27Fh:
+$8B:BB70 30 07       BMI $07    [$BB79]     ;/
+$8B:BB72 38          SEC                    ;\
+$8B:BB73 E9 20 00    SBC #$0020             ;} Intro baby metroid X velocity -= 20h
+$8B:BB76 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;/
 
-$8B:BB6A AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:BB6D C9 81 FD    CMP #$FD81
-$8B:BB70 30 07       BMI $07    [$BB79]
-$8B:BB72 38          SEC
-$8B:BB73 E9 20 00    SBC #$0020
-$8B:BB76 8D 4D 1A    STA $1A4D  [$7E:1A4D]
-
-$8B:BB79 AD 4D 1A    LDA $1A4D  [$7E:1A4D]
-$8B:BB7C EB          XBA
-$8B:BB7D 48          PHA
-$8B:BB7E 29 00 FF    AND #$FF00
-$8B:BB81 85 14       STA $14    [$7E:0014]
-$8B:BB83 68          PLA
-$8B:BB84 29 FF 00    AND #$00FF
-$8B:BB87 89 80 00    BIT #$0080
-$8B:BB8A F0 03       BEQ $03    [$BB8F]
-$8B:BB8C 09 00 FF    ORA #$FF00
-
-$8B:BB8F 85 12       STA $12    [$7E:0012]
-$8B:BB91 10 08       BPL $08    [$BB9B]
-$8B:BB93 A9 01 00    LDA #$0001
-$8B:BB96 8D 57 1A    STA $1A57  [$7E:1A57]
+$8B:BB79 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
+$8B:BB7C EB          XBA                    ;|
+$8B:BB7D 48          PHA                    ;|
+$8B:BB7E 29 00 FF    AND #$FF00             ;|
+$8B:BB81 85 14       STA $14    [$7E:0014]  ;|
+$8B:BB83 68          PLA                    ;|
+$8B:BB84 29 FF 00    AND #$00FF             ;} $12.$14 = ±[intro baby metroid X velocity] / 100h
+$8B:BB87 89 80 00    BIT #$0080             ;|
+$8B:BB8A F0 03       BEQ $03    [$BB8F]     ;|
+$8B:BB8C 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$8B:BB8F 85 12       STA $12    [$7E:0012]  ;/
+$8B:BB91 10 08       BPL $08    [$BB9B]     ; If [$12] < 0:
+$8B:BB93 A9 01 00    LDA #$0001             ;\
+$8B:BB96 8D 57 1A    STA $1A57  [$7E:1A57]  ;} Intro Samus display flag = 1 (Samus/projectiles displayed under cinematic sprite objects)
 $8B:BB99 80 06       BRA $06    [$BBA1]
 
-$8B:BB9B A9 FF FF    LDA #$FFFF
-$8B:BB9E 8D 57 1A    STA $1A57  [$7E:1A57]
+$8B:BB9B A9 FF FF    LDA #$FFFF             ;\ Else ([$12] >= 0):
+$8B:BB9E 8D 57 1A    STA $1A57  [$7E:1A57]  ;} Intro Samus display flag = FFFFh (Samus/projectiles displayed over cinematic sprite objects)
 
-$8B:BBA1 BD DD 1A    LDA $1ADD,x[$7E:1AF7]
-$8B:BBA4 18          CLC
-$8B:BBA5 65 14       ADC $14    [$7E:0014]
-$8B:BBA7 9D DD 1A    STA $1ADD,x[$7E:1AF7]
-$8B:BBAA BD 7D 1A    LDA $1A7D,x[$7E:1A97]
-$8B:BBAD 65 12       ADC $12    [$7E:0012]
-$8B:BBAF 9D 7D 1A    STA $1A7D,x[$7E:1A97]
-$8B:BBB2 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$8B:BBB5 38          SEC
-$8B:BBB6 E9 08 00    SBC #$0008
-$8B:BBB9 DD 9D 1A    CMP $1A9D,x[$7E:1AB7]
-$8B:BBBC 30 11       BMI $11    [$BBCF]
-$8B:BBBE AD 4F 1A    LDA $1A4F  [$7E:1A4F]
-$8B:BBC1 C9 20 02    CMP #$0220
-$8B:BBC4 10 18       BPL $18    [$BBDE]
-$8B:BBC6 18          CLC
-$8B:BBC7 69 20 00    ADC #$0020
-$8B:BBCA 8D 4F 1A    STA $1A4F  [$7E:1A4F]
+$8B:BBA1 BD DD 1A    LDA $1ADD,x[$7E:1AF7]  ;\
+$8B:BBA4 18          CLC                    ;|
+$8B:BBA5 65 14       ADC $14    [$7E:0014]  ;|
+$8B:BBA7 9D DD 1A    STA $1ADD,x[$7E:1AF7]  ;} Cinematic sprite object X position += [$12].[$14]
+$8B:BBAA BD 7D 1A    LDA $1A7D,x[$7E:1A97]  ;|
+$8B:BBAD 65 12       ADC $12    [$7E:0012]  ;|
+$8B:BBAF 9D 7D 1A    STA $1A7D,x[$7E:1A97]  ;/
+$8B:BBB2 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$8B:BBB5 38          SEC                    ;|
+$8B:BBB6 E9 08 00    SBC #$0008             ;} If [Samus Y position] - 8 >= [cinematic sprite object Y position]:
+$8B:BBB9 DD 9D 1A    CMP $1A9D,x[$7E:1AB7]  ;|
+$8B:BBBC 30 11       BMI $11    [$BBCF]     ;/
+$8B:BBBE AD 4F 1A    LDA $1A4F  [$7E:1A4F]  ;\
+$8B:BBC1 C9 20 02    CMP #$0220             ;} If [intro baby metroid Y velocity] < 220h:
+$8B:BBC4 10 18       BPL $18    [$BBDE]     ;/
+$8B:BBC6 18          CLC                    ;\
+$8B:BBC7 69 20 00    ADC #$0020             ;} Intro baby metroid Y velocity += 20h
+$8B:BBCA 8D 4F 1A    STA $1A4F  [$7E:1A4F]  ;/
 $8B:BBCD 80 0F       BRA $0F    [$BBDE]
 
-$8B:BBCF AD 4F 1A    LDA $1A4F  [$7E:1A4F]
-$8B:BBD2 C9 E1 FD    CMP #$FDE1
-$8B:BBD5 30 07       BMI $07    [$BBDE]
-$8B:BBD7 38          SEC
-$8B:BBD8 E9 20 00    SBC #$0020
-$8B:BBDB 8D 4F 1A    STA $1A4F  [$7E:1A4F]
+$8B:BBCF AD 4F 1A    LDA $1A4F  [$7E:1A4F]  ;\ Else ([Samus Y position] - 8 < [cinematic sprite object Y position]):
+$8B:BBD2 C9 E1 FD    CMP #$FDE1             ;} If [intro baby metroid Y velocity] >= -21Fh:
+$8B:BBD5 30 07       BMI $07    [$BBDE]     ;/
+$8B:BBD7 38          SEC                    ;\
+$8B:BBD8 E9 20 00    SBC #$0020             ;} Intro baby metroid Y velocity -= 20h
+$8B:BBDB 8D 4F 1A    STA $1A4F  [$7E:1A4F]  ;/
 
-$8B:BBDE AD 4F 1A    LDA $1A4F  [$7E:1A4F]
-$8B:BBE1 EB          XBA
-$8B:BBE2 48          PHA
-$8B:BBE3 29 00 FF    AND #$FF00
-$8B:BBE6 85 14       STA $14    [$7E:0014]
-$8B:BBE8 68          PLA
-$8B:BBE9 29 FF 00    AND #$00FF
-$8B:BBEC 89 80 00    BIT #$0080
-$8B:BBEF F0 03       BEQ $03    [$BBF4]
-$8B:BBF1 09 00 FF    ORA #$FF00
-
-$8B:BBF4 85 12       STA $12    [$7E:0012]
-$8B:BBF6 BD FD 1A    LDA $1AFD,x[$7E:1B17]
-$8B:BBF9 18          CLC
-$8B:BBFA 65 14       ADC $14    [$7E:0014]
-$8B:BBFC 9D FD 1A    STA $1AFD,x[$7E:1B17]
-$8B:BBFF BD 9D 1A    LDA $1A9D,x[$7E:1AB7]
-$8B:BC02 65 12       ADC $12    [$7E:0012]
-$8B:BC04 9D 9D 1A    STA $1A9D,x[$7E:1AB7]
+$8B:BBDE AD 4F 1A    LDA $1A4F  [$7E:1A4F]  ;\
+$8B:BBE1 EB          XBA                    ;|
+$8B:BBE2 48          PHA                    ;|
+$8B:BBE3 29 00 FF    AND #$FF00             ;|
+$8B:BBE6 85 14       STA $14    [$7E:0014]  ;|
+$8B:BBE8 68          PLA                    ;|
+$8B:BBE9 29 FF 00    AND #$00FF             ;} $12.$14 = ±[intro baby metroid Y velocity] / 100h
+$8B:BBEC 89 80 00    BIT #$0080             ;|
+$8B:BBEF F0 03       BEQ $03    [$BBF4]     ;|
+$8B:BBF1 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$8B:BBF4 85 12       STA $12    [$7E:0012]  ;/
+$8B:BBF6 BD FD 1A    LDA $1AFD,x[$7E:1B17]  ;\
+$8B:BBF9 18          CLC                    ;|
+$8B:BBFA 65 14       ADC $14    [$7E:0014]  ;|
+$8B:BBFC 9D FD 1A    STA $1AFD,x[$7E:1B17]  ;} Cinematic sprite object Y position += [$12].[$14]
+$8B:BBFF BD 9D 1A    LDA $1A9D,x[$7E:1AB7]  ;|
+$8B:BC02 65 12       ADC $12    [$7E:0012]  ;|
+$8B:BC04 9D 9D 1A    STA $1A9D,x[$7E:1AB7]  ;/
 $8B:BC07 60          RTS
 }
 
@@ -7945,19 +7949,19 @@ $8B:BC9F 60          RTS
 }
 
 
-;;; $BCA0..CB04: Ceres cutscene ;;;
+;;; $BCA0..CB04: Ceres cutscenes ;;;
 {
-;;; $BCA0: Cinematic function -  ;;;
+;;; $BCA0: Cinematic function - fly to Ceres - initial ;;;
 {
 $8B:BCA0 20 9B 81    JSR $819B  [$8B:819B]  ; Set up PPU for Ceres cutscene
 $8B:BCA3 20 DA 93    JSR $93DA  [$8B:93DA]  ; Clear cinematic sprite objects
-$8B:BCA6 64 AB       STZ $AB    [$7E:00AB]
-$8B:BCA8 64 A7       STZ $A7    [$7E:00A7]
+$8B:BCA6 64 AB       STZ $AB    [$7E:00AB]  ; Interrupt command = nothing
+$8B:BCA8 64 A7       STZ $A7    [$7E:00A7]  ; Next interrupt command = nothing
 $8B:BCAA A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:BCAD BF E9 E5 8C LDA $8CE5E9,x[$8C:E5E9];|
 $8B:BCB1 9F 00 C0 7E STA $7EC000,x[$7E:C000];|
-$8B:BCB5 E8          INX                    ;} Load space/gunship/Ceres palettes
+$8B:BCB5 E8          INX                    ;} Palettes = [$8C:E5E9..E7E8] (space/gunship/Ceres palettes)
 $8B:BCB6 E8          INX                    ;|
 $8B:BCB7 E0 00 02    CPX #$0200             ;|
 $8B:BCBA 30 F1       BMI $F1    [$BCAD]     ;/
@@ -7980,47 +7984,47 @@ $8B:BCE6 85 47       STA $47    [$7E:0047]  ;} Decompress $96:D10A (space/Ceres 
 $8B:BCE8 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:BCEC             dl 7F5000              ;/
 $8B:BCEF E2 30       SEP #$30
-$8B:BCF1 A9 00       LDA #$00
-$8B:BCF3 8D 16 21    STA $2116  [$7E:2116]
-$8B:BCF6 A9 00       LDA #$00
-$8B:BCF8 8D 17 21    STA $2117  [$7E:2117]
-$8B:BCFB A9 80       LDA #$80
-$8B:BCFD 8D 15 21    STA $2115  [$7E:2115]
-$8B:BD00 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:BD04             dx 01,00,19,7F0000,4000
-$8B:BD0C A9 02       LDA #$02
-$8B:BD0E 8D 0B 42    STA $420B  [$7E:420B]
+$8B:BCF1 A9 00       LDA #$00               ;\
+$8B:BCF3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:BCF6 A9 00       LDA #$00               ;|
+$8B:BCF8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:BCFB A9 80       LDA #$80               ;|
+$8B:BCFD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (gunship/Ceres BG tiles)
+$8B:BD00 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:BD04             dx 01,00,19,7F0000,4000;|
+$8B:BD0C A9 02       LDA #$02               ;|
+$8B:BD0E 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $8B:BD11 C2 10       REP #$10
-$8B:BD13 9C 15 21    STZ $2115  [$7E:2115]
-$8B:BD16 9C 16 21    STZ $2116  [$7E:2116]
-$8B:BD19 9C 17 21    STZ $2117  [$7E:2117]
-$8B:BD1C A2 00 40    LDX #$4000
-$8B:BD1F A9 8C       LDA #$8C
-
-$8B:BD21 8D 18 21    STA $2118  [$7E:2118]
-$8B:BD24 CA          DEX
-$8B:BD25 D0 FA       BNE $FA    [$BD21]
+$8B:BD13 9C 15 21    STZ $2115  [$7E:2115]  ;\
+$8B:BD16 9C 16 21    STZ $2116  [$7E:2116]  ;|
+$8B:BD19 9C 17 21    STZ $2117  [$7E:2117]  ;|
+$8B:BD1C A2 00 40    LDX #$4000             ;|
+$8B:BD1F A9 8C       LDA #$8C               ;} VRAM $0000..3FFF low bytes = FFh
+                                            ;|
+$8B:BD21 8D 18 21    STA $2118  [$7E:2118]  ;|
+$8B:BD24 CA          DEX                    ;|
+$8B:BD25 D0 FA       BNE $FA    [$BD21]     ;/
 $8B:BD27 E2 10       SEP #$10
-$8B:BD29 A9 00       LDA #$00
-$8B:BD2B 8D 16 21    STA $2116  [$7E:2116]
-$8B:BD2E A9 00       LDA #$00
-$8B:BD30 8D 17 21    STA $2117  [$7E:2117]
-$8B:BD33 A9 00       LDA #$00
-$8B:BD35 8D 15 21    STA $2115  [$7E:2115]
-$8B:BD38 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:BD3C             dx 01,00,18,7F4000,0300
-$8B:BD44 A9 02       LDA #$02
-$8B:BD46 8D 0B 42    STA $420B  [$7E:420B]
-$8B:BD49 A9 00       LDA #$00
-$8B:BD4B 8D 16 21    STA $2116  [$7E:2116]
-$8B:BD4E A9 60       LDA #$60
-$8B:BD50 8D 17 21    STA $2117  [$7E:2117]
-$8B:BD53 A9 80       LDA #$80
-$8B:BD55 8D 15 21    STA $2115  [$7E:2115]
-$8B:BD58 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:BD5C             dx 01,01,18,7F5000,4000
-$8B:BD64 A9 02       LDA #$02
-$8B:BD66 8D 0B 42    STA $420B  [$7E:420B]
+$8B:BD29 A9 00       LDA #$00               ;\
+$8B:BD2B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:BD2E A9 00       LDA #$00               ;|
+$8B:BD30 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:BD33 A9 00       LDA #$00               ;|
+$8B:BD35 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..02FF low bytes = [$7F:4000..42FF] (gunship front tilemap)
+$8B:BD38 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:BD3C             dx 01,00,18,7F4000,0300;|
+$8B:BD44 A9 02       LDA #$02               ;|
+$8B:BD46 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:BD49 A9 00       LDA #$00               ;\
+$8B:BD4B 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:BD4E A9 60       LDA #$60               ;|
+$8B:BD50 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:BD53 A9 80       LDA #$80               ;|
+$8B:BD55 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (space/Ceres sprite tiles)
+$8B:BD58 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:BD5C             dx 01,01,18,7F5000,4000;|
+$8B:BD64 A9 02       LDA #$02               ;|
+$8B:BD66 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $8B:BD69 C2 30       REP #$30
 $8B:BD6B A9 00 01    LDA #$0100             ;\
 $8B:BD6E 8D 1B 21    STA $211B  [$7E:211B]  ;|
@@ -8045,13 +8049,13 @@ $8B:BD9E A9 E0 00    LDA #$00E0             ;\
 $8B:BDA1 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = E0h
 $8B:BDA4 A9 00 02    LDA #$0200             ;\
 $8B:BDA7 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 200h
-$8B:BDAA 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
-$8B:BDAE 22 C2 C4 8D JSL $8DC4C2[$8D:C4C2]
-$8B:BDB2 A9 00 00    LDA #$0000
-$8B:BDB5 22 CE 95 8B JSL $8B95CE[$8B:95CE]
+$8B:BDAA 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
+$8B:BDAE 22 C2 C4 8D JSL $8DC4C2[$8D:C4C2]  ; Enable palette FX objects
+$8B:BDB2 A9 00 00    LDA #$0000             ;\
+$8B:BDB5 22 CE 95 8B JSL $8B95CE[$8B:95CE]  ;} Clear cinematic BG objects, cinematic BG tilemap = 0
 $8B:BDB9 A9 00 5C    LDA #$5C00             ;\
 $8B:BDBC 8D F5 19    STA $19F5  [$7E:19F5]  ;} Cinematic BG VRAM address = $5C00 (BG1 tilemap)
-$8B:BDBF 22 4B 83 80 JSL $80834B[$80:834B]
+$8B:BDBF 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:BDC3 A0 0F CF    LDY #$CF0F             ;\
 $8B:BDC6 A9 00 00    LDA #$0000             ;} Spawn cinematic sprite object $CF0F (Ceres stars)
 $8B:BDC9 20 8A 93    JSR $938A  [$8B:938A]  ;/
@@ -8066,14 +8070,14 @@ $8B:BDE3 60          RTS
 }
 
 
-;;; $BDE4:  ;;;
+;;; $BDE4: Cinematic function - fly to Ceres - wait for music queue and enable display ;;;
 {
 $8B:BDE4 22 F4 8E 80 JSL $808EF4[$80:8EF4]  ;\
 $8B:BDE8 B0 0E       BCS $0E    [$BDF8]     ;} If music is queued: return
-$8B:BDEA E2 20       SEP #$20
-$8B:BDEC A9 0F       LDA #$0F
-$8B:BDEE 85 51       STA $51    [$7E:0051]
-$8B:BDF0 C2 20       REP #$20
+$8B:BDEA E2 20       SEP #$20               ;\
+$8B:BDEC A9 0F       LDA #$0F               ;|
+$8B:BDEE 85 51       STA $51    [$7E:0051]  ;} Screen brightness = Fh, disable forced blank
+$8B:BDF0 C2 20       REP #$20               ;/
 $8B:BDF2 A9 F9 BD    LDA #$BDF9             ;\
 $8B:BDF5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDF9
 
@@ -8081,36 +8085,36 @@ $8B:BDF8 60          RTS
 }
 
 
-;;; $BDF9:  ;;;
+;;; $BDF9: Cinematic function - fly to Ceres - flying into camera ;;;
 {
-$8B:BDF9 AD 8F 19    LDA $198F  [$7E:198F]
-$8B:BDFC C9 20 00    CMP #$0020
-$8B:BDFF 30 08       BMI $08    [$BE09]
-$8B:BE01 38          SEC
-$8B:BE02 E9 10 00    SBC #$0010
-$8B:BE05 8D 8F 19    STA $198F  [$7E:198F]
-$8B:BE08 60          RTS
+$8B:BDF9 AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:BDFC C9 20 00    CMP #$0020             ;} If [mode 7 transformation zoom level] >= 20h:
+$8B:BDFF 30 08       BMI $08    [$BE09]     ;/
+$8B:BE01 38          SEC                    ;\
+$8B:BE02 E9 10 00    SBC #$0010             ;} Mode 7 transformation zoom level -= 10h
+$8B:BE05 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:BE08 60          RTS                    ; Return
 
 $8B:BE09 E2 20       SEP #$20
-$8B:BE0B 64 6F       STZ $6F    [$7E:006F]
-$8B:BE0D A9 31       LDA #$31
-$8B:BE0F 85 72       STA $72    [$7E:0072]
-$8B:BE11 A9 3F       LDA #$3F
-$8B:BE13 85 74       STA $74    [$7E:0074]
-$8B:BE15 A9 5F       LDA #$5F
-$8B:BE17 85 75       STA $75    [$7E:0075]
-$8B:BE19 A9 9F       LDA #$9F
-$8B:BE1B 85 76       STA $76    [$7E:0076]
+$8B:BE0B 64 6F       STZ $6F    [$7E:006F]  ; Disable subscreen layers
+$8B:BE0D A9 31       LDA #$31               ;\
+$8B:BE0F 85 72       STA $72    [$7E:0072]  ;} Enable colour math on BG1/sprites/backdrop
+$8B:BE11 A9 3F       LDA #$3F               ;\
+$8B:BE13 85 74       STA $74    [$7E:0074]  ;|
+$8B:BE15 A9 5F       LDA #$5F               ;|
+$8B:BE17 85 75       STA $75    [$7E:0075]  ;} Colour math subscreen backdrop colour = (1Fh, 1Fh, 1Fh) (white)
+$8B:BE19 A9 9F       LDA #$9F               ;|
+$8B:BE1B 85 76       STA $76    [$7E:0076]  ;/
 $8B:BE1D C2 20       REP #$20
 $8B:BE1F 20 DA 93    JSR $93DA  [$8B:93DA]  ; Clear cinematic sprite objects
-$8B:BE22 A2 74 BE    LDX #$BE74
-$8B:BE25 22 4F 8B 80 JSL $808B4F[$80:8B4F]
-$8B:BE29 A9 E0 FF    LDA #$FFE0
-$8B:BE2C 8D 93 19    STA $1993  [$7E:1993]
-$8B:BE2F A9 80 FF    LDA #$FF80
-$8B:BE32 8D 97 19    STA $1997  [$7E:1997]
-$8B:BE35 A9 20 00    LDA #$0020
-$8B:BE38 8D 8D 19    STA $198D  [$7E:198D]
+$8B:BE22 A2 74 BE    LDX #$BE74             ; X = $BE74 (back of gunship)
+$8B:BE25 22 4F 8B 80 JSL $808B4F[$80:8B4F]  ; Queue mode 7 transfers
+$8B:BE29 A9 E0 FF    LDA #$FFE0             ;\
+$8B:BE2C 8D 93 19    STA $1993  [$7E:1993]  ;} Cinematic BG1 X position = -20h
+$8B:BE2F A9 80 FF    LDA #$FF80             ;\
+$8B:BE32 8D 97 19    STA $1997  [$7E:1997]  ;} Cinematic BG1 Y position = -80h
+$8B:BE35 A9 20 00    LDA #$0020             ;\
+$8B:BE38 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = 20h
 $8B:BE3B A0 39 CF    LDY #$CF39             ;\
 $8B:BE3E 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CF39 (Ceres explosion large asteroids)
 $8B:BE41 A0 85 CE    LDY #$CE85             ;\
@@ -8124,7 +8128,7 @@ $8B:BE56 A0 0F CF    LDY #$CF0F             ;\
 $8B:BE59 A9 01 00    LDA #$0001             ;} Spawn cinematic sprite object $CF0F (Ceres stars)
 $8B:BE5C 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BE5F A9 DA BF    LDA #$BFDA             ;\
-$8B:BE62 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BFDA
+$8B:BE62 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BFDA (flying into Ceres)
 $8B:BE65 A0 A8 E1    LDY #$E1A8             ;\
 $8B:BE68 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A8 (cutscene gunship engine flicker)
 $8B:BE6C A0 AC E1    LDY #$E1AC             ;\
@@ -8334,7 +8338,7 @@ $8B:BFD9 60          RTS
 }
 
 
-;;; $BFDA:  ;;;
+;;; $BFDA: Cinematic function - fly to Ceres - flying into Ceres ;;;
 {
 $8B:BFDA E2 20       SEP #$20
 $8B:BFDC A5 74       LDA $74    [$7E:0074]
@@ -8407,13 +8411,13 @@ $8B:C05F 9C 91 19    STZ $1991  [$7E:1991]
 $8B:C062 9C 93 19    STZ $1993  [$7E:1993]
 $8B:C065 9C 95 19    STZ $1995  [$7E:1995]
 $8B:C068 9C 97 19    STZ $1997  [$7E:1997]
-$8B:C06B 22 A2 95 8B JSL $8B95A2[$8B:95A2]
+$8B:C06B 22 A2 95 8B JSL $8B95A2[$8B:95A2]  ; Enable cinematic BG objects
 $8B:C06F 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
 $8B:C073 A0 69 CF    LDY #$CF69             ;\
 $8B:C076 A9 00 5C    LDA #$5C00             ;} Spawn space colony cinematic BG object for VRAM $4C00
 $8B:C079 20 F0 95    JSR $95F0  [$8B:95F0]  ;/
 $8B:C07C A9 8F A3    LDA #$A38F             ;\
-$8B:C07F 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A38F
+$8B:C07F 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 $8B:C082 60          RTS
 }
 
@@ -8443,7 +8447,7 @@ $8B:C0A1 60          RTS
 }
 
 
-;;; $C0A2: Instruction - finish intro ;;;
+;;; $C0A2: Instruction -  ;;;
 {
 $8B:C0A2 A9 C5 C0    LDA #$C0C5             ;\
 $8B:C0A5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C0C5
@@ -9805,8 +9809,8 @@ $8B:CB43             dx 0005,8D6F,
                         000A,8EA9,
                         0050,8ED8,
                         A918,       ; Spawn metroid egg particles
-                        000A,8F07,
-                        000A,8F18,
+                        000A,8F07
+$8B:CB79             dx 000A,8F18,
                         000A,8F29,
                         000A,8F3A,
                         000A,8F4B,
@@ -9940,7 +9944,7 @@ $8B:CC63             dx 0100,0000,
                         000A,921F,
                         C096,       ; Skip next instruction if English text
                         0080,921F,
-                        C0A2        ; Finish intro
+                        C0A2        ; ?
 $8B:CC9B             dx 0001,921F,
                         94BC,CC9B   ; Go to $CC9B
 }
