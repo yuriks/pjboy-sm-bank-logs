@@ -8057,7 +8057,7 @@ $8B:BDB9 A9 00 5C    LDA #$5C00             ;\
 $8B:BDBC 8D F5 19    STA $19F5  [$7E:19F5]  ;} Cinematic BG VRAM address = $5C00 (BG1 tilemap)
 $8B:BDBF 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:BDC3 A0 0F CF    LDY #$CF0F             ;\
-$8B:BDC6 A9 00 00    LDA #$0000             ;} Spawn cinematic sprite object $CF0F (Ceres stars)
+$8B:BDC6 A9 00 00    LDA #$0000             ;} Spawn cinematic sprite object $CF0F (Ceres stars) with parameter 0
 $8B:BDC9 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BDCC A9 E4 BD    LDA #$BDE4             ;\
 $8B:BDCF 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BDE4
@@ -8122,10 +8122,10 @@ $8B:BE44 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CE
 $8B:BE47 A0 8B CE    LDY #$CE8B             ;\
 $8B:BE4A 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CE8B (Ceres small asteroids)
 $8B:BE4D A0 91 CE    LDY #$CE91             ;\
-$8B:BE50 A9 01 00    LDA #$0001             ;} Spawn cinematic sprite object $CE91 (Ceres purple space vortex)
+$8B:BE50 A9 01 00    LDA #$0001             ;} Spawn cinematic sprite object $CE91 (Ceres purple space vortex) with parameter 1
 $8B:BE53 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BE56 A0 0F CF    LDY #$CF0F             ;\
-$8B:BE59 A9 01 00    LDA #$0001             ;} Spawn cinematic sprite object $CF0F (Ceres stars)
+$8B:BE59 A9 01 00    LDA #$0001             ;} Spawn cinematic sprite object $CF0F (Ceres stars) with parameter 1
 $8B:BE5C 20 8A 93    JSR $938A  [$8B:938A]  ;/
 $8B:BE5F A9 DA BF    LDA #$BFDA             ;\
 $8B:BE62 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $BFDA (flying into Ceres)
@@ -8148,20 +8148,20 @@ $8B:BE74             dx 80,7F4300,0300,0000,00, 00
 
 ;;; $BE7E: Initialisation function - cinematic sprite object $CF0F (Ceres stars) ;;;
 {
-$8B:BE7E AD 9D 1B    LDA $1B9D  [$7E:1B9D]
-$8B:BE81 D0 19       BNE $19    [$BE9C]
-$8B:BE83 A9 00 FC    LDA #$FC00
-$8B:BE86 99 7D 1B    STA $1B7D,y[$7E:1B9B]
+$8B:BE7E AD 9D 1B    LDA $1B9D  [$7E:1B9D]  ;\
+$8B:BE81 D0 19       BNE $19    [$BE9C]     ;} If [cinematic sprite object initialisation parameter] = 0:
+$8B:BE83 A9 00 FC    LDA #$FC00             ;\
+$8B:BE86 99 7D 1B    STA $1B7D,y[$7E:1B9B]  ;} Cinematic sprite object velocity = -400h
 $8B:BE89 A9 70 00    LDA #$0070             ;\
 $8B:BE8C 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 70h
 $8B:BE8F A9 57 00    LDA #$0057             ;\
 $8B:BE92 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 57h
 $8B:BE95 A9 00 08    LDA #$0800             ;\
 $8B:BE98 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 800h (palette 4)
-$8B:BE9B 60          RTS
+$8B:BE9B 60          RTS                    ; Return
 
-$8B:BE9C A9 C6 BF    LDA #$BFC6
-$8B:BE9F 99 3D 1B    STA $1B3D,y[$7E:1B53]
+$8B:BE9C A9 C6 BF    LDA #$BFC6             ;\
+$8B:BE9F 99 3D 1B    STA $1B3D,y[$7E:1B53]  ;} Cinematic sprite object pre-instruction = $BFC6 (Ceres purple space vortex)
 $8B:BEA2 A9 E0 FF    LDA #$FFE0             ;\
 $8B:BEA5 99 7D 1A    STA $1A7D,y[$7E:1A93]  ;} Cinematic sprite object X position = -20h
 $8B:BEA8 A9 57 00    LDA #$0057             ;\
@@ -8175,53 +8175,53 @@ $8B:BEB4 60          RTS
 ;;; $BEB5: Pre-instruction - cinematic sprite object $CF0F (Ceres stars) ;;;
 {
 $8B:BEB5 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
-$8B:BEB8 C9 F9 BD    CMP #$BDF9             ;} If [$1F51] != $BDF9:
+$8B:BEB8 C9 F9 BD    CMP #$BDF9             ;} If [cinematic function] != $BDF9 (flying into camera):
 $8B:BEBB F0 01       BEQ $01    [$BEBE]     ;/
 $8B:BEBD 60          RTS                    ; Return
 
-$8B:BEBE BD 7D 1B    LDA $1B7D,x[$7E:1B9B]
-$8B:BEC1 18          CLC
-$8B:BEC2 69 80 00    ADC #$0080
-$8B:BEC5 9D 7D 1B    STA $1B7D,x[$7E:1B9B]
-$8B:BEC8 EB          XBA
-$8B:BEC9 48          PHA
-$8B:BECA 29 00 FF    AND #$FF00
-$8B:BECD 85 14       STA $14    [$7E:0014]
-$8B:BECF 68          PLA
-$8B:BED0 29 FF 00    AND #$00FF
-$8B:BED3 89 80 00    BIT #$0080
-$8B:BED6 F0 03       BEQ $03    [$BEDB]
-$8B:BED8 09 00 FF    ORA #$FF00
-
-$8B:BEDB 85 12       STA $12    [$7E:0012]
-$8B:BEDD BD FD 1A    LDA $1AFD,x[$7E:1B1B]
-$8B:BEE0 18          CLC
-$8B:BEE1 65 14       ADC $14    [$7E:0014]
-$8B:BEE3 9D FD 1A    STA $1AFD,x[$7E:1B1B]
-$8B:BEE6 BD 9D 1A    LDA $1A9D,x[$7E:1ABB]
-$8B:BEE9 65 12       ADC $12    [$7E:0012]
-$8B:BEEB 9D 9D 1A    STA $1A9D,x[$7E:1ABB]
-$8B:BEEE BD DD 1A    LDA $1ADD,x[$7E:1AFB]
-$8B:BEF1 18          CLC
-$8B:BEF2 65 14       ADC $14    [$7E:0014]
-$8B:BEF4 9D DD 1A    STA $1ADD,x[$7E:1AFB]
-$8B:BEF7 BD 7D 1A    LDA $1A7D,x[$7E:1A9B]
-$8B:BEFA 65 12       ADC $12    [$7E:0012]
-$8B:BEFC 9D 7D 1A    STA $1A7D,x[$7E:1A9B]
-$8B:BEFF AD 91 19    LDA $1991  [$7E:1991]
-$8B:BF02 18          CLC
-$8B:BF03 65 14       ADC $14    [$7E:0014]
-$8B:BF05 8D 91 19    STA $1991  [$7E:1991]
-$8B:BF08 AD 93 19    LDA $1993  [$7E:1993]
-$8B:BF0B 65 12       ADC $12    [$7E:0012]
-$8B:BF0D 8D 93 19    STA $1993  [$7E:1993]
-$8B:BF10 AD 95 19    LDA $1995  [$7E:1995]
-$8B:BF13 18          CLC
-$8B:BF14 65 14       ADC $14    [$7E:0014]
-$8B:BF16 8D 95 19    STA $1995  [$7E:1995]
-$8B:BF19 AD 97 19    LDA $1997  [$7E:1997]
-$8B:BF1C 65 12       ADC $12    [$7E:0012]
-$8B:BF1E 8D 97 19    STA $1997  [$7E:1997]
+$8B:BEBE BD 7D 1B    LDA $1B7D,x[$7E:1B9B]  ;\
+$8B:BEC1 18          CLC                    ;|
+$8B:BEC2 69 80 00    ADC #$0080             ;} Cinematic sprite object velocity += 80h
+$8B:BEC5 9D 7D 1B    STA $1B7D,x[$7E:1B9B]  ;/
+$8B:BEC8 EB          XBA                    ;\
+$8B:BEC9 48          PHA                    ;|
+$8B:BECA 29 00 FF    AND #$FF00             ;|
+$8B:BECD 85 14       STA $14    [$7E:0014]  ;|
+$8B:BECF 68          PLA                    ;|
+$8B:BED0 29 FF 00    AND #$00FF             ;} $12.$14 = ±[cinematic sprite object velocity] / 100h
+$8B:BED3 89 80 00    BIT #$0080             ;|
+$8B:BED6 F0 03       BEQ $03    [$BEDB]     ;|
+$8B:BED8 09 00 FF    ORA #$FF00             ;|
+                                            ;|
+$8B:BEDB 85 12       STA $12    [$7E:0012]  ;/
+$8B:BEDD BD FD 1A    LDA $1AFD,x[$7E:1B1B]  ;\
+$8B:BEE0 18          CLC                    ;|
+$8B:BEE1 65 14       ADC $14    [$7E:0014]  ;|
+$8B:BEE3 9D FD 1A    STA $1AFD,x[$7E:1B1B]  ;} Cinematic sprite object Y position += [$12].[$14]
+$8B:BEE6 BD 9D 1A    LDA $1A9D,x[$7E:1ABB]  ;|
+$8B:BEE9 65 12       ADC $12    [$7E:0012]  ;|
+$8B:BEEB 9D 9D 1A    STA $1A9D,x[$7E:1ABB]  ;/
+$8B:BEEE BD DD 1A    LDA $1ADD,x[$7E:1AFB]  ;\
+$8B:BEF1 18          CLC                    ;|
+$8B:BEF2 65 14       ADC $14    [$7E:0014]  ;|
+$8B:BEF4 9D DD 1A    STA $1ADD,x[$7E:1AFB]  ;} Cinematic sprite object X position += [$12].[$14]
+$8B:BEF7 BD 7D 1A    LDA $1A7D,x[$7E:1A9B]  ;|
+$8B:BEFA 65 12       ADC $12    [$7E:0012]  ;|
+$8B:BEFC 9D 7D 1A    STA $1A7D,x[$7E:1A9B]  ;/
+$8B:BEFF AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:BF02 18          CLC                    ;|
+$8B:BF03 65 14       ADC $14    [$7E:0014]  ;|
+$8B:BF05 8D 91 19    STA $1991  [$7E:1991]  ;} Cinematic BG1 X position += [$12].[$14]
+$8B:BF08 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:BF0B 65 12       ADC $12    [$7E:0012]  ;|
+$8B:BF0D 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:BF10 AD 95 19    LDA $1995  [$7E:1995]  ;\
+$8B:BF13 18          CLC                    ;|
+$8B:BF14 65 14       ADC $14    [$7E:0014]  ;|
+$8B:BF16 8D 95 19    STA $1995  [$7E:1995]  ;} Cinematic BG1 Y position += [$12].[$14]
+$8B:BF19 AD 97 19    LDA $1997  [$7E:1997]  ;|
+$8B:BF1C 65 12       ADC $12    [$7E:0012]  ;|
+$8B:BF1E 8D 97 19    STA $1997  [$7E:1997]  ;/
 $8B:BF21 60          RTS
 }
 
@@ -8240,14 +8240,14 @@ $8B:BF34 60          RTS
 
 ;;; $BF35: Pre-instruction - cinematic sprite object $CF39 (Ceres explosion large asteroids) ;;;
 {
-$8B:BF35 BD DD 1A    LDA $1ADD,x[$7E:1AFB]
-$8B:BF38 18          CLC
-$8B:BF39 69 00 40    ADC #$4000
-$8B:BF3C 9D DD 1A    STA $1ADD,x[$7E:1AFB]
-$8B:BF3F BD 7D 1A    LDA $1A7D,x[$7E:1A9B]
-$8B:BF42 69 00 00    ADC #$0000
-$8B:BF45 29 FF 01    AND #$01FF
-$8B:BF48 9D 7D 1A    STA $1A7D,x[$7E:1A9B]
+$8B:BF35 BD DD 1A    LDA $1ADD,x[$7E:1AFB]  ;\
+$8B:BF38 18          CLC                    ;|
+$8B:BF39 69 00 40    ADC #$4000             ;|
+$8B:BF3C 9D DD 1A    STA $1ADD,x[$7E:1AFB]  ;} Cinematic sprite object X position += 0.4000h
+$8B:BF3F BD 7D 1A    LDA $1A7D,x[$7E:1A9B]  ;|
+$8B:BF42 69 00 00    ADC #$0000             ;/
+$8B:BF45 29 FF 01    AND #$01FF             ;\
+$8B:BF48 9D 7D 1A    STA $1A7D,x[$7E:1A9B]  ;} Cinematic sprite object X position %= 200h
 $8B:BF4B 60          RTS
 }
 
@@ -8266,14 +8266,14 @@ $8B:BF5E 60          RTS
 
 ;;; $BF5F: Pre-instruction - cinematic sprite object $CE85 (Ceres under attack) ;;;
 {
-$8B:BF5F BD DD 1A    LDA $1ADD,x[$7E:1AF9]
-$8B:BF62 18          CLC
-$8B:BF63 69 00 10    ADC #$1000
-$8B:BF66 9D DD 1A    STA $1ADD,x[$7E:1AF9]
-$8B:BF69 BD 7D 1A    LDA $1A7D,x[$7E:1A99]
-$8B:BF6C 69 00 00    ADC #$0000
-$8B:BF6F 29 FF 01    AND #$01FF
-$8B:BF72 9D 7D 1A    STA $1A7D,x[$7E:1A99]
+$8B:BF5F BD DD 1A    LDA $1ADD,x[$7E:1AF9]  ;\
+$8B:BF62 18          CLC                    ;|
+$8B:BF63 69 00 10    ADC #$1000             ;|
+$8B:BF66 9D DD 1A    STA $1ADD,x[$7E:1AF9]  ;} Cinematic sprite object X position += 0.1000h
+$8B:BF69 BD 7D 1A    LDA $1A7D,x[$7E:1A99]  ;|
+$8B:BF6C 69 00 00    ADC #$0000             ;/
+$8B:BF6F 29 FF 01    AND #$01FF             ;\
+$8B:BF72 9D 7D 1A    STA $1A7D,x[$7E:1A99]  ;} Cinematic sprite object X position %= 200h
 $8B:BF75 60          RTS
 }
 
@@ -8292,29 +8292,29 @@ $8B:BF88 60          RTS
 
 ;;; $BF89: Pre-instruction - cinematic sprite object $CE8B (Ceres small asteroids) ;;;
 {
-$8B:BF89 BD DD 1A    LDA $1ADD,x[$7E:1AF7]
-$8B:BF8C 18          CLC
-$8B:BF8D 69 00 08    ADC #$0800
-$8B:BF90 9D DD 1A    STA $1ADD,x[$7E:1AF7]
-$8B:BF93 BD 7D 1A    LDA $1A7D,x[$7E:1A97]
-$8B:BF96 69 00 00    ADC #$0000
-$8B:BF99 29 FF 01    AND #$01FF
-$8B:BF9C 9D 7D 1A    STA $1A7D,x[$7E:1A97]
+$8B:BF89 BD DD 1A    LDA $1ADD,x[$7E:1AF7]  ;\
+$8B:BF8C 18          CLC                    ;|
+$8B:BF8D 69 00 08    ADC #$0800             ;|
+$8B:BF90 9D DD 1A    STA $1ADD,x[$7E:1AF7]  ;} Cinematic sprite object X position += 0.0800h
+$8B:BF93 BD 7D 1A    LDA $1A7D,x[$7E:1A97]  ;|
+$8B:BF96 69 00 00    ADC #$0000             ;/
+$8B:BF99 29 FF 01    AND #$01FF             ;\
+$8B:BF9C 9D 7D 1A    STA $1A7D,x[$7E:1A97]  ;} Cinematic sprite object X position %= 200h
 $8B:BF9F 60          RTS
 }
 
 
 ;;; $BFA0: Initialisation function - cinematic sprite object $CE91 (Ceres purple space vortex) ;;;
 {
-$8B:BFA0 AD 9D 1B    LDA $1B9D  [$7E:1B9D]
-$8B:BFA3 D0 0E       BNE $0E    [$BFB3]
+$8B:BFA0 AD 9D 1B    LDA $1B9D  [$7E:1B9D]  ;\
+$8B:BFA3 D0 0E       BNE $0E    [$BFB3]     ;} If [cinematic sprite object initialisation parameter] = 0:
 $8B:BFA5 A9 70 00    LDA #$0070             ;\
 $8B:BFA8 99 7D 1A    STA $1A7D,y[$7E:1A7D]  ;} Cinematic sprite object X position = 70h
-$8B:BFAB A9 D9 BF    LDA #$BFD9
-$8B:BFAE 99 3D 1B    STA $1B3D,y[$7E:1B3D]
+$8B:BFAB A9 D9 BF    LDA #$BFD9             ;\
+$8B:BFAE 99 3D 1B    STA $1B3D,y[$7E:1B3D]  ;} Cinematic sprite object pre-instruction = RTS
 $8B:BFB1 80 06       BRA $06    [$BFB9]
 
-$8B:BFB3 A9 E0 00    LDA #$00E0             ;\
+$8B:BFB3 A9 E0 00    LDA #$00E0             ;\ Else ([cinematic sprite object initialisation parameter] != 0):
 $8B:BFB6 99 7D 1A    STA $1A7D,y[$7E:1A95]  ;} Cinematic sprite object X position = E0h
 
 $8B:BFB9 A9 57 00    LDA #$0057             ;\
@@ -8327,13 +8327,13 @@ $8B:BFC5 60          RTS
 
 ;;; $BFC6: Pre-instruction - cinematic sprite object $CE91 (Ceres purple space vortex) ;;;
 {
-$8B:BFC6 BD DD 1A    LDA $1ADD,x[$7E:1AF5]
-$8B:BFC9 38          SEC
-$8B:BFCA E9 00 20    SBC #$2000
-$8B:BFCD 9D DD 1A    STA $1ADD,x[$7E:1AF5]
-$8B:BFD0 BD 7D 1A    LDA $1A7D,x[$7E:1A95]
-$8B:BFD3 E9 00 00    SBC #$0000
-$8B:BFD6 9D 7D 1A    STA $1A7D,x[$7E:1A95]
+$8B:BFC6 BD DD 1A    LDA $1ADD,x[$7E:1AF5]  ;\
+$8B:BFC9 38          SEC                    ;|
+$8B:BFCA E9 00 20    SBC #$2000             ;|
+$8B:BFCD 9D DD 1A    STA $1ADD,x[$7E:1AF5]  ;} Cinematic sprite object X position -= 0.2000h
+$8B:BFD0 BD 7D 1A    LDA $1A7D,x[$7E:1A95]  ;|
+$8B:BFD3 E9 00 00    SBC #$0000             ;|
+$8B:BFD6 9D 7D 1A    STA $1A7D,x[$7E:1A95]  ;/
 $8B:BFD9 60          RTS
 }
 
@@ -8657,7 +8657,7 @@ $8B:C288 85 12       STA $12    [$7E:0012]  ;} Spawn cinematic sprite object $CE
 $8B:C28A 20 A2 93    JSR $93A2  [$8B:93A2]  ;/
 $8B:C28D A0 91 CE    LDY #$CE91             ;\
 $8B:C290 64 12       STZ $12    [$7E:0012]  ;|
-$8B:C292 A9 00 00    LDA #$0000             ;} Spawn cinematic sprite object $CE91 to index 0 (Ceres purple space vortex)
+$8B:C292 A9 00 00    LDA #$0000             ;} Spawn cinematic sprite object $CE91 to index 0 (Ceres purple space vortex) with parameter 0
 $8B:C295 20 A2 93    JSR $93A2  [$8B:93A2]  ;/
 $8B:C298 A0 33 CF    LDY #$CF33             ;\
 $8B:C29B 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CF33 (Ceres explosion spawner)
