@@ -5636,7 +5636,7 @@ $8C:D629             dx 0010,0A,18,D7C1, ; "S"
                         C096,            ; Skip next instruction if English text
                         0001,0C,1A,D7F7, ; "スペースコロニー"
                         0080,01,01,D683,
-                        C0A2,            ; Finish intro
+                        C0A2,            ; Finish fly to Ceres
                         9698             ; Delete
 }
 }

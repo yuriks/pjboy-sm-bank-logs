@@ -12438,7 +12438,7 @@ $90:D9C0 BD DC 0B    LDA $0BDC,x            ;\
 $90:D9C3 48          PHA                    ;|
 $90:D9C4 EB          XBA                    ;|
 $90:D9C5 48          PHA                    ;|
-$90:D9C6 29 00 FF    AND #$FF00             ;} $12.$14 = ([bomb X speed] & ~80h) / 100h
+$90:D9C6 29 00 FF    AND #$FF00             ;} $12.$14 = ([bomb X speed] & ~8000h) / 100h
 $90:D9C9 85 14       STA $14    [$7E:0014]  ;|
 $90:D9CB 68          PLA                    ;|
 $90:D9CC 29 7F 00    AND #$007F             ;|
@@ -13078,7 +13078,7 @@ $90:DE46 80 28       BRA $28    [$DE70]     ; Go to BRANCH_DE70
 
 ; BRANCH_KNOCKBACK_MOVEMENT
 $90:DE48 AD D0 0C    LDA $0CD0  [$7E:0CD0]  ;\
-$90:DE4B C9 10 00    CMP #$0010             ;} If [flare counter] < 10h:
+$90:DE4B C9 10 00    CMP #$0010             ;} If [flare counter] >= 10h:
 $90:DE4E 30 07       BMI $07    [$DE57]     ;/
 $90:DE50 A9 41 00    LDA #$0041             ;\
 $90:DE53 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 41h, sound library 1, max queued sounds allowed = 5 (resume charging beam)

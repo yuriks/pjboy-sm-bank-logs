@@ -7951,6 +7951,8 @@ $8B:BC9F 60          RTS
 
 ;;; $BCA0..CB04: Ceres cutscenes ;;;
 {
+;;; $BCA0...C11A: Fly to Ceres ;;;
+{
 ;;; $BCA0: Cinematic function - fly to Ceres - initial ;;;
 {
 $8B:BCA0 20 9B 81    JSR $819B  [$8B:819B]  ; Set up PPU for Ceres cutscene
@@ -8341,76 +8343,76 @@ $8B:BFD9 60          RTS
 ;;; $BFDA: Cinematic function - fly to Ceres - flying into Ceres ;;;
 {
 $8B:BFDA E2 20       SEP #$20
-$8B:BFDC A5 74       LDA $74    [$7E:0074]
-$8B:BFDE 38          SEC
-$8B:BFDF E9 01       SBC #$01
-$8B:BFE1 85 74       STA $74    [$7E:0074]
-$8B:BFE3 C9 20       CMP #$20
-$8B:BFE5 10 04       BPL $04    [$BFEB]
-$8B:BFE7 A9 20       LDA #$20
-$8B:BFE9 85 74       STA $74    [$7E:0074]
-
-$8B:BFEB A5 75       LDA $75    [$7E:0075]
-$8B:BFED 38          SEC
-$8B:BFEE E9 01       SBC #$01
-$8B:BFF0 85 75       STA $75    [$7E:0075]
-$8B:BFF2 C9 40       CMP #$40
-$8B:BFF4 10 04       BPL $04    [$BFFA]
-$8B:BFF6 A9 40       LDA #$40
-$8B:BFF8 85 75       STA $75    [$7E:0075]
-
-$8B:BFFA A5 76       LDA $76    [$7E:0076]
-$8B:BFFC 38          SEC
-$8B:BFFD E9 01       SBC #$01
-$8B:BFFF 85 76       STA $76    [$7E:0076]
-$8B:C001 C9 80       CMP #$80
-$8B:C003 10 04       BPL $04    [$C009]
-$8B:C005 A9 80       LDA #$80
-$8B:C007 85 76       STA $76    [$7E:0076]
+$8B:BFDC A5 74       LDA $74    [$7E:0074]  ;\
+$8B:BFDE 38          SEC                    ;|
+$8B:BFDF E9 01       SBC #$01               ;|
+$8B:BFE1 85 74       STA $74    [$7E:0074]  ;|
+$8B:BFE3 C9 20       CMP #$20               ;} Colour math subscreen backdrop colour 0 = max(20h, [colour math subscreen backdrop colour 0] - 1)
+$8B:BFE5 10 04       BPL $04    [$BFEB]     ;|
+$8B:BFE7 A9 20       LDA #$20               ;|
+$8B:BFE9 85 74       STA $74    [$7E:0074]  ;/
+                                            
+$8B:BFEB A5 75       LDA $75    [$7E:0075]  ;\
+$8B:BFED 38          SEC                    ;|
+$8B:BFEE E9 01       SBC #$01               ;|
+$8B:BFF0 85 75       STA $75    [$7E:0075]  ;|
+$8B:BFF2 C9 40       CMP #$40               ;} Colour math subscreen backdrop colour 1 = max(40h, [colour math subscreen backdrop colour 0] - 1)
+$8B:BFF4 10 04       BPL $04    [$BFFA]     ;|
+$8B:BFF6 A9 40       LDA #$40               ;|
+$8B:BFF8 85 75       STA $75    [$7E:0075]  ;/
+                                            
+$8B:BFFA A5 76       LDA $76    [$7E:0076]  ;\
+$8B:BFFC 38          SEC                    ;|
+$8B:BFFD E9 01       SBC #$01               ;|
+$8B:BFFF 85 76       STA $76    [$7E:0076]  ;|
+$8B:C001 C9 80       CMP #$80               ;} Colour math subscreen backdrop colour 2 = max(80h, [colour math subscreen backdrop colour 0] - 1)
+$8B:C003 10 04       BPL $04    [$C009]     ;|
+$8B:C005 A9 80       LDA #$80               ;|
+$8B:C007 85 76       STA $76    [$7E:0076]  ;/
 
 $8B:C009 C2 20       REP #$20
-$8B:C00B AD 91 19    LDA $1991  [$7E:1991]
-$8B:C00E 38          SEC
-$8B:C00F E9 00 20    SBC #$2000
-$8B:C012 8D 91 19    STA $1991  [$7E:1991]
-$8B:C015 AD 93 19    LDA $1993  [$7E:1993]
-$8B:C018 E9 00 00    SBC #$0000
-$8B:C01B 8D 93 19    STA $1993  [$7E:1993]
-$8B:C01E AD 8F 19    LDA $198F  [$7E:198F]
-$8B:C021 C9 00 0C    CMP #$0C00
-$8B:C024 10 08       BPL $08    [$C02E]
-$8B:C026 18          CLC
-$8B:C027 69 10 00    ADC #$0010
-$8B:C02A 8D 8F 19    STA $198F  [$7E:198F]
-$8B:C02D 60          RTS
+$8B:C00B AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:C00E 38          SEC                    ;|
+$8B:C00F E9 00 20    SBC #$2000             ;|
+$8B:C012 8D 91 19    STA $1991  [$7E:1991]  ;} Cinematic BG1 X position += 0.2000h
+$8B:C015 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:C018 E9 00 00    SBC #$0000             ;|
+$8B:C01B 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:C01E AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:C021 C9 00 0C    CMP #$0C00             ;} If [mode 7 transformation zoom level] < C00h:
+$8B:C024 10 08       BPL $08    [$C02E]     ;/
+$8B:C026 18          CLC                    ;\
+$8B:C027 69 10 00    ADC #$0010             ;} Mode 7 transformation zoom level += 10h
+$8B:C02A 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:C02D 60          RTS                    ; Return
 
-$8B:C02E AD 8F 19    LDA $198F  [$7E:198F]
-$8B:C031 C9 00 20    CMP #$2000
-$8B:C034 10 08       BPL $08    [$C03E]
-$8B:C036 18          CLC
-$8B:C037 69 20 00    ADC #$0020
-$8B:C03A 8D 8F 19    STA $198F  [$7E:198F]
-$8B:C03D 60          RTS
+$8B:C02E AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:C031 C9 00 20    CMP #$2000             ;} If [mode 7 transformation zoom level] < 2000h:
+$8B:C034 10 08       BPL $08    [$C03E]     ;/
+$8B:C036 18          CLC                    ;\
+$8B:C037 69 20 00    ADC #$0020             ;} Mode 7 transformation zoom level += 20h
+$8B:C03A 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:C03D 60          RTS                    ; Return
 
 $8B:C03E E2 20       SEP #$20
-$8B:C040 A9 11       LDA #$11
-$8B:C042 85 69       STA $69    [$7E:0069]
-$8B:C044 A9 01       LDA #$01
-$8B:C046 85 55       STA $55    [$7E:0055]
-$8B:C048 A9 00       LDA #$00
-$8B:C04A 85 5F       STA $5F    [$7E:005F]
-$8B:C04C A9 5C       LDA #$5C
-$8B:C04E 85 58       STA $58    [$7E:0058]
-$8B:C050 A9 06       LDA #$06
-$8B:C052 85 5D       STA $5D    [$7E:005D]
+$8B:C040 A9 11       LDA #$11               ;\
+$8B:C042 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
+$8B:C044 A9 01       LDA #$01               ;\
+$8B:C046 85 55       STA $55    [$7E:0055]  ;} BG mode = 1 without BG3 priority, BG tile sizes = 8x8
+$8B:C048 A9 00       LDA #$00               ;\
+$8B:C04A 85 5F       STA $5F    [$7E:005F]  ;} Set mode 7 BG map to wrap within 128x128 tile area, no screen flip
+$8B:C04C A9 5C       LDA #$5C               ;\
+$8B:C04E 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $5C00, size = 32x32
+$8B:C050 A9 06       LDA #$06               ;\
+$8B:C052 85 5D       STA $5D    [$7E:005D]  ;} BG1 tiles base address = $6000
 $8B:C054 C2 20       REP #$20
-$8B:C056 A9 00 01    LDA #$0100
-$8B:C059 8D 8F 19    STA $198F  [$7E:198F]
-$8B:C05C 9C 8D 19    STZ $198D  [$7E:198D]
-$8B:C05F 9C 91 19    STZ $1991  [$7E:1991]
-$8B:C062 9C 93 19    STZ $1993  [$7E:1993]
-$8B:C065 9C 95 19    STZ $1995  [$7E:1995]
-$8B:C068 9C 97 19    STZ $1997  [$7E:1997]
+$8B:C056 A9 00 01    LDA #$0100             ;\
+$8B:C059 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 100h
+$8B:C05C 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
+$8B:C05F 9C 91 19    STZ $1991  [$7E:1991]  ;\
+$8B:C062 9C 93 19    STZ $1993  [$7E:1993]  ;} Cinematic BG1 X position = 0.0
+$8B:C065 9C 95 19    STZ $1995  [$7E:1995]  ;\
+$8B:C068 9C 97 19    STZ $1997  [$7E:1997]  ;} Cinematic BG1 Y position = 0.0
 $8B:C06B 22 A2 95 8B JSL $8B95A2[$8B:95A2]  ; Enable cinematic BG objects
 $8B:C06F 22 B8 95 8B JSL $8B95B8[$8B:95B8]  ; Enable cinematic BG tilemap updates
 $8B:C073 A0 69 CF    LDY #$CF69             ;\
@@ -8436,21 +8438,21 @@ $8B:C095 60          RTS
 
 ;;; $C096: Instruction - skip next instruction if English text ;;;
 {
-$8B:C096 AD E2 09    LDA $09E2  [$7E:09E2]
-$8B:C099 D0 06       BNE $06    [$C0A1]
-$8B:C09B 98          TYA
-$8B:C09C 18          CLC
-$8B:C09D 69 06 00    ADC #$0006
-$8B:C0A0 A8          TAY
+$8B:C096 AD E2 09    LDA $09E2  [$7E:09E2]  ;\
+$8B:C099 D0 06       BNE $06    [$C0A1]     ;} If Japanese text is enabled: return
+$8B:C09B 98          TYA                    ;\
+$8B:C09C 18          CLC                    ;|
+$8B:C09D 69 06 00    ADC #$0006             ;} Y += 6
+$8B:C0A0 A8          TAY                    ;/
 
 $8B:C0A1 60          RTS
 }
 
 
-;;; $C0A2: Instruction -  ;;;
+;;; $C0A2: Instruction - finish fly to Ceres ;;;
 {
 $8B:C0A2 A9 C5 C0    LDA #$C0C5             ;\
-$8B:C0A5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C0C5
+$8B:C0A5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C0C5 (fly to Ceres - finish)
 $8B:C0A8 A9 01 00    LDA #$0001             ;\
 $8B:C0AB 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $8B:C0AE 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
@@ -8470,33 +8472,33 @@ $8B:C0C4 60          RTS
 }
 
 
-;;; $C0C5:  ;;;
+;;; $C0C5: Cinematic function - fly to Ceres - finish ;;;
 {
 $8B:C0C5 22 24 89 80 JSL $808924[$80:8924]  ; Handle fading out
 $8B:C0C9 E2 20       SEP #$20
 $8B:C0CB A5 51       LDA $51    [$7E:0051]  ;\
 $8B:C0CD C9 80       CMP #$80               ;} If not finished fading out: return
 $8B:C0CF D0 2E       BNE $2E    [$C0FF]     ;/
-$8B:C0D1 22 4B 83 80 JSL $80834B[$80:834B]
+$8B:C0D1 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:C0D5 C2 20       REP #$20
 $8B:C0D7 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:C0DA 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
-$8B:C0DD 64 B5       STZ $B5    [$7E:00B5]
-$8B:C0DF 64 B9       STZ $B9    [$7E:00B9]
-$8B:C0E1 64 B7       STZ $B7    [$7E:00B7]
-$8B:C0E3 64 BB       STZ $BB    [$7E:00BB]
-$8B:C0E5 9C 8D 19    STZ $198D  [$7E:198D]
-$8B:C0E8 A9 1F 1C    LDA #$1C1F
-$8B:C0EB 3A          DEC A
-$8B:C0EC 3A          DEC A
-$8B:C0ED 38          SEC
-$8B:C0EE E9 8D 19    SBC #$198D
-$8B:C0F1 AA          TAX
-
-$8B:C0F2 9E 8D 19    STZ $198D,x[$7E:1C1D]
-$8B:C0F5 CA          DEX
-$8B:C0F6 CA          DEX
-$8B:C0F7 10 F9       BPL $F9    [$C0F2]
+$8B:C0DD 64 B5       STZ $B5    [$7E:00B5]  ;\
+$8B:C0DF 64 B9       STZ $B9    [$7E:00B9]  ;|
+$8B:C0E1 64 B7       STZ $B7    [$7E:00B7]  ;} BG2/3 X/Y scroll = 0
+$8B:C0E3 64 BB       STZ $BB    [$7E:00BB]  ;/
+$8B:C0E5 9C 8D 19    STZ $198D  [$7E:198D]  ; >_<;
+$8B:C0E8 A9 1F 1C    LDA #$1C1F             ;\
+$8B:C0EB 3A          DEC A                  ;|
+$8B:C0EC 3A          DEC A                  ;|
+$8B:C0ED 38          SEC                    ;|
+$8B:C0EE E9 8D 19    SBC #$198D             ;|
+$8B:C0F1 AA          TAX                    ;} Clear non-gameplay use RAM
+                                            ;|
+$8B:C0F2 9E 8D 19    STZ $198D,x[$7E:1C1D]  ;|
+$8B:C0F5 CA          DEX                    ;|
+$8B:C0F6 CA          DEX                    ;|
+$8B:C0F7 10 F9       BPL $F9    [$C0F2]     ;/
 $8B:C0F9 A9 00 C1    LDA #$C100             ;\
 $8B:C0FC 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C100
 
@@ -8504,42 +8506,43 @@ $8B:C0FF 60          RTS
 }
 
 
-;;; $C100:  ;;;
+;;; $C100: Cinematic function - fly to Ceres - start game at Ceres ;;;
 {
-$8B:C100 A9 1F 00    LDA #$001F
-$8B:C103 8F 14 D9 7E STA $7ED914[$7E:D914]
+$8B:C100 A9 1F 00    LDA #$001F             ;\
+$8B:C103 8F 14 D9 7E STA $7ED914[$7E:D914]  ;} Loading game state = 1Fh (starting at Ceres)
 $8B:C107 8D 98 09    STA $0998  [$7E:0998]  ; Game state = 1Fh (set up new game)
-$8B:C10A A9 06 00    LDA #$0006
-$8B:C10D 8D 9F 07    STA $079F  [$7E:079F]
-$8B:C110 9C 8B 07    STZ $078B  [$7E:078B]
+$8B:C10A A9 06 00    LDA #$0006             ;\
+$8B:C10D 8D 9F 07    STA $079F  [$7E:079F]  ;} Area index = Ceres
+$8B:C110 9C 8B 07    STZ $078B  [$7E:078B]  ; Load station index = 0
 $8B:C113 AD 52 09    LDA $0952  [$7E:0952]  ;\
 $8B:C116 22 00 80 81 JSL $818000[$81:8000]  ;} Save current save slot to SRAM
 $8B:C11A 60          RTS
 }
+}
 
 
-;;; $C11B: Cinematic function - escaping Ceres ;;;
+;;; $C11B: Cinematic function - escaping Ceres - initial ;;;
 {
-$8B:C11B A2 08 00    LDX #$0008
-
-$8B:C11E 22 38 83 80 JSL $808338[$80:8338]
-$8B:C122 CA          DEX
-$8B:C123 10 F9       BPL $F9    [$C11E]
+$8B:C11B A2 08 00    LDX #$0008             ;\
+                                            ;|
+$8B:C11E 22 38 83 80 JSL $808338[$80:8338]  ;} Wait 8 frames
+$8B:C122 CA          DEX                    ;|
+$8B:C123 10 F9       BPL $F9    [$C11E]     ;/
 $8B:C125 20 9B 81    JSR $819B  [$8B:819B]  ; Set up PPU for Ceres cutscene
-$8B:C128 A9 1F 1C    LDA #$1C1F
-$8B:C12B 3A          DEC A
-$8B:C12C 3A          DEC A
-$8B:C12D 38          SEC
-$8B:C12E E9 8D 19    SBC #$198D
-$8B:C131 AA          TAX
-
-$8B:C132 9E 8D 19    STZ $198D,x[$7E:1C1D]
-$8B:C135 CA          DEX
-$8B:C136 CA          DEX
-$8B:C137 10 F9       BPL $F9    [$C132]
-$8B:C139 9C 8D 07    STZ $078D  [$7E:078D]
-$8B:C13C 9C 11 09    STZ $0911  [$7E:0911]
-$8B:C13F 9C 15 09    STZ $0915  [$7E:0915]
+$8B:C128 A9 1F 1C    LDA #$1C1F             ;\
+$8B:C12B 3A          DEC A                  ;|
+$8B:C12C 3A          DEC A                  ;|
+$8B:C12D 38          SEC                    ;|
+$8B:C12E E9 8D 19    SBC #$198D             ;|
+$8B:C131 AA          TAX                    ;} Clear non-gameplay use RAM
+                                            ;|
+$8B:C132 9E 8D 19    STZ $198D,x[$7E:1C1D]  ;|
+$8B:C135 CA          DEX                    ;|
+$8B:C136 CA          DEX                    ;|
+$8B:C137 10 F9       BPL $F9    [$C132]     ;/
+$8B:C139 9C 8D 07    STZ $078D  [$7E:078D]  ; Door pointer = 0
+$8B:C13C 9C 11 09    STZ $0911  [$7E:0911]  ; Layer 1 X position = 0
+$8B:C13F 9C 15 09    STZ $0915  [$7E:0915]  ; Layer 1 Y position = 0
 $8B:C142 A2 00 00    LDX #$0000             ;\
                                             ;|
 $8B:C145 BF E9 E5 8C LDA $8CE5E9,x[$8C:E5E9];|
@@ -9746,7 +9749,7 @@ $8B:CAEA 3A          DEC A                  ;|
 $8B:CAEB 3A          DEC A                  ;|
 $8B:CAEC 38          SEC                    ;|
 $8B:CAED E9 8D 19    SBC #$198D             ;|
-$8B:CAF0 AA          TAX                    ;} Clear $198D..1C1E (non-gameplay RAM)
+$8B:CAF0 AA          TAX                    ;} Clear non-gameplay use RAM
                                             ;|
 $8B:CAF1 9E 8D 19    STZ $198D,x[$7E:1C1D]  ;|
 $8B:CAF4 CA          DEX                    ;|
@@ -9930,6 +9933,7 @@ $8B:CC57             dx 0001,8FE7,
 
 ;;; $CC63: Unused. Instruction list - cinematic sprite object $CE97 (space colony text) ;;;
 {
+; Cinematic BG object $CF69 is used instead
 $8B:CC63             dx 0100,0000,
                         000A,92AA,
                         000A,92B1,
@@ -9944,7 +9948,7 @@ $8B:CC63             dx 0100,0000,
                         000A,921F,
                         C096,       ; Skip next instruction if English text
                         0080,921F,
-                        C0A2        ; ?
+                        C0A2        ; Finish fly to Ceres
 $8B:CC9B             dx 0001,921F,
                         94BC,CC9B   ; Go to $CC9B
 }
@@ -10852,7 +10856,7 @@ $8B:D494 3A          DEC A                  ;|
 $8B:D495 3A          DEC A                  ;|
 $8B:D496 38          SEC                    ;|
 $8B:D497 E9 8D 19    SBC #$198D             ;|
-$8B:D49A AA          TAX                    ;} $198D..1C1E = 0
+$8B:D49A AA          TAX                    ;} Clear non-gameplay use RAM
                                             ;|
 $8B:D49B 9E 8D 19    STZ $198D,x[$7E:1C1D]  ;|
 $8B:D49E CA          DEX                    ;|
