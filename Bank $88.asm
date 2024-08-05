@@ -465,7 +465,7 @@ $88:816C 85 6C       STA $6C    [$7E:006C]  ;} Disable BG1/BG2/sprites in window
 $88:816E A9 04       LDA #$04               ;\
 $88:8170 85 6D       STA $6D    [$7E:006D]  ;} Disable BG3 in window area subscreen
 $88:8172 A9 10       LDA #$10               ;\
-$88:8174 85 6E       STA $6E    [$7E:006E]  ;} Restrict colour math to inside window
+$88:8174 85 6E       STA $6E    [$7E:006E]  ;} Disable subscreen layers and restrict colour math to inside window
 $88:8176 A9 33       LDA #$33               ;\
 $88:8178 85 71       STA $71    [$7E:0071]  ;} Enable colour math on BG1/BG2/sprites/backdrop
 $88:817A 60          RTS

@@ -6634,7 +6634,7 @@ $90:AD23 C2 30       REP #$30
 $90:AD25 A2 00 00    LDX #$0000             ; X = 0 (projectile index)
 
 ; LOOP
-$90:AD28 9E 90 0C    STZ $0C90,x[$7E:0C90]  ; Projectile trail timer / bomb subspeed = 0
+$90:AD28 9E 90 0C    STZ $0C90,x[$7E:0C90]  ; Projectile trail timer / bomb Y subvelocity = 0
 $90:AD2B 9E 64 0B    STZ $0B64,x[$7E:0B64]  ; Projectile X position = 0
 $90:AD2E 9E 78 0B    STZ $0B78,x[$7E:0B78]  ; Projectile Y position = 0
 $90:AD31 9E 04 0C    STZ $0C04,x[$7E:0C04]  ; Projectile direction = 0
@@ -12283,38 +12283,38 @@ $90:D853 A2 0A 00    LDX #$000A             ; X = Ah (projectile index)
 
 ; LOOP
 $90:D856 A9 00 85    LDA #$8500             ;\
-$90:D859 9D 18 0C    STA $0C18,x            ;} Bomb [X] type = bomb, don't interact with Samus
-$90:D85C 9E 04 0C    STZ $0C04,x            ; Bomb [X] direction = 0
+$90:D859 9D 18 0C    STA $0C18,x            ;} Bomb type = bomb, don't interact with Samus
+$90:D85C 9E 04 0C    STZ $0C04,x            ; Bomb direction = 0
 $90:D85F A9 F7 D8    LDA #$D8F7             ;\
-$90:D862 9D 68 0C    STA $0C68,x            ;} Bomb [X] pre-instruction = $D8F7
+$90:D862 9D 68 0C    STA $0C68,x            ;} Bomb pre-instruction = $D8F7
 $90:D865 22 A0 80 93 JSL $9380A0[$93:80A0]  ; Initialise bomb
 $90:D869 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
-$90:D86C 9D 64 0B    STA $0B64,x            ;} Bomb [X] X position = [Samus X position]
-$90:D86F 9E 8C 0B    STZ $0B8C,x            ; Bomb [X] X subposition = 0
+$90:D86C 9D 64 0B    STA $0B64,x            ;} Bomb X position = [Samus X position]
+$90:D86F 9E 8C 0B    STZ $0B8C,x            ; Bomb X subposition = 0
 $90:D872 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
-$90:D875 9D 78 0B    STA $0B78,x            ;} Bomb [X] Y position = [Samus Y position]
-$90:D878 9E A0 0B    STZ $0BA0,x            ; Bomb [X] Y subposition = 0
+$90:D875 9D 78 0B    STA $0B78,x            ;} Bomb Y position = [Samus Y position]
+$90:D878 9E A0 0B    STZ $0BA0,x            ; Bomb Y subposition = 0
 $90:D87B 8A          TXA                    ;\
 $90:D87C 38          SEC                    ;|
 $90:D87D E9 0A 00    SBC #$000A             ;} Y = [X] - Ah
 $90:D880 A8          TAY                    ;/
 $90:D881 B9 D9 D8    LDA $D8D9,y            ;\
-$90:D884 9D DC 0B    STA $0BDC,x            ;} Bomb [X] X speed = [$D8D9 + [Y]]
+$90:D884 9D DC 0B    STA $0BDC,x            ;} Bomb X velocity = [$D8D9 + [Y]]
 $90:D887 B9 ED D8    LDA $D8ED,y            ;\
-$90:D88A 9D 90 0C    STA $0C90,x            ;} Bomb [X] Y subspeed = [$D8ED + [Y]]
+$90:D88A 9D 90 0C    STA $0C90,x            ;} Bomb Y subvelocity = [$D8ED + [Y]]
 $90:D88D AD D4 0C    LDA $0CD4  [$7E:0CD4]  ;\
 $90:D890 0A          ASL A                  ;|
 $90:D891 0A          ASL A                  ;|
 $90:D892 EB          XBA                    ;|
 $90:D893 29 03 00    AND #$0003             ;|
-$90:D896 18          CLC                    ;} Bomb [X] Y speed = -([bomb spread charge timeout counter] / 40h % 4 + [$D8E3 + [Y]])
+$90:D896 18          CLC                    ;} Bomb Y velocity = -([$D8E3 + [Y]] + [bomb spread charge timeout counter] / 40h % 4)
 $90:D897 79 E3 D8    ADC $D8E3,y            ;|
 $90:D89A 49 FF FF    EOR #$FFFF             ;|
 $90:D89D 1A          INC A                  ;|
 $90:D89E 9D F0 0B    STA $0BF0,x            ;/
-$90:D8A1 9D A4 0C    STA $0CA4,x            ; Bomb [X] $0CA4 = [bomb [X] Y speed]
+$90:D8A1 9D A4 0C    STA $0CA4,x            ; Bomb bounce Y velocity = [bomb Y velocity]
 $90:D8A4 B9 CF D8    LDA $D8CF,y            ;\
-$90:D8A7 9D 7C 0C    STA $0C7C,x            ;} Bomb [X] timer = [$D8CF + [Y]]
+$90:D8A7 9D 7C 0C    STA $0C7C,x            ;} Bomb timer = [$D8CF + [Y]]
 $90:D8AA E8          INX                    ;\
 $90:D8AB E8          INX                    ;} X += 2
 $90:D8AC E0 14 00    CPX #$0014             ;\
@@ -12337,7 +12337,7 @@ $90:D8CE 60          RTS
 ;;; $D8CF: Bomb spread data ;;;
 {
 $90:D8CF             dw 0078, 006E, 0064, 006E, 0078 ; Bomb timers
-$90:D8D9             dw 8100, 8080, 0000, 0080, 0100 ; Bomb X speeds
+$90:D8D9             dw 8100, 8080, 0000, 0080, 0100 ; Bomb X velocities. Unit 1/100h px/frame. MSb = direction, set = left, clear = right
 $90:D8E3             dw 0000, 0001, 0002, 0001, 0000 ; Bomb Y speeds
 $90:D8ED             dw 0000, 0000, 8000, 0000, 0000 ; Bomb Y subspeeds
 }
@@ -12359,14 +12359,14 @@ $90:D90C 4C B7 D9    JMP $D9B7  [$90:D9B7]  ; Go to BRANCH_MOVEMENT_DONE
 $90:D90F BD 90 0C    LDA $0C90,x            ;\
 $90:D912 18          CLC                    ;|
 $90:D913 6D 32 0B    ADC $0B32  [$7E:0B32]  ;|
-$90:D916 9D 90 0C    STA $0C90,x            ;} Bomb Y speed += [Samus Y acceleration]
+$90:D916 9D 90 0C    STA $0C90,x            ;} Bomb Y velocity += [Samus Y acceleration]
 $90:D919 BD F0 0B    LDA $0BF0,x            ;|
 $90:D91C 6D 34 0B    ADC $0B34  [$7E:0B34]  ;|
 $90:D91F 9D F0 0B    STA $0BF0,x            ;/
 $90:D922 BD A0 0B    LDA $0BA0,x            ;\
 $90:D925 18          CLC                    ;|
 $90:D926 7D 90 0C    ADC $0C90,x            ;|
-$90:D929 9D A0 0B    STA $0BA0,x            ;} Bomb Y position += [bomb Y speed]
+$90:D929 9D A0 0B    STA $0BA0,x            ;} Bomb Y position += [bomb Y velocity]
 $90:D92C BD 78 0B    LDA $0B78,x            ;|
 $90:D92F 7D F0 0B    ADC $0BF0,x            ;|
 $90:D932 9D 78 0B    STA $0B78,x            ;/
@@ -12380,19 +12380,19 @@ $90:D943 A8          TAY                    ;/
 $90:D944 BD A0 0B    LDA $0BA0,x            ;\
 $90:D947 38          SEC                    ;|
 $90:D948 FD 90 0C    SBC $0C90,x            ;|
-$90:D94B 9D A0 0B    STA $0BA0,x            ;} Bomb Y position -= [bomb Y speed]
+$90:D94B 9D A0 0B    STA $0BA0,x            ;} Bomb Y position -= [bomb Y velocity]
 $90:D94E BD 78 0B    LDA $0B78,x            ;|
 $90:D951 FD F0 0B    SBC $0BF0,x            ;|
 $90:D954 9D 78 0B    STA $0B78,x            ;/
 $90:D957 BD F0 0B    LDA $0BF0,x            ;\
-$90:D95A 30 0F       BMI $0F    [$D96B]     ;} If [bomb Y speed] & 8000h = 0:
+$90:D95A 30 0F       BMI $0F    [$D96B]     ;} If [bomb Y velocity] >= 0:
 $90:D95C B9 ED D8    LDA $D8ED,y            ;\
-$90:D95F 9D 90 0C    STA $0C90,x            ;} Bomb Y subspeed = [$D8ED + [Y]]
+$90:D95F 9D 90 0C    STA $0C90,x            ;} Bomb Y subvelocity = [$D8ED + [Y]]
 $90:D962 BD A4 0C    LDA $0CA4,x            ;\
-$90:D965 9D F0 0B    STA $0BF0,x            ;} Bomb Y speed = [bomb $0CA4]
+$90:D965 9D F0 0B    STA $0BF0,x            ;} Bomb Y velocity = [bomb bounce Y velocity]
 $90:D968 4C 07 DA    JMP $DA07  [$90:DA07]  ; Return
 
-$90:D96B 9E F0 0B    STZ $0BF0,x            ; Bomb Y speed = 0
+$90:D96B 9E F0 0B    STZ $0BF0,x            ; Bomb Y velocity = 0
 $90:D96E 9E C8 0B    STZ $0BC8,x            ; Bomb Y radius = 0
 $90:D971 4C 07 DA    JMP $DA07  [$90:DA07]  ; Return
 
@@ -12402,7 +12402,7 @@ $90:D977 BD DC 0B    LDA $0BDC,x            ;\
 $90:D97A EB          XBA                    ;|
 $90:D97B 48          PHA                    ;|
 $90:D97C 29 00 FF    AND #$FF00             ;|
-$90:D97F 85 14       STA $14    [$7E:0014]  ;} $12.$14 = [bomb X speed] / 100h
+$90:D97F 85 14       STA $14    [$7E:0014]  ;} $12.$14 = [bomb X velocity] / 100h
 $90:D981 68          PLA                    ;|
 $90:D982 29 FF 00    AND #$00FF             ;|
 $90:D985 85 12       STA $12    [$7E:0012]  ;/
@@ -12438,16 +12438,16 @@ $90:D9C0 BD DC 0B    LDA $0BDC,x            ;\
 $90:D9C3 48          PHA                    ;|
 $90:D9C4 EB          XBA                    ;|
 $90:D9C5 48          PHA                    ;|
-$90:D9C6 29 00 FF    AND #$FF00             ;} $12.$14 = ([bomb X speed] & ~8000h) / 100h
+$90:D9C6 29 00 FF    AND #$FF00             ;} $12.$14 = ([bomb X velocity] & ~8000h) / 100h
 $90:D9C9 85 14       STA $14    [$7E:0014]  ;|
 $90:D9CB 68          PLA                    ;|
 $90:D9CC 29 7F 00    AND #$007F             ;|
 $90:D9CF 85 12       STA $12    [$7E:0012]  ;/
 $90:D9D1 68          PLA                    ;\
-$90:D9D2 89 00 80    BIT #$8000             ;} If [bomb X speed] & 8000h != 0:
+$90:D9D2 89 00 80    BIT #$8000             ;} If [bomb X velocity] & 8000h != 0:
 $90:D9D5 F0 19       BEQ $19    [$D9F0]     ;/
 $90:D9D7 29 FF 7F    AND #$7FFF             ;\
-$90:D9DA 9D DC 0B    STA $0BDC,x            ;} Bomb X speed &= ~8000h
+$90:D9DA 9D DC 0B    STA $0BDC,x            ;} Bomb X velocity &= ~8000h
 $90:D9DD BD 8C 0B    LDA $0B8C,x            ;\
 $90:D9E0 18          CLC                    ;|
 $90:D9E1 65 14       ADC $14    [$7E:0014]  ;|
@@ -12457,8 +12457,8 @@ $90:D9E9 65 12       ADC $12    [$7E:0012]  ;|
 $90:D9EB 9D 64 0B    STA $0B64,x            ;/
 $90:D9EE 80 17       BRA $17    [$DA07]
 
-$90:D9F0 09 00 80    ORA #$8000             ;\ Else ([bomb X speed] & 8000h = 0):
-$90:D9F3 9D DC 0B    STA $0BDC,x            ;} Bomb X speed |= 8000h
+$90:D9F0 09 00 80    ORA #$8000             ;\ Else ([bomb X velocity] & 8000h = 0):
+$90:D9F3 9D DC 0B    STA $0BDC,x            ;} Bomb X velocity |= 8000h
 $90:D9F6 BD 8C 0B    LDA $0B8C,x            ;\
 $90:D9F9 38          SEC                    ;|
 $90:D9FA E5 14       SBC $14    [$7E:0014]  ;|
@@ -13818,7 +13818,7 @@ $90:E2A0 6B          RTL
 ; If grapple connected: prevent pose transition due to $0A28 (prevents Samus from aiming elsewhere).
 ; Handle Draygon-escape button counter and release Samus if reached 60.
 $90:E2A1 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
-$90:E2A4 C9 7E C7    CMP #$C77E             ;} If [grapple beam function] = $C77E (connected - locked in place): go to BRANCH
+$90:E2A4 C9 7E C7    CMP #$C77E             ;} If [grapple beam function] != $C77E (connected - locked in place): go to BRANCH
 $90:E2A7 D0 0C       BNE $0C    [$E2B5]     ;/
 $90:E2A9 A9 FF FF    LDA #$FFFF             ;\
 $90:E2AC 8D 28 0A    STA $0A28  [$7E:0A28]  ;} Prospective pose = FFFFh
@@ -13832,7 +13832,7 @@ $90:E2B5 A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:E2B7 29 00 0F    AND #$0F00             ;} If not newly pressing d-pad: return
 $90:E2BA F0 F8       BEQ $F8    [$E2B4]     ;/
 $90:E2BC CD EE 0D    CMP $0DEE  [$7E:0DEE]  ;\
-$90:E2BF F0 F3       BEQ $F3    [$E2B4]     ;} If newly pressed d-pad input != [Draygon-escape previous d-pad input]:
+$90:E2BF F0 F3       BEQ $F3    [$E2B4]     ;} If newly pressed d-pad input = [Draygon-escape previous d-pad input]: return
 $90:E2C1 8D EE 0D    STA $0DEE  [$7E:0DEE]  ; Draygon-escape previous d-pad input = newly pressed d-pad input
 $90:E2C4 AD EC 0D    LDA $0DEC  [$7E:0DEC]  ;\
 $90:E2C7 1A          INC A                  ;} Increment Draygon-escape button counter
@@ -14525,7 +14525,7 @@ $90:E6D5 8D 2A 0A    STA $0A2A  [$7E:0A2A]  ; Special prospective pose = FFFFh
 $90:E6D8 8D 2C 0A    STA $0A2C  [$7E:0A2C]  ; Super special prospective pose = FFFFh
 $90:E6DB 9C 2E 0A    STZ $0A2E  [$7E:0A2E]  ; Prospective pose change command = none
 $90:E6DE 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change command = none
-$90:E6E1 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Special Super special pose change command = none
+$90:E6E1 9C 32 0A    STZ $0A32  [$7E:0A32]  ; Super special pose change command = none
 $90:E6E4 A5 8B       LDA $8B    [$7E:008B]  ;\
 $90:E6E6 8D 14 0A    STA $0A14  [$7E:0A14]  ;} $0A14 = [controller 1 input]
 $90:E6E9 A5 8F       LDA $8F    [$7E:008F]  ;\

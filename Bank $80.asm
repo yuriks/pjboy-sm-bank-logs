@@ -8080,8 +8080,8 @@ $80:CA2F             dw DE23,AABC,0000,0000,0000,0098,FFE0, ; 0: Pre Mother Brai
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
                         0000,0000,0000,0400,0400,00B0,0000,
-                        DDF3,AAA4,0000,0000,0200,0080,0000, ; 10h: Mother Brain shaft (from Tourian eye-door room)
-                        DDF3,AA38,0000,0000,0000,0080,0000  ; 11h: Mother Brain shaft (from Shitroid room)
+                        DDF3,AAA4,0000,0000,0200,0080,0000, ; 10h: Pre Mother Brain shaft (from Tourian eye-door room)
+                        DDF3,AA38,0000,0000,0000,0080,0000  ; 11h: Pre Mother Brain shaft (from Shitroid room)
 
 ; Ceres load stations
 $80:CB2B             dw DF45,AB58,0000,0000,0000,0048,0000, ; Ceres elevator shaft (from Ceres pre elevator hall)

@@ -4451,7 +4451,7 @@ $81:A5BC A9 04       LDA #$04               ; >_<
 $81:A5BE 85 6D       STA $6D    [$7E:006D]  ;\
 $81:A5C0 8D 2F 21    STA $212F  [$7E:212F]  ;} Disable BG3 in window area subscreen
 $81:A5C3 A9 02       LDA #$02               ;\
-$81:A5C5 85 6F       STA $6F    [$7E:006F]  ;} Enable colour math subscreen layers
+$81:A5C5 85 6F       STA $6F    [$7E:006F]  ;} Enable subscreen layers
 $81:A5C7 8D 30 21    STA $2130  [$7E:2130]  ;/
 $81:A5CA A9 25       LDA #$25               ;\
 $81:A5CC 85 72       STA $72    [$7E:0072]  ;} Enable colour math on BG1/BG3/backdrop
