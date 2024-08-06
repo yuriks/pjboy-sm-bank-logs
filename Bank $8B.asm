@@ -967,7 +967,7 @@ $8B:8780             dw 39F4, 39F5, 39F6, 39F7, 39F8, 39F9, 39FA, 39FB, 39FC, 39
 ;;; $87A0: Update cinematic BG tilemap ;;;
 {
 ; If not mode 7:
-;     Queue DMA of 780h bytes from $7E:3000 to VRAM [$19F5]
+;     Queue transfer of 780h bytes from $7E:3000 to VRAM [$19F5]
 $8B:87A0 08          PHP
 $8B:87A1 C2 30       REP #$30
 $8B:87A3 A5 55       LDA $55    [$7E:0055]
@@ -1002,7 +1002,7 @@ $8B:87D2 60          RTS
 ;;; $87D3: Update Samus eyes tilemap ;;;
 {
 ; If not mode 7:
-;     Queue DMA for VRAM $49A0..DF = [$7E:3B40..BF] (BG2 tilemap rows Dh/Eh)
+;     Queue transfer of $7E:3B40..BF to VRAM $49A0..DF (BG2 tilemap rows Dh/Eh)
 $8B:87D3 08          PHP
 $8B:87D4 C2 30       REP #$30
 $8B:87D6 A5 55       LDA $55    [$7E:0055]
@@ -1037,7 +1037,7 @@ $8B:8805 60          RTS
 ;;; $8806:  ;;;
 {
 ; If not mode 7:
-;     Queue DMA of 800h bytes from $7E:3000 to VRAM [$19F5]
+;     Queue transfer of 800h bytes from $7E:3000 to VRAM [$19F5]
 $8B:8806 08          PHP
 $8B:8807 C2 30       REP #$30
 $8B:8809 A5 55       LDA $55    [$7E:0055]
@@ -1258,7 +1258,7 @@ $8B:896A 60          RTS
 }
 
 
-;;; $896B:  ;;;
+;;; $896B: Unused ;;;
 {
 $8B:896B 20 2C 8A    JSR $8A2C  [$8B:8A2C]
 $8B:896E B9 02 00    LDA $0002,y
@@ -1309,7 +1309,7 @@ $8B:89CE 60          RTS
 }
 
 
-;;; $89CF:  ;;;
+;;; $89CF: Unused ;;;
 {
 $8B:89CF 20 2C 8A    JSR $8A2C  [$8B:8A2C]
 $8B:89D2 B9 02 00    LDA $0002,y
@@ -1357,10 +1357,11 @@ $8B:8A2B 60          RTS
 }
 
 
-;;; $8A2C:  ;;;
+;;; $8A2C: Unused ;;;
 {
 ; Presumably mode 7 tilemap offset calculation
 ; $16 = [$13] * 80h + [$12]
+; Only called by unused routines
 $8B:8A2C AD 12 00    LDA $0012  [$7E:0012]
 $8B:8A2F 29 FF 00    AND #$00FF
 $8B:8A32 8D 14 00    STA $0014  [$7E:0014]
@@ -1383,75 +1384,81 @@ $8B:8A51 60          RTS
 
 ;;; $8A52: Calculate position of Samus in rotating elevator room ;;;
 {
+; Let p be the vector of Samus' position
+; Let p_0 be the vector of the mode 7 transformation origin co-ordinates
+; Let M be the mode 7 transformation matrix with parameter D replaced by A (>_<;)
+; Then we're doing
+;     p = p_0 + (p - p_0) * M / 100h
+
 $8B:8A52 08          PHP
 $8B:8A53 8B          PHB
-$8B:8A54 4B          PHK
-$8B:8A55 AB          PLB
+$8B:8A54 4B          PHK                    ;\
+$8B:8A55 AB          PLB                    ;} DB = $8B
 $8B:8A56 C2 30       REP #$30
-$8B:8A58 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$8B:8A5B 38          SEC
-$8B:8A5C E5 80       SBC $80    [$7E:0080]
-$8B:8A5E 85 22       STA $22    [$7E:0022]
-$8B:8A60 A5 82       LDA $82    [$7E:0082]
-$8B:8A62 38          SEC
-$8B:8A63 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$8B:8A66 85 24       STA $24    [$7E:0024]
-$8B:8A68 A5 22       LDA $22    [$7E:0022]
-$8B:8A6A 85 26       STA $26    [$7E:0026]
-$8B:8A6C A5 78       LDA $78    [$7E:0078]
-$8B:8A6E 85 28       STA $28    [$7E:0028]
-$8B:8A70 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8A73 E2 20       SEP #$20
-$8B:8A75 A5 2A       LDA $2A    [$7E:002A]
-$8B:8A77 EB          XBA
-$8B:8A78 A5 2D       LDA $2D    [$7E:002D]
-$8B:8A7A C2 20       REP #$20
-$8B:8A7C 85 1A       STA $1A    [$7E:001A]
-$8B:8A7E A5 7A       LDA $7A    [$7E:007A]
-$8B:8A80 85 26       STA $26    [$7E:0026]
-$8B:8A82 A5 24       LDA $24    [$7E:0024]
-$8B:8A84 85 28       STA $28    [$7E:0028]
-$8B:8A86 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8A89 E2 20       SEP #$20
-$8B:8A8B A5 2A       LDA $2A    [$7E:002A]
-$8B:8A8D EB          XBA
-$8B:8A8E A5 2D       LDA $2D    [$7E:002D]
-$8B:8A90 C2 20       REP #$20
-$8B:8A92 18          CLC
-$8B:8A93 65 1A       ADC $1A    [$7E:001A]
-$8B:8A95 85 1A       STA $1A    [$7E:001A]
-$8B:8A97 A5 80       LDA $80    [$7E:0080]
-$8B:8A99 18          CLC
-$8B:8A9A 65 1A       ADC $1A    [$7E:001A]
-$8B:8A9C 8D F6 0A    STA $0AF6  [$7E:0AF6]
-$8B:8A9F A5 7C       LDA $7C    [$7E:007C]
-$8B:8AA1 85 26       STA $26    [$7E:0026]
-$8B:8AA3 A5 22       LDA $22    [$7E:0022]
-$8B:8AA5 85 28       STA $28    [$7E:0028]
-$8B:8AA7 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8AAA E2 20       SEP #$20
-$8B:8AAC A5 2A       LDA $2A    [$7E:002A]
-$8B:8AAE EB          XBA
-$8B:8AAF A5 2D       LDA $2D    [$7E:002D]
-$8B:8AB1 C2 20       REP #$20
-$8B:8AB3 85 1A       STA $1A    [$7E:001A]
-$8B:8AB5 A5 78       LDA $78    [$7E:0078]
-$8B:8AB7 85 26       STA $26    [$7E:0026]
-$8B:8AB9 A5 24       LDA $24    [$7E:0024]
-$8B:8ABB 85 28       STA $28    [$7E:0028]
-$8B:8ABD 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8AC0 E2 20       SEP #$20
-$8B:8AC2 A5 2A       LDA $2A    [$7E:002A]
-$8B:8AC4 EB          XBA
-$8B:8AC5 A5 2D       LDA $2D    [$7E:002D]
-$8B:8AC7 C2 20       REP #$20
-$8B:8AC9 18          CLC
-$8B:8ACA 65 1A       ADC $1A    [$7E:001A]
-$8B:8ACC 85 1A       STA $1A    [$7E:001A]
-$8B:8ACE A5 82       LDA $82    [$7E:0082]
-$8B:8AD0 38          SEC
-$8B:8AD1 E5 1A       SBC $1A    [$7E:001A]
-$8B:8AD3 8D FA 0A    STA $0AFA  [$7E:0AFA]
+$8B:8A58 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$8B:8A5B 38          SEC                    ;|
+$8B:8A5C E5 80       SBC $80    [$7E:0080]  ;} $22 = [Samus X position] - [mode 7 transformation origin co-ordinate X]
+$8B:8A5E 85 22       STA $22    [$7E:0022]  ;/
+$8B:8A60 A5 82       LDA $82    [$7E:0082]  ;\
+$8B:8A62 38          SEC                    ;|
+$8B:8A63 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $24 = [Samus Y position] - [mode 7 transformation origin co-ordinate Y]
+$8B:8A66 85 24       STA $24    [$7E:0024]  ;/
+$8B:8A68 A5 22       LDA $22    [$7E:0022]  ;\
+$8B:8A6A 85 26       STA $26    [$7E:0026]  ;|
+$8B:8A6C A5 78       LDA $78    [$7E:0078]  ;|
+$8B:8A6E 85 28       STA $28    [$7E:0028]  ;|
+$8B:8A70 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8A73 E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter A] / 100h
+$8B:8A75 A5 2A       LDA $2A    [$7E:002A]  ;|
+$8B:8A77 EB          XBA                    ;|
+$8B:8A78 A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8A7A C2 20       REP #$20               ;|
+$8B:8A7C 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8A7E A5 7A       LDA $7A    [$7E:007A]  ;\
+$8B:8A80 85 26       STA $26    [$7E:0026]  ;|
+$8B:8A82 A5 24       LDA $24    [$7E:0024]  ;|
+$8B:8A84 85 28       STA $28    [$7E:0028]  ;|
+$8B:8A86 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8A89 E2 20       SEP #$20               ;|
+$8B:8A8B A5 2A       LDA $2A    [$7E:002A]  ;} $1A += ±[$24] * ±[mode 7 transformation matrix parameter B] / 100h
+$8B:8A8D EB          XBA                    ;|
+$8B:8A8E A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8A90 C2 20       REP #$20               ;|
+$8B:8A92 18          CLC                    ;|
+$8B:8A93 65 1A       ADC $1A    [$7E:001A]  ;|
+$8B:8A95 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8A97 A5 80       LDA $80    [$7E:0080]  ;\
+$8B:8A99 18          CLC                    ;|
+$8B:8A9A 65 1A       ADC $1A    [$7E:001A]  ;} Samus X position = [mode 7 transformation origin co-ordinate X] + [$1A]
+$8B:8A9C 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
+$8B:8A9F A5 7C       LDA $7C    [$7E:007C]  ;\
+$8B:8AA1 85 26       STA $26    [$7E:0026]  ;|
+$8B:8AA3 A5 22       LDA $22    [$7E:0022]  ;|
+$8B:8AA5 85 28       STA $28    [$7E:0028]  ;|
+$8B:8AA7 20 8F 85    JSR $858F  [$8B:858F]  ;|                                
+$8B:8AAA E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter C] / 100h
+$8B:8AAC A5 2A       LDA $2A    [$7E:002A]  ;|
+$8B:8AAE EB          XBA                    ;|
+$8B:8AAF A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8AB1 C2 20       REP #$20               ;|
+$8B:8AB3 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8AB5 A5 78       LDA $78    [$7E:0078]  ;\
+$8B:8AB7 85 26       STA $26    [$7E:0026]  ;|
+$8B:8AB9 A5 24       LDA $24    [$7E:0024]  ;|
+$8B:8ABB 85 28       STA $28    [$7E:0028]  ;|
+$8B:8ABD 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8AC0 E2 20       SEP #$20               ;|
+$8B:8AC2 A5 2A       LDA $2A    [$7E:002A]  ;} $1A += ±[$24] * ±[mode 7 transformation matrix parameter A] / 100h
+$8B:8AC4 EB          XBA                    ;|
+$8B:8AC5 A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8AC7 C2 20       REP #$20               ;|
+$8B:8AC9 18          CLC                    ;|
+$8B:8ACA 65 1A       ADC $1A    [$7E:001A]  ;|
+$8B:8ACC 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8ACE A5 82       LDA $82    [$7E:0082]  ;\
+$8B:8AD0 38          SEC                    ;|
+$8B:8AD1 E5 1A       SBC $1A    [$7E:001A]  ;} Samus Y position = [mode 7 transformation origin co-ordinate Y] - [$1A]
+$8B:8AD3 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $8B:8AD6 AB          PLB
 $8B:8AD7 28          PLP
 $8B:8AD8 6B          RTL
@@ -1918,7 +1925,7 @@ $8B:8DE5 60          RTS
 
 ;;; $8DE6: Transfer Japanese text tiles to VRAM ;;;
 {
-; Queue DMA for VRAM $4180..447F = [$7E:4000..45FF]
+; Queue transfer of $7E:4000..45FF to VRAM $4180..447F
 $8B:8DE6 DA          PHX
 $8B:8DE7 AE 30 03    LDX $0330  [$7E:0330]
 $8B:8DEA A9 00 06    LDA #$0600
@@ -1972,13 +1979,13 @@ $8B:8E32 30 0D       BMI $0D    [$8E41]     ; If [intro Samus display flag] & 80
 $8B:8E34 20 46 97    JSR $9746  [$8B:9746]  ; Draw cinematic sprite objects
 $8B:8E37 22 35 EB 90 JSL $90EB35[$90:EB35]  ; Draw Samus
 $8B:8E3B 22 54 82 93 JSL $938254[$93:8254]  ; Draw projectiles
-$8B:8E3F 80 10       BRA $10    [$8E51]
+$8B:8E3F 80 10       BRA $10    [$8E51]     ; Return
 
 ; BRANCH_SAMUS_PRIORITY
 $8B:8E41 22 35 EB 90 JSL $90EB35[$90:EB35]  ; Draw Samus
 $8B:8E45 22 54 82 93 JSL $938254[$93:8254]  ; Draw projectiles
 $8B:8E49 20 46 97    JSR $9746  [$8B:9746]  ; Draw cinematic sprite objects
-$8B:8E4C 80 03       BRA $03    [$8E51]
+$8B:8E4C 80 03       BRA $03    [$8E51]     ; Return
 
 ; BRANCH_NO_SAMUS
 $8B:8E4E 20 46 97    JSR $9746  [$8B:9746]  ; Draw cinematic sprite objects
@@ -2696,8 +2703,8 @@ $8B:93C0 A9 00 00    LDA #$0000             ;\
 $8B:93C3 99 5D 1A    STA $1A5D,y[$7E:1A7B]  ;} Cinematic sprite object spritemap pointer = 0
 $8B:93C6 A9 00 00    LDA #$0000             ;\
 $8B:93C9 99 7D 1B    STA $1B7D,y[$7E:1B9B]  ;} Cinematic sprite object timer = 0
-$8B:93CC 99 DD 1A    STA $1ADD,y[$7E:1AFB]  ; Cinematic sprite object $1ADD = 0
-$8B:93CF 99 FD 1A    STA $1AFD,y[$7E:1B1B]  ; Cinematic sprite object $1AFD = 0
+$8B:93CC 99 DD 1A    STA $1ADD,y[$7E:1AFB]  ; Cinematic sprite object X subposition = 0
+$8B:93CF 99 FD 1A    STA $1AFD,y[$7E:1B1B]  ; Cinematic sprite object Y subposition = 0
 $8B:93D2 FC 00 00    JSR ($0000,x)[$8B:9CBC]; Execute [[X]]
 $8B:93D5 FA          PLX
 $8B:93D6 28          PLP
@@ -5357,7 +5364,7 @@ $8B:A5DD A9 00 30    LDA #$3000             ;|
 $8B:A5E0 95 D0       STA $D0,x              ;|
 $8B:A5E2 E8          INX                    ;|
 $8B:A5E3 E8          INX                    ;|
-$8B:A5E4 E2 20       SEP #$20               ;} Queue DMA for VRAM $4EE0..4F5F = [$7E:3000..FF] (initial Japanese text)
+$8B:A5E4 E2 20       SEP #$20               ;} Queue transfer of $7E:3000..FF to VRAM $4EE0..4F5F (initial Japanese text)
 $8B:A5E6 A9 7E       LDA #$7E               ;|
 $8B:A5E8 95 D0       STA $D0,x              ;|
 $8B:A5EA C2 20       REP #$20               ;|
@@ -9160,6 +9167,8 @@ $8B:C698 60          RTS
 }
 
 
+;;; $C699..CB04: Fly to Zebes ;;;
+{
 ;;; $C699: Cinematic function - fly to Zebes - initial ;;;
 {
 $8B:C699 20 30 82    JSR $8230  [$8B:8230]  ; Set up PPU for Samus goes to Zebes cutscene
@@ -9187,36 +9196,36 @@ $8B:C6C6 85 47       STA $47    [$7E:0047]  ;} Decompress $96:EC76 (Zebes tiles)
 $8B:C6C8 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:C6CC             dl 7F5000              ;/
 $8B:C6CF E2 30       SEP #$30
-$8B:C6D1 A9 00       LDA #$00
-$8B:C6D3 8D 16 21    STA $2116  [$7E:2116]
-$8B:C6D6 A9 00       LDA #$00
-$8B:C6D8 8D 17 21    STA $2117  [$7E:2117]
-$8B:C6DB A9 00       LDA #$00
-$8B:C6DD 8D 15 21    STA $2115  [$7E:2115]
-$8B:C6E0 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:C6E4             dx 01,00,18,7F4300,0300
-$8B:C6EC A9 02       LDA #$02
-$8B:C6EE 8D 0B 42    STA $420B  [$7E:420B]
-$8B:C6F1 A9 00       LDA #$00
-$8B:C6F3 8D 16 21    STA $2116  [$7E:2116]
-$8B:C6F6 A9 5C       LDA #$5C
-$8B:C6F8 8D 17 21    STA $2117  [$7E:2117]
-$8B:C6FB A9 80       LDA #$80
-$8B:C6FD 8D 15 21    STA $2115  [$7E:2115]
-$8B:C700 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:C704             dx 01,01,18,7F9000,0800
-$8B:C70C A9 02       LDA #$02
-$8B:C70E 8D 0B 42    STA $420B  [$7E:420B]
-$8B:C711 A9 00       LDA #$00
-$8B:C713 8D 16 21    STA $2116  [$7E:2116]
-$8B:C716 A9 60       LDA #$60
-$8B:C718 8D 17 21    STA $2117  [$7E:2117]
-$8B:C71B A9 80       LDA #$80
-$8B:C71D 8D 15 21    STA $2115  [$7E:2115]
-$8B:C720 22 A9 91 80 JSL $8091A9[$80:91A9]
-$8B:C724             dx 01,01,18,7F5000,4000
-$8B:C72C A9 02       LDA #$02
-$8B:C72E 8D 0B 42    STA $420B  [$7E:420B]
+$8B:C6D1 A9 00       LDA #$00               ;\
+$8B:C6D3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C6D6 A9 00       LDA #$00               ;|
+$8B:C6D8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C6DB A9 00       LDA #$00               ;|
+$8B:C6DD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..02FF low bytes = [$7F:4300..45FF] (gunship back tilemap)
+$8B:C6E0 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:C6E4             dx 01,00,18,7F4300,0300;|
+$8B:C6EC A9 02       LDA #$02               ;|
+$8B:C6EE 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C6F1 A9 00       LDA #$00               ;\
+$8B:C6F3 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C6F6 A9 5C       LDA #$5C               ;|
+$8B:C6F8 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C6FB A9 80       LDA #$80               ;|
+$8B:C6FD 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $5C00..5FFF = [$7F:9000..97FF] (Zebes tilemap)
+$8B:C700 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:C704             dx 01,01,18,7F9000,0800;|
+$8B:C70C A9 02       LDA #$02               ;|
+$8B:C70E 8D 0B 42    STA $420B  [$7E:420B]  ;/
+$8B:C711 A9 00       LDA #$00               ;\
+$8B:C713 8D 16 21    STA $2116  [$7E:2116]  ;|
+$8B:C716 A9 60       LDA #$60               ;|
+$8B:C718 8D 17 21    STA $2117  [$7E:2117]  ;|
+$8B:C71B A9 80       LDA #$80               ;|
+$8B:C71D 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:5000..8FFF] (Zebes sprite tiles)
+$8B:C720 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
+$8B:C724             dx 01,01,18,7F5000,4000;|
+$8B:C72C A9 02       LDA #$02               ;|
+$8B:C72E 8D 0B 42    STA $420B  [$7E:420B]  ;/
 $8B:C731 C2 30       REP #$30
 $8B:C733 A9 00 01    LDA #$0100             ;\
 $8B:C736 8D 1B 21    STA $211B  [$7E:211B]  ;|
@@ -9238,19 +9247,19 @@ $8B:C75D 9C 97 19    STZ $1997  [$7E:1997]  ; Cinematic BG1 Y position = 0
 $8B:C760 9C 8D 19    STZ $198D  [$7E:198D]  ; Mode 7 transformation angle = 0
 $8B:C763 A9 00 01    LDA #$0100             ;\
 $8B:C766 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 100h
-$8B:C769 22 93 82 88 JSL $888293[$88:8293]
+$8B:C769 22 93 82 88 JSL $888293[$88:8293]  ; Disable HDMA objects
 $8B:C76D 22 9E 82 88 JSL $88829E[$88:829E]  ; Wait until the end of a v-blank and clear (H)DMA enable flags
-$8B:C771 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]
-$8B:C775 22 C2 C4 8D JSL $8DC4C2[$8D:C4C2]
-$8B:C779 E2 20       SEP #$20
-$8B:C77B A9 81       LDA #$81
-$8B:C77D 85 57       STA $57    [$7E:0057]
-$8B:C77F C2 20       REP #$20
+$8B:C771 22 D8 C4 8D JSL $8DC4D8[$8D:C4D8]  ; Clear palette FX objects
+$8B:C775 22 C2 C4 8D JSL $8DC4C2[$8D:C4C2]  ; Enable palette FX objects
+$8B:C779 E2 20       SEP #$20               ;\
+$8B:C77B A9 81       LDA #$81               ;|
+$8B:C77D 85 57       STA $57    [$7E:0057]  ;} Enable BG1 mosaic, block size 9x9
+$8B:C77F C2 20       REP #$20               ;/
 $8B:C781 A0 A8 E1    LDY #$E1A8             ;\
 $8B:C784 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1A8 (cutscene gunship engine flicker)
 $8B:C788 A9 9C C7    LDA #$C79C             ;\
 $8B:C78B 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C79C
-$8B:C78E 22 4B 83 80 JSL $80834B[$80:834B]
+$8B:C78E 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:C792 A9 01 00    LDA #$0001             ;\
 $8B:C795 8D 23 07    STA $0723  [$7E:0723]  ;} Screen fade delay = 1
 $8B:C798 8D 25 07    STA $0725  [$7E:0725]  ; Screen fade counter = 1
@@ -9258,23 +9267,23 @@ $8B:C79B 60          RTS
 }
 
 
-;;; $C79C:  ;;;
+;;; $C79C: Cinematic function - fly to Zebes - fading in ;;;
 {
-$8B:C79C AD 51 1A    LDA $1A51  [$7E:1A51]
-$8B:C79F 89 03 00    BIT #$0003
-$8B:C7A2 D0 0B       BNE $0B    [$C7AF]
-$8B:C7A4 E2 20       SEP #$20
-$8B:C7A6 A5 57       LDA $57    [$7E:0057]
-$8B:C7A8 38          SEC
-$8B:C7A9 E9 10       SBC #$10
-$8B:C7AB 85 57       STA $57    [$7E:0057]
-$8B:C7AD C2 20       REP #$20
+$8B:C79C AD 51 1A    LDA $1A51  [$7E:1A51]  ;\
+$8B:C79F 89 03 00    BIT #$0003             ;} If [cinematic frame counter] % 4 = 0:
+$8B:C7A2 D0 0B       BNE $0B    [$C7AF]     ;/
+$8B:C7A4 E2 20       SEP #$20               ;\
+$8B:C7A6 A5 57       LDA $57    [$7E:0057]  ;|
+$8B:C7A8 38          SEC                    ;|
+$8B:C7A9 E9 10       SBC #$10               ;} Mosaic block size -= 1
+$8B:C7AB 85 57       STA $57    [$7E:0057]  ;|
+$8B:C7AD C2 20       REP #$20               ;/
 
-$8B:C7AF 22 4D 89 80 JSL $80894D[$80:894D]
+$8B:C7AF 22 4D 89 80 JSL $80894D[$80:894D]  ; Handle fading in
 $8B:C7B3 E2 20       SEP #$20
-$8B:C7B5 A5 51       LDA $51    [$7E:0051]
-$8B:C7B7 C9 0F       CMP #$0F
-$8B:C7B9 D0 0E       BNE $0E    [$C7C9]
+$8B:C7B5 A5 51       LDA $51    [$7E:0051]  ;\
+$8B:C7B7 C9 0F       CMP #$0F               ;} If finished fading in:
+$8B:C7B9 D0 0E       BNE $0E    [$C7C9]     ;/
 $8B:C7BB C2 20       REP #$20
 $8B:C7BD 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:C7C0 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
@@ -9285,40 +9294,40 @@ $8B:C7C9 60          RTS
 }
 
 
-;;; $C7CA:  ;;;
+;;; $C7CA: Cinematic function - fly to Zebes - mosaic transition ;;;
 {
-$8B:C7CA AD 51 1A    LDA $1A51  [$7E:1A51]
-$8B:C7CD 89 03 00    BIT #$0003
-$8B:C7D0 D0 68       BNE $68    [$C83A]
+$8B:C7CA AD 51 1A    LDA $1A51  [$7E:1A51]  ;\
+$8B:C7CD 89 03 00    BIT #$0003             ;} If [cinematic frame counter] % 4 = 0:
+$8B:C7D0 D0 68       BNE $68    [$C83A]     ;/
 $8B:C7D2 E2 20       SEP #$20
-$8B:C7D4 A5 57       LDA $57    [$7E:0057]
-$8B:C7D6 38          SEC
-$8B:C7D7 E9 10       SBC #$10
-$8B:C7D9 85 57       STA $57    [$7E:0057]
-$8B:C7DB 89 F0       BIT #$F0
-$8B:C7DD F0 03       BEQ $03    [$C7E2]
+$8B:C7D4 A5 57       LDA $57    [$7E:0057]  ;\
+$8B:C7D6 38          SEC                    ;|
+$8B:C7D7 E9 10       SBC #$10               ;} (Mosaic block size) -= 1
+$8B:C7D9 85 57       STA $57    [$7E:0057]  ;/
+$8B:C7DB 89 F0       BIT #$F0               ;\
+$8B:C7DD F0 03       BEQ $03    [$C7E2]     ;} If (mosaic block size) != 0:
 $8B:C7DF C2 20       REP #$20
-$8B:C7E1 60          RTS
+$8B:C7E1 60          RTS                    ; Return
 
 $8B:C7E2 E2 20       SEP #$20
-$8B:C7E4 A9 07       LDA #$07
-$8B:C7E6 85 55       STA $55    [$7E:0055]
-$8B:C7E8 A9 80       LDA #$80
-$8B:C7EA 85 5F       STA $5F    [$7E:005F]
-$8B:C7EC A9 00       LDA #$00
-$8B:C7EE 85 58       STA $58    [$7E:0058]
-$8B:C7F0 64 5D       STZ $5D    [$7E:005D]
-$8B:C7F2 A9 11       LDA #$11
-$8B:C7F4 85 69       STA $69    [$7E:0069]
+$8B:C7E4 A9 07       LDA #$07               ;\
+$8B:C7E6 85 55       STA $55    [$7E:0055]  ;} BG mode = 7
+$8B:C7E8 A9 80       LDA #$80               ;\
+$8B:C7EA 85 5F       STA $5F    [$7E:005F]  ;} Set mode 7 BG map overflowing tiles as transparent, no screen flip
+$8B:C7EC A9 00       LDA #$00               ;\
+$8B:C7EE 85 58       STA $58    [$7E:0058]  ;} BG1 tilemap base address = $0000, size = 32x32
+$8B:C7F0 64 5D       STZ $5D    [$7E:005D]  ; BG1/2 tiles base address = $0000
+$8B:C7F2 A9 11       LDA #$11               ;\
+$8B:C7F4 85 69       STA $69    [$7E:0069]  ;} Main screen layers = BG1/sprites
 $8B:C7F6 C2 20       REP #$20
-$8B:C7F8 A9 80 00    LDA #$0080
-$8B:C7FB 8D 93 19    STA $1993  [$7E:1993]
-$8B:C7FE A9 98 FF    LDA #$FF98
-$8B:C801 8D 97 19    STA $1997  [$7E:1997]
-$8B:C804 A9 20 00    LDA #$0020
-$8B:C807 8D 8D 19    STA $198D  [$7E:198D]
-$8B:C80A A9 00 01    LDA #$0100
-$8B:C80D 8D 8F 19    STA $198F  [$7E:198F]
+$8B:C7F8 A9 80 00    LDA #$0080             ;\
+$8B:C7FB 8D 93 19    STA $1993  [$7E:1993]  ;} Cinematic BG1 X position = 80h
+$8B:C7FE A9 98 FF    LDA #$FF98             ;\
+$8B:C801 8D 97 19    STA $1997  [$7E:1997]  ;} Cinematic BG1 Y position = -68h
+$8B:C804 A9 20 00    LDA #$0020             ;\
+$8B:C807 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = 20h
+$8B:C80A A9 00 01    LDA #$0100             ;\
+$8B:C80D 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 100h
 $8B:C810 A0 A3 CE    LDY #$CEA3             ;\
 $8B:C813 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEA3 (Zebes)
 $8B:C816 A0 F7 CE    LDY #$CEF7             ;\
@@ -9332,7 +9341,7 @@ $8B:C82B 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CF
 $8B:C82E A0 AF CE    LDY #$CEAF             ;\
 $8B:C831 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEAF (planet Zebes text)
 $8B:C834 A9 8F A3    LDA #$A38F             ;\
-$8B:C837 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $A38F
+$8B:C837 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = RTS
 
 $8B:C83A 60          RTS
 }
@@ -9352,42 +9361,42 @@ $8B:C84D 60          RTS
 
 ;;; $C84E: Pre-instruction - cinematic sprite object $CEA3 (Zebes) ;;;
 {
-$8B:C84E AD 51 1F    LDA $1F51  [$7E:1F51]
-$8B:C851 C9 DE CA    CMP #$CADE
-$8B:C854 D0 06       BNE $06    [$C85C]
-$8B:C856 A9 5D C8    LDA #$C85D
-$8B:C859 9D 3D 1B    STA $1B3D,x[$7E:1B5B]
+$8B:C84E AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
+$8B:C851 C9 DE CA    CMP #$CADE             ;} If [cinematic function] = $CADE (slide scene away):
+$8B:C854 D0 06       BNE $06    [$C85C]     ;/
+$8B:C856 A9 5D C8    LDA #$C85D             ;\
+$8B:C859 9D 3D 1B    STA $1B3D,x[$7E:1B5B]  ;} Cinematic sprite object pre-instruction = $C85D
 
 $8B:C85C 60          RTS
 }
 
 
-;;; $C85D:  ;;;
+;;; $C85D: Pre-instruction - Zebes - slide scene away ;;;
 {
-$8B:C85D BD 7D 1B    LDA $1B7D,x[$7E:1B9B]
-$8B:C860 18          CLC
-$8B:C861 69 40 00    ADC #$0040
-$8B:C864 9D 7D 1B    STA $1B7D,x[$7E:1B9B]
-$8B:C867 EB          XBA
-$8B:C868 48          PHA
-$8B:C869 29 00 FF    AND #$FF00
-$8B:C86C 85 14       STA $14    [$7E:0014]
-$8B:C86E 68          PLA
-$8B:C86F 29 FF 00    AND #$00FF
-$8B:C872 85 12       STA $12    [$7E:0012]
-$8B:C874 BD FD 1A    LDA $1AFD,x[$7E:1B1B]
-$8B:C877 38          SEC
-$8B:C878 E5 14       SBC $14    [$7E:0014]
-$8B:C87A 9D FD 1A    STA $1AFD,x[$7E:1B1B]
-$8B:C87D BD 9D 1A    LDA $1A9D,x[$7E:1ABB]
-$8B:C880 E5 12       SBC $12    [$7E:0012]
-$8B:C882 9D 9D 1A    STA $1A9D,x[$7E:1ABB]
-$8B:C885 C9 80 FF    CMP #$FF80
-$8B:C888 10 0C       BPL $0C    [$C896]
-$8B:C88A A9 01 00    LDA #$0001
-$8B:C88D 9D 5D 1B    STA $1B5D,x[$7E:1B7B]
-$8B:C890 A9 53 CE    LDA #$CE53
-$8B:C893 9D 1D 1B    STA $1B1D,x[$7E:1B3B]
+$8B:C85D BD 7D 1B    LDA $1B7D,x[$7E:1B9B]  ;\
+$8B:C860 18          CLC                    ;|
+$8B:C861 69 40 00    ADC #$0040             ;} Cinematic sprite object Y velocity += 40h
+$8B:C864 9D 7D 1B    STA $1B7D,x[$7E:1B9B]  ;/
+$8B:C867 EB          XBA                    ;\
+$8B:C868 48          PHA                    ;|
+$8B:C869 29 00 FF    AND #$FF00             ;|
+$8B:C86C 85 14       STA $14    [$7E:0014]  ;} $12.$14 = [cinematic sprite object Y velocity] / 100h
+$8B:C86E 68          PLA                    ;|
+$8B:C86F 29 FF 00    AND #$00FF             ;|
+$8B:C872 85 12       STA $12    [$7E:0012]  ;/
+$8B:C874 BD FD 1A    LDA $1AFD,x[$7E:1B1B]  ;\
+$8B:C877 38          SEC                    ;|
+$8B:C878 E5 14       SBC $14    [$7E:0014]  ;|
+$8B:C87A 9D FD 1A    STA $1AFD,x[$7E:1B1B]  ;} Cinematic sprite object Y position -= [$12].[$14]
+$8B:C87D BD 9D 1A    LDA $1A9D,x[$7E:1ABB]  ;|
+$8B:C880 E5 12       SBC $12    [$7E:0012]  ;|
+$8B:C882 9D 9D 1A    STA $1A9D,x[$7E:1ABB]  ;/
+$8B:C885 C9 80 FF    CMP #$FF80             ;\
+$8B:C888 10 0C       BPL $0C    [$C896]     ;} If [cinematic sprite object Y position] < -80h:
+$8B:C88A A9 01 00    LDA #$0001             ;\
+$8B:C88D 9D 5D 1B    STA $1B5D,x[$7E:1B7B]  ;} Cinematic sprite object instruction timer = 1
+$8B:C890 A9 53 CE    LDA #$CE53             ;\
+$8B:C893 9D 1D 1B    STA $1B1D,x[$7E:1B3B]  ;} Cinematic sprite object instruction list pointer = $CE53 (delete)
 
 $8B:C896 60          RTS
 }
@@ -9407,44 +9416,44 @@ $8B:C8A9 60          RTS
 
 ;;; $C8AA: Pre-instruction - cinematic sprite object $CEA9/$CF09 (Zebes stars 5) ;;;
 {
-$8B:C8AA AD 51 1F    LDA $1F51  [$7E:1F51]
-$8B:C8AD C9 DE CA    CMP #$CADE
-$8B:C8B0 D0 06       BNE $06    [$C8B8]
-$8B:C8B2 A9 B9 C8    LDA #$C8B9
-$8B:C8B5 9D 3D 1B    STA $1B3D,x[$7E:1B53]
+$8B:C8AA AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
+$8B:C8AD C9 DE CA    CMP #$CADE             ;} If [cinematic function] = $CADE (slide scene away):
+$8B:C8B0 D0 06       BNE $06    [$C8B8]     ;/
+$8B:C8B2 A9 B9 C8    LDA #$C8B9             ;\
+$8B:C8B5 9D 3D 1B    STA $1B3D,x[$7E:1B53]  ;} Cinematic sprite object pre-instruction = $C8B9
 
 $8B:C8B8 60          RTS
 }
 
 
-;;; $C8B9:  ;;;
+;;; $C8B9: Pre-instruction - Zebes stars 5 - slide scene away ;;;
 {
-$8B:C8B9 BD 7D 1B    LDA $1B7D,x[$7E:1B93]
-$8B:C8BC 18          CLC
-$8B:C8BD 69 20 00    ADC #$0020
-$8B:C8C0 9D 7D 1B    STA $1B7D,x[$7E:1B93]
-$8B:C8C3 EB          XBA
-$8B:C8C4 48          PHA
-$8B:C8C5 29 00 FF    AND #$FF00
-$8B:C8C8 85 14       STA $14    [$7E:0014]
-$8B:C8CA 68          PLA
-$8B:C8CB 29 FF 00    AND #$00FF
-$8B:C8CE 85 12       STA $12    [$7E:0012]
-$8B:C8D0 BD FD 1A    LDA $1AFD,x[$7E:1B13]
-$8B:C8D3 38          SEC
-$8B:C8D4 E5 14       SBC $14    [$7E:0014]
-$8B:C8D6 9D FD 1A    STA $1AFD,x[$7E:1B13]
-$8B:C8D9 BD 9D 1A    LDA $1A9D,x[$7E:1AB3]
-$8B:C8DC E5 12       SBC $12    [$7E:0012]
-$8B:C8DE 9D 9D 1A    STA $1A9D,x[$7E:1AB3]
-$8B:C8E1 C9 80 FF    CMP #$FF80
-$8B:C8E4 10 12       BPL $12    [$C8F8]
-$8B:C8E6 A9 01 00    LDA #$0001
-$8B:C8E9 9D 5D 1B    STA $1B5D,x[$7E:1B73]
-$8B:C8EC A9 53 CE    LDA #$CE53
-$8B:C8EF 9D 1D 1B    STA $1B1D,x[$7E:1B33]
+$8B:C8B9 BD 7D 1B    LDA $1B7D,x[$7E:1B93]  ;\
+$8B:C8BC 18          CLC                    ;|
+$8B:C8BD 69 20 00    ADC #$0020             ;} Cinematic sprite object Y velocity += 20h
+$8B:C8C0 9D 7D 1B    STA $1B7D,x[$7E:1B93]  ;/
+$8B:C8C3 EB          XBA                    ;\
+$8B:C8C4 48          PHA                    ;|
+$8B:C8C5 29 00 FF    AND #$FF00             ;|
+$8B:C8C8 85 14       STA $14    [$7E:0014]  ;} $12.$14 = [cinematic sprite object Y velocity] / 100h
+$8B:C8CA 68          PLA                    ;|
+$8B:C8CB 29 FF 00    AND #$00FF             ;|
+$8B:C8CE 85 12       STA $12    [$7E:0012]  ;/
+$8B:C8D0 BD FD 1A    LDA $1AFD,x[$7E:1B13]  ;\
+$8B:C8D3 38          SEC                    ;|
+$8B:C8D4 E5 14       SBC $14    [$7E:0014]  ;|
+$8B:C8D6 9D FD 1A    STA $1AFD,x[$7E:1B13]  ;} Cinematic sprite object Y position -= [$12].[$14]
+$8B:C8D9 BD 9D 1A    LDA $1A9D,x[$7E:1AB3]  ;|
+$8B:C8DC E5 12       SBC $12    [$7E:0012]  ;|
+$8B:C8DE 9D 9D 1A    STA $1A9D,x[$7E:1AB3]  ;/
+$8B:C8E1 C9 80 FF    CMP #$FF80             ;\
+$8B:C8E4 10 12       BPL $12    [$C8F8]     ;} If [cinematic sprite object Y position] < -80h:
+$8B:C8E6 A9 01 00    LDA #$0001             ;\
+$8B:C8E9 9D 5D 1B    STA $1B5D,x[$7E:1B73]  ;} Cinematic sprite object instruction timer = 1
+$8B:C8EC A9 53 CE    LDA #$CE53             ;\
+$8B:C8EF 9D 1D 1B    STA $1B1D,x[$7E:1B33]  ;} Cinematic sprite object instruction list pointer = $CE53 (delete)
 $8B:C8F2 A9 DF CA    LDA #$CADF             ;\
-$8B:C8F5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADF
+$8B:C8F5 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADF (load game data)
 
 $8B:C8F8 60          RTS
 }
@@ -9452,42 +9461,42 @@ $8B:C8F8 60          RTS
 
 ;;; $C8F9: Pre-instruction - cinematic sprite object $CEF7/$CEFD/$CF03 (Zebes stars 2/3/4) ;;;
 {
-$8B:C8F9 AD 51 1F    LDA $1F51  [$7E:1F51]
-$8B:C8FC C9 DE CA    CMP #$CADE
-$8B:C8FF D0 06       BNE $06    [$C907]
-$8B:C901 A9 08 C9    LDA #$C908
-$8B:C904 9D 3D 1B    STA $1B3D,x[$7E:1B59]
+$8B:C8F9 AD 51 1F    LDA $1F51  [$7E:1F51]  ;\
+$8B:C8FC C9 DE CA    CMP #$CADE             ;} If [cinematic function] = $CADE (slide scene away):
+$8B:C8FF D0 06       BNE $06    [$C907]     ;/
+$8B:C901 A9 08 C9    LDA #$C908             ;\
+$8B:C904 9D 3D 1B    STA $1B3D,x[$7E:1B59]  ;} Cinematic sprite object pre-instruction = $C908
 
 $8B:C907 60          RTS
 }
 
 
-;;; $C908:  ;;;
+;;; $C908: Pre-instruction - Zebes stars 2/3/4 - slide scene away ;;;
 {
-$8B:C908 BD 7D 1B    LDA $1B7D,x[$7E:1B99]
-$8B:C90B 18          CLC
-$8B:C90C 69 20 00    ADC #$0020
-$8B:C90F 9D 7D 1B    STA $1B7D,x[$7E:1B99]
-$8B:C912 EB          XBA
-$8B:C913 48          PHA
-$8B:C914 29 00 FF    AND #$FF00
-$8B:C917 85 14       STA $14    [$7E:0014]
-$8B:C919 68          PLA
-$8B:C91A 29 FF 00    AND #$00FF
-$8B:C91D 85 12       STA $12    [$7E:0012]
-$8B:C91F BD FD 1A    LDA $1AFD,x[$7E:1B19]
-$8B:C922 38          SEC
-$8B:C923 E5 14       SBC $14    [$7E:0014]
-$8B:C925 9D FD 1A    STA $1AFD,x[$7E:1B19]
-$8B:C928 BD 9D 1A    LDA $1A9D,x[$7E:1AB9]
-$8B:C92B E5 12       SBC $12    [$7E:0012]
-$8B:C92D 9D 9D 1A    STA $1A9D,x[$7E:1AB9]
-$8B:C930 C9 80 FF    CMP #$FF80
-$8B:C933 10 0C       BPL $0C    [$C941]
-$8B:C935 A9 01 00    LDA #$0001
-$8B:C938 9D 5D 1B    STA $1B5D,x[$7E:1B79]
-$8B:C93B A9 53 CE    LDA #$CE53
-$8B:C93E 9D 1D 1B    STA $1B1D,x[$7E:1B39]
+$8B:C908 BD 7D 1B    LDA $1B7D,x[$7E:1B99]  ;\
+$8B:C90B 18          CLC                    ;|
+$8B:C90C 69 20 00    ADC #$0020             ;} Cinematic sprite object Y velocity += 20h
+$8B:C90F 9D 7D 1B    STA $1B7D,x[$7E:1B99]  ;/
+$8B:C912 EB          XBA                    ;\
+$8B:C913 48          PHA                    ;|
+$8B:C914 29 00 FF    AND #$FF00             ;|
+$8B:C917 85 14       STA $14    [$7E:0014]  ;} $12.$14 = [cinematic sprite object Y velocity] / 100h
+$8B:C919 68          PLA                    ;|
+$8B:C91A 29 FF 00    AND #$00FF             ;|
+$8B:C91D 85 12       STA $12    [$7E:0012]  ;/
+$8B:C91F BD FD 1A    LDA $1AFD,x[$7E:1B19]  ;\
+$8B:C922 38          SEC                    ;|
+$8B:C923 E5 14       SBC $14    [$7E:0014]  ;|
+$8B:C925 9D FD 1A    STA $1AFD,x[$7E:1B19]  ;} Cinematic sprite object Y position -= [$12].[$14]
+$8B:C928 BD 9D 1A    LDA $1A9D,x[$7E:1AB9]  ;|
+$8B:C92B E5 12       SBC $12    [$7E:0012]  ;|
+$8B:C92D 9D 9D 1A    STA $1A9D,x[$7E:1AB9]  ;/
+$8B:C930 C9 80 FF    CMP #$FF80             ;\
+$8B:C933 10 0C       BPL $0C    [$C941]     ;} If [cinematic sprite object Y position] < -80h:
+$8B:C935 A9 01 00    LDA #$0001             ;\
+$8B:C938 9D 5D 1B    STA $1B5D,x[$7E:1B79]  ;} Cinematic sprite object instruction timer = 1
+$8B:C93B A9 53 CE    LDA #$CE53             ;\
+$8B:C93E 9D 1D 1B    STA $1B1D,x[$7E:1B39]  ;} Cinematic sprite object instruction list pointer = $CE53 (delete)
 
 $8B:C941 60          RTS
 }
@@ -9557,56 +9566,56 @@ $8B:C9A4 60          RTS
 }
 
 
-;;; $C9A5: Instruction -  ;;;
+;;; $C9A5: Instruction - fade in PLANET ZEBES text ;;;
 {
-$8B:C9A5 5A          PHY
-$8B:C9A6 A0 B0 E1    LDY #$E1B0             ;\
+$8B:C9A5 5A          PHY                    ;\
+$8B:C9A6 A0 B0 E1    LDY #$E1B0             ;|
 $8B:C9A9 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1B0 (fade in PLANET ZEBES text)
-$8B:C9AD 7A          PLY
+$8B:C9AD 7A          PLY                    ;/
 $8B:C9AE 60          RTS
 }
 
 
-;;; $C9AF: Instruction -  ;;;
+;;; $C9AF: Instruction - spawn planet Zebes Japanese text if enabled ;;;
 {
-$8B:C9AF AD E2 09    LDA $09E2  [$7E:09E2]
-$8B:C9B2 F0 08       BEQ $08    [$C9BC]
-$8B:C9B4 5A          PHY
-$8B:C9B5 A0 B5 CE    LDY #$CEB5             ;\
+$8B:C9AF AD E2 09    LDA $09E2  [$7E:09E2]  ;\
+$8B:C9B2 F0 08       BEQ $08    [$C9BC]     ;} If Japanese text is enabled:
+$8B:C9B4 5A          PHY                    ;\
+$8B:C9B5 A0 B5 CE    LDY #$CEB5             ;|
 $8B:C9B8 20 8A 93    JSR $938A  [$8B:938A]  ;} Spawn cinematic sprite object $CEB5 (planet Zebes Japanese text)
-$8B:C9BB 7A          PLY
+$8B:C9BB 7A          PLY                    ;/
 
 $8B:C9BC 60          RTS
 }
 
 
-;;; $C9BD: Instruction -  ;;;
+;;; $C9BD: Instruction - fade out PLANET ZEBES text ;;;
 {
-$8B:C9BD 5A          PHY
-$8B:C9BE A0 B4 E1    LDY #$E1B4             ;\
+$8B:C9BD 5A          PHY                    ;\
+$8B:C9BE A0 B4 E1    LDY #$E1B4             ;|
 $8B:C9C1 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn palette FX object $E1B4 (fade out PLANET ZEBES text)
-$8B:C9C5 7A          PLY
+$8B:C9C5 7A          PLY                    ;/
 $8B:C9C6 60          RTS
 }
 
 
-;;; $C9C7: Instruction -  ;;;
+;;; $C9C7: Instruction - start flying to Zebes ;;;
 {
-$8B:C9C7 A9 3E 00    LDA #$003E
-$8B:C9CA 8D 93 19    STA $1993  [$7E:1993]
-$8B:C9CD A9 90 FF    LDA #$FF90
-$8B:C9D0 8D 97 19    STA $1997  [$7E:1997]
-$8B:C9D3 A9 20 00    LDA #$0020
-$8B:C9D6 8D 8D 19    STA $198D  [$7E:198D]
-$8B:C9D9 A9 10 00    LDA #$0010
-$8B:C9DC 8D 8F 19    STA $198F  [$7E:198F]
+$8B:C9C7 A9 3E 00    LDA #$003E             ;\
+$8B:C9CA 8D 93 19    STA $1993  [$7E:1993]  ;} Cinematic BG1 X position = 3Eh
+$8B:C9CD A9 90 FF    LDA #$FF90             ;\
+$8B:C9D0 8D 97 19    STA $1997  [$7E:1997]  ;} Cinematic BG1 Y position = -70h
+$8B:C9D3 A9 20 00    LDA #$0020             ;\
+$8B:C9D6 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = 20h
+$8B:C9D9 A9 10 00    LDA #$0010             ;\
+$8B:C9DC 8D 8F 19    STA $198F  [$7E:198F]  ;} Mode 7 transformation zoom level = 10h
 $8B:C9DF A9 F9 C9    LDA #$C9F9             ;\
 $8B:C9E2 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $C9F9
 $8B:C9E5 60          RTS
 }
 
 
-;;; $C9E6: Initialisation function - cinematic sprite object $CEB5 (Planet Zebes Japanese text) ;;;
+;;; $C9E6: Initialisation function - cinematic sprite object $CEB5 (planet Zebes Japanese text) ;;;
 {
 $8B:C9E6 A9 80 00    LDA #$0080             ;\
 $8B:C9E9 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 80h
@@ -9618,29 +9627,29 @@ $8B:C9F8 60          RTS
 }
 
 
-;;; $C9F9:  ;;;
+;;; $C9F9: Cinematic function - fly to Zebes - flying to Zebes - drifting right ;;;
 {
-$8B:C9F9 AD 95 19    LDA $1995  [$7E:1995]
-$8B:C9FC 18          CLC
-$8B:C9FD 69 00 20    ADC #$2000
-$8B:CA00 8D 95 19    STA $1995  [$7E:1995]
-$8B:CA03 AD 97 19    LDA $1997  [$7E:1997]
-$8B:CA06 69 00 00    ADC #$0000
-$8B:CA09 8D 97 19    STA $1997  [$7E:1997]
-$8B:CA0C AD 91 19    LDA $1991  [$7E:1991]
-$8B:CA0F 38          SEC
-$8B:CA10 E9 00 80    SBC #$8000
-$8B:CA13 8D 91 19    STA $1991  [$7E:1991]
-$8B:CA16 AD 93 19    LDA $1993  [$7E:1993]
-$8B:CA19 E9 00 00    SBC #$0000
-$8B:CA1C 8D 93 19    STA $1993  [$7E:1993]
-$8B:CA1F AD 8F 19    LDA $198F  [$7E:198F]
-$8B:CA22 C9 80 04    CMP #$0480
-$8B:CA25 10 08       BPL $08    [$CA2F]
-$8B:CA27 18          CLC
-$8B:CA28 69 04 00    ADC #$0004
-$8B:CA2B 8D 8F 19    STA $198F  [$7E:198F]
-$8B:CA2E 60          RTS
+$8B:C9F9 AD 95 19    LDA $1995  [$7E:1995]  ;\
+$8B:C9FC 18          CLC                    ;|
+$8B:C9FD 69 00 20    ADC #$2000             ;|
+$8B:CA00 8D 95 19    STA $1995  [$7E:1995]  ;} Cinematic BG1 Y position += 0.2000h
+$8B:CA03 AD 97 19    LDA $1997  [$7E:1997]  ;|
+$8B:CA06 69 00 00    ADC #$0000             ;|
+$8B:CA09 8D 97 19    STA $1997  [$7E:1997]  ;/
+$8B:CA0C AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:CA0F 38          SEC                    ;|
+$8B:CA10 E9 00 80    SBC #$8000             ;|
+$8B:CA13 8D 91 19    STA $1991  [$7E:1991]  ;} Cinematic BG1 X position -= 0.8000h
+$8B:CA16 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:CA19 E9 00 00    SBC #$0000             ;|
+$8B:CA1C 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:CA1F AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:CA22 C9 80 04    CMP #$0480             ;} If [mode 7 transformation zoom level] < 480h:
+$8B:CA25 10 08       BPL $08    [$CA2F]     ;/
+$8B:CA27 18          CLC                    ;\
+$8B:CA28 69 04 00    ADC #$0004             ;} Mode 7 transformation zoom level += 4
+$8B:CA2B 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:CA2E 60          RTS                    ; Return
 
 $8B:CA2F A9 36 CA    LDA #$CA36             ;\
 $8B:CA32 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA36
@@ -9648,85 +9657,86 @@ $8B:CA35 60          RTS
 }
 
 
-;;; $CA36:  ;;;
+;;; $CA36: Cinematic function - fly to Zebes - flying to Zebes - turning left ;;;
 {
-$8B:CA36 AD 95 19    LDA $1995  [$7E:1995]
-$8B:CA39 18          CLC
-$8B:CA3A 69 00 20    ADC #$2000
-$8B:CA3D 8D 95 19    STA $1995  [$7E:1995]
-$8B:CA40 AD 97 19    LDA $1997  [$7E:1997]
-$8B:CA43 69 00 00    ADC #$0000
-$8B:CA46 8D 97 19    STA $1997  [$7E:1997]
-$8B:CA49 AD 91 19    LDA $1991  [$7E:1991]
-$8B:CA4C 38          SEC
-$8B:CA4D E9 00 80    SBC #$8000
-$8B:CA50 8D 91 19    STA $1991  [$7E:1991]
-$8B:CA53 AD 93 19    LDA $1993  [$7E:1993]
-$8B:CA56 E9 00 00    SBC #$0000
-$8B:CA59 8D 93 19    STA $1993  [$7E:1993]
-$8B:CA5C C9 80 FF    CMP #$FF80
-$8B:CA5F 30 1D       BMI $1D    [$CA7E]
-$8B:CA61 AD 8F 19    LDA $198F  [$7E:198F]
-$8B:CA64 18          CLC
-$8B:CA65 69 10 00    ADC #$0010
-$8B:CA68 8D 8F 19    STA $198F  [$7E:198F]
-$8B:CA6B AD 8D 19    LDA $198D  [$7E:198D]
-$8B:CA6E C9 E0 00    CMP #$00E0
-$8B:CA71 F0 0A       BEQ $0A    [$CA7D]
-$8B:CA73 38          SEC
-$8B:CA74 E9 01 00    SBC #$0001
-$8B:CA77 29 FF 00    AND #$00FF
-$8B:CA7A 8D 8D 19    STA $198D  [$7E:198D]
+$8B:CA36 AD 95 19    LDA $1995  [$7E:1995]  ;\
+$8B:CA39 18          CLC                    ;|
+$8B:CA3A 69 00 20    ADC #$2000             ;|
+$8B:CA3D 8D 95 19    STA $1995  [$7E:1995]  ;} Cinematic BG1 Y position += 0.2000h
+$8B:CA40 AD 97 19    LDA $1997  [$7E:1997]  ;|
+$8B:CA43 69 00 00    ADC #$0000             ;|
+$8B:CA46 8D 97 19    STA $1997  [$7E:1997]  ;/
+$8B:CA49 AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:CA4C 38          SEC                    ;|
+$8B:CA4D E9 00 80    SBC #$8000             ;|
+$8B:CA50 8D 91 19    STA $1991  [$7E:1991]  ;} Cinematic BG1 X position -= 0.8000h
+$8B:CA53 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:CA56 E9 00 00    SBC #$0000             ;|
+$8B:CA59 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:CA5C C9 80 FF    CMP #$FF80             ;\
+$8B:CA5F 30 1D       BMI $1D    [$CA7E]     ;} If [cinematic BG1 X position] < -80h: go to BRANCH_FINISHED
+$8B:CA61 AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:CA64 18          CLC                    ;|
+$8B:CA65 69 10 00    ADC #$0010             ;} Mode 7 transformation zoom level += 4
+$8B:CA68 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:CA6B AD 8D 19    LDA $198D  [$7E:198D]  ;\
+$8B:CA6E C9 E0 00    CMP #$00E0             ;} If [mode 7 transformation angle] != E0h:
+$8B:CA71 F0 0A       BEQ $0A    [$CA7D]     ;/
+$8B:CA73 38          SEC                    ;\
+$8B:CA74 E9 01 00    SBC #$0001             ;|
+$8B:CA77 29 FF 00    AND #$00FF             ;} Mode 7 transformation angle = ([mode 7 transformation angle] - 1) % 100h
+$8B:CA7A 8D 8D 19    STA $198D  [$7E:198D]  ;/
 
-$8B:CA7D 60          RTS
+$8B:CA7D 60          RTS                    ; Return
 
+; BRANCH_FINISHED
 $8B:CA7E A9 85 CA    LDA #$CA85             ;\
 $8B:CA81 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CA85
 $8B:CA84 60          RTS
 }
 
 
-;;; $CA85:  ;;;
+;;; $CA85: Cinematic function - fly to Zebes - flying to Zebes - drifting left ;;;
 {
-$8B:CA85 AD 95 19    LDA $1995  [$7E:1995]
-$8B:CA88 18          CLC
-$8B:CA89 69 00 20    ADC #$2000
-$8B:CA8C 8D 95 19    STA $1995  [$7E:1995]
-$8B:CA8F AD 97 19    LDA $1997  [$7E:1997]
-$8B:CA92 69 00 00    ADC #$0000
-$8B:CA95 8D 97 19    STA $1997  [$7E:1997]
-$8B:CA98 AD 91 19    LDA $1991  [$7E:1991]
-$8B:CA9B 18          CLC
-$8B:CA9C 69 00 20    ADC #$2000
-$8B:CA9F 8D 91 19    STA $1991  [$7E:1991]
-$8B:CAA2 AD 93 19    LDA $1993  [$7E:1993]
-$8B:CAA5 69 00 00    ADC #$0000
-$8B:CAA8 8D 93 19    STA $1993  [$7E:1993]
-$8B:CAAB AD 8F 19    LDA $198F  [$7E:198F]
-$8B:CAAE C9 00 20    CMP #$2000
-$8B:CAB1 10 08       BPL $08    [$CABB]
-$8B:CAB3 18          CLC
-$8B:CAB4 69 20 00    ADC #$0020
-$8B:CAB7 8D 8F 19    STA $198F  [$7E:198F]
-$8B:CABA 60          RTS
+$8B:CA85 AD 95 19    LDA $1995  [$7E:1995]  ;\
+$8B:CA88 18          CLC                    ;|
+$8B:CA89 69 00 20    ADC #$2000             ;|
+$8B:CA8C 8D 95 19    STA $1995  [$7E:1995]  ;} Cinematic BG1 Y position += 0.2000h
+$8B:CA8F AD 97 19    LDA $1997  [$7E:1997]  ;|
+$8B:CA92 69 00 00    ADC #$0000             ;|
+$8B:CA95 8D 97 19    STA $1997  [$7E:1997]  ;/
+$8B:CA98 AD 91 19    LDA $1991  [$7E:1991]  ;\
+$8B:CA9B 18          CLC                    ;|
+$8B:CA9C 69 00 20    ADC #$2000             ;|
+$8B:CA9F 8D 91 19    STA $1991  [$7E:1991]  ;} Cinematic BG1 X position += 0.2000h
+$8B:CAA2 AD 93 19    LDA $1993  [$7E:1993]  ;|
+$8B:CAA5 69 00 00    ADC #$0000             ;|
+$8B:CAA8 8D 93 19    STA $1993  [$7E:1993]  ;/
+$8B:CAAB AD 8F 19    LDA $198F  [$7E:198F]  ;\
+$8B:CAAE C9 00 20    CMP #$2000             ;} If [mode 7 transformation zoom level] < 2000h:
+$8B:CAB1 10 08       BPL $08    [$CABB]     ;/
+$8B:CAB3 18          CLC                    ;\
+$8B:CAB4 69 20 00    ADC #$0020             ;} Mode 7 transformation zoom level += 20h
+$8B:CAB7 8D 8F 19    STA $198F  [$7E:198F]  ;/
+$8B:CABA 60          RTS                    ; Return
 
-$8B:CABB E2 20       SEP #$20
-$8B:CABD A9 10       LDA #$10
-$8B:CABF 85 69       STA $69    [$7E:0069]
-$8B:CAC1 C2 20       REP #$20
+$8B:CABB E2 20       SEP #$20               ;\
+$8B:CABD A9 10       LDA #$10               ;|
+$8B:CABF 85 69       STA $69    [$7E:0069]  ;} Main screen layers = sprites
+$8B:CAC1 C2 20       REP #$20               ;/
 $8B:CAC3 A9 D0 CA    LDA #$CAD0             ;\
 $8B:CAC6 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CAD0
-$8B:CAC9 A9 40 00    LDA #$0040
-$8B:CACC 8D 49 1A    STA $1A49  [$7E:1A49]
+$8B:CAC9 A9 40 00    LDA #$0040             ;\
+$8B:CACC 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 40h
 $8B:CACF 60          RTS
 }
 
 
-;;; $CAD0:  ;;;
+;;; $CAD0: Cinematic function - fly to Zebes - hold on scene for 40h frames ;;;
 {
-$8B:CAD0 CE 49 1A    DEC $1A49  [$7E:1A49]
-$8B:CAD3 F0 02       BEQ $02    [$CAD7]
-$8B:CAD5 10 06       BPL $06    [$CADD]
+$8B:CAD0 CE 49 1A    DEC $1A49  [$7E:1A49]  ; Decrement cinematic function timer
+$8B:CAD3 F0 02       BEQ $02    [$CAD7]     ;\
+$8B:CAD5 10 06       BPL $06    [$CADD]     ;} If [cinematic function timer] > 0: return
 
 $8B:CAD7 A9 DE CA    LDA #$CADE             ;\
 $8B:CADA 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $CADE
@@ -9735,13 +9745,13 @@ $8B:CADD 60          RTS
 }
 
 
-;;; $CADE: RTS ;;;
+;;; $CADE: RTS. Cinematic function - fly to Zebes - slide scene away ;;;
 {
 $8B:CADE 60          RTS
 }
 
 
-;;; $CADF: Cinematic function - load game data ;;;
+;;; $CADF: Cinematic function - fly to Zebes - load game data ;;;
 {
 $8B:CADF E2 20       SEP #$20               ;\
 $8B:CAE1 A9 80       LDA #$80               ;|
@@ -9763,6 +9773,7 @@ $8B:CAFB 8D 98 09    STA $0998  [$7E:0998]  ;} Game state = 6 (loading game data
 $8B:CAFE AD C4 09    LDA $09C4  [$7E:09C4]  ;\
 $8B:CB01 8D C2 09    STA $09C2  [$7E:09C2]  ;} Samus health = [Samus max health] (?!)
 $8B:CB04 60          RTS
+}
 }
 }
 
@@ -9981,13 +9992,13 @@ $8B:CCB3             dx 000A,96CB,
 ;;; $CCBB: Instruction list - cinematic sprite object $CEAF (planet Zebes text) ;;;
 {
 $8B:CCBB             dx 0040,0000,
-                        C9A5,       ;
+                        C9A5,       ; Fade in PLANET ZEBES text
                         0020,9654,
-                        C9AF,       ;
+                        C9AF,       ; Spawn planet Zebes Japanese text if enabled
                         00C0,9654,
-                        C9BD,       ;
+                        C9BD,       ; Fade out PLANET ZEBES text
                         0060,9654,
-                        C9C7,       ;
+                        C9C7,       ; Start flying to Zebes
                         9438        ; Delete
 }
 

@@ -12112,7 +12112,7 @@ $82:EF1C E2 20       SEP #$20
 $82:EF1E A5 57       LDA $57    [$7E:0057]  ;\
 $82:EF20 C9 F3       CMP #$F3               ;|
 $82:EF22 F0 05       BEQ $05    [$EF29]     ;|
-$82:EF24 18          CLC                    ;} (Mosaic block size) = min(Fh, (mosaic block size))
+$82:EF24 18          CLC                    ;} (Mosaic block size) = min(Fh, (mosaic block size) + 1)
 $82:EF25 69 10       ADC #$10               ;|
 $82:EF27 85 57       STA $57    [$7E:0057]  ;/
 
@@ -12212,7 +12212,7 @@ $82:EFDF E2 20       SEP #$20
 $82:EFE1 A5 57       LDA $57    [$7E:0057]  ;\
 $82:EFE3 C9 03       CMP #$03               ;|
 $82:EFE5 F0 05       BEQ $05    [$EFEC]     ;|
-$82:EFE7 38          SEC                    ;} (Mosaic block size) = max(0, (mosaic block size))
+$82:EFE7 38          SEC                    ;} (Mosaic block size) = max(0, (mosaic block size) - 1)
 $82:EFE8 E9 10       SBC #$10               ;|
 $82:EFEA 85 57       STA $57    [$7E:0057]  ;/
 

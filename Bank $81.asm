@@ -2341,7 +2341,7 @@ $81:94FD 85 12       STA $12    [$7E:0012]  ;|
 $81:94FF A5 51       LDA $51    [$7E:0051]  ;|
 $81:9501 29 0F 00    AND #$000F             ;|
 $81:9504 0A          ASL A                  ;|
-$81:9505 0A          ASL A                  ;} Mosaic block size = Fh - (brightness)
+$81:9505 0A          ASL A                  ;} (Mosaic block size) = Fh - (brightness)
 $81:9506 0A          ASL A                  ;|
 $81:9507 0A          ASL A                  ;|
 $81:9508 49 F0 00    EOR #$00F0             ;|
@@ -2382,7 +2382,7 @@ $81:9541 85 12       STA $12    [$7E:0012]  ;|
 $81:9543 A5 51       LDA $51    [$7E:0051]  ;|
 $81:9545 29 0F 00    AND #$000F             ;|
 $81:9548 0A          ASL A                  ;|
-$81:9549 0A          ASL A                  ;} Mosaic block size = Fh - (brightness)
+$81:9549 0A          ASL A                  ;} (Mosaic block size) = Fh - (brightness)
 $81:954A 0A          ASL A                  ;|
 $81:954B 0A          ASL A                  ;|
 $81:954C 49 F0 00    EOR #$00F0             ;|
