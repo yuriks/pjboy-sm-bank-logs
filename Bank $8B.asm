@@ -1384,11 +1384,16 @@ $8B:8A51 60          RTS
 
 ;;; $8A52: Calculate position of Samus in rotating elevator room ;;;
 {
-; Let p be the vector of Samus' position
-; Let p_0 be the vector of the mode 7 transformation origin co-ordinates
-; Let M be the mode 7 transformation matrix with parameter D replaced by A (>_<;)
-; Then we're doing
-;     p = p_0 + (p - p_0) * M / 100h
+; x = x_0 + (x - x_0) * a / 100h + (y_0 - y) * b / 100h
+; y = y_0 - (x - x_0) * c / 100h - (y_0 - y) * a / 100h
+
+; x = x_0 + (x - x_0) * a / 100h - (y - y_0) * b / 100h
+; y = y_0 - (x - x_0) * c / 100h + (y - y_0) * a / 100h
+
+; where
+;     a = 100h * cos(t)
+;     b = 100h * sin(t)
+;     c = -b
 
 $8B:8A52 08          PHP
 $8B:8A53 8B          PHB
@@ -1401,7 +1406,7 @@ $8B:8A5C E5 80       SBC $80    [$7E:0080]  ;} $22 = [Samus X position] - [mode 
 $8B:8A5E 85 22       STA $22    [$7E:0022]  ;/
 $8B:8A60 A5 82       LDA $82    [$7E:0082]  ;\
 $8B:8A62 38          SEC                    ;|
-$8B:8A63 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $24 = [Samus Y position] - [mode 7 transformation origin co-ordinate Y]
+$8B:8A63 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} $24 = [mode 7 transformation origin co-ordinate Y] - [Samus Y position]
 $8B:8A66 85 24       STA $24    [$7E:0024]  ;/
 $8B:8A68 A5 22       LDA $22    [$7E:0022]  ;\
 $8B:8A6A 85 26       STA $26    [$7E:0026]  ;|

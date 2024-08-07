@@ -13121,7 +13121,7 @@ $91:F488 C9 00 0E    CMP #$0E00             ;} If [Samus movement type] = turnin
 $91:F48B D0 13       BNE $13    [$F4A0]     ;/
 $91:F48D EB          XBA                    ;\
 $91:F48E 0A          ASL A                  ;|
-$91:F48F AA          TAX                    ;} Execute [$F4A2 + [Samus movement type] * 2]
+$91:F48F AA          TAX                    ;} Initialise Samus pose - turning around - on ground
 $91:F490 FC A2 F4    JSR ($F4A2,x)[$91:F8D3];/
 $91:F493 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:F496 0A          ASL A                  ;|

@@ -8556,7 +8556,6 @@ $90:BA0C BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $90:BA0F 89 00 0F    BIT #$0F00             ;} If not beam: go to BRANCH_RETURN
 $90:BA12 D0 22       BNE $22    [$BA36]     ;/
 $90:BA14 80 0C       BRA $0C    [$BA22]
-
                                             ; Else (wave beam):
 $90:BA16 9E DC 0B    STZ $0BDC,x[$7E:0BDC]  ; Projectile X speed = 0
 $90:BA19 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y speed = 0
@@ -8600,6 +8599,9 @@ $90:BA3E             dw AEF3, ; 0: Power
 ;;     $14: Projectile index
 ;; Returns:
 ;;     Carry: Clear is can fire, set otherwise
+
+; As far as I can tell, BRANCH_RETURN_NO_FIRE can only possibly be taken when trying to shoot whilst in pose BEh/F0h (grabbed by Draygon - moving)
+
 $90:BA56 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:BA59 0A          ASL A                  ;|
 $90:BA5A 0A          ASL A                  ;} X = [Samus pose] * 8
@@ -12848,7 +12850,7 @@ $90:DCEA 20 1C AC    JSR $AC1C  [$90:AC1C]  ; Handle Samus cooldown
 $90:DCED 20 B5 C4    JSR $C4B5  [$90:C4B5]  ; Handle switching HUD selection
 $90:DCF0 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $90:DCF3 29 FF 00    AND #$00FF             ;|
-$90:DCF6 0A          ASL A                  ;} Execute HUD selection handler
+$90:DCF6 0A          ASL A                  ;} Execute [$DD05 + [Samus movement type] * 2] (HUD selection handler)
 $90:DCF7 AA          TAX                    ;|
 $90:DCF8 FC 05 DD    JSR ($DD05,x)[$90:DD3D];/
 $90:DCFB AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
@@ -12958,7 +12960,7 @@ $90:DD97 10 10       BPL $10    [$DDA9]     ;} If [Samus pose] >= DBh (not sure 
 $90:DD99 38          SEC                    ;\
 $90:DD9A E9 35 00    SBC #$0035             ;|
 $90:DD9D AA          TAX                    ;|
-$90:DD9E BD AA DD    LDA $DDAA,x[$90:DDAA]  ;} If not crouching/standing transition: return
+$90:DD9E BD AA DD    LDA $DDAA,x[$90:DDAA]  ;} If not crouching/standing transition: go to $DDB6
 $90:DDA1 29 FF 00    AND #$00FF             ;|
 $90:DDA4 D0 10       BNE $10    [$DDB6]     ;/
 
@@ -13014,8 +13016,8 @@ $90:DDDB C9 DF 00    CMP #$00DF             ;} If [Samus pose] != DFh (unused?):
 $90:DDDE F0 05       BEQ $05    [$DDE5]     ;/
 $90:DDE0 20 3D DD    JSR $DD3D  [$90:DD3D]  ; Standard HUD selection handler
 $90:DDE3 80 03       BRA $03    [$DDE8]
-
-$90:DDE5 20 9D BF    JSR $BF9D  [$90:BF9D]  ; Else ([Samus pose] = DFh): HUD selection handler - morph ball
+                                            ; Else ([Samus pose] = DFh):
+$90:DDE5 20 9D BF    JSR $BF9D  [$90:BF9D]  ; HUD selection handler - morph ball
 
 $90:DDE8 60          RTS
 }
