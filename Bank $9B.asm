@@ -835,7 +835,7 @@ $9B:B3F6 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $9B:B3F9 8D 20 0A    STA $0A20  [$7E:0A20]  ;} Samus previous pose = [Samus pose]
 $9B:B3FC AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $9B:B3FF 8D 22 0A    STA $0A22  [$7E:0A22]  ;} Samus previous pose X direction / movement type = [Samus pose X direction / movement type]
-$9B:B402 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
+$9B:B402 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $9B:B405 68          PLA
 $9B:B406 8D 96 0A    STA $0A96  [$7E:0A96]  ; Samus animation frame = [A]
 $9B:B409 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -850,7 +850,7 @@ $9B:B41D AB          PLB
 $9B:B41E 28          PLP
 $9B:B41F 6B          RTL
 
-; Samus animation frame. 5 if Samus is morphed, otherwise 1
+; Samus animation frame. 1 (transition from morphed) if Samus is morphed, otherwise 5 (unmorphed)
 $9B:B420             db 05, ; 0: Standing
                         05, ; 1: Running
                         05, ; 2: Normal jumping
@@ -2233,7 +2233,7 @@ $9B:BDB7 29 00 FF    AND #$FF00             ;|
 $9B:BDBA C9 00 80    CMP #$8000             ;} If [grapple beam end angle] / 100h != 80h (down): go to BRANCH_SET_SWINGING_ANIMATION_FRAME
 $9B:BDBD D0 23       BNE $23    [$BDE2]     ;/
 $9B:BDBF AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
-$9B:BDC2 C9 40 00    CMP #$0040             ;} If [Samus animation frame] < 40h not (hanging straight down):
+$9B:BDC2 C9 40 00    CMP #$0040             ;} If [Samus animation frame] < 40h (not hanging straight down):
 $9B:BDC5 10 0C       BPL $0C    [$BDD3]     ;/
 $9B:BDC7 A9 08 00    LDA #$0008             ;\
 $9B:BDCA 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 8
@@ -2274,7 +2274,7 @@ $9B:BE11 30 03       BMI $03    [$BE16]     ;/
 $9B:BE13 A9 10 00    LDA #$0010             ; Samus animation frame = 10h
 
 $9B:BE16 18          CLC                    ;\
-$9B:BE17 69 20 00    ADC #$0020             ;} Samus animation frame += 20h
+$9B:BE17 69 20 00    ADC #$0020             ;} Samus animation frame += 20h (kicking)
 $9B:BE1A 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 
 ; BRANCH_NOT_GRAPPLING_KICKING

@@ -501,7 +501,7 @@ $90:835F 60          RTS                    ;} Return carry set
 ;     E9h: Facing left  - Samus drained - crouching
 
 $90:8360 A9 CB 94    LDA #$94CB             ;\
-$90:8363 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $94CB (Samus drained - crouching)
+$90:8363 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $94CB (Samus drained - falling)
 $90:8366 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:8369 1A          INC A                  ;} Increment Samus animation frame
 $90:836A 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
@@ -706,7 +706,7 @@ $90:8450 D0 11       BNE $11    [$8463]     ;} If space jump equipped: go to BRA
 $90:8452 A9 31 00    LDA #$0031             ;\
 $90:8455 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 31h, sound library 1, max queued sounds allowed = 6 (spin jump)
 $90:8459 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
-$90:845C 1A          INC A                  ;} Increment Samus animation frame
+$90:845C 1A          INC A                  ;} Samus animation frame += 3 - 2 (normal)
 $90:845D 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 $90:8460 A8          TAY                    ; Y = [Samus animation frame]
 $90:8461 38          SEC                    ;\
@@ -717,7 +717,7 @@ $90:8463 A9 3E 00    LDA #$003E             ;\
 $90:8466 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 3Eh, sound library 1, max queued sounds allowed = 6 (space jump)
 $90:846A AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:846D 18          CLC                    ;|
-$90:846E 69 0B 00    ADC #$000B             ;} Samus animation frame += Bh
+$90:846E 69 0B 00    ADC #$000B             ;} Samus animation frame += Dh - 2 (space jump)
 $90:8471 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 $90:8474 A8          TAY                    ; Y = [Samus animation frame]
 $90:8475 38          SEC                    ;\
@@ -728,7 +728,7 @@ $90:8477 A9 33 00    LDA #$0033             ;\
 $90:847A 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 33h, sound library 1, max queued sounds allowed = 6 (screw attack)
 $90:847E AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:8481 18          CLC                    ;|
-$90:8482 69 15 00    ADC #$0015             ;} Samus animation frame += 15h
+$90:8482 69 15 00    ADC #$0015             ;} Samus animation frame += 17h - 2 (screw attack)
 $90:8485 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 $90:8488 A8          TAY                    ; Y = [Samus animation frame]
 $90:8489 38          SEC                    ;\
@@ -3345,7 +3345,7 @@ $90:94CA 60          RTS
 }
 
 
-;;; $94CB: Samus movement handler - Samus drained - crouching ;;;
+;;; $94CB: Samus movement handler - Samus drained - falling ;;;
 {
 $90:94CB 20 E2 90    JSR $90E2  [$90:90E2]  ; Samus Y movement - with speed calculations
 $90:94CE AD D0 0D    LDA $0DD0  [$7E:0DD0]  ;\
@@ -3355,7 +3355,7 @@ $90:94D6 8D 58 0A    STA $0A58  [$7E:0A58]  ;} Samus movement handler = $A337 (n
 $90:94D9 A9 08 00    LDA #$0008             ;\
 $90:94DC 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 8
 $90:94DF A9 07 00    LDA #$0007             ;\
-$90:94E2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 7
+$90:94E2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 7 (crouching)
 $90:94E5 9C 2C 0B    STZ $0B2C  [$7E:0B2C]  ;\
 $90:94E8 9C 2E 0B    STZ $0B2E  [$7E:0B2E]  ;} Samus Y speed = 0.0
 
@@ -5306,7 +5306,7 @@ $90:A5BA 10 0C       BPL $0C    [$A5C8]     ;/
 $90:A5BC A9 08 00    LDA #$0008             ;\
 $90:A5BF 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 8
 $90:A5C2 A9 05 00    LDA #$0005             ;\
-$90:A5C5 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 5
+$90:A5C5 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 5 (terminal velocity)
 
 $90:A5C8 28          PLP
 $90:A5C9 60          RTS
@@ -10275,7 +10275,7 @@ $90:C68E AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:C691 D0 11       BNE $11    [$C6A4]     ;} If [Samus animation frame] = 0:
 $90:C693 B9 00 00    LDA $0000,y[$90:CAB5]  ;\
 $90:C696 29 7F 00    AND #$007F             ;|
-$90:C699 0A          ASL A                  ;} X = [[Y]] & 7Fh * 2
+$90:C699 0A          ASL A                  ;} X = [[Y]] & 7Fh * 2 (direction)
 $90:C69A AA          TAX                    ;/
 $90:C69B 98          TYA                    ;\
 $90:C69C 18          CLC                    ;|
@@ -10285,7 +10285,7 @@ $90:C6A2 80 18       BRA $18    [$C6BC]     ; Go to BRANCH_MERGE
 
 $90:C6A4 B9 02 00    LDA $0002,y[$90:CA07]  ;\
 $90:C6A7 29 7F 00    AND #$007F             ;|
-$90:C6AA 0A          ASL A                  ;} X = [[Y] + 2] & 7Fh * 2
+$90:C6AA 0A          ASL A                  ;} X = [[Y] + 2] & 7Fh * 2 (direction)
 $90:C6AB AA          TAX                    ;/
 $90:C6AC 98          TYA                    ;\
 $90:C6AD 18          CLC                    ;|
@@ -10295,7 +10295,7 @@ $90:C6B3 80 07       BRA $07    [$C6BC]     ; Go to BRANCH_MERGE
 
 ; BRANCH_SPRITE_POSITIVE
 $90:C6B5 0A          ASL A                  ;\
-$90:C6B6 AA          TAX                    ;} X = [[Y]] * 2
+$90:C6B6 AA          TAX                    ;} X = [[Y]] * 2 (direction)
 $90:C6B7 98          TYA                    ;\
 $90:C6B8 1A          INC A                  ;|
 $90:C6B9 1A          INC A                  ;} $16 = [Y] + 2 (base address of arm cannon X/Y offsets)
@@ -10364,18 +10364,18 @@ $90:C737 AA          TAX                    ;} Y = [$C7DF + [Samus pose] * 2]
 $90:C738 BD DF C7    LDA $C7DF,x[$90:C7E3]  ;|
 $90:C73B A8          TAY                    ;/
 $90:C73C B9 00 00    LDA $0000,y[$90:C9F1]  ;\
-$90:C73F 29 FF 00    AND #$00FF             ;} A = [[Y]]
+$90:C73F 29 FF 00    AND #$00FF             ;} A = [[Y]] (direction)
 $90:C742 89 80 00    BIT #$0080             ;\
 $90:C745 F0 15       BEQ $15    [$C75C]     ;} If [A] & 80h = 0: go to BRANCH_TILES_POSITIVE
 $90:C747 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
 $90:C74A D0 08       BNE $08    [$C754]     ;} If [Samus animation frame] = 0:
 $90:C74C B9 00 00    LDA $0000,y[$90:CAB5]  ;\
-$90:C74F 29 7F 00    AND #$007F             ;} A = [[Y]] & 7Fh
+$90:C74F 29 7F 00    AND #$007F             ;} A = [[Y]] & 7Fh (direction)
 $90:C752 80 08       BRA $08    [$C75C]
 
 $90:C754 C8          INY                    ;\ Else ([Samus animation frame] != 0):
 $90:C755 C8          INY                    ;|
-$90:C756 B9 00 00    LDA $0000,y[$90:CA07]  ;} A = [[Y] + 2] & 7Fh
+$90:C756 B9 00 00    LDA $0000,y[$90:CA07]  ;} A = [[Y] + 2] & 7Fh (direction)
 $90:C759 29 7F 00    AND #$007F             ;/
 
 ; BRANCH_TILES_POSITIVE
@@ -10455,7 +10455,7 @@ $90:C7DF             dw C9DB, C9DD, C9F1, CA05, CA0D, CA15, CA19, CA1D, CA21, C9
 ;
 ; where
 ;     d: Direction
-;     D: Direction if [Samus animation frame] = 0
+;     D: Direction if [Samus animation frame] != 0
 ;     {
 ;         0: Up, facing right
 ;         1: Up-right
@@ -12035,7 +12035,7 @@ $90:D687 10 44       BPL $44    [$D6CD]     ; If [crystal flash raise Samus time
 $90:D689 A9 03 00    LDA #$0003             ;\
 $90:D68C 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3
 $90:D68F A9 06 00    LDA #$0006             ;\
-$90:D692 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 6
+$90:D692 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 6 (main)
 $90:D695 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $90:D698 8D F0 0D    STA $0DF0  [$7E:0DF0]  ;} $0DF0 = [Samus Y position]
 $90:D69B A9 CE D6    LDA #$D6CE             ;\
@@ -12137,7 +12137,7 @@ $90:D74B 8D 5C 0A    STA $0A5C  [$7E:0A5C]  ;} Samus drawing handler = $EB52 (de
 $90:D74E A9 03 00    LDA #$0003             ;\
 $90:D751 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3
 $90:D754 A9 0C 00    LDA #$000C             ;\
-$90:D757 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Ch
+$90:D757 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Ch (finish)
 
 $90:D75A 60          RTS
 }
@@ -13156,7 +13156,7 @@ $90:DEC7 80 0C       BRA $0C    [$DED5]     ; Go to BRANCH_RETURN
 $90:DEC9 A9 11 00    LDA #$0011             ;\
 $90:DECC 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 11h
 $90:DECF A9 1A 00    LDA #$001A             ;\
-$90:DED2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 1Ah
+$90:DED2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 1Ah (Samus gets hit)
 
 ; BRANCH_RETURN
 $90:DED5 9C 30 0A    STZ $0A30  [$7E:0A30]  ; Special prospective pose change command = none
@@ -13283,7 +13283,7 @@ $90:DF43 60          RTS
 $90:DF44             dw DF50, ; 0: Crashes
                         DF53, ; 1: Up left
                         DF53, ; 2: Up right
-                        DF5D, ; 3: ???
+                        DF5D, ; 3: Straight up (unused)
                         DF64, ; 4: Down left
                         DF64  ; 5: Down right
 }
@@ -13551,7 +13551,7 @@ $90:E09B AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $90:E09E C9 E9 00    CMP #$00E9             ;} If [Samus pose] != E9h (facing left - Samus drained - crouching): return
 $90:E0A1 D0 21       BNE $21    [$E0C4]     ;/
 $90:E0A3 AD 96 0A    LDA $0A96  [$7E:0A96]  ;\
-$90:E0A6 C9 08 00    CMP #$0008             ;} If [Samus animation frame] < 8: return
+$90:E0A6 C9 08 00    CMP #$0008             ;} If [Samus animation frame] < 8 (falling / transition to crouching): return
 $90:E0A9 30 19       BMI $19    [$E0C4]     ;/
 $90:E0AB A5 8F       LDA $8F    [$7E:008F]  ;\
 $90:E0AD 89 00 08    BIT #$0800             ;} If not newly pressing up: return
@@ -13559,7 +13559,7 @@ $90:E0B0 F0 12       BEQ $12    [$E0C4]     ;/
 $90:E0B2 A9 01 00    LDA #$0001             ;\
 $90:E0B5 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $90:E0B8 A9 0D 00    LDA #$000D             ;\
-$90:E0BB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Dh
+$90:E0BB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Eh - 1 (Samus is let up)
 $90:E0BE A9 0E E9    LDA #$E90E             ;\
 $90:E0C1 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = RTS
 
@@ -13580,7 +13580,7 @@ $90:E0D7 F0 0C       BEQ $0C    [$E0E5]     ;/
 $90:E0D9 A9 01 00    LDA #$0001             ;\
 $90:E0DC 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $90:E0DF A9 12 00    LDA #$0012             ;\
-$90:E0E2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 12h
+$90:E0E2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 13h - 1 (Samus fails to stand up)
 
 $90:E0E5 60          RTS
 }
@@ -14033,7 +14033,9 @@ $90:E41A 6B          RTL
 
 ;;; $E41B: Unused. Timer / Samus hack handler - special falling ;;;
 {
-; Accelerates Samus Y speed up to 5, then sets her animation frame to 4 (invisible) if she's falling
+; Looks like a cut-down version of $A58D (Samus movement - falling)
+; In particular, this version doesn't do any horizontal movement
+; Perhaps it was used for the Maridia elevatube at one point
 $90:E41B AD 2E 0B    LDA $0B2E  [$7E:0B2E]  ;\
 $90:E41E C9 05 00    CMP #$0005             ;} If [Samus Y speed] < 5:
 $90:E421 10 13       BPL $13    [$E436]     ;/
@@ -14062,7 +14064,7 @@ $90:E455 30 0C       BMI $0C    [$E463]     ;/
 $90:E457 A9 10 00    LDA #$0010             ;\
 $90:E45A 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 10h
 $90:E45D A9 04 00    LDA #$0004             ;\
-$90:E460 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 4
+$90:E460 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 5 - 1 (terminal velocity)
 
 $90:E463 60          RTS
 }
@@ -14967,50 +14969,50 @@ $90:E96A F0 30       BEQ $30    [$E99C]     ;/
 $90:E96C AD 82 0A    LDA $0A82  [$7E:0A82]  ;\
 $90:E96F C9 19 00    CMP #$0019             ;} If [x-ray angle] < 19h:
 $90:E972 10 05       BPL $05    [$E979]     ;/
-$90:E974 A9 00 00    LDA #$0000             ; Samus animation frame = 0
+$90:E974 A9 00 00    LDA #$0000             ; Samus animation frame = 0 (looking up)
 $90:E977 80 51       BRA $51    [$E9CA]     ; Return
 
 $90:E979 C9 32 00    CMP #$0032             ;\
 $90:E97C 10 05       BPL $05    [$E983]     ;} If [x-ray angle] < 32h:
-$90:E97E A9 01 00    LDA #$0001             ; Samus animation frame = 1
+$90:E97E A9 01 00    LDA #$0001             ; Samus animation frame = 1 (looking up-forward)
 $90:E981 80 47       BRA $47    [$E9CA]     ; Return
 
 $90:E983 C9 4B 00    CMP #$004B             ;\
 $90:E986 10 05       BPL $05    [$E98D]     ;} If [x-ray angle] < 4Bh:
-$90:E988 A9 02 00    LDA #$0002             ; Samus animation frame = 2
+$90:E988 A9 02 00    LDA #$0002             ; Samus animation frame = 2 (looking forward)
 $90:E98B 80 3D       BRA $3D    [$E9CA]     ; Return
 
 $90:E98D C9 64 00    CMP #$0064             ;\
 $90:E990 10 05       BPL $05    [$E997]     ;} If [x-ray angle] < 64h:
-$90:E992 A9 03 00    LDA #$0003             ; Samus animation frame = 3
+$90:E992 A9 03 00    LDA #$0003             ; Samus animation frame = 3 (looking down-forward)
 $90:E995 80 33       BRA $33    [$E9CA]     ; Return
 
-$90:E997 A9 04 00    LDA #$0004             ; Samus animation frame = 4
+$90:E997 A9 04 00    LDA #$0004             ; Samus animation frame = 4 (looking down)
 $90:E99A 80 2E       BRA $2E    [$E9CA]     ; Return
 
 ; BRANCH_FACING_LEFT
 $90:E99C AD 82 0A    LDA $0A82  [$7E:0A82]  ;\
 $90:E99F C9 99 00    CMP #$0099             ;} If [x-ray angle] < 99h:
 $90:E9A2 10 05       BPL $05    [$E9A9]     ;/
-$90:E9A4 A9 04 00    LDA #$0004             ; Samus animation frame = 4
+$90:E9A4 A9 04 00    LDA #$0004             ; Samus animation frame = 4 (looking down)
 $90:E9A7 80 21       BRA $21    [$E9CA]     ; Return
 
 $90:E9A9 C9 B2 00    CMP #$00B2             ;\
 $90:E9AC 10 05       BPL $05    [$E9B3]     ;} If [x-ray angle] < B2h:
-$90:E9AE A9 03 00    LDA #$0003             ; Samus animation frame = 3
+$90:E9AE A9 03 00    LDA #$0003             ; Samus animation frame = 3 (looking down-forward)
 $90:E9B1 80 17       BRA $17    [$E9CA]     ; Return
 
 $90:E9B3 C9 CB 00    CMP #$00CB             ;\
 $90:E9B6 10 05       BPL $05    [$E9BD]     ;} If [x-ray angle] < CBh:
-$90:E9B8 A9 02 00    LDA #$0002             ; Samus animation frame = 2
+$90:E9B8 A9 02 00    LDA #$0002             ; Samus animation frame = 2 (looking forward)
 $90:E9BB 80 0D       BRA $0D    [$E9CA]     ; Return
 
 $90:E9BD C9 E4 00    CMP #$00E4             ;\
 $90:E9C0 10 05       BPL $05    [$E9C7]     ;} If [x-ray angle] < E4h:
-$90:E9C2 A9 01 00    LDA #$0001             ; Samus animation frame = 1
+$90:E9C2 A9 01 00    LDA #$0001             ; Samus animation frame = 1 (looking up-forward)
 $90:E9C5 80 03       BRA $03    [$E9CA]     ; Return
 
-$90:E9C7 A9 00 00    LDA #$0000             ; Samus animation frame = 0
+$90:E9C7 A9 00 00    LDA #$0000             ; Samus animation frame = 0 (looking up)
 
 $90:E9CA 8D 96 0A    STA $0A96  [$7E:0A96]
 $90:E9CD 60          RTS
@@ -15203,7 +15205,7 @@ $90:EB11 9C B2 0D    STZ $0DB2  [$7E:0DB2]  ;\
 $90:EB14 9C B4 0D    STZ $0DB4  [$7E:0DB4]  ;} Distance Samus moved up = 0.0
 $90:EB17 9C B6 0D    STZ $0DB6  [$7E:0DB6]  ;\
 $90:EB1A 9C B8 0D    STZ $0DB8  [$7E:0DB8]  ;} Distance Samus moved down = 0.0
-$90:EB1D 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
+$90:EB1D 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $90:EB20 9C 5E 0B    STZ $0B5E  [$7E:0B5E]  ; Pose transition shot direction = 0
 $90:EB23 AD FA 0D    LDA $0DFA  [$7E:0DFA]  ;\
 $90:EB26 EB          XBA                    ;|
@@ -16205,7 +16207,7 @@ $90:F136 80 06       BRA $06    [$F13E]
 $90:F138 A9 02 00    LDA #$0002             ;\ Else (Samus is facing left):
 $90:F13B 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
 
-$90:F13E 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
+$90:F13E 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $90:F141 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F145 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F149 A9 3C 00    LDA #$003C             ;\
@@ -16246,7 +16248,7 @@ $90:F183 80 06       BRA $06    [$F18B]
 $90:F185 A9 02 00    LDA #$0002             ;\ Else (Samus is facing left):
 $90:F188 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - normal
 
-$90:F18B 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
+$90:F18B 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $90:F18E 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F192 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F196 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
@@ -16323,7 +16325,7 @@ $90:F1EF A9 DC E8    LDA #$E8DC             ;\
 $90:F1F2 8D 44 0A    STA $0A44  [$7E:0A44]  ;} Samus new state handler = $E8DC (Samus is locked)
 $90:F1F5 A9 00 00    LDA #$0000             ;\
 $90:F1F8 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing forward - power suit
-$90:F1FB 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
+$90:F1FB 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $90:F1FE 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F202 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F206 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
@@ -16381,7 +16383,7 @@ $90:F278 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F27C A9 03 00    LDA #$0003             ;\
 $90:F27F 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3
 $90:F282 A9 02 00    LDA #$0002             ;\
-$90:F285 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 2
+$90:F285 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 2 (Samus appears)
 $90:F288 9C EC 0D    STZ $0DEC  [$7E:0DEC]  ; Samus appears fanfare timer = 0
 $90:F28B 38          SEC                    ;\
 $90:F28C 60          RTS                    ;} Return carry set
@@ -16621,7 +16623,7 @@ $90:F391 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E09
 {
 $90:F394 A9 54 00    LDA #$0054             ;\
 $90:F397 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - knockback
-$90:F39A 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
+$90:F39A 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 $90:F39D 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $90:F3A1 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $90:F3A5 20 EE F0    JSR $F0EE  [$90:F0EE]  ; Update Samus previous pose
@@ -16675,7 +16677,7 @@ $90:F3E9 22 BA DE 91 JSL $91DEBA[$91:DEBA]  ; Load Samus suit palette
 $90:F3ED A9 01 00    LDA #$0001             ;\
 $90:F3F0 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $90:F3F3 A9 0D 00    LDA #$000D             ;\
-$90:F3F6 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Dh
+$90:F3F6 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Eh - 1 (Samus is let up)
 $90:F3F9 18          CLC                    ;\
 $90:F3FA 60          RTS                    ;} Return carry clear
 }
@@ -16688,7 +16690,7 @@ $90:F3FA 60          RTS                    ;} Return carry clear
 $90:F3FB A9 01 00    LDA #$0001             ;\
 $90:F3FE 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $90:F401 A9 1C 00    LDA #$001C             ;\
-$90:F404 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 1Ch
+$90:F404 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 1Dh - 1 (Samus is frozen)
 $90:F407 38          SEC                    ;\
 $90:F408 60          RTS                    ;} Return carry set
 }

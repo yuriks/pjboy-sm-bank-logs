@@ -3984,8 +3984,10 @@ $91:B010             dw B56F, B298, B298, B222, B222, B2B4, B2B4, B2B4, B2B4, B2
 ; 12h: Moving left  - aiming down-left
 ; 45h: Unused
 ; 46h: Unused
-$91:B20A             db 02, 03, 02, 03, 02, 03, 02, 03, 02, 03, FF,
-                        04, 04, 04, 04, 04, 04, 03, 04, 04, 03, FF,
+$91:B20A             db 02, 03, 02, 03, 02, 03, 02, 03, 02, 03, FF
+
+; Unused. Not a subanimation of the above, just looks like a slower version
+$91:B20A             db 04, 04, 04, 04, 04, 04, 03, 04, 04, 03, FF,
                         0A, FF
 
 ; 3: Facing right - aiming up
@@ -4042,8 +4044,11 @@ $91:B257             db 02, 02, 02, 10, F7,
                         03, FD,01
 
 ; E9h: Facing left  - Samus drained - crouching/falling
+                        ; Falling
 $91:B268             db 02, 02, 10, F7,
                         01, FE,01,
+                        
+                        ; Crouching
                         08,
                         10, 10, 10, 10, FE,04,
 
@@ -4061,10 +4066,14 @@ $91:B268             db 02, 02, 10, F7,
 
 ; EAh: Facing right - Samus drained - standing
 $91:B288             db 10, 10, 10, 10, FF,
+
+                        ; Samus is let up
                         03, FD,01
 
 ; EBh: Facing left  - Samus drained - standing
 $91:B290             db 10, 10, 10, 10, FF,
+
+                        ; Samus is let up
                         03, FD,02
 
 ; 1: Facing right - normal
@@ -4081,7 +4090,13 @@ $91:B2A3             db 0A, 0A, 0A, 0A, F6,
 ; D6h: Facing left  - x-ray - standing
 ; D9h: Facing right - x-ray - crouching
 ; DAh: Facing left  - x-ray - crouching
-$91:B2AE             db 0F, 0F, 0F, 0F, 0F, FF
+; These delays don't really take effect, Samus animation frame is set every frame during x-ray
+$91:B2AE             db 0F, ; Looking up
+                        0F, ; Looking up-forward
+                        0F, ; Looking forward
+                        0F, ; Looking down-forward
+                        0F, ; Looking down
+                        FF
 
 ; 5: Facing right - aiming up-right
 ; 6: Facing left  - aiming up-left
@@ -4138,9 +4153,15 @@ $91:B2C0             db 02,
 
 ; B2h: Facing clockwise     - grapple - in air
 ; B3h: Facing anticlockwise - grapple - in air
-$91:B2C4             db 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 
-                        08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, ; Grapple kicking
-                        08, ; Hanging straight down
+; These delays don't really take effect, Samus animation frame is set every frame during grapple swinging
+                        ; Swinging
+$91:B2C4             db 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08,
+
+                        ; Kicking
+                        08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08, 08,
+                        
+                        ; Hanging straight down
+                        08,
                         08, FE,01
 
 ; 4Bh: Facing right - normal jump transition
@@ -4206,13 +4227,19 @@ $91:B346             db 02,
 ; 29h: Facing right - falling
 ; 2Ah: Facing left  - falling
 $91:B34A             db 08, 06,
-                        06, FE,01, 08,
+                        06, FE,01,
+                        
+                        ; Terminal velocity
+                        08,
                         10, FE,01
 
 ; 67h: Facing right - falling - gun extended
 ; 68h: Facing left  - falling - gun extended
 $91:B353             db 08, 06,
-                        06, FE,01, 08,
+                        06, FE,01,
+                        
+                        ; Terminal velocity
+                        08,
                         10, FE,01
 
 ; 2Bh: Facing right - falling - aiming up
@@ -4235,7 +4262,10 @@ $91:B366             db 02,
 ; 53h: Facing right - knockback
 ; 54h: Facing left  - knockback
 $91:B36A             db 02,
-                        10, FE,01, 06, 06, 06, 08, FF,
+                        10, FE,01
+                        
+; Unused. Not a subanimation of the above
+$91:B36E             db 06, 06, 06, 08, FF,
                         08, 08, FF,
                         0A, FF
 
@@ -4271,25 +4301,34 @@ $91:B36A             db 02,
 ; 80h: Facing left  - morph ball - spring ball - in air
 ; C5h: Unused
 ; DFh: Unused. Related to Draygon
-$91:B378             db 03, 03, 03, 03, 03, 03, 03, 03, FF, 03, FE,0A
+$91:B378             db 03, 03, 03, 03, 03, 03, 03, 03, FF,
+
+                        ; Unused. Squished morph ball
+                        03, FE,0A
 
 ; 19h: Facing right - spin jump
 ; 1Ah: Facing left  - spin jump
 $91:B384             db 04,
                         03, 02, 03, 02, 03, 02, 03, 02, FE,08,
-                        08, FF ; Wall jump eligible
+                        
+                        ; Wall jump eligible
+                        08, FF
 
 ; 1Bh: Facing right - space jump
 ; 1Ch: Facing left  - space jump
 $91:B391             db 04,
                         01, 01, 01, 01, 01, 01, 01, 01, FE,08,
-                        08, FF ; Wall jump eligible
+                        
+                        ; Wall jump eligible
+                        08, FF
 
 ; 81h: Facing right - screw attack
 ; 82h: Facing left  - screw attack
 $91:B39E             db 04,
                         01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, FE,18,
-                        08, FF ; Wall jump eligible
+                        
+                        ; Wall jump eligible
+                        08, FF
 
 ; 25h: Facing right - turning - standing
 $91:B3BB             db 02, 02, 02, F8,02
@@ -4423,10 +4462,17 @@ $91:B486             db 03,
 
 ; 83h: Facing right - wall jump
 ; 84h: Facing left  - wall jump
-$91:B491             db 05, 05, FB, ; Wall jump start-up
-                        03, 02, 03, 02, 03, 02, 03, 02, FE,08, ; Normal
-                        02, 01, 02, 01, 02, 01, 02, 01, FE,08, ; Space jump
-                        01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, FE,18 ; Screw attack
+                        ; Wall jump start-up
+$91:B491             db 05, 05, FB,
+
+                        ; Normal
+                        03, 02, 03, 02, 03, 02, 03, 02, FE,08,
+                        
+                        ; Space jump
+                        02, 01, 02, 01, 02, 01, 02, 01, FE,08,
+                        
+                        ; Screw attack
+                        01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, FE,18
 
 ; 35h: Facing right - crouching transition
 $91:B4C2             db 03, FD,27
@@ -4525,36 +4571,47 @@ $91:B53C             db 06, 06, 06, 06, 06, 06, FF
 $91:B543             db 08, FF
 
 ; D3h: Facing right - crystal flash
-$91:B545             db 03, 03, ; Raise Samus and generate bubble
+                        ; Raise Samus and generate bubble
+$91:B545             db 03, 03,
                         01, 01, FE,02,
-                        0C, 0C, 0C, 0C, FE,04, ; Main
-                        03, 03, 03, FD,01 ; Finish
+                        
+                        ; Main
+                        0C, 0C, 0C, 0C, FE,04,
+                        
+                        ; Finish
+                        03, 03, 03, FD,01
 
 ; D4h: Facing left  - crystal flash
-$91:B556             db 03, 03, ; Raise Samus and generate bubble
+                        ; Raise Samus and generate bubble
+$91:B556             db 03, 03,
                         01, 01, FE,02,
-                        0C, 0C, 0C, 0C, FE,04, ; Main
-                        03, 03, 03, FD,02 ; Finish
+                        
+                        ; Main
+                        0C, 0C, 0C, 0C, FE,04,
+                        
+                        ; Finish
+                        03, 03, 03, FD,02
 
 ; D7h: Facing right - crystal flash ending
 ; D8h: Facing left  - crystal flash ending
+                        ; Transition from morphed
 $91:B567             db 02, 02, 02, 02, 02,
+
+                        ; Unmorphed
                         02, FE,01
 
 ; 0: Facing forward - power suit
 ; 9Bh: Facing forward - varia/gravity suit
-$91:B56F             db 08, FF
-}
+$91:B56F             db 08, FF,
 
-
-;;; $B571: Unused animation delay table ;;;
-{
-$91:B571             db 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
+                        ; Samus appears (with save station electricity)
                         03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
                         03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
                         03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
                         03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
-                        03, 03, 03, 03, 03, 03, 03, 03, 03, 33, 02, 02, 02, 30, FE, 01
+                        03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03, 03,
+                        03, 03, 03, 03, 03, 03, 03, 03, 03, 33, 02, 02, 02,
+                        30, FE,01
 }
 
 
@@ -10758,7 +10815,7 @@ $91:E520 A9 E9 00    LDA #$00E9             ;\ Else (facing left):
 $91:E523 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - Samus drained - crouching/falling
 
 $91:E526 A9 02 00    LDA #$0002             ;\
-$91:E529 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 2
+$91:E529 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 2
 $91:E52C 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:E530 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
 $91:E534 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -10827,14 +10884,14 @@ $91:E5B0 D0 1A       BNE $1A    [$E5CC]     ;/
 $91:E5B2 A9 01 00    LDA #$0001             ;\
 $91:E5B5 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $91:E5B8 A9 04 00    LDA #$0004             ;\
-$91:E5BB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 4
+$91:E5BB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 5 - 1 (Samus is let up)
 $91:E5BE 80 0C       BRA $0C    [$E5CC]     ; Go to BRANCH_MERGE
 
 ; BRANCH_CROUCHING_FALLING
 $91:E5C0 A9 01 00    LDA #$0001             ;\
 $91:E5C3 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 1
 $91:E5C6 A9 0D 00    LDA #$000D             ;\
-$91:E5C9 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Dh
+$91:E5C9 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Eh - 1 (Samus is let up)
 
 ; BRANCH_MERGE
 $91:E5CC AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
@@ -10876,7 +10933,7 @@ $91:E60B 60          RTS                    ;} Return carry clear
 $91:E60C A9 10 00    LDA #$0010             ;\
 $91:E60F 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 10h
 $91:E612 A9 08 00    LDA #$0008             ;\
-$91:E615 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 8
+$91:E615 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 8 (crouching)
 $91:E618 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
 $91:E61B 29 FF 00    AND #$00FF             ;|
 $91:E61E C9 04 00    CMP #$0004             ;} If facing right:
@@ -11217,17 +11274,17 @@ $91:E89A D0 13       BNE $13    [$E8AF]     ;/
 $91:E89C 89 00 02    BIT #$0200             ;\
 $91:E89F D0 07       BNE $07    [$E8A8]     ;} If space jump equipped: go to BRANCH_SPACE_JUMP
 $91:E8A1 A9 03 00    LDA #$0003             ;\
-$91:E8A4 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 3
+$91:E8A4 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 3 (normal)
 $91:E8A7 60          RTS                    ; Return
 
 ; BRANCH_SPACE_JUMP
 $91:E8A8 A9 0D 00    LDA #$000D             ;\
-$91:E8AB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Dh
+$91:E8AB 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = Dh (space jump)
 $91:E8AE 60          RTS                    ; Return
 
 ; BRANCH_SCREW_ATTACK
 $91:E8AF A9 17 00    LDA #$0017             ;\
-$91:E8B2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 17h
+$91:E8B2 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 17h (screw attack)
 $91:E8B5 60          RTS
 }
 }
@@ -12223,7 +12280,7 @@ $91:EEEF 8D 82 0A    STA $0A82  [$7E:0A82]  ;} X-ray angle = C0h
 
 ; BRANCH_MERGE
 $91:EEF2 A9 02 00    LDA #$0002             ;\
-$91:EEF5 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 2
+$91:EEF5 8D 96 0A    STA $0A96  [$7E:0A96]  ;} Samus animation frame = 2 (facing forward)
 $91:EEF8 A9 3F 00    LDA #$003F             ;\
 $91:EEFB 8D 94 0A    STA $0A94  [$7E:0A94]  ;} Samus animation frame timer = 3Fh
 $91:EEFE A9 4F E9    LDA #$E94F             ;\
@@ -13047,7 +13104,7 @@ $91:F413 20 AE FD    JSR $FDAE  [$91:FDAE]  ; Handle collision due to change of 
 $91:F416 22 33 F4 91 JSL $91F433[$91:F433]  ; Initialise Samus pose
 $91:F41A 22 BB FB 91 JSL $91FBBB[$91:FBBB]  ; Handle jump transition
 $91:F41E 22 08 FB 91 JSL $91FB08[$91:FB08]  ; Set Samus animation frame if pose changed
-$91:F422 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; Samus animation frame skip = 0
+$91:F422 9C 9A 0A    STZ $0A9A  [$7E:0A9A]  ; New pose Samus animation frame = 0
 
 $91:F425 68          PLA
 $91:F426 CD 1C 0A    CMP $0A1C  [$7E:0A1C]  ;\
@@ -13197,7 +13254,7 @@ $91:F4FF C9 09 00    CMP #$0009             ;|
 $91:F502 D0 06       BNE $06    [$F50A]     ;/
 
 $91:F504 A9 01 00    LDA #$0001             ;\
-$91:F507 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 1
+$91:F507 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 1
 
 $91:F50A 18          CLC                    ;\
 $91:F50B 60          RTS                    ;} Return carry clear
@@ -13211,7 +13268,7 @@ $91:F50F 29 FF 00    AND #$00FF             ;|
 $91:F512 C9 01 00    CMP #$0001             ;} If [Samus previous movement type] = running:
 $91:F515 D0 06       BNE $06    [$F51D]     ;/
 $91:F517 A9 00 80    LDA #$8000             ;\
-$91:F51A 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 8000h
+$91:F51A 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 8000h (preserve animation frame)
 
 $91:F51D AD F8 0D    LDA $0DF8  [$7E:0DF8]  ;\
 $91:F520 F0 1F       BEQ $1F    [$F541]     ;} If [$0DF8] = 0 (always true): return carry clear
@@ -13313,7 +13370,7 @@ $91:F5C4 C9 56 00    CMP #$0056             ;|
 $91:F5C7 D0 06       BNE $06    [$F5CF]     ;/
 
 $91:F5C9 A9 01 00    LDA #$0001             ;\
-$91:F5CC 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 1
+$91:F5CC 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 1 (skip arm cannon moving up animation)
 
 ; BRANCH_NO_ANIMATION_SKIP
 $91:F5CF A5 8F       LDA $8F    [$7E:008F]  ;\
@@ -13349,7 +13406,7 @@ $91:F600 C9 F2 00    CMP #$00F2             ;|
 $91:F603 D0 06       BNE $06    [$F60B]     ;/
 
 $91:F605 A9 01 00    LDA #$0001             ;\
-$91:F608 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 1
+$91:F608 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 1 (skip arm cannon moving up animation)
 
 $91:F60B 18          CLC                    ;\
 $91:F60C 60          RTS                    ;} Return carry clear
@@ -13383,7 +13440,7 @@ $91:F62F C9 14 00    CMP #$0014             ;\
 $91:F632 D0 4B       BNE $4B    [$F67F]     ;} If [Samus previous movement type] != wall jumping: go to BRANCH_NOT_TURNING_AROUND
 
 $91:F634 A9 01 00    LDA #$0001             ;\
-$91:F637 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 1
+$91:F637 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 1 (skip arm cannon moving up animation)
 $91:F63A AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
 $91:F63D 29 0F 00    AND #$000F             ;|
 $91:F640 C9 08 00    CMP #$0008             ;|
@@ -13442,7 +13499,7 @@ $91:F6B8 D0 29       BNE $29    [$F6E3]     ;/
 $91:F6BA 89 00 02    BIT #$0200             ;\
 $91:F6BD D0 15       BNE $15    [$F6D4]     ;} If space jump equipped: go to BRANCH_SPACE_JUMP_RIGHT
 $91:F6BF AD 9A 0A    LDA $0A9A  [$7E:0A9A]  ;\
-$91:F6C2 F0 02       BEQ $02    [$F6C6]     ;} If [Samus animation frame skip] = 0 (not previously spinning): go to BRANCH_SPIN_JUMP_RIGHT
+$91:F6C2 F0 02       BEQ $02    [$F6C6]     ;} If [new pose Samus animation frame] = 0 (not previously spinning): go to BRANCH_SPIN_JUMP_RIGHT
 
 $91:F6C4 18          CLC                    ;\
 $91:F6C5 60          RTS                    ;} Return carry clear
@@ -13494,7 +13551,7 @@ $91:F719 D0 29       BNE $29    [$F744]     ;/
 $91:F71B 89 00 02    BIT #$0200             ;\
 $91:F71E D0 15       BNE $15    [$F735]     ;} If space jump equipped: go to BRANCH_SPACE_JUMP_LEFT
 $91:F720 AD 9A 0A    LDA $0A9A  [$7E:0A9A]  ;\
-$91:F723 F0 02       BEQ $02    [$F727]     ;} If [Samus animation frame skip] = 0 (not previously spinning): go to BRANCH_SPIN_JUMP_LEFT
+$91:F723 F0 02       BEQ $02    [$F727]     ;} If [new pose Samus animation frame] = 0 (not previously spinning): go to BRANCH_SPIN_JUMP_LEFT
 
 $91:F725 18          CLC                    ;\
 $91:F726 60          RTS                    ;} Return carry clear
@@ -13521,7 +13578,7 @@ $91:F747 8D 1C 0A    STA $0A1C  [$7E:0A1C]  ;} Samus pose = facing left - screw 
 
 ; BRANCH_SCREW_ATTACK_SOUND_EFFECT
 $91:F74A AD 9A 0A    LDA $0A9A  [$7E:0A9A]  ;\
-$91:F74D D0 07       BNE $07    [$F756]     ;} If [Samus animation frame skip] = 0 (not previously spinning):
+$91:F74D D0 07       BNE $07    [$F756]     ;} If [new pose Samus animation frame] = 0 (not previously spinning):
 $91:F74F A9 33 00    LDA #$0033             ;\
 $91:F752 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 33h, sound library 1, max queued sounds allowed = 6 (screw attack)
 
@@ -13920,7 +13977,7 @@ $91:F9FF C9 08 00    CMP #$0008             ;\
 $91:FA02 D0 06       BNE $06    [$FA0A]     ;} If [Samus previous movement type] != morph ball - falling: go to BRANCH_WAS_NOT_MORPH_BALL
 
 $91:FA04 A9 00 80    LDA #$8000             ;\
-$91:FA07 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 8000h
+$91:FA07 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 8000h (preserve animation frame)
 
 ; BRANCH_WAS_NOT_MORPH_BALL
 $91:FA0A 20 0F FA    JSR $FA0F  [$91:FA0F]  ; Apply momentum if turning in morph ball
@@ -13975,7 +14032,7 @@ $91:FA66 C9 13 00    CMP #$0013             ;\
 $91:FA69 D0 06       BNE $06    [$FA71]     ;} If [Samus previous movement type] != spring ball - falling: go to BRANCH_WAS_NOT_SPRING_BALL
 
 $91:FA6B A9 00 80    LDA #$8000             ;\
-$91:FA6E 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} Samus animation frame skip = 8000h
+$91:FA6E 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 8000h (preserve animation frame)
 
 ; BRANCH_WAS_NOT_SPRING_BALL
 $91:FA71 20 0F FA    JSR $FA0F  [$91:FA0F]  ; Apply momentum if turning in morph ball
@@ -14115,13 +14172,13 @@ $91:FB5A 85 12       STA $12    [$7E:0012]  ;} $12 = 2 (Samus animation delay in
 
 ; BRANCH_MERGE
 $91:FB5C AD 9A 0A    LDA $0A9A  [$7E:0A9A]  ;\
-$91:FB5F 30 2A       BMI $2A    [$FB8B]     ;} If [Samus animation frame skip] & 8000h != 0: return
+$91:FB5F 30 2A       BMI $2A    [$FB8B]     ;} If [new pose Samus animation frame] & 8000h != 0: return
 $91:FB61 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
 $91:FB64 CD 20 0A    CMP $0A20  [$7E:0A20]  ;} If [Samus pose] = [Samus previous pose]: return
 $91:FB67 F0 22       BEQ $22    [$FB8B]     ;/
 $91:FB69 A9 00 00    LDA #$0000             ;\
 $91:FB6C 18          CLC                    ;|
-$91:FB6D 6D 9A 0A    ADC $0A9A  [$7E:0A9A]  ;} Samus animation frame = [Samus animation frame skip]
+$91:FB6D 6D 9A 0A    ADC $0A9A  [$7E:0A9A]  ;} Samus animation frame = [new pose Samus animation frame]
 $91:FB70 8D 96 0A    STA $0A96  [$7E:0A96]  ;/
 $91:FB73 A8          TAY                    ;\
 $91:FB74 AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;|
