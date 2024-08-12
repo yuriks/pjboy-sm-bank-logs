@@ -5722,228 +5722,236 @@ $8C:D81B             dw 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 10
 
 ;;; $D91B: Instruction list - credits scrolling ;;;
 {
+; Negative instructions are ASM instructions (as per usual)
+; For positive instructions, the first word is ignored, the second word is an offset to a row of credits tilemap to load
+; Offsets are a multiple of 40h that index $7F:0000 (which is decompressed from $97:EEFF)
+; A positive instruction will be processed only when a new tilemap row needs copying (which is once every 10h frames)
+
+; Strangely (to me), this doesn't just load the credits tilemap in the original order,
+; but actually rearranges some sections and omits(!) some credits
+
 $8C:D91B             dx 9A17,0008   ; Timer = 8
-$8C:D91F             dx 0000,1FC0,
+$8C:D91F             dx 0000,1FC0,  ; "                                "
                         9A0D,D91F,  ; Decrement timer and go to $D91F if non-zero
-                        0000,0000,
+                        0000,0000,  ; "      SUPER METROID STAFF       "
                         9A17,0010   ; Timer = 10h
-$8C:D92F             dx 0000,1FC0,
+$8C:D92F             dx 0000,1FC0,  ; "                                "
                         9A0D,D92F,  ; Decrement timer and go to $D92F if non-zero
-                        0000,0100,
-                        0000,1FC0,
-                        0000,01C0,
-                        0000,0200,
+                        0000,0100,  ; "            PRODUCER            "
+                        0000,1FC0,  ; "                                "
+                        0000,01C0,  ; "          MAKOTO KANOH          "
+                        0000,0200,  ; "          MAKOTO KANOH          "
                         9A17,0010   ; Timer = 10h
-$8C:D94B             dx 0000,1FC0,
+$8C:D94B             dx 0000,1FC0,  ; "                                "
                         9A0D,D94B,  ; Decrement timer and go to $D94B if non-zero
-                        0000,0240,
-                        0000,1FC0,
-                        0000,0280,
-                        0000,02C0,
+                        0000,0240,  ; "            DIRECTOR            "
+                        0000,1FC0,  ; "                                "
+                        0000,0280,  ; "         YOSHIO SAKAMOTO        "
+                        0000,02C0,  ; "         YOSHIO SAKAMOTO        "
                         9A17,0010   ; Timer = 10h
-$8C:D967             dx 0000,1FC0,
+$8C:D967             dx 0000,1FC0,  ; "                                "
                         9A0D,D967,  ; Decrement timer and go to $D967 if non-zero
-                        0000,0300,
-                        0000,1FC0,
-                        0000,0340,
-                        0000,0380,
-                        0000,1FC0,
-                        0000,03C0,
-                        0000,0400,
-                        0000,1FC0,
-                        0000,0440,
-                        0000,0480,
+                        0000,0300,  ; "      BACK GROUND DESIGNERS     "
+                        0000,1FC0,  ; "                                "
+                        0000,0340,  ; "        HIROFUMI MATSUOKA       "
+                        0000,0380,  ; "        HIROFUMI MATSUOKA       "
+                        0000,1FC0,  ; "                                "
+                        0000,03C0,  ; "        MASAHIKO MASHIMO        "
+                        0000,0400,  ; "        MASAHIKO MASHIMO        "
+                        0000,1FC0,  ; "                                "
+                        0000,0440,  ; "         HIROYUKI KIMURA        "
+                        0000,0480,  ; "         HIROYUKI KIMURA        "
                         9A17,0010   ; Timer = 10h
-$8C:D99B             dx 0000,1FC0,
+$8C:D99B             dx 0000,1FC0,  ; "                                "
                         9A0D,D99B,  ; Decrement timer and go to $D99B if non-zero
-                        0000,04C0,
-                        0000,1FC0,
-                        0000,0500,
-                        0000,0540,
-                        0000,1FC0,
-                        0000,0580,
-                        0000,05C0,
+                        0000,04C0,  ; "        OBJECT DESIGNERS        "
+                        0000,1FC0,  ; "                                "
+                        0000,0500,  ; "          TOHRU OHSAWA          "
+                        0000,0540,  ; "          TOHRU OHSAWA          "
+                        0000,1FC0,  ; "                                "
+                        0000,0580,  ; "        TOMOYOSHI YAMANE        "
+                        0000,05C0,  ; "        TOMOYOSHI YAMANE        "
                         9A17,0010   ; Timer = 10h
-$8C:D9C3             dx 0000,1FC0,
+$8C:D9C3             dx 0000,1FC0,  ; "                                "
                         9A0D,D9C3,  ; Decrement timer and go to $D9C3 if non-zero
-                        0000,0600,
-                        0000,1FC0,
-                        0000,0640,
-                        0000,0680,
+                        0000,0600,  ; "     SAMUS ORIGINAL DESIGNER    "
+                        0000,1FC0,  ; "                                "
+                        0000,0640,  ; "         HIROJI KIYOTAKE        "
+                        0000,0680,  ; "         HIROJI KIYOTAKE        "
                         9A17,0010   ; Timer = 10h
-$8C:D9DF             dx 0000,1FC0,
+$8C:D9DF             dx 0000,1FC0,  ; "                                "
                         9A0D,D9DF,  ; Decrement timer and go to $D9DF if non-zero
-                        0000,06C0,
-                        0000,1FC0,
-                        0000,0700,
-                        0000,0740,
+                        0000,06C0,  ; "         SAMUS DESIGNER         "
+                        0000,1FC0,  ; "                                "
+                        0000,0700,  ; "          TOMOMI YAMANE         "
+                        0000,0740,  ; "          TOMOMI YAMANE         "
                         9A17,0010   ; Timer = 10h
-$8C:D9FB             dx 0000,1FC0,
+$8C:D9FB             dx 0000,1FC0,  ; "                                "
                         9A0D,D9FB,  ; Decrement timer and go to $D9FB if non-zero
-                        0000,14C0,
-                        0000,1AC0,
-                        0000,1FC0,
-                        0000,1500,
-                        0000,1540,
+                        0000,14C0,  ; "     SOUND PROGRAM              "
+                        0000,1AC0,  ; "          AND SOUND EFFECTS     "
+                        0000,1FC0,  ; "                                "
+                        0000,1500,  ; "         KENJI YAMAMOTO         "
+                        0000,1540,  ; "         KENJI YAMAMOTO         "
                         9A17,0010   ; Timer = 10h
-$8C:DA1B             dx 0000,1FC0,
+$8C:DA1B             dx 0000,1FC0,  ; "                                "
                         9A0D,DA1B,  ; Decrement timer and go to $DA1B if non-zero
-                        0000,1580,
-                        0000,1FC0,
-                        0000,1500,
-                        0000,1540,
-                        0000,1FC0,
-                        0000,15C0,
-                        0000,1600,
+                        0000,1580,  ; "         MUSIC COMPOSERS        "
+                        0000,1FC0,  ; "                                "
+                        0000,1500,  ; "         KENJI YAMAMOTO         "
+                        0000,1540,  ; "         KENJI YAMAMOTO         "
+                        0000,1FC0,  ; "                                "
+                        0000,15C0,  ; "          MINAKO HAMANO         "
+                        0000,1600,  ; "          MINAKO HAMANO         "
                         9A17,0010   ; Timer = 10h
-$8C:DA43             dx 0000,1FC0,
+$8C:DA43             dx 0000,1FC0,  ; "                                "
                         9A0D,DA43,  ; Decrement timer and go to $DA43 if non-zero
-                        0000,0780,
-                        0000,1FC0,
-                        0000,07C0,
-                        0000,1000,
+                        0000,0780,  ; "        PROGRAM DIRECTOR        "
+                        0000,1FC0,  ; "                                "
+                        0000,07C0,  ; "           KENJI IMAI           "
+                        0000,1000,  ; "           KENJI IMAI           "
                         9A17,0010   ; Timer = 10h
-$8C:DA5F             dx 0000,1FC0,
+$8C:DA5F             dx 0000,1FC0,  ; "                                "
                         9A0D,DA5F,  ; Decrement timer and go to $DA5F if non-zero
-                        0000,1040,
-                        0000,1FC0,
-                        0000,1080,
-                        0000,10C0,
+                        0000,1040,  ; "        SYSTEM COORDINATOR      "
+                        0000,1FC0,  ; "                                "
+                        0000,1080,  ; "          KENJI NAKAJIMA        "
+                        0000,10C0,  ; "          KENJI NAKAJIMA        "
                         9A17,0010   ; Timer = 10h
-$8C:DA7B             dx 0000,1FC0,
+$8C:DA7B             dx 0000,1FC0,  ; "                                "
                         9A0D,DA7B,  ; Decrement timer and go to $DA7B if non-zero
-                        0000,1100,
-                        0000,1FC0,
-                        0000,1140,
-                        0000,1180,
+                        0000,1100,  ; "        SYSTEM PROGRAMMER       "
+                        0000,1FC0,  ; "                                "
+                        0000,1140,  ; "          YOSHIKAZU MORI        "
+                        0000,1180,  ; "          YOSHIKAZU MORI        "
                         9A17,0010   ; Timer = 10h
-$8C:DA97             dx 0000,1FC0,
+$8C:DA97             dx 0000,1FC0,  ; "                                "
                         9A0D,DA97,  ; Decrement timer and go to $DA97 if non-zero
-                        0000,11C0,
-                        0000,1FC0,
-                        0000,1200,
-                        0000,1240,
+                        0000,11C0,  ; "        SAMUS PROGRAMMER        "
+                        0000,1FC0,  ; "                                "
+                        0000,1200,  ; "          ISAMU KUBOTA          "
+                        0000,1240,  ; "          ISAMU KUBOTA          "
                         9A17,0010   ; Timer = 10h
-$8C:DAB3             dx 0000,1FC0,
+$8C:DAB3             dx 0000,1FC0,  ; "                                "
                         9A0D,DAB3,  ; Decrement timer and go to $DAB3 if non-zero
-                        0000,1280,
-                        0000,1FC0,
-                        0000,12C0,
-                        0000,1300,
+                        0000,1280,  ; "        EVENT PROGRAMMER        "
+                        0000,1FC0,  ; "                                "
+                        0000,12C0,  ; "        MITSURU MATSUMOTO       "
+                        0000,1300,  ; "        MITSURU MATSUMOTO       "
                         9A17,0010   ; Timer = 10h
-$8C:DACF             dx 0000,1FC0,
+$8C:DACF             dx 0000,1FC0,  ; "                                "
                         9A0D,DACF,  ; Decrement timer and go to $DACF if non-zero
-                        0000,1340,
-                        0000,1FC0,
-                        0000,1380,
-                        0000,13C0,
+                        0000,1340,  ; "        ENEMY PROGRAMMER        "
+                        0000,1FC0,  ; "                                "
+                        0000,1380,  ; "         YASUHIKO FUJII         "
+                        0000,13C0,  ; "         YASUHIKO FUJII         "
                         9A17,0010   ; Timer = 10h
-$8C:DAEB             dx 0000,1FC0,
+$8C:DAEB             dx 0000,1FC0,  ; "                                "
                         9A0D,DAEB,  ; Decrement timer and go to $DAEB if non-zero
-                        0000,1400,
-                        0000,1FC0,
-                        0000,1440,
-                        0000,1480,
+                        0000,1400,  ; "         MAP PROGRAMMER         "
+                        0000,1FC0,  ; "                                "
+                        0000,1440,  ; "       MOTOMU CHIKARAISHI       "
+                        0000,1480,  ; "       MOTOMU CHIKARAISHI       "
                         9A17,0010   ; Timer = 10h
-$8C:DB07             dx 0000,1FC0,
+$8C:DB07             dx 0000,1FC0,  ; "                                "
                         9A0D,DB07,  ; Decrement timer and go to $DB07 if non-zero
-                        0000,1940,
-                        0000,1FC0,
-                        0000,1980,
-                        0000,19C0,
+                        0000,1940,  ; "      ASSISTANT PROGRAMMER      "
+                        0000,1FC0,  ; "                                "
+                        0000,1980,  ; "           KOUICHI ABE          "
+                        0000,19C0,  ; "           KOUICHI ABE          "
                         9A17,0010   ; Timer = 10h
-$8C:DB23             dx 0000,1FC0,
+$8C:DB23             dx 0000,1FC0,  ; "                                "
                         9A0D,DB23,  ; Decrement timer and go to $DB23 if non-zero
-                        0000,1A00,
-                        0000,1FC0,
-                        0000,1A40,
-                        0000,1A80,
-                        0000,1FC0,
-                        0000,0FC0,
-                        0000,1800,
+                        0000,1A00,  ; "          COORDINATORS          "
+                        0000,1FC0,  ; "                                "
+                        0000,1A40,  ; "         KATSUYA YAMANO         "
+                        0000,1A80,  ; "         KATSUYA YAMANO         "
+                        0000,1FC0,  ; "                                "
+                        0000,0FC0,  ; "        TSUTOMU KANESHIGE       "
+                        0000,1800,  ; "        TSUTOMU KANESHIGE       "
                         9A17,0010   ; Timer = 10h
-$8C:DB4B             dx 0000,1FC0,
+$8C:DB4B             dx 0000,1FC0,  ; "                                "
                         9A0D,DB4B,  ; Decrement timer and go to $DB4B if non-zero
-                        0000,1640,
-                        0000,1FC0,
-                        0000,1680,
-                        0000,16C0,
-                        0000,1FC0,
-                        0000,1700,
-                        0000,1740,
-                        0000,1FC0,
-                        0000,1780,
-                        0000,17C0,
-                        0000,1FC0,
-                        0000,18C0,
-                        0000,1900,
-                        0000,1FC0,
-                        0000,1B00,
-                        0000,1B40,
-                        0000,1FC0,
-                        0000,1B80,
-                        0000,1BC0,
+                        0000,1640,  ; "        PRINTED ART WORK        "
+                        0000,1FC0,  ; "                                "
+                        0000,1680,  ; "       MASAFUMI SAKASHITA       "
+                        0000,16C0,  ; "       MASAFUMI SAKASHITA       "
+                        0000,1FC0,  ; "                                "
+                        0000,1700,  ; "           YASUO INOUE          "
+                        0000,1740,  ; "           YASUO INOUE          "
+                        0000,1FC0,  ; "                                "
+                        0000,1780,  ; "           MARY COCOMA          "
+                        0000,17C0,  ; "           MARY COCOMA          "
+                        0000,1FC0,  ; "                                "
+                        0000,18C0,  ; "          YUSUKE NAKANO         "
+                        0000,1900,  ; "          YUSUKE NAKANO         "
+                        0000,1FC0,  ; "                                "
+                        0000,1B00,  ; "           SHINYA SANO          "
+                        0000,1B40,  ; "           SHINYA SANO          "
+                        0000,1FC0,  ; "                                "
+                        0000,1B80,  ; "          NORIYUKI SATO         "
+                        0000,1BC0,  ; "          NORIYUKI SATO         "
                         9A17,0010   ; Timer = 10h
-$8C:DBA3             dx 0000,1FC0,
+$8C:DBA3             dx 0000,1FC0,  ; "                                "
                         9A0D,DBA3,  ; Decrement timer and go to $DBA3 if non-zero
-                        0000,0800,
-                        0000,1FC0,
-                        0000,0840,
-                        0000,0880,
-                        0000,1FC0,
-                        0000,08C0,
-                        0000,0900,
-                        0000,1FC0,
-                        0000,09C0,
-                        0000,0A00,
-                        0000,1FC0,
-                        0000,0AC0,
-                        0000,0B00,
-                        0000,1FC0,
-                        0000,0BC0,
-                        0000,0C00,
-                        0000,1FC0,
-                        0000,0C40,
-                        0000,0C80,
-                        0000,1FC0,
-                        0000,0CC0,
-                        0000,0D00,
-                        0000,1FC0,
-                        0000,0D40,
-                        0000,0D80,
-                        0000,1FC0,
-                        0000,0E40,
-                        0000,0E80,
-                        0000,1FC0,
-                        0000,0EC0,
-                        0000,0F00,
-                        0000,1FC0,
-                        0000,0F40,
-                        0000,0F80,
-                        0000,1FC0,
-                        0000,1840,
-                        0000,1880,
-                        0000,1FC0,
-                        0000,1E80,
-                        0000,1EC0,
-                        0000,1FC0,
-                        0000,1F00,
-                        0000,1F40,
-                        0000,1FC0,
-                        0000,0B40,
-                        0000,0B80,
-                        0000,1FC0,
-                        0000,1C00,
-                        0000,1C40,
+                        0000,0800,  ; "        SPECIAL THANKS TO       "
+                        0000,1FC0,  ; "                                "
+                        0000,0840,  ; "            DAN OWSEN           "
+                        0000,0880,  ; "            DAN OWSEN           "
+                        0000,1FC0,  ; "                                "
+                        0000,08C0,  ; "         GEORGE SINFIELD        "
+                        0000,0900,  ; "         GEORGE SINFIELD        "
+                        0000,1FC0,  ; "                                "
+                        0000,09C0,  ; "           MASARU OKADA         "
+                        0000,0A00,  ; "           MASARU OKADA         "
+                        0000,1FC0,  ; "                                "
+                        0000,0AC0,  ; "         TAKAHIRO HARADA        "
+                        0000,0B00,  ; "         TAKAHIRO HARADA        "
+                        0000,1FC0,  ; "                                "
+                        0000,0BC0,  ; "           KOHTA FUKUI          "
+                        0000,0C00,  ; "           KOHTA FUKUI          "
+                        0000,1FC0,  ; "                                "
+                        0000,0C40,  ; "         KEISUKE TERASAKI       "
+                        0000,0C80,  ; "         KEISUKE TERASAKI       "
+                        0000,1FC0,  ; "                                "
+                        0000,0CC0,  ; "         MASARU YAMANAKA        "
+                        0000,0D00,  ; "         MASARU YAMANAKA        "
+                        0000,1FC0,  ; "                                "
+                        0000,0D40,  ; "         HITOSHI YAMAGAMI       "
+                        0000,0D80,  ; "         HITOSHI YAMAGAMI       "
+                        0000,1FC0,  ; "                                "
+                        0000,0E40,  ; "          NOBUHIRO OZAKI        "
+                        0000,0E80,  ; "          NOBUHIRO OZAKI        "
+                        0000,1FC0,  ; "                                "
+                        0000,0EC0,  ; "         KENICHI NAKAMURA       "
+                        0000,0F00,  ; "         KENICHI NAKAMURA       "
+                        0000,1FC0,  ; "                                "
+                        0000,0F40,  ; "        TAKEHIKO HOSOKAWA       "
+                        0000,0F80,  ; "        TAKEHIKO HOSOKAWA       "
+                        0000,1FC0,  ; "                                "
+                        0000,1840,  ; "        SATOSHI MATSUMURA       "
+                        0000,1880,  ; "        SATOSHI MATSUMURA       "
+                        0000,1FC0,  ; "                                "
+                        0000,1E80,  ; "        TAKESHI NAGAREDA        "
+                        0000,1EC0,  ; "        TAKESHI NAGAREDA        "
+                        0000,1FC0,  ; "                                "
+                        0000,1F00,  ; "         MASAHIRO KAWANO        "
+                        0000,1F40,  ; "         MASAHIRO KAWANO        "
+                        0000,1FC0,  ; "                                "
+                        0000,0B40,  ; "           HIRO YAMADA          "
+                        0000,0B80,  ; "           HIRO YAMADA          "
+                        0000,1FC0,  ; "                                "
+                        0000,1C00,  ; "     AND ALL OF R&D1 STAFFS     "
+                        0000,1C40,  ; "     AND ALL OF R&D1 STAFFS     "
                         9A17,0010   ; Timer = 10h
-$8C:DC73             dx 0000,1FC0,
+$8C:DC73             dx 0000,1FC0,  ; "                                "
                         9A0D,DC73,  ; Decrement timer and go to $DC73 if non-zero
-                        0000,1C80,
-                        0000,1FC0,
-                        0000,0140,
-                        0000,0180,
+                        0000,1C80,  ; "        GENERAL MANAGER         "
+                        0000,1FC0,  ; "                                "
+                        0000,0140,  ; "          GUMPEI YOKOI          "
+                        0000,0180,  ; "          GUMPEI YOKOI          "
                         9A17,0023   ; Timer = 23h
-$8C:DC8F             dx 0000,1FC0,
+$8C:DC8F             dx 0000,1FC0,  ; "                                "
                         9A0D,DC8F,  ; Decrement timer and go to $DC8F if non-zero
                         F6FE        ; End credits
                         99FE        ; Delete

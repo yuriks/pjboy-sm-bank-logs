@@ -428,7 +428,7 @@ $93:82AC 10 3B       BPL $3B    [$82E9]     ;/
 ; BRANCH_DRAW
 $93:82AE AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $93:82B1 10 08       BPL $08    [$82BB]     ;} If Ceres elevator room is rotating:
-$93:82B3 22 D9 8A 8B JSL $8B8AD9[$8B:8AD9]  ; Calculate position of projectile explosion in rotating elevator room
+$93:82B3 22 D9 8A 8B JSL $8B8AD9[$8B:8AD9]  ; Calculate position of projectile in rotating elevator room
 $93:82B7 A5 12       LDA $12    [$7E:0012]
 $93:82B9 80 12       BRA $12    [$82CD]     ; Go to BRANCH_POSITION_CALCULATED
 
@@ -537,7 +537,7 @@ $93:8368 C9 00 05    CMP #$0500             ;\
 $93:836B F0 12       BEQ $12    [$837F]     ;} If projectile is a bomb: go to BRANCH_NORMAL_POSITION_CALCULATION
 $93:836D AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $93:8370 10 0D       BPL $0D    [$837F]     ;} If [Ceres status] != elevator room rotates: go to BRANCH_NORMAL_POSITION_CALCULATION
-$93:8372 22 D9 8A 8B JSL $8B8AD9[$8B:8AD9]  ; Calculate position of projectile explosion in rotating elevator room
+$93:8372 22 D9 8A 8B JSL $8B8AD9[$8B:8AD9]  ; Calculate position of projectile in rotating elevator room
 $93:8376 A5 12       LDA $12    [$7E:0012]  ; A = [$12]
 $93:8378 80 21       BRA $21    [$839B]     ; Go to BRANCH_CALCULATED_POSITION
 

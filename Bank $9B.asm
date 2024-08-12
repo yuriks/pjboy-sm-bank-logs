@@ -465,7 +465,7 @@ $9B:A3D0 C2 30       REP #$30
 $9B:A3D2 22 D1 81 93 JSL $9381D1[$93:81D1]  ; $16 = projectile trail frame
 $9B:A3D6 AD 3F 09    LDA $093F  [$7E:093F]  ;\
 $9B:A3D9 10 18       BPL $18    [$A3F3]     ;} If Ceres elevator shaft is rotating:
-$9B:A3DB 22 D9 8A 8B JSL $8B8AD9[$8B:8AD9]  ; Calculate position of projectile explosion in rotating elevator room
+$9B:A3DB 22 D9 8A 8B JSL $8B8AD9[$8B:8AD9]  ; Calculate position of projectile in rotating elevator room
 $9B:A3DF A5 12       LDA $12    [$7E:0012]  ;\
 $9B:A3E1 48          PHA                    ;|
 $9B:A3E2 A5 14       LDA $14    [$7E:0014]  ;|

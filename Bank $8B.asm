@@ -1,5 +1,6 @@
 ;;; $8000: Set up PPU for title sequence ;;;
 {
+; No idea why pause menu variables are being cleared here
 $8B:8000 08          PHP
 $8B:8001 E2 30       SEP #$30
 $8B:8003 A9 80       LDA #$80               ;\
@@ -55,17 +56,17 @@ $8B:807E 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:8081 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:8084 9C 29 07    STZ $0729  [$7E:0729]  ;\
 $8B:8087 9C 2B 07    STZ $072B  [$7E:072B]  ;|
-$8B:808A 9C 2D 07    STZ $072D  [$7E:072D]  ;} $0729..32 = 0
+$8B:808A 9C 2D 07    STZ $072D  [$7E:072D]  ;} $0729..32 = 0 (some pause menu animation timers)
 $8B:808D 9C 2F 07    STZ $072F  [$7E:072F]  ;|
 $8B:8090 9C 31 07    STZ $0731  [$7E:0731]  ;/
 $8B:8093 9C 3D 07    STZ $073D  [$7E:073D]  ;\
 $8B:8096 9C 3F 07    STZ $073F  [$7E:073F]  ;|
-$8B:8099 9C 41 07    STZ $0741  [$7E:0741]  ;} $073D..46 = 0
+$8B:8099 9C 41 07    STZ $0741  [$7E:0741]  ;} $073D..46 = 0 (some pause menu animation frames)
 $8B:809C 9C 43 07    STZ $0743  [$7E:0743]  ;|
 $8B:809F 9C 45 07    STZ $0745  [$7E:0745]  ;/
 $8B:80A2 9C 51 07    STZ $0751  [$7E:0751]  ;\
 $8B:80A5 9C 53 07    STZ $0753  [$7E:0753]  ;|
-$8B:80A8 9C 55 07    STZ $0755  [$7E:0755]  ;} $0751..5A = 0
+$8B:80A8 9C 55 07    STZ $0755  [$7E:0755]  ;} $0751..5A = 0 (some pause menu animation modes)
 $8B:80AB 9C 57 07    STZ $0757  [$7E:0757]  ;|
 $8B:80AE 9C 59 07    STZ $0759  [$7E:0759]  ;/
 $8B:80B1 9C D6 09    STZ $09D6  [$7E:09D6]  ; Samus reserve health = 0
@@ -964,7 +965,9 @@ $8B:8780             dw 39F4, 39F5, 39F6, 39F7, 39F8, 39F9, 39FA, 39FB, 39FC, 39
 }
 
 
-;;; $87A0: Update cinematic BG tilemap ;;;
+;;; $87A0..8A51: Cinematic BG objects ;;;
+{
+;;; $87A0: Update 32x30 cinematic BG tilemap ;;;
 {
 ; If not mode 7:
 ;     Queue transfer of 780h bytes from $7E:3000 to VRAM [$19F5]
@@ -1034,7 +1037,7 @@ $8B:8805 60          RTS
 }
 
 
-;;; $8806:  ;;;
+;;; $8806: Update 32x32 cinematic BG tilemap ;;;
 {
 ; If not mode 7:
 ;     Queue transfer of 800h bytes from $7E:3000 to VRAM [$19F5]
@@ -1096,6 +1099,7 @@ $8B:884C 60          RTS
 {
 ; Only one tile can be specified
 ; Draws character, updates caret position (based on next instruction) and plays intro text click
+; Cinemastic sprite object Fh is the intro text caret here
 $8B:884D AD A1 1B    LDA $1BA1  [$7E:1BA1]  ;\
 $8B:8850 D0 08       BNE $08    [$885A]     ;|
 $8B:8852 A9 01 00    LDA #$0001             ;|
@@ -1113,27 +1117,27 @@ $8B:886A 30 1E       BMI $1E    [$888A]     ;} If [[Y] + 6] & 8000h = 0:
 $8B:886C B9 08 00    LDA $0008,y[$8C:C393]  ;\
 $8B:886F 29 FF 00    AND #$00FF             ;|
 $8B:8872 0A          ASL A                  ;|
-$8B:8873 0A          ASL A                  ;} Cinematic sprite object 1Eh X position = [[Y] + 8] * 8
+$8B:8873 0A          ASL A                  ;} Cinematic sprite object Fh X position = [[Y] + 8] * 8
 $8B:8874 0A          ASL A                  ;|
 $8B:8875 9D 7D 1A    STA $1A7D,x[$7E:1A9B]  ;/
 $8B:8878 B9 09 00    LDA $0009,y[$8C:C394]  ;\
 $8B:887B 29 FF 00    AND #$00FF             ;|
 $8B:887E 0A          ASL A                  ;|
 $8B:887F 0A          ASL A                  ;|
-$8B:8880 0A          ASL A                  ;} Cinematic sprite object 1Eh Y position = ([[Y] + 9] - 1) * 8
+$8B:8880 0A          ASL A                  ;} Cinematic sprite object Fh Y position = ([[Y] + 9] - 1) * 8
 $8B:8881 38          SEC                    ;|
 $8B:8882 E9 08 00    SBC #$0008             ;|
 $8B:8885 9D 9D 1A    STA $1A9D,x[$7E:1ABB]  ;/
 $8B:8888 80 18       BRA $18    [$88A2]
 
 $8B:888A A9 08 00    LDA #$0008             ;\ Else ([[Y] + 6] & 8000h != 0):
-$8B:888D 9D 7D 1A    STA $1A7D,x[$7E:1A9B]  ;} Cinematic sprite object 1Eh X position = 8
+$8B:888D 9D 7D 1A    STA $1A7D,x[$7E:1A9B]  ;} Cinematic sprite object Fh X position = 8
 $8B:8890 B9 03 00    LDA $0003,y[$8C:C790]  ;\
 $8B:8893 29 FF 00    AND #$00FF             ;|
 $8B:8896 1A          INC A                  ;|
 $8B:8897 1A          INC A                  ;|
 $8B:8898 0A          ASL A                  ;|
-$8B:8899 0A          ASL A                  ;} Cinematic sprite object 1Eh Y position = ([[Y] + 3] + 2) * 8
+$8B:8899 0A          ASL A                  ;} Cinematic sprite object Fh Y position = ([[Y] + 3] + 2) * 8
 $8B:889A 0A          ASL A                  ;|
 $8B:889B 38          SEC                    ;|
 $8B:889C E9 08 00    SBC #$0008             ;|
@@ -1258,50 +1262,51 @@ $8B:896A 60          RTS
 }
 
 
-;;; $896B: Unused ;;;
+;;; $896B: Unused. Indirect instruction function - draw the [[Y] + 3] x [[Y] + 2] region with tilemap values at [Y] + 4 to mode 7 tilemap ;;;
 {
-$8B:896B 20 2C 8A    JSR $8A2C  [$8B:8A2C]
-$8B:896E B9 02 00    LDA $0002,y
-$8B:8971 29 FF 00    AND #$00FF
-$8B:8974 8D 12 00    STA $0012  [$7E:0012]
-$8B:8977 B9 03 00    LDA $0003,y
-$8B:897A 29 FF 00    AND #$00FF
-$8B:897D 8D 14 00    STA $0014  [$7E:0014]
-$8B:8980 98          TYA
-$8B:8981 18          CLC
-$8B:8982 69 04 00    ADC #$0004
-$8B:8985 A8          TAY
-$8B:8986 AE 34 03    LDX $0334  [$7E:0334]
+$8B:896B 20 2C 8A    JSR $8A2C  [$8B:8A2C]  ; $16 = mode 7 tilemap offset for tile ([$12], [$13])
+$8B:896E B9 02 00    LDA $0002,y            ;\
+$8B:8971 29 FF 00    AND #$00FF             ;} $12 = [[Y] + 2] (columns)
+$8B:8974 8D 12 00    STA $0012  [$7E:0012]  ;/
+$8B:8977 B9 03 00    LDA $0003,y            ;\
+$8B:897A 29 FF 00    AND #$00FF             ;} $14 = [[Y] + 3] (rows)
+$8B:897D 8D 14 00    STA $0014  [$7E:0014]  ;/
+$8B:8980 98          TYA                    ;\
+$8B:8981 18          CLC                    ;|
+$8B:8982 69 04 00    ADC #$0004             ;} Y += 4
+$8B:8985 A8          TAY                    ;/
+$8B:8986 AE 34 03    LDX $0334  [$7E:0334]  ; X = [mode 7 transfers stack pointer]
 
-$8B:8989 A9 80 00    LDA #$0080
-$8B:898C 9D D0 02    STA $02D0,x
-$8B:898F 98          TYA
-$8B:8990 9D D1 02    STA $02D1,x
-$8B:8993 A9 8B 00    LDA #$008B
-$8B:8996 9D D3 02    STA $02D3,x
-$8B:8999 AD 12 00    LDA $0012  [$7E:0012]
-$8B:899C 9D D4 02    STA $02D4,x
-$8B:899F AD 16 00    LDA $0016  [$7E:0016]
-$8B:89A2 9D D6 02    STA $02D6,x
-$8B:89A5 A9 00 00    LDA #$0000
-$8B:89A8 9D D8 02    STA $02D8,x
-$8B:89AB 8A          TXA
-$8B:89AC 18          CLC
-$8B:89AD 69 09 00    ADC #$0009
-$8B:89B0 AA          TAX
-$8B:89B1 98          TYA
-$8B:89B2 18          CLC
-$8B:89B3 6D 12 00    ADC $0012  [$7E:0012]
-$8B:89B6 A8          TAY
-$8B:89B7 AD 16 00    LDA $0016  [$7E:0016]
-$8B:89BA 18          CLC
-$8B:89BB 69 80 00    ADC #$0080
-$8B:89BE 8D 16 00    STA $0016  [$7E:0016]
-$8B:89C1 CE 14 00    DEC $0014  [$7E:0014]
-$8B:89C4 F0 02       BEQ $02    [$89C8]
-$8B:89C6 80 C1       BRA $C1    [$8989]
+; LOOP
+$8B:8989 A9 80 00    LDA #$0080             ;\
+$8B:898C 9D D0 02    STA $02D0,x            ;|
+$8B:898F 98          TYA                    ;|
+$8B:8990 9D D1 02    STA $02D1,x            ;|
+$8B:8993 A9 8B 00    LDA #$008B             ;|
+$8B:8996 9D D3 02    STA $02D3,x            ;|
+$8B:8999 AD 12 00    LDA $0012  [$7E:0012]  ;} Queue mode 7 tilemap transfer of [$12] bytes from $8B:[Y] to VRAM [$16]
+$8B:899C 9D D4 02    STA $02D4,x            ;|
+$8B:899F AD 16 00    LDA $0016  [$7E:0016]  ;|
+$8B:89A2 9D D6 02    STA $02D6,x            ;|
+$8B:89A5 A9 00 00    LDA #$0000             ;|
+$8B:89A8 9D D8 02    STA $02D8,x            ;/
+$8B:89AB 8A          TXA                    ;\
+$8B:89AC 18          CLC                    ;|
+$8B:89AD 69 09 00    ADC #$0009             ;} X += 9
+$8B:89B0 AA          TAX                    ;/
+$8B:89B1 98          TYA                    ;\
+$8B:89B2 18          CLC                    ;|
+$8B:89B3 6D 12 00    ADC $0012  [$7E:0012]  ;} Y += [$12] (next source row)
+$8B:89B6 A8          TAY                    ;/
+$8B:89B7 AD 16 00    LDA $0016  [$7E:0016]  ;\
+$8B:89BA 18          CLC                    ;|
+$8B:89BB 69 80 00    ADC #$0080             ;} $16 += 80h (next destination row)
+$8B:89BE 8D 16 00    STA $0016  [$7E:0016]  ;/
+$8B:89C1 CE 14 00    DEC $0014  [$7E:0014]  ; Decrement $14
+$8B:89C4 F0 02       BEQ $02    [$89C8]     ; If [$14] != 0:
+$8B:89C6 80 C1       BRA $C1    [$8989]     ; Go to LOOP
 
-$8B:89C8 8E 34 03    STX $0334  [$7E:0334]
+$8B:89C8 8E 34 03    STX $0334  [$7E:0334]  ; Mode 7 transfers stack pointer = [X]
 $8B:89CB 7A          PLY
 $8B:89CC FA          PLX
 $8B:89CD 28          PLP
@@ -1309,47 +1314,48 @@ $8B:89CE 60          RTS
 }
 
 
-;;; $89CF: Unused ;;;
+;;; $89CF: Unused. Indirect instruction function - draw the [[Y] + 3] x [[Y] + 2] region with column-major tilemap values at [Y] + 4 to mode 7 tilemap ;;;
 {
-$8B:89CF 20 2C 8A    JSR $8A2C  [$8B:8A2C]
-$8B:89D2 B9 02 00    LDA $0002,y
-$8B:89D5 29 FF 00    AND #$00FF
-$8B:89D8 8D 12 00    STA $0012  [$7E:0012]
-$8B:89DB B9 03 00    LDA $0003,y
-$8B:89DE 29 FF 00    AND #$00FF
-$8B:89E1 8D 14 00    STA $0014  [$7E:0014]
-$8B:89E4 98          TYA
-$8B:89E5 18          CLC
-$8B:89E6 69 04 00    ADC #$0004
-$8B:89E9 A8          TAY
-$8B:89EA AE 34 03    LDX $0334  [$7E:0334]
+$8B:89CF 20 2C 8A    JSR $8A2C  [$8B:8A2C]  ; $16 = mode 7 tilemap offset for tile ([$12], [$13])
+$8B:89D2 B9 02 00    LDA $0002,y            ;\
+$8B:89D5 29 FF 00    AND #$00FF             ;} $12 = [[Y] + 2] (columns)
+$8B:89D8 8D 12 00    STA $0012  [$7E:0012]  ;/
+$8B:89DB B9 03 00    LDA $0003,y            ;\
+$8B:89DE 29 FF 00    AND #$00FF             ;} $14 = [[Y] + 3] (rows)
+$8B:89E1 8D 14 00    STA $0014  [$7E:0014]  ;/
+$8B:89E4 98          TYA                    ;\
+$8B:89E5 18          CLC                    ;|
+$8B:89E6 69 04 00    ADC #$0004             ;} Y += 4
+$8B:89E9 A8          TAY                    ;/
+$8B:89EA AE 34 03    LDX $0334  [$7E:0334]  ; X = [mode 7 transfers stack pointer]
 
-$8B:89ED A9 80 00    LDA #$0080
-$8B:89F0 9D D0 02    STA $02D0,x
-$8B:89F3 98          TYA
-$8B:89F4 9D D1 02    STA $02D1,x
-$8B:89F7 A9 8B 00    LDA #$008B
-$8B:89FA 9D D3 02    STA $02D3,x
-$8B:89FD AD 14 00    LDA $0014  [$7E:0014]
-$8B:8A00 9D D4 02    STA $02D4,x
-$8B:8A03 AD 16 00    LDA $0016  [$7E:0016]
-$8B:8A06 9D D6 02    STA $02D6,x
-$8B:8A09 A9 02 00    LDA #$0002
-$8B:8A0C 9D D8 02    STA $02D8,x
-$8B:8A0F 8A          TXA
-$8B:8A10 18          CLC
-$8B:8A11 69 09 00    ADC #$0009
-$8B:8A14 AA          TAX
-$8B:8A15 98          TYA
-$8B:8A16 18          CLC
-$8B:8A17 6D 14 00    ADC $0014  [$7E:0014]
-$8B:8A1A A8          TAY
-$8B:8A1B EE 16 00    INC $0016  [$7E:0016]
-$8B:8A1E CE 12 00    DEC $0012  [$7E:0012]
-$8B:8A21 F0 02       BEQ $02    [$8A25]
-$8B:8A23 80 C8       BRA $C8    [$89ED]
+; LOOP
+$8B:89ED A9 80 00    LDA #$0080             ;\
+$8B:89F0 9D D0 02    STA $02D0,x            ;|
+$8B:89F3 98          TYA                    ;|
+$8B:89F4 9D D1 02    STA $02D1,x            ;|
+$8B:89F7 A9 8B 00    LDA #$008B             ;|
+$8B:89FA 9D D3 02    STA $02D3,x            ;|
+$8B:89FD AD 14 00    LDA $0014  [$7E:0014]  ;} Queue mode 7 tilemap column transfer of [$14] bytes from $8B:[Y] to VRAM [$16]
+$8B:8A00 9D D4 02    STA $02D4,x            ;|
+$8B:8A03 AD 16 00    LDA $0016  [$7E:0016]  ;|
+$8B:8A06 9D D6 02    STA $02D6,x            ;|
+$8B:8A09 A9 02 00    LDA #$0002             ;|
+$8B:8A0C 9D D8 02    STA $02D8,x            ;/
+$8B:8A0F 8A          TXA                    ;\
+$8B:8A10 18          CLC                    ;|
+$8B:8A11 69 09 00    ADC #$0009             ;} X += 9
+$8B:8A14 AA          TAX                    ;/
+$8B:8A15 98          TYA                    ;\
+$8B:8A16 18          CLC                    ;|
+$8B:8A17 6D 14 00    ADC $0014  [$7E:0014]  ;} Y += [$14] (next source column)
+$8B:8A1A A8          TAY                    ;/
+$8B:8A1B EE 16 00    INC $0016  [$7E:0016]  ; Increment $16 (next destination column)
+$8B:8A1E CE 12 00    DEC $0012  [$7E:0012]  ; Decrement $12
+$8B:8A21 F0 02       BEQ $02    [$8A25]     ; If [$12] != 0:
+$8B:8A23 80 C8       BRA $C8    [$89ED]     ; Go to LOOP
 
-$8B:8A25 8E 34 03    STX $0334  [$7E:0334]
+$8B:8A25 8E 34 03    STX $0334  [$7E:0334]  ; Mode 7 transfers stack pointer = [X]
 $8B:8A28 7A          PLY
 $8B:8A29 FA          PLX
 $8B:8A2A 28          PLP
@@ -1357,10 +1363,10 @@ $8B:8A2B 60          RTS
 }
 
 
-;;; $8A2C: Unused ;;;
+;;; $8A2C: Unused. $16 = mode 7 tilemap offset for tile ([$12], [$13]) ;;;
 {
-; Presumably mode 7 tilemap offset calculation
 ; $16 = [$13] * 80h + [$12]
+; Uses the multiplication registers for some reason
 ; Only called by unused routines
 $8B:8A2C AD 12 00    LDA $0012  [$7E:0012]
 $8B:8A2F 29 FF 00    AND #$00FF
@@ -1380,20 +1386,27 @@ $8B:8A4B 6D 14 00    ADC $0014  [$7E:0014]
 $8B:8A4E 8D 16 00    STA $0016  [$7E:0016]
 $8B:8A51 60          RTS
 }
+}
 
 
 ;;; $8A52: Calculate position of Samus in rotating elevator room ;;;
 {
-; x = x_0 + (x - x_0) * a / 100h + (y_0 - y) * b / 100h
-; y = y_0 - (x - x_0) * c / 100h - (y_0 - y) * a / 100h
-
-; x = x_0 + (x - x_0) * a / 100h - (y - y_0) * b / 100h
-; y = y_0 - (x - x_0) * c / 100h + (y - y_0) * a / 100h
-
+; Calculates
+;     p = p_0 + M⁻¹ (p - p_0)
 ; where
-;     a = 100h * cos(t)
-;     b = 100h * sin(t)
-;     c = -b
+;     p: Samus position (as a column vector)
+;     p_0: Mode 7 transformation origin (as a column vector)
+;     M⁻¹: Inverse of the mode 7 transformation matrix
+
+; Given that M is the clockwise rotation matrix of some angle t (see $89:ACC3):
+;     M = ( cos(t), sin(t))
+;         (-sin(t), cos(t))
+; this expands to:
+;     x = x_0 + (x - x_0) * cos(t) - (y - y_0) * sin(t)
+;     y = y_0 + (x - x_0) * sin(t) + (y - y_0) * cos(t)
+; where
+;     x,y: Samus position
+;     x_0,y_0: Mode 7 transformation origin
 
 $8B:8A52 08          PHP
 $8B:8A53 8B          PHB
@@ -1470,81 +1483,86 @@ $8B:8AD8 6B          RTL
 }
 
 
-;;; $8AD9: Calculate position of projectile explosion in rotating elevator room ;;;
+;;; $8AD9: Calculate position of projectile in rotating elevator room ;;;
 {
+;; Parameters:
+;;     X: Projectile index
+;; Returns:
+;      $12: Y position on screen
+;      $14: X position on screen
 $8B:8AD9 08          PHP
 $8B:8ADA 8B          PHB
-$8B:8ADB 4B          PHK
-$8B:8ADC AB          PLB
-$8B:8ADD C2 30       REP #$30
-$8B:8ADF BD 64 0B    LDA $0B64,x
-$8B:8AE2 38          SEC
-$8B:8AE3 E5 80       SBC $80    [$7E:0080]
-$8B:8AE5 85 22       STA $22    [$7E:0022]
-$8B:8AE7 A5 82       LDA $82    [$7E:0082]
-$8B:8AE9 38          SEC
-$8B:8AEA FD 78 0B    SBC $0B78,x
-$8B:8AED 85 24       STA $24    [$7E:0024]
-$8B:8AEF A5 22       LDA $22    [$7E:0022]
-$8B:8AF1 85 26       STA $26    [$7E:0026]
-$8B:8AF3 A5 78       LDA $78    [$7E:0078]
-$8B:8AF5 85 28       STA $28    [$7E:0028]
-$8B:8AF7 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8AFA E2 20       SEP #$20
-$8B:8AFC A5 2A       LDA $2A    [$7E:002A]
-$8B:8AFE EB          XBA
-$8B:8AFF A5 2D       LDA $2D    [$7E:002D]
-$8B:8B01 C2 20       REP #$20
-$8B:8B03 85 1A       STA $1A    [$7E:001A]
-$8B:8B05 A5 7A       LDA $7A    [$7E:007A]
-$8B:8B07 85 26       STA $26    [$7E:0026]
-$8B:8B09 A5 24       LDA $24    [$7E:0024]
-$8B:8B0B 85 28       STA $28    [$7E:0028]
-$8B:8B0D 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8B10 E2 20       SEP #$20
-$8B:8B12 A5 2A       LDA $2A    [$7E:002A]
-$8B:8B14 EB          XBA
-$8B:8B15 A5 2D       LDA $2D    [$7E:002D]
-$8B:8B17 C2 20       REP #$20
-$8B:8B19 18          CLC
-$8B:8B1A 65 1A       ADC $1A    [$7E:001A]
-$8B:8B1C 85 1A       STA $1A    [$7E:001A]
-$8B:8B1E A5 80       LDA $80    [$7E:0080]
-$8B:8B20 18          CLC
-$8B:8B21 65 1A       ADC $1A    [$7E:001A]
-$8B:8B23 38          SEC
-$8B:8B24 ED 11 09    SBC $0911  [$7E:0911]
-$8B:8B27 85 14       STA $14    [$7E:0014]
-$8B:8B29 A5 7C       LDA $7C    [$7E:007C]
-$8B:8B2B 85 26       STA $26    [$7E:0026]
-$8B:8B2D A5 22       LDA $22    [$7E:0022]
-$8B:8B2F 85 28       STA $28    [$7E:0028]
-$8B:8B31 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8B34 E2 20       SEP #$20
-$8B:8B36 A5 2A       LDA $2A    [$7E:002A]
-$8B:8B38 EB          XBA
-$8B:8B39 A5 2D       LDA $2D    [$7E:002D]
-$8B:8B3B C2 20       REP #$20
-$8B:8B3D 85 1A       STA $1A    [$7E:001A]
-$8B:8B3F A5 78       LDA $78    [$7E:0078]
-$8B:8B41 85 26       STA $26    [$7E:0026]
-$8B:8B43 A5 24       LDA $24    [$7E:0024]
-$8B:8B45 85 28       STA $28    [$7E:0028]
-$8B:8B47 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8B4A E2 20       SEP #$20
-$8B:8B4C A5 2A       LDA $2A    [$7E:002A]
-$8B:8B4E EB          XBA
-$8B:8B4F A5 2D       LDA $2D    [$7E:002D]
-$8B:8B51 C2 20       REP #$20
-$8B:8B53 18          CLC
-$8B:8B54 65 1A       ADC $1A    [$7E:001A]
-$8B:8B56 85 1A       STA $1A    [$7E:001A]
-$8B:8B58 A5 82       LDA $82    [$7E:0082]
-$8B:8B5A 38          SEC
-$8B:8B5B E5 1A       SBC $1A    [$7E:001A]
-$8B:8B5D 38          SEC
-$8B:8B5E ED 15 09    SBC $0915  [$7E:0915]
-$8B:8B61 85 12       STA $12    [$7E:0012]
+$8B:8ADB 4B          PHK                    ;\
+$8B:8ADC AB          PLB                    ;} DB = $8B
+$8B:8ADD C2 30       REP #$30               
+$8B:8ADF BD 64 0B    LDA $0B64,x            ;\
+$8B:8AE2 38          SEC                    ;|
+$8B:8AE3 E5 80       SBC $80    [$7E:0080]  ;} $22 = [projectile X position] - [mode 7 transformation origin co-ordinate X]
+$8B:8AE5 85 22       STA $22    [$7E:0022]  ;/
+$8B:8AE7 A5 82       LDA $82    [$7E:0082]  ;\
+$8B:8AE9 38          SEC                    ;|
+$8B:8AEA FD 78 0B    SBC $0B78,x            ;} $24 = [mode 7 transformation origin co-ordinate Y] - [projectile Y position]
+$8B:8AED 85 24       STA $24    [$7E:0024]  ;/
+$8B:8AEF A5 22       LDA $22    [$7E:0022]  ;\
+$8B:8AF1 85 26       STA $26    [$7E:0026]  ;|
+$8B:8AF3 A5 78       LDA $78    [$7E:0078]  ;|
+$8B:8AF5 85 28       STA $28    [$7E:0028]  ;|
+$8B:8AF7 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8AFA E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter A] / 100h
+$8B:8AFC A5 2A       LDA $2A    [$7E:002A]  ;|
+$8B:8AFE EB          XBA                    ;|
+$8B:8AFF A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8B01 C2 20       REP #$20               ;|
+$8B:8B03 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8B05 A5 7A       LDA $7A    [$7E:007A]  ;\
+$8B:8B07 85 26       STA $26    [$7E:0026]  ;|
+$8B:8B09 A5 24       LDA $24    [$7E:0024]  ;|
+$8B:8B0B 85 28       STA $28    [$7E:0028]  ;|
+$8B:8B0D 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8B10 E2 20       SEP #$20               ;|
+$8B:8B12 A5 2A       LDA $2A    [$7E:002A]  ;} $1A += ±[$24] * ±[mode 7 transformation matrix parameter B] / 100h
+$8B:8B14 EB          XBA                    ;|
+$8B:8B15 A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8B17 C2 20       REP #$20               ;|
+$8B:8B19 18          CLC                    ;|
+$8B:8B1A 65 1A       ADC $1A    [$7E:001A]  ;|
+$8B:8B1C 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8B1E A5 80       LDA $80    [$7E:0080]  ;\
+$8B:8B20 18          CLC                    ;|
+$8B:8B21 65 1A       ADC $1A    [$7E:001A]  ;|
+$8B:8B23 38          SEC                    ;} $14 = [mode 7 transformation origin co-ordinate X] + [$1A] - [layer 1 X position]
+$8B:8B24 ED 11 09    SBC $0911  [$7E:0911]  ;|
+$8B:8B27 85 14       STA $14    [$7E:0014]  ;/
+$8B:8B29 A5 7C       LDA $7C    [$7E:007C]  ;\
+$8B:8B2B 85 26       STA $26    [$7E:0026]  ;|
+$8B:8B2D A5 22       LDA $22    [$7E:0022]  ;|
+$8B:8B2F 85 28       STA $28    [$7E:0028]  ;|
+$8B:8B31 20 8F 85    JSR $858F  [$8B:858F]  ;|                                
+$8B:8B34 E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter C] / 100h
+$8B:8B36 A5 2A       LDA $2A    [$7E:002A]  ;|
+$8B:8B38 EB          XBA                    ;|
+$8B:8B39 A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8B3B C2 20       REP #$20               ;|
+$8B:8B3D 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8B3F A5 78       LDA $78    [$7E:0078]  ;\
+$8B:8B41 85 26       STA $26    [$7E:0026]  ;|
+$8B:8B43 A5 24       LDA $24    [$7E:0024]  ;|
+$8B:8B45 85 28       STA $28    [$7E:0028]  ;|
+$8B:8B47 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8B4A E2 20       SEP #$20               ;|
+$8B:8B4C A5 2A       LDA $2A    [$7E:002A]  ;} $1A += ±[$24] * ±[mode 7 transformation matrix parameter A] / 100h
+$8B:8B4E EB          XBA                    ;|
+$8B:8B4F A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8B51 C2 20       REP #$20               ;|
+$8B:8B53 18          CLC                    ;|
+$8B:8B54 65 1A       ADC $1A    [$7E:001A]  ;|
+$8B:8B56 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8B58 A5 82       LDA $82    [$7E:0082]  ;\
+$8B:8B5A 38          SEC                    ;|
+$8B:8B5B E5 1A       SBC $1A    [$7E:001A]  ;|
+$8B:8B5D 38          SEC                    ;} $12 = [mode 7 transformation origin co-ordinate Y] - [$1A] - [layer 1 Y position]
+$8B:8B5E ED 15 09    SBC $0915  [$7E:0915]  ;|
+$8B:8B61 85 12       STA $12    [$7E:0012]  ;/
 $8B:8B63 AB          PLB
 $8B:8B64 28          PLP
 $8B:8B65 6B          RTL
@@ -1553,75 +1571,83 @@ $8B:8B65 6B          RTL
 
 ;;; $8B66: Calculate position of Ceres steam in rotating elevator room ;;;
 {
+;; Parameters:
+;      $12: X position
+;      $14: Y position
+;; Returns:
+;      $12: X position
+;      $14: Y position
+
+; This should be the only one of these functions, the others could just call this one >_<;
 $8B:8B66 08          PHP
 $8B:8B67 8B          PHB
-$8B:8B68 4B          PHK
-$8B:8B69 AB          PLB
-$8B:8B6A C2 30       REP #$30
-$8B:8B6C A5 12       LDA $12    [$7E:0012]
-$8B:8B6E 38          SEC
-$8B:8B6F E5 80       SBC $80    [$7E:0080]
-$8B:8B71 85 22       STA $22    [$7E:0022]
-$8B:8B73 A5 82       LDA $82    [$7E:0082]
-$8B:8B75 38          SEC
-$8B:8B76 E5 14       SBC $14    [$7E:0014]
-$8B:8B78 85 24       STA $24    [$7E:0024]
-$8B:8B7A A5 22       LDA $22    [$7E:0022]
-$8B:8B7C 85 26       STA $26    [$7E:0026]
-$8B:8B7E A5 78       LDA $78    [$7E:0078]
-$8B:8B80 85 28       STA $28    [$7E:0028]
-$8B:8B82 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8B85 E2 20       SEP #$20
-$8B:8B87 A5 2A       LDA $2A    [$7E:002A]
-$8B:8B89 EB          XBA
-$8B:8B8A A5 2D       LDA $2D    [$7E:002D]
-$8B:8B8C C2 20       REP #$20
-$8B:8B8E 85 1A       STA $1A    [$7E:001A]
-$8B:8B90 A5 7A       LDA $7A    [$7E:007A]
-$8B:8B92 85 26       STA $26    [$7E:0026]
-$8B:8B94 A5 24       LDA $24    [$7E:0024]
-$8B:8B96 85 28       STA $28    [$7E:0028]
-$8B:8B98 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8B9B E2 20       SEP #$20
-$8B:8B9D A5 2A       LDA $2A    [$7E:002A]
-$8B:8B9F EB          XBA
-$8B:8BA0 A5 2D       LDA $2D    [$7E:002D]
-$8B:8BA2 C2 20       REP #$20
-$8B:8BA4 18          CLC
-$8B:8BA5 65 1A       ADC $1A    [$7E:001A]
-$8B:8BA7 85 1A       STA $1A    [$7E:001A]
-$8B:8BA9 A5 80       LDA $80    [$7E:0080]
-$8B:8BAB 18          CLC
-$8B:8BAC 65 1A       ADC $1A    [$7E:001A]
-$8B:8BAE 85 12       STA $12    [$7E:0012]
-$8B:8BB0 A5 7C       LDA $7C    [$7E:007C]
-$8B:8BB2 85 26       STA $26    [$7E:0026]
-$8B:8BB4 A5 22       LDA $22    [$7E:0022]
-$8B:8BB6 85 28       STA $28    [$7E:0028]
-$8B:8BB8 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8BBB E2 20       SEP #$20
-$8B:8BBD A5 2A       LDA $2A    [$7E:002A]
-$8B:8BBF EB          XBA
-$8B:8BC0 A5 2D       LDA $2D    [$7E:002D]
-$8B:8BC2 C2 20       REP #$20
-$8B:8BC4 85 1A       STA $1A    [$7E:001A]
-$8B:8BC6 A5 78       LDA $78    [$7E:0078]
-$8B:8BC8 85 26       STA $26    [$7E:0026]
-$8B:8BCA A5 24       LDA $24    [$7E:0024]
-$8B:8BCC 85 28       STA $28    [$7E:0028]
-$8B:8BCE 20 8F 85    JSR $858F  [$8B:858F]
-$8B:8BD1 E2 20       SEP #$20
-$8B:8BD3 A5 2A       LDA $2A    [$7E:002A]
-$8B:8BD5 EB          XBA
-$8B:8BD6 A5 2D       LDA $2D    [$7E:002D]
-$8B:8BD8 C2 20       REP #$20
-$8B:8BDA 18          CLC
-$8B:8BDB 65 1A       ADC $1A    [$7E:001A]
-$8B:8BDD 85 1A       STA $1A    [$7E:001A]
-$8B:8BDF A5 82       LDA $82    [$7E:0082]
-$8B:8BE1 38          SEC
-$8B:8BE2 E5 1A       SBC $1A    [$7E:001A]
-$8B:8BE4 85 14       STA $14    [$7E:0014]
+$8B:8B68 4B          PHK                    ;\
+$8B:8B69 AB          PLB                    ;} DB = $8B
+$8B:8B6A C2 30       REP #$30               
+$8B:8B6C A5 12       LDA $12    [$7E:0012]  ;\
+$8B:8B6E 38          SEC                    ;|
+$8B:8B6F E5 80       SBC $80    [$7E:0080]  ;} $22 = [$12] - [mode 7 transformation origin co-ordinate X]
+$8B:8B71 85 22       STA $22    [$7E:0022]  ;/
+$8B:8B73 A5 82       LDA $82    [$7E:0082]  ;\
+$8B:8B75 38          SEC                    ;|
+$8B:8B76 E5 14       SBC $14    [$7E:0014]  ;} $24 = [mode 7 transformation origin co-ordinate Y] - [$14]
+$8B:8B78 85 24       STA $24    [$7E:0024]  ;/
+$8B:8B7A A5 22       LDA $22    [$7E:0022]  ;\
+$8B:8B7C 85 26       STA $26    [$7E:0026]  ;|
+$8B:8B7E A5 78       LDA $78    [$7E:0078]  ;|
+$8B:8B80 85 28       STA $28    [$7E:0028]  ;|
+$8B:8B82 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8B85 E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter A] / 100h
+$8B:8B87 A5 2A       LDA $2A    [$7E:002A]  ;|
+$8B:8B89 EB          XBA                    ;|
+$8B:8B8A A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8B8C C2 20       REP #$20               ;|
+$8B:8B8E 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8B90 A5 7A       LDA $7A    [$7E:007A]  ;\
+$8B:8B92 85 26       STA $26    [$7E:0026]  ;|
+$8B:8B94 A5 24       LDA $24    [$7E:0024]  ;|
+$8B:8B96 85 28       STA $28    [$7E:0028]  ;|
+$8B:8B98 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8B9B E2 20       SEP #$20               ;|
+$8B:8B9D A5 2A       LDA $2A    [$7E:002A]  ;} $1A += ±[$24] * ±[mode 7 transformation matrix parameter B] / 100h
+$8B:8B9F EB          XBA                    ;|
+$8B:8BA0 A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8BA2 C2 20       REP #$20               ;|
+$8B:8BA4 18          CLC                    ;|
+$8B:8BA5 65 1A       ADC $1A    [$7E:001A]  ;|
+$8B:8BA7 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8BA9 A5 80       LDA $80    [$7E:0080]  ;\
+$8B:8BAB 18          CLC                    ;|
+$8B:8BAC 65 1A       ADC $1A    [$7E:001A]  ;} $12 = [mode 7 transformation origin co-ordinate X] + [$1A]
+$8B:8BAE 85 12       STA $12    [$7E:0012]  ;/
+$8B:8BB0 A5 7C       LDA $7C    [$7E:007C]  ;\
+$8B:8BB2 85 26       STA $26    [$7E:0026]  ;|
+$8B:8BB4 A5 22       LDA $22    [$7E:0022]  ;|
+$8B:8BB6 85 28       STA $28    [$7E:0028]  ;|
+$8B:8BB8 20 8F 85    JSR $858F  [$8B:858F]  ;|                                
+$8B:8BBB E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter C] / 100h
+$8B:8BBD A5 2A       LDA $2A    [$7E:002A]  ;|
+$8B:8BBF EB          XBA                    ;|
+$8B:8BC0 A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8BC2 C2 20       REP #$20               ;|
+$8B:8BC4 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8BC6 A5 78       LDA $78    [$7E:0078]  ;\
+$8B:8BC8 85 26       STA $26    [$7E:0026]  ;|
+$8B:8BCA A5 24       LDA $24    [$7E:0024]  ;|
+$8B:8BCC 85 28       STA $28    [$7E:0028]  ;|
+$8B:8BCE 20 8F 85    JSR $858F  [$8B:858F]  ;|
+$8B:8BD1 E2 20       SEP #$20               ;|
+$8B:8BD3 A5 2A       LDA $2A    [$7E:002A]  ;} $1A += ±[$24] * ±[mode 7 transformation matrix parameter A] / 100h
+$8B:8BD5 EB          XBA                    ;|
+$8B:8BD6 A5 2D       LDA $2D    [$7E:002D]  ;|
+$8B:8BD8 C2 20       REP #$20               ;|
+$8B:8BDA 18          CLC                    ;|
+$8B:8BDB 65 1A       ADC $1A    [$7E:001A]  ;|
+$8B:8BDD 85 1A       STA $1A    [$7E:001A]  ;/
+$8B:8BDF A5 82       LDA $82    [$7E:0082]  ;\
+$8B:8BE1 38          SEC                    ;|
+$8B:8BE2 E5 1A       SBC $1A    [$7E:001A]  ;} $14 = [mode 7 transformation origin co-ordinate Y] - [$1A]
+$8B:8BE4 85 14       STA $14    [$7E:0014]  ;/
 $8B:8BE6 AB          PLB
 $8B:8BE7 28          PLP
 $8B:8BE8 6B          RTL
@@ -1632,6 +1658,7 @@ $8B:8BE8 6B          RTL
 {
 ;;; $8BE9: Copy current palettes to fading palettes ;;;
 {
+; Temporarily changes DB to $7F for absolutely no reason!
 $8B:8BE9 08          PHP
 $8B:8BEA 8B          PHB
 $8B:8BEB E2 30       SEP #$30
@@ -1658,11 +1685,11 @@ $8B:8C08 60          RTS
 {
 $8B:8C09 08          PHP
 $8B:8C0A 8B          PHB
-$8B:8C0B E2 30       SEP #$30
-$8B:8C0D A9 7F       LDA #$7F
-$8B:8C0F 48          PHA
-$8B:8C10 AB          PLB
-$8B:8C11 C2 30       REP #$30
+$8B:8C0B E2 30       SEP #$30               ;\
+$8B:8C0D A9 7F       LDA #$7F               ;|
+$8B:8C0F 48          PHA                    ;} DB = $7F >_<;
+$8B:8C10 AB          PLB                    ;|
+$8B:8C11 C2 30       REP #$30               ;/
 $8B:8C13 A2 00 00    LDX #$0000             ; X = 0 (colour index)
 $8B:8C16 A0 00 01    LDY #$0100             ; Y = 100h
 
@@ -1670,32 +1697,32 @@ $8B:8C16 A0 00 01    LDY #$0100             ; Y = 100h
 $8B:8C19 BF 00 22 7E LDA $7E2200,x[$7E:2200];\
 $8B:8C1D 85 12       STA $12    [$7E:0012]  ;} $12 = [$7E:2200 + [X]]
 $8B:8C1F 29 1F 00    AND #$001F             ;\
-$8B:8C22 EB          XBA                    ;} Fading intro red colour = ([$12] & 1Fh) * 100h
+$8B:8C22 EB          XBA                    ;} Fading red colour = ([$12] & 1Fh) * 100h
 $8B:8C23 9F 00 24 7E STA $7E2400,x[$7E:2400];/
 $8B:8C27 EB          XBA                    ;\
 $8B:8C28 0A          ASL A                  ;|
-$8B:8C29 0A          ASL A                  ;} Fading intro red colour delta = [fading intro red colour] / 20h
+$8B:8C29 0A          ASL A                  ;} Fading red colour delta = [fading red colour] / 20h
 $8B:8C2A 0A          ASL A                  ;|
 $8B:8C2B 9F 00 2A 7E STA $7E2A00,x[$7E:2A00];/
 $8B:8C2F A5 12       LDA $12    [$7E:0012]  ;\
 $8B:8C31 29 E0 03    AND #$03E0             ;|
 $8B:8C34 0A          ASL A                  ;|
-$8B:8C35 0A          ASL A                  ;} Fading intro green colour = ([$12] >> 5 & 1Fh) * 100h
+$8B:8C35 0A          ASL A                  ;} Fading green colour = ([$12] >> 5 & 1Fh) * 100h
 $8B:8C36 0A          ASL A                  ;|
 $8B:8C37 9F 00 26 7E STA $7E2600,x[$7E:2600];/
 $8B:8C3B EB          XBA                    ;\
 $8B:8C3C 0A          ASL A                  ;|
-$8B:8C3D 0A          ASL A                  ;} Fading intro green colour delta = [fading intro green colour] / 20h
+$8B:8C3D 0A          ASL A                  ;} Fading green colour delta = [fading green colour] / 20h
 $8B:8C3E 0A          ASL A                  ;|
 $8B:8C3F 9F 00 2C 7E STA $7E2C00,x[$7E:2C00];/
 $8B:8C43 A5 12       LDA $12    [$7E:0012]  ;\
 $8B:8C45 29 00 7C    AND #$7C00             ;|
-$8B:8C48 4A          LSR A                  ;} Fading intro blue colour = ([$12] >> 10 & 1Fh) * 100h
+$8B:8C48 4A          LSR A                  ;} Fading blue colour = ([$12] >> 10 & 1Fh) * 100h
 $8B:8C49 4A          LSR A                  ;|
 $8B:8C4A 9F 00 28 7E STA $7E2800,x[$7E:2800];/
 $8B:8C4E EB          XBA                    ;\
 $8B:8C4F 0A          ASL A                  ;|
-$8B:8C50 0A          ASL A                  ;} Fading intro blue colour delta = [fading intro blue colour] / 20h
+$8B:8C50 0A          ASL A                  ;} Fading blue colour delta = [fading blue colour] / 20h
 $8B:8C51 0A          ASL A                  ;|
 $8B:8C52 9F 00 2E 7E STA $7E2E00,x[$7E:2E00];/
 $8B:8C56 E8          INX                    ;\
@@ -1712,18 +1739,18 @@ $8B:8C5D 60          RTS
 {
 $8B:8C5E 08          PHP
 $8B:8C5F 8B          PHB
-$8B:8C60 E2 20       SEP #$20
-$8B:8C62 A9 7F       LDA #$7F
-$8B:8C64 48          PHA
-$8B:8C65 AB          PLB
-$8B:8C66 C2 30       REP #$30
+$8B:8C60 E2 20       SEP #$20               ;\
+$8B:8C62 A9 7F       LDA #$7F               ;|
+$8B:8C64 48          PHA                    ;} DB = $7F >_<;
+$8B:8C65 AB          PLB                    ;|
+$8B:8C66 C2 30       REP #$30               ;/
 
 ; LOOP
-$8B:8C68 A9 00 00    LDA #$0000
-$8B:8C6B 9F 00 22 7E STA $7E2200,x[$7E:2228]
-$8B:8C6F 9F 00 24 7E STA $7E2400,x[$7E:2428]; Fading intro red colour = 0
-$8B:8C73 9F 00 26 7E STA $7E2600,x[$7E:2628]; Fading intro green colour = 0
-$8B:8C77 9F 00 28 7E STA $7E2800,x[$7E:2828]; Fading intro blue colour = 0
+$8B:8C68 A9 00 00    LDA #$0000             ;\
+$8B:8C6B 9F 00 22 7E STA $7E2200,x[$7E:2228];} Fading initial colour = 0
+$8B:8C6F 9F 00 24 7E STA $7E2400,x[$7E:2428]; Fading red colour = 0
+$8B:8C73 9F 00 26 7E STA $7E2600,x[$7E:2628]; Fading green colour = 0
+$8B:8C77 9F 00 28 7E STA $7E2800,x[$7E:2828]; Fading blue colour = 0
 $8B:8C7B E8          INX                    ;\
 $8B:8C7C E8          INX                    ;} X += 2 (colour index)
 $8B:8C7D 88          DEY                    ; Decrement Y
@@ -1741,15 +1768,15 @@ $8B:8C83 08          PHP
 ; LOOP
 $8B:8C84 BF 00 24 7E LDA $7E2400,x[$7E:2400];\
 $8B:8C88 38          SEC                    ;|
-$8B:8C89 FF 00 2A 7E SBC $7E2A00,x[$7E:2A00];} Fading intro red colour -= [fading intro red colour delta]
+$8B:8C89 FF 00 2A 7E SBC $7E2A00,x[$7E:2A00];} Fading red colour -= [fading red colour delta]
 $8B:8C8D 9F 00 24 7E STA $7E2400,x[$7E:2400];/
 $8B:8C91 BF 00 26 7E LDA $7E2600,x[$7E:2600];\
 $8B:8C95 38          SEC                    ;|
-$8B:8C96 FF 00 2C 7E SBC $7E2C00,x[$7E:2C00];} Fading intro green colour -= [fading intro green colour delta]
+$8B:8C96 FF 00 2C 7E SBC $7E2C00,x[$7E:2C00];} Fading green colour -= [fading green colour delta]
 $8B:8C9A 9F 00 26 7E STA $7E2600,x[$7E:2600];/
 $8B:8C9E BF 00 28 7E LDA $7E2800,x[$7E:2800];\
 $8B:8CA2 38          SEC                    ;|
-$8B:8CA3 FF 00 2E 7E SBC $7E2E00,x[$7E:2E00];} Fading intro blue colour -= [fading intro blue colour delta]
+$8B:8CA3 FF 00 2E 7E SBC $7E2E00,x[$7E:2E00];} Fading blue colour -= [fading blue colour delta]
 $8B:8CA7 9F 00 28 7E STA $7E2800,x[$7E:2800];/
 $8B:8CAB E8          INX                    ;\
 $8B:8CAC E8          INX                    ;} X += 2 (colour index)
@@ -1767,17 +1794,17 @@ $8B:8CB2 08          PHP
 ; LOOP
 $8B:8CB3 BF 00 24 7E LDA $7E2400,x[$7E:2428];\
 $8B:8CB7 18          CLC                    ;|
-$8B:8CB8 7F 00 2A 7E ADC $7E2A00,x[$7E:2A28];} Fading intro red colour = ([fading intro red colour] + [fading intro red colour delta]) % 2000h
+$8B:8CB8 7F 00 2A 7E ADC $7E2A00,x[$7E:2A28];} Fading red colour = ([fading red colour] + [fading red colour delta]) % 2000h
 $8B:8CBC 29 FF 1F    AND #$1FFF             ;|
 $8B:8CBF 9F 00 24 7E STA $7E2400,x[$7E:2428];/
 $8B:8CC3 BF 00 26 7E LDA $7E2600,x[$7E:2628];\
 $8B:8CC7 18          CLC                    ;|
-$8B:8CC8 7F 00 2C 7E ADC $7E2C00,x[$7E:2C28];} Fading intro green colour = ([fading intro green colour] + [fading intro green colour delta]) % 2000h
+$8B:8CC8 7F 00 2C 7E ADC $7E2C00,x[$7E:2C28];} Fading green colour = ([fading green colour] + [fading green colour delta]) % 2000h
 $8B:8CCC 29 FF 1F    AND #$1FFF             ;|
 $8B:8CCF 9F 00 26 7E STA $7E2600,x[$7E:2628];/
 $8B:8CD3 BF 00 28 7E LDA $7E2800,x[$7E:2828];\
 $8B:8CD7 18          CLC                    ;|
-$8B:8CD8 7F 00 2E 7E ADC $7E2E00,x[$7E:2E28];} Fading intro blue colour = ([fading intro blue colour] + [fading intro blue colour delta]) % 2000h
+$8B:8CD8 7F 00 2E 7E ADC $7E2E00,x[$7E:2E28];} Fading blue colour = ([fading blue colour] + [fading blue colour delta]) % 2000h
 $8B:8CDC 29 FF 1F    AND #$1FFF             ;|
 $8B:8CDF 9F 00 28 7E STA $7E2800,x[$7E:2828];/
 $8B:8CE3 E8          INX                    ;\
@@ -1835,7 +1862,7 @@ $8B:8D22 60          RTS
 ;     tttt,bbbb
 ;     ...
 ; where
-;     d: Japanese text tiles destination offset ($7E:4000 + d)
+;     d: Japanese text tiles destination offset ($7E:4000/4300 + d)
 ;     n: Number of characters
 ;     t: Top Japanese text tiles source offset ($7F:A000 + t)
 ;     b: Bottom Japanese text tiles source offset ($7F:A000 + b)
@@ -1843,84 +1870,85 @@ $8B:8D22 60          RTS
 $8B:8D23 08          PHP
 $8B:8D24 C2 30       REP #$30
 $8B:8D26 DA          PHX
-$8B:8D27 B9 00 00    LDA $0000,y
-$8B:8D2A AA          TAX
-$8B:8D2B B9 02 00    LDA $0002,y
-$8B:8D2E 85 12       STA $12    [$7E:0012]
+$8B:8D27 B9 00 00    LDA $0000,y            ;\
+$8B:8D2A AA          TAX                    ;} X = [[Y]] (destination offset)
+$8B:8D2B B9 02 00    LDA $0002,y            ;\
+$8B:8D2E 85 12       STA $12    [$7E:0012]  ;} $12 = [[Y] + 2] (number of characters)
 
-$8B:8D30 B9 04 00    LDA $0004,y
-$8B:8D33 85 16       STA $16    [$7E:0016]
-$8B:8D35 5A          PHY
-$8B:8D36 A9 00 A0    LDA #$A000
-$8B:8D39 18          CLC
-$8B:8D3A 65 16       ADC $16    [$7E:0016]
-$8B:8D3C A8          TAY
-$8B:8D3D 8B          PHB
-$8B:8D3E F4 00 7F    PEA $7F00
-$8B:8D41 AB          PLB
-$8B:8D42 AB          PLB
-$8B:8D43 B9 00 00    LDA $0000,y
-$8B:8D46 9F 00 40 7E STA $7E4000,x
-$8B:8D4A B9 02 00    LDA $0002,y
-$8B:8D4D 9F 02 40 7E STA $7E4002,x
-$8B:8D51 B9 04 00    LDA $0004,y
-$8B:8D54 9F 04 40 7E STA $7E4004,x
-$8B:8D58 B9 06 00    LDA $0006,y
-$8B:8D5B 9F 06 40 7E STA $7E4006,x
-$8B:8D5F B9 08 00    LDA $0008,y
-$8B:8D62 9F 08 40 7E STA $7E4008,x
-$8B:8D66 B9 0A 00    LDA $000A,y
-$8B:8D69 9F 0A 40 7E STA $7E400A,x
-$8B:8D6D B9 0C 00    LDA $000C,y
-$8B:8D70 9F 0C 40 7E STA $7E400C,x
-$8B:8D74 B9 0E 00    LDA $000E,y
-$8B:8D77 9F 0E 40 7E STA $7E400E,x
-$8B:8D7B AB          PLB
-$8B:8D7C 7A          PLY
-$8B:8D7D B9 06 00    LDA $0006,y
-$8B:8D80 85 16       STA $16    [$7E:0016]
-$8B:8D82 8A          TXA
-$8B:8D83 18          CLC
-$8B:8D84 69 00 03    ADC #$0300
-$8B:8D87 AA          TAX
-$8B:8D88 5A          PHY
-$8B:8D89 A9 00 A0    LDA #$A000
-$8B:8D8C 18          CLC
-$8B:8D8D 65 16       ADC $16    [$7E:0016]
-$8B:8D8F A8          TAY
-$8B:8D90 8B          PHB
-$8B:8D91 F4 00 7F    PEA $7F00
-$8B:8D94 AB          PLB
-$8B:8D95 AB          PLB
-$8B:8D96 B9 00 00    LDA $0000,y
-$8B:8D99 9F 00 40 7E STA $7E4000,x
-$8B:8D9D B9 02 00    LDA $0002,y
-$8B:8DA0 9F 02 40 7E STA $7E4002,x
-$8B:8DA4 B9 04 00    LDA $0004,y
-$8B:8DA7 9F 04 40 7E STA $7E4004,x
-$8B:8DAB B9 06 00    LDA $0006,y
-$8B:8DAE 9F 06 40 7E STA $7E4006,x
-$8B:8DB2 B9 08 00    LDA $0008,y
-$8B:8DB5 9F 08 40 7E STA $7E4008,x
-$8B:8DB9 B9 0A 00    LDA $000A,y
-$8B:8DBC 9F 0A 40 7E STA $7E400A,x
-$8B:8DC0 B9 0C 00    LDA $000C,y
-$8B:8DC3 9F 0C 40 7E STA $7E400C,x
-$8B:8DC7 B9 0E 00    LDA $000E,y
-$8B:8DCA 9F 0E 40 7E STA $7E400E,x
-$8B:8DCE AB          PLB
-$8B:8DCF 7A          PLY
-$8B:8DD0 8A          TXA
-$8B:8DD1 38          SEC
-$8B:8DD2 E9 F0 02    SBC #$02F0
-$8B:8DD5 AA          TAX
-$8B:8DD6 98          TYA
-$8B:8DD7 18          CLC
-$8B:8DD8 69 04 00    ADC #$0004
-$8B:8DDB A8          TAY
-$8B:8DDC C6 12       DEC $12    [$7E:0012]
-$8B:8DDE F0 03       BEQ $03    [$8DE3]
-$8B:8DE0 4C 30 8D    JMP $8D30  [$8B:8D30]
+; LOOP
+$8B:8D30 B9 04 00    LDA $0004,y            ;\
+$8B:8D33 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y] + 4] (top source offset)
+$8B:8D35 5A          PHY                    ;\
+$8B:8D36 A9 00 A0    LDA #$A000             ;|
+$8B:8D39 18          CLC                    ;|
+$8B:8D3A 65 16       ADC $16    [$7E:0016]  ;|
+$8B:8D3C A8          TAY                    ;|
+$8B:8D3D 8B          PHB                    ;|
+$8B:8D3E F4 00 7F    PEA $7F00              ;|
+$8B:8D41 AB          PLB                    ;|
+$8B:8D42 AB          PLB                    ;|
+$8B:8D43 B9 00 00    LDA $0000,y            ;|
+$8B:8D46 9F 00 40 7E STA $7E4000,x          ;|
+$8B:8D4A B9 02 00    LDA $0002,y            ;|
+$8B:8D4D 9F 02 40 7E STA $7E4002,x          ;|
+$8B:8D51 B9 04 00    LDA $0004,y            ;} Copy 10h bytes from $7F:A000 + [$16] to $7E:4000 + [X]
+$8B:8D54 9F 04 40 7E STA $7E4004,x          ;|
+$8B:8D58 B9 06 00    LDA $0006,y            ;|
+$8B:8D5B 9F 06 40 7E STA $7E4006,x          ;|
+$8B:8D5F B9 08 00    LDA $0008,y            ;|
+$8B:8D62 9F 08 40 7E STA $7E4008,x          ;|
+$8B:8D66 B9 0A 00    LDA $000A,y            ;|
+$8B:8D69 9F 0A 40 7E STA $7E400A,x          ;|
+$8B:8D6D B9 0C 00    LDA $000C,y            ;|
+$8B:8D70 9F 0C 40 7E STA $7E400C,x          ;|
+$8B:8D74 B9 0E 00    LDA $000E,y            ;|
+$8B:8D77 9F 0E 40 7E STA $7E400E,x          ;|
+$8B:8D7B AB          PLB                    ;|
+$8B:8D7C 7A          PLY                    ;/
+$8B:8D7D B9 06 00    LDA $0006,y            ;\
+$8B:8D80 85 16       STA $16    [$7E:0016]  ;} $16 = [[Y] + 6] (bottom source offset)
+$8B:8D82 8A          TXA                    ;\
+$8B:8D83 18          CLC                    ;|
+$8B:8D84 69 00 03    ADC #$0300             ;|
+$8B:8D87 AA          TAX                    ;|
+$8B:8D88 5A          PHY                    ;|
+$8B:8D89 A9 00 A0    LDA #$A000             ;|
+$8B:8D8C 18          CLC                    ;|
+$8B:8D8D 65 16       ADC $16    [$7E:0016]  ;|
+$8B:8D8F A8          TAY                    ;|
+$8B:8D90 8B          PHB                    ;|
+$8B:8D91 F4 00 7F    PEA $7F00              ;|
+$8B:8D94 AB          PLB                    ;|
+$8B:8D95 AB          PLB                    ;|
+$8B:8D96 B9 00 00    LDA $0000,y            ;|
+$8B:8D99 9F 00 40 7E STA $7E4000,x          ;|
+$8B:8D9D B9 02 00    LDA $0002,y            ;} Copy 10h bytes from $7F:A000 + [$16] to $7E:4300 + [X]
+$8B:8DA0 9F 02 40 7E STA $7E4002,x          ;|
+$8B:8DA4 B9 04 00    LDA $0004,y            ;|
+$8B:8DA7 9F 04 40 7E STA $7E4004,x          ;|
+$8B:8DAB B9 06 00    LDA $0006,y            ;|
+$8B:8DAE 9F 06 40 7E STA $7E4006,x          ;|
+$8B:8DB2 B9 08 00    LDA $0008,y            ;|
+$8B:8DB5 9F 08 40 7E STA $7E4008,x          ;|
+$8B:8DB9 B9 0A 00    LDA $000A,y            ;|
+$8B:8DBC 9F 0A 40 7E STA $7E400A,x          ;|
+$8B:8DC0 B9 0C 00    LDA $000C,y            ;|
+$8B:8DC3 9F 0C 40 7E STA $7E400C,x          ;|
+$8B:8DC7 B9 0E 00    LDA $000E,y            ;|
+$8B:8DCA 9F 0E 40 7E STA $7E400E,x          ;|
+$8B:8DCE AB          PLB                    ;|
+$8B:8DCF 7A          PLY                    ;/
+$8B:8DD0 8A          TXA                    ;\
+$8B:8DD1 38          SEC                    ;|
+$8B:8DD2 E9 F0 02    SBC #$02F0             ;} X += 10h
+$8B:8DD5 AA          TAX                    ;/
+$8B:8DD6 98          TYA                    ;\
+$8B:8DD7 18          CLC                    ;|
+$8B:8DD8 69 04 00    ADC #$0004             ;} Y += 4
+$8B:8DDB A8          TAY                    ;/
+$8B:8DDC C6 12       DEC $12    [$7E:0012]  ; Decrement $12
+$8B:8DDE F0 03       BEQ $03    [$8DE3]     ; If [$12] != 0:
+$8B:8DE0 4C 30 8D    JMP $8D30  [$8B:8D30]  ; Go to LOOP
 
 $8B:8DE3 FA          PLX
 $8B:8DE4 28          PLP
@@ -2059,8 +2087,9 @@ $8B:8EA2 60          RTS
 }
 
 
-;;; $8EA3: A = [$18] * sin([X] / 2 * pi / 80h) ;;;
+;;; $8EA3: Unused. A = [$18] * sin([X] / 2 * pi / 80h) ;;;
 {
+; Only called by unused routine
 $8B:8EA3 E2 20       SEP #$20               ;\
 $8B:8EA5 BF 43 B4 A0 LDA $A0B443,x          ;|
 $8B:8EA9 8D 02 42    STA $4202  [$7E:4202]  ;|
@@ -2728,14 +2757,15 @@ $8B:93D9 60          RTS
 {
 $8B:93DA 08          PHP
 $8B:93DB C2 30       REP #$30
-$8B:93DD A2 1E 00    LDX #$001E
+$8B:93DD A2 1E 00    LDX #$001E             ; X = 1Eh (cinematic sprite object index)
 $8B:93E0 A9 00 00    LDA #$0000
 
-$8B:93E3 9D 1D 1B    STA $1B1D,x[$7E:1B3B]
-$8B:93E6 9D 5D 1A    STA $1A5D,x[$7E:1A7B]
-$8B:93E9 CA          DEX
-$8B:93EA CA          DEX
-$8B:93EB 10 F6       BPL $F6    [$93E3]
+; LOOP
+$8B:93E3 9D 1D 1B    STA $1B1D,x[$7E:1B3B]  ; Cinematic sprite object instruction list pointer = 0
+$8B:93E6 9D 5D 1A    STA $1A5D,x[$7E:1A7B]  ; Cinematic sprite object spritemap pointer = 0
+$8B:93E9 CA          DEX                    ;\
+$8B:93EA CA          DEX                    ;} X -= 2
+$8B:93EB 10 F6       BPL $F6    [$93E3]     ; If [X] >= 0: go to LOOP
 $8B:93ED 28          PLP
 $8B:93EE 60          RTS
 }
@@ -3238,7 +3268,7 @@ $8B:9649 CA          DEX                    ;} X -= 2
 $8B:964A 10 EE       BPL $EE    [$963A]     ; If [X] >= 0: go to LOOP
 $8B:964C 2C F3 19    BIT $19F3  [$7E:19F3]  ;\
 $8B:964F 10 03       BPL $03    [$9654]     ;} If [BG tilemap update flag] & 8000h != 0:
-$8B:9651 20 A0 87    JSR $87A0  [$8B:87A0]  ; Update cinematic BG tilemap
+$8B:9651 20 A0 87    JSR $87A0  [$8B:87A0]  ; Update 32x30 cinematic BG tilemap
 
 $8B:9654 20 D3 87    JSR $87D3  [$8B:87D3]  ; Update Samus eyes tilemap
 
@@ -3632,7 +3662,7 @@ $8B:987D 8D 16 00    STA $0016  [$7E:0016]  ;/
 $8B:9880 AA          TAX                    ; X = [$16]
 $8B:9881 B9 02 00    LDA $0002,y[$8C:D6B7]  ;\
 $8B:9884 29 FF 00    AND #$00FF             ;|
-$8B:9887 8D 12 00    STA $0012  [$7E:0012]  ;} $18 = $12 = [[Y] + 2] (columns, always 1)
+$8B:9887 8D 12 00    STA $0012  [$7E:0012]  ;} $12 = $18 = [[Y] + 2] (columns, always 1)
 $8B:988A 8D 18 00    STA $0018  [$7E:0018]  ;/
 $8B:988D B9 03 00    LDA $0003,y[$8C:D6B8]  ;\
 $8B:9890 29 FF 00    AND #$00FF             ;} $14 = [[Y] + 3] (rows, always 1)
@@ -3702,30 +3732,30 @@ $8B:98F8 60          RTS
 }
 
 
-;;; $98F9:  ;;;
+;;; $98F9: Clear credits object, cinematic BG tilemap = [A] ;;;
 {
 $8B:98F9 08          PHP
 $8B:98FA C2 30       REP #$30
 $8B:98FC DA          PHX
-$8B:98FD A2 FE 07    LDX #$07FE
-
-$8B:9900 9F 00 30 7E STA $7E3000,x[$7E:37FE]
-$8B:9904 CA          DEX
-$8B:9905 CA          DEX
-$8B:9906 10 F8       BPL $F8    [$9900]
-$8B:9908 A9 00 00    LDA #$0000
-$8B:990B 8D 01 1A    STA $1A01  [$7E:1A01]
-$8B:990E 9C F7 19    STZ $19F7  [$7E:19F7]
-$8B:9911 9C F9 19    STZ $19F9  [$7E:19F9]
-$8B:9914 9C FB 19    STZ $19FB  [$7E:19FB]
-$8B:9917 9C FD 19    STZ $19FD  [$7E:19FD]
+$8B:98FD A2 FE 07    LDX #$07FE             ;\
+                                            ;|
+$8B:9900 9F 00 30 7E STA $7E3000,x[$7E:37FE];|
+$8B:9904 CA          DEX                    ;} $7E:3000..37FF = [A]
+$8B:9905 CA          DEX                    ;|
+$8B:9906 10 F8       BPL $F8    [$9900]     ;/
+$8B:9908 A9 00 00    LDA #$0000             ;\
+$8B:990B 8D 01 1A    STA $1A01  [$7E:1A01]  ;} Cinematic BG tilemap row index = 0
+$8B:990E 9C F7 19    STZ $19F7  [$7E:19F7]  ; Credits object instruction list pointer = 0
+$8B:9911 9C F9 19    STZ $19F9  [$7E:19F9]  ; Credits object instruction timer = 0
+$8B:9914 9C FB 19    STZ $19FB  [$7E:19FB]  ; Credits object timer = 0
+$8B:9917 9C FD 19    STZ $19FD  [$7E:19FD]  ; Credits object pre-instruction = 0
 $8B:991A A9 00 48    LDA #$4800             ;\
 $8B:991D 8D F5 19    STA $19F5  [$7E:19F5]  ;} Cinematic BG VRAM address = $4800
-$8B:9920 9C 03 1A    STZ $1A03  [$7E:1A03]
-$8B:9923 9C 91 19    STZ $1991  [$7E:1991]
-$8B:9926 9C 93 19    STZ $1993  [$7E:1993]
-$8B:9929 9C 95 19    STZ $1995  [$7E:1995]
-$8B:992C 9C 97 19    STZ $1997  [$7E:1997]
+$8B:9920 9C 03 1A    STZ $1A03  [$7E:1A03]  ; Last credits update Y position = 0
+$8B:9923 9C 91 19    STZ $1991  [$7E:1991]  ;\
+$8B:9926 9C 93 19    STZ $1993  [$7E:1993]  ;} Cinematic BG1 X position = 0.0
+$8B:9929 9C 95 19    STZ $1995  [$7E:1995]  ;\
+$8B:992C 9C 97 19    STZ $1997  [$7E:1997]  ;} Cinematic BG1 Y position = 0.0
 $8B:992F FA          PLX
 $8B:9930 28          PLP
 $8B:9931 60          RTS
@@ -3737,7 +3767,7 @@ $8B:9931 60          RTS
 $8B:9932 08          PHP
 $8B:9933 C2 30       REP #$30
 $8B:9935 DA          PHX
-$8B:9936 BB          TYX                    ; Y = [X]
+$8B:9936 BB          TYX                    ; X = [Y]
 $8B:9937 BD 02 00    LDA $0002,x[$8B:F6FA]  ;\
 $8B:993A 8D FD 19    STA $19FD  [$7E:19FD]  ;} Credits object pre-instruction = [[X] + 2]
 $8B:993D BD 04 00    LDA $0004,x[$8B:F6FC]  ;\
@@ -3761,16 +3791,16 @@ $8B:9958 2C FF 19    BIT $19FF  [$7E:19FF]  ;\
 $8B:995B 10 0B       BPL $0B    [$9968]     ;} If [credits object enable flag] & 8000h = 0: return
 $8B:995D AD F7 19    LDA $19F7  [$7E:19F7]  ;\
 $8B:9960 F0 03       BEQ $03    [$9965]     ;} If [credits object instruction list pointer] != 0:
-$8B:9962 20 6A 99    JSR $996A  [$8B:996A]
+$8B:9962 20 6A 99    JSR $996A  [$8B:996A]  ; Process credits object instruction list
 
-$8B:9965 20 06 88    JSR $8806  [$8B:8806]
+$8B:9965 20 06 88    JSR $8806  [$8B:8806]  ; Update 32x32 cinematic BG tilemap
 
 $8B:9968 28          PLP
 $8B:9969 60          RTS
 }
 
 
-;;; $996A:  ;;;
+;;; $996A: Process credits object instruction list ;;;
 {
 $8B:996A A2 00 00    LDX #$0000             ;\
 $8B:996D FC FD 19    JSR ($19FD,x)[$8B:93D9];} Execute [credits object pre-instruction]
@@ -3781,16 +3811,16 @@ $8B:9975 AB          PLB                    ;/
 $8B:9976 AD 95 19    LDA $1995  [$7E:1995]  ;\
 $8B:9979 18          CLC                    ;|
 $8B:997A 69 00 80    ADC #$8000             ;|
-$8B:997D 8D 95 19    STA $1995  [$7E:1995]  ;} $1997.$1995 += 0.8000h
+$8B:997D 8D 95 19    STA $1995  [$7E:1995]  ;} Cinematic BG1 Y position += 0.8000h
 $8B:9980 AD 97 19    LDA $1997  [$7E:1997]  ;|
 $8B:9983 69 00 00    ADC #$0000             ;|
 $8B:9986 8D 97 19    STA $1997  [$7E:1997]  ;/
 $8B:9989 38          SEC                    ;\
 $8B:998A ED 03 1A    SBC $1A03  [$7E:1A03]  ;|
-$8B:998D C9 08 00    CMP #$0008             ;} If [$1997] < [$1A03] + 8: return
+$8B:998D C9 08 00    CMP #$0008             ;} If [cinematic BG1 Y position] < [last credits update Y position] + 8: return
 $8B:9990 30 2D       BMI $2D    [$99BF]     ;/
 $8B:9992 AD 97 19    LDA $1997  [$7E:1997]  ;\
-$8B:9995 8D 03 1A    STA $1A03  [$7E:1A03]  ;} $1A03 = [$1997]
+$8B:9995 8D 03 1A    STA $1A03  [$7E:1A03]  ;} Last credits update Y position = [cinematic BG1 Y position]
 $8B:9998 AC F7 19    LDY $19F7  [$7E:19F7]  ; Y = [credits object instruction list pointer]
 
 ; LOOP
@@ -3802,10 +3832,10 @@ $8B:99A3 C8          INY                    ;} Y += 2
 $8B:99A4 F4 9A 99    PEA $999A              ;\
 $8B:99A7 6C 12 00    JMP ($0012)[$8B:9A17]  ;} Execute [$12] and return to LOOP
 
-$8B:99AA 20 C1 99    JSR $99C1  [$8B:99C1]  ; Execute $99C1
+$8B:99AA 20 C1 99    JSR $99C1  [$8B:99C1]  ; Copy credits row to cinematic BG tilemap
 $8B:99AD AD 01 1A    LDA $1A01  [$7E:1A01]  ;\
 $8B:99B0 1A          INC A                  ;|
-$8B:99B1 29 1F 00    AND #$001F             ;} $1A01 = ([$1A01] + 1) % 20h
+$8B:99B1 29 1F 00    AND #$001F             ;} Cinematic BG tilemap row index = ([cinematic BG tilemap row index] + 1) % 20h
 $8B:99B4 8D 01 1A    STA $1A01  [$7E:1A01]  ;/
 $8B:99B7 98          TYA                    ;\
 $8B:99B8 18          CLC                    ;|
@@ -3817,7 +3847,7 @@ $8B:99C0 60          RTS
 }
 
 
-;;; $99C1:  ;;;
+;;; $99C1: Copy credits row to cinematic BG tilemap ;;;
 {
 ; Copy 40h bytes from $7F:0000 + [[Y] + 2] to $7E:3000 + [$1A01] * 40h
 
@@ -10835,8 +10865,8 @@ $8B:D454 1A          INC A                  ;\
 $8B:D455 8D 9F 1B    STA $1B9F  [$7E:1B9F]  ;} Increment ending frame counter (never read)
 
 $8B:D458 EE 51 1A    INC $1A51  [$7E:1A51]  ; Increment cinematic frame counter
-$8B:D45B 20 EF 93    JSR $93EF  [$8B:93EF]  ; Handle cinematic sprite objects
-$8B:D45E 20 74 D4    JSR $D474  [$8B:D474]  ; Handle final screen cinematic BG objects
+$8B:D45B 20 EF 93    JSR $93EF  [$8B:93EF]  ; Handle cinematic sprite objects (Zebes, stars, clouds, clear time, Samus, Super Metroid icon)
+$8B:D45E 20 74 D4    JSR $D474  [$8B:D474]  ; Handle final screen cinematic BG objects ("see you next mission" and item percentage)
 $8B:D461 20 55 99    JSR $9955  [$8B:9955]  ; Handle credits object
 $8B:D464 22 27 C5 8D JSL $8DC527[$8D:C527]  ; Palette FX object handler
 $8B:D468 20 99 97    JSR $9799  [$8B:9799]  ; Draw cinematic sprite objects
@@ -12223,7 +12253,7 @@ $8B:E1AA E8          INX
 $8B:E1AB E8          INX
 $8B:E1AC E0 40 02    CPX #$0240
 $8B:E1AF 30 F1       BMI $F1    [$E1A2]
-$8B:E1B1 20 06 88    JSR $8806  [$8B:8806]
+$8B:E1B1 20 06 88    JSR $8806  [$8B:8806]  ; Update 32x32 cinematic BG tilemap
 $8B:E1B4 E2 20       SEP #$20
 $8B:E1B6 A9 01       LDA #$01
 $8B:E1B8 85 69       STA $69    [$7E:0069]
@@ -12351,7 +12381,7 @@ $8B:E2B8 E8          INX
 $8B:E2B9 E8          INX
 $8B:E2BA E0 80 00    CPX #$0080
 $8B:E2BD 30 F1       BMI $F1    [$E2B0]
-$8B:E2BF 20 06 88    JSR $8806  [$8B:8806]
+$8B:E2BF 20 06 88    JSR $8806  [$8B:8806]  ; Update 32x32 cinematic BG tilemap
 $8B:E2C2 E2 20       SEP #$20
 $8B:E2C4 A9 01       LDA #$01
 $8B:E2C6 85 69       STA $69    [$7E:0069]
@@ -12630,7 +12660,7 @@ $8B:E4F8 9F 00 33 7E STA $7E3300,x[$7E:337E]
 $8B:E4FC CA          DEX
 $8B:E4FD CA          DEX
 $8B:E4FE 10 F8       BPL $F8    [$E4F8]
-$8B:E500 20 06 88    JSR $8806  [$8B:8806]
+$8B:E500 20 06 88    JSR $8806  [$8B:8806]  ; Update 32x32 cinematic BG tilemap
 $8B:E503 60          RTS
 }
 
@@ -12674,7 +12704,7 @@ $8B:E53C A9 BA E7    LDA #$E7BA             ;\
 $8B:E53F 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $E7BA
 $8B:E542 A9 00 50    LDA #$5000
 $8B:E545 8D F5 19    STA $19F5  [$7E:19F5]
-$8B:E548 20 06 88    JSR $8806  [$8B:8806]
+$8B:E548 20 06 88    JSR $8806  [$8B:8806]  ; Update 32x32 cinematic BG tilemap
 $8B:E54B A9 00 01    LDA #$0100
 $8B:E54E 8D 11 09    STA $0911  [$7E:0911]
 $8B:E551 8D 15 09    STA $0915  [$7E:0915]
