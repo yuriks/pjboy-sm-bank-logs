@@ -10943,7 +10943,7 @@ $8B:D4EB 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D4EE A9 00       LDA #$00               ;|
 $8B:D4F0 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D4F3 A9 80       LDA #$80               ;|
-$8B:D4F5 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7F:8000..BFFF] (clear BG tiles) <-- immediately overwritten >_<;
+$8B:D4F5 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7F:8000..BFFF] (clear BG tiles) <-- or tilemap actually?
 $8B:D4F8 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D4FC             dx 01,01,18,7F8000,4000;|
 $8B:D504 A9 02       LDA #$02               ;|
@@ -10963,7 +10963,7 @@ $8B:D52B 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D52E A9 60       LDA #$60               ;|
 $8B:D530 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D533 A9 80       LDA #$80               ;|
-$8B:D535 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:4000..7FFF] (yellow clouds tiles)
+$8B:D535 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $6000..7FFF = [$7F:4000..7FFF] (yellow clouds sprite tiles)
 $8B:D538 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D53C             dx 01,01,18,7F4000,4000;|
 $8B:D544 A9 02       LDA #$02               ;|
@@ -10973,7 +10973,7 @@ $8B:D54B 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D54E A9 00       LDA #$00               ;|
 $8B:D550 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D553 A9 80       LDA #$80               ;|
-$8B:D555 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7F:0000..3FFF] (Zebes being zoomed out tiles)
+$8B:D555 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7F:0000..3FFF] (Zebes being zoomed out BG tiles)
 $8B:D558 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D55C             dx 01,00,19,7F0000,4000;|
 $8B:D564 A9 02       LDA #$02               ;|
@@ -11001,7 +11001,7 @@ $8B:D59E A2 00 03    LDX #$0300             ;\
 $8B:D5A1 A9 8C 8C    LDA #$8C8C             ;|
                                             ;|
 $8B:D5A4 9F 00 40 7F STA $7F4000,x[$7F:4300];|
-$8B:D5A8 E8          INX                    ;} $7F:4300..7FFF = 8C8Ch (keep only the first gunship frame of the tilemap)
+$8B:D5A8 E8          INX                    ;} $7F:4300..7FFF = 8Ch (keep only the first gunship frame of the tilemap)
 $8B:D5A9 E8          INX                    ;|
 $8B:D5AA E0 00 40    CPX #$4000             ;|
 $8B:D5AD 30 F5       BMI $F5    [$D5A4]     ;/
@@ -11174,7 +11174,7 @@ $8B:D735 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D738 A9 00       LDA #$00               ;|
 $8B:D73A 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D73D A9 80       LDA #$80               ;|
-$8B:D73F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (clear BG tiles) <-- immediately overwritten >_<;
+$8B:D73F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (clear BG tiles) <-- actually tilemap?
 $8B:D742 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D746             dx 01,01,18,7E2000,4000;|
 $8B:D74E A9 02       LDA #$02               ;|
@@ -11202,7 +11202,7 @@ $8B:D78A 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D78D A9 00       LDA #$00               ;|
 $8B:D78F 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D792 A9 80       LDA #$80               ;|
-$8B:D794 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (grey clouds tiles)
+$8B:D794 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..3FFF high bytes = [$7E:2000..5FFF] (grey clouds BG tiles)
 $8B:D797 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D79B             dx 01,00,19,7E2000,4000;|
 $8B:D7A3 A9 02       LDA #$02               ;|
