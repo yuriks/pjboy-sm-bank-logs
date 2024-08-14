@@ -9091,7 +9091,7 @@ $82:DAA5 60          RTS
 ;      y = [Y]
 ;      d = [palette change denominator]
 ; Solving this recurrence relation actually gives you:
-;     x_t = x_0 + t (y - x_0) / d
+;     x_t = x_0 + t (y - x_0) / d <-- TODO: double check, I feel like I'm missing a +1
 ; which is linear interpolation
 
 $82:DAA6 C9 00 00    CMP #$0000             ;\
