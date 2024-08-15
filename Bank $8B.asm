@@ -10934,7 +10934,7 @@ $8B:D4D3             dl 7F4000              ;/
 $8B:D4D6 A9 00 99    LDA #$9900             ;\
 $8B:D4D9 85 48       STA $48    [$7E:0048]  ;|
 $8B:D4DB A9 7E D1    LDA #$D17E             ;|
-$8B:D4DE 85 47       STA $47    [$7E:0047]  ;} Decompress $99:D17E (clear BG tiles for Zebes being zoomed out during Zebes explosion) to $7F:8000
+$8B:D4DE 85 47       STA $47    [$7E:0047]  ;} Decompress $99:D17E (Zebes being zoomed out during Zebes explosion tilemap) to $7F:8000
 $8B:D4E0 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D4E4             dl 7F8000              ;/
 $8B:D4E7 E2 30       SEP #$30
@@ -10943,7 +10943,7 @@ $8B:D4EB 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D4EE A9 00       LDA #$00               ;|
 $8B:D4F0 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D4F3 A9 80       LDA #$80               ;|
-$8B:D4F5 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7F:8000..BFFF] (clear BG tiles) <-- or tilemap actually?
+$8B:D4F5 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7F:8000..BFFF] (Zebes being zoomed out tilemap)
 $8B:D4F8 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D4FC             dx 01,01,18,7F8000,4000;|
 $8B:D504 A9 02       LDA #$02               ;|
@@ -10953,7 +10953,7 @@ $8B:D50B 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D50E A9 20       LDA #$20               ;|
 $8B:D510 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D513 A9 80       LDA #$80               ;|
-$8B:D515 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7F:8000..BFFF] (clear BG tiles)
+$8B:D515 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7F:8000..BFFF] (Zebes being zoomed out tilemap)
 $8B:D518 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D51C             dx 01,01,18,7F8000,4000;|
 $8B:D524 A9 02       LDA #$02               ;|
@@ -11038,13 +11038,13 @@ $8B:D601             dl 7EA000              ;/
 $8B:D604 A9 00 99    LDA #$9900             ;\
 $8B:D607 85 48       STA $48    [$7E:0048]  ;|
 $8B:D609 A9 5B D6    LDA #$D65B             ;|
-$8B:D60C 85 47       STA $47    [$7E:0047]  ;} Decompress $99:D65B (clear BG tiles for grey clouds during Zebes explosion) to $7E:2000
+$8B:D60C 85 47       STA $47    [$7E:0047]  ;} Decompress $99:D65B (grey clouds during Zebes explosion tilemap) to $7E:2000
 $8B:D60E 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D612             dl 7E2000              ;/
 $8B:D615 A9 00 99    LDA #$9900             ;\
 $8B:D618 85 48       STA $48    [$7E:0048]  ;|
 $8B:D61A A9 32 D9    LDA #$D932             ;|
-$8B:D61D 85 47       STA $47    [$7E:0047]  ;} Decompress $99:D932 (clear BG tiles for big Zebes during Zebes explosion) to $7E:6000
+$8B:D61D 85 47       STA $47    [$7E:0047]  ;} Decompress $99:D932 (big Zebes during Zebes explosion tilemap) to $7E:6000
 $8B:D61F 22 FF B0 80 JSL $80B0FF[$80:B0FF]  ;|
 $8B:D623             dl 7E6000              ;/
 $8B:D626 A9 00 01    LDA #$0100             ;\
@@ -11174,7 +11174,7 @@ $8B:D735 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D738 A9 00       LDA #$00               ;|
 $8B:D73A 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D73D A9 80       LDA #$80               ;|
-$8B:D73F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (clear BG tiles) <-- actually tilemap?
+$8B:D73F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:2000..5FFF] (grey clouds during Zebes explosion tilemap) <-- actually tilemap?
 $8B:D742 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D746             dx 01,01,18,7E2000,4000;|
 $8B:D74E A9 02       LDA #$02               ;|
@@ -11184,7 +11184,7 @@ $8B:D755 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D758 A9 20       LDA #$20               ;|
 $8B:D75A 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D75D A9 80       LDA #$80               ;|
-$8B:D75F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7E:2000..5FFF] (clear BG tiles)
+$8B:D75F 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7E:2000..5FFF] (grey clouds during Zebes explosion tilemap)
 $8B:D762 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D766             dx 01,01,18,7E2000,4000;|
 $8B:D76E A9 02       LDA #$02               ;|
@@ -11283,7 +11283,7 @@ $8B:D83B 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D83E A9 00       LDA #$00               ;|
 $8B:D840 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D843 A9 80       LDA #$80               ;|
-$8B:D845 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:6000..9FFF] (clear BG tiles) <-- immediately overwritten >_<;
+$8B:D845 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $0000..1FFF = [$7E:6000..9FFF] (big Zebes during Zebes explosion tilemap)
 $8B:D848 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D84C             dx 01,01,18,7E6000,4000;|
 $8B:D854 A9 02       LDA #$02               ;|
@@ -11293,7 +11293,7 @@ $8B:D85B 8D 16 21    STA $2116  [$7E:2116]  ;|
 $8B:D85E A9 20       LDA #$20               ;|
 $8B:D860 8D 17 21    STA $2117  [$7E:2117]  ;|
 $8B:D863 A9 80       LDA #$80               ;|
-$8B:D865 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7E:6000..9FFF] (clear BG tiles)
+$8B:D865 8D 15 21    STA $2115  [$7E:2115]  ;} VRAM $2000..3FFF = [$7E:6000..9FFF] (big Zebes during Zebes explosion tilemap)
 $8B:D868 22 A9 91 80 JSL $8091A9[$80:91A9]  ;|
 $8B:D86C             dx 01,01,18,7E6000,4000;|
 $8B:D874 A9 02       LDA #$02               ;|
