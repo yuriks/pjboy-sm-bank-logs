@@ -11681,8 +11681,8 @@ $8B:DC33 8D 8D 19    STA $198D  [$7E:198D]  ;} Mode 7 transformation angle = -70
 $8B:DC36 A9 01 00    LDA #$0001             ;\
 $8B:DC39 8D 49 1A    STA $1A49  [$7E:1A49]  ;} Cinematic function timer = 1
 $8B:DC3C A9 C0 00    LDA #$00C0             ;\
-$8B:DC3F 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} $1A4B = C0h
-$8B:DC42 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; $1A4D = 0
+$8B:DC3F 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} Zebes explosion afterglow timer = C0h
+$8B:DC42 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; Ending gunship shake index = 0
 $8B:DC45 A9 A5 DC    LDA #$DCA5             ;\
 $8B:DC48 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DCA5
 $8B:DC4B 60          RTS
@@ -11746,14 +11746,14 @@ $8B:DCA4 60          RTS
 }
 
 
-;;; $DCA5: Cinematic function - ending - space view - gunship emergence -  ;;;
+;;; $DCA5: Cinematic function - ending - space view - gunship emergence - spinning fast ;;;
 {
 $8B:DCA5 AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;\
-$8B:DCA8 F0 06       BEQ $06    [$DCB0]     ;} If [$1A4B] != 0:
+$8B:DCA8 F0 06       BEQ $06    [$DCB0]     ;} If [Zebes explosion afterglow timer] != 0:
 $8B:DCAA 3A          DEC A                  ;\
-$8B:DCAB 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} Decrement $1A4B
+$8B:DCAB 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} Decrement Zebes explosion afterglow timer
 $8B:DCAE 80 03       BRA $03    [$DCB3]
-                                            ; Else ([$1A4B] = 0):
+                                            ; Else ([Zebes explosion afterglow timer] = 0):
 $8B:DCB0 20 4C DC    JSR $DC4C  [$8B:DC4C]  ; Fade out Zebes explosion afterglow
 
 $8B:DCB3 AD 8D 19    LDA $198D  [$7E:198D]  ;\
@@ -11763,7 +11763,7 @@ $8B:DCBA 29 FF 00    AND #$00FF             ;|
 $8B:DCBD 8D 8D 19    STA $198D  [$7E:198D]  ;/
 $8B:DCC0 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
 $8B:DCC3 0A          ASL A                  ;|
-$8B:DCC4 0A          ASL A                  ;} X = [$1A4D] * 4
+$8B:DCC4 0A          ASL A                  ;} X = [ending gunship shake index] * 4
 $8B:DCC5 AA          TAX                    ;/
 $8B:DCC6 AD 91 19    LDA $1991  [$7E:1991]  ;\
 $8B:DCC9 18          CLC                    ;|
@@ -11774,7 +11774,7 @@ $8B:DCD3 7D 02 DD    ADC $DD02,x[$8B:DD02]  ;|
 $8B:DCD6 8D 93 19    STA $1993  [$7E:1993]  ;/
 $8B:DCD9 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
 $8B:DCDC 1A          INC A                  ;|
-$8B:DCDD 29 0F 00    AND #$000F             ;} $1A4D = ([$1A4D] + 1) % 10h
+$8B:DCDD 29 0F 00    AND #$000F             ;} Ending gunship shake index = ([ending gunship shake index] + 1) % 10h
 $8B:DCE0 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;/
 $8B:DCE3 AD 8F 19    LDA $198F  [$7E:198F]  ;\
 $8B:DCE6 38          SEC                    ;|
@@ -11784,18 +11784,19 @@ $8B:DCED C9 B0 05    CMP #$05B0             ;\
 $8B:DCF0 10 0F       BPL $0F    [$DD01]     ;} If [mode 7 transformation zoom level] < 4A0h:
 $8B:DCF2 A9 01 00    LDA #$0001             ;\
 $8B:DCF5 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;} $1A4B = 1 (never read)
-$8B:DCF8 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; $1A4D = 0
+$8B:DCF8 9C 4D 1A    STZ $1A4D  [$7E:1A4D]  ; Ending gunship shake index = 0
 $8B:DCFB A9 42 DD    LDA #$DD42             ;\
 $8B:DCFE 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DD42
 
 $8B:DD01 60          RTS
 
+; Shaking X velocities
 $8B:DD02             dw 0000,8000, 0000,8000, 0000,8000, 0000,8000, FFFF,8000, FFFF,8000, 0000,8000, 0000,8000,
                         0000,8000, 0000,8000, FFFF,8000, FFFF,8000, 0000,8000, 0000,8000, FFFF,8000, FFFF,8000
 }
 
 
-;;; $DD42: Cinematic function - ending - space view - gunship emergence -  ;;;
+;;; $DD42: Cinematic function - ending - space view - gunship emergence - spinning slow ;;;
 {
 $8B:DD42 20 4C DC    JSR $DC4C  [$8B:DC4C]  ; Fade out Zebes explosion afterglow
 $8B:DD45 AD 8D 19    LDA $198D  [$7E:198D]  ;\
@@ -11808,7 +11809,7 @@ $8B:DD54 8D 8D 19    STA $198D  [$7E:198D]  ;/
 
 $8B:DD57 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
 $8B:DD5A 0A          ASL A                  ;|
-$8B:DD5B 0A          ASL A                  ;} X = [$1A4D] * 4
+$8B:DD5B 0A          ASL A                  ;} X = [ending gunship shake index] * 4
 $8B:DD5C AA          TAX                    ;/
 $8B:DD5D AD 91 19    LDA $1991  [$7E:1991]  ;\
 $8B:DD60 18          CLC                    ;|
@@ -11819,7 +11820,7 @@ $8B:DD6A 7D AD DD    ADC $DDAD,x[$8B:DDAD]  ;|
 $8B:DD6D 8D 93 19    STA $1993  [$7E:1993]  ;/
 $8B:DD70 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
 $8B:DD73 1A          INC A                  ;|
-$8B:DD74 29 07 00    AND #$0007             ;} $1A4D = ([$1A4D] + 1) % 8
+$8B:DD74 29 07 00    AND #$0007             ;} Ending gunship shake index = ([ending gunship shake index] + 1) % 8
 $8B:DD77 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;/
 $8B:DD7A AD 8F 19    LDA $198F  [$7E:198F]  ;\
 $8B:DD7D 38          SEC                    ;|
@@ -11830,7 +11831,7 @@ $8B:DD87 10 23       BPL $23    [$DDAC]     ;} If [mode 7 transformation zoom le
 $8B:DD89 A9 CD DD    LDA #$DDCD             ;\
 $8B:DD8C 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DDCD
 $8B:DD8F A9 00 80    LDA #$8000             ;\
-$8B:DD92 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} $1A4B.$1A4D = 0.8000h
+$8B:DD92 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} Ending gunship X velocity = 0.8000h
 $8B:DD95 9C 4B 1A    STZ $1A4B  [$7E:1A4B]  ;/
 $8B:DD98 A9 0F 00    LDA #$000F             ;\
 $8B:DD9B 22 33 82 80 JSL $808233[$80:8233]  ;} If critters escaped:
@@ -11842,24 +11843,25 @@ $8B:DDA9 20 A2 93    JSR $93A2  [$8B:93A2]  ;/
 
 $8B:DDAC 60          RTS
 
+; Shaking X velocities
 $8B:DDAD             dw 0001,0000, 0001,0000, 0001,0000, FFFF,0000, FFFF,0000, 0001,0000, 0001,0000, FFFF,0000
 }
 
 
-;;; $DDCD: Cinematic function - ending - space view - gunship emergence -  ;;;
+;;; $DDCD: Cinematic function - ending - space view - gunship emergence - fly into camera ;;;
 {
 $8B:DDCD 20 4C DC    JSR $DC4C  [$8B:DC4C]  ; Fade out Zebes explosion afterglow
 $8B:DDD0 AD 4D 1A    LDA $1A4D  [$7E:1A4D]  ;\
 $8B:DDD3 38          SEC                    ;|
 $8B:DDD4 E9 00 01    SBC #$0100             ;|
-$8B:DDD7 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} $1A4B.$1A4D -= 0.0100h
+$8B:DDD7 8D 4D 1A    STA $1A4D  [$7E:1A4D]  ;} Ending gunship X velocity -= 0.0100h
 $8B:DDDA AD 4B 1A    LDA $1A4B  [$7E:1A4B]  ;|
 $8B:DDDD E9 00 00    SBC #$0000             ;|
 $8B:DDE0 8D 4B 1A    STA $1A4B  [$7E:1A4B]  ;/
 $8B:DDE3 AD 91 19    LDA $1991  [$7E:1991]  ;\
 $8B:DDE6 18          CLC                    ;|
 $8B:DDE7 6D 4D 1A    ADC $1A4D  [$7E:1A4D]  ;|
-$8B:DDEA 8D 91 19    STA $1991  [$7E:1991]  ;} Cinematic BG1 X position += [$1A4B].[$1A4D]
+$8B:DDEA 8D 91 19    STA $1991  [$7E:1991]  ;} Cinematic BG1 X position += [ending gunship X velocity]
 $8B:DDED AD 93 19    LDA $1993  [$7E:1993]  ;|
 $8B:DDF0 6D 4B 1A    ADC $1A4B  [$7E:1A4B]  ;|
 $8B:DDF3 8D 93 19    STA $1993  [$7E:1993]  ;/
@@ -11911,11 +11913,11 @@ $8B:DE63 60          RTS
 
 ;;; $DE64: Cinematic function - ending - space view - transition to credits ;;;
 {
-$8B:DE64 A9 01 00    LDA #$0001
-$8B:DE67 8D 25 07    STA $0725  [$7E:0725]
+$8B:DE64 A9 01 00    LDA #$0001             ;\
+$8B:DE67 8D 25 07    STA $0725  [$7E:0725]  ;} Screen fade counter = 1
 $8B:DE6A 20 B8 90    JSR $90B8  [$8B:90B8]  ; Advance fast screen fade out
 $8B:DE6D 90 10       BCC $10    [$DE7F]     ; If not reached zero brightness: return
-$8B:DE6F 22 4B 83 80 JSL $80834B[$80:834B]
+$8B:DE6F 22 4B 83 80 JSL $80834B[$80:834B]  ; Enable NMI
 $8B:DE73 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:DE76 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:DE79 A9 80 DE    LDA #$DE80             ;\
@@ -14058,17 +14060,17 @@ $8B:F0B5 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y positio
 }
 
 
-;;; $F0B8:  ;;;
+;;; $F0B8: Top/bottom yellow clouds common initialisation ;;;
 {
 $8B:F0B8 AD 9D 1B    LDA $1B9D  [$7E:1B9D]  ;\
-$8B:F0BB F0 17       BEQ $17    [$F0D4]     ;} If [cinematic sprite object initialisation parameter] != 0:
+$8B:F0BB F0 17       BEQ $17    [$F0D4]     ;} If [cinematic sprite object initialisation parameter] != 0 (never true):
 $8B:F0BD A9 80 01    LDA #$0180             ;\
 $8B:F0C0 99 7D 1A    STA $1A7D,y            ;} Cinematic sprite object X position = 180h
 $8B:F0C3 A9 00 0A    LDA #$0A00             ;\
 $8B:F0C6 99 BD 1A    STA $1ABD,y            ;} Cinematic sprite object palette index = A00h (palette 5)
 $8B:F0C9 B9 1D 1B    LDA $1B1D,y            ;\
 $8B:F0CC 18          CLC                    ;|
-$8B:F0CD 69 04 00    ADC #$0004             ;} Cinematic sprite object instruction list pointer += 4
+$8B:F0CD 69 04 00    ADC #$0004             ;} Cinematic sprite object instruction list pointer += 4 (uh, this skips to the loop instruction and hence has no effect)
 $8B:F0D0 99 1D 1B    STA $1B1D,y            ;/
 $8B:F0D3 60          RTS                    ; Return
 
@@ -14084,7 +14086,7 @@ $8B:F0E0 60          RTS
 {
 $8B:F0E1 A9 E0 FF    LDA #$FFE0             ;\
 $8B:F0E4 99 9D 1A    STA $1A9D,y[$7E:1AB9]  ;} Cinematic sprite object Y position = -20h
-$8B:F0E7 80 CF       BRA $CF    [$F0B8]     ; Go to $F0B8
+$8B:F0E7 80 CF       BRA $CF    [$F0B8]     ; Go to top/bottom yellow clouds common initialisation
 }
 
 
@@ -14092,7 +14094,7 @@ $8B:F0E7 80 CF       BRA $CF    [$F0B8]     ; Go to $F0B8
 {
 $8B:F0E9 A9 20 01    LDA #$0120             ;\
 $8B:F0EC 99 9D 1A    STA $1A9D,y[$7E:1AB7]  ;} Cinematic sprite object Y position = 120h
-$8B:F0EF 80 C7       BRA $C7    [$F0B8]     ; Go to $F0B8
+$8B:F0EF 80 C7       BRA $C7    [$F0B8]     ; Go to top/bottom yellow clouds common initialisation
 }
 
 
@@ -14100,7 +14102,7 @@ $8B:F0EF 80 C7       BRA $C7    [$F0B8]     ; Go to $F0B8
 {
 $8B:F0F1 A9 60 01    LDA #$0160             ;\
 $8B:F0F4 99 9D 1A    STA $1A9D,y[$7E:1AB5]  ;} Cinematic sprite object Y position = 160h
-$8B:F0F7 80 BF       BRA $BF    [$F0B8]     ; Go to $F0B8
+$8B:F0F7 80 BF       BRA $BF    [$F0B8]     ; Go to top/bottom yellow clouds common initialisation
 }
 
 
@@ -14628,7 +14630,7 @@ $8B:F447 60          RTS
 $8B:F448 9C 23 07    STZ $0723  [$7E:0723]  ; Screen fade delay = 0
 $8B:F44B 9C 25 07    STZ $0725  [$7E:0725]  ; Screen fade counter = 0
 $8B:F44E A9 64 DE    LDA #$DE64             ;\
-$8B:F451 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DE64
+$8B:F451 8D 51 1F    STA $1F51  [$7E:1F51]  ;} Cinematic function = $DE64 (ending - space view - transition to credits)
 $8B:F454 60          RTS
 }
 
@@ -14645,7 +14647,7 @@ $8B:F463 60          RTS
 }
 
 
-;;; $F464: Pre-instruction ;;;
+;;; $F464: Pre-instruction - yellow clouds - top - moving ;;;
 {
 $8B:F464 BD FD 1A    LDA $1AFD,x[$7E:1B1B]
 $8B:F467 18          CLC
@@ -14670,7 +14672,7 @@ $8B:F486 60          RTS
 }
 
 
-;;; $F487: Pre-instruction ;;;
+;;; $F487: Pre-instruction - yellow clouds - bottom - moving ;;;
 {
 $8B:F487 BD FD 1A    LDA $1AFD,x[$7E:1B17]
 $8B:F48A 38          SEC
@@ -14695,7 +14697,7 @@ $8B:F4A9 60          RTS
 }
 
 
-;;; $F4AA: Pre-instruction ;;;
+;;; $F4AA: Pre-instruction - yellow clouds - right - moving ;;;
 {
 $8B:F4AA BD FD 1A    LDA $1AFD,x[$7E:1B1B]
 $8B:F4AD 38          SEC
@@ -14727,21 +14729,21 @@ $8B:F4DF 60          RTS
 }
 
 
-;;; $F4E0: Pre-instruction ;;;
+;;; $F4E0: Pre-instruction - yellow clouds - left - moving ;;;
 {
 $8B:F4E0 BD FD 1A    LDA $1AFD,x[$7E:1B19]
 $8B:F4E3 18          CLC
 $8B:F4E4 69 00 00    ADC #$0000
 $8B:F4E7 9D FD 1A    STA $1AFD,x[$7E:1B19]
 $8B:F4EA BD 9D 1A    LDA $1A9D,x[$7E:1AB9]  ;\
-$8B:F4ED 69 02 00    ADC #$0002             ;} Cinematic sprite object Y position -= 2
+$8B:F4ED 69 02 00    ADC #$0002             ;} Cinematic sprite object Y position += 2
 $8B:F4F0 9D 9D 1A    STA $1A9D,x[$7E:1AB9]  ;/
 $8B:F4F3 BD DD 1A    LDA $1ADD,x[$7E:1AF9]
 $8B:F4F6 18          CLC
 $8B:F4F7 69 00 00    ADC #$0000
 $8B:F4FA 9D DD 1A    STA $1ADD,x[$7E:1AF9]
 $8B:F4FD BD 7D 1A    LDA $1A7D,x[$7E:1A99]  ;\
-$8B:F500 69 01 00    ADC #$0001             ;} Cinematic sprite object X position -= 1
+$8B:F500 69 01 00    ADC #$0001             ;} Cinematic sprite object X position += 1
 $8B:F503 9D 7D 1A    STA $1A7D,x[$7E:1A99]  ;/
 $8B:F506 60          RTS
 }
