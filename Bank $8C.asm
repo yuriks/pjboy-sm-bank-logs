@@ -5720,7 +5720,7 @@ $8C:D81B             dw 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 002F, 10
 }
 
 
-;;; $D91B: Instruction list - credits scrolling ;;;
+;;; $D91B: Instruction list - credits ;;;
 {
 ; Negative instructions are ASM instructions (as per usual)
 ; For positive instructions, the first word is ignored, the second word is an offset to a row of credits tilemap to load
@@ -5958,7 +5958,7 @@ $8C:DC8F             dx 0000,1FC0,  ; "                                "
 }
 
 
-;;; $DC9B: Tilemap - credits - Deer Force ;;;
+;;; $DC9B: Tilemap - post-credits - Deer Force ;;;
 {
 $8C:DC9B             dw 004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,000F,0011,000E,0003,0014,0002,0004,0003,004F,0001,0018,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,
                         004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,
@@ -5972,14 +5972,14 @@ $8C:DC9B             dw 004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,000F,0
 }
 
 
-;;; $DEDB: Tilemap - credits - 1994 Nintendo ;;;
+;;; $DEDB: Tilemap - post-credits - 1994 Nintendo ;;;
 {
 $8C:DEDB             dw 007F,007F,007F,007F,007F,007F,007F,007F,007F,0061,0069,0069,0064,007F,007F,002D,0028,002D,0043,0024,002D,0023,002E,007F,007F,007F,007F,007F,007F,007F,007F,007F,
                         007F,007F,007F,007F,007F,007F,007F,007F,007F,0071,0079,0079,0074,007F,007F,003D,0038,003D,0053,0034,003D,0033,003E,007F,007F,007F,007F,007F,007F,007F,007F,007F
 }
 
 
-;;; $DF5B: Tilemap - credits - item percentage Japanese text ;;;
+;;; $DF5B: Tilemap - post-credits - item percentage Japanese text ;;;
 {
 ; アイテム発見パーセンテージ (percentage of items discovered)
 $8C:DF5B             dw 004F,004F,004F,004F,004F,004F,004F,004F,004F,005B,005C,005D,005E,005F,0080,0081,0082,0083,0084,0085,0086,0087,004F,004F,004F,004F,004F,004F,004F,004F,004F,004F,
@@ -6246,6 +6246,7 @@ $8C:EDE9             dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0
 
 ;;; $EFE9: Palettes - ending Super Metroid icon glare ;;;
 {
+; TODO: double check, this seems to be used for the grey BG2 palette (too?)?
 $8C:EFE9             dw 0000,013F,0030,0005,025F,00F2,0029,035F,0192,0089,7BE0,7980,4400,43FF,03FF,1C84,
                         0000,011D,002F,0004,021D,00D0,0028,031D,0170,0068,73A0,7160,3C00,3FBD,03BD,1863,
                         0000,00FA,000D,0004,01FA,00CF,0007,02DA,014F,0067,6B40,6940,3800,375A,035A,1863,

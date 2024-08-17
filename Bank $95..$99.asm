@@ -2025,7 +2025,7 @@ $97:96F4             db EB, 17, DF, 00, 0D, 00, 08, 01, 08, A7, 08, A8, 08, A9, 
 {
 ; Decompressed to $7F:0000..3FFF around $8B:DEAD, then transferred to VRAM $5000..5FFF (BG2 tiles)
 ; First frame is always loaded
-; Second frame is loaded to $6000..6FFF if player got the bad ending
+; Both frames are loaded to VRAM $0000..1FFF if player got the bad ending
 
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |        |        |        |        |3333    |333     |        |        |  3333  |        |        |        |        |   3333 |        |
