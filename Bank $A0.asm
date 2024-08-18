@@ -599,7 +599,7 @@ $A0:8708 30 03       BMI $03    [$870D]     ;/
 $A0:870A 20 12 87    JSR $8712  [$A0:8712]  ; Set all active enemies to shake horizontally for two frames
 
 ; BRANCH_RETURN
-$A0:870D EE 42 18    INC $1842  [$7E:1842]  ; Increment frame counter
+$A0:870D EE 42 18    INC $1842  [$7E:1842]  ; Increment $1842 (never read)
 $A0:8710 AB          PLB
 $A0:8711 6B          RTL
 }

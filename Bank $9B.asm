@@ -3135,7 +3135,7 @@ $9B:C6B1 60          RTS
 ;;     A: Direction grapple is fired
 ;;     $16: 6. Y offset of Samus projectile origin
 
-; Gets directions for Samus aiming while held by Draygon
+; Gets directions for Samus aiming when held by Draygon
 $9B:C6B2 C9 BE 00    CMP #$00BE             ;\
 $9B:C6B5 F0 25       BEQ $25    [$C6DC]     ;} If [Samus pose] = facing left - grabbed by Draygon - moving: go to BRANCH_FACING_LEFT
 $9B:C6B7 A9 06 00    LDA #$0006             ;\

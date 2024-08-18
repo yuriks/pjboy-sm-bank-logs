@@ -2424,9 +2424,10 @@ $AA:C87E 60          RTS
 }
 
 
-;;; $C87F: Initialisation AI - enemy $EEFF/$EF3F/$EF7F/$EFBF (Torizos) ;;;
+;;; $C87F: Initialisation AI - enemy $EEFF/$EF3F/$EF7F/$EFBF (torizos) ;;;
 {
 ; $AA:C91E is the GT code
+; The torizo orb enemies ($EF3F/$EFBF) are never spawned, they're only used for drop chances (see torizo chozo orb shot instruction list $86:AB68)
 $AA:C87F A9 04 00    LDA #$0004             ;\
 $AA:C882 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area torizo is dead:
 $AA:C886 90 0D       BCC $0D    [$C895]     ;/

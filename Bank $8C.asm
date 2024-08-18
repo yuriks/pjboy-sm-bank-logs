@@ -6026,10 +6026,10 @@ $8C:DFDB             dx 0040,00,00,E12F, ; Nothing
                         0004,16,0C,E1E3, ; " "
                         0004,17,0C,E1A7, ; "I"
                         0004,18,0C,E1CB, ; "S"
-                        E627,            ; Item percentage count
-                        E769,            ; Handle creating Japanese text
+                        E627,            ; Draw item percentage count
+                        E769,            ; Draw item percentage Japanese text
                         0080,00,00,E12F, ; Nothing
-                        E780,
+                        E780,            ; Clear item percentage Japanese text
                         9698             ; Delete
 }
 
@@ -6244,9 +6244,8 @@ $8C:EDE9             dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0
 }
 
 
-;;; $EFE9: Palettes - ending Super Metroid icon glare ;;;
+;;; $EFE9: Palettes - ending Super Metroid icon fading to grey - sprite palettes ;;;
 {
-; TODO: double check, this seems to be used for the grey BG2 palette (too?)?
 $8C:EFE9             dw 0000,013F,0030,0005,025F,00F2,0029,035F,0192,0089,7BE0,7980,4400,43FF,03FF,1C84,
                         0000,011D,002F,0004,021D,00D0,0028,031D,0170,0068,73A0,7160,3C00,3FBD,03BD,1863,
                         0000,00FA,000D,0004,01FA,00CF,0007,02DA,014F,0067,6B40,6940,3800,375A,035A,1863,
@@ -6266,8 +6265,9 @@ $8C:EFE9             dw 0000,013F,0030,0005,025F,00F2,0029,035F,0192,0089,7BE0,7
 }
 
 
-;;; $F1E9: Palettes - ending Super Metroid icon fading to grey ;;;
+;;; $F1E9: Palettes - ending Super Metroid icon fading to grey - BG palettes ;;;
 {
+; This table is read from the bottom upwards
 $8C:F1E9             dw 0000,6B5A,5EF7,5294,4631,35AD,294A,1CE7,1084,0000,0000,0000,0000,0000,0000,0000,
                         0000,6318,56B5,4A52,3DEF,318C,2529,18C6,0C63,0000,0000,0000,0000,0000,0000,0000,
                         0000,5AD6,5294,4631,39CE,2D6B,2108,18C6,0C63,0000,0000,0000,0000,0000,0000,0000,

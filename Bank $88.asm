@@ -4762,7 +4762,7 @@ $88:B10C E2 30       SEP #$30               ;\
 $88:B10E 09 80       ORA #$80               ;|
 $88:B110 85 75       STA $75    [$7E:0075]  ;|
 $88:B112 8A          TXA                    ;|
-$88:B113 09 40       ORA #$40               ;} Colour math subscreen backdrop colour = ([X], [X], [X]) 
+$88:B113 09 40       ORA #$40               ;} Colour math subscreen backdrop colour = ([X], [X], [X])
 $88:B115 85 76       STA $76    [$7E:0076]  ;|
 $88:B117 8A          TXA                    ;|
 $88:B118 09 20       ORA #$20               ;|
@@ -4964,13 +4964,13 @@ $88:B255 60          RTS
 ;                       |     ___ Base timer
 ;                       |    |
 $88:B256             dw 0046,0001,
-                        0046,0003, 
-                        0046,0002, 
-                        0046,0001, 
-                        0046,0001, 
-                        0046,0002, 
-                        0046,0002, 
-                        0046,0001, 
+                        0046,0003,
+                        0046,0002,
+                        0046,0001,
+                        0046,0001,
+                        0046,0002,
+                        0046,0002,
+                        0046,0001,
                         8000
 }
 
@@ -5075,8 +5075,8 @@ $88:B32B 10 09       BPL $09    [$B336]     ;} If -40h < [tide phase] / 100h < 4
 $88:B32D AD 74 19    LDA $1974  [$7E:1974]  ;\
 $88:B330 18          CLC                    ;} Tide phase += 80h
 $88:B331 69 80 00    ADC #$0080             ;/
-$88:B334 80 07       BRA $07    [$B33D]     
-                                            
+$88:B334 80 07       BRA $07    [$B33D]
+
 $88:B336 AD 74 19    LDA $1974  [$7E:1974]  ;\ Else (not -40h < [tide phase] / 100h < 40h (tide below midpoint)):
 $88:B339 18          CLC                    ;} Tide phase += E0h
 $88:B33A 69 E0 00    ADC #$00E0             ;/
@@ -5515,7 +5515,7 @@ $88:B62A             dx 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81
                         81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
                         81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
                         81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
-                        
+
                         81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02,
                         81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02,
                         81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02,
@@ -5541,7 +5541,7 @@ $88:B62A             dx 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81
                         81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02,
                         81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02,
                         81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02, 81,9C02,
-                        
+
                         60,9C02, 60,9C02,
                         00
 }
@@ -5885,7 +5885,7 @@ $88:C5BC 10 08       BPL $08    [$C5C6]     ; If [FX Y position] - [layer 1 Y po
 $88:C5BE 29 0F 00    AND #$000F             ;\
 $88:C5C1 09 00 01    ORA #$0100             ;} A = 100h + ([FX Y position] - [layer 1 Y position]) % 10h
 $88:C5C4 80 08       BRA $08    [$C5CE]     ; Go to BRANCH_MERGE_2
-                                            
+
 $88:C5C6 C9 00 02    CMP #$0200             ;\
 $88:C5C9 90 03       BCC $03    [$C5CE]     ;} If [FX Y position] - [layer 1 Y position] < 100h: go to BRANCH_MERGE_2
 
@@ -5991,7 +5991,7 @@ $88:C645             dx 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81
                         81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
                         81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00,
                         81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00, 81,9C00
-                        
+
 $88:C945             dx 81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
                         81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
                         81,9C04, 81,9C06, 81,9C08, 81,9C0A, 81,9C0C, 81,9C0E, 81,9C10, 81,9C12, 81,9C14, 81,9C16, 81,9C18, 81,9C1A, 81,9C1C, 81,9C1E, 81,9C20, 81,9C22,
@@ -6046,7 +6046,7 @@ $88:CF46             dx 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81
                         81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
                         81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
                         81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44, 81,9C44,
-                        
+
                         81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
                         81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
                         81,9C48, 81,9C4A, 81,9C4C, 81,9C4E, 81,9C50, 81,9C52, 81,9C54, 81,9C56, 81,9C58, 81,9C5A, 81,9C5C, 81,9C5E, 81,9C60, 81,9C62, 81,9C64, 81,9C66,
@@ -6441,7 +6441,7 @@ $88:DA4C AD 84 19    LDA $1984  [$7E:1984]  ;\
 $88:DA4F 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = [FX layer 3 layer blending configuration]
 $88:DA52 AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $88:DA55 F0 02       BEQ $02    [$DA59]     ;} If time is frozen:
-$88:DA57 AB          PLB                    
+$88:DA57 AB          PLB
 $88:DA58 6B          RTL                    ; Return
 
 $88:DA59 BD 2C 19    LDA $192C,x[$7E:192C]  ;\
@@ -7066,7 +7066,7 @@ $88:DE86 AD 9C 09    LDA $099C  [$7E:099C]  ;\
 $88:DE89 C9 DB E2    CMP #$E2DB             ;} If [door transition function] != $E2DB (fading out):
 $88:DE8C F0 01       BEQ $01    [$DE8F]     ;/
 $88:DE8E 6B          RTL                    ; Return
-                                            
+
 $88:DE8F A9 96 DE    LDA #$DE96             ;\
 $88:DE92 9D F0 18    STA $18F0,x[$7E:18F0]  ;} HDMA object pre-instruction = $DE96
 $88:DE95 6B          RTL
@@ -7101,11 +7101,11 @@ $88:DEC3 A5 12       LDA $12    [$7E:0012]  ;/
 $88:DEC5 3A          DEC A                  ;\
 $88:DEC6 10 02       BPL $02    [$DECA]     ;} A = max(0, [A] - 1)
 $88:DEC8 A9 00       LDA #$00               ;/
-                                            
+
 $88:DECA CA          DEX                    ; Decrement X
 $88:DECB 10 EE       BPL $EE    [$DEBB]     ; If [X] >= 0: go to LOOP
-$88:DECD 28          PLP                    
-$88:DECE FA          PLX                    
+$88:DECD 28          PLP
+$88:DECE FA          PLX
 $88:DECF DE 14 19    DEC $1914,x[$7E:1914]  ; Decrement HDMA object max colour intensity
 
 $88:DED2 6B          RTL
@@ -7403,14 +7403,14 @@ $88:E062 0A          ASL A                  ;|
 $88:E063 AA          TAX                    ;} Execute [$E084 + [$0DEC] * 2
 $88:E064 FC 84 E0    JSR ($E084,x)[$88:E092];/
 $88:E067 90 19       BCC $19    [$E082]     ; If carry set:
-$88:E069 E2 20       SEP #$20               
+$88:E069 E2 20       SEP #$20
 $88:E06B AD F0 0D    LDA $0DF0  [$7E:0DF0]  ;\
 $88:E06E 85 74       STA $74    [$7E:0074]  ;} Colour math subscreen backdrop colour 0 = [suit pickup colour math subscreen backdrop red component]
 $88:E070 AD F1 0D    LDA $0DF1  [$7E:0DF1]  ;\
 $88:E073 85 75       STA $75    [$7E:0075]  ;} Colour math subscreen backdrop colour 1 = [suit pickup colour math subscreen backdrop green component]
 $88:E075 AD F2 0D    LDA $0DF2  [$7E:0DF2]  ;\
 $88:E078 85 76       STA $76    [$7E:0076]  ;} Colour math subscreen backdrop colour 2 = [suit pickup colour math subscreen backdrop blue component]
-$88:E07A C2 20       REP #$20               
+$88:E07A C2 20       REP #$20
 $88:E07C A9 12 00    LDA #$0012             ;\
 $88:E07F 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 12h (normal, but BG3 is disabled inside window 1)
 
@@ -7711,7 +7711,7 @@ $88:E294 9C F0 0D    STZ $0DF0  [$7E:0DF0]  ;} Suit pickup variables = 0
 $88:E297 9C F2 0D    STZ $0DF2  [$7E:0DF2]  ;/
 $88:E29A AE B2 18    LDX $18B2  [$7E:18B2]  ; X = [HDMA object index]
 $88:E29D BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
-$88:E2A0 1A          INC A                  ;| 
+$88:E2A0 1A          INC A                  ;|
 $88:E2A1 1A          INC A                  ;} HDMA object instruction list pointer += 2
 $88:E2A2 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
 $88:E2A5 A9 01 00    LDA #$0001             ;\
@@ -7856,20 +7856,20 @@ $88:E3A7 C9 30       CMP #$30               ;} If [suit pickup colour math subsc
 $88:E3A9 F0 04       BEQ $04    [$E3AF]     ;/
 $88:E3AB 3A          DEC A                  ;\
 $88:E3AC 8D F0 0D    STA $0DF0  [$7E:0DF0]  ;} Decrement suit pickup colour math subscreen backdrop red component
-                                            
+
 $88:E3AF AD F1 0D    LDA $0DF1  [$7E:0DF1]  ;\
 $88:E3B2 C9 49       CMP #$49               ;} If [suit pickup colour math subscreen backdrop green component] != 9:
 $88:E3B4 F0 04       BEQ $04    [$E3BA]     ;/
 $88:E3B6 3A          DEC A                  ;\
 $88:E3B7 8D F1 0D    STA $0DF1  [$7E:0DF1]  ;} Decrement suit pickup colour math subscreen backdrop green component
-                                            
+
 $88:E3BA AD F2 0D    LDA $0DF2  [$7E:0DF2]  ;\
 $88:E3BD C9 90       CMP #$90               ;} If [suit pickup colour math subscreen backdrop blue component] != 10h:
 $88:E3BF F0 04       BEQ $04    [$E3C5]     ;/
 $88:E3C1 3A          DEC A                  ;\
 $88:E3C2 8D F2 0D    STA $0DF2  [$7E:0DF2]  ;} Decrement suit pickup colour math subscreen backdrop blue component
-                                            
-$88:E3C5 C2 20       REP #$20               
+
+$88:E3C5 C2 20       REP #$20
 $88:E3C7 38          SEC                    ; This carry has no effect
 $88:E3C8 60          RTS
 }
@@ -8229,7 +8229,7 @@ $88:E6CC 18          CLC                    ;} $14 += [$1C]
 $88:E6CD 65 1C       ADC $1C    [$7E:001C]  ;/
 $88:E6CF 29 FF 01    AND #$01FF             ;\
 $88:E6D2 85 14       STA $14    [$7E:0014]  ;} $14 %= 200h
-$88:E6D4 FA          PLX                    
+$88:E6D4 FA          PLX
 $88:E6D5 A5 B5       LDA $B5    [$7E:00B5]  ;\
 $88:E6D7 38          SEC                    ;|
 $88:E6D8 E5 12       SBC $12    [$7E:0012]  ;} $7E:9100 + [X] = [BG2 X scroll] - [$12]
@@ -9014,7 +9014,7 @@ $88:ECC5 1A          INC A                  ;} HDMA object instruction list poin
 $88:ECC6 9D CC 18    STA $18CC,x[$7E:18CC]  ;/
 $88:ECC9 A9 01 00    LDA #$0001             ;\
 $88:ECCC 9D E4 18    STA $18E4,x[$7E:18E4]  ;} HDMA object instruction timer = 1
-$88:ECCF 28          PLP                    
+$88:ECCF 28          PLP
 $88:ECD0 6B          RTL                    ; Return
 
 $88:ECD1 A9 04 00    LDA #$0004             ;\
@@ -9033,9 +9033,9 @@ $88:ECEB 9D 14 19    STA $1914,x[$7E:1914]  ;/
 $88:ECEE BD 14 19    LDA $1914,x[$7E:1914]  ; >_<;
 $88:ECF1 85 14       STA $14    [$7E:0014]  ; $14 = [HDMA object wave phase]
 $88:ECF3 A2 00 00    LDX #$0000             ; X = 0
-                                            
-; LOOP                                      
-$88:ECF6 DA          PHX                    
+
+; LOOP
+$88:ECF6 DA          PHX
 $88:ECF7 A6 14       LDX $14    [$7E:0014]  ;\
 $88:ECF9 BF 43 B4 A0 LDA $A0B443,x[$A0:B451];} If [$14] / 2 <= 80h:
 $88:ECFD 10 03       BPL $03    [$ED02]     ;/
@@ -9100,7 +9100,7 @@ $88:ED74 18          CLC                    ;} $14 += 4
 $88:ED75 65 1C       ADC $1C    [$7E:001C]  ;/
 $88:ED77 29 FF 01    AND #$01FF             ;\
 $88:ED7A 85 14       STA $14    [$7E:0014]  ;} $14 %= 200h
-$88:ED7C FA          PLX                    
+$88:ED7C FA          PLX
 $88:ED7D A5 B9       LDA $B9    [$7E:00B9]  ;\
 $88:ED7F 18          CLC                    ;|
 $88:ED80 65 12       ADC $12    [$7E:0012]  ;} $7E:9800 + [X] = [BG3 X scroll] + [$12]
@@ -9169,7 +9169,7 @@ $88:EDFF 18          CLC                    ;} $14 += 4
 $88:EE00 65 1C       ADC $1C    [$7E:001C]  ;/
 $88:EE02 29 FF 01    AND #$01FF             ;\
 $88:EE05 85 14       STA $14    [$7E:0014]  ;} $14 %= 200h
-$88:EE07 FA          PLX                    
+$88:EE07 FA          PLX
 $88:EE08 A5 B9       LDA $B9    [$7E:00B9]  ;\
 $88:EE0A 38          SEC                    ;|
 $88:EE0B E5 12       SBC $12    [$7E:0012]  ;} $7E:9800 + [X] = [BG3 X scroll] - [$12]

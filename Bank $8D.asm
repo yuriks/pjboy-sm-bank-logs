@@ -2959,7 +2959,7 @@ $8D:DF22             dx 0003,
 }
 
 
-;;; $DF94: Instruction list - palette FX object $E200 (post-credits Super Metroid icon) ;;;
+;;; $DF94: Instruction list - palette FX object $E200 (post-credits Super Metroid icon glare) ;;;
 {
 $8D:DF94             dx C655,01E0,  ; Palette FX object colour index = 01E0h
                         0001,
