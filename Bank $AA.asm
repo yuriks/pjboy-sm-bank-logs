@@ -6,29 +6,27 @@
 
 ;;; $8687..D744: Torizo ;;;
 {
-;;; $8687: Palette - enemy $EEFF/$EF3F/$EF7F/$EFBF (Torizo) ;;;
+;;; $8687: Torizo palettes ;;;  
 {
-$AA:8687             dw 3800, 03FF, 033B, 0216, 0113, 6B1E, 4A16, 3591, 20E9, 1580, 1580, 1580, 1580, 1580, 1580, 1580
-}
+; Orb projectile
+$AA:8687             dw 3800,03FF,033B,0216,0113,6B1E,4A16,3591,20E9,1580,1580,1580,1580,1580,1580,1580 ; Sprite palette 3
 
+; Bomb Torizo statue
+$AA:86A7             dw 3800,02DF,01D7,00AC,5A73,41AD,2D08,1863,1486,0145,0145,0145,7FFF,0145,0145,0000 ; Sprite palette 7
 
-;;; $86A7: Torizo palettes ;;;
-{
-$AA:86A7             dw 3800,02DF,01D7,00AC,5A73,41AD,2D08,1863,1486,0145,0145,0145,7FFF,0145,0145,0000
-
-; Bomb Torizo statue palettes
+; Initial Bomb Torizo
 $AA:86C7             dw 3800,679F,5299,252E,14AA,5EFC,4657,35B2,2D70,5B7F,3DF8,2D0E,5F5F,5E1A,5D35,0C63 ; Sprite palette 1
 $AA:86E7             dw 3800,4ABA,35B2,0847,0003,4215,2970,18CB,1089,463A,28B3,1809,6F7F,51FD,4113,0C63 ; Sprite palette 2
 
-; Normal Torizo palettes (Bomb Torizo after coming to life, Golden Torizo transitions to this from damage)
+; Normal Torizo (Bomb Torizo after coming to life, Golden Torizo transitions to this from damage, the hatched Golden Torizo egg)
 $AA:8707             dw 3800,56BA,41B2,1447,0403,4E15,3570,24CB,1868,6F7F,51F8,410E,031F,01DA,00F5,0C63 ; Sprite palette 1
 $AA:8727             dw 3800,4215,2D0D,0002,0000,3970,20CB,0C26,0403,463A,28B3,1809,6F7F,51FD,4113,0C63 ; Sprite palette 2
 
-; Golden Torizo statue palettes
+; Initial Golden Torizo
 $AA:8747             dw 3800,6AB5,49B0,1C45,0C01,5613,416D,2CC9,2066,5714,31CC,14E3,5630,3569,1883,0C66 ; Sprite palette 1
 $AA:8767             dw 3800,5610,350B,0800,0000,416E,2CC8,1823,0C01,6A31,4CAA,2406,7F7B,75F4,4D10,0C63 ; Sprite palette 2
 
-; Golden Torizo palettes
+; Golden Torizo (after coming to life)
 $AA:8787             dw 3800,4BBE,06B9,00A8,0000,173A,0276,01F2,014D,73E0,4F20,2A20,7FE0,5AA0,5920,0043 ; Sprite palette 1
 $AA:87A7             dw 3800,3719,0214,0003,0000,0295,01D1,014D,00A8,4B40,25E0,00E0,6B40,4600,4480,0000 ; Sprite palette 2
 }
@@ -362,11 +360,11 @@ $AA:B07C             dx 0003, 000F,FFE3,9786,87C7, 0003,FFE8,A0A0,89B6, 0000,000
 }
 
 
-;;; $B096: Torizo constants ;;;
+;;; $B096: Torizo music tracks ;;;
 {
-$AA:B096             dw 0006
-$AA:B098             dw 0005
-$AA:B09A             dw 0003
+$AA:B096             dw 0006 ; Song 1 - pre-fight music. Music track to queue when Bomb Torizo is revealed
+$AA:B098             dw 0005 ; Song 0 - fight music. Music track to queue when Bomb Torizo fight starts
+$AA:B09A             dw 0003 ; Elevator. Music track to queue when torizo dies
 }
 
 
@@ -489,7 +487,7 @@ $AA:B1E2             dx C32F,       ; ???
                         B271,       ; ???
                         8110,B1E2,  ; Decrement timer and go to $B1E2 if non-zero
                         813A,0040,  ; Wait 40h frames
-                        B24D,       ; ???
+                        B24D,       ; Set boss bit, queue elevator music, spawn item drops
                         807C        ; Delete
 }
 
@@ -528,20 +526,20 @@ $AA:B24C 6B          RTL
 }
 
 
-;;; $B24D: Instruction ;;;
+;;; $B24D: Instruction - set boss bit, queue elevator music, spawn item drops ;;;
 {
 $AA:B24D A9 04 00    LDA #$0004             ;\
-$AA:B250 22 A6 81 80 JSL $8081A6[$80:81A6]  ;} Set Torizo boss bit
+$AA:B250 22 A6 81 80 JSL $8081A6[$80:81A6]  ;} Set torizo boss bit
 $AA:B254 AD 9A B0    LDA $B09A  [$AA:B09A]  ;\
 $AA:B257 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 $AA:B25B 5A          PHY
 $AA:B25C DA          PHX
 $AA:B25D 08          PHP
 $AA:B25E AD 9F 07    LDA $079F  [$7E:079F]  ;\
-$AA:B261 D0 06       BNE $06    [$B269]     ;} If Bomb Torizo:
+$AA:B261 D0 06       BNE $06    [$B269]     ;} If [area index] = Crateria:
 $AA:B263 22 A4 BA A0 JSL $A0BAA4[$A0:BAA4]  ; Bomb Torizo death item drop routine
 $AA:B267 80 04       BRA $04    [$B26D]
-                                            ; Else (Golden Torizo):
+                                            ; Else ([area index] != Crateria):
 $AA:B269 22 D7 BA A0 JSL $A0BAD7[$A0:BAD7]  ; Golden Torizo death item drop routine
 
 $AA:B26D 28          PLP
@@ -1475,8 +1473,8 @@ $AA:C21A A9 40 FA    LDA #$FA40
 $AA:C21D 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 $AA:C220 A9 28 00    LDA #$0028
 $AA:C223 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$AA:C226 A9 01 00    LDA #$0001
-$AA:C229 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:C226 A9 01 00    LDA #$0001             ;\
+$AA:C229 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C22C 60          RTS
 }
 
@@ -1495,13 +1493,13 @@ $AA:C23D A9 80 FB    LDA #$FB80
 $AA:C240 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 $AA:C243 A9 28 00    LDA #$0028
 $AA:C246 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$AA:C249 A9 01 00    LDA #$0001
-$AA:C24C 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:C249 A9 01 00    LDA #$0001             ;\
+$AA:C24C 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C24F 60          RTS
 }
 
 
-;;; $C250: Load Bomb Torizo statue palettes ;;;
+;;; $C250: Load initial Bomb Torizo palettes ;;;
 {
 $AA:C250 DA          PHX
 $AA:C251 A2 1E 00    LDX #$001E             ;\
@@ -1535,7 +1533,7 @@ $AA:C27F 60          RTS
 }
 
 
-;;; $C280: Load Golden Torizo statue palettes ;;;
+;;; $C280: Load initial Golden Torizo palettes ;;;
 {
 $AA:C280 DA          PHX
 $AA:C281 A2 1E 00    LDX #$001E             ;\
@@ -1674,7 +1672,7 @@ $AA:C31D 98          TYA
 $AA:C31E 9D 92 0F    STA $0F92,x[$7E:0F92]
 $AA:C321 A9 28 00    LDA #$0028
 $AA:C324 9D 9C 0F    STA $0F9C,x[$7E:0F9C]
-$AA:C327 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:C327 9D 94 0F    STA $0F94,x[$7E:0F94]  ; Enemy instruction timer = 28h
 $AA:C32A 68          PLA
 $AA:C32B F4 AE C2    PEA $C2AE
 $AA:C32E 6B          RTL
@@ -1691,7 +1689,7 @@ $AA:C338 98          TYA
 $AA:C339 9D 92 0F    STA $0F92,x[$7E:0F92]
 $AA:C33C A9 01 00    LDA #$0001
 $AA:C33F 9D 9C 0F    STA $0F9C,x[$7E:0F9C]
-$AA:C342 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:C342 9D 94 0F    STA $0F94,x[$7E:0F94]  ; Enemy instruction timer = 1
 $AA:C345 68          PLA
 $AA:C346 F4 AE C2    PEA $C2AE
 $AA:C349 6B          RTL
@@ -2202,28 +2200,28 @@ $AA:C6C5 60          RTS
 
 ;;; $C6C6: Torizo function ;;;
 {
-$AA:C6C6 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$AA:C6C9 09 00 04    ORA #$0400
-$AA:C6CC 9D 86 0F    STA $0F86,x[$7E:0F86]
+$AA:C6C6 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$AA:C6C9 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$AA:C6CC 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $AA:C6CF DA          PHX
-$AA:C6D0 A2 4E 00    LDX #$004E
+$AA:C6D0 A2 4E 00    LDX #$004E             ; X = 4Eh (PLM index)
 
-$AA:C6D3 BD 37 1C    LDA $1C37,x[$7E:1C85]
-$AA:C6D6 C9 EA D6    CMP #$D6EA
-$AA:C6D9 F0 22       BEQ $22    [$C6FD]
-$AA:C6DB CA          DEX
-$AA:C6DC CA          DEX
-$AA:C6DD 10 F4       BPL $F4    [$C6D3]
+$AA:C6D3 BD 37 1C    LDA $1C37,x[$7E:1C85]  ;\
+$AA:C6D6 C9 EA D6    CMP #$D6EA             ;} If [PLM ID] = $D6EA (Bomb Torizo's crumbling chozo): return
+$AA:C6D9 F0 22       BEQ $22    [$C6FD]     ;/
+$AA:C6DB CA          DEX                    ;\
+$AA:C6DC CA          DEX                    ;} X -= 2
+$AA:C6DD 10 F4       BPL $F4    [$C6D3]     ; If [X] >= 0: go to LOOP
 $AA:C6DF FA          PLX
 $AA:C6E0 AD 96 B0    LDA $B096  [$AA:B096]  ;\
 $AA:C6E3 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 1 music track
-$AA:C6E7 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$AA:C6EA 29 FF FB    AND #$FBFF
-$AA:C6ED 9D 86 0F    STA $0F86,x[$7E:0F86]
-$AA:C6F0 FE 92 0F    INC $0F92,x[$7E:0F92]
-$AA:C6F3 FE 92 0F    INC $0F92,x[$7E:0F92]
-$AA:C6F6 A9 01 00    LDA #$0001
-$AA:C6F9 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:C6E7 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$AA:C6EA 29 FF FB    AND #$FBFF             ;} Set enemy as tangible
+$AA:C6ED 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$AA:C6F0 FE 92 0F    INC $0F92,x[$7E:0F92]  ;\
+$AA:C6F3 FE 92 0F    INC $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer += 2
+$AA:C6F6 A9 01 00    LDA #$0001             ;\
+$AA:C6F9 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C6FC 60          RTS
 
 $AA:C6FD FA          PLX
@@ -2234,39 +2232,40 @@ $AA:C6FE 60          RTS
 ;;; $C6FF: Torizo function ;;;
 {
 $AA:C6FF 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
-$AA:C702 3C B6 0F    BIT $0FB6,x[$7E:0FB6]
-$AA:C705 30 1C       BMI $1C    [$C723]
-$AA:C707 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$AA:C70A C9 5E 01    CMP #$015E
-$AA:C70D B0 14       BCS $14    [$C723]
-$AA:C70F BD 92 0F    LDA $0F92,x[$7E:0F92]
-$AA:C712 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$AA:C716 A9 E5 B0    LDA #$B0E5
-$AA:C719 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:C71C A9 01 00    LDA #$0001
-$AA:C71F 9D 94 0F    STA $0F94,x[$7E:0F94]
-$AA:C722 60          RTS
+$AA:C702 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
+$AA:C705 30 1C       BMI $1C    [$C723]     ;} If [enemy $0FB6] & 8000h = 0:
+$AA:C707 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$AA:C70A C9 5E 01    CMP #$015E             ;} If [enemy health] < 350:
+$AA:C70D B0 14       BCS $14    [$C723]     ;/
+$AA:C70F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
+$AA:C712 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = [enemy instruction list pointer]
+$AA:C716 A9 E5 B0    LDA #$B0E5             ;\
+$AA:C719 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B0E5
+$AA:C71C A9 01 00    LDA #$0001             ;\
+$AA:C71F 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$AA:C722 60          RTS                    ; Return
 
-$AA:C723 3C B6 0F    BIT $0FB6,x[$7E:0FB6]
-$AA:C726 70 26       BVS $26    [$C74E]
-$AA:C728 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$AA:C72B C9 64 00    CMP #$0064
-$AA:C72E B0 1E       BCS $1E    [$C74E]
-$AA:C730 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C733 30 05       BMI $05    [$C73A]
-$AA:C735 A9 88 C1    LDA #$C188
+$AA:C723 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
+$AA:C726 70 26       BVS $26    [$C74E]     ;} If [enemy $0FB6] & 4000h != 0: go to BRANCH_NORMAL
+$AA:C728 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$AA:C72B C9 64 00    CMP #$0064             ;} If [enemy health] >= 100: go to BRANCH_NORMAL
+$AA:C72E B0 1E       BCS $1E    [$C74E]     ;/
+$AA:C730 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C733 30 05       BMI $05    [$C73A]     ;} If [enemy $0FB4] & 8000h = 0:
+$AA:C735 A9 88 C1    LDA #$C188             ; Enemy $7E:7800 = $C188
 $AA:C738 80 03       BRA $03    [$C73D]
-
-$AA:C73A A9 0E BD    LDA #$BD0E
+                                            ; Else ([enemy $0FB4] & 8000h != 0):
+$AA:C73A A9 0E BD    LDA #$BD0E             ; Enemy $7E:7800 = $BD0E
 
 $AA:C73D 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$AA:C741 A9 55 B1    LDA #$B155
-$AA:C744 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:C747 A9 01 00    LDA #$0001
-$AA:C74A 9D 94 0F    STA $0F94,x[$7E:0F94]
-$AA:C74D 60          RTS
+$AA:C741 A9 55 B1    LDA #$B155             ;\
+$AA:C744 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B155
+$AA:C747 A9 01 00    LDA #$0001             ;\
+$AA:C74A 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$AA:C74D 60          RTS                    ; Return
 
-$AA:C74E FC B2 0F    JSR ($0FB2,x)[$AA:C752]
+; BRANCH_NORMAL
+$AA:C74E FC B2 0F    JSR ($0FB2,x)[$AA:C752]; Execute [enemy $0FB2]
 $AA:C751 60          RTS
 }
 
@@ -2292,8 +2291,8 @@ $AA:C776 80 03       BRA $03    [$C77B]
 $AA:C778 A9 62 B9    LDA #$B962
 
 $AA:C77B 9D 92 0F    STA $0F92,x
-$AA:C77E A9 01 00    LDA #$0001
-$AA:C781 9D 94 0F    STA $0F94,x
+$AA:C77E A9 01 00    LDA #$0001             ;\
+$AA:C781 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:C784 60          RTS
 
 $AA:C785 64 12       STZ $12    [$7E:0012]  ;\
@@ -2318,8 +2317,8 @@ $AA:C7A9 80 03       BRA $03    [$C7AE]
 $AA:C7AB A9 F2 C0    LDA #$C0F2
 
 $AA:C7AE 9D 92 0F    STA $0F92,x
-$AA:C7B1 A9 01 00    LDA #$0001
-$AA:C7B4 9D 94 0F    STA $0F94,x
+$AA:C7B1 A9 01 00    LDA #$0001             ;\
+$AA:C7B4 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:C7B7 A9 00 01    LDA #$0100
 $AA:C7BA 9D AA 0F    STA $0FAA,x
 $AA:C7BD 9E A8 0F    STZ $0FA8,x
@@ -2341,8 +2340,8 @@ $AA:C7DD 80 03       BRA $03    [$C7E2]
 $AA:C7DF A9 0E BD    LDA #$BD0E
 
 $AA:C7E2 9D 92 0F    STA $0F92,x
-$AA:C7E5 A9 01 00    LDA #$0001
-$AA:C7E8 9D 94 0F    STA $0F94,x
+$AA:C7E5 A9 01 00    LDA #$0001             ;\
+$AA:C7E8 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:C7EB 60          RTS
 
 $AA:C7EC 64 12       STZ $12    [$7E:0012]  ;\
@@ -2367,8 +2366,8 @@ $AA:C810 80 03       BRA $03    [$C815]
 $AA:C812 A9 F2 C0    LDA #$C0F2
 
 $AA:C815 9D 92 0F    STA $0F92,x
-$AA:C818 A9 01 00    LDA #$0001
-$AA:C81B 9D 94 0F    STA $0F94,x
+$AA:C818 A9 01 00    LDA #$0001             ;\
+$AA:C81B 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:C81E A9 00 01    LDA #$0100
 $AA:C821 9D AA 0F    STA $0FAA,x
 $AA:C824 9E A8 0F    STZ $0FA8,x
@@ -2412,8 +2411,8 @@ $AA:C85E 60          RTS
 
 $AA:C85F BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $AA:C863 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:C866 A9 01 00    LDA #$0001
-$AA:C869 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:C866 A9 01 00    LDA #$0001             ;\
+$AA:C869 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C86C A9 00 01    LDA #$0100
 $AA:C86F 9D AA 0F    STA $0FAA,x[$7E:0FAA]
 $AA:C872 A9 04 00    LDA #$0004             ;\
@@ -2472,18 +2471,18 @@ $AA:C8F2 A2 1E 00    LDX #$001E             ;\
                                             ;|
 $AA:C8F5 BD A7 86    LDA $86A7,x[$AA:86C5]  ;|
 $AA:C8F8 9F E0 C3 7E STA $7EC3E0,x[$7E:C3FE];|
-$AA:C8FC BD 87 86    LDA $8687,x[$AA:86A5]  ;} Target sprite palette 7 = [$86A7..C6]
-$AA:C8FF 9F 60 C3 7E STA $7EC360,x[$7E:C37E];} Target sprite palette 3 = [$8687..A6]
+$AA:C8FC BD 87 86    LDA $8687,x[$AA:86A5]  ;} Target sprite palette 7 = [$86A7..C6] (Bomb Torizo statue)
+$AA:C8FF 9F 60 C3 7E STA $7EC360,x[$7E:C37E];} Target sprite palette 3 = [$8687..A6] (orb projectile)
 $AA:C903 CA          DEX                    ;|
 $AA:C904 CA          DEX                    ;|
 $AA:C905 10 EE       BPL $EE    [$C8F5]     ;/
 $AA:C907 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:C90A D0 08       BNE $08    [$C914]     ;} If [area index] = Crateria:
-$AA:C90C 20 50 C2    JSR $C250  [$AA:C250]  ; Load Bomb Torizo statue palettes
+$AA:C90C 20 50 C2    JSR $C250  [$AA:C250]  ; Load initial Bomb Torizo palettes
 $AA:C90F 22 32 DD 88 JSL $88DD32[$88:DD32]  ; Spawn Bomb Torizo haze
 $AA:C913 6B          RTL                    ; Return
 
-$AA:C914 20 80 C2    JSR $C280  [$AA:C280]  ; Load Golden Torizo statue palettes
+$AA:C914 20 80 C2    JSR $C280  [$AA:C280]  ; Load initial Golden Torizo palettes
 $AA:C917 A5 8B       LDA $8B    [$7E:008B]  ;\
 $AA:C919 C9 C0 C0    CMP #$C0C0             ;} If pressing exactly BYAX:
 $AA:C91C D0 3F       BNE $3F    [$C95D]     ;/
@@ -2582,18 +2581,13 @@ $AA:C9CA 6B          RTL
 
 ;;; $C9CB: Instruction list -  ;;;
 {
-$AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 0600h bytes from $AFE200 to VRAM $6D00
+$AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 600h bytes from $AF:E200 to VRAM $6D00
                         C3A0,                   ; ???
                         C2C9,                   ; Enemy $7E:7808 = 7777h
-                        B09C,D5C2,              ; Enemy function = $D5C2
+                        B09C,D5C2,              ; Enemy function = $D5C2 (wake enemy if Samus is below and right of target position)
                         0001,AA30,
-                        812F                    ; Sleep
-}
-
-
-;;; $C9E2: Instruction list -  ;;;
-{
-$AA:C9E2             dx B09C,C6BF,              ; Enemy function = $C6BF
+                        812F,                   ; Sleep
+                        B09C,C6BF,              ; Enemy function = $C6BF
                         0001,AA30,
                         CACE,C9E6,              ; ???
                         C618,                   ; Play torizo footsteps sound effect
@@ -3761,18 +3755,18 @@ $AA:D59A             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FF
 }
 
 
-;;; $D5C2: Torizo function - activate Golden Torizo if Samus is in the right place ;;;
+;;; $D5C2: Torizo function - wake enemy if Samus is below and right of target position ;;;
 {
-$AA:D5C2 A9 40 01    LDA #$0140
-$AA:D5C5 CD FA 0A    CMP $0AFA  [$7E:0AFA]
-$AA:D5C8 B0 14       BCS $14    [$D5DE]
-$AA:D5CA A9 70 01    LDA #$0170
-$AA:D5CD CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$AA:D5D0 B0 0C       BCS $0C    [$D5DE]
-$AA:D5D2 FE 92 0F    INC $0F92,x[$7E:0F92]
-$AA:D5D5 FE 92 0F    INC $0F92,x[$7E:0F92]
-$AA:D5D8 A9 01 00    LDA #$0001
-$AA:D5DB 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:D5C2 A9 40 01    LDA #$0140             ;\
+$AA:D5C5 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [Samus Y position] > 140h:
+$AA:D5C8 B0 14       BCS $14    [$D5DE]     ;/
+$AA:D5CA A9 70 01    LDA #$0170             ;\
+$AA:D5CD CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [Samus X position] > 170h:
+$AA:D5D0 B0 0C       BCS $0C    [$D5DE]     ;/
+$AA:D5D2 FE 92 0F    INC $0F92,x[$7E:0F92]  ;\
+$AA:D5D5 FE 92 0F    INC $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer += 2
+$AA:D5D8 A9 01 00    LDA #$0001             ;\
+$AA:D5DB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 
 $AA:D5DE 60          RTS
 }
@@ -3780,6 +3774,7 @@ $AA:D5DE 60          RTS
 
 ;;; $D5DF: Torizo function ;;;
 {
+; Clone of $C6BF
 $AA:D5DF 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
 $AA:D5E2 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:D5E5 60          RTS
@@ -3789,7 +3784,7 @@ $AA:D5E5 60          RTS
 ;;; $D5E6: Torizo function ;;;
 {
 $AA:D5E6 20 20 C6    JSR $C620  [$AA:C620]  ; Handle low-health initial drool
-$AA:D5E9 FC B2 0F    JSR ($0FB2,x)[$AA:D5F1]
+$AA:D5E9 FC B2 0F    JSR ($0FB2,x)[$AA:D5F1]; Execute [enemy $0FB2]
 $AA:D5EC 60          RTS
 }
 
@@ -3818,8 +3813,8 @@ $AA:D60D 80 03       BRA $03    [$D612]
 $AA:D60F A9 03 D2    LDA #$D203
 
 $AA:D612 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:D615 A9 01 00    LDA #$0001
-$AA:D618 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:D615 A9 01 00    LDA #$0001             ;\
+$AA:D618 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:D61B 60          RTS
 
 $AA:D61C 64 12       STZ $12    [$7E:0012]  ;\
@@ -3844,8 +3839,8 @@ $AA:D640 80 03       BRA $03    [$D645]
 $AA:D642 A9 F2 C0    LDA #$C0F2
 
 $AA:D645 9D 92 0F    STA $0F92,x
-$AA:D648 A9 01 00    LDA #$0001
-$AA:D64B 9D 94 0F    STA $0F94,x
+$AA:D648 A9 01 00    LDA #$0001             ;\
+$AA:D64B 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:D64E A9 00 01    LDA #$0100
 $AA:D651 9D AA 0F    STA $0FAA,x
 $AA:D654 9E A8 0F    STZ $0FA8,x
@@ -3907,8 +3902,8 @@ $AA:D6AD BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
 $AA:D6B0 D0 1E       BNE $1E    [$D6D0]
 $AA:D6B2 A9 C8 B1    LDA #$B1C8
 $AA:D6B5 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:D6B8 A9 01 00    LDA #$0001
-$AA:D6BB 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:D6B8 A9 01 00    LDA #$0001             ;\
+$AA:D6BB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:D6BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]
 $AA:D6C1 09 00 C0    ORA #$C000
 $AA:D6C4 9D B6 0F    STA $0FB6,x[$7E:0FB6]
@@ -3925,10 +3920,10 @@ $AA:D6D0 6B          RTL
 $AA:D6D1 B9 04 0C    LDA $0C04,y
 $AA:D6D4 29 EF FF    AND #$FFEF
 $AA:D6D7 99 04 0C    STA $0C04,y
-$AA:D6DA A9 AB C6    LDA #$C6AB
-$AA:D6DD 9D B0 0F    STA $0FB0,x
-$AA:D6E0 A9 01 00    LDA #$0001
-$AA:D6E3 9D 94 0F    STA $0F94,x
+$AA:D6DA A9 AB C6    LDA #$C6AB             ;\
+$AA:D6DD 9D B0 0F    STA $0FB0,x            ;} Enemy function = RTS
+$AA:D6E0 A9 01 00    LDA #$0001             ;\
+$AA:D6E3 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:D6E6 3C B4 0F    BIT $0FB4,x
 $AA:D6E9 30 05       BMI $05    [$D6F0]
 $AA:D6EB A9 F1 D1    LDA #$D1F1
@@ -3950,13 +3945,13 @@ $AA:D6FC 4C A6 D6    JMP $D6A6  [$AA:D6A6]
 $AA:D6FF BD B6 0F    LDA $0FB6,x
 $AA:D702 09 00 10    ORA #$1000
 $AA:D705 9D B6 0F    STA $0FB6,x
-$AA:D708 A9 AB C6    LDA #$C6AB
-$AA:D70B 9D B0 0F    STA $0FB0,x
+$AA:D708 A9 AB C6    LDA #$C6AB             ;\
+$AA:D70B 9D B0 0F    STA $0FB0,x            ;} Enemy function = RTS
 $AA:D70E B9 04 0C    LDA $0C04,y
 $AA:D711 09 10 00    ORA #$0010
 $AA:D714 99 04 0C    STA $0C04,y
-$AA:D717 A9 01 00    LDA #$0001
-$AA:D71A 9D 94 0F    STA $0F94,x
+$AA:D717 A9 01 00    LDA #$0001             ;\
+$AA:D71A 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:D71D BD B4 0F    LDA $0FB4,x
 $AA:D720 89 00 20    BIT #$2000
 $AA:D723 D0 0F       BNE $0F    [$D734]
@@ -4031,8 +4026,8 @@ $AA:D7C7 6B          RTL
 {
 $AA:D7C8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D7CB 9E 96 0F    STZ $0F96,x[$7E:0FD6]
-$AA:D7CE A9 01 00    LDA #$0001
-$AA:D7D1 9D 94 0F    STA $0F94,x[$7E:0FD4]
+$AA:D7CE A9 01 00    LDA #$0001             ;\
+$AA:D7D1 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $AA:D7D4 9E 90 0F    STZ $0F90,x[$7E:0FD0]
 $AA:D7D7 BC B4 0F    LDY $0FB4,x[$7E:0FF4]
 $AA:D7DA B9 10 D8    LDA $D810,y[$AA:D810]
@@ -4395,8 +4390,8 @@ $AA:DAF1 A9 AA DC    LDA #$DCAA
 $AA:DAF4 9D B2 0F    STA $0FB2,x
 $AA:DAF7 B9 21 DF    LDA $DF21,y
 $AA:DAFA 9D 92 0F    STA $0F92,x
-$AA:DAFD A9 01 00    LDA #$0001
-$AA:DB00 9D 94 0F    STA $0F94,x
+$AA:DAFD A9 01 00    LDA #$0001             ;\
+$AA:DB00 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:DB03 8A          TXA
 $AA:DB04 38          SEC
 $AA:DB05 E9 40 00    SBC #$0040
@@ -4682,8 +4677,8 @@ $AA:DD06 4A          LSR A
 $AA:DD07 A8          TAY
 $AA:DD08 B9 15 DD    LDA $DD15,y[$AA:DD1D]
 $AA:DD0B 9D 92 0F    STA $0F92,x[$7E:1052]
-$AA:DD0E A9 01 00    LDA #$0001
-$AA:DD11 9D 94 0F    STA $0F94,x[$7E:1054]
+$AA:DD0E A9 01 00    LDA #$0001             ;\
+$AA:DD11 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
 $AA:DD14 60          RTS
 
 $AA:DD15             dw DAB4, DABC, DAC4, DACC, DAD4, DADC, DAA4, DAAC
@@ -4815,8 +4810,8 @@ $AA:DE26 A9 AA DC    LDA #$DCAA
 $AA:DE29 9D B2 0F    STA $0FB2,x[$7E:1132]
 $AA:DE2C B9 13 DF    LDA $DF13,y[$AA:DF1F]
 $AA:DE2F 9D 92 0F    STA $0F92,x[$7E:1112]
-$AA:DE32 A9 01 00    LDA #$0001
-$AA:DE35 9D 94 0F    STA $0F94,x[$7E:1114]
+$AA:DE32 A9 01 00    LDA #$0001             ;\
+$AA:DE35 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
 $AA:DE38 8A          TXA
 $AA:DE39 38          SEC
 $AA:DE3A E9 40 00    SBC #$0040
@@ -5083,8 +5078,8 @@ $AA:E445 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
 $AA:E448 F0 0C       BEQ $0C    [$E456]
 $AA:E44A A9 A7 E3    LDA #$E3A7
 $AA:E44D 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:E450 A9 01 00    LDA #$0001
-$AA:E453 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:E450 A9 01 00    LDA #$0001             ;\
+$AA:E453 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 
 $AA:E456 60          RTS
 }
@@ -5330,8 +5325,8 @@ $AA:E72B 09 00 A8    ORA #$A800
 $AA:E72E 9D 86 0F    STA $0F86,x[$7E:0F86]
 $AA:E731 A9 4D 80    LDA #$804D
 $AA:E734 9D 8E 0F    STA $0F8E,x[$7E:0F8E]
-$AA:E737 A9 01 00    LDA #$0001
-$AA:E73A 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:E737 A9 01 00    LDA #$0001             ;\
+$AA:E73A 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:E73D 9E 90 0F    STZ $0F90,x[$7E:0F90]
 $AA:E740 A9 A6 E7    LDA #$E7A6
 $AA:E743 9D B2 0F    STA $0FB2,x[$7E:0FB2]
@@ -5402,8 +5397,8 @@ $AA:E7BC BD B4 0F    LDA $0FB4,x[$7E:0FB4]
 $AA:E7BF F0 18       BEQ $18    [$E7D9]
 $AA:E7C1 A9 61 E4    LDA #$E461
 $AA:E7C4 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:E7C7 A9 01 00    LDA #$0001
-$AA:E7CA 9D 94 0F    STA $0F94,x[$7E:0F94]
+$AA:E7C7 A9 01 00    LDA #$0001             ;\
+$AA:E7CA 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:E7CD A9 00 FF    LDA #$FF00
 $AA:E7D0 9D A8 0F    STA $0FA8,x[$7E:0FA8]
 $AA:E7D3 A9 00 01    LDA #$0100

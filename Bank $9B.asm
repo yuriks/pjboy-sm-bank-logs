@@ -1482,7 +1482,7 @@ $9B:B906 60          RTS                    ;} Return carry clear
 ;;         5: Enemy grapple AI = $8019 - Samus latches on - paralyse enemy
 ;;         6: Enemy grapple AI = $801E - hurt Samus
 ;;     }
-;;     $12: Index of collided enemy
+;;     $12: Collided enemy ID
 ;; Returns:
 ;;     A: If carry is set: non-zero to cancel grapple beam
 ;;     Carry: Set if enemy collision occurred
@@ -1543,7 +1543,7 @@ $9B:B931 60          RTS
 ;;; $B932: Process enemy / grapple beam collision result - grapple reaction index = 6 (hurt Samus) - hurt Samus, set carry, A = 1 ;;;
 {
 $9B:B932 A6 12       LDX $12    [$7E:0012]  ;\
-$9B:B934 BF 06 00 A0 LDA $A00006,x          ;} $12 = enemy damage
+$9B:B934 BF 06 00 A0 LDA $A00006,x          ;} $12 = (enemy damage)
 $9B:B938 85 12       STA $12    [$7E:0012]  ;/
 $9B:B93A AD A2 09    LDA $09A2  [$7E:09A2]  ;\
 $9B:B93D 89 20 00    BIT #$0020             ;} If gravity suit equipped: go to BRANCH_GRAVITY_SUIT

@@ -3629,7 +3629,7 @@ $A0:9E97 DC 84 17    JML [$1784]
 ;;         5: Enemy grapple AI = $8019 - Samus latches on - paralyse enemy
 ;;         6: Enemy grapple AI = $801E - hurt Samus
 ;;     }
-;;     $12: Index of collided enemy
+;;     $12: Collided enemy ID if collision, otherwise 0
 
 ; Grapple reaction indices 1/4/5 set the grapple beam's end position to the enemy's position.
 ; Collision detection ignores the extended hitbox format
@@ -3698,7 +3698,7 @@ $A0:9F08 9D 8A 0F    STA $0F8A,x[$7E:10CA]  ;} Enemy AI handler = grapple
 $A0:9F0B A0 00 00    LDY #$0000             ; Y = 0
 $A0:9F0E BD 78 0F    LDA $0F78,x[$7E:10B8]  ;\
 $A0:9F11 AA          TAX                    ;|
-$A0:9F12 BF 1A 00 A0 LDA $A0001A,x[$A0:D659];} If enemy grapple AI != $8000:
+$A0:9F12 BF 1A 00 A0 LDA $A0001A,x[$A0:D659];} If (enemy grapple AI) != $8000:
 $A0:9F16 C9 00 80    CMP #$8000             ;|
 $A0:9F19 F0 29       BEQ $29    [$9F44]     ;/
 $A0:9F1B A0 01 00    LDY #$0001             ; Y = 1
