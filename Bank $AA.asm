@@ -6,7 +6,7 @@
 
 ;;; $8687..D744: Torizo ;;;
 {
-;;; $8687: Torizo palettes ;;;  
+;;; $8687: Torizo palettes ;;;
 {
 ; Orb projectile
 $AA:8687             dw 3800,03FF,033B,0216,0113,6B1E,4A16,3591,20E9,1580,1580,1580,1580,1580,1580,1580 ; Sprite palette 3
@@ -378,13 +378,14 @@ $AA:B0A4 6B          RTL
 }
 
 
-;;; $B0A5: Blank tilemap ;;;
+;;; $B0A5: Blank tiles ;;;
 {
-$AA:B0A5             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
+$AA:B0A5             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 }
 
 
-;;; $B0E5: Instruction list ;;;
+;;; $B0E5: Instruction list - blow up Bomb Torizo's gut ;;;
 {
 $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
                         C2C9,                   ; Enemy $7E:7808 = 7777h
@@ -396,7 +397,7 @@ $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
                         814B,0020,AAB6B9,7F70,  ; Transfer 20h bytes from $AA:B6B9 to VRAM $7F70
                         B09C,C6FF,              ; Enemy function = $C6FF
                         C2D1,                   ; Enemy $7E:7808 = 0
-                        C2FD                    ; Go to [enemy $7E:7802]
+                        C2FD                    ; Go to [enemy gut explosion link instruction]
 }
 
 
@@ -425,12 +426,12 @@ $AA:B154 6B          RTL
 }
 
 
-;;; $B155: Instruction list ;;;
+;;; $B155: Instruction list - blow up Bomb Torizo's face ;;;
 {
 $AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
                         C2C9,                   ; Enemy $7E:7808 = 7777h
                         C303,0006,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter 6 and sleep for 28h i-frames
-                        B1BE,                   ; Enemy $0FB6 |= 4000h
+                        B1BE,                   ; Mark Bomb Torizo face blown up
                         814B,0020,AAB4D9,7E50,  ; Transfer 20h bytes from $AA:B4D9 to VRAM $7E50
                         814B,0020,AAB6D9,7F50,  ; Transfer 20h bytes from $AA:B6D9 to VRAM $7F50
                         814B,0040,AAB0A5,7C80,  ; Transfer 40h bytes from $AA:B0A5 to VRAM $7C80
@@ -447,16 +448,16 @@ $AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
 }
 
 
-;;; $B1BE: Instruction - enemy $0FB6 |= 4000h ;;;
+;;; $B1BE: Instruction - mark Bomb Torizo face blown up ;;;
 {
-$AA:B1BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$AA:B1C1 09 00 40    ORA #$4000
-$AA:B1C4 9D B6 0F    STA $0FB6,x[$7E:0FB6]
+$AA:B1BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$AA:B1C1 09 00 40    ORA #$4000             ;} Enemy $0FB6 |= 4000h
+$AA:B1C4 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
 $AA:B1C7 6B          RTL
 }
 
 
-;;; $B1C8: Instruction list - Torizo death sequence ;;;
+;;; $B1C8: Instruction list - torizo death sequence ;;;
 {
 $AA:B1C8             dx B09C,C6AB,  ; Enemy function = RTS
                         C2C9,       ; Enemy $7E:7808 = 7777h
@@ -510,8 +511,9 @@ $AA:B237 6B          RTL
 }
 
 
-;;; $B238: Instruction ;;;
+;;; $B238: Instruction - set up palette transition to black ;;;
 {
+; Target sprite palettes 1/2 = 0
 $AA:B238 DA          PHX
 $AA:B239 A2 1E 00    LDX #$001E
 $AA:B23C A9 00 00    LDA #$0000
@@ -549,7 +551,7 @@ $AA:B270 6B          RTL
 }
 
 
-;;; $B271: Instruction ;;;
+;;; $B271: Instruction - advance gradual colour change ;;;
 {
 $AA:B271 A9 00 06    LDA #$0600             ;\
 $AA:B274 22 F7 DA 82 JSL $82DAF7[$82:DAF7]  ;} Advance gradual colour change of sprite palettes 1/2 - denominator = Ch
@@ -653,19 +655,14 @@ $AA:B679             db 7F,2F,2B,3F,3F,3F,07,2F,0D,07,01,03,03,01,00,00,00,58,00
 }
 
 
-;;; $B879: Instruction list -  ;;;
+;;; $B879: Instruction list - Bomb Torizo - initial ;;;
 {
-$AA:B879             dx C3A0,       ; ???
-                        C2C9,       ; Enemy $7E:7808 = 7777h
+$AA:B879             dx C3A0,                   ; ???
+                        C2C9,                   ; Enemy $7E:7808 = 7777h
                         0001,87D0,
-                        B09C,C6C6,  ; Enemy function = $C6C6
-                        812F        ; Sleep
-}
-
-
-;;; $B887: Instruction list -  ;;;
-{
-$AA:B887             dx B09C,C6BF,              ; Enemy function = $C6BF
+                        B09C,C6C6,              ; Enemy function = $C6C6 (wake enemy when Bomb Torizo chozo finishes crumbling)
+                        812F,                   ; Sleep
+                        B09C,C6BF,              ; Enemy function = $C6BF
                         0030,AA12,
                         814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
                         0020,AA12,
@@ -700,7 +697,7 @@ $AA:B8C7             dx 0004,AA12,
                         B94D,                   ; ???
                         8123,0010               ; Timer = 10h
 $AA:B935             dx 0004,AA5E,
-                        B271,                   ; ???
+                        B271,                   ; Advance gradual colour change
                         8110,B935,              ; Decrement timer and go to $B935 if non-zero
                         C2C8,                   ; NOP
                         C2D1,                   ; Enemy $7E:7808 = 0
@@ -710,14 +707,14 @@ $AA:B935             dx 0004,AA5E,
 }
 
 
-;;; $B94D: Instruction ;;;
+;;; $B94D: Instruction - set up palette transition to normal torizo ;;;
 {
-$AA:B94D 20 68 C2    JSR $C268  [$AA:C268]
+$AA:B94D 20 68 C2    JSR $C268  [$AA:C268]  ; Load normal torizo target palettes
 $AA:B950 6B          RTL
 }
 
 
-;;; $B951: Instruction ;;;
+;;; $B951: Instruction - start fight music and Bomb Torizo belly palette FX ;;;
 {
 $AA:B951 AD 98 B0    LDA $B098  [$AA:B098]  ;\
 $AA:B954 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue song 0 music track
@@ -1079,18 +1076,13 @@ $AA:BD0E             dx B09C,C6BF,  ; Enemy function = $C6BF
 }
 
 
-;;; $BD90: Instruction list -  ;;;
+;;; $BD90: Unused. Instruction list ;;;
 {
 $AA:BD90             dx C3B6,       ; ???
                         0001,87D0,
                         B09C,C6C6,  ; Enemy function = $C6C6
-                        812F        ; Sleep
-}
-
-
-;;; $BD9C: Instruction list -  ;;;
-{
-$AA:BD9C             dx B09C,C6BF,  ; Enemy function = $C6BF
+                        812F,       ; Sleep
+                        B09C,C6BF,  ; Enemy function = $C6BF
                         0020,AF9C,
                         C3CC,0010,  ; ???
                         0010,AFA6,
@@ -1642,7 +1634,7 @@ $AA:C2FC 6B          RTL
 }
 
 
-;;; $C2FD: Instruction - go to [enemy $7E:7802] ;;;
+;;; $C2FD: Instruction - go to [enemy gut explosion link instruction] ;;;
 {
 $AA:C2FD BF 02 78 7E LDA $7E7802,x[$7E:7802]
 $AA:C301 A8          TAY
@@ -1758,13 +1750,13 @@ $AA:C39F 6B          RTL
 
 ;;; $C3A0: Instruction ;;;
 {
-$AA:C3A0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C3A3 29 FF 1F    AND #$1FFF
-$AA:C3A6 09 00 20    ORA #$2000
-$AA:C3A9 9D B4 0F    STA $0FB4,x[$7E:0FB4]
-$AA:C3AC BF 12 78 7E LDA $7E7812,x[$7E:7812]
-$AA:C3B0 1A          INC A
-$AA:C3B1 9F 12 78 7E STA $7E7812,x[$7E:7812]
+$AA:C3A0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C3A3 29 FF 1F    AND #$1FFF             ;} Enemy $0FB4 &= ~E000h
+$AA:C3A6 09 00 20    ORA #$2000             ;\
+$AA:C3A9 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy $0FB4 |= 2000h
+$AA:C3AC BF 12 78 7E LDA $7E7812,x[$7E:7812];\
+$AA:C3B0 1A          INC A                  ;} Increment enemy $7E:7812
+$AA:C3B1 9F 12 78 7E STA $7E7812,x[$7E:7812];/
 $AA:C3B5 6B          RTL
 }
 
@@ -1785,25 +1777,26 @@ $AA:C3CB 6B          RTL
 ;;; $C3CC: Instruction ;;;
 {
 $AA:C3CC 5A          PHY
-$AA:C3CD B9 00 00    LDA $0000,y[$AA:B905]
-$AA:C3D0 A8          TAY
-$AA:C3D1 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$AA:C3D4 18          CLC
-$AA:C3D5 79 EE C3    ADC $C3EE,y[$AA:C3EE]
-$AA:C3D8 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$AA:C3DB 98          TYA
-$AA:C3DC 29 0F 00    AND #$000F
-$AA:C3DF A8          TAY
-$AA:C3E0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$AA:C3E3 18          CLC
-$AA:C3E4 79 0E C4    ADC $C40E,y[$AA:C40E]
-$AA:C3E7 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
+$AA:C3CD B9 00 00    LDA $0000,y[$AA:B905]  ;\
+$AA:C3D0 A8          TAY                    ;|
+$AA:C3D1 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
+$AA:C3D4 18          CLC                    ;} Enemy X position += [$C3EE + [[Y]]]
+$AA:C3D5 79 EE C3    ADC $C3EE,y[$AA:C3EE]  ;|
+$AA:C3D8 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$AA:C3DB 98          TYA                    ;\
+$AA:C3DC 29 0F 00    AND #$000F             ;|
+$AA:C3DF A8          TAY                    ;|
+$AA:C3E0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;} Enemy Y position += [$C40E + [[Y]] % 10h]
+$AA:C3E3 18          CLC                    ;|
+$AA:C3E4 79 0E C4    ADC $C40E,y[$AA:C40E]  ;|
+$AA:C3E7 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $AA:C3EA 7A          PLY
-$AA:C3EB C8          INY
-$AA:C3EC C8          INY
+$AA:C3EB C8          INY                    ;\
+$AA:C3EC C8          INY                    ;} Y += 2
 $AA:C3ED 6B          RTL
 
-$AA:C3EE             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000, 0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000
+$AA:C3EE             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000,
+                        0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000
 
 $AA:C40E             dw 0000, FFFA, FFFA, FFF9, 0000, 0000, 0000, 0000
 }
@@ -1893,7 +1886,7 @@ $AA:C4EC B9 32 C5    LDA $C532,y[$AA:C548]  ;} Enemy X velocity = [$C4BD + [[Y]]
 $AA:C4EF 85 14       STA $14    [$7E:0014]  ;|
 $AA:C4F1 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
 $AA:C4F4 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [enemy X velocity]
-$AA:C4F8 7A          PLY                    
+$AA:C4F8 7A          PLY
 $AA:C4F9 90 14       BCC $14    [$C50F]     ; If not collided with wall: go to BRANCH_NO_COLLISION
 $AA:C4FB A9 00 00    LDA #$0000
 $AA:C4FE 9F 06 78 7E STA $7E7806,x[$7E:7806]
@@ -2116,7 +2109,7 @@ $AA:C64C C6 14       DEC $14    [$7E:0014]  ;} Move enemy down by [enemy Y veloc
                                             ;|
 $AA:C64E 85 13       STA $13    [$7E:0013]  ;|
 $AA:C650 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$AA:C654 B0 0B       BCS $0B    [$C661]     ; If not collided with block: 
+$AA:C654 B0 0B       BCS $0B    [$C661]     ; If not collided with block:
 $AA:C656 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $AA:C659 18          CLC                    ;|
 $AA:C65A 69 28 00    ADC #$0028             ;} Enemy Y velocity += 28h
@@ -2177,7 +2170,7 @@ $AA:C6AB 60          RTS
 }
 
 
-;;; $C6AC:  ;;;
+;;; $C6AC: Unused ;;;
 {
 $AA:C6AC 20 43 C6    JSR $C643  [$AA:C643]  ; Handle falling
 $AA:C6AF A9 00 06    LDA #$0600             ;\
@@ -2198,7 +2191,7 @@ $AA:C6C5 60          RTS
 }
 
 
-;;; $C6C6: Torizo function ;;;
+;;; $C6C6: Torizo function - wake enemy when Bomb Torizo chozo finishes crumbling ;;;
 {
 $AA:C6C6 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $AA:C6C9 09 00 04    ORA #$0400             ;} Set enemy as intangible
@@ -2238,17 +2231,17 @@ $AA:C707 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $AA:C70A C9 5E 01    CMP #$015E             ;} If [enemy health] < 350:
 $AA:C70D B0 14       BCS $14    [$C723]     ;/
 $AA:C70F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
-$AA:C712 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = [enemy instruction list pointer]
+$AA:C712 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy gut explosion link instruction = [enemy instruction list pointer]
 $AA:C716 A9 E5 B0    LDA #$B0E5             ;\
-$AA:C719 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B0E5
+$AA:C719 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B0E5 (blow up Bomb Torizo's gut)
 $AA:C71C A9 01 00    LDA #$0001             ;\
 $AA:C71F 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C722 60          RTS                    ; Return
 
 $AA:C723 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
-$AA:C726 70 26       BVS $26    [$C74E]     ;} If [enemy $0FB6] & 4000h != 0: go to BRANCH_NORMAL
+$AA:C726 70 26       BVS $26    [$C74E]     ;} If [enemy $0FB6] & 4000h != 0 (face blown up): go to BRANCH_NO_CHANGE
 $AA:C728 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
-$AA:C72B C9 64 00    CMP #$0064             ;} If [enemy health] >= 100: go to BRANCH_NORMAL
+$AA:C72B C9 64 00    CMP #$0064             ;} If [enemy health] >= 100: go to BRANCH_NO_CHANGE
 $AA:C72E B0 1E       BCS $1E    [$C74E]     ;/
 $AA:C730 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C733 30 05       BMI $05    [$C73A]     ;} If [enemy $0FB4] & 8000h = 0:
@@ -2259,12 +2252,12 @@ $AA:C73A A9 0E BD    LDA #$BD0E             ; Enemy $7E:7800 = $BD0E
 
 $AA:C73D 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $AA:C741 A9 55 B1    LDA #$B155             ;\
-$AA:C744 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B155
+$AA:C744 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B155 (blow up Bomb Torizo's face)
 $AA:C747 A9 01 00    LDA #$0001             ;\
 $AA:C74A 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C74D 60          RTS                    ; Return
 
-; BRANCH_NORMAL
+; BRANCH_NO_CHANGE
 $AA:C74E FC B2 0F    JSR ($0FB2,x)[$AA:C752]; Execute [enemy $0FB2]
 $AA:C751 60          RTS
 }
@@ -2525,18 +2518,18 @@ $AA:C973             dw 0030, 0029 ; Y radius
 }
 
 
-;;; $C977: Enemy touch - enemy $EEFF/$EF3F/$EF7F/$EFBF (Torizos) ;;;
+;;; $C977: Enemy touch - enemy $EEFF/$EF3F/$EF7F/$EFBF (torizos) ;;;
 {
 $AA:C977 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
 $AA:C97B 6B          RTL
 }
 
 
-;;; $C97C: Enemy shot - enemy $EEFF/$EF3F (Bomb Torizo) ;;;
+;;; $C97C: Enemy shot - torizo -  ;;;
 {
 $AA:C97C AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:C97F F0 03       BEQ $03    [$C984]     ;} If [area index] != Crateria:
-$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to enemy shot - Golden Torizo
+$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to enemy shot - Golden Torizo - 
 
 $AA:C984 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:C987 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
@@ -2569,17 +2562,17 @@ $AA:C9C1 6B          RTL
 }
 
 
-;;; $C9C2:  ;;;
+;;; $C9C2: Enemy shot - torizo -  ;;;
 {
-$AA:C9C2 AD 9F 07    LDA $079F  [$7E:079F]
-$AA:C9C5 F0 03       BEQ $03    [$C9CA]
-$AA:C9C7 4C 58 D6    JMP $D658  [$AA:D658]
+$AA:C9C2 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$AA:C9C5 F0 03       BEQ $03    [$C9CA]     ;} If [area index] != Crateria:
+$AA:C9C7 4C 58 D6    JMP $D658  [$AA:D658]  ; Go to enemy shot - Golden Torizo - 
 
 $AA:C9CA 6B          RTL
 }
 
 
-;;; $C9CB: Instruction list -  ;;;
+;;; $C9CB: Instruction list - Golden Torizo - initial ;;;
 {
 $AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 600h bytes from $AF:E200 to VRAM $6D00
                         C3A0,                   ; ???
@@ -3718,7 +3711,7 @@ $AA:D554 B9 9A D5    LDA $D59A,y[$AA:D5A6]  ;} Enemy X velocity = [$C4BD + [[Y]]
 $AA:D557 85 14       STA $14    [$7E:0014]  ;|
 $AA:D559 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
 $AA:D55C 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [enemy X velocity]
-$AA:D560 7A          PLY                    
+$AA:D560 7A          PLY
 $AA:D561 90 14       BCC $14    [$D577]     ; If not collided with wall: go to BRANCH_NO_COLLISION
 $AA:D563 A9 00 00    LDA #$0000
 $AA:D566 9F 06 78 7E STA $7E7806,x[$7E:7806]
@@ -3849,7 +3842,7 @@ $AA:D657 60          RTS
 }
 
 
-;;; $D658:  ;;;
+;;; $D658: Enemy shot - Golden Torizo -  ;;;
 {
 $AA:D658 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D65B BD 9C 0F    LDA $0F9C,x
@@ -3861,7 +3854,7 @@ $AA:D666 6B          RTL
 }
 
 
-;;; $D667: Enemy shot - enemy $EF7F/$EFBF (Gold Torizo) ;;;
+;;; $D667: Enemy shot - Golden Torizo -  ;;;
 {
 $AA:D667 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D66A BD 9C 0F    LDA $0F9C,x[$7E:0F9C]
@@ -5247,7 +5240,7 @@ $AA:E5ED 85 13       STA $13    [$7E:0013]  ;/
 $AA:E5EF 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $AA:E5F3 B0 00       BCS $00    [$E5F5]
 
-$AA:E5F5 64 12       STZ $12    [$7E:0012]  
+$AA:E5F5 64 12       STZ $12    [$7E:0012]
 $AA:E5F7 64 14       STZ $14    [$7E:0014]
 $AA:E5F9 BC AC 0F    LDY $0FAC,x[$7E:0FAC]  ;\
 $AA:E5FC B9 30 E6    LDA $E630,y[$AA:E630]  ;|

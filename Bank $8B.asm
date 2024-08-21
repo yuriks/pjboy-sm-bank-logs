@@ -1453,7 +1453,7 @@ $8B:8A9F A5 7C       LDA $7C    [$7E:007C]  ;\
 $8B:8AA1 85 26       STA $26    [$7E:0026]  ;|
 $8B:8AA3 A5 22       LDA $22    [$7E:0022]  ;|
 $8B:8AA5 85 28       STA $28    [$7E:0028]  ;|
-$8B:8AA7 20 8F 85    JSR $858F  [$8B:858F]  ;|                                
+$8B:8AA7 20 8F 85    JSR $858F  [$8B:858F]  ;|
 $8B:8AAA E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter C] / 100h
 $8B:8AAC A5 2A       LDA $2A    [$7E:002A]  ;|
 $8B:8AAE EB          XBA                    ;|
@@ -1494,7 +1494,7 @@ $8B:8AD9 08          PHP
 $8B:8ADA 8B          PHB
 $8B:8ADB 4B          PHK                    ;\
 $8B:8ADC AB          PLB                    ;} DB = $8B
-$8B:8ADD C2 30       REP #$30               
+$8B:8ADD C2 30       REP #$30
 $8B:8ADF BD 64 0B    LDA $0B64,x            ;\
 $8B:8AE2 38          SEC                    ;|
 $8B:8AE3 E5 80       SBC $80    [$7E:0080]  ;} $22 = [projectile X position] - [mode 7 transformation origin co-ordinate X]
@@ -1537,7 +1537,7 @@ $8B:8B29 A5 7C       LDA $7C    [$7E:007C]  ;\
 $8B:8B2B 85 26       STA $26    [$7E:0026]  ;|
 $8B:8B2D A5 22       LDA $22    [$7E:0022]  ;|
 $8B:8B2F 85 28       STA $28    [$7E:0028]  ;|
-$8B:8B31 20 8F 85    JSR $858F  [$8B:858F]  ;|                                
+$8B:8B31 20 8F 85    JSR $858F  [$8B:858F]  ;|
 $8B:8B34 E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter C] / 100h
 $8B:8B36 A5 2A       LDA $2A    [$7E:002A]  ;|
 $8B:8B38 EB          XBA                    ;|
@@ -1583,7 +1583,7 @@ $8B:8B66 08          PHP
 $8B:8B67 8B          PHB
 $8B:8B68 4B          PHK                    ;\
 $8B:8B69 AB          PLB                    ;} DB = $8B
-$8B:8B6A C2 30       REP #$30               
+$8B:8B6A C2 30       REP #$30
 $8B:8B6C A5 12       LDA $12    [$7E:0012]  ;\
 $8B:8B6E 38          SEC                    ;|
 $8B:8B6F E5 80       SBC $80    [$7E:0080]  ;} $22 = [$12] - [mode 7 transformation origin co-ordinate X]
@@ -1624,7 +1624,7 @@ $8B:8BB0 A5 7C       LDA $7C    [$7E:007C]  ;\
 $8B:8BB2 85 26       STA $26    [$7E:0026]  ;|
 $8B:8BB4 A5 22       LDA $22    [$7E:0022]  ;|
 $8B:8BB6 85 28       STA $28    [$7E:0028]  ;|
-$8B:8BB8 20 8F 85    JSR $858F  [$8B:858F]  ;|                                
+$8B:8BB8 20 8F 85    JSR $858F  [$8B:858F]  ;|
 $8B:8BBB E2 20       SEP #$20               ;} $1A = ±[$22] * ±[mode 7 transformation matrix parameter C] / 100h
 $8B:8BBD A5 2A       LDA $2A    [$7E:002A]  ;|
 $8B:8BBF EB          XBA                    ;|
@@ -9178,7 +9178,7 @@ $8B:C669 9C 82 19    STZ $1982  [$7E:1982]  ; Default layer blending configurati
 $8B:C66C E2 20       SEP #$20
 $8B:C66E 64 6E       STZ $6E    [$7E:006E]  ;\
 $8B:C670 64 71       STZ $71    [$7E:0071]  ;} Disable colour math
-$8B:C672 A9 10       LDA #$10               
+$8B:C672 A9 10       LDA #$10
 $8B:C674 85 69       STA $69    [$7E:0069]  ; Main screen layers = sprites
 $8B:C676 64 6B       STZ $6B    [$7E:006B]  ; Disable subscreen layers
 $8B:C678 64 6C       STZ $6C    [$7E:006C]  ;\
@@ -12691,7 +12691,7 @@ $8B:E50D C9 20       CMP #$20               ;} Colour math subscreen backdrop co
 $8B:E50F 10 04       BPL $04    [$E515]     ;|
 $8B:E511 A9 20       LDA #$20               ;|
 $8B:E513 85 74       STA $74    [$7E:0074]  ;/
-                                            
+
 $8B:E515 A5 75       LDA $75    [$7E:0075]  ;\
 $8B:E517 38          SEC                    ;|
 $8B:E518 E9 01       SBC #$01               ;|
@@ -12700,7 +12700,7 @@ $8B:E51C C9 40       CMP #$40               ;} Colour math subscreen backdrop co
 $8B:E51E 10 04       BPL $04    [$E524]     ;|
 $8B:E520 A9 40       LDA #$40               ;|
 $8B:E522 85 75       STA $75    [$7E:0075]  ;/
-                                            
+
 $8B:E524 A5 76       LDA $76    [$7E:0076]  ;\
 $8B:E526 38          SEC                    ;|
 $8B:E527 E9 01       SBC #$01               ;|
@@ -12814,20 +12814,20 @@ $8B:E5E6 60          RTS
 ;                       |     ___ Sprite palette 7
 ;                       |    |
 $8B:E5E7             dw F3E7,F007,
-                        F3C7,F027, 
-                        F3A7,F047, 
-                        F387,F067, 
-                        F367,F087, 
-                        F347,F0A7, 
-                        F327,F0C7, 
+                        F3C7,F027,
+                        F3A7,F047,
+                        F387,F067,
+                        F367,F087,
+                        F347,F0A7,
+                        F327,F0C7,
                         F307,F0E7,
-                        F2E7,F107, 
-                        F2C7,F127, 
-                        F2A7,F147, 
-                        F287,F167, 
-                        F267,F187, 
-                        F247,F1A7, 
-                        F227,F1C7, 
+                        F2E7,F107,
+                        F2C7,F127,
+                        F2A7,F147,
+                        F287,F167,
+                        F267,F187,
+                        F247,F1A7,
+                        F227,F1C7,
                         F207,F1E7
 }
 

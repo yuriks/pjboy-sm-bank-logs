@@ -5953,7 +5953,7 @@ $86:A80B             dw 0010,0010,0010,0010,0010,0010,0010,0010
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
-;;     $1993: Index. 0 or 6
+;;     $1993: Index. 0 (BT's gut) or 6 (BT's face)
 $86:A81B AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:A81E BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:A821 99 4B 1A    STA $1A4B,y[$7E:1A59]  ;} Enemy projectile X position = [enemy X position]
