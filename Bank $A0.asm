@@ -2736,7 +2736,7 @@ $A0:97BB F0 02       BEQ $02    [$97BF]     ;} If [Samus contact damage index] !
 $A0:97BD AB          PLB
 $A0:97BE 6B          RTL                    ; Return
 
-$A0:97BF 9C A6 18    STZ $18A6  [$7E:18A6]  ; $18A6 = 0 (projectile index)
+$A0:97BF 9C A6 18    STZ $18A6  [$7E:18A6]  ; Projectile index = 0
 
 ; LOOP
 $A0:97C2 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
@@ -2864,7 +2864,7 @@ $A0:98AB 6B          RTL                    ; Return
 $A0:98AC AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $A0:98AF D0 6F       BNE $6F    [$9920]     ;} If [Samus contact damage index] != normal: return
 $A0:98B1 A9 22 00    LDA #$0022             ;\
-$A0:98B4 8D A6 18    STA $18A6  [$7E:18A6]  ;} $18A6 = 22h (enemy projectile index)
+$A0:98B4 8D A6 18    STA $18A6  [$7E:18A6]  ;} Enemy projectile index = 22h
 
 ; LOOP
 $A0:98B7 AE A6 18    LDX $18A6  [$7E:18A6]  ;\
@@ -2978,7 +2978,7 @@ $A0:9982 28          PLP
 $A0:9983 6B          RTL                    ; Return
 
 $A0:9984 A9 22 00    LDA #$0022             ;\
-$A0:9987 8D A6 18    STA $18A6  [$7E:18A6]  ;} $18A6 = 22h (enemy projectile index)
+$A0:9987 8D A6 18    STA $18A6  [$7E:18A6]  ;} Enemy projectile index = 22h
 
 ; LOOP_ENEMY_PROJECTILE
 $A0:998A AE A6 18    LDX $18A6  [$7E:18A6]  ;\
@@ -3398,14 +3398,14 @@ $A0:9CD9 22 17 9D A0 JSL $A09D17[$A0:9D17]  ; Execute [enemy hitbox entry projec
 $A0:9CDD 80 36       BRA $36    [$9D15]     ; Return
 
 ; BRANCH_NEXT_HITBOX
-$A0:9CDF AD 78 18    LDA $1878  [$7E:1878]   ;\
-$A0:9CE2 18          CLC                     ;|
-$A0:9CE3 69 0C 00    ADC #$000C              ;} Enemy hitbox entry pointer += Ch
-$A0:9CE6 8D 78 18    STA $1878  [$7E:1878]   ;/
-$A0:9CE9 CE 0D 06    DEC $060D  [$7E:060D]   ; Decrement number of remaining enemy hitbox entries
-$A0:9CEC F0 05       BEQ $05    [$9CF3]      ;\
-$A0:9CEE 30 03       BMI $03    [$9CF3]      ;} If [number of remaining enemy hitbox entries] <= 0: go to BRANCH_NEXT_SPRITEMAP_ENTRY
-$A0:9CF0 4C 43 9C    JMP $9C43  [$A0:9C43]   ; Go to LOOP_HITBOXES
+$A0:9CDF AD 78 18    LDA $1878  [$7E:1878]  ;\
+$A0:9CE2 18          CLC                    ;|
+$A0:9CE3 69 0C 00    ADC #$000C             ;} Enemy hitbox entry pointer += Ch
+$A0:9CE6 8D 78 18    STA $1878  [$7E:1878]  ;/
+$A0:9CE9 CE 0D 06    DEC $060D  [$7E:060D]  ; Decrement number of remaining enemy hitbox entries
+$A0:9CEC F0 05       BEQ $05    [$9CF3]     ;\
+$A0:9CEE 30 03       BMI $03    [$9CF3]     ;} If [number of remaining enemy hitbox entries] <= 0: go to BRANCH_NEXT_SPRITEMAP_ENTRY
+$A0:9CF0 4C 43 9C    JMP $9C43  [$A0:9C43]  ; Go to LOOP_HITBOXES
 
 ; BRANCH_NEXT_SPRITEMAP_ENTRY
 $A0:9CF3 AD 6E 18    LDA $186E  [$7E:186E]  ;\
@@ -3470,7 +3470,7 @@ $A0:9D65 60          RTS                    ; Return
 $A0:9D66 AD D2 0C    LDA $0CD2  [$7E:0CD2]  ;\
 $A0:9D69 F0 F9       BEQ $F9    [$9D64]     ;} If [bomb counter] = 0: return
 $A0:9D6B A9 05 00    LDA #$0005             ;\
-$A0:9D6E 8D A6 18    STA $18A6  [$7E:18A6]  ;} Projectile index = 6
+$A0:9D6E 8D A6 18    STA $18A6  [$7E:18A6]  ;} Projectile index = 5
 
 ; LOOP_PROJECTILES
 $A0:9D71 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -3642,7 +3642,7 @@ $A0:9EA0 22 84 F0 90 JSL $90F084[$90:F084]  ;} If grapple beam is inactive:
 $A0:9EA4 D0 03       BNE $03    [$9EA9]     ;/
 $A0:9EA6 4C 44 9F    JMP $9F44  [$A0:9F44]  ; Go to BRANCH_9F44 (fortunately this branch is never taken)
 
-$A0:9EA9 9C A6 18    STZ $18A6  [$7E:18A6]  ; $18A6 = 0 (never read)
+$A0:9EA9 9C A6 18    STZ $18A6  [$7E:18A6]  ; Collision index = 0 (never read)
 $A0:9EAC 9C AA 17    STZ $17AA  [$7E:17AA]  ; Interactive enemy indices index = 0
 
 ; LOOP
@@ -4153,12 +4153,12 @@ $A0:A262 B9 78 0F    LDA $0F78,y[$7E:0F78]  ;\
 $A0:A265 C9 FF DA    CMP #$DAFF             ;} If [enemy ID] = respawning enemy placeholder: return
 $A0:A268 F0 E6       BEQ $E6    [$A250]     ;/
 $A0:A26A A9 05 00    LDA #$0005             ;\
-$A0:A26D 8D A6 18    STA $18A6  [$7E:18A6]  ;} Bomb index = 5
+$A0:A26D 8D A6 18    STA $18A6  [$7E:18A6]  ;} Projectile index = 5
 
 ; LOOP
 $A0:A270 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A273 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A276 0A          ASL A                  ;} Y = [bomb index] * 2
+$A0:A276 0A          ASL A                  ;} Y = [projectile index] * 2
 $A0:A277 A8          TAY                    ;/
 $A0:A278 B9 18 0C    LDA $0C18,y[$7E:0C22]  ;\
 $A0:A27B D0 03       BNE $03    [$A280]     ;} If [projectile type] = 0:
@@ -4203,7 +4203,7 @@ $A0:A2C9 90 02       BCC $02    [$A2CD]     ;/
 $A0:A2CB 80 19       BRA $19    [$A2E6]     ; Go to BRANCH_NEXT
 
 $A0:A2CD AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A2D0 0A          ASL A                  ;} Y = [bomb index] * 2
+$A0:A2D0 0A          ASL A                  ;} Y = [projectile index] * 2
 $A0:A2D1 A8          TAY                    ;/
 $A0:A2D2 B9 7C 0C    LDA $0C7C,y[$7E:0C86]  ;\
 $A0:A2D5 D0 0F       BNE $0F    [$A2E6]     ;} If [bomb timer] != 0: go to BRANCH_NEXT (never true)
@@ -4214,9 +4214,9 @@ $A0:A2E0 22 F6 A2 A0 JSL $A0A2F6[$A0:A2F6]  ; Execute enemy shot
 $A0:A2E4 80 0E       BRA $0E    [$A2F4]     ; Return
 
 ; BRANCH_NEXT
-$A0:A2E6 EE A6 18    INC $18A6  [$7E:18A6]  ; Increment bomb index
+$A0:A2E6 EE A6 18    INC $18A6  [$7E:18A6]  ; Increment projectile index
 $A0:A2E9 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A2EC C9 0A 00    CMP #$000A             ;} If [bomb index] = Ah: return
+$A0:A2EC C9 0A 00    CMP #$000A             ;} If [projectile index] = Ah: return
 $A0:A2EF F0 03       BEQ $03    [$A2F4]     ;/
 $A0:A2F1 4C 70 A2    JMP $A270  [$A0:A270]  ; Go to LOOP
 
@@ -4717,11 +4717,11 @@ $A0:A662 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A0:A666 BD 8C 0F    LDA $0F8C,x[$7E:0FCC]  ;\
 $A0:A669 D0 38       BNE $38    [$A6A3]     ;} If [enemy health] != 0: return
 $A0:A66B AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A66E 0A          ASL A                  ;|
-$A0:A66F A8          TAY                    ;|
-$A0:A670 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} Enemy cause of death = (projectile type)
+$A0:A66E 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A0:A66F A8          TAY                    ;/
+$A0:A670 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A0:A673 EB          XBA                    ;|
-$A0:A674 29 0F 00    AND #$000F             ;|
+$A0:A674 29 0F 00    AND #$000F             ;} Enemy cause of death = (projectile type)
 $A0:A677 9F 02 70 7E STA $7E7002,x[$7E:7042];/
 $A0:A67B A0 02 00    LDY #$0002             ; Y = 2 (normal explosion)
 $A0:A67E C9 02 00    CMP #$0002             ;\
@@ -4794,10 +4794,10 @@ $A0:A6DD 6B          RTL
 ;         f: Does not freeze
 $A0:A6DE 8B          PHB
 $A0:A6DF AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A6E2 0A          ASL A                  ;|
-$A0:A6E3 AA          TAX                    ;} $187A = [projectile damage]
-$A0:A6E4 BD 2C 0C    LDA $0C2C,x[$7E:0C2C]  ;|
-$A0:A6E7 8D 7A 18    STA $187A  [$7E:187A]  ;/
+$A0:A6E2 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A0:A6E3 AA          TAX                    ;/
+$A0:A6E4 BD 2C 0C    LDA $0C2C,x[$7E:0C2C]  ;\
+$A0:A6E7 8D 7A 18    STA $187A  [$7E:187A]  ;} $187A = [projectile damage]
 $A0:A6EA BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $A0:A6ED 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile type]
 $A0:A6EF DA          PHX                    ; <-- This is never meaningfully pulled >_<
@@ -4886,10 +4886,10 @@ $A0:A7A5 4C 4A A7    JMP $A74A  [$A0:A74A]  ; Go to BRANCH_CALCULATE_DAMAGE
 
 ; BRANCH_NO_DAMAGE
 $A0:A7A8 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A7AB 0A          ASL A                  ;|
-$A0:A7AC AA          TAX                    ;|
-$A0:A7AD BD 04 0C    LDA $0C04,x[$7E:0C06]  ;} Flag projectile for deletion
-$A0:A7B0 09 10 00    ORA #$0010             ;|
+$A0:A7AB 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A0:A7AC AA          TAX                    ;/
+$A0:A7AD BD 04 0C    LDA $0C04,x[$7E:0C06]  ;\
+$A0:A7B0 09 10 00    ORA #$0010             ;} Flag projectile for deletion
 $A0:A7B3 9D 04 0C    STA $0C04,x[$7E:0C06]  ;/
 $A0:A7B6 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;\
 $A0:A7B9 85 12       STA $12    [$7E:0012]  ;|
@@ -4964,10 +4964,10 @@ $A0:A849 EE 2E 0E    INC $0E2E  [$7E:0E2E]  ; Set enemy hit flag
 ; BRANCH_NO_FLASH_NO_CRY
 $A0:A84C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A84F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A852 0A          ASL A                  ;|
-$A0:A853 A8          TAY                    ;|
-$A0:A854 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If projectile is a plasma beam:
-$A0:A857 89 08 00    BIT #$0008             ;|
+$A0:A852 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A0:A853 A8          TAY                    ;/
+$A0:A854 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$A0:A857 89 08 00    BIT #$0008             ;} If projectile is a plasma beam:
 $A0:A85A F0 06       BEQ $06    [$A862]     ;/
 $A0:A85C A9 10 00    LDA #$0010             ;\
 $A0:A85F 9D A0 0F    STA $0FA0,x[$7E:0FA0]  ;} Enemy invincibility timer = 10h
@@ -4979,10 +4979,10 @@ $A0:A869 F0 02       BEQ $02    [$A86D]     ;\
 $A0:A86B B0 4A       BCS $4A    [$A8B7]     ;} If [A] > 0: go to BRANCH_RETURN
 
 $A0:A86D AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A870 0A          ASL A                  ;|
-$A0:A871 A8          TAY                    ;|
-$A0:A872 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;} If projectile is not ice beam: go to BRANCH_ENEMY_HEALTH_ZERO
-$A0:A875 29 02 00    AND #$0002             ;|
+$A0:A870 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A0:A871 A8          TAY                    ;/
+$A0:A872 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$A0:A875 29 02 00    AND #$0002             ;} If projectile is not ice beam: go to BRANCH_ENEMY_HEALTH_ZERO
 $A0:A878 F0 3A       BEQ $3A    [$A8B4]     ;/
 $A0:A87A AD 40 0E    LDA $0E40  [$7E:0E40]  ;\
 $A0:A87D 29 F0 00    AND #$00F0             ;|
@@ -5024,13 +5024,13 @@ $A0:A8BB 60          RTS
 $A0:A8BC DA          PHX
 $A0:A8BD 5A          PHY
 $A0:A8BE AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A0:A8C1 0A          ASL A                  ;|
-$A0:A8C2 AA          TAX                    ;|
-$A0:A8C3 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;|
+$A0:A8C1 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A0:A8C2 AA          TAX                    ;/
+$A0:A8C3 BD 64 0B    LDA $0B64,x[$7E:0B66]  ;\
 $A0:A8C6 85 12       STA $12    [$7E:0012]  ;|
-$A0:A8C8 BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;} Create sprite object 6 (dud shot) at projectile position
+$A0:A8C8 BD 78 0B    LDA $0B78,x[$7E:0B7A]  ;|
 $A0:A8CB 85 14       STA $14    [$7E:0014]  ;|
-$A0:A8CD A9 06 00    LDA #$0006             ;|
+$A0:A8CD A9 06 00    LDA #$0006             ;} Create sprite object 6 (dud shot) at projectile position
 $A0:A8D0 85 16       STA $16    [$7E:0016]  ;|
 $A0:A8D2 64 18       STZ $18    [$7E:0018]  ;|
 $A0:A8D4 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
@@ -5207,7 +5207,7 @@ $A0:A9B8 AD FE 0A    LDA $0AFE  [$7E:0AFE]  ;\
 $A0:A9BB 8D A2 18    STA $18A2  [$7E:18A2]  ;} $18A2 = [Samus X radius]
 $A0:A9BE AD 00 0B    LDA $0B00  [$7E:0B00]  ;\
 $A0:A9C1 8D A4 18    STA $18A4  [$7E:18A4]  ;} $18A4 = [Samus Y radius]
-$A0:A9C4 9C A6 18    STZ $18A6  [$7E:18A6]  ; Collision enemy index = 0
+$A0:A9C4 9C A6 18    STZ $18A6  [$7E:18A6]  ; Enemy index = 0
 $A0:A9C7 9C AA 17    STZ $17AA  [$7E:17AA]  ; Interactive enemy indices index = 0
 
 ; LOOP
@@ -5218,7 +5218,7 @@ $A0:A9D3 D0 03       BNE $03    [$A9D8]     ;/
 $A0:A9D5 4C 7B AB    JMP $AB7B  [$A0:AB7B]  ; Return A = 0
 
 $A0:A9D8 8D A6 18    STA $18A6  [$7E:18A6]  ;\
-$A0:A9DB AA          TAX                    ;} X = collision enemy index = [interactive enemy index]
+$A0:A9DB AA          TAX                    ;} X = enemy index = [interactive enemy index]
 $A0:A9DC BD 9E 0F    LDA $0F9E,x[$7E:0FDE]  ;\
 $A0:A9DF D0 0B       BNE $0B    [$A9EC]     ;} If [enemy frozen timer] = 0:
 $A0:A9E1 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
@@ -8545,7 +8545,7 @@ $A0:C2A6 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
 $A0:C2A9 09 00 80    ORA #$8000             ;} Set enemy graphic updated flag
 $A0:C2AC 9D 88 0F    STA $0F88,x[$7E:0F88]  ;/
 
-; Where enemy instruction: kill returns to
+; Sleep/wait/delete instructions return to here
 $A0:C2AF AB          PLB
 $A0:C2B0 60          RTS                    ; Return
 

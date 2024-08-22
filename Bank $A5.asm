@@ -5506,10 +5506,10 @@ $A5:ED59 60          RTS
 ;;; $ED5A: Enemy shot - Spore Spawn - vulnerable ;;;
 {
 $A5:ED5A AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A5:ED5D 0A          ASL A                  ;|
-$A5:ED5E AA          TAX                    ;|
-$A5:ED5F BD 18 0C    LDA $0C18,x[$7E:0C18]  ;} If (projectile type) = beam:
-$A5:ED62 89 00 07    BIT #$0700             ;|
+$A5:ED5D 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A5:ED5E AA          TAX                    ;/
+$A5:ED5F BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
+$A5:ED62 89 00 07    BIT #$0700             ;} If (projectile type) = beam:
 $A5:ED65 D0 06       BNE $06    [$ED6D]     ;/
 $A5:ED67 89 10 00    BIT #$0010             ;\
 $A5:ED6A D0 01       BNE $01    [$ED6D]     ;} If projectile is not charged:

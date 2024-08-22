@@ -5128,6 +5128,7 @@ $A3:BB28 7C B4 0F    JMP ($0FB4,x)
 
 ;;; $BB2B:  ;;;
 {
+; Pointed to by parameter 2 of debug enemy population data $B4:E309
 $A3:BB2B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BB2E BF 40 80 7E LDA $7E8040,x
 $A3:BB32 18          CLC
@@ -5144,6 +5145,7 @@ $A3:BB49 6B          RTL
 
 ;;; $BB4A:  ;;;
 {
+; Pointed to by parameter 2 of debug enemy population data $B4:E309
 $A3:BB4A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BB4D BF C0 7F 7E LDA $7E7FC0,x
 $A3:BB51 18          CLC
@@ -5159,6 +5161,7 @@ $A3:BB65 6B          RTL
 
 ;;; $BB66:  ;;;
 {
+; Pointed to by parameter 2 of debug enemy population data $B4:E309
 $A3:BB66 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BB69 20 9E BC    JSR $BC9E  [$A3:BC9E]
 $A3:BB6C BD 7A 0F    LDA $0F7A,x
@@ -5597,9 +5600,9 @@ $A3:BEFD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BF00 BD B2 0F    LDA $0FB2,x
 $A3:BF03 C9 C1 BC    CMP #$BCC1
 $A3:BF06 F0 33       BEQ $33    [$BF3B]
-$A3:BF08 AD A6 18    LDA $18A6  [$7E:18A6]
-$A3:BF0B 0A          ASL A
-$A3:BF0C A8          TAY
+$A3:BF08 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A3:BF0B 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A3:BF0C A8          TAY                    ;/
 $A3:BF0D B9 04 0C    LDA $0C04,y
 $A3:BF10 29 0F 00    AND #$000F
 $A3:BF13 0A          ASL A
@@ -5625,9 +5628,9 @@ $A3:BF45 BF 00 80 7E LDA $7E8000,x
 $A3:BF49 1A          INC A
 $A3:BF4A 9F 00 80 7E STA $7E8000,x
 $A3:BF4E 20 DA BE    JSR $BEDA  [$A3:BEDA]
-$A3:BF51 AD A6 18    LDA $18A6  [$7E:18A6]
-$A3:BF54 0A          ASL A
-$A3:BF55 A8          TAY
+$A3:BF51 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A3:BF54 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A3:BF55 A8          TAY                    ;/
 $A3:BF56 B9 2C 0C    LDA $0C2C,y
 $A3:BF59 18          CLC
 $A3:BF5A 7D B0 0F    ADC $0FB0,x
@@ -6027,11 +6030,11 @@ $A3:C81F A0 EC 8B    LDY #$8BEC             ;\
 $A3:C822 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn skree particle - up-left enemy projectile
 $A3:C826 A0 02 00    LDY #$0002             ; Y = 2 (normal explosion)
 $A3:C829 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A3:C82C 0A          ASL A                  ;|
-$A3:C82D AA          TAX                    ;|
-$A3:C82E BD 18 0C    LDA $0C18,x[$7E:0C18]  ;} If projectile is not super missile:
+$A3:C82C 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A3:C82D AA          TAX                    ;/
+$A3:C82E BD 18 0C    LDA $0C18,x[$7E:0C18]  ;\
 $A3:C831 29 00 0F    AND #$0F00             ;|
-$A3:C834 C9 00 02    CMP #$0200             ;|
+$A3:C834 C9 00 02    CMP #$0200             ;} If projectile is not super missile:
 $A3:C837 F0 03       BEQ $03    [$C83C]     ;/
 $A3:C839 A0 00 00    LDY #$0000             ; Y = 0 (small explosion)
 
@@ -7462,9 +7465,9 @@ $A3:D468 60          RTS
 ;;; $D469: Enemy shot - enemy $DBBF (Maridia snail) ;;;
 {
 $A3:D469 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:D46C AD A6 18    LDA $18A6  [$7E:18A6]
-$A3:D46F 0A          ASL A
-$A3:D470 A8          TAY
+$A3:D46C AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A3:D46F 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A3:D470 A8          TAY                    ;/
 $A3:D471 B9 18 0C    LDA $0C18,y[$7E:0C18]
 $A3:D474 29 00 FF    AND #$FF00
 $A3:D477 C9 00 03    CMP #$0300
@@ -7908,9 +7911,9 @@ $A3:DC1B 6B          RTL
 ;;; $DC1C: Enemy shot - enemy $DBFF (reflec) ;;;
 {
 $A3:DC1C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DC1F AD A6 18    LDA $18A6  [$7E:18A6]
-$A3:DC22 0A          ASL A
-$A3:DC23 A8          TAY
+$A3:DC1F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A3:DC22 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A3:DC23 A8          TAY                    ;/
 $A3:DC24 A9 0A 00    LDA #$000A
 $A3:DC27 9D A0 0F    STA $0FA0,x
 $A3:DC2A BD B6 0F    LDA $0FB6,x
@@ -9806,7 +9809,7 @@ $A3:EF0A 38          SEC                    ;|
 $A3:EF0B E9 08 00    SBC #$0008             ;} $0E32 = [Samus Y position] - 8 (never read)
 $A3:EF0E 8D 32 0E    STA $0E32  [$7E:0E32]  ;/
 $A3:EF11 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A3:EF14 0A          ASL A                  ;} Y = (collided projectile index)
+$A3:EF14 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $A3:EF15 A8          TAY                    ;/
 $A3:EF16 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:EF19 BD 9E 0F    LDA $0F9E,x[$7E:105E]  ;\
@@ -9908,7 +9911,7 @@ $A3:EFF2 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = 
 $A3:EFF5 A9 01 00    LDA #$0001             ;\
 $A3:EFF8 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
 $A3:EFFB AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A3:EFFE 0A          ASL A                  ;} Y = (collided projectile index)
+$A3:EFFE 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $A3:EFFF A8          TAY                    ;/
 $A3:F000 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A3:F003 29 02 00    AND #$0002             ;} If projectile is not ice beam: go to BRANCH_NOT_ICE_BEAM

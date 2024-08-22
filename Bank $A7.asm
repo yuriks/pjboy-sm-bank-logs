@@ -7624,11 +7624,11 @@ $A7:DDFE 85 12       STA $12    [$7E:0012]  ;/
 $A7:DE00 C9 2C 01    CMP #$012C             ;\
 $A7:DE03 30 13       BMI $13    [$DE18]     ;} If (shot damage) >= 300: (just in case a super does less than 300 damage? >_<;)
 $A7:DE05 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A7:DE08 0A          ASL A                  ;|
-$A7:DE09 A8          TAY                    ;|
-$A7:DE0A B9 18 0C    LDA $0C18,y            ;} If projectile is super missile:
+$A7:DE08 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A7:DE09 A8          TAY                    ;/
+$A7:DE0A B9 18 0C    LDA $0C18,y            ;\
 $A7:DE0D 29 00 0F    AND #$0F00             ;|
-$A7:DE10 C9 00 02    CMP #$0200             ;|
+$A7:DE10 C9 00 02    CMP #$0200             ;} If projectile is super missile:
 $A7:DE13 D0 03       BNE $03    [$DE18]     ;/
 $A7:DE15 4C D5 DE    JMP $DED5  [$A7:DED5]  ; Go to BRANCH_ENRAGED
 
@@ -7650,11 +7650,11 @@ $A7:DE34 85 12       STA $12    [$7E:0012]  ;/
 $A7:DE36 C9 2C 01    CMP #$012C             ;\
 $A7:DE39 30 13       BMI $13    [$DE4E]     ;} If (shot damage) >= 300: (just in case a super does less than 300 damage? >_<;)
 $A7:DE3B AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A7:DE3E 0A          ASL A                  ;|
-$A7:DE3F A8          TAY                    ;|
-$A7:DE40 B9 18 0C    LDA $0C18,y            ;} If projectile is super missile:
+$A7:DE3E 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A7:DE3F A8          TAY                    ;/
+$A7:DE40 B9 18 0C    LDA $0C18,y            ;\
 $A7:DE43 29 00 0F    AND #$0F00             ;|
-$A7:DE46 C9 00 02    CMP #$0200             ;|
+$A7:DE46 C9 00 02    CMP #$0200             ;} If projectile is super missile:
 $A7:DE49 D0 03       BNE $03    [$DE4E]     ;/
 $A7:DE4B 4C D5 DE    JMP $DED5  [$A7:DED5]  ; Go to BRANCH_ENRAGED
 

@@ -1451,40 +1451,40 @@ $AA:C188             dx B09C,C6BF,  ; Enemy function = $C6BF
 }
 
 
-;;; $C20A:  ;;;
+;;; $C20A: Make torizo jump forwards ;;;
 {
-$AA:C20A BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C20D 30 05       BMI $05    [$C214]
-$AA:C20F A9 00 FE    LDA #$FE00
-$AA:C212 80 03       BRA $03    [$C217]
-
-$AA:C214 A9 00 02    LDA #$0200
-
-$AA:C217 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$AA:C21A A9 40 FA    LDA #$FA40
-$AA:C21D 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$AA:C220 A9 28 00    LDA #$0028
-$AA:C223 9D AC 0F    STA $0FAC,x[$7E:0FAC]
+$AA:C20A BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C20D 30 05       BMI $05    [$C214]     ;} If torizo is facing left:
+$AA:C20F A9 00 FE    LDA #$FE00             ; Enemy X velocity = -200h
+$AA:C212 80 03       BRA $03    [$C217]     
+                                            ; Else (torizo is facing right):
+$AA:C214 A9 00 02    LDA #$0200             ; Enemy X velocity = 200h
+                                            
+$AA:C217 9D A8 0F    STA $0FA8,x[$7E:0FA8]  
+$AA:C21A A9 40 FA    LDA #$FA40             ;\
+$AA:C21D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy Y velocity = -5C0h
+$AA:C220 A9 28 00    LDA #$0028             ;\
+$AA:C223 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = 28h
 $AA:C226 A9 01 00    LDA #$0001             ;\
 $AA:C229 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C22C 60          RTS
 }
 
 
-;;; $C22D:  ;;;
+;;; $C22D: Make torizo jump backwards ;;;
 {
-$AA:C22D BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C230 30 05       BMI $05    [$C237]
-$AA:C232 A9 00 03    LDA #$0300
+$AA:C22D BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C230 30 05       BMI $05    [$C237]     ;} If torizo is facing left:
+$AA:C232 A9 00 03    LDA #$0300             ; Enemy X velocity = 300h
 $AA:C235 80 03       BRA $03    [$C23A]
-
-$AA:C237 A9 00 FD    LDA #$FD00
+                                            ; Else (torizo is facing right):
+$AA:C237 A9 00 FD    LDA #$FD00             ; Enemy X velocity = -300h
 
 $AA:C23A 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$AA:C23D A9 80 FB    LDA #$FB80
-$AA:C240 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$AA:C243 A9 28 00    LDA #$0028
-$AA:C246 9D AC 0F    STA $0FAC,x[$7E:0FAC]
+$AA:C23D A9 80 FB    LDA #$FB80             ;\
+$AA:C240 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy Y velocity = -480h
+$AA:C243 A9 28 00    LDA #$0028             ;\
+$AA:C246 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = 28h
 $AA:C249 A9 01 00    LDA #$0001             ;\
 $AA:C24C 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C24F 60          RTS
@@ -1600,18 +1600,18 @@ $AA:C2D8 6B          RTL
 
 ;;; $C2D9: Instruction ;;;
 {
-$AA:C2D9 3C B6 0F    BIT $0FB6,x[$7E:0FB6]
-$AA:C2DC 70 0A       BVS $0A    [$C2E8]
-$AA:C2DE C8          INY
-$AA:C2DF C8          INY
-$AA:C2E0 AD 9F 07    LDA $079F  [$7E:079F]
-$AA:C2E3 D0 03       BNE $03    [$C2E8]
-$AA:C2E5 C8          INY
-$AA:C2E6 C8          INY
-$AA:C2E7 6B          RTL
+$AA:C2D9 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
+$AA:C2DC 70 0A       BVS $0A    [$C2E8]     ;} If [enemy $0FB6] & 4000h = 0:
+$AA:C2DE C8          INY                    ;\
+$AA:C2DF C8          INY                    ;} Y += 2
+$AA:C2E0 AD 9F 07    LDA $079F  [$7E:079F]  ;\
+$AA:C2E3 D0 03       BNE $03    [$C2E8]     ;} If [area index] = Crateria:
+$AA:C2E5 C8          INY                    ;\
+$AA:C2E6 C8          INY                    ;} Y += 2
+$AA:C2E7 6B          RTL                    ; Return
 
-$AA:C2E8 B9 00 00    LDA $0000,y[$AA:C17C]
-$AA:C2EB A8          TAY
+$AA:C2E8 B9 00 00    LDA $0000,y[$AA:C17C]  ;\
+$AA:C2EB A8          TAY                    ;} Y = [[Y]]
 $AA:C2EC 6B          RTL
 }
 
@@ -1642,48 +1642,49 @@ $AA:C302 6B          RTL
 }
 
 
-;;; $C303: Instruction - spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter [[Y]] and sleep for 28h i-frames ;;;
+;;; $C303: Instruction - spawn 5 Bomb Torizo low-health explosions with parameter [[Y]] and sleep for 28h i-frames ;;;
 {
-$AA:C303 5A          PHY
-$AA:C304 B9 00 00    LDA $0000,y[$AA:B0ED]
+$AA:C303 5A          PHY                    ; Save Y
+$AA:C304 B9 00 00    LDA $0000,y[$AA:B0ED]  ; A = [[Y]]
 $AA:C307 48          PHA
-$AA:C308 A0 05 00    LDY #$0005
+$AA:C308 A0 05 00    LDY #$0005             ; Y = 5
 
-$AA:C30B 5A          PHY
-$AA:C30C A3 03       LDA $03,s  [$7E:1FEE]
-$AA:C30E A0 A1 A9    LDY #$A9A1             ;\
-$AA:C311 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Bomb Torizo low-health explosion enemy projectile
-$AA:C315 7A          PLY
-$AA:C316 88          DEY
-$AA:C317 10 F2       BPL $F2    [$C30B]
+; LOOP
+$AA:C30B 5A          PHY                    ;\
+$AA:C30C A3 03       LDA $03,s  [$7E:1FEE]  ;|
+$AA:C30E A0 A1 A9    LDY #$A9A1             ;} Spawn Bomb Torizo low-health explosion enemy projectile with parameter [A]
+$AA:C311 22 97 80 86 JSL $868097[$86:8097]  ;|
+$AA:C315 7A          PLY                    ;/
+$AA:C316 88          DEY                    ; Decrement Y
+$AA:C317 10 F2       BPL $F2    [$C30B]     ; If [Y] >= 0: go to LOOP
 $AA:C319 68          PLA
-$AA:C31A 7A          PLY
-$AA:C31B C8          INY
-$AA:C31C C8          INY
-$AA:C31D 98          TYA
-$AA:C31E 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:C321 A9 28 00    LDA #$0028
-$AA:C324 9D 9C 0F    STA $0F9C,x[$7E:0F9C]
+$AA:C31A 7A          PLY                    ; Restore Y
+$AA:C31B C8          INY                    ;\
+$AA:C31C C8          INY                    ;|
+$AA:C31D 98          TYA                    ;} Enemy instruction list pointer = [Y] + 2
+$AA:C31E 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
+$AA:C321 A9 28 00    LDA #$0028             ;\
+$AA:C324 9D 9C 0F    STA $0F9C,x[$7E:0F9C]  ;} Enemy flash timer = 28h
 $AA:C327 9D 94 0F    STA $0F94,x[$7E:0F94]  ; Enemy instruction timer = 28h
-$AA:C32A 68          PLA
-$AA:C32B F4 AE C2    PEA $C2AE
+$AA:C32A 68          PLA                    ;\
+$AA:C32B F4 AE C2    PEA $C2AE              ;} Terminate processing enemy instructions
 $AA:C32E 6B          RTL
 }
 
 
-;;; $C32F: Instruction ;;;
+;;; $C32F: Instruction - spawn torizo death explosion and sleep for 1 i-frame ;;;
 {
-$AA:C32F 5A          PHY
-$AA:C330 A0 AF A9    LDY #$A9AF             ;\
-$AA:C333 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Torizo death explosion enemy projectile
-$AA:C337 7A          PLY
-$AA:C338 98          TYA
-$AA:C339 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:C33C A9 01 00    LDA #$0001
-$AA:C33F 9D 9C 0F    STA $0F9C,x[$7E:0F9C]
+$AA:C32F 5A          PHY                    ;\
+$AA:C330 A0 AF A9    LDY #$A9AF             ;|
+$AA:C333 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn torizo death explosion enemy projectile
+$AA:C337 7A          PLY                    ;/
+$AA:C338 98          TYA                    ;\
+$AA:C339 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = [Y]
+$AA:C33C A9 01 00    LDA #$0001             ;\
+$AA:C33F 9D 9C 0F    STA $0F9C,x[$7E:0F9C]  ;} Enemy flash timer = 1
 $AA:C342 9D 94 0F    STA $0F94,x[$7E:0F94]  ; Enemy instruction timer = 1
-$AA:C345 68          PLA
-$AA:C346 F4 AE C2    PEA $C2AE
+$AA:C345 68          PLA                    ;\
+$AA:C346 F4 AE C2    PEA $C2AE              ;} Terminate processing enemy instructions
 $AA:C349 6B          RTL
 }
 
@@ -1700,15 +1701,15 @@ $AA:C35A 6B          RTL
 }
 
 
-;;; $C35B:  ;;;
+;;; $C35B: Instruction - spawn low-health initial drool if health is low ;;;
 {
-$AA:C35B BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$AA:C35E C9 5E 01    CMP #$015E
-$AA:C361 B0 09       BCS $09    [$C36C]
-$AA:C363 5A          PHY
-$AA:C364 A0 69 A9    LDY #$A969             ;\
+$AA:C35B BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$AA:C35E C9 5E 01    CMP #$015E             ;} If [enemy health] < 350:
+$AA:C361 B0 09       BCS $09    [$C36C]     ;/
+$AA:C363 5A          PHY                    ;\
+$AA:C364 A0 69 A9    LDY #$A969             ;|
 $AA:C367 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Bomb Torizo low-health initial drool enemy projectile
-$AA:C36B 7A          PLY
+$AA:C36B 7A          PLY                    ;/
 
 $AA:C36C 6B          RTL
 }
@@ -1725,25 +1726,25 @@ $AA:C376 6B          RTL
 
 ;;; $C377: Instruction ;;;
 {
-$AA:C377 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C37A 29 FF 1F    AND #$1FFF
-$AA:C37D 9D B4 0F    STA $0FB4,x[$7E:0FB4]
-$AA:C380 BF 12 78 7E LDA $7E7812,x[$7E:7812]
-$AA:C384 1A          INC A
-$AA:C385 9F 12 78 7E STA $7E7812,x[$7E:7812]
+$AA:C377 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C37A 29 FF 1F    AND #$1FFF             ;} Enemy $0FB4 &= ~E000h
+$AA:C37D 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;/
+$AA:C380 BF 12 78 7E LDA $7E7812,x[$7E:7812];\
+$AA:C384 1A          INC A                  ;} Increment enemy $7E:7812
+$AA:C385 9F 12 78 7E STA $7E7812,x[$7E:7812];/
 $AA:C389 6B          RTL
 }
 
 
 ;;; $C38A: Instruction ;;;
 {
-$AA:C38A BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C38D 29 FF 1F    AND #$1FFF
-$AA:C390 09 00 80    ORA #$8000
-$AA:C393 9D B4 0F    STA $0FB4,x[$7E:0FB4]
-$AA:C396 BF 12 78 7E LDA $7E7812,x[$7E:7812]
-$AA:C39A 1A          INC A
-$AA:C39B 9F 12 78 7E STA $7E7812,x[$7E:7812]
+$AA:C38A BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C38D 29 FF 1F    AND #$1FFF             ;} Enemy $0FB4 &= ~E000h
+$AA:C390 09 00 80    ORA #$8000             ;\
+$AA:C393 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy $0FB4 |= 8000h
+$AA:C396 BF 12 78 7E LDA $7E7812,x[$7E:7812];\
+$AA:C39A 1A          INC A                  ;} Increment enemy $7E:7812
+$AA:C39B 9F 12 78 7E STA $7E7812,x[$7E:7812];/
 $AA:C39F 6B          RTL
 }
 
@@ -1763,18 +1764,18 @@ $AA:C3B5 6B          RTL
 
 ;;; $C3B6: Instruction ;;;
 {
-$AA:C3B6 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C3B9 29 FF 1F    AND #$1FFF
-$AA:C3BC 09 00 A0    ORA #$A000
-$AA:C3BF 9D B4 0F    STA $0FB4,x[$7E:0FB4]
-$AA:C3C2 BF 12 78 7E LDA $7E7812,x[$7E:7812]
-$AA:C3C6 1A          INC A
-$AA:C3C7 9F 12 78 7E STA $7E7812,x[$7E:7812]
+$AA:C3B6 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C3B9 29 FF 1F    AND #$1FFF             ;} Enemy $0FB4 &= ~E000h
+$AA:C3BC 09 00 A0    ORA #$A000             ;\
+$AA:C3BF 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy $0FB4 |= A000h
+$AA:C3C2 BF 12 78 7E LDA $7E7812,x[$7E:7812];\
+$AA:C3C6 1A          INC A                  ;} Increment enemy $7E:7812
+$AA:C3C7 9F 12 78 7E STA $7E7812,x[$7E:7812];/
 $AA:C3CB 6B          RTL
 }
 
 
-;;; $C3CC: Instruction ;;;
+;;; $C3CC: Instruction - standing up movement - index [[Y]] ;;;
 {
 $AA:C3CC 5A          PHY
 $AA:C3CD B9 00 00    LDA $0000,y[$AA:B905]  ;\
@@ -1795,41 +1796,46 @@ $AA:C3EB C8          INY                    ;\
 $AA:C3EC C8          INY                    ;} Y += 2
 $AA:C3ED 6B          RTL
 
-$AA:C3EE             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000,
-                        0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000
+; X velocities
+$AA:C3EE             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000, ; Facing left
+                        0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000  ; Facing right
 
+; Y velocities
 $AA:C40E             dw 0000, FFFA, FFFA, FFF9, 0000, 0000, 0000, 0000
 }
 
 
-;;; $C41E: Instruction ;;;
+;;; $C41E: Instruction - sitting down movement - index [[Y]] ;;;
 {
 $AA:C41E 5A          PHY
-$AA:C41F B9 00 00    LDA $0000,y[$AA:C9F6]
-$AA:C422 A8          TAY
-$AA:C423 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$AA:C426 38          SEC
-$AA:C427 F9 40 C4    SBC $C440,y[$AA:C444]
-$AA:C42A 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$AA:C42D 98          TYA
-$AA:C42E 29 0F 00    AND #$000F
-$AA:C431 A8          TAY
-$AA:C432 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$AA:C435 38          SEC
-$AA:C436 F9 60 C4    SBC $C460,y[$AA:C464]
-$AA:C439 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
-$AA:C43C 7A          PLY
-$AA:C43D C8          INY
-$AA:C43E C8          INY
+$AA:C41F B9 00 00    LDA $0000,y[$AA:C9F6]  ;\
+$AA:C422 A8          TAY                    ;|
+$AA:C423 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
+$AA:C426 38          SEC                    ;} Enemy X position -= [$C440 + [[Y]]]
+$AA:C427 F9 40 C4    SBC $C440,y[$AA:C444]  ;|
+$AA:C42A 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$AA:C42D 98          TYA                    ;\
+$AA:C42E 29 0F 00    AND #$000F             ;|
+$AA:C431 A8          TAY                    ;|
+$AA:C432 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;} Enemy Y position -= [$C460 + [[Y]] % 10h]
+$AA:C435 38          SEC                    ;|
+$AA:C436 F9 60 C4    SBC $C460,y[$AA:C464]  ;|
+$AA:C439 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
+$AA:C43C 7A          PLY                    
+$AA:C43D C8          INY                    ;\
+$AA:C43E C8          INY                    ;} Y += 2
 $AA:C43F 6B          RTL
 
-$AA:C440             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000, 0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000
+; Negated X velocities
+$AA:C440             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000, ; Facing left
+                        0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000  ; Facing right
 
+; Negated Y velocities
 $AA:C460             dw 0000, FFFA, FFFA, FFF9, 0000, 0000, 0000, 0000
 }
 
 
-;;; $C470: Instruction ;;;
+;;; $C470: Instruction - Bomb Torizo walking movement - normal - index [[Y]] ;;;
 {
 $AA:C470 5A          PHY
 $AA:C471 64 12       STZ $12    [$7E:0012]
@@ -1841,34 +1847,34 @@ $AA:C47C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
 $AA:C47F 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [enemy X velocity]
 $AA:C483 7A          PLY
 $AA:C484 90 14       BCC $14    [$C49A]     ; If not collided with wall: go to BRANCH_NO_COLLISION
-$AA:C486 A9 00 00    LDA #$0000
-$AA:C489 9F 06 78 7E STA $7E7806,x
-$AA:C48D BD B4 0F    LDA $0FB4,x
-$AA:C490 30 04       BMI $04    [$C496]
-$AA:C492 A0 D8 BD    LDY #$BDD8
-$AA:C495 6B          RTL
+$AA:C486 A9 00 00    LDA #$0000             ;\
+$AA:C489 9F 06 78 7E STA $7E7806,x          ;} Enemy $7E:7806 = 0
+$AA:C48D BD B4 0F    LDA $0FB4,x            ;\
+$AA:C490 30 04       BMI $04    [$C496]     ;} If torizo is facing left:
+$AA:C492 A0 D8 BD    LDY #$BDD8             ; Y = $BDD8
+$AA:C495 6B          RTL                    ; Return
 
-$AA:C496 A0 62 B9    LDY #$B962
-$AA:C499 6B          RTL
+$AA:C496 A0 62 B9    LDY #$B962             ; Y = $B962
+$AA:C499 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
 $AA:C49A 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$AA:C49E AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$AA:C4A1 38          SEC
-$AA:C4A2 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$AA:C4A5 5D B4 0F    EOR $0FB4,x[$7E:0FB4]
-$AA:C4A8 10 03       BPL $03    [$C4AD]
-$AA:C4AA C8          INY
-$AA:C4AB C8          INY
-$AA:C4AC 6B          RTL
+$AA:C49E AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$AA:C4A1 38          SEC                    ;|
+$AA:C4A2 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;} If torizo is facing away from Samus:
+$AA:C4A5 5D B4 0F    EOR $0FB4,x[$7E:0FB4]  ;|
+$AA:C4A8 10 03       BPL $03    [$C4AD]     ;/
+$AA:C4AA C8          INY                    ;\
+$AA:C4AB C8          INY                    ;} Y += 2
+$AA:C4AC 6B          RTL                    ; Return
 
-$AA:C4AD BF 06 78 7E LDA $7E7806,x
-$AA:C4B1 D0 07       BNE $07    [$C4BA]
-$AA:C4B3 A9 48 00    LDA #$0048
-$AA:C4B6 9F 06 78 7E STA $7E7806,x
+$AA:C4AD BF 06 78 7E LDA $7E7806,x          ;\
+$AA:C4B1 D0 07       BNE $07    [$C4BA]     ;} If [enemy $7E:7806] = 0:
+$AA:C4B3 A9 48 00    LDA #$0048             ;\
+$AA:C4B6 9F 06 78 7E STA $7E7806,x          ;} Enemy $7E:7806 = 48h
 
-$AA:C4BA C8          INY
-$AA:C4BB C8          INY
+$AA:C4BA C8          INY                    ;\
+$AA:C4BB C8          INY                    ;} Y += 2
 $AA:C4BC 6B          RTL
 
 $AA:C4BD             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FFEE, 0005, 0000, 0005, 0013, 0010, 0007,
@@ -1876,46 +1882,46 @@ $AA:C4BD             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FF
 }
 
 
-;;; $C4E5: Instruction ;;;
+;;; $C4E5: Instruction - Bomb Torizo walking movement - faceless - index [[Y]] ;;;
 {
 $AA:C4E5 5A          PHY
 $AA:C4E6 64 12       STZ $12    [$7E:0012]
 $AA:C4E8 B9 00 00    LDA $0000,y[$AA:C1AA]  ;\
 $AA:C4EB A8          TAY                    ;|
-$AA:C4EC B9 32 C5    LDA $C532,y[$AA:C548]  ;} Enemy X velocity = [$C4BD + [[Y]]]
+$AA:C4EC B9 32 C5    LDA $C532,y[$AA:C548]  ;} Enemy X velocity = [$C532 + [[Y]]]
 $AA:C4EF 85 14       STA $14    [$7E:0014]  ;|
 $AA:C4F1 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
 $AA:C4F4 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [enemy X velocity]
 $AA:C4F8 7A          PLY
 $AA:C4F9 90 14       BCC $14    [$C50F]     ; If not collided with wall: go to BRANCH_NO_COLLISION
-$AA:C4FB A9 00 00    LDA #$0000
-$AA:C4FE 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$AA:C502 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C505 30 04       BMI $04    [$C50B]
-$AA:C507 A0 88 C1    LDY #$C188
-$AA:C50A 6B          RTL
-
-$AA:C50B A0 0E BD    LDY #$BD0E
-$AA:C50E 6B          RTL
+$AA:C4FB A9 00 00    LDA #$0000             ;\
+$AA:C4FE 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = 0
+$AA:C502 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C505 30 04       BMI $04    [$C50B]     ;} If torizo is facing left:
+$AA:C507 A0 88 C1    LDY #$C188             ; Y = $C188
+$AA:C50A 6B          RTL                    ; Return
+                                            
+$AA:C50B A0 0E BD    LDY #$BD0E             ; Y = $BD0E
+$AA:C50E 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
 $AA:C50F 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$AA:C513 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$AA:C516 38          SEC
-$AA:C517 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$AA:C51A 5D B4 0F    EOR $0FB4,x[$7E:0FB4]
-$AA:C51D 10 03       BPL $03    [$C522]
-$AA:C51F C8          INY
-$AA:C520 C8          INY
-$AA:C521 6B          RTL
-
-$AA:C522 BF 06 78 7E LDA $7E7806,x[$7E:7806]
-$AA:C526 D0 07       BNE $07    [$C52F]
-$AA:C528 A9 48 00    LDA #$0048
-$AA:C52B 9F 06 78 7E STA $7E7806,x[$7E:7806]
-
-$AA:C52F C8          INY
-$AA:C530 C8          INY
+$AA:C513 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$AA:C516 38          SEC                    ;|
+$AA:C517 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;} If torizo is facing away from Samus:
+$AA:C51A 5D B4 0F    EOR $0FB4,x[$7E:0FB4]  ;|
+$AA:C51D 10 03       BPL $03    [$C522]     ;/
+$AA:C51F C8          INY                    ;\
+$AA:C520 C8          INY                    ;} Y += 2
+$AA:C521 6B          RTL                    ; Return
+                                            
+$AA:C522 BF 06 78 7E LDA $7E7806,x[$7E:7806];\
+$AA:C526 D0 07       BNE $07    [$C52F]     ;} If [enemy $7E:7806] = 0:
+$AA:C528 A9 48 00    LDA #$0048             ;\
+$AA:C52B 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = 48h
+                                            
+$AA:C52F C8          INY                    ;\
+$AA:C530 C8          INY                    ;} Y += 2
 $AA:C531 6B          RTL
 
 $AA:C532             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FFEE, 0005, 0000, 0005, 0013, 0010, 0007,
@@ -1923,85 +1929,88 @@ $AA:C532             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FF
 }
 
 
-;;; $C55A: Instruction ;;;
+;;; $C55A: Instruction - go to [[Y]] if rising ;;;
 {
-$AA:C55A BD AA 0F    LDA $0FAA,x[$7E:0FAA]
-$AA:C55D 30 03       BMI $03    [$C562]
-$AA:C55F C8          INY
-$AA:C560 C8          INY
-$AA:C561 6B          RTL
+$AA:C55A BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
+$AA:C55D 30 03       BMI $03    [$C562]     ;} If [enemy Y velocity] >= 0:
+$AA:C55F C8          INY                    ;\
+$AA:C560 C8          INY                    ;} Y += 2
+$AA:C561 6B          RTL                    ; Return
 
-$AA:C562 B9 00 00    LDA $0000,y[$AA:BCE8]
-$AA:C565 A8          TAY
+$AA:C562 B9 00 00    LDA $0000,y[$AA:BCE8]  ;\
+$AA:C565 A8          TAY                    ;} Y = [[Y]]
 $AA:C566 6B          RTL
 }
 
 
-;;; $C567: Instruction ;;;
+;;; $C567: Instruction - call [[Y]] if Samus is less than 38h pixels behind torizo ;;;
 {
 $AA:C567 A9 38 00    LDA #$0038             ;\
 $AA:C56A 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 38h: go to BRANCH_NEAR
 $AA:C56E 90 03       BCC $03    [$C573]     ;/
 
-$AA:C570 C8          INY
-$AA:C571 C8          INY
-$AA:C572 6B          RTL
+; BRANCH_NO_GO_TO
+$AA:C570 C8          INY                    ;\
+$AA:C571 C8          INY                    ;} Y += 2
+$AA:C572 6B          RTL                    ; Return
 
 ; BRANCH_NEAR
-$AA:C573 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$AA:C576 38          SEC
-$AA:C577 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$AA:C57A 5D B4 0F    EOR $0FB4,x[$7E:0FB4]
-$AA:C57D 10 F1       BPL $F1    [$C570]
-$AA:C57F 98          TYA
-$AA:C580 1A          INC A
-$AA:C581 1A          INC A
-$AA:C582 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$AA:C586 B9 00 00    LDA $0000,y[$AA:B980]
-$AA:C589 A8          TAY
+$AA:C573 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$AA:C576 38          SEC                    ;|
+$AA:C577 FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;} If torizo is facing Samus: go to BRANCH_NO_GO_TO
+$AA:C57A 5D B4 0F    EOR $0FB4,x[$7E:0FB4]  ;|
+$AA:C57D 10 F1       BPL $F1    [$C570]     ;/
+$AA:C57F 98          TYA                    ;\
+$AA:C580 1A          INC A                  ;|
+$AA:C581 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 2
+$AA:C582 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$AA:C586 B9 00 00    LDA $0000,y[$AA:B980]  ;\
+$AA:C589 A8          TAY                    ;} Y = [[Y]]
 $AA:C58A 6B          RTL
 }
 
 
-;;; $C58B: Instruction ;;;
+;;; $C58B: Instruction - go to [[Y]] and jump backwards if Samus is less 20h pixels in front of Bomb Torizo ;;;
 {
 $AA:C58B A9 20 00    LDA #$0020             ;\
 $AA:C58E 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is less than 20h:
 $AA:C592 B0 0D       BCS $0D    [$C5A1]     ;/
-$AA:C594 20 A7 D3    JSR $D3A7  [$AA:D3A7]
-$AA:C597 30 08       BMI $08    [$C5A1]
-$AA:C599 20 2D C2    JSR $C22D  [$AA:C22D]
-$AA:C59C B9 00 00    LDA $0000,y[$AA:B9CE]
-$AA:C59F A8          TAY
+$AA:C594 20 A7 D3    JSR $D3A7  [$AA:D3A7]  ;\
+$AA:C597 30 08       BMI $08    [$C5A1]     ;} If torizo is facing Samus:
+$AA:C599 20 2D C2    JSR $C22D  [$AA:C22D]  ; Make torizo jump backwards
+$AA:C59C B9 00 00    LDA $0000,y[$AA:B9CE]  ;\
+$AA:C59F A8          TAY                    ;} Y = [[Y]]
 $AA:C5A0 6B          RTL
 
-$AA:C5A1 C8          INY
-$AA:C5A2 C8          INY
+$AA:C5A1 C8          INY                    ;\
+$AA:C5A2 C8          INY                    ;} Y += 2
 $AA:C5A3 6B          RTL
 }
 
 
-;;; $C5A4: Instruction ;;;
+;;; $C5A4: Instruction - call [[Y]] or [[Y] + 2] for Bomb Torizo attack ;;;
 {
-$AA:C5A4 98          TYA
-$AA:C5A5 1A          INC A
-$AA:C5A6 1A          INC A
-$AA:C5A7 1A          INC A
-$AA:C5A8 1A          INC A
-$AA:C5A9 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$AA:C5AD AD C6 09    LDA $09C6  [$7E:09C6]
-$AA:C5B0 C9 05 00    CMP #$0005
-$AA:C5B3 90 0C       BCC $0C    [$C5C1]
-$AA:C5B5 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$AA:C5B8 4A          LSR A
-$AA:C5B9 6D B6 05    ADC $05B6  [$7E:05B6]
-$AA:C5BC 89 08 00    BIT #$0008
-$AA:C5BF F0 05       BEQ $05    [$C5C6]
+$AA:C5A4 98          TYA                    ;\
+$AA:C5A5 1A          INC A                  ;|
+$AA:C5A6 1A          INC A                  ;|
+$AA:C5A7 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 4
+$AA:C5A8 1A          INC A                  ;|
+$AA:C5A9 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$AA:C5AD AD C6 09    LDA $09C6  [$7E:09C6]  ;\
+$AA:C5B0 C9 05 00    CMP #$0005             ;} If [Samus missiles] < 5: go to BRANCH_SPEW_ORBS
+$AA:C5B3 90 0C       BCC $0C    [$C5C1]     ;/
+$AA:C5B5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$AA:C5B8 4A          LSR A                  ;|
+$AA:C5B9 6D B6 05    ADC $05B6  [$7E:05B6]  ;} If [Samus X position] / 2 + [frame counter] & 8 = 0: go to BRANCH_SONIC_BOOMS
+$AA:C5BC 89 08 00    BIT #$0008             ;|
+$AA:C5BF F0 05       BEQ $05    [$C5C6]     ;/
 
-$AA:C5C1 B9 00 00    LDA $0000,y[$AA:BD06]
-$AA:C5C4 80 03       BRA $03    [$C5C9]
+; BRANCH_SPEW_ORBS
+$AA:C5C1 B9 00 00    LDA $0000,y[$AA:BD06]  ; Y = [[Y]]
+$AA:C5C4 80 03       BRA $03    [$C5C9]     ; Return
 
-$AA:C5C6 B9 02 00    LDA $0002,y
+; BRANCH_SONIC_BOOMS
+$AA:C5C6 B9 02 00    LDA $0002,y            ; Y = [[Y] + 2]
 
 $AA:C5C9 A8          TAY
 $AA:C5CA 6B          RTL
@@ -2525,11 +2534,11 @@ $AA:C97B 6B          RTL
 }
 
 
-;;; $C97C: Enemy shot - torizo -  ;;;
+;;; $C97C: Enemy shot - torizo - normal ;;;
 {
 $AA:C97C AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:C97F F0 03       BEQ $03    [$C984]     ;} If [area index] != Crateria:
-$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to enemy shot - Golden Torizo - 
+$AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to Golden Torizo shot reaction - normal
 
 $AA:C984 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:C987 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
@@ -2562,11 +2571,11 @@ $AA:C9C1 6B          RTL
 }
 
 
-;;; $C9C2: Enemy shot - torizo -  ;;;
+;;; $C9C2: Enemy shot - torizo - busy ;;;
 {
 $AA:C9C2 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:C9C5 F0 03       BEQ $03    [$C9CA]     ;} If [area index] != Crateria:
-$AA:C9C7 4C 58 D6    JMP $D658  [$AA:D658]  ; Go to enemy shot - Golden Torizo - 
+$AA:C9C7 4C 58 D6    JMP $D658  [$AA:D658]  ; Go to Golden Torizo shot reaction - busy
 
 $AA:C9CA 6B          RTL
 }
@@ -2921,7 +2930,7 @@ $AA:CDCD             dx D526,CC57,CCDB, ; ???
 }
 
 
-;;; $CDD7: Instruction - enemy $0FB6 &= EFFFh ;;;
+;;; $CDD7: Instruction - enemy $0FB6 &= ~1000h ;;;
 {
 $AA:CDD7 BD B6 0F    LDA $0FB6,x
 $AA:CDDA 29 FF EF    AND #$EFFF
@@ -3254,7 +3263,7 @@ $AA:D193             dx 806B,D5ED,              ; Enemy $0FB2 = $D5ED
 }
 
 
-;;; $D1E7: Instruction - enemy $0FB6 &= DFFFh ;;;
+;;; $D1E7: Instruction - enemy $0FB6 &= ~2000h ;;;
 {
 $AA:D1E7 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
 $AA:D1EA 29 FF DF    AND #$DFFF
@@ -3388,20 +3397,20 @@ $AA:D2BF             dx B09C,C6BF,  ; Enemy function = $C6BF
 ;;; $D369: Main AI - enemy $EF7F/$EFBF (Gold Torizo) ;;;
 {
 $AA:D369 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:D36C AD 1C 0A    LDA $0A1C  [$7E:0A1C]
-$AA:D36F C9 1B 00    CMP #$001B
-$AA:D372 F0 0E       BEQ $0E    [$D382]
-$AA:D374 C9 1C 00    CMP #$001C
-$AA:D377 F0 09       BEQ $09    [$D382]
-$AA:D379 A9 00 00    LDA #$0000
-$AA:D37C 9F 0E 78 7E STA $7E780E,x[$7E:780E]
+$AA:D36C AD 1C 0A    LDA $0A1C  [$7E:0A1C]  ;\
+$AA:D36F C9 1B 00    CMP #$001B             ;|
+$AA:D372 F0 0E       BEQ $0E    [$D382]     ;} If [Samus pose] != space jump:
+$AA:D374 C9 1C 00    CMP #$001C             ;|
+$AA:D377 F0 09       BEQ $09    [$D382]     ;/
+$AA:D379 A9 00 00    LDA #$0000             ;\
+$AA:D37C 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy space jump counter = 0
 $AA:D380 80 09       BRA $09    [$D38B]
 
-$AA:D382 BF 0E 78 7E LDA $7E780E,x[$7E:780E]
-$AA:D386 1A          INC A
-$AA:D387 9F 0E 78 7E STA $7E780E,x[$7E:780E]
+$AA:D382 BF 0E 78 7E LDA $7E780E,x[$7E:780E];\
+$AA:D386 1A          INC A                  ;} Increment enemy space jump counter
+$AA:D387 9F 0E 78 7E STA $7E780E,x[$7E:780E];/
 
-$AA:D38B FC B0 0F    JSR ($0FB0,x)[$AA:C6BF]
+$AA:D38B FC B0 0F    JSR ($0FB0,x)[$AA:C6BF]; Execute [enemy function]
 $AA:D38E 6B          RTL
 }
 
@@ -3430,8 +3439,12 @@ $AA:D3A6 6B          RTL
 }
 
 
-;;; $D3A7:  ;;;
+;;; $D3A7: Check if torizo is facing Samus ;;;
 {
+;; Returns:
+;;     Negative: Set if torizo is facing away from Samus, clear otherwise
+
+; Facing right: [$0FB4] & 8000h != 0
 $AA:D3A7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
 $AA:D3AA 38          SEC
 $AA:D3AB ED F6 0A    SBC $0AF6  [$7E:0AF6]
@@ -3649,59 +3662,61 @@ $AA:D4FC 6B          RTL
 }
 
 
-;;; $D4FD: Instruction ;;;
+;;; $D4FD: Instruction - go to [[Y]] and jump backwards if Samus is less 20h pixels in front of Golden Torizo ;;;
 {
-$AA:D4FD BF 12 78 7E LDA $7E7812,x[$7E:7812]
-$AA:D501 C9 08 00    CMP #$0008
-$AA:D504 B0 0E       BCS $0E    [$D514]
+$AA:D4FD BF 12 78 7E LDA $7E7812,x[$7E:7812];\
+$AA:D501 C9 08 00    CMP #$0008             ;} If [enemy $7E:7812] < 8:
+$AA:D504 B0 0E       BCS $0E    [$D514]     ;/
 $AA:D506 A9 20 00    LDA #$0020             ;\
 $AA:D509 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is at least 20h: go to BRANCH_NO_GO_TO
 $AA:D50D B0 14       BCS $14    [$D523]     ;/
-$AA:D50F 20 A7 D3    JSR $D3A7  [$AA:D3A7]
-$AA:D512 30 0F       BMI $0F    [$D523]
+$AA:D50F 20 A7 D3    JSR $D3A7  [$AA:D3A7]  ;\
+$AA:D512 30 0F       BMI $0F    [$D523]     ;} If torizo is facing away from Samus: go to BRANCH_NO_GO_TO
 
-$AA:D514 A9 00 00    LDA #$0000
-$AA:D517 9F 12 78 7E STA $7E7812,x[$7E:7812]
-$AA:D51B 20 2D C2    JSR $C22D  [$AA:C22D]
-$AA:D51E B9 00 00    LDA $0000,y[$AA:D32F]
-$AA:D521 A8          TAY
+$AA:D514 A9 00 00    LDA #$0000             ;\
+$AA:D517 9F 12 78 7E STA $7E7812,x[$7E:7812];} Enemy $7E:7812 = 0
+$AA:D51B 20 2D C2    JSR $C22D  [$AA:C22D]  ; Make torizo jump backwards
+$AA:D51E B9 00 00    LDA $0000,y[$AA:D32F]  ;\
+$AA:D521 A8          TAY                    ;} Y = [[Y]]
 $AA:D522 6B          RTL
 
 ; BRANCH_NO_GO_TO
-$AA:D523 C8          INY
-$AA:D524 C8          INY
+$AA:D523 C8          INY                    ;\
+$AA:D524 C8          INY                    ;} Y += 2
 $AA:D525 6B          RTL
 }
 
 
-;;; $D526: Instruction ;;;
+;;; $D526: Instruction - call [[Y]] or [[Y] + 2] for Golden Torizo attack ;;;
 {
-$AA:D526 98          TYA
-$AA:D527 1A          INC A
-$AA:D528 1A          INC A
-$AA:D529 1A          INC A
-$AA:D52A 1A          INC A
-$AA:D52B 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$AA:D52F AD C6 09    LDA $09C6  [$7E:09C6]
-$AA:D532 C9 20 00    CMP #$0020
-$AA:D535 90 0C       BCC $0C    [$D543]
-$AA:D537 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$AA:D53A 4A          LSR A
-$AA:D53B 6D B6 05    ADC $05B6  [$7E:05B6]
-$AA:D53E 29 08 00    AND #$0008
-$AA:D541 F0 05       BEQ $05    [$D548]
-
-$AA:D543 B9 00 00    LDA $0000,y[$AA:CDCF]
-$AA:D546 80 03       BRA $03    [$D54B]
-
-$AA:D548 B9 02 00    LDA $0002,y[$AA:CDD1]
+$AA:D526 98          TYA                    ;\
+$AA:D527 1A          INC A                  ;|
+$AA:D528 1A          INC A                  ;|
+$AA:D529 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 4
+$AA:D52A 1A          INC A                  ;|
+$AA:D52B 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$AA:D52F AD C6 09    LDA $09C6  [$7E:09C6]  ;\
+$AA:D532 C9 20 00    CMP #$0020             ;} If [Samus missiles] < 20h: go to BRANCH_SPEW_ORBS
+$AA:D535 90 0C       BCC $0C    [$D543]     ;/
+$AA:D537 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$AA:D53A 4A          LSR A                  ;|
+$AA:D53B 6D B6 05    ADC $05B6  [$7E:05B6]  ;} If [Samus X position] / 2 + [frame counter] & 8 = 0: go to BRANCH_SONIC_BOOMS
+$AA:D53E 29 08 00    AND #$0008             ;|
+$AA:D541 F0 05       BEQ $05    [$D548]     ;/
+                                            
+; BRANCH_SPEW_ORBS                          
+$AA:D543 B9 00 00    LDA $0000,y[$AA:CDCF]  ; Y = [[Y]]
+$AA:D546 80 03       BRA $03    [$D54B]     ; Return
+                                            
+; BRANCH_SONIC_BOOMS                        
+$AA:D548 B9 02 00    LDA $0002,y[$AA:CDD1]  ; Y = [[Y] + 2]
 
 $AA:D54B A8          TAY
 $AA:D54C 6B          RTL
 }
 
 
-;;; $D54D: Instruction ;;;
+;;; $D54D: Instruction - Golden Torizo walking movement - index [[Y]] ;;;
 {
 $AA:D54D 5A          PHY
 $AA:D54E 64 12       STZ $12    [$7E:0012]
@@ -3713,34 +3728,34 @@ $AA:D559 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
 $AA:D55C 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [enemy X velocity]
 $AA:D560 7A          PLY
 $AA:D561 90 14       BCC $14    [$D577]     ; If not collided with wall: go to BRANCH_NO_COLLISION
-$AA:D563 A9 00 00    LDA #$0000
-$AA:D566 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$AA:D56A BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:D56D 30 04       BMI $04    [$D573]
-$AA:D56F A0 BF D2    LDY #$D2BF
-$AA:D572 6B          RTL
-
-$AA:D573 A0 03 D2    LDY #$D203
-$AA:D576 6B          RTL
+$AA:D563 A9 00 00    LDA #$0000             ;\
+$AA:D566 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = 0
+$AA:D56A BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:D56D 30 04       BMI $04    [$D573]     ;} If torizo is facing left:
+$AA:D56F A0 BF D2    LDY #$D2BF             ; Y = $D2BF
+$AA:D572 6B          RTL                    ; Return
+                                            
+$AA:D573 A0 03 D2    LDY #$D203             ; Y = $D203
+$AA:D576 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
 $AA:D577 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$AA:D57B AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$AA:D57E 38          SEC
-$AA:D57F FD 7A 0F    SBC $0F7A,x[$7E:0F7A]
-$AA:D582 5D B4 0F    EOR $0FB4,x[$7E:0FB4]
-$AA:D585 10 03       BPL $03    [$D58A]
-$AA:D587 C8          INY
-$AA:D588 C8          INY
-$AA:D589 6B          RTL
-
-$AA:D58A BF 06 78 7E LDA $7E7806,x[$7E:7806]
-$AA:D58E D0 07       BNE $07    [$D597]
-$AA:D590 A9 10 00    LDA #$0010
-$AA:D593 9F 06 78 7E STA $7E7806,x[$7E:7806]
-
-$AA:D597 C8          INY
-$AA:D598 C8          INY
+$AA:D57B AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$AA:D57E 38          SEC                    ;|
+$AA:D57F FD 7A 0F    SBC $0F7A,x[$7E:0F7A]  ;} If torizo is facing away from Samus:
+$AA:D582 5D B4 0F    EOR $0FB4,x[$7E:0FB4]  ;|
+$AA:D585 10 03       BPL $03    [$D58A]     ;/
+$AA:D587 C8          INY                    ;\
+$AA:D588 C8          INY                    ;} Y += 2
+$AA:D589 6B          RTL                    ; Return
+                                            
+$AA:D58A BF 06 78 7E LDA $7E7806,x[$7E:7806];\
+$AA:D58E D0 07       BNE $07    [$D597]     ;} If [enemy $7E:7806] = 0:
+$AA:D590 A9 10 00    LDA #$0010             ;\
+$AA:D593 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = 10h
+                                            
+$AA:D597 C8          INY                    ;\
+$AA:D598 C8          INY                    ;} Y += 2
 $AA:D599 6B          RTL
 
 $AA:D59A             dw FFFB, 0000, FFFB, FFED, FFF0, FFF9, 0000, FFF9, FFEF, FFEE, 0005, 0000, 0005, 0013, 0010, 0007,
@@ -3842,126 +3857,128 @@ $AA:D657 60          RTS
 }
 
 
-;;; $D658: Enemy shot - Golden Torizo -  ;;;
+;;; $D658: Golden Torizo shot reaction - busy ;;;
 {
 $AA:D658 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:D65B BD 9C 0F    LDA $0F9C,x
-$AA:D65E D0 06       BNE $06    [$D666]
-$AA:D660 BF 08 78 7E LDA $7E7808,x
-$AA:D664 F0 40       BEQ $40    [$D6A6]
+$AA:D65B BD 9C 0F    LDA $0F9C,x            ;\
+$AA:D65E D0 06       BNE $06    [$D666]     ;} If [enemy flash timer] = 0:
+$AA:D660 BF 08 78 7E LDA $7E7808,x          ;\
+$AA:D664 F0 40       BEQ $40    [$D6A6]     ;} If [enemy $7E:7808] = 0: go to Golden Torizo shot reaction - damaged
 
 $AA:D666 6B          RTL
 }
 
 
-;;; $D667: Enemy shot - Golden Torizo -  ;;;
+;;; $D667: Golden Torizo shot reaction - normal ;;;
 {
 $AA:D667 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:D66A BD 9C 0F    LDA $0F9C,x[$7E:0F9C]
-$AA:D66D D0 0C       BNE $0C    [$D67B]
-$AA:D66F BF 08 78 7E LDA $7E7808,x[$7E:7808]
-$AA:D673 F0 03       BEQ $03    [$D678]
-$AA:D675 4C A6 D6    JMP $D6A6  [$AA:D6A6]
+$AA:D66A BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
+$AA:D66D D0 0C       BNE $0C    [$D67B]     ;} If [enemy flash timer] != 0: return
+$AA:D66F BF 08 78 7E LDA $7E7808,x[$7E:7808];\
+$AA:D673 F0 03       BEQ $03    [$D678]     ;} If [enemy $7E:7808] = 0: go to BRANCH
+$AA:D675 4C A6 D6    JMP $D6A6  [$AA:D6A6]  ; Go to Golden Torizo shot reaction - damaged
 
 $AA:D678 4C 7C D6    JMP $D67C  [$AA:D67C]
 
 $AA:D67B 6B          RTL
 
-$AA:D67C BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$AA:D67F 89 00 10    BIT #$1000
-$AA:D682 D0 19       BNE $19    [$D69D]
-$AA:D684 AD A6 18    LDA $18A6  [$7E:18A6]
-$AA:D687 0A          ASL A
-$AA:D688 A8          TAY
-$AA:D689 B9 18 0C    LDA $0C18,y[$7E:0C18]
-$AA:D68C 29 00 0F    AND #$0F00
-$AA:D68F 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$AA:D693 C9 00 01    CMP #$0100
-$AA:D696 F0 39       BEQ $39    [$D6D1]
-$AA:D698 C9 00 02    CMP #$0200
-$AA:D69B F0 5A       BEQ $5A    [$D6F7]
+; BRANCH
+$AA:D67C BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$AA:D67F 89 00 10    BIT #$1000             ;} If [enemy $0FB6] & 1000h = 0:
+$AA:D682 D0 19       BNE $19    [$D69D]     ;/
+$AA:D684 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$AA:D687 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$AA:D688 A8          TAY                    ;/
+$AA:D689 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$AA:D68C 29 00 0F    AND #$0F00             ;} Enemy $7E:780A = (projectile type)
+$AA:D68F 9F 0A 78 7E STA $7E780A,x[$7E:780A];/
+$AA:D693 C9 00 01    CMP #$0100             ;\
+$AA:D696 F0 39       BEQ $39    [$D6D1]     ;} If (projectile type) = missile: go to Golden Torizo shot reaction - normal - missile
+$AA:D698 C9 00 02    CMP #$0200             ;\
+$AA:D69B F0 5A       BEQ $5A    [$D6F7]     ;} If (projectile type) = super missile: go to Golden Torizo shot reaction - normal - super missile
 
-$AA:D69D BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$AA:D6A0 09 00 20    ORA #$2000
-$AA:D6A3 9D B6 0F    STA $0FB6,x[$7E:0FB6]
+$AA:D69D BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$AA:D6A0 09 00 20    ORA #$2000             ;} Enemy $0FB6 |= 2000h 
+$AA:D6A3 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
 }
 
 
-;;; $D6A6:  ;;;
+;;; $D6A6: Golden Torizo shot reaction - damaged ;;;
 {
 $AA:D6A6 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $AA:D6AA AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:D6AD BD 8C 0F    LDA $0F8C,x[$7E:0F8C]
-$AA:D6B0 D0 1E       BNE $1E    [$D6D0]
-$AA:D6B2 A9 C8 B1    LDA #$B1C8
-$AA:D6B5 9D 92 0F    STA $0F92,x[$7E:0F92]
+$AA:D6AD BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
+$AA:D6B0 D0 1E       BNE $1E    [$D6D0]     ;} If [enemy health] != 0: return
+$AA:D6B2 A9 C8 B1    LDA #$B1C8             ;\
+$AA:D6B5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list = $B1C8
 $AA:D6B8 A9 01 00    LDA #$0001             ;\
 $AA:D6BB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$AA:D6BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$AA:D6C1 09 00 C0    ORA #$C000
-$AA:D6C4 9D B6 0F    STA $0FB6,x[$7E:0FB6]
-$AA:D6C7 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$AA:D6CA 09 00 04    ORA #$0400
-$AA:D6CD 9D 86 0F    STA $0F86,x[$7E:0F86]
+$AA:D6BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$AA:D6C1 09 00 C0    ORA #$C000             ;} Enemy $0FB6 |= C000h
+$AA:D6C4 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
+$AA:D6C7 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$AA:D6CA 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$AA:D6CD 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 
 $AA:D6D0 6B          RTL
 }
 
 
-;;; $D6D1:  ;;;
+;;; $D6D1: Golden Torizo shot reaction - normal - missile ;;;
 {
-$AA:D6D1 B9 04 0C    LDA $0C04,y
-$AA:D6D4 29 EF FF    AND #$FFEF
-$AA:D6D7 99 04 0C    STA $0C04,y
+$AA:D6D1 B9 04 0C    LDA $0C04,y            ;\
+$AA:D6D4 29 EF FF    AND #$FFEF             ;} Unflag projectile for deletion(!)
+$AA:D6D7 99 04 0C    STA $0C04,y            ;/
 $AA:D6DA A9 AB C6    LDA #$C6AB             ;\
 $AA:D6DD 9D B0 0F    STA $0FB0,x            ;} Enemy function = RTS
 $AA:D6E0 A9 01 00    LDA #$0001             ;\
 $AA:D6E3 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$AA:D6E6 3C B4 0F    BIT $0FB4,x
-$AA:D6E9 30 05       BMI $05    [$D6F0]
-$AA:D6EB A9 F1 D1    LDA #$D1F1
+$AA:D6E6 3C B4 0F    BIT $0FB4,x            ;\
+$AA:D6E9 30 05       BMI $05    [$D6F0]     ;} If [enemy $0FB4] & 8000h = 0:
+$AA:D6EB A9 F1 D1    LDA #$D1F1             ; Enemy instruction list pointer = $D1F1
 $AA:D6EE 80 03       BRA $03    [$D6F3]
-
-$AA:D6F0 A9 AD D2    LDA #$D2AD
+                                            ; Else ([enemy $0FB4] & 8000h != 0):
+$AA:D6F0 A9 AD D2    LDA #$D2AD             ; Enemy instruction list pointer = $D2AD
 
 $AA:D6F3 9D 92 0F    STA $0F92,x
 $AA:D6F6 6B          RTL
 }
 
 
-;;; $D6F7:  ;;;
+;;; $D6F7: Golden Torizo shot reaction - normal - super missile ;;;
 {
-$AA:D6F7 20 A7 D3    JSR $D3A7  [$AA:D3A7]
-$AA:D6FA 10 03       BPL $03    [$D6FF]
-$AA:D6FC 4C A6 D6    JMP $D6A6  [$AA:D6A6]
+$AA:D6F7 20 A7 D3    JSR $D3A7  [$AA:D3A7]  ;\
+$AA:D6FA 10 03       BPL $03    [$D6FF]     ;} If torizo is facing away from Samus:
+$AA:D6FC 4C A6 D6    JMP $D6A6  [$AA:D6A6]  ; Go to Golden Torizo shot reaction - damaged
 
-$AA:D6FF BD B6 0F    LDA $0FB6,x
-$AA:D702 09 00 10    ORA #$1000
-$AA:D705 9D B6 0F    STA $0FB6,x
+$AA:D6FF BD B6 0F    LDA $0FB6,x            ;\
+$AA:D702 09 00 10    ORA #$1000             ;} Enemy $0FB6 |= 1000h
+$AA:D705 9D B6 0F    STA $0FB6,x            ;/
 $AA:D708 A9 AB C6    LDA #$C6AB             ;\
 $AA:D70B 9D B0 0F    STA $0FB0,x            ;} Enemy function = RTS
-$AA:D70E B9 04 0C    LDA $0C04,y
-$AA:D711 09 10 00    ORA #$0010
-$AA:D714 99 04 0C    STA $0C04,y
+$AA:D70E B9 04 0C    LDA $0C04,y            ;\
+$AA:D711 09 10 00    ORA #$0010             ;} Flag projectile for deletion
+$AA:D714 99 04 0C    STA $0C04,y            ;/
 $AA:D717 A9 01 00    LDA #$0001             ;\
 $AA:D71A 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$AA:D71D BD B4 0F    LDA $0FB4,x
-$AA:D720 89 00 20    BIT #$2000
-$AA:D723 D0 0F       BNE $0F    [$D734]
-$AA:D725 3C B4 0F    BIT $0FB4,x
-$AA:D728 30 05       BMI $05    [$D72F]
-$AA:D72A A9 E1 CD    LDA #$CDE1
-$AA:D72D 80 12       BRA $12    [$D741]
+$AA:D71D BD B4 0F    LDA $0FB4,x            ;\
+$AA:D720 89 00 20    BIT #$2000             ;} If [enemy $0FB4] & 2000h != 0: go to BRANCH_D734
+$AA:D723 D0 0F       BNE $0F    [$D734]     ;/
+$AA:D725 3C B4 0F    BIT $0FB4,x            ;\
+$AA:D728 30 05       BMI $05    [$D72F]     ;} If facing left:
+$AA:D72A A9 E1 CD    LDA #$CDE1             ; Enemy instruction list pointer = $CDE1
+$AA:D72D 80 12       BRA $12    [$D741]     ; Return
 
-$AA:D72F A9 A5 CE    LDA #$CEA5
-$AA:D732 80 0D       BRA $0D    [$D741]
+$AA:D72F A9 A5 CE    LDA #$CEA5             ; Enemy instruction list pointer = $CEA5
+$AA:D732 80 0D       BRA $0D    [$D741]     ; Return
 
-$AA:D734 3C B4 0F    BIT $0FB4,x
-$AA:D737 30 05       BMI $05    [$D73E]
-$AA:D739 A9 43 CE    LDA #$CE43
-$AA:D73C 80 03       BRA $03    [$D741]
+; BRANCH_D734
+$AA:D734 3C B4 0F    BIT $0FB4,x            ;\
+$AA:D737 30 05       BMI $05    [$D73E]     ;} If facing left:
+$AA:D739 A9 43 CE    LDA #$CE43             ; Enemy instruction list pointer = $CE43
+$AA:D73C 80 03       BRA $03    [$D741]     ; Return
 
-$AA:D73E A9 FF CE    LDA #$CEFF
+$AA:D73E A9 FF CE    LDA #$CEFF             ; Enemy instruction list pointer = $CEFF
 
 $AA:D741 9D 92 0F    STA $0F92,x
 $AA:D744 6B          RTL

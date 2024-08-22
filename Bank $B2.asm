@@ -112,7 +112,7 @@ $B2:87D1 F0 03       BEQ $03    [$87D6]     ;/
 $B2:87D3 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
 $B2:87D6 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$B2:87D9 0A          ASL A                  ;} Y = (collided projectile index)
+$B2:87D9 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $B2:87DA A8          TAY                    ;/
 $B2:87DB B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $B2:87DE 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile type]
@@ -175,7 +175,7 @@ $B2:8849 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
 $B2:884C AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:884F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$B2:8852 0A          ASL A                  ;} Y = (collided projectile index)
+$B2:8852 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $B2:8853 A8          TAY                    ;/
 $B2:8854 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $B2:8857 85 12       STA $12    [$7E:0012]  ;} $12 = [projectile type]

@@ -4342,12 +4342,12 @@ $A9:B503 5C BC A8 A0 JML $A0A8BC[$A0:A8BC]  ; Go to creates a dud shot
 $A9:B507 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
 $A9:B50B D0 41       BNE $41    [$B54E]     ;} If [Mother Brain's form] != first phase: go to BRANCH_NOT_FIRST_PHASE
 $A9:B50D AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A9:B510 0A          ASL A                  ;|
-$A9:B511 A8          TAY                    ;|
-$A9:B512 B9 19 0C    LDA $0C19,y[$7E:0C1D]  ;|
-$A9:B515 29 07 00    AND #$0007             ;} If [$B546 + (current projectile type)] = 0: return
+$A9:B510 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A9:B511 A8          TAY                    ;/
+$A9:B512 B9 19 0C    LDA $0C19,y[$7E:0C1D]  ;\
+$A9:B515 29 07 00    AND #$0007             ;|
 $A9:B518 A8          TAY                    ;|
-$A9:B519 B9 46 B5    LDA $B546,y[$A9:B547]  ;|
+$A9:B519 B9 46 B5    LDA $B546,y[$A9:B547]  ;} If [$B546 + (projectile type)] = 0: return
 $A9:B51C 29 FF 00    AND #$00FF             ;|
 $A9:B51F F0 24       BEQ $24    [$B545]     ;/
 $A9:B521 A2 4E 00    LDX #$004E             ;\
@@ -4415,7 +4415,7 @@ $A9:B58D 60          RTS
 
 ;;; $B58E: Determine Mother Brain shot reaction type ;;;
 {
-; Return [$B5A1 + (current projectile type)]
+; Return [$B5A1 + (collided projectile type)]
 $A9:B58E AD A6 18    LDA $18A6  [$7E:18A6]
 $A9:B591 0A          ASL A
 $A9:B592 A8          TAY
@@ -13624,12 +13624,12 @@ $A9:F86C 69 80 00    ADC #$0080             ;|
 $A9:F86F 29 FF 00    AND #$00FF             ;|
 $A9:F872 85 12       STA $12    [$7E:0012]  ;/
 $A9:F874 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
-$A9:F877 0A          ASL A                  ;|
-$A9:F878 AA          TAX                    ;|
-$A9:F879 BD 2C 0C    LDA $0C2C,x            ;|
+$A9:F877 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A9:F878 AA          TAX                    ;/
+$A9:F879 BD 2C 0C    LDA $0C2C,x            ;\
 $A9:F87C 0A          ASL A                  ;|
-$A9:F87D 0A          ASL A                  ;} A = min(F0h, [projectile damage] * 8)
-$A9:F87E 0A          ASL A                  ;|
+$A9:F87D 0A          ASL A                  ;|
+$A9:F87E 0A          ASL A                  ;} A = min(F0h, [projectile damage] * 8)
 $A9:F87F C9 F0 00    CMP #$00F0             ;|
 $A9:F882 90 03       BCC $03    [$F887]     ;|
 $A9:F884 A9 F0 00    LDA #$00F0             ;/

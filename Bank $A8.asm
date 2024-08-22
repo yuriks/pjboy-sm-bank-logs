@@ -7983,9 +7983,9 @@ $A8:DB35 9D 94 0F    STA $0F94,x[$7E:1014]
 $A8:DB38 9E 90 0F    STZ $0F90,x[$7E:1010]
 $A8:DB3B A9 55 D8    LDA #$D855
 $A8:DB3E 9D 92 0F    STA $0F92,x[$7E:1012]
-$A8:DB41 AD A6 18    LDA $18A6  [$7E:18A6]
-$A8:DB44 0A          ASL A
-$A8:DB45 A8          TAY
+$A8:DB41 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A8:DB44 0A          ASL A                  ;} Y = [collided projectile index] * 2
+$A8:DB45 A8          TAY                    ;/
 $A8:DB46 B9 04 0C    LDA $0C04,y[$7E:0C04]
 $A8:DB49 29 0F 00    AND #$000F
 $A8:DB4C 0A          ASL A
@@ -9033,9 +9033,9 @@ $A8:E70D 6B          RTL
 ;;; $E70E: Enemy shot - enemy $EA3F (Wrecked Ship spark) ;;;
 {
 $A8:E70E DA          PHX
-$A8:E70F AD A6 18    LDA $18A6  [$7E:18A6]
-$A8:E712 0A          ASL A
-$A8:E713 AA          TAX
+$A8:E70F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A8:E712 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A8:E713 AA          TAX                    ;/
 $A8:E714 BD 04 0C    LDA $0C04,x[$7E:0C04]
 $A8:E717 29 EF FF    AND #$FFEF
 $A8:E71A 9D 04 0C    STA $0C04,x[$7E:0C04]
@@ -9235,9 +9235,9 @@ $A8:E91C 6B          RTL
 ;;; $E91D: Enemy shot - enemy $EA7F (blue Brinstar face block) ;;;
 {
 ; Undeletes the collided projectile!
-$A8:E91D AD A6 18    LDA $18A6  [$7E:18A6]
-$A8:E920 0A          ASL A
-$A8:E921 AA          TAX
+$A8:E91D AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A8:E920 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A8:E921 AA          TAX                    ;/
 $A8:E922 BD 04 0C    LDA $0C04,x[$7E:0C04]
 $A8:E925 29 EF FF    AND #$FFEF
 $A8:E928 9D 04 0C    STA $0C04,x[$7E:0C04]

@@ -9534,9 +9534,9 @@ $A6:E03C 18          CLC
 $A6:E03D 69 80 00    ADC #$0080
 $A6:E040 29 FF 00    AND #$00FF
 $A6:E043 85 12       STA $12    [$7E:0012]
-$A6:E045 AD A6 18    LDA $18A6  [$7E:18A6]
-$A6:E048 0A          ASL A
-$A6:E049 AA          TAX
+$A6:E045 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
+$A6:E048 0A          ASL A                  ;} X = [collided projectile index] * 2
+$A6:E049 AA          TAX                    ;/
 $A6:E04A BD 2C 0C    LDA $0C2C,x
 $A6:E04D 0A          ASL A
 $A6:E04E 0A          ASL A
