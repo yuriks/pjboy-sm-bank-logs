@@ -7389,6 +7389,23 @@ $90:B1F2 60          RTS
 ;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
+
+; There's a repeating issue in all of the subroutines jumped to from here with how "distance Samus moved" is loaded
+; These are the variables:
+;     $0DAA.$0DAC: Distance Samus moved left
+;     $0DAE.$0DB0: Distance Samus moved right
+;     $0DB2.$0DB4: Distance Samus moved up
+;     $0DB6.$0DB8: Distance Samus moved down
+
+; Notice that the most significant word is stored before the least significant
+; Generally speaking, it's more useful to extend little endian ordering and store the least significant word first
+; If distance Samus moved left was $0DAC.$0DAA, then loading $0DAB would give (distance Samus moved left) * 100h,
+; disregarding the high byte of $0DAC and low byte of $0DAA, which is a common trick used a lot in SM
+
+; It looks like they tried to apply this trick without realising the ordering of the words isn't suitable
+; E.g. $0DA9 is loaded into A for (distance Samus moved left) * 100h, which does load the low byte of $0DAA into the high byte of A,
+; but also loads garbage (namely the high byte of $0DA8) into the low byte of A
+
 $90:B1F3 9E 8C 0B    STZ $0B8C,x[$7E:0B8C]  ; Projectile X subposition = 0
 $90:B1F6 9E A0 0B    STZ $0BA0,x[$7E:0BA0]  ; Projectile Y subposition = 0
 $90:B1F9 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\
@@ -7408,7 +7425,7 @@ $90:B204             dw B218, B23D, B268, B277, B28C, B28C, B29B, B2B4, B2C7, B2
 ;;     $12: Projectile index
 ;;     $16: Base speed
 
-; Note: [distance Samus moved up] is non-positive
+; Note: [distance Samus moved up] is negative
 $90:B218 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
 $90:B21A AD B1 0D    LDA $0DB1  [$7E:0DB1]  ;\
 $90:B21D 89 00 FF    BIT #$FF00             ;|
@@ -7529,7 +7546,7 @@ $90:B2A3 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
 $90:B2A6 A5 16       LDA $16    [$7E:0016]  ;\
 $90:B2A8 49 FF FF    EOR #$FFFF             ;|
 $90:B2AB 1A          INC A                  ;|
-$90:B2AC 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16]
+$90:B2AC 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16] + [camera Y subspeed] / 100h
 $90:B2AD 6D A9 0D    ADC $0DA9  [$7E:0DA9]  ;|
 $90:B2B0 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B2B3 60          RTS
@@ -7542,12 +7559,15 @@ $90:B2B3 60          RTS
 ;;     X: Projectile index
 ;;     $12: Projectile index
 ;;     $16: Base speed
+
+; Note: [distance Samus moved left] is negative
+; The low byte of $0DA9 is the high byte of camera Y subspeed
 $90:B2B4 A6 12       LDX $12    [$7E:0012]  ; X = [$12] (projectile index)
 $90:B2B6 9E F0 0B    STZ $0BF0,x[$7E:0BF0]  ; Projectile Y velocity = 0
 $90:B2B9 A5 16       LDA $16    [$7E:0016]  ;\
 $90:B2BB 49 FF FF    EOR #$FFFF             ;|
 $90:B2BE 1A          INC A                  ;|
-$90:B2BF 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16]
+$90:B2BF 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16] + [camera Y subspeed] / 100h
 $90:B2C0 6D A9 0D    ADC $0DA9  [$7E:0DA9]  ;|
 $90:B2C3 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B2C6 60          RTS
@@ -7581,7 +7601,7 @@ $90:B2E5 9D F0 0B    STA $0BF0,x[$7E:0BF0]  ;/
 $90:B2E8 A5 16       LDA $16    [$7E:0016]  ;\
 $90:B2EA 49 FF FF    EOR #$FFFF             ;|
 $90:B2ED 1A          INC A                  ;|
-$90:B2EE 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16]
+$90:B2EE 18          CLC                    ;} Projectile X velocity = [distance Samus moved left] * 100h - [$16] + [camera Y subspeed] / 100h
 $90:B2EF 6D A9 0D    ADC $0DA9  [$7E:0DA9]  ;|
 $90:B2F2 9D DC 0B    STA $0BDC,x[$7E:0BDC]  ;/
 $90:B2F5 60          RTS

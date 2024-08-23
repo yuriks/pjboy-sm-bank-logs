@@ -13440,7 +13440,7 @@ $91:F62F C9 14 00    CMP #$0014             ;\
 $91:F632 D0 4B       BNE $4B    [$F67F]     ;} If [Samus previous movement type] != wall jumping: go to BRANCH_NOT_TURNING_AROUND
 
 $91:F634 A9 01 00    LDA #$0001             ;\
-$91:F637 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 1 (skip arm cannon moving up animation)
+$91:F637 8D 9A 0A    STA $0A9A  [$7E:0A9A]  ;} New pose Samus animation frame = 1 (skip jumping from floor animation)
 $91:F63A AD 22 0A    LDA $0A22  [$7E:0A22]  ;\
 $91:F63D 29 0F 00    AND #$000F             ;|
 $91:F640 C9 08 00    CMP #$0008             ;|
