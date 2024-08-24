@@ -727,7 +727,9 @@ $AA:B961 6B          RTL
 }
 
 
-;;; $B962: Instruction list -  ;;;
+;;; $B962..BD8F: Instruction lists - facing left ;;;
+{
+;;; $B962: Instruction list - turning left ;;;
 {
 $AA:B962             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
@@ -786,7 +788,7 @@ $AA:B9B6             dx C3A0,       ; ???
 }
 
 
-;;; $BA04: Instruction list - callable -  ;;;
+;;; $BA04: Instruction list - callable - spewing chozo orbs - facing left - right foot forward ;;;
 {
 $AA:BA04             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0010,A64E,
@@ -809,7 +811,7 @@ $AA:BA26             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
 }
 
 
-;;; $BA46: Instruction list - callable -  ;;;
+;;; $BA46: Instruction list - callable - spewing chozo orbs - facing left - left foot forward ;;;
 {
 $AA:BA46             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0010,A6EA,
@@ -832,7 +834,7 @@ $AA:BA68             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
 }
 
 
-;;; $BA88: Instruction list - callable -  ;;;
+;;; $BA88: Instruction list - callable - sonic booms - facing left - right foot forward ;;;
 {
 $AA:BA88             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         8123,0004   ; Timer = 4
@@ -864,7 +866,7 @@ $AA:BA90             dx 0006,A64E,
 }
 
 
-;;; $BAF2: Instruction list - callable -  ;;;
+;;; $BAF2: Instruction list - callable - sonic booms - facing left - left foot forward ;;;
 {
 $AA:BAF2             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         8123,0004   ; Timer = 4
@@ -972,7 +974,7 @@ $AA:BBDE             dx 806B,C828,  ; Enemy $0FB2 = $C828
 }
 
 
-;;; $BC60: Instruction list -  ;;;
+;;; $BC60: Instruction list - jumping forwards - facing left ;;;
 {
 $AA:BC60             dx 806B,C82C,      ; Enemy $0FB2 = $C82C
                         C2ED,BC78,      ; Enemy link instruction = $BC78
@@ -986,8 +988,8 @@ $AA:BC80             dx 0005,B014,
                         80ED,BC80       ; Go to $BC80
 $AA:BC88             dx C618,           ; Play torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
-                        C2D9,BD52,D259, ; Go to $BD52 if face blown up, else go to $D259 if Golden Torizo
-                        80ED,B9B6       ; Go to $B9B6
+                        C2D9,BD52,D259, ; Go to $BD52 (faceless - walking left - left leg moving) if face blown up, else go to $D259 if Golden Torizo
+                        80ED,B9B6       ; Go to $B9B6 (walking left - left leg moving)
 }
 
 
@@ -1005,9 +1007,9 @@ $AA:BCB6             dx 0005,B014,
                         80ED,BCB6       ; Go to $BCB6
 $AA:BCBE             dx C618,           ; Play torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
-                        C2D9,BD18,CDAF, ; Go to $BD18 if face blown up, else go to $CDAF if Golden Torizo
-                        C5A4,BA46,BAF2, ; Call $BA46 or $BAF2 for Bomb Torizo attack
-                        80ED,B96C       ; Go to $B96C
+                        C2D9,BD18,CDAF, ; Go to $BD18 (faceless - walking left - right leg moving) if face blown up, else go to $CDAF if Golden Torizo
+                        C5A4,BA46,BAF2, ; Call $BA46 (spewing orbs) or $BAF2 (sonic booms) for Bomb Torizo attack
+                        80ED,B96C       ; Go to $B96C (walking left - right leg moving)
 }
 
 
@@ -1025,13 +1027,13 @@ $AA:BCF2             dx 0005,B014,
                         80ED,BCF2       ; Go to $BCF2
 $AA:BCFA             dx C618,           ; Play torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
-                        C2D9,BD52,CDB9, ; Go to $BD52 if face blown up, else go to $CDB9 if Golden Torizo
-                        C5A4,BA04,BA88, ; Call $BA04 or $BA88 for Bomb Torizo attack
-                        80ED,B9B6       ; Go to $B9B6
+                        C2D9,BD52,CDB9, ; Go to $BD52 (faceless - walking left - left leg moving) if face blown up, else go to $CDB9 if Golden Torizo
+                        C5A4,BA04,BA88, ; Call $BA04 (spewing orbs) or $BA88 (sonic booms) for Bomb Torizo attack
+                        80ED,B9B6       ; Go to $B9B6 (walking left - left leg moving)
 }
 
 
-;;; $BD0E: Instruction list -  ;;;
+;;; $BD0E: Instruction list - faceless - turning left ;;;
 {
 $AA:BD0E             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
@@ -1039,7 +1041,7 @@ $AA:BD0E             dx B09C,C6BF,  ; Enemy function = $C6BF
 }
 
 
-;;; $BD18: Instruction list -  ;;;
+;;; $BD18: Instruction list - faceless - walking left - right leg moving ;;;
 {
 $AA:BD18             dx C377,       ; ???
                         B09C,C6FF,  ; Enemy function = $C6FF
@@ -1047,7 +1049,7 @@ $AA:BD18             dx C377,       ; ???
                         C35B,       ; Spawn low-health initial drool if health is low
                         C618,       ; Play torizo footsteps sound effect
                         0001,A4FA,
-                        C567,BBDE,  ; Call $BBDE if Samus is less than 38h pixels behind torizo
+                        C567,BBDE,  ; Call $BBDE (explosive swipe) if Samus is less than 38h pixels behind torizo
                         C4E5,0002,  ; Bomb Torizo walking movement - faceless - index 2
                         0005,A51C,
                         C4E5,0004,  ; Bomb Torizo walking movement - faceless - index 4
@@ -1056,14 +1058,19 @@ $AA:BD18             dx C377,       ; ???
                         0005,A560,
                         C4E5,0008,  ; Bomb Torizo walking movement - faceless - index 8
                         0005,A582,
-                        C4E5,000A,  ; Bomb Torizo walking movement - faceless - index Ah
-                        C3A0,       ; ???
+                        C4E5,000A   ; Bomb Torizo walking movement - faceless - index Ah
+}
+
+
+;;; $BD52: Instruction list - faceless - walking left - left leg moving ;;;
+{
+$AA:BD52             dx C3A0,       ; ???
                         B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; Spawn low-health initial drool if health is low
                         C618,       ; Play torizo footsteps sound effect
                         0001,A5A4,
-                        C567,BB5C,  ; Call $BB5C if Samus is less than 38h pixels behind torizo
+                        C567,BB5C,  ; Call $BB5C (explosive swipe) if Samus is less than 38h pixels behind torizo
                         C4E5,000C,  ; Bomb Torizo walking movement - faceless - index Ch
                         0005,A5C6,
                         C4E5,000E,  ; Bomb Torizo walking movement - faceless - index Eh
@@ -1073,11 +1080,14 @@ $AA:BD18             dx C377,       ; ???
                         C4E5,0012,  ; Bomb Torizo walking movement - faceless - index 12h
                         0005,A62C,
                         C4E5,0000,  ; Bomb Torizo walking movement - faceless - index 0
-                        80ED,BD18   ; Go to $BD18
+                        80ED,BD18   ; Go to $BD18 (right leg moving)
+}
 }
 
 
-;;; $BD90: Instruction list -  ;;;
+;;; $BD90..C209: Instruction lists - facing right ;;;
+{
+;;; $BD90: Unused. Instruction list - stand up - facing right ;;;
 {
 $AA:BD90             dx C3B6,       ; ???
                         0001,87D0,
@@ -1097,11 +1107,11 @@ $AA:BD90             dx C3B6,       ; ???
                         0008,AFD6,
                         C3CC,001A,  ; Standing up movement - index 1Ah
                         0008,AFE8,
-                        80ED,BE30   ; Go to $BE30
+                        80ED,BE30   ; Go to $BE30 (walking right - right leg moving)
 }
 
 
-;;; $BDD8: Instruction list -  ;;;
+;;; $BDD8: Instruction list - turning right ;;;
 {
 $AA:BDD8             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
@@ -1161,7 +1171,7 @@ $AA:BE30             dx C3B6,       ; ???
 }
 
 
-;;; $BE7E: Instruction list - callable -  ;;;
+;;; $BE7E: Instruction list - callable - spewing chozo orbs - facing right - left foot forward ;;;
 {
 $AA:BE7E             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0010,ABEC,
@@ -1184,7 +1194,7 @@ $AA:BEA0             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
 }
 
 
-;;; $BEC0: Instruction list - callable -  ;;;
+;;; $BEC0: Instruction list - callable - spewing chozo orbs - facing right - right foot forward ;;;
 {
 $AA:BEC0             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         0010,AC88,
@@ -1207,7 +1217,7 @@ $AA:BEE2             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
 }
 
 
-;;; $BF02: Instruction list - callable -  ;;;
+;;; $BF02: Instruction list - callable - sonic booms - facing right - left foot forward ;;;
 {
 $AA:BF02             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         8123,0004   ; Timer = 4
@@ -1239,7 +1249,7 @@ $AA:BF0A             dx 0006,ABEC,
 }
 
 
-;;; $BF6C: Instruction list - callable -  ;;;
+;;; $BF6C: Instruction list - callable - sonic booms - facing right - right foot forward ;;;
 {
 $AA:BF6C             dx 806B,C828,  ; Enemy $0FB2 = $C828
                         8123,0004   ; Timer = 4
@@ -1347,7 +1357,7 @@ $AA:C058             dx 806B,C828,  ; Enemy $0FB2 = $C828
 }
 
 
-;;; $C0DA: Instruction list -  ;;;
+;;; $C0DA: Instruction list - jumping forwards - facing right ;;;
 {
 $AA:C0DA             dx 806B,C82C,      ; Enemy $0FB2 = $C82C
                         C2ED,C0F2,      ; Enemy link instruction = $C0F2
@@ -1361,8 +1371,8 @@ $AA:C0FA             dx 0005,B062,
                         80ED,C0FA       ; Go to $C0FA
 $AA:C102             dx C618,           ; Play torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
-                        C2D9,C1CC,D315, ; Go to $C1CC if face blown up, else go to $D315 if Golden Torizo
-                        80ED,BE30       ; Go to $BE30
+                        C2D9,C1CC,D315, ; Go to $C1CC (faceless - walking right - right leg moving) if face blown up, else go to $D315 if Golden Torizo
+                        80ED,BE30       ; Go to $BE30 (walking right - right leg moving)
 }
 
 
@@ -1380,9 +1390,9 @@ $AA:C130             dx 0005,B062,
                         80ED,C130       ; Go to $C130
 $AA:C138             dx C618,           ; Play torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
-                        C2D9,C192,CDC3, ; Go to $C192 if face blown up, else go to $CDC3 if Golden Torizo
-                        C5A4,BEC0,BF6C, ; Call $BEC0 or $BF6C for Bomb Torizo attack
-                        80ED,BDE2       ; Go to $BDE2
+                        C2D9,C192,CDC3, ; Go to $C192 (faceless - walking right - left leg moving) if face blown up, else go to $CDC3 if Golden Torizo
+                        C5A4,BEC0,BF6C, ; Call $BEC0 (spewing orbs) or $BF6C (sonic booms) for Bomb Torizo attack
+                        80ED,BDE2       ; Go to $BDE2 (walking right - left leg moving)
 }
 
 
@@ -1400,24 +1410,29 @@ $AA:C16C             dx 0005,B062,
                         80ED,C16C       ; Go to $C16C
 $AA:C174             dx C618,           ; Play torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
-                        C2D9,C1CC,CDCD, ; Go to $C1CC if face blown up, else go to $CDCD if Golden Torizo
-                        C5A4,BE7E,BF02, ; Call $BE7E or $BF02 for Bomb Torizo attack
-                        80ED,BE30       ; Go to $BE30
+                        C2D9,C1CC,CDCD, ; Go to $C1CC (faceless - walking right - right leg moving) if face blown up, else go to $CDCD if Golden Torizo
+                        C5A4,BE7E,BF02, ; Call $BE7E (spewing orbs) or $BF02 (sonic booms) for Bomb Torizo attack
+                        80ED,BE30       ; Go to $BE30 (walking right - right leg moving)
 }
 
 
-;;; $C188: Instruction list -  ;;;
+;;; $C188: Instruction list - faceless - turning right ;;;
 {
 $AA:C188             dx B09C,C6BF,  ; Enemy function = $C6BF
                         C36D,       ; Enemy $0FB4 |= 4000h
                         0008,A4F0
+}
+
+
+;;; $C192: Instruction list - faceless - walking right - left leg moving ;;;
+{
 $AA:C192             dx C38A,       ; ???
                         B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; Spawn low-health initial drool if health is low
                         C618,       ; Play torizo footsteps sound effect
                         0001,AA98,
-                        C567,C058,  ; Call $C058 if Samus is less than 38h pixels behind torizo
+                        C567,C058,  ; Call $C058 (explosive swipe) if Samus is less than 38h pixels behind torizo
                         C4E5,0016,  ; Bomb Torizo walking movement - faceless - index 16h
                         0005,AABA,
                         C4E5,0018,  ; Bomb Torizo walking movement - faceless - index 18h
@@ -1426,14 +1441,19 @@ $AA:C192             dx C38A,       ; ???
                         0005,AAFE,
                         C4E5,001C,  ; Bomb Torizo walking movement - faceless - index 1Ch
                         0005,AB20,
-                        C4E5,001E,  ; Bomb Torizo walking movement - faceless - index 1Eh
-                        C3B6,       ; ???
+                        C4E5,001E   ; Bomb Torizo walking movement - faceless - index 1Eh
+}
+
+
+;;; $C1CC: Instruction list - faceless - walking right - right leg moving ;;;
+{
+$AA:C1CC             dx C3B6,       ; ???
                         B09C,C6FF,  ; Enemy function = $C6FF
                         806B,C752,  ; Enemy $0FB2 = $C752
                         C35B,       ; Spawn low-health initial drool if health is low
                         C618,       ; Play torizo footsteps sound effect
                         0001,AB42,
-                        C567,BFD6,  ; Call $BFD6 if Samus is less than 38h pixels behind torizo
+                        C567,BFD6,  ; Call $BFD6 (explosive swipe) if Samus is less than 38h pixels behind torizo
                         C4E5,0020,  ; Bomb Torizo walking movement - faceless - index 20h
                         0005,AB64,
                         C4E5,0022,  ; Bomb Torizo walking movement - faceless - index 22h
@@ -1443,7 +1463,8 @@ $AA:C192             dx C38A,       ; ???
                         C4E5,0026,  ; Bomb Torizo walking movement - faceless - index 26h
                         0005,ABCA,
                         C4E5,0014,  ; Bomb Torizo walking movement - faceless - index 14h
-                        80ED,C192   ; Go to $C192
+                        80ED,C192   ; Go to $C192 (left leg moving)
+}
 }
 
 
@@ -1572,6 +1593,8 @@ $AA:C2C7 60          RTS
 }
 
 
+;;; $C2C8..C61F: Instructions ;;;
+{
 ;;; $C2C8: RTL. Instruction - NOP ;;;
 {
 $AA:C2C8 6B          RTL
@@ -1793,11 +1816,11 @@ $AA:C3EC C8          INY                    ;} Y += 2
 $AA:C3ED 6B          RTL
 
 ; X velocities
-$AA:C3EE             dw FFF7, FFFA, FFF9, 0005, FFF0, FFF9, 0000, 0000, ; Facing left
-                        0009, 0006, 0007, FFFB, 0010, 0007, 0000, 0000  ; Facing right
+$AA:C3EE             dw FFF7,FFFA,FFF9,0005,FFF0,FFF9, 0000,0000, ; 0..Ah: Facing left
+                        0009,0006,0007,FFFB,0010,0007, 0000,0000  ; 10h..1Ah: Facing right
 
 ; Y velocities
-$AA:C40E             dw 0000, FFFA, FFFA, FFF9, 0000, 0000, 0000, 0000
+$AA:C40E             dw 0000,FFFA,FFFA,FFF9,0000,0000, 0000,0000
 }
 
 
@@ -1847,10 +1870,10 @@ $AA:C486 A9 00 00    LDA #$0000             ;\
 $AA:C489 9F 06 78 7E STA $7E7806,x          ;} Enemy $7E:7806 = 0
 $AA:C48D BD B4 0F    LDA $0FB4,x            ;\
 $AA:C490 30 04       BMI $04    [$C496]     ;} If torizo is facing left:
-$AA:C492 A0 D8 BD    LDY #$BDD8             ; Y = $BDD8
+$AA:C492 A0 D8 BD    LDY #$BDD8             ; Y = $BDD8 (turning right)
 $AA:C495 6B          RTL                    ; Return
 
-$AA:C496 A0 62 B9    LDY #$B962             ; Y = $B962
+$AA:C496 A0 62 B9    LDY #$B962             ; Y = $B962 (turning left)
 $AA:C499 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
@@ -1894,10 +1917,10 @@ $AA:C4FB A9 00 00    LDA #$0000             ;\
 $AA:C4FE 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = 0
 $AA:C502 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C505 30 04       BMI $04    [$C50B]     ;} If torizo is facing left:
-$AA:C507 A0 88 C1    LDY #$C188             ; Y = $C188
+$AA:C507 A0 88 C1    LDY #$C188             ; Y = $C188 (faceless - turning right)
 $AA:C50A 6B          RTL                    ; Return
                                             
-$AA:C50B A0 0E BD    LDY #$BD0E             ; Y = $BD0E
+$AA:C50B A0 0E BD    LDY #$BD0E             ; Y = $BD0E (faceless - turning left)
 $AA:C50E 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
@@ -2079,6 +2102,7 @@ $AA:C617 6B          RTL
 $AA:C618 A9 4B 00    LDA #$004B             ;\
 $AA:C61B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 4Bh, sound library 2, max queued sounds allowed = 6 (chozo / torizo footsteps)
 $AA:C61F 6B          RTL
+}
 }
 
 
