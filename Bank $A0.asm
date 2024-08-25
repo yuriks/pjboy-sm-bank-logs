@@ -412,6 +412,10 @@ $A0:8139 6B          RTL
 
 ;;; $813A: Instruction - wait [[Y]] frames ;;;
 {
+; Set instruction timer and terminate processing enemy instructions
+; Used for running a delay that doesn't update graphics,
+; useful for e.g. GT eye beam attack ($AA:D10D), implemented by an instruction list that has no graphical instructions,
+; which allows it to be called from multiple different poses
 $A0:813A B9 00 00    LDA $0000,y
 $A0:813D 9D 94 0F    STA $0F94,x
 $A0:8140 C8          INY
