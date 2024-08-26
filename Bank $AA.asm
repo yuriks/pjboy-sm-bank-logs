@@ -392,10 +392,10 @@ $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
                         C2C9,                   ; Enemy $7E:7808 = 7777h
                         C303,0000,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter 0 and sleep for 28h i-frames
                         B11D,                   ; Spawn 6 Bomb Torizo low-health continuous drool enemy projectiles
-                        814B,0040,AAB479,7300,  ; Transfer 40h bytes from $AA:B479 to VRAM $7300
-                        814B,0040,AAB679,7400,  ; Transfer 40h bytes from $AA:B679 to VRAM $7400
-                        814B,0020,AAB4B9,7E70,  ; Transfer 20h bytes from $AA:B4B9 to VRAM $7E70
-                        814B,0020,AAB6B9,7F70,  ; Transfer 20h bytes from $AA:B6B9 to VRAM $7F70
+                        814B,0040,AAB479,7300,  ; Transfer 40h bytes from $AA:B479        to VRAM $7300
+                        814B,0040,AAB679,7400,  ; Transfer 40h bytes from $AA:B479 + 200h to VRAM $7400
+                        814B,0020,AAB4B9,7E70,  ; Transfer 20h bytes from $AA:B479 + 40h  to VRAM $7E70
+                        814B,0020,AAB6B9,7F70,  ; Transfer 20h bytes from $AA:B479 + 240h to VRAM $7F70
                         B09C,C6FF,              ; Enemy function = $C6FF
                         C2D1,                   ; Enemy $7E:7808 = 0
                         C2FD                    ; Go to [enemy gut explosion link instruction]
@@ -404,9 +404,9 @@ $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
 
 ;;; $B11D: Instruction - spawn 6 Bomb Torizo low-health continuous drool enemy projectiles ;;;
 {
-$AA:B11D BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$AA:B120 09 00 80    ORA #$8000
-$AA:B123 9D B6 0F    STA $0FB6,x[$7E:0FB6]
+$AA:B11D BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$AA:B120 09 00 80    ORA #$8000             ;} Enemy $0FB6 |= 8000h
+$AA:B123 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
 $AA:B126 DA          PHX
 $AA:B127 5A          PHY
 $AA:B128 A0 5B A9    LDY #$A95B             ;\
@@ -433,8 +433,8 @@ $AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
                         C2C9,                   ; Enemy $7E:7808 = 7777h
                         C303,0006,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter 6 and sleep for 28h i-frames
                         B1BE,                   ; Mark Bomb Torizo face blown up
-                        814B,0020,AAB4D9,7E50,  ; Transfer 20h bytes from $AA:B4D9 to VRAM $7E50
-                        814B,0020,AAB6D9,7F50,  ; Transfer 20h bytes from $AA:B6D9 to VRAM $7F50
+                        814B,0020,AAB4D9,7E50,  ; Transfer 20h bytes from $AA:B479 + 60h  to VRAM $7E50
+                        814B,0020,AAB6D9,7F50,  ; Transfer 20h bytes from $AA:B479 + 260h to VRAM $7F50
                         814B,0040,AAB0A5,7C80,  ; Transfer 40h bytes from $AA:B0A5 to VRAM $7C80
                         814B,0040,AAB0A5,7CA0,  ; Transfer 40h bytes from $AA:B0A5 to VRAM $7CA0
                         813A,0001,              ; Wait 1 frame
@@ -560,8 +560,13 @@ $AA:B278 6B          RTL
 }
 
 
-;;; $B279: Tiles ;;;
+;;; $B279: Torizo tiles ;;;
 {
+; Torizo eyes opening / blinking
+; Bomb Torizo gut blown up
+; Bomb Torizo face blown up
+; Golden Torizo releasing eggs
+
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 ; | 4756744|347F4333| 4756744|347F4333| 4756744|347F4333| 4756744|347F4333|        |        |        |        |        |        |        |        |
 ; | 3667343|3337333F| 3667343|3337333F| 3667343|3337333F| 3667347|6737333F|        |        |        |        |        |        |        |        |
@@ -571,6 +576,24 @@ $AA:B278 6B          RTL
 ; |76737661|716734F |76737623|DDE734F |767376BD|CDE734F |76735BEC|CDEB74F |        |        |        |        |        |        |        |        |
 ; |72737657|16674F4 |7273763D|CE374F4 |727373EC|CDE74F4 |72735BED|DDEB4F4 |        |        |        |        |        |        |        |        |
 ; |65737635|6673F4  |657373EC|E373F4  |657373ED|DE73F4  |657363BE|EEB6F4  |        |        |        |        |        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+; |3777734B|BFF6744F|37444375|43443773|7666734B|BFF6744F|7666734B|BFF6744F|7666734B|BFF6744F|        |        |        |        |        |        |
+; |333334BA|AF6F3414|33743475|47448675|377334BA|AF6F3414|377334BA|AF6F3414|377334BA|AF663414|        |        |        |        |        |        |
+; |FFFBAFBB|BBFB7574|44349436|45743333|333FFFBB|BBFB7574|333FFFBB|BBFB7564|333FFFBB|BBFB7564|        |        |        |        |        |        |
+; |FFFF9BBB|ABBF6673|3443AB36|43453655|FFFFFBA9|9ABF6673|FFFFFBA9|9ABF6673|FFFFFBA9|ABBF6673|        |        |        |        |        |        |
+; |33FBA33B|9BF6F733|349ABA37|43477573|333BAA99|ABA6F733|333BBA99|ABA6F733|333BFA99|ABA6F733|        |        |        |        |        |        |
+; |3BABB333|BBBFB333|743BAA33|47443175|33BAA9AB|BABFB333|3FF3BBAA|BABFB333|3FFFFFBA|BABFB333|        |        |        |        |        |        |
+; | ABB3333|ABBBB3FF|44A9BBBB|44573633| 33BBBB9|9ABBB3F1| 3FFFBBB|A9BBB3F1| 3FFFFFB|A9ABB3F1|        |        |        |        |        |        |
+; | A3AB333|B3AAB7FF|49AB9ABB|44447737| 33FBA99|9BAAB71F|  3FFFBA|9BBAB71F|  F3FFFF|BABAB716|        |        |        |        |        |        |
+; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+; | 939B333|333BF7F4|344BABBB|43444337|  3FFBA9|BBABF7F4|   3FFFB|BBABF7F4|   3FFFF|FBABF7F4|        |        |        |        |        |        |
+; |  BABAB3|333B77F3|24A9AABB|43344765|   FFFBB|99AB77F3|    3FFF|BA9B77F3|    3FFF|FF9B77F3|        |        |        |        |        |        |
+; |  B3B3B3|333B773F|234B9ABB|64333337|   3FFBB|A9BA773F|     3FF|B7BA773F|     3FF|FFBA773F|        |        |        |        |        |        |
+; |  A AFBB|FBBAB3FF|3739BABB|13673333|    3FFB|AABAB3FF|     3FF|FBAAB3FF|      3F|FFBAB3FF|        |        |        |        |        |        |
+; |    93AB|BBB9B3FF| 444BAAB|66434773|     3FF|BBA9B3FF|      3F|FFA9B3FF|      3F|FFB9B3FF|        |        |        |        |        |        |
+; |      AB|BBABF3FF|47444BAA|41343373|      33|BAABF3FF|       F|FB7BF3FF|       3|FFBBF3FF|        |        |        |        |        |        |
+; |      93|AB97F3FF|22749A3B|43673777|       3|3BB7F3FF|       3|F377F3FF|       3|FB77F3FF|        |        |        |        |        |        |
+; |        |333F3FFF|22247494|74361773|       F|333F3FFF|       F|333F3FFF|       F|333F3FFF|        |        |        |        |        |        |
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 
 $AA:B279             db 34,2C,4D,7D,5F,7F,1E,7F,9C,FF,B9,FE,BB,FD,7B,BE,7F,00,3A,00,DB,00,D7,00,37,00,EE,00,AF,00,ED,00,
@@ -588,33 +611,8 @@ $AA:B279             db 34,2C,4D,7D,5F,7F,1E,7F,9C,FF,B9,FE,BB,FD,7B,BE,7F,00,3A
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-}
-
-
-;;; $B479: Tiles -  ;;;
-{
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |3777734B|BFF6744F|37444375|43443773|7666734B|BFF6744F|7666734B|BFF6744F|
-; |333334BA|AF6F3414|33743475|47448675|377334BA|AF6F3414|377334BA|AF6F3414|
-; |FFFBAFBB|BBFB7574|44349436|45743333|333FFFBB|BBFB7574|333FFFBB|BBFB7564|
-; |FFFF9BBB|ABBF6673|3443AB36|43453655|FFFFFBA9|9ABF6673|FFFFFBA9|9ABF6673|
-; |33FBA33B|9BF6F733|349ABA37|43477573|333BAA99|ABA6F733|333BBA99|ABA6F733|
-; |3BABB333|BBBFB333|743BAA33|47443175|33BAA9AB|BABFB333|3FF3BBAA|BABFB333|
-; | ABB3333|ABBBB3FF|44A9BBBB|44573633| 33BBBB9|9ABBB3F1| 3FFFBBB|A9BBB3F1|
-; | A3AB333|B3AAB7FF|49AB9ABB|44447737| 33FBA99|9BAAB71F|  3FFFBA|9BBAB71F|
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-; |7666734B|BFF6744F|        |        |        |        |        |        |
-; |377334BA|AF663414|        |        |        |        |        |        |
-; |333FFFBB|BBFB7564|        |        |        |        |        |        |
-; |FFFFFBA9|ABBF6673|        |        |        |        |        |        |
-; |333BFA99|ABA6F733|        |        |        |        |        |        |
-; |3FFFFFBA|BABFB333|        |        |        |        |        |        |
-; | 3FFFFFB|A9ABB3F1|        |        |        |        |        |        |
-; |  F3FFFF|BABAB716|        |        |        |        |        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|
-
-$AA:B479             db FD,FD,FA,FB,F7,FF,FF,F7,F7,FF,DF,FF,3F,7F,2F,7F,7A,01,04,03,E4,FF,F0,FF,20,39,00,78,00,70,00,58,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        FD,FD,FA,FB,F7,FF,FF,F7,F7,FF,DF,FF,3F,7F,2F,7F,7A,01,04,03,E4,FF,F0,FF,20,39,00,78,00,70,00,58,
                         E9,F9,5A,F8,FE,FA,73,FF,EF,7F,FF,FF,7F,FF,CF,FF,7F,E1,75,D0,2F,F0,1E,F0,3C,E8,10,F8,03,FB,07,BB,
                         C7,C6,EB,EA,2A,23,96,9F,AB,9F,B3,BF,1F,2F,5B,37,7B,00,37,00,D5,08,61,0C,41,3C,C0,1C,C0,3F,80,7F,
                         4F,4F,43,46,6F,2F,5B,4C,5F,5B,4F,4A,3B,1F,0F,0F,B6,00,F7,08,F0,00,B7,00,BE,00,F3,00,F4,00,FD,00,
@@ -629,24 +627,8 @@ $AA:B479             db FD,FD,FA,FB,F7,FF,FF,F7,F7,FF,DF,FF,3F,7F,2F,7F,7A,01,04
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
-                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-}
-
-
-;;; $B679: Tiles ;;;
-{
-; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
-; | 939B333|333BF7F4|344BABBB|43444337|  3FFBA9|BBABF7F4|   3FFFB|BBABF7F4|   3FFFF|FBABF7F4|        |        |        |        |        |        |
-; |  BABAB3|333B77F3|24A9AABB|43344765|   FFFBB|99AB77F3|    3FFF|BA9B77F3|    3FFF|FF9B77F3|        |        |        |        |        |        |
-; |  B3B3B3|333B773F|234B9ABB|64333337|   3FFBB|A9BA773F|     3FF|B7BA773F|     3FF|FFBA773F|        |        |        |        |        |        |
-; |  A AFBB|FBBAB3FF|3739BABB|13673333|    3FFB|AABAB3FF|     3FF|FBAAB3FF|      3F|FFBAB3FF|        |        |        |        |        |        |
-; |    93AB|BBB9B3FF| 444BAAB|66434773|     3FF|BBA9B3FF|      3F|FFA9B3FF|      3F|FFB9B3FF|        |        |        |        |        |        |
-; |      AB|BBABF3FF|47444BAA|41343373|      33|BAABF3FF|       F|FB7BF3FF|       3|FFBBF3FF|        |        |        |        |        |        |
-; |      93|AB97F3FF|22749A3B|43673777|       3|3BB7F3FF|       3|F377F3FF|       3|FB77F3FF|        |        |        |        |        |        |
-; |        |333F3FFF|22247494|74361773|       F|333F3FFF|       F|333F3FFF|       F|333F3FFF|        |        |        |        |        |        |
-; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
-
-$AA:B679             db 7F,2F,2B,3F,3F,3F,07,2F,0D,07,01,03,03,01,00,00,00,58,00,3E,00,2A,04,2F,00,0B,00,03,00,02,00,00,
+                        00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,
+                        7F,2F,2B,3F,3F,3F,07,2F,0D,07,01,03,03,01,00,00,00,58,00,3E,00,2A,04,2F,00,0B,00,03,00,02,00,00,
                         FE,FE,FF,FF,FF,FF,EF,FF,FF,EF,DF,FF,7F,DF,FF,FF,0F,1A,0E,12,0D,11,83,FB,03,FB,0B,FB,1B,EB,17,17,
                         97,9F,13,AF,5B,D7,FB,EF,09,0F,44,47,2B,E7,0A,E8,60,1F,40,3F,20,1F,40,1F,70,0F,F8,07,30,0D,1D,02,
                         47,47,65,66,3F,BF,DF,7F,17,D7,6F,2F,5F,7F,AF,B7,B9,00,9F,00,C1,00,30,00,EE,00,92,00,B7,00,D6,00,
@@ -674,23 +656,23 @@ $AA:B879             dx C3A0,                   ; ???
                         812F,                   ; Sleep
                         B09C,C6BF,              ; Enemy function = $C6BF
                         0030,AA12,
-                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
+                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279       to VRAM $7D80
                         0020,AA12,
-                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B2B9 to VRAM $7D80
+                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B279 + 40h to VRAM $7D80
                         0010,AA12,
-                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B2F9 to VRAM $7D80
+                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B279 + 80h to VRAM $7D80
                         0008,AA12,
-                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
+                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B279 + C0h to VRAM $7D80
                         0020,AA12,
                         8123,0002               ; Timer = 2
 $AA:B8C7             dx 0004,AA12,
-                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
+                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279       to VRAM $7D80
                         0004,AA12,
-                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B2B9 to VRAM $7D80
+                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B279 + 40h to VRAM $7D80
                         0004,AA12,
-                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B2F9 to VRAM $7D80
+                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B279 + 80h to VRAM $7D80
                         0004,AA12,
-                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
+                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B279 + C0h to VRAM $7D80
                         8110,B8C7,              ; Decrement timer and go to $B8C7 if non-zero
                         0030,AA12,
                         C3CC,0000,              ; Standing up movement - index 0
@@ -1639,7 +1621,7 @@ $AA:C2D8 6B          RTL
 ;;; $C2D9: Instruction - go to [[Y]] if face blown up, else go to [[Y] + 2] if Golden Torizo ;;;
 {
 $AA:C2D9 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
-$AA:C2DC 70 0A       BVS $0A    [$C2E8]     ;} If [enemy $0FB6] & 4000h = 0:
+$AA:C2DC 70 0A       BVS $0A    [$C2E8]     ;} If torizo face not blown up:
 $AA:C2DE C8          INY                    ;\
 $AA:C2DF C8          INY                    ;} Y += 2
 $AA:C2E0 AD 9F 07    LDA $079F  [$7E:079F]  ;\
@@ -2194,7 +2176,7 @@ $AA:C690 A2 1E 00    LDX #$001E             ;|
                                             ;|
 $AA:C693 A9 FF 7F    LDA #$7FFF             ;|
 $AA:C696 9F 40 C1 7E STA $7EC140,x[$7E:C15E];|
-$AA:C69A 9F 20 C1 7E STA $7EC120,x[$7E:C13E];} Target sprite palette 1/2 = 7FFFh
+$AA:C69A 9F 20 C1 7E STA $7EC120,x[$7E:C13E];} Sprite palette 1/2 = 7FFFh
 $AA:C69E CA          DEX                    ;|
 $AA:C69F CA          DEX                    ;|
 $AA:C6A0 10 F1       BPL $F1    [$C693]     ;|
@@ -2287,16 +2269,16 @@ $AA:C71F 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C722 60          RTS                    ; Return
 
 $AA:C723 3C B6 0F    BIT $0FB6,x[$7E:0FB6]  ;\
-$AA:C726 70 26       BVS $26    [$C74E]     ;} If [enemy $0FB6] & 4000h != 0 (face blown up): go to BRANCH_NO_CHANGE
+$AA:C726 70 26       BVS $26    [$C74E]     ;} If torizo face blown up: go to BRANCH_NO_CHANGE
 $AA:C728 BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $AA:C72B C9 64 00    CMP #$0064             ;} If [enemy health] >= 100: go to BRANCH_NO_CHANGE
 $AA:C72E B0 1E       BCS $1E    [$C74E]     ;/
 $AA:C730 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$AA:C733 30 05       BMI $05    [$C73A]     ;} If [enemy $0FB4] & 8000h = 0:
-$AA:C735 A9 88 C1    LDA #$C188             ; Enemy $7E:7800 = $C188
+$AA:C733 30 05       BMI $05    [$C73A]     ;} If torizo is facing left:
+$AA:C735 A9 88 C1    LDA #$C188             ; Enemy $7E:7800 = $C188 (faceless - turning right)
 $AA:C738 80 03       BRA $03    [$C73D]
-                                            ; Else ([enemy $0FB4] & 8000h != 0):
-$AA:C73A A9 0E BD    LDA #$BD0E             ; Enemy $7E:7800 = $BD0E
+                                            ; Else (torizo is facing right):
+$AA:C73A A9 0E BD    LDA #$BD0E             ; Enemy $7E:7800 = $BD0E (faceless - turning left)
 
 $AA:C73D 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $AA:C741 A9 55 B1    LDA #$B155             ;\
@@ -2593,7 +2575,7 @@ $AA:C99A D0 24       BNE $24    [$C9C0]     ;} If [enemy health] != 0: return
 $AA:C99C A9 AB C6    LDA #$C6AB             ;\
 $AA:C99F 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy function = RTS
 $AA:C9A2 A9 C8 B1    LDA #$B1C8             ;\
-$AA:C9A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B1C8
+$AA:C9A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B1C8 (torizo death sequence)
 $AA:C9A8 A9 01 00    LDA #$0001             ;\
 $AA:C9AB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C9AE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
@@ -2643,23 +2625,23 @@ $AA:C9E6             dx 0001,AA30,
                         C41E,0000,              ; Sitting down movement - index 0
                         B09C,C6AB,              ; Enemy function = $C6AB
                         0030,AA12,
-                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
-                        0020,AA12,
-                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B2B9 to VRAM $7D80
-                        0010,AA12,
-                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B2F9 to VRAM $7D80
-                        0008,AA12,
-                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
+                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279       to VRAM $7D80
+                        0020,AA12,                                            
+                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B279 + 40h to VRAM $7D80
+                        0010,AA12,                                            
+                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B279 + 80h to VRAM $7D80
+                        0008,AA12,                                            
+                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B279 + C0h to VRAM $7D80
                         0020,AA12,
                         8123,0002               ; Timer = 2
 $AA:CA48             dx 0004,AA12,
-                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279 to VRAM $7D80
-                        0004,AA12,
-                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B2B9 to VRAM $7D80
-                        0004,AA12,
-                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B2F9 to VRAM $7D80
-                        0004,AA12,
-                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
+                        814B,0040,AAB279,7D80,  ; Transfer 40h bytes from $AA:B279       to VRAM $7D80
+                        0004,AA12,                                            
+                        814B,0040,AAB2B9,7D80,  ; Transfer 40h bytes from $AA:B279 + 40h to VRAM $7D80
+                        0004,AA12,                                            
+                        814B,0040,AAB2F9,7D80,  ; Transfer 40h bytes from $AA:B279 + 80h to VRAM $7D80
+                        0004,AA12,                                            
+                        814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B279 + C0h to VRAM $7D80
                         8110,CA48,              ; Decrement timer and go to $CA48 if non-zero
                         0020,AA12,
                         C3CC,0000,              ; Standing up movement - index 0
@@ -3168,14 +3150,14 @@ $AA:CFC5             dx 806B,D5ED,  ; Enemy $0FB2 = $D5ED
 ;;; $D031: Instruction list - callable - release Golden Torizo eggs ;;;
 {
 $AA:D031             dx 806B,D5ED,              ; Enemy $0FB2 = $D5ED
-                        814B,0040,AAB4F9,7300,  ; Transfer 40h bytes from $AA:B4F9 to VRAM $7300
-                        814B,0040,AAB6F9,7400,  ; Transfer 40h bytes from $AA:B6F9 to VRAM $7400
+                        814B,0040,AAB4F9,7300,  ; Transfer 40h bytes from $AA:B479 + 80h  to VRAM $7300
+                        814B,0040,AAB6F9,7400,  ; Transfer 40h bytes from $AA:B479 + 280h to VRAM $7400
                         813A,0008,              ; Wait 8 frames
-                        814B,0040,AAB539,7300,  ; Transfer 40h bytes from $AA:B539 to VRAM $7300
-                        814B,0040,AAB739,7400,  ; Transfer 40h bytes from $AA:B739 to VRAM $7400
+                        814B,0040,AAB539,7300,  ; Transfer 40h bytes from $AA:B479 + C0h  to VRAM $7300
+                        814B,0040,AAB739,7400,  ; Transfer 40h bytes from $AA:B479 + 2C0h to VRAM $7400
                         813A,0008,              ; Wait 8 frames
-                        814B,0040,AAB579,7300,  ; Transfer 40h bytes from $AA:B579 to VRAM $7300
-                        814B,0040,AAB779,7400,  ; Transfer 40h bytes from $AA:B779 to VRAM $7400
+                        814B,0040,AAB579,7300,  ; Transfer 40h bytes from $AA:B479 + 100h to VRAM $7300
+                        814B,0040,AAB779,7400,  ; Transfer 40h bytes from $AA:B479 + 300h to VRAM $7400
                         813A,0010,              ; Wait 10h frames
                         8123,0006               ; Timer = 6
 $AA:D07B             dx D38F,                   ; Queue Golden Torizo egg released sound effect
@@ -3184,14 +3166,14 @@ $AA:D07B             dx D38F,                   ; Queue Golden Torizo egg releas
                         8110,D07B               ; Decrement timer and go to $D07B if non-zero
 $AA:D087             dx 813A,0001,              ; Wait 1 frame
                         D0F3,D087,              ; Go to $D087 if Golden Torizo egg is active
-                        814B,0040,AAB579,7300,  ; Transfer 40h bytes from $AA:B579 to VRAM $7300
-                        814B,0040,AAB779,7400,  ; Transfer 40h bytes from $AA:B779 to VRAM $7400
+                        814B,0040,AAB579,7300,  ; Transfer 40h bytes from $AA:B479 + 100h to VRAM $7300
+                        814B,0040,AAB779,7400,  ; Transfer 40h bytes from $AA:B479 + 300h to VRAM $7400
                         813A,0008,              ; Wait 8 frames
-                        814B,0040,AAB539,7300,  ; Transfer 40h bytes from $AA:B539 to VRAM $7300
-                        814B,0040,AAB739,7400,  ; Transfer 40h bytes from $AA:B739 to VRAM $7400
+                        814B,0040,AAB539,7300,  ; Transfer 40h bytes from $AA:B479 + C0h  to VRAM $7300
+                        814B,0040,AAB739,7400,  ; Transfer 40h bytes from $AA:B479 + 2C0h to VRAM $7400
                         813A,0008,              ; Wait 8 frames
-                        814B,0040,AAB4F9,7300,  ; Transfer 40h bytes from $AA:B4F9 to VRAM $7300
-                        814B,0040,AAB6F9,7400,  ; Transfer 40h bytes from $AA:B6F9 to VRAM $7400
+                        814B,0040,AAB4F9,7300,  ; Transfer 40h bytes from $AA:B479 + 80h  to VRAM $7300
+                        814B,0040,AAB6F9,7400,  ; Transfer 40h bytes from $AA:B479 + 280h to VRAM $7400
                         813A,0008,              ; Wait 8 frames
                         814B,0040,AFC800,7300,  ; Transfer 40h bytes from $AF:C800 to VRAM $7300
                         814B,0040,AFCA00,7400,  ; Transfer 40h bytes from $AF:CA00 to VRAM $7400
