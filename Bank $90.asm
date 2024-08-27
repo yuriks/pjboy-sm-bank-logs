@@ -7406,6 +7406,8 @@ $90:B1F2 60          RTS
 ; E.g. $0DA9 is loaded into A for (distance Samus moved left) * 100h, which does load the low byte of $0DAA into the high byte of A,
 ; but also loads garbage (namely the high byte of $0DA8) into the low byte of A
 
+; TODO: add these pesky garbage low bytes to the below calculations
+
 $90:B1F3 9E 8C 0B    STZ $0B8C,x[$7E:0B8C]  ; Projectile X subposition = 0
 $90:B1F6 9E A0 0B    STZ $0BA0,x[$7E:0BA0]  ; Projectile Y subposition = 0
 $90:B1F9 BD 04 0C    LDA $0C04,x[$7E:0C04]  ;\

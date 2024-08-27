@@ -214,6 +214,7 @@ $A0:806A EA          NOP
 {
 ;;; $806B: Instruction - enemy $0FB2 = [[Y]] ;;;
 {
+; Used only by torizos (for enemy movement function) and escape etecoon (for enemy function)
 $A0:806B B9 00 00    LDA $0000,y
 $A0:806E 9D B2 0F    STA $0FB2,x
 $A0:8071 C8          INY

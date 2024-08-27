@@ -193,7 +193,7 @@ $B3:884A 38          SEC                    ;\
 $B3:884B E9 10 00    SBC #$0010             ;} Enemy target Y position = [enemy Y position] - 10h
 $B3:884E 9F 00 78 7E STA $7E7800,x[$7E:7A40];/
 $B3:8852 A9 80 88    LDA #$8880             ;\
-$B3:8855 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function pointer = $8880
+$B3:8855 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $8880
 $B3:8858 A9 30 00    LDA #$0030             ;\
 $B3:885B 9D AE 0F    STA $0FAE,x[$7E:11EE]  ;} Enemy spawn delay timer = 30h <-- this doesn't need to be initialised here
 $B3:885E A9 00 00    LDA #$0000             ;\
@@ -252,7 +252,7 @@ $B3:88B7 90 01       BCC $01    [$88BA]     ;/
 $B3:88B9 6B          RTL                    ; Return
 
 $B3:88BA A9 E3 88    LDA #$88E3             ;\
-$B3:88BD 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function pointer = $88E3
+$B3:88BD 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $88E3
 $B3:88C0 BD 86 0F    LDA $0F86,x[$7E:11C6]  ;\
 $B3:88C3 29 FF FE    AND #$FEFF             ;} Set enemy as visible
 $B3:88C6 9D 86 0F    STA $0F86,x[$7E:11C6]  ;/
@@ -594,7 +594,7 @@ $B3:8BF0 BD A8 10    LDA $10A8,x[$7E:10A8]  ;\
 $B3:8BF3 C9 CD 8B    CMP #$8BCD             ;} If [enemy ([X] + 4) function = $8BCD:
 $B3:8BF6 D0 06       BNE $06    [$8BFE]     ;/
 $B3:8BF8 A9 FF 8B    LDA #$8BFF             ;\
-$B3:8BFB 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function pointer = $8BFF
+$B3:8BFB 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8BFF
 
 $B3:8BFE 60          RTS
 }
@@ -656,15 +656,15 @@ $B3:8C7C 9F C4 78 7E STA $7E78C4,x[$7E:78C4];} Enemy ([X] + 3) shoot delay = 70h
 $B3:8C80 A9 78 00    LDA #$0078             ;\
 $B3:8C83 9F 04 79 7E STA $7E7904,x[$7E:7904];} Enemy ([X] + 4) shoot delay = 78h
 $B3:8C87 A9 FF 8C    LDA #$8CFF             ;\
-$B3:8C8A 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy formation function pointer = $8CFF
+$B3:8C8A 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy formation function = $8CFF
 $B3:8C8D A9 0C 8D    LDA #$8D0C             ;\
-$B3:8C90 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) formation function pointer = $8D0C
+$B3:8C90 9D F2 0F    STA $0FF2,x[$7E:0FF2]  ;} Enemy ([X] + 1) formation function = $8D0C
 $B3:8C93 A9 4E 8D    LDA #$8D4E             ;\
-$B3:8C96 9D 32 10    STA $1032,x[$7E:1032]  ;} Enemy ([X] + 2) formation function pointer = $8D4E
+$B3:8C96 9D 32 10    STA $1032,x[$7E:1032]  ;} Enemy ([X] + 2) formation function = $8D4E
 $B3:8C99 A9 90 8D    LDA #$8D90             ;\
-$B3:8C9C 9D 72 10    STA $1072,x[$7E:1072]  ;} Enemy ([X] + 3) formation function pointer = $8D90
+$B3:8C9C 9D 72 10    STA $1072,x[$7E:1072]  ;} Enemy ([X] + 3) formation function = $8D90
 $B3:8C9F A9 D2 8D    LDA #$8DD2             ;\
-$B3:8CA2 9D B2 10    STA $10B2,x[$7E:10B2]  ;} Enemy ([X] + 4) formation function pointer = $8DD2
+$B3:8CA2 9D B2 10    STA $10B2,x[$7E:10B2]  ;} Enemy ([X] + 4) formation function = $8DD2
 $B3:8CA5 60          RTS
 }
 
@@ -691,7 +691,7 @@ $B3:8CCC 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $B3:8CCF CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;\
 $B3:8CD2 10 2A       BPL $2A    [$8CFE]     ;} If [enemy Y position] >= [Samus Y position]: return
 $B3:8CD4 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
-$B3:8CD7 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function pointer = [enemy formation function pointer]
+$B3:8CD7 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = [enemy formation function]
 $B3:8CDA BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $B3:8CDD 9F 02 78 7E STA $7E7802,x[$7E:7882];} Enemy formation centre Y position = [enemy Y position]
 $B3:8CE1 A9 01 00    LDA #$0001             ;\
@@ -715,7 +715,7 @@ $B3:8CFE 60          RTS
 $B3:8CFF AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8D02 FE AC 0F    INC $0FAC,x[$7E:0FEC]  ; Increment enemy shoot delay timer
 $B3:8D05 A9 5A 8E    LDA #$8E5A             ;\
-$B3:8D08 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function pointer = $8E5A
+$B3:8D08 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $8E5A
 $B3:8D0B 60          RTS
 }
 
@@ -747,7 +747,7 @@ $B3:8D3E E9 10 00    SBC #$0010             ;} Enemy Y position = [enemy formati
 $B3:8D41 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $B3:8D44 9E 80 0F    STZ $0F80,x[$7E:1000]  ; Enemy Y subposition = 0
 $B3:8D47 A9 5A 8E    LDA #$8E5A             ;\
-$B3:8D4A 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function pointer = $8E5A
+$B3:8D4A 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $8E5A
 
 $B3:8D4D 60          RTS
 }
@@ -780,7 +780,7 @@ $B3:8D80 E9 20 00    SBC #$0020             ;} Enemy Y position = [enemy formati
 $B3:8D83 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;/
 $B3:8D86 9E 80 0F    STZ $0F80,x[$7E:1040]  ; Enemy Y subposition = 0
 $B3:8D89 A9 5A 8E    LDA #$8E5A             ;\
-$B3:8D8C 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function pointer = $8E5A
+$B3:8D8C 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $8E5A
 
 $B3:8D8F 60          RTS
 }
@@ -813,7 +813,7 @@ $B3:8DC2 69 10 00    ADC #$0010             ;} Enemy Y position = [enemy formati
 $B3:8DC5 9D 7E 0F    STA $0F7E,x[$7E:107E]  ;/
 $B3:8DC8 9E 80 0F    STZ $0F80,x[$7E:1080]  ; Enemy Y subposition = 0
 $B3:8DCB A9 5A 8E    LDA #$8E5A             ;\
-$B3:8DCE 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function pointer = $8E5A
+$B3:8DCE 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $8E5A
 
 $B3:8DD1 60          RTS
 }
@@ -846,7 +846,7 @@ $B3:8E04 69 20 00    ADC #$0020             ;} Enemy Y position = [enemy formati
 $B3:8E07 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;/
 $B3:8E0A 9E 80 0F    STZ $0F80,x[$7E:10C0]  ; Enemy Y subposition = 0
 $B3:8E0D A9 5A 8E    LDA #$8E5A             ;\
-$B3:8E10 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function pointer = $8E5A
+$B3:8E10 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $8E5A
 
 $B3:8E13 60          RTS
 }
@@ -3477,7 +3477,7 @@ $B3:E59A             dw 0003,E75F,
 
 ;;; $E5AE: Instruction list - running for escape ;;;
 {
-$B3:E5AE             dw 806B,E65C   ; Enemy function = $E65C
+$B3:E5AE             dw 806B,E65C   ; Enemy function = $E65C (running for escape)
 $B3:E5B2             dw 0003,E75F,
                         0003,E770,
                         0003,E77C,
@@ -3511,7 +3511,7 @@ $B3:E5E0             dw 0008,E736,
                         8110,E5E0,  ; Decrement timer and go to $E5E0 if non-zero
                         0040,E8B0,
                         0008,E8D5,
-                        80ED,E5AE   ; Go to $E5AE
+                        80ED,E5AE   ; Go to $E5AE (running for escape)
 }
 
 
