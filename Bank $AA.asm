@@ -723,7 +723,7 @@ $AA:B961 6B          RTL
 ;;; $B962: Instruction list - turning left ;;;
 {
 $AA:B962             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0018,A4F0
 }
 
@@ -1032,7 +1032,7 @@ $AA:BCFA             dx C618,           ; Play torizo footsteps sound effect
 ;;; $BD0E: Instruction list - faceless - turning left ;;;
 {
 $AA:BD0E             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0008,A4F0
 }
 
@@ -1110,7 +1110,7 @@ $AA:BD90             dx C3B6,       ; ???
 ;;; $BDD8: Instruction list - turning right ;;;
 {
 $AA:BDD8             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0018,A4F0
 }
 
@@ -1420,7 +1420,7 @@ $AA:C174             dx C618,           ; Play torizo footsteps sound effect
 ;;; $C188: Instruction list - faceless - turning right ;;;
 {
 $AA:C188             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0008,A4F0
 }
 
@@ -1735,11 +1735,11 @@ $AA:C36C 6B          RTL
 }
 
 
-;;; $C36D: Instruction - enemy $0FB4 |= 4000h ;;;
+;;; $C36D: Instruction - set torizo turning around flag ;;;
 {
-$AA:C36D BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:C370 09 00 40    ORA #$4000
-$AA:C373 9D B4 0F    STA $0FB4,x[$7E:0FB4]
+$AA:C36D BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:C370 09 00 40    ORA #$4000             ;} Enemy $0FB4 |= 4000h
+$AA:C373 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;/
 $AA:C376 6B          RTL
 }
 
@@ -2967,7 +2967,7 @@ $AA:CDE0 6B          RTL
 }
 
 
-;;; $CDE1: Instruction list -  ;;;
+;;; $CDE1: Instruction list - caught super missile - facing left - left leg forward ;;;
 {
 $AA:CDE1             dx D39F,       ; Queue torizo sonic boom sound effect
                         B09C,D5DF,  ; Enemy function = $D5DF
@@ -2994,11 +2994,11 @@ $AA:CDE1             dx D39F,       ; Queue torizo sonic boom sound effect
                         0002,A6EA,
                         0010,A954,
                         CDD7,       ; Enemy $0FB6 &= ~1000h
-                        80ED,D20D   ; Go to $D20D
+                        80ED,D20D   ; Go to $D20D (Golden Torizo - walking left - right leg moving)
 }
 
 
-;;; $CE43: Instruction list -  ;;;
+;;; $CE43: Instruction list - caught super missile - facing left - right leg forward ;;;
 {
 $AA:CE43             dx D39F,       ; Queue torizo sonic boom sound effect
                         B09C,D5DF,  ; Enemy function = $D5DF
@@ -3025,11 +3025,11 @@ $AA:CE43             dx D39F,       ; Queue torizo sonic boom sound effect
                         0002,A64E,
                         0010,A828,
                         CDD7,       ; Enemy $0FB6 &= ~1000h
-                        80ED,D259   ; Go to $D259
+                        80ED,D259   ; Go to $D259 (Golden Torizo - walking left - left leg moving)
 }
 
 
-;;; $CEA5: Instruction list -  ;;;
+;;; $CEA5: Instruction list - caught super missile - facing right - right leg forward ;;;
 {
 $AA:CEA5             dx D39F,       ; Queue torizo sonic boom sound effect
                         B09C,D5DF,  ; Enemy function = $D5DF
@@ -3054,11 +3054,11 @@ $AA:CEA5             dx D39F,       ; Queue torizo sonic boom sound effect
                         0002,AC88,
                         0010,AEF2,
                         CDD7,       ; Enemy $0FB6 &= ~1000h
-                        80ED,D2C9   ; Go to $D2C9
+                        80ED,D2C9   ; Go to $D2C9 (Golden Torizo - walking right - left leg moving)
 }
 
 
-;;; $CEFF: Instruction list -  ;;;
+;;; $CEFF: Instruction list - caught super missile - facing right - left leg forward ;;;
 {
 $AA:CEFF             dx D39F,       ; Queue torizo sonic boom sound effect
                         B09C,D5DF,  ; Enemy function = $D5DF
@@ -3083,7 +3083,7 @@ $AA:CEFF             dx D39F,       ; Queue torizo sonic boom sound effect
                         0002,ABEC,
                         0010,ADC6,
                         CDD7,       ; Enemy $0FB6 &= ~1000h
-                        80ED,D315   ; Go to $D315
+                        80ED,D315   ; Go to $D315 (Golden Torizo - walking right - right leg moving)
 }
 
 
@@ -3305,7 +3305,7 @@ $AA:D1F0 6B          RTL
 {
 $AA:D1F1             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
                         C2C9,       ; Enemy $7E:7808 = 7777h
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0018,A4F0,
                         C2D1,       ; Enemy $7E:7808 = 0
                         80ED,D20D   ; Go to $D20D
@@ -3315,7 +3315,7 @@ $AA:D1F1             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
 ;;; $D203: Instruction list -  ;;;
 {
 $AA:D203             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0008,A4F0
 }
 
@@ -3376,7 +3376,7 @@ $AA:D259             dx C3A0,       ; ???
 {
 $AA:D2AD             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
                         C2C9,       ; Enemy $7E:7808 = 7777h
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0018,A4F0,
                         C2D1,       ; Enemy $7E:7808 = 0
                         80ED,D2C9   ; Go to $D2C9
@@ -3386,7 +3386,7 @@ $AA:D2AD             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
 ;;; $D2BF: Instruction list -  ;;;
 {
 $AA:D2BF             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C36D,       ; Enemy $0FB4 |= 4000h
+                        C36D,       ; Set torizo turning around flag
                         0008,A4F0
 }
 
@@ -3967,7 +3967,7 @@ $AA:D6AA AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D6AD BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $AA:D6B0 D0 1E       BNE $1E    [$D6D0]     ;} If [enemy health] != 0: return
 $AA:D6B2 A9 C8 B1    LDA #$B1C8             ;\
-$AA:D6B5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list = $B1C8
+$AA:D6B5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list = $B1C8 (torizo death sequence)
 $AA:D6B8 A9 01 00    LDA #$0001             ;\
 $AA:D6BB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:D6BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
@@ -3991,10 +3991,10 @@ $AA:D6DD 9D B0 0F    STA $0FB0,x            ;} Enemy function = RTS
 $AA:D6E0 A9 01 00    LDA #$0001             ;\
 $AA:D6E3 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:D6E6 3C B4 0F    BIT $0FB4,x            ;\
-$AA:D6E9 30 05       BMI $05    [$D6F0]     ;} If [enemy $0FB4] & 8000h = 0:
+$AA:D6E9 30 05       BMI $05    [$D6F0]     ;} If torizo is facing left:
 $AA:D6EB A9 F1 D1    LDA #$D1F1             ; Enemy instruction list pointer = $D1F1
 $AA:D6EE 80 03       BRA $03    [$D6F3]
-                                            ; Else ([enemy $0FB4] & 8000h != 0):
+                                            ; Else (torizo is facing right):
 $AA:D6F0 A9 AD D2    LDA #$D2AD             ; Enemy instruction list pointer = $D2AD
 
 $AA:D6F3 9D 92 0F    STA $0F92,x
@@ -4019,23 +4019,23 @@ $AA:D714 99 04 0C    STA $0C04,y            ;/
 $AA:D717 A9 01 00    LDA #$0001             ;\
 $AA:D71A 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:D71D BD B4 0F    LDA $0FB4,x            ;\
-$AA:D720 89 00 20    BIT #$2000             ;} If [enemy $0FB4] & 2000h != 0: go to BRANCH_D734
+$AA:D720 89 00 20    BIT #$2000             ;} If torizo background leg forward: go to BRANCH_BACKGROUND_LEG_FORWARD
 $AA:D723 D0 0F       BNE $0F    [$D734]     ;/
 $AA:D725 3C B4 0F    BIT $0FB4,x            ;\
-$AA:D728 30 05       BMI $05    [$D72F]     ;} If facing left:
-$AA:D72A A9 E1 CD    LDA #$CDE1             ; Enemy instruction list pointer = $CDE1
+$AA:D728 30 05       BMI $05    [$D72F]     ;} If torizo is facing left:
+$AA:D72A A9 E1 CD    LDA #$CDE1             ; Enemy instruction list pointer = $CDE1 (caught super missile - facing left - left leg forward)
 $AA:D72D 80 12       BRA $12    [$D741]     ; Return
 
-$AA:D72F A9 A5 CE    LDA #$CEA5             ; Enemy instruction list pointer = $CEA5
+$AA:D72F A9 A5 CE    LDA #$CEA5             ; Enemy instruction list pointer = $CEA5 (caught super missile - facing right - right leg forward)
 $AA:D732 80 0D       BRA $0D    [$D741]     ; Return
 
-; BRANCH_D734
+; BRANCH_BACKGROUND_LEG_FORWARD
 $AA:D734 3C B4 0F    BIT $0FB4,x            ;\
-$AA:D737 30 05       BMI $05    [$D73E]     ;} If facing left:
-$AA:D739 A9 43 CE    LDA #$CE43             ; Enemy instruction list pointer = $CE43
+$AA:D737 30 05       BMI $05    [$D73E]     ;} If torizo is facing left:
+$AA:D739 A9 43 CE    LDA #$CE43             ; Enemy instruction list pointer = $CE43 (caught super missile - facing left - right leg forward)
 $AA:D73C 80 03       BRA $03    [$D741]     ; Return
 
-$AA:D73E A9 FF CE    LDA #$CEFF             ; Enemy instruction list pointer = $CEFF
+$AA:D73E A9 FF CE    LDA #$CEFF             ; Enemy instruction list pointer = $CEFF (caught super missile - facing right - left leg forward)
 
 $AA:D741 9D 92 0F    STA $0F92,x
 $AA:D744 6B          RTL

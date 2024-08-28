@@ -5727,15 +5727,15 @@ $86:A5F2 18          CLC                    ;|
 $86:A5F3 69 FB FF    ADC #$FFFB             ;} Enemy projectile Y position = [enemy Y position] - 5
 $86:A5F6 99 93 1A    STA $1A93,y[$7E:1AAF]  ;/
 $86:A5F9 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A5FC 50 08       BVC $08    [$A606]     ;} If [enemy $0FB4] & 4000h != 0:
+$86:A5FC 50 08       BVC $08    [$A606]     ;} If torizo is turning around:
 $86:A5FE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:A601 29 FE 01    AND #$01FE             ;} X = [random number] / 2 % 100h * 2
 $86:A604 80 1A       BRA $1A    [$A620]     ; Go to BRANCH_ANGLE_DETERMINED
 
-$86:A606 30 05       BMI $05    [$A60D]     ; If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:A606 30 05       BMI $05    [$A60D]     ; If torizo is facing left:
 $86:A608 A9 E0 00    LDA #$00E0             ; $12 = E0h
 $86:A60B 80 03       BRA $03    [$A610]
-                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+                                            ; Else (torizo is facing right):
 $86:A60D A9 20 00    LDA #$0020             ; $12 = 20h
 
 $86:A610 85 12       STA $12    [$7E:0012]
@@ -5755,7 +5755,7 @@ $86:A628 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B585];\
 $86:A62C 99 DB 1A    STA $1ADB,y[$7E:1AF7]  ;} Enemy projectile Y velocity = -cos([X] / 2 * pi / 80h) * 100h
 $86:A62F AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:A632 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A635 30 0B       BMI $0B    [$A642]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:A635 30 0B       BMI $0B    [$A642]     ;} If torizo is facing left:
 $86:A637 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $86:A63A 18          CLC                    ;|
 $86:A63B 69 F8 FF    ADC #$FFF8             ;} Enemy projectile X position = [enemy X position] - 8
@@ -5795,7 +5795,7 @@ $86:A686 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:A68A AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $86:A68D 29 03 00    AND #$0003             ;} A = [random number] % 4
 $86:A690 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A693 50 0E       BVC $0E    [$A6A3]     ;} If [enemy $0FB4] & 4000h != 0:
+$86:A693 50 0E       BVC $0E    [$A6A3]     ;} If torizo is turning around:
 $86:A695 18          CLC                    ;\
 $86:A696 7D 7A 0F    ADC $0F7A,x[$7E:0F7A]  ;} Enemy projectile X position = [enemy X position] + [random number] % 4
 $86:A699 99 4B 1A    STA $1A4B,y[$7E:1A61]  ;/
@@ -5803,7 +5803,7 @@ $86:A69C A9 00 00    LDA #$0000             ;\
 $86:A69F 99 B7 1A    STA $1AB7,y[$7E:1ACD]  ;} Enemy projectile X velocity = 0
 $86:A6A2 60          RTS                    ; Return
 
-$86:A6A3 30 11       BMI $11    [$A6B6]     ; If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:A6A3 30 11       BMI $11    [$A6B6]     ; If torizo is facing left:
 $86:A6A5 18          CLC                    ;\
 $86:A6A6 7D 7A 0F    ADC $0F7A,x[$7E:0F7A]  ;|
 $86:A6A9 69 F8 FF    ADC #$FFF8             ;} Enemy projectile X position = [enemy X position] - 8 + [random number] % 4
@@ -5860,7 +5860,7 @@ $86:A6FC 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:A6FE BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:A701 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:A703 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A706 30 16       BMI $16    [$A71E]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:A706 30 16       BMI $16    [$A71E]     ;} If torizo is facing left:
 $86:A708 AE 93 19    LDX $1993  [$7E:1993]  ; X = [enemy projectile initialisation parameter 0]
 $86:A70B BD 38 A7    LDA $A738,x[$86:A738]  ;\
 $86:A70E 18          CLC                    ;|
@@ -5960,7 +5960,7 @@ $86:A821 99 4B 1A    STA $1A4B,y[$7E:1A59]  ;} Enemy projectile X position = [en
 $86:A824 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:A827 99 93 1A    STA $1A93,y[$7E:1AA1]  ;} Enemy projectile Y position = [enemy Y position]
 $86:A82A 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:A82D 30 06       BMI $06    [$A835]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:A82D 30 06       BMI $06    [$A835]     ;} If torizo is facing left:
 $86:A82F EE 93 19    INC $1993  [$7E:1993]  ;\
 $86:A832 EE 93 19    INC $1993  [$7E:1993]  ;} Enemy projectile initialisation parameter 0 += 2
 
@@ -6438,10 +6438,10 @@ $86:ABF1 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:ABF3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:ABF6 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:ABF8 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:ABFB 30 05       BMI $05    [$AC02]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:ABFB 30 05       BMI $05    [$AC02]     ;} If torizo is facing left:
 $86:ABFD A2 12 AC    LDX #$AC12             ; X = $AC12
 $86:AC00 80 03       BRA $03    [$AC05]
-                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+                                            ; Else (torizo is facing right):
 $86:AC02 A2 08 AC    LDX #$AC08             ; X = $AC08
 
 $86:AC05 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to torizo chozo orbs / egg / eye beam common initialisation
@@ -6483,7 +6483,7 @@ $86:AC4E 18          CLC                    ;|
 $86:AC4F 69 D8 FF    ADC #$FFD8             ;} Enemy projectile Y position = [enemy Y position] - 28h
 $86:AC52 99 93 1A    STA $1A93,y            ;/
 $86:AC55 3C B4 0F    BIT $0FB4,x            ;\
-$86:AC58 30 11       BMI $11    [$AC6B]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:AC58 30 11       BMI $11    [$AC6B]     ;} If torizo is facing left:
 $86:AC5A BD 7A 0F    LDA $0F7A,x            ;\
 $86:AC5D 18          CLC                    ;|
 $86:AC5E 69 E5 FF    ADC #$FFE5             ;} Enemy projectile X position = [enemy X position] - 1Bh
@@ -6510,10 +6510,10 @@ $86:AC82 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:AC84 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:AC87 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:AC89 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:AC8C 30 05       BMI $05    [$AC93]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:AC8C 30 05       BMI $05    [$AC93]     ;} If torizo is facing left:
 $86:AC8E A2 A3 AC    LDX #$ACA3             ; X = $ACA3
 $86:AC91 80 03       BRA $03    [$AC96]
-                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+                                            ; Else (torizo is facing right):
 $86:AC93 A2 99 AC    LDX #$AC99             ; X = $AC99
 
 $86:AC96 4C AE AB    JMP $ABAE  [$86:ABAE]  ; Go to torizo chozo orbs / egg / eye beam common initialisation
@@ -6749,7 +6749,7 @@ $86:AE30 99 93 1A    STA $1A93,y[$7E:1AA1]  ;/
 $86:AE33 A9 00 00    LDA #$0000
 $86:AE36 99 DB 1A    STA $1ADB,y[$7E:1AE9]
 $86:AE39 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:AE3C 30 17       BMI $17    [$AE55]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:AE3C 30 17       BMI $17    [$AE55]     ;} If torizo is facing left:
 $86:AE3E BD 7A 0F    LDA $0F7A,x            ;\
 $86:AE41 18          CLC                    ;|
 $86:AE42 69 E0 FF    ADC #$FFE0             ;} Enemy projectile X position -= 20h
@@ -7289,10 +7289,10 @@ $86:B1D8 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:B1DA BD 7E 0F    LDA $0F7E,x            ;\
 $86:B1DD 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:B1DF 3C B4 0F    BIT $0FB4,x            ;\
-$86:B1E2 30 05       BMI $05    [$B1E9]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B1E2 30 05       BMI $05    [$B1E9]     ;} If torizo is facing left:
 $86:B1E4 A2 00 00    LDX #$0000             ; X = 0
 $86:B1E7 80 03       BRA $03    [$B1EC]
-                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+                                            ; Else (torizo is facing right):
 $86:B1E9 A2 02 00    LDX #$0002             ; X = 2
 
 $86:B1EC BD 05 B2    LDA $B205,x            ;\
@@ -7324,10 +7324,10 @@ $86:B213 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:B215 B9 7E 0F    LDA $0F7E,y            ;\
 $86:B218 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:B21A B9 B4 0F    LDA $0FB4,y            ;\
-$86:B21D 30 05       BMI $05    [$B224]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B21D 30 05       BMI $05    [$B224]     ;} If torizo is facing left:
 $86:B21F A9 E0 FF    LDA #$FFE0             ; A = -20h
 $86:B222 80 03       BRA $03    [$B227]
-                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+                                            ; Else (torizo is facing right):
 $86:B224 A9 20 00    LDA #$0020             ; A = 20h
 
 $86:B227 18          CLC                    ;\
@@ -7485,10 +7485,10 @@ $86:B32E 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $86:B330 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $86:B333 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $86:B335 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;\
-$86:B338 30 05       BMI $05    [$B33F]     ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B338 30 05       BMI $05    [$B33F]     ;} If torizo is facing left:
 $86:B33A A2 80 B3    LDX #$B380             ; X = $B380
 $86:B33D 80 03       BRA $03    [$B342]
-                                            ; Else ([enemy $0FB4] & 8000h != 0 (facing right)):
+                                            ; Else (torizo is facing right):
 $86:B33F A2 76 B3    LDX #$B376             ; X = $B376
 
 $86:B342 20 AE AB    JSR $ABAE  [$86:ABAE]  ; Execute torizo chozo orbs / egg / eye beam common initialisation
@@ -7499,7 +7499,7 @@ $86:B34D E9 10 00    SBC #$0010             ;/
 $86:B350 18          CLC                    ;\
 $86:B351 69 C0 00    ADC #$00C0             ;} X = 60h * 2 + [A] (down-right + variance)
 $86:B354 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
-$86:B357 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;} If [enemy $0FB4] & 8000h = 0 (facing left):
+$86:B357 3C B4 0F    BIT $0FB4,x[$7E:0FB4]  ;} If torizo is facing left:
 $86:B35A 30 04       BMI $04    [$B360]     ;/
 $86:B35C 18          CLC                    ;\
 $86:B35D 69 80 00    ADC #$0080             ;} X = A0h * 2 + [A] (down-left + variance)
