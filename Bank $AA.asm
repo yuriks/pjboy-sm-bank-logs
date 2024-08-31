@@ -32,19 +32,19 @@ $AA:87A7             dw 3800,3719,0214,0003,0000,0295,01D1,014D,00A8,4B40,25E0,0
 }
 
 
-;;; $87C7: Torizo hitbox ;;;
+;;; $87C7: Torizo hitbox - blank ;;;
 {
 $AA:87C7             dw 0000
 }
 
 
-;;; $87C9: Torizo spritemap ;;;
+;;; $87C9: Torizo spritemap - blank ;;;
 {
 $AA:87C9             dx 0001, 0100,00,4200
 }
 
 
-;;; $87D0: Torizo extended spritemap ;;;
+;;; $87D0: Torizo extended spritemap - blank ;;;
 {
 $AA:87D0             dw 0001, 0000,0000,87C9,87C7
 }
@@ -451,7 +451,7 @@ $AA:B0A5             db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 {
 ; "special" because the usual link instruction isn't being used for returning
 $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
-                        C2C9,                   ; Enemy $7E:7808 = 7777h
+                        C2C9,                   ; Set animation lock
                         C303,0000,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter 0 and sleep for 28h i-frames
                         B11D,                   ; Mark Bomb Torizo gut blown up and spawn 6 Bomb Torizo low-health continuous drool enemy projectiles
                         814B,0040,AAB479,7300,  ; Transfer 40h bytes from $AA:B479        to VRAM $7300
@@ -459,7 +459,7 @@ $AA:B0E5             dx B09C,C6AB,              ; Enemy function = RTS
                         814B,0020,AAB4B9,7E70,  ; Transfer 20h bytes from $AA:B479 + 40h  to VRAM $7E70
                         814B,0020,AAB6B9,7F70,  ; Transfer 20h bytes from $AA:B479 + 240h to VRAM $7F70
                         B09C,C6FF,              ; Enemy function = $C6FF (normal movement)
-                        C2D1,                   ; Enemy $7E:7808 = 0
+                        C2D1,                   ; Clear animation lock
                         C2FD                    ; Go to [enemy gut explosion link instruction]
 }
 
@@ -492,7 +492,7 @@ $AA:B154 6B          RTL
 ;;; $B155: Instruction list - callable - blow up Bomb Torizo's face ;;;
 {
 $AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
-                        C2C9,                   ; Enemy $7E:7808 = 7777h
+                        C2C9,                   ; Set animation lock
                         C303,0006,              ; Spawn 5 Bomb Torizo low-health explosion enemy projectiles with parameter 6 and sleep for 28h i-frames
                         B1BE,                   ; Mark Bomb Torizo face blown up
                         814B,0020,AAB4D9,7E50,  ; Transfer 20h bytes from $AA:B479 + 60h  to VRAM $7E50
@@ -506,7 +506,7 @@ $AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
                         814B,0040,AAB0A5,7F80,  ; Transfer 40h bytes from $AA:B0A5 to VRAM $7F80
                         814B,0020,AAB0A5,79F0,  ; Transfer 20h bytes from $AA:B0A5 to VRAM $79F0
                         B09C,C6FF,              ; Enemy function = $C6FF (normal movement)
-                        C2D1,                   ; Enemy $7E:7808 = 0
+                        C2D1,                   ; Clear animation lock
                         C2F7                    ; Return
 }
 
@@ -514,7 +514,7 @@ $AA:B155             dx B09C,C6AB,              ; Enemy function = RTS
 ;;; $B1BE: Instruction - mark Bomb Torizo face blown up ;;;
 {
 $AA:B1BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
-$AA:B1C1 09 00 40    ORA #$4000             ;} Enemy $0FB6 |= 4000h
+$AA:B1C1 09 00 40    ORA #$4000             ;} Enemy behavioural properties |= 4000h
 $AA:B1C4 9D B6 0F    STA $0FB6,x[$7E:0FB6]  ;/
 $AA:B1C7 6B          RTL
 }
@@ -523,7 +523,7 @@ $AA:B1C7 6B          RTL
 ;;; $B1C8: Instruction list - torizo death sequence ;;;
 {
 $AA:B1C8             dx B09C,C6AB,  ; Enemy function = RTS
-                        C2C9,       ; Enemy $7E:7808 = 7777h
+                        C2C9,       ; Set animation lock
                         8123,0008   ; Timer = 8
 $AA:B1D2             dx C32F,       ; Spawn torizo death explosion and sleep for 1 i-frame
                         813A,0006,  ; Wait 6 frames
@@ -712,7 +712,7 @@ $AA:B279             db 34,2C,4D,7D,5F,7F,1E,7F,9C,FF,B9,FE,BB,FD,7B,BE,7F,00,3A
 ;;; $B879: Instruction list - Bomb Torizo - initial ;;;
 {
 $AA:B879             dx C3A0,                   ; Set stepped left with right foot state
-                        C2C9,                   ; Enemy $7E:7808 = 7777h
+                        C2C9,                   ; Set animation lock
                         0001,87D0,
                         B09C,C6C6,              ; Enemy function = $C6C6 (wake enemy when Bomb Torizo chozo finishes crumbling)
                         812F,                   ; Sleep
@@ -754,7 +754,7 @@ $AA:B935             dx 0004,AA5E,
                         B271,                   ; Advance gradual colour change
                         8110,B935,              ; Decrement timer and go to $B935 if non-zero
                         C2C8,                   ; NOP
-                        C2D1,                   ; Enemy $7E:7808 = 0
+                        C2D1,                   ; Clear animation lock
                         B951,                   ; Start fight music and Bomb Torizo belly palette FX
                         0010,AA5E,
                         80ED,B9B6               ; Go to $B9B6 (walking left - left leg moving)
@@ -1030,7 +1030,7 @@ $AA:BBDE             dx 806B,C828,  ; Enemy movement function = $C828 (attacking
 ;;; $BC60: Instruction list - jumping forwards - facing left ;;;
 {
 $AA:BC60             dx 806B,C82C,      ; Enemy movement function = $C82C (jumping/falling)
-                        C2ED,BC78,      ; Enemy link instruction = $BC78
+                        C2ED,BC78,      ; Enemy link instruction = $BC78 (falling - facing left)
                         0005,AFFA,
                         0005,B014
 $AA:BC70             dx 0001,B02E,
@@ -1418,7 +1418,7 @@ $AA:C058             dx 806B,C828,  ; Enemy movement function = $C828 (attacking
 ;;; $C0DA: Instruction list - jumping forwards - facing right ;;;
 {
 $AA:C0DA             dx 806B,C82C,      ; Enemy movement function = $C82C (jumping/falling)
-                        C2ED,C0F2,      ; Enemy link instruction = $C0F2
+                        C2ED,C0F2,      ; Enemy link instruction = $C0F2 (falling - facing right)
                         0005,B048,
                         0005,B062
 $AA:C0EA             dx 0001,B07C,
@@ -1544,7 +1544,7 @@ $AA:C217 9D A8 0F    STA $0FA8,x[$7E:0FA8]
 $AA:C21A A9 40 FA    LDA #$FA40             ;\
 $AA:C21D 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy Y velocity = -5C0h
 $AA:C220 A9 28 00    LDA #$0028             ;\
-$AA:C223 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = 28h
+$AA:C223 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy Y acceleration = 28h
 $AA:C226 A9 01 00    LDA #$0001             ;\
 $AA:C229 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C22C 60          RTS
@@ -1564,7 +1564,7 @@ $AA:C23A 9D A8 0F    STA $0FA8,x[$7E:0FA8]
 $AA:C23D A9 80 FB    LDA #$FB80             ;\
 $AA:C240 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy Y velocity = -480h
 $AA:C243 A9 28 00    LDA #$0028             ;\
-$AA:C246 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = 28h
+$AA:C246 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy Y acceleration = 28h
 $AA:C249 A9 01 00    LDA #$0001             ;\
 $AA:C24C 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:C24F 60          RTS
@@ -1664,7 +1664,7 @@ $AA:C2C8 6B          RTL
 }
 
 
-;;; $C2C9: Instruction - enemy $7E:7808 = 7777h ;;;
+;;; $C2C9: Instruction - set animation lock ;;;
 {
 $AA:C2C9 A9 77 77    LDA #$7777
 $AA:C2CC 9F 08 78 7E STA $7E7808,x[$7E:7808]
@@ -1672,7 +1672,7 @@ $AA:C2D0 6B          RTL
 }
 
 
-;;; $C2D1: Instruction - enemy $7E:7808 = 0 ;;;
+;;; $C2D1: Instruction - clear animation lock ;;;
 {
 $AA:C2D1 A9 00 00    LDA #$0000
 $AA:C2D4 9F 08 78 7E STA $7E7808,x[$7E:7808]
@@ -1800,7 +1800,7 @@ $AA:C36C 6B          RTL
 ;;; $C36D: Instruction - set torizo turning around flag ;;;
 {
 $AA:C36D BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$AA:C370 09 00 40    ORA #$4000             ;} Enemy $0FB4 |= 4000h
+$AA:C370 09 00 40    ORA #$4000             ;} Enemy graphical properties |= 4000h
 $AA:C373 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;/
 $AA:C376 6B          RTL
 }
@@ -2044,7 +2044,7 @@ $AA:C57A 5D B4 0F    EOR $0FB4,x[$7E:0FB4]  ;|
 $AA:C57D 10 F1       BPL $F1    [$C570]     ;/
 $AA:C57F 98          TYA                    ;\
 $AA:C580 1A          INC A                  ;|
-$AA:C581 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 2
+$AA:C581 1A          INC A                  ;} Enemy link instruction = [Y] + 2
 $AA:C582 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $AA:C586 B9 00 00    LDA $0000,y[$AA:B980]  ;\
 $AA:C589 A8          TAY                    ;} Y = [[Y]]
@@ -2075,7 +2075,7 @@ $AA:C5A3 6B          RTL
 $AA:C5A4 98          TYA                    ;\
 $AA:C5A5 1A          INC A                  ;|
 $AA:C5A6 1A          INC A                  ;|
-$AA:C5A7 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 4
+$AA:C5A7 1A          INC A                  ;} Enemy link instruction = [Y] + 4
 $AA:C5A8 1A          INC A                  ;|
 $AA:C5A9 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $AA:C5AD AD C6 09    LDA $09C6  [$7E:09C6]  ;\
@@ -2341,10 +2341,10 @@ $AA:C72B C9 64 00    CMP #$0064             ;} If [enemy health] >= 100: go to B
 $AA:C72E B0 1E       BCS $1E    [$C74E]     ;/
 $AA:C730 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:C733 30 05       BMI $05    [$C73A]     ;} If torizo is facing left:
-$AA:C735 A9 88 C1    LDA #$C188             ; Enemy $7E:7800 = $C188 (faceless - turning right)
+$AA:C735 A9 88 C1    LDA #$C188             ; Enemy link instruction = $C188 (faceless - turning right)
 $AA:C738 80 03       BRA $03    [$C73D]
                                             ; Else (torizo is facing right):
-$AA:C73A A9 0E BD    LDA #$BD0E             ; Enemy $7E:7800 = $BD0E (faceless - turning left)
+$AA:C73A A9 0E BD    LDA #$BD0E             ; Enemy link instruction = $BD0E (faceless - turning left)
 
 $AA:C73D 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $AA:C741 A9 55 B1    LDA #$B155             ;\
@@ -2632,7 +2632,7 @@ $AA:C981 4C 67 D6    JMP $D667  [$AA:D667]  ; Go to Golden Torizo shot reaction 
 
 $AA:C984 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:C987 BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
-$AA:C98A 1F 08 78 7E ORA $7E7808,x[$7E:7808];} If [enemy flash timer] != 0 or [enemy $7E:7808] != 0: return
+$AA:C98A 1F 08 78 7E ORA $7E7808,x[$7E:7808];} If [enemy flash timer] != 0 or [enemy animation lock flag] != 0: return
 $AA:C98E D0 30       BNE $30    [$C9C0]     ;/
 $AA:C990 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $AA:C994 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -2661,11 +2661,11 @@ $AA:C9C1 6B          RTL
 }
 
 
-;;; $C9C2: Enemy shot - torizo - busy ;;;
+;;; $C9C2: Enemy shot - torizo - stand up / sit down ;;;
 {
 $AA:C9C2 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $AA:C9C5 F0 03       BEQ $03    [$C9CA]     ;} If [area index] != Crateria:
-$AA:C9C7 4C 58 D6    JMP $D658  [$AA:D658]  ; Go to Golden Torizo shot reaction - busy
+$AA:C9C7 4C 58 D6    JMP $D658  [$AA:D658]  ; Go to Golden Torizo shot reaction - stand up / sit down
 
 $AA:C9CA 6B          RTL
 }
@@ -2675,7 +2675,7 @@ $AA:C9CA 6B          RTL
 {
 $AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 600h bytes from $AF:E200 to VRAM $6D00
                         C3A0,                   ; Set stepped left with right foot state
-                        C2C9,                   ; Enemy $7E:7808 = 7777h
+                        C2C9,                   ; Set animation lock
                         B09C,D5C2,              ; Enemy function = $D5C2 (wake enemy if Samus is below and right of target position)
                         0001,AA30,
                         812F,                   ; Sleep
@@ -2727,10 +2727,10 @@ $AA:CAB6             dx 0004,AA5E,
                         B271,                   ; Advance gradual colour change
                         8110,CAB6,              ; Decrement timer and go to $CAB6 if non-zero
                         C2C8,                   ; NOP
-                        C2D1,                   ; Enemy $7E:7808 = 0
+                        C2D1,                   ; Clear animation lock
                         CAE2,                   ; Start fight music and Golden Torizo belly palette FX
                         0010,AA5E,
-                        80ED,D259               ; Go to $D259
+                        80ED,D259               ; Go to $D259 (Golden Torizo - walking left - left leg moving)
 }
 
 
@@ -3286,7 +3286,7 @@ $AA:D10C 6B          RTL
 {
 $AA:D10D             dw B09C,D5DF,              ; Enemy function = $D5DF (simple movement)
                         D17B,                   ; Disable eye beam explosions
-                        C2C9,                   ; Enemy $7E:7808 = 7777h
+                        C2C9,                   ; Set animation lock
                         813A,0008,              ; Wait 8 frames
                         8123,0004,              ; Timer = 4
                         D397                    ; Play laser sound effect
@@ -3307,7 +3307,7 @@ $AA:D133             dx 813A,0003,              ; Wait 3 frames
                         D187,                   ; Enable eye beam explosions
                         813A,0008,              ; Wait 8 frames
                         D17B,                   ; Disable eye beam explosions
-                        C2D1,                   ; Enemy $7E:7808 = 0
+                        C2D1,                   ; Clear animation lock
                         B09C,D5E6,              ; Enemy function = $D5E6 (normal movement)
                         C2F7                    ; Return
 }
@@ -3334,7 +3334,7 @@ $AA:D192 6B          RTL
 ;;; $D193: Instruction list - callable - stunned ;;;
 {
 $AA:D193             dx 806B,D5ED,              ; Enemy movement function = $D5ED (attacking)
-                        C2C9,                   ; Enemy $7E:7808 = 7777h
+                        C2C9,                   ; Set animation lock
                         813A,0018,              ; Wait 18h frames
                         8123,0002               ; Timer = 2
 $AA:D1A1             dx 813A,0003,              ; Wait 3 frames
@@ -3347,7 +3347,7 @@ $AA:D1A1             dx 813A,0003,              ; Wait 3 frames
                         814B,0040,AAB339,7D80,  ; Transfer 40h bytes from $AA:B339 to VRAM $7D80
                         8110,D1A1,              ; Decrement timer and go to $D1A1 if non-zero
                         813A,0010,              ; Wait 10h frames
-                        C2D1,                   ; Enemy $7E:7808 = 0
+                        C2D1,                   ; Clear animation lock
                         D1E7,                   ; Unmark Golden Torizo stunned
                         806B,D5F1,              ; Enemy movement function = $D5F1 (walking)
                         C2F7                    ; Return
@@ -3366,10 +3366,10 @@ $AA:D1F0 6B          RTL
 ;;; $D1F1: Instruction list - Golden Torizo - dodge - turning left ;;;
 {
 $AA:D1F1             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C2C9,       ; Enemy $7E:7808 = 7777h
+                        C2C9,       ; Set animation lock
                         C36D,       ; Set torizo turning around flag
                         0018,A4F0,
-                        C2D1,       ; Enemy $7E:7808 = 0
+                        C2D1,       ; Clear animation lock
                         80ED,D20D   ; Go to $D20D (Golden Torizo - walking left - right leg moving)
 }
 
@@ -3437,10 +3437,10 @@ $AA:D259             dx C3A0,       ; Set stepped left with right foot state
 ;;; $D2AD: Instruction list - Golden Torizo - dodge - turning right ;;;
 {
 $AA:D2AD             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
-                        C2C9,       ; Enemy $7E:7808 = 7777h
+                        C2C9,       ; Set animation lock
                         C36D,       ; Set torizo turning around flag
                         0018,A4F0,
-                        C2D1,       ; Enemy $7E:7808 = 0
+                        C2D1,       ; Clear animation lock
                         80ED,D2C9   ; Go to $D2C9 (Golden Torizo - walking right - left leg moving)
 }
 
@@ -3677,7 +3677,7 @@ $AA:D460 29 10 01    AND #$0110             ;\
 $AA:D463 D0 0C       BNE $0C    [$D471]     ;} If [random number] & 110h = 0 (25% chance):
 $AA:D465 98          TYA                    ;\
 $AA:D466 1A          INC A                  ;|
-$AA:D467 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 2
+$AA:D467 1A          INC A                  ;} Enemy link instruction = [Y] + 2
 $AA:D468 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $AA:D46C B9 00 00    LDA $0000,y[$AA:D27B]  ;\
 $AA:D46F A8          TAY                    ;} Y = [[Y]]
@@ -3701,7 +3701,7 @@ $AA:D485 A9 00 00    LDA #$0000             ;\
 $AA:D488 9F 12 78 7E STA $7E7812,x          ;} Enemy step counter = 0
 $AA:D48C 98          TYA                    ;\
 $AA:D48D 1A          INC A                  ;|
-$AA:D48E 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 2
+$AA:D48E 1A          INC A                  ;} Enemy link instruction = [Y] + 2
 $AA:D48F 9F 00 78 7E STA $7E7800,x          ;/
 $AA:D493 B9 00 00    LDA $0000,y            ;\
 $AA:D496 A8          TAY                    ;} Y = [[Y]]
@@ -3723,7 +3723,7 @@ $AA:D4A6 89 00 20    BIT #$2000             ;} If torizo is stunned:
 $AA:D4A9 F0 0C       BEQ $0C    [$D4B7]     ;/
 $AA:D4AB 98          TYA                    ;\
 $AA:D4AC 1A          INC A                  ;|
-$AA:D4AD 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 2
+$AA:D4AD 1A          INC A                  ;} Enemy link instruction = [Y] + 2
 $AA:D4AE 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $AA:D4B2 B9 00 00    LDA $0000,y[$AA:D333]  ;\
 $AA:D4B5 A8          TAY                    ;} Y = [[Y]]
@@ -3809,7 +3809,7 @@ $AA:D525 6B          RTL
 $AA:D526 98          TYA                    ;\
 $AA:D527 1A          INC A                  ;|
 $AA:D528 1A          INC A                  ;|
-$AA:D529 1A          INC A                  ;} Enemy $7E:7800 = [Y] + 4
+$AA:D529 1A          INC A                  ;} Enemy link instruction = [Y] + 4
 $AA:D52A 1A          INC A                  ;|
 $AA:D52B 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $AA:D52F AD C6 09    LDA $09C6  [$7E:09C6]  ;\
@@ -3849,10 +3849,10 @@ $AA:D563 A9 00 00    LDA #$0000             ;\
 $AA:D566 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy turn around timer = 0
 $AA:D56A BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:D56D 30 04       BMI $04    [$D573]     ;} If torizo is facing left:
-$AA:D56F A0 BF D2    LDY #$D2BF             ; Y = $D2BF
+$AA:D56F A0 BF D2    LDY #$D2BF             ; Y = $D2BF (Golden Torizo - turning right)
 $AA:D572 6B          RTL                    ; Return
 
-$AA:D573 A0 03 D2    LDY #$D203             ; Y = $D203
+$AA:D573 A0 03 D2    LDY #$D203             ; Y = $D203 (Golden Torizo - turning left)
 $AA:D576 6B          RTL                    ; Return
 
 ; BRANCH_NO_COLLISION
@@ -3934,10 +3934,10 @@ $AA:D5FE A9 00 00    LDA #$0000             ;\
 $AA:D601 9F 06 78 7E STA $7E7806,x[$7E:7806];} >_<;
 $AA:D605 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $AA:D608 30 05       BMI $05    [$D60F]     ;} If torizo is facing left:
-$AA:D60A A9 BF D2    LDA #$D2BF             ; Enemy instruction list pointer = $D2BF
+$AA:D60A A9 BF D2    LDA #$D2BF             ; Enemy instruction list pointer = $D2BF (Golden Torizo - turning right)
 $AA:D60D 80 03       BRA $03    [$D612]
                                             ; Else (torizo is facing right):
-$AA:D60F A9 03 D2    LDA #$D203             ; Enemy instruction list pointer = $D203
+$AA:D60F A9 03 D2    LDA #$D203             ; Enemy instruction list pointer = $D203 (Golden Torizo - turning left)
 
 $AA:D612 9D 92 0F    STA $0F92,x[$7E:0F92]
 $AA:D615 A9 01 00    LDA #$0001             ;\
@@ -3977,13 +3977,13 @@ $AA:D657 60          RTS
 }
 
 
-;;; $D658: Golden Torizo shot reaction - busy ;;;
+;;; $D658: Golden Torizo shot reaction - stand up / sit down ;;;
 {
 $AA:D658 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D65B BD 9C 0F    LDA $0F9C,x            ;\
 $AA:D65E D0 06       BNE $06    [$D666]     ;} If [enemy flash timer] = 0:
 $AA:D660 BF 08 78 7E LDA $7E7808,x          ;\
-$AA:D664 F0 40       BEQ $40    [$D6A6]     ;} If [enemy $7E:7808] = 0: go to Golden Torizo shot reaction - damaged
+$AA:D664 F0 40       BEQ $40    [$D6A6]     ;} If [enemy animation lock flag] = 0: go to Golden Torizo shot reaction - damaged
 
 $AA:D666 6B          RTL
 }
@@ -3995,7 +3995,7 @@ $AA:D667 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D66A BD 9C 0F    LDA $0F9C,x[$7E:0F9C]  ;\
 $AA:D66D D0 0C       BNE $0C    [$D67B]     ;} If [enemy flash timer] != 0: return
 $AA:D66F BF 08 78 7E LDA $7E7808,x[$7E:7808];\
-$AA:D673 F0 03       BEQ $03    [$D678]     ;} If [enemy $7E:7808] = 0: go to BRANCH
+$AA:D673 F0 03       BEQ $03    [$D678]     ;} If [enemy animation lock flag] = 0: go to BRANCH
 $AA:D675 4C A6 D6    JMP $D6A6  [$AA:D6A6]  ; Go to Golden Torizo shot reaction - damaged
 
 $AA:D678 4C 7C D6    JMP $D67C  [$AA:D67C]
@@ -4010,7 +4010,7 @@ $AA:D684 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $AA:D687 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $AA:D688 A8          TAY                    ;/
 $AA:D689 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
-$AA:D68C 29 00 0F    AND #$0F00             ;} Enemy $7E:780A = (projectile type)
+$AA:D68C 29 00 0F    AND #$0F00             ;} Enemy $7E:780A = (projectile type) (never read)
 $AA:D68F 9F 0A 78 7E STA $7E780A,x[$7E:780A];/
 $AA:D693 C9 00 01    CMP #$0100             ;\
 $AA:D696 F0 39       BEQ $39    [$D6D1]     ;} If (projectile type) = missile: go to Golden Torizo shot reaction - normal - missile
@@ -4030,7 +4030,7 @@ $AA:D6AA AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D6AD BD 8C 0F    LDA $0F8C,x[$7E:0F8C]  ;\
 $AA:D6B0 D0 1E       BNE $1E    [$D6D0]     ;} If [enemy health] != 0: return
 $AA:D6B2 A9 C8 B1    LDA #$B1C8             ;\
-$AA:D6B5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list = $B1C8 (torizo death sequence)
+$AA:D6B5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B1C8 (torizo death sequence)
 $AA:D6B8 A9 01 00    LDA #$0001             ;\
 $AA:D6BB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:D6BE BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
@@ -4055,10 +4055,10 @@ $AA:D6E0 A9 01 00    LDA #$0001             ;\
 $AA:D6E3 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:D6E6 3C B4 0F    BIT $0FB4,x            ;\
 $AA:D6E9 30 05       BMI $05    [$D6F0]     ;} If torizo is facing left:
-$AA:D6EB A9 F1 D1    LDA #$D1F1             ; Enemy instruction list pointer = $D1F1
+$AA:D6EB A9 F1 D1    LDA #$D1F1             ; Enemy instruction list pointer = $D1F1 (Golden Torizo - dodge - turning left)
 $AA:D6EE 80 03       BRA $03    [$D6F3]
                                             ; Else (torizo is facing right):
-$AA:D6F0 A9 AD D2    LDA #$D2AD             ; Enemy instruction list pointer = $D2AD
+$AA:D6F0 A9 AD D2    LDA #$D2AD             ; Enemy instruction list pointer = $D2AD (Golden Torizo - dodge - turning right)
 
 $AA:D6F3 9D 92 0F    STA $0F92,x
 $AA:D6F6 6B          RTL
@@ -4116,8 +4116,8 @@ $AA:D745             dw 3800, 57FF, 2BFF, 1F3C, 0278, 01B0, 010B, 0087, 0044, 00
 
 ;;; $D765: Tourian entrance statue palettes ;;;
 {
-$AA:D765             dw 3800, 57FF, 2BFF, 1F3C, 0278, 01B0, 010B, 0087, 0044, 7FFF, 7FFF, 7FFF, 03FF, 0252, 0129, 0000
-$AA:D785             dw 3800, 27F9, 2375, 1AD2, 164E, 11AB, 0D27, 0484, 0000, 7F5F, 7C1F, 5816, 300C, 5294, 39CE, 2108
+$AA:D765             dw 3800, 57FF, 2BFF, 1F3C, 0278, 01B0, 010B, 0087, 0044, 7FFF, 7FFF, 7FFF, 03FF, 0252, 0129, 0000 ; Sprite palette 2
+$AA:D785             dw 3800, 27F9, 2375, 1AD2, 164E, 11AB, 0D27, 0484, 0000, 7F5F, 7C1F, 5816, 300C, 5294, 39CE, 2108 ; Sprite palette 7
 }
 
 
@@ -4146,7 +4146,7 @@ $AA:D7BF             dx 7777,D816,
 }
 
 
-;;; $D7C7: Main AI - enemy $EFFF (Tourian entrance statue) ;;;
+;;; $D7C7: RTL. Main AI - enemy $EFFF (Tourian entrance statue) ;;;
 {
 $AA:D7C7 6B          RTL
 }
@@ -4155,15 +4155,15 @@ $AA:D7C7 6B          RTL
 ;;; $D7C8: Initialisation AI - enemy $EFFF (Tourian entrance statue) ;;;
 {
 $AA:D7C8 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:D7CB 9E 96 0F    STZ $0F96,x[$7E:0FD6]
+$AA:D7CB 9E 96 0F    STZ $0F96,x[$7E:0FD6]  ; Enemy palette index = 0
 $AA:D7CE A9 01 00    LDA #$0001             ;\
 $AA:D7D1 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
-$AA:D7D4 9E 90 0F    STZ $0F90,x[$7E:0FD0]
-$AA:D7D7 BC B4 0F    LDY $0FB4,x[$7E:0FF4]
-$AA:D7DA B9 10 D8    LDA $D810,y[$AA:D810]
-$AA:D7DD 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$AA:D7E0 BC B4 0F    LDY $0FB4,x[$7E:0FF4]
-$AA:D7E3 D0 15       BNE $15    [$D7FA]
+$AA:D7D4 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
+$AA:D7D7 BC B4 0F    LDY $0FB4,x[$7E:0FF4]  ;\
+$AA:D7DA B9 10 D8    LDA $D810,y[$AA:D810]  ;} Enemy instruction list pointer = [$D810 + [enemy parameter 1]]
+$AA:D7DD 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;/
+$AA:D7E0 BC B4 0F    LDY $0FB4,x[$7E:0FF4]  ;\
+$AA:D7E3 D0 15       BNE $15    [$D7FA]     ;} If [enemy parameter 1] = 0:
 $AA:D7E5 A0 BE BA    LDY #$BABE             ;\
 $AA:D7E8 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian statue - base decoration enemy projectile
 $AA:D7EC A0 A2 BA    LDY #$BAA2             ;\
@@ -4171,18 +4171,20 @@ $AA:D7EF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian statue - Ridley ene
 $AA:D7F3 A0 B0 BA    LDY #$BAB0             ;\
 $AA:D7F6 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Tourian statue - Phantoon enemy projectile
 
-$AA:D7FA A2 1E 00    LDX #$001E
-
-$AA:D7FD BD 85 D7    LDA $D785,x[$AA:D7A3]
-$AA:D800 9F E0 C3 7E STA $7EC3E0,x[$7E:C3FE]
-$AA:D804 BD 65 D7    LDA $D765,x[$AA:D783]
-$AA:D807 9F 40 C3 7E STA $7EC340,x[$7E:C35E]
-$AA:D80B CA          DEX
-$AA:D80C CA          DEX
-$AA:D80D 10 EE       BPL $EE    [$D7FD]
+$AA:D7FA A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:D7FD BD 85 D7    LDA $D785,x[$AA:D7A3]  ;|
+$AA:D800 9F E0 C3 7E STA $7EC3E0,x[$7E:C3FE];|
+$AA:D804 BD 65 D7    LDA $D765,x[$AA:D783]  ;} Target sprite palette 7 = [$D785..A4]
+$AA:D807 9F 40 C3 7E STA $7EC340,x[$7E:C35E];} Target sprite palette 2 = [$D765..84]
+$AA:D80B CA          DEX                    ;|
+$AA:D80C CA          DEX                    ;|
+$AA:D80D 10 EE       BPL $EE    [$D7FD]     ;/
 $AA:D80F 6B          RTL
 
-$AA:D810             dw D7B9, D7A5, D7AF
+$AA:D810             dw D7B9, ; Base decoration
+                        D7A5, ; Ridley
+                        D7AF  ; Phantoon
 }
 
 

@@ -2607,8 +2607,8 @@ $91:9EDC             dw 83BF,8A9B,9DAE ; Crystal flash
 ;     0100: Right
 ;     0080: Jump
 ;     0040: Shoot
-;     0020: Aim diagonally up
-;     0010: Aim diagonally down
+;     0020: Aim diagonally down
+;     0010: Aim diagonally up
 
 $91:9EE2             dw A0DE, A0EC, A172, A0EC, A172, A0EC, A172, A0EC, A172, A1F8, A242, AE94, AEDE, A1F8, A242, A1F8,
                         A242, A1F8, A242, AAC0, AB3A, A2F6, A376, ABB4, AC40, A41E, A46E, A4BE, A50E, A5FE, A618, A632,
