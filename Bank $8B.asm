@@ -7931,13 +7931,13 @@ $8B:BC07 60          RTS
 ;;; $BC08: Reset button assignments to default ;;;
 {
 $8B:BC08 A9 00 08    LDA #$0800             ;\
-$8B:BC0B 8D AA 09    STA $09AA  [$7E:09AA]  ;} Up button
+$8B:BC0B 8D AA 09    STA $09AA  [$7E:09AA]  ;} Up binding = up
 $8B:BC0E A9 00 04    LDA #$0400             ;\
-$8B:BC11 8D AC 09    STA $09AC  [$7E:09AC]  ;} Down button
+$8B:BC11 8D AC 09    STA $09AC  [$7E:09AC]  ;} Down binding = down
 $8B:BC14 A9 00 02    LDA #$0200             ;\
-$8B:BC17 8D AE 09    STA $09AE  [$7E:09AE]  ;} Left button
+$8B:BC17 8D AE 09    STA $09AE  [$7E:09AE]  ;} Left binding = left
 $8B:BC1A A9 00 01    LDA #$0100             ;\
-$8B:BC1D 8D B0 09    STA $09B0  [$7E:09B0]  ;} Right button
+$8B:BC1D 8D B0 09    STA $09B0  [$7E:09B0]  ;} Right binding = right
 $8B:BC20 AD B2 09    LDA $09B2  [$7E:09B2]  ;\
 $8B:BC23 8D 82 0D    STA $0D82  [$7E:0D82]  ;|
 $8B:BC26 AD B4 09    LDA $09B4  [$7E:09B4]  ;|
@@ -7945,7 +7945,7 @@ $8B:BC29 8D 84 0D    STA $0D84  [$7E:0D84]  ;|
 $8B:BC2C AD B6 09    LDA $09B6  [$7E:09B6]  ;|
 $8B:BC2F 8D 86 0D    STA $0D86  [$7E:0D86]  ;|
 $8B:BC32 AD B8 09    LDA $09B8  [$7E:09B8]  ;|
-$8B:BC35 8D 88 0D    STA $0D88  [$7E:0D88]  ;} Back up previous button settings to $0D82..8F
+$8B:BC35 8D 88 0D    STA $0D88  [$7E:0D88]  ;} Back up previous controller bindings to $0D82..8F
 $8B:BC38 AD BA 09    LDA $09BA  [$7E:09BA]  ;|
 $8B:BC3B 8D 8A 0D    STA $0D8A  [$7E:0D8A]  ;|
 $8B:BC3E AD BC 09    LDA $09BC  [$7E:09BC]  ;|
@@ -7953,19 +7953,19 @@ $8B:BC41 8D 8C 0D    STA $0D8C  [$7E:0D8C]  ;|
 $8B:BC44 AD BE 09    LDA $09BE  [$7E:09BE]  ;|
 $8B:BC47 8D 8E 0D    STA $0D8E  [$7E:0D8E]  ;/
 $8B:BC4A A9 40 00    LDA #$0040             ;\
-$8B:BC4D 8D B2 09    STA $09B2  [$7E:09B2]  ;} Shoot button
+$8B:BC4D 8D B2 09    STA $09B2  [$7E:09B2]  ;} Shoot binding = X
 $8B:BC50 A9 80 00    LDA #$0080             ;\
-$8B:BC53 8D B4 09    STA $09B4  [$7E:09B4]  ;} Jump button
+$8B:BC53 8D B4 09    STA $09B4  [$7E:09B4]  ;} Jump binding = A
 $8B:BC56 A9 00 80    LDA #$8000             ;\
-$8B:BC59 8D B6 09    STA $09B6  [$7E:09B6]  ;} Run button
+$8B:BC59 8D B6 09    STA $09B6  [$7E:09B6]  ;} Run binding = B
 $8B:BC5C A9 00 40    LDA #$4000             ;\
-$8B:BC5F 8D B8 09    STA $09B8  [$7E:09B8]  ;} Item cancel button
+$8B:BC5F 8D B8 09    STA $09B8  [$7E:09B8]  ;} Item cancel binding = Y
 $8B:BC62 A9 00 20    LDA #$2000             ;\
-$8B:BC65 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item switch button
+$8B:BC65 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item select binding = select
 $8B:BC68 A9 20 00    LDA #$0020             ;\
-$8B:BC6B 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down button
+$8B:BC6B 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down binding = L
 $8B:BC6E A9 10 00    LDA #$0010             ;\
-$8B:BC71 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up button
+$8B:BC71 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up binding = R
 $8B:BC74 60          RTS
 }
 
@@ -7973,19 +7973,19 @@ $8B:BC74 60          RTS
 ;;; $BC75: Recover previous button assignments ;;;
 {
 $8B:BC75 AD 82 0D    LDA $0D82  [$7E:0D82]  ;\
-$8B:BC78 8D B2 09    STA $09B2  [$7E:09B2]  ;} Shoot button
+$8B:BC78 8D B2 09    STA $09B2  [$7E:09B2]  ;} Shoot binding
 $8B:BC7B AD 84 0D    LDA $0D84  [$7E:0D84]  ;\
-$8B:BC7E 8D B4 09    STA $09B4  [$7E:09B4]  ;} Jump button
+$8B:BC7E 8D B4 09    STA $09B4  [$7E:09B4]  ;} Jump binding
 $8B:BC81 AD 86 0D    LDA $0D86  [$7E:0D86]  ;\
-$8B:BC84 8D B6 09    STA $09B6  [$7E:09B6]  ;} Run button
+$8B:BC84 8D B6 09    STA $09B6  [$7E:09B6]  ;} Run binding
 $8B:BC87 AD 88 0D    LDA $0D88  [$7E:0D88]  ;\
-$8B:BC8A 8D B8 09    STA $09B8  [$7E:09B8]  ;} Item cancel button
+$8B:BC8A 8D B8 09    STA $09B8  [$7E:09B8]  ;} Item cancel binding
 $8B:BC8D AD 8A 0D    LDA $0D8A  [$7E:0D8A]  ;\
-$8B:BC90 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item switch button
+$8B:BC90 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item select binding
 $8B:BC93 AD 8C 0D    LDA $0D8C  [$7E:0D8C]  ;\
-$8B:BC96 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down button
+$8B:BC96 8D BC 09    STA $09BC  [$7E:09BC]  ;} Aim down binding
 $8B:BC99 AD 8E 0D    LDA $0D8E  [$7E:0D8E]  ;\
-$8B:BC9C 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up button
+$8B:BC9C 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up binding
 $8B:BC9F 60          RTS
 }
 }

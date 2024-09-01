@@ -12531,7 +12531,7 @@ $82:F23B 8D B6 09    STA $09B6  [$7E:09B6]  ;} Run binding = B
 $82:F23E A9 00 40    LDA #$4000             ;\
 $82:F241 8D B8 09    STA $09B8  [$7E:09B8]  ;} Item cancel binding = Y
 $82:F244 A9 00 20    LDA #$2000             ;\
-$82:F247 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item switch binding = select
+$82:F247 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item select binding = select
 $82:F24A A9 10 00    LDA #$0010             ;\
 $82:F24D 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up binding = R
 $82:F250 A9 20 00    LDA #$0020             ;\
@@ -13000,7 +13000,7 @@ $82:F549 60          RTS
 $82:F54A             dw 09B2, ; Shoot binding
                         09B4, ; Jump binding
                         09B6, ; Run binding
-                        09BA, ; Item switch binding
+                        09BA, ; Item select binding
                         09B8, ; Item cancel binding
                         09BE, ; Aim up binding
                         09BC  ; Aim down binding

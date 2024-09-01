@@ -4214,75 +4214,77 @@ $AA:D911             dw 3800, 5755, 4A4F, 1CE4, 0C60, 56B2, 3E0D, 2D68, 2526, 03
 {
 ;;; $D931: Instruction -  ;;;
 {
-$AA:D931 5A          PHY
-$AA:D932 BC B0 0F    LDY $0FB0,x
-$AA:D935 B9 6E 10    LDA $106E,y
-$AA:D938 49 80 00    EOR #$0080
-$AA:D93B 7A          PLY
-$AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]
+$AA:D931 5A          PHY                    ;\
+$AA:D932 BC B0 0F    LDY $0FB0,x            ;|
+$AA:D935 B9 6E 10    LDA $106E,y            ;} A = [enemy ([X] + 3) $0FAE + [enemy $0FB0]] ^ 80h
+$AA:D938 49 80 00    EOR #$0080             ;|
+$AA:D93B 7A          PLY                    ;/
+$AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
 }
 
 
 ;;; $D93F: Instruction -  ;;;
 {
-$AA:D93F 5A          PHY
-$AA:D940 BC B0 0F    LDY $0FB0,x
-$AA:D943 B9 6E 10    LDA $106E,y
-$AA:D946 7A          PLY
-$AA:D947 4C 56 D9    JMP $D956  [$AA:D956]
+$AA:D93F 5A          PHY                    ;\
+$AA:D940 BC B0 0F    LDY $0FB0,x            ;|
+$AA:D943 B9 6E 10    LDA $106E,y            ;} A = [enemy ([X] + 3) $0FAE + [enemy $0FB0]]
+$AA:D946 7A          PLY                    ;/
+$AA:D947 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
 }
 
 
 ;;; $D94A: Instruction -  ;;;
 {
-$AA:D94A BD A9 0F    LDA $0FA9,x[$7E:0FE9]
-$AA:D94D 49 80 00    EOR #$0080
-$AA:D950 4C 56 D9    JMP $D956  [$AA:D956]
+$AA:D94A BD A9 0F    LDA $0FA9,x[$7E:0FE9]  ;\
+$AA:D94D 49 80 00    EOR #$0080             ;} A = [enemy $0FA8] / 100h ^ 80h
+$AA:D950 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
 }
 
 
 ;;; $D953: Instruction -  ;;;
 {
-$AA:D953 BD A9 0F    LDA $0FA9,x[$7E:1069]
+$AA:D953 BD A9 0F    LDA $0FA9,x[$7E:1069]  ; A = [enemy $0FA8] / 100h
 }
 
 
 ;;; $D956:  ;;;
 {
+;; Parameters:
+;;     A: Angle
 $AA:D956 DA          PHX
 $AA:D957 5A          PHY
-$AA:D958 9B          TXY
-$AA:D959 29 FF 00    AND #$00FF
-$AA:D95C 0A          ASL A
-$AA:D95D AA          TAX
-$AA:D95E 64 12       STZ $12    [$7E:0012]
-$AA:D960 64 14       STZ $14    [$7E:0014]
-$AA:D962 BF 43 B4 A0 LDA $A0B443,x[$A0:B531]
-$AA:D966 10 02       BPL $02    [$D96A]
-$AA:D968 C6 14       DEC $14    [$7E:0014]
-
-$AA:D96A 85 13       STA $13    [$7E:0013]
-$AA:D96C B9 7C 0F    LDA $0F7C,y[$7E:0FBC]
-$AA:D96F 18          CLC
-$AA:D970 65 12       ADC $12    [$7E:0012]
-$AA:D972 99 7C 0F    STA $0F7C,y[$7E:0FBC]
-$AA:D975 B9 7A 0F    LDA $0F7A,y[$7E:0FBA]
-$AA:D978 65 14       ADC $14    [$7E:0014]
-$AA:D97A 99 7A 0F    STA $0F7A,y[$7E:0FBA]
-$AA:D97D 64 12       STZ $12    [$7E:0012]
-$AA:D97F 64 14       STZ $14    [$7E:0014]
-$AA:D981 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B4B1]
-$AA:D985 10 02       BPL $02    [$D989]
-$AA:D987 C6 14       DEC $14    [$7E:0014]
-
-$AA:D989 85 13       STA $13    [$7E:0013]
-$AA:D98B B9 80 0F    LDA $0F80,y[$7E:0FC0]
-$AA:D98E 18          CLC
-$AA:D98F 65 12       ADC $12    [$7E:0012]
-$AA:D991 99 80 0F    STA $0F80,y[$7E:0FC0]
-$AA:D994 B9 7E 0F    LDA $0F7E,y[$7E:0FBE]
-$AA:D997 65 14       ADC $14    [$7E:0014]
-$AA:D999 99 7E 0F    STA $0F7E,y[$7E:0FBE]
+$AA:D958 9B          TXY                    ; Y = [X] (enemy index)
+$AA:D959 29 FF 00    AND #$00FF             ;\
+$AA:D95C 0A          ASL A                  ;} X = [A] % 100h * 2
+$AA:D95D AA          TAX                    ;/
+$AA:D95E 64 12       STZ $12    [$7E:0012]  ;\
+$AA:D960 64 14       STZ $14    [$7E:0014]  ;|
+$AA:D962 BF 43 B4 A0 LDA $A0B443,x[$A0:B531];|
+$AA:D966 10 02       BPL $02    [$D96A]     ;} $14.$12 = sin([X] / 2 * pi / 80h)
+$AA:D968 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$AA:D96A 85 13       STA $13    [$7E:0013]  ;/
+$AA:D96C B9 7C 0F    LDA $0F7C,y[$7E:0FBC]  ;\
+$AA:D96F 18          CLC                    ;|
+$AA:D970 65 12       ADC $12    [$7E:0012]  ;|
+$AA:D972 99 7C 0F    STA $0F7C,y[$7E:0FBC]  ;} Enemy X position += [$14].[$12]
+$AA:D975 B9 7A 0F    LDA $0F7A,y[$7E:0FBA]  ;|
+$AA:D978 65 14       ADC $14    [$7E:0014]  ;|
+$AA:D97A 99 7A 0F    STA $0F7A,y[$7E:0FBA]  ;/
+$AA:D97D 64 12       STZ $12    [$7E:0012]  ;\
+$AA:D97F 64 14       STZ $14    [$7E:0014]  ;|
+$AA:D981 BF C3 B3 A0 LDA $A0B3C3,x[$A0:B4B1];|
+$AA:D985 10 02       BPL $02    [$D989]     ;} $14.$12 = -cos([X] / 2 * pi / 80h)
+$AA:D987 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;|
+$AA:D989 85 13       STA $13    [$7E:0013]  ;/
+$AA:D98B B9 80 0F    LDA $0F80,y[$7E:0FC0]  ;\
+$AA:D98E 18          CLC                    ;|
+$AA:D98F 65 12       ADC $12    [$7E:0012]  ;|
+$AA:D991 99 80 0F    STA $0F80,y[$7E:0FC0]  ;} Enemy Y position += [$14].[$12]
+$AA:D994 B9 7E 0F    LDA $0F7E,y[$7E:0FBE]  ;|
+$AA:D997 65 14       ADC $14    [$7E:0014]  ;|
+$AA:D999 99 7E 0F    STA $0F7E,y[$7E:0FBE]  ;/
 $AA:D99C 7A          PLY
 $AA:D99D FA          PLX
 $AA:D99E 6B          RTL
@@ -4333,14 +4335,14 @@ $AA:D9E9 6B          RTL
 
 ;;; $D9EA..DAE3: Instruction lists - Shaktool ;;;
 {
-;;; $D9EA: Instruction list - yyyy ;;;
+;;; $D9EA: Instruction list - Shaktool saw hand -  ;;;
 {
 $AA:D9EA             dx 813A,0240,  ; Wait 240h frames
                         80ED,DA0E   ; Go to $DA0E
 }
 
 
-;;; $D9F2: Instruction list - yyyy ;;;
+;;; $D9F2: Instruction list - Shaktool arm piece -  ;;;
 {
 $AA:D9F2             dx 813A,0240,  ; Wait 240h frames
                         D9BA,       ; Reset Shaktool functions
@@ -4348,14 +4350,14 @@ $AA:D9F2             dx 813A,0240,  ; Wait 240h frames
 }
 
 
-;;; $D9FC: Instruction list - yyyy ;;;
+;;; $D9FC: Instruction list - Shaktool saw hand -  ;;;
 {
 $AA:D9FC             dx 813A,0014,  ; Wait 14h frames
                         80ED,DA0E   ; Go to $DA0E
 }
 
 
-;;; $DA04: Instruction list - yyyy ;;;
+;;; $DA04: Instruction list - Shaktool arm piece -  ;;;
 {
 $AA:DA04             dx 813A,0014,  ; Wait 14h frames
                         D9BA,       ; Reset Shaktool functions
@@ -4372,7 +4374,7 @@ $AA:DA0E             dx 000A,E028,
 }
 
 
-;;; $DA1E: Instruction list - yyyy ;;;
+;;; $DA1E: Instruction list - Shaktool arm piece -  ;;;
 {
 $AA:DA1E             dx 0003,DF5C,
                         0003,DF63,
@@ -4381,7 +4383,7 @@ $AA:DA1E             dx 0003,DF5C,
 }
 
 
-;;; $DA2E: Instruction list - yyyy ;;;
+;;; $DA2E: Instruction list - Shaktool arm piece -  ;;;
 {
 $AA:DA2E             dx 813A,00C0,  ; Wait C0h frames
                         D931,
@@ -4392,7 +4394,7 @@ $AA:DA2E             dx 813A,00C0,  ; Wait C0h frames
 }
 
 
-;;; $DA42: Instruction list - yyyy ;;;
+;;; $DA42: Instruction list - Shaktool arm piece -  ;;;
 {
 $AA:DA42             dx 813A,0100,  ; Wait 100h frames
                         D931,
@@ -4403,7 +4405,7 @@ $AA:DA42             dx 813A,0100,  ; Wait 100h frames
 }
 
 
-;;; $DA56: Instruction list - yyyy ;;;
+;;; $DA56: Instruction list - Shaktool arm piece -  ;;;
 {
 $AA:DA56             dx D94A,
                         813A,0014,  ; Wait 14h frames
@@ -4412,7 +4414,7 @@ $AA:DA56             dx D94A,
 }
 
 
-;;; $DA62: Instruction list - yyyy ;;;
+;;; $DA62: Instruction list - Shaktool arm piece -  ;;;
 {
 $AA:DA62             dx 813A,0004,  ; Wait 4 frames
                         D94A,
@@ -4429,7 +4431,7 @@ $AA:DA72             dx 0077,DF71,
 }
 
 
-;;; $DA7A: Instruction list - yyyy ;;;
+;;; $DA7A: Instruction list - Shaktool head -  ;;;
 {
 $AA:DA7A             dx 813A,0080,  ; Wait 80h frames
                         D931,
@@ -4441,7 +4443,7 @@ $AA:DA7A             dx 813A,0080,  ; Wait 80h frames
 }
 
 
-;;; $DA90: Instruction list - yyyy ;;;
+;;; $DA90: Instruction list - Shaktool head -  ;;;
 {
 ; Suspect head bob animation
 $AA:DA90             dx 813A,0008,  ; Wait 8 frames
@@ -4455,35 +4457,35 @@ $AA:DAA4             dx 0774,DF78,
 }
 
 
-;;; $DAAC: Instruction list - yyyy ;;;
+;;; $DAAC: Instruction list - Shaktool head -  ;;;
 {
 $AA:DAAC             dx 0775,DF8E,
                         80ED,DAAC   ; Go to $DAAC
 }
 
 
-;;; $DAB4: Instruction list - yyyy ;;;
+;;; $DAB4: Instruction list - Shaktool head -  ;;;
 {
 $AA:DAB4             dx 0776,DFA4,
                         80ED,DAB4   ; Go to $DAB4
 }
 
 
-;;; $DABC: Instruction list - yyyy ;;;
+;;; $DABC: Instruction list - Shaktool head -  ;;;
 {
 $AA:DABC             dx 0777,DFBA,
                         80ED,DABC   ; Go to $DABC
 }
 
 
-;;; $DAC4: Instruction list - yyyy ;;;
+;;; $DAC4: Instruction list - Shaktool head -  ;;;
 {
 $AA:DAC4             dx 0778,DFD0,
                         80ED,DAC4   ; Go to $DAC4
 }
 
 
-;;; $DACC: Instruction list - yyyy ;;;
+;;; $DACC: Instruction list - Shaktool head -  ;;;
 {
 $AA:DACC             dx 0779,DFE6,
                         80ED,DACC   ; Go to $DACC
@@ -4497,7 +4499,7 @@ $AA:DAD4             dx 077A,DFFC,
 }
 
 
-;;; $DADC: Instruction list - yyyy ;;;
+;;; $DADC: Instruction list - Shaktool head -  ;;;
 {
 $AA:DADC             dx 077B,E012,
                         80ED,DADC   ; Go to $DADC
@@ -5003,7 +5005,7 @@ $AA:DE94 6B          RTL
 $AA:DE95             dw 2800, 2C00, 2C00, 2C00, 2C00, 2C00, 2800 ; Properties
 $AA:DEA3             dw 0000, 0040, 0080, 00C0, 0100, 0140, 0180 ; Enemy RAM offset from primary piece
 $AA:DEB1             dw 0000, F800, E800, D000, B000, 9800, 8800 ; $0FAA. Initial angles for each piece
-$AA:DEBF             dw DA0E, DA72, DA72, DAD4, DA72, DA72, DA0E ; Instruction pointer
+$AA:DEBF             dw DA0E, DA72, DA72, DAD4, DA72, DA72, DA0E ; Instruction list pointer
 $AA:DECD             dw 0002, 0004, 0004, 0002, 0004, 0004, 0002 ; Layer control
 $AA:DEDB             dw DCAB, DCAC, DCAC, DCD7, DCAC, DCAC, DD25 ; Function pointer
 $AA:DEE9             dw 0000, 0020, 0060, 00C0, 0140, 01A0, 01E0 ; $0FAC

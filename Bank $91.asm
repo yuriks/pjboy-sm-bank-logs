@@ -1378,7 +1378,7 @@ $91:8854 8D B6 09    STA $09B6  [$7E:09B6]  ;} Run binding = B
 $91:8857 A9 00 40    LDA #$4000             ;\
 $91:885A 8D B8 09    STA $09B8  [$7E:09B8]  ;} Item cancel binding = Y
 $91:885D A9 00 20    LDA #$2000             ;\
-$91:8860 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item switch binding = select
+$91:8860 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item select binding = select
 $91:8863 A9 10 00    LDA #$0010             ;\
 $91:8866 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up binding = R
 $91:8869 A9 20 00    LDA #$0020             ;\

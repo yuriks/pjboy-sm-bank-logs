@@ -10010,7 +10010,7 @@ $90:C4D4 A9 01 00    LDA #$0001             ;|
 $90:C4D7 85 16       STA $16    [$7E:0016]  ;/
 
 $90:C4D9 A5 8F       LDA $8F    [$7E:008F]  ;\
-$90:C4DB 2C BA 09    BIT $09BA  [$7E:09BA]  ;} If not newly pressed item switch: go to BRANCH_ITEM_SWITCH_END
+$90:C4DB 2C BA 09    BIT $09BA  [$7E:09BA]  ;} If not newly pressed item select: go to BRANCH_ITEM_SELECT_END
 $90:C4DE F0 39       BEQ $39    [$C519]     ;/
 $90:C4E0 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
 $90:C4E3 1A          INC A                  ;} Increment currently selected HUD item
@@ -10042,10 +10042,10 @@ $90:C50C F0 08       BEQ $08    [$C516]     ;} If holding item cancel:
 $90:C50E AD D2 09    LDA $09D2  [$7E:09D2]  ;\
 $90:C511 8D 04 0A    STA $0A04  [$7E:0A04]  ;} Auto-cancelling HUD item = [currently selected HUD item]
 $90:C514 80 03       BRA $03    [$C519]
+                                            ; Else (not holding item cancel):
+$90:C516 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Auto-cancelling HUD item = nothing
 
-$90:C516 9C 04 0A    STZ $0A04  [$7E:0A04]  ; Else (not holding item cancel): auto-cancelling HUD item = nothing
-
-; BRANCH_ITEM_SWITCH_END
+; BRANCH_ITEM_SELECT_END
 $90:C519 AD D2 09    LDA $09D2  [$7E:09D2]  ;\
 $90:C51C C5 12       CMP $12    [$7E:0012]  ;} If currently selected HUD item changed: go to BRANCH_ITEM_CHANGED
 $90:C51E D0 11       BNE $11    [$C531]     ;/

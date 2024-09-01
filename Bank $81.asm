@@ -5959,7 +5959,7 @@ $81:B333 8D B2 09    STA $09B2  [$7E:09B2]  ;} Shoot button = X
 $81:B336 A9 00 40    LDA #$4000             ;\
 $81:B339 8D B8 09    STA $09B8  [$7E:09B8]  ;} Item cancel button = Y
 $81:B33C A9 00 20    LDA #$2000             ;\
-$81:B33F 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item switch button = select
+$81:B33F 8D BA 09    STA $09BA  [$7E:09BA]  ;} Item select button = select
 $81:B342 A9 10 00    LDA #$0010             ;\
 $81:B345 8D BE 09    STA $09BE  [$7E:09BE]  ;} Aim up button = R
 $81:B348 A9 20 00    LDA #$0020             ;\
