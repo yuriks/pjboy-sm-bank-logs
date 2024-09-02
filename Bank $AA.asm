@@ -4758,59 +4758,59 @@ $AA:DCAB 60          RTS
 ;;; $DCAC: Shaktool function - arm piece ;;;
 {
 $AA:DCAC 20 2A DC    JSR $DC2A  [$AA:DC2A]  ; Position Shaktool piece relative to previous piece
-$AA:DCAF 3C B4 0F    BIT $0FB4,x[$7E:0FF4]
-$AA:DCB2 50 0F       BVC $0F    [$DCC3]
-$AA:DCB4 A9 00 01    LDA #$0100
-$AA:DCB7 18          CLC
-$AA:DCB8 7D A8 0F    ADC $0FA8,x[$7E:0FE8]
-$AA:DCBB 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$AA:DCBE A9 00 01    LDA #$0100
+$AA:DCAF 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
+$AA:DCB2 50 0F       BVC $0F    [$DCC3]     ;} If [enemy parameter 1] & 4000h != 0:
+$AA:DCB4 A9 00 01    LDA #$0100             ;\
+$AA:DCB7 18          CLC                    ;|
+$AA:DCB8 7D A8 0F    ADC $0FA8,x[$7E:0FE8]  ;} Enemy $0FA8 += 100h
+$AA:DCBB 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
+$AA:DCBE A9 00 01    LDA #$0100             ; A = 100h
 $AA:DCC1 80 03       BRA $03    [$DCC6]
+                                            ; Else ([enemy parameter 1] & 4000h = 0):
+$AA:DCC3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ; A = [enemy $0FAC]
 
-$AA:DCC3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]
+$AA:DCC6 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
+$AA:DCC9 10 04       BPL $04    [$DCCF]     ;} If [enemy parameter 1] & 8000h != 0:
+$AA:DCCB 49 FF FF    EOR #$FFFF             ;\
+$AA:DCCE 1A          INC A                  ;} A = -[A]
 
-$AA:DCC6 3C B4 0F    BIT $0FB4,x[$7E:0FF4]
-$AA:DCC9 10 04       BPL $04    [$DCCF]
-$AA:DCCB 49 FF FF    EOR #$FFFF
-$AA:DCCE 1A          INC A
-
-$AA:DCCF 18          CLC
-$AA:DCD0 7D AA 0F    ADC $0FAA,x[$7E:0FEA]
-$AA:DCD3 9D AA 0F    STA $0FAA,x[$7E:0FEA]
+$AA:DCCF 18          CLC                    ;\
+$AA:DCD0 7D AA 0F    ADC $0FAA,x[$7E:0FEA]  ;} Enemy $0FAA += [A]
+$AA:DCD3 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $AA:DCD6 60          RTS
 }
 
 
 ;;; $DCD7: Shaktool function - head ;;;
 {
-$AA:DCD7 20 AC DC    JSR $DCAC  [$AA:DCAC]
-$AA:DCDA BD AA 0F    LDA $0FAA,x[$7E:106A]
-$AA:DCDD 49 00 80    EOR #$8000
-$AA:DCE0 85 12       STA $12    [$7E:0012]
-$AA:DCE2 BD EA 0F    LDA $0FEA,x[$7E:10AA]
-$AA:DCE5 38          SEC
-$AA:DCE6 E5 12       SBC $12    [$7E:0012]
-$AA:DCE8 4A          LSR A
-$AA:DCE9 18          CLC
-$AA:DCEA 65 12       ADC $12    [$7E:0012]
-$AA:DCEC 3C AE 0F    BIT $0FAE,x[$7E:106E]
-$AA:DCEF 10 03       BPL $03    [$DCF4]
-$AA:DCF1 49 00 80    EOR #$8000
+$AA:DCD7 20 AC DC    JSR $DCAC  [$AA:DCAC]  ; Execute $DCAC
+$AA:DCDA BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
+$AA:DCDD 49 00 80    EOR #$8000             ;|
+$AA:DCE0 85 12       STA $12    [$7E:0012]  ;|
+$AA:DCE2 BD EA 0F    LDA $0FEA,x[$7E:10AA]  ;|
+$AA:DCE5 38          SEC                    ;} A = midpoint([enemy $0FAA] ^ 8000h, [enemy ([X] + 1) $0FAA])
+$AA:DCE6 E5 12       SBC $12    [$7E:0012]  ;|
+$AA:DCE8 4A          LSR A                  ;|
+$AA:DCE9 18          CLC                    ;|
+$AA:DCEA 65 12       ADC $12    [$7E:0012]  ;/
+$AA:DCEC 3C AE 0F    BIT $0FAE,x[$7E:106E]  ;\
+$AA:DCEF 10 03       BPL $03    [$DCF4]     ;} If [enemy ([X] + 1) $0FAA] & 8000h != 0:
+$AA:DCF1 49 00 80    EOR #$8000             ; A ^= 8000h
 
-$AA:DCF4 EB          XBA
-$AA:DCF5 18          CLC
-$AA:DCF6 69 08 00    ADC #$0008
-$AA:DCF9 29 E0 00    AND #$00E0
-$AA:DCFC E2 20       SEP #$20
-$AA:DCFE 9D AE 0F    STA $0FAE,x[$7E:106E]
-$AA:DD01 C2 20       REP #$20
-$AA:DD03 4A          LSR A
-$AA:DD04 4A          LSR A
-$AA:DD05 4A          LSR A
-$AA:DD06 4A          LSR A
-$AA:DD07 A8          TAY
-$AA:DD08 B9 15 DD    LDA $DD15,y[$AA:DD1D]
-$AA:DD0B 9D 92 0F    STA $0F92,x[$7E:1052]
+$AA:DCF4 EB          XBA                    ;\
+$AA:DCF5 18          CLC                    ;|
+$AA:DCF6 69 08 00    ADC #$0008             ;} A = [A] / 100h + 8 & E0h
+$AA:DCF9 29 E0 00    AND #$00E0             ;/
+$AA:DCFC E2 20       SEP #$20               ;\
+$AA:DCFE 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy $0FAE = [A]
+$AA:DD01 C2 20       REP #$20               ;/
+$AA:DD03 4A          LSR A                  ;\
+$AA:DD04 4A          LSR A                  ;|
+$AA:DD05 4A          LSR A                  ;|
+$AA:DD06 4A          LSR A                  ;} Enemy instruction list pointer = [$DD15 + [A] / 10h]
+$AA:DD07 A8          TAY                    ;|
+$AA:DD08 B9 15 DD    LDA $DD15,y[$AA:DD1D]  ;|
+$AA:DD0B 9D 92 0F    STA $0F92,x[$7E:1052]  ;/
 $AA:DD0E A9 01 00    LDA #$0001             ;\
 $AA:DD11 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
 $AA:DD14 60          RTS

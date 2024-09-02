@@ -13999,7 +13999,7 @@ $8B:F02A 60          RTS
 $8B:F02B A9 80 00    LDA #$0080             ;\
 $8B:F02E 99 7D 1A    STA $1A7D,y[$7E:1A9B]  ;} Cinematic sprite object X position = 80h
 $8B:F031 A9 60 00    LDA #$0060             ;\
-$8B:F034 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 80h
+$8B:F034 99 9D 1A    STA $1A9D,y[$7E:1ABB]  ;} Cinematic sprite object Y position = 60h
 $8B:F037 A9 00 04    LDA #$0400             ;\
 $8B:F03A 99 BD 1A    STA $1ABD,y[$7E:1ADB]  ;} Cinematic sprite object palette index = 400h (palette 2)
 $8B:F03D 60          RTS
