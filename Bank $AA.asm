@@ -4216,7 +4216,7 @@ $AA:D911             dw 3800, 5755, 4A4F, 1CE4, 0C60, 56B2, 3E0D, 2D68, 2526, 03
 {
 $AA:D931 5A          PHY                    ;\
 $AA:D932 BC B0 0F    LDY $0FB0,x            ;|
-$AA:D935 B9 6E 10    LDA $106E,y            ;} A = [enemy ([X] + 3) $0FAE + [enemy $0FB0]] ^ 80h
+$AA:D935 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head $0FAE] ^ 80h
 $AA:D938 49 80 00    EOR #$0080             ;|
 $AA:D93B 7A          PLY                    ;/
 $AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
@@ -4675,15 +4675,14 @@ $AA:DC29 60          RTS
 
 ;;; $DC2A: Position Shaktool piece relative to previous piece ;;;
 {
-; Sets position of enemy relative to enemy in previous slot using trigonometry on angle given by enemy's $0FAB
 $AA:DC2A BD AB 0F    LDA $0FAB,x[$7E:0FEB]  ;\
 $AA:DC2D 29 FF 00    AND #$00FF             ;|
-$AA:DC30 0A          ASL A                  ;} Y = [enemy $0FAB] * 2
+$AA:DC30 0A          ASL A                  ;} Y = [enemy $0FAA] / 100h * 2
 $AA:DC31 A8          TAY                    ;/
 $AA:DC32 64 12       STZ $12    [$7E:0012]  ;\
 $AA:DC34 64 14       STZ $14    [$7E:0014]  ;|
 $AA:DC36 B9 BD E0    LDA $E0BD,y[$AA:E2AD]  ;|
-$AA:DC39 10 02       BPL $02    [$DC3D]     ;} $14.$12 = sin([enemy $0FAB] * pi / 80h) * BFFh / 100h
+$AA:DC39 10 02       BPL $02    [$DC3D]     ;} $14.$12 = sin([enemy $0FAA] * pi / 8000h) * BFFh / 100h
 $AA:DC3B C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:DC3D 85 13       STA $13    [$7E:0013]  ;/
@@ -4697,7 +4696,7 @@ $AA:DC4D 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 $AA:DC50 64 12       STZ $12    [$7E:0012]  ;\
 $AA:DC52 64 14       STZ $14    [$7E:0014]  ;|
 $AA:DC54 B9 3D E0    LDA $E03D,y[$AA:E22D]  ;|
-$AA:DC57 10 02       BPL $02    [$DC5B]     ;} $14.$12 = -cos([enemy $0FAB] * pi / 80h) * BFFh / 100h
+$AA:DC57 10 02       BPL $02    [$DC5B]     ;} $14.$12 = -cos([enemy $0FAA] * pi / 8000h) * BFFh / 100h
 $AA:DC59 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:DC5B 85 13       STA $13    [$7E:0013]  ;/
@@ -4759,18 +4758,18 @@ $AA:DCAB 60          RTS
 {
 $AA:DCAC 20 2A DC    JSR $DC2A  [$AA:DC2A]  ; Position Shaktool piece relative to previous piece
 $AA:DCAF 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
-$AA:DCB2 50 0F       BVC $0F    [$DCC3]     ;} If [enemy parameter 1] & 4000h != 0:
+$AA:DCB2 50 0F       BVC $0F    [$DCC3]     ;} If [enemy $0FB4] & 4000h != 0:
 $AA:DCB4 A9 00 01    LDA #$0100             ;\
 $AA:DCB7 18          CLC                    ;|
 $AA:DCB8 7D A8 0F    ADC $0FA8,x[$7E:0FE8]  ;} Enemy $0FA8 += 100h
 $AA:DCBB 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 $AA:DCBE A9 00 01    LDA #$0100             ; A = 100h
 $AA:DCC1 80 03       BRA $03    [$DCC6]
-                                            ; Else ([enemy parameter 1] & 4000h = 0):
+                                            ; Else ([enemy $0FB4] & 4000h = 0):
 $AA:DCC3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ; A = [enemy $0FAC]
 
 $AA:DCC6 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
-$AA:DCC9 10 04       BPL $04    [$DCCF]     ;} If [enemy parameter 1] & 8000h != 0:
+$AA:DCC9 10 04       BPL $04    [$DCCF]     ;} If [enemy $0FB4] & 8000h != 0:
 $AA:DCCB 49 FF FF    EOR #$FFFF             ;\
 $AA:DCCE 1A          INC A                  ;} A = -[A]
 
@@ -4794,7 +4793,7 @@ $AA:DCE8 4A          LSR A                  ;|
 $AA:DCE9 18          CLC                    ;|
 $AA:DCEA 65 12       ADC $12    [$7E:0012]  ;/
 $AA:DCEC 3C AE 0F    BIT $0FAE,x[$7E:106E]  ;\
-$AA:DCEF 10 03       BPL $03    [$DCF4]     ;} If [enemy ([X] + 1) $0FAA] & 8000h != 0:
+$AA:DCEF 10 03       BPL $03    [$DCF4]     ;} If [enemy $0FAE] & 8000h != 0:
 $AA:DCF1 49 00 80    EOR #$8000             ; A ^= 8000h
 
 $AA:DCF4 EB          XBA                    ;\
