@@ -11411,7 +11411,7 @@ $82:EA55 60          RTS                    ;} Return carry clear
 ;;; $EA56: Load library background - command Ah: clear BG2 tilemap ;;;
 {
 ; Command Ah is only used by:
-;     Phanton's room and Draygon's room (which aren't load station rooms)
+;     Phantoon's room and Draygon's room (which aren't load station rooms)
 ;     Ceres elevator shaft (which doesn't display BG2)
 
 ; So this routine has no observable effect (and hence the bug in $80:A23F doesn't show)

@@ -4212,7 +4212,7 @@ $AA:D911             dw 3800, 5755, 4A4F, 1CE4, 0C60, 56B2, 3E0D, 2D68, 2526, 03
 
 ;;; $D931..E9: Shaktool instructions ;;;
 {
-;;; $D931: Instruction -  ;;;
+;;; $D931: Unused. Instruction -  ;;;
 {
 $AA:D931 5A          PHY                    ;\
 $AA:D932 BC B0 0F    LDY $0FB0,x            ;|
@@ -4223,11 +4223,11 @@ $AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
 }
 
 
-;;; $D93F: Instruction -  ;;;
+;;; $D93F: Unused. Instruction -  ;;;
 {
 $AA:D93F 5A          PHY                    ;\
 $AA:D940 BC B0 0F    LDY $0FB0,x            ;|
-$AA:D943 B9 6E 10    LDA $106E,y            ;} A = [enemy ([X] + 3) $0FAE + [enemy $0FB0]]
+$AA:D943 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head $0FAE]
 $AA:D946 7A          PLY                    ;/
 $AA:D947 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
 }
@@ -4335,14 +4335,16 @@ $AA:D9E9 6B          RTL
 
 ;;; $D9EA..DAE3: Instruction lists - Shaktool ;;;
 {
-;;; $D9EA: Instruction list - Shaktool saw hand -  ;;;
+;;; $D9EA..DA2D: Instruction lists - Shaktool saw hand ;;;
+{
+;;; $D9EA: Unused. Instruction list - Shaktool saw hand - attack - primary piece ;;;
 {
 $AA:D9EA             dx 813A,0240,  ; Wait 240h frames
                         80ED,DA0E   ; Go to $DA0E
 }
 
 
-;;; $D9F2: Instruction list - Shaktool arm piece -  ;;;
+;;; $D9F2: Unused. Instruction list - Shaktool saw hand - attack - final piece ;;;
 {
 $AA:D9F2             dx 813A,0240,  ; Wait 240h frames
                         D9BA,       ; Reset Shaktool functions
@@ -4350,14 +4352,14 @@ $AA:D9F2             dx 813A,0240,  ; Wait 240h frames
 }
 
 
-;;; $D9FC: Instruction list - Shaktool saw hand -  ;;;
+;;; $D9FC: Instruction list - Shaktool saw hand - head bob - primary piece ;;;
 {
 $AA:D9FC             dx 813A,0014,  ; Wait 14h frames
                         80ED,DA0E   ; Go to $DA0E
 }
 
 
-;;; $DA04: Instruction list - Shaktool arm piece -  ;;;
+;;; $DA04: Instruction list - Shaktool saw hand - head bob - final piece ;;;
 {
 $AA:DA04             dx 813A,0014,  ; Wait 14h frames
                         D9BA,       ; Reset Shaktool functions
@@ -4365,8 +4367,9 @@ $AA:DA04             dx 813A,0014,  ; Wait 14h frames
 }
 
 
-;;; $DA0E: Instruction list - Shaktool saw hand - initial ;;;
+;;; $DA0E: Instruction list - Shaktool saw hand - primary piece ;;;
 {
+; Also used for the final piece before the first collision
 $AA:DA0E             dx 000A,E028,
                         000A,E02F,
                         000A,E036,
@@ -4374,16 +4377,19 @@ $AA:DA0E             dx 000A,E028,
 }
 
 
-;;; $DA1E: Instruction list - Shaktool arm piece -  ;;;
+;;; $DA1E: Instruction list - Shaktool saw hand - final piece ;;;
 {
 $AA:DA1E             dx 0003,DF5C,
                         0003,DF63,
                         0003,DF6A,
                         80ED,DA1E   ; Go to $DA1E
 }
+}
 
 
-;;; $DA2E: Instruction list - Shaktool arm piece -  ;;;
+;;; $DA2E..79: Instruction lists - Shaktool arm piece ;;;
+{
+;;; $DA2E: Unused. Instruction list - Shaktool arm piece - attack - back ;;;
 {
 $AA:DA2E             dx 813A,00C0,  ; Wait C0h frames
                         D931,
@@ -4394,7 +4400,7 @@ $AA:DA2E             dx 813A,00C0,  ; Wait C0h frames
 }
 
 
-;;; $DA42: Instruction list - Shaktool arm piece -  ;;;
+;;; $DA42: Unused. Instruction list - Shaktool arm piece - attack - front ;;;
 {
 $AA:DA42             dx 813A,0100,  ; Wait 100h frames
                         D931,
@@ -4405,7 +4411,7 @@ $AA:DA42             dx 813A,0100,  ; Wait 100h frames
 }
 
 
-;;; $DA56: Instruction list - Shaktool arm piece -  ;;;
+;;; $DA56: Instruction list - Shaktool arm piece - head bob - back ;;;
 {
 $AA:DA56             dx D94A,
                         813A,0014,  ; Wait 14h frames
@@ -4414,7 +4420,7 @@ $AA:DA56             dx D94A,
 }
 
 
-;;; $DA62: Instruction list - Shaktool arm piece -  ;;;
+;;; $DA62: Instruction list - Shaktool arm piece - head bob - front ;;;
 {
 $AA:DA62             dx 813A,0004,  ; Wait 4 frames
                         D94A,
@@ -4424,14 +4430,17 @@ $AA:DA62             dx 813A,0004,  ; Wait 4 frames
 }
 
 
-;;; $DA72: Instruction list - Shaktool arm piece - initial ;;;
+;;; $DA72: Instruction list - Shaktool arm piece - normal ;;;
 {
 $AA:DA72             dx 0077,DF71,
                         80ED,DA72   ; Go to $DA72
 }
+}
 
 
-;;; $DA7A: Instruction list - Shaktool head -  ;;;
+;;; $DA7A..E3: Instruction lists - Shaktool head ;;;
+{
+;;; $DA7A: Unused. Instruction list - Shaktool head - attack ;;;
 {
 $AA:DA7A             dx 813A,0080,  ; Wait 80h frames
                         D931,
@@ -4443,96 +4452,100 @@ $AA:DA7A             dx 813A,0080,  ; Wait 80h frames
 }
 
 
-;;; $DA90: Instruction list - Shaktool head -  ;;;
+;;; $DA90: Instruction list - Shaktool head - head bob ;;;
 {
-; Suspect head bob animation
 $AA:DA90             dx 813A,0008,  ; Wait 8 frames
                         D94A,
                         813A,0004,  ; Wait 4 frames
                         D953,
                         813A,0008,  ; Wait 8 frames
                         813A,0001   ; Wait 1 frame
+}
+
+
+;;; $DAA4: Instruction list - Shaktool head - aiming left ;;;
+{
+; Useless observation: the graphical instruction delay is increasing by one for each of these instruction lists ^^;
 $AA:DAA4             dx 0774,DF78,
                         80ED,DAA4   ; Go to $DAA4
 }
 
 
-;;; $DAAC: Instruction list - Shaktool head -  ;;;
+;;; $DAAC: Instruction list - Shaktool head - aiming up-left ;;;
 {
 $AA:DAAC             dx 0775,DF8E,
                         80ED,DAAC   ; Go to $DAAC
 }
 
 
-;;; $DAB4: Instruction list - Shaktool head -  ;;;
+;;; $DAB4: Instruction list - Shaktool head - aiming up ;;;
 {
 $AA:DAB4             dx 0776,DFA4,
                         80ED,DAB4   ; Go to $DAB4
 }
 
 
-;;; $DABC: Instruction list - Shaktool head -  ;;;
+;;; $DABC: Instruction list - Shaktool head - aiming up-right ;;;
 {
 $AA:DABC             dx 0777,DFBA,
                         80ED,DABC   ; Go to $DABC
 }
 
 
-;;; $DAC4: Instruction list - Shaktool head -  ;;;
+;;; $DAC4: Instruction list - Shaktool head - aiming right ;;;
 {
 $AA:DAC4             dx 0778,DFD0,
                         80ED,DAC4   ; Go to $DAC4
 }
 
 
-;;; $DACC: Instruction list - Shaktool head -  ;;;
+;;; $DACC: Instruction list - Shaktool head - aiming down-right ;;;
 {
 $AA:DACC             dx 0779,DFE6,
                         80ED,DACC   ; Go to $DACC
 }
 
 
-;;; $DAD4: Instruction list - Shaktool head - initial ;;;
+;;; $DAD4: Instruction list - Shaktool head - aiming down ;;;
 {
 $AA:DAD4             dx 077A,DFFC,
                         80ED,DAD4   ; Go to $DAD4
 }
 
 
-;;; $DADC: Instruction list - Shaktool head -  ;;;
+;;; $DADC: Instruction list - Shaktool head - aiming down-left ;;;
 {
 $AA:DADC             dx 077B,E012,
                         80ED,DADC   ; Go to $DADC
+}
 }
 }
 
 
 ;;; $DAE4: RTS ;;;
 {
+; RTS'd out
 $AA:DAE4 60          RTS
-}
 
+$AA:DAE5 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$AA:DAE9 89 31 84    BIT #$8431             ;\
+$AA:DAEC D0 1F       BNE $1F    [$DB0D]     ;} If [random number] & 8431h != 0 (1Fh/20h chance): return
+$AA:DAEE A0 0C 00    LDY #$000C             ; Y = Ch
 
-;;; $DAE5:  ;;;
-{
-$AA:DAE5 22 11 81 80 JSL $808111[$80:8111]
-$AA:DAE9 89 31 84    BIT #$8431
-$AA:DAEC D0 1F       BNE $1F    [$DB0D]
-$AA:DAEE A0 0C 00    LDY #$000C
-
-$AA:DAF1 A9 AA DC    LDA #$DCAA
-$AA:DAF4 9D B2 0F    STA $0FB2,x
-$AA:DAF7 B9 21 DF    LDA $DF21,y
-$AA:DAFA 9D 92 0F    STA $0F92,x
+; LOOP
+$AA:DAF1 A9 AA DC    LDA #$DCAA             ;\
+$AA:DAF4 9D B2 0F    STA $0FB2,x            ;} Enemy function = RTS
+$AA:DAF7 B9 21 DF    LDA $DF21,y            ;\
+$AA:DAFA 9D 92 0F    STA $0F92,x            ;} Enemy instruction list = [$DF21 + [Y]]
 $AA:DAFD A9 01 00    LDA #$0001             ;\
 $AA:DB00 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$AA:DB03 8A          TXA
-$AA:DB04 38          SEC
-$AA:DB05 E9 40 00    SBC #$0040
-$AA:DB08 AA          TAX
-$AA:DB09 88          DEY
-$AA:DB0A 88          DEY
-$AA:DB0B 10 E4       BPL $E4    [$DAF1]
+$AA:DB03 8A          TXA                    ;\
+$AA:DB04 38          SEC                    ;|
+$AA:DB05 E9 40 00    SBC #$0040             ;} X -= 40h
+$AA:DB08 AA          TAX                    ;/
+$AA:DB09 88          DEY                    ;\
+$AA:DB0A 88          DEY                    ;} Y -= 2
+$AA:DB0B 10 E4       BPL $E4    [$DAF1]     ; If [Y] >= 0: go to LOOP
 
 $AA:DB0D 60          RTS
 }
@@ -4798,7 +4811,7 @@ $AA:DCF1 49 00 80    EOR #$8000             ; A ^= 8000h
 
 $AA:DCF4 EB          XBA                    ;\
 $AA:DCF5 18          CLC                    ;|
-$AA:DCF6 69 08 00    ADC #$0008             ;} A = [A] / 100h + 8 & E0h
+$AA:DCF6 69 08 00    ADC #$0008             ;} A = ([A] / 100h + 8) / 20h * 20h
 $AA:DCF9 29 E0 00    AND #$00E0             ;/
 $AA:DCFC E2 20       SEP #$20               ;\
 $AA:DCFE 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy $0FAE = [A]
@@ -4806,7 +4819,7 @@ $AA:DD01 C2 20       REP #$20               ;/
 $AA:DD03 4A          LSR A                  ;\
 $AA:DD04 4A          LSR A                  ;|
 $AA:DD05 4A          LSR A                  ;|
-$AA:DD06 4A          LSR A                  ;} Enemy instruction list pointer = [$DD15 + [A] / 10h]
+$AA:DD06 4A          LSR A                  ;} Enemy instruction list pointer = [$DD15 + [A] / 20h * 2]
 $AA:DD07 A8          TAY                    ;|
 $AA:DD08 B9 15 DD    LDA $DD15,y[$AA:DD1D]  ;|
 $AA:DD0B 9D 92 0F    STA $0F92,x[$7E:1052]  ;/
@@ -4992,7 +5005,11 @@ $AA:DE8F F0 03       BEQ $03    [$DE94]     ;} If [Y] != 0:
 $AA:DE91 20 2A DC    JSR $DC2A  [$AA:DC2A]  ; Position Shaktool piece relative to previous piece
 
 $AA:DE94 6B          RTL
+}
 
+
+;;; $DE95: Shaktool piece data ;;;
+{
 ;                        _______________________________________ Initially right saw hand (primary piece)
 ;                       |      _________________________________ Initially rightmost arm piece
 ;                       |     |      ___________________________ Initially centre right arm piece
@@ -5004,24 +5021,14 @@ $AA:DE94 6B          RTL
 $AA:DE95             dw 2800, 2C00, 2C00, 2C00, 2C00, 2C00, 2800 ; Properties
 $AA:DEA3             dw 0000, 0040, 0080, 00C0, 0100, 0140, 0180 ; Enemy RAM offset from primary piece
 $AA:DEB1             dw 0000, F800, E800, D000, B000, 9800, 8800 ; $0FAA. Initial angles for each piece
-$AA:DEBF             dw DA0E, DA72, DA72, DAD4, DA72, DA72, DA0E ; Instruction list pointer
+$AA:DEBF             dw DA0E, DA72, DA72, DAD4, DA72, DA72, DA0E ; Initial instruction list pointer
 $AA:DECD             dw 0002, 0004, 0004, 0002, 0004, 0004, 0002 ; Layer control
 $AA:DEDB             dw DCAB, DCAC, DCAC, DCD7, DCAC, DCAC, DD25 ; Function pointer
 $AA:DEE9             dw 0000, 0020, 0060, 00C0, 0140, 01A0, 01E0 ; $0FAC
 $AA:DEF7             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000 ; Zero
-}
-
-
-;;; $DF05: Unused ;;;
-{
-$AA:DF05             dw 0000, 0000, 0002, 0004, 0006, 0008, 000A
-}
-
-
-;;; $DF13: Shaktool instruction list pointers ;;;
-{
-$AA:DF13             dw D9FC, DA56, DA62, DA90, DA62, DA56, DA04
-$AA:DF21             dw D9EA, DA2E, DA42, DA7A, DA42, DA2E, D9F2
+$AA:DF05             dw 0000, 0000, 0002, 0004, 0006, 0008, 000A ; Unused
+$AA:DF13             dw D9FC, DA56, DA62, DA90, DA62, DA56, DA04 ; Head bob instruction list pointers
+$AA:DF21             dw D9EA, DA2E, DA42, DA7A, DA42, DA2E, D9F2 ; Unused. Attack instruction list pointers
 }
 
 
@@ -5057,10 +5064,12 @@ $AA:DF5B 6B          RTL
 
 ;;; $DF5C: Spritemaps - Shaktool ;;;
 {
-; Arm piece
+; Saw hand - final piece (spins anti-clockwise)
 $AA:DF5C             dx 0001, 81F8,F8,2100
 $AA:DF63             dx 0001, 81F8,F8,2102
 $AA:DF6A             dx 0001, 81F8,F8,2104
+
+; Arm piece
 $AA:DF71             dx 0001, 81F8,F8,2106
 
 ; Head
@@ -5073,7 +5082,7 @@ $AA:DFE6             dx 0004, 0004,04,E10F, 81F8,F8,A10C, 01F4,FC,211F, 01FC,F4,
 $AA:DFFC             dx 0004, 81F8,F8,A10A, 0002,F7,211F, 01F6,F7,211F, 01FC,08,A11E
 $AA:E012             dx 0004, 01F4,04,A10F, 81F8,F8,E10C, 0004,FC,211F, 01FC,F4,211F
 
-; Saw hand
+; Saw hand - primary piece (spins clockwise)
 $AA:E028             dx 0001, 81F8,F8,6100
 $AA:E02F             dx 0001, 81F8,F8,6102
 $AA:E036             dx 0001, 81F8,F8,6104
