@@ -4219,7 +4219,7 @@ $AA:D932 BC B0 0F    LDY $0FB0,x            ;|
 $AA:D935 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head $0FAE] ^ 80h
 $AA:D938 49 80 00    EOR #$0080             ;|
 $AA:D93B 7A          PLY                    ;/
-$AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
+$AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 }
 
 
@@ -4229,25 +4229,25 @@ $AA:D93F 5A          PHY                    ;\
 $AA:D940 BC B0 0F    LDY $0FB0,x            ;|
 $AA:D943 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head $0FAE]
 $AA:D946 7A          PLY                    ;/
-$AA:D947 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
+$AA:D947 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 }
 
 
-;;; $D94A: Instruction -  ;;;
+;;; $D94A: Instruction - lower enemy 1px ;;;
 {
 $AA:D94A BD A9 0F    LDA $0FA9,x[$7E:0FE9]  ;\
 $AA:D94D 49 80 00    EOR #$0080             ;} A = [enemy $0FA8] / 100h ^ 80h
-$AA:D950 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to $D956
+$AA:D950 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 }
 
 
-;;; $D953: Instruction -  ;;;
+;;; $D953: Instruction - raise enemy 1px ;;;
 {
 $AA:D953 BD A9 0F    LDA $0FA9,x[$7E:1069]  ; A = [enemy $0FA8] / 100h
 }
 
 
-;;; $D956:  ;;;
+;;; $D956: Move Shaktool piece 1px ;;;
 {
 ;; Parameters:
 ;;     A: Angle
@@ -4312,21 +4312,21 @@ $AA:D9B9 6B          RTL
 ;;; $D9BA: Instruction - reset Shaktool functions ;;;
 {
 $AA:D9BA 5A          PHY
-$AA:D9BB BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:D9BE AD DB DE    LDA $DEDB  [$AA:DEDB]
-$AA:D9C1 99 B2 0F    STA $0FB2,y[$7E:0FB2]
-$AA:D9C4 AD DD DE    LDA $DEDD  [$AA:DEDD]
-$AA:D9C7 99 F2 0F    STA $0FF2,y[$7E:0FF2]
-$AA:D9CA AD DF DE    LDA $DEDF  [$AA:DEDF]
-$AA:D9CD 99 32 10    STA $1032,y[$7E:1032]
-$AA:D9D0 AD E1 DE    LDA $DEE1  [$AA:DEE1]
-$AA:D9D3 99 72 10    STA $1072,y[$7E:1072]
-$AA:D9D6 AD E3 DE    LDA $DEE3  [$AA:DEE3]
-$AA:D9D9 99 B2 10    STA $10B2,y[$7E:10B2]
-$AA:D9DC AD E5 DE    LDA $DEE5  [$AA:DEE5]
-$AA:D9DF 99 F2 10    STA $10F2,y[$7E:10F2]
-$AA:D9E2 AD E7 DE    LDA $DEE7  [$AA:DEE7]
-$AA:D9E5 99 32 11    STA $1132,y[$7E:1132]
+$AA:D9BB BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
+$AA:D9BE AD DB DE    LDA $DEDB  [$AA:DEDB]  ;\
+$AA:D9C1 99 B2 0F    STA $0FB2,y[$7E:0FB2]  ;} Shaktool primary piece function = RTS
+$AA:D9C4 AD DD DE    LDA $DEDD  [$AA:DEDD]  ;\
+$AA:D9C7 99 F2 0F    STA $0FF2,y[$7E:0FF2]  ;} Shaktool rightmost arm piece function = $DCAC
+$AA:D9CA AD DF DE    LDA $DEDF  [$AA:DEDF]  ;\
+$AA:D9CD 99 32 10    STA $1032,y[$7E:1032]  ;} Shaktool centre right arm piece function = $DCAC
+$AA:D9D0 AD E1 DE    LDA $DEE1  [$AA:DEE1]  ;\
+$AA:D9D3 99 72 10    STA $1072,y[$7E:1072]  ;} Shaktool head function = $DCD7
+$AA:D9D6 AD E3 DE    LDA $DEE3  [$AA:DEE3]  ;\
+$AA:D9D9 99 B2 10    STA $10B2,y[$7E:10B2]  ;} Shaktool centre left arm piece function = $DCAC
+$AA:D9DC AD E5 DE    LDA $DEE5  [$AA:DEE5]  ;\
+$AA:D9DF 99 F2 10    STA $10F2,y[$7E:10F2]  ;} Shaktool leftmost arm piece function = $DCAC
+$AA:D9E2 AD E7 DE    LDA $DEE7  [$AA:DEE7]  ;\
+$AA:D9E5 99 32 11    STA $1132,y[$7E:1132]  ;} Shaktool final piece function = $DD25
 $AA:D9E8 7A          PLY
 $AA:D9E9 6B          RTL
 }
@@ -4413,9 +4413,9 @@ $AA:DA42             dx 813A,0100,  ; Wait 100h frames
 
 ;;; $DA56: Instruction list - Shaktool arm piece - head bob - back ;;;
 {
-$AA:DA56             dx D94A,
+$AA:DA56             dx D94A,       ; Lower enemy 1px
                         813A,0014,  ; Wait 14h frames
-                        D953,
+                        D953,       ; Raise enemy 1px
                         80ED,DA72   ; Go to $DA72
 }
 
@@ -4423,9 +4423,9 @@ $AA:DA56             dx D94A,
 ;;; $DA62: Instruction list - Shaktool arm piece - head bob - front ;;;
 {
 $AA:DA62             dx 813A,0004,  ; Wait 4 frames
-                        D94A,
+                        D94A,       ; Lower enemy 1px
                         813A,000C,  ; Wait Ch frames
-                        D953,
+                        D953,       ; Raise enemy 1px
                         813A,0004   ; Wait 4 frames
 }
 
@@ -4455,9 +4455,9 @@ $AA:DA7A             dx 813A,0080,  ; Wait 80h frames
 ;;; $DA90: Instruction list - Shaktool head - head bob ;;;
 {
 $AA:DA90             dx 813A,0008,  ; Wait 8 frames
-                        D94A,
+                        D94A,       ; Lower enemy 1px
                         813A,0004,  ; Wait 4 frames
-                        D953,
+                        D953,       ; Raise enemy 1px
                         813A,0008,  ; Wait 8 frames
                         813A,0001   ; Wait 1 frame
 }

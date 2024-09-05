@@ -7037,7 +7037,7 @@ $84:B51D C5 13       CMP $13    [$7E:0013]  ;|
 $84:B51F B0 02       BCS $02    [$B523]     ;} $14.$12 = min([$14].[$12], 0.3000h)
 $84:B521 85 13       STA $13    [$7E:0013]  ;/
 
-$84:B523 EE 71 1E    INC $1E71  [$7E:1E71]  ; Set Samus in in quicksand flag
+$84:B523 EE 71 1E    INC $1E71  [$7E:1E71]  ; Set Samus is in quicksand flag
 
 $84:B526 18          CLC                    ;\
 $84:B527 60          RTS                    ;} Return carry clear
@@ -7062,7 +7062,7 @@ $84:B529 60          RTS
 $84:B52A AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $84:B52D C9 01 00    CMP #$0001             ;} If [Samus contact damage index] = speed boosting: go to quicksand speed boosting
 $84:B530 F0 05       BEQ $05    [$B537]     ;/
-$84:B532 EE 71 1E    INC $1E71  [$7E:1E71]  ; Set Samus in in quicksand flag
+$84:B532 EE 71 1E    INC $1E71  [$7E:1E71]  ; Set Samus is in quicksand flag
 $84:B535 18          CLC                    ;\
 $84:B536 60          RTS                    ;} Return carry clear
 }
