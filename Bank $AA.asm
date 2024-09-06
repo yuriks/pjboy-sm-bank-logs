@@ -4522,7 +4522,7 @@ $AA:DADC             dx 077B,E012,
 }
 
 
-;;; $DAE4: RTS ;;;
+;;; $DAE4: RTS. Maybe make Shaktool attack ;;;
 {
 ; RTS'd out
 $AA:DAE4 60          RTS
@@ -4536,7 +4536,7 @@ $AA:DAEE A0 0C 00    LDY #$000C             ; Y = Ch
 $AA:DAF1 A9 AA DC    LDA #$DCAA             ;\
 $AA:DAF4 9D B2 0F    STA $0FB2,x            ;} Enemy function = RTS
 $AA:DAF7 B9 21 DF    LDA $DF21,y            ;\
-$AA:DAFA 9D 92 0F    STA $0F92,x            ;} Enemy instruction list = [$DF21 + [Y]]
+$AA:DAFA 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = [$DF21 + [Y]]
 $AA:DAFD A9 01 00    LDA #$0001             ;\
 $AA:DB00 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $AA:DB03 8A          TXA                    ;\
@@ -4551,44 +4551,44 @@ $AA:DB0D 60          RTS
 }
 
 
-;;; $DB0E:  ;;;
+;;; $DB0E: Shaktool pieces $0FB4 = [A] ;;;
 {
-$AA:DB0E BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:DB11 99 B4 0F    STA $0FB4,y[$7E:0FB4]
-$AA:DB14 99 F4 0F    STA $0FF4,y[$7E:0FF4]
-$AA:DB17 99 34 10    STA $1034,y[$7E:1034]
-$AA:DB1A 99 74 10    STA $1074,y[$7E:1074]
-$AA:DB1D 99 B4 10    STA $10B4,y[$7E:10B4]
-$AA:DB20 99 F4 10    STA $10F4,y[$7E:10F4]
-$AA:DB23 99 34 11    STA $1134,y[$7E:1134]
+$AA:DB0E BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
+$AA:DB11 99 B4 0F    STA $0FB4,y[$7E:0FB4]  ; Shaktool primary piece $0FB4 = [A]
+$AA:DB14 99 F4 0F    STA $0FF4,y[$7E:0FF4]  ; Shaktool rightmost arm piece $0FB4 = [A]
+$AA:DB17 99 34 10    STA $1034,y[$7E:1034]  ; Shaktool centre right arm piece $0FB4 = [A]
+$AA:DB1A 99 74 10    STA $1074,y[$7E:1074]  ; Shaktool head $0FB4 = [A]
+$AA:DB1D 99 B4 10    STA $10B4,y[$7E:10B4]  ; Shaktool centre left arm piece $0FB4 = [A]
+$AA:DB20 99 F4 10    STA $10F4,y[$7E:10F4]  ; Shaktool leftmost arm piece $0FB4 = [A]
+$AA:DB23 99 34 11    STA $1134,y[$7E:1134]  ; Shaktool final piece $0FB4 = [A]
 $AA:DB26 60          RTS
 }
 
 
-;;; $DB27:  ;;;
+;;; $DB27: Shaktool pieces $0FA8 = [A] ;;;
 {
-$AA:DB27 BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:DB2A 99 A8 0F    STA $0FA8,y[$7E:0FA8]
-$AA:DB2D 99 E8 0F    STA $0FE8,y[$7E:0FE8]
-$AA:DB30 99 28 10    STA $1028,y[$7E:1028]
-$AA:DB33 99 68 10    STA $1068,y[$7E:1068]
-$AA:DB36 99 A8 10    STA $10A8,y[$7E:10A8]
-$AA:DB39 99 E8 10    STA $10E8,y[$7E:10E8]
-$AA:DB3C 99 28 11    STA $1128,y[$7E:1128]
+$AA:DB27 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
+$AA:DB2A 99 A8 0F    STA $0FA8,y[$7E:0FA8]  ; Shaktool primary piece $0FA8 = [A]
+$AA:DB2D 99 E8 0F    STA $0FE8,y[$7E:0FE8]  ; Shaktool rightmost arm piece $0FA8 = [A]
+$AA:DB30 99 28 10    STA $1028,y[$7E:1028]  ; Shaktool centre right arm piece $0FA8 = [A]
+$AA:DB33 99 68 10    STA $1068,y[$7E:1068]  ; Shaktool head $0FA8 = [A]
+$AA:DB36 99 A8 10    STA $10A8,y[$7E:10A8]  ; Shaktool centre left arm piece $0FA8 = [A]
+$AA:DB39 99 E8 10    STA $10E8,y[$7E:10E8]  ; Shaktool leftmost arm piece $0FA8 = [A]
+$AA:DB3C 99 28 11    STA $1128,y[$7E:1128]  ; Shaktool final piece $0FA8 = [A]
 $AA:DB3F 60          RTS
 }
 
 
-;;; $DB40:  ;;;
+;;; $DB40: Shaktool pieces $0FAA = [A] ;;;
 {
-$AA:DB40 BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:DB43 99 AA 0F    STA $0FAA,y[$7E:0FAA]
-$AA:DB46 99 EA 0F    STA $0FEA,y[$7E:0FEA]
-$AA:DB49 99 2A 10    STA $102A,y[$7E:102A]
-$AA:DB4C 99 6A 10    STA $106A,y[$7E:106A]
-$AA:DB4F 99 AA 10    STA $10AA,y[$7E:10AA]
-$AA:DB52 99 EA 10    STA $10EA,y[$7E:10EA]
-$AA:DB55 99 2A 11    STA $112A,y[$7E:112A]
+$AA:DB40 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
+$AA:DB43 99 AA 0F    STA $0FAA,y[$7E:0FAA]  ; Shaktool primary piece $0FAA = [A]
+$AA:DB46 99 EA 0F    STA $0FEA,y[$7E:0FEA]  ; Shaktool rightmost arm piece $0FAA = [A]
+$AA:DB49 99 2A 10    STA $102A,y[$7E:102A]  ; Shaktool centre right arm piece $0FAA = [A]
+$AA:DB4C 99 6A 10    STA $106A,y[$7E:106A]  ; Shaktool head $0FAA = [A]
+$AA:DB4F 99 AA 10    STA $10AA,y[$7E:10AA]  ; Shaktool centre left arm piece $0FAA = [A]
+$AA:DB52 99 EA 10    STA $10EA,y[$7E:10EA]  ; Shaktool leftmost arm piece $0FAA = [A]
+$AA:DB55 99 2A 11    STA $112A,y[$7E:112A]  ; Shaktool final piece $0FAA = [A]
 $AA:DB58 60          RTS
 }
 
@@ -4724,25 +4724,25 @@ $AA:DC6E 60          RTS
 }
 
 
-;;; $DC6F:  ;;;
+;;; $DC6F: Set Shaktool pieces $0FAA ;;;
 {
-$AA:DC6F BD A8 0F    LDA $0FA8,x[$7E:1128]
-$AA:DC72 20 40 DB    JSR $DB40  [$AA:DB40]
-$AA:DC75 BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:DC78 AD E9 DE    LDA $DEE9  [$AA:DEE9]
-$AA:DC7B 99 AC 0F    STA $0FAC,y[$7E:0FAC]
-$AA:DC7E AD EB DE    LDA $DEEB  [$AA:DEEB]
-$AA:DC81 99 EC 0F    STA $0FEC,y[$7E:0FEC]
-$AA:DC84 AD ED DE    LDA $DEED  [$AA:DEED]
-$AA:DC87 99 2C 10    STA $102C,y[$7E:102C]
-$AA:DC8A AD EF DE    LDA $DEEF  [$AA:DEEF]
-$AA:DC8D 99 6C 10    STA $106C,y[$7E:106C]
-$AA:DC90 AD F1 DE    LDA $DEF1  [$AA:DEF1]
-$AA:DC93 99 AC 10    STA $10AC,y[$7E:10AC]
-$AA:DC96 AD F3 DE    LDA $DEF3  [$AA:DEF3]
-$AA:DC99 99 EC 10    STA $10EC,y[$7E:10EC]
-$AA:DC9C AD F5 DE    LDA $DEF5  [$AA:DEF5]
-$AA:DC9F 99 2C 11    STA $112C,y[$7E:112C]
+$AA:DC6F BD A8 0F    LDA $0FA8,x[$7E:1128]  ;\
+$AA:DC72 20 40 DB    JSR $DB40  [$AA:DB40]  ;} Shaktool pieces $0FAA = [enemy $0FA8]
+$AA:DC75 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
+$AA:DC78 AD E9 DE    LDA $DEE9  [$AA:DEE9]  ;\
+$AA:DC7B 99 AC 0F    STA $0FAC,y[$7E:0FAC]  ;} Shaktool primary piece $0FAC = 0
+$AA:DC7E AD EB DE    LDA $DEEB  [$AA:DEEB]  ;\
+$AA:DC81 99 EC 0F    STA $0FEC,y[$7E:0FEC]  ;} Shaktool rightmost arm piece $0FAC = 20h
+$AA:DC84 AD ED DE    LDA $DEED  [$AA:DEED]  ;\
+$AA:DC87 99 2C 10    STA $102C,y[$7E:102C]  ;} Shaktool centre right arm piece $0FAC = 60h
+$AA:DC8A AD EF DE    LDA $DEEF  [$AA:DEEF]  ;\
+$AA:DC8D 99 6C 10    STA $106C,y[$7E:106C]  ;} Shaktool head $0FAC = C0h
+$AA:DC90 AD F1 DE    LDA $DEF1  [$AA:DEF1]  ;\
+$AA:DC93 99 AC 10    STA $10AC,y[$7E:10AC]  ;} Shaktool centre left arm piece $0FAC = 140h
+$AA:DC96 AD F3 DE    LDA $DEF3  [$AA:DEF3]  ;\
+$AA:DC99 99 EC 10    STA $10EC,y[$7E:10EC]  ;} Shaktool leftmost arm piece $0FAC = 1A0h
+$AA:DC9C AD F5 DE    LDA $DEF5  [$AA:DEF5]  ;\
+$AA:DC9F 99 2C 11    STA $112C,y[$7E:112C]  ;} Shaktool final piece $0FAC = 1E0h
 $AA:DCA2 60          RTS
 }
 
@@ -4767,22 +4767,22 @@ $AA:DCAB 60          RTS
 }
 
 
-;;; $DCAC: Shaktool function - arm piece ;;;
+;;; $DCAC: Shaktool function - arm piece. Set position and handle curling ;;;
 {
 $AA:DCAC 20 2A DC    JSR $DC2A  [$AA:DC2A]  ; Position Shaktool piece relative to previous piece
 $AA:DCAF 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
-$AA:DCB2 50 0F       BVC $0F    [$DCC3]     ;} If [enemy $0FB4] & 4000h != 0:
+$AA:DCB2 50 0F       BVC $0F    [$DCC3]     ;} If enemy is maximally curled:
 $AA:DCB4 A9 00 01    LDA #$0100             ;\
 $AA:DCB7 18          CLC                    ;|
 $AA:DCB8 7D A8 0F    ADC $0FA8,x[$7E:0FE8]  ;} Enemy $0FA8 += 100h
 $AA:DCBB 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 $AA:DCBE A9 00 01    LDA #$0100             ; A = 100h
 $AA:DCC1 80 03       BRA $03    [$DCC6]
-                                            ; Else ([enemy $0FB4] & 4000h = 0):
+                                            ; Else (enemy is not maximally curled):
 $AA:DCC3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ; A = [enemy $0FAC]
 
 $AA:DCC6 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
-$AA:DCC9 10 04       BPL $04    [$DCCF]     ;} If [enemy $0FB4] & 8000h != 0:
+$AA:DCC9 10 04       BPL $04    [$DCCF]     ;} If enemy is moving anti-clockwise:
 $AA:DCCB 49 FF FF    EOR #$FFFF             ;\
 $AA:DCCE 1A          INC A                  ;} A = -[A]
 
@@ -4795,7 +4795,7 @@ $AA:DCD6 60          RTS
 
 ;;; $DCD7: Shaktool function - head ;;;
 {
-$AA:DCD7 20 AC DC    JSR $DCAC  [$AA:DCAC]  ; Execute $DCAC
+$AA:DCD7 20 AC DC    JSR $DCAC  [$AA:DCAC]  ; Set position and handle curling
 $AA:DCDA BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $AA:DCDD 49 00 80    EOR #$8000             ;|
 $AA:DCE0 85 12       STA $12    [$7E:0012]  ;|
@@ -4834,137 +4834,138 @@ $AA:DD15             dw DAB4, DABC, DAC4, DACC, DAD4, DADC, DAA4, DAAC
 ;;; $DD25: Shaktool function - final piece ;;;
 {
 ; Holy shit at the use of the stack here
-$AA:DD25 BD 7E 0F    LDA $0F7E,x[$7E:10FE]
-$AA:DD28 48          PHA
-$AA:DD29 BD 7A 0F    LDA $0F7A,x[$7E:10FA]
-$AA:DD2C 48          PHA
-$AA:DD2D 20 AC DC    JSR $DCAC  [$AA:DCAC]
-$AA:DD30 BD 7E 0F    LDA $0F7E,x[$7E:10FE]
-$AA:DD33 48          PHA
-$AA:DD34 BD 7A 0F    LDA $0F7A,x[$7E:10FA]
-$AA:DD37 48          PHA
-$AA:DD38 A3 05       LDA $05,s  [$7E:1FEB]
-$AA:DD3A 9D 7A 0F    STA $0F7A,x[$7E:10FA]
-$AA:DD3D A3 07       LDA $07,s  [$7E:1FED]
-$AA:DD3F 9D 7E 0F    STA $0F7E,x[$7E:10FE]
-$AA:DD42 64 12       STZ $12    [$7E:0012]
-$AA:DD44 A3 01       LDA $01,s  [$7E:1FE7]
-$AA:DD46 38          SEC
-$AA:DD47 E3 05       SBC $05,s  [$7E:1FEB]
-$AA:DD49 85 14       STA $14    [$7E:0014]
-$AA:DD4B 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
-$AA:DD4F B0 73       BCS $73    [$DDC4]     ; If collided with wall: go to BRANCH_COLLISION
-$AA:DD51 A3 07       LDA $07,s  [$7E:1FED]
-$AA:DD53 9D 7E 0F    STA $0F7E,x[$7E:10FE]
-$AA:DD56 64 12       STZ $12    [$7E:0012]
-$AA:DD58 A3 03       LDA $03,s  [$7E:1FE9]
-$AA:DD5A 38          SEC
-$AA:DD5B E3 07       SBC $07,s  [$7E:1FED]
-$AA:DD5D 85 14       STA $14    [$7E:0014]
-$AA:DD5F 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$AA:DD63 B0 5F       BCS $5F    [$DDC4]     ; If collided with wall: go to BRANCH_COLLISION
-$AA:DD65 68          PLA
-$AA:DD66 9D 7A 0F    STA $0F7A,x[$7E:10FA]
-$AA:DD69 68          PLA
-$AA:DD6A 9D 7E 0F    STA $0F7E,x[$7E:10FE]
+$AA:DD25 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
+$AA:DD28 48          PHA                    ;} Save [enemy Y position] (old Y position)
+$AA:DD29 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;\
+$AA:DD2C 48          PHA                    ;} Save [enemy X position] (old X position)
+$AA:DD2D 20 AC DC    JSR $DCAC  [$AA:DCAC]  ; Set position and handle curling
+$AA:DD30 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
+$AA:DD33 48          PHA                    ;} Save [enemy Y position] (new Y position)
+$AA:DD34 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;\
+$AA:DD37 48          PHA                    ;} Save [enemy X position] (new X position)
+$AA:DD38 A3 05       LDA $05,s  [$7E:1FEB]  ;\
+$AA:DD3A 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = (old X position)
+$AA:DD3D A3 07       LDA $07,s  [$7E:1FED]  ;\
+$AA:DD3F 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = (old Y position)
+$AA:DD42 64 12       STZ $12    [$7E:0012]  ;\
+$AA:DD44 A3 01       LDA $01,s  [$7E:1FE7]  ;|
+$AA:DD46 38          SEC                    ;|
+$AA:DD47 E3 05       SBC $05,s  [$7E:1FEB]  ;} Move enemy right by (new X position) - (old X position)
+$AA:DD49 85 14       STA $14    [$7E:0014]  ;|
+$AA:DD4B 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
+$AA:DD4F B0 73       BCS $73    [$DDC4]     ; If collided with block: go to BRANCH_COLLISION
+$AA:DD51 A3 07       LDA $07,s  [$7E:1FED]  ;\
+$AA:DD53 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = (old Y position)
+$AA:DD56 64 12       STZ $12    [$7E:0012]  ;\
+$AA:DD58 A3 03       LDA $03,s  [$7E:1FE9]  ;|
+$AA:DD5A 38          SEC                    ;|
+$AA:DD5B E3 07       SBC $07,s  [$7E:1FED]  ;} Move enemy down by (new Y position) - (old Y position)
+$AA:DD5D 85 14       STA $14    [$7E:0014]  ;|
+$AA:DD5F 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
+$AA:DD63 B0 5F       BCS $5F    [$DDC4]     ; If collided with block: go to BRANCH_COLLISION
+$AA:DD65 68          PLA                    ;\
+$AA:DD66 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = (new X position)
+$AA:DD69 68          PLA                    ;\
+$AA:DD6A 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = (new Y position)
 $AA:DD6D 68          PLA
 $AA:DD6E 68          PLA
-$AA:DD6F 3C B4 0F    BIT $0FB4,x[$7E:1134]
-$AA:DD72 50 0B       BVC $0B    [$DD7F]
-$AA:DD74 A9 00 01    LDA #$0100
-$AA:DD77 18          CLC
-$AA:DD78 7D A8 0F    ADC $0FA8,x[$7E:1128]
-$AA:DD7B 9D A8 0F    STA $0FA8,x[$7E:1128]
-$AA:DD7E 60          RTS
+$AA:DD6F 3C B4 0F    BIT $0FB4,x[$7E:1134]  ;\
+$AA:DD72 50 0B       BVC $0B    [$DD7F]     ;} If enemy is maximally curled:
+$AA:DD74 A9 00 01    LDA #$0100             ;\
+$AA:DD77 18          CLC                    ;|
+$AA:DD78 7D A8 0F    ADC $0FA8,x[$7E:1128]  ;} Enemy $0FA8 += 100h
+$AA:DD7B 9D A8 0F    STA $0FA8,x[$7E:1128]  ;/
+$AA:DD7E 60          RTS                    ; Return
 
-$AA:DD7F BD AA 0F    LDA $0FAA,x[$7E:112A]
-$AA:DD82 5D A8 0F    EOR $0FA8,x[$7E:1128]
-$AA:DD85 29 00 FF    AND #$FF00
-$AA:DD88 D0 1B       BNE $1B    [$DDA5]
-$AA:DD8A 20 6F DC    JSR $DC6F  [$AA:DC6F]
-$AA:DD8D A9 00 78    LDA #$7800
-$AA:DD90 9D AE 0F    STA $0FAE,x[$7E:112E]
-$AA:DD93 BD B4 0F    LDA $0FB4,x[$7E:1134]
-$AA:DD96 29 FF DF    AND #$DFFF
-$AA:DD99 20 0E DB    JSR $DB0E  [$AA:DB0E]
-$AA:DD9C BD AE 0F    LDA $0FAE,x[$7E:112E]
-$AA:DD9F 29 00 FF    AND #$FF00
-$AA:DDA2 9D AE 0F    STA $0FAE,x[$7E:112E]
+$AA:DD7F BD AA 0F    LDA $0FAA,x[$7E:112A]  ;\
+$AA:DD82 5D A8 0F    EOR $0FA8,x[$7E:1128]  ;|
+$AA:DD85 29 00 FF    AND #$FF00             ;} If [enemy $0FAA] / 100h = [enemy $0FA8] / 100h:
+$AA:DD88 D0 1B       BNE $1B    [$DDA5]     ;/
+$AA:DD8A 20 6F DC    JSR $DC6F  [$AA:DC6F]  ; Set Shaktool pieces $0FAA
+$AA:DD8D A9 00 78    LDA #$7800             ;\
+$AA:DD90 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy $0FAE = 7800h
+$AA:DD93 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$AA:DD96 29 FF DF    AND #$DFFF             ;} Set Shaktool pieces as curling
+$AA:DD99 20 0E DB    JSR $DB0E  [$AA:DB0E]  ;/
+$AA:DD9C BD AE 0F    LDA $0FAE,x[$7E:112E]  ;\
+$AA:DD9F 29 00 FF    AND #$FF00             ;} Enemy $0FAE &= FF00h
+$AA:DDA2 9D AE 0F    STA $0FAE,x[$7E:112E]  ;/
 
-$AA:DDA5 BD AC 0F    LDA $0FAC,x[$7E:112C]
-$AA:DDA8 18          CLC
-$AA:DDA9 7D AE 0F    ADC $0FAE,x[$7E:112E]
-$AA:DDAC 9D AE 0F    STA $0FAE,x[$7E:112E]
-$AA:DDAF C9 00 F0    CMP #$F000
-$AA:DDB2 90 0C       BCC $0C    [$DDC0]
-$AA:DDB4 BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:DDB7 BD B4 0F    LDA $0FB4,x[$7E:1134]
-$AA:DDBA 09 00 40    ORA #$4000
-$AA:DDBD 20 0E DB    JSR $DB0E  [$AA:DB0E]
+$AA:DDA5 BD AC 0F    LDA $0FAC,x[$7E:112C]  ;\
+$AA:DDA8 18          CLC                    ;|
+$AA:DDA9 7D AE 0F    ADC $0FAE,x[$7E:112E]  ;} Enemy $0FAE += [enemy $0FAC]
+$AA:DDAC 9D AE 0F    STA $0FAE,x[$7E:112E]  ;/
+$AA:DDAF C9 00 F0    CMP #$F000             ;\
+$AA:DDB2 90 0C       BCC $0C    [$DDC0]     ;} If [enemy $0FAE] >= F000h:
+$AA:DDB4 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
+$AA:DDB7 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$AA:DDBA 09 00 40    ORA #$4000             ;} Set Shaktool pieces as maximally curled
+$AA:DDBD 20 0E DB    JSR $DB0E  [$AA:DB0E]  ;/
 
-$AA:DDC0 20 E4 DA    JSR $DAE4  [$AA:DAE4]
-$AA:DDC3 60          RTS
+$AA:DDC0 20 E4 DA    JSR $DAE4  [$AA:DAE4]  ; RTS. Maybe make Shaktool attack
+$AA:DDC3 60          RTS                    ; Return
 
 ; BRANCH_COLLISION
-$AA:DDC4 BD B4 0F    LDA $0FB4,x[$7E:1134]
-$AA:DDC7 89 00 20    BIT #$2000
-$AA:DDCA F0 12       BEQ $12    [$DDDE]
+$AA:DDC4 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$AA:DDC7 89 00 20    BIT #$2000             ;} If enemy is uncurling:
+$AA:DDCA F0 12       BEQ $12    [$DDDE]     ;/
 $AA:DDCC 68          PLA
 $AA:DDCD 68          PLA
 $AA:DDCE 68          PLA
 $AA:DDCF 68          PLA
-$AA:DDD0 BD B4 0F    LDA $0FB4,x
-$AA:DDD3 49 00 80    EOR #$8000
-$AA:DDD6 29 FF 8F    AND #$8FFF
-$AA:DDD9 20 0E DB    JSR $DB0E  [$AA:DB0E]
+$AA:DDD0 BD B4 0F    LDA $0FB4,x            ;\
+$AA:DDD3 49 00 80    EOR #$8000             ;|
+$AA:DDD6 29 FF 8F    AND #$8FFF             ;} Set Shaktool pieces as curling, not maximally curled, and moving in opposite direction
+$AA:DDD9 20 0E DB    JSR $DB0E  [$AA:DB0E]  ;/
 $AA:DDDC 80 22       BRA $22    [$DE00]
 
-$AA:DDDE 68          PLA
+$AA:DDDE 68          PLA                    ; Else (enemy is curling):
 $AA:DDDF 68          PLA
-$AA:DDE0 68          PLA
-$AA:DDE1 9D 7A 0F    STA $0F7A,x[$7E:10FA]
-$AA:DDE4 68          PLA
-$AA:DDE5 9D 7E 0F    STA $0F7E,x[$7E:10FE]
-$AA:DDE8 20 59 DB    JSR $DB59  [$AA:DB59]
+$AA:DDE0 68          PLA                    ;\
+$AA:DDE1 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = (old X position)
+$AA:DDE4 68          PLA                    ;\
+$AA:DDE5 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = (old Y position)
+$AA:DDE8 20 59 DB    JSR $DB59  [$AA:DB59]  ; Execute $DB59
 $AA:DDEB AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:DDEE BD B4 0F    LDA $0FB4,x[$7E:1134]
-$AA:DDF1 09 00 20    ORA #$2000
-$AA:DDF4 20 0E DB    JSR $DB0E  [$AA:DB0E]
-$AA:DDF7 BD B4 0F    LDA $0FB4,x[$7E:1134]
-$AA:DDFA 29 FF BF    AND #$BFFF
-$AA:DDFD 20 0E DB    JSR $DB0E  [$AA:DB0E]
+$AA:DDEE BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$AA:DDF1 09 00 20    ORA #$2000             ;} Set Shaktool pieces as uncurling (this first call to $DB0E is redundant)
+$AA:DDF4 20 0E DB    JSR $DB0E  [$AA:DB0E]  ;/
+$AA:DDF7 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
+$AA:DDFA 29 FF BF    AND #$BFFF             ;} Set Shaktool pieces as non maximally curled
+$AA:DDFD 20 0E DB    JSR $DB0E  [$AA:DB0E]  ;/
 
-$AA:DE00 9E AE 0F    STZ $0FAE,x[$7E:112E]
-$AA:DE03 BC B0 0F    LDY $0FB0,x[$7E:1130]
+$AA:DE00 9E AE 0F    STZ $0FAE,x[$7E:112E]  ; Enemy $0FAE = 0
+$AA:DE03 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DE06 22 96 C0 A0 JSL $A0C096[$A0:C096]  ; A = angle of enemy [X] from enemy [Y]
-$AA:DE0A EB          XBA
-$AA:DE0B 29 00 FF    AND #$FF00
-$AA:DE0E 3C B4 0F    BIT $0FB4,x[$7E:1134]
-$AA:DE11 30 06       BMI $06    [$DE19]
-$AA:DE13 18          CLC
-$AA:DE14 69 00 40    ADC #$4000
+$AA:DE0A EB          XBA                    ;\
+$AA:DE0B 29 00 FF    AND #$FF00             ;} A *= 100h
+$AA:DE0E 3C B4 0F    BIT $0FB4,x[$7E:1134]  ;\
+$AA:DE11 30 06       BMI $06    [$DE19]     ;} If enemy is moving clockwise:
+$AA:DE13 18          CLC                    ;\
+$AA:DE14 69 00 40    ADC #$4000             ;} A += 4000h
 $AA:DE17 80 04       BRA $04    [$DE1D]
 
-$AA:DE19 38          SEC
-$AA:DE1A E9 00 40    SBC #$4000
+$AA:DE19 38          SEC                    ;\ Else (enemy is moving anti-clockwise):
+$AA:DE1A E9 00 40    SBC #$4000             ;} A -= 4000h
 
-$AA:DE1D 20 27 DB    JSR $DB27  [$AA:DB27]
-$AA:DE20 A0 0C 00    LDY #$000C
+$AA:DE1D 20 27 DB    JSR $DB27  [$AA:DB27]  ; Shaktool pieces $0FA8 = [A]
+$AA:DE20 A0 0C 00    LDY #$000C             ; Y = Ch
 
-$AA:DE23 20 07 DC    JSR $DC07  [$AA:DC07]
-$AA:DE26 A9 AA DC    LDA #$DCAA
-$AA:DE29 9D B2 0F    STA $0FB2,x[$7E:1132]
-$AA:DE2C B9 13 DF    LDA $DF13,y[$AA:DF1F]
-$AA:DE2F 9D 92 0F    STA $0F92,x[$7E:1112]
+; LOOP
+$AA:DE23 20 07 DC    JSR $DC07  [$AA:DC07]  ; Execute $DC07
+$AA:DE26 A9 AA DC    LDA #$DCAA             ;\
+$AA:DE29 9D B2 0F    STA $0FB2,x[$7E:1132]  ;} Enemy function = RTS
+$AA:DE2C B9 13 DF    LDA $DF13,y[$AA:DF1F]  ;\
+$AA:DE2F 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = [$DF13 + [Y]] (head bob)
 $AA:DE32 A9 01 00    LDA #$0001             ;\
 $AA:DE35 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
-$AA:DE38 8A          TXA
-$AA:DE39 38          SEC
-$AA:DE3A E9 40 00    SBC #$0040
-$AA:DE3D AA          TAX
-$AA:DE3E 88          DEY
-$AA:DE3F 88          DEY
-$AA:DE40 10 E1       BPL $E1    [$DE23]
+$AA:DE38 8A          TXA                    ;\
+$AA:DE39 38          SEC                    ;|
+$AA:DE3A E9 40 00    SBC #$0040             ;} X -= 40h
+$AA:DE3D AA          TAX                    ;/
+$AA:DE3E 88          DEY                    ;\
+$AA:DE3F 88          DEY                    ;} Y -= 2
+$AA:DE40 10 E1       BPL $E1    [$DE23]     ; If [Y] >= 0: go to LOOP
 $AA:DE42 60          RTS
 }
 
