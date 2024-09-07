@@ -4666,22 +4666,22 @@ $AA:DC06 60          RTS
 {
 $AA:DC07 A9 00 00    LDA #$0000
 $AA:DC0A 38          SEC
-$AA:DC0B 3C B4 0F    BIT $0FB4,x[$7E:1134]
-$AA:DC0E 30 09       BMI $09    [$DC19]
-$AA:DC10 FD AA 0F    SBC $0FAA,x[$7E:112A]
-$AA:DC13 18          CLC
-$AA:DC14 7D A8 0F    ADC $0FA8,x[$7E:1128]
+$AA:DC0B 3C B4 0F    BIT $0FB4,x[$7E:1134]  ;\
+$AA:DC0E 30 09       BMI $09    [$DC19]     ;} If enemy is moving clockwise:
+$AA:DC10 FD AA 0F    SBC $0FAA,x[$7E:112A]  ;\
+$AA:DC13 18          CLC                    ;} A = [enemy $0FA8] - [enemy $0FAA]
+$AA:DC14 7D A8 0F    ADC $0FA8,x[$7E:1128]  ;/
 $AA:DC17 80 07       BRA $07    [$DC20]
 
-$AA:DC19 FD A8 0F    SBC $0FA8,x
-$AA:DC1C 18          CLC
-$AA:DC1D 7D AA 0F    ADC $0FAA,x
+$AA:DC19 FD A8 0F    SBC $0FA8,x            ;\ Else (enemy is moving anti-clockwise):
+$AA:DC1C 18          CLC                    ;} A = [enemy $0FAA] - [enemy $0FA8]
+$AA:DC1D 7D AA 0F    ADC $0FAA,x            ;/
 
-$AA:DC20 EB          XBA
-$AA:DC21 29 FF 00    AND #$00FF
-$AA:DC24 0A          ASL A
-$AA:DC25 0A          ASL A
-$AA:DC26 9D AC 0F    STA $0FAC,x[$7E:112C]
+$AA:DC20 EB          XBA                    ;\
+$AA:DC21 29 FF 00    AND #$00FF             ;|
+$AA:DC24 0A          ASL A                  ;} Enemy $0FAC = [A] / 100h * 4
+$AA:DC25 0A          ASL A                  ;|
+$AA:DC26 9D AC 0F    STA $0FAC,x[$7E:112C]  ;/
 $AA:DC29 60          RTS
 }
 
@@ -4724,7 +4724,7 @@ $AA:DC6E 60          RTS
 }
 
 
-;;; $DC6F: Set Shaktool pieces $0FAA ;;;
+;;; $DC6F: Set Shaktool pieces $0FAC ;;;
 {
 $AA:DC6F BD A8 0F    LDA $0FA8,x[$7E:1128]  ;\
 $AA:DC72 20 40 DB    JSR $DB40  [$AA:DB40]  ;} Shaktool pieces $0FAA = [enemy $0FA8]
@@ -4881,7 +4881,7 @@ $AA:DD7F BD AA 0F    LDA $0FAA,x[$7E:112A]  ;\
 $AA:DD82 5D A8 0F    EOR $0FA8,x[$7E:1128]  ;|
 $AA:DD85 29 00 FF    AND #$FF00             ;} If [enemy $0FAA] / 100h = [enemy $0FA8] / 100h:
 $AA:DD88 D0 1B       BNE $1B    [$DDA5]     ;/
-$AA:DD8A 20 6F DC    JSR $DC6F  [$AA:DC6F]  ; Set Shaktool pieces $0FAA
+$AA:DD8A 20 6F DC    JSR $DC6F  [$AA:DC6F]  ; Set Shaktool pieces $0FAC
 $AA:DD8D A9 00 78    LDA #$7800             ;\
 $AA:DD90 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy $0FAE = 7800h
 $AA:DD93 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
