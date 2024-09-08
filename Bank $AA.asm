@@ -4236,14 +4236,14 @@ $AA:D947 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 ;;; $D94A: Instruction - lower enemy 1px ;;;
 {
 $AA:D94A BD A9 0F    LDA $0FA9,x[$7E:0FE9]  ;\
-$AA:D94D 49 80 00    EOR #$0080             ;} A = [enemy $0FA8] / 100h ^ 80h
+$AA:D94D 49 80 00    EOR #$0080             ;} A = [enemy facing angle] / 100h ^ 80h
 $AA:D950 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 }
 
 
 ;;; $D953: Instruction - raise enemy 1px ;;;
 {
-$AA:D953 BD A9 0F    LDA $0FA9,x[$7E:1069]  ; A = [enemy $0FA8] / 100h
+$AA:D953 BD A9 0F    LDA $0FA9,x[$7E:1069]  ; A = [enemy facing angle] / 100h
 }
 
 
@@ -4565,99 +4565,99 @@ $AA:DB26 60          RTS
 }
 
 
-;;; $DB27: Shaktool pieces $0FA8 = [A] ;;;
+;;; $DB27: Shaktool pieces facing angle = [A] ;;;
 {
 $AA:DB27 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
-$AA:DB2A 99 A8 0F    STA $0FA8,y[$7E:0FA8]  ; Shaktool primary piece $0FA8 = [A]
-$AA:DB2D 99 E8 0F    STA $0FE8,y[$7E:0FE8]  ; Shaktool rightmost arm piece $0FA8 = [A]
-$AA:DB30 99 28 10    STA $1028,y[$7E:1028]  ; Shaktool centre right arm piece $0FA8 = [A]
-$AA:DB33 99 68 10    STA $1068,y[$7E:1068]  ; Shaktool head $0FA8 = [A]
-$AA:DB36 99 A8 10    STA $10A8,y[$7E:10A8]  ; Shaktool centre left arm piece $0FA8 = [A]
-$AA:DB39 99 E8 10    STA $10E8,y[$7E:10E8]  ; Shaktool leftmost arm piece $0FA8 = [A]
-$AA:DB3C 99 28 11    STA $1128,y[$7E:1128]  ; Shaktool final piece $0FA8 = [A]
+$AA:DB2A 99 A8 0F    STA $0FA8,y[$7E:0FA8]  ; Shaktool primary piece facing angle = [A]
+$AA:DB2D 99 E8 0F    STA $0FE8,y[$7E:0FE8]  ; Shaktool rightmost arm piece facing angle = [A]
+$AA:DB30 99 28 10    STA $1028,y[$7E:1028]  ; Shaktool centre right arm piece facing angle = [A]
+$AA:DB33 99 68 10    STA $1068,y[$7E:1068]  ; Shaktool head facing angle = [A]
+$AA:DB36 99 A8 10    STA $10A8,y[$7E:10A8]  ; Shaktool centre left arm piece facing angle = [A]
+$AA:DB39 99 E8 10    STA $10E8,y[$7E:10E8]  ; Shaktool leftmost arm piece facing angle = [A]
+$AA:DB3C 99 28 11    STA $1128,y[$7E:1128]  ; Shaktool final piece facing angle = [A]
 $AA:DB3F 60          RTS
 }
 
 
-;;; $DB40: Shaktool pieces $0FAA = [A] ;;;
+;;; $DB40: Shaktool pieces neighbour angle = [A] ;;;
 {
 $AA:DB40 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
-$AA:DB43 99 AA 0F    STA $0FAA,y[$7E:0FAA]  ; Shaktool primary piece $0FAA = [A]
-$AA:DB46 99 EA 0F    STA $0FEA,y[$7E:0FEA]  ; Shaktool rightmost arm piece $0FAA = [A]
-$AA:DB49 99 2A 10    STA $102A,y[$7E:102A]  ; Shaktool centre right arm piece $0FAA = [A]
-$AA:DB4C 99 6A 10    STA $106A,y[$7E:106A]  ; Shaktool head $0FAA = [A]
-$AA:DB4F 99 AA 10    STA $10AA,y[$7E:10AA]  ; Shaktool centre left arm piece $0FAA = [A]
-$AA:DB52 99 EA 10    STA $10EA,y[$7E:10EA]  ; Shaktool leftmost arm piece $0FAA = [A]
-$AA:DB55 99 2A 11    STA $112A,y[$7E:112A]  ; Shaktool final piece $0FAA = [A]
+$AA:DB43 99 AA 0F    STA $0FAA,y[$7E:0FAA]  ; Shaktool primary piece neighbour angle = [A]
+$AA:DB46 99 EA 0F    STA $0FEA,y[$7E:0FEA]  ; Shaktool rightmost arm piece neighbour angle = [A]
+$AA:DB49 99 2A 10    STA $102A,y[$7E:102A]  ; Shaktool centre right arm piece neighbour angle = [A]
+$AA:DB4C 99 6A 10    STA $106A,y[$7E:106A]  ; Shaktool head neighbour angle = [A]
+$AA:DB4F 99 AA 10    STA $10AA,y[$7E:10AA]  ; Shaktool centre left arm piece neighbour angle = [A]
+$AA:DB52 99 EA 10    STA $10EA,y[$7E:10EA]  ; Shaktool leftmost arm piece neighbour angle = [A]
+$AA:DB55 99 2A 11    STA $112A,y[$7E:112A]  ; Shaktool final piece neighbour angle = [A]
 $AA:DB58 60          RTS
 }
 
 
-;;; $DB59:  ;;;
+;;; $DB59: Flip Shaktool ;;;
 {
-$AA:DB59 BC B0 0F    LDY $0FB0,x[$7E:1130]
-$AA:DB5C B9 6E 10    LDA $106E,y[$7E:106E]
-$AA:DB5F 49 00 80    EOR #$8000
-$AA:DB62 99 6E 10    STA $106E,y[$7E:106E]
-$AA:DB65 BE 2A 11    LDX $112A,y[$7E:112A]
-$AA:DB68 B9 EA 0F    LDA $0FEA,y[$7E:0FEA]
-$AA:DB6B 49 00 80    EOR #$8000
-$AA:DB6E 29 00 FF    AND #$FF00
-$AA:DB71 99 2A 11    STA $112A,y[$7E:112A]
-$AA:DB74 8A          TXA
-$AA:DB75 49 00 80    EOR #$8000
-$AA:DB78 29 00 FF    AND #$FF00
-$AA:DB7B 99 EA 0F    STA $0FEA,y[$7E:0FEA]
-$AA:DB7E BE EA 10    LDX $10EA,y[$7E:10EA]
-$AA:DB81 B9 2A 10    LDA $102A,y[$7E:102A]
-$AA:DB84 49 00 80    EOR #$8000
-$AA:DB87 29 00 FF    AND #$FF00
-$AA:DB8A 99 EA 10    STA $10EA,y[$7E:10EA]
-$AA:DB8D 8A          TXA
-$AA:DB8E 49 00 80    EOR #$8000
-$AA:DB91 29 00 FF    AND #$FF00
-$AA:DB94 99 2A 10    STA $102A,y[$7E:102A]
-$AA:DB97 BE AA 10    LDX $10AA,y[$7E:10AA]
-$AA:DB9A B9 6A 10    LDA $106A,y[$7E:106A]
-$AA:DB9D 49 00 80    EOR #$8000
-$AA:DBA0 29 00 FF    AND #$FF00
-$AA:DBA3 99 AA 10    STA $10AA,y[$7E:10AA]
-$AA:DBA6 8A          TXA
-$AA:DBA7 49 00 80    EOR #$8000
-$AA:DBAA 29 00 FF    AND #$FF00
-$AA:DBAD 99 6A 10    STA $106A,y[$7E:106A]
-$AA:DBB0 BE FC 10    LDX $10FC,y[$7E:10FC]
-$AA:DBB3 B9 7C 0F    LDA $0F7C,y[$7E:0F7C]
-$AA:DBB6 99 FC 10    STA $10FC,y[$7E:10FC]
-$AA:DBB9 8A          TXA
-$AA:DBBA 99 7C 0F    STA $0F7C,y[$7E:0F7C]
-$AA:DBBD BE 00 11    LDX $1100,y[$7E:1100]
-$AA:DBC0 B9 80 0F    LDA $0F80,y[$7E:0F80]
-$AA:DBC3 99 00 11    STA $1100,y[$7E:1100]
-$AA:DBC6 8A          TXA
-$AA:DBC7 99 80 0F    STA $0F80,y[$7E:0F80]
-$AA:DBCA BE FA 10    LDX $10FA,y[$7E:10FA]
-$AA:DBCD B9 7A 0F    LDA $0F7A,y[$7E:0F7A]
-$AA:DBD0 99 FA 10    STA $10FA,y[$7E:10FA]
-$AA:DBD3 8A          TXA
-$AA:DBD4 99 7A 0F    STA $0F7A,y[$7E:0F7A]
-$AA:DBD7 BE FE 10    LDX $10FE,y[$7E:10FE]
-$AA:DBDA B9 7E 0F    LDA $0F7E,y[$7E:0F7E]
-$AA:DBDD 99 FE 10    STA $10FE,y[$7E:10FE]
-$AA:DBE0 8A          TXA
-$AA:DBE1 99 7E 0F    STA $0F7E,y[$7E:0F7E]
-$AA:DBE4 BB          TYX
-$AA:DBE5 A9 00 80    LDA #$8000
-$AA:DBE8 9D BC 0F    STA $0FBC,x[$7E:0FBC]
-$AA:DBEB 9D FC 0F    STA $0FFC,x[$7E:0FFC]
-$AA:DBEE 9D 3C 10    STA $103C,x[$7E:103C]
-$AA:DBF1 9D 7C 10    STA $107C,x[$7E:107C]
-$AA:DBF4 9D BC 10    STA $10BC,x[$7E:10BC]
-$AA:DBF7 9D C0 0F    STA $0FC0,x[$7E:0FC0]
-$AA:DBFA 9D 00 10    STA $1000,x[$7E:1000]
-$AA:DBFD 9D 40 10    STA $1040,x[$7E:1040]
-$AA:DC00 9D 80 10    STA $1080,x[$7E:1080]
-$AA:DC03 9D C0 10    STA $10C0,x[$7E:10C0]
+$AA:DB59 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
+$AA:DB5C B9 6E 10    LDA $106E,y[$7E:106E]  ;\
+$AA:DB5F 49 00 80    EOR #$8000             ;} Shaktool head $0FAE ^= 8000h
+$AA:DB62 99 6E 10    STA $106E,y[$7E:106E]  ;/
+$AA:DB65 BE 2A 11    LDX $112A,y[$7E:112A]  ;\
+$AA:DB68 B9 EA 0F    LDA $0FEA,y[$7E:0FEA]  ;|
+$AA:DB6B 49 00 80    EOR #$8000             ;|
+$AA:DB6E 29 00 FF    AND #$FF00             ;} swap(Shaktool rightmost arm piece neighbour angle, Shaktool final piece neighbour angle)
+$AA:DB71 99 2A 11    STA $112A,y[$7E:112A]  ;} Shaktool rightmost arm piece neighbour angle = [Shaktool rightmost arm piece neighbour angle] & FF00h ^ 8000h
+$AA:DB74 8A          TXA                    ;} Shaktool final piece neighbour angle = [Shaktool final piece neighbour angle] & FF00h ^ 8000h
+$AA:DB75 49 00 80    EOR #$8000             ;|
+$AA:DB78 29 00 FF    AND #$FF00             ;|
+$AA:DB7B 99 EA 0F    STA $0FEA,y[$7E:0FEA]  ;/
+$AA:DB7E BE EA 10    LDX $10EA,y[$7E:10EA]  ;\
+$AA:DB81 B9 2A 10    LDA $102A,y[$7E:102A]  ;|
+$AA:DB84 49 00 80    EOR #$8000             ;|
+$AA:DB87 29 00 FF    AND #$FF00             ;} swap(Shaktool centre right arm piece neighbour angle, Shaktool leftmost arm piece neighbour angle)
+$AA:DB8A 99 EA 10    STA $10EA,y[$7E:10EA]  ;} Shaktool centre right arm piece neighbour angle = [Shaktool centre right arm piece neighbour angle] & FF00h ^ 8000h
+$AA:DB8D 8A          TXA                    ;} Shaktool leftmost arm piece neighbour angle = [Shaktool leftmost arm piece neighbour angle] & FF00h ^ 8000h
+$AA:DB8E 49 00 80    EOR #$8000             ;|
+$AA:DB91 29 00 FF    AND #$FF00             ;|
+$AA:DB94 99 2A 10    STA $102A,y[$7E:102A]  ;/
+$AA:DB97 BE AA 10    LDX $10AA,y[$7E:10AA]  ;\
+$AA:DB9A B9 6A 10    LDA $106A,y[$7E:106A]  ;|
+$AA:DB9D 49 00 80    EOR #$8000             ;|
+$AA:DBA0 29 00 FF    AND #$FF00             ;} swap(Shaktool centre left arm piece neighbour angle, Shaktool head neighbour angle)
+$AA:DBA3 99 AA 10    STA $10AA,y[$7E:10AA]  ;} Shaktool centre left arm piece neighbour angle = [Shaktool centre left arm piece neighbour angle] & FF00h ^ 8000h
+$AA:DBA6 8A          TXA                    ;} Shaktool head neighbour angle = [Shaktool head neighbour angle] & FF00h ^ 8000h
+$AA:DBA7 49 00 80    EOR #$8000             ;|
+$AA:DBAA 29 00 FF    AND #$FF00             ;|
+$AA:DBAD 99 6A 10    STA $106A,y[$7E:106A]  ;/
+$AA:DBB0 BE FC 10    LDX $10FC,y[$7E:10FC]  ;\
+$AA:DBB3 B9 7C 0F    LDA $0F7C,y[$7E:0F7C]  ;|
+$AA:DBB6 99 FC 10    STA $10FC,y[$7E:10FC]  ;} swap(Shaktool primary piece X subposition, Shaktool final piece X subposition)
+$AA:DBB9 8A          TXA                    ;|
+$AA:DBBA 99 7C 0F    STA $0F7C,y[$7E:0F7C]  ;/
+$AA:DBBD BE 00 11    LDX $1100,y[$7E:1100]  ;\
+$AA:DBC0 B9 80 0F    LDA $0F80,y[$7E:0F80]  ;|
+$AA:DBC3 99 00 11    STA $1100,y[$7E:1100]  ;} swap(Shaktool primary piece Y subposition, Shaktool final piece Y subposition)
+$AA:DBC6 8A          TXA                    ;|
+$AA:DBC7 99 80 0F    STA $0F80,y[$7E:0F80]  ;/
+$AA:DBCA BE FA 10    LDX $10FA,y[$7E:10FA]  ;\
+$AA:DBCD B9 7A 0F    LDA $0F7A,y[$7E:0F7A]  ;|
+$AA:DBD0 99 FA 10    STA $10FA,y[$7E:10FA]  ;} swap(Shaktool primary piece X position, Shaktool final piece X position)
+$AA:DBD3 8A          TXA                    ;|
+$AA:DBD4 99 7A 0F    STA $0F7A,y[$7E:0F7A]  ;/
+$AA:DBD7 BE FE 10    LDX $10FE,y[$7E:10FE]  ;\
+$AA:DBDA B9 7E 0F    LDA $0F7E,y[$7E:0F7E]  ;|
+$AA:DBDD 99 FE 10    STA $10FE,y[$7E:10FE]  ;} swap(Shaktool primary piece Y position, Shaktool final piece Y position)
+$AA:DBE0 8A          TXA                    ;|
+$AA:DBE1 99 7E 0F    STA $0F7E,y[$7E:0F7E]  ;/
+$AA:DBE4 BB          TYX                    ; X = [enemy primary piece enemy index]
+$AA:DBE5 A9 00 80    LDA #$8000             ;\
+$AA:DBE8 9D BC 0F    STA $0FBC,x[$7E:0FBC]  ;} Shaktool rightmost arm piece X subposition = 8000h
+$AA:DBEB 9D FC 0F    STA $0FFC,x[$7E:0FFC]  ; Shaktool centre right arm piece X subposition = 8000h
+$AA:DBEE 9D 3C 10    STA $103C,x[$7E:103C]  ; Shaktool head X subposition = 8000h
+$AA:DBF1 9D 7C 10    STA $107C,x[$7E:107C]  ; Shaktool centre left arm piece X subposition = 8000h
+$AA:DBF4 9D BC 10    STA $10BC,x[$7E:10BC]  ; Shaktool leftmost arm piece X subposition = 8000h
+$AA:DBF7 9D C0 0F    STA $0FC0,x[$7E:0FC0]  ; Shaktool rightmost arm piece Y subposition = 8000h
+$AA:DBFA 9D 00 10    STA $1000,x[$7E:1000]  ; Shaktool centre right arm piece Y subposition = 8000h
+$AA:DBFD 9D 40 10    STA $1040,x[$7E:1040]  ; Shaktool head Y subposition = 8000h
+$AA:DC00 9D 80 10    STA $1080,x[$7E:1080]  ; Shaktool centre left arm piece Y subposition = 8000h
+$AA:DC03 9D C0 10    STA $10C0,x[$7E:10C0]  ; Shaktool leftmost arm piece Y subposition = 8000h
 $AA:DC06 60          RTS
 }
 
@@ -4669,12 +4669,12 @@ $AA:DC0A 38          SEC
 $AA:DC0B 3C B4 0F    BIT $0FB4,x[$7E:1134]  ;\
 $AA:DC0E 30 09       BMI $09    [$DC19]     ;} If enemy is moving clockwise:
 $AA:DC10 FD AA 0F    SBC $0FAA,x[$7E:112A]  ;\
-$AA:DC13 18          CLC                    ;} A = [enemy $0FA8] - [enemy $0FAA]
+$AA:DC13 18          CLC                    ;} A = [enemy facing angle] - [enemy neighbour angle]
 $AA:DC14 7D A8 0F    ADC $0FA8,x[$7E:1128]  ;/
 $AA:DC17 80 07       BRA $07    [$DC20]
 
 $AA:DC19 FD A8 0F    SBC $0FA8,x            ;\ Else (enemy is moving anti-clockwise):
-$AA:DC1C 18          CLC                    ;} A = [enemy $0FAA] - [enemy $0FA8]
+$AA:DC1C 18          CLC                    ;} A = [enemy neighbour angle] - [enemy facing angle]
 $AA:DC1D 7D AA 0F    ADC $0FAA,x            ;/
 
 $AA:DC20 EB          XBA                    ;\
@@ -4690,12 +4690,12 @@ $AA:DC29 60          RTS
 {
 $AA:DC2A BD AB 0F    LDA $0FAB,x[$7E:0FEB]  ;\
 $AA:DC2D 29 FF 00    AND #$00FF             ;|
-$AA:DC30 0A          ASL A                  ;} Y = [enemy $0FAA] / 100h * 2
+$AA:DC30 0A          ASL A                  ;} Y = [enemy neighbour angle] / 100h * 2
 $AA:DC31 A8          TAY                    ;/
 $AA:DC32 64 12       STZ $12    [$7E:0012]  ;\
 $AA:DC34 64 14       STZ $14    [$7E:0014]  ;|
 $AA:DC36 B9 BD E0    LDA $E0BD,y[$AA:E2AD]  ;|
-$AA:DC39 10 02       BPL $02    [$DC3D]     ;} $14.$12 = sin([enemy $0FAA] * pi / 8000h) * BFFh / 100h
+$AA:DC39 10 02       BPL $02    [$DC3D]     ;} $14.$12 = sin([enemy neighbour angle] * pi / 8000h) * BFFh / 100h
 $AA:DC3B C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:DC3D 85 13       STA $13    [$7E:0013]  ;/
@@ -4709,7 +4709,7 @@ $AA:DC4D 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
 $AA:DC50 64 12       STZ $12    [$7E:0012]  ;\
 $AA:DC52 64 14       STZ $14    [$7E:0014]  ;|
 $AA:DC54 B9 3D E0    LDA $E03D,y[$AA:E22D]  ;|
-$AA:DC57 10 02       BPL $02    [$DC5B]     ;} $14.$12 = -cos([enemy $0FAA] * pi / 8000h) * BFFh / 100h
+$AA:DC57 10 02       BPL $02    [$DC5B]     ;} $14.$12 = -cos([enemy neighbour angle] * pi / 8000h) * BFFh / 100h
 $AA:DC59 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:DC5B 85 13       STA $13    [$7E:0013]  ;/
@@ -4727,7 +4727,7 @@ $AA:DC6E 60          RTS
 ;;; $DC6F: Set Shaktool pieces $0FAC ;;;
 {
 $AA:DC6F BD A8 0F    LDA $0FA8,x[$7E:1128]  ;\
-$AA:DC72 20 40 DB    JSR $DB40  [$AA:DB40]  ;} Shaktool pieces $0FAA = [enemy $0FA8]
+$AA:DC72 20 40 DB    JSR $DB40  [$AA:DB40]  ;} Shaktool pieces neighbour angle = [enemy facing angle]
 $AA:DC75 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DC78 AD E9 DE    LDA $DEE9  [$AA:DEE9]  ;\
 $AA:DC7B 99 AC 0F    STA $0FAC,y[$7E:0FAC]  ;} Shaktool primary piece $0FAC = 0
@@ -4774,7 +4774,7 @@ $AA:DCAF 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
 $AA:DCB2 50 0F       BVC $0F    [$DCC3]     ;} If enemy is maximally curled:
 $AA:DCB4 A9 00 01    LDA #$0100             ;\
 $AA:DCB7 18          CLC                    ;|
-$AA:DCB8 7D A8 0F    ADC $0FA8,x[$7E:0FE8]  ;} Enemy $0FA8 += 100h
+$AA:DCB8 7D A8 0F    ADC $0FA8,x[$7E:0FE8]  ;} Enemy facing angle += 100h
 $AA:DCBB 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 $AA:DCBE A9 00 01    LDA #$0100             ; A = 100h
 $AA:DCC1 80 03       BRA $03    [$DCC6]
@@ -4787,7 +4787,7 @@ $AA:DCCB 49 FF FF    EOR #$FFFF             ;\
 $AA:DCCE 1A          INC A                  ;} A = -[A]
 
 $AA:DCCF 18          CLC                    ;\
-$AA:DCD0 7D AA 0F    ADC $0FAA,x[$7E:0FEA]  ;} Enemy $0FAA += [A]
+$AA:DCD0 7D AA 0F    ADC $0FAA,x[$7E:0FEA]  ;} Enemy neighbour angle += [A]
 $AA:DCD3 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
 $AA:DCD6 60          RTS
 }
@@ -4800,7 +4800,7 @@ $AA:DCDA BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
 $AA:DCDD 49 00 80    EOR #$8000             ;|
 $AA:DCE0 85 12       STA $12    [$7E:0012]  ;|
 $AA:DCE2 BD EA 0F    LDA $0FEA,x[$7E:10AA]  ;|
-$AA:DCE5 38          SEC                    ;} A = midpoint([enemy $0FAA] ^ 8000h, [enemy ([X] + 1) $0FAA])
+$AA:DCE5 38          SEC                    ;} A = midpoint([enemy neighbour angle] ^ 8000h, [enemy ([X] + 1) neighbour angle])
 $AA:DCE6 E5 12       SBC $12    [$7E:0012]  ;|
 $AA:DCE8 4A          LSR A                  ;|
 $AA:DCE9 18          CLC                    ;|
@@ -4873,13 +4873,13 @@ $AA:DD6F 3C B4 0F    BIT $0FB4,x[$7E:1134]  ;\
 $AA:DD72 50 0B       BVC $0B    [$DD7F]     ;} If enemy is maximally curled:
 $AA:DD74 A9 00 01    LDA #$0100             ;\
 $AA:DD77 18          CLC                    ;|
-$AA:DD78 7D A8 0F    ADC $0FA8,x[$7E:1128]  ;} Enemy $0FA8 += 100h
+$AA:DD78 7D A8 0F    ADC $0FA8,x[$7E:1128]  ;} Enemy facing angle += 100h
 $AA:DD7B 9D A8 0F    STA $0FA8,x[$7E:1128]  ;/
 $AA:DD7E 60          RTS                    ; Return
 
 $AA:DD7F BD AA 0F    LDA $0FAA,x[$7E:112A]  ;\
 $AA:DD82 5D A8 0F    EOR $0FA8,x[$7E:1128]  ;|
-$AA:DD85 29 00 FF    AND #$FF00             ;} If [enemy $0FAA] / 100h = [enemy $0FA8] / 100h:
+$AA:DD85 29 00 FF    AND #$FF00             ;} If [enemy neighbour angle] / 100h = [enemy facing angle] / 100h:
 $AA:DD88 D0 1B       BNE $1B    [$DDA5]     ;/
 $AA:DD8A 20 6F DC    JSR $DC6F  [$AA:DC6F]  ; Set Shaktool pieces $0FAC
 $AA:DD8D A9 00 78    LDA #$7800             ;\
@@ -4925,7 +4925,7 @@ $AA:DDE0 68          PLA                    ;\
 $AA:DDE1 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;} Enemy X position = (old X position)
 $AA:DDE4 68          PLA                    ;\
 $AA:DDE5 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;} Enemy Y position = (old Y position)
-$AA:DDE8 20 59 DB    JSR $DB59  [$AA:DB59]  ; Execute $DB59
+$AA:DDE8 20 59 DB    JSR $DB59  [$AA:DB59]  ; Flip Shaktool
 $AA:DDEB AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:DDEE BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $AA:DDF1 09 00 20    ORA #$2000             ;} Set Shaktool pieces as uncurling (this first call to $DB0E is redundant)
@@ -4948,7 +4948,7 @@ $AA:DE17 80 04       BRA $04    [$DE1D]
 $AA:DE19 38          SEC                    ;\ Else (enemy is moving anti-clockwise):
 $AA:DE1A E9 00 40    SBC #$4000             ;} A -= 4000h
 
-$AA:DE1D 20 27 DB    JSR $DB27  [$AA:DB27]  ; Shaktool pieces $0FA8 = [A]
+$AA:DE1D 20 27 DB    JSR $DB27  [$AA:DB27]  ; Shaktool pieces facing angle = [A]
 $AA:DE20 A0 0C 00    LDY #$000C             ; Y = Ch
 
 ; LOOP
@@ -4979,7 +4979,7 @@ $AA:DE46 A9 01 00    LDA #$0001             ;\
 $AA:DE49 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:DE4C 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $AA:DE4F A9 00 00    LDA #$0000             ;\
-$AA:DE52 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = 0
+$AA:DE52 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy facing angle = 0
 $AA:DE55 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ; Enemy $0FAE = 0
 $AA:DE58 BC B6 0F    LDY $0FB6,x[$7E:0FB6]  ; Y = [enemy parameter 2]
 $AA:DE5B BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
@@ -4996,7 +4996,7 @@ $AA:DE75 38          SEC                    ;|
 $AA:DE76 F9 F7 DE    SBC $DEF7,y[$AA:DEF7]  ;} Enemy $0FAC = [$DEE9 + [Y]]
 $AA:DE79 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
 $AA:DE7C B9 B1 DE    LDA $DEB1,y[$AA:DEB1]  ;\
-$AA:DE7F 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = [$DEB1 + [Y]]
+$AA:DE7F 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy neighbour angle = [$DEB1 + [Y]]
 $AA:DE82 B9 BF DE    LDA $DEBF,y[$AA:DEBF]  ;\
 $AA:DE85 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = [$DEBF + [Y]]
 $AA:DE88 B9 CD DE    LDA $DECD,y[$AA:DECD]  ;\
@@ -5021,7 +5021,7 @@ $AA:DE94 6B          RTL
 ;                       |     |     |     |     |     |     |
 $AA:DE95             dw 2800, 2C00, 2C00, 2C00, 2C00, 2C00, 2800 ; Properties
 $AA:DEA3             dw 0000, 0040, 0080, 00C0, 0100, 0140, 0180 ; Enemy RAM offset from primary piece
-$AA:DEB1             dw 0000, F800, E800, D000, B000, 9800, 8800 ; $0FAA. Initial angles for each piece
+$AA:DEB1             dw 0000, F800, E800, D000, B000, 9800, 8800 ; Initial neighbour angle
 $AA:DEBF             dw DA0E, DA72, DA72, DAD4, DA72, DA72, DA0E ; Initial instruction list pointer
 $AA:DECD             dw 0002, 0004, 0004, 0002, 0004, 0004, 0002 ; Layer control
 $AA:DEDB             dw DCAB, DCAC, DCAC, DCD7, DCAC, DCAC, DD25 ; Function pointer
