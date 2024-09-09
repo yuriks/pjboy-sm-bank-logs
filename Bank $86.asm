@@ -9063,7 +9063,7 @@ $86:BDA8 99 4B 1A    STA $1A4B,y            ;} Enemy projectile X position = [en
 $86:BDAB BD 7E 0F    LDA $0F7E,x            ;\
 $86:BDAE 99 93 1A    STA $1A93,y            ;} Enemy projectile Y position = [enemy Y position]
 $86:BDB1 BD AE 0F    LDA $0FAE,x            ;\
-$86:BDB4 29 FF 00    AND #$00FF             ;} A = [enemy $0FAE]
+$86:BDB4 29 FF 00    AND #$00FF             ;} A = [enemy head direction]
 $86:BDB7 0A          ASL A                  ;\
 $86:BDB8 AA          TAX                    ;|
 $86:BDB9 BF 43 B4 A0 LDA $A0B443,x          ;} Enemy projectile X velocity = 100h * sin([A] * pi / 80h)

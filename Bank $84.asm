@@ -1231,7 +1231,7 @@ $84:889A BD C7 1D    LDA $1DC7,x[$7E:1E0B]  ;\
 $84:889D 30 0F       BMI $0F    [$88AE]     ;} If [PLM room argument] & 8000h = 0:
 $84:889F 22 8E 81 80 JSL $80818E[$80:818E]  ;\
 $84:88A3 BF 70 D8 7E LDA $7ED870,x[$7E:D873];|
-$84:88A7 0D E7 05    ORA $05E7  [$7E:05E7]  ;} Set PLM room argument chozo block destroyed
+$84:88A7 0D E7 05    ORA $05E7  [$7E:05E7]  ;} Set PLM room argument item collected
 $84:88AA 9F 70 D8 7E STA $7ED870,x[$7E:D873];/
 
 $84:88AE FA          PLX
@@ -10797,7 +10797,7 @@ $84:D0EC             dx 0001,924D,
 $84:D0F2             dw B3C1,D0EC   ; Unused. Blue Brinstar face-block
 
 
-;;; $D0F6: Instruction list - PLM $D113 (crumble Lower Norfair chozo room plug) ;;;
+;;; $D0F6: Instruction list - PLM $D113 (chozo crumbled block) ;;;
 {
 $84:D0F6             dx 0004,A345,
                         0004,A34B,
@@ -10807,11 +10807,9 @@ $84:D0F6             dx 0004,A345,
 }
 
 
-;;; $D108: Setup - PLM $D113 (crumble Lower Norfair chozo room plug) ;;;
+;;; $D108: Setup - PLM $D113 (chozo crumbled block) ;;;
 {
-; This setup routine is pointless, as the block is off-screen and the instruction list draws over the block next frame
-; Alternatively, the instruction list is pointless, as you'll never see the off-screen block crumbling animation,
-; but this setup routine fails to set the block to air correctly (missing LDA), so I guess it's just as well the instruction list is there
+; This setup routine fails to set the block to air correctly (missing LDA)
 $84:D108 BE 87 1C    LDX $1C87,y[$7E:1CCB]
 $84:D10B 29 FF 0F    AND #$0FFF             ;\
 $84:D10E 9F 02 00 7F STA $7F0002,x[$7F:158C];} PLM block = (garbage) air block
@@ -10819,7 +10817,7 @@ $84:D112 60          RTS
 }
 
 
-$84:D113             dw D108,D0F6   ; Crumble Lower Norfair chozo room plug
+$84:D113             dw D108,D0F6   ; Chozo crumbled block
 
 
 ;;; $D117: Setup - PLM $D127 ;;;
@@ -10914,7 +10912,7 @@ $84:D18D 60          RTS
 }
 
 
-;;; $D18E: Setup = PLM $D6D6 (Lower Norfair chozo hand) ;;;
+;;; $D18E: RTS. Setup - PLM $D6D6 (Lower Norfair chozo hand) ;;;
 {
 $84:D18E 60          RTS
 }
@@ -10952,7 +10950,7 @@ $84:D1CB 9F 02 00 7F STA $7F0002,x[$7F:030A];/
 $84:D1CF A9 00 00    LDA #$0000             ;\
 $84:D1D2 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - lock Samus
 $84:D1D6 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
-$84:D1DA             dx 0C, 1D, D113        ;} Spawn PLM $D113 (crumble Lower Norfair chozo room plug)
+$84:D1DA             dx 0C, 1D, D113        ;} Spawn PLM $D113 (chozo crumbled block) at (Ch, 1Dh)
 
 ; BRANCH_RETURN
 $84:D1DE A9 00 00    LDA #$0000             ;\

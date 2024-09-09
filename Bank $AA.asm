@@ -4212,22 +4212,22 @@ $AA:D911             dw 3800, 5755, 4A4F, 1CE4, 0C60, 56B2, 3E0D, 2D68, 2526, 03
 
 ;;; $D931..E9: Shaktool instructions ;;;
 {
-;;; $D931: Unused. Instruction -  ;;;
+;;; $D931: Unused. Instruction - lower enemy 1px away from enemy projectile ;;;
 {
 $AA:D931 5A          PHY                    ;\
 $AA:D932 BC B0 0F    LDY $0FB0,x            ;|
-$AA:D935 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head $0FAE] ^ 80h
+$AA:D935 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head head direction] ^ 80h
 $AA:D938 49 80 00    EOR #$0080             ;|
 $AA:D93B 7A          PLY                    ;/
 $AA:D93C 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 }
 
 
-;;; $D93F: Unused. Instruction -  ;;;
+;;; $D93F: Unused. Instruction - raise enemy 1px towards enemy projectile ;;;
 {
 $AA:D93F 5A          PHY                    ;\
 $AA:D940 BC B0 0F    LDY $0FB0,x            ;|
-$AA:D943 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head $0FAE]
+$AA:D943 B9 6E 10    LDA $106E,y            ;} A = [Shaktool head head direction]
 $AA:D946 7A          PLY                    ;/
 $AA:D947 4C 56 D9    JMP $D956  [$AA:D956]  ; Go to move Shaktool piece 1px
 }
@@ -4293,6 +4293,7 @@ $AA:D99E 6B          RTL
 
 ;;; $D99F: RTL. Instruction - NOP (disabled - spawn Shaktool attack enemy projectiles) ;;;
 {
+; This is RTL'd out, but the instruction list that calls this instruction is never used due to $DAE4 being RTS'd out anyway
 $AA:D99F 6B          RTL
 
 $AA:D9A0 5A          PHY
@@ -4392,9 +4393,9 @@ $AA:DA1E             dx 0003,DF5C,
 ;;; $DA2E: Unused. Instruction list - Shaktool arm piece - attack - back ;;;
 {
 $AA:DA2E             dx 813A,00C0,  ; Wait C0h frames
-                        D931,
+                        D931,       ; Lower enemy 1px away from enemy projectile
                         813A,0080,  ; Wait 80h frames
-                        D93F,
+                        D93F,       ; Raise enemy 1px towards enemy projectile
                         813A,0100,  ; Wait 100h frames
                         80ED,DA72   ; Go to $DA72
 }
@@ -4403,9 +4404,9 @@ $AA:DA2E             dx 813A,00C0,  ; Wait C0h frames
 ;;; $DA42: Unused. Instruction list - Shaktool arm piece - attack - front ;;;
 {
 $AA:DA42             dx 813A,0100,  ; Wait 100h frames
-                        D931,
+                        D931,       ; Lower enemy 1px away from enemy projectile
                         813A,0080,  ; Wait 80h frames
-                        D93F,
+                        D93F,       ; Raise enemy 1px towards enemy projectile
                         813A,00C0,  ; Wait C0h frames
                         80ED,DA72   ; Go to $DA72
 }
@@ -4443,10 +4444,10 @@ $AA:DA72             dx 0077,DF71,
 ;;; $DA7A: Unused. Instruction list - Shaktool head - attack ;;;
 {
 $AA:DA7A             dx 813A,0080,  ; Wait 80h frames
-                        D931,
+                        D931,       ; Lower enemy 1px away from enemy projectile
                         D99F,       ; NOP (disabled - spawn Shaktool attack enemy projectiles
                         813A,0080,  ; Wait 80h frames
-                        D93F,
+                        D93F,       ; Raise enemy 1px towards enemy projectile
                         813A,0140,  ; Wait 140h frames
                         813A,0001   ; Wait 1 frame
 }
@@ -4551,16 +4552,16 @@ $AA:DB0D 60          RTS
 }
 
 
-;;; $DB0E: Shaktool pieces $0FB4 = [A] ;;;
+;;; $DB0E: Shaktool pieces movement options = [A] ;;;
 {
 $AA:DB0E BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
-$AA:DB11 99 B4 0F    STA $0FB4,y[$7E:0FB4]  ; Shaktool primary piece $0FB4 = [A]
-$AA:DB14 99 F4 0F    STA $0FF4,y[$7E:0FF4]  ; Shaktool rightmost arm piece $0FB4 = [A]
-$AA:DB17 99 34 10    STA $1034,y[$7E:1034]  ; Shaktool centre right arm piece $0FB4 = [A]
-$AA:DB1A 99 74 10    STA $1074,y[$7E:1074]  ; Shaktool head $0FB4 = [A]
-$AA:DB1D 99 B4 10    STA $10B4,y[$7E:10B4]  ; Shaktool centre left arm piece $0FB4 = [A]
-$AA:DB20 99 F4 10    STA $10F4,y[$7E:10F4]  ; Shaktool leftmost arm piece $0FB4 = [A]
-$AA:DB23 99 34 11    STA $1134,y[$7E:1134]  ; Shaktool final piece $0FB4 = [A]
+$AA:DB11 99 B4 0F    STA $0FB4,y[$7E:0FB4]  ; Shaktool primary piece movement options = [A]
+$AA:DB14 99 F4 0F    STA $0FF4,y[$7E:0FF4]  ; Shaktool rightmost arm piece movement options = [A]
+$AA:DB17 99 34 10    STA $1034,y[$7E:1034]  ; Shaktool centre right arm piece movement options = [A]
+$AA:DB1A 99 74 10    STA $1074,y[$7E:1074]  ; Shaktool head movement options = [A]
+$AA:DB1D 99 B4 10    STA $10B4,y[$7E:10B4]  ; Shaktool centre left arm piece movement options = [A]
+$AA:DB20 99 F4 10    STA $10F4,y[$7E:10F4]  ; Shaktool leftmost arm piece movement options = [A]
+$AA:DB23 99 34 11    STA $1134,y[$7E:1134]  ; Shaktool final piece movement options = [A]
 $AA:DB26 60          RTS
 }
 
@@ -4597,7 +4598,7 @@ $AA:DB58 60          RTS
 {
 $AA:DB59 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DB5C B9 6E 10    LDA $106E,y[$7E:106E]  ;\
-$AA:DB5F 49 00 80    EOR #$8000             ;} Shaktool head $0FAE ^= 8000h
+$AA:DB5F 49 00 80    EOR #$8000             ;} Set Shaktool head as flipped
 $AA:DB62 99 6E 10    STA $106E,y[$7E:106E]  ;/
 $AA:DB65 BE 2A 11    LDX $112A,y[$7E:112A]  ;\
 $AA:DB68 B9 EA 0F    LDA $0FEA,y[$7E:0FEA]  ;|
@@ -4662,7 +4663,7 @@ $AA:DC06 60          RTS
 }
 
 
-;;; $DC07:  ;;;
+;;; $DC07: Set Shaktool piece neighbour angle delta due to block collision ;;;
 {
 $AA:DC07 A9 00 00    LDA #$0000
 $AA:DC0A 38          SEC
@@ -4679,7 +4680,7 @@ $AA:DC1D 7D AA 0F    ADC $0FAA,x            ;/
 
 $AA:DC20 EB          XBA                    ;\
 $AA:DC21 29 FF 00    AND #$00FF             ;|
-$AA:DC24 0A          ASL A                  ;} Enemy $0FAC = [A] / 100h * 4
+$AA:DC24 0A          ASL A                  ;} Enemy neighbour angle delta = [A] / 40h
 $AA:DC25 0A          ASL A                  ;|
 $AA:DC26 9D AC 0F    STA $0FAC,x[$7E:112C]  ;/
 $AA:DC29 60          RTS
@@ -4724,25 +4725,25 @@ $AA:DC6E 60          RTS
 }
 
 
-;;; $DC6F: Set Shaktool pieces $0FAC ;;;
+;;; $DC6F: Set Shaktool pieces neighbour angle and angle delta for curling ;;;
 {
 $AA:DC6F BD A8 0F    LDA $0FA8,x[$7E:1128]  ;\
 $AA:DC72 20 40 DB    JSR $DB40  [$AA:DB40]  ;} Shaktool pieces neighbour angle = [enemy facing angle]
 $AA:DC75 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DC78 AD E9 DE    LDA $DEE9  [$AA:DEE9]  ;\
-$AA:DC7B 99 AC 0F    STA $0FAC,y[$7E:0FAC]  ;} Shaktool primary piece $0FAC = 0
+$AA:DC7B 99 AC 0F    STA $0FAC,y[$7E:0FAC]  ;} Shaktool primary piece neighbour angle delta = 0
 $AA:DC7E AD EB DE    LDA $DEEB  [$AA:DEEB]  ;\
-$AA:DC81 99 EC 0F    STA $0FEC,y[$7E:0FEC]  ;} Shaktool rightmost arm piece $0FAC = 20h
+$AA:DC81 99 EC 0F    STA $0FEC,y[$7E:0FEC]  ;} Shaktool rightmost arm piece neighbour angle delta = 20h
 $AA:DC84 AD ED DE    LDA $DEED  [$AA:DEED]  ;\
-$AA:DC87 99 2C 10    STA $102C,y[$7E:102C]  ;} Shaktool centre right arm piece $0FAC = 60h
+$AA:DC87 99 2C 10    STA $102C,y[$7E:102C]  ;} Shaktool centre right arm piece neighbour angle delta = 60h
 $AA:DC8A AD EF DE    LDA $DEEF  [$AA:DEEF]  ;\
-$AA:DC8D 99 6C 10    STA $106C,y[$7E:106C]  ;} Shaktool head $0FAC = C0h
+$AA:DC8D 99 6C 10    STA $106C,y[$7E:106C]  ;} Shaktool head neighbour angle delta = C0h
 $AA:DC90 AD F1 DE    LDA $DEF1  [$AA:DEF1]  ;\
-$AA:DC93 99 AC 10    STA $10AC,y[$7E:10AC]  ;} Shaktool centre left arm piece $0FAC = 140h
+$AA:DC93 99 AC 10    STA $10AC,y[$7E:10AC]  ;} Shaktool centre left arm piece neighbour angle delta = 140h
 $AA:DC96 AD F3 DE    LDA $DEF3  [$AA:DEF3]  ;\
-$AA:DC99 99 EC 10    STA $10EC,y[$7E:10EC]  ;} Shaktool leftmost arm piece $0FAC = 1A0h
+$AA:DC99 99 EC 10    STA $10EC,y[$7E:10EC]  ;} Shaktool leftmost arm piece neighbour angle delta = 1A0h
 $AA:DC9C AD F5 DE    LDA $DEF5  [$AA:DEF5]  ;\
-$AA:DC9F 99 2C 11    STA $112C,y[$7E:112C]  ;} Shaktool final piece $0FAC = 1E0h
+$AA:DC9F 99 2C 11    STA $112C,y[$7E:112C]  ;} Shaktool final piece neighbour angle delta = 1E0h
 $AA:DCA2 60          RTS
 }
 
@@ -4779,7 +4780,7 @@ $AA:DCBB 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 $AA:DCBE A9 00 01    LDA #$0100             ; A = 100h
 $AA:DCC1 80 03       BRA $03    [$DCC6]
                                             ; Else (enemy is not maximally curled):
-$AA:DCC3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ; A = [enemy $0FAC]
+$AA:DCC3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ; A = [enemy neighbour angle delta]
 
 $AA:DCC6 3C B4 0F    BIT $0FB4,x[$7E:0FF4]  ;\
 $AA:DCC9 10 04       BPL $04    [$DCCF]     ;} If enemy is moving anti-clockwise:
@@ -4806,7 +4807,7 @@ $AA:DCE8 4A          LSR A                  ;|
 $AA:DCE9 18          CLC                    ;|
 $AA:DCEA 65 12       ADC $12    [$7E:0012]  ;/
 $AA:DCEC 3C AE 0F    BIT $0FAE,x[$7E:106E]  ;\
-$AA:DCEF 10 03       BPL $03    [$DCF4]     ;} If [enemy $0FAE] & 8000h != 0:
+$AA:DCEF 10 03       BPL $03    [$DCF4]     ;} If enemy is flipped:
 $AA:DCF1 49 00 80    EOR #$8000             ; A ^= 8000h
 
 $AA:DCF4 EB          XBA                    ;\
@@ -4814,12 +4815,12 @@ $AA:DCF5 18          CLC                    ;|
 $AA:DCF6 69 08 00    ADC #$0008             ;} A = ([A] / 100h + 8) / 20h * 20h
 $AA:DCF9 29 E0 00    AND #$00E0             ;/
 $AA:DCFC E2 20       SEP #$20               ;\
-$AA:DCFE 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy $0FAE = [A]
+$AA:DCFE 9D AE 0F    STA $0FAE,x[$7E:106E]  ;} Enemy head direction = [A]
 $AA:DD01 C2 20       REP #$20               ;/
 $AA:DD03 4A          LSR A                  ;\
 $AA:DD04 4A          LSR A                  ;|
 $AA:DD05 4A          LSR A                  ;|
-$AA:DD06 4A          LSR A                  ;} Enemy instruction list pointer = [$DD15 + [A] / 20h * 2]
+$AA:DD06 4A          LSR A                  ;} Enemy instruction list pointer = [$DD15 + [enemy head direction] / 20h * 2]
 $AA:DD07 A8          TAY                    ;|
 $AA:DD08 B9 15 DD    LDA $DD15,y[$AA:DD1D]  ;|
 $AA:DD0B 9D 92 0F    STA $0F92,x[$7E:1052]  ;/
@@ -4833,7 +4834,6 @@ $AA:DD15             dw DAB4, DABC, DAC4, DACC, DAD4, DADC, DAA4, DAAC
 
 ;;; $DD25: Shaktool function - final piece ;;;
 {
-; Holy shit at the use of the stack here
 $AA:DD25 BD 7E 0F    LDA $0F7E,x[$7E:10FE]  ;\
 $AA:DD28 48          PHA                    ;} Save [enemy Y position] (old Y position)
 $AA:DD29 BD 7A 0F    LDA $0F7A,x[$7E:10FA]  ;\
@@ -4881,22 +4881,22 @@ $AA:DD7F BD AA 0F    LDA $0FAA,x[$7E:112A]  ;\
 $AA:DD82 5D A8 0F    EOR $0FA8,x[$7E:1128]  ;|
 $AA:DD85 29 00 FF    AND #$FF00             ;} If [enemy neighbour angle] / 100h = [enemy facing angle] / 100h:
 $AA:DD88 D0 1B       BNE $1B    [$DDA5]     ;/
-$AA:DD8A 20 6F DC    JSR $DC6F  [$AA:DC6F]  ; Set Shaktool pieces $0FAC
+$AA:DD8A 20 6F DC    JSR $DC6F  [$AA:DC6F]  ; Set Shaktool pieces neighbour angle and angle delta for curling
 $AA:DD8D A9 00 78    LDA #$7800             ;\
-$AA:DD90 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy $0FAE = 7800h
+$AA:DD90 9D AE 0F    STA $0FAE,x[$7E:112E]  ;} Enemy angle curled = 7800h
 $AA:DD93 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $AA:DD96 29 FF DF    AND #$DFFF             ;} Set Shaktool pieces as curling
 $AA:DD99 20 0E DB    JSR $DB0E  [$AA:DB0E]  ;/
 $AA:DD9C BD AE 0F    LDA $0FAE,x[$7E:112E]  ;\
-$AA:DD9F 29 00 FF    AND #$FF00             ;} Enemy $0FAE &= FF00h
+$AA:DD9F 29 00 FF    AND #$FF00             ;} Enemy angle curled &= FF00h
 $AA:DDA2 9D AE 0F    STA $0FAE,x[$7E:112E]  ;/
 
 $AA:DDA5 BD AC 0F    LDA $0FAC,x[$7E:112C]  ;\
 $AA:DDA8 18          CLC                    ;|
-$AA:DDA9 7D AE 0F    ADC $0FAE,x[$7E:112E]  ;} Enemy $0FAE += [enemy $0FAC]
+$AA:DDA9 7D AE 0F    ADC $0FAE,x[$7E:112E]  ;} Enemy angle curled += [enemy neighbour angle delta]
 $AA:DDAC 9D AE 0F    STA $0FAE,x[$7E:112E]  ;/
 $AA:DDAF C9 00 F0    CMP #$F000             ;\
-$AA:DDB2 90 0C       BCC $0C    [$DDC0]     ;} If [enemy $0FAE] >= F000h:
+$AA:DDB2 90 0C       BCC $0C    [$DDC0]     ;} If [enemy angle curled] >= F000h:
 $AA:DDB4 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DDB7 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $AA:DDBA 09 00 40    ORA #$4000             ;} Set Shaktool pieces as maximally curled
@@ -4934,7 +4934,7 @@ $AA:DDF7 BD B4 0F    LDA $0FB4,x[$7E:1134]  ;\
 $AA:DDFA 29 FF BF    AND #$BFFF             ;} Set Shaktool pieces as non maximally curled
 $AA:DDFD 20 0E DB    JSR $DB0E  [$AA:DB0E]  ;/
 
-$AA:DE00 9E AE 0F    STZ $0FAE,x[$7E:112E]  ; Enemy $0FAE = 0
+$AA:DE00 9E AE 0F    STZ $0FAE,x[$7E:112E]  ; Enemy angle curled = 0
 $AA:DE03 BC B0 0F    LDY $0FB0,x[$7E:1130]  ; Y = [enemy primary piece enemy index]
 $AA:DE06 22 96 C0 A0 JSL $A0C096[$A0:C096]  ; A = angle of enemy [X] from enemy [Y]
 $AA:DE0A EB          XBA                    ;\
@@ -4952,7 +4952,7 @@ $AA:DE1D 20 27 DB    JSR $DB27  [$AA:DB27]  ; Shaktool pieces facing angle = [A]
 $AA:DE20 A0 0C 00    LDY #$000C             ; Y = Ch
 
 ; LOOP
-$AA:DE23 20 07 DC    JSR $DC07  [$AA:DC07]  ; Execute $DC07
+$AA:DE23 20 07 DC    JSR $DC07  [$AA:DC07]  ; Set Shaktool piece neighbour angle delta due to block collision
 $AA:DE26 A9 AA DC    LDA #$DCAA             ;\
 $AA:DE29 9D B2 0F    STA $0FB2,x[$7E:1132]  ;} Enemy function = RTS
 $AA:DE2C B9 13 DF    LDA $DF13,y[$AA:DF1F]  ;\
@@ -4980,7 +4980,7 @@ $AA:DE49 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:DE4C 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $AA:DE4F A9 00 00    LDA #$0000             ;\
 $AA:DE52 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy facing angle = 0
-$AA:DE55 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ; Enemy $0FAE = 0
+$AA:DE55 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ; Enemy head direction / flip flag / angle curled = 0
 $AA:DE58 BC B6 0F    LDY $0FB6,x[$7E:0FB6]  ; Y = [enemy parameter 2]
 $AA:DE5B BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $AA:DE5E 19 95 DE    ORA $DE95,y[$AA:DE95]  ;} Enemy properties |= [$DE95 + [Y]] (process instructions, process whilst off-screen, and maybe intangible)
@@ -4993,7 +4993,7 @@ $AA:DE6C B9 DB DE    LDA $DEDB,y[$AA:DEDB]  ;\
 $AA:DE6F 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = [$DEDB + [Y]]
 $AA:DE72 B9 E9 DE    LDA $DEE9,y[$AA:DEE9]  ;\
 $AA:DE75 38          SEC                    ;|
-$AA:DE76 F9 F7 DE    SBC $DEF7,y[$AA:DEF7]  ;} Enemy $0FAC = [$DEE9 + [Y]]
+$AA:DE76 F9 F7 DE    SBC $DEF7,y[$AA:DEF7]  ;} Enemy neighbour angle delta = [$DEE9 + [Y]]
 $AA:DE79 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
 $AA:DE7C B9 B1 DE    LDA $DEB1,y[$AA:DEB1]  ;\
 $AA:DE7F 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy neighbour angle = [$DEB1 + [Y]]
@@ -5025,7 +5025,7 @@ $AA:DEB1             dw 0000, F800, E800, D000, B000, 9800, 8800 ; Initial neigh
 $AA:DEBF             dw DA0E, DA72, DA72, DAD4, DA72, DA72, DA0E ; Initial instruction list pointer
 $AA:DECD             dw 0002, 0004, 0004, 0002, 0004, 0004, 0002 ; Layer control
 $AA:DEDB             dw DCAB, DCAC, DCAC, DCD7, DCAC, DCAC, DD25 ; Function pointer
-$AA:DEE9             dw 0000, 0020, 0060, 00C0, 0140, 01A0, 01E0 ; $0FAC
+$AA:DEE9             dw 0000, 0020, 0060, 00C0, 0140, 01A0, 01E0 ; Initial curling neighbour angle delta
 $AA:DEF7             dw 0000, 0000, 0000, 0000, 0000, 0000, 0000 ; Zero
 $AA:DF05             dw 0000, 0000, 0002, 0004, 0006, 0008, 000A ; Unused
 $AA:DF13             dw D9FC, DA56, DA62, DA90, DA62, DA56, DA04 ; Head bob instruction list pointers
@@ -5112,45 +5112,35 @@ $AA:E23D              dw F401, F401, F404, F409, F40F, F418, F422, F42E, F43C, F
 
 ;;; $E2BD..F7D2: n00b tube cracks / chozo statue ;;;
 {
-;;; $E2BD: Palette - enemy $F0BF (n00b tube cracks) ;;;
+;;; $E2BD: n00b tube cracks palettes ;;;
 {
-$AA:E2BD             dw 3800, 7F9C, 7F17, 6E72, 59EE, 456A, 3528, 28E6, 777F, 66FB, 5676, 45F2, 358D, 2509, 1484, 0400
+; Wow, three copies of the same palette
+$AA:E2BD             dw 3800, 7F9C, 7F17, 6E72, 59EE, 456A, 3528, 28E6, 777F, 66FB, 5676, 45F2, 358D, 2509, 1484, 0400 ; Initial. (Sprite palette 7)
+$AA:E2DD             dw 3800, 7F9C, 7F17, 6E72, 59EE, 456A, 3528, 28E6, 777F, 66FB, 5676, 45F2, 358D, 2509, 1484, 0400 ; Sprite palette 1
+$AA:E2FD             dw 3800, 7F9C, 7F17, 6E72, 59EE, 456A, 3528, 28E6, 777F, 66FB, 5676, 45F2, 358D, 2509, 1484, 0400 ; Sprite palette 2
 }
 
 
-;;; $E2DD: n00b tube cracks palettes ;;;
+;;; $E31D: Chozo statue palettes ;;;
 {
-; These are both clones of the initial palette...
-$AA:E2DD             dw 3800, 7F9C, 7F17, 6E72, 59EE, 456A, 3528, 28E6, 777F, 66FB, 5676, 45F2, 358D, 2509, 1484, 0400
-$AA:E2FD             dw 3800, 7F9C, 7F17, 6E72, 59EE, 456A, 3528, 28E6, 777F, 66FB, 5676, 45F2, 358D, 2509, 1484, 0400
+$AA:E31D             dw 3800, 633F, 4A9F, 2DDF, 6739, 4E73, 318C, 18C6, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 7FFF, 0000 ; Wrecked Ship - sprite palette 1
+$AA:E33D             dw 3800, 633F, 4A9F, 2DDF, 4210, 318C, 2108, 1084, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 5294, 0000 ; Wrecked Ship - sprite palette 2
+$AA:E35D             dw 3800, 633F, 4A9F, 2DDF, 2F7C, 2295, 118D, 08E8, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 73DF, 0043 ; Lower Norfair - sprite palette 1
+$AA:E37D             dw 3800, 633F, 4A9F, 2DDF, 2295, 118D, 08E8, 0085, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 5294, 0001 ; Lower Norfair - sprite palette 2
 }
 
 
-;;; $E31D: Palette - enemy $F0FF (chozo statue) ;;;
+;;; $E39D: Instruction list - Chozo Statue - Lower Norfair - initial ;;;
 {
-$AA:E31D             dw 3800, 633F, 4A9F, 2DDF, 6739, 4E73, 318C, 18C6, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 7FFF, 0000
-}
-
-
-;;; $E33D: Chozo statue palettes ;;;
-{
-$AA:E33D             dw 3800, 633F, 4A9F, 2DDF, 4210, 318C, 2108, 1084, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 5294, 0000
-$AA:E35D             dw 3800, 633F, 4A9F, 2DDF, 2F7C, 2295, 118D, 08E8, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 73DF, 0043
-$AA:E37D             dw 3800, 633F, 4A9F, 2DDF, 2295, 118D, 08E8, 0085, 27FF, 1AF7, 0DCE, 00C6, 3FFF, 2B39, 5294, 0001
-}
-
-
-;;; $E39D: Instruction list -  ;;;
-{
-$AA:E39D             dx 806B,E445,  ; Enemy $0FB2 = $E445
+$AA:E39D             dx 806B,E445,  ; Enemy function = $E445
                         0001,EFD8,
                         812F        ; Sleep
 }
 
 
-;;; $E3A7: Instruction list -  ;;;
+;;; $E3A7: Instruction list - Chozo Statue - Lower Norfair - activated ;;;
 {
-$AA:E3A7             dx 8074,       ; Enemy $0FB2 = RTS
+$AA:E3A7             dx 8074,       ; Enemy function = RTS
                         E5D8,0020,  ; ???
                         0020,EFD8,
                         E5D8,0022,  ; ???
@@ -5165,8 +5155,8 @@ $AA:E3A7             dx 8074,       ; Enemy $0FB2 = RTS
                         000A,F56C,
                         000C,F5C8,
                         0060,F624,
-                        E429,       ; ???
-                        8123,0005,  ; Timer = 0005h
+                        E429,       ; Start lowering acid
+                        8123,0005,  ; Timer = 5
                         000B,F510,
                         0008,F56C,
                         0006,F5C8,
@@ -5174,7 +5164,7 @@ $AA:E3A7             dx 8074,       ; Enemy $0FB2 = RTS
                         0006,F5C8,
                         0008,F56C,
                         8110,E3E5,  ; Decrement timer and go to $E3E5 if non-zero
-                        8074,       ; Enemy $0FB2 = RTS
+                        8074,       ; Enemy function = RTS
                         E5D8,0026,  ; ???
                         0080,F0E2,
                         E5D8,0024,  ; ???
@@ -5184,25 +5174,25 @@ $AA:E3A7             dx 8074,       ; Enemy $0FB2 = RTS
                         E5D8,0020,  ; ???
                         0020,EFD8,
                         E43D,       ; Unlock Samus
-                        E436,       ; ???
+                        E436,       ; Set lowered acid position
                         812F        ; Sleep
 }
 
 
-;;; $E429: Instruction ;;;
+;;; $E429: Instruction - start lowering acid ;;;
 {
-$AA:E429 A9 20 00    LDA #$0020
-$AA:E42C 8D 80 19    STA $1980  [$7E:1980]
-$AA:E42F A9 40 00    LDA #$0040
-$AA:E432 8D 7C 19    STA $197C  [$7E:197C]
+$AA:E429 A9 20 00    LDA #$0020             ;\
+$AA:E42C 8D 80 19    STA $1980  [$7E:1980]  ;} FX timer = 20h
+$AA:E42F A9 40 00    LDA #$0040             ;\
+$AA:E432 8D 7C 19    STA $197C  [$7E:197C]  ;} FX Y velocity = 0.40h
 $AA:E435 6B          RTL
 }
 
 
-;;; $E436: Instruction ;;;
+;;; $E436: Instruction - set lowered acid position ;;;
 {
-$AA:E436 A9 D2 02    LDA #$02D2
-$AA:E439 8D 78 19    STA $1978  [$7E:1978]
+$AA:E436 A9 D2 02    LDA #$02D2             ;\
+$AA:E439 8D 78 19    STA $1978  [$7E:1978]  ;} FX base Y position = 2D2h
 $AA:E43C 6B          RTL
 }
 
@@ -5215,12 +5205,12 @@ $AA:E444 6B          RTL
 }
 
 
-;;; $E445:  ;;;
+;;; $E445: Chozo statue function - Lower Norfair ;;;
 {
-$AA:E445 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:E448 F0 0C       BEQ $0C    [$E456]
-$AA:E44A A9 A7 E3    LDA #$E3A7
-$AA:E44D 9D 92 0F    STA $0F92,x[$7E:0F92]
+$AA:E445 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:E448 F0 0C       BEQ $0C    [$E456]     ;} If [enemy $0FB4] = 0: return
+$AA:E44A A9 A7 E3    LDA #$E3A7             ;\
+$AA:E44D 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E3A7 (activated)
 $AA:E450 A9 01 00    LDA #$0001             ;\
 $AA:E453 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 
@@ -5228,17 +5218,17 @@ $AA:E456 60          RTS
 }
 
 
-;;; $E457: Instruction list -  ;;;
+;;; $E457: Instruction list - Chozo Statue - Wrecked Ship - initial ;;;
 {
-$AA:E457             dx 806B,E7AE,  ; Enemy $0FB2 = $E7AE
+$AA:E457             dx 806B,E7AE,  ; Enemy function = $E7AE
                         0001,E7DD,
                         812F        ; Sleep
 }
 
 
-;;; $E461: Instruction list -  ;;;
+;;; $E461: Instruction list - Chozo Statue - Wrecked Ship - activated ;;;
 {
-$AA:E461             dx 8074,       ; Enemy $0FB2 = RTS
+$AA:E461             dx 8074,       ; Enemy function = RTS
                         E5D8,0000,  ; ???
                         0020,E7DD,
                         E5D8,0002,  ; ???
@@ -5253,7 +5243,7 @@ $AA:E461             dx 8074,       ; Enemy $0FB2 = RTS
                         000A,ED71,
                         000C,EDCD,
                         0080,EE29,
-                        8123,0004,  ; Timer = 0004h
+                        8123,0004,  ; Timer = 4
                         000B,ED15,
                         0008,ED71,
                         0006,EDCD,
@@ -5261,8 +5251,8 @@ $AA:E461             dx 8074,       ; Enemy $0FB2 = RTS
                         0006,EDCD,
                         0008,ED71,
                         8110,E49D,  ; Decrement timer and go to $E49D if non-zero
-                        806B,E7DA,  ; Enemy $0FB2 = $E7DA
-                        8123,0010,  ; Timer = 0010h
+                        806B,E7DA,  ; Enemy function = RTS
+                        8123,0010,  ; Timer = 10h
                         E5D8,0016,  ; ???
                         E58F,FFF8,  ; ???
                         0008,EC49,
@@ -5302,7 +5292,7 @@ $AA:E461             dx 8074,       ; Enemy $0FB2 = RTS
                         E5D8,000C,  ; ???
                         E58F,0000,  ; ???
                         0006,EA1E,
-                        8074,       ; Enemy $0FB2 = RTS
+                        8074,       ; Enemy function = RTS
                         E5D8,0006,  ; ???
                         0080,E8E7,
                         E5D8,0004,  ; ???
@@ -5376,8 +5366,8 @@ $AA:E5D7 6B          RTL
 
 ;;; $E5D8: Instruction ;;;
 {
-$AA:E5D8 B9 00 00    LDA $0000,y[$AA:E465]
-$AA:E5DB 9D AC 0F    STA $0FAC,x[$7E:0FAC]
+$AA:E5D8 B9 00 00    LDA $0000,y[$AA:E465]  ;\
+$AA:E5DB 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [[Y]]
 $AA:E5DE 5A          PHY
 $AA:E5DF 64 12       STZ $12    [$7E:0012]  ;\
 $AA:E5E1 64 14       STZ $14    [$7E:0014]  ;|
@@ -5388,44 +5378,47 @@ $AA:E5EB C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:E5ED 85 13       STA $13    [$7E:0013]  ;/
 $AA:E5EF 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
-$AA:E5F3 B0 00       BCS $00    [$E5F5]
+$AA:E5F3 B0 00       BCS $00    [$E5F5]     ; >_<;
 
-$AA:E5F5 64 12       STZ $12    [$7E:0012]
-$AA:E5F7 64 14       STZ $14    [$7E:0014]
-$AA:E5F9 BC AC 0F    LDY $0FAC,x[$7E:0FAC]  ;\
+$AA:E5F5 64 12       STZ $12    [$7E:0012]  ;\
+$AA:E5F7 64 14       STZ $14    [$7E:0014]  ;|
+$AA:E5F9 BC AC 0F    LDY $0FAC,x[$7E:0FAC]  ;|
 $AA:E5FC B9 30 E6    LDA $E630,y[$AA:E630]  ;|
 $AA:E5FF 10 04       BPL $04    [$E605]     ;|
 $AA:E601 49 FF FF    EOR #$FFFF             ;|
-$AA:E604 1A          INC A                  ;|
-                                            ;} $14.$12 = |[$E630 + [enemy $0FAC]]| / 100h
+$AA:E604 1A          INC A                  ;} $14.$12 = |[$E630 + [enemy $0FAC]]| / 100h
+                                            ;|
 $AA:E605 10 02       BPL $02    [$E609]     ;|
 $AA:E607 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:E609 85 13       STA $13    [$7E:0013]  ;/
 $AA:E60B 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$AA:E60F B0 00       BCS $00    [$E611]
+$AA:E60F B0 00       BCS $00    [$E611]     ; >_<;
 
 $AA:E611 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$AA:E615 BC AC 0F    LDY $0FAC,x[$7E:0FAC]
-$AA:E618 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$AA:E61B 18          CLC
-$AA:E61C 79 70 E6    ADC $E670,y[$AA:E670]
-$AA:E61F 8D F6 0A    STA $0AF6  [$7E:0AF6]
-$AA:E622 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$AA:E625 18          CLC
-$AA:E626 79 B0 E6    ADC $E6B0,y[$AA:E6B0]
-$AA:E629 8D FA 0A    STA $0AFA  [$7E:0AFA]
+$AA:E615 BC AC 0F    LDY $0FAC,x[$7E:0FAC]  ;\
+$AA:E618 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
+$AA:E61B 18          CLC                    ;} Samus X position = [enemy X position] + [$E670 + [enemy $0FAC]]
+$AA:E61C 79 70 E6    ADC $E670,y[$AA:E670]  ;|
+$AA:E61F 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
+$AA:E622 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$AA:E625 18          CLC                    ;|
+$AA:E626 79 B0 E6    ADC $E6B0,y[$AA:E6B0]  ;} Samus Y position = [enemy Y position] + [$E6B0 + [enemy $0FAC]]
+$AA:E629 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $AA:E62C 7A          PLY
-$AA:E62D C8          INY
-$AA:E62E C8          INY
+$AA:E62D C8          INY                    ;\
+$AA:E62E C8          INY                    ;} Y += 2
 $AA:E62F 6B          RTL
 
+; Enemy X velocity. Unit 1/100h px/frame. Absolute value used for Y velocity
 $AA:E630             dw 0000, 0000, 0000, 0000, FE00, FD00, F200, F800, FE00, FD00, F200, F800, 0000, 0000, 0000, 0000,
                         0000, 0000, 0000, 0000, 0200, 0300, 0E00, 0800, 0200, 0300, 0E00, 0800, 0000, 0000, 0000, 0000
 
+; Samus X offsets from enemy
 $AA:E670             dw FFE4, FFE2, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0,
                         001C, 001E, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020
 
+; Samus Y offsets from enemy
 $AA:E6B0             dw FFE0, FFE7, FFE9, FFE9, FFE9, FFE8, FFE7, FFE8, FFE9, FFE8, FFE7, FFE8, FFE9, FFE9, FFE9, FFE9,
                         FFE0, FFE7, FFE9, FFE9, FFE9, FFE8, FFE7, FFE8, FFE9, FFE8, FFE7, FFE8, FFE9, FFE9, FFE9, FFE9
 }
@@ -5449,13 +5442,13 @@ $AA:E715 6B          RTL
 
 ;;; $E716: Initialisation AI - enemy $F0BF (n00b tube cracks) ;;;
 {
-$AA:E716 A2 3E 00    LDX #$003E
-
-$AA:E719 BD DD E2    LDA $E2DD,x[$AA:E31B]
-$AA:E71C 9F 20 C3 7E STA $7EC320,x[$7E:C35E]
-$AA:E720 CA          DEX
-$AA:E721 CA          DEX
-$AA:E722 10 F5       BPL $F5    [$E719]
+$AA:E716 A2 3E 00    LDX #$003E             ;\
+                                            ;|
+$AA:E719 BD DD E2    LDA $E2DD,x[$AA:E31B]  ;|
+$AA:E71C 9F 20 C3 7E STA $7EC320,x[$7E:C35E];} Target sprite palette 1..2 = [$E2DD..E31C]
+$AA:E720 CA          DEX                    ;|
+$AA:E721 CA          DEX                    ;|
+$AA:E722 10 F5       BPL $F5    [$E719]     ;/
 $AA:E724 6B          RTL
 }
 
@@ -5463,58 +5456,59 @@ $AA:E724 6B          RTL
 ;;; $E725: Initialisation AI - enemy $F0FF (chozo statue) ;;;
 {
 $AA:E725 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:E728 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$AA:E72B 09 00 A8    ORA #$A800
-$AA:E72E 9D 86 0F    STA $0F86,x[$7E:0F86]
-$AA:E731 A9 4D 80    LDA #$804D
-$AA:E734 9D 8E 0F    STA $0F8E,x[$7E:0F8E]
+$AA:E728 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$AA:E72B 09 00 A8    ORA #$A800             ;} Set enemy to process whilst off-screen, process instructions, hitbox solid to Samus
+$AA:E72E 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$AA:E731 A9 4D 80    LDA #$804D             ;\
+$AA:E734 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
 $AA:E737 A9 01 00    LDA #$0001             ;\
 $AA:E73A 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$AA:E73D 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$AA:E740 A9 A6 E7    LDA #$E7A6
-$AA:E743 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$AA:E746 A9 00 00    LDA #$0000
-$AA:E749 9D B4 0F    STA $0FB4,x[$7E:0FB4]
-$AA:E74C 9E 96 0F    STZ $0F96,x[$7E:0F96]
-$AA:E74F 9C 9A 0F    STZ $0F9A  [$7E:0F9A]
-$AA:E752 BC B6 0F    LDY $0FB6,x[$7E:0FB6]
-$AA:E755 B9 A2 E7    LDA $E7A2,y[$AA:E7A2]
-$AA:E758 9D 92 0F    STA $0F92,x[$7E:0F92]
-$AA:E75B 98          TYA
-$AA:E75C D0 26       BNE $26    [$E784]
-$AA:E75E A2 1E 00    LDX #$001E
-
-$AA:E761 BD 3D E3    LDA $E33D,x[$AA:E35B]
-$AA:E764 9F 40 C3 7E STA $7EC340,x[$7E:C35E]
-$AA:E768 BD 1D E3    LDA $E31D,x[$AA:E33B]
-$AA:E76B 9F 20 C3 7E STA $7EC320,x[$7E:C33E]
-$AA:E76F CA          DEX
-$AA:E770 CA          DEX
-$AA:E771 10 EE       BPL $EE    [$E761]
+$AA:E73D 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$AA:E740 A9 A6 E7    LDA #$E7A6             ;\
+$AA:E743 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = RTS
+$AA:E746 A9 00 00    LDA #$0000             ;\
+$AA:E749 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy $0FB4 = 0
+$AA:E74C 9E 96 0F    STZ $0F96,x[$7E:0F96]  ; Enemy palette index = 0
+$AA:E74F 9C 9A 0F    STZ $0F9A  [$7E:0F9A]  ; Enemy 0 layer = 0
+$AA:E752 BC B6 0F    LDY $0FB6,x[$7E:0FB6]  ;\
+$AA:E755 B9 A2 E7    LDA $E7A2,y[$AA:E7A2]  ;} Enemy instruction list pointer = [$E7A2 + [enemy parameter 2]]
+$AA:E758 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
+$AA:E75B 98          TYA                    ;\
+$AA:E75C D0 26       BNE $26    [$E784]     ;} If [enemy parameter 2] = 0 (Wrecked Ship):
+$AA:E75E A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:E761 BD 3D E3    LDA $E33D,x[$AA:E35B]  ;|
+$AA:E764 9F 40 C3 7E STA $7EC340,x[$7E:C35E];|
+$AA:E768 BD 1D E3    LDA $E31D,x[$AA:E33B]  ;} Target sprite palette 1..2 = [$E31D..5C]
+$AA:E76B 9F 20 C3 7E STA $7EC320,x[$7E:C33E];|
+$AA:E76F CA          DEX                    ;|
+$AA:E770 CA          DEX                    ;|
+$AA:E771 10 EE       BPL $EE    [$E761]     ;/
 $AA:E773 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $AA:E777             dx 4A,17,D6EE          ;} Spawn Wrecked Ship chozo hand PLM
 $AA:E77B 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $AA:E77F             dx 17,1D,D6FC          ;} Spawn block slope access for Wrecked Ship chozo PLM
-$AA:E783 6B          RTL
+$AA:E783 6B          RTL                    ; Return
 
-$AA:E784 A2 1E 00    LDX #$001E
-
-$AA:E787 BD 7D E3    LDA $E37D,x[$AA:E39B]
-$AA:E78A 9F 40 C3 7E STA $7EC340,x[$7E:C35E]
-$AA:E78E BD 5D E3    LDA $E35D,x[$AA:E37B]
-$AA:E791 9F 20 C3 7E STA $7EC320,x[$7E:C33E]
-$AA:E795 CA          DEX
-$AA:E796 CA          DEX
-$AA:E797 10 EE       BPL $EE    [$E787]
+$AA:E784 A2 1E 00    LDX #$001E             ;\
+                                            ;|
+$AA:E787 BD 7D E3    LDA $E37D,x[$AA:E39B]  ;|
+$AA:E78A 9F 40 C3 7E STA $7EC340,x[$7E:C35E];|
+$AA:E78E BD 5D E3    LDA $E35D,x[$AA:E37B]  ;} Target sprite palette 1..2 = [$E35D..9C]
+$AA:E791 9F 20 C3 7E STA $7EC320,x[$7E:C33E];|
+$AA:E795 CA          DEX                    ;|
+$AA:E796 CA          DEX                    ;|
+$AA:E797 10 EE       BPL $EE    [$E787]     ;/
 $AA:E799 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $AA:E79D             dx 0C,1D,D6D6          ;} Spawn Lower Norfair chozo hand PLM
 $AA:E7A1 6B          RTL
 
+; Enemy instruction list pointers
 $AA:E7A2             dw E457, E39D
 }
 
 
-;;; $E7A6:  ;;;
+;;; $E7A6: RTS ;;;
 {
 $AA:E7A6 60          RTS
 }
@@ -5523,29 +5517,29 @@ $AA:E7A6 60          RTS
 ;;; $E7A7: Main AI - enemy $F0FF (chozo statue) ;;;
 {
 $AA:E7A7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$AA:E7AA FC B2 0F    JSR ($0FB2,x)[$AA:E7A6]
+$AA:E7AA FC B2 0F    JSR ($0FB2,x)[$AA:E7A6]; Execute [enemy function]
 $AA:E7AD 6B          RTL
 }
 
 
-;;; $E7AE:  ;;;
+;;; $E7AE: Chozo statue function - Wrecked Ship ;;;
 {
-$AA:E7AE DA          PHX
-$AA:E7AF AE 9F 07    LDX $079F  [$7E:079F]
-$AA:E7B2 BF 28 D8 7E LDA $7ED828,x[$7E:D82B]
-$AA:E7B6 FA          PLX
-$AA:E7B7 29 01 00    AND #$0001
-$AA:E7BA F0 1D       BEQ $1D    [$E7D9]
-$AA:E7BC BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$AA:E7BF F0 18       BEQ $18    [$E7D9]
-$AA:E7C1 A9 61 E4    LDA #$E461
-$AA:E7C4 9D 92 0F    STA $0F92,x[$7E:0F92]
+$AA:E7AE DA          PHX                    ;\
+$AA:E7AF AE 9F 07    LDX $079F  [$7E:079F]  ;|
+$AA:E7B2 BF 28 D8 7E LDA $7ED828,x[$7E:D82B];|
+$AA:E7B6 FA          PLX                    ;} If area boss is alive: return
+$AA:E7B7 29 01 00    AND #$0001             ;|
+$AA:E7BA F0 1D       BEQ $1D    [$E7D9]     ;/
+$AA:E7BC BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$AA:E7BF F0 18       BEQ $18    [$E7D9]     ;} If [enemy $0FB4] = 0: return
+$AA:E7C1 A9 61 E4    LDA #$E461             ;\
+$AA:E7C4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E461 (activated)
 $AA:E7C7 A9 01 00    LDA #$0001             ;\
 $AA:E7CA 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
-$AA:E7CD A9 00 FF    LDA #$FF00
-$AA:E7D0 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$AA:E7D3 A9 00 01    LDA #$0100
-$AA:E7D6 9D AA 0F    STA $0FAA,x[$7E:0FAA]
+$AA:E7CD A9 00 FF    LDA #$FF00             ;\
+$AA:E7D0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = -100h
+$AA:E7D3 A9 00 01    LDA #$0100             ;\
+$AA:E7D6 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = 100h
 
 $AA:E7D9 60          RTS
 }
