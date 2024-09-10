@@ -3302,7 +3302,7 @@ $A6:AA3F             dw E23F,00F8,007F,0000,2800,0000,0006,0000 ; Ceres door
 }
 
 
-;;; $AA4F: Ridley function ;;;
+;;; $AA4F: RTS. Ridley function ;;;
 {
 $A6:AA4F 60          RTS
 }
@@ -9457,7 +9457,7 @@ $A6:DFB2 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no de
 }
 
 
-;;; $DFB6: Ridley reaction ;;;
+;;; $DFB6: RTL. Ridley reaction ;;;
 {
 $A6:DFB6 6B          RTL
 }

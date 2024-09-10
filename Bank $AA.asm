@@ -5141,14 +5141,14 @@ $AA:E39D             dx 806B,E445,  ; Enemy function = $E445
 ;;; $E3A7: Instruction list - Chozo Statue - Lower Norfair - activated ;;;
 {
 $AA:E3A7             dx 8074,       ; Enemy function = RTS
-                        E5D8,0020,  ; ???
+                        E5D8,0020,  ; Chozo statue movement - index 20h
                         0020,EFD8,
-                        E5D8,0022,  ; ???
+                        E5D8,0022,  ; Chozo statue movement - index 22h
                         0008,F034,
-                        E5D8,0024,  ; ???
+                        E5D8,0024,  ; Chozo statue movement - index 24h
                         0030,F08B,
                         E57F,       ; Play chozo grabs Samus sound effect
-                        E5D8,0026,  ; ???
+                        E5D8,0026,  ; Chozo statue movement - index 26h
                         0040,F0E2,
                         0006,F4B4,
                         0008,F510,
@@ -5156,8 +5156,8 @@ $AA:E3A7             dx 8074,       ; Enemy function = RTS
                         000C,F5C8,
                         0060,F624,
                         E429,       ; Start lowering acid
-                        8123,0005,  ; Timer = 5
-                        000B,F510,
+                        8123,0005   ; Timer = 5
+$AA:E3E5             dx 000B,F510,
                         0008,F56C,
                         0006,F5C8,
                         0008,F624,
@@ -5165,13 +5165,13 @@ $AA:E3A7             dx 8074,       ; Enemy function = RTS
                         0008,F56C,
                         8110,E3E5,  ; Decrement timer and go to $E3E5 if non-zero
                         8074,       ; Enemy function = RTS
-                        E5D8,0026,  ; ???
+                        E5D8,0026,  ; Chozo statue movement - index 26h
                         0080,F0E2,
-                        E5D8,0024,  ; ???
+                        E5D8,0024,  ; Chozo statue movement - index 24h
                         0050,F08B,
-                        E5D8,0022,  ; ???
+                        E5D8,0022,  ; Chozo statue movement - index 22h
                         0008,F034,
-                        E5D8,0020,  ; ???
+                        E5D8,0020,  ; Chozo statue movement - index 20h
                         0020,EFD8,
                         E43D,       ; Unlock Samus
                         E436,       ; Set lowered acid position
@@ -5208,7 +5208,7 @@ $AA:E444 6B          RTL
 ;;; $E445: Chozo statue function - Lower Norfair ;;;
 {
 $AA:E445 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$AA:E448 F0 0C       BEQ $0C    [$E456]     ;} If [enemy $0FB4] = 0: return
+$AA:E448 F0 0C       BEQ $0C    [$E456]     ;} If [enemy activation flag] = 0: return
 $AA:E44A A9 A7 E3    LDA #$E3A7             ;\
 $AA:E44D 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E3A7 (activated)
 $AA:E450 A9 01 00    LDA #$0001             ;\
@@ -5229,14 +5229,14 @@ $AA:E457             dx 806B,E7AE,  ; Enemy function = $E7AE
 ;;; $E461: Instruction list - Chozo Statue - Wrecked Ship - activated ;;;
 {
 $AA:E461             dx 8074,       ; Enemy function = RTS
-                        E5D8,0000,  ; ???
+                        E5D8,0000,  ; Chozo statue movement - index 0
                         0020,E7DD,
-                        E5D8,0002,  ; ???
+                        E5D8,0002,  ; Chozo statue movement - index 2
                         0008,E839,
-                        E5D8,0004,  ; ???
+                        E5D8,0004,  ; Chozo statue movement - index 4
                         0050,E890,
                         E57F,       ; Play chozo grabs Samus sound effect
-                        E5D8,0006,  ; ???
+                        E5D8,0006,  ; Chozo statue movement - index 6
                         0080,E8E7,
                         0006,ECB9,
                         0008,ED15,
@@ -5253,55 +5253,55 @@ $AA:E461             dx 8074,       ; Enemy function = RTS
                         8110,E49D,  ; Decrement timer and go to $E49D if non-zero
                         806B,E7DA,  ; Enemy function = RTS
                         8123,0010,  ; Timer = 10h
-                        E5D8,0016,  ; ???
-                        E58F,FFF8,  ; ???
+                        E5D8,0016,  ; Chozo statue movement - index 16h
+                        E58F,FFF8,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -8
                         0008,EC49,
                         E587,       ; Play chozo footsteps sound effect
-                        E5D8,0008,  ; ???
-                        E58F,FFEC,  ; ???
+                        E5D8,0008,  ; Chozo statue movement - index 8
+                        E58F,FFEC,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -14h
                         000B,E943,
-                        E5D8,000A,  ; ???
-                        E58F,FFF0,  ; ???
+                        E5D8,000A,  ; Chozo statue movement - index Ah
+                        E58F,FFF0,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -10h
                         0008,E9AE,
-                        E5D8,000C,  ; ???
-                        E58F,0000,  ; ???
+                        E5D8,000C,  ; Chozo statue movement - index Ch
+                        E58F,0000,  ; Spawn chozo spike clearing footstep enemy projectile with X offset 0
                         0006,EA1E,
-                        E5D8,000E,  ; ???
-                        E58F,FFF8,  ; ???
+                        E5D8,000E,  ; Chozo statue movement - index Eh
+                        E58F,FFF8,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -8
                         0008,EA8E,
                         E587,       ; Play chozo footsteps sound effect
-                        E5D8,0010,  ; ???
-                        E58F,FFEC,  ; ???
+                        E5D8,0010,  ; Chozo statue movement - index 10h
+                        E58F,FFEC,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -14h
                         000B,EAFE,
-                        E5D8,0012,  ; ???
-                        E58F,FFF0,  ; ???
+                        E5D8,0012,  ; Chozo statue movement - index 12h
+                        E58F,FFF0,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -10h
                         0008,EB69,
-                        E5D8,0014,  ; ???
-                        E58F,0000,  ; ???
+                        E5D8,0014,  ; Chozo statue movement - index 14h
+                        E58F,0000,  ; Spawn chozo spike clearing footstep enemy projectile with X offset 0
                         0006,EBD9,
                         8110,E4C1,  ; Decrement timer and go to $E4C1 if non-zero
-                        E5D8,0016,  ; ???
-                        E58F,FFF8,  ; ???
+                        E5D8,0016,  ; Chozo statue movement - index 16h
+                        E58F,FFF8,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -8
                         0008,EC49,
-                        E5D8,0008,  ; ???
-                        E58F,FFEC,  ; ???
+                        E5D8,0008,  ; Chozo statue movement - index 8
+                        E58F,FFEC,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -14h
                         000B,E943,
-                        E5D8,000A,  ; ???
-                        E58F,FFF0,  ; ???
+                        E5D8,000A,  ; Chozo statue movement - index Ah
+                        E58F,FFF0,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -10h
                         0008,E9AE,
-                        E5D8,000C,  ; ???
-                        E58F,0000,  ; ???
+                        E5D8,000C,  ; Chozo statue movement - index Ch
+                        E58F,0000,  ; Spawn chozo spike clearing footstep enemy projectile with X offset 0
                         0006,EA1E,
                         8074,       ; Enemy function = RTS
-                        E5D8,0006,  ; ???
+                        E5D8,0006,  ; Chozo statue movement - index 6
                         0080,E8E7,
-                        E5D8,0004,  ; ???
+                        E5D8,0004,  ; Chozo statue movement - index 4
                         0050,E890,
-                        E5D8,0002,  ; ???
+                        E5D8,0002,  ; Chozo statue movement - index 2
                         0008,E839,
-                        E5D8,0000,  ; ???
+                        E5D8,0000,  ; Chozo statue movement - index 0
                         0020,E7DD,
-                        E6F0,       ; Release Samus
+                        E6F0,       ; Release Samus and block slope access
                         812F        ; Sleep
 }
 
@@ -5317,12 +5317,12 @@ $AA:E586 6B          RTL
 ;;; $E587: Instruction - play chozo footsteps sound effect ;;;
 {
 $AA:E587 A9 4B 00    LDA #$004B             ;\
-$AA:E58A 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 4Bh, sound library 2, max queued sounds allowed = 6 (chozo / Torizo footsteps)
+$AA:E58A 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 4Bh, sound library 2, max queued sounds allowed = 6 (chozo / torizo footsteps)
 $AA:E58E 6B          RTL
 }
 
 
-;;; $E58F: Instruction ;;;
+;;; $E58F: Instruction - spawn chozo spike clearing footstep enemy projectile with X offset [[Y]] ;;;
 {
 $AA:E58F DA          PHX
 $AA:E590 5A          PHY
@@ -5335,45 +5335,45 @@ $AA:E59C 18          CLC                    ;|
 $AA:E59D 69 1C 00    ADC #$001C             ;|
 $AA:E5A0 48          PHA                    ;|
 $AA:E5A1 22 70 BB A0 JSL $A0BB70[$A0:BB70]  ;/
-$AA:E5A5 AD C4 0D    LDA $0DC4  [$7E:0DC4]
-$AA:E5A8 18          CLC
-$AA:E5A9 6D A5 07    ADC $07A5  [$7E:07A5]
-$AA:E5AC 0A          ASL A
-$AA:E5AD AA          TAX
-$AA:E5AE BF 02 00 7F LDA $7F0002,x[$7F:14D8]
-$AA:E5B2 29 00 F0    AND #$F000
-$AA:E5B5 C9 00 A0    CMP #$A000
-$AA:E5B8 D0 19       BNE $19    [$E5D3]
-$AA:E5BA 8A          TXA
-$AA:E5BB 38          SEC
-$AA:E5BC ED A5 07    SBC $07A5  [$7E:07A5]
-$AA:E5BF AA          TAX
-$AA:E5C0 A9 13 D1    LDA #$D113
-$AA:E5C3 22 E7 84 84 JSL $8484E7[$84:84E7]
+$AA:E5A5 AD C4 0D    LDA $0DC4  [$7E:0DC4]  ;\
+$AA:E5A8 18          CLC                    ;|
+$AA:E5A9 6D A5 07    ADC $07A5  [$7E:07A5]  ;|
+$AA:E5AC 0A          ASL A                  ;|
+$AA:E5AD AA          TAX                    ;} If block one row down is a spike block:
+$AA:E5AE BF 02 00 7F LDA $7F0002,x[$7F:14D8];|
+$AA:E5B2 29 00 F0    AND #$F000             ;|
+$AA:E5B5 C9 00 A0    CMP #$A000             ;|
+$AA:E5B8 D0 19       BNE $19    [$E5D3]     ;/
+$AA:E5BA 8A          TXA                    ;\
+$AA:E5BB 38          SEC                    ;|
+$AA:E5BC ED A5 07    SBC $07A5  [$7E:07A5]  ;} >_<;
+$AA:E5BF AA          TAX                    ;/
+$AA:E5C0 A9 13 D1    LDA #$D113             ;\
+$AA:E5C3 22 E7 84 84 JSL $8484E7[$84:84E7]  ;} Spawn PLM $D113 (chozo crumbled block)
 $AA:E5C7 7A          PLY
 $AA:E5C8 5A          PHY
-$AA:E5C9 B9 00 00    LDA $0000,y[$AA:E507]
-$AA:E5CC A0 68 AF    LDY #$AF68             ;\
-$AA:E5CF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Wrecked Ship chozo spike clearing footsteps enemy projectile
+$AA:E5C9 B9 00 00    LDA $0000,y[$AA:E507]  ;\
+$AA:E5CC A0 68 AF    LDY #$AF68             ;} Spawn Wrecked Ship chozo spike clearing footsteps enemy projectile with parameter [[Y]]
+$AA:E5CF 22 97 80 86 JSL $868097[$86:8097]  ;/
 
 $AA:E5D3 7A          PLY
 $AA:E5D4 FA          PLX
-$AA:E5D5 C8          INY
-$AA:E5D6 C8          INY
+$AA:E5D5 C8          INY                    ;\
+$AA:E5D6 C8          INY                    ;} Y += 2
 $AA:E5D7 6B          RTL
 }
 
 
-;;; $E5D8: Instruction ;;;
+;;; $E5D8: Instruction - chozo statue movement - index [[Y]] ;;;
 {
 $AA:E5D8 B9 00 00    LDA $0000,y[$AA:E465]  ;\
-$AA:E5DB 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy $0FAC = [[Y]]
+$AA:E5DB 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy movement index = [[Y]]
 $AA:E5DE 5A          PHY
 $AA:E5DF 64 12       STZ $12    [$7E:0012]  ;\
 $AA:E5E1 64 14       STZ $14    [$7E:0014]  ;|
 $AA:E5E3 BC AC 0F    LDY $0FAC,x[$7E:0FAC]  ;|
 $AA:E5E6 B9 30 E6    LDA $E630,y[$AA:E630]  ;|
-$AA:E5E9 10 02       BPL $02    [$E5ED]     ;} $14.$12 = [$E630 + [enemy $0FAC]] / 100h
+$AA:E5E9 10 02       BPL $02    [$E5ED]     ;} $14.$12 = [$E630 + [enemy movement index]] / 100h
 $AA:E5EB C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $AA:E5ED 85 13       STA $13    [$7E:0013]  ;/
@@ -5386,7 +5386,7 @@ $AA:E5F9 BC AC 0F    LDY $0FAC,x[$7E:0FAC]  ;|
 $AA:E5FC B9 30 E6    LDA $E630,y[$AA:E630]  ;|
 $AA:E5FF 10 04       BPL $04    [$E605]     ;|
 $AA:E601 49 FF FF    EOR #$FFFF             ;|
-$AA:E604 1A          INC A                  ;} $14.$12 = |[$E630 + [enemy $0FAC]]| / 100h
+$AA:E604 1A          INC A                  ;} $14.$12 = |[$E630 + [enemy movement index]]| / 100h
                                             ;|
 $AA:E605 10 02       BPL $02    [$E609]     ;|
 $AA:E607 C6 14       DEC $14    [$7E:0014]  ;|
@@ -5398,12 +5398,12 @@ $AA:E60F B0 00       BCS $00    [$E611]     ; >_<;
 $AA:E611 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
 $AA:E615 BC AC 0F    LDY $0FAC,x[$7E:0FAC]  ;\
 $AA:E618 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
-$AA:E61B 18          CLC                    ;} Samus X position = [enemy X position] + [$E670 + [enemy $0FAC]]
+$AA:E61B 18          CLC                    ;} Samus X position = [enemy X position] + [$E670 + [enemy movement index]]
 $AA:E61C 79 70 E6    ADC $E670,y[$AA:E670]  ;|
 $AA:E61F 8D F6 0A    STA $0AF6  [$7E:0AF6]  ;/
 $AA:E622 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $AA:E625 18          CLC                    ;|
-$AA:E626 79 B0 E6    ADC $E6B0,y[$AA:E6B0]  ;} Samus Y position = [enemy Y position] + [$E6B0 + [enemy $0FAC]]
+$AA:E626 79 B0 E6    ADC $E6B0,y[$AA:E6B0]  ;} Samus Y position = [enemy Y position] + [$E6B0 + [enemy movement index]]
 $AA:E629 8D FA 0A    STA $0AFA  [$7E:0AFA]  ;/
 $AA:E62C 7A          PLY
 $AA:E62D C8          INY                    ;\
@@ -5411,20 +5411,20 @@ $AA:E62E C8          INY                    ;} Y += 2
 $AA:E62F 6B          RTL
 
 ; Enemy X velocity. Unit 1/100h px/frame. Absolute value used for Y velocity
-$AA:E630             dw 0000, 0000, 0000, 0000, FE00, FD00, F200, F800, FE00, FD00, F200, F800, 0000, 0000, 0000, 0000,
-                        0000, 0000, 0000, 0000, 0200, 0300, 0E00, 0800, 0200, 0300, 0E00, 0800, 0000, 0000, 0000, 0000
+$AA:E630             dw 0000,0000,0000,0000,FE00,FD00,F200,F800,FE00,FD00,F200,F800, 0000,0000,0000,0000, ; 0..1Eh: Wrecked Ship. Only 0..16h used
+                        0000,0000,0000,0000, 0200,0300,0E00,0800,0200,0300,0E00,0800,0000,0000,0000,0000  ; 20h..3Eh: Lower Norfair. Only 0..6h used
 
 ; Samus X offsets from enemy
-$AA:E670             dw FFE4, FFE2, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0, FFE0,
-                        001C, 001E, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020, 0020
+$AA:E670             dw FFE4,FFE2,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0,FFE0, FFE0,FFE0,FFE0,FFE0, ; 0..1Eh: Wrecked Ship. Only 0..16h used
+                        001C,001E,0020,0020, 0020,0020,0020,0020,0020,0020,0020,0020,0020,0020,0020,0020  ; 20h..3Eh: Lower Norfair. Only 0..6h used
 
 ; Samus Y offsets from enemy
-$AA:E6B0             dw FFE0, FFE7, FFE9, FFE9, FFE9, FFE8, FFE7, FFE8, FFE9, FFE8, FFE7, FFE8, FFE9, FFE9, FFE9, FFE9,
-                        FFE0, FFE7, FFE9, FFE9, FFE9, FFE8, FFE7, FFE8, FFE9, FFE8, FFE7, FFE8, FFE9, FFE9, FFE9, FFE9
+$AA:E6B0             dw FFE0,FFE7,FFE9,FFE9,FFE9,FFE8,FFE7,FFE8,FFE9,FFE8,FFE7,FFE8, FFE9,FFE9,FFE9,FFE9, ; 0..1Eh: Wrecked Ship. Only 0..16h used
+                        FFE0,FFE7,FFE9,FFE9, FFE9,FFE8,FFE7,FFE8,FFE9,FFE8,FFE7,FFE8,FFE9,FFE9,FFE9,FFE9  ; 20h..3Eh: Lower Norfair. Only 0..6h used
 }
 
 
-;;; $E6F0: Instruction - release Samus ;;;
+;;; $E6F0: Instruction - release Samus and block slope access ;;;
 {
 $AA:E6F0 A9 01 00    LDA #$0001             ;\
 $AA:E6F3 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
@@ -5467,7 +5467,7 @@ $AA:E73D 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $AA:E740 A9 A6 E7    LDA #$E7A6             ;\
 $AA:E743 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = RTS
 $AA:E746 A9 00 00    LDA #$0000             ;\
-$AA:E749 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy $0FB4 = 0
+$AA:E749 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy activation flag = 0
 $AA:E74C 9E 96 0F    STZ $0F96,x[$7E:0F96]  ; Enemy palette index = 0
 $AA:E74F 9C 9A 0F    STZ $0F9A  [$7E:0F9A]  ; Enemy 0 layer = 0
 $AA:E752 BC B6 0F    LDY $0FB6,x[$7E:0FB6]  ;\
@@ -5531,15 +5531,15 @@ $AA:E7B6 FA          PLX                    ;} If area boss is alive: return
 $AA:E7B7 29 01 00    AND #$0001             ;|
 $AA:E7BA F0 1D       BEQ $1D    [$E7D9]     ;/
 $AA:E7BC BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$AA:E7BF F0 18       BEQ $18    [$E7D9]     ;} If [enemy $0FB4] = 0: return
+$AA:E7BF F0 18       BEQ $18    [$E7D9]     ;} If [enemy activation flag] = 0: return
 $AA:E7C1 A9 61 E4    LDA #$E461             ;\
 $AA:E7C4 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E461 (activated)
 $AA:E7C7 A9 01 00    LDA #$0001             ;\
 $AA:E7CA 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $AA:E7CD A9 00 FF    LDA #$FF00             ;\
-$AA:E7D0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = -100h
+$AA:E7D0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy $0FA8 = -100h (never read)
 $AA:E7D3 A9 00 01    LDA #$0100             ;\
-$AA:E7D6 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = 100h
+$AA:E7D6 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = 100h (never read)
 
 $AA:E7D9 60          RTS
 }
@@ -5551,13 +5551,13 @@ $AA:E7DA 60          RTS
 }
 
 
-;;; $E7DB: Enemy touch - enemy $F0FF (chozo statue) ;;;
+;;; $E7DB: RTL. Enemy touch - enemy $F0FF (chozo statue) ;;;
 {
 $AA:E7DB 6B          RTL
 }
 
 
-;;; $E7DC: Enemy shot - enemy $F0FF (chozo statue) ;;;
+;;; $E7DC: RTL. Enemy shot - enemy $F0FF (chozo statue) ;;;
 {
 $AA:E7DC 6B          RTL
 }

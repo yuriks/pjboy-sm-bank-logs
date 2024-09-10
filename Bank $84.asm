@@ -5389,7 +5389,7 @@ $84:AB30 60          RTS
 
 ;;; $AB31: Instruction list - PLM $B79B (crumble Botwoon wall) ;;;
 {
-$84:AB31             dx 874E,09,    ; Timer = 9h
+$84:AB31             dx 874E,09,    ; Timer = 9
                         AB51,       ; Scroll 0..1 = blue
 $84:AB36             dx 8C10,0A,    ; Queue sound Ah, sound library 2, max queued sounds allowed = 6 (block crumble)
                         0004,A345,
@@ -7576,7 +7576,7 @@ $84:B8EB             dw B8DC,B8D6
 }
 
 
-;;; $B8EF: Setup - PLM $B8F9 (Maridia elevatube) ;;;
+;;; $B8EF: RTS. Setup - PLM $B8F9 (Maridia elevatube) ;;;
 {
 $84:B8EF 60          RTS
 }
@@ -10923,7 +10923,7 @@ $84:D18E 60          RTS
 ;; Returns:
 ;;     Carry: Set. Unconditional collision
 
-; Enemy 0 is presumed to be the chozo
+; Enemy 0 is presumed to be the chozo statue
 $84:D18F AD A4 09    LDA $09A4  [$7E:09A4]  ;\
 $84:D192 29 00 02    AND #$0200             ;} If Samus doesn't have space jump: go to BRANCH_RETURN
 $84:D195 F0 47       BEQ $47    [$D1DE]     ;/
@@ -10942,7 +10942,7 @@ $84:D1B2 D0 2A       BNE $2A    [$D1DE]     ;/
 $84:D1B4 A9 0C 00    LDA #$000C             ;\
 $84:D1B7 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Set Lower Norfair chozo event
 $84:D1BB A9 01 00    LDA #$0001             ;\
-$84:D1BE 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 $0FB4 = 1
+$84:D1BE 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 activation flag = 1
 $84:D1C1 BE 87 1C    LDX $1C87,y[$7E:1CD1]  ;\
 $84:D1C4 BF 02 00 7F LDA $7F0002,x[$7F:030A];|
 $84:D1C8 29 FF 0F    AND #$0FFF             ;} Make PLM block air
@@ -11287,7 +11287,7 @@ $84:D4B8             dx 0001,9B4B,
 }
 
 
-;;; $D4BE: Instruction - NOP ;;;
+;;; $D4BE: RTS. Instruction - NOP ;;;
 {
 $84:D4BE 60          RTS
 }
@@ -11481,7 +11481,7 @@ $84:D61F 60          RTS
 ;; Returns:
 ;;     Carry: Set. Unconditional collision
 
-; Enemy 0 is presumed to be the chozo
+; Enemy 0 is presumed to be the chozo statue
 $84:D620 A9 01 00    LDA #$0001             ;\
 $84:D623 22 DC 81 80 JSL $8081DC[$80:81DC]  ;} If area main boss is not dead: go to BRANCH_RETURN
 $84:D627 90 4E       BCC $4E    [$D677]     ;/
@@ -11498,7 +11498,7 @@ $84:D641 C9 7A 00    CMP #$007A             ;} If [Samus pose] != morph ball - s
 $84:D644 D0 31       BNE $31    [$D677]     ;/
 
 $84:D646 A9 01 00    LDA #$0001             ;\
-$84:D649 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 $0FB4 = 1
+$84:D649 8D B4 0F    STA $0FB4  [$7E:0FB4]  ;} Enemy 0 activation flag = 1
 $84:D64C A9 02 02    LDA #$0202             ;\
 $84:D64F 8F 27 CD 7E STA $7ECD27[$7E:CD27]  ;} Scrolls 7/8 = green
 $84:D653 A9 01 01    LDA #$0101             ;\
@@ -11594,13 +11594,13 @@ $84:D6EE             dw D616,AAE3   ; Wrecked Ship chozo hand
 $84:D6F2             dw D620,AAE3   ; Collision reaction, special, BTS Wrecked Ship 80h. Wrecked Ship chozo hand check
 
 
-;;; $D6F6: Setup - PLM $D6F8 (clear slope access for Wrecked Ship chozo) ;;;
+;;; $D6F6: RTS. Setup - PLM $D6F8 (clear slope access for Wrecked Ship chozo) ;;;
 {
 $84:D6F6 60          RTS
 }
 
 
-;;; $D6F7: Setup - PLM $D6FC (block slope access for Wrecked Ship chozo) ;;;
+;;; $D6F7: RTS. Setup - PLM $D6FC (block slope access for Wrecked Ship chozo) ;;;
 {
 $84:D6F7 60          RTS
 }

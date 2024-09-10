@@ -2200,7 +2200,7 @@ $A3:9F06 60          RTS
 }
 
 
-;;; $9F07: Enemy touch - enemy $D7FF/$D83F (sinking platform) ;;;
+;;; $9F07: RTL. Enemy touch - enemy $D7FF/$D83F (sinking platform) ;;;
 {
 $A3:9F07 6B          RTL
 }
@@ -7902,7 +7902,7 @@ $A3:DC0B             dw DB4C, DB58, DB64, DB6E, DB78, DB82, DB8C, DB96
 }
 
 
-;;; $DC1B: Main AI - enemy $DBFF (reflec) ;;;
+;;; $DC1B: RTL. Main AI - enemy $DBFF (reflec) ;;;
 {
 $A3:DC1B 6B          RTL
 }

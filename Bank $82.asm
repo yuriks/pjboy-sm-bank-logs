@@ -1269,7 +1269,7 @@ $82:8B0C 60          RTS
 }
 
 
-;;; $8B0D: Game state 3 (nothing) ;;;
+;;; $8B0D: RTS. Game state 3 (nothing) ;;;
 {
 $82:8B0D 60          RTS
 }

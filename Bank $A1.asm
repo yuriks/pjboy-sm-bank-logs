@@ -19,7 +19,7 @@
 
 ; Room $DA60, state $DA8C
 ; Room $DD58, state $DDA2
-$A1:8000             dx FFFF
+$A1:8000             dx FFFF ; No death quota byte (off to a good start)
 
 ; Room $94FD, state $950A
 $A1:8002             dx D3BF,0150,054C,0000,2000,0000,0203,0010,

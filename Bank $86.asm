@@ -7491,7 +7491,7 @@ $86:B33D 80 03       BRA $03    [$B342]
                                             ; Else (torizo is facing right):
 $86:B33F A2 76 B3    LDX #$B376             ; X = $B376
 
-$86:B342 20 AE AB    JSR $ABAE  [$86:ABAE]  ; Execute torizo chozo orbs / egg / eye beam common initialisation
+$86:B342 20 AE AB    JSR $ABAE  [$86:ABAE]  ; Torizo chozo orbs / egg / eye beam common initialisation
 $86:B345 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $86:B349 29 1E 00    AND #$001E             ;\
 $86:B34C 38          SEC                    ;} A = ([random number] / 2 % 10h - 8) * 2 (random angle variance)

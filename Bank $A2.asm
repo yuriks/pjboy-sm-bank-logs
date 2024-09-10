@@ -280,7 +280,7 @@ $A2:88C4 60          RTS
 }
 
 
-;;; $88C5: Instruction - nothing ;;;
+;;; $88C5: RTL. Instruction - nothing ;;;
 {
 $A2:88C5 6B          RTL
 }

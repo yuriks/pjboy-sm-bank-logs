@@ -6369,8 +6369,8 @@ $B4:E2E5             dx 52,4F,42,4F,32,20,20,20,20,20, EC09, 0062 ; "ROBO2     "
 ; |    |    |     _____________________ Initialisation parameter (orientation in SMILE)
 ; |    |    |    |     ________________ Properties (special in SMILE)
 ; |    |    |    |    |     ___________ Extra properties (special graphics bitset in SMILE)
-; |    |    |    |    |    |     ______ General purpose parameter (speed in SMILE)
-; |    |    |    |    |    |    |     _ General purpose parameter (speed2 in SMILE)
+; |    |    |    |    |    |     ______ Parameter 1 (speed in SMILE)
+; |    |    |    |    |    |    |     _ Parameter 2 (speed2 in SMILE)
 ; |    |    |    |    |    |    |    |
 ; iiii xxxx yyyy oooo pppp gggg aaaa bbbb
 
