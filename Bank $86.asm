@@ -1285,7 +1285,7 @@ $86:8700 30 02       BMI $02    [$8704]     ;/
 $86:8702 18          CLC                    ;\
 $86:8703 60          RTS                    ;} Return carry clear
 
-$86:8704 4C 07 87    JMP $8707  [$86:8707]
+$86:8704 4C 07 87    JMP $8707  [$86:8707]  ; >_<;
 
 ; BRANCH_COLLISION
 $86:8707 AE 91 19    LDX $1991  [$7E:1991]  ; X = [enemy projectile index]

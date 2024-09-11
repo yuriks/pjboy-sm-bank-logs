@@ -1201,7 +1201,7 @@ $A3:948F             dx 0005, C3F1,00,2102, C3F1,F0,2100, 01FD,00,2122, 0002,FD,
 
 
 
-;;; $94AA: Maridia fish spritemap pointers ;;;
+;;; $94AA: Unused. Maridia fish spritemap pointers ;;;
 {
 $A3:94AA             dw 928A, 92A5, 92C0, 92DB, 92F6, 9311, 9327, 933D, 934E, 9364, 937F, 939A, 93B5, 93D0, 93EB, 9406,
                         9421, 9437, 944D, 945E, 9474, 948F
