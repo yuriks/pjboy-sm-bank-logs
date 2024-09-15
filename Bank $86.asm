@@ -13583,7 +13583,7 @@ $86:DF38 60          RTS
 ;;; $DF39: Pre-instruction - enemy projectile $DFBC/$DFCA (nami/fune fireball) ;;;
 {
 $86:DF39 FC FF 1A    JSR ($1AFF,x)[$86:DF6A]; Execute [enemy projectile function]
-$86:DF3C 20 94 DF    JSR $DF94  [$86:DF94]  ; Delete enemy projectile if horizontally off screen
+$86:DF3C 20 94 DF    JSR $DF94  [$86:DF94]  ; Delete enemy projectile if off screen
 $86:DF3F 60          RTS
 }
 
@@ -13636,10 +13636,10 @@ $86:DF93 60          RTS
 }
 
 
-;;; $DF94: Delete enemy projectile if horizontally off screen ;;;
+;;; $DF94: Delete enemy projectile if off screen ;;;
 {
 $86:DF94 20 C2 DB    JSR $DBC2  [$86:DBC2]  ;\
-$86:DF97 F0 06       BEQ $06    [$DF9F]     ;} If enemy projectile is horizontally off screen:
+$86:DF97 F0 06       BEQ $06    [$DF9F]     ;} If enemy projectile is off screen:
 $86:DF99 A9 00 00    LDA #$0000             ;\
 $86:DF9C 9D 97 19    STA $1997,x[$7E:19B9]  ;} Enemy projectile ID = 0
 
@@ -13647,7 +13647,7 @@ $86:DF9F 60          RTS
 }
 
 
-;;; $DFA0: Check if enemy projectile is horizontally off screen ;;;
+;;; $DFA0: Unused. Check if enemy projectile is horizontally off screen ;;;
 {
 ;; Returns:
 ;;     A: 1 if off-screen, 0 otherwise
