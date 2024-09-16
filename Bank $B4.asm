@@ -4407,7 +4407,7 @@ $B4:B064             dx 0006, 0008,E0,30D2, 0000,E0,30B0, 01F8,E0,30C5, 01F0,E0,
 ; 35h: 'BATTA3'
 $B4:B084             dx 0006, 0008,E0,30D3, 0000,E0,30B0, 01F8,E0,30C5, 01F0,E0,30C5, 01E8,E0,30B0, 01E0,E0,30B1
 
-; 36h: 'BOOOTN'
+; 36h: 'BOTOON'
 $B4:B0A4             dx 0006, 0008,E0,30BD, 01F0,E0,30C5, 0000,E0,30C0, 01F8,E0,30C0, 01E8,E0,30C0, 01E0,E0,30B1
 
 ; 37h: 'BOYON'
@@ -4428,7 +4428,7 @@ $B4:B13F             dx 0003, 01F0,E0,30B8, 01E8,E0,30B1, 01E0,E0,30B4
 ; 3Ch: 'EYE'
 $B4:B150             dx 0003, 01F0,E0,30B4, 01E8,E0,30CA, 01E0,E0,30B4
 
-; 3Dh: 'NAMIEIH'
+; 3Dh: 'NAMIHEI'
 $B4:B161             dx 0007, 0000,E0,30B7, 0010,E0,30B8, 0008,E0,30B4, 01F8,E0,30B8, 01F0,E0,30BC, 01E8,E0,30B0, 01E0,E0,30BD
 
 ; 3Eh: 'FISH'
@@ -4440,7 +4440,7 @@ $B4:B19C             dx 0003, 01F0,E0,30B8, 01E8,E0,30B0, 01E0,E0,30B6
 ; 40h: 'GAMET'
 $B4:B1AD             dx 0005, 0000,E0,30C5, 01F8,E0,30B4, 01F0,E0,30BC, 01E8,E0,30B0, 01E0,E0,30B6
 
-; 41h: 'GEGAE'
+; 41h: 'GEEGA'
 $B4:B1C8             dx 0005, 01F0,E0,30B4, 0000,E0,30B0, 01F8,E0,30B6, 01E8,E0,30B4, 01E0,E0,30B6
 
 ; 42h: 'GERUDA'
@@ -4488,13 +4488,13 @@ $B4:B34C             dx 0004, 01F8,E0,30B0, 01F0,E0,30BC, 01E8,E0,30C0, 01E0,E0,
 ; 50h: 'KZAN'
 $B4:B362             dx 0004, 01F8,E0,30BD, 01F0,E0,30B0, 01E8,E0,30CB, 01E0,E0,30BA
 
-; 51h: 'ALVAMAN'
+; 51h: 'LAVAMAN'
 $B4:B378             dx 0007, 0010,E0,30BD, 0008,E0,30B0, 0000,E0,30BC, 01F8,E0,30B0, 01F0,E0,30C7, 01E0,E0,30BB, 01E8,E0,30B0
 
 ; 52h: 'MELLA'
 $B4:B39D             dx 0005, 0000,E0,30B0, 01F8,E0,30BB, 01F0,E0,30BB, 01E8,E0,30B4, 01E0,E0,30BC
 
-; 53h: 'MMEU'
+; 53h: 'MEMU'
 $B4:B3B8             dx 0004, 01F8,E0,30C6, 01E8,E0,30B4, 01E0,E0,30BC, 01F0,E0,30BC
 
 ; 54h: 'MERO'
@@ -4512,7 +4512,7 @@ $B4:B429             dx 0007, 0010,E0,30B3, 0008,E0,30B8, 01F8,E0,30C3, 0000,E0,
 ; 58h: 'MULTI'
 $B4:B44E             dx 0005, 0000,E0,30B8, 01F8,E0,30C5, 01F0,E0,30BB, 01E8,E0,30C6, 01E0,E0,30BC
 
-; 59h: 'MMERZOO'
+; 59h: 'MZOOMER'
 $B4:B469             dx 0007, 01F8,E0,30C0, 01F0,E0,30C0, 01E8,E0,30CB, 0010,E0,30C3, 0008,E0,30B4, 0000,E0,30BC, 01E0,E0,30BC
 
 ; 5Ah: 'NDRA'
@@ -4533,7 +4533,7 @@ $B4:B4E1             dx 0004, 01F8,E0,30C6, 01F0,E0,30BC, 01E8,E0,30C6, 01E0,E0,
 ; 5Fh: 'PIPE'
 $B4:B4F7             dx 0004, 01F8,E0,30B4, 01F0,E0,30C1, 01E8,E0,30B8, 01E0,E0,30C1
 
-; 60h: 'POYLP'
+; 60h: 'POLYP'
 $B4:B50D             dx 0005, 0000,E0,30C1, 01F0,E0,30BB, 01F8,E0,30CA, 01E8,E0,30C0, 01E0,E0,30C1
 
 ; 61h: 'PUROMI'
@@ -4554,10 +4554,10 @@ $B4:B58F             dx 0005, 0000,E0,30B0, 01F8,E0,30BA, 01F0,E0,30BD, 01E8,E0,
 ; 66h: 'RIO'
 $B4:B5AA             dx 0003, 01F0,E0,30C0, 01E8,E0,30B8, 01E0,E0,30C3
 
-; 67h: 'RRIPPE1'
+; 67h: 'RIPPER1'
 $B4:B5BB             dx 0007, 0010,E0,30D1, 0000,E0,30B4, 01F8,E0,30C1, 01F0,E0,30C1, 01E8,E0,30B8, 0008,E0,30C3, 01E0,E0,30C3
 
-; 68h: 'RRIPPE2'
+; 68h: 'RIPPER2'
 $B4:B5E0             dx 0007, 0010,E0,30D2, 0000,E0,30B4, 01F8,E0,30C1, 01F0,E0,30C1, 01E8,E0,30B8, 0008,E0,30C3, 01E0,E0,30C3
 
 ; 69h: 'ROBO'
@@ -4602,10 +4602,10 @@ $B4:B776             dx 0005, 0000,E0,30B4, 01F8,E0,30B3, 01F0,E0,30B8, 01E8,E0,
 ; 76h: 'STOKE'
 $B4:B791             dx 0005, 0000,E0,30B4, 01F8,E0,30BA, 01F0,E0,30C0, 01E8,E0,30C5, 01E0,E0,30C4
 
-; 77h: 'OGET'
+; 77h: 'TOGE'
 $B4:B7AC             dx 0004, 01E0,E0,30C5, 01F8,E0,30B4, 01F0,E0,30B6, 01E8,E0,30C0
 
-; 78h: 'VIOAL'
+; 78h: 'VIOLA'
 $B4:B7C2             dx 0005, 01F8,E0,30BB, 0000,E0,30B0, 01F0,E0,30C0, 01E8,E0,30B8, 01E0,E0,30C7
 
 ; 79h: 'WAVER'
@@ -4634,6 +4634,9 @@ $B4:B866             dx 0006, 0008,E0,30C3, 0000,E0,30B4, 01F8,E0,30BC, 01F0,E0,
 ; 1Ch: Text cursor
 $B4:B886             dx 0001, 0000,00,303E
 
+
+;;; $B88D: Enemy names ;;;
+{
 ; 30h: 'NoDebug;'
 $B4:B88D             dx 0008, 0018,E0,30CD, 0010,E0,30E6, 0008,E0,30F4, 0000,E0,30E1, 01F8,E0,30E4, 01F0,E0,30B3, 01E8,E0,30EE, 01E0,E0,30BD
 
@@ -4655,10 +4658,10 @@ $B4:B95F             dx 0008, 0018,E0,30F2, 0010,E0,30F3, 0008,E0,30D1, 0000,E0,
 ; 85h: 'BATTA2br'
 $B4:B989             dx 0008, 0018,E0,30F1, 0010,E0,30E1, 0008,E0,30D2, 0000,E0,30B0, 01F8,E0,30C5, 01F0,E0,30C5, 01E8,E0,30B0, 01E0,E0,30B1
 
-; 86h: 'BATTAno2'
+; 86h: 'BATTA2no'
 $B4:B9B3             dx 0008, 0008,E0,30D2, 0018,E0,30EE, 0010,E0,30ED, 0000,E0,30B0, 01F8,E0,30C5, 01F0,E0,30C5, 01E8,E0,30B0, 01E0,E0,30B1
 
-; 87h: 'BATTAn2p'
+; 87h: 'BATTA2np'
 $B4:B9DD             dx 0008, 0018,E0,30EF, 0008,E0,30D2, 0010,E0,30ED, 0000,E0,30B0, 01F8,E0,30C5, 01F0,E0,30C5, 01E8,E0,30B0, 01E0,E0,30B1
 
 ; 88h: 'BATTA2ml'
@@ -4681,8 +4684,11 @@ $B4:BAD9             dx 0008, 0018,E0,30EB, 0010,E0,30EC, 0008,E0,30D3, 0000,E0,
 
 ; 8Eh: 'BATTA3ts'
 $B4:BB03             dx 0008, 0018,E0,30F2, 0010,E0,30F3, 0008,E0,30D3, 0000,E0,30B0, 01F8,E0,30C5, 01F0,E0,30C5, 01E8,E0,30B0, 01E0,E0,30B1
+}
 
-; Area names
+
+;;; $BB2D: Area names ;;;
+{
 $B4:BB2D             dx 0003, 01E8,F8,30B5, 01E0,F8,30C4, 01F8,F8,30FD ; 14h: 'SF _' (Crateria)
 $B4:BB3E             dx 0003, 01E8,F8,30BB, 01E0,F8,30B1, 01F8,F8,30FD ; 15h: 'BL _' (Brinstar)
 $B4:BB4F             dx 0003, 01E8,F8,30C0, 01E0,F8,30BD, 01F8,F8,30FD ; 16h: 'NO _' (Norfair)
@@ -4691,7 +4697,11 @@ $B4:BB71             dx 0003, 01E8,F8,30BB, 01E0,F8,30BC, 01F8,F8,30FD ; 18h: 'M
 $B4:BB82             dx 0003, 01E8,F8,30C4, 01E0,F8,30C5, 01F8,F8,30FD ; 19h: 'TS _' (Tourian)
 $B4:BB93             dx 0003, 01E8,F8,30C0, 01E0,F8,30B2, 01F8,F8,30FD ; 1Ah: 'CO _' (Ceres)
 $B4:BBA4             dx 0003, 01E8,F8,30C5, 01E0,F8,30C5, 01F8,F8,30FD ; 1Bh: 'TT _' (Debug)
+}
 
+
+;;; $BBB5: Enemy names ;;;
+{
 ; 8Fh: 'FUNE'
 $B4:BBB5             dx 0004, 01F8,E0,30B4, 01F0,E0,30BD, 01E8,E0,30C6, 01E0,E0,30B5
 
@@ -4703,6 +4713,7 @@ $B4:BBEB             dx 0006, 0008,E0,30D3, 0000,E0,30B8, 01F8,E0,30B7, 01F0,E0,
 
 ; 92h: 'ROBO2'
 $B4:BC0B             dx 0005, 0000,E0,30D2, 01F8,E0,30C0, 01F0,E0,30B1, 01E8,E0,30C0, 01E0,E0,30C3
+}
 }
 
 
@@ -5518,7 +5529,7 @@ $B4:C304             dx 0001,D2AC,
 }
 
 
-;;; $C30A: Instruction list - sprite object 2Bh (nuclear waffle body) ;;;
+;;; $C30A: Instruction list - sprite object 2Bh (fire arc body) ;;;
 {
 $B4:C30A             dx 0003,D4BE,
                         0003,D4C5,
@@ -5536,7 +5547,7 @@ $B4:C30A             dx 0003,D4BE,
 }
 
 
-;;; $C33E: Instruction list - sprite object 2Ch (nuclear waffle right explosion) ;;;
+;;; $C33E: Instruction list - sprite object 2Ch (fire arc right explosion) ;;;
 {
 $B4:C33E             dx 0002,D4F6,
                         0002,D4FD,
@@ -5549,7 +5560,7 @@ $B4:C33E             dx 0002,D4F6,
 }
 
 
-;;; $C35C: Instruction list - sprite object 2Dh (nuclear waffle left explosion) ;;;
+;;; $C35C: Instruction list - sprite object 2Dh (fire arc left explosion) ;;;
 {
 $B4:C35C             dx 0002,D527,
                         0002,D52E,
@@ -5562,7 +5573,7 @@ $B4:C35C             dx 0002,D527,
 }
 
 
-;;; $C37A: Instruction list - sprite object 2Eh (nuclear waffle splash) ;;;
+;;; $C37A: Instruction list - sprite object 2Eh (fire arc splash) ;;;
 {
 $B4:C37A             dx 0002,D558,
                         0002,D558,
@@ -5788,7 +5799,7 @@ $B4:C5E4             dx 000A,D8BD,
 }
 
 
-;;; $C608: Instruction list - sprite object 3Bh (mini-Draygon facing left) ;;;
+;;; $C608: Instruction list - sprite object 3Bh (evir facing left) ;;;
 {
 $B4:C608             dx 000A,DB42,
                         000A,DB80,
@@ -5798,7 +5809,7 @@ $B4:C608             dx 000A,DB42,
 }
 
 
-;;; $C61C: Instruction list - sprite object 3Ch (mini-Draygon facing right) ;;;
+;;; $C61C: Instruction list - sprite object 3Ch (evir facing right) ;;;
 {
 $B4:C61C             dx 000A,DC3F,
                         000A,DC7D,
@@ -6116,7 +6127,7 @@ $B4:D46D             dx 0003, 01F6,FC,60F4, 01F8,F8,60F4, 01FA,F4,60F4
 $B4:D47E             dx 0006, 01FA,F4,60F3, 0002,F4,60F2, 01F8,F8,60F3, 0000,F8,60F2, 01F6,FC,60F3, 01FE,FC,60F2
 $B4:D49E             dx 0006, 01FA,F4,60F1, 0002,F4,60F0, 0000,F8,60F0, 01F8,F8,60F1, 01F6,FC,60F1, 01FE,FC,60F0
 
-; Sprite object 2Bh (nuclear waffle related)
+; Sprite object 2Bh (fire arc body)
 $B4:D4BE             dx 0001, 81F9,F8,230A
 $B4:D4C5             dx 0001, 81F9,F8,2308
 $B4:D4CC             dx 0001, 81F8,F8,E30A
@@ -6126,7 +6137,7 @@ $B4:D4E1             dx 0001, 81F9,F8,2322
 $B4:D4E8             dx 0001, 81F8,F8,E306
 $B4:D4EF             dx 0001, 81F8,F8,E322
 
-; Sprite object 2Ch (nuclear waffle related)
+; Sprite object 2Ch (fire arc right explosion)
 $B4:D4F6             dx 0001, 81F9,F9,230E
 $B4:D4FD             dx 0001, 81FD,F5,2320
 $B4:D504             dx 0001, 8003,EE,2304
@@ -6135,7 +6146,7 @@ $B4:D512             dx 0001, 8005,EC,230C
 $B4:D519             dx 0001, 8005,EC,2326
 $B4:D520             dx 0001, 8005,EC,232E
 
-; Sprite object 2Dh (nuclear waffle related)
+; Sprite object 2Dh (fire arc left explosion)
 $B4:D527             dx 0001, 81F8,F9,630E
 $B4:D52E             dx 0001, 81F4,F5,6320
 $B4:D535             dx 0001, 81EE,EE,6304
@@ -6144,7 +6155,7 @@ $B4:D543             dx 0001, 81EC,EC,630C
 $B4:D54A             dx 0001, 81EC,EC,6326
 $B4:D551             dx 0001, 81EB,EC,232E
 
-; Sprite object 2Eh (nuclear waffle related)
+; Sprite object 2Eh (fire arc splash)
 $B4:D558             dx 0002, 01F1,F8,6334, 0008,F8,2334
 $B4:D564             dx 0002, 01F1,F8,6324, 0008,F8,2324
 $B4:D570             dx 0002, 81E9,F0,6328, 8008,F0,2328
@@ -6223,13 +6234,13 @@ $B4:DAD8             dx 000F, 01FE,04,20F3, 01F6,04,20F2, 01FC,01,20F1, 01F4,01,
 $B4:DB25             dx 0004, 0000,00,A0F8, 01F8,00,A0F7, 0000,F8,20F8, 01F8,F8,20F7
 $B4:DB3B             dx 0001, 81F8,F8,20DE
 
-; Sprite object 3Bh (mini-Draygon facing left)
+; Sprite object 3Bh (evir facing left)
 $B4:DB42             dx 000C, 0000,02,20F3, 01F8,02,20F2, 01FC,FC,20F1, 01F4,FC,20F0, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FB,20D8, 8002,02,20DC, 0000,0F,20F6, 0000,07,20F5
 $B4:DB80             dx 000C, 01F8,F4,20FC, 0000,02,20F4, 01FC,FC,20F3, 01F4,FC,20F2, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FC,20D8, 8002,03,20DC, 0000,0E,20F6, 0000,06,20F5
 $B4:DBBE             dx 000C, 01F8,F4,20FB, 0000,02,20F3, 01F8,02,20F2, 01FA,FC,20F4, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FD,20D8, 8002,03,20DC, 0000,0D,20F6, 0000,05,20F5
 $B4:DBFC             dx 000D, 01FC,FC,20F3, 01F4,FC,20F2, 01F0,FC,20F9, 0000,02,20F1, 01F8,02,20F0, 8000,FC,20D6, 81F0,FC,20D4, 8000,EC,20D2, 81F0,EC,20D0, 8004,FD,20D8, 8002,04,20DC, 0000,0E,20F6, 0000,06,20F5
 
-; Sprite object 3Ch (mini-Draygon facing right)
+; Sprite object 3Ch (evir facing right)
 $B4:DC3F             dx 000C, 01F8,02,60F3, 0000,02,60F2, 01FC,FC,60F1, 0004,FC,60F0, 81F0,FC,60D6, 8000,FC,60D4, 81F0,EC,60D2, 8000,EC,60D0, 81EC,FB,60D8, 81EE,02,60DC, 01F8,0F,60F6, 01F8,07,60F5
 $B4:DC7D             dx 000C, 0000,F4,60FC, 01F8,02,60F4, 01FC,FC,60F3, 0004,FC,60F2, 81F0,FC,60D6, 8000,FC,60D4, 81F0,EC,60D2, 8000,EC,60D0, 81EC,FC,60D8, 81EE,03,60DC, 01F8,0E,60F6, 01F8,06,60F5
 $B4:DCBB             dx 000C, 0000,F4,60FB, 01F8,02,60F3, 0000,02,60F2, 01FE,FC,60F4, 81F0,FC,60D6, 8000,FC,60D4, 81F0,EC,60D2, 8000,EC,60D0, 81EC,FD,60D8, 81EE,03,60DC, 01F8,0D,60F6, 01F8,05,60F5
@@ -6272,7 +6283,7 @@ $B4:DE07             dx 44,4F,52,49,20,20,20,20,20,20, E3AE, 0009 ; "DORI      "
 $B4:DE15             dx 44,52,41,47,4F,4E,20,20,20,20, E421, 000A ; "DRAGON    " - enemy $D4BF
 $B4:DE23             dx 45,42,49,20,20,20,20,20,20,20, E444, 000B ; "EBI       " - enemy $E63F
 $B4:DE31             dx 45,59,45,20,20,20,20,20,20,20, E477, 000C ; "EYE       " - enemy $E6BF
-$B4:DE3F             dx 4E,41,4D,49,20,20,20,20,20,20, E49A, 000D ; "NAMI      " - enemy $E73F
+$B4:DE3F             dx 4E,41,4D,49,20,20,20,20,20,20, E49A, 000D ; "NAMI      " - enemy $E73F, debug spritemap name is "NAMIHEI"
 $B4:DE4D             dx 46,49,53,48,20,20,20,20,20,20, E4AD, 000E ; "FISH      " - enemy $D6FF
 $B4:DE5B             dx 47,41,49,20,20,20,20,20,20,20, E4C0, 000F ; "GAI       " - enemy $E77F
 $B4:DE69             dx 47,41,4D,45,54,20,20,20,20,20, E4D3, 0010 ; "GAMET     " - enemy $F213
@@ -6314,7 +6325,7 @@ $B4:E053             dx 50,55,59,4F,20,20,20,20,20,20, E85C, 0033 ; "PUYO      "
 $B4:E061             dx 52,45,46,4C,45,43,20,20,20,20, E86F, 0034 ; "REFLEC    " - enemy $DBFF
 $B4:E06F             dx 52,49,4E,4B,41,20,20,20,20,20, E882, 0035 ; "RINKA     " - enemy $D23F
 $B4:E07D             dx 52,49,4F,20,20,20,20,20,20,20, E895, 0036 ; "RIO       " - enemy $D27F
-$B4:E08B             dx 52,49,50,50,45,52,20,20,20,20, E8A8, 0037 ; "RIPPER    " - enemy $D47F
+$B4:E08B             dx 52,49,50,50,45,52,20,20,20,20, E8A8, 0037 ; "RIPPER    " - enemy $D47F, debug spritemap name is "RIPPER1"
 $B4:E099             dx 52,49,50,50,45,52,32,20,20,20, E8BB, 0038 ; "RIPPER2   " - enemy $D3FF/$D43F
 $B4:E0A7             dx 52,4F,42,4F,20,20,20,20,20,20, E8CE, 0039 ; "ROBO      " - enemy $E8FF
 $B4:E0B5             dx 52,53,54,4F,4E,45,20,20,20,20, E8E1, 003A ; "RSTONE    " - enemy $DFBF
@@ -6322,7 +6333,7 @@ $B4:E0C3             dx 53,41,42,4F,54,45,4E,20,20,20, E8F4, 003B ; "SABOTEN   "
 $B4:E0D1             dx 53,42,55,47,20,20,20,20,20,20, E907, 003C ; "SBUG      " - enemy $D87F/$D8BF
 $B4:E0DF             dx 53,43,4C,41,59,44,20,20,20,20, E91A, 003D ; "SCLAYD    " - enemy $E0FF
 $B4:E0ED             dx 53,44,45,41,54,48,20,20,20,20, E92D, 003E ; "SDEATH    " - enemy $D97F
-$B4:E0FB             dx 53,48,55,54,54,45,52,20,20,20, E940, 003F ; "SHUTTER   " - enemy $D4FF
+$B4:E0FB             dx 53,48,55,54,54,45,52,20,20,20, E940, 003F ; "SHUTTER   " - enemy $D4FF, debug spritemap name is "SHUTTER1"
 $B4:E109             dx 53,48,55,54,54,45,52,32,20,20, E953, 0040 ; "SHUTTER2  " - enemy $D53F/$D57F/$D5BF/$D5FF
 $B4:E117             dx 53,49,44,45,20,20,20,20,20,20, E966, 0041 ; "SIDE      " - enemy $D9BF/$D9FF
 $B4:E125             dx 53,4B,52,45,45,20,20,20,20,20, E979, 0042 ; "SKREE     " - enemy $DB7F
@@ -6339,21 +6350,21 @@ $B4:E1B1             dx 5A,45,42,42,4F,20,20,20,20,20, EA47, 004C ; "ZEBBO     "
 $B4:E1BF             dx 5A,45,45,4C,41,20,20,20,20,20, EA5A, 004D ; "ZEELA     " - enemy $DC7F
 $B4:E1CD             dx 5A,4F,41,20,20,20,20,20,20,20, EA6D, 004E ; "ZOA       " - enemy $DA7F
 $B4:E1DB             dx 5A,4F,4F,4D,45,52,20,20,20,20, EA80, 004F ; "ZOOMER    " - enemy $DCFF
-$B4:E1E9             dx 42,41,54,54,41,31,42,72,20,20, EA93, 0050 ; "BATTA1Br  " - enemy $F393
-$B4:E1F7             dx 42,41,54,54,41,31,4E,6F,20,20, EAA6, 0051 ; "BATTA1No  " - enemy $F3D3
-$B4:E205             dx 42,41,54,54,41,31,4E,61,20,20, EAB9, 0052 ; "BATTA1Na  " - enemy $F413
-$B4:E213             dx 42,41,54,54,41,31,4D,61,20,20, EACC, 0053 ; "BATTA1Ma  " - enemy $F453
-$B4:E221             dx 42,41,54,54,41,31,54,75,20,20, EADF, 0054 ; "BATTA1Tu  " - enemy $F493
-$B4:E22F             dx 42,41,54,54,41,32,42,72,20,20, EAF2, 0055 ; "BATTA2Br  " - enemy $F513
-$B4:E23D             dx 42,41,54,54,41,32,4E,6F,20,20, EB05, 0056 ; "BATTA2No  " - enemy $F553
-$B4:E24B             dx 42,41,54,54,41,32,4E,61,20,20, EB18, 0057 ; "BATTA2Na  " - enemy $F593
-$B4:E259             dx 42,41,54,54,41,32,4D,61,20,20, EB2B, 0058 ; "BATTA2Ma  " - enemy $F5D3
-$B4:E267             dx 42,41,54,54,41,32,54,75,20,20, EB3E, 0059 ; "BATTA2Tu  " - enemy $F613
-$B4:E275             dx 42,41,54,54,41,33,42,72,20,20, EB51, 005A ; "BATTA3Br  " - enemy $F693
-$B4:E283             dx 42,41,54,54,41,33,4E,6F,20,20, EB64, 005B ; "BATTA3No  " - enemy $F6D3
-$B4:E291             dx 42,41,54,54,41,33,4E,61,20,20, EB77, 005C ; "BATTA3Na  " - enemy $F713
-$B4:E29F             dx 42,41,54,54,41,33,4D,61,20,20, EB8A, 005D ; "BATTA3Ma  " - enemy $F753
-$B4:E2AD             dx 42,41,54,54,41,33,54,75,20,20, EB9D, 005E ; "BATTA3Tu  " - enemy $F793
+$B4:E1E9             dx 42,41,54,54,41,31,42,72,20,20, EA93, 0050 ; "BATTA1Br  " - enemy $F393, debug spritemap name is "BATTA1br"
+$B4:E1F7             dx 42,41,54,54,41,31,4E,6F,20,20, EAA6, 0051 ; "BATTA1No  " - enemy $F3D3, debug spritemap name is "BATTA1no"
+$B4:E205             dx 42,41,54,54,41,31,4E,61,20,20, EAB9, 0052 ; "BATTA1Na  " - enemy $F413, debug spritemap name is "BATTA1np"
+$B4:E213             dx 42,41,54,54,41,31,4D,61,20,20, EACC, 0053 ; "BATTA1Ma  " - enemy $F453, debug spritemap name is "BATTA1ml"
+$B4:E221             dx 42,41,54,54,41,31,54,75,20,20, EADF, 0054 ; "BATTA1Tu  " - enemy $F493, debug spritemap name is "BATTA1ts"
+$B4:E22F             dx 42,41,54,54,41,32,42,72,20,20, EAF2, 0055 ; "BATTA2Br  " - enemy $F513, debug spritemap name is "BATTA2br"
+$B4:E23D             dx 42,41,54,54,41,32,4E,6F,20,20, EB05, 0056 ; "BATTA2No  " - enemy $F553, debug spritemap name is "BATTA2no"
+$B4:E24B             dx 42,41,54,54,41,32,4E,61,20,20, EB18, 0057 ; "BATTA2Na  " - enemy $F593, debug spritemap name is "BATTA2np"
+$B4:E259             dx 42,41,54,54,41,32,4D,61,20,20, EB2B, 0058 ; "BATTA2Ma  " - enemy $F5D3, debug spritemap name is "BATTA2ml"
+$B4:E267             dx 42,41,54,54,41,32,54,75,20,20, EB3E, 0059 ; "BATTA2Tu  " - enemy $F613, debug spritemap name is "BATTA2ts"
+$B4:E275             dx 42,41,54,54,41,33,42,72,20,20, EB51, 005A ; "BATTA3Br  " - enemy $F693, debug spritemap name is "BATTA3br"
+$B4:E283             dx 42,41,54,54,41,33,4E,6F,20,20, EB64, 005B ; "BATTA3No  " - enemy $F6D3, debug spritemap name is "BATTA3no"
+$B4:E291             dx 42,41,54,54,41,33,4E,61,20,20, EB77, 005C ; "BATTA3Na  " - enemy $F713, debug spritemap name is "BATTA3np"
+$B4:E29F             dx 42,41,54,54,41,33,4D,61,20,20, EB8A, 005D ; "BATTA3Ma  " - enemy $F753, debug spritemap name is "BATTA3ml"
+$B4:E2AD             dx 42,41,54,54,41,33,54,75,20,20, EB9D, 005E ; "BATTA3Tu  " - enemy $F793, debug spritemap name is "BATTA3ts"
 $B4:E2BB             dx 46,55,4E,45,20,20,20,20,20,20, EBB0, 005F ; "FUNE      " - enemy $E6FF
 $B4:E2C9             dx 48,41,43,48,49,32,20,20,20,20, EBC3, 0060 ; "HACHI2    " - enemy $EB3F
 $B4:E2D7             dx 48,41,43,48,49,33,20,20,20,20, EBE6, 0061 ; "HACHI3    " - enemy $EBBF
@@ -6366,11 +6377,11 @@ $B4:E2E5             dx 52,4F,42,4F,32,20,20,20,20,20, EC09, 0062 ; "ROBO2     "
 ;  ____________________________________ Enemy ID
 ; |     _______________________________ X position
 ; |    |     __________________________ Y position
-; |    |    |     _____________________ Initialisation parameter (orientation in SMILE)
-; |    |    |    |     ________________ Properties (special in SMILE)
-; |    |    |    |    |     ___________ Extra properties (special graphics bitset in SMILE)
-; |    |    |    |    |    |     ______ Parameter 1 (speed in SMILE)
-; |    |    |    |    |    |    |     _ Parameter 2 (speed2 in SMILE)
+; |    |    |     _____________________ Initialisation parameter
+; |    |    |    |     ________________ Properties
+; |    |    |    |    |     ___________ Extra properties
+; |    |    |    |    |    |     ______ Parameter 1
+; |    |    |    |    |    |    |     _ Parameter 2
 ; |    |    |    |    |    |    |    |
 ; iiii xxxx yyyy oooo pppp gggg aaaa bbbb
 
@@ -6379,34 +6390,44 @@ $B4:E2E5             dx 52,4F,42,4F,32,20,20,20,20,20, EC09, 0062 ; "ROBO2     "
 ; |    |
 ; FFFF nn
 
+; Enemies with enemy name = 0
 $B4:E2F3             dx FFFF, 00
 
+; Enemy $E9FF (atomic)
 $B4:E2F6             dx E9FF, 0100, 0100, 0000, 2000, 0000, 0001, 0001,
                         FFFF, 01
 
+; Enemy $DB3F (bang)
 $B4:E309             dx DB3F, 0100, 0100, 0000, 2800, 0000, BB2B, 0000,
                         DB3F, 0100, 0100, 0000, 2800, 0000, BB66, 0101,
                         DB3F, 0100, 0100, 0000, 2800, 0000, BB4A, 0000,
                         FFFF, 01
 
+; Enemy $F353 (grey wall space pirate)
 $B4:E33C             dx F353, 002D, 01B8, 0000, 2000, 0004, 0000, 00A0,
                         FFFF, 01
 
+; Enemy $F4D3 (grey ninja space pirate)
 $B4:E34F             dx F4D3, 0270, 00A0, 0000, 2800, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F653 (grey walking space pirate)
 $B4:E362             dx F653, 00D9, 00A0, 0000, 2000, 0004, 0000, 0050,
                         FFFF, 01
 
+; Enemy $F293 (Botwoon)
 $B4:E375             dx F293, 0100, 0100, 0000, 2800, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $CEBF (boyon)
 $B4:E388             dx CEBF, 00E8, 00A8, 0000, 2000, 0000, 0103, 0020,
                         FFFF, 00
 
+; Enemy $DA3F (super-desgeega)
 $B4:E39B             dx DA3F, 0100, 0100, 0000, 2000, 0000, 8000, 0000,
                         FFFF, 01
 
+; Enemy $F07F (Shaktool)
 $B4:E3AE             dx F07F, 0110, 035C, 0000, 2000, 0000, 8000, 0000,
                         F07F, 0110, 035C, 0000, 2000, 0000, 8000, 0002,
                         F07F, 0110, 035C, 0000, 2000, 0000, 8000, 0004,
@@ -6416,28 +6437,35 @@ $B4:E3AE             dx F07F, 0110, 035C, 0000, 2000, 0000, 8000, 0000,
                         F07F, 0110, 035C, 0000, 2000, 0000, 8000, 000C,
                         FFFF, 01
 
+; Enemy $D4BF (dragon)
 $B4:E421             dx D4BF, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         D4BF, 0100, 0100, 0002, 2400, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $E63F (evir)
 $B4:E444             dx E63F, 0100, 0100, 0000, 2000, 0000, 0000, 1010,
                         E63F, 0100, 0100, 0000, 2400, 0000, 0001, 0000,
                         E67F, 0100, 0100, 0000, 2800, 0000, 0002, 0000,
                         FFFF, 01
 
+; Enemy $E6BF (morph ball eye)
 $B4:E477             dx E6BF, 0228, 0048, 0000, 2C00, 0000, 0000, 8001,
                         E6BF, 0228, 0048, 0000, 2C00, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $E73F (namihe)
 $B4:E49A             dx E73F, 00F0, 04E0, 0000, A000, 0000, 0111, 0F05,
                         FFFF, 01
 
+; Enemy $D6FF (skultera)
 $B4:E4AD             dx D6FF, 0090, 00A0, 0000, 2000, 0000, 0102, 0420,
                         FFFF, 01
 
+; Enemy $E77F (coven)
 $B4:E4C0             dx E77F, 0100, 0100, 0000, 6800, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $F213 (gamet)
 $B4:E4D3             dx F213, 0100, 00E0, 0000, 6800, 0000, 0000, 4030,
                         F213, 0100, 00E0, 0000, 6800, 0000, 0000, 4000,
                         F213, 0100, 00E0, 0000, 6800, 0000, 0000, 4000,
@@ -6445,43 +6473,54 @@ $B4:E4D3             dx F213, 0100, 00E0, 0000, 6800, 0000, 0000, 4030,
                         F213, 0100, 00E0, 0000, 6800, 0000, 0000, 4000,
                         FFFF, 01
 
+; Enemy $F253 (geega)
 $B4:E526             dx F253, 0100, 0100, 0000, 6100, 0000, 0001, 0010,
                         FFFF, 01
 
+; Enemy $D2FF (geruta)
 $B4:E539             dx D2FF, 0048, 0080, 0000, 2000, 0000, 0000, 0000,
                         D2FF, 0048, 0080, 0005, 2400, 0000, 8000, 0000,
                         FFFF, 01
 
+; Used for enemy name "GRAVY"
 $B4:E55C             dx FFFF, 00
 
-
+; Enemy $EABF (green ki-hunter)
 $B4:E55F             dx EABF, 0100, 0100, 0000, 2800, 0000, 0001, 0000,
                         EAFF, 0100, 0100, 0000, 2C00, 0000, 0020, 0000,
                         FFFF, 01
 
+; Enemy $E7BF (yapping maw)
 $B4:E582             dx E7BF, 0100, 0100, 0000, 2000, 0000, 0010, 0001,
                         FFFF, 00
 
+; Enemy $E07F (fire pillar)
 $B4:E595             dx E07F, 0100, 0100, 0000, 2500, 0000, 0025, 0000,
                         E07F, 0100, 0100, 0000, 2100, 0000, 0000, 0001,
                         FFFF, 00
 
+; Enemy $D3BF (choot)
 $B4:E5B8             dx D3BF, 0100, 0100, 0000, 2000, 0000, 0204, 0030,
                         FFFF, 01
 
+; Enemy $D33F (holtz)
 $B4:E5CB             dx D33F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         D33F, 0100, 0100, 0006, 2400, 0000, 8000, 0000,
                         FFFF, 01
 
+; Enemy $D6BF (fireflea)
 $B4:E5EE             dx D6BF, 0600, 0060, 0000, 2000, 0000, 0001, 0108,
                         FFFF, 01
 
+; Enemy $DC3F (Wrecked Ship orange zoomer)
 $B4:E601             dx DC3F, 0360, 0098, 0003, 2001, 0000, 0002, 0000,
                         FFFF, 01
 
+; Enemy $E7FF (kago)
 $B4:E614             dx E7FF, 0168, 0090, 0000, A000, 0000, 0020, 0000,
                         FFFF, 01
 
+; Enemy $CF3F (tatori)
 $B4:E627             dx CF3F, 0100, 0100, 0000, A800, 0000, 0000, 0000,
                         CF7F, 00D8, 0100, 0000, A800, 0000, FFFF, 0000,
                         CF7F, 0100, 0100, 0000, A800, 0000, FFFF, 0000,
@@ -6489,220 +6528,290 @@ $B4:E627             dx CF3F, 0100, 0100, 0000, A800, 0000, 0000, 0000,
                         CF7F, 0140, 0100, 0000, A800, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $D7FF/$D83F (tripper / suspensor platform))
 $B4:E67A             dx D7FF, 0868, 00C8, 0000, A000, 0000, 0000, 2020,
                         FFFF, 01
 
+; Enemy $D77F (sciser)
 $B4:E68D             dx D77F, 01C0, 0098, 0003, 2000, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $EA7F (blue Brinstar face block)
 $B4:E6A0             dx EA7F, 0100, 0100, 0000, A000, 0000, 0025, 0000,
                         FFFF, 00
 
+; Enemy $DFFF (spike platform)
 $B4:E6B3             dx DFFF, 0480, 0400, 0000, A000, 0000, 0030, A070,
                         E03F, 0480, 0408, 0000, 0100, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $E83F (magdollite)
 $B4:E6D6             dx E83F, 0248, 00B0, 0000, 2800, 0000, 0000, 3A60,
                         E83F, 0248, 00B0, 0000, 2C00, 0000, 0001, 0000,
                         E83F, 0248, 00B0, 0000, 2C00, 0000, 0002, 0000,
                         FFFF, 01
 
+; Enemy $D13F (mella)
 $B4:E709             dx D13F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $D17F (memu)
 $B4:E71C             dx D17F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $D0FF (mellow)
 $B4:E72F             dx D0FF, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $D67F (metaree)
 $B4:E742             dx D67F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $D8FF (mochtroid)
 $B4:E755             dx D8FF, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $DD7F (metroid)
 $B4:E768             dx DD7F, 0100, 0100, 0000, 2000, 0000, 0000, 0005,
                         FFFF, 01
 
+; Enemy $D1BF (multiviola)
 $B4:E77B             dx D1BF, 0078, 0058, 0000, 2000, 0000, 0060, 0001,
                         FFFF, 00
 
+; Enemy $DD3F (stone zoomer)
 $B4:E78E             dx DD3F, 0188, 0198, 0003, 2800, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $E9BF (alcoon)
 $B4:E7A1             dx E9BF, 0100, 0100, 0000, 2800, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $E87F (beetom)
 $B4:E7B4             dx E87F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $DCBF (sova)
 $B4:E7C7             dx DCBF, 0880, 02A8, 0003, 2000, 0000, 0001, 0004,
                         FFFF, 01
 
+; Enemy $D37F (oum)
 $B4:E7DA             dx D37F, 0100, 0100, 0000, A000, 0004, 0000, 0000,
                         FFFF, 01
 
+; Enemy $D7BF (zero)
 $B4:E7ED             dx D7BF, 00A0, 0040, 0002, 2000, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $E97F (bull)
 $B4:E800             dx E97F, 0200, 0060, 0000, 2800, 0000, 0008, 0000,
                         FFFF, 01
 
+; Enemy $D1FF (polyp)
 $B4:E813             dx D1FF, 0100, 0100, 0000, 2500, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $E0BF (fire arc)
 $B4:E826             dx E0BF, 0100, 0100, 0000, 2000, 0000, 1010, 2001,
                         FFFF, 00
 
+; Enemy $E8BF (powamp)
 $B4:E839             dx E8BF, 0100, 0100, 0000, 2C00, 0000, 0001, 0000,
                         E8BF, 0100, 0100, 0000, 2800, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $CFBF (puyo)
 $B4:E85C             dx CFBF, 033D, 00CC, 0000, 2000, 0000, 0003, 000A,
                         FFFF, 01
 
+; Enemy $DBFF (reflec)
 $B4:E86F             dx DBFF, 0168, 0048, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $D23F (rinka)
 $B4:E882             dx D23F, 0100, 0100, 0000, 6000, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $D27F (rio)
 $B4:E895             dx D27F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $D47F (ripper)
 $B4:E8A8             dx D47F, 0068, 01A0, 0000, 2000, 0000, 0010, 0001,
                         FFFF, 01
 
+; Enemy $D3FF/$D43F (gripper / ripper ii)
 $B4:E8BB             dx D43F, 0040, 06A0, 0000, 2800, 0000, 0020, 0001,
                         FFFF, 01
 
+; Enemy $E8FF (work robot)
 $B4:E8CE             dx E8FF, 0050, 00B0, 0000, 2800, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $DFBF (boulder)
 $B4:E8E1             dx DFBF, 0400, 01B5, 0060, 2000, 0000, 0101, 20A0,
                         FFFF, 00
 
+; Enemy $CFFF (cacatac)
 $B4:E8F4             dx CFFF, 03D0, 00B3, 0000, 2000, 0000, 0100, 0F01,
                         FFFF, 01
 
+; Enemy $D87F/$D8BF (roach)
 $B4:E907             dx D87F, 01AD, 04E8, 0000, 2400, 0000, E804, 0020,
                         FFFF, 00
 
+; Enemy $E0FF (fake Kraid)
 $B4:E91A             dx E0FF, 0100, 0100, 0000, 2800, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $D97F (desgeega)
 $B4:E92D             dx D97F, 0100, 0100, 0000, 2000, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $D4FF (timed shutter)
 $B4:E940             dx D4FF, 0300, 0088, 0000, A800, 0000, 004C, 0008,
                         FFFF, 00
 
+; Enemy $D53F/$D57F/$D5BF/$D5FF (shutter / rising and falling platform)
 $B4:E953             dx D53F, 0100, 0100, 0020, A800, 0A0A, 2003, 0000,
                         FFFF, 00
 
+; Enemy $D9BF/$D9FF (super-sidehopper)
 $B4:E966             dx D9BF, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $DB7F (skree)
 $B4:E979             dx DB7F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $EA3F (Wrecked Ship spark)
 $B4:E98C             dx EA3F, 0100, 0100, 0000, 2000, 0000, 0000, 0000,
                         FFFF, 00
 
+; Enemy $D2BF (squeept)
 $B4:E99F             dx D2BF, 0060, 00D8, 0000, 2000, 0000, 0000, 0000,
                         D2BF, 0060, 00D8, 0002, 2400, 0000, 8000, 0000,
                         FFFF, 01
 
+; Enemy $D93F (sidehopper)
 $B4:E9C2             dx D93F, 0100, 0100, 0000, 2000, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $CEFF (mini-Crocomire)
 $B4:E9D5             dx CEFF, 0C30, 01F8, 0000, 2000, 0000, 0000, 0001,
                         FFFF, 01
 
+; Enemy $D03F (owtch)
 $B4:E9E8             dx D03F, 0060, 01C8, 0000, 2000, 0000, 0301, 0002,
                         FFFF, 01
 
+; Enemy $DABF (viola)
 $B4:E9FB             dx DABF, 00D8, 008A, 0003, 2001, 0000, 0002, 0006,
                         FFFF, 01
 
+; Enemy $D63F (waver)
 $B4:EA0E             dx D63F, 00C9, 005C, 0000, 2000, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $DBBF (yard)
 $B4:EA21             dx DBBF, 01D0, 0098, 0003, A004, 0000, 0001, 0000,
                         FFFF, 01
 
+; Enemy $F193 (zeb)
 $B4:EA34             dx F193, 0100, 0100, 0000, 6900, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $F1D3 (zebbo)
 $B4:EA47             dx F1D3, 0100, 0100, 0000, 6900, 0000, 0002, 0000,
                         FFFF, 01
 
+; Enemy $DC7F (zeela)
 $B4:EA5A             dx DC7F, 0180, 008C, 0003, 2000, 0000, 0002, 0002,
                         FFFF, 01
 
+; Enemy $DA7F (zoa)
 $B4:EA6D             dx DA7F, 0100, 0100, 0000, 6100, 0000, 0000, 0000,
                         FFFF, 01
 
+; Enemy $DCFF (zoomer)
 $B4:EA80             dx DCFF, 00D8, 00C8, 0003, 2000, 0000, 0002, 0000,
                         FFFF, 01
 
+; Enemy $F393 (green wall space pirate)
 $B4:EA93             dx F393, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F3D3 (red wall space pirate)
 $B4:EAA6             dx F3D3, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F413 (gold wall space pirate)
 $B4:EAB9             dx F413, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F453 (magenta wall space pirate)
 $B4:EACC             dx F453, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F493 (silver wall space pirate)
 $B4:EADF             dx F493, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F513 (green ninja space pirate)
 $B4:EAF2             dx F513, 0100, 0100, 0000, 2800, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F553 (red ninja space pirate)
 $B4:EB05             dx F553, 0100, 0100, 0000, 2800, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F593 (gold ninja space pirate)
 $B4:EB18             dx F593, 0100, 0100, 0000, 2800, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F5D3 (magenta ninja space pirate)
 $B4:EB2B             dx F5D3, 0100, 0100, 0000, 2800, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F613 (silver ninja space pirate)
 $B4:EB3E             dx F613, 0100, 0100, 0000, 2800, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F693 (green walking space pirate)
 $B4:EB51             dx F693, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F6D3 (red walking space pirate)
 $B4:EB64             dx F6D3, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F713 (gold walking space pirate)
 $B4:EB77             dx F713, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F753 (magenta walking space pirate)
 $B4:EB8A             dx F753, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $F793 (silver walking space pirate)
 $B4:EB9D             dx F793, 0100, 0100, 0000, 2000, 0004, 0001, 0030,
                         FFFF, 01
 
+; Enemy $E6FF (fune)
 $B4:EBB0             dx E6FF, 00F0, 04E0, 0000, A000, 0000, 0110, 0F05,
                         FFFF, 01
 
+; Enemy $EB3F (yellow ki-hunter)
 $B4:EBC3             dx EB3F, 0100, 0100, 0000, 2800, 0000, 0001, 0000,
                         EB7F, 0100, 0100, 0000, 2C00, 0000, 0020, 0000,
                         FFFF, 01
 
+; Enemy $EBBF (red ki-hunter)
 $B4:EBE6             dx EBBF, 0100, 0100, 0000, 2800, 0000, 0001, 0000,
                         EBFF, 0100, 0100, 0000, 2C00, 0000, 0020, 0000,
                         FFFF, 01
 
+; Enemy $E93F (work robot deactivated)
 $B4:EC09             dx E93F, 0050, 00B0, 0000, A800, 0000, 0001, 0000,
                         FFFF, 01
 }
@@ -6744,7 +6853,7 @@ $B4:EC09             dx E93F, 0050, 00B0, 0000, A800, 0000, 0001, 0000,
 ;                       |  |  |  |  |  |  |  |  |  |  |  |   |  |  |  |  |  |  |  |  |  |
 $B4:EC1C             db 02,02,02,02,02,02,02,02,02,02,02,02, 02,02,02,02,02,02,02,02,02,02 ; Default. Enemy $CEFF/$CFBF/$CFFF/$D07F/$D0BF/$D0FF/$D17F/$D23F/$D27F/$D3BF/$D63F/$D6BF/$D6FF/$D8FF/$D93F/$D97F/$D9BF/$DA7F/$DB7F/$E77F/$E9FF/$ECBF/$ECFF/$EFFF/$F03F/$F0BF/$F193/$F1D3/$F213/$F253
 $B4:EC32             db 00,00,00,00,01,01,01,01,02,02,02,02, 02,02,02,02,02,02,02,02,02,02 ; Enemy $DA3F (super-desgeega)
-$B4:EC48             db 02,02,02,02,02,02,02,02,02,02,02,02, 02,02,04,04,02,02,02,02,02,02 ; Enemy $DABF/$DBBF/$DC3F/$DC7F/$DCBF/$DCFF ((orange / fire) zoomer / slow fireball / snail / big eye bugs)
+$B4:EC48             db 02,02,02,02,02,02,02,02,02,02,02,02, 02,02,04,04,02,02,02,02,02,02 ; Enemy $DABF/$DBBF/$DC3F/$DC7F/$DCBF/$DCFF ((orange / fire) zoomer / viola / yard / zeela)
 $B4:EC5E             db 82,82,82,82,82,82,82,82,82,82,82,82, 02,02,00,02,02,02,02,02,80,00 ; Enemy $F4D3/$F513/$F553/$F5D3 (non-gold/silver ninja space pirate)
 $B4:EC74             db 80,80,80,80,81,81,81,81,82,82,82,82, 02,04,00,00,00,00,00,02,80,00 ; Enemy $F593 (gold ninja space pirate)
 $B4:EC8A             db 02,02,02,02,02,02,02,02,02,02,02,02, 04,04,00,02,02,02,02,02,02,02 ; Enemy $F493/$F793 (silver walking/wall space pirate)
@@ -6760,16 +6869,16 @@ $B4:ED50             db 00,00,00,00,00,00,00,00,00,00,00,00, 02,02,02,02,02,02,0
 $B4:ED66             db 01,01,01,01,01,01,01,01,01,01,01,01, 04,04,00,02,02,02,02,02,02,02 ; Enemy $EABF/$EAFF (green ki-hunter)
 $B4:ED7C             db 02,02,02,02,02,02,02,02,02,02,02,02, 02,02,00,02,02,02,02,02,02,02 ; Enemy $EB3F/$EB7F (yellow ki-hunter)
 $B4:ED92             db 00,00,81,81,81,82,82,82,82,82,82,82, 00,02,00,00,02,02,04,82,00,02 ; Enemy $EBBF/$EBFF (red ki-hunter)
-$B4:EDA8             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,02,02,00,00,00,00,02,02 ; Enemy $CEBF (bouncing gooball)
-$B4:EDBE             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,02,02,00,00,02,00,02,02 ; Enemy $D67F (metal skree)
+$B4:EDA8             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,02,02,00,00,00,00,02,02 ; Enemy $CEBF (boyon)
+$B4:EDBE             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,02,02,00,00,02,00,02,02 ; Enemy $D67F (metaree)
 $B4:EDD4             db 00,00,00,00,00,00,00,00,02,02,02,02, 00,00,02,02,00,00,02,00,00,00 ; Enemy $DD3F (stone zoomer)
-$B4:EDEA             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,00,02,00,00,02,00,00,02 ; Enemy $D2BF/$D43F/$D47F/$D7FF (lava jumping enemy / (jet powered) ripper / fast-moving slowly-sinking platform)
-$B4:EE00             db 02,02,04,04,02,02,04,04,02,02,04,04, 02,02,02,02,02,02,02,02,02,02 ; Enemy $D13F (under ice beam fly)
-$B4:EE16             db 00,00,FF,FF,00,00,FF,FF,02,02,02,02, 02,02,02,02,02,02,02,02,02,02 ; Enemy $D4BF (lava seahorse)
-$B4:EE2C             db 02,02,02,02,02,02,02,02,02,02,02,02, 04,04,02,02,02,02,02,02,02,02 ; Enemy $E9BF (walking lava seahorse)
-$B4:EE42             db 02,02,04,04,02,02,04,04,02,02,04,04, 02,02,00,02,02,02,02,02,02,02 ; Enemy $D2FF (Norfair rio)
-$B4:EE58             db 02,02,04,04,02,02,04,04,02,02,04,04, 00,02,00,02,02,02,02,02,02,02 ; Enemy $D33F (Lower Norfair rio)
-$B4:EE6E             db 02,02,04,04,02,02,04,04,02,02,04,04, 02,02,02,02,02,02,02,02,02,02 ; Enemy $D1BF (erratic fireball)
+$B4:EDEA             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,00,02,00,00,02,00,00,02 ; Enemy $D2BF/$D43F/$D47F/$D7FF (lava jumping enemy / ripper ii / ripper / tripper)
+$B4:EE00             db 02,02,04,04,02,02,04,04,02,02,04,04, 02,02,02,02,02,02,02,02,02,02 ; Enemy $D13F (mella)
+$B4:EE16             db 00,00,FF,FF,00,00,FF,FF,02,02,02,02, 02,02,02,02,02,02,02,02,02,02 ; Enemy $D4BF (dragon)
+$B4:EE2C             db 02,02,02,02,02,02,02,02,02,02,02,02, 04,04,02,02,02,02,02,02,02,02 ; Enemy $E9BF (alcoon)
+$B4:EE42             db 02,02,04,04,02,02,04,04,02,02,04,04, 02,02,00,02,02,02,02,02,02,02 ; Enemy $D2FF (geruta)
+$B4:EE58             db 02,02,04,04,02,02,04,04,02,02,04,04, 00,02,00,02,02,02,02,02,02,02 ; Enemy $D33F (holtz)
+$B4:EE6E             db 02,02,04,04,02,02,04,04,02,02,04,04, 02,02,02,02,02,02,02,02,02,02 ; Enemy $D1BF (multiviola)
 $B4:EE84             db 00,00,00,00,00,00,00,00,02,02,02,02, 00,02,00,02,02,02,02,02,02,02 ; Enemy $D03F (spikey shells)
 $B4:EE9A             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,00,00,02,02,00,00,00,02 ; Enemy $E7BF (yapping maw)
 $B4:EEB0             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 00,02,00,02,02,02,00,00,00,02 ; Enemy $E6FF/$E83F (fune / lava creature)
@@ -6779,11 +6888,11 @@ $B4:EEF2             db 00,00,00,00,00,00,00,00,00,00,FF,FF, 00,00,00,00,00,00,0
 $B4:EF08             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,00,00,82,00,00,00,00,00,00 ; Enemy $D4FF/$D53F/$D57F/$D5FF (non-destroyable shutters)
 $B4:EF1E             db 82,82,82,82,82,82,82,82,82,82,82,82, 82,82,82,00,00,00,00,00,00,00 ; Enemy $F07F (shaktool)
 $B4:EF34             db 82,82,82,82,82,82,82,82,82,82,82,82, 82,82,82,82,82,82,82,02,82,82 ; Enemy $E8BF (floater)
-$B4:EF4A             db 00,00,00,00,00,00,80,00,00,00,00,00, 02,02,00,02,00,02,02,00,00,02 ; Enemy $D3FF (grapplable jet powered ripper)
+$B4:EF4A             db 00,00,00,00,00,00,80,00,00,00,00,00, 02,02,00,02,00,02,02,00,00,02 ; Enemy $D3FF (gripper)
 $B4:EF60             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 02,04,00,01,02,02,02,00,02,02 ; Enemy $DD7F (metroid)
-$B4:EF76             db 02,02,02,02,02,02,02,02,02,02,02,02, 02,02,04,04,02,02,02,02,02,02 ; Enemy $D77F/$D7BF (crab / slug)
+$B4:EF76             db 02,02,02,02,02,02,02,02,02,02,02,02, 02,02,04,04,02,02,02,02,02,02 ; Enemy $D77F/$D7BF (sciser / zero)
 $B4:EF8C             db 00,00,FF,FF,00,00,FF,FF,00,00,FF,FF, 02,02,04,04,02,02,02,00,00,02 ; Enemy $E87F (beetom)
-$B4:EFA2             db 80,80,80,80,80,80,80,80,02,02,82,82, 02,02,02,02,02,02,02,02,02,02 ; Enemy $E97F (puffer)
+$B4:EFA2             db 80,80,80,80,80,80,80,80,02,02,82,82, 02,02,02,02,02,02,02,02,02,02 ; Enemy $E97F (bull)
 $B4:EFB8             db 02,02,02,02,02,02,02,02,02,02,82,82, 00,00,00,00,00,00,00,02,00,00 ; Enemy $D5BF (destroyable timed shutter)
 $B4:EFCE             db 02,02,FF,FF,02,02,FF,FF,02,02,82,82, 02,02,02,02,02,02,02,02,02,02 ; Enemy $E63F (evir)
 $B4:EFE4             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,00,00,00,00,00,00,00,00,00 ; Enemy $E67F (evir projectile)
@@ -6804,12 +6913,12 @@ $B4:F118             db 80,80,80,80,80,80,80,80,80,80,80,80, 82,82,80,80,80,80,8
 $B4:F12E             db 00,00,00,00,00,00,00,00,00,00,00,00, 00,00,00,00,00,00,00,00,00,00 ; Enemy $ED3F/$ED7F/$EDBF/$EDFF/$EE3F/$EE7F/$EEBF (dead enemies / Shitroid)
 $B4:F144             db 80,80,80,80,80,80,80,80,80,80,80,80, 82,82,80,80,80,81,80,82,82,80 ; Enemy $DE3F/$DE7F/$DEBF/$DEFF (Draygon)
 $B4:F15A             db 82,82,82,82,82,82,82,82,82,82,82,82, 82,82,80,80,80,80,80,02,80,80 ; Enemy $E2BF (Kraid)
-$B4:F170             db 80,80,80,80,80,80,80,80,80,80,80,80, 80,80,80,80,80,80,80,00,80,80 ; Enemy $E2FF/$E3FF (Kraid's arm / foot)
+$B4:F170             db 80,80,80,80,80,80,80,80,80,80,80,80, 80,80,80,80,80,80,80,00,80,80 ; Enemy $E2FF/$E3FF (Kraid arm / foot)
 $B4:F186             db 80,80,80,80,80,80,80,80,80,80,80,80, 80,80,80,80,80,80,80,00,80,80 ; Enemy $E33F/$E37F/$E3BF (Kraid lints)
 $B4:F19C             db 82,82,82,82,82,82,82,82,82,82,82,82, 82,82,82,82,82,00,82,02,82,82 ; Enemy $E43F/$E47F (Kraid fingernails)
 $B4:F1B2             db 80,80,80,80,80,80,80,80,80,80,80,80, 82,84,80,82,80,80,80,82,80,80 ; Enemy $E13F/$E17F (Ridley)
-$B4:F1C8             db 80,80,80,80,80,80,80,80,80,80,80,80, 82,82,80,80,80,80,80,02,80,80 ; Enemy $EC3F (Mother Brain's brain)
-$B4:F1DE             db 80,80,80,80,80,80,80,80,80,80,80,80, 80,80,80,80,80,80,80,00,80,80 ; Enemy $EC7F (Mother Brain's body)
+$B4:F1C8             db 80,80,80,80,80,80,80,80,80,80,80,80, 82,82,80,80,80,80,80,02,80,80 ; Enemy $EC3F (Mother Brain brain)
+$B4:F1DE             db 80,80,80,80,80,80,80,80,80,80,80,80, 80,80,80,80,80,80,80,00,80,80 ; Enemy $EC7F (Mother Brain body)
 }
 
 
@@ -6822,124 +6931,124 @@ $B4:F1DE             db 80,80,80,80,80,80,80,80,80,80,80,80, 80,80,80,80,80,80,8
 ;                       |  |  |  |   ____ ; 4: Super missiles
 ;                       |  |  |  |  |   _ ; 5: Power bombs
 ;                       |  |  |  |  |  |
-$B4:F1F4             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D2FF
-$B4:F1FA             db 1E,50,55,28,0A,0A ;  11.8%  31.4%  33.3%  15.7%   3.9%   3.9% - enemy $D27F
-$B4:F200             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D63F
-$B4:F206             db 14,03,55,89,05,05 ;   7.8%   1.2%  33.3%  53.7%   2.0%   2.0% - enemy $DB7F
-$B4:F20C             db 3C,3C,3C,05,0A,3C ;  23.5%  23.5%  23.5%   2.0%   3.9%  23.5% - enemy $CFBF
-$B4:F212             db 00,A5,50,00,05,05 ;         64.7%  31.4%          2.0%   2.0% - enemy $E9FF
-$B4:F218             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D8FF
-$B4:F21E             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D3BF
-$B4:F224             db 37,19,AA,00,05,00 ;  21.6%   9.8%  66.7%          2.0%        - enemy $DCFF
-$B4:F22A             db 37,19,7D,00,32,00 ;  21.6%   9.8%  49.0%         19.6%        - enemy $DC7F
-$B4:F230             db 50,46,1E,19,32,00 ;  31.4%  27.5%  11.8%   9.8%  19.6%        - enemy $DCBF
-$B4:F236             db 1E,46,50,46,05,00 ;  11.8%  27.5%  31.4%  27.5%   2.0%        - enemy $D0FF
-$B4:F23C             db 46,1E,50,46,05,00 ;  27.5%  11.8%  31.4%  27.5%   2.0%        - enemy $D13F
-$B4:F242             db 46,14,50,50,05,00 ;  27.5%   7.8%  31.4%  31.4%   2.0%        - enemy $D17F
-$B4:F248             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $F193
-$B4:F24E             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $F253
-$B4:F254             db 00,8C,0A,00,64,05 ;         54.9%   3.9%         39.2%   2.0% - enemy $F1D3
-$B4:F25A             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $F213
-$B4:F260             db 00,64,46,05,46,0A ;         39.2%  27.5%   2.0%  27.5%   3.9% - enemy $DA7F
-$B4:F266             db 32,5F,46,00,14,14 ;  19.6%  37.3%  27.5%          7.8%   7.8% - enemy $E77F
-$B4:F26C             db 32,5A,46,05,14,14 ;  19.6%  35.3%  27.5%   2.0%   7.8%   7.8% - enemy $E7FF
-$B4:F272             db 32,1E,50,4B,0A,0A ;  19.6%  11.8%  31.4%  29.4%   3.9%   3.9% - enemy $EABF/$EAFF
-$B4:F278             db 37,50,0A,28,3C,0A ;  21.6%  31.4%   3.9%  15.7%  23.5%   3.9% - enemy $EB3F/$EB7F
-$B4:F27E             db 23,78,0A,14,3C,0A ;  13.7%  47.1%   3.9%   7.8%  23.5%   3.9% - enemy $EBBF/$EBFF
-$B4:F284             db 00,96,05,00,64,00 ;         58.8%   2.0%         39.2%        - enemy $F593
-$B4:F28A             db 50,14,32,5F,05,05 ;  31.4%   7.8%  19.6%  37.3%   2.0%   2.0% - enemy $DA3F
-$B4:F290             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F3D3
-$B4:F296             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F553
-$B4:F29C             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F6D3
-$B4:F2A2             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F413
-$B4:F2A8             db 0A,2D,C5,01,01,01 ;   3.9%  17.6%  77.3%   0.4%   0.4%   0.4% - enemy $F353
-$B4:F2AE             db 05,1E,78,00,64,00 ;   2.0%  11.8%  47.1%         39.2%        - enemy $F393
-$B4:F2B4             db 01,00,00,00,FE,00 ;   0.4%                       99.6%        - enemy $E8BF
-$B4:F2BA             db 00,01,00,00,FE,00 ;          0.4%                99.6%        - enemy $CFFF
-$B4:F2C0             db 00,01,00,00,FE,00 ;          0.4%                99.6%        - enemy $E0FF
-$B4:F2C6             db 00,01,00,00,FE,00 ;          0.4%                99.6%        - enemy $D3FF/$D43F
-$B4:F2CC             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $DABF
-$B4:F2D2             db 00,05,00,00,00,FA ;          2.0%                       98.0% - enemy $E97F
-$B4:F2D8             db 01,64,00,00,00,9A ;   0.4%  39.2%                       60.4% - enemy $D77F
-$B4:F2DE             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $D97F
-$B4:F2E4             db 00,01,00,00,00,FE ;          0.4%                       99.6% - enemy $D6BF
-$B4:F2EA             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $E9BF
-$B4:F2F0             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $D7BF
-$B4:F2F6             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $E87F
-$B4:F2FC             db 82,14,00,64,00,05 ;  51.0%   7.8%         39.2%          2.0% - enemy $DC3F
-$B4:F302             db 82,14,00,64,00,05 ;  51.0%   7.8%         39.2%          2.0% - enemy $DD3F
-$B4:F308             db 50,14,50,41,05,05 ;  31.4%   7.8%  31.4%  25.5%   2.0%   2.0% - enemy $D47F
-$B4:F30E             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $D7FF/$D83F
-$B4:F314             db 50,19,50,3C,05,05 ;  31.4%   9.8%  31.4%  23.5%   2.0%   2.0% - enemy $D67F
-$B4:F31A             db 3C,3C,3C,3C,0F,00 ;  23.5%  23.5%  23.5%  23.5%   5.9%        - enemy $DBFF
-$B4:F320             db 14,0A,55,82,05,05 ;   7.8%   3.9%  33.3%  51.0%   2.0%   2.0% - enemy $CEBF
-$B4:F326             db 14,28,55,64,05,05 ;   7.8%  15.7%  33.3%  39.2%   2.0%   2.0% - enemy $D93F
-$B4:F32C             db 14,14,37,64,37,05 ;   7.8%   7.8%  21.6%  39.2%  21.6%   2.0% - enemy $D9BF/$D9FF
-$B4:F332             db 50,1E,46,46,05,00 ;  31.4%  11.8%  27.5%  27.5%   2.0%        - enemy $D6FF
-$B4:F338             db 46,1E,46,4B,05,05 ;  27.5%  11.8%  27.5%  29.4%   2.0%   2.0% - enemy $D37F
-$B4:F33E             db 55,50,00,50,00,0A ;  33.3%  31.4%         31.4%          3.9% - enemy $DBBF
-$B4:F344             db 00,82,3C,05,1E,1E ;         51.0%  23.5%   2.0%  11.8%  11.8% - enemy $F293
-$B4:F34A             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $D03F
-$B4:F350             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E63F/$E67F
-$B4:F356             db 00,78,32,00,32,23 ;         47.1%  19.6%         19.6%  13.7% - enemy $D33F
-$B4:F35C             db 32,32,32,05,32,32 ;  19.6%  19.6%  19.6%   2.0%  19.6%  19.6% - enemy $D2BF
-$B4:F362             db 46,1E,4B,46,05,05 ;  27.5%  11.8%  29.4%  27.5%   2.0%   2.0% - enemy $D1BF
-$B4:F368             db 32,32,46,4B,05,05 ;  19.6%  19.6%  27.5%  29.4%   2.0%   2.0% - enemy $D4BF
-$B4:F36E             db 19,32,5A,0A,32,1E ;   9.8%  19.6%  35.3%   3.9%  19.6%  11.8% - enemy $DD7F
-$B4:F374             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D23F
+$B4:F1F4             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D2FF (geruta)
+$B4:F1FA             db 1E,50,55,28,0A,0A ;  11.8%  31.4%  33.3%  15.7%   3.9%   3.9% - enemy $D27F (rio)
+$B4:F200             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D63F (waver)
+$B4:F206             db 14,03,55,89,05,05 ;   7.8%   1.2%  33.3%  53.7%   2.0%   2.0% - enemy $DB7F (skree)
+$B4:F20C             db 3C,3C,3C,05,0A,3C ;  23.5%  23.5%  23.5%   2.0%   3.9%  23.5% - enemy $CFBF (puyo)
+$B4:F212             db 00,A5,50,00,05,05 ;         64.7%  31.4%          2.0%   2.0% - enemy $E9FF (atomic)
+$B4:F218             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D8FF (mochtroid)
+$B4:F21E             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $D3BF (choot)
+$B4:F224             db 37,19,AA,00,05,00 ;  21.6%   9.8%  66.7%          2.0%        - enemy $DCFF (zoomer)
+$B4:F22A             db 37,19,7D,00,32,00 ;  21.6%   9.8%  49.0%         19.6%        - enemy $DC7F (zeela)
+$B4:F230             db 50,46,1E,19,32,00 ;  31.4%  27.5%  11.8%   9.8%  19.6%        - enemy $DCBF (sova)
+$B4:F236             db 1E,46,50,46,05,00 ;  11.8%  27.5%  31.4%  27.5%   2.0%        - enemy $D0FF (mellow)
+$B4:F23C             db 46,1E,50,46,05,00 ;  27.5%  11.8%  31.4%  27.5%   2.0%        - enemy $D13F (mella)
+$B4:F242             db 46,14,50,50,05,00 ;  27.5%   7.8%  31.4%  31.4%   2.0%        - enemy $D17F (memu)
+$B4:F248             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $F193 (zeb)
+$B4:F24E             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $F253 (geega)
+$B4:F254             db 00,8C,0A,00,64,05 ;         54.9%   3.9%         39.2%   2.0% - enemy $F1D3 (zebbo)
+$B4:F25A             db 3C,3C,3C,05,3C,0A ;  23.5%  23.5%  23.5%   2.0%  23.5%   3.9% - enemy $F213 (gamet)
+$B4:F260             db 00,64,46,05,46,0A ;         39.2%  27.5%   2.0%  27.5%   3.9% - enemy $DA7F (zoa)
+$B4:F266             db 32,5F,46,00,14,14 ;  19.6%  37.3%  27.5%          7.8%   7.8% - enemy $E77F (coven)
+$B4:F26C             db 32,5A,46,05,14,14 ;  19.6%  35.3%  27.5%   2.0%   7.8%   7.8% - enemy $E7FF (kago)
+$B4:F272             db 32,1E,50,4B,0A,0A ;  19.6%  11.8%  31.4%  29.4%   3.9%   3.9% - enemy $EABF/$EAFF (green ki-hunter)
+$B4:F278             db 37,50,0A,28,3C,0A ;  21.6%  31.4%   3.9%  15.7%  23.5%   3.9% - enemy $EB3F/$EB7F (yellow ki-hunter)
+$B4:F27E             db 23,78,0A,14,3C,0A ;  13.7%  47.1%   3.9%   7.8%  23.5%   3.9% - enemy $EBBF/$EBFF (red ki-hunter)
+$B4:F284             db 00,96,05,00,64,00 ;         58.8%   2.0%         39.2%        - enemy $F593 (gold ninja space pirate)
+$B4:F28A             db 50,14,32,5F,05,05 ;  31.4%   7.8%  19.6%  37.3%   2.0%   2.0% - enemy $DA3F (super-desgeega)
+$B4:F290             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F3D3 (red wall space pirate)
+$B4:F296             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F553 (red ninja space pirate)
+$B4:F29C             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F6D3 (red walking space pirate)
+$B4:F2A2             db 0A,14,14,C3,05,05 ;   3.9%   7.8%   7.8%  76.5%   2.0%   2.0% - enemy $F413 (gold wall space pirate)
+$B4:F2A8             db 0A,2D,C5,01,01,01 ;   3.9%  17.6%  77.3%   0.4%   0.4%   0.4% - enemy $F353 (grey wall space pirate)
+$B4:F2AE             db 05,1E,78,00,64,00 ;   2.0%  11.8%  47.1%         39.2%        - enemy $F393 (green wall space pirate)
+$B4:F2B4             db 01,00,00,00,FE,00 ;   0.4%                       99.6%        - enemy $E8BF (powamp)
+$B4:F2BA             db 00,01,00,00,FE,00 ;          0.4%                99.6%        - enemy $CFFF (cacatac)
+$B4:F2C0             db 00,01,00,00,FE,00 ;          0.4%                99.6%        - enemy $E0FF (fake Kraid)
+$B4:F2C6             db 00,01,00,00,FE,00 ;          0.4%                99.6%        - enemy $D3FF/$D43F (gripper / ripper ii)
+$B4:F2CC             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $DABF (viola)
+$B4:F2D2             db 00,05,00,00,00,FA ;          2.0%                       98.0% - enemy $E97F (bull)
+$B4:F2D8             db 01,64,00,00,00,9A ;   0.4%  39.2%                       60.4% - enemy $D77F (sciser)
+$B4:F2DE             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $D97F (desgeega)
+$B4:F2E4             db 00,01,00,00,00,FE ;          0.4%                       99.6% - enemy $D6BF (fireflea)
+$B4:F2EA             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $E9BF (alcoon)
+$B4:F2F0             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $D7BF (zero)
+$B4:F2F6             db 01,00,00,00,00,FE ;   0.4%                              99.6% - enemy $E87F (beetom)
+$B4:F2FC             db 82,14,00,64,00,05 ;  51.0%   7.8%         39.2%          2.0% - enemy $DC3F (Wrecked Ship orange zoomer)
+$B4:F302             db 82,14,00,64,00,05 ;  51.0%   7.8%         39.2%          2.0% - enemy $DD3F (stone zoomer)
+$B4:F308             db 50,14,50,41,05,05 ;  31.4%   7.8%  31.4%  25.5%   2.0%   2.0% - enemy $D47F (ripper)
+$B4:F30E             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $D7FF/$D83F (tripper / suspensor platform)
+$B4:F314             db 50,19,50,3C,05,05 ;  31.4%   9.8%  31.4%  23.5%   2.0%   2.0% - enemy $D67F (metaree)
+$B4:F31A             db 3C,3C,3C,3C,0F,00 ;  23.5%  23.5%  23.5%  23.5%   5.9%        - enemy $DBFF (reflec)
+$B4:F320             db 14,0A,55,82,05,05 ;   7.8%   3.9%  33.3%  51.0%   2.0%   2.0% - enemy $CEBF (boyon)
+$B4:F326             db 14,28,55,64,05,05 ;   7.8%  15.7%  33.3%  39.2%   2.0%   2.0% - enemy $D93F (sidehopper)
+$B4:F32C             db 14,14,37,64,37,05 ;   7.8%   7.8%  21.6%  39.2%  21.6%   2.0% - enemy $D9BF/$D9FF (super-sidehopper)
+$B4:F332             db 50,1E,46,46,05,00 ;  31.4%  11.8%  27.5%  27.5%   2.0%        - enemy $D6FF (skultera)
+$B4:F338             db 46,1E,46,4B,05,05 ;  27.5%  11.8%  27.5%  29.4%   2.0%   2.0% - enemy $D37F (oum)
+$B4:F33E             db 55,50,00,50,00,0A ;  33.3%  31.4%         31.4%          3.9% - enemy $DBBF (yard)
+$B4:F344             db 00,82,3C,05,1E,1E ;         51.0%  23.5%   2.0%  11.8%  11.8% - enemy $F293 (Botwoon)
+$B4:F34A             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $D03F (owtch)
+$B4:F350             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E63F/$E67F (evir)
+$B4:F356             db 00,78,32,00,32,23 ;         47.1%  19.6%         19.6%  13.7% - enemy $D33F (holtz)
+$B4:F35C             db 32,32,32,05,32,32 ;  19.6%  19.6%  19.6%   2.0%  19.6%  19.6% - enemy $D2BF (squeept)
+$B4:F362             db 46,1E,4B,46,05,05 ;  27.5%  11.8%  29.4%  27.5%   2.0%   2.0% - enemy $D1BF (multiviola)
+$B4:F368             db 32,32,46,4B,05,05 ;  19.6%  19.6%  27.5%  29.4%   2.0%   2.0% - enemy $D4BF (dragon)
+$B4:F36E             db 19,32,5A,0A,32,1E ;   9.8%  19.6%  35.3%   3.9%  19.6%  11.8% - enemy $DD7F (metroid)
+$B4:F374             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D23F (rinka)
 $B4:F37A             db 00,82,3C,05,1E,1E ;         51.0%  23.5%   2.0%  11.8%  11.8%
-$B4:F380             db 2D,50,50,1E,0A,0A ;  17.6%  31.4%  31.4%  11.8%   3.9%   3.9% - enemy $DB3F
-$B4:F386             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F4D3
-$B4:F38C             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F653
-$B4:F392             db 32,19,00,19,9B,00 ;  19.6%   9.8%          9.8%  60.8%        - enemy $F513
-$B4:F398             db 32,1E,64,2D,14,0A ;  19.6%  11.8%  39.2%  17.6%   7.8%   3.9% - enemy $F693
-$B4:F39E             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F713
-$B4:F3A4             db 1E,46,50,46,05,00 ;  11.8%  27.5%  31.4%  27.5%   2.0%        - enemy $F453
-$B4:F3AA             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F5D3
-$B4:F3B0             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F753
-$B4:F3B6             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $CEFF
-$B4:F3BC             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $CF3F/$CF7F
-$B4:F3C2             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D07F/$D0BF
-$B4:F3C8             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $F07F
-$B4:F3CE             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E6BF
-$B4:F3D4             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E6FF
-$B4:F3DA             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E73F
-$B4:F3E0             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E7BF
-$B4:F3E6             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E83F
-$B4:F3EC             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E8FF
-$B4:F3F2             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E93F
-$B4:F3F8             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $EC7F/$EEFF
-$B4:F3FE             db 74,14,41,36,00,00 ;  45.5%   7.8%  25.5%  21.2%               - enemy $EF3F
-$B4:F404             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $EF7F
-$B4:F40A             db 1E,1E,32,3C,55,00 ;  11.8%  11.8%  19.6%  23.5%  33.3%        - enemy $EFBF
-$B4:F410             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $DF3F
-$B4:F416             db 0A,14,C8,19,00,00 ;   3.9%   7.8%  78.4%   9.8%               - enemy $DF7F
-$B4:F41C             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $E2BF
-$B4:F422             db 0A,23,C8,00,0A,00 ;   3.9%  13.7%  78.4%          3.9%        - enemy $E3FF/$E43F
-$B4:F428             db 00,0A,DC,05,14,00 ;          3.9%  86.3%   2.0%   7.8%        - enemy $DDFF
-$B4:F42E             db 00,78,64,05,14,0A ;         47.1%  39.2%   2.0%   7.8%   3.9% - enemy $DDBF
-$B4:F434             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $E4BF/$E53F/$E57F
-$B4:F43A             db 14,14,64,69,0A,00 ;   7.8%   7.8%  39.2%  41.2%   3.9%        - enemy $E4FF
-$B4:F440             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $DE3F/$DEBF/$DEFF
-$B4:F446             db 05,1E,6E,64,05,05 ;   2.0%  11.8%  43.1%  39.2%   2.0%   2.0% - enemy $DE7F
-$B4:F44C             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $E13F/$E17F
-$B4:F452             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F0BF/$F0FF
-$B4:F458             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EA3F
-$B4:F45E             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EA7F
-$B4:F464             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E0BF
-$B4:F46A             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $DFBF
-$B4:F470             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $DFFF/$E03F
-$B4:F476             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E07F
-$B4:F47C             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D87F/$D8BF
-$B4:F482             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E5BF/$F2D3
-$B4:F488             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E1FF/$E5FF/$F313
-$B4:F48E             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D1FF
+$B4:F380             db 2D,50,50,1E,0A,0A ;  17.6%  31.4%  31.4%  11.8%   3.9%   3.9% - enemy $DB3F (bang)
+$B4:F386             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F4D3 (grey ninja space pirate)
+$B4:F38C             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F653 (grey walking space pirate)
+$B4:F392             db 32,19,00,19,9B,00 ;  19.6%   9.8%          9.8%  60.8%        - enemy $F513 (green ninja space pirate)
+$B4:F398             db 32,1E,64,2D,14,0A ;  19.6%  11.8%  39.2%  17.6%   7.8%   3.9% - enemy $F693 (green walking space pirate)
+$B4:F39E             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F713 (gold walking space pirate)
+$B4:F3A4             db 1E,46,50,46,05,00 ;  11.8%  27.5%  31.4%  27.5%   2.0%        - enemy $F453 (magenta wall space pirate)
+$B4:F3AA             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F5D3 (magenta ninja space pirate)
+$B4:F3B0             db 32,78,50,00,05,00 ;  19.6%  47.1%  31.4%          2.0%        - enemy $F753 (magenta walking space pirate)
+$B4:F3B6             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $CEFF (mini-Crocomire)
+$B4:F3BC             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $CF3F/$CF7F (tatori / mini-tatori))
+$B4:F3C2             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D07F/$D0BF (gunship))
+$B4:F3C8             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $F07F (Shaktool)
+$B4:F3CE             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E6BF (morph ball eye)
+$B4:F3D4             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E6FF (fune)
+$B4:F3DA             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E73F (namihe)
+$B4:F3E0             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E7BF (yapping maw)
+$B4:F3E6             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E83F (magdollite)
+$B4:F3EC             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E8FF (work robot)
+$B4:F3F2             db 50,50,50,05,05,05 ;  31.4%  31.4%  31.4%   2.0%   2.0%   2.0% - enemy $E93F (work robot deactivated)
+$B4:F3F8             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $EC7F/$EEFF (Mother Brain body / Bomb Torizo))
+$B4:F3FE             db 74,14,41,36,00,00 ;  45.5%   7.8%  25.5%  21.2%               - enemy $EF3F (Bomb Torizo orb)
+$B4:F404             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $EF7F (Golden Torizo)
+$B4:F40A             db 1E,1E,32,3C,55,00 ;  11.8%  11.8%  19.6%  23.5%  33.3%        - enemy $EFBF (Golden Torizo orb)
+$B4:F410             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $DF3F (Spore Spawn)
+$B4:F416             db 0A,14,C8,19,00,00 ;   3.9%   7.8%  78.4%   9.8%               - enemy $DF7F (Spore Spawn)
+$B4:F41C             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $E2BF (Kraid)
+$B4:F422             db 0A,23,C8,00,0A,00 ;   3.9%  13.7%  78.4%          3.9%        - enemy $E3FF/$E43F (Kraid foot / good fingernail)
+$B4:F428             db 00,0A,DC,05,14,00 ;          3.9%  86.3%   2.0%   7.8%        - enemy $DDFF (Crocomire tongue)
+$B4:F42E             db 00,78,64,05,14,0A ;         47.1%  39.2%   2.0%   7.8%   3.9% - enemy $DDBF (Crocomire)
+$B4:F434             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $E4BF/$E53F/$E57F (Phantoon body / tentacles / mouth))
+$B4:F43A             db 14,14,64,69,0A,00 ;   7.8%   7.8%  39.2%  41.2%   3.9%        - enemy $E4FF (Phantoon eye)
+$B4:F440             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $DE3F/$DEBF/$DEFF (Draygon body / tail / arms))
+$B4:F446             db 05,1E,6E,64,05,05 ;   2.0%  11.8%  43.1%  39.2%   2.0%   2.0% - enemy $DE7F (Draygon eye)
+$B4:F44C             db 32,32,32,00,32,37 ;  19.6%  19.6%  19.6%         19.6%  21.6% - enemy $E13F/$E17F (Ridley)
+$B4:F452             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F0BF/$F0FF (n00b tube cracks / chozo statue)
+$B4:F458             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EA3F (Wrecked Ship spark)
+$B4:F45E             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EA7F (blue Brinstar face block)
+$B4:F464             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E0BF (fire arc)
+$B4:F46A             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $DFBF (boulder)
+$B4:F470             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $DFFF/$E03F (spike platform)
+$B4:F476             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E07F (fire pillar)
+$B4:F47C             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D87F/$D8BF (roach)
+$B4:F482             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E5BF/$F2D3 (etecoon)
+$B4:F488             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $E1FF/$E5FF/$F313 (Ceres steam / dachora))
+$B4:F48E             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D1FF (polyp)
 $B4:F494             db 00,00,00,FF,00,00 ;                      100.0%
-$B4:F49A             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EC3F
-$B4:F4A0             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D4FF/$D53F/$D57F/$D5BF/$D5FF/$ECBF/$ED3F
-$B4:F4A6             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F493
-$B4:F4AC             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F613
-$B4:F4B2             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F793
+$B4:F49A             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EC3F (Mother Brain brain)
+$B4:F4A0             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D4FF/$D53F/$D57F/$D5BF/$D5FF/$ECBF/$ED3F (shutter / rising and falling platform / Shitroid in cutscene / torizo corpse)
+$B4:F4A6             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F493 (silver wall space pirate)
+$B4:F4AC             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F613 (silver ninja space pirate)
+$B4:F4B2             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F793 (silver walking space pirate)
 }
 
 

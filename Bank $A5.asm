@@ -90,14 +90,14 @@ $A5:8734 95 D0       STA $D0,x  [$7E:00D0]  ;|
 $A5:8736 A9 00 94    LDA #$9400             ;|
 $A5:8739 95 D2       STA $D2,x  [$7E:00D2]  ;|
 $A5:873B A9 B1 00    LDA #$00B1             ;|
-$A5:873E 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of $B1:9400..99FF to VRAM $6D00..6FFF (mini-Draygon tiles)
+$A5:873E 95 D4       STA $D4,x  [$7E:00D4]  ;} Queue transfer of $B1:9400..99FF to VRAM $6D00..6FFF (evir tiles)
 $A5:8740 A9 00 6D    LDA #$6D00             ;|
 $A5:8743 95 D5       STA $D5,x  [$7E:00D5]  ;|
 $A5:8745 AD 30 03    LDA $0330  [$7E:0330]  ;|
 $A5:8748 18          CLC                    ;|
 $A5:8749 69 07 00    ADC #$0007             ;|
 $A5:874C 8D 30 03    STA $0330  [$7E:0330]  ;/
-$A5:874F 20 D9 A0    JSR $A0D9  [$A5:A0D9]  ; Spawn fight intro mini-Draygon sprite objects
+$A5:874F 20 D9 A0    JSR $A0D9  [$A5:A0D9]  ; Spawn fight intro evir sprite objects
 
 $A5:8752 EE AA 0F    INC $0FAA  [$7E:0FAA]  ; Increment Draygon body function timer
 $A5:8755 60          RTS                    ; Return
@@ -1385,9 +1385,9 @@ $A5:9245 80 03       BRA $03    [$924A]     ; Go to BRANCH_DONE
 $A5:9247 4C 93 92    JMP $9293  [$A5:9293]  ; Return
 
 ; BRANCH_DONE
-$A5:924A 20 6C A0    JSR $A06C  [$A5:A06C]  ; Spawn death sequence mini-Draygon sprite objects
+$A5:924A 20 6C A0    JSR $A06C  [$A5:A06C]  ; Spawn death sequence evir sprite objects
 $A5:924D A9 94 92    LDA #$9294             ;\
-$A5:9250 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $9294 (wait for mini-Draygons)
+$A5:9250 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $9294 (wait for evirs)
 $A5:9253 A9 03 00    LDA #$0003             ;\
 $A5:9256 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue elevator music track
 $A5:925A A9 A0 01    LDA #$01A0             ;\
@@ -1415,26 +1415,26 @@ $A5:9293 60          RTS
 }
 
 
-;;; $9294: Draygon body function - death sequence - wait for mini-Draygons ;;;
+;;; $9294: Draygon body function - death sequence - wait for evirs ;;;
 {
 $A5:9294 20 EA 92    JSR $92EA  [$A5:92EA]  ; Handle dying Draygon smoke
 $A5:9297 CE AA 0F    DEC $0FAA  [$7E:0FAA]  ; Decrement Draygon body function timer
 $A5:929A AD AA 0F    LDA $0FAA  [$7E:0FAA]
 $A5:929D F0 05       BEQ $05    [$92A4]     ; If [Draygon body function timer] != 0:
-$A5:929F 20 E0 9F    JSR $9FE0  [$A5:9FE0]  ; Handle death sequence mini-Draygon movement
+$A5:929F 20 E0 9F    JSR $9FE0  [$A5:9FE0]  ; Handle death sequence evir movement
 $A5:92A2 80 06       BRA $06    [$92AA]     ; Return
 
 $A5:92A4 A9 AB 92    LDA #$92AB             ;\
-$A5:92A7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $92AB (buried by mini-Draygons)
+$A5:92A7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Draygon body function = $92AB (buried by evirs)
 
 $A5:92AA 60          RTS
 }
 
 
-;;; $92AB: Draygon body function - death sequence - buried by mini-Draygons ;;;
+;;; $92AB: Draygon body function - death sequence - buried by evirs ;;;
 {
 $A5:92AB 20 EA 92    JSR $92EA  [$A5:92EA]  ; Handle dying Draygon smoke
-$A5:92AE 20 E0 9F    JSR $9FE0  [$A5:9FE0]  ; Handle death sequence mini-Draygon movement
+$A5:92AE 20 E0 9F    JSR $9FE0  [$A5:9FE0]  ; Handle death sequence evir movement
 $A5:92B1 EE 7E 0F    INC $0F7E  [$7E:0F7E]  ; Draygon Y position += 1
 $A5:92B4 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A5:92B7 C9 40 02    CMP #$0240             ;} If [Draygon Y position] >= 240h:
@@ -2224,7 +2224,7 @@ $A5:98A5             dx 813A,000C,  ; Wait Ch frames
                         9752,       ; Spawn dying Draygon sprite object - small explosion
                         973F,       ; Spawn dying Draygon sprite object - big dust cloud
                         9778,       ; Spawn dying Draygon sprite object - breath bubbles
-                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         8110,98A5,  ; Decrement timer and go to $98A5 if non-zero
                         813A,0001,  ; Wait 1 frame
                         98D3        ; Paralyse Draygon tail and arms
@@ -2233,7 +2233,7 @@ $A5:98BF             dx 813A,0010,  ; Wait 10h frames
                         9752,       ; Spawn dying Draygon sprite object - small explosion
                         973F,       ; Spawn dying Draygon sprite object - big dust cloud
                         9778,       ; Spawn dying Draygon sprite object - breath bubbles
-                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         80ED,98BF   ; Go to $98BF
 }
 
@@ -2279,7 +2279,7 @@ $A5:98FE             dx 0001,A343,
                         0002,A34D,
                         0003,A357,
                         9F7C,       ; Spawn Draygon goop - leftwards
-                        9F60,004C,  ; Queue sound 4Ch, sound library 2, max queued sounds allowed = 6
+                        9F60,004C,  ; Queue sound 4Ch, sound library 2, max queued sounds allowed = 6 (Draygon goop)
                         0003,A361,
                         0002,A357,
                         0002,A34D,
@@ -2290,7 +2290,7 @@ $A5:98FE             dx 0001,A343,
 
 ;;; $9922: Instruction list - Draygon body - facing left - roar ;;;
 {
-$A5:9922             dx 9F60,0073,  ; Queue sound 73h, sound library 2, max queued sounds allowed = 6
+$A5:9922             dx 9F60,0073,  ; Queue sound 73h, sound library 2, max queued sounds allowed = 6 (Draygon's cry)
                         0006,A343,
                         0006,A34D,
                         0006,A357,
@@ -2440,7 +2440,7 @@ $A5:9A6C             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px rig
                         0001,A55B,
                         9E0A,0000,0000, ; Displace Draygon body graphics 0px right, 0px up
                         9B9A,           ; Draygon tail whip hit
-                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         0003,A59D,
                         0001,A55B,
                         0002,A521,
@@ -2473,7 +2473,7 @@ $A5:9AE8             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px rig
                         0001,A55B,
                         9E0A,0000,0000, ; Displace Draygon body graphics 0px right, 0px up
                         9B9A,           ; Draygon tail whip hit
-                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         0003,A59D,
                         0001,A55B,
                         0002,A521,
@@ -2495,7 +2495,7 @@ $A5:9B5A             dx 0002,A42F,
                         0003,A4EF,
                         0002,A521,
                         0001,A55B,
-                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         0003,A59D,
                         0001,A55B,
                         0002,A521,
@@ -2641,7 +2641,7 @@ $A5:9C90             dx 0001,A66B,
                         0002,A675,
                         0003,A67F,
                         9FAE,       ; Spawn Draygon goop - rightwards
-                        9F60,004C,  ; Queue sound 4Ch, sound library 2, max queued sounds allowed = 6
+                        9F60,004C,  ; Queue sound 4Ch, sound library 2, max queued sounds allowed = 6 (Draygon goop)
                         0003,A689,
                         0002,A67F,
                         0002,A675,
@@ -2652,7 +2652,7 @@ $A5:9C90             dx 0001,A66B,
 
 ;;; $9CB4: Instruction list - Draygon body - facing right - roar ;;;
 {
-$A5:9CB4             dx 9F60,0073,  ; Queue sound 73h, sound library 2, max queued sounds allowed = 6
+$A5:9CB4             dx 9F60,0073,  ; Queue sound 73h, sound library 2, max queued sounds allowed = 6 (Draygon's cry)
                         0006,A66B,
                         0006,A675,
                         0006,A67F,
@@ -2829,7 +2829,7 @@ $A5:9E25             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px lef
                         0001,A8C9,                                       
                         9E0A,0000,0000, ; Displace Draygon body graphics 0px left, 0px down
                         9B9A,           ; Draygon tail whip hit
-                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         0003,A90B,
                         0001,A8C9,
                         0002,A88F,
@@ -2862,7 +2862,7 @@ $A5:9EA1             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px lef
                         0001,A8C9,                                       
                         9E0A,0000,0000, ; Displace Draygon body graphics 0px left, 0px down
                         9B9A,           ; Draygon tail whip hit
-                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,      ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         0003,A90B,
                         0001,A8C9,
                         0002,A88F,
@@ -2885,7 +2885,7 @@ $A5:9F15             dx 0002,A79D,
                         0003,A85D,
                         0002,A88F,
                         0001,A8C9,
-                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6
+                        9F60,0025,  ; Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
                         0003,A90B,
                         0001,A8C9,
                         0002,A88F,
@@ -2993,7 +2993,7 @@ $A5:9FDF 6B          RTL
 }
 
 
-;;; $9FE0: Handle death sequence mini-Draygon movement ;;;
+;;; $9FE0: Handle death sequence evir movement ;;;
 {
 ; Where does $0E24 come from? Maybe $8817? Only used when moving left. Supposed to be `SBC #$0000`?
 $A5:9FE0 5A          PHY
@@ -3059,7 +3059,7 @@ $A5:A069 4C E7 9F    JMP $9FE7  [$A5:9FE7]  ; Go to LOOP
 }
 
 
-;;; $A06C: Spawn death sequence mini-Draygon sprite objects ;;;
+;;; $A06C: Spawn death sequence evir sprite objects ;;;
 {
 $A5:A06C DA          PHX
 $A5:A06D 5A          PHY
@@ -3080,7 +3080,7 @@ $A5:A087 B9 C9 A1    LDA $A1C9,y[$A5:A1DD]  ;\
 $A5:A08A 85 14       STA $14    [$7E:0014]  ;} $14 = [$A1C7 + [Y] + 2]
 $A5:A08C A9 3B 00    LDA #$003B             ;\
 $A5:A08F 85 16       STA $16    [$7E:0016]  ;|
-$A5:A091 A9 00 0E    LDA #$0E00             ;} Create sprite object 3Bh (mini-Draygon facing left) at position ([$12], [$14]) with palette 7
+$A5:A091 A9 00 0E    LDA #$0E00             ;} Create sprite object 3Bh (evir facing left) at position ([$12], [$14]) with palette 7
 $A5:A094 85 18       STA $18    [$7E:0018]  ;|
 $A5:A096 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:A09A 88          DEY                    ;\
@@ -3098,7 +3098,7 @@ $A5:A0A9 B9 C9 A1    LDA $A1C9,y[$A5:A1D1]  ;\
 $A5:A0AC 85 14       STA $14    [$7E:0014]  ;} $14 = [$A1C7 + [Y] + 2]
 $A5:A0AE A9 3C 00    LDA #$003C             ;\
 $A5:A0B1 85 16       STA $16    [$7E:0016]  ;|
-$A5:A0B3 A9 00 0E    LDA #$0E00             ;} Create sprite object 3Ch (mini-Draygon facing right) at position ([$12], [$14]) with palette 7
+$A5:A0B3 A9 00 0E    LDA #$0E00             ;} Create sprite object 3Ch (evir facing right) at position ([$12], [$14]) with palette 7
 $A5:A0B6 85 18       STA $18    [$7E:0018]  ;|
 $A5:A0B8 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ;/
 $A5:A0BC 88          DEY                    ;\
@@ -3130,7 +3130,7 @@ $A5:A0D8 60          RTS
 }
 
 
-;;; $A0D9: Spawn fight intro mini-Draygon sprite objects ;;;
+;;; $A0D9: Spawn fight intro evir sprite objects ;;;
 {
 $A5:A0D9 DA          PHX
 $A5:A0DA 5A          PHY
@@ -3138,7 +3138,7 @@ $A5:A0DB A9 10 00    LDA #$0010             ;\
 $A5:A0DE 85 12       STA $12    [$7E:0012]  ;|
 $A5:A0E0 A9 80 01    LDA #$0180             ;|
 $A5:A0E3 85 14       STA $14    [$7E:0014]  ;|
-$A5:A0E5 A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A0E5 A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (evir facing left) at position (10h, 180h) with palette 7
 $A5:A0E8 85 16       STA $16    [$7E:0016]  ;|
 $A5:A0EA A9 00 0E    LDA #$0E00             ;|
 $A5:A0ED 85 18       STA $18    [$7E:0018]  ;|
@@ -3147,7 +3147,7 @@ $A5:A0F3 A9 10 00    LDA #$0010             ;\
 $A5:A0F6 85 12       STA $12    [$7E:0012]  ;|
 $A5:A0F8 A9 80 01    LDA #$0180             ;|
 $A5:A0FB 85 14       STA $14    [$7E:0014]  ;|
-$A5:A0FD A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A0FD A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (evir facing left) at position (10h, 180h) with palette 7
 $A5:A100 85 16       STA $16    [$7E:0016]  ;|
 $A5:A102 A9 00 0E    LDA #$0E00             ;|
 $A5:A105 85 18       STA $18    [$7E:0018]  ;|
@@ -3156,7 +3156,7 @@ $A5:A10B A9 10 00    LDA #$0010             ;\
 $A5:A10E 85 12       STA $12    [$7E:0012]  ;|
 $A5:A110 A9 80 01    LDA #$0180             ;|
 $A5:A113 85 14       STA $14    [$7E:0014]  ;|
-$A5:A115 A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A115 A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (evir facing left) at position (10h, 180h) with palette 7
 $A5:A118 85 16       STA $16    [$7E:0016]  ;|
 $A5:A11A A9 00 0E    LDA #$0E00             ;|
 $A5:A11D 85 18       STA $18    [$7E:0018]  ;|
@@ -3165,7 +3165,7 @@ $A5:A123 A9 10 00    LDA #$0010             ;\
 $A5:A126 85 12       STA $12    [$7E:0012]  ;|
 $A5:A128 A9 80 01    LDA #$0180             ;|
 $A5:A12B 85 14       STA $14    [$7E:0014]  ;|
-$A5:A12D A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (mini-Draygon facing left) at position (10h, 180h) with palette 7
+$A5:A12D A9 3B 00    LDA #$003B             ;} Create sprite object 3Bh (evir facing left) at position (10h, 180h) with palette 7
 $A5:A130 85 16       STA $16    [$7E:0016]  ;|
 $A5:A132 A9 00 0E    LDA #$0E00             ;|
 $A5:A135 85 18       STA $18    [$7E:0018]  ;|
@@ -3178,7 +3178,7 @@ $A5:A13D 60          RTS
 
 ;;; $A13E: Handle Draygon fight intro dance ;;;
 {
-; There's 8 entries in the movement latency table $A19F, but only 4 mini-Draygon are processed
+; There's 8 entries in the movement latency table $A19F, but only 4 evir are processed
 ; I guess there was supposed to be 8 originally and then it was reduced to 4?
 ; In any case, it's the first four entries of the table that are used, where the last 4 would have made more sense
 ; The consequence of this is a 128 frames of this routine doing nothing
@@ -3230,13 +3230,13 @@ $A5:A196 A9 00 00    LDA #$0000             ;\
 $A5:A199 9F 78 EF 7E STA $7EEF78,x[$7E:EFB6];} Sprite object [X] instruction list pointer = 0
 $A5:A19D 80 E2       BRA $E2    [$A181]     ; Go to BRANCH_NEXT
 
-; Movement latency for each mini-Draygon sprite object (each mini-Draygon moves 80h bytes later in the movement table than the next)
+; Movement latency for each evir sprite object (each evir moves 80h bytes later in the movement table than the next)
 $A5:A19F             dw FC80, FD00, FD80, FE00,
                         FE80, FF00, FF80, 0000 ; <-- Unused
 }
 
 
-;;; $A1AF: Death sequence mini-Draygon subspeeds ;;;
+;;; $A1AF: Death sequence evir subspeeds ;;;
 {
 ;                        ________ X subspeed
 ;                       |     ___ Y subspeed
@@ -3250,7 +3250,7 @@ $A5:A1AF             dw D4DA,8E39, ; -0xFFFF * cos(68h * pi / 80h), 0xFFFF * sin
 }
 
 
-;;; $A1C7: Death sequence mini-Draygon spawn positions ;;;
+;;; $A1C7: Death sequence evir spawn positions ;;;
 {
 ;                        ________ X position
 ;                       |     ___ Y position
@@ -3264,7 +3264,7 @@ $A5:A1C7             dw FF59,00E5,
 }
 
 
-;;; $A1DF: Death sequence mini-Draygon angles ;;;
+;;; $A1DF: Death sequence evir angles ;;;
 {
 ; Used *only* to decide the sign of the X/Y subspeeds at $A1AF
 ; 0 = left(!), positive = clockwise
@@ -4504,7 +4504,7 @@ $A5:CE07             db 03,00, 03,00, 03,00, 02,FF, 03,00, 03,FF, 03,00, 02,FF,
 
 ;;; $DDC7: Unused Draygon fight intro dance data ;;;
 {
-; This section is read even though the mini-Draygon's are deleted at this point
+; This section is read even though the evirs are deleted at this point
 ; (deleted due to the 80,80 terminator, but the movement routine sets their position anyway)
 $A5:DDC7             db 01,FF, 02,FE, 01,FF, 02,FE, 01,FF, 01,FE, 02,FF, 01,FE,
                         02,FF, 01,FE, 01,FF, 02,FE, 01,FE, 01,FF, 02,FE, 01,FE,

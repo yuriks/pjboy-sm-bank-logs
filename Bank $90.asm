@@ -16201,7 +16201,7 @@ $90:F116 60          RTS                    ;} Return carry set
 ;     $8F:E309: Door ASM: reset elevatube on south exit
 ;     $A6:BC84: (Draygon releases Samus)
 ;     $A9:886C: Mother Brain body function - fake death - descent - unlock Samus
-;     $A9:BA5E: Mother Brain's body function - second phase - firing rainbow beam - finish firing rainbow beam
+;     $A9:BA5E: Mother Brain body function - second phase - firing rainbow beam - finish firing rainbow beam
 ;     $AA:E43D: Instruction - unlock Samus
 ;     $AA:E6F0: Instruction - release Samus
 
@@ -16490,7 +16490,7 @@ $90:F2D7 60          RTS                    ;} Return carry set
 ;;; $F2D8: Samus command Fh: enable timer handling ;;;
 {
 ; Called by:
-;     $A9:B2F9: Mother Brain's body function - third phase - death sequence - escape door is exploding, start escape timer
+;     $A9:B2F9: Mother Brain body function - third phase - death sequence - escape door is exploding, start escape timer
 $90:F2D8 A9 E6 E0    LDA #$E0E6             ;\
 $90:F2DB 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0E6 (handle timer)
 $90:F2DE 18          CLC                    ;\
@@ -16635,7 +16635,7 @@ $90:F38D 60          RTS                    ;} Return carry clear
 ;;; $F38E: Samus command 5: set up Samus for being drained - able to stand ;;;
 {
 ; Called by:
-;     $A9:B975: Mother Brain's body function - second phase - firing rainbow beam - start firing rainbow beam
+;     $A9:B975: Mother Brain body function - second phase - firing rainbow beam - start firing rainbow beam
 $90:F38E A9 9B E0    LDA #$E09B             ;\
 $90:F391 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E09B (handle letting Samus up from being drained)
 }
@@ -16664,7 +16664,7 @@ $90:F3BF 60          RTS                    ;} Return carry set
 ;;; $F3C0: Samus command 18h: set up Samus for being drained - unable to stand ;;;
 {
 ; Called by:
-;     $A9:B975: Mother Brain's body function - second phase - firing rainbow beam - start firing rainbow beam
+;     $A9:B975: Mother Brain body function - second phase - firing rainbow beam - start firing rainbow beam
 $90:F3C0 A9 C5 E0    LDA #$E0C5             ;\
 $90:F3C3 8D 5A 0A    STA $0A5A  [$7E:0A5A]  ;} Timer / Samus hack handler = $E0C5 (handle letting Samus fail to stand up from being drained)
 $90:F3C6 4C 94 F3    JMP $F394  [$90:F394]  ; Go to set up Samus for being drained

@@ -733,10 +733,10 @@ $A4:8BA2 85 B7       STA $B7    [$7E:00B7]  ;/
 $A4:8BA4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:8BA7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A4:8BAA 18          CLC                    ;|
-$A4:8BAB 7D E8 0F    ADC $0FE8,x[$7E:0FE8]  ;} Crocomire's tongue X position = [Crocomire X position] + [Crocomire's tongue X offset]
+$A4:8BAB 7D E8 0F    ADC $0FE8,x[$7E:0FE8]  ;} Crocomire tongue X position = [Crocomire X position] + [Crocomire tongue X offset]
 $A4:8BAE 9D BA 0F    STA $0FBA,x[$7E:0FBA]  ;/
 $A4:8BB1 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A4:8BB4 9D BE 0F    STA $0FBE,x[$7E:0FBE]  ;} Crocomire's tongue Y position = [Crocomire Y position]
+$A4:8BB4 9D BE 0F    STA $0FBE,x[$7E:0FBE]  ;} Crocomire tongue Y position = [Crocomire Y position]
 $A4:8BB7 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A4:8BBA CD 11 09    CMP $0911  [$7E:0911]  ;} If [Crocomire X position] >= [layer 1 X position]: go to BRANCH_RIGHT_OFF_SCREEN_CHECK
 $A4:8BBD 10 2F       BPL $2F    [$8BEE]     ;/
@@ -1105,11 +1105,11 @@ $A4:8EB3 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $A4:8EB6 09 00 04    ORA #$0400             ;} Set Crocomire as intangible
 $A4:8EB9 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A4:8EBC A9 FF 7F    LDA #$7FFF             ;\
-$A4:8EBF 9D D4 0F    STA $0FD4,x[$7E:0FD4]  ;} Crocomire's tongue instruction timer = 7FFFh
+$A4:8EBF 9D D4 0F    STA $0FD4,x[$7E:0FD4]  ;} Crocomire tongue instruction timer = 7FFFh
 $A4:8EC2 A9 62 BF    LDA #$BF62             ;\
-$A4:8EC5 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire's tongue instruction list pointer = $BF62 (sleep)
+$A4:8EC5 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire tongue instruction list pointer = $BF62 (sleep)
 $A4:8EC8 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A4:8ECB 09 00 01    ORA #$0100             ;} Set Crocomire's tongue to be invisible
+$A4:8ECB 09 00 01    ORA #$0100             ;} Set Crocomire tongue to be invisible
 $A4:8ECE 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A4:8ED1 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Crocomire Y velocity = 0.0
 $A4:8ED4 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Crocomire Y subposition = 0
@@ -1379,7 +1379,7 @@ $A4:90BD A9 01 01    LDA #$0101             ;\
 $A4:90C0 8F 24 CD 7E STA $7ECD24[$7E:CD24]  ;} Scrolls 4/5 = blue
 $A4:90C4 9C F7 05    STZ $05F7  [$7E:05F7]  ; Enable mini-map
 $A4:90C7 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A4:90CA 09 00 02    ORA #$0200             ;} Mark Crocomire's tongue for deletion
+$A4:90CA 09 00 02    ORA #$0200             ;} Mark Crocomire tongue for deletion
 $A4:90CD 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A4:90D0 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A4:90D4             dx 4E,03,B753          ;} Spawn PLM to clear Crocomire invisible wall at (4Eh, 3)
@@ -1710,18 +1710,18 @@ $A4:935C 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Crocomire instruction timer = 1
 $A4:935F A9 01 00    LDA #$0001             ;\
 $A4:9362 8D 1E 0E    STA $0E1E  [$7E:0E1E]  ;} Request enemy BG2 tilemap VRAM transfer
 $A4:9365 A9 98 BF    LDA #$BF98             ;\
-$A4:9368 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire's tongue instruction list pointer = $BF98 (melting)
+$A4:9368 9D D2 0F    STA $0FD2,x[$7E:0FD2]  ;} Crocomire tongue instruction list pointer = $BF98 (melting)
 $A4:936B A9 01 00    LDA #$0001             ;\
-$A4:936E 9D D4 0F    STA $0FD4,x[$7E:0FD4]  ;} Crocomire's tongue instruction timer = 1
+$A4:936E 9D D4 0F    STA $0FD4,x[$7E:0FD4]  ;} Crocomire tongue instruction timer = 1
 $A4:9371 BD C6 0F    LDA $0FC6,x[$7E:0FC6]  ;\
 $A4:9374 09 00 2C    ORA #$2C00             ;|
-$A4:9377 29 FF FE    AND #$FEFF             ;} Set Crocomire's tongue to process instructions, process whilst off-screen, as intangible, and visible
+$A4:9377 29 FF FE    AND #$FEFF             ;} Set Crocomire tongue to process instructions, process whilst off-screen, as intangible, and visible
 $A4:937A 9D C6 0F    STA $0FC6,x[$7E:0FC6]  ;/
 $A4:937D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
-$A4:9380 9D BA 0F    STA $0FBA,x[$7E:0FBA]  ;} Crocomire's tongue X position = [Crocomire X position]
+$A4:9380 9D BA 0F    STA $0FBA,x[$7E:0FBA]  ;} Crocomire tongue X position = [Crocomire X position]
 $A4:9383 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A4:9386 18          CLC                    ;|
-$A4:9387 69 10 00    ADC #$0010             ;} Crocomire's tongue Y position = [Crocomire Y position] + 10h
+$A4:9387 69 10 00    ADC #$0010             ;} Crocomire tongue Y position = [Crocomire Y position] + 10h
 $A4:938A 9D BE 0F    STA $0FBE,x[$7E:0FBE]  ;/
 $A4:938D A2 00 00    LDX #$0000             ;\
 $A4:9390 A9 38 03    LDA #$0338             ;|
@@ -1965,7 +1965,7 @@ $A4:950B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 2Dh, sound library 2,
 {
 $A4:950F AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A4:9512 38          SEC                    ;|
-$A4:9513 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2 (HDMA data table index)
+$A4:9513 E9 48 00    SBC #$0048             ;} X = ([Crocomire tongue Y position] - 48h) * 2 (HDMA data table index)
 $A4:9516 0A          ASL A                  ;|
 $A4:9517 AA          TAX                    ;/
 $A4:9518 A5 B7       LDA $B7    [$7E:00B7]
@@ -2096,7 +2096,7 @@ $A4:9609 8D 92 06    STA $0692  [$7E:0692]  ;/
 $A4:960C 64 12       STZ $12    [$7E:0012]  ; $12 = 0 (melting subpixel displacement)
 $A4:960E AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A4:9611 38          SEC                    ;|
-$A4:9612 E9 48 00    SBC #$0048             ;} X = ([Crocomire's tongue Y position] - 48h) * 2 (HDMA data table index)
+$A4:9612 E9 48 00    SBC #$0048             ;} X = ([Crocomire tongue Y position] - 48h) * 2 (HDMA data table index)
 $A4:9615 0A          ASL A                  ;|
 $A4:9616 AA          TAX                    ;/
 $A4:9617 AD 94 06    LDA $0694  [$7E:0694]  ;\
@@ -2353,7 +2353,7 @@ $A4:97FC 29 FF 7F    AND #$7FFF             ;|
 $A4:97FF 09 00 04    ORA #$0400             ;} Set Crocomire as intangible
 $A4:9802 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A4:9805 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A4:9808 09 00 05    ORA #$0500             ;} Set Crocomire's tongue as intangible and invisible
+$A4:9808 09 00 05    ORA #$0500             ;} Set Crocomire tongue as intangible and invisible
 $A4:980B 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A4:980E A9 04 00    LDA #$0004             ;\
 $A4:9811 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;} Crocomire rumble table index = 4
@@ -2652,7 +2652,7 @@ $A4:9A7C 30 1C       BMI $1C    [$9A9A]     ;} If [Crocomire X position] < 240h:
 $A4:9A7E A9 25 00    LDA #$0025             ;\
 $A4:9A81 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 25h, sound library 2, max queued sounds allowed = 6 (big explosion)
 $A4:9A85 AD 96 0F    LDA $0F96  [$7E:0F96]  ;\
-$A4:9A88 8D D6 0F    STA $0FD6  [$7E:0FD6]  ;} Crocomire's tongue palette index = [Crocomire palette index]
+$A4:9A88 8D D6 0F    STA $0FD6  [$7E:0FD6]  ;} Crocomire tongue palette index = [Crocomire palette index]
 $A4:9A8B A9 58 E1    LDA #$E158             ;\
 $A4:9A8E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Crocomire instruction list pointer = $E158 (skeleton - falls apart)
 $A4:9A91 A9 01 00    LDA #$0001             ;\
@@ -3918,7 +3918,7 @@ $A4:BE06             dx 0004,BFC4,
 }
 
 
-;;; $BE56: Instruction list - Crocomire's tongue - fight ;;;
+;;; $BE56: Instruction list - Crocomire tongue - fight ;;;
 {
 $A4:BE56             dx 0005,C65E,
                         0005,C668,
@@ -3928,7 +3928,7 @@ $A4:BE56             dx 0005,C65E,
 }
 
 
-;;; $BE6A: Unused. Instruction list - Crocomire's tongue - reversed version of fight ;;;
+;;; $BE6A: Unused. Instruction list - Crocomire tongue - reversed version of fight ;;;
 {
 $A4:BE6A             dx 0005,C67C,
                         0005,C672,
@@ -4087,7 +4087,7 @@ $A4:BF92             dx 7FFF,CAC4,
 }
 
 
-;;; $BF98: Instruction list - Crocomire's tongue - melting ;;;
+;;; $BF98: Instruction list - Crocomire tongue - melting ;;;
 {
 $A4:BF98             dx 0005,CACE,
                         0005,CAD8,
@@ -4732,7 +4732,7 @@ $A4:F673             dx 0001, 01FC,EE,0A40
 }
 
 
-;;; $F67A: Initialisation AI - enemy $DDFF (Crocomire's tongue) ;;;
+;;; $F67A: Initialisation AI - enemy $DDFF (Crocomire tongue) ;;;
 {
 $A4:F67A AE 9F 07    LDX $079F  [$7E:079F]  ;\
 $A4:F67D BF 28 D8 7E LDA $7ED828,x[$7E:D82A];|
@@ -4762,7 +4762,7 @@ $A4:F6BA 6B          RTL
 }
 
 
-;;; $F6BB: RTL. Main AI - enemy $DDFF (Crocomire's tongue) ;;;
+;;; $F6BB: RTL. Main AI - enemy $DDFF (Crocomire tongue) ;;;
 {
 $A4:F6BB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A4:F6BE 6B          RTL

@@ -4,37 +4,37 @@
 }
 
 
-;;; $8687: Palette - enemy $F353/$F4D3/$F653 (Old Tourian grey wall space pirate) ;;;
+;;; $8687: Palette - enemy $F353/$F4D3/$F653 (grey space pirate) ;;;
 {
 $B2:8687             dw 3800, 5755, 4A4F, 1CE4, 0C60, 56B2, 3E0D, 2D68, 2526, 5EBB, 3DB3, 292E, 1486, 033B, 0216, 0113
 }
 
 
-;;; $86A7: Palette - enemy $F393 (Brinstar green wall space pirate) ;;;
+;;; $86A7: Palette - enemy $F393/$F513/$F693 (green space pirate) ;;;
 {
 $B2:86A7             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 5EBB, 3DB3, 292E, 1486, 033B, 0216, 0113
 }
 
 
-;;; $86C7: Palette - enemy $F453 (Maridia magenta wall space pirate) ;;;
+;;; $86C7: Palette - enemy $F453/$F5D3/$F753 (magenta space pirate) ;;;
 {
 $B2:86C7             dw 3800, 4EBF, 4D9E, 1009, 0C04, 49DE, 555D, 30B0, 1C4D, 5EBB, 3DB3, 292E, 1486, 033B, 0216, 0113
 }
 
 
-;;; $86E7: Palette - enemy $F3D3 (Norfair red wall space pirate) ;;;
+;;; $86E7: Palette - enemy $F3D3/$F553/$F6D3 (red space pirate) ;;;
 {
 $B2:86E7             dw 3800, 02FD, 013E, 006C, 0066, 021E, 005F, 0059, 0073, 5EBB, 3DB3, 292E, 1486, 033B, 0216, 0113
 }
 
 
-;;; $8707: Palette - enemy $F493 (escape silver wall space pirate) ;;;
+;;; $8707: Palette - enemy $F493/$F593/$F613/$F793 (silver space pirate / gold ninja space pirate) ;;;
 {
 $B2:8707             dw 3800, 6BFF, 4ED6, 14A4, 0420, 5B7B, 3E52, 31CD, 2149, 5EBB, 3DB3, 292E, 1486, 033B, 0216, 0113
 }
 
 
-;;; $8727: Palette - enemy $F413 (Lower Norfair gold wall space pirate) ;;;
+;;; $8727: Palette - enemy $F413/$F713 (gold non-ninja space pirate) ;;;
 {
 $B2:8727             dw 3800, 4BBE, 06B9, 00EA, 0065, 173A, 0276, 01F2, 014D, 5EBB, 3DB3, 292E, 1486, 033B, 0216, 0113
 }
@@ -42,11 +42,12 @@ $B2:8727             dw 3800, 4BBE, 06B9, 00EA, 0065, 173A, 0276, 01F2, 014D, 5E
 
 ;;; $8747: Unused. Palette ;;;
 {
+; Clone of $B707
 $B2:8747             dw 3800, 6BFF, 4ED6, 14A4, 0420, 5B7B, 3E52, 31CD, 2149, 5EBB, 3DB3, 292E, 1486, 033B, 0216, 0113
 }
 
 
-;;; $8767: Power bomb reaction - enemy $F353/$F4D3/$F513/$F553/$F593/$F5D3/$F613/$F653/$F693/$F6D3/$F713/$F753/$F793 (Old Tourian grey wall space pirate / ninja space pirates / walking space pirates) ;;;
+;;; $8767: Power bomb reaction - enemy $F353/$F4D3/$F513/$F553/$F593/$F5D3/$F613/$F653/$F693/$F6D3/$F713/$F753/$F793 (grey wall space pirate / ninja space pirates / walking space pirates) ;;;
 {
 $B2:8767 22 97 A5 A0 JSL $A0A597[$A0:A597]  ; Normal enemy power bomb AI
 $B2:876B 6B          RTL
@@ -68,7 +69,7 @@ $B2:8778 6B          RTL
 {
 $B2:8779 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:877C BD 78 0F    LDA $0F78,x[$7E:0FB8]  ;\
-$B2:877F C9 93 F5    CMP #$F593             ;} If Lower Norfair pirate: go to normal pirate shot
+$B2:877F C9 93 F5    CMP #$F593             ;} If gold ninja space pirate: go to normal pirate shot
 $B2:8782 F0 05       BEQ $05    [$8789]     ;/
 $B2:8784 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $B2:8788 6B          RTL
@@ -87,12 +88,12 @@ $B2:879E BD 8C 0F    LDA $0F8C,x[$7E:100C]  ;\
 $B2:87A1 D0 19       BNE $19    [$87BC]     ;} If [enemy health] != 0: return
 $B2:87A3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:87A6 BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
-$B2:87A9 C9 93 F5    CMP #$F593             ;} If Lower Norfair pirate:
+$B2:87A9 C9 93 F5    CMP #$F593             ;} If gold ninja space pirate:
 $B2:87AC D0 0F       BNE $0F    [$87BD]     ;/
 $B2:87AE 9E AA 0F    STZ $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = 0
 $B2:87B1 A9 04 00    LDA #$0004             ; A = 4 (big explosion)
 $B2:87B4 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
-$B2:87B8 22 2B B9 A0 JSL $A0B92B[$A0:B92B]  ; Lower Norfair space pirate death item drop routine
+$B2:87B8 22 2B B9 A0 JSL $A0B92B[$A0:B92B]  ; Gold ninja space pirate death item drop routine
 $B2:87BC 6B          RTL                    ; Return
 
 $B2:87BD 9E AA 0F    STZ $0FAA,x[$7E:102A]  ; Enemy $0FAA = 0
@@ -102,12 +103,12 @@ $B2:87C7 6B          RTL
 }
 
 
-;;; $87C8: Enemy shot - space pirate - Lower Norfair pirate is vulnerable ;;;
+;;; $87C8: Enemy shot - space pirate - gold ninja space pirate is vulnerable ;;;
 {
 ; Note how the vulnerability check here doesn't take beam charge into account
 $B2:87C8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:87CB BD 78 0F    LDA $0F78,x[$7E:0FF8]  ;\
-$B2:87CE C9 93 F5    CMP #$F593             ;} If not Lower Norfair pirate:
+$B2:87CE C9 93 F5    CMP #$F593             ;} If not gold ninja space pirate:
 $B2:87D1 F0 03       BEQ $03    [$87D6]     ;/
 $B2:87D3 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
@@ -165,11 +166,11 @@ $B2:883C 80 DB       BRA $DB    [$8819]     ; Go to normal pirate shot
 }
 
 
-;;; $883E: Enemy shot - space pirate - Lower Norfair pirate is invincible ;;;
+;;; $883E: Enemy shot - space pirate - gold ninja space pirate is invincible ;;;
 {
 $B2:883E AE 54 0E    LDX $0E54  [$7E:0E54]
 $B2:8841 BD 78 0F    LDA $0F78,x[$7E:0F78]  ;\
-$B2:8844 C9 93 F5    CMP #$F593             ;} If not Lower Norfair pirate:
+$B2:8844 C9 93 F5    CMP #$F593             ;} If not gold ninja space pirate:
 $B2:8847 F0 03       BEQ $03    [$884C]     ;/
 $B2:8849 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 

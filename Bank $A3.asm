@@ -220,9 +220,9 @@ $A3:88DA             dx 0004, 01F8,08,612E, 0000,08,612D, 81F0,F8,610E, 8000,F8,
 }
 
 
-;;; $88F0..8C0E: Metal skree ;;;
+;;; $88F0..8C0E: Metaree ;;;
 {
-;;; $88F0: Palette - enemy $D67F (metal skree) ;;;
+;;; $88F0: Palette - enemy $D67F (metaree) ;;;
 {
 $A3:88F0             dw 3800, 4D1F, 38B6, 246E, 1448, 47FF, 2EFA, 1616, 0132, 6F39, 5A73, 41AD, 2D08, 1863, 7FFF, 0041
 }
@@ -266,7 +266,7 @@ $A3:8946             dx 817D,       ; Disable off-screen processing
 }
 
 
-;;; $894E: Metal skree instruction list pointers ;;;
+;;; $894E: Metaree instruction list pointers ;;;
 {
 $A3:894E             dw 8910, 8924, 8930, 8946
 }
@@ -281,7 +281,7 @@ $A3:895F 6B          RTL
 }
 
 
-;;; $8960: Initialisation AI - enemy $D67F (metaree, metal skree) ;;;
+;;; $8960: Initialisation AI - enemy $D67F (metaree) ;;;
 {
 $A3:8960 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8963 9E AC 0F    STZ $0FAC,x[$7E:102C]
@@ -295,14 +295,14 @@ $A3:8978 6B          RTL
 }
 
 
-;;; $8979: Main AI - enemy $D67F (metal skree) ;;;
+;;; $8979: Main AI - enemy $D67F (metaree) ;;;
 {
 $A3:8979 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:897C 7C AA 0F    JMP ($0FAA,x)[$A3:8987]
 }
 
 
-;;; $897F: Metal skree function pointers ;;;
+;;; $897F: Metaree function pointers ;;;
 {
 $A3:897F             dw 8987, 89D4, 89F3, 8A5C
 }
@@ -430,13 +430,13 @@ $A3:8A67 C9 08 00    CMP #$0008
 $A3:8A6A D0 1F       BNE $1F    [$8A8B]
 $A3:8A6C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8A6F A0 FA 8B    LDY #$8BFA             ;\
-$A3:8A72 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - down-right enemy projectile
+$A3:8A72 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - down-right enemy projectile
 $A3:8A76 A0 08 8C    LDY #$8C08             ;\
-$A3:8A79 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - up-right enemy projectile
+$A3:8A79 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - up-right enemy projectile
 $A3:8A7D A0 16 8C    LDY #$8C16             ;\
-$A3:8A80 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - down-left enemy projectile
+$A3:8A80 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - down-left enemy projectile
 $A3:8A84 A0 24 8C    LDY #$8C24             ;\
-$A3:8A87 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - up-left enemy projectile
+$A3:8A87 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - up-left enemy projectile
 
 $A3:8A8B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8A8E FE 7E 0F    INC $0F7E,x[$7E:0FFE]
@@ -493,32 +493,32 @@ $A3:8B0E 6B          RTL
 }
 
 
-;;; $8B0F: Enemy shot - enemy $D67F (metal skree) ;;;
+;;; $8B0F: Enemy shot - enemy $D67F (metaree) ;;;
 {
 $A3:8B0F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B12 BD 98 0F    LDA $0F98,x[$7E:1118]  ;\
-$A3:8B15 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;} Metal skree particle VRAM tiles index = [enemy VRAM tiles index]
+$A3:8B15 8D 2A 0E    STA $0E2A  [$7E:0E2A]  ;} Metaree particle VRAM tiles index = [enemy VRAM tiles index]
 $A3:8B18 BD 96 0F    LDA $0F96,x[$7E:1116]  ;\
-$A3:8B1B 8D 2C 0E    STA $0E2C  [$7E:0E2C]  ;} Metal skree particle palette index = [enemy palette index]
+$A3:8B1B 8D 2C 0E    STA $0E2C  [$7E:0E2C]  ;} Metaree particle palette index = [enemy palette index]
 $A3:8B1E 22 2D 80 A3 JSL $A3802D[$A3:802D]  ; Normal enemy shot AI
 $A3:8B22 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B25 BD 8C 0F    LDA $0F8C,x[$7E:110C]  ;\
 $A3:8B28 D0 3A       BNE $3A    [$8B64]     ;} If [enemy health] = 0:
 $A3:8B2A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B2D AD 2A 0E    LDA $0E2A  [$7E:0E2A]  ;\
-$A3:8B30 9D 98 0F    STA $0F98,x            ;} Enemy VRAM tiles index = [metal skree particle VRAM tiles index]
+$A3:8B30 9D 98 0F    STA $0F98,x            ;} Enemy VRAM tiles index = [metaree particle VRAM tiles index]
 $A3:8B33 AD 2C 0E    LDA $0E2C  [$7E:0E2C]  ;\
-$A3:8B36 9D 96 0F    STA $0F96,x            ;} Enemy palette index = [metal skree particle palette index]
+$A3:8B36 9D 96 0F    STA $0F96,x            ;} Enemy palette index = [metaree particle palette index]
 $A3:8B39 BD A8 0F    LDA $0FA8,x            ; A = [enemy $0FA8] <-- I think zero'd by enemy death routine, parameter is unused anyway
 $A3:8B3C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B3F A0 FA 8B    LDY #$8BFA             ;\
-$A3:8B42 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - down-right enemy projectile
+$A3:8B42 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - down-right enemy projectile
 $A3:8B46 A0 08 8C    LDY #$8C08             ;\
-$A3:8B49 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - up-right enemy projectile
+$A3:8B49 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - up-right enemy projectile
 $A3:8B4D A0 16 8C    LDY #$8C16             ;\
-$A3:8B50 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - down-left enemy projectile
+$A3:8B50 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - down-left enemy projectile
 $A3:8B54 A0 24 8C    LDY #$8C24             ;\
-$A3:8B57 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metal skree particle - up-left enemy projectile
+$A3:8B57 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - up-left enemy projectile
 $A3:8B5B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B5E 9E 98 0F    STZ $0F98,x            ; Enemy VRAM tiles index = 0
 $A3:8B61 9E 96 0F    STZ $0F96,x            ; Enemy palette index = 0
@@ -527,7 +527,7 @@ $A3:8B64 6B          RTL
 }
 
 
-;;; $8B65: Metal skree spritemaps ;;;
+;;; $8B65: Metaree spritemaps ;;;
 {
 $A3:8B65             dx 0009, 0004,F5,6122, 0004,FD,6123, 0004,05,6124, 01F4,05,2124, 01F4,FD,2123, 01F4,F5,2122, 0000,03,2121, 01F8,03,2120, 81F8,F3,2100
 $A3:8B94             dx 0007, 0005,03,6127, 01F3,03,2127, 0005,FB,6126, 01F3,FB,2126, 0005,F3,6125, 01F3,F3,2125, 81F8,F3,2102
@@ -875,9 +875,9 @@ $A3:8FF9             dx 0003, 0001,F6,311F, 01F7,F6,311E, 81F8,F8,310C
 }
 
 
-;;; $900A..94D5: Maridia fish ;;;
+;;; $900A..94D5: Skultera ;;;
 {
-;;; $900A: Palette - enemy $D6FF (Maridia fish) ;;;
+;;; $900A: Palette - enemy $D6FF (skultera) ;;;
 {
 $A3:900A             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 241F, 1C17, 142F, 0C47, 03FF, 0237, 00D1
 }
@@ -960,7 +960,7 @@ $A3:90B4 6B          RTL
 }
 
 
-;;; $90B5: Initialisation AI - enemy $D6FF (Maridia fish) ;;;
+;;; $90B5: Initialisation AI - enemy $D6FF (skultera) ;;;
 {
 $A3:90B5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:90B8 A9 2A 90    LDA #$902A
@@ -1007,7 +1007,7 @@ $A3:912A 6B          RTL
 }
 
 
-;;; $912B: Main AI - enemy $D6FF (Maridia fish) ;;;
+;;; $912B: Main AI - enemy $D6FF (skultera) ;;;
 {
 $A3:912B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:912E FC A8 0F    JSR ($0FA8,x)[$A3:9132]
@@ -1173,7 +1173,7 @@ $A3:9289 6B          RTL
 }
 
 
-;;; $928A: Maridia fish spritemaps ;;;
+;;; $928A: Skultera spritemaps ;;;
 {
 $A3:928A             dx 0005, C3F2,00,2104, C3F2,F0,2100, 01FE,FD,2120, 0003,FE,2121, 0008,FE,2123
 $A3:92A5             dx 0005, C3F2,00,2102, C3F2,F0,2100, 01FE,FE,2121, 0003,00,2122, 0008,FE,2124
@@ -1201,7 +1201,7 @@ $A3:948F             dx 0005, C3F1,00,2102, C3F1,F0,2100, 01FD,00,2122, 0002,FD,
 
 
 
-;;; $94AA: Unused. Maridia fish spritemap pointers ;;;
+;;; $94AA: Unused. Skultera spritemap pointers ;;;
 {
 $A3:94AA             dw 928A, 92A5, 92C0, 92DB, 92F6, 9311, 9327, 933D, 934E, 9364, 937F, 939A, 93B5, 93D0, 93EB, 9406,
                         9421, 9437, 944D, 945E, 9474, 948F
@@ -1398,15 +1398,15 @@ $A3:9645             dx 0004, 0000,FC,6A6E, 0008,FC,6A6D, 01F8,FC,2A6E, 01F0,FC,
 }
 
 
-;;; $965B..980A: Crab ;;;
+;;; $965B..980A: Sciser ;;;
 {
-;;; $965B: Palette - enemy $D77F (crab) ;;;
+;;; $965B: Palette - enemy $D77F (sciser) ;;;
 {
 $A3:965B             dw 3800, 3EDF, 0018, 000F, 0005, 01DD, 0118, 0093, 002F, 7FE0, 7DA0, 48E0, 30A0, 3BE0, 2680, 1580
 }
 
 
-;;; $967B: Instruction list - crab - upside right ;;;
+;;; $967B: Instruction list - sciser - upside right ;;;
 {
 $A3:967B             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:967F             dw 0008,9745,
@@ -1417,7 +1417,7 @@ $A3:967F             dw 0008,9745,
 }
 
 
-;;; $9693: Instruction list - crab - upside left ;;;
+;;; $9693: Instruction list - sciser - upside left ;;;
 {
 $A3:9693             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:9697             dw 0008,97C9,
@@ -1428,7 +1428,7 @@ $A3:9697             dw 0008,97C9,
 }
 
 
-;;; $96AB: Instruction list - crab - upside down ;;;
+;;; $96AB: Instruction list - sciser - upside down ;;;
 {
 $A3:96AB             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:96AF             dw 0008,9787,
@@ -1439,7 +1439,7 @@ $A3:96AF             dw 0008,9787,
 }
 
 
-;;; $96C3: Instruction list - crab - upside up ;;;
+;;; $96C3: Instruction list - sciser - upside up ;;;
 {
 $A3:96C3             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:96C7             dw 0008,9703,
@@ -1450,7 +1450,7 @@ $A3:96C7             dw 0008,9703,
 }
 
 
-;;; $96DB: Crab initial instruction list pointers ;;;
+;;; $96DB: Sciser initial instruction list pointers ;;;
 {
 ; Indexed by [enemy initialisation parameter] * 2
 $A3:96DB             dw 967B, ; 0: Upside right
@@ -1460,7 +1460,7 @@ $A3:96DB             dw 967B, ; 0: Upside right
 }
 
 
-;;; $96E3: Initialisation AI - enemy $D77F (crab) ;;;
+;;; $96E3: Initialisation AI - enemy $D77F (sciser) ;;;
 {
 $A3:96E3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:96E6 A9 08 00    LDA #$0008             ;\
@@ -1494,7 +1494,7 @@ $A3:9702 6B          RTL
 }
 
 
-;;; $9703: Crab spritemaps ;;;
+;;; $9703: Sciser spritemaps ;;;
 {
 ; Upside up
 $A3:9703             dx 0004, 81FF,F3,6106, 81F3,F4,2106, 8000,FC,6104, 81F0,FC,2100
@@ -1519,9 +1519,9 @@ $A3:97F5             dx 0004, 81F4,FD,E10E, 81F3,F1,610E, 81FC,00,E108, 81FC,F0,
 }
 
 
-;;; $980B..9B7A: Slug ;;;
+;;; $980B..9B7A: Zero ;;;
 {
-;;; $980B: Palette - enemy $D7BF (slug) ;;;
+;;; $980B: Palette - enemy $D7BF (zero) ;;;
 {
 $A3:980B             dw 3800, 57F5, 4AEF, 1182, 00C0, 5752, 3EAD, 2E08, 25C6, 03FD, 02D5, 020F, 0149, 3EDF, 0018, 000F
 }
@@ -1529,7 +1529,7 @@ $A3:980B             dw 3800, 57F5, 4AEF, 1182, 00C0, 5752, 3EAD, 2E08, 25C6, 03
 
 ;;; $982B..992A: Instruction lists ;;;
 {
-;;; $982B: Unused. Instruction list - slug - upside right - facing up ;;;
+;;; $982B: Unused. Instruction list - zero - upside right - facing up ;;;
 {
 $A3:982B             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:982F             dw 0004,9AAF,
@@ -1542,7 +1542,7 @@ $A3:982F             dw 0004,9AAF,
 }
 
 
-;;; $984B: Instruction list - slug - upside right - facing down ;;;
+;;; $984B: Instruction list - zero - upside right - facing down ;;;
 {
 $A3:984B             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:984F             dw 0004,9B37,
@@ -1555,7 +1555,7 @@ $A3:984F             dw 0004,9B37,
 }
 
 
-;;; $986B: Unused. Instruction list - slug - upside left - facing down ;;;
+;;; $986B: Unused. Instruction list - zero - upside left - facing down ;;;
 {
 $A3:986B             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:986F             dw 0004,9A27,
@@ -1568,7 +1568,7 @@ $A3:986F             dw 0004,9A27,
 }
 
 
-;;; $988B: Instruction list - slug - upside left - facing up ;;;
+;;; $988B: Instruction list - zero - upside left - facing up ;;;
 {
 $A3:988B             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:988F             dw 0004,999F,
@@ -1581,7 +1581,7 @@ $A3:988F             dw 0004,999F,
 }
 
 
-;;; $98AB: Instruction list - slug - upside down - facing left ;;;
+;;; $98AB: Instruction list - zero - upside down - facing left ;;;
 {
 $A3:98AB             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:98AF             dw 0004,99E3,
@@ -1594,7 +1594,7 @@ $A3:98AF             dw 0004,99E3,
 }
 
 
-;;; $98CB: Unused. Instruction list - slug - upside up - facing left ;;;
+;;; $98CB: Unused. Instruction list - zero - upside up - facing left ;;;
 {
 $A3:98CB             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:98CF             dw 0004,9A6B,
@@ -1607,7 +1607,7 @@ $A3:98CF             dw 0004,9A6B,
 }
 
 
-;;; $98EB: Unused. Instruction list - slug - upside down - facing right ;;;
+;;; $98EB: Unused. Instruction list - zero - upside down - facing right ;;;
 {
 $A3:98EB             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:98EF             dw 0004,9AF3,
@@ -1620,7 +1620,7 @@ $A3:98EF             dw 0004,9AF3,
 }
 
 
-;;; $990B: Instruction list - slug - upside up - facing right ;;;
+;;; $990B: Instruction list - zero - upside up - facing right ;;;
 {
 $A3:990B             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:990F             dw 0004,995B,
@@ -1634,7 +1634,7 @@ $A3:990F             dw 0004,995B,
 }
 
 
-;;; $992B: Slug initial instruction list pointers ;;;
+;;; $992B: Zero initial instruction list pointers ;;;
 {
 $A3:992B             dw 984B, ; 0: Upside right
                         988B, ; 1: Upside left
@@ -1647,7 +1647,7 @@ $A3:992B             dw 984B, ; 0: Upside right
 }
 
 
-;;; $993B: Initialisation AI - enemy $D7BF (slug) ;;;
+;;; $993B: Initialisation AI - enemy $D7BF (zero) ;;;
 {
 $A3:993B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:993E A9 0A 00    LDA #$000A             ;\
@@ -1681,7 +1681,7 @@ $A3:995A 6B          RTL
 }
 
 
-;;; $995B: Slug spritemaps ;;;
+;;; $995B: Zero spritemaps ;;;
 {
 ; Upside up - facing right
 $A3:995B             dx 0003, 8000,F8,2104, 81FA,F8,2102, 81F1,F8,2100
@@ -1736,13 +1736,13 @@ $A3:9B6A             dx 0003, 81F8,EE,A10A, 81F8,F6,A108, 81F8,02,A106
 
 ;;; $9B7B..A050: Platforms ;;;
 {
-;;; $9B7B: Palette - enemy $D7FF (fast-moving slowly-sinking platform) ;;;
+;;; $9B7B: Palette - enemy $D7FF (tripper) ;;;
 {
 $A3:9B7B             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 7F5A, 7EC0, 6DE0, 54E0, 03FF, 0237, 00D1
 }
 
 
-;;; $9B9B: Palette - enemy $D83F (platform that falls with Samus weight) ;;;
+;;; $9B9B: Palette - enemy $D83F (suspensor platform) ;;;
 {
 $A3:9B9B             dw 3800, 7F5A, 3BE0, 2680, 0920, 4F5A, 36B5, 2610, 1DCE, 5294, 39CE, 2108, 1084, 033B, 0216, 0113
 }
@@ -1881,7 +1881,7 @@ $A3:9C97             dw 9D5E, 9D83, 9DA8, 9DE4
 }
 
 
-;;; $9C9F: Initialisation AI - enemy $D83F (platform that falls with Samus weight) ;;;
+;;; $9C9F: Initialisation AI - enemy $D83F (suspensor platform) ;;;
 {
 $A3:9C9F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:9CA2 A9 FF FF    LDA #$FFFF
@@ -1895,7 +1895,7 @@ $A3:9CB8 80 12       BRA $12    [$9CCC]
 }
 
 
-;;; $9CBA: Initialisation AI - enemy $D7FF (fast-moving slowly-sinking platform) ;;;
+;;; $9CBA: Initialisation AI - enemy $D7FF (tripper) ;;;
 {
 $A3:9CBA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:9CBD A0 3F 9C    LDY #$9C3F
@@ -1939,7 +1939,7 @@ $A3:9D15 6B          RTL
 }
 
 
-;;; $9D16: Main AI - enemy $D7FF/$D83F (fast-moving slowly-sinking platform / platform that falls with Samus weight) ;;;
+;;; $9D16: Main AI - enemy $D7FF/$D83F (tripper / suspensor platform) ;;;
 {
 $A3:9D16 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:9D19 A9 00 00    LDA #$0000
@@ -2206,7 +2206,7 @@ $A3:9F07 6B          RTL
 }
 
 
-;;; $9F08: Enemy shot - enemy $D7FF (fast-moving slowly-sinking platform) ;;;
+;;; $9F08: Enemy shot - enemy $D7FF (tripper) ;;;
 {
 $A3:9F08 22 2D 80 A3 JSL $A3802D[$A3:802D]
 $A3:9F0C AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4285,9 +4285,9 @@ $A3:B368             dx 000B, C3F8,04,A100, C20B,00,E104, C3E5,00,A104, 0007,08,
 }
 
 
-;;; $B3A1..B5B2: Maridia refill candy ;;;
+;;; $B3A1..B5B2: Zoa ;;;
 {
-;;; $B3A1: Palette - enemy $DA7F (Maridia refill candy) ;;;
+;;; $B3A1: Palette - enemy $DA7F (zoa) ;;;
 {
 $A3:B3A1             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 1D79, 1933, 150E, 10C8, 3BE0, 2680, 1580
 }
@@ -4335,13 +4335,13 @@ $A3:B3FD             dx 0004,B5A5,
 }
 
 
-;;; $B40D: Maridia refill candy instruction list pointers ;;;
+;;; $B40D: Zoa instruction list pointers ;;;
 {
 $A3:B40D             dw B3C1, B3D7, B3E7, B3FD
 }
 
 
-;;; $B415: Maridia refill candy X speed table ;;;
+;;; $B415: Zoa X speed table ;;;
 {
 ; Indexed by enemy $7E:7800
 ;                        ________ X speed
@@ -4382,7 +4382,7 @@ $A3:B449 6B          RTL
 }
 
 
-;;; $B44A: Initialisation AI - enemy $DA7F (Maridia refill candy) ;;;
+;;; $B44A: Initialisation AI - enemy $DA7F (zoa) ;;;
 {
 $A3:B44A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B44D A9 82 B4    LDA #$B482             ;\
@@ -4404,14 +4404,14 @@ $A3:B47B 6B          RTL
 }
 
 
-;;; $B47C: Main AI - enemy $DA7F (Maridia refill candy) ;;;
+;;; $B47C: Main AI - enemy $DA7F (zoa) ;;;
 {
 $A3:B47C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B47F 7C B4 0F    JMP ($0FB4,x)[$A3:B482]; Go to [enemy function]
 }
 
 
-;;; $B482: Maridia refill candy function - wait for Samus to get near ;;;
+;;; $B482: Zoa function - wait for Samus to get near ;;;
 {
 $A3:B482 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B485 A9 80 00    LDA #$0080             ;\
@@ -4424,7 +4424,7 @@ $A3:B497 A0 03 00    LDY #$0003             ; Enemy instruction list table index
 
 $A3:B49A 98          TYA
 $A3:B49B 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A3:B49E 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
+$A3:B49E 20 37 B5    JSR $B537  [$A3:B537]  ; Set zoa instruction list
 $A3:B4A1 A9 A8 B4    LDA #$B4A8             ;\
 $A3:B4A4 9D B4 0F    STA $0FB4,x[$7E:0FF4]  ;} Enemy function = $B4A8 (rising)
 
@@ -4432,7 +4432,7 @@ $A3:B4A7 6B          RTL
 }
 
 
-;;; $B4A8: Maridia refill candy function - rising ;;;
+;;; $B4A8: Zoa function - rising ;;;
 {
 $A3:B4A8 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A3:B4AB 29 FF FE    AND #$FEFF             ;} Set enemy to be visible
@@ -4440,7 +4440,7 @@ $A3:B4AE 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
 $A3:B4B1 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
 $A3:B4B5 30 10       BMI $10    [$B4C7]     ;} If [Samus Y position] >= [enemy Y position]:
 $A3:B4B7 DE AE 0F    DEC $0FAE,x[$7E:0FEE]  ; Enemy instruction list table index -= 1 (rising -> shooting)
-$A3:B4BA 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
+$A3:B4BA 20 37 B5    JSR $B537  [$A3:B537]  ; Set zoa instruction list
 $A3:B4BD 9E B2 0F    STZ $0FB2,x[$7E:0FF2]
 $A3:B4C0 A9 D6 B4    LDA #$B4D6             ;\
 $A3:B4C3 9D B4 0F    STA $0FB4,x[$7E:0FF4]  ;} Enemy function = $B4D6 (shooting)
@@ -4455,7 +4455,7 @@ $A3:B4D5 6B          RTL
 }
 
 
-;;; $B4D6: Maridia refill candy function - shooting ;;;
+;;; $B4D6: Zoa function - shooting ;;;
 {
 $A3:B4D6 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
 $A3:B4D9 F0 1D       BEQ $1D    [$B4F8]     ;} If [enemy direction] = left:
@@ -4468,7 +4468,7 @@ $A3:B4E8 85 12       STA $12    [$7E:0012]  ;|
 $A3:B4EA 22 6C AF A0 JSL $A0AF6C[$A0:AF6C]  ;/
 $A3:B4EE 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A3:B4F2 D0 21       BNE $21    [$B515]     ;} If enemy centre is off-screen: go to BRANCH_OFF_SCREEN
-$A3:B4F4 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
+$A3:B4F4 20 37 B5    JSR $B537  [$A3:B537]  ; Set zoa instruction list
 $A3:B4F7 6B          RTL                    ; Return
 
 $A3:B4F8 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
@@ -4480,7 +4480,7 @@ $A3:B505 85 12       STA $12    [$7E:0012]  ;|
 $A3:B507 22 5A AF A0 JSL $A0AF5A[$A0:AF5A]  ;/
 $A3:B50B 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A3:B50F D0 04       BNE $04    [$B515]     ;} If enemy centre is off-screen: go to BRANCH_OFF_SCREEN
-$A3:B511 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
+$A3:B511 20 37 B5    JSR $B537  [$A3:B537]  ; Set zoa instruction list
 $A3:B514 6B          RTL                    ; Return
 
 ; BRANCH_OFF_SCREEN
@@ -4492,14 +4492,14 @@ $A3:B521 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;} Enemy X position = [enemy spawn X
 $A3:B524 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:B527 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;} Enemy Y position = [enemy spawn Y position]
 $A3:B52A 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ; Enemy instruction list table index = 0 (facing left - shooting)
-$A3:B52D 20 37 B5    JSR $B537  [$A3:B537]  ; Set Maridia refill candy instruction list
+$A3:B52D 20 37 B5    JSR $B537  [$A3:B537]  ; Set zoa instruction list
 $A3:B530 A9 82 B4    LDA #$B482             ;\
 $A3:B533 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;} Enemy function = $B482 (wait for Samus to get near)
 $A3:B536 6B          RTL
 }
 
 
-;;; $B537: Set Maridia refill candy instruction list ;;;
+;;; $B537: Set zoa instruction list ;;;
 {
 $A3:B537 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B53A BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
@@ -4532,7 +4532,7 @@ $A3:B55E 6B          RTL
 }
 
 
-;;; $B55F: Maridia refill candy spritemaps ;;;
+;;; $B55F: Zoa spritemaps ;;;
 {
 $A3:B55F             dx 0001, 81F8,F8,2100
 $A3:B566             dx 0001, 81F8,F8,2102
@@ -4550,42 +4550,42 @@ $A3:B5AC             dx 0001, 81F8,F8,610A
 }
 
 
-;;; $B5B3..B6F8: Norfair slow fireball ;;;
+;;; $B5B3..B6F8: Viola ;;;
 {
-;;; $B5B3: Palette - enemy $DABF (Norfair slow fireball) ;;;
+;;; $B5B3: Palette - enemy $DABF (viola) ;;;
 {
 $A3:B5B3             dw 3800, 7FFF, 56E0, 3180, 18C0, 6BC0, 5EC0, 4A20, 35A0, 241F, 1C17, 142F, 0C47, 03E0, 02A0, 0140
 }
 
 
-;;; $B5D3: Instruction list - Norfair slow fireball - upside down ;;;
+;;; $B5D3: Instruction list - viola - upside down ;;;
 {
 $A3:B5D3             dw E660,E7F2,  ; Enemy function = crawling horizontally
                         80ED,B5EF   ; Go to $B5EF (normal)
 }
 
 
-;;; $B5DB: Instruction list - Norfair slow fireball - upside up ;;;
+;;; $B5DB: Instruction list - viola - upside up ;;;
 {
 $A3:B5DB             dw E660,E7F2,  ; Enemy function = crawling horizontally
                         80ED,B5EF   ; Go to $B5EF (normal)
 }
 
 
-;;; $B5E3: Instruction list - Norfair slow fireball - upside right ;;;
+;;; $B5E3: Instruction list - viola - upside right ;;;
 {
 $A3:B5E3             dw E660,E6C8,  ; Enemy function = crawling vertically
                         80ED,B5EF   ; Go to $B5EF (normal)
 }
 
 
-;;; $B5EB: Instruction list - Norfair slow fireball - upside left ;;;
+;;; $B5EB: Instruction list - viola - upside left ;;;
 {
 $A3:B5EB             dw E660,E6C8   ; Enemy function = crawling vertically
 }
 
 
-;;; $B5EF: Instruction list - Norfair slow fireball - normal ;;;
+;;; $B5EF: Instruction list - viola - normal ;;;
 {
 $A3:B5EF             dw 000A,B689,
                         000A,B690,
@@ -4605,7 +4605,7 @@ $A3:B5EF             dw 000A,B689,
 }
 
 
-;;; $B62B: Unused. Instruction list - Norfair slow fireball - X flipped ;;;
+;;; $B62B: Unused. Instruction list - viola - X flipped ;;;
 {
 $A3:B62B             dw 0006,B6C1,
                         0006,B6C8,
@@ -4625,7 +4625,7 @@ $A3:B62B             dw 0006,B6C1,
 }
 
 
-;;; $B667: Norfair slow fireball initial instruction list pointers ;;;
+;;; $B667: Viola initial instruction list pointers ;;;
 {
 ; Indexed by [enemy initialisation parameter] * 2
 $A3:B667             dw B5E3, ; 0: Upside right
@@ -4635,7 +4635,7 @@ $A3:B667             dw B5E3, ; 0: Upside right
 }
 
 
-;;; $B66F: Initialisation AI - enemy $DABF (Norfair slow fireball) ;;;
+;;; $B66F: Initialisation AI - enemy $DABF (viola) ;;;
 {
 $A3:B66F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:B672 A9 06 00    LDA #$0006             ;\
@@ -4650,7 +4650,7 @@ $A3:B686 4C 7A E6    JMP $E67A  [$A3:E67A]  ; Go to creepy crawly common initial
 }
 
 
-;;; $B689: Norfair slow fireball spritemaps ;;;
+;;; $B689: Viola spritemaps ;;;
 {
 ; Normal
 $A3:B689             dx 0001, 81F8,F8,2100
@@ -6056,15 +6056,15 @@ $A3:C89A             dx 0002, 81F8,04,210E, 81F8,F4,210C
 }
 
 
-;;; $C8A6..DA9B: Maridia snail ;;;
+;;; $C8A6..DA9B: Yard ;;;
 {
-;;; $C8A6: Palette - enemy $DBBF (Maridia snail) ;;;
+;;; $C8A6: Palette - enemy $DBBF (yard) ;;;
 {
 $A3:C8A6             dw 3800, 57FF, 42F7, 158C, 00A5, 4F5A, 36B5, 2610, 1DCE, 77FF, 62B5, 314A, 1063, 4D1F, 38B6, 246E
 }
 
 
-;;; $C8C6..CC35: Instruction lists - Maridia snail ;;;
+;;; $C8C6..CC35: Instruction lists - yard ;;;
 {
 ;;; $C8C6: Instruction list -  ;;;
 {
@@ -6571,7 +6571,7 @@ $A3:CDD2             dw CFEB,CFE5,CFFC,CFB7,CFCE,CFBD,CFA6,CFD4
 }
 
 
-;;; $CDE2: Initialisation AI - enemy $DBBF (Maridia snail) ;;;
+;;; $CDE2: Initialisation AI - enemy $DBBF (yard) ;;;
 {
 $A3:CDE2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:CDE5 A9 5F CF    LDA #$CF5F
@@ -6639,7 +6639,7 @@ $A3:CE63 6B          RTL
 }
 
 
-;;; $CE64: Main AI - enemy $DBBF (Maridia snail) ;;;
+;;; $CE64: Main AI - enemy $DBBF (yard) ;;;
 {
 $A3:CE64 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:CE67 20 73 CE    JSR $CE73  [$A3:CE73]
@@ -7181,7 +7181,7 @@ $A3:D21E 9F 06 78 7E STA $7E7806,x[$7E:7846];/
 $A3:D222 A9 01 00    LDA #$0001
 $A3:D225 9F 00 80 7E STA $7E8000,x[$7E:8040]
 $A3:D229 A9 70 00    LDA #$0070             ;\
-$A3:D22C 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (Maridia snail bounce)
+$A3:D22C 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
 $A3:D230 4C 33 D2    JMP $D233  [$A3:D233]
 
 $A3:D233 BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
@@ -7358,7 +7358,7 @@ $A3:D3AF 6B          RTL
 }
 
 
-;;; $D3B0: Enemy touch - enemy $DBBF (Maridia snail) ;;;
+;;; $D3B0: Enemy touch - enemy $DBBF (yard) ;;;
 {
 $A3:D3B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:D3B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0]
@@ -7382,7 +7382,7 @@ $A3:D3DB BD B2 0F    LDA $0FB2,x[$7E:1172]
 $A3:D3DE C9 B3 D1    CMP #$D1B3
 $A3:D3E1 D0 07       BNE $07    [$D3EA]
 $A3:D3E3 A9 70 00    LDA #$0070             ;\
-$A3:D3E6 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (Maridia snail bounce)
+$A3:D3E6 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
 
 $A3:D3EA 6B          RTL
 
@@ -7462,7 +7462,7 @@ $A3:D468 60          RTS
 }
 
 
-;;; $D469: Enemy shot - enemy $DBBF (Maridia snail) ;;;
+;;; $D469: Enemy shot - enemy $DBBF (yard) ;;;
 {
 $A3:D469 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:D46C AD A6 18    LDA $18A6  [$7E:18A6]  ;\
@@ -7486,7 +7486,7 @@ $A3:D492 F0 03       BEQ $03    [$D497]
 $A3:D494 20 57 D5    JSR $D557  [$A3:D557]
 
 $A3:D497 A9 70 00    LDA #$0070             ;\
-$A3:D49A 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (Maridia snail bounce)
+$A3:D49A 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
 $A3:D49E 6B          RTL
 }
 
@@ -7582,7 +7582,7 @@ $A3:D5A4             dw CC06,CB44, CC1E,CB92
 }
 
 
-;;; $D5AC: Maridia snail spritemaps ;;;
+;;; $D5AC: Yard spritemaps ;;;
 {
 $A3:D5AC             dx 0002, C3FB,F6,2120, C3F5,F8,2100
 $A3:D5B8             dx 0002, C3FC,F6,2120, C3F4,F8,2102
@@ -8569,15 +8569,15 @@ $A3:E23B 6B          RTL
 }
 
 
-;;; $E23C..E5EF: Big eye bugs / zoomer ;;;
+;;; $E23C..E5EF: Zeela / zoomer ;;;
 {
-;;; $E23C: Palette - enemy $DC7F (big eye bugs) ;;;
+;;; $E23C: Palette - enemy $DC7F (zeela) ;;;
 {
 $A3:E23C             dw 3800, 3F5A, 2E50, 00E5, 0063, 3AB3, 220E, 1169, 0927, 03FF, 02F7, 0210, 0108, 7FFF, 0299, 0170
 }
 
 
-;;; $E25C: Instruction list - big eye bugs / zoomer - upside right ;;;
+;;; $E25C: Instruction list - zeela / zoomer - upside right ;;;
 {
 $A3:E25C             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:E260             dw 0003,E50E,
@@ -8589,7 +8589,7 @@ $A3:E260             dw 0003,E50E,
 }
 
 
-;;; $E278: Instruction list - big eye bugs / zoomer - upside left ;;;
+;;; $E278: Instruction list - zeela / zoomer - upside left ;;;
 {
 $A3:E278             dw E660,E6C8   ; Enemy function = crawling vertically
 $A3:E27C             dw 0003,E3C4,
@@ -8601,7 +8601,7 @@ $A3:E27C             dw 0003,E3C4,
 }
 
 
-;;; $E294: Instruction list - big eye bugs / zoomer - upside down ;;;
+;;; $E294: Instruction list - zeela / zoomer - upside down ;;;
 {
 $A3:E294             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:E298             dw 0003,E432,
@@ -8613,7 +8613,7 @@ $A3:E298             dw 0003,E432,
 }
 
 
-;;; $E2B0: Instruction list - big eye bugs / zoomer - upside up ;;;
+;;; $E2B0: Instruction list - zeela / zoomer - upside up ;;;
 {
 $A3:E2B0             dw E660,E7F2   ; Enemy function = crawling horizontally
 $A3:E2B4             dw 0003,E2E8,
@@ -8625,9 +8625,9 @@ $A3:E2B4             dw 0003,E2E8,
 }
 
 
-;;; $E2CC: Big eye bugs / zoomer initial instruction list pointers ;;;
+;;; $E2CC: Zeela / zoomer initial instruction list pointers ;;;
 {
-; Used by: big eye bugs, zoomer, stone zoomer, fire zoomer
+; Used by: zeela, zoomer, stone zoomer, sova
 
 ; Indexed by [enemy initialisation parameter] * 2
 $A3:E2CC             dw E25C, ; 0: Upside right
@@ -8637,7 +8637,7 @@ $A3:E2CC             dw E25C, ; 0: Upside right
 }
 
 
-;;; $E2D4: Initialisation AI - enemy $DC7F (big eye bugs) ;;;
+;;; $E2D4: Initialisation AI - enemy $DC7F (zeela) ;;;
 {
 $A3:E2D4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:E2D7 BD 92 0F    LDA $0F92,x[$7E:0FD2]  ;\
@@ -8650,9 +8650,9 @@ $A3:E2E5 4C 7A E6    JMP $E67A  [$A3:E67A]  ; Go to creepy crawly common initial
 }
 
 
-;;; $E2E8: Big eye bugs / zoomer spritemaps ;;;
+;;; $E2E8: Zeela / zoomer spritemaps ;;;
 {
-; Used by: big eye bugs, zoomer, stone zoomer, fire zoomer, Wrecked Ship orange zoomer
+; Used by: zeela, zoomer, stone zoomer, sova, Wrecked Ship orange zoomer
 
 ; Upside up - facing right
 $A3:E2E8             dx 0004, 0002,00,2121, 01F6,00,2120, 8000,F8,2102, 81F0,F8,2100
@@ -8698,13 +8698,13 @@ $A3:E566             dx 0004, 01F8,F6,610C, 01F8,02,611C, 81F8,00,6106, 81F8,F0,
 }
 
 
-;;; $E57C: Palette - enemy $DCBF (fire zoomer) ;;;
+;;; $E57C: Palette - enemy $DCBF (sova) ;;;
 {
 $A3:E57C             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 00BA, 0011, 7FFF, 039C, 0237, 00D1, 3BE0, 2680, 1580
 }
 
 
-;;; $E59C: Initialisation AI - enemy $DCBF (fire zoomer) ;;;
+;;; $E59C: Initialisation AI - enemy $DCBF (sova) ;;;
 {
 $A3:E59C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:E59F BD 92 0F    LDA $0F92,x[$7E:0FD2]  ;\
@@ -8744,11 +8744,11 @@ $A3:E5F0             dw 0040, 0080, 00C0, 0100, 0140, 0180, 01C0, 0200, 0240, 02
 {
 ; Instruction list pointers. Indexed by [enemy parameter 2]
 ;                        _________________________________ 0: (Stone) zoomer
-;                       |      ___________________________ 2: Big eye bugs
-;                       |     |      _____________________ 4: Fire zoomer
-;                       |     |     |      _______________ 6: Norfair slow fireball
-;                       |     |     |     |      _________ 8: Crab
-;                       |     |     |     |     |      ___ Ah: Slug
+;                       |      ___________________________ 2: Zeela
+;                       |     |      _____________________ 4: Sova
+;                       |     |     |      _______________ 6: Viola
+;                       |     |     |     |      _________ 8: Sciser
+;                       |     |     |     |     |      ___ Ah: Zero
 ;                       |     |     |     |     |     |
 $A3:E630             dw E294, E294, E294, B5D3, 96AB, 98AB ; Upside down
 $A3:E63C             dw E2B0, E2B0, E2B0, B5DB, 96C3, 990B ; Upside up
@@ -8781,7 +8781,7 @@ $A3:E677 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
 
 ;;; $E67A: Creepy crawly common initialisation AI ;;;
 {
-; Used by: crab, slug, Norfair slow fireball, Maridia snail, big eye bugs, zoomer, fire zoomer, stone zoomer
+; Used by: sciser, zero, viola, yard, zeela, zoomer, sova, stone zoomer
 $A3:E67A A9 4D 80    LDA #$804D             ;\
 $A3:E67D 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
 $A3:E680 A9 01 00    LDA #$0001             ;\
@@ -8817,7 +8817,7 @@ $A3:E6C1 6B          RTL
 }
 
 
-;;; $E6C2: Main AI - enemy $D77F/$D7BF/$DABF/$DC7F/$DCBF/$DCFF/$DD3F (crab / slug / Norfair slow fireball / big eye bugs / zoomer) ;;;
+;;; $E6C2: Main AI - enemy $D77F/$D7BF/$DABF/$DC7F/$DCBF/$DCFF/$DD3F (sciser / zero / viola / zeela / zoomer) ;;;
 {
 $A3:E6C2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:E6C5 7C B2 0F    JMP ($0FB2,x)[$A3:E6C1]; Go to [enemy function]
@@ -9257,7 +9257,7 @@ $A3:EAA4 6B          RTL
 $A3:EAA5 DA          PHX
 $A3:EAA6 5A          PHY
 $A3:EAA7 A9 50 00    LDA #$0050             ;\
-$A3:EAAA 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 50h, sound library 2, max queued sounds allowed = 6 (Metroid draining Samus)
+$A3:EAAA 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 50h, sound library 2, max queued sounds allowed = 6 (metroid draining Samus)
 $A3:EAAE 7A          PLY
 $A3:EAAF FA          PLX
 $A3:EAB0 6B          RTL
@@ -9941,7 +9941,7 @@ $A3:F037 9D B6 0F    STA $0FB6,x            ; Enemy freeze health threshold -= [
 
 ; BRANCH_NOT_ICE_BEAM
 $A3:F03A A9 5A 00    LDA #$005A             ;\
-$A3:F03D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Ah, sound library 2, max queued sounds allowed = 6 (shot Metroid)
+$A3:F03D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Ah, sound library 2, max queued sounds allowed = 6 (shot metroid)
 $A3:F041 6B          RTL
 }
 

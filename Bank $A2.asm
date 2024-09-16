@@ -4,15 +4,15 @@
 }
 
 
-;;; $8687..8911: Bouncing gooball ;;;
+;;; $8687..8911: Boyon ;;;
 {
-;;; $8687: Palette - enemy $CEBF (bouncing gooball) ;;;
+;;; $8687: Palette - enemy $CEBF (boyon) ;;;
 {
 $A2:8687             dw 3800, 4BBE, 06B9, 00EA, 0065, 173A, 0276, 01F2, 014D, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 }
 
 
-;;; $86A7..DE: Instruction lists - bouncing gooball ;;;
+;;; $86A7..DE: Instruction lists - boyon ;;;
 {
 ;;; $86A7: Instruction list -  ;;;
 {
@@ -65,12 +65,12 @@ $A2:8718             dw 8801, 8850
 }
 
 
-;;; $871C: Initialisation AI - enemy $CEBF (bouncing gooball) ;;;
+;;; $871C: Initialisation AI - enemy $CEBF (boyon) ;;;
 {
 $A2:871C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:871F A9 4D 80    LDA #$804D
-$A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]
-$A2:8725 20 9F 88    JSR $889F  [$A2:889F]
+$A2:871F A9 4D 80    LDA #$804D             ;\
+$A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
+$A2:8725 20 9F 88    JSR $889F  [$A2:889F]  
 $A2:8728 A9 01 00    LDA #$0001
 $A2:872B 9F 02 78 7E STA $7E7802,x[$7E:7802]
 $A2:872F BD B4 0F    LDA $0FB4,x[$7E:0FB4]
@@ -128,7 +128,7 @@ $A2:879B 60          RTS
 }
 
 
-;;; $879C: Main AI - enemy $CEBF (bouncing gooball) ;;;
+;;; $879C: Main AI - enemy $CEBF (boyon) ;;;
 {
 $A2:879C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:879F BF 0A 78 7E LDA $7E780A,x[$7E:780A]
@@ -259,11 +259,11 @@ $A2:889E 60          RTS
 ;;; $889F:  ;;;
 {
 $A2:889F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:88A2 A9 A7 86    LDA #$86A7
-$A2:88A5 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:88A8 A9 01 00    LDA #$0001
-$A2:88AB 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:88AE 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A2:88A2 A9 A7 86    LDA #$86A7             ;\
+$A2:88A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7
+$A2:88A8 A9 01 00    LDA #$0001             ;\
+$A2:88AB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:88AE 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A2:88B1 60          RTS
 }
 
@@ -271,11 +271,11 @@ $A2:88B1 60          RTS
 ;;; $88B2:  ;;;
 {
 $A2:88B2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:88B5 A9 BF 86    LDA #$86BF
-$A2:88B8 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A2:88BB A9 01 00    LDA #$0001
-$A2:88BE 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A2:88C1 9E 90 0F    STZ $0F90,x[$7E:0FD0]
+$A2:88B5 A9 BF 86    LDA #$86BF             ;\
+$A2:88B8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $86BF
+$A2:88BB A9 01 00    LDA #$0001             ;\
+$A2:88BE 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A2:88C1 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
 $A2:88C4 60          RTS
 }
 
@@ -289,8 +289,8 @@ $A2:88C5 6B          RTL
 ;;; $88C6: Instruction -  ;;;
 {
 $A2:88C6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:88C9 A9 00 00    LDA #$0000
-$A2:88CC 9F 04 78 7E STA $7E7804,x[$7E:7844]
+$A2:88C9 A9 00 00    LDA #$0000             ;\
+$A2:88CC 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy $7E:7804 = 0
 $A2:88D0 A9 0E 00    LDA #$000E             ;\
 $A2:88D3 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound Eh, sound library 2, max queued sounds allowed = 6 (splashed out of water)
 $A2:88D7 6B          RTL
@@ -309,7 +309,7 @@ $A2:88D9 6B          RTL
 }
 
 
-;;; $88DA: Spritemaps - bouncing gooball ;;;
+;;; $88DA: Spritemaps - boyon ;;;
 {
 $A2:88DA             dx 0001, C3F8,F8,2100
 $A2:88E1             dx 0001, C3F8,F8,2102
@@ -616,15 +616,15 @@ $A2:8B4A             dx 0004, 01FA,F0,610E, 0002,F0,610D, C3F2,F8,610B, C3FA,F8,
 }
 
 
-;;; $8B60..998C: Maridia beyblade turtle ;;;
+;;; $8B60..998C: Tatori ;;;
 {
-;;; $8B60: Palette - enemy $CF3F/$CF7F (Maridia beyblade turtle) ;;;
+;;; $8B60: Palette - enemy $CF3F/$CF7F (tatori) ;;;
 {
 $A2:8B60             dw 3800, 4B9C, 3694, 08E7, 0884, 42F7, 2A52, 19AD, 1129, 7FFF, 033B, 0216, 0113, 7FFF, 03FF, 000D
 }
 
 
-;;; $8B80..8D4F: Instruction lists - Maridia beyblade turtle ;;;
+;;; $8B80..8D4F: Instruction lists - tatori ;;;
 {
 ;;; $8B80: Instruction list -  ;;;
 {
@@ -837,7 +837,7 @@ $A2:8D40             dx 0005,9501,
 }
 
 
-;;; $8D50: Maridia beyblade turtle constants ;;;
+;;; $8D50: Tatori constants ;;;
 {
 $A2:8D50             dw 0030
 $A2:8D52             dw 0001
@@ -855,7 +855,7 @@ $A2:8D6A             dw 0003 ; Unused
 }
 
 
-;;; $8D6C: Initialisation AI - enemy $CF3F (Maridia beyblade turtle) ;;;
+;;; $8D6C: Initialisation AI - enemy $CF3F (tatori) ;;;
 {
 $A2:8D6C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8D6F BD 86 0F    LDA $0F86,x[$7E:0F86]
@@ -877,7 +877,7 @@ $A2:8D9C 6B          RTL
 }
 
 
-;;; $8D9D: Initialisation AI - enemy $CF7F (mini Maridia beyblade turtle) ;;;
+;;; $8D9D: Initialisation AI - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:8D9D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8DA0 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
@@ -903,7 +903,7 @@ $A2:8DD1 6B          RTL
 }
 
 
-;;; $8DD2: Main AI - enemy $CF3F (Maridia beyblade turtle) ;;;
+;;; $8DD2: Main AI - enemy $CF3F (tatori) ;;;
 {
 $A2:8DD2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8DD5 7C A8 0F    JMP ($0FA8,x)[$A2:8DD8]
@@ -1200,7 +1200,7 @@ $A2:9072 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pix
 $A2:9075 A9 10 00    LDA #$0010             ;\
 $A2:9078 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 10h
 $A2:907B A9 1B 00    LDA #$001B             ;\
-$A2:907E 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Bh, sound library 2, max queued sounds allowed = 6 (Maridia beyblade turtle hits wall)
+$A2:907E 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Bh, sound library 2, max queued sounds allowed = 6 (tatori hits wall)
 $A2:9082 6B          RTL
 }
 
@@ -1291,7 +1291,7 @@ $A2:912D 6B          RTL
 }
 
 
-;;; $912E: Main AI - enemy $CF7F (mini Maridia beyblade turtle) ;;;
+;;; $912E: Main AI - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:912E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9131 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
@@ -1473,7 +1473,7 @@ $A2:9280 6B          RTL
 }
 
 
-;;; $9281: Enemy touch - enemy $CF3F (Maridia beyblade turtle) ;;;
+;;; $9281: Enemy touch - enemy $CF3F (tatori) ;;;
 {
 $A2:9281 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9284 BD 86 0F    LDA $0F86,x
@@ -1495,7 +1495,7 @@ $A2:929E 6B          RTL
 }
 
 
-;;; $929F: Enemy touch - enemy $CF7F (mini Maridia beyblade turtle) ;;;
+;;; $929F: Enemy touch - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:929F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:92A2 BD A8 0F    LDA $0FA8,x
@@ -1554,7 +1554,7 @@ $A2:930E 6B          RTL
 }
 
 
-;;; $930F: Enemy shot - enemy $CF7F (mini Maridia beyblade turtle) ;;;
+;;; $930F: Enemy shot - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:930F 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:9313 80 EA       BRA $EA    [$92FF]
@@ -1822,12 +1822,12 @@ $A2:94D0 6B          RTL
 ;;; $94D1:  ;;;
 {
 $A2:94D1 A9 3A 00    LDA #$003A             ;\
-$A2:94D4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Ah, sound library 2, max queued sounds allowed = 6 (Maridia beyblade turtle spinning)
+$A2:94D4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Ah, sound library 2, max queued sounds allowed = 6 (tatori spinning)
 $A2:94D8 6B          RTL
 }
 
 
-;;; $94D9: Spritemaps - Maridia beyblade turtle ;;;
+;;; $94D9: Spritemaps - tatori ;;;
 {
 $A2:94D9             dx 0001, C3F8,F8,2104
 $A2:94E0             dx 0001, C3F8,F8,2106
@@ -1875,9 +1875,9 @@ $A2:9959             dx 000A, 01F8,08,215F, 01F8,00,215E, 0000,08,615F, 0000,00,
 }
 
 
-;;; $998D..9E69: Thin hopping blob ;;;
+;;; $998D..9E69: Puyo ;;;
 {
-;;; $998D: Palette - enemy $CFBF (thin hopping blob) ;;;
+;;; $998D: Palette - enemy $CFBF (puyo) ;;;
 {
 $A2:998D             dw 3800, 4B9C, 2610, 0CC6, 0C63, 42F7, 2A52, 19AD, 0D29, 5617, 3D72, 1C48, 0C05, 033B, 0216, 0113
 }
@@ -1968,7 +1968,7 @@ $A2:9A07             dw 0010,0100,0200,9D0B, ; 0: Normal - small hop
 }
 
 
-;;; $9A3F: Initialisation AI - enemy $CFBF (thin hopping blob) ;;;
+;;; $9A3F: Initialisation AI - enemy $CFBF (puyo) ;;;
 {
 $A2:9A3F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9A42 A9 4D 80    LDA #$804D             ;\
@@ -2005,7 +2005,7 @@ $A2:9A7C 60          RTS
 }
 
 
-;;; $9A7D: Main AI - enemy $CFBF (thin hopping blob) ;;;
+;;; $9A7D: Main AI - enemy $CFBF (puyo) ;;;
 {
 $A2:9A7D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9A80 FC AE 0F    JSR ($0FAE,x)[$A2:9B65]
@@ -2138,7 +2138,7 @@ $A2:9B64 60          RTS
 }
 
 
-;;; $9B65: Thin hopping blob function - grounded ;;;
+;;; $9B65: Puyo function - grounded ;;;
 {
 $A2:9B65 DE AC 0F    DEC $0FAC,x[$7E:112C]  ; Decrement enemy hop cooldown timer
 $A2:9B68 10 16       BPL $16    [$9B80]     ; If [enemy hop cooldown timer] >= 0: return
@@ -2154,7 +2154,7 @@ $A2:9B80 60          RTS
 }
 
 
-;;; $9B81: Thin hopping blob function - airborne ;;;
+;;; $9B81: Puyo function - airborne ;;;
 {
 $A2:9B81 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9B84 FC B0 0F    JSR ($0FB0,x)[$A2:9D0B]; Execute [enemy airborne function]
@@ -2162,7 +2162,7 @@ $A2:9B87 60          RTS
 }
 
 
-;;; $9B88: Thin hopping blob movement ;;;
+;;; $9B88: Puyo movement ;;;
 {
 $A2:9B88 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9B8B BD AA 0F    LDA $0FAA,x[$7E:112A]  ;\
@@ -2367,10 +2367,10 @@ $A2:9D0A 60          RTS
 }
 
 
-;;; $9D0B: Thin hopping blob airborne function - normal - short hop ;;;
+;;; $9D0B: Puyo airborne function - normal - short hop ;;;
 {
 $A2:9D0B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9D0E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Thin hopping blob movement
+$A2:9D0E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Puyo movement
 $A2:9D11 BF 08 78 7E LDA $7E7808,x[$7E:7988];\
 $A2:9D15 D0 06       BNE $06    [$9D1D]     ;} If enemy direction not inverted:
 $A2:9D17 BF 02 78 7E LDA $7E7802,x[$7E:7982];\
@@ -2385,10 +2385,10 @@ $A2:9D2A 60          RTS
 }
 
 
-;;; $9D2B: Thin hopping blob airborne function - normal - big hop ;;;
+;;; $9D2B: Puyo airborne function - normal - big hop ;;;
 {
 $A2:9D2B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9D2E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Thin hopping blob movement
+$A2:9D2E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Puyo movement
 $A2:9D31 BF 08 78 7E LDA $7E7808,x[$7E:7948];\
 $A2:9D35 D0 06       BNE $06    [$9D3D]     ;} If enemy direction not inverted:
 $A2:9D37 BF 02 78 7E LDA $7E7802,x[$7E:7942];\
@@ -2403,10 +2403,10 @@ $A2:9D4A 60          RTS
 }
 
 
-;;; $9D4B: Thin hopping blob airborne function - normal - long hop ;;;
+;;; $9D4B: Puyo airborne function - normal - long hop ;;;
 {
 $A2:9D4B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9D4E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Thin hopping blob movement
+$A2:9D4E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Puyo movement
 $A2:9D51 BF 08 78 7E LDA $7E7808,x[$7E:7908];\
 $A2:9D55 D0 06       BNE $06    [$9D5D]     ;} If enemy direction not inverted:
 $A2:9D57 BF 02 78 7E LDA $7E7802,x[$7E:7902];\
@@ -2421,10 +2421,10 @@ $A2:9D6A 60          RTS
 }
 
 
-;;; $9D6B: Thin hopping blob airborne function - giant hop ;;;
+;;; $9D6B: Puyo airborne function - giant hop ;;;
 {
 $A2:9D6B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9D6E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Thin hopping blob movement
+$A2:9D6E 20 88 9B    JSR $9B88  [$A2:9B88]  ; Puyo movement
 $A2:9D71 BF 08 78 7E LDA $7E7808,x          ;\
 $A2:9D75 D0 13       BNE $13    [$9D8A]     ;} If enemy direction not inverted:
 $A2:9D77 BF 02 78 7E LDA $7E7802,x          ;\
@@ -2443,7 +2443,7 @@ $A2:9D97 60          RTS
 }
 
 
-;;; $9D98: Thin hopping blob airborne function - dropping ;;;
+;;; $9D98: Puyo airborne function - dropping ;;;
 {
 $A2:9D98 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9D9B BC B2 0F    LDY $0FB2,x[$7E:11B2]  ;\
@@ -2470,10 +2470,10 @@ $A2:9DCC 60          RTS
 }
 
 
-;;; $9DCD: Thin hopping blob airborne function - dropped ;;;
+;;; $9DCD: Puyo airborne function - dropped ;;;
 {
 $A2:9DCD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9DD0 20 88 9B    JSR $9B88  [$A2:9B88]  ; Thin hopping blob movement
+$A2:9DD0 20 88 9B    JSR $9B88  [$A2:9B88]  ; Puyo movement
 $A2:9DD3 BF 02 78 7E LDA $7E7802,x[$7E:7842];\
 $A2:9DD7 D0 1A       BNE $1A    [$9DF3]     ;} If enemy hopping animation active: return
 $A2:9DD9 A9 00 00    LDA #$0000             ;\
@@ -2501,7 +2501,7 @@ $A2:9DF5 6B          RTL
 }
 
 
-;;; $9DF6: Spritemaps - thin hopping blob ;;;
+;;; $9DF6: Spritemaps - puyo ;;;
 {
 $A2:9DF6             dx 0002, 0000,FC,6100, 01F8,FC,2100
 $A2:9E02             dx 0002, 0000,FC,6101, 01F8,FC,2101
@@ -2515,15 +2515,15 @@ $A2:9E5E             dx 0002, 01F8,FC,6108, 0000,FC,6107
 }
 
 
-;;; $9E6A..A38A: Spike shooting plant ;;;
+;;; $9E6A..A38A: Cacatac ;;;
 {
-;;; $9E6A: Palette - enemy $CFFF (spike shooting plant) ;;;
+;;; $9E6A: Palette - enemy $CFFF (cacatac) ;;;
 {
 $A2:9E6A             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 57FF, 42F7, 2610, 158C, 017F, 0016, 300A
 }
 
 
-;;; $9E8A..9F29: Instruction list - spike shooting plant ;;;
+;;; $9E8A..9F29: Instruction list - cacatac ;;;
 {
 ;;; $9E8A: Instruction list -  ;;;
 {
@@ -2593,28 +2593,28 @@ $A2:9F00             dx 0015,A223,
 $A2:9F2A DA          PHX
 $A2:9F2B 5A          PHY
 $A2:9F2C A9 34 00    LDA #$0034             ;\
-$A2:9F2F 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 34h, sound library 2, max queued sounds allowed = 6 (spike shooting plant spikes)
+$A2:9F2F 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 34h, sound library 2, max queued sounds allowed = 6 (cacatac spikes)
 $A2:9F33 7A          PLY
 $A2:9F34 FA          PLX
 $A2:9F35 6B          RTL
 }
 
 
-;;; $9F36: Spike shooting plant X radius of travel ;;;
+;;; $9F36: Cacatac X radius of travel ;;;
 {
-; Indexed by Speed2 low
+; Indexed by enemy parameter 2 low
 $A2:9F36             dw 0010, 0040, 0050, 0060, 0070, 0080
 }
 
 
-;;; $9F42: Spike shooting plant function pointers ;;;
+;;; $9F42: Cacatac function pointers ;;;
 {
-; Indexed by Speed low
+; Indexed by enemy parameter 1 low
 $A2:9F42             dw 9FBA, 9FEC, A01B
 }
 
 
-;;; $9F48: Initialisation AI - enemy $CFFF (spike shooting plant) ;;;
+;;; $9F48: Initialisation AI - enemy $CFFF (cacatac) ;;;
 {
 $A2:9F48 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9F4B A9 4D 80    LDA #$804D
@@ -2664,7 +2664,7 @@ $A2:9FB2 6B          RTL
 }
 
 
-;;; $9FB3: Main AI - enemy $CFFF (spike shooting plant) ;;;
+;;; $9FB3: Main AI - enemy $CFFF (cacatac) ;;;
 {
 $A2:9FB3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9FB6 FC B2 0F    JSR ($0FB2,x)[$A2:9FBA]
@@ -2814,13 +2814,13 @@ $A2:A0A6 6B          RTL
 }
 
 
-;;; $A0A7: Instruction - spawn spike shooting plant spike enemy projectile with parameter [[Y]] ;;;
+;;; $A0A7: Instruction - spawn cacatac spike enemy projectile with parameter [[Y]] ;;;
 {
 $A2:A0A7 5A          PHY
 $A2:A0A8 B9 00 00    LDA $0000,y[$A2:9EC4]  ; A = [[Y]] (direction)
 $A2:A0AB AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $A2:A0AE A0 FE DA    LDY #$DAFE             ;\
-$A2:A0B1 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn spike shooting plant spike enemy projectile
+$A2:A0B1 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn cacatac spike enemy projectile
 $A2:A0B5 7A          PLY
 $A2:A0B6 C8          INY                    ;\
 $A2:A0B7 C8          INY                    ;} Y += 2
@@ -2840,7 +2840,7 @@ $A2:A0BA 6B          RTL
 }
 
 
-;;; $A0BB: Spritemaps - spike shooting plant ;;;
+;;; $A0BB: Spritemaps - cacatac ;;;
 {
 $A2:A0BB             dx 0006, 0000,04,610C, 0004,04,610B, 01F8,04,210C, 01F4,04,210B, 01FC,EF,211C, C3F8,F7,2100
 $A2:A0DB             dx 0006, 01F8,04,210C, 01F4,05,210C, 0000,04,610C, 0004,04,610B, 01FC,F0,211C, C3F8,F8,2100
@@ -2866,15 +2866,15 @@ $A2:A357             dx 000A, 01FC,0F,A11C, 0000,F4,E10C, 0004,F4,E10B, 01F8,F4,
 }
 
 
-;;; $A38B..A59D: Maridia spikey shell ;;;
+;;; $A38B..A59D: Owtch ;;;
 {
-;;; $A38B: Palette - enemy $D03F (Maridia spikey shell) ;;;
+;;; $A38B: Palette - enemy $D03F (owtch) ;;;
 {
 $A2:A38B             dw 3800, 4B9C, 2610, 0CC6, 0C63, 42F7, 2A52, 19AD, 0D29, 5E59, 3D72, 2CEE, 1447, 033B, 0216, 0113
 }
 
 
-;;; $A3AB: Instruction list - Maridia spikey shell - [enemy parameter 1] & 1 = 0 ;;;
+;;; $A3AB: Instruction list - owtch - [enemy parameter 1] & 1 = 0 ;;;
 {
 $A2:A3AB             dw A56D        ; Enemy function index = 0
 $A2:A3AD             dw 0008,A589,
@@ -2884,7 +2884,7 @@ $A2:A3AD             dw 0008,A589,
 }
 
 
-;;; $A3BD: Instruction list - Maridia spikey shell - [enemy parameter 1] & 1 = 1 ;;;
+;;; $A3BD: Instruction list - owtch - [enemy parameter 1] & 1 = 1 ;;;
 {
 $A2:A3BD             dw A571        ; Enemy function index = 1
 $A2:A3BF             dw 0008,A597,
@@ -2894,7 +2894,7 @@ $A2:A3BF             dw 0008,A597,
 }
 
 
-;;; $A3CF: Maridia spikey shell constants ;;;
+;;; $A3CF: Owtch constants ;;;
 {
 ; Initialisation AI pointers
 $A2:A3CF             dw A48A, A49D
@@ -2910,7 +2910,7 @@ $A2:A3ED             dw 0020, 0040, 0060, 0080, 00A0, 00C0
 }
 
 
-;;; $A3F9: Initialisation AI - enemy $D03F (Maridia spikey shell) ;;;
+;;; $A3F9: Initialisation AI - enemy $D03F (owtch) ;;;
 {
 $A2:A3F9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A3FC A9 4D 80    LDA #$804D
@@ -2969,7 +2969,7 @@ $A2:A47D 6B          RTL
 }
 
 
-;;; $A47E: Main AI - enemy $D03F (Maridia spikey shell) ;;;
+;;; $A47E: Main AI - enemy $D03F (owtch) ;;;
 {
 $A2:A47E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A481 BD B0 0F    LDA $0FB0,x[$7E:1170]
@@ -2980,7 +2980,7 @@ $A2:A489 6B          RTL
 }
 
 
-;;; $A48A: Set Maridia spikey shell initial instruction list pointer - [enemy parameter 1] & 1 = 0 ;;;
+;;; $A48A: Set owtch initial instruction list pointer - [enemy parameter 1] & 1 = 0 ;;;
 {
 $A2:A48A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A48D A9 AB A3    LDA #$A3AB
@@ -2992,7 +2992,7 @@ $A2:A49C 60          RTS
 }
 
 
-;;; $A49D: Set Maridia spikey shell initial instruction list pointer - [enemy parameter 1] & 1 = 1 ;;;
+;;; $A49D: Set owtch initial instruction list pointer - [enemy parameter 1] & 1 = 1 ;;;
 {
 $A2:A49D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A4A0 A9 BD A3    LDA #$A3BD
@@ -3004,7 +3004,7 @@ $A2:A4AF 60          RTS
 }
 
 
-;;; $A4B0: Maridia spikey shell function - [enemy function index] = 0 ;;;
+;;; $A4B0: Owtch function - [enemy function index] = 0 ;;;
 {
 $A2:A4B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A4B3 BD 7C 0F    LDA $0F7C,x[$7E:113C]
@@ -3027,7 +3027,7 @@ $A2:A4D8 60          RTS
 }
 
 
-;;; $A4D9: Maridia spikey shell function - [enemy function index] = 1 ;;;
+;;; $A4D9: Owtch function - [enemy function index] = 1 ;;;
 {
 $A2:A4D9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A4DC BD 7C 0F    LDA $0F7C,x[$7E:0FBC]
@@ -3050,7 +3050,7 @@ $A2:A501 60          RTS
 }
 
 
-;;; $A502: Maridia spikey shell function - [enemy function index] = 2 ;;;
+;;; $A502: Owtch function - [enemy function index] = 2 ;;;
 {
 $A2:A502 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A505 BF 00 78 7E LDA $7E7800,x[$7E:79C0]
@@ -3064,7 +3064,7 @@ $A2:A516 60          RTS
 }
 
 
-;;; $A517: Maridia spikey shell function - [enemy function index] = 3 ;;;
+;;; $A517: Owtch function - [enemy function index] = 3 ;;;
 {
 $A2:A517 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A51A FE 7E 0F    INC $0F7E,x[$7E:113E]
@@ -3085,7 +3085,7 @@ $A2:A53D 60          RTS
 }
 
 
-;;; $A53E: Maridia spikey shell function - [enemy function index] = 4 ;;;
+;;; $A53E: Owtch function - [enemy function index] = 4 ;;;
 {
 $A2:A53E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A541 DE 7E 0F    DEC $0F7E,x[$7E:0FBE]
@@ -3136,7 +3136,7 @@ $A2:A578 6B          RTL
 }
 
 
-;;; $A579: Enemy shot - enemy $D03F (Maridia spikey shell) ;;;
+;;; $A579: Enemy shot - enemy $D03F (owtch) ;;;
 {
 $A2:A579 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A57C BD B0 0F    LDA $0FB0,x[$7E:0FF0]
@@ -3148,7 +3148,7 @@ $A2:A588 6B          RTL
 }
 
 
-;;; $A589: Spritemaps - Maridia spikey shell ;;;
+;;; $A589: Spritemaps - owtch ;;;
 {
 $A2:A589             dx 0001, C3F8,F8,2100
 $A2:A590             dx 0001, C3F8,F8,2102
@@ -4164,7 +4164,7 @@ $A2:AFDD             dx 0004, 0000,F8,7F65, 0008,F8,7F64, 01F8,F8,3F65, 01F0,F8,
 
 ;;; $AFF3..B2BB: Flies ;;;
 {
-;;; $AFF3: Palette - enemy $D0FF (pre-Bomb Torizo fly) ;;;
+;;; $AFF3: Palette - enemy $D0FF (mellow) ;;;
 {
 $A2:AFF3             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 2FEF, 030D, 0209, 0145, 183F, 1014, 080A
 }
@@ -4421,7 +4421,7 @@ $A2:B204             dw B1E8, B1EF, B1F6, B1FD
 }
 
 
-;;; $B20C: Palette - enemy $D13F (under ice beam fly) ;;;
+;;; $B20C: Palette - enemy $D13F (mella) ;;;
 {
 $A2:B20C             dw 3800, 039F, 01BF, 000F, 0005, 021F, 015B, 00BA, 0011, 4F72, 36AD, 1DC8, 0925, 7E1F, 5415, 280A
 }
@@ -4434,7 +4434,7 @@ $A2:B22E             dw 0000, 000E, 0001, 000B, 0002, 000A, 0003, 0009, FFFE
 }
 
 
-;;; $B240: Unused. Under ice beam fly spritemaps ;;;
+;;; $B240: Unused. Mella spritemaps ;;;
 {
 $A2:B240             dx 0001, C3F8,F4,2100
 $A2:B247             dx 0001, C3F8,F4,2102
@@ -4443,13 +4443,13 @@ $A2:B255             dx 0001, C3F8,F4,2106
 }
 
 
-;;; $B25C: Unused. Spritemap pointers - under ice beam fly ;;;
+;;; $B25C: Unused. Spritemap pointers - mella ;;;
 {
 $A2:B25C             dw B240, B247, B24E, B255
 }
 
 
-;;; $B264: Palette - enemy $D17F (pre-spring ball fly) ;;;
+;;; $B264: Palette - enemy $D17F (memu) ;;;
 {
 $A2:B264             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 2F5A, 2294, 01AD, 0108, 7FFF, 56B5, 294A
 }
@@ -4462,7 +4462,7 @@ $A2:B286             dw 0000, 000E, 0001, 000B, 0002, 000A, 0003, 0009, FFFE
 }
 
 
-;;; $B298: Unused. Pre-spring ball fly spritemaps ;;;
+;;; $B298: Unused. Memu spritemaps ;;;
 {
 $A2:B298             dx 0001,C3F8,F8,2100
 $A2:B29F             dx 0001,C3F8,F8,2102
@@ -4471,22 +4471,22 @@ $A2:B2AD             dx 0001,C3F8,F8,2106
 }
 
 
-;;; $B2B4: Unused. Spritemap pointers - enemy $D17F (pre-spring ball fly) ;;;
+;;; $B2B4: Unused. Spritemap pointers - enemy $D17F (memu) ;;;
 {
 $A2:B2B4             dw B298, B29F, B2A6, B2AD
 }
 }
 
 
-;;; $B2BC..B519: Norfair erratic fireball ;;;
+;;; $B2BC..B519: Multiviola ;;;
 {
-;;; $B2BC: Palette - enemy $D1BF (Norfair erratic fireball) ;;;
+;;; $B2BC: Palette - enemy $D1BF (multiviola) ;;;
 {
 $A2:B2BC             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 0015, 0011, 241F, 1C17, 142F, 0C47, 03E0, 02A0, 0140
 }
 
 
-;;; $B2DC..B3DF: Instruction lists - Norfair erratic fireball ;;;
+;;; $B2DC..B3DF: Instruction lists - multiviola ;;;
 {
 ;;; $B2DC: Instruction list -  ;;;
 {
@@ -4569,7 +4569,7 @@ $A2:B37C             dx 0002,B4FE,
 }
 
 
-;;; $B3E0: Initialisation AI - enemy $D1BF (Norfair erratic fireball) ;;;
+;;; $B3E0: Initialisation AI - enemy $D1BF (multiviola) ;;;
 {
 $A2:B3E0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:B3E3 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
@@ -4592,7 +4592,7 @@ $A2:B40E 6B          RTL
 }
 
 
-;;; $B40F: Main AI - enemy $D1BF (Norfair erratic fireball) ;;;
+;;; $B40F: Main AI - enemy $D1BF (multiviola) ;;;
 {
 ; Note the two fixed point negation operations at $B443 and $B47D are off by 1.0 when the low word is zero
 $A2:B40F AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -4661,7 +4661,7 @@ $A2:B4A9 6B          RTL
 }
 
 
-;;; $B4AA: Spritemaps - Norfair erratic fireball ;;;
+;;; $B4AA: Spritemaps - multiviola ;;;
 {
 $A2:B4AA             dx 0001, 81F8,F8,2100
 $A2:B4B1             dx 0001, 81F8,F8,2102
@@ -4683,9 +4683,9 @@ $A2:B513             dx 0001, 81F8,F8,212E
 }
 
 
-;;; $B51A..B601: Lavaquake rocks ;;;
+;;; $B51A..B601: Polyp ;;;
 {
-;;; $B51A: Instruction list - lavaquake rocks ;;;
+;;; $B51A: Instruction list - polyp ;;;
 {
 $A2:B51A             dx 0001,B5FB,
                         812F        ; Sleep
@@ -4700,7 +4700,7 @@ $A2:B550             dw 0060, 0070, 0080, 0090, 00A0, 00B0, 00C0, 00D0, FFA0, FF
 }
 
 
-;;; $B570: Initialisation AI - enemy $D1FF (lavaquake rocks) ;;;
+;;; $B570: Initialisation AI - enemy $D1FF (polyp) ;;;
 {
 $A2:B570 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:B573 A9 1A B5    LDA #$B51A
@@ -4716,7 +4716,7 @@ $A2:B58E 6B          RTL
 }
 
 
-;;; $B58F: Main AI - enemy $D1FF (lavaquake rocks) ;;;
+;;; $B58F: Main AI - enemy $D1FF (polyp) ;;;
 {
 $A2:B58F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:B592 FC A8 0F    JSR ($0FA8,x)[$A2:B596]
@@ -4753,7 +4753,7 @@ $A2:B5C7 29 1E 00    AND #$001E
 $A2:B5CA A8          TAY
 $A2:B5CB B9 30 B5    LDA $B530,y[$A2:B548]
 $A2:B5CE A0 5A BD    LDY #$BD5A             ;\
-$A2:B5D1 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn Norfair lavaquake rocks enemy projectile
+$A2:B5D1 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn polyp rock enemy projectile
 $A2:B5D5 A9 EA B5    LDA #$B5EA
 $A2:B5D8 9D A8 0F    STA $0FA8,x[$7E:11E8]
 $A2:B5DB 22 11 81 80 JSL $808111[$80:8111]
@@ -4789,7 +4789,7 @@ $A2:B5FA 6B          RTL
 }
 
 
-;;; $B5FB: Spritemap - lavaquake rocks ;;;
+;;; $B5FB: Spritemap - polyp ;;;
 {
 $A2:B5FB             dx 0001, 01FC,FC,210A
 }
@@ -5414,7 +5414,7 @@ $A2:BA54             dx 0001, C3F8,F8,3108
 }
 
 
-;;; $BA5B: Palette - enemy $D1FF/$D23F (lavaquake rocks / rinka) ;;;
+;;; $BA5B: Palette - enemy $D1FF/$D23F (polyp / rinka) ;;;
 {
 $A2:BA5B             dw 3800, 5739, 4273, 2DAD, 14C6, 19DA, 1174, 0D0F, 08AA, 0FDE, 02DF, 019F, 005F, 0037, 6FDF, 0006
 }
@@ -5791,9 +5791,9 @@ $A2:BE06             dx 0004, 81FF,00,610A, 81F0,00,210A, 81FF,F8,E104, 81F0,F8,
 }
 
 
-;;; $BE1C..C0D0: Norfair lava-jumping enemy ;;;
+;;; $BE1C..C0D0: Squeept ;;;
 {
-;;; $BE1C: Palette - enemy $D2BF (Norfair lava-jumping enemy) ;;;
+;;; $BE1C: Palette - enemy $D2BF (squeept) ;;;
 {
 $A2:BE1C             dw 3800, 021D, 0015, 0008, 0003, 00BD, 0013, 000E, 000B, 7FFF, 039C, 0237, 00D1, 03A0, 02C0, 05E0
 }
@@ -5849,7 +5849,7 @@ $A2:BE98 6B          RTL
 }
 
 
-;;; $BE99: Initialisation AI - enemy $D2BF (Norfair lava-jumping enemy) ;;;
+;;; $BE99: Initialisation AI - enemy $D2BF (squeept) ;;;
 {
 $A2:BE99 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:BE9C A9 00 00    LDA #$0000
@@ -5875,7 +5875,7 @@ $A2:BED1 6B          RTL
 }
 
 
-;;; $BED2: Main AI - enemy $D2BF (Norfair lava-jumping enemy) ;;;
+;;; $BED2: Main AI - enemy $D2BF (squeept) ;;;
 {
 $A2:BED2 22 11 81 80 JSL $808111[$80:8111]
 $A2:BED6 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6056,7 +6056,7 @@ $A2:C02B 60          RTS
 }
 
 
-;;; $C02C: Spritemaps - Norfair lava-jumping enemy ;;;
+;;; $C02C: Spritemaps - squeept ;;;
 {
 $A2:C02C             dx 0004, 81FF,F3,6100, 81FF,03,6102, 81F0,03,2102, 81F0,F3,2100
 $A2:C042             dx 0004, 0007,03,610C, 01F0,03,210C, 81FF,F3,6104, 81F0,F3,2104
@@ -6072,9 +6072,9 @@ $A2:C0C5             dx 0002, 01FC,0C,211E, 01FC,04,210E
 }
 
 
-;;; $C0D1..C5F9: Norfair rio ;;;
+;;; $C0D1..C5F9: Geruta ;;;
 {
-;;; $C0D1: Palette - enemy $D2FF (Norfair rio) ;;;
+;;; $C0D1: Palette - enemy $D2FF (geruta) ;;;
 {
 $A2:C0D1             dw 3800, 4E7F, 3975, 0C0A, 0006, 45D8, 2D33, 1C8E, 102B, 5347, 5624, 5962, 5CA0, 1BBD, 0DFD, 009D
 }
@@ -6178,7 +6178,7 @@ $A2:C1A3             dx 0006,C5D6,
 }
 
 
-;;; $C1B7: Norfair rio constants ;;;
+;;; $C1B7: Geruta constants ;;;
 {
 ; Unused
 $A2:C1B7             dw 0000, 000E, 000C, 000E, 0010
@@ -6296,7 +6296,7 @@ $A2:C241 6B          RTL
 }
 
 
-;;; $C242: Initialisation AI - enemy $D2FF (Norfair rio) ;;;
+;;; $C242: Initialisation AI - enemy $D2FF (geruta) ;;;
 {
 $A2:C242 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C245 A9 00 00    LDA #$0000             ;\
@@ -6320,7 +6320,7 @@ $A2:C276 6B          RTL
 }
 
 
-;;; $C277: Main AI - enemy $D2FF (Norfair rio) ;;;
+;;; $C277: Main AI - enemy $D2FF (geruta) ;;;
 {
 $A2:C277 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A2:C27B AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6328,7 +6328,7 @@ $A2:C27E 7C B2 0F    JMP ($0FB2,x)[$A2:C2E7]; Go to [enemy function]
 }
 
 
-;;; $C281: Norfair rio function - flames ;;;
+;;; $C281: Geruta function - flames ;;;
 {
 $A2:C281 BD 4C 0F    LDA $0F4C,x[$7E:0F8C]  ;\
 $A2:C284 D0 0A       BNE $0A    [$C290]     ;} If [enemy ([X] - 1) health] = 0:
@@ -6379,7 +6379,7 @@ $A2:C2E6 6B          RTL
 }
 
 
-;;; $C2E7: Norfair rio function - idle ;;;
+;;; $C2E7: Geruta function - idle ;;;
 {
 $A2:C2E7 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A2:C2EA 29 01 01    AND #$0101             ;} If [random number] & 101h != 0:
@@ -6422,7 +6422,7 @@ $A2:C33E 6B          RTL
 }
 
 
-;;; $C33F: Norfair rio function - start swoop ;;;
+;;; $C33F: Geruta function - start swoop ;;;
 {
 $A2:C33F BF 02 78 7E LDA $7E7802,x[$7E:7802];\
 $A2:C343 D0 01       BNE $01    [$C346]     ;} If not finished swoop start animation:
@@ -6440,7 +6440,7 @@ $A2:C360 6B          RTL
 }
 
 
-;;; $C361: Norfair rio function - swoop - descending ;;;
+;;; $C361: Geruta function - swoop - descending ;;;
 {
 $A2:C361 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C363 64 14       STZ $14    [$7E:0014]  ;|
@@ -6482,7 +6482,7 @@ $A2:C3B0 6B          RTL
 }
 
 
-;;; $C3B1: Norfair rio function - swoop - ascending ;;;
+;;; $C3B1: Geruta function - swoop - ascending ;;;
 {
 $A2:C3B1 64 12       STZ $12    [$7E:0012]  ;\
 $A2:C3B3 64 14       STZ $14    [$7E:0014]  ;|
@@ -6527,7 +6527,7 @@ $A2:C405 6B          RTL
 }
 
 
-;;; $C406: Norfair rio function - finish swoop ;;;
+;;; $C406: Geruta function - finish swoop ;;;
 {
 $A2:C406 A9 E7 C2    LDA #$C2E7             ;\
 $A2:C409 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $C2E7 (idle)
@@ -6535,7 +6535,7 @@ $A2:C40C 6B          RTL
 }
 
 
-;;; $C40D: Set Norfair rio instruction list ;;;
+;;; $C40D: Set geruta instruction list ;;;
 {
 $A2:C40D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C410 DF 00 78 7E CMP $7E7800,x[$7E:7800];\
@@ -6550,7 +6550,7 @@ $A2:C426 60          RTS
 }
 
 
-;;; $C427: Norfair rio spritemaps ;;;
+;;; $C427: Geruta spritemaps ;;;
 {
 $A2:C427             dx 0005, 81F8,F6,2100, 81FE,02,610C, 81F1,02,210C, 8006,F5,6106, 81E9,F5,2106
 $A2:C442             dx 0005, 81F8,F6,2102, 81FE,04,610C, 81F1,04,210C, 8006,F6,6108, 81E9,F6,2108
@@ -6577,9 +6577,9 @@ $A2:C5EE             dx 0002, 0002,FC,A11E, 01F6,FC,A11E
 }
 
 
-;;; $C5FA..CA2A: Lower Norfair rio ;;;
+;;; $C5FA..CA2A: Holtz ;;;
 {
-;;; $C5FA: Palette - enemy $D33F (Lower Norfair rio) ;;;
+;;; $C5FA: Palette - enemy $D33F (holtz) ;;;
 {
 $A2:C5FA             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 7D7F, 54D5, 384D, 2007, 021F, 1014, 080A
 }
@@ -6668,7 +6668,7 @@ $A2:C6B0             dx 0006,CA07,
 }
 
 
-;;; $C6C0: Lower Norfair rio constants ;;;
+;;; $C6C0: Holtz constants ;;;
 {
 ; Unused?
 $A2:C6C0             dw 0000, 0009, 000A, 000B, 000A
@@ -6712,7 +6712,7 @@ $A2:C6F2 6B          RTL
 }
 
 
-;;; $C6F3: Initialisation AI - enemy $D33F (Lower Norfair rio) ;;;
+;;; $C6F3: Initialisation AI - enemy $D33F (holtz) ;;;
 {
 $A2:C6F3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:C6F6 A9 00 00    LDA #$0000
@@ -6735,7 +6735,7 @@ $A2:C723 6B          RTL
 }
 
 
-;;; $C724: Main AI - enemy $D33F (Lower Norfair rio) ;;;
+;;; $C724: Main AI - enemy $D33F (holtz) ;;;
 {
 $A2:C724 22 11 81 80 JSL $808111[$80:8111]
 $A2:C728 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6869,7 +6869,7 @@ $A2:C81C 20 A3 C8    JSR $C8A3  [$A2:C8A3]
 $A2:C81F A9 2D C8    LDA #$C82D
 $A2:C822 9D B2 0F    STA $0FB2,x[$7E:1132]
 $A2:C825 A9 64 00    LDA #$0064             ;\
-$A2:C828 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 64h, sound library 2, max queued sounds allowed = 6 (Lower Norfair rio cry)
+$A2:C828 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 64h, sound library 2, max queued sounds allowed = 6 (holtz cry)
 $A2:C82C 6B          RTL
 }
 
@@ -6952,7 +6952,7 @@ $A2:C8BC 60          RTS
 }
 
 
-;;; $C8BD: Lower Norfair rio spritemaps ;;;
+;;; $C8BD: Holtz spritemaps ;;;
 {
 $A2:C8BD             dx 0004, 81F8,04,2126, 8008,F4,6100, 81F8,F4,210A, 81E8,F4,2100
 $A2:C8D3             dx 0004, 8008,F5,6100, 81E8,F5,2100, 81F8,F5,210A, 81F8,05,2128
@@ -6976,9 +6976,9 @@ $A2:CA1F             dx 0002, 0004,FC,612C, 01F4,FC,212C
 }
 
 
-;;; $CA2B..D80B: Maridia large indestructible snail ;;;
+;;; $CA2B..D80B: Oum ;;;
 {
-;;; $CA2B: Palette - enemy $D37F (Maridia large indestructible snail) ;;;
+;;; $CA2B: Palette - enemy $D37F (oum) ;;;
 {
 $A2:CA2B             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 21B9, 1533, 0CCE, 0448, 03E0, 02A0, 0140
 }
@@ -7122,7 +7122,7 @@ $A2:CB77             dw CADB, CA4B, CB1B, CA8B, CAE1, CA51, CB43, CAB3
 }
 
 
-;;; $CB87: Maridia large indestructible snail extended spritemaps ;;;
+;;; $CB87: Oum extended spritemaps ;;;
 {
 $A2:CB87             dx 0001, 0000,0000,D3C0,D034
 $A2:CB91             dx 0001, 0000,0000,D3E0,D04E
@@ -7184,7 +7184,7 @@ $A2:CCD3 6B          RTL
 }
 
 
-;;; $CCD4: Initialisation AI - enemy $D37F (Maridia large indestructible snail) ;;;
+;;; $CCD4: Initialisation AI - enemy $D37F (oum) ;;;
 {
 $A2:CCD4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:CCD7 A9 00 00    LDA #$0000
@@ -7209,7 +7209,7 @@ $A2:CD12 6B          RTL
 }
 
 
-;;; $CD13: Main AI - enemy $D37F (Maridia large indestructible snail) ;;;
+;;; $CD13: Main AI - enemy $D37F (oum) ;;;
 {
 $A2:CD13 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:CD16 20 23 CD    JSR $CD23  [$A2:CD23]
@@ -7602,7 +7602,7 @@ $A2:D033 60          RTS
 }
 
 
-;;; $D034: Maridia large indestructible snail hitboxes ;;;
+;;; $D034: Oum hitboxes ;;;
 {
 $A2:D034             dx 0002, FFF0,FFEF,FFF8,0010,D38C,D3B4, FFF8,FFEF,000E,0010,D38C,804C
 $A2:D04E             dx 0001, FFF0,FFEF,000E,0010,D38C,804C
@@ -7643,7 +7643,7 @@ $A2:D388 22 23 80 A2 JSL $A28023[$A2:8023]
 }
 
 
-;;; $D38C: Enemy touch - enemy $D37F (Maridia large indestructible snail) ;;;
+;;; $D38C: Enemy touch - enemy $D37F (oum) ;;;
 {
 $A2:D38C 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:D390 D0 21       BNE $21    [$D3B3]     ;} If enemy is touching Samus from below: return
@@ -7667,16 +7667,16 @@ $A2:D3B3 6B          RTL
 }
 
 
-;;; $D3B4: Enemy shot - enemy $D37F (Maridia large indestructible snail) ;;;
+;;; $D3B4: Enemy shot - enemy $D37F (oum) ;;;
 {
 $A2:D3B4 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:D3B8 A9 57 00    LDA #$0057             ;\
-$A2:D3BB 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot Maridia large indestructible snail)
+$A2:D3BB 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot oum)
 $A2:D3BF 6B          RTL
 }
 
 
-;;; $D3C0: Maridia large indestructible snail spritemaps ;;;
+;;; $D3C0: Oum spritemaps ;;;
 {
 $A2:D3C0             dx 0006, 01F0,00,211E, 01F0,F8,210E, 8000,00,2122, 81F0,00,2120, 8000,F0,2102, 81F0,F0,2100
 $A2:D3E0             dx 0006, 01F0,00,211F, 01F0,F8,210F, 8000,00,2122, 81F0,00,2120, 8000,F0,2102, 81F0,F0,2100
@@ -7712,9 +7712,9 @@ $A2:D7F6             dx 0004, 81F0,00,6124, 8000,00,A10C, 8000,F0,A12C, 81F0,F0,
 }
 
 
-;;; $D80C..E17A: High-rising slow-falling enemy ;;;
+;;; $D80C..E17A: Choot ;;;
 {
-;;; $D80C: Palette - enemy $D3BF (high-rising slow-falling enemy) ;;;
+;;; $D80C: Palette - enemy $D3BF (choot) ;;;
 {
 $A2:D80C             dw 3800, 4B9C, 2610, 0CC6, 0C63, 42F7, 2A52, 19AD, 0D29, 5E59, 3D72, 2CEE, 1447, 033B, 0216, 0113
 }
@@ -7831,7 +7831,7 @@ $A2:DF6A             dw D974, DA9E, DBC8, DD42, DF5C, DF5E
 }
 
 
-;;; $DF76: Initialisation AI - enemy $D3BF (high-rising slow-falling enemy) ;;;
+;;; $DF76: Initialisation AI - enemy $D3BF (choot) ;;;
 {
 $A2:DF76 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:DF79 A9 2C D8    LDA #$D82C
@@ -7935,7 +7935,7 @@ $A2:E02D 60          RTS
 }
 
 
-;;; $E02E: Main AI - enemy $D3BF (high-rising slow-falling enemy) ;;;
+;;; $E02E: Main AI - enemy $D3BF (choot) ;;;
 {
 $A2:E02E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E031 FC A8 0F    JSR ($0FA8,x)[$A2:E035]
@@ -8084,7 +8084,7 @@ $A2:E145 6B          RTL
 }
 
 
-;;; $E146: High-rising slow-falling enemy spritemaps ;;;
+;;; $E146: Choot spritemaps ;;;
 {
 $A2:E146             dx 0004, 01F0,FC,6107, 01F8,FC,6106, 0008,FC,2107, 0000,FC,2106
 $A2:E15C             dx 0002, C3F0,F8,6102, C200,F8,2102
@@ -8281,9 +8281,9 @@ $A2:E2BF 6B          RTL
 }
 
 
-;;; $E2C0..E3A8: Jet powered ripper ;;;
+;;; $E2C0..E3A8: Ripper ii ;;;
 {
-;;; $E2C0: Palette - enemy $D43F (jet powered ripper) ;;;
+;;; $E2C0: Palette - enemy $D43F (ripper ii) ;;;
 {
 $A2:E2C0             dw 3800, 021D, 0015, 0008, 0003, 00BD, 0013, 000E, 000B, 17BE, 1A9F, 0C53, 084B, 7EC0, 6DE0, 54E0
 }
@@ -8323,7 +8323,7 @@ $A2:E310             dx 0010,E44B,
 }
 
 
-;;; $E318: Initialisation AI - enemy $D43F (jet powered ripper) ;;;
+;;; $E318: Initialisation AI - enemy $D43F (ripper ii) ;;;
 {
 $A2:E318 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E31B A0 E0 E2    LDY #$E2E0
@@ -8355,7 +8355,7 @@ $A2:E352 6B          RTL
 }
 
 
-;;; $E353: Main AI - enemy $D43F (jet powered ripper) ;;;
+;;; $E353: Main AI - enemy $D43F (ripper ii) ;;;
 {
 $A2:E353 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E356 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
@@ -8407,7 +8407,7 @@ $A2:E3A8 6B          RTL
 }
 
 
-;;; $E3A9: Enemy shot - enemy $D3FF/$D43F (gripper / jet powered ripper) ;;;
+;;; $E3A9: Enemy shot - enemy $D3FF/$D43F (gripper / ripper ii) ;;;
 {
 $A2:E3A9 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A2:E3AD AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -8553,9 +8553,9 @@ $A2:E56F             dw E527, E533, E53F, E54B, E557, E563
 }
 
 
-;;; $E57B..E977: Lava seahorse ;;;
+;;; $E57B..E977: Dragon ;;;
 {
-;;; $E57B: Palette - enemy $D4BF (lava seahorse) ;;;
+;;; $E57B: Palette - enemy $D4BF (dragon) ;;;
 {
 $A2:E57B             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 00BA, 0011, 5A5C, 41B4, 290D, 1065, 03FF, 0237, 00D1
 }
@@ -8630,7 +8630,7 @@ $A2:E605 6B          RTL
 }
 
 
-;;; $E606: Initialisation AI - enemy $D4BF (lava seahorse) ;;;
+;;; $E606: Initialisation AI - enemy $D4BF (dragon) ;;;
 {
 $A2:E606 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E609 A9 00 00    LDA #$0000
@@ -8660,7 +8660,7 @@ $A2:E64D 6B          RTL
 }
 
 
-;;; $E64E: Main AI - enemy $D4BF (lava seahorse) ;;;
+;;; $E64E: Main AI - enemy $D4BF (dragon) ;;;
 {
 $A2:E64E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E651 7C B2 0F    JMP ($0FB2,x)[$A2:E654]
@@ -8749,9 +8749,9 @@ $A2:E6FD 9F 04 78 7E STA $7E7804,x[$7E:7A44]
 $A2:E701 A9 FF FF    LDA #$FFFF
 $A2:E704 9F 02 78 7E STA $7E7802,x[$7E:7A42]
 $A2:E708 A0 CB B5    LDY #$B5CB             ;\
-$A2:E70B 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn lava seahorse fireball enemy projectile
+$A2:E70B 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn dragon fireball enemy projectile
 $A2:E70F A9 61 00    LDA #$0061             ;\
-$A2:E712 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 61h, sound library 2, max queued sounds allowed = 6 (lava seahorse)
+$A2:E712 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 61h, sound library 2, max queued sounds allowed = 6 (dragon)
 $A2:E716 DE AE 0F    DEC $0FAE,x[$7E:11EE]
 $A2:E719 D0 18       BNE $18    [$E733]
 $A2:E71B BF 00 78 7E LDA $7E7800,x[$7E:7A40]
@@ -8852,21 +8852,21 @@ $A2:E7C7 60          RTS
 }
 
 
-;;; $E7C8: Enemy touch - enemy $D4BF (lava seahorse) ;;;
+;;; $E7C8: Enemy touch - enemy $D4BF (dragon) ;;;
 {
 $A2:E7C8 22 23 80 A2 JSL $A28023[$A2:8023]
 $A2:E7CC 80 0C       BRA $0C    [$E7DA]
 }
 
 
-;;; $E7CE: Enemy shot - enemy $D4BF (lava seahorse) ;;;
+;;; $E7CE: Enemy shot - enemy $D4BF (dragon) ;;;
 {
 $A2:E7CE 22 2D 80 A2 JSL $A2802D[$A2:802D]
 $A2:E7D2 80 06       BRA $06    [$E7DA]
 }
 
 
-;;; $E7D4: Power bomb reaction - enemy $D4BF (lava seahorse) ;;;
+;;; $E7D4: Power bomb reaction - enemy $D4BF (dragon) ;;;
 {
 $A2:E7D4 22 37 80 A2 JSL $A28037[$A2:8037]
 $A2:E7D8 80 00       BRA $00    [$E7DA]
@@ -8898,7 +8898,7 @@ $A2:E80B 6B          RTL
 }
 
 
-;;; $E80C: Lava seahorse spritemaps ;;;
+;;; $E80C: Dragon spritemaps ;;;
 {
 $A2:E80C             dx 0008, 0008,04,211C, 0008,FC,210C, 01F0,EC,2110, 0000,04,211D, 01F8,04,210D, 81F9,0C,210E, 81F8,F4,210A, 81F8,E4,2101
 $A2:E836             dx 0008, 01F0,E4,2100, 81F8,E4,2103, 0008,04,211C, 0008,FC,210C, 0000,04,211D, 01F8,04,210D, 81F9,0C,210E, 81F8,F4,210A

@@ -501,9 +501,9 @@ $A6:8AF3             dx 0004, 8000,00,216E, 81F0,00,216C, 8000,F0,214E, 81F0,F0,
 }
 
 
-;;; $8B09..8CFA: Spikey platform ;;;
+;;; $8B09..8CFA: Spike platform ;;;
 {
-;;; $8B09: Palette - enemy $DFFF/$E03F (spikey platform) ;;;
+;;; $8B09: Palette - enemy $DFFF/$E03F (spike platform) ;;;
 {
 $A6:8B09             dw 3800, 62BA, 49F3, 2D4D, 0C44, 49F3, 356E, 20C9, 1486, 241F, 1C17, 142F, 0C47, 0000, 0000, 0000
 }
@@ -516,7 +516,7 @@ $A6:8B29             dx 0001,8CE5,
 }
 
 
-;;; $8B2F: Initialisation AI - enemy $DFFF (spikey platform top) ;;;
+;;; $8B2F: Initialisation AI - enemy $DFFF (spike platform top) ;;;
 {
 $A6:8B2F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8B32 A9 29 8B    LDA #$8B29             ;\
@@ -555,7 +555,7 @@ $A6:8B84 6B          RTL
 }
 
 
-;;; $8B85: Initialisation AI - enemy $E03F (spikey platform bottom) ;;;
+;;; $8B85: Initialisation AI - enemy $E03F (spike platform bottom) ;;;
 {
 $A6:8B85 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8B88 BD 3A 0F    LDA $0F3A,x[$7E:14BA]  ;\
@@ -568,7 +568,7 @@ $A6:8B98 6B          RTL
 }
 
 
-;;; $8B99: Main AI - enemy $E03F (spikey platform bottom) ;;;
+;;; $8B99: Main AI - enemy $E03F (spike platform bottom) ;;;
 {
 $A6:8B99 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8B9C BD 3A 0F    LDA $0F3A,x[$7E:123A]  ;\
@@ -581,7 +581,7 @@ $A6:8BAC 6B          RTL
 }
 
 
-;;; $8BAD: Main AI - enemy $DFFF (spikey platform top) ;;;
+;;; $8BAD: Main AI - enemy $DFFF (spike platform top) ;;;
 {
 $A6:8BAD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8BB0 FC A8 0F    JSR ($0FA8,x)[$A6:8BB4]; Execute [enemy function]
@@ -589,7 +589,7 @@ $A6:8BB3 6B          RTL
 }
 
 
-;;; $8BB4: Spikey platform function - waiting to fall ;;;
+;;; $8BB4: Spike platform function - waiting to fall ;;;
 {
 $A6:8BB4 DA          PHX
 $A6:8BB5 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -612,7 +612,7 @@ $A6:8BDB 60          RTS
 }
 
 
-;;; $8BDC: Spikey platform function - falling ;;;
+;;; $8BDC: Spike platform function - falling ;;;
 {
 $A6:8BDC DA          PHX
 $A6:8BDD AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -636,10 +636,10 @@ $A6:8C0F 9D A8 0F    STA $0FA8,x[$7E:1268]  ;} Enemy function = $8C4A (waiting t
 $A6:8C12 BD AE 0F    LDA $0FAE,x[$7E:126E]  ;\
 $A6:8C15 9D 7E 0F    STA $0F7E,x[$7E:123E]  ;} Enemy Y position = [enemy falling target Y position]
 $A6:8C18 A9 1B 00    LDA #$001B             ;\
-$A6:8C1B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Bh, sound library 2, max queued sounds allowed = 6 (spikey platform stops)
+$A6:8C1B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Bh, sound library 2, max queued sounds allowed = 6 (spike platform stops)
 
 $A6:8C1F 22 A1 8C A6 JSL $A68CA1[$A6:8CA1]  ;\
-$A6:8C23 F0 0F       BEQ $0F    [$8C34]     ;} If spikey platform is touching Samus from below:
+$A6:8C23 F0 0F       BEQ $0F    [$8C34]     ;} If spike platform is touching Samus from below:
 $A6:8C25 BD 7E 0F    LDA $0F7E,x[$7E:13BE]  ;\
 $A6:8C28 38          SEC                    ;|
 $A6:8C29 FF 02 78 7E SBC $7E7802,x[$7E:7C42];|
@@ -660,7 +660,7 @@ $A6:8C49 60          RTS
 }
 
 
-;;; $8C4A: Spikey platform function - waiting to rise ;;;
+;;; $8C4A: Spike platform function - waiting to rise ;;;
 {
 $A6:8C4A BF 06 78 7E LDA $7E7806,x[$7E:7AC6];\
 $A6:8C4E 3A          DEC A                  ;} Decrement enemy rise wait timer
@@ -674,7 +674,7 @@ $A6:8C5C 60          RTS
 }
 
 
-;;; $8C5D: Spikey platform function - rising ;;;
+;;; $8C5D: Spike platform function - rising ;;;
 {
 $A6:8C5D DA          PHX
 $A6:8C5E AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -694,7 +694,7 @@ $A6:8C84 BD AC 0F    LDA $0FAC,x[$7E:13EC]  ;\
 $A6:8C87 9D 7E 0F    STA $0F7E,x[$7E:13BE]  ;} Enemy Y position = [enemy rising target Y position]
 
 $A6:8C8A 22 A1 8C A6 JSL $A68CA1[$A6:8CA1]  ;\
-$A6:8C8E F0 0F       BEQ $0F    [$8C9F]     ;} If spikey platform is touching Samus from below:
+$A6:8C8E F0 0F       BEQ $0F    [$8C9F]     ;} If spike platform is touching Samus from below:
 $A6:8C90 BD 7E 0F    LDA $0F7E,x[$7E:12BE]  ;\
 $A6:8C93 38          SEC                    ;|
 $A6:8C94 FF 02 78 7E SBC $7E7802,x[$7E:7B42];|
@@ -707,7 +707,7 @@ $A6:8CA0 60          RTS
 }
 
 
-;;; $8CA1: Check if spikey platform is touching Samus from below ;;;
+;;; $8CA1: Check if spike platform is touching Samus from below ;;;
 {
 ;; Returns:
 ;;     Zero: clear if touching Samus, otherwise set
@@ -763,16 +763,16 @@ $A6:8CE4 6B          RTL
 }
 
 
-;;; $8CE5: Spikey platform spritemap ;;;
+;;; $8CE5: Spike platform spritemap ;;;
 {
 $A6:8CE5             dx 0004, 8000,04,2106, 81F0,04,2104, 8000,F4,2102, 81F0,F4,2100
 }
 }
 
 
-;;; $8CFB..946F: Fire geyser ;;;
+;;; $8CFB..946F: Fire pillar ;;;
 {
-;;; $8CFB: Palette - enemy $E07F (fire geyser) ;;;
+;;; $8CFB: Palette - enemy $E07F (fire pillar) ;;;
 {
 $A6:8CFB             dw 3800, 3E7F, 2DFD, 10FB, 0097, 73FF, 53FF, 37FF, 17FF, 24DF, 189B, 1076, 0C50, 084B, 5EFF, 0880
 }
@@ -780,7 +780,7 @@ $A6:8CFB             dw 3800, 3E7F, 2DFD, 10FB, 0097, 73FF, 53FF, 37FF, 17FF, 24
 
 ;;; $8D1B: Instruction list - graphics part ;;;
 {
-$A6:8D1B             dx 8DAF,       ; Play fire geyser sound effect
+$A6:8D1B             dx 8DAF,       ; Play fire pillar sound effect
                         0002,9082,
                         8E13,       ; Activity frame 0
                         0002,9089,
@@ -838,12 +838,12 @@ $A6:8DA9             dx 0002,9082,
 }
 
 
-;;; $8DAF: Instruction - play fire geyser sound effect ;;;
+;;; $8DAF: Instruction - play fire pillar sound effect ;;;
 {
 $A6:8DAF DA          PHX
 $A6:8DB0 5A          PHY
 $A6:8DB1 A9 61 00    LDA #$0061             ;\
-$A6:8DB4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 61h, sound library 2, max queued sounds allowed = 6 (fire geyser)
+$A6:8DB4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 61h, sound library 2, max queued sounds allowed = 6 (fire pillar)
 $A6:8DB8 7A          PLY
 $A6:8DB9 FA          PLX
 $A6:8DBA 6B          RTL
@@ -904,7 +904,7 @@ $A6:8E11             dw 0008
 }
 
 
-;;; $8E13..8FFB: Fire geyser instructions ;;;
+;;; $8E13..8FFB: Fire pillar instructions ;;;
 {
 ;;; $8E13: Instruction - activity frame 0 ;;;
 {
@@ -1215,7 +1215,7 @@ $A6:8FFB 6B          RTL
 }
 
 
-;;; $8FFC: Initialisation AI - enemy $E07F (fire geyser) ;;;
+;;; $8FFC: Initialisation AI - enemy $E07F (fire pillar) ;;;
 {
 $A6:8FFC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:8FFF A9 A9 8D    LDA #$8DA9             ;\
@@ -1235,7 +1235,7 @@ $A6:9022 6B          RTL
 }
 
 
-;;; $9023: Main AI - enemy $E07F (fire geyser) ;;;
+;;; $9023: Main AI - enemy $E07F (fire pillar) ;;;
 {
 $A6:9023 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9026 BD B6 0F    LDA $0FB6,x[$7E:12B6]  ;\
@@ -1246,7 +1246,7 @@ $A6:902E 6B          RTL
 }
 
 
-;;; $902F: Fire geyser function - inactive ;;;
+;;; $902F: Fire pillar function - inactive ;;;
 {
 $A6:902F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9032 DE AA 0F    DEC $0FAA,x[$7E:126A]  ; Decrement enemy inactive timer
@@ -1270,7 +1270,7 @@ $A6:9061 60          RTS
 }
 
 
-;;; $9062: Fire geyser function - active ;;;
+;;; $9062: Fire pillar function - active ;;;
 {
 $A6:9062 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9065 BD AC 0F    LDA $0FAC,x[$7E:126C]  ;\
@@ -1299,7 +1299,7 @@ $A6:9081 6B          RTL
 }
 
 
-;;; $9082: Fire geyser spritemaps ;;;
+;;; $9082: Fire pillar spritemaps ;;;
 {
 $A6:9082             dx 0001, 81F9,F9,210E
 $A6:9089             dx 0004, 0005,FF,2134, 01F4,FF,6134, 81F9,F8,2102, 81F9,F2,2100
@@ -1328,9 +1328,9 @@ $A6:9469             dx 0001, 81F9,9C,212E
 }
 
 
-;;; $9470..998B: Nuclear waffle ;;;
+;;; $9470..998B: Fire arc ;;;
 {
-;;; $9470: Palette - enemy $E0BF (nuclear waffle) ;;;
+;;; $9470: Palette - enemy $E0BF (fire arc) ;;;
 {
 $A6:9470             dw 3800, 3E7F, 2DFD, 10FB, 0097, 73FF, 53FF, 37FF, 17FF, 24DF, 189B, 1076, 0C50, 084B, 5EFF, 0880
 }
@@ -1354,7 +1354,7 @@ $A6:9490             dx 0003,9954,
 }
 
 
-;;; $94C4: Initialisation AI - enemy $E0BF (nuclear waffle) ;;;
+;;; $94C4: Initialisation AI - enemy $E0BF (fire arc) ;;;
 {
 $A6:94C4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:94C7 A9 90 94    LDA #$9490             ;\
@@ -1433,7 +1433,7 @@ $A6:9591 9F 14 80 7E STA $7E8014,x[$7E:8014];} Enemy body index = 8
 ; LOOP_ENEMY_PROJECTILES
 $A6:9595 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9598 A0 C7 BB    LDY #$BBC7             ;\
-$A6:959B 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn nuclear waffle body enemy projectile
+$A6:959B 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn fire arc body enemy projectile
 $A6:959F BF 14 80 7E LDA $7E8014,x[$7E:8014];\
 $A6:95A3 38          SEC                    ;|
 $A6:95A4 E9 02 00    SBC #$0002             ;} Enemy body index -= 2
@@ -1449,7 +1449,7 @@ $A6:95BA 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A6:95BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A6:95BF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:95C1 A9 2B 00    LDA #$002B             ;\
-$A6:95C4 85 16       STA $16    [$7E:0016]  ;} $16 = 2Bh (nuclear waffle body)
+$A6:95C4 85 16       STA $16    [$7E:0016]  ;} $16 = 2Bh (fire arc body)
 $A6:95C6 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
 $A6:95C9 1D 98 0F    ORA $0F98,x[$7E:0F98]  ;| 
 $A6:95CC 9F 28 80 7E STA $7E8028,x[$7E:8028];} $18 = enemy graphics indices = [enemy palette index] | [enemy VRAM tiles index]
@@ -1479,7 +1479,7 @@ $A6:95F6             dw 0190,00F0, 00F0,0190 ; Start angle, finish angle
 }
 
 
-;;; $960E: Main AI - enemy $E0BF (nuclear waffle) ;;;
+;;; $960E: Main AI - enemy $E0BF (fire arc) ;;;
 {
 $A6:960E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9611 FC A8 0F    JSR ($0FA8,x)[$A6:9615]; Execute [enemy function]
@@ -1487,7 +1487,7 @@ $A6:9614 6B          RTL
 }
 
 
-;;; $9615: Nuclear waffle function - inactive ;;;
+;;; $9615: Fire arc function - inactive ;;;
 {
 $A6:9615 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9618 DE AA 0F    DEC $0FAA,x[$7E:0FAA]  ; Decrement enemy inactive timer
@@ -1524,7 +1524,7 @@ $A6:9681 60          RTS
 }
 
 
-;;; $9682: Nuclear waffle function - active ;;;
+;;; $9682: Fire arc function - active ;;;
 {
 $A6:9682 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9685 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
@@ -1541,7 +1541,7 @@ $A6:96A1 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy X position]
 $A6:96A3 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A6:96A6 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:96A8 A9 2E 00    LDA #$002E             ;\
-$A6:96AB 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (nuclear waffle splash)
+$A6:96AB 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (fire arc splash)
 $A6:96AD BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:96B1 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:96B3 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
@@ -1551,12 +1551,12 @@ $A6:96BC BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A6:96BF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y position]
 $A6:96C1 A5 1A       LDA $1A    [$7E:001A]  ;\
 $A6:96C3 18          CLC                    ;|
-$A6:96C4 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] (nuclear waffle explosion)
+$A6:96C4 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] (fire arc explosion)
 $A6:96C7 85 16       STA $16    [$7E:0016]  ;/
 $A6:96C9 BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:96CD 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:96CF 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
-$A6:96D3 20 3F 99    JSR $993F  [$A6:993F]  ; Play nuclear waffle explosion sound effect
+$A6:96D3 20 3F 99    JSR $993F  [$A6:993F]  ; Play fire arc explosion sound effect
 
 $A6:96D6 68          PLA
 $A6:96D7 9F 26 80 7E STA $7E8026,x[$7E:8026]; Enemy head explosion reason = [$1E] (explosion reason)
@@ -1572,8 +1572,8 @@ $A6:96F5 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;\
 $A6:96F9 18          CLC                    ;|
 $A6:96FA 7F 0E 80 7E ADC $7E800E,x[$7E:800E];} Enemy Y position = [enemy arc origin Y position] + [$0E32] * -sin([A] * pi / 80h) * FFh / 100h
 $A6:96FE 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
-$A6:9701 20 21 97    JSR $9721  [$A6:9721]  ; Handle nuclear waffle enemy projectiles
-$A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]  ; Handle nuclear waffle sprite objects
+$A6:9701 20 21 97    JSR $9721  [$A6:9721]  ; Handle fire arc enemy projectiles
+$A6:9704 20 E9 97    JSR $97E9  [$A6:97E9]  ; Handle fire arc sprite objects
 $A6:9707 18          CLC                    ;\
 $A6:9708 BF 00 80 7E LDA $7E8000,x[$7E:8000];|
 $A6:970C 7F 08 80 7E ADC $7E8008,x[$7E:8008];|
@@ -1585,7 +1585,7 @@ $A6:9720 60          RTS
 }
 
 
-;;; $9721: Handle nuclear waffle enemy projectiles ;;;
+;;; $9721: Handle fire arc enemy projectiles ;;;
 {
 $A6:9721 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9724 A9 08 00    LDA #$0008             ;\
@@ -1621,7 +1621,7 @@ $A6:9766 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X positio
 $A6:9768 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
 $A6:976B 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
 $A6:976D A9 2E 00    LDA #$002E             ;\
-$A6:9770 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (nuclear waffle splash)
+$A6:9770 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (fire arc splash)
 $A6:9772 BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:9776 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:9778 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
@@ -1631,12 +1631,12 @@ $A6:9781 B9 93 1A    LDA $1A93,y[$7E:1AB5]  ;\
 $A6:9784 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
 $A6:9786 A5 1A       LDA $1A    [$7E:001A]  ;\
 $A6:9788 18          CLC                    ;|
-$A6:9789 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] (nuclear waffle explosion)
+$A6:9789 69 2C 00    ADC #$002C             ;} $16 = 2Ch + [$1A] (fire arc explosion)
 $A6:978C 85 16       STA $16    [$7E:0016]  ;/
 $A6:978E BF 28 80 7E LDA $7E8028,x[$7E:8028];\
 $A6:9792 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:9794 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
-$A6:9798 20 3F 99    JSR $993F  [$A6:993F]  ; Play nuclear waffle explosion sound effect
+$A6:9798 20 3F 99    JSR $993F  [$A6:993F]  ; Play fire arc explosion sound effect
 $A6:979B FA          PLX
 
 $A6:979C 68          PLA
@@ -1673,7 +1673,7 @@ $A6:97E8 60          RTS
 }
 
 
-;;; $97E9: Handle nuclear waffle sprite objects ;;;
+;;; $97E9: Handle fire arc sprite objects ;;;
 {
 $A6:97E9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:97EC A9 06 00    LDA #$0006             ;\
@@ -1710,7 +1710,7 @@ $A6:9831 85 12       STA $12    [$7E:0012]  ;/
 $A6:9833 BF F8 F1 7E LDA $7EF1F8,x[$7E:F236];\
 $A6:9837 85 14       STA $14    [$7E:0014]  ;} $14 = [sprite object Y position]
 $A6:9839 A9 2E 00    LDA #$002E             ;\
-$A6:983C 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (nuclear waffle splash)
+$A6:983C 85 16       STA $16    [$7E:0016]  ;} $16 = 2Eh (fire arc splash)
 $A6:983E A5 26       LDA $26    [$7E:0026]  ;\
 $A6:9840 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:9842 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
@@ -1720,12 +1720,12 @@ $A6:984C BF F8 F1 7E LDA $7EF1F8,x[$7E:F236];\
 $A6:9850 85 14       STA $14    [$7E:0014]  ;} $14 = [sprite object Y position]
 $A6:9852 A9 2C 00    LDA #$002C             ;\
 $A6:9855 18          CLC                    ;|
-$A6:9856 65 1A       ADC $1A    [$7E:001A]  ;} $16 = 2Ch + [$1A] (nuclear waffle explosion)
+$A6:9856 65 1A       ADC $1A    [$7E:001A]  ;} $16 = 2Ch + [$1A] (fire arc explosion)
 $A6:9858 85 16       STA $16    [$7E:0016]  ;/
 $A6:985A A5 26       LDA $26    [$7E:0026]  ;\
 $A6:985C 85 18       STA $18    [$7E:0018]  ;} $18 = [enemy graphics indices]
 $A6:985E 22 26 BC B4 JSL $B4BC26[$B4:BC26]  ; Create sprite object
-$A6:9862 20 3F 99    JSR $993F  [$A6:993F]  ; Play nuclear waffle explosion sound effect
+$A6:9862 20 3F 99    JSR $993F  [$A6:993F]  ; Play fire arc explosion sound effect
 $A6:9865 FA          PLX
 
 $A6:9866 68          PLA
@@ -1859,7 +1859,7 @@ $A6:993E 60          RTS
 }
 
 
-;;; $993F: Play nuclear waffle explosion sound effect ;;;
+;;; $993F: Play fire arc explosion sound effect ;;;
 {
 ;; Parameters:
 ;;     $1E: Explosion reason. 0 = no explosion, 1 = rising, 2 = falling
@@ -1869,7 +1869,7 @@ $A6:9941 A5 1E       LDA $1E    [$7E:001E]  ;\
 $A6:9943 C9 02 00    CMP #$0002             ;} If [$1E] != 2 (falling):
 $A6:9946 F0 07       BEQ $07    [$994F]     ;/
 $A6:9948 A9 5E 00    LDA #$005E             ;\
-$A6:994B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (nuclear waffle part spawns)
+$A6:994B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (fire arc part spawns)
 
 $A6:994F FA          PLX
 $A6:9950 7A          PLY
@@ -1889,7 +1889,7 @@ $A6:9953 6B          RTL
 }
 
 
-;;; $9954: Nuclear waffle spritemaps ;;;
+;;; $9954: Fire arc spritemaps ;;;
 {
 $A6:9954             dx 0001, 81F9,F8,230A
 $A6:995B             dx 0001, 81F9,F8,2308
@@ -2125,10 +2125,10 @@ $A6:9AFB 9F 06 78 7E STA $7E7806,x[$7E:78CA];/
 $A6:9AFF 98          TYA                    ;\
 $A6:9B00 FA          PLX                    ;} Enemy spike index = [Y]
 $A6:9B01 9F 0C 78 7E STA $7E780C,x[$7E:78CC];/
-$A6:9B05 A0 BE 9D    LDY #$9DBE             ; Y = $9DBE (mini Kraid spikes - left)
+$A6:9B05 A0 BE 9D    LDY #$9DBE             ; Y = $9DBE (fake Kraid spikes - left)
 $A6:9B08 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
 $A6:9B0B 30 03       BMI $03    [$9B10]     ;} If [enemy direction] = right:
-$A6:9B0D A0 CC 9D    LDY #$9DCC             ; Y = $9DCC (mini Kraid spikes - right)
+$A6:9B0D A0 CC 9D    LDY #$9DCC             ; Y = $9DCC (fake Kraid spikes - right)
 
 $A6:9B10 22 27 80 86 JSL $868027[$86:8027]  ; Spawn enemy projectile
 $A6:9B14 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
@@ -2255,7 +2255,7 @@ $A6:9BD7 9F 00 78 7E STA $7E7800,x[$7E:78C0];} Enemy spit X velocity = [$9A48 + 
 $A6:9BDB B9 4A 9A    LDA $9A4A,y[$A6:9A4A]  ;\
 $A6:9BDE 9F 02 78 7E STA $7E7802,x[$7E:78C2];} Enemy spit Y velocity = [$9A48 + [Y] + 2]
 $A6:9BE2 A0 B0 9D    LDY #$9DB0             ;\
-$A6:9BE5 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn mini Kraid spit enemy projectile
+$A6:9BE5 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn fake Kraid spit enemy projectile
 $A6:9BE9 FA          PLX
 $A6:9BEA 7A          PLY
 $A6:9BEB B9 4C 9A    LDA $9A4C,y[$A6:9A4C]  ;\
@@ -2263,7 +2263,7 @@ $A6:9BEE 9F 00 78 7E STA $7E7800,x[$7E:78C0];} Enemy spit X velocity = [$9A48 + 
 $A6:9BF2 B9 4E 9A    LDA $9A4E,y[$A6:9A4E]  ;\
 $A6:9BF5 9F 02 78 7E STA $7E7802,x[$7E:78C2];} Enemy spit Y velocity = [$9A48 + [Y] + 6]
 $A6:9BF9 A0 B0 9D    LDY #$9DB0             ;\
-$A6:9BFC 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn mini Kraid spit enemy projectile
+$A6:9BFC 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn fake Kraid spit enemy projectile
 $A6:9C00 7A          PLY
 $A6:9C01 6B          RTL
 }
@@ -2322,9 +2322,9 @@ $A6:9C4E 80 00       BRA $00    [$9C50]
 $A6:9C50 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9C53 BD 8C 0F    LDA $0F8C,x[$7E:104C]  ;\
 $A6:9C56 D0 0B       BNE $0B    [$9C63]     ;} If [enemy health] = 0:
-$A6:9C58 A9 03 00    LDA #$0003             ; A = 3 (mini-Kraid explosion)
+$A6:9C58 A9 03 00    LDA #$0003             ; A = 3 (fake Kraid explosion)
 $A6:9C5B 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
-$A6:9C5F 22 EE B8 A0 JSL $A0B8EE[$A0:B8EE]  ; Mini-Kraid death item drop routine
+$A6:9C5F 22 EE B8 A0 JSL $A0B8EE[$A0:B8EE]  ; Fake Kraid death item drop routine
 
 $A6:9C63 6B          RTL
 }
@@ -6276,7 +6276,7 @@ $A6:C66E             dw FFE8,FFE8, FFEC,0014, 0010,FFE2, 001E,FFFD, 000E,FFF3, F
 }
 
 
-;;; $C696: Initialisation AI - enemy $E1BF (Ridley's explosion) ;;;
+;;; $C696: Initialisation AI - enemy $E1BF (Ridley explosion) ;;;
 {
 $A6:C696 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:C699 A9 01 00    LDA #$0001
@@ -6534,7 +6534,7 @@ $A6:C8D0             dw CA89, CA8F
 }
 
 
-;;; $C8D4: Main AI - enemy $E1BF (Ridley's explosion) ;;;
+;;; $C8D4: Main AI - enemy $E1BF (Ridley explosion) ;;;
 {
 $A6:C8D4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:C8D7 20 13 C9    JSR $C913  [$A6:C913]
@@ -6586,32 +6586,32 @@ $A6:C931 60          RTS
 }
 
 
-;;; $C932: Spawn Ridley's explosion enemies ;;;
+;;; $C932: Spawn Ridley explosion enemies ;;;
 {
 $A6:C932 A2 E7 C9    LDX #$C9E7             ;\
-$A6:C935 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 0
+$A6:C935 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 0
 $A6:C939 A2 D7 C9    LDX #$C9D7             ;\
-$A6:C93C 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 1
+$A6:C93C 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 1
 $A6:C940 A2 C7 C9    LDX #$C9C7             ;\
-$A6:C943 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 2
+$A6:C943 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 2
 $A6:C947 A2 B7 C9    LDX #$C9B7             ;\
-$A6:C94A 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 3
+$A6:C94A 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 3
 $A6:C94E A2 A7 C9    LDX #$C9A7             ;\
-$A6:C951 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 4
+$A6:C951 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 4
 $A6:C955 A2 97 C9    LDX #$C997             ;\
-$A6:C958 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 5
+$A6:C958 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 5
 $A6:C95C A2 87 C9    LDX #$C987             ;\
-$A6:C95F 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 6
+$A6:C95F 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 6
 $A6:C963 A2 F7 C9    LDX #$C9F7             ;\
-$A6:C966 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 7
+$A6:C966 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 7
 $A6:C96A A2 07 CA    LDX #$CA07             ;\
-$A6:C96D 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 8
+$A6:C96D 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 8
 $A6:C971 A2 27 CA    LDX #$CA27             ;\
-$A6:C974 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion 9
+$A6:C974 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion 9
 $A6:C978 A2 17 CA    LDX #$CA17             ;\
-$A6:C97B 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion Ah
+$A6:C97B 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion Ah
 $A6:C97F A2 37 CA    LDX #$CA37             ;\
-$A6:C982 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley's explosion Bh
+$A6:C982 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Ridley explosion Bh
 $A6:C986 60          RTS
 
 ;                        ______________________________________ Enemy ID
@@ -6623,18 +6623,18 @@ $A6:C986 60          RTS
 ;                       |    |    |    |    |    |     ________ Parameter 1
 ;                       |    |    |    |    |    |    |     ___ Parameter 2
 ;                       |    |    |    |    |    |    |    |
-$A6:C987             dw E1BF,0000,0000,0000,2C00,0000,0000,0000 ; Ridley's explosion
-$A6:C997             dw E1BF,0000,0000,0000,2C00,0000,0002,0000 ; Ridley's explosion
-$A6:C9A7             dw E1BF,0000,0000,0000,2C00,0000,0004,0000 ; Ridley's explosion
-$A6:C9B7             dw E1BF,0000,0000,0000,2C00,0000,0006,0000 ; Ridley's explosion
-$A6:C9C7             dw E1BF,0000,0000,0000,2C00,0000,0008,0000 ; Ridley's explosion
-$A6:C9D7             dw E1BF,0000,0000,0000,2C00,0000,000A,0000 ; Ridley's explosion
-$A6:C9E7             dw E1BF,0000,0000,0000,2C00,0000,000C,0000 ; Ridley's explosion
-$A6:C9F7             dw E1BF,0000,0000,0000,2C00,0000,000E,0000 ; Ridley's explosion
-$A6:CA07             dw E1BF,0000,0000,0000,2C00,0000,0010,0000 ; Ridley's explosion
-$A6:CA17             dw E1BF,0000,0000,0000,2C00,0000,0012,0000 ; Ridley's explosion
-$A6:CA27             dw E1BF,0000,0000,0000,2C00,0000,0014,0000 ; Ridley's explosion
-$A6:CA37             dw E1BF,0000,0000,0000,2C00,0000,0016,0000 ; Ridley's explosion
+$A6:C987             dw E1BF,0000,0000,0000,2C00,0000,0000,0000 ; Ridley explosion
+$A6:C997             dw E1BF,0000,0000,0000,2C00,0000,0002,0000 ; Ridley explosion
+$A6:C9A7             dw E1BF,0000,0000,0000,2C00,0000,0004,0000 ; Ridley explosion
+$A6:C9B7             dw E1BF,0000,0000,0000,2C00,0000,0006,0000 ; Ridley explosion
+$A6:C9C7             dw E1BF,0000,0000,0000,2C00,0000,0008,0000 ; Ridley explosion
+$A6:C9D7             dw E1BF,0000,0000,0000,2C00,0000,000A,0000 ; Ridley explosion
+$A6:C9E7             dw E1BF,0000,0000,0000,2C00,0000,000C,0000 ; Ridley explosion
+$A6:C9F7             dw E1BF,0000,0000,0000,2C00,0000,000E,0000 ; Ridley explosion
+$A6:CA07             dw E1BF,0000,0000,0000,2C00,0000,0010,0000 ; Ridley explosion
+$A6:CA17             dw E1BF,0000,0000,0000,2C00,0000,0012,0000 ; Ridley explosion
+$A6:CA27             dw E1BF,0000,0000,0000,2C00,0000,0014,0000 ; Ridley explosion
+$A6:CA37             dw E1BF,0000,0000,0000,2C00,0000,0016,0000 ; Ridley explosion
 }
 
 
@@ -9677,7 +9677,7 @@ $A6:E18F             dw 0000, 6BF5, 06E1, 0641, 05A1, 5E5F, 183F, 1014, 080A, 04
 }
 
 
-;;; $E1AF: Palette - enemy $E1BF (Ridley's explosion) ;;;
+;;; $E1AF: Palette - enemy $E1BF (Ridley explosion) ;;;
 {
 $A6:E1AF             dw 3800, 56BA, 41B2, 1447, 0403, 4E15, 3570, 24CB, 1868, 5E5F, 183F, 1014, 031F, 01DA, 00F5, 0C63
 }
@@ -11384,7 +11384,6 @@ $A6:FB2F             dx 000D, C3F8,80,04E6, C3F8,90,04E6, C3F8,A0,04E6, C3F8,B0,
 {
 ;;; $FB72: Initialisation AI - enemy $E27F (zebetites) ;;;
 {
-; Also enemy unknown - enemy $E23F (Ceres door)
 $A6:FB72 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:FB75 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
 $A6:FB78 09 00 A0    ORA #$A000             ;} Set enemy hitbox solid to Samus and process instructions

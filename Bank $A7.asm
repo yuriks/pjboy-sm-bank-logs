@@ -1295,7 +1295,7 @@ $A7:AB42 60          RTS
 }
 
 
-;;; $AB43: Initialisation AI - enemy $E2FF (Kraid's arm) ;;;
+;;; $AB43: Initialisation AI - enemy $E2FF (Kraid arm) ;;;
 {
 $A7:AB43 20 2C A9    JSR $A92C  [$A7:A92C]  ;\
 $A7:AB46 D0 1C       BNE $1C    [$AB64]     ;} If Kraid not dead:
@@ -1386,7 +1386,7 @@ $A7:ABF7 6B          RTL
 }
 
 
-;;; $ABF8: Initialisation AI - enemy $E3FF (Kraid's foot) ;;;
+;;; $ABF8: Initialisation AI - enemy $E3FF (Kraid foot) ;;;
 {
 $A7:ABF8 20 2C A9    JSR $A92C  [$A7:A92C]  ;\
 $A7:ABFB D0 20       BNE $20    [$AC1D]     ;} If Kraid not dead:
@@ -2730,7 +2730,7 @@ $A7:B7BC 6B          RTL
 }
 
 
-;;; $B7BD: Main AI - enemy $E2FF (Kraid's arm) ;;;
+;;; $B7BD: Main AI - enemy $E2FF (Kraid arm) ;;;
 {
 $A7:B7BD AD 15 09    LDA $0915  [$7E:0915]  ;\
 $A7:B7C0 18          CLC                    ;|
@@ -3047,7 +3047,7 @@ $A7:B9F5 60          RTS
 }
 
 
-;;; $B9F6: Main AI - enemy $E3FF (Kraid's foot) ;;;
+;;; $B9F6: Main AI - enemy $E3FF (Kraid foot) ;;;
 {
 $A7:B9F6 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A7:B9F9 8D BA 10    STA $10BA  [$7E:10BA]  ;} Kraid foot X position = [Kraid X position]
@@ -4398,14 +4398,14 @@ $A7:C560 A9 4C 80    LDA #$804C             ;} Uhhh >_<; (enemy shot "=" RTL)
 $A7:C563 9F 32 00 A0 STA $A00032,x[$A0:E2F1];/
 $A7:C567 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
 $A7:C56A 09 00 02    ORA #$0200             ;|
-$A7:C56D 09 00 04    ORA #$0400             ;} Set Kraid's arm as intangible and flagged for deletion
+$A7:C56D 09 00 04    ORA #$0400             ;} Set Kraid arm as intangible and flagged for deletion
 $A7:C570 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A7:C573 09 00 02    ORA #$0200             ;\
 $A7:C576 09 00 04    ORA #$0400             ;} >_<
 $A7:C579 29 FF F7    AND #$F7FF             ;\
 $A7:C57C 29 FF DF    AND #$DFFF             ;|
 $A7:C57F 29 FF 7F    AND #$7FFF             ;|
-$A7:C582 8D 06 10    STA $1006  [$7E:1006]  ;} Set Kraid's foot and lints as intangible, flagged for deletion, not processed off screen, not processing instructions and non-solid hitbox
+$A7:C582 8D 06 10    STA $1006  [$7E:1006]  ;} Set Kraid foot and lints as intangible, flagged for deletion, not processed off screen, not processing instructions and non-solid hitbox
 $A7:C585 8D 46 10    STA $1046  [$7E:1046]  ;|
 $A7:C588 8D 86 10    STA $1086  [$7E:1086]  ;|
 $A7:C58B 8D C6 10    STA $10C6  [$7E:10C6]  ;/

@@ -53,7 +53,7 @@
 {
 ;;; $8000: Grapple AI - no interaction. Also unfreezes enemies(!) ;;;
 {
-; Used by Maridia fish, Draygon body, nuclear waffle, Phantoon, etecoon, dachora and WS ghost
+; Used by skultera, Draygon body, fire arc, Phantoon, etecoon, dachora and WS ghost
 $A0:8000 22 6D 9F A0 JSL $A09F6D[$A0:9F6D]  ; Switch enemy AI to main AI
 $A0:8004 6B          RTL
 }
@@ -61,7 +61,7 @@ $A0:8004 6B          RTL
 
 ;;; $8005: Grapple AI - Samus latches on ;;;
 {
-; Used by grapplable jet powered ripper and Crocomire
+; Used by gripper and Crocomire
 $A0:8005 22 7D 9F A0 JSL $A09F7D[$A0:9F7D]  ; Samus latches on with grapple
 $A0:8009 6B          RTL
 }
@@ -85,7 +85,7 @@ $A0:8013 6B          RTL
 
 ;;; $8014: Grapple AI - Samus latches on - no invincibility ;;;
 {
-; Used by Maridia floater
+; Used by powamp
 $A0:8014 22 E9 9F A0 JSL $A09FE9[$A0:9FE9]  ; Samus latches on with grapple - no invincibility
 $A0:8018 6B          RTL
 }
@@ -3048,7 +3048,7 @@ $A0:99F8 6B          RTL
 ;;     Y: Projectile index
 
 ; Code at $9A3D for creating the dud shot graphics uses the wrong index register for the projectile position,
-; meaning the sprite object usually doesn't appear (used for nuclear waffle and Botwoon)
+; meaning the sprite object usually doesn't appear (used for fire arc and Botwoon)
 
 ; Why does getting shot mask off all the property bits?
 ; The first ASM instructions of the shot instruction list *are* executed in time to disable Samus collision before the next check,
@@ -4335,11 +4335,11 @@ $A0:A3AC DC 84 17    JML [$1784][$A2:8037]
 {
 ;; Parameter:
 ;;     A: Death animation. Range 0..4
-;;         0: Small explosion. Used by grapple killed, power bomb killed, refill candy, fire geyser, boulder, creepy crawlies, skree, Norfair fireball, fireflea, waver, rinka, lavaquake rocks, fly, Maridia spikey shells, thin hopping blob, bouncing gooball, zebetite
+;;         0: Small explosion. Used by grapple killed, power bomb killed, refill candy, fire pillar, boulder, creepy crawlies, skree, Norfair fireball, fireflea, waver, rinka, polyp, fly, owtch, puyo, boyon, zebetite
 ;;         1: Killed by Samus contact
-;;         2: Normal explosion. Used by super missile killed default, Wrecked Ship orb / robot / ghost, Maridia puffer / floater / large indestructible snail / snail / fish, fune, sidehopper, desgeega, mochtroid, slug, crab, metal skree, chute, rio, Norfair lava-jumping enemy, rio, spike shooting plant
-;;         3: Mini-Kraid explosion
-;;         4: Big explosion. Used by space pirates, Shaktool, ki-hunter, lava seahorse, kago, yapping maw, mini-Draygon, metroid, super-sidehopper/desgeega, Maridia beyblade turtle
+;;         2: Normal explosion. Used by super missile killed default, atomic / robot / ghost, bull / floater / oum / yard / fish, fune, sidehopper, desgeega, mochtroid, slug, sciser, metaree, chute, rio, squeept, rio, cacatac
+;;         3: Fake Kraid explosion
+;;         4: Big explosion. Used by space pirates, Shaktool, ki-hunter, dragon, kago, yapping maw, evir, metroid, super-sidehopper/desgeega, tatori
 $A0:A3AF 08          PHP
 $A0:A3B0 8B          PHB
 $A0:A3B1 F4 00 A0    PEA $A000              ;\
@@ -4632,7 +4632,7 @@ $A0:A5B6 6B          RTL
 
 ;;; $A5B7: Normal enemy power bomb AI - no death check (external) ;;;
 {
-; Called by rinka, mini-Kraid, Kraid, Draygon, Ridley, Mother Brain
+; Called by rinka, fake Kraid, Kraid, Draygon, Ridley, Mother Brain
 $A0:A5B7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A0:A5BA 20 C1 A5    JSR $A5C1  [$A0:A5C1]  ; Normal enemy power bomb AI - no death check
 $A0:A5BD AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -5779,7 +5779,7 @@ $A0:ADA2 6B          RTL                    ;} Return A = 1
 ;; Returns:
 ;;     Zero: Clear if enemy centre is over [A] pixels off-screen, set otherwise
 
-; Called by mini-Draygon only
+; Called by evir only
 $A0:ADA3 DA          PHX
 $A0:ADA4 85 12       STA $12    [$7E:0012]  ; $12 = [A]
 $A0:ADA6 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6800,7 +6800,7 @@ $A0:B7EE             dw 0000, 0648, 0C8F, 12D5, 1917, 1F56, 258F, 2BC3, 31F1, 38
 
 ;;; $B8EE..BB6F: Enemy death item drop routines ;;;
 {
-;;; $B8EE: Mini-Kraid death item drop routine ;;;
+;;; $B8EE: Fake Kraid death item drop routine ;;;
 {
 $A0:B8EE DA          PHX
 $A0:B8EF 5A          PHY
@@ -6825,7 +6825,7 @@ $A0:B914 18          CLC                    ;|
 $A0:B915 6F 36 F4 7E ADC $7EF436[$7E:F436]  ;|
 $A0:B919 85 14       STA $14    [$7E:0014]  ;/
 $A0:B91B A9 FF E0    LDA #$E0FF             ;\
-$A0:B91E 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with mini-Kraid's drop chances
+$A0:B91E 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn item drop with fake Kraid's drop chances
 $A0:B922 CE 0B 06    DEC $060B  [$7E:060B]  ; Decrement $060B
 $A0:B925 D0 D0       BNE $D0    [$B8F7]     ; If [$060B] != 0: go to LOOP
 $A0:B927 28          PLP
@@ -6835,7 +6835,7 @@ $A0:B92A 6B          RTL
 }
 
 
-;;; $B92B: Lower Norfair space pirate death item drop routine ;;;
+;;; $B92B: Gold ninja space pirate death item drop routine ;;;
 {
 $A0:B92B DA          PHX
 $A0:B92C 5A          PHY
@@ -9183,7 +9183,7 @@ $A0:C69C 60          RTS
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
-; Used by Maridia large indestructible snail
+; Used by oum
 
 $A0:C69D A9 00 40    LDA #$4000
 $A0:C6A0 85 20       STA $20    [$7E:0020]
@@ -9200,7 +9200,7 @@ $A0:C6A2 80 09       BRA $09    [$C6AD]
 ;;     Carry: Set if collision, clear otherwise
 
 ; Call $A0:C8AD if this routine returns carry clear to adjust the enemy's position for any slopes
-; Used by Maridia snail and Wrecked Ship orange zoomer
+; Used by yard and Wrecked Ship orange zoomer
 
 $A0:C6A4 A9 00 80    LDA #$8000
 $A0:C6A7 85 20       STA $20    [$7E:0020]
@@ -9786,7 +9786,7 @@ $A0:C9BF             dw 0000,0000,0000,0000, 0000,1000,FFFF,F000, 0000,2000,FFFF
 ;;; $CBC7: Common enemy projectile speeds - quadratically increasing ;;;
 {
 ; Clone of $838F
-; Used by Botwoon's body when dying and falling to the floor, and Norfair lavaquake rocks
+; Used by Botwoon's body when dying and falling to the floor, and polyp rock
 
 ; Subspeed, speed, negated subspeed, negated speed
 $A0:CBC7             dw 0000,0000,0000,0000, 0109,0000,FEF7,FFFF, 031B,0000,FCE5,FFFF, 0636,0000,F9CA,FFFF,
@@ -9924,11 +9924,11 @@ $A0:DF3F             dx 0E00, E359, 03C0, 000C, 0030, 0020, A5, 04, 002C, 0004, 
 $A0:DF7F             dx 0E00, E359, 03C0, 000C, 0013, 0013, A5, 08, 0000, 0004, EA2A, 0001, 0000, EB13, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, EDEC, ED5A, 0000, AC9C00, 05, F416, F094, 0000 ; Spore Spawn
 
 $A0:DFBF             dx 1000, 8687, 0014, 0028, 0010, 0010, A6, 00, 0000, 0000, 86F5, 0001, 0000, 8793, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 802D, 0000, AB9C00, 05, F46A, EEDC, E0B5 ; Boulder
-$A0:DFFF             dx 0400, 8B09, 01F4, 00C8, 0010, 000C, A6, 00, 0000, 0000, 8B2F, 0002, 0000, 8BAD, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 804C, 0000, AB9800, 05, F470, EEC6, DF49 ; Spikey platform top
-$A0:E03F             dx 0200, 8B09, 01F4, 00C8, 0010, 0002, A6, 00, 0000, 0000, 8B85, 0001, 0000, 8B99, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 804C, 0000, AB9800, 05, F470, EEC6, 0000 ; Spikey platform bottom
+$A0:DFFF             dx 0400, 8B09, 01F4, 00C8, 0010, 000C, A6, 00, 0000, 0000, 8B2F, 0002, 0000, 8BAD, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 804C, 0000, AB9800, 05, F470, EEC6, DF49 ; Spike platform top
+$A0:E03F             dx 0200, 8B09, 01F4, 00C8, 0010, 0002, A6, 00, 0000, 0000, 8B85, 0001, 0000, 8B99, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 804C, 0000, AB9800, 05, F470, EEC6, 0000 ; Spike platform bottom
 $A0:E07F             dx 0800, 8CFB, 0014, 001E, 0008, 0008, A6, 00, 0000, 0000, 8FFC, 0002, 0000, 9023, 800F, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 804C, 0000, AB9000, 05, F476, EEC6, DEBD ; Fire pillar
 $A0:E0BF             dx 0800, 9470, 0028, 0032, 0008, 0008, A6, 00, 0000, 0000, 94C4, 0001, 0000, 960E, 8000, 804C, 8041, 0000, 0000, 00000000, 0000, 0000, 00000000, 8023, 804C, 0000, AB9000, 05, F464, EEC6, E037 ; Fire arc
-$A0:E0FF             dx 1000, 998C, 0190, 0064, 0020, 0018, A6, 00, 0000, 0000, 9A58, 0001, 0000, 9AC2, 800F, 804C, 8041, 0000, 0003, 00000000, 9C39, 0000, 00000000, 9C22, 9C39, 0000, AB8000, 05, F2C0, EFFA, E0DF ; Mini-Kraid
+$A0:E0FF             dx 1000, 998C, 0190, 0064, 0020, 0018, A6, 00, 0000, 0000, 9A58, 0001, 0000, 9AC2, 800F, 804C, 8041, 0000, 0003, 00000000, 9C39, 0000, 00000000, 9C22, 9C39, 0000, AB8000, 05, F2C0, EFFA, E0DF ; Fake Kraid
 $A0:E13F             dx 2000, E14F, 7FFF, 0005, 0008, 0008, A6, 08, 0000, 0001, A0F5, 0001, 0000, A288, 800F, A2D3, 8041, 0000, 0000, 00000000, DFB2, 0000, 00000000, 8023, DF8A, 0000, B09400, 05, F44C, F1B2, 0000 ; Ceres Ridley
 $A0:E17F             dx 2000, E14F, 4650, 00A0, 0008, 0008, A6, 08, 0000, 0005, A0F5, 0001, 0000, B227, 800F, B297, 8041, B28A, 0000, 00000000, DFB2, 0000, 00000000, 8023, DF8A, 0000, B09400, 02, F44C, F1B2, 0000 ; Ridley
 $A0:E1BF             dx 8400, E1AF, 4650, 00A0, 0008, 0008, A6, 00, 0000, 0000, C696, 0001, 0000, C8D4, 800F, 804C, 804C, 0000, 0000, 00000000, 804C, 0000, 00000000, 804C, 804C, 0000, B0B400, 05, 0000, EEC6, 0000 ; Ridley explosion
@@ -10017,19 +10017,19 @@ $A0:F393             dx 0C00, 86A7, 005A, 0014, 0010, 0018, B2, 00, 0021, 0000, 
 $A0:F3D3             dx 0C00, 86E7, 00C8, 0050, 0010, 0018, B2, 00, 0021, 0000, EF9F, 0001, 0000, F02D, 800F, 804C, 8041, 0000, 0004, 00000000, 0000, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F290, ECB6, E1F7 ; Red wall space pirate
 $A0:F413             dx 0C00, 8727, 0384, 00C8, 0010, 0018, B2, 00, 0021, 0000, EF9F, 0001, 0000, F02D, 800F, 804C, 8041, 0000, 0004, 00000000, 0000, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F2A2, ED50, E205 ; Gold wall space pirate
 $A0:F453             dx 0C00, 86C7, 012C, 00A0, 0010, 0018, B2, 00, 0021, 0000, EF9F, 0001, 0000, F02D, 800F, 804C, 8041, 0000, 0004, 00000000, 0000, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F3A4, ECE2, E213 ; Magenta wall space pirate
-$A0:F493             dx 0C00, 8707, 01F4, 000F, 0010, 0018, B2, 00, 0021, 0000, EF9F, 0001, 0000, F02D, 800F, 804C, 8041, 0000, 0004, 00000000, 0000, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F4A6, EC8A, E221 ; Escape silver wall space pirate
+$A0:F493             dx 0C00, 8707, 01F4, 000F, 0010, 0018, B2, 00, 0021, 0000, EF9F, 0001, 0000, F02D, 800F, 804C, 8041, 0000, 0004, 00000000, 0000, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F4A6, EC8A, E221 ; Silver wall space pirate
 $A0:F4D3             dx 1800, 8687, 0014, 000F, 0010, 0020, B2, 00, 0021, 0000, F5DE, 0001, 0000, F6A2, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F386, EC5E, DDC1 ; Grey ninja space pirate
 $A0:F513             dx 1800, 86A7, 005A, 0014, 0010, 0020, B2, 00, 0021, 0000, F5DE, 0001, 0000, F6A2, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F392, EC5E, E22F ; Green ninja space pirate
 $A0:F553             dx 1800, 86E7, 00C8, 0050, 0010, 0020, B2, 00, 0021, 0000, F5DE, 0001, 0001, F6A2, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F296, EC5E, E23D ; Red ninja space pirate
 $A0:F593             dx 1800, 8707, 0708, 0064, 0010, 0020, B2, 00, 0021, 0000, F5DE, 0001, 0000, F6A2, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F284, EC74, E24B ; Gold ninja space pirate
 $A0:F5D3             dx 1800, 86C7, 012C, 00A0, 0010, 0020, B2, 00, 0021, 0000, F5DE, 0001, 0000, F6A2, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F3AA, EC5E, E259 ; Magenta ninja space pirate
-$A0:F613             dx 1800, 8707, 01F4, 000F, 0010, 0020, B2, 00, 0021, 0000, F5DE, 0001, 0000, F6A2, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F4AC, ECA0, E267 ; Escape silver ninja space pirate
+$A0:F613             dx 1800, 8707, 01F4, 000F, 0010, 0020, B2, 00, 0021, 0000, F5DE, 0001, 0000, F6A2, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F4AC, ECA0, E267 ; Silver ninja space pirate
 $A0:F653             dx 0C00, 8687, 0014, 000F, 0010, 0020, B2, 00, 0066, 0000, FD02, 0001, 0000, FD32, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F38C, ECF8, DDCF ; Grey walking space pirate
 $A0:F693             dx 0C00, 86A7, 005A, 0014, 0010, 0020, B2, 00, 0066, 0000, FD02, 0001, 0000, FD32, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F398, ED0E, E275 ; Green walking space pirate
 $A0:F6D3             dx 0C00, 86E7, 00C8, 0050, 0010, 0020, B2, 00, 0066, 0000, FD02, 0001, 0000, FD32, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F29C, ED24, E283 ; Red walking space pirate
 $A0:F713             dx 0C00, 8727, 0384, 00C8, 0010, 0020, B2, 00, 0066, 0000, FD02, 0001, 0000, FD32, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F39E, ED50, E291 ; Gold walking space pirate
 $A0:F753             dx 0C00, 86C7, 012C, 00A0, 0010, 0020, B2, 00, 0066, 0000, FD02, 0001, 0000, FD32, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F3B0, ED3A, E29F ; Magenta walking space pirate
-$A0:F793             dx 0C00, 8707, 01F4, 000F, 0010, 0020, B2, 00, 0066, 0000, FD02, 0001, 0000, FD32, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F4B2, EC8A, E2AD ; Escape silver walking space pirate
+$A0:F793             dx 0C00, 8707, 01F4, 000F, 0010, 0020, B2, 00, 0066, 0000, FD02, 0001, 0000, FD32, 800F, 804C, 8041, 0000, 0004, 00000000, 8767, 0000, 00000000, 876C, 8779, 0000, ADC600, 05, F4B2, EC8A, E2AD ; Silver walking space pirate
 }
 
 

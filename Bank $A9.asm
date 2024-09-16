@@ -6,7 +6,7 @@
 
 ;;; $8687..C70F: Mother Brain ;;;
 {
-;;; $8687: Initialisation AI - enemy $EC7F (Mother Brain's body) ;;;
+;;; $8687: Initialisation AI - enemy $EC7F (Mother Brain body) ;;;
 {
 $A9:8687 8B          PHB                    ;\
 $A9:8688 F4 7E 7E    PEA $7E7E              ;|
@@ -21,13 +21,13 @@ $A9:8697 CA          DEX                    ;|
 $A9:8698 10 F9       BPL $F9    [$8693]     ;|
 $A9:869A AB          PLB                    ;/
 $A9:869B A9 13 9C    LDA #$9C13             ;\
-$A9:869E 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to $9C13
-$A9:86A1 9C 98 0F    STZ $0F98  [$7E:0F98]  ; Mother Brain's body VRAM tiles index = 0
+$A9:869E 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $9C13
+$A9:86A1 9C 98 0F    STZ $0F98  [$7E:0F98]  ; Mother Brain body VRAM tiles index = 0
 $A9:86A4 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:86A7 09 00 15    ORA #$1500             ;} Set Mother Brain's body to block plasma beam, be intangible and invisible
+$A9:86A7 09 00 15    ORA #$1500             ;} Set Mother Brain body to block plasma beam, be intangible and invisible
 $A9:86AA 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:86AD A9 00 00    LDA #$0000             ;\
-$A9:86B0 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Mother Brain's body palette index = 0
+$A9:86B0 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Mother Brain body palette index = 0
 $A9:86B3 A0 14 95    LDY #$9514             ;\
 $A9:86B6 A2 62 01    LDX #$0162             ;|
 $A9:86B9 A9 0F 00    LDA #$000F             ;} Sprite target palette 3 colours 1..Fh = [$9514..31] (glass shards)
@@ -42,9 +42,9 @@ $A9:86D4 8F 44 78 7E STA $7E7844[$7E:7844]  ; Disable unpause hook
 $A9:86D8 A9 02 00    LDA #$0002             ;\
 $A9:86DB 8F 08 78 7E STA $7E7808[$7E:7808]  ;} Mother Brain hitboxes enabled = Mother Brain brain
 $A9:86DF A9 D0 87    LDA #$87D0             ;\
-$A9:86E2 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Mother Brain's brain function = $87D0 (set up brain to be drawn)
+$A9:86E2 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Mother Brain brain function = $87D0 (set up brain to be drawn)
 $A9:86E5 A9 E1 87    LDA #$87E1             ;\
-$A9:86E8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $87E1 (first phase)
+$A9:86E8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $87E1 (first phase)
 $A9:86EB A9 01 00    LDA #$0001             ;\
 $A9:86EE 22 02 AB 89 JSL $89AB02[$89:AB02]  ;} Load FX entry index 1
 $A9:86F2 A9 00 00    LDA #$0000             ;\
@@ -60,35 +60,35 @@ $A9:8704 6B          RTL
 }
 
 
-;;; $8705: Initialisation AI - enemy $EC3F (Mother Brain's brain) ;;;
+;;; $8705: Initialisation AI - enemy $EC3F (Mother Brain brain) ;;;
 {
-$A9:8705 A2 40 00    LDX #$0040             ; X = (Mother Brain's brain enemy index)
+$A9:8705 A2 40 00    LDX #$0040             ; X = (Mother Brain brain enemy index)
 $A9:8708 A0 08 DE    LDY #$DE08             ; Y = $DE08
 $A9:870B 20 5F DC    JSR $DC5F  [$A9:DC5F]  ; Initialise Mother Brain corpse rotting
 $A9:870E A9 B8 0B    LDA #$0BB8             ;\
-$A9:8711 8D CC 0F    STA $0FCC  [$7E:0FCC]  ;} Mother Brain's brain health = 3000
+$A9:8711 8D CC 0F    STA $0FCC  [$7E:0FCC]  ;} Mother Brain brain health = 3000
 $A9:8714 A9 13 9C    LDA #$9C13             ;\
-$A9:8717 20 3A C4    JSR $C43A  [$A9:C43A]  ;} Set Mother Brain's brain unused instruction list to $9C13
-$A9:871A 9C D8 0F    STZ $0FD8  [$7E:0FD8]  ; Mother Brain's brain VRAM tiles index = 0
+$A9:8717 20 3A C4    JSR $C43A  [$A9:C43A]  ;} Set Mother Brain brain unused instruction list to $9C13
+$A9:871A 9C D8 0F    STZ $0FD8  [$7E:0FD8]  ; Mother Brain brain VRAM tiles index = 0
 $A9:871D AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A9:8720 09 00 11    ORA #$1100             ;} Set Mother Brain's brain to block plasma beam and be invisible
+$A9:8720 09 00 11    ORA #$1100             ;} Set Mother Brain brain to block plasma beam and be invisible
 $A9:8723 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A9:8726 A9 00 02    LDA #$0200             ;\
-$A9:8729 8D D6 0F    STA $0FD6  [$7E:0FD6]  ;} Mother Brain's brain palette index = 200h (palette 1)
+$A9:8729 8D D6 0F    STA $0FD6  [$7E:0FD6]  ;} Mother Brain brain palette index = 200h (palette 1)
 $A9:872C 8F 18 78 7E STA $7E7818[$7E:7818]  ; Mother Brain's neck palette index = 200h
-$A9:8730 8F 1A 78 7E STA $7E781A[$7E:781A]  ; Mother Brain's brain palette index = 200h
+$A9:8730 8F 1A 78 7E STA $7E781A[$7E:781A]  ; Mother Brain brain palette index = 200h
 $A9:8734 A9 21 9C    LDA #$9C21             ;\
-$A9:8737 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C21 (initial)
-$A9:873A 20 F8 D1    JSR $D1F8  [$A9:D1F8]  ; Set up Mother Brain's brain normal palette
+$A9:8737 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C21 (initial)
+$A9:873A 20 F8 D1    JSR $D1F8  [$A9:D1F8]  ; Set up Mother Brain brain normal palette
 $A9:873D 6B          RTL
 }
 
 
-;;; $873E: Main AI / hurt AI - enemy $EC7F (Mother Brain's body) ;;;
+;;; $873E: Main AI / hurt AI - enemy $EC7F (Mother Brain body) ;;;
 {
 $A9:873E 20 1C D0    JSR $D01C  [$A9:D01C]  ; Handle room palette
 $A9:8741 F4 46 87    PEA $8746              ;\
-$A9:8744 6C A8 0F    JMP ($0FA8)[$A9:87E1]  ;} Execute [Mother Brain's body function]
+$A9:8744 6C A8 0F    JMP ($0FA8)[$A9:87E1]  ;} Execute [Mother Brain body function]
 
 $A9:8747 20 E4 D1    JSR $D1E4  [$A9:D1E4]  ; Handle Mother Brain's palette
 $A9:874A 20 B6 B3    JSR $B3B6  [$A9:B3B6]  ; Mother Brain / Samus collision detection
@@ -112,7 +112,7 @@ $A9:8769 A9 40 00    LDA #$0040             ;\
 $A9:876C 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 40h, sound library 1, max queued sounds allowed = 6 (Mother Brain's rainbow beam)
 
 $A9:8770 AD 88 0F    LDA $0F88  [$7E:0F88]  ;\
-$A9:8773 29 04 00    AND #$0004             ;} If Mother Brain's body extended spritemap format enabled:
+$A9:8773 29 04 00    AND #$0004             ;} If Mother Brain body extended spritemap format enabled:
 $A9:8776 F0 0C       BEQ $0C    [$8784]     ;/
 $A9:8778 A9 00 08    LDA #$0800             ;\
 $A9:877B 8D 9A 17    STA $179A  [$7E:179A]  ;} Enemy BG2 tilemap size = 800h
@@ -141,7 +141,7 @@ $A9:8787 22 B7 A5 A0 JSL $A0A5B7[$A0:A5B7]  ; Normal enemy power bomb AI - no de
 }
 
 
-;;; $878B: Main AI / hurt AI - enemy $EC3F (Mother Brain's brain) ;;;
+;;; $878B: Main AI / hurt AI - enemy $EC3F (Mother Brain brain) ;;;
 {
 ; Power bomb reaction for enemy $EC7F falls through into here, possible bug?
 
@@ -152,9 +152,9 @@ $A9:878E 8D 8D 17    STA $178D  [$7E:178D]  ;|
 $A9:8791 A9 86 87    LDA #$8786             ;} Enemy graphics drawn hook = RTL
 $A9:8794 8D 8C 17    STA $178C  [$7E:178C]  ;/
 $A9:8797 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A9:879A 29 00 01    AND #$0100             ;} If Mother Brain's brain is not invisible: return
+$A9:879A 29 00 01    AND #$0100             ;} If Mother Brain brain is not invisible: return
 $A9:879D F0 E7       BEQ $E7    [$8786]     ;/
-$A9:879F 6C E8 0F    JMP ($0FE8)[$A9:87D0]  ; Go to [Mother Brain's brain function]
+$A9:879F 6C E8 0F    JMP ($0FE8)[$A9:87D0]  ; Go to [Mother Brain brain function]
 }
 
 
@@ -165,10 +165,10 @@ $A9:87A5 D0 03       BNE $03    [$87AA]     ;} If time is not frozen:
 $A9:87A7 20 B8 91    JSR $91B8  [$A9:91B8]  ; Handle Mother Brain's neck
 
 $A9:87AA AF 5C 80 7E LDA $7E805C[$7E:805C]  ;\
-$A9:87AE 8D BA 0F    STA $0FBA  [$7E:0FBA]  ;} Mother Brain's brain X position = [Mother Brain's neck hitbox segment 4 X position]
+$A9:87AE 8D BA 0F    STA $0FBA  [$7E:0FBA]  ;} Mother Brain brain X position = [Mother Brain's neck hitbox segment 4 X position]
 $A9:87B1 A9 EB FF    LDA #$FFEB             ;\
 $A9:87B4 18          CLC                    ;|
-$A9:87B5 6F 5E 80 7E ADC $7E805E[$7E:805E]  ;} Mother Brain's brain Y position = [Mother Brain's neck hitbox segment 4 Y position] - 15h
+$A9:87B5 6F 5E 80 7E ADC $7E805E[$7E:805E]  ;} Mother Brain brain Y position = [Mother Brain's neck hitbox segment 4 Y position] - 15h
 $A9:87B9 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;/
 $A9:87BC A9 00 A9    LDA #$A900             ;\
 $A9:87BF 8D 8D 17    STA $178D  [$7E:178D]  ;|
@@ -180,7 +180,7 @@ $A9:87C8 6B          RTL
 
 ;;; $87C9: Enemy graphics drawn hook - Mother Brain - draw brain and neck ;;;
 {
-$A9:87C9 20 57 93    JSR $9357  [$A9:9357]  ; Draw Mother Brain's brain
+$A9:87C9 20 57 93    JSR $9357  [$A9:9357]  ; Draw Mother Brain brain
 $A9:87CC 20 03 93    JSR $9303  [$A9:9303]  ; Draw Mother Brain's neck
 $A9:87CF 6B          RTL
 }
@@ -198,7 +198,7 @@ $A9:87DC 6B          RTL
 
 ;;; $87DD: Enemy graphics drawn hook - Mother Brain - draw brain ;;;
 {
-$A9:87DD 20 57 93    JSR $9357  [$A9:9357]  ; Draw Mother Brain's brain
+$A9:87DD 20 57 93    JSR $9357  [$A9:9357]  ; Draw Mother Brain brain
 $A9:87E0 6B          RTL
 }
 
@@ -209,12 +209,12 @@ $A9:87E1 A9 02 00    LDA #$0002             ;\
 $A9:87E4 22 33 82 80 JSL $808233[$80:8233]  ;} If Mother Brain's glass is destroyed:
 $A9:87E8 90 2E       BCC $2E    [$8818]     ;/
 $A9:87EA AD 40 18    LDA $1840  [$7E:1840]  ;\
-$A9:87ED 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Mother Brain's brain main shake timer = [earthquake timer]
+$A9:87ED 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Mother Brain brain main shake timer = [earthquake timer]
 $A9:87F1 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A9:87F4 C9 EC 00    CMP #$00EC             ;} If [Samus X position] < ECh:
 $A9:87F7 10 1F       BPL $1F    [$8818]     ;/
 $A9:87F9 AD CC 0F    LDA $0FCC  [$7E:0FCC]  ;\
-$A9:87FC D0 1A       BNE $1A    [$8818]     ;} If [Mother Brain's brain health] = 0:
+$A9:87FC D0 1A       BNE $1A    [$8818]     ;} If [Mother Brain brain health] = 0:
 $A9:87FE A9 01 00    LDA #$0001             ;\
 $A9:8801 8F 3A 78 7E STA $7E783A[$7E:783A]  ;} Flag turrets and rinkas to be deleted
 $A9:8805 8F 00 78 7E STA $7E7800[$7E:7800]  ; Mother Brain form = fake death
@@ -234,16 +234,16 @@ $A9:881C 6B          RTL
 ;;; $881D: Mother Brain body function - fake death - descent - initial pause ;;;
 {
 $A9:881D A9 29 88    LDA #$8829             ;\
-$A9:8820 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8829
+$A9:8820 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8829
 $A9:8823 A9 40 00    LDA #$0040             ;\
-$A9:8826 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 40h
+$A9:8826 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 40h
 }
 
 
 ;;; $8829: Mother Brain body function - fake death - descent - lock Samus and set scroll region ;;;
 {
-$A9:8829 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:882C 30 01       BMI $01    [$882F]     ; If [Mother Brain's body function timer] >= 0:
+$A9:8829 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:882C 30 01       BMI $01    [$882F]     ; If [Mother Brain body function timer] >= 0:
 $A9:882E 60          RTS                    ; Return
 
 $A9:882F A9 00 00    LDA #$0000             ;\
@@ -252,52 +252,52 @@ $A9:8836 AF 20 CD 7E LDA $7ECD20[$7E:CD20]  ;\
 $A9:883A 29 FF 00    AND #$00FF             ;} Scroll 1 = red
 $A9:883D 8F 20 CD 7E STA $7ECD20[$7E:CD20]  ;/
 $A9:8841 A9 4D 88    LDA #$884D             ;\
-$A9:8844 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $884D
+$A9:8844 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $884D
 $A9:8847 A9 20 00    LDA #$0020             ;\
-$A9:884A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 20h
+$A9:884A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 20h
 }
 
 
 ;;; $884D: Mother Brain body function - fake death - descent - queue Mother Brain music ;;;
 {
-$A9:884D CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8850 10 5F       BPL $5F    [$88B1]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:884D CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8850 10 5F       BPL $5F    [$88B1]     ; If [Mother Brain body function timer] >= 0: return
 $A9:8852 A9 00 00    LDA #$0000             ;\
 $A9:8855 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A9:8859 A9 21 FF    LDA #$FF21             ;\
 $A9:885C 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue Mother Brain music data
 $A9:8860 A9 6C 88    LDA #$886C             ;\
-$A9:8863 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $886C
+$A9:8863 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $886C
 $A9:8866 A9 0C 00    LDA #$000C             ;\
-$A9:8869 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = Ch
+$A9:8869 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = Ch
 }
 
 
 ;;; $886C: Mother Brain body function - fake death - descent - unlock Samus ;;;
 {
-$A9:886C CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:886F 10 40       BPL $40    [$88B1]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:886C CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:886F 10 40       BPL $40    [$88B1]     ; If [Mother Brain body function timer] >= 0: return
 $A9:8871 A9 01 00    LDA #$0001             ;\
 $A9:8874 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $A9:8878 A9 84 88    LDA #$8884             ;\
-$A9:887B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8884
+$A9:887B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8884
 $A9:887E A9 08 00    LDA #$0008             ;\
-$A9:8881 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 8
+$A9:8881 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 8
 }
 
 
 ;;; $8884: Mother Brain body function - fake death - descent - begin screen flashing and lower acid ;;;
 {
-$A9:8884 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8887 10 28       BPL $28    [$88B1]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:8884 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8887 10 28       BPL $28    [$88B1]     ; If [Mother Brain body function timer] >= 0: return
 $A9:8889 20 FD CF    JSR $CFFD  [$A9:CFFD]  ; Begin screen flashing
 $A9:888C A9 02 00    LDA #$0002             ;\
 $A9:888F 22 02 AB 89 JSL $89AB02[$89:AB02]  ;} Load FX entry index 2 (lower acid)
 $A9:8893 A9 49 89    LDA #$8949             ;\
-$A9:8896 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8949 (wait until there are less than 4 enemy projectiles alive and spawn tubes falling enemy 0)
+$A9:8896 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8949 (wait until there are less than 4 enemy projectiles alive and spawn tubes falling enemy 0)
 $A9:8899 A9 B2 88    LDA #$88B2             ;\
-$A9:889C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $88B2
-$A9:889F 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain's body function timer = 0
+$A9:889C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $88B2
+$A9:889F 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain body function timer = 0
 $A9:88A2 A9 00 00    LDA #$0000             ;\
 $A9:88A5 8F 2E 80 7E STA $7E802E[$7E:802E]  ;} Mother Brain grey transition counter = 0
 $A9:88A9 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
@@ -309,10 +309,10 @@ $A9:88B1 60          RTS
 
 ;;; $88B2: Mother Brain body function - fake death - descent - transition Mother Brain palette to grey ;;;
 {
-$A9:88B2 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:88B5 10 1C       BPL $1C    [$88D3]     ; If [Mother Brain's body function timer] < 0:
+$A9:88B2 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:88B5 10 1C       BPL $1C    [$88D3]     ; If [Mother Brain body function timer] < 0:
 $A9:88B7 A9 08 00    LDA #$0008             ;\
-$A9:88BA 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 8
+$A9:88BA 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 8
 $A9:88BD AF 2E 80 7E LDA $7E802E[$7E:802E]  ; A = [Mother Brain grey transition counter]
 $A9:88C1 1A          INC A                  ;\
 $A9:88C2 8F 2E 80 7E STA $7E802E[$7E:802E]  ;} Increment Mother Brain grey transition counter
@@ -320,14 +320,14 @@ $A9:88C6 3A          DEC A                  ;/
 $A9:88C7 22 DE EE AD JSL $ADEEDE[$AD:EEDE]  ; Transition Mother Brain palette to grey
 $A9:88CB 90 06       BCC $06    [$88D3]     ; If finished transition:
 $A9:88CD A9 D3 88    LDA #$88D3             ;\
-$A9:88D0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $88D3
+$A9:88D0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $88D3
 }
 
 
 ;;; $88D3: Mother Brain body function - fake death - descent - collapse tubes ;;;
 {
 $A9:88D3 F4 D8 88    PEA $88D8              ;\
-$A9:88D6 6C F0 0F    JMP ($0FF0)[$A9:8949]  ;} Execute [Mother Brain's body subfunction]
+$A9:88D6 6C F0 0F    JMP ($0FF0)[$A9:8949]  ;} Execute [Mother Brain body subfunction]
 
 $A9:88D9 20 DD 88    JSR $88DD  [$A9:88DD]  ; Handle fake death explosions
 $A9:88DC 60          RTS
@@ -405,9 +405,9 @@ $A9:895D 10 01       BPL $01    [$8960]     ;} If [X] < 4:
 $A9:895F 60          RTS                    ; Return
 
 $A9:8960 A2 E5 8A    LDX #$8AE5             ;\
-$A9:8963 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain's tubes falling enemy 0
+$A9:8963 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain tubes falling enemy 0
 $A9:8967 A9 6E 89    LDA #$896E             ;\
-$A9:896A 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $896E
+$A9:896A 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $896E
 $A9:896D 60          RTS
 }
 
@@ -417,17 +417,17 @@ $A9:896D 60          RTS
 $A9:896E 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8972             dx 05,09,B6C3          ;} Spawn PLM to clear Mother Brain's bottom-left tube
 $A9:8976 A9 83 89    LDA #$8983             ;\
-$A9:8979 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8983
+$A9:8979 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8983
 $A9:897C A9 20 00    LDA #$0020             ;\
-$A9:897F 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20
+$A9:897F 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20
 $A9:8982 60          RTS
 }
 
 
 ;;; $8983: Mother brain body subfunction - spawn top-right tube falling enemy projectile ;;;
 {
-$A9:8983 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:8986 10 17       BPL $17    [$899F]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:8983 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:8986 10 17       BPL $17    [$899F]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:8988 A9 98 00    LDA #$0098             ;\
 $A9:898B 85 12       STA $12    [$7E:0012]  ;} $12 = 98h
 $A9:898D A9 2F 00    LDA #$002F             ;\
@@ -435,7 +435,7 @@ $A9:8990 85 14       STA $14    [$7E:0014]  ;} $14 = 2Fh
 $A9:8992 A0 5B CC    LDY #$CC5B             ;\
 $A9:8995 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's top-right tube falling enemy projectile
 $A9:8999 A9 A0 89    LDA #$89A0             ;\
-$A9:899C 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $89A0
+$A9:899C 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $89A0
 
 $A9:899F 60          RTS
 }
@@ -446,17 +446,17 @@ $A9:899F 60          RTS
 $A9:89A0 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:89A4             dx 09,02,B6B3          ;} Spawn PLM to clear ceiling block
 $A9:89A8 A9 B5 89    LDA #$89B5             ;\
-$A9:89AB 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $89B5
+$A9:89AB 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $89B5
 $A9:89AE A9 20 00    LDA #$0020             ;\
-$A9:89B1 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20h
+$A9:89B1 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20h
 $A9:89B4 60          RTS
 }
 
 
 ;;; $89B5: Mother brain body subfunction - spawn top-left tube falling enemy projectile ;;;
 {
-$A9:89B5 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:89B8 10 17       BPL $17    [$89D1]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:89B5 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:89B8 10 17       BPL $17    [$89D1]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:89BA A9 68 00    LDA #$0068             ;\
 $A9:89BD 85 12       STA $12    [$7E:0012]  ;} $12 = 68h
 $A9:89BF A9 2F 00    LDA #$002F             ;\
@@ -464,7 +464,7 @@ $A9:89C2 85 14       STA $14    [$7E:0014]  ;} $14 = 2Fh
 $A9:89C4 A0 69 CC    LDY #$CC69             ;\
 $A9:89C7 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's top-left tube falling enemy projectile
 $A9:89CB A9 D2 89    LDA #$89D2             ;\
-$A9:89CE 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $89D2
+$A9:89CE 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $89D2
 
 $A9:89D1 60          RTS
 }
@@ -475,21 +475,21 @@ $A9:89D1 60          RTS
 $A9:89D2 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:89D6             dx 06,02,B6B3          ;} Spawn PLM to clear ceiling block
 $A9:89DA A9 E7 89    LDA #$89E7             ;\
-$A9:89DD 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $89E7
+$A9:89DD 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $89E7
 $A9:89E0 A9 20 00    LDA #$0020             ;\
-$A9:89E3 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20h
+$A9:89E3 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20h
 $A9:89E6 60          RTS
 }
 
 
 ;;; $89E7: Mother brain body subfunction - spawn tubes falling enemy 1 ;;;
 {
-$A9:89E7 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:89EA 10 0D       BPL $0D    [$89F9]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:89E7 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:89EA 10 0D       BPL $0D    [$89F9]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:89EC A2 F5 8A    LDX #$8AF5             ;\
-$A9:89EF 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain's tubes falling enemy 1
+$A9:89EF 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain tubes falling enemy 1
 $A9:89F3 A9 FA 89    LDA #$89FA             ;\
-$A9:89F6 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $89FA
+$A9:89F6 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $89FA
 
 $A9:89F9 60          RTS
 }
@@ -500,21 +500,21 @@ $A9:89F9 60          RTS
 $A9:89FA 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:89FE             dx 0A,09,B6C7          ;} Spawn PLM to clear Mother Brain's bottom-right tube
 $A9:8A02 A9 0F 8A    LDA #$8A0F             ;\
-$A9:8A05 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8A0F
+$A9:8A05 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8A0F
 $A9:8A08 A9 20 00    LDA #$0020             ;\
-$A9:8A0B 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20h
+$A9:8A0B 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20h
 $A9:8A0E 60          RTS
 }
 
 
 ;;; $8A0F: Mother brain body subfunction - spawn tubes falling enemy 2 ;;;
 {
-$A9:8A0F CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:8A12 10 0D       BPL $0D    [$8A21]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:8A0F CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:8A12 10 0D       BPL $0D    [$8A21]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:8A14 A2 05 8B    LDX #$8B05             ;\
-$A9:8A17 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain's tubes falling enemy 2
+$A9:8A17 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain tubes falling enemy 2
 $A9:8A1B A9 22 8A    LDA #$8A22             ;\
-$A9:8A1E 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8A22
+$A9:8A1E 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8A22
 
 $A9:8A21 60          RTS
 }
@@ -525,17 +525,17 @@ $A9:8A21 60          RTS
 $A9:8A22 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8A26             dx 06,0A,B6BB          ;} Spawn PLM to clear Mother Brain's bottom-middle-side tube
 $A9:8A2A A9 37 8A    LDA #$8A37             ;\
-$A9:8A2D 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8A37
+$A9:8A2D 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8A37
 $A9:8A30 A9 20 00    LDA #$0020             ;\
-$A9:8A33 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20h
+$A9:8A33 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20h
 $A9:8A36 60          RTS
 }
 
 
 ;;; $8A37: Mother brain body subfunction - spawn top-middle-left tube falling enemy projectile ;;;
 {
-$A9:8A37 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:8A3A 10 17       BPL $17    [$8A53]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:8A37 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:8A3A 10 17       BPL $17    [$8A53]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:8A3C A9 78 00    LDA #$0078             ;\
 $A9:8A3F 85 12       STA $12    [$7E:0012]  ;} $12 = 78h
 $A9:8A41 A9 3B 00    LDA #$003B             ;\
@@ -543,7 +543,7 @@ $A9:8A44 85 14       STA $14    [$7E:0014]  ;} $14 = 3Bh
 $A9:8A46 A0 77 CC    LDY #$CC77             ;\
 $A9:8A49 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's top-middle-left tube falling enemy projectile
 $A9:8A4D A9 54 8A    LDA #$8A54             ;\
-$A9:8A50 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8A54
+$A9:8A50 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8A54
 
 $A9:8A53 60          RTS
 }
@@ -554,17 +554,17 @@ $A9:8A53 60          RTS
 $A9:8A54 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8A58             dx 07,02,B6B7          ;} Spawn PLM to clear ceiling tube
 $A9:8A5C A9 69 8A    LDA #$8A69             ;\
-$A9:8A5F 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8A69
+$A9:8A5F 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8A69
 $A9:8A62 A9 20 00    LDA #$0020             ;\
-$A9:8A65 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20h
+$A9:8A65 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20h
 $A9:8A68 60          RTS
 }
 
 
 ;;; $8A69: Mother brain body subfunction - spawn top-middle-right tube falling enemy projectile ;;;
 {
-$A9:8A69 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:8A6C 10 17       BPL $17    [$8A85]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:8A69 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:8A6C 10 17       BPL $17    [$8A85]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:8A6E A9 88 00    LDA #$0088             ;\
 $A9:8A71 85 12       STA $12    [$7E:0012]  ;} $12 = 88h
 $A9:8A73 A9 3B 00    LDA #$003B             ;\
@@ -572,7 +572,7 @@ $A9:8A76 85 14       STA $14    [$7E:0014]  ;} $14 = 3Bh
 $A9:8A78 A0 85 CC    LDY #$CC85             ;\
 $A9:8A7B 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's top-middle-right tube falling enemy projectile
 $A9:8A7F A9 86 8A    LDA #$8A86             ;\
-$A9:8A82 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8A86
+$A9:8A82 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8A86
 
 $A9:8A85 60          RTS
 }
@@ -583,21 +583,21 @@ $A9:8A85 60          RTS
 $A9:8A86 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8A8A             dx 08,02,B6B7          ;} Spawn PLM to clear ceiling tube
 $A9:8A8E A9 9B 8A    LDA #$8A9B             ;\
-$A9:8A91 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8A9B
+$A9:8A91 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8A9B
 $A9:8A94 A9 20 00    LDA #$0020             ;\
-$A9:8A97 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20h
+$A9:8A97 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20h
 $A9:8A9A 60          RTS
 }
 
 
 ;;; $8A9B: Mother brain body subfunction - spawn tubes falling enemy 3 ;;;
 {
-$A9:8A9B CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:8A9E 10 0D       BPL $0D    [$8AAD]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:8A9B CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:8A9E 10 0D       BPL $0D    [$8AAD]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:8AA0 A2 15 8B    LDX #$8B15             ;\
-$A9:8AA3 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain's tubes falling enemy 3
+$A9:8AA3 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain tubes falling enemy 3
 $A9:8AA7 A9 AE 8A    LDA #$8AAE             ;\
-$A9:8AAA 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8AAE
+$A9:8AAA 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8AAE
 
 $A9:8AAD 60          RTS
 }
@@ -608,21 +608,21 @@ $A9:8AAD 60          RTS
 $A9:8AAE 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8AB2             dx 09,0A,B6BB          ;} Spawn PLM to clear Mother Brain's bottom-middle-side tube
 $A9:8AB6 A9 C3 8A    LDA #$8AC3             ;\
-$A9:8AB9 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8AC3
+$A9:8AB9 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8AC3
 $A9:8ABC A9 02 00    LDA #$0002             ;\
-$A9:8ABF 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain's body subfunction timer = 20h
+$A9:8ABF 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;} Mother Brain body subfunction timer = 20h
 $A9:8AC2 60          RTS
 }
 
 
 ;;; $8AC3: Mother brain body subfunction - spawn tubes falling enemy 4 ;;;
 {
-$A9:8AC3 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain's body subfunction timer
-$A9:8AC6 10 0D       BPL $0D    [$8AD5]     ; If [Mother Brain's body subfunction timer] >= 0: return
+$A9:8AC3 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ; Decrement Mother Brain body subfunction timer
+$A9:8AC6 10 0D       BPL $0D    [$8AD5]     ; If [Mother Brain body subfunction timer] >= 0: return
 $A9:8AC8 A2 25 8B    LDX #$8B25             ;\
-$A9:8ACB 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain's tubes falling enemy 4
+$A9:8ACB 22 75 92 A0 JSL $A09275[$A0:9275]  ;} Spawn Mother Brain tubes falling enemy 4
 $A9:8ACF A9 D6 8A    LDA #$8AD6             ;\
-$A9:8AD2 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8AD6
+$A9:8AD2 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8AD6
 
 $A9:8AD5 60          RTS
 }
@@ -633,13 +633,13 @@ $A9:8AD5 60          RTS
 $A9:8AD6 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8ADA             dx 07,07,B6BF          ;} Spawn PLM to clear Mother Brain's bottom-middle tubes
 $A9:8ADE A9 E4 8A    LDA #$8AE4             ;\
-$A9:8AE1 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain's body subfunction = $8AE4
+$A9:8AE1 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Mother Brain body subfunction = $8AE4
 $A9:8AE4 60          RTS
 }
 }
 
 
-;;; $8AE5: Mother Brain's tubes falling enemy population entries ;;;
+;;; $8AE5: Mother Brain tubes falling enemy population entries ;;;
 {
 ;                        ____________________________________ Enemy ID
 ;                       |     _______________________________ X position
@@ -658,9 +658,9 @@ $A9:8B25             dw ECFF,0080,00A7,8C81,A800,0000,0008,0020 ; Main tube
 }
 
 
-;;; $8B35..8C86: Mother Brain's tubes falling ;;;
+;;; $8B35..8C86: Mother Brain tubes falling ;;;
 {
-;;; $8B35: Initialisation AI - enemy $ECFF (Mother Brain's tubes falling) ;;;
+;;; $8B35: Initialisation AI - enemy $ECFF (Mother Brain tubes falling) ;;;
 {
 $A9:8B35 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:8B38 BC B4 0F    LDY $0FB4,x[$7E:1034]  ; Y = [enemy parameter 1]
@@ -684,13 +684,13 @@ $A9:8B7B             dw 8B88, 8B88, 8B88, 8B88, 8BCB ; Function
 }
 
 
-;;; $8B85: Main AI - enemy $ECFF (Mother Brain's tubes falling) ;;;
+;;; $8B85: Main AI - enemy $ECFF (Mother Brain tubes falling) ;;;
 {
 $A9:8B85 7C A8 0F    JMP ($0FA8,x)[$A9:8B88]; Go to [enemy function]
 }
 
 
-;;; $8B88: Mother Brain's tubes falling function - non-main tube ;;;
+;;; $8B88: Mother Brain tubes falling function - non-main tube ;;;
 {
 $A9:8B88 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
 $A9:8B8B 18          CLC                    ;|
@@ -731,7 +731,7 @@ $A9:8BCA 6B          RTL
 }
 
 
-;;; $8BCB: Mother Brain's tubes falling function - main tube - waiting to fall ;;;
+;;; $8BCB: Mother Brain tubes falling function - main tube - waiting to fall ;;;
 {
 $A9:8BCB DE B6 0F    DEC $0FB6,x[$7E:1076]  ; Decrement enemy parameter 2
 $A9:8BCE 10 D5       BPL $D5    [$8BA5]     ; If [enemy parameter 2] >= 0: return
@@ -740,7 +740,7 @@ $A9:8BD3 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $8BD6 (falling)
 }
 
 
-;;; $8BD6: Mother Brain's tubes falling function - main tube - falling ;;;
+;;; $8BD6: Mother Brain tubes falling function - main tube - falling ;;;
 {
 $A9:8BD6 BD AC 0F    LDA $0FAC,x[$7E:106C]  ;\
 $A9:8BD9 18          CLC                    ;|
@@ -757,9 +757,9 @@ $A9:8BEF 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
 $A9:8BF2 68          PLA
 $A9:8BF3 38          SEC                    ;\
 $A9:8BF4 E9 38 00    SBC #$0038             ;|
-$A9:8BF7 C9 C4 00    CMP #$00C4             ;} Mother Brain's brain Y position = [enemy Y position] - 38h
+$A9:8BF7 C9 C4 00    CMP #$00C4             ;} Mother Brain brain Y position = [enemy Y position] - 38h
 $A9:8BFA 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;/
-$A9:8BFD 10 03       BPL $03    [$8C02]     ; If [Mother Brain's brain Y position] < C4h:
+$A9:8BFD 10 03       BPL $03    [$8C02]     ; If [Mother Brain brain Y position] < C4h:
 $A9:8BFF 4C 9D 8B    JMP $8B9D  [$A9:8B9D]  ; Go to handle falling tube smoke
 
 $A9:8C02 20 0C D0    JSR $D00C  [$A9:D00C]  ; End screen flashing
@@ -769,14 +769,14 @@ $A9:8C0C 9C B4 18    STZ $18B4  [$7E:18B4]  ; Delete HDMA object 0
 $A9:8C0F 9C B6 18    STZ $18B6  [$7E:18B6]  ; Delete HDMA object 1
 $A9:8C12 9E AC 0F    STZ $0FAC,x[$7E:10AA]  ; Enemy Y velocity = 0
 $A9:8C15 A9 C4 00    LDA #$00C4             ;\
-$A9:8C18 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;} Mother Brain's brain Y position = C4h
+$A9:8C18 8D BE 0F    STA $0FBE  [$7E:0FBE]  ;} Mother Brain brain Y position = C4h
 $A9:8C1B A9 3B 00    LDA #$003B             ;\
-$A9:8C1E 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Mother Brain's body X position = 3Bh
+$A9:8C1E 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Mother Brain body X position = 3Bh
 $A9:8C21 A9 17 01    LDA #$0117             ;\
-$A9:8C24 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain's body Y position = 117h
+$A9:8C24 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain body Y position = 117h
 $A9:8C27 20 3F 90    JSR $903F  [$A9:903F]  ; Set up Mother Brain's neck for fake death ascent
 $A9:8C2A A9 87 8C    LDA #$8C87             ;\
-$A9:8C2D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8C87 (fake death - ascent)
+$A9:8C2D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8C87 (fake death - ascent)
 $A9:8C30 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:8C33 4C A6 8B    JMP $8BA6  [$A9:8BA6]  ; Explode Mother Brain tube
 }
@@ -807,35 +807,35 @@ $A9:8C61             dw FFF8, 0002, FFFC, 0006
 }
 
 
-;;; $8C69: Instruction list - Mother Brain's tubes falling 0 ;;;
+;;; $8C69: Instruction list - Mother Brain tubes falling 0 ;;;
 {
 $A9:8C69             dx 0001,ADA1,
                         812F        ; Sleep
 }
 
 
-;;; $8C6F: Instruction list - Mother Brain's tubes falling 1 ;;;
+;;; $8C6F: Instruction list - Mother Brain tubes falling 1 ;;;
 {
 $A9:8C6F             dx 0001,ADD5,
                         812F        ; Sleep
 }
 
 
-;;; $8C75: Instruction list - Mother Brain's tubes falling 2 ;;;
+;;; $8C75: Instruction list - Mother Brain tubes falling 2 ;;;
 {
 $A9:8C75             dx 0001,AE09,
                         812F        ; Sleep
 }
 
 
-;;; $8C7B: Instruction list - Mother Brain's tubes falling 3 ;;;
+;;; $8C7B: Instruction list - Mother Brain tubes falling 3 ;;;
 {
 $A9:8C7B             dx 0001,AE33,
                         812F        ; Sleep
 }
 
 
-;;; $8C81: Instruction list - Mother Brain's tubes falling 4 ;;;
+;;; $8C81: Instruction list - Mother Brain tubes falling 4 ;;;
 {
 $A9:8C81             dx 0001,AE5D,
                         812F        ; Sleep
@@ -843,79 +843,79 @@ $A9:8C81             dx 0001,AE5D,
 }
 
 
-;;; $8C87: Mother Brain's body function - fake death - ascent - draw room background on BG1 - rows 2/3 ;;;
+;;; $8C87: Mother Brain body function - fake death - ascent - draw room background on BG1 - rows 2/3 ;;;
 {
 $A9:8C87 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8C8B             dx 02,02,B67B          ;} Spawn Mother Brain's background row 2 PLM
 $A9:8C8F 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8C93             dx 02,03,B67F          ;} Spawn Mother Brain's background row 3 PLM
 $A9:8C97 A9 9E 8C    LDA #$8C9E             ;\
-$A9:8C9A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8C9E
+$A9:8C9A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8C9E
 $A9:8C9D 60          RTS
 }
 
 
-;;; $8C9E: Mother Brain's body function - fake death - ascent - draw room background on BG1 - rows 4/5 ;;;
+;;; $8C9E: Mother Brain body function - fake death - ascent - draw room background on BG1 - rows 4/5 ;;;
 {
 $A9:8C9E 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CA2             dx 02,04,B683          ;} Spawn Mother Brain's background row 4 PLM
 $A9:8CA6 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CAA             dx 02,05,B687          ;} Spawn Mother Brain's background row 5 PLM
 $A9:8CAE A9 B5 8C    LDA #$8CB5             ;\
-$A9:8CB1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8CB5
+$A9:8CB1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8CB5
 $A9:8CB4 60          RTS
 }
 
 
-;;; $8CB5: Mother Brain's body function - fake death - ascent - draw room background on BG1 - rows 6/7 ;;;
+;;; $8CB5: Mother Brain body function - fake death - ascent - draw room background on BG1 - rows 6/7 ;;;
 {
 $A9:8CB5 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CB9             dx 02,06,B68B          ;} Spawn Mother Brain's background row 6 PLM
 $A9:8CBD 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CC1             dx 02,07,B68F          ;} Spawn Mother Brain's background row 7 PLM
 $A9:8CC5 A9 CC 8C    LDA #$8CCC             ;\
-$A9:8CC8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8CCC
+$A9:8CC8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8CCC
 $A9:8CCB 60          RTS
 }
 
 
-;;; $8CCC: Mother Brain's body function - fake death - ascent - draw room background on BG1 - rows 8/9 ;;;
+;;; $8CCC: Mother Brain body function - fake death - ascent - draw room background on BG1 - rows 8/9 ;;;
 {
 $A9:8CCC 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CD0             dx 02,08,B693          ;} Spawn Mother Brain's background row 8 PLM
 $A9:8CD4 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CD8             dx 02,09,B697          ;} Spawn Mother Brain's background row 9 PLM
 $A9:8CDC A9 E3 8C    LDA #$8CE3             ;\
-$A9:8CDF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8CE3
+$A9:8CDF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8CE3
 $A9:8CE2 60          RTS
 }
 
 
-;;; $8CE3: Mother Brain's body function - fake death - ascent - draw room background on BG1 - rows Ah/Bh ;;;
+;;; $8CE3: Mother Brain body function - fake death - ascent - draw room background on BG1 - rows Ah/Bh ;;;
 {
 $A9:8CE3 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CE7             dx 02,0A,B69B          ;} Spawn Mother Brain's background row Ah PLM
 $A9:8CEB 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CEF             dx 02,0B,B69F          ;} Spawn Mother Brain's background row Bh PLM
 $A9:8CF3 A9 FA 8C    LDA #$8CFA             ;\
-$A9:8CF6 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8CFA
+$A9:8CF6 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8CFA
 $A9:8CF9 60          RTS
 }
 
 
-;;; $8CFA: Mother Brain's body function - fake death - ascent - draw room background on BG1 - rows Ch/Dh ;;;
+;;; $8CFA: Mother Brain body function - fake death - ascent - draw room background on BG1 - rows Ch/Dh ;;;
 {
 $A9:8CFA 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8CFE             dx 02,0C,B6A3          ;} Spawn Mother Brain's background row Ch PLM
 $A9:8D02 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:8D06             dx 02,0D,B6A7          ;} Spawn Mother Brain's background row Dh PLM
 $A9:8D0A A9 11 8D    LDA #$8D11             ;\
-$A9:8D0D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8D11
+$A9:8D0D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8D11
 $A9:8D10 60          RTS
 }
 
 
-;;; $8D11: Mother Brain's body function - fake death - ascent - set up Mother Brain phase 2 graphics ;;;
+;;; $8D11: Mother Brain body function - fake death - ascent - set up Mother Brain phase 2 graphics ;;;
 {
 $A9:8D11 A9 01 01    LDA #$0101             ;\
 $A9:8D14 8D 1B 09    STA $091B  [$7E:091B]  ;} Layer 2 scroll X = layer 2 scroll Y = 1 (library background, no scrolling)
@@ -931,7 +931,7 @@ $A9:8D2E A2 62 01    LDX #$0162             ;|
 $A9:8D31 A9 0F 00    LDA #$000F             ;} Sprite palette 3 colours 1..Fh = [$9494..B1] (Mother Brain's back leg)
 $A9:8D34 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 $A9:8D38 A9 49 8D    LDA #$8D49             ;\
-$A9:8D3B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8D49
+$A9:8D3B 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8D49
 $A9:8D3E A9 01 00    LDA #$0001             ;\
 $A9:8D41 8D 1E 0E    STA $0E1E  [$7E:0E1E]  ;} Request enemy BG2 tilemap VRAM transfer
 $A9:8D44 8F 44 78 7E STA $7E7844[$7E:7844]  ; Enable unpause hook
@@ -939,61 +939,61 @@ $A9:8D48 60          RTS
 }
 
 
-;;; $8D49: Mother Brain's body function - fake death - ascent - set up Mother Brain phase 2 brain ;;;
+;;; $8D49: Mother Brain body function - fake death - ascent - set up Mother Brain phase 2 brain ;;;
 {
 $A9:8D49 A9 34 00    LDA #$0034             ;\
 $A9:8D4C 8D 82 19    STA $1982  [$7E:1982]  ;} Default layer blending configuration = 34h (disables colour math on BG2/BG3)
 $A9:8D4F A9 A2 87    LDA #$87A2             ;\
-$A9:8D52 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Mother Brain's brain function = $87A2 (set up brain and neck to be drawn)
+$A9:8D52 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Mother Brain brain function = $87A2 (set up brain and neck to be drawn)
 $A9:8D55 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:8D58 29 FF FB    AND #$FBFF             ;} Set Mother Brain's body as tangible
+$A9:8D58 29 FF FB    AND #$FBFF             ;} Set Mother Brain body as tangible
 $A9:8D5B 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:8D5E AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A9:8D61 29 FF FB    AND #$FBFF             ;} Set Mother Brain's brain as tangible
+$A9:8D61 29 FF FB    AND #$FBFF             ;} Set Mother Brain brain as tangible
 $A9:8D64 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A9:8D67 A9 50 46    LDA #$4650             ;\
-$A9:8D6A 8D CC 0F    STA $0FCC  [$7E:0FCC]  ;} Mother Brain's brain health = 18,000
+$A9:8D6A 8D CC 0F    STA $0FCC  [$7E:0FCC]  ;} Mother Brain brain health = 18,000
 $A9:8D6D A9 79 8D    LDA #$8D79             ;\
-$A9:8D70 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8D79
+$A9:8D70 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8D79
 $A9:8D73 A9 80 00    LDA #$0080             ;\
-$A9:8D76 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 80h
+$A9:8D76 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 80h
 }
 
 
-;;; $8D79: Mother Brain's body function - fake death - ascent - pause for suspense ;;;
+;;; $8D79: Mother Brain body function - fake death - ascent - pause for suspense ;;;
 {
-$A9:8D79 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8D7C 30 01       BMI $01    [$8D7F]     ; If [Mother Brain's body function timer] >= 0:
+$A9:8D79 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8D7C 30 01       BMI $01    [$8D7F]     ; If [Mother Brain body function timer] >= 0:
 $A9:8D7E 60          RTS                    ; Return
 
 $A9:8D7F A9 8B 8D    LDA #$8D8B             ;\
-$A9:8D82 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8D8B
+$A9:8D82 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8D8B
 $A9:8D85 A9 20 00    LDA #$0020             ;\
-$A9:8D88 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 20h
+$A9:8D88 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 20h
 }
 
 
-;;; $8D8B: Mother Brain's body function - fake death - ascent - prepare Mother Brain for rising ;;;
+;;; $8D8B: Mother Brain body function - fake death - ascent - prepare Mother Brain for rising ;;;
 {
-$A9:8D8B CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8D8E 30 01       BMI $01    [$8D91]     ; If [Mother Brain's body function timer] >= 0:
+$A9:8D8B CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8D8E 30 01       BMI $01    [$8D91]     ; If [Mother Brain body function timer] >= 0:
 $A9:8D90 60          RTS                    ; Return
 
 $A9:8D91 22 1E E7 88 JSL $88E71E[$88:E71E]  ; Spawn Mother Brain rising HDMA object
 $A9:8D95 8F 12 78 7E STA $7E7812[$7E:7812]  ; Mother Brain HDMA object index = HDMA object index
 $A9:8D99 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A9:8D9C 09 00 01    ORA #$0100             ;} Set Mother Brain's brain as invisible
+$A9:8D9C 09 00 01    ORA #$0100             ;} Set Mother Brain brain as invisible
 $A9:8D9F 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A9:8DA2 A9 21 9C    LDA #$9C21             ;\
-$A9:8DA5 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C21 (initial)
+$A9:8DA5 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C21 (initial)
 $A9:8DA8 A9 B4 8D    LDA #$8DB4             ;\
-$A9:8DAB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8DB4
+$A9:8DAB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8DB4
 $A9:8DAE A9 00 01    LDA #$0100             ;\
-$A9:8DB1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h
+$A9:8DB1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h
 }
 
 
-;;; $8DB4: Mother Brain's body function - fake death - ascent - load Mother Brain's legs tiles ;;;
+;;; $8DB4: Mother Brain body function - fake death - ascent - load Mother Brain's legs tiles ;;;
 {
 $A9:8DB4 A2 8F 8F    LDX #$8F8F             ;\
 $A9:8DB7 20 BE C5    JSR $C5BE  [$A9:C5BE]  ;} Load Mother Brain's legs tiles
@@ -1001,18 +1001,18 @@ $A9:8DBA B0 01       BCS $01    [$8DBD]     ; If not finished loading:
 $A9:8DBC 60          RTS                    ; Return
 
 $A9:8DBD A9 C3 8D    LDA #$8DC3             ;\
-$A9:8DC0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8DC3
+$A9:8DC0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8DC3
 }
 
 
-;;; $8DC3: Mother Brain's body function - fake death - ascent - continue pausing for suspense ;;;
+;;; $8DC3: Mother Brain body function - fake death - ascent - continue pausing for suspense ;;;
 {
-$A9:8DC3 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8DC6 10 23       BPL $23    [$8DEB]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:8DC3 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8DC6 10 23       BPL $23    [$8DEB]     ; If [Mother Brain body function timer] >= 0: return
 $A9:8DC8 A9 3B 00    LDA #$003B             ;\
-$A9:8DCB 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Mother Brain's body X position = 3Bh
+$A9:8DCB 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Mother Brain body X position = 3Bh
 $A9:8DCE A9 17 01    LDA #$0117             ;\
-$A9:8DD1 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain's body Y position = 117h
+$A9:8DD1 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain body Y position = 117h
 $A9:8DD4 A9 E5 FF    LDA #$FFE5             ;\
 $A9:8DD7 85 B5       STA $B5    [$7E:00B5]  ;} BG2 X scroll = -1Bh
 $A9:8DD9 A9 27 FF    LDA #$FF27             ;\
@@ -1020,25 +1020,25 @@ $A9:8DDC 85 B7       STA $B7    [$7E:00B7]  ;} BG2 Y scroll = -D9h
 $A9:8DDE A9 07 00    LDA #$0007             ;\
 $A9:8DE1 8F 08 78 7E STA $7E7808[$7E:7808]  ;} Enable all Mother Brain hitboxes
 $A9:8DE5 A9 EC 8D    LDA #$8DEC             ;\
-$A9:8DE8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8DEC
+$A9:8DE8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8DEC
 
 $A9:8DEB 60          RTS
 }
 
 
-;;; $8DEC: Mother Brain's body function - fake death - ascent - start music and earthquake ;;;
+;;; $8DEC: Mother Brain body function - fake death - ascent - start music and earthquake ;;;
 {
 $A9:8DEC A9 02 9A    LDA #$9A02             ;\
-$A9:8DEF 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to $9A02 (crouched)
+$A9:8DEF 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $9A02 (crouched)
 $A9:8DF2 A9 01 00    LDA #$0001             ;\
-$A9:8DF5 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Mother Brain's brain instruction timer = 1
+$A9:8DF5 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Mother Brain brain instruction timer = 1
 $A9:8DF8 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:8DFB 29 FF FE    AND #$FEFF             ;} Set Mother Brain's body as visible
+$A9:8DFB 29 FF FE    AND #$FEFF             ;} Set Mother Brain body as visible
 $A9:8DFE 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:8E01 A9 3B 00    LDA #$003B             ;\
-$A9:8E04 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Mother Brain's body X position = 3Bh
+$A9:8E04 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;} Mother Brain body X position = 3Bh
 $A9:8E07 A9 17 01    LDA #$0117             ;\
-$A9:8E0A 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain's body Y position = 117h
+$A9:8E0A 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain body Y position = 117h
 $A9:8E0D A9 E5 FF    LDA #$FFE5             ;\
 $A9:8E10 85 B5       STA $B5    [$7E:00B5]  ;} BG2 X scroll = -1Bh
 $A9:8E12 A9 27 FF    LDA #$FF27             ;\
@@ -1058,12 +1058,12 @@ $A9:8E3B 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement 
 $A9:8E3F A9 06 00    LDA #$0006             ;\
 $A9:8E42 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 6 (lower)
 $A9:8E46 A9 4D 8E    LDA #$8E4D             ;\
-$A9:8E49 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8E4D
+$A9:8E49 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8E4D
 $A9:8E4C 60          RTS
 }
 
 
-;;; $8E4D: Mother Brain's body function - fake death - ascent - raise Mother Brain ;;;
+;;; $8E4D: Mother Brain body function - fake death - ascent - raise Mother Brain ;;;
 {
 $A9:8E4D AD B6 05    LDA $05B6  [$7E:05B6]  ;\
 $A9:8E50 29 03 00    AND #$0003             ;} If [frame counter] % 4 != 0: return
@@ -1077,26 +1077,26 @@ $A9:8E60 65 12       ADC $12    [$7E:0012]  ;} BG2 Y scroll += 2
 $A9:8E62 85 B7       STA $B7    [$7E:00B7]  ;/
 $A9:8E64 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $A9:8E67 38          SEC                    ;|
-$A9:8E68 E5 12       SBC $12    [$7E:0012]  ;} Mother Brain's body Y position -= 2
+$A9:8E68 E5 12       SBC $12    [$7E:0012]  ;} Mother Brain body Y position -= 2
 $A9:8E6A 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;/
 $A9:8E6D C9 BD 00    CMP #$00BD             ;\
-$A9:8E70 B0 29       BCS $29    [$8E9B]     ;} If [Mother Brain's body Y position] >= BDh: return
+$A9:8E70 B0 29       BCS $29    [$8E9B]     ;} If [Mother Brain body Y position] >= BDh: return
 $A9:8E72 A9 40 01    LDA #$0140             ;\
 $A9:8E75 8D 9A 17    STA $179A  [$7E:179A]  ;} Enemy BG2 tilemap size = 140h
 $A9:8E78 A9 BC 00    LDA #$00BC             ;\
-$A9:8E7B 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain's body Y position = BCh
+$A9:8E7B 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;} Mother Brain body Y position = BCh
 $A9:8E7E 9C 40 18    STZ $1840  [$7E:1840]  ; Earthquake timer = 0
 $A9:8E81 AF 12 78 7E LDA $7E7812[$7E:7812]  ;\
 $A9:8E85 AA          TAX                    ;} Delete Mother Brain HDMA object
 $A9:8E86 9E B4 18    STZ $18B4,x[$7E:18B4]  ;/
 $A9:8E89 A9 AA 99    LDA #$99AA             ;\
-$A9:8E8C 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to $99AA (standing up after crouching - slow)
+$A9:8E8C 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $99AA (standing up after crouching - slow)
 $A9:8E8F A9 95 8E    LDA #$8E95             ;\
-$A9:8E92 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8E95
+$A9:8E92 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8E95
 }
 
 
-;;; $8E95: Mother Brain's body function - fake death - ascent - wait until Mother Brain has finished uncrouching ;;;
+;;; $8E95: Mother Brain body function - fake death - ascent - wait until Mother Brain has finished uncrouching ;;;
 {
 $A9:8E95 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
 $A9:8E99 F0 01       BEQ $01    [$8E9C]     ;} If [Mother Brain's pose] != standing:
@@ -1104,18 +1104,18 @@ $A9:8E9B 60          RTS                    ; Return
 
 $A9:8E9C 8F 2E 80 7E STA $7E802E[$7E:802E]  ; Mother Brain grey transition counter = 0
 $A9:8EA0 A9 AA 8E    LDA #$8EAA             ;\
-$A9:8EA3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8EAA
-$A9:8EA6 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain's body function timer = 0
+$A9:8EA3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8EAA
+$A9:8EA6 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain body function timer = 0
 $A9:8EA9 60          RTS
 }
 
 
-;;; $8EAA: Mother Brain's body function - fake death - ascent - transition Mother Brain from grey and lower her head ;;;
+;;; $8EAA: Mother Brain body function - fake death - ascent - transition Mother Brain from grey and lower her head ;;;
 {
-$A9:8EAA CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8EAD 10 45       BPL $45    [$8EF4]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:8EAA CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8EAD 10 45       BPL $45    [$8EF4]     ; If [Mother Brain body function timer] >= 0: return
 $A9:8EAF A9 04 00    LDA #$0004             ;\
-$A9:8EB2 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 4
+$A9:8EB2 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 4
 $A9:8EB5 AF 2E 80 7E LDA $7E802E[$7E:802E]  ;\
 $A9:8EB9 1A          INC A                  ;} Increment Mother Brain grey transition counter
 $A9:8EBA 8F 2E 80 7E STA $7E802E[$7E:802E]  ;/
@@ -1123,7 +1123,7 @@ $A9:8EBE 3A          DEC A                  ; A = [Mother Brain grey transition 
 $A9:8EBF 22 EA EE AD JSL $ADEEEA[$AD:EEEA]  ; Transition Mother Brain palette from grey
 $A9:8EC3 90 2F       BCC $2F    [$8EF4]     ; If not finished transition: return
 $A9:8EC5 A9 01 00    LDA #$0001             ;\
-$A9:8EC8 8F 60 78 7E STA $7E7860[$7E:7860]  ;} Enable Mother Brain's brain palette handling
+$A9:8EC8 8F 60 78 7E STA $7E7860[$7E:7860]  ;} Enable Mother Brain brain palette handling
 $A9:8ECC 1A          INC A                  ;\
 $A9:8ECD 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Mother Brain's form = second phase
 $A9:8ED1 3A          DEC A                  ;\
@@ -1134,54 +1134,54 @@ $A9:8EDD 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement i
 $A9:8EE1 A9 00 05    LDA #$0500             ;\
 $A9:8EE4 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 500h
 $A9:8EE8 A9 F5 8E    LDA #$8EF5             ;\
-$A9:8EEB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8EF5
+$A9:8EEB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8EF5
 $A9:8EEE A9 17 00    LDA #$0017             ;\
-$A9:8EF1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 17h
+$A9:8EF1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 17h
 
 $A9:8EF4 60          RTS
 }
 
 
-;;; $8EF5: Mother Brain's body function - second phase - stretching - shake head menacingly ;;;
+;;; $8EF5: Mother Brain body function - second phase - stretching - shake head menacingly ;;;
 {
-$A9:8EF5 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8EF8 30 01       BMI $01    [$8EFB]     ; If [Mother Brain's body function timer] >= 0:
+$A9:8EF5 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8EF8 30 01       BMI $01    [$8EFB]     ; If [Mother Brain body function timer] >= 0:
 $A9:8EFA 60          RTS                    ; Return
 
 $A9:8EFB A9 7F 9B    LDA #$9B7F             ;\
-$A9:8EFE 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9B7F (stretching)
+$A9:8EFE 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9B7F (stretching)
 $A9:8F01 A9 14 8F    LDA #$8F14             ;\
-$A9:8F04 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8F14
+$A9:8F04 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8F14
 $A9:8F07 A9 40 00    LDA #$0040             ;\
 $A9:8F0A 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 40h
 $A9:8F0E A9 00 01    LDA #$0100             ;\
-$A9:8F11 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h
+$A9:8F11 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h
 }
 
 
-;;; $8F14: Mother Brain's body function - second phase - stretching - bring head back up ;;;
+;;; $8F14: Mother Brain body function - second phase - stretching - bring head back up ;;;
 {
-$A9:8F14 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8F17 10 2C       BPL $2C    [$8F45]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:8F14 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8F17 10 2C       BPL $2C    [$8F45]     ; If [Mother Brain body function timer] >= 0: return
 $A9:8F19 A9 02 00    LDA #$0002             ;\
 $A9:8F1C 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 2 (bob down)
 $A9:8F20 A9 04 00    LDA #$0004             ;\
 $A9:8F23 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 4 (bob up)
 $A9:8F27 A9 33 8F    LDA #$8F33             ;\
-$A9:8F2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $8F33
+$A9:8F2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $8F33
 $A9:8F2D A9 40 00    LDA #$0040             ;\
-$A9:8F30 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 40h
+$A9:8F30 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 40h
 }
 
 
-;;; $8F33: Mother Brain's body function - second phase - stretching - finish stretching ;;;
+;;; $8F33: Mother Brain body function - second phase - stretching - finish stretching ;;;
 {
-$A9:8F33 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:8F36 10 0D       BPL $0D    [$8F45]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:8F33 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:8F36 10 0D       BPL $0D    [$8F45]     ; If [Mother Brain body function timer] >= 0: return
 $A9:8F38 A9 01 00    LDA #$0001             ;\
 $A9:8F3B 8F 68 78 7E STA $7E7868[$7E:7868]  ;} Enable Mother Brain's small purple breath generation
 $A9:8F3F A9 05 B6    LDA #$B605             ;\
-$A9:8F42 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B605
+$A9:8F42 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B605
 
 $A9:8F45 60          RTS
 }
@@ -1191,12 +1191,12 @@ $A9:8F45 60          RTS
 {
 $A9:8F46 CE F2 0F    DEC $0FF2  [$7E:0FF2]  ;\
 $A9:8F49 10 06       BPL $06    [$8F51]     ;|
-$A9:8F4B A9 07 00    LDA #$0007             ;} Mother Brain's body subfunction timer = ([Mother Brain's body subfunction timer] - 1) % 8
+$A9:8F4B A9 07 00    LDA #$0007             ;} Mother Brain body subfunction timer = ([Mother Brain body subfunction timer] - 1) % 8
 $A9:8F4E 8D F2 0F    STA $0FF2  [$7E:0FF2]  ;/
 
 $A9:8F51 AD F2 0F    LDA $0FF2  [$7E:0FF2]  ;\
 $A9:8F54 0A          ASL A                  ;|
-$A9:8F55 AA          TAX                    ;} $12 = [$8F7F + [Mother Brain's body subfunction timer] * 2]
+$A9:8F55 AA          TAX                    ;} $12 = [$8F7F + [Mother Brain body subfunction timer] * 2]
 $A9:8F56 BD 7F 8F    LDA $8F7F,x[$A9:8F8D]  ;|
 $A9:8F59 85 12       STA $12    [$7E:0012]  ;/
 $A9:8F5B A9 D4 00    LDA #$00D4             ;\
@@ -1323,7 +1323,7 @@ $A9:90A1 60          RTS
 ;;; $90A2: Handle Mother Brain's neck - lower - movement index = 4: bob up ;;;
 {
 $A9:90A2 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
-$A9:90A5 C9 3C 00    CMP #$003C             ;} If [Mother Brain's brain Y position] < 3Ch: go to BRANCH_BOB_DOWN
+$A9:90A5 C9 3C 00    CMP #$003C             ;} If [Mother Brain brain Y position] < 3Ch: go to BRANCH_BOB_DOWN
 $A9:90A8 30 1D       BMI $1D    [$90C7]     ;/
 $A9:90AA AF 40 80 7E LDA $7E8040[$7E:8040]  ;\
 $A9:90AE 18          CLC                    ;} Mother Brain's lower neck angle += [Mother Brain neck angle delta]
@@ -1396,7 +1396,7 @@ $A9:911B 60          RTS
 {
 $A9:911C AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:911F 18          CLC                    ;|
-$A9:9120 69 04 00    ADC #$0004             ;} If [Mother Brain's brain Y position] + 4 >= [Samus Y position]:
+$A9:9120 69 04 00    ADC #$0004             ;} If [Mother Brain brain Y position] + 4 >= [Samus Y position]:
 $A9:9123 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;|
 $A9:9126 30 0C       BMI $0C    [$9134]     ;/
 $A9:9128 A9 04 00    LDA #$0004             ;\
@@ -1480,11 +1480,11 @@ $A9:91B7 60          RTS
 
 $A9:91B8 A9 B0 FF    LDA #$FFB0             ;\
 $A9:91BB 18          CLC                    ;|
-$A9:91BC 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} $7E:7814 = [Mother Brain's body X position] - 50h
+$A9:91BC 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} $7E:7814 = [Mother Brain body X position] - 50h
 $A9:91BF 8F 14 78 7E STA $7E7814[$7E:7814]  ;/
 $A9:91C3 A9 2E 00    LDA #$002E             ;\
 $A9:91C6 18          CLC                    ;|
-$A9:91C7 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} $7E:7816 = [Mother Brain's body Y position] + 2Eh
+$A9:91C7 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} $7E:7816 = [Mother Brain body Y position] + 2Eh
 $A9:91CA 8F 16 78 7E STA $7E7816[$7E:7816]  ;/
 $A9:91CE AF 62 80 7E LDA $7E8062[$7E:8062]  ;\
 $A9:91D2 F0 06       BEQ $06    [$91DA]     ;} If Mother Brain neck movement enabled:
@@ -1563,12 +1563,12 @@ $A9:92AE 60          RTS
 }
 
 
-;;; $92AF: Y = Mother Brain's brain spritemap pointer ;;;
+;;; $92AF: Y = Mother Brain brain spritemap pointer ;;;
 {
 $A9:92AF AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $A9:92B2 D0 08       BNE $08    [$92BC]     ;} If time is frozen: go to BRANCH_FROZEN_TIME
 $A9:92B4 AF 02 80 7E LDA $7E8002[$7E:8002]  ;\
-$A9:92B8 30 0D       BMI $0D    [$92C7]     ;} If [Mother Brain's brain instruction list pointer] & 8000h != 0: go to BRANCH_PROCESS_INSTRUCTION_LIST
+$A9:92B8 30 0D       BMI $0D    [$92C7]     ;} If [Mother Brain brain instruction list pointer] & 8000h != 0: go to BRANCH_PROCESS_INSTRUCTION_LIST
 
 ; BRANCH_NO_DRAW
 $A9:92BA 68          PLA                    ;\
@@ -1576,17 +1576,17 @@ $A9:92BB 60          RTS                    ;} Return out of caller routine
 
 ; BRANCH_FROZEN_TIME
 $A9:92BC AF 02 80 7E LDA $7E8002[$7E:8002]  ;\
-$A9:92C0 10 F8       BPL $F8    [$92BA]     ;} If [Mother Brain's brain instruction list pointer] & 8000h = 0: go to BRANCH_NO_DRAW
+$A9:92C0 10 F8       BPL $F8    [$92BA]     ;} If [Mother Brain brain instruction list pointer] & 8000h = 0: go to BRANCH_NO_DRAW
 $A9:92C2 AA          TAX                    ;\
-$A9:92C3 BC 02 00    LDY $0002,x            ;} Y = [[Mother Brain's brain instruction list pointer] + 2]
+$A9:92C3 BC 02 00    LDY $0002,x            ;} Y = [[Mother Brain brain instruction list pointer] + 2]
 $A9:92C6 60          RTS                    ; Return
 
 ; BRANCH_PROCESS_INSTRUCTION_LIST
-$A9:92C7 AA          TAX                    ; X = [Mother Brain's brain instruction list pointer]
+$A9:92C7 AA          TAX                    ; X = [Mother Brain brain instruction list pointer]
 $A9:92C8 BD 00 00    LDA $0000,x[$A9:9C21]  ;\
 $A9:92CB 30 0F       BMI $0F    [$92DC]     ;} If [[X]] & 8000h != 0: go to BRANCH_ASM_INSTRUCTION
 $A9:92CD CF 00 80 7E CMP $7E8000[$7E:8000]  ;\
-$A9:92D1 10 23       BPL $23    [$92F6]     ;} If [[X]] >= [Mother Brain's brain instruction timer]: go to BRANCH_TICK
+$A9:92D1 10 23       BPL $23    [$92F6]     ;} If [[X]] >= [Mother Brain brain instruction timer]: go to BRANCH_TICK
 $A9:92D3 E8          INX                    ;\
 $A9:92D4 E8          INX                    ;|
 $A9:92D5 E8          INX                    ;} X += 4
@@ -1605,15 +1605,15 @@ $A9:92E3 6C 00 00    JMP ($0000)[$A9:9B0F]  ; Go to [A]
 
 ; BRANCH_SPECIAL_INSTRUCTION
 $A9:92E6 A9 01 00    LDA #$0001             ;\
-$A9:92E9 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Mother Brain's brain instruction timer = 1
+$A9:92E9 8F 00 80 7E STA $7E8000[$7E:8000]  ;} Mother Brain brain instruction timer = 1
 $A9:92ED 8A          TXA                    ;\
-$A9:92EE 8F 02 80 7E STA $7E8002[$7E:8002]  ;} Mother Brain's brain instruction list pointer = [X]
+$A9:92EE 8F 02 80 7E STA $7E8002[$7E:8002]  ;} Mother Brain brain instruction list pointer = [X]
 $A9:92F2 BC 02 00    LDY $0002,x[$A9:9C23]  ; Y = [[X] + 2]
 $A9:92F5 60          RTS                    ; Return
 
 ; BRANCH_TICK
 $A9:92F6 AF 00 80 7E LDA $7E8000[$7E:8000]  ;\
-$A9:92FA 1A          INC A                  ;} Increment Mother Brain's brain instruction timer
+$A9:92FA 1A          INC A                  ;} Increment Mother Brain brain instruction timer
 $A9:92FB 8F 00 80 7E STA $7E8000[$7E:8000]  ;/
 $A9:92FF BC 02 00    LDY $0002,x[$A9:9C23]  ; Y = [[X] + 2]
 $A9:9302 60          RTS
@@ -1623,7 +1623,7 @@ $A9:9302 60          RTS
 ;;; $9303: Draw Mother Brain's neck ;;;
 {
 $A9:9303 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:9306 29 00 01    AND #$0100             ;} If Mother Brain's body is invisible:
+$A9:9306 29 00 01    AND #$0100             ;} If Mother Brain body is invisible:
 $A9:9309 F0 01       BEQ $01    [$930C]     ;/
 $A9:930B 60          RTS                    ; Return
 
@@ -1655,7 +1655,7 @@ $A9:9354 4C CB 93    JMP $93CB  [$A9:93CB]  ; Go to draw Mother Brain neck segme
 }
 
 
-;;; $9357: Draw Mother Brain's brain ;;;
+;;; $9357: Draw Mother Brain brain ;;;
 {
 ; Note that the call to $92AF can return out of *this* routine if no spritemap is to be drawn,
 ; and is assuming that nothing gets pushed to the stack by this routine
@@ -1669,9 +1669,9 @@ $A9:9366 30 07       BMI $07    [$936F]     ;} If [random number] & 8000h = 0:
 $A9:9368 A0 3D CB    LDY #$CB3D             ;\
 $A9:936B 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn Mother Brain's purple breath - small enemy projectile
 
-$A9:936F 20 AF 92    JSR $92AF  [$A9:92AF]  ; Y = Mother Brain's brain spritemap pointer
+$A9:936F 20 AF 92    JSR $92AF  [$A9:92AF]  ; Y = Mother Brain brain spritemap pointer
 $A9:9372 AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
-$A9:9376 AA          TAX                    ;} $16 = [Mother Brain's brain palette index]
+$A9:9376 AA          TAX                    ;} $16 = [Mother Brain brain palette index]
 $A9:9377 AD DC 0F    LDA $0FDC  [$7E:0FDC]  ;\
 $A9:937A 4A          LSR A                  ;} If [Mother Brain brain invincibility timer] & 1 != 0:
 $A9:937B 90 03       BCC $03    [$9380]     ;/
@@ -1679,11 +1679,11 @@ $A9:937D A2 00 00    LDX #$0000             ; $16 = 0
 
 $A9:9380 86 16       STX $16    [$7E:0016]
 $A9:9382 AF 40 78 7E LDA $7E7840[$7E:7840]  ;\
-$A9:9386 F0 07       BEQ $07    [$938F]     ;} If [Mother Brain's brain main shake timer] != 0:
+$A9:9386 F0 07       BEQ $07    [$938F]     ;} If [Mother Brain brain main shake timer] != 0:
 $A9:9388 3A          DEC A                  ;\
-$A9:9389 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Decrement Mother Brain's brain main shake timer
+$A9:9389 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Decrement Mother Brain brain main shake timer
 $A9:938D 80 08       BRA $08    [$9397]
-                                            ; Else ([Mother Brain's brain main shake timer] = 0):
+                                            ; Else ([Mother Brain brain main shake timer] = 0):
 $A9:938F AD DC 0F    LDA $0FDC  [$7E:0FDC]  ; A = [Mother Brain brain invincibility timer]
 $A9:9392 D0 03       BNE $03    [$9397]     ; If [Mother Brain brain invincibility timer] = 0:
 $A9:9394 AD E2 0F    LDA $0FE2  [$7E:0FE2]  ; A = [Mother Brain brain shake timer]
@@ -1711,7 +1711,7 @@ $A9:93BA 60          RTS
 
 ;;; $93BB: Shaking offsets ;;;
 {
-; Used for Mother Brain's brain shaking and when Shitroid shakes
+; Used for Mother Brain brain shaking and when Shitroid shakes
 $A9:93BB             dw 0000, FFFF, 0000, 0001  ; X offsets
 $A9:93C3             dw 0000, 0001, FFFF, 0001  ; Y offsets
 }
@@ -1880,12 +1880,12 @@ $A9:9532             dw 3800, 4D1F, 38B6, 246E, 1448, 47FF, 2EFA, 1616, 0132, 52
 }
 
 
-;;; $9552: Move Mother Brain's body down by [A], scroll it left by [X] ;;;
+;;; $9552: Move Mother Brain body down by [A], scroll it left by [X] ;;;
 {
 ; This function expects X to have been pushed
 $A9:9552 48          PHA                    ;\
 $A9:9553 18          CLC                    ;|
-$A9:9554 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Mother Brain's body Y position += [A]
+$A9:9554 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Mother Brain body Y position += [A]
 $A9:9557 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;|
 $A9:955A 68          PLA                    ;/
 $A9:955B 49 FF FF    EOR #$FFFF             ;\
@@ -1898,7 +1898,7 @@ $A9:9565 18          CLC                    ;|
 $A9:9566 69 22 00    ADC #$0022             ;|
 $A9:9569 85 14       STA $14    [$7E:0014]  ;|
 $A9:956B AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;|
-$A9:956E 49 FF FF    EOR #$FFFF             ;} BG2 X scroll = 22h - [Mother Brain's body X position] + [X]
+$A9:956E 49 FF FF    EOR #$FFFF             ;} BG2 X scroll = 22h - [Mother Brain body X position] + [X]
 $A9:9571 1A          INC A                  ;|
 $A9:9572 18          CLC                    ;|
 $A9:9573 65 14       ADC $14    [$7E:0014]  ;|
@@ -1908,11 +1908,11 @@ $A9:9578 6B          RTL
 }
 
 
-;;; $9579: Move Mother Brain's body down by [A] ;;;
+;;; $9579: Move Mother Brain body down by [A] ;;;
 {
 $A9:9579 48          PHA                    ;\
 $A9:957A 18          CLC                    ;|
-$A9:957B 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Mother Brain's body Y position += [A]
+$A9:957B 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Mother Brain body Y position += [A]
 $A9:957E 8D 7E 0F    STA $0F7E  [$7E:0F7E]  ;|
 $A9:9581 68          PLA                    ;/
 $A9:9582 49 FF FF    EOR #$FFFF             ;\
@@ -1923,7 +1923,7 @@ $A9:9589 85 B7       STA $B7    [$7E:00B7]  ;/
 $A9:958B A9 00 00    LDA #$0000             ;\
 $A9:958E 38          SEC                    ;|
 $A9:958F ED 7A 0F    SBC $0F7A  [$7E:0F7A]  ;|
-$A9:9592 18          CLC                    ;} BG2 X scroll = 22h - [Mother Brain's body X position]
+$A9:9592 18          CLC                    ;} BG2 X scroll = 22h - [Mother Brain body X position]
 $A9:9593 69 22 00    ADC #$0022             ;|
 $A9:9596 85 B5       STA $B5    [$7E:00B5]  ;/
 $A9:9598 6B          RTL
@@ -1948,9 +1948,9 @@ $A9:95B5 60          RTS
 }
 
 
-;;; $95B6..972F: Instructions - Mother Brain's body ;;;
+;;; $95B6..972F: Instructions - Mother Brain body ;;;
 {
-;;; $95B6: Instruction - move Mother Brain's body up by 10px, scroll it left by 4px ;;;
+;;; $95B6: Instruction - move Mother Brain body up by 10px, scroll it left by 4px ;;;
 {
 $A9:95B6 DA          PHX
 $A9:95B7 A2 04 00    LDX #$0004
@@ -1959,7 +1959,7 @@ $A9:95BD 4C 52 95    JMP $9552  [$A9:9552]
 }
 
 
-;;; $95C0: Instruction - move Mother Brain's body up by 16px, scroll it left by 4px ;;;
+;;; $95C0: Instruction - move Mother Brain body up by 16px, scroll it left by 4px ;;;
 {
 $A9:95C0 DA          PHX
 $A9:95C1 A2 04 00    LDX #$0004
@@ -1968,7 +1968,7 @@ $A9:95C7 4C 52 95    JMP $9552  [$A9:9552]
 }
 
 
-;;; $95CA: Instruction - move Mother Brain's body up by 12px, scroll it right by 2px ;;;
+;;; $95CA: Instruction - move Mother Brain body up by 12px, scroll it right by 2px ;;;
 {
 $A9:95CA DA          PHX
 $A9:95CB A2 FE FF    LDX #$FFFE
@@ -1977,7 +1977,7 @@ $A9:95D1 4C 52 95    JMP $9552  [$A9:9552]
 }
 
 
-;;; $95D4: Unused. Instruction - scroll Mother Brain's body right by 2px ;;;
+;;; $95D4: Unused. Instruction - scroll Mother Brain body right by 2px ;;;
 {
 $A9:95D4 DA          PHX
 $A9:95D5 A2 FE FF    LDX #$FFFE
@@ -1986,7 +1986,7 @@ $A9:95DB 4C 52 95    JMP $9552  [$A9:9552]
 }
 
 
-;;; $95DE: Instruction - move Mother Brain's body down by 12px, scroll it left by 4px ;;;
+;;; $95DE: Instruction - move Mother Brain body down by 12px, scroll it left by 4px ;;;
 {
 $A9:95DE DA          PHX
 $A9:95DF A2 04 00    LDX #$0004
@@ -1995,7 +1995,7 @@ $A9:95E5 4C 52 95    JMP $9552  [$A9:9552]
 }
 
 
-;;; $95E8: Instruction - move Mother Brain's body down by 16px, scroll it right by 2px ;;;
+;;; $95E8: Instruction - move Mother Brain body down by 16px, scroll it right by 2px ;;;
 {
 $A9:95E8 DA          PHX
 $A9:95E9 A2 FE FF    LDX #$FFFE
@@ -2004,7 +2004,7 @@ $A9:95EF 4C 52 95    JMP $9552  [$A9:9552]
 }
 
 
-;;; $95F2: Instruction - move Mother Brain's body down by 10px, scroll it right by 2px ;;;
+;;; $95F2: Instruction - move Mother Brain body down by 10px, scroll it right by 2px ;;;
 {
 $A9:95F2 DA          PHX
 $A9:95F3 A2 FE FF    LDX #$FFFE
@@ -2013,179 +2013,179 @@ $A9:95F9 4C 52 95    JMP $9552  [$A9:9552]
 }
 
 
-;;; $95FC: Instruction - move Mother Brain's body up by 2px and right by 1px ;;;
+;;; $95FC: Instruction - move Mother Brain body up by 2px and right by 1px ;;;
 {
 $A9:95FC AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:95FF 18          CLC                    ;|
-$A9:9600 69 01 00    ADC #$0001             ;} Mother Brain's body X position += 1
+$A9:9600 69 01 00    ADC #$0001             ;} Mother Brain body X position += 1
 $A9:9603 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9606 A9 FE FF    LDA #$FFFE             ;\
-$A9:9609 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 2
+$A9:9609 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
 }
 
 
-;;; $960C: Instruction - move Mother Brain's body right by 2px ;;;
+;;; $960C: Instruction - move Mother Brain body right by 2px ;;;
 {
 $A9:960C AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:960F 18          CLC                    ;|
-$A9:9610 69 02 00    ADC #$0002             ;} Mother Brain's body X position += 2
+$A9:9610 69 02 00    ADC #$0002             ;} Mother Brain body X position += 2
 $A9:9613 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9616 A9 00 00    LDA #$0000             ;\
-$A9:9619 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 0
+$A9:9619 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 0
 }
 
 
-;;; $961C: Instruction - move Mother Brain's body up by 1px ;;;
+;;; $961C: Instruction - move Mother Brain body up by 1px ;;;
 {
 $A9:961C A9 01 00    LDA #$0001             ;\
-$A9:961F 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 1
+$A9:961F 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 1
 }
 
 
-;;; $9622: Instruction - move Mother Brain's body up by 1px and right by 3px, do footstep effect ;;;
+;;; $9622: Instruction - move Mother Brain body up by 1px and right by 3px, do footstep effect ;;;
 {
 $A9:9622 A9 22 00    LDA #$0022
 $A9:9625 20 99 95    JSR $9599  [$A9:9599]  ; Mother Brain footstep effect
 $A9:9628 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:962B 18          CLC                    ;|
-$A9:962C 69 03 00    ADC #$0003             ;} Mother Brain's body X position += 3
+$A9:962C 69 03 00    ADC #$0003             ;} Mother Brain body X position += 3
 $A9:962F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9632 A9 01 00    LDA #$0001             ;\
-$A9:9635 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 1
+$A9:9635 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 1
 }
 
 
-;;; $9638: Instruction - move Mother Brain's body down by 2px and right by 15px ;;;
+;;; $9638: Instruction - move Mother Brain body down by 2px and right by 15px ;;;
 {
 $A9:9638 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:963B 18          CLC                    ;|
-$A9:963C 69 0F 00    ADC #$000F             ;} Mother Brain's body X position += 15
+$A9:963C 69 0F 00    ADC #$000F             ;} Mother Brain body X position += 15
 $A9:963F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9642 A9 FE FF    LDA #$FFFE             ;\
-$A9:9645 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body down by 2
+$A9:9645 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 2
 }
 
 
-;;; $9648: Instruction - move Mother Brain's body down by 4px and right by 6px ;;;
+;;; $9648: Instruction - move Mother Brain body down by 4px and right by 6px ;;;
 {
 $A9:9648 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:964B 18          CLC                    ;|
-$A9:964C 69 06 00    ADC #$0006             ;} Mother Brain's body X position += 6
+$A9:964C 69 06 00    ADC #$0006             ;} Mother Brain body X position += 6
 $A9:964F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9652 A9 FC FF    LDA #$FFFC             ;\
-$A9:9655 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body down by 4
+$A9:9655 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 4
 }
 
 
-;;; $9658: Instruction - move Mother Brain's body up by 4px and left by 2px ;;;
+;;; $9658: Instruction - move Mother Brain body up by 4px and left by 2px ;;;
 {
 $A9:9658 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:965B 18          CLC                    ;|
-$A9:965C 69 FE FF    ADC #$FFFE             ;} Mother Brain's body X position -= 2
+$A9:965C 69 FE FF    ADC #$FFFE             ;} Mother Brain body X position -= 2
 $A9:965F 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9662 A9 04 00    LDA #$0004             ;\
-$A9:9665 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 4
+$A9:9665 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 4
 }
 
 
-;;; $9668: Instruction - move Mother Brain's body up by 2px and left by 1px, do footstep effect ;;;
+;;; $9668: Instruction - move Mother Brain body up by 2px and left by 1px, do footstep effect ;;;
 {
 $A9:9668 A9 EF FF    LDA #$FFEF
 $A9:966B 20 99 95    JSR $9599  [$A9:9599]  ; Mother Brain footstep effect
 $A9:966E AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:9671 18          CLC                    ;|
-$A9:9672 69 FF FF    ADC #$FFFF             ;} Mother Brain's body X position -= 1
+$A9:9672 69 FF FF    ADC #$FFFF             ;} Mother Brain body X position -= 1
 $A9:9675 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:9678 A9 02 00    LDA #$0002             ;\
-$A9:967B 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 2
+$A9:967B 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
 }
 
 
-;;; $967E: Instruction - move Mother Brain's body up by 2px and left by 1px, do footstep effect ;;;
+;;; $967E: Instruction - move Mother Brain body up by 2px and left by 1px, do footstep effect ;;;
 {
 $A9:967E A9 0B 00    LDA #$000B
 $A9:9681 20 99 95    JSR $9599  [$A9:9599]  ; Mother Brain footstep effect
 $A9:9684 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:9687 38          SEC                    ;|
-$A9:9688 E9 01 00    SBC #$0001             ;} Mother Brain's body X position -= 1
+$A9:9688 E9 01 00    SBC #$0001             ;} Mother Brain body X position -= 1
 $A9:968B 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:968E A9 02 00    LDA #$0002             ;\
-$A9:9691 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 2
+$A9:9691 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
 }
 
 
-;;; $9694: Instruction - move Mother Brain's body left by 2px ;;;
+;;; $9694: Instruction - move Mother Brain body left by 2px ;;;
 {
 $A9:9694 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:9697 38          SEC                    ;|
-$A9:9698 E9 02 00    SBC #$0002             ;} Mother Brain's body X position -= 2
+$A9:9698 E9 02 00    SBC #$0002             ;} Mother Brain body X position -= 2
 $A9:969B 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:969E A9 00 00    LDA #$0000             ;\
-$A9:96A1 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 0
+$A9:96A1 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 0
 }
 
 
-;;; $96A4: Instruction - move Mother Brain's body down by 1px ;;;
+;;; $96A4: Instruction - move Mother Brain body down by 1px ;;;
 {
 $A9:96A4 A9 FF FF    LDA #$FFFF             ;\
-$A9:96A7 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body down by 1
+$A9:96A7 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 1
 }
 
 
-;;; $96AA: Instruction - move Mother Brain's body down by 1px and left by 3px ;;;
+;;; $96AA: Instruction - move Mother Brain body down by 1px and left by 3px ;;;
 {
 $A9:96AA AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:96AD 38          SEC                    ;|
-$A9:96AE E9 03 00    SBC #$0003             ;} Mother Brain's body X position -= 3
+$A9:96AE E9 03 00    SBC #$0003             ;} Mother Brain body X position -= 3
 $A9:96B1 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96B4 A9 FF FF    LDA #$FFFF             ;\
-$A9:96B7 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body down by 1
+$A9:96B7 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 1
 }
 
 
-;;; $96BA: Instruction - move Mother Brain's body up by 2px and left by 15px, do footstep effect ;;;
+;;; $96BA: Instruction - move Mother Brain body up by 2px and left by 15px, do footstep effect ;;;
 {
 $A9:96BA A9 DB FF    LDA #$FFDB
 $A9:96BD 20 99 95    JSR $9599  [$A9:9599]  ; Mother Brain footstep effect
 $A9:96C0 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:96C3 38          SEC                    ;|
-$A9:96C4 E9 0F 00    SBC #$000F             ;} Mother Brain's body X position -= 15
+$A9:96C4 E9 0F 00    SBC #$000F             ;} Mother Brain body X position -= 15
 $A9:96C7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96CA A9 02 00    LDA #$0002             ;\
-$A9:96CD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 2
+$A9:96CD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 2
 }
 
 
-;;; $96D0: Instruction - move Mother Brain's body up by 4px and left by 6px ;;;
+;;; $96D0: Instruction - move Mother Brain body up by 4px and left by 6px ;;;
 {
 $A9:96D0 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:96D3 38          SEC                    ;|
-$A9:96D4 E9 06 00    SBC #$0006             ;} Mother Brain's body X position -= 6
+$A9:96D4 E9 06 00    SBC #$0006             ;} Mother Brain body X position -= 6
 $A9:96D7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96DA A9 04 00    LDA #$0004             ;\
-$A9:96DD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body up by 4
+$A9:96DD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body up by 4
 }
 
 
-;;; $96E0: Instruction - move Mother Brain's body down by 4px and right by 2px ;;;
+;;; $96E0: Instruction - move Mother Brain body down by 4px and right by 2px ;;;
 {
 $A9:96E0 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:96E3 38          SEC                    ;|
-$A9:96E4 E9 FE FF    SBC #$FFFE             ;} Mother Brain's body X position += 2
+$A9:96E4 E9 FE FF    SBC #$FFFE             ;} Mother Brain body X position += 2
 $A9:96E7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96EA A9 FC FF    LDA #$FFFC             ;\
-$A9:96ED 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body down by 4
+$A9:96ED 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 4
 }
 
 
-;;; $96F0: Instruction - move Mother Brain's body down by 2px and right by 1px ;;;
+;;; $96F0: Instruction - move Mother Brain body down by 2px and right by 1px ;;;
 {
 $A9:96F0 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:96F3 38          SEC                    ;|
-$A9:96F4 E9 FF FF    SBC #$FFFF             ;} Mother Brain's body X position += 1
+$A9:96F4 E9 FF FF    SBC #$FFFF             ;} Mother Brain body X position += 1
 $A9:96F7 8D 7A 0F    STA $0F7A  [$7E:0F7A]  ;/
 $A9:96FA A9 FE FF    LDA #$FFFE             ;\
-$A9:96FD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain's body down by 2
+$A9:96FD 4C 79 95    JMP $9579  [$A9:9579]  ;} Move Mother Brain body down by 2
 }
 
 
@@ -2238,335 +2238,335 @@ $A9:972F 6B          RTL
 }
 
 
-;;; $9730..9AC7: Instruction lists - Mother Brain's body ;;;
+;;; $9730..9AC7: Instruction lists - Mother Brain body ;;;
 {
-;;; $9730: Instruction list - Mother Brain's body - walking forwards - really fast ;;;
+;;; $9730: Instruction list - Mother Brain body - walking forwards - really fast ;;;
 {
 $A9:9730             dx 9708,       ; Mother Brain's pose = walking
                         0002,9FA0,
-                        95FC,       ; Move Mother Brain's body up by 2px and right by 1px
+                        95FC,       ; Move Mother Brain body up by 2px and right by 1px
                         0002,9FEA,
-                        960C,       ; Move Mother Brain's body right by 2px
+                        960C,       ; Move Mother Brain body right by 2px
                         0002,A03C,
-                        961C,       ; Move Mother Brain's body up by 1px
+                        961C,       ; Move Mother Brain body up by 1px
                         0002,A08E,
-                        9622,       ; Move Mother Brain's body up by 1px and right by 3px, do footstep effect
+                        9622,       ; Move Mother Brain body up by 1px and right by 3px, do footstep effect
                         0002,A0E0,
-                        9638,       ; Move Mother Brain's body down by 2px and right by 15px
+                        9638,       ; Move Mother Brain body down by 2px and right by 15px
                         0002,A12A,
-                        9648,       ; Move Mother Brain's body down by 4px and right by 6px
+                        9648,       ; Move Mother Brain body down by 4px and right by 6px
                         0002,A174,
-                        9658,       ; Move Mother Brain's body up by 4px and left by 2px
+                        9658,       ; Move Mother Brain body up by 4px and left by 2px
                         0002,A1BE,
-                        9668,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        9668,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0002,A208,
                         812F        ; Sleep
 }
 
 
-;;; $976A: Instruction list - Mother Brain's body - walking forwards - fast ;;;
+;;; $976A: Instruction list - Mother Brain body - walking forwards - fast ;;;
 {
 $A9:976A             dx 9708,       ; Mother Brain's pose = walking
                         0004,9FA0,
-                        95FC,       ; Move Mother Brain's body up by 2px and right by 1px
+                        95FC,       ; Move Mother Brain body up by 2px and right by 1px
                         0004,9FEA,
-                        960C,       ; Move Mother Brain's body right by 2px
+                        960C,       ; Move Mother Brain body right by 2px
                         0004,A03C,
-                        961C,       ; Move Mother Brain's body up by 1px
+                        961C,       ; Move Mother Brain body up by 1px
                         0004,A08E,
-                        9622,       ; Move Mother Brain's body up by 1px and right by 3px, do footstep effect
+                        9622,       ; Move Mother Brain body up by 1px and right by 3px, do footstep effect
                         0004,A0E0,
-                        9638,       ; Move Mother Brain's body down by 2px and right by 15px
+                        9638,       ; Move Mother Brain body down by 2px and right by 15px
                         0004,A12A,
-                        9648,       ; Move Mother Brain's body down by 4px and right by 6px
+                        9648,       ; Move Mother Brain body down by 4px and right by 6px
                         0004,A174,
-                        9658,       ; Move Mother Brain's body up by 4px and left by 2px
+                        9658,       ; Move Mother Brain body up by 4px and left by 2px
                         0004,A1BE,
-                        9668,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        9668,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0004,A208,
                         812F        ; Sleep
 }
 
 
-;;; $97A4: Instruction list - Mother Brain's body - walking forwards - medium ;;;
+;;; $97A4: Instruction list - Mother Brain body - walking forwards - medium ;;;
 {
 $A9:97A4             dx 9708,       ; Mother Brain's pose = walking
                         0006,9FA0,
-                        95FC,       ; Move Mother Brain's body up by 2px and right by 1px
+                        95FC,       ; Move Mother Brain body up by 2px and right by 1px
                         0006,9FEA,
-                        960C,       ; Move Mother Brain's body right by 2px
+                        960C,       ; Move Mother Brain body right by 2px
                         0006,A03C,
-                        961C,       ; Move Mother Brain's body up by 1px
+                        961C,       ; Move Mother Brain body up by 1px
                         0006,A08E,
-                        9622,       ; Move Mother Brain's body up by 1px and right by 3px, do footstep effect
+                        9622,       ; Move Mother Brain body up by 1px and right by 3px, do footstep effect
                         0006,A0E0,
-                        9638,       ; Move Mother Brain's body down by 2px and right by 15px
+                        9638,       ; Move Mother Brain body down by 2px and right by 15px
                         0006,A12A,
-                        9648,       ; Move Mother Brain's body down by 4px and right by 6px
+                        9648,       ; Move Mother Brain body down by 4px and right by 6px
                         0006,A174,
-                        9658,       ; Move Mother Brain's body up by 4px and left by 2px
+                        9658,       ; Move Mother Brain body up by 4px and left by 2px
                         0006,A1BE,
-                        9668,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        9668,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0006,A208,
                         812F        ; Sleep
 }
 
 
-;;; $97DE: Instruction list - Mother Brain's body - walking forwards - slow ;;;
+;;; $97DE: Instruction list - Mother Brain body - walking forwards - slow ;;;
 {
 $A9:97DE             dx 9708,       ; Mother Brain's pose = walking
                         0008,9FA0,
-                        95FC,       ; Move Mother Brain's body up by 2px and right by 1px
+                        95FC,       ; Move Mother Brain body up by 2px and right by 1px
                         0008,9FEA,
-                        960C,       ; Move Mother Brain's body right by 2px
+                        960C,       ; Move Mother Brain body right by 2px
                         0008,A03C,
-                        961C,       ; Move Mother Brain's body up by 1px
+                        961C,       ; Move Mother Brain body up by 1px
                         0008,A08E,
-                        9622,       ; Move Mother Brain's body up by 1px and right by 3px, do footstep effect
+                        9622,       ; Move Mother Brain body up by 1px and right by 3px, do footstep effect
                         0008,A0E0,
-                        9638,       ; Move Mother Brain's body down by 2px and right by 15px
+                        9638,       ; Move Mother Brain body down by 2px and right by 15px
                         0008,A12A,
-                        9648,       ; Move Mother Brain's body down by 4px and right by 6px
+                        9648,       ; Move Mother Brain body down by 4px and right by 6px
                         0008,A174,
-                        9658,       ; Move Mother Brain's body up by 4px and left by 2px
+                        9658,       ; Move Mother Brain body up by 4px and left by 2px
                         0008,A1BE,
-                        9668,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        9668,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0008,A208,
                         812F        ; Sleep
 }
 
 
-;;; $9818: Instruction list - Mother Brain's body - walking forwards - really slow ;;;
+;;; $9818: Instruction list - Mother Brain body - walking forwards - really slow ;;;
 {
 $A9:9818             dx 9708,       ; Mother Brain's pose = walking
                         000A,9FA0,
-                        95FC,       ; Move Mother Brain's body up by 2px and right by 1px
+                        95FC,       ; Move Mother Brain body up by 2px and right by 1px
                         000A,9FEA,
-                        960C,       ; Move Mother Brain's body right by 2px
+                        960C,       ; Move Mother Brain body right by 2px
                         000A,A03C,
-                        961C,       ; Move Mother Brain's body up by 1px
+                        961C,       ; Move Mother Brain body up by 1px
                         000A,A08E,
-                        9622,       ; Move Mother Brain's body up by 1px and right by 3px, do footstep effect
+                        9622,       ; Move Mother Brain body up by 1px and right by 3px, do footstep effect
                         000A,A0E0,
-                        9638,       ; Move Mother Brain's body down by 2px and right by 15px
+                        9638,       ; Move Mother Brain body down by 2px and right by 15px
                         000A,A12A,
-                        9648,       ; Move Mother Brain's body down by 4px and right by 6px
+                        9648,       ; Move Mother Brain body down by 4px and right by 6px
                         000A,A174,
-                        9658,       ; Move Mother Brain's body up by 4px and left by 2px
+                        9658,       ; Move Mother Brain body up by 4px and left by 2px
                         000A,A1BE,
-                        9668,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        9668,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         000A,A208,
                         812F        ; Sleep
 }
 
 
-;;; $9852: Instruction list - Mother Brain's body - walking backwards - slow ;;;
+;;; $9852: Instruction list - Mother Brain body - walking backwards - slow ;;;
 {
 $A9:9852             dx 9708,       ; Mother Brain's pose = walking
                         0008,A208,
-                        96F0,       ; Move Mother Brain's body down by 2px and right by 1px
+                        96F0,       ; Move Mother Brain body down by 2px and right by 1px
                         0008,A1BE,
-                        96E0,       ; Move Mother Brain's body down by 4px and right by 2px
+                        96E0,       ; Move Mother Brain body down by 4px and right by 2px
                         0008,A174,
-                        96D0,       ; Move Mother Brain's body up by 4px and left by 6px
+                        96D0,       ; Move Mother Brain body up by 4px and left by 6px
                         0008,A12A,
-                        96BA,       ; Move Mother Brain's body up by 2px and left by 15px, do footstep effect
+                        96BA,       ; Move Mother Brain body up by 2px and left by 15px, do footstep effect
                         0008,A0E0,
-                        96AA,       ; Move Mother Brain's body down by 1px and left by 3px
+                        96AA,       ; Move Mother Brain body down by 1px and left by 3px
                         0008,A08E,
-                        96A4,       ; Move Mother Brain's body down by 1px
+                        96A4,       ; Move Mother Brain body down by 1px
                         0008,A03C,
-                        9694,       ; Move Mother Brain's body left by 2px
+                        9694,       ; Move Mother Brain body left by 2px
                         0008,9FEA,
-                        967E,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        967E,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0008,9FA0,
                         812F        ; Sleep
 }
 
 
-;;; $988C: Instruction list - Mother Brain's body - walking backwards - really fast ;;;
+;;; $988C: Instruction list - Mother Brain body - walking backwards - really fast ;;;
 {
 $A9:988C             dx 9708,       ; Mother Brain's pose = walking
                         0002,A208,
-                        96F0,       ; Move Mother Brain's body down by 2px and right by 1px
+                        96F0,       ; Move Mother Brain body down by 2px and right by 1px
                         0002,A1BE,
-                        96E0,       ; Move Mother Brain's body down by 4px and right by 2px
+                        96E0,       ; Move Mother Brain body down by 4px and right by 2px
                         0002,A174,
-                        96D0,       ; Move Mother Brain's body up by 4px and left by 6px
+                        96D0,       ; Move Mother Brain body up by 4px and left by 6px
                         0002,A12A,
-                        96BA,       ; Move Mother Brain's body up by 2px and left by 15px, do footstep effect
+                        96BA,       ; Move Mother Brain body up by 2px and left by 15px, do footstep effect
                         0002,A0E0,
-                        96AA,       ; Move Mother Brain's body down by 1px and left by 3px
+                        96AA,       ; Move Mother Brain body down by 1px and left by 3px
                         0002,A08E,
-                        96A4,       ; Move Mother Brain's body down by 1px
+                        96A4,       ; Move Mother Brain body down by 1px
                         0002,A03C,
-                        9694,       ; Move Mother Brain's body left by 2px
+                        9694,       ; Move Mother Brain body left by 2px
                         0002,9FEA,
-                        967E,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        967E,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0002,9FA0,
                         812F        ; Sleep
 }
 
 
-;;; $98C6: Instruction list - Mother Brain's body - walking backwards - fast ;;;
+;;; $98C6: Instruction list - Mother Brain body - walking backwards - fast ;;;
 {
 $A9:98C6             dx 9708,       ; Mother Brain's pose = walking
                         0004,A208,
-                        96F0,       ; Move Mother Brain's body down by 2px and right by 1px
+                        96F0,       ; Move Mother Brain body down by 2px and right by 1px
                         0004,A1BE,
-                        96E0,       ; Move Mother Brain's body down by 4px and right by 2px
+                        96E0,       ; Move Mother Brain body down by 4px and right by 2px
                         0004,A174,
-                        96D0,       ; Move Mother Brain's body up by 4px and left by 6px
+                        96D0,       ; Move Mother Brain body up by 4px and left by 6px
                         0004,A12A,
-                        96BA,       ; Move Mother Brain's body up by 2px and left by 15px, do footstep effect
+                        96BA,       ; Move Mother Brain body up by 2px and left by 15px, do footstep effect
                         0004,A0E0,
-                        96AA,       ; Move Mother Brain's body down by 1px and left by 3px
+                        96AA,       ; Move Mother Brain body down by 1px and left by 3px
                         0004,A08E,
-                        96A4,       ; Move Mother Brain's body down by 1px
+                        96A4,       ; Move Mother Brain body down by 1px
                         0004,A03C,
-                        9694,       ; Move Mother Brain's body left by 2px
+                        9694,       ; Move Mother Brain body left by 2px
                         0004,9FEA,
-                        967E,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        967E,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0004,9FA0,
                         812F        ; Sleep
 }
 
 
-;;; $9900: Instruction list - Mother Brain's body - walking backwards - medium ;;;
+;;; $9900: Instruction list - Mother Brain body - walking backwards - medium ;;;
 {
 $A9:9900             dx 9708,       ; Mother Brain's pose = walking
                         0006,A208,
-                        96F0,       ; Move Mother Brain's body down by 2px and right by 1px
+                        96F0,       ; Move Mother Brain body down by 2px and right by 1px
                         0006,A1BE,
-                        96E0,       ; Move Mother Brain's body down by 4px and right by 2px
+                        96E0,       ; Move Mother Brain body down by 4px and right by 2px
                         0006,A174,
-                        96D0,       ; Move Mother Brain's body up by 4px and left by 6px
+                        96D0,       ; Move Mother Brain body up by 4px and left by 6px
                         0006,A12A,
-                        96BA,       ; Move Mother Brain's body up by 2px and left by 15px, do footstep effect
+                        96BA,       ; Move Mother Brain body up by 2px and left by 15px, do footstep effect
                         0006,A0E0,
-                        96AA,       ; Move Mother Brain's body down by 1px and left by 3px
+                        96AA,       ; Move Mother Brain body down by 1px and left by 3px
                         0006,A08E,
-                        96A4,       ; Move Mother Brain's body down by 1px
+                        96A4,       ; Move Mother Brain body down by 1px
                         0006,A03C,
-                        9694,       ; Move Mother Brain's body left by 2px
+                        9694,       ; Move Mother Brain body left by 2px
                         0006,9FEA,
-                        967E,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        967E,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         0006,9FA0,
                         812F        ; Sleep
 }
 
 
-;;; $993A: Instruction list - Mother Brain's body - walking backwards - really slow ;;;
+;;; $993A: Instruction list - Mother Brain body - walking backwards - really slow ;;;
 {
 $A9:993A             dx 9708,       ; Mother Brain's pose = walking
                         000A,A208,
-                        96F0,       ; Move Mother Brain's body down by 2px and right by 1px
+                        96F0,       ; Move Mother Brain body down by 2px and right by 1px
                         000A,A1BE,
-                        96E0,       ; Move Mother Brain's body down by 4px and right by 2px
+                        96E0,       ; Move Mother Brain body down by 4px and right by 2px
                         000A,A174,
-                        96D0,       ; Move Mother Brain's body up by 4px and left by 6px
+                        96D0,       ; Move Mother Brain body up by 4px and left by 6px
                         000A,A12A,
-                        96BA,       ; Move Mother Brain's body up by 2px and left by 15px, do footstep effect
+                        96BA,       ; Move Mother Brain body up by 2px and left by 15px, do footstep effect
                         000A,A0E0,
-                        96AA,       ; Move Mother Brain's body down by 1px and left by 3px
+                        96AA,       ; Move Mother Brain body down by 1px and left by 3px
                         000A,A08E,
-                        96A4,       ; Move Mother Brain's body down by 1px
+                        96A4,       ; Move Mother Brain body down by 1px
                         000A,A03C,
-                        9694,       ; Move Mother Brain's body left by 2px
+                        9694,       ; Move Mother Brain body left by 2px
                         000A,9FEA,
-                        967E,       ; Move Mother Brain's body up by 2px and left by 1px, do footstep effect
+                        967E,       ; Move Mother Brain body up by 2px and left by 1px, do footstep effect
                         9700,       ; Mother Brain's pose = standing
                         000A,9FA0,
                         812F        ; Sleep
 }
 
 
-;;; $9974: Instruction list - Mother Brain's body - crouch and then stand up ;;;
+;;; $9974: Instruction list - Mother Brain body - crouch and then stand up ;;;
 {
 $A9:9974             dx 9718,       ; Mother Brain's pose = crouching transition
                         0008,9FA0,
-                        95DE,       ; Move Mother Brain's body down by 12px, scroll it left by 4px
+                        95DE,       ; Move Mother Brain body down by 12px, scroll it left by 4px
                         0008,A2D6,
-                        95E8,       ; Move Mother Brain's body down by 16px, scroll it right by 2px
+                        95E8,       ; Move Mother Brain body down by 16px, scroll it right by 2px
                         0008,A28C,
-                        95F2,       ; Move Mother Brain's body down by 10px, scroll it right by 2px
+                        95F2,       ; Move Mother Brain body down by 10px, scroll it right by 2px
                         9710,       ; Mother Brain's pose = crouched
                         0008,A252,
                         0008,A252,
-                        95B6,       ; Move Mother Brain's body up by 10px, scroll it left by 4px
+                        95B6,       ; Move Mother Brain body up by 10px, scroll it left by 4px
                         9718,       ; Mother Brain's pose = crouching transition
                         0008,A28C,
-                        95C0,       ; Move Mother Brain's body up by 16px, scroll it left by 4px
+                        95C0,       ; Move Mother Brain body up by 16px, scroll it left by 4px
                         0008,A2D6,
-                        95CA,       ; Move Mother Brain's body up by 12px, scroll it right by 2px
+                        95CA,       ; Move Mother Brain body up by 12px, scroll it right by 2px
                         0008,9FA0,
                         9700,       ; Mother Brain's pose = standing
                         812F        ; Sleep
 }
 
 
-;;; $99AA: Instruction list - Mother Brain's body - standing up after crouching - slow ;;;
+;;; $99AA: Instruction list - Mother Brain body - standing up after crouching - slow ;;;
 {
 $A9:99AA             dx 9718,       ; Mother Brain's pose = crouching transition
                         0010,A252,
-                        95B6,       ; Move Mother Brain's body up by 10px, scroll it left by 4px
+                        95B6,       ; Move Mother Brain body up by 10px, scroll it left by 4px
                         0010,A28C,
-                        95C0,       ; Move Mother Brain's body up by 16px, scroll it left by 4px
+                        95C0,       ; Move Mother Brain body up by 16px, scroll it left by 4px
                         0010,A2D6,
-                        95CA,       ; Move Mother Brain's body up by 12px, scroll it right by 2px
+                        95CA,       ; Move Mother Brain body up by 12px, scroll it right by 2px
                         0010,9FA0,
                         9700,       ; Mother Brain's pose = standing
                         812F        ; Sleep
 }
 
 
-;;; $99C6: Instruction list - Mother Brain's body - standing up after crouching - fast ;;;
+;;; $99C6: Instruction list - Mother Brain body - standing up after crouching - fast ;;;
 {
 $A9:99C6             dx 9718,       ; Mother Brain's pose = crouching transition
                         0008,A252,
-                        95B6,       ; Move Mother Brain's body up by 10px, scroll it left by 4px
+                        95B6,       ; Move Mother Brain body up by 10px, scroll it left by 4px
                         0008,A28C,
-                        95C0,       ; Move Mother Brain's body up by 16px, scroll it left by 4px
+                        95C0,       ; Move Mother Brain body up by 16px, scroll it left by 4px
                         0008,A2D6,
-                        95CA,       ; Move Mother Brain's body up by 12px, scroll it right by 2px
+                        95CA,       ; Move Mother Brain body up by 12px, scroll it right by 2px
                         0008,9FA0,
                         9700,       ; Mother Brain's pose = standing
                         812F        ; Sleep
 }
 
 
-;;; $99E2: Instruction list - Mother Brain's body - standing up after leaning down ;;;
+;;; $99E2: Instruction list - Mother Brain body - standing up after leaning down ;;;
 {
 $A9:99E2             dx 9718,       ; Mother Brain's pose = crouching transition
                         0008,A2D6,
-                        95CA,       ; Move Mother Brain's body up by 12px, scroll it right by 2px
+                        95CA,       ; Move Mother Brain body up by 12px, scroll it right by 2px
                         0008,9FA0,
                         9700,       ; Mother Brain's pose = standing
                         812F        ; Sleep
 }
 
 
-;;; $99F2: Instruction list - Mother Brain's body - leaning down ;;;
+;;; $99F2: Instruction list - Mother Brain body - leaning down ;;;
 {
 $A9:99F2             dx 9718,       ; Mother Brain's pose = crouching transition
                         0008,9FA0,
-                        95DE,       ; Move Mother Brain's body down by 12px, scroll it left by 4px
+                        95DE,       ; Move Mother Brain body down by 12px, scroll it left by 4px
                         9728,       ; Mother Brain's pose = leaning down
                         0008,A2D6,
                         812F        ; Sleep
 }
 
 
-;;; $9A02: Instruction list - Mother Brain's body - crouched ;;;
+;;; $9A02: Instruction list - Mother Brain body - crouched ;;;
 {
 $A9:9A02             dx 9710,       ; Mother Brain's pose = crouched
                         0008,A252,
@@ -2574,37 +2574,37 @@ $A9:9A02             dx 9710,       ; Mother Brain's pose = crouched
 }
 
 
-;;; $9A0A: Instruction list - Mother Brain's body - crouch - slow ;;;
+;;; $9A0A: Instruction list - Mother Brain body - crouch - slow ;;;
 {
 $A9:9A0A             dx 9718,       ; Mother Brain's pose = crouching transition
                         0008,9FA0,
-                        95DE,       ; Move Mother Brain's body down by 12px, scroll it left by 4px
+                        95DE,       ; Move Mother Brain body down by 12px, scroll it left by 4px
                         0008,A2D6,
-                        95E8,       ; Move Mother Brain's body down by 16px, scroll it right by 2px
+                        95E8,       ; Move Mother Brain body down by 16px, scroll it right by 2px
                         0008,A28C,
-                        95F2,       ; Move Mother Brain's body down by 10px, scroll it right by 2px
+                        95F2,       ; Move Mother Brain body down by 10px, scroll it right by 2px
                         9710,       ; Mother Brain's pose = crouched
                         0008,A252,
                         812F        ; Sleep
 }
 
 
-;;; $9A26: Instruction list - Mother Brain's body - crouch - fast ;;;
+;;; $9A26: Instruction list - Mother Brain body - crouch - fast ;;;
 {
 $A9:9A26             dx 9718,       ; Mother Brain's pose = crouching transition
                         0008,9FA0,
-                        95DE,       ; Move Mother Brain's body down by 12px, scroll it left by 4px
+                        95DE,       ; Move Mother Brain body down by 12px, scroll it left by 4px
                         0002,A2D6,
-                        95E8,       ; Move Mother Brain's body down by 16px, scroll it right by 2px
+                        95E8,       ; Move Mother Brain body down by 16px, scroll it right by 2px
                         0002,A28C,
-                        95F2,       ; Move Mother Brain's body down by 10px, scroll it right by 2px
+                        95F2,       ; Move Mother Brain body down by 10px, scroll it right by 2px
                         9710,       ; Mother Brain's pose = crouched
                         0008,A252,
                         812F        ; Sleep
 }
 
 
-;;; $9A42: Instruction list - Mother Brain's body - death beam mode ;;;
+;;; $9A42: Instruction list - Mother Brain body - death beam mode ;;;
 {
 $A9:9A42             dx 9720,                   ; Mother Brain's pose = death beam mode
                         0001,9FA0,
@@ -2638,11 +2638,11 @@ $A9:9A42             dx 9720,                   ; Mother Brain's pose = death be
 }
 
 
-;;; $9AC8..9B0E: Instructions - Mother Brain's body - death beam mode ;;;
+;;; $9AC8..9B0E: Instructions - Mother Brain body - death beam mode ;;;
 {
 ;;; $9AC8: Instruction - spawn enemy projectile $E509 to offset ([[Y]], [[Y] + 2]) with parameter [[Y] + 4] ;;;
 {
-; Offset is relative to Mother Brain's body position
+; Offset is relative to Mother Brain body position
 $A9:9AC8 5A          PHY
 $A9:9AC9 DA          PHX
 $A9:9ACA B9 00 00    LDA $0000,y[$A9:9A52]
@@ -2675,7 +2675,7 @@ $A9:9AF0 5A          PHY
 $A9:9AF1 A9 63 00    LDA #$0063             ;\
 $A9:9AF4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 63h, sound library 2, max queued sounds allowed = 6 (Mother Brain's death beam)
 $A9:9AF8 A2 40 00    LDX #$0040             ;\
-$A9:9AFB A0 67 CB    LDY #$CB67             ;} Spawn Mother Brain's death beam - charging enemy projectile using Mother Brain's brain graphics
+$A9:9AFB A0 67 CB    LDY #$CB67             ;} Spawn Mother Brain's death beam - charging enemy projectile using Mother Brain brain graphics
 $A9:9AFE 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A9:9B02 7A          PLY
 $A9:9B03 FA          PLX
@@ -2701,7 +2701,7 @@ $A9:9B13 60          RTS
 }
 
 
-;;; $9B14..9F9F: Instruction lists and instructions - Mother Brain's brain ;;;
+;;; $9B14..9F9F: Instruction lists and instructions - Mother Brain brain ;;;
 {
 ;;; $9B14: Instruction - enable Mother Brain neck movement and go to [[X]] ;;;
 {
@@ -2777,7 +2777,7 @@ $A9:9B76 60          RTS
 }
 
 
-;;; $9B77: Instruction - Mother Brain's brain main shake timer = 50 ;;;
+;;; $9B77: Instruction - Mother Brain brain main shake timer = 50 ;;;
 {
 $A9:9B77 A9 32 00    LDA #$0032
 $A9:9B7A 8F 40 78 7E STA $7E7840[$7E:7840]
@@ -2785,9 +2785,9 @@ $A9:9B7E 60          RTS
 }
 
 
-;;; $9B7F: Instruction list - Mother Brain's brain - stretching - phase 2 ;;;
+;;; $9B7F: Instruction list - Mother Brain brain - stretching - phase 2 ;;;
 {
-$A9:9B7F             dx 9B77,       ; Mother Brain's brain main shake timer = 50
+$A9:9B7F             dx 9B77,       ; Mother Brain brain main shake timer = 50
                         0002,A5F8,
                         0002,A62C,
                         9B3C,       ; Spawn Mother Brain's drool enemy projectile
@@ -2806,9 +2806,9 @@ $A9:9BAB             dx 0001,A5F8,
 }
 
 
-;;; $9BB3: Instruction list - Mother Brain's brain - stretching - phase 3 ;;;
+;;; $9BB3: Instruction list - Mother Brain brain - stretching - phase 3 ;;;
 {
-$A9:9BB3             dx 9B77,       ; Mother Brain's brain main shake timer = 50
+$A9:9BB3             dx 9B77,       ; Mother Brain brain main shake timer = 50
                         0002,A717,
                         0002,A750,
                         9B3C,       ; Spawn Mother Brain's drool enemy projectile
@@ -2827,9 +2827,9 @@ $A9:9BDF             dx 0001,A717,
 }
 
 
-;;; $9BE7: Instruction list - Mother Brain's brain - hyper beam recoil ;;;
+;;; $9BE7: Instruction list - Mother Brain brain - hyper beam recoil ;;;
 {
-$A9:9BE7             dx 9B77,       ; Mother Brain's brain main shake timer = 50
+$A9:9BE7             dx 9B77,       ; Mother Brain brain main shake timer = 50
                         0002,A717,
                         0002,A750,
                         0002,A750,
@@ -2844,28 +2844,28 @@ $A9:9C0B             dx 0001,A717,
 }
 
 
-;;; $9C13: Instruction list - Mother Brain's body - initial (dummy) ;;;
+;;; $9C13: Instruction list - Mother Brain body - initial (dummy) ;;;
 {
 $A9:9C13             dx 0000,A320,
                         812F        ; Sleep
 }
 
 
-;;; $9C19: Unused. Instruction list - Mother Brain's brain ;;;
+;;; $9C19: Unused. Instruction list - Mother Brain brain ;;;
 {
 $A9:9C19             dx 0008,A5F8,
                         0004,A5BF
 }
 
 
-;;; $9C21: Instruction list - Mother Brain's brain - initial ;;;
+;;; $9C21: Instruction list - Mother Brain brain - initial ;;;
 {
 $A9:9C21             dx 0004,A586,
                         9B0F,9C21   ; Go to $9C21
 }
 
 
-;;; $9C29: Instruction list - Mother Brain's brain - decapitated ;;;
+;;; $9C29: Instruction list - Mother Brain brain - decapitated ;;;
 {
 $A9:9C29             dx 0008,A717,
                         0004,A6D9
@@ -2874,9 +2874,9 @@ $A9:9C31             dx 0004,A69B,
 }
 
 
-;;; $9C39: Instruction list - Mother Brain's brain - dying drool ;;;
+;;; $9C39: Instruction list - Mother Brain brain - dying drool ;;;
 {
-$A9:9C39             dx 9B77,       ; Mother Brain's brain main shake timer = 50
+$A9:9C39             dx 9B77,       ; Mother Brain brain main shake timer = 50
                         0004,A717,
                         0004,A750,
                         9B28,007E   ; Queue sound 7Eh, sound library 2, max queued sounds allowed = 6 (Mother Brain's cry - high pitch)
@@ -2906,21 +2906,21 @@ $A9:9C76 60          RTS
 }
 
 
-;;; $9C77: Instruction list - Mother Brain's brain - firing rainbow beam ;;;
+;;; $9C77: Instruction list - Mother Brain brain - firing rainbow beam ;;;
 {
 $A9:9C77             dx 0001,A5F8,
                         9B0F,9C77   ; Go to $9C77
 }
 
 
-;;; $9C7F: Unused. Instruction list - Mother Brain's brain ;;;
+;;; $9C7F: Unused. Instruction list - Mother Brain brain ;;;
 {
 $A9:9C7F             dx 0001,A717,
                         9B0F,9C7F   ; Go to $9C7F
 }
 
 
-;;; $9C87: Instruction list - Mother Brain's brain - neutral - phase 2 ;;;
+;;; $9C87: Instruction list - Mother Brain brain - neutral - phase 2 ;;;
 {
 ; Includes firing death beam (which is done by body)
 $A9:9C87             dx 0004,A586,
@@ -2947,7 +2947,7 @@ $A9:9CB8 60          RTS
 }
 
 
-;;; $9CB9: Instruction list - Mother Brain's brain - neutral - phase 3 ;;;
+;;; $9CB9: Instruction list - Mother Brain brain - neutral - phase 3 ;;;
 {
 ; When Shitroid is making its final stand
 $A9:9CB9             dx 0004,A69B,
@@ -3002,7 +3002,7 @@ $A9:9D24 60          RTS
 }
 
 
-;;; $9D25: Instruction list - Mother Brain's brain - corpse ;;;
+;;; $9D25: Instruction list - Mother Brain brain - corpse ;;;
 {
 $A9:9D25             dx 0002,A69B,
                         0002,A6D9,
@@ -3013,7 +3013,7 @@ $A9:9D35             dx 0002,AD6D,
 }
 
 
-;;; $9D3D: Instruction list - Mother Brain's brain - attacking - four blue rings - phase 2 ;;;
+;;; $9D3D: Instruction list - Mother Brain brain - attacking - four blue rings - phase 2 ;;;
 {
 $A9:9D3D             dx 9B20,       ; Disable Mother Brain neck movement
                         0004,A5F8,
@@ -3039,7 +3039,7 @@ $A9:9D3D             dx 9B20,       ; Disable Mother Brain neck movement
 }
 
 
-;;; $9D7F: Instruction list - Mother Brain's brain - attacking - two blue rings - phase 2 ;;;
+;;; $9D7F: Instruction list - Mother Brain brain - attacking - two blue rings - phase 2 ;;;
 {
 $A9:9D7F             dx 9B20,       ; Disable Mother Brain neck movement
                         0004,A5F8,
@@ -3059,7 +3059,7 @@ $A9:9D7F             dx 9B20,       ; Disable Mother Brain neck movement
 }
 
 
-;;; $9DB1: Instruction list - Mother Brain's brain - attacking Shitroid ;;;
+;;; $9DB1: Instruction list - Mother Brain brain - attacking Shitroid ;;;
 {
 $A9:9DB1             dx 9EA3,       ; Increment Mother Brain Shitroid attack counter
                         9B20,       ; Disable Mother Brain neck movement
@@ -3068,7 +3068,7 @@ $A9:9DB1             dx 9EA3,       ; Increment Mother Brain Shitroid attack cou
 }
 
 
-;;; $9DBB: Instruction list - Mother Brain's brain - attacking Samus - four blue rings - phase 3 ;;;
+;;; $9DBB: Instruction list - Mother Brain brain - attacking Samus - four blue rings - phase 3 ;;;
 {
 $A9:9DBB             dx 9EB5,       ; Mother Brain Shitroid attack counter = 0
                         9B20,       ; Disable Mother Brain neck movement
@@ -3076,7 +3076,7 @@ $A9:9DBB             dx 9EB5,       ; Mother Brain Shitroid attack counter = 0
 }
 
 
-;;; $9DC1: Instruction list - Mother Brain's brain - attacking - four blue rings - phase 3 ;;;
+;;; $9DC1: Instruction list - Mother Brain brain - attacking - four blue rings - phase 3 ;;;
 {
 $A9:9DC1             dx 0004,A717,
                         0004,A750,
@@ -3139,13 +3139,13 @@ $A9:9E3D AA          TAX                    ;} X = [Shitroid enemy index]
 $A9:9E3E BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
 $A9:9E41 38          SEC                    ;|
 $A9:9E42 ED BA 0F    SBC $0FBA  [$7E:0FBA]  ;|
-$A9:9E45 38          SEC                    ;} $12 = [Shitroid X position] - Ah - [Mother Brain's brain X position]
+$A9:9E45 38          SEC                    ;} $12 = [Shitroid X position] - Ah - [Mother Brain brain X position]
 $A9:9E46 E9 0A 00    SBC #$000A             ;|
 $A9:9E49 85 12       STA $12    [$7E:0012]  ;/
 $A9:9E4B BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A9:9E4E 38          SEC                    ;|
 $A9:9E4F ED BE 0F    SBC $0FBE  [$7E:0FBE]  ;|
-$A9:9E52 38          SEC                    ;} $14 = [Shitroid Y position] - 10h - [Mother Brain's brain Y position]
+$A9:9E52 38          SEC                    ;} $14 = [Shitroid Y position] - 10h - [Mother Brain brain Y position]
 $A9:9E53 E9 10 00    SBC #$0010             ;|
 $A9:9E56 85 14       STA $14    [$7E:0014]  ;/
 $A9:9E58 4C 77 9E    JMP $9E77  [$A9:9E77]  ; Go to aim Mother Brain blue rings
@@ -3159,13 +3159,13 @@ $A9:9E5C 5A          PHY
 $A9:9E5D AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A9:9E60 38          SEC                    ;|
 $A9:9E61 ED BA 0F    SBC $0FBA  [$7E:0FBA]  ;|
-$A9:9E64 38          SEC                    ;} $12 = [Samus X position] - Ah - [Mother Brain's brain X position]
+$A9:9E64 38          SEC                    ;} $12 = [Samus X position] - Ah - [Mother Brain brain X position]
 $A9:9E65 E9 0A 00    SBC #$000A             ;|
 $A9:9E68 85 12       STA $12    [$7E:0012]  ;/
 $A9:9E6A AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A9:9E6D 38          SEC                    ;|
 $A9:9E6E ED BE 0F    SBC $0FBE  [$7E:0FBE]  ;|
-$A9:9E71 38          SEC                    ;} $14 = [Samus Y position] - 10h - [Mother Brain's brain Y position]
+$A9:9E71 38          SEC                    ;} $14 = [Samus Y position] - 10h - [Mother Brain brain Y position]
 $A9:9E72 E9 10 00    SBC #$0010             ;|
 $A9:9E75 85 14       STA $14    [$7E:0014]  ;/
 }
@@ -3240,7 +3240,7 @@ $A9:9ECB 60          RTS
 }
 
 
-;;; $9ECC: Instruction list - Mother Brain's brain - attacking - bomb - phase 2 ;;;
+;;; $9ECC: Instruction list - Mother Brain brain - attacking - bomb - phase 2 ;;;
 {
 $A9:9ECC             dx 0004,A586,
                         0004,A5BF,
@@ -3259,7 +3259,7 @@ $A9:9ECC             dx 0004,A586,
 }
 
 
-;;; $9F00: Instruction list - Mother Brain's brain - attacking - bomb - phase 3 ;;;
+;;; $9F00: Instruction list - Mother Brain brain - attacking - bomb - phase 3 ;;;
 {
 $A9:9F00             dx 0004,A69B,
                         0004,A6D9,
@@ -3278,7 +3278,7 @@ $A9:9F00             dx 0004,A69B,
 }
 
 
-;;; $9F34: Instruction list - Mother Brain's brain - attacking - laser ;;;
+;;; $9F34: Instruction list - Mother Brain brain - attacking - laser ;;;
 {
 $A9:9F34             dx 0010,A5BF,
                         0004,A5F8,
@@ -3295,11 +3295,11 @@ $A9:9F49 8F 62 80 7E STA $7E8062[$7E:8062]  ;} Disable Mother Brain neck movemen
 $A9:9F4D 5A          PHY
 $A9:9F4E AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:9F51 18          CLC                    ;|
-$A9:9F52 69 10 00    ADC #$0010             ;} $12 = [Mother Brain's brain X position] + 10h
+$A9:9F52 69 10 00    ADC #$0010             ;} $12 = [Mother Brain brain X position] + 10h
 $A9:9F55 85 12       STA $12    [$7E:0012]  ;/
 $A9:9F57 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:9F5A 18          CLC                    ;|
-$A9:9F5B 69 04 00    ADC #$0004             ;} $14 = [Mother Brain's brain Y position] + 4
+$A9:9F5B 69 04 00    ADC #$0004             ;} $14 = [Mother Brain brain Y position] + 4
 $A9:9F5E 85 14       STA $14    [$7E:0014]  ;/
 $A9:9F60 A9 01 00    LDA #$0001             ;\
 $A9:9F63 A0 7B A1    LDY #$A17B             ;} Spawn laser enemy projectile with parameter 1
@@ -3309,7 +3309,7 @@ $A9:9F6B 60          RTS
 }
 
 
-;;; $9F6C: Instruction list - Mother Brain's brain - charging rainbow beam ;;;
+;;; $9F6C: Instruction list - Mother Brain brain - charging rainbow beam ;;;
 {
 $A9:9F6C             dx 9F8E,       ; Set up effects for Mother Brain charging rainbow beam
                         0004,A5F8,
@@ -3335,7 +3335,7 @@ $A9:9F8D 60          RTS
 {
 $A9:9F8E A9 00 00    LDA #$0000             ;\
 $A9:9F91 8F 68 78 7E STA $7E7868[$7E:7868]  ;} Disable Mother Brain's small purple breath generation
-$A9:9F95 20 FF D1    JSR $D1FF  [$A9:D1FF]  ; Set up Mother Brain's brain palette for charging her laser
+$A9:9F95 20 FF D1    JSR $D1FF  [$A9:D1FF]  ; Set up Mother Brain brain palette for charging her laser
 $A9:9F98 A9 7F 00    LDA #$007F             ;\
 $A9:9F9B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 7Fh, sound library 2, max queued sounds allowed = 6 (Mother Brain charging her rainbow)
 $A9:9F9F 60          RTS
@@ -3343,7 +3343,7 @@ $A9:9F9F 60          RTS
 }
 
 
-;;; $9FA0: Extended spritemap entries - Mother Brain's body ;;;
+;;; $9FA0: Extended spritemap entries - Mother Brain body ;;;
 {
 ; Standing
 $A9:9FA0             dx 0009, 0012,003A,A890,A4CA, 001E,001D,A85B,A4C8, 0019,001E,A86E,A4C8, 0000,FFFC,A7C2,A4C8, 0000,0000,A98A,A4E8, 0000,0000,AAEA,A504, FFF6,0038,A974,A4DA, 0007,001C,A93F,A4D8, 0002,001D,A95E,A4D8
@@ -3387,7 +3387,7 @@ $A9:A462             dx 0009, 0012,003A,A890,A4CA, 001E,001D,A85B,A4C8, 0019,001
 }
 
 
-;;; $A4AC: Hitboxes - Mother Brain's body ;;;
+;;; $A4AC: Hitboxes - Mother Brain body ;;;
 {
 $A9:A4AC             dx 0001, FFEC,FFEB,0010,0017,B5C6,B507
 $A9:A4BA             dx 0001, FFEC,FFEB,0013,0017,B5C6,B507
@@ -3519,32 +3519,32 @@ $A9:ACE4             dx FFFE,
 $A9:AD3E             dx 0009, 8008,08,21E4, 81F8,08,21E2, 81E8,08,21E0, 8008,F8,21C4, 81F8,F8,21C2, 81E8,F8,21C0, 8008,E8,21A4, 81F8,E8,21A2, 81E8,E8,21A0
 $A9:AD6D             dx 000A, 8014,08,21EC, 8004,08,21EA, 81F4,08,21E8, 81E4,08,21E6, 8004,F8,21CA, 81F4,F8,21C8, 81E4,F8,21C6, 8004,E8,21AA, 81F4,E8,21A8, 81E4,E8,21A6
 
-; Mother Brain's tubes falling 0
+; Mother Brain tubes falling 0
 $A9:ADA1             dx 000A, 0008,E4,2F5D, 0008,DC,2F4D, 0000,E4,2F5D, 0000,DC,2F4D, C3F0,DC,2F42, 01F8,1C,2F51, 01F0,1C,2F50, C3F0,FC,2F47, C3F0,EC,AF40, C3F0,0C,2F40
 
-; Mother Brain's tubes falling 1
+; Mother Brain tubes falling 1
 $A9:ADD5             dx 000A, 01F0,E4,6F5D, 01F0,DC,6F4D, 01F8,E4,6F5D, 01F8,DC,6F4D, C200,DC,6F42, 0000,1C,6F51, 0008,1C,6F50, C200,FC,6F47, C200,EC,EF40, C200,0C,6F40
 
-; Mother Brain's tubes falling 2
+; Mother Brain tubes falling 2
 $A9:AE09             dx 0008, C3F8,E4,2F44, 0000,14,2F51, 01F8,14,2F50, C3F8,04,2F4B, 0000,FC,2F51, 01F8,FC,2F50, 0000,F4,2F51, 01F8,F4,2F50
 
-; Mother Brain's tubes falling 3
+; Mother Brain tubes falling 3
 $A9:AE33             dx 0008, C3F8,E4,6F44, 01F8,14,6F51, 0000,14,6F50, C3F8,04,2F4B, 01F8,FC,6F51, 0000,FC,6F50, 01F8,F4,6F51, 0000,F4,6F50
 
-; Mother Brain's tubes falling 4
+; Mother Brain tubes falling 4
 $A9:AE5D             dx 001A, 0000,E0,6F70, 01F8,E0,2F70, 0000,D8,6F60, 01F8,D8,2F60, 0008,28,2F6D, 0000,28,2F6D, 01F8,28,2F6D, 01F0,28,2F6D, 0008,20,2F6D, 0000,20,2F6D, 01F8,20,2F6D, 01F0,20,2F6D, 0008,18,2F6C, 0000,18,2F6C, 01F8,18,2F6C, 01F0,18,2F6C, C200,F8,6F49, C3F0,F8,2F49, C200,08,6F46, C3F0,08,2F46, C200,E8,2F40, C3F0,E8,2F40, C200,D8,EF4E, C3F0,D8,AF4E, C200,D0,EF5E, C3F0,D0,AF5E
 }
 
 
 ;;; $AEE1..B3B5: Mother Brain death sequence ;;;
 {
-;;; $AEE1: Mother Brain's body function - third phase - death sequence - move to back of room ;;;
+;;; $AEE1: Mother Brain body function - third phase - death sequence - move to back of room ;;;
 {
 $A9:AEE1 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:AEE4 09 00 04    ORA #$0400             ;} Set Mother Brain's body as intangible
+$A9:AEE4 09 00 04    ORA #$0400             ;} Set Mother Brain body as intangible
 $A9:AEE7 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:AEEA AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A9:AEED 09 00 04    ORA #$0400             ;} Set Mother Brain's brain as intangible
+$A9:AEED 09 00 04    ORA #$0400             ;} Set Mother Brain brain as intangible
 $A9:AEF0 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A9:AEF3 A9 00 00    LDA #$0000             ;\
 $A9:AEF6 8F 08 78 7E STA $7E7808[$7E:7808]  ;} Disable all Mother Brain hitboxes
@@ -3555,57 +3555,57 @@ $A9:AF03 B0 01       BCS $01    [$AF06]     ; If not reached X position 28h:
 $A9:AF05 60          RTS                    ; Return
 
 $A9:AF06 A9 12 AF    LDA #$AF12             ;\
-$A9:AF09 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $AF12
+$A9:AF09 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $AF12
 $A9:AF0C A9 80 00    LDA #$0080             ;\
-$A9:AF0F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 80h
+$A9:AF0F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 80h
 }
 
 
-;;; $AF12: Mother Brain's body function - third phase - death sequence - idle whilst exploding ;;;
+;;; $AF12: Mother Brain body function - third phase - death sequence - idle whilst exploding ;;;
 {
-$A9:AF12 20 22 B0    JSR $B022  [$A9:B022]  ; Generate smoky explosions around Mother Brain's body
-$A9:AF15 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:AF18 10 06       BPL $06    [$AF20]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:AF12 20 22 B0    JSR $B022  [$A9:B022]  ; Generate smoky explosions around Mother Brain body
+$A9:AF15 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:AF18 10 06       BPL $06    [$AF20]     ; If [Mother Brain body function timer] >= 0: return
 $A9:AF1A A9 21 AF    LDA #$AF21             ;\
-$A9:AF1D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $AF21
+$A9:AF1D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $AF21
 
 $A9:AF20 60          RTS
 }
 
 
-;;; $AF21: Mother Brain's body function - third phase - death sequence - stumble to middle of room and drool ;;;
+;;; $AF21: Mother Brain body function - third phase - death sequence - stumble to middle of room and drool ;;;
 {
-$A9:AF21 20 22 B0    JSR $B022  [$A9:B022]  ; Generate smoky explosions around Mother Brain's body
+$A9:AF21 20 22 B0    JSR $B022  [$A9:B022]  ; Generate smoky explosions around Mother Brain body
 $A9:AF24 A0 02 00    LDY #$0002             ;\
 $A9:AF27 A9 60 00    LDA #$0060             ;} Make Mother Brain walk forwards really fast towards X position 60h
 $A9:AF2A 20 01 C6    JSR $C601  [$A9:C601]  ;/
 $A9:AF2D 90 F1       BCC $F1    [$AF20]     ; If not reached X position 60h: return
 $A9:AF2F A9 39 9C    LDA #$9C39             ;\
-$A9:AF32 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C39 (dying drool)
+$A9:AF32 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C39 (dying drool)
 $A9:AF35 A9 06 00    LDA #$0006             ;\
 $A9:AF38 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 6 (lower)
 $A9:AF3C 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement index = 6 (lower)
 $A9:AF40 A9 00 05    LDA #$0500             ;\
 $A9:AF43 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 500h
 $A9:AF47 A9 54 AF    LDA #$AF54             ;\
-$A9:AF4A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $AF54
+$A9:AF4A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $AF54
 $A9:AF4D A9 20 00    LDA #$0020             ;\
-$A9:AF50 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 20h
+$A9:AF50 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 20h
 $A9:AF53 60          RTS
 }
 
 
-;;; $AF54: Mother Brain's body function - third phase - death sequence - disable brain effects ;;;
+;;; $AF54: Mother Brain body function - third phase - death sequence - disable brain effects ;;;
 {
-$A9:AF54 20 22 B0    JSR $B022  [$A9:B022]  ; Generate smoky explosions around Mother Brain's body
-$A9:AF57 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:AF5A 10 C4       BPL $C4    [$AF20]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:AF54 20 22 B0    JSR $B022  [$A9:B022]  ; Generate smoky explosions around Mother Brain body
+$A9:AF57 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:AF5A 10 C4       BPL $C4    [$AF20]     ; If [Mother Brain body function timer] >= 0: return
 $A9:AF5C A9 00 00    LDA #$0000             ;\
 $A9:AF5F 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 0 (nothing)
 $A9:AF63 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement index = 0 (nothing)
 $A9:AF67 8F 64 78 7E STA $7E7864[$7E:7864]  ; Disable Mother Brain drool generation
 $A9:AF6B 8F 68 78 7E STA $7E7868[$7E:7868]  ; Disable Mother Brain small purple breath generation
-$A9:AF6F 8F 60 78 7E STA $7E7860[$7E:7860]  ; Disable Mother Brain's brain palette handling
+$A9:AF6F 8F 60 78 7E STA $7E7860[$7E:7860]  ; Disable Mother Brain brain palette handling
 $A9:AF73 8F 62 78 7E STA $7E7862[$7E:7862]  ; Disable Mother Brain health-based palette handling
 $A9:AF77 A2 1C 00    LDX #$001C             ;\
                                             ;|
@@ -3616,38 +3616,38 @@ $A9:AF83 CA          DEX                    ;|
 $A9:AF84 10 F4       BPL $F4    [$AF7A]     ;/
 $A9:AF86 22 D5 E3 AD JSL $ADE3D5[$AD:E3D5]  ; Mother Brain health-based palette handling
 $A9:AF8A A9 00 0E    LDA #$0E00             ;\
-$A9:AF8D 8F 1A 78 7E STA $7E781A[$7E:781A]  ;} Mother Brain's brain palette index = E00h (palette 7)
+$A9:AF8D 8F 1A 78 7E STA $7E781A[$7E:781A]  ;} Mother Brain brain palette index = E00h (palette 7)
 $A9:AF91 9C F0 0F    STZ $0FF0  [$7E:0FF0]  ; Mother Brain death explosion interval timer = 0
 $A9:AF94 9C F2 0F    STZ $0FF2  [$7E:0FF2]  ; Mother Brain death explosion index = 0
 $A9:AF97 A9 9D AF    LDA #$AF9D             ;\
-$A9:AF9A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $AF9D
+$A9:AF9A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $AF9D
 }
 
 
-;;; $AF9D: Mother Brain's body function - third phase - death sequence - set up body fade out ;;;
+;;; $AF9D: Mother Brain body function - third phase - death sequence - set up body fade out ;;;
 {
 ; Function timer is already negative coming into this function...
-$A9:AF9D 20 31 B0    JSR $B031  [$A9:B031]  ; Generate mixed explosions around Mother Brain's body
-$A9:AFA0 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:AFA3 30 01       BMI $01    [$AFA6]     ; If [Mother Brain's body function timer] >= 0:
+$A9:AF9D 20 31 B0    JSR $B031  [$A9:B031]  ; Generate mixed explosions around Mother Brain body
+$A9:AFA0 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:AFA3 30 01       BMI $01    [$AFA6]     ; If [Mother Brain body function timer] >= 0:
 $A9:AFA5 60          RTS                    ; Return
 
 $A9:AFA6 A9 00 00    LDA #$0000             ;\
 $A9:AFA9 8F 2E 80 7E STA $7E802E[$7E:802E]  ;} Mother Brain grey transition counter = 0
 $A9:AFAD A9 B6 AF    LDA #$AFB6             ;\
-$A9:AFB0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $AFB6
-$A9:AFB3 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain's body function timer = 0
+$A9:AFB0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $AFB6
+$A9:AFB3 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain body function timer = 0
 }
 
 
-;;; $AFB6: Mother Brain's body function - third phase - death sequence - fade out body ;;;
+;;; $AFB6: Mother Brain body function - third phase - death sequence - fade out body ;;;
 {
-$A9:AFB6 22 1C F4 AD JSL $ADF41C[$AD:F41C]  ; Handle Mother Brain's body flickering
-$A9:AFBA 20 31 B0    JSR $B031  [$A9:B031]  ; Generate mixed explosions around Mother Brain's body
-$A9:AFBD CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:AFC0 10 16       BPL $16    [$AFD8]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:AFB6 22 1C F4 AD JSL $ADF41C[$AD:F41C]  ; Handle Mother Brain body flickering
+$A9:AFBA 20 31 B0    JSR $B031  [$A9:B031]  ; Generate mixed explosions around Mother Brain body
+$A9:AFBD CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:AFC0 10 16       BPL $16    [$AFD8]     ; If [Mother Brain body function timer] >= 0: return
 $A9:AFC2 A9 10 00    LDA #$0010             ;\
-$A9:AFC5 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:AFC5 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 $A9:AFC8 AF 2E 80 7E LDA $7E802E[$7E:802E]  ;\
 $A9:AFCC 1A          INC A                  ;} Increment Mother Brain grey transition counter
 $A9:AFCD 8F 2E 80 7E STA $7E802E[$7E:802E]  ;/
@@ -3676,41 +3676,41 @@ $A9:AFF1 A9 01 00    LDA #$0001             ;\
 $A9:AFF4 8D 1E 0E    STA $0E1E  [$7E:0E1E]  ;} Request enemy BG2 tilemap VRAM transfer
 $A9:AFF7 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A9:AFFA 09 00 01    ORA #$0100             ;|
-$A9:AFFD 29 FF DF    AND #$DFFF             ;} Set Mother Brain's body as invisible and disable processing instructions
+$A9:AFFD 29 FF DF    AND #$DFFF             ;} Set Mother Brain body as invisible and disable processing instructions
 $A9:B000 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
-$A9:B003 9C 88 0F    STZ $0F88  [$7E:0F88]  ; Mother Brain's body extra properties = 0
+$A9:B003 9C 88 0F    STZ $0F88  [$7E:0F88]  ; Mother Brain body extra properties = 0
 $A9:B006 A9 13 B0    LDA #$B013             ;\
-$A9:B009 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B013
+$A9:B009 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B013
 $A9:B00C A9 10 00    LDA #$0010             ;\
-$A9:B00F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:B00F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 
 $A9:B012 60          RTS
 }
 
 
-;;; $B013: Mother Brain's body function - third phase - death sequence - final few explosions ;;;
+;;; $B013: Mother Brain body function - third phase - death sequence - final few explosions ;;;
 {
-$A9:B013 20 31 B0    JSR $B031  [$A9:B031]  ; Generate mixed explosions around Mother Brain's body
-$A9:B016 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B019 10 F7       BPL $F7    [$B012]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:B013 20 31 B0    JSR $B031  [$A9:B031]  ; Generate mixed explosions around Mother Brain body
+$A9:B016 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B019 10 F7       BPL $F7    [$B012]     ; If [Mother Brain body function timer] >= 0: return
 $A9:B01B A9 15 B1    LDA #$B115             ;\
-$A9:B01E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B115
+$A9:B01E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B115
 $A9:B021 60          RTS
 }
 
 
-;;; $B022: Generate smoky explosions around Mother Brain's body ;;;
+;;; $B022: Generate smoky explosions around Mother Brain body ;;;
 {
 $A9:B022 A9 0F B1    LDA #$B10F             ;\
 $A9:B025 85 16       STA $16    [$7E:0016]  ;} $16 = $B10F
 $A9:B027 A9 02 00    LDA #$0002             ;\
 $A9:B02A 85 18       STA $18    [$7E:0018]  ;} $18 = 2 (number of simultaneous explosions)
 $A9:B02C A9 10 00    LDA #$0010             ; A = 10h (Mother Brain death explosion interval length)
-$A9:B02F 80 0D       BRA $0D    [$B03E]     ; Go to generate explosions around Mother Brain's body
+$A9:B02F 80 0D       BRA $0D    [$B03E]     ; Go to generate explosions around Mother Brain body
 }
 
 
-;;; $B031: Generate mixed explosions around Mother Brain's body ;;;
+;;; $B031: Generate mixed explosions around Mother Brain body ;;;
 {
 $A9:B031 A9 09 B1    LDA #$B109             ;\
 $A9:B034 85 16       STA $16    [$7E:0016]  ;} $16 = $B109
@@ -3720,7 +3720,7 @@ $A9:B03B A9 08 00    LDA #$0008             ; A = 8 (Mother Brain death explosio
 }
 
 
-;;; $B03E: Generate explosions around Mother Brain's body ;;;
+;;; $B03E: Generate explosions around Mother Brain body ;;;
 {
 ;; Parameters:
 ;;     A: Mother Brain death explosion interval length
@@ -3746,9 +3746,9 @@ $A9:B059 A5 18       LDA $18    [$7E:0018]  ; A = [$18] (loop counter)
 $A9:B05B 48          PHA
 $A9:B05C DA          PHX
 $A9:B05D BD 99 B0    LDA $B099,x[$A9:B0A9]  ;\
-$A9:B060 85 12       STA $12    [$7E:0012]  ;} $12 = [$B099 + [X]] (X offset from Mother Brain's body)
+$A9:B060 85 12       STA $12    [$7E:0012]  ;} $12 = [$B099 + [X]] (X offset from Mother Brain body)
 $A9:B062 BD 9B B0    LDA $B09B,x[$A9:B0AB]  ;\
-$A9:B065 85 14       STA $14    [$7E:0014]  ;} $14 = [$B099 + [X] + 2] (Y offset from Mother Brain's body)
+$A9:B065 85 14       STA $14    [$7E:0014]  ;} $14 = [$B099 + [X] + 2] (Y offset from Mother Brain body)
 $A9:B067 A6 16       LDX $16    [$7E:0016]  ;\
 $A9:B069 BC 00 00    LDY $0000,x[$A9:B10F]  ;} Y = [[$16]]
 $A9:B06C 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
@@ -3795,75 +3795,75 @@ $A9:B10F             dw 0001,0001,0001
 }
 
 
-;;; $B115: Mother Brain's body function - third phase - death sequence - realise decapitation ;;;
+;;; $B115: Mother Brain body function - third phase - death sequence - realise decapitation ;;;
 {
 $A9:B115 A9 29 9C    LDA #$9C29             ;\
-$A9:B118 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C29 (decapitated)
+$A9:B118 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C29 (decapitated)
 $A9:B11B A9 D0 87    LDA #$87D0             ;\
-$A9:B11E 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Mother Brain's brain function = $87D0 (stop drawing neck)
+$A9:B11E 8D E8 0F    STA $0FE8  [$7E:0FE8]  ;} Mother Brain brain function = $87D0 (stop drawing neck)
 $A9:B121 A9 00 00    LDA #$0000             ;\
-$A9:B124 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 0
+$A9:B124 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 0
 $A9:B127 A9 2D B1    LDA #$B12D             ;\
-$A9:B12A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B12D
+$A9:B12A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B12D
 }
 
 
-;;; $B12D: Mother Brain's body function - third phase - death sequence - brain falls to ground ;;;
+;;; $B12D: Mother Brain body function - third phase - death sequence - brain falls to ground ;;;
 {
 $A9:B12D AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;\
 $A9:B130 18          CLC                    ;|
-$A9:B131 69 20 00    ADC #$0020             ;} Mother Brain's body function timer += 20h
+$A9:B131 69 20 00    ADC #$0020             ;} Mother Brain body function timer += 20h
 $A9:B134 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;/
 $A9:B137 EB          XBA                    ;\
 $A9:B138 29 FF 00    AND #$00FF             ;|
-$A9:B13B 18          CLC                    ;} Mother Brain's brain Y position += [Mother Brain's body function timer] / 100h
+$A9:B13B 18          CLC                    ;} Mother Brain brain Y position += [Mother Brain body function timer] / 100h
 $A9:B13C 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;/
 $A9:B13F C9 C4 00    CMP #$00C4             ;\
-$A9:B142 90 16       BCC $16    [$B15A]     ;} If [Mother Brain's brain Y position] >= C4h:
+$A9:B142 90 16       BCC $16    [$B15A]     ;} If [Mother Brain brain Y position] >= C4h:
 $A9:B144 A9 02 00    LDA #$0002             ;\
 $A9:B147 22 0B F4 AD JSL $ADF40B[$AD:F40B]  ;} Enable earthquake type 2 for 20 frames (BG1 only, 1 pixel displacement, diagonal)
 $A9:B14B A9 5E B1    LDA #$B15E             ;\
-$A9:B14E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B15E
+$A9:B14E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B15E
 $A9:B151 A9 00 01    LDA #$0100             ;\
-$A9:B154 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h (no effect)
-$A9:B157 A9 C4 00    LDA #$00C4             ; Mother Brain's brain Y position = C4h
+$A9:B154 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h (no effect)
+$A9:B157 A9 C4 00    LDA #$00C4             ; Mother Brain brain Y position = C4h
 
 $A9:B15A 8D BE 0F    STA $0FBE  [$7E:0FBE]
 $A9:B15D 60          RTS
 }
 
 
-;;; $B15E: Mother Brain's body function - third phase - death sequence - load corpse tiles ;;;
+;;; $B15E: Mother Brain body function - third phase - death sequence - load corpse tiles ;;;
 {
 $A9:B15E A2 03 90    LDX #$9003             ;\
 $A9:B161 20 BE C5    JSR $C5BE  [$A9:C5BE]  ;} Load Mother Brain's corpse tiles
 $A9:B164 90 0C       BCC $0C    [$B172]     ; If not finished loading: return
 $A9:B166 A9 73 B1    LDA #$B173             ;\
-$A9:B169 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B173
+$A9:B169 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B173
 $A9:B16C A9 20 00    LDA #$0020             ;\
-$A9:B16F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 20h
+$A9:B16F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 20h
 
 $A9:B172 60          RTS
 }
 
 
-;;; $B173: Mother Brain's body function - third phase - death sequence - set up fade to grey ;;;
+;;; $B173: Mother Brain body function - third phase - death sequence - set up fade to grey ;;;
 {
-$A9:B173 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B176 10 FA       BPL $FA    [$B172]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:B173 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B176 10 FA       BPL $FA    [$B172]     ; If [Mother Brain body function timer] >= 0: return
 $A9:B178 A9 00 00    LDA #$0000             ;\
 $A9:B17B 8F 2E 80 7E STA $7E802E[$7E:802E]  ;} Mother Brain grey transition counter = 0
 $A9:B17F A9 89 B1    LDA #$B189             ;\
-$A9:B182 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B189
-$A9:B185 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain's body function timer = 0
+$A9:B182 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B189
+$A9:B185 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain body function timer = 0
 $A9:B188 60          RTS
 }
 
 
-;;; $B189: Mother Brain's body function - third phase - death sequence - fade to grey ;;;
+;;; $B189: Mother Brain body function - third phase - death sequence - fade to grey ;;;
 {
-$A9:B189 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B18C 10 16       BPL $16    [$B1A4]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:B189 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B18C 10 16       BPL $16    [$B1A4]     ; If [Mother Brain body function timer] >= 0: return
 $A9:B18E AF 2E 80 7E LDA $7E802E[$7E:802E]  ;\
 $A9:B192 1A          INC A                  ;} Increment Mother Brain grey transition counter
 $A9:B193 8F 2E 80 7E STA $7E802E[$7E:802E]  ;/
@@ -3871,31 +3871,31 @@ $A9:B197 3A          DEC A                  ; A = [Mother Brain grey transition 
 $A9:B198 22 E9 F0 AD JSL $ADF0E9[$AD:F0E9]  ; Transition Mother Brain palette to grey - real death
 $A9:B19C B0 07       BCS $07    [$B1A5]     ; If finished transitioning: go to BRANCH_FINISHED_TRAMSITION
 $A9:B19E A9 10 00    LDA #$0010             ;\
-$A9:B1A1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:B1A1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 
 $A9:B1A4 60          RTS                    ; Return
 
 ; BRANCH_FINISHED_TRAMSITION
 $A9:B1A5 A9 25 9D    LDA #$9D25             ;\
-$A9:B1A8 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9D25 (corpse)
+$A9:B1A8 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9D25 (corpse)
 $A9:B1AB A9 B8 B1    LDA #$B1B8             ;\
-$A9:B1AE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B1B8
+$A9:B1AE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B1B8
 $A9:B1B1 A9 00 01    LDA #$0100             ;\
-$A9:B1B4 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h
+$A9:B1B4 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h
 $A9:B1B7 60          RTS
 }
 
 
-;;; $B1B8: Mother Brain's body function - third phase - death sequence - corpse tips over ;;;
+;;; $B1B8: Mother Brain body function - third phase - death sequence - corpse tips over ;;;
 {
-$A9:B1B8 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B1BB 30 01       BMI $01    [$B1BE]     ; If [Mother Brain's body function timer] >= 0:
+$A9:B1B8 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B1BB 30 01       BMI $01    [$B1BE]     ; If [Mother Brain body function timer] >= 0:
 $A9:B1BD 60          RTS                    ; Return
 
 $A9:B1BE A9 D5 B1    LDA #$B1D5             ;\
-$A9:B1C1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B1D5
+$A9:B1C1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B1D5
 $A9:B1C4 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
-$A9:B1C7 09 00 04    ORA #$0400             ;} Set Mother Brain's brain as intangible
+$A9:B1C7 09 00 04    ORA #$0400             ;} Set Mother Brain brain as intangible
 $A9:B1CA 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
 $A9:B1CD A9 00 00    LDA #$0000             ;\
 $A9:B1D0 8F 08 78 7E STA $7E7808[$7E:7808]  ;} Disable all Mother Brain hitboxes
@@ -3903,40 +3903,40 @@ $A9:B1D4 60          RTS
 }
 
 
-;;; $B1D5: Mother Brain's body function - third phase - death sequence - corpse rots away ;;;
+;;; $B1D5: Mother Brain body function - third phase - death sequence - corpse rots away ;;;
 {
 $A9:B1D5 A2 40 00    LDX #$0040             ;\
-$A9:B1D8 20 12 DB    JSR $DB12  [$A9:DB12]  ;} Process Mother Brain's brain corpse rotting
+$A9:B1D8 20 12 DB    JSR $DB12  [$A9:DB12]  ;} Process Mother Brain brain corpse rotting
 $A9:B1DB 90 0B       BCC $0B    [$B1E8]     ; If not finished rotting:
 $A9:B1DD A2 40 00    LDX #$0040             ;\
 $A9:B1E0 BF 26 88 7E LDA $7E8826,x[$7E:8866];|
-$A9:B1E4 AA          TAX                    ;} Process Mother Brain's brain corpse rotting VRAM transfers
+$A9:B1E4 AA          TAX                    ;} Process Mother Brain brain corpse rotting VRAM transfers
 $A9:B1E5 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 
 $A9:B1E8 AD C6 0F    LDA $0FC6  [$7E:0FC6]  ;\
 $A9:B1EB 09 00 01    ORA #$0100             ;|
-$A9:B1EE 29 FF DF    AND #$DFFF             ;} Set Mother Brain's brain as invisible and disable processing instructions
+$A9:B1EE 29 FF DF    AND #$DFFF             ;} Set Mother Brain brain as invisible and disable processing instructions
 $A9:B1F1 8D C6 0F    STA $0FC6  [$7E:0FC6]  ;/
-$A9:B1F4 9C C8 0F    STZ $0FC8  [$7E:0FC8]  ; Mother Brain's brain extra properties = 0
+$A9:B1F4 9C C8 0F    STZ $0FC8  [$7E:0FC8]  ; Mother Brain brain extra properties = 0
 $A9:B1F7 A9 00 00    LDA #$0000             ;\
 $A9:B1FA 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A9:B1FE A9 24 FF    LDA #$FF24             ;\
 $A9:B201 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue boss fight 1 music data
 $A9:B205 A9 11 B2    LDA #$B211             ;\
-$A9:B208 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B211
+$A9:B208 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B211
 $A9:B20B A9 14 00    LDA #$0014             ;\
-$A9:B20E 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 14h
+$A9:B20E 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 14h
 }
 
 
-;;; $B211: Mother Brain's body function - third phase - death sequence - 20 frame delay ;;;
+;;; $B211: Mother Brain body function - third phase - death sequence - 20 frame delay ;;;
 {
-$A9:B211 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B214 10 0C       BPL $0C    [$B222]     ; If [Mother Brain's body function timer] >= 0: return
-$A9:B216 9C BA 0F    STZ $0FBA  [$7E:0FBA]  ; Mother Brain's brain X position = 0
-$A9:B219 9C BE 0F    STZ $0FBE  [$7E:0FBE]  ; Mother Brain's brain Y position = 0
+$A9:B211 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B214 10 0C       BPL $0C    [$B222]     ; If [Mother Brain body function timer] >= 0: return
+$A9:B216 9C BA 0F    STZ $0FBA  [$7E:0FBA]  ; Mother Brain brain X position = 0
+$A9:B219 9C BE 0F    STZ $0FBE  [$7E:0FBE]  ; Mother Brain brain Y position = 0
 $A9:B21C A9 58 B2    LDA #$B258             ;\
-$A9:B21F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B258
+$A9:B21F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B258
 
 $A9:B222 60          RTS
 }
@@ -3948,13 +3948,13 @@ $A9:B223 DA          PHX
 $A9:B224 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:B227 29 1F 00    AND #$001F             ;|
 $A9:B22A 18          CLC                    ;|
-$A9:B22B 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} $12 = [Mother Brain's brain X position] - 10h + [random number] % 1Fh
+$A9:B22B 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} $12 = [Mother Brain brain X position] - 10h + [random number] % 1Fh
 $A9:B22E 18          CLC                    ;|
 $A9:B22F 69 F0 FF    ADC #$FFF0             ;|
 $A9:B232 85 12       STA $12    [$7E:0012]  ;/
 $A9:B234 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:B237 18          CLC                    ;|
-$A9:B238 69 10 00    ADC #$0010             ;} $14 = [Mother Brain's brain Y position] + 10h
+$A9:B238 69 10 00    ADC #$0010             ;} $14 = [Mother Brain brain Y position] + 10h
 $A9:B23B 85 14       STA $14    [$7E:0014]  ;/
 $A9:B23D A9 0A 00    LDA #$000A             ; A = Ah (corpse dust cloud)
 $A9:B240 A0 09 E5    LDY #$E509             ;\
@@ -3970,7 +3970,7 @@ $A9:B257 60          RTS
 }
 
 
-;;; $B258: Mother Brain's body function - third phase - death sequence - load escape timer tiles ;;;
+;;; $B258: Mother Brain body function - third phase - death sequence - load escape timer tiles ;;;
 {
 $A9:B258 8B          PHB                    ;\
 $A9:B259 F4 00 A6    PEA $A600              ;|
@@ -3981,11 +3981,11 @@ $A9:B261 20 BE C5    JSR $C5BE  [$A9:C5BE]  ;|
 $A9:B264 AB          PLB                    ;|
 $A9:B265 90 69       BCC $69    [$B2D0]     ;/
 $A9:B267 A9 6D B2    LDA #$B26D             ;\
-$A9:B26A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B26D
+$A9:B26A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B26D
 }
 
 
-;;; $B26D: Mother Brain's body function - third phase - death sequence - start escape sequence ;;;
+;;; $B26D: Mother Brain body function - third phase - death sequence - start escape sequence ;;;
 {
 $A9:B26D A2 2F 90    LDX #$902F             ;\
 $A9:B270 20 BE C5    JSR $C5BE  [$A9:C5BE]  ;} Load exploded escape door particles tiles
@@ -4012,11 +4012,11 @@ $A9:B2B1 A9 00 00    LDA #$0000             ;\
 $A9:B2B4 8F 44 78 7E STA $7E7844[$7E:7844]  ;} Disable unpause hook
 $A9:B2B8 22 3F C2 A6 JSL $A6C23F[$A6:C23F]  ; Set up Zebes escape typewriter
 $A9:B2BC A9 20 00    LDA #$0020             ;\
-$A9:B2BF 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 20h
-$A9:B2C2 A0 D1 B2    LDY #$B2D1             ; Mother Brain's body function = $B2D1
+$A9:B2BF 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 20h
+$A9:B2C2 A0 D1 B2    LDY #$B2D1             ; Mother Brain body function = $B2D1
 $A9:B2C5 AD E2 09    LDA $09E2  [$7E:09E2]  ;\
 $A9:B2C8 D0 03       BNE $03    [$B2CD]     ;} If Japanese text is disabled:
-$A9:B2CA A0 E3 B2    LDY #$B2E3             ; Mother Brain's body function = $B2E3
+$A9:B2CA A0 E3 B2    LDY #$B2E3             ; Mother Brain body function = $B2E3
 
 $A9:B2CD 8C A8 0F    STY $0FA8  [$7E:0FA8]
 
@@ -4024,36 +4024,36 @@ $A9:B2D0 60          RTS
 }
 
 
-;;; $B2D1: Mother Brain's body function - third phase - death sequence - spawn time bomb set Japanese text ;;;
+;;; $B2D1: Mother Brain body function - third phase - death sequence - spawn time bomb set Japanese text ;;;
 {
-$A9:B2D1 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B2D4 10 0D       BPL $0D    [$B2E3]     ; If [Mother Brain's body function timer] < 0:
+$A9:B2D1 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B2D4 10 0D       BPL $0D    [$B2E3]     ; If [Mother Brain body function timer] < 0:
 $A9:B2D6 A9 E3 B2    LDA #$B2E3             ;\
-$A9:B2D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B2E3
+$A9:B2D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B2E3
 $A9:B2DC A0 BB CB    LDY #$CBBB             ;\
 $A9:B2DF 22 97 80 86 JSL $868097[$86:8097]  ;} Spawn enemy projectile $CBBB (time bomb set Japanese text)
 }
 
 
-;;; $B2E3: Mother Brain's body function - third phase - death sequence - type out Zebes escape text ;;;
+;;; $B2E3: Mother Brain body function - third phase - death sequence - type out Zebes escape text ;;;
 {
 $A9:B2E3 A9 10 26    LDA #$2610             ; A = 2610h
 $A9:B2E6 22 A7 C2 A6 JSL $A6C2A7[$A6:C2A7]  ; Handle typewriter text
 $A9:B2EA 90 0C       BCC $0C    [$B2F8]     ; If not finished typing: return
 $A9:B2EC A9 F9 B2    LDA #$B2F9             ;\
-$A9:B2EF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B2F9
+$A9:B2EF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B2F9
 $A9:B2F2 A9 20 00    LDA #$0020             ;\
-$A9:B2F5 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 20h
+$A9:B2F5 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 20h
 
 $A9:B2F8 60          RTS
 }
 
 
-;;; $B2F9: Mother Brain's body function - third phase - death sequence - escape door is exploding, start escape timer ;;;
+;;; $B2F9: Mother Brain body function - third phase - death sequence - escape door is exploding, start escape timer ;;;
 {
 $A9:B2F9 22 46 B3 A9 JSL $A9B346[$A9:B346]  ; Generate escape door explosion
-$A9:B2FD CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B300 10 27       BPL $27    [$B329]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:B2FD CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B300 10 27       BPL $27    [$B329]     ; If [Mother Brain body function timer] >= 0: return
 $A9:B302 A9 0F 00    LDA #$000F             ;\
 $A9:B305 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - enable timer handling
 $A9:B309 A9 02 00    LDA #$0002             ;\
@@ -4062,7 +4062,7 @@ $A9:B30F 22 A6 81 80 JSL $8081A6[$80:81A6]  ; Set mini-boss bit for current area
 $A9:B313 A9 0E 00    LDA #$000E             ;\
 $A9:B316 22 FA 81 80 JSL $8081FA[$80:81FA]  ;} Mark event Eh (Zebes timebomb set)
 $A9:B31A A9 2A B3    LDA #$B32A             ;\
-$A9:B31D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B32A
+$A9:B31D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B32A
 $A9:B320 A9 00 00    LDA #$0000             ;\
 $A9:B323 8D F0 0F    STA $0FF0  [$7E:0FF0]  ;} Escape door explosion interval timer = 0
 $A9:B326 8D F2 0F    STA $0FF2  [$7E:0FF2]  ; Escape door index
@@ -4071,18 +4071,18 @@ $A9:B329 60          RTS
 }
 
 
-;;; $B32A: Mother Brain's body function - third phase - death sequence - blow up escape door ;;;
+;;; $B32A: Mother Brain body function - third phase - death sequence - blow up escape door ;;;
 {
 $A9:B32A 20 A3 B3    JSR $B3A3  [$A9:B3A3]  ; Explode Mother Brain escape door
 $A9:B32D A9 3C B3    LDA #$B33C             ;\
-$A9:B330 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B33C
+$A9:B330 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B33C
 $A9:B333 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $A9:B337             dx  00, 06, B677       ;} Spawn Mother Brain's room escape door
 $A9:B33B 60          RTS
 }
 
 
-;;; $B33C: Mother Brain's body function - third phase - death sequence - keep earthquake going ;;;
+;;; $B33C: Mother Brain body function - third phase - death sequence - keep earthquake going ;;;
 {
 ; Final MB body function
 $A9:B33C AD 40 18    LDA $1840  [$7E:1840]  ;\
@@ -4158,7 +4158,7 @@ $A9:B3B5 60          RTS
 {
 $A9:B3B6 AF 08 78 7E LDA $7E7808[$7E:7808]  ;\
 $A9:B3BA 85 1A       STA $1A    [$7E:001A]  ;|
-$A9:B3BC 46 1A       LSR $1A    [$7E:001A]  ;} If Mother Brain's body hitbox enabled:
+$A9:B3BC 46 1A       LSR $1A    [$7E:001A]  ;} If Mother Brain body hitbox enabled:
 $A9:B3BE 90 12       BCC $12    [$B3D2]     ;/
 $A9:B3C0 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:B3C3 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain body X position]
@@ -4169,7 +4169,7 @@ $A9:B3CD 20 55 B4    JSR $B455  [$A9:B455]  ; Mother Brain part / Samus collisio
 $A9:B3D0 B0 54       BCS $54    [$B426]     ; If carry set: return
 
 $A9:B3D2 46 1A       LSR $1A    [$7E:001A]  ;\
-$A9:B3D4 90 12       BCC $12    [$B3E8]     ;} If Mother Brain's brain hitbox enabled:
+$A9:B3D4 90 12       BCC $12    [$B3E8]     ;} If Mother Brain brain hitbox enabled:
 $A9:B3D6 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:B3D9 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain brain X position]
 $A9:B3DB AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
@@ -4330,13 +4330,13 @@ $A9:B502 60          RTS                    ;} Return carry set
 }
 
 
-;;; $B503: Enemy shot - enemy $EC7F (Mother Brain's body) ;;;
+;;; $B503: Enemy shot - enemy $EC7F (Mother Brain body) ;;;
 {
 $A9:B503 5C BC A8 A0 JML $A0A8BC[$A0:A8BC]  ; Go to creates a dud shot
 }
 
 
-;;; $B507: Enemy shot - enemy $EC3F (Mother Brain's brain) ;;;
+;;; $B507: Enemy shot - enemy $EC3F (Mother Brain brain) ;;;
 {
 ; This code assumes that Mother Brain's glass is the first spawned PLM (index 4Eh)
 $A9:B507 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
@@ -4446,22 +4446,22 @@ $A9:B5B1 10 0D       BPL $0D    [$B5C0]     ;/
 $A9:B5B3 A9 95 C3    LDA #$C395             ;\
 $A9:B5B6 8F 70 78 7E STA $7E7870[$7E:7870]  ;} Mother Brain neck function = $C395 (set up hyper beam recoil)
 $A9:B5BA A9 00 00    LDA #$0000             ;\
-$A9:B5BD 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 0
+$A9:B5BD 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 0
 
 $A9:B5C0 8F 0E 78 7E STA $7E780E[$7E:780E]  ; Mother Brain walk counter = max(0, [Mother Brain walk counter] - 10Ah)
 $A9:B5C4 60          RTS
 }
 
 
-;;; $B5C5: RTL. Enemy touch - enemy $EC7F (Mother Brain's body) ;;;
+;;; $B5C5: RTL. Enemy touch - enemy $EC7F (Mother Brain body) ;;;
 {
 $A9:B5C5 6B          RTL
 }
 
 
-;;; $B5C6: Enemy touch - enemy $EC3F (Mother Brain's brain) ;;;
+;;; $B5C6: Enemy touch - enemy $EC3F (Mother Brain brain) ;;;
 {
-; I'm pretty sure it's impossible to touch Mother Brain's brain due to the custom hitboxes
+; I'm pretty sure it's impossible to touch Mother Brain brain due to the custom hitboxes
 $A9:B5C6 AD 1F 0A    LDA $0A1F  [$7E:0A1F]  ;\
 $A9:B5C9 29 FF 00    AND #$00FF             ;|
 $A9:B5CC C9 03 00    CMP #$0003             ;} If [Samus movement type] != spin jumping: return
@@ -4502,13 +4502,13 @@ $A9:B604 60          RTS
 
 ;;; $B605..B780: Mother Brain - main second phase ;;;
 {
-;;; $B605: Mother Brain's body function - second phase - thinking ;;;
+;;; $B605: Mother Brain body function - second phase - thinking ;;;
 {
 ; 4500 is a quarter of full health
 $A9:B605 AD CC 0F    LDA $0FCC  [$7E:0FCC]  ;\
-$A9:B608 D0 09       BNE $09    [$B613]     ;} If [Mother Brain's brain health] = 0:
+$A9:B608 D0 09       BNE $09    [$B613]     ;} If [Mother Brain brain health] = 0:
 $A9:B60A A9 EB B8    LDA #$B8EB             ;\
-$A9:B60D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B8EB
+$A9:B60D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B8EB
 $A9:B610 4C EB B8    JMP $B8EB  [$A9:B8EB]  ; Go to $B8EB
 
 $A9:B613 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
@@ -4516,7 +4516,7 @@ $A9:B617 F0 01       BEQ $01    [$B61A]     ;} If [Mother Brain's pose] != stand
 $A9:B619 60          RTS                    ; Return
 
 $A9:B61A AD CC 0F    LDA $0FCC  [$7E:0FCC]  ;\
-$A9:B61D C9 94 11    CMP #$1194             ;} If [Mother Brain's brain health] < 4500: go to BRANCH_LOW_HEALTH
+$A9:B61D C9 94 11    CMP #$1194             ;} If [Mother Brain brain health] < 4500: go to BRANCH_LOW_HEALTH
 $A9:B620 30 12       BMI $12    [$B634]     ;/
 $A9:B622 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:B625 C9 00 10    CMP #$1000             ;} If [random number] >= 1000h:
@@ -4525,7 +4525,7 @@ $A9:B62A 4C B8 C6    JMP $C6B8  [$A9:C6B8]  ; Go to handle Mother Brain walking
 
 ; BRANCH_TRY_ATTACK
 $A9:B62D A9 4B B6    LDA #$B64B             ;\
-$A9:B630 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B64B (try attack)
+$A9:B630 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B64B (try attack)
 $A9:B633 60          RTS                    ; Return
 
 ; BRANCH_LOW_HEALTH
@@ -4537,12 +4537,12 @@ $A9:B63C 4C B8 C6    JMP $C6B8  [$A9:C6B8]  ; Go to handle Mother Brain walking
 $A9:B63F C9 00 A0    CMP #$A000             ;\
 $A9:B642 B0 E9       BCS $E9    [$B62D]     ;} If [random number] >= A000h: go to BRANCH_TRY_ATTACK
 $A9:B644 A9 7D B8    LDA #$B87D             ;\
-$A9:B647 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B87D (firing death beam)
+$A9:B647 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B87D (firing death beam)
 $A9:B64A 60          RTS
 }
 
 
-;;; $B64B: Mother Brain's body function - second phase - try attack ;;;
+;;; $B64B: Mother Brain body function - second phase - try attack ;;;
 {
 $A9:B64B AF 30 78 7E LDA $7E7830[$7E:7830]  ;\
 $A9:B64F 0A          ASL A                  ;|
@@ -4570,7 +4570,7 @@ $A9:B672 18          CLC                    ;|
 $A9:B673 69 04 00    ADC #$0004             ;|
 $A9:B676 38          SEC                    ;|
 $A9:B677 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;|
-$A9:B67A 10 04       BPL $04    [$B680]     ;} If |[Mother Brain's brain Y position] + 4 - [Samus Y position]| < 20h:
+$A9:B67A 10 04       BPL $04    [$B680]     ;} If |[Mother Brain brain Y position] + 4 - [Samus Y position]| < 20h:
 $A9:B67C 49 FF FF    EOR #$FFFF             ;|
 $A9:B67F 1A          INC A                  ;|
                                             ;|
@@ -4601,7 +4601,7 @@ $A9:B6AB C9 CC 9E    CMP #$9ECC             ;|
 $A9:B6AE F0 09       BEQ $09    [$B6B9]     ;/
 $A9:B6B0 C9 34 9F    CMP #$9F34             ;\
 $A9:B6B3 F0 16       BEQ $16    [$B6CB]     ;} If [$B6D4 + [Y]] = $9F34: go to BRANCH_LASER
-$A9:B6B5 20 47 C4    JSR $C447  [$A9:C447]  ; Set Mother Brain's brain instruction list to [$B6D4 + [Y]]
+$A9:B6B5 20 47 C4    JSR $C447  [$A9:C447]  ; Set Mother Brain brain instruction list to [$B6D4 + [Y]]
 
 $A9:B6B8 60          RTS                    ; Return
 
@@ -4610,15 +4610,15 @@ $A9:B6B9 AF 4A 78 7E LDA $7E784A[$7E:784A]  ;\
 $A9:B6BD C9 01 00    CMP #$0001             ;} If [Mother Brain bomb counter] >= 1: return
 $A9:B6C0 10 F6       BPL $F6    [$B6B8]     ;/
 $A9:B6C2 A9 81 B7    LDA #$B781             ;\
-$A9:B6C5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B781 (firing bomb)
+$A9:B6C5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B781 (firing bomb)
 $A9:B6C8 4C 81 B7    JMP $B781  [$A9:B781]  ; Go to $B781
 
 ; BRANCH_LASER
 $A9:B6CB A9 0E B8    LDA #$B80E             ;\
-$A9:B6CE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B80E (firing laser)
+$A9:B6CE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B80E (firing laser)
 $A9:B6D1 4C 0E B8    JMP $B80E  [$A9:B80E]  ; Go to $B80E
 
-; Mother Brain's brain instruction list pointers
+; Mother Brain brain instruction list pointers
 $A9:B6D4             dw 9C87, ; Neutral
                         9D3D, ; Attacking - blue rings
                         9F34, ; Attacking - laser
@@ -4645,13 +4645,13 @@ $A9:B6F2 29 FF 00    AND #$00FF             ;|
 $A9:B6F5 C9 80 00    CMP #$0080             ;} If [random number] & FFh >= 80h:
 $A9:B6F8 30 08       BMI $08    [$B702]     ;/
 $A9:B6FA A9 3D 9D    LDA #$9D3D             ;\
-$A9:B6FD 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9D3D (attacking - blue rings)
+$A9:B6FD 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9D3D (attacking - blue rings)
 $A9:B700 68          PLA                    ; Set return to caller's return
 $A9:B701 60          RTS                    ; Return
 
 $A9:B702 68          PLA                    ; Set return to caller's return
 $A9:B703 A9 0E B8    LDA #$B80E             ;\
-$A9:B706 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B80E (firing laser)
+$A9:B706 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B80E (firing laser)
 $A9:B709 4C 0E B8    JMP $B80E  [$A9:B80E]  ; Go to $B80E
 
 ; BRANCH_AIM_AT_GROUND
@@ -4665,7 +4665,7 @@ $A9:B718 AF 4A 78 7E LDA $7E784A[$7E:784A]  ;\
 $A9:B71C C9 01 00    CMP #$0001             ;} If [Mother Brain bomb counter] >= 1: return
 $A9:B71F 10 0A       BPL $0A    [$B72B]     ;/
 $A9:B721 A9 81 B7    LDA #$B781             ;\
-$A9:B724 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B781 (firing bomb)
+$A9:B724 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B781 (firing bomb)
 $A9:B727 68          PLA                    ; Set return to caller's return
 $A9:B728 4C 81 B7    JMP $B781  [$A9:B781]  ; Go to $B781
 
@@ -4721,7 +4721,7 @@ $A9:B772 60          RTS
 $A9:B773 A9 00 00    LDA #$0000             ;\
 $A9:B776 8F 30 78 7E STA $7E7830[$7E:7830]  ;} Mother Brain attack phase = 0 (try attack)
 $A9:B77A A9 05 B6    LDA #$B605             ;\
-$A9:B77D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B605 (thinking)
+$A9:B77D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B605 (thinking)
 $A9:B780 60          RTS
 }
 }
@@ -4729,7 +4729,7 @@ $A9:B780 60          RTS
 
 ;;; $B781..B80D: Mother Brain - firing bomb ;;;
 {
-;;; $B781: Mother Brain's body function - firing bomb - decide on walking ;;;
+;;; $B781: Mother Brain body function - firing bomb - decide on walking ;;;
 {
 $A9:B781 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:B784 C9 80 FF    CMP #$FF80             ;} If [random number] >= FF80h: go to decide on crouching
@@ -4740,20 +4740,20 @@ $A9:B78F B0 03       BCS $03    [$B794]     ;} If [random number] < 6000h:
 $A9:B791 A2 60 00    LDX #$0060             ; X = 60h (target X position)
 
 $A9:B794 8A          TXA                    ;\
-$A9:B795 CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;} If [Mother Brain's body X position] <= [X]: go to decide on crouching
+$A9:B795 CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;} If [Mother Brain body X position] <= [X]: go to decide on crouching
 $A9:B798 10 1D       BPL $1D    [$B7B7]     ;/
 $A9:B79A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ; $0FB2 = [X]
 $A9:B79D A0 06 00    LDY #$0006             ;\
 $A9:B7A0 20 47 C6    JSR $C647  [$A9:C647]  ;} Make Mother Brain walk backwards medium towards X position [$0FB2]
 $A9:B7A3 B0 12       BCS $12    [$B7B7]     ; If reached X position [$0FB2]: go to decide on crouching
 $A9:B7A5 A9 AC B7    LDA #$B7AC             ;\
-$A9:B7A8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B7AC (walking backwards)
+$A9:B7A8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B7AC (walking backwards)
 
 $A9:B7AB 60          RTS
 }
 
 
-;;; $B7AC: Mother Brain's body function - firing bomb - walking backwards ;;;
+;;; $B7AC: Mother Brain body function - firing bomb - walking backwards ;;;
 {
 $A9:B7AC A0 06 00    LDY #$0006             ;\
 $A9:B7AF AD B2 0F    LDA $0FB2  [$7E:0FB2]  ;} Make Mother Brain walk backwards medium towards X position [$0FB2]
@@ -4768,11 +4768,11 @@ $A9:B7B7 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
 $A9:B7BB C9 00 80    CMP #$8000             ;\
 $A9:B7BE 90 0B       BCC $0B    [$B7CB]     ;} If [random number] < 8000h: go to fire bomb
 $A9:B7C0 A9 C6 B7    LDA #$B7C6             ;\
-$A9:B7C3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B7C6 (crouch)
+$A9:B7C3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B7C6 (crouch)
 }
 
 
-;;; $B7C6: Mother Brain's body function - firing bomb - crouch ;;;
+;;; $B7C6: Mother Brain body function - firing bomb - crouch ;;;
 {
 $A9:B7C6 20 8E C6    JSR $C68E  [$A9:C68E]  ; Make Mother Brain crouch
 $A9:B7C9 90 E0       BCC $E0    [$B7AB]     ; If not crouching: return
@@ -4787,27 +4787,27 @@ $A9:B7D2 F0 03       BEQ $03    [$B7D7]     ;} If have been turned into a corpse
 $A9:B7D4 A0 00 9F    LDY #$9F00             ; Y = $9F00 (attacking - bomb - phase 3)
 
 $A9:B7D7 98          TYA                    ;\
-$A9:B7D8 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to [Y]
+$A9:B7D8 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to [Y]
 $A9:B7DB A9 E8 B7    LDA #$B7E8             ;\
-$A9:B7DE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B7E8 (fired bomb)
+$A9:B7DE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B7E8 (fired bomb)
 $A9:B7E1 A9 2C 00    LDA #$002C             ;\
-$A9:B7E4 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 60
+$A9:B7E4 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 60
 $A9:B7E7 60          RTS
 }
 
 
-;;; $B7E8: Mother Brain's body function - firing bomb - fired bomb ;;;
+;;; $B7E8: Mother Brain body function - firing bomb - fired bomb ;;;
 {
-$A9:B7E8 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B7EB 10 20       BPL $20    [$B80D]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:B7E8 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B7EB 10 20       BPL $20    [$B80D]     ; If [Mother Brain body function timer] >= 0: return
 $A9:B7ED 20 70 C6    JSR $C670  [$A9:C670]  ; Make Mother Brain stand up
 $A9:B7F0 B0 0B       BCS $0B    [$B7FD]     ; If standing: go to finish firing bomb
 $A9:B7F2 A9 F8 B7    LDA #$B7F8             ;\
-$A9:B7F5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B7F8 (stand up)
+$A9:B7F5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B7F8 (stand up)
 }
 
 
-;;; $B7F8: Mother Brain's body function - firing bomb - stand up ;;;
+;;; $B7F8: Mother Brain body function - firing bomb - stand up ;;;
 {
 $A9:B7F8 20 70 C6    JSR $C670  [$A9:C670]  ; Make Mother Brain stand up
 $A9:B7FB 90 10       BCC $10    [$B80D]     ; If not standing: return
@@ -4822,7 +4822,7 @@ $A9:B804 F0 03       BEQ $03    [$B809]     ;} If have been turned into a corpse
 $A9:B806 A0 5C C1    LDY #$C15C             ; Y = $C15C (second phase - murder Shitroid)
 
 $A9:B809 98          TYA                    ;\
-$A9:B80A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = [Y]
+$A9:B80A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = [Y]
 
 $A9:B80D 60          RTS
 }
@@ -4831,11 +4831,11 @@ $A9:B80D 60          RTS
 
 ;;; $B80E..B87C: Mother Brain - firing laser ;;;
 {
-;;; $B80E: Mother Brain's body function - second phase - firing laser - position head quickly ;;;
+;;; $B80E: Mother Brain body function - second phase - firing laser - position head quickly ;;;
 {
 $A9:B80E A2 08 00    LDX #$0008             ; X = 8 (raise head)
 $A9:B811 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
-$A9:B814 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [Mother Brain's brain Y position] < [Samus Y position]:
+$A9:B814 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [Mother Brain brain Y position] < [Samus Y position]:
 $A9:B817 10 03       BPL $03    [$B81C]     ;/
 $A9:B819 A2 06 00    LDX #$0006             ; X = 6 (lower head)
 
@@ -4845,17 +4845,17 @@ $A9:B821 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement i
 $A9:B825 A9 00 02    LDA #$0200             ;\
 $A9:B828 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 200h
 $A9:B82C A9 39 B8    LDA #$B839             ;\
-$A9:B82F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B839
+$A9:B82F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B839
 $A9:B832 A9 04 00    LDA #$0004             ;\
-$A9:B835 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 4
+$A9:B835 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 4
 $A9:B838 60          RTS
 }
 
 
-;;; $B839: Mother Brain's body function - second phase - firing laser - position head slowly and fire ;;;
+;;; $B839: Mother Brain body function - second phase - firing laser - position head slowly and fire ;;;
 {
-$A9:B839 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B83C 30 01       BMI $01    [$B83F]     ; If [Mother Brain's body function timer] >= 0:
+$A9:B839 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B83C 30 01       BMI $01    [$B83F]     ; If [Mother Brain body function timer] >= 0:
 $A9:B83E 60          RTS                    ; Return
 
 $A9:B83F A0 00 01    LDY #$0100             ;\
@@ -4866,26 +4866,26 @@ $A9:B848 A0 00 FF    LDY #$FF00             ;} Mother Brain neck angle delta = 1
 $A9:B84B 98          TYA                    ;|
 $A9:B84C 8F 68 80 7E STA $7E8068[$7E:8068]  ;/
 $A9:B850 A9 34 9F    LDA #$9F34             ;\
-$A9:B853 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9F34 (attacking - laser)
+$A9:B853 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9F34 (attacking - laser)
 $A9:B856 A9 63 B8    LDA #$B863             ;\
-$A9:B859 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B863
+$A9:B859 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B863
 $A9:B85C A9 10 00    LDA #$0010             ;\
-$A9:B85F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:B85F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 $A9:B862 60          RTS
 }
 
 
-;;; $B863: Mother Brain's body function - second phase - firing laser - finish attack ;;;
+;;; $B863: Mother Brain body function - second phase - firing laser - finish attack ;;;
 {
-$A9:B863 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B866 30 01       BMI $01    [$B869]     ; If [Mother Brain's body function timer] >= 0:
+$A9:B863 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B866 30 01       BMI $01    [$B869]     ; If [Mother Brain body function timer] >= 0:
 $A9:B868 60          RTS                    ; Return
 
 $A9:B869 A9 04 00    LDA #$0004             ;\
 $A9:B86C 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 4 (bob up)
 $A9:B870 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement index = 4 (bob up)
 $A9:B874 A9 05 B6    LDA #$B605             ;\
-$A9:B877 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B605 (thinking)
+$A9:B877 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B605 (thinking)
 $A9:B87A 4C 05 B6    JMP $B605  [$A9:B605]  ; Go to $B605
 }
 }
@@ -4893,7 +4893,7 @@ $A9:B87A 4C 05 B6    JMP $B605  [$A9:B605]  ; Go to $B605
 
 ;;; $B87D..B8EA: Mother Brain - firing death beam ;;;
 {
-;;; $B87D: Mother Brain's body function - second phase - firing death beam ;;;
+;;; $B87D: Mother Brain body function - second phase - firing death beam ;;;
 {
 $A9:B87D AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
 $A9:B881 0A          ASL A                  ;|
@@ -4930,7 +4930,7 @@ $A9:B8B1 60          RTS
 $A9:B8B2 AF 4A 78 7E LDA $7E784A[$7E:784A]  ;\
 $A9:B8B6 D0 0F       BNE $0F    [$B8C7]     ;} If [Mother Brain bomb counter] != 0: return
 $A9:B8B8 A9 42 9A    LDA #$9A42             ;\
-$A9:B8BB 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to $9A42 (death beam mode)
+$A9:B8BB 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $9A42 (death beam mode)
 $A9:B8BE AF 2E 78 7E LDA $7E782E[$7E:782E]  ;\
 $A9:B8C2 1A          INC A                  ;} Mother Brain death beam attack phase = 2
 $A9:B8C3 8F 2E 78 7E STA $7E782E[$7E:782E]  ;/
@@ -4950,7 +4950,7 @@ $A9:B8C8 60          RTS
 {
 ; [Mother Brain death beam attack phase] = 4
 $A9:B8C9 A9 87 9C    LDA #$9C87             ;\
-$A9:B8CC 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C87 (neutral)
+$A9:B8CC 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C87 (neutral)
 $A9:B8CF A9 02 00    LDA #$0002             ;\
 $A9:B8D2 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 2 (bob down)
 $A9:B8D6 A9 04 00    LDA #$0004             ;\
@@ -4958,7 +4958,7 @@ $A9:B8D9 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement 
 $A9:B8DD A9 00 00    LDA #$0000             ;\
 $A9:B8E0 8F 2E 78 7E STA $7E782E[$7E:782E]  ;} Mother Brain death beam attack phase = 0
 $A9:B8E4 A9 05 B6    LDA #$B605             ;\
-$A9:B8E7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B605 (thinking)
+$A9:B8E7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B605 (thinking)
 $A9:B8EA 60          RTS
 }
 }
@@ -4966,10 +4966,10 @@ $A9:B8EA 60          RTS
 
 ;;; $B8EB..BCCD: Mother Brain - firing rainbow beam ;;;
 {
-;;; $B8EB: Mother Brain's body function - second phase - firing rainbow beam - extend neck ;;;
+;;; $B8EB: Mother Brain body function - second phase - firing rainbow beam - extend neck ;;;
 {
 $A9:B8EB A9 87 9C    LDA #$9C87             ;\
-$A9:B8EE 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C87 (neutral)
+$A9:B8EE 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C87 (neutral)
 $A9:B8F1 A9 40 00    LDA #$0040             ;\
 $A9:B8F4 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 40h
 $A9:B8F8 A9 01 00    LDA #$0001             ;\
@@ -4979,49 +4979,49 @@ $A9:B902 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement 
 $A9:B906 A9 04 00    LDA #$0004             ;\
 $A9:B909 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 4 (bob up)
 $A9:B90D A9 1A B9    LDA #$B91A             ;\
-$A9:B910 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B91A
+$A9:B910 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B91A
 $A9:B913 A9 00 01    LDA #$0100             ;\
-$A9:B916 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h
+$A9:B916 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h
 
 $A9:B919 60          RTS
 }
 
 
-;;; $B91A: Mother Brain's body function - second phase - firing rainbow beam - start charging rainbow beam ;;;
+;;; $B91A: Mother Brain body function - second phase - firing rainbow beam - start charging rainbow beam ;;;
 {
-$A9:B91A CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B91D 10 FA       BPL $FA    [$B919]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:B91A CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B91D 10 FA       BPL $FA    [$B919]     ; If [Mother Brain body function timer] >= 0: return
 $A9:B91F A9 6C 9F    LDA #$9F6C             ;\
-$A9:B922 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9F6C (charging rainbow beam)
+$A9:B922 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9F6C (charging rainbow beam)
 $A9:B925 A9 2B B9    LDA #$B92B             ;\
-$A9:B928 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B92B
+$A9:B928 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B92B
 }
 
 
-;;; $B92B: Mother Brain's body function - second phase - firing rainbow beam - retract neck ;;;
+;;; $B92B: Mother Brain body function - second phase - firing rainbow beam - retract neck ;;;
 {
 $A9:B92B A9 28 00    LDA #$0028             ;\
 $A9:B92E 20 48 BB    JSR $BB48  [$A9:BB48]  ;} Make Mother Brain walk backwards really slow towards X position 28h and retract head
 $A9:B931 90 E6       BCC $E6    [$B919]     ; If not reached X position 28h: return
 $A9:B933 A9 3F B9    LDA #$B93F             ;\
-$A9:B936 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B93F
+$A9:B936 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B93F
 $A9:B939 A9 00 01    LDA #$0100             ;\
-$A9:B93C 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h
+$A9:B93C 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h
 }
 
 
-;;; $B93F: Mother Brain's body function - second phase - firing rainbow beam - wait for beam to charge ;;;
+;;; $B93F: Mother Brain body function - second phase - firing rainbow beam - wait for beam to charge ;;;
 {
-$A9:B93F CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B942 10 D5       BPL $D5    [$B919]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:B93F CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B942 10 D5       BPL $D5    [$B919]     ; If [Mother Brain body function timer] >= 0: return
 $A9:B944 A9 71 00    LDA #$0071             ;\
 $A9:B947 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 71h, sound library 2, max queued sounds allowed = 6 (silence)
 $A9:B94B A9 51 B9    LDA #$B951             ;\
-$A9:B94E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B951
+$A9:B94E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B951
 }
 
 
-;;; $B951: Mother Brain's body function - second phase - firing rainbow beam - extend neck down ;;;
+;;; $B951: Mother Brain body function - second phase - firing rainbow beam - extend neck down ;;;
 {
 $A9:B951 A9 08 00    LDA #$0008             ;\
 $A9:B954 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 8
@@ -5031,27 +5031,27 @@ $A9:B95E 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement i
 $A9:B962 A9 00 05    LDA #$0500             ;\
 $A9:B965 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 500h
 $A9:B969 A9 75 B9    LDA #$B975             ;\
-$A9:B96C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B975
+$A9:B96C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B975
 $A9:B96F A9 10 00    LDA #$0010             ;\
-$A9:B972 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:B972 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 }
 
 
-;;; $B975: Mother Brain's body function - second phase - firing rainbow beam - start firing rainbow beam ;;;
+;;; $B975: Mother Brain body function - second phase - firing rainbow beam - start firing rainbow beam ;;;
 {
 $A9:B975 20 6E BB    JSR $BB6E  [$A9:BB6E]  ; Aim Mother Brain rainbow beam and increase width (beam widening is pointless)
 $A9:B978 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
 $A9:B97B D0 05       BNE $05    [$B982]     ;} If power bomb active: return
-$A9:B97D CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:B980 30 01       BMI $01    [$B983]     ; If [Mother Brain's body function timer] >= 0:
+$A9:B97D CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:B980 30 01       BMI $01    [$B983]     ; If [Mother Brain body function timer] >= 0:
 $A9:B982 60          RTS                    ; Return
 
 $A9:B983 AD EE 0C    LDA $0CEE  [$7E:0CEE]  ;\
 $A9:B986 D0 FA       BNE $FA    [$B982]     ;} >_<
 $A9:B988 9C CC 0C    STZ $0CCC  [$7E:0CCC]  ; Cooldown timer = 0
-$A9:B98B 20 C6 BC    JSR $BCC6  [$A9:BCC6]  ; Mother Brain's body rainbow beam palette animation index = 0
+$A9:B98B 20 C6 BC    JSR $BCC6  [$A9:BCC6]  ; Mother Brain body rainbow beam palette animation index = 0
 $A9:B98E A9 77 9C    LDA #$9C77             ;\
-$A9:B991 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C77 (firing rainbow beam)
+$A9:B991 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C77 (firing rainbow beam)
 $A9:B994 A9 00 02    LDA #$0200             ;\
 $A9:B997 8F 26 80 7E STA $7E8026[$7E:8026]  ;} Mother Brain rainbow beam angular width = 200h
 $A9:B99B 22 48 E7 88 JSL $88E748[$88:E748]  ; Spawn Mother Brain rainbow beam HDMA object
@@ -5076,80 +5076,80 @@ $A9:B9D3 22 84 F0 90 JSL $90F084[$90:F084]  ; Run Samus command
 $A9:B9D7 A9 06 00    LDA #$0006             ;\
 $A9:B9DA 8F 2A 78 7E STA $7E782A[$7E:782A]  ;} Number of times to queue rainbow beam sound effect = 6 (seems excessive...)
 $A9:B9DE A9 E5 B9    LDA #$B9E5             ;\
-$A9:B9E1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B9E5
+$A9:B9E1 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B9E5
 $A9:B9E4 60          RTS
 }
 
 
-;;; $B9E5: Mother Brain's body function - second phase - firing rainbow beam - move Samus towards wall ;;;
+;;; $B9E5: Mother Brain body function - second phase - firing rainbow beam - move Samus towards wall ;;;
 {
 $A9:B9E5 20 2E BB    JSR $BB2E  [$A9:BB2E]  ; Play Mother Brain rainbow beam sound effect
-$A9:B9E8 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain's body rainbow beam palette
+$A9:B9E8 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain body rainbow beam palette
 $A9:B9EB 20 6E BB    JSR $BB6E  [$A9:BB6E]  ; Aim Mother Brain rainbow beam and increase width
 $A9:B9EE 20 76 BC    JSR $BC76  [$A9:BC76]  ; Handle Mother Brain rainbow beam explosions
 $A9:B9F1 20 B5 BB    JSR $BBB5  [$A9:BBB5]  ; Move Samus towards wall due to rainbow beam
 $A9:B9F4 90 09       BCC $09    [$B9FF]     ; If not reached wall: return
 $A9:B9F6 A9 00 BA    LDA #$BA00             ;\
-$A9:B9F9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BA00
-$A9:B9FC 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain's body function timer = 0
+$A9:B9F9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BA00
+$A9:B9FC 9C B2 0F    STZ $0FB2  [$7E:0FB2]  ; Mother Brain body function timer = 0
 
 $A9:B9FF 60          RTS
 }
 
 
-;;; $BA00: Mother Brain's body function - second phase - firing rainbow beam - 1 frame delay ;;;
+;;; $BA00: Mother Brain body function - second phase - firing rainbow beam - 1 frame delay ;;;
 {
 $A9:BA00 20 2E BB    JSR $BB2E  [$A9:BB2E]  ; Play Mother Brain rainbow beam sound effect
-$A9:BA03 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain's body rainbow beam palette
+$A9:BA03 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain body rainbow beam palette
 $A9:BA06 20 6E BB    JSR $BB6E  [$A9:BB6E]  ; Aim Mother Brain rainbow beam and increase width
 $A9:BA09 20 76 BC    JSR $BC76  [$A9:BC76]  ; Handle Mother Brain rainbow beam explosions
 $A9:BA0C 20 B5 BB    JSR $BBB5  [$A9:BBB5]  ; Move Samus towards wall due to rainbow beam
-$A9:BA0F CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BA12 10 12       BPL $12    [$BA26]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BA0F CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BA12 10 12       BPL $12    [$BA26]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BA14 A9 08 00    LDA #$0008             ;\
 $A9:BA17 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 3 pixel displacement, diagonal
 $A9:BA1A A9 08 00    LDA #$0008             ;\
 $A9:BA1D 8D 40 18    STA $1840  [$7E:1840]  ;} Earthquake timer = 8
 $A9:BA20 A9 27 BA    LDA #$BA27             ;\
-$A9:BA23 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BA27
+$A9:BA23 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BA27
 
 $A9:BA26 60          RTS
 }
 
 
-;;; $BA27: Mother Brain's body function - second phase - firing rainbow beam - start draining Samus ;;;
+;;; $BA27: Mother Brain body function - second phase - firing rainbow beam - start draining Samus ;;;
 {
 $A9:BA27 A9 3C BA    LDA #$BA3C             ;\
-$A9:BA2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BA3C
+$A9:BA2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BA3C
 $A9:BA2D A9 2B 01    LDA #$012B             ;\
-$A9:BA30 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 299
+$A9:BA30 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 299
 $A9:BA33 8D 40 18    STA $1840  [$7E:1840]  ; Earthquake timer = 299
 $A9:BA36 A9 08 00    LDA #$0008             ;\
 $A9:BA39 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 3 pixel displacement, diagonal
 }
 
 
-;;; $BA3C: Mother Brain's body function - second phase - firing rainbow beam - draining Samus ;;;
+;;; $BA3C: Mother Brain body function - second phase - firing rainbow beam - draining Samus ;;;
 {
 $A9:BA3C 20 2E BB    JSR $BB2E  [$A9:BB2E]  ; Play Mother Brain rainbow beam sound effect
-$A9:BA3F 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain's body rainbow beam palette
+$A9:BA3F 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain body rainbow beam palette
 $A9:BA42 20 6E BB    JSR $BB6E  [$A9:BB6E]  ; Aim Mother Brain rainbow beam and increase width
 $A9:BA45 20 76 BC    JSR $BC76  [$A9:BC76]  ; Handle Mother Brain rainbow beam explosions
 $A9:BA48 22 7D C5 A9 JSL $A9C57D[$A9:C57D]  ; Damage Samus due to rainbow beam
 $A9:BA4C 20 C4 C4    JSR $C4C4  [$A9:C4C4]  ; Decrement ammo due to rainbow beam
 $A9:BA4F 20 CF BB    JSR $BBCF  [$A9:BBCF]  ; Move Samus towards middle of wall
-$A9:BA52 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BA55 10 6C       BPL $6C    [$BAC3]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BA52 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BA55 10 6C       BPL $6C    [$BAC3]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BA57 A9 5E BA    LDA #$BA5E             ;\
-$A9:BA5A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BA5E
+$A9:BA5A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BA5E
 $A9:BA5D 60          RTS
 }
 
 
-;;; $BA5E: Mother Brain's body function - second phase - firing rainbow beam - finish firing rainbow beam ;;;
+;;; $BA5E: Mother Brain body function - second phase - firing rainbow beam - finish firing rainbow beam ;;;
 {
 $A9:BA5E 20 2E BB    JSR $BB2E  [$A9:BB2E]  ; Play Mother Brain rainbow beam sound effect
-$A9:BA61 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain's body rainbow beam palette
+$A9:BA61 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain body rainbow beam palette
 $A9:BA64 20 82 BB    JSR $BB82  [$A9:BB82]  ; Aim Mother Brain rainbow beam
 $A9:BA67 20 76 BC    JSR $BC76  [$A9:BC76]  ; Handle Mother Brain rainbow beam explosions
 $A9:BA6A AF 26 80 7E LDA $7E8026[$7E:8026]  ;\
@@ -5168,8 +5168,8 @@ $A9:BA8F AA          TAX                    ;} Delete Mother Brain HDMA object
 $A9:BA90 9E B4 18    STZ $18B4,x[$7E:18B4]  ;/
 $A9:BA93 9C 40 18    STZ $1840  [$7E:1840]  ; Earthquake timer = 0
 $A9:BA96 A9 87 9C    LDA #$9C87             ;\
-$A9:BA99 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C87 (neutral)
-$A9:BA9C 20 F8 D1    JSR $D1F8  [$A9:D1F8]  ; Set up Mother Brain's brain normal palette
+$A9:BA99 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C87 (neutral)
+$A9:BA9C 20 F8 D1    JSR $D1F8  [$A9:D1F8]  ; Set up Mother Brain brain normal palette
 $A9:BA9F 20 CE BC    JSR $BCCE  [$A9:BCCE]  ; Write Mother Brain default palette
 $A9:BAA2 A9 02 00    LDA #$0002             ;\
 $A9:BAA5 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 6 (silence)
@@ -5180,33 +5180,33 @@ $A9:BAB3 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - unlock Samus
 $A9:BAB7 A9 08 00    LDA #$0008             ;\
 $A9:BABA 8D CC 0C    STA $0CCC  [$7E:0CCC]  ;} Cooldown timer = 8
 $A9:BABD A9 C4 BA    LDA #$BAC4             ;\
-$A9:BAC0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BAC4
+$A9:BAC0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BAC4
 
 $A9:BAC3 60          RTS
 }
 
 
-;;; $BAC4: Mother Brain's body function - second phase - firing rainbow beam - let Samus fall ;;;
+;;; $BAC4: Mother Brain body function - second phase - firing rainbow beam - let Samus fall ;;;
 {
 $A9:BAC4 A9 00 00    LDA #$0000             ;\
 $A9:BAC7 22 AD E4 91 JSL $91E4AD[$91:E4AD]  ;} Let drained Samus fall
 $A9:BACB A9 D1 BA    LDA #$BAD1             ;\
-$A9:BACE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BAD1
+$A9:BACE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BAD1
 }
 
 
-;;; $BAD1: Mother Brain's body function - second phase - firing rainbow beam - wait for Samus to hit ground ;;;
+;;; $BAD1: Mother Brain body function - second phase - firing rainbow beam - wait for Samus to hit ground ;;;
 {
 $A9:BAD1 20 E1 BB    JSR $BBE1  [$A9:BBE1]  ; Move Samus for falling after rainbow beam
 $A9:BAD4 90 06       BCC $06    [$BADC]     ; If not reached floor: return
 $A9:BAD6 A9 DD BA    LDA #$BADD             ;\
-$A9:BAD9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BADD
+$A9:BAD9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BADD
 
 $A9:BADC 60          RTS
 }
 
 
-;;; $BADD: Mother Brain's body function - second phase - firing rainbow beam - lower head ;;;
+;;; $BADD: Mother Brain body function - second phase - firing rainbow beam - lower head ;;;
 {
 $A9:BADD A9 40 00    LDA #$0040             ;\
 $A9:BAE0 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 40h
@@ -5217,23 +5217,23 @@ $A9:BAEE 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement 
 $A9:BAF2 A9 04 00    LDA #$0004             ;\
 $A9:BAF5 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 4 (bob up)
 $A9:BAF9 A9 06 BB    LDA #$BB06             ;\
-$A9:BAFC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BB06
+$A9:BAFC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BB06
 $A9:BAFF A9 80 00    LDA #$0080             ;\
-$A9:BB02 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 80h
+$A9:BB02 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 80h
 
 $A9:BB05 60          RTS
 }
 
 
-;;; $BB06: Mother Brain's body function - second phase - firing rainbow beam - decide next action ;;;
+;;; $BB06: Mother Brain body function - second phase - firing rainbow beam - decide next action ;;;
 {
-$A9:BB06 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BB09 10 FA       BPL $FA    [$BB05]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BB06 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BB09 10 FA       BPL $FA    [$BB05]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BB0B AD C2 09    LDA $09C2  [$7E:09C2]  ;\
 $A9:BB0E C9 90 01    CMP #$0190             ;} If [Samus health] >= 400:
 $A9:BB11 30 07       BMI $07    [$BB1A]     ;/
 $A9:BB13 A9 EB B8    LDA #$B8EB             ;\
-$A9:BB16 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $B8EB (firing rainbow beam)
+$A9:BB16 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B8EB (firing rainbow beam)
 $A9:BB19 60          RTS                    ; Return
 
 $A9:BB1A A0 0A 00    LDY #$000A             ;\
@@ -5242,7 +5242,7 @@ $A9:BB20 18          CLC                    ;} Make Mother Brain walk forwards r
 $A9:BB21 69 10 00    ADC #$0010             ;|
 $A9:BB24 20 01 C6    JSR $C601  [$A9:C601]  ;/
 $A9:BB27 A9 45 BD    LDA #$BD45             ;\
-$A9:BB2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BD45 (finish Samus off)
+$A9:BB2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BD45 (finish Samus off)
 $A9:BB2D 60          RTS
 }
 
@@ -5306,7 +5306,7 @@ $A9:BB86 ED BA 0F    SBC $0FBA  [$7E:0FBA]  ;|
 $A9:BB89 38          SEC                    ;|
 $A9:BB8A E9 10 00    SBC #$0010             ;|
 $A9:BB8D 85 12       STA $12    [$7E:0012]  ;|
-$A9:BB8F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = angle from Mother Brain's brain - (10h, 4) to Samus
+$A9:BB8F AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = angle from Mother Brain brain - (10h, 4) to Samus
 $A9:BB92 38          SEC                    ;|
 $A9:BB93 ED BE 0F    SBC $0FBE  [$7E:0FBE]  ;|
 $A9:BB96 38          SEC                    ;|
@@ -5484,10 +5484,10 @@ $A9:BCB6             dw FFF9, 0002, 0005, FFFC, 0006, FFFE, FFFA, 0007
 }
 
 
-;;; $BCC6: Mother Brain's body rainbow beam palette animation index = 0 ;;;
+;;; $BCC6: Mother Brain body rainbow beam palette animation index = 0 ;;;
 {
 $A9:BCC6 A9 00 00    LDA #$0000             ;\
-$A9:BCC9 8F 42 78 7E STA $7E7842[$7E:7842]  ;} Mother Brain's body rainbow beam palette animation index = 0
+$A9:BCC9 8F 42 78 7E STA $7E7842[$7E:7842]  ;} Mother Brain body rainbow beam palette animation index = 0
 $A9:BCCD 60          RTS
 }
 }
@@ -5498,7 +5498,7 @@ $A9:BCCD 60          RTS
 ; DB should be set to $A9
 $A9:BCCE A0 74 94    LDY #$9474             ;\
 $A9:BCD1 A2 82 00    LDX #$0082             ;|
-$A9:BCD4 A9 0F 00    LDA #$000F             ;} BG1/2 palette 4 colours 1..Fh = [$9474..93] (Mother Brain's body)
+$A9:BCD4 A9 0F 00    LDA #$000F             ;} BG1/2 palette 4 colours 1..Fh = [$9474..93] (Mother Brain body)
 $A9:BCD7 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 $A9:BCDB A0 74 94    LDY #$9474             ;\
 $A9:BCDE A2 22 01    LDX #$0122             ;|
@@ -5520,14 +5520,14 @@ $A9:BCFB 80 20       BRA $20    [$BD1D]     ; Go to write Mother Brain palette
 }
 
 
-;;; $BCFD: Handle Mother Brain's body rainbow beam palette ;;;
+;;; $BCFD: Handle Mother Brain body rainbow beam palette ;;;
 {
 $A9:BCFD AD A4 0F    LDA $0FA4  [$7E:0FA4]  ;\
-$A9:BD00 29 02 00    AND #$0002             ;} If [Mother Brain's body frame counter] & 2 = 0:
+$A9:BD00 29 02 00    AND #$0002             ;} If [Mother Brain body frame counter] & 2 = 0:
 $A9:BD03 D0 01       BNE $01    [$BD06]     ;/
 $A9:BD05 60          RTS                    ; Return
 
-$A9:BD06 AF 42 78 7E LDA $7E7842[$7E:7842]  ; A = [Mother Brain's body rainbow beam palette animation index]
+$A9:BD06 AF 42 78 7E LDA $7E7842[$7E:7842]  ; A = [Mother Brain body rainbow beam palette animation index]
 
 ; BRANCH_RESTART
 $A9:BD0A AA          TAX                    ;\
@@ -5535,10 +5535,10 @@ $A9:BD0B BF 34 E4 AD LDA $ADE434,x[$AD:E434];} A = [$AD:E434 + [A]]
 $A9:BD0F F0 F9       BEQ $F9    [$BD0A]     ; If [A] = 0: go to BRANCH_RESTART
 $A9:BD11 E8          INX                    ;\
 $A9:BD12 E8          INX                    ;|
-$A9:BD13 8A          TXA                    ;} Mother Brain's body rainbow beam palette animation index = [A] + 2
+$A9:BD13 8A          TXA                    ;} Mother Brain body rainbow beam palette animation index = [A] + 2
 $A9:BD14 8F 42 78 7E STA $7E7842[$7E:7842]  ;/
 $A9:BD18 BF 32 E4 AD LDA $ADE432,x[$AD:E434];\
-$A9:BD1C A8          TAY                    ;} Y = [$AD:E434 + [Mother Brain's body rainbow beam palette animation index] - 2]
+$A9:BD1C A8          TAY                    ;} Y = [$AD:E434 + [Mother Brain body rainbow beam palette animation index] - 2]
 }
 
 
@@ -5550,7 +5550,7 @@ $A9:BD21 AB          PLB                    ;} DB = $AD
 $A9:BD22 AB          PLB                    ;/
 $A9:BD23 5A          PHY                    ;\
 $A9:BD24 A2 82 00    LDX #$0082             ;|
-$A9:BD27 A9 0F 00    LDA #$000F             ;} BG1/2 palette 4 colours 1..Fh = 1Eh bytes from $AD:[Y] (Mother Brain's body)
+$A9:BD27 A9 0F 00    LDA #$000F             ;} BG1/2 palette 4 colours 1..Fh = 1Eh bytes from $AD:[Y] (Mother Brain body)
 $A9:BD2A 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;|
 $A9:BD2E 7A          PLY                    ;/
 $A9:BD2F A2 22 01    LDX #$0122             ;\
@@ -5566,7 +5566,7 @@ $A9:BD44 60          RTS
 
 ;;; $BD45..C1CE: Mother Brain - end of second phase cutscene ;;;
 {
-;;; $BD45: Mother Brain's body function - second phase - finish Samus off - get Samus to low health ;;;
+;;; $BD45: Mother Brain body function - second phase - finish Samus off - get Samus to low health ;;;
 {
 ; NOPing the branch at $A9:BD5F counter-intuitively causes MB to never effectively launch an attack,
 ; I guess she never gets the chance to spawn a projectile when she's constantly switching attacks
@@ -5598,59 +5598,59 @@ $A9:BD7F A0 7F 9D    LDY #$9D7F             ; Y = $9D7F (attacking - two blue ri
 
 ; BRANCH_DO_ATTACK
 $A9:BD82 98          TYA                    ;\
-$A9:BD83 4C 47 C4    JMP $C447  [$A9:C447]  ;} Go to set Mother Brain's brain instruction list to [Y]
+$A9:BD83 4C 47 C4    JMP $C447  [$A9:C447]  ;} Go to set Mother Brain brain instruction list to [Y]
 
 ; BRANCH_NO_ATTACK
 $A9:BD86 AD A4 0F    LDA $0FA4  [$7E:0FA4]  ;\
-$A9:BD89 29 1F 00    AND #$001F             ;} If [Mother Brain's body frame counter] % 20h != 0: return
+$A9:BD89 29 1F 00    AND #$001F             ;} If [Mother Brain body frame counter] % 20h != 0: return
 $A9:BD8C D0 09       BNE $09    [$BD97]     ;/
 $A9:BD8E 4C A7 C1    JMP $C1A7  [$A9:C1A7]  ; Go to maybe make Mother Brain stand up or lean down
 
 ; BRANCH_DONE
 $A9:BD91 A9 98 BD    LDA #$BD98             ;\
-$A9:BD94 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BD98
+$A9:BD94 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BD98
 
 $A9:BD97 60          RTS
 }
 
 
-;;; $BD98: Mother Brain's body function - second phase - finish Samus off - stand up ;;;
+;;; $BD98: Mother Brain body function - second phase - finish Samus off - stand up ;;;
 {
 $A9:BD98 20 70 C6    JSR $C670  [$A9:C670]  ; Make Mother Brain stand up
 $A9:BD9B 90 4F       BCC $4F    [$BDEC]     ; If not standing: return
 $A9:BD9D A9 A9 BD    LDA #$BDA9             ;\
-$A9:BDA0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BDA9
+$A9:BDA0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BDA9
 $A9:BDA3 A9 10 00    LDA #$0010             ;\
-$A9:BDA6 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:BDA6 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 }
 
 
-;;; $BDA9: Mother Brain's body function - second phase - finish Samus off - admire job well done ;;;
+;;; $BDA9: Mother Brain body function - second phase - finish Samus off - admire job well done ;;;
 {
-$A9:BDA9 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BDAC 10 3E       BPL $3E    [$BDEC]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BDA9 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BDAC 10 3E       BPL $3E    [$BDEC]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BDAE A9 7F 9B    LDA #$9B7F             ;\
-$A9:BDB1 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9B7F (stretching)
+$A9:BDB1 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9B7F (stretching)
 $A9:BDB4 A9 C1 BD    LDA #$BDC1             ;\
-$A9:BDB7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BDC1
+$A9:BDB7 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BDC1
 $A9:BDBA A9 00 01    LDA #$0100             ;\
-$A9:BDBD 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h
+$A9:BDBD 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h
 $A9:BDC0 60          RTS
 }
 
 
-;;; $BDC1: Mother Brain's body function - second phase - finish Samus off - charge final rainbow beam ;;;
+;;; $BDC1: Mother Brain body function - second phase - finish Samus off - charge final rainbow beam ;;;
 {
-$A9:BDC1 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BDC4 10 26       BPL $26    [$BDEC]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BDC1 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BDC4 10 26       BPL $26    [$BDEC]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BDC6 A9 6C 9F    LDA #$9F6C             ;\
-$A9:BDC9 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9F6C (charging rainbow beam)
+$A9:BDC9 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9F6C (charging rainbow beam)
 $A9:BDCC A9 D2 BD    LDA #$BDD2             ;\
-$A9:BDCF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BDD2
+$A9:BDCF 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BDD2
 }
 
 
-;;; $BDD2: Mother Brain's body function - second phase - finish Samus off - charge final rainbow beam / load Shitroid ;;;
+;;; $BDD2: Mother Brain body function - second phase - finish Samus off - charge final rainbow beam / load Shitroid ;;;
 {
 $A9:BDD2 A2 E5 8F    LDX #$8FE5             ;\
 $A9:BDD5 20 BE C5    JSR $C5BE  [$A9:C5BE]  ;} Load Shitroid tiles
@@ -5658,21 +5658,21 @@ $A9:BDD8 90 12       BCC $12    [$BDEC]     ; If not finished loading: return
 $A9:BDDA 20 51 BB    JSR $BB51  [$A9:BB51]  ; Retract Mother Brain's head
 $A9:BDDD 20 1B BE    JSR $BE1B  [$A9:BE1B]  ; Spawn Shitroid in cutscene
 $A9:BDE0 A9 ED BD    LDA #$BDED             ;\
-$A9:BDE3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BDED
+$A9:BDE3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BDED
 $A9:BDE6 A9 00 01    LDA #$0100             ;\
-$A9:BDE9 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 100h
+$A9:BDE9 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 100h
 
 $A9:BDEC 60          RTS
 }
 
 
-;;; $BDED: Mother Brain's body function - second phase - finish Samus off - fire final rainbow beam ;;;
+;;; $BDED: Mother Brain body function - second phase - finish Samus off - fire final rainbow beam ;;;
 {
-$A9:BDED CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BDF0 10 FA       BPL $FA    [$BDEC]     ; If [Mother Brain's body function timer] >= 0: return
-$A9:BDF2 20 C6 BC    JSR $BCC6  [$A9:BCC6]  ; Mother Brain's body rainbow beam palette animation index = 0
+$A9:BDED CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BDF0 10 FA       BPL $FA    [$BDEC]     ; If [Mother Brain body function timer] >= 0: return
+$A9:BDF2 20 C6 BC    JSR $BCC6  [$A9:BCC6]  ; Mother Brain body rainbow beam palette animation index = 0
 $A9:BDF5 A9 77 9C    LDA #$9C77             ;\
-$A9:BDF8 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C77 (firing rainbow beam)
+$A9:BDF8 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C77 (firing rainbow beam)
 $A9:BDFB A9 06 00    LDA #$0006             ;\
 $A9:BDFE 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 6 (lower)
 $A9:BE02 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement index = 6 (lower)
@@ -5681,7 +5681,7 @@ $A9:BE09 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 5
 $A9:BE0D A9 71 00    LDA #$0071             ;\
 $A9:BE10 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 71h, sound library 2, max queued sounds allowed = 6 (silence)
 $A9:BE14 A9 1A BE    LDA #$BE1A             ;\
-$A9:BE17 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = RTS
+$A9:BE17 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = RTS
 
 $A9:BE1A 60          RTS
 }
@@ -5708,7 +5708,7 @@ $A9:BE28             dw ECBF,0180,0040,CFA2,2800,0000,0000,0000
 }
 
 
-;;; $BE38: Mother Brain's body function - drained by Shitroid - taken aback by Shitroid ;;;
+;;; $BE38: Mother Brain body function - drained by Shitroid - taken aback by Shitroid ;;;
 {
 $A9:BE38 A9 03 00    LDA #$0003             ;\
 $A9:BE3B 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Mother Brain's form = drained by Shitroid
@@ -5718,19 +5718,19 @@ $A9:BE46 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement i
 $A9:BE4A A9 00 07    LDA #$0700             ;\
 $A9:BE4D 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 700h
 $A9:BE51 A9 5D BE    LDA #$BE5D             ;\
-$A9:BE54 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BE5D
+$A9:BE54 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BE5D
 $A9:BE57 A9 30 00    LDA #$0030             ;\
-$A9:BE5A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 30h
+$A9:BE5A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 30h
 }
 
 
-;;; $BE5D: Mother Brain's body function - drained by Shitroid - regain balance ;;;
+;;; $BE5D: Mother Brain body function - drained by Shitroid - regain balance ;;;
 {
-$A9:BE5D 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain's body rainbow beam palette
-$A9:BE60 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BE63 10 30       BPL $30    [$BE95]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BE5D 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain body rainbow beam palette
+$A9:BE60 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BE63 10 30       BPL $30    [$BE95]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BE65 A9 96 BE    LDA #$BE96             ;\
-$A9:BE68 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BE96
+$A9:BE68 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BE96
 $A9:BE6B A9 D0 BF    LDA #$BFD0             ;\
 $A9:BE6E 8F 50 78 7E STA $7E7850[$7E:7850]  ;} Mother Brain painful walking function = $BFD0 (walk forwards)
 $A9:BE72 A9 00 00    LDA #$0000             ;\
@@ -5748,14 +5748,14 @@ $A9:BE95 60          RTS
 }
 
 
-;;; $BE96: Mother Brain's body function - drained by Shitroid - firing rainbow beam ;;;
+;;; $BE96: Mother Brain body function - drained by Shitroid - firing rainbow beam ;;;
 {
 $A9:BE96 AF 40 78 7E LDA $7E7840[$7E:7840]  ;\
-$A9:BE9A D0 07       BNE $07    [$BEA3]     ;} If [Mother Brain's brain main shake timer] = 0:
+$A9:BE9A D0 07       BNE $07    [$BEA3]     ;} If [Mother Brain brain main shake timer] = 0:
 $A9:BE9C A9 32 00    LDA #$0032             ;\
-$A9:BE9F 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Mother Brain's brain main shake timer = 50
+$A9:BE9F 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Mother Brain brain main shake timer = 50
 
-$A9:BEA3 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain's body rainbow beam palette
+$A9:BEA3 20 FD BC    JSR $BCFD  [$A9:BCFD]  ; Handle Mother Brain body rainbow beam palette
 $A9:BEA6 AF 50 78 7E LDA $7E7850[$7E:7850]  ;\
 $A9:BEAA 85 12       STA $12    [$7E:0012]  ;|
 $A9:BEAC F4 B1 BE    PEA $BEB1              ;} Execute [Mother Brain painful walking function]
@@ -5774,12 +5774,12 @@ $A9:BECD C9 06 00    CMP #$0006             ;} If [Mother Brain painful walking 
 $A9:BED0 D0 1B       BNE $1B    [$BEED]     ;/
 $A9:BED2 A9 00 00    LDA #$0000             ;\
 $A9:BED5 8F 2C 78 7E STA $7E782C[$7E:782C]  ;} Set Mother Brain rainbow beam sound effect as not playing
-$A9:BED9 8F 60 78 7E STA $7E7860[$7E:7860]  ; Disable Mother Brain's brain palette handling
+$A9:BED9 8F 60 78 7E STA $7E7860[$7E:7860]  ; Disable Mother Brain brain palette handling
 $A9:BEDD 20 F6 BC    JSR $BCF6  [$A9:BCF6]  ; Write Mother Brain second phase death palette
 $A9:BEE0 A9 02 00    LDA #$0002             ;\
 $A9:BEE3 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 2, sound library 1, max queued sounds allowed = 6 (silence)
 $A9:BEE7 A9 0E BF    LDA #$BF0E             ;\
-$A9:BEEA 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BF0E
+$A9:BEEA 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BF0E
 
 $A9:BEED 60          RTS
 
@@ -5788,7 +5788,7 @@ $A9:BEFE             dw 0500, 0500, 0200, 0200, 00C0, 00C0, 0040, 0040 ; Neck an
 }
 
 
-;;; $BF0E: Mother Brain's body function - drained by Shitroid - rainbow beam has run out ;;;
+;;; $BF0E: Mother Brain body function - drained by Shitroid - rainbow beam has run out ;;;
 {
 $A9:BF0E AF 50 78 7E LDA $7E7850[$7E:7850]  ;\
 $A9:BF12 85 12       STA $12    [$7E:0012]  ;|
@@ -5804,25 +5804,25 @@ $A9:BF2A A9 08 00    LDA #$0008             ;\
 $A9:BF2D 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement index = 8 (raise)
 $A9:BF31 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement index = 8 (raise)
 $A9:BF35 A9 39 9C    LDA #$9C39             ;\
-$A9:BF38 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9C39 (dying drool)
+$A9:BF38 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9C39 (dying drool)
 $A9:BF3B A9 41 BF    LDA #$BF41             ;\
-$A9:BF3E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BF41
+$A9:BF3E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BF41
 }
 
 
-;;; $BF41: Mother Brain's body function - drained by Shitroid - move to back of room ;;;
+;;; $BF41: Mother Brain body function - drained by Shitroid - move to back of room ;;;
 {
 $A9:BF41 A9 28 00    LDA #$0028             ;\
 $A9:BF44 20 47 C6    JSR $C647  [$A9:C647]  ;} Make Mother Brain walk backwards towards X position 28h with animation delay [Y]
 $A9:BF47 90 33       BCC $33    [$BF7C]     ; If not reached X position 28h: return
 $A9:BF49 A9 56 BF    LDA #$BF56             ;\
-$A9:BF4C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BF56
+$A9:BF4C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BF56
 $A9:BF4F A9 00 00    LDA #$0000             ;\
 $A9:BF52 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement index = 0 (nothing)
 }
 
 
-;;; $BF56: Mother Brain's body function - drained by Shitroid - go into low power mode ;;;
+;;; $BF56: Mother Brain body function - drained by Shitroid - go into low power mode ;;;
 {
 $A9:BF56 AF 64 80 7E LDA $7E8064[$7E:8064]  ;\
 $A9:BF5A 0F 66 80 7E ORA $7E8066[$7E:8066]  ;} If not finished raising neck: return
@@ -5831,35 +5831,35 @@ $A9:BF60 8F 64 78 7E STA $7E7864[$7E:7864]  ; Disable Mother Brain's drool gener
 $A9:BF64 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
 $A9:BF68 D0 12       BNE $12    [$BF7C]     ;} If [Mother Brain pose] != standing: return
 $A9:BF6A A9 26 9A    LDA #$9A26             ;\
-$A9:BF6D 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to $9A26 (crouch - fast)
+$A9:BF6D 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $9A26 (crouch - fast)
 $A9:BF70 A9 7D BF    LDA #$BF7D             ;\
-$A9:BF73 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BF7D
+$A9:BF73 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BF7D
 $A9:BF76 A9 40 00    LDA #$0040             ;\
-$A9:BF79 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 40h
+$A9:BF79 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 40h
 
 $A9:BF7C 60          RTS
 }
 
 
-;;; $BF7D: Mother Brain's body function - drained by Shitroid - prepare transition to grey ;;;
+;;; $BF7D: Mother Brain body function - drained by Shitroid - prepare transition to grey ;;;
 {
-$A9:BF7D CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BF80 10 FA       BPL $FA    [$BF7C]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BF7D CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BF80 10 FA       BPL $FA    [$BF7C]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BF82 A9 00 00    LDA #$0000             ;\
 $A9:BF85 8F 2E 80 7E STA $7E802E[$7E:802E]  ;} Mother Brain grey transition counter = 0
 $A9:BF89 A9 95 BF    LDA #$BF95             ;\
-$A9:BF8C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BF95
+$A9:BF8C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BF95
 $A9:BF8F A9 10 00    LDA #$0010             ;\
-$A9:BF92 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:BF92 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 }
 
 
-;;; $BF95: Mother Brain's body function - drained by Shitroid - transition to grey ;;;
+;;; $BF95: Mother Brain body function - drained by Shitroid - transition to grey ;;;
 {
-$A9:BF95 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:BF98 10 E2       BPL $E2    [$BF7C]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:BF95 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:BF98 10 E2       BPL $E2    [$BF7C]     ; If [Mother Brain body function timer] >= 0: return
 $A9:BF9A A9 10 00    LDA #$0010             ;\
-$A9:BF9D 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h <-- this doesn't get used
+$A9:BF9D 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h <-- this doesn't get used
 $A9:BFA0 AF 2E 80 7E LDA $7E802E[$7E:802E]  ;\
 $A9:BFA4 1A          INC A                  ;} Increment Mother Brain grey transition counter
 $A9:BFA5 8F 2E 80 7E STA $7E802E[$7E:802E]  ;/
@@ -5867,7 +5867,7 @@ $A9:BFA9 3A          DEC A                  ; A = [Mother Brain grey transition 
 $A9:BFAA 22 4A EF AD JSL $ADEF4A[$AD:EF4A]  ; Transition Mother Brain palette to grey
 $A9:BFAE 90 CC       BCC $CC    [$BF7C]     ; If not finished transitioning: return
 $A9:BFB0 A9 A0 8C    LDA #$8CA0             ;\
-$A9:BFB3 8D CC 0F    STA $0FCC  [$7E:0FCC]  ;} Mother Brain's brain health = 36,000
+$A9:BFB3 8D CC 0F    STA $0FCC  [$7E:0FCC]  ;} Mother Brain brain health = 36,000
 $A9:BFB6 A9 01 00    LDA #$0001             ;\
 $A9:BFB9 8F 3E 78 7E STA $7E783E[$7E:783E]  ;} Mother Brain phase 2 corpse state = turned into corpse by Shitroid
 $A9:BFBD 3A          DEC A                  ;\
@@ -5875,7 +5875,7 @@ $A9:BFBE 8F 68 78 7E STA $7E7868[$7E:7868]  ;} Disable Mother Brain's small purp
 $A9:BFC2 A9 02 00    LDA #$0002             ;\
 $A9:BFC5 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Mother Brain's form = second phase
 $A9:BFC9 A9 59 C0    LDA #$C059             ;\
-$A9:BFCC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C059 (revive self)
+$A9:BFCC 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C059 (revive self)
 $A9:BFCF 60          RTS
 }
 
@@ -5956,46 +5956,46 @@ $A9:C049             dw 0010, 0010, 0020, 0020, 0030, 0030, 0040, 0040
 }
 
 
-;;; $C059: Mother Brain's body function - second phase - revive self - inanimate grey ;;;
+;;; $C059: Mother Brain body function - second phase - revive self - inanimate grey ;;;
 {
 $A9:C059 A9 66 C0    LDA #$C066             ;\
-$A9:C05C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C066
+$A9:C05C 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C066
 $A9:C05F A9 00 03    LDA #$0300             ;\
-$A9:C062 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 300h
+$A9:C062 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 300h
 
 $A9:C065 60          RTS
 }
 
 
-;;; $C066: Mother Brain's body function - second phase - revive self - show signs of life ;;;
+;;; $C066: Mother Brain body function - second phase - revive self - show signs of life ;;;
 {
-$A9:C066 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:C069 10 FA       BPL $FA    [$C065]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:C066 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:C069 10 FA       BPL $FA    [$C065]     ; If [Mother Brain body function timer] >= 0: return
 $A9:C06B A9 01 00    LDA #$0001             ;\
 $A9:C06E 8F 68 78 7E STA $7E7868[$7E:7868]  ;} Enable Mother Brain's small purple breath generation
 $A9:C072 8F 64 78 7E STA $7E7864[$7E:7864]  ; Enable Mother Brain's drool generation
 $A9:C076 A9 82 C0    LDA #$C082             ;\
-$A9:C079 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C082
+$A9:C079 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C082
 $A9:C07C A9 E0 00    LDA #$00E0             ;\
-$A9:C07F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = E0h
+$A9:C07F 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = E0h
 }
 
 
-;;; $C082: Mother Brain's body function - second phase - revive self - prepare transition from grey ;;;
+;;; $C082: Mother Brain body function - second phase - revive self - prepare transition from grey ;;;
 {
 $A9:C082 A9 8F C0    LDA #$C08F             ;\
-$A9:C085 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C08F
+$A9:C085 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C08F
 $A9:C088 A9 00 00    LDA #$0000             ;\
 $A9:C08B 8F 2E 80 7E STA $7E802E[$7E:802E]  ;} Mother Brain grey transition counter = 0
 }
 
 
-;;; $C08F: Mother Brain's body function - second phase - revive self - transition from grey ;;;
+;;; $C08F: Mother Brain body function - second phase - revive self - transition from grey ;;;
 {
-$A9:C08F CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:C092 10 D1       BPL $D1    [$C065]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:C08F CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:C092 10 D1       BPL $D1    [$C065]     ; If [Mother Brain body function timer] >= 0: return
 $A9:C094 A9 10 00    LDA #$0010             ;\
-$A9:C097 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h <-- this doesn't get used
+$A9:C097 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h <-- this doesn't get used
 $A9:C09A AF 2E 80 7E LDA $7E802E[$7E:802E]  ;\
 $A9:C09E 1A          INC A                  ;} Increment Mother Brain grey transition counter
 $A9:C09F 8F 2E 80 7E STA $7E802E[$7E:802E]  ;/
@@ -6003,14 +6003,14 @@ $A9:C0A3 3A          DEC A                  ; A = [Mother Brain grey transition 
 $A9:C0A4 22 0D EF AD JSL $ADEF0D[$AD:EF0D]  ; Transition Mother Brain palette from grey
 $A9:C0A8 90 BB       BCC $BB    [$C065]     ; If not finished transitioning: return
 $A9:C0AA A9 BA C0    LDA #$C0BA             ;\
-$A9:C0AD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C0BA
+$A9:C0AD 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C0BA
 $A9:C0B0 A9 01 00    LDA #$0001             ;\
-$A9:C0B3 8F 60 78 7E STA $7E7860[$7E:7860]  ;} Enable Mother Brain's brain palette handling
-$A9:C0B7 20 F8 D1    JSR $D1F8  [$A9:D1F8]  ; Set up Mother Brain's brain normal palette
+$A9:C0B3 8F 60 78 7E STA $7E7860[$7E:7860]  ;} Enable Mother Brain brain palette handling
+$A9:C0B7 20 F8 D1    JSR $D1F8  [$A9:D1F8]  ; Set up Mother Brain brain normal palette
 }
 
 
-;;; $C0BA: Mother Brain's body function - second phase - revive self - wake up ;;;
+;;; $C0BA: Mother Brain body function - second phase - revive self - wake up ;;;
 {
 $A9:C0BA 20 70 C6    JSR $C670  [$A9:C670]  ; Make Mother Brain stand up
 $A9:C0BD 90 A6       BCC $A6    [$C065]     ; If not standing: return
@@ -6022,35 +6022,35 @@ $A9:C0CD 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 5
 $A9:C0D1 A9 01 00    LDA #$0001             ;\
 $A9:C0D4 8F 62 80 7E STA $7E8062[$7E:8062]  ;} Enable Mother Brain neck movement
 $A9:C0D8 A9 E4 C0    LDA #$C0E4             ;\
-$A9:C0DB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C0E4
+$A9:C0DB 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C0E4
 $A9:C0DE A9 10 00    LDA #$0010             ;\
-$A9:C0E1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 10h
+$A9:C0E1 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 10h
 }
 
 
-;;; $C0E4: Mother Brain's body function - second phase - revive self - wake-up stretch ;;;
+;;; $C0E4: Mother Brain body function - second phase - revive self - wake-up stretch ;;;
 {
-$A9:C0E4 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:C0E7 10 34       BPL $34    [$C11D]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:C0E4 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:C0E7 10 34       BPL $34    [$C11D]     ; If [Mother Brain body function timer] >= 0: return
 $A9:C0E9 A9 B3 9B    LDA #$9BB3             ;\
-$A9:C0EC 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9BB3 (stretching - phase 3)
+$A9:C0EC 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9BB3 (stretching - phase 3)
 $A9:C0EF A9 FB C0    LDA #$C0FB             ;\
-$A9:C0F2 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C0FB
+$A9:C0F2 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C0FB
 $A9:C0F5 A9 80 00    LDA #$0080             ;\
-$A9:C0F8 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 80h
+$A9:C0F8 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 80h
 }
 
 
-;;; $C0FB: Mother Brain's body function - second phase - revive self - walk up to Shitroid ;;;
+;;; $C0FB: Mother Brain body function - second phase - revive self - walk up to Shitroid ;;;
 {
-$A9:C0FB CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:C0FE 10 1D       BPL $1D    [$C11D]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:C0FB CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:C0FE 10 1D       BPL $1D    [$C11D]     ; If [Mother Brain body function timer] >= 0: return
 $A9:C100 A0 04 00    LDY #$0004             ;\
 $A9:C103 A9 50 00    LDA #$0050             ;} Make Mother Brain walk forwards fast towards X position 50h
 $A9:C106 20 01 C6    JSR $C601  [$A9:C601]  ;/
 $A9:C109 90 12       BCC $12    [$C11D]     ; If not reached X position 50h: return
 $A9:C10B A9 1E C1    LDA #$C11E             ;\
-$A9:C10E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C11E
+$A9:C10E 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C11E
 $A9:C111 A9 02 00    LDA #$0002             ;\
 $A9:C114 8F 3E 78 7E STA $7E783E[$7E:783E]  ;} Mother Brain phase 2 corpse state = recovered from being a corpse
 $A9:C118 3A          DEC A                  ;\
@@ -6060,7 +6060,7 @@ $A9:C11D 60          RTS
 }
 
 
-;;; $C11E: Mother Brain's body function - second phase - revive self - prepare neck for Shitroid murder ;;;
+;;; $C11E: Mother Brain body function - second phase - revive self - prepare neck for Shitroid murder ;;;
 {
 $A9:C11E A9 00 00    LDA #$0000             ;\
 $A9:C121 8F 26 78 7E STA $7E7826[$7E:7826]  ;} Mother Brain Shitroid attack counter = 0
@@ -6073,25 +6073,25 @@ $A9:C136 8F 66 80 7E STA $7E8066[$7E:8066]  ;} Mother Brain upper neck movement 
 $A9:C13A A9 40 00    LDA #$0040             ;\
 $A9:C13D 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 40h
 $A9:C141 A9 47 C1    LDA #$C147             ;\
-$A9:C144 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C147
+$A9:C144 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C147
 }
 
 
-;;; $C147: Mother Brain's body function - second phase - revive self - finish preparing for Shitroid murder ;;;
+;;; $C147: Mother Brain body function - second phase - revive self - finish preparing for Shitroid murder ;;;
 {
 $A9:C147 20 70 C6    JSR $C670  [$A9:C670]  ; Make Mother Brain stand up
 $A9:C14A B0 01       BCS $01    [$C14D]     ; If not standing:
 $A9:C14C 60          RTS                    ; Return
 
 $A9:C14D A9 5C C1    LDA #$C15C             ;\
-$A9:C150 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C15C (murder Shitroid)
+$A9:C150 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C15C (murder Shitroid)
 $A9:C153 A0 0A 00    LDY #$000A             ;\
 $A9:C156 A9 50 00    LDA #$0050             ;} Make Mother Brain walk forwards really slow towards X position 50h
 $A9:C159 20 01 C6    JSR $C601  [$A9:C601]  ;/
 }
 
 
-;;; $C15C: Mother Brain's body function - second phase - murder Shitroid - attack Shitroid ;;;
+;;; $C15C: Mother Brain body function - second phase - murder Shitroid - attack Shitroid ;;;
 {
 $A9:C15C 20 A7 C1    JSR $C1A7  [$A9:C1A7]  ; Maybe make Mother Brain stand up or lean down
 $A9:C15F AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -6104,27 +6104,27 @@ $A9:C16C F0 03       BEQ $03    [$C171]     ;} If [Shitroid enemy index] != 0:
 $A9:C16E A0 B1 9D    LDY #$9DB1             ; Y = $9DB1 (attacking Shitroid)
 
 $A9:C171 98          TYA                    ;\
-$A9:C172 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to [Y]
+$A9:C172 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to [Y]
 $A9:C175 A9 82 C1    LDA #$C182             ;\
-$A9:C178 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C182
+$A9:C178 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C182
 $A9:C17B A9 40 00    LDA #$0040             ;\
-$A9:C17E 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 40h
+$A9:C17E 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 40h
 
 $A9:C181 60          RTS
 }
 
 
-;;; $C182: Mother Brain's body function - second phase - murder Shitroid - Shitroid attack cooldown ;;;
+;;; $C182: Mother Brain body function - second phase - murder Shitroid - Shitroid attack cooldown ;;;
 {
-$A9:C182 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:C185 10 FA       BPL $FA    [$C181]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:C182 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:C185 10 FA       BPL $FA    [$C181]     ; If [Mother Brain body function timer] >= 0: return
 $A9:C187 A9 5C C1    LDA #$C15C             ;\
-$A9:C18A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C15C (attack Shitroid)
+$A9:C18A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C15C (attack Shitroid)
 $A9:C18D 60          RTS
 }
 
 
-;;; $C18E: Mother Brain's body function - second phase - prepare for final Shitroid attack ;;;
+;;; $C18E: Mother Brain body function - second phase - prepare for final Shitroid attack ;;;
 {
 ; This isn't waiting for Mother Brain to finish standing up (bug?)
 $A9:C18E 20 70 C6    JSR $C670  [$A9:C670]  ; Make Mother Brain stand up
@@ -6134,12 +6134,12 @@ $A9:C197 4C 47 C6    JMP $C647  [$A9:C647]  ;/
 }
 
 
-;;; $C19A: Mother Brain's body function - second phase - execute final Shitroid attack ;;;
+;;; $C19A: Mother Brain body function - second phase - execute final Shitroid attack ;;;
 {
 $A9:C19A A9 B1 9D    LDA #$9DB1             ;\
-$A9:C19D 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9DB1 (attacking Shitroid)
+$A9:C19D 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9DB1 (attacking Shitroid)
 $A9:C1A0 A9 A6 C1    LDA #$C1A6             ;\
-$A9:C1A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = RTS
+$A9:C1A3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = RTS
 
 $A9:C1A6 60          RTS
 }
@@ -6170,14 +6170,14 @@ $A9:C1CE 60          RTS
 
 ;;; $C1CF..C3EE: Mother Brain - third phase ;;;
 {
-;;; $C1CF: Mother Brain's body function - third phase - recover from cutscene - make some distance ;;;
+;;; $C1CF: Mother Brain body function - third phase - recover from cutscene - make some distance ;;;
 {
 $A9:C1CF A9 04 00    LDA #$0004             ;\
 $A9:C1D2 8F 00 78 7E STA $7E7800[$7E:7800]  ;} Mother Brain's form = third phase
 $A9:C1D6 A9 F0 C1    LDA #$C1F0             ;\
-$A9:C1D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C1F0
+$A9:C1D9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C1F0
 $A9:C1DC A9 20 00    LDA #$0020             ;\
-$A9:C1DF 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 20h
+$A9:C1DF 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 20h
 $A9:C1E2 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:C1E5 38          SEC                    ;|
 $A9:C1E6 E9 0E 00    SBC #$000E             ;} Make Mother Brain walk backwards Eh pixels really fast
@@ -6187,12 +6187,12 @@ $A9:C1EF 60          RTS
 }
 
 
-;;; $C1F0: Mother Brain's body function - third phase - recover from cutscene - set up for fighting ;;;
+;;; $C1F0: Mother Brain body function - third phase - recover from cutscene - set up for fighting ;;;
 {
-$A9:C1F0 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:C1F3 10 FA       BPL $FA    [$C1EF]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:C1F0 CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:C1F3 10 FA       BPL $FA    [$C1EF]     ; If [Mother Brain body function timer] >= 0: return
 $A9:C1F5 A9 09 C2    LDA #$C209             ;\
-$A9:C1F8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C209
+$A9:C1F8 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C209
 $A9:C1FB A9 30 C3    LDA #$C330             ;\
 $A9:C1FE 8F 70 78 7E STA $7E7870[$7E:7870]  ;} Mother Brain neck function = $C330 (normal)
 $A9:C202 A9 6A C2    LDA #$C26A             ;\
@@ -6200,12 +6200,12 @@ $A9:C205 8F 74 78 7E STA $7E7874[$7E:7874]  ;} Mother Brain walking function = $
 }
 
 
-;;; $C209: Mother Brain's body function - third phase - fighting - main ;;;
+;;; $C209: Mother Brain body function - third phase - fighting - main ;;;
 {
 $A9:C209 AD CC 0F    LDA $0FCC  [$7E:0FCC]  ;\
-$A9:C20C D0 07       BNE $07    [$C215]     ;} If [Mother Brain's brain health] = 0:
+$A9:C20C D0 07       BNE $07    [$C215]     ;} If [Mother Brain brain health] = 0:
 $A9:C20E A9 E1 AE    LDA #$AEE1             ;\
-$A9:C211 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $AEE1 (death sequence)
+$A9:C211 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $AEE1 (death sequence)
 $A9:C214 60          RTS                    ; Return
 
 $A9:C215 20 27 C3    JSR $C327  [$A9:C327]  ; Mother Brain third phase neck handler
@@ -6224,21 +6224,21 @@ $A9:C238 90 03       BCC $03    [$C23D]     ;/
 $A9:C23A A0 BB 9D    LDY #$9DBB             ; Y = $9DBB (attacking Samus - four blue rings - phase 3)
 
 $A9:C23D 98          TYA                    ;\
-$A9:C23E 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to [Y]
+$A9:C23E 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to [Y]
 $A9:C241 A9 4E C2    LDA #$C24E             ;\
-$A9:C244 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C24E
+$A9:C244 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C24E
 $A9:C247 A9 40 00    LDA #$0040             ;\
-$A9:C24A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain's body function timer = 40h
+$A9:C24A 8D B2 0F    STA $0FB2  [$7E:0FB2]  ;} Mother Brain body function timer = 40h
 $A9:C24D 60          RTS
 }
 
 
-;;; $C24E: Mother Brain's body function - third phase - fighting - attack cooldown ;;;
+;;; $C24E: Mother Brain body function - third phase - fighting - attack cooldown ;;;
 {
-$A9:C24E CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain's body function timer
-$A9:C251 10 C1       BPL $C1    [$C214]     ; If [Mother Brain's body function timer] >= 0: return
+$A9:C24E CE B2 0F    DEC $0FB2  [$7E:0FB2]  ; Decrement Mother Brain body function timer
+$A9:C251 10 C1       BPL $C1    [$C214]     ; If [Mother Brain body function timer] >= 0: return
 $A9:C253 A9 09 C2    LDA #$C209             ;\
-$A9:C256 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C209 (main)
+$A9:C256 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C209 (main)
 $A9:C259 60          RTS
 }
 
@@ -6265,7 +6265,7 @@ $A9:C274 8F 0E 78 7E STA $7E780E[$7E:780E]  ;/
 $A9:C278 C9 00 01    CMP #$0100             ;\
 $A9:C27B 90 23       BCC $23    [$C2A0]     ;} If [Mother Brain walk counter] < 100h: return
 $A9:C27D AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C280 1A          INC A                  ;} Mother Brain target X position = [Mother Brain's body X position] + 1
+$A9:C280 1A          INC A                  ;} Mother Brain target X position = [Mother Brain body X position] + 1
 $A9:C281 8F 76 78 7E STA $7E7876[$7E:7876]  ;/
 $A9:C285 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:C288 29 02 00    AND #$0002             ;|
@@ -6283,7 +6283,7 @@ $A9:C2A0 60          RTS                    ; Return
 ; BRANCH_WALK_LEFT
 $A9:C2A1 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:C2A4 38          SEC                    ;|
-$A9:C2A5 E9 0E 00    SBC #$000E             ;} Mother Brain target X position = [Mother Brain's body X position] - Eh
+$A9:C2A5 E9 0E 00    SBC #$000E             ;} Mother Brain target X position = [Mother Brain body X position] - Eh
 $A9:C2A8 8F 76 78 7E STA $7E7876[$7E:7876]  ;/
 $A9:C2AC A9 B3 C2    LDA #$C2B3             ;\
 $A9:C2AF 8F 74 78 7E STA $7E7874[$7E:7874]  ;} Mother Brain walking function = $C2B3
@@ -6298,7 +6298,7 @@ $A9:C2BA 20 47 C6    JSR $C647  [$A9:C647]  ;/
 $A9:C2BD 90 12       BCC $12    [$C2D1]     ; If not reached Mother Brain target X position: return
 $A9:C2BF AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $A9:C2C2 38          SEC                    ;|
-$A9:C2C3 E9 0E 00    SBC #$000E             ;} Mother Brain target X position = [Mother Brain's body X position] - Eh
+$A9:C2C3 E9 0E 00    SBC #$000E             ;} Mother Brain target X position = [Mother Brain body X position] - Eh
 $A9:C2C6 8F 76 78 7E STA $7E7876[$7E:7876]  ;/
 $A9:C2CA A9 D2 C2    LDA #$C2D2             ;\
 $A9:C2CD 8F 74 78 7E STA $7E7874[$7E:7874]  ;} Mother Brain walking function = $C2D2
@@ -6357,7 +6357,7 @@ $A9:C313 8F 0E 78 7E STA $7E780E[$7E:780E]  ; Mother Brain walk counter = [A]
 $A9:C317 A9 6A C2    LDA #$C26A             ;\
 $A9:C31A 8F 74 78 7E STA $7E7874[$7E:7874]  ;} Mother Brain walking function = $C26A
 $A9:C31E AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C321 1A          INC A                  ;} Mother Brain target X position = [Mother Brain's body X position] + 1 (gets ignored)
+$A9:C321 1A          INC A                  ;} Mother Brain target X position = [Mother Brain body X position] + 1 (gets ignored)
 $A9:C322 8F 76 78 7E STA $7E7876[$7E:7876]  ;/
 $A9:C326 60          RTS
 }
@@ -6413,7 +6413,7 @@ $A9:C382 8F 72 78 7E STA $7E7872[$7E:7872]  ; Decrement Mother Brain neck functi
 $A9:C386 60          RTS                    ; Return
 
 $A9:C387 A9 BB 9D    LDA #$9DBB             ;\
-$A9:C38A 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9DBB (attacking Samus - four blue rings - phase 3)
+$A9:C38A 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9DBB (attacking Samus - four blue rings - phase 3)
 $A9:C38D A9 30 C3    LDA #$C330             ;\
 $A9:C390 8F 70 78 7E STA $7E7870[$7E:7870]  ;} Mother Brain neck function = $C330
 $A9:C394 60          RTS
@@ -6427,9 +6427,9 @@ $A9:C395 A9 01 00    LDA #$0001             ;\
 $A9:C398 8F 62 80 7E STA $7E8062[$7E:8062]  ;} Enable Mother Brain neck movement
 $A9:C39C 8F 0C 78 7E STA $7E780C[$7E:780C]  ; Disable attacks
 $A9:C3A0 A9 E7 9B    LDA #$9BE7             ;\
-$A9:C3A3 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain's brain instruction list to $9BE7 (hyper beam recoil)
+$A9:C3A3 20 47 C4    JSR $C447  [$A9:C447]  ;} Set Mother Brain brain instruction list to $9BE7 (hyper beam recoil)
 $A9:C3A6 A9 32 00    LDA #$0032             ;\
-$A9:C3A9 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Mother Brain's brain main shake timer = 50
+$A9:C3A9 8F 40 78 7E STA $7E7840[$7E:7840]  ;} Mother Brain brain main shake timer = 50
 $A9:C3AD A9 00 09    LDA #$0900             ;\
 $A9:C3B0 8F 68 80 7E STA $7E8068[$7E:8068]  ;} Mother Brain neck angle delta = 900h
 $A9:C3B4 A9 08 00    LDA #$0008             ;\
@@ -6494,27 +6494,27 @@ $A9:C42C 6B          RTL
 }
 
 
-;;; $C42D: Set Mother Brain's body instruction list ;;;
+;;; $C42D: Set Mother Brain body instruction list ;;;
 {
-$A9:C42D 8D 92 0F    STA $0F92  [$7E:0F92]  ; Mother Brain's body instruction list pointer = [A]
+$A9:C42D 8D 92 0F    STA $0F92  [$7E:0F92]  ; Mother Brain body instruction list pointer = [A]
 $A9:C430 A9 01 00    LDA #$0001             ;\
-$A9:C433 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Mother Brain's body instruction timer = 1
-$A9:C436 9C 90 0F    STZ $0F90  [$7E:0F90]  ; Mother Brain's body timer = 0
+$A9:C433 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Mother Brain body instruction timer = 1
+$A9:C436 9C 90 0F    STZ $0F90  [$7E:0F90]  ; Mother Brain body timer = 0
 $A9:C439 60          RTS
 }
 
 
-;;; $C43A: Set Mother Brain's brain unused instruction list ;;;
+;;; $C43A: Set Mother Brain brain unused instruction list ;;;
 {
-$A9:C43A 8D D2 0F    STA $0FD2  [$7E:0FD2]  ; Mother Brain's brain instruction list pointer = [A]
+$A9:C43A 8D D2 0F    STA $0FD2  [$7E:0FD2]  ; Mother Brain brain instruction list pointer = [A]
 $A9:C43D A9 01 00    LDA #$0001             ;\
-$A9:C440 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Mother Brain's brain instruction timer = 1
-$A9:C443 9C D0 0F    STZ $0FD0  [$7E:0FD0]  ; Mother Brain's brain timer = 0
+$A9:C440 8D D4 0F    STA $0FD4  [$7E:0FD4]  ;} Mother Brain brain instruction timer = 1
+$A9:C443 9C D0 0F    STZ $0FD0  [$7E:0FD0]  ; Mother Brain brain timer = 0
 $A9:C446 60          RTS
 }
 
 
-;;; $C447: Set Mother Brain's brain instruction list ;;;
+;;; $C447: Set Mother Brain brain instruction list ;;;
 {
 $A9:C447 8F 02 80 7E STA $7E8002[$7E:8002]
 $A9:C44B A9 01 00    LDA #$0001
@@ -6818,14 +6818,14 @@ $A9:C600 60          RTS                    ;} Return carry set
 ;; Returns:
 ;;     Carry: Set if reached target, clear otherwise
 $A9:C601 CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;\
-$A9:C604 30 16       BMI $16    [$C61C]     ;} If [Mother Brain's body X position] > [A]: return carry set
+$A9:C604 30 16       BMI $16    [$C61C]     ;} If [Mother Brain body X position] > [A]: return carry set
 $A9:C606 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
 $A9:C60A D0 0E       BNE $0E    [$C61A]     ;} If [Mother Brain's pose] != standing: return return carry clear
 $A9:C60C AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C60F C9 80 00    CMP #$0080             ;} If [Mother Brain's body X position] >= 80h: return carry set
+$A9:C60F C9 80 00    CMP #$0080             ;} If [Mother Brain body X position] >= 80h: return carry set
 $A9:C612 10 08       BPL $08    [$C61C]     ;/
 $A9:C614 B9 1E C6    LDA $C61E,y[$A9:C628]  ;\
-$A9:C617 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to [$C61E + [Y]]
+$A9:C617 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to [$C61E + [Y]]
 
 $A9:C61A 18          CLC                    ;\
 $A9:C61B 60          RTS                    ;} Return carry clear
@@ -6846,14 +6846,14 @@ $A9:C61E             dw C61E,
 {
 ; Allows her to go back further than $C647 does
 $A9:C62A CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;\
-$A9:C62D 10 16       BPL $16    [$C645]     ;} If [Mother Brain's body X position] <= [A]: return carry set
+$A9:C62D 10 16       BPL $16    [$C645]     ;} If [Mother Brain body X position] <= [A]: return carry set
 $A9:C62F AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
 $A9:C633 D0 0E       BNE $0E    [$C643]     ;} If [Mother Brain's pose] != standing: return return carry clear
 $A9:C635 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C638 C9 10 00    CMP #$0010             ;} If [Mother Brain's body X position] < 10h: return carry set
+$A9:C638 C9 10 00    CMP #$0010             ;} If [Mother Brain body X position] < 10h: return carry set
 $A9:C63B 30 08       BMI $08    [$C645]     ;/
 $A9:C63D B9 64 C6    LDA $C664,y            ;\
-$A9:C640 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to [$C664 + [Y]]
+$A9:C640 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to [$C664 + [Y]]
 
 $A9:C643 18          CLC                    ;\
 $A9:C644 60          RTS                    ;} Return carry clear
@@ -6871,14 +6871,14 @@ $A9:C646 60          RTS
 ;; Returns:
 ;;     Carry: Set if reached target, clear otherwise
 $A9:C647 CD 7A 0F    CMP $0F7A  [$7E:0F7A]  ;\
-$A9:C64A 10 16       BPL $16    [$C662]     ;} If [Mother Brain's body X position] <= [A]: return carry set
+$A9:C64A 10 16       BPL $16    [$C662]     ;} If [Mother Brain body X position] <= [A]: return carry set
 $A9:C64C AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
 $A9:C650 D0 0E       BNE $0E    [$C660]     ;} If [Mother Brain's pose] != standing: return return carry clear
 $A9:C652 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C655 C9 30 00    CMP #$0030             ;} If [Mother Brain's body X position] < 30h: return carry set
+$A9:C655 C9 30 00    CMP #$0030             ;} If [Mother Brain body X position] < 30h: return carry set
 $A9:C658 30 08       BMI $08    [$C662]     ;/
 $A9:C65A B9 64 C6    LDA $C664,y[$A9:C666]  ;\
-$A9:C65D 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to [$C664 + [Y]]
+$A9:C65D 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to [$C664 + [Y]]
 
 $A9:C660 18          CLC                    ;\
 $A9:C661 60          RTS                    ;} Return carry clear
@@ -6909,7 +6909,7 @@ $A9:C681 D0 07       BNE $07    [$C68A]     ;} If [Mother Brain pose] != leaning
 $A9:C683 A0 E2 99    LDY #$99E2             ; Y = $99E2 (standing up after leaning down)
 
 $A9:C686 98          TYA                    ;\
-$A9:C687 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to [Y]
+$A9:C687 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to [Y]
 
 $A9:C68A 18          CLC                    ;\
 $A9:C68B 60          RTS                    ;} Return carry clear
@@ -6931,7 +6931,7 @@ $A9:C699 38          SEC                    ;\
 $A9:C69A 60          RTS                    ;} Return carry set
 
 $A9:C69B A9 0A 9A    LDA #$9A0A             ;\
-$A9:C69E 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to $9A0A (crouch - slow)
+$A9:C69E 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $9A0A (crouch - slow)
 
 $A9:C6A1 18          CLC
 $A9:C6A2 60          RTS
@@ -6950,7 +6950,7 @@ $A9:C6AE 38          SEC                    ;\
 $A9:C6AF 60          RTS                    ;} Return carry set
 
 $A9:C6B0 A9 F2 99    LDA #$99F2             ;\
-$A9:C6B3 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain's body instruction list to $99F2 (leaning down)
+$A9:C6B3 20 2D C4    JSR $C42D  [$A9:C42D]  ;} Set Mother Brain body instruction list to $99F2 (leaning down)
 
 $A9:C6B6 18          CLC
 $A9:C6B7 60          RTS
@@ -6975,23 +6975,23 @@ $A9:C6D0 90 2A       BCC $2A    [$C6FC]     ;} If [Mother Brain walk counter] < 
 $A9:C6D2 A9 80 00    LDA #$0080             ;\
 $A9:C6D5 8F 0E 78 7E STA $7E780E[$7E:780E]  ;} Mother Brain walk counter = 80h
 $A9:C6D9 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C6DC C9 80 00    CMP #$0080             ;} If [Mother Brain's body X position] >= 80h: return
+$A9:C6DC C9 80 00    CMP #$0080             ;} If [Mother Brain body X position] >= 80h: return
 $A9:C6DF 10 2E       BPL $2E    [$C70F]     ;/
 $A9:C6E1 A9 A4 97    LDA #$97A4             ;\
-$A9:C6E4 4C 2D C4    JMP $C42D  [$A9:C42D]  ;} Go to set Mother Brain's body instruction list to $97A4 (walking forwards - medium)
+$A9:C6E4 4C 2D C4    JMP $C42D  [$A9:C42D]  ;} Go to set Mother Brain body instruction list to $97A4 (walking forwards - medium)
 
 ; BRANCH_WALK_BACKWARDS
 $A9:C6E7 A9 01 00    LDA #$0001             ;\
 $A9:C6EA 8F 0E 78 7E STA $7E780E[$7E:780E]  ;} Mother Brain walk counter = 1
 $A9:C6EE AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C6F1 C9 30 00    CMP #$0030             ;} If [Mother Brain's body X position] < 30h: go to BRANCH_MAYBE_WALK_FORWARDS
+$A9:C6F1 C9 30 00    CMP #$0030             ;} If [Mother Brain body X position] < 30h: go to BRANCH_MAYBE_WALK_FORWARDS
 $A9:C6F4 30 0E       BMI $0E    [$C704]     ;/
 $A9:C6F6 A9 C6 98    LDA #$98C6             ;\
-$A9:C6F9 4C 2D C4    JMP $C42D  [$A9:C42D]  ;} Go to set Mother Brain's body instruction list to $98C6 (walking backwards - fast)
+$A9:C6F9 4C 2D C4    JMP $C42D  [$A9:C42D]  ;} Go to set Mother Brain body instruction list to $98C6 (walking backwards - fast)
 
 ; BRANCH_MAYBE_WALK_FORWARDS_IF_FAR_LEFT
 $A9:C6FC AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:C6FF C9 30 00    CMP #$0030             ;} If [Mother Brain's body X position] >= 30h: return
+$A9:C6FF C9 30 00    CMP #$0030             ;} If [Mother Brain body X position] >= 30h: return
 $A9:C702 10 0B       BPL $0B    [$C70F]     ;/
 
 ; BRANCH_MAYBE_WALK_FORWARDS
@@ -7111,7 +7111,7 @@ $A9:C7E9 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function timer = Ah
 }
 
 
-;;; $C7EC: Shitroid function - curve towards Mother Brain's brain ;;;
+;;; $C7EC: Shitroid function - curve towards Mother Brain brain ;;;
 {
 $A9:C7EC A9 80 FE    LDA #$FE80             ;\
 $A9:C7EF 85 12       STA $12    [$7E:0012]  ;} $12 = -180h (angle delta)
@@ -7145,7 +7145,7 @@ $A9:C823 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:C826 85 12       STA $12    [$7E:0012]  ;|
 $A9:C828 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;|
 $A9:C82B 85 14       STA $14    [$7E:0014]  ;|
-$A9:C82D A9 04 00    LDA #$0004             ;} Check for enemy collision with 8x8 px^2 region around Mother Brain's brain position
+$A9:C82D A9 04 00    LDA #$0004             ;} Check for enemy collision with 8x8 px^2 region around Mother Brain brain position
 $A9:C830 85 16       STA $16    [$7E:0016]  ;|
 $A9:C832 85 18       STA $18    [$7E:0018]  ;|
 $A9:C834 22 06 EF A9 JSL $A9EF06[$A9:EF06]  ;/
@@ -7166,10 +7166,10 @@ $A9:C850 60          RTS
 ;;; $C851: Shitroid function - latch onto Mother Brain ;;;
 {
 $A9:C851 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
-$A9:C854 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain's brain X position]
+$A9:C854 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain brain X position]
 $A9:C856 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:C859 18          CLC                    ;|
-$A9:C85A 69 E8 FF    ADC #$FFE8             ;} $14 = [Mother Brain's brain Y position] - 18h
+$A9:C85A 69 E8 FF    ADC #$FFE8             ;} $14 = [Mother Brain brain Y position] - 18h
 $A9:C85D 85 14       STA $14    [$7E:0014]  ;/
 $A9:C85F A0 00 00    LDY #$0000             ; Y = 0 (slowest acceleration)
 $A9:C862 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
@@ -7196,15 +7196,15 @@ $A9:C886 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $C889
 }
 
 
-;;; $C889: Shitroid function - activate rainbow beam and Mother Brain's body ;;;
+;;; $C889: Shitroid function - activate rainbow beam and Mother Brain body ;;;
 {
 $A9:C889 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $A9:C88C 18          CLC                    ;|
-$A9:C88D 69 00 00    ADC #$0000             ;} $12 = [Mother Brain's brain X position]
+$A9:C88D 69 00 00    ADC #$0000             ;} $12 = [Mother Brain brain X position]
 $A9:C890 85 12       STA $12    [$7E:0012]  ;/
 $A9:C892 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:C895 18          CLC                    ;|
-$A9:C896 69 E8 FF    ADC #$FFE8             ;} $14 = [Mother Brain's brain Y position] - 18h
+$A9:C896 69 E8 FF    ADC #$FFE8             ;} $14 = [Mother Brain brain Y position] - 18h
 $A9:C899 85 14       STA $14    [$7E:0014]  ;/
 $A9:C89B A9 00 02    LDA #$0200             ; A = 200h (acceleration)
 $A9:C89E 20 A6 F5    JSR $F5A6  [$A9:F5A6]  ; Accelerate Shitroid towards ([$12], [$14])
@@ -7214,10 +7214,10 @@ $A9:C8A3 60          RTS                    ; Return
 $A9:C8A4 9E AA 0F    STZ $0FAA,x[$7E:102A]  ; Enemy X velocity = 0
 $A9:C8A7 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy Y velocity = 0
 $A9:C8AA AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
-$A9:C8AD 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [Mother Brain's brain X position]
+$A9:C8AD 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [Mother Brain brain X position]
 $A9:C8B0 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:C8B3 18          CLC                    ;|
-$A9:C8B4 69 E8 FF    ADC #$FFE8             ;} Enemy Y position = [Mother Brain's brain Y position] - 18h
+$A9:C8B4 69 E8 FF    ADC #$FFE8             ;} Enemy Y position = [Mother Brain brain Y position] - 18h
 $A9:C8B7 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A9:C8BA A9 B8 CF    LDA #$CFB8             ;\
 $A9:C8BD 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $CFB8 (draining Mother Brain)
@@ -7226,7 +7226,7 @@ $A9:C8C4 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $C8E2
 $A9:C8C7 A9 01 00    LDA #$0001             ;\
 $A9:C8CA 9D B0 0F    STA $0FB0,x[$7E:1030]  ;} Enemy palette handler delay = 1
 $A9:C8CD A9 38 BE    LDA #$BE38             ;\
-$A9:C8D0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $BE38 (drained by Shitroid)
+$A9:C8D0 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $BE38 (drained by Shitroid)
 $A9:C8D3 A9 40 00    LDA #$0040             ;\
 $A9:C8D6 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 40h, sound library 1, max queued sounds allowed = 6 (Mother Brain's rainbow beam)
 $A9:C8DA A9 01 00    LDA #$0001             ;\
@@ -7242,12 +7242,12 @@ $A9:C8E5 29 06 00    AND #$0006             ;} Y = [enemy frame timer] & 6
 $A9:C8E8 A8          TAY                    ;/
 $A9:C8E9 B9 BB 93    LDA $93BB,y[$A9:93BB]  ;\
 $A9:C8EC 18          CLC                    ;|
-$A9:C8ED 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} Enemy X position = [Mother Brain's brain X position] + [$93BB + [Y]] (shake X offset)
+$A9:C8ED 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} Enemy X position = [Mother Brain brain X position] + [$93BB + [Y]] (shake X offset)
 $A9:C8F0 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
 $A9:C8F3 B9 C3 93    LDA $93C3,y[$A9:93C3]  ;\
 $A9:C8F6 18          CLC                    ;|
 $A9:C8F7 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;|
-$A9:C8FA 18          CLC                    ;} Enemy Y position = [Mother Brain's brain Y position] - 18h + [$93C3 + [Y]] (shake Y offset)
+$A9:C8FA 18          CLC                    ;} Enemy Y position = [Mother Brain brain Y position] - 18h + [$93C3 + [Y]] (shake Y offset)
 $A9:C8FB 69 E8 FF    ADC #$FFE8             ;|
 $A9:C8FE 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A9:C901 AF 3E 78 7E LDA $7E783E[$7E:783E]  ;\
@@ -7265,10 +7265,10 @@ $A9:C914 60          RTS
 ;;; $C915: Shitroid function - stop draining ;;;
 {
 $A9:C915 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
-$A9:C918 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [Mother Brain's brain X position]
+$A9:C918 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [Mother Brain brain X position]
 $A9:C91B AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $A9:C91E 18          CLC                    ;|
-$A9:C91F 69 E8 FF    ADC #$FFE8             ;} Enemy Y position = [Mother Brain's brain Y position] - 18h
+$A9:C91F 69 E8 FF    ADC #$FFE8             ;} Enemy Y position = [Mother Brain brain Y position] - 18h
 $A9:C922 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A9:C925 DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:C928 30 01       BMI $01    [$C92B]     ; If [enemy function timer] >= 0:
@@ -7292,7 +7292,7 @@ $A9:C94A 60          RTS
 {
 $A9:C94B DE B2 0F    DEC $0FB2,x[$7E:1032]  ; Decrement enemy function timer
 $A9:C94E 10 09       BPL $09    [$C959]     ; If [enemy function timer] < 0:
-$A9:C950 20 8C C9    JSR $C98C  [$A9:C98C]  ; Spawn three dust clouds on Mother Brain's brain
+$A9:C950 20 8C C9    JSR $C98C  [$A9:C98C]  ; Spawn three dust clouds on Mother Brain brain
 $A9:C953 A9 59 C9    LDA #$C959             ;\
 $A9:C956 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $C959
 }
@@ -7301,7 +7301,7 @@ $A9:C956 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $C959
 ;;; $C959: Shitroid function - move up to ceiling ;;;
 {
 $A9:C959 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
-$A9:C95C 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain's brain X position]
+$A9:C95C 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain brain X position]
 $A9:C95E A9 00 00    LDA #$0000             ;\
 $A9:C961 85 14       STA $14    [$7E:0014]  ;} $14 = 0
 $A9:C963 A0 00 00    LDY #$0000             ; Y = 0 (slowest acceleration)
@@ -7323,30 +7323,30 @@ $A9:C98B 60          RTS
 }
 
 
-;;; $C98C: Spawn three dust clouds on Mother Brain's brain ;;;
+;;; $C98C: Spawn three dust clouds on Mother Brain brain ;;;
 {
 $A9:C98C A9 F8 FF    LDA #$FFF8             ;\
 $A9:C98F 85 14       STA $14    [$7E:0014]  ;} $14 = -8
 $A9:C991 A9 F0 FF    LDA #$FFF0             ; A = -10h
-$A9:C994 20 AA C9    JSR $C9AA  [$A9:C9AA]  ; Spawn dust cloud at Mother Brain's brain position offset by ([A], [$14])
+$A9:C994 20 AA C9    JSR $C9AA  [$A9:C9AA]  ; Spawn dust cloud at Mother Brain brain position offset by ([A], [$14])
 $A9:C997 A9 F0 FF    LDA #$FFF0             ;\
 $A9:C99A 85 14       STA $14    [$7E:0014]  ;} $14 = -10h
 $A9:C99C A9 00 00    LDA #$0000             ; A = 0
-$A9:C99F 20 AA C9    JSR $C9AA  [$A9:C9AA]  ; Spawn dust cloud at Mother Brain's brain position offset by ([A], [$14])
+$A9:C99F 20 AA C9    JSR $C9AA  [$A9:C9AA]  ; Spawn dust cloud at Mother Brain brain position offset by ([A], [$14])
 $A9:C9A2 A9 F8 FF    LDA #$FFF8             ;\
 $A9:C9A5 85 14       STA $14    [$7E:0014]  ;} $14 = -8
 $A9:C9A7 A9 10 00    LDA #$0010             ; A = 10h
 }
 
 
-;;; $C9AA: Spawn dust cloud at Mother Brain's brain position offset by ([A], [$14]) ;;;
+;;; $C9AA: Spawn dust cloud at Mother Brain brain position offset by ([A], [$14]) ;;;
 {
 $A9:C9AA 18          CLC                    ;\
-$A9:C9AB 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} $12 = [Mother Brain's brain X position] + [A]
+$A9:C9AB 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} $12 = [Mother Brain brain X position] + [A]
 $A9:C9AE 85 12       STA $12    [$7E:0012]  ;/
 $A9:C9B0 A5 14       LDA $14    [$7E:0014]  ;\
 $A9:C9B2 18          CLC                    ;|
-$A9:C9B3 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} $14 += [Mother Brain's brain Y position]
+$A9:C9B3 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} $14 += [Mother Brain brain Y position]
 $A9:C9B6 85 14       STA $14    [$7E:0014]  ;/
 $A9:C9B8 A9 09 00    LDA #$0009             ; A = 9 (small dust cloud)
 $A9:C9BB A0 09 E5    LDY #$E509             ;\
@@ -7520,7 +7520,7 @@ $A9:CB1D 8F 56 78 7E STA $7E7856[$7E:7856]  ;} $7E:7856 = 1
 $A9:CB21 A9 2D CB    LDA #$CB2D             ;\
 $A9:CB24 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $CB2D
 $A9:CB27 A9 8E C1    LDA #$C18E             ;\
-$A9:CB2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C18E (prepare for final Shitroid attack)
+$A9:CB2A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C18E (prepare for final Shitroid attack)
 }
 
 
@@ -7588,7 +7588,7 @@ $A9:CB9C 9D 8C 0F    STA $0F8C,x[$7E:100C]  ;} Enemy health = 4Fh
 $A9:CB9F A9 00 00    LDA #$0000             ;\
 $A9:CBA2 8F 56 78 7E STA $7E7856[$7E:7856]  ;} $7E:7856 = 0
 $A9:CBA6 A9 9A C1    LDA #$C19A             ;\
-$A9:CBA9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C19A (execute final Shitroid attack)
+$A9:CBA9 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C19A (execute final Shitroid attack)
 $A9:CBAC A9 B3 CB    LDA #$CBB3             ;\
 $A9:CBAF 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $CBB3
 $A9:CBB2 60          RTS
@@ -7619,10 +7619,10 @@ $A9:CBD7 60          RTS
 ;;; $CBD8: Shitroid function - final charge ;;;
 {
 $A9:CBD8 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
-$A9:CBDB 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain's brain X position]
+$A9:CBDB 85 12       STA $12    [$7E:0012]  ;} $12 = [Mother Brain brain X position]
 $A9:CBDD A9 E0 FF    LDA #$FFE0             ;\
 $A9:CBE0 18          CLC                    ;|
-$A9:CBE1 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} $14 = [Mother Brain's brain Y position] - 20h
+$A9:CBE1 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} $14 = [Mother Brain brain Y position] - 20h
 $A9:CBE4 85 14       STA $14    [$7E:0014]  ;/
 $A9:CBE6 A0 0C 00    LDY #$000C             ; Y = Ch (very fast acceleration)
 $A9:CBE9 20 51 F4    JSR $F451  [$A9:F451]  ; Gradually accelerate towards point ([$12], [$14])
@@ -7642,7 +7642,7 @@ $A9:CC0D 22 53 C4 A9 JSL $A9C453[$A9:C453]  ;} Set enemy instruction list to $CF
 $A9:CC11 9E AA 0F    STZ $0FAA,x[$7E:102A]  ; Enemy X velocity = 0
 $A9:CC14 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy Y velocity = 0
 $A9:CC17 A9 8D C1    LDA #$C18D             ;\
-$A9:CC1A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = RTS
+$A9:CC1A 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = RTS
 $A9:CC1D A9 00 00    LDA #$0000             ;\
 $A9:CC20 22 C1 8F 80 JSL $808FC1[$80:8FC1]  ;} Queue music stop
 $A9:CC24 A9 3E CC    LDA #$CC3E             ;\
@@ -7761,7 +7761,7 @@ $A9:CCFB 22 4B F2 AD JSL $ADF24B[$AD:F24B]  ;} Transition lights back on for Mot
 $A9:CCFF FA          PLX                    ;/
 $A9:CD00 90 BD       BCC $BD    [$CCBF]     ; If not finished transition: return
 $A9:CD02 A9 CF C1    LDA #$C1CF             ;\
-$A9:CD05 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain's body function = $C1CF (third phase - recover from cutscene)
+$A9:CD05 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $C1CF (third phase - recover from cutscene)
 $A9:CD08 A9 17 00    LDA #$0017             ;\
 $A9:CD0B 22 84 F0 90 JSL $90F084[$90:F084]  ;} Run Samus command - disable rainbow Samus and stand her up
 $A9:CD0F A9 03 00    LDA #$0003             ;\
@@ -8391,8 +8391,8 @@ $A9:D1E3 60          RTS                    ;} Return carry clear
 ;;; $D1E4: Handle Mother Brain's palette ;;;
 {
 $A9:D1E4 AF 60 78 7E LDA $7E7860[$7E:7860]  ;\
-$A9:D1E8 F0 03       BEQ $03    [$D1ED]     ;} If Mother Brain's brain palette handling enabled:
-$A9:D1EA 20 06 D2    JSR $D206  [$A9:D206]  ; Handle Mother Brain's brain palette
+$A9:D1E8 F0 03       BEQ $03    [$D1ED]     ;} If Mother Brain brain palette handling enabled:
+$A9:D1EA 20 06 D2    JSR $D206  [$A9:D206]  ; Handle Mother Brain brain palette
 
 $A9:D1ED AF 62 78 7E LDA $7E7862[$7E:7862]  ;\
 $A9:D1F1 F0 04       BEQ $04    [$D1F7]     ;} If Mother Brain health-based palette handling enabled:
@@ -8402,36 +8402,36 @@ $A9:D1F7 60          RTS
 }
 
 
-;;; $D1F8: Set up Mother Brain's brain normal palette ;;;
+;;; $D1F8: Set up Mother Brain brain normal palette ;;;
 {
-; Mother Brain's brain palette timer reset value = Ah
-; Mother Brain's brain palette set = 0
+; Mother Brain brain palette timer reset value = Ah
+; Mother Brain brain palette set = 0
 $A9:D1F8 A9 0A 00    LDA #$000A
 $A9:D1FB 8D B0 0F    STA $0FB0  [$7E:0FB0]
 $A9:D1FE 60          RTS
 }
 
 
-;;; $D1FF: Set up Mother Brain's brain palette for charging her laser ;;;
+;;; $D1FF: Set up Mother Brain brain palette for charging her laser ;;;
 {
-; Mother Brain's brain palette timer reset value = 2
-; Mother Brain's brain palette set = 2
+; Mother Brain brain palette timer reset value = 2
+; Mother Brain brain palette set = 2
 $A9:D1FF A9 02 02    LDA #$0202
 $A9:D202 8D B0 0F    STA $0FB0  [$7E:0FB0]
 $A9:D205 60          RTS
 }
 
 
-;;; $D206: Handle Mother Brain's brain palette ;;;
+;;; $D206: Handle Mother Brain brain palette ;;;
 {
 $A9:D206 AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
 $A9:D20A 3A          DEC A                  ;} If [Mother Brain's form] = fake death: return
 $A9:D20B F0 0B       BEQ $0B    [$D218]     ;/
 $A9:D20D E2 20       SEP #$20
 $A9:D20F AD AF 0F    LDA $0FAF  [$7E:0FAF]  ;\
-$A9:D212 F0 07       BEQ $07    [$D21B]     ;} If [Mother Brain's brain palette timer] = 0: go to BRANCH_ZERO
+$A9:D212 F0 07       BEQ $07    [$D21B]     ;} If [Mother Brain brain palette timer] = 0: go to BRANCH_ZERO
 $A9:D214 3A          DEC A                  ;\
-$A9:D215 8D AF 0F    STA $0FAF  [$7E:0FAF]  ;} Decrement Mother Brain's brain palette timer
+$A9:D215 8D AF 0F    STA $0FAF  [$7E:0FAF]  ;} Decrement Mother Brain brain palette timer
 
 $A9:D218 C2 20       REP #$20
 $A9:D21A 60          RTS                    ; Return
@@ -8440,29 +8440,29 @@ $A9:D21A 60          RTS                    ; Return
 $A9:D21B EB          XBA                    ; >_<;
 $A9:D21C AD B1 0F    LDA $0FB1  [$7E:0FB1]  ;\
 $A9:D21F AA          TAX                    ;|
-$A9:D220 BC 60 D2    LDY $D260,x[$A9:D260]  ;} $12 = [$D260 + [Mother Brain's brain palette set]]
+$A9:D220 BC 60 D2    LDY $D260,x[$A9:D260]  ;} $12 = [$D260 + [Mother Brain brain palette set]]
 $A9:D223 84 12       STY $12    [$7E:0012]  ;/
 $A9:D225 AD B0 0F    LDA $0FB0  [$7E:0FB0]  ;\
-$A9:D228 8D AF 0F    STA $0FAF  [$7E:0FAF]  ;} Mother Brain's brain palette timer = [Mother Brain's brain palette timer reset value]
+$A9:D228 8D AF 0F    STA $0FAF  [$7E:0FAF]  ;} Mother Brain brain palette timer = [Mother Brain brain palette timer reset value]
 $A9:D22B AD AE 0F    LDA $0FAE  [$7E:0FAE]  ;\
-$A9:D22E D0 08       BNE $08    [$D238]     ;} If [Mother Brain's brain palette counter] = 0:
+$A9:D22E D0 08       BNE $08    [$D238]     ;} If [Mother Brain brain palette counter] = 0:
 $A9:D230 AC E8 0F    LDY $0FE8  [$7E:0FE8]  ;\
-$A9:D233 C0 A2 87    CPY #$87A2             ;} If [Mother Brain's brain function] != $87A2 (if neck is not being drawn): return
+$A9:D233 C0 A2 87    CPY #$87A2             ;} If [Mother Brain brain function] != $87A2 (if neck is not being drawn): return
 $A9:D236 D0 E0       BNE $E0    [$D218]     ;/
 
 $A9:D238 1A          INC A                  ;\
-$A9:D239 29 07       AND #$07               ;} Mother Brain's brain palette counter = ([Mother Brain's brain palette counter] + 1) % 8
+$A9:D239 29 07       AND #$07               ;} Mother Brain brain palette counter = ([Mother Brain brain palette counter] + 1) % 8
 $A9:D23B 8D AE 0F    STA $0FAE  [$7E:0FAE]  ;/
 $A9:D23E C2 20       REP #$20
 $A9:D240 29 FF 00    AND #$00FF             ;\
 $A9:D243 0A          ASL A                  ;|
 $A9:D244 0A          ASL A                  ;|
-$A9:D245 0A          ASL A                  ;} Y = [$12] + [Mother Brain's brain palette counter] * 8
+$A9:D245 0A          ASL A                  ;} Y = [$12] + [Mother Brain brain palette counter] * 8
 $A9:D246 65 12       ADC $12    [$7E:0012]  ;|
 $A9:D248 A8          TAY                    ;/
 $A9:D249 A2 22 01    LDX #$0122             ; X = 122h (sprite palette 1 colour 1)
 $A9:D24C AF 1A 78 7E LDA $7E781A[$7E:781A]  ;\
-$A9:D250 C9 00 02    CMP #$0200             ;} If [Mother Brain's brain palette index] != 200h:
+$A9:D250 C9 00 02    CMP #$0200             ;} If [Mother Brain brain palette index] != 200h:
 $A9:D253 F0 03       BEQ $03    [$D258]     ;/
 $A9:D255 A2 E2 01    LDX #$01E2             ; X = 1E2h (sprite palette 7 colour 1)
 
@@ -8529,9 +8529,9 @@ $A9:D307 6B          RTL
 
 ;;; $D308..EEBE: Dead monsters / corpse handling ;;;
 {
-;;; $D308..D7B5: Dead torizo ;;;
+;;; $D308..D7B5: Torizo corpse ;;;
 {
-;;; $D308: Initialisation AI - enemy $ED3F (dead torizo) ;;;
+;;; $D308: Initialisation AI - enemy $ED3F (torizo corpse) ;;;
 {
 $A9:D308 8B          PHB                    ;\
 $A9:D309 F4 7E 7E    PEA $7E7E              ;|
@@ -8546,58 +8546,58 @@ $A9:D318 CA          DEX                    ;|
 $A9:D319 10 F9       BPL $F9    [$D314]     ;|
 $A9:D31B AB          PLB                    ;/
 $A9:D31C A9 AD D3    LDA #$D3AD             ;\
-$A9:D31F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3AD (wait for Samus collision)
+$A9:D31F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Torizo corpse function = $D3AD (wait for Samus collision)
 $A9:D322 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:D325 09 00 A0    ORA #$A000             ;} Set dead torizo to process instructions and have solid hitbox
+$A9:D325 09 00 A0    ORA #$A000             ;} Set torizo corpse to process instructions and have solid hitbox
 $A9:D328 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D32B A9 DC D6    LDA #$D6DC             ;\
-$A9:D32E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Dead torizo instruction list pointer = $D6DC (dead torizo)
+$A9:D32E 8D 92 0F    STA $0F92  [$7E:0F92]  ;} Torizo corpse instruction list pointer = $D6DC (torizo corpse)
 $A9:D331 A9 01 00    LDA #$0001             ;\
-$A9:D334 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Dead torizo instruction list timer = 1
-$A9:D337 9C 90 0F    STZ $0F90  [$7E:0F90]  ; Dead torizo timer = 0
+$A9:D334 8D 94 0F    STA $0F94  [$7E:0F94]  ;} Torizo corpse instruction list timer = 1
+$A9:D337 9C 90 0F    STZ $0F90  [$7E:0F90]  ; Torizo corpse timer = 0
 $A9:D33A A9 00 02    LDA #$0200             ;\
-$A9:D33D 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Dead torizo palette index = 200h (palette 1)
-$A9:D340 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Dead torizo X velocity = 0
+$A9:D33D 8D 96 0F    STA $0F96  [$7E:0F96]  ;} Torizo corpse palette index = 200h (palette 1)
+$A9:D340 9C AA 0F    STZ $0FAA  [$7E:0FAA]  ; Torizo corpse X velocity = 0
 $A9:D343 A9 08 00    LDA #$0008             ;\
-$A9:D346 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Dead torizo Y velocity = 8
+$A9:D346 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;} Torizo corpse Y velocity = 8
 $A9:D349 A9 00 00    LDA #$0000             ;\
 $A9:D34C 8F 08 78 7E STA $7E7808[$7E:7808]  ;} Pre-rot delay timer = 0
 $A9:D350 A9 0F 00    LDA #$000F             ;\
 $A9:D353 8F 04 78 7E STA $7E7804[$7E:7804]  ;} Sand heap Y pixel row to copy = Fh
 $A9:D357 A9 00 00    LDA #$0000             ;\
 $A9:D35A 8F 06 78 7E STA $7E7806[$7E:7806]  ;} Sand heap formation timer = 0
-$A9:D35E A2 00 00    LDX #$0000             ; X = (dead torizo enemy index)
+$A9:D35E A2 00 00    LDX #$0000             ; X = (torizo corpse enemy index)
 $A9:D361 A0 58 DD    LDY #$DD58             ; Y = $DD58
-$A9:D364 20 5F DC    JSR $DC5F  [$A9:DC5F]  ; Initialise dead torizo corpse rotting
+$A9:D364 20 5F DC    JSR $DC5F  [$A9:DC5F]  ; Initialise torizo corpse corpse rotting
 $A9:D367 6B          RTL
 }
 
 
-;;; $D368: Main AI - enemy $ED3F (dead torizo) ;;;
+;;; $D368: Main AI - enemy $ED3F (torizo corpse) ;;;
 {
 $A9:D368 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:D36B 29 00 04    AND #$0400             ;} If dead torizo is tangible:
+$A9:D36B 29 00 04    AND #$0400             ;} If torizo corpse is tangible:
 $A9:D36E D0 14       BNE $14    [$D384]     ;/
-$A9:D370 20 43 D4    JSR $D443  [$A9:D443]  ; Dead torizo / Samus collision detection
+$A9:D370 20 43 D4    JSR $D443  [$A9:D443]  ; Torizo corpse / Samus collision detection
 $A9:D373 90 0F       BCC $0F    [$D384]     ; If collision:
 $A9:D375 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:D378 09 00 04    ORA #$0400             ;} Set dead torizo as intangible
+$A9:D378 09 00 04    ORA #$0400             ;} Set torizo corpse as intangible
 $A9:D37B 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D37E A9 E6 D3    LDA #$D3E6             ;\
-$A9:D381 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6 (rotting)
+$A9:D381 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Torizo corpse function = $D3E6 (rotting)
 
 $A9:D384 A9 00 A9    LDA #$A900             ;\
 $A9:D387 8D 8D 17    STA $178D  [$7E:178D]  ;|
 $A9:D38A A9 9A D3    LDA #$D39A             ;} Enemy graphics drawn hook = $A9:D39A
 $A9:D38D 8D 8C 17    STA $178C  [$7E:178C]  ;/
 $A9:D390 A2 00 00    LDX #$0000             ;\
-$A9:D393 FC A8 0F    JSR ($0FA8,x)[$A9:D3AD];} Execute [dead torizo function]
-$A9:D396 20 CF D4    JSR $D4CF  [$A9:D4CF]  ; Process dead torizo corpse rotting VRAM transfers
+$A9:D393 FC A8 0F    JSR ($0FA8,x)[$A9:D3AD];} Execute [torizo corpse function]
+$A9:D396 20 CF D4    JSR $D4CF  [$A9:D4CF]  ; Process torizo corpse corpse rotting VRAM transfers
 $A9:D399 6B          RTL
 }
 
 
-;;; $D39A: Enemy graphics drawn hook - dead torizo ;;;
+;;; $D39A: Enemy graphics drawn hook - torizo corpse ;;;
 {
 $A9:D39A 64 16       STZ $16    [$7E:0016]  ;\
 $A9:D39C A9 28 01    LDA #$0128             ;|
@@ -8610,25 +8610,25 @@ $A9:D3AC 6B          RTL
 }
 
 
-;;; $D3AD: Dead torizo function - wait for Samus collision ;;;
+;;; $D3AD: Torizo corpse function - wait for Samus collision ;;;
 {
 $A9:D3AD EC 2C 18    CPX $182C  [$7E:182C]  ;\
 $A9:D3B0 F0 0F       BEQ $0F    [$D3C1]     ;|
 $A9:D3B2 EC 2E 18    CPX $182E  [$7E:182E]  ;|
 $A9:D3B5 F0 0A       BEQ $0A    [$D3C1]     ;|
-$A9:D3B7 EC 30 18    CPX $1830  [$7E:1830]  ;} If Samus didn't collided with dead torizo (enemy index 0): return
+$A9:D3B7 EC 30 18    CPX $1830  [$7E:1830]  ;} If Samus didn't collided with torizo corpse (enemy index 0): return
 $A9:D3BA F0 05       BEQ $05    [$D3C1]     ;|
 $A9:D3BC EC 32 18    CPX $1832  [$7E:1832]  ;|
 $A9:D3BF D0 06       BNE $06    [$D3C7]     ;/
 
 $A9:D3C1 A9 C8 D3    LDA #$D3C8             ;\
-$A9:D3C4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3C8 (pre-rot delay)
+$A9:D3C4 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Torizo corpse function = $D3C8 (pre-rot delay)
 
 $A9:D3C7 60          RTS
 }
 
 
-;;; $D3C8: Dead torizo function - pre-rot delay ;;;
+;;; $D3C8: Torizo corpse function - pre-rot delay ;;;
 {
 $A9:D3C8 AF 08 78 7E LDA $7E7808[$7E:7808]  ;\
 $A9:D3CC 1A          INC A                  ;} Increment pre-rot delay timer
@@ -8641,11 +8641,11 @@ $A9:D3D7 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
 $A9:D3DA 09 00 04    ORA #$0400             ;} Set enemy as intangible
 $A9:D3DD 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D3E0 A9 E6 D3    LDA #$D3E6             ;\
-$A9:D3E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6 (rotting)
+$A9:D3E3 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Torizo corpse function = $D3E6 (rotting)
 }
 
 
-;;; $D3E6: Dead torizo function - rotting ;;;
+;;; $D3E6: Torizo corpse function - rotting ;;;
 {
 $A9:D3E6 AF 06 78 7E LDA $7E7806[$7E:7806]  ;\
 $A9:D3EA 1A          INC A                  ;} Increment sand heap formation timer
@@ -8663,48 +8663,48 @@ $A9:D409 8F 04 78 7E STA $7E7804[$7E:7804]  ;/
 
 $A9:D40D AD AC 0F    LDA $0FAC  [$7E:0FAC]  ;\
 $A9:D410 18          CLC                    ;|
-$A9:D411 69 01 00    ADC #$0001             ;} Dead torizo Y velocity += 1
+$A9:D411 69 01 00    ADC #$0001             ;} Torizo corpse Y velocity += 1
 $A9:D414 8D AC 0F    STA $0FAC  [$7E:0FAC]  ;/
 $A9:D417 A2 00 00    LDX #$0000
-$A9:D41A 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]  ; Move dead torizo according to dead torizo velocity
-$A9:D41E 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process dead torizo corpse rotting
+$A9:D41A 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]  ; Move torizo corpse according to torizo corpse velocity
+$A9:D41E 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process torizo corpse corpse rotting
 $A9:D421 B0 06       BCS $06    [$D429]     ; If finished rotting:
 $A9:D423 A9 C7 D3    LDA #$D3C7             ;\
-$A9:D426 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = RTS
+$A9:D426 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Torizo corpse function = RTS
 
 $A9:D429 60          RTS
 }
 
 
-;;; $D42A: Power bomb reaction - enemy $ED3F (dead torizo) ;;;
+;;; $D42A: Power bomb reaction - enemy $ED3F (torizo corpse) ;;;
 {
 $A9:D42A AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:D42D 29 00 04    AND #$0400             ;} If dead torizo is intangible:
+$A9:D42D 29 00 04    AND #$0400             ;} If torizo corpse is intangible:
 $A9:D430 F0 01       BEQ $01    [$D433]     ;/
 $A9:D432 6B          RTL                    ; Return
 }
 
 
-;;; $D433: Enemy touch / enemy shot - enemy $ED3F (dead torizo) ;;;
+;;; $D433: Enemy touch / enemy shot - enemy $ED3F (torizo corpse) ;;;
 {
 $A9:D433 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$A9:D436 09 00 04    ORA #$0400             ;} Set dead torizo as intangible
+$A9:D436 09 00 04    ORA #$0400             ;} Set torizo corpse as intangible
 $A9:D439 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $A9:D43C A9 E6 D3    LDA #$D3E6             ;\
-$A9:D43F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Dead torizo function = $D3E6 (rotting)
+$A9:D43F 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Torizo corpse function = $D3E6 (rotting)
 $A9:D442 6B          RTL
 }
 
 
-;;; $D443: Dead torizo / Samus collision detection ;;;
+;;; $D443: Torizo corpse / Samus collision detection ;;;
 {
 ;; Returns:
 ;;     Carry: Set if collision, otherwise clear
 $A9:D443 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
-$A9:D446 85 12       STA $12    [$7E:0012]  ;} $12 = [dead torizo X position]
+$A9:D446 85 12       STA $12    [$7E:0012]  ;} $12 = [torizo corpse X position]
 $A9:D448 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
-$A9:D44B 85 14       STA $14    [$7E:0014]  ;} $14 = [dead torizo Y position]
-$A9:D44D A2 7C D7    LDX #$D77C             ; X = $D77C (dead torizo hitbox definition)
+$A9:D44B 85 14       STA $14    [$7E:0014]  ;} $14 = [torizo corpse Y position]
+$A9:D44D A2 7C D7    LDX #$D77C             ; X = $D77C (torizo corpse hitbox definition)
 $A9:D450 BD 00 00    LDA $0000,x[$A9:D77C]  ;\
 $A9:D453 F0 5F       BEQ $5F    [$D4B4]     ;} If 7 = 0: return carry clear >_<;
 $A9:D455 85 16       STA $16    [$7E:0016]  ; $16 = 7 (number of hitbox entries)
@@ -8714,44 +8714,44 @@ $A9:D458 E8          INX                    ;} X += 2 (first hitbox entry)
 ; LOOP
 $A9:D459 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
 $A9:D45C 38          SEC                    ;|
-$A9:D45D E5 14       SBC $14    [$7E:0014]  ;} If [Samus Y position] < [dead torizo Y position]:
+$A9:D45D E5 14       SBC $14    [$7E:0014]  ;} If [Samus Y position] < [torizo corpse Y position]:
 $A9:D45F 10 0B       BPL $0B    [$D46C]     ;/
 $A9:D461 49 FF FF    EOR #$FFFF             ;\
-$A9:D464 1A          INC A                  ;} $18 = [dead torizo Y position] - [Samus Y position]
+$A9:D464 1A          INC A                  ;} $18 = [torizo corpse Y position] - [Samus Y position]
 $A9:D465 85 18       STA $18    [$7E:0018]  ;/
 $A9:D467 BD 02 00    LDA $0002,x[$A9:D780]  ; A = [[X] + 2] (top offset)
 $A9:D46A 80 05       BRA $05    [$D471]
-                                            ; Else ([Samus Y position] >= [dead torizo Y position]):
-$A9:D46C 85 18       STA $18    [$7E:0018]  ; $18 = [Samus Y position] - [dead torizo Y position]
+                                            ; Else ([Samus Y position] >= [torizo corpse Y position]):
+$A9:D46C 85 18       STA $18    [$7E:0018]  ; $18 = [Samus Y position] - [torizo corpse Y position]
 $A9:D46E BD 06 00    LDA $0006,x[$A9:D784]  ; A = [[X] + 6] (bottom offset)
 
 $A9:D471 10 04       BPL $04    [$D477]     ;\
 $A9:D473 49 FF FF    EOR #$FFFF             ;|
 $A9:D476 1A          INC A                  ;|
                                             ;|
-$A9:D477 18          CLC                    ;} If |[A]| + [Samus Y radius] < |[dead torizo Y position] - [Samus Y position]|: go to BRANCH_NEXT
+$A9:D477 18          CLC                    ;} If |[A]| + [Samus Y radius] < |[torizo corpse Y position] - [Samus Y position]|: go to BRANCH_NEXT
 $A9:D478 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
 $A9:D47B 38          SEC                    ;|
 $A9:D47C E5 18       SBC $18    [$7E:0018]  ;|
 $A9:D47E 30 27       BMI $27    [$D4A7]     ;/
 $A9:D480 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
 $A9:D483 38          SEC                    ;|
-$A9:D484 E5 12       SBC $12    [$7E:0012]  ;} If [Samus X position] < [dead torizo X position]:
+$A9:D484 E5 12       SBC $12    [$7E:0012]  ;} If [Samus X position] < [torizo corpse X position]:
 $A9:D486 10 0B       BPL $0B    [$D493]     ;/
 $A9:D488 49 FF FF    EOR #$FFFF             ;\
-$A9:D48B 1A          INC A                  ;} $18 = [dead torizo X position] - [Samus X position]
+$A9:D48B 1A          INC A                  ;} $18 = [torizo corpse X position] - [Samus X position]
 $A9:D48C 85 18       STA $18    [$7E:0018]  ;/
 $A9:D48E BD 00 00    LDA $0000,x            ; A = [[X]] (left offset)
 $A9:D491 80 05       BRA $05    [$D498]
-                                            ; Else ([Samus X position] >= [dead torizo X position]):
-$A9:D493 85 18       STA $18    [$7E:0018]  ; $18 = [Samus X position] - [dead torizo X position]
+                                            ; Else ([Samus X position] >= [torizo corpse X position]):
+$A9:D493 85 18       STA $18    [$7E:0018]  ; $18 = [Samus X position] - [torizo corpse X position]
 $A9:D495 BD 04 00    LDA $0004,x[$A9:D782]  ; A = [[X] + 4] (right offset)
 
 $A9:D498 10 04       BPL $04    [$D49E]     ;\
 $A9:D49A 49 FF FF    EOR #$FFFF             ;|
 $A9:D49D 1A          INC A                  ;|
                                             ;|
-$A9:D49E 18          CLC                    ;} If |[A]| + [Samus X radius] >= |[dead torizo X position] - [Samus X position]|: go to BRANCH_COLLISION
+$A9:D49E 18          CLC                    ;} If |[A]| + [Samus X radius] >= |[torizo corpse X position] - [Samus X position]|: go to BRANCH_COLLISION
 $A9:D49F 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;|
 $A9:D4A2 38          SEC                    ;|
 $A9:D4A3 E5 18       SBC $18    [$7E:0018]  ;|
@@ -8784,7 +8784,7 @@ $A9:D4CE 60          RTS                    ;} Return carry set
 }
 
 
-;;; $D4CF: Process dead torizo corpse rotting VRAM transfers ;;;
+;;; $D4CF: Process torizo corpse corpse rotting VRAM transfers ;;;
 {
 $A9:D4CF AF 00 78 7E LDA $7E7800[$7E:7800]  ;\
 $A9:D4D3 1A          INC A                  ;} Increment $7E:7800
@@ -8870,7 +8870,7 @@ $A9:D583             dw 0100,7E00,27C0,7680,
 }
 
 
-;;; $D5BD: Corpse rotting rot entry finished hook - dead torizo ;;;
+;;; $D5BD: Corpse rotting rot entry finished hook - torizo corpse ;;;
 {
 $A9:D5BD DA          PHX
 $A9:D5BE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -8968,22 +8968,22 @@ $A9:D69C             dw 0000, 0002, 0004, 0006, 0008, 000A, 000C, 000E, 0200, 02
 }
 
 
-;;; $D6BC: Palette - enemy $ED3F (dead torizo) ;;;
+;;; $D6BC: Palette - enemy $ED3F (torizo corpse) ;;;
 {
 $A9:D6BC             dw 3800, 4F38, 3A52, 0CA5, 0042, 42D5, 2DEF, 218B, 1528, 4F38, 42B4, 3631, 29CD, 1949, 0CC6, 0042
 }
 
 
-;;; $D6DC: Instruction list - dead torizo ;;;
+;;; $D6DC: Instruction list - torizo corpse ;;;
 {
 $A9:D6DC             dx 0001,D6E2,
                         812F        ; Sleep
 }
 
 
-;;; $D6E2: Dead torizo spritemaps ;;;
+;;; $D6E2: Torizo corpse spritemaps ;;;
 {
-; Dead torizo
+; Torizo corpse
 $A9:D6E2             dx 0019, 01E8,14,2397, C218,CC,230D, C208,CC,230B, C3F8,CC,2309, C220,DC,232E, C210,DC,232C, C200,DC,232A, C3F0,DC,2328, C220,EC,234E, C210,EC,234C, C200,EC,234A, C3F0,EC,2348, C220,FC,236E, C210,FC,236C, C200,FC,236A, C3F0,FC,2368, C220,0C,238E, C210,0C,238C, C200,0C,238A, C3F0,0C,2388, C220,1C,23AE, C210,1C,23AC, C200,1C,23AA, C3F0,1C,23A8, C3E0,1C,23A6
 
 ; Sand heap
@@ -8991,7 +8991,7 @@ $A9:D761             dx 0005, 0018,FE,2318, C208,F6,2306, C3F8,F6,2304, C3E8,F6,
 }
 
 
-;;; $D77C: Dead torizo hitbox definition ;;;
+;;; $D77C: Torizo corpse hitbox definition ;;;
 {
 ; [word] Number of entries
 ; [entries]
@@ -9016,7 +9016,7 @@ $A9:D77C             dw 0007,
 
 ;;; $D7B6..DB11: Dead monsters AI ;;;
 {
-;;; $D7B6: Initialisation AI - enemy $ED7F/$EDBF (dead sidehopper) ;;;
+;;; $D7B6: Initialisation AI - enemy $ED7F/$EDBF (sidehopper corpse) ;;;
 {
 $A9:D7B6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D7B9 BD B4 0F    LDA $0FB4,x[$7E:0FF4]  ;\
@@ -9027,7 +9027,7 @@ $A9:D7C0             dw D7C4, D825
 }
 
 
-;;; $D7C4: Dead sidehopper initialisation - enemy parameter 1 = 0 (initially alive) ;;;
+;;; $D7C4: Sidehopper corpse initialisation - enemy parameter 1 = 0 (initially alive) ;;;
 {
 ; Palette 1 is loaded by Shitroid from $F8C6
 $A9:D7C4 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -9066,7 +9066,7 @@ $A9:D824 6B          RTL
 }
 
 
-;;; $D825: Dead sidehopper initialisation - enemy parameter 1 = 2 (initially dead) ;;;
+;;; $D825: Sidehopper corpse initialisation - enemy parameter 1 = 2 (initially dead) ;;;
 {
 ; Palette 7 is loaded by Shitroid from $F8A6
 $A9:D825 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -9084,7 +9084,7 @@ $A9:D848 6B          RTL
 }
 
 
-;;; $D849: Initialisation AI - enemy $EDFF (dead zoomer) ;;;
+;;; $D849: Initialisation AI - enemy $EDFF (zoomer corpse) ;;;
 {
 $A9:D849 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D84C A9 00 0E    LDA #$0E00             ;\
@@ -9107,7 +9107,7 @@ $A9:D870             dw DD88, DD98, DDA8
 }
 
 
-;;; $D876: Initialisation AI - enemy $EE3F (dead ripper) ;;;
+;;; $D876: Initialisation AI - enemy $EE3F (ripper corpse) ;;;
 {
 $A9:D876 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D879 A9 00 0E    LDA #$0E00             ;\
@@ -9130,7 +9130,7 @@ $A9:D89B             dw DDB8, DDC8
 }
 
 
-;;; $D89F: Initialisation AI - enemy $EE7F (dead skree) ;;;
+;;; $D89F: Initialisation AI - enemy $EE7F (skree corpse) ;;;
 {
 $A9:D89F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D8A2 A9 00 0E    LDA #$0E00             ;\
@@ -9153,13 +9153,13 @@ $A9:D8C6             dw DDD8, DDE8, DDF8
 }
 
 
-;;; $D8CC: Power bomb reaction - enemy $ED7F (dead sidehopper) ;;;
+;;; $D8CC: Power bomb reaction - enemy $ED7F (sidehopper corpse) ;;;
 {
 $A9:D8CC AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:D8CF BF 10 78 7E LDA $7E7810,x          ;\
 $A9:D8D3 C9 08 00    CMP #$0008             ;} If [enemy drained palette index] >= 8:
 $A9:D8D6 90 03       BCC $03    [$D8DB]     ;/
-$A9:D8D8 4C 1D DD    JMP $DD1D  [$A9:DD1D]  ; Go to enemy shot - dead sidehopper
+$A9:D8D8 4C 1D DD    JMP $DD1D  [$A9:DD1D]  ; Go to enemy shot - sidehopper corpse
 }
 
 
@@ -9171,7 +9171,7 @@ $A9:D8E1 6B          RTL
 }
 
 
-;;; $D8E2: Dead sidehopper function - alive - waiting for activation ;;;
+;;; $D8E2: Sidehopper corpse function - alive - waiting for activation ;;;
 {
 $A9:D8E2 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $A9:D8E5 C9 01 02    CMP #$0201             ;} If [layer 1 X position] <= 200h:
@@ -9183,9 +9183,9 @@ $A9:D8EE 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D8F1 (hopping)
 }
 
 
-;;; $D8F1: Dead sidehopper function - hopping ;;;
+;;; $D8F1: Sidehopper corpse function - hopping ;;;
 {
-$A9:D8F1 20 61 D9    JSR $D961  [$A9:D961]  ; Dead sidehopper movement
+$A9:D8F1 20 61 D9    JSR $D961  [$A9:D961]  ; Sidehopper corpse movement
 $A9:D8F4 90 19       BCC $19    [$D90F]     ; If collision:
 $A9:D8F6 BF 0C 78 7E LDA $7E780C,x[$7E:784C];\
 $A9:D8FA 1A          INC A                  ;|
@@ -9200,7 +9200,7 @@ $A9:D90F 60          RTS
 }
 
 
-;;; $D910: Dead sidehopper function - start idling ;;;
+;;; $D910: Sidehopper corpse function - start idling ;;;
 {
 $A9:D910 A9 1D D9    LDA #$D91D             ;\
 $A9:D913 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $D91D (idling)
@@ -9210,7 +9210,7 @@ $A9:D91C 60          RTS
 }
 
 
-;;; $D91D: Dead sidehopper function - idling ;;;
+;;; $D91D: Sidehopper corpse function - idling ;;;
 {
 $A9:D91D DE B2 0F    DEC $0FB2,x[$7E:0FF2]  ; Decrement enemy function timer
 $A9:D920 10 2E       BPL $2E    [$D950]     ; If [enemy function timer] >= 0: return
@@ -9240,12 +9240,12 @@ $A9:D959             dw 01C0, 0120, 0120, 0300 ; X velocity
 }
 
 
-;;; $D961: Dead sidehopper movement ;;;
+;;; $D961: Sidehopper corpse movement ;;;
 {
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 $A9:D961 BF 14 78 7E LDA $7E7814,x[$7E:7854]; A = [enemy X velocity]
-$A9:D965 20 C7 D9    JSR $D9C7  [$A9:D9C7]  ; Dead sidehopper horizontal movement
+$A9:D965 20 C7 D9    JSR $D9C7  [$A9:D9C7]  ; Sidehopper corpse horizontal movement
 $A9:D968 A0 20 00    LDY #$0020             ; Y = 20h
 $A9:D96B BF 16 78 7E LDA $7E7816,x[$7E:7856];\
 $A9:D96F 30 03       BMI $03    [$D974]     ;} If [enemy Y velocity] >= 0:
@@ -9296,7 +9296,7 @@ $A9:D9C6 60          RTS                    ;} Return carry clear
 }
 
 
-;;; $D9C7: Dead sidehopper horizontal movement ;;;
+;;; $D9C7: Sidehopper corpse horizontal movement ;;;
 {
 ;; Parameters:
 ;;     A: Distance to move (signed)
@@ -9335,7 +9335,7 @@ $A9:DA07 60          RTS
 }
 
 
-;;; $DA08: Dead sidehopper function - being drained ;;;
+;;; $DA08: Sidehopper corpse function - being drained ;;;
 {
 $A9:DA08 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
 $A9:DA0C 1A          INC A                  ;} Increment enemy drained palette timer
@@ -9382,28 +9382,28 @@ $A9:DA63 60          RTS
 }
 
 
-;;; $DA64: Dead sidehopper function - dead - wait for Samus collision ;;;
+;;; $DA64: Sidehopper corpse function - dead - wait for Samus collision ;;;
 {
 $A9:DA64 A0 8F DA    LDY #$DA8F             ; Y = $DA8F (pre-rot delay)
 $A9:DA67 80 0D       BRA $0D    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
 
 
-;;; $DA69: Dead zoomer function - wait for Samus collision ;;;
+;;; $DA69: Zoomer corpse function - wait for Samus collision ;;;
 {
 $A9:DA69 A0 94 DA    LDY #$DA94             ; Y = $DA94 (pre-rot delay)
 $A9:DA6C 80 08       BRA $08    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
 
 
-;;; $DA6E: Dead skree function - wait for Samus collision ;;;
+;;; $DA6E: Skree corpse function - wait for Samus collision ;;;
 {
 $A9:DA6E A0 9E DA    LDY #$DA9E             ; Y = $DA9E (pre-rot delay)
 $A9:DA71 80 03       BRA $03    [$DA76]     ; Go to dead enemies shared AI - wait for Samus collision
 }
 
 
-;;; $DA73: Dead ripper function - wait for Samus collision ;;;
+;;; $DA73: Ripper corpse function - wait for Samus collision ;;;
 {
 $A9:DA73 A0 99 DA    LDY #$DA99             ; Y = $DA99 (pre-rot delay)
 }
@@ -9428,7 +9428,7 @@ $A9:DA8E 60          RTS
 }
 
 
-;;; $DA8F: Dead sidehopper function - pre-rot delay ;;;
+;;; $DA8F: Sidehopper corpse function - pre-rot delay ;;;
 {
 $A9:DA8F A0 BA DA    LDY #$DABA             ; Y = $DABA (rotting)
 $A9:DA92 80 0D       BRA $0D    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
@@ -9436,21 +9436,21 @@ $A9:DA92 80 0D       BRA $0D    [$DAA1]     ; Go to dead enemies shared AI - pre
 }
 
 
-;;; $DA94: Dead zoomer function - pre-rot delay ;;;
+;;; $DA94: Zoomer corpse function - pre-rot delay ;;;
 {
 $A9:DA94 A0 D0 DA    LDY #$DAD0             ; Y = $DAD0 (rotting)
 $A9:DA97 80 08       BRA $08    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
 }
 
 
-;;; $DA99: Dead ripper function - pre-rot delay ;;;
+;;; $DA99: Ripper corpse function - pre-rot delay ;;;
 {
 $A9:DA99 A0 E6 DA    LDY #$DAE6             ; Y = $DAE6 (rotting)
 $A9:DA9C 80 03       BRA $03    [$DAA1]     ; Go to dead enemies shared AI - pre-rot delay
 }
 
 
-;;; $DA9E: Dead skree function - pre-rot delay ;;;
+;;; $DA9E: Skree corpse function - pre-rot delay ;;;
 {
 $A9:DA9E A0 FC DA    LDY #$DAFC             ; Y = $DAFC (rotting)
 }
@@ -9474,7 +9474,7 @@ $A9:DAB9 60          RTS
 }
 
 
-;;; $DABA: Dead sidehopper function - rotting ;;;
+;;; $DABA: Sidehopper corpse function - rotting ;;;
 {
 ; The LDA at $DAC2 looks like it was supposed to be for $DA63 (RTS), but since the sidehopper is intangible at this point, it doesn't really matter
 
@@ -9482,7 +9482,7 @@ $A9:DABA 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
 $A9:DABD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DAC0 B0 06       BCS $06    [$DAC8]     ; If finished rotting:
 $A9:DAC2 A9 64 DA    LDA #$DA64             ;\
-$A9:DAC5 9D A8 0F    STA $0FA8,x            ;} Enemy function = dead sidehopper function - dead - wait for Samus collision
+$A9:DAC5 9D A8 0F    STA $0FA8,x            ;} Enemy function = sidehopper corpse function - dead - wait for Samus collision
 
 $A9:DAC8 BF 26 88 7E LDA $7E8826,x          ;\
 $A9:DACC AA          TAX                    ;} Go to process enemy corpse rotting VRAM transfers
@@ -9490,7 +9490,7 @@ $A9:DACD 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 }
 
 
-;;; $DAD0: Dead zoomer function - rotting ;;;
+;;; $DAD0: Zoomer corpse function - rotting ;;;
 {
 $A9:DAD0 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
 $A9:DAD3 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -9504,7 +9504,7 @@ $A9:DAE3 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 }
 
 
-;;; $DAE6: Dead ripper function - rotting ;;;
+;;; $DAE6: Ripper corpse function - rotting ;;;
 {
 $A9:DAE6 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
 $A9:DAE9 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -9518,7 +9518,7 @@ $A9:DAF9 4C B9 DC    JMP $DCB9  [$A9:DCB9]  ;/
 }
 
 
-;;; $DAFC: Dead skree function - rotting ;;;
+;;; $DAFC: Skree corpse function - rotting ;;;
 {
 $A9:DAFC 20 12 DB    JSR $DB12  [$A9:DB12]  ; Process corpse rotting
 $A9:DAFF AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -9863,7 +9863,7 @@ $A9:DCEC 60          RTS
 
 ;;; $DCED..DD57: Dead monster contact reactions ;;;
 {
-;;; $DCED: Power bomb reaction - enemy $EDFF (dead zoomer) ;;;
+;;; $DCED: Power bomb reaction - enemy $EDFF (zoomer corpse) ;;;
 {
 $A9:DCED AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DCF0 BD 86 0F    LDA $0F86,x            ;\
@@ -9872,14 +9872,14 @@ $A9:DCF6 D0 4B       BNE $4B    [$DD43]     ;/
 }
 
 
-;;; $DCF8: Enemy touch / enemy shot - enemy $EDFF (dead zoomer) ;;;
+;;; $DCF8: Enemy touch / enemy shot - enemy $EDFF (zoomer corpse) ;;;
 {
 $A9:DCF8 A9 D0 DA    LDA #$DAD0             ; Enemy function = $DAD0 (rotting)
 $A9:DCFB 80 37       BRA $37    [$DD34]     ; Dead enemies shared contact reaction
 }
 
 
-;;; $DCFD: Power bomb reaction - enemy $EE3F (dead ripper) ;;;
+;;; $DCFD: Power bomb reaction - enemy $EE3F (ripper corpse) ;;;
 {
 $A9:DCFD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD00 BD 86 0F    LDA $0F86,x            ;\
@@ -9888,14 +9888,14 @@ $A9:DD06 D0 3B       BNE $3B    [$DD43]     ;/
 }
 
 
-;;; $DD08: Enemy touch / enemy shot - enemy $EE3F (dead ripper) ;;;
+;;; $DD08: Enemy touch / enemy shot - enemy $EE3F (ripper corpse) ;;;
 {
 $A9:DD08 A9 E6 DA    LDA #$DAE6             ; Enemy function = $DAE6 (rotting)
 $A9:DD0B 80 27       BRA $27    [$DD34]     ; Dead enemies shared contact reaction
 }
 
 
-;;; $DD0D: Power bomb reaction - enemy $EE7F (dead skree) ;;;
+;;; $DD0D: Power bomb reaction - enemy $EE7F (skree corpse) ;;;
 {
 $A9:DD0D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD10 BD 86 0F    LDA $0F86,x            ;\
@@ -9904,16 +9904,16 @@ $A9:DD16 D0 2B       BNE $2B    [$DD43]     ;/
 }
 
 
-;;; $DD18: Enemy touch / enemy shot - enemy $EE7F (dead skree) ;;;
+;;; $DD18: Enemy touch / enemy shot - enemy $EE7F (skree corpse) ;;;
 {
 $A9:DD18 A9 FC DA    LDA #$DAFC             ; Enemy function = $DAFC (rotting)
 $A9:DD1B 80 17       BRA $17    [$DD34]     ; Dead enemies shared contact reaction
 }
 
 
-;;; $DD1D: Enemy shot - enemy $ED7F (dead sidehopper) ;;;
+;;; $DD1D: Enemy shot - enemy $ED7F (sidehopper corpse) ;;;
 {
-; Also power bomb reaction / enemy touch / enemy shot - enemy $EDBF (dead sidehopper, part 2)
+; Also power bomb reaction / enemy touch / enemy shot - enemy $EDBF (sidehopper corpse, part 2)
 $A9:DD1D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD20 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
 $A9:DD23 29 00 04    AND #$0400             ;} If enemy is intangible: return
@@ -9924,7 +9924,7 @@ $A9:DD2F 90 12       BCC $12    [$DD43]     ;/
 }
 
 
-;;; $DD31: Dead sidehopper contact reaction - rottable ;;;
+;;; $DD31: Sidehopper corpse contact reaction - rottable ;;;
 {
 $A9:DD31 A9 BA DA    LDA #$DABA             ; Enemy function = $DABA (rotting)
 }
@@ -9944,11 +9944,11 @@ $A9:DD43 6B          RTL
 }
 
 
-;;; $DD44: Enemy touch - enemy $ED7F (dead sidehopper) ;;;
+;;; $DD44: Enemy touch - enemy $ED7F (sidehopper corpse) ;;;
 {
 $A9:DD44 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD47 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
-$A9:DD4B C9 08 00    CMP #$0008             ;} If [enemy drained palette index] >= 8: go to dead sidehopper contact reaction - rottable
+$A9:DD4B C9 08 00    CMP #$0008             ;} If [enemy drained palette index] >= 8: go to sidehopper corpse contact reaction - rottable
 $A9:DD4E B0 E1       BCS $E1    [$DD31]     ;/
 $A9:DD50 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A9:DD53 22 97 A4 A0 JSL $A0A497[$A0:A497]  ; Normal enemy touch AI - no death check
@@ -12082,7 +12082,7 @@ $A9:EBAC             dw 3800, 4EDA, 3A35, 2990, 14EB, 77E9, 5706, 3A44, 1D62, 2F
 }
 
 
-;;; $EBCC: Palettes - dead sidehopper being drained ;;;
+;;; $EBCC: Palettes - sidehopper corpse being drained ;;;
 {
 $A9:EBCC             dw 3800,7FFF,56E0,3180,18C0,6BC0,5EC0,4A20,35A0,7FFF,039C,0237,00D1,03FF,0237,00D1
 $A9:EBEC             dw 3800,77DF,52C5,2962,14A1,67A5,56A4,4203,3182,77FF,0F7B,01F4,00CF,037B,01F3,00AF
@@ -12096,7 +12096,7 @@ $A9:EC8C             dw 3800,57FF,42F7,0929,00A5,7FFF,4231,0043,4B3F,42DB,3678,2
 
 ;;; $ECAC..ED24: Dead monster instruction lists ;;;
 {
-;;; $ECAC: Instruction list - dead sidehopper - alive - hopping ;;;
+;;; $ECAC: Instruction list - sidehopper corpse - alive - hopping ;;;
 {
 $A9:ECAC             dx 0002,EE3C,
                         0004,EE61,
@@ -12126,77 +12126,77 @@ $A9:ECE2 6B          RTL
 }
 
 
-;;; $ECE3: Instruction list - dead sidehopper - alive - idle ;;;
+;;; $ECE3: Instruction list - sidehopper corpse - alive - idle ;;;
 {
 $A9:ECE3             dx 0001,EE86,
                         812F        ; Sleep
 }
 
 
-;;; $ECE9: Instruction list - dead sidehopper - alive - corpse ;;;
+;;; $ECE9: Instruction list - sidehopper corpse - alive - corpse ;;;
 {
 $A9:ECE9             dx 0001,ED25,
                         812F        ; Sleep
 }
 
 
-;;; $ECEF: Instruction list - dead sidehopper - dead ;;;
+;;; $ECEF: Instruction list - sidehopper corpse - dead ;;;
 {
 $A9:ECEF             dx 0001,ED4F,
                         812F        ; Sleep
 }
 
 
-;;; $ECF5: Instruction list - dead zoomer - enemy parameter 1 = 0 ;;;
+;;; $ECF5: Instruction list - zoomer corpse - enemy parameter 1 = 0 ;;;
 {
 $A9:ECF5             dx 0001,ED79,
                         812F        ; Sleep
 }
 
 
-;;; $ECFB: Instruction list - dead zoomer - enemy parameter 1 = 2 ;;;
+;;; $ECFB: Instruction list - zoomer corpse - enemy parameter 1 = 2 ;;;
 {
 $A9:ECFB             dx 0001,ED85,
                         812F        ; Sleep
 }
 
 
-;;; $ED01: Instruction list - dead zoomer - enemy parameter 1 = 4 ;;;
+;;; $ED01: Instruction list - zoomer corpse - enemy parameter 1 = 4 ;;;
 {
 $A9:ED01             dx 0001,ED91,
                         812F        ; Sleep
 }
 
 
-;;; $ED07: Instruction list - dead ripper - enemy parameter 1 = 0 ;;;
+;;; $ED07: Instruction list - ripper corpse - enemy parameter 1 = 0 ;;;
 {
 $A9:ED07             dx 0001,ED9D,
                         812F        ; Sleep
 }
 
 
-;;; $ED0D: Instruction list - dead ripper - enemy parameter 1 = 2 ;;;
+;;; $ED0D: Instruction list - ripper corpse - enemy parameter 1 = 2 ;;;
 {
 $A9:ED0D             dx 0001,EDA9,
                         812F        ; Sleep
 }
 
 
-;;; $ED13: Instruction list - dead skree - enemy parameter 1 = 0 ;;;
+;;; $ED13: Instruction list - skree corpse - enemy parameter 1 = 0 ;;;
 {
 $A9:ED13             dx 0001,EDB5,
                         812F        ; Sleep
 }
 
 
-;;; $ED19: Instruction list - dead skree - enemy parameter 1 = 2 ;;;
+;;; $ED19: Instruction list - skree corpse - enemy parameter 1 = 2 ;;;
 {
 $A9:ED19             dx 0001,EDCB,
                         812F        ; Sleep
 }
 
 
-;;; $ED1F: Instruction list - dead skree - enemy parameter 1 = 4 ;;;
+;;; $ED1F: Instruction list - skree corpse - enemy parameter 1 = 4 ;;;
 {
 $A9:ED1F             dx 0001,EDE1,
                         812F        ; Sleep
@@ -12206,20 +12206,20 @@ $A9:ED1F             dx 0001,EDE1,
 
 ;;; $ED25: Dead monster spritemaps ;;;
 {
-; Dead sidehopper - corpse
+; Sidehopper corpse - corpse
 $A9:ED25             dx 0008, C20C,02,6130, C20C,F2,6110, C3FC,FA,2123, C3FC,EA,2103, C3F4,FA,2122, C3F4,EA,2102, C3E4,02,2130, C3E4,F2,2110
 $A9:ED4F             dx 0008, C20C,FE,6129, C20C,EE,6109, C3F4,06,213B, C3F4,F6,211B, C3FC,06,213C, C3FC,F6,211C, C3E4,FE,2129, C3E4,EE,2109
 
-; Dead zoomer
+; Zoomer corpse
 $A9:ED79             dx 0002, C3FC,F8,2154, C3F4,F8,2153
 $A9:ED85             dx 0002, C3FC,F8,2157, C3F4,F8,2156
 $A9:ED91             dx 0002, C3FC,F8,215A, C3F4,F8,2159
 
-; Dead ripper
+; Ripper corpse
 $A9:ED9D             dx 0002, C3FC,F8,2151, C3F4,F8,2150
 $A9:EDA9             dx 0002, C3FC,F8,215D, C3F4,F8,215C
 
-; Dead skree
+; Skree corpse
 $A9:EDB5             dx 0004, C3FC,04,7135, C3FC,F4,7115, C3F4,04,3135, C3F4,F4,3115
 $A9:EDCB             dx 0004, C3FC,04,7127, C3FC,F4,7107, C3F4,04,3127, C3F4,F4,3107
 $A9:EDE1             dx 0004, C3FC,04,712E, C3FC,F4,710E, C3F4,04,312E, C3F4,F4,310E
@@ -12228,7 +12228,7 @@ $A9:EDE1             dx 0004, C3FC,04,712E, C3FC,F4,710E, C3F4,04,312E, C3F4,F4,
 $A9:EDF7             dx 000A, 000C,FC,2F0C, 0014,FC,2F0D, 0004,FC,2F0B, 01F4,FC,2F0D, 01EC,FC,2F0C, 01E4,FC,2F0B, 0008,FC,2F06, 0000,FC,2F05, 01F8,FC,2F01, 01F0,FC,2F00
 $A9:EE2B             dx 0003, 0004,FA,2F0D, 01FC,FA,2F0C, 01F4,FA,2F0B
 
-; Dead sidehopper - alive
+; Sidehopper corpse - alive
 $A9:EE3C             dx 0007, 0000,EC,2171, 01F8,EC,2170, C20C,04,6176, C3E4,04,2176, C208,F4,6174, C3E8,F4,2174, C3F8,F4,2180
 $A9:EE61             dx 0007, C3F8,F6,2182, C20D,04,617A, C3E3,04,217A, C208,F4,6178, C3E8,F4,2178, 0000,EE,2171, 01F8,EE,2170
 $A9:EE86             dx 000B, 0010,0C,6172, 0008,0C,6173, 01F0,0C,2173, 01E8,0C,2172, C208,FC,617E, C3E8,FC,217E, C208,EC,617C, C3E8,EC,217C, 0000,E3,2171, 01F8,E3,2170, C3F8,EB,2180

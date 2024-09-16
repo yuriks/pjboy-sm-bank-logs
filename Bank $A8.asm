@@ -4,9 +4,9 @@
 }
 
 
-;;; $8687..8F8B: Mini-Draygon ;;;
+;;; $8687..8F8B: Evir ;;;
 {
-;;; $8687: Palette - enemy $E63F/$E67F (mini-Draygon) ;;;
+;;; $8687: Palette - enemy $E63F/$E67F (evir) ;;;
 {
 $A8:8687             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 158C, 03FF, 02B9, 0170, 0069, 0BB1, 1EA9, 0145
 }
@@ -108,7 +108,7 @@ $A8:8775             dx 879B,       ; ???
 $A8:878F DA          PHX
 $A8:8790 5A          PHY
 $A8:8791 A9 5E 00    LDA #$005E             ;\
-$A8:8794 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (mini-Draygon spit)
+$A8:8794 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (evir spit)
 $A8:8798 7A          PLY
 $A8:8799 FA          PLX
 $A8:879A 6B          RTL
@@ -159,12 +159,12 @@ $A8:87DF 6B          RTL
 }
 
 
-;;; $87E0: Initialisation AI - enemy $E63F (mini-Draygon) ;;;
+;;; $87E0: Initialisation AI - enemy $E63F (evir) ;;;
 {
 $A8:87E0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:87E3 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A8:87E6 D0 35       BNE $35    [$881D]     ;} If [enemy parameter 1] = 0:
-$A8:87E8 20 38 88    JSR $8838  [$A8:8838]  ; Set mini-Draygon facing direction
+$A8:87E8 20 38 88    JSR $8838  [$A8:8838]  ; Set evir facing direction
 $A8:87EB BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $A8:87EE 29 FF 00    AND #$00FF             ;|
 $A8:87F1 0A          ASL A                  ;|
@@ -186,7 +186,7 @@ $A8:8818 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 $A8:881B 80 09       BRA $09    [$8826]
 
                                             ; Else ([enemy parameter 1] != 0):
-$A8:881D 20 66 88    JSR $8866  [$A8:8866]  ; Slave mini-Draygon AI
+$A8:881D 20 66 88    JSR $8866  [$A8:8866]  ; Slave evir AI
 $A8:8820 A9 04 00    LDA #$0004             ;\
 $A8:8823 9D 9A 0F    STA $0F9A,x[$7E:0FDA]  ;} Enemy layer = 4
 
@@ -199,7 +199,7 @@ $A8:8837 6B          RTL
 }
 
 
-;;; $8838: Set mini-Draygon facing direction ;;;
+;;; $8838: Set evir facing direction ;;;
 {
 $A8:8838 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:883B 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
@@ -218,12 +218,12 @@ $A8:8859 F0 07       BEQ $07    [$8862]     ;} If [enemy facing direction] != le
 $A8:885B A9 0B 87    LDA #$870B             ;\
 $A8:885E 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy next instruction pointer = $870B
 
-$A8:8862 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process mini-Draygon instruction pointer queue
+$A8:8862 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process evir instruction pointer queue
 $A8:8865 60          RTS
 }
 
 
-;;; $8866: Slave mini-Draygon AI ;;;
+;;; $8866: Slave evir AI ;;;
 {
 $A8:8866 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8869 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]  ;\
@@ -239,7 +239,7 @@ $A8:887F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 
 $A8:8882 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:8885 A9 C3 86    LDA #$86C3             ;\
 $A8:8888 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy next instruction pointer = $86C3
-$A8:888C 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process mini-Draygon instruction pointer queue
+$A8:888C 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process evir instruction pointer queue
 $A8:888F 80 1E       BRA $1E    [$88AF]
 
 $A8:8891 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\ Else ([enemy facing direction] != left):
@@ -252,7 +252,7 @@ $A8:889F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 
 $A8:88A2 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:88A5 A9 27 87    LDA #$8727             ;\
 $A8:88A8 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy next instruction pointer = $8727
-$A8:88AC 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process mini-Draygon instruction pointer queue
+$A8:88AC 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process evir instruction pointer queue
 
 $A8:88AF 60          RTS
 }
@@ -309,7 +309,7 @@ $A8:891A 60          RTS
 }
 
 
-;;; $891B: Main AI - enemy $E63F (mini-Draygon) ;;;
+;;; $891B: Main AI - enemy $E63F (evir) ;;;
 {
 $A8:891B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:891E FC AC 0F    JSR ($0FAC,x)[$A8:8922]
@@ -317,7 +317,7 @@ $A8:8921 6B          RTL
 }
 
 
-;;; $8922: Mini-Draygon function - default AI ;;;
+;;; $8922: Evir function - default AI ;;;
 {
 $A8:8922 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8925 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
@@ -331,7 +331,7 @@ $A8:8932 60          RTS
 }
 
 
-;;; $8933: Mini-Draygon master default AI ;;;
+;;; $8933: Evir master default AI ;;;
 {
 $A8:8933 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8936 BF 98 78 7E LDA $7E7898,x[$7E:7898]
@@ -378,7 +378,7 @@ $A8:8996 60          RTS
 }
 
 
-;;; $8997: Mini-Draygon slave default AI ;;;
+;;; $8997: Evir slave default AI ;;;
 {
 $A8:8997 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:899A 20 66 88    JSR $8866  [$A8:8866]
@@ -541,7 +541,7 @@ $A8:8AE7 60          RTS
 }
 
 
-;;; $8AE8: Process mini-Draygon instruction pointer queue ;;;
+;;; $8AE8: Process evir instruction pointer queue ;;;
 {
 $A8:8AE8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8AEB BF 04 78 7E LDA $7E7804,x[$7E:7804];\
@@ -557,27 +557,27 @@ $A8:8B05 60          RTS
 }
 
 
-;;; $8B06: Enemy shot - enemy $E63F (mini-Draygon) ;;;
+;;; $8B06: Enemy shot - enemy $E63F (evir) ;;;
 {
 $A8:8B06 22 23 80 A8 JSL $A88023[$A8:8023]
 $A8:8B0A 80 0A       BRA $0A    [$8B16]
 }
 
 
-;;; $8B0C: Power bomb reaction - enemy $E63F (mini-Draygon) ;;;
+;;; $8B0C: Power bomb reaction - enemy $E63F (evir) ;;;
 {
 $A8:8B0C 22 37 80 A8 JSL $A88037[$A8:8037]
 $A8:8B10 80 04       BRA $04    [$8B16]
 }
 
 
-;;; $8B12: Enemy touch - enemy $E63F (mini-Draygon) ;;;
+;;; $8B12: Enemy touch - enemy $E63F (evir) ;;;
 {
 $A8:8B12 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 }
 
 
-;;; $8B16: Mini-Draygon shared contact reaction ;;;
+;;; $8B16: Evir shared contact reaction ;;;
 {
 $A8:8B16 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8B19 BD 8C 0F    LDA $0F8C,x[$7E:104C]  ;\
@@ -608,7 +608,7 @@ $A8:8B58 6B          RTL
 }
 
 
-;;; $8B59: Mini-Draygon spritemaps ;;;
+;;; $8B59: Evir spritemaps ;;;
 {
 $A8:8B59             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FB,2108, 8001,01,2108, 81FF,07,210C, 01FE,10,2126, 01FE,08,2125
 $A8:8B88             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FC,2108, 8001,02,2108, 81FF,07,210C, 01FE,10,2126, 01FE,08,2125
@@ -1146,7 +1146,7 @@ $A8:9635 BD B6 0F    LDA $0FB6,x[$7E:10B6]
 $A8:9638 29 FF 00    AND #$00FF
 $A8:963B 8D 95 19    STA $1995  [$7E:1995]
 $A8:963E A9 00 00    LDA #$0000             ;\
-$A8:9641 A0 BC DF    LDY #$DFBC             ;} Spawn nami fireball enemy projectile
+$A8:9641 A0 BC DF    LDY #$DFBC             ;} Spawn namihe fireball enemy projectile
 $A8:9644 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:9648 7A          PLY
 $A8:9649 6B          RTL
@@ -1161,7 +1161,7 @@ $A8:964E BD B6 0F    LDA $0FB6,x[$7E:0FF6]
 $A8:9651 29 FF 00    AND #$00FF
 $A8:9654 8D 95 19    STA $1995  [$7E:1995]
 $A8:9657 A9 01 00    LDA #$0001             ;\
-$A8:965A A0 BC DF    LDY #$DFBC             ;} Spawn nami fireball enemy projectile
+$A8:965A A0 BC DF    LDY #$DFBC             ;} Spawn namihe fireball enemy projectile
 $A8:965D 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:9661 7A          PLY
 $A8:9662 6B          RTL
@@ -1398,15 +1398,15 @@ $A8:9982             dx 0008, 8007,05,6106, 0008,EC,6105, 0010,EC,6104, 8008,F4,
 }
 
 
-;;; $99AC..9F4E: Wrecked Ship ghost ;;;
+;;; $99AC..9F4E: Coven ;;;
 {
-;;; $99AC: Palette - enemy $E77F (Wrecked Ship ghost) ;;;
+;;; $99AC: Palette - enemy $E77F (coven) ;;;
 {
 $A8:99AC             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 01DF, 001F, 0018, 000A, 06B9, 00EA, 0045
 }
 
 
-;;; $99CC: Wrecked Ship ghost palettes ;;;
+;;; $99CC: Coven palettes ;;;
 {
 $A8:99CC             dw 3800, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
 $A8:99EC             dw 3800, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000, 0000
@@ -1426,7 +1426,7 @@ $A8:9A8C             dx 0010,9E46,
 }
 
 
-;;; $9A9C: Wrecked Ship ghosts constants ;;;
+;;; $9A9C: Coven constants ;;;
 {
 $A8:9A9C             dw 0010
 $A8:9A9E             dw 0040
@@ -1442,7 +1442,7 @@ $A8:9ACC             dw 0001, 0008, 0001, 0008, 0001, 0007, 0001, 0007, 0002, 00
 }
 
 
-;;; $9AEE: Initialisation AI - enemy $E77F (Wrecked Ship ghost) ;;;
+;;; $9AEE: Initialisation AI - enemy $E77F (coven) ;;;
 {
 $A8:9AEE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9AF1 BD 86 0F    LDA $0F86,x[$7E:0F86]
@@ -1482,7 +1482,7 @@ $A8:9B3B 6B          RTL
 }
 
 
-;;; $9B3C: Main AI - enemy $E77F (Wrecked Ship ghost) ;;;
+;;; $9B3C: Main AI - enemy $E77F (coven) ;;;
 {
 $A8:9B3C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9B3F 7C A8 0F    JMP ($0FA8,x)[$A8:9D13]
@@ -1870,7 +1870,7 @@ $A8:9E45 6B          RTL
 }
 
 
-;;; $9E46: Wrecked Ship ghost spritemaps ;;;
+;;; $9E46: Coven spritemaps ;;;
 {
 $A8:9E46             dx 0004, 8000,00,3106, 81F0,00,3104, 8000,F0,3102, 81F0,F0,3100
 $A8:9E5C             dx 0004, 8000,00,310A, 81F0,00,3108, 8000,F0,3102, 81F0,F0,3100
@@ -3246,15 +3246,15 @@ $A8:AC06             dx 0004, 8000,00,2126, 81F0,00,2124, 8000,F0,210A, 81F0,F0,
 }
 
 
-;;; $AC1C..B65D: Norfair lava creature ;;;
+;;; $AC1C..B65D: Magdollite ;;;
 {
-;;; $AC1C: Palette - enemy $E83F (Norfair lava creature) ;;;
+;;; $AC1C: Palette - enemy $E83F (magdollite) ;;;
 {
 $A8:AC1C             dw 3800, 001F, 001C, 0018, 0015, 7FFF, 3BE0, 2680, 1580, 023F, 00BD, 0014, 0010, 0000, 0000, 0000
 }
 
 
-;;; $AC3C: Norfair lava creature glow palettes ;;;
+;;; $AC3C: Magdollite glow palettes ;;;
 {
 ;                                                                     Only these four colours are actually used
 ;                                                                     |
@@ -3264,7 +3264,7 @@ $A8:AC7C             dw 3800,0000,0000,0000,0000,0000,0000,0000,0000, 0010,023F,
 }
 
 
-;;; $AC9C..AE11: Instruction lists - Norfair lava creature ;;;
+;;; $AC9C..AE11: Instruction lists - magdollite ;;;
 {
 ;;; $AC9C: Instruction list -  ;;;
 {
@@ -3474,7 +3474,7 @@ $A8:AE0C             dx 0001,B4B5,
 }
 
 
-;;; $AE12..AF4E: Norfair lava creature instructions ;;;
+;;; $AE12..AF4E: Magdollite instructions ;;;
 {
 ;;; $AE12: Instruction - queue sound [[Y]], sound library 2, max queued sounds allowed = 6, if enemy is on-screen ;;;
 {
@@ -3598,7 +3598,7 @@ $A8:AEB9 6B          RTL
 $A8:AEBA 5A          PHY
 $A8:AEBB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AEBE A0 E0 E0    LDY #$E0E0             ;\
-$A8:AEC1 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;} Spawn lavaman lava enemy projectile
+$A8:AEC1 BD AA 0F    LDA $0FAA,x[$7E:102A]  ;} Spawn magdollite lava enemy projectile
 $A8:AEC4 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:AEC8 7A          PLY
 $A8:AEC9 6B          RTL
@@ -3692,7 +3692,7 @@ $A8:AF4F             dw AF9D, AFE2, B020
 }
 
 
-;;; $AF55: Norfair lava creature constants ;;;
+;;; $AF55: Magdollite constants ;;;
 {
 $A8:AF55             dw 0000, 0010, 0020, 0030, 0040, 0050, 0060, 0070, 0080
 $A8:AF67             dw ADDC, ADDC, ADE2, ADE8, ADEE, ADF4, ADFA, AE00, AE06
@@ -3700,7 +3700,7 @@ $A8:AF79             dw 000C, 000C, 0014, 001C, 0024, 002C, 0034, 003C, 0044
 }
 
 
-;;; $AF8B: Initialisation AI - enemy $E83F (Norfair lava creature) ;;;
+;;; $AF8B: Initialisation AI - enemy $E83F (magdollite) ;;;
 {
 $A8:AF8B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:AF8E BD B4 0F    LDA $0FB4,x[$7E:0FB4]
@@ -3838,7 +3838,7 @@ $A8:B0B1 60          RTS
 }
 
 
-;;; $B0B2: Enemy graphics drawn hook - Norfair lava creature - periodically cycle between palettes ;;;
+;;; $B0B2: Enemy graphics drawn hook - magdollite - periodically cycle between palettes ;;;
 {
 ; Why is this one implemented differently to the others? >_<;
 $A8:B0B2 AD 97 07    LDA $0797  [$7E:0797]  ;\
@@ -3883,7 +3883,7 @@ $A8:B109 6B          RTL
 }
 
 
-;;; $B10A: Main AI - enemy $E83F (Norfair lava creature) ;;;
+;;; $B10A: Main AI - enemy $E83F (magdollite) ;;;
 {
 $A8:B10A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B10D BF 08 78 7E LDA $7E7808,x[$7E:7808]
@@ -4269,27 +4269,27 @@ $A8:B3FF 60          RTS
 }
 
 
-;;; $B400: Power bomb reaction - enemy $E83F (Norfair lava creature) ;;;
+;;; $B400: Power bomb reaction - enemy $E83F (magdollite) ;;;
 {
 $A8:B400 22 37 80 A8 JSL $A88037[$A8:8037]
 $A8:B404 80 0A       BRA $0A    [$B410]
 }
 
 
-;;; $B406: Enemy touch - enemy $E83F (Norfair lava creature) ;;;
+;;; $B406: Enemy touch - enemy $E83F (magdollite) ;;;
 {
 $A8:B406 22 23 80 A8 JSL $A88023[$A8:8023]
 $A8:B40A 80 04       BRA $04    [$B410]
 }
 
 
-;;; $B40C: Enemy shot - enemy $E83F (Norfair lava creature) ;;;
+;;; $B40C: Enemy shot - enemy $E83F (magdollite) ;;;
 {
 $A8:B40C 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 }
 
 
-;;; $B410: Norfair lava creature shared contact reaction ;;;
+;;; $B410: Magdollite shared contact reaction ;;;
 {
 $A8:B410 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:B413 BD 8C 0F    LDA $0F8C,x[$7E:104C]
@@ -4316,7 +4316,7 @@ $A8:B447 6B          RTL
 }
 
 
-;;; $B448: Norfair lava creature spritemaps ;;;
+;;; $B448: Magdollite spritemaps ;;;
 {
 $A8:B448             dx 0003, 0004,FF,2123, 0004,F7,2122, 81F4,F7,210A
 $A8:B459             dx 0003, 0004,00,2123, 0004,F8,2122, 81F4,F8,210A
@@ -5515,9 +5515,9 @@ $A8:C123             dx 0006, 01FE,F8,6122, 01F8,00,610D, 0000,00,610C, 01FA,05,
 }
 
 
-;;; $C143..C6B2: Maridia floater ;;;
+;;; $C143..C6B2: Powamp ;;;
 {
-;;; $C143: Palette - enemy $E8BF (Maridia floater) ;;;
+;;; $C143: Palette - enemy $E8BF (powamp) ;;;
 {
 $A8:C143             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 02FF, 01BF, 000F, 0008, 03FF, 0237, 00D1
 }
@@ -5559,7 +5559,7 @@ $A8:C191             dx 0001,C698,
 }
 
 
-;;; $C19F: Maridia floater constants ;;;
+;;; $C19F: Powamp constants ;;;
 {
 $A8:C19F             dw 0040
 
@@ -5576,7 +5576,7 @@ $A8:C1C7             dw 8000
 }
 
 
-;;; $C1C9: Initialisation AI - enemy $E8BF (Maridia floater) ;;;
+;;; $C1C9: Initialisation AI - enemy $E8BF (powamp) ;;;
 {
 $A8:C1C9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:C1CC BD 86 0F    LDA $0F86,x[$7E:0F86]
@@ -5612,7 +5612,7 @@ $A8:C21B 6B          RTL
 }
 
 
-;;; $C21C: Main AI - enemy $E8BF (Maridia floater) ;;;
+;;; $C21C: Main AI - enemy $E8BF (powamp) ;;;
 {
 $A8:C21C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:C21F 7C B2 0F    JMP ($0FB2,x)[$A8:C568]
@@ -6099,7 +6099,7 @@ $A8:C5BD 6B          RTL
 }
 
 
-;;; $C5BE: Enemy touch - enemy $E8BF (Maridia floater) ;;;
+;;; $C5BE: Enemy touch - enemy $E8BF (powamp) ;;;
 {
 $A8:C5BE AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:C5C1 BD B6 0F    LDA $0FB6,x[$7E:1076]
@@ -6126,7 +6126,7 @@ $A8:C5EE 6B          RTL
 }
 
 
-;;; $C5EF: Enemy shot - enemy $E8BF (Maridia floater) ;;;
+;;; $C5EF: Enemy shot - enemy $E8BF (powamp) ;;;
 {
 $A8:C5EF 8B          PHB
 $A8:C5F0 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -6166,7 +6166,7 @@ $A8:C63E 6B          RTL
 }
 
 
-;;; $C63F: Power bomb reaction - enemy $E8BF (Maridia floater) ;;;
+;;; $C63F: Power bomb reaction - enemy $E8BF (powamp) ;;;
 {
 ; TODO: This routine modifies the previous enemy... need to check if that's sane
 $A8:C63F 22 37 80 A8 JSL $A88037[$A8:8037]  ; Normal enemy power bomb AI
@@ -6193,7 +6193,7 @@ $A8:C674 6B          RTL
 }
 
 
-;;; $C675: Maridia floater spritemaps ;;;
+;;; $C675: Powamp spritemaps ;;;
 {
 $A8:C675             dx 0001, 81F8,F8,2100
 $A8:C67C             dx 0001, 81F8,F8,2102
@@ -6205,31 +6205,31 @@ $A8:C698             dx 0005, 0004,04,210D, 01FC,04,210C, 01F4,04,210B, 81FC,F4,
 }
 
 
-;;; $C6B3..D820: Wrecked Ship robot ;;;
+;;; $C6B3..D820: Work robot ;;;
 {
-;;; $C6B3: Palette - enemy $E8FF/$E93F (Wrecked Ship robot) ;;;
+;;; $C6B3: Palette - enemy $E8FF/$E93F (work robot) ;;;
 {
 $A8:C6B3             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 001F, 0018, 000F, 0008, 000A, 03FF, 02B5
 }
 
 
-;;; $C6D3..C6E4: Instruction lists - Wrecked Ship robot, deactivated ;;;
+;;; $C6D3..C6E4: Instruction lists - work robot deactivated ;;;
 {
-;;; $C6D3: Instruction list - Wrecked Ship robot, deactivated - neutral ;;;
+;;; $C6D3: Instruction list - work robot deactivated - neutral ;;;
 {
 $A8:C6D3             dx 7FFF,D7E1,
                         812F        ; Sleep
 }
 
 
-;;; $C6D9: Instruction list - Wrecked Ship robot, deactivated - leaning left ;;;
+;;; $C6D9: Instruction list - work robot deactivated - leaning left ;;;
 {
 $A8:C6D9             dx 7FFF,D7C1,
                         812F        ; Sleep
 }
 
 
-;;; $C6DF: Instruction list - Wrecked Ship robot, deactivated - leaning right ;;;
+;;; $C6DF: Instruction list - work robot deactivated - leaning right ;;;
 {
 $A8:C6DF             dx 7FFF,D801,
                         812F        ; Sleep
@@ -6237,7 +6237,7 @@ $A8:C6DF             dx 7FFF,D801,
 }
 
 
-;;; $C6E5..CB76: Instruction lists - Wrecked Ship robot ;;;
+;;; $C6E5..CB76: Instruction lists - work robot ;;;
 {
 ;;; $C6E5: Instruction list - initial ;;;
 {
@@ -6256,7 +6256,7 @@ $A8:C6ED             dx 000A,D22F,
                         D0D2,       ; Try shooting laser up-left and go to $C8D1 if so
                         0009,D2AB,
                         000A,D2E9,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         000A,D327,
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
@@ -6266,7 +6266,7 @@ $A8:C6ED             dx 000A,D22F,
                         000A,D41F,
                         000A,D45D,
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         000A,D49B,
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         0001,D1F1,
@@ -6280,14 +6280,14 @@ $A8:C6ED             dx 000A,D22F,
 {
 $A8:C73F             dx 0001,D49B,
                         000A,D49B,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D45D,
                         000A,D41F,
                         000A,D3E1,
                         000A,D3A3,
                         000A,D365,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D327,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6297,7 +6297,7 @@ $A8:C73F             dx 0001,D49B,
                         000A,D22F,
                         000A,D1F1,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         000A,D49B,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D45D,
@@ -6305,7 +6305,7 @@ $A8:C73F             dx 0001,D49B,
                         000A,D3E1,
                         000A,D3A3,
                         000A,D365,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D327,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6321,14 +6321,14 @@ $A8:C73F             dx 0001,D49B,
 ;;; $C7BB: Instruction list - facing left - shot - Samus is ahead ;;;
 {
 $A8:C7BB             dx 0005,D49B,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D45D,
                         0005,D41F,
                         0005,D3E1,
                         0005,D3A3,
                         0005,D365,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D327,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
@@ -6338,7 +6338,7 @@ $A8:C7BB             dx 0005,D49B,
                         0005,D22F,
                         0005,D1F1,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D49B,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D45D,
@@ -6346,7 +6346,7 @@ $A8:C7BB             dx 0005,D49B,
                         0005,D3E1,
                         0005,D3A3,
                         0005,D365,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D327,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
@@ -6361,13 +6361,13 @@ $A8:C7BB             dx 0005,D49B,
 
 ;;; $C833: Instruction list - facing left - shot - Samus is behind ;;;
 {
-$A8:C833             dx D091,       ; Play Wrecked Ship robot sound effect if on screen
+$A8:C833             dx D091,       ; Play work robot sound effect if on screen
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D22F,
                         0005,D26D,
                         0005,D2AB,
                         0005,D2E9,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D327,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
@@ -6377,7 +6377,7 @@ $A8:C833             dx D091,       ; Play Wrecked Ship robot sound effect if on
                         0005,D41F,
                         0005,D45D,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D49B,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D1F1,
@@ -6385,7 +6385,7 @@ $A8:C833             dx D091,       ; Play Wrecked Ship robot sound effect if on
                         0005,D26D,
                         0005,D2AB,
                         0005,D2E9,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D327,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
@@ -6395,7 +6395,7 @@ $A8:C833             dx D091,       ; Play Wrecked Ship robot sound effect if on
                         0005,D41F,
                         0005,D45D,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D49B,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D1F1,
@@ -6416,7 +6416,7 @@ $A8:C8B1             dx 0005,D1F1,
 $A8:C8BD             dx 0005,D22F,
                         0002,D1F1,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         000A,D49B,
                         80ED,C8E9   ; Go to $C8E9
 }
@@ -6429,7 +6429,7 @@ $A8:C8D1             dx 0005,D2AB,
                         0002,D22F,
                         0004,D1F1,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0004,D49B
 }
 
@@ -6442,7 +6442,7 @@ $A8:C8E9             dx CDEA,       ; Facing left - move backwards, go to $C6E9 
                         0005,D3E1,
                         0005,D3A3,
                         0005,D365,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D327,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6479,7 +6479,7 @@ $A8:C931             dx 0001,D4D9,
                         D0C6,       ; Try shooting laser up-right and go to $CB1D if so
                         0009,D593,
                         000A,D5D1,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         000A,D60F,
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
@@ -6489,7 +6489,7 @@ $A8:C931             dx 0001,D4D9,
                         000A,D707,
                         000A,D745,
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         000A,D783,
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         80ED,C931   ; Go to $C931
@@ -6500,14 +6500,14 @@ $A8:C931             dx 0001,D4D9,
 {
 $A8:C985             dx 0001,D783,
                         000A,D783,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D745,
                         000A,D707,
                         000A,D6C9,
                         000A,D68B,
                         000A,D64D,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D60F,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6516,7 +6516,7 @@ $A8:C985             dx 0001,D783,
                         000A,D555,
                         000A,D517,
                         000A,D4D9,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D783,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6525,7 +6525,7 @@ $A8:C985             dx 0001,D783,
                         000A,D6C9,
                         000A,D68B,
                         000A,D64D,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D60F,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6542,14 +6542,14 @@ $A8:C985             dx 0001,D783,
 {
 $A8:CA01             dx 0001,D783,
                         0005,D783,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         0005,D745,
                         0005,D707,
                         0005,D6C9,
                         0005,D68B,
                         0005,D64D,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         0005,D60F,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
@@ -6559,7 +6559,7 @@ $A8:CA01             dx 0001,D783,
                         0005,D517,
                         0005,D4D9,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D783,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         0005,D745,
@@ -6567,7 +6567,7 @@ $A8:CA01             dx 0001,D783,
                         0005,D6C9,
                         0005,D68B,
                         0005,D64D,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         000A,D60F,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
@@ -6583,24 +6583,24 @@ $A8:CA01             dx 0001,D783,
 ;;; $CA7D: Instruction list - facing right - shot - Samus is behind ;;;
 {
 $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D4D9,
                         0005,D517,
                         0005,D555,
                         0005,D593,
                         0005,D5D1,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         0005,D60F,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D64D,
                         0005,D68B,
                         0005,D6C9,
                         0005,D707,
                         0005,D745,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D783,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         0005,D4D9,
@@ -6608,7 +6608,7 @@ $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F 
                         0005,D555,
                         0005,D593,
                         0005,D5D1,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         0005,D60F,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
@@ -6618,7 +6618,7 @@ $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F 
                         0005,D707,
                         0005,D745,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         0005,D783,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         CECB        ; Go to $C92D
@@ -6637,7 +6637,7 @@ $A8:CAFD             dx 0005,D4D9,
 {
 $A8:CB09             dx 0005,D517,
                         0002,D4D9,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D783,
                         80ED,CB35   ; Go to $CB35
@@ -6650,7 +6650,7 @@ $A8:CB1D             dx 0005,D593,
                         0002,D555,
                         0002,D517,
                         0004,D4D9,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         0004,D783
 }
@@ -6664,7 +6664,7 @@ $A8:CB35             dx CFB0,       ; Facing right - move backwards, go to $C6E9
                         0005,D6C9,
                         0005,D68B,
                         0005,D64D,
-                        D091,       ; Play Wrecked Ship robot sound effect if on screen
+                        D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D60F,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6686,11 +6686,11 @@ $A8:CB65             dx 0080,D1F1,
 }
 
 
-;;; $CB77: Initialisation AI - enemy $E8FF (Wrecked Ship robot) ;;;
+;;; $CB77: Initialisation AI - enemy $E8FF (work robot) ;;;
 {
 $A8:CB77 AE 9F 07    LDX $079F  [$7E:079F]  ;\
 $A8:CB7A BF 28 D8 7E LDA $7ED828,x[$7E:D82B];|
-$A8:CB7E 89 01 00    BIT #$0001             ;} If area boss is not dead: go to initialisation AI - enemy $E93F (Wrecked Ship robot, deactivated)
+$A8:CB7E 89 01 00    BIT #$0001             ;} If area boss is not dead: go to initialisation AI - enemy $E93F (work robot deactivated)
 $A8:CB81 F0 49       BEQ $49    [$CBCC]     ;|
 $A8:CB83 AE 54 0E    LDX $0E54  [$7E:0E54]  ;/
 $A8:CB86 E2 20       SEP #$20               ;\
@@ -6710,17 +6710,17 @@ $A8:CBAA 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = 
 $A8:CBAD A9 00 FE    LDA #$FE00             ;\
 $A8:CBB0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy laser X velocity = -200h
 $A8:CBB3 A9 01 00    LDA #$0001             ;\
-$A8:CBB6 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Wrecked Ship robot palette animation timer = 1
+$A8:CBB6 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Work robot palette animation timer = 1
 $A8:CBBA A9 00 00    LDA #$0000             ;\
-$A8:CBBD 8F 56 D6 7E STA $7ED656[$7E:D656]  ;} Wrecked Ship robot palette animation table index = 0
+$A8:CBBD 8F 56 D6 7E STA $7ED656[$7E:D656]  ;} Work robot palette animation table index = 0
 $A8:CBC1 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy laser cooldown = 0
 $A8:CBC4 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
-$A8:CBC7 8F 52 D6 7E STA $7ED652[$7E:D652]  ;} Wrecked Ship robot palette animation palette index = [enemy palette index]
+$A8:CBC7 8F 52 D6 7E STA $7ED652[$7E:D652]  ;} Work robot palette animation palette index = [enemy palette index]
 $A8:CBCB 6B          RTL
 }
 
 
-;;; $CBCC: Initialisation AI - enemy $E93F (Wrecked Ship robot, deactivated) ;;;
+;;; $CBCC: Initialisation AI - enemy $E93F (work robot deactivated) ;;;
 {
 ; The colour writes at $A8:CC1C have no effect for multiple reasons:
 ;     It writes to the active palette RAM instead of the target palette RAM, so room fade in immediately overwrites any changes
@@ -6751,7 +6751,7 @@ $A8:CBF3 A9 01 00    LDA #$0001             ;\
 $A8:CBF6 9D 94 0F    STA $0F94,x[$7E:1494]  ;} Enemy instruction timer = 1
 $A8:CBF9 9E 90 0F    STZ $0F90,x[$7E:1490]  ; Enemy timer = 0
 $A8:CBFC A9 00 00    LDA #$0000             ;\
-$A8:CBFF 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Wrecked Ship robot palette animation timer = 0
+$A8:CBFF 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Work robot palette animation timer = 0
 $A8:CC03 A9 00 00    LDA #$0000             ;\
 $A8:CC06 9D B0 0F    STA $0FB0,x[$7E:14B0]  ;|
 $A8:CC09 A9 01 00    LDA #$0001             ;} Enemy Y velocity = 1.0
@@ -6760,7 +6760,7 @@ $A8:CC0F AF 52 D6 7E LDA $7ED652[$7E:D652]  ;\
 $A8:CC13 29 00 FF    AND #$FF00             ;|
 $A8:CC16 EB          XBA                    ;|
 $A8:CC17 0A          ASL A                  ;|
-$A8:CC18 0A          ASL A                  ;} X = [Wrecked Ship robot palette animation palette index] / 200h * 20h (WRAM palette index)
+$A8:CC18 0A          ASL A                  ;} X = [work robot palette animation palette index] / 200h * 20h (WRAM palette index)
 $A8:CC19 0A          ASL A                  ;|
 $A8:CC1A 0A          ASL A                  ;|
 $A8:CC1B AA          TAX                    ;/
@@ -6778,7 +6778,7 @@ $A8:CC30             dw C6D3, ; 0: Neutral
 }
 
 
-;;; $CC36: Main AI - enemy $E8FF (Wrecked Ship robot) ;;;
+;;; $CC36: Main AI - enemy $E8FF (work robot) ;;;
 {
 $A8:CC36 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:CC39 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
@@ -6801,32 +6801,32 @@ $A8:CC63 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
 }
 
 
-;;; $CC66: RTL. Main AI - enemy $E93F (Wrecked Ship robot, deactivated) ;;;
+;;; $CC66: RTL. Main AI - enemy $E93F (work robot deactivated) ;;;
 {
 $A8:CC66 6B          RTL
 }
 
 
-;;; $CC67: Enemy graphics drawn hook - Wrecked Ship robot - periodically cycle between palettes ;;;
+;;; $CC67: Enemy graphics drawn hook - work robot - periodically cycle between palettes ;;;
 {
 $A8:CC67 AD 97 07    LDA $0797  [$7E:0797]  ;\
 $A8:CC6A D0 4F       BNE $4F    [$CCBB]     ;} If currently transitioning the room: return
 $A8:CC6C AF 54 D6 7E LDA $7ED654[$7E:D654]  ;\
-$A8:CC70 F0 49       BEQ $49    [$CCBB]     ;} If [Wrecked Ship robot palette animation timer] = 0: return
+$A8:CC70 F0 49       BEQ $49    [$CCBB]     ;} If [work robot palette animation timer] = 0: return
 $A8:CC72 3A          DEC A                  ;\
-$A8:CC73 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Decrement Wrecked Ship robot palette animation timer
-$A8:CC77 D0 42       BNE $42    [$CCBB]     ; If [Wrecked Ship robot palette animation timer] != 0: return
+$A8:CC73 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Decrement work robot palette animation timer
+$A8:CC77 D0 42       BNE $42    [$CCBB]     ; If [work robot palette animation timer] != 0: return
 $A8:CC79 DA          PHX
 $A8:CC7A AF 52 D6 7E LDA $7ED652[$7E:D652]  ;\
 $A8:CC7E 29 00 FF    AND #$FF00             ;|
 $A8:CC81 EB          XBA                    ;|
 $A8:CC82 0A          ASL A                  ;|
-$A8:CC83 0A          ASL A                  ;} X = [Wrecked Ship robot palette animation palette index] / 200h * 20h (WRAM palette index)
+$A8:CC83 0A          ASL A                  ;} X = [work robot palette animation palette index] / 200h * 20h (WRAM palette index)
 $A8:CC84 0A          ASL A                  ;|
 $A8:CC85 0A          ASL A                  ;|
 $A8:CC86 AA          TAX                    ;/
 $A8:CC87 AF 56 D6 7E LDA $7ED656[$7E:D656]  ;\
-$A8:CC8B A8          TAY                    ;} Y = [Wrecked Ship robot palette animation table index]
+$A8:CC8B A8          TAY                    ;} Y = [work robot palette animation table index]
 
 ; BRANCH_AGAIN
 $A8:CC8C B9 C1 CC    LDA $CCC1,y[$A8:CCC1]  ;\
@@ -6839,10 +6839,10 @@ $A8:CC9F 9F 16 C1 7E STA $7EC116,x[$7E:C136];|
 $A8:CCA3 B9 C7 CC    LDA $CCC7,y[$A8:CCC7]  ;|
 $A8:CCA6 9F 18 C1 7E STA $7EC118,x[$7E:C138];/
 $A8:CCAA B9 C9 CC    LDA $CCC9,y[$A8:CCC9]  ;\
-$A8:CCAD 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Wrecked Ship robot palette animation timer = [$CCC1 + [Y] + 8]
+$A8:CCAD 8F 54 D6 7E STA $7ED654[$7E:D654]  ;} Work robot palette animation timer = [$CCC1 + [Y] + 8]
 $A8:CCB1 98          TYA                    ;\
 $A8:CCB2 18          CLC                    ;|
-$A8:CCB3 69 0A 00    ADC #$000A             ;} Wrecked Ship robot palette animation table index = [Y] + Ah
+$A8:CCB3 69 0A 00    ADC #$000A             ;} Work robot palette animation table index = [Y] + Ah
 $A8:CCB6 8F 56 D6 7E STA $7ED656[$7E:D656]  ;/
 $A8:CCBA FA          PLX
 
@@ -7318,7 +7318,7 @@ $A8:D090 6B          RTL
 }
 
 
-;;; $D091: Instruction - play Wrecked Ship robot sound effect if on screen ;;;
+;;; $D091: Instruction - play work robot sound effect if on screen ;;;
 {
 $A8:D091 DA          PHX
 $A8:D092 5A          PHY
@@ -7338,7 +7338,7 @@ $A8:D0B0 69 E0 00    ADC #$00E0             ;|
 $A8:D0B3 DD 7E 0F    CMP $0F7E,x[$7E:0FBE]  ;|
 $A8:D0B6 30 07       BMI $07    [$D0BF]     ;/
 $A8:D0B8 A9 68 00    LDA #$0068             ;\
-$A8:D0BB 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 68h, sound library 2, max queued sounds allowed = 6 (Wrecked Ship robot)
+$A8:D0BB 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 68h, sound library 2, max queued sounds allowed = 6 (work robot)
 
 $A8:D0BF 7A          PLY
 $A8:D0C0 FA          PLX
@@ -7358,7 +7358,7 @@ $A8:D0C5 6B          RTL
 $A8:D0C6 A9 1D CB    LDA #$CB1D             ;\
 $A8:D0C9 85 32       STA $32    [$7E:0032]  ;} $32 = $CB1D
 $A8:D0CB A9 D0 D2    LDA #$D2D0             ;\
-$A8:D0CE 85 30       STA $30    [$7E:0030]  ;} $30 = $D2D0 (Wrecked Ship robot laser - up-right)
+$A8:D0CE 85 30       STA $30    [$7E:0030]  ;} $30 = $D2D0 (work robot laser - up-right)
 $A8:D0D0 80 0A       BRA $0A    [$D0DC]     ; Go to handle firing laser - upwards
 }
 
@@ -7368,7 +7368,7 @@ $A8:D0D0 80 0A       BRA $0A    [$D0DC]     ; Go to handle firing laser - upward
 $A8:D0D2 A9 D1 C8    LDA #$C8D1             ;\
 $A8:D0D5 85 32       STA $32    [$7E:0032]  ;} $32 = $C8D1
 $A8:D0D7 A9 A6 D2    LDA #$D2A6             ;\
-$A8:D0DA 85 30       STA $30    [$7E:0030]  ;} $30 = $D2A6 (Wrecked Ship robot laser - up-left)
+$A8:D0DA 85 30       STA $30    [$7E:0030]  ;} $30 = $D2A6 (work robot laser - up-left)
 }
 
 
@@ -7420,7 +7420,7 @@ $A8:D118 69 10 00    ADC #$0010             ;|
 $A8:D11B 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
 $A8:D11E DA          PHX                    ;\
 $A8:D11F A0 B4 D2    LDY #$D2B4             ;|
-$A8:D122 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Spawn Wrecked Ship robot laser - horizontal enemy projectile
+$A8:D122 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Spawn work robot laser - horizontal enemy projectile
 $A8:D125 22 27 80 86 JSL $868027[$86:8027]  ;|
 $A8:D129 FA          PLX                    ;/
 $A8:D12A A4 32       LDY $32    [$7E:0032]  ; Y = [$32]
@@ -7434,7 +7434,7 @@ $A8:D130 6B          RTL
 ;;; $D131: Instruction - try shooting laser down-right and go to $CAFD if so ;;;
 {
 $A8:D131 A9 DE D2    LDA #$D2DE             ;\
-$A8:D134 85 30       STA $30    [$7E:0030]  ;} $30 = $D2DE (Wrecked Ship robot laser - down-right)
+$A8:D134 85 30       STA $30    [$7E:0030]  ;} $30 = $D2DE (work robot laser - down-right)
 $A8:D136 A9 FD CA    LDA #$CAFD             ;\
 $A8:D139 85 32       STA $32    [$7E:0032]  ;} $32 = $CAFD
 $A8:D13B 80 0A       BRA $0A    [$D147]     ; Go to handle firing laser - downwards
@@ -7444,7 +7444,7 @@ $A8:D13B 80 0A       BRA $0A    [$D147]     ; Go to handle firing laser - downwa
 ;;; $D13D: Instruction - try shooting laser down-left and go to $C8B1 if so ;;;
 {
 $A8:D13D A9 C2 D2    LDA #$D2C2             ;\
-$A8:D140 85 30       STA $30    [$7E:0030]  ;} $30 = $D2C2 (Wrecked Ship robot laser - down-left)
+$A8:D140 85 30       STA $30    [$7E:0030]  ;} $30 = $D2C2 (work robot laser - down-left)
 $A8:D142 A9 B1 C8    LDA #$C8B1             ;\
 $A8:D145 85 32       STA $32    [$7E:0032]  ;} $32 = $C8B1
 }
@@ -7483,7 +7483,7 @@ $A8:D173 6B          RTL
 }
 
 
-;;; $D174: Enemy touch - enemy $E8FF/$E93F (Wrecked Ship robot) ;;;
+;;; $D174: Enemy touch - enemy $E8FF/$E93F (work robot) ;;;
 {
 $A8:D174 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D177 BD 7A 0F    LDA $0F7A,x            ;\
@@ -7499,14 +7499,14 @@ $A8:D18C 6B          RTL
 }
 
 
-;;; $D18D: Enemy shot - enemy $E93F (Wrecked Ship robot, deactivated) ;;;
+;;; $D18D: Enemy shot - enemy $E93F (work robot deactivated) ;;;
 {
 $A8:D18D 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
 $A8:D191 6B          RTL
 }
 
 
-;;; $D192: Enemy shot - enemy $E8FF (Wrecked Ship robot) ;;;
+;;; $D192: Enemy shot - enemy $E8FF (work robot) ;;;
 {
 $A8:D192 C2 30       REP #$30
 $A8:D194 DA          PHX
@@ -7559,7 +7559,7 @@ $A8:D1EF 80 E5       BRA $E5    [$D1D6]     ; Go to BRANCH_MERGE
 }
 
 
-;;; $D1F1: Wrecked Ship robot spritemaps ;;;
+;;; $D1F1: Work robot spritemaps ;;;
 {
 $A8:D1F1             dx 000C, 8000,01,212E, 81F0,01,212C, 0008,17,2149, 0000,17,2148, 8000,07,210C, 0000,19,214B, 01F8,19,214A, 81F8,09,210E, 8000,F1,2122, 81F0,F1,2120, 8000,E1,2102, 81F0,E1,2100
 $A8:D22F             dx 000C, 8001,01,2146, 81F1,01,2144, 0003,18,2149, 01FB,18,2148, 81FB,08,210C, 0000,19,214B, 01F8,19,214A, 81F8,09,210E, 8000,F1,2126, 81F0,F1,2124, 81FF,E1,2106, 81EF,E1,2104
@@ -7592,9 +7592,9 @@ $A8:D801             dx 0006, 8000,01,2142, 81F0,01,2140, 8000,F1,212A, 81F0,F1,
 }
 
 
-;;; $D821..DBC6: Maridia puffer ;;;
+;;; $D821..DBC6: Bull ;;;
 {
-;;; $D821: Palette - enemy $E97F (Maridia puffer) ;;;
+;;; $D821: Palette - enemy $E97F (bull) ;;;
 {
 $A8:D821             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 435A, 3694, 15AD, 0508, 03FF, 0237, 00D1
 }
@@ -7622,7 +7622,7 @@ $A8:D855             dx 8123,0005,  ; Timer = 0005h
 }
 
 
-;;; $D871: Maridia puffer constants ;;;
+;;; $D871: Bull constants ;;;
 {
 $A8:D871             dw 00C0, ; 0: Up, facing right
                         00E0, ; 1: Up-right
@@ -7642,7 +7642,7 @@ $A8:D895             dw 0003,0001, 0004,0001, 0005,0002, 0006,0002, 0007,0002, 0
 }
 
 
-;;; $D8C9: Initialisation AI - enemy $E97F (Maridia puffer) ;;;
+;;; $D8C9: Initialisation AI - enemy $E97F (bull) ;;;
 {
 $A8:D8C9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D8CC A9 01 00    LDA #$0001
@@ -7672,7 +7672,7 @@ $A8:D90A 6B          RTL
 }
 
 
-;;; $D90B: Main AI - enemy $E97F (Maridia puffer) ;;;
+;;; $D90B: Main AI - enemy $E97F (bull) ;;;
 {
 $A8:D90B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:D90E BF 0E 78 7E LDA $7E780E,x[$7E:788E]
@@ -7965,7 +7965,7 @@ $A8:DB13 60          RTS
 }
 
 
-;;; $DB14: Enemy shot - enemy $E97F (Maridia puffer) ;;;
+;;; $DB14: Enemy shot - enemy $E97F (bull) ;;;
 {
 $A8:DB14 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DB17 BD 8C 0F    LDA $0F8C,x[$7E:100C]
@@ -8007,7 +8007,7 @@ $A8:DB75 6B          RTL
 }
 
 
-;;; $DB76: Maridia puffer spritemaps ;;;
+;;; $DB76: Bull spritemaps ;;;
 {
 $A8:DB76             dx 0004, 81F8,00,210A, 81F0,00,2109, 81F8,F0,2107, 81F0,F0,2106
 $A8:DB8C             dx 0004, 81F8,00,210D, 81F0,00,210C, 81F8,F0,2104, 81F0,F0,2103
@@ -8016,9 +8016,9 @@ $A8:DBA2             dx 0007, 0000,08,211F, 0000,00,210F, 01F8,08,2123, 01F0,08,
 }
 
 
-;;; $DBC7..E22F: Walking lava seahorse ;;;
+;;; $DBC7..E22F: Alcoon ;;;
 {
-;;; $DBC7: Palette - enemy $E9BF (walking lava seahorse) ;;;
+;;; $DBC7: Palette - enemy $E9BF (alcoon) ;;;
 {
 $A8:DBC7             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 00BA, 0011, 5A5C, 41B4, 290D, 1065, 03FF, 0237, 00D1
 }
@@ -8120,7 +8120,7 @@ $A8:DCC1             dx 7FFF,E140,
 }
 
 
-;;; $DCC7: Walking lava seahorse constants ;;;
+;;; $DCC7: Alcoon constants ;;;
 {
 $A8:DCC7             dw 0050
 $A8:DCC9             dw 0040
@@ -8128,7 +8128,7 @@ $A8:DCCB             dw 0070
 }
 
 
-;;; $DCCD: Initialisation AI - enemy $E9BF (walking lava seahorse) ;;;
+;;; $DCCD: Initialisation AI - enemy $E9BF (alcoon) ;;;
 {
 $A8:DCCD AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DCD0 A9 00 00    LDA #$0000
@@ -8201,7 +8201,7 @@ $A8:DD6A 60          RTS
 }
 
 
-;;; $DD6B: Main AI - enemy $E9BF (walking lava seahorse) ;;;
+;;; $DD6B: Main AI - enemy $E9BF (alcoon) ;;;
 {
 $A8:DD6B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:DD6E 7C A8 0F    JMP ($0FA8,x)[$A8:DD71]
@@ -8245,7 +8245,7 @@ $A8:DDB3 9D 94 0F    STA $0F94,x[$7E:10D4]
 $A8:DDB6 A9 C6 DD    LDA #$DDC6
 $A8:DDB9 9D A8 0F    STA $0FA8,x[$7E:10E8]
 $A8:DDBC A9 5E 00    LDA #$005E             ;\
-$A8:DDBF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (walking lava seahorse spawns)
+$A8:DDBF 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Eh, sound library 2, max queued sounds allowed = 6 (alcoon spawns)
 
 $A8:DDC3 6B          RTL
 
@@ -8447,10 +8447,10 @@ $A8:DF1C 5A          PHY
 $A8:DF1D A9 00 00    LDA #$0000
 
 $A8:DF20 A0 90 9E    LDY #$9E90             ;\
-$A8:DF23 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Spawn walking lava seahorse fireball enemy projectile
+$A8:DF23 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Spawn alcoon fireball enemy projectile
 $A8:DF26 22 27 80 86 JSL $868027[$86:8027]  ;/
 $A8:DF2A A9 3F 00    LDA #$003F             ;\
-$A8:DF2D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Fh, sound library 2, max queued sounds allowed = 6 (walking lava seahorse spit)
+$A8:DF2D 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Fh, sound library 2, max queued sounds allowed = 6 (alcoon spit)
 $A8:DF31 7A          PLY
 $A8:DF32 6B          RTL
 }
@@ -8541,7 +8541,7 @@ $A8:DFA1 6B          RTL
 }
 
 
-;;; $DFA2: Walking lava seahorse spritemaps ;;;
+;;; $DFA2: Alcoon spritemaps ;;;
 {
 $A8:DFA2             dx 0006, 81FD,F3,2124, 8004,FC,210C, 81F8,F8,210A, 81F8,08,2102, 01ED,F0,212A, 81F5,E8,2100
 $A8:DFC2             dx 0006, 8004,FB,210E, 81FD,F2,2126, 81F8,07,2104, 81F8,F7,210A, 01EE,EF,212A, 81F6,E7,2100
@@ -8569,15 +8569,15 @@ $A8:E229             dx 0001, 01FC,FC,212D
 }
 
 
-;;; $E230..E586: Wrecked Ship orbs ;;;
+;;; $E230..E586: Atomic ;;;
 {
-;;; $E230: Palette - enemy $E9FF (Wrecked Ship orbs) ;;;
+;;; $E230: Palette - enemy $E9FF (atomic) ;;;
 {
 $A8:E230             dw 3800, 7FFF, 56E0, 3180, 18C0, 6BC0, 5EC0, 4A20, 35A0, 7FFF, 039C, 0237, 00D1, 03FF, 0237, 00D1
 }
 
 
-;;; $E250: Palettes - Wrecked Ship orbs ;;;
+;;; $E250: Palettes - atomic ;;;
 {
 $A8:E250             dw 3800,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,
 $A8:E270             dw 3800,7FFF,6A40,44E0,2C20,7F20,7220,5D80,4900,03FF,001F,0016,000E,03FF,0237,00D1,
@@ -8588,7 +8588,7 @@ $A8:E2F0             dw 3800,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0
 }
 
 
-;;; $E310..7F: Instruction lists - Wrecked Ship orbs ;;;
+;;; $E310..7F: Instruction lists - atomic ;;;
 {
 ;;; $E310: Instruction list -  ;;;
 {
@@ -8639,13 +8639,13 @@ $A8:E364             dx 0008,E571,
 }
 
 
-;;; $E380: Wrecked Ship orbs instruction list pointers ;;;
+;;; $E380: Atomic instruction list pointers ;;;
 {
 $A8:E380             dw E310, E32C, E348, E364
 }
 
 
-;;; $E388: Initialisation AI - enemy $E9FF (Wrecked Ship orbs) ;;;
+;;; $E388: Initialisation AI - enemy $E9FF (atomic) ;;;
 {
 $A8:E388 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E38B A9 01 00    LDA #$0001
@@ -8673,7 +8673,7 @@ $A8:E3C2 6B          RTL
 }
 
 
-;;; $E3C3: Main AI - enemy $E9FF (Wrecked Ship orbs) ;;;
+;;; $E3C3: Main AI - enemy $E9FF (atomic) ;;;
 {
 $A8:E3C3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:E3C6 20 D9 E3    JSR $E3D9  [$A8:E3D9]
@@ -8800,7 +8800,7 @@ $A8:E488 6B          RTL
 }
 
 
-;;; $E489: Spritemaps - Wrecked Ship orbs ;;;
+;;; $E489: Spritemaps - atomic ;;;
 {
 $A8:E489             dx 0004, 01F8,00,2102, 81F8,F8,2100, 01FC,F4,2103, 0004,FC,2103
 $A8:E49F             dx 0004, 01FC,FC,2102, 81F8,F8,2100, 01F8,F8,2103, 0000,00,2103
@@ -9140,7 +9140,7 @@ $A8:E86D 6B          RTL
 ;;; $E86E: Enemy graphics drawn hook - blue Brinstar face block - periodically cycle between palettes ;;;
 {
 ; This enemy doesn't set $1796 to zero anywhere,
-; so visiting a Norfair lava creature can cause this routine to execute with [$1796] >= 8,
+; so visiting a magdollite can cause this routine to execute with [$1796] >= 8,
 ; giving this enemy a glitch palette for its first palette cycle
 $A8:E86E AD 97 07    LDA $0797  [$7E:0797]  ;\
 $A8:E871 D0 3A       BNE $3A    [$E8AD]     ;} If currently transitioning the room: return

@@ -1933,7 +1933,7 @@ $86:8ABD             dw 0010,8023,
 }
 
 
-;;; $8AC5: Instruction list - enemy projectile $8BFA/$8C08/$8C16/$8C24 (metal skree particle) ;;;
+;;; $8AC5: Instruction list - enemy projectile $8BFA/$8C08/$8C16/$8C24 (metaree particle) ;;;
 {
 $86:8AC5             dw 0010,8435,
                         81AB,8AC5   ; Go to $8AC5
@@ -2083,10 +2083,10 @@ $86:8BC2             dx 8ACD,8B5D,8ABD,02,02,0004,0000,84FC ; Skree particle - d
 $86:8BD0             dx 8AF1,8B5D,8ABD,02,02,0004,0000,84FC ; Skree particle - up-right
 $86:8BDE             dx 8B15,8B5D,8ABD,02,02,0004,0000,84FC ; Skree particle - down-left
 $86:8BEC             dx 8B39,8B5D,8ABD,02,02,0004,0000,84FC ; Skree particle - up-left
-$86:8BFA             dx 8ACD,8B5D,8AC5,02,02,0004,0000,84FC ; Metal skree particle - down-right
-$86:8C08             dx 8AF1,8B5D,8AC5,02,02,0004,0000,84FC ; Metal skree particle - up-right
-$86:8C16             dx 8B15,8B5D,8AC5,02,02,0004,0000,84FC ; Metal skree particle - down-left
-$86:8C24             dx 8B39,8B5D,8AC5,02,02,0004,0000,84FC ; Metal skree particle - up-left
+$86:8BFA             dx 8ACD,8B5D,8AC5,02,02,0004,0000,84FC ; Metaree particle - down-right
+$86:8C08             dx 8AF1,8B5D,8AC5,02,02,0004,0000,84FC ; Metaree particle - up-right
+$86:8C16             dx 8B15,8B5D,8AC5,02,02,0004,0000,84FC ; Metaree particle - down-left
+$86:8C24             dx 8B39,8B5D,8AC5,02,02,0004,0000,84FC ; Metaree particle - up-left
 }
 }
 
@@ -2419,7 +2419,7 @@ $86:8E4F 60          RTS
 {
 ; Enemy projectile $8E6C is partially coded, small sprite with a fairly short animation loop that travels towards Draygon
 ; It doesn't collide with Samus, but it is shootable
-; Uses the last row of mini-Draygon tiles ($B1:9400), though I doubt those are the correct graphics for this enemy projectile
+; Uses the last row of evir tiles ($B1:9400), though I doubt those are the correct graphics for this enemy projectile
 
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -4553,9 +4553,9 @@ $86:9DAF 60          RTS
 }
 
 
-;;; $9DB0..9E8F: Mini Kraid ;;;
+;;; $9DB0..9E8F: Fake Kraid ;;;
 {
-;;; $9DB0: Enemy projectiles - mini Kraid ;;;
+;;; $9DB0: Enemy projectiles - fake Kraid ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -4566,34 +4566,34 @@ $86:9DAF 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:9DB0             dx 9DEC,9E1E,9DDA,04,04,0014,0000,84FC ; Mini Kraid spit
-$86:9DBE             dx 9E46,9E83,9DE0,04,02,0006,0000,84FC ; Mini Kraid spikes - left
-$86:9DCC             dx 9E4B,9E83,9DE6,04,02,0006,0000,84FC ; Mini Kraid spikes - right
+$86:9DB0             dx 9DEC,9E1E,9DDA,04,04,0014,0000,84FC ; Fake Kraid spit
+$86:9DBE             dx 9E46,9E83,9DE0,04,02,0006,0000,84FC ; Fake Kraid spikes - left
+$86:9DCC             dx 9E4B,9E83,9DE6,04,02,0006,0000,84FC ; Fake Kraid spikes - right
 }
 
 
-;;; $9DDA: Instruction list - enemy projectile $9DB0 (mini Kraid spit) ;;;
+;;; $9DDA: Instruction list - enemy projectile $9DB0 (fake Kraid spit) ;;;
 {
 $86:9DDA             dx 7FFF,8420,
                         8159        ; Sleep
 }
 
 
-;;; $9DE0: Instruction list - enemy projectile $9DBE (mini Kraid spikes - left) ;;;
+;;; $9DE0: Instruction list - enemy projectile $9DBE (fake Kraid spikes - left) ;;;
 {
 $86:9DE0             dx 7FFF,8427,
                         8159        ; Sleep
 }
 
 
-;;; $9DE6: Instruction list - enemy projectile $9DCC (mini Kraid spikes - right) ;;;
+;;; $9DE6: Instruction list - enemy projectile $9DCC (fake Kraid spikes - right) ;;;
 {
 $86:9DE6             dx 7FFF,842E,
                         8159        ; Sleep
 }
 
 
-;;; $9DEC: Initialisation AI - enemy projectile $9DB0 (mini Kraid spit) ;;;
+;;; $9DEC: Initialisation AI - enemy projectile $9DB0 (fake Kraid spit) ;;;
 {
 $86:9DEC DA          PHX
 $86:9DED AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
@@ -4617,7 +4617,7 @@ $86:9E1D 60          RTS
 }
 
 
-;;; $9E1E: Pre-instruction - enemy projectile $9DB0 (mini Kraid spit) ;;;
+;;; $9E1E: Pre-instruction - enemy projectile $9DB0 (fake Kraid spit) ;;;
 {
 $86:9E1E 08          PHP
 $86:9E1F C2 20       REP #$20
@@ -4644,20 +4644,20 @@ $86:9E45 60          RTS
 }
 
 
-;;; $9E46: Initialisation AI - enemy projectile $9DBE (mini Kraid spikes - left) ;;;
+;;; $9E46: Initialisation AI - enemy projectile $9DBE (fake Kraid spikes - left) ;;;
 {
 $86:9E46 A9 00 FE    LDA #$FE00             ; Enemy projectile X velocity = -200h
-$86:9E49 80 03       BRA $03    [$9E4E]     ; Go to mini Kraid spikes common initialisation
+$86:9E49 80 03       BRA $03    [$9E4E]     ; Go to fake Kraid spikes common initialisation
 }
 
 
-;;; $9E4B: Initialisation AI - enemy projectile $9DCC (mini Kraid spikes - right) ;;;
+;;; $9E4B: Initialisation AI - enemy projectile $9DCC (fake Kraid spikes - right) ;;;
 {
 $86:9E4B A9 00 02    LDA #$0200             ; Enemy projectile X velocity = 200h
 }
 
 
-;;; $9E4E: Mini Kraid spikes common initialisation ;;;
+;;; $9E4E: Fake Kraid spikes common initialisation ;;;
 {
 $86:9E4E 99 B7 1A    STA $1AB7,y[$7E:1AD5]
 $86:9E51 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
@@ -4682,7 +4682,7 @@ $86:9E7D             dw FFFE, 000C, 0018
 }
 
 
-;;; $9E83: Pre-instruction - enemy projectile $9DBE/$9DCC (mini Kraid spikes) ;;;
+;;; $9E83: Pre-instruction - enemy projectile $9DBE/$9DCC (fake Kraid spikes) ;;;
 {
 $86:9E83 08          PHP
 $86:9E84 C2 20       REP #$20
@@ -4696,9 +4696,9 @@ $86:9E8F 60          RTS
 }
 
 
-;;; $9E90..9F40: Walking lava seahorse fireball ;;;
+;;; $9E90..9F40: Alcoon fireball ;;;
 {
-;;; $9E90: Enemy projectile - walking lava seahorse fireball ;;;
+;;; $9E90: Enemy projectile - alcoon fireball ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -4709,11 +4709,11 @@ $86:9E8F 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:9E90             dx 9EB2,9EFF,9E9E,04,04,0014,0000,84FC ; Walking lava seahorse fireball
+$86:9E90             dx 9EB2,9EFF,9E9E,04,04,0014,0000,84FC ; Alcoon fireball
 }
 
 
-;;; $9E9E: Instruction list - enemy projectile $9E90 (walking lava seahorse fireball) ;;;
+;;; $9E9E: Instruction list - enemy projectile $9E90 (alcoon fireball) ;;;
 {
 $86:9E9E             dx 0003,8404,
                         0003,840B,
@@ -4723,7 +4723,7 @@ $86:9E9E             dx 0003,8404,
 }
 
 
-;;; $9EB2: Initialisation AI - enemy projectile $9E90 (walking lava seahorse fireball) ;;;
+;;; $9EB2: Initialisation AI - enemy projectile $9E90 (alcoon fireball) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -4763,7 +4763,7 @@ $86:9EF9             dw FF00, 0000, 0100
 }
 
 
-;;; $9EFF: Pre-instruction - enemy projectile $9E90 (walking lava seahorse fireball) ;;;
+;;; $9EFF: Pre-instruction - enemy projectile $9E90 (alcoon fireball) ;;;
 {
 $86:9EFF C2 30       REP #$30
 $86:9F01 20 7B 89    JSR $897B  [$86:897B]  ; Move enemy projectile vertically
@@ -7727,9 +7727,9 @@ $86:B4B1             dx B49D,B4B0,B443,00,00,3000,0000,84FC ; Old Tourian escape
 }
 
 
-;;; $B4BF..B5D8: Lava seahorse fireball ;;;
+;;; $B4BF..B5D8: Dragon fireball ;;;
 {
-;;; $B4BF: Instruction list - lava seahorse fireball - rising - leftwards ;;;
+;;; $B4BF: Instruction list - dragon fireball - rising - leftwards ;;;
 {
 $86:B4BF             dx 0005,8FD3,
                         0005,8FDA,
@@ -7737,7 +7737,7 @@ $86:B4BF             dx 0005,8FD3,
 }
 
 
-;;; $B4CB: Instruction list - lava seahorse fireball - rising - rightwards ;;;
+;;; $B4CB: Instruction list - dragon fireball - rising - rightwards ;;;
 {
 $86:B4CB             dx 0005,8FEF,
                         0005,8FF6,
@@ -7745,7 +7745,7 @@ $86:B4CB             dx 0005,8FEF,
 }
 
 
-;;; $B4D7: Instruction list - lava seahorse fireball - falling - leftwards ;;;
+;;; $B4D7: Instruction list - dragon fireball - falling - leftwards ;;;
 {
 $86:B4D7             dx 0005,8FE1,
                         0005,8FE8,
@@ -7753,7 +7753,7 @@ $86:B4D7             dx 0005,8FE1,
 }
 
 
-;;; $B4E3: Instruction list - lava seahorse fireball - falling - rightwards ;;;
+;;; $B4E3: Instruction list - dragon fireball - falling - rightwards ;;;
 {
 $86:B4E3             dx 0005,8FFD,
                         0005,9004,
@@ -7761,7 +7761,7 @@ $86:B4E3             dx 0005,8FFD,
 }
 
 
-;;; $B4EF: Initialisation AI - enemy projectile $B5CB (lava seahorse fireball) ;;;
+;;; $B4EF: Initialisation AI - enemy projectile $B5CB (dragon fireball) ;;;
 {
 $86:B4EF AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:B4F2 BD 7E 0F    LDA $0F7E,x[$7E:11BE]  ;\
@@ -7794,7 +7794,7 @@ $86:B534 60          RTS
 }
 
 
-;;; $B535: Pre-instruction - enemy projectile $B5CB (lava seahorse fireball) ;;;
+;;; $B535: Pre-instruction - enemy projectile $B5CB (dragon fireball) ;;;
 {
 $86:B535 BD B6 1A    LDA $1AB6,x[$7E:1AD6]  ;\
 $86:B538 29 00 FF    AND #$FF00             ;|
@@ -7878,7 +7878,7 @@ $86:B5CA 60          RTS
 }
 
 
-;;; $B5CB: Enemy projectile - lava seahorse fireball ;;;
+;;; $B5CB: Enemy projectile - dragon fireball ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -7889,7 +7889,7 @@ $86:B5CA 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:B5CB             dx B4EF,B535,B4BF,02,02,000A,0000,84FC ; Lava seahorse fireball. Initial instruction list ignored
+$86:B5CB             dx B4EF,B535,B4BF,02,02,000A,0000,84FC ; Dragon fireball. Initial instruction list ignored
 }
 }
 
@@ -8691,9 +8691,9 @@ $86:BB50             dx BB30,BB4F,BACC,00,00,0000,7000,84FC
 }
 
 
-;;; $BB5E..BBD4: Nuclear waffle body ;;;
+;;; $BB5E..BBD4: Fire arc body ;;;
 {
-;;; $BB5E: Instruction list - enemy projectile $BBC7 (Nuclear waffle body) ;;;
+;;; $BB5E: Instruction list - enemy projectile $BBC7 (fire arc body) ;;;
 {
 $86:BB5E             dx 0003,9306,
                         0003,930D,
@@ -8711,7 +8711,7 @@ $86:BB5E             dx 0003,9306,
 }
 
 
-;;; $BB92: Initialisation AI - enemy projectile $BBC7 (nuclear waffle body) ;;;
+;;; $BB92: Initialisation AI - enemy projectile $BBC7 (fire arc body) ;;;
 {
 $86:BB92 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $86:BB95 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
@@ -8737,13 +8737,13 @@ $86:BBC5 60          RTS
 }
 
 
-;;; $BBC6: RTS. Pre-instruction - enemy projectile $BBC7 (nuclear waffle body) ;;;
+;;; $BBC6: RTS. Pre-instruction - enemy projectile $BBC7 (fire arc body) ;;;
 {
 $86:BBC6 60          RTS
 }
 
 
-;;; $BBC7: Enemy projectile - nuclear waffle body ;;;
+;;; $BBC7: Enemy projectile - fire arc body ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -8754,21 +8754,21 @@ $86:BBC6 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:BBC7             dx BB92,BBC6,BB5E,08,08,C040,0000,84FC ; Nuclear waffle body
+$86:BBC7             dx BB92,BBC6,BB5E,08,08,C040,0000,84FC ; Fire arc body
 }
 }
 
 
-;;; $BBD5..BD67: Norfair lavaquake rocks ;;;
+;;; $BBD5..BD67: Polyp rock ;;;
 {
-;;; $BBD5: Instruction list - enemy projectile $BD5A (Norfair lavaquake rocks) ;;;
+;;; $BBD5: Instruction list - enemy projectile $BD5A (polyp rock) ;;;
 {
 $86:BBD5             dx 0001,9340,
                         8159        ; Sleep
 }
 
 
-;;; $BBDB: Initialisation AI - enemy projectile $BD5A (Norfair lavaquake rocks) ;;;
+;;; $BBDB: Initialisation AI - enemy projectile $BD5A (polyp rock) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -8795,7 +8795,7 @@ $86:BC0E 60          RTS
 }
 
 
-;;; $BC0F: Pre-instruction - enemy projectile $BD5A (Norfair lavaquake rocks) ;;;
+;;; $BC0F: Pre-instruction - enemy projectile $BD5A (polyp rock) ;;;
 {
 $86:BC0F FC FF 1A    JSR ($1AFF,x)[$86:BC16]; Execute [enemy projectile function]
 $86:BC12 20 1E BD    JSR $BD1E  [$86:BD1E]  ; Delete enemy projectile if off screen
@@ -8803,7 +8803,7 @@ $86:BC15 60          RTS
 }
 
 
-;;; $BC16: Norfair lavaquake rocks function - rising ;;;
+;;; $BC16: Polyp rock function - rising ;;;
 {
 $86:BC16 BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:BC19 38          SEC                    ;|
@@ -8878,7 +8878,7 @@ $86:BC8E 60          RTS
 }
 
 
-;;; $BC8F: Norfair lavaquake rocks function - falling ;;;
+;;; $BC8F: Polyp rock function - falling ;;;
 {
 $86:BC8F BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;\
 $86:BC92 18          CLC                    ;|
@@ -8999,7 +8999,7 @@ $86:BD59 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $BD5A: Enemy projectile - Norfair lavaquake rocks ;;;
+;;; $BD5A: Enemy projectile - polyp rock ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -9010,7 +9010,7 @@ $86:BD59 60          RTS                    ;} Return A = 1
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:BD5A             dx BBDB,BC0F,BBD5,02,02,0010,0000,84FC ; Norfair lavaquake rocks. Initial instruction list ignored
+$86:BD5A             dx BBDB,BC0F,BBD5,02,02,0010,0000,84FC ; Polyp rock. Initial instruction list ignored
 }
 }
 
@@ -9855,11 +9855,11 @@ $86:C31D 9D DB 1A    STA $1ADB,x[$7E:1AF9]  ;/
 {
 $86:C320 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:C323 18          CLC                    ;|
-$86:C324 69 0A 00    ADC #$000A             ;} Enemy projectile X position = [Mother Brain's brain X position] + Ah
+$86:C324 69 0A 00    ADC #$000A             ;} Enemy projectile X position = [Mother Brain brain X position] + Ah
 $86:C327 9D 4B 1A    STA $1A4B,x[$7E:1A69]  ;/
 $86:C32A AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $86:C32D 18          CLC                    ;|
-$86:C32E 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain's brain Y position] + 10h
+$86:C32E 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain brain Y position] + 10h
 $86:C331 9D 93 1A    STA $1A93,x[$7E:1AB1]  ;/
 $86:C334 60          RTS
 }
@@ -10081,11 +10081,11 @@ $86:C492 A9 E0 00    LDA #$00E0             ;\
 $86:C495 99 B7 1A    STA $1AB7,y[$7E:1AD7]  ;} Enemy projectile X velocity = E0h
 $86:C498 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:C49B 18          CLC                    ;|
-$86:C49C 69 0C 00    ADC #$000C             ;} Enemy projectile X position = [Mother Brain's brain X position] + Ch
+$86:C49C 69 0C 00    ADC #$000C             ;} Enemy projectile X position = [Mother Brain brain X position] + Ch
 $86:C49F 99 4B 1A    STA $1A4B,y[$7E:1A6B]  ;/
 $86:C4A2 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $86:C4A5 18          CLC                    ;|
-$86:C4A6 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain's brain Y position] + 10h
+$86:C4A6 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain brain Y position] + 10h
 $86:C4A9 99 93 1A    STA $1A93,y[$7E:1AB3]  ;/
 $86:C4AC A9 00 04    LDA #$0400             ;\
 $86:C4AF 99 BB 19    STA $19BB,y[$7E:19DB]  ;} Enemy projectile VRAM graphics index = 0, palette 2
@@ -10207,7 +10207,7 @@ $86:C5B4 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y positio
 $86:C5B6 A9 3F EC    LDA #$EC3F             ;\
 $86:C5B9 DA          PHX                    ;|
 $86:C5BA 5A          PHY                    ;|
-$86:C5BB 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn Mother Brain's brain enemy drops (100% nothing...)
+$86:C5BB 22 0E 92 A0 JSL $A0920E[$A0:920E]  ;} Spawn Mother Brain brain enemy drops (100% nothing...)
 $86:C5BF 7A          PLY                    ;|
 $86:C5C0 FA          PLX                    ;/
 $86:C5C1 60          RTS
@@ -10272,7 +10272,7 @@ $86:C622 A9 00 04    LDA #$0400             ;\
 $86:C625 99 BB 19    STA $19BB,y[$7E:19CB]  ;} Enemy projectile VRAM graphics index = 0, palette 2
 $86:C628 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
 $86:C62B 18          CLC                    ;|
-$86:C62C 69 40 00    ADC #$0040             ;} Enemy projectile X position = [Mother Brain's body X position] + 40h
+$86:C62C 69 40 00    ADC #$0040             ;} Enemy projectile X position = [Mother Brain body X position] + 40h
 $86:C62F 99 4B 1A    STA $1A4B,y[$7E:1A5B]  ;/
 $86:C632 8F 08 80 7E STA $7E8008[$7E:8008]  ; Mother Brain's death beam next X position = [enemy projectile X position]
 $86:C636 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
@@ -10281,7 +10281,7 @@ $86:C63A EF 08 80 7E SBC $7E8008[$7E:8008]  ;} $12 = [Samus X position] - [enemy
 $86:C63E 85 12       STA $12    [$7E:0012]  ;/
 $86:C640 AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
 $86:C643 18          CLC                    ;|
-$86:C644 69 D0 FF    ADC #$FFD0             ;} Enemy projectile Y position = [Mother Brain's body Y position] - 30h
+$86:C644 69 D0 FF    ADC #$FFD0             ;} Enemy projectile Y position = [Mother Brain body Y position] - 30h
 $86:C647 99 93 1A    STA $1A93,y[$7E:1AA3]  ;/
 $86:C64A 8F 0C 80 7E STA $7E800C[$7E:800C]  ; Mother Brain's death beam next Y position = [enemy projectile Y position]
 $86:C64E AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
@@ -10470,11 +10470,11 @@ $86:C811 9E DB 1A    STZ $1ADB,x[$7E:1AFB]
 {
 $86:C814 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:C817 18          CLC                    ;|
-$86:C818 69 00 00    ADC #$0000             ;} Enemy projectile X position = [Mother Brain's brain X position]
+$86:C818 69 00 00    ADC #$0000             ;} Enemy projectile X position = [Mother Brain brain X position]
 $86:C81B 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;/
 $86:C81E AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $86:C821 18          CLC                    ;|
-$86:C822 69 00 00    ADC #$0000             ;} Enemy projectile Y position = [Mother Brain's brain Y position]
+$86:C822 69 00 00    ADC #$0000             ;} Enemy projectile Y position = [Mother Brain brain Y position]
 $86:C825 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
 $86:C828 60          RTS
 }
@@ -10515,11 +10515,11 @@ $86:C851 0A          ASL A                  ;} Y = [enemy projectile attached po
 $86:C852 A8          TAY                    ;/
 $86:C853 B9 6E C8    LDA $C86E,y[$86:C872]  ;\
 $86:C856 18          CLC                    ;|
-$86:C857 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} Enemy projectile X position = [Mother Brain's brain X position] + [$C86E + [Y]]
+$86:C857 6D BA 0F    ADC $0FBA  [$7E:0FBA]  ;} Enemy projectile X position = [Mother Brain brain X position] + [$C86E + [Y]]
 $86:C85A 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 $86:C85D B9 70 C8    LDA $C870,y[$86:C874]  ;\
 $86:C860 18          CLC                    ;|
-$86:C861 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} Enemy projectile Y position = [Mother Brain's brain Y position] + [$C86E + [Y] + 2]
+$86:C861 6D BE 0F    ADC $0FBE  [$7E:0FBE]  ;} Enemy projectile Y position = [Mother Brain brain Y position] + [$C86E + [Y] + 2]
 $86:C864 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:C867 9E B7 1A    STZ $1AB7,x[$7E:1AD9]
 $86:C86A 9E DB 1A    STZ $1ADB,x[$7E:1AFD]  ; Enemy projectile Y velocity = 0
@@ -10631,11 +10631,11 @@ $86:C911 9D DB 1A    STA $1ADB,x[$7E:1AF7]  ;} Enemy projectile Y offset = [$14]
 {
 $86:C914 BD B7 1A    LDA $1AB7,x[$7E:1AD3]  ;\
 $86:C917 18          CLC                    ;|
-$86:C918 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy projectile X position = [Mother Brain's body X position] + [enemy projectile X offset]
+$86:C918 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy projectile X position = [Mother Brain body X position] + [enemy projectile X offset]
 $86:C91B 9D 4B 1A    STA $1A4B,x[$7E:1A67]  ;/
 $86:C91E BD DB 1A    LDA $1ADB,x[$7E:1AF7]  ;\
 $86:C921 18          CLC                    ;|
-$86:C922 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy projectile Y position = [Mother Brain's body Y position] + [enemy projectile Y offset]
+$86:C922 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy projectile Y position = [Mother Brain body Y position] + [enemy projectile Y offset]
 $86:C925 9D 93 1A    STA $1A93,x[$7E:1AAF]  ;/
 $86:C928 60          RTS
 }
@@ -10801,11 +10801,11 @@ $86:CA6A BB          TYX
 $86:CA6B 9E BB 19    STZ $19BB,x[$7E:19DB]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:CA6E AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:CA71 18          CLC                    ;|
-$86:CA72 69 06 00    ADC #$0006             ;} Enemy projectile X position = [Mother Brain's brain X position] + 6
+$86:CA72 69 06 00    ADC #$0006             ;} Enemy projectile X position = [Mother Brain brain X position] + 6
 $86:CA75 9D 4B 1A    STA $1A4B,x[$7E:1A6B]  ;/
 $86:CA78 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $86:CA7B 18          CLC                    ;|
-$86:CA7C 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain's brain Y position] + 10h
+$86:CA7C 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain brain Y position] + 10h
 $86:CA7F 9D 93 1A    STA $1A93,x[$7E:1AB3]  ;/
 $86:CA82 60          RTS
 }
@@ -10817,11 +10817,11 @@ $86:CA83 BB          TYX
 $86:CA84 9E BB 19    STZ $19BB,x[$7E:19DD]  ; Enemy projectile VRAM graphics index = 0, palette 0
 $86:CA87 AD BA 0F    LDA $0FBA  [$7E:0FBA]  ;\
 $86:CA8A 18          CLC                    ;|
-$86:CA8B 69 06 00    ADC #$0006             ;} Enemy projectile X position = [Mother Brain's brain X position] + 6
+$86:CA8B 69 06 00    ADC #$0006             ;} Enemy projectile X position = [Mother Brain brain X position] + 6
 $86:CA8E 9D 4B 1A    STA $1A4B,x[$7E:1A6D]  ;/
 $86:CA91 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $86:CA94 18          CLC                    ;|
-$86:CA95 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain's brain Y position] + 10h
+$86:CA95 69 10 00    ADC #$0010             ;} Enemy projectile Y position = [Mother Brain brain Y position] + 10h
 $86:CA98 9D 93 1A    STA $1A93,x[$7E:1AB5]  ;/
 $86:CA9B A9 01 00    LDA #$0001             ;\
 $86:CA9E 8F 6A 78 7E STA $7E786A[$7E:786A]  ;} Mother Brain's small purple breath is active flag = 1
@@ -10931,9 +10931,9 @@ $86:CBBB             dx CAF6,CAFA,CB0D,00,00,1000,0000,84FC ; Time bomb set Japa
 }
 
 
-;;; $CBC9..CC92: Mother Brain's tube falling ;;;
+;;; $CBC9..CC92: Mother Brain tube falling ;;;
 {
-;;; $CBC9: Initialisation AI - enemy projectile $CC5B/$CC69/$CC77/$CC85 (Mother Brain's tube falling) ;;;
+;;; $CBC9: Initialisation AI - enemy projectile $CC5B/$CC69/$CC77/$CC85 (Mother Brain tube falling) ;;;
 {
 $86:CBC9 BB          TYX
 $86:CBCA A9 00 0E    LDA #$0E00             ;\
@@ -10950,13 +10950,13 @@ $86:CBE6 60          RTS
 }
 
 
-;;; $CBE7: Pre-instruction - enemy projectile $CC5B/$CC69/$CC77/$CC85 (Mother Brain's tube falling) ;;;
+;;; $CBE7: Pre-instruction - enemy projectile $CC5B/$CC69/$CC77/$CC85 (Mother Brain tube falling) ;;;
 {
 $86:CBE7 7C FF 1A    JMP ($1AFF,x)[$86:CBEA]; Go to [enemy projectile function]
 }
 
 
-;;; $CBEA: Mother Brain's tube falling function - generate explosion ;;;
+;;; $CBEA: Mother Brain tube falling function - generate explosion ;;;
 {
 $86:CBEA BD 4B 1A    LDA $1A4B,x[$7E:1A6D]  ;\
 $86:CBED 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
@@ -10972,7 +10972,7 @@ $86:CC05 9D FF 1A    STA $1AFF,x[$7E:1B21]  ;} Enemy projectile function = $CC08
 }
 
 
-;;; $CC08: Mother Brain's tube falling function - falling ;;;
+;;; $CC08: Mother Brain tube falling function - falling ;;;
 {
 $86:CC08 C2 21       REP #$21               ;\
 $86:CC0A BD DB 1A    LDA $1ADB,x[$7E:1AFD]  ;|
@@ -11822,9 +11822,9 @@ $86:D207 60          RTS
 }
 
 
-;;; $D208..A5: Maridia floater spike ;;;
+;;; $D208..A5: Powamp spike ;;;
 {
-;;; $D208: Instruction list - enemy projectile $D298 (Maridia floater spike) ;;;
+;;; $D208: Instruction list - enemy projectile $D298 (powamp spike) ;;;
 {
 $86:D208             dw 0006,99E7,
                         0006,99EE,
@@ -11833,13 +11833,13 @@ $86:D208             dw 0006,99E7,
 }
 
 
-;;; $D218: Instruction - delete / shot instruction list - enemy projectile $D298 (Maridia floater spike) ;;;
+;;; $D218: Instruction - delete / shot instruction list - enemy projectile $D298 (powamp spike) ;;;
 {
 $86:D218             dw 8154        ; Delete
 }
 
 
-;;; $D21A: Maridia floater's spike velocity table ;;;
+;;; $D21A: Powamp spike velocity table ;;;
 {
 ;                        _____________________________________________ 0: Up
 ;                       |      _______________________________________ 1: Up-right
@@ -11855,7 +11855,7 @@ $86:D22A             dw FFE0, FFE0, 0000, 0020, 0020, 0020, 0000, FFE0 ; Y veloc
 }
 
 
-;;; $D23A: Initialisation AI - enemy projectile $D298 (Maridia floater spike) ;;;
+;;; $D23A: Initialisation AI - enemy projectile $D298 (powamp spike) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -11887,7 +11887,7 @@ $86:D262 60          RTS
 }
 
 
-;;; $D263: Pre-instruction - enemy projectile $D298 (Maridia floater spike) ;;;
+;;; $D263: Pre-instruction - enemy projectile $D298 (powamp spike) ;;;
 {
 $86:D263 BD FF 1A    LDA $1AFF,x            ;\
 $86:D266 0A          ASL A                  ;|
@@ -11917,7 +11917,7 @@ $86:D297 60          RTS
 }
 
 
-;;; $D298: Enemy projectile - Maridia floater spike ;;;
+;;; $D298: Enemy projectile - powamp spike ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -11928,14 +11928,14 @@ $86:D297 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:D298             dx D23A,D263,D208,04,04,0014,0000,D218 ; Maridia floater spike
+$86:D298             dx D23A,D263,D208,04,04,0014,0000,D218 ; Powamp spike
 }
 }
 
 
-;;; $D2A6..D3D6: Wrecked Ship robot laser ;;;
+;;; $D2A6..D3D6: Work robot laser ;;;
 {
-;;; $D2A6: Enemy projectiles - Wrecked Ship robot laser ;;;
+;;; $D2A6: Enemy projectiles - work robot laser ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -11946,15 +11946,15 @@ $86:D298             dx D23A,D263,D208,04,04,0014,0000,D218 ; Maridia floater sp
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:D2A6             dx D341,D3BF,D2EC,0C,0C,0004,0000,84FC ; Wrecked Ship robot laser - up-left
-$86:D2B4             dx D32E,D3BF,D2EC,0F,02,0014,0000,84FC ; Wrecked Ship robot laser - horizontal
-$86:D2C2             dx D30C,D3BF,D2EC,0C,0C,0004,0000,84FC ; Wrecked Ship robot laser - down-left
-$86:D2D0             dx D341,D3BF,D2EC,0C,0C,0004,0000,84FC ; Wrecked Ship robot laser - up-right
-$86:D2DE             dx D30C,D3BF,D2EC,0C,0C,0004,0000,84FC ; Wrecked Ship robot laser - down-right
+$86:D2A6             dx D341,D3BF,D2EC,0C,0C,0004,0000,84FC ; Work robot laser - up-left
+$86:D2B4             dx D32E,D3BF,D2EC,0F,02,0014,0000,84FC ; Work robot laser - horizontal
+$86:D2C2             dx D30C,D3BF,D2EC,0C,0C,0004,0000,84FC ; Work robot laser - down-left
+$86:D2D0             dx D341,D3BF,D2EC,0C,0C,0004,0000,84FC ; Work robot laser - up-right
+$86:D2DE             dx D30C,D3BF,D2EC,0C,0C,0004,0000,84FC ; Work robot laser - down-right
 }
 
 
-;;; $D2EC: Instruction list - enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (Wrecked Ship robot laser) ;;;
+;;; $D2EC: Instruction list - enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (work robot laser) ;;;
 {
 $86:D2EC             dw 0004,99FC,
                         0004,9A03,
@@ -11967,7 +11967,7 @@ $86:D2F8             dw 0004,9A20,
 }
 
 
-;;; $D30C: Initialisation AI - enemy projectile $D2C2/$D2DE (Wrecked Ship robot laser - down-left/right) ;;;
+;;; $D30C: Initialisation AI - enemy projectile $D2C2/$D2DE (work robot laser - down-left/right) ;;;
 {
 $86:D30C DA          PHX
 $86:D30D AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
@@ -11983,11 +11983,11 @@ $86:D320 A9 80 00    LDA #$0080             ;\
 $86:D323 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = 80h
 $86:D326 A9 00 00    LDA #$0000             ;\
 $86:D329 99 BB 19    STA $19BB,y[$7E:19DD]  ;} Enemy projectile VRAM graphics index = 0, palette 0
-$86:D32C 80 2D       BRA $2D    [$D35B]     ; Go to Wrecked Ship robot laser common initialisation
+$86:D32C 80 2D       BRA $2D    [$D35B]     ; Go to work robot laser common initialisation
 }
 
 
-;;; $D32E: Initialisation AI - enemy projectile $D2B4 (Wrecked Ship robot laser - horizontal) ;;;
+;;; $D32E: Initialisation AI - enemy projectile $D2B4 (work robot laser - horizontal) ;;;
 {
 $86:D32E DA          PHX
 $86:D32F AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
@@ -11996,11 +11996,11 @@ $86:D335 08          PHP                    ;} Enemy projectile X velocity = [en
 $86:D336 99 B7 1A    STA $1AB7,y[$7E:1AD9]  ;/
 $86:D339 A9 00 00    LDA #$0000             ;\
 $86:D33C 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = 0
-$86:D33F 80 1A       BRA $1A    [$D35B]     ; Go to Wrecked Ship robot laser common initialisation
+$86:D33F 80 1A       BRA $1A    [$D35B]     ; Go to work robot laser common initialisation
 }
 
 
-;;; $D341: Initialisation AI - enemy projectile $D2A6/$D2D0 (Wrecked Ship robot laser - up-left/right) ;;;
+;;; $D341: Initialisation AI - enemy projectile $D2A6/$D2D0 (work robot laser - up-left/right) ;;;
 {
 $86:D341 DA          PHX
 $86:D342 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
@@ -12017,7 +12017,7 @@ $86:D358 99 DB 1A    STA $1ADB,y[$7E:1AFD]  ;} Enemy projectile Y velocity = -80
 }
 
 
-;;; $D35B: Wrecked Ship robot laser common initialisation ;;;
+;;; $D35B: Work robot laser common initialisation ;;;
 {
 ; Expects a pushed PSR and X
 ; BUG: Missing `CMP $0915` at $D3B4 causes laser sound effect to only play if the robot is in the top row of scrolls
@@ -12070,7 +12070,7 @@ $86:D3BE 60          RTS
 }
 
 
-;;; $D3BF: Pre-instruction - enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (Wrecked Ship robot laser) ;;;
+;;; $D3BF: Pre-instruction - enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (work robot laser) ;;;
 {
 $86:D3BF 08          PHP
 $86:D3C0 C2 20       REP #$20
@@ -12696,74 +12696,74 @@ $86:D920             dx D774,84FB,D652,00,00,3000,0000,84FC ; n00b tube released
 }
 
 
-;;; $D92E..DB0B: Spike shooting plant spike ;;;
+;;; $D92E..DB0B: Cacatac spike ;;;
 {
 ;;; $D92E..69: Instruction lists ;;;
 {
-;;; $D92E: Instruction list - spike shooting plant spike - left - facing up ;;;
+;;; $D92E: Instruction list - cacatac spike - left - facing up ;;;
 {
 $86:D92E             dx 0001,A908,
                         8159        ; Sleep
 }
 
 
-;;; $D934: Instruction list - spike shooting plant spike - up-left ;;;
+;;; $D934: Instruction list - cacatac spike - up-left ;;;
 {
 $86:D934             dx 0001,A90F,
                         8159        ; Sleep
 }
 
 
-;;; $D93A: Instruction list - spike shooting plant spike - up ;;;
+;;; $D93A: Instruction list - cacatac spike - up ;;;
 {
 $86:D93A             dx 0001,A916,
                         8159        ; Sleep
 }
 
 
-;;; $D940: Instruction list - spike shooting plant spike - up-right ;;;
+;;; $D940: Instruction list - cacatac spike - up-right ;;;
 {
 $86:D940             dx 0001,A91D,
                         8159        ; Sleep
 }
 
 
-;;; $D946: Instruction list - spike shooting plant spike - right - facing up ;;;
+;;; $D946: Instruction list - cacatac spike - right - facing up ;;;
 {
 $86:D946             dx 0001,A924,
                         8159        ; Sleep
 }
 
 
-;;; $D94C: Instruction list - spike shooting plant spike - left - facing down ;;;
+;;; $D94C: Instruction list - cacatac spike - left - facing down ;;;
 {
 $86:D94C             dx 0001,A92B,
                         8159        ; Sleep
 }
 
 
-;;; $D952: Instruction list - spike shooting plant spike - down-left ;;;
+;;; $D952: Instruction list - cacatac spike - down-left ;;;
 {
 $86:D952             dx 0001,A932,
                         8159        ; Sleep
 }
 
 
-;;; $D958: Instruction list - spike shooting plant spike - down ;;;
+;;; $D958: Instruction list - cacatac spike - down ;;;
 {
 $86:D958             dx 0001,A939,
                         8159        ; Sleep
 }
 
 
-;;; $D95E: Instruction list - spike shooting plant spike - down-right ;;;
+;;; $D95E: Instruction list - cacatac spike - down-right ;;;
 {
 $86:D95E             dx 0001,A940,
                         8159        ; Sleep
 }
 
 
-;;; $D964: Instruction list - spike shooting plant spike - right - facing down ;;;
+;;; $D964: Instruction list - cacatac spike - right - facing down ;;;
 {
 $86:D964             dx 0001,A947,
                         8159        ; Sleep
@@ -12771,21 +12771,21 @@ $86:D964             dx 0001,A947,
 }
 
 
-;;; $D96A: Spike shooting plant instruction list pointers ;;;
+;;; $D96A: Cacatac instruction list pointers ;;;
 {
 $86:D96A             dw D92E, D93A, D946, D94C, D958, D964,
                         D934, D940, D952, D95E
 }
 
 
-;;; $D97E: Spike shooting plant function pointers ;;;
+;;; $D97E: Cacatac function pointers ;;;
 {
 $86:D97E             dw DA8E, DA98, DA93, DA8E, DA9D, DA93,
                         DAA2, DAB2, DAAA, DABA
 }
 
 
-;;; $D992: Initialisation AI - enemy projectile $DAFE (spike shooting plant spike) ;;;
+;;; $D992: Initialisation AI - enemy projectile $DAFE (cacatac spike) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -12830,7 +12830,7 @@ $86:D9DA 60          RTS
 }
 
 
-;;; $D9DB: Pre-instruction - enemy projectile $DAFE (spike shooting plant spike) ;;;
+;;; $D9DB: Pre-instruction - enemy projectile $DAFE (cacatac spike) ;;;
 {
 $86:D9DB 9B          TXY                    ;\
 $86:D9DC BE FF 1A    LDX $1AFF,y[$7E:1B21]  ;} Execute [$D97E + [enemy projectile direction]]
@@ -12840,7 +12840,7 @@ $86:D9E5 60          RTS
 }
 
 
-;;; $D9E6: Move spike shooting plant spike up ;;;
+;;; $D9E6: Move cacatac spike up ;;;
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
@@ -12866,7 +12866,7 @@ $86:DA0F 60          RTS
 }
 
 
-;;; $DA10: Move spike shooting plant spike down ;;;
+;;; $DA10: Move cacatac spike down ;;;
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
@@ -12892,7 +12892,7 @@ $86:DA39 60          RTS
 }
 
 
-;;; $DA3A: Move spike shooting plant spike left ;;;
+;;; $DA3A: Move cacatac spike left ;;;
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
@@ -12918,7 +12918,7 @@ $86:DA63 60          RTS
 }
 
 
-;;; $DA64: Move spike shooting plant spike right ;;;
+;;; $DA64: Move cacatac spike right ;;;
 {
 ;; Parameters:
 ;;     X: Enemy projectile index
@@ -12944,70 +12944,70 @@ $86:DA8D 60          RTS
 }
 
 
-;;; $DA8E: Move spike shooting plant spike left ;;;
+;;; $DA8E: Move cacatac spike left ;;;
 {
 $86:DA8E BB          TYX
-$86:DA8F 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move spike shooting plant spike left
+$86:DA8F 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move cacatac spike left
 $86:DA92 60          RTS
 }
 
 
-;;; $DA93: Move spike shooting plant spike right ;;;
+;;; $DA93: Move cacatac spike right ;;;
 {
 $86:DA93 BB          TYX
-$86:DA94 20 64 DA    JSR $DA64  [$86:DA64]  ; Move spike shooting plant spike right
+$86:DA94 20 64 DA    JSR $DA64  [$86:DA64]  ; Move cacatac spike right
 $86:DA97 60          RTS
 }
 
 
-;;; $DA98: Move spike shooting plant spike up ;;;
+;;; $DA98: Move cacatac spike up ;;;
 {
 $86:DA98 BB          TYX
-$86:DA99 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move spike shooting plant spike up
+$86:DA99 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move cacatac spike up
 $86:DA9C 60          RTS
 }
 
 
-;;; $DA9D: Move spike shooting plant spike down ;;;
+;;; $DA9D: Move cacatac spike down ;;;
 {
 $86:DA9D BB          TYX
-$86:DA9E 20 10 DA    JSR $DA10  [$86:DA10]  ; Move spike shooting plant spike down
+$86:DA9E 20 10 DA    JSR $DA10  [$86:DA10]  ; Move cacatac spike down
 $86:DAA1 60          RTS
 }
 
 
-;;; $DAA2: Move spike shooting plant spike up-left ;;;
+;;; $DAA2: Move cacatac spike up-left ;;;
 {
 $86:DAA2 BB          TYX
-$86:DAA3 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move spike shooting plant spike left
-$86:DAA6 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move spike shooting plant spike up
+$86:DAA3 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move cacatac spike left
+$86:DAA6 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move cacatac spike up
 $86:DAA9 60          RTS
 }
 
 
-;;; $DAAA: Move spike shooting plant spike down-left ;;;
+;;; $DAAA: Move cacatac spike down-left ;;;
 {
 $86:DAAA BB          TYX
-$86:DAAB 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move spike shooting plant spike left
-$86:DAAE 20 10 DA    JSR $DA10  [$86:DA10]  ; Move spike shooting plant spike down
+$86:DAAB 20 3A DA    JSR $DA3A  [$86:DA3A]  ; Move cacatac spike left
+$86:DAAE 20 10 DA    JSR $DA10  [$86:DA10]  ; Move cacatac spike down
 $86:DAB1 60          RTS
 }
 
 
-;;; $DAB2: Move spike shooting plant spike up-right ;;;
+;;; $DAB2: Move cacatac spike up-right ;;;
 {
 $86:DAB2 BB          TYX
-$86:DAB3 20 64 DA    JSR $DA64  [$86:DA64]  ; Move spike shooting plant spike right
-$86:DAB6 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move spike shooting plant spike up
+$86:DAB3 20 64 DA    JSR $DA64  [$86:DA64]  ; Move cacatac spike right
+$86:DAB6 20 E6 D9    JSR $D9E6  [$86:D9E6]  ; Move cacatac spike up
 $86:DAB9 60          RTS
 }
 
 
-;;; $DABA: Move spike shooting plant spike down-right ;;;
+;;; $DABA: Move cacatac spike down-right ;;;
 {
 $86:DABA BB          TYX
-$86:DABB 20 64 DA    JSR $DA64  [$86:DA64]  ; Move spike shooting plant spike right
-$86:DABE 20 10 DA    JSR $DA10  [$86:DA10]  ; Move spike shooting plant spike down
+$86:DABB 20 64 DA    JSR $DA64  [$86:DA64]  ; Move cacatac spike right
+$86:DABE 20 10 DA    JSR $DA10  [$86:DA10]  ; Move cacatac spike down
 $86:DAC1 60          RTS
 }
 
@@ -13054,7 +13054,7 @@ $86:DAFD 60          RTS
 }
 
 
-;;; $DAFE: Enemy projectile - spike shooting plant spike ;;;
+;;; $DAFE: Enemy projectile - cacatac spike ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -13065,7 +13065,7 @@ $86:DAFD 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:DAFE             dx D992,D9DB,D92E,02,02,0005,0000,84FC ; Spike shooting plant spike. Initial instruction list ignored
+$86:DAFE             dx D992,D9DB,D92E,02,02,0005,0000,84FC ; Cacatac spike. Initial instruction list ignored
 }
 }
 
@@ -13506,9 +13506,9 @@ $86:DE88             dx DCD4,DD46,DC00,02,02,2000,0000,DC00 ; Spore spawner
 }
 
 
-;;; $DE96..DFD7: Nami/fune fireball ;;;
+;;; $DE96..DFD7: Namihe/fune fireball ;;;
 {
-;;; $DE96: Instruction list - nami/fune fireball - left ;;;
+;;; $DE96: Instruction list - namihe/fune fireball - left ;;;
 {
 $86:DE96             dx 0005,AAB9,
                         0005,AAC0,
@@ -13517,7 +13517,7 @@ $86:DE96             dx 0005,AAB9,
 }
 
 
-;;; $DEA6: Instruction list - nami/fune fireball - right ;;;
+;;; $DEA6: Instruction list - namihe/fune fireball - right ;;;
 {
 $86:DEA6             dx 0005,AACE,
                         0005,AAD5,
@@ -13526,14 +13526,14 @@ $86:DEA6             dx 0005,AACE,
 }
 
 
-;;; $DEB6: Nami/fune fireball X velocity table ;;;
+;;; $DEB6: Namihe/fune fireball X velocity table ;;;
 {
 ; Left velocity, right velocity
 $86:DEB6             dw FFC0,0040, FF80,0080, FF40,00C0, FF00,0100, FEC0,0140, FE80,0180, FE40,01C0, FE00,0200
 }
 
 
-;;; $DED6: Initialisation AI - enemy projectile $DFBC/$DFCA (nami/fune fireball) ;;;
+;;; $DED6: Initialisation AI - enemy projectile $DFBC/$DFCA (namihe/fune fireball) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -13580,7 +13580,7 @@ $86:DF38 60          RTS
 }
 
 
-;;; $DF39: Pre-instruction - enemy projectile $DFBC/$DFCA (nami/fune fireball) ;;;
+;;; $DF39: Pre-instruction - enemy projectile $DFBC/$DFCA (namihe/fune fireball) ;;;
 {
 $86:DF39 FC FF 1A    JSR ($1AFF,x)[$86:DF6A]; Execute [enemy projectile function]
 $86:DF3C 20 94 DF    JSR $DF94  [$86:DF94]  ; Delete enemy projectile if off screen
@@ -13588,7 +13588,7 @@ $86:DF3F 60          RTS
 }
 
 
-;;; $DF40: Nami/fune fireball function - left ;;;
+;;; $DF40: Namihe/fune fireball function - left ;;;
 {
 $86:DF40 BD DB 1A    LDA $1ADB,x[$7E:1AFB]  ;\
 $86:DF43 29 00 FF    AND #$FF00             ;|
@@ -13612,7 +13612,7 @@ $86:DF69 60          RTS
 }
 
 
-;;; $DF6A: Nami/fune fireball function - right ;;;
+;;; $DF6A: Namihe/fune fireball function - right ;;;
 {
 $86:DF6A BD B7 1A    LDA $1AB7,x[$7E:1AD9]  ;\
 $86:DF6D 29 00 FF    AND #$FF00             ;|
@@ -13667,7 +13667,7 @@ $86:DFBB 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DFBC: Enemy projectiles - nami/fune fireball ;;;
+;;; $DFBC: Enemy projectiles - namihe/fune fireball ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -13678,15 +13678,15 @@ $86:DFBB 60          RTS                    ;} Return A = 1
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:DFBC             dx DED6,DF39,DE96,04,08,00C8,0000,84FC ; Nami fireball. Initial instruction list ignored
+$86:DFBC             dx DED6,DF39,DE96,04,08,00C8,0000,84FC ; Namihe fireball. Initial instruction list ignored
 $86:DFCA             dx DED6,DF39,DE96,04,08,003C,0000,84FC ; Fune fireball. Initial instruction list ignored
 }
 }
 
 
-;;; $DFD8..E0ED: Lava thrown by lavaman ;;;
+;;; $DFD8..E0ED: Lava thrown by magdollite ;;;
 {
-;;; $DFD8: Instruction list - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
+;;; $DFD8: Instruction list - enemy projectile $E0E0 (lava thrown by magdollite) ;;;
 {
 $86:DFD8             dw 0001,AB0F,
                         8159        ; Sleep
@@ -13700,14 +13700,14 @@ $86:DFDE             dw 0001,AB25,
 }
 
 
-;;; $DFE4: Shot instruction list - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
+;;; $DFE4: Shot instruction list - enemy projectile $E0E0 (lava thrown by magdollite) ;;;
 {
-$86:DFE4             dw DFEA,       ; Spawn enemy drops with Norfair lava creature's drop chances
-                        81AB,84FC   ; Go to $84FC
+$86:DFE4             dw DFEA,       ; Spawn enemy drops with magdollite's drop chances
+                        81AB,84FC   ; Go to delete
 }
 
 
-;;; $DFEA: Instruction - spawn enemy drops with Norfair lava creature's drop chances ;;;
+;;; $DFEA: Instruction - spawn enemy drops with magdollite's drop chances ;;;
 {
 $86:DFEA 5A          PHY
 $86:DFEB DA          PHX
@@ -13715,7 +13715,7 @@ $86:DFEC BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
 $86:DFEF 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
 $86:DFF1 BD 93 1A    LDA $1A93,x[$7E:1AB1]  ;\
 $86:DFF4 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
-$86:DFF6 A9 3F E8    LDA #$E83F             ; A = $E83F (Norfair lava creature)
+$86:DFF6 A9 3F E8    LDA #$E83F             ; A = $E83F (magdollite)
 $86:DFF9 22 0E 92 A0 JSL $A0920E[$A0:920E]  ; Spawn enemy drops
 $86:DFFD FA          PLX
 $86:DFFE 7A          PLY
@@ -13723,7 +13723,7 @@ $86:DFFF 60          RTS
 }
 
 
-;;; $E000: Initialisation AI - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
+;;; $E000: Initialisation AI - enemy projectile $E0E0 (lava thrown by magdollite) ;;;
 {
 ;; Parameters:
 ;;     Y: Enemy projectile index
@@ -13758,7 +13758,7 @@ $86:E048 60          RTS
 }
 
 
-;;; $E049: Pre-instruction - enemy projectile $E0E0 (lava thrown by lavaman) ;;;
+;;; $E049: Pre-instruction - enemy projectile $E0E0 (lava thrown by magdollite) ;;;
 {
 $86:E049 FC FF 1A    JSR ($1AFF,x)[$86:E07A]; Execute [enemy projectile function]
 $86:E04C 20 A4 E0    JSR $E0A4  [$86:E0A4]  ; Delete enemy projectile if off screen
@@ -13766,7 +13766,7 @@ $86:E04F 60          RTS
 }
 
 
-;;; $E050: Lava thrown by lavaman function - left ;;;
+;;; $E050: Lava thrown by magdollite function - left ;;;
 {
 ; Clone of $DF40
 $86:E050 BD DB 1A    LDA $1ADB,x[$7E:1AFD]
@@ -13791,7 +13791,7 @@ $86:E079 60          RTS
 }
 
 
-;;; $E07A: Lava thrown by lavaman function - right ;;;
+;;; $E07A: Lava thrown by magdollite function - right ;;;
 {
 ; Clone of $DF6A
 $86:E07A BD B7 1A    LDA $1AB7,x[$7E:1AD9]
@@ -13858,7 +13858,7 @@ $86:E0DF 60          RTS
 }
 
 
-;;; $E0E0: Enemy projectile - lava thrown by lavaman ;;;
+;;; $E0E0: Enemy projectile - lava thrown by magdollite ;;;
 {
 ;                        __________________________________ Initialisation AI
 ;                       |     _____________________________ Initial pre-instruction
@@ -13869,7 +13869,7 @@ $86:E0DF 60          RTS
 ;                       |    |    |    |  |  |     ________ Hit instruction list
 ;                       |    |    |    |  |  |    |     ___ Shot instruction list
 ;                       |    |    |    |  |  |    |    |
-$86:E0E0             dx E000,E049,DFD8,02,02,8028,0000,DFE4 ; Lava thrown by lavaman
+$86:E0E0             dx E000,E049,DFD8,02,02,8028,0000,DFE4 ; Lava thrown by magdollite
 }
 }
 
@@ -15611,7 +15611,7 @@ $86:ECAF             dx ED17,0003,  ; Spawn sprite object 3 (small explosion) ra
 }
 
 
-;;; $ECC5: Instruction list - enemy death explosion - type 3 (mini-Kraid explosion) ;;;
+;;; $ECC5: Instruction list - enemy death explosion - type 3 (fake Kraid explosion) ;;;
 {
 $86:ECC5             dx 81D5,0010   ; Timer = 10h
 $86:ECC9             dx ECE3,0003,  ; Spawn sprite object 3 (small explosion) randomly within radius 20h
@@ -16005,7 +16005,7 @@ $86:EF88 60          RTS
 ;;         0: Small explosion
 ;;         1: Killed by Samus contact
 ;;         2: Normal explosion
-;;         3: Mini-Kraid explosion
+;;         3: Fake Kraid explosion
 ;;         4: Big explosion
 $86:EF89 DA          PHX
 $86:EF8A 5A          PHY

@@ -1224,13 +1224,13 @@ $AD:DE1A 65 12       ADC $12    [$7E:0012]  ;} Mother Brain rainbow beam left ed
 $AD:DE1C 8F 36 80 7E STA $7E8036[$7E:8036]  ;/
 $AD:DE20 AD B9 0F    LDA $0FB9  [$7E:0FB9]  ;\
 $AD:DE23 18          CLC                    ;|
-$AD:DE24 69 00 0E    ADC #$0E00             ;} Mother Brain rainbow beam left origin X position = ([Mother Brain's brain X position] + Eh) * 100h
+$AD:DE24 69 00 0E    ADC #$0E00             ;} Mother Brain rainbow beam left origin X position = ([Mother Brain brain X position] + Eh) * 100h
 $AD:DE27 29 00 FF    AND #$FF00             ;|
 $AD:DE2A 8F 38 80 7E STA $7E8038[$7E:8038]  ;/
 $AD:DE2E 8F 3C 80 7E STA $7E803C[$7E:803C]  ; Mother Brain rainbow beam right origin X position = [Mother Brain rainbow beam left origin X position]
 $AD:DE32 AD BE 0F    LDA $0FBE  [$7E:0FBE]  ;\
 $AD:DE35 18          CLC                    ;|
-$AD:DE36 69 05 00    ADC #$0005             ;} Mother Brain rainbow beam origin Y position = [Mother Brain's brain Y position] + 5
+$AD:DE36 69 05 00    ADC #$0005             ;} Mother Brain rainbow beam origin Y position = [Mother Brain brain Y position] + 5
 $AD:DE39 8F 3A 80 7E STA $7E803A[$7E:803A]  ;|
 $AD:DE3D 8F 3E 80 7E STA $7E803E[$7E:803E]  ;/
 $AD:DE41 AF 34 80 7E LDA $7E8034[$7E:8034]  ;\
@@ -2032,8 +2032,8 @@ $AD:E3D4 6B          RTL
 
 ;;; $E3D5: Mother Brain health-based palette handling ;;;
 {
-; BG palette 4: Mother Brain's body
-; Sprite palette 1: Mother Brain's brain
+; BG palette 4: Mother Brain body
+; Sprite palette 1: Mother Brain brain
 ; Sprite palette 3: Mother Brain's back leg
 $AD:E3D5 AF 3E 78 7E LDA $7E783E[$7E:783E]  ;\
 $AD:E3D9 C9 02 00    CMP #$0002             ;} If not yet recovered from being a corpse:
@@ -2080,7 +2080,7 @@ $AD:E433 6B          RTL
 }
 
 
-;;; $E434: Mother Brain's body rainbow beam palettes ;;;
+;;; $E434: Mother Brain body rainbow beam palettes ;;;
 {
 ; Indexed by [$7E:7842]
 $AD:E434             dw E44A, E486, E4C2, E4FE, E53A, E576, E5B2, E5EE, E62A, E666, 0000
@@ -2196,8 +2196,8 @@ $AD:E998             dw 0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0000,0
 
 ;;; $E9B4: Fade Mother Brain palette to black ;;;
 {
-; BG palette 4: Mother Brain's body
-; Sprite palette 1: Mother Brain's brain
+; BG palette 4: Mother Brain body
+; Sprite palette 1: Mother Brain brain
 ; Sprite palette 3: Mother Brain's back leg
 $AD:E9B4 0A          ASL A                  ;\
 $AD:E9B5 AA          TAX                    ;} A = [$AD:E9E8 + [A] * 2]
@@ -2345,7 +2345,7 @@ $AD:EEF5 6B          RTL                    ;} Return carry set
 
 ;;; $EEF6: Transition Mother Brain palette to/from grey - fake death ;;;
 {
-; Sprite palette 1: Mother Brain's brain
+; Sprite palette 1: Mother Brain brain
 ; Expects a pushed X
 $AD:EEF6 5A          PHY
 $AD:EEF7 8B          PHB                    ;\
@@ -2366,8 +2366,8 @@ $AD:EF0C 6B          RTL                    ;} Return carry clear
 
 ;;; $EF0D: Transition Mother Brain palette from grey - drained by Shitroid ;;;
 {
-; BG palette 4: Mother Brain's body
-; Sprite palette 1: Mother Brain's brain
+; BG palette 4: Mother Brain body
+; Sprite palette 1: Mother Brain brain
 ; Sprite palette 3: Mother Brain's back leg
 $AD:EF0D 0A          ASL A                  ;\
 $AD:EF0E AA          TAX                    ;} A = [$AD:ED9C + [A] * 2]
@@ -2403,8 +2403,8 @@ $AD:EF49 6B          RTL                    ;} Return carry clear
 
 ;;; $EF4A: Transition Mother Brain palette to grey - drained by Shitroid ;;;
 {
-; BG palette 4: Mother Brain's body
-; Sprite palette 1: Mother Brain's brain
+; BG palette 4: Mother Brain body
+; Sprite palette 1: Mother Brain brain
 ; Sprite palette 3: Mother Brain's back leg
 $AD:EF4A 0A          ASL A                  ;\
 $AD:EF4B AA          TAX                    ;} A = [$AD:EF87 + [A] * 2]
@@ -2469,7 +2469,7 @@ $AD:F0BF             dw 4F38,3A52,218B,0CA5,5739,4273,2DAD,14C6,4F38,42B4,3631,2
 
 ;;; $F0E9: Transition Mother Brain palette to grey - real death ;;;
 {
-; Sprite palette 7: Mother Brain's brain whilst/after body explodes
+; Sprite palette 7: Mother Brain brain whilst/after body explodes
 $AD:F0E9 0A          ASL A                  ;\
 $AD:F0EA AA          TAX                    ;} A = [$AD:F107 + [A] * 2]
 $AD:F0EB BF 07 F1 AD LDA $ADF107,x[$AD:F107];/
@@ -2596,24 +2596,24 @@ $AD:F41B 6B          RTL
 }
 
 
-;;; $F41C: Handle Mother Brain's body flickering ;;;
+;;; $F41C: Handle Mother Brain body flickering ;;;
 {
 $AD:F41C AD A4 0F    LDA $0FA4  [$7E:0FA4]  ;\
-$AD:F41F 4A          LSR A                  ;} If [Mother Brain's body frame 0 counter] % 2 != 0:
+$AD:F41F 4A          LSR A                  ;} If [Mother Brain body frame 0 counter] % 2 != 0:
 $AD:F420 90 11       BCC $11    [$F433]     ;/
 $AD:F422 A5 69       LDA $69    [$7E:0069]  ;\
 $AD:F424 09 02 00    ORA #$0002             ;} Enable BG2
 $AD:F427 85 69       STA $69    [$7E:0069]  ;/
 $AD:F429 AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$AD:F42C 29 FF FE    AND #$FEFF             ;} Set Mother Brain's body as visible
+$AD:F42C 29 FF FE    AND #$FEFF             ;} Set Mother Brain body as visible
 $AD:F42F 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $AD:F432 6B          RTL                    ; Return
 
-$AD:F433 A5 69       LDA $69    [$7E:0069]  ;\ Else ([Mother Brain's body frame 0 counter] % 2 = 0):
+$AD:F433 A5 69       LDA $69    [$7E:0069]  ;\ Else ([Mother Brain body frame 0 counter] % 2 = 0):
 $AD:F435 29 FD FF    AND #$FFFD             ;} Disable BG2
 $AD:F438 85 69       STA $69    [$7E:0069]  ;/
 $AD:F43A AD 86 0F    LDA $0F86  [$7E:0F86]  ;\
-$AD:F43D 09 00 01    ORA #$0100             ;} Set Mother Brain's body as invisible
+$AD:F43D 09 00 01    ORA #$0100             ;} Set Mother Brain body as invisible
 $AD:F440 8D 86 0F    STA $0F86  [$7E:0F86]  ;/
 $AD:F443 6B          RTL
 }

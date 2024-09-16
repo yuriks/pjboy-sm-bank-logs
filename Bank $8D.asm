@@ -127,22 +127,22 @@ $8D:83BA             dx 0007, C3FA,DC,AF5E, C3F8,1C,2F5E, C3F8,14,2F4E, C3F8,04,
 ; Enemy projectile $CC85 (Mother Brain's top-middle-right tube falling)
 $8D:83DF             dx 0007, C3F6,DC,EF5E, C3F8,1C,6F5E, C3F8,14,6F4E, C3F8,04,EF40, C3F8,F4,2F4B, 01F8,EC,6F6D, 0000,EC,6F6D
 
-; Enemy projectile $9E90 (walking lava seahorse fireball)
+; Enemy projectile $9E90 (alcoon fireball)
 $8D:8404             dx 0001, 01FC,FC,212C
 $8D:840B             dx 0001, 01FC,FC,A12D
 $8D:8412             dx 0001, 01FC,FC,E12C
 $8D:8419             dx 0001, 01FC,FC,612D
 
-; Enemy projectile $9DB0 (mini Kraid spit)
+; Enemy projectile $9DB0 (fake Kraid spit)
 $8D:8420             dx 0001, 01FD,FD,231F
 
-; Enemy projectile $9DBE (mini Kraid spikes - left)
+; Enemy projectile $9DBE (fake Kraid spikes - left)
 $8D:8427             dx 0001, 01FC,FC,230F
 
-; Enemy projectile $9DCC (mini Kraid spikes - right)
+; Enemy projectile $9DCC (fake Kraid spikes - right)
 $8D:842E             dx 0001, 01FC,FC,630F
 
-; Enemy projectile $8BFA/$8C08/$8C16/$8C24 (metal skree particle)
+; Enemy projectile $8BFA/$8C08/$8C16/$8C24 (metaree particle)
 $8D:8435             dx 0001, 01FC,FC,312B
 
 ; Unused
@@ -433,7 +433,7 @@ $8D:8FB4             dx 0001, C3F8,F6,62DC
 $8D:8FBB             dx 0002, 0000,FE,62EF, 01F8,FE,62EE
 $8D:8FC7             dx 0002, 0000,FE,62DF, 01F8,FE,62DE
 
-; Enemy projectile $B5CB (lava seahorse fireball)
+; Enemy projectile $B5CB (dragon fireball)
 $8D:8FD3             dx 0001, 01FC,FC,2122
 $8D:8FDA             dx 0001, 01FC,FC,2123
 $8D:8FE1             dx 0001, 01FC,FC,A122
@@ -521,7 +521,7 @@ $8D:92E2             dx 0002, 81E9,F0,6328, 8008,F0,2328
 $8D:92EE             dx 0002, 81E9,F0,632C, 8008,F0,232C ; Unused
 $8D:92FA             dx 0002, 81E8,F0,632A, 8009,F0,232A
 
-; Enemy projectile $BBC7 (Nuclear waffle body)
+; Enemy projectile $BBC7 (fire arc body)
 $8D:9306             dx 0001, 81F9,F8,230A
 $8D:930D             dx 0001, 81F9,F8,2308
 $8D:9314             dx 0001, 81F8,F8,E30A
@@ -534,7 +534,7 @@ $8D:9337             dx 0001, 81F8,F8,E322
 ; Unused
 $8D:933E             dx 0000
 
-; Enemy projectile $BD5A (Norfair lavaquake rocks)
+; Enemy projectile $BD5A (polyp rock)
 $8D:9340             dx 0001, 01FC,FC,210A
 
 ; Enemy projectile $BE25/$BE33/$BE41 (Shaktool's attack)
@@ -724,12 +724,12 @@ $8D:99C8             dx 0002, C208,F8,714B, C200,F8,714C
 $8D:99D4             dx 0002, 0000,FC,7164, C208,F8,712A
 $8D:99E0             dx 0001, C3F8,F8,712A
 
-; Enemy projectile $D298 (Maridia floater's spikes)
+; Enemy projectile $D298 (powamp spikes)
 $8D:99E7             dx 0001, 01FC,FC,210F
 $8D:99EE             dx 0001, 01FC,FC,211B
 $8D:99F5             dx 0001, 01FC,FC,211C
 
-; Enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (Wrecked Ship robot laser)
+; Enemy projectile $D2A6/$D2B4/$D2C2/$D2D0/$D2DE (work robot laser)
 $8D:99FC             dx 0001, 01FC,FC,2A53
 $8D:9A03             dx 0001, 01FC,FC,2A51
 $8D:9A0A             dx 0004, 0000,00,EA60, 0000,F8,6A60, 01F8,00,AA60, 01F8,F8,2A60
@@ -821,7 +821,7 @@ $8D:A8D0             dx 0004, 0002,ED,3A25, 01FC,E8,3A25, 01FD,F5,3A43, 01F8,F0,
 $8D:A8E6             dx 0004, 0002,ED,3A43, 01FC,E8,3A43, 01FD,F5,3A40, 01F8,F0,3A40
 $8D:A8FC             dx 0002, 0002,ED,3A40, 01FC,E8,3A40
 
-; Enemy projectile $DAFE (spike shooting plant spikes)
+; Enemy projectile $DAFE (cacatac spikes)
 $8D:A908             dx 0001, 01FC,FC,311B
 $8D:A90F             dx 0001, 01FC,FC,310E
 $8D:A916             dx 0001, 01FC,FC,310F
@@ -864,7 +864,7 @@ $8D:A9BE             dx 0001, 01FC,FC,2F2E
 $8D:A9C5             dx 0018, 8000,26,614E, 8010,26,614C, 8020,26,614A, 8000,16,6148, 8010,16,6146, 8020,16,6144, 81F0,26,214E, 81E0,26,214C, 81D0,26,214A, 81F0,16,2148, 81E0,16,2146, 81D0,16,2144, 8000,DA,6124, 8010,DA,6122, 8020,DA,6120, 8000,CA,6104, 8010,CA,6102, 8020,CA,6100, 81F0,DA,2124, 81E0,DA,2122, 81D0,DA,2120, 81F0,CA,2104, 81E0,CA,2102, 81D0,CA,2100
 $8D:AA3F             dx 0018, 8000,28,614E, 8010,28,614C, 8020,28,614A, 8000,18,6148, 8010,18,6146, 8020,18,6144, 81F0,28,214E, 81E0,28,214C, 81D0,28,214A, 81F0,18,2148, 81E0,18,2146, 81D0,18,2144, 8000,D8,6124, 8010,D8,6122, 8020,D8,6120, 8000,C8,6104, 8010,C8,6102, 8020,C8,6100, 81F0,D8,2124, 81E0,D8,2122, 81D0,D8,2120, 81F0,C8,2104, 81E0,C8,2102, 81D0,C8,2100
 
-; Enemy projectile $DFBC/$DFCA (nami/fune fireball)
+; Enemy projectile $DFBC/$DFCA (namihe/fune fireball)
 $8D:AAB9             dx 0001, 81F8,F8,210A
 $8D:AAC0             dx 0001, 81F8,F8,210C
 $8D:AAC7             dx 0001, 81F8,F8,210E
@@ -876,7 +876,7 @@ $8D:AADC             dx 0001, 81F8,F8,610E
 $8D:AAE3             dx 0004, 01F8,00,612F, 0000,00,612E, 01F8,F8,612D, 0000,F8,612C
 $8D:AAF9             dx 0004, 0000,00,212F, 01F8,00,212E, 0000,F8,212D, 01F8,F8,212C
 
-; Enemy projectile $E0E0 (lava thrown by lavaman)
+; Enemy projectile $E0E0 (lava thrown by magdollite)
 $8D:AB0F             dx 0004, 0000,00,212F, 01F8,00,212E, 0000,F8,212D, 01F8,F8,212C
 $8D:AB25             dx 0004, 01F8,00,612F, 0000,00,612E, 01F8,F8,612D, 0000,F8,612C
 

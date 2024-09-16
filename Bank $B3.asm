@@ -110,9 +110,9 @@ $B3:8784             dx 0001, 01F8,F8,330C
 }
 
 
-;;; $878B..8AC0: Brinstar red/green pipe bug ;;;
+;;; $878B..8AC0: Zeb / zebbo ;;;
 {
-;;; $878B: Palette - enemy $F193 (Brinstar red pipe bug) ;;;
+;;; $878B: Palette - enemy $F193 (zeb) ;;;
 {
 $B3:878B             dw 3800, 021D, 0015, 0008, 0003, 00BD, 0013, 000E, 000B, 7F5A, 7EC0, 6DE0, 54E0, 03E0, 02A0, 0140
 }
@@ -170,19 +170,19 @@ $B3:880F             dx 0001,89DA,
 }
 
 
-;;; $882B: Instruction list pointers - red pipe bug ;;;
+;;; $882B: Instruction list pointers - zeb ;;;
 {
 $B3:882B             dw 87AB, 87CF, 87EB, 880F
 }
 
 
-;;; $8833: Instruction list pointers - green pipe bug ;;;
+;;; $8833: Instruction list pointers - zebbo ;;;
 {
 $B3:8833             dw 8A1D, 8A31, 8A45, 8A59
 }
 
 
-;;; $883B: Initialisation AI - enemy $F193/$F1D3 (Brinstar red/green pipe bug) ;;;
+;;; $883B: Initialisation AI - enemy $F193/$F1D3 (zeb / zebbo) ;;;
 {
 $B3:883B AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:883E BD 7A 0F    LDA $0F7A,x[$7E:11BA]  ;\
@@ -210,14 +210,14 @@ $B3:8879 6B          RTL
 }
 
 
-;;; $887A: Main AI - enemy $F193/$F1D3 (Brinstar red/green pipe bug) ;;;
+;;; $887A: Main AI - enemy $F193/$F1D3 (zeb / zebbo) ;;;
 {
 $B3:887A AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:887D 7C B2 0F    JMP ($0FB2,x)[$B3:8880]
 }
 
 
-;;; $8880: Brinstar red/green pipe bug function - wait until on screen ;;;
+;;; $8880: Zeb/zebbo function - wait until on screen ;;;
 {
 $B3:8880 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8883 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
@@ -229,7 +229,7 @@ $B3:888F 6B          RTL
 }
 
 
-;;; $8890: Brinstar red/green pipe bug function - wait for Samus to get near ;;;
+;;; $8890: Zeb/zebbo function - wait for Samus to get near ;;;
 {
 $B3:8890 22 DD AE A0 JSL $A0AEDD[$A0:AEDD]  ;\
 $B3:8894 10 23       BPL $23    [$88B9]     ;|
@@ -266,12 +266,12 @@ $B3:88D7 80 03       BRA $03    [$88DC]
 $B3:88D9 A9 00 00    LDA #$0000             ; Enemy instruction list table index = 0
 
 $B3:88DC 9D B0 0F    STA $0FB0,x[$7E:11F0]
-$B3:88DF 20 8B 89    JSR $898B  [$B3:898B]  ; Set Brinstar red/green pipe bug instruction list
+$B3:88DF 20 8B 89    JSR $898B  [$B3:898B]  ; Set zeb/zebbo instruction list
 $B3:88E2 6B          RTL
 }
 
 
-;;; $88E3: Brinstar red/green pipe bug function - rising ;;;
+;;; $88E3: Zeb/zebbo function - rising ;;;
 {
 $B3:88E3 A9 FF FF    LDA #$FFFF             ;\
 $B3:88E6 18          CLC                    ;|
@@ -291,7 +291,7 @@ $B3:8907 80 12       BRA $12    [$891B]     ; Return
 $B3:8909 BD B0 0F    LDA $0FB0,x[$7E:11F0]  ;\
 $B3:890C 09 01 00    ORA #$0001             ;} Enemy instruction list table index |= 1
 $B3:890F 9D B0 0F    STA $0FB0,x[$7E:11F0]  ;/
-$B3:8912 20 8B 89    JSR $898B  [$B3:898B]  ; Set Brinstar red/green pipe bug instruction list
+$B3:8912 20 8B 89    JSR $898B  [$B3:898B]  ; Set zeb/zebbo instruction list
 $B3:8915 A9 1C 89    LDA #$891C             ;\
 $B3:8918 9D B2 0F    STA $0FB2,x[$7E:11F2]  ;} Enemy function = $891C
 
@@ -299,7 +299,7 @@ $B3:891B 6B          RTL
 }
 
 
-;;; $891C: Brinstar red/green pipe bug function - shooting ;;;
+;;; $891C: Zeb/zebbo function - shooting ;;;
 {
 $B3:891C 3C A8 0F    BIT $0FA8,x[$7E:11E8]  ;\
 $B3:891F 10 15       BPL $15    [$8936]     ;} If [enemy direction] = left:
@@ -331,7 +331,7 @@ $B3:8959 BD AC 0F    LDA $0FAC,x[$7E:11EC]  ;\
 $B3:895C 9D 7E 0F    STA $0F7E,x[$7E:11BE]  ;} Enemy Y position = [enemy spawn Y position]
 $B3:895F 9D 80 0F    STA $0F80,x[$7E:11C0]  ; Enemy Y subposition = [enemy Y position] (>_<;)
 $B3:8962 9E B0 0F    STZ $0FB0,x[$7E:11F0]  ; Enemy instruction list table index = 0
-$B3:8965 20 8B 89    JSR $898B  [$B3:898B]  ; Set Brinstar red/green pipe bug instruction list
+$B3:8965 20 8B 89    JSR $898B  [$B3:898B]  ; Set zeb/zebbo instruction list
 $B3:8968 BD 86 0F    LDA $0F86,x[$7E:11C6]  ;\
 $B3:896B 09 00 01    ORA #$0100             ;} Set enemy as invisible
 $B3:896E 9D 86 0F    STA $0F86,x[$7E:11C6]  ;/
@@ -343,7 +343,7 @@ $B3:897D 6B          RTL
 }
 
 
-;;; $897E: Brinstar red/green pipe bug function - spawn delay ;;;
+;;; $897E: Zeb/zebbo function - spawn delay ;;;
 {
 $B3:897E DE AE 0F    DEC $0FAE,x[$7E:11EE]  ; Decrement enemy spawn delay timer
 $B3:8981 F0 01       BEQ $01    [$8984]     ; If [enemy spawn delay timer] != 0:
@@ -355,7 +355,7 @@ $B3:898A 6B          RTL
 }
 
 
-;;; $898B: Set Brinstar red/green pipe bug instruction list ;;;
+;;; $898B: Set zeb/zebbo instruction list ;;;
 {
 $B3:898B AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:898E BD B0 0F    LDA $0FB0,x[$7E:11F0]  ;\
@@ -395,7 +395,7 @@ $B3:89F6             dx 0001, 81F8,F8,6108
 }
 
 
-;;; $89FD: Palette - enemy $F1D3 (Brinstar green pipe bug) ;;;
+;;; $89FD: Palette - enemy $F1D3 (zebbo) ;;;
 {
 $B3:89FD             dw 3800, 3F95, 2E8B, 0120, 0060, 3AEE, 2249, 11A4, 0962, 39BB, 30F5, 2C6E, 2827, 7F93, 6ECE, 6229
 }
@@ -459,9 +459,9 @@ $B3:8ABA             dx 0001, 81F8,F8,610A
 }
 
 
-;;; $8AC1..8EDB: Norfair pipe bug ;;;
+;;; $8AC1..8EDB: Gamet ;;;
 {
-;;; $8AC1: Palette - enemy $F213 (Norfair pipe bug) ;;;
+;;; $8AC1: Palette - enemy $F213 (gamet) ;;;
 {
 $B3:8AC1             dw 3800, 021D, 0015, 0008, 0003, 015F, 0076, 0050, 000B, 7FFF, 56E0, 3180, 18C0, 43FF, 42DC, 4176
 }
@@ -519,7 +519,7 @@ $B3:8B45             dx 0001,8EB9,
 }
 
 
-;;; $8B61: Initialisation AI - enemy $F213 (Norfair pipe bug) ;;;
+;;; $8B61: Initialisation AI - enemy $F213 (gamet) ;;;
 {
 $B3:8B61 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8B64 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
@@ -547,7 +547,7 @@ $B3:8B9D 6B          RTL
 }
 
 
-;;; $8B9E: Main AI - enemy $F213 (Norfair pipe bug) ;;;
+;;; $8B9E: Main AI - enemy $F213 (gamet) ;;;
 {
 $B3:8B9E AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8BA1 FC A8 0F    JSR ($0FA8,x)[$B3:8BCD]; Execute [enemy function]
@@ -575,7 +575,7 @@ $B3:8BCC 60          RTS
 }
 
 
-;;; $8BCD: Norfair pipe bug function - wait until everyone's ready ;;;
+;;; $8BCD: Gamet function - wait until everyone's ready ;;;
 {
 $B3:8BCD AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8BD0 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
@@ -600,7 +600,7 @@ $B3:8BFE 60          RTS
 }
 
 
-;;; $8BFF: Norfair pipe bug function - wait for Samus to get near ;;;
+;;; $8BFF: Gamet function - wait for Samus to get near ;;;
 {
 $B3:8BFF AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8C02 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
@@ -631,13 +631,13 @@ $B3:8C45 9D 12 10    STA $1012,x[$7E:1012]  ; Enemy ([X] + 2) instruction list p
 $B3:8C48 9D 52 10    STA $1052,x[$7E:1052]  ; Enemy ([X] + 3) instruction list pointer = $8B21
 $B3:8C4B 9D 92 10    STA $1092,x[$7E:1092]  ; Enemy ([X] + 4) instruction list pointer = $8B21
 
-$B3:8C4E 20 52 8C    JSR $8C52  [$B3:8C52]  ; Set up Norfair pipe bug formation
+$B3:8C4E 20 52 8C    JSR $8C52  [$B3:8C52]  ; Set up gamet formation
 
 $B3:8C51 60          RTS
 }
 
 
-;;; $8C52: Set up Norfair pipe bug formation ;;;
+;;; $8C52: Set up Gamet formation ;;;
 {
 $B3:8C52 A9 A6 8C    LDA #$8CA6             ;\
 $B3:8C55 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8CA6
@@ -669,7 +669,7 @@ $B3:8CA5 60          RTS
 }
 
 
-;;; $8CA6: Norfair pipe bug function - rising ;;;
+;;; $8CA6: Gamet function - rising ;;;
 {
 $B3:8CA6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8CA9 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
@@ -710,7 +710,7 @@ $B3:8CFE 60          RTS
 }
 
 
-;;; $8CFF: Norfair pipe bug function - move to formation - centre ;;;
+;;; $8CFF: Gamet function - move to formation - centre ;;;
 {
 $B3:8CFF AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8D02 FE AC 0F    INC $0FAC,x[$7E:0FEC]  ; Increment enemy shoot delay timer
@@ -720,7 +720,7 @@ $B3:8D0B 60          RTS
 }
 
 
-;;; $8D0C: Norfair pipe bug function - move to formation - upper middle ;;;
+;;; $8D0C: Gamet function - move to formation - upper middle ;;;
 {
 $B3:8D0C AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8D0F FE AC 0F    INC $0FAC,x[$7E:102C]  ; Increment enemy shoot delay timer
@@ -753,7 +753,7 @@ $B3:8D4D 60          RTS
 }
 
 
-;;; $8D4E: Norfair pipe bug function - move to formation - top ;;;
+;;; $8D4E: Gamet function - move to formation - top ;;;
 {
 $B3:8D4E AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8D51 FE AC 0F    INC $0FAC,x[$7E:106C]  ; Increment enemy shoot delay timer
@@ -786,7 +786,7 @@ $B3:8D8F 60          RTS
 }
 
 
-;;; $8D90: Norfair pipe bug function - move to formation - lower middle ;;;
+;;; $8D90: Gamet function - move to formation - lower middle ;;;
 {
 $B3:8D90 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8D93 FE AC 0F    INC $0FAC,x[$7E:10AC]  ; Increment enemy shoot delay timer
@@ -819,7 +819,7 @@ $B3:8DD1 60          RTS
 }
 
 
-;;; $8DD2: Norfair pipe bug function - move to formation - bottom ;;;
+;;; $8DD2: Gamet function - move to formation - bottom ;;;
 {
 $B3:8DD2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8DD5 FE AC 0F    INC $0FAC,x[$7E:10EC]  ; Increment enemy shoot delay timer
@@ -852,7 +852,7 @@ $B3:8E13 60          RTS
 }
 
 
-;;; $8E14: Norfair pipe bug function - shooting left ;;;
+;;; $8E14: Gamet function - shooting left ;;;
 {
 $B3:8E14 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8E17 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
@@ -872,7 +872,7 @@ $B3:8E34 60          RTS
 }
 
 
-;;; $8E35: Norfair pipe bug function - shooting right ;;;
+;;; $8E35: Gamet function - shooting right ;;;
 {
 $B3:8E35 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8E38 BD AA 0F    LDA $0FAA,x[$7E:106A]  ;\
@@ -899,7 +899,7 @@ $B3:8E59 60          RTS
 }
 
 
-;;; $8E5A: Norfair pipe bug function - shoot delay ;;;
+;;; $8E5A: Gamet function - shoot delay ;;;
 {
 $B3:8E5A AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8E5D FE AC 0F    INC $0FAC,x[$7E:0FEC]  ; Increment enemy shoot delay timer
@@ -953,9 +953,9 @@ $B3:8ED5             dx 0001, 81F8,F8,6108
 }
 
 
-;;; $8EDC..9318: Brinstar yellow pipe bug ;;;
+;;; $8EDC..9318: Geega ;;;
 {
-;;; $8EDC: Palette - enemy $F253 (Brinstar yellow pipe bug) ;;;
+;;; $8EDC: Palette - enemy $F253 (geega) ;;;
 {
 $B3:8EDC             dw 3800, 57FF, 42F7, 158C, 00A5, 4F5A, 36B5, 2610, 1DCE, 3FE0, 2EE0, 2200, 1100, 7E5B, 552F, 2887
 }
@@ -1001,7 +1001,7 @@ $B3:8F38             dx 0001,92EC,
 }
 
 
-;;; $8F4C: Initialisation AI - enemy $F253 (Brinstar yellow pipe bug) ;;;
+;;; $8F4C: Initialisation AI - enemy $F253 (geega) ;;;
 {
 $B3:8F4C AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8F4F BD 7A 0F    LDA $0F7A,x[$7E:103A]  ;\
@@ -1041,7 +1041,7 @@ $B3:8FAD 6B          RTL
 }
 
 
-;;; $8FAE: Main AI - enemy $F253 (Brinstar yellow pipe bug) ;;;
+;;; $8FAE: Main AI - enemy $F253 (geega) ;;;
 {
 $B3:8FAE AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8FB1 FC A8 0F    JSR ($0FA8,x)[$B3:8FB5]
@@ -1049,7 +1049,7 @@ $B3:8FB4 6B          RTL
 }
 
 
-;;; $8FB5: Brinstar yellow pipe bug function - wait for Samus to get near ;;;
+;;; $8FB5: Geega function - wait for Samus to get near ;;;
 {
 $B3:8FB5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:8FB8 BD B4 0F    LDA $0FB4,x[$7E:1074]  ;\
@@ -1059,7 +1059,6 @@ $B3:8FC1 30 31       BMI $31    [$8FF4]     ;|
 $B3:8FC3 C9 C0 00    CMP #$00C0             ;} If not 0 <= [Samus X position] - [enemy X position] < C0h: return
 $B3:8FC6 10 2C       BPL $2C    [$8FF4]     ;/
 $B3:8FC8 80 0B       BRA $0B    [$8FD5]
-
                                             ; Else ([enemy parameter 1] != 0 (leftwards)):
 $B3:8FCA 22 E5 AE A0 JSL $A0AEE5[$A0:AEE5]  ;\
 $B3:8FCE 10 24       BPL $24    [$8FF4]     ;|
@@ -1081,7 +1080,7 @@ $B3:8FF4 60          RTS
 }
 
 
-;;; $8FF5: Brinstar yellow pipe bug function - shoot delay ;;;
+;;; $8FF5: Geega function - shoot delay ;;;
 {
 $B3:8FF5 BF 00 80 7E LDA $7E8000,x[$7E:80C0];\
 $B3:8FF9 3A          DEC A                  ;} Decrement enemy shoot delay timer
@@ -1107,10 +1106,10 @@ $B3:9027 60          RTS
 }
 
 
-;;; $9028: Brinstar yellow pipe bug function - shooting left ;;;
+;;; $9028: Geega function - shooting left ;;;
 {
 $B3:9028 AE 54 0E    LDX $0E54  [$7E:0E54]
-$B3:902B 20 A1 90    JSR $90A1  [$B3:90A1]  ; Move Brinstar yellow pipe bug left
+$B3:902B 20 A1 90    JSR $90A1  [$B3:90A1]  ; Move geega left
 $B3:902E 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $B3:9032 F0 2C       BEQ $2C    [$9060]     ;} If enemy centre is not on screen:
 $B3:9034 BF 0E 78 7E LDA $7E780E,x          ;\
@@ -1155,7 +1154,7 @@ $B3:90A0 60          RTS
 }
 
 
-;;; $90A1: Move Brinstar yellow pipe bug left ;;;
+;;; $90A1: Move geega left ;;;
 {
 $B3:90A1 BD 7C 0F    LDA $0F7C,x[$7E:103C]  ;\
 $B3:90A4 18          CLC                    ;|
@@ -1172,10 +1171,10 @@ $B3:90BC 60          RTS
 }
 
 
-;;; $90BD: Brinstar yellow pipe bug function - shooting right ;;;
+;;; $90BD: Geega function - shooting right ;;;
 {
 $B3:90BD AE 54 0E    LDX $0E54  [$7E:0E54]
-$B3:90C0 20 3A 91    JSR $913A  [$B3:913A]  ; Move Brinstar yellow pipe bug right
+$B3:90C0 20 3A 91    JSR $913A  [$B3:913A]  ; Move geega right
 $B3:90C3 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $B3:90C7 F0 2C       BEQ $2C    [$90F5]     ;} If enemy centre is not on screen:
 $B3:90C9 BF 0E 78 7E LDA $7E780E,x[$7E:790E];\
@@ -1222,7 +1221,7 @@ $B3:9139 60          RTS
 }
 
 
-;;; $913A: Move Brinstar yellow pipe bug right ;;;
+;;; $913A: Move geega right ;;;
 {
 $B3:913A BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
 $B3:913D A8          TAY                    ;} Y = [enemy $0FAA] (unused)
@@ -1241,7 +1240,7 @@ $B3:9159 60          RTS
 }
 
 
-;;; $915A: Brinstar yellow pipe bug function - dipping left ;;;
+;;; $915A: Geega function - dipping left ;;;
 {
 $B3:915A AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:915D 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
@@ -1266,10 +1265,10 @@ $B3:9196 09 00 01    ORA #$0100             ;} Set enemy as invisible
 $B3:9199 9D 86 0F    STA $0F86,x[$7E:1046]  ;/
 $B3:919C 4C D7 91    JMP $91D7  [$B3:91D7]  ; Return
 
-$B3:919F 20 A1 90    JSR $90A1  [$B3:90A1]  ; Move Brinstar yellow pipe bug left
+$B3:919F 20 A1 90    JSR $90A1  [$B3:90A1]  ; Move geega left
 $B3:91A2 BD B2 0F    LDA $0FB2,x[$7E:1072]  ;\
 $B3:91A5 D0 2D       BNE $2D    [$91D4]     ;} If [enemy dip direction] = up:
-$B3:91A7 20 56 92    JSR $9256  [$B3:9256]  ; Move Brinstar yellow pipe bug up
+$B3:91A7 20 56 92    JSR $9256  [$B3:9256]  ; Move geega up
 $B3:91AA BD 7E 0F    LDA $0F7E,x[$7E:10BE]  ;\
 $B3:91AD DF 10 78 7E CMP $7E7810,x[$7E:7950];} If [enemy Y position] >= [enemy spawn Y position]: return
 $B3:91B1 10 24       BPL $24    [$91D7]     ;/
@@ -1286,13 +1285,13 @@ $B3:91CF 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = 
 $B3:91D2 80 03       BRA $03    [$91D7]
 
                                             ; Else ([enemy dip direction] = down):
-$B3:91D4 20 7A 92    JSR $927A  [$B3:927A]  ; Move Brinstar yellow pipe bug down
+$B3:91D4 20 7A 92    JSR $927A  [$B3:927A]  ; Move geega down
 
 $B3:91D7 60          RTS
 }
 
 
-;;; $91D8: Brinstar yellow pipe bug function - dipping right ;;;
+;;; $91D8: Geega function - dipping right ;;;
 {
 $B3:91D8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $B3:91DB 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
@@ -1317,10 +1316,10 @@ $B3:9214 09 00 01    ORA #$0100             ;} Set enemy as invisible
 $B3:9217 9D 86 0F    STA $0F86,x[$7E:11C6]  ;/
 $B3:921A 4C 55 92    JMP $9255  [$B3:9255]  ; Return
 
-$B3:921D 20 3A 91    JSR $913A  [$B3:913A]  ; Move Brinstar yellow pipe bug right
+$B3:921D 20 3A 91    JSR $913A  [$B3:913A]  ; Move geega right
 $B3:9220 BD B2 0F    LDA $0FB2,x[$7E:11F2]  ;\
 $B3:9223 D0 2D       BNE $2D    [$9252]     ;} If [enemy dip direction] = up:
-$B3:9225 20 56 92    JSR $9256  [$B3:9256]  ; Move Brinstar yellow pipe bug up
+$B3:9225 20 56 92    JSR $9256  [$B3:9256]  ; Move geega up
 $B3:9228 BF 10 78 7E LDA $7E7810,x          ;\
 $B3:922C DD 7E 0F    CMP $0F7E,x            ;} If [enemy Y position] > [enemy spawn Y position]: return
 $B3:922F 30 24       BMI $24    [$9255]     ;/
@@ -1334,16 +1333,15 @@ $B3:9244 A9 24 8F    LDA #$8F24             ;\
 $B3:9247 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8F24 (facing right - rising)
 $B3:924A A9 BD 90    LDA #$90BD             ;\
 $B3:924D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $90BD (shooting right)
-$B3:9250 80 03       BRA $03    [$9255]     ; Return
-
+$B3:9250 80 03       BRA $03    [$9255]
                                             ; Else ([enemy dip direction] = down):
-$B3:9252 20 7A 92    JSR $927A  [$B3:927A]  ; Move Brinstar yellow pipe bug down
+$B3:9252 20 7A 92    JSR $927A  [$B3:927A]  ; Move geega down
 
 $B3:9255 60          RTS
 }
 
 
-;;; $9256: Move Brinstar yellow pipe bug up ;;;
+;;; $9256: Move geega up ;;;
 {
 $B3:9256 FE B0 0F    INC $0FB0,x[$7E:10F0]  ; Increment enemy Y speed table index
 $B3:9259 BD B0 0F    LDA $0FB0,x[$7E:10F0]  ;\
@@ -1366,7 +1364,7 @@ $B3:9279 60          RTS
 }
 
 
-;;; $927A: Move Brinstar yellow pipe bug down ;;;
+;;; $927A: Move geega down ;;;
 {
 $B3:927A DE B0 0F    DEC $0FB0,x[$7E:1070]  ; Decrement enemy Y speed table index
 $B3:927D 10 0B       BPL $0B    [$928A]     ; If [enemy Y speed table index] < 0:
