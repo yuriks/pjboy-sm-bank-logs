@@ -1154,6 +1154,8 @@ $92:808D             dw 90ED, 90F4,
 
 ;;; $90ED: Samus spritemaps - debug ;;;
 {
+; See $81:8A5F for spritemap format
+
 ; Unused. Samus spritemap 0
 $92:90ED             dx 0001, 01FC,FC,315A
 
@@ -1223,6 +1225,8 @@ $92:945D             dw 0062,04AA,04B3,04C0,04C2,04C0,04C2,04C0,04C2,04E3,04ED,0
 
 ;;; $9657: Samus spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 $92:9657             dx 0002, C3FB,F8,2800, C3FB,F0,2802
 $92:9663             dx 0002, C3FB,F7,2800, C3FB,EF,2802
 $92:966F             dx 0003, C3FF,F7,2800, 0007,EF,2804, C3F7,EF,2802
@@ -5719,6 +5723,8 @@ $92:D7CC             dx 9CF880, 0100, 0100
 
 ;;; $D7D3: Samus spritemaps - atmospheric graphics ;;;
 {
+; See $81:8A5F for spritemap format
+
 ; Bubbles
 $92:D7D3             dx 0002, 01FC,FE,3A25, 01FD,FC,3A43
 $92:D7DF             dx 0003, 01FF,FA,3A43, 01FB,F8,BA25, 01FC,FD,3A25

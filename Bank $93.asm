@@ -2165,6 +2165,8 @@ $93:A22B             dw 0000, 002A, 0030 ; Facing left
 
 ;;; $A231: Projectile / flare spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 $93:A231             dx 0001, 01FC,FC,3A2B ; Unused
 $93:A238             dx 0001, 01FC,FC,3A2A ; Unused
 $93:A23F             dx 0001, 01FC,FC,3A29 ; Unused

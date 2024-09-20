@@ -1,5 +1,7 @@
 ;;; $8000..8BFF: Title sequence spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 ;;; $8000: Unused. Beta Metroid logo ;;;
 {
 ; The "4 METROID" title logo
@@ -893,6 +895,8 @@ $8C:8BE0             dx 0006,
 
 ;;; $8C00..99D5: Intro / Ceres explosion spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 ;;; $8C00: Intro Mother Brain (frame 1) ;;;
 {
 $8C:8C00             dx 0009,
@@ -1359,6 +1363,8 @@ $8C:8FE0             dx 0001,
 
 ;;; $8FE7..99D5: Space spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 ;;; $8FE7: Ceres purple space vortex (frame 1) ;;;
 {
 $8C:8FE7             dx 0024,
@@ -2145,6 +2151,8 @@ $8C:9998             dx 000C,
 
 ;;; $99D6..BC5C: Ending sequence spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 ;;; $99D6: Large Samus from ending (standing) ;;;
 {
 $8C:99D6             dx 0022,

@@ -8137,6 +8137,8 @@ $82:C214             dw 0005 ; Left scroll arrow
 
 ;;; $C216: Spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 ; Spritemap 2
 $82:C216             dx 0001, 0000,00,3095
 
@@ -8627,6 +8629,8 @@ $82:CAE7             dw FFFF
 
 ;;; $CAE9: Spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 ; Spritemap 2Ch: file select menu Samus helmet (frame 0)
 $82:CAE9             dx 0004, C3FC,F4,3ED1, C3FC,FC,3EE1, C3F4,FC,3EE0, C3F4,F4,3ED0
 

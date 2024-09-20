@@ -1,5 +1,7 @@
 ;;; $8000: Enemy projectile spritemaps ;;;
 {
+; See $81:8A5F for spritemap format
+
 ; Blank spritemap (default)
 $8D:8000             dx 0000, 0000,00,00DF
 
