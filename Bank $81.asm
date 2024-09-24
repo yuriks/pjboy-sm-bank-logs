@@ -4059,7 +4059,7 @@ $81:A294 A9 00 00    LDA #$0000             ; File select menu selection = 0
 $81:A297 80 16       BRA $16    [$A2AF]     ; Go to BRANCH_CURSOR_SOUND
 
 $81:A299 AD 52 09    LDA $0952  [$7E:0952]  ;\
-$81:A29C 1A          INC A                  ;} Decrement file select menu selection
+$81:A29C 1A          INC A                  ;} Increment file select menu selection
 $81:A29D C9 03 00    CMP #$0003             ;\
 $81:A2A0 30 0D       BMI $0D    [$A2AF]     ;} If [file select menu selection] < 3: go to BRANCH_CURSOR_SOUND
 $81:A2A2 C9 06 00    CMP #$0006             ;\
@@ -4099,7 +4099,7 @@ $81:A2E3 85 57       STA $57    [$7E:0057]  ;/
 $81:A2E5 60          RTS                    ; Return
 
 $81:A2E6 C9 04 00    CMP #$0004             ;\
-$81:A2E9 D0 1B       BNE $1B    [$A306]     ;} If [file select menu selection] = 3 (file clear):
+$81:A2E9 D0 1B       BNE $1B    [$A306]     ;} If [file select menu selection] = 4 (file clear):
 $81:A2EB A9 37 00    LDA #$0037             ;\
 $81:A2EE 22 49 90 80 JSL $809049[$80:9049]  ;} Queue sound 37h, sound library 1, max queued sounds allowed = 6 (moved cursor)
 $81:A2F2 AD 27 07    LDA $0727  [$7E:0727]  ;\
@@ -4109,7 +4109,7 @@ $81:A2F9 8D 27 07    STA $0727  [$7E:0727]  ;/
 $81:A2FC A5 57       LDA $57    [$7E:0057]  ;\
 $81:A2FE 29 0F FF    AND #$FF0F             ;|
 $81:A301 09 03 00    ORA #$0003             ;} Enable BG1/2 mosaic, block size = 0
-$81:A304 85 57       STA $57    [$7E:0057]  ;/
+$81:A304 85 57       STA $57    [$7E:0057]  ;/ <-- Missing RTS after this (fortunately, the next check will always fail)
 
 $81:A306 C9 05 00    CMP #$0005             ;\
 $81:A309 D0 06       BNE $06    [$A311]     ;} If [file select menu selection] = 5 (exit):

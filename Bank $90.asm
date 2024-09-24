@@ -13011,7 +13011,7 @@ $90:DDB6 AD 32 0D    LDA $0D32  [$7E:0D32]  ;\
 $90:DDB9 C9 F0 C4    CMP #$C4F0             ;} If [grapple handler] = inactive: return
 $90:DDBC F0 09       BEQ $09    [$DDC7]     ;/
 $90:DDBE A9 56 C8    LDA #$C856             ;\
-$90:DDC1 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Cancel grapple
+$90:DDC1 8D 32 0D    STA $0D32  [$7E:0D32]  ;} Cancel grapple beam
 $90:DDC4 20 3D DD    JSR $DD3D  [$90:DD3D]  ; Standard HUD selection handler
 
 $90:DDC7 60          RTS
