@@ -4699,17 +4699,20 @@ $81:A7FF 60          RTS
 
 ;;; $A800: File select map - index 6: area select map ;;;
 {
+; BUG: The check for debug mode here loads zero if debug mode isn't enabled,
+;      causing the subsequent BITs that expect newly pressed controller 1 input in A to always flag zero
+;      This means pressing up/left/down/right/select the same frame as B/A/start negates the B/A/start input
 $81:A800 C2 30       REP #$30
 $81:A802 A5 8F       LDA $8F    [$7E:008F]  ;\
 $81:A804 89 00 0A    BIT #$0A00             ;} If newly pressing up or left:
 $81:A807 F0 08       BEQ $08    [$A811]     ;/
-$81:A809 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
+$81:A809 AD D1 05    LDA $05D1  [$7E:05D1]  ;\ <-- clobbers A >_<;
 $81:A80C F0 10       BEQ $10    [$A81E]     ;} If debug mode enabled:
 $81:A80E 4C 3E A8    JMP $A83E  [$81:A83E]  ; Go to BRANCH_DEBUG_PREVIOUS
 
 $81:A811 89 00 25    BIT #$2500             ;\ Else (not newly pressing up or left):
 $81:A814 F0 08       BEQ $08    [$A81E]     ;} If newly pressing select, down or right:
-$81:A816 AD D1 05    LDA $05D1  [$7E:05D1]  ;\
+$81:A816 AD D1 05    LDA $05D1  [$7E:05D1]  ;\ <-- clobbers A >_<;
 $81:A819 F0 03       BEQ $03    [$A81E]     ;} If debug mode enabled:
 $81:A81B 4C 70 A8    JMP $A870  [$81:A870]  ; Go to BRANCH_DEBUG_NEXT
 
@@ -4904,7 +4907,7 @@ $81:A957 60          RTS
 }
 
 
-;;; $A958: Switch active file select map area ;;;
+;;; $A958: Debug. Switch active file select map area ;;;
 {
 $81:A958 AD 50 09    LDA $0950  [$7E:0950]  ;\
 $81:A95B 0A          ASL A                  ;|

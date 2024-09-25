@@ -2343,14 +2343,14 @@ $90:8E23 AB          PLB
 $90:8E24 28          PLP
 $90:8E25 6B          RTL
 
-$90:8E26             dw 8E36 ; 0: None / 20h: Unused scrolling sky
-$90:8E28             dw 8E3A ; 2: Lava / 22h: Unused
-$90:8E2A             dw 8E3A ; 4: Acid / 24h: Fireflea
-$90:8E2C             dw 8E4A ; 6: Water / 26h: Tourian entrance statue
-$90:8E2E             dw 8E36 ; 8: Spores / 28h: Ceres Ridley
-$90:8E30             dw 8E36 ; Ah: Rain / 2Ah: Ceres elevator
-$90:8E32             dw 8E36 ; Ch: Fog / 2Ch: Ceres haze
-$90:8E34             dw 8E36
+$90:8E26             dw 8E36, ; 0: None / 20h: Unused scrolling sky
+                        8E3A, ; 2: Lava / 22h: Unused
+                        8E3A, ; 4: Acid / 24h: Fireflea
+                        8E4A, ; 6: Water / 26h: Tourian entrance statue
+                        8E36, ; 8: Spores / 28h: Ceres Ridley
+                        8E36, ; Ah: Rain / 2Ah: Ceres elevator
+                        8E36, ; Ch: Fog / 2Ch: Ceres haze
+                        8E36
 }
 
 
