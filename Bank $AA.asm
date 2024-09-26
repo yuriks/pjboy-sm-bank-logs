@@ -4108,15 +4108,15 @@ $AA:D744 6B          RTL
 
 ;;; $D745..D910: Tourian entrance statue ;;;
 {
-;;; $D745: Palette - enemy $EFFF/$F03F (Tourian entrance statue) ;;;
+;;; $D745: Tourian entrance statue palettes ;;;
 {
-$AA:D745             dw 3800, 57FF, 2BFF, 1F3C, 0278, 01B0, 010B, 0087, 0044, 001F, 0012, 0009, 7FFF, 7FFF, 7FFF, 0000
-}
+; Ridley
+$AA:D745             dw 3800, 57FF, 2BFF, 1F3C, 0278, 01B0, 010B, 0087, 0044, 001F, 0012, 0009, 7FFF, 7FFF, 7FFF, 0000 ; Initial. (Sprite palette 1)
 
-
-;;; $D765: Tourian entrance statue palettes ;;;
-{
+; Phantoon
 $AA:D765             dw 3800, 57FF, 2BFF, 1F3C, 0278, 01B0, 010B, 0087, 0044, 7FFF, 7FFF, 7FFF, 03FF, 0252, 0129, 0000 ; Sprite palette 2
+
+; Base decoration
 $AA:D785             dw 3800, 27F9, 2375, 1AD2, 164E, 11AB, 0D27, 0484, 0000, 7F5F, 7C1F, 5816, 300C, 5294, 39CE, 2108 ; Sprite palette 7
 }
 
@@ -4154,6 +4154,10 @@ $AA:D7C7 6B          RTL
 
 ;;; $D7C8: Initialisation AI - enemy $EFFF (Tourian entrance statue) ;;;
 {
+; All the instruction lists this enemy use lead with a delete instruction
+; I would have to guess that this statue was originally implemented with enemies and then later moved to enemy projectiles
+; The remnant instruction lists and spritemaps are leftover, see $86:B85A / $8D:916D for the real deal
+
 $AA:D7C8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $AA:D7CB 9E 96 0F    STZ $0F96,x[$7E:0FD6]  ; Enemy palette index = 0
 $AA:D7CE A9 01 00    LDA #$0001             ;\
@@ -4175,8 +4179,8 @@ $AA:D7FA A2 1E 00    LDX #$001E             ;\
                                             ;|
 $AA:D7FD BD 85 D7    LDA $D785,x[$AA:D7A3]  ;|
 $AA:D800 9F E0 C3 7E STA $7EC3E0,x[$7E:C3FE];|
-$AA:D804 BD 65 D7    LDA $D765,x[$AA:D783]  ;} Target sprite palette 7 = [$D785..A4]
-$AA:D807 9F 40 C3 7E STA $7EC340,x[$7E:C35E];} Target sprite palette 2 = [$D765..84]
+$AA:D804 BD 65 D7    LDA $D765,x[$AA:D783]  ;} Target sprite palette 7 = [$D785..A4] (base decoration)
+$AA:D807 9F 40 C3 7E STA $7EC340,x[$7E:C35E];} Target sprite palette 2 = [$D765..84] (Phantoon)
 $AA:D80B CA          DEX                    ;|
 $AA:D80C CA          DEX                    ;|
 $AA:D80D 10 EE       BPL $EE    [$D7FD]     ;/
@@ -4188,7 +4192,7 @@ $AA:D810             dw D7B9, ; Base decoration
 }
 
 
-;;; $D816: Spritemaps - Tourian entrance statue ;;;
+;;; $D816: Unused. Spritemaps - Tourian entrance statue ;;;
 {
 ; Base decoration
 $AA:D816             dx 0007, C228,F8,1F9C, C218,F8,1F9A, C208,F8,1F98, C3F8,F8,1F96, C3E8,F8,1F94, C3D8,F8,1F92, C3C8,F8,1F90
