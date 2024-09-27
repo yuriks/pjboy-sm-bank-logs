@@ -8114,7 +8114,7 @@ $90:B683 10 F7       BPL $F7    [$B67C]     ; If [Y] >= 0: go to LOOP
 
 $90:B685 AB          PLB
 $90:B686 38          SEC                    ;\
-$90:B687 6B          RTL                    ;} Return carry clear
+$90:B687 6B          RTL                    ;} Return carry set
 
 ; BRANCH_FOUND
 $90:B688 A9 01 00    LDA #$0001             ;\
