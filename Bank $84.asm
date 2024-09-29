@@ -6069,7 +6069,7 @@ $84:AF80             dw 0001,D000,
 $84:AF86             dx 0001,AF62,
 $84:AF8A             dx 86B4,       ; Sleep
                         8B55,       ; Process air scroll update
-                        8724,AF8A,  ; Go to $AF8A
+                        8724,AF8A   ; Go to $AF8A
 }
 
 
