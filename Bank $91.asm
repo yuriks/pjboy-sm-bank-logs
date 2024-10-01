@@ -3987,7 +3987,7 @@ $91:B010             dw B56F, B298, B298, B222, B222, B2B4, B2B4, B2B4, B2B4, B2
 $91:B20A             db 02, 03, 02, 03, 02, 03, 02, 03, 02, 03, FF
 
 ; Unused. Not a subanimation of the above, just looks like a slower version
-$91:B20A             db 04, 04, 04, 04, 04, 04, 03, 04, 04, 03, FF,
+$91:B215             db 04, 04, 04, 04, 04, 04, 03, 04, 04, 03, FF,
                         0A, FF
 
 ; 3: Facing right - aiming up
