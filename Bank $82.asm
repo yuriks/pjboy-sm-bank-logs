@@ -10559,7 +10559,7 @@ $82:E4BD 22 C3 83 84 JSL $8483C3[$84:83C3]  ; Clear PLMs
 $82:E4C1 22 6C EB 82 JSL $82EB6C[$82:EB6C]  ; Create PLMs, execute door ASM, room setup ASM and set elevator status
 $82:E4C5 22 82 AB 89 JSL $89AB82[$89:AB82]  ; Load FX header
 $82:E4C9 20 EB E8    JSR $E8EB  [$82:E8EB]  ; Spawn door closing PLM
-$82:E4CC 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam graphics
+$82:E4CC 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam tiles and palette
 $82:E4D0 22 39 E1 82 JSL $82E139[$82:E139]  ; Load target colours for common sprites, beams and flashing enemies / pickups
 $82:E4D4 22 1E 8A A0 JSL $A08A1E[$A0:8A1E]  ; Load enemies
 $82:E4D8 22 9E 8A A0 JSL $A08A9E[$A0:8A9E]  ; Initialise enemies

@@ -9517,7 +9517,7 @@ $91:DABF             dw 9F20,9F40,9F60,9F80 ; Gravity suit
 ;; Returns:
 ;;     Carry: Clear to use normal suit palette, set otherwise
 $91:DAC7 AD 68 0A    LDA $0A68  [$7E:0A68]  ;\
-$91:DACA C9 AA 00    CMP #$00AA             ;} If [special Samus palette timer] = Ah:
+$91:DACA C9 AA 00    CMP #$00AA             ;} If [special Samus palette timer] = AAh:
 $91:DACD D0 09       BNE $09    [$DAD8]     ;/
 $91:DACF 48          PHA                    ;\
 $91:DAD0 A9 0C 00    LDA #$000C             ;|
@@ -10290,8 +10290,8 @@ $91:E0BC 8D 12 0A    STA $0A12  [$7E:0A12]  ;} Samus health mirror = 50
 $91:E0BF A9 01 06    LDA #$0601             ;\
 $91:E0C2 8D 72 0A    STA $0A72  [$7E:0A72]  ;} Samus visor palette timer = 1, Samus visor palette index = 6
 $91:E0C5 A2 00 00    LDX #$0000             ;\
-$91:E0C8 A9 69 B1    LDA #$B169             ;|
                                             ;|
+$91:E0C8 A9 69 B1    LDA #$B169             ;|
 $91:E0CB 9D 68 0C    STA $0C68,x[$7E:0C68]  ;|
 $91:E0CE E8          INX                    ;} Projectile pre-instructions = RTS
 $91:E0CF E8          INX                    ;|
@@ -10325,7 +10325,7 @@ $91:E11C 8D 34 0B    STA $0B34  [$7E:0B34]  ;/
 $91:E11F A9 FF FF    LDA #$FFFF             ;\
 $91:E122 8D 5E 19    STA $195E  [$7E:195E]  ;} FX Y position = FFFFh
 $91:E125 8D 62 19    STA $1962  [$7E:1962]  ; Lava/acid Y position = FFFFh
-$91:E128 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam graphics
+$91:E128 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam tiles and palette
 $91:E12C 9C 51 1F    STZ $1F51  [$7E:1F51]  ; Cinematic function = 0
 $91:E12F 9C 1C 0A    STZ $0A1C  [$7E:0A1C]  ; Samus pose = 0
 $91:E132 9C 1E 0A    STZ $0A1E  [$7E:0A1E]  ; Samus pose X direction = Samus movement type = 0
@@ -10622,7 +10622,7 @@ $91:E380 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $91:E383 29 00 F0    AND #$F000             ;} Clear equipped beams
 $91:E386 8D A6 09    STA $09A6  [$7E:09A6]  ;/
 
-$91:E389 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam graphics
+$91:E389 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam tiles and palette
 $91:E38D A9 3F F3    LDA #$F33F             ;\
 $91:E390 8D A4 09    STA $09A4  [$7E:09A4]  ;} Equipped items = collected items = F33Fh (all of them + 10h)
 $91:E393 8D A2 09    STA $09A2  [$7E:09A2]  ;/
@@ -10917,7 +10917,7 @@ $91:E5EF 60          RTS                    ;} Return carry set
 {
 $91:E5F0 A9 09 10    LDA #$1009             ;\
 $91:E5F3 8D A6 09    STA $09A6  [$7E:09A6]  ;} Equipped beams = wave/plasma/charge
-$91:E5F6 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam graphics
+$91:E5F6 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam tiles and palette
 $91:E5FA A0 F0 E1    LDY #$E1F0             ;\
 $91:E5FD 22 E9 C4 8D JSL $8DC4E9[$8D:C4E9]  ;} Spawn hyper beam palette FX object
 $91:E601 A9 00 80    LDA #$8000             ;\
@@ -12130,7 +12130,7 @@ $91:EDEC 80 31       BRA $31    [$EE1F]
 
 ; BRANCH_FACING_LEFT
 $91:EDEE AD 54 0A    LDA $0A54  [$7E:0A54]  ;\
-$91:EDF1 F0 17       BEQ $17    [$EE0A]     ;} If [knockback X direction] = left: go to BRANCH_FACING_LET_KNOCKBACK_LEFT
+$91:EDF1 F0 17       BEQ $17    [$EE0A]     ;} If [knockback X direction] = left: go to BRANCH_FACING_LEFT_KNOCKBACK_LEFT
 $91:EDF3 A5 8B       LDA $8B    [$7E:008B]  ;\
 $91:EDF5 89 00 02    BIT #$0200             ;} If not pressing left:
 $91:EDF8 D0 08       BNE $08    [$EE02]     ;/
@@ -12142,7 +12142,7 @@ $91:EE02 A9 05 00    LDA #$0005             ;\ Else (pressing left):
 $91:EE05 8D 52 0A    STA $0A52  [$7E:0A52]  ;} Knockback direction = down right
 $91:EE08 80 15       BRA $15    [$EE1F]
 
-; BRANCH_FACING_LET_KNOCKBACK_LEFT
+; BRANCH_FACING_LEFT_KNOCKBACK_LEFT
 $91:EE0A A5 8B       LDA $8B    [$7E:008B]  ;\
 $91:EE0C 89 00 02    BIT #$0200             ;} If not pressing left:
 $91:EE0F D0 08       BNE $08    [$EE19]     ;/

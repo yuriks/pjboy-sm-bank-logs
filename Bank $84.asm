@@ -1257,7 +1257,7 @@ $84:88D0 29 04 00    AND #$0004             ;} If setting plasma: clear spazer
 $84:88D3 1C A6 09    TRB $09A6  [$7E:09A6]  ;/
 $84:88D6 DA          PHX                    ;\
 $84:88D7 5A          PHY                    ;|
-$84:88D8 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ;} Update beam GFX
+$84:88D8 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ;} Update beam tiles and palette
 $84:88DC 7A          PLY                    ;|
 $84:88DD FA          PLX                    ;/
 $84:88DE A9 68 01    LDA #$0168             ;\

@@ -6533,16 +6533,16 @@ $90:ACB8 95 D0       STA $D0,x  [$7E:00D5]  ;|
 $90:ACBA E8          INX                    ;|
 $90:ACBB E8          INX                    ;|
 $90:ACBC 8E 30 03    STX $0330  [$7E:0330]  ;/
-$90:ACBF 4C CD AC    JMP $ACCD  [$90:ACCD]  ; Go to write beam palette
+$90:ACBF 4C CD AC    JMP $ACCD  [$90:ACCD]  ; Go to load beam palette
 }
 
 
-;;; $ACC2: Load beam palette ;;;
+;;; $ACC2: Load beam palette (external) ;;;
 {
 ;; Parameters:
-;;     A: Beam index
+;;     A: Equipped beams
 
-; Same as $ACF0
+; Same as $ACF0. Called for crystal flash finish
 $90:ACC2 08          PHP
 $90:ACC3 8B          PHB
 $90:ACC4 4B          PHK                    ;\
@@ -6557,7 +6557,7 @@ $90:ACCC A8          TAY                    ;/
 ;;; $ACCD: Load beam palette ;;;
 {
 ;; Parameters:
-;;     Y: Beam index * 2 (without the charge beam bit)
+;;     Y: Beam type * 2 (without the charge beam bit)
 
 ; Requires DB and PSR to have been pushed
 $90:ACCD A9 90 00    LDA #$0090             ;\
@@ -6585,7 +6585,9 @@ $90:ACEF 6B          RTL
 ;;; $ACF0: Load beam palette (external) ;;;
 {
 ;; Parameters:
-;;     A: Beam index
+;;     A: Equipped beams
+
+; Same as $ACC2. Called for grapple start/finish
 $90:ACF0 08          PHP
 $90:ACF1 8B          PHB
 $90:ACF2 4B          PHK                    ;\
@@ -6601,10 +6603,10 @@ $90:ACFB 6B          RTL
 ;;; $ACFC: Load beam palette ;;;
 {
 ;; Parameters:
-;;     A: Beam index
-$90:ACFC 29 FF 0F    AND #$0FFF
-$90:ACFF 0A          ASL A
-$90:AD00 A8          TAY
+;;     A: Equipped beams
+$90:ACFC 29 FF 0F    AND #$0FFF             ;\
+$90:ACFF 0A          ASL A                  ;} Y = ([A] & FFFh) * 2
+$90:AD00 A8          TAY                    ;/
 $90:AD01 A9 90 00    LDA #$0090             ;\
 $90:AD04 EB          XBA                    ;|
 $90:AD05 85 01       STA $01    [$7E:0001]  ;|
