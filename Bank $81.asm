@@ -3850,11 +3850,11 @@ $81:A0E7 AA          TAX                    ;/
 ; LOOP
 $81:A0E8 C6 16       DEC $16    [$7E:0016]  ; Decrement $16
 $81:A0EA 30 27       BMI $27    [$A113]     ; If [$16] < 0: go to BRANCH_ETANKS_DRAWN
-$81:A0EC A0 99 00    LDY #$0099             ; Y = 99h
+$81:A0EC A0 99 00    LDY #$0099             ; Y = 99h (sub-tank)
 $81:A0EF A5 14       LDA $14    [$7E:0014]  ;\
 $81:A0F1 F0 05       BEQ $05    [$A0F8]     ;} If [$14] != 0:
 $81:A0F3 C6 14       DEC $14    [$7E:0014]  ; Decrement $14
-$81:A0F5 A0 98 00    LDY #$0098             ; Y = 98h
+$81:A0F5 A0 98 00    LDY #$0098             ; Y = 98h (whole energy tank)
 
 $81:A0F8 98          TYA                    ;\
 $81:A0F9 0D 96 0F    ORA $0F96  [$7E:0F96]  ;} $7E:3600 + [X] = [Y] | [enemy 0 palette index]

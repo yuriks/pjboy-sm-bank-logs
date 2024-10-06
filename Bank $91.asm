@@ -8638,12 +8638,12 @@ $91:D322             dw 0000,D374, ; 1x1 respawning crumble block
                         000B,D3B4, ; Unused air
                         000C,D3B8, ; Unused air
                         000D,D3BC, ; Unused air
-                        000E,D3C0, ; Respawning speed boost block
-                        000F,D3C4, ; Speed boost block
+                        000E,D3C0, ; Respawning speed block
+                        000F,D3C4, ; Speed block
                         0082,D3C8, ; Brinstar only. Respawning speed block, slower crumble animation
                         0083,D3C8, ; Brinstar only. Speed block, slower crumble animation
                         0084,D3C8, ; Brinstar only. Respawning speed block (used by dachora pit)
-                        0085,D3C8, ; Brinstar only. Speed boost block
+                        0085,D3C8, ; Brinstar only. Speed block
                         FFFF
 
 $91:D374             dw CF36, 00BC                   ; Copy 1x1 block to x-ray BG2 tilemap
@@ -11893,7 +11893,7 @@ $91:EC84 60          RTS
 ;;; $EC85: Prospective pose change command 6 - kill X speed ;;;
 {
 ; Morph ball on ground / spring ball / wall jumping / grappling
-$91:EC85 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X extra run speed = accelerating
+$91:EC85 9C 4A 0B    STZ $0B4A  [$7E:0B4A]  ; Samus X acceleration mode = accelerating
 $91:EC88 9C 46 0B    STZ $0B46  [$7E:0B46]  ;\
 $91:EC8B 9C 48 0B    STZ $0B48  [$7E:0B48]  ;} Samus X base speed = 0.0
 }

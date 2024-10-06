@@ -4137,11 +4137,11 @@ $84:A33F             dw 0001, 8052
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
 ;     $C92E: PLM $D028 (unused)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
-;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed boost block)
+;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
 ;     $C9BA: PLM $D02C (unused)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
-;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed boost block)
+;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
 ;     $CA8B: PLM $D054 (collision reaction, special, BTS 4. 1x1 crumble block)
 ;     $CADF: PLM $D064 (shot/bombed/grappled reaction, shootable, BTS 0. 1x1 respawning shot block)
@@ -4162,11 +4162,11 @@ $84:A345             dw 0001, 0053
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
 ;     $C92E: PLM $D028 (unused)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
-;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed boost block)
+;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
 ;     $C9BA: PLM $D02C (unused)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
-;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed boost block)
+;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
 ;     $CA8B: PLM $D054 (collision reaction, special, BTS 4. 1x1 crumble block)
 ;     $CADF: PLM $D064 (shot/bombed/grappled reaction, shootable, BTS 0. 1x1 respawning shot block)
@@ -4187,11 +4187,11 @@ $84:A34B             dw 0001, 0054
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
 ;     $C92E: PLM $D028 (unused)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
-;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed boost block)
+;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
 ;     $C9BA: PLM $D02C (unused)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
-;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed boost block)
+;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
 ;     $CA8B: PLM $D054 (collision reaction, special, BTS 4. 1x1 crumble block)
 ;     $CADF: PLM $D064 (shot/bombed/grappled reaction, shootable, BTS 0. 1x1 respawning shot block)
@@ -4212,11 +4212,11 @@ $84:A351             dw 0001, 0055
 ;     $AB31: PLM $B79B (crumble Botwoon wall)
 ;     $C92E: PLM $D028 (unused)
 ;     $C951: PLM $D030 (collision reaction, special, BTS Brinstar 82h. Respawning speed block, slower crumble animation)
-;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed boost block)
+;     $C974: PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block)
 ;     $C997: PLM $D03C (collision reaction, special, BTS Brinstar 84h. Respawning speed block)
 ;     $C9BA: PLM $D02C (unused)
 ;     $C9CF: PLM $D034 (collision reaction, special, BTS Brinstar 83h. Speed block, slower crumble animation)
-;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed boost block)
+;     $C9E4: PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block)
 ;     $C9F9: PLM $D044 (collision reaction, special, BTS 0. 1x1 respawning crumble block)
 ;     $CA8B: PLM $D054 (collision reaction, special, BTS 4. 1x1 crumble block)
 ;     $CADF: PLM $D064 (shot/bombed/grappled reaction, shootable, BTS 0. 1x1 respawning shot block)
@@ -9816,7 +9816,7 @@ $84:C951             dx 8C7C,06,        ; Queue sound 6, sound library 2, max qu
 }
 
 
-;;; $C974: Instruction list - PLM $D038 (collision reaction, special, BTS Eh. Respawning speed boost block) ;;;
+;;; $C974: Instruction list - PLM $D038 (collision reaction, special, BTS Eh. Respawning speed block) ;;;
 {
 $84:C974             dx 8C7C,06,        ; Queue sound 6, sound library 2, max queued sounds allowed = 1 (block destroyed by contact damage)
                         0001,A345,
@@ -9868,7 +9868,7 @@ $84:C9CF             dx 8C7C,06,        ; Queue sound 6, sound library 2, max qu
 }
 
 
-;;; $C9E4: Instruction list - PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed boost block) ;;;
+;;; $C9E4: Instruction list - PLM $D040 (collision reaction, special, BTS Fh / Brinstar 85h. Speed block) ;;;
 {
 $84:C9E4             dx 8C7C,06,        ; Queue sound 6, sound library 2, max queued sounds allowed = 1 (block destroyed by contact damage)
                         0001,A345,
@@ -10426,7 +10426,7 @@ $84:CDE9 60          RTS
 }
 
 
-;;; $CDEA: Setup - PLM $D030/$D034/$D038/$D03C/$D040 (collision reaction, special, BTS Eh/Fh / Brinstar 82h..85h. Respawning speed boost block) ;;;
+;;; $CDEA: Setup - PLM $D030/$D034/$D038/$D03C/$D040 (collision reaction, special, BTS Eh/Fh / Brinstar 82h..85h. Respawning speed block) ;;;
 {
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
@@ -10735,14 +10735,14 @@ $84:D014             dw CFA0,C910   ; Unused
 $84:D018             dw CFA0,C916   ; Unused
 $84:D01C             dw CFA0,C91C   ; Unused
 $84:D020             dw CFA0,C922   ; Unused
-$84:D024             dw CFA0,C928   ; Bomb reaction, special block, BTS Eh/Fh / Brinstar 82h/83h/84h/85h. Speed boost block
+$84:D024             dw CFA0,C928   ; Bomb reaction, special block, BTS Eh/Fh / Brinstar 82h/83h/84h/85h. Speed block
 $84:D028             dw CDC2,C92E   ; Unused
 $84:D02C             dw CDC2,C9BA   ; Unused
 $84:D030             dw CDEA,C951   ; Collision reaction, special, BTS Brinstar 82h
 $84:D034             dw CDEA,C9CF   ; Collision reaction, special, BTS Brinstar 83h
-$84:D038             dw CDEA,C974   ; Collision reaction, special, BTS Eh. Respawning speed boost block
-$84:D03C             dw CDEA,C997   ; Collision reaction, special, BTS Brinstar 84h. Respawning speed boost block (used by dachora pit)
-$84:D040             dw CDEA,C9E4   ; Collision reaction, special, BTS Fh / Brinstar 85h. Speed boost block
+$84:D038             dw CDEA,C974   ; Collision reaction, special, BTS Eh. Respawning speed block
+$84:D03C             dw CDEA,C997   ; Collision reaction, special, BTS Brinstar 84h. Respawning speed block (used by dachora pit)
+$84:D040             dw CDEA,C9E4   ; Collision reaction, special, BTS Fh / Brinstar 85h. Speed block
 $84:D044             dw CE37,C9F9   ; Collision reaction, special, BTS 0. 1x1 respawning crumble block
 $84:D048             dw CE37,CA1C   ; Collision reaction, special, BTS 1. 2x1 respawning crumble block
 $84:D04C             dw CE37,CA41   ; Collision reaction, special, BTS 2. 1x2 respawning crumble block
