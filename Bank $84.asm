@@ -12727,7 +12727,7 @@ $84:DFC7             dx 86CA,       ; Clear pre-instruction
 }
 
 
-;;; $DFD7: Instruction list - callable - empty item orb ;;;
+;;; $DFD7: Unused. Instruction list - callable - empty item orb ;;;
 {
 ; Coded like an incomplete reconcealing orb
 $84:DFD7             dx 86CA,       ; Clear pre-instruction
