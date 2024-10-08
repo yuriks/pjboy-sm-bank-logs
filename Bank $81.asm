@@ -5821,7 +5821,7 @@ $81:B05C 8F 36 9E 7E STA $7E9E36[$7E:9E36]  ;} Expanding square right position =
 $81:B060 A9 08 00    LDA #$0008             ;\
 $81:B063 8F 3A 9E 7E STA $7E9E3A[$7E:9E3A]  ;} Expanding square top position = 8
 $81:B067 A9 D8 00    LDA #$00D8             ;\
-$81:B06A 8F 3E 9E 7E STA $7E9E3E[$7E:9E3E]  ;} Expanding square bottom position = -28
+$81:B06A 8F 3E 9E 7E STA $7E9E3E[$7E:9E3E]  ;} Expanding square bottom position = -28h
 $81:B06E A9 00 00    LDA #$0000             ;\
 $81:B071 8F 30 9E 7E STA $7E9E30[$7E:9E30]  ;} Expanding square left subposition = 0
 $81:B075 8F 34 9E 7E STA $7E9E34[$7E:9E34]  ; Expanding square right subposition = 0
