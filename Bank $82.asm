@@ -6815,7 +6815,7 @@ $82:B6CA E5 B3       SBC $B3    [$7E:00B3]  ;} Y = 28h - [BG1 Y scroll]
 $82:B6CC A8          TAY                    ;/
 $82:B6CD AD 53 C8    LDA $C853  [$82:C853]  ;\
 $82:B6D0 38          SEC                    ;|
-$82:B6D1 E5 B1       SBC $B1    [$7E:00B1]  ;} Y = D8h - [BG1 X scroll]
+$82:B6D1 E5 B1       SBC $B1    [$7E:00B1]  ;} X = D8h - [BG1 X scroll]
 $82:B6D3 AA          TAX                    ;/
 $82:B6D4 A9 63 00    LDA #$0063             ; A = 63h (gunship icon)
 $82:B6D7 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
@@ -6899,15 +6899,15 @@ $82:B774 20 05 B8    JSR $B805  [$82:B805]  ; Draw simple map icons
 
 $82:B777 AD 9F 07    LDA $079F  [$7E:079F]  ;\
 $82:B77A D0 1A       BNE $1A    [$B796]     ;} If [area index] = Crateria:
-$82:B77C A9 00 0E    LDA #$0E00
-$82:B77F 85 03       STA $03    [$7E:0003]
+$82:B77C A9 00 0E    LDA #$0E00             ;\
+$82:B77F 85 03       STA $03    [$7E:0003]  ;} $03 = E00h (palette 7)
 $82:B781 AD 55 C8    LDA $C855  [$82:C855]  ;\
 $82:B784 38          SEC                    ;|
 $82:B785 E5 B3       SBC $B3    [$7E:00B3]  ;} Y = 28h - [BG1 Y scroll]
 $82:B787 A8          TAY                    ;/
 $82:B788 AD 53 C8    LDA $C853  [$82:C853]  ;\
 $82:B78B 38          SEC                    ;|
-$82:B78C E5 B1       SBC $B1    [$7E:00B1]  ;} Y = D8h - [BG1 X scroll]
+$82:B78C E5 B1       SBC $B1    [$7E:00B1]  ;} X = D8h - [BG1 X scroll]
 $82:B78E AA          TAX                    ;/
 $82:B78F A9 63 00    LDA #$0063             ; A = 63h (gunship icon)
 $82:B792 22 1F 89 81 JSL $81891F[$81:891F]  ; Add spritemap from $82:C569 table to OAM
