@@ -6276,291 +6276,296 @@ $A6:C66E             dw FFE8,FFE8, FFEC,0014, 0010,FFE2, 001E,FFFD, 000E,FFF3, F
 }
 
 
+;;; $C696..CAF4: Ridley explosion ;;;
+{
 ;;; $C696: Initialisation AI - enemy $E1BF (Ridley explosion) ;;;
 {
 $A6:C696 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C699 A9 01 00    LDA #$0001
-$A6:C69C 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A6:C69F 9E 90 0F    STZ $0F90,x[$7E:0FD0]
-$A6:C6A2 9E 98 0F    STZ $0F98,x[$7E:0FD8]
-$A6:C6A5 A9 00 0E    LDA #$0E00
-$A6:C6A8 9D 96 0F    STA $0F96,x[$7E:0FD6]
-$A6:C6AB BC B4 0F    LDY $0FB4,x[$7E:0FF4]
-$A6:C6AE B9 CE C6    LDA $C6CE,y[$A6:C6DA]
-$A6:C6B1 9D B2 0F    STA $0FB2,x[$7E:0FF2]
-$A6:C6B4 22 11 81 80 JSL $808111[$80:8111]
-$A6:C6B8 29 30 01    AND #$0130
-$A6:C6BB 2C E5 05    BIT $05E5  [$7E:05E5]
-$A6:C6BE 10 04       BPL $04    [$C6C4]
-$A6:C6C0 49 FF FF    EOR #$FFFF
-$A6:C6C3 1A          INC A
+$A6:C699 A9 01 00    LDA #$0001             ;\
+$A6:C69C 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction list timer = 1
+$A6:C69F 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
+$A6:C6A2 9E 98 0F    STZ $0F98,x[$7E:0FD8]  ; Enemy VRAM tiles index = 0
+$A6:C6A5 A9 00 0E    LDA #$0E00             ;\
+$A6:C6A8 9D 96 0F    STA $0F96,x[$7E:0FD6]  ;} Enemy palette index = E00h (palette 7)
+$A6:C6AB BC B4 0F    LDY $0FB4,x[$7E:0FF4]  ;\
+$A6:C6AE B9 CE C6    LDA $C6CE,y[$A6:C6DA]  ;} Enemy life timer = [$C6CE + [enemy parameter 1]]
+$A6:C6B1 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;/
+$A6:C6B4 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A6:C6B8 29 30 01    AND #$0130             ;\
+$A6:C6BB 2C E5 05    BIT $05E5  [$7E:05E5]  ;|
+$A6:C6BE 10 04       BPL $04    [$C6C4]     ;|
+$A6:C6C0 49 FF FF    EOR #$FFFF             ;} Enemy X velocity = ([random number] & 130h) * sgn([random number])
+$A6:C6C3 1A          INC A                  ;|
+                                            ;|
+$A6:C6C4 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
+$A6:C6C7 9E AC 0F    STZ $0FAC,x[$7E:0FEC]  ; Enemy Y velocity = 0
+$A6:C6CA BB          TYX                    ;\
+$A6:C6CB 7C E6 C6    JMP ($C6E6,x)[$A6:C78E];} Go to [$C6E6 + [enemy parameter 1]]
 
-$A6:C6C4 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A6:C6C7 9E AC 0F    STZ $0FAC,x[$7E:0FEC]
-$A6:C6CA BB          TYX
-$A6:C6CB 7C E6 C6    JMP ($C6E6,x)[$A6:C78E]
-
+; Life times. Indexed by enemy parameter 1
 $A6:C6CE             dw 0048, 0050, 0058, 0060, 0068, 0070, 0078, 0028, 0030, 0038, 0080, 0040
 
+; Initialisation pointers. Indexed by enemy parameter 1
 $A6:C6E6             dw C6FE, C716, C72E, C746, C75E, C776, C78E, C7DA, C80C, C83E, C870, C8A2
 }
 
 
-;;; $C6FE:  ;;;
+;;; $C6FE: Ridley explosion initialisation - index = 0 ;;;
 {
 $A6:C6FE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C701 AF 2C 20 7E LDA $7E202C[$7E:202C]
-$A6:C705 9D 7A 0F    STA $0F7A,x[$7E:113A]
-$A6:C708 AF 2E 20 7E LDA $7E202E[$7E:202E]
-$A6:C70C 9D 7E 0F    STA $0F7E,x[$7E:113E]
-$A6:C70F A9 47 CA    LDA #$CA47
-$A6:C712 9D 92 0F    STA $0F92,x[$7E:1152]
+$A6:C701 AF 2C 20 7E LDA $7E202C[$7E:202C]  ;\
+$A6:C705 9D 7A 0F    STA $0F7A,x[$7E:113A]  ;} Enemy X position = [$7E:202C]
+$A6:C708 AF 2E 20 7E LDA $7E202E[$7E:202E]  ;\
+$A6:C70C 9D 7E 0F    STA $0F7E,x[$7E:113E]  ;} Enemy Y position = [$7E:202E]
+$A6:C70F A9 47 CA    LDA #$CA47             ;\
+$A6:C712 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = $CA47
 $A6:C715 6B          RTL
 }
 
 
-;;; $C716:  ;;;
+;;; $C716: Ridley explosion initialisation - index = 2 ;;;
 {
-$A6:C716 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C719 AF 40 20 7E LDA $7E2040[$7E:2040]
-$A6:C71D 9D 7A 0F    STA $0F7A,x[$7E:10FA]
-$A6:C720 AF 42 20 7E LDA $7E2042[$7E:2042]
-$A6:C724 9D 7E 0F    STA $0F7E,x[$7E:10FE]
-$A6:C727 A9 47 CA    LDA #$CA47
+$A6:C716 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A6:C719 AF 40 20 7E LDA $7E2040[$7E:2040]  ;} Enemy X position = [$7E:2040]
+$A6:C71D 9D 7A 0F    STA $0F7A,x[$7E:10FA]  ;\
+$A6:C720 AF 42 20 7E LDA $7E2042[$7E:2042]  ;} Enemy Y position = [$7E:2042]
+$A6:C724 9D 7E 0F    STA $0F7E,x[$7E:10FE]  ;\
+$A6:C727 A9 47 CA    LDA #$CA47             ;} Enemy instruction list pointer = $CA47
 $A6:C72A 9D 92 0F    STA $0F92,x[$7E:1112]
 $A6:C72D 6B          RTL
 }
 
 
-;;; $C72E:  ;;;
+;;; $C72E: Ridley explosion initialisation - index = 4 ;;;
 {
-$A6:C72E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C731 AF 54 20 7E LDA $7E2054[$7E:2054]
-$A6:C735 9D 7A 0F    STA $0F7A,x[$7E:10BA]
-$A6:C738 AF 56 20 7E LDA $7E2056[$7E:2056]
-$A6:C73C 9D 7E 0F    STA $0F7E,x[$7E:10BE]
-$A6:C73F A9 4D CA    LDA #$CA4D
+$A6:C72E AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A6:C731 AF 54 20 7E LDA $7E2054[$7E:2054]  ;} Enemy X position = [$7E:2054]
+$A6:C735 9D 7A 0F    STA $0F7A,x[$7E:10BA]  ;\
+$A6:C738 AF 56 20 7E LDA $7E2056[$7E:2056]  ;} Enemy Y position = [$7E:2056]
+$A6:C73C 9D 7E 0F    STA $0F7E,x[$7E:10BE]  ;\
+$A6:C73F A9 4D CA    LDA #$CA4D             ;} Enemy instruction list pointer = $CA4D
 $A6:C742 9D 92 0F    STA $0F92,x[$7E:10D2]
 $A6:C745 6B          RTL
 }
 
 
-;;; $C746:  ;;;
+;;; $C746: Ridley explosion initialisation - index = 6 ;;;
 {
 $A6:C746 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C749 AF 68 20 7E LDA $7E2068[$7E:2068]
-$A6:C74D 9D 7A 0F    STA $0F7A,x[$7E:107A]
-$A6:C750 AF 6A 20 7E LDA $7E206A[$7E:206A]
-$A6:C754 9D 7E 0F    STA $0F7E,x[$7E:107E]
-$A6:C757 A9 4D CA    LDA #$CA4D
-$A6:C75A 9D 92 0F    STA $0F92,x[$7E:1092]
+$A6:C749 AF 68 20 7E LDA $7E2068[$7E:2068]  ;\
+$A6:C74D 9D 7A 0F    STA $0F7A,x[$7E:107A]  ;} Enemy X position = [$7E:2068]
+$A6:C750 AF 6A 20 7E LDA $7E206A[$7E:206A]  ;\
+$A6:C754 9D 7E 0F    STA $0F7E,x[$7E:107E]  ;} Enemy Y position = [$7E:206A]
+$A6:C757 A9 4D CA    LDA #$CA4D             ;\
+$A6:C75A 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $CA4D
 $A6:C75D 6B          RTL
 }
 
 
-;;; $C75E:  ;;;
+;;; $C75E: Ridley explosion initialisation - index = 8 ;;;
 {
 $A6:C75E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C761 AF 7C 20 7E LDA $7E207C[$7E:207C]
-$A6:C765 9D 7A 0F    STA $0F7A,x[$7E:103A]
-$A6:C768 AF 7E 20 7E LDA $7E207E[$7E:207E]
-$A6:C76C 9D 7E 0F    STA $0F7E,x[$7E:103E]
-$A6:C76F A9 53 CA    LDA #$CA53
-$A6:C772 9D 92 0F    STA $0F92,x[$7E:1052]
+$A6:C761 AF 7C 20 7E LDA $7E207C[$7E:207C]  ;\
+$A6:C765 9D 7A 0F    STA $0F7A,x[$7E:103A]  ;} Enemy X position = [$7E:207C]
+$A6:C768 AF 7E 20 7E LDA $7E207E[$7E:207E]  ;\
+$A6:C76C 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;} Enemy Y position = [$7E:207E]
+$A6:C76F A9 53 CA    LDA #$CA53             ;\
+$A6:C772 9D 92 0F    STA $0F92,x[$7E:1052]  ;} Enemy instruction list pointer = $CA53
 $A6:C775 6B          RTL
 }
 
 
-;;; $C776:  ;;;
+;;; $C776: Ridley explosion initialisation - index = Ah ;;;
 {
 $A6:C776 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C779 AF 90 20 7E LDA $7E2090[$7E:2090]
-$A6:C77D 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
-$A6:C780 AF 92 20 7E LDA $7E2092[$7E:2092]
-$A6:C784 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A6:C787 A9 53 CA    LDA #$CA53
-$A6:C78A 9D 92 0F    STA $0F92,x[$7E:1012]
+$A6:C779 AF 90 20 7E LDA $7E2090[$7E:2090]  ;\
+$A6:C77D 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;} Enemy X position = [$7E:2090]
+$A6:C780 AF 92 20 7E LDA $7E2092[$7E:2092]  ;\
+$A6:C784 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;} Enemy Y position = [$7E:2092]
+$A6:C787 A9 53 CA    LDA #$CA53             ;\
+$A6:C78A 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $CA53
 $A6:C78D 6B          RTL
 }
 
 
-;;; $C78E:  ;;;
+;;; $C78E: Ridley explosion initialisation - index = Ch ;;;
 {
 $A6:C78E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C791 AF A4 20 7E LDA $7E20A4[$7E:20A4]
-$A6:C795 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A6:C798 AF A6 20 7E LDA $7E20A6[$7E:20A6]
-$A6:C79C 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A6:C79F AF A2 20 7E LDA $7E20A2[$7E:20A2]
-$A6:C7A3 18          CLC
-$A6:C7A4 6F 8E 20 7E ADC $7E208E[$7E:208E]
-$A6:C7A8 18          CLC
-$A6:C7A9 69 08 00    ADC #$0008
-$A6:C7AC 29 F0 00    AND #$00F0
-$A6:C7AF 4A          LSR A
-$A6:C7B0 4A          LSR A
-$A6:C7B1 4A          LSR A
-$A6:C7B2 A8          TAY
-$A6:C7B3 B9 BA C7    LDA $C7BA,y[$A6:C7BC]
-$A6:C7B6 9D 92 0F    STA $0F92,x[$7E:0FD2]
+$A6:C791 AF A4 20 7E LDA $7E20A4[$7E:20A4]  ;\
+$A6:C795 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;} Enemy X position = [$7E:20A4]
+$A6:C798 AF A6 20 7E LDA $7E20A6[$7E:20A6]  ;\
+$A6:C79C 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [$7E:20A6]
+$A6:C79F AF A2 20 7E LDA $7E20A2[$7E:20A2]  ;\
+$A6:C7A3 18          CLC                    ;|
+$A6:C7A4 6F 8E 20 7E ADC $7E208E[$7E:208E]  ;|
+$A6:C7A8 18          CLC                    ;|
+$A6:C7A9 69 08 00    ADC #$0008             ;|
+$A6:C7AC 29 F0 00    AND #$00F0             ;|
+$A6:C7AF 4A          LSR A                  ;} Enemy instruction list pointer = [$C7BA + ([$7E:20A2] + [$7E:208E] + 8) / 10h % 10h * 2]
+$A6:C7B0 4A          LSR A                  ;|
+$A6:C7B1 4A          LSR A                  ;|
+$A6:C7B2 A8          TAY                    ;|
+$A6:C7B3 B9 BA C7    LDA $C7BA,y[$A6:C7BC]  ;|
+$A6:C7B6 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;/
 $A6:C7B9 6B          RTL
 
+; Instruction list pointers
 $A6:C7BA             dw CA95, CA9B, CAA1, CAA7, CAAD, CAB3, CAB9, CABF, CAC5, CACB, CAD1, CAD7, CADD, CAE3, CAE9, CAEF
 }
 
 
-;;; $C7DA:  ;;;
+;;; $C7DA: Ridley explosion initialisation - index = Eh ;;;
 {
-$A6:C7DA A0 00 00    LDY #$0000
-$A6:C7DD AF 20 78 7E LDA $7E7820[$7E:7820]
-$A6:C7E1 F0 03       BEQ $03    [$C7E6]
-$A6:C7E3 A0 02 00    LDY #$0002
+$A6:C7DA A0 00 00    LDY #$0000             ; Y = 0
+$A6:C7DD AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
+$A6:C7E1 F0 03       BEQ $03    [$C7E6]     ;} If [$7E:7820] != 0:
+$A6:C7E3 A0 02 00    LDY #$0002             ; Y = 2
 
 $A6:C7E6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C7E9 B9 04 C8    LDA $C804,y[$A6:C806]
-$A6:C7EC 18          CLC
-$A6:C7ED 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:C7F0 9D 7A 0F    STA $0F7A,x[$7E:117A]
-$A6:C7F3 A9 00 00    LDA #$0000
-$A6:C7F6 18          CLC
-$A6:C7F7 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:C7FA 9D 7E 0F    STA $0F7E,x[$7E:117E]
-$A6:C7FD B9 08 C8    LDA $C808,y[$A6:C80A]
-$A6:C800 9D 92 0F    STA $0F92,x[$7E:1192]
+$A6:C7E9 B9 04 C8    LDA $C804,y[$A6:C806]  ;\ (>_<;)
+$A6:C7EC 18          CLC                    ;|
+$A6:C7ED 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position]
+$A6:C7F0 9D 7A 0F    STA $0F7A,x[$7E:117A]  ;/
+$A6:C7F3 A9 00 00    LDA #$0000             ;\ (>_<;)
+$A6:C7F6 18          CLC                    ;|
+$A6:C7F7 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy Y position = [Ridley Y position]
+$A6:C7FA 9D 7E 0F    STA $0F7E,x[$7E:117E]  ;/
+$A6:C7FD B9 08 C8    LDA $C808,y[$A6:C80A]  ;\
+$A6:C800 9D 92 0F    STA $0F92,x[$7E:1192]  ;} Enemy instruction list pointer = [$C808 + [Y]]
 $A6:C803 6B          RTL
 
-$A6:C804             dw 0000, 0000
-$A6:C808             dw CA59, CA5F
+$A6:C804             dw 0000, 0000 ; X offset from Ridley X position
+$A6:C808             dw CA59, CA5F ; Instruction list pointers
 }
 
 
-;;; $C80C:  ;;;
+;;; $C80C: Ridley explosion initialisation - index = 10h ;;;
 {
-$A6:C80C A0 00 00    LDY #$0000
-$A6:C80F AF 20 78 7E LDA $7E7820[$7E:7820]
-$A6:C813 F0 03       BEQ $03    [$C818]
-$A6:C815 A0 02 00    LDY #$0002
-
-$A6:C818 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C81B B9 36 C8    LDA $C836,y[$A6:C838]
-$A6:C81E 18          CLC
-$A6:C81F 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:C822 9D 7A 0F    STA $0F7A,x[$7E:11BA]
-$A6:C825 A9 16 00    LDA #$0016
-$A6:C828 18          CLC
-$A6:C829 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:C82C 9D 7E 0F    STA $0F7E,x[$7E:11BE]
-$A6:C82F B9 3A C8    LDA $C83A,y[$A6:C83C]
-$A6:C832 9D 92 0F    STA $0F92,x[$7E:11D2]
+$A6:C80C A0 00 00    LDY #$0000             ; Y = 0
+$A6:C80F AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
+$A6:C813 F0 03       BEQ $03    [$C818]     ;} If [$7E:7820] != 0:
+$A6:C815 A0 02 00    LDY #$0002             ; Y = 2
+                                            
+$A6:C818 AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A6:C81B B9 36 C8    LDA $C836,y[$A6:C838]  ;\
+$A6:C81E 18          CLC                    ;|
+$A6:C81F 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C836 + [Y]]
+$A6:C822 9D 7A 0F    STA $0F7A,x[$7E:11BA]  ;/
+$A6:C825 A9 16 00    LDA #$0016             ;\
+$A6:C828 18          CLC                    ;|
+$A6:C829 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy Y position = [Ridley Y position] + 16h
+$A6:C82C 9D 7E 0F    STA $0F7E,x[$7E:11BE]  ;/
+$A6:C82F B9 3A C8    LDA $C83A,y[$A6:C83C]  ;\
+$A6:C832 9D 92 0F    STA $0F92,x[$7E:11D2]  ;} Enemy instruction list pointer = [$C83A + [Y]]
 $A6:C835 6B          RTL
 
-$A6:C836             dw 000F, FFF1
-$A6:C83A             dw CA65, CA6B
+$A6:C836             dw 000F, FFF1 ; X offset from Ridley X position
+$A6:C83A             dw CA65, CA6B ; Instruction list pointers
 }
 
 
-;;; $C83E:  ;;;
+;;; $C83E: Ridley explosion initialisation - index = 12h ;;;
 {
-$A6:C83E A0 00 00    LDY #$0000
-$A6:C841 AF 20 78 7E LDA $7E7820[$7E:7820]
-$A6:C845 F0 03       BEQ $03    [$C84A]
-$A6:C847 A0 02 00    LDY #$0002
-
-$A6:C84A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C84D B9 68 C8    LDA $C868,y[$A6:C86A]
-$A6:C850 18          CLC
-$A6:C851 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:C854 9D 7A 0F    STA $0F7A,x[$7E:123A]
-$A6:C857 A9 E8 FF    LDA #$FFE8
-$A6:C85A 18          CLC
-$A6:C85B 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:C85E 9D 7E 0F    STA $0F7E,x[$7E:123E]
-$A6:C861 B9 6C C8    LDA $C86C,y[$A6:C86E]
-$A6:C864 9D 92 0F    STA $0F92,x[$7E:1252]
+$A6:C83E A0 00 00    LDY #$0000             ; Y = 0
+$A6:C841 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
+$A6:C845 F0 03       BEQ $03    [$C84A]     ;} If [$7E:7820] != 0:
+$A6:C847 A0 02 00    LDY #$0002             ; Y = 2
+                                            
+$A6:C84A AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A6:C84D B9 68 C8    LDA $C868,y[$A6:C86A]  ;\
+$A6:C850 18          CLC                    ;|
+$A6:C851 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C868 + [Y]]
+$A6:C854 9D 7A 0F    STA $0F7A,x[$7E:123A]  ;/
+$A6:C857 A9 E8 FF    LDA #$FFE8             ;\
+$A6:C85A 18          CLC                    ;|
+$A6:C85B 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy Y position = [Ridley Y position] - 18h
+$A6:C85E 9D 7E 0F    STA $0F7E,x[$7E:123E]  ;/
+$A6:C861 B9 6C C8    LDA $C86C,y[$A6:C86E]  ;\
+$A6:C864 9D 92 0F    STA $0F92,x[$7E:1252]  ;} Enemy instruction list pointer = [$C86C + [Y]]
 $A6:C867 6B          RTL
 
-$A6:C868             dw FFFD, 0003
-$A6:C86C             dw CA71, CA77
+$A6:C868             dw FFFD, 0003 ; X offset from Ridley X position
+$A6:C86C             dw CA71, CA77 ; Instruction list pointers
 }
 
 
-;;; $C870:  ;;;
+;;; $C870: Ridley explosion initialisation - index = 14h ;;;
 {
-$A6:C870 A0 00 00    LDY #$0000
-$A6:C873 AF 20 78 7E LDA $7E7820[$7E:7820]
-$A6:C877 F0 03       BEQ $03    [$C87C]
-$A6:C879 A0 02 00    LDY #$0002
-
-$A6:C87C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C87F B9 9A C8    LDA $C89A,y[$A6:C89C]
-$A6:C882 18          CLC
-$A6:C883 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:C886 9D 7A 0F    STA $0F7A,x[$7E:11FA]
-$A6:C889 A9 00 00    LDA #$0000
-$A6:C88C 18          CLC
-$A6:C88D 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:C890 9D 7E 0F    STA $0F7E,x[$7E:11FE]
-$A6:C893 B9 9E C8    LDA $C89E,y[$A6:C8A0]
-$A6:C896 9D 92 0F    STA $0F92,x[$7E:1212]
+$A6:C870 A0 00 00    LDY #$0000             ; Y = 0
+$A6:C873 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
+$A6:C877 F0 03       BEQ $03    [$C87C]     ;} If [$7E:7820] != 0:
+$A6:C879 A0 02 00    LDY #$0002             ; Y = 2
+                                            
+$A6:C87C AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A6:C87F B9 9A C8    LDA $C89A,y[$A6:C89C]  ;\
+$A6:C882 18          CLC                    ;|
+$A6:C883 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C89A + [Y]]
+$A6:C886 9D 7A 0F    STA $0F7A,x[$7E:11FA]  ;/
+$A6:C889 A9 00 00    LDA #$0000             ;\ (>_<;)
+$A6:C88C 18          CLC                    ;|
+$A6:C88D 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy Y position = [Ridley Y position]
+$A6:C890 9D 7E 0F    STA $0F7E,x[$7E:11FE]  ;/
+$A6:C893 B9 9E C8    LDA $C89E,y[$A6:C8A0]  ;\
+$A6:C896 9D 92 0F    STA $0F92,x[$7E:1212]  ;} Enemy instruction list pointer = [$C89E + [Y]]
 $A6:C899 6B          RTL
 
-$A6:C89A             dw 0010, FFF0
-$A6:C89E             dw CA7D, CA83
+$A6:C89A             dw 0010, FFF0 ; X offset from Ridley X position
+$A6:C89E             dw CA7D, CA83 ; Instruction list pointers
 }
 
 
-;;; $C8A2:  ;;;
+;;; $C8A2: Ridley explosion initialisation - index = 16h ;;;
 {
-$A6:C8A2 A0 00 00    LDY #$0000
-$A6:C8A5 AF 20 78 7E LDA $7E7820[$7E:7820]
-$A6:C8A9 F0 03       BEQ $03    [$C8AE]
-$A6:C8AB A0 02 00    LDY #$0002
-
-$A6:C8AE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C8B1 B9 CC C8    LDA $C8CC,y[$A6:C8CE]
-$A6:C8B4 18          CLC
-$A6:C8B5 6D 7A 0F    ADC $0F7A  [$7E:0F7A]
-$A6:C8B8 9D 7A 0F    STA $0F7A,x[$7E:127A]
-$A6:C8BB A9 07 00    LDA #$0007
-$A6:C8BE 18          CLC
-$A6:C8BF 6D 7E 0F    ADC $0F7E  [$7E:0F7E]
-$A6:C8C2 9D 7E 0F    STA $0F7E,x[$7E:127E]
-$A6:C8C5 B9 D0 C8    LDA $C8D0,y[$A6:C8D2]
-$A6:C8C8 9D 92 0F    STA $0F92,x[$7E:1292]
+$A6:C8A2 A0 00 00    LDY #$0000             ; Y = 0
+$A6:C8A5 AF 20 78 7E LDA $7E7820[$7E:7820]  ;\
+$A6:C8A9 F0 03       BEQ $03    [$C8AE]     ;} If [$7E:7820] != 0:
+$A6:C8AB A0 02 00    LDY #$0002             ; Y = 2
+                                            
+$A6:C8AE AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A6:C8B1 B9 CC C8    LDA $C8CC,y[$A6:C8CE]  ;\
+$A6:C8B4 18          CLC                    ;|
+$A6:C8B5 6D 7A 0F    ADC $0F7A  [$7E:0F7A]  ;} Enemy X position = [Ridley X position] + [$C8CC + [Y]]
+$A6:C8B8 9D 7A 0F    STA $0F7A,x[$7E:127A]  ;/
+$A6:C8BB A9 07 00    LDA #$0007             ;\
+$A6:C8BE 18          CLC                    ;|
+$A6:C8BF 6D 7E 0F    ADC $0F7E  [$7E:0F7E]  ;} Enemy Y position = [Ridley Y position] + 7
+$A6:C8C2 9D 7E 0F    STA $0F7E,x[$7E:127E]  ;/
+$A6:C8C5 B9 D0 C8    LDA $C8D0,y[$A6:C8D2]  ;\
+$A6:C8C8 9D 92 0F    STA $0F92,x[$7E:1292]  ;} Enemy instruction list pointer = [$C8D0 + [Y]]
 $A6:C8CB 6B          RTL
 
-$A6:C8CC             dw 0008, FFF8
-$A6:C8D0             dw CA89, CA8F
+$A6:C8CC             dw 0008, FFF8 ; X offset from Ridley X position
+$A6:C8D0             dw CA89, CA8F ; Instruction list pointers
 }
 
 
 ;;; $C8D4: Main AI - enemy $E1BF (Ridley explosion) ;;;
 {
 $A6:C8D4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A6:C8D7 20 13 C9    JSR $C913  [$A6:C913]
-$A6:C8DA BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A6:C8DD 10 04       BPL $04    [$C8E3]
-$A6:C8DF 49 FF FF    EOR #$FFFF
-$A6:C8E2 1A          INC A
-
-$A6:C8E3 18          CLC
-$A6:C8E4 69 FC FF    ADC #$FFFC
-$A6:C8E7 10 03       BPL $03    [$C8EC]
-$A6:C8E9 A9 00 00    LDA #$0000
-
-$A6:C8EC 3C AA 0F    BIT $0FAA,x[$7E:0FEA]
-$A6:C8EF 10 04       BPL $04    [$C8F5]
-$A6:C8F1 49 FF FF    EOR #$FFFF
-$A6:C8F4 1A          INC A
-
-$A6:C8F5 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A6:C8F8 BD AC 0F    LDA $0FAC,x[$7E:0FEC]
-$A6:C8FB 18          CLC
-$A6:C8FC 69 04 00    ADC #$0004
-$A6:C8FF 9D AC 0F    STA $0FAC,x[$7E:0FEC]
-$A6:C902 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]
-$A6:C906 DE B2 0F    DEC $0FB2,x[$7E:0FF2]
-$A6:C909 10 07       BPL $07    [$C912]
+$A6:C8D7 20 13 C9    JSR $C913  [$A6:C913]  ; Handle flickering
+$A6:C8DA BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A6:C8DD 10 04       BPL $04    [$C8E3]     ;|
+$A6:C8DF 49 FF FF    EOR #$FFFF             ;|
+$A6:C8E2 1A          INC A                  ;|
+                                            ;|
+$A6:C8E3 18          CLC                    ;|
+$A6:C8E4 69 FC FF    ADC #$FFFC             ;|
+$A6:C8E7 10 03       BPL $03    [$C8EC]     ;|
+$A6:C8E9 A9 00 00    LDA #$0000             ;} Enemy X velocity = max(0, |[enemy X velocity]| - 4) * sgn([enemy X velocity])
+                                            ;|
+$A6:C8EC 3C AA 0F    BIT $0FAA,x[$7E:0FEA]  ;|
+$A6:C8EF 10 04       BPL $04    [$C8F5]     ;|
+$A6:C8F1 49 FF FF    EOR #$FFFF             ;|
+$A6:C8F4 1A          INC A                  ;|
+                                            ;|
+$A6:C8F5 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
+$A6:C8F8 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
+$A6:C8FB 18          CLC                    ;|
+$A6:C8FC 69 04 00    ADC #$0004             ;} Enemy Y velocity += 4
+$A6:C8FF 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;/
+$A6:C902 22 EF C3 A9 JSL $A9C3EF[$A9:C3EF]  ; Move enemy according to enemy velocity
+$A6:C906 DE B2 0F    DEC $0FB2,x[$7E:0FF2]  ; Decrement enemy life timer
+$A6:C909 10 07       BPL $07    [$C912]     ; If [enemy life timer] < 0:
 $A6:C90B A9 00 00    LDA #$0000             ; A = 0 (small explosion)
 $A6:C90E 5C AF A3 A0 JML $A0A3AF[$A0:A3AF]  ; Go to enemy death
 
@@ -6568,20 +6573,20 @@ $A6:C912 6B          RTL
 }
 
 
-;;; $C913:  ;;;
+;;; $C913: Handle flickering ;;;
 {
-$A6:C913 BD A4 0F    LDA $0FA4,x[$7E:0FE4]
-$A6:C916 29 01 00    AND #$0001
-$A6:C919 9D A4 0F    STA $0FA4,x[$7E:0FE4]
-$A6:C91C F0 0A       BEQ $0A    [$C928]
-$A6:C91E BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A6:C921 09 00 01    ORA #$0100
-$A6:C924 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A6:C927 60          RTS
+$A6:C913 BD A4 0F    LDA $0FA4,x[$7E:0FE4]  ;\
+$A6:C916 29 01 00    AND #$0001             ;} Enemy frame counter %= 2
+$A6:C919 9D A4 0F    STA $0FA4,x[$7E:0FE4]  ;/
+$A6:C91C F0 0A       BEQ $0A    [$C928]     ; If [enemy frame counter] != 0:
+$A6:C91E BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A6:C921 09 00 01    ORA #$0100             ;} Set enemy as invisible
+$A6:C924 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A6:C927 60          RTS                    ; Return
 
-$A6:C928 BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A6:C92B 29 FF FE    AND #$FEFF
-$A6:C92E 9D 86 0F    STA $0F86,x[$7E:0FC6]
+$A6:C928 BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A6:C92B 29 FF FE    AND #$FEFF             ;} Set enemy as visible
+$A6:C92E 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
 $A6:C931 60          RTS
 }
 
@@ -6840,6 +6845,7 @@ $A6:CAE9             dx 0001,DD3C,
 {
 $A6:CAEF             dx 0001,DD35,
                         812F        ; Sleep
+}
 }
 }
 

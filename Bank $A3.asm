@@ -228,7 +228,7 @@ $A3:88F0             dw 3800, 4D1F, 38B6, 246E, 1448, 47FF, 2EFA, 1616, 0132, 6F
 }
 
 
-;;; $8910: Instruction list -  ;;;
+;;; $8910: Instruction list - idling ;;;
 {
 $A3:8910             dx 000A,8B65,
                         000A,8BB9,
@@ -238,16 +238,16 @@ $A3:8910             dx 000A,8B65,
 }
 
 
-;;; $8924: Instruction list -  ;;;
+;;; $8924: Instruction list - prepare to launch attack ;;;
 {
 $A3:8924             dx 0010,8B65,
                         0008,8B94,
-                        8956,       ; ???
+                        8956,       ; Set attack ready flag
                         812F        ; Sleep
 }
 
 
-;;; $8930: Instruction list -  ;;;
+;;; $8930: Instruction list - launched attack ;;;
 {
 $A3:8930             dx 8173        ; Enable off-screen processing
 $A3:8932             dx 0002,8BB9,
@@ -258,7 +258,7 @@ $A3:8932             dx 0002,8BB9,
 }
 
 
-;;; $8946: Instruction list -  ;;;
+;;; $8946: Unused. Instruction list - stop animating ;;;
 {
 $A3:8946             dx 817D,       ; Disable off-screen processing
                         0001,8B65,
@@ -272,7 +272,7 @@ $A3:894E             dw 8910, 8924, 8930, 8946
 }
 
 
-;;; $8956: Instruction ;;;
+;;; $8956: Instruction - set attack ready flag ;;;
 {
 $A3:8956 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8959 A9 01 00    LDA #$0001
@@ -284,13 +284,13 @@ $A3:895F 6B          RTL
 ;;; $8960: Initialisation AI - enemy $D67F (metaree) ;;;
 {
 $A3:8960 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8963 9E AC 0F    STZ $0FAC,x[$7E:102C]
-$A3:8966 9E AE 0F    STZ $0FAE,x[$7E:102E]
-$A3:8969 9E B0 0F    STZ $0FB0,x[$7E:1030]
-$A3:896C A9 10 89    LDA #$8910
-$A3:896F 9D 92 0F    STA $0F92,x[$7E:1012]
-$A3:8972 A9 87 89    LDA #$8987
-$A3:8975 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:8963 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 0
+$A3:8966 9E AE 0F    STZ $0FAE,x[$7E:102E]  ; Enemy instruction list index = 0
+$A3:8969 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
+$A3:896C A9 10 89    LDA #$8910             ;\
+$A3:896F 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $8910 (idling)
+$A3:8972 A9 87 89    LDA #$8987             ;\
+$A3:8975 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $8987 (idling)
 $A3:8978 6B          RTL
 }
 
@@ -298,74 +298,79 @@ $A3:8978 6B          RTL
 ;;; $8979: Main AI - enemy $D67F (metaree) ;;;
 {
 $A3:8979 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:897C 7C AA 0F    JMP ($0FAA,x)[$A3:8987]
+$A3:897C 7C AA 0F    JMP ($0FAA,x)[$A3:8987]; Go to [enemy function]
 }
 
 
-;;; $897F: Metaree function pointers ;;;
+;;; $897F: Unused. Metaree function pointers ;;;
 {
 $A3:897F             dw 8987, 89D4, 89F3, 8A5C
 }
 
 
-;;; $8987:  ;;;
+;;; $8987: Metaree function - idling ;;;
 {
+; BUG: This routine fails to check if the metaree is above Samus before activating it
+;      Aside from launching the metaree when it arguably shouldn't, this causes the metaree to shoot off-screen / burrow in mid-air (see $89AC)
 $A3:8987 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:898A BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A3:898D 38          SEC
-$A3:898E ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A3:8991 10 04       BPL $04    [$8997]
-$A3:8993 49 FF FF    EOR #$FFFF
-$A3:8996 1A          INC A
-
-$A3:8997 C9 48 00    CMP #$0048
-$A3:899A B0 0F       BCS $0F    [$89AB]
-$A3:899C 20 AC 89    JSR $89AC  [$A3:89AC]
-$A3:899F FE AC 0F    INC $0FAC,x[$7E:102C]
-$A3:89A2 20 B2 8A    JSR $8AB2  [$A3:8AB2]
-$A3:89A5 A9 D4 89    LDA #$89D4
-$A3:89A8 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:898A BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A3:898D 38          SEC                    ;|
+$A3:898E ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A3:8991 10 04       BPL $04    [$8997]     ;|
+$A3:8993 49 FF FF    EOR #$FFFF             ;} If |[enemy X position] - [Samus X position]| < 48h:
+$A3:8996 1A          INC A                  ;|
+                                            ;|
+$A3:8997 C9 48 00    CMP #$0048             ;|
+$A3:899A B0 0F       BCS $0F    [$89AB]     ;/
+$A3:899C 20 AC 89    JSR $89AC  [$A3:89AC]  ; Determine metaree Y velocity
+$A3:899F FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 1 (prepare to launch attack)
+$A3:89A2 20 B2 8A    JSR $8AB2  [$A3:8AB2]  ; Set metaree instruction list pointer
+$A3:89A5 A9 D4 89    LDA #$89D4             ;\
+$A3:89A8 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $89D4 (prepare to launch attack)
 
 $A3:89AB 6B          RTL
 }
 
 
-;;; $89AC:  ;;;
+;;; $89AC: Determine metaree Y velocity ;;;
 {
-$A3:89AC AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A3:89AF 38          SEC
-$A3:89B0 FD 7E 0F    SBC $0F7E,x[$7E:0FFE]
-$A3:89B3 8D 04 42    STA $4204  [$7E:4204]
-$A3:89B6 E2 20       SEP #$20
-$A3:89B8 A9 18       LDA #$18
-$A3:89BA 8D 06 42    STA $4206  [$7E:4206]
-$A3:89BD C2 20       REP #$20
-$A3:89BF EA          NOP
-$A3:89C0 EA          NOP
-$A3:89C1 EA          NOP
-$A3:89C2 EA          NOP
-$A3:89C3 EA          NOP
-$A3:89C4 EA          NOP
-$A3:89C5 EA          NOP
-$A3:89C6 AD 14 42    LDA $4214  [$7E:4214]
-$A3:89C9 29 FF 00    AND #$00FF
-$A3:89CC 18          CLC
-$A3:89CD 69 04 00    ADC #$0004
-$A3:89D0 9D B2 0F    STA $0FB2,x[$7E:1032]
+; This subroutine assumes [Samus' Y position] >= [enemy Y position]
+; If this is not the case, then due to the unsigned nature of division,
+; the resulting enemy velocity will be some large value (~AAh) that makes the metaree shoot off-screen in an instant and/or hit the ground from many tiles away
+$A3:89AC AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A3:89AF 38          SEC                    ;|
+$A3:89B0 FD 7E 0F    SBC $0F7E,x[$7E:0FFE]  ;|
+$A3:89B3 8D 04 42    STA $4204  [$7E:4204]  ;|
+$A3:89B6 E2 20       SEP #$20               ;|
+$A3:89B8 A9 18       LDA #$18               ;|
+$A3:89BA 8D 06 42    STA $4206  [$7E:4206]  ;|
+$A3:89BD C2 20       REP #$20               ;|
+$A3:89BF EA          NOP                    ;|
+$A3:89C0 EA          NOP                    ;|
+$A3:89C1 EA          NOP                    ;} Enemy Y velocity = 4 + ([Samus Y position] - [enemy Y position]) / 18h % 100h
+$A3:89C2 EA          NOP                    ;|
+$A3:89C3 EA          NOP                    ;|
+$A3:89C4 EA          NOP                    ;|
+$A3:89C5 EA          NOP                    ;|
+$A3:89C6 AD 14 42    LDA $4214  [$7E:4214]  ;|
+$A3:89C9 29 FF 00    AND #$00FF             ;|
+$A3:89CC 18          CLC                    ;|
+$A3:89CD 69 04 00    ADC #$0004             ;|
+$A3:89D0 9D B2 0F    STA $0FB2,x[$7E:1032]  ;/
 $A3:89D3 60          RTS
 }
 
 
-;;; $89D4:  ;;;
+;;; $89D4: Metaree function - prepare to launch attack ;;;
 {
-$A3:89D4 BD B0 0F    LDA $0FB0,x[$7E:1030]
-$A3:89D7 F0 19       BEQ $19    [$89F2]
-$A3:89D9 9E B0 0F    STZ $0FB0,x[$7E:1030]
+$A3:89D4 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
+$A3:89D7 F0 19       BEQ $19    [$89F2]     ;} If [enemy attack ready flag] = 0: return
+$A3:89D9 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
 $A3:89DC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:89DF FE AC 0F    INC $0FAC,x[$7E:102C]
-$A3:89E2 20 B2 8A    JSR $8AB2  [$A3:8AB2]
-$A3:89E5 A9 F3 89    LDA #$89F3
-$A3:89E8 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:89DF FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 2 (launched attack)
+$A3:89E2 20 B2 8A    JSR $8AB2  [$A3:8AB2]  ; Set metaree instruction list pointer
+$A3:89E5 A9 F3 89    LDA #$89F3             ;\
+$A3:89E8 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $89F3 (launched attack)
 $A3:89EB A9 5B 00    LDA #$005B             ;\
 $A3:89EE 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Bh, sound library 2, max queued sounds allowed = 6 (skree launches attack)
 
@@ -373,46 +378,46 @@ $A3:89F2 6B          RTL
 }
 
 
-;;; $89F3:  ;;;
+;;; $89F3: Metaree function - launched attack ;;;
 {
 $A3:89F3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:89F6 A9 15 00    LDA #$0015
-$A3:89F9 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A3:89F6 A9 15 00    LDA #$0015             ;\
+$A3:89F9 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy burrow timer = 15h
 $A3:89FC BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
-$A3:89FF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy $0FB2]
+$A3:89FF 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy Y velocity]
 $A3:8A01 64 12       STZ $12    [$7E:0012]  ; $12 = 0
 $A3:8A03 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
-$A3:8A06 09 03 00    ORA #$0003             ;} A = [enemy $0F86] | 3
-$A3:8A09 9D 86 0F    STA $0F86,x[$7E:1006]  ; Enemy $0F86 = [A]
+$A3:8A06 09 03 00    ORA #$0003             ;} A = enemy properties = [enemy properties] | 3
+$A3:8A09 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
 $A3:8A0C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8A0F 22 8A BF A0 JSL $A0BF8A[$A0:BF8A]  ; Check for downwards "solid" block collision
 $A3:8A13 B0 2D       BCS $2D    [$8A42]     ; If collision: go to BRANCH_COLLISION
 $A3:8A15 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8A18 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A3:8A1B 18          CLC
-$A3:8A1C 7D B2 0F    ADC $0FB2,x[$7E:1032]
-$A3:8A1F 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A3:8A22 A9 02 00    LDA #$0002
-$A3:8A25 8D 24 0E    STA $0E24  [$7E:0E24]
-$A3:8A28 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A3:8A2B CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$A3:8A2E 30 06       BMI $06    [$8A36]
-$A3:8A30 A9 FE FF    LDA #$FFFE
-$A3:8A33 8D 24 0E    STA $0E24  [$7E:0E24]
+$A3:8A18 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A3:8A1B 18          CLC                    ;|
+$A3:8A1C 7D B2 0F    ADC $0FB2,x[$7E:1032]  ;} Enemy Y position += [enemy Y velocity]
+$A3:8A1F 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A3:8A22 A9 02 00    LDA #$0002             ;\
+$A3:8A25 8D 24 0E    STA $0E24  [$7E:0E24]  ;} $0E24 = 2 (X velocity)
+$A3:8A28 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A3:8A2B CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] >= [Samus X position]:
+$A3:8A2E 30 06       BMI $06    [$8A36]     ;/
+$A3:8A30 A9 FE FF    LDA #$FFFE             ;\
+$A3:8A33 8D 24 0E    STA $0E24  [$7E:0E24]  ;} $0E24 = -2 (X velocity)
 
-$A3:8A36 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A3:8A39 18          CLC
-$A3:8A3A 6D 24 0E    ADC $0E24  [$7E:0E24]
-$A3:8A3D 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
-$A3:8A40 80 19       BRA $19    [$8A5B]
+$A3:8A36 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A3:8A39 18          CLC                    ;|
+$A3:8A3A 6D 24 0E    ADC $0E24  [$7E:0E24]  ;} Enemy X position += (X velocity)
+$A3:8A3D 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
+$A3:8A40 80 19       BRA $19    [$8A5B]     ; Return
 
 ; BRANCH_COLLISION
 $A3:8A42 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8A45 A9 01 00    LDA #$0001
-$A3:8A48 9D 94 0F    STA $0F94,x[$7E:1014]
-$A3:8A4B 9E 90 0F    STZ $0F90,x[$7E:1010]
-$A3:8A4E A9 5C 8A    LDA #$8A5C
-$A3:8A51 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:8A45 A9 01 00    LDA #$0001             ;\
+$A3:8A48 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
+$A3:8A4B 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
+$A3:8A4E A9 5C 8A    LDA #$8A5C             ;\
+$A3:8A51 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $8A5C (burrowing)
 $A3:8A54 A9 5C 00    LDA #$005C             ;\
 $A3:8A57 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Ch, sound library 2, max queued sounds allowed = 6 (skree hits the ground)
 
@@ -420,14 +425,15 @@ $A3:8A5B 6B          RTL
 }
 
 
-;;; $8A5C:  ;;;
+;;; $8A5C: Metaree function - burrowing ;;;
 {
+; I have no idea why BRANCH_DELETE does any of those three assignments
 $A3:8A5C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8A5F DE A8 0F    DEC $0FA8,x[$7E:1028]
-$A3:8A62 F0 2E       BEQ $2E    [$8A92]
-$A3:8A64 BD A8 0F    LDA $0FA8,x[$7E:1028]
-$A3:8A67 C9 08 00    CMP #$0008
-$A3:8A6A D0 1F       BNE $1F    [$8A8B]
+$A3:8A5F DE A8 0F    DEC $0FA8,x[$7E:1028]  ; Decrement enemy burrow timer
+$A3:8A62 F0 2E       BEQ $2E    [$8A92]     ; If [enemy burrow timer] = 0: go to BRANCH_DELETE
+$A3:8A64 BD A8 0F    LDA $0FA8,x[$7E:1028]  ;\
+$A3:8A67 C9 08 00    CMP #$0008             ;} If [enemy burrow timer] = 8:
+$A3:8A6A D0 1F       BNE $1F    [$8A8B]     ;/
 $A3:8A6C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8A6F A0 FA 8B    LDY #$8BFA             ;\
 $A3:8A72 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - down-right enemy projectile
@@ -439,43 +445,44 @@ $A3:8A84 A0 24 8C    LDY #$8C24             ;\
 $A3:8A87 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - up-left enemy projectile
 
 $A3:8A8B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8A8E FE 7E 0F    INC $0F7E,x[$7E:0FFE]
-$A3:8A91 6B          RTL
+$A3:8A8E FE 7E 0F    INC $0F7E,x[$7E:0FFE]  ; Increment enemy Y position
+$A3:8A91 6B          RTL                    ; Return
 
+; BRANCH_DELETE
 $A3:8A92 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8A95 BD 96 0F    LDA $0F96,x[$7E:1016]
-$A3:8A98 1D 98 0F    ORA $0F98,x[$7E:1018]
-$A3:8A9B 9F 06 70 7E STA $7E7006,x[$7E:7086]
-$A3:8A9F A9 00 0A    LDA #$0A00
-$A3:8AA2 9D 96 0F    STA $0F96,x[$7E:1016]
-$A3:8AA5 9E 98 0F    STZ $0F98,x[$7E:1018]
-$A3:8AA8 BD 86 0F    LDA $0F86,x[$7E:1006]
-$A3:8AAB 09 00 02    ORA #$0200
-$A3:8AAE 9D 86 0F    STA $0F86,x[$7E:1006]
+$A3:8A95 BD 96 0F    LDA $0F96,x[$7E:1016]  ;\
+$A3:8A98 1D 98 0F    ORA $0F98,x[$7E:1018]  ;} Enemy spawn VRAM tiles index = [enemy palette index] | [enemy VRAM tiles index]
+$A3:8A9B 9F 06 70 7E STA $7E7006,x[$7E:7086];/
+$A3:8A9F A9 00 0A    LDA #$0A00             ;\
+$A3:8AA2 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = A00h (palette 5)
+$A3:8AA5 9E 98 0F    STZ $0F98,x[$7E:1018]  ; Enemy VRAM tiles index = 0
+$A3:8AA8 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A3:8AAB 09 00 02    ORA #$0200             ;} Flag enemy for deletion
+$A3:8AAE 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
 $A3:8AB1 6B          RTL
 }
 
 
-;;; $8AB2:  ;;;
+;;; $8AB2: Set metaree instruction list pointer ;;;
 {
 $A3:8AB2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8AB5 BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A3:8AB8 DD AE 0F    CMP $0FAE,x[$7E:102E]
-$A3:8ABB F0 14       BEQ $14    [$8AD1]
-$A3:8ABD 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A3:8AC0 0A          ASL A
-$A3:8AC1 A8          TAY
-$A3:8AC2 B9 4E 89    LDA $894E,y[$A3:8950]
-$A3:8AC5 9D 92 0F    STA $0F92,x[$7E:1012]
-$A3:8AC8 A9 01 00    LDA #$0001
-$A3:8ACB 9D 94 0F    STA $0F94,x[$7E:1014]
-$A3:8ACE 9E 90 0F    STZ $0F90,x[$7E:1010]
+$A3:8AB5 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A3:8AB8 DD AE 0F    CMP $0FAE,x[$7E:102E]  ;} If [enemy next instruction list index] != [enemy instruction list index]:
+$A3:8ABB F0 14       BEQ $14    [$8AD1]     ;/
+$A3:8ABD 9D AE 0F    STA $0FAE,x[$7E:102E]  ; Enemy instruction list index = [enemy next instruction list index]
+$A3:8AC0 0A          ASL A                  ;\
+$A3:8AC1 A8          TAY                    ;|
+$A3:8AC2 B9 4E 89    LDA $894E,y[$A3:8950]  ;} Enemy instruction list pointer = [$894E + [enemy instruction list index] * 2]
+$A3:8AC5 9D 92 0F    STA $0F92,x[$7E:1012]  ;/
+$A3:8AC8 A9 01 00    LDA #$0001             ;\
+$A3:8ACB 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
+$A3:8ACE 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
 
 $A3:8AD1 60          RTS
 }
 
 
-;;; $8AD2:  ;;;
+;;; $8AD2: Unused ;;;
 {
 $A3:8AD2             dw 8ADC, 8AE6, 8AF0, 8AFA, 8B04
 
@@ -503,13 +510,13 @@ $A3:8B1B 8D 2C 0E    STA $0E2C  [$7E:0E2C]  ;} Metaree particle palette index = 
 $A3:8B1E 22 2D 80 A3 JSL $A3802D[$A3:802D]  ; Normal enemy shot AI
 $A3:8B22 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B25 BD 8C 0F    LDA $0F8C,x[$7E:110C]  ;\
-$A3:8B28 D0 3A       BNE $3A    [$8B64]     ;} If [enemy health] = 0:
+$A3:8B28 D0 3A       BNE $3A    [$8B64]     ;} If [enemy health] != 0: return
 $A3:8B2A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B2D AD 2A 0E    LDA $0E2A  [$7E:0E2A]  ;\
 $A3:8B30 9D 98 0F    STA $0F98,x            ;} Enemy VRAM tiles index = [metaree particle VRAM tiles index]
 $A3:8B33 AD 2C 0E    LDA $0E2C  [$7E:0E2C]  ;\
 $A3:8B36 9D 96 0F    STA $0F96,x            ;} Enemy palette index = [metaree particle palette index]
-$A3:8B39 BD A8 0F    LDA $0FA8,x            ; A = [enemy $0FA8] <-- I think zero'd by enemy death routine, parameter is unused anyway
+$A3:8B39 BD A8 0F    LDA $0FA8,x            ; A = [enemy burrow timer] <-- A isn't used, zero'd by enemy death routine anyway
 $A3:8B3C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8B3F A0 FA 8B    LDY #$8BFA             ;\
 $A3:8B42 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn metaree particle - down-right enemy projectile
@@ -5791,7 +5798,7 @@ $A3:C63E             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 7F
 }
 
 
-;;; $C65E: Instruction list -  ;;;
+;;; $C65E: Instruction list - idling ;;;
 {
 $A3:C65E             dx 000A,C842,
                         000A,C878,
@@ -5801,16 +5808,16 @@ $A3:C65E             dx 000A,C842,
 }
 
 
-;;; $C672: Instruction list -  ;;;
+;;; $C672: Instruction list - prepare to launch attack ;;;
 {
 $A3:C672             dx 0010,C842,
                         0008,C862,
-                        C6A4,       ; ???
+                        C6A4,       ; Set attack ready flag
                         812F        ; Sleep
 }
 
 
-;;; $C67E: Instruction list -  ;;;
+;;; $C67E: Instruction list - launched attack ;;;
 {
 $A3:C67E             dx 8173,       ; Enable off-screen processing
                         0002,C878,
@@ -5821,7 +5828,7 @@ $A3:C67E             dx 8173,       ; Enable off-screen processing
 }
 
 
-;;; $C694: Instruction list -  ;;;
+;;; $C694: Unused. Instruction list - stop animating ;;;
 {
 $A3:C694             dx 817D,       ; Disable off-screen processing
                         0001,C842,
@@ -5835,7 +5842,7 @@ $A3:C69C             dw C65E, C672, C67E, C694
 }
 
 
-;;; $C6A4: Instruction ;;;
+;;; $C6A4: Instruction - set attack ready flag ;;;
 {
 $A3:C6A4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C6A7 A9 01 00    LDA #$0001
@@ -5847,13 +5854,13 @@ $A3:C6AD 6B          RTL
 ;;; $C6AE: Initialisation AI - enemy $DB7F (skree) ;;;
 {
 $A3:C6AE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C6B1 9E AC 0F    STZ $0FAC,x[$7E:102C]
-$A3:C6B4 9E AE 0F    STZ $0FAE,x[$7E:102E]
-$A3:C6B7 9E B0 0F    STZ $0FB0,x[$7E:1030]
-$A3:C6BA A9 5E C6    LDA #$C65E
-$A3:C6BD 9D 92 0F    STA $0F92,x[$7E:1012]
-$A3:C6C0 A9 D5 C6    LDA #$C6D5
-$A3:C6C3 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:C6B1 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 0
+$A3:C6B4 9E AE 0F    STZ $0FAE,x[$7E:102E]  ; Enemy instruction list index = 0
+$A3:C6B7 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
+$A3:C6BA A9 5E C6    LDA #$C65E             ;\
+$A3:C6BD 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $C65E (idling)
+$A3:C6C0 A9 D5 C6    LDA #$C6D5             ;\
+$A3:C6C3 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $C6D5 (idling)
 $A3:C6C6 6B          RTL
 }
 
@@ -5861,47 +5868,47 @@ $A3:C6C6 6B          RTL
 ;;; $C6C7: Main AI - enemy $DB7F (skree) ;;;
 {
 $A3:C6C7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C6CA 7C AA 0F    JMP ($0FAA,x)[$A3:C6D5]
+$A3:C6CA 7C AA 0F    JMP ($0FAA,x)[$A3:C6D5]; Go to [enemy function]
 }
 
 
-;;; $C6CD:  ;;;
+;;; $C6CD: Unused. Skree function pointers ;;;
 {
 $A3:C6CD             dw C6D5, C6F7, C716, C77F
 }
 
 
-;;; $C6D5:  ;;;
+;;; $C6D5: Skree function - idling ;;;
 {
 $A3:C6D5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C6D8 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A3:C6DB 38          SEC
-$A3:C6DC ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A3:C6DF 10 04       BPL $04    [$C6E5]
-$A3:C6E1 49 FF FF    EOR #$FFFF
-$A3:C6E4 1A          INC A
-
-$A3:C6E5 C9 30 00    CMP #$0030
-$A3:C6E8 B0 0C       BCS $0C    [$C6F6]
-$A3:C6EA FE AC 0F    INC $0FAC,x[$7E:102C]
-$A3:C6ED 20 D5 C7    JSR $C7D5  [$A3:C7D5]
-$A3:C6F0 A9 F7 C6    LDA #$C6F7
-$A3:C6F3 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:C6D8 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A3:C6DB 38          SEC                    ;|
+$A3:C6DC ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;|
+$A3:C6DF 10 04       BPL $04    [$C6E5]     ;|
+$A3:C6E1 49 FF FF    EOR #$FFFF             ;} If |[enemy X position] - [Samus X position]| < 30h:
+$A3:C6E4 1A          INC A                  ;|
+                                            ;|
+$A3:C6E5 C9 30 00    CMP #$0030             ;|
+$A3:C6E8 B0 0C       BCS $0C    [$C6F6]     ;/
+$A3:C6EA FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 1 (prepare to launch attack)
+$A3:C6ED 20 D5 C7    JSR $C7D5  [$A3:C7D5]  ; Set skree instruction list pointer
+$A3:C6F0 A9 F7 C6    LDA #$C6F7             ;\
+$A3:C6F3 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $C6F7 (prepare to launch attack)
 
 $A3:C6F6 6B          RTL
 }
 
 
-;;; $C6F7:  ;;;
+;;; $C6F7: Skree function - prepare to launch attack ;;;
 {
-$A3:C6F7 BD B0 0F    LDA $0FB0,x[$7E:1030]
-$A3:C6FA F0 19       BEQ $19    [$C715]
-$A3:C6FC 9E B0 0F    STZ $0FB0,x[$7E:1030]
-$A3:C6FF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C702 FE AC 0F    INC $0FAC,x[$7E:102C]
-$A3:C705 20 D5 C7    JSR $C7D5  [$A3:C7D5]
-$A3:C708 A9 16 C7    LDA #$C716
-$A3:C70B 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:C6F7 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
+$A3:C6FA F0 19       BEQ $19    [$C715]     ;} If [enemy attack ready flag] = 0: return
+$A3:C6FC 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
+$A3:C6FF AE 54 0E    LDX $0E54  [$7E:0E54]  
+$A3:C702 FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 2 (launched attack)
+$A3:C705 20 D5 C7    JSR $C7D5  [$A3:C7D5]  ; Set metaree instruction list pointer
+$A3:C708 A9 16 C7    LDA #$C716             ;\
+$A3:C70B 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $C716 (launched attack)
 $A3:C70E A9 5B 00    LDA #$005B             ;\
 $A3:C711 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Bh, sound library 2, max queued sounds allowed = 6 (skree launches attack)
 
@@ -5909,46 +5916,46 @@ $A3:C715 6B          RTL
 }
 
 
-;;; $C716:  ;;;
+;;; $C716: Skree function - launched attack ;;;
 {
 $A3:C716 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C719 A9 15 00    LDA #$0015
-$A3:C71C 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A3:C719 A9 15 00    LDA #$0015             ;\
+$A3:C71C 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy burrow timer = 15h
 $A3:C71F A9 06 00    LDA #$0006             ;\
 $A3:C722 85 14       STA $14    [$7E:0014]  ;} $14.$12 = 6.0
 $A3:C724 64 12       STZ $12    [$7E:0012]  ;/
 $A3:C726 BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
-$A3:C729 09 03 00    ORA #$0003             ;} A = [enemy $0F86] | 3
-$A3:C72C 9D 86 0F    STA $0F86,x[$7E:1006]  ; Enemy $0F86 = [A]
+$A3:C729 09 03 00    ORA #$0003             ;} A = enemy properties = [enemy properties] | 3
+$A3:C72C 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
 $A3:C72F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C732 22 8A BF A0 JSL $A0BF8A[$A0:BF8A]  ; Check for downwards "solid" block collision
 $A3:C736 B0 2D       BCS $2D    [$C765]     ; If collision: go to BRANCH_COLLISION
 $A3:C738 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C73B BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A3:C73E 18          CLC
-$A3:C73F 69 06 00    ADC #$0006
-$A3:C742 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A3:C745 A9 01 00    LDA #$0001
-$A3:C748 8D 24 0E    STA $0E24  [$7E:0E24]
-$A3:C74B BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A3:C74E CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$A3:C751 30 06       BMI $06    [$C759]
-$A3:C753 A9 FF FF    LDA #$FFFF
-$A3:C756 8D 24 0E    STA $0E24  [$7E:0E24]
+$A3:C73B BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A3:C73E 18          CLC                    ;|
+$A3:C73F 69 06 00    ADC #$0006             ;} Enemy Y position += 6
+$A3:C742 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A3:C745 A9 01 00    LDA #$0001             ;\
+$A3:C748 8D 24 0E    STA $0E24  [$7E:0E24]  ;} $0E24 = 1 (X velocity)
+$A3:C74B BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A3:C74E CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] >= [Samus X position]:
+$A3:C751 30 06       BMI $06    [$C759]     ;/
+$A3:C753 A9 FF FF    LDA #$FFFF             ;\
+$A3:C756 8D 24 0E    STA $0E24  [$7E:0E24]  ;} $0E24 = -1 (X velocity)
 
-$A3:C759 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A3:C75C 18          CLC
-$A3:C75D 6D 24 0E    ADC $0E24  [$7E:0E24]
-$A3:C760 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
-$A3:C763 80 19       BRA $19    [$C77E]
+$A3:C759 BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A3:C75C 18          CLC                    ;|
+$A3:C75D 6D 24 0E    ADC $0E24  [$7E:0E24]  ;} Enemy X position += (X velocity)
+$A3:C760 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
+$A3:C763 80 19       BRA $19    [$C77E]     ; Return
 
 ; BRANCH_COLLISION
 $A3:C765 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C768 A9 01 00    LDA #$0001
-$A3:C76B 9D 94 0F    STA $0F94,x[$7E:1014]
-$A3:C76E 9E 90 0F    STZ $0F90,x[$7E:1010]
-$A3:C771 A9 7F C7    LDA #$C77F
-$A3:C774 9D AA 0F    STA $0FAA,x[$7E:102A]
+$A3:C768 A9 01 00    LDA #$0001             ;\
+$A3:C76B 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
+$A3:C76E 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
+$A3:C771 A9 7F C7    LDA #$C77F             ;\
+$A3:C774 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $C77F (burrowing)
 $A3:C777 A9 5C 00    LDA #$005C             ;\
 $A3:C77A 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 5Ch, sound library 2, max queued sounds allowed = 6 (skree hits the ground)
 
@@ -5956,14 +5963,15 @@ $A3:C77E 6B          RTL
 }
 
 
-;;; $C77F:  ;;;
+;;; $C77F: Skree function - burrowing ;;;
 {
+; I have no idea why BRANCH_DELETE does any of those three assignments
 $A3:C77F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C782 DE A8 0F    DEC $0FA8,x[$7E:1028]
-$A3:C785 F0 2E       BEQ $2E    [$C7B5]
-$A3:C787 BD A8 0F    LDA $0FA8,x[$7E:1028]
-$A3:C78A C9 08 00    CMP #$0008
-$A3:C78D D0 1F       BNE $1F    [$C7AE]
+$A3:C782 DE A8 0F    DEC $0FA8,x[$7E:1028]  ; Decrement enemy burrow timer
+$A3:C785 F0 2E       BEQ $2E    [$C7B5]     ; If [enemy burrow timer] = 0: go to BRANCH_DELETE
+$A3:C787 BD A8 0F    LDA $0FA8,x[$7E:1028]  ;\
+$A3:C78A C9 08 00    CMP #$0008             ;} If [enemy burrow timer] = 8:
+$A3:C78D D0 1F       BNE $1F    [$C7AE]     ;/
 $A3:C78F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C792 A0 C2 8B    LDY #$8BC2             ;\
 $A3:C795 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn skree particle - down-right enemy projectile
@@ -5975,37 +5983,38 @@ $A3:C7A7 A0 EC 8B    LDY #$8BEC             ;\
 $A3:C7AA 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn skree particle - up-left enemy projectile
 
 $A3:C7AE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C7B1 FE 7E 0F    INC $0F7E,x[$7E:0FFE]
-$A3:C7B4 6B          RTL
+$A3:C7B1 FE 7E 0F    INC $0F7E,x[$7E:0FFE]  ; Increment enemy Y position
+$A3:C7B4 6B          RTL                    ; Return
 
+; BRANCH_DELETE
 $A3:C7B5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C7B8 BD 96 0F    LDA $0F96,x[$7E:1016]
-$A3:C7BB 1D 98 0F    ORA $0F98,x[$7E:1018]
-$A3:C7BE 9F 06 70 7E STA $7E7006,x[$7E:7086]
-$A3:C7C2 A9 00 0A    LDA #$0A00
-$A3:C7C5 9D 96 0F    STA $0F96,x[$7E:1016]
-$A3:C7C8 9E 98 0F    STZ $0F98,x[$7E:1018]
-$A3:C7CB BD 86 0F    LDA $0F86,x[$7E:1006]
-$A3:C7CE 09 00 02    ORA #$0200
-$A3:C7D1 9D 86 0F    STA $0F86,x[$7E:1006]
+$A3:C7B8 BD 96 0F    LDA $0F96,x[$7E:1016]  ;\
+$A3:C7BB 1D 98 0F    ORA $0F98,x[$7E:1018]  ;} Enemy spawn VRAM tiles index = [enemy palette index] | [enemy VRAM tiles index]
+$A3:C7BE 9F 06 70 7E STA $7E7006,x[$7E:7086];/
+$A3:C7C2 A9 00 0A    LDA #$0A00             ;\
+$A3:C7C5 9D 96 0F    STA $0F96,x[$7E:1016]  ;} Enemy palette index = A00h (palette 5)
+$A3:C7C8 9E 98 0F    STZ $0F98,x[$7E:1018]  ; Enemy VRAM tiles index = 0
+$A3:C7CB BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A3:C7CE 09 00 02    ORA #$0200             ;} Flag enemy for deletion
+$A3:C7D1 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
 $A3:C7D4 6B          RTL
 }
 
 
-;;; $C7D5:  ;;;
+;;; $C7D5: Set skree instruction list pointer ;;;
 {
 $A3:C7D5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C7D8 BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A3:C7DB DD AE 0F    CMP $0FAE,x[$7E:102E]
-$A3:C7DE F0 14       BEQ $14    [$C7F4]
-$A3:C7E0 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A3:C7E3 0A          ASL A
-$A3:C7E4 A8          TAY
-$A3:C7E5 B9 9C C6    LDA $C69C,y[$A3:C69E]
-$A3:C7E8 9D 92 0F    STA $0F92,x[$7E:1012]
-$A3:C7EB A9 01 00    LDA #$0001
-$A3:C7EE 9D 94 0F    STA $0F94,x[$7E:1014]
-$A3:C7F1 9E 90 0F    STZ $0F90,x[$7E:1010]
+$A3:C7D8 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A3:C7DB DD AE 0F    CMP $0FAE,x[$7E:102E]  ;} If [enemy next instruction list index] != [enemy instruction list index]:
+$A3:C7DE F0 14       BEQ $14    [$C7F4]     ;/
+$A3:C7E0 9D AE 0F    STA $0FAE,x[$7E:102E]  ; Enemy instruction list index = [enemy next instruction list index]
+$A3:C7E3 0A          ASL A                  ;\
+$A3:C7E4 A8          TAY                    ;|
+$A3:C7E5 B9 9C C6    LDA $C69C,y[$A3:C69E]  ;} Enemy instruction list pointer = [$894E + [enemy instruction list index] * 2]
+$A3:C7E8 9D 92 0F    STA $0F92,x[$7E:1012]  ;/
+$A3:C7EB A9 01 00    LDA #$0001             ;\
+$A3:C7EE 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
+$A3:C7F1 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
 
 $A3:C7F4 60          RTS
 }
@@ -6014,11 +6023,11 @@ $A3:C7F4 60          RTS
 ;;; $C7F5: Enemy shot - enemy $DB7F (skree) ;;;
 {
 $A3:C7F5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C7F8 22 32 80 A3 JSL $A38032[$A3:8032]
+$A3:C7F8 22 32 80 A3 JSL $A38032[$A3:8032]  ; Normal enemy shot AI - no death check, no enemy shot graphic
 $A3:C7FC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C7FF BD 8C 0F    LDA $0F8C,x[$7E:108C]
-$A3:C802 D0 3D       BNE $3D    [$C841]
-$A3:C804 BD A8 0F    LDA $0FA8,x[$7E:10A8]
+$A3:C7FF BD 8C 0F    LDA $0F8C,x[$7E:108C]  ;\
+$A3:C802 D0 3D       BNE $3D    [$C841]     ;} If [enemy health] != 0: return
+$A3:C804 BD A8 0F    LDA $0FA8,x[$7E:10A8]  ; A = [enemy burrow timer] <-- A isn't used
 $A3:C807 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C80A A0 C2 8B    LDY #$8BC2             ;\
 $A3:C80D 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn skree particle - down-right enemy projectile

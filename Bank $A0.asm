@@ -7893,13 +7893,13 @@ $A0:BF89 6B          RTL                    ;/
 ;;; $BF8A: Check for vertical "solid" block collision ;;;
 {
 ;; Parameters:
-;;     A: Direction. 0 = up, 1 = down
+;;     A: Bit 0 = direction. Clear = up, set = down
 ;;     X: Enemy index
 ;;     $14.$12: Distance to check for collision (unsigned)
 ;; Returns:
 ;;     Carry: Set if collision, clear otherwise
 
-; Used by (metal) skree
+; Used by skree/metaree. Only used for downwards direction
 
 $A0:BF8A 85 1C       STA $1C    [$7E:001C]  ; $1C = [A]
 $A0:BF8C 8B          PHB                    ;\
