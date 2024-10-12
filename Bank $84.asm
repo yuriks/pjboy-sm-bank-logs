@@ -3850,7 +3850,7 @@ $84:A151             dx 0001, C932
                         0002, D911, D912
                         0000
 
-; Used by instruction list $DDEC: PLM $DF7D (Dragon cannon, facing left)
+; Used by instruction list $DDEC: PLM $DF7D (Draygon cannon, facing left)
 $84:A165             dx 0001, A180
                         FF, 00
                         0001, 00FF
@@ -3858,7 +3858,7 @@ $84:A165             dx 0001, A180
                         0002, 00FF, A1A0
                         0000
 
-; Used by instruction list $DDEC: PLM $DF7D (Dragon cannon, facing left)
+; Used by instruction list $DDEC: PLM $DF7D (Draygon cannon, facing left)
 $84:A179             dx 0001, A181
                         FF, 00
                         0001, 00FF
@@ -3866,7 +3866,7 @@ $84:A179             dx 0001, A181
                         0002, 00FF, A1A1
                         0000
 
-; Used by instruction list $DDEC: PLM $DF7D (Dragon cannon, facing left)
+; Used by instruction list $DDEC: PLM $DF7D (Draygon cannon, facing left)
 $84:A18D             dx 0001, A182
                         FF, 00
                         0001, 00FF
@@ -3874,7 +3874,7 @@ $84:A18D             dx 0001, A182
                         0002, 00FF, A1A2
                         0000
 
-; Used by instruction list $DDEC: PLM $DF7D (Dragon cannon, facing left)
+; Used by instruction list $DDEC: PLM $DF7D (Draygon cannon, facing left)
 $84:A1A1             dx 0001, A183
                         FF, 00
                         0001, 00FF
@@ -12483,7 +12483,7 @@ $84:DDCB             dx 8ACD,03,DDEC,   ; Increment room argument; room argument
 }
 
 
-;;; $DDEC: Instruction list - PLM $DF7D (Dragon cannon, facing left) ;;;
+;;; $DDEC: Instruction list - PLM $DF7D (Draygon cannon, facing left) ;;;
 {
 $84:DDEC             dx DC36,           ; Damage Draygon turret
 $84:DDEE             dx 0006,A165,
@@ -12674,7 +12674,7 @@ $84:DF6D             dw DF4C,DDA3 ; Unused. Draygon cannon, facing up-right
 $84:DF71             dw DEF0,DDB9 ; Draygon cannon, with shield, facing left
 $84:DF75             dw DF15,DE02 ; Unused. Draygon cannon, with shield, facing down-left
 $84:DF79             dw DF15,DE4B ; Unused. Draygon cannon, with shield, facing up-left
-$84:DF7D             dw DF4C,DDEC ; Dragon cannon, facing left
+$84:DF7D             dw DF4C,DDEC ; Draygon cannon, facing left
 $84:DF81             dw DF4C,DE35 ; Unused. Draygon cannon, facing down-left
 $84:DF85             dw DF4C,DE7E ; Unused. Draygon cannon, facing up-left
 }
