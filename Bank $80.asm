@@ -514,9 +514,9 @@ $80:824E 6B          RTL
 ;;; $824F: Write 'supermetroid' to SRAM  ;;;
 {
 ; Called by:
-;     $8B:E797
+;     $8B:E797: Cinematic function - post-credits - scroll item percentage down
 
-; $70:1FE0..1FEB = 'supermetroid'
+; $70:1FE0..1FEB = 'supermetroid' (game completed)
 $80:824F DA          PHX
 $80:8250 A2 0A 00    LDX #$000A
 
@@ -530,7 +530,7 @@ $80:8260 6B          RTL
 }
 
 
-;;; $8261: Check for non-corrupt SRAM ;;;
+;;; $8261: Determine number of demo sets ;;;
 {
 $80:8261 DA          PHX
 $80:8262 A9 03 00    LDA #$0003             ;\
@@ -547,7 +547,7 @@ $80:8281 90 11       BCC $11    [$8294]     ; If not corrupt, go to BRANCH_NON_C
 $80:8283 A2 0A 00    LDX #$000A             ;\
                                             ;|
 $80:8286 BF AD 82 80 LDA $8082AD,x[$80:949A];|
-$80:828A 9F E0 1F 70 STA $701FE0,x[$70:31CD];} $70:1FE0..1FEB = 'madadameyohn' (all SRAM is corrupt)
+$80:828A 9F E0 1F 70 STA $701FE0,x[$70:31CD];} $70:1FE0..1FEB = 'madadameyohn' (game not completed)
 $80:828E CA          DEX                    ;|
 $80:828F CA          DEX                    ;|
 $80:8290 10 F4       BPL $F4    [$8286]     ;/
@@ -559,7 +559,7 @@ $80:8294 A2 0A 00    LDX #$000A             ;\
                                             ;|
 $80:8297 BF E0 1F 70 LDA $701FE0,x[$70:1FEA];|
 $80:829B DF B9 82 80 CMP $8082B9,x[$80:82C3];|
-$80:829F D0 0A       BNE $0A    [$82AB]     ;} If $70:1FE0..1FEB = 'supermetroid':
+$80:829F D0 0A       BNE $0A    [$82AB]     ;} If [$70:1FE0..1FEB] = 'supermetroid' (game completed):
                                             ;|
 $80:82A1 CA          DEX                    ;|
 $80:82A2 CA          DEX                    ;|
@@ -1062,7 +1062,7 @@ $80:8558 AF 04 80 80 LDA $808004[$80:8004]  ;\
 $80:855C 8D D1 05    STA $05D1  [$7E:05D1]  ;} Mirror debug byte to RAM
 $80:855F 20 F6 85    JSR $85F6  [$80:85F6]  ; NTSC/PAL and SRAM mapping check
 $80:8562 C2 30       REP #$30
-$80:8564 22 61 82 80 JSL $808261[$80:8261]  ; Check for non-corrupt SRAM
+$80:8564 22 61 82 80 JSL $808261[$80:8261]  ; Determine number of demo sets
 $80:8568 9C F5 05    STZ $05F5  [$7E:05F5]  ; Enable sounds
 $80:856B 9C 86 06    STZ $0686  [$7E:0686]  ; Sound handler downtime = 0
 $80:856E 5C 3D 89 82 JML $82893D[$82:893D]  ; Go to main game loop

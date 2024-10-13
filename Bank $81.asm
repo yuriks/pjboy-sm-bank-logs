@@ -76,12 +76,23 @@ $81:8084 6B          RTL
 }
 
 
-;;; $8085: Load from SRAM ;;;
+;;; $8085: Load from SRAM / clear SRAM ;;;
 {
 ;; Parameter:
 ;;     A: SRAM slot (0, 1 or 2)
 ;; Returns:
-;;     Carry: Set if SRAM is corrupt
+;;     Carry: Set if SRAM was corrupt
+
+; Copies all the data from the SRAM slot out to $7E:D7C0..DE1B
+; If SRAM is not corrupt (according to the checksums):
+;     Copies data to $09A2..0A01 (Samus data and game options)
+;     Loads map data to $7E:CD52..D351, clears Ceres map data $7E:D352..D451 (the working copy $07F7..08F6 isn't updated)
+;     Copies load station index to $078B and area index to $079F
+; Otherwise:
+;     Clears the SRAM slot
+;     Sets load station index to 0 and area index to Crateria
+;     $09A2..0A01 and map data are NOT modified
+
 $81:8085 C2 30       REP #$30
 $81:8087 8B          PHB
 $81:8088 DA          PHX
@@ -166,7 +177,7 @@ $81:8118 C0 1C DE    CPY #$DE1C             ;|
 $81:811B D0 EE       BNE $EE    [$810B]     ;/
 $81:811D A9 00 00    LDA #$0000             ;\
 $81:8120 8D 8B 07    STA $078B  [$7E:078B]  ;} Load station index = 0
-$81:8123 8D 9F 07    STA $079F  [$7E:079F]  ; Region = Crateria
+$81:8123 8D 9F 07    STA $079F  [$7E:079F]  ; Area index = Crateria
 $81:8126 7A          PLY
 $81:8127 FA          PLX
 $81:8128 38          SEC                    ; Return carry set
@@ -3344,10 +3355,10 @@ $81:9C9D 60          RTS
 $81:9C9E C2 30       REP #$30
 $81:9CA0 22 5B BA 82 JSL $82BA5B[$82:BA5B]  ; Draw border around DATA CLEAR MODE
 $81:9CA4 A9 70 00    LDA #$0070             ;\
-$81:9CA7 85 02       STA $02    [$7E:0002]  ;} $02 = $70 (source bank)
-$81:9CA9 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
-$81:9CAC 0A          ASL A                  ;|
-$81:9CAD AA          TAX                    ;} $00 = [$81:812B + [file clear slot] * 2] (SRAM offset)
+$81:9CA7 85 02       STA $02    [$7E:0002]  ;|
+$81:9CA9 AD B7 19    LDA $19B7  [$7E:19B7]  ;|
+$81:9CAC 0A          ASL A                  ;} $00 = $70:0000 + [$81:812B + [file clear slot] * 2] (SRAM slot)
+$81:9CAD AA          TAX                    ;|
 $81:9CAE BF 2B 81 81 LDA $81812B,x[$81:812B];|
 $81:9CB2 85 00       STA $00    [$7E:0000]  ;/
 $81:9CB4 A0 00 00    LDY #$0000             ;\
@@ -3360,19 +3371,19 @@ $81:9CBE C0 5C 06    CPY #$065C             ;|
 $81:9CC1 30 F7       BMI $F7    [$9CBA]     ;/
 $81:9CC3 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
 $81:9CC6 0A          ASL A                  ;|
-$81:9CC7 AA          TAX                    ;} $70:0000 + [file clear slot] * 2 = 0
+$81:9CC7 AA          TAX                    ;} $70:0000 + [file clear slot] * 2 = 0 (checksum)
 $81:9CC8 A9 00 00    LDA #$0000             ;|
 $81:9CCB 9F 00 00 70 STA $700000,x[$70:0000];/
-$81:9CCF 9F 08 00 70 STA $700008,x[$70:0008]; $70:0008 + [file clear slot] * 2 = 0
-$81:9CD3 9F F0 1F 70 STA $701FF0,x[$70:1FF0]; $70:1FF0 + [file clear slot] * 2 = 0
-$81:9CD7 9F F8 1F 70 STA $701FF8,x[$70:1FF8]; $70:1FF8 + [file clear slot] * 2 = 0
+$81:9CCF 9F 08 00 70 STA $700008,x[$70:0008]; $70:0008 + [file clear slot] * 2 = 0 (checksum complement)
+$81:9CD3 9F F0 1F 70 STA $701FF0,x[$70:1FF0]; $70:1FF0 + [file clear slot] * 2 = 0 (checksum)
+$81:9CD7 9F F8 1F 70 STA $701FF8,x[$70:1FF8]; $70:1FF8 + [file clear slot] * 2 = 0 (checksum complement)
 $81:9CDB EE 27 07    INC $0727  [$7E:0727]  ; Menu index = 1Ah (clear completed)
-$81:9CDE 20 CB B2    JSR $B2CB  [$81:B2CB]  ; New save file <-- what?
+$81:9CDE 20 CB B2    JSR $B2CB  [$81:B2CB]  ; New save file
 $81:9CE1 AD B7 19    LDA $19B7  [$7E:19B7]  ; A = [file clear slot]
-$81:9CE4 22 85 80 81 JSL $818085[$81:8085]  ; Load from SRAM <-- huh?
+$81:9CE4 22 85 80 81 JSL $818085[$81:8085]  ; Clear SRAM <-- again >_<;
 $81:9CE8 AD B7 19    LDA $19B7  [$7E:19B7]  ;\
-$81:9CEB 8D 9F 07    STA $079F  [$7E:079F]  ;} Area index = [file clear slot] <-- w-what?
-$81:9CEE 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored <-- ...?
+$81:9CEB 8D 9F 07    STA $079F  [$7E:079F]  ;} Area index = [file clear slot] <-- this shouldn't be here, but since areas 0/1/2 are all cleared, it doesn't matter
+$81:9CEE 22 8C 85 80 JSL $80858C[$80:858C]  ; Load mirror of current area's map explored
 $81:9CF2 A2 00 05    LDX #$0500             ;\
 $81:9CF5 A9 0F 00    LDA #$000F             ;|
                                             ;|
