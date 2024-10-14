@@ -1579,9 +1579,9 @@ $AD:E0A7 F4 7E 7E    PEA $7E7E              ;\
 $AD:E0AA AB          PLB                    ;} DB = $7E
 $AD:E0AB AB          PLB                    ;/
 $AD:E0AC A9 FF 00    LDA #$00FF             ;\
-$AD:E0AF 8D 00 9D    STA $9D00  [$AD:9D00]  ;} $9D00 = FFh, 00h
-$AD:E0B2 8D 02 9D    STA $9D02  [$AD:9D02]  ; $9D02 = FFh, 00h
-$AD:E0B5 AD 36 80    LDA $8036  [$AD:8036]  ;\
+$AD:E0AF 8D 00 9D    STA $9D00  [$7E:9D00]  ;} $9D00 = FFh, 00h
+$AD:E0B2 8D 02 9D    STA $9D02  [$7E:9D02]  ; $9D02 = FFh, 00h
+$AD:E0B5 AD 36 80    LDA $8036  [$7E:8036]  ;\
 $AD:E0B8 49 FF FF    EOR #$FFFF             ;|
 $AD:E0BB 1A          INC A                  ;|
 $AD:E0BC 29 FF 00    AND #$00FF             ;|
@@ -1589,13 +1589,13 @@ $AD:E0BF 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow
 $AD:E0C0 AA          TAX                    ;|
 $AD:E0C1 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E0C5 85 12       STA $12    [$7E:0012]  ;/
-$AD:E0C7 AD 34 80    LDA $8034  [$AD:8034]  ;\
+$AD:E0C7 AD 34 80    LDA $8034  [$7E:8034]  ;\
 $AD:E0CA 29 FF 00    AND #$00FF             ;|
 $AD:E0CD 0A          ASL A                  ;|
 $AD:E0CE AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam right edge angle] * pi / 80h)| * 100h (right edge gradient)
 $AD:E0CF BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E0D3 85 14       STA $14    [$7E:0014]  ;/
-$AD:E0D5 AD 3A 80    LDA $803A  [$AD:803A]  ;\
+$AD:E0D5 AD 3A 80    LDA $803A  [$7E:803A]  ;\
 $AD:E0D8 A8          TAY                    ;} Y = [Mother Brain rainbow beam origin Y position]
 $AD:E0D9 38          SEC                    ;\
 $AD:E0DA E9 20 00    SBC #$0020             ;|
@@ -1654,9 +1654,9 @@ $AD:E125 F4 7E 7E    PEA $7E7E              ;\
 $AD:E128 AB          PLB                    ;} DB = $7E
 $AD:E129 AB          PLB                    ;/
 $AD:E12A A9 FF 00    LDA #$00FF             ;\
-$AD:E12D 8D 00 9D    STA $9D00  [$AD:9D00]  ;} $9D00 = FFh, 00h
-$AD:E130 8D 02 9D    STA $9D02  [$AD:9D02]  ; $9D02 = FFh, 00h
-$AD:E133 AD 36 80    LDA $8036  [$AD:8036]  ;\
+$AD:E12D 8D 00 9D    STA $9D00  [$7E:9D00]  ;} $9D00 = FFh, 00h
+$AD:E130 8D 02 9D    STA $9D02  [$7E:9D02]  ; $9D02 = FFh, 00h
+$AD:E133 AD 36 80    LDA $8036  [$7E:8036]  ;\
 $AD:E136 49 FF FF    EOR #$FFFF             ;|
 $AD:E139 1A          INC A                  ;|
 $AD:E13A 29 FF 00    AND #$00FF             ;|
@@ -1664,7 +1664,7 @@ $AD:E13D 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow
 $AD:E13E AA          TAX                    ;|
 $AD:E13F BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E143 85 12       STA $12    [$7E:0012]  ;/
-$AD:E145 AD 34 80    LDA $8034  [$AD:8034]  ;\
+$AD:E145 AD 34 80    LDA $8034  [$7E:8034]  ;\
 $AD:E148 49 FF FF    EOR #$FFFF             ;|
 $AD:E14B 1A          INC A                  ;|
 $AD:E14C 29 FF 00    AND #$00FF             ;|
@@ -1672,7 +1672,7 @@ $AD:E14F 0A          ASL A                  ;} $14 = |tan(-[Mother Brain rainbow
 $AD:E150 AA          TAX                    ;|
 $AD:E151 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E155 85 14       STA $14    [$7E:0014]  ;/
-$AD:E157 AD 3A 80    LDA $803A  [$AD:803A]  ;\
+$AD:E157 AD 3A 80    LDA $803A  [$7E:803A]  ;\
 $AD:E15A A8          TAY                    ;} Y = [Mother Brain rainbow beam origin Y position]
 $AD:E15B 38          SEC                    ;\
 $AD:E15C E9 20 00    SBC #$0020             ;|
@@ -1857,9 +1857,9 @@ $AD:E294 F4 7E 7E    PEA $7E7E              ;\
 $AD:E297 AB          PLB                    ;} DB = $7E
 $AD:E298 AB          PLB                    ;/
 $AD:E299 A9 FF 00    LDA #$00FF             ;\
-$AD:E29C 8D 00 9D    STA $9D00  [$AD:9D00]  ;} $9D00 = FFh, 00h
-$AD:E29F 8D 02 9D    STA $9D02  [$AD:9D02]  ; $9D02 = FFh, 00h
-$AD:E2A2 AD 34 80    LDA $8034  [$AD:8034]  ;\
+$AD:E29C 8D 00 9D    STA $9D00  [$7E:9D00]  ;} $9D00 = FFh, 00h
+$AD:E29F 8D 02 9D    STA $9D02  [$7E:9D02]  ; $9D02 = FFh, 00h
+$AD:E2A2 AD 34 80    LDA $8034  [$7E:8034]  ;\
 $AD:E2A5 49 FF FF    EOR #$FFFF             ;|
 $AD:E2A8 1A          INC A                  ;|
 $AD:E2A9 29 FF 00    AND #$00FF             ;|
@@ -1867,13 +1867,13 @@ $AD:E2AC 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow
 $AD:E2AD AA          TAX                    ;|
 $AD:E2AE BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E2B2 85 12       STA $12    [$7E:0012]  ;/
-$AD:E2B4 AD 36 80    LDA $8036  [$AD:8036]  ;\
+$AD:E2B4 AD 36 80    LDA $8036  [$7E:8036]  ;\
 $AD:E2B7 29 FF 00    AND #$00FF             ;|
 $AD:E2BA 0A          ASL A                  ;|
 $AD:E2BB AA          TAX                    ;} $14 = |tan([Mother Brain rainbow beam left edge angle] * pi / 80h)| * 100h (left edge gradient)
 $AD:E2BC BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E2C0 85 14       STA $14    [$7E:0014]  ;/
-$AD:E2C2 AD 3A 80    LDA $803A  [$AD:803A]  ;\
+$AD:E2C2 AD 3A 80    LDA $803A  [$7E:803A]  ;\
 $AD:E2C5 38          SEC                    ;|
 $AD:E2C6 E9 20 00    SBC #$0020             ;} Y = [Mother Brain rainbow beam origin Y position] - 20h (number of lines of padding)
 $AD:E2C9 A8          TAY                    ;/
@@ -1886,7 +1886,7 @@ $AD:E2D3 E8          INX                    ;\
 $AD:E2D4 E8          INX                    ;} X += 2
 $AD:E2D5 88          DEY                    ; Decrement Y
 $AD:E2D6 D0 F8       BNE $F8    [$E2D0]     ; If [Y] != 0: go to LOOP_PAD_ABOVE
-$AD:E2D8 AD 3A 80    LDA $803A  [$AD:803A]  ;\
+$AD:E2D8 AD 3A 80    LDA $803A  [$7E:803A]  ;\
 $AD:E2DB A8          TAY                    ;} Y = [Mother Brain rainbow beam origin Y position]
 
 ; LOOP_BEAM
@@ -1936,9 +1936,9 @@ $AD:E315 F4 7E 7E    PEA $7E7E              ;\
 $AD:E318 AB          PLB                    ;} DB = $7E
 $AD:E319 AB          PLB                    ;/
 $AD:E31A A9 FF 00    LDA #$00FF             ;\
-$AD:E31D 8D 00 9D    STA $9D00  [$AD:9D00]  ;} $9D00 = FFh, 00h
-$AD:E320 8D 02 9D    STA $9D02  [$AD:9D02]  ; $9D02 = FFh, 00h
-$AD:E323 AD 34 80    LDA $8034  [$AD:8034]  ;\
+$AD:E31D 8D 00 9D    STA $9D00  [$7E:9D00]  ;} $9D00 = FFh, 00h
+$AD:E320 8D 02 9D    STA $9D02  [$7E:9D02]  ; $9D02 = FFh, 00h
+$AD:E323 AD 34 80    LDA $8034  [$7E:8034]  ;\
 $AD:E326 49 FF FF    EOR #$FFFF             ;|
 $AD:E329 1A          INC A                  ;|
 $AD:E32A 29 FF 00    AND #$00FF             ;|
@@ -1946,7 +1946,7 @@ $AD:E32D 0A          ASL A                  ;} $12 = |tan(-[Mother Brain rainbow
 $AD:E32E AA          TAX                    ;|
 $AD:E32F BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E333 85 12       STA $12    [$7E:0012]  ;/
-$AD:E335 AD 36 80    LDA $8036  [$AD:8036]  ;\
+$AD:E335 AD 36 80    LDA $8036  [$7E:8036]  ;\
 $AD:E338 49 FF FF    EOR #$FFFF             ;|
 $AD:E33B 1A          INC A                  ;|
 $AD:E33C 29 FF 00    AND #$00FF             ;|
@@ -1954,7 +1954,7 @@ $AD:E33F 0A          ASL A                  ;} $14 = |tan(-[Mother Brain rainbow
 $AD:E340 AA          TAX                    ;|
 $AD:E341 BF D4 C9 91 LDA $91C9D4,x          ;|
 $AD:E345 85 14       STA $14    [$7E:0014]  ;/
-$AD:E347 AD 3A 80    LDA $803A  [$AD:803A]  ;\
+$AD:E347 AD 3A 80    LDA $803A  [$7E:803A]  ;\
 $AD:E34A 38          SEC                    ;|
 $AD:E34B E9 20 00    SBC #$0020             ;} Y = [Mother Brain rainbow beam origin Y position] - 20h (number of lines of padding)
 $AD:E34E A8          TAY                    ;/
@@ -1967,7 +1967,7 @@ $AD:E358 E8          INX                    ;\
 $AD:E359 E8          INX                    ;} X += 2
 $AD:E35A 88          DEY                    ; Decrement Y
 $AD:E35B D0 F8       BNE $F8    [$E355]     ; If [Y] != 0: go to LOOP_PAD_ABOVE
-$AD:E35D AD 3A 80    LDA $803A  [$AD:803A]  ;\
+$AD:E35D AD 3A 80    LDA $803A  [$7E:803A]  ;\
 $AD:E360 A8          TAY                    ;} Y = [Mother Brain rainbow beam origin Y position]
 
 ; LOOP_BEAM
@@ -2184,7 +2184,7 @@ $AD:E8D8             dw 5990,3870,346D,3068,0C44 ; Health < 280h
 $AD:E8E2             dw E8F0, E90C, E928, E944, E960, E97C, E998
 
 ; Colours 1..Eh of sprite palette 7
-$AD:E8F0             dw 1716,0252,018A,00C6,494D,304D,2C4B,2846,0823,2E12,218E,192B,0068,4B39
+$AD:E8F0             dw 1716,0252,018A,00C6,494D,304D,2C4B,2846,0823,2E12,218E,192B,0068,4B39 ; Unused
 $AD:E90C             dw 1292,01EF,0148,00A5,3D0B,284B,2449,2045,0822,25AF,1D4C,14E9,0047,3EB5
 $AD:E928             dw 0E0E,018C,0106,0084,30C9,2029,1C27,1824,0422,1D4C,1509,10C7,0045,3231
 $AD:E944             dw 098B,0129,00C5,0063,24A6,1826,1425,1423,0401,1509,10C7,0C85,0024,258C
@@ -2393,7 +2393,7 @@ $AD:EF34 A2 68 01    LDX #$0168             ;\
 $AD:EF37 A9 05 00    LDA #$0005             ;} Write 5 colours from [A] to sprite palette 3 colours 4..8
 $AD:EF3A 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 $AD:EF3E A2 7C 01    LDX #$017C             ;\
-$AD:EF41 B9 00 00    LDA $0000,y[$AD:EEDC]  ;} <-- Bug. Should be writing to $7E:C17C
+$AD:EF41 B9 00 00    LDA $0000,y[$AD:EEDC]  ;} $017C = [[A]] <-- Bug. Should be writing to $7E:C17C. $017C is VRAM write table entry 18h source bank and destination address low
 $AD:EF44 9D 00 00    STA $0000,x[$7E:017C]  ;/
 $AD:EF47 AB          PLB
 $AD:EF48 18          CLC                    ;\
@@ -2430,7 +2430,7 @@ $AD:EF71 A2 68 01    LDX #$0168             ;\
 $AD:EF74 A9 05 00    LDA #$0005             ;} Write 5 colours from [A] to sprite palette 3 colours 4..8
 $AD:EF77 22 E4 D2 A9 JSL $A9D2E4[$A9:D2E4]  ;/
 $AD:EF7B A2 7C 01    LDX #$017C             ;\
-$AD:EF7E B9 00 00    LDA $0000,y[$AD:EFC1]  ;} <-- Bug. Should be writing to $7E:C17C
+$AD:EF7E B9 00 00    LDA $0000,y[$AD:EFC1]  ;} $017C = [[A]] <-- Bug. Should be writing to $7E:C17C
 $AD:EF81 9D 00 00    STA $0000,x[$7E:017C]  ;/
 $AD:EF84 AB          PLB
 $AD:EF85 18          CLC                    ;\

@@ -1423,7 +1423,7 @@ $B3:92FA             dx 0001, C3F8,F8,610A
 }
 
 
-;;; $9301: Spritemap pointers ;;;
+;;; $9301: Unused. Spritemap pointers ;;;
 {
 $B3:9301             dw 92AD, 92B4, 92BB, 92C2, 92C9, 92D0, 92D7, 92DE, 92E5, 92EC, 92F3, 92FA
 }

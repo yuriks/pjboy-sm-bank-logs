@@ -192,17 +192,19 @@ $81:812B             dw 0010, 066C, 0CC8
 }
 
 
-;;; $8131: SRAM map data ;;;
+;;; $8131: Exported map data ;;;
 {
-; Note that map room indices of 80h+ are specifying the right half of the map (7Fh- are specifying the left half)
+; Lists of offsets into explored map data ($7E:CD52 + (area index) * 100h) whose bytes are saved to SRAM
+; Map data offsets of 80h+ are specifying the right half of the map (7Fh- are specifying the left half)
+; Each byte is 8 map tiles, and the first row (offsets 0..3 and 80h..83h) is meaningless padding
 
-; Size of each area map
+; Size of each exported map
 $81:8131             db 4A, 48, 4C, 12, 42, 15, 08
 
-; Offset for each area map
+; Offset for each exported map
 $81:8138             dw 0000, 004A, 0092, 00DE, 00F0, 0132, 0147
 
-; Crateria map rooms
+; Crateria map offset list
 {
 $81:8146             db          07,
                                  0B,
@@ -242,7 +244,7 @@ $81:8146             db          07,
                         00,00,00,00,00,00
 }
 
-; Brinstar map rooms
+; Brinstar map offset list
 {
 $81:8196             db    05,
                            09,0A,0B,
@@ -281,7 +283,7 @@ $81:8196             db    05,
                         00,00,00,00,00,00,00,00
 }
 
-; Norfair map rooms
+; Norfair map offset list
 {
 $81:81E6             db    05,
                         08,09,   0B,
@@ -319,7 +321,7 @@ $81:81E6             db    05,
                         00,00,00,00
 }
 
-; Wrecked Ship map rooms
+; Wrecked Ship map offset list
 {
 $81:8236             db    2D,2E,
                            31,32,
@@ -334,7 +336,7 @@ $81:8236             db    2D,2E,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00
 }
 
-; Maridia map rooms
+; Maridia map offset list
 {
 $81:8256             db          07,
                                  0B,
@@ -372,7 +374,7 @@ $81:8256             db          07,
                         00,00,00,00,00,00,00,00,00,00,00,00,00,00
 }
 
-; Tourian map rooms
+; Tourian map offset list
 {
 $81:82A6             db       26,
                               2A,
@@ -391,7 +393,7 @@ $81:82A6             db       26,
                         00,00,00,00,00,00,00,00,00,00,00
 }
 
-; Ceres map rooms
+; Unused. Ceres map offset list
 {
 $81:82C6             db    2D,
                            31,
@@ -403,8 +405,7 @@ $81:82C6             db    2D,
                         00,00,00,00,00,00,00,00
 }
 
-
-; Pointer to each area's map rooms
+; Map offset list pointers. Indexed by area
 $81:82D6             dw 8146, 8196, 81E6, 8236, 8256, 82A6, 82C6
 }
 
@@ -428,21 +429,21 @@ $81:82F8 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (area index)
 
 ; LOOP_AREA
 $81:82FA A5 16       LDA $16    [$7E:0016]  ;\
-$81:82FC EB          XBA                    ;} $14 = (area index) * 100h (area map base offset)
+$81:82FC EB          XBA                    ;} $14 = (area index) * 100h (explored map base offset)
 $81:82FD 85 14       STA $14    [$7E:0014]  ;/
 $81:82FF A6 16       LDX $16    [$7E:0016]  ;\
 $81:8301 BD 31 81    LDA $8131,x[$81:8131]  ;|
-$81:8304 29 FF 00    AND #$00FF             ;} $12 = [$8131 + (area index)] (area map size)
+$81:8304 29 FF 00    AND #$00FF             ;} $12 = [$8131 + (area index)] (exported map size)
 $81:8307 85 12       STA $12    [$7E:0012]  ;/
 $81:8309 A5 16       LDA $16    [$7E:0016]  ;\
 $81:830B 0A          ASL A                  ;|
 $81:830C AA          TAX                    ;|
-$81:830D BD D6 82    LDA $82D6,x[$81:82D6]  ;} $00 = $81:0000 + [$82D6 + (area index) * 2] (area room list pointer)
+$81:830D BD D6 82    LDA $82D6,x[$81:82D6]  ;} $00 = $81:0000 + [$82D6 + (area index) * 2] (explored map offset list pointer)
 $81:8310 85 00       STA $00    [$7E:0000]  ;|
 $81:8312 A9 81 00    LDA #$0081             ;|
 $81:8315 85 02       STA $02    [$7E:0002]  ;/
 $81:8317 BD 38 81    LDA $8138,x[$81:8138]  ;\
-$81:831A AA          TAX                    ;} X = [$8138 + (area index) * 2] (saved area map offset)
+$81:831A AA          TAX                    ;} X = [$8138 + (area index) * 2] (exported map offset)
 $81:831B A9 52 CD    LDA #$CD52             ;\
 $81:831E 85 03       STA $03    [$7E:0003]  ;|
 $81:8320 A9 7E 00    LDA #$007E             ;} $03 = $7E:CD52 (explored map tiles base address)
@@ -451,15 +452,15 @@ $81:8323 85 05       STA $05    [$7E:0005]  ;/
 ; LOOP_ROOM
 $81:8325 B2 00       LDA ($00)  [$81:8146]  ;\
 $81:8327 29 FF 00    AND #$00FF             ;|
-$81:832A 18          CLC                    ;} Y = [$14] + [[$00]] (area map room offset)
+$81:832A 18          CLC                    ;} Y = (explored map base offset) + [(explored map offset list pointer)] (explored map offset)
 $81:832B 65 14       ADC $14    [$7E:0014]  ;|
 $81:832D A8          TAY                    ;/
 $81:832E E2 20       SEP #$20               ;\
 $81:8330 BF 1C D9 7E LDA $7ED91C,x[$7E:D91C];|
-$81:8334 97 03       STA [$03],y[$7E:CD59]  ;} $7E:CD52 + [Y] = [$7E:D91C + [X]]
+$81:8334 97 03       STA [$03],y[$7E:CD59]  ;} $7E:CD52 + (explored map offset) = [$7E:D91C + (exported map offset)]
 $81:8336 C2 20       REP #$20               ;/
-$81:8338 E6 00       INC $00    [$7E:0000]  ; Increment $00 (area map rooms address)
-$81:833A E8          INX                    ; Increment X (saved map room offset)
+$81:8338 E6 00       INC $00    [$7E:0000]  ; Increment (explored map offset list pointer)
+$81:833A E8          INX                    ; Increment (exported map offset)
 $81:833B C6 12       DEC $12    [$7E:0012]  ; Decrement $12
 $81:833D D0 E6       BNE $E6    [$8325]     ; If [$12] != 0: go to LOOP_ROOM
 $81:833F E6 16       INC $16    [$7E:0016]  ; Increment (area index)
@@ -485,17 +486,17 @@ $81:8351 64 1A       STZ $1A    [$7E:001A]  ; $1A = 0 (area index)
 ; LOOP_AREAS
 $81:8353 A6 1A       LDX $1A    [$7E:001A]  ;\
 $81:8355 BD 31 81    LDA $8131,x[$81:8131]  ;|
-$81:8358 29 FF 00    AND #$00FF             ;} $16 = [$8131 + (area index)] (area map size)
+$81:8358 29 FF 00    AND #$00FF             ;} $16 = [$8131 + (area index)] (exported map size)
 $81:835B 85 16       STA $16    [$7E:0016]  ;/
 $81:835D A5 1A       LDA $1A    [$7E:001A]  ;\
 $81:835F 0A          ASL A                  ;|
-$81:8360 AA          TAX                    ;} $00 = [$82D6 + (area index) * 2] (area room list pointer)
+$81:8360 AA          TAX                    ;} $00 = [$82D6 + (area index) * 2] (explored map offset list pointer)
 $81:8361 BD D6 82    LDA $82D6,x[$81:82D6]  ;|
 $81:8364 85 00       STA $00    [$7E:0000]  ;/
 $81:8366 BD 38 81    LDA $8138,x[$81:8138]  ;\
-$81:8369 AA          TAX                    ;} X = [$8138 + (area index) * 2] (saved area map offset)
+$81:8369 AA          TAX                    ;} X = [$8138 + (area index) * 2] (exported map offset)
 $81:836A A5 1A       LDA $1A    [$7E:001A]  ;\
-$81:836C EB          XBA                    ;} $18 = (area index) * 100h (area map base offset)
+$81:836C EB          XBA                    ;} $18 = (area index) * 100h (explored map base offset)
 $81:836D 85 18       STA $18    [$7E:0018]  ;/
 $81:836F A9 52 CD    LDA #$CD52             ;\
 $81:8372 85 03       STA $03    [$7E:0003]  ;|
@@ -505,15 +506,15 @@ $81:8377 85 05       STA $05    [$7E:0005]  ;/
 ; LOOP_ROOMS
 $81:8379 B2 00       LDA ($00)  [$81:8146]  ;\
 $81:837B 29 FF 00    AND #$00FF             ;|
-$81:837E 18          CLC                    ;} Y = [$18] + [[$00]] (area map room offset)
+$81:837E 18          CLC                    ;} Y = (explored map base offset) + [(explored map offset list pointer)] (explored map offset)
 $81:837F 65 18       ADC $18    [$7E:0018]  ;|
 $81:8381 A8          TAY                    ;/
 $81:8382 E2 20       SEP #$20               ;\
 $81:8384 B7 03       LDA [$03],y[$7E:CD59]  ;|
-$81:8386 9F 1C D9 7E STA $7ED91C,x[$7E:D91C];} $7E:D91C + [X] = [$7E:CD52 + [Y]]
+$81:8386 9F 1C D9 7E STA $7ED91C,x[$7E:D91C];} $7E:D91C + (exported map offset) = [$7E:CD52 + (explored map offset)]
 $81:838A C2 20       REP #$20               ;/
-$81:838C E6 00       INC $00    [$7E:0000]  ; Increment $00 (area map rooms address)
-$81:838E E8          INX                    ; Increment X (saved map room offset)
+$81:838C E6 00       INC $00    [$7E:0000]  ; Increment (explored map offset list pointer)
+$81:838E E8          INX                    ; Increment (exported map offset)
 $81:838F C6 16       DEC $16    [$7E:0016]  ; Decrement $16
 $81:8391 D0 E6       BNE $E6    [$8379]     ; If [$16] != 0: go to LOOP_ROOMS
 $81:8393 E6 1A       INC $1A    [$7E:001A]  ; Increment (area index)

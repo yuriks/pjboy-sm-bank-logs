@@ -10616,10 +10616,10 @@ $91:E371 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
 $91:E374 1A          INC A                  ;} Equipped beams += 1
 $91:E375 8D A6 09    STA $09A6  [$7E:09A6]  ;/
 $91:E378 29 FF 0F    AND #$0FFF             ;\
-$91:E37B C9 0C 00    CMP #$000C             ;} If equipped beams >= spazer + plasma:
+$91:E37B C9 0C 00    CMP #$000C             ;} If [equipped beams] & FFFh >= spazer + plasma:
 $91:E37E 30 09       BMI $09    [$E389]     ;/
 $91:E380 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
-$91:E383 29 00 F0    AND #$F000             ;} Clear equipped beams
+$91:E383 29 00 F0    AND #$F000             ;} Equipped beams &= ~FFFh (clear beams except charge)
 $91:E386 8D A6 09    STA $09A6  [$7E:09A6]  ;/
 
 $91:E389 22 8D AC 90 JSL $90AC8D[$90:AC8D]  ; Update beam tiles and palette
@@ -10627,20 +10627,20 @@ $91:E38D A9 3F F3    LDA #$F33F             ;\
 $91:E390 8D A4 09    STA $09A4  [$7E:09A4]  ;} Equipped items = collected items = F33Fh (all of them + 10h)
 $91:E393 8D A2 09    STA $09A2  [$7E:09A2]  ;/
 $91:E396 A9 84 03    LDA #$0384             ;\
-$91:E399 8D C8 09    STA $09C8  [$7E:09C8]  ;} Current missiles = max missiles = 900
+$91:E399 8D C8 09    STA $09C8  [$7E:09C8]  ;} Samus missiles = Samus max missiles = 900
 $91:E39C 8D C6 09    STA $09C6  [$7E:09C6]  ;/
 $91:E39F A9 5A 00    LDA #$005A             ;\
-$91:E3A2 8D CC 09    STA $09CC  [$7E:09CC]  ;} Current super missiles = max super missiles = 90
+$91:E3A2 8D CC 09    STA $09CC  [$7E:09CC]  ;} Samus super missiles = Samus max super missiles = 90
 $91:E3A5 8D CA 09    STA $09CA  [$7E:09CA]  ;/
 $91:E3A8 A9 5A 00    LDA #$005A             ;\
-$91:E3AB 8D D0 09    STA $09D0  [$7E:09D0]  ;} Current power bombs = max power bombs = 90
+$91:E3AB 8D D0 09    STA $09D0  [$7E:09D0]  ;} Samus power bombs = Samus max power bombs = 90
 $91:E3AE 8D CE 09    STA $09CE  [$7E:09CE]  ;/
 $91:E3B1 A9 4B 04    LDA #$044B             ;\
-$91:E3B4 8D C4 09    STA $09C4  [$7E:09C4]  ;} Current health = max health = 1099
+$91:E3B4 8D C4 09    STA $09C4  [$7E:09C4]  ;} Samus health = Samus max health = 1099
 $91:E3B7 8D C2 09    STA $09C2  [$7E:09C2]  ;/
 $91:E3BA A9 F3 01    LDA #$01F3             ;\
-$91:E3BD 8D D6 09    STA $09D6  [$7E:09D6]  ;} Current reserve tanks = 499
-$91:E3C0 9C D8 09    STZ $09D8  [$7E:09D8]  ; Clear reserve missiles
+$91:E3BD 8D D6 09    STA $09D6  [$7E:09D6]  ;} Samus reserve health = 499
+$91:E3C0 9C D8 09    STZ $09D8  [$7E:09D8]  ; Samus reserve missiles = 0
 $91:E3C3 A9 0F 10    LDA #$100F             ;\
 $91:E3C6 8D A8 09    STA $09A8  [$7E:09A8]  ;} Collected beams = 100Fh (all of them)
 $91:E3C9 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
