@@ -14,38 +14,38 @@ $A3:8687             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 24
 
 ;;; $86A7..DA: Instruction lists - waver  ;;;
 {
-;;; $86A7: Instruction list -  ;;;
+;;; $86A7: Instruction list - steady - facing left ;;;
 {
 $A3:86A7             dx 0001,884A,
                         812F        ; Sleep
 }
 
 
-;;; $86AD: Instruction list -  ;;;
+;;; $86AD: Instruction list - steady - facing right ;;;
 {
 $A3:86AD             dx 0001,88B3,
                         812F        ; Sleep
 }
 
 
-;;; $86B3: Instruction list -  ;;;
+;;; $86B3: Instruction list - spinning - facing left ;;;
 {
 $A3:86B3             dx 0008,885B,
                         0008,8871,
                         0008,881E,
                         0008,8834,
-                        86E3,       ; ???
+                        86E3,       ; Set spin finished flag
                         812F        ; Sleep
 }
 
 
-;;; $86C7: Instruction list -  ;;;
+;;; $86C7: Instruction list - spinning - facing right ;;;
 {
 $A3:86C7             dx 0008,88C4,
                         0008,88DA,
                         0008,8887,
                         0008,889D,
-                        86E3,       ; ???
+                        86E3,       ; Set spin finished flag
                         812F        ; Sleep
 }
 }
@@ -53,16 +53,16 @@ $A3:86C7             dx 0008,88C4,
 
 ;;; $86DB: Instruction list pointers ;;;
 {
-; See $87FE
+; Indexed by [enemy $0FAC]
 $A3:86DB             dw 86A7, 86AD, 86B3, 86C7
 }
 
 
-;;; $86E3: Instruction -  ;;;
+;;; $86E3: Instruction - set spin finished flag ;;;
 {
 $A3:86E3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:86E6 A9 01 00    LDA #$0001
-$A3:86E9 9D B0 0F    STA $0FB0,x[$7E:0FB0]
+$A3:86E6 A9 01 00    LDA #$0001             ;\
+$A3:86E9 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy spin finished flag = 1
 $A3:86EC 6B          RTL
 }
 
@@ -70,41 +70,41 @@ $A3:86EC 6B          RTL
 ;;; $86ED: Initialisation AI - enemy $D63F (waver) ;;;
 {
 $A3:86ED AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:86F0 A9 80 01    LDA #$0180
-$A3:86F3 29 00 FF    AND #$FF00
-$A3:86F6 EB          XBA
-$A3:86F7 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A3:86FA A9 80 01    LDA #$0180
-$A3:86FD 29 FF 00    AND #$00FF
-$A3:8700 EB          XBA
-$A3:8701 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A3:8704 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:8707 29 01 00    AND #$0001
-$A3:870A D0 24       BNE $24    [$8730]
-$A3:870C A9 80 01    LDA #$0180
-$A3:870F 49 FF FF    EOR #$FFFF
-$A3:8712 1A          INC A
-$A3:8713 29 00 FF    AND #$FF00
-$A3:8716 EB          XBA
-$A3:8717 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$A3:871B 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A3:871E A9 80 01    LDA #$0180
-$A3:8721 49 FF FF    EOR #$FFFF
-$A3:8724 1A          INC A
-$A3:8725 29 FF 00    AND #$00FF
-$A3:8728 EB          XBA
-$A3:8729 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$A3:872D 9D A8 0F    STA $0FA8,x[$7E:0FE8]
+$A3:86F0 A9 80 01    LDA #$0180             ;\
+$A3:86F3 29 00 FF    AND #$FF00             ;|
+$A3:86F6 EB          XBA                    ;|
+$A3:86F7 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;|
+$A3:86FA A9 80 01    LDA #$0180             ;} Enemy X velocity = 1.80h
+$A3:86FD 29 FF 00    AND #$00FF             ;|
+$A3:8700 EB          XBA                    ;|
+$A3:8701 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
+$A3:8704 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:8707 29 01 00    AND #$0001             ;} If [enemy parameter 1] & 1 = 0:
+$A3:870A D0 24       BNE $24    [$8730]     ;/
+$A3:870C A9 80 01    LDA #$0180             ;\
+$A3:870F 49 FF FF    EOR #$FFFF             ;|
+$A3:8712 1A          INC A                  ;|
+$A3:8713 29 00 FF    AND #$FF00             ;|
+$A3:8716 EB          XBA                    ;|
+$A3:8717 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$A3:871B 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;|
+$A3:871E A9 80 01    LDA #$0180             ;} Enemy X velocity = -1.80h
+$A3:8721 49 FF FF    EOR #$FFFF             ;|
+$A3:8724 1A          INC A                  ;|
+$A3:8725 29 FF 00    AND #$00FF             ;|
+$A3:8728 EB          XBA                    ;|
+$A3:8729 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$A3:872D 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;/
 
 $A3:8730 9E B2 0F    STZ $0FB2,x[$7E:0FB2]
-$A3:8733 9E AC 0F    STZ $0FAC,x[$7E:0FAC]
-$A3:8736 9E B0 0F    STZ $0FB0,x[$7E:0FB0]
-$A3:8739 A9 A7 86    LDA #$86A7
-$A3:873C 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:873F BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:8742 29 01 00    AND #$0001
-$A3:8745 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A3:8748 20 FE 87    JSR $87FE  [$A3:87FE]
+$A3:8733 9E AC 0F    STZ $0FAC,x[$7E:0FAC]  ; Enemy instruction list index = 0
+$A3:8736 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy $0FB0 = 0
+$A3:8739 A9 A7 86    LDA #$86A7             ;\
+$A3:873C 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7
+$A3:873F BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:8742 29 01 00    AND #$0001             ;} Enemy new instruction list index = [enemy parameter 1] & 1
+$A3:8745 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
+$A3:8748 20 FE 87    JSR $87FE  [$A3:87FE]  ; Set waver instruction list
 $A3:874B 6B          RTL
 }
 
@@ -118,31 +118,31 @@ $A3:8754 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;} Move enemy right by [enemy X velo
 $A3:8757 85 14       STA $14    [$7E:0014]  ;|
 $A3:8759 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A3:875D 90 37       BCC $37    [$8796]     ; If collided with wall:
-$A3:875F BD A9 0F    LDA $0FA9,x[$7E:1029]
-$A3:8762 85 12       STA $12    [$7E:0012]
-$A3:8764 49 FF FF    EOR #$FFFF
-$A3:8767 1A          INC A
-$A3:8768 29 00 FF    AND #$FF00
-$A3:876B EB          XBA
-$A3:876C 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$A3:8770 9D AA 0F    STA $0FAA,x[$7E:102A]
-$A3:8773 A5 12       LDA $12    [$7E:0012]
-$A3:8775 49 FF FF    EOR #$FFFF
-$A3:8778 1A          INC A
-$A3:8779 29 FF 00    AND #$00FF
-$A3:877C EB          XBA
-$A3:877D 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$A3:8781 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A3:8784 BD B2 0F    LDA $0FB2,x[$7E:1032]
-$A3:8787 49 01 00    EOR #$0001
-$A3:878A 29 01 00    AND #$0001
-$A3:878D 9D B2 0F    STA $0FB2,x[$7E:1032]
-$A3:8790 20 FE 87    JSR $87FE  [$A3:87FE]
-$A3:8793 4C CF 87    JMP $87CF  [$A3:87CF]
+$A3:875F BD A9 0F    LDA $0FA9,x[$7E:1029]  ;\
+$A3:8762 85 12       STA $12    [$7E:0012]  ;|
+$A3:8764 49 FF FF    EOR #$FFFF             ;|
+$A3:8767 1A          INC A                  ;|
+$A3:8768 29 00 FF    AND #$FF00             ;|
+$A3:876B EB          XBA                    ;|
+$A3:876C 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$A3:8770 9D AA 0F    STA $0FAA,x[$7E:102A]  ;; Negate enemy X velocity
+$A3:8773 A5 12       LDA $12    [$7E:0012]  ;|
+$A3:8775 49 FF FF    EOR #$FFFF             ;|
+$A3:8778 1A          INC A                  ;|
+$A3:8779 29 FF 00    AND #$00FF             ;|
+$A3:877C EB          XBA                    ;|
+$A3:877D 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$A3:8781 9D A8 0F    STA $0FA8,x[$7E:1028]  ;/
+$A3:8784 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
+$A3:8787 49 01 00    EOR #$0001             ;} Enemy new instruction list index ^= 1
+$A3:878A 29 01 00    AND #$0001             ;\
+$A3:878D 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy new instruction list index &= 1 (steady)
+$A3:8790 20 FE 87    JSR $87FE  [$A3:87FE]  ; Set waver instruction list
+$A3:8793 4C CF 87    JMP $87CF  [$A3:87CF]  ; Go to BRANCH_MERGE
 
 $A3:8796 A9 04 00    LDA #$0004             ;\
 $A3:8799 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A3:879C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;} A = 4 * -sin([enemy $0FAE] * pi / 80h) * FFh / 100h
+$A3:879C BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;} A = 4 * -sin([enemy angle] * pi / 80h) * FFh / 100h
 $A3:879F 29 FF 00    AND #$00FF             ;|
 $A3:87A2 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;/
 $A3:87A6 85 14       STA $14    [$7E:0014]  ;\
@@ -150,55 +150,56 @@ $A3:87A8 64 12       STZ $12    [$7E:0012]  ;} Move enemy down by [A]
 $A3:87AA 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A3:87AE 90 12       BCC $12    [$87C2]     ; If collided with block:
 $A3:87B0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:87B3 BD AE 0F    LDA $0FAE,x[$7E:0FEE]
-$A3:87B6 18          CLC
-$A3:87B7 69 80 00    ADC #$0080
-$A3:87BA 29 FF 00    AND #$00FF
-$A3:87BD 9D AE 0F    STA $0FAE,x[$7E:0FEE]
+$A3:87B3 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
+$A3:87B6 18          CLC                    ;|
+$A3:87B7 69 80 00    ADC #$0080             ;} Enemy angle = ([enemy angle] + 80h) % 100h
+$A3:87BA 29 FF 00    AND #$00FF             ;|
+$A3:87BD 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A3:87C0 80 0D       BRA $0D    [$87CF]
 
-$A3:87C2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:87C5 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:87C8 18          CLC
-$A3:87C9 69 02 00    ADC #$0002
-$A3:87CC 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A3:87C2 AE 54 0E    LDX $0E54  [$7E:0E54]  ; Else (not collided with block):
+$A3:87C5 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A3:87C8 18          CLC                    ;|
+$A3:87C9 69 02 00    ADC #$0002             ;} Enemy angle += 2
+$A3:87CC 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
 
+; BRANCH_MERGE
 $A3:87CF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:87D2 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:87D5 29 7F 00    AND #$007F
-$A3:87D8 C9 38 00    CMP #$0038
-$A3:87DB D0 0C       BNE $0C    [$87E9]
-$A3:87DD BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A3:87E0 09 02 00    ORA #$0002
-$A3:87E3 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A3:87E6 20 FE 87    JSR $87FE  [$A3:87FE]
+$A3:87D2 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A3:87D5 29 7F 00    AND #$007F             ;|
+$A3:87D8 C9 38 00    CMP #$0038             ;} If [enemy angle] % 80h = 38h:
+$A3:87DB D0 0C       BNE $0C    [$87E9]     ;/
+$A3:87DD BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A3:87E0 09 02 00    ORA #$0002             ;} Enemy new instruction list index |= 2 (spinning)
+$A3:87E3 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
+$A3:87E6 20 FE 87    JSR $87FE  [$A3:87FE]  ; Set waver instruction list
 
-$A3:87E9 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A3:87EC F0 0F       BEQ $0F    [$87FD]
-$A3:87EE 9E B0 0F    STZ $0FB0,x[$7E:0FB0]
-$A3:87F1 BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A3:87F4 29 01 00    AND #$0001
-$A3:87F7 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A3:87FA 20 FE 87    JSR $87FE  [$A3:87FE]
+$A3:87E9 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A3:87EC F0 0F       BEQ $0F    [$87FD]     ;} If [enemy spin finished flag] != 0:
+$A3:87EE 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy spin finished flag = 0
+$A3:87F1 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A3:87F4 29 01 00    AND #$0001             ;} Enemy new instruction list index &= 1 (steady)
+$A3:87F7 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
+$A3:87FA 20 FE 87    JSR $87FE  [$A3:87FE]  ; Set waver instruction list
 
 $A3:87FD 6B          RTL
 }
 
 
-;;; $87FE:  ;;;
+;;; $87FE: Set waver instruction list ;;;
 {
 $A3:87FE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8801 BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A3:8804 DD AC 0F    CMP $0FAC,x[$7E:0FAC]
-$A3:8807 F0 14       BEQ $14    [$881D]
-$A3:8809 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A3:880C 0A          ASL A
-$A3:880D A8          TAY
-$A3:880E B9 DB 86    LDA $86DB,y[$A3:86DD]
-$A3:8811 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:8814 A9 01 00    LDA #$0001
-$A3:8817 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:881A 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A3:8801 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A3:8804 DD AC 0F    CMP $0FAC,x[$7E:0FAC]  ;} If [enemy new instruction list index] = [enemy instruction list index]: return
+$A3:8807 F0 14       BEQ $14    [$881D]     ;/
+$A3:8809 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ; Enemy instruction list index = [enemy new instruction list index]
+$A3:880C 0A          ASL A                  ;\
+$A3:880D A8          TAY                    ;|
+$A3:880E B9 DB 86    LDA $86DB,y[$A3:86DD]  ;} Enemy instruction list pointer = [$86DB + [enemy instruction list index] * 2]
+$A3:8811 9D 92 0F    STA $0F92,x[$7E:0F92]  ;/
+$A3:8814 A9 01 00    LDA #$0001             ;\
+$A3:8817 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:881A 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 
 $A3:881D 60          RTS
 }
@@ -553,9 +554,9 @@ $A3:8C0F             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 00BA, 0011, 7F
 }
 
 
-;;; $8C2F: Instruction list -  ;;;
+;;; $8C2F: Instruction list - fireflea ;;;
 {
-$A3:8C2F             dx 0002,8EA5,
+$A3:8C2F             dw 0002,8EA5,
                         0001,8EB6,
                         0002,8EC7,
                         0001,8EB6,
