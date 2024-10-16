@@ -269,6 +269,7 @@ $A3:8946             dx 817D,       ; Disable off-screen processing
 
 ;;; $894E: Metaree instruction list pointers ;;;
 {
+; Indexed by [enemy $0FAE]
 $A3:894E             dw 8910, 8924, 8930, 8946
 }
 
@@ -285,7 +286,7 @@ $A3:895F 6B          RTL
 ;;; $8960: Initialisation AI - enemy $D67F (metaree) ;;;
 {
 $A3:8960 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8963 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 0
+$A3:8963 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy new instruction list index = 0
 $A3:8966 9E AE 0F    STZ $0FAE,x[$7E:102E]  ; Enemy instruction list index = 0
 $A3:8969 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
 $A3:896C A9 10 89    LDA #$8910             ;\
@@ -324,7 +325,7 @@ $A3:8996 1A          INC A                  ;|
 $A3:8997 C9 48 00    CMP #$0048             ;|
 $A3:899A B0 0F       BCS $0F    [$89AB]     ;/
 $A3:899C 20 AC 89    JSR $89AC  [$A3:89AC]  ; Determine metaree Y velocity
-$A3:899F FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 1 (prepare to launch attack)
+$A3:899F FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy new instruction list index = 1 (prepare to launch attack)
 $A3:89A2 20 B2 8A    JSR $8AB2  [$A3:8AB2]  ; Set metaree instruction list pointer
 $A3:89A5 A9 D4 89    LDA #$89D4             ;\
 $A3:89A8 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $89D4 (prepare to launch attack)
@@ -368,7 +369,7 @@ $A3:89D4 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
 $A3:89D7 F0 19       BEQ $19    [$89F2]     ;} If [enemy attack ready flag] = 0: return
 $A3:89D9 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
 $A3:89DC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:89DF FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 2 (launched attack)
+$A3:89DF FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy new instruction list index = 2 (launched attack)
 $A3:89E2 20 B2 8A    JSR $8AB2  [$A3:8AB2]  ; Set metaree instruction list pointer
 $A3:89E5 A9 F3 89    LDA #$89F3             ;\
 $A3:89E8 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $89F3 (launched attack)
@@ -468,9 +469,9 @@ $A3:8AB1 6B          RTL
 {
 $A3:8AB2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:8AB5 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
-$A3:8AB8 DD AE 0F    CMP $0FAE,x[$7E:102E]  ;} If [enemy next instruction list index] != [enemy instruction list index]:
+$A3:8AB8 DD AE 0F    CMP $0FAE,x[$7E:102E]  ;} If [enemy new instruction list index] != [enemy instruction list index]:
 $A3:8ABB F0 14       BEQ $14    [$8AD1]     ;/
-$A3:8ABD 9D AE 0F    STA $0FAE,x[$7E:102E]  ; Enemy instruction list index = [enemy next instruction list index]
+$A3:8ABD 9D AE 0F    STA $0FAE,x[$7E:102E]  ; Enemy instruction list index = [enemy new instruction list index]
 $A3:8AC0 0A          ASL A                  ;\
 $A3:8AC1 A8          TAY                    ;|
 $A3:8AC2 B9 4E 89    LDA $894E,y[$A3:8950]  ;} Enemy instruction list pointer = [$894E + [enemy instruction list index] * 2]
@@ -612,14 +613,15 @@ $A3:8C2F             dw 0002,8EA5,
 }
 
 
-;;; $8D03:  ;;;
+;;; $8D03: Fireflea data ;;;
 {
-; Unused?
+; Unused
 $A3:8D03             dw 1000, 2000, 4000, 6000, 8000, A000, C000, E000
 
-; Unused?
+; Unused
 $A3:8D13             dw 0001, 2001, 4001, 6001, 8001
 
+; Movement radii. Indexed by [enemy parameter 2 high] * 2
 $A3:8D1D             dw 0008, 0010, 0018, 0020, 0028, 0030, 0038, 0040
 }
 
@@ -627,99 +629,101 @@ $A3:8D1D             dw 0008, 0010, 0018, 0020, 0028, 0030, 0038, 0040
 ;;; $8D2D: Initialisation AI - enemy $D6BF (fireflea) ;;;
 {
 $A3:8D2D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8D30 A9 2F 8C    LDA #$8C2F
-$A3:8D33 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:8D36 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:8D39 29 FF 00    AND #$00FF
-$A3:8D3C 85 12       STA $12    [$7E:0012]
-$A3:8D3E 29 02 00    AND #$0002
-$A3:8D41 D0 0A       BNE $0A    [$8D4D]
-$A3:8D43 20 75 8D    JSR $8D75  [$A3:8D75]
-$A3:8D46 20 9C 8D    JSR $8D9C  [$A3:8D9C]
-$A3:8D49 20 D7 8D    JSR $8DD7  [$A3:8DD7]
-$A3:8D4C 6B          RTL
+$A3:8D30 A9 2F 8C    LDA #$8C2F             ;\
+$A3:8D33 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $8C2F
+$A3:8D36 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:8D39 29 FF 00    AND #$00FF             ;} $12 = [enemy parameter 1 low]
+$A3:8D3C 85 12       STA $12    [$7E:0012]  ;/
+$A3:8D3E 29 02 00    AND #$0002             ;\
+$A3:8D41 D0 0A       BNE $0A    [$8D4D]     ;} If [enemy parameter 1 low] & 2 = 0 (vertical line pattern):
+$A3:8D43 20 75 8D    JSR $8D75  [$A3:8D75]  ; Set fireflea speed
+$A3:8D46 20 9C 8D    JSR $8D9C  [$A3:8D9C]  ; Set fireflea radius
+$A3:8D49 20 D7 8D    JSR $8DD7  [$A3:8DD7]  ; Set fireflea Y extrema
+$A3:8D4C 6B          RTL                    ; Return
 
-$A3:8D4D 20 5D 8D    JSR $8D5D  [$A3:8D5D]
-$A3:8D50 20 6A 8D    JSR $8D6A  [$A3:8D6A]
-$A3:8D53 20 75 8D    JSR $8D75  [$A3:8D75]
-$A3:8D56 20 9C 8D    JSR $8D9C  [$A3:8D9C]
-$A3:8D59 20 AE 8D    JSR $8DAE  [$A3:8DAE]
+$A3:8D4D 20 5D 8D    JSR $8D5D  [$A3:8D5D]  ; Set fireflea centre
+$A3:8D50 20 6A 8D    JSR $8D6A  [$A3:8D6A]  ; Set initial fireflea angle
+$A3:8D53 20 75 8D    JSR $8D75  [$A3:8D75]  ; Set fireflea speed
+$A3:8D56 20 9C 8D    JSR $8D9C  [$A3:8D9C]  ; Set fireflea radius
+$A3:8D59 20 AE 8D    JSR $8DAE  [$A3:8DAE]  ; Set initial circling fireflea position
 $A3:8D5C 6B          RTL
 }
 
 
-;;; $8D5D:  ;;;
+;;; $8D5D: Set fireflea centre ;;;
 {
-$A3:8D5D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A3:8D60 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A3:8D63 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A3:8D66 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A3:8D5D BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A3:8D60 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy X centre = [enemy X position]
+$A3:8D63 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A3:8D66 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy Y centre = [enemy Y position]
 $A3:8D69 60          RTS
 }
 
 
-;;; $8D6A:  ;;;
+;;; $8D6A: Set initial fireflea angle ;;;
 {
-$A3:8D6A BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A3:8D6D 29 FF 00    AND #$00FF
-$A3:8D70 EB          XBA
-$A3:8D71 9D AE 0F    STA $0FAE,x[$7E:0FAE]
+$A3:8D6A BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A3:8D6D 29 FF 00    AND #$00FF             ;|
+$A3:8D70 EB          XBA                    ;} Enemy angle = [enemy parameter 1 high] * 100h
+$A3:8D71 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
 $A3:8D74 60          RTS
 }
 
 
-;;; $8D75:  ;;;
+;;; $8D75: Set fireflea speed ;;;
 {
-$A3:8D75 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A3:8D78 29 FF 00    AND #$00FF
-$A3:8D7B 0A          ASL A
-$A3:8D7C 0A          ASL A
-$A3:8D7D 0A          ASL A
-$A3:8D7E A8          TAY
-$A3:8D7F A5 12       LDA $12    [$7E:0012]
-$A3:8D81 29 01 00    AND #$0001
-$A3:8D84 D0 04       BNE $04    [$8D8A]
-$A3:8D86 C8          INY
-$A3:8D87 C8          INY
-$A3:8D88 C8          INY
-$A3:8D89 C8          INY
+$A3:8D75 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A3:8D78 29 FF 00    AND #$00FF             ;|
+$A3:8D7B 0A          ASL A                  ;|
+$A3:8D7C 0A          ASL A                  ;} Y = [enemy parameter 2 low] * 8 (linear speed table index)
+$A3:8D7D 0A          ASL A                  ;|
+$A3:8D7E A8          TAY                    ;/
+$A3:8D7F A5 12       LDA $12    [$7E:0012]  ;\
+$A3:8D81 29 01 00    AND #$0001             ;} If [$12] & 1 = 0:
+$A3:8D84 D0 04       BNE $04    [$8D8A]     ;/
+$A3:8D86 C8          INY                    ;\
+$A3:8D87 C8          INY                    ;|
+$A3:8D88 C8          INY                    ;} Y += 4 (negated speed)
+$A3:8D89 C8          INY                    ;/
 
-$A3:8D8A 98          TYA
-$A3:8D8B 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A3:8D8F B9 87 81    LDA $8187,y[$A3:820B]
-$A3:8D92 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A3:8D95 B9 89 81    LDA $8189,y[$A3:820D]
-$A3:8D98 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A3:8D8A 98          TYA                    ;\
+$A3:8D8B 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy speed table index = [Y]
+$A3:8D8F B9 87 81    LDA $8187,y[$A3:820B]  ;\
+$A3:8D92 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;|
+$A3:8D95 B9 89 81    LDA $8189,y[$A3:820D]  ;} Enemy angle delta = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A3:8D98 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
 $A3:8D9B 60          RTS
 }
 
 
-;;; $8D9C:  ;;;
+;;; $8D9C: Set fireflea radius ;;;
 {
-$A3:8D9C BD B7 0F    LDA $0FB7,x[$7E:0FB7]
-$A3:8D9F 29 FF 00    AND #$00FF
-$A3:8DA2 0A          ASL A
-$A3:8DA3 A8          TAY
-$A3:8DA4 B9 1D 8D    LDA $8D1D,y[$A3:8D21]
-$A3:8DA7 29 FF 00    AND #$00FF
-$A3:8DAA 9D AC 0F    STA $0FAC,x[$7E:0FAC]
+$A3:8D9C BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
+$A3:8D9F 29 FF 00    AND #$00FF             ;|
+$A3:8DA2 0A          ASL A                  ;|
+$A3:8DA3 A8          TAY                    ;} Enemy radius = [$8D1D + [enemy parameter 2 high] * 2] & FFh
+$A3:8DA4 B9 1D 8D    LDA $8D1D,y[$A3:8D21]  ;|
+$A3:8DA7 29 FF 00    AND #$00FF             ;|
+$A3:8DAA 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
 $A3:8DAD 60          RTS
 }
 
 
-;;; $8DAE:  ;;;
+;;; $8DAE: Set initial circling fireflea position ;;;
 {
+; This seems to be missing a division by 100h of the enemy angle,
+; which is of little consequence as the main AI sets the position every frame anyway
 $A3:8DAE BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8DB1 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8DB4 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
-$A3:8DB7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy $0FB0] + [enemy $0FAC] * cos([enemy $0FAE] * pi / 80h) * FFh / 100h
+$A3:8DB7 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;} Enemy X position = [enemy X centre] + [enemy radius] * cos([enemy angle] * pi / 80h) * FFh / 100h
 $A3:8DBB 18          CLC                    ;|
 $A3:8DBC 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;|
 $A3:8DBF 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
 $A3:8DC2 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8DC5 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8DC8 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
-$A3:8DCB 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy $0FB2] + [enemy $0FAC] * -sin([enemy $0FAE] * pi / 80h) * FFh / 100h
+$A3:8DCB 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;} Enemy Y position = [enemy Y centre] + [enemy radius] * -sin([enemy angle] * pi / 80h) * FFh / 100h
 $A3:8DCF 18          CLC                    ;|
 $A3:8DD0 7D B2 0F    ADC $0FB2,x[$7E:0FB2]  ;|
 $A3:8DD3 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
@@ -727,16 +731,16 @@ $A3:8DD6 60          RTS
 }
 
 
-;;; $8DD7:  ;;;
+;;; $8DD7: Set Y fireflea extrema ;;;
 {
-$A3:8DD7 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A3:8DDA 38          SEC
-$A3:8DDB FD AC 0F    SBC $0FAC,x[$7E:106C]
-$A3:8DDE 9F 00 78 7E STA $7E7800,x[$7E:78C0]
-$A3:8DE2 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A3:8DE5 18          CLC
-$A3:8DE6 7D AC 0F    ADC $0FAC,x[$7E:106C]
-$A3:8DE9 9F 02 78 7E STA $7E7802,x[$7E:78C2]
+$A3:8DD7 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$A3:8DDA 38          SEC                    ;|
+$A3:8DDB FD AC 0F    SBC $0FAC,x[$7E:106C]  ;} Enemy minimum Y position = [enemy Y position] - [enemy radius]
+$A3:8DDE 9F 00 78 7E STA $7E7800,x[$7E:78C0];/
+$A3:8DE2 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$A3:8DE5 18          CLC                    ;|
+$A3:8DE6 7D AC 0F    ADC $0FAC,x[$7E:106C]  ;} Enemy maximum Y position = [enemy Y position] + [enemy radius]
+$A3:8DE9 9F 02 78 7E STA $7E7802,x[$7E:78C2];/
 $A3:8DED 60          RTS
 }
 
@@ -744,14 +748,14 @@ $A3:8DED 60          RTS
 ;;; $8DEE: Main AI - enemy $D6BF (fireflea) ;;;
 {
 $A3:8DEE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:8DF1 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:8DF4 29 02 00    AND #$0002
-$A3:8DF7 F0 3B       BEQ $3B    [$8E34]
+$A3:8DF1 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:8DF4 29 02 00    AND #$0002             ;} If [enemy parameter 1 low] & 2 != 0 (circle pattern):
+$A3:8DF7 F0 3B       BEQ $3B    [$8E34]     ;/
 $A3:8DF9 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8DFC 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8DFF BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
 $A3:8E02 29 00 FF    AND #$FF00             ;|
-$A3:8E05 EB          XBA                    ;} Enemy X position = [enemy $0FB0] + [enemy $0FAC] * cos([enemy $0FAE] * pi / 8000h) * FFh / 100h
+$A3:8E05 EB          XBA                    ;} Enemy X position = [enemy X centre] + [enemy radius] * cos([enemy angle] * pi / 8000h) * FFh / 100h
 $A3:8E06 22 B2 B0 A0 JSL $A0B0B2[$A0:B0B2]  ;|
 $A3:8E0A 18          CLC                    ;|
 $A3:8E0B 7D B0 0F    ADC $0FB0,x[$7E:0FB0]  ;|
@@ -760,37 +764,37 @@ $A3:8E11 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A3:8E14 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
 $A3:8E17 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;|
 $A3:8E1A 29 00 FF    AND #$FF00             ;|
-$A3:8E1D EB          XBA                    ;} Enemy Y position = [enemy $0FB2] + [enemy $0FAC] * -sin([enemy $0FAE] * pi / 8000h) * FFh / 100h
+$A3:8E1D EB          XBA                    ;} Enemy Y position = [enemy Y centre] + [enemy radius] * -sin([enemy angle] * pi / 8000h) * FFh / 100h
 $A3:8E1E 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:8E22 18          CLC                    ;|
 $A3:8E23 7D B2 0F    ADC $0FB2,x[$7E:0FB2]  ;|
 $A3:8E26 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
-$A3:8E29 BD AE 0F    LDA $0FAE,x[$7E:0FAE]
-$A3:8E2C 18          CLC
-$A3:8E2D 7D A9 0F    ADC $0FA9,x[$7E:0FA9]
-$A3:8E30 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A3:8E33 6B          RTL
+$A3:8E29 BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;\
+$A3:8E2C 18          CLC                    ;|
+$A3:8E2D 7D A9 0F    ADC $0FA9,x[$7E:0FA9]  ;} Enemy angle += [enemy angle delta] * 100h
+$A3:8E30 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
+$A3:8E33 6B          RTL                    ; Return
 
-$A3:8E34 BF 04 78 7E LDA $7E7804,x[$7E:7904]
-$A3:8E38 A8          TAY
-$A3:8E39 18          CLC
-$A3:8E3A BD 80 0F    LDA $0F80,x[$7E:1080]
-$A3:8E3D 79 89 81    ADC $8189,y[$A3:81CD]
-$A3:8E40 9D 80 0F    STA $0F80,x[$7E:1080]
-$A3:8E43 BD 7E 0F    LDA $0F7E,x[$7E:107E]
-$A3:8E46 79 87 81    ADC $8187,y[$A3:81CB]
-$A3:8E49 9D 7E 0F    STA $0F7E,x[$7E:107E]
-$A3:8E4C BD 7E 0F    LDA $0F7E,x[$7E:107E]
-$A3:8E4F DF 00 78 7E CMP $7E7800,x[$7E:7900]
-$A3:8E53 30 0A       BMI $0A    [$8E5F]
-$A3:8E55 BD 7E 0F    LDA $0F7E,x[$7E:107E]
-$A3:8E58 DF 02 78 7E CMP $7E7802,x[$7E:7902]
-$A3:8E5C 10 01       BPL $01    [$8E5F]
-$A3:8E5E 6B          RTL
+$A3:8E34 BF 04 78 7E LDA $7E7804,x[$7E:7904];\
+$A3:8E38 A8          TAY                    ;} Y = [enemy speed table index]
+$A3:8E39 18          CLC                    ;\
+$A3:8E3A BD 80 0F    LDA $0F80,x[$7E:1080]  ;|
+$A3:8E3D 79 89 81    ADC $8189,y[$A3:81CD]  ;|
+$A3:8E40 9D 80 0F    STA $0F80,x[$7E:1080]  ;} Enemy Y position += [$8187 + [Y]].[$8187 + [Y] + 2]
+$A3:8E43 BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;|
+$A3:8E46 79 87 81    ADC $8187,y[$A3:81CB]  ;|
+$A3:8E49 9D 7E 0F    STA $0F7E,x[$7E:107E]  ;/
+$A3:8E4C BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;\
+$A3:8E4F DF 00 78 7E CMP $7E7800,x[$7E:7900];|
+$A3:8E53 30 0A       BMI $0A    [$8E5F]     ;|
+$A3:8E55 BD 7E 0F    LDA $0F7E,x[$7E:107E]  ;} If [enemy minimum Y position] <= [enemy Y position] < [enemy maximum Y position]:
+$A3:8E58 DF 02 78 7E CMP $7E7802,x[$7E:7902];|
+$A3:8E5C 10 01       BPL $01    [$8E5F]     ;/
+$A3:8E5E 6B          RTL                    ; Return
 
-$A3:8E5F BF 04 78 7E LDA $7E7804,x[$7E:7904]
-$A3:8E63 49 04 00    EOR #$0004
-$A3:8E66 9F 04 78 7E STA $7E7804,x[$7E:7904]
+$A3:8E5F BF 04 78 7E LDA $7E7804,x[$7E:7904];\
+$A3:8E63 49 04 00    EOR #$0004             ;} Enemy speed table index ^= 4 (negate speed)
+$A3:8E66 9F 04 78 7E STA $7E7804,x[$7E:7904];/
 $A3:8E6A 6B          RTL
 }
 
@@ -891,19 +895,19 @@ $A3:900A             dw 3800, 72FA, 55B0, 2845, 1801, 6210, 496B, 38C6, 2C63, 24
 }
 
 
-;;; $902A: Instruction list -  ;;;
+;;; $902A: Instruction list - swimming left ;;;
 {
-$A3:902A             dx 90A0,       ; ???
-                        000E,928A,
+$A3:902A             dw 90A0        ; Enemy layer = 2
+$A3:902C             dw 000E,928A,
                         000E,92A5,
                         000E,92C0,
                         80ED,902C   ; Go to $902C
 }
 
 
-;;; $903C: Instruction list -  ;;;
+;;; $903C: Instruction list - turning right ;;;
 {
-$A3:903C             dx 000D,92DB,
+$A3:903C             dw 000D,92DB,
                         000A,92F6,
                         0008,9311,
                         0006,9327,
@@ -911,24 +915,24 @@ $A3:903C             dx 000D,92DB,
                         0008,934E,
                         000A,9364,
                         000D,937F,
-                        90AA,       ; ???
+                        90AA,       ; Set turn finished flag
                         812F        ; Sleep
 }
 
 
-;;; $9060: Instruction list -  ;;;
+;;; $9060: Instruction list - swimming right ;;;
 {
-$A3:9060             dx 9096,       ; ???
-                        000E,939A,
+$A3:9060             dw 9096        ; Enemy layer = 6
+$A3:9062             dw 000E,939A,
                         000E,93B5,
                         000E,93D0,
                         80ED,9062   ; Go to $9062
 }
 
 
-;;; $9072: Instruction list -  ;;;
+;;; $9072: Instruction list - turning left ;;;
 {
-$A3:9072             dx 000D,93EB,
+$A3:9072             dw 000D,93EB,
                         000A,9406,
                         0008,9421,
                         0006,9437,
@@ -936,12 +940,12 @@ $A3:9072             dx 000D,93EB,
                         0008,945E,
                         000A,9474,
                         000D,948F,
-                        90AA,       ; ???
+                        90AA,       ; Set turn finished flag
                         812F        ; Sleep
 }
 
 
-;;; $9096: Instruction ;;;
+;;; $9096: Instruction - enemy layer = 6 ;;;
 {
 $A3:9096 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:9099 A9 06 00    LDA #$0006
@@ -950,7 +954,7 @@ $A3:909F 6B          RTL
 }
 
 
-;;; $90A0: Instruction ;;;
+;;; $90A0: Instruction - enemy layer = 2 ;;;
 {
 $A3:90A0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:90A3 A9 02 00    LDA #$0002
@@ -959,11 +963,11 @@ $A3:90A9 6B          RTL
 }
 
 
-;;; $90AA: Instruction ;;;
+;;; $90AA: Instruction - set turn finished flag ;;;
 {
 $A3:90AA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:90AD A9 01 00    LDA #$0001
-$A3:90B0 9F 02 78 7E STA $7E7802,x[$7E:7842]
+$A3:90AD A9 01 00    LDA #$0001             ;\
+$A3:90B0 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy turn finished flag = 1
 $A3:90B4 6B          RTL
 }
 
@@ -971,44 +975,44 @@ $A3:90B4 6B          RTL
 ;;; $90B5: Initialisation AI - enemy $D6FF (skultera) ;;;
 {
 $A3:90B5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:90B8 A9 2A 90    LDA #$902A
-$A3:90BB 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:90BE A9 32 91    LDA #$9132
-$A3:90C1 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A3:90C4 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A3:90C7 29 FF 00    AND #$00FF
-$A3:90CA D0 0C       BNE $0C    [$90D8]
-$A3:90CC A9 60 90    LDA #$9060
-$A3:90CF 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:90D2 A9 AB 91    LDA #$91AB
-$A3:90D5 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A3:90B8 A9 2A 90    LDA #$902A             ;\
+$A3:90BB 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $902A (swimming left)
+$A3:90BE A9 32 91    LDA #$9132             ;\
+$A3:90C1 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9132 (swimming left)
+$A3:90C4 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A3:90C7 29 FF 00    AND #$00FF             ;} If [enemy parameter 1 high] = 0:
+$A3:90CA D0 0C       BNE $0C    [$90D8]     ;/
+$A3:90CC A9 60 90    LDA #$9060             ;\
+$A3:90CF 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9060 (swimming right)
+$A3:90D2 A9 AB 91    LDA #$91AB             ;\
+$A3:90D5 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $91AB (swimming right)
 
-$A3:90D8 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A3:90DB 29 FF 00    AND #$00FF
-$A3:90DE 0A          ASL A
-$A3:90DF 0A          ASL A
-$A3:90E0 0A          ASL A
-$A3:90E1 A8          TAY
-$A3:90E2 B9 87 81    LDA $8187,y[$A3:8207]
-$A3:90E5 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A3:90E8 B9 89 81    LDA $8189,y[$A3:8209]
-$A3:90EB 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A3:90EE B9 8B 81    LDA $818B,y[$A3:820B]
-$A3:90F1 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A3:90F4 B9 8D 81    LDA $818D,y[$A3:820D]
-$A3:90F7 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A3:90FA BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A3:90FD 29 FF 00    AND #$00FF
-$A3:9100 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A3:9104 BD B7 0F    LDA $0FB7,x[$7E:0FB7]
-$A3:9107 29 FF 00    AND #$00FF
-$A3:910A 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A3:910E A9 00 00    LDA #$0000
-$A3:9111 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A3:9114 9F 02 78 7E STA $7E7802,x[$7E:7802]
+$A3:90D8 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A3:90DB 29 FF 00    AND #$00FF             ;|
+$A3:90DE 0A          ASL A                  ;|
+$A3:90DF 0A          ASL A                  ;} Y = [enemy parameter 1 low] * 8 (linear speed table index)
+$A3:90E0 0A          ASL A                  ;|
+$A3:90E1 A8          TAY                    ;/
+$A3:90E2 B9 87 81    LDA $8187,y[$A3:8207]  ;\
+$A3:90E5 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;|
+$A3:90E8 B9 89 81    LDA $8189,y[$A3:8209]  ;} Enemy right velocity = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A3:90EB 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
+$A3:90EE B9 8B 81    LDA $818B,y[$A3:820B]  ;\
+$A3:90F1 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;|
+$A3:90F4 B9 8D 81    LDA $818D,y[$A3:820D]  ;} Enemy left velocity = [$8187 + [Y] + 4].[$8187 + [Y] + 6]
+$A3:90F7 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
+$A3:90FA BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A3:90FD 29 FF 00    AND #$00FF             ;} Enemy radius = [enemy parameter 2 low]
+$A3:9100 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$A3:9104 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
+$A3:9107 29 FF 00    AND #$00FF             ;} Enemy angle delta = [enemy parameter 2 high]
+$A3:910A 9F 04 78 7E STA $7E7804,x[$7E:7804];/
+$A3:910E A9 00 00    LDA #$0000             ;\
+$A3:9111 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy angle = 0
+$A3:9114 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy turn finished flag = 0
 $A3:9118 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
 $A3:911C 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A3:911F BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;} Enemy $7E:7806 = [enemy $7E:7800] * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A3:911F BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;} Enemy previous Y offset = 0 <-- calculated by multiplication by sin(0) >_<;
 $A3:9122 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:9126 9F 06 78 7E STA $7E7806,x[$7E:7806];/
 $A3:912A 6B          RTL
@@ -1018,152 +1022,154 @@ $A3:912A 6B          RTL
 ;;; $912B: Main AI - enemy $D6FF (skultera) ;;;
 {
 $A3:912B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:912E FC A8 0F    JSR ($0FA8,x)[$A3:9132]
+$A3:912E FC A8 0F    JSR ($0FA8,x)[$A3:9132]; Execute [enemy function]
 $A3:9131 6B          RTL
 }
 
 
-;;; $9132:  ;;;
+;;; $9132: Skultera function - swimming left ;;;
 {
 $A3:9132 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:9135 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
 $A3:9138 85 12       STA $12    [$7E:0012]  ;|
-$A3:913A BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;} Move enemy right by [enemy X velocity]
+$A3:913A BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;} Move enemy right by [enemy left velocity]
 $A3:913D 85 14       STA $14    [$7E:0014]  ;|
 $A3:913F 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A3:9143 90 17       BCC $17    [$915C]     ; If collided with wall:
-$A3:9145 A9 24 92    LDA #$9224
-$A3:9148 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A3:914B A9 01 00    LDA #$0001
-$A3:914E 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A3:9151 9E 90 0F    STZ $0F90,x[$7E:0FD0]
-$A3:9154 A9 3C 90    LDA #$903C
-$A3:9157 9D 92 0F    STA $0F92,x[$7E:0FD2]
+$A3:9145 A9 24 92    LDA #$9224             ;\
+$A3:9148 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $9224 (turning right)
+$A3:914B A9 01 00    LDA #$0001             ;\
+$A3:914E 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A3:9151 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
+$A3:9154 A9 3C 90    LDA #$903C             ;\
+$A3:9157 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $903C (turning right)
 $A3:915A 80 46       BRA $46    [$91A2]
 
 $A3:915C BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $A3:9160 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A3:9163 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy $7E:7808 = [enemy $7E:7800] * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A3:9163 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy Y offset = [enemy radius] * -sin([enemy angle] * pi / 80h) * FFh / 100h
 $A3:9166 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:916A 9F 08 78 7E STA $7E7808,x[$7E:7848];/
-$A3:916E 38          SEC
-$A3:916F FF 06 78 7E SBC $7E7806,x[$7E:7846]
-$A3:9173 85 14       STA $14    [$7E:0014]
-$A3:9175 64 12       STZ $12    [$7E:0012]  ;\
-$A3:9177 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14]
+$A3:916E 38          SEC                    ;\
+$A3:916F FF 06 78 7E SBC $7E7806,x[$7E:7846];|
+$A3:9173 85 14       STA $14    [$7E:0014]  ;} Move enemy down by [enemy Y offset] - [enemy previous Y offset]
+$A3:9175 64 12       STZ $12    [$7E:0012]  ;|
+$A3:9177 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A3:917B 90 17       BCC $17    [$9194]     ; If collided with block:
-$A3:917D A9 24 92    LDA #$9224
-$A3:9180 9D A8 0F    STA $0FA8,x[$7E:10E8]
-$A3:9183 A9 01 00    LDA #$0001
-$A3:9186 9D 94 0F    STA $0F94,x[$7E:10D4]
-$A3:9189 9E 90 0F    STZ $0F90,x[$7E:10D0]
-$A3:918C A9 3C 90    LDA #$903C
-$A3:918F 9D 92 0F    STA $0F92,x[$7E:10D2]
+$A3:917D A9 24 92    LDA #$9224             ;\
+$A3:9180 9D A8 0F    STA $0FA8,x[$7E:10E8]  ;} Enemy function = $9224 (turning right)
+$A3:9183 A9 01 00    LDA #$0001             ;\
+$A3:9186 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
+$A3:9189 9E 90 0F    STZ $0F90,x[$7E:10D0]  ; Enemy timer = 0
+$A3:918C A9 3C 90    LDA #$903C             ;\
+$A3:918F 9D 92 0F    STA $0F92,x[$7E:10D2]  ;} Enemy instruction list pointer = $903C (turning right)
 $A3:9192 80 0E       BRA $0E    [$91A2]
 
-$A3:9194 BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A3:9197 18          CLC
-$A3:9198 7F 04 78 7E ADC $7E7804,x[$7E:7844]
-$A3:919C 29 FF 00    AND #$00FF
-$A3:919F 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A3:9194 BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\ Else (not collided with block):
+$A3:9197 18          CLC                    ;|
+$A3:9198 7F 04 78 7E ADC $7E7804,x[$7E:7844];} Enemy angle = ([enemy angle] + [enemy angle delta]) % 100h
+$A3:919C 29 FF 00    AND #$00FF             ;|
+$A3:919F 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;/
 
-$A3:91A2 BF 08 78 7E LDA $7E7808,x[$7E:7848]
-$A3:91A6 9F 06 78 7E STA $7E7806,x[$7E:7846]
+; BRANCH_MERGE
+$A3:91A2 BF 08 78 7E LDA $7E7808,x[$7E:7848];\
+$A3:91A6 9F 06 78 7E STA $7E7806,x[$7E:7846];} Enemy previous Y offset = [enemy Y offset]
 $A3:91AA 60          RTS
 }
 
 
-;;; $91AB:  ;;;
+;;; $91AB: Skultera function - swimming right ;;;
 {
 $A3:91AB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:91AE BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A3:91B1 85 12       STA $12    [$7E:0012]  ;|
-$A3:91B3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;} Move enemy right by [enemy X velocity]
+$A3:91B3 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;} Move enemy right by [enemy right velocity]
 $A3:91B6 85 14       STA $14    [$7E:0014]  ;|
 $A3:91B8 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A3:91BC 90 17       BCC $17    [$91D5]     ; If collided with wall:
-$A3:91BE A9 56 92    LDA #$9256
-$A3:91C1 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A3:91C4 A9 01 00    LDA #$0001
-$A3:91C7 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:91CA 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A3:91CD A9 72 90    LDA #$9072
-$A3:91D0 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:91D3 80 46       BRA $46    [$921B]
+$A3:91BE A9 56 92    LDA #$9256             ;\
+$A3:91C1 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9256 (turning left)
+$A3:91C4 A9 01 00    LDA #$0001             ;\
+$A3:91C7 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:91CA 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A3:91CD A9 72 90    LDA #$9072             ;\
+$A3:91D0 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $9072 (turning left)
+$A3:91D3 80 46       BRA $46    [$921B]     ; Go to BRANCH_MERGE
 
 $A3:91D5 BF 00 78 7E LDA $7E7800,x[$7E:7840];\
 $A3:91D9 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
-$A3:91DC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy $7E:7808 = [enemy $7E:7800] * -sin([enemy $0FB2] * pi / 80h) * FFh / 100h
+$A3:91DC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;} Enemy Y offset = [enemy radius] * -sin([enemy angle] * pi / 80h) * FFh / 100h
 $A3:91DF 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A3:91E3 9F 08 78 7E STA $7E7808,x[$7E:7848];/
-$A3:91E7 38          SEC
-$A3:91E8 FF 06 78 7E SBC $7E7806,x[$7E:7846]
-$A3:91EC 85 14       STA $14    [$7E:0014]
-$A3:91EE 64 12       STZ $12    [$7E:0012]  ;\
-$A3:91F0 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14]
+$A3:91E7 38          SEC                    ;\
+$A3:91E8 FF 06 78 7E SBC $7E7806,x[$7E:7846];|
+$A3:91EC 85 14       STA $14    [$7E:0014]  ;} Move enemy down by [enemy Y offset] - [enemy previous Y offset]
+$A3:91EE 64 12       STZ $12    [$7E:0012]  ;|
+$A3:91F0 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A3:91F4 90 17       BCC $17    [$920D]     ; If collided with block:
-$A3:91F6 A9 56 92    LDA #$9256
-$A3:91F9 9D A8 0F    STA $0FA8,x[$7E:1128]
-$A3:91FC A9 01 00    LDA #$0001
-$A3:91FF 9D 94 0F    STA $0F94,x[$7E:1114]
-$A3:9202 9E 90 0F    STZ $0F90,x[$7E:1110]
-$A3:9205 A9 72 90    LDA #$9072
-$A3:9208 9D 92 0F    STA $0F92,x[$7E:1112]
+$A3:91F6 A9 56 92    LDA #$9256             ;\
+$A3:91F9 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $9256 (turning left)
+$A3:91FC A9 01 00    LDA #$0001             ;\
+$A3:91FF 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
+$A3:9202 9E 90 0F    STZ $0F90,x[$7E:1110]  ; Enemy timer = 0
+$A3:9205 A9 72 90    LDA #$9072             ;\
+$A3:9208 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = $9072 (turning left)
 $A3:920B 80 0E       BRA $0E    [$921B]
 
-$A3:920D BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A3:9210 18          CLC
-$A3:9211 7F 04 78 7E ADC $7E7804,x[$7E:7844]
-$A3:9215 29 FF 00    AND #$00FF
-$A3:9218 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A3:920D BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\ Else (not collided with block):
+$A3:9210 18          CLC                    ;|
+$A3:9211 7F 04 78 7E ADC $7E7804,x[$7E:7844];} Enemy angle = ([enemy angle] + [enemy angle delta]) % 100h
+$A3:9215 29 FF 00    AND #$00FF             ;|
+$A3:9218 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;/
 
-$A3:921B BF 08 78 7E LDA $7E7808,x[$7E:7848]
-$A3:921F 9F 06 78 7E STA $7E7806,x[$7E:7846]
+; BRANCH_MERGE
+$A3:921B BF 08 78 7E LDA $7E7808,x[$7E:7848];\
+$A3:921F 9F 06 78 7E STA $7E7806,x[$7E:7846];} Enemy previous Y offset = [enemy Y offset]
 $A3:9223 60          RTS
 }
 
 
-;;; $9224:  ;;;
+;;; $9224: Skultera function - turning right ;;;
 {
 $A3:9224 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:9227 BF 02 78 7E LDA $7E7802,x[$7E:7842]
-$A3:922B F0 28       BEQ $28    [$9255]
-$A3:922D A9 00 00    LDA #$0000
-$A3:9230 9F 02 78 7E STA $7E7802,x[$7E:7842]
-$A3:9234 A9 AB 91    LDA #$91AB
-$A3:9237 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A3:923A BF 04 78 7E LDA $7E7804,x[$7E:7844]
-$A3:923E 49 FF FF    EOR #$FFFF
-$A3:9241 1A          INC A
-$A3:9242 9F 04 78 7E STA $7E7804,x[$7E:7844]
-$A3:9246 A9 01 00    LDA #$0001
-$A3:9249 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A3:924C 9E 90 0F    STZ $0F90,x[$7E:0FD0]
-$A3:924F A9 60 90    LDA #$9060
-$A3:9252 9D 92 0F    STA $0F92,x[$7E:0FD2]
+$A3:9227 BF 02 78 7E LDA $7E7802,x[$7E:7842];\
+$A3:922B F0 28       BEQ $28    [$9255]     ;} If [enemy turn finished flag] = 0: return
+$A3:922D A9 00 00    LDA #$0000             ;\
+$A3:9230 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy turn finished flag = 0
+$A3:9234 A9 AB 91    LDA #$91AB             ;\
+$A3:9237 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $91AB (swimming right)
+$A3:923A BF 04 78 7E LDA $7E7804,x[$7E:7844];\
+$A3:923E 49 FF FF    EOR #$FFFF             ;|
+$A3:9241 1A          INC A                  ;} Negate enemy angle delta
+$A3:9242 9F 04 78 7E STA $7E7804,x[$7E:7844];/
+$A3:9246 A9 01 00    LDA #$0001             ;\
+$A3:9249 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A3:924C 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
+$A3:924F A9 60 90    LDA #$9060             ;\
+$A3:9252 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $9060 (swimming right)
 
 $A3:9255 60          RTS
 }
 
 
-;;; $9256:  ;;;
+;;; $9256: Skultera function - turning left ;;;
 {
 $A3:9256 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:9259 BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A3:925D F0 28       BEQ $28    [$9287]
-$A3:925F A9 00 00    LDA #$0000
-$A3:9262 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A3:9266 A9 32 91    LDA #$9132
-$A3:9269 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A3:926C BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A3:9270 49 FF FF    EOR #$FFFF
-$A3:9273 1A          INC A
-$A3:9274 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A3:9278 A9 01 00    LDA #$0001
-$A3:927B 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:927E 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A3:9281 A9 2A 90    LDA #$902A
-$A3:9284 9D 92 0F    STA $0F92,x[$7E:0F92]
+$A3:9259 BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A3:925D F0 28       BEQ $28    [$9287]     ;} If [enemy turn finished flag] = 0: return
+$A3:925F A9 00 00    LDA #$0000             ;\
+$A3:9262 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy turn finished flag = 0
+$A3:9266 A9 32 91    LDA #$9132             ;\
+$A3:9269 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9132 (swimming left)
+$A3:926C BF 04 78 7E LDA $7E7804,x[$7E:7804];\
+$A3:9270 49 FF FF    EOR #$FFFF             ;|
+$A3:9273 1A          INC A                  ;} Negate enemy angle delta
+$A3:9274 9F 04 78 7E STA $7E7804,x[$7E:7804];/
+$A3:9278 A9 01 00    LDA #$0001             ;\
+$A3:927B 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:927E 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A3:9281 A9 2A 90    LDA #$902A             ;\
+$A3:9284 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $902A (swimming left)
 
 $A3:9287 60          RTS
 }
@@ -1206,7 +1212,6 @@ $A3:945E             dx 0004, C3FB,00,2104, C3FB,F0,2100, 0007,00,2122, 0009,FD,
 $A3:9474             dx 0005, C3F5,00,2102, C3F5,F0,2100, 0001,FD,2120, 0006,00,2122, 0008,FE,2124
 $A3:948F             dx 0005, C3F1,00,2102, C3F1,F0,2100, 01FD,00,2122, 0002,FD,2120, 0007,FE,2125
 }
-
 
 
 ;;; $94AA: Unused. Skultera spritemap pointers ;;;
@@ -1756,7 +1761,7 @@ $A3:9B9B             dw 3800, 7F5A, 3BE0, 2680, 0920, 4F5A, 36B5, 2610, 1DCE, 52
 }
 
 
-;;; $9BBB..9C6A: Instruction lists - sinking platforms ;;;
+;;; $9BBB..9C6A: Instruction lists - tripper / suspensor platform ;;;
 {
 ;;; $9BBB: Instruction list -  ;;;
 {
@@ -1914,7 +1919,7 @@ $A3:9CC9 A0 55 9C    LDY #$9C55
 }
 
 
-;;; $9CCC: Sinking platform enemy common initialisation AI ;;;
+;;; $9CCC: Tripper / suspensor platform common initialisation AI ;;;
 {
 $A3:9CCC 98          TYA
 $A3:9CCD 9D 92 0F    STA $0F92,x[$7E:0F92]
@@ -2110,9 +2115,9 @@ $A3:9E53 A0 BB 9B    LDY #$9BBB
 
 $A3:9E56 98          TYA
 $A3:9E57 9D 92 0F    STA $0F92,x[$7E:11D2]
-$A3:9E5A A9 01 00    LDA #$0001
-$A3:9E5D 9D 94 0F    STA $0F94,x[$7E:11D4]
-$A3:9E60 9E 90 0F    STZ $0F90,x[$7E:11D0]
+$A3:9E5A A9 01 00    LDA #$0001             ;\
+$A3:9E5D 9D 94 0F    STA $0F94,x[$7E:11D4]  ;} Enemy instruction timer = 1
+$A3:9E60 9E 90 0F    STZ $0F90,x[$7E:11D0]  ; Enemy timer = 0
 $A3:9E63 60          RTS
 }
 
@@ -2127,9 +2132,9 @@ $A3:9E70 A0 D1 9B    LDY #$9BD1
 
 $A3:9E73 98          TYA
 $A3:9E74 9D 92 0F    STA $0F92,x
-$A3:9E77 A9 01 00    LDA #$0001
-$A3:9E7A 9D 94 0F    STA $0F94,x
-$A3:9E7D 9E 90 0F    STZ $0F90,x
+$A3:9E77 A9 01 00    LDA #$0001             ;\
+$A3:9E7A 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A3:9E7D 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
 $A3:9E80 60          RTS
 }
 
@@ -2144,9 +2149,9 @@ $A3:9E8D A0 E7 9B    LDY #$9BE7
 
 $A3:9E90 98          TYA
 $A3:9E91 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:9E94 A9 01 00    LDA #$0001
-$A3:9E97 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:9E9A 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A3:9E94 A9 01 00    LDA #$0001             ;\
+$A3:9E97 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:9E9A 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A3:9E9D 60          RTS
 }
 
@@ -2161,9 +2166,9 @@ $A3:9EAA A0 FD 9B    LDY #$9BFD
 
 $A3:9EAD 98          TYA
 $A3:9EAE 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:9EB1 A9 01 00    LDA #$0001
-$A3:9EB4 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:9EB7 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A3:9EB1 A9 01 00    LDA #$0001             ;\
+$A3:9EB4 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:9EB7 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A3:9EBA 60          RTS
 }
 
@@ -2233,7 +2238,7 @@ $A3:9F28 6B          RTL
 }
 
 
-;;; $9F29: Sinking platform spritemaps ;;;
+;;; $9F29: Tripper / suspensor platform spritemaps ;;;
 {
 $A3:9F29             dx 0003, 01F9,08,210E, C200,F8,2102, C3F0,F8,2100
 $A3:9F3A             dx 0003, C200,F8,2102, 01F9,08,210F, C3F0,F8,2108
@@ -2368,9 +2373,9 @@ $A3:A136 DF 0A 80 7E CMP $7E800A,x[$7E:800A]
 $A3:A13A F0 10       BEQ $10    [$A14C]
 $A3:A13C 9F 0A 80 7E STA $7E800A,x[$7E:800A]
 $A3:A140 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A3:A143 A9 01 00    LDA #$0001
-$A3:A146 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A3:A149 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A3:A143 A9 01 00    LDA #$0001             ;\
+$A3:A146 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A3:A149 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 
 $A3:A14C 60          RTS
 }
@@ -3638,9 +3643,9 @@ $A3:ABBA 60          RTS
 $A3:ABBB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:ABBE BF 00 78 7E LDA $7E7800,x[$7E:7840]
 $A3:ABC2 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:ABC5 A9 01 00    LDA #$0001
-$A3:ABC8 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A3:ABCB 9E 90 0F    STZ $0F90,x[$7E:0FD0]
+$A3:ABC5 A9 01 00    LDA #$0001             ;\
+$A3:ABC8 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A3:ABCB 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
 $A3:ABCE 60          RTS
 }
 
@@ -5121,8 +5126,8 @@ $A3:BB16 D0 06       BNE $06    [$BB1E]
 $A3:BB18 A9 C1 BC    LDA #$BCC1
 $A3:BB1B 9D B2 0F    STA $0FB2,x
 
-$A3:BB1E A9 5E B7    LDA #$B75E
-$A3:BB21 9D 92 0F    STA $0F92,x
+$A3:BB1E A9 5E B7    LDA #$B75E             ;\
+$A3:BB21 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $B75E
 $A3:BB24 6B          RTL
 }
 
@@ -5594,9 +5599,9 @@ $A3:BEEB 0A          ASL A
 $A3:BEEC A8          TAY
 $A3:BEED B9 22 B7    LDA $B722,y
 $A3:BEF0 9D 92 0F    STA $0F92,x
-$A3:BEF3 A9 01 00    LDA #$0001
-$A3:BEF6 9D 94 0F    STA $0F94,x
-$A3:BEF9 9E 90 0F    STZ $0F90,x
+$A3:BEF3 A9 01 00    LDA #$0001             ;\
+$A3:BEF6 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A3:BEF9 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
 
 $A3:BEFC 60          RTS
 }
@@ -5839,6 +5844,7 @@ $A3:C694             dx 817D,       ; Disable off-screen processing
 
 ;;; $C69C: Skree instruction list pointers ;;;
 {
+; Indexed by [enemy $0FAE]
 $A3:C69C             dw C65E, C672, C67E, C694
 }
 
@@ -5855,7 +5861,7 @@ $A3:C6AD 6B          RTL
 ;;; $C6AE: Initialisation AI - enemy $DB7F (skree) ;;;
 {
 $A3:C6AE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:C6B1 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 0
+$A3:C6B1 9E AC 0F    STZ $0FAC,x[$7E:102C]  ; Enemy new instruction list index = 0
 $A3:C6B4 9E AE 0F    STZ $0FAE,x[$7E:102E]  ; Enemy instruction list index = 0
 $A3:C6B7 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
 $A3:C6BA A9 5E C6    LDA #$C65E             ;\
@@ -5891,7 +5897,7 @@ $A3:C6E4 1A          INC A                  ;|
                                             ;|
 $A3:C6E5 C9 30 00    CMP #$0030             ;|
 $A3:C6E8 B0 0C       BCS $0C    [$C6F6]     ;/
-$A3:C6EA FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 1 (prepare to launch attack)
+$A3:C6EA FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy new instruction list index = 1 (prepare to launch attack)
 $A3:C6ED 20 D5 C7    JSR $C7D5  [$A3:C7D5]  ; Set skree instruction list pointer
 $A3:C6F0 A9 F7 C6    LDA #$C6F7             ;\
 $A3:C6F3 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $C6F7 (prepare to launch attack)
@@ -5906,7 +5912,7 @@ $A3:C6F7 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
 $A3:C6FA F0 19       BEQ $19    [$C715]     ;} If [enemy attack ready flag] = 0: return
 $A3:C6FC 9E B0 0F    STZ $0FB0,x[$7E:1030]  ; Enemy attack ready flag = 0
 $A3:C6FF AE 54 0E    LDX $0E54  [$7E:0E54]  
-$A3:C702 FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy next instruction list index = 2 (launched attack)
+$A3:C702 FE AC 0F    INC $0FAC,x[$7E:102C]  ; Enemy new instruction list index = 2 (launched attack)
 $A3:C705 20 D5 C7    JSR $C7D5  [$A3:C7D5]  ; Set metaree instruction list pointer
 $A3:C708 A9 16 C7    LDA #$C716             ;\
 $A3:C70B 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy function = $C716 (launched attack)
@@ -6006,12 +6012,12 @@ $A3:C7D4 6B          RTL
 {
 $A3:C7D5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:C7D8 BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
-$A3:C7DB DD AE 0F    CMP $0FAE,x[$7E:102E]  ;} If [enemy next instruction list index] != [enemy instruction list index]:
+$A3:C7DB DD AE 0F    CMP $0FAE,x[$7E:102E]  ;} If [enemy new instruction list index] != [enemy instruction list index]:
 $A3:C7DE F0 14       BEQ $14    [$C7F4]     ;/
-$A3:C7E0 9D AE 0F    STA $0FAE,x[$7E:102E]  ; Enemy instruction list index = [enemy next instruction list index]
+$A3:C7E0 9D AE 0F    STA $0FAE,x[$7E:102E]  ; Enemy instruction list index = [enemy new instruction list index]
 $A3:C7E3 0A          ASL A                  ;\
 $A3:C7E4 A8          TAY                    ;|
-$A3:C7E5 B9 9C C6    LDA $C69C,y[$A3:C69E]  ;} Enemy instruction list pointer = [$894E + [enemy instruction list index] * 2]
+$A3:C7E5 B9 9C C6    LDA $C69C,y[$A3:C69E]  ;} Enemy instruction list pointer = [$C69C + [enemy instruction list index] * 2]
 $A3:C7E8 9D 92 0F    STA $0F92,x[$7E:1012]  ;/
 $A3:C7EB A9 01 00    LDA #$0001             ;\
 $A3:C7EE 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
@@ -6588,8 +6594,8 @@ $A3:CDE5 A9 5F CF    LDA #$CF5F
 $A3:CDE8 9D B2 0F    STA $0FB2,x[$7E:1032]
 $A3:CDEB A9 4D 80    LDA #$804D
 $A3:CDEE 9D 8E 0F    STA $0F8E,x[$7E:100E]
-$A3:CDF1 A9 01 00    LDA #$0001
-$A3:CDF4 9D 94 0F    STA $0F94,x[$7E:1014]
+$A3:CDF1 A9 01 00    LDA #$0001             ;\
+$A3:CDF4 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A3:CDF7 BD 92 0F    LDA $0F92,x[$7E:1012]
 $A3:CDFA 0A          ASL A
 $A3:CDFB 0A          ASL A
@@ -6719,9 +6725,9 @@ $A3:CEED F0 1A       BEQ $1A    [$CF09]
 $A3:CEEF 9D 92 0F    STA $0F92,x[$7E:1012]
 $A3:CEF2 A9 4D 80    LDA #$804D
 $A3:CEF5 9D 8E 0F    STA $0F8E,x[$7E:100E]
-$A3:CEF8 A9 01 00    LDA #$0001
-$A3:CEFB 9D 94 0F    STA $0F94,x[$7E:1014]
-$A3:CEFE 9E 90 0F    STZ $0F90,x[$7E:1010]
+$A3:CEF8 A9 01 00    LDA #$0001             ;\
+$A3:CEFB 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
+$A3:CEFE 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
 $A3:CF01 A9 02 00    LDA #$0002
 $A3:CF04 9F 10 78 7E STA $7E7810,x[$7E:7890]
 
@@ -7096,8 +7102,8 @@ $A3:D14B 60          RTS
 ;;; $D14C:  ;;;
 {
 $A3:D14C 9D 92 0F    STA $0F92,x[$7E:1152]
-$A3:D14F A9 01 00    LDA #$0001
-$A3:D152 9D 94 0F    STA $0F94,x[$7E:1154]
+$A3:D14F A9 01 00    LDA #$0001             ;\
+$A3:D152 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A3:D155 A9 01 00    LDA #$0001
 $A3:D158 9F 0A 78 7E STA $7E780A,x[$7E:79CA]
 $A3:D15C A9 00 00    LDA #$0000
@@ -7124,9 +7130,9 @@ $A3:D181 B9 AB D1    LDA $D1AB,y[$A3:D1AB]
 $A3:D184 9D 92 0F    STA $0F92,x[$7E:1152]
 $A3:D187 B9 AD D1    LDA $D1AD,y[$A3:D1AD]
 $A3:D18A 9D AE 0F    STA $0FAE,x[$7E:116E]
-$A3:D18D A9 01 00    LDA #$0001
-$A3:D190 9D 94 0F    STA $0F94,x[$7E:1154]
-$A3:D193 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A3:D18D A9 01 00    LDA #$0001             ;\
+$A3:D190 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A3:D193 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 $A3:D196 A9 00 00    LDA #$0000
 $A3:D199 9F 04 78 7E STA $7E7804,x[$7E:79C4]
 $A3:D19D 9F 06 78 7E STA $7E7806,x[$7E:79C6]
@@ -7262,9 +7268,9 @@ $A3:D2E4 A9 5F CF    LDA #$CF5F
 $A3:D2E7 9D B2 0F    STA $0FB2,x[$7E:1172]
 $A3:D2EA BD AE 0F    LDA $0FAE,x[$7E:116E]
 $A3:D2ED 9D 92 0F    STA $0F92,x[$7E:1152]
-$A3:D2F0 A9 01 00    LDA #$0001
-$A3:D2F3 9D 94 0F    STA $0F94,x[$7E:1154]
-$A3:D2F6 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A3:D2F0 A9 01 00    LDA #$0001             ;\
+$A3:D2F3 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A3:D2F6 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 $A3:D2F9 6B          RTL
 }
 
@@ -7516,9 +7522,9 @@ $A3:D4B2 B9 0F D5    LDA $D50F,y[$A3:D50F]
 $A3:D4B5 9D 92 0F    STA $0F92,x[$7E:1152]
 $A3:D4B8 B9 11 D5    LDA $D511,y[$A3:D511]
 $A3:D4BB 9D AE 0F    STA $0FAE,x[$7E:116E]
-$A3:D4BE A9 01 00    LDA #$0001
-$A3:D4C1 9D 94 0F    STA $0F94,x[$7E:1154]
-$A3:D4C4 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A3:D4BE A9 01 00    LDA #$0001             ;\
+$A3:D4C1 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A3:D4C4 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 $A3:D4C7 AD A4 0D    LDA $0DA4  [$7E:0DA4]
 $A3:D4CA 9F 04 78 7E STA $7E7804,x[$7E:79C4]
 $A3:D4CE AD A2 0D    LDA $0DA2  [$7E:0DA2]
@@ -7569,9 +7575,9 @@ $A3:D56B B9 A4 D5    LDA $D5A4,y[$A3:D5A4]
 $A3:D56E 9D 92 0F    STA $0F92,x[$7E:1152]
 $A3:D571 B9 A6 D5    LDA $D5A6,y[$A3:D5A6]
 $A3:D574 9D AE 0F    STA $0FAE,x[$7E:116E]
-$A3:D577 A9 01 00    LDA #$0001
-$A3:D57A 9D 94 0F    STA $0F94,x[$7E:1154]
-$A3:D57D 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A3:D577 A9 01 00    LDA #$0001             ;\
+$A3:D57A 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A3:D57D 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 $A3:D580 A9 FF FF    LDA #$FFFF
 $A3:D583 9F 02 78 7E STA $7E7802,x[$7E:79C2]
 $A3:D587 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
@@ -7976,9 +7982,9 @@ $A3:DC94 0A          ASL A
 $A3:DC95 A8          TAY
 $A3:DC96 B9 A6 DC    LDA $DCA6,y
 $A3:DC99 9D 92 0F    STA $0F92,x
-$A3:DC9C A9 01 00    LDA #$0001
-$A3:DC9F 9D 94 0F    STA $0F94,x
-$A3:DCA2 9E 90 0F    STZ $0F90,x
+$A3:DC9C A9 01 00    LDA #$0001             ;\
+$A3:DC9F 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A3:DCA2 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
 
 $A3:DCA5 6B          RTL
 
