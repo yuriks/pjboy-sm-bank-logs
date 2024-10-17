@@ -2375,7 +2375,7 @@ $8D:CB3C             dx C655,0002,  ; Palette FX object colour index = 0002h
 
 ;;; $CD62: Instruction list - palette FX object $E1CC (Zebes explosion finale) ;;;
 {
-$8D:CD62             dx C655,0002,  ; Palette FX object colour index = 0002h
+$8D:CD62             dx C655,0002,  ; Palette FX object colour index = 2
                         0002,
                             7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,7FFF,
                             C595,       ; Done

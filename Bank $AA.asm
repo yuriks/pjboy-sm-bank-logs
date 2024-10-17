@@ -5232,7 +5232,7 @@ $AA:E457             dx 806B,E7AE,  ; Enemy function = $E7AE
 
 ;;; $E461: Instruction list - Chozo Statue - Wrecked Ship - activated ;;;
 {
-$AA:E461             dx 8074,       ; Enemy function = RTS
+$AA:E461             dw 8074,       ; Enemy function = RTS
                         E5D8,0000,  ; Chozo statue movement - index 0
                         0020,E7DD,
                         E5D8,0002,  ; Chozo statue movement - index 2
@@ -5247,8 +5247,8 @@ $AA:E461             dx 8074,       ; Enemy function = RTS
                         000A,ED71,
                         000C,EDCD,
                         0080,EE29,
-                        8123,0004,  ; Timer = 4
-                        000B,ED15,
+                        8123,0004   ; Timer = 4
+$AA:E49D             dw 000B,ED15,
                         0008,ED71,
                         0006,EDCD,
                         0008,EE29,
@@ -5256,8 +5256,8 @@ $AA:E461             dx 8074,       ; Enemy function = RTS
                         0008,ED71,
                         8110,E49D,  ; Decrement timer and go to $E49D if non-zero
                         806B,E7DA,  ; Enemy function = RTS
-                        8123,0010,  ; Timer = 10h
-                        E5D8,0016,  ; Chozo statue movement - index 16h
+                        8123,0010   ; Timer = 10h
+$AA:E4C1             dw E5D8,0016,  ; Chozo statue movement - index 16h
                         E58F,FFF8,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -8
                         0008,EC49,
                         E587,       ; Play chozo footsteps sound effect
