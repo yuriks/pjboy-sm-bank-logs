@@ -2096,8 +2096,7 @@ $A2:9B19 60          RTS
 
 ;;; $9B1A: Calculate initial hop speed ;;;
 {
-; Calculates how long it will take for enemy to fall [$9A07 + [enemy hop table index]] pixels I think
-; Need to figure out how the [$9A07 + [enemy hop table index] + 2] scalar affects calculations
+; Calculates how long it will take for enemy to fall [$9A07 + [enemy hop table index]] pixels
 $A2:9B1A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9B1D BC B2 0F    LDY $0FB2,x[$7E:1132]  ; Y = [enemy hop table index]
 $A2:9B20 64 16       STZ $16    [$7E:0016]  ; $16 = 0 (Y speed table index)
@@ -2116,7 +2115,7 @@ $A2:9B32 0A          ASL A                  ;|
 $A2:9B33 A8          TAY                    ;/
 $A2:9B34 A5 18       LDA $18    [$7E:0018]  ;\
 $A2:9B36 18          CLC                    ;|
-$A2:9B37 79 90 83    ADC $8390,y[$A2:8398]  ;} $18 += floor([$838F + [Y] + 2].[$838F + [Y]] * 100h)
+$A2:9B37 79 90 83    ADC $8390,y[$A2:8398]  ;} $18 += [$838F + [Y] + 2].[$838F + [Y]] * 100h
 $A2:9B3A 85 18       STA $18    [$7E:0018]  ;/
 $A2:9B3C BC B2 0F    LDY $0FB2,x[$7E:1132]  ; Y = [enemy hop table index]
 $A2:9B3F B9 07 9A    LDA $9A07,y[$A2:9A07]  ;\

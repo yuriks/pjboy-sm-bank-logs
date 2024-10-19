@@ -509,7 +509,7 @@ $A6:8B09             dw 3800, 62BA, 49F3, 2D4D, 0C44, 49F3, 356E, 20C9, 1486, 24
 }
 
 
-;;; $8B29: Instruction list ;;;
+;;; $8B29: Instruction list - spike platform ;;;
 {
 $A6:8B29             dx 0001,8CE5,
                         812F        ; Sleep
@@ -562,7 +562,7 @@ $A6:8B88 BD 3A 0F    LDA $0F3A,x[$7E:14BA]  ;\
 $A6:8B8B 9D 7A 0F    STA $0F7A,x[$7E:14FA]  ;} Enemy X position = [enemy ([X] - 1) X position]
 $A6:8B8E BD 3E 0F    LDA $0F3E,x[$7E:14BE]  ;\
 $A6:8B91 18          CLC                    ;|
-$A6:8B92 69 0C 00    ADC #$000C             ;} Enemy Y position = [enemy ([X] - 1) X position] + Ch
+$A6:8B92 69 0C 00    ADC #$000C             ;} Enemy Y position = [enemy ([X] - 1) Y position] + Ch
 $A6:8B95 9D 7E 0F    STA $0F7E,x[$7E:14FE]  ;/
 $A6:8B98 6B          RTL
 }
@@ -575,7 +575,7 @@ $A6:8B9C BD 3A 0F    LDA $0F3A,x[$7E:123A]  ;\
 $A6:8B9F 9D 7A 0F    STA $0F7A,x[$7E:127A]  ;} Enemy X position = [enemy ([X] - 1) X position]
 $A6:8BA2 BD 3E 0F    LDA $0F3E,x[$7E:123E]  ;\
 $A6:8BA5 18          CLC                    ;|
-$A6:8BA6 69 0C 00    ADC #$000C             ;} Enemy Y position = [enemy ([X] - 1) X position] + Ch
+$A6:8BA6 69 0C 00    ADC #$000C             ;} Enemy Y position = [enemy ([X] - 1) Y position] + Ch
 $A6:8BA9 9D 7E 0F    STA $0F7E,x[$7E:127E]  ;/
 $A6:8BAC 6B          RTL
 }
