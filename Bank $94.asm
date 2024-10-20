@@ -1738,14 +1738,14 @@ $94:8E7C 60          RTS
 }
 
 
-;;; $8E7D: Clear carry ;;;
+;;; $8E7D: Unused. Clear carry ;;;
 {
 $94:8E7D 18          CLC
 $94:8E7E 60          RTS
 }
 
 
-;;; $8E7F: Clear carry ;;;
+;;; $8E7F: Unused. Clear carry ;;;
 {
 $94:8E7F 18          CLC
 $94:8E80 60          RTS
@@ -3237,7 +3237,7 @@ $94:980F 60          RTS
 }
 
 
-;;; $9810: Clear carry ;;;
+;;; $9810: Unused. Clear carry ;;;
 {
 $94:9810 18          CLC
 $94:9811 60          RTS
@@ -4303,7 +4303,7 @@ $94:A159 4C 6A A6    JMP $A66A  [$94:A66A]  ; Go to block shot reaction - horizo
 }
 
 
-;;; $A15C: Set carry ;;;
+;;; $A15C: Unused. Set carry ;;;
 {
 $94:A15C 38          SEC
 $94:A15D 60          RTS
@@ -4333,7 +4333,7 @@ $94:A170 4C 1A A7    JMP $A71A  [$94:A71A]  ; Go to block shot reaction - vertic
 }
 
 
-;;; $A173: Set carry ;;;
+;;; $A173: Unused. Set carry ;;;
 {
 $94:A173 38          SEC
 $94:A174 60          RTS
