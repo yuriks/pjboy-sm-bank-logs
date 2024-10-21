@@ -2216,7 +2216,7 @@ $A5:989A 6B          RTL
 
 ;;; $989B: Instruction list - Draygon body - dying ;;;
 {
-$A5:989B             dx 9F6E,001B,  ; Queue sound 1Bh, sound library 3, max queued sounds allowed = 6
+$A5:989B             dx 9F6E,001B,  ; Queue sound 1Bh, sound library 3, max queued sounds allowed = 6 (Draygon dying cry)
                         98EF,       ; Set Draygon body as intangible
                         8123,0008   ; Timer = 8
 $A5:98A5             dx 813A,000C,  ; Wait Ch frames

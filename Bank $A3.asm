@@ -4798,14 +4798,15 @@ $A3:B702             dw 3800, 013F, 00D8, 0091, 002B, 7F12, 5B13, 2B15, 0318, 6A
 
 ;;; $B722: Instruction list pointers ;;;
 {
-$A3:B722             dw B75E, B772, B790, B7A4, B7C2, B7D6, B7F4, B838, B85A, B88A, B9FA, B9FA, B9FA, B9FA, B9FA, B9FA,
-                        B9FA, BA00, B9FA, BA00, B8AC, B8C0, B8DE, B8F2, B910, B924, B942, B986, B9A8, B9D8
+$A3:B722             dw B75E, B772, B790, B7A4, B7C2, B7D6, B7F4, B838, B85A, B88A, ; Core
+                        B9FA, B9FA, B9FA, B9FA, B9FA, B9FA, B9FA, BA00, B9FA, BA00, ; Electricity
+                        B8AC, B8C0, B8DE, B8F2, B910, B924, B942, B986, B9A8, B9D8  ; Shell
 }
 
 
 ;;; $B75E: Instruction lists - bang ;;;
 {
-;;; $B75E: Instruction list - yyyy ;;;
+;;; $B75E: Instruction list - core - yyyy ;;;
 {
 $A3:B75E             dx 0020,BF7D,
                         000D,BF8B,
@@ -4815,7 +4816,7 @@ $A3:B75E             dx 0020,BF7D,
 }
 
 
-;;; $B772: Instruction list - yyyy ;;;
+;;; $B772: Instruction list - core - yyyy ;;;
 {
 $A3:B772             dx BA78,       ; Play acquired suit sound effect
                         0004,BFA7,
@@ -4829,7 +4830,7 @@ $A3:B772             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B790: Instruction list - yyyy ;;;
+;;; $B790: Instruction list - core - yyyy ;;;
 {
 $A3:B790             dx 0010,C00C,
                         0008,C029,
@@ -4839,7 +4840,7 @@ $A3:B790             dx 0010,C00C,
 }
 
 
-;;; $B7A4: Instruction list - yyyy ;;;
+;;; $B7A4: Instruction list - core - yyyy ;;;
 {
 $A3:B7A4             dx BA78,       ; Play acquired suit sound effect
                         0004,C063,
@@ -4853,7 +4854,7 @@ $A3:B7A4             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B7C2: Instruction list - yyyy ;;;
+;;; $B7C2: Instruction list - core - yyyy ;;;
 {
 $A3:B7C2             dx 000C,C0E6,
                         0006,C103,
@@ -4863,7 +4864,7 @@ $A3:B7C2             dx 000C,C0E6,
 }
 
 
-;;; $B7D6: Instruction list - yyyy ;;;
+;;; $B7D6: Instruction list - core - yyyy ;;;
 {
 $A3:B7D6             dx BA78,       ; Play acquired suit sound effect
                         0004,C13D,
@@ -4877,7 +4878,7 @@ $A3:B7D6             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B7F4: Instruction list - yyyy ;;;
+;;; $B7F4: Instruction list - core - yyyy ;;;
 {
 $A3:B7F4             dx 0008,C1CE,
                         0003,C1EB,
@@ -4899,7 +4900,7 @@ $A3:B7F4             dx 0008,C1CE,
 }
 
 
-;;; $B838: Instruction list - yyyy ;;;
+;;; $B838: Instruction list - core - yyyy ;;;
 {
 $A3:B838             dx BA78,       ; Play acquired suit sound effect
                         0004,C2D3,
@@ -4914,7 +4915,7 @@ $A3:B838             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B85A: Instruction list - yyyy ;;;
+;;; $B85A: Instruction list - core - yyyy ;;;
 {
 $A3:B85A             dx 0006,C411,
                         0002,C42E,
@@ -4931,7 +4932,7 @@ $A3:B85A             dx 0006,C411,
 }
 
 
-;;; $B88A: Instruction list - yyyy ;;;
+;;; $B88A: Instruction list - core - yyyy ;;;
 {
 $A3:B88A             dx BA78,       ; Play acquired suit sound effect
                         0004,C516,
@@ -4946,7 +4947,7 @@ $A3:B88A             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B8AC: Instruction list - yyyy ;;;
+;;; $B8AC: Instruction list - shell - yyyy ;;;
 {
 $A3:B8AC             dx 0020,BF84,
                         000D,BF92,
@@ -4956,7 +4957,7 @@ $A3:B8AC             dx 0020,BF84,
 }
 
 
-;;; $B8C0: Instruction list - yyyy ;;;
+;;; $B8C0: Instruction list - shell - yyyy ;;;
 {
 $A3:B8C0             dx BA78,       ; Play acquired suit sound effect
                         0004,804D,
@@ -4970,7 +4971,7 @@ $A3:B8C0             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B8DE: Instruction list - yyyy ;;;
+;;; $B8DE: Instruction list - shell - yyyy ;;;
 {
 $A3:B8DE             dx 0010,C013,
                         0008,C030,
@@ -4980,7 +4981,7 @@ $A3:B8DE             dx 0010,C013,
 }
 
 
-;;; $B8F2: Instruction list - yyyy ;;;
+;;; $B8F2: Instruction list - shell - yyyy ;;;
 {
 $A3:B8F2             dx BA78,       ; Play acquired suit sound effect
                         0004,804D,
@@ -4994,7 +4995,7 @@ $A3:B8F2             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B910: Instruction list - yyyy ;;;
+;;; $B910: Instruction list - shell - yyyy ;;;
 {
 $A3:B910             dx 000C,C0ED,
                         0006,C10A,
@@ -5004,7 +5005,7 @@ $A3:B910             dx 000C,C0ED,
 }
 
 
-;;; $B924: Instruction list - yyyy ;;;
+;;; $B924: Instruction list - shell - yyyy ;;;
 {
 $A3:B924             dx BA78,       ; Play acquired suit sound effect
                         0004,C144,
@@ -5018,7 +5019,7 @@ $A3:B924             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B942: Instruction list - yyyy ;;;
+;;; $B942: Instruction list - shell - yyyy ;;;
 {
 $A3:B942             dx 0008,C1D5,
                         0003,C1F2,
@@ -5040,7 +5041,7 @@ $A3:B942             dx 0008,C1D5,
 }
 
 
-;;; $B986: Instruction list - yyyy ;;;
+;;; $B986: Instruction list - shell - yyyy ;;;
 {
 $A3:B986             dx BA78,       ; Play acquired suit sound effect
                         0004,C2DA,
@@ -5055,7 +5056,7 @@ $A3:B986             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B9A8: Instruction list - yyyy ;;;
+;;; $B9A8: Instruction list - shell - yyyy ;;;
 {
 $A3:B9A8             dx 0006,C418,
                         0002,C435,
@@ -5072,7 +5073,7 @@ $A3:B9A8             dx 0006,C418,
 }
 
 
-;;; $B9D8: Instruction list - yyyy ;;;
+;;; $B9D8: Instruction list - shell - yyyy ;;;
 {
 $A3:B9D8             dx BA78,       ; Play acquired suit sound effect
                         0004,C51D,
@@ -5087,16 +5088,16 @@ $A3:B9D8             dx BA78,       ; Play acquired suit sound effect
 }
 
 
-;;; $B9FA: Instruction list - yyyy ;;;
+;;; $B9FA: Instruction list - electricity - none ;;;
 {
 $A3:B9FA             dx 0001,804D,
                         812F        ; Sleep
 }
 
 
-;;; $BA00: Instruction list - yyyy ;;;
+;;; $BA00: Instruction list - electricity - yyyy ;;;
 {
-$A3:BA00             dx 0002,C381,
+$A3:BA00             dw 0002,C381,
                         0003,C38D,
                         0004,C399,
                         0002,804D,
@@ -5114,9 +5115,9 @@ $A3:BA00             dx 0002,C381,
 }
 
 
-;;; $BA3C: Instruction list - yyyy ;;;
+;;; $BA3C: Unused. Instruction list - electricity - yyyy ;;;
 {
-$A3:BA3C             dx 0002,C5AE,
+$A3:BA3C             dw 0002,C5AE,
                         0003,C5BA,
                         0004,C5C6,
                         0002,804D,
@@ -5180,41 +5181,41 @@ $A3:BAB2 6B          RTL
 ;;; $BAB3: Initialisation AI - enemy $DB3F (bang) ;;;
 {
 $A3:BAB3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BAB6 BD 96 0F    LDA $0F96,x
-$A3:BAB9 9D AA 0F    STA $0FAA,x
-$A3:BABC BD 86 0F    LDA $0F86,x
-$A3:BABF 09 00 10    ORA #$1000
-$A3:BAC2 9D 86 0F    STA $0F86,x
-$A3:BAC5 A9 A5 BC    LDA #$BCA5
-$A3:BAC8 9D B2 0F    STA $0FB2,x
-$A3:BACB A9 10 00    LDA #$0010
-$A3:BACE 9F 00 78 7E STA $7E7800,x
-$A3:BAD2 A9 00 00    LDA #$0000
-$A3:BAD5 9F 02 78 7E STA $7E7802,x
-$A3:BAD9 9F 04 78 7E STA $7E7804,x
-$A3:BADD 9F 00 80 7E STA $7E8000,x
-$A3:BAE1 9F 02 80 7E STA $7E8002,x
-$A3:BAE5 9F 04 80 7E STA $7E8004,x
-$A3:BAE9 BD B6 0F    LDA $0FB6,x
-$A3:BAEC 29 FF 00    AND #$00FF
-$A3:BAEF 0A          ASL A
-$A3:BAF0 A8          TAY
-$A3:BAF1 B9 84 BA    LDA $BA84,y
-$A3:BAF4 9F 16 78 7E STA $7E7816,x
-$A3:BAF8 BD B7 0F    LDA $0FB7,x
-$A3:BAFB 29 FF 00    AND #$00FF
-$A3:BAFE 0A          ASL A
-$A3:BAFF 0A          ASL A
-$A3:BB00 A8          TAY
-$A3:BB01 B9 6A BC    LDA $BC6A,y
-$A3:BB04 9F 18 78 7E STA $7E7818,x
-$A3:BB08 9F 1A 78 7E STA $7E781A,x
-$A3:BB0C B9 6C BC    LDA $BC6C,y
-$A3:BB0F 9F 1C 78 7E STA $7E781C,x
-$A3:BB13 BD 92 0F    LDA $0F92,x
-$A3:BB16 D0 06       BNE $06    [$BB1E]
-$A3:BB18 A9 C1 BC    LDA #$BCC1
-$A3:BB1B 9D B2 0F    STA $0FB2,x
+$A3:BAB6 BD 96 0F    LDA $0F96,x            ;\
+$A3:BAB9 9D AA 0F    STA $0FAA,x            ;} Enemy $0FAA = [enemy palette index]
+$A3:BABC BD 86 0F    LDA $0F86,x            ;\
+$A3:BABF 09 00 10    ORA #$1000             ;} Set enemy to block plasma beam
+$A3:BAC2 9D 86 0F    STA $0F86,x            ;/
+$A3:BAC5 A9 A5 BC    LDA #$BCA5             ;\
+$A3:BAC8 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BCA5
+$A3:BACB A9 10 00    LDA #$0010             ;\
+$A3:BACE 9F 00 78 7E STA $7E7800,x          ;} Enemy $7E:7800 = 10h
+$A3:BAD2 A9 00 00    LDA #$0000             ;\
+$A3:BAD5 9F 02 78 7E STA $7E7802,x          ;} Enemy $7E:7802 = 0
+$A3:BAD9 9F 04 78 7E STA $7E7804,x          ; Enemy $7E:7804 = 0
+$A3:BADD 9F 00 80 7E STA $7E8000,x          ; Enemy $7E:8000 = 0
+$A3:BAE1 9F 02 80 7E STA $7E8002,x          ; Enemy $7E:8002 = 0
+$A3:BAE5 9F 04 80 7E STA $7E8004,x          ; Enemy $7E:8004 = 0
+$A3:BAE9 BD B6 0F    LDA $0FB6,x            ;\
+$A3:BAEC 29 FF 00    AND #$00FF             ;|
+$A3:BAEF 0A          ASL A                  ;|
+$A3:BAF0 A8          TAY                    ;} Enemy $7E:7816 = [$BA84 + [enemy parameter 2 low] * 2]
+$A3:BAF1 B9 84 BA    LDA $BA84,y            ;|
+$A3:BAF4 9F 16 78 7E STA $7E7816,x          ;/
+$A3:BAF8 BD B7 0F    LDA $0FB7,x            ;\
+$A3:BAFB 29 FF 00    AND #$00FF             ;|
+$A3:BAFE 0A          ASL A                  ;} Y = [enemy parameter 2 high] * 4
+$A3:BAFF 0A          ASL A                  ;|
+$A3:BB00 A8          TAY                    ;/
+$A3:BB01 B9 6A BC    LDA $BC6A,y            ;\
+$A3:BB04 9F 18 78 7E STA $7E7818,x          ;} Enemy $7E:7818 = enemy $7E:781A = 3 + [enemy parameter 2 high]
+$A3:BB08 9F 1A 78 7E STA $7E781A,x          ;/
+$A3:BB0C B9 6C BC    LDA $BC6C,y            ;\
+$A3:BB0F 9F 1C 78 7E STA $7E781C,x          ;} Enemy $7E:781C = [$BC6A + [Y] + 2]
+$A3:BB13 BD 92 0F    LDA $0F92,x            ;\
+$A3:BB16 D0 06       BNE $06    [$BB1E]     ;} If [enemy initialisation parameter] = 0:
+$A3:BB18 A9 C1 BC    LDA #$BCC1             ;\
+$A3:BB1B 9D B2 0F    STA $0FB2,x            ;} Enemy core function = RTS
 
 $A3:BB1E A9 5E B7    LDA #$B75E             ;\
 $A3:BB21 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $B75E
@@ -5229,44 +5230,44 @@ $A3:BB28 7C B4 0F    JMP ($0FB4,x)          ; Go to [enemy parameter 1]
 }
 
 
-;;; $BB2B:  ;;;
+;;; $BB2B: Bang AI - electricity ;;;
 {
-; Pointed to by parameter 2 of debug enemy population data $B4:E309
+; Pointed to by parameter 1 of debug enemy population data $B4:E309
 $A3:BB2B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BB2E BF 40 80 7E LDA $7E8040,x
-$A3:BB32 18          CLC
-$A3:BB33 69 0A 00    ADC #$000A
-$A3:BB36 9F 00 80 7E STA $7E8000,x
-$A3:BB3A 20 DA BE    JSR $BEDA  [$A3:BEDA]
+$A3:BB2E BF 40 80 7E LDA $7E8040,x          ;\
+$A3:BB32 18          CLC                    ;|
+$A3:BB33 69 0A 00    ADC #$000A             ;} Enemy new instruction list index = [enemy ([X] + 1) new instruction list index] + Ah
+$A3:BB36 9F 00 80 7E STA $7E8000,x          ;/
+$A3:BB3A 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
 $A3:BB3D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BB40 BD 86 0F    LDA $0F86,x
-$A3:BB43 09 00 04    ORA #$0400
-$A3:BB46 9D 86 0F    STA $0F86,x
+$A3:BB40 BD 86 0F    LDA $0F86,x            ;\
+$A3:BB43 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$A3:BB46 9D 86 0F    STA $0F86,x            ;/
 $A3:BB49 6B          RTL
 }
 
 
-;;; $BB4A:  ;;;
+;;; $BB4A: Bang AI - shell ;;;
 {
-; Pointed to by parameter 2 of debug enemy population data $B4:E309
+; Pointed to by parameter 1 of debug enemy population data $B4:E309
 $A3:BB4A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BB4D BF C0 7F 7E LDA $7E7FC0,x
-$A3:BB51 18          CLC
-$A3:BB52 69 14 00    ADC #$0014
-$A3:BB55 9F 00 80 7E STA $7E8000,x
-$A3:BB59 20 DA BE    JSR $BEDA  [$A3:BEDA]
-$A3:BB5C BD 86 0F    LDA $0F86,x
-$A3:BB5F 09 00 04    ORA #$0400
-$A3:BB62 9D 86 0F    STA $0F86,x
+$A3:BB4D BF C0 7F 7E LDA $7E7FC0,x          ;\
+$A3:BB51 18          CLC                    ;|
+$A3:BB52 69 14 00    ADC #$0014             ;} Enemy new instruction list index = [enemy ([X] - 1) new instruction list index] + 14h
+$A3:BB55 9F 00 80 7E STA $7E8000,x          ;/
+$A3:BB59 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
+$A3:BB5C BD 86 0F    LDA $0F86,x            ;\
+$A3:BB5F 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$A3:BB62 9D 86 0F    STA $0F86,x            ;/
 $A3:BB65 6B          RTL
 }
 
 
-;;; $BB66:  ;;;
+;;; $BB66: Bang AI - core ;;;
 {
-; Pointed to by parameter 2 of debug enemy population data $B4:E309
+; Pointed to by parameter 1 of debug enemy population data $B4:E309
 $A3:BB66 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BB69 20 9E BC    JSR $BC9E  [$A3:BC9E]
+$A3:BB69 20 9E BC    JSR $BC9E  [$A3:BC9E]  ; Execute bang core function
 $A3:BB6C BD 7A 0F    LDA $0F7A,x
 $A3:BB6F 9D 3A 0F    STA $0F3A,x
 $A3:BB72 9D BA 0F    STA $0FBA,x
@@ -5281,7 +5282,7 @@ $A3:BB8A A0 00 0C    LDY #$0C00
 
 $A3:BB8D 98          TYA
 $A3:BB8E 9D 96 0F    STA $0F96,x
-$A3:BB91 20 DA BE    JSR $BEDA  [$A3:BEDA]
+$A3:BB91 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
 $A3:BB94 BF 04 80 7E LDA $7E8004,x
 $A3:BB98 D0 01       BNE $01    [$BB9B]
 $A3:BB9A 6B          RTL
@@ -5293,9 +5294,9 @@ $A3:BBA6 C9 09 00    CMP #$0009
 $A3:BBA9 D0 30       BNE $30    [$BBDB]
 $A3:BBAB A9 10 00    LDA #$0010
 $A3:BBAE 9D A0 0F    STA $0FA0,x
-$A3:BBB1 BD 86 0F    LDA $0F86,x
-$A3:BBB4 09 00 04    ORA #$0400
-$A3:BBB7 9D 86 0F    STA $0F86,x
+$A3:BBB1 BD 86 0F    LDA $0F86,x            ;\
+$A3:BBB4 09 00 04    ORA #$0400             ;} Set enemy as intangible
+$A3:BBB7 9D 86 0F    STA $0F86,x            ;/
 $A3:BBBA 22 29 AE A0 JSL $A0AE29[$A0:AE29]  ; Determine direction of Samus from enemy
 $A3:BBBE 20 EB BB    JSR $BBEB  [$A3:BBEB]
 $A3:BBC1 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
@@ -5312,7 +5313,7 @@ $A3:BBDB AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BBDE BF 00 80 7E LDA $7E8000,x
 $A3:BBE2 1A          INC A
 $A3:BBE3 9F 00 80 7E STA $7E8000,x
-$A3:BBE7 20 DA BE    JSR $BEDA  [$A3:BEDA]
+$A3:BBE7 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
 $A3:BBEA 6B          RTL
 }
 
@@ -5366,12 +5367,23 @@ $A3:BC4A             dw 0017, 0019, 0018, 001A, 001E, 001C, 001D, 001F, 0022, 00
 
 ;;; $BC6A:  ;;;
 {
-$A3:BC6A             dw 0003, 0001, 0004, 0001, 0005, 0002, 0006, 0002, 0007, 0002, 0008, 0003, 0009, 0003, 000A, 0004,
-                        000B, 0004, 000C, 0005, 000D, 0005, 000E, 0006, 000F, 0006
+$A3:BC6A             dw 0003,0001, 
+                        0004,0001, 
+                        0005,0002, 
+                        0006,0002, 
+                        0007,0002, 
+                        0008,0003, 
+                        0009,0003, 
+                        000A,0004,
+                        000B,0004, 
+                        000C,0005, 
+                        000D,0005, 
+                        000E,0006, 
+                        000F,0006
 }
 
 
-;;; $BC9E:  ;;;
+;;; $BC9E: Execute bang core function ;;;
 {
 $A3:BC9E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BCA1 FC B2 0F    JSR ($0FB2,x)
@@ -5379,7 +5391,7 @@ $A3:BCA4 60          RTS
 }
 
 
-;;; $BCA5:  ;;;
+;;; $BCA5: Bang core function ;;;
 {
 $A3:BCA5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BCA8 BF 00 78 7E LDA $7E7800,x
@@ -5388,21 +5400,21 @@ $A3:BCAD 9F 00 78 7E STA $7E7800,x
 $A3:BCB1 D0 0D       BNE $0D    [$BCC0]
 $A3:BCB3 A9 10 00    LDA #$0010
 $A3:BCB6 9F 00 78 7E STA $7E7800,x
-$A3:BCBA A9 C5 BC    LDA #$BCC5
-$A3:BCBD 9D B2 0F    STA $0FB2,x
+$A3:BCBA A9 C5 BC    LDA #$BCC5             ;\
+$A3:BCBD 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BCC5
 
 $A3:BCC0 60          RTS
 }
 
 
-;;; $BCC1:  ;;;
+;;; $BCC1: RTS ;;;
 {
 $A3:BCC1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BCC4 60          RTS
 }
 
 
-;;; $BCC5:  ;;;
+;;; $BCC5: Bang core function ;;;
 {
 $A3:BCC5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BCC8 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
@@ -5410,8 +5422,8 @@ $A3:BCCC 38          SEC
 $A3:BCCD E9 40 00    SBC #$0040
 $A3:BCD0 29 FF 00    AND #$00FF
 $A3:BCD3 9F 02 78 7E STA $7E7802,x
-$A3:BCD7 A9 1C BD    LDA #$BD1C
-$A3:BCDA 9D B2 0F    STA $0FB2,x
+$A3:BCD7 A9 1C BD    LDA #$BD1C             ;\
+$A3:BCDA 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BD1C
 $A3:BCDD A9 00 00    LDA #$0000
 $A3:BCE0 9F 0E 78 7E STA $7E780E,x
 $A3:BCE4 9F 10 78 7E STA $7E7810,x
@@ -5435,14 +5447,14 @@ $A3:BD08 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
 $A3:BD0C 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
 $A3:BD10 C9 30 00    CMP #$0030
 $A3:BD13 30 06       BMI $06    [$BD1B]
-$A3:BD15 A9 2C BD    LDA #$BD2C
-$A3:BD18 9D B2 0F    STA $0FB2,x
+$A3:BD15 A9 2C BD    LDA #$BD2C             ;\
+$A3:BD18 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BD2C
 
 $A3:BD1B 60          RTS
 }
 
 
-;;; $BD1C:  ;;;
+;;; $BD1C: Bang core function ;;;
 {
 $A3:BD1C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BD1F 20 B9 BD    JSR $BDB9  [$A3:BDB9]
@@ -5453,7 +5465,7 @@ $A3:BD2B 60          RTS
 }
 
 
-;;; $BD2C:  ;;;
+;;; $BD2C: Bang core function ;;;
 {
 $A3:BD2C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BD2F 20 B9 BD    JSR $BDB9  [$A3:BDB9]
@@ -5466,8 +5478,8 @@ $A3:BD40 BF 12 78 7E LDA $7E7812,x
 $A3:BD44 F0 02       BEQ $02    [$BD48]
 $A3:BD46 10 06       BPL $06    [$BD4E]
 
-$A3:BD48 A9 A5 BC    LDA #$BCA5
-$A3:BD4B 9D B2 0F    STA $0FB2,x
+$A3:BD48 A9 A5 BC    LDA #$BCA5             ;\
+$A3:BD4B 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BCA5
 
 $A3:BD4E 60          RTS
 }
@@ -5678,17 +5690,17 @@ $A3:BED9 60          RTS
 }
 
 
-;;; $BEDA:  ;;;
+;;; $BEDA: Set bang instruction list ;;;
 {
 $A3:BEDA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BEDD BF 00 80 7E LDA $7E8000,x
-$A3:BEE1 DF 02 80 7E CMP $7E8002,x
-$A3:BEE5 F0 15       BEQ $15    [$BEFC]
-$A3:BEE7 9F 02 80 7E STA $7E8002,x
-$A3:BEEB 0A          ASL A
-$A3:BEEC A8          TAY
-$A3:BEED B9 22 B7    LDA $B722,y
-$A3:BEF0 9D 92 0F    STA $0F92,x
+$A3:BEDD BF 00 80 7E LDA $7E8000,x          ;\
+$A3:BEE1 DF 02 80 7E CMP $7E8002,x          ;} If [enemy instruction list index] != [enemy new instruction list index]:
+$A3:BEE5 F0 15       BEQ $15    [$BEFC]     ;/
+$A3:BEE7 9F 02 80 7E STA $7E8002,x          ; Enemy instruction list index = [enemy new instruction list index]
+$A3:BEEB 0A          ASL A                  ;\
+$A3:BEEC A8          TAY                    ;|
+$A3:BEED B9 22 B7    LDA $B722,y            ;} Enemy instruction list pointer = [$B722 + [enemy instruction list index] * 2]
+$A3:BEF0 9D 92 0F    STA $0F92,x            ;/
 $A3:BEF3 A9 01 00    LDA #$0001             ;\
 $A3:BEF6 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A3:BEF9 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
@@ -5712,8 +5724,8 @@ $A3:BF13 0A          ASL A
 $A3:BF14 A8          TAY
 $A3:BF15 B9 94 BA    LDA $BA94,y
 $A3:BF18 9F 02 78 7E STA $7E7802,x
-$A3:BF1C A9 2C BD    LDA #$BD2C
-$A3:BF1F 9D B2 0F    STA $0FB2,x
+$A3:BF1C A9 2C BD    LDA #$BD2C             ;\
+$A3:BF1F 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BD2C
 $A3:BF22 A9 00 00    LDA #$0000
 $A3:BF25 9F 0E 78 7E STA $7E780E,x
 $A3:BF29 9F 10 78 7E STA $7E7810,x
@@ -5730,7 +5742,7 @@ $A3:BF44 6B          RTL
 $A3:BF45 BF 00 80 7E LDA $7E8000,x
 $A3:BF49 1A          INC A
 $A3:BF4A 9F 00 80 7E STA $7E8000,x
-$A3:BF4E 20 DA BE    JSR $BEDA  [$A3:BEDA]
+$A3:BF4E 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
 $A3:BF51 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A3:BF54 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $A3:BF55 A8          TAY                    ;/
@@ -5829,6 +5841,8 @@ $A3:C347             dx 0001, C3F8,F8,316C
 $A3:C34E             dx 0004, C200,00,B142, C3F0,00,F142, C200,F0,3142, C3F0,F0,3140
 $A3:C364             dx 0001, C3F8,F8,310E
 $A3:C36B             dx 0004, C200,00,B142, C3F0,00,F142, C200,F0,3142, C3F0,F0,3140
+
+; Electricity
 $A3:C381             dx 0002, 0004,FC,3164, 01F6,F6,3161
 $A3:C38D             dx 0002, 0004,FC,3165, 01F6,F6,3162
 $A3:C399             dx 0002, 0004,FC,3166, 01F6,F6,3163
@@ -5841,6 +5855,7 @@ $A3:C3E1             dx 0002, 01FB,03,3174, 01FC,F5,3176
 $A3:C3ED             dx 0002, 0002,02,3163, 01F6,02,7161
 $A3:C3F9             dx 0002, 0002,02,3162, 01F6,02,7162
 $A3:C405             dx 0002, 0002,02,3161, 01F6,02,7163
+
 $A3:C411             dx 0001, C3F8,F8,310E
 $A3:C418             dx 0004, C200,00,B142, C3F0,00,F142, C200,F0,3142, C3F0,F0,3140
 $A3:C42E             dx 0001, C3F8,F8,312E
@@ -5870,6 +5885,8 @@ $A3:C574             dx 0004, C3EE,EE,7146, C3EE,02,F146, C202,02,B146, C202,EE,
 $A3:C58A             dx 0001, C3F8,F8,316E
 $A3:C591             dx 0004, C3ED,ED,714A, C3ED,03,F14A, C203,03,B14A, C203,ED,314A
 $A3:C5A7             dx 0001, C3F8,F8,316C
+
+; Unused electricity
 $A3:C5AE             dx 0002, 0006,FC,3164, 01F5,F5,3161
 $A3:C5BA             dx 0002, 0006,FC,3165, 01F5,F5,3162
 $A3:C5C6             dx 0002, 0006,FC,3166, 01F5,F5,3163

@@ -2735,6 +2735,9 @@ $B4:94B7 60          RTS
 {
 ;; Returns:
 ;;     A: Non-zero to skip processing frame
+
+; Uses part of the enemy spawn data (recorded by $A0:88D0) as enemy population data for one enemy
+; As the following RAM is garbage (the debug enemy name), respawning a multi-part enemy will crash
 $B4:94B8 8B          PHB
 $B4:94B9 F4 7E 7E    PEA $7E7E              ;\
 $B4:94BC AB          PLB                    ;} DB = $7E
