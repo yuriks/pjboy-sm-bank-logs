@@ -5268,51 +5268,51 @@ $A3:BB65 6B          RTL
 ; Pointed to by parameter 1 of debug enemy population data $B4:E309
 $A3:BB66 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BB69 20 9E BC    JSR $BC9E  [$A3:BC9E]  ; Execute bang core function
-$A3:BB6C BD 7A 0F    LDA $0F7A,x
-$A3:BB6F 9D 3A 0F    STA $0F3A,x
-$A3:BB72 9D BA 0F    STA $0FBA,x
-$A3:BB75 BD 7E 0F    LDA $0F7E,x
-$A3:BB78 9D 3E 0F    STA $0F3E,x
-$A3:BB7B 9D BE 0F    STA $0FBE,x
-$A3:BB7E BC AA 0F    LDY $0FAA,x
-$A3:BB81 BF 00 80 7E LDA $7E8000,x
-$A3:BB85 29 01 00    AND #$0001
-$A3:BB88 F0 03       BEQ $03    [$BB8D]
-$A3:BB8A A0 00 0C    LDY #$0C00
+$A3:BB6C BD 7A 0F    LDA $0F7A,x            ;\
+$A3:BB6F 9D 3A 0F    STA $0F3A,x            ;} Enemy ([X] - 1) = [enemy X position]
+$A3:BB72 9D BA 0F    STA $0FBA,x            ; Enemy ([X] + 1) = [enemy X position]
+$A3:BB75 BD 7E 0F    LDA $0F7E,x            ;\
+$A3:BB78 9D 3E 0F    STA $0F3E,x            ;} Enemy ([X] - 1) Y position = [enemy Y position]
+$A3:BB7B 9D BE 0F    STA $0FBE,x            ; Enemy ([X] + 1) Y position = [enemy Y position]
+$A3:BB7E BC AA 0F    LDY $0FAA,x            ; Y = [enemy $0FAA]
+$A3:BB81 BF 00 80 7E LDA $7E8000,x          ;\
+$A3:BB85 29 01 00    AND #$0001             ;} If [enemy new instruction list index] % 2 != 0:
+$A3:BB88 F0 03       BEQ $03    [$BB8D]     ;/
+$A3:BB8A A0 00 0C    LDY #$0C00             ; Y = C00h (palette 6 (beams))
 
-$A3:BB8D 98          TYA
-$A3:BB8E 9D 96 0F    STA $0F96,x
+$A3:BB8D 98          TYA                    ;\
+$A3:BB8E 9D 96 0F    STA $0F96,x            ;} Enemy palette index = [Y]
 $A3:BB91 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
-$A3:BB94 BF 04 80 7E LDA $7E8004,x
-$A3:BB98 D0 01       BNE $01    [$BB9B]
-$A3:BB9A 6B          RTL
+$A3:BB94 BF 04 80 7E LDA $7E8004,x          ;\
+$A3:BB98 D0 01       BNE $01    [$BB9B]     ;} If [enemy $7E:8004] = 0:
+$A3:BB9A 6B          RTL                    ; Return
 
-$A3:BB9B A9 00 00    LDA #$0000
-$A3:BB9E 9F 04 80 7E STA $7E8004,x
-$A3:BBA2 BF 00 80 7E LDA $7E8000,x
-$A3:BBA6 C9 09 00    CMP #$0009
-$A3:BBA9 D0 30       BNE $30    [$BBDB]
-$A3:BBAB A9 10 00    LDA #$0010
-$A3:BBAE 9D A0 0F    STA $0FA0,x
+$A3:BB9B A9 00 00    LDA #$0000             ;\
+$A3:BB9E 9F 04 80 7E STA $7E8004,x          ;} Enemy $7E:8004 = 0
+$A3:BBA2 BF 00 80 7E LDA $7E8000,x          ;\
+$A3:BBA6 C9 09 00    CMP #$0009             ;} If [enemy new instruction list index] = 9:
+$A3:BBA9 D0 30       BNE $30    [$BBDB]     ;/
+$A3:BBAB A9 10 00    LDA #$0010             ;\
+$A3:BBAE 9D A0 0F    STA $0FA0,x            ;} Enemy invincibility timer = 10h
 $A3:BBB1 BD 86 0F    LDA $0F86,x            ;\
 $A3:BBB4 09 00 04    ORA #$0400             ;} Set enemy as intangible
 $A3:BBB7 9D 86 0F    STA $0F86,x            ;/
 $A3:BBBA 22 29 AE A0 JSL $A0AE29[$A0:AE29]  ; Determine direction of Samus from enemy
-$A3:BBBE 20 EB BB    JSR $BBEB  [$A3:BBEB]
-$A3:BBC1 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death (with garbage in A)
+$A3:BBBE 20 EB BB    JSR $BBEB  [$A3:BBEB]  ; Execute $BBEB (sets A)
+$A3:BBC1 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A3:BBC5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BBC8 BD C6 0F    LDA $0FC6,x
-$A3:BBCB 09 00 02    ORA #$0200
-$A3:BBCE 9D C6 0F    STA $0FC6,x
-$A3:BBD1 BD 46 0F    LDA $0F46,x
-$A3:BBD4 09 00 02    ORA #$0200
-$A3:BBD7 9D 46 0F    STA $0F46,x
-$A3:BBDA 6B          RTL
+$A3:BBC8 BD C6 0F    LDA $0FC6,x            ;\
+$A3:BBCB 09 00 02    ORA #$0200             ;} Mark enemy ([X] + 1) for deletion
+$A3:BBCE 9D C6 0F    STA $0FC6,x            ;/
+$A3:BBD1 BD 46 0F    LDA $0F46,x            ;\
+$A3:BBD4 09 00 02    ORA #$0200             ;} Mark enemy ([X] - 1) for deletion
+$A3:BBD7 9D 46 0F    STA $0F46,x            ;/
+$A3:BBDA 6B          RTL                    ; Return
 
 $A3:BBDB AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BBDE BF 00 80 7E LDA $7E8000,x
-$A3:BBE2 1A          INC A
-$A3:BBE3 9F 00 80 7E STA $7E8000,x
+$A3:BBDE BF 00 80 7E LDA $7E8000,x          ;\
+$A3:BBE2 1A          INC A                  ;} Increment enemy new instruction list index
+$A3:BBE3 9F 00 80 7E STA $7E8000,x          ;/
 $A3:BBE7 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
 $A3:BBEA 6B          RTL
 }
@@ -5320,48 +5320,66 @@ $A3:BBEA 6B          RTL
 
 ;;; $BBEB:  ;;;
 {
-$A3:BBEB 8D 72 18    STA $1872  [$7E:1872]
+;; Parameters:
+;;     A: Direction of Samus from enemy
+;; Returns:
+;;     A: Death animation
+$A3:BBEB 8D 72 18    STA $1872  [$7E:1872]  ; Direction of Samus from enemy = [A]
 $A3:BBEE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BBF1 AD CE 0C    LDA $0CCE  [$7E:0CCE]
-$A3:BBF4 C9 05 00    CMP #$0005
-$A3:BBF7 10 4D       BPL $4D    [$BC46]
-$A3:BBF9 A9 00 00    LDA #$0000
-$A3:BBFC A8          TAY
+$A3:BBF1 AD CE 0C    LDA $0CCE  [$7E:0CCE]  ;\
+$A3:BBF4 C9 05 00    CMP #$0005             ;} If [projectile counter] >= 5: go to BRANCH_FAIL
+$A3:BBF7 10 4D       BPL $4D    [$BC46]     ;/
+$A3:BBF9 A9 00 00    LDA #$0000             ;\
+$A3:BBFC A8          TAY                    ;} Y = 0 (projectile index)
 
-$A3:BBFD B9 2C 0C    LDA $0C2C,y
-$A3:BC00 F0 04       BEQ $04    [$BC06]
-$A3:BC02 C8          INY
-$A3:BC03 C8          INY
-$A3:BC04 80 F7       BRA $F7    [$BBFD]
+; LOOP
+$A3:BBFD B9 2C 0C    LDA $0C2C,y            ;\
+$A3:BC00 F0 04       BEQ $04    [$BC06]     ;} If [projectile damage] != 0:
+$A3:BC02 C8          INY                    ;\
+$A3:BC03 C8          INY                    ;} Y += 2
+$A3:BC04 80 F7       BRA $F7    [$BBFD]     ; Go to LOOP
 
-$A3:BC06 BD 7A 0F    LDA $0F7A,x
-$A3:BC09 99 64 0B    STA $0B64,y
-$A3:BC0C BD 7E 0F    LDA $0F7E,x
-$A3:BC0F 99 78 0B    STA $0B78,y
-$A3:BC12 AD 72 18    LDA $1872  [$7E:1872]
-$A3:BC15 99 04 0C    STA $0C04,y
-$A3:BC18 AD A6 09    LDA $09A6  [$7E:09A6]
-$A3:BC1B 29 0F 00    AND #$000F
-$A3:BC1E 09 10 00    ORA #$0010
-$A3:BC21 99 18 0C    STA $0C18,y
-$A3:BC24 EE CE 0C    INC $0CCE  [$7E:0CCE]
-$A3:BC27 84 14       STY $14    [$7E:0014]
-$A3:BC29 22 00 BE 90 JSL $90BE00[$90:BE00]
-$A3:BC2D BD B0 0F    LDA $0FB0,x
-$A3:BC30 99 2C 0C    STA $0C2C,y
+$A3:BC06 BD 7A 0F    LDA $0F7A,x            ;\
+$A3:BC09 99 64 0B    STA $0B64,y            ;} Projectile X position = [enemy X position]
+$A3:BC0C BD 7E 0F    LDA $0F7E,x            ;\
+$A3:BC0F 99 78 0B    STA $0B78,y            ;} Projectile Y position = [enemy Y position]
+$A3:BC12 AD 72 18    LDA $1872  [$7E:1872]  ;\
+$A3:BC15 99 04 0C    STA $0C04,y            ;} Projectile direction = [direction of Samus from enemy]
+$A3:BC18 AD A6 09    LDA $09A6  [$7E:09A6]  ;
+$A3:BC1B 29 0F 00    AND #$000F             ;
+$A3:BC1E 09 10 00    ORA #$0010             ;
+$A3:BC21 99 18 0C    STA $0C18,y            ;
+$A3:BC24 EE CE 0C    INC $0CCE  [$7E:0CCE]  ;
+$A3:BC27 84 14       STY $14    [$7E:0014]  ;
+$A3:BC29 22 00 BE 90 JSL $90BE00[$90:BE00]  ; Projectile reflection
+$A3:BC2D BD B0 0F    LDA $0FB0,x            ;
+$A3:BC30 99 2C 0C    STA $0C2C,y            ;
 $A3:BC33 B9 18 0C    LDA $0C18,y            ;\
 $A3:BC36 29 0F 00    AND #$000F             ;|
 $A3:BC39 0A          ASL A                  ;|
 $A3:BC3A AA          TAX                    ;} Queue sound [$BC4A + ([projectile type] & Fh) * 2], sound library 1, max queued sounds allowed = 6
 $A3:BC3B BD 4A BC    LDA $BC4A,x            ;|
 $A3:BC3E 22 49 90 80 JSL $809049[$80:9049]  ;/
-$A3:BC42 A9 00 00    LDA #$0000
-$A3:BC45 60          RTS
+$A3:BC42 A9 00 00    LDA #$0000             ; A = 0 (small explosion)
+$A3:BC45 60          RTS                    ; Return
 
-$A3:BC46 A9 01 00    LDA #$0001
+; BRANCH_FAIL
+$A3:BC46 A9 01 00    LDA #$0001             ; A = 1 (killed by Samus contact)
 $A3:BC49 60          RTS
 
-$A3:BC4A             dw 0017, 0019, 0018, 001A, 001E, 001C, 001D, 001F, 0022, 0020, 0021, 0000, 0000, 0000, 0000, 0000
+$A3:BC4A             dw 0017, ; Charged power beam
+                        0019, ; Charged wave beam
+                        0018, ; Charged ice beam
+                        001A, ; Charged ice + wave beam
+                              ; <-- Missing charged spazer beam
+                        001E, ; Charged spazer + wave beam
+                        001C, ; Charged spazer + ice beam
+                        001D, ; Charged spazer + ice + wave beam
+                        001F, ; Charged plasma beam
+                        0022, ; Charged plasma + wave beam
+                        0020, ; Charged plasma + ice beam
+                        0021, ; Charged plasma + ice + wave beam
+                        0000, 0000, 0000, 0000, 0000
 }
 
 

@@ -2560,7 +2560,7 @@ $A7:B682 6B          RTL
 }
 
 
-;;; $B683: Instruction - move Kraid right ;;;
+;;; $B683: Unused. Instruction - move Kraid right ;;;
 {
 $A7:B683 DA          PHX
 $A7:B684 5A          PHY
