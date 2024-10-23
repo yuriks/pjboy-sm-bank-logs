@@ -4806,7 +4806,7 @@ $A3:B722             dw B75E, B772, B790, B7A4, B7C2, B7D6, B7F4, B838, B85A, B8
 
 ;;; $B75E: Instruction lists - bang ;;;
 {
-;;; $B75E: Instruction list - core - yyyy ;;;
+;;; $B75E: Instruction list - core - growth level 0 - idling ;;;
 {
 $A3:B75E             dx 0020,BF7D,
                         000D,BF8B,
@@ -4816,7 +4816,7 @@ $A3:B75E             dx 0020,BF7D,
 }
 
 
-;;; $B772: Instruction list - core - yyyy ;;;
+;;; $B772: Instruction list - core - growth level 0 - growing ;;;
 {
 $A3:B772             dx BA78,       ; Play acquired suit sound effect
                         0004,BFA7,
@@ -4825,12 +4825,12 @@ $A3:B772             dx BA78,       ; Play acquired suit sound effect
                         0002,BFB5,
                         0004,BFD2,
                         0010,BFEF,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B790: Instruction list - core - yyyy ;;;
+;;; $B790: Instruction list - core - growth level 1 - idling ;;;
 {
 $A3:B790             dx 0010,C00C,
                         0008,C029,
@@ -4840,7 +4840,7 @@ $A3:B790             dx 0010,C00C,
 }
 
 
-;;; $B7A4: Instruction list - core - yyyy ;;;
+;;; $B7A4: Instruction list - core - growth level 1 - growing ;;;
 {
 $A3:B7A4             dx BA78,       ; Play acquired suit sound effect
                         0004,C063,
@@ -4849,12 +4849,12 @@ $A3:B7A4             dx BA78,       ; Play acquired suit sound effect
                         0002,C08F,
                         0004,C0AC,
                         0010,C0C9,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B7C2: Instruction list - core - yyyy ;;;
+;;; $B7C2: Instruction list - core - growth level 2 - idling ;;;
 {
 $A3:B7C2             dx 000C,C0E6,
                         0006,C103,
@@ -4864,7 +4864,7 @@ $A3:B7C2             dx 000C,C0E6,
 }
 
 
-;;; $B7D6: Instruction list - core - yyyy ;;;
+;;; $B7D6: Instruction list - core - growth level 2 - growing ;;;
 {
 $A3:B7D6             dx BA78,       ; Play acquired suit sound effect
                         0004,C13D,
@@ -4873,12 +4873,12 @@ $A3:B7D6             dx BA78,       ; Play acquired suit sound effect
                         0002,C177,
                         0004,C194,
                         0010,C1B1,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B7F4: Instruction list - core - yyyy ;;;
+;;; $B7F4: Instruction list - core - growth level 3 - idling ;;;
 {
 $A3:B7F4             dx 0008,C1CE,
                         0003,C1EB,
@@ -4900,7 +4900,7 @@ $A3:B7F4             dx 0008,C1CE,
 }
 
 
-;;; $B838: Instruction list - core - yyyy ;;;
+;;; $B838: Instruction list - core - growth level 3 - growing ;;;
 {
 $A3:B838             dx BA78,       ; Play acquired suit sound effect
                         0004,C2D3,
@@ -4910,12 +4910,12 @@ $A3:B838             dx BA78,       ; Play acquired suit sound effect
                         0004,C32A,
                         0004,C347,
                         0010,C364,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B85A: Instruction list - core - yyyy ;;;
+;;; $B85A: Instruction list - core - growth level 4 - idling ;;;
 {
 $A3:B85A             dx 0006,C411,
                         0002,C42E,
@@ -4932,7 +4932,7 @@ $A3:B85A             dx 0006,C411,
 }
 
 
-;;; $B88A: Instruction list - core - yyyy ;;;
+;;; $B88A: Instruction list - core - growth level 4 - growing ;;;
 {
 $A3:B88A             dx BA78,       ; Play acquired suit sound effect
                         0004,C516,
@@ -4942,12 +4942,12 @@ $A3:B88A             dx BA78,       ; Play acquired suit sound effect
                         0004,C56D,
                         0004,C58A,
                         0010,C5A7,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B8AC: Instruction list - shell - yyyy ;;;
+;;; $B8AC: Instruction list - shell - growth level 0 - idling ;;;
 {
 $A3:B8AC             dx 0020,BF84,
                         000D,BF92,
@@ -4957,7 +4957,7 @@ $A3:B8AC             dx 0020,BF84,
 }
 
 
-;;; $B8C0: Instruction list - shell - yyyy ;;;
+;;; $B8C0: Instruction list - shell - growth level 0 - growing ;;;
 {
 $A3:B8C0             dx BA78,       ; Play acquired suit sound effect
                         0004,804D,
@@ -4966,12 +4966,12 @@ $A3:B8C0             dx BA78,       ; Play acquired suit sound effect
                         0002,BFBC,
                         0004,BFD9,
                         0010,BFF6,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B8DE: Instruction list - shell - yyyy ;;;
+;;; $B8DE: Instruction list - shell - growth level 1 - idling ;;;
 {
 $A3:B8DE             dx 0010,C013,
                         0008,C030,
@@ -4981,7 +4981,7 @@ $A3:B8DE             dx 0010,C013,
 }
 
 
-;;; $B8F2: Instruction list - shell - yyyy ;;;
+;;; $B8F2: Instruction list - shell - growth level 1 - growing ;;;
 {
 $A3:B8F2             dx BA78,       ; Play acquired suit sound effect
                         0004,804D,
@@ -4990,12 +4990,12 @@ $A3:B8F2             dx BA78,       ; Play acquired suit sound effect
                         0002,C096,
                         0004,C0B3,
                         0010,C0D0,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B910: Instruction list - shell - yyyy ;;;
+;;; $B910: Instruction list - shell - growth level 2 - idling ;;;
 {
 $A3:B910             dx 000C,C0ED,
                         0006,C10A,
@@ -5005,7 +5005,7 @@ $A3:B910             dx 000C,C0ED,
 }
 
 
-;;; $B924: Instruction list - shell - yyyy ;;;
+;;; $B924: Instruction list - shell - growth level 2 - growing ;;;
 {
 $A3:B924             dx BA78,       ; Play acquired suit sound effect
                         0004,C144,
@@ -5014,12 +5014,12 @@ $A3:B924             dx BA78,       ; Play acquired suit sound effect
                         0002,C17E,
                         0004,C19B,
                         0010,C1B8,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B942: Instruction list - shell - yyyy ;;;
+;;; $B942: Instruction list - shell - growth level 3 - idling ;;;
 {
 $A3:B942             dx 0008,C1D5,
                         0003,C1F2,
@@ -5041,7 +5041,7 @@ $A3:B942             dx 0008,C1D5,
 }
 
 
-;;; $B986: Instruction list - shell - yyyy ;;;
+;;; $B986: Instruction list - shell - growth level 3 - growing ;;;
 {
 $A3:B986             dx BA78,       ; Play acquired suit sound effect
                         0004,C2DA,
@@ -5051,12 +5051,12 @@ $A3:B986             dx BA78,       ; Play acquired suit sound effect
                         0004,C331,
                         0004,C34E,
                         0010,C36B,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
 
-;;; $B9A8: Instruction list - shell - yyyy ;;;
+;;; $B9A8: Instruction list - shell - growth level 4 - idling ;;;
 {
 $A3:B9A8             dx 0006,C418,
                         0002,C435,
@@ -5073,7 +5073,7 @@ $A3:B9A8             dx 0006,C418,
 }
 
 
-;;; $B9D8: Instruction list - shell - yyyy ;;;
+;;; $B9D8: Instruction list - shell - growth level 4 - growing ;;;
 {
 $A3:B9D8             dx BA78,       ; Play acquired suit sound effect
                         0004,C51D,
@@ -5083,7 +5083,7 @@ $A3:B9D8             dx BA78,       ; Play acquired suit sound effect
                         0004,C574,
                         0004,C591,
                         0010,804D,
-                        BAA8,       ; Enemy $7E:8004 = 1
+                        BAA8,       ; Enemy finished growing flag = 1
                         812F        ; Sleep
 }
 
@@ -5095,7 +5095,7 @@ $A3:B9FA             dx 0001,804D,
 }
 
 
-;;; $BA00: Instruction list - electricity - yyyy ;;;
+;;; $BA00: Instruction list - electricity - growth level 3/4 - growing ;;;
 {
 $A3:BA00             dw 0002,C381,
                         0003,C38D,
@@ -5115,8 +5115,9 @@ $A3:BA00             dw 0002,C381,
 }
 
 
-;;; $BA3C: Unused. Instruction list - electricity - yyyy ;;;
+;;; $BA3C: Unused. Instruction list - electricity - growing ;;;
 {
+; Probably intended to be growth level 4 - growing
 $A3:BA3C             dw 0002,C5AE,
                         0003,C5BA,
                         0004,C5C6,
@@ -5169,7 +5170,7 @@ $A3:BA94             dw 00C0, ; 0: Up, facing right
 }
 
 
-;;; $BAA8: Instruction - enemy $7E:8004 = 1 ;;;
+;;; $BAA8: Instruction - enemy finished growing flag = 1 ;;;
 {
 $A3:BAA8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BAAB A9 01 00    LDA #$0001
@@ -5195,7 +5196,7 @@ $A3:BAD5 9F 02 78 7E STA $7E7802,x          ;} Enemy $7E:7802 = 0
 $A3:BAD9 9F 04 78 7E STA $7E7804,x          ; Enemy $7E:7804 = 0
 $A3:BADD 9F 00 80 7E STA $7E8000,x          ; Enemy $7E:8000 = 0
 $A3:BAE1 9F 02 80 7E STA $7E8002,x          ; Enemy $7E:8002 = 0
-$A3:BAE5 9F 04 80 7E STA $7E8004,x          ; Enemy $7E:8004 = 0
+$A3:BAE5 9F 04 80 7E STA $7E8004,x          ; Enemy finished growing flag = 0
 $A3:BAE9 BD B6 0F    LDA $0FB6,x            ;\
 $A3:BAEC 29 FF 00    AND #$00FF             ;|
 $A3:BAEF 0A          ASL A                  ;|
@@ -5218,7 +5219,7 @@ $A3:BB18 A9 C1 BC    LDA #$BCC1             ;\
 $A3:BB1B 9D B2 0F    STA $0FB2,x            ;} Enemy core function = RTS
 
 $A3:BB1E A9 5E B7    LDA #$B75E             ;\
-$A3:BB21 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $B75E
+$A3:BB21 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $B75E (core - growth level 0 - idling)
 $A3:BB24 6B          RTL
 }
 
@@ -5284,11 +5285,11 @@ $A3:BB8D 98          TYA                    ;\
 $A3:BB8E 9D 96 0F    STA $0F96,x            ;} Enemy palette index = [Y]
 $A3:BB91 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
 $A3:BB94 BF 04 80 7E LDA $7E8004,x          ;\
-$A3:BB98 D0 01       BNE $01    [$BB9B]     ;} If [enemy $7E:8004] = 0:
+$A3:BB98 D0 01       BNE $01    [$BB9B]     ;} If [enemy finished growing flag] = 0:
 $A3:BB9A 6B          RTL                    ; Return
 
 $A3:BB9B A9 00 00    LDA #$0000             ;\
-$A3:BB9E 9F 04 80 7E STA $7E8004,x          ;} Enemy $7E:8004 = 0
+$A3:BB9E 9F 04 80 7E STA $7E8004,x          ;} Enemy finished growing flag = 0
 $A3:BBA2 BF 00 80 7E LDA $7E8000,x          ;\
 $A3:BBA6 C9 09 00    CMP #$0009             ;} If [enemy new instruction list index] = 9:
 $A3:BBA9 D0 30       BNE $30    [$BBDB]     ;/
@@ -5298,7 +5299,7 @@ $A3:BBB1 BD 86 0F    LDA $0F86,x            ;\
 $A3:BBB4 09 00 04    ORA #$0400             ;} Set enemy as intangible
 $A3:BBB7 9D 86 0F    STA $0F86,x            ;/
 $A3:BBBA 22 29 AE A0 JSL $A0AE29[$A0:AE29]  ; Determine direction of Samus from enemy
-$A3:BBBE 20 EB BB    JSR $BBEB  [$A3:BBEB]  ; Execute $BBEB (sets A)
+$A3:BBBE 20 EB BB    JSR $BBEB  [$A3:BBEB]  ; Fire charged beam at Samus (sets A)
 $A3:BBC1 22 AF A3 A0 JSL $A0A3AF[$A0:A3AF]  ; Enemy death
 $A3:BBC5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BBC8 BD C6 0F    LDA $0FC6,x            ;\
@@ -5318,7 +5319,7 @@ $A3:BBEA 6B          RTL
 }
 
 
-;;; $BBEB:  ;;;
+;;; $BBEB: Fire charged beam at Samus ;;;
 {
 ;; Parameters:
 ;;     A: Direction of Samus from enemy
@@ -5345,19 +5346,19 @@ $A3:BC0C BD 7E 0F    LDA $0F7E,x            ;\
 $A3:BC0F 99 78 0B    STA $0B78,y            ;} Projectile Y position = [enemy Y position]
 $A3:BC12 AD 72 18    LDA $1872  [$7E:1872]  ;\
 $A3:BC15 99 04 0C    STA $0C04,y            ;} Projectile direction = [direction of Samus from enemy]
-$A3:BC18 AD A6 09    LDA $09A6  [$7E:09A6]  ;
-$A3:BC1B 29 0F 00    AND #$000F             ;
-$A3:BC1E 09 10 00    ORA #$0010             ;
-$A3:BC21 99 18 0C    STA $0C18,y            ;
-$A3:BC24 EE CE 0C    INC $0CCE  [$7E:0CCE]  ;
-$A3:BC27 84 14       STY $14    [$7E:0014]  ;
+$A3:BC18 AD A6 09    LDA $09A6  [$7E:09A6]  ;\
+$A3:BC1B 29 0F 00    AND #$000F             ;|
+$A3:BC1E 09 10 00    ORA #$0010             ;} Projectile type = [equipped beams] & Fh | 1000h (charged)
+$A3:BC21 99 18 0C    STA $0C18,y            ;/
+$A3:BC24 EE CE 0C    INC $0CCE  [$7E:0CCE]  ; Increment projectile counter
+$A3:BC27 84 14       STY $14    [$7E:0014]  ; $14 = (projectile index)
 $A3:BC29 22 00 BE 90 JSL $90BE00[$90:BE00]  ; Projectile reflection
-$A3:BC2D BD B0 0F    LDA $0FB0,x            ;
-$A3:BC30 99 2C 0C    STA $0C2C,y            ;
+$A3:BC2D BD B0 0F    LDA $0FB0,x            ;\
+$A3:BC30 99 2C 0C    STA $0C2C,y            ;} Projectile damage = [enemy damage]
 $A3:BC33 B9 18 0C    LDA $0C18,y            ;\
 $A3:BC36 29 0F 00    AND #$000F             ;|
 $A3:BC39 0A          ASL A                  ;|
-$A3:BC3A AA          TAX                    ;} Queue sound [$BC4A + ([projectile type] & Fh) * 2], sound library 1, max queued sounds allowed = 6
+$A3:BC3A AA          TAX                    ;} Queue sound [$BC4A + (beam type) * 2], sound library 1, max queued sounds allowed = 6
 $A3:BC3B BD 4A BC    LDA $BC4A,x            ;|
 $A3:BC3E 22 49 90 80 JSL $809049[$80:9049]  ;/
 $A3:BC42 A9 00 00    LDA #$0000             ; A = 0 (small explosion)
@@ -5412,12 +5413,12 @@ $A3:BCA4 60          RTS
 ;;; $BCA5: Bang core function ;;;
 {
 $A3:BCA5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BCA8 BF 00 78 7E LDA $7E7800,x
-$A3:BCAC 3A          DEC A
-$A3:BCAD 9F 00 78 7E STA $7E7800,x
-$A3:BCB1 D0 0D       BNE $0D    [$BCC0]
-$A3:BCB3 A9 10 00    LDA #$0010
-$A3:BCB6 9F 00 78 7E STA $7E7800,x
+$A3:BCA8 BF 00 78 7E LDA $7E7800,x          ;\
+$A3:BCAC 3A          DEC A                  ;} Decrement enemy $7E:7800
+$A3:BCAD 9F 00 78 7E STA $7E7800,x          ;/
+$A3:BCB1 D0 0D       BNE $0D    [$BCC0]     ; If [enemy $7E:7800] = 0:
+$A3:BCB3 A9 10 00    LDA #$0010             ;\
+$A3:BCB6 9F 00 78 7E STA $7E7800,x          ;} Enemy $7E:7800 = 10h
 $A3:BCBA A9 C5 BC    LDA #$BCC5             ;\
 $A3:BCBD 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BCC5
 
@@ -5436,17 +5437,17 @@ $A3:BCC4 60          RTS
 {
 $A3:BCC5 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BCC8 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
-$A3:BCCC 38          SEC
-$A3:BCCD E9 40 00    SBC #$0040
-$A3:BCD0 29 FF 00    AND #$00FF
-$A3:BCD3 9F 02 78 7E STA $7E7802,x
+$A3:BCCC 38          SEC                    ;\
+$A3:BCCD E9 40 00    SBC #$0040             ;|
+$A3:BCD0 29 FF 00    AND #$00FF             ;} Enemy $7E:7802 = ([A] - 40h) % 100h
+$A3:BCD3 9F 02 78 7E STA $7E7802,x          ;/
 $A3:BCD7 A9 1C BD    LDA #$BD1C             ;\
 $A3:BCDA 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BD1C
-$A3:BCDD A9 00 00    LDA #$0000
-$A3:BCE0 9F 0E 78 7E STA $7E780E,x
-$A3:BCE4 9F 10 78 7E STA $7E7810,x
-$A3:BCE8 9F 12 78 7E STA $7E7812,x
-$A3:BCEC 9F 14 78 7E STA $7E7814,x
+$A3:BCDD A9 00 00    LDA #$0000             ;\
+$A3:BCE0 9F 0E 78 7E STA $7E780E,x          ;} Enemy $7E:780E = 0
+$A3:BCE4 9F 10 78 7E STA $7E7810,x          ; Enemy $7E:7810 = 0
+$A3:BCE8 9F 12 78 7E STA $7E7812,x          ; Enemy $7E:7812 = 0
+$A3:BCEC 9F 14 78 7E STA $7E7814,x          ; Enemy $7E:7814 = 0
 $A3:BCF0 60          RTS
 }
 
@@ -5455,16 +5456,16 @@ $A3:BCF0 60          RTS
 {
 $A3:BCF1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BCF4 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
-$A3:BCF8 38          SEC
-$A3:BCF9 E9 40 00    SBC #$0040
-$A3:BCFC 29 FF 00    AND #$00FF
-$A3:BCFF 9F 04 78 7E STA $7E7804,x
-$A3:BD03 38          SEC
-$A3:BD04 FF 02 78 7E SBC $7E7802,x
-$A3:BD08 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ; Sign extend A
-$A3:BD0C 22 67 B0 A0 JSL $A0B067[$A0:B067]  ; A = |[A]|
-$A3:BD10 C9 30 00    CMP #$0030
-$A3:BD13 30 06       BMI $06    [$BD1B]
+$A3:BCF8 38          SEC                    ;\
+$A3:BCF9 E9 40 00    SBC #$0040             ;|
+$A3:BCFC 29 FF 00    AND #$00FF             ;} Enemy $7E:7804 = ([A] - 40h) % 100h
+$A3:BCFF 9F 04 78 7E STA $7E7804,x          ;/
+$A3:BD03 38          SEC                    ;\
+$A3:BD04 FF 02 78 7E SBC $7E7802,x          ;|
+$A3:BD08 22 EA AF A0 JSL $A0AFEA[$A0:AFEA]  ;|
+$A3:BD0C 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;} If |[enemy $7E:7804] - [enemy $7E:7802]| >= 30h:
+$A3:BD10 C9 30 00    CMP #$0030             ;|
+$A3:BD13 30 06       BMI $06    [$BD1B]     ;/
 $A3:BD15 A9 2C BD    LDA #$BD2C             ;\
 $A3:BD18 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BD2C
 
@@ -5489,12 +5490,12 @@ $A3:BD2C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:BD2F 20 B9 BD    JSR $BDB9  [$A3:BDB9]
 $A3:BD32 20 1C BE    JSR $BE1C  [$A3:BE1C]
 $A3:BD35 20 89 BD    JSR $BD89  [$A3:BD89]
-$A3:BD38 BF 14 78 7E LDA $7E7814,x
-$A3:BD3C D0 0A       BNE $0A    [$BD48]
-$A3:BD3E 30 08       BMI $08    [$BD48]
-$A3:BD40 BF 12 78 7E LDA $7E7812,x
-$A3:BD44 F0 02       BEQ $02    [$BD48]
-$A3:BD46 10 06       BPL $06    [$BD4E]
+$A3:BD38 BF 14 78 7E LDA $7E7814,x          ;\
+$A3:BD3C D0 0A       BNE $0A    [$BD48]     ;} If [enemy $7E:7814] > 0:
+$A3:BD3E 30 08       BMI $08    [$BD48]     ;/
+$A3:BD40 BF 12 78 7E LDA $7E7812,x          ;\
+$A3:BD44 F0 02       BEQ $02    [$BD48]     ;} If [enemy $7E:7812] > 0: return
+$A3:BD46 10 06       BPL $06    [$BD4E]     ;/
 
 $A3:BD48 A9 A5 BC    LDA #$BCA5             ;\
 $A3:BD4B 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BCA5
@@ -5730,55 +5731,55 @@ $A3:BEFC 60          RTS
 ;;; $BEFD: Enemy shot - enemy $DB3F (bang) ;;;
 {
 $A3:BEFD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BF00 BD B2 0F    LDA $0FB2,x
-$A3:BF03 C9 C1 BC    CMP #$BCC1
-$A3:BF06 F0 33       BEQ $33    [$BF3B]
+$A3:BF00 BD B2 0F    LDA $0FB2,x            ;\
+$A3:BF03 C9 C1 BC    CMP #$BCC1             ;} If [enemy core function] != $BCC1 (RTS):
+$A3:BF06 F0 33       BEQ $33    [$BF3B]     ;/
 $A3:BF08 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A3:BF0B 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $A3:BF0C A8          TAY                    ;/
-$A3:BF0D B9 04 0C    LDA $0C04,y
-$A3:BF10 29 0F 00    AND #$000F
-$A3:BF13 0A          ASL A
-$A3:BF14 A8          TAY
-$A3:BF15 B9 94 BA    LDA $BA94,y
-$A3:BF18 9F 02 78 7E STA $7E7802,x
+$A3:BF0D B9 04 0C    LDA $0C04,y            ;\
+$A3:BF10 29 0F 00    AND #$000F             ;|
+$A3:BF13 0A          ASL A                  ;|
+$A3:BF14 A8          TAY                    ;} Enemy $7E:7802 = [$BA94 + ([projectile direction] & Fh) * 2]
+$A3:BF15 B9 94 BA    LDA $BA94,y            ;|
+$A3:BF18 9F 02 78 7E STA $7E7802,x          ;/
 $A3:BF1C A9 2C BD    LDA #$BD2C             ;\
 $A3:BF1F 9D B2 0F    STA $0FB2,x            ;} Enemy core function = $BD2C
-$A3:BF22 A9 00 00    LDA #$0000
-$A3:BF25 9F 0E 78 7E STA $7E780E,x
-$A3:BF29 9F 10 78 7E STA $7E7810,x
-$A3:BF2D A9 00 01    LDA #$0100
-$A3:BF30 9F 12 78 7E STA $7E7812,x
-$A3:BF34 A9 00 06    LDA #$0600
-$A3:BF37 9F 14 78 7E STA $7E7814,x
+$A3:BF22 A9 00 00    LDA #$0000             ;\
+$A3:BF25 9F 0E 78 7E STA $7E780E,x          ;} Enemy $7E:780E = 0
+$A3:BF29 9F 10 78 7E STA $7E7810,x          ; Enemy $7E:7810 = 0
+$A3:BF2D A9 00 01    LDA #$0100             ;\
+$A3:BF30 9F 12 78 7E STA $7E7812,x          ;} Enemy $7E:7812 = 100h
+$A3:BF34 A9 00 06    LDA #$0600             ;\
+$A3:BF37 9F 14 78 7E STA $7E7814,x          ;} Enemy $7E:7814 = 600h
 
-$A3:BF3B BF 00 80 7E LDA $7E8000,x
-$A3:BF3F C9 09 00    CMP #$0009
-$A3:BF42 D0 01       BNE $01    [$BF45]
-$A3:BF44 6B          RTL
+$A3:BF3B BF 00 80 7E LDA $7E8000,x          ;\
+$A3:BF3F C9 09 00    CMP #$0009             ;} If [enemy new instruction list index] = 9:
+$A3:BF42 D0 01       BNE $01    [$BF45]     ;/
+$A3:BF44 6B          RTL                    ; Return
 
-$A3:BF45 BF 00 80 7E LDA $7E8000,x
-$A3:BF49 1A          INC A
-$A3:BF4A 9F 00 80 7E STA $7E8000,x
+$A3:BF45 BF 00 80 7E LDA $7E8000,x          ;\
+$A3:BF49 1A          INC A                  ;} Increment enemy new instruction list index
+$A3:BF4A 9F 00 80 7E STA $7E8000,x          ;/
 $A3:BF4E 20 DA BE    JSR $BEDA  [$A3:BEDA]  ; Set bang instruction list
 $A3:BF51 AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A3:BF54 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $A3:BF55 A8          TAY                    ;/
-$A3:BF56 B9 2C 0C    LDA $0C2C,y
-$A3:BF59 18          CLC
-$A3:BF5A 7D B0 0F    ADC $0FB0,x
-$A3:BF5D 9D B0 0F    STA $0FB0,x
-$A3:BF60 B9 04 0C    LDA $0C04,y
-$A3:BF63 09 10 00    ORA #$0010
-$A3:BF66 99 04 0C    STA $0C04,y
+$A3:BF56 B9 2C 0C    LDA $0C2C,y            ;\
+$A3:BF59 18          CLC                    ;|
+$A3:BF5A 7D B0 0F    ADC $0FB0,x            ;} Enemy damage += [projectile damage]
+$A3:BF5D 9D B0 0F    STA $0FB0,x            ;/
+$A3:BF60 B9 04 0C    LDA $0C04,y            ;\
+$A3:BF63 09 10 00    ORA #$0010             ;} Mark projectile for deletion
+$A3:BF66 99 04 0C    STA $0C04,y            ;/
 $A3:BF69 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:BF6C BF 00 80 7E LDA $7E8000,x
-$A3:BF70 C9 09 00    CMP #$0009
-$A3:BF73 F0 01       BEQ $01    [$BF76]
-$A3:BF75 6B          RTL
+$A3:BF6C BF 00 80 7E LDA $7E8000,x          ;\
+$A3:BF70 C9 09 00    CMP #$0009             ;} If [enemy new instruction list index] = 9:
+$A3:BF73 F0 01       BEQ $01    [$BF76]     ;/
+$A3:BF75 6B          RTL                    ; Return
 
-$A3:BF76 A9 01 00    LDA #$0001
-$A3:BF79 9D AE 0F    STA $0FAE,x
+$A3:BF76 A9 01 00    LDA #$0001             ;\
+$A3:BF79 9D AE 0F    STA $0FAE,x            ;} Enemy $0FAE = 1
 $A3:BF7C 6B          RTL
 }
 
