@@ -14576,7 +14576,7 @@ $91:FE01 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh
 $91:FE04 AA          TAX                    ;\
 $91:FE05 F0 06       BEQ $06    [$FE0D]     ;} If collision detected:
 $91:FE07 A9 01 00    LDA #$0001             ;\
-$91:FE0A 8D 34 0A    STA $0A34  [$7E:0A34]  ;} Solid enemy collision flags = 1
+$91:FE0A 8D 34 0A    STA $0A34  [$7E:0A34]  ;} Solid enemy collision flags = 1 (collision from above)
 
 $91:FE0D A5 12       LDA $12    [$7E:0012]  ;\
 $91:FE0F 8D 3E 0A    STA $0A3E  [$7E:0A3E]  ;} $0A3E = [$12] (space to move Samus up)
@@ -14590,7 +14590,7 @@ $91:FE23 8D D0 0D    STA $0DD0  [$7E:0DD0]  ; Samus solid collision flag = FFFFh
 $91:FE26 AA          TAX                    ;\
 $91:FE27 F0 09       BEQ $09    [$FE32]     ;} If collision detected:
 $91:FE29 AD 34 0A    LDA $0A34  [$7E:0A34]  ;\
-$91:FE2C 09 02 00    ORA #$0002             ;} Solid enemy collision flags |= 2
+$91:FE2C 09 02 00    ORA #$0002             ;} Solid enemy collision flags |= 2 (collision from below)
 $91:FE2F 8D 34 0A    STA $0A34  [$7E:0A34]  ;/
 
 $91:FE32 A5 12       LDA $12    [$7E:0012]  ;\
@@ -14608,7 +14608,7 @@ $91:FE4A 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $91:FE4C 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Block collision detection due to change of pose
 $91:FE50 90 06       BCC $06    [$FE58]     ; If carry set: (collision detected)
 $91:FE52 A9 01 00    LDA #$0001             ;\
-$91:FE55 8D 36 0A    STA $0A36  [$7E:0A36]  ;} Block collision flags = 1
+$91:FE55 8D 36 0A    STA $0A36  [$7E:0A36]  ;} Block collision flags = 1 (collision from above)
 
 $91:FE58 A5 12       LDA $12    [$7E:0012]  ;\
 $91:FE5A 8D 38 0A    STA $0A38  [$7E:0A38]  ;} $0A38 = [$12] (space to move Samus up)
@@ -14618,7 +14618,7 @@ $91:FE62 64 14       STZ $14    [$7E:0014]  ; $14 = 0
 $91:FE64 22 AB 96 94 JSL $9496AB[$94:96AB]  ; Block collision detection due to change of pose
 $91:FE68 90 09       BCC $09    [$FE73]     ; If carry set: (collision detected)
 $91:FE6A AD 36 0A    LDA $0A36  [$7E:0A36]  ;\
-$91:FE6D 09 02 00    ORA #$0002             ;} Block collision flags |= 2
+$91:FE6D 09 02 00    ORA #$0002             ;} Block collision flags |= 2 (collision from below)
 $91:FE70 8D 36 0A    STA $0A36  [$7E:0A36]  ;/
 
 $91:FE73 A5 12       LDA $12    [$7E:0012]  ;\

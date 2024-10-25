@@ -7727,40 +7727,40 @@ $A7:DEDB 80 C3       BRA $C3    [$DEA0]     ; Go to BRANCH_NEXT_ROUND_OR_ENRAGED
 ;;; $DEDD: Extended spritemaps ;;;
 {
 ; Body
-$A7:DEDD             dx 0001, 0000,0000,E0AA,E020 ; Invulnerable
-$A7:DEE7             dx 0001, 0000,0000,E0AA,E02E ; Full hitbox
-$A7:DEF1             dx 0001, 0000,0000,E0AA,E06C ; Eye hitbox only
+$A7:DEDD             dw 0001, 0000,0000,E0AA,E020 ; Invulnerable
+$A7:DEE7             dw 0001, 0000,0000,E0AA,E02E ; Full hitbox
+$A7:DEF1             dw 0001, 0000,0000,E0AA,E06C ; Eye hitbox only
 
 ; Eye
-$A7:DEFB             dx 0001, 0000,0000,E236,E020 ; Closed
-$A7:DF05             dx 0001, 0000,0000,E236,E020 ; Opening
-$A7:DF0F             dx 0001, 0000,0000,E202,E020 ; Opening / closing
-$A7:DF19             dx 0001, 0000,0000,E1CE,E020 ; Open
+$A7:DEFB             dw 0001, 0000,0000,E236,E020 ; Closed
+$A7:DF05             dw 0001, 0000,0000,E236,E020 ; Opening
+$A7:DF0F             dw 0001, 0000,0000,E202,E020 ; Opening / closing
+$A7:DF19             dw 0001, 0000,0000,E1CE,E020 ; Open
 
 ; Eyeball
-$A7:DF23             dx 0001, 0000,0000,E26A,E020 ; Centred
-$A7:DF2D             dx 0001, 0000,0000,E27E,E020 ; Looking up
-$A7:DF37             dx 0001, 0000,0000,E292,E020 ; Looking up-right
-$A7:DF41             dx 0001, 0000,0000,E2A6,E020 ; Looking left
-$A7:DF4B             dx 0001, 0000,0000,E2BA,E020 ; Looking right
-$A7:DF55             dx 0001, 0000,0000,E2CE,E020 ; Looking down-left
-$A7:DF5F             dx 0001, 0000,0000,E2E2,E020 ; Looking down-right
-$A7:DF69             dx 0001, 0000,0000,E2F6,E020 ; Looking up-left
-$A7:DF73             dx 0001, 0000,0000,E30A,E020 ; Looking up-right
+$A7:DF23             dw 0001, 0000,0000,E26A,E020 ; Centred
+$A7:DF2D             dw 0001, 0000,0000,E27E,E020 ; Looking up
+$A7:DF37             dw 0001, 0000,0000,E292,E020 ; Looking down
+$A7:DF41             dw 0001, 0000,0000,E2A6,E020 ; Looking left
+$A7:DF4B             dw 0001, 0000,0000,E2BA,E020 ; Looking right
+$A7:DF55             dw 0001, 0000,0000,E2CE,E020 ; Looking down-left
+$A7:DF5F             dw 0001, 0000,0000,E2E2,E020 ; Looking down-right
+$A7:DF69             dw 0001, 0000,0000,E2F6,E020 ; Looking up-left
+$A7:DF73             dw 0001, 0000,0000,E30A,E020 ; Looking up-right
 
 ; Tentacles
-$A7:DF7D             dx 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020 ;\
-$A7:DF8F             dx 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020 ;} Unused clone of below
-$A7:DFA1             dx 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020 ;/
-$A7:DFB3             dx 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020 ;\
-$A7:DFC5             dx 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020 ;} Normal
-$A7:DFD7             dx 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020 ;/
+$A7:DF7D             dw 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020 ;\
+$A7:DF8F             dw 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020 ;} Unused clone of below
+$A7:DFA1             dw 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020 ;/
+$A7:DFB3             dw 0002, 0000,0000,E31E,E020, 0000,0000,E34E,E020 ;\
+$A7:DFC5             dw 0002, 0000,0000,E32E,E020, 0000,0000,E35E,E020 ;} Normal
+$A7:DFD7             dw 0002, 0000,0000,E33E,E020, 0000,0000,E36E,E020 ;/
 
 ; Mouth
-$A7:DFE9             dx 0001, 0000,0000,E37E,E020 ; Normal
-$A7:DFF3             dx 0001, 0000,0000,E39A,E020 ;\
-$A7:DFFD             dx 0001, 0000,0000,E3B6,E020 ;} Spawning flame
-$A7:E007             dx 0001, 0000,0000,E37E,E020 ; Unused
+$A7:DFE9             dw 0001, 0000,0000,E37E,E020 ; Normal
+$A7:DFF3             dw 0001, 0000,0000,E39A,E020 ;\
+$A7:DFFD             dw 0001, 0000,0000,E3B6,E020 ;} Spawning flame
+$A7:E007             dw 0001, 0000,0000,E37E,E020 ; Unused
 }
 
 
@@ -7772,10 +7772,10 @@ $A7:E011 6B          RTL
 
 ;;; $E012: Hitboxes ;;;
 {
-$A7:E012             dx 0001, FFF7,FFF0,0008,0010,DD95,DD9B ; Unused
-$A7:E020             dx 0001, 0000,0000,0000,0000,804C,804C
-$A7:E02E             dx 0005, FFDF,FFD8,0020,0038,DD95,DD9B, FFF7,0016,0008,0027,DD95,DD9B, FFE9,0034,FFF0,0047,DD95,DD9B, 000F,0035,0016,0046,DD95,DD9B, FFF4,0035,000B,0045,DD95,DD9B
-$A7:E06C             dx 0001, FFF7,0016,0008,0027,DD95,DD9B
+$A7:E012             dw 0001, FFF7,FFF0,0008,0010,DD95,DD9B ; Unused
+$A7:E020             dw 0001, 0000,0000,0000,0000,804C,804C
+$A7:E02E             dw 0005, FFDF,FFD8,0020,0038,DD95,DD9B, FFF7,0016,0008,0027,DD95,DD9B, FFE9,0034,FFF0,0047,DD95,DD9B, 000F,0035,0016,0046,DD95,DD9B, FFF4,0035,000B,0045,DD95,DD9B
+$A7:E06C             dw 0001, FFF7,0016,0008,0027,DD95,DD9B
 }
 
 
@@ -7788,7 +7788,7 @@ $A7:E092             dx 0002, 81F8,00,210A, 81F8,F0,2104
 $A7:E09E             dx 0002, 8000,F8,610C, 81F0,F8,210C
 
 ; Body
-$A7:E0AA             dx FFFE,
+$A7:E0AA             dw FFFE,
                         2000,000A, 2338,2338,2338,3D32,3D33,7D33,7D32,2338,2338,2338,
                         2040,000A, 2338,3D40,3D41,3D42,3D43,7D43,7D42,7D41,7D40,2338,
                         2080,000A, 2338,3D50,3D51,3D52,3D53,7D53,7D52,7D51,7D50,2338,
@@ -7803,118 +7803,128 @@ $A7:E0AA             dx FFFE,
                         22C0,000A, 2338,2338,3D48,3D49,3D4A,7D4A,7D49,7D48,2338,2338,
                         FFFF
 
-; Eye
-$A7:E1CE             dx FFFE,
+; Eye - open
+$A7:E1CE             dw FFFE,
                         21C6,0004, 3D56,3D57,7D57,7D56,
                         2206,0004, 3D66,3D67,3D3F,7D66,
                         2246,0004, 3D76,3D77,3D4F,7D76,
                         2286,0004, 3D39,3D3A,7D3A,7D39,
                         FFFF
 
-$A7:E202             dx FFFE,
+; Eye - opening / closing
+$A7:E202             dw FFFE,
                         21C6,0004, 3D3D,3D3E,7D3E,7D3D,
                         2206,0004, 3D4D,3D4E,3D5F,7D4D,
                         2246,0004, 3D5D,3D5E,3D6F,7D5D,
                         2286,0004, 3D6D,3D6E,7D6E,7D6D,
                         FFFF
 
-$A7:E236             dx FFFE,
+; Eye - closed / opening
+$A7:E236             dw FFFE,
                         21C6,0004, 3D3B,3D3C,7D3C,7D3B,
                         2206,0004, 3D4B,3D4C,7D4C,7D4B,
                         2246,0004, 3D5B,3D5C,7D5C,7D5B,
                         2286,0004, 3D6B,3D6C,7D6C,7D6B,
                         FFFF
 
-; Eyeball
-$A7:E26A             dx FFFE,
+; Eyeball - centred
+$A7:E26A             dw FFFE,
                         2208,0002, 3D67,3D3F,
                         2248,0002, 3D77,3D4F,
                         FFFF
 
-$A7:E27E             dx FFFE,
+; Eyeball - looking up
+$A7:E27E             dw FFFE,
                         2208,0002, 3D10,3D11,
                         2248,0002, 3D20,3D21,
                         FFFF
 
-$A7:E292             dx FFFE,
+; Eyeball - looking down
+$A7:E292             dw FFFE,
                         2208,0002, 3D12,3D13,
                         2248,0002, 3D22,3D23,
                         FFFF
 
-$A7:E2A6             dx FFFE,
+; Eyeball - looking left
+$A7:E2A6             dw FFFE,
                         2208,0002, 3D14,3D15,
                         2248,0002, 3D24,3D25,
                         FFFF
 
-$A7:E2BA             dx FFFE,
+; Eyeball - looking right
+$A7:E2BA             dw FFFE,
                         2208,0002, 3D16,3D17,
                         2248,0002, 3D26,3D27,
                         FFFF
 
-$A7:E2CE             dx FFFE,
+; Eyeball - looking down-left
+$A7:E2CE             dw FFFE,
                         2208,0002, 3D18,3D19,
                         2248,0002, 3D28,3D29,
                         FFFF
 
-$A7:E2E2             dx FFFE,
+; Eyeball - looking down-right
+$A7:E2E2             dw FFFE,
                         2208,0002, 3D1A,3D1B,
                         2248,0002, 3D2A,3D2B,
                         FFFF
 
-$A7:E2F6             dx FFFE,
+; Eyeball - looking up-left
+$A7:E2F6             dw FFFE,
                         2208,0002, 3D1C,3D1D,
                         2248,0002, 3D2C,3D2D,
                         FFFF
 
-$A7:E30A             dx FFFE,
+; Eyeball - looking up-right
+$A7:E30A             dw FFFE,
                         2208,0002, 3D1E,3D1F,
                         2248,0002, 3D2E,3D2F,
                         FFFF
 
 ; Left tentacle
-$A7:E31E             dx FFFE,
+$A7:E31E             dw FFFE,
                         2304,0001, 3D58,
                         2344,0001, 3D68,
                         FFFF
 
-$A7:E32E             dx FFFE,
+$A7:E32E             dw FFFE,
                         2304,0001, 3D81,
                         2344,0001, 3D83,
                         FFFF
 
-$A7:E33E             dx FFFE,
+$A7:E33E             dw FFFE,
                         2304,0001, 3D80,
                         2344,0001, 3D82,
                         FFFF
 
 ; Right tentacle
-$A7:E34E             dx FFFE,
+$A7:E34E             dw FFFE,
                         230E,0001, 7D58,
                         234E,0001, 7D68,
                         FFFF
 
-$A7:E35E             dx FFFE,
+$A7:E35E             dw FFFE,
                         230E,0001, 7D81,
                         234E,0001, 7D83,
                         FFFF
 
-$A7:E36E             dx FFFE,
+$A7:E36E             dw FFFE,
                         230E,0001, 7D80,
                         234E,0001, 7D82,
                         FFFF
 
 ; Mouth
-$A7:E37E             dx FFFE,
+$A7:E37E             dw FFFE,
                         2306,0004, 3D59,3D5A,7D5A,7D59,
                         2346,0004, 3D69,3D6A,7D6A,7D69,
                         FFFF
 
-$A7:E39A             dx FFFE,
+$A7:E39A             dw FFFE,
                         2306,0004, 3D7A,3D7B,7D7B,7D7A,
                         2346,0004, 3D7C,3D7D,7D7D,7D7C,
                         FFFF
 
-$A7:E3B6             dx FFFE,
+$A7:E3B6             dw FFFE,
                         2306,0004, 3D7E,3D7F,7D7F,7D7E,
                         2346,0004, 3D30,3D31,7D31,7D30,
                         FFFF

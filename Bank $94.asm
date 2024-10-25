@@ -2967,7 +2967,8 @@ $94:96AA 6B          RTL
 ;;     Carry: Set if collision, clear otherwise
 ;;     $12: Adjusted distance to move Samus or distance to collision
 
-; Check for collision with the one or two blocks (depending on the distance to check) below Samus, ignoring special air/block collisions
+; Check for collision with the one or two blocks (depending on the distance to check) above or below Samus (depending on the sign of $12),
+; ignoring special air/block collisions
 
 $94:96AB A5 12       LDA $12    [$7E:0012]  ;\
 $94:96AD 10 04       BPL $04    [$96B3]     ;|
@@ -2985,7 +2986,7 @@ $94:96C0 A5 14       LDA $14    [$7E:0014]  ;} Save $12.$14
 $94:96C2 48          PHA                    ;/
 $94:96C3 A5 12       LDA $12    [$7E:0012]  ;\
 $94:96C5 29 F8 FF    AND #$FFF8             ;|
-$94:96C8 09 08 00    ORA #$0008             ;} $12.$14 = 8.0
+$94:96C8 09 08 00    ORA #$0008             ;} $12.$14 = 8.0 * sgn([$12])
 $94:96CB 85 12       STA $12    [$7E:0012]  ;|
 $94:96CD 64 14       STZ $14    [$7E:0014]  ;/
 $94:96CF 22 E3 96 94 JSL $9496E3[$94:96E3]  ; Collision detection due to change of pose - single block

@@ -6239,13 +6239,18 @@ $A3:C8A6             dw 3800, 57FF, 42F7, 158C, 00A5, 4F5A, 36B5, 2610, 1DCE, 77
 {
 ;;; $C8C6: Instruction list -  ;;;
 {
-$A3:C8C6             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:C8C6             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D6A8,
                         0004,D6B4,
                         0007,D6C0,
-                        CC5F,FFFC,FFF8, ; Move (FFFCh, FFF8h) pixels
-                        CC36,CFA6,      ; Enemy $0FB2 = $CFA6
+                        CC5F,FFFC,FFF8  ; Move (-4, -8) pixels
+}
+
+
+;;; $C8E0: Instruction list -  ;;;
+{
+$A3:C8E0             dx CC36,CFA6,      ; Enemy $0FB2 = $CFA6 (crawling - upside up - moving left)
                         CC3F,CB36,      ; Enemy $0FAE = $CB36
                         CC48,0006,      ; ???
                         0009,D5AC,
@@ -6257,13 +6262,18 @@ $A3:C8C6             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $C8FC: Instruction list -  ;;;
 {
-$A3:C8FC             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:C8FC             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D5D0,
                         0004,D5DC,
                         0007,D5E8,
-                        CC5F,FFF8,0004, ; Move (FFF8h, 0004h) pixels
-                        CC36,CFB7,      ; Enemy $0FB2 = $CFB7
+                        CC5F,FFF8,0004  ; Move (-8, 4) pixels
+}
+
+
+;;; $C916: Instruction list -  ;;;
+{
+$A3:C916             dx CC36,CFB7,      ; Enemy $0FB2 = $CFB7 (crawling - upside left - moving down)
                         CC3F,CBD2,      ; Enemy $0FAE = $CBD2
                         CC48,0003,      ; ???
                         0009,D5F4,
@@ -6275,13 +6285,18 @@ $A3:C8FC             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $C932: Instruction list -  ;;;
 {
-$A3:C932             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:C932             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D618,
                         0004,D624,
                         0007,D630,
-                        CC5F,0004,0008, ; Move (0004h, 0008h) pixels
-                        CC36,CFBD,      ; Enemy $0FB2 = $CFBD
+                        CC5F,0004,0008  ; Move (4, 8) pixels
+}
+
+
+;;; $C94C: Instruction list -  ;;;
+{
+$A3:C94C             dx CC36,CFBD,      ; Enemy $0FB2 = $CFBD (crawling - upside down - moving right)
                         CC3F,CB6A,      ; Enemy $0FAE = $CB6A
                         CC48,0005,      ; ???
                         0009,D63C,
@@ -6293,13 +6308,18 @@ $A3:C932             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $C968: Instruction list -  ;;;
 {
-$A3:C968             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:C968             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D660,
                         0004,D66C,
                         0007,D678,
-                        CC5F,0008,FFFC, ; Move (0008h, FFFCh) pixels
-                        CC36,CFCE,      ; Enemy $0FB2 = $CFCE
+                        CC5F,0008,FFFC  ; Move (8, -4) pixels
+}
+
+
+;;; $C982: Instruction list -  ;;;
+{
+$A3:C982             dx CC36,CFCE,      ; Enemy $0FB2 = $CFCE (crawling - upside right - moving up)
                         CC3F,CB9E,      ; Enemy $0FAE = $CB9E
                         CC48,0000,      ; ???
                         0009,D684,
@@ -6311,13 +6331,18 @@ $A3:C968             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $C99E: Instruction list -  ;;;
 {
-$A3:C99E             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:C99E             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D814,
                         0004,D820,
                         0007,D82C,
-                        CC5F,0004,FFF8, ; Move (0004h, FFF8h) pixels
-                        CC36,CFD4,      ; Enemy $0FB2 = $CFD4
+                        CC5F,0004,FFF8  ; Move (4, -8) pixels
+}
+
+
+;;; $C9B8: Instruction list -  ;;;
+{
+$A3:C9B8             dx CC36,CFD4,      ; Enemy $0FB2 = $CFD4 (crawling - upside up - moving right)
                         CC3F,CB84,      ; Enemy $0FAE = $CB84
                         CC48,0007,      ; ???
                         0009,D718,
@@ -6329,13 +6354,18 @@ $A3:C99E             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $C9D4: Instruction list -  ;;;
 {
-$A3:C9D4             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:C9D4             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D73C,
                         0004,D748,
                         0007,D754,
-                        CC5F,0008,0004, ; Move (0008h, 0004h) pixels
-                        CC36,CFE5,      ; Enemy $0FB2 = $CFE5
+                        CC5F,0008,0004  ; Move (8, 4) pixels
+}
+
+
+;;; $C9EE: Instruction list -  ;;;
+{
+$A3:C9EE             dx CC36,CFE5,      ; Enemy $0FB2 = $CFE5 (crawling - upside right - moving down)
                         CC3F,CBEC,      ; Enemy $0FAE = $CBEC
                         CC48,0001,      ; ???
                         0009,D760,
@@ -6347,13 +6377,18 @@ $A3:C9D4             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $CA0A: Instruction list -  ;;;
 {
-$A3:CA0A             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:CA0A             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D784,
                         0004,D790,
                         0007,D79C,
-                        CC5F,FFFC,0008, ; Move (FFFCh, 0008h) pixels
-                        CC36,CFEB,      ; Enemy $0FB2 = $CFEB
+                        CC5F,FFFC,0008  ; Move (-4, 8) pixels
+}
+
+
+;;; $CA24: Instruction list -  ;;;
+{
+$A3:CA24             dx CC36,CFEB,      ; Enemy $0FB2 = $CFEB (crawling - upside down - moving left)
                         CC3F,CB50,      ; Enemy $0FAE = $CB50
                         CC48,0004,      ; ???
                         0009,D7A8,
@@ -6365,13 +6400,18 @@ $A3:CA0A             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $CA40: Instruction list -  ;;;
 {
-$A3:CA40             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F
+$A3:CA40             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
                         0007,D7CC,
                         0004,D7D8,
                         0007,D7E4,
-                        CC5F,FFF8,FFFC, ; Move (FFF8h, FFFCh) pixels
-                        CC36,CFFC,      ; Enemy $0FB2 = $CFFC
+                        CC5F,FFF8,FFFC  ; Move (-8, -4) pixels
+}
+
+
+;;; $CA5A: Instruction list -  ;;;
+{
+$A3:CA5A             dx CC36,CFFC,      ; Enemy $0FB2 = $CFFC (crawling - upside left - moving up)
                         CC3F,CBB8,      ; Enemy $0FAE = $CBB8
                         CC48,0002,      ; ???
                         0009,D7F0,
@@ -6383,8 +6423,8 @@ $A3:CA40             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F
 
 ;;; $CA76: Instruction list -  ;;;
 {
-$A3:CA76             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CA76             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,D890,
                         0004,D89C,
                         0007,D8A8,
@@ -6394,8 +6434,8 @@ $A3:CA76             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CA8E: Instruction list -  ;;;
 {
-$A3:CA8E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CA8E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,D8C0,
                         0004,D8CC,
                         0007,D8D8,
@@ -6405,8 +6445,8 @@ $A3:CA8E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CAA6: Instruction list -  ;;;
 {
-$A3:CAA6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CAA6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,D8F0,
                         0004,D8FC,
                         0007,D908,
@@ -6416,8 +6456,8 @@ $A3:CAA6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CABE: Instruction list -  ;;;
 {
-$A3:CABE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CABE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,D920,
                         0004,D92C,
                         0007,D938,
@@ -6427,8 +6467,8 @@ $A3:CABE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CAD6: Instruction list -  ;;;
 {
-$A3:CAD6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CAD6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,D99C,
                         0004,D9A8,
                         0007,D9B4,
@@ -6438,8 +6478,8 @@ $A3:CAD6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CAEE: Instruction list -  ;;;
 {
-$A3:CAEE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CAEE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,D9CC,
                         0004,D9D8,
                         0007,D9E4,
@@ -6449,8 +6489,8 @@ $A3:CAEE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CB06: Instruction list -  ;;;
 {
-$A3:CB06             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CB06             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,D9FC,
                         0004,DA08,
                         0007,DA14,
@@ -6460,8 +6500,8 @@ $A3:CB06             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CB1E: Instruction list -  ;;;
 {
-$A3:CB1E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F
+$A3:CB1E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
                         0007,DA2C,
                         0004,DA38,
                         0007,DA44,
@@ -6471,7 +6511,7 @@ $A3:CB1E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F
 
 ;;; $CB36: Instruction list -  ;;;
 {
-$A3:CB36             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CB36             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D6CC,
                         0001,D6D8,
                         CC78,       ; ???
@@ -6483,7 +6523,7 @@ $A3:CB36             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CB50: Instruction list -  ;;;
 {
-$A3:CB50             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CB50             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D85E,
                         0001,D86A,
                         CC78,       ; ???
@@ -6495,7 +6535,7 @@ $A3:CB50             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CB6A: Instruction list -  ;;;
 {
-$A3:CB6A             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CB6A             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D6F2,
                         0001,D6FE,
                         CC78,       ; ???
@@ -6507,7 +6547,7 @@ $A3:CB6A             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CB84: Instruction list -  ;;;
 {
-$A3:CB84             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CB84             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D838,
                         0001,D844,
                         CC78,       ; ???
@@ -6519,7 +6559,7 @@ $A3:CB84             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CB9E: Instruction list -  ;;;
 {
-$A3:CB9E             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CB9E             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D705,
                         0001,D711,
                         CC78,       ; ???
@@ -6531,7 +6571,7 @@ $A3:CB9E             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CBB8: Instruction list -  ;;;
 {
-$A3:CBB8             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CBB8             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D871,
                         0001,D87D,
                         CC78,       ; ???
@@ -6543,7 +6583,7 @@ $A3:CBB8             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CBD2: Instruction list -  ;;;
 {
-$A3:CBD2             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CBD2             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D6DF,
                         0001,D6EB,
                         CC78,       ; ???
@@ -6555,7 +6595,7 @@ $A3:CBD2             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CBEC: Instruction list -  ;;;
 {
-$A3:CBEC             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
+$A3:CBEC             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
                         0005,D84B,
                         0001,D857,
                         CC78,       ; ???
@@ -6567,9 +6607,9 @@ $A3:CBEC             dx CC36,CF60,  ; Enemy $0FB2 = $CF60
 
 ;;; $CC06: Instruction list -  ;;;
 {
-$A3:CC06             dx CC36,D1B3,  ; Enemy $0FB2 = $D1B3
-                        0003,D711,
-                        0003,D6EB,
+$A3:CC06             dx CC36,D1B3,  ; Enemy $0FB2 = $D1B3 (airborne)
+                        0003,D711
+$A3:CC0E             dx 0003,D6EB,
                         0003,D6FE,
                         0003,D711,
                         80ED,CC0E   ; Go to $CC0E
@@ -6578,9 +6618,9 @@ $A3:CC06             dx CC36,D1B3,  ; Enemy $0FB2 = $D1B3
 
 ;;; $CC1E: Instruction list -  ;;;
 {
-$A3:CC1E             dx CC36,D1B3,  ; Enemy $0FB2 = $D1B3
-                        0003,D87D,
-                        0003,D857,
+$A3:CC1E             dx CC36,D1B3,  ; Enemy $0FB2 = $D1B3 (airborne)
+                        0003,D87D
+$A3:CC26             dx 0003,D857,
                         0003,D86A,
                         0003,D87D,
                         80ED,CC26   ; Go to $CC26
@@ -6705,14 +6745,19 @@ $A3:CD3A             dw 0000,0000,CA5A,C9EE
 
 ;;; $CD42:  ;;;
 {
-$A3:CD42             dw C982,0002,CB9E,0000
-$A3:CD4A             dw C9EE,0003,CBEC,0001
-$A3:CD52             dw CA5A,0002,CBB8,0001
-$A3:CD5A             dw C916,0003,CBD2,0000
-$A3:CD62             dw CA24,0000,CB50,0001
-$A3:CD6A             dw C94C,0001,CB6A,0000
-$A3:CD72             dw C8E0,0000,CB36,0000
-$A3:CD7A             dw C9B8,0001,CB84,0001
+;                        __________________ 
+;                       |     _____________ 
+;                       |    |     ________ 
+;                       |    |    |     ___ 
+;                       |    |    |    |
+$A3:CD42             dw C982,0002,CB9E,0000 ; 0: Upside right - moving up
+$A3:CD4A             dw C9EE,0003,CBEC,0001 ; 1: Upside right - moving down
+$A3:CD52             dw CA5A,0002,CBB8,0001 ; 2: Upside left - moving up
+$A3:CD5A             dw C916,0003,CBD2,0000 ; 3: Upside left - moving down
+$A3:CD62             dw CA24,0000,CB50,0001 ; 4: Upside down - moving left
+$A3:CD6A             dw C94C,0001,CB6A,0000 ; 5: Upside down - moving right
+$A3:CD72             dw C8E0,0000,CB36,0000 ; 6: Upside up - moving left
+$A3:CD7A             dw C9B8,0001,CB84,0001 ; 7: Upside up - moving right
 }
 
 
@@ -6732,43 +6777,52 @@ $A3:CDBA             dw 0000,0000,0000,0000
 
 ;;; $CDC2:  ;;;
 {
-$A3:CDC2             dw 0001,0000,0003,0002,0005,0004,0007,0006
+; Opposite direction?
+$A3:CDC2             dw 0001, 0000, 0003, 0002, 0005, 0004, 0007, 0006
 }
 
 
-;;; $CDD2:  ;;;
+;;; $CDD2: Yard crawling movement functions ;;;
 {
-$A3:CDD2             dw CFEB,CFE5,CFFC,CFB7,CFCE,CFBD,CFA6,CFD4
+; Indexed by [enemy $7E:780E] * 2
+$A3:CDD2             dw CFEB, ; 0: Upside up - moving left
+                        CFE5, ; 1: Upside left - moving down
+                        CFFC, ; 2: Upside down - moving right
+                        CFB7, ; 3: Upside down - moving left <-- points to upside right - moving up
+                        CFCE, ; 4: Upside up - moving right
+                        CFBD, ; 5: Upside right - moving down
+                        CFA6, ; 6: Upside right - moving up <-- points to upside down - moving left
+                        CFD4  ; 7: Upside left - moving up
 }
 
 
 ;;; $CDE2: Initialisation AI - enemy $DBBF (yard) ;;;
 {
 $A3:CDE2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:CDE5 A9 5F CF    LDA #$CF5F
-$A3:CDE8 9D B2 0F    STA $0FB2,x[$7E:1032]
-$A3:CDEB A9 4D 80    LDA #$804D
-$A3:CDEE 9D 8E 0F    STA $0F8E,x[$7E:100E]
+$A3:CDE5 A9 5F CF    LDA #$CF5F             ;\
+$A3:CDE8 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy movement function = RTL
+$A3:CDEB A9 4D 80    LDA #$804D             ;\
+$A3:CDEE 9D 8E 0F    STA $0F8E,x[$7E:100E]  ;} Enemy spritemap pointer = $804D (nothing)
 $A3:CDF1 A9 01 00    LDA #$0001             ;\
 $A3:CDF4 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
-$A3:CDF7 BD 92 0F    LDA $0F92,x[$7E:1012]
-$A3:CDFA 0A          ASL A
-$A3:CDFB 0A          ASL A
-$A3:CDFC 0A          ASL A
-$A3:CDFD A8          TAY
-$A3:CDFE B9 42 CD    LDA $CD42,y[$A3:CD72]
-$A3:CE01 9D 92 0F    STA $0F92,x[$7E:1012]
-$A3:CE04 B9 44 CD    LDA $CD44,y[$A3:CD74]
-$A3:CE07 1D 86 0F    ORA $0F86,x[$7E:1006]
-$A3:CE0A 9D 86 0F    STA $0F86,x[$7E:1006]
-$A3:CE0D B9 46 CD    LDA $CD46,y[$A3:CD76]
-$A3:CE10 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A3:CE13 B9 48 CD    LDA $CD48,y[$A3:CD78]
-$A3:CE16 9D AC 0F    STA $0FAC,x[$7E:102C]
-$A3:CE19 A9 00 00    LDA #$0000
-$A3:CE1C 9F 10 78 7E STA $7E7810,x[$7E:7890]
-$A3:CE20 BD B4 0F    LDA $0FB4,x[$7E:1034]
-$A3:CE23 9F 0C 78 7E STA $7E780C,x[$7E:788C]
+$A3:CDF7 BD 92 0F    LDA $0F92,x[$7E:1012]  ;\
+$A3:CDFA 0A          ASL A                  ;|
+$A3:CDFB 0A          ASL A                  ;} Y = [enemy initialisation parameter] * 8
+$A3:CDFC 0A          ASL A                  ;| 
+$A3:CDFD A8          TAY                    ;/
+$A3:CDFE B9 42 CD    LDA $CD42,y[$A3:CD72]  ;\
+$A3:CE01 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = [$CD42 + [Y]]
+$A3:CE04 B9 44 CD    LDA $CD44,y[$A3:CD74]  ;\
+$A3:CE07 1D 86 0F    ORA $0F86,x[$7E:1006]  ;} Enemy properties |= [$CD42 + [Y] + 2]
+$A3:CE0A 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
+$A3:CE0D B9 46 CD    LDA $CD46,y[$A3:CD76]  ;\
+$A3:CE10 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy $0FAE = [$CD42 + [Y] + 4]
+$A3:CE13 B9 48 CD    LDA $CD48,y[$A3:CD78]  ;\
+$A3:CE16 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy $0FAC = [$CD42 + [Y] + 6]
+$A3:CE19 A9 00 00    LDA #$0000             ;\
+$A3:CE1C 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy $7E:7810 = 0
+$A3:CE20 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
+$A3:CE23 9F 0C 78 7E STA $7E780C,x[$7E:788C];} Enemy $7E:780C = [enemy parameter 1]
 }
 
 
@@ -6801,11 +6855,11 @@ $A3:CE56 6B          RTL
 
 ;;; $CE57:  ;;;
 {
-$A3:CE57 BF 0E 78 7E LDA $7E780E,x[$7E:784E]
-$A3:CE5B 0A          ASL A
-$A3:CE5C A8          TAY
-$A3:CE5D B9 D2 CD    LDA $CDD2,y[$A3:CDE0]
-$A3:CE60 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+$A3:CE57 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
+$A3:CE5B 0A          ASL A                  ;|
+$A3:CE5C A8          TAY                    ;} Enemy movement function = [$CDD2 + [enemy direction] * 2]
+$A3:CE5D B9 D2 CD    LDA $CDD2,y[$A3:CDE0]  ;|
+$A3:CE60 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;/
 $A3:CE63 6B          RTL
 }
 
@@ -6816,7 +6870,7 @@ $A3:CE64 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:CE67 20 73 CE    JSR $CE73  [$A3:CE73]
 $A3:CE6A 20 9A CE    JSR $CE9A  [$A3:CE9A]
 $A3:CE6D 20 11 CF    JSR $CF11  [$A3:CF11]
-$A3:CE70 7C B2 0F    JMP ($0FB2,x)[$A3:CF5F]
+$A3:CE70 7C B2 0F    JMP ($0FB2,x)[$A3:CF5F]; Go to [enemy movement function]
 }
 
 
@@ -6940,7 +6994,7 @@ $A3:CF5F 6B          RTL
 }
 
 
-;;; $CF60:  ;;;
+;;; $CF60: Yard movement function - hiding ;;;
 {
 $A3:CF60 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
 $A3:CF64 C9 04 00    CMP #$0004             ;} If [enemy $7E:780E] < 4:
@@ -6986,7 +7040,7 @@ $A3:CFA5 60          RTS
 }
 
 
-;;; $CFA6:  ;;;
+;;; $CFA6: Yard movement function - crawling - upside up - moving left ;;;
 {
 $A3:CFA6 BF 0A 78 7E LDA $7E780A,x[$7E:79CA]
 $A3:CFAA D0 05       BNE $05    [$CFB1]
@@ -6999,14 +7053,14 @@ $A3:CFB4 4C 7E D0    JMP $D07E  [$A3:D07E]
 }
 
 
-;;; $CFB7:  ;;;
+;;; $CFB7: Yard movement function - crawling - upside left - moving down ;;;
 {
 $A3:CFB7 A0 EA CC    LDY #$CCEA
 $A3:CFBA 4C 02 D0    JMP $D002  [$A3:D002]
 }
 
 
-;;; $CFBD:  ;;;
+;;; $CFBD: Yard movement function - crawling - upside down - moving right ;;;
 {
 $A3:CFBD BF 0A 78 7E LDA $7E780A,x[$7E:78CA]
 $A3:CFC1 D0 05       BNE $05    [$CFC8]
@@ -7019,14 +7073,14 @@ $A3:CFCB 4C 7E D0    JMP $D07E  [$A3:D07E]
 }
 
 
-;;; $CFCE:  ;;;
+;;; $CFCE: Yard movement function - crawling - upside right - moving up ;;;
 {
 $A3:CFCE A0 FA CC    LDY #$CCFA
 $A3:CFD1 4C 02 D0    JMP $D002  [$A3:D002]
 }
 
 
-;;; $CFD4:  ;;;
+;;; $CFD4: Yard movement function - crawling - upside up - moving right ;;;
 {
 $A3:CFD4 BF 0A 78 7E LDA $7E780A,x[$7E:780A]
 $A3:CFD8 D0 05       BNE $05    [$CFDF]
@@ -7039,14 +7093,14 @@ $A3:CFE2 4C 7E D0    JMP $D07E  [$A3:D07E]
 }
 
 
-;;; $CFE5:  ;;;
+;;; $CFE5: Yard movement function - crawling - upside right - moving down ;;;
 {
 $A3:CFE5 A0 0A CD    LDY #$CD0A
 $A3:CFE8 4C 02 D0    JMP $D002  [$A3:D002]
 }
 
 
-;;; $CFEB:  ;;;
+;;; $CFEB: Yard movement function - crawling - upside down - moving left ;;;
 {
 $A3:CFEB BF 0A 78 7E LDA $7E780A,x[$7E:7A0A]
 $A3:CFEF D0 05       BNE $05    [$CFF6]
@@ -7059,14 +7113,14 @@ $A3:CFF9 4C 7E D0    JMP $D07E  [$A3:D07E]
 }
 
 
-;;; $CFFC:  ;;;
+;;; $CFFC: Yard movement function - crawling - upside left - moving up ;;;
 {
 $A3:CFFC A0 1A CD    LDY #$CD1A
 $A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]
 }
 
 
-;;; $D002:  ;;;
+;;; $D002: Yard crawling movement - vertical ;;;
 {
 $A3:D002 20 F8 D0    JSR $D0F8  [$A3:D0F8]
 $A3:D005 64 12       STZ $12    [$7E:0012]  ;\
@@ -7135,7 +7189,7 @@ $A3:D07D 6B          RTL
 }
 
 
-;;; $D07E:  ;;;
+;;; $D07E: Yard crawling movement - horizontal ;;;
 {
 $A3:D07E 20 F8 D0    JSR $D0F8  [$A3:D0F8]
 $A3:D081 64 12       STZ $12    [$7E:0012]  ;\
@@ -7301,7 +7355,7 @@ $A3:D1AB             dw CC06,CB44, CC1E,CB92
 }
 
 
-;;; $D1B3:  ;;;
+;;; $D1B3: Yard movement function - airborne ;;;
 {
 ; Note the two fixed point negation operations at $D20A and $D26D are off by 1.0 when the low word is zero
 $A3:D1B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0]
@@ -7532,50 +7586,50 @@ $A3:D3AF 6B          RTL
 ;;; $D3B0: Enemy touch - enemy $DBBF (yard) ;;;
 {
 $A3:D3B0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:D3B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0]
-$A3:D3B7 C9 01 00    CMP #$0001
-$A3:D3BA D0 0F       BNE $0F    [$D3CB]
-$A3:D3BC BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A3:D3BF C9 5F CF    CMP #$CF5F
-$A3:D3C2 F0 07       BEQ $07    [$D3CB]
-$A3:D3C4 20 21 D4    JSR $D421  [$A3:D421]
-$A3:D3C7 90 02       BCC $02    [$D3CB]
-$A3:D3C9 80 20       BRA $20    [$D3EB]
+$A3:D3B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
+$A3:D3B7 C9 01 00    CMP #$0001             ;} If [enemy $7E:7810] = 1:
+$A3:D3BA D0 0F       BNE $0F    [$D3CB]     ;/
+$A3:D3BC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
+$A3:D3BF C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] != RTL:
+$A3:D3C2 F0 07       BEQ $07    [$D3CB]     ;/
+$A3:D3C4 20 21 D4    JSR $D421  [$A3:D421]  ; Execute $D421
+$A3:D3C7 90 02       BCC $02    [$D3CB]     ; If carry set:
+$A3:D3C9 80 20       BRA $20    [$D3EB]     ; Go to BRANCH_D3EB
 
-$A3:D3CB BD B2 0F    LDA $0FB2,x[$7E:1172]
-$A3:D3CE C9 B3 D1    CMP #$D1B3
-$A3:D3D1 F0 05       BEQ $05    [$D3D8]
+$A3:D3CB BD B2 0F    LDA $0FB2,x[$7E:1172]  ;\
+$A3:D3CE C9 B3 D1    CMP #$D1B3             ;} If [enemy movement function] != airborne:
+$A3:D3D1 F0 05       BEQ $05    [$D3D8]     ;/
 $A3:D3D3 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
 $A3:D3D6 F0 13       BEQ $13    [$D3EB]     ;} If [Samus running momentum flag] = 0: go to BRANCH_D3EB
 
-$A3:D3D8 20 9F D4    JSR $D49F  [$A3:D49F]
-$A3:D3DB BD B2 0F    LDA $0FB2,x[$7E:1172]
-$A3:D3DE C9 B3 D1    CMP #$D1B3
-$A3:D3E1 D0 07       BNE $07    [$D3EA]
+$A3:D3D8 20 9F D4    JSR $D49F  [$A3:D49F]  ; Execute $D49F
+$A3:D3DB BD B2 0F    LDA $0FB2,x[$7E:1172]  ;\
+$A3:D3DE C9 B3 D1    CMP #$D1B3             ;} If [enemy movement function] = airborne:
+$A3:D3E1 D0 07       BNE $07    [$D3EA]     ;/
 $A3:D3E3 A9 70 00    LDA #$0070             ;\
 $A3:D3E6 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
 
-$A3:D3EA 6B          RTL
+$A3:D3EA 6B          RTL                    ; Return
 
 ; BRANCH_D3EB
-$A3:D3EB BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A3:D3EE C9 5F CF    CMP #$CF5F
-$A3:D3F1 F0 2D       BEQ $2D    [$D420]
-$A3:D3F3 BF 10 78 7E LDA $7E7810,x
-$A3:D3F7 C9 04 00    CMP #$0004
-$A3:D3FA F0 24       BEQ $24    [$D420]
-$A3:D3FC C9 03 00    CMP #$0003
-$A3:D3FF F0 1F       BEQ $1F    [$D420]
-$A3:D401 22 23 80 A3 JSL $A38023[$A3:8023]
-$A3:D405 BF 0C 78 7E LDA $7E780C,x
-$A3:D409 9D B4 0F    STA $0FB4,x
-$A3:D40C BF 10 78 7E LDA $7E7810,x
-$A3:D410 C9 00 00    CMP #$0000
-$A3:D413 F0 04       BEQ $04    [$D419]
-$A3:D415 22 56 D3 A3 JSL $A3D356[$A3:D356]
+$A3:D3EB BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A3:D3EE C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] = RTL: return
+$A3:D3F1 F0 2D       BEQ $2D    [$D420]     ;/
+$A3:D3F3 BF 10 78 7E LDA $7E7810,x          ;\
+$A3:D3F7 C9 04 00    CMP #$0004             ;} If [enemy $7E:7810] = 4: return
+$A3:D3FA F0 24       BEQ $24    [$D420]     ;/
+$A3:D3FC C9 03 00    CMP #$0003             ;\
+$A3:D3FF F0 1F       BEQ $1F    [$D420]     ;} If [enemy $7E:7810] = 3: return
+$A3:D401 22 23 80 A3 JSL $A38023[$A3:8023]  ; Normal enemy touch AI
+$A3:D405 BF 0C 78 7E LDA $7E780C,x          ;\
+$A3:D409 9D B4 0F    STA $0FB4,x            ;} Enemy parameter 1 = [enemy $7E:780C]
+$A3:D40C BF 10 78 7E LDA $7E7810,x          ;\
+$A3:D410 C9 00 00    CMP #$0000             ;} If [enemy $7E:7810] != 0:
+$A3:D413 F0 04       BEQ $04    [$D419]     ;/
+$A3:D415 22 56 D3 A3 JSL $A3D356[$A3:D356]  ; Execute $D356
 
-$A3:D419 A9 00 00    LDA #$0000
-$A3:D41C 9F 10 78 7E STA $7E7810,x
+$A3:D419 A9 00 00    LDA #$0000             ;\
+$A3:D41C 9F 10 78 7E STA $7E7810,x          ;} Enemy $7E:7810 = 0
 
 $A3:D420 6B          RTL
 }
