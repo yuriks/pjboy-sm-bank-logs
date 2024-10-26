@@ -6686,9 +6686,9 @@ $A3:CC77 6B          RTL
 
 ;;; $CC78:  ;;;
 {
-$A3:CC78 BF 10 78 7E LDA $7E7810,x[$7E:7890]
-$A3:CC7C C9 02 00    CMP #$0002
-$A3:CC7F F0 0A       BEQ $0A    [$CC8B]
+$A3:CC78 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
+$A3:CC7C C9 02 00    CMP #$0002             ;} If [enemy behaviour] != hiding:
+$A3:CC7F F0 0A       BEQ $0A    [$CC8B]     ;/
 $A3:CC81 22 11 81 80 JSL $808111[$80:8111]
 $A3:CC85 89 01 00    BIT #$0001
 $A3:CC88 D0 01       BNE $01    [$CC8B]
@@ -6820,7 +6820,7 @@ $A3:CE10 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy $0FAE = [$CD42 + [Y] + 4]
 $A3:CE13 B9 48 CD    LDA $CD48,y[$A3:CD78]  ;\
 $A3:CE16 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy $0FAC = [$CD42 + [Y] + 6]
 $A3:CE19 A9 00 00    LDA #$0000             ;\
-$A3:CE1C 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy $7E:7810 = 0
+$A3:CE1C 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy behaviour = idle crawling
 $A3:CE20 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
 $A3:CE23 9F 0C 78 7E STA $7E780C,x[$7E:788C];} Enemy $7E:780C = [enemy parameter 1]
 }
@@ -6867,123 +6867,125 @@ $A3:CE63 6B          RTL
 ;;; $CE64: Main AI - enemy $DBBF (yard) ;;;
 {
 $A3:CE64 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:CE67 20 73 CE    JSR $CE73  [$A3:CE73]
-$A3:CE6A 20 9A CE    JSR $CE9A  [$A3:CE9A]
-$A3:CE6D 20 11 CF    JSR $CF11  [$A3:CF11]
+$A3:CE67 20 73 CE    JSR $CE73  [$A3:CE73]  ; Drop yard if super missile quake
+$A3:CE6A 20 9A CE    JSR $CE9A  [$A3:CE9A]  ; Handle yard hiding
+$A3:CE6D 20 11 CF    JSR $CF11  [$A3:CF11]  ; Determine if yard hitbox is solid to Samus
 $A3:CE70 7C B2 0F    JMP ($0FB2,x)[$A3:CF5F]; Go to [enemy movement function]
 }
 
 
-;;; $CE73:  ;;;
+;;; $CE73: Drop yard if super missile quake ;;;
 {
-$A3:CE73 BF 10 78 7E LDA $7E7810,x[$7E:7890]
-$A3:CE77 C9 03 00    CMP #$0003
-$A3:CE7A F0 1D       BEQ $1D    [$CE99]
-$A3:CE7C C9 04 00    CMP #$0004
-$A3:CE7F F0 18       BEQ $18    [$CE99]
-$A3:CE81 C9 05 00    CMP #$0005
-$A3:CE84 F0 13       BEQ $13    [$CE99]
-$A3:CE86 AD 40 18    LDA $1840  [$7E:1840]
-$A3:CE89 C9 1E 00    CMP #$001E
-$A3:CE8C D0 0B       BNE $0B    [$CE99]
-$A3:CE8E AD 3E 18    LDA $183E  [$7E:183E]
-$A3:CE91 C9 14 00    CMP #$0014
-$A3:CE94 D0 03       BNE $03    [$CE99]
-$A3:CE96 20 64 D1    JSR $D164  [$A3:D164]
+$A3:CE73 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
+$A3:CE77 C9 03 00    CMP #$0003             ;} If [enemy behaviour] = dropped: return
+$A3:CE7A F0 1D       BEQ $1D    [$CE99]     ;/
+$A3:CE7C C9 04 00    CMP #$0004             ;\
+$A3:CE7F F0 18       BEQ $18    [$CE99]     ;} If [enemy behaviour] = kicked into air: return
+$A3:CE81 C9 05 00    CMP #$0005             ;\
+$A3:CE84 F0 13       BEQ $13    [$CE99]     ;} If [enemy behaviour] = shot into air: return
+$A3:CE86 AD 40 18    LDA $1840  [$7E:1840]  ;\
+$A3:CE89 C9 1E 00    CMP #$001E             ;} If [earthquake timer] = 1Eh:
+$A3:CE8C D0 0B       BNE $0B    [$CE99]     ;/
+$A3:CE8E AD 3E 18    LDA $183E  [$7E:183E]  ;\
+$A3:CE91 C9 14 00    CMP #$0014             ;} If [earthquake type] = 14h (super missile induced earthquake):
+$A3:CE94 D0 03       BNE $03    [$CE99]     ;/
+$A3:CE96 20 64 D1    JSR $D164  [$A3:D164]  ; Drop yard
 
 $A3:CE99 60          RTS
 }
 
 
-;;; $CE9A:  ;;;
+;;; $CE9A: Handle yard hiding ;;;
 {
-$A3:CE9A BF 10 78 7E LDA $7E7810,x[$7E:7890]
-$A3:CE9E C9 01 00    CMP #$0001
-$A3:CEA1 F0 6D       BEQ $6D    [$CF10]
-$A3:CEA3 C9 03 00    CMP #$0003
-$A3:CEA6 F0 68       BEQ $68    [$CF10]
-$A3:CEA8 C9 04 00    CMP #$0004
-$A3:CEAB F0 63       BEQ $63    [$CF10]
-$A3:CEAD C9 05 00    CMP #$0005
-$A3:CEB0 F0 5E       BEQ $5E    [$CF10]
-$A3:CEB2 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A3:CEB5 38          SEC
-$A3:CEB6 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$A3:CEB9 C9 A0 FF    CMP #$FFA0
-$A3:CEBC 30 4B       BMI $4B    [$CF09]
-$A3:CEBE BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A3:CEC1 CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$A3:CEC4 30 0D       BMI $0D    [$CED3]
-$A3:CEC6 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$A3:CEC9 29 FF 00    AND #$00FF
-$A3:CECC C9 08 00    CMP #$0008
-$A3:CECF D0 38       BNE $38    [$CF09]
+$A3:CE9A BF 10 78 7E LDA $7E7810,x[$7E:7890];\
+$A3:CE9E C9 01 00    CMP #$0001             ;} If [enemy behaviour] = aggressive crawling: return
+$A3:CEA1 F0 6D       BEQ $6D    [$CF10]     ;/
+$A3:CEA3 C9 03 00    CMP #$0003             ;\
+$A3:CEA6 F0 68       BEQ $68    [$CF10]     ;} If [enemy behaviour] = dropped: return
+$A3:CEA8 C9 04 00    CMP #$0004             ;\
+$A3:CEAB F0 63       BEQ $63    [$CF10]     ;} If [enemy behaviour] = kicked into air: return
+$A3:CEAD C9 05 00    CMP #$0005             ;\
+$A3:CEB0 F0 5E       BEQ $5E    [$CF10]     ;} If [enemy behaviour] = shot into air: return
+$A3:CEB2 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A3:CEB5 38          SEC                    ;|
+$A3:CEB6 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} If [enemy Y position] < [Samus Y position] - 60h: go to BRANCH_CRAWL
+$A3:CEB9 C9 A0 FF    CMP #$FFA0             ;|
+$A3:CEBC 30 4B       BMI $4B    [$CF09]     ;/
+$A3:CEBE BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;\
+$A3:CEC1 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] >= [Samus X position]:
+$A3:CEC4 30 0D       BMI $0D    [$CED3]     ;/
+$A3:CEC6 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$A3:CEC9 29 FF 00    AND #$00FF             ;|
+$A3:CECC C9 08 00    CMP #$0008             ;} If Samus is facing left: go to BRANCH_CRAWL
+$A3:CECF D0 38       BNE $38    [$CF09]     ;/
 $A3:CED1 80 0B       BRA $0B    [$CEDE]
 
-$A3:CED3 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$A3:CED6 29 FF 00    AND #$00FF
-$A3:CED9 C9 04 00    CMP #$0004
-$A3:CEDC D0 2B       BNE $2B    [$CF09]
+$A3:CED3 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\ Else ([enemy X position] < [Samus X position]):
+$A3:CED6 29 FF 00    AND #$00FF             ;|
+$A3:CED9 C9 04 00    CMP #$0004             ;} If Samus is facing right: go to BRANCH_CRAWL
+$A3:CEDC D0 2B       BNE $2B    [$CF09]     ;/
 
-$A3:CEDE BF 10 78 7E LDA $7E7810,x[$7E:7890]
-$A3:CEE2 C9 02 00    CMP #$0002
-$A3:CEE5 F0 21       BEQ $21    [$CF08]
-$A3:CEE7 BD AE 0F    LDA $0FAE,x[$7E:102E]
-$A3:CEEA C9 5F CF    CMP #$CF5F
-$A3:CEED F0 1A       BEQ $1A    [$CF09]
-$A3:CEEF 9D 92 0F    STA $0F92,x[$7E:1012]
-$A3:CEF2 A9 4D 80    LDA #$804D
-$A3:CEF5 9D 8E 0F    STA $0F8E,x[$7E:100E]
+$A3:CEDE BF 10 78 7E LDA $7E7810,x[$7E:7890];\
+$A3:CEE2 C9 02 00    CMP #$0002             ;} If [enemy behaviour] = hiding: return
+$A3:CEE5 F0 21       BEQ $21    [$CF08]     ;/
+$A3:CEE7 BD AE 0F    LDA $0FAE,x[$7E:102E]  ;\
+$A3:CEEA C9 5F CF    CMP #$CF5F             ;} If [enemy $0FAE] = RTL: go to BRANCH_CRAWL
+$A3:CEED F0 1A       BEQ $1A    [$CF09]     ;/
+$A3:CEEF 9D 92 0F    STA $0F92,x[$7E:1012]  ; Enemy instruction list pointer = [enemy $0FAE]
+$A3:CEF2 A9 4D 80    LDA #$804D             ;\
+$A3:CEF5 9D 8E 0F    STA $0F8E,x[$7E:100E]  ;} Enemy spritemap pointer = $804D (nothing)
 $A3:CEF8 A9 01 00    LDA #$0001             ;\
 $A3:CEFB 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A3:CEFE 9E 90 0F    STZ $0F90,x[$7E:1010]  ; Enemy timer = 0
-$A3:CF01 A9 02 00    LDA #$0002
-$A3:CF04 9F 10 78 7E STA $7E7810,x[$7E:7890]
+$A3:CF01 A9 02 00    LDA #$0002             ;\
+$A3:CF04 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy behaviour = hiding
 
-$A3:CF08 60          RTS
+$A3:CF08 60          RTS                    ; Return
 
-$A3:CF09 A9 00 00    LDA #$0000
-$A3:CF0C 9F 10 78 7E STA $7E7810,x[$7E:7890]
+; BRANCH_CRAWL
+$A3:CF09 A9 00 00    LDA #$0000             ;\
+$A3:CF0C 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy behaviour = idle crawling
 
 $A3:CF10 60          RTS
 }
 
 
-;;; $CF11:  ;;;
+;;; $CF11: Determine if yard hitbox is solid to Samus ;;;
 {
-$A3:CF11 BD B2 0F    LDA $0FB2,x[$7E:1032]
-$A3:CF14 C9 B3 D1    CMP #$D1B3
-$A3:CF17 F0 3C       BEQ $3C    [$CF55]
-$A3:CF19 BF 10 78 7E LDA $7E7810,x[$7E:7890]
-$A3:CF1D C9 01 00    CMP #$0001
-$A3:CF20 F0 1A       BEQ $1A    [$CF3C]
+$A3:CF11 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
+$A3:CF14 C9 B3 D1    CMP #$D1B3             ;} If [enemy movement function] = $D1B3 (airborne): go to BRANCH_NOT_SOLID
+$A3:CF17 F0 3C       BEQ $3C    [$CF55]     ;/
+$A3:CF19 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
+$A3:CF1D C9 01 00    CMP #$0001             ;} If [enemy behaviour] != aggressive crawling:
+$A3:CF20 F0 1A       BEQ $1A    [$CF3C]     ;/
 $A3:CF22 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
 $A3:CF25 D0 2E       BNE $2E    [$CF55]     ;} If [Samus running momentum flag] != 0: go to BRANCH_NOT_SOLID
-$A3:CF27 BF 10 78 7E LDA $7E7810,x[$7E:7890]
-$A3:CF2B C9 02 00    CMP #$0002
-$A3:CF2E F0 1B       BEQ $1B    [$CF4B]
-$A3:CF30 C9 03 00    CMP #$0003
-$A3:CF33 F0 20       BEQ $20    [$CF55]
-$A3:CF35 C9 05 00    CMP #$0005
-$A3:CF38 D0 11       BNE $11    [$CF4B]
-$A3:CF3A 80 19       BRA $19    [$CF55]
+$A3:CF27 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
+$A3:CF2B C9 02 00    CMP #$0002             ;} If [enemy behaviour] = hiding: go to BRANCH_SOLID
+$A3:CF2E F0 1B       BEQ $1B    [$CF4B]     ;/
+$A3:CF30 C9 03 00    CMP #$0003             ;\
+$A3:CF33 F0 20       BEQ $20    [$CF55]     ;} If [enemy behaviour] = dropped: go to BRANCH_NOT_SOLID
+$A3:CF35 C9 05 00    CMP #$0005             ;\
+$A3:CF38 D0 11       BNE $11    [$CF4B]     ;} If [enemy behaviour] != shot into air: go to BRANCH_SOLID
+$A3:CF3A 80 19       BRA $19    [$CF55]     ; Go to BRANCH_NOT_SOLID
 
 $A3:CF3C AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
 $A3:CF3F D0 14       BNE $14    [$CF55]     ;} If [Samus running momentum flag] != 0: go to BRANCH_NOT_SOLID
-$A3:CF41 BD B2 0F    LDA $0FB2,x[$7E:1172]
-$A3:CF44 C9 5F CF    CMP #$CF5F
-$A3:CF47 F0 02       BEQ $02    [$CF4B]
-$A3:CF49 80 0A       BRA $0A    [$CF55]
+$A3:CF41 BD B2 0F    LDA $0FB2,x[$7E:1172]  ;\
+$A3:CF44 C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] = RTL: go to BRANCH_SOLID
+$A3:CF47 F0 02       BEQ $02    [$CF4B]     ;/
+$A3:CF49 80 0A       BRA $0A    [$CF55]     ; Go to BRANCH_NOT_SOLID
 
-$A3:CF4B BD 86 0F    LDA $0F86,x[$7E:1006]
-$A3:CF4E 09 00 80    ORA #$8000
-$A3:CF51 9D 86 0F    STA $0F86,x[$7E:1006]
-$A3:CF54 60          RTS
+; BRANCH_SOLID
+$A3:CF4B BD 86 0F    LDA $0F86,x[$7E:1006]  ;\
+$A3:CF4E 09 00 80    ORA #$8000             ;} Set enemy hitbox solid to Samus
+$A3:CF51 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
+$A3:CF54 60          RTS                    ; Return
 
 ; BRANCH_NOT_SOLID
-$A3:CF55 BD 86 0F    LDA $0F86,x[$7E:1146]
-$A3:CF58 29 FF 7F    AND #$7FFF
-$A3:CF5B 9D 86 0F    STA $0F86,x[$7E:1146]
+$A3:CF55 BD 86 0F    LDA $0F86,x[$7E:1146]  ;\
+$A3:CF58 29 FF 7F    AND #$7FFF             ;} Set enemy hitbox not solid to Samus
+$A3:CF5B 9D 86 0F    STA $0F86,x[$7E:1146]  ;/
 $A3:CF5E 60          RTS
 }
 
@@ -6997,45 +6999,46 @@ $A3:CF5F 6B          RTL
 ;;; $CF60: Yard movement function - hiding ;;;
 {
 $A3:CF60 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
-$A3:CF64 C9 04 00    CMP #$0004             ;} If [enemy $7E:780E] < 4:
+$A3:CF64 C9 04 00    CMP #$0004             ;} If [enemy direction] < 4: (moving vertically)
 $A3:CF67 B0 11       BCS $11    [$CF7A]     ;/
 $A3:CF69 64 12       STZ $12    [$7E:0012]  ;\
-$A3:CF6B 64 14       STZ $14    [$7E:0014]  ;} $14.$12 = 0.0
-$A3:CF6D BD A8 0F    LDA $0FA8,x[$7E:1028]
-$A3:CF70 20 8F CF    JSR $CF8F  [$A3:CF8F]
+$A3:CF6B 64 14       STZ $14    [$7E:0014]  ;|
+$A3:CF6D BD A8 0F    LDA $0FA8,x[$7E:1028]  ;} $14.$12 = ±[enemy $0FA8] / 100h + 7 * sgn([enemy $0FA8])
+$A3:CF70 20 8F CF    JSR $CF8F  [$A3:CF8F]  ;/
 $A3:CF73 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]  ; Check for horizontal "solid" block collision
 $A3:CF77 90 12       BCC $12    [$CF8B]     ; If collision:
 $A3:CF79 6B          RTL                    ; Return
 
-$A3:CF7A 64 12       STZ $12    [$7E:0012]  ;\ Else ([enemy $7E:780E] >= 4):
-$A3:CF7C 64 14       STZ $14    [$7E:0014]  ;} $14.$12 = 0.0
-$A3:CF7E BD AA 0F    LDA $0FAA,x[$7E:10AA]
-$A3:CF81 20 8F CF    JSR $CF8F  [$A3:CF8F]
+$A3:CF7A 64 12       STZ $12    [$7E:0012]  ;\ Else ([enemy direction] >= 4): (moving horizontally)
+$A3:CF7C 64 14       STZ $14    [$7E:0014]  ;|
+$A3:CF7E BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;} $14.$12 = ±[enemy $0FAA] / 100h + 7 * sgn([enemy $0FAA])
+$A3:CF81 20 8F CF    JSR $CF8F  [$A3:CF8F]  ;/
 $A3:CF84 22 76 BC A0 JSL $A0BC76[$A0:BC76]  ; Check for vertical "solid" block collision
 $A3:CF88 90 01       BCC $01    [$CF8B]     ; If collision:
 $A3:CF8A 6B          RTL                    ; Return
 
-$A3:CF8B 20 64 D1    JSR $D164  [$A3:D164]
+$A3:CF8B 20 64 D1    JSR $D164  [$A3:D164]  ; Drop yard
 $A3:CF8E 6B          RTL
 }
 
 
-;;; $CF8F:  ;;;
+;;; $CF8F: $14.$12 = ±[A] / 100h + 7 * sgn([A]) ;;;
 {
-$A3:CF8F 10 02       BPL $02    [$CF93]
-$A3:CF91 C6 14       DEC $14    [$7E:0014]
-
-$A3:CF93 85 13       STA $13    [$7E:0013]
-$A3:CF95 A5 14       LDA $14    [$7E:0014]
-$A3:CF97 10 06       BPL $06    [$CF9F]
-$A3:CF99 38          SEC
-$A3:CF9A E9 07 00    SBC #$0007
-$A3:CF9D 80 04       BRA $04    [$CFA3]
-
-$A3:CF9F 18          CLC
-$A3:CFA0 69 07 00    ADC #$0007
-
-$A3:CFA3 85 14       STA $14    [$7E:0014]
+; Requires $14.$12 to be set to 0.0 first
+$A3:CF8F 10 02       BPL $02    [$CF93]     ;\
+$A3:CF91 C6 14       DEC $14    [$7E:0014]  ;|
+                                            ;} $14.$12 = ±[A] / 100h
+$A3:CF93 85 13       STA $13    [$7E:0013]  ;/
+$A3:CF95 A5 14       LDA $14    [$7E:0014]  ;\
+$A3:CF97 10 06       BPL $06    [$CF9F]     ;|
+$A3:CF99 38          SEC                    ;|
+$A3:CF9A E9 07 00    SBC #$0007             ;|
+$A3:CF9D 80 04       BRA $04    [$CFA3]     ;|
+                                            ;} $14 += 7 * sgn([$14])
+$A3:CF9F 18          CLC                    ;|
+$A3:CFA0 69 07 00    ADC #$0007             ;|
+                                            ;|
+$A3:CFA3 85 14       STA $14    [$7E:0014]  ;/
 $A3:CFA5 60          RTS
 }
 
@@ -7176,7 +7179,7 @@ $A3:D060 1A          INC A
 $A3:D061 9D B0 0F    STA $0FB0,x[$7E:1170]
 $A3:D064 C9 04 00    CMP #$0004
 $A3:D067 30 04       BMI $04    [$D06D]
-$A3:D069 20 64 D1    JSR $D164  [$A3:D164]
+$A3:D069 20 64 D1    JSR $D164  [$A3:D164]  ; Drop yard
 $A3:D06C 6B          RTL
 
 $A3:D06D BD AA 0F    LDA $0FAA,x[$7E:116A]
@@ -7242,7 +7245,7 @@ $A3:D0DA 1A          INC A
 $A3:D0DB 9D B0 0F    STA $0FB0,x[$7E:1030]
 $A3:D0DE C9 04 00    CMP #$0004
 $A3:D0E1 30 04       BMI $04    [$D0E7]
-$A3:D0E3 20 64 D1    JSR $D164  [$A3:D164]
+$A3:D0E3 20 64 D1    JSR $D164  [$A3:D164]  ; Drop yard
 $A3:D0E6 6B          RTL
 
 $A3:D0E7 BD A8 0F    LDA $0FA8,x[$7E:1028]
@@ -7321,16 +7324,16 @@ $A3:D163 60          RTS
 }
 
 
-;;; $D164:  ;;;
+;;; $D164: Drop yard ;;;
 {
 $A3:D164 5A          PHY
-$A3:D165 BF 10 78 7E LDA $7E7810,x[$7E:79D0]
-$A3:D169 C9 03 00    CMP #$0003
-$A3:D16C F0 3B       BEQ $3B    [$D1A9]
-$A3:D16E A9 03 00    LDA #$0003
-$A3:D171 9F 10 78 7E STA $7E7810,x[$7E:79D0]
-$A3:D175 A9 B3 D1    LDA #$D1B3
-$A3:D178 9D B2 0F    STA $0FB2,x[$7E:1172]
+$A3:D165 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
+$A3:D169 C9 03 00    CMP #$0003             ;} If [enemy behaviour] = dropped: return
+$A3:D16C F0 3B       BEQ $3B    [$D1A9]     ;/
+$A3:D16E A9 03 00    LDA #$0003             ;\
+$A3:D171 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = dropped
+$A3:D175 A9 B3 D1    LDA #$D1B3             ;\
+$A3:D178 9D B2 0F    STA $0FB2,x[$7E:1172]  ;} Enemy movement function = $D1B3 (airborne)
 $A3:D17B BD AC 0F    LDA $0FAC,x[$7E:116C]
 $A3:D17E 0A          ASL A
 $A3:D17F 0A          ASL A
@@ -7358,9 +7361,9 @@ $A3:D1AB             dw CC06,CB44, CC1E,CB92
 ;;; $D1B3: Yard movement function - airborne ;;;
 {
 ; Note the two fixed point negation operations at $D20A and $D26D are off by 1.0 when the low word is zero
-$A3:D1B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0]
-$A3:D1B7 C9 03 00    CMP #$0003
-$A3:D1BA F0 77       BEQ $77    [$D233]
+$A3:D1B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
+$A3:D1B7 C9 03 00    CMP #$0003             ;} If [enemy behaviour] = dropped: go to BRANCH_X_MOVEMENT_END
+$A3:D1BA F0 77       BEQ $77    [$D233]     ;/
 $A3:D1BC BF 04 78 7E LDA $7E7804,x[$7E:79C4];\
 $A3:D1C0 85 12       STA $12    [$7E:0012]  ;|
 $A3:D1C2 BF 06 78 7E LDA $7E7806,x[$7E:79C6];} Move enemy right by [enemy X velocity]
@@ -7409,6 +7412,7 @@ $A3:D229 A9 70 00    LDA #$0070             ;\
 $A3:D22C 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
 $A3:D230 4C 33 D2    JMP $D233  [$A3:D233]
 
+; BRANCH_X_MOVEMENT_END
 $A3:D233 BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
 $A3:D237 85 12       STA $12    [$7E:0012]  ;|
 $A3:D239 BF 02 78 7E LDA $7E7802,x[$7E:79C2];} Move enemy down by [enemy Y velocity]
@@ -7454,19 +7458,19 @@ $A3:D2A0 9D B0 0F    STA $0FB0,x[$7E:1170]
 $A3:D2A3 9F 08 78 7E STA $7E7808,x[$7E:79C8]
 $A3:D2A7 A9 01 00    LDA #$0001
 $A3:D2AA 9F 0A 78 7E STA $7E780A,x[$7E:79CA]
-$A3:D2AE BF 10 78 7E LDA $7E7810,x[$7E:79D0]
-$A3:D2B2 C9 03 00    CMP #$0003
-$A3:D2B5 F0 16       BEQ $16    [$D2CD]
-$A3:D2B7 A9 01 00    LDA #$0001
-$A3:D2BA 9F 10 78 7E STA $7E7810,x[$7E:79D0]
+$A3:D2AE BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
+$A3:D2B2 C9 03 00    CMP #$0003             ;} If [enemy behaviour] != dropped:
+$A3:D2B5 F0 16       BEQ $16    [$D2CD]     ;/
+$A3:D2B7 A9 01 00    LDA #$0001             ;\
+$A3:D2BA 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = aggressive crawling
 $A3:D2BE A9 08 00    LDA #$0008
 $A3:D2C1 9D B4 0F    STA $0FB4,x[$7E:1174]
 $A3:D2C4 22 3E D3 A3 JSL $A3D33E[$A3:D33E]
 $A3:D2C8 20 FA D2    JSR $D2FA  [$A3:D2FA]
 $A3:D2CB 80 07       BRA $07    [$D2D4]
 
-$A3:D2CD A9 00 00    LDA #$0000
-$A3:D2D0 9F 10 78 7E STA $7E7810,x[$7E:79D0]
+$A3:D2CD A9 00 00    LDA #$0000             ;\ Else ([enemy behaviour] = dropped):
+$A3:D2D0 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = idle crawling
 
 $A3:D2D4 BD 86 0F    LDA $0F86,x[$7E:1146]
 $A3:D2D7 29 FC FF    AND #$FFFC
@@ -7544,9 +7548,9 @@ $A3:D355 6B          RTL
 
 ;;; $D356:  ;;;
 {
-$A3:D356 BF 10 78 7E LDA $7E7810,x[$7E:7850]
-$A3:D35A C9 02 00    CMP #$0002
-$A3:D35D F0 4F       BEQ $4F    [$D3AE]
+$A3:D356 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
+$A3:D35A C9 02 00    CMP #$0002             ;} If [enemy behaviour] = hiding: return
+$A3:D35D F0 4F       BEQ $4F    [$D3AE]     ;/
 $A3:D35F BD B2 0F    LDA $0FB2,x[$7E:0FF2]
 $A3:D362 C9 5F CF    CMP #$CF5F
 $A3:D365 F0 47       BEQ $47    [$D3AE]
@@ -7587,7 +7591,7 @@ $A3:D3AF 6B          RTL
 {
 $A3:D3B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:D3B3 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
-$A3:D3B7 C9 01 00    CMP #$0001             ;} If [enemy $7E:7810] = 1:
+$A3:D3B7 C9 01 00    CMP #$0001             ;} If [enemy behaviour] = aggressive crawling:
 $A3:D3BA D0 0F       BNE $0F    [$D3CB]     ;/
 $A3:D3BC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
 $A3:D3BF C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] != RTL:
@@ -7616,20 +7620,20 @@ $A3:D3EB BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
 $A3:D3EE C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] = RTL: return
 $A3:D3F1 F0 2D       BEQ $2D    [$D420]     ;/
 $A3:D3F3 BF 10 78 7E LDA $7E7810,x          ;\
-$A3:D3F7 C9 04 00    CMP #$0004             ;} If [enemy $7E:7810] = 4: return
+$A3:D3F7 C9 04 00    CMP #$0004             ;} If [enemy behaviour] = kicked into air: return
 $A3:D3FA F0 24       BEQ $24    [$D420]     ;/
 $A3:D3FC C9 03 00    CMP #$0003             ;\
-$A3:D3FF F0 1F       BEQ $1F    [$D420]     ;} If [enemy $7E:7810] = 3: return
+$A3:D3FF F0 1F       BEQ $1F    [$D420]     ;} If [enemy behaviour] = dropped: return
 $A3:D401 22 23 80 A3 JSL $A38023[$A3:8023]  ; Normal enemy touch AI
 $A3:D405 BF 0C 78 7E LDA $7E780C,x          ;\
 $A3:D409 9D B4 0F    STA $0FB4,x            ;} Enemy parameter 1 = [enemy $7E:780C]
 $A3:D40C BF 10 78 7E LDA $7E7810,x          ;\
-$A3:D410 C9 00 00    CMP #$0000             ;} If [enemy $7E:7810] != 0:
+$A3:D410 C9 00 00    CMP #$0000             ;} If [enemy behaviour] != idle crawling:
 $A3:D413 F0 04       BEQ $04    [$D419]     ;/
 $A3:D415 22 56 D3 A3 JSL $A3D356[$A3:D356]  ; Execute $D356
 
 $A3:D419 A9 00 00    LDA #$0000             ;\
-$A3:D41C 9F 10 78 7E STA $7E7810,x          ;} Enemy $7E:7810 = 0
+$A3:D41C 9F 10 78 7E STA $7E7810,x          ;} Enemy behaviour = idle crawling
 
 $A3:D420 6B          RTL
 }
@@ -7693,22 +7697,23 @@ $A3:D469 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:D46C AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A3:D46F 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $A3:D470 A8          TAY                    ;/
-$A3:D471 B9 18 0C    LDA $0C18,y[$7E:0C18]
-$A3:D474 29 00 FF    AND #$FF00
-$A3:D477 C9 00 03    CMP #$0300
-$A3:D47A F0 05       BEQ $05    [$D481]
-$A3:D47C C9 00 05    CMP #$0500
-$A3:D47F D0 05       BNE $05    [$D486]
+$A3:D471 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
+$A3:D474 29 00 FF    AND #$FF00             ;|
+$A3:D477 C9 00 03    CMP #$0300             ;|
+$A3:D47A F0 05       BEQ $05    [$D481]     ;} If (projectile type) != (power) bomb: go to BRANCH_NON_BOMB
+$A3:D47C C9 00 05    CMP #$0500             ;|
+$A3:D47F D0 05       BNE $05    [$D486]     ;/
 
-$A3:D481 22 2D 80 A3 JSL $A3802D[$A3:802D]
-$A3:D485 6B          RTL
+$A3:D481 22 2D 80 A3 JSL $A3802D[$A3:802D]  ; Normal enemy shot AI
+$A3:D485 6B          RTL                    ; Return
 
-$A3:D486 BF 10 78 7E LDA $7E7810,x[$7E:79D0]
-$A3:D48A C9 03 00    CMP #$0003
-$A3:D48D F0 08       BEQ $08    [$D497]
-$A3:D48F C9 04 00    CMP #$0004
-$A3:D492 F0 03       BEQ $03    [$D497]
-$A3:D494 20 57 D5    JSR $D557  [$A3:D557]
+; BRANCH_NON_BOMB
+$A3:D486 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
+$A3:D48A C9 03 00    CMP #$0003             ;} If [enemy behaviour] != dropped:
+$A3:D48D F0 08       BEQ $08    [$D497]     ;/
+$A3:D48F C9 04 00    CMP #$0004             ;\
+$A3:D492 F0 03       BEQ $03    [$D497]     ;} If [enemy behaviour] != kicked into air:
+$A3:D494 20 57 D5    JSR $D557  [$A3:D557]  ; Execute $D557
 
 $A3:D497 A9 70 00    LDA #$0070             ;\
 $A3:D49A 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
@@ -7719,8 +7724,8 @@ $A3:D49E 6B          RTL
 ;;; $D49F:  ;;;
 {
 ; Note the fixed point negation operation at $D4F6 is off by 1.0 when the low word is zero
-$A3:D49F A9 04 00    LDA #$0004
-$A3:D4A2 9F 10 78 7E STA $7E7810,x[$7E:79D0]
+$A3:D49F A9 04 00    LDA #$0004             ;\
+$A3:D4A2 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = kicked into air
 $A3:D4A6 A9 B3 D1    LDA #$D1B3
 $A3:D4A9 9D B2 0F    STA $0FB2,x[$7E:1172]
 $A3:D4AC BD AC 0F    LDA $0FAC,x[$7E:116C]
@@ -7772,8 +7777,8 @@ $A3:D517             dw 0000,FFFD, A000,FFFD, 4000,FFFD, 0000,FFFC, A000,FFFC, 4
 ;;; $D557:  ;;;
 {
 $A3:D557 5A          PHY
-$A3:D558 A9 05 00    LDA #$0005
-$A3:D55B 9F 10 78 7E STA $7E7810,x[$7E:79D0]
+$A3:D558 A9 05 00    LDA #$0005             ;\
+$A3:D55B 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = shot into air
 $A3:D55F A9 B3 D1    LDA #$D1B3
 $A3:D562 9D B2 0F    STA $0FB2,x[$7E:1172]
 $A3:D565 BD AC 0F    LDA $0FAC,x[$7E:116C]
