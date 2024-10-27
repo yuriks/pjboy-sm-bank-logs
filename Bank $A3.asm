@@ -6726,16 +6726,21 @@ $A3:CCA2             dw 0040, 0080, 00C0, 0100, 0140, 0180, 01C0, 0200, 0240, 02
 }
 
 
-;;; $CCE2:  ;;;
+;;; $CCE2: Yard turn data ;;;
 {
+;                        __________________ Outside turn lookahead X offset
+;                       |     _____________ Outside turn lookahead Y offset
+;                       |    |     ________ Instruction list - outside turn
+;                       |    |    |     ___ Instruction list - inside turn
+;                       |    |    |    |
 $A3:CCE2             dw FFF9,0000,C8FC,CA76
-$A3:CCEA             dw 0000,0007,C932,CABE
+$A3:CCEA             dw 0000,0007,C932,CABE ; upside left - moving down
 $A3:CCF2             dw 0007,0000,C968,CAA6
-$A3:CCFA             dw 0000,FFF9,C8C6,CA8E
+$A3:CCFA             dw 0000,FFF9,C8C6,CA8E ; upside right - moving up
 $A3:CD02             dw 0007,0000,C9D4,CAD6
-$A3:CD0A             dw 0000,0007,CA0A,CB1E
+$A3:CD0A             dw 0000,0007,CA0A,CB1E ; upside right - moving down
 $A3:CD12             dw FFF9,0000,CA40,CB06
-$A3:CD1A             dw 0000,FFF9,C99E,CAEE
+$A3:CD1A             dw 0000,FFF9,C99E,CAEE ; upside left - moving up
 $A3:CD22             dw 0000,0000,C916,C982
 $A3:CD2A             dw 0000,0000,C982,C916
 $A3:CD32             dw 0000,0000,C9EE,CA5A
@@ -6750,14 +6755,14 @@ $A3:CD3A             dw 0000,0000,CA5A,C9EE
 ;                       |    |     ________ 
 ;                       |    |    |     ___ 
 ;                       |    |    |    |
-$A3:CD42             dw C982,0002,CB9E,0000 ; 0: Upside right - moving up
-$A3:CD4A             dw C9EE,0003,CBEC,0001 ; 1: Upside right - moving down
-$A3:CD52             dw CA5A,0002,CBB8,0001 ; 2: Upside left - moving up
-$A3:CD5A             dw C916,0003,CBD2,0000 ; 3: Upside left - moving down
-$A3:CD62             dw CA24,0000,CB50,0001 ; 4: Upside down - moving left
-$A3:CD6A             dw C94C,0001,CB6A,0000 ; 5: Upside down - moving right
-$A3:CD72             dw C8E0,0000,CB36,0000 ; 6: Upside up - moving left
-$A3:CD7A             dw C9B8,0001,CB84,0001 ; 7: Upside up - moving right
+$A3:CD42             dw C982,0002,CB9E,0000, ; 0: Upside right - moving up
+                        C9EE,0003,CBEC,0001, ; 1: Upside right - moving down
+                        CA5A,0002,CBB8,0001, ; 2: Upside left - moving up
+                        C916,0003,CBD2,0000, ; 3: Upside left - moving down
+                        CA24,0000,CB50,0001, ; 4: Upside down - moving left
+                        C94C,0001,CB6A,0000, ; 5: Upside down - moving right
+                        C8E0,0000,CB36,0000, ; 6: Upside up - moving left
+                        C9B8,0001,CB84,0001  ; 7: Upside up - moving right
 }
 
 
@@ -7003,7 +7008,7 @@ $A3:CF64 C9 04 00    CMP #$0004             ;} If [enemy direction] < 4: (moving
 $A3:CF67 B0 11       BCS $11    [$CF7A]     ;/
 $A3:CF69 64 12       STZ $12    [$7E:0012]  ;\
 $A3:CF6B 64 14       STZ $14    [$7E:0014]  ;|
-$A3:CF6D BD A8 0F    LDA $0FA8,x[$7E:1028]  ;} $14.$12 = ±[enemy $0FA8] / 100h + 7 * sgn([enemy $0FA8])
+$A3:CF6D BD A8 0F    LDA $0FA8,x[$7E:1028]  ;} $14.$12 = ±[enemy crawling X velocity] / 100h + 7 * sgn([enemy crawling X velocity])
 $A3:CF70 20 8F CF    JSR $CF8F  [$A3:CF8F]  ;/
 $A3:CF73 22 BF BB A0 JSL $A0BBBF[$A0:BBBF]  ; Check for horizontal "solid" block collision
 $A3:CF77 90 12       BCC $12    [$CF8B]     ; If collision:
@@ -7011,7 +7016,7 @@ $A3:CF79 6B          RTL                    ; Return
 
 $A3:CF7A 64 12       STZ $12    [$7E:0012]  ;\ Else ([enemy direction] >= 4): (moving horizontally)
 $A3:CF7C 64 14       STZ $14    [$7E:0014]  ;|
-$A3:CF7E BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;} $14.$12 = ±[enemy $0FAA] / 100h + 7 * sgn([enemy $0FAA])
+$A3:CF7E BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;} $14.$12 = ±[enemy crawling Y velocity] / 100h + 7 * sgn([enemy crawling Y velocity])
 $A3:CF81 20 8F CF    JSR $CF8F  [$A3:CF8F]  ;/
 $A3:CF84 22 76 BC A0 JSL $A0BC76[$A0:BC76]  ; Check for vertical "solid" block collision
 $A3:CF88 90 01       BCC $01    [$CF8B]     ; If collision:
@@ -7125,165 +7130,174 @@ $A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]
 
 ;;; $D002: Yard crawling movement - vertical ;;;
 {
-$A3:D002 20 F8 D0    JSR $D0F8  [$A3:D0F8]
+;; Parameters:
+;;     Y: 
+$A3:D002 20 F8 D0    JSR $D0F8  [$A3:D0F8]  ; Move enemy ahead for outside turn check
 $A3:D005 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D007 64 14       STZ $14    [$7E:0014]  ;|
 $A3:D009 BD A8 0F    LDA $0FA8,x[$7E:1168]  ;|
-$A3:D00C 10 02       BPL $02    [$D010]     ;} $14.$12 = [enemy X velocity] / 100h
+$A3:D00C 10 02       BPL $02    [$D010]     ;} $14.$12 = [enemy crawling X velocity] / 100h
 $A3:D00E C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:D010 85 13       STA $13    [$7E:0013]  ;/
 $A3:D012 A5 14       LDA $14    [$7E:0014]  ;\
-$A3:D014 10 03       BPL $03    [$D019]     ;} If [$14] < 0:
-$A3:D016 3A          DEC A                  ; $14 -= 1
-$A3:D017 80 01       BRA $01    [$D01A]
-                                            ; Else ([$14] >= 0):
-$A3:D019 1A          INC A                  ; $14 += 1
-
-$A3:D01A 85 14       STA $14    [$7E:0014]
-$A3:D01C 5A          PHY
-$A3:D01D 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], process slopes
-$A3:D021 7A          PLY
-$A3:D022 20 0D D1    JSR $D10D  [$A3:D10D]
-$A3:D025 90 36       BCC $36    [$D05D]     ; If not collided with wall: go to BRANCH_NO_COLLISION
-$A3:D027 A9 00 00    LDA #$0000
-$A3:D02A 9D B0 0F    STA $0FB0,x[$7E:1170]
+$A3:D014 10 03       BPL $03    [$D019]     ;|
+$A3:D016 3A          DEC A                  ;|
+$A3:D017 80 01       BRA $01    [$D01A]     ;|
+                                            ;} $14 += 1 * sgn([enemy X velocity])
+$A3:D019 1A          INC A                  ;|
+                                            ;|
+$A3:D01A 85 14       STA $14    [$7E:0014]  ;/
+$A3:D01C 5A          PHY                    ;\
+$A3:D01D 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ;} Move enemy right by [$14].[$12], process slopes
+$A3:D021 7A          PLY                    ;/
+$A3:D022 20 0D D1    JSR $D10D  [$A3:D10D]  ; Move enemy back from outside turn check
+$A3:D025 90 36       BCC $36    [$D05D]     ; If no collision: go to BRANCH_OUTSIDE_TURN
+$A3:D027 A9 00 00    LDA #$0000             ;\
+$A3:D02A 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy consecutive turn counter = 0
 $A3:D02D 5A          PHY                    ;\
-$A3:D02E 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ;} Align enemy Y position with non-square slope
+$A3:D02E 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ;} Align enemy Y position with non-square slope <-- does nothing, a non-square slope isn't a collision
 $A3:D032 7A          PLY                    ;/
-$A3:D033 20 24 D1    JSR $D124  [$A3:D124]
+$A3:D033 20 24 D1    JSR $D124  [$A3:D124]  ; Execute $D124
 $A3:D036 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D038 64 14       STZ $14    [$7E:0014]  ;|
 $A3:D03A BD AA 0F    LDA $0FAA,x[$7E:116A]  ;|
-$A3:D03D 10 02       BPL $02    [$D041]     ;} $14.$12 = [enemy Y velocity] / 100h
+$A3:D03D 10 02       BPL $02    [$D041]     ;} $14.$12 = [enemy crawling Y velocity] / 100h
 $A3:D03F C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:D041 85 13       STA $13    [$7E:0013]  ;/
-$A3:D043 5A          PHY
-$A3:D044 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$A3:D048 7A          PLY
-$A3:D049 B0 01       BCS $01    [$D04C]     ; If not collided with block:
+$A3:D043 5A          PHY                    ;\
+$A3:D044 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14].[$12]
+$A3:D048 7A          PLY                    ;/
+$A3:D049 B0 01       BCS $01    [$D04C]     ; If collision: go to BRANCH_INSIDE_TURN
 $A3:D04B 6B          RTL                    ; Return
 
-$A3:D04C BD A8 0F    LDA $0FA8,x[$7E:11A8]
-$A3:D04F 49 FF FF    EOR #$FFFF
-$A3:D052 1A          INC A
-$A3:D053 9D A8 0F    STA $0FA8,x[$7E:11A8]
-$A3:D056 B9 06 00    LDA $0006,y[$A3:CD20]
-$A3:D059 20 4C D1    JSR $D14C  [$A3:D14C]
-$A3:D05C 6B          RTL
+; BRANCH_INSIDE_TURN
+$A3:D04C BD A8 0F    LDA $0FA8,x[$7E:11A8]  ;\
+$A3:D04F 49 FF FF    EOR #$FFFF             ;|
+$A3:D052 1A          INC A                  ;} Negate enemy crawling X velocity
+$A3:D053 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;/
+$A3:D056 B9 06 00    LDA $0006,y[$A3:CD20]  ; A = [[Y] + 6]
+$A3:D059 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
+$A3:D05C 6B          RTL                    ; Return
 
-; BRANCH_NO_COLLISION
-$A3:D05D BD B0 0F    LDA $0FB0,x[$7E:1170]
-$A3:D060 1A          INC A
-$A3:D061 9D B0 0F    STA $0FB0,x[$7E:1170]
-$A3:D064 C9 04 00    CMP #$0004
-$A3:D067 30 04       BMI $04    [$D06D]
+; BRANCH_OUTSIDE_TURN
+$A3:D05D BD B0 0F    LDA $0FB0,x[$7E:1170]  ;\
+$A3:D060 1A          INC A                  ;} Increment enemy consecutive turn counter
+$A3:D061 9D B0 0F    STA $0FB0,x[$7E:1170]  ;/
+$A3:D064 C9 04 00    CMP #$0004             ;\
+$A3:D067 30 04       BMI $04    [$D06D]     ;} If [enemy consecutive turn counter] >= 4:
 $A3:D069 20 64 D1    JSR $D164  [$A3:D164]  ; Drop yard
-$A3:D06C 6B          RTL
+$A3:D06C 6B          RTL                    ; Return
 
-$A3:D06D BD AA 0F    LDA $0FAA,x[$7E:116A]
-$A3:D070 49 FF FF    EOR #$FFFF
-$A3:D073 1A          INC A
-$A3:D074 9D AA 0F    STA $0FAA,x[$7E:116A]
-$A3:D077 B9 04 00    LDA $0004,y[$A3:CCFE]
-$A3:D07A 20 4C D1    JSR $D14C  [$A3:D14C]
+$A3:D06D BD AA 0F    LDA $0FAA,x[$7E:116A]  ;\
+$A3:D070 49 FF FF    EOR #$FFFF             ;|
+$A3:D073 1A          INC A                  ;} Negate enemy crawling Y velocity
+$A3:D074 9D AA 0F    STA $0FAA,x[$7E:116A]  ;/
+$A3:D077 B9 04 00    LDA $0004,y[$A3:CCFE]  ; A = [[Y] + 4]
+$A3:D07A 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
 $A3:D07D 6B          RTL
 }
 
 
 ;;; $D07E: Yard crawling movement - horizontal ;;;
 {
-$A3:D07E 20 F8 D0    JSR $D0F8  [$A3:D0F8]
+$A3:D07E 20 F8 D0    JSR $D0F8  [$A3:D0F8]  ; Move enemy ahead for outside turn check
 $A3:D081 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D083 64 14       STZ $14    [$7E:0014]  ;|
 $A3:D085 BD AA 0F    LDA $0FAA,x[$7E:116A]  ;|
-$A3:D088 10 02       BPL $02    [$D08C]     ;} $14.$12 = [enemy Y velocity] / 100h
+$A3:D088 10 02       BPL $02    [$D08C]     ;} $14.$12 = [enemy crawling Y velocity] / 100h
 $A3:D08A C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:D08C 85 13       STA $13    [$7E:0013]  ;/
 $A3:D08E A5 14       LDA $14    [$7E:0014]  ;\
-$A3:D090 10 03       BPL $03    [$D095]     ;} If [$14] < 0:
-$A3:D092 3A          DEC A                  ; $14 -= 1
-$A3:D093 80 01       BRA $01    [$D096]
-                                            ; Else ([$14] >= 0):
-$A3:D095 1A          INC A                  ; $14 += 1
-
-$A3:D096 85 14       STA $14    [$7E:0014]
-$A3:D098 5A          PHY
-$A3:D099 22 86 C7 A0 JSL $A0C786[$A0:C786]  ; Move enemy down by [$14].[$12]
-$A3:D09D 7A          PLY
-$A3:D09E 20 0D D1    JSR $D10D  [$A3:D10D]
-$A3:D0A1 90 34       BCC $34    [$D0D7]     ; If not collided with block: go to BRANCH_NO_COLLISION
-$A3:D0A3 A9 00 00    LDA #$0000
-$A3:D0A6 9D B0 0F    STA $0FB0,x[$7E:1170]
+$A3:D090 10 03       BPL $03    [$D095]     ;|
+$A3:D092 3A          DEC A                  ;|
+$A3:D093 80 01       BRA $01    [$D096]     ;|
+                                            ;} $14 += 1 * sgn([enemy Y velocity])
+$A3:D095 1A          INC A                  ;|
+                                            ;|
+$A3:D096 85 14       STA $14    [$7E:0014]  ;/
+$A3:D098 5A          PHY                    ;\
+$A3:D099 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;} Move enemy down by [$14].[$12]
+$A3:D09D 7A          PLY                    ;/
+$A3:D09E 20 0D D1    JSR $D10D  [$A3:D10D]  ; Move enemy back from outside turn check
+$A3:D0A1 90 34       BCC $34    [$D0D7]     ; If no collision: go to BRANCH_OUTSIDE_TURN
+$A3:D0A3 A9 00 00    LDA #$0000             ;\
+$A3:D0A6 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy consecutive turn counter = 0
 $A3:D0A9 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D0AB 64 14       STZ $14    [$7E:0014]  ;|
 $A3:D0AD BD A8 0F    LDA $0FA8,x[$7E:1168]  ;|
-$A3:D0B0 10 02       BPL $02    [$D0B4]     ;} $14.$12 = [enemy X velocity] / 100h
+$A3:D0B0 10 02       BPL $02    [$D0B4]     ;} $14.$12 = [enemy crawling X velocity] / 100h
 $A3:D0B2 C6 14       DEC $14    [$7E:0014]  ;|
                                             ;|
 $A3:D0B4 85 13       STA $13    [$7E:0013]  ;/
-$A3:D0B6 5A          PHY
-$A3:D0B7 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], process slopes
-$A3:D0BB 7A          PLY
-$A3:D0BC B0 08       BCS $08    [$D0C6]     ; If not collided with wall:
+$A3:D0B6 5A          PHY                    ;\
+$A3:D0B7 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ;} Move enemy right by [$14].[$12], process slopes
+$A3:D0BB 7A          PLY                    ;/
+$A3:D0BC B0 08       BCS $08    [$D0C6]     ; If collision: go to BRANCH_INSIDE_TURN
 $A3:D0BE 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$A3:D0C2 20 24 D1    JSR $D124  [$A3:D124]
-$A3:D0C5 6B          RTL
+$A3:D0C2 20 24 D1    JSR $D124  [$A3:D124]  ; Execute $D124
+$A3:D0C5 6B          RTL                    ; Return
 
-$A3:D0C6 BD AA 0F    LDA $0FAA,x[$7E:116A]
-$A3:D0C9 49 FF FF    EOR #$FFFF
-$A3:D0CC 1A          INC A
-$A3:D0CD 9D AA 0F    STA $0FAA,x[$7E:116A]
-$A3:D0D0 B9 06 00    LDA $0006,y[$A3:CCE8]
-$A3:D0D3 20 4C D1    JSR $D14C  [$A3:D14C]
-$A3:D0D6 6B          RTL
+; BRANCH_INSIDE_TURN
+$A3:D0C6 BD AA 0F    LDA $0FAA,x[$7E:116A]  ;\
+$A3:D0C9 49 FF FF    EOR #$FFFF             ;|
+$A3:D0CC 1A          INC A                  ;} Negate enemy crawling Y velocity
+$A3:D0CD 9D AA 0F    STA $0FAA,x[$7E:116A]  ;/
+$A3:D0D0 B9 06 00    LDA $0006,y[$A3:CCE8]  ; A = [[Y] + 6]
+$A3:D0D3 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
+$A3:D0D6 6B          RTL                    ; Return
 
-$A3:D0D7 BD B0 0F    LDA $0FB0,x[$7E:1030]
-$A3:D0DA 1A          INC A
-$A3:D0DB 9D B0 0F    STA $0FB0,x[$7E:1030]
-$A3:D0DE C9 04 00    CMP #$0004
-$A3:D0E1 30 04       BMI $04    [$D0E7]
+; BRANCH_OUTSIDE_TURN
+$A3:D0D7 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
+$A3:D0DA 1A          INC A                  ;} Increment enemy consecutive turn counter
+$A3:D0DB 9D B0 0F    STA $0FB0,x[$7E:1030]  ;/
+$A3:D0DE C9 04 00    CMP #$0004             ;\
+$A3:D0E1 30 04       BMI $04    [$D0E7]     ;} If [enemy consecutive turn counter] >= 4:
 $A3:D0E3 20 64 D1    JSR $D164  [$A3:D164]  ; Drop yard
-$A3:D0E6 6B          RTL
+$A3:D0E6 6B          RTL                    ; Return
 
-$A3:D0E7 BD A8 0F    LDA $0FA8,x[$7E:1028]
-$A3:D0EA 49 FF FF    EOR #$FFFF
-$A3:D0ED 1A          INC A
-$A3:D0EE 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A3:D0F1 B9 04 00    LDA $0004,y[$A3:CD3E]
-$A3:D0F4 20 4C D1    JSR $D14C  [$A3:D14C]
+$A3:D0E7 BD A8 0F    LDA $0FA8,x[$7E:1028]  ;\
+$A3:D0EA 49 FF FF    EOR #$FFFF             ;|
+$A3:D0ED 1A          INC A                  ;} Negate enemy crawling X velocity
+$A3:D0EE 9D A8 0F    STA $0FA8,x[$7E:1028]  ;/
+$A3:D0F1 B9 04 00    LDA $0004,y[$A3:CD3E]  ; A = [[Y] + 4]
+$A3:D0F4 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
 $A3:D0F7 6B          RTL
 }
 
 
-;;; $D0F8:  ;;;
+;;; $D0F8: Move enemy ahead for outside turn check ;;;
 {
-$A3:D0F8 BD 7A 0F    LDA $0F7A,x[$7E:113A]
-$A3:D0FB 18          CLC
-$A3:D0FC 79 00 00    ADC $0000,y[$A3:CD22]
-$A3:D0FF 9D 7A 0F    STA $0F7A,x[$7E:113A]
-$A3:D102 BD 7E 0F    LDA $0F7E,x[$7E:113E]
-$A3:D105 18          CLC
-$A3:D106 79 02 00    ADC $0002,y[$A3:CD24]
-$A3:D109 9D 7E 0F    STA $0F7E,x[$7E:113E]
+;; Parameters:
+;;     Y: Pointer to turn data entry (see $CCE2)
+$A3:D0F8 BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
+$A3:D0FB 18          CLC                    ;|
+$A3:D0FC 79 00 00    ADC $0000,y[$A3:CD22]  ;} Enemy X position += [[Y]]
+$A3:D0FF 9D 7A 0F    STA $0F7A,x[$7E:113A]  ;/
+$A3:D102 BD 7E 0F    LDA $0F7E,x[$7E:113E]  ;\
+$A3:D105 18          CLC                    ;|
+$A3:D106 79 02 00    ADC $0002,y[$A3:CD24]  ;} Enemy Y position += [[Y] + 2]
+$A3:D109 9D 7E 0F    STA $0F7E,x[$7E:113E]  ;/
 $A3:D10C 60          RTS
 }
 
 
-;;; $D10D:  ;;;
+;;; $D10D: Move enemy back from outside turn check ;;;
 {
+;; Parameters:
+;;     Y: Pointer to turn data entry (see $CCE2)
 ; Important that the carry flag is preserved here
 $A3:D10D 08          PHP
-$A3:D10E BD 7A 0F    LDA $0F7A,x[$7E:113A]
-$A3:D111 38          SEC
-$A3:D112 F9 00 00    SBC $0000,y[$A3:CD22]
-$A3:D115 9D 7A 0F    STA $0F7A,x[$7E:113A]
-$A3:D118 BD 7E 0F    LDA $0F7E,x[$7E:113E]
-$A3:D11B 38          SEC
-$A3:D11C F9 02 00    SBC $0002,y[$A3:CD24]
-$A3:D11F 9D 7E 0F    STA $0F7E,x[$7E:113E]
+$A3:D10E BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
+$A3:D111 38          SEC                    ;|
+$A3:D112 F9 00 00    SBC $0000,y[$A3:CD22]  ;} Enemy X position -= [[Y]]
+$A3:D115 9D 7A 0F    STA $0F7A,x[$7E:113A]  ;/
+$A3:D118 BD 7E 0F    LDA $0F7E,x[$7E:113E]  ;\
+$A3:D11B 38          SEC                    ;|
+$A3:D11C F9 02 00    SBC $0002,y[$A3:CD24]  ;} Enemy Y position -= [[Y] + 2]
+$A3:D11F 9D 7E 0F    STA $0F7E,x[$7E:113E]  ;/
 $A3:D122 28          PLP
 $A3:D123 60          RTS
 }
@@ -7291,35 +7305,38 @@ $A3:D123 60          RTS
 
 ;;; $D124:  ;;;
 {
-$A3:D124 B0 0F       BCS $0F    [$D135]
-$A3:D126 BF 08 78 7E LDA $7E7808,x[$7E:79C8]
-$A3:D12A 1A          INC A
-$A3:D12B C9 10 00    CMP #$0010
-$A3:D12E B0 14       BCS $14    [$D144]
-$A3:D130 9F 08 78 7E STA $7E7808,x[$7E:79C8]
-$A3:D134 60          RTS
+;; Parameters:
+;;     Carry: Set if position was adjusted by slope, otherwise clear
+$A3:D124 B0 0F       BCS $0F    [$D135]     ; If carry clear:
+$A3:D126 BF 08 78 7E LDA $7E7808,x[$7E:79C8];\
+$A3:D12A 1A          INC A                  ;|
+$A3:D12B C9 10 00    CMP #$0010             ;} If [enemy $7E:7808] >= Fh: go to BRANCH_D144
+$A3:D12E B0 14       BCS $14    [$D144]     ;/
+$A3:D130 9F 08 78 7E STA $7E7808,x[$7E:79C8]; Increment enemy $7E:7808
+$A3:D134 60          RTS                    ; Return
 
-$A3:D135 A9 01 00    LDA #$0001
-$A3:D138 9F 0A 78 7E STA $7E780A,x
-$A3:D13C A9 00 00    LDA #$0000
-$A3:D13F 9F 08 78 7E STA $7E7808,x
-$A3:D143 60          RTS
+$A3:D135 A9 01 00    LDA #$0001             ;\
+$A3:D138 9F 0A 78 7E STA $7E780A,x          ;} Enemy $7E:780A = 1
+$A3:D13C A9 00 00    LDA #$0000             ;\
+$A3:D13F 9F 08 78 7E STA $7E7808,x          ;} Enemy $7E:7808 = 0
+$A3:D143 60          RTS                    ; Return
 
-$A3:D144 A9 00 00    LDA #$0000
-$A3:D147 9F 0A 78 7E STA $7E780A,x[$7E:79CA]
+; BRANCH_D144
+$A3:D144 A9 00 00    LDA #$0000             ;\
+$A3:D147 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy $7E:780A = 1
 $A3:D14B 60          RTS
 }
 
 
 ;;; $D14C:  ;;;
 {
-$A3:D14C 9D 92 0F    STA $0F92,x[$7E:1152]
+$A3:D14C 9D 92 0F    STA $0F92,x[$7E:1152]  ; Enemy instruction list pointer = [A]
 $A3:D14F A9 01 00    LDA #$0001             ;\
 $A3:D152 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
-$A3:D155 A9 01 00    LDA #$0001
-$A3:D158 9F 0A 78 7E STA $7E780A,x[$7E:79CA]
-$A3:D15C A9 00 00    LDA #$0000
-$A3:D15F 9F 08 78 7E STA $7E7808,x[$7E:79C8]
+$A3:D155 A9 01 00    LDA #$0001             ;\
+$A3:D158 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy $7E:780A = 1
+$A3:D15C A9 00 00    LDA #$0000             ;\
+$A3:D15F 9F 08 78 7E STA $7E7808,x[$7E:79C8];} Enemy $7E:7808 = 0
 $A3:D163 60          RTS
 }
 
@@ -7334,27 +7351,28 @@ $A3:D16E A9 03 00    LDA #$0003             ;\
 $A3:D171 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = dropped
 $A3:D175 A9 B3 D1    LDA #$D1B3             ;\
 $A3:D178 9D B2 0F    STA $0FB2,x[$7E:1172]  ;} Enemy movement function = $D1B3 (airborne)
-$A3:D17B BD AC 0F    LDA $0FAC,x[$7E:116C]
-$A3:D17E 0A          ASL A
-$A3:D17F 0A          ASL A
-$A3:D180 A8          TAY
-$A3:D181 B9 AB D1    LDA $D1AB,y[$A3:D1AB]
-$A3:D184 9D 92 0F    STA $0F92,x[$7E:1152]
-$A3:D187 B9 AD D1    LDA $D1AD,y[$A3:D1AD]
-$A3:D18A 9D AE 0F    STA $0FAE,x[$7E:116E]
+$A3:D17B BD AC 0F    LDA $0FAC,x[$7E:116C]  ;\
+$A3:D17E 0A          ASL A                  ;|
+$A3:D17F 0A          ASL A                  ;} Y = [enemy $0FAC] * 4
+$A3:D180 A8          TAY                    ;/
+$A3:D181 B9 AB D1    LDA $D1AB,y[$A3:D1AB]  ;\
+$A3:D184 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = [$D1AB + [Y]]
+$A3:D187 B9 AD D1    LDA $D1AD,y[$A3:D1AD]  ;\
+$A3:D18A 9D AE 0F    STA $0FAE,x[$7E:116E]  ;} Enemy $0FAE = [$D1AB + [Y] + 2]
 $A3:D18D A9 01 00    LDA #$0001             ;\
 $A3:D190 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A3:D193 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
-$A3:D196 A9 00 00    LDA #$0000
-$A3:D199 9F 04 78 7E STA $7E7804,x[$7E:79C4]
-$A3:D19D 9F 06 78 7E STA $7E7806,x[$7E:79C6]
-$A3:D1A1 9F 00 78 7E STA $7E7800,x[$7E:79C0]
-$A3:D1A5 9F 02 78 7E STA $7E7802,x[$7E:79C2]
+$A3:D196 A9 00 00    LDA #$0000             ;\
+$A3:D199 9F 04 78 7E STA $7E7804,x[$7E:79C4];} Enemy airborne X velocity = 0.0
+$A3:D19D 9F 06 78 7E STA $7E7806,x[$7E:79C6];/
+$A3:D1A1 9F 00 78 7E STA $7E7800,x[$7E:79C0];\
+$A3:D1A5 9F 02 78 7E STA $7E7802,x[$7E:79C2];} Enemy airborne Y velocity = 0.0
 
 $A3:D1A9 7A          PLY
 $A3:D1AA 60          RTS
 
-$A3:D1AB             dw CC06,CB44, CC1E,CB92
+$A3:D1AB             dw CC06,CB44, 
+                        CC1E,CB92
 }
 
 
@@ -7366,7 +7384,7 @@ $A3:D1B7 C9 03 00    CMP #$0003             ;} If [enemy behaviour] = dropped: g
 $A3:D1BA F0 77       BEQ $77    [$D233]     ;/
 $A3:D1BC BF 04 78 7E LDA $7E7804,x[$7E:79C4];\
 $A3:D1C0 85 12       STA $12    [$7E:0012]  ;|
-$A3:D1C2 BF 06 78 7E LDA $7E7806,x[$7E:79C6];} Move enemy right by [enemy X velocity]
+$A3:D1C2 BF 06 78 7E LDA $7E7806,x[$7E:79C6];} Move enemy right by [enemy airborne X velocity]
 $A3:D1C6 85 14       STA $14    [$7E:0014]  ;|
 $A3:D1C8 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A3:D1CC B0 3C       BCS $3C    [$D20A]     ; If collided with wall: go to BRANCH_HIT_WALL
@@ -7400,11 +7418,11 @@ $A3:D208 80 29       BRA $29    [$D233]
 ; BRANCH_HIT_WALL
 $A3:D20A BF 04 78 7E LDA $7E7804,x[$7E:7844];\
 $A3:D20E 49 FF FF    EOR #$FFFF             ;|
-$A3:D211 1A          INC A                  ;} Negate enemy X subvelocity
+$A3:D211 1A          INC A                  ;} Negate enemy airborne X subvelocity
 $A3:D212 9F 04 78 7E STA $7E7804,x[$7E:7844];/
 $A3:D216 BF 06 78 7E LDA $7E7806,x[$7E:7846];\
 $A3:D21A 49 FF FF    EOR #$FFFF             ;|
-$A3:D21D 1A          INC A                  ;} Negate enemy X velocity
+$A3:D21D 1A          INC A                  ;} Negate enemy airborne X velocity
 $A3:D21E 9F 06 78 7E STA $7E7806,x[$7E:7846];/
 $A3:D222 A9 01 00    LDA #$0001
 $A3:D225 9F 00 80 7E STA $7E8000,x[$7E:8040]
@@ -7415,7 +7433,7 @@ $A3:D230 4C 33 D2    JMP $D233  [$A3:D233]
 ; BRANCH_X_MOVEMENT_END
 $A3:D233 BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
 $A3:D237 85 12       STA $12    [$7E:0012]  ;|
-$A3:D239 BF 02 78 7E LDA $7E7802,x[$7E:79C2];} Move enemy down by [enemy Y velocity]
+$A3:D239 BF 02 78 7E LDA $7E7802,x[$7E:79C2];} Move enemy down by [enemy airborne Y velocity]
 $A3:D23D 85 14       STA $14    [$7E:0014]  ;|
 $A3:D23F 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A3:D243 B0 1D       BCS $1D    [$D262]     ; If collided with block: go to BRANCH_COLLIDED_VERTICALLY
@@ -7439,11 +7457,11 @@ $A3:D26B 30 20       BMI $20    [$D28D]
 
 $A3:D26D BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
 $A3:D271 49 FF FF    EOR #$FFFF             ;|
-$A3:D274 1A          INC A                  ;} Negate enemy Y subvelocity
+$A3:D274 1A          INC A                  ;} Negate enemy airborne Y subvelocity
 $A3:D275 9F 00 78 7E STA $7E7800,x[$7E:79C0];/
 $A3:D279 BF 02 78 7E LDA $7E7802,x[$7E:79C2];\
 $A3:D27D 49 FF FF    EOR #$FFFF             ;|
-$A3:D280 1A          INC A                  ;} Negate enemy Y velocity
+$A3:D280 1A          INC A                  ;} Negate enemy airborne Y velocity
 $A3:D281 9F 02 78 7E STA $7E7802,x[$7E:79C2];/
 $A3:D285 A9 00 00    LDA #$0000
 $A3:D288 9F 00 80 7E STA $7E8000,x[$7E:81C0]
@@ -7759,11 +7777,11 @@ $A3:D4F1 89 04 00    BIT #$0004
 $A3:D4F4 F0 18       BEQ $18    [$D50E]
 $A3:D4F6 BF 04 78 7E LDA $7E7804,x[$7E:79C4];\
 $A3:D4FA 49 FF FF    EOR #$FFFF             ;|
-$A3:D4FD 1A          INC A                  ;} Negate enemy X subvelocity
+$A3:D4FD 1A          INC A                  ;} Negate enemy airborne X subvelocity
 $A3:D4FE 9F 04 78 7E STA $7E7804,x[$7E:79C4];/
 $A3:D502 BF 06 78 7E LDA $7E7806,x[$7E:79C6];\
 $A3:D506 49 FF FF    EOR #$FFFF             ;|
-$A3:D509 1A          INC A                  ;} Negate enemy X velocity
+$A3:D509 1A          INC A                  ;} Negate enemy airborne X velocity
 $A3:D50A 9F 06 78 7E STA $7E7806,x[$7E:79C6];/
 
 $A3:D50E 60          RTS
@@ -8619,7 +8637,7 @@ $A3:E0C5 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ; Move enemy right by [$14].[$12], p
 $A3:E0C9 90 61       BCC $61    [$E12C]     ; If no collision: go to BRANCH_OUTSIDE_TURN
 $A3:E0CB A9 00 00    LDA #$0000             ;\
 $A3:E0CE 9F 08 78 7E STA $7E7808,x          ;} Enemy consecutive turn counter = 0
-$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
+$A3:E0D2 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope <-- does nothing, a non-square slope isn't a collision
 $A3:E0D6 64 12       STZ $12    [$7E:0012]  ;\
 $A3:E0D8 64 14       STZ $14    [$7E:0014]  ;|
 $A3:E0DA BD AA 0F    LDA $0FAA,x            ;|
