@@ -592,7 +592,7 @@ $A4:8A39 60          RTS
 }
 
 
-;;; $8A3A: Crocomire palette ;;;
+;;; $8A3A: Unused. Palette ;;;
 {
 $A4:8A3A             dw 3800, 7FFF, 6B40, 6A80, 6980, 68E0, 6800, 5294, 39CE, 2108, 08BF, 0895, 039F, 023A, 0176, 0000
 }
@@ -3308,18 +3308,24 @@ $A4:AC7D             db 00,00,00,00,00,01,03,03,06,07,04,07,06,07,0D,0E,00,00,00
 }
 
 
-;;; $B87D: Palette - enemy $DDBF/$DDFF (Crocomire) ;;;
+;;; $B87D: Crocomire palettes ;;;
 {
-$A4:B87D             dw 3800, 7FFF, 0DFF, 08BF, 0895, 086C, 0447, 6B7E, 571E, 3A58, 2171, 0CCB, 039F, 023A, 0176, 0000
-}
+; Tongue, arms, legs, skeleton (except arm)
+$A4:B87D             dw 3800, 7FFF, 0DFF, 08BF, 0895, 086C, 0447, 6B7E, 571E, 3A58, 2171, 0CCB, 039F, 023A, 0176, 0000 ; Initial. (Sprite palette 7)
 
-
-;;; $B89D: Crocomire palettes ;;;
-{
+; Body/head
 $A4:B89D             dw 0000, 7FFF, 0DFF, 08BF, 0895, 086C, 0447, 6B7E, 571E, 3A58, 2171, 0CCB, 039F, 023A, 0176, 0000 ; BG1/2 palette 7
+
+; Breakable wall
 $A4:B8BD             dw 3800, 571E, 6318, 6318, 6318, 6318, 6318, 4A7B, 1C90, 1469, 1424, 0008, 24BF, 2495, 1C6C, 1045 ; Sprite palette 2
+
+; Projectile
 $A4:B8DD             dw 3800, 7F5A, 033B, 0216, 0113, 7C1D, 5814, 300A, 3BE0, 2680, 1580, 5294, 39CE, 2108, 2484, 03E0 ; Sprite palette 5. Changes colour Fh from 7D08h to 3E0h, no observable difference
+
+; Skeleton arm
 $A4:B8FD             dw 3800, 7FFF, 6B7E, 571E, 3A58, 2171, 0CCB, 6B7E, 571E, 3A58, 2171, 0CCB, 039F, 023A, 0176, 0000 ; Sprite palette 1
+
+; Breakable wall spikes
 $A4:B91D             dw 3800, 02DF, 01D7, 00AC, 5A73, 41AD, 2D08, 1863, 0BB1, 48FB, 7FFF, 0000, 7FFF, 44E5, 7FFF, 0000 ; Sprite palette 3
 }
 

@@ -6237,10 +6237,10 @@ $A3:C8A6             dw 3800, 57FF, 42F7, 158C, 00A5, 4F5A, 36B5, 2610, 1DCE, 77
 
 ;;; $C8C6..CC35: Instruction lists - yard ;;;
 {
-;;; $C8C6: Instruction list -  ;;;
+;;; $C8C6: Instruction list - outside turn - upside right - moving up ;;;
 {
-$A3:C8C6             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:C8C6             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D6A8,
                         0004,D6B4,
                         0007,D6C0,
@@ -6248,11 +6248,11 @@ $A3:C8C6             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $C8E0: Instruction list -  ;;;
+;;; $C8E0: Instruction list - crawling - upside up - moving left ;;;
 {
-$A3:C8E0             dx CC36,CFA6,      ; Enemy $0FB2 = $CFA6 (crawling - upside up - moving left)
-                        CC3F,CB36,      ; Enemy $0FAE = $CB36
-                        CC48,0006,      ; ???
+$A3:C8E0             dx CC36,CFA6,      ; Enemy movement function = $CFA6 (crawling - upside up - moving left)
+                        CC3F,CB36,      ; Enemy hiding instruction list = $CB36
+                        CC48,0006,      ; Set enemy direction to 6 (upside up - moving left)
                         0009,D5AC,
                         000D,D5B8,
                         0009,D5C4,
@@ -6260,10 +6260,10 @@ $A3:C8E0             dx CC36,CFA6,      ; Enemy $0FB2 = $CFA6 (crawling - upside
 }
 
 
-;;; $C8FC: Instruction list -  ;;;
+;;; $C8FC: Instruction list - outside turn - upside up - moving left ;;;
 {
-$A3:C8FC             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:C8FC             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D5D0,
                         0004,D5DC,
                         0007,D5E8,
@@ -6271,11 +6271,11 @@ $A3:C8FC             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $C916: Instruction list -  ;;;
+;;; $C916: Instruction list - crawling - upside left - moving down ;;;
 {
-$A3:C916             dx CC36,CFB7,      ; Enemy $0FB2 = $CFB7 (crawling - upside left - moving down)
-                        CC3F,CBD2,      ; Enemy $0FAE = $CBD2
-                        CC48,0003,      ; ???
+$A3:C916             dx CC36,CFB7,      ; Enemy movement function = $CFB7 (crawling - upside left - moving down)
+                        CC3F,CBD2,      ; Enemy hiding instruction list = $CBD2
+                        CC48,0003,      ; Set enemy direction to 3 (upside left - moving down)
                         0009,D5F4,
                         000D,D600,
                         0009,D60C,
@@ -6283,10 +6283,10 @@ $A3:C916             dx CC36,CFB7,      ; Enemy $0FB2 = $CFB7 (crawling - upside
 }
 
 
-;;; $C932: Instruction list -  ;;;
+;;; $C932: Instruction list - outside turn - upside left - moving down ;;;
 {
-$A3:C932             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:C932             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D618,
                         0004,D624,
                         0007,D630,
@@ -6294,11 +6294,11 @@ $A3:C932             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $C94C: Instruction list -  ;;;
+;;; $C94C: Instruction list - crawling - upside down - moving right ;;;
 {
-$A3:C94C             dx CC36,CFBD,      ; Enemy $0FB2 = $CFBD (crawling - upside down - moving right)
-                        CC3F,CB6A,      ; Enemy $0FAE = $CB6A
-                        CC48,0005,      ; ???
+$A3:C94C             dx CC36,CFBD,      ; Enemy movement function = $CFBD (crawling - upside down - moving right)
+                        CC3F,CB6A,      ; Enemy hiding instruction list = $CB6A
+                        CC48,0005,      ; Set enemy direction to 5 (upside down - moving right)
                         0009,D63C,
                         000D,D648,
                         0009,D654,
@@ -6306,10 +6306,10 @@ $A3:C94C             dx CC36,CFBD,      ; Enemy $0FB2 = $CFBD (crawling - upside
 }
 
 
-;;; $C968: Instruction list -  ;;;
+;;; $C968: Instruction list - outside turn - upside down - moving right ;;;
 {
-$A3:C968             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:C968             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D660,
                         0004,D66C,
                         0007,D678,
@@ -6317,11 +6317,11 @@ $A3:C968             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $C982: Instruction list -  ;;;
+;;; $C982: Instruction list - crawling - upside right - moving up ;;;
 {
-$A3:C982             dx CC36,CFCE,      ; Enemy $0FB2 = $CFCE (crawling - upside right - moving up)
-                        CC3F,CB9E,      ; Enemy $0FAE = $CB9E
-                        CC48,0000,      ; ???
+$A3:C982             dx CC36,CFCE,      ; Enemy movement function = $CFCE (crawling - upside right - moving up)
+                        CC3F,CB9E,      ; Enemy hiding instruction list = $CB9E
+                        CC48,0000,      ; Set enemy direction to 0 (upside right - moving up)
                         0009,D684,
                         000D,D690,
                         0009,D69C,
@@ -6329,10 +6329,10 @@ $A3:C982             dx CC36,CFCE,      ; Enemy $0FB2 = $CFCE (crawling - upside
 }
 
 
-;;; $C99E: Instruction list -  ;;;
+;;; $C99E: Instruction list - outside turn - upside left - moving up ;;;
 {
-$A3:C99E             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:C99E             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D814,
                         0004,D820,
                         0007,D82C,
@@ -6340,11 +6340,11 @@ $A3:C99E             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $C9B8: Instruction list -  ;;;
+;;; $C9B8: Instruction list - crawling - upside up - moving right ;;;
 {
-$A3:C9B8             dx CC36,CFD4,      ; Enemy $0FB2 = $CFD4 (crawling - upside up - moving right)
-                        CC3F,CB84,      ; Enemy $0FAE = $CB84
-                        CC48,0007,      ; ???
+$A3:C9B8             dx CC36,CFD4,      ; Enemy movement function = $CFD4 (crawling - upside up - moving right)
+                        CC3F,CB84,      ; Enemy hiding instruction list = $CB84
+                        CC48,0007,      ; Set enemy direction to 7 (upside up - moving right)
                         0009,D718,
                         000D,D724,
                         0009,D730,
@@ -6352,10 +6352,10 @@ $A3:C9B8             dx CC36,CFD4,      ; Enemy $0FB2 = $CFD4 (crawling - upside
 }
 
 
-;;; $C9D4: Instruction list -  ;;;
+;;; $C9D4: Instruction list - outside turn - upside up - moving right ;;;
 {
-$A3:C9D4             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:C9D4             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D73C,
                         0004,D748,
                         0007,D754,
@@ -6363,11 +6363,11 @@ $A3:C9D4             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $C9EE: Instruction list -  ;;;
+;;; $C9EE: Instruction list - crawling - upside right - moving down ;;;
 {
-$A3:C9EE             dx CC36,CFE5,      ; Enemy $0FB2 = $CFE5 (crawling - upside right - moving down)
-                        CC3F,CBEC,      ; Enemy $0FAE = $CBEC
-                        CC48,0001,      ; ???
+$A3:C9EE             dx CC36,CFE5,      ; Enemy movement function = $CFE5 (crawling - upside right - moving down)
+                        CC3F,CBEC,      ; Enemy hiding instruction list = $CBEC
+                        CC48,0001,      ; Set enemy direction to 1 (upside right - moving down)
                         0009,D760,
                         000D,D76C,
                         0009,D778,
@@ -6375,10 +6375,10 @@ $A3:C9EE             dx CC36,CFE5,      ; Enemy $0FB2 = $CFE5 (crawling - upside
 }
 
 
-;;; $CA0A: Instruction list -  ;;;
+;;; $CA0A: Instruction list - outside turn - upside right - moving down ;;;
 {
-$A3:CA0A             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:CA0A             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D784,
                         0004,D790,
                         0007,D79C,
@@ -6386,11 +6386,11 @@ $A3:CA0A             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $CA24: Instruction list -  ;;;
+;;; $CA24: Instruction list - crawling - upside down - moving left ;;;
 {
-$A3:CA24             dx CC36,CFEB,      ; Enemy $0FB2 = $CFEB (crawling - upside down - moving left)
-                        CC3F,CB50,      ; Enemy $0FAE = $CB50
-                        CC48,0004,      ; ???
+$A3:CA24             dx CC36,CFEB,      ; Enemy movement function = $CFEB (crawling - upside down - moving left)
+                        CC3F,CB50,      ; Enemy hiding instruction list = $CB50
+                        CC48,0004,      ; Set enemy direction to 4 (upside down - moving left)
                         0009,D7A8,
                         000D,D7B4,
                         0009,D7C0,
@@ -6398,10 +6398,10 @@ $A3:CA24             dx CC36,CFEB,      ; Enemy $0FB2 = $CFEB (crawling - upside
 }
 
 
-;;; $CA40: Instruction list -  ;;;
+;;; $CA40: Instruction list - outside turn - upside down - moving left ;;;
 {
-$A3:CA40             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,      ; Enemy $0FAE = $CF5F (RTL)
+$A3:CA40             dx CC36,CF5F,      ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,      ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D7CC,
                         0004,D7D8,
                         0007,D7E4,
@@ -6409,11 +6409,11 @@ $A3:CA40             dx CC36,CF5F,      ; Enemy $0FB2 = $CF5F (RTL)
 }
 
 
-;;; $CA5A: Instruction list -  ;;;
+;;; $CA5A: Instruction list - crawling - upside left - moving up ;;;
 {
-$A3:CA5A             dx CC36,CFFC,      ; Enemy $0FB2 = $CFFC (crawling - upside left - moving up)
-                        CC3F,CBB8,      ; Enemy $0FAE = $CBB8
-                        CC48,0002,      ; ???
+$A3:CA5A             dx CC36,CFFC,      ; Enemy movement function = $CFFC (crawling - upside left - moving up)
+                        CC3F,CBB8,      ; Enemy hiding instruction list = $CBB8
+                        CC48,0002,      ; Set enemy direction to 2 (upside left - moving up)
                         0009,D7F0,
                         000D,D7FC,
                         0009,D808,
@@ -6421,193 +6421,203 @@ $A3:CA5A             dx CC36,CFFC,      ; Enemy $0FB2 = $CFFC (crawling - upside
 }
 
 
-;;; $CA76: Instruction list -  ;;;
+;;; $CA76: Instruction list - inside turn - upside up - moving left ;;;
 {
-$A3:CA76             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CA76             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D890,
                         0004,D89C,
                         0007,D8A8,
-                        80ED,C982   ; Go to $C982
+                        80ED,C982   ; Go to $C982 (crawling - upside right - moving up)
 }
 
 
-;;; $CA8E: Instruction list -  ;;;
+;;; $CA8E: Instruction list - inside turn - upside right - moving up ;;;
 {
-$A3:CA8E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CA8E             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D8C0,
                         0004,D8CC,
                         0007,D8D8,
-                        80ED,C94C   ; Go to $C94C
+                        80ED,C94C   ; Go to $C94C (crawling - upside down - moving right)
 }
 
 
-;;; $CAA6: Instruction list -  ;;;
+;;; $CAA6: Instruction list - inside turn - upside down - moving right ;;;
 {
-$A3:CAA6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CAA6             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D8F0,
                         0004,D8FC,
                         0007,D908,
-                        80ED,C916   ; Go to $C916
+                        80ED,C916   ; Go to $C916 (crawling - upside left - moving down)
 }
 
 
-;;; $CABE: Instruction list -  ;;;
+;;; $CABE: Instruction list - inside turn - upside left - moving down ;;;
 {
-$A3:CABE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CABE             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D920,
                         0004,D92C,
                         0007,D938,
-                        80ED,C8E0   ; Go to $C8E0
+                        80ED,C8E0   ; Go to $C8E0 (crawling - upside up - moving left)
 }
 
 
-;;; $CAD6: Instruction list -  ;;;
+;;; $CAD6: Instruction list - inside turn - upside up - moving right ;;;
 {
-$A3:CAD6             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CAD6             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D99C,
                         0004,D9A8,
                         0007,D9B4,
-                        80ED,CA5A   ; Go to $CA5A
+                        80ED,CA5A   ; Go to $CA5A (crawling - upside left - moving up)
 }
 
 
-;;; $CAEE: Instruction list -  ;;;
+;;; $CAEE: Instruction list - inside turn - upside left - moving up ;;;
 {
-$A3:CAEE             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CAEE             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D9CC,
                         0004,D9D8,
                         0007,D9E4,
-                        80ED,CA24   ; Go to $CA24
+                        80ED,CA24   ; Go to $CA24 (crawling - upside down - moving left)
 }
 
 
-;;; $CB06: Instruction list -  ;;;
+;;; $CB06: Instruction list - inside turn - upside down - moving left ;;;
 {
-$A3:CB06             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CB06             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,D9FC,
                         0004,DA08,
                         0007,DA14,
-                        80ED,C9EE   ; Go to $C9EE
+                        80ED,C9EE   ; Go to $C9EE (crawling - upside right - moving down)
 }
 
 
-;;; $CB1E: Instruction list -  ;;;
+;;; $CB1E: Instruction list - inside turn - upside right - moving down ;;;
 {
-$A3:CB1E             dx CC36,CF5F,  ; Enemy $0FB2 = $CF5F (RTL)
-                        CC3F,CF5F,  ; Enemy $0FAE = $CF5F (RTL)
+$A3:CB1E             dx CC36,CF5F,  ; Enemy movement function = $CF5F (RTL)
+                        CC3F,CF5F,  ; Enemy hiding instruction list = $CF5F (RTL)
                         0007,DA2C,
                         0004,DA38,
                         0007,DA44,
-                        80ED,C9B8   ; Go to $C9B8
+                        80ED,C9B8   ; Go to $C9B8 (crawling - upside up - moving right)
 }
 
 
-;;; $CB36: Instruction list -  ;;;
+;;; $CB36: Instruction list - hiding - upside up - moving left ;;;
 {
-$A3:CB36             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CB36             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D6CC,
                         0001,D6D8,
-                        CC78,       ; ???
-                        0030,D944,
-                        0010,D94B,
-                        80ED,C8E0   ; Go to $C8E0
+                        CC78        ; Go back 4 bytes if hiding or with 50% chance
 }
 
 
-;;; $CB50: Instruction list -  ;;;
+;;; $CB44: Instruction list - hidden - upside up - moving left ;;;
 {
-$A3:CB50             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CB44             dx 0030,D944,
+                        0010,D94B,
+                        80ED,C8E0   ; Go to $C8E0 (crawling - upside up - moving left)
+}
+
+
+;;; $CB50: Instruction list - hiding - upside down - moving left ;;;
+{
+$A3:CB50             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D85E,
                         0001,D86A,
-                        CC78,       ; ???
+                        CC78,       ; Go back 4 bytes if hiding or with 50% chance
                         0030,DA76,
                         0010,DA7D,
-                        80ED,CA24   ; Go to $CA24
+                        80ED,CA24   ; Go to $CA24 (crawling - upside down - moving left)
 }
 
 
-;;; $CB6A: Instruction list -  ;;;
+;;; $CB6A: Instruction list - hiding - upside down - moving right ;;;
 {
-$A3:CB6A             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CB6A             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D6F2,
                         0001,D6FE,
-                        CC78,       ; ???
+                        CC78,       ; Go back 4 bytes if hiding or with 50% chance
                         0030,D96A,
                         0010,D971,
-                        80ED,C94C   ; Go to $C94C
+                        80ED,C94C   ; Go to $C94C (crawling - upside down - moving right)
 }
 
 
-;;; $CB84: Instruction list -  ;;;
+;;; $CB84: Instruction list - hiding - upside up - moving right ;;;
 {
-$A3:CB84             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CB84             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D838,
                         0001,D844,
-                        CC78,       ; ???
-                        0030,DA50,
-                        0010,DA57,
-                        80ED,C9B8   ; Go to $C9B8
+                        CC78        ; Go back 4 bytes if hiding or with 50% chance
 }
 
 
-;;; $CB9E: Instruction list -  ;;;
+;;; $CB92: Instruction list - hidden - upside up - moving right ;;;
 {
-$A3:CB9E             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CB92             dx 0030,DA50,
+                        0010,DA57,
+                        80ED,C9B8   ; Go to $C9B8 (crawling - upside up - moving right)
+}
+
+
+;;; $CB9E: Instruction list - hiding - upside right - moving up ;;;
+{
+$A3:CB9E             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D705,
                         0001,D711,
-                        CC78,       ; ???
+                        CC78,       ; Go back 4 bytes if hiding or with 50% chance
                         0030,D957,
                         0010,D95E,
-                        80ED,C982   ; Go to $C982
+                        80ED,C982   ; Go to $C982 (crawling - upside right - moving up)
 }
 
 
-;;; $CBB8: Instruction list -  ;;;
+;;; $CBB8: Instruction list - hiding - upside left - moving up ;;;
 {
-$A3:CBB8             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CBB8             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D871,
                         0001,D87D,
-                        CC78,       ; ???
+                        CC78,       ; Go back 4 bytes if hiding or with 50% chance
                         0030,DA63,
                         0010,DA6A,
-                        80ED,CA5A   ; Go to $CA5A
+                        80ED,CA5A   ; Go to $CA5A (crawling - upside left - moving up)
 }
 
 
-;;; $CBD2: Instruction list -  ;;;
+;;; $CBD2: Instruction list - hiding - upside left - moving down ;;;
 {
-$A3:CBD2             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CBD2             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D6DF,
                         0001,D6EB,
-                        CC78,       ; ???
+                        CC78,       ; Go back 4 bytes if hiding or with 50% chance
                         0030,D97D,
                         0010,D984,
-                        80ED,C916   ; Go to $C916
+                        80ED,C916   ; Go to $C916 (crawling - upside left - moving down)
 }
 
 
-;;; $CBEC: Instruction list -  ;;;
+;;; $CBEC: Instruction list - hiding - upside right - moving down ;;;
 {
-$A3:CBEC             dx CC36,CF60,  ; Enemy $0FB2 = $CF60 (hiding)
+$A3:CBEC             dx CC36,CF60,  ; Enemy movement function = $CF60 (hiding)
                         0005,D84B,
                         0001,D857,
-                        CC78,       ; ???
+                        CC78,       ; Go back 4 bytes if hiding or with 50% chance
                         0030,DA89,
                         0010,DA90,
-                        80ED,C9EE   ; Go to $C9EE
+                        80ED,C9EE   ; Go to $C9EE (crawling - upside right - moving down)
 }
 
 
-;;; $CC06: Instruction list -  ;;;
+;;; $CC06: Instruction list - airborne - facing left ;;;
 {
-$A3:CC06             dx CC36,D1B3,  ; Enemy $0FB2 = $D1B3 (airborne)
+$A3:CC06             dx CC36,D1B3,  ; Enemy movement function = $D1B3 (airborne)
                         0003,D711
 $A3:CC0E             dx 0003,D6EB,
                         0003,D6FE,
@@ -6616,9 +6626,9 @@ $A3:CC0E             dx 0003,D6EB,
 }
 
 
-;;; $CC1E: Instruction list -  ;;;
+;;; $CC1E: Instruction list - airborne - facing right ;;;
 {
-$A3:CC1E             dx CC36,D1B3,  ; Enemy $0FB2 = $D1B3 (airborne)
+$A3:CC1E             dx CC36,D1B3,  ; Enemy movement function = $D1B3 (airborne)
                         0003,D87D
 $A3:CC26             dx 0003,D857,
                         0003,D86A,
@@ -6628,7 +6638,7 @@ $A3:CC26             dx 0003,D857,
 }
 
 
-;;; $CC36: Instruction - enemy $0FB2 = [[Y]] ;;;
+;;; $CC36: Instruction - enemy movement function = [[Y]] ;;;
 {
 $A3:CC36 B9 00 00    LDA $0000,y[$A3:CB38]
 $A3:CC39 9D B2 0F    STA $0FB2,x[$7E:1032]
@@ -6638,7 +6648,7 @@ $A3:CC3E 6B          RTL
 }
 
 
-;;; $CC3F: Instruction - enemy $0FAE = [[Y]] ;;;
+;;; $CC3F: Instruction - enemy hiding instruction list = [[Y]] ;;;
 {
 $A3:CC3F B9 00 00    LDA $0000,y[$A3:C8E6]
 $A3:CC42 9D AE 0F    STA $0FAE,x[$7E:116E]
@@ -6648,20 +6658,20 @@ $A3:CC47 6B          RTL
 }
 
 
-;;; $CC48: Instruction ;;;
+;;; $CC48: Instruction - set enemy direction to [[Y]] ;;;
 {
 $A3:CC48 5A          PHY
-$A3:CC49 B9 00 00    LDA $0000,y[$A3:C8EA]
-$A3:CC4C 9F 0E 78 7E STA $7E780E,x[$7E:79CE]
-$A3:CC50 0A          ASL A
-$A3:CC51 0A          ASL A
-$A3:CC52 0A          ASL A
-$A3:CC53 A8          TAY
-$A3:CC54 B9 48 CD    LDA $CD48,y[$A3:CD78]
-$A3:CC57 9F AC 0F 00 STA $000FAC,x[$7E:116C]
+$A3:CC49 B9 00 00    LDA $0000,y[$A3:C8EA]  ;\
+$A3:CC4C 9F 0E 78 7E STA $7E780E,x[$7E:79CE];} Enemy direction = [[Y]]
+$A3:CC50 0A          ASL A                  ;\
+$A3:CC51 0A          ASL A                  ;|
+$A3:CC52 0A          ASL A                  ;|
+$A3:CC53 A8          TAY                    ;} Enemy airborne facing direction = [$CD42 + [enemy direction] * 8 + 6]
+$A3:CC54 B9 48 CD    LDA $CD48,y[$A3:CD78]  ;|
+$A3:CC57 9F AC 0F 00 STA $000FAC,x[$7E:116C];/
 $A3:CC5B 7A          PLY
-$A3:CC5C C8          INY
-$A3:CC5D C8          INY
+$A3:CC5C C8          INY                    ;\
+$A3:CC5D C8          INY                    ;} Y += 2
 $A3:CC5E 6B          RTL
 }
 
@@ -6684,25 +6694,25 @@ $A3:CC77 6B          RTL
 }
 
 
-;;; $CC78:  ;;;
+;;; $CC78: Instruction - go back 4 bytes if hiding or with 50% chance ;;;
 {
 $A3:CC78 BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A3:CC7C C9 02 00    CMP #$0002             ;} If [enemy behaviour] != hiding:
 $A3:CC7F F0 0A       BEQ $0A    [$CC8B]     ;/
-$A3:CC81 22 11 81 80 JSL $808111[$80:8111]
-$A3:CC85 89 01 00    BIT #$0001
-$A3:CC88 D0 01       BNE $01    [$CC8B]
-$A3:CC8A 6B          RTL
+$A3:CC81 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A3:CC85 89 01 00    BIT #$0001             ;\
+$A3:CC88 D0 01       BNE $01    [$CC8B]     ;} If [random number] % 2 = 0:
+$A3:CC8A 6B          RTL                    ; Return
 
-$A3:CC8B 98          TYA
-$A3:CC8C 38          SEC
-$A3:CC8D E9 06 00    SBC #$0006
-$A3:CC90 A8          TAY
+$A3:CC8B 98          TYA                    ;\
+$A3:CC8C 38          SEC                    ;|
+$A3:CC8D E9 06 00    SBC #$0006             ;} Y -= 6
+$A3:CC90 A8          TAY                    ;/
 $A3:CC91 6B          RTL
 }
 
 
-;;; $CC92:  ;;;
+;;; $CC92: Unused. Instruction ;;;
 {
 ; Wild NOP appears!
 $A3:CC92 EA          NOP
@@ -6719,8 +6729,9 @@ $A3:CCA1 6B          RTL
 }
 
 
-;;; $CCA2:  ;;;
+;;; $CCA2: Yard crawling speeds ;;;
 {
+; Unit 1/100h px/frame. Indexed by [enemy parameter 1] * 2
 $A3:CCA2             dw 0040, 0080, 00C0, 0100, 0140, 0180, 01C0, 0200, 0240, 0280, 02C0, 0300, 0340, 0380, 0400, 0440,
                         0540, 0580, 05C0, 0600, 0640, 0680, 06C0, 0700, 0740, 0780, 07C0, 0800, 0840, 0880, 0800, 0000
 }
@@ -6733,50 +6744,57 @@ $A3:CCA2             dw 0040, 0080, 00C0, 0100, 0140, 0180, 01C0, 0200, 0240, 02
 ;                       |    |     ________ Instruction list - outside turn
 ;                       |    |    |     ___ Instruction list - inside turn
 ;                       |    |    |    |
-$A3:CCE2             dw FFF9,0000,C8FC,CA76
-$A3:CCEA             dw 0000,0007,C932,CABE ; upside left - moving down
-$A3:CCF2             dw 0007,0000,C968,CAA6
-$A3:CCFA             dw 0000,FFF9,C8C6,CA8E ; upside right - moving up
-$A3:CD02             dw 0007,0000,C9D4,CAD6
-$A3:CD0A             dw 0000,0007,CA0A,CB1E ; upside right - moving down
-$A3:CD12             dw FFF9,0000,CA40,CB06
-$A3:CD1A             dw 0000,FFF9,C99E,CAEE ; upside left - moving up
-$A3:CD22             dw 0000,0000,C916,C982
-$A3:CD2A             dw 0000,0000,C982,C916
-$A3:CD32             dw 0000,0000,C9EE,CA5A
-$A3:CD3A             dw 0000,0000,CA5A,C9EE
+$A3:CCE2             dw FFF9,0000,C8FC,CA76 ; Upside up    - moving left
+$A3:CCEA             dw 0000,0007,C932,CABE ; Upside left  - moving down
+$A3:CCF2             dw 0007,0000,C968,CAA6 ; Upside down  - moving right
+$A3:CCFA             dw 0000,FFF9,C8C6,CA8E ; Upside right - moving up
+$A3:CD02             dw 0007,0000,C9D4,CAD6 ; Upside up    - moving right
+$A3:CD0A             dw 0000,0007,CA0A,CB1E ; Upside right - moving down
+$A3:CD12             dw FFF9,0000,CA40,CB06 ; Upside down  - moving left
+$A3:CD1A             dw 0000,FFF9,C99E,CAEE ; Upside left  - moving up
+$A3:CD22             dw 0000,0000,C916,C982 ; Upside up   - moving left  - no turn transition
+$A3:CD2A             dw 0000,0000,C982,C916 ; Upside down - moving right - no turn transition
+$A3:CD32             dw 0000,0000,C9EE,CA5A ; Upside up   - moving right - no turn transition
+$A3:CD3A             dw 0000,0000,CA5A,C9EE ; Upside down - moving left  - no turn transition
 }
 
 
-;;; $CD42:  ;;;
+;;; $CD42: Yard direction data ;;;
 {
-;                        __________________ 
-;                       |     _____________ 
-;                       |    |     ________ 
-;                       |    |    |     ___ 
+; Indexed by [enemy direction] * 8
+
+;                        __________________ Crawling instruction list
+;                       |     _____________ Movement direction. Not meaningfully used
+;                       |    |     ________ Hiding instruction list
+;                       |    |    |     ___ Airborne facing direction
 ;                       |    |    |    |
 $A3:CD42             dw C982,0002,CB9E,0000, ; 0: Upside right - moving up
                         C9EE,0003,CBEC,0001, ; 1: Upside right - moving down
-                        CA5A,0002,CBB8,0001, ; 2: Upside left - moving up
-                        C916,0003,CBD2,0000, ; 3: Upside left - moving down
-                        CA24,0000,CB50,0001, ; 4: Upside down - moving left
-                        C94C,0001,CB6A,0000, ; 5: Upside down - moving right
-                        C8E0,0000,CB36,0000, ; 6: Upside up - moving left
-                        C9B8,0001,CB84,0001  ; 7: Upside up - moving right
+                        CA5A,0002,CBB8,0001, ; 2: Upside left  - moving up
+                        C916,0003,CBD2,0000, ; 3: Upside left  - moving down
+                        CA24,0000,CB50,0001, ; 4: Upside down  - moving left
+                        C94C,0001,CB6A,0000, ; 5: Upside down  - moving right
+                        C8E0,0000,CB36,0000, ; 6: Upside up    - moving left
+                        C9B8,0001,CB84,0001  ; 7: Upside up    - moving right
 }
 
 
-;;; $CD82:  ;;;
+;;; $CD82: Yard crawling velocity signs ;;;
 {
-$A3:CD82             dw FFFF,0001,FFFF,0001
-$A3:CD8A             dw FFFF,0001,0000,0000
-$A3:CD92             dw 0000,0000,FFFF,0001
-$A3:CD9A             dw 0000,0000,0000,0000
+; 0000,0000 = positive
+; FFFF,0001 = negative
 
-$A3:CDA2             dw FFFF,0001,FFFF,0001
-$A3:CDAA             dw 0000,0000,FFFF,0001
-$A3:CDB2             dw FFFF,0001,0000,0000
-$A3:CDBA             dw 0000,0000,0000,0000
+;                        ___________________ X velocity
+;                       |           ________ Y velocity
+;                       |          |
+$A3:CD82             dw FFFF,0001, FFFF,0001 ; 0: Upside right - moving up
+$A3:CD8A             dw FFFF,0001, 0000,0000 ; 1: Upside right - moving down
+$A3:CD92             dw 0000,0000, FFFF,0001 ; 2: Upside left  - moving up
+$A3:CD9A             dw 0000,0000, 0000,0000 ; 3: Upside left  - moving down
+$A3:CDA2             dw FFFF,0001, FFFF,0001 ; 4: Upside down  - moving left
+$A3:CDAA             dw 0000,0000, FFFF,0001 ; 5: Upside down  - moving right
+$A3:CDB2             dw FFFF,0001, 0000,0000 ; 6: Upside up    - moving left
+$A3:CDBA             dw 0000,0000, 0000,0000 ; 7: Upside up    - moving right
 }
 
 
@@ -6818,47 +6836,49 @@ $A3:CDFD A8          TAY                    ;/
 $A3:CDFE B9 42 CD    LDA $CD42,y[$A3:CD72]  ;\
 $A3:CE01 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = [$CD42 + [Y]]
 $A3:CE04 B9 44 CD    LDA $CD44,y[$A3:CD74]  ;\
-$A3:CE07 1D 86 0F    ORA $0F86,x[$7E:1006]  ;} Enemy properties |= [$CD42 + [Y] + 2]
+$A3:CE07 1D 86 0F    ORA $0F86,x[$7E:1006]  ;} Enemy properties |= [$CD42 + [Y] + 2] <-- seemingly inconsequential
 $A3:CE0A 9D 86 0F    STA $0F86,x[$7E:1006]  ;/
 $A3:CE0D B9 46 CD    LDA $CD46,y[$A3:CD76]  ;\
-$A3:CE10 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy $0FAE = [$CD42 + [Y] + 4]
+$A3:CE10 9D AE 0F    STA $0FAE,x[$7E:102E]  ;} Enemy hiding instruction list = [$CD42 + [Y] + 4]
 $A3:CE13 B9 48 CD    LDA $CD48,y[$A3:CD78]  ;\
-$A3:CE16 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy $0FAC = [$CD42 + [Y] + 6]
+$A3:CE16 9D AC 0F    STA $0FAC,x[$7E:102C]  ;} Enemy airborne facing direction = [$CD42 + [Y] + 6]
 $A3:CE19 A9 00 00    LDA #$0000             ;\
 $A3:CE1C 9F 10 78 7E STA $7E7810,x[$7E:7890];} Enemy behaviour = idle crawling
 $A3:CE20 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
-$A3:CE23 9F 0C 78 7E STA $7E780C,x[$7E:788C];} Enemy $7E:780C = [enemy parameter 1]
+$A3:CE23 9F 0C 78 7E STA $7E780C,x[$7E:788C];} Enemy idle crawling speed table index = [enemy crawling speed table index] (enemy parameter 1)
 }
 
 
-;;; $CE27:  ;;;
+;;; $CE27: Set yard crawling velocities ;;;
 {
-$A3:CE27 B9 82 CD    LDA $CD82,y[$A3:CDB2]
-$A3:CE2A 85 12       STA $12    [$7E:0012]
-$A3:CE2C B9 84 CD    LDA $CD84,y[$A3:CDB4]
-$A3:CE2F 85 14       STA $14    [$7E:0014]
-$A3:CE31 B9 86 CD    LDA $CD86,y[$A3:CDB6]
-$A3:CE34 85 16       STA $16    [$7E:0016]
-$A3:CE36 B9 88 CD    LDA $CD88,y[$A3:CDB8]
-$A3:CE39 85 18       STA $18    [$7E:0018]
-$A3:CE3B BD B4 0F    LDA $0FB4,x[$7E:1034]
-$A3:CE3E 0A          ASL A
-$A3:CE3F A8          TAY
-$A3:CE40 B9 A2 CC    LDA $CCA2,y[$A3:CCA6]
-$A3:CE43 45 12       EOR $12    [$7E:0012]
-$A3:CE45 18          CLC
-$A3:CE46 65 14       ADC $14    [$7E:0014]
-$A3:CE48 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A3:CE4B B9 A2 CC    LDA $CCA2,y[$A3:CCA6]
-$A3:CE4E 45 16       EOR $16    [$7E:0016]
-$A3:CE50 18          CLC
-$A3:CE51 65 18       ADC $18    [$7E:0018]
-$A3:CE53 9D AA 0F    STA $0FAA,x[$7E:102A]
+;; Parameters:
+;;     Y: Direction * 8
+$A3:CE27 B9 82 CD    LDA $CD82,y[$A3:CDB2]  ;\
+$A3:CE2A 85 12       STA $12    [$7E:0012]  ;} $12 = [$CD82 + [Y]] (X velocity sign, FFFF = negative)
+$A3:CE2C B9 84 CD    LDA $CD84,y[$A3:CDB4]  ;\
+$A3:CE2F 85 14       STA $14    [$7E:0014]  ;} $14 = [$CD82 + [Y] + 2] (X velocity sign, 1 = negative)
+$A3:CE31 B9 86 CD    LDA $CD86,y[$A3:CDB6]  ;\
+$A3:CE34 85 16       STA $16    [$7E:0016]  ;} $16 = [$CD82 + [Y] + 4] (Y velocity sign, FFFF = negative)
+$A3:CE36 B9 88 CD    LDA $CD88,y[$A3:CDB8]  ;\
+$A3:CE39 85 18       STA $18    [$7E:0018]  ;} $18 = [$CD82 + [Y] + 6] (Y velocity sign, 1 = negative)
+$A3:CE3B BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
+$A3:CE3E 0A          ASL A                  ;} Y = [enemy crawling speed table index] * 2
+$A3:CE3F A8          TAY                    ;/
+$A3:CE40 B9 A2 CC    LDA $CCA2,y[$A3:CCA6]  ;\
+$A3:CE43 45 12       EOR $12    [$7E:0012]  ;|
+$A3:CE45 18          CLC                    ;} Enemy crawling X velocity = ([$CCA2 + [Y]] ^ [$12]) + [$14]
+$A3:CE46 65 14       ADC $14    [$7E:0014]  ;|
+$A3:CE48 9D A8 0F    STA $0FA8,x[$7E:1028]  ;/
+$A3:CE4B B9 A2 CC    LDA $CCA2,y[$A3:CCA6]  ;\
+$A3:CE4E 45 16       EOR $16    [$7E:0016]  ;|
+$A3:CE50 18          CLC                    ;} Enemy crawling Y velocity = ([$CCA2 + [Y]] ^ [$16]) + [$18]
+$A3:CE51 65 18       ADC $18    [$7E:0018]  ;|
+$A3:CE53 9D AA 0F    STA $0FAA,x[$7E:102A]  ;/
 $A3:CE56 6B          RTL
 }
 
 
-;;; $CE57:  ;;;
+;;; $CE57: Set yard crawling movement function ;;;
 {
 $A3:CE57 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
 $A3:CE5B 0A          ASL A                  ;|
@@ -6934,9 +6954,9 @@ $A3:CEDE BF 10 78 7E LDA $7E7810,x[$7E:7890];\
 $A3:CEE2 C9 02 00    CMP #$0002             ;} If [enemy behaviour] = hiding: return
 $A3:CEE5 F0 21       BEQ $21    [$CF08]     ;/
 $A3:CEE7 BD AE 0F    LDA $0FAE,x[$7E:102E]  ;\
-$A3:CEEA C9 5F CF    CMP #$CF5F             ;} If [enemy $0FAE] = RTL: go to BRANCH_CRAWL
+$A3:CEEA C9 5F CF    CMP #$CF5F             ;} If [enemy hiding instruction list] = RTL: go to BRANCH_CRAWL
 $A3:CEED F0 1A       BEQ $1A    [$CF09]     ;/
-$A3:CEEF 9D 92 0F    STA $0F92,x[$7E:1012]  ; Enemy instruction list pointer = [enemy $0FAE]
+$A3:CEEF 9D 92 0F    STA $0F92,x[$7E:1012]  ; Enemy instruction list pointer = [enemy hiding instruction list]
 $A3:CEF2 A9 4D 80    LDA #$804D             ;\
 $A3:CEF5 9D 8E 0F    STA $0F8E,x[$7E:100E]  ;} Enemy spritemap pointer = $804D (nothing)
 $A3:CEF8 A9 01 00    LDA #$0001             ;\
@@ -6997,6 +7017,7 @@ $A3:CF5E 60          RTS
 
 ;;; $CF5F: RTL ;;;
 {
+; Also used as dummy hiding instruction list pointer
 $A3:CF5F 6B          RTL
 }
 
@@ -7050,88 +7071,88 @@ $A3:CFA5 60          RTS
 
 ;;; $CFA6: Yard movement function - crawling - upside up - moving left ;;;
 {
-$A3:CFA6 BF 0A 78 7E LDA $7E780A,x[$7E:79CA]
-$A3:CFAA D0 05       BNE $05    [$CFB1]
-$A3:CFAC A0 E2 CC    LDY #$CCE2
-$A3:CFAF 80 03       BRA $03    [$CFB4]
+$A3:CFA6 BF 0A 78 7E LDA $7E780A,x[$7E:79CA];\
+$A3:CFAA D0 05       BNE $05    [$CFB1]     ;} If [enemy turn transition disable flag] = 0:
+$A3:CFAC A0 E2 CC    LDY #$CCE2             ; Y = $CCE2
+$A3:CFAF 80 03       BRA $03    [$CFB4]     ; Go to yard crawling movement - horizontal
 
-$A3:CFB1 A0 22 CD    LDY #$CD22
+$A3:CFB1 A0 22 CD    LDY #$CD22             ; Y = $CD22
 
-$A3:CFB4 4C 7E D0    JMP $D07E  [$A3:D07E]
+$A3:CFB4 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $CFB7: Yard movement function - crawling - upside left - moving down ;;;
 {
-$A3:CFB7 A0 EA CC    LDY #$CCEA
-$A3:CFBA 4C 02 D0    JMP $D002  [$A3:D002]
+$A3:CFB7 A0 EA CC    LDY #$CCEA             ; Y = $CCEA
+$A3:CFBA 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $CFBD: Yard movement function - crawling - upside down - moving right ;;;
 {
-$A3:CFBD BF 0A 78 7E LDA $7E780A,x[$7E:78CA]
-$A3:CFC1 D0 05       BNE $05    [$CFC8]
-$A3:CFC3 A0 F2 CC    LDY #$CCF2
-$A3:CFC6 80 03       BRA $03    [$CFCB]
-
-$A3:CFC8 A0 2A CD    LDY #$CD2A
-
-$A3:CFCB 4C 7E D0    JMP $D07E  [$A3:D07E]
+$A3:CFBD BF 0A 78 7E LDA $7E780A,x[$7E:78CA];\
+$A3:CFC1 D0 05       BNE $05    [$CFC8]     ;} If [enemy turn transition disable flag] = 0:
+$A3:CFC3 A0 F2 CC    LDY #$CCF2             ; Y = $CCF2
+$A3:CFC6 80 03       BRA $03    [$CFCB]     ; Go to yard crawling movement - horizontal
+                                            
+$A3:CFC8 A0 2A CD    LDY #$CD2A             ; Y = $CD2A
+                                            
+$A3:CFCB 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $CFCE: Yard movement function - crawling - upside right - moving up ;;;
 {
-$A3:CFCE A0 FA CC    LDY #$CCFA
-$A3:CFD1 4C 02 D0    JMP $D002  [$A3:D002]
+$A3:CFCE A0 FA CC    LDY #$CCFA             ; Y = $CCFA
+$A3:CFD1 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $CFD4: Yard movement function - crawling - upside up - moving right ;;;
 {
-$A3:CFD4 BF 0A 78 7E LDA $7E780A,x[$7E:780A]
-$A3:CFD8 D0 05       BNE $05    [$CFDF]
-$A3:CFDA A0 02 CD    LDY #$CD02
-$A3:CFDD 80 03       BRA $03    [$CFE2]
-
-$A3:CFDF A0 32 CD    LDY #$CD32
-
-$A3:CFE2 4C 7E D0    JMP $D07E  [$A3:D07E]
+$A3:CFD4 BF 0A 78 7E LDA $7E780A,x[$7E:780A];\
+$A3:CFD8 D0 05       BNE $05    [$CFDF]     ;} If [enemy turn transition disable flag] = 0:
+$A3:CFDA A0 02 CD    LDY #$CD02             ; Y = $CD02
+$A3:CFDD 80 03       BRA $03    [$CFE2]     ; Go to yard crawling movement - horizontal
+                                            
+$A3:CFDF A0 32 CD    LDY #$CD32             ; Y = $CD32
+                                            
+$A3:CFE2 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $CFE5: Yard movement function - crawling - upside right - moving down ;;;
 {
-$A3:CFE5 A0 0A CD    LDY #$CD0A
-$A3:CFE8 4C 02 D0    JMP $D002  [$A3:D002]
+$A3:CFE5 A0 0A CD    LDY #$CD0A             ; Y = $CD0A
+$A3:CFE8 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $CFEB: Yard movement function - crawling - upside down - moving left ;;;
 {
-$A3:CFEB BF 0A 78 7E LDA $7E780A,x[$7E:7A0A]
-$A3:CFEF D0 05       BNE $05    [$CFF6]
-$A3:CFF1 A0 12 CD    LDY #$CD12
-$A3:CFF4 80 03       BRA $03    [$CFF9]
-
-$A3:CFF6 A0 3A CD    LDY #$CD3A
-
-$A3:CFF9 4C 7E D0    JMP $D07E  [$A3:D07E]
+$A3:CFEB BF 0A 78 7E LDA $7E780A,x[$7E:7A0A];\
+$A3:CFEF D0 05       BNE $05    [$CFF6]     ;} If [enemy turn transition disable flag] = 0:
+$A3:CFF1 A0 12 CD    LDY #$CD12             ; Y = $CD12
+$A3:CFF4 80 03       BRA $03    [$CFF9]     ; Go to yard crawling movement - horizontal
+                                            
+$A3:CFF6 A0 3A CD    LDY #$CD3A             ; Y = $CD3A
+                                            
+$A3:CFF9 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $CFFC: Yard movement function - crawling - upside left - moving up ;;;
 {
-$A3:CFFC A0 1A CD    LDY #$CD1A
-$A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]
+$A3:CFFC A0 1A CD    LDY #$CD1A             ; Y = $CD1A
+$A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
 }
 
 
 ;;; $D002: Yard crawling movement - vertical ;;;
 {
 ;; Parameters:
-;;     Y: 
+;;     Y: Pointer to turn data entry (see $CCE2)
 $A3:D002 20 F8 D0    JSR $D0F8  [$A3:D0F8]  ; Move enemy ahead for outside turn check
 $A3:D005 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D007 64 14       STZ $14    [$7E:0014]  ;|
@@ -7202,6 +7223,8 @@ $A3:D07D 6B          RTL
 
 ;;; $D07E: Yard crawling movement - horizontal ;;;
 {
+;; Parameters:
+;;     Y: Pointer to turn data entry (see $CCE2)
 $A3:D07E 20 F8 D0    JSR $D0F8  [$A3:D0F8]  ; Move enemy ahead for outside turn check
 $A3:D081 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D083 64 14       STZ $14    [$7E:0014]  ;|
@@ -7310,20 +7333,20 @@ $A3:D123 60          RTS
 $A3:D124 B0 0F       BCS $0F    [$D135]     ; If carry clear:
 $A3:D126 BF 08 78 7E LDA $7E7808,x[$7E:79C8];\
 $A3:D12A 1A          INC A                  ;|
-$A3:D12B C9 10 00    CMP #$0010             ;} If [enemy $7E:7808] >= Fh: go to BRANCH_D144
+$A3:D12B C9 10 00    CMP #$0010             ;} If [enemy turn transition disable counter] >= Fh: go to BRANCH_D144
 $A3:D12E B0 14       BCS $14    [$D144]     ;/
-$A3:D130 9F 08 78 7E STA $7E7808,x[$7E:79C8]; Increment enemy $7E:7808
+$A3:D130 9F 08 78 7E STA $7E7808,x[$7E:79C8]; Increment enemy turn transition disable counter
 $A3:D134 60          RTS                    ; Return
 
 $A3:D135 A9 01 00    LDA #$0001             ;\
-$A3:D138 9F 0A 78 7E STA $7E780A,x          ;} Enemy $7E:780A = 1
+$A3:D138 9F 0A 78 7E STA $7E780A,x          ;} Enemy turn transition disable flag = 1
 $A3:D13C A9 00 00    LDA #$0000             ;\
-$A3:D13F 9F 08 78 7E STA $7E7808,x          ;} Enemy $7E:7808 = 0
+$A3:D13F 9F 08 78 7E STA $7E7808,x          ;} Enemy turn transition disable counter = 0
 $A3:D143 60          RTS                    ; Return
 
 ; BRANCH_D144
 $A3:D144 A9 00 00    LDA #$0000             ;\
-$A3:D147 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy $7E:780A = 1
+$A3:D147 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy turn transition disable flag = 0
 $A3:D14B 60          RTS
 }
 
@@ -7334,9 +7357,9 @@ $A3:D14C 9D 92 0F    STA $0F92,x[$7E:1152]  ; Enemy instruction list pointer = [
 $A3:D14F A9 01 00    LDA #$0001             ;\
 $A3:D152 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A3:D155 A9 01 00    LDA #$0001             ;\
-$A3:D158 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy $7E:780A = 1
+$A3:D158 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy turn transition disable flag = 1
 $A3:D15C A9 00 00    LDA #$0000             ;\
-$A3:D15F 9F 08 78 7E STA $7E7808,x[$7E:79C8];} Enemy $7E:7808 = 0
+$A3:D15F 9F 08 78 7E STA $7E7808,x[$7E:79C8];} Enemy turn transition disable counter = 0
 $A3:D163 60          RTS
 }
 
@@ -7353,12 +7376,12 @@ $A3:D175 A9 B3 D1    LDA #$D1B3             ;\
 $A3:D178 9D B2 0F    STA $0FB2,x[$7E:1172]  ;} Enemy movement function = $D1B3 (airborne)
 $A3:D17B BD AC 0F    LDA $0FAC,x[$7E:116C]  ;\
 $A3:D17E 0A          ASL A                  ;|
-$A3:D17F 0A          ASL A                  ;} Y = [enemy $0FAC] * 4
+$A3:D17F 0A          ASL A                  ;} Y = [enemy airborne facing direction] * 4
 $A3:D180 A8          TAY                    ;/
 $A3:D181 B9 AB D1    LDA $D1AB,y[$A3:D1AB]  ;\
 $A3:D184 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = [$D1AB + [Y]]
 $A3:D187 B9 AD D1    LDA $D1AD,y[$A3:D1AD]  ;\
-$A3:D18A 9D AE 0F    STA $0FAE,x[$7E:116E]  ;} Enemy $0FAE = [$D1AB + [Y] + 2]
+$A3:D18A 9D AE 0F    STA $0FAE,x[$7E:116E]  ;} Enemy hiding instruction list = [$D1AB + [Y] + 2]
 $A3:D18D A9 01 00    LDA #$0001             ;\
 $A3:D190 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A3:D193 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
@@ -7371,8 +7394,11 @@ $A3:D1A5 9F 02 78 7E STA $7E7802,x[$7E:79C2];} Enemy airborne Y velocity = 0.0
 $A3:D1A9 7A          PLY
 $A3:D1AA 60          RTS
 
-$A3:D1AB             dw CC06,CB44, 
-                        CC1E,CB92
+;                        ________ Airborne instruction list
+;                       |     ___ Hiding instruction list
+;                       |    |
+$A3:D1AB             dw CC06,CB44, ; Facing left
+                        CC1E,CB92  ; Facing right
 }
 
 
@@ -7494,7 +7520,7 @@ $A3:D2D4 BD 86 0F    LDA $0F86,x[$7E:1146]
 $A3:D2D7 29 FC FF    AND #$FFFC
 $A3:D2DA 1D AC 0F    ORA $0FAC,x[$7E:116C]
 $A3:D2DD 9D 86 0F    STA $0F86,x[$7E:1146]
-$A3:D2E0 22 7A E6 A3 JSL $A3E67A[$A3:E67A]  ; Execute creepy crawly common initialisation AI
+$A3:D2E0 22 7A E6 A3 JSL $A3E67A[$A3:E67A]  ; Creepy crawly common initialisation AI
 $A3:D2E4 A9 5F CF    LDA #$CF5F
 $A3:D2E7 9D B2 0F    STA $0FB2,x[$7E:1172]
 $A3:D2EA BD AE 0F    LDA $0FAE,x[$7E:116E]
@@ -7522,7 +7548,7 @@ $A3:D30D             dw CC06,CB44, CC1E,CB92
 }
 
 
-;;; $D315:  ;;;
+;;; $D315: Unused ;;;
 {
 $A3:D315 BF 0A 78 7E LDA $7E780A,x
 $A3:D319 F0 02       BEQ $02    [$D31D]
@@ -7591,8 +7617,8 @@ $A3:D38A B9 46 CD    LDA $CD46,y[$A3:CD7E]
 $A3:D38D 9D AE 0F    STA $0FAE,x[$7E:0FEE]
 $A3:D390 B9 48 CD    LDA $CD48,y[$A3:CD80]
 $A3:D393 9D AC 0F    STA $0FAC,x[$7E:0FEC]
-$A3:D396 22 27 CE A3 JSL $A3CE27[$A3:CE27]
-$A3:D39A 22 57 CE A3 JSL $A3CE57[$A3:CE57]
+$A3:D396 22 27 CE A3 JSL $A3CE27[$A3:CE27]  ; Set yard crawling velocities
+$A3:D39A 22 57 CE A3 JSL $A3CE57[$A3:CE57]  ; Set yard crawling movement function
 $A3:D39E A9 01 00    LDA #$0001
 $A3:D3A1 9F 0A 78 7E STA $7E780A,x[$7E:784A]
 $A3:D3A5 A9 00 00    LDA #$0000
@@ -7644,7 +7670,7 @@ $A3:D3FC C9 03 00    CMP #$0003             ;\
 $A3:D3FF F0 1F       BEQ $1F    [$D420]     ;} If [enemy behaviour] = dropped: return
 $A3:D401 22 23 80 A3 JSL $A38023[$A3:8023]  ; Normal enemy touch AI
 $A3:D405 BF 0C 78 7E LDA $7E780C,x          ;\
-$A3:D409 9D B4 0F    STA $0FB4,x            ;} Enemy parameter 1 = [enemy $7E:780C]
+$A3:D409 9D B4 0F    STA $0FB4,x            ;} Enemy crawling speed table index = [enemy idle crawling speed table index]
 $A3:D40C BF 10 78 7E LDA $7E7810,x          ;\
 $A3:D410 C9 00 00    CMP #$0000             ;} If [enemy behaviour] != idle crawling:
 $A3:D413 F0 04       BEQ $04    [$D419]     ;/
@@ -7665,7 +7691,7 @@ $A3:D426 EB          XBA                    ;} $12 = 0 iff pressing right and no
 $A3:D427 3A          DEC A                  ;|
 $A3:D428 85 12       STA $12    [$7E:0012]  ;/
 $A3:D42A BD AC 0F    LDA $0FAC,x            ;\
-$A3:D42D 29 01 00    AND #$0001             ;} $14 = [enemy $0FAC] & 1
+$A3:D42D 29 01 00    AND #$0001             ;} $14 = [enemy airborne facing direction] & 1
 $A3:D430 85 14       STA $14    [$7E:0014]  ;/
 $A3:D432 A5 12       LDA $12    [$7E:0012]  ;\
 $A3:D434 D0 06       BNE $06    [$D43C]     ;} If [$12] = 0:
