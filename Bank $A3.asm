@@ -2678,7 +2678,7 @@ $A3:A34A 60          RTS
 }
 
 
-;;; $A34B: Roach function - activate - index 2 (move along 45° angle towards Samus) ;;;
+;;; $A34B: Roach function - activate - index 2 (move towards Samus) ;;;
 {
 $A3:A34B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A34E 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
@@ -2686,7 +2686,7 @@ $A3:A352 38          SEC                    ;\
 $A3:A353 E9 40 00    SBC #$0040             ;|
 $A3:A356 49 FF FF    EOR #$FFFF             ;|
 $A3:A359 1A          INC A                  ;|
-$A3:A35A 18          CLC                    ;} Enemy custom angle = (40h - [A]) % 100h (angle flipped over 45° line)
+$A3:A35A 18          CLC                    ;} Enemy custom angle = (40h - [A]) % 100h (angle using the common maths convention)
 $A3:A35B 69 00 01    ADC #$0100             ;|
 $A3:A35E 29 FF 00    AND #$00FF             ;|
 $A3:A361 9D AC 0F    STA $0FAC,x            ;/
@@ -2703,17 +2703,17 @@ $A3:A37F 60          RTS
 }
 
 
-;;; $A380: Roach function - activate - index 6 (move along 45° angle away from Samus) ;;;
+;;; $A380: Roach function - activate - index 6 (away from Samus) ;;;
 {
 $A3:A380 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A383 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
 $A3:A387 38          SEC                    ;\
 $A3:A388 E9 40 00    SBC #$0040             ;|
-$A3:A38B 49 FF FF    EOR #$FFFF             ;|
-$A3:A38E 1A          INC A                  ;|
-$A3:A38F 18          CLC                    ;} Enemy custom angle = (C0h - [A]) % 100h (angle flipped over 135° line)
+$A3:A38B 49 FF FF    EOR #$FFFF             ;} A = (40h - [A]) % 100h (angle using the common maths convention)
+$A3:A38E 1A          INC A                  ;/
+$A3:A38F 18          CLC                    ;\
 $A3:A390 69 80 00    ADC #$0080             ;|
-$A3:A393 29 FF 00    AND #$00FF             ;|
+$A3:A393 29 FF 00    AND #$00FF             ;} Enemy custom angle = ([A] + 80h) % 100h
 $A3:A396 9D AC 0F    STA $0FAC,x            ;/
 $A3:A399 20 CA A3    JSR $A3CA  [$A3:A3CA]  ; Calculate custom velocities
 $A3:A39C 20 B5 A3    JSR $A3B5  [$A3:A3B5]  ; Determine custom instruction list index
@@ -2805,7 +2805,7 @@ $A3:A43F 60          RTS
 }
 
 
-;;; $A440: Roach function - activated - index 2 (move along 45° angle towards Samus) ;;;
+;;; $A440: Roach function - activated - index 2 (move towards Samus) ;;;
 {
 $A3:A440 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A443 20 11 A6    JSR $A611  [$A3:A611]  ; Move enemy along custom angle
@@ -2813,7 +2813,7 @@ $A3:A446 60          RTS
 }
 
 
-;;; $A447: Roach function - activated - index 6 (move along 45° angle away from Samus) ;;;
+;;; $A447: Roach function - activated - index 6 (move away from Samus) ;;;
 {
 $A3:A447 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:A44A 20 11 A6    JSR $A611  [$A3:A611]  ; Move enemy along custom angle
@@ -4804,7 +4804,7 @@ $A3:B722             dw B75E, B772, B790, B7A4, B7C2, B7D6, B7F4, B838, B85A, B8
 }
 
 
-;;; $B75E: Instruction lists - bang ;;;
+;;; $B75E..BA77: Instruction lists - bang ;;;
 {
 ;;; $B75E: Instruction list - core - growth level 0 - idling ;;;
 {
@@ -5389,18 +5389,18 @@ $A3:BC4A             dw 0017, ; Charged power beam
 ;                        ________ Acceleration interval timer
 ;                       |     ___ Deceleration interval timer
 ;                       |    |
-$A3:BC6A             dw 0003,0001, 
-                        0004,0001, 
-                        0005,0002, 
-                        0006,0002, 
-                        0007,0002, 
-                        0008,0003, 
-                        0009,0003, 
+$A3:BC6A             dw 0003,0001,
+                        0004,0001,
+                        0005,0002,
+                        0006,0002,
+                        0007,0002,
+                        0008,0003,
+                        0009,0003,
                         000A,0004,
-                        000B,0004, 
-                        000C,0005, 
-                        000D,0005, 
-                        000E,0006, 
+                        000B,0004,
+                        000C,0005,
+                        000D,0005,
+                        000E,0006,
                         000F,0006
 }
 
@@ -5620,7 +5620,7 @@ $A3:BE30 A5 12       LDA $12    [$7E:0012]  ;\
 $A3:BE32 10 07       BPL $07    [$BE3B]     ;} If [$12] < 0:
 $A3:BE34 A9 01 00    LDA #$0001             ;\
 $A3:BE37 9F 10 78 7E STA $7E7810,x          ;} Enemy moving up flag = 1
-                                            
+
 $A3:BE3B A5 12       LDA $12    [$7E:0012]  ;\
 $A3:BE3D 22 67 B0 A0 JSL $A0B067[$A0:B067]  ;|
 $A3:BE41 29 00 FF    AND #$FF00             ;|
@@ -5640,7 +5640,7 @@ $A3:BE61 A5 1C       LDA $1C    [$7E:001C]  ;|
 $A3:BE63 85 16       STA $16    [$7E:0016]  ;} $18.$16 = -[$18].[$16]
 $A3:BE65 A5 1E       LDA $1E    [$7E:001E]  ;|
 $A3:BE67 85 18       STA $18    [$7E:0018]  ;/
-                                            
+
 $A3:BE69 18          CLC                    ;\
 $A3:BE6A BD 80 0F    LDA $0F80,x            ;|
 $A3:BE6D 65 16       ADC $16    [$7E:0016]  ;|
@@ -5980,8 +5980,8 @@ $A3:C672             dx 0010,C842,
 
 ;;; $C67E: Instruction list - launched attack ;;;
 {
-$A3:C67E             dx 8173,       ; Enable off-screen processing
-                        0002,C878,
+$A3:C67E             dx 8173        ; Enable off-screen processing
+$A3:C680             dx 0002,C878,
                         0002,C884,
                         0002,C89A,
                         0002,C842,
@@ -6712,17 +6712,17 @@ $A3:CC91 6B          RTL
 }
 
 
-;;; $CC92: Unused. Instruction ;;;
+;;; $CC92: Unused. Instruction - make yard face Samus ;;;
 {
 ; Wild NOP appears!
 $A3:CC92 EA          NOP
 $A3:CC93 5A          PHY
-$A3:CC94 22 15 D3 A3 JSL $A3D315[$A3:D315]
-$A3:CC98 90 06       BCC $06    [$CCA0]
+$A3:CC94 22 15 D3 A3 JSL $A3D315[$A3:D315]  ; Make yard face Samus
+$A3:CC98 90 06       BCC $06    [$CCA0]     ; If yard was turned around:
 $A3:CC9A 7A          PLY
-$A3:CC9B BD 92 0F    LDA $0F92,x
-$A3:CC9E A8          TAY
-$A3:CC9F 6B          RTL
+$A3:CC9B BD 92 0F    LDA $0F92,x            ;\
+$A3:CC9E A8          TAY                    ;} Y = [enemy instruction list pointer]
+$A3:CC9F 6B          RTL                    ; Return
 
 $A3:CCA0 7A          PLY
 $A3:CCA1 6B          RTL
@@ -6798,10 +6798,16 @@ $A3:CDBA             dw 0000,0000, 0000,0000 ; 7: Upside up    - moving right
 }
 
 
-;;; $CDC2:  ;;;
+;;; $CDC2: Yard opposite directions ;;;
 {
-; Opposite direction?
-$A3:CDC2             dw 0001, 0000, 0003, 0002, 0005, 0004, 0007, 0006
+$A3:CDC2             dw 0001, ; 0: Upside right - moving up
+                        0000, ; 1: Upside right - moving down
+                        0003, ; 2: Upside left  - moving up
+                        0002, ; 3: Upside left  - moving down
+                        0005, ; 4: Upside down  - moving left
+                        0004, ; 5: Upside down  - moving right
+                        0007, ; 6: Upside up    - moving left
+                        0006  ; 7: Upside up    - moving right
 }
 
 
@@ -6831,7 +6837,7 @@ $A3:CDF4 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A3:CDF7 BD 92 0F    LDA $0F92,x[$7E:1012]  ;\
 $A3:CDFA 0A          ASL A                  ;|
 $A3:CDFB 0A          ASL A                  ;} Y = [enemy initialisation parameter] * 8
-$A3:CDFC 0A          ASL A                  ;| 
+$A3:CDFC 0A          ASL A                  ;|
 $A3:CDFD A8          TAY                    ;/
 $A3:CDFE B9 42 CD    LDA $CD42,y[$A3:CD72]  ;\
 $A3:CE01 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = [$CD42 + [Y]]
@@ -7085,7 +7091,7 @@ $A3:CFB4 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 ;;; $CFB7: Yard movement function - crawling - upside left - moving down ;;;
 {
 $A3:CFB7 A0 EA CC    LDY #$CCEA             ; Y = $CCEA
-$A3:CFBA 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
+$A3:CFBA 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
 
 
@@ -7095,9 +7101,9 @@ $A3:CFBD BF 0A 78 7E LDA $7E780A,x[$7E:78CA];\
 $A3:CFC1 D0 05       BNE $05    [$CFC8]     ;} If [enemy turn transition disable flag] = 0:
 $A3:CFC3 A0 F2 CC    LDY #$CCF2             ; Y = $CCF2
 $A3:CFC6 80 03       BRA $03    [$CFCB]     ; Go to yard crawling movement - horizontal
-                                            
+
 $A3:CFC8 A0 2A CD    LDY #$CD2A             ; Y = $CD2A
-                                            
+
 $A3:CFCB 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - horizontal
 }
 
@@ -7105,7 +7111,7 @@ $A3:CFCB 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 ;;; $CFCE: Yard movement function - crawling - upside right - moving up ;;;
 {
 $A3:CFCE A0 FA CC    LDY #$CCFA             ; Y = $CCFA
-$A3:CFD1 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
+$A3:CFD1 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
 
 
@@ -7115,9 +7121,9 @@ $A3:CFD4 BF 0A 78 7E LDA $7E780A,x[$7E:780A];\
 $A3:CFD8 D0 05       BNE $05    [$CFDF]     ;} If [enemy turn transition disable flag] = 0:
 $A3:CFDA A0 02 CD    LDY #$CD02             ; Y = $CD02
 $A3:CFDD 80 03       BRA $03    [$CFE2]     ; Go to yard crawling movement - horizontal
-                                            
+
 $A3:CFDF A0 32 CD    LDY #$CD32             ; Y = $CD32
-                                            
+
 $A3:CFE2 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - horizontal
 }
 
@@ -7125,7 +7131,7 @@ $A3:CFE2 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 ;;; $CFE5: Yard movement function - crawling - upside right - moving down ;;;
 {
 $A3:CFE5 A0 0A CD    LDY #$CD0A             ; Y = $CD0A
-$A3:CFE8 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
+$A3:CFE8 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
 
 
@@ -7135,9 +7141,9 @@ $A3:CFEB BF 0A 78 7E LDA $7E780A,x[$7E:7A0A];\
 $A3:CFEF D0 05       BNE $05    [$CFF6]     ;} If [enemy turn transition disable flag] = 0:
 $A3:CFF1 A0 12 CD    LDY #$CD12             ; Y = $CD12
 $A3:CFF4 80 03       BRA $03    [$CFF9]     ; Go to yard crawling movement - horizontal
-                                            
+
 $A3:CFF6 A0 3A CD    LDY #$CD3A             ; Y = $CD3A
-                                            
+
 $A3:CFF9 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - horizontal
 }
 
@@ -7145,7 +7151,7 @@ $A3:CFF9 4C 7E D0    JMP $D07E  [$A3:D07E]  ; Go to yard crawling movement - hor
 ;;; $CFFC: Yard movement function - crawling - upside left - moving up ;;;
 {
 $A3:CFFC A0 1A CD    LDY #$CD1A             ; Y = $CD1A
-$A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - horizontal
+$A3:CFFF 4C 02 D0    JMP $D002  [$A3:D002]  ; Go to yard crawling movement - vertical
 }
 
 
@@ -7179,7 +7185,7 @@ $A3:D02A 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy consecutive turn counter = 
 $A3:D02D 5A          PHY                    ;\
 $A3:D02E 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ;} Align enemy Y position with non-square slope <-- does nothing, a non-square slope isn't a collision
 $A3:D032 7A          PLY                    ;/
-$A3:D033 20 24 D1    JSR $D124  [$A3:D124]  ; Execute $D124
+$A3:D033 20 24 D1    JSR $D124  [$A3:D124]  ; Handle turn transition disabling
 $A3:D036 64 12       STZ $12    [$7E:0012]  ;\
 $A3:D038 64 14       STZ $14    [$7E:0014]  ;|
 $A3:D03A BD AA 0F    LDA $0FAA,x[$7E:116A]  ;|
@@ -7199,7 +7205,7 @@ $A3:D04F 49 FF FF    EOR #$FFFF             ;|
 $A3:D052 1A          INC A                  ;} Negate enemy crawling X velocity
 $A3:D053 9D A8 0F    STA $0FA8,x[$7E:11A8]  ;/
 $A3:D056 B9 06 00    LDA $0006,y[$A3:CD20]  ; A = [[Y] + 6]
-$A3:D059 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
+$A3:D059 20 4C D1    JSR $D14C  [$A3:D14C]  ; Set enemy instruction list and disable turn transition
 $A3:D05C 6B          RTL                    ; Return
 
 ; BRANCH_OUTSIDE_TURN
@@ -7216,7 +7222,7 @@ $A3:D070 49 FF FF    EOR #$FFFF             ;|
 $A3:D073 1A          INC A                  ;} Negate enemy crawling Y velocity
 $A3:D074 9D AA 0F    STA $0FAA,x[$7E:116A]  ;/
 $A3:D077 B9 04 00    LDA $0004,y[$A3:CCFE]  ; A = [[Y] + 4]
-$A3:D07A 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
+$A3:D07A 20 4C D1    JSR $D14C  [$A3:D14C]  ; Set enemy instruction list and disable turn transition
 $A3:D07D 6B          RTL
 }
 
@@ -7260,7 +7266,7 @@ $A3:D0B7 22 A4 C6 A0 JSL $A0C6A4[$A0:C6A4]  ;} Move enemy right by [$14].[$12], 
 $A3:D0BB 7A          PLY                    ;/
 $A3:D0BC B0 08       BCS $08    [$D0C6]     ; If collision: go to BRANCH_INSIDE_TURN
 $A3:D0BE 22 AD C8 A0 JSL $A0C8AD[$A0:C8AD]  ; Align enemy Y position with non-square slope
-$A3:D0C2 20 24 D1    JSR $D124  [$A3:D124]  ; Execute $D124
+$A3:D0C2 20 24 D1    JSR $D124  [$A3:D124]  ; Handle turn transition disabling
 $A3:D0C5 6B          RTL                    ; Return
 
 ; BRANCH_INSIDE_TURN
@@ -7269,7 +7275,7 @@ $A3:D0C9 49 FF FF    EOR #$FFFF             ;|
 $A3:D0CC 1A          INC A                  ;} Negate enemy crawling Y velocity
 $A3:D0CD 9D AA 0F    STA $0FAA,x[$7E:116A]  ;/
 $A3:D0D0 B9 06 00    LDA $0006,y[$A3:CCE8]  ; A = [[Y] + 6]
-$A3:D0D3 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
+$A3:D0D3 20 4C D1    JSR $D14C  [$A3:D14C]  ; Set enemy instruction list and disable turn transition
 $A3:D0D6 6B          RTL                    ; Return
 
 ; BRANCH_OUTSIDE_TURN
@@ -7286,7 +7292,7 @@ $A3:D0EA 49 FF FF    EOR #$FFFF             ;|
 $A3:D0ED 1A          INC A                  ;} Negate enemy crawling X velocity
 $A3:D0EE 9D A8 0F    STA $0FA8,x[$7E:1028]  ;/
 $A3:D0F1 B9 04 00    LDA $0004,y[$A3:CD3E]  ; A = [[Y] + 4]
-$A3:D0F4 20 4C D1    JSR $D14C  [$A3:D14C]  ; Execute $D14C
+$A3:D0F4 20 4C D1    JSR $D14C  [$A3:D14C]  ; Set enemy instruction list and disable turn transition
 $A3:D0F7 6B          RTL
 }
 
@@ -7326,32 +7332,33 @@ $A3:D123 60          RTS
 }
 
 
-;;; $D124:  ;;;
+;;; $D124: Handle turn transition disabling ;;;
 {
 ;; Parameters:
 ;;     Carry: Set if position was adjusted by slope, otherwise clear
-$A3:D124 B0 0F       BCS $0F    [$D135]     ; If carry clear:
+$A3:D124 B0 0F       BCS $0F    [$D135]     ; If carry set: go to BRANCH_RESET_TURN_TRANSITION_DISABLE_COUNTER
 $A3:D126 BF 08 78 7E LDA $7E7808,x[$7E:79C8];\
 $A3:D12A 1A          INC A                  ;|
-$A3:D12B C9 10 00    CMP #$0010             ;} If [enemy turn transition disable counter] >= Fh: go to BRANCH_D144
+$A3:D12B C9 10 00    CMP #$0010             ;} If [enemy turn transition disable counter] >= Fh: go to BRANCH_ENABLE_TURN_TRANSITION
 $A3:D12E B0 14       BCS $14    [$D144]     ;/
 $A3:D130 9F 08 78 7E STA $7E7808,x[$7E:79C8]; Increment enemy turn transition disable counter
 $A3:D134 60          RTS                    ; Return
 
+; BRANCH_RESET_TURN_TRANSITION_DISABLE_COUNTER
 $A3:D135 A9 01 00    LDA #$0001             ;\
 $A3:D138 9F 0A 78 7E STA $7E780A,x          ;} Enemy turn transition disable flag = 1
 $A3:D13C A9 00 00    LDA #$0000             ;\
 $A3:D13F 9F 08 78 7E STA $7E7808,x          ;} Enemy turn transition disable counter = 0
 $A3:D143 60          RTS                    ; Return
 
-; BRANCH_D144
+; BRANCH_ENABLE_TURN_TRANSITION
 $A3:D144 A9 00 00    LDA #$0000             ;\
 $A3:D147 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy turn transition disable flag = 0
 $A3:D14B 60          RTS
 }
 
 
-;;; $D14C:  ;;;
+;;; $D14C: Set enemy instruction list and disable turn transition ;;;
 {
 $A3:D14C 9D 92 0F    STA $0F92,x[$7E:1152]  ; Enemy instruction list pointer = [A]
 $A3:D14F A9 01 00    LDA #$0001             ;\
@@ -7414,32 +7421,32 @@ $A3:D1C2 BF 06 78 7E LDA $7E7806,x[$7E:79C6];} Move enemy right by [enemy airbor
 $A3:D1C6 85 14       STA $14    [$7E:0014]  ;|
 $A3:D1C8 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A3:D1CC B0 3C       BCS $3C    [$D20A]     ; If collided with wall: go to BRANCH_HIT_WALL
-$A3:D1CE BF 06 78 7E LDA $7E7806,x[$7E:79C6]
-$A3:D1D2 30 13       BMI $13    [$D1E7]
-$A3:D1D4 A9 00 10    LDA #$1000
-$A3:D1D7 49 FF FF    EOR #$FFFF
-$A3:D1DA 1A          INC A
-$A3:D1DB 85 16       STA $16    [$7E:0016]
-$A3:D1DD A9 00 00    LDA #$0000
-$A3:D1E0 49 FF FF    EOR #$FFFF
-$A3:D1E3 85 18       STA $18    [$7E:0018]
+$A3:D1CE BF 06 78 7E LDA $7E7806,x[$7E:79C6];\
+$A3:D1D2 30 13       BMI $13    [$D1E7]     ;} If [airborne X velocity] >= 0:
+$A3:D1D4 A9 00 10    LDA #$1000             ;\
+$A3:D1D7 49 FF FF    EOR #$FFFF             ;|
+$A3:D1DA 1A          INC A                  ;|
+$A3:D1DB 85 16       STA $16    [$7E:0016]  ;} $18.$16 = -0.1000h
+$A3:D1DD A9 00 00    LDA #$0000             ;|
+$A3:D1E0 49 FF FF    EOR #$FFFF             ;|
+$A3:D1E3 85 18       STA $18    [$7E:0018]  ;/
 $A3:D1E5 80 0A       BRA $0A    [$D1F1]
 
-$A3:D1E7 A9 00 10    LDA #$1000
-$A3:D1EA 85 16       STA $16    [$7E:0016]
-$A3:D1EC A9 00 00    LDA #$0000
-$A3:D1EF 85 18       STA $18    [$7E:0018]
+$A3:D1E7 A9 00 10    LDA #$1000             ;\ Else ([airborne X velocity] < 0):
+$A3:D1EA 85 16       STA $16    [$7E:0016]  ;|
+$A3:D1EC A9 00 00    LDA #$0000             ;} $18.$16 = 0.1000h
+$A3:D1EF 85 18       STA $18    [$7E:0018]  ;/
 
-$A3:D1F1 18          CLC
-$A3:D1F2 BF 04 78 7E LDA $7E7804,x[$7E:79C4]
-$A3:D1F6 65 16       ADC $16    [$7E:0016]
-$A3:D1F8 9F 04 78 7E STA $7E7804,x[$7E:79C4]
-$A3:D1FC BF 06 78 7E LDA $7E7806,x[$7E:79C6]
-$A3:D200 65 18       ADC $18    [$7E:0018]
-$A3:D202 F0 04       BEQ $04    [$D208]
-$A3:D204 9F 06 78 7E STA $7E7806,x[$7E:79C6]
+$A3:D1F1 18          CLC                    ;\
+$A3:D1F2 BF 04 78 7E LDA $7E7804,x[$7E:79C4];|
+$A3:D1F6 65 16       ADC $16    [$7E:0016]  ;} Enemy airborne X subvelocity += [$16]
+$A3:D1F8 9F 04 78 7E STA $7E7804,x[$7E:79C4];/
+$A3:D1FC BF 06 78 7E LDA $7E7806,x[$7E:79C6];\
+$A3:D200 65 18       ADC $18    [$7E:0018]  ;} A = [enemy airborne X velocity] + [$18] + carry
+$A3:D202 F0 04       BEQ $04    [$D208]     ; If [A] != 0:
+$A3:D204 9F 06 78 7E STA $7E7806,x[$7E:79C6]; Enemy airborne X velocity = [A]
 
-$A3:D208 80 29       BRA $29    [$D233]
+$A3:D208 80 29       BRA $29    [$D233]     ; Go to BRANCH_X_MOVEMENT_END
 
 ; BRANCH_HIT_WALL
 $A3:D20A BF 04 78 7E LDA $7E7804,x[$7E:7844];\
@@ -7450,11 +7457,11 @@ $A3:D216 BF 06 78 7E LDA $7E7806,x[$7E:7846];\
 $A3:D21A 49 FF FF    EOR #$FFFF             ;|
 $A3:D21D 1A          INC A                  ;} Negate enemy airborne X velocity
 $A3:D21E 9F 06 78 7E STA $7E7806,x[$7E:7846];/
-$A3:D222 A9 01 00    LDA #$0001
-$A3:D225 9F 00 80 7E STA $7E8000,x[$7E:8040]
+$A3:D222 A9 01 00    LDA #$0001             ;\
+$A3:D225 9F 00 80 7E STA $7E8000,x[$7E:8040];} Enemy $7E:8000 = 1 (never read)
 $A3:D229 A9 70 00    LDA #$0070             ;\
 $A3:D22C 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
-$A3:D230 4C 33 D2    JMP $D233  [$A3:D233]
+$A3:D230 4C 33 D2    JMP $D233  [$A3:D233]  ; >_<;
 
 ; BRANCH_X_MOVEMENT_END
 $A3:D233 BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
@@ -7463,23 +7470,23 @@ $A3:D239 BF 02 78 7E LDA $7E7802,x[$7E:79C2];} Move enemy down by [enemy airborn
 $A3:D23D 85 14       STA $14    [$7E:0014]  ;|
 $A3:D23F 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A3:D243 B0 1D       BCS $1D    [$D262]     ; If collided with block: go to BRANCH_COLLIDED_VERTICALLY
-$A3:D245 18          CLC
-$A3:D246 BF 00 78 7E LDA $7E7800,x[$7E:79C0]
-$A3:D24A 69 00 20    ADC #$2000
-$A3:D24D 9F 00 78 7E STA $7E7800,x[$7E:79C0]
-$A3:D251 BF 02 78 7E LDA $7E7802,x[$7E:79C2]
-$A3:D255 69 00 00    ADC #$0000
-$A3:D258 C9 04 00    CMP #$0004
-$A3:D25B 10 04       BPL $04    [$D261]
-$A3:D25D 9F 02 78 7E STA $7E7802,x[$7E:79C2]
+$A3:D245 18          CLC                    ;\
+$A3:D246 BF 00 78 7E LDA $7E7800,x[$7E:79C0];|
+$A3:D24A 69 00 20    ADC #$2000             ;} Enemy airborne Y subvelocity += 2000h
+$A3:D24D 9F 00 78 7E STA $7E7800,x[$7E:79C0];/
+$A3:D251 BF 02 78 7E LDA $7E7802,x[$7E:79C2];\
+$A3:D255 69 00 00    ADC #$0000             ;} A = [enemy airborne Y velocity] + carry
+$A3:D258 C9 04 00    CMP #$0004             ;\
+$A3:D25B 10 04       BPL $04    [$D261]     ;} If [A] < 4:
+$A3:D25D 9F 02 78 7E STA $7E7802,x[$7E:79C2]; Enemy airborne Y velocity = [A]
 
-$A3:D261 6B          RTL
+$A3:D261 6B          RTL                    ; Return
 
 ; BRANCH_COLLIDED_VERTICALLY
-$A3:D262 BF 02 78 7E LDA $7E7802,x[$7E:79C2]
-$A3:D266 30 05       BMI $05    [$D26D]
-$A3:D268 C9 03 00    CMP #$0003
-$A3:D26B 30 20       BMI $20    [$D28D]
+$A3:D262 BF 02 78 7E LDA $7E7802,x[$7E:79C2];\
+$A3:D266 30 05       BMI $05    [$D26D]     ;|
+$A3:D268 C9 03 00    CMP #$0003             ;} If 0 <= [enemy airborne Y velocity] < 3: go to BRANCH_LAND
+$A3:D26B 30 20       BMI $20    [$D28D]     ;/
 
 $A3:D26D BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
 $A3:D271 49 FF FF    EOR #$FFFF             ;|
@@ -7489,42 +7496,43 @@ $A3:D279 BF 02 78 7E LDA $7E7802,x[$7E:79C2];\
 $A3:D27D 49 FF FF    EOR #$FFFF             ;|
 $A3:D280 1A          INC A                  ;} Negate enemy airborne Y velocity
 $A3:D281 9F 02 78 7E STA $7E7802,x[$7E:79C2];/
-$A3:D285 A9 00 00    LDA #$0000
-$A3:D288 9F 00 80 7E STA $7E8000,x[$7E:81C0]
-$A3:D28C 6B          RTL
+$A3:D285 A9 00 00    LDA #$0000             ;\
+$A3:D288 9F 00 80 7E STA $7E8000,x[$7E:81C0];} Enemy $7E:8000 = 0 (never read)
+$A3:D28C 6B          RTL                    ; Return
 
-$A3:D28D A9 00 00    LDA #$0000
-$A3:D290 9F 06 78 7E STA $7E7806,x[$7E:79C6]
-$A3:D294 9F 04 78 7E STA $7E7804,x[$7E:79C4]
-$A3:D298 9F 02 78 7E STA $7E7802,x[$7E:79C2]
-$A3:D29C 9F 00 78 7E STA $7E7800,x[$7E:79C0]
-$A3:D2A0 9D B0 0F    STA $0FB0,x[$7E:1170]
-$A3:D2A3 9F 08 78 7E STA $7E7808,x[$7E:79C8]
-$A3:D2A7 A9 01 00    LDA #$0001
-$A3:D2AA 9F 0A 78 7E STA $7E780A,x[$7E:79CA]
+; BRANCH_LAND
+$A3:D28D A9 00 00    LDA #$0000             ;\
+$A3:D290 9F 06 78 7E STA $7E7806,x[$7E:79C6];} Enemy airborne X velocity = 0.0
+$A3:D294 9F 04 78 7E STA $7E7804,x[$7E:79C4];/
+$A3:D298 9F 02 78 7E STA $7E7802,x[$7E:79C2];\
+$A3:D29C 9F 00 78 7E STA $7E7800,x[$7E:79C0];} Enemy airborne Y velocity = 0.0
+$A3:D2A0 9D B0 0F    STA $0FB0,x[$7E:1170]  ; Enemy consecutive turn counter = 0
+$A3:D2A3 9F 08 78 7E STA $7E7808,x[$7E:79C8]; Enemy turn transition disable counter = 0
+$A3:D2A7 A9 01 00    LDA #$0001             ;\
+$A3:D2AA 9F 0A 78 7E STA $7E780A,x[$7E:79CA];} Enemy turn transition disable flag = 1
 $A3:D2AE BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
 $A3:D2B2 C9 03 00    CMP #$0003             ;} If [enemy behaviour] != dropped:
 $A3:D2B5 F0 16       BEQ $16    [$D2CD]     ;/
 $A3:D2B7 A9 01 00    LDA #$0001             ;\
 $A3:D2BA 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = aggressive crawling
-$A3:D2BE A9 08 00    LDA #$0008
-$A3:D2C1 9D B4 0F    STA $0FB4,x[$7E:1174]
-$A3:D2C4 22 3E D3 A3 JSL $A3D33E[$A3:D33E]
-$A3:D2C8 20 FA D2    JSR $D2FA  [$A3:D2FA]
+$A3:D2BE A9 08 00    LDA #$0008             ;\
+$A3:D2C1 9D B4 0F    STA $0FB4,x[$7E:1174]  ;} Enemy parameter 1 / crawling speed table index = 8
+$A3:D2C4 22 3E D3 A3 JSL $A3D33E[$A3:D33E]  ; Make yard face Samus horizontally
+$A3:D2C8 20 FA D2    JSR $D2FA  [$A3:D2FA]  ; Set yard airborne instruction list
 $A3:D2CB 80 07       BRA $07    [$D2D4]
 
 $A3:D2CD A9 00 00    LDA #$0000             ;\ Else ([enemy behaviour] = dropped):
 $A3:D2D0 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = idle crawling
 
-$A3:D2D4 BD 86 0F    LDA $0F86,x[$7E:1146]
-$A3:D2D7 29 FC FF    AND #$FFFC
-$A3:D2DA 1D AC 0F    ORA $0FAC,x[$7E:116C]
-$A3:D2DD 9D 86 0F    STA $0F86,x[$7E:1146]
+$A3:D2D4 BD 86 0F    LDA $0F86,x[$7E:1146]  ;\
+$A3:D2D7 29 FC FF    AND #$FFFC             ;|
+$A3:D2DA 1D AC 0F    ORA $0FAC,x[$7E:116C]  ;} Enemy parameter 2 = [enemy properties] & ~3 | [enemy airborne facing direction]
+$A3:D2DD 9D 86 0F    STA $0F86,x[$7E:1146]  ;/
 $A3:D2E0 22 7A E6 A3 JSL $A3E67A[$A3:E67A]  ; Creepy crawly common initialisation AI
-$A3:D2E4 A9 5F CF    LDA #$CF5F
-$A3:D2E7 9D B2 0F    STA $0FB2,x[$7E:1172]
-$A3:D2EA BD AE 0F    LDA $0FAE,x[$7E:116E]
-$A3:D2ED 9D 92 0F    STA $0F92,x[$7E:1152]
+$A3:D2E4 A9 5F CF    LDA #$CF5F             ;\
+$A3:D2E7 9D B2 0F    STA $0FB2,x[$7E:1172]  ;} Enemy movement function = RTL
+$A3:D2EA BD AE 0F    LDA $0FAE,x[$7E:116E]  ;\
+$A3:D2ED 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = [enemy hiding instruction list]
 $A3:D2F0 A9 01 00    LDA #$0001             ;\
 $A3:D2F3 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A3:D2F6 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
@@ -7532,99 +7540,113 @@ $A3:D2F9 6B          RTL
 }
 
 
-;;; $D2FA:  ;;;
+;;; $D2FA: Set yard airborne instruction list ;;;
 {
-$A3:D2FA BD AC 0F    LDA $0FAC,x[$7E:116C]
-$A3:D2FD 0A          ASL A
-$A3:D2FE 0A          ASL A
-$A3:D2FF A8          TAY
-$A3:D300 B9 0D D3    LDA $D30D,y[$A3:D30D]
-$A3:D303 9D 92 0F    STA $0F92,x[$7E:1152]
-$A3:D306 B9 0F D3    LDA $D30F,y[$A3:D30F]
-$A3:D309 9D AE 0F    STA $0FAE,x[$7E:116E]
+$A3:D2FA BD AC 0F    LDA $0FAC,x[$7E:116C]  ;\
+$A3:D2FD 0A          ASL A                  ;|
+$A3:D2FE 0A          ASL A                  ;} Y = [enemy airborne facing direction] * 4
+$A3:D2FF A8          TAY                    ;/
+$A3:D300 B9 0D D3    LDA $D30D,y[$A3:D30D]  ;\
+$A3:D303 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = [$D30D + [Y]]
+$A3:D306 B9 0F D3    LDA $D30F,y[$A3:D30F]  ;\
+$A3:D309 9D AE 0F    STA $0FAE,x[$7E:116E]  ;} Enemy hiding instruction list = [$D30D + [Y] + 2]
 $A3:D30C 60          RTS
 
-$A3:D30D             dw CC06,CB44, CC1E,CB92
+;                        ________ Airborne instruction list
+;                       |     ___ Hiding instruction list
+;                       |    |
+$A3:D30D             dw CC06,CB44, ; Facing left
+                        CC1E,CB92  ; Facing right
 }
 
 
-;;; $D315: Unused ;;;
+;;; $D315: Unused. Make yard face Samus ;;;
 {
-$A3:D315 BF 0A 78 7E LDA $7E780A,x
-$A3:D319 F0 02       BEQ $02    [$D31D]
-$A3:D31B 18          CLC
-$A3:D31C 6B          RTL
+;; Returns:
+;;     Carry: Set if yard was turned around
+$A3:D315 BF 0A 78 7E LDA $7E780A,x          ;\
+$A3:D319 F0 02       BEQ $02    [$D31D]     ;} If [enemy turn transition disable flag] != 0:
+$A3:D31B 18          CLC                    ;\
+$A3:D31C 6B          RTL                    ;} Return carry clear
 
-$A3:D31D BF 0E 78 7E LDA $7E780E,x
-$A3:D321 C9 04 00    CMP #$0004
-$A3:D324 B0 18       BCS $18    [$D33E]
-$A3:D326 89 01 00    BIT #$0001
-$A3:D329 D0 0A       BNE $0A    [$D335]
-$A3:D32B BD 7E 0F    LDA $0F7E,x
-$A3:D32E CD FA 0A    CMP $0AFA  [$7E:0AFA]
-$A3:D331 90 23       BCC $23    [$D356]
-$A3:D333 18          CLC
-$A3:D334 6B          RTL
+$A3:D31D BF 0E 78 7E LDA $7E780E,x          ;\
+$A3:D321 C9 04 00    CMP #$0004             ;} If [enemy direction] >= 4 (moving horizontally): go to make yard face Samus horizontally
+$A3:D324 B0 18       BCS $18    [$D33E]     ;/
+$A3:D326 89 01 00    BIT #$0001             ;\
+$A3:D329 D0 0A       BNE $0A    [$D335]     ;} If [enemy direction] % 2 = 0: (moving up)
+$A3:D32B BD 7E 0F    LDA $0F7E,x            ;\
+$A3:D32E CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [enemy Y position] < [Samus Y position]: go to turn yard around
+$A3:D331 90 23       BCC $23    [$D356]     ;/
+$A3:D333 18          CLC                    ;\
+$A3:D334 6B          RTL                    ;} Return carry clear
 
-$A3:D335 BD 7E 0F    LDA $0F7E,x
-$A3:D338 CD FA 0A    CMP $0AFA  [$7E:0AFA]
-$A3:D33B B0 19       BCS $19    [$D356]
-$A3:D33D 6B          RTL
+$A3:D335 BD 7E 0F    LDA $0F7E,x            ;\ Else ([enemy direction] % 2 != 0): (moving down)
+$A3:D338 CD FA 0A    CMP $0AFA  [$7E:0AFA]  ;} If [enemy Y position] >= [Samus Y position]: go to turn yard around
+$A3:D33B B0 19       BCS $19    [$D356]     ;/
+$A3:D33D 6B          RTL                    ; Return carry clear
 }
 
 
-;;; $D33E:  ;;;
+;;; $D33E: Make yard face Samus horizontally ;;;
 {
-$A3:D33E BD AC 0F    LDA $0FAC,x[$7E:116C]
-$A3:D341 D0 0A       BNE $0A    [$D34D]
-$A3:D343 BD 7A 0F    LDA $0F7A,x[$7E:113A]
-$A3:D346 CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$A3:D349 90 0B       BCC $0B    [$D356]
-$A3:D34B 18          CLC
-$A3:D34C 6B          RTL
+;; Returns:
+;;     Carry: Set if yard was turned around
 
-$A3:D34D BD 7A 0F    LDA $0F7A,x[$7E:107A]
-$A3:D350 CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$A3:D353 B0 01       BCS $01    [$D356]
-$A3:D355 6B          RTL
+; Carry is only used by unused caller $D315 (for unused instruction $CC92)
+$A3:D33E BD AC 0F    LDA $0FAC,x[$7E:116C]  ;\
+$A3:D341 D0 0A       BNE $0A    [$D34D]     ;} If [enemy airborne facing direction] = left:
+$A3:D343 BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
+$A3:D346 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] >= [Samus X position]:
+$A3:D349 90 0B       BCC $0B    [$D356]     ;/
+$A3:D34B 18          CLC                    ;\
+$A3:D34C 6B          RTL                    ;} Return carry clear
+
+$A3:D34D BD 7A 0F    LDA $0F7A,x[$7E:107A]  ;\ Else ([enemy airborne facing direction] = right):
+$A3:D350 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
+$A3:D353 B0 01       BCS $01    [$D356]     ;/
+$A3:D355 6B          RTL                    ; Return carry clear
 }
 
 
-;;; $D356:  ;;;
+;;; $D356: Turn yard around ;;;
 {
+;; Returns:
+;;     Carry: Set if yard was turned around
+
+; Carry is only used by unused caller $D315 (for unused instruction $CC92)
 $A3:D356 BF 10 78 7E LDA $7E7810,x[$7E:7850];\
-$A3:D35A C9 02 00    CMP #$0002             ;} If [enemy behaviour] = hiding: return
+$A3:D35A C9 02 00    CMP #$0002             ;} If [enemy behaviour] = hiding: return carry clear
 $A3:D35D F0 4F       BEQ $4F    [$D3AE]     ;/
-$A3:D35F BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A3:D362 C9 5F CF    CMP #$CF5F
-$A3:D365 F0 47       BEQ $47    [$D3AE]
-$A3:D367 BF 0E 78 7E LDA $7E780E,x[$7E:784E]
-$A3:D36B 0A          ASL A
-$A3:D36C A8          TAY
-$A3:D36D B9 C2 CD    LDA $CDC2,y[$A3:CDCE]
-$A3:D370 9F 0E 78 7E STA $7E780E,x[$7E:784E]
-$A3:D374 0A          ASL A
-$A3:D375 0A          ASL A
-$A3:D376 0A          ASL A
-$A3:D377 A8          TAY
-$A3:D378 B9 42 CD    LDA $CD42,y[$A3:CD7A]
-$A3:D37B 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A3:D37E BD 86 0F    LDA $0F86,x[$7E:0FC6]
-$A3:D381 29 FC FF    AND #$FFFC
-$A3:D384 19 44 CD    ORA $CD44,y[$A3:CD7C]
-$A3:D387 9D 86 0F    STA $0F86,x[$7E:0FC6]
-$A3:D38A B9 46 CD    LDA $CD46,y[$A3:CD7E]
-$A3:D38D 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A3:D390 B9 48 CD    LDA $CD48,y[$A3:CD80]
-$A3:D393 9D AC 0F    STA $0FAC,x[$7E:0FEC]
+$A3:D35F BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
+$A3:D362 C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] = RTL: return carry clear
+$A3:D365 F0 47       BEQ $47    [$D3AE]     ;/
+$A3:D367 BF 0E 78 7E LDA $7E780E,x[$7E:784E];\
+$A3:D36B 0A          ASL A                  ;|
+$A3:D36C A8          TAY                    ;} Enemy direction = [$CDC2 + [enemy direction] * 2] (opposite direction)
+$A3:D36D B9 C2 CD    LDA $CDC2,y[$A3:CDCE]  ;|
+$A3:D370 9F 0E 78 7E STA $7E780E,x[$7E:784E];/
+$A3:D374 0A          ASL A                  ;\
+$A3:D375 0A          ASL A                  ;|
+$A3:D376 0A          ASL A                  ;} Y = [enemy direction] * 8
+$A3:D377 A8          TAY                    ;/
+$A3:D378 B9 42 CD    LDA $CD42,y[$A3:CD7A]  ;\
+$A3:D37B 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = [$CD42 + [Y]]
+$A3:D37E BD 86 0F    LDA $0F86,x[$7E:0FC6]  ;\
+$A3:D381 29 FC FF    AND #$FFFC             ;|
+$A3:D384 19 44 CD    ORA $CD44,y[$A3:CD7C]  ;} Enemy properties |= [$CD42 + [Y] + 2]
+$A3:D387 9D 86 0F    STA $0F86,x[$7E:0FC6]  ;/
+$A3:D38A B9 46 CD    LDA $CD46,y[$A3:CD7E]  ;\
+$A3:D38D 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;} Enemy hiding instruction list = [$CD42 + [Y] + 4]
+$A3:D390 B9 48 CD    LDA $CD48,y[$A3:CD80]  ;\
+$A3:D393 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;} Enemy airborne facing direction = [$CD42 + [Y] + 6]
 $A3:D396 22 27 CE A3 JSL $A3CE27[$A3:CE27]  ; Set yard crawling velocities
 $A3:D39A 22 57 CE A3 JSL $A3CE57[$A3:CE57]  ; Set yard crawling movement function
-$A3:D39E A9 01 00    LDA #$0001
-$A3:D3A1 9F 0A 78 7E STA $7E780A,x[$7E:784A]
-$A3:D3A5 A9 00 00    LDA #$0000
-$A3:D3A8 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A3:D3AC 38          SEC
-$A3:D3AD 6B          RTL
+$A3:D39E A9 01 00    LDA #$0001             ;\
+$A3:D3A1 9F 0A 78 7E STA $7E780A,x[$7E:784A];} Enemy turn transition disable flag = 1
+$A3:D3A5 A9 00 00    LDA #$0000             ;\
+$A3:D3A8 9F 08 78 7E STA $7E7808,x[$7E:7848];} Enemy turn transition disable counter = 0
+$A3:D3AC 38          SEC                    ;\
+$A3:D3AD 6B          RTL                    ;} Return carry set
 
 $A3:D3AE 18          CLC
 $A3:D3AF 6B          RTL
@@ -7640,17 +7662,17 @@ $A3:D3BA D0 0F       BNE $0F    [$D3CB]     ;/
 $A3:D3BC BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
 $A3:D3BF C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] != RTL:
 $A3:D3C2 F0 07       BEQ $07    [$D3CB]     ;/
-$A3:D3C4 20 21 D4    JSR $D421  [$A3:D421]  ; Execute $D421
-$A3:D3C7 90 02       BCC $02    [$D3CB]     ; If carry set:
-$A3:D3C9 80 20       BRA $20    [$D3EB]     ; Go to BRANCH_D3EB
+$A3:D3C4 20 21 D4    JSR $D421  [$A3:D421]  ;\
+$A3:D3C7 90 02       BCC $02    [$D3CB]     ;} If player is directing towards enemy:
+$A3:D3C9 80 20       BRA $20    [$D3EB]     ; Go to BRANCH_NOT_KICKED
 
 $A3:D3CB BD B2 0F    LDA $0FB2,x[$7E:1172]  ;\
 $A3:D3CE C9 B3 D1    CMP #$D1B3             ;} If [enemy movement function] != airborne:
 $A3:D3D1 F0 05       BEQ $05    [$D3D8]     ;/
 $A3:D3D3 AD 3C 0B    LDA $0B3C  [$7E:0B3C]  ;\
-$A3:D3D6 F0 13       BEQ $13    [$D3EB]     ;} If [Samus running momentum flag] = 0: go to BRANCH_D3EB
+$A3:D3D6 F0 13       BEQ $13    [$D3EB]     ;} If [Samus running momentum flag] = 0: go to BRANCH_NOT_KICKED
 
-$A3:D3D8 20 9F D4    JSR $D49F  [$A3:D49F]  ; Execute $D49F
+$A3:D3D8 20 9F D4    JSR $D49F  [$A3:D49F]  ; Kick yard into air
 $A3:D3DB BD B2 0F    LDA $0FB2,x[$7E:1172]  ;\
 $A3:D3DE C9 B3 D1    CMP #$D1B3             ;} If [enemy movement function] = airborne:
 $A3:D3E1 D0 07       BNE $07    [$D3EA]     ;/
@@ -7659,7 +7681,7 @@ $A3:D3E6 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2,
 
 $A3:D3EA 6B          RTL                    ; Return
 
-; BRANCH_D3EB
+; BRANCH_NOT_KICKED
 $A3:D3EB BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
 $A3:D3EE C9 5F CF    CMP #$CF5F             ;} If [enemy movement function] = RTL: return
 $A3:D3F1 F0 2D       BEQ $2D    [$D420]     ;/
@@ -7674,7 +7696,7 @@ $A3:D409 9D B4 0F    STA $0FB4,x            ;} Enemy crawling speed table index 
 $A3:D40C BF 10 78 7E LDA $7E7810,x          ;\
 $A3:D410 C9 00 00    CMP #$0000             ;} If [enemy behaviour] != idle crawling:
 $A3:D413 F0 04       BEQ $04    [$D419]     ;/
-$A3:D415 22 56 D3 A3 JSL $A3D356[$A3:D356]  ; Execute $D356
+$A3:D415 22 56 D3 A3 JSL $A3D356[$A3:D356]  ; Turn yard around
 
 $A3:D419 A9 00 00    LDA #$0000             ;\
 $A3:D41C 9F 10 78 7E STA $7E7810,x          ;} Enemy behaviour = idle crawling
@@ -7683,8 +7705,12 @@ $A3:D420 6B          RTL
 }
 
 
-;;; $D421:  ;;;
+;;; $D421: Check if player is directing towards enemy ;;;
 {
+;; Returns:
+;;     Carry: Set if player is directing towards enemy, clear otherwise
+
+; Return carry clear if pressing right and enemy is "facing" right, or not pressing right and enemy is "facing" left
 $A3:D421 A5 8B       LDA $8B    [$7E:008B]  ;\
 $A3:D423 29 00 03    AND #$0300             ;|
 $A3:D426 EB          XBA                    ;} $12 = 0 iff pressing right and not left
@@ -7694,13 +7720,13 @@ $A3:D42A BD AC 0F    LDA $0FAC,x            ;\
 $A3:D42D 29 01 00    AND #$0001             ;} $14 = [enemy airborne facing direction] & 1
 $A3:D430 85 14       STA $14    [$7E:0014]  ;/
 $A3:D432 A5 12       LDA $12    [$7E:0012]  ;\
-$A3:D434 D0 06       BNE $06    [$D43C]     ;} If [$12] = 0:
+$A3:D434 D0 06       BNE $06    [$D43C]     ;} If [$12] = 0: (pressing right)
 $A3:D436 A5 14       LDA $14    [$7E:0014]  ;\
-$A3:D438 F0 0A       BEQ $0A    [$D444]     ;} If [$14] = 0: return carry set
+$A3:D438 F0 0A       BEQ $0A    [$D444]     ;} If [enemy airborne facing direction] = left: return carry set
 $A3:D43A 80 06       BRA $06    [$D442]
 
-$A3:D43C A5 14       LDA $14    [$7E:0014]  ;\ Else ([$12] != 0):
-$A3:D43E F0 02       BEQ $02    [$D442]     ;} If [$14] != 0:
+$A3:D43C A5 14       LDA $14    [$7E:0014]  ;\ Else ([$12] != 0): (not pressing right)
+$A3:D43E F0 02       BEQ $02    [$D442]     ;} If [enemy airborne facing direction] = right:
 $A3:D440 80 02       BRA $02    [$D444]     ; Return carry set
 
 $A3:D442 18          CLC                    ;\
@@ -7711,24 +7737,26 @@ $A3:D445 60          RTS
 }
 
 
-;;; $D446:  ;;;
+;;; $D446: Unused. Check if enemy is moving the direction Samus is facing ;;;
 {
-$A3:D446 BD A8 0F    LDA $0FA8,x
-$A3:D449 10 0D       BPL $0D    [$D458]
-$A3:D44B AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$A3:D44E 29 FF 00    AND #$00FF
-$A3:D451 C9 08 00    CMP #$0008
-$A3:D454 D0 0F       BNE $0F    [$D465]
-$A3:D456 80 0F       BRA $0F    [$D467]
+;; Returns:
+;;     Carry: Clear if enemy is moving the direction Samus is facing, set otherwise
+$A3:D446 BD A8 0F    LDA $0FA8,x            ;\
+$A3:D449 10 0D       BPL $0D    [$D458]     ;} If [enemy crawling X velocity] < 0:
+$A3:D44B AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$A3:D44E 29 FF 00    AND #$00FF             ;|
+$A3:D451 C9 08 00    CMP #$0008             ;} If Samus is facing right:
+$A3:D454 D0 0F       BNE $0F    [$D465]     ;/
+$A3:D456 80 0F       BRA $0F    [$D467]     ; Return carry set
 
-$A3:D458 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$A3:D45B 29 FF 00    AND #$00FF
-$A3:D45E C9 04 00    CMP #$0004
-$A3:D461 D0 02       BNE $02    [$D465]
-$A3:D463 80 02       BRA $02    [$D467]
+$A3:D458 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\ Else ([enemy crawling X velocity] >= 0):
+$A3:D45B 29 FF 00    AND #$00FF             ;|
+$A3:D45E C9 04 00    CMP #$0004             ;} If Samus is facing left:
+$A3:D461 D0 02       BNE $02    [$D465]     ;/
+$A3:D463 80 02       BRA $02    [$D467]     ; Return carry set
 
-$A3:D465 18          CLC
-$A3:D466 60          RTS
+$A3:D465 18          CLC                    ;\
+$A3:D466 60          RTS                    ;} Return carry clear
 
 $A3:D467 38          SEC
 $A3:D468 60          RTS
@@ -7744,20 +7772,20 @@ $A3:D470 A8          TAY                    ;/
 $A3:D471 B9 18 0C    LDA $0C18,y[$7E:0C18]  ;\
 $A3:D474 29 00 FF    AND #$FF00             ;|
 $A3:D477 C9 00 03    CMP #$0300             ;|
-$A3:D47A F0 05       BEQ $05    [$D481]     ;} If (projectile type) != (power) bomb: go to BRANCH_NON_BOMB
+$A3:D47A F0 05       BEQ $05    [$D481]     ;} If (projectile type) != (power) bomb: go to BRANCH_SHOT
 $A3:D47C C9 00 05    CMP #$0500             ;|
 $A3:D47F D0 05       BNE $05    [$D486]     ;/
 
 $A3:D481 22 2D 80 A3 JSL $A3802D[$A3:802D]  ; Normal enemy shot AI
 $A3:D485 6B          RTL                    ; Return
 
-; BRANCH_NON_BOMB
+; BRANCH_SHOT
 $A3:D486 BF 10 78 7E LDA $7E7810,x[$7E:79D0];\
 $A3:D48A C9 03 00    CMP #$0003             ;} If [enemy behaviour] != dropped:
 $A3:D48D F0 08       BEQ $08    [$D497]     ;/
 $A3:D48F C9 04 00    CMP #$0004             ;\
 $A3:D492 F0 03       BEQ $03    [$D497]     ;} If [enemy behaviour] != kicked into air:
-$A3:D494 20 57 D5    JSR $D557  [$A3:D557]  ; Execute $D557
+$A3:D494 20 57 D5    JSR $D557  [$A3:D557]  ; Shoot yard into air
 
 $A3:D497 A9 70 00    LDA #$0070             ;\
 $A3:D49A 22 B7 90 80 JSL $8090B7[$80:90B7]  ;} Queue sound 70h, sound library 2, max queued sounds allowed = 3 (yard bounce)
@@ -7765,42 +7793,42 @@ $A3:D49E 6B          RTL
 }
 
 
-;;; $D49F:  ;;;
+;;; $D49F: Kick yard into air ;;;
 {
 ; Note the fixed point negation operation at $D4F6 is off by 1.0 when the low word is zero
 $A3:D49F A9 04 00    LDA #$0004             ;\
 $A3:D4A2 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = kicked into air
-$A3:D4A6 A9 B3 D1    LDA #$D1B3
-$A3:D4A9 9D B2 0F    STA $0FB2,x[$7E:1172]
-$A3:D4AC BD AC 0F    LDA $0FAC,x[$7E:116C]
-$A3:D4AF 0A          ASL A
-$A3:D4B0 0A          ASL A
-$A3:D4B1 A8          TAY
-$A3:D4B2 B9 0F D5    LDA $D50F,y[$A3:D50F]
-$A3:D4B5 9D 92 0F    STA $0F92,x[$7E:1152]
-$A3:D4B8 B9 11 D5    LDA $D511,y[$A3:D511]
-$A3:D4BB 9D AE 0F    STA $0FAE,x[$7E:116E]
+$A3:D4A6 A9 B3 D1    LDA #$D1B3             ;\
+$A3:D4A9 9D B2 0F    STA $0FB2,x[$7E:1172]  ;} Enemy movement function = $D1B3 (airborne)
+$A3:D4AC BD AC 0F    LDA $0FAC,x[$7E:116C]  ;\
+$A3:D4AF 0A          ASL A                  ;|
+$A3:D4B0 0A          ASL A                  ;} Y = [enemy airborne facing direction] * 4
+$A3:D4B1 A8          TAY                    ;/
+$A3:D4B2 B9 0F D5    LDA $D50F,y[$A3:D50F]  ;\
+$A3:D4B5 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = [$D50F + [Y]]
+$A3:D4B8 B9 11 D5    LDA $D511,y[$A3:D511]  ;\
+$A3:D4BB 9D AE 0F    STA $0FAE,x[$7E:116E]  ;} Enemy hiding instruction list = [$D50F + [Y] + 2]
 $A3:D4BE A9 01 00    LDA #$0001             ;\
 $A3:D4C1 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A3:D4C4 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
-$A3:D4C7 AD A4 0D    LDA $0DA4  [$7E:0DA4]
-$A3:D4CA 9F 04 78 7E STA $7E7804,x[$7E:79C4]
-$A3:D4CE AD A2 0D    LDA $0DA2  [$7E:0DA2]
-$A3:D4D1 9F 06 78 7E STA $7E7806,x[$7E:79C6]
-$A3:D4D5 C9 10 00    CMP #$0010
-$A3:D4D8 90 03       BCC $03    [$D4DD]
-$A3:D4DA A9 0F 00    LDA #$000F
-
-$A3:D4DD 0A          ASL A
-$A3:D4DE 0A          ASL A
-$A3:D4DF A8          TAY
-$A3:D4E0 B9 17 D5    LDA $D517,y[$A3:D523]
-$A3:D4E3 9F 00 78 7E STA $7E7800,x[$7E:79C0]
-$A3:D4E7 B9 19 D5    LDA $D519,y[$A3:D525]
-$A3:D4EA 9F 02 78 7E STA $7E7802,x[$7E:79C2]
-$A3:D4EE AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$A3:D4F1 89 04 00    BIT #$0004
-$A3:D4F4 F0 18       BEQ $18    [$D50E]
+$A3:D4C7 AD A4 0D    LDA $0DA4  [$7E:0DA4]  ;\
+$A3:D4CA 9F 04 78 7E STA $7E7804,x[$7E:79C4];|
+$A3:D4CE AD A2 0D    LDA $0DA2  [$7E:0DA2]  ;} Enemy airborne X velocity = [camera X speed]
+$A3:D4D1 9F 06 78 7E STA $7E7806,x[$7E:79C6];/
+$A3:D4D5 C9 10 00    CMP #$0010             ;\
+$A3:D4D8 90 03       BCC $03    [$D4DD]     ;|
+$A3:D4DA A9 0F 00    LDA #$000F             ;|
+                                            ;} Y = min(Fh, [enemy airborne X velocity]) * 4
+$A3:D4DD 0A          ASL A                  ;|
+$A3:D4DE 0A          ASL A                  ;|
+$A3:D4DF A8          TAY                    ;/
+$A3:D4E0 B9 17 D5    LDA $D517,y[$A3:D523]  ;\
+$A3:D4E3 9F 00 78 7E STA $7E7800,x[$7E:79C0];|
+$A3:D4E7 B9 19 D5    LDA $D519,y[$A3:D525]  ;} Enemy airborne Y velocity = [$D517 + [Y] + 2].[$D517 + [Y]]
+$A3:D4EA 9F 02 78 7E STA $7E7802,x[$7E:79C2];/
+$A3:D4EE AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$A3:D4F1 89 04 00    BIT #$0004             ;} If Samus is facing left:
+$A3:D4F4 F0 18       BEQ $18    [$D50E]     ;/
 $A3:D4F6 BF 04 78 7E LDA $7E7804,x[$7E:79C4];\
 $A3:D4FA 49 FF FF    EOR #$FFFF             ;|
 $A3:D4FD 1A          INC A                  ;} Negate enemy airborne X subvelocity
@@ -7812,47 +7840,58 @@ $A3:D50A 9F 06 78 7E STA $7E7806,x[$7E:79C6];/
 
 $A3:D50E 60          RTS
 
-$A3:D50F             dw CC06,CB44, CC1E,CB92
+;                        ________ Airborne instruction list
+;                       |     ___ Hiding instruction list
+;                       |    |
+$A3:D50F             dw CC06,CB44, ; Facing left
+                        CC1E,CB92  ; Facing right
+
+; Y velocities. Indexed by X velocity
+; Y subvelocity, Y velocity
 $A3:D517             dw 0000,FFFD, A000,FFFD, 4000,FFFD, 0000,FFFC, A000,FFFC, 4000,FFFC, 0000,FFFB, A000,FFFB,
                         4000,FFFB, 0000,FFFA, A000,FFFA, 4000,FFFA, 0000,FFF9, A000,FFF9, 4000,FFF9, 0000,FFF8
 }
 
 
-;;; $D557:  ;;;
+;;; $D557: Shoot yard into air ;;;
 {
 $A3:D557 5A          PHY
 $A3:D558 A9 05 00    LDA #$0005             ;\
 $A3:D55B 9F 10 78 7E STA $7E7810,x[$7E:79D0];} Enemy behaviour = shot into air
-$A3:D55F A9 B3 D1    LDA #$D1B3
-$A3:D562 9D B2 0F    STA $0FB2,x[$7E:1172]
-$A3:D565 BD AC 0F    LDA $0FAC,x[$7E:116C]
-$A3:D568 0A          ASL A
-$A3:D569 0A          ASL A
-$A3:D56A A8          TAY
-$A3:D56B B9 A4 D5    LDA $D5A4,y[$A3:D5A4]
-$A3:D56E 9D 92 0F    STA $0F92,x[$7E:1152]
-$A3:D571 B9 A6 D5    LDA $D5A6,y[$A3:D5A6]
-$A3:D574 9D AE 0F    STA $0FAE,x[$7E:116E]
+$A3:D55F A9 B3 D1    LDA #$D1B3             ;\
+$A3:D562 9D B2 0F    STA $0FB2,x[$7E:1172]  ;} Enemy movement function = $D1B3 (airborne)
+$A3:D565 BD AC 0F    LDA $0FAC,x[$7E:116C]  ;\
+$A3:D568 0A          ASL A                  ;|
+$A3:D569 0A          ASL A                  ;} Y = [enemy airborne facing direction] * 4
+$A3:D56A A8          TAY                    ;/
+$A3:D56B B9 A4 D5    LDA $D5A4,y[$A3:D5A4]  ;\
+$A3:D56E 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = [$D50F + [Y]]
+$A3:D571 B9 A6 D5    LDA $D5A6,y[$A3:D5A6]  ;\
+$A3:D574 9D AE 0F    STA $0FAE,x[$7E:116E]  ;} Enemy hiding instruction list = [$D50F + [Y] + 2]
 $A3:D577 A9 01 00    LDA #$0001             ;\
 $A3:D57A 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A3:D57D 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
-$A3:D580 A9 FF FF    LDA #$FFFF
-$A3:D583 9F 02 78 7E STA $7E7802,x[$7E:79C2]
-$A3:D587 AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$A3:D58A 29 FF 00    AND #$00FF
-$A3:D58D C9 04 00    CMP #$0004
-$A3:D590 D0 09       BNE $09    [$D59B]
-$A3:D592 A9 FF FF    LDA #$FFFF
-$A3:D595 9F 06 78 7E STA $7E7806,x[$7E:79C6]
+$A3:D580 A9 FF FF    LDA #$FFFF             ;\
+$A3:D583 9F 02 78 7E STA $7E7802,x[$7E:79C2];} Enemy airborne Y velocity = -1
+$A3:D587 AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$A3:D58A 29 FF 00    AND #$00FF             ;|
+$A3:D58D C9 04 00    CMP #$0004             ;} If Samus is facing left:
+$A3:D590 D0 09       BNE $09    [$D59B]     ;/
+$A3:D592 A9 FF FF    LDA #$FFFF             ;\
+$A3:D595 9F 06 78 7E STA $7E7806,x[$7E:79C6];} Enemy airborne X velocity = -1
 $A3:D599 80 07       BRA $07    [$D5A2]
 
-$A3:D59B A9 01 00    LDA #$0001
-$A3:D59E 9F 06 78 7E STA $7E7806,x[$7E:79C6]
+$A3:D59B A9 01 00    LDA #$0001             ;\ Else (Samus is facing right):
+$A3:D59E 9F 06 78 7E STA $7E7806,x[$7E:79C6];} Enemy airborne X velocity = 1
 
 $A3:D5A2 7A          PLY
 $A3:D5A3 60          RTS
 
-$A3:D5A4             dw CC06,CB44, CC1E,CB92
+;                        ________ Airborne instruction list
+;                       |     ___ Hiding instruction list
+;                       |    |
+$A3:D5A4             dw CC06,CB44, ; Facing left
+                        CC1E,CB92  ; Facing right
 }
 
 
@@ -7922,19 +7961,19 @@ $A3:D85E             dx 0002, C3FA,F9,A120, C3F8,F8,A100
 $A3:D86A             dx 0001, C3F8,F8,A122
 $A3:D871             dx 0002, C3F7,FA,A124, C3F8,F8,A108
 $A3:D87D             dx 0001, C3F8,F8,A126
-$A3:D884             dx 0002, C3FB,F6,2120, C3F5,F8,2100
+$A3:D884             dx 0002, C3FB,F6,2120, C3F5,F8,2100 ; Unused
 $A3:D890             dx 0002, C3F5,F8,2128, C3FB,F7,2120
 $A3:D89C             dx 0002, C3FA,FA,E126, C3F8,F7,E108
 $A3:D8A8             dx 0002, C3FA,FA,E124, C3F8,F6,E108
-$A3:D8B4             dx 0002, C3FA,FB,E124, C3F8,F5,E108
+$A3:D8B4             dx 0002, C3FA,FB,E124, C3F8,F5,E108 ; Unused
 $A3:D8C0             dx 0002, C3F8,F5,E12A, C3F9,FB,E124
 $A3:D8CC             dx 0002, C3F6,FA,2126, C3F9,F8,E100
 $A3:D8D8             dx 0002, C3F6,FA,E120, C3FA,F8,E100
-$A3:D8E4             dx 0002, C3F5,FA,E120, C3FB,F8,E100
+$A3:D8E4             dx 0002, C3F5,FA,E120, C3FB,F8,E100 ; Unused
 $A3:D8F0             dx 0002, C3FB,F8,E128, C3F5,F9,E120
 $A3:D8FC             dx 0002, C3F6,F6,2126, C3F8,F9,2108
 $A3:D908             dx 0002, C3F6,F6,2124, C3F8,FA,2108
-$A3:D914             dx 0002, C3F6,F5,2124, C3F8,FB,2108
+$A3:D914             dx 0002, C3F6,F5,2124, C3F8,FB,2108 ; Unused
 $A3:D920             dx 0002, C3F8,FB,212A, C3F7,F5,2124
 $A3:D92C             dx 0002, C3FA,F6,2122, C3F7,F8,2100
 $A3:D938             dx 0002, C3FB,F6,2120, C3F7,F8,2100
@@ -7946,19 +7985,19 @@ $A3:D96A             dx 0001, C3F8,F8,E122
 $A3:D971             dx 0002, C3F8,F9,E120, C3FA,F8,E100
 $A3:D97D             dx 0001, C3F8,F8,2126
 $A3:D984             dx 0002, C3F7,F8,2124, C3F8,FA,2108
-$A3:D990             dx 0002, C3F5,F6,6120, C3FB,F8,6100
+$A3:D990             dx 0002, C3F5,F6,6120, C3FB,F8,6100 ; Unused
 $A3:D99C             dx 0002, C3FB,F8,6128, C3F5,F7,6120
 $A3:D9A8             dx 0002, C3F6,FA,A126, C3F8,F7,A108
 $A3:D9B4             dx 0002, C3F6,FA,A124, C3F8,F6,A108
-$A3:D9C0             dx 0002, C3F6,FB,A124, C3F8,F5,A108
+$A3:D9C0             dx 0002, C3F6,FB,A124, C3F8,F5,A108 ; Unused
 $A3:D9CC             dx 0002, C3F8,F5,A12A, C3F7,FB,A124
 $A3:D9D8             dx 0002, C3FA,FA,6126, C3F7,F8,A100
 $A3:D9E4             dx 0002, C3FA,FA,A120, C3F6,F8,A100
-$A3:D9F0             dx 0002, C3FB,FA,A120, C3F5,F8,A100
+$A3:D9F0             dx 0002, C3FB,FA,A120, C3F5,F8,A100 ; Unused
 $A3:D9FC             dx 0002, C3F5,F8,A128, C3FB,F9,A120
 $A3:DA08             dx 0002, C3FA,F6,6126, C3F8,F9,6108
 $A3:DA14             dx 0002, C3FA,F6,6124, C3F8,FA,6108
-$A3:DA20             dx 0002, C3FA,F5,6124, C3F8,FB,6108
+$A3:DA20             dx 0002, C3FA,F5,6124, C3F8,FB,6108 ; Unused
 $A3:DA2C             dx 0002, C3F8,FB,612A, C3F9,F5,6124
 $A3:DA38             dx 0002, C3F6,F6,6122, C3F9,F8,6100
 $A3:DA44             dx 0002, C3F5,F6,6120, C3F9,F8,6100
@@ -7982,7 +8021,7 @@ $A3:DA9C             dw 3800, 7FBD, 5EB5, 1884, 0800, 777B, 5EB5, 45EF, 2D29, 24
 }
 
 
-;;; $DABC: Reflec glow colours ;;;
+;;; $DABC: Reflec palette cycle colours ;;;
 {
 $A3:DABC             dw 241F,1C17,142F,0C47,
                         211F,18D8,10B1,086A,
@@ -8002,11 +8041,11 @@ $A3:DABC             dw 241F,1C17,142F,0C47,
 $A3:DB0C AD 97 07    LDA $0797  [$7E:0797]  ;\
 $A3:DB0F D0 3A       BNE $3A    [$DB4B]     ;} If currently transitioning the room: return
 $A3:DB11 AD 98 17    LDA $1798  [$7E:1798]  ;\
-$A3:DB14 3A          DEC A                  ;} Decrement $1798
+$A3:DB14 3A          DEC A                  ;} Decrement enemy palette cycle timer
 $A3:DB15 8D 98 17    STA $1798  [$7E:1798]  ;/
-$A3:DB18 D0 31       BNE $31    [$DB4B]     ; If [$1798] != 0: return
+$A3:DB18 D0 31       BNE $31    [$DB4B]     ; If [enemy palette cycle timer] != 0: return
 $A3:DB1A A9 10 00    LDA #$0010             ;\
-$A3:DB1D 8D 98 17    STA $1798  [$7E:1798]  ;} $1798 = 10h
+$A3:DB1D 8D 98 17    STA $1798  [$7E:1798]  ;} Enemy palette cycle timer = 10h
 $A3:DB20 AD 94 17    LDA $1794  [$7E:1794]  ;\
 $A3:DB23 AA          TAX                    ;|
 $A3:DB24 AD 96 17    LDA $1796  [$7E:1796]  ;|
@@ -8016,7 +8055,7 @@ $A3:DB29 0A          ASL A                  ;|
 $A3:DB2A A8          TAY                    ;|
 $A3:DB2B A9 04 00    LDA #$0004             ;|
 $A3:DB2E 8D 0B 06    STA $060B  [$7E:060B]  ;|
-                                            ;} Copy 4 colours from $DABC + [$1796] * 8 to enemy palette colours 9..Ch
+                                            ;} Copy 4 colours from $DABC + [enemy palette cycle colour set index] * 8 to enemy palette colours 9..Ch
 $A3:DB31 B9 BC DA    LDA $DABC,y            ;|
 $A3:DB34 9F 12 C1 7E STA $7EC112,x          ;|
 $A3:DB38 C8          INY                    ;|
@@ -8027,7 +8066,7 @@ $A3:DB3C CE 0B 06    DEC $060B  [$7E:060B]  ;|
 $A3:DB3F D0 F0       BNE $F0    [$DB31]     ;/
 $A3:DB41 AD 96 17    LDA $1796  [$7E:1796]  ;\
 $A3:DB44 1A          INC A                  ;|
-$A3:DB45 29 07 00    AND #$0007             ;} $1796 = ([$1796] + 1) % 8
+$A3:DB45 29 07 00    AND #$0007             ;} Enemy palette cycle colour set index = ([enemy palette cycle colour set index] + 1) % 8
 $A3:DB48 8D 96 17    STA $1796  [$7E:1796]  ;/
 
 $A3:DB4B 6B          RTL
@@ -8036,104 +8075,104 @@ $A3:DB4B 6B          RTL
 
 ;;; $DB4C..C7: Instruction lists - reflec ;;;
 {
-;;; $DB4C: Instruction list -  ;;;
+;;; $DB4C: Instruction list - facing left ;;;
 {
-$A3:DB4C             dx DBC8,0000,  ; Enemy $0FB6 = 0
+$A3:DB4C             dx DBC8,0000,  ; Enemy reflection axis = vertical
                         0040,DF1A,
                         80ED,DB4C   ; Go to $DB4C
 }
 
 
-;;; $DB58: Instruction list -  ;;;
+;;; $DB58: Instruction list - facing up-left ;;;
 {
-$A3:DB58             dx DBC8,0001,  ; Enemy $0FB6 = 1
+$A3:DB58             dx DBC8,0001,  ; Enemy reflection axis = up-right diagonal
                         0040,DF2B,
                         80ED,DB58   ; Go to $DB58
 }
 
 
-;;; $DB64: Instruction list -  ;;;
+;;; $DB64: Instruction list - facing up ;;;
 {
-$A3:DB64             dx DBC8,0002,  ; Enemy $0FB6 = 2
+$A3:DB64             dx DBC8,0002,  ; Enemy reflection axis = horizontal
                         0040,DF3C,
                         812F        ; Sleep
 }
 
 
-;;; $DB6E: Instruction list -  ;;;
+;;; $DB6E: Instruction list - facing up-right ;;;
 {
-$A3:DB6E             dx DBC8,0003,  ; Enemy $0FB6 = 3
+$A3:DB6E             dx DBC8,0003,  ; Enemy reflection axis = down-right diagonal
                         0040,DF4D,
                         812F        ; Sleep
 }
 
 
-;;; $DB78: Instruction list -  ;;;
+;;; $DB78: Instruction list - facing right ;;;
 {
-$A3:DB78             dx DBC8,0000,  ; Enemy $0FB6 = 0
+$A3:DB78             dx DBC8,0000,  ; Enemy reflection axis = vertical
                         0040,DF5E,
                         812F        ; Sleep
 }
 
 
-;;; $DB82: Instruction list -  ;;;
+;;; $DB82: Instruction list - facing down-right ;;;
 {
-$A3:DB82             dx DBC8,0001,  ; Enemy $0FB6 = 1
+$A3:DB82             dx DBC8,0001,  ; Enemy reflection axis = up-right diagonal
                         0040,DF6F,
                         812F        ; Sleep
 }
 
 
-;;; $DB8C: Instruction list -  ;;;
+;;; $DB8C: Instruction list - facing down ;;;
 {
-$A3:DB8C             dx DBC8,0002,  ; Enemy $0FB6 = 2
+$A3:DB8C             dx DBC8,0002,  ; Enemy reflection axis = horizontal
                         0040,DF80,
                         812F        ; Sleep
 }
 
 
-;;; $DB96: Instruction list -  ;;;
+;;; $DB96: Instruction list - facing down-left ;;;
 {
-$A3:DB96             dx DBC8,0003,  ; Enemy $0FB6 = 3
+$A3:DB96             dx DBC8,0003,  ; Enemy reflection axis = down-right diagonal
                         0040,DF91,
                         812F        ; Sleep
 }
 
 
-;;; $DBA0: Instruction list -  ;;;
+;;; $DBA0: Instruction list - health reached zero - facing left ;;;
 {
-$A3:DBA0             dx DBC8,0000,  ; Enemy $0FB6 = 0
+$A3:DBA0             dx DBC8,0000,  ; Enemy reflection axis = vertical
                         0001,DF1A,
                         812F        ; Sleep
 }
 
 
-;;; $DBAA: Instruction list -  ;;;
+;;; $DBAA: Instruction list - health reached zero - facing up-left ;;;
 {
-$A3:DBAA             dx DBC8,0001,  ; Enemy $0FB6 = 1
+$A3:DBAA             dx DBC8,0001,  ; Enemy reflection axis = up-right diagonal
                         0001,DF2B,
                         812F        ; Sleep
 }
 
 
-;;; $DBB4: Instruction list -  ;;;
+;;; $DBB4: Instruction list - health reached zero - facing up ;;;
 {
-$A3:DBB4             dx DBC8,0002,  ; Enemy $0FB6 = 2
+$A3:DBB4             dx DBC8,0002,  ; Enemy reflection axis = horizontal
                         0001,DF3C,
                         812F        ; Sleep
 }
 
 
-;;; $DBBE: Instruction list -  ;;;
+;;; $DBBE: Instruction list - health reached zero - facing up-right ;;;
 {
-$A3:DBBE             dx DBC8,0003,  ; Enemy $0FB6 = 3
+$A3:DBBE             dx DBC8,0003,  ; Enemy reflection axis = down-right diagonal
                         0001,DF4D,
                         812F        ; Sleep
 }
 }
 
 
-;;; $DBC8: Instruction - enemy $0FB6 = [[Y]] ;;;
+;;; $DBC8: Instruction - enemy reflection axis = [[Y]] ;;;
 {
 $A3:DBC8 5A          PHY
 $A3:DBC9 B9 00 00    LDA $0000,y
@@ -8148,28 +8187,28 @@ $A3:DBD2 6B          RTL
 ;;; $DBD3: Initialisation AI - enemy $DBFF (reflec) ;;;
 {
 $A3:DBD3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DBD6 BD 86 0F    LDA $0F86,x
-$A3:DBD9 09 00 10    ORA #$1000
-$A3:DBDC 9D 86 0F    STA $0F86,x
-$A3:DBDF BD B4 0F    LDA $0FB4,x
-$A3:DBE2 0A          ASL A
-$A3:DBE3 A8          TAY
-$A3:DBE4 B9 0B DC    LDA $DC0B,y
-$A3:DBE7 9D 92 0F    STA $0F92,x
-$A3:DBEA A9 0C DB    LDA #$DB0C
-$A3:DBED 8D 8C 17    STA $178C  [$7E:178C]
-$A3:DBF0 A9 A3 00    LDA #$00A3
-$A3:DBF3 8D 8E 17    STA $178E  [$7E:178E]
-$A3:DBF6 BD 96 0F    LDA $0F96,x
-$A3:DBF9 0A          ASL A
-$A3:DBFA 0A          ASL A
-$A3:DBFB 0A          ASL A
-$A3:DBFC 0A          ASL A
-$A3:DBFD 29 00 FF    AND #$FF00
-$A3:DC00 EB          XBA
-$A3:DC01 8D 94 17    STA $1794  [$7E:1794]
-$A3:DC04 A9 10 00    LDA #$0010
-$A3:DC07 8D 98 17    STA $1798  [$7E:1798]
+$A3:DBD6 BD 86 0F    LDA $0F86,x            ;\
+$A3:DBD9 09 00 10    ORA #$1000             ;} Set enemy to block plasma beam
+$A3:DBDC 9D 86 0F    STA $0F86,x            ;/
+$A3:DBDF BD B4 0F    LDA $0FB4,x            ;\
+$A3:DBE2 0A          ASL A                  ;|
+$A3:DBE3 A8          TAY                    ;} Enemy instruction list pointer = [$DC0B + [enemy parameter 1] * 2]
+$A3:DBE4 B9 0B DC    LDA $DC0B,y            ;|
+$A3:DBE7 9D 92 0F    STA $0F92,x            ;/
+$A3:DBEA A9 0C DB    LDA #$DB0C             ;\
+$A3:DBED 8D 8C 17    STA $178C  [$7E:178C]  ;|
+$A3:DBF0 A9 A3 00    LDA #$00A3             ;} Enemy graphics drawn hook = $A3:DB0C
+$A3:DBF3 8D 8E 17    STA $178E  [$7E:178E]  ;/
+$A3:DBF6 BD 96 0F    LDA $0F96,x            ;\
+$A3:DBF9 0A          ASL A                  ;|
+$A3:DBFA 0A          ASL A                  ;|
+$A3:DBFB 0A          ASL A                  ;|
+$A3:DBFC 0A          ASL A                  ;} Enemy palette cycle enemy palette index = [enemy palette index] / 10h
+$A3:DBFD 29 00 FF    AND #$FF00             ;|
+$A3:DC00 EB          XBA                    ;|
+$A3:DC01 8D 94 17    STA $1794  [$7E:1794]  ;/
+$A3:DC04 A9 10 00    LDA #$0010             ;\
+$A3:DC07 8D 98 17    STA $1798  [$7E:1798]  ;} Enemy palette cycle timer = 10h
 $A3:DC0A 6B          RTL
 
 $A3:DC0B             dw DB4C, DB58, DB64, DB6E, DB78, DB82, DB8C, DB96
@@ -8188,67 +8227,73 @@ $A3:DC1C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A3:DC1F AD A6 18    LDA $18A6  [$7E:18A6]  ;\
 $A3:DC22 0A          ASL A                  ;} Y = [collided projectile index] * 2
 $A3:DC23 A8          TAY                    ;/
-$A3:DC24 A9 0A 00    LDA #$000A
-$A3:DC27 9D A0 0F    STA $0FA0,x
-$A3:DC2A BD B6 0F    LDA $0FB6,x
-$A3:DC2D 0A          ASL A
-$A3:DC2E 0A          ASL A
-$A3:DC2F 0A          ASL A
-$A3:DC30 0A          ASL A
-$A3:DC31 0A          ASL A
-$A3:DC32 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:DC35 B9 04 0C    LDA $0C04,y
-$A3:DC38 29 0F 00    AND #$000F
-$A3:DC3B 0A          ASL A
-$A3:DC3C 18          CLC
-$A3:DC3D 6D 32 0E    ADC $0E32  [$7E:0E32]
-$A3:DC40 AA          TAX
-$A3:DC41 8D 32 0E    STA $0E32  [$7E:0E32]
-$A3:DC44 BD AE DC    LDA $DCAE,x
-$A3:DC47 C9 00 80    CMP #$8000
-$A3:DC4A F0 2E       BEQ $2E    [$DC7A]
-$A3:DC4C BD AE DC    LDA $DCAE,x
-$A3:DC4F 30 02       BMI $02    [$DC53]
-$A3:DC51 80 0D       BRA $0D    [$DC60]
+$A3:DC24 A9 0A 00    LDA #$000A             ;\
+$A3:DC27 9D A0 0F    STA $0FA0,x            ;} Enemy invincibility timer = Ah
+$A3:DC2A BD B6 0F    LDA $0FB6,x            ;\
+$A3:DC2D 0A          ASL A                  ;|
+$A3:DC2E 0A          ASL A                  ;|
+$A3:DC2F 0A          ASL A                  ;|
+$A3:DC30 0A          ASL A                  ;|
+$A3:DC31 0A          ASL A                  ;|
+$A3:DC32 8D 32 0E    STA $0E32  [$7E:0E32]  ;|
+$A3:DC35 B9 04 0C    LDA $0C04,y            ;} X = $0E32 = [enemy reflection axis] * 20h + ([projectile direction] & Fh) * 2
+$A3:DC38 29 0F 00    AND #$000F             ;|
+$A3:DC3B 0A          ASL A                  ;|
+$A3:DC3C 18          CLC                    ;|
+$A3:DC3D 6D 32 0E    ADC $0E32  [$7E:0E32]  ;|
+$A3:DC40 AA          TAX                    ;|
+$A3:DC41 8D 32 0E    STA $0E32  [$7E:0E32]  ;/
+$A3:DC44 BD AE DC    LDA $DCAE,x            ; A = [$DCAE + [X]]
+$A3:DC47 C9 00 80    CMP #$8000             ;\
+$A3:DC4A F0 2E       BEQ $2E    [$DC7A]     ;} If [A] = 8000h (parallel shot): go to BRANCH_NO_REFLECT
+$A3:DC4C BD AE DC    LDA $DCAE,x            ; >_<;
+$A3:DC4F 30 02       BMI $02    [$DC53]     ; If [A] >= 0 (perpendicular shot):
+$A3:DC51 80 0D       BRA $0D    [$DC60]     ; Go to BRANCH_NO_OFFSET
 
-$A3:DC53 FC 2E DD    JSR ($DD2E,x)
-$A3:DC56 AE 32 0E    LDX $0E32  [$7E:0E32]
-$A3:DC59 BD AE DC    LDA $DCAE,x
-$A3:DC5C 49 FF FF    EOR #$FFFF
-$A3:DC5F 1A          INC A
+$A3:DC53 FC 2E DD    JSR ($DD2E,x)          ; Execute [$DD2E + [X]] <-- ...and then discard the result
+$A3:DC56 AE 32 0E    LDX $0E32  [$7E:0E32]  ; X = [$0E32]
+$A3:DC59 BD AE DC    LDA $DCAE,x            ;\
+$A3:DC5C 49 FF FF    EOR #$FFFF             ;} A = -[$DCAE + [X]]
+$A3:DC5F 1A          INC A                  ;/
 
-$A3:DC60 99 04 0C    STA $0C04,y
-$A3:DC63 B9 18 0C    LDA $0C18,y
-$A3:DC66 29 FF 7F    AND #$7FFF
-$A3:DC69 99 18 0C    STA $0C18,y
-$A3:DC6C 84 14       STY $14    [$7E:0014]
-$A3:DC6E 22 00 BE 90 JSL $90BE00[$90:BE00]
+; BRANCH_NO_OFFSET
+$A3:DC60 99 04 0C    STA $0C04,y            ; Projectile direction = [A]
+$A3:DC63 B9 18 0C    LDA $0C18,y            ;\
+$A3:DC66 29 FF 7F    AND #$7FFF             ;} Enable projectile collision Samus
+$A3:DC69 99 18 0C    STA $0C18,y            ;/
+$A3:DC6C 84 14       STY $14    [$7E:0014]  ; $14 = [Y] (projectile index)
+$A3:DC6E 22 00 BE 90 JSL $90BE00[$90:BE00]  ; Projectile reflection
 $A3:DC72 A9 57 00    LDA #$0057             ;\
 $A3:DC75 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 57h, sound library 2, max queued sounds allowed = 6 (shot reflec)
-$A3:DC79 6B          RTL
+$A3:DC79 6B          RTL                    ; Return
 
-$A3:DC7A B9 04 0C    LDA $0C04,y
-$A3:DC7D 09 10 00    ORA #$0010
-$A3:DC80 99 04 0C    STA $0C04,y
-$A3:DC83 BD 8C 0F    LDA $0F8C,x
-$A3:DC86 F0 1D       BEQ $1D    [$DCA5]
-$A3:DC88 22 32 80 A3 JSL $A38032[$A3:8032]
-$A3:DC8C BD 8C 0F    LDA $0F8C,x
-$A3:DC8F D0 14       BNE $14    [$DCA5]
-$A3:DC91 BD B6 0F    LDA $0FB6,x
-$A3:DC94 0A          ASL A
-$A3:DC95 A8          TAY
-$A3:DC96 B9 A6 DC    LDA $DCA6,y
-$A3:DC99 9D 92 0F    STA $0F92,x
+; BRANCH_NO_REFLECT
+$A3:DC7A B9 04 0C    LDA $0C04,y            ;\
+$A3:DC7D 09 10 00    ORA #$0010             ;} Mark projectile for deletion
+$A3:DC80 99 04 0C    STA $0C04,y            ;/
+$A3:DC83 BD 8C 0F    LDA $0F8C,x            ;\
+$A3:DC86 F0 1D       BEQ $1D    [$DCA5]     ;} If [enemy health] != 0:
+$A3:DC88 22 32 80 A3 JSL $A38032[$A3:8032]  ; Normal enemy shot AI - no death check, no enemy shot graphic
+$A3:DC8C BD 8C 0F    LDA $0F8C,x            ;\
+$A3:DC8F D0 14       BNE $14    [$DCA5]     ;} If [enemy health] = 0:
+$A3:DC91 BD B6 0F    LDA $0FB6,x            ;\
+$A3:DC94 0A          ASL A                  ;|
+$A3:DC95 A8          TAY                    ;} Enemy instruction list pointer = [$DCA6 + [enemy reflection axis] * 2]
+$A3:DC96 B9 A6 DC    LDA $DCA6,y            ;|
+$A3:DC99 9D 92 0F    STA $0F92,x            ;/
 $A3:DC9C A9 01 00    LDA #$0001             ;\
 $A3:DC9F 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A3:DCA2 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
 
 $A3:DCA5 6B          RTL
 
+; Instruction lists for when health reaches zero...
 $A3:DCA6             dw DBA0, DBAA, DBB4, DBBE
 
 
+; Reflected direction table
+; 8000h = no reflected projectile
+; Negative = reflection projectile position is offset
 ;                        ______________________________________________ Up, facing right
 ;                       |     _________________________________________ Up-right
 ;                       |    |     ____________________________________ Right
@@ -8260,251 +8305,281 @@ $A3:DCA6             dw DBA0, DBAA, DBB4, DBBE
 ;                       |    |    |    |    |    |    |    |     ______ Up-left
 ;                       |    |    |    |    |    |    |    |    |     _ Up, facing left
 ;                       |    |    |    |    |    |    |    |    |    |
-$A3:DCAE             dw 8000,FFF8,0007,FFFA,8000,8000,FFFD,0002,FFFF,8000, 0000,0000,0000,0000,0000,0000,
-                        FFFE,8000,FFF7,0008,FFF9,FFF9,8000,FFFB,0003,FFFE, 0000,0000,0000,0000,0000,0000,
-                        0004,FFFD,8000,FFFF,0000,0009,FFF8,8000,FFFA,0005, 0000,0000,0000,0000,0000,0000,
-                        FFF9,0006,FFFC,8000,FFFE,FFFE,0001,FFF7,8000,FFF9, 0000,0000,0000,0000,0000,0000
+$A3:DCAE             dw 8000,FFF8,0007,FFFA,8000,8000,FFFD,0002,FFFF,8000, 0000,0000,0000,0000,0000,0000, ; 0: Vertical
+                        FFFE,8000,FFF7,0008,FFF9,FFF9,8000,FFFB,0003,FFFE, 0000,0000,0000,0000,0000,0000, ; 1: Up-right diagonal
+                        0004,FFFD,8000,FFFF,0000,0009,FFF8,8000,FFFA,0005, 0000,0000,0000,0000,0000,0000, ; 2: Horizontal
+                        FFF9,0006,FFFC,8000,FFFE,FFFE,0001,FFF7,8000,FFF9, 0000,0000,0000,0000,0000,0000  ; 3: Down-right diagonal
 
-$A3:DD2E             dw 0000,DDAE,0000,DDAE,0000,0000,DDCF,0000,DDCF,0000, 0000,0000,0000,0000,0000,0000,
-                        DDF0,0000,DE0D,0000,DE2A,DE2A,0000,DE47,0000,DDF0, 0000,0000,0000,0000,0000,0000,
-                        0000,DE64,0000,DE85,0000,0000,DE85,0000,DE64,0000, 0000,0000,0000,0000,0000,0000,
-                        DEA6,0000,DEC3,0000,DEE0,DEE0,0000,DEFD,0000,DEA6, 0000,0000,0000,0000,0000,0000
+; Offset function for negative entries of above table
+;                        ______________________________________________ Up, facing right
+;                       |     _________________________________________ Up-right
+;                       |    |     ____________________________________ Right
+;                       |    |    |     _______________________________ Down-right
+;                       |    |    |    |     __________________________ Down, facing right
+;                       |    |    |    |    |     _____________________ Down, facing left
+;                       |    |    |    |    |    |     ________________ Down-left
+;                       |    |    |    |    |    |    |     ___________ Left
+;                       |    |    |    |    |    |    |    |     ______ Up-left
+;                       |    |    |    |    |    |    |    |    |     _ Up, facing left
+;                       |    |    |    |    |    |    |    |    |    |
+$A3:DD2E             dw 0000,DDAE,0000,DDAE,0000,0000,DDCF,0000,DDCF,0000, 0000,0000,0000,0000,0000,0000, ; 0: Vertical
+                        DDF0,0000,DE0D,0000,DE2A,DE2A,0000,DE47,0000,DDF0, 0000,0000,0000,0000,0000,0000, ; 1: Up-right diagonal
+                        0000,DE64,0000,DE85,0000,0000,DE85,0000,DE64,0000, 0000,0000,0000,0000,0000,0000, ; 2: Horizontal
+                        DEA6,0000,DEC3,0000,DEE0,DEE0,0000,DEFD,0000,DEA6, 0000,0000,0000,0000,0000,0000  ; 3: Down-right diagonal
 }
 
 
-;;; $DDAE:  ;;;
+;;; $DDAE..DF19: Reflection offset functions ;;;
+{
+;;; $DDAE: Reflection offset function - vertical - up-right / down-right ;;;
 {
 $A3:DDAE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DDB1 BD 7A 0F    LDA $0F7A,x
-$A3:DDB4 38          SEC
-$A3:DDB5 E9 08 00    SBC #$0008
-$A3:DDB8 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DDBB B9 64 0B    LDA $0B64,y
-$A3:DDBE 18          CLC
-$A3:DDBF 79 B4 0B    ADC $0BB4,y
-$A3:DDC2 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DDC5 10 04       BPL $04    [$DDCB]
-$A3:DDC7 A9 00 00    LDA #$0000
-$A3:DDCA 60          RTS
+$A3:DDB1 BD 7A 0F    LDA $0F7A,x            ;\
+$A3:DDB4 38          SEC                    ;|
+$A3:DDB5 E9 08 00    SBC #$0008             ;|
+$A3:DDB8 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DDBB B9 64 0B    LDA $0B64,y            ;} If [projectile X position] + [projectile X radius] < [enemy X position] - 8:
+$A3:DDBE 18          CLC                    ;|
+$A3:DDBF 79 B4 0B    ADC $0BB4,y            ;|
+$A3:DDC2 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DDC5 10 04       BPL $04    [$DDCB]     ;/
+$A3:DDC7 A9 00 00    LDA #$0000             ;\
+$A3:DDCA 60          RTS                    ;} Return A = 0
 
-$A3:DDCB A9 01 00    LDA #$0001
-$A3:DDCE 60          RTS
+$A3:DDCB A9 01 00    LDA #$0001             ;\
+$A3:DDCE 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DDCF:  ;;;
+;;; $DDCF: Reflection offset function - vertical - up-left / down-left ;;;
 {
 $A3:DDCF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DDD2 BD 7A 0F    LDA $0F7A,x
-$A3:DDD5 18          CLC
-$A3:DDD6 69 08 00    ADC #$0008
-$A3:DDD9 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DDDC B9 64 0B    LDA $0B64,y
-$A3:DDDF 38          SEC
-$A3:DDE0 F9 B4 0B    SBC $0BB4,y
-$A3:DDE3 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DDE6 30 04       BMI $04    [$DDEC]
-$A3:DDE8 A9 00 00    LDA #$0000
-$A3:DDEB 60          RTS
-
-$A3:DDEC A9 01 00    LDA #$0001
-$A3:DDEF 60          RTS
+$A3:DDD2 BD 7A 0F    LDA $0F7A,x            ;\
+$A3:DDD5 18          CLC                    ;|
+$A3:DDD6 69 08 00    ADC #$0008             ;|
+$A3:DDD9 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DDDC B9 64 0B    LDA $0B64,y            ;} If [projectile X position] - [projectile X radius] >= [enemy X position] + 8:
+$A3:DDDF 38          SEC                    ;|
+$A3:DDE0 F9 B4 0B    SBC $0BB4,y            ;|
+$A3:DDE3 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DDE6 30 04       BMI $04    [$DDEC]     ;/
+$A3:DDE8 A9 00 00    LDA #$0000             ;\
+$A3:DDEB 60          RTS                    ;} Return A = 0
+                                            
+$A3:DDEC A9 01 00    LDA #$0001             ;\
+$A3:DDEF 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DDF0:  ;;;
+;;; $DDF0: Reflection offset function - up-right diagonal - up ;;;
 {
 $A3:DDF0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DDF3 BD 7A 0F    LDA $0F7A,x
-$A3:DDF6 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DDF9 B9 64 0B    LDA $0B64,y
-$A3:DDFC 18          CLC
-$A3:DDFD 79 B4 0B    ADC $0BB4,y
-$A3:DE00 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DE03 30 04       BMI $04    [$DE09]
-$A3:DE05 A9 00 00    LDA #$0000
-$A3:DE08 60          RTS
-
-$A3:DE09 A9 01 00    LDA #$0001
-$A3:DE0C 60          RTS
+$A3:DDF3 BD 7A 0F    LDA $0F7A,x            ;\
+$A3:DDF6 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DDF9 B9 64 0B    LDA $0B64,y            ;|
+$A3:DDFC 18          CLC                    ;} If [projectile X position] + [projectile X radius] >= [enemy X position]:
+$A3:DDFD 79 B4 0B    ADC $0BB4,y            ;|
+$A3:DE00 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DE03 30 04       BMI $04    [$DE09]     ;/
+$A3:DE05 A9 00 00    LDA #$0000             ;\
+$A3:DE08 60          RTS                    ;} Return A = 0
+                                            
+$A3:DE09 A9 01 00    LDA #$0001             ;\
+$A3:DE0C 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DE0D:  ;;;
+;;; $DE0D: Reflection offset function - up-right diagonal - right ;;;
 {
 $A3:DE0D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DE10 BD 7E 0F    LDA $0F7E,x
-$A3:DE13 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DE16 B9 78 0B    LDA $0B78,y
-$A3:DE19 38          SEC
-$A3:DE1A F9 C8 0B    SBC $0BC8,y
-$A3:DE1D CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DE20 10 04       BPL $04    [$DE26]
-$A3:DE22 A9 00 00    LDA #$0000
-$A3:DE25 60          RTS
-
-$A3:DE26 A9 01 00    LDA #$0001
-$A3:DE29 60          RTS
+$A3:DE10 BD 7E 0F    LDA $0F7E,x            ;\
+$A3:DE13 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DE16 B9 78 0B    LDA $0B78,y            ;|
+$A3:DE19 38          SEC                    ;} If [projectile Y position] - [projectile Y radius] < [enemy Y position]:
+$A3:DE1A F9 C8 0B    SBC $0BC8,y            ;|
+$A3:DE1D CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DE20 10 04       BPL $04    [$DE26]     ;/
+$A3:DE22 A9 00 00    LDA #$0000             ;\
+$A3:DE25 60          RTS                    ;} Return A = 0
+                                            
+$A3:DE26 A9 01 00    LDA #$0001             ;\
+$A3:DE29 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DE2A:  ;;;
+;;; $DE2A: Reflection offset function - up-right diagonal - down ;;;
 {
 $A3:DE2A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DE2D BD 7A 0F    LDA $0F7A,x
-$A3:DE30 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DE33 B9 64 0B    LDA $0B64,y
-$A3:DE36 38          SEC
-$A3:DE37 F9 B4 0B    SBC $0BB4,y
-$A3:DE3A CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DE3D 10 04       BPL $04    [$DE43]
-$A3:DE3F A9 00 00    LDA #$0000
-$A3:DE42 60          RTS
-
-$A3:DE43 A9 01 00    LDA #$0001
-$A3:DE46 60          RTS
+$A3:DE2D BD 7A 0F    LDA $0F7A,x            ;\
+$A3:DE30 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DE33 B9 64 0B    LDA $0B64,y            ;|
+$A3:DE36 38          SEC                    ;} If [projectile X position] - [projectile X radius] < [enemy X position]:
+$A3:DE37 F9 B4 0B    SBC $0BB4,y            ;|
+$A3:DE3A CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DE3D 10 04       BPL $04    [$DE43]     ;/
+$A3:DE3F A9 00 00    LDA #$0000             ;\
+$A3:DE42 60          RTS                    ;} Return A = 0
+                                            
+$A3:DE43 A9 01 00    LDA #$0001             ;\
+$A3:DE46 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DE47:  ;;;
+;;; $DE47: Reflection offset function - up-right diagonal - left ;;;
 {
 $A3:DE47 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DE4A BD 7E 0F    LDA $0F7E,x
-$A3:DE4D 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DE50 B9 78 0B    LDA $0B78,y
-$A3:DE53 18          CLC
-$A3:DE54 79 C8 0B    ADC $0BC8,y
-$A3:DE57 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DE5A 30 04       BMI $04    [$DE60]
-$A3:DE5C A9 00 00    LDA #$0000
-$A3:DE5F 60          RTS
-
-$A3:DE60 A9 01 00    LDA #$0001
-$A3:DE63 60          RTS
+$A3:DE4A BD 7E 0F    LDA $0F7E,x            ;\
+$A3:DE4D 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DE50 B9 78 0B    LDA $0B78,y            ;|
+$A3:DE53 18          CLC                    ;} If [projectile Y position] + [projectile Y radius] >= [enemy Y position]:
+$A3:DE54 79 C8 0B    ADC $0BC8,y            ;|
+$A3:DE57 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DE5A 30 04       BMI $04    [$DE60]     ;/
+$A3:DE5C A9 00 00    LDA #$0000             ;\
+$A3:DE5F 60          RTS                    ;} Return A = 0
+                                            
+$A3:DE60 A9 01 00    LDA #$0001             ;\
+$A3:DE63 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DE64:  ;;;
+;;; $DE64: Reflection offset function - horizontal - up-right / up-left ;;;
 {
 $A3:DE64 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DE67 BD 7E 0F    LDA $0F7E,x
-$A3:DE6A 18          CLC
-$A3:DE6B 69 08 00    ADC #$0008
-$A3:DE6E 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DE71 B9 78 0B    LDA $0B78,y
-$A3:DE74 38          SEC
-$A3:DE75 F9 C8 0B    SBC $0BC8,y
-$A3:DE78 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DE7B 30 04       BMI $04    [$DE81]
-$A3:DE7D A9 00 00    LDA #$0000
-$A3:DE80 60          RTS
-
-$A3:DE81 A9 01 00    LDA #$0001
-$A3:DE84 60          RTS
+$A3:DE67 BD 7E 0F    LDA $0F7E,x            ;\
+$A3:DE6A 18          CLC                    ;|
+$A3:DE6B 69 08 00    ADC #$0008             ;|
+$A3:DE6E 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DE71 B9 78 0B    LDA $0B78,y            ;} If [projectile Y position] - [projectile Y radius] >= [enemy Y position] + 8:
+$A3:DE74 38          SEC                    ;|
+$A3:DE75 F9 C8 0B    SBC $0BC8,y            ;|
+$A3:DE78 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DE7B 30 04       BMI $04    [$DE81]     ;/
+$A3:DE7D A9 00 00    LDA #$0000             ;\
+$A3:DE80 60          RTS                    ;} Return A = 0
+                                            
+$A3:DE81 A9 01 00    LDA #$0001             ;\
+$A3:DE84 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DE85:  ;;;
+;;; $DE85: Reflection offset function - horizontal - down-right / down-left ;;;
 {
 $A3:DE85 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DE88 BD 7E 0F    LDA $0F7E,x
-$A3:DE8B 38          SEC
-$A3:DE8C E9 08 00    SBC #$0008
-$A3:DE8F 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DE92 B9 78 0B    LDA $0B78,y
-$A3:DE95 18          CLC
-$A3:DE96 79 C8 0B    ADC $0BC8,y
-$A3:DE99 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DE9C 10 04       BPL $04    [$DEA2]
-$A3:DE9E A9 00 00    LDA #$0000
-$A3:DEA1 60          RTS
-
-$A3:DEA2 A9 01 00    LDA #$0001
-$A3:DEA5 60          RTS
+$A3:DE88 BD 7E 0F    LDA $0F7E,x            ;\
+$A3:DE8B 38          SEC                    ;|
+$A3:DE8C E9 08 00    SBC #$0008             ;|
+$A3:DE8F 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DE92 B9 78 0B    LDA $0B78,y            ;} If [projectile Y position] + [projectile Y radius] < [enemy Y position] - 8:
+$A3:DE95 18          CLC                    ;|
+$A3:DE96 79 C8 0B    ADC $0BC8,y            ;|
+$A3:DE99 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DE9C 10 04       BPL $04    [$DEA2]     ;/
+$A3:DE9E A9 00 00    LDA #$0000             ;\
+$A3:DEA1 60          RTS                    ;} Return A = 0
+                                            
+$A3:DEA2 A9 01 00    LDA #$0001             ;\
+$A3:DEA5 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DEA6:  ;;;
+;;; $DEA6: Reflection offset function - down-right diagonal - up ;;;
 {
 $A3:DEA6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DEA9 BD 7A 0F    LDA $0F7A,x
-$A3:DEAC 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DEAF B9 64 0B    LDA $0B64,y
-$A3:DEB2 38          SEC
-$A3:DEB3 F9 B4 0B    SBC $0BB4,y
-$A3:DEB6 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DEB9 30 04       BMI $04    [$DEBF]
-$A3:DEBB A9 00 00    LDA #$0000
-$A3:DEBE 60          RTS
-
-$A3:DEBF A9 01 00    LDA #$0001
-$A3:DEC2 60          RTS
+$A3:DEA9 BD 7A 0F    LDA $0F7A,x            ;\
+$A3:DEAC 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DEAF B9 64 0B    LDA $0B64,y            ;|
+$A3:DEB2 38          SEC                    ;} If [projectile X position] - [projectile X radius] >= [enemy X position]:
+$A3:DEB3 F9 B4 0B    SBC $0BB4,y            ;|
+$A3:DEB6 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DEB9 30 04       BMI $04    [$DEBF]     ;/
+$A3:DEBB A9 00 00    LDA #$0000             ;\
+$A3:DEBE 60          RTS                    ;} Return A = 0
+                                            
+$A3:DEBF A9 01 00    LDA #$0001             ;\
+$A3:DEC2 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DEC3:  ;;;
+;;; $DEC3: Reflection offset function - down-right diagonal - right ;;;
 {
 $A3:DEC3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DEC6 BD 7E 0F    LDA $0F7E,x
-$A3:DEC9 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DECC B9 78 0B    LDA $0B78,y
-$A3:DECF 18          CLC
-$A3:DED0 79 C8 0B    ADC $0BC8,y
-$A3:DED3 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DED6 10 04       BPL $04    [$DEDC]
-$A3:DED8 A9 01 00    LDA #$0001
-$A3:DEDB 60          RTS
-
-$A3:DEDC A9 00 00    LDA #$0000
-$A3:DEDF 60          RTS
+$A3:DEC6 BD 7E 0F    LDA $0F7E,x            ;\
+$A3:DEC9 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DECC B9 78 0B    LDA $0B78,y            ;|
+$A3:DECF 18          CLC                    ;} If [projectile Y position] + [projectile Y radius] < [enemy Y position]:
+$A3:DED0 79 C8 0B    ADC $0BC8,y            ;|
+$A3:DED3 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DED6 10 04       BPL $04    [$DEDC]     ;/
+$A3:DED8 A9 01 00    LDA #$0001             ;\
+$A3:DEDB 60          RTS                    ;} Return A = 1
+                                            
+$A3:DEDC A9 00 00    LDA #$0000             ;\
+$A3:DEDF 60          RTS                    ;} Return A = 0
 }
 
 
-;;; $DEE0:  ;;;
+;;; $DEE0: Reflection offset function - down-right diagonal - down ;;;
 {
 $A3:DEE0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DEE3 BD 7A 0F    LDA $0F7A,x
-$A3:DEE6 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DEE9 B9 64 0B    LDA $0B64,y
-$A3:DEEC 38          SEC
-$A3:DEED F9 B4 0B    SBC $0BB4,y
-$A3:DEF0 CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DEF3 30 04       BMI $04    [$DEF9]
-$A3:DEF5 A9 00 00    LDA #$0000
-$A3:DEF8 60          RTS
-
-$A3:DEF9 A9 01 00    LDA #$0001
-$A3:DEFC 60          RTS
+$A3:DEE3 BD 7A 0F    LDA $0F7A,x            ;\
+$A3:DEE6 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DEE9 B9 64 0B    LDA $0B64,y            ;|
+$A3:DEEC 38          SEC                    ;} If [projectile X position] - [projectile X radius] >= [enemy X position]:
+$A3:DEED F9 B4 0B    SBC $0BB4,y            ;|
+$A3:DEF0 CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DEF3 30 04       BMI $04    [$DEF9]     ;/
+$A3:DEF5 A9 00 00    LDA #$0000             ;\
+$A3:DEF8 60          RTS                    ;} Return A = 0
+                                            
+$A3:DEF9 A9 01 00    LDA #$0001             ;\
+$A3:DEFC 60          RTS                    ;} Return A = 1
 }
 
 
-;;; $DEFD:  ;;;
+;;; $DEFD: Reflection offset function - down-right diagonal - left ;;;
 {
 $A3:DEFD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A3:DF00 BD 7E 0F    LDA $0F7E,x
-$A3:DF03 8D 36 0E    STA $0E36  [$7E:0E36]
-$A3:DF06 B9 78 0B    LDA $0B78,y
-$A3:DF09 38          SEC
-$A3:DF0A F9 C8 0B    SBC $0BC8,y
-$A3:DF0D CD 36 0E    CMP $0E36  [$7E:0E36]
-$A3:DF10 10 04       BPL $04    [$DF16]
-$A3:DF12 A9 00 00    LDA #$0000
-$A3:DF15 60          RTS
-
-$A3:DF16 A9 01 00    LDA #$0001
-$A3:DF19 60          RTS
+$A3:DF00 BD 7E 0F    LDA $0F7E,x            ;\
+$A3:DF03 8D 36 0E    STA $0E36  [$7E:0E36]  ;|
+$A3:DF06 B9 78 0B    LDA $0B78,y            ;|
+$A3:DF09 38          SEC                    ;} If [projectile Y position] - [projectile Y radius] < [enemy Y position]:
+$A3:DF0A F9 C8 0B    SBC $0BC8,y            ;|
+$A3:DF0D CD 36 0E    CMP $0E36  [$7E:0E36]  ;|
+$A3:DF10 10 04       BPL $04    [$DF16]     ;/
+$A3:DF12 A9 00 00    LDA #$0000             ;\
+$A3:DF15 60          RTS                    ;} Return A = 0
+                                            
+$A3:DF16 A9 01 00    LDA #$0001             ;\
+$A3:DF19 60          RTS                    ;} Return A = 1
+}
 }
 
 
 ;;; $DF1A: Reflec spritemaps ;;;
 {
+; Facing left
 $A3:DF1A             dx 0003, 81F0,00,610E, 81F0,F0,210D, 81F8,F8,2100
+
+; Facing up-left
 $A3:DF2B             dx 0003, 81EA,F3,211A, 81F2,EB,210B, 81F8,F8,2102
+
+; Facing up
 $A3:DF3C             dx 0003, 81F8,F8,2104, 8000,F1,A118, 81F0,F1,2108
+
+; Facing up-right
 $A3:DF4D             dx 0003, 81F8,F8,2106, 8006,F3,611A, 81FE,EB,610B
+
+; Facing right
 $A3:DF5E             dx 0003, 8000,00,210E, 8000,F0,610D, 81F8,F8,2100
+
+; Facing down-right
 $A3:DF6F             dx 0003, 81F8,F8,2102, 8006,FD,E11A, 81FE,05,E10B
+
+; Facing down
 $A3:DF80             dx 0003, 81F8,F8,2104, 8000,FF,2118, 81F0,FF,A108
+
+; Facing down-left
 $A3:DF91             dx 0003, 81F8,F8,2106, 81EA,FD,A11A, 81F2,05,A10B
 }
 }

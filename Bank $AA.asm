@@ -4449,7 +4449,7 @@ $AA:DA72             dx 0077,DF71,
 {
 $AA:DA7A             dx 813A,0080,  ; Wait 80h frames
                         D931,       ; Lower enemy 1px away from enemy projectile
-                        D99F,       ; NOP (disabled - spawn Shaktool attack enemy projectiles
+                        D99F,       ; NOP (disabled - spawn Shaktool attack enemy projectiles)
                         813A,0080,  ; Wait 80h frames
                         D93F,       ; Raise enemy 1px towards enemy projectile
                         813A,0140,  ; Wait 140h frames

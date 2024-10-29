@@ -3845,13 +3845,13 @@ $A8:B0B2 AD 97 07    LDA $0797  [$7E:0797]  ;\
 $A8:B0B5 D0 52       BNE $52    [$B109]     ;} If currently transitioning the room: return
 $A8:B0B7 AE 54 0E    LDX $0E54  [$7E:0E54]  ; >_<
 $A8:B0BA AD 98 17    LDA $1798  [$7E:1798]  ;\
-$A8:B0BD 3A          DEC A                  ;} Decrement $1798
+$A8:B0BD 3A          DEC A                  ;} Decrement enemy palette cycle timer
 $A8:B0BE 8D 98 17    STA $1798  [$7E:1798]  ;/
-$A8:B0C1 D0 46       BNE $46    [$B109]     ; If [$1798] != 0: return
+$A8:B0C1 D0 46       BNE $46    [$B109]     ; If [enemy palette cycle timer] != 0: return
 $A8:B0C3 A9 08 00    LDA #$0008             ;\
-$A8:B0C6 8D 98 17    STA $1798  [$7E:1798]  ;} $1798 = 8
+$A8:B0C6 8D 98 17    STA $1798  [$7E:1798]  ;} Enemy palette cycle timer = 8
 $A8:B0C9 AD 96 17    LDA $1796  [$7E:1796]  ;\
-$A8:B0CC 1A          INC A                  ;} Increment $1796
+$A8:B0CC 1A          INC A                  ;} Increment enemy palette cycle colour set index
 $A8:B0CD 8D 96 17    STA $1796  [$7E:1796]  ;/
 $A8:B0D0 29 03 00    AND #$0003             ;\
 $A8:B0D3 0A          ASL A                  ;|
@@ -3865,7 +3865,7 @@ $A8:B0DC 85 12       STA $12    [$7E:0012]  ;|
 $A8:B0DE B9 30 AC    LDA $AC30,y[$A8:AC50]  ;|
 $A8:B0E1 85 14       STA $14    [$7E:0014]  ;|
 $A8:B0E3 B9 32 AC    LDA $AC32,y[$A8:AC52]  ;|
-$A8:B0E6 85 16       STA $16    [$7E:0016]  ;} Copy 4 colours from $AC2E + [$1796] % 4 * 20h to enemy palette colours 9..Ch
+$A8:B0E6 85 16       STA $16    [$7E:0016]  ;} Copy 4 colours from $AC2E + [enemy palette cycle colour set index] % 4 * 20h to enemy palette colours 9..Ch
 $A8:B0E8 B9 34 AC    LDA $AC34,y[$A8:AC54]  ;|
 $A8:B0EB 85 18       STA $18    [$7E:0018]  ;|
 $A8:B0ED AD 94 17    LDA $1794  [$7E:1794]  ;|
@@ -9145,11 +9145,11 @@ $A8:E86D 6B          RTL
 $A8:E86E AD 97 07    LDA $0797  [$7E:0797]  ;\
 $A8:E871 D0 3A       BNE $3A    [$E8AD]     ;} If currently transitioning the room: return
 $A8:E873 AD 98 17    LDA $1798  [$7E:1798]  ;\
-$A8:E876 3A          DEC A                  ;} Decrement $1798
+$A8:E876 3A          DEC A                  ;} Decrement enemy palette cycle timer
 $A8:E877 8D 98 17    STA $1798  [$7E:1798]  ;/
-$A8:E87A D0 31       BNE $31    [$E8AD]     ; If [$1798] != 0: return
+$A8:E87A D0 31       BNE $31    [$E8AD]     ; If [enemy palette cycle timer] != 0: return
 $A8:E87C A9 10 00    LDA #$0010             ;\
-$A8:E87F 8D 98 17    STA $1798  [$7E:1798]  ;} $1798 = 10h
+$A8:E87F 8D 98 17    STA $1798  [$7E:1798]  ;} Enemy palette cycle timer = 10h
 $A8:E882 AD 94 17    LDA $1794  [$7E:1794]  ;\
 $A8:E885 AA          TAX                    ;|
 $A8:E886 AD 96 17    LDA $1796  [$7E:1796]  ;|
@@ -9159,7 +9159,7 @@ $A8:E88B 0A          ASL A                  ;|
 $A8:E88C A8          TAY                    ;|
 $A8:E88D A9 04 00    LDA #$0004             ;|
 $A8:E890 8D 0B 06    STA $060B  [$7E:060B]  ;|
-                                            ;} Copy 4 colours from $E7CC + [$1796] * 8 to enemy palette colours 9..Ch
+                                            ;} Copy 4 colours from $E7CC + [enemy palette cycle colour set index] * 8 to enemy palette colours 9..Ch
 $A8:E893 B9 CC E7    LDA $E7CC,y[$A8:E7CC]  ;|
 $A8:E896 9F 12 C1 7E STA $7EC112,x[$7E:C1F2];|
 $A8:E89A C8          INY                    ;|
@@ -9170,7 +9170,7 @@ $A8:E89E CE 0B 06    DEC $060B  [$7E:060B]  ;|
 $A8:E8A1 D0 F0       BNE $F0    [$E893]     ;/
 $A8:E8A3 AD 96 17    LDA $1796  [$7E:1796]  ;\
 $A8:E8A6 1A          INC A                  ;|
-$A8:E8A7 29 07 00    AND #$0007             ;} $1796 = ([$1796] + 1) % 8
+$A8:E8A7 29 07 00    AND #$0007             ;} Enemy palette cycle colour set index = ([enemy palette cycle colour set index] + 1) % 8
 $A8:E8AA 8D 96 17    STA $1796  [$7E:1796]  ;/
 
 $A8:E8AD 6B          RTL
