@@ -14,7 +14,7 @@ $A2:8687             dw 3800, 4BBE, 06B9, 00EA, 0065, 173A, 0276, 01F2, 014D, 00
 
 ;;; $86A7..DE: Instruction lists - boyon ;;;
 {
-;;; $86A7: Instruction list -  ;;;
+;;; $86A7: Instruction list - idle ;;;
 {
 $A2:86A7             dx 817D,       ; Disable off-screen processing
                         88C5        ; Nothing
@@ -26,7 +26,7 @@ $A2:86AB             dx 000A,88DA,
 }
 
 
-;;; $86BF: Instruction list -  ;;;
+;;; $86BF: Instruction list - bouncing ;;;
 {
 $A2:86BF             dx 8173,       ; Enable off-screen processing
                         88C6        ; ???
@@ -58,7 +58,7 @@ $A2:8718             dw 8801, 8850
 $A2:871C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:871F A9 4D 80    LDA #$804D             ;\
 $A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
-$A2:8725 20 9F 88    JSR $889F  [$A2:889F]  
+$A2:8725 20 9F 88    JSR $889F  [$A2:889F]  ; Set boyon idle instruction list
 $A2:8728 A9 01 00    LDA #$0001
 $A2:872B 9F 02 78 7E STA $7E7802,x[$7E:7802]
 $A2:872F BD B4 0F    LDA $0FB4,x[$7E:0FB4]
@@ -128,15 +128,15 @@ $A2:87AF 6B          RTL
 
 $A2:87B0 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
 $A2:87B3 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$A2:87B7 20 94 88    JSR $8894  [$A2:8894]
-$A2:87BA D0 18       BNE $18    [$87D4]
+$A2:87B7 20 94 88    JSR $8894  [$A2:8894]  ;\
+$A2:87BA D0 18       BNE $18    [$87D4]     ;} If Samus is not in proximity:
 $A2:87BC BF 04 78 7E LDA $7E7804,x[$7E:7804]
 $A2:87C0 F0 2B       BEQ $2B    [$87ED]
 $A2:87C2 BF 08 78 7E LDA $7E7808,x[$7E:7808]
 $A2:87C6 D0 38       BNE $38    [$8800]
 $A2:87C8 A9 01 00    LDA #$0001
 $A2:87CB 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A2:87CF 20 9F 88    JSR $889F  [$A2:889F]
+$A2:87CF 20 9F 88    JSR $889F  [$A2:889F]  ; Set boyon idle instruction list
 $A2:87D2 80 2C       BRA $2C    [$8800]
 
 $A2:87D4 A9 00 00    LDA #$0000
@@ -146,7 +146,7 @@ $A2:87DF BD B2 0F    LDA $0FB2,x[$7E:0FF2]
 $A2:87E2 D0 09       BNE $09    [$87ED]
 $A2:87E4 A9 01 00    LDA #$0001
 $A2:87E7 9D B2 0F    STA $0FB2,x[$7E:0FF2]
-$A2:87EA 20 B2 88    JSR $88B2  [$A2:88B2]
+$A2:87EA 20 B2 88    JSR $88B2  [$A2:88B2]  ; Set boyon bouncing instruction list
 
 $A2:87ED AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:87F0 BF 06 78 7E LDA $7E7806,x[$7E:7846]
@@ -235,8 +235,10 @@ $A2:8893 60          RTS
 }
 
 
-;;; $8894:  ;;;
+;;; $8894: Check if Samus is in proximity ;;;
 {
+;; Returns:
+;;     Zero: Clear if Samus is in proximity, set otherwise
 $A2:8894 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8897 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $A2:889A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} A = (1 if Samus within [enemy parameter 2] pixel columns of enemy, else 0)
@@ -244,11 +246,11 @@ $A2:889E 60          RTS
 }
 
 
-;;; $889F:  ;;;
+;;; $889F: Set boyon idle instruction list ;;;
 {
 $A2:889F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:88A2 A9 A7 86    LDA #$86A7             ;\
-$A2:88A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7
+$A2:88A5 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $86A7 (idle)
 $A2:88A8 A9 01 00    LDA #$0001             ;\
 $A2:88AB 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A2:88AE 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
@@ -256,11 +258,11 @@ $A2:88B1 60          RTS
 }
 
 
-;;; $88B2:  ;;;
+;;; $88B2: Set boyon bouncing instruction list ;;;
 {
 $A2:88B2 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:88B5 A9 BF 86    LDA #$86BF             ;\
-$A2:88B8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $86BF
+$A2:88B8 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $86BF (bouncing)
 $A2:88BB A9 01 00    LDA #$0001             ;\
 $A2:88BE 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A2:88C1 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
@@ -3651,7 +3653,7 @@ $A2:A9BC 6B          RTL
 }
 
 
-;;; $A9BD: Gunship function - handle letting Samus enter ;;;
+;;; $A9BD: Gunship function - idle - handle letting Samus enter ;;;
 {
 $A2:A9BD AD 98 09    LDA $0998  [$7E:0998]  ;\
 $A2:A9C0 C9 08 00    CMP #$0008             ;} If [game state] != main gameplay: return
@@ -3715,7 +3717,7 @@ $A2:AA4E 6B          RTL
 }
 
 
-;;; $AA4F: Gunship function - wait for entrance pad to open ;;;
+;;; $AA4F: Gunship function - Samus entering - wait for entrance pad to open ;;;
 {
 $A2:AA4F CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy 0 function timer
 $A2:AA52 F0 02       BEQ $02    [$AA56]     ;\
@@ -3728,7 +3730,7 @@ $A2:AA5C 6B          RTL
 }
 
 
-;;; $AA5D: Gunship function - lower Samus ;;;
+;;; $AA5D: Gunship function - Samus entering - lower Samus ;;;
 {
 $A2:AA5D BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:AA60 18          CLC                    ;|
@@ -3755,7 +3757,7 @@ $A2:AA93 6B          RTL
 }
 
 
-;;; $AA94: Gunship function - wait for entrance pad to close ;;;
+;;; $AA94: Gunship function - Samus entering - wait for entrance pad to close ;;;
 {
 $A2:AA94 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy 0 function timer
 $A2:AA97 F0 02       BEQ $02    [$AA9B]     ;\
@@ -3768,7 +3770,7 @@ $A2:AAA1 6B          RTL
 }
 
 
-;;; $AAA2: Gunship function - go to liftoff or restore Samus health / ammo ;;;
+;;; $AAA2: Gunship function - Samus entered - go to liftoff or restore Samus health / ammo ;;;
 {
 ; The unconditional branch at $AAEF was most likely added to disable the liftoff debug feature
 $A2:AAA2 A9 0E 00    LDA #$000E             ;\
@@ -3822,7 +3824,7 @@ $A2:AB1E 6B          RTL
 }
 
 
-;;; $AB1F: Gunship function - handle save confirmation ;;;
+;;; $AB1F: Gunship function - Samus entered - handle save confirmation ;;;
 {
 $A2:AB1F A9 1C 00    LDA #$001C             ;\
 $A2:AB22 22 80 80 85 JSL $858080[$85:8080]  ;} Display save confirmation message box
@@ -3849,7 +3851,7 @@ $A2:AB5F 6B          RTL
 }
 
 
-;;; $AB60: Gunship function - wait for entrance pad to open ;;;
+;;; $AB60: Gunship function - Samus exiting - wait for entrance pad to open ;;;
 {
 ; Set by initialisation AI if demo set 0 is playing
 $A2:AB60 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy function timer
@@ -3863,7 +3865,7 @@ $A2:AB6D 6B          RTL
 }
 
 
-;;; $AB6E: Gunship function - eject Samus ;;;
+;;; $AB6E: Gunship function - Samus exiting - raise Samus ;;;
 {
 $A2:AB6E BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:AB71 38          SEC                    ;|
@@ -3890,7 +3892,7 @@ $A2:ABA4 6B          RTL
 }
 
 
-;;; $ABA5: Gunship function - wait for entrance pad to close ;;;
+;;; $ABA5: Gunship function - Samus exiting - wait for entrance pad to close, then unlock Samus ;;;
 {
 $A2:ABA5 CE A8 0F    DEC $0FA8  [$7E:0FA8]  ; Decrement enemy function timer
 $A2:ABA8 F0 02       BEQ $02    [$ABAC]     ;\
