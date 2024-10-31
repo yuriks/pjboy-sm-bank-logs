@@ -1926,7 +1926,7 @@ $A6:99AE             dw 0010,9C64,
                         0008,9D08,
                         000C,9D5A,
                         9B26,       ; Move
-                        80ED,99AC   ; Go to $99AC
+                        80ED,99AC   ; Go to $99AC (choose action)
 }
 
 
@@ -1943,7 +1943,7 @@ $A6:99C6             dw 0010,9C64,
                         000C,9D5A,
                         0008,9D08,
                         000C,9CB6,
-                        80ED,99C4   ; Go to $99C4
+                        80ED,99C4   ; Go to $99C4 (choose action)
 }
 
 
@@ -1955,7 +1955,7 @@ $A6:99DC             dx 0010,9DAC,
                         9BC4,       ; Fire spit left
                         0010,9E50,
                         0008,9DFE,
-                        80ED,99AC   ; Go to $99AC
+                        80ED,99AC   ; Go to $99AC (choose action)
 }
 
 
@@ -1979,7 +1979,7 @@ $A6:99FC             dw 0010,9EA2,
                         0008,9F46,
                         000C,9F98,
                         9B26,       ; Move
-                        80ED,99FA   ; Go to $99FA
+                        80ED,99FA   ; Go to $99FA (choose action)
 }
 
 
@@ -1996,7 +1996,7 @@ $A6:9A14             dw 0010,9EA2,
                         000C,9F98,
                         0008,9F46,
                         000C,9EF4,
-                        80ED,9A12   ; Go to $9A12
+                        80ED,9A12   ; Go to $9A12 (choose action)
 }
 
 
@@ -2008,7 +2008,7 @@ $A6:9A2A             dx 0010,9FEA,
                         9C02,       ; Fire spit right
                         0010,A08E,
                         0008,A03C,
-                        80ED,99FA   ; Go to $99FA
+                        80ED,99FA   ; Go to $99FA (choose action)
 }
 
 
@@ -10911,7 +10911,7 @@ $A6:F612             dw 0001,F921,
 
 ;;; $F61A: Instruction list - parameter 1 = 4 (rotating elevator room invisible wall) ;;;
 {
-$A6:F61A             dw F678,F5BE,   ; Go to $F5BE if Ceres Ridley has not escaped
+$A6:F61A             dw F678,F5BE,   ; Go to $F5BE (normal facing left) if Ceres Ridley has not escaped
                         F695,        ; Set enemy as tangible
                         F6A6,        ; Set enemy as invisible
 $A6:F622             dw 0001,F95F,

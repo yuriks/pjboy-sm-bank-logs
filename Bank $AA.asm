@@ -4345,7 +4345,7 @@ $AA:D9E9 6B          RTL
 ;;; $D9EA: Unused. Instruction list - Shaktool saw hand - attack - primary piece ;;;
 {
 $AA:D9EA             dx 813A,0240,  ; Wait 240h frames
-                        80ED,DA0E   ; Go to $DA0E
+                        80ED,DA0E   ; Go to $DA0E (primary piece)
 }
 
 
@@ -4353,14 +4353,14 @@ $AA:D9EA             dx 813A,0240,  ; Wait 240h frames
 {
 $AA:D9F2             dx 813A,0240,  ; Wait 240h frames
                         D9BA,       ; Reset Shaktool functions
-                        80ED,DA1E   ; Go to $DA1E
+                        80ED,DA1E   ; Go to $DA1E (final piece)
 }
 
 
 ;;; $D9FC: Instruction list - Shaktool saw hand - head bob - primary piece ;;;
 {
 $AA:D9FC             dx 813A,0014,  ; Wait 14h frames
-                        80ED,DA0E   ; Go to $DA0E
+                        80ED,DA0E   ; Go to $DA0E (primary piece)
 }
 
 
@@ -4368,7 +4368,7 @@ $AA:D9FC             dx 813A,0014,  ; Wait 14h frames
 {
 $AA:DA04             dx 813A,0014,  ; Wait 14h frames
                         D9BA,       ; Reset Shaktool functions
-                        80ED,DA1E   ; Go to $DA1E
+                        80ED,DA1E   ; Go to $DA1E (final piece)
 }
 
 
@@ -4401,7 +4401,7 @@ $AA:DA2E             dx 813A,00C0,  ; Wait C0h frames
                         813A,0080,  ; Wait 80h frames
                         D93F,       ; Raise enemy 1px towards enemy projectile
                         813A,0100,  ; Wait 100h frames
-                        80ED,DA72   ; Go to $DA72
+                        80ED,DA72   ; Go to $DA72 (normal)
 }
 
 
@@ -4412,7 +4412,7 @@ $AA:DA42             dx 813A,0100,  ; Wait 100h frames
                         813A,0080,  ; Wait 80h frames
                         D93F,       ; Raise enemy 1px towards enemy projectile
                         813A,00C0,  ; Wait C0h frames
-                        80ED,DA72   ; Go to $DA72
+                        80ED,DA72   ; Go to $DA72 (normal)
 }
 
 
@@ -4421,7 +4421,7 @@ $AA:DA42             dx 813A,0100,  ; Wait 100h frames
 $AA:DA56             dx D94A,       ; Lower enemy 1px
                         813A,0014,  ; Wait 14h frames
                         D953,       ; Raise enemy 1px
-                        80ED,DA72   ; Go to $DA72
+                        80ED,DA72   ; Go to $DA72 (normal)
 }
 
 

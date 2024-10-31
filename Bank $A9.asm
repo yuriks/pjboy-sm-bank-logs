@@ -3064,7 +3064,7 @@ $A9:9D7F             dx 9B20,       ; Disable Mother Brain neck movement
 $A9:9DB1             dx 9EA3,       ; Increment Mother Brain Shitroid attack counter
                         9B20,       ; Disable Mother Brain neck movement
                         9E37,       ; Aim Mother Brain blue rings at Shitroid
-                        9B0F,9DC1   ; Go to $9DC1
+                        9B0F,9DC1   ; Go to $9DC1 (attacking - four blue rings - phase 3)
 }
 
 
@@ -4508,8 +4508,8 @@ $A9:B604 60          RTS
 $A9:B605 AD CC 0F    LDA $0FCC  [$7E:0FCC]  ;\
 $A9:B608 D0 09       BNE $09    [$B613]     ;} If [Mother Brain brain health] = 0:
 $A9:B60A A9 EB B8    LDA #$B8EB             ;\
-$A9:B60D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B8EB
-$A9:B610 4C EB B8    JMP $B8EB  [$A9:B8EB]  ; Go to $B8EB
+$A9:B60D 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B8EB (second phase - firing rainbow beam - extend neck)
+$A9:B610 4C EB B8    JMP $B8EB  [$A9:B8EB]  ; Go to second phase - firing rainbow beam - extend neck
 
 $A9:B613 AF 04 78 7E LDA $7E7804[$7E:7804]  ;\
 $A9:B617 F0 01       BEQ $01    [$B61A]     ;} If [Mother Brain's pose] != standing:
@@ -4611,12 +4611,12 @@ $A9:B6BD C9 01 00    CMP #$0001             ;} If [Mother Brain bomb counter] >=
 $A9:B6C0 10 F6       BPL $F6    [$B6B8]     ;/
 $A9:B6C2 A9 81 B7    LDA #$B781             ;\
 $A9:B6C5 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B781 (firing bomb)
-$A9:B6C8 4C 81 B7    JMP $B781  [$A9:B781]  ; Go to $B781
+$A9:B6C8 4C 81 B7    JMP $B781  [$A9:B781]  ; Go to firing bomb
 
 ; BRANCH_LASER
 $A9:B6CB A9 0E B8    LDA #$B80E             ;\
 $A9:B6CE 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B80E (firing laser)
-$A9:B6D1 4C 0E B8    JMP $B80E  [$A9:B80E]  ; Go to $B80E
+$A9:B6D1 4C 0E B8    JMP $B80E  [$A9:B80E]  ; Go to firing laser
 
 ; Mother Brain brain instruction list pointers
 $A9:B6D4             dw 9C87, ; Neutral
@@ -4652,7 +4652,7 @@ $A9:B701 60          RTS                    ; Return
 $A9:B702 68          PLA                    ; Set return to caller's return
 $A9:B703 A9 0E B8    LDA #$B80E             ;\
 $A9:B706 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B80E (firing laser)
-$A9:B709 4C 0E B8    JMP $B80E  [$A9:B80E]  ; Go to $B80E
+$A9:B709 4C 0E B8    JMP $B80E  [$A9:B80E]  ; Go to firing laser
 
 ; BRANCH_AIM_AT_GROUND
 $A9:B70C AD E5 05    LDA $05E5  [$7E:05E5]  ;\
@@ -4667,7 +4667,7 @@ $A9:B71F 10 0A       BPL $0A    [$B72B]     ;/
 $A9:B721 A9 81 B7    LDA #$B781             ;\
 $A9:B724 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B781 (firing bomb)
 $A9:B727 68          PLA                    ; Set return to caller's return
-$A9:B728 4C 81 B7    JMP $B781  [$A9:B781]  ; Go to $B781
+$A9:B728 4C 81 B7    JMP $B781  [$A9:B781]  ; Go to firing bomb
 
 $A9:B72B 60          RTS
 
@@ -4886,7 +4886,7 @@ $A9:B86C 8F 64 80 7E STA $7E8064[$7E:8064]  ;} Mother Brain lower neck movement 
 $A9:B870 8F 66 80 7E STA $7E8066[$7E:8066]  ; Mother Brain upper neck movement index = 4 (bob up)
 $A9:B874 A9 05 B6    LDA #$B605             ;\
 $A9:B877 8D A8 0F    STA $0FA8  [$7E:0FA8]  ;} Mother Brain body function = $B605 (thinking)
-$A9:B87A 4C 05 B6    JMP $B605  [$A9:B605]  ; Go to $B605
+$A9:B87A 4C 05 B6    JMP $B605  [$A9:B605]  ; Go to thinking
 }
 }
 

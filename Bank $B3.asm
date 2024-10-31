@@ -3433,7 +3433,7 @@ $B3:E555 60          RTS
 
 ;;; $E556: Instruction list - running left - low tide ;;;
 {
-$B3:E556             dw E545,E56E   ; Go to $E56E if [acid Y position] < CEh
+$B3:E556             dw E545,E56E   ; Go to $E56E (high tide) if [acid Y position] < CEh
 $B3:E55A             dw 0005,E736,
                         0005,E747,
                         0005,E753,
@@ -3454,7 +3454,7 @@ $B3:E56E             dw 0003,E736,
 
 ;;; $E582: Instruction list - running right - low tide ;;;
 {
-$B3:E582             dw E545,E59A   ; Go to $E59A if [acid Y position] < CEh
+$B3:E582             dw E545,E59A   ; Go to $E59A (high tide) if [acid Y position] < CEh
 $B3:E586             dw 0006,E75F,
                         0006,E770,
                         0006,E77C,
@@ -3721,7 +3721,7 @@ $B3:E968             dw 0003,EB1B,
                         0003,EC10,
                         EAC9,       ; Enemy X position -= 6
                         EAA8,E9FC,  ; Go to $E9FC if [acid Y position] < CEh
-                        EAB8,EA34,  ; Go to $EA34 if critters escaped
+                        EAB8,EA34,  ; Go to $EA34 (running for escape) if critters escaped
                         8110,E968,  ; Decrement timer and go to $E968 if non-zero
                         8123,0005   ; Timer = 5
 $B3:E99C             dw 0003,EC49,
@@ -3745,6 +3745,7 @@ $B3:E99C             dw 0003,EC49,
 
 ;;; $E9D0: Instruction list - running around aimlessly - high tide ;;;
 {
+; Parts of this instruction list are jumped to from the low tide instruction list
 $B3:E9D0             dw 8123,0005   ; Timer = 5
 $B3:E9D4             dw 0002,EB1B,
                         EAC9,       ; Enemy X position -= 6
@@ -3758,7 +3759,7 @@ $B3:E9D4             dw 0002,EB1B,
                         EAC9,       ; Enemy X position -= 6
                         0002,EC10,
                         EAC9,       ; Enemy X position -= 6
-                        EAB8,EA34   ; Go to $EA34 if critters escaped
+                        EAB8,EA34   ; Go to $EA34 (running for escape) if critters escaped
 $B3:E9FC             dw 8110,E9D4,  ; Decrement timer and go to $E9D4 if non-zero
                         8123,0005   ; Timer = 5
 $B3:EA04             dw 0002,EC49,
@@ -3781,6 +3782,7 @@ $B3:EA2C             dw 8110,EA04,  ; Decrement timer and go to $EA04 if non-zer
 
 ;;; $EA34: Instruction list - running for escape ;;;
 {
+; TODO: separate out this first instruction
 $B3:EA34             dw 001E,EB1B 
 $B3:EA38             dw 005A,EC49,
                         EAD7,       ; Enemy X position += 6

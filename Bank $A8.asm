@@ -93,8 +93,8 @@ $A8:876F             dx 0001,8D7A,
 {
 $A8:8775             dx 879B,       ; ???
                         8123,0008,  ; Timer = 0008h
-                        878F,       ; ???
-                        0008,8D64,
+                        878F        ; ???
+$A8:877D             dx 0008,8D64,
                         87B6,       ; ???
                         8110,877D,  ; Decrement timer and go to $877D if non-zero
                         0010,8D7A,
@@ -228,7 +228,7 @@ $A8:8865 60          RTS
 $A8:8866 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8869 BD 6A 0F    LDA $0F6A,x[$7E:0FAA]  ;\
 $A8:886C 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;} Enemy facing direction = [enemy ([X] - 1) facing direction]
-$A8:886F D0 20       BNE $20    [$8891]     ; If [enemy facing direction] = right:
+$A8:886F D0 20       BNE $20    [$8891]     ; If [enemy facing direction] = left:
 $A8:8871 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\
 $A8:8874 38          SEC                    ;|
 $A8:8875 E9 04 00    SBC #$0004             ;} Enemy X position = [enemy ([X] - 1) X position] - 4
@@ -242,7 +242,7 @@ $A8:8888 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy next instruction pointer = 
 $A8:888C 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process evir instruction pointer queue
 $A8:888F 80 1E       BRA $1E    [$88AF]
 
-$A8:8891 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\ Else ([enemy facing direction] != left):
+$A8:8891 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\ Else ([enemy facing direction] = right):
 $A8:8894 18          CLC                    ;|
 $A8:8895 69 04 00    ADC #$0004             ;} Enemy X position = [enemy ([X] - 1) X position] + 4
 $A8:8898 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
@@ -2088,8 +2088,8 @@ $A8:A009             dx 0005,AAC1,
 {
 $A8:A01F             dx A0C7,       ; ???
                         0004,A961,
-                        A10F,       ; ???
-                        0050,A91A,
+                        A10F        ; ???
+$A8:A027             dx 0050,A91A,
                         0003,A909,
                         0005,A8EE,
                         0003,A909,
@@ -2102,8 +2102,8 @@ $A8:A01F             dx A0C7,       ; ???
 {
 $A8:A03D             dx A0D9,       ; ???
                         0004,AAED,
-                        A10F,       ; ???
-                        0050,A91A,
+                        A10F        ; ???
+$A2:A045             dx 0050,A91A,
                         0003,A909,
                         0005,A8EE,
                         0003,A909,
@@ -2116,8 +2116,8 @@ $A8:A03D             dx A0D9,       ; ???
 {
 $A8:A05B             dx A0EB,       ; ???
                         0004,A9E5,
-                        A121,       ; ???
-                        0050,AA22,
+                        A121        ; ???
+$A2:A063             dx 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
                         0003,AA11,
@@ -2130,8 +2130,8 @@ $A8:A05B             dx A0EB,       ; ???
 {
 $A8:A079             dx A0FD,       ; ???
                         0004,AA69,
-                        A121,       ; ???
-                        0050,AA22,
+                        A121        ; ???
+$A2:A081             dx 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
                         0003,AA11,
@@ -3308,8 +3308,8 @@ $A8:ACDE             dx AE3A,       ; ???
                         AE26,       ; ???
                         0005,B4E0,
                         AE64,       ; ???
-                        8123,0018,  ; Timer = 0018h
-                        AE50,       ; ???
+                        8123,0018   ; Timer = 0018h
+$A8:ACFE             dx AE50,       ; ???
                         0001,B4C1,
                         8110,ACFE,  ; Decrement timer and go to $ACFE if non-zero
                         AE45,       ; ???
@@ -3321,8 +3321,8 @@ $A8:ACDE             dx AE3A,       ; ???
 {
 $A8:AD0C             dx AE3A,       ; ???
                         AE88,       ; ???
-                        8123,0018,  ; Timer = 0018h
-                        AE5A,       ; ???
+                        8123,0018   ; Timer = 0018h
+$A8:AD14             dx AE5A,       ; ???
                         0001,B4C1,
                         8110,AD14,  ; Decrement timer and go to $AD14 if non-zero
                         AE96,       ; ???
@@ -3380,8 +3380,8 @@ $A8:AD7E             dx AE3A,       ; ???
                         AE26,       ; ???
                         0005,B589,
                         AE64,       ; ???
-                        8123,0018,  ; Timer = 0018h
-                        AE50,       ; ???
+                        8123,0018   ; Timer = 0018h
+$A8:AD9E             dx AE50,       ; ???
                         0001,B56A,
                         8110,AD9E,  ; Decrement timer and go to $AD9E if non-zero
                         AE45,       ; ???
@@ -3393,8 +3393,8 @@ $A8:AD7E             dx AE3A,       ; ???
 {
 $A8:ADAC             dx AE3A,       ; ???
                         AE88,       ; ???
-                        8123,0018,  ; Timer = 0018h
-                        AE5A,       ; ???
+                        8123,0018   ; Timer = 0018h
+$A2:ADB4             dx AE5A,       ; ???
                         0001,B56A,
                         8110,ADB4,  ; Decrement timer and go to $ADB4 if non-zero
                         AE96,       ; ???
@@ -6314,7 +6314,7 @@ $A8:C73F             dx 0001,D49B,
                         000A,D26D,
                         000A,D22F,
                         000A,D1F1,
-                        CECB        ; Go to $C92D
+                        CECB        ; Go to $C92D (facing right - walking forwards)
 }
 
 
@@ -6355,7 +6355,7 @@ $A8:C7BB             dx 0005,D49B,
                         0005,D26D,
                         0005,D22F,
                         0005,D1F1,
-                        CECB        ; Go to $C92D
+                        CECB        ; Go to $C92D (facing right - walking forwards)
 }
 
 
@@ -6399,7 +6399,7 @@ $A8:C833             dx D091,       ; Play work robot sound effect if on screen
                         0005,D49B,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D1F1,
-                        D0C2        ; Go to $C6E9
+                        D0C2        ; Go to $C6E9 (facing left - walking forwards)
 }
 
 
@@ -6407,7 +6407,7 @@ $A8:C833             dx D091,       ; Play work robot sound effect if on screen
 {
 $A8:C8B1             dx 0005,D1F1,
                         0002,D49B,
-                        80ED,C8E9   ; Go to $C8E9
+                        80ED,C8E9   ; Go to $C8E9 (facing left - laser shot recoil)
 }
 
 
@@ -6418,7 +6418,7 @@ $A8:C8BD             dx 0005,D22F,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         D091,       ; Play work robot sound effect if on screen
                         000A,D49B,
-                        80ED,C8E9   ; Go to $C8E9
+                        80ED,C8E9   ; Go to $C8E9 (facing left - laser shot recoil)
 }
 
 
@@ -6450,7 +6450,7 @@ $A8:C8E9             dx CDEA,       ; Facing left - move backwards, go to $C6E9 
                         000A,D2AB,
                         0060,D26D,
                         D16B,       ; Decrement enemy laser cooldown
-                        80ED,C6E9   ; Go to $C6E9
+                        80ED,C6E9   ; Go to $C6E9 (facing left - walking forwards)
 }
 
 
@@ -6460,7 +6460,7 @@ $A8:C91B             dx 0080,D4D9,
                         000A,D517,
                         000A,D555,
                         D16B,       ; Decrement enemy laser cooldown
-                        80ED,C6E9   ; Go to $C6E9
+                        80ED,C6E9   ; Go to $C6E9 (facing left - walking forwards)
 }
 
 
@@ -6534,7 +6534,7 @@ $A8:C985             dx 0001,D783,
                         000A,D555,
                         000A,D517,
                         000A,D4D9,
-                        D0C2        ; Go to $C6E9
+                        D0C2        ; Go to $C6E9 (facing left - walking forwards)
 }
 
 
@@ -6576,7 +6576,7 @@ $A8:CA01             dx 0001,D783,
                         0005,D555,
                         0005,D517,
                         0005,D4D9,
-                        D0C2        ; Go to $C6E9
+                        D0C2        ; Go to $C6E9 (facing left - walking forwards)
 }
 
 
@@ -6621,7 +6621,7 @@ $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F 
                         D091,       ; Play work robot sound effect if on screen
                         0005,D783,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        CECB        ; Go to $C92D
+                        CECB        ; Go to $C92D (facing right - walking forwards)
 }
 
 
@@ -6629,7 +6629,7 @@ $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F 
 {
 $A8:CAFD             dx 0005,D4D9,
                         0002,D783,
-                        80ED,CB35   ; Go to $CB35
+                        80ED,CB35   ; Go to $CB35 (facing right - laser shot recoil)
 }
 
 
@@ -6640,7 +6640,7 @@ $A8:CB09             dx 0005,D517,
                         D091,       ; Play work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D783,
-                        80ED,CB35   ; Go to $CB35
+                        80ED,CB35   ; Go to $CB35 (facing right - laser shot recoil)
 }
 
 
@@ -6671,7 +6671,7 @@ $A8:CB35             dx CFB0,       ; Facing right - move backwards, go to $C6E9
                         000A,D5D1,
                         000A,D593,
                         0060,D555,
-                        80ED,C92D   ; Go to $C92D
+                        80ED,C92D   ; Go to $C92D (facing right - walking forwards)
 }
 
 
@@ -6681,7 +6681,7 @@ $A8:CB65             dx 0080,D1F1,
                         000A,D22F,
                         000A,D26D,
                         D16B,       ; Decrement enemy laser cooldown
-                        80ED,C92D   ; Go to $C92D
+                        80ED,C92D   ; Go to $C92D (facing right - walking forwards)
 }
 }
 
@@ -7612,8 +7612,8 @@ $A8:D841             dx 000A,DB76,
 
 ;;; $D855: Instruction list -  ;;;
 {
-$A8:D855             dx 8123,0005,  ; Timer = 0005h
-                        0003,DB76,
+$A8:D855             dx 8123,0005   ; Timer = 0005h
+$A2:D859             dx 0003,DB76,
                         0003,DB8C,
                         0003,DB76,
                         0003,DBA2,
@@ -9295,7 +9295,7 @@ $A8:EA08             dx 0002,ECEA,
                         0002,ECC0,
                         0002,ED3E,
                         0020,ED68,
-                        80ED,E9FA   ; Go to $E9FA
+                        80ED,E9FA   ; Go to $E9FA (idling - facing left)
 }
 
 
@@ -9316,7 +9316,7 @@ $A8:EA32             dx 0002,EDBC,
                         0002,ED92,
                         0002,EE10,
                         0020,EE3A,
-                        80ED,EA24   ; Go to $EA24
+                        80ED,EA24   ; Go to $EA24 (idling - facing right)
 }
 
 

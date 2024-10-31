@@ -2160,7 +2160,7 @@ $A5:9825             dx 0001,A3C5,
                         0001,A3D9,
                         0001,A3CF,
                         0040,A3C5,
-                        80ED,97E7   ; Go to $97E7
+                        80ED,97E7   ; Go to $97E7 (facing left - idle)
 }
 
 
@@ -2184,7 +2184,7 @@ $A5:9867             dx 0005,A31B,
                         0005,A325,
                         0005,A32F,
                         0005,A339,
-                        80ED,989B   ; Go to $989B
+                        80ED,989B   ; Go to $989B (dying)
 }
 
 
@@ -2417,7 +2417,7 @@ $A5:99FC             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px rig
                         0004,A4C5,
                         0005,A4A3,
                         0006,A489,
-                        80ED,99C6       ; Go to $99C6
+                        80ED,99C6       ; Go to $99C6 (facing left - idle)
 }
 
 
@@ -2450,7 +2450,7 @@ $A5:9A6C             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px rig
                         0006,A489,
                         8110,9A6C,      ; Decrement timer and go to $9A6C if non-zero
                         9F57,9128,      ; Draygon body function = $9128 (flail tail and fly straight up)
-                        80ED,99C6       ; Go to $99C6
+                        80ED,99C6       ; Go to $99C6 (facing left - idle)
 $A5:9AE6             dx 812F            ; Sleep
 }
 
@@ -2481,7 +2481,7 @@ $A5:9AE8             dx 9E0A,FFFF,FFFF, ; Displace Draygon body graphics 1px rig
                         0004,A4C5,
                         0005,A4A3,
                         0006,A489,
-                        80ED,99C6       ; Go to $99C6
+                        80ED,99C6       ; Go to $99C6 (facing left - idle)
 }
 
 
@@ -2503,7 +2503,7 @@ $A5:9B5A             dx 0002,A42F,
                         0004,A4C5,
                         0005,A4A3,
                         0006,A489,
-                        80ED,99C6   ; Go to $99C6
+                        80ED,99C6   ; Go to $99C6 (facing left - idle)
 }
 
 
@@ -2580,7 +2580,7 @@ $A5:9C18             dx 0001,A6ED,
                         0001,A701,
                         0001,A6F7,
                         0040,A6ED,
-                        80ED,9BDA   ; Go to $9BDA
+                        80ED,9BDA   ; Go to $9BDA (facing right - idle)
 }
 
 
@@ -2604,7 +2604,7 @@ $A5:9C5A             dx 0005,A643,
                         0005,A64D,
                         0005,A657,
                         0005,A661,
-                        80ED,989B   ; Go to $989B
+                        80ED,989B   ; Go to $989B (dying)
 $A5:9C6E             dx 812F        ; Sleep
 }
 
@@ -2788,7 +2788,7 @@ $A5:9D9E             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px lef
                         0004,A833,
                         0005,A811,
                         0006,A7F7,
-                        80ED,9D68       ; Go to $9D68
+                        80ED,9D68       ; Go to $9D68 (facing right - idle)
 }
 
 
@@ -2839,7 +2839,7 @@ $A5:9E25             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px lef
                         0006,A7F7,
                         8110,9E25,      ; Decrement timer and go to $9E25 if non-zero
                         9F57,9128,      ; Draygon body function = $9128 (flail tail and fly straight up)
-                        80ED,9D68       ; Go to $9D68
+                        80ED,9D68       ; Go to $9D68 (facing right - idle)
 $A5:9E9F             dx 812F            ; Sleep
 }
 
@@ -2870,7 +2870,7 @@ $A5:9EA1             dx 9E0A,0001,FFFF, ; Displace Draygon body graphics 1px lef
                         0004,A833,
                         0005,A811,
                         0006,A7F7,
-                        80ED,9D68       ; Go to $9D68
+                        80ED,9D68       ; Go to $9D68 (facing right - idle)
 $A5:9F13             dx 812F            ; Sleep
 }
 
@@ -2893,7 +2893,7 @@ $A5:9F15             dx 0002,A79D,
                         0004,A833,
                         0005,A811,
                         0006,A7F7,
-                        80ED,9D68   ; Go to $9D68
+                        80ED,9D68   ; Go to $9D68 (facing right - idle)
 $A5:9F55             dx 812F        ; Sleep
 }
 

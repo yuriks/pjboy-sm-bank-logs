@@ -137,12 +137,12 @@ $B2:8802 A5 12       LDA $12    [$7E:0012]  ;\
 $B2:8804 29 0F 00    AND #$000F             ;|
 $B2:8807 18          CLC                    ;|
 $B2:8808 65 14       ADC $14    [$7E:0014]  ;|
-$B2:880A AA          TAX                    ;} If [$B4:0000 + [$14] + (beam type)] & Fh = 0: go to $883E (0 damage)
+$B2:880A AA          TAX                    ;} If [$B4:0000 + [$14] + (beam type)] & Fh = 0: go to enemy shot - space pirate - gold ninja space pirate is invincible (0 damage)
 $B2:880B BF 00 00 B4 LDA $B40000,x[$B4:EC7D];|
 $B2:880F 29 0F 00    AND #$000F             ;|
 $B2:8812 F0 2A       BEQ $2A    [$883E]     ;/
 $B2:8814 C9 0F 00    CMP #$000F             ;\
-$B2:8817 F0 25       BEQ $25    [$883E]     ;} If [$B4:0000 + [$14] + (beam type)] & Fh = Fh: go to $883E (freeze)
+$B2:8817 F0 25       BEQ $25    [$883E]     ;} If [$B4:0000 + [$14] + (beam type)] & Fh = Fh: go to enemy shot - space pirate - gold ninja space pirate is invincible (freeze)
 
 $B2:8819 4C 89 87    JMP $8789  [$B2:8789]  ; Go to normal pirate shot
 
@@ -156,12 +156,12 @@ $B2:8827 D0 F0       BNE $F0    [$8819]     ;} If projectile is not super missil
 $B2:8829 EB          XBA                    ;\
 $B2:882A 18          CLC                    ;|
 $B2:882B 65 14       ADC $14    [$7E:0014]  ;|
-$B2:882D AA          TAX                    ;} If [$B4:000B + [$14] + (projectile type)] & Fh = 0: go to $883E (0 damage)
+$B2:882D AA          TAX                    ;} If [$B4:000B + [$14] + (projectile type)] & Fh = 0: go to enemy shot - space pirate - gold ninja space pirate is invincible (0 damage)
 $B2:882E BF 0B 00 B4 LDA $B4000B,x          ;|
 $B2:8832 29 0F 00    AND #$000F             ;|
 $B2:8835 F0 07       BEQ $07    [$883E]     ;/
 $B2:8837 C9 0F 00    CMP #$000F             ;\
-$B2:883A F0 02       BEQ $02    [$883E]     ;} If [$B4:000B + [$14] + (projectile type)] & Fh = 0: go to $883E (freeze???)
+$B2:883A F0 02       BEQ $02    [$883E]     ;} If [$B4:000B + [$14] + (projectile type)] & Fh = 0: go to enemy shot - space pirate - gold ninja space pirate is invincible (freeze???)
 $B2:883C 80 DB       BRA $DB    [$8819]     ; Go to normal pirate shot
 }
 
