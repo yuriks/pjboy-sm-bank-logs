@@ -29,7 +29,7 @@ $A2:86AB             dx 000A,88DA,
 ;;; $86BF: Instruction list - bouncing ;;;
 {
 $A2:86BF             dx 8173,       ; Enable off-screen processing
-                        88C6        ; ???
+                        88C6        ; Start bounce
 $A2:86C3             dx 0005,88EF,
                         0005,88F6,
                         0005,88FD,
@@ -47,6 +47,7 @@ $A2:86DF             dw 0001, 0002, 0004, 0008, 000A, 000D, 0010, 0014
 
 $A2:86EF             dw 3000, 4000, 5000, 6000, 7000, 8000, 9000, A000, B000
 
+; k (k+1) / 2 (sum of 0..k)
 $A2:8701             db 00, 01, 03, 06, 0A, 0F, 15, 1C, 24, 2D, 37, 42, 4E, 5B, 69, 78, 88, 99, AB, BE, D2, E7, FD
 
 $A2:8718             dw 8801, 8850
@@ -59,23 +60,23 @@ $A2:871C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:871F A9 4D 80    LDA #$804D             ;\
 $A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
 $A2:8725 20 9F 88    JSR $889F  [$A2:889F]  ; Set boyon idle instruction list
-$A2:8728 A9 01 00    LDA #$0001
-$A2:872B 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A2:872F BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:8732 29 FF 00    AND #$00FF
-$A2:8735 0A          ASL A
-$A2:8736 A8          TAY
-$A2:8737 B9 DF 86    LDA $86DF,y[$A2:86E5]
-$A2:873A 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:873D BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A2:8740 29 FF 00    AND #$00FF
-$A2:8743 0A          ASL A
-$A2:8744 A8          TAY
-$A2:8745 B9 EF 86    LDA $86EF,y[$A2:86EF]
-$A2:8748 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A2:874B 9E AE 0F    STZ $0FAE,x[$7E:0FAE]
-$A2:874E 9E B0 0F    STZ $0FB0,x[$7E:0FB0]
-$A2:8751 9E B2 0F    STZ $0FB2,x[$7E:0FB2]
+$A2:8728 A9 01 00    LDA #$0001             ;\
+$A2:872B 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = 1
+$A2:872F BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:8732 29 FF 00    AND #$00FF             ;|
+$A2:8735 0A          ASL A                  ;|
+$A2:8736 A8          TAY                    ;} Enemy $0FA8 = [$86DF + [enemy parameter 1 low] * 2]
+$A2:8737 B9 DF 86    LDA $86DF,y[$A2:86E5]  ;|
+$A2:873A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
+$A2:873D BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A2:8740 29 FF 00    AND #$00FF             ;|
+$A2:8743 0A          ASL A                  ;|
+$A2:8744 A8          TAY                    ;} Enemy $0FAC = [$86EF + [enemy parameter 1 high] * 2]
+$A2:8745 B9 EF 86    LDA $86EF,y[$A2:86EF]  ;|
+$A2:8748 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
+$A2:874B 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ; Enemy $0FAE = 0
+$A2:874E 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy $0FB0 = 0
+$A2:8751 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy $0FB2 = 0
 $A2:8754 6B          RTL
 }
 
@@ -84,33 +85,34 @@ $A2:8754 6B          RTL
 {
 $A2:8755 08          PHP
 
-$A2:8756 BC B0 0F    LDY $0FB0,x[$7E:0FB0]
-$A2:8759 E2 20       SEP #$20
-$A2:875B B9 01 87    LDA $8701,y[$A2:8701]
-$A2:875E C0 17 00    CPY #$0017
-$A2:8761 30 02       BMI $02    [$8765]
-$A2:8763 A9 FF       LDA #$FF
+; LOOP
+$A2:8756 BC B0 0F    LDY $0FB0,x[$7E:0FB0]  ;\
+$A2:8759 E2 20       SEP #$20               ;} A = [$8701 + [enemy $0FB0]]
+$A2:875B B9 01 87    LDA $8701,y[$A2:8701]  ;/
+$A2:875E C0 17 00    CPY #$0017             ;\
+$A2:8761 30 02       BMI $02    [$8765]     ;} If [enemy $0FB0] >= 17h:
+$A2:8763 A9 FF       LDA #$FF               ; A = FFh
 
-$A2:8765 8D 02 42    STA $4202  [$7E:4202]
-$A2:8768 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:876B 8D 03 42    STA $4203  [$7E:4203]
-$A2:876E EA          NOP
-$A2:876F EA          NOP
-$A2:8770 EA          NOP
-$A2:8771 C2 20       REP #$20
-$A2:8773 AD 16 42    LDA $4216  [$7E:4216]
-$A2:8776 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A2:8779 18          CLC
-$A2:877A 7D AE 0F    ADC $0FAE,x[$7E:0FAE]
-$A2:877D 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A2:8780 FE B0 0F    INC $0FB0,x[$7E:0FB0]
-$A2:8783 DD AC 0F    CMP $0FAC,x[$7E:0FAC]
-$A2:8786 30 CE       BMI $CE    [$8756]
-$A2:8788 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A2:878B 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:878F A9 01 00    LDA #$0001
-$A2:8792 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A2:8796 9F 08 78 7E STA $7E7808,x[$7E:7808]
+$A2:8765 8D 02 42    STA $4202  [$7E:4202]  ;\
+$A2:8768 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;|
+$A2:876B 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A2:876E EA          NOP                    ;|
+$A2:876F EA          NOP                    ;} Enemy speed = [A] * [enemy $0FA8]
+$A2:8770 EA          NOP                    ;|
+$A2:8771 C2 20       REP #$20               ;|
+$A2:8773 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A2:8776 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
+$A2:8779 18          CLC                    ;\
+$A2:877A 7D AE 0F    ADC $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE += [enemy speed]
+$A2:877D 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
+$A2:8780 FE B0 0F    INC $0FB0,x[$7E:0FB0]  ; Increment $0FB0
+$A2:8783 DD AC 0F    CMP $0FAC,x[$7E:0FAC]  ;\
+$A2:8786 30 CE       BMI $CE    [$8756]     ;} If [enemy $0FAE] < [enemy $0FAC]: go to LOOP
+$A2:8788 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A2:878B 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = [enemy $0FB0]
+$A2:878F A9 01 00    LDA #$0001             ;\
+$A2:8792 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy bounce disable flag = 1
+$A2:8796 9F 08 78 7E STA $7E7808,x[$7E:7808]; Enemy idle disable flag = 1
 $A2:879A 28          PLP
 $A2:879B 60          RTS
 }
@@ -119,117 +121,119 @@ $A2:879B 60          RTS
 ;;; $879C: Main AI - enemy $CEBF (boyon) ;;;
 {
 $A2:879C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:879F BF 0A 78 7E LDA $7E780A,x[$7E:780A]
-$A2:87A3 D0 0B       BNE $0B    [$87B0]
-$A2:87A5 20 55 87    JSR $8755  [$A2:8755]
-$A2:87A8 A9 01 00    LDA #$0001
-$A2:87AB 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A2:87AF 6B          RTL
+$A2:879F BF 0A 78 7E LDA $7E780A,x[$7E:780A];\
+$A2:87A3 D0 0B       BNE $0B    [$87B0]     ;} If [enemy $7E:780A] = 0:
+$A2:87A5 20 55 87    JSR $8755  [$A2:8755]  ; Execute $8755
+$A2:87A8 A9 01 00    LDA #$0001             ;\
+$A2:87AB 9F 0A 78 7E STA $7E780A,x[$7E:780A];} Enemy $7E:780A = 1
+$A2:87AF 6B          RTL                    ; Return
 
-$A2:87B0 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:87B3 9F 06 78 7E STA $7E7806,x[$7E:7806]
+$A2:87B0 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:87B3 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = [enemy $0FA8]
 $A2:87B7 20 94 88    JSR $8894  [$A2:8894]  ;\
-$A2:87BA D0 18       BNE $18    [$87D4]     ;} If Samus is not in proximity:
-$A2:87BC BF 04 78 7E LDA $7E7804,x[$7E:7804]
-$A2:87C0 F0 2B       BEQ $2B    [$87ED]
-$A2:87C2 BF 08 78 7E LDA $7E7808,x[$7E:7808]
-$A2:87C6 D0 38       BNE $38    [$8800]
-$A2:87C8 A9 01 00    LDA #$0001
-$A2:87CB 9F 08 78 7E STA $7E7808,x[$7E:7808]
+$A2:87BA D0 18       BNE $18    [$87D4]     ;} If Samus is in proximity: go to BRANCH_IN_PROXIMITY
+$A2:87BC BF 04 78 7E LDA $7E7804,x[$7E:7804];\
+$A2:87C0 F0 2B       BEQ $2B    [$87ED]     ;} If [enemy bounce disable flag] = 0: go to BRANCH_BOUNCING
+$A2:87C2 BF 08 78 7E LDA $7E7808,x[$7E:7808];\
+$A2:87C6 D0 38       BNE $38    [$8800]     ;} If [enemy idle disable flag] != 0: return
+$A2:87C8 A9 01 00    LDA #$0001             ;\
+$A2:87CB 9F 08 78 7E STA $7E7808,x[$7E:7808];} Enemy idle disable flag = 1
 $A2:87CF 20 9F 88    JSR $889F  [$A2:889F]  ; Set boyon idle instruction list
-$A2:87D2 80 2C       BRA $2C    [$8800]
+$A2:87D2 80 2C       BRA $2C    [$8800]     ; Return
 
-$A2:87D4 A9 00 00    LDA #$0000
-$A2:87D7 9F 04 78 7E STA $7E7804,x[$7E:7844]
-$A2:87DB 9F 08 78 7E STA $7E7808,x[$7E:7848]
-$A2:87DF BD B2 0F    LDA $0FB2,x[$7E:0FF2]
-$A2:87E2 D0 09       BNE $09    [$87ED]
-$A2:87E4 A9 01 00    LDA #$0001
-$A2:87E7 9D B2 0F    STA $0FB2,x[$7E:0FF2]
+; BRANCH_IN_PROXIMITY
+$A2:87D4 A9 00 00    LDA #$0000             ;\
+$A2:87D7 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy bounce disable flag = 0
+$A2:87DB 9F 08 78 7E STA $7E7808,x[$7E:7848]; Enemy idle disable flag = 0
+$A2:87DF BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
+$A2:87E2 D0 09       BNE $09    [$87ED]     ;} If [enemy $0FB2] = 0:
+$A2:87E4 A9 01 00    LDA #$0001             ;\
+$A2:87E7 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy $0FB2 = 1
 $A2:87EA 20 B2 88    JSR $88B2  [$A2:88B2]  ; Set boyon bouncing instruction list
 
+; BRANCH_BOUNCING
 $A2:87ED AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:87F0 BF 06 78 7E LDA $7E7806,x[$7E:7846]
-$A2:87F4 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A2:87F7 BF 02 78 7E LDA $7E7802,x[$7E:7842]
-$A2:87FB 0A          ASL A
-$A2:87FC AA          TAX
-$A2:87FD FC 18 87    JSR ($8718,x)[$A2:8850]
+$A2:87F0 BF 06 78 7E LDA $7E7806,x[$7E:7846];\
+$A2:87F4 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy $0FA8 = [enemy $7E:7806]
+$A2:87F7 BF 02 78 7E LDA $7E7802,x[$7E:7842];\
+$A2:87FB 0A          ASL A                  ;|
+$A2:87FC AA          TAX                    ;} Execute [$8718 + [enemy bounce movement index] * 2]
+$A2:87FD FC 18 87    JSR ($8718,x)[$A2:8850];/
 
 $A2:8800 6B          RTL
 }
 
 
-;;; $8801:  ;;;
+;;; $8801: Boyon bounce movement - falling ;;;
 {
 $A2:8801 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8804 FE B0 0F    INC $0FB0,x[$7E:0FF0]
-$A2:8807 BC B0 0F    LDY $0FB0,x[$7E:0FF0]
-$A2:880A E2 20       SEP #$20
-$A2:880C B9 01 87    LDA $8701,y[$A2:8701]
-$A2:880F C0 17 00    CPY #$0017
-$A2:8812 30 02       BMI $02    [$8816]
-$A2:8814 A9 FF       LDA #$FF
-
-$A2:8816 8D 02 42    STA $4202  [$7E:4202]
-$A2:8819 BD A8 0F    LDA $0FA8,x[$7E:0FE8]
-$A2:881C 8D 03 42    STA $4203  [$7E:4203]
-$A2:881F EA          NOP
-$A2:8820 EA          NOP
-$A2:8821 EA          NOP
-$A2:8822 C2 20       REP #$20
-$A2:8824 AD 16 42    LDA $4216  [$7E:4216]
-$A2:8827 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A2:882A EB          XBA
-$A2:882B 29 FF 00    AND #$00FF
-$A2:882E 18          CLC
-$A2:882F 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]
-$A2:8832 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A2:8835 BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A2:8838 DF 00 78 7E CMP $7E7800,x[$7E:7840]
-$A2:883C 30 11       BMI $11    [$884F]
-$A2:883E A9 01 00    LDA #$0001
-$A2:8841 9F 02 78 7E STA $7E7802,x[$7E:7842]
-$A2:8845 A9 01 00    LDA #$0001
-$A2:8848 9F 04 78 7E STA $7E7804,x[$7E:7844]
-$A2:884C 9E B2 0F    STZ $0FB2,x[$7E:0FF2]
+$A2:8804 FE B0 0F    INC $0FB0,x[$7E:0FF0]  ; Increment enemy $0FB0
+$A2:8807 BC B0 0F    LDY $0FB0,x[$7E:0FF0]  ;\
+$A2:880A E2 20       SEP #$20               ;} A = [$8701 + [enemy $0FB0]]
+$A2:880C B9 01 87    LDA $8701,y[$A2:8701]  ;/
+$A2:880F C0 17 00    CPY #$0017             ;\
+$A2:8812 30 02       BMI $02    [$8816]     ;} If [enemy $0FB0] >= 17h:
+$A2:8814 A9 FF       LDA #$FF               ; A = FFh
+                                            
+$A2:8816 8D 02 42    STA $4202  [$7E:4202]  ;\
+$A2:8819 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
+$A2:881C 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A2:881F EA          NOP                    ;|
+$A2:8820 EA          NOP                    ;} Enemy speed = [A] * [enemy $0FA8]
+$A2:8821 EA          NOP                    ;|
+$A2:8822 C2 20       REP #$20               ;|
+$A2:8824 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A2:8827 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
+$A2:882A EB          XBA                    ;\
+$A2:882B 29 FF 00    AND #$00FF             ;|
+$A2:882E 18          CLC                    ;} Enemy Y position += [enemy speed] / 100h
+$A2:882F 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]  ;|
+$A2:8832 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A2:8835 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A2:8838 DF 00 78 7E CMP $7E7800,x[$7E:7840];} If [enemy $0FB0] >= [enemy $7E:7800]:
+$A2:883C 30 11       BMI $11    [$884F]     ;/
+$A2:883E A9 01 00    LDA #$0001             ;\
+$A2:8841 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy $7E:7802 = 1
+$A2:8845 A9 01 00    LDA #$0001             ; >_<;
+$A2:8848 9F 04 78 7E STA $7E7804,x[$7E:7844]; Enemy bounce disable flag = 1
+$A2:884C 9E B2 0F    STZ $0FB2,x[$7E:0FF2]  ; Enemy $0FB2 = 0
 
 $A2:884F 60          RTS
 }
 
 
-;;; $8850:  ;;;
+;;; $8850: Boyon bounce movement - rising ;;;
 {
 $A2:8850 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8853 BC B0 0F    LDY $0FB0,x[$7E:0FF0]
-$A2:8856 E2 20       SEP #$20
-$A2:8858 B9 01 87    LDA $8701,y[$A2:8716]
-$A2:885B C0 17 00    CPY #$0017
-$A2:885E 30 02       BMI $02    [$8862]
-$A2:8860 A9 FF       LDA #$FF
+$A2:8853 BC B0 0F    LDY $0FB0,x[$7E:0FF0]  ;\
+$A2:8856 E2 20       SEP #$20               ;} A = [$8701 + [enemy $0FB0]]
+$A2:8858 B9 01 87    LDA $8701,y[$A2:8716]  ;/
+$A2:885B C0 17 00    CPY #$0017             ;\
+$A2:885E 30 02       BMI $02    [$8862]     ;} If [enemy $0FB0] >= 17h:
+$A2:8860 A9 FF       LDA #$FF               ; A = FFh
+                                            
+$A2:8862 8D 02 42    STA $4202  [$7E:4202]  ;\
+$A2:8865 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
+$A2:8868 8D 03 42    STA $4203  [$7E:4203]  ;|
+$A2:886B EA          NOP                    ;|
+$A2:886C EA          NOP                    ;} Enemy speed = [A] * [enemy $0FA8]
+$A2:886D EA          NOP                    ;|
+$A2:886E C2 20       REP #$20               ;|
+$A2:8870 AD 16 42    LDA $4216  [$7E:4216]  ;|
+$A2:8873 9D AA 0F    STA $0FAA,x[$7E:0FEA]  ;/
+$A2:8876 EB          XBA                    ;\
+$A2:8877 29 FF 00    AND #$00FF             ;|
+$A2:887A 49 FF FF    EOR #$FFFF             ;|
+$A2:887D 1A          INC A                  ;} Enemy Y position -= [enemy speed] / 100h
+$A2:887E 18          CLC                    ;|
+$A2:887F 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]  ;|
+$A2:8882 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
+$A2:8885 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy $0FB0
+$A2:8888 30 02       BMI $02    [$888C]     ; If [enemy $0FB0] >= 0:
+$A2:888A 80 07       BRA $07    [$8893]     ; Return
 
-$A2:8862 8D 02 42    STA $4202  [$7E:4202]
-$A2:8865 BD A8 0F    LDA $0FA8,x[$7E:0FE8]
-$A2:8868 8D 03 42    STA $4203  [$7E:4203]
-$A2:886B EA          NOP
-$A2:886C EA          NOP
-$A2:886D EA          NOP
-$A2:886E C2 20       REP #$20
-$A2:8870 AD 16 42    LDA $4216  [$7E:4216]
-$A2:8873 9D AA 0F    STA $0FAA,x[$7E:0FEA]
-$A2:8876 EB          XBA
-$A2:8877 29 FF 00    AND #$00FF
-$A2:887A 49 FF FF    EOR #$FFFF
-$A2:887D 1A          INC A
-$A2:887E 18          CLC
-$A2:887F 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]
-$A2:8882 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
-$A2:8885 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
-$A2:8888 30 02       BMI $02    [$888C]
-$A2:888A 80 07       BRA $07    [$8893]
-
-$A2:888C A9 00 00    LDA #$0000
-$A2:888F 9F 02 78 7E STA $7E7802,x[$7E:7842]
+$A2:888C A9 00 00    LDA #$0000             ;\
+$A2:888F 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy $7E:7802 = 0
 
 $A2:8893 60          RTS
 }
@@ -276,11 +280,11 @@ $A2:88C5 6B          RTL
 }
 
 
-;;; $88C6: Instruction -  ;;;
+;;; $88C6: Instruction - start bounce ;;;
 {
 $A2:88C6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:88C9 A9 00 00    LDA #$0000             ;\
-$A2:88CC 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy $7E:7804 = 0
+$A2:88CC 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy bounce disable flag = 0
 $A2:88D0 A9 0E 00    LDA #$000E             ;\
 $A2:88D3 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound Eh, sound library 2, max queued sounds allowed = 6 (splashed out of water)
 $A2:88D7 6B          RTL

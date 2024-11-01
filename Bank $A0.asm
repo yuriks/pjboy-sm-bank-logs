@@ -6559,9 +6559,18 @@ $A0:B690 6B          RTL
 ;;; $B691: Move enemy according to angle and X/Y speeds ;;;
 {
 ;; Parameters:
-;;     $0E20: Angle
+;;     $0E20: Angle. Standard maths angle convention
 ;;     $0E24.$0E26: X speed
 ;;     $0E28.$0E2A: Y speed
+
+; Standard maths angle convention:
+;          40h
+;           |
+;     80h   #    0
+;
+;          C0h
+;
+; Where # is the origin and | is the negative y axis
 $A0:B691 DA          PHX
 $A0:B692 AE 54 0E    LDX $0E54  [$7E:0E54]  ; X = [enemy index]
 $A0:B695 AD 20 0E    LDA $0E20  [$7E:0E20]  ;\
