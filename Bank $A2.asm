@@ -43,13 +43,16 @@ $A2:86C3             dx 0005,88EF,
 
 ;;; $86DF: Boyon data ;;;
 {
+; Speed multipliers. Indexed by [enemy parameter 1 low] * 2
 $A2:86DF             dw 0001, 0002, 0004, 0008, 000A, 000D, 0010, 0014
 
+; Jump heights. Unit 1/100h px. Indexed by [enemy parameter 1 high] * 2
 $A2:86EF             dw 3000, 4000, 5000, 6000, 7000, 8000, 9000, A000, B000
 
-; k (k+1) / 2 (sum of 0..k)
+; Speed table. k (k+1) / 2 (sum of 0..k)
 $A2:8701             db 00, 01, 03, 06, 0A, 0F, 15, 1C, 24, 2D, 37, 42, 4E, 5B, 69, 78, 88, 99, AB, BE, D2, E7, FD
 
+; Bounce movement functions
 $A2:8718             dw 8801, 8850
 }
 
@@ -58,58 +61,58 @@ $A2:8718             dw 8801, 8850
 {
 $A2:871C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:871F A9 4D 80    LDA #$804D             ;\
-$A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D
+$A2:8722 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
 $A2:8725 20 9F 88    JSR $889F  [$A2:889F]  ; Set boyon idle instruction list
 $A2:8728 A9 01 00    LDA #$0001             ;\
-$A2:872B 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = 1
+$A2:872B 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy bounce movement index = rising
 $A2:872F BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
 $A2:8732 29 FF 00    AND #$00FF             ;|
 $A2:8735 0A          ASL A                  ;|
-$A2:8736 A8          TAY                    ;} Enemy $0FA8 = [$86DF + [enemy parameter 1 low] * 2]
+$A2:8736 A8          TAY                    ;} Enemy speed multiplier = [$86DF + [enemy parameter 1 low] * 2]
 $A2:8737 B9 DF 86    LDA $86DF,y[$A2:86E5]  ;|
 $A2:873A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;/
 $A2:873D BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A2:8740 29 FF 00    AND #$00FF             ;|
 $A2:8743 0A          ASL A                  ;|
-$A2:8744 A8          TAY                    ;} Enemy $0FAC = [$86EF + [enemy parameter 1 high] * 2]
+$A2:8744 A8          TAY                    ;} Enemy jump height = [$86EF + [enemy parameter 1 high] * 2]
 $A2:8745 B9 EF 86    LDA $86EF,y[$A2:86EF]  ;|
 $A2:8748 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
-$A2:874B 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ; Enemy $0FAE = 0
-$A2:874E 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy $0FB0 = 0
-$A2:8751 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy $0FB2 = 0
+$A2:874B 9E AE 0F    STZ $0FAE,x[$7E:0FAE]  ; Enemy distance accumulator = 0
+$A2:874E 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy speed table index = 0
+$A2:8751 9E B2 0F    STZ $0FB2,x[$7E:0FB2]  ; Enemy bouncing flag = 0
 $A2:8754 6B          RTL
 }
 
 
-;;; $8755:  ;;;
+;;; $8755: Calculate initial bounce speed ;;;
 {
 $A2:8755 08          PHP
 
 ; LOOP
 $A2:8756 BC B0 0F    LDY $0FB0,x[$7E:0FB0]  ;\
-$A2:8759 E2 20       SEP #$20               ;} A = [$8701 + [enemy $0FB0]]
+$A2:8759 E2 20       SEP #$20               ;} A = [$8701 + [enemy speed table index]]
 $A2:875B B9 01 87    LDA $8701,y[$A2:8701]  ;/
 $A2:875E C0 17 00    CPY #$0017             ;\
-$A2:8761 30 02       BMI $02    [$8765]     ;} If [enemy $0FB0] >= 17h:
+$A2:8761 30 02       BMI $02    [$8765]     ;} If [enemy speed table index] >= 17h:
 $A2:8763 A9 FF       LDA #$FF               ; A = FFh
 
 $A2:8765 8D 02 42    STA $4202  [$7E:4202]  ;\
 $A2:8768 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;|
 $A2:876B 8D 03 42    STA $4203  [$7E:4203]  ;|
 $A2:876E EA          NOP                    ;|
-$A2:876F EA          NOP                    ;} Enemy speed = [A] * [enemy $0FA8]
+$A2:876F EA          NOP                    ;} Enemy speed = [A] * [enemy speed multiplier]
 $A2:8770 EA          NOP                    ;|
 $A2:8771 C2 20       REP #$20               ;|
 $A2:8773 AD 16 42    LDA $4216  [$7E:4216]  ;|
 $A2:8776 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
 $A2:8779 18          CLC                    ;\
-$A2:877A 7D AE 0F    ADC $0FAE,x[$7E:0FAE]  ;} Enemy $0FAE += [enemy speed]
+$A2:877A 7D AE 0F    ADC $0FAE,x[$7E:0FAE]  ;} Enemy distance accumulator += [enemy speed]
 $A2:877D 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
-$A2:8780 FE B0 0F    INC $0FB0,x[$7E:0FB0]  ; Increment $0FB0
+$A2:8780 FE B0 0F    INC $0FB0,x[$7E:0FB0]  ; Increment speed table index
 $A2:8783 DD AC 0F    CMP $0FAC,x[$7E:0FAC]  ;\
-$A2:8786 30 CE       BMI $CE    [$8756]     ;} If [enemy $0FAE] < [enemy $0FAC]: go to LOOP
+$A2:8786 30 CE       BMI $CE    [$8756]     ;} If [enemy distance accumulator] < [enemy jump height]: go to LOOP
 $A2:8788 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
-$A2:878B 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = [enemy $0FB0]
+$A2:878B 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy initial bounce speed table index = [enemy speed table index]
 $A2:878F A9 01 00    LDA #$0001             ;\
 $A2:8792 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy bounce disable flag = 1
 $A2:8796 9F 08 78 7E STA $7E7808,x[$7E:7808]; Enemy idle disable flag = 1
@@ -122,14 +125,14 @@ $A2:879B 60          RTS
 {
 $A2:879C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:879F BF 0A 78 7E LDA $7E780A,x[$7E:780A];\
-$A2:87A3 D0 0B       BNE $0B    [$87B0]     ;} If [enemy $7E:780A] = 0:
-$A2:87A5 20 55 87    JSR $8755  [$A2:8755]  ; Execute $8755
+$A2:87A3 D0 0B       BNE $0B    [$87B0]     ;} If [enemy bounce speed calculated flag] = 0:
+$A2:87A5 20 55 87    JSR $8755  [$A2:8755]  ; Calculate initial bounce speed
 $A2:87A8 A9 01 00    LDA #$0001             ;\
-$A2:87AB 9F 0A 78 7E STA $7E780A,x[$7E:780A];} Enemy $7E:780A = 1
+$A2:87AB 9F 0A 78 7E STA $7E780A,x[$7E:780A];} Enemy bounce speed calculated flag = 1
 $A2:87AF 6B          RTL                    ; Return
 
 $A2:87B0 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
-$A2:87B3 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy $7E:7806 = [enemy $0FA8]
+$A2:87B3 9F 06 78 7E STA $7E7806,x[$7E:7806];} Enemy speed multiplier mirror = [enemy speed multiplier] (not meaningfully used)
 $A2:87B7 20 94 88    JSR $8894  [$A2:8894]  ;\
 $A2:87BA D0 18       BNE $18    [$87D4]     ;} If Samus is in proximity: go to BRANCH_IN_PROXIMITY
 $A2:87BC BF 04 78 7E LDA $7E7804,x[$7E:7804];\
@@ -146,15 +149,15 @@ $A2:87D4 A9 00 00    LDA #$0000             ;\
 $A2:87D7 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy bounce disable flag = 0
 $A2:87DB 9F 08 78 7E STA $7E7808,x[$7E:7848]; Enemy idle disable flag = 0
 $A2:87DF BD B2 0F    LDA $0FB2,x[$7E:0FF2]  ;\
-$A2:87E2 D0 09       BNE $09    [$87ED]     ;} If [enemy $0FB2] = 0:
+$A2:87E2 D0 09       BNE $09    [$87ED]     ;} If [enemy bouncing flag] = 0:
 $A2:87E4 A9 01 00    LDA #$0001             ;\
-$A2:87E7 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy $0FB2 = 1
+$A2:87E7 9D B2 0F    STA $0FB2,x[$7E:0FF2]  ;} Enemy bouncing flag = 1
 $A2:87EA 20 B2 88    JSR $88B2  [$A2:88B2]  ; Set boyon bouncing instruction list
 
 ; BRANCH_BOUNCING
 $A2:87ED AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:87F0 BF 06 78 7E LDA $7E7806,x[$7E:7846];\
-$A2:87F4 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy $0FA8 = [enemy $7E:7806]
+$A2:87F4 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy speed multiplier = [enemy speed multiplier mirror]
 $A2:87F7 BF 02 78 7E LDA $7E7802,x[$7E:7842];\
 $A2:87FB 0A          ASL A                  ;|
 $A2:87FC AA          TAX                    ;} Execute [$8718 + [enemy bounce movement index] * 2]
@@ -167,19 +170,19 @@ $A2:8800 6B          RTL
 ;;; $8801: Boyon bounce movement - falling ;;;
 {
 $A2:8801 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8804 FE B0 0F    INC $0FB0,x[$7E:0FF0]  ; Increment enemy $0FB0
+$A2:8804 FE B0 0F    INC $0FB0,x[$7E:0FF0]  ; Increment enemy speed table index
 $A2:8807 BC B0 0F    LDY $0FB0,x[$7E:0FF0]  ;\
-$A2:880A E2 20       SEP #$20               ;} A = [$8701 + [enemy $0FB0]]
+$A2:880A E2 20       SEP #$20               ;} A = [$8701 + [enemy speed table index]]
 $A2:880C B9 01 87    LDA $8701,y[$A2:8701]  ;/
 $A2:880F C0 17 00    CPY #$0017             ;\
-$A2:8812 30 02       BMI $02    [$8816]     ;} If [enemy $0FB0] >= 17h:
+$A2:8812 30 02       BMI $02    [$8816]     ;} If [enemy speed table index] >= 17h:
 $A2:8814 A9 FF       LDA #$FF               ; A = FFh
                                             
 $A2:8816 8D 02 42    STA $4202  [$7E:4202]  ;\
 $A2:8819 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
 $A2:881C 8D 03 42    STA $4203  [$7E:4203]  ;|
 $A2:881F EA          NOP                    ;|
-$A2:8820 EA          NOP                    ;} Enemy speed = [A] * [enemy $0FA8]
+$A2:8820 EA          NOP                    ;} Enemy speed = [A] * [enemy speed multiplier]
 $A2:8821 EA          NOP                    ;|
 $A2:8822 C2 20       REP #$20               ;|
 $A2:8824 AD 16 42    LDA $4216  [$7E:4216]  ;|
@@ -190,13 +193,13 @@ $A2:882E 18          CLC                    ;} Enemy Y position += [enemy speed]
 $A2:882F 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]  ;|
 $A2:8832 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A2:8835 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
-$A2:8838 DF 00 78 7E CMP $7E7800,x[$7E:7840];} If [enemy $0FB0] >= [enemy $7E:7800]:
+$A2:8838 DF 00 78 7E CMP $7E7800,x[$7E:7840];} If [enemy speed table index] >= [enemy initial bounce speed table index]:
 $A2:883C 30 11       BMI $11    [$884F]     ;/
 $A2:883E A9 01 00    LDA #$0001             ;\
-$A2:8841 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy $7E:7802 = 1
+$A2:8841 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy bounce movement index = rising
 $A2:8845 A9 01 00    LDA #$0001             ; >_<;
 $A2:8848 9F 04 78 7E STA $7E7804,x[$7E:7844]; Enemy bounce disable flag = 1
-$A2:884C 9E B2 0F    STZ $0FB2,x[$7E:0FF2]  ; Enemy $0FB2 = 0
+$A2:884C 9E B2 0F    STZ $0FB2,x[$7E:0FF2]  ; Enemy bouncing flag = 0
 
 $A2:884F 60          RTS
 }
@@ -206,17 +209,17 @@ $A2:884F 60          RTS
 {
 $A2:8850 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8853 BC B0 0F    LDY $0FB0,x[$7E:0FF0]  ;\
-$A2:8856 E2 20       SEP #$20               ;} A = [$8701 + [enemy $0FB0]]
+$A2:8856 E2 20       SEP #$20               ;} A = [$8701 + [enemy speed table index]]
 $A2:8858 B9 01 87    LDA $8701,y[$A2:8716]  ;/
 $A2:885B C0 17 00    CPY #$0017             ;\
-$A2:885E 30 02       BMI $02    [$8862]     ;} If [enemy $0FB0] >= 17h:
+$A2:885E 30 02       BMI $02    [$8862]     ;} If [enemy speed table index] >= 17h:
 $A2:8860 A9 FF       LDA #$FF               ; A = FFh
                                             
 $A2:8862 8D 02 42    STA $4202  [$7E:4202]  ;\
 $A2:8865 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
 $A2:8868 8D 03 42    STA $4203  [$7E:4203]  ;|
 $A2:886B EA          NOP                    ;|
-$A2:886C EA          NOP                    ;} Enemy speed = [A] * [enemy $0FA8]
+$A2:886C EA          NOP                    ;} Enemy speed = [A] * [enemy speed multiplier]
 $A2:886D EA          NOP                    ;|
 $A2:886E C2 20       REP #$20               ;|
 $A2:8870 AD 16 42    LDA $4216  [$7E:4216]  ;|
@@ -228,12 +231,12 @@ $A2:887D 1A          INC A                  ;} Enemy Y position -= [enemy speed]
 $A2:887E 18          CLC                    ;|
 $A2:887F 7D 7E 0F    ADC $0F7E,x[$7E:0FBE]  ;|
 $A2:8882 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
-$A2:8885 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy $0FB0
-$A2:8888 30 02       BMI $02    [$888C]     ; If [enemy $0FB0] >= 0:
+$A2:8885 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Decrement enemy speed table index
+$A2:8888 30 02       BMI $02    [$888C]     ; If [enemy speed table index] >= 0:
 $A2:888A 80 07       BRA $07    [$8893]     ; Return
 
 $A2:888C A9 00 00    LDA #$0000             ;\
-$A2:888F 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy $7E:7802 = 0
+$A2:888F 9F 02 78 7E STA $7E7802,x[$7E:7842];} Enemy bounce movement index = falling
 
 $A2:8893 60          RTS
 }
@@ -329,9 +332,9 @@ $A2:8912             dw 3800, 3DB3, 292E, 1486, 1840, 3D92, 38CA, 1C61, 24A7, 24
 
 ;;; $8932..7D: Instruction lists - mini-Crocomire ;;;
 {
-;;; $8932: Instruction list -  ;;;
+;;; $8932: Instruction list - moving left ;;;
 {
-$A2:8932             dw 8990        ; ???
+$A2:8932             dw 8990        ; Set moving left
 $A2:8934             dw 0008,8ACA,
                         0010,8AD6,
                         0008,8AE7,
@@ -340,18 +343,18 @@ $A2:8934             dw 0008,8ACA,
 }
 
 
-;;; $8948: Instruction list -  ;;;
+;;; $8948: Instruction list - attacking left ;;;
 {
 $A2:8948             dw 0010,8AE7,
-                        897E,0000,  ; ???
+                        897E,0000,  ; Spawn leftwards mini-Crocomire projectile
                         0010,8AFF,
                         80ED,8932   ; Go to $8932
 }
 
 
-;;; $8958: Instruction list -  ;;;
+;;; $8958: Instruction list - moving right ;;;
 {
-$A2:8958             dw 899D        ; ???
+$A2:8958             dw 899D        ; Set moving right
 $A2:895A             dw 0008,8B15,
                         0010,8B21,
                         0008,8B32,
@@ -360,46 +363,46 @@ $A2:895A             dw 0008,8B15,
 }
 
 
-;;; $896E: Instruction list -  ;;;
+;;; $896E: Instruction list - attacking right ;;;
 {
 $A2:896E             dw 0010,8B32,
-                        897E,0001,  ; ???
+                        897E,0001,  ; Spawn rightwards mini-Crocomire projectile
                         0010,8B4A,
                         80ED,8958   ; Go to $8958
 }
 }
 
 
-;;; $897E: Instruction ;;;
+;;; $897E: Instruction - spawn mini-Crocomire projectile with direction [[Y]] ;;;
 {
 $A2:897E 5A          PHY
-$A2:897F B9 00 00    LDA $0000,y
+$A2:897F B9 00 00    LDA $0000,y            ; A = [[Y]] (direction)
 $A2:8982 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8985 A0 F2 DB    LDY #$DBF2             ;\
-$A2:8988 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn enemy projectile $DBF2
+$A2:8988 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn mini-Crocomire projectile enemy projectile
 $A2:898C 7A          PLY
-$A2:898D C8          INY
-$A2:898E C8          INY
+$A2:898D C8          INY                    ;\
+$A2:898E C8          INY                    ;} Y += 2
 $A2:898F 6B          RTL
 }
 
 
-;;; $8990: Instruction ;;;
+;;; $8990: Instruction - set moving left ;;;
 {
 $A2:8990 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8993 A9 43 8A    LDA #$8A43
-$A2:8996 9D B2 0F    STA $0FB2,x
-$A2:8999 9E B0 0F    STZ $0FB0,x
+$A2:8993 A9 43 8A    LDA #$8A43             ;\
+$A2:8996 9D B2 0F    STA $0FB2,x            ;} Enemy function = $8A43 (moving left)
+$A2:8999 9E B0 0F    STZ $0FB0,x            ; Enemy direction = left
 $A2:899C 6B          RTL
 }
 
 
-;;; $899D: Instruction ;;;
+;;; $899D: Instruction - set moving right ;;;
 {
 $A2:899D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:89A0 A9 5C 8A    LDA #$8A5C
-$A2:89A3 9D B2 0F    STA $0FB2,x
-$A2:89A6 A9 01 00    LDA #$0001
+$A2:89A0 A9 5C 8A    LDA #$8A5C             ;\
+$A2:89A3 9D B2 0F    STA $0FB2,x            ;} Enemy function = $8A5C (moving right)
+$A2:89A6 A9 01 00    LDA #$0001             ; Enemy direction = right
 $A2:89A9 9D B0 0F    STA $0FB0,x
 $A2:89AC 6B          RTL
 }
@@ -408,30 +411,30 @@ $A2:89AC 6B          RTL
 ;;; $89AD: Initialisation AI - enemy $CEFF (mini-Crocomire) ;;;
 {
 $A2:89AD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:89B0 A9 4D 80    LDA #$804D
-$A2:89B3 9D 8E 0F    STA $0F8E,x
-$A2:89B6 BD B6 0F    LDA $0FB6,x
-$A2:89B9 0A          ASL A
-$A2:89BA 0A          ASL A
-$A2:89BB 0A          ASL A
-$A2:89BC A8          TAY
-$A2:89BD B9 87 81    LDA $8187,y
-$A2:89C0 9D AA 0F    STA $0FAA,x
-$A2:89C3 B9 89 81    LDA $8189,y
-$A2:89C6 9D A8 0F    STA $0FA8,x
-$A2:89C9 B9 8B 81    LDA $818B,y
-$A2:89CC 9D AE 0F    STA $0FAE,x
-$A2:89CF B9 8D 81    LDA $818D,y
-$A2:89D2 9D AC 0F    STA $0FAC,x
-$A2:89D5 20 F7 89    JSR $89F7  [$A2:89F7]
-$A2:89D8 A9 43 8A    LDA #$8A43
-$A2:89DB 9D B2 0F    STA $0FB2,x
-$A2:89DE BD B4 0F    LDA $0FB4,x
-$A2:89E1 9D B0 0F    STA $0FB0,x
-$A2:89E4 F0 09       BEQ $09    [$89EF]
-$A2:89E6 20 1D 8A    JSR $8A1D  [$A2:8A1D]
-$A2:89E9 A9 5C 8A    LDA #$8A5C
-$A2:89EC 9D B2 0F    STA $0FB2,x
+$A2:89B0 A9 4D 80    LDA #$804D             ;\
+$A2:89B3 9D 8E 0F    STA $0F8E,x            ;} Enemy spritemap pointer = $804D (nothing)
+$A2:89B6 BD B6 0F    LDA $0FB6,x            ;\
+$A2:89B9 0A          ASL A                  ;|
+$A2:89BA 0A          ASL A                  ;} Y = [enemy parameter 2] * 8 (linear speed table index)
+$A2:89BB 0A          ASL A                  ;|
+$A2:89BC A8          TAY                    ;/
+$A2:89BD B9 87 81    LDA $8187,y            ;\
+$A2:89C0 9D AA 0F    STA $0FAA,x            ;|
+$A2:89C3 B9 89 81    LDA $8189,y            ;} Enemy right velocity = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A2:89C6 9D A8 0F    STA $0FA8,x            ;/
+$A2:89C9 B9 8B 81    LDA $818B,y            ;\
+$A2:89CC 9D AE 0F    STA $0FAE,x            ;|
+$A2:89CF B9 8D 81    LDA $818D,y            ;} Enemy left velocity = [$8187 + [Y] + 4].[$8187 + [Y] + 6]
+$A2:89D2 9D AC 0F    STA $0FAC,x            ;/
+$A2:89D5 20 F7 89    JSR $89F7  [$A2:89F7]  ; Set mini-Crocomire moving left instruction list
+$A2:89D8 A9 43 8A    LDA #$8A43             ;\
+$A2:89DB 9D B2 0F    STA $0FB2,x            ;} Enemy function = $8A43 (moving left)
+$A2:89DE BD B4 0F    LDA $0FB4,x            ;\
+$A2:89E1 9D B0 0F    STA $0FB0,x            ;} Enemy direction = [enemy parameter 1]
+$A2:89E4 F0 09       BEQ $09    [$89EF]     ; If [enemy direction] != left:
+$A2:89E6 20 1D 8A    JSR $8A1D  [$A2:8A1D]  ; Set mini-Crocomire moving right instruction list
+$A2:89E9 A9 5C 8A    LDA #$8A5C             ;\
+$A2:89EC 9D B2 0F    STA $0FB2,x            ;} Enemy function = $8A5C (moving right)
 
 $A2:89EF 6B          RTL
 }
@@ -440,86 +443,86 @@ $A2:89EF 6B          RTL
 ;;; $89F0: Main AI - enemy $CEFF (mini-Crocomire) ;;;
 {
 $A2:89F0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:89F3 FC B2 0F    JSR ($0FB2,x)
+$A2:89F3 FC B2 0F    JSR ($0FB2,x)          ; Execute [enemy function]
 $A2:89F6 6B          RTL
 }
 
 
-;;; $89F7:  ;;;
+;;; $89F7: Set mini-Crocomire moving left instruction list ;;;
 {
 $A2:89F7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:89FA A9 01 00    LDA #$0001
-$A2:89FD 9D 94 0F    STA $0F94,x
-$A2:8A00 9E 90 0F    STZ $0F90,x
-$A2:8A03 A9 32 89    LDA #$8932
-$A2:8A06 9D 92 0F    STA $0F92,x
+$A2:89FA A9 01 00    LDA #$0001             ;\
+$A2:89FD 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A2:8A00 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
+$A2:8A03 A9 32 89    LDA #$8932             ;\
+$A2:8A06 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8932
 $A2:8A09 60          RTS
 }
 
 
-;;; $8A0A:  ;;;
+;;; $8A0A: Set mini-Crocomire attacking left instruction list ;;;
 {
 $A2:8A0A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8A0D A9 01 00    LDA #$0001
-$A2:8A10 9D 94 0F    STA $0F94,x
-$A2:8A13 9E 90 0F    STZ $0F90,x
-$A2:8A16 A9 48 89    LDA #$8948
-$A2:8A19 9D 92 0F    STA $0F92,x
+$A2:8A0D A9 01 00    LDA #$0001             ;\
+$A2:8A10 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A2:8A13 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
+$A2:8A16 A9 48 89    LDA #$8948             ;\
+$A2:8A19 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8948
 $A2:8A1C 60          RTS
 }
 
 
-;;; $8A1D:  ;;;
+;;; $8A1D: Set mini-Crocomire moving right instruction list ;;;
 {
 $A2:8A1D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8A20 A9 01 00    LDA #$0001
-$A2:8A23 9D 94 0F    STA $0F94,x
-$A2:8A26 9E 90 0F    STZ $0F90,x
-$A2:8A29 A9 58 89    LDA #$8958
-$A2:8A2C 9D 92 0F    STA $0F92,x
+$A2:8A20 A9 01 00    LDA #$0001             ;\
+$A2:8A23 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A2:8A26 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
+$A2:8A29 A9 58 89    LDA #$8958             ;\
+$A2:8A2C 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8958
 $A2:8A2F 60          RTS
 }
 
 
-;;; $8A30:  ;;;
+;;; $8A30: Set mini-Crocomire attacking right instruction list ;;;
 {
 $A2:8A30 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8A33 A9 01 00    LDA #$0001
-$A2:8A36 9D 94 0F    STA $0F94,x
-$A2:8A39 9E 90 0F    STZ $0F90,x
-$A2:8A3C A9 6E 89    LDA #$896E
-$A2:8A3F 9D 92 0F    STA $0F92,x
+$A2:8A33 A9 01 00    LDA #$0001             ;\
+$A2:8A36 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
+$A2:8A39 9E 90 0F    STZ $0F90,x            ; Enemy timer = 0
+$A2:8A3C A9 6E 89    LDA #$896E             ;\
+$A2:8A3F 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $896E
 $A2:8A42 60          RTS
 }
 
 
-;;; $8A43:  ;;;
+;;; $8A43: Mini-Crocomire function - moving left ;;;
 {
 $A2:8A43 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8A46 BD AE 0F    LDA $0FAE,x
-$A2:8A49 85 14       STA $14    [$7E:0014]
-$A2:8A4B BD AC 0F    LDA $0FAC,x
-$A2:8A4E 85 12       STA $12    [$7E:0012]
-$A2:8A50 20 76 8A    JSR $8A76  [$A2:8A76]
-$A2:8A53 20 A7 8A    JSR $8AA7  [$A2:8AA7]
-$A2:8A56 90 03       BCC $03    [$8A5B]
-$A2:8A58 20 0A 8A    JSR $8A0A  [$A2:8A0A]
+$A2:8A46 BD AE 0F    LDA $0FAE,x            ;\
+$A2:8A49 85 14       STA $14    [$7E:0014]  ;|
+$A2:8A4B BD AC 0F    LDA $0FAC,x            ;} $14.$12 = [enemy left subvelocity]
+$A2:8A4E 85 12       STA $12    [$7E:0012]  ;/
+$A2:8A50 20 76 8A    JSR $8A76  [$A2:8A76]  ; Mini-Crocomire movement
+$A2:8A53 20 A7 8A    JSR $8AA7  [$A2:8AA7]  ; Decide whether to attack
+$A2:8A56 90 03       BCC $03    [$8A5B]     ; If decided attack:
+$A2:8A58 20 0A 8A    JSR $8A0A  [$A2:8A0A]  ; Set mini-Crocomire attacking left instruction list
 
 $A2:8A5B 60          RTS
 }
 
 
-;;; $8A5C:  ;;;
+;;; $8A5C: Mini-Crocomire function - moving right ;;;
 {
 $A2:8A5C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8A5F BD AA 0F    LDA $0FAA,x
-$A2:8A62 85 14       STA $14    [$7E:0014]
-$A2:8A64 BD A8 0F    LDA $0FA8,x
-$A2:8A67 85 12       STA $12    [$7E:0012]
-$A2:8A69 20 76 8A    JSR $8A76  [$A2:8A76]
-$A2:8A6C 20 A7 8A    JSR $8AA7  [$A2:8AA7]
-$A2:8A6F 90 03       BCC $03    [$8A74]
-$A2:8A71 20 30 8A    JSR $8A30  [$A2:8A30]
+$A2:8A5F BD AA 0F    LDA $0FAA,x            ;\
+$A2:8A62 85 14       STA $14    [$7E:0014]  ;|
+$A2:8A64 BD A8 0F    LDA $0FA8,x            ;} $14.$12 = [enemy right subvelocity]
+$A2:8A67 85 12       STA $12    [$7E:0012]  ;/
+$A2:8A69 20 76 8A    JSR $8A76  [$A2:8A76]  ; Mini-Crocomire movement
+$A2:8A6C 20 A7 8A    JSR $8AA7  [$A2:8AA7]  ; Decide whether to attack
+$A2:8A6F 90 03       BCC $03    [$8A74]     ; If decided attack:
+$A2:8A71 20 30 8A    JSR $8A30  [$A2:8A30]  ; Set mini-Crocomire attacking left instruction list
 
 $A2:8A74 60          RTS
 }
@@ -531,52 +534,56 @@ $A2:8A75 60          RTS
 }
 
 
-;;; $8A76:  ;;;
+;;; $8A76: Mini-Crocomire movement ;;;
 {
+;; Parameters:
+;;     $14.$12: X velocity
 $A2:8A76 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:8A79 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ; Move enemy right by [$14].[$12]
 $A2:8A7D 90 05       BCC $05    [$8A84]     ; If collided with wall:
-$A2:8A7F 20 95 8A    JSR $8A95  [$A2:8A95]
-$A2:8A82 80 10       BRA $10    [$8A94]
+$A2:8A7F 20 95 8A    JSR $8A95  [$A2:8A95]  ; Turn mini-Crocomire around
+$A2:8A82 80 10       BRA $10    [$8A94]     ; Return
 
 $A2:8A84 A9 02 00    LDA #$0002             ;\
 $A2:8A87 85 14       STA $14    [$7E:0014]  ;} $14.$12 = 2.0
 $A2:8A89 64 12       STZ $12    [$7E:0012]  ;/
 $A2:8A8B 22 76 BC A0 JSL $A0BC76[$A0:BC76]  ; Check for vertical "solid" block collision
 $A2:8A8F B0 03       BCS $03    [$8A94]     ; If no collision:
-$A2:8A91 20 95 8A    JSR $8A95  [$A2:8A95]
+$A2:8A91 20 95 8A    JSR $8A95  [$A2:8A95]  ; Turn mini-Crocomire around
 
 $A2:8A94 60          RTS
 }
 
 
-;;; $8A95:  ;;;
+;;; $8A95: Turn mini-Crocomire around ;;;
 {
 $A2:8A95 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8A98 20 F7 89    JSR $89F7  [$A2:89F7]
-$A2:8A9B BD B0 0F    LDA $0FB0,x
-$A2:8A9E 49 01 00    EOR #$0001
-$A2:8AA1 F0 03       BEQ $03    [$8AA6]
-$A2:8AA3 20 1D 8A    JSR $8A1D  [$A2:8A1D]
+$A2:8A98 20 F7 89    JSR $89F7  [$A2:89F7]  ; Set mini-Crocomire moving left instruction list
+$A2:8A9B BD B0 0F    LDA $0FB0,x            ;\
+$A2:8A9E 49 01 00    EOR #$0001             ;} If [enemy direction] != right:
+$A2:8AA1 F0 03       BEQ $03    [$8AA6]     ;/
+$A2:8AA3 20 1D 8A    JSR $8A1D  [$A2:8A1D]  ; Set mini-Crocomire moving right instruction list
 
 $A2:8AA6 60          RTS
 }
 
 
-;;; $8AA7:  ;;;
+;;; $8AA7: Decide whether to attack ;;;
 {
+;; Returns:
+;;     Carry: Set if decided attack, clear otherwise
 $A2:8AA7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8AAA 22 11 81 80 JSL $808111[$80:8111]
-$A2:8AAE AD E5 05    LDA $05E5  [$7E:05E5]
-$A2:8AB1 18          CLC
-$A2:8AB2 7D A4 0F    ADC $0FA4,x
-$A2:8AB5 29 FF 00    AND #$00FF
-$A2:8AB8 C9 02 00    CMP #$0002
-$A2:8ABB 10 09       BPL $09    [$8AC6]
-$A2:8ABD A9 75 8A    LDA #$8A75
-$A2:8AC0 9D B2 0F    STA $0FB2,x
-$A2:8AC3 38          SEC
-$A2:8AC4 80 01       BRA $01    [$8AC7]
+$A2:8AAA 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A2:8AAE AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A2:8AB1 18          CLC                    ;|
+$A2:8AB2 7D A4 0F    ADC $0FA4,x            ;|
+$A2:8AB5 29 FF 00    AND #$00FF             ;} If ([random number] + [enemy frame counter]) % 100h >= 2: return carry clear
+$A2:8AB8 C9 02 00    CMP #$0002             ;|
+$A2:8ABB 10 09       BPL $09    [$8AC6]     ;/
+$A2:8ABD A9 75 8A    LDA #$8A75             ;\
+$A2:8AC0 9D B2 0F    STA $0FB2,x            ;} Enemy function = RTS
+$A2:8AC3 38          SEC                    ;\
+$A2:8AC4 80 01       BRA $01    [$8AC7]     ;} Return carry set
 
 $A2:8AC6 18          CLC
 
@@ -854,21 +861,21 @@ $A2:8D6A             dw 0003 ; Unused
 ;;; $8D6C: Initialisation AI - enemy $CF3F (tatori) ;;;
 {
 $A2:8D6C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8D6F BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A2:8D72 09 00 20    ORA #$2000
-$A2:8D75 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A2:8D78 A9 4D 80    LDA #$804D
-$A2:8D7B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]
-$A2:8D7E A9 01 00    LDA #$0001
-$A2:8D81 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:8D84 9E 90 0F    STZ $0F90,x[$7E:0F90]
-$A2:8D87 9E 84 0F    STZ $0F84,x[$7E:0F84]
-$A2:8D8A A9 44 8C    LDA #$8C44
-$A2:8D8D 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:8D90 A9 D8 8D    LDA #$8DD8
-$A2:8D93 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:8D96 AD 52 8D    LDA $8D52  [$A2:8D52]
-$A2:8D99 9D B2 0F    STA $0FB2,x[$7E:0FB2]
+$A2:8D6F BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A2:8D72 09 00 20    ORA #$2000             ;} Set enemy to process instructions
+$A2:8D75 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A2:8D78 A9 4D 80    LDA #$804D             ;\
+$A2:8D7B 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
+$A2:8D7E A9 01 00    LDA #$0001             ;\
+$A2:8D81 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:8D84 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
+$A2:8D87 9E 84 0F    STZ $0F84,x[$7E:0F84]  ; Enemy Y radius = 0
+$A2:8D8A A9 44 8C    LDA #$8C44             ;\
+$A2:8D8D 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $8C44
+$A2:8D90 A9 D8 8D    LDA #$8DD8             ;\
+$A2:8D93 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8DD8
+$A2:8D96 AD 52 8D    LDA $8D52  [$A2:8D52]  ;\
+$A2:8D99 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy $0FB2 = 1
 $A2:8D9C 6B          RTL
 }
 
@@ -876,22 +883,22 @@ $A2:8D9C 6B          RTL
 ;;; $8D9D: Initialisation AI - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:8D9D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8DA0 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$A2:8DA3 9D AC 0F    STA $0FAC,x[$7E:0FEC]
-$A2:8DA6 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A2:8DA9 38          SEC
-$A2:8DAA FD 84 0F    SBC $0F84,x[$7E:0FC4]
-$A2:8DAD 9D AE 0F    STA $0FAE,x[$7E:0FEE]
-$A2:8DB0 A9 42 91    LDA #$9142
-$A2:8DB3 9D A8 0F    STA $0FA8,x[$7E:0FE8]
-$A2:8DB6 A9 01 00    LDA #$0001
-$A2:8DB9 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A2:8DBC 9E 90 0F    STZ $0F90,x[$7E:0FD0]
-$A2:8DBF A0 80 8B    LDY #$8B80
-$A2:8DC2 BD B4 0F    LDA $0FB4,x[$7E:0FF4]
-$A2:8DC5 9D B0 0F    STA $0FB0,x[$7E:0FF0]
-$A2:8DC8 30 03       BMI $03    [$8DCD]
-$A2:8DCA A0 72 8C    LDY #$8C72
+$A2:8DA0 BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;\
+$A2:8DA3 9D AC 0F    STA $0FAC,x[$7E:0FEC]  ;} Enemy $0FAC = [enemy X position]
+$A2:8DA6 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A2:8DA9 38          SEC                    ;|
+$A2:8DAA FD 84 0F    SBC $0F84,x[$7E:0FC4]  ;} Enemy $0FAE = [enemy Y position] - [enemy Y radius]
+$A2:8DAD 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
+$A2:8DB0 A9 42 91    LDA #$9142             ;\
+$A2:8DB3 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $9142
+$A2:8DB6 A9 01 00    LDA #$0001             ;\
+$A2:8DB9 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A2:8DBC 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
+$A2:8DBF A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80
+$A2:8DC2 BD B4 0F    LDA $0FB4,x[$7E:0FF4]  ;\
+$A2:8DC5 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy $0FB0 = [enemy parameter 1]
+$A2:8DC8 30 03       BMI $03    [$8DCD]     ; If [enemy $0FB0] >= 0:
+$A2:8DCA A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72
 
 $A2:8DCD 98          TYA
 $A2:8DCE 9D 92 0F    STA $0F92,x[$7E:0FD2]
@@ -902,11 +909,11 @@ $A2:8DD1 6B          RTL
 ;;; $8DD2: Main AI - enemy $CF3F (tatori) ;;;
 {
 $A2:8DD2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8DD5 7C A8 0F    JMP ($0FA8,x)[$A2:8DD8]
+$A2:8DD5 7C A8 0F    JMP ($0FA8,x)[$A2:8DD8]; Go to [enemy function]
 }
 
 
-;;; $8DD8:  ;;;
+;;; $8DD8: Tatori function -  ;;;
 {
 $A2:8DD8 BD 96 0F    LDA $0F96,x[$7E:0F96]
 $A2:8DDB 9D D6 0F    STA $0FD6,x[$7E:0FD6]
@@ -929,7 +936,7 @@ $A2:8E09 6B          RTL
 }
 
 
-;;; $8E0A:  ;;;
+;;; $8E0A: Tatori function -  ;;;
 {
 $A2:8E0A BD B2 0F    LDA $0FB2,x[$7E:0FB2]
 $A2:8E0D D0 10       BNE $10    [$8E1F]
@@ -1000,7 +1007,7 @@ $A2:8E80             dw FFF0, FFF0, FFF0, FFF0, FFF1, FFF1, FFF1, FFF1, FFF1, FF
 }
 
 
-;;; $8EE0:  ;;;
+;;; $8EE0: Tatori function -  ;;;
 {
 $A2:8EE0 20 15 93    JSR $9315  [$A2:9315]
 $A2:8EE3 AD B5 05    LDA $05B5  [$7E:05B5]
@@ -1295,11 +1302,11 @@ $A2:9134 AA          TAX
 $A2:9135 A9 00 00    LDA #$0000
 $A2:9138 9F 0C 78 7E STA $7E780C,x[$7E:780C]
 $A2:913C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:913F 7C A8 0F    JMP ($0FA8,x)[$A2:9142]
+$A2:913F 7C A8 0F    JMP ($0FA8,x)[$A2:9142]; Go to [enemy function]
 }
 
 
-;;; $9142:  ;;;
+;;; $9142: Mini-tatori function -  ;;;
 {
 $A2:9142 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9146 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: return
@@ -1322,7 +1329,7 @@ $A2:916D 6B          RTL
 }
 
 
-;;; $916E:  ;;;
+;;; $916E: Mini-tatori function -  ;;;
 {
 $A2:916E 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9172 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
@@ -1345,7 +1352,7 @@ $A2:9197 6B          RTL
 }
 
 
-;;; $9198:  ;;;
+;;; $9198: Mini-tatori function -  ;;;
 {
 $A2:9198 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:919C 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
@@ -1391,7 +1398,7 @@ $A2:91F7 6B          RTL
 }
 
 
-;;; $91F8:  ;;;
+;;; $91F8: Mini-tatori function -  ;;;
 {
 $A2:91F8 64 12       STZ $12    [$7E:0012]  ;\
 $A2:91FA BD B0 0F    LDA $0FB0,x            ;|
@@ -1613,7 +1620,7 @@ $A2:9380 60          RTS
 }
 
 
-;;; $9381:  ;;;
+;;; $9381: Instruction ;;;
 {
 $A2:9381 DA          PHX
 $A2:9382 5A          PHY
@@ -1690,7 +1697,7 @@ $A2:9410 80 DB       BRA $DB    [$93ED]
 }
 
 
-;;; $9412:  ;;;
+;;; $9412: Instruction ;;;
 {
 $A2:9412 DA          PHX
 $A2:9413 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1726,7 +1733,7 @@ $A2:9445 80 F0       BRA $F0    [$9437]
 }
 
 
-;;; $9447:  ;;;
+;;; $9447: Instruction ;;;
 {
 $A2:9447 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:944A A9 3F 8F    LDA #$8F3F
@@ -1735,7 +1742,7 @@ $A2:9450 6B          RTL
 }
 
 
-;;; $9451:  ;;;
+;;; $9451: Instruction ;;;
 {
 $A2:9451 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9454 A9 8D 8F    LDA #$8F8D
@@ -1749,7 +1756,7 @@ $A2:946A 6B          RTL
 }
 
 
-;;; $946B:  ;;;
+;;; $946B: Instruction ;;;
 {
 $A2:946B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:946E A9 8D 8F    LDA #$8F8D
@@ -1763,7 +1770,7 @@ $A2:9484 6B          RTL
 }
 
 
-;;; $9485:  ;;;
+;;; $9485: Instruction ;;;
 {
 $A2:9485 5A          PHY
 $A2:9486 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1783,7 +1790,7 @@ $A2:94A0 6B          RTL
 }
 
 
-;;; $94A1:  ;;;
+;;; $94A1: Instruction ;;;
 {
 $A2:94A1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:94A4 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
@@ -1815,7 +1822,7 @@ $A2:94D0 6B          RTL
 }
 
 
-;;; $94D1:  ;;;
+;;; $94D1: Instruction ;;;
 {
 $A2:94D1 A9 3A 00    LDA #$003A             ;\
 $A2:94D4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Ah, sound library 2, max queued sounds allowed = 6 (tatori spinning)
