@@ -1070,7 +1070,7 @@ $A8:9573             dx 0008, 01F8,0C,6127, 0000,0C,6126, 81F8,FC,6122, 81F8,EC,
 }
 
 
-;;; $959D: Palette - enemy $E73F (fune with eyes) ;;;
+;;; $959D: Palette - enemy $E73F (namihe) ;;;
 {
 $A8:959D             dw 3800, 4B9C, 3694, 0929, 0042, 3B18, 2A52, 19AD, 116B, 7F5A, 7EC0, 6DE0, 54E0, 001D, 0014, 000A
 }
@@ -1244,7 +1244,7 @@ $A8:96D3             dw 939F, 93CF, 9399, 93C9, 95C3, 95F7, 95BD, 95F1
 }
 
 
-;;; $96E3: Initialisation AI - enemy $E6FF/$E73F (fune / fune with eyes) ;;;
+;;; $96E3: Initialisation AI - enemy $E6FF/$E73F (fune / namihe) ;;;
 {
 $A8:96E3 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:96E6 A9 D7 96    LDA #$96D7
@@ -1278,7 +1278,7 @@ $A8:972F 6B          RTL
 }
 
 
-;;; $9730: Main AI - enemy $E6FF/$E73F (fune / fune with eyes) ;;;
+;;; $9730: Main AI - enemy $E6FF/$E73F (fune / namihe) ;;;
 {
 $A8:9730 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:9733 FC AA 0F    JSR ($0FAA,x)[$A8:9737]

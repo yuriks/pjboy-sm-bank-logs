@@ -913,97 +913,97 @@ $A2:8DD5 7C A8 0F    JMP ($0FA8,x)[$A2:8DD8]; Go to [enemy function]
 }
 
 
-;;; $8DD8: Tatori function -  ;;;
+;;; $8DD8: Tatori function - initial ;;;
 {
-$A2:8DD8 BD 96 0F    LDA $0F96,x[$7E:0F96]
-$A2:8DDB 9D D6 0F    STA $0FD6,x[$7E:0FD6]
-$A2:8DDE 9D 16 10    STA $1016,x[$7E:1016]
-$A2:8DE1 9D 56 10    STA $1056,x[$7E:1056]
-$A2:8DE4 9D 96 10    STA $1096,x[$7E:1096]
-$A2:8DE7 BD 98 0F    LDA $0F98,x[$7E:0F98]
-$A2:8DEA 9D D8 0F    STA $0FD8,x[$7E:0FD8]
-$A2:8DED 9D 18 10    STA $1018,x[$7E:1018]
-$A2:8DF0 9D 58 10    STA $1058,x[$7E:1058]
-$A2:8DF3 9D 98 10    STA $1098,x[$7E:1098]
-$A2:8DF6 8A          TXA
-$A2:8DF7 9D EA 0F    STA $0FEA,x[$7E:0FEA]
-$A2:8DFA 9D 2A 10    STA $102A,x[$7E:102A]
-$A2:8DFD 9D 6A 10    STA $106A,x[$7E:106A]
-$A2:8E00 9D AA 10    STA $10AA,x[$7E:10AA]
-$A2:8E03 A9 0A 8E    LDA #$8E0A
-$A2:8E06 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:8DD8 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
+$A2:8DDB 9D D6 0F    STA $0FD6,x[$7E:0FD6]  ;} Enemy ([X] + 1) palette index = [enemy palette index]
+$A2:8DDE 9D 16 10    STA $1016,x[$7E:1016]  ; Enemy ([X] + 2) palette index = [enemy palette index]
+$A2:8DE1 9D 56 10    STA $1056,x[$7E:1056]  ; Enemy ([X] + 3) palette index = [enemy palette index]
+$A2:8DE4 9D 96 10    STA $1096,x[$7E:1096]  ; Enemy ([X] + 4) palette index = [enemy palette index]
+$A2:8DE7 BD 98 0F    LDA $0F98,x[$7E:0F98]  ;\
+$A2:8DEA 9D D8 0F    STA $0FD8,x[$7E:0FD8]  ;} Enemy ([X] + 1) VRAM tiles index = [enemy VRAM tiles index]
+$A2:8DED 9D 18 10    STA $1018,x[$7E:1018]  ; Enemy ([X] + 2) VRAM tiles index = [enemy VRAM tiles index]
+$A2:8DF0 9D 58 10    STA $1058,x[$7E:1058]  ; Enemy ([X] + 3) VRAM tiles index = [enemy VRAM tiles index]
+$A2:8DF3 9D 98 10    STA $1098,x[$7E:1098]  ; Enemy ([X] + 4) VRAM tiles index = [enemy VRAM tiles index]
+$A2:8DF6 8A          TXA                    ;\
+$A2:8DF7 9D EA 0F    STA $0FEA,x[$7E:0FEA]  ;} Enemy ([X] + 1) mama index = [X]
+$A2:8DFA 9D 2A 10    STA $102A,x[$7E:102A]  ; Enemy ([X] + 2) mama index = [X]
+$A2:8DFD 9D 6A 10    STA $106A,x[$7E:106A]  ; Enemy ([X] + 3) mama index = [X]
+$A2:8E00 9D AA 10    STA $10AA,x[$7E:10AA]  ; Enemy ([X] + 4) mama index = [X]
+$A2:8E03 A9 0A 8E    LDA #$8E0A             ;\
+$A2:8E06 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E0A
 $A2:8E09 6B          RTL
 }
 
 
-;;; $8E0A: Tatori function -  ;;;
+;;; $8E0A: Tatori function - asleep ;;;
 {
-$A2:8E0A BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A2:8E0D D0 10       BNE $10    [$8E1F]
-$A2:8E0F A9 E0 8E    LDA #$8EE0
-$A2:8E12 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:8E15 BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A2:8E18 29 FF FB    AND #$FBFF
-$A2:8E1B 9D 86 0F    STA $0F86,x[$7E:0F86]
-$A2:8E1E 6B          RTL
+$A2:8E0A BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A2:8E0D D0 10       BNE $10    [$8E1F]     ;} If [enemy $0FB2] = 0:
+$A2:8E0F A9 E0 8E    LDA #$8EE0             ;\
+$A2:8E12 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8EE0
+$A2:8E15 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A2:8E18 29 FF FB    AND #$FBFF             ;} Set enemy as tangible
+$A2:8E1B 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
+$A2:8E1E 6B          RTL                    ; Return
 
-$A2:8E1F 9E 84 0F    STZ $0F84,x[$7E:0F84]
-$A2:8E22 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A2:8E25 38          SEC
-$A2:8E26 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A2:8E29 08          PHP
-$A2:8E2A 10 04       BPL $04    [$8E30]
-$A2:8E2C 49 FF FF    EOR #$FFFF
-$A2:8E2F 1A          INC A
+$A2:8E1F 9E 84 0F    STZ $0F84,x[$7E:0F84]  ; Enemy Y radius = 0
+$A2:8E22 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A2:8E25 38          SEC                    ;} A = [enemy X position] - [Samus X position]
+$A2:8E26 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;/
+$A2:8E29 08          PHP                    ;\
+$A2:8E2A 10 04       BPL $04    [$8E30]     ;|
+$A2:8E2C 49 FF FF    EOR #$FFFF             ;|
+$A2:8E2F 1A          INC A                  ;|
+                                            ;} If |[enemy X position] - [Samus X position]| >= 18h: return
+$A2:8E30 C9 18 00    CMP #$0018             ;|
+$A2:8E33 10 49       BPL $49    [$8E7E]     ;|
+$A2:8E35 28          PLP                    ;/
+$A2:8E36 10 04       BPL $04    [$8E3C]     ; If [enemy X position] < [Samus X position]:
+$A2:8E38 18          CLC                    ;\
+$A2:8E39 69 18 00    ADC #$0018             ;} A = 18h + [Samus X position] - [enemy X position]
 
-$A2:8E30 C9 18 00    CMP #$0018
-$A2:8E33 10 49       BPL $49    [$8E7E]
-$A2:8E35 28          PLP
-$A2:8E36 10 04       BPL $04    [$8E3C]
-$A2:8E38 18          CLC
-$A2:8E39 69 18 00    ADC #$0018
-
-$A2:8E3C 0A          ASL A
-$A2:8E3D AA          TAX
-$A2:8E3E BD 80 8E    LDA $8E80,x[$A2:8EAC]
-$A2:8E41 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:8E44 49 FF FF    EOR #$FFFF
-$A2:8E47 1A          INC A
-$A2:8E48 9D 84 0F    STA $0F84,x[$7E:0F84]
-$A2:8E4B BD 86 0F    LDA $0F86,x[$7E:0F86]
-$A2:8E4E 09 00 80    ORA #$8000
-$A2:8E51 9D 86 0F    STA $0F86,x[$7E:0F86]
+$A2:8E3C 0A          ASL A                  ;\
+$A2:8E3D AA          TAX                    ;|
+$A2:8E3E BD 80 8E    LDA $8E80,x[$A2:8EAC]  ;|
+$A2:8E41 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Enemy Y radius = -[$8E80 + [A] * 2]
+$A2:8E44 49 FF FF    EOR #$FFFF             ;|
+$A2:8E47 1A          INC A                  ;|
+$A2:8E48 9D 84 0F    STA $0F84,x[$7E:0F84]  ;/
+$A2:8E4B BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
+$A2:8E4E 09 00 80    ORA #$8000             ;} Set enemy hitbox solid to Samus
+$A2:8E51 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
 $A2:8E54 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:8E58 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A2:8E5B F0 20       BEQ $20    [$8E7D]     ;/
-$A2:8E5D BD 7E 0F    LDA $0F7E,x
-$A2:8E60 38          SEC
-$A2:8E61 FD 84 0F    SBC $0F84,x
-$A2:8E64 85 12       STA $12    [$7E:0012]
-$A2:8E66 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A2:8E69 18          CLC
-$A2:8E6A 6D 00 0B    ADC $0B00  [$7E:0B00]
-$A2:8E6D 38          SEC
-$A2:8E6E E5 12       SBC $12    [$7E:0012]
-$A2:8E70 30 0B       BMI $0B    [$8E7D]
+$A2:8E5D BD 7E 0F    LDA $0F7E,x            ;\
+$A2:8E60 38          SEC                    ;|
+$A2:8E61 FD 84 0F    SBC $0F84,x            ;|
+$A2:8E64 85 12       STA $12    [$7E:0012]  ;|
+$A2:8E66 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;} A = (Samus bottom boundary) + 1 - (enemy top boundary)
+$A2:8E69 18          CLC                    ;|
+$A2:8E6A 6D 00 0B    ADC $0B00  [$7E:0B00]  ;|
+$A2:8E6D 38          SEC                    ;|
+$A2:8E6E E5 12       SBC $12    [$7E:0012]  ;/
+$A2:8E70 30 0B       BMI $0B    [$8E7D]     ; If [A] >= 0:
 $A2:8E72 49 FF FF    EOR #$FFFF             ;\
 $A2:8E75 1A          INC A                  ;|
 $A2:8E76 18          CLC                    ;} Extra Samus Y displacement -= [A]
 $A2:8E77 6D 5C 0B    ADC $0B5C  [$7E:0B5C]  ;|
 $A2:8E7A 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
-$A2:8E7D 6B          RTL
+$A2:8E7D 6B          RTL                    ; Return
 
 $A2:8E7E 28          PLP
 $A2:8E7F 6B          RTL
 }
 
 
-;;; $8E80:  ;;;
+;;; $8E80: Sleeping tatori shell shape ;;;
 {
-$A2:8E80             dw FFF0, FFF0, FFF0, FFF0, FFF1, FFF1, FFF1, FFF1, FFF1, FFF2, FFF3, FFF3, FFF4, FFF5, FFF6, FFF7,
-                        FFF8, FFF9, FFFA, FFFB, FFFC, FFFC, 0000, 0000, FFF0, FFF0, FFF0, FFF1, FFF1, FFF1, FFF2, FFF3,
-                        FFF4, FFF5, FFF6, FFF7, FFF8, FFF9, FFFA, FFFB, FFFC, FFFD, FFFD, FFFE, 0000, 0000, 0000, 0000
+; Y pixel offsets from centre. Indexed by X distance from centre
+$A2:8E80             dw FFF0, FFF0, FFF0, FFF0, FFF1, FFF1, FFF1, FFF1, FFF1, FFF2, FFF3, FFF3, FFF4, FFF5, FFF6, FFF7, FFF8, FFF9, FFFA, FFFB, FFFC, FFFC, 0000, 0000, ; Right half
+                        FFF0, FFF0, FFF0, FFF1, FFF1, FFF1, FFF2, FFF3, FFF4, FFF5, FFF6, FFF7, FFF8, FFF9, FFFA, FFFB, FFFC, FFFD, FFFD, FFFE, 0000, 0000, 0000, 0000  ; Left half
 }
 
 
@@ -1045,8 +1045,8 @@ $A2:8F2C A9 01 00    LDA #$0001
 $A2:8F2F 9D 94 0F    STA $0F94,x[$7E:0F94]
 $A2:8F32 AD 54 8D    LDA $8D54  [$A2:8D54]
 $A2:8F35 9D 06 00    STA $0006,x[$7E:0006]
-$A2:8F38 A9 09 8E    LDA #$8E09
-$A2:8F3B 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:8F38 A9 09 8E    LDA #$8E09             ;\
+$A2:8F3B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E09
 
 $A2:8F3E 6B          RTL
 }
@@ -1065,8 +1065,8 @@ $A2:8F4E 98          TYA
 $A2:8F4F 9D 92 0F    STA $0F92,x[$7E:0F92]
 $A2:8F52 A9 01 00    LDA #$0001
 $A2:8F55 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:8F58 A9 09 8E    LDA #$8E09
-$A2:8F5B 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:8F58 A9 09 8E    LDA #$8E09             ;\
+$A2:8F5B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E09
 $A2:8F5E 6B          RTL
 }
 
@@ -1078,8 +1078,8 @@ $A2:8F60 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;|
 $A2:8F64 FA          PLX                    ;} If enemy is not touching Samus from below: return
 $A2:8F65 29 FF FF    AND #$FFFF             ;|
 $A2:8F68 F0 22       BEQ $22    [$8F8C]     ;/
-$A2:8F6A A9 83 90    LDA #$9083
-$A2:8F6D 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:8F6A A9 83 90    LDA #$9083             ;\
+$A2:8F6D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9083
 $A2:8F70 AD 56 0B    LDA $0B56  [$7E:0B56]  ;\
 $A2:8F73 38          SEC                    ;|
 $A2:8F74 FF 06 78 7E SBC $7E7806,x[$7E:7806];} Extra Samus X subdisplacement -= [enemy $7E:7806]
@@ -1132,8 +1132,8 @@ $A2:8FD6 9F 04 78 7E STA $7E7804,x[$7E:7804]
 $A2:8FDA A9 00 00    LDA #$0000
 $A2:8FDD 9D B0 0F    STA $0FB0,x[$7E:0FB0]
 $A2:8FE0 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$A2:8FE4 A9 EB 8F    LDA #$8FEB
-$A2:8FE7 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:8FE4 A9 EB 8F    LDA #$8FEB             ;\
+$A2:8FE7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8FEB
 
 $A2:8FEA 6B          RTL
 }
@@ -1252,14 +1252,14 @@ $A2:90CF BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $A2:90D3 3A          DEC A
 $A2:90D4 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $A2:90D8 D0 06       BNE $06    [$90E0]
-$A2:90DA A9 E1 90    LDA #$90E1
-$A2:90DD 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:90DA A9 E1 90    LDA #$90E1             ;\
+$A2:90DD 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $90E1
 
 $A2:90E0 6B          RTL
 }
 
 
-;;; $90E1:  ;;;
+;;; $90E1: Tatori function ;;;
 {
 $A2:90E1 20 15 93    JSR $9315  [$A2:9315]
 $A2:90E4 AF 08 78 7E LDA $7E7808[$7E:7808]
@@ -1287,8 +1287,8 @@ $A2:911D 98          TYA
 $A2:911E 9D 92 0F    STA $0F92,x[$7E:0F92]
 $A2:9121 A9 01 00    LDA #$0001
 $A2:9124 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:9127 A9 09 8E    LDA #$8E09
-$A2:912A 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:9127 A9 09 8E    LDA #$8E09             ;\
+$A2:912A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E09
 
 $A2:912D 6B          RTL
 }
@@ -1297,10 +1297,10 @@ $A2:912D 6B          RTL
 ;;; $912E: Main AI - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:912E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9131 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A2:9134 AA          TAX
-$A2:9135 A9 00 00    LDA #$0000
-$A2:9138 9F 0C 78 7E STA $7E780C,x[$7E:780C]
+$A2:9131 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A2:9134 AA          TAX                    ;} X = [enemy mama index]
+$A2:9135 A9 00 00    LDA #$0000             ;\
+$A2:9138 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Mama $7E:780C = 0
 $A2:913C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:913F 7C A8 0F    JMP ($0FA8,x)[$A2:9142]; Go to [enemy function]
 }
@@ -1311,8 +1311,8 @@ $A2:913F 7C A8 0F    JMP ($0FA8,x)[$A2:9142]; Go to [enemy function]
 $A2:9142 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9146 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: return
 $A2:9149 F0 22       BEQ $22    [$916D]     ;/
-$A2:914B A9 6E 91    LDA #$916E
-$A2:914E 9D A8 0F    STA $0FA8,x[$7E:10A8]
+$A2:914B A9 6E 91    LDA #$916E             ;\
+$A2:914E 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $916E
 $A2:9151 A9 04 00    LDA #$0004
 $A2:9154 9F 0A 78 7E STA $7E780A,x[$7E:790A]
 $A2:9158 A0 30 8C    LDY #$8C30
@@ -1344,8 +1344,8 @@ $A2:917F BF 0A 78 7E LDA $7E780A,x[$7E:790A]
 $A2:9183 3A          DEC A
 $A2:9184 9F 0A 78 7E STA $7E780A,x[$7E:790A]
 $A2:9188 D0 F4       BNE $F4    [$917E]
-$A2:918A A9 98 91    LDA #$9198
-$A2:918D 9D A8 0F    STA $0FA8,x[$7E:10A8]
+$A2:918A A9 98 91    LDA #$9198             ;\
+$A2:918D 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $9198
 $A2:9190 A9 3C 00    LDA #$003C
 $A2:9193 9F 00 78 7E STA $7E7800,x[$7E:7900]
 $A2:9197 6B          RTL
@@ -1357,8 +1357,8 @@ $A2:9197 6B          RTL
 $A2:9198 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:919C 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:919F F0 2F       BEQ $2F    [$91D0]     ;/
-$A2:91A1 A9 F8 91    LDA #$91F8
-$A2:91A4 9D A8 0F    STA $0FA8,x
+$A2:91A1 A9 F8 91    LDA #$91F8             ;\
+$A2:91A4 9D A8 0F    STA $0FA8,x            ;} Enemy function = $91F8
 $A2:91A7 A9 D2 8B    LDA #$8BD2
 $A2:91AA 9D 92 0F    STA $0F92,x
 $A2:91AD A9 01 00    LDA #$0001
@@ -1392,8 +1392,8 @@ $A2:91E7 98          TYA
 $A2:91E8 9D 92 0F    STA $0F92,x[$7E:1092]
 $A2:91EB A9 01 00    LDA #$0001
 $A2:91EE 9D 94 0F    STA $0F94,x[$7E:1094]
-$A2:91F1 A9 42 91    LDA #$9142
-$A2:91F4 9D A8 0F    STA $0FA8,x[$7E:10A8]
+$A2:91F1 A9 42 91    LDA #$9142             ;\
+$A2:91F4 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $9142
 $A2:91F7 6B          RTL
 }
 
@@ -1430,8 +1430,8 @@ $A2:9228 98          TYA
 $A2:9229 9D 92 0F    STA $0F92,x
 $A2:922C A9 01 00    LDA #$0001
 $A2:922F 9D 94 0F    STA $0F94,x
-$A2:9232 A9 42 91    LDA #$9142
-$A2:9235 9D A8 0F    STA $0FA8,x
+$A2:9232 A9 42 91    LDA #$9142             ;\
+$A2:9235 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 $A2:9238 6B          RTL
 }
 
@@ -1450,13 +1450,13 @@ $A2:924D 98          TYA
 $A2:924E 9D 92 0F    STA $0F92,x
 $A2:9251 A9 01 00    LDA #$0001
 $A2:9254 9D 94 0F    STA $0F94,x
-$A2:9257 A9 42 91    LDA #$9142
-$A2:925A 9D A8 0F    STA $0FA8,x
+$A2:9257 A9 42 91    LDA #$9142             ;\
+$A2:925A 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 $A2:925D 6B          RTL
 }
 
 
-;;; $925E:  ;;;
+;;; $925E: Mini-tatori function -  ;;;
 {
 $A2:925E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9261 BD 84 0F    LDA $0F84,x
@@ -1469,8 +1469,8 @@ $A2:926E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9271 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9275 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below: return
 $A2:9278 D0 06       BNE $06    [$9280]     ;/
-$A2:927A A9 42 91    LDA #$9142
-$A2:927D 9D A8 0F    STA $0FA8,x
+$A2:927A A9 42 91    LDA #$9142             ;\
+$A2:927D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 
 $A2:9280 6B          RTL
 }
@@ -1478,15 +1478,16 @@ $A2:9280 6B          RTL
 
 ;;; $9281: Enemy touch - enemy $CF3F (tatori) ;;;
 {
+; The solid enemy hitbox check here is useless, enemy touch reactions aren't called on solid enemies
 $A2:9281 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9284 BD 86 0F    LDA $0F86,x
-$A2:9287 89 00 80    BIT #$8000
-$A2:928A D0 11       BNE $11    [$929D]
-$A2:928C 22 23 80 A2 JSL $A28023[$A2:8023]
-$A2:9290 A9 E1 90    LDA #$90E1
-$A2:9293 9D A8 0F    STA $0FA8,x
-$A2:9296 A9 02 00    LDA #$0002
-$A2:9299 9F 08 78 7E STA $7E7808,x
+$A2:9284 BD 86 0F    LDA $0F86,x            ;\
+$A2:9287 89 00 80    BIT #$8000             ;} If enemy hitbox is solid to Samus: return
+$A2:928A D0 11       BNE $11    [$929D]     ;/
+$A2:928C 22 23 80 A2 JSL $A28023[$A2:8023]  ; Normal enemy touch AI
+$A2:9290 A9 E1 90    LDA #$90E1             ;\
+$A2:9293 9D A8 0F    STA $0FA8,x            ;} Enemy function = $90E1
+$A2:9296 A9 02 00    LDA #$0002             ;\
+$A2:9299 9F 08 78 7E STA $7E7808,x          ;} Enemy $7E:7808 = 2
 
 $A2:929D 6B          RTL
 }
@@ -1501,42 +1502,42 @@ $A2:929E 6B          RTL
 ;;; $929F: Enemy touch - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:929F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:92A2 BD A8 0F    LDA $0FA8,x
-$A2:92A5 C9 5E 92    CMP #$925E
-$A2:92A8 D0 01       BNE $01    [$92AB]
-$A2:92AA 6B          RTL
+$A2:92A2 BD A8 0F    LDA $0FA8,x            ;\
+$A2:92A5 C9 5E 92    CMP #$925E             ;} If [enemy function] = $925E:
+$A2:92A8 D0 01       BNE $01    [$92AB]     ;/
+$A2:92AA 6B          RTL                    ; Return
 
-$A2:92AB BD B0 0F    LDA $0FB0,x
-$A2:92AE 30 0B       BMI $0B    [$92BB]
-$A2:92B0 A9 80 8B    LDA #$8B80
-$A2:92B3 9D 92 0F    STA $0F92,x
-$A2:92B6 A9 FF FF    LDA #$FFFF
+$A2:92AB BD B0 0F    LDA $0FB0,x            ;\
+$A2:92AE 30 0B       BMI $0B    [$92BB]     ;} If [enemy $0FB0] >= 0:
+$A2:92B0 A9 80 8B    LDA #$8B80             ;\
+$A2:92B3 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8B80
+$A2:92B6 A9 FF FF    LDA #$FFFF             ; Enemy $0FB0 = -1
 $A2:92B9 80 09       BRA $09    [$92C4]
 
-$A2:92BB A9 72 8C    LDA #$8C72
-$A2:92BE 9D 92 0F    STA $0F92,x
-$A2:92C1 A9 01 00    LDA #$0001
+$A2:92BB A9 72 8C    LDA #$8C72             ;\ Else ([enemy $0FB0] < 0):
+$A2:92BE 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8C72
+$A2:92C1 A9 01 00    LDA #$0001             ; Enemy $0FB0 = 1
 
 $A2:92C4 9D B0 0F    STA $0FB0,x
-$A2:92C7 A9 01 00    LDA #$0001
-$A2:92CA 9D 94 0F    STA $0F94,x
-$A2:92CD BD 7A 0F    LDA $0F7A,x
-$A2:92D0 CD F6 0A    CMP $0AF6  [$7E:0AF6]
-$A2:92D3 10 0C       BPL $0C    [$92E1]
-$A2:92D5 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:92D8 38          SEC
-$A2:92D9 ED FE 0A    SBC $0AFE  [$7E:0AFE]
-$A2:92DC FD 82 0F    SBC $0F82,x
+$A2:92C7 A9 01 00    LDA #$0001             ;\
+$A2:92CA 9D 94 0F    STA $0F94,x            ;} Instruction timer = 1
+$A2:92CD BD 7A 0F    LDA $0F7A,x            ;\
+$A2:92D0 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
+$A2:92D3 10 0C       BPL $0C    [$92E1]     ;/
+$A2:92D5 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:92D8 38          SEC                    ;|
+$A2:92D9 ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;} Enemy X position = [Samus X position] - [Samus X radius] - [enemy X radius]
+$A2:92DC FD 82 0F    SBC $0F82,x            ;/
 $A2:92DF 80 0A       BRA $0A    [$92EB]
 
-$A2:92E1 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:92E4 18          CLC
-$A2:92E5 6D FE 0A    ADC $0AFE  [$7E:0AFE]
-$A2:92E8 7D 82 0F    ADC $0F82,x
+$A2:92E1 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\ Else ([enemy X position] >= [Samus X position]):
+$A2:92E4 18          CLC                    ;|
+$A2:92E5 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;} Enemy X position = [Samus X position] + [Samus X radius] + [enemy X radius]
+$A2:92E8 7D 82 0F    ADC $0F82,x            ;/
 
 $A2:92EB 9D 7A 0F    STA $0F7A,x
-$A2:92EE A9 42 91    LDA #$9142
-$A2:92F1 9D A8 0F    STA $0FA8,x
+$A2:92EE A9 42 91    LDA #$9142             ;\
+$A2:92F1 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 $A2:92F4 64 12       STZ $12    [$7E:0012]  ;\
 $A2:92F6 BD B0 0F    LDA $0FB0,x            ;|
 $A2:92F9 85 14       STA $14    [$7E:0014]  ;} Move enemy right by [enemy X velocity]
@@ -1547,11 +1548,11 @@ $A2:92FB 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 ;;; $92FF:  ;;;
 {
 $A2:92FF AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9302 BD AA 0F    LDA $0FAA,x[$7E:10AA]
-$A2:9305 AA          TAX
-$A2:9306 BD B2 0F    LDA $0FB2,x[$7E:0FB2]
-$A2:9309 F0 03       BEQ $03    [$930E]
-$A2:930B DE B2 0F    DEC $0FB2,x[$7E:0FB2]
+$A2:9302 BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
+$A2:9305 AA          TAX                    ;} X = [enemy mama index]
+$A2:9306 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
+$A2:9309 F0 03       BEQ $03    [$930E]     ;} Mama $0FB2 = max(0, [mama $0FB2] - 1)
+$A2:930B DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ;/
 
 $A2:930E 6B          RTL
 }
@@ -1560,7 +1561,7 @@ $A2:930E 6B          RTL
 ;;; $930F: Enemy shot - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:930F 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
-$A2:9313 80 EA       BRA $EA    [$92FF]
+$A2:9313 80 EA       BRA $EA    [$92FF]     ; Go to $92FF
 }
 
 
@@ -1736,8 +1737,8 @@ $A2:9445 80 F0       BRA $F0    [$9437]
 ;;; $9447: Instruction ;;;
 {
 $A2:9447 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:944A A9 3F 8F    LDA #$8F3F
-$A2:944D 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:944A A9 3F 8F    LDA #$8F3F             ;\
+$A2:944D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F3F
 $A2:9450 6B          RTL
 }
 
@@ -1745,8 +1746,8 @@ $A2:9450 6B          RTL
 ;;; $9451: Instruction ;;;
 {
 $A2:9451 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9454 A9 8D 8F    LDA #$8F8D
-$A2:9457 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:9454 A9 8D 8F    LDA #$8F8D             ;\
+$A2:9457 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D
 $A2:945A A9 FF FF    LDA #$FFFF
 $A2:945D 9D B0 0F    STA $0FB0,x[$7E:0FB0]
 $A2:9460 A9 10 00    LDA #$0010
@@ -1759,8 +1760,8 @@ $A2:946A 6B          RTL
 ;;; $946B: Instruction ;;;
 {
 $A2:946B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:946E A9 8D 8F    LDA #$8F8D
-$A2:9471 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:946E A9 8D 8F    LDA #$8F8D             ;\
+$A2:9471 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D
 $A2:9474 A9 01 00    LDA #$0001
 $A2:9477 9D B0 0F    STA $0FB0,x[$7E:0FB0]
 $A2:947A A9 10 00    LDA #$0010
@@ -1796,8 +1797,8 @@ $A2:94A1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:94A4 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:94A8 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:94AB F0 12       BEQ $12    [$94BF]     ;/
-$A2:94AD A9 5E 92    LDA #$925E
-$A2:94B0 9D A8 0F    STA $0FA8,x
+$A2:94AD A9 5E 92    LDA #$925E             ;\
+$A2:94B0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $925E
 
 $A2:94B3 A0 80 8B    LDY #$8B80
 $A2:94B6 BD B0 0F    LDA $0FB0,x
@@ -1807,8 +1808,8 @@ $A2:94BB A0 72 8C    LDY #$8C72
 $A2:94BE 6B          RTL
 
 ; BRANCH_NOT_TOUCHING_SAMUS
-$A2:94BF A9 42 91    LDA #$9142
-$A2:94C2 9D A8 0F    STA $0FA8,x
+$A2:94BF A9 42 91    LDA #$9142             ;\
+$A2:94C2 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 $A2:94C5 80 EC       BRA $EC    [$94B3]
 }
 
@@ -1816,8 +1817,8 @@ $A2:94C5 80 EC       BRA $EC    [$94B3]
 ;;; $94C7: Instruction ;;;
 {
 $A2:94C7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:94CA A9 39 92    LDA #$9239
-$A2:94CD 9D A8 0F    STA $0FA8,x
+$A2:94CA A9 39 92    LDA #$9239             ;\
+$A2:94CD 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9239
 $A2:94D0 6B          RTL
 }
 

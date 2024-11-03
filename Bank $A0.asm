@@ -6513,7 +6513,16 @@ $A0:B5C3             dw FF00, FF01, FF01, FF01, FF02, FF02, FF03, FF04, FF05, FF
 ;;; $B643: ($16.$18, $1A.$1C) = ([$14] * |cos([$12] * pi / 80h)|, [$14] * |sin([$12] * pi / 80h)|) ;;;
 {
 ; All arithmetic done here is unsigned, so [$14] should be positive
-; Uses the common maths convention for angle(!)
+; Uses the standard maths convention for angle(!)
+
+; Standard maths angle convention:
+;          40h
+;           |
+;     80h   #    0
+;
+;          C0h
+;
+; Where # is the origin and | is the negative y axis
 $A0:B643 8B          PHB
 $A0:B644 DA          PHX
 $A0:B645 F4 00 A0    PEA $A000              ;\
