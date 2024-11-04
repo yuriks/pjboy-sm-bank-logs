@@ -657,7 +657,7 @@ $A2:8B80             dx 9381,       ; ???
                         000A,950D,
                         9412        ; ???
 $A2:8BD2             dx 0001,9519,
-                        94D1,       ; ???
+                        94D1,       ; Play tatori spinning sound effect
                         0004,9519,
                         0005,9520,
                         0005,9527,
@@ -677,10 +677,10 @@ $A2:8BEE             dx 0010,95E5,
 }
 
 
-;;; $8C02: Instruction list -  ;;;
+;;; $8C02: Instruction list - tatori - spinning ;;;
 {
 $A2:8C02             dx 0001,9535,
-                        94D1,       ; ???
+                        94D1,       ; Play tatori spinning sound effect
                         0004,9535,
                         0005,96E9,
                         0005,96C9,
@@ -689,12 +689,12 @@ $A2:8C02             dx 0001,9535,
 }
 
 
-;;; $8C1C: Instruction list -  ;;;
+;;; $8C1C: Instruction list - tatori - facing left - enter shell ;;;
 {
 $A2:8C1C             dx 0020,95E5,
                         0005,959D,
                         0005,9555,
-                        9451,       ; ???
+                        9451,       ; Rise to hover rightwards, go to $8C02 (spinning)
                         7FFF,9535,
                         812F        ; Sleep
 }
@@ -711,20 +711,20 @@ $A2:8C30             dx 0005,94F5,
 }
 
 
-;;; $8C44: Instruction list -  ;;;
+;;; $8C44: Instruction list - tatori - asleep ;;;
 {
 $A2:8C44             dx 7FFF,9535,
                         812F        ; Sleep
 }
 
 
-;;; $8C4A: Instruction list -  ;;;
+;;; $8C4A: Instruction list - tatori - facing left - leave shell ;;;
 {
 $A2:8C4A             dx 0010,9535,
                         0005,9555,
                         0005,959D,
                         0060,95E5,
-                        9447,       ; ???
+                        9447,       ; Enter shell
                         7FFF,95E5,
                         812F        ; Sleep
 }
@@ -795,12 +795,12 @@ $A2:8CEC             dx 0005,978F,
 }
 
 
-;;; $8D00: Instruction list -  ;;;
+;;; $8D00: Instruction list - tatori - facing right - enter shell ;;;
 {
 $A2:8D00             dx 0001,983F,
                         0005,97F7,
                         0005,97AF,
-                        946B,       ; ???
+                        946B,       ; Rise to hover leftwards, go to $8C02 (spinning)
                         7FFF,978F,
                         812F        ; Sleep
 }
@@ -817,13 +817,13 @@ $A2:8D14             dx 0005,974F,
 }
 
 
-;;; $8D28: Instruction list -  ;;;
+;;; $8D28: Instruction list - tatori - facing right - leave shell ;;;
 {
 $A2:8D28             dx 0010,978F,
                         0005,97AF,
                         0005,97F7,
                         0060,983F,
-                        9447,       ; ???
+                        9447,       ; Enter shell
                         7FFF,983F,
                         812F        ; Sleep
 }
@@ -840,13 +840,14 @@ $A2:8D40             dx 0005,9501,
 }
 
 
-;;; $8D50: Tatori constants ;;;
+;;; $8D50: Tatori data ;;;
 {
 $A2:8D50             dw 0030
 $A2:8D52             dw 0001
 $A2:8D54             dw 0020
 
-$A2:8D56             dw F000,FFFF, 1000,0000
+$A2:8D56             dw F000,FFFF,
+                        1000,0000
 
 $A2:8D5E             dw 0003
 $A2:8D60             dw 01E8
@@ -871,11 +872,11 @@ $A2:8D81 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A2:8D84 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A2:8D87 9E 84 0F    STZ $0F84,x[$7E:0F84]  ; Enemy Y radius = 0
 $A2:8D8A A9 44 8C    LDA #$8C44             ;\
-$A2:8D8D 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $8C44
+$A2:8D8D 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $8C44 (asleep)
 $A2:8D90 A9 D8 8D    LDA #$8DD8             ;\
-$A2:8D93 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8DD8
+$A2:8D93 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8DD8 (initial)
 $A2:8D96 AD 52 8D    LDA $8D52  [$A2:8D52]  ;\
-$A2:8D99 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy $0FB2 = 1
+$A2:8D99 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy asleep flag = 1
 $A2:8D9C 6B          RTL
 }
 
@@ -926,12 +927,12 @@ $A2:8DED 9D 18 10    STA $1018,x[$7E:1018]  ; Enemy ([X] + 2) VRAM tiles index =
 $A2:8DF0 9D 58 10    STA $1058,x[$7E:1058]  ; Enemy ([X] + 3) VRAM tiles index = [enemy VRAM tiles index]
 $A2:8DF3 9D 98 10    STA $1098,x[$7E:1098]  ; Enemy ([X] + 4) VRAM tiles index = [enemy VRAM tiles index]
 $A2:8DF6 8A          TXA                    ;\
-$A2:8DF7 9D EA 0F    STA $0FEA,x[$7E:0FEA]  ;} Enemy ([X] + 1) mama index = [X]
-$A2:8DFA 9D 2A 10    STA $102A,x[$7E:102A]  ; Enemy ([X] + 2) mama index = [X]
-$A2:8DFD 9D 6A 10    STA $106A,x[$7E:106A]  ; Enemy ([X] + 3) mama index = [X]
-$A2:8E00 9D AA 10    STA $10AA,x[$7E:10AA]  ; Enemy ([X] + 4) mama index = [X]
+$A2:8DF7 9D EA 0F    STA $0FEA,x[$7E:0FEA]  ;} Enemy ([X] + 1) tatori index = [X]
+$A2:8DFA 9D 2A 10    STA $102A,x[$7E:102A]  ; Enemy ([X] + 2) tatori index = [X]
+$A2:8DFD 9D 6A 10    STA $106A,x[$7E:106A]  ; Enemy ([X] + 3) tatori index = [X]
+$A2:8E00 9D AA 10    STA $10AA,x[$7E:10AA]  ; Enemy ([X] + 4) tatori index = [X]
 $A2:8E03 A9 0A 8E    LDA #$8E0A             ;\
-$A2:8E06 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E0A
+$A2:8E06 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E0A (asleep)
 $A2:8E09 6B          RTL
 }
 
@@ -939,9 +940,9 @@ $A2:8E09 6B          RTL
 ;;; $8E0A: Tatori function - asleep ;;;
 {
 $A2:8E0A BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
-$A2:8E0D D0 10       BNE $10    [$8E1F]     ;} If [enemy $0FB2] = 0:
+$A2:8E0D D0 10       BNE $10    [$8E1F]     ;} If [enemy asleep flag] = 0:
 $A2:8E0F A9 E0 8E    LDA #$8EE0             ;\
-$A2:8E12 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8EE0
+$A2:8E12 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8EE0 (leave shell)
 $A2:8E15 BD 86 0F    LDA $0F86,x[$7E:0F86]  ;\
 $A2:8E18 29 FF FB    AND #$FBFF             ;} Set enemy as tangible
 $A2:8E1B 9D 86 0F    STA $0F86,x[$7E:0F86]  ;/
@@ -1007,12 +1008,13 @@ $A2:8E80             dw FFF0, FFF0, FFF0, FFF0, FFF1, FFF1, FFF1, FFF1, FFF1, FF
 }
 
 
-;;; $8EE0: Tatori function -  ;;;
+;;; $8EE0: Tatori function - leave shell ;;;
 {
-$A2:8EE0 20 15 93    JSR $9315  [$A2:9315]
-$A2:8EE3 AD B5 05    LDA $05B5  [$7E:05B5]
-$A2:8EE6 29 01 00    AND #$0001
-$A2:8EE9 D0 53       BNE $53    [$8F3E]
+; I don't understand these small position adjustments
+$A2:8EE0 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
+$A2:8EE3 AD B5 05    LDA $05B5  [$7E:05B5]  ;\
+$A2:8EE6 29 01 00    AND #$0001             ;} If [8-bit frame counter] % 2 != 0: return
+$A2:8EE9 D0 53       BNE $53    [$8F3E]     ;/
 $A2:8EEB DA          PHX                    ;\
 $A2:8EEC 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;|
 $A2:8EF0 FA          PLX                    ;} If enemy is touching Samus from below:
@@ -1020,53 +1022,53 @@ $A2:8EF1 29 FF FF    AND #$FFFF             ;|
 $A2:8EF4 F0 0A       BEQ $0A    [$8F00]     ;/
 $A2:8EF6 AD 58 0B    LDA $0B58  [$7E:0B58]  ;\
 $A2:8EF9 38          SEC                    ;|
-$A2:8EFA E9 01 00    SBC #$0001             ;} Extra Samus X displacement -= 1
+$A2:8EFA E9 01 00    SBC #$0001             ;} Extra Samus X displacement -= 1 (?)
 $A2:8EFD 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
 
-$A2:8F00 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]
-$A2:8F03 64 12       STZ $12    [$7E:0012]
-$A2:8F05 A9 10 00    LDA #$0010
-$A2:8F08 9D 84 0F    STA $0F84,x[$7E:0F84]
-$A2:8F0B BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A2:8F0E 89 01 00    BIT #$0001
-$A2:8F11 D0 05       BNE $05    [$8F18]
-$A2:8F13 FE 7A 0F    INC $0F7A,x[$7E:0F7A]
+$A2:8F00 DE 7E 0F    DEC $0F7E,x[$7E:0F7E]  ; Enemy Y position -= 1
+$A2:8F03 64 12       STZ $12    [$7E:0012]  ; $12 = 0
+$A2:8F05 A9 10 00    LDA #$0010             ;\
+$A2:8F08 9D 84 0F    STA $0F84,x[$7E:0F84]  ;} Enemy Y radius = 10h
+$A2:8F0B BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A2:8F0E 89 01 00    BIT #$0001             ;} If [enemy Y position] % 2 = 0:
+$A2:8F11 D0 05       BNE $05    [$8F18]     ;/
+$A2:8F13 FE 7A 0F    INC $0F7A,x[$7E:0F7A]  ; Enemy X position += 1
 $A2:8F16 80 03       BRA $03    [$8F1B]
-
-$A2:8F18 DE 7A 0F    DEC $0F7A,x[$7E:0F7A]
+                                            ; Else ([enemy Y position] % 2 != 0):
+$A2:8F18 DE 7A 0F    DEC $0F7A,x[$7E:0F7A]  ; Enemy X position -= 1
 
 $A2:8F1B A9 01 00    LDA #$0001             ;\
 $A2:8F1E 85 14       STA $14    [$7E:0014]  ;} Move enemy right by 1.0
 $A2:8F20 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A2:8F24 B0 18       BCS $18    [$8F3E]     ; If collided with wall: return
-$A2:8F26 A9 4A 8C    LDA #$8C4A
-$A2:8F29 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:8F2C A9 01 00    LDA #$0001
-$A2:8F2F 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:8F32 AD 54 8D    LDA $8D54  [$A2:8D54]
-$A2:8F35 9D 06 00    STA $0006,x[$7E:0006]
+$A2:8F26 A9 4A 8C    LDA #$8C4A             ;\
+$A2:8F29 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $8C4A (facing left - leave shell)
+$A2:8F2C A9 01 00    LDA #$0001             ;\
+$A2:8F2F 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:8F32 AD 54 8D    LDA $8D54  [$A2:8D54]  ;\
+$A2:8F35 9D 06 00    STA $0006,x[$7E:0006]  ;} $0006 + [enemy index] = 20h <-- bug (how did this even happen?) >_<;
 $A2:8F38 A9 09 8E    LDA #$8E09             ;\
-$A2:8F3B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E09
+$A2:8F3B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTL
 
 $A2:8F3E 6B          RTL
 }
 
 
-;;; $8F3F:  ;;;
+;;; $8F3F: Tatori function - enter shell ;;;
 {
-$A2:8F3F A0 1C 8C    LDY #$8C1C
-$A2:8F42 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A2:8F45 38          SEC
-$A2:8F46 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A2:8F49 10 03       BPL $03    [$8F4E]
-$A2:8F4B A0 00 8D    LDY #$8D00
+$A2:8F3F A0 1C 8C    LDY #$8C1C             ; Enemy instruction list pointer = $8C1C (facing left - enter shell)
+$A2:8F42 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A2:8F45 38          SEC                    ;|
+$A2:8F46 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
+$A2:8F49 10 03       BPL $03    [$8F4E]     ;/
+$A2:8F4B A0 00 8D    LDY #$8D00             ; Enemy instruction list pointer = $8D00 (facing right - enter shell)
 
 $A2:8F4E 98          TYA
 $A2:8F4F 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:8F52 A9 01 00    LDA #$0001
-$A2:8F55 9D 94 0F    STA $0F94,x[$7E:0F94]
+$A2:8F52 A9 01 00    LDA #$0001             ;\
+$A2:8F55 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A2:8F58 A9 09 8E    LDA #$8E09             ;\
-$A2:8F5B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E09
+$A2:8F5B 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTL
 $A2:8F5E 6B          RTL
 }
 
@@ -1079,7 +1081,7 @@ $A2:8F64 FA          PLX                    ;} If enemy is not touching Samus fr
 $A2:8F65 29 FF FF    AND #$FFFF             ;|
 $A2:8F68 F0 22       BEQ $22    [$8F8C]     ;/
 $A2:8F6A A9 83 90    LDA #$9083             ;\
-$A2:8F6D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9083
+$A2:8F6D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9083 (rising to peak)
 $A2:8F70 AD 56 0B    LDA $0B56  [$7E:0B56]  ;\
 $A2:8F73 38          SEC                    ;|
 $A2:8F74 FF 06 78 7E SBC $7E7806,x[$7E:7806];} Extra Samus X subdisplacement -= [enemy $7E:7806]
@@ -1087,7 +1089,7 @@ $A2:8F78 8D 56 0B    STA $0B56  [$7E:0B56]  ;/
 $A2:8F7B AD 58 0B    LDA $0B58  [$7E:0B58]  ;\
 $A2:8F7E FD B0 0F    SBC $0FB0,x[$7E:0FB0]  ;|
 $A2:8F81 C9 F0 FF    CMP #$FFF0             ;|
-$A2:8F84 10 03       BPL $03    [$8F89]     ;} Extra Samus X displacement = max(-10h, [extra Samus X displacement] - [enemy $0FB0])
+$A2:8F84 10 03       BPL $03    [$8F89]     ;} Extra Samus X displacement = max(-10h, [extra Samus X displacement] - [enemy X velocity])
 $A2:8F86 A9 F0 FF    LDA #$FFF0             ;|
                                             ;|
 $A2:8F89 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
@@ -1096,9 +1098,9 @@ $A2:8F8C 60          RTS
 }
 
 
-;;; $8F8D:  ;;;
+;;; $8F8D: Tatori function - rise to hover ;;;
 {
-$A2:8F8D 20 15 93    JSR $9315  [$A2:9315]
+$A2:8F8D 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:8F90 A9 FF FF    LDA #$FFFF             ;\
 $A2:8F93 85 14       STA $14    [$7E:0014]  ;|
 $A2:8F95 64 12       STZ $12    [$7E:0012]  ;} Move enemy up by 1.0
@@ -1114,36 +1116,36 @@ $A2:8FAB 38          SEC                    ;|
 $A2:8FAC E9 01 00    SBC #$0001             ;} Extra Samus Y displacement -= 1
 $A2:8FAF 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
-$A2:8FB2 BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$A2:8FB6 3A          DEC A
-$A2:8FB7 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:8FBB D0 2D       BNE $2D    [$8FEA]
-$A2:8FBD A0 00 00    LDY #$0000
-$A2:8FC0 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A2:8FC3 38          SEC
-$A2:8FC4 ED F6 0A    SBC $0AF6  [$7E:0AF6]
-$A2:8FC7 10 03       BPL $03    [$8FCC]
-$A2:8FC9 A0 04 00    LDY #$0004
+$A2:8FB2 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$A2:8FB6 3A          DEC A                  ;} Decrement enemy $7E:7800
+$A2:8FB7 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$A2:8FBB D0 2D       BNE $2D    [$8FEA]     ; If [enemy $7E:7800] != 0: return
+$A2:8FBD A0 00 00    LDY #$0000             ; Y = 0
+$A2:8FC0 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A2:8FC3 38          SEC                    ;|
+$A2:8FC4 ED F6 0A    SBC $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
+$A2:8FC7 10 03       BPL $03    [$8FCC]     ;/
+$A2:8FC9 A0 04 00    LDY #$0004             ; Y = 4
 
-$A2:8FCC B9 56 8D    LDA $8D56,y[$A2:8D5A]
-$A2:8FCF 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A2:8FD3 B9 58 8D    LDA $8D58,y[$A2:8D5C]
-$A2:8FD6 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A2:8FDA A9 00 00    LDA #$0000
-$A2:8FDD 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:8FE0 9F 06 78 7E STA $7E7806,x[$7E:7806]
+$A2:8FCC B9 56 8D    LDA $8D56,y[$A2:8D5A]  ;\
+$A2:8FCF 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = [$8D56 + [Y]]
+$A2:8FD3 B9 58 8D    LDA $8D58,y[$A2:8D5C]  ;\
+$A2:8FD6 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy $7E:7804 = [$8D56 + [Y] + 2]
+$A2:8FDA A9 00 00    LDA #$0000             ;\
+$A2:8FDD 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy X velocity = 0
+$A2:8FE0 9F 06 78 7E STA $7E7806,x[$7E:7806]; Enemy $7E:7806 = 0
 $A2:8FE4 A9 EB 8F    LDA #$8FEB             ;\
-$A2:8FE7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8FEB
+$A2:8FE7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8FEB (hovering)
 
 $A2:8FEA 6B          RTL
 }
 
 
-;;; $8FEB:  ;;;
+;;; $8FEB: Tatori function - hovering ;;;
 {
 ; Looks like buggy fixed point negations at $903C..6E
 
-$A2:8FEB 20 15 93    JSR $9315  [$A2:9315]
+$A2:8FEB 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:8FEE BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:8FF1 85 14       STA $14    [$7E:0014]  ;|
 $A2:8FF3 BF 06 78 7E LDA $7E7806,x[$7E:7806];} Move enemy right by [enemy X velocity].[enemy X subvelocity]
@@ -1208,9 +1210,9 @@ $A2:9082 6B          RTL
 }
 
 
-;;; $9083:  ;;;
+;;; $9083: Tatori function - rising to peak ;;;
 {
-$A2:9083 20 15 93    JSR $9315  [$A2:9315]
+$A2:9083 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:9086 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
 $A2:9089 CD 60 8D    CMP $8D60  [$A2:8D60]
 $A2:908C 30 20       BMI $20    [$90AE]
@@ -1245,23 +1247,23 @@ $A2:90CA 80 EC       BRA $EC    [$90B8]
 }
 
 
-;;; $90CC:  ;;;
+;;; $90CC: Tatori function - hovering at peak ;;;
 {
-$A2:90CC 20 15 93    JSR $9315  [$A2:9315]
+$A2:90CC 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:90CF BF 00 78 7E LDA $7E7800,x[$7E:7800]
 $A2:90D3 3A          DEC A
 $A2:90D4 9F 00 78 7E STA $7E7800,x[$7E:7800]
 $A2:90D8 D0 06       BNE $06    [$90E0]
 $A2:90DA A9 E1 90    LDA #$90E1             ;\
-$A2:90DD 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $90E1
+$A2:90DD 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $90E1 (falling)
 
 $A2:90E0 6B          RTL
 }
 
 
-;;; $90E1: Tatori function ;;;
+;;; $90E1: Tatori function - falling ;;;
 {
-$A2:90E1 20 15 93    JSR $9315  [$A2:9315]
+$A2:90E1 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:90E4 AF 08 78 7E LDA $7E7808[$7E:7808]
 $A2:90E8 CD 66 8D    CMP $8D66  [$A2:8D66]
 $A2:90EB 10 17       BPL $17    [$9104]
@@ -1278,17 +1280,17 @@ $A2:9106 BF 08 78 7E LDA $7E7808,x[$7E:7808];|
 $A2:910A 85 14       STA $14    [$7E:0014]  ;} Move enemy down by [enemy Y velocity]
 $A2:910C 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A2:9110 90 1B       BCC $1B    [$912D]     ; If not collided with block: return
-$A2:9112 A0 4A 8C    LDY #$8C4A
-$A2:9115 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A2:9118 30 03       BMI $03    [$911D]
-$A2:911A A0 28 8D    LDY #$8D28
+$A2:9112 A0 4A 8C    LDY #$8C4A             ; Enemy instruction list pointer = $8C4A (facing left - leave shell)
+$A2:9115 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A2:9118 30 03       BMI $03    [$911D]     ;} If [enemy X velocity] >= 0:
+$A2:911A A0 28 8D    LDY #$8D28             ; Enemy instruction list pointer = $8D28 (facing right - leave shell)
 
 $A2:911D 98          TYA
 $A2:911E 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:9121 A9 01 00    LDA #$0001
-$A2:9124 9D 94 0F    STA $0F94,x[$7E:0F94]
+$A2:9121 A9 01 00    LDA #$0001             ;\
+$A2:9124 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A2:9127 A9 09 8E    LDA #$8E09             ;\
-$A2:912A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8E09
+$A2:912A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTL
 
 $A2:912D 6B          RTL
 }
@@ -1298,9 +1300,9 @@ $A2:912D 6B          RTL
 {
 $A2:912E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9131 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
-$A2:9134 AA          TAX                    ;} X = [enemy mama index]
+$A2:9134 AA          TAX                    ;} X = [enemy tatori index]
 $A2:9135 A9 00 00    LDA #$0000             ;\
-$A2:9138 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Mama $7E:780C = 0
+$A2:9138 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Tatori $7E:780C = 0
 $A2:913C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:913F 7C A8 0F    JMP ($0FA8,x)[$A2:9142]; Go to [enemy function]
 }
@@ -1322,8 +1324,8 @@ $A2:9160 A0 14 8D    LDY #$8D14
 
 $A2:9163 98          TYA
 $A2:9164 9D 92 0F    STA $0F92,x[$7E:1092]
-$A2:9167 A9 01 00    LDA #$0001
-$A2:916A 9D 94 0F    STA $0F94,x[$7E:1094]
+$A2:9167 A9 01 00    LDA #$0001             ;\
+$A2:916A 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
 
 $A2:916D 6B          RTL
 }
@@ -1361,8 +1363,8 @@ $A2:91A1 A9 F8 91    LDA #$91F8             ;\
 $A2:91A4 9D A8 0F    STA $0FA8,x            ;} Enemy function = $91F8
 $A2:91A7 A9 D2 8B    LDA #$8BD2
 $A2:91AA 9D 92 0F    STA $0F92,x
-$A2:91AD A9 01 00    LDA #$0001
-$A2:91B0 9D 94 0F    STA $0F94,x
+$A2:91AD A9 01 00    LDA #$0001             ;\
+$A2:91B0 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A2:91B3 A9 01 00    LDA #$0001
 $A2:91B6 9F 08 78 7E STA $7E7808,x
 $A2:91BA AD 1E 0A    LDA $0A1E  [$7E:0A1E]
@@ -1390,8 +1392,8 @@ $A2:91E4 A0 72 8C    LDY #$8C72
 
 $A2:91E7 98          TYA
 $A2:91E8 9D 92 0F    STA $0F92,x[$7E:1092]
-$A2:91EB A9 01 00    LDA #$0001
-$A2:91EE 9D 94 0F    STA $0F94,x[$7E:1094]
+$A2:91EB A9 01 00    LDA #$0001             ;\
+$A2:91EE 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
 $A2:91F1 A9 42 91    LDA #$9142             ;\
 $A2:91F4 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $9142
 $A2:91F7 6B          RTL
@@ -1428,8 +1430,8 @@ $A2:9225 A0 72 8C    LDY #$8C72
 
 $A2:9228 98          TYA
 $A2:9229 9D 92 0F    STA $0F92,x
-$A2:922C A9 01 00    LDA #$0001
-$A2:922F 9D 94 0F    STA $0F94,x
+$A2:922C A9 01 00    LDA #$0001             ;\
+$A2:922F 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A2:9232 A9 42 91    LDA #$9142             ;\
 $A2:9235 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 $A2:9238 6B          RTL
@@ -1448,8 +1450,8 @@ $A2:924A A0 72 8C    LDY #$8C72
 
 $A2:924D 98          TYA
 $A2:924E 9D 92 0F    STA $0F92,x
-$A2:9251 A9 01 00    LDA #$0001
-$A2:9254 9D 94 0F    STA $0F94,x
+$A2:9251 A9 01 00    LDA #$0001             ;\
+$A2:9254 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A2:9257 A9 42 91    LDA #$9142             ;\
 $A2:925A 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 $A2:925D 6B          RTL
@@ -1485,7 +1487,7 @@ $A2:9287 89 00 80    BIT #$8000             ;} If enemy hitbox is solid to Samus
 $A2:928A D0 11       BNE $11    [$929D]     ;/
 $A2:928C 22 23 80 A2 JSL $A28023[$A2:8023]  ; Normal enemy touch AI
 $A2:9290 A9 E1 90    LDA #$90E1             ;\
-$A2:9293 9D A8 0F    STA $0FA8,x            ;} Enemy function = $90E1
+$A2:9293 9D A8 0F    STA $0FA8,x            ;} Enemy function = $90E1 (falling)
 $A2:9296 A9 02 00    LDA #$0002             ;\
 $A2:9299 9F 08 78 7E STA $7E7808,x          ;} Enemy $7E:7808 = 2
 
@@ -1520,7 +1522,7 @@ $A2:92C1 A9 01 00    LDA #$0001             ; Enemy $0FB0 = 1
 
 $A2:92C4 9D B0 0F    STA $0FB0,x
 $A2:92C7 A9 01 00    LDA #$0001             ;\
-$A2:92CA 9D 94 0F    STA $0F94,x            ;} Instruction timer = 1
+$A2:92CA 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A2:92CD BD 7A 0F    LDA $0F7A,x            ;\
 $A2:92D0 CD F6 0A    CMP $0AF6  [$7E:0AF6]  ;} If [enemy X position] < [Samus X position]:
 $A2:92D3 10 0C       BPL $0C    [$92E1]     ;/
@@ -1545,14 +1547,14 @@ $A2:92FB 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 }
 
 
-;;; $92FF:  ;;;
+;;; $92FF: Awaken tatori ;;;
 {
 $A2:92FF AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9302 BD AA 0F    LDA $0FAA,x[$7E:10AA]  ;\
-$A2:9305 AA          TAX                    ;} X = [enemy mama index]
+$A2:9305 AA          TAX                    ;} X = [enemy tatori index]
 $A2:9306 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;\
-$A2:9309 F0 03       BEQ $03    [$930E]     ;} Mama $0FB2 = max(0, [mama $0FB2] - 1)
-$A2:930B DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ;/
+$A2:9309 F0 03       BEQ $03    [$930E]     ;} If [tatori asleep flag] != 0:
+$A2:930B DE B2 0F    DEC $0FB2,x[$7E:0FB2]  ; Tatori asleep flag = 0
 
 $A2:930E 6B          RTL
 }
@@ -1561,60 +1563,60 @@ $A2:930E 6B          RTL
 ;;; $930F: Enemy shot - enemy $CF7F (mini-tatori) ;;;
 {
 $A2:930F 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
-$A2:9313 80 EA       BRA $EA    [$92FF]     ; Go to $92FF
+$A2:9313 80 EA       BRA $EA    [$92FF]     ; Go to awaken tatori
 }
 
 
-;;; $9315:  ;;;
+;;; $9315: Tatori / Samus collision detection ;;;
 {
-$A2:9315 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A2:9318 38          SEC
-$A2:9319 ED 82 0F    SBC $0F82  [$7E:0F82]
-$A2:931C 38          SEC
-$A2:931D E9 08 00    SBC #$0008
-$A2:9320 85 12       STA $12    [$7E:0012]
-$A2:9322 AD 7A 0F    LDA $0F7A  [$7E:0F7A]
-$A2:9325 18          CLC
-$A2:9326 6D 82 0F    ADC $0F82  [$7E:0F82]
-$A2:9329 18          CLC
-$A2:932A 69 08 00    ADC #$0008
-$A2:932D 85 14       STA $14    [$7E:0014]
-$A2:932F AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A2:9332 38          SEC
-$A2:9333 ED 84 0F    SBC $0F84  [$7E:0F84]
-$A2:9336 18          CLC
-$A2:9337 69 04 00    ADC #$0004
-$A2:933A 85 16       STA $16    [$7E:0016]
-$A2:933C AD 7E 0F    LDA $0F7E  [$7E:0F7E]
-$A2:933F 18          CLC
-$A2:9340 6D 84 0F    ADC $0F84  [$7E:0F84]
-$A2:9343 38          SEC
-$A2:9344 E9 04 00    SBC #$0004
-$A2:9347 85 18       STA $18    [$7E:0018]
-$A2:9349 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:934C 38          SEC
-$A2:934D ED FE 0A    SBC $0AFE  [$7E:0AFE]
-$A2:9350 3A          DEC A
-$A2:9351 C5 14       CMP $14    [$7E:0014]
-$A2:9353 10 2B       BPL $2B    [$9380]
-$A2:9355 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:9358 18          CLC
-$A2:9359 6D FE 0A    ADC $0AFE  [$7E:0AFE]
-$A2:935C C5 12       CMP $12    [$7E:0012]
-$A2:935E 30 20       BMI $20    [$9380]
-$A2:9360 AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A2:9363 38          SEC
-$A2:9364 ED 00 0B    SBC $0B00  [$7E:0B00]
-$A2:9367 1A          INC A
-$A2:9368 C5 18       CMP $18    [$7E:0018]
-$A2:936A 10 14       BPL $14    [$9380]
-$A2:936C AD FA 0A    LDA $0AFA  [$7E:0AFA]
-$A2:936F 18          CLC
-$A2:9370 6D 00 0B    ADC $0B00  [$7E:0B00]
-$A2:9373 C5 16       CMP $16    [$7E:0016]
-$A2:9375 30 09       BMI $09    [$9380]
-$A2:9377 AD A8 18    LDA $18A8  [$7E:18A8]
-$A2:937A D0 04       BNE $04    [$9380]
+$A2:9315 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A2:9318 38          SEC                    ;|
+$A2:9319 ED 82 0F    SBC $0F82  [$7E:0F82]  ;|
+$A2:931C 38          SEC                    ;} $12 = (enemy left boundary) - 8
+$A2:931D E9 08 00    SBC #$0008             ;|
+$A2:9320 85 12       STA $12    [$7E:0012]  ;/
+$A2:9322 AD 7A 0F    LDA $0F7A  [$7E:0F7A]  ;\
+$A2:9325 18          CLC                    ;|
+$A2:9326 6D 82 0F    ADC $0F82  [$7E:0F82]  ;|
+$A2:9329 18          CLC                    ;} $14 = (enemy right boundary) + 1 + 8
+$A2:932A 69 08 00    ADC #$0008             ;|
+$A2:932D 85 14       STA $14    [$7E:0014]  ;/
+$A2:932F AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A2:9332 38          SEC                    ;|
+$A2:9333 ED 84 0F    SBC $0F84  [$7E:0F84]  ;|
+$A2:9336 18          CLC                    ;} $16 = (enemy top boundary) + 4
+$A2:9337 69 04 00    ADC #$0004             ;|
+$A2:933A 85 16       STA $16    [$7E:0016]  ;/
+$A2:933C AD 7E 0F    LDA $0F7E  [$7E:0F7E]  ;\
+$A2:933F 18          CLC                    ;|
+$A2:9340 6D 84 0F    ADC $0F84  [$7E:0F84]  ;|
+$A2:9343 38          SEC                    ;} $18 = (enemy bottom boundary) + 1 - 4
+$A2:9344 E9 04 00    SBC #$0004             ;|
+$A2:9347 85 18       STA $18    [$7E:0018]  ;/
+$A2:9349 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:934C 38          SEC                    ;|
+$A2:934D ED FE 0A    SBC $0AFE  [$7E:0AFE]  ;|
+$A2:9350 3A          DEC A                  ;} If (Samus left boundary) <= (enemy right boundary) + 9:
+$A2:9351 C5 14       CMP $14    [$7E:0014]  ;|
+$A2:9353 10 2B       BPL $2B    [$9380]     ;/
+$A2:9355 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:9358 18          CLC                    ;|
+$A2:9359 6D FE 0A    ADC $0AFE  [$7E:0AFE]  ;} If (Samus right boundary) >= (enemy left boundary) - 9:
+$A2:935C C5 12       CMP $12    [$7E:0012]  ;|
+$A2:935E 30 20       BMI $20    [$9380]     ;/
+$A2:9360 AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A2:9363 38          SEC                    ;|
+$A2:9364 ED 00 0B    SBC $0B00  [$7E:0B00]  ;|
+$A2:9367 1A          INC A                  ;} If (Samus top boundary) <= (enemy bottom boundary) - 3:
+$A2:9368 C5 18       CMP $18    [$7E:0018]  ;|
+$A2:936A 10 14       BPL $14    [$9380]     ;/
+$A2:936C AD FA 0A    LDA $0AFA  [$7E:0AFA]  ;\
+$A2:936F 18          CLC                    ;|
+$A2:9370 6D 00 0B    ADC $0B00  [$7E:0B00]  ;} If (Samus bottom boundary) >= (enemy top boundary) + 3:
+$A2:9373 C5 16       CMP $16    [$7E:0016]  ;|
+$A2:9375 30 09       BMI $09    [$9380]     ;/
+$A2:9377 AD A8 18    LDA $18A8  [$7E:18A8]  ;\
+$A2:937A D0 04       BNE $04    [$9380]     ;} If [Samus invincibility timer] = 0:
 $A2:937C 22 77 A4 A0 JSL $A0A477[$A0:A477]  ; Normal enemy touch AI
 
 $A2:9380 60          RTS
@@ -1734,39 +1736,39 @@ $A2:9445 80 F0       BRA $F0    [$9437]
 }
 
 
-;;; $9447: Instruction ;;;
+;;; $9447: Instruction - enter shell ;;;
 {
 $A2:9447 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:944A A9 3F 8F    LDA #$8F3F             ;\
-$A2:944D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F3F
+$A2:944D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F3F (enter shell)
 $A2:9450 6B          RTL
 }
 
 
-;;; $9451: Instruction ;;;
+;;; $9451: Instruction - rise to hover rightwards, go to $8C02 ;;;
 {
 $A2:9451 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9454 A9 8D 8F    LDA #$8F8D             ;\
-$A2:9457 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D
-$A2:945A A9 FF FF    LDA #$FFFF
-$A2:945D 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:9460 A9 10 00    LDA #$0010
-$A2:9463 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:9467 A0 02 8C    LDY #$8C02
+$A2:9457 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D (rise to hover)
+$A2:945A A9 FF FF    LDA #$FFFF             ;\
+$A2:945D 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy X velocity = -1
+$A2:9460 A9 10 00    LDA #$0010             ;\
+$A2:9463 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = 10h
+$A2:9467 A0 02 8C    LDY #$8C02             ; Y = $8C02
 $A2:946A 6B          RTL
 }
 
 
-;;; $946B: Instruction ;;;
+;;; $946B: Instruction - rise to hover leftwards, go to $8C02 ;;;
 {
 $A2:946B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:946E A9 8D 8F    LDA #$8F8D             ;\
-$A2:9471 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D
-$A2:9474 A9 01 00    LDA #$0001
-$A2:9477 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:947A A9 10 00    LDA #$0010
-$A2:947D 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:9481 A0 02 8C    LDY #$8C02
+$A2:9471 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8F8D (rise to hover)
+$A2:9474 A9 01 00    LDA #$0001             ;\
+$A2:9477 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy X velocity = 1
+$A2:947A A9 10 00    LDA #$0010             ;\
+$A2:947D 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = 10h
+$A2:9481 A0 02 8C    LDY #$8C02             ; Y = $8C02
 $A2:9484 6B          RTL
 }
 
@@ -1823,7 +1825,7 @@ $A2:94D0 6B          RTL
 }
 
 
-;;; $94D1: Instruction ;;;
+;;; $94D1: Instruction - play tatori spinning sound effect ;;;
 {
 $A2:94D1 A9 3A 00    LDA #$003A             ;\
 $A2:94D4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Ah, sound library 2, max queued sounds allowed = 6 (tatori spinning)
@@ -1996,9 +1998,9 @@ $A2:9A6B 6B          RTL
 {
 $A2:9A6C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9A6F 9D 92 0F    STA $0F92,x[$7E:10D2]
-$A2:9A72 A9 01 00    LDA #$0001
-$A2:9A75 9D 94 0F    STA $0F94,x[$7E:10D4]
-$A2:9A78 9E 90 0F    STZ $0F90,x[$7E:10D0]
+$A2:9A72 A9 01 00    LDA #$0001             ;\
+$A2:9A75 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
+$A2:9A78 9E 90 0F    STZ $0F90,x[$7E:10D0]  ; Enemy timer = 0
 $A2:9A7B 60          RTS
 }
 
@@ -2761,9 +2763,9 @@ $A2:A048 60          RTS
 $A2:A049 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A04C A9 8A 9E    LDA #$9E8A
 $A2:A04F 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:A052 A9 01 00    LDA #$0001
-$A2:A055 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:A058 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A2:A052 A9 01 00    LDA #$0001             ;\
+$A2:A055 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:A058 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A2:A05B 60          RTS
 }
 
@@ -2773,9 +2775,9 @@ $A2:A05B 60          RTS
 $A2:A05C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A05F A9 B0 9E    LDA #$9EB0
 $A2:A062 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:A065 A9 01 00    LDA #$0001
-$A2:A068 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:A06B 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A2:A065 A9 01 00    LDA #$0001             ;\
+$A2:A068 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:A06B 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A2:A06E 60          RTS
 }
 
@@ -2785,9 +2787,9 @@ $A2:A06E 60          RTS
 $A2:A06F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A072 A9 DA 9E    LDA #$9EDA
 $A2:A075 9D 92 0F    STA $0F92,x[$7E:1092]
-$A2:A078 A9 01 00    LDA #$0001
-$A2:A07B 9D 94 0F    STA $0F94,x[$7E:1094]
-$A2:A07E 9E 90 0F    STZ $0F90,x[$7E:1090]
+$A2:A078 A9 01 00    LDA #$0001             ;\
+$A2:A07B 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
+$A2:A07E 9E 90 0F    STZ $0F90,x[$7E:1090]  ; Enemy timer = 0
 $A2:A081 60          RTS
 }
 
@@ -2797,9 +2799,9 @@ $A2:A081 60          RTS
 $A2:A082 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A085 A9 00 9F    LDA #$9F00
 $A2:A088 9D 92 0F    STA $0F92,x[$7E:1052]
-$A2:A08B A9 01 00    LDA #$0001
-$A2:A08E 9D 94 0F    STA $0F94,x[$7E:1054]
-$A2:A091 9E 90 0F    STZ $0F90,x[$7E:1050]
+$A2:A08B A9 01 00    LDA #$0001             ;\
+$A2:A08E 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
+$A2:A091 9E 90 0F    STZ $0F90,x[$7E:1050]  ; Enemy timer = 0
 $A2:A094 60          RTS
 }
 
@@ -2988,9 +2990,9 @@ $A2:A489 6B          RTL
 $A2:A48A AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A48D A9 AB A3    LDA #$A3AB
 $A2:A490 9D 92 0F    STA $0F92,x[$7E:1152]
-$A2:A493 A9 01 00    LDA #$0001
-$A2:A496 9D 94 0F    STA $0F94,x[$7E:1154]
-$A2:A499 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A2:A493 A9 01 00    LDA #$0001             ;\
+$A2:A496 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A2:A499 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 $A2:A49C 60          RTS
 }
 
@@ -3000,9 +3002,9 @@ $A2:A49C 60          RTS
 $A2:A49D AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A4A0 A9 BD A3    LDA #$A3BD
 $A2:A4A3 9D 92 0F    STA $0F92,x[$7E:0FD2]
-$A2:A4A6 A9 01 00    LDA #$0001
-$A2:A4A9 9D 94 0F    STA $0F94,x[$7E:0FD4]
-$A2:A4AC 9E 90 0F    STZ $0F90,x[$7E:0FD0]
+$A2:A4A6 A9 01 00    LDA #$0001             ;\
+$A2:A4A9 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
+$A2:A4AC 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
 $A2:A4AF 60          RTS
 }
 
@@ -4708,9 +4710,9 @@ $A2:B550             dw 0060, 0070, 0080, 0090, 00A0, 00B0, 00C0, 00D0, FFA0, FF
 $A2:B570 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:B573 A9 1A B5    LDA #$B51A
 $A2:B576 9D 92 0F    STA $0F92,x[$7E:1112]
-$A2:B579 A9 01 00    LDA #$0001
-$A2:B57C 9D 94 0F    STA $0F94,x[$7E:1114]
-$A2:B57F 9E 90 0F    STZ $0F90,x[$7E:1110]
+$A2:B579 A9 01 00    LDA #$0001             ;\
+$A2:B57C 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
+$A2:B57F 9E 90 0F    STZ $0F90,x[$7E:1110]  ; Enemy timer = 0
 $A2:B582 A9 96 B5    LDA #$B596
 $A2:B585 9D A8 0F    STA $0FA8,x[$7E:1128]
 $A2:B588 A9 11 00    LDA #$0011             ;\
@@ -5772,9 +5774,9 @@ $A2:BD57 DD B2 0F    CMP $0FB2,x[$7E:10B2]
 $A2:BD5A F0 0F       BEQ $0F    [$BD6B]
 $A2:BD5C 9D B2 0F    STA $0FB2,x[$7E:10B2]
 $A2:BD5F 9D 92 0F    STA $0F92,x[$7E:1092]
-$A2:BD62 A9 01 00    LDA #$0001
-$A2:BD65 9D 94 0F    STA $0F94,x[$7E:1094]
-$A2:BD68 9E 90 0F    STZ $0F90,x[$7E:1090]
+$A2:BD62 A9 01 00    LDA #$0001             ;\
+$A2:BD65 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
+$A2:BD68 9E 90 0F    STZ $0F90,x[$7E:1090]  ; Enemy timer = 0
 
 $A2:BD6B 60          RTS
 }
@@ -6051,9 +6053,9 @@ $A2:C015 DF 02 78 7E CMP $7E7802,x[$7E:7802]
 $A2:C019 F0 10       BEQ $10    [$C02B]
 $A2:C01B 9F 02 78 7E STA $7E7802,x[$7E:7802]
 $A2:C01F 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:C022 A9 01 00    LDA #$0001
-$A2:C025 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:C028 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A2:C022 A9 01 00    LDA #$0001             ;\
+$A2:C025 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:C028 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 
 $A2:C02B 60          RTS
 }
@@ -6947,9 +6949,9 @@ $A2:C8A6 DF 00 78 7E CMP $7E7800,x[$7E:7980]
 $A2:C8AA F0 10       BEQ $10    [$C8BC]
 $A2:C8AC 9F 00 78 7E STA $7E7800,x[$7E:7980]
 $A2:C8B0 9D 92 0F    STA $0F92,x[$7E:1112]
-$A2:C8B3 A9 01 00    LDA #$0001
-$A2:C8B6 9D 94 0F    STA $0F94,x[$7E:1114]
-$A2:C8B9 9E 90 0F    STZ $0F90,x[$7E:1110]
+$A2:C8B3 A9 01 00    LDA #$0001             ;\
+$A2:C8B6 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
+$A2:C8B9 9E 90 0F    STZ $0F90,x[$7E:1110]  ; Enemy timer = 0
 
 $A2:C8BC 60          RTS
 }
@@ -7574,9 +7576,9 @@ $A2:CFED 0A          ASL A
 $A2:CFEE A8          TAY
 $A2:CFEF B9 77 CB    LDA $CB77,y[$A2:CB79]
 $A2:CFF2 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:CFF5 A9 01 00    LDA #$0001
-$A2:CFF8 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:CFFB 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A2:CFF5 A9 01 00    LDA #$0001             ;\
+$A2:CFF8 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:CFFB 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 
 $A2:CFFE 60          RTS
 }
@@ -7931,9 +7933,9 @@ $A2:E01D 60          RTS
 {
 $A2:E01E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:E021 9D 92 0F    STA $0F92,x[$7E:0F92]
-$A2:E024 A9 01 00    LDA #$0001
-$A2:E027 9D 94 0F    STA $0F94,x[$7E:0F94]
-$A2:E02A 9E 90 0F    STZ $0F90,x[$7E:0F90]
+$A2:E024 A9 01 00    LDA #$0001             ;\
+$A2:E027 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
+$A2:E02A 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
 $A2:E02D 60          RTS
 }
 
@@ -8213,9 +8215,9 @@ $A2:E268 A0 9B E1    LDY #$E19B
 
 $A2:E26B 98          TYA
 $A2:E26C 9D 92 0F    STA $0F92,x[$7E:1152]
-$A2:E26F A9 01 00    LDA #$0001
-$A2:E272 9D 94 0F    STA $0F94,x[$7E:1154]
-$A2:E275 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A2:E26F A9 01 00    LDA #$0001             ;\
+$A2:E272 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A2:E275 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 $A2:E278 6B          RTL
 }
 
@@ -8387,9 +8389,9 @@ $A2:E38F A0 E0 E2    LDY #$E2E0
 
 $A2:E392 98          TYA
 $A2:E393 9D 92 0F    STA $0F92,x[$7E:1052]
-$A2:E396 A9 01 00    LDA #$0001
-$A2:E399 9D 94 0F    STA $0F94,x[$7E:1054]
-$A2:E39C 9E 90 0F    STZ $0F90,x[$7E:1050]
+$A2:E396 A9 01 00    LDA #$0001             ;\
+$A2:E399 9D 94 0F    STA $0F94,x[$7E:1054]  ;} Enemy instruction timer = 1
+$A2:E39C 9E 90 0F    STZ $0F90,x[$7E:1050]  ; Enemy timer = 0
 
 $A2:E39F 6B          RTL
 }
@@ -8530,9 +8532,9 @@ $A2:E516 A0 8B E4    LDY #$E48B
 
 $A2:E519 98          TYA
 $A2:E51A 9D 92 0F    STA $0F92,x[$7E:1152]
-$A2:E51D A9 01 00    LDA #$0001
-$A2:E520 9D 94 0F    STA $0F94,x[$7E:1154]
-$A2:E523 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A2:E51D A9 01 00    LDA #$0001             ;\
+$A2:E520 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A2:E523 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 
 $A2:E526 6B          RTL
 }
@@ -8828,9 +8830,9 @@ $A2:E793 0A          ASL A
 $A2:E794 A8          TAY
 $A2:E795 B9 EF E5    LDA $E5EF,y[$A2:E5F7]
 $A2:E798 9D 92 0F    STA $0F92,x[$7E:1152]
-$A2:E79B A9 01 00    LDA #$0001
-$A2:E79E 9D 94 0F    STA $0F94,x[$7E:1154]
-$A2:E7A1 9E 90 0F    STZ $0F90,x[$7E:1150]
+$A2:E79B A9 01 00    LDA #$0001             ;\
+$A2:E79E 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
+$A2:E7A1 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
 
 $A2:E7A4 60          RTS
 }
@@ -9144,8 +9146,8 @@ $A2:EB49 38          SEC
 $A2:EB4A E9 07 00    SBC #$0007
 $A2:EB4D 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
 $A2:EB50 FE B2 0F    INC $0FB2,x[$7E:1032]
-$A2:EB53 A9 01 00    LDA #$0001
-$A2:EB56 9D 94 0F    STA $0F94,x[$7E:1014]
+$A2:EB53 A9 01 00    LDA #$0001             ;\
+$A2:EB56 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A2:EB59 A9 9E E9    LDA #$E99E
 $A2:EB5C 9D 92 0F    STA $0F92,x[$7E:1012]
 $A2:EB5F A9 10 00    LDA #$0010
@@ -9174,8 +9176,8 @@ $A2:EB8A 38          SEC
 $A2:EB8B E9 07 00    SBC #$0007
 $A2:EB8E 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
 $A2:EB91 FE B2 0F    INC $0FB2,x[$7E:1032]
-$A2:EB94 A9 01 00    LDA #$0001
-$A2:EB97 9D 94 0F    STA $0F94,x[$7E:1014]
+$A2:EB94 A9 01 00    LDA #$0001             ;\
+$A2:EB97 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A2:EB9A A9 A4 E9    LDA #$E9A4
 $A2:EB9D 9D 92 0F    STA $0F92,x[$7E:1012]
 $A2:EBA0 A9 18 00    LDA #$0018
@@ -9204,8 +9206,8 @@ $A2:EBCB 38          SEC
 $A2:EBCC E9 07 00    SBC #$0007
 $A2:EBCF 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
 $A2:EBD2 FE B2 0F    INC $0FB2,x[$7E:1032]
-$A2:EBD5 A9 01 00    LDA #$0001
-$A2:EBD8 9D 94 0F    STA $0F94,x[$7E:1014]
+$A2:EBD5 A9 01 00    LDA #$0001             ;\
+$A2:EBD8 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
 $A2:EBDB A9 AA E9    LDA #$E9AA
 $A2:EBDE 9D 92 0F    STA $0F92,x[$7E:1012]
 $A2:EBE1 A9 20 00    LDA #$0020
@@ -9286,8 +9288,8 @@ $A2:EC69 18          CLC
 $A2:EC6A 69 07 00    ADC #$0007
 $A2:EC6D 9D 7E 0F    STA $0F7E,x
 $A2:EC70 FE B2 0F    INC $0FB2,x
-$A2:EC73 A9 01 00    LDA #$0001
-$A2:EC76 9D 94 0F    STA $0F94,x
+$A2:EC73 A9 01 00    LDA #$0001             ;\
+$A2:EC76 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A2:EC79 A9 9E E9    LDA #$E99E
 $A2:EC7C 9D 92 0F    STA $0F92,x
 $A2:EC7F A9 10 00    LDA #$0010
@@ -9316,8 +9318,8 @@ $A2:ECAA 18          CLC
 $A2:ECAB 69 07 00    ADC #$0007
 $A2:ECAE 9D 7E 0F    STA $0F7E,x
 $A2:ECB1 FE B2 0F    INC $0FB2,x
-$A2:ECB4 A9 01 00    LDA #$0001
-$A2:ECB7 9D 94 0F    STA $0F94,x
+$A2:ECB4 A9 01 00    LDA #$0001             ;\
+$A2:ECB7 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A2:ECBA A9 A4 E9    LDA #$E9A4
 $A2:ECBD 9D 92 0F    STA $0F92,x
 $A2:ECC0 A9 18 00    LDA #$0018
@@ -9346,8 +9348,8 @@ $A2:ECEB 18          CLC
 $A2:ECEC 69 07 00    ADC #$0007
 $A2:ECEF 9D 7E 0F    STA $0F7E,x
 $A2:ECF2 FE B2 0F    INC $0FB2,x
-$A2:ECF5 A9 01 00    LDA #$0001
-$A2:ECF8 9D 94 0F    STA $0F94,x
+$A2:ECF5 A9 01 00    LDA #$0001             ;\
+$A2:ECF8 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
 $A2:ECFB A9 AA E9    LDA #$E9AA
 $A2:ECFE 9D 92 0F    STA $0F92,x
 $A2:ED01 A9 20 00    LDA #$0020
