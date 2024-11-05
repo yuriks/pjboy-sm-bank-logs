@@ -1073,7 +1073,7 @@ $A2:8F5E 6B          RTL
 }
 
 
-;;; $8F5F:  ;;;
+;;; $8F5F: Handle Samus landing on hovering tatori ;;;
 {
 $A2:8F5F DA          PHX                    ;\
 $A2:8F60 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;|
@@ -1084,13 +1084,13 @@ $A2:8F6A A9 83 90    LDA #$9083             ;\
 $A2:8F6D 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $9083 (rising to peak)
 $A2:8F70 AD 56 0B    LDA $0B56  [$7E:0B56]  ;\
 $A2:8F73 38          SEC                    ;|
-$A2:8F74 FF 06 78 7E SBC $7E7806,x[$7E:7806];} Extra Samus X subdisplacement -= [enemy $7E:7806]
-$A2:8F78 8D 56 0B    STA $0B56  [$7E:0B56]  ;/
-$A2:8F7B AD 58 0B    LDA $0B58  [$7E:0B58]  ;\
-$A2:8F7E FD B0 0F    SBC $0FB0,x[$7E:0FB0]  ;|
-$A2:8F81 C9 F0 FF    CMP #$FFF0             ;|
-$A2:8F84 10 03       BPL $03    [$8F89]     ;} Extra Samus X displacement = max(-10h, [extra Samus X displacement] - [enemy X velocity])
-$A2:8F86 A9 F0 FF    LDA #$FFF0             ;|
+$A2:8F74 FF 06 78 7E SBC $7E7806,x[$7E:7806];|
+$A2:8F78 8D 56 0B    STA $0B56  [$7E:0B56]  ;} Extra Samus X displacement -= [enemy X velocity]
+$A2:8F7B AD 58 0B    LDA $0B58  [$7E:0B58]  ;|
+$A2:8F7E FD B0 0F    SBC $0FB0,x[$7E:0FB0]  ;/
+$A2:8F81 C9 F0 FF    CMP #$FFF0             ;\
+$A2:8F84 10 03       BPL $03    [$8F89]     ;|
+$A2:8F86 A9 F0 FF    LDA #$FFF0             ;} Extra Samus X displacement = max([extra Samus X displacement], -10h)
                                             ;|
 $A2:8F89 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
 
@@ -1117,9 +1117,9 @@ $A2:8FAC E9 01 00    SBC #$0001             ;} Extra Samus Y displacement -= 1
 $A2:8FAF 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
 $A2:8FB2 BF 00 78 7E LDA $7E7800,x[$7E:7800];\
-$A2:8FB6 3A          DEC A                  ;} Decrement enemy $7E:7800
+$A2:8FB6 3A          DEC A                  ;} Decrement enemy function timer
 $A2:8FB7 9F 00 78 7E STA $7E7800,x[$7E:7800];/
-$A2:8FBB D0 2D       BNE $2D    [$8FEA]     ; If [enemy $7E:7800] != 0: return
+$A2:8FBB D0 2D       BNE $2D    [$8FEA]     ; If [enemy function timer] != 0: return
 $A2:8FBD A0 00 00    LDY #$0000             ; Y = 0
 $A2:8FC0 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
 $A2:8FC3 38          SEC                    ;|
@@ -1128,12 +1128,12 @@ $A2:8FC7 10 03       BPL $03    [$8FCC]     ;/
 $A2:8FC9 A0 04 00    LDY #$0004             ; Y = 4
 
 $A2:8FCC B9 56 8D    LDA $8D56,y[$A2:8D5A]  ;\
-$A2:8FCF 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy $7E:7802 = [$8D56 + [Y]]
-$A2:8FD3 B9 58 8D    LDA $8D58,y[$A2:8D5C]  ;\
-$A2:8FD6 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy $7E:7804 = [$8D56 + [Y] + 2]
+$A2:8FCF 9F 02 78 7E STA $7E7802,x[$7E:7802];|
+$A2:8FD3 B9 58 8D    LDA $8D58,y[$A2:8D5C]  ;} Enemy X acceleration = [$8D56 + [Y] + 2].[$8D56 + [Y]]
+$A2:8FD6 9F 04 78 7E STA $7E7804,x[$7E:7804];/
 $A2:8FDA A9 00 00    LDA #$0000             ;\
-$A2:8FDD 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy X velocity = 0
-$A2:8FE0 9F 06 78 7E STA $7E7806,x[$7E:7806]; Enemy $7E:7806 = 0
+$A2:8FDD 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;} Enemy X velocity = 0.0
+$A2:8FE0 9F 06 78 7E STA $7E7806,x[$7E:7806];/
 $A2:8FE4 A9 EB 8F    LDA #$8FEB             ;\
 $A2:8FE7 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $8FEB (hovering)
 
@@ -1144,6 +1144,7 @@ $A2:8FEA 6B          RTL
 ;;; $8FEB: Tatori function - hovering ;;;
 {
 ; Looks like buggy fixed point negations at $903C..6E
+; The dev must have thought that INC affected the carry flag
 
 $A2:8FEB 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
 $A2:8FEE BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
@@ -1152,53 +1153,53 @@ $A2:8FF3 BF 06 78 7E LDA $7E7806,x[$7E:7806];} Move enemy right by [enemy X velo
 $A2:8FF7 85 12       STA $12    [$7E:0012]  ;|
 $A2:8FF9 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A2:8FFD B0 3D       BCS $3D    [$903C]     ; If collided with wall: go to BRANCH_HIT_WALL
-$A2:8FFF 20 5F 8F    JSR $8F5F  [$A2:8F5F]
-$A2:9002 BF 06 78 7E LDA $7E7806,x[$7E:7806]
-$A2:9006 18          CLC
-$A2:9007 7F 02 78 7E ADC $7E7802,x[$7E:7802]
-$A2:900B 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$A2:900F BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A2:9012 7F 04 78 7E ADC $7E7804,x[$7E:7804]
-$A2:9016 48          PHA
-$A2:9017 10 04       BPL $04    [$901D]
-$A2:9019 49 FF FF    EOR #$FFFF
-$A2:901C 1A          INC A
-
-$A2:901D CD 5E 8D    CMP $8D5E  [$A2:8D5E]
-$A2:9020 30 15       BMI $15    [$9037]
-$A2:9022 68          PLA
-$A2:9023 AC 5E 8D    LDY $8D5E  [$A2:8D5E]
-$A2:9026 BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A2:9029 89 00 80    BIT #$8000
-$A2:902C F0 08       BEQ $08    [$9036]
-$A2:902E AD 5E 8D    LDA $8D5E  [$A2:8D5E]
-$A2:9031 49 FF FF    EOR #$FFFF
-$A2:9034 1A          INC A
-$A2:9035 A8          TAY
-
-$A2:9036 5A          PHY
-
-$A2:9037 68          PLA
-$A2:9038 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:903B 6B          RTL
+$A2:8FFF 20 5F 8F    JSR $8F5F  [$A2:8F5F]  ; Handle Samus landing on hovering tatori
+$A2:9002 BF 06 78 7E LDA $7E7806,x[$7E:7806];\
+$A2:9006 18          CLC                    ;|
+$A2:9007 7F 02 78 7E ADC $7E7802,x[$7E:7802];} Enemy X subvelocity += [enemy X subacceleration]
+$A2:900B 9F 06 78 7E STA $7E7806,x[$7E:7806];/
+$A2:900F BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A2:9012 7F 04 78 7E ADC $7E7804,x[$7E:7804];} A = [enemy X velocity] + [enemy X acceleration] + carry
+$A2:9016 48          PHA                    ;\
+$A2:9017 10 04       BPL $04    [$901D]     ;|
+$A2:9019 49 FF FF    EOR #$FFFF             ;|
+$A2:901C 1A          INC A                  ;|
+                                            ;|
+$A2:901D CD 5E 8D    CMP $8D5E  [$A2:8D5E]  ;|
+$A2:9020 30 15       BMI $15    [$9037]     ;|
+$A2:9022 68          PLA                    ;|
+$A2:9023 AC 5E 8D    LDY $8D5E  [$A2:8D5E]  ;|
+$A2:9026 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;|
+$A2:9029 89 00 80    BIT #$8000             ;} Enemy X velocity = clamp(|[A]|, -3, 3)
+$A2:902C F0 08       BEQ $08    [$9036]     ;|
+$A2:902E AD 5E 8D    LDA $8D5E  [$A2:8D5E]  ;|
+$A2:9031 49 FF FF    EOR #$FFFF             ;|
+$A2:9034 1A          INC A                  ;|
+$A2:9035 A8          TAY                    ;|
+                                            ;|
+$A2:9036 5A          PHY                    ;|
+                                            ;|
+$A2:9037 68          PLA                    ;|
+$A2:9038 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
+$A2:903B 6B          RTL                    ; Return
 
 ; BRANCH_HIT_WALL
 $A2:903C BF 06 78 7E LDA $7E7806,x[$7E:7806];\
 $A2:9040 49 FF FF    EOR #$FFFF             ;|
-$A2:9043 1A          INC A                  ;} Negate [enemy $7E:7806]
+$A2:9043 1A          INC A                  ;} Negate enemy X subvelocity
 $A2:9044 9F 06 78 7E STA $7E7806,x[$7E:7806];/
 $A2:9048 BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:904B 69 00 00    ADC #$0000             ;|
-$A2:904E 49 FF FF    EOR #$FFFF             ;} Enemy $0FB0 = 1 - [enemy $0FB0]
+$A2:904E 49 FF FF    EOR #$FFFF             ;} Enemy X velocity = -1 - [enemy X velocity]
 $A2:9051 1A          INC A                  ;|
 $A2:9052 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 $A2:9055 BF 02 78 7E LDA $7E7802,x[$7E:7802];\
 $A2:9059 49 FF FF    EOR #$FFFF             ;|
-$A2:905C 1A          INC A                  ;} Negate [enemy $7E:7802]
+$A2:905C 1A          INC A                  ;} Negate enemy X subacceleration
 $A2:905D 9F 02 78 7E STA $7E7802,x[$7E:7802];/
 $A2:9061 BF 04 78 7E LDA $7E7804,x[$7E:7804];\
 $A2:9065 69 00 00    ADC #$0000             ;|
-$A2:9068 49 FF FF    EOR #$FFFF             ;} Enemy $7E:7804 = carry - [enemy $7E:7804]
+$A2:9068 49 FF FF    EOR #$FFFF             ;} Enemy X acceleration = -carry - [enemy X acceleration]
 $A2:906B 9F 04 78 7E STA $7E7804,x[$7E:7804];/
 $A2:906F A9 00 00    LDA #$0000             ;\
 $A2:9072 8D 3E 18    STA $183E  [$7E:183E]  ;} Earthquake type = BG1 only, 1 pixel displacement, horizontal
@@ -1213,47 +1214,48 @@ $A2:9082 6B          RTL
 ;;; $9083: Tatori function - rising to peak ;;;
 {
 $A2:9083 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
-$A2:9086 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A2:9089 CD 60 8D    CMP $8D60  [$A2:8D60]
-$A2:908C 30 20       BMI $20    [$90AE]
+$A2:9086 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A2:9089 CD 60 8D    CMP $8D60  [$A2:8D60]  ;} If [enemy Y position] >= 1E8h:
+$A2:908C 30 20       BMI $20    [$90AE]     ;/
 $A2:908E DA          PHX                    ;\
 $A2:908F 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;|
 $A2:9093 FA          PLX                    ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:9094 29 FF FF    AND #$FFFF             ;|
 $A2:9097 F0 2E       BEQ $2E    [$90C7]     ;/
-$A2:9099 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A2:909C 38          SEC
-$A2:909D ED 62 8D    SBC $8D62  [$A2:8D62]
-$A2:90A0 9D 7E 0F    STA $0F7E,x[$7E:0F7E]
+$A2:9099 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A2:909C 38          SEC                    ;|
+$A2:909D ED 62 8D    SBC $8D62  [$A2:8D62]  ;} Enemy Y position -= 7
+$A2:90A0 9D 7E 0F    STA $0F7E,x[$7E:0F7E]  ;/
 $A2:90A3 AD 5C 0B    LDA $0B5C  [$7E:0B5C]  ;\
 $A2:90A6 38          SEC                    ;|
 $A2:90A7 ED 62 8D    SBC $8D62  [$A2:8D62]  ;} Extra Samus Y displacement -= 7
 $A2:90AA 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
-$A2:90AD 6B          RTL
+$A2:90AD 6B          RTL                    ; Return
 
-$A2:90AE AD 64 8D    LDA $8D64  [$A2:8D64]
-$A2:90B1 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:90B5 A9 CC 90    LDA #$90CC
+$A2:90AE AD 64 8D    LDA $8D64  [$A2:8D64]  ;\
+$A2:90B1 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy function timer = 1Eh
+$A2:90B5 A9 CC 90    LDA #$90CC             ; Enemy function = $90CC (hovering at peak)
 
+; BRANCH_MERGE
 $A2:90B8 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:90BB A9 00 00    LDA #$0000
-$A2:90BE 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A2:90C2 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A2:90C6 6B          RTL
+$A2:90BB A9 00 00    LDA #$0000             ;\
+$A2:90BE 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy Y velocity = 0.0
+$A2:90C2 9F 08 78 7E STA $7E7808,x[$7E:7808];/
+$A2:90C6 6B          RTL                    ; Return
 
 ; BRANCH_NOT_TOUCHING_SAMUS
-$A2:90C7 A9 E1 90    LDA #$90E1
-$A2:90CA 80 EC       BRA $EC    [$90B8]
+$A2:90C7 A9 E1 90    LDA #$90E1             ; Enemy function = $90E1 (falling)
+$A2:90CA 80 EC       BRA $EC    [$90B8]     ; Go to BRANCH_MERGE
 }
 
 
 ;;; $90CC: Tatori function - hovering at peak ;;;
 {
 $A2:90CC 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
-$A2:90CF BF 00 78 7E LDA $7E7800,x[$7E:7800]
-$A2:90D3 3A          DEC A
-$A2:90D4 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:90D8 D0 06       BNE $06    [$90E0]
+$A2:90CF BF 00 78 7E LDA $7E7800,x[$7E:7800];\
+$A2:90D3 3A          DEC A                  ;} Decrement enemy function timer
+$A2:90D4 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$A2:90D8 D0 06       BNE $06    [$90E0]     ; If [enemy function timer] = 0:
 $A2:90DA A9 E1 90    LDA #$90E1             ;\
 $A2:90DD 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $90E1 (falling)
 
@@ -1264,16 +1266,16 @@ $A2:90E0 6B          RTL
 ;;; $90E1: Tatori function - falling ;;;
 {
 $A2:90E1 20 15 93    JSR $9315  [$A2:9315]  ; Tatori / Samus collision detection
-$A2:90E4 AF 08 78 7E LDA $7E7808[$7E:7808]
-$A2:90E8 CD 66 8D    CMP $8D66  [$A2:8D66]
-$A2:90EB 10 17       BPL $17    [$9104]
-$A2:90ED BF 0E 78 7E LDA $7E780E,x[$7E:780E]
-$A2:90F1 18          CLC
-$A2:90F2 69 00 20    ADC #$2000
-$A2:90F5 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A2:90F9 BF 08 78 7E LDA $7E7808,x[$7E:7808]
-$A2:90FD 69 00 00    ADC #$0000
-$A2:9100 9F 08 78 7E STA $7E7808,x[$7E:7808]
+$A2:90E4 AF 08 78 7E LDA $7E7808[$7E:7808]  ;\
+$A2:90E8 CD 66 8D    CMP $8D66  [$A2:8D66]  ;} If [enemy Y velocity] < 4:
+$A2:90EB 10 17       BPL $17    [$9104]     ;/
+$A2:90ED BF 0E 78 7E LDA $7E780E,x[$7E:780E];\
+$A2:90F1 18          CLC                    ;|
+$A2:90F2 69 00 20    ADC #$2000             ;|
+$A2:90F5 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy Y velocity += 0.2000h
+$A2:90F9 BF 08 78 7E LDA $7E7808,x[$7E:7808];|
+$A2:90FD 69 00 00    ADC #$0000             ;|
+$A2:9100 9F 08 78 7E STA $7E7808,x[$7E:7808];/
 
 $A2:9104 64 12       STZ $12    [$7E:0012]  ;\
 $A2:9106 BF 08 78 7E LDA $7E7808,x[$7E:7808];|
@@ -1489,7 +1491,7 @@ $A2:928C 22 23 80 A2 JSL $A28023[$A2:8023]  ; Normal enemy touch AI
 $A2:9290 A9 E1 90    LDA #$90E1             ;\
 $A2:9293 9D A8 0F    STA $0FA8,x            ;} Enemy function = $90E1 (falling)
 $A2:9296 A9 02 00    LDA #$0002             ;\
-$A2:9299 9F 08 78 7E STA $7E7808,x          ;} Enemy $7E:7808 = 2
+$A2:9299 9F 08 78 7E STA $7E7808,x          ;} Enemy Y velocity = 2
 
 $A2:929D 6B          RTL
 }
