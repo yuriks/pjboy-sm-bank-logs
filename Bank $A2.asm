@@ -177,7 +177,7 @@ $A2:880C B9 01 87    LDA $8701,y[$A2:8701]  ;/
 $A2:880F C0 17 00    CPY #$0017             ;\
 $A2:8812 30 02       BMI $02    [$8816]     ;} If [enemy speed table index] >= 17h:
 $A2:8814 A9 FF       LDA #$FF               ; A = FFh
-                                            
+
 $A2:8816 8D 02 42    STA $4202  [$7E:4202]  ;\
 $A2:8819 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
 $A2:881C 8D 03 42    STA $4203  [$7E:4203]  ;|
@@ -214,7 +214,7 @@ $A2:8858 B9 01 87    LDA $8701,y[$A2:8716]  ;/
 $A2:885B C0 17 00    CPY #$0017             ;\
 $A2:885E 30 02       BMI $02    [$8862]     ;} If [enemy speed table index] >= 17h:
 $A2:8860 A9 FF       LDA #$FF               ; A = FFh
-                                            
+
 $A2:8862 8D 02 42    STA $4202  [$7E:4202]  ;\
 $A2:8865 BD A8 0F    LDA $0FA8,x[$7E:0FE8]  ;|
 $A2:8868 8D 03 42    STA $4203  [$7E:4203]  ;|
@@ -629,40 +629,45 @@ $A2:8B60             dw 3800, 4B9C, 3694, 08E7, 0884, 42F7, 2A52, 19AD, 1129, 7F
 
 ;;; $8B80..8D4F: Instruction lists - tatori ;;;
 {
-;;; $8B80: Instruction list -  ;;;
+;;; $8B80: Instruction list - mini-tatori - crawling left ;;;
 {
-$A2:8B80             dx 9381,       ; ???
+$A2:8B80             dx 9381,       ; Crawl
                         000A,94D9,
                         000A,94E0,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,94E7,
                         000A,94EE,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,94D9,
                         000A,94E0,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,94E7,
                         000A,94EE,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,94D9,
                         000A,94E0,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,9501,
                         000A,950D,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,94D9,
                         000A,94F5,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,9501,
                         000A,950D,
-                        9412        ; ???
+                        9412        ; Loop or turn around if moved too far
+}
+
+
+;;; $8BD2: Instruction list -  ;;;
+{
 $A2:8BD2             dx 0001,9519,
                         94D1,       ; Play tatori spinning sound effect
                         0004,9519,
                         0005,9520,
                         0005,9527,
                         0005,952E,
-                        94C7,       ; ???
+                        94C7,       ; Enemy function = spinning - stoppable
                         80ED,8BD2   ; Go to $8BD2
 }
 
@@ -740,33 +745,38 @@ $A2:8C62             dx 0005,9501,
 }
 
 
-;;; $8C72: Instruction list -  ;;;
+;;; $8C72: Instruction list - mini-tatori - crawling right ;;;
 {
-$A2:8C72             dx 9381,       ; ???
+$A2:8C72             dx 9381,       ; Crawl
                         000A,9733,
                         000A,973A,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,9741,
                         000A,9748,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,9733,
                         000A,973A,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,9741,
                         000A,9748,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,9733,
                         000A,973A,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,975B,
                         000A,9767,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,9733,
                         000A,974F,
-                        9381,       ; ???
+                        9381,       ; Crawl
                         000A,975B,
                         000A,9767,
-                        9412        ; ???
+                        9412        ; Loop or turn around if moved too far
+}
+
+
+;;; $8CC4: Unused. Instruction list -  ;;;
+{
 $A2:8CC4             dx 0005,9773,
                         0005,977A,
                         0005,9781,
@@ -843,19 +853,21 @@ $A2:8D40             dx 0005,9501,
 ;;; $8D50: Tatori data ;;;
 {
 $A2:8D50             dw 0030
-$A2:8D52             dw 0001
-$A2:8D54             dw 0020
+$A2:8D52             dw 0001 ; 1. Used as value to set asleep flag to
+$A2:8D54             dw 0020 ; Unknown. Used as value for a bugged store operation
 
-$A2:8D56             dw F000,FFFF,
-                        1000,0000
+; Hovering X acceleration
+; Subacceleration, acceleration
+$A2:8D56             dw F000,FFFF, ; Moving left
+                        1000,0000  ; Moving right
 
-$A2:8D5E             dw 0003
-$A2:8D60             dw 01E8
-$A2:8D62             dw 0007
-$A2:8D64             dw 001E
-$A2:8D66             dw 0004
-$A2:8D68             dw FFFD ; Unused
-$A2:8D6A             dw 0003 ; Unused
+$A2:8D5E             dw 0003 ; Max hovering X speed
+$A2:8D60             dw 01E8 ; Peak Y position
+$A2:8D62             dw 0007 ; Rising to peak speed
+$A2:8D64             dw 001E ; Hovering at peak duration
+$A2:8D66             dw 0004 ; Max falling Y speed
+$A2:8D68             dw FFFD ;
+$A2:8D6A             dw 0003 ;
 }
 
 
@@ -891,14 +903,14 @@ $A2:8DA9 38          SEC                    ;|
 $A2:8DAA FD 84 0F    SBC $0F84,x[$7E:0FC4]  ;} Enemy $0FAE = [enemy Y position] - [enemy Y radius]
 $A2:8DAD 9D AE 0F    STA $0FAE,x[$7E:0FEE]  ;/
 $A2:8DB0 A9 42 91    LDA #$9142             ;\
-$A2:8DB3 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $9142
+$A2:8DB3 9D A8 0F    STA $0FA8,x[$7E:0FE8]  ;} Enemy function = $9142 (crawling - not carrying Samus)
 $A2:8DB6 A9 01 00    LDA #$0001             ;\
 $A2:8DB9 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A2:8DBC 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
 $A2:8DBF A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80
 $A2:8DC2 BD B4 0F    LDA $0FB4,x[$7E:0FF4]  ;\
-$A2:8DC5 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy $0FB0 = [enemy parameter 1]
-$A2:8DC8 30 03       BMI $03    [$8DCD]     ; If [enemy $0FB0] >= 0:
+$A2:8DC5 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy X velocity = [enemy parameter 1]
+$A2:8DC8 30 03       BMI $03    [$8DCD]     ; If [enemy X velocity] >= 0:
 $A2:8DCA A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72
 
 $A2:8DCD 98          TYA
@@ -914,6 +926,8 @@ $A2:8DD5 7C A8 0F    JMP ($0FA8,x)[$A2:8DD8]; Go to [enemy function]
 }
 
 
+;;; $8DD8..912D: Tatori functions ;;;
+{
 ;;; $8DD8: Tatori function - initial ;;;
 {
 $A2:8DD8 BD 96 0F    LDA $0F96,x[$7E:0F96]  ;\
@@ -1296,6 +1310,7 @@ $A2:912A 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = RTL
 
 $A2:912D 6B          RTL
 }
+}
 
 
 ;;; $912E: Main AI - enemy $CF7F (mini-tatori) ;;;
@@ -1304,25 +1319,27 @@ $A2:912E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9131 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
 $A2:9134 AA          TAX                    ;} X = [enemy tatori index]
 $A2:9135 A9 00 00    LDA #$0000             ;\
-$A2:9138 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Tatori $7E:780C = 0
+$A2:9138 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Tatori $7E:780C = 0 (never read)
 $A2:913C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:913F 7C A8 0F    JMP ($0FA8,x)[$A2:9142]; Go to [enemy function]
 }
 
 
-;;; $9142: Mini-tatori function -  ;;;
+;;; $9142..9280: Mini-tatori functions ;;;
+{
+;;; $9142: Mini-tatori function - crawling - not carrying Samus ;;;
 {
 $A2:9142 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9146 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: return
 $A2:9149 F0 22       BEQ $22    [$916D]     ;/
 $A2:914B A9 6E 91    LDA #$916E             ;\
-$A2:914E 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $916E
-$A2:9151 A9 04 00    LDA #$0004
-$A2:9154 9F 0A 78 7E STA $7E780A,x[$7E:790A]
-$A2:9158 A0 30 8C    LDY #$8C30
-$A2:915B BD B0 0F    LDA $0FB0,x[$7E:10B0]
-$A2:915E 30 03       BMI $03    [$9163]
-$A2:9160 A0 14 8D    LDY #$8D14
+$A2:914E 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $916E (hiding - carrying Samus)
+$A2:9151 A9 04 00    LDA #$0004             ;\
+$A2:9154 9F 0A 78 7E STA $7E780A,x[$7E:790A];} Enemy $7E:780A = 4
+$A2:9158 A0 30 8C    LDY #$8C30             ; Enemy instruction list pointer = $8C30
+$A2:915B BD B0 0F    LDA $0FB0,x[$7E:10B0]  ;\
+$A2:915E 30 03       BMI $03    [$9163]     ;} If [enemy X velocity] >= 0:
+$A2:9160 A0 14 8D    LDY #$8D14             ; Enemy instruction list pointer = $8D14
 
 $A2:9163 98          TYA
 $A2:9164 9D 92 0F    STA $0F92,x[$7E:1092]
@@ -1333,64 +1350,64 @@ $A2:916D 6B          RTL
 }
 
 
-;;; $916E: Mini-tatori function -  ;;;
+;;; $916E: Mini-tatori function - hiding - carrying Samus ;;;
 {
 $A2:916E 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9172 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:9175 F0 08       BEQ $08    [$917F]     ;/
-$A2:9177 A9 04 00    LDA #$0004
-$A2:917A 9F 0A 78 7E STA $7E780A,x[$7E:790A]
+$A2:9177 A9 04 00    LDA #$0004             ;\
+$A2:917A 9F 0A 78 7E STA $7E780A,x[$7E:790A];} Enemy $7E:780A = 4
 
-$A2:917E 6B          RTL
+$A2:917E 6B          RTL                    ; Return
 
 ; BRANCH_NOT_TOUCHING_SAMUS
-$A2:917F BF 0A 78 7E LDA $7E780A,x[$7E:790A]
-$A2:9183 3A          DEC A
-$A2:9184 9F 0A 78 7E STA $7E780A,x[$7E:790A]
-$A2:9188 D0 F4       BNE $F4    [$917E]
+$A2:917F BF 0A 78 7E LDA $7E780A,x[$7E:790A];\
+$A2:9183 3A          DEC A                  ;} Decrement enemy $7E:780A
+$A2:9184 9F 0A 78 7E STA $7E780A,x[$7E:790A];/
+$A2:9188 D0 F4       BNE $F4    [$917E]     ; If [enemy $7E:780A] != 0: return
 $A2:918A A9 98 91    LDA #$9198             ;\
 $A2:918D 9D A8 0F    STA $0FA8,x[$7E:10A8]  ;} Enemy function = $9198
-$A2:9190 A9 3C 00    LDA #$003C
-$A2:9193 9F 00 78 7E STA $7E7800,x[$7E:7900]
+$A2:9190 A9 3C 00    LDA #$003C             ;\
+$A2:9193 9F 00 78 7E STA $7E7800,x[$7E:7900];} Enemy $7E:7800 = 60
 $A2:9197 6B          RTL
 }
 
 
-;;; $9198: Mini-tatori function -  ;;;
+;;; $9198: Mini-tatori function - hiding - not carrying Samus ;;;
 {
 $A2:9198 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:919C 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to BRANCH_NOT_TOUCHING_SAMUS
 $A2:919F F0 2F       BEQ $2F    [$91D0]     ;/
 $A2:91A1 A9 F8 91    LDA #$91F8             ;\
 $A2:91A4 9D A8 0F    STA $0FA8,x            ;} Enemy function = $91F8
-$A2:91A7 A9 D2 8B    LDA #$8BD2
-$A2:91AA 9D 92 0F    STA $0F92,x
+$A2:91A7 A9 D2 8B    LDA #$8BD2             ;\
+$A2:91AA 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8BD2
 $A2:91AD A9 01 00    LDA #$0001             ;\
 $A2:91B0 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$A2:91B3 A9 01 00    LDA #$0001
-$A2:91B6 9F 08 78 7E STA $7E7808,x
-$A2:91BA AD 1E 0A    LDA $0A1E  [$7E:0A1E]
-$A2:91BD 29 0F 00    AND #$000F
-$A2:91C0 AC 68 8D    LDY $8D68  [$A2:8D68]
-$A2:91C3 C9 08 00    CMP #$0008
-$A2:91C6 D0 03       BNE $03    [$91CB]
-$A2:91C8 AC 6A 8D    LDY $8D6A  [$A2:8D6A]
+$A2:91B3 A9 01 00    LDA #$0001             ;\
+$A2:91B6 9F 08 78 7E STA $7E7808,x          ;} Enemy Y velocity = 1
+$A2:91BA AD 1E 0A    LDA $0A1E  [$7E:0A1E]  ;\
+$A2:91BD 29 0F 00    AND #$000F             ;} A = [Samus pose X direction]
+$A2:91C0 AC 68 8D    LDY $8D68  [$A2:8D68]  ; Enemy X velocity = -3
+$A2:91C3 C9 08 00    CMP #$0008             ;\
+$A2:91C6 D0 03       BNE $03    [$91CB]     ;} If Samus is facing right:
+$A2:91C8 AC 6A 8D    LDY $8D6A  [$A2:8D6A]  ; Enemy X velocity = 3
 
 $A2:91CB 98          TYA
 $A2:91CC 9D B0 0F    STA $0FB0,x
-$A2:91CF 6B          RTL
+$A2:91CF 6B          RTL                    ; Return
 
 ; BRANCH_NOT_TOUCHING_SAMUS
-$A2:91D0 BF 00 78 7E LDA $7E7800,x[$7E:7900]
-$A2:91D4 3A          DEC A
-$A2:91D5 9F 00 78 7E STA $7E7800,x[$7E:7900]
-$A2:91D9 F0 01       BEQ $01    [$91DC]
-$A2:91DB 6B          RTL
+$A2:91D0 BF 00 78 7E LDA $7E7800,x[$7E:7900];\
+$A2:91D4 3A          DEC A                  ;} Decrement enemy $7E:780A
+$A2:91D5 9F 00 78 7E STA $7E7800,x[$7E:7900];/
+$A2:91D9 F0 01       BEQ $01    [$91DC]     ; If [enemy $7E:780A] != 0:
+$A2:91DB 6B          RTL                    ; Return
 
-$A2:91DC A0 80 8B    LDY #$8B80
-$A2:91DF BD B0 0F    LDA $0FB0,x[$7E:10B0]
-$A2:91E2 30 03       BMI $03    [$91E7]
-$A2:91E4 A0 72 8C    LDY #$8C72
+$A2:91DC A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80
+$A2:91DF BD B0 0F    LDA $0FB0,x[$7E:10B0]  ;\
+$A2:91E2 30 03       BMI $03    [$91E7]     ;} If [enemy X velocity] >= 0:
+$A2:91E4 A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72
 
 $A2:91E7 98          TYA
 $A2:91E8 9D 92 0F    STA $0F92,x[$7E:1092]
@@ -1402,7 +1419,7 @@ $A2:91F7 6B          RTL
 }
 
 
-;;; $91F8: Mini-tatori function -  ;;;
+;;; $91F8: Mini-tatori function - spinning - unstoppable ;;;
 {
 $A2:91F8 64 12       STZ $12    [$7E:0012]  ;\
 $A2:91FA BD B0 0F    LDA $0FB0,x            ;|
@@ -1413,22 +1430,23 @@ $A2:9205 64 12       STZ $12    [$7E:0012]  ;\
 $A2:9207 BF 08 78 7E LDA $7E7808,x          ;|
 $A2:920B 85 14       STA $14    [$7E:0014]  ;} Move enemy down by [enemy Y velocity]
 $A2:920D 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A2:9211 6B          RTL
+$A2:9211 6B          RTL                    ; Return
 
-$A2:9212 BD B0 0F    LDA $0FB0,x
-$A2:9215 49 FF FF    EOR #$FFFF
-$A2:9218 1A          INC A
-$A2:9219 9D B0 0F    STA $0FB0,x
+$A2:9212 BD B0 0F    LDA $0FB0,x            ;\
+$A2:9215 49 FF FF    EOR #$FFFF             ;|
+$A2:9218 1A          INC A                  ;} Negate enemy X velocity
+$A2:9219 9D B0 0F    STA $0FB0,x            ;/
 $A2:921C 6B          RTL
 }
 
 
-;;; $921D:  ;;;
+;;; $921D: Unused ;;;
 {
-$A2:921D A0 80 8B    LDY #$8B80
-$A2:9220 BD B0 0F    LDA $0FB0,x
-$A2:9223 30 03       BMI $03    [$9228]
-$A2:9225 A0 72 8C    LDY #$8C72
+; Clone of $91DC. Possibly an RTL'd out section of the above function
+$A2:921D A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80
+$A2:9220 BD B0 0F    LDA $0FB0,x            ;\
+$A2:9223 30 03       BMI $03    [$9228]     ;} If [enemy X velocity] >= 0:
+$A2:9225 A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72
 
 $A2:9228 98          TYA
 $A2:9229 9D 92 0F    STA $0F92,x
@@ -1440,15 +1458,15 @@ $A2:9238 6B          RTL
 }
 
 
-;;; $9239:  ;;;
+;;; $9239: Mini-tatori function - spinning - stoppable ;;;
 {
 $A2:9239 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:923D 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to $91F8
 $A2:9240 F0 B6       BEQ $B6    [$91F8]     ;/
-$A2:9242 A0 80 8B    LDY #$8B80
-$A2:9245 BD B0 0F    LDA $0FB0,x
-$A2:9248 30 03       BMI $03    [$924D]
-$A2:924A A0 72 8C    LDY #$8C72
+$A2:9242 A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80
+$A2:9245 BD B0 0F    LDA $0FB0,x            ;\
+$A2:9248 30 03       BMI $03    [$924D]     ;} If [enemy X velocity] >= 0:
+$A2:924A A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72
 
 $A2:924D 98          TYA
 $A2:924E 9D 92 0F    STA $0F92,x
@@ -1460,15 +1478,15 @@ $A2:925D 6B          RTL
 }
 
 
-;;; $925E: Mini-tatori function -  ;;;
+;;; $925E: Mini-tatori function - crawling - carrying Samus ;;;
 {
 $A2:925E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9261 BD 84 0F    LDA $0F84,x
-$A2:9264 48          PHA
-$A2:9265 BD AA 0F    LDA $0FAA,x
-$A2:9268 AA          TAX
-$A2:9269 68          PLA
-$A2:926A 9F 0C 78 7E STA $7E780C,x
+$A2:9261 BD 84 0F    LDA $0F84,x            ; A = [enemy Y radius]
+$A2:9264 48          PHA                    ;\
+$A2:9265 BD AA 0F    LDA $0FAA,x            ;|
+$A2:9268 AA          TAX                    ;} X = [enemy tatori index]
+$A2:9269 68          PLA                    ;/
+$A2:926A 9F 0C 78 7E STA $7E780C,x          ; Tatori $7E:780C = [A] (never read)
 $A2:926E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9271 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:9275 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below: return
@@ -1477,6 +1495,7 @@ $A2:927A A9 42 91    LDA #$9142             ;\
 $A2:927D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9142
 
 $A2:9280 6B          RTL
+}
 }
 
 
@@ -1512,15 +1531,15 @@ $A2:92A8 D0 01       BNE $01    [$92AB]     ;/
 $A2:92AA 6B          RTL                    ; Return
 
 $A2:92AB BD B0 0F    LDA $0FB0,x            ;\
-$A2:92AE 30 0B       BMI $0B    [$92BB]     ;} If [enemy $0FB0] >= 0:
+$A2:92AE 30 0B       BMI $0B    [$92BB]     ;} If [enemy X velocity] >= 0:
 $A2:92B0 A9 80 8B    LDA #$8B80             ;\
 $A2:92B3 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8B80
-$A2:92B6 A9 FF FF    LDA #$FFFF             ; Enemy $0FB0 = -1
+$A2:92B6 A9 FF FF    LDA #$FFFF             ; Enemy X velocity = -1
 $A2:92B9 80 09       BRA $09    [$92C4]
 
-$A2:92BB A9 72 8C    LDA #$8C72             ;\ Else ([enemy $0FB0] < 0):
+$A2:92BB A9 72 8C    LDA #$8C72             ;\ Else ([enemy X velocity] < 0):
 $A2:92BE 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $8C72
-$A2:92C1 A9 01 00    LDA #$0001             ; Enemy $0FB0 = 1
+$A2:92C1 A9 01 00    LDA #$0001             ; Enemy X velocity = 1
 
 $A2:92C4 9D B0 0F    STA $0FB0,x
 $A2:92C7 A9 01 00    LDA #$0001             ;\
@@ -1625,66 +1644,69 @@ $A2:9380 60          RTS
 }
 
 
-;;; $9381: Instruction ;;;
+;;; $9381..94D8: Instructions ;;;
+{
+;;; $9381: Instruction - mini-tatori - crawl ;;;
 {
 $A2:9381 DA          PHX
 $A2:9382 5A          PHY
-$A2:9383 A9 00 00    LDA #$0000
-$A2:9386 85 30       STA $30    [$7E:0030]
+$A2:9383 A9 00 00    LDA #$0000             ;\
+$A2:9386 85 30       STA $30    [$7E:0030]  ;} $30 = 0 (not carrying Samus)
 $A2:9388 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:938B 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:938F 29 FF FF    AND #$FFFF             ;} If enemy is touching Samus from below:
 $A2:9392 F0 0F       BEQ $0F    [$93A3]     ;/
 $A2:9394 BD B0 0F    LDA $0FB0,x            ;\
 $A2:9397 18          CLC                    ;|
-$A2:9398 6D 58 0B    ADC $0B58  [$7E:0B58]  ;} Extra Samus X displacement += [enemy $0FB0]
+$A2:9398 6D 58 0B    ADC $0B58  [$7E:0B58]  ;} Extra Samus X displacement += [enemy X velocity]
 $A2:939B 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
-$A2:939E A9 01 00    LDA #$0001
-$A2:93A1 85 30       STA $30    [$7E:0030]
+$A2:939E A9 01 00    LDA #$0001             ;\
+$A2:93A1 85 30       STA $30    [$7E:0030]  ;} $30 = 1 (carrying Samus)
 
-$A2:93A3 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]
-$A2:93A6 85 32       STA $32    [$7E:0032]
-$A2:93A8 BD AE 0F    LDA $0FAE,x[$7E:0FEE]
-$A2:93AB 9D 7E 0F    STA $0F7E,x[$7E:0FBE]
+$A2:93A3 BD 7E 0F    LDA $0F7E,x[$7E:0FBE]  ;\
+$A2:93A6 85 32       STA $32    [$7E:0032]  ;} $32 = [enemy Y position]
+$A2:93A8 BD AE 0F    LDA $0FAE,x[$7E:0FEE]  ;\
+$A2:93AB 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;} Enemy Y position = [enemy $0FAE]
 $A2:93AE 64 12       STZ $12    [$7E:0012]  ;\
 $A2:93B0 BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;|
 $A2:93B3 85 14       STA $14    [$7E:0014]  ;} Move enemy right by [enemy X velocity]
 $A2:93B5 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
-$A2:93B9 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A2:93BC AA          TAX
-$A2:93BD BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:93C0 C9 0A 8E    CMP #$8E0A
-$A2:93C3 D0 44       BNE $44    [$9409]
-$A2:93C5 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:93C8 DA          PHX
-$A2:93C9 BD AA 0F    LDA $0FAA,x[$7E:0FEA]
-$A2:93CC AA          TAX
-$A2:93CD BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A2:93D0 FA          PLX
-$A2:93D1 38          SEC
-$A2:93D2 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]
-$A2:93D5 08          PHP
-$A2:93D6 10 04       BPL $04    [$93DC]
-$A2:93D8 49 FF FF    EOR #$FFFF
-$A2:93DB 1A          INC A
+$A2:93B9 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;\
+$A2:93BC AA          TAX                    ;} X = [enemy tatori index]
+$A2:93BD BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:93C0 C9 0A 8E    CMP #$8E0A             ;} If [tatori function] != $8E0A (asleep): return
+$A2:93C3 D0 44       BNE $44    [$9409]     ;/
+$A2:93C5 AE 54 0E    LDX $0E54  [$7E:0E54]  ;\
+$A2:93C8 DA          PHX                    ;|
+$A2:93C9 BD AA 0F    LDA $0FAA,x[$7E:0FEA]  ;} >_<;
+$A2:93CC AA          TAX                    ;/
+$A2:93CD BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A2:93D0 FA          PLX                    ;|
+$A2:93D1 38          SEC                    ;} A = [tatori X position] - [enemy X position]
+$A2:93D2 FD 7A 0F    SBC $0F7A,x[$7E:0FBA]  ;/
+$A2:93D5 08          PHP                    ;\
+$A2:93D6 10 04       BPL $04    [$93DC]     ;|
+$A2:93D8 49 FF FF    EOR #$FFFF             ;|
+$A2:93DB 1A          INC A                  ;|
+                                            ;} If |[tatori X position] - [enemy X position]| >= 18h: go to BRANCH_NOT_ON_TATORI
+$A2:93DC C9 18 00    CMP #$0018             ;|
+$A2:93DF 10 2B       BPL $2B    [$940C]     ;|
+$A2:93E1 28          PLP                    ;/
+$A2:93E2 10 04       BPL $04    [$93E8]     ; If [tatori X position] < [enemy X position]:
+$A2:93E4 18          CLC                    ;\
+$A2:93E5 69 18 00    ADC #$0018             ;} A = 18h + [enemy X position] - [tatori X position]
 
-$A2:93DC C9 18 00    CMP #$0018
-$A2:93DF 10 2B       BPL $2B    [$940C]
-$A2:93E1 28          PLP
-$A2:93E2 10 04       BPL $04    [$93E8]
-$A2:93E4 18          CLC
-$A2:93E5 69 18 00    ADC #$0018
+$A2:93E8 0A          ASL A                  ;\
+$A2:93E9 AA          TAX                    ;} A = [$8E80 + [A] * 2]
+$A2:93EA BD 80 8E    LDA $8E80,x[$A2:8E82]  ;/
 
-$A2:93E8 0A          ASL A
-$A2:93E9 AA          TAX
-$A2:93EA BD 80 8E    LDA $8E80,x[$A2:8E82]
-
-$A2:93ED 85 14       STA $14    [$7E:0014]
-$A2:93EF 64 12       STZ $12    [$7E:0012]  ;\
-$A2:93F1 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Move enemy down by [$14]
+; BRANCH_MERGE
+$A2:93ED 85 14       STA $14    [$7E:0014]  ;\
+$A2:93EF 64 12       STZ $12    [$7E:0012]  ;|
+$A2:93F1 AE 54 0E    LDX $0E54  [$7E:0E54]  ;} Move enemy down by [A]
 $A2:93F4 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A2:93F8 A5 30       LDA $30    [$7E:0030]
-$A2:93FA F0 0D       BEQ $0D    [$9409]
+$A2:93F8 A5 30       LDA $30    [$7E:0030]  ;\
+$A2:93FA F0 0D       BEQ $0D    [$9409]     ;} If [$30] != 0: (carrying Samus)
 $A2:93FC BD 7E 0F    LDA $0F7E,x            ;\
 $A2:93FF 38          SEC                    ;|
 $A2:9400 E5 32       SBC $32    [$7E:0032]  ;|
@@ -1694,51 +1716,54 @@ $A2:9406 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
 $A2:9409 7A          PLY
 $A2:940A FA          PLX
-$A2:940B 6B          RTL
+$A2:940B 6B          RTL                    ; Return
 
+; BRANCH_NOT_ON_TATORI
 $A2:940C 28          PLP
-$A2:940D A9 01 00    LDA #$0001
-$A2:9410 80 DB       BRA $DB    [$93ED]
+$A2:940D A9 01 00    LDA #$0001             ; A = 1
+$A2:9410 80 DB       BRA $DB    [$93ED]     ; Go to BRANCH_MERGE
 }
 
 
-;;; $9412: Instruction ;;;
+;;; $9412: Instruction - mini-tatori - loop or turn around if moved too far ;;;
 {
 $A2:9412 DA          PHX
 $A2:9413 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9416 BD AC 0F    LDA $0FAC,x[$7E:0FEC]
-$A2:9419 38          SEC
-$A2:941A FD 7A 0F    SBC $0F7A,x[$7E:0FBA]
-$A2:941D 08          PHP
-$A2:941E 10 04       BPL $04    [$9424]
-$A2:9420 49 FF FF    EOR #$FFFF
-$A2:9423 1A          INC A
-
-$A2:9424 CD 50 8D    CMP $8D50  [$A2:8D50]
-$A2:9427 30 1B       BMI $1B    [$9444]
-$A2:9429 28          PLP
-$A2:942A 30 05       BMI $05    [$9431]
-$A2:942C A9 01 00    LDA #$0001
+$A2:9416 BD AC 0F    LDA $0FAC,x[$7E:0FEC]  ;\
+$A2:9419 38          SEC                    ;} A = [enemy $0FAC] - [enemy X position]
+$A2:941A FD 7A 0F    SBC $0F7A,x[$7E:0FBA]  ;/
+$A2:941D 08          PHP                    ;\
+$A2:941E 10 04       BPL $04    [$9424]     ;|
+$A2:9420 49 FF FF    EOR #$FFFF             ;|
+$A2:9423 1A          INC A                  ;|
+                                            ;} If |[enemy $0FAC] - [enemy X position]| < 30h: go to BRANCH_NO_TURN
+$A2:9424 CD 50 8D    CMP $8D50  [$A2:8D50]  ;|
+$A2:9427 30 1B       BMI $1B    [$9444]     ;|
+$A2:9429 28          PLP                    ;/
+$A2:942A 30 05       BMI $05    [$9431]     ; If [enemy $0FAC] >= [enemy X position]:
+$A2:942C A9 01 00    LDA #$0001             ; Enemy X velocity = 1
 $A2:942F 80 03       BRA $03    [$9434]
-
-$A2:9431 A9 FF FF    LDA #$FFFF
+                                            ; Else ([enemy $0FAC] < [enemy X position]):
+$A2:9431 A9 FF FF    LDA #$FFFF             ; Enemy X velocity = -1
 
 $A2:9434 9D B0 0F    STA $0FB0,x[$7E:0FF0]
 
-$A2:9437 A0 72 8C    LDY #$8C72
-$A2:943A BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A2:943D 10 03       BPL $03    [$9442]
-$A2:943F A0 80 8B    LDY #$8B80
+; BRANCH_MERGE
+$A2:9437 A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72
+$A2:943A BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A2:943D 10 03       BPL $03    [$9442]     ;} If [enemy X velocity] < 0:
+$A2:943F A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80
 
 $A2:9442 FA          PLX
-$A2:9443 6B          RTL
+$A2:9443 6B          RTL                    ; Return
 
+; BRANCH_NO_TURN
 $A2:9444 28          PLP
-$A2:9445 80 F0       BRA $F0    [$9437]
+$A2:9445 80 F0       BRA $F0    [$9437]     ; Go to BRANCH_MERGE
 }
 
 
-;;; $9447: Instruction - enter shell ;;;
+;;; $9447: Instruction - tatori - enter shell ;;;
 {
 $A2:9447 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:944A A9 3F 8F    LDA #$8F3F             ;\
@@ -1747,7 +1772,7 @@ $A2:9450 6B          RTL
 }
 
 
-;;; $9451: Instruction - rise to hover rightwards, go to $8C02 ;;;
+;;; $9451: Instruction - tatori - rise to hover rightwards, go to $8C02 ;;;
 {
 $A2:9451 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9454 A9 8D 8F    LDA #$8F8D             ;\
@@ -1761,7 +1786,7 @@ $A2:946A 6B          RTL
 }
 
 
-;;; $946B: Instruction - rise to hover leftwards, go to $8C02 ;;;
+;;; $946B: Instruction - tatori - rise to hover leftwards, go to $8C02 ;;;
 {
 $A2:946B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:946E A9 8D 8F    LDA #$8F8D             ;\
@@ -1775,7 +1800,7 @@ $A2:9484 6B          RTL
 }
 
 
-;;; $9485: Instruction ;;;
+;;; $9485: Instruction - mini-tatori - ;;;
 {
 $A2:9485 5A          PHY
 $A2:9486 AE 54 0E    LDX $0E54  [$7E:0E54]
@@ -1783,19 +1808,19 @@ $A2:9489 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:948D 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: return
 $A2:9490 F0 0D       BEQ $0D    [$949F]     ;/
 $A2:9492 7A          PLY
-$A2:9493 A0 62 8C    LDY #$8C62
-$A2:9496 BD B0 0F    LDA $0FB0,x
-$A2:9499 30 03       BMI $03    [$949E]
-$A2:949B A0 40 8D    LDY #$8D40
+$A2:9493 A0 62 8C    LDY #$8C62             ; Y = $8C62
+$A2:9496 BD B0 0F    LDA $0FB0,x            ;\
+$A2:9499 30 03       BMI $03    [$949E]     ;} If [enemy X velocity] >= 0:
+$A2:949B A0 40 8D    LDY #$8D40             ; Y = $8D40
 
-$A2:949E 6B          RTL
+$A2:949E 6B          RTL                    ; Return
 
 $A2:949F 7A          PLY
 $A2:94A0 6B          RTL
 }
 
 
-;;; $94A1: Instruction ;;;
+;;; $94A1: Instruction - mini-tatori - ;;;
 {
 $A2:94A1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:94A4 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
@@ -1804,12 +1829,12 @@ $A2:94AB F0 12       BEQ $12    [$94BF]     ;/
 $A2:94AD A9 5E 92    LDA #$925E             ;\
 $A2:94B0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $925E
 
-$A2:94B3 A0 80 8B    LDY #$8B80
-$A2:94B6 BD B0 0F    LDA $0FB0,x
-$A2:94B9 30 03       BMI $03    [$94BE]
-$A2:94BB A0 72 8C    LDY #$8C72
+$A2:94B3 A0 80 8B    LDY #$8B80             ; Y = $8B80
+$A2:94B6 BD B0 0F    LDA $0FB0,x            ;\
+$A2:94B9 30 03       BMI $03    [$94BE]     ;} If [enemy X velocity] >= 0:
+$A2:94BB A0 72 8C    LDY #$8C72             ; Y = $8C72
 
-$A2:94BE 6B          RTL
+$A2:94BE 6B          RTL                    ; Return
 
 ; BRANCH_NOT_TOUCHING_SAMUS
 $A2:94BF A9 42 91    LDA #$9142             ;\
@@ -1818,11 +1843,11 @@ $A2:94C5 80 EC       BRA $EC    [$94B3]
 }
 
 
-;;; $94C7: Instruction ;;;
+;;; $94C7: Instruction - mini-tatori - enemy function = spinning - stoppable ;;;
 {
 $A2:94C7 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:94CA A9 39 92    LDA #$9239             ;\
-$A2:94CD 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9239
+$A2:94CD 9D A8 0F    STA $0FA8,x            ;} Enemy function = $9239 (spinning - stoppable)
 $A2:94D0 6B          RTL
 }
 
@@ -1832,6 +1857,7 @@ $A2:94D0 6B          RTL
 $A2:94D1 A9 3A 00    LDA #$003A             ;\
 $A2:94D4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Ah, sound library 2, max queued sounds allowed = 6 (tatori spinning)
 $A2:94D8 6B          RTL
+}
 }
 
 
@@ -2400,7 +2426,7 @@ $A2:9D31 BF 08 78 7E LDA $7E7808,x[$7E:7948];\
 $A2:9D35 D0 06       BNE $06    [$9D3D]     ;} If enemy direction not inverted:
 $A2:9D37 BF 02 78 7E LDA $7E7802,x[$7E:7942];\
 $A2:9D3B D0 0D       BNE $0D    [$9D4A]     ;} If enemy hopping animation active: return
-                                            
+
 $A2:9D3D A9 00 00    LDA #$0000             ;\
 $A2:9D40 9F 02 78 7E STA $7E7802,x[$7E:7982];} Enemy hopping animation flag = 0
 $A2:9D44 A9 C1 99    LDA #$99C1             ;\
@@ -2418,7 +2444,7 @@ $A2:9D51 BF 08 78 7E LDA $7E7808,x[$7E:7908];\
 $A2:9D55 D0 06       BNE $06    [$9D5D]     ;} If enemy direction not inverted:
 $A2:9D57 BF 02 78 7E LDA $7E7802,x[$7E:7902];\
 $A2:9D5B D0 0D       BNE $0D    [$9D6A]     ;} If enemy hopping animation active: return
-                                            
+
 $A2:9D5D A9 00 00    LDA #$0000             ;\
 $A2:9D60 9F 02 78 7E STA $7E7802,x[$7E:7902];} Enemy hopping animation flag = 0
 $A2:9D64 A9 AD 99    LDA #$99AD             ;\
@@ -6420,7 +6446,7 @@ $A2:C328 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A2:C32B 49 FF FF    EOR #$FFFF             ;|
 $A2:C32E 1A          INC A                  ;} Negate enemy X velocity
 $A2:C32F 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;/
-                                            
+
 $A2:C332 A9 07 C1    LDA #$C107             ;\
 $A2:C335 20 0D C4    JSR $C40D  [$A2:C40D]  ;} Set enemy instruction list to $C107 (swoop - start descending)
 $A2:C338 A9 3F C3    LDA #$C33F             ;\
@@ -6434,7 +6460,7 @@ $A2:C33E 6B          RTL
 $A2:C33F BF 02 78 7E LDA $7E7802,x[$7E:7802];\
 $A2:C343 D0 01       BNE $01    [$C346]     ;} If not finished swoop start animation:
 $A2:C345 6B          RTL                    ; Return
-                                            
+
 $A2:C346 A9 00 00    LDA #$0000             ;\
 $A2:C349 9F 02 78 7E STA $7E7802,x[$7E:7802];} Enemy finished swoop start animation flag = 0
 $A2:C34D A9 2F C1    LDA #$C12F             ;\
