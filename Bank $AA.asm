@@ -5134,7 +5134,9 @@ $AA:E37D             dw 3800, 633F, 4A9F, 2DDF, 2295, 118D, 08E8, 0085, 27FF, 1A
 }
 
 
-;;; $E39D: Instruction list - Chozo Statue - Lower Norfair - initial ;;;
+;;; $E39D..E456: Chozo statue - Lower Norfair ;;;
+{
+;;; $E39D: Instruction list - chozo statue - Lower Norfair - initial ;;;
 {
 $AA:E39D             dx 806B,E445,  ; Enemy function = $E445
                         0001,EFD8,
@@ -5142,7 +5144,7 @@ $AA:E39D             dx 806B,E445,  ; Enemy function = $E445
 }
 
 
-;;; $E3A7: Instruction list - Chozo Statue - Lower Norfair - activated ;;;
+;;; $E3A7: Instruction list - chozo statue - Lower Norfair - activated ;;;
 {
 $AA:E3A7             dx 8074,       ; Enemy function = RTS
                         E5D8,0020,  ; Chozo statue movement - index 20h
@@ -5220,9 +5222,12 @@ $AA:E453 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 
 $AA:E456 60          RTS
 }
+}
 
 
-;;; $E457: Instruction list - Chozo Statue - Wrecked Ship - initial ;;;
+;;; $E457..E715: Chozo statue - Wrecked Ship ;;;
+{
+;;; $E457: Instruction list - chozo statue - Wrecked Ship - initial ;;;
 {
 $AA:E457             dx 806B,E7AE,  ; Enemy function = $E7AE
                         0001,E7DD,
@@ -5230,7 +5235,7 @@ $AA:E457             dx 806B,E7AE,  ; Enemy function = $E7AE
 }
 
 
-;;; $E461: Instruction list - Chozo Statue - Wrecked Ship - activated ;;;
+;;; $E461: Instruction list - chozo statue - Wrecked Ship - activated ;;;
 {
 $AA:E461             dw 8074,       ; Enemy function = RTS
                         E5D8,0000,  ; Chozo statue movement - index 0
@@ -5441,6 +5446,7 @@ $AA:E709 8F 2D CD 7E STA $7ECD2D[$7E:CD2D]  ;/
 $AA:E70D 22 D7 83 84 JSL $8483D7[$84:83D7]  ;\
 $AA:E711             dx 17, 1D, D6FC        ;} Block slope access for Wrecked Ship chozo
 $AA:E715 6B          RTL
+}
 }
 
 

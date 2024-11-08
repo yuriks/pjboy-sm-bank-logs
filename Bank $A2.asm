@@ -1464,8 +1464,8 @@ $A2:9239 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:923D 29 FF FF    AND #$FFFF             ;} If enemy is not touching Samus from below: go to mini-tatori function - spinning - unstoppable
 $A2:9240 F0 B6       BEQ $B6    [$91F8]     ;/
 $A2:9242 A0 80 8B    LDY #$8B80             ; Enemy instruction list pointer = $8B80 (crawling left)
-$A2:9245 BD B0 0F    LDA $0FB0,x            ;\                                      
-$A2:9248 30 03       BMI $03    [$924D]     ;} If [enemy X velocity] >= 0:          
+$A2:9245 BD B0 0F    LDA $0FB0,x            ;\
+$A2:9248 30 03       BMI $03    [$924D]     ;} If [enemy X velocity] >= 0:
 $A2:924A A0 72 8C    LDY #$8C72             ; Enemy instruction list pointer = $8C72 (crawling right)
 
 $A2:924D 98          TYA
@@ -1863,6 +1863,7 @@ $A2:94D8 6B          RTL
 
 ;;; $94D9: Spritemaps - tatori ;;;
 {
+; Mini-tatori facing left
 $A2:94D9             dx 0001, C3F8,F8,2104
 $A2:94E0             dx 0001, C3F8,F8,2106
 $A2:94E7             dx 0001, C3F8,F8,2108
@@ -1874,6 +1875,8 @@ $A2:9519             dx 0001, C3F8,F8,2102
 $A2:9520             dx 0001, C3F8,F8,2100
 $A2:9527             dx 0001, C3F8,F8,6102
 $A2:952E             dx 0001, C3F8,F8,6100
+
+; Tatori facing left
 $A2:9535             dx 0006, C208,00,212A, C3F8,00,2128, C3E8,00,2126, C208,F0,2124, C3F8,F0,2122, C3E8,F0,2120
 $A2:9555             dx 000E, 0008,08,214B, 0000,08,214A, 01F8,08,2149, 01F0,08,2148, 01E8,08,2157, 01E8,00,2147, 0010,00,212B, 0008,00,212A, 0000,00,2129, 01F8,00,2128, 01F0,00,2127, C208,F0,2124, C3F8,F0,2122, C3E8,F0,2120
 $A2:959D             dx 000E, 0008,08,215B, 0000,08,215A, 01F8,08,2159, 01F0,08,2158, 01E8,08,2156, 01E8,00,2146, 0010,00,212B, 0008,00,212A, 0000,00,2129, 01F8,00,2128, 01F0,00,2127, C208,F0,2124, C3F8,F0,2122, C3E8,F0,2120
@@ -1883,7 +1886,9 @@ $A2:9657             dx 000B, C3FF,01,2140, C3F3,00,2142, C3EA,01,2144, C208,F9,
 $A2:9690             dx 000B, C201,00,2142, C3F3,01,2144, C3EA,00,2142, C208,FA,212A, C20D,01,212E, C3DD,FB,212C, C3F8,FA,2128, C3E8,FA,2126, C208,EA,2124, C3F8,EA,2122, C3E8,EA,2120
 $A2:96C9             dx 0006, C3E8,00,612A, C3F8,00,6128, C208,00,6126, C3E8,F0,6124, C3F8,F0,6122, C208,F0,6120
 $A2:96E9             dx 0004, C200,00,610E, C200,F0,610C, C3F0,00,210E, C3F0,F0,210C
-$A2:96FF             dx 000A, 0000,08,615F, 0000,00,615E, 01F8,08,215F, 01F8,00,215E, C206,00,6140, C3EA,00,2140, C200,FA,610E, C3F0,FA,210E, C200,EA,610C, C3F0,EA,210C
+$A2:96FF             dx 000A, 0000,08,615F, 0000,00,615E, 01F8,08,215F, 01F8,00,215E, C206,00,6140, C3EA,00,2140, C200,FA,610E, C3F0,FA,210E, C200,EA,610C, C3F0,EA,210C ; Unused
+
+; Mini-tatori facing right
 $A2:9733             dx 0001, C3F8,F8,6104
 $A2:973A             dx 0001, C3F8,F8,6106
 $A2:9741             dx 0001, C3F8,F8,6108
@@ -1895,6 +1900,8 @@ $A2:9773             dx 0001, C3F8,F8,6102
 $A2:977A             dx 0001, C3F8,F8,6100
 $A2:9781             dx 0001, C3F8,F8,2102
 $A2:9788             dx 0001, C3F8,F8,2100
+
+; Tatori facing right
 $A2:978F             dx 0006, C3E8,00,612A, C3F8,00,6128, C208,00,6126, C3E8,F0,6124, C3F8,F0,6122, C208,F0,6120
 $A2:97AF             dx 000E, 01F0,08,614B, 01F8,08,614A, 0000,08,6149, 0008,08,6148, 0010,08,6157, 0010,00,6147, 01E8,00,612B, 01F0,00,612A, 01F8,00,6129, 0000,00,6128, 0008,00,6127, C3E8,F0,6124, C3F8,F0,6122, C208,F0,6120
 $A2:97F7             dx 000E, 01F0,08,615B, 01F8,08,615A, 0000,08,6159, 0008,08,6158, 0010,08,6156, 0010,00,6146, 01E8,00,612B, 01F0,00,612A, 01F8,00,6129, 0000,00,6128, 0008,00,6127, C3E8,F0,6124, C3F8,F0,6122, C208,F0,6120
@@ -1904,7 +1911,7 @@ $A2:98B1             dx 000B, C3F1,01,6140, C3FD,00,6142, C206,01,6144, C3E8,F9,
 $A2:98EA             dx 000B, C3EF,00,6142, C3FD,01,6144, C206,00,6142, C3E8,FA,612A, C3E3,01,612E, C213,FB,612C, C3F8,FA,6128, C208,FA,6126, C3E8,EA,6124, C3F8,EA,6122, C208,EA,6120
 $A2:9923             dx 0006, C208,00,212A, C3F8,00,2128, C3E8,00,2126, C208,F0,2124, C3F8,F0,2122, C3E8,F0,2120
 $A2:9943             dx 0004, C3F0,00,210E, C3F0,F0,210C, C200,00,610E, C200,F0,610C
-$A2:9959             dx 000A, 01F8,08,215F, 01F8,00,215E, 0000,08,615F, 0000,00,615E, C3EA,00,2140, C206,00,6140, C3F0,FA,210E, C200,FA,610E, C3F0,EA,210C, C200,EA,610C
+$A2:9959             dx 000A, 01F8,08,215F, 01F8,00,215E, 0000,08,615F, 0000,00,615E, C3EA,00,2140, C206,00,6140, C3F0,FA,210E, C200,FA,610E, C3F0,EA,210C, C200,EA,610C ; Unused
 }
 }
 
@@ -2558,9 +2565,9 @@ $A2:9E6A             dw 3800, 3F57, 2E4D, 00E2, 0060, 3AB0, 220B, 1166, 0924, 57
 
 ;;; $9E8A..9F29: Instruction list - cacatac ;;;
 {
-;;; $9E8A: Instruction list -  ;;;
+;;; $9E8A: Instruction list - upside up - idling ;;;
 {
-$A2:9E8A             dx A095,       ; ???
+$A2:9E8A             dx A095,       ; Function = moving left/right
                         0008,A0BB,
                         0008,A0DB,
                         0008,A0FB,
@@ -2573,25 +2580,25 @@ $A2:9E8A             dx A095,       ; ???
 }
 
 
-;;; $9EB0: Instruction list -  ;;;
+;;; $9EB0: Instruction list - upside up - attacking ;;;
 {
 $A2:9EB0             dx 0015,A0BB,
                         0005,A1BB,
                         0015,A1EF,
                         0005,A1BB,
                         9F2A,       ; Play cacatac spikes effect
-                        A0A7,0000,  ; Spawn cacatac spike enemy projectile with parameter 0
-                        A0A7,000C,  ; Spawn cacatac spike enemy projectile with parameter Ch
-                        A0A7,0002,  ; Spawn cacatac spike enemy projectile with parameter 2
-                        A0A7,000E,  ; Spawn cacatac spike enemy projectile with parameter Eh
-                        A0A7,0004,  ; Spawn cacatac spike enemy projectile with parameter 4
-                        80ED,9E8A   ; Go to $9E8A
+                        A0A7,0000,  ; Spawn cacatac spike enemy projectile with direction left - facing up
+                        A0A7,000C,  ; Spawn cacatac spike enemy projectile with direction up-left
+                        A0A7,0002,  ; Spawn cacatac spike enemy projectile with direction up
+                        A0A7,000E,  ; Spawn cacatac spike enemy projectile with direction up-right
+                        A0A7,0004,  ; Spawn cacatac spike enemy projectile with direction right - facing up
+                        80ED,9E8A   ; Go to $9E8A (idling)
 }
 
 
-;;; $9EDA: Instruction list -  ;;;
+;;; $9EDA: Instruction list - upside down - idling ;;;
 {
-$A2:9EDA             dx A095        ; ???
+$A2:9EDA             dx A095        ; Function = moving left/right
 $A2:9EDC             dx 0008,A223,
                         0008,A243,
                         0008,A263,
@@ -2604,19 +2611,19 @@ $A2:9EDC             dx 0008,A223,
 }
 
 
-;;; $9F00: Instruction list -  ;;;
+;;; $9F00: Instruction list - upside down - attacking ;;;
 {
 $A2:9F00             dx 0015,A223,
                         0005,A323,
                         0015,A357,
                         0005,A323,
                         9F2A,       ; Play cacatac spikes effect
-                        A0A7,0006,  ; Spawn cacatac spike enemy projectile with parameter 6
-                        A0A7,0010,  ; Spawn cacatac spike enemy projectile with parameter 10h
-                        A0A7,0008,  ; Spawn cacatac spike enemy projectile with parameter 8
-                        A0A7,0012,  ; Spawn cacatac spike enemy projectile with parameter 12h
-                        A0A7,000A,  ; Spawn cacatac spike enemy projectile with parameter Ah
-                        80ED,9EDA   ; Go to $9EDA
+                        A0A7,0006,  ; Spawn cacatac spike enemy projectile with direction left - facing down
+                        A0A7,0010,  ; Spawn cacatac spike enemy projectile with direction down-left
+                        A0A7,0008,  ; Spawn cacatac spike enemy projectile with direction down
+                        A0A7,0012,  ; Spawn cacatac spike enemy projectile with direction down-right
+                        A0A7,000A,  ; Spawn cacatac spike enemy projectile with direction right - facing down
+                        80ED,9EDA   ; Go to $9EDA (idling)
 }
 }
 
@@ -2652,33 +2659,33 @@ $A2:9F42             dw 9FBA, 9FEC, A01B
 $A2:9F48 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:9F4B A9 4D 80    LDA #$804D             ;\
 $A2:9F4E 9D 8E 0F    STA $0F8E,x[$7E:0F8E]  ;} Enemy spritemap pointer = $804D (nothing)
-$A2:9F51 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A2:9F54 29 FF 00    AND #$00FF
-$A2:9F57 F0 05       BEQ $05    [$9F5E]
-$A2:9F59 20 49 A0    JSR $A049  [$A2:A049]
+$A2:9F51 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A2:9F54 29 FF 00    AND #$00FF             ;} If [enemy parameter 1 high] != 0:
+$A2:9F57 F0 05       BEQ $05    [$9F5E]     ;/
+$A2:9F59 20 49 A0    JSR $A049  [$A2:A049]  ; Set cacatac instruction list - upside up - idling
 $A2:9F5C 80 03       BRA $03    [$9F61]
+                                            ; Else ([enemy parameter 1 high] = 0):
+$A2:9F5E 20 6F A0    JSR $A06F  [$A2:A06F]  ; Set cacatac instruction list - upside down - idling
 
-$A2:9F5E 20 6F A0    JSR $A06F  [$A2:A06F]
-
-$A2:9F61 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:9F64 29 FF 00    AND #$00FF
-$A2:9F67 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:9F6A 0A          ASL A
-$A2:9F6B A8          TAY
-$A2:9F6C B9 42 9F    LDA $9F42,y[$A2:9F42]
-$A2:9F6F 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A2:9F72 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A2:9F75 29 FF 00    AND #$00FF
-$A2:9F78 0A          ASL A
-$A2:9F79 A8          TAY
-$A2:9F7A BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A2:9F7D 18          CLC
-$A2:9F7E 79 36 9F    ADC $9F36,y[$A2:9F38]
-$A2:9F81 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A2:9F85 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A2:9F88 38          SEC
-$A2:9F89 F9 36 9F    SBC $9F36,y[$A2:9F38]
-$A2:9F8C 9F 00 78 7E STA $7E7800,x[$7E:7800]
+$A2:9F61 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:9F64 29 FF 00    AND #$00FF             ;} Enemy direction = [enemy parameter 1 low]
+$A2:9F67 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
+$A2:9F6A 0A          ASL A                  ;\
+$A2:9F6B A8          TAY                    ;|
+$A2:9F6C B9 42 9F    LDA $9F42,y[$A2:9F42]  ;} Enemy function = [$9F42 + [enemy direction] * 2]
+$A2:9F6F 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
+$A2:9F72 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A2:9F75 29 FF 00    AND #$00FF             ;|
+$A2:9F78 0A          ASL A                  ;} Y = [enemy parameter 2 low] * 2
+$A2:9F79 A8          TAY                    ;/
+$A2:9F7A BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A2:9F7D 18          CLC                    ;|
+$A2:9F7E 79 36 9F    ADC $9F36,y[$A2:9F38]  ;} Enemy maximum X position = [enemy X position] + [$9F36 + [Y]]
+$A2:9F81 9F 02 78 7E STA $7E7802,x[$7E:7802];/
+$A2:9F85 BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;\
+$A2:9F88 38          SEC                    ;|
+$A2:9F89 F9 36 9F    SBC $9F36,y[$A2:9F38]  ;} Enemy minimum X position = [enemy X position] - [$9F36 + [Y]]
+$A2:9F8C 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $A2:9F90 BD B7 0F    LDA $0FB7,x[$7E:0FB7]  ;\
 $A2:9F93 29 FF 00    AND #$00FF             ;|
 $A2:9F96 0A          ASL A                  ;|
@@ -2708,25 +2715,25 @@ $A2:9FB9 6B          RTL
 ;;; $9FBA: Cacatac function - moving left ;;;
 {
 $A2:9FBA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9FBD BD 7C 0F    LDA $0F7C,x[$7E:0F7C]
-$A2:9FC0 18          CLC
-$A2:9FC1 7D AC 0F    ADC $0FAC,x[$7E:0FAC]
-$A2:9FC4 90 03       BCC $03    [$9FC9]
-$A2:9FC6 FE 7A 0F    INC $0F7A,x[$7E:0F7A]
+$A2:9FBD BD 7C 0F    LDA $0F7C,x[$7E:0F7C]  ;\
+$A2:9FC0 18          CLC                    ;|
+$A2:9FC1 7D AC 0F    ADC $0FAC,x[$7E:0FAC]  ;|
+$A2:9FC4 90 03       BCC $03    [$9FC9]     ;|
+$A2:9FC6 FE 7A 0F    INC $0F7A,x[$7E:0F7A]  ;|
+                                            ;} Enemy X position += [enemy left velocity]
+$A2:9FC9 9D 7C 0F    STA $0F7C,x[$7E:0F7C]  ;|
+$A2:9FCC BD 7A 0F    LDA $0F7A,x[$7E:0F7A]  ;|
+$A2:9FCF 18          CLC                    ;|
+$A2:9FD0 7D AE 0F    ADC $0FAE,x[$7E:0FAE]  ;|
+$A2:9FD3 9D 7A 0F    STA $0F7A,x[$7E:0F7A]  ;/
+$A2:9FD6 DF 00 78 7E CMP $7E7800,x[$7E:7800];\
+$A2:9FDA 10 0C       BPL $0C    [$9FE8]     ;} If [enemy X position] < [enemy minimum X position]:
+$A2:9FDC A9 EC 9F    LDA #$9FEC             ;\
+$A2:9FDF 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy function = $9FEC (moving right)
+$A2:9FE2 A9 01 00    LDA #$0001             ;\
+$A2:9FE5 9D B0 0F    STA $0FB0,x[$7E:10F0]  ;} Enemy direction = right
 
-$A2:9FC9 9D 7C 0F    STA $0F7C,x[$7E:0F7C]
-$A2:9FCC BD 7A 0F    LDA $0F7A,x[$7E:0F7A]
-$A2:9FCF 18          CLC
-$A2:9FD0 7D AE 0F    ADC $0FAE,x[$7E:0FAE]
-$A2:9FD3 9D 7A 0F    STA $0F7A,x[$7E:0F7A]
-$A2:9FD6 DF 00 78 7E CMP $7E7800,x[$7E:7800]
-$A2:9FDA 10 0C       BPL $0C    [$9FE8]
-$A2:9FDC A9 EC 9F    LDA #$9FEC
-$A2:9FDF 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A2:9FE2 A9 01 00    LDA #$0001
-$A2:9FE5 9D B0 0F    STA $0FB0,x[$7E:10F0]
-
-$A2:9FE8 20 1C A0    JSR $A01C  [$A2:A01C]
+$A2:9FE8 20 1C A0    JSR $A01C  [$A2:A01C]  ; Maybe make cacatac attack
 $A2:9FEB 60          RTS
 }
 
@@ -2734,24 +2741,24 @@ $A2:9FEB 60          RTS
 ;;; $9FEC: Cacatac function - moving right ;;;
 {
 $A2:9FEC AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9FEF BD 7C 0F    LDA $0F7C,x[$7E:0FFC]
-$A2:9FF2 18          CLC
-$A2:9FF3 7D A8 0F    ADC $0FA8,x[$7E:1028]
-$A2:9FF6 90 03       BCC $03    [$9FFB]
-$A2:9FF8 FE 7A 0F    INC $0F7A,x[$7E:0FFA]
+$A2:9FEF BD 7C 0F    LDA $0F7C,x[$7E:0FFC]  ;\
+$A2:9FF2 18          CLC                    ;|
+$A2:9FF3 7D A8 0F    ADC $0FA8,x[$7E:1028]  ;|
+$A2:9FF6 90 03       BCC $03    [$9FFB]     ;|
+$A2:9FF8 FE 7A 0F    INC $0F7A,x[$7E:0FFA]  ;|
+                                            ;} Enemy X position += [enemy right velocity]
+$A2:9FFB 9D 7C 0F    STA $0F7C,x[$7E:0FFC]  ;|
+$A2:9FFE BD 7A 0F    LDA $0F7A,x[$7E:0FFA]  ;|
+$A2:A001 18          CLC                    ;|
+$A2:A002 7D AA 0F    ADC $0FAA,x[$7E:102A]  ;|
+$A2:A005 9D 7A 0F    STA $0F7A,x[$7E:0FFA]  ;/
+$A2:A008 DF 02 78 7E CMP $7E7802,x[$7E:7882];\
+$A2:A00C 30 09       BMI $09    [$A017]     ;} If [enemy X position] >= [enemy maximum X position]:
+$A2:A00E A9 BA 9F    LDA #$9FBA             ;\
+$A2:A011 9D B2 0F    STA $0FB2,x[$7E:10F2]  ;} Enemy function = $9FBA (moving left)
+$A2:A014 9E B0 0F    STZ $0FB0,x[$7E:10F0]  ; Enemy direction = left
 
-$A2:9FFB 9D 7C 0F    STA $0F7C,x[$7E:0FFC]
-$A2:9FFE BD 7A 0F    LDA $0F7A,x[$7E:0FFA]
-$A2:A001 18          CLC
-$A2:A002 7D AA 0F    ADC $0FAA,x[$7E:102A]
-$A2:A005 9D 7A 0F    STA $0F7A,x[$7E:0FFA]
-$A2:A008 DF 02 78 7E CMP $7E7802,x[$7E:7882]
-$A2:A00C 30 09       BMI $09    [$A017]
-$A2:A00E A9 BA 9F    LDA #$9FBA
-$A2:A011 9D B2 0F    STA $0FB2,x[$7E:10F2]
-$A2:A014 9E B0 0F    STZ $0FB0,x[$7E:10F0]
-
-$A2:A017 20 1C A0    JSR $A01C  [$A2:A01C]
+$A2:A017 20 1C A0    JSR $A01C  [$A2:A01C]  ; Maybe make cacatac attack
 $A2:A01A 60          RTS
 }
 
@@ -2762,31 +2769,31 @@ $A2:A01B 60          RTS
 }
 
 
-;;; $A01C:  ;;;
+;;; $A01C: Maybe make cacatac attack ;;;
 {
 $A2:A01C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A01F 22 11 81 80 JSL $808111[$80:8111]
-$A2:A023 AD E5 05    LDA $05E5  [$7E:05E5]
-$A2:A026 18          CLC
-$A2:A027 7D A4 0F    ADC $0FA4,x[$7E:0FA4]
-$A2:A02A 29 FF 00    AND #$00FF
-$A2:A02D C9 03 00    CMP #$0003
-$A2:A030 10 16       BPL $16    [$A048]
-$A2:A032 A9 1B A0    LDA #$A01B
-$A2:A035 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A2:A038 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A2:A03B 29 FF 00    AND #$00FF
-$A2:A03E F0 05       BEQ $05    [$A045]
-$A2:A040 20 5C A0    JSR $A05C  [$A2:A05C]
+$A2:A01F 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A2:A023 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A2:A026 18          CLC                    ;|
+$A2:A027 7D A4 0F    ADC $0FA4,x[$7E:0FA4]  ;|
+$A2:A02A 29 FF 00    AND #$00FF             ;} If ([random number] + [enemy frame counter]) % 100h >= 3: return
+$A2:A02D C9 03 00    CMP #$0003             ;|
+$A2:A030 10 16       BPL $16    [$A048]     ;/
+$A2:A032 A9 1B A0    LDA #$A01B             ;\
+$A2:A035 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = RTS
+$A2:A038 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A2:A03B 29 FF 00    AND #$00FF             ;} If [enemy parameter 1 high] != 0:
+$A2:A03E F0 05       BEQ $05    [$A045]     ;/
+$A2:A040 20 5C A0    JSR $A05C  [$A2:A05C]  ; Set cacatac instruction list - upside up - attacking
 $A2:A043 80 03       BRA $03    [$A048]
-
-$A2:A045 20 82 A0    JSR $A082  [$A2:A082]
+                                            ; Else ([enemy parameter 1 high] = 0):
+$A2:A045 20 82 A0    JSR $A082  [$A2:A082]  ; Set cacatac instruction list - upside down - attacking
 
 $A2:A048 60          RTS
 }
 
 
-;;; $A049:  ;;;
+;;; $A049: Set cacatac instruction list - upside up - idling ;;;
 {
 $A2:A049 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A04C A9 8A 9E    LDA #$9E8A             ;\
@@ -2798,7 +2805,7 @@ $A2:A05B 60          RTS
 }
 
 
-;;; $A05C:  ;;;
+;;; $A05C: Set cacatac instruction list - upside up - attacking ;;;
 {
 $A2:A05C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A05F A9 B0 9E    LDA #$9EB0             ;\
@@ -2810,7 +2817,7 @@ $A2:A06E 60          RTS
 }
 
 
-;;; $A06F:  ;;;
+;;; $A06F: Set cacatac instruction list - upside down - idling ;;;
 {
 $A2:A06F AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A072 A9 DA 9E    LDA #$9EDA             ;\
@@ -2822,7 +2829,7 @@ $A2:A081 60          RTS
 }
 
 
-;;; $A082:  ;;;
+;;; $A082: Set cacatac instruction list - upside down - attacking ;;;
 {
 $A2:A082 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A085 A9 00 9F    LDA #$9F00             ;\
@@ -2834,14 +2841,14 @@ $A2:A094 60          RTS
 }
 
 
-;;; $A095: Instruction ;;;
+;;; $A095: Instruction - function = moving left/right ;;;
 {
-$A2:A095 A9 BA 9F    LDA #$9FBA
-$A2:A098 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A2:A09B BD B0 0F    LDA $0FB0,x[$7E:0FB0]
-$A2:A09E F0 06       BEQ $06    [$A0A6]
-$A2:A0A0 A9 EC 9F    LDA #$9FEC
-$A2:A0A3 9D B2 0F    STA $0FB2,x[$7E:1032]
+$A2:A095 A9 BA 9F    LDA #$9FBA             ;\
+$A2:A098 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;} Enemy function = $9FBA (moving left)
+$A2:A09B BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
+$A2:A09E F0 06       BEQ $06    [$A0A6]     ;} If [enemy direction] = right:
+$A2:A0A0 A9 EC 9F    LDA #$9FEC             ;\
+$A2:A0A3 9D B2 0F    STA $0FB2,x[$7E:1032]  ;} Enemy function = $9FEC (moving right)
 
 $A2:A0A6 6B          RTL
 }
@@ -2907,9 +2914,9 @@ $A2:A38B             dw 3800, 4B9C, 2610, 0CC6, 0C63, 42F7, 2A52, 19AD, 0D29, 5E
 }
 
 
-;;; $A3AB: Instruction list - owtch - [enemy parameter 1] & 1 = 0 ;;;
+;;; $A3AB: Instruction list - moving left ;;;
 {
-$A2:A3AB             dw A56D        ; Enemy function index = 0
+$A2:A3AB             dw A56D        ; Enemy function index = 0 (moving left)
 $A2:A3AD             dw 0008,A589,
                         0008,A590,
                         0008,A597,
@@ -2917,9 +2924,9 @@ $A2:A3AD             dw 0008,A589,
 }
 
 
-;;; $A3BD: Instruction list - owtch - [enemy parameter 1] & 1 = 1 ;;;
+;;; $A3BD: Instruction list - moving right ;;;
 {
-$A2:A3BD             dw A571        ; Enemy function index = 1
+$A2:A3BD             dw A571        ; Enemy function index = 1 (moving right)
 $A2:A3BF             dw 0008,A597,
                         0008,A590,
                         0008,A589,
@@ -2927,7 +2934,7 @@ $A2:A3BF             dw 0008,A597,
 }
 
 
-;;; $A3CF: Owtch constants ;;;
+;;; $A3CF: Owtch data ;;;
 {
 ; Initialisation AI pointers
 $A2:A3CF             dw A48A, A49D
@@ -2948,55 +2955,55 @@ $A2:A3ED             dw 0020, 0040, 0060, 0080, 00A0, 00C0
 $A2:A3F9 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:A3FC A9 4D 80    LDA #$804D             ;\
 $A2:A3FF 9D 8E 0F    STA $0F8E,x[$7E:114E]  ;} Enemy spritemap pointer = $804D (nothing)
-$A2:A402 BD B4 0F    LDA $0FB4,x[$7E:1174]
-$A2:A405 29 FF 00    AND #$00FF
-$A2:A408 9D B0 0F    STA $0FB0,x[$7E:1170]
-$A2:A40B 29 01 00    AND #$0001
-$A2:A40E 0A          ASL A
-$A2:A40F AA          TAX
-$A2:A410 FC CF A3    JSR ($A3CF,x)[$A2:A48A]
+$A2:A402 BD B4 0F    LDA $0FB4,x[$7E:1174]  ;\
+$A2:A405 29 FF 00    AND #$00FF             ;} Enemy function index = [enemy parameter 1 low]
+$A2:A408 9D B0 0F    STA $0FB0,x[$7E:1170]  ;/
+$A2:A40B 29 01 00    AND #$0001             ;\
+$A2:A40E 0A          ASL A                  ;|
+$A2:A40F AA          TAX                    ;} Execute [$A3CF + [enemy function index] % 2]
+$A2:A410 FC CF A3    JSR ($A3CF,x)[$A2:A48A];/
 $A2:A413 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A416 BD B6 0F    LDA $0FB6,x[$7E:1176]
-$A2:A419 29 FF 00    AND #$00FF
-$A2:A41C 0A          ASL A
-$A2:A41D 0A          ASL A
-$A2:A41E 0A          ASL A
-$A2:A41F A8          TAY
-$A2:A420 B9 87 81    LDA $8187,y[$A2:81A7]
-$A2:A423 9D AA 0F    STA $0FAA,x[$7E:116A]
-$A2:A426 B9 89 81    LDA $8189,y[$A2:81A9]
-$A2:A429 9D A8 0F    STA $0FA8,x[$7E:1168]
-$A2:A42C B9 8B 81    LDA $818B,y[$A2:81AB]
-$A2:A42F 9D AE 0F    STA $0FAE,x[$7E:116E]
-$A2:A432 B9 8D 81    LDA $818D,y[$A2:81AD]
-$A2:A435 9D AC 0F    STA $0FAC,x[$7E:116C]
-$A2:A438 BD B7 0F    LDA $0FB7,x[$7E:1177]
-$A2:A43B 29 FF 00    AND #$00FF
-$A2:A43E 0A          ASL A
-$A2:A43F A8          TAY
-$A2:A440 BD 7A 0F    LDA $0F7A,x[$7E:113A]
-$A2:A443 18          CLC
-$A2:A444 79 DD A3    ADC $A3DD,y[$A2:A3DF]
-$A2:A447 9F 04 78 7E STA $7E7804,x[$7E:79C4]
-$A2:A44B BD 7A 0F    LDA $0F7A,x[$7E:113A]
-$A2:A44E 38          SEC
-$A2:A44F F9 DD A3    SBC $A3DD,y[$A2:A3DF]
-$A2:A452 9F 02 78 7E STA $7E7802,x[$7E:79C2]
-$A2:A456 BD B5 0F    LDA $0FB5,x[$7E:1175]
-$A2:A459 29 FF 00    AND #$00FF
-$A2:A45C 0A          ASL A
-$A2:A45D A8          TAY
-$A2:A45E B9 ED A3    LDA $A3ED,y[$A2:A3F3]
-$A2:A461 9F 00 78 7E STA $7E7800,x[$7E:79C0]
-$A2:A465 9E B2 0F    STZ $0FB2,x[$7E:1172]
-$A2:A468 BD B0 0F    LDA $0FB0,x[$7E:1170]
-$A2:A46B C9 02 00    CMP #$0002
-$A2:A46E D0 0D       BNE $0D    [$A47D]
-$A2:A470 A9 10 00    LDA #$0010
-$A2:A473 9D B2 0F    STA $0FB2,x
-$A2:A476 18          CLC
-$A2:A477 7D 7E 0F    ADC $0F7E,x
-$A2:A47A 9D 7E 0F    STA $0F7E,x
+$A2:A416 BD B6 0F    LDA $0FB6,x[$7E:1176]  ;\
+$A2:A419 29 FF 00    AND #$00FF             ;|
+$A2:A41C 0A          ASL A                  ;|
+$A2:A41D 0A          ASL A                  ;} Y = [enemy parameter 2 low] * 8 (linear speed table index)
+$A2:A41E 0A          ASL A                  ;|
+$A2:A41F A8          TAY                    ;/
+$A2:A420 B9 87 81    LDA $8187,y[$A2:81A7]  ;\
+$A2:A423 9D AA 0F    STA $0FAA,x[$7E:116A]  ;|
+$A2:A426 B9 89 81    LDA $8189,y[$A2:81A9]  ;} Enemy right velocity = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A2:A429 9D A8 0F    STA $0FA8,x[$7E:1168]  ;/
+$A2:A42C B9 8B 81    LDA $818B,y[$A2:81AB]  ;\
+$A2:A42F 9D AE 0F    STA $0FAE,x[$7E:116E]  ;|
+$A2:A432 B9 8D 81    LDA $818D,y[$A2:81AD]  ;} Enemy left velocity = [$8187 + [Y] + 4].[$8187 + [Y] + 6]
+$A2:A435 9D AC 0F    STA $0FAC,x[$7E:116C]  ;/
+$A2:A438 BD B7 0F    LDA $0FB7,x[$7E:1177]  ;\
+$A2:A43B 29 FF 00    AND #$00FF             ;|
+$A2:A43E 0A          ASL A                  ;} Y = [enemy parameter 2 high] * 2
+$A2:A43F A8          TAY                    ;/
+$A2:A440 BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
+$A2:A443 18          CLC                    ;|
+$A2:A444 79 DD A3    ADC $A3DD,y[$A2:A3DF]  ;} Enemy maximum X position = [enemy X position] + [$A3DD + [Y]]
+$A2:A447 9F 04 78 7E STA $7E7804,x[$7E:79C4];/
+$A2:A44B BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;\
+$A2:A44E 38          SEC                    ;|
+$A2:A44F F9 DD A3    SBC $A3DD,y[$A2:A3DF]  ;} Enemy minimum X position = [enemy X position] - [$A3DD + [Y]]
+$A2:A452 9F 02 78 7E STA $7E7802,x[$7E:79C2];/
+$A2:A456 BD B5 0F    LDA $0FB5,x[$7E:1175]  ;\
+$A2:A459 29 FF 00    AND #$00FF             ;|
+$A2:A45C 0A          ASL A                  ;|
+$A2:A45D A8          TAY                    ;} Enemy underground timer = [$A3ED + [enemy parameter 1 high] * 2]
+$A2:A45E B9 ED A3    LDA $A3ED,y[$A2:A3F3]  ;|
+$A2:A461 9F 00 78 7E STA $7E7800,x[$7E:79C0];/
+$A2:A465 9E B2 0F    STZ $0FB2,x[$7E:1172]  ; Enemy sink Y offset = 0
+$A2:A468 BD B0 0F    LDA $0FB0,x[$7E:1170]  ;\
+$A2:A46B C9 02 00    CMP #$0002             ;} If [enemy function index] = 2 (underground):
+$A2:A46E D0 0D       BNE $0D    [$A47D]     ;/
+$A2:A470 A9 10 00    LDA #$0010             ;\
+$A2:A473 9D B2 0F    STA $0FB2,x            ;} Enemy sink Y offset = 10h
+$A2:A476 18          CLC                    ;\
+$A2:A477 7D 7E 0F    ADC $0F7E,x            ;} Enemy Y position += 10h
+$A2:A47A 9D 7E 0F    STA $0F7E,x            ;/
 
 $A2:A47D 6B          RTL
 }
@@ -3005,19 +3012,19 @@ $A2:A47D 6B          RTL
 ;;; $A47E: Main AI - enemy $D03F (owtch) ;;;
 {
 $A2:A47E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A481 BD B0 0F    LDA $0FB0,x[$7E:1170]
-$A2:A484 0A          ASL A
-$A2:A485 AA          TAX
-$A2:A486 FC D3 A3    JSR ($A3D3,x)[$A2:A4B0]
+$A2:A481 BD B0 0F    LDA $0FB0,x[$7E:1170]  ;\
+$A2:A484 0A          ASL A                  ;|
+$A2:A485 AA          TAX                    ;} Execute [$A3D3 + [enemy function index] * 2]
+$A2:A486 FC D3 A3    JSR ($A3D3,x)[$A2:A4B0];/
 $A2:A489 6B          RTL
 }
 
 
-;;; $A48A: Set owtch initial instruction list pointer - [enemy parameter 1] & 1 = 0 ;;;
+;;; $A48A: Set owtch instruction list pointer - moving left ;;;
 {
 $A2:A48A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A48D A9 AB A3    LDA #$A3AB
-$A2:A490 9D 92 0F    STA $0F92,x[$7E:1152]
+$A2:A48D A9 AB A3    LDA #$A3AB             ;\
+$A2:A490 9D 92 0F    STA $0F92,x[$7E:1152]  ;} Enemy instruction list pointer = $A3AB
 $A2:A493 A9 01 00    LDA #$0001             ;\
 $A2:A496 9D 94 0F    STA $0F94,x[$7E:1154]  ;} Enemy instruction timer = 1
 $A2:A499 9E 90 0F    STZ $0F90,x[$7E:1150]  ; Enemy timer = 0
@@ -3025,11 +3032,11 @@ $A2:A49C 60          RTS
 }
 
 
-;;; $A49D: Set owtch initial instruction list pointer - [enemy parameter 1] & 1 = 1 ;;;
+;;; $A49D: Owtch function index -1 / set owtch instruction list pointer - moving right ;;;
 {
 $A2:A49D AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A4A0 A9 BD A3    LDA #$A3BD
-$A2:A4A3 9D 92 0F    STA $0F92,x[$7E:0FD2]
+$A2:A4A0 A9 BD A3    LDA #$A3BD             ;\
+$A2:A4A3 9D 92 0F    STA $0F92,x[$7E:0FD2]  ;} Enemy instruction list pointer = $A3BD
 $A2:A4A6 A9 01 00    LDA #$0001             ;\
 $A2:A4A9 9D 94 0F    STA $0F94,x[$7E:0FD4]  ;} Enemy instruction timer = 1
 $A2:A4AC 9E 90 0F    STZ $0F90,x[$7E:0FD0]  ; Enemy timer = 0
@@ -3037,112 +3044,115 @@ $A2:A4AF 60          RTS
 }
 
 
-;;; $A4B0: Owtch function - [enemy function index] = 0 ;;;
+;;; $A4B0: Owtch function index 0 - moving left ;;;
 {
+; The decrement at $A4D2 is almost certainly supposed to be an increment
+; It just about works out though, with $A49D being called as a result,
+; and the instruction list that gets issued immediately sets the function index to 1 as it should be
 $A2:A4B0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A4B3 BD 7C 0F    LDA $0F7C,x[$7E:113C]
-$A2:A4B6 18          CLC
-$A2:A4B7 7D AC 0F    ADC $0FAC,x[$7E:116C]
-$A2:A4BA 90 03       BCC $03    [$A4BF]
-$A2:A4BC FE 7A 0F    INC $0F7A,x[$7E:113A]
+$A2:A4B3 BD 7C 0F    LDA $0F7C,x[$7E:113C]  ;\
+$A2:A4B6 18          CLC                    ;|
+$A2:A4B7 7D AC 0F    ADC $0FAC,x[$7E:116C]  ;|
+$A2:A4BA 90 03       BCC $03    [$A4BF]     ;|
+$A2:A4BC FE 7A 0F    INC $0F7A,x[$7E:113A]  ;|
+                                            ;} Enemy X position += [enemy left velocity]
+$A2:A4BF 9D 7C 0F    STA $0F7C,x[$7E:113C]  ;|
+$A2:A4C2 BD 7A 0F    LDA $0F7A,x[$7E:113A]  ;|
+$A2:A4C5 18          CLC                    ;|
+$A2:A4C6 7D AE 0F    ADC $0FAE,x[$7E:116E]  ;|
+$A2:A4C9 9D 7A 0F    STA $0F7A,x[$7E:113A]  ;/
+$A2:A4CC DF 02 78 7E CMP $7E7802,x[$7E:79C2];\
+$A2:A4D0 10 03       BPL $03    [$A4D5]     ;} If [enemy X position] < [enemy minimum X position]:
+$A2:A4D2 DE B0 0F    DEC $0FB0,x[$7E:0FF0]  ; Enemy function index = -1
 
-$A2:A4BF 9D 7C 0F    STA $0F7C,x[$7E:113C]
-$A2:A4C2 BD 7A 0F    LDA $0F7A,x[$7E:113A]
-$A2:A4C5 18          CLC
-$A2:A4C6 7D AE 0F    ADC $0FAE,x[$7E:116E]
-$A2:A4C9 9D 7A 0F    STA $0F7A,x[$7E:113A]
-$A2:A4CC DF 02 78 7E CMP $7E7802,x[$7E:79C2]
-$A2:A4D0 10 03       BPL $03    [$A4D5]
-$A2:A4D2 DE B0 0F    DEC $0FB0,x[$7E:0FF0]
-
-$A2:A4D5 20 53 A5    JSR $A553  [$A2:A553]
+$A2:A4D5 20 53 A5    JSR $A553  [$A2:A553]  ; Maybe make owtch sink
 $A2:A4D8 60          RTS
 }
 
 
-;;; $A4D9: Owtch function - [enemy function index] = 1 ;;;
+;;; $A4D9: Owtch function index 1 - moving right ;;;
 {
 $A2:A4D9 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A4DC BD 7C 0F    LDA $0F7C,x[$7E:0FBC]
-$A2:A4DF 18          CLC
-$A2:A4E0 7D A8 0F    ADC $0FA8,x[$7E:0FE8]
-$A2:A4E3 90 03       BCC $03    [$A4E8]
-$A2:A4E5 FE 7A 0F    INC $0F7A,x[$7E:0FBA]
-
-$A2:A4E8 9D 7C 0F    STA $0F7C,x[$7E:0FBC]
-$A2:A4EB BD 7A 0F    LDA $0F7A,x[$7E:0FBA]
-$A2:A4EE 18          CLC
-$A2:A4EF 7D AA 0F    ADC $0FAA,x[$7E:0FEA]
-$A2:A4F2 9D 7A 0F    STA $0F7A,x[$7E:0FBA]
-$A2:A4F5 DF 04 78 7E CMP $7E7804,x[$7E:7844]
-$A2:A4F9 30 03       BMI $03    [$A4FE]
-$A2:A4FB 9E B0 0F    STZ $0FB0,x[$7E:0FB0]
-
-$A2:A4FE 20 53 A5    JSR $A553  [$A2:A553]
+$A2:A4DC BD 7C 0F    LDA $0F7C,x[$7E:0FBC]  ;\
+$A2:A4DF 18          CLC                    ;|
+$A2:A4E0 7D A8 0F    ADC $0FA8,x[$7E:0FE8]  ;|
+$A2:A4E3 90 03       BCC $03    [$A4E8]     ;|
+$A2:A4E5 FE 7A 0F    INC $0F7A,x[$7E:0FBA]  ;|
+                                            ;} Enemy X position += [enemy right velocity]
+$A2:A4E8 9D 7C 0F    STA $0F7C,x[$7E:0FBC]  ;|
+$A2:A4EB BD 7A 0F    LDA $0F7A,x[$7E:0FBA]  ;|
+$A2:A4EE 18          CLC                    ;|
+$A2:A4EF 7D AA 0F    ADC $0FAA,x[$7E:0FEA]  ;|
+$A2:A4F2 9D 7A 0F    STA $0F7A,x[$7E:0FBA]  ;/
+$A2:A4F5 DF 04 78 7E CMP $7E7804,x[$7E:7844];\
+$A2:A4F9 30 03       BMI $03    [$A4FE]     ;} If [enemy X position] >= [enemy maximum X position]:
+$A2:A4FB 9E B0 0F    STZ $0FB0,x[$7E:0FB0]  ; Enemy function index = 0 (moving left)
+                                            
+$A2:A4FE 20 53 A5    JSR $A553  [$A2:A553]  ; Maybe make owtch sink
 $A2:A501 60          RTS
 }
 
 
-;;; $A502: Owtch function - [enemy function index] = 2 ;;;
+;;; $A502: Owtch function index 2 - underground ;;;
 {
 $A2:A502 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A505 BF 00 78 7E LDA $7E7800,x[$7E:79C0]
-$A2:A509 3A          DEC A
-$A2:A50A 9F 00 78 7E STA $7E7800,x[$7E:79C0]
-$A2:A50E D0 06       BNE $06    [$A516]
-$A2:A510 A9 04 00    LDA #$0004
-$A2:A513 9D B0 0F    STA $0FB0,x[$7E:0FF0]
+$A2:A505 BF 00 78 7E LDA $7E7800,x[$7E:79C0];\
+$A2:A509 3A          DEC A                  ;} Decrement enemy underground timer
+$A2:A50A 9F 00 78 7E STA $7E7800,x[$7E:79C0];/
+$A2:A50E D0 06       BNE $06    [$A516]     ; If [enemy underground timer] = 0:
+$A2:A510 A9 04 00    LDA #$0004             ;\
+$A2:A513 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;} Enemy function index = 4
 
 $A2:A516 60          RTS
 }
 
 
-;;; $A517: Owtch function - [enemy function index] = 3 ;;;
+;;; $A517: Owtch function index 3 - sinking ;;;
 {
 $A2:A517 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A51A FE 7E 0F    INC $0F7E,x[$7E:113E]
-$A2:A51D FE B2 0F    INC $0FB2,x[$7E:1172]
-$A2:A520 BD B2 0F    LDA $0FB2,x[$7E:1172]
-$A2:A523 C9 10 00    CMP #$0010
-$A2:A526 30 15       BMI $15    [$A53D]
-$A2:A528 A9 02 00    LDA #$0002
-$A2:A52B 9D B0 0F    STA $0FB0,x[$7E:1170]
-$A2:A52E BD B5 0F    LDA $0FB5,x[$7E:1175]
-$A2:A531 29 FF 00    AND #$00FF
-$A2:A534 0A          ASL A
-$A2:A535 A8          TAY
-$A2:A536 B9 ED A3    LDA $A3ED,y[$A2:A3F3]
-$A2:A539 9F 00 78 7E STA $7E7800,x[$7E:79C0]
+$A2:A51A FE 7E 0F    INC $0F7E,x[$7E:113E]  ; Enemy Y position += 1
+$A2:A51D FE B2 0F    INC $0FB2,x[$7E:1172]  ; Enemy sink Y offset += 1
+$A2:A520 BD B2 0F    LDA $0FB2,x[$7E:1172]  ;\
+$A2:A523 C9 10 00    CMP #$0010             ;} If [enemy sink Y offset] >= 10h:
+$A2:A526 30 15       BMI $15    [$A53D]     ;/
+$A2:A528 A9 02 00    LDA #$0002             ;\
+$A2:A52B 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy function index = 2
+$A2:A52E BD B5 0F    LDA $0FB5,x[$7E:1175]  ;\
+$A2:A531 29 FF 00    AND #$00FF             ;|
+$A2:A534 0A          ASL A                  ;|
+$A2:A535 A8          TAY                    ;} Enemy underground timer = [$A3ED + [enemy parameter 1 high] * 2]
+$A2:A536 B9 ED A3    LDA $A3ED,y[$A2:A3F3]  ;|
+$A2:A539 9F 00 78 7E STA $7E7800,x[$7E:79C0];/
 
 $A2:A53D 60          RTS
 }
 
 
-;;; $A53E: Owtch function - [enemy function index] = 4 ;;;
+;;; $A53E: Owtch function index 4 - rising ;;;
 {
 $A2:A53E AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A541 DE 7E 0F    DEC $0F7E,x[$7E:0FBE]
-$A2:A544 DE B2 0F    DEC $0FB2,x[$7E:0FF2]
-$A2:A547 D0 09       BNE $09    [$A552]
-$A2:A549 AD E6 05    LDA $05E6  [$7E:05E6]
-$A2:A54C 29 01 00    AND #$0001
-$A2:A54F 9D B0 0F    STA $0FB0,x[$7E:0FF0]
+$A2:A541 DE 7E 0F    DEC $0F7E,x[$7E:0FBE]  ; Enemy Y position -= 1
+$A2:A544 DE B2 0F    DEC $0FB2,x[$7E:0FF2]  ; Enemy sink Y offset -= 1
+$A2:A547 D0 09       BNE $09    [$A552]     ; If [enemy sink Y offset] = 0:
+$A2:A549 AD E6 05    LDA $05E6  [$7E:05E6]  ;\
+$A2:A54C 29 01 00    AND #$0001             ;} Enemy function index = [random number] / 100h % 2
+$A2:A54F 9D B0 0F    STA $0FB0,x[$7E:0FF0]  ;/
 
 $A2:A552 60          RTS
 }
 
 
-;;; $A553:  ;;;
+;;; $A553: Maybe make owtch sink ;;;
 {
-$A2:A553 22 11 81 80 JSL $808111[$80:8111]
-$A2:A557 AD E5 05    LDA $05E5  [$7E:05E5]
-$A2:A55A 18          CLC
-$A2:A55B 7D A4 0F    ADC $0FA4,x[$7E:1164]
-$A2:A55E 29 FF 00    AND #$00FF
-$A2:A561 C9 06 00    CMP #$0006
-$A2:A564 10 06       BPL $06    [$A56C]
-$A2:A566 A9 03 00    LDA #$0003
-$A2:A569 9D B0 0F    STA $0FB0,x[$7E:1170]
+$A2:A553 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A2:A557 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
+$A2:A55A 18          CLC                    ;|
+$A2:A55B 7D A4 0F    ADC $0FA4,x[$7E:1164]  ;|
+$A2:A55E 29 FF 00    AND #$00FF             ;} If ([random number] + [enemy frame counter]) % 100h < 6:
+$A2:A561 C9 06 00    CMP #$0006             ;|
+$A2:A564 10 06       BPL $06    [$A56C]     ;/
+$A2:A566 A9 03 00    LDA #$0003             ;\
+$A2:A569 9D B0 0F    STA $0FB0,x[$7E:1170]  ;} Enemy function index = 3 (sinking)
 
 $A2:A56C 60          RTS
 }
@@ -3172,10 +3182,10 @@ $A2:A578 6B          RTL
 ;;; $A579: Enemy shot - enemy $D03F (owtch) ;;;
 {
 $A2:A579 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:A57C BD B0 0F    LDA $0FB0,x[$7E:0FF0]
-$A2:A57F C9 01 00    CMP #$0001
-$A2:A582 10 04       BPL $04    [$A588]
-$A2:A584 22 2D 80 A2 JSL $A2802D[$A2:802D]
+$A2:A57C BD B0 0F    LDA $0FB0,x[$7E:0FF0]  ;\
+$A2:A57F C9 01 00    CMP #$0001             ;} If [enemy function index] < 1:
+$A2:A582 10 04       BPL $04    [$A588]     ;/
+$A2:A584 22 2D 80 A2 JSL $A2802D[$A2:802D]  ; Normal enemy shot AI
 
 $A2:A588 6B          RTL
 }
@@ -4521,7 +4531,7 @@ $A2:B2BC             dw 3800, 02FF, 01BF, 000F, 0008, 01BF, 011B, 0015, 0011, 24
 
 ;;; $B2DC..B3DF: Instruction lists - multiviola ;;;
 {
-;;; $B2DC: Instruction list -  ;;;
+;;; $B2DC: Instruction list ;;;
 {
 $A2:B2DC             dx 000A,B4AA,
                         000A,B4B1,
@@ -4541,8 +4551,9 @@ $A2:B2DC             dx 000A,B4AA,
 }
 
 
-;;; $B318: Instruction list -  ;;;
+;;; $B318: Unused. Instruction list ;;;
 {
+; The spritemaps here have no associated graphics
 $A2:B318             dx 0002,B4E2,
                         0001,804D,
                         0002,B4E2,
@@ -4571,8 +4582,9 @@ $A2:B318             dx 0002,B4E2,
 }
 
 
-;;; $B37C: Instruction list -  ;;;
+;;; $B37C: Unused. Instruction list ;;;
 {
+; The spritemaps here have no associated graphics
 $A2:B37C             dx 0002,B4FE,
                         0001,804D,
                         0002,B4FE,
@@ -4604,23 +4616,24 @@ $A2:B37C             dx 0002,B4FE,
 
 ;;; $B3E0: Initialisation AI - enemy $D1BF (multiviola) ;;;
 {
+; Everything but the instruction list pointer assignment is done in the main AI, making it completely redundant to do here
 $A2:B3E0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B3E3 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:B3E6 85 12       STA $12    [$7E:0012]
-$A2:B3E8 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A2:B3EB 29 FF 00    AND #$00FF
-$A2:B3EE 85 14       STA $14    [$7E:0014]
+$A2:B3E3 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:B3E6 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy angle]
+$A2:B3E8 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A2:B3EB 29 FF 00    AND #$00FF             ;} $14 = [enemy parameter 2 low]
+$A2:B3EE 85 14       STA $14    [$7E:0014]  ;/
 $A2:B3F0 22 43 B6 A0 JSL $A0B643[$A0:B643]  ; ($16.$18, $1A.$1C) = ([$14] * |cos([$12] * pi / 80h)|, [$14] * |sin([$12] * pi / 80h)|)
-$A2:B3F4 A5 16       LDA $16    [$7E:0016]
-$A2:B3F6 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A2:B3F9 A5 18       LDA $18    [$7E:0018]
-$A2:B3FB 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A2:B3FE A5 1A       LDA $1A    [$7E:001A]
-$A2:B400 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:B403 A5 1C       LDA $1C    [$7E:001C]
-$A2:B405 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A2:B408 A9 DC B2    LDA #$B2DC
-$A2:B40B 9D 92 0F    STA $0F92,x[$7E:0F92]
+$A2:B3F4 A5 16       LDA $16    [$7E:0016]  ;\
+$A2:B3F6 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;|
+$A2:B3F9 A5 18       LDA $18    [$7E:0018]  ;} Enemy X velocity = [$16].[$18]
+$A2:B3FB 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
+$A2:B3FE A5 1A       LDA $1A    [$7E:001A]  ;\
+$A2:B400 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;|
+$A2:B403 A5 1C       LDA $1C    [$7E:001C]  ;} Enemy Y velocity = [$1A].[$1C]
+$A2:B405 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
+$A2:B408 A9 DC B2    LDA #$B2DC             ;\
+$A2:B40B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $B2DC
 $A2:B40E 6B          RTL
 }
 
@@ -4629,25 +4642,25 @@ $A2:B40E 6B          RTL
 {
 ; Note the two fixed point negation operations at $B443 and $B47D are off by 1.0 when the low word is zero
 $A2:B40F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B412 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:B415 85 12       STA $12    [$7E:0012]
-$A2:B417 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A2:B41A 29 FF 00    AND #$00FF
-$A2:B41D 85 14       STA $14    [$7E:0014]
+$A2:B412 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:B415 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy angle]
+$A2:B417 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A2:B41A 29 FF 00    AND #$00FF             ;} $14 = [enemy parameter 2 low]
+$A2:B41D 85 14       STA $14    [$7E:0014]  ;/
 $A2:B41F 22 43 B6 A0 JSL $A0B643[$A0:B643]  ; ($16.$18, $1A.$1C) = ([$14] * |cos([$12] * pi / 80h)|, [$14] * |sin([$12] * pi / 80h)|)
-$A2:B423 A5 16       LDA $16    [$7E:0016]
-$A2:B425 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A2:B428 A5 18       LDA $18    [$7E:0018]
-$A2:B42A 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A2:B42D A5 1A       LDA $1A    [$7E:001A]
-$A2:B42F 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:B432 A5 1C       LDA $1C    [$7E:001C]
-$A2:B434 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A2:B437 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:B43A 18          CLC
-$A2:B43B 69 40 00    ADC #$0040
-$A2:B43E 89 80 00    BIT #$0080
-$A2:B441 D0 13       BNE $13    [$B456]
+$A2:B423 A5 16       LDA $16    [$7E:0016]  ;\
+$A2:B425 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;|
+$A2:B428 A5 18       LDA $18    [$7E:0018]  ;} Enemy X velocity = [$16].[$18]
+$A2:B42A 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;/
+$A2:B42D A5 1A       LDA $1A    [$7E:001A]  ;\
+$A2:B42F 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;|
+$A2:B432 A5 1C       LDA $1C    [$7E:001C]  ;} Enemy Y velocity = [$1A].[$1C]
+$A2:B434 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;/
+$A2:B437 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:B43A 18          CLC                    ;|
+$A2:B43B 69 40 00    ADC #$0040             ;} If ([enemy angle] + 40h) % 100h < 80h:
+$A2:B43E 89 80 00    BIT #$0080             ;|
+$A2:B441 D0 13       BNE $13    [$B456]     ;/
 $A2:B443 BD AC 0F    LDA $0FAC,x[$7E:0FAC]  ;\
 $A2:B446 49 FF FF    EOR #$FFFF             ;} Enemy X velocity = -1 - [enemy X velocity]
 $A2:B449 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
@@ -4662,16 +4675,16 @@ $A2:B45B BD AE 0F    LDA $0FAE,x[$7E:0FAE]  ;} Move enemy right by [enemy X velo
 $A2:B45E 85 12       STA $12    [$7E:0012]  ;|
 $A2:B460 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A2:B464 90 0B       BCC $0B    [$B471]     ; If collided with wall:
-$A2:B466 BD B4 0F    LDA $0FB4,x[$7E:1034]
-$A2:B469 49 40 00    EOR #$0040
-$A2:B46C 9D B4 0F    STA $0FB4,x[$7E:1034]
-$A2:B46F 80 38       BRA $38    [$B4A9]
+$A2:B466 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
+$A2:B469 49 40 00    EOR #$0040             ;} Enemy angle ^= 40h
+$A2:B46C 9D B4 0F    STA $0FB4,x[$7E:1034]  ;/
+$A2:B46F 80 38       BRA $38    [$B4A9]     ; Return
 
-$A2:B471 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:B474 18          CLC
-$A2:B475 69 80 00    ADC #$0080
-$A2:B478 89 80 00    BIT #$0080
-$A2:B47B D0 13       BNE $13    [$B490]
+$A2:B471 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:B474 18          CLC                    ;|
+$A2:B475 69 80 00    ADC #$0080             ;} If [enemy angle] >= 80h:
+$A2:B478 89 80 00    BIT #$0080             ;|
+$A2:B47B D0 13       BNE $13    [$B490]     ;/
 $A2:B47D BD B0 0F    LDA $0FB0,x[$7E:0FB0]  ;\
 $A2:B480 49 FF FF    EOR #$FFFF             ;} Enemy Y velocity = -1 - [enemy Y velocity]
 $A2:B483 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
@@ -4686,9 +4699,9 @@ $A2:B495 BD B2 0F    LDA $0FB2,x[$7E:0FB2]  ;} Move enemy down by [enemy Y veloc
 $A2:B498 85 12       STA $12    [$7E:0012]  ;|
 $A2:B49A 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A2:B49E 90 09       BCC $09    [$B4A9]     ; If collided with block:
-$A2:B4A0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:B4A3 49 C0 00    EOR #$00C0
-$A2:B4A6 9D B4 0F    STA $0FB4,x[$7E:0FB4]
+$A2:B4A0 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:B4A3 49 C0 00    EOR #$00C0             ;} Enemy angle ^= C0h
+$A2:B4A6 9D B4 0F    STA $0FB4,x[$7E:0FB4]  ;/
 
 $A2:B4A9 6B          RTL
 }
@@ -4696,6 +4709,7 @@ $A2:B4A9 6B          RTL
 
 ;;; $B4AA: Spritemaps - multiviola ;;;
 {
+; Used instruction list
 $A2:B4AA             dx 0001, 81F8,F8,2100
 $A2:B4B1             dx 0001, 81F8,F8,2102
 $A2:B4B8             dx 0001, 81F8,F8,2104
@@ -4704,10 +4718,14 @@ $A2:B4C6             dx 0001, 81F8,F8,2108
 $A2:B4CD             dx 0001, 81F8,F8,210A
 $A2:B4D4             dx 0001, 81F8,F8,210C
 $A2:B4DB             dx 0001, 81F8,F8,210E
+
+; Unused instruction list
 $A2:B4E2             dx 0001, 81F8,F8,2120
 $A2:B4E9             dx 0001, 81F8,F8,2122
 $A2:B4F0             dx 0001, 81F8,F8,2124
 $A2:B4F7             dx 0001, 81F8,F8,2126
+
+; Unused instruction list
 $A2:B4FE             dx 0001, 81F8,F8,2128
 $A2:B505             dx 0001, 81F8,F8,212A
 $A2:B50C             dx 0001, 81F8,F8,212C
@@ -4725,10 +4743,15 @@ $A2:B51A             dx 0001,B5FB,
 }
 
 
-;;; $B520:  ;;;
+;;; $B520: Polpy data ;;;
 {
+; Cooldown time
 $A2:B520             dw 0010, 0018, 0020, 0028, 0030, 0038, 0040, 0048
+
+; Enemy projectile initial Y speed table index
 $A2:B530             dw 001C, 001D, 001E, 001F, 0020, 0021, 0022, 0023, 0024, 0025, 0026, 0027, 0028, 0029, 002A, 002B
+
+; Enemy projectile X velocity
 $A2:B550             dw 0060, 0070, 0080, 0090, 00A0, 00B0, 00C0, 00D0, FFA0, FF90, FF80, FF70, FF60, FF50, FF40, FF30
 }
 
@@ -4736,13 +4759,13 @@ $A2:B550             dw 0060, 0070, 0080, 0090, 00A0, 00B0, 00C0, 00D0, FFA0, FF
 ;;; $B570: Initialisation AI - enemy $D1FF (polyp) ;;;
 {
 $A2:B570 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B573 A9 1A B5    LDA #$B51A
-$A2:B576 9D 92 0F    STA $0F92,x[$7E:1112]
+$A2:B573 A9 1A B5    LDA #$B51A             ;\
+$A2:B576 9D 92 0F    STA $0F92,x[$7E:1112]  ;} Enemy instruction list pointer = $B51A
 $A2:B579 A9 01 00    LDA #$0001             ;\
 $A2:B57C 9D 94 0F    STA $0F94,x[$7E:1114]  ;} Enemy instruction timer = 1
 $A2:B57F 9E 90 0F    STZ $0F90,x[$7E:1110]  ; Enemy timer = 0
-$A2:B582 A9 96 B5    LDA #$B596
-$A2:B585 9D A8 0F    STA $0FA8,x[$7E:1128]
+$A2:B582 A9 96 B5    LDA #$B596             ;\
+$A2:B585 9D A8 0F    STA $0FA8,x[$7E:1128]  ;} Enemy function = $B596 (wait for Samus to get near)
 $A2:B588 A9 11 00    LDA #$0011             ;\
 $A2:B58B 8D E5 05    STA $05E5  [$7E:05E5]  ;} Random number = 11h
 $A2:B58E 6B          RTL
@@ -4752,12 +4775,12 @@ $A2:B58E 6B          RTL
 ;;; $B58F: Main AI - enemy $D1FF (polyp) ;;;
 {
 $A2:B58F AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B592 FC A8 0F    JSR ($0FA8,x)[$A2:B596]
+$A2:B592 FC A8 0F    JSR ($0FA8,x)[$A2:B596]; Execute [enemy function]
 $A2:B595 6B          RTL
 }
 
 
-;;; $B596:  ;;;
+;;; $B596: Polyp function - wait for Samus to get near ;;;
 {
 $A2:B596 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:B599 A9 40 00    LDA #$0040             ;\
@@ -4766,45 +4789,45 @@ $A2:B5A0 F0 0F       BEQ $0F    [$B5B1]     ;/
 $A2:B5A2 A9 40 00    LDA #$0040             ;\
 $A2:B5A5 22 ED AE A0 JSL $A0AEED[$A0:AEED]  ;} If Samus is within 40h pixels rows of enemy:
 $A2:B5A9 F0 06       BEQ $06    [$B5B1]     ;/
-$A2:B5AB A9 B2 B5    LDA #$B5B2
-$A2:B5AE 9D A8 0F    STA $0FA8,x[$7E:11E8]
+$A2:B5AB A9 B2 B5    LDA #$B5B2             ;\
+$A2:B5AE 9D A8 0F    STA $0FA8,x[$7E:11E8]  ;} Enemy function = $B5B2
 
 $A2:B5B1 60          RTS
 }
 
 
-;;; $B5B2:  ;;;
+;;; $B5B2: Polyp function - shoot rock ;;;
 {
 $A2:B5B2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B5B5 22 11 81 80 JSL $808111[$80:8111]
-$A2:B5B9 29 1E 00    AND #$001E
-$A2:B5BC A8          TAY
-$A2:B5BD B9 50 B5    LDA $B550,y[$A2:B56A]
-$A2:B5C0 8D 95 19    STA $1995  [$7E:1995]
-$A2:B5C3 22 11 81 80 JSL $808111[$80:8111]
-$A2:B5C7 29 1E 00    AND #$001E
-$A2:B5CA A8          TAY
-$A2:B5CB B9 30 B5    LDA $B530,y[$A2:B548]
+$A2:B5B5 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A2:B5B9 29 1E 00    AND #$001E             ;\
+$A2:B5BC A8          TAY                    ;|
+$A2:B5BD B9 50 B5    LDA $B550,y[$A2:B56A]  ;} Enemy projectile initialisation parameter 1 = [$B550 + [random number] / 2 % 10h * 2] (X velocity)
+$A2:B5C0 8D 95 19    STA $1995  [$7E:1995]  ;/
+$A2:B5C3 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A2:B5C7 29 1E 00    AND #$001E             ;\
+$A2:B5CA A8          TAY                    ;} A = [$B530 + [random number] / 2 % 10h * 2] (initial Y speed table index)
+$A2:B5CB B9 30 B5    LDA $B530,y[$A2:B548]  ;/
 $A2:B5CE A0 5A BD    LDY #$BD5A             ;\
 $A2:B5D1 22 27 80 86 JSL $868027[$86:8027]  ;} Spawn polyp rock enemy projectile
-$A2:B5D5 A9 EA B5    LDA #$B5EA
-$A2:B5D8 9D A8 0F    STA $0FA8,x[$7E:11E8]
-$A2:B5DB 22 11 81 80 JSL $808111[$80:8111]
-$A2:B5DF 29 0E 00    AND #$000E
-$A2:B5E2 A8          TAY
-$A2:B5E3 B9 20 B5    LDA $B520,y[$A2:B528]
-$A2:B5E6 9D AA 0F    STA $0FAA,x[$7E:11EA]
+$A2:B5D5 A9 EA B5    LDA #$B5EA             ;\
+$A2:B5D8 9D A8 0F    STA $0FA8,x[$7E:11E8]  ;} Enemy function = $B5EA
+$A2:B5DB 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number
+$A2:B5DF 29 0E 00    AND #$000E             ;\
+$A2:B5E2 A8          TAY                    ;|
+$A2:B5E3 B9 20 B5    LDA $B520,y[$A2:B528]  ;} Enemy cooldown timer = [$B520 + [random number] / 2 % 8 * 2]
+$A2:B5E6 9D AA 0F    STA $0FAA,x[$7E:11EA]  ;/
 $A2:B5E9 60          RTS
 }
 
 
-;;; $B5EA:  ;;;
+;;; $B5EA: Polyp function - cooldown ;;;
 {
 $A2:B5EA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:B5ED DE AA 0F    DEC $0FAA,x[$7E:11EA]
-$A2:B5F0 10 06       BPL $06    [$B5F8]
-$A2:B5F2 A9 96 B5    LDA #$B596
-$A2:B5F5 9D A8 0F    STA $0FA8,x[$7E:11E8]
+$A2:B5ED DE AA 0F    DEC $0FAA,x[$7E:11EA]  ; Decrement enemy cooldown timer
+$A2:B5F0 10 06       BPL $06    [$B5F8]     ; If [enemy cooldown timer] < 0:
+$A2:B5F2 A9 96 B5    LDA #$B596             ;\
+$A2:B5F5 9D A8 0F    STA $0FA8,x[$7E:11E8]  ;} Enemy function = $B596 (wait for Samus to get near)
 
 $A2:B5F8 60          RTS
 }
@@ -5517,11 +5540,16 @@ $A2:BACF             dx 0003,BD98,
 }
 
 
-;;; $BB4B: Instruction list -  ;;;
+;;; $BB4B: Instruction list - initial ;;;
 {
 $A2:BB4B             dx 0004,BD6C,
-                        0004,BD82,
-                        0004,BD6C,
+                        0004,BD82
+}
+
+
+;;; $BB53: Instruction list -  ;;;
+{
+$A2:BB53             dx 0004,BD6C,
                         0004,BD82,
                         0004,BD6C,
                         0004,BD82,
@@ -5570,9 +5598,9 @@ $A2:BBA3             dx 0003,BDF0,
 
 ;;; $BBBB: Rio constants ;;;
 {
-$A2:BBBB             dw 0580
+$A2:BBBB             dw 0580 ; Y velocity
 $A2:BBBD             dw 0600 ; Unused
-$A2:BBBF             dw 0180
+$A2:BBBF             dw 0180 ; X velocity
 $A2:BBC1             dw 0200 ; Unused
 }
 
@@ -5589,47 +5617,47 @@ $A2:BBCC 6B          RTL
 ;;; $BBCD: Initialisation AI - enemy $D27F (rio) ;;;
 {
 $A2:BBCD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:BBD0 9E B0 0F    STZ $0FB0,x[$7E:10B0]
-$A2:BBD3 9E B2 0F    STZ $0FB2,x[$7E:10B2]
-$A2:BBD6 A9 4B BB    LDA #$BB4B
-$A2:BBD9 9D 92 0F    STA $0F92,x[$7E:1092]
-$A2:BBDC A9 ED BB    LDA #$BBED
-$A2:BBDF 9D AA 0F    STA $0FAA,x[$7E:10AA]
+$A2:BBD0 9E B0 0F    STZ $0FB0,x[$7E:10B0]  ; Enemy $0FB0 = 0
+$A2:BBD3 9E B2 0F    STZ $0FB2,x[$7E:10B2]  ; Enemy $0FB2 = 0
+$A2:BBD6 A9 4B BB    LDA #$BB4B             ;\
+$A2:BBD9 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $BB4B
+$A2:BBDC A9 ED BB    LDA #$BBED             ;\
+$A2:BBDF 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BBED (wait for Samus to get near)
 $A2:BBE2 6B          RTL
 }
 
 
 ;;; $BBE3: Main AI - enemy $D27F (rio) ;;;
 {
-$A2:BBE3 22 11 81 80 JSL $808111[$80:8111]
+$A2:BBE3 22 11 81 80 JSL $808111[$80:8111]  ; Generate random number...
 $A2:BBE7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:BBEA 7C AA 0F    JMP ($0FAA,x)[$A2:BBED]
+$A2:BBEA 7C AA 0F    JMP ($0FAA,x)[$A2:BBED]; Go to [enemy function]
 }
 
 
-;;; $BBED:  ;;;
+;;; $BBED: Rio function - wait for Samus to get near ;;;
 {
 $A2:BBED A9 A0 00    LDA #$00A0             ;\
 $A2:BBF0 22 9B BB A0 JSL $A0BB9B[$A0:BB9B]  ;} If X distance between enemy and Samus is at least A0h:
 $A2:BBF4 90 01       BCC $01    [$BBF7]     ;/
 $A2:BBF6 6B          RTL                    ; Return
 
-$A2:BBF7 AD BB BB    LDA $BBBB  [$A2:BBBB]  ; Woah
-$A2:BBFA 9D AC 0F    STA $0FAC,x[$7E:10AC]
-$A2:BBFD AD BF BB    LDA $BBBF  [$A2:BBBF]
-$A2:BC00 9D AE 0F    STA $0FAE,x[$7E:10AE]
-$A2:BC03 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:BC06 DD 7A 0F    CMP $0F7A,x[$7E:107A]
-$A2:BC09 10 0A       BPL $0A    [$BC15]
-$A2:BC0B BD AE 0F    LDA $0FAE,x[$7E:10AE]
-$A2:BC0E 49 FF FF    EOR #$FFFF
-$A2:BC11 1A          INC A
-$A2:BC12 9D AE 0F    STA $0FAE,x[$7E:10AE]
+$A2:BBF7 AD BB BB    LDA $BBBB  [$A2:BBBB]  ;\
+$A2:BBFA 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;} Enemy Y velocity = 580h
+$A2:BBFD AD BF BB    LDA $BBBF  [$A2:BBBF]  ;\
+$A2:BC00 9D AE 0F    STA $0FAE,x[$7E:10AE]  ;} Enemy X velocity = 180h
+$A2:BC03 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:BC06 DD 7A 0F    CMP $0F7A,x[$7E:107A]  ;} If [Samus X position] < [enemy X position]
+$A2:BC09 10 0A       BPL $0A    [$BC15]     ;/
+$A2:BC0B BD AE 0F    LDA $0FAE,x[$7E:10AE]  ;\
+$A2:BC0E 49 FF FF    EOR #$FFFF             ;|
+$A2:BC11 1A          INC A                  ;} Negate enemy X velocity
+$A2:BC12 9D AE 0F    STA $0FAE,x[$7E:10AE]  ;/
 
-$A2:BC15 A9 7F BB    LDA #$BB7F
-$A2:BC18 20 54 BD    JSR $BD54  [$A2:BD54]
-$A2:BC1B A9 48 BC    LDA #$BC48
-$A2:BC1E 9D AA 0F    STA $0FAA,x[$7E:10AA]
+$A2:BC15 A9 7F BB    LDA #$BB7F             ;\
+$A2:BC18 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB7F
+$A2:BC1B A9 48 BC    LDA #$BC48             ;\
+$A2:BC1E 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BC48
 $A2:BC21 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A2:BC25 29 FF FF    AND #$FFFF             ;} If enemy centre is on screen:
 $A2:BC28 D0 07       BNE $07    [$BC31]     ;/
@@ -5640,22 +5668,22 @@ $A2:BC31 6B          RTL
 }
 
 
-;;; $BC32:  ;;;
+;;; $BC32: Rio function -  ;;;
 {
 $A2:BC32 BD B0 0F    LDA $0FB0,x[$7E:10B0]
 $A2:BC35 D0 01       BNE $01    [$BC38]
 $A2:BC37 6B          RTL
 
 $A2:BC38 9E B0 0F    STZ $0FB0,x[$7E:10B0]
-$A2:BC3B A9 53 BB    LDA #$BB53
-$A2:BC3E 20 54 BD    JSR $BD54  [$A2:BD54]
-$A2:BC41 A9 ED BB    LDA #$BBED
-$A2:BC44 9D AA 0F    STA $0FAA,x[$7E:10AA]
+$A2:BC3B A9 53 BB    LDA #$BB53             ;\
+$A2:BC3E 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB53
+$A2:BC41 A9 ED BB    LDA #$BBED             ;\
+$A2:BC44 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BBED
 $A2:BC47 6B          RTL
 }
 
 
-;;; $BC48:  ;;;
+;;; $BC48: Rio function -  ;;;
 {
 $A2:BC48 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BC4A 64 14       STZ $14    [$7E:0014]  ;|
@@ -5675,45 +5703,46 @@ $A2:BC64 C6 14       DEC $14    [$7E:0014]  ;} Move enemy down by [enemy Y veloc
 $A2:BC66 85 13       STA $13    [$7E:0013]  ;|
 $A2:BC68 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A2:BC6C B0 38       BCS $38    [$BCA6]     ; If collided with block: go to BRANCH_COLLIDED_VERTICALLY
-$A2:BC6E BD AC 0F    LDA $0FAC,x[$7E:10AC]
-$A2:BC71 38          SEC
-$A2:BC72 E9 18 00    SBC #$0018
-$A2:BC75 9D AC 0F    STA $0FAC,x[$7E:10AC]
-$A2:BC78 30 0F       BMI $0F    [$BC89]
+$A2:BC6E BD AC 0F    LDA $0FAC,x[$7E:10AC]  ;\
+$A2:BC71 38          SEC                    ;|
+$A2:BC72 E9 18 00    SBC #$0018             ;} Enemy Y velocity -= 18h
+$A2:BC75 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;/
+$A2:BC78 30 0F       BMI $0F    [$BC89]     ; If [enemy Y velocity] < 0: go to BRANCH_BC89
 $A2:BC7A BD B0 0F    LDA $0FB0,x[$7E:10B0]
 $A2:BC7D F0 09       BEQ $09    [$BC88]
 $A2:BC7F 9E B0 0F    STZ $0FB0,x[$7E:10B0]
-$A2:BC82 A9 97 BB    LDA #$BB97
-$A2:BC85 20 54 BD    JSR $BD54  [$A2:BD54]
+$A2:BC82 A9 97 BB    LDA #$BB97             ;\
+$A2:BC85 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB97
 
-$A2:BC88 6B          RTL
+$A2:BC88 6B          RTL                    ; Return
 
+; BRANCH_BC89
 $A2:BC89 BD AE 0F    LDA $0FAE,x
 $A2:BC8C 9D A8 0F    STA $0FA8,x
 $A2:BC8F 9E AE 0F    STZ $0FAE,x
 $A2:BC92 9E AC 0F    STZ $0FAC,x
-$A2:BC95 A9 FF BC    LDA #$BCFF
-$A2:BC98 9D AA 0F    STA $0FAA,x
-$A2:BC9B 6B          RTL
+$A2:BC95 A9 FF BC    LDA #$BCFF             ;\
+$A2:BC98 9D AA 0F    STA $0FAA,x            ;} Enemy function = $BCFF
+$A2:BC9B 6B          RTL                    ; Return
 
 ; BRANCH_COLLIDED_HORIZONTALLY
-$A2:BC9C BD AE 0F    LDA $0FAE,x[$7E:10AE]
-$A2:BC9F 49 FF FF    EOR #$FFFF
-$A2:BCA2 1A          INC A
-$A2:BCA3 9D AE 0F    STA $0FAE,x[$7E:10AE]
+$A2:BC9C BD AE 0F    LDA $0FAE,x[$7E:10AE]  ;\
+$A2:BC9F 49 FF FF    EOR #$FFFF             ;|
+$A2:BCA2 1A          INC A                  ;} Negate enemy X velocity
+$A2:BCA3 9D AE 0F    STA $0FAE,x[$7E:10AE]  ;/
 
 ; BRANCH_COLLIDED_VERTICALLY
-$A2:BCA6 BD AC 0F    LDA $0FAC,x[$7E:10AC]
-$A2:BCA9 49 FF FF    EOR #$FFFF
-$A2:BCAC 1A          INC A
-$A2:BCAD 9D AC 0F    STA $0FAC,x[$7E:10AC]
-$A2:BCB0 A9 B7 BC    LDA #$BCB7
-$A2:BCB3 9D AA 0F    STA $0FAA,x[$7E:10AA]
+$A2:BCA6 BD AC 0F    LDA $0FAC,x[$7E:10AC]  ;\
+$A2:BCA9 49 FF FF    EOR #$FFFF             ;|
+$A2:BCAC 1A          INC A                  ;} Negate enemy Y velocity
+$A2:BCAD 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;/
+$A2:BCB0 A9 B7 BC    LDA #$BCB7             ;\
+$A2:BCB3 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BCB7
 $A2:BCB6 6B          RTL
 }
 
 
-;;; $BCB7:  ;;;
+;;; $BCB7: Rio function -  ;;;
 {
 $A2:BCB7 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BCB9 64 14       STZ $14    [$7E:0014]  ;|
@@ -5724,10 +5753,10 @@ $A2:BCC0 C6 14       DEC $14    [$7E:0014]  ;} Move enemy right by [enemy X velo
 $A2:BCC2 85 13       STA $13    [$7E:0013]  ;|
 $A2:BCC4 22 AB C6 A0 JSL $A0C6AB[$A0:C6AB]  ;/
 $A2:BCC8 90 0A       BCC $0A    [$BCD4]     ; If collided with wall:
-$A2:BCCA BD AE 0F    LDA $0FAE,x[$7E:106E]
-$A2:BCCD 49 FF FF    EOR #$FFFF
-$A2:BCD0 1A          INC A
-$A2:BCD1 9D AE 0F    STA $0FAE,x[$7E:106E]
+$A2:BCCA BD AE 0F    LDA $0FAE,x[$7E:106E]  ;\
+$A2:BCCD 49 FF FF    EOR #$FFFF             ;|
+$A2:BCD0 1A          INC A                  ;} Negate enemy X velocity
+$A2:BCD1 9D AE 0F    STA $0FAE,x[$7E:106E]  ;/
 
 $A2:BCD4 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BCD6 64 14       STZ $14    [$7E:0014]  ;|
@@ -5738,21 +5767,21 @@ $A2:BCDD C6 14       DEC $14    [$7E:0014]  ;} Move enemy down by [enemy Y veloc
 $A2:BCDF 85 13       STA $13    [$7E:0013]  ;|
 $A2:BCE1 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
 $A2:BCE5 B0 0B       BCS $0B    [$BCF2]     ; If collided with block:
-$A2:BCE7 BD AC 0F    LDA $0FAC,x[$7E:10AC]
-$A2:BCEA 38          SEC
-$A2:BCEB E9 18 00    SBC #$0018
-$A2:BCEE 9D AC 0F    STA $0FAC,x[$7E:10AC]
-$A2:BCF1 6B          RTL
+$A2:BCE7 BD AC 0F    LDA $0FAC,x[$7E:10AC]  ;\
+$A2:BCEA 38          SEC                    ;|
+$A2:BCEB E9 18 00    SBC #$0018             ;} Enemy Y velocity -= 18h
+$A2:BCEE 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;/
+$A2:BCF1 6B          RTL                    ; Return
 
-$A2:BCF2 A9 A3 BB    LDA #$BBA3
-$A2:BCF5 20 54 BD    JSR $BD54  [$A2:BD54]
-$A2:BCF8 A9 32 BC    LDA #$BC32
-$A2:BCFB 9D AA 0F    STA $0FAA,x[$7E:10AA]
+$A2:BCF2 A9 A3 BB    LDA #$BBA3             ;\
+$A2:BCF5 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BBA3
+$A2:BCF8 A9 32 BC    LDA #$BC32             ;\
+$A2:BCFB 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BC32
 $A2:BCFE 6B          RTL
 }
 
 
-;;; $BCFF:  ;;;
+;;; $BCFF: Rio function -  ;;;
 {
 $A2:BCFF BD 7E 0F    LDA $0F7E,x
 $A2:BD02 38          SEC
@@ -5789,19 +5818,21 @@ $A2:BD41 BD A8 0F    LDA $0FA8,x
 $A2:BD44 9D AE 0F    STA $0FAE,x
 $A2:BD47 A9 FF FF    LDA #$FFFF
 $A2:BD4A 9D AC 0F    STA $0FAC,x
-$A2:BD4D A9 B7 BC    LDA #$BCB7
-$A2:BD50 9D AA 0F    STA $0FAA,x
+$A2:BD4D A9 B7 BC    LDA #$BCB7             ;\
+$A2:BD50 9D AA 0F    STA $0FAA,x            ;} Enemy function = $BCB7
 $A2:BD53 6B          RTL
 }
 
 
-;;; $BD54:  ;;;
+;;; $BD54: Set rio instruction list ;;;
 {
+;; Parameters:
+;;     A: Instruction list pointer
 $A2:BD54 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:BD57 DD B2 0F    CMP $0FB2,x[$7E:10B2]
-$A2:BD5A F0 0F       BEQ $0F    [$BD6B]
-$A2:BD5C 9D B2 0F    STA $0FB2,x[$7E:10B2]
-$A2:BD5F 9D 92 0F    STA $0F92,x[$7E:1092]
+$A2:BD57 DD B2 0F    CMP $0FB2,x[$7E:10B2]  ;\
+$A2:BD5A F0 0F       BEQ $0F    [$BD6B]     ;} If [enemy instruction list] != [A]:
+$A2:BD5C 9D B2 0F    STA $0FB2,x[$7E:10B2]  ; Enemy instruction list = [A]
+$A2:BD5F 9D 92 0F    STA $0F92,x[$7E:1092]  ; Enemy instruction list pointer = [A]
 $A2:BD62 A9 01 00    LDA #$0001             ;\
 $A2:BD65 9D 94 0F    STA $0F94,x[$7E:1094]  ;} Enemy instruction timer = 1
 $A2:BD68 9E 90 0F    STZ $0F90,x[$7E:1090]  ; Enemy timer = 0
