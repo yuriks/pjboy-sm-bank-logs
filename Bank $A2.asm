@@ -5486,8 +5486,9 @@ $A2:BA7B             dw 3800, 2FFF, 1AF7, 014A, 0063, 275A, 0EB5, 0210, 01CE, 03
 
 ;;; $BA9B..BBCC: Instruction lists - rio ;;;
 {
-;;; $BA9B: Instruction list -  ;;;
+;;; $BA9B: Unused. Instruction list ;;;
 {
+; Clone of $BB4B (idle)
 $A2:BA9B             dx 0004,BD6C,
                         0004,BD82,
                         0004,BD6C,
@@ -5504,8 +5505,9 @@ $A2:BA9B             dx 0004,BD6C,
 }
 
 
-;;; $BACF: Instruction list -  ;;;
+;;; $BACF: Unused. Instruction list ;;;
 {
+; Combination of the two swooping instruction lists
 $A2:BACF             dx 0003,BD98,
                         0003,BDAE,
                         0003,BDC4,
@@ -5540,14 +5542,14 @@ $A2:BACF             dx 0003,BD98,
 }
 
 
-;;; $BB4B: Instruction list - initial ;;;
+;;; $BB4B: Instruction list - idle ;;;
 {
 $A2:BB4B             dx 0004,BD6C,
                         0004,BD82
 }
 
 
-;;; $BB53: Instruction list -  ;;;
+;;; $BB53: Instruction list - post-swoop idle ;;;
 {
 $A2:BB53             dx 0004,BD6C,
                         0004,BD82,
@@ -5559,23 +5561,23 @@ $A2:BB53             dx 0004,BD6C,
                         0004,BDAE,
                         0004,BD98,
                         0004,BDAE,
-                        80ED,BB4B   ; Go to $BB4B
+                        80ED,BB4B   ; Go to $BB4B (idle)
 }
 
 
-;;; $BB7F: Instruction list -  ;;;
+;;; $BB7F: Instruction list - swooping - part 1 ;;;
 {
 $A2:BB7F             dx 0003,BD98,
                         0003,BDAE,
                         0003,BDC4,
                         0003,BDDA,
                         0003,BDF0,
-                        BBC3,       ; ???
+                        BBC3,       ; Set animation finished flag
                         812F        ; Sleep
 }
 
 
-;;; $BB97: Instruction list -  ;;;
+;;; $BB97: Instruction list - swooping - part 2 ;;;
 {
 $A2:BB97             dx 0003,BE06,
                         0003,BDF0,
@@ -5583,14 +5585,14 @@ $A2:BB97             dx 0003,BE06,
 }
 
 
-;;; $BBA3: Instruction list -  ;;;
+;;; $BBA3: Instruction list - swoop cooldown ;;;
 {
 $A2:BBA3             dx 0003,BDF0,
                         0003,BDDA,
                         0003,BDC4,
                         0003,BDAE,
                         0003,BD98,
-                        BBC3,       ; ???
+                        BBC3,       ; Set animation finished flag
                         812F        ; Sleep
 }
 }
@@ -5605,11 +5607,11 @@ $A2:BBC1             dw 0200 ; Unused
 }
 
 
-;;; $BBC3: Instruction ;;;
+;;; $BBC3: Instruction - set animation finished flag ;;;
 {
 $A2:BBC3 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:BBC6 A9 01 00    LDA #$0001
-$A2:BBC9 9D B0 0F    STA $0FB0,x[$7E:10B0]
+$A2:BBC6 A9 01 00    LDA #$0001             ;\
+$A2:BBC9 9D B0 0F    STA $0FB0,x[$7E:10B0]  ;} Enemy animation finished flag = 1
 $A2:BBCC 6B          RTL
 }
 
@@ -5617,10 +5619,10 @@ $A2:BBCC 6B          RTL
 ;;; $BBCD: Initialisation AI - enemy $D27F (rio) ;;;
 {
 $A2:BBCD AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:BBD0 9E B0 0F    STZ $0FB0,x[$7E:10B0]  ; Enemy $0FB0 = 0
-$A2:BBD3 9E B2 0F    STZ $0FB2,x[$7E:10B2]  ; Enemy $0FB2 = 0
+$A2:BBD0 9E B0 0F    STZ $0FB0,x[$7E:10B0]  ; Enemy finished animation finished flag = 0
+$A2:BBD3 9E B2 0F    STZ $0FB2,x[$7E:10B2]  ; Enemy instruction list = 0
 $A2:BBD6 A9 4B BB    LDA #$BB4B             ;\
-$A2:BBD9 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $BB4B
+$A2:BBD9 9D 92 0F    STA $0F92,x[$7E:1092]  ;} Enemy instruction list pointer = $BB4B (idle)
 $A2:BBDC A9 ED BB    LDA #$BBED             ;\
 $A2:BBDF 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BBED (wait for Samus to get near)
 $A2:BBE2 6B          RTL
@@ -5655,9 +5657,9 @@ $A2:BC11 1A          INC A                  ;} Negate enemy X velocity
 $A2:BC12 9D AE 0F    STA $0FAE,x[$7E:10AE]  ;/
 
 $A2:BC15 A9 7F BB    LDA #$BB7F             ;\
-$A2:BC18 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB7F
+$A2:BC18 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB7F (swooping - part 1)
 $A2:BC1B A9 48 BC    LDA #$BC48             ;\
-$A2:BC1E 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BC48
+$A2:BC1E 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BC48 (swoop - descending)
 $A2:BC21 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A2:BC25 29 FF FF    AND #$FFFF             ;} If enemy centre is on screen:
 $A2:BC28 D0 07       BNE $07    [$BC31]     ;/
@@ -5668,22 +5670,22 @@ $A2:BC31 6B          RTL
 }
 
 
-;;; $BC32: Rio function -  ;;;
+;;; $BC32: Rio function - swoop cooldown ;;;
 {
-$A2:BC32 BD B0 0F    LDA $0FB0,x[$7E:10B0]
-$A2:BC35 D0 01       BNE $01    [$BC38]
-$A2:BC37 6B          RTL
+$A2:BC32 BD B0 0F    LDA $0FB0,x[$7E:10B0]  ;\
+$A2:BC35 D0 01       BNE $01    [$BC38]     ;} If enemy not finished animation:
+$A2:BC37 6B          RTL                    ; Return
 
 $A2:BC38 9E B0 0F    STZ $0FB0,x[$7E:10B0]
 $A2:BC3B A9 53 BB    LDA #$BB53             ;\
-$A2:BC3E 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB53
+$A2:BC3E 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB53 (post-swoop idle)
 $A2:BC41 A9 ED BB    LDA #$BBED             ;\
-$A2:BC44 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BBED
+$A2:BC44 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BBED (wait for Samus to get near)
 $A2:BC47 6B          RTL
 }
 
 
-;;; $BC48: Rio function -  ;;;
+;;; $BC48: Rio function - swoop - descending ;;;
 {
 $A2:BC48 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BC4A 64 14       STZ $14    [$7E:0014]  ;|
@@ -5707,22 +5709,22 @@ $A2:BC6E BD AC 0F    LDA $0FAC,x[$7E:10AC]  ;\
 $A2:BC71 38          SEC                    ;|
 $A2:BC72 E9 18 00    SBC #$0018             ;} Enemy Y velocity -= 18h
 $A2:BC75 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;/
-$A2:BC78 30 0F       BMI $0F    [$BC89]     ; If [enemy Y velocity] < 0: go to BRANCH_BC89
-$A2:BC7A BD B0 0F    LDA $0FB0,x[$7E:10B0]
-$A2:BC7D F0 09       BEQ $09    [$BC88]
-$A2:BC7F 9E B0 0F    STZ $0FB0,x[$7E:10B0]
+$A2:BC78 30 0F       BMI $0F    [$BC89]     ; If [enemy Y velocity] < 0: go to BRANCH_HOMING
+$A2:BC7A BD B0 0F    LDA $0FB0,x[$7E:10B0]  ;\
+$A2:BC7D F0 09       BEQ $09    [$BC88]     ;} If enemy finished animation:
+$A2:BC7F 9E B0 0F    STZ $0FB0,x[$7E:10B0]  ; Enemy animation finished flag = 0
 $A2:BC82 A9 97 BB    LDA #$BB97             ;\
-$A2:BC85 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB97
+$A2:BC85 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BB97 (swooping - part 2)
 
 $A2:BC88 6B          RTL                    ; Return
 
-; BRANCH_BC89
-$A2:BC89 BD AE 0F    LDA $0FAE,x
-$A2:BC8C 9D A8 0F    STA $0FA8,x
-$A2:BC8F 9E AE 0F    STZ $0FAE,x
-$A2:BC92 9E AC 0F    STZ $0FAC,x
+; BRANCH_HOMING
+$A2:BC89 BD AE 0F    LDA $0FAE,x            ;\
+$A2:BC8C 9D A8 0F    STA $0FA8,x            ;} Enemy swoop X velocity backup = [enemy X velocity]
+$A2:BC8F 9E AE 0F    STZ $0FAE,x            ; Enemy X velocity = 0
+$A2:BC92 9E AC 0F    STZ $0FAC,x            ; Enemy Y velocity = 0
 $A2:BC95 A9 FF BC    LDA #$BCFF             ;\
-$A2:BC98 9D AA 0F    STA $0FAA,x            ;} Enemy function = $BCFF
+$A2:BC98 9D AA 0F    STA $0FAA,x            ;} Enemy function = $BCFF (homing)
 $A2:BC9B 6B          RTL                    ; Return
 
 ; BRANCH_COLLIDED_HORIZONTALLY
@@ -5737,12 +5739,12 @@ $A2:BCA9 49 FF FF    EOR #$FFFF             ;|
 $A2:BCAC 1A          INC A                  ;} Negate enemy Y velocity
 $A2:BCAD 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;/
 $A2:BCB0 A9 B7 BC    LDA #$BCB7             ;\
-$A2:BCB3 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BCB7
+$A2:BCB3 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BCB7 (swoop - ascending)
 $A2:BCB6 6B          RTL
 }
 
 
-;;; $BCB7: Rio function -  ;;;
+;;; $BCB7: Rio function - swoop - ascending ;;;
 {
 $A2:BCB7 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BCB9 64 14       STZ $14    [$7E:0014]  ;|
@@ -5774,27 +5776,27 @@ $A2:BCEE 9D AC 0F    STA $0FAC,x[$7E:10AC]  ;/
 $A2:BCF1 6B          RTL                    ; Return
 
 $A2:BCF2 A9 A3 BB    LDA #$BBA3             ;\
-$A2:BCF5 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BBA3
+$A2:BCF5 20 54 BD    JSR $BD54  [$A2:BD54]  ;} Set rio instruction list to $BBA3 (swoop cooldown)
 $A2:BCF8 A9 32 BC    LDA #$BC32             ;\
-$A2:BCFB 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BC32
+$A2:BCFB 9D AA 0F    STA $0FAA,x[$7E:10AA]  ;} Enemy function = $BC32 (swoop cooldown)
 $A2:BCFE 6B          RTL
 }
 
 
-;;; $BCFF: Rio function -  ;;;
+;;; $BCFF: Rio function - homing ;;;
 {
-$A2:BCFF BD 7E 0F    LDA $0F7E,x
-$A2:BD02 38          SEC
-$A2:BD03 ED FA 0A    SBC $0AFA  [$7E:0AFA]
-$A2:BD06 10 39       BPL $39    [$BD41]
+$A2:BCFF BD 7E 0F    LDA $0F7E,x            ;\
+$A2:BD02 38          SEC                    ;|
+$A2:BD03 ED FA 0A    SBC $0AFA  [$7E:0AFA]  ;} If [enemy Y position] >= [Samus Y position]: go to BRANCH_RESUME_SWOOP
+$A2:BD06 10 39       BPL $39    [$BD41]     ;/
 $A2:BD08 22 66 C0 A0 JSL $A0C066[$A0:C066]  ; A = angle of Samus from enemy
-$A2:BD0C 9B          TXY
-$A2:BD0D 0A          ASL A
-$A2:BD0E AA          TAX
-$A2:BD0F BF 43 B4 A0 LDA $A0B443,x
-$A2:BD13 99 AE 0F    STA $0FAE,y
-$A2:BD16 BF C3 B3 A0 LDA $A0B3C3,x
-$A2:BD1A 99 AC 0F    STA $0FAC,y
+$A2:BD0C 9B          TXY                    ;\
+$A2:BD0D 0A          ASL A                  ;|
+$A2:BD0E AA          TAX                    ;} Enemy X velocity = sin([A] * pi / 80h) * 100h
+$A2:BD0F BF 43 B4 A0 LDA $A0B443,x          ;|
+$A2:BD13 99 AE 0F    STA $0FAE,y            ;/
+$A2:BD16 BF C3 B3 A0 LDA $A0B3C3,x          ;\
+$A2:BD1A 99 AC 0F    STA $0FAC,y            ;} Enemy Y velocity = -cos([A] * pi / 80h) * 100h
 $A2:BD1D BB          TYX
 $A2:BD1E 64 12       STZ $12    [$7E:0012]  ;\
 $A2:BD20 64 14       STZ $14    [$7E:0014]  ;|
@@ -5812,14 +5814,15 @@ $A2:BD38 C6 14       DEC $14    [$7E:0014]  ;} Move enemy down by [enemy Y veloc
                                             ;|
 $A2:BD3A 85 13       STA $13    [$7E:0013]  ;|
 $A2:BD3C 22 86 C7 A0 JSL $A0C786[$A0:C786]  ;/
-$A2:BD40 6B          RTL
+$A2:BD40 6B          RTL                    ; Return
 
-$A2:BD41 BD A8 0F    LDA $0FA8,x
-$A2:BD44 9D AE 0F    STA $0FAE,x
-$A2:BD47 A9 FF FF    LDA #$FFFF
-$A2:BD4A 9D AC 0F    STA $0FAC,x
+; BRANCH_RESUME_SWOOP
+$A2:BD41 BD A8 0F    LDA $0FA8,x            ;\
+$A2:BD44 9D AE 0F    STA $0FAE,x            ;} Enemy X velocity = [enemy swoop X velocity backup]
+$A2:BD47 A9 FF FF    LDA #$FFFF             ;\
+$A2:BD4A 9D AC 0F    STA $0FAC,x            ;} Enemy Y velocity = -1
 $A2:BD4D A9 B7 BC    LDA #$BCB7             ;\
-$A2:BD50 9D AA 0F    STA $0FAA,x            ;} Enemy function = $BCB7
+$A2:BD50 9D AA 0F    STA $0FAA,x            ;} Enemy function = $BCB7 (swoop - ascending)
 $A2:BD53 6B          RTL
 }
 
