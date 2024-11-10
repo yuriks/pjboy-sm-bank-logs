@@ -2675,7 +2675,7 @@ $82:94AD 60          RTS                    ; Return
 $82:94AE FE F7 07    INC $07F7,x[$7E:081E]
 $82:94B1 C2 30       REP #$30
 $82:94B3 B7 00       LDA [$00],y[$B5:8274]  ;\
-$82:94B5 29 FF FB    AND #$FBFF             ;} [$03] + [Y] = [[$00] + [Y]] & ~400h
+$82:94B5 29 FF FB    AND #$FBFF             ;} [$03] + [Y] = [[$00] + [Y]] & ~400h (changes from palette index 3 (blue) to 2 (pink))
 $82:94B8 97 03       STA [$03],y[$7E:4274]  ;/
 $82:94BA 80 DC       BRA $DC    [$9498]     ; Go to BRANCH_NEXT_WITHOUT_MAP_DATA
 
@@ -2702,7 +2702,7 @@ $82:94DD A2 10 00    LDX #$0010             ; X = 10h (map bit index)
 $82:94E0 B7 00       LDA [$00],y[$B5:9000]  ; A = [[$00] + [Y]] (source tilemap entry)
 $82:94E2 06 28       ASL $28    [$7E:0028]  ;\
 $82:94E4 90 07       BCC $07    [$94ED]     ;} If [$28] & 1 << [X] - 1 != 0:
-$82:94E6 29 FF FB    AND #$FBFF             ; A &= ~400h
+$82:94E6 29 FF FB    AND #$FBFF             ; A &= ~400h (changes from palette index 3 (blue) to 2 (pink))
 $82:94E9 06 26       ASL $26    [$7E:0026]
 $82:94EB 80 07       BRA $07    [$94F4]
 
@@ -2809,7 +2809,7 @@ $82:9599 4C 03 96    JMP $9603  [$82:9603]  ; Go to BRANCH_RETURN
 $82:959C FE F7 07    INC $07F7,x[$7E:07FE]
 $82:959F C2 30       REP #$30
 $82:95A1 B7 00       LDA [$00],y[$B5:9076]  ;\
-$82:95A3 29 FF FB    AND #$FBFF             ;} [$03] + [Y] = [[$00] + [Y]] & ~400h
+$82:95A3 29 FF FB    AND #$FBFF             ;} [$03] + [Y] = [[$00] + [Y]] & ~400h (changes from palette index 3 (blue) to 2 (pink))
 $82:95A6 97 03       STA [$03],y[$7E:3076]  ;/
 $82:95A8 80 DB       BRA $DB    [$9585]     ; Go to BRANCH_NEXT_WITHOUT_MAP_DATA
 
@@ -2836,7 +2836,7 @@ $82:95CB A2 10 00    LDX #$0010             ; X = 10h
 $82:95CE B7 00       LDA [$00],y            ; A = [[$00] + [Y]]
 $82:95D0 06 28       ASL $28    [$7E:0028]  ;\
 $82:95D2 90 07       BCC $07    [$95DB]     ;} If [$28] & (1 << [X]-1) != 0:
-$82:95D4 29 FF FB    AND #$FBFF             ; A &= ~400h
+$82:95D4 29 FF FB    AND #$FBFF             ; A &= ~400h (changes from palette index 3 (blue) to 2 (pink))
 $82:95D7 06 26       ASL $26    [$7E:0026]
 $82:95D9 80 07       BRA $07    [$95E2]
 
