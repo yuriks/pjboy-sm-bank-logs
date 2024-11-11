@@ -2279,7 +2279,7 @@ $A6:9C09 80 C0       BRA $C0    [$9BCB]     ; Go to fire fake Kraid spit
 }
 
 
-;;; $9C0B: Unused. Fake Kraid Power bomb reaction ;;;
+;;; $9C0B: Unused. Fake Kraid power bomb reaction ;;;
 {
 $A6:9C0B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A6:9C0E BD 7A 0F    LDA $0F7A,x            ;\

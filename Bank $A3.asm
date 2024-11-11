@@ -3708,7 +3708,7 @@ $A3:ABAE 18          CLC                    ;|
 $A3:ABAF 79 90 83    ADC $8390,y[$A3:83A8]  ;} $14 += [$838F + [Y] + 2].[$838F + [Y]] * 100h
 $A3:ABB2 85 14       STA $14    [$7E:0014]  ;/
 $A3:ABB4 C5 16       CMP $16    [$7E:0016]  ;\
-$A3:ABB6 30 E9       BMI $E9    [$ABA1]     ;} If [$14] > [$16]: go to LOOP
+$A3:ABB6 30 E9       BMI $E9    [$ABA1]     ;} If [$14] < [$16]: go to LOOP
 $A3:ABB8 A5 12       LDA $12    [$7E:0012]  ; A = [$12]
 $A3:ABBA 60          RTS
 }
