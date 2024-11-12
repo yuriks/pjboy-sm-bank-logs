@@ -6675,7 +6675,7 @@ $B4:E91A             dx E0FF, 0100, 0100, 0000, 2800, 0000, 0000, 0000,
 $B4:E92D             dx D97F, 0100, 0100, 0000, 2000, 0000, 0001, 0000,
                         FFFF, 01
 
-; Enemy $D4FF (timed shutter)
+; Enemy $D4FF (growing shutter)
 $B4:E940             dx D4FF, 0300, 0088, 0000, A800, 0000, 004C, 0008,
                         FFFF, 00
 

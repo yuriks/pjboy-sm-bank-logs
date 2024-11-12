@@ -9042,38 +9042,40 @@ $A2:E978             dw 3800, 4D1F, 38B6, 246E, 1448, 47FF, 2EFA, 1616, 0132, 6F
 }
 
 
-;;; $E998..D9: Instruction lists ;;;
+;;; $E998..D9: Instruction lists - shutter ;;;
 {
-;;; $E998: Instruction list -  ;;;
+;;; $E998: Instruction list - shutter - growth level 0 ;;;
 {
 $A2:E998             dx 0001,ED44,
                         812F        ; Sleep
 }
 
 
-;;; $E99E: Instruction list -  ;;;
+;;; $E99E: Instruction list - shutter - growth level 1 ;;;
 {
 $A2:E99E             dx 0001,ED57,
                         812F        ; Sleep
 }
 
 
-;;; $E9A4: Instruction list -  ;;;
+;;; $E9A4: Instruction list - shutter - growth level 2 ;;;
 {
 $A2:E9A4             dx 0001,ED74,
                         812F        ; Sleep
 }
 
 
-;;; $E9AA: Instruction list -  ;;;
+;;; $E9AA: Instruction list - shutter - growth level 3 ;;;
 {
 $A2:E9AA             dx 0001,ED9B,
                         812F        ; Sleep
 }
 
 
-;;; $E9B0: Instruction list -  ;;;
+;;; $E9B0: Unused. Instruction list - shrinking loop ;;;
 {
+; Debug/demo use probably
+; Goes through all the vertical shutter spritemaps, including 8px offset sizes that are otherwise unused
 $A2:E9B0             dx 0004,ED9B,
                         0004,ED85,
                         0004,ED74,
@@ -9086,7 +9088,7 @@ $A2:E9B0             dx 0004,ED9B,
 }
 
 
-;;; $E9D4: Instruction list -  ;;;
+;;; $E9D4: Instruction list - horizontal shutter ;;;
 {
 $A2:E9D4             dx 0001,EDB1,
                         812F        ; Sleep
@@ -9094,72 +9096,70 @@ $A2:E9D4             dx 0001,EDB1,
 }
 
 
-;;; $E9DA: Initialisation AI - enemy $D4FF (timed shutter) ;;;
+;;; $E9DA..ED32: Growing shutter ;;;
+{
+;;; $E9DA: Initialisation AI - enemy $D4FF (growing shutter) ;;;
 {
 $A2:E9DA AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:E9DD BD 88 0F    LDA $0F88,x[$7E:1008]
-$A2:E9E0 0A          ASL A
-$A2:E9E1 18          CLC
-$A2:E9E2 7D 92 0F    ADC $0F92,x[$7E:1012]
-$A2:E9E5 0A          ASL A
-$A2:E9E6 A8          TAY
-$A2:E9E7 B9 4E EA    LDA $EA4E,y[$A2:EA50]
-$A2:E9EA 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A2:E9ED BD 88 0F    LDA $0F88,x[$7E:1008]
-$A2:E9F0 F0 1D       BEQ $1D    [$EA0F]
-$A2:E9F2 BD 7E 0F    LDA $0F7E,x
-$A2:E9F5 9D AA 0F    STA $0FAA,x
-$A2:E9F8 38          SEC
-$A2:E9F9 E9 08 00    SBC #$0008
-$A2:E9FC 9D AC 0F    STA $0FAC,x
-$A2:E9FF 38          SEC
-$A2:EA00 E9 08 00    SBC #$0008
-$A2:EA03 9D AE 0F    STA $0FAE,x
-$A2:EA06 38          SEC
-$A2:EA07 E9 08 00    SBC #$0008
-$A2:EA0A 9D B0 0F    STA $0FB0,x
+$A2:E9DD BD 88 0F    LDA $0F88,x[$7E:1008]  ;\
+$A2:E9E0 0A          ASL A                  ;|
+$A2:E9E1 18          CLC                    ;|
+$A2:E9E2 7D 92 0F    ADC $0F92,x[$7E:1012]  ;|
+$A2:E9E5 0A          ASL A                  ;} Enemy function = [$EA4E + [enemy extra properties] * 4 + [enemy initialisation parameter] * 2]
+$A2:E9E6 A8          TAY                    ;|
+$A2:E9E7 B9 4E EA    LDA $EA4E,y[$A2:EA50]  ;|
+$A2:E9EA 9D A8 0F    STA $0FA8,x[$7E:1028]  ;/
+$A2:E9ED BD 88 0F    LDA $0F88,x[$7E:1008]  ;\
+$A2:E9F0 F0 1D       BEQ $1D    [$EA0F]     ;} If [enemy extra properties] != 0:
+$A2:E9F2 BD 7E 0F    LDA $0F7E,x            ;\
+$A2:E9F5 9D AA 0F    STA $0FAA,x            ;} Enemy growth level 0 Y position = [enemy Y position]
+$A2:E9F8 38          SEC                    ;\
+$A2:E9F9 E9 08 00    SBC #$0008             ;} Enemy growth level 1 Y position = [enemy Y position] - 8
+$A2:E9FC 9D AC 0F    STA $0FAC,x            ;/
+$A2:E9FF 38          SEC                    ;\
+$A2:EA00 E9 08 00    SBC #$0008             ;} Enemy growth level 2 Y position = [enemy Y position] - 10h
+$A2:EA03 9D AE 0F    STA $0FAE,x            ;/
+$A2:EA06 38          SEC                    ;\
+$A2:EA07 E9 08 00    SBC #$0008             ;} Enemy growth level 3 Y position = [enemy Y position] - 18h
+$A2:EA0A 9D B0 0F    STA $0FB0,x            ;/
 $A2:EA0D 80 1B       BRA $1B    [$EA2A]
 
-$A2:EA0F BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:EA12 9D AA 0F    STA $0FAA,x[$7E:102A]
-$A2:EA15 18          CLC
-$A2:EA16 69 08 00    ADC #$0008
-$A2:EA19 9D AC 0F    STA $0FAC,x[$7E:102C]
-$A2:EA1C 18          CLC
-$A2:EA1D 69 08 00    ADC #$0008
-$A2:EA20 9D AE 0F    STA $0FAE,x[$7E:102E]
-$A2:EA23 18          CLC
-$A2:EA24 69 08 00    ADC #$0008
-$A2:EA27 9D B0 0F    STA $0FB0,x[$7E:1030]
+$A2:EA0F BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\ Else ([enemy extra properties] = 0):
+$A2:EA12 9D AA 0F    STA $0FAA,x[$7E:102A]  ;} Enemy growth level 0 Y position = [enemy Y position]
+$A2:EA15 18          CLC                    ;\
+$A2:EA16 69 08 00    ADC #$0008             ;} Enemy growth level 1 Y position = [enemy Y position] + 8
+$A2:EA19 9D AC 0F    STA $0FAC,x[$7E:102C]  ;/
+$A2:EA1C 18          CLC                    ;\
+$A2:EA1D 69 08 00    ADC #$0008             ;} Enemy growth level 2 Y position = [enemy Y position] + 10h
+$A2:EA20 9D AE 0F    STA $0FAE,x[$7E:102E]  ;/
+$A2:EA23 18          CLC                    ;\
+$A2:EA24 69 08 00    ADC #$0008             ;} Enemy growth level 3 Y position = [enemy Y position] + 18h
+$A2:EA27 9D B0 0F    STA $0FB0,x[$7E:1030]  ;/
 
-$A2:EA2A 9E 88 0F    STZ $0F88,x[$7E:1008]
-$A2:EA2D 9E B2 0F    STZ $0FB2,x[$7E:1032]
-$A2:EA30 A9 98 E9    LDA #$E998
-$A2:EA33 9D 92 0F    STA $0F92,x[$7E:1012]
-$A2:EA36 BD B6 0F    LDA $0FB6,x[$7E:1036]
-$A2:EA39 29 FF 00    AND #$00FF
-$A2:EA3C 0A          ASL A
-$A2:EA3D 0A          ASL A
-$A2:EA3E A8          TAY
-$A2:EA3F B9 56 EA    LDA $EA56,y[$A2:EA96]
-$A2:EA42 9F 00 78 7E STA $7E7800,x[$7E:7880]
-$A2:EA46 B9 58 EA    LDA $EA58,y[$A2:EA98]
-$A2:EA49 9F 02 78 7E STA $7E7802,x[$7E:7882]
+$A2:EA2A 9E 88 0F    STZ $0F88,x[$7E:1008]  ; Enemy extra properties = 0
+$A2:EA2D 9E B2 0F    STZ $0FB2,x[$7E:1032]  ; Enemy growth level = 0
+$A2:EA30 A9 98 E9    LDA #$E998             ;\
+$A2:EA33 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $E998 (growth level 0)
+$A2:EA36 BD B6 0F    LDA $0FB6,x[$7E:1036]  ;\
+$A2:EA39 29 FF 00    AND #$00FF             ;|
+$A2:EA3C 0A          ASL A                  ;|
+$A2:EA3D 0A          ASL A                  ;|
+$A2:EA3E A8          TAY                    ;} Enemy Y speed = ([enemy parameter 2] + 1) * 0.1000h
+$A2:EA3F B9 56 EA    LDA $EA56,y[$A2:EA96]  ;|
+$A2:EA42 9F 00 78 7E STA $7E7800,x[$7E:7880];|
+$A2:EA46 B9 58 EA    LDA $EA58,y[$A2:EA98]  ;|
+$A2:EA49 9F 02 78 7E STA $7E7802,x[$7E:7882];/
 $A2:EA4D 6B          RTL
 
 $A2:EA4E             dw EAFD, EAE7, EABD, EAD1
-}
 
-
-;;; $EA56:  ;;;
-{
 $A2:EA56             dw 0000,1000, 0000,2000, 0000,3000, 0000,4000, 0000,5000, 0000,6000, 0000,7000, 0000,8000,
                         0000,9000, 0000,A000, 0000,B000, 0000,C000, 0000,D000, 0000,E000, 0000,F000, 0001,0000,
                         0001,1000, 0001,2000, 0001,3000, 0001,4000, 0001,5000, 0001,6000, 0001,7000, 0001,8000
 }
 
 
-;;; $EAB6: Main AI - enemy $D4FF (timed shutter) ;;;
+;;; $EAB6: Main AI - enemy $D4FF (growing shutter) ;;;
 {
 $A2:EAB6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EAB9 FC A8 0F    JSR ($0FA8,x)[$A2:EAE7]; Execute [enemy function]
@@ -9167,70 +9167,70 @@ $A2:EABC 6B          RTL
 }
 
 
-;;; $EABD:  ;;;
+;;; $EABD: Growing shutter function - initial - upwards - wait for timer ;;;
 {
-$A2:EABD BD B4 0F    LDA $0FB4,x
-$A2:EAC0 F0 05       BEQ $05    [$EAC7]
-$A2:EAC2 3A          DEC A
-$A2:EAC3 9D B4 0F    STA $0FB4,x
-$A2:EAC6 60          RTS
+$A2:EABD BD B4 0F    LDA $0FB4,x            ;\
+$A2:EAC0 F0 05       BEQ $05    [$EAC7]     ;} If [enemy parameter 1] != 0:
+$A2:EAC2 3A          DEC A                  ;\
+$A2:EAC3 9D B4 0F    STA $0FB4,x            ;} Decrement enemy parameter 1
+$A2:EAC6 60          RTS                    ; Return
 
-$A2:EAC7 20 5A EF    JSR $EF5A  [$A2:EF5A]
-$A2:EACA A9 13 EC    LDA #$EC13
-$A2:EACD 9D A8 0F    STA $0FA8,x
+$A2:EAC7 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
+$A2:EACA A9 13 EC    LDA #$EC13             ;\
+$A2:EACD 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EC13 (closing - upwards)
 $A2:EAD0 60          RTS
 }
 
 
-;;; $EAD1:  ;;;
+;;; $EAD1: Growing shutter function - initial - upwards - wait for Samus to get near ;;;
 {
 $A2:EAD1 BD B4 0F    LDA $0FB4,x            ;\
 $A2:EAD4 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
-$A2:EAD8 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy $0FB4] pixels columns of enemy:
+$A2:EAD8 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy parameter 1] pixels columns of enemy:
 $A2:EADB F0 09       BEQ $09    [$EAE6]     ;/
-$A2:EADD 20 5A EF    JSR $EF5A  [$A2:EF5A]
-$A2:EAE0 A9 13 EC    LDA #$EC13
-$A2:EAE3 9D A8 0F    STA $0FA8,x
+$A2:EADD 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
+$A2:EAE0 A9 13 EC    LDA #$EC13             ;\
+$A2:EAE3 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EC13 (closing - upwards)
 
 $A2:EAE6 60          RTS
 }
 
 
-;;; $EAE7:  ;;;
+;;; $EAE7: Growing shutter function - initial - downwards - wait for Samus to get near ;;;
 {
 $A2:EAE7 BD B4 0F    LDA $0FB4,x[$7E:1034]  ;\
 $A2:EAEA 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;|
-$A2:EAEE 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy $0FB4] pixels columns of enemy:
+$A2:EAEE 29 FF FF    AND #$FFFF             ;} If Samus is within [enemy parameter 1] pixels columns of enemy:
 $A2:EAF1 F0 09       BEQ $09    [$EAFC]     ;/
-$A2:EAF3 20 5A EF    JSR $EF5A  [$A2:EF5A]
-$A2:EAF6 A9 11 EB    LDA #$EB11
-$A2:EAF9 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A2:EAF3 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
+$A2:EAF6 A9 11 EB    LDA #$EB11             ;\
+$A2:EAF9 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EB11 (closing - downwards)
 
 $A2:EAFC 60          RTS
 }
 
 
-;;; $EAFD:  ;;;
+;;; $EAFD: Growing shutter function - initial - downwards - wait for timer ;;;
 {
-$A2:EAFD BD B4 0F    LDA $0FB4,x
-$A2:EB00 F0 05       BEQ $05    [$EB07]
-$A2:EB02 3A          DEC A
-$A2:EB03 9D B4 0F    STA $0FB4,x
-$A2:EB06 60          RTS
+$A2:EAFD BD B4 0F    LDA $0FB4,x            ;\
+$A2:EB00 F0 05       BEQ $05    [$EB07]     ;} If [enemy parameter 1] != 0:
+$A2:EB02 3A          DEC A                  ;\
+$A2:EB03 9D B4 0F    STA $0FB4,x            ;} Decrement enemy parameter 1
+$A2:EB06 60          RTS                    ; Return
 
-$A2:EB07 20 5A EF    JSR $EF5A  [$A2:EF5A]
-$A2:EB0A A9 11 EB    LDA #$EB11
-$A2:EB0D 9D A8 0F    STA $0FA8,x
+$A2:EB07 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
+$A2:EB0A A9 11 EB    LDA #$EB11             ;\
+$A2:EB0D 9D A8 0F    STA $0FA8,x            ;} Enemy function = $EB11 (closing - downwards)
 $A2:EB10 60          RTS
 }
 
 
-;;; $EB11:  ;;;
+;;; $EB11: Growing shutter function - growing - downwards ;;;
 {
-$A2:EB11 BD B2 0F    LDA $0FB2,x[$7E:1032]
-$A2:EB14 0A          ASL A
-$A2:EB15 AA          TAX
-$A2:EB16 FC 1A EB    JSR ($EB1A,x)[$A2:EB25]
+$A2:EB11 BD B2 0F    LDA $0FB2,x[$7E:1032]  ;\
+$A2:EB14 0A          ASL A                  ;|
+$A2:EB15 AA          TAX                    ;} Execute [$EB1A + [enemy growth level] * 2]
+$A2:EB16 FC 1A EB    JSR ($EB1A,x)[$A2:EB25];/
 $A2:EB19 60          RTS
 
 $A2:EB1A             dw EB25, EB66, EBA7, EBE8, EB24
@@ -9243,134 +9243,134 @@ $A2:EB24 60          RTS
 }
 
 
-;;; $EB25:  ;;;
+;;; $EB25: Growing shutter growing function - downwards - growth level 0 ;;;
 {
 $A2:EB25 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EB28 BD 80 0F    LDA $0F80,x[$7E:1000]
-$A2:EB2B 18          CLC
-$A2:EB2C 7F 02 78 7E ADC $7E7802,x[$7E:7882]
-$A2:EB30 9D 80 0F    STA $0F80,x[$7E:1000]
-$A2:EB33 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:EB36 7F 00 78 7E ADC $7E7800,x[$7E:7880]
-$A2:EB3A 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EB3D BD AA 0F    LDA $0FAA,x[$7E:102A]
-$A2:EB40 18          CLC
-$A2:EB41 69 10 00    ADC #$0010
-$A2:EB44 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]
-$A2:EB47 10 1C       BPL $1C    [$EB65]
-$A2:EB49 38          SEC
-$A2:EB4A E9 07 00    SBC #$0007
-$A2:EB4D 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EB50 FE B2 0F    INC $0FB2,x[$7E:1032]
+$A2:EB28 BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
+$A2:EB2B 18          CLC                    ;|
+$A2:EB2C 7F 02 78 7E ADC $7E7802,x[$7E:7882];|
+$A2:EB30 9D 80 0F    STA $0F80,x[$7E:1000]  ;} Enemy Y position += [enemy Y speed]
+$A2:EB33 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
+$A2:EB36 7F 00 78 7E ADC $7E7800,x[$7E:7880];|
+$A2:EB3A 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:EB3D BD AA 0F    LDA $0FAA,x[$7E:102A]  ;\
+$A2:EB40 18          CLC                    ;|
+$A2:EB41 69 10 00    ADC #$0010             ;} If [enemy Y position] - 8 >= [enemy growth level 0 Y position] + 9:
+$A2:EB44 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]  ;|
+$A2:EB47 10 1C       BPL $1C    [$EB65]     ;/
+$A2:EB49 38          SEC                    ;\
+$A2:EB4A E9 07 00    SBC #$0007             ;} Enemy Y position = [enemy growth level 0 Y position] + 9
+$A2:EB4D 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:EB50 FE B2 0F    INC $0FB2,x[$7E:1032]  ; Enemy growth level = 1
 $A2:EB53 A9 01 00    LDA #$0001             ;\
 $A2:EB56 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
-$A2:EB59 A9 9E E9    LDA #$E99E
-$A2:EB5C 9D 92 0F    STA $0F92,x[$7E:1012]
-$A2:EB5F A9 10 00    LDA #$0010
-$A2:EB62 9D 84 0F    STA $0F84,x[$7E:1004]
+$A2:EB59 A9 9E E9    LDA #$E99E             ;\
+$A2:EB5C 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $E99E (growth level 1)
+$A2:EB5F A9 10 00    LDA #$0010             ;\
+$A2:EB62 9D 84 0F    STA $0F84,x[$7E:1004]  ;} Enemy Y radius += 8
 
 $A2:EB65 60          RTS
 }
 
 
-;;; $EB66:  ;;;
+;;; $EB66: Growing shutter growing function - downwards - growth level 1 ;;;
 {
 $A2:EB66 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EB69 BD 80 0F    LDA $0F80,x[$7E:1000]
-$A2:EB6C 18          CLC
-$A2:EB6D 7F 02 78 7E ADC $7E7802,x[$7E:7882]
-$A2:EB71 9D 80 0F    STA $0F80,x[$7E:1000]
-$A2:EB74 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:EB77 7F 00 78 7E ADC $7E7800,x[$7E:7880]
-$A2:EB7B 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EB7E BD AC 0F    LDA $0FAC,x[$7E:102C]
-$A2:EB81 18          CLC
-$A2:EB82 69 10 00    ADC #$0010
-$A2:EB85 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]
-$A2:EB88 10 1C       BPL $1C    [$EBA6]
-$A2:EB8A 38          SEC
-$A2:EB8B E9 07 00    SBC #$0007
-$A2:EB8E 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EB91 FE B2 0F    INC $0FB2,x[$7E:1032]
+$A2:EB69 BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
+$A2:EB6C 18          CLC                    ;|
+$A2:EB6D 7F 02 78 7E ADC $7E7802,x[$7E:7882];|
+$A2:EB71 9D 80 0F    STA $0F80,x[$7E:1000]  ;} Enemy Y position += [enemy Y speed]
+$A2:EB74 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
+$A2:EB77 7F 00 78 7E ADC $7E7800,x[$7E:7880];|
+$A2:EB7B 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:EB7E BD AC 0F    LDA $0FAC,x[$7E:102C]  ;\
+$A2:EB81 18          CLC                    ;|
+$A2:EB82 69 10 00    ADC #$0010             ;} If [enemy Y position] - 8 >= [enemy growth level 1 Y position] + 9:
+$A2:EB85 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]  ;|
+$A2:EB88 10 1C       BPL $1C    [$EBA6]     ;/
+$A2:EB8A 38          SEC                    ;\
+$A2:EB8B E9 07 00    SBC #$0007             ;} Enemy Y position = [enemy growth level 1 Y position] + 9
+$A2:EB8E 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:EB91 FE B2 0F    INC $0FB2,x[$7E:1032]  ; Enemy growth level = 2
 $A2:EB94 A9 01 00    LDA #$0001             ;\
 $A2:EB97 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
-$A2:EB9A A9 A4 E9    LDA #$E9A4
-$A2:EB9D 9D 92 0F    STA $0F92,x[$7E:1012]
-$A2:EBA0 A9 18 00    LDA #$0018
-$A2:EBA3 9D 84 0F    STA $0F84,x[$7E:1004]
+$A2:EB9A A9 A4 E9    LDA #$E9A4             ;\
+$A2:EB9D 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $E9A4 (growth level 2)
+$A2:EBA0 A9 18 00    LDA #$0018             ;\
+$A2:EBA3 9D 84 0F    STA $0F84,x[$7E:1004]  ;} Enemy Y radius += 8
 
 $A2:EBA6 60          RTS
 }
 
 
-;;; $EBA7:  ;;;
+;;; $EBA7: Growing shutter growing function - downwards - growth level 2 ;;;
 {
 $A2:EBA7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EBAA BD 80 0F    LDA $0F80,x[$7E:1000]
-$A2:EBAD 18          CLC
-$A2:EBAE 7F 02 78 7E ADC $7E7802,x[$7E:7882]
-$A2:EBB2 9D 80 0F    STA $0F80,x[$7E:1000]
-$A2:EBB5 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:EBB8 7F 00 78 7E ADC $7E7800,x[$7E:7880]
-$A2:EBBC 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EBBF BD AE 0F    LDA $0FAE,x[$7E:102E]
-$A2:EBC2 18          CLC
-$A2:EBC3 69 10 00    ADC #$0010
-$A2:EBC6 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]
-$A2:EBC9 10 1C       BPL $1C    [$EBE7]
-$A2:EBCB 38          SEC
-$A2:EBCC E9 07 00    SBC #$0007
-$A2:EBCF 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EBD2 FE B2 0F    INC $0FB2,x[$7E:1032]
+$A2:EBAA BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
+$A2:EBAD 18          CLC                    ;|
+$A2:EBAE 7F 02 78 7E ADC $7E7802,x[$7E:7882];|
+$A2:EBB2 9D 80 0F    STA $0F80,x[$7E:1000]  ;} Enemy Y position += [enemy Y speed]
+$A2:EBB5 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
+$A2:EBB8 7F 00 78 7E ADC $7E7800,x[$7E:7880];|
+$A2:EBBC 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:EBBF BD AE 0F    LDA $0FAE,x[$7E:102E]  ;\
+$A2:EBC2 18          CLC                    ;|
+$A2:EBC3 69 10 00    ADC #$0010             ;} If [enemy Y position] - 8 >= [enemy growth level 2 Y position] + 9:
+$A2:EBC6 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]  ;|
+$A2:EBC9 10 1C       BPL $1C    [$EBE7]     ;/
+$A2:EBCB 38          SEC                    ;\
+$A2:EBCC E9 07 00    SBC #$0007             ;} Enemy Y position = [enemy growth level 2 Y position] + 9
+$A2:EBCF 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:EBD2 FE B2 0F    INC $0FB2,x[$7E:1032]  ; Enemy growth level = 3
 $A2:EBD5 A9 01 00    LDA #$0001             ;\
 $A2:EBD8 9D 94 0F    STA $0F94,x[$7E:1014]  ;} Enemy instruction timer = 1
-$A2:EBDB A9 AA E9    LDA #$E9AA
-$A2:EBDE 9D 92 0F    STA $0F92,x[$7E:1012]
-$A2:EBE1 A9 20 00    LDA #$0020
-$A2:EBE4 9D 84 0F    STA $0F84,x[$7E:1004]
+$A2:EBDB A9 AA E9    LDA #$E9AA             ;\
+$A2:EBDE 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $E9AA (growth level 3)
+$A2:EBE1 A9 20 00    LDA #$0020             ;\
+$A2:EBE4 9D 84 0F    STA $0F84,x[$7E:1004]  ;} Enemy Y radius += 8
 
 $A2:EBE7 60          RTS
 }
 
 
-;;; $EBE8:  ;;;
+;;; $EBE8: Growing shutter growing function - downwards - growth level 3 ;;;
 {
 $A2:EBE8 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EBEB BD 80 0F    LDA $0F80,x[$7E:1000]
-$A2:EBEE 18          CLC
-$A2:EBEF 7F 02 78 7E ADC $7E7802,x[$7E:7882]
-$A2:EBF3 9D 80 0F    STA $0F80,x[$7E:1000]
-$A2:EBF6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:EBF9 7F 00 78 7E ADC $7E7800,x[$7E:7880]
-$A2:EBFD 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EC00 BD B0 0F    LDA $0FB0,x[$7E:1030]
-$A2:EC03 18          CLC
-$A2:EC04 69 10 00    ADC #$0010
-$A2:EC07 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]
-$A2:EC0A 10 06       BPL $06    [$EC12]
-$A2:EC0C 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:EC0F FE B2 0F    INC $0FB2,x[$7E:1032]
+$A2:EBEB BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
+$A2:EBEE 18          CLC                    ;|
+$A2:EBEF 7F 02 78 7E ADC $7E7802,x[$7E:7882];|
+$A2:EBF3 9D 80 0F    STA $0F80,x[$7E:1000]  ;} Enemy Y position += [enemy Y speed]
+$A2:EBF6 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
+$A2:EBF9 7F 00 78 7E ADC $7E7800,x[$7E:7880];|
+$A2:EBFD 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:EC00 BD B0 0F    LDA $0FB0,x[$7E:1030]  ;\
+$A2:EC03 18          CLC                    ;|
+$A2:EC04 69 10 00    ADC #$0010             ;} If [enemy Y position] > [enemy growth level 3 Y position] + 10h:
+$A2:EC07 DD 7E 0F    CMP $0F7E,x[$7E:0FFE]  ;|
+$A2:EC0A 10 06       BPL $06    [$EC12]     ;/
+$A2:EC0C 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ; Enemy Y position = [enemy growth level 3 Y position] + 10h
+$A2:EC0F FE B2 0F    INC $0FB2,x[$7E:1032]  ; Enemy growth level = 4 (RTS)
 
 $A2:EC12 60          RTS
 }
 
 
-;;; $EC13:  ;;;
+;;; $EC13: Growing shutter function - growing - upwards ;;;
 {
-$A2:EC13 BD 7E 0F    LDA $0F7E,x
-$A2:EC16 9F 00 88 7E STA $7E8800,x
-$A2:EC1A BD B2 0F    LDA $0FB2,x
-$A2:EC1D 0A          ASL A
-$A2:EC1E AA          TAX
-$A2:EC1F FC 3A EC    JSR ($EC3A,x)
+$A2:EC13 BD 7E 0F    LDA $0F7E,x            ;\
+$A2:EC16 9F 00 88 7E STA $7E8800,x          ;} Enemy previous Y position = [enemy Y position]
+$A2:EC1A BD B2 0F    LDA $0FB2,x            ;\
+$A2:EC1D 0A          ASL A                  ;|
+$A2:EC1E AA          TAX                    ;} Execute [$EC3A + [enemy growth level] * 2]
+$A2:EC1F FC 3A EC    JSR ($EC3A,x)          ;/
 $A2:EC22 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:EC26 F0 11       BEQ $11    [$EC39]     ;} If enemy is touching Samus from below:
-$A2:EC28 BD 7E 0F    LDA $0F7E,x
-$A2:EC2B 38          SEC
-$A2:EC2C FF 00 88 7E SBC $7E8800,x
-$A2:EC30 10 07       BPL $07    [$EC39]
+$A2:EC28 BD 7E 0F    LDA $0F7E,x            ;\
+$A2:EC2B 38          SEC                    ;|
+$A2:EC2C FF 00 88 7E SBC $7E8800,x          ;} If [enemy Y position] < [enemy previous Y position]:
+$A2:EC30 10 07       BPL $07    [$EC39]     ;/
 $A2:EC32 18          CLC                    ;\
-$A2:EC33 6D 5C 0B    ADC $0B5C  [$7E:0B5C]  ;} Extra Samus Y displacement += [A]
+$A2:EC33 6D 5C 0B    ADC $0B5C  [$7E:0B5C]  ;} Extra Samus Y displacement += [enemy Y position] - [enemy previous Y position]
 $A2:EC36 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
 $A2:EC39 60          RTS
@@ -9385,119 +9385,120 @@ $A2:EC44 60          RTS
 }
 
 
-;;; $EC45:  ;;;
+;;; $EC45: Growing shutter growing function - upwards - growth level 0 ;;;
 {
 $A2:EC45 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EC48 BD 80 0F    LDA $0F80,x
-$A2:EC4B 38          SEC
-$A2:EC4C FF 02 78 7E SBC $7E7802,x
-$A2:EC50 9D 80 0F    STA $0F80,x
-$A2:EC53 BD 7E 0F    LDA $0F7E,x
-$A2:EC56 FF 00 78 7E SBC $7E7800,x
-$A2:EC5A 9D 7E 0F    STA $0F7E,x
-$A2:EC5D BD AA 0F    LDA $0FAA,x
-$A2:EC60 38          SEC
-$A2:EC61 E9 10 00    SBC #$0010
-$A2:EC64 DD 7E 0F    CMP $0F7E,x
-$A2:EC67 30 1C       BMI $1C    [$EC85]
-$A2:EC69 18          CLC
-$A2:EC6A 69 07 00    ADC #$0007
-$A2:EC6D 9D 7E 0F    STA $0F7E,x
-$A2:EC70 FE B2 0F    INC $0FB2,x
+$A2:EC48 BD 80 0F    LDA $0F80,x            ;\
+$A2:EC4B 38          SEC                    ;|
+$A2:EC4C FF 02 78 7E SBC $7E7802,x          ;|
+$A2:EC50 9D 80 0F    STA $0F80,x            ;} Enemy Y position -= [enemy Y speed]
+$A2:EC53 BD 7E 0F    LDA $0F7E,x            ;|
+$A2:EC56 FF 00 78 7E SBC $7E7800,x          ;|
+$A2:EC5A 9D 7E 0F    STA $0F7E,x            ;/
+$A2:EC5D BD AA 0F    LDA $0FAA,x            ;\
+$A2:EC60 38          SEC                    ;|
+$A2:EC61 E9 10 00    SBC #$0010             ;} If [enemy Y position] + 7 <= [enemy growth level 0 Y position] - 9:
+$A2:EC64 DD 7E 0F    CMP $0F7E,x            ;|
+$A2:EC67 30 1C       BMI $1C    [$EC85]     ;/
+$A2:EC69 18          CLC                    ;\
+$A2:EC6A 69 07 00    ADC #$0007             ;} Enemy Y position = [enemy growth level 0 Y position] - 9
+$A2:EC6D 9D 7E 0F    STA $0F7E,x            ;/
+$A2:EC70 FE B2 0F    INC $0FB2,x            ; Enemy growth level = 1
 $A2:EC73 A9 01 00    LDA #$0001             ;\
 $A2:EC76 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$A2:EC79 A9 9E E9    LDA #$E99E
-$A2:EC7C 9D 92 0F    STA $0F92,x
-$A2:EC7F A9 10 00    LDA #$0010
-$A2:EC82 9D 84 0F    STA $0F84,x
+$A2:EC79 A9 9E E9    LDA #$E99E             ;\
+$A2:EC7C 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E99E (growth level 1)
+$A2:EC7F A9 10 00    LDA #$0010             ;\
+$A2:EC82 9D 84 0F    STA $0F84,x            ;} Enemy Y radius += 8
 
 $A2:EC85 60          RTS
 }
 
 
-;;; $EC86:  ;;;
+;;; $EC86: Growing shutter growing function - upwards - growth level 1 ;;;
 {
 $A2:EC86 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EC89 BD 80 0F    LDA $0F80,x
-$A2:EC8C 38          SEC
-$A2:EC8D FF 02 78 7E SBC $7E7802,x
-$A2:EC91 9D 80 0F    STA $0F80,x
-$A2:EC94 BD 7E 0F    LDA $0F7E,x
-$A2:EC97 FF 00 78 7E SBC $7E7800,x
-$A2:EC9B 9D 7E 0F    STA $0F7E,x
-$A2:EC9E BD AC 0F    LDA $0FAC,x
-$A2:ECA1 38          SEC
-$A2:ECA2 E9 10 00    SBC #$0010
-$A2:ECA5 DD 7E 0F    CMP $0F7E,x
-$A2:ECA8 30 1C       BMI $1C    [$ECC6]
-$A2:ECAA 18          CLC
-$A2:ECAB 69 07 00    ADC #$0007
-$A2:ECAE 9D 7E 0F    STA $0F7E,x
-$A2:ECB1 FE B2 0F    INC $0FB2,x
+$A2:EC89 BD 80 0F    LDA $0F80,x            ;\
+$A2:EC8C 38          SEC                    ;|
+$A2:EC8D FF 02 78 7E SBC $7E7802,x          ;|
+$A2:EC91 9D 80 0F    STA $0F80,x            ;} Enemy Y position -= [enemy Y speed]
+$A2:EC94 BD 7E 0F    LDA $0F7E,x            ;|
+$A2:EC97 FF 00 78 7E SBC $7E7800,x          ;|
+$A2:EC9B 9D 7E 0F    STA $0F7E,x            ;/
+$A2:EC9E BD AC 0F    LDA $0FAC,x            ;\
+$A2:ECA1 38          SEC                    ;|
+$A2:ECA2 E9 10 00    SBC #$0010             ;} If [enemy Y position] + 7 <= [enemy growth level 1 Y position] - 9:
+$A2:ECA5 DD 7E 0F    CMP $0F7E,x            ;|
+$A2:ECA8 30 1C       BMI $1C    [$ECC6]     ;/
+$A2:ECAA 18          CLC                    ;\
+$A2:ECAB 69 07 00    ADC #$0007             ;} Enemy Y position = [enemy growth level 1 Y position] - 9
+$A2:ECAE 9D 7E 0F    STA $0F7E,x            ;/
+$A2:ECB1 FE B2 0F    INC $0FB2,x            ; Enemy growth level = 2
 $A2:ECB4 A9 01 00    LDA #$0001             ;\
 $A2:ECB7 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$A2:ECBA A9 A4 E9    LDA #$E9A4
-$A2:ECBD 9D 92 0F    STA $0F92,x
-$A2:ECC0 A9 18 00    LDA #$0018
-$A2:ECC3 9D 84 0F    STA $0F84,x
+$A2:ECBA A9 A4 E9    LDA #$E9A4             ;\
+$A2:ECBD 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E9A4 (growth level 2)
+$A2:ECC0 A9 18 00    LDA #$0018             ;\
+$A2:ECC3 9D 84 0F    STA $0F84,x            ;} Enemy Y radius += 8
 
 $A2:ECC6 60          RTS
 }
 
 
-;;; $ECC7:  ;;;
+;;; $ECC7: Growing shutter growing function - upwards - growth level 2 ;;;
 {
 $A2:ECC7 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:ECCA BD 80 0F    LDA $0F80,x
-$A2:ECCD 38          SEC
-$A2:ECCE FF 02 78 7E SBC $7E7802,x
-$A2:ECD2 9D 80 0F    STA $0F80,x
-$A2:ECD5 BD 7E 0F    LDA $0F7E,x
-$A2:ECD8 FF 00 78 7E SBC $7E7800,x
-$A2:ECDC 9D 7E 0F    STA $0F7E,x
-$A2:ECDF BD AE 0F    LDA $0FAE,x
-$A2:ECE2 38          SEC
-$A2:ECE3 E9 10 00    SBC #$0010
-$A2:ECE6 DD 7E 0F    CMP $0F7E,x
-$A2:ECE9 30 1C       BMI $1C    [$ED07]
-$A2:ECEB 18          CLC
-$A2:ECEC 69 07 00    ADC #$0007
-$A2:ECEF 9D 7E 0F    STA $0F7E,x
-$A2:ECF2 FE B2 0F    INC $0FB2,x
+$A2:ECCA BD 80 0F    LDA $0F80,x            ;\
+$A2:ECCD 38          SEC                    ;|
+$A2:ECCE FF 02 78 7E SBC $7E7802,x          ;|
+$A2:ECD2 9D 80 0F    STA $0F80,x            ;} Enemy Y position -= [enemy Y speed]
+$A2:ECD5 BD 7E 0F    LDA $0F7E,x            ;|
+$A2:ECD8 FF 00 78 7E SBC $7E7800,x          ;|
+$A2:ECDC 9D 7E 0F    STA $0F7E,x            ;/
+$A2:ECDF BD AE 0F    LDA $0FAE,x            ;\
+$A2:ECE2 38          SEC                    ;|
+$A2:ECE3 E9 10 00    SBC #$0010             ;} If [enemy Y position] + 7 <= [enemy growth level 2 Y position] - 9:
+$A2:ECE6 DD 7E 0F    CMP $0F7E,x            ;|
+$A2:ECE9 30 1C       BMI $1C    [$ED07]     ;/
+$A2:ECEB 18          CLC                    ;\
+$A2:ECEC 69 07 00    ADC #$0007             ;} Enemy Y position = [enemy growth level 2 Y position] - 9
+$A2:ECEF 9D 7E 0F    STA $0F7E,x            ;/
+$A2:ECF2 FE B2 0F    INC $0FB2,x            ; Enemy growth level = 3
 $A2:ECF5 A9 01 00    LDA #$0001             ;\
 $A2:ECF8 9D 94 0F    STA $0F94,x            ;} Enemy instruction timer = 1
-$A2:ECFB A9 AA E9    LDA #$E9AA
-$A2:ECFE 9D 92 0F    STA $0F92,x
-$A2:ED01 A9 20 00    LDA #$0020
-$A2:ED04 9D 84 0F    STA $0F84,x
+$A2:ECFB A9 AA E9    LDA #$E9AA             ;\
+$A2:ECFE 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E9AA (growth level 3)
+$A2:ED01 A9 20 00    LDA #$0020             ;\
+$A2:ED04 9D 84 0F    STA $0F84,x            ;} Enemy Y radius += 8
 
 $A2:ED07 60          RTS
 }
 
 
-;;; $ED08:  ;;;
+;;; $ED08: Growing shutter growing function - upwards - growth level 3 ;;;
 {
 $A2:ED08 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:ED0B BD 80 0F    LDA $0F80,x
-$A2:ED0E 38          SEC
-$A2:ED0F FF 02 78 7E SBC $7E7802,x
-$A2:ED13 9D 80 0F    STA $0F80,x
-$A2:ED16 BD 7E 0F    LDA $0F7E,x
-$A2:ED19 FF 00 78 7E SBC $7E7800,x
-$A2:ED1D 9D 7E 0F    STA $0F7E,x
-$A2:ED20 BD B0 0F    LDA $0FB0,x
-$A2:ED23 38          SEC
-$A2:ED24 E9 10 00    SBC #$0010
-$A2:ED27 DD 7E 0F    CMP $0F7E,x
-$A2:ED2A 30 06       BMI $06    [$ED32]
-$A2:ED2C 9D 7E 0F    STA $0F7E,x
-$A2:ED2F FE B2 0F    INC $0FB2,x
-
-$A2:ED32 60          RTS
+$A2:ED0B BD 80 0F    LDA $0F80,x            ;\
+$A2:ED0E 38          SEC                    ;|
+$A2:ED0F FF 02 78 7E SBC $7E7802,x          ;|
+$A2:ED13 9D 80 0F    STA $0F80,x            ;} Enemy Y position -= [enemy Y speed]
+$A2:ED16 BD 7E 0F    LDA $0F7E,x            ;|
+$A2:ED19 FF 00 78 7E SBC $7E7800,x          ;|
+$A2:ED1D 9D 7E 0F    STA $0F7E,x            ;/
+$A2:ED20 BD B0 0F    LDA $0FB0,x            ;\
+$A2:ED23 38          SEC                    ;|
+$A2:ED24 E9 10 00    SBC #$0010             ;} If [enemy Y position] <= [enemy growth level 3 Y position] - 10h:
+$A2:ED27 DD 7E 0F    CMP $0F7E,x            ;|
+$A2:ED2A 30 06       BMI $06    [$ED32]     ;/
+$A2:ED2C 9D 7E 0F    STA $0F7E,x            ; Enemy Y position = [enemy growth level 3 Y position] - 10h
+$A2:ED2F FE B2 0F    INC $0FB2,x            ; Enemy growth level = 4 (RTS)
+                                            
+$A2:ED32 60          RTS                    
+}
 }
 
 
-;;; $ED33:  ;;;
+;;; $ED33: Unused. A = 5 ;;;
 {
 $A2:ED33 A9 05 00    LDA #$0005
 $A2:ED36 6B          RTL
@@ -9512,14 +9513,31 @@ $A2:ED37 6B          RTL
 
 ;;; $ED38: Shutters spritemaps ;;;
 {
-$A2:ED38             dx 0002, 0000,FC,2101, 01F8,FC,2100
+; Shutter. 8 px tall
+$A2:ED38             dx 0002, 0000,FC,2101, 01F8,FC,2100 ; Unused
+
+; Shutter. 10h px tall
 $A2:ED44             dx 0001, C3F8,F8,2100
-$A2:ED4B             dx 0002, C3F8,FC,2100, C3F8,F4,2100
+
+; Shutter. 18h px tall
+$A2:ED4B             dx 0002, C3F8,FC,2100, C3F8,F4,2100 ; Unused
+
+; Shutter. 20h px tall
 $A2:ED57             dx 0002, C3F8,00,2100, C3F8,F0,2100
-$A2:ED63             dx 0003, C3F8,F8,2100, C3F8,04,2100, C3F8,EC,2100
+
+; Shutter. 28h px tall
+$A2:ED63             dx 0003, C3F8,F8,2100, C3F8,04,2100, C3F8,EC,2100 ; Unused
+
+; Shutter. 30h px tall
 $A2:ED74             dx 0003, C3F8,08,2100, C3F8,F8,2100, C3F8,E8,2100
-$A2:ED85             dx 0004, C3F8,0C,2100, C3F8,00,2100, C3F8,F0,2100, C3F8,E4,2100
+
+; Shutter. 38h px tall
+$A2:ED85             dx 0004, C3F8,0C,2100, C3F8,00,2100, C3F8,F0,2100, C3F8,E4,2100 ; Unused
+
+; Shutter. 40h px tall
 $A2:ED9B             dx 0004, C3F8,10,2100, C3F8,00,2100, C3F8,F0,2100, C3F8,E0,2100
+
+; Horizontal shutter
 $A2:EDB1             dx 0004, 81E0,F8,2102, 8010,F8,2102, 8000,F8,2102, 81F0,F8,2102
 }
 
@@ -9530,7 +9548,7 @@ $A2:EDC7             dw 3800, 7F5A, 3BE0, 2680, 0920, 4F5A, 36B5, 2610, 1DCE, 52
 }
 
 
-;;; $EDE7: Instruction list -  ;;;
+;;; $EDE7: Instruction list - rising and falling platform ;;;
 {
 $A2:EDE7             dx 000A,F468,
                         000A,F474,
@@ -9540,7 +9558,7 @@ $A2:EDE7             dx 000A,F468,
 }
 
 
-;;; $EDFB:  ;;;
+;;; $EDFB: Initial function pointers ;;;
 {
 $A2:EDFB             dw EF15, EF28, EF39, EF40, EF40
 }
@@ -9549,9 +9567,9 @@ $A2:EDFB             dw EF15, EF28, EF39, EF40, EF40
 ;;; $EE05: Initialisation AI - enemy $D5FF (rising and falling platform) ;;;
 {
 $A2:EE05 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EE08 20 1F EE    JSR $EE1F  [$A2:EE1F]
-$A2:EE0B A9 E7 ED    LDA #$EDE7
-$A2:EE0E 9D 92 0F    STA $0F92,x[$7E:1012]
+$A2:EE08 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable timed shutter / rising and falling platform
+$A2:EE0B A9 E7 ED    LDA #$EDE7             ;\
+$A2:EE0E 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $EDE7 (rising and falling platform)
 $A2:EE11 6B          RTL
 }
 
@@ -9559,79 +9577,79 @@ $A2:EE11 6B          RTL
 ;;; $EE12: Initialisation AI - enemy $D53F/$D5BF (shootable shutter / destroyable timed shutter) ;;;
 {
 $A2:EE12 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EE15 20 1F EE    JSR $EE1F  [$A2:EE1F]
-$A2:EE18 A9 AA E9    LDA #$E9AA
-$A2:EE1B 9D 92 0F    STA $0F92,x[$7E:0F92]
+$A2:EE15 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable timed shutter / rising and falling platform
+$A2:EE18 A9 AA E9    LDA #$E9AA             ;\
+$A2:EE1B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E9AA (shutter - growth level 3)
 $A2:EE1E 6B          RTL
 }
 
 
-;;; $EE1F:  ;;;
+;;; $EE1F: Initialise shootable shutter / destroyable timed shutter / rising and falling platform ;;;
 {
-$A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]
-$A2:EE22 29 FF 00    AND #$00FF
-$A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800]
-$A2:EE29 0A          ASL A
-$A2:EE2A 0A          ASL A
-$A2:EE2B 0A          ASL A
-$A2:EE2C A8          TAY
-$A2:EE2D B9 87 81    LDA $8187,y[$A2:81C7]
-$A2:EE30 9D AE 0F    STA $0FAE,x[$7E:0FAE]
-$A2:EE33 B9 89 81    LDA $8189,y[$A2:81C9]
-$A2:EE36 9D AC 0F    STA $0FAC,x[$7E:0FAC]
-$A2:EE39 B9 8B 81    LDA $818B,y[$A2:81CB]
-$A2:EE3C 9D B2 0F    STA $0FB2,x[$7E:0FB2]
-$A2:EE3F B9 8D 81    LDA $818D,y[$A2:81CD]
-$A2:EE42 9D B0 0F    STA $0FB0,x[$7E:0FB0]
-$A2:EE45 BD 93 0F    LDA $0F93,x[$7E:0F93]
-$A2:EE48 29 FF 00    AND #$00FF
-$A2:EE4B 9F 02 78 7E STA $7E7802,x[$7E:7802]
-$A2:EE4F 9F 00 80 7E STA $7E8000,x[$7E:8000]
-$A2:EE53 BD 88 0F    LDA $0F88,x[$7E:0F88]
-$A2:EE56 29 FF 00    AND #$00FF
-$A2:EE59 9F 04 78 7E STA $7E7804,x[$7E:7804]
-$A2:EE5D 0A          ASL A
-$A2:EE5E 0A          ASL A
-$A2:EE5F 0A          ASL A
-$A2:EE60 0A          ASL A
-$A2:EE61 9F 10 78 7E STA $7E7810,x[$7E:7810]
-$A2:EE65 BD 89 0F    LDA $0F89,x[$7E:0F89]
-$A2:EE68 29 FF 00    AND #$00FF
-$A2:EE6B 9F 06 78 7E STA $7E7806,x[$7E:7806]
-$A2:EE6F 0A          ASL A
-$A2:EE70 0A          ASL A
-$A2:EE71 0A          ASL A
-$A2:EE72 0A          ASL A
-$A2:EE73 9F 12 78 7E STA $7E7812,x[$7E:7812]
-$A2:EE77 BD B4 0F    LDA $0FB4,x[$7E:0FB4]
-$A2:EE7A 29 FF 00    AND #$00FF
-$A2:EE7D 9F 08 78 7E STA $7E7808,x[$7E:7808]
-$A2:EE81 0A          ASL A
-$A2:EE82 9F 0E 78 7E STA $7E780E,x[$7E:780E]
-$A2:EE86 BD B5 0F    LDA $0FB5,x[$7E:0FB5]
-$A2:EE89 29 FF 00    AND #$00FF
-$A2:EE8C 9F 0A 78 7E STA $7E780A,x[$7E:780A]
-$A2:EE90 BD B6 0F    LDA $0FB6,x[$7E:0FB6]
-$A2:EE93 9F 0C 78 7E STA $7E780C,x[$7E:780C]
-$A2:EE97 9D AA 0F    STA $0FAA,x[$7E:0FAA]
-$A2:EE9A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A2:EE9D 9F 1E 78 7E STA $7E781E,x[$7E:781E]
-$A2:EEA1 18          CLC
-$A2:EEA2 7F 0A 78 7E ADC $7E780A,x[$7E:780A]
-$A2:EEA6 9F 20 78 7E STA $7E7820,x[$7E:7820]
-$A2:EEAA BF 02 78 7E LDA $7E7802,x[$7E:7802]
-$A2:EEAE D0 10       BNE $10    [$EEC0]
-$A2:EEB0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]
-$A2:EEB3 9F 20 78 7E STA $7E7820,x[$7E:7820]
-$A2:EEB7 38          SEC
-$A2:EEB8 FF 0A 78 7E SBC $7E780A,x[$7E:780A]
-$A2:EEBC 9F 1E 78 7E STA $7E781E,x[$7E:781E]
+$A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
+$A2:EE22 29 FF 00    AND #$00FF             ;} Enemy $7E:7800 = [enemy initialisation parameter low]
+$A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$A2:EE29 0A          ASL A                  ;\
+$A2:EE2A 0A          ASL A                  ;|
+$A2:EE2B 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (linear speed table index)
+$A2:EE2C A8          TAY                    ;/
+$A2:EE2D B9 87 81    LDA $8187,y[$A2:81C7]  ;\
+$A2:EE30 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;|
+$A2:EE33 B9 89 81    LDA $8189,y[$A2:81C9]  ;} Enemy down velocity = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A2:EE36 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;/
+$A2:EE39 B9 8B 81    LDA $818B,y[$A2:81CB]  ;\
+$A2:EE3C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;|
+$A2:EE3F B9 8D 81    LDA $818D,y[$A2:81CD]  ;} Enemy up velocity = [$8187 + [Y] + 4].[$8187 + [Y] + 6]
+$A2:EE42 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
+$A2:EE45 BD 93 0F    LDA $0F93,x[$7E:0F93]  ;\
+$A2:EE48 29 FF 00    AND #$00FF             ;} Enemy $7E:7802 = [enemy initialisation parameter high]
+$A2:EE4B 9F 02 78 7E STA $7E7802,x[$7E:7802];/
+$A2:EE4F 9F 00 80 7E STA $7E8000,x[$7E:8000]; Enemy $7E:8000 = [enemy $7E:7802]
+$A2:EE53 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
+$A2:EE56 29 FF 00    AND #$00FF             ;} Enemy $7E:7804 = [enemy extra properties low]
+$A2:EE59 9F 04 78 7E STA $7E7804,x[$7E:7804];/
+$A2:EE5D 0A          ASL A                  ;\
+$A2:EE5E 0A          ASL A                  ;|
+$A2:EE5F 0A          ASL A                  ;} Enemy $7E:7810 = [enemy $7E:7804] * 10h
+$A2:EE60 0A          ASL A                  ;|
+$A2:EE61 9F 10 78 7E STA $7E7810,x[$7E:7810];/
+$A2:EE65 BD 89 0F    LDA $0F89,x[$7E:0F89]  ;\
+$A2:EE68 29 FF 00    AND #$00FF             ;} Enemy $7E:7806 = [enemy extra properties high]
+$A2:EE6B 9F 06 78 7E STA $7E7806,x[$7E:7806];/
+$A2:EE6F 0A          ASL A                  ;\
+$A2:EE70 0A          ASL A                  ;|
+$A2:EE71 0A          ASL A                  ;} Enemy $7E:7812 = [enemy $7E:7806] * 10h
+$A2:EE72 0A          ASL A                  ;|
+$A2:EE73 9F 12 78 7E STA $7E7812,x[$7E:7812];/
+$A2:EE77 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
+$A2:EE7A 29 FF 00    AND #$00FF             ;} Enemy $7E:7808 = [enemy parameter 1 low]
+$A2:EE7D 9F 08 78 7E STA $7E7808,x[$7E:7808];/
+$A2:EE81 0A          ASL A                  ;\
+$A2:EE82 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy $7E:780E = [enemy $7E:7808] * 2
+$A2:EE86 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
+$A2:EE89 29 FF 00    AND #$00FF             ;} Enemy $7E:780A = [enemy parameter 1 high]
+$A2:EE8C 9F 0A 78 7E STA $7E780A,x[$7E:780A];/
+$A2:EE90 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
+$A2:EE93 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Enemy $7E:780C = [enemy parameter 2]
+$A2:EE97 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = [enemy parameter 2]
+$A2:EE9A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A2:EE9D 9F 1E 78 7E STA $7E781E,x[$7E:781E];} Enemy $7E:781E = [enemy Y position]
+$A2:EEA1 18          CLC                    ;\
+$A2:EEA2 7F 0A 78 7E ADC $7E780A,x[$7E:780A];} Enemy $7E:7820 = [enemy Y position] + [enemy $7E:780A]
+$A2:EEA6 9F 20 78 7E STA $7E7820,x[$7E:7820];/
+$A2:EEAA BF 02 78 7E LDA $7E7802,x[$7E:7802];\
+$A2:EEAE D0 10       BNE $10    [$EEC0]     ;} If [enemy $7E:7802] = 0:
+$A2:EEB0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
+$A2:EEB3 9F 20 78 7E STA $7E7820,x[$7E:7820];} Enemy $7E:7820 = [enemy Y position]
+$A2:EEB7 38          SEC                    ;\
+$A2:EEB8 FF 0A 78 7E SBC $7E780A,x[$7E:780A];} Enemy $7E:781E = [enemy Y position] - [enemy $7E:780A]
+$A2:EEBC 9F 1E 78 7E STA $7E781E,x[$7E:781E];/
 
-$A2:EEC0 A9 09 EF    LDA #$EF09
-$A2:EEC3 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:EEC6 A9 00 00    LDA #$0000
-$A2:EEC9 9D 88 0F    STA $0F88,x[$7E:0F88]
-$A2:EECC 9F 14 78 7E STA $7E7814,x[$7E:7814]
+$A2:EEC0 A9 09 EF    LDA #$EF09             ;\
+$A2:EEC3 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EF09
+$A2:EEC6 A9 00 00    LDA #$0000             ;\
+$A2:EEC9 9D 88 0F    STA $0F88,x[$7E:0F88]  ;} Enemy extra properties = 0
+$A2:EECC 9F 14 78 7E STA $7E7814,x[$7E:7814]; Enemy $7E:7814 = 0
 $A2:EED0 60          RTS
 }
 
@@ -9639,55 +9657,55 @@ $A2:EED0 60          RTS
 ;;; $EED1: Main AI - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable timed shutter / rising and falling platform) ;;;
 {
 $A2:EED1 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EED4 FC A8 0F    JSR ($0FA8,x)[$A2:EF09]
-$A2:EED7 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:EEDA C9 68 EF    CMP #$EF68
-$A2:EEDD D0 02       BNE $02    [$EEE1]
-$A2:EEDF 80 27       BRA $27    [$EF08]
+$A2:EED4 FC A8 0F    JSR ($0FA8,x)[$A2:EF09]; Execute [enemy function]
+$A2:EED7 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:EEDA C9 68 EF    CMP #$EF68             ;} If [enemy function] = $EF68:
+$A2:EEDD D0 02       BNE $02    [$EEE1]     ;/
+$A2:EEDF 80 27       BRA $27    [$EF08]     ; Return
 
-$A2:EEE1 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:EEE4 C9 D4 EF    CMP #$EFD4
-$A2:EEE7 F0 1F       BEQ $1F    [$EF08]
-$A2:EEE9 AD 2C 18    LDA $182C  [$7E:182C]
-$A2:EEEC 2D 2E 18    AND $182E  [$7E:182E]
-$A2:EEEF 2D 30 18    AND $1830  [$7E:1830]
-$A2:EEF2 2D 32 18    AND $1832  [$7E:1832]
-$A2:EEF5 C9 FF FF    CMP #$FFFF
-$A2:EEF8 F0 0E       BEQ $0E    [$EF08]
-$A2:EEFA CD 54 0E    CMP $0E54  [$7E:0E54]
-$A2:EEFD D0 09       BNE $09    [$EF08]
-$A2:EEFF AD 6E 0A    LDA $0A6E  [$7E:0A6E]
-$A2:EF02 F0 04       BEQ $04    [$EF08]
-$A2:EF04 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]
+$A2:EEE1 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:EEE4 C9 D4 EF    CMP #$EFD4             ;} If [enemy function] = $EFD4: return
+$A2:EEE7 F0 1F       BEQ $1F    [$EF08]     ;/
+$A2:EEE9 AD 2C 18    LDA $182C  [$7E:182C]  ;\
+$A2:EEEC 2D 2E 18    AND $182E  [$7E:182E]  ;|
+$A2:EEEF 2D 30 18    AND $1830  [$7E:1830]  ;} A = (enemy index when Samus collides with solid enemy)
+$A2:EEF2 2D 32 18    AND $1832  [$7E:1832]  ;/
+$A2:EEF5 C9 FF FF    CMP #$FFFF             ;\
+$A2:EEF8 F0 0E       BEQ $0E    [$EF08]     ;} >_<;
+$A2:EEFA CD 54 0E    CMP $0E54  [$7E:0E54]  ;\
+$A2:EEFD D0 09       BNE $09    [$EF08]     ;} If [A] = [enemy index]:
+$A2:EEFF AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
+$A2:EF02 F0 04       BEQ $04    [$EF08]     ;} If [Samus contact damage index] != 0:
+$A2:EF04 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
 
 $A2:EF08 6B          RTL
 }
 
 
-;;; $EF09:  ;;;
+;;; $EF09: Function - initial ;;;
 {
 $A2:EF09 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EF0C BF 0E 78 7E LDA $7E780E,x[$7E:780E]
-$A2:EF10 AA          TAX
-$A2:EF11 FC FB ED    JSR ($EDFB,x)[$A2:EF40]
+$A2:EF0C BF 0E 78 7E LDA $7E780E,x[$7E:780E];\
+$A2:EF10 AA          TAX                    ;} Execute [$EDFB + [enemy $7E:780E]]
+$A2:EF11 FC FB ED    JSR ($EDFB,x)[$A2:EF40];/
 $A2:EF14 60          RTS
 }
 
 
-;;; $EF15:  ;;;
+;;; $EF15: Initial function - wait for timer ;;;
 {
 $A2:EF15 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EF18 DE AA 0F    DEC $0FAA,x[$7E:116A]
-$A2:EF1B D0 0A       BNE $0A    [$EF27]
-$A2:EF1D BF 0C 78 7E LDA $7E780C,x[$7E:780C]
-$A2:EF21 9D AA 0F    STA $0FAA,x[$7E:0FAA]
+$A2:EF18 DE AA 0F    DEC $0FAA,x[$7E:116A]  ; Decrement enemy $0FAA
+$A2:EF1B D0 0A       BNE $0A    [$EF27]     ; If [enemy $0FAA] = 0:
+$A2:EF1D BF 0C 78 7E LDA $7E780C,x[$7E:780C];\
+$A2:EF21 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = [enemy $7E:780C]
 $A2:EF24 20 44 EF    JSR $EF44  [$A2:EF44]
 
 $A2:EF27 60          RTS
 }
 
 
-;;; $EF28:  ;;;
+;;; $EF28: Function / initial function - wait for Samus to get near ;;;
 {
 $A2:EF28 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF2B BF 0C 78 7E LDA $7E780C,x[$7E:788C];\
@@ -9699,7 +9717,7 @@ $A2:EF38 60          RTS
 }
 
 
-;;; $EF39:  ;;;
+;;; $EF39: Initial function - activate ;;;
 {
 $A2:EF39 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF3C 20 44 EF    JSR $EF44  [$A2:EF44]
@@ -9707,7 +9725,7 @@ $A2:EF3F 60          RTS
 }
 
 
-;;; $EF40:  ;;;
+;;; $EF40: Initial function - nothing ;;;
 {
 $A2:EF40 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF43 60          RTS
@@ -9716,19 +9734,19 @@ $A2:EF43 60          RTS
 
 ;;; $EF44:  ;;;
 {
-$A2:EF44 A9 68 EF    LDA #$EF68
-$A2:EF47 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A2:EF4A BF 02 78 7E LDA $7E7802,x[$7E:7882]
-$A2:EF4E F0 06       BEQ $06    [$EF56]
-$A2:EF50 A9 D4 EF    LDA #$EFD4
-$A2:EF53 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A2:EF44 A9 68 EF    LDA #$EF68             ;\
+$A2:EF47 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68
+$A2:EF4A BF 02 78 7E LDA $7E7802,x[$7E:7882];\
+$A2:EF4E F0 06       BEQ $06    [$EF56]     ;} If [enemy $7E:7802] != 0:
+$A2:EF50 A9 D4 EF    LDA #$EFD4             ;\
+$A2:EF53 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EFD4
 
-$A2:EF56 20 5A EF    JSR $EF5A  [$A2:EF5A]
+$A2:EF56 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 $A2:EF59 60          RTS
 }
 
 
-;;; $EF5A:  ;;;
+;;; $EF5A: Play gate opening/closing sound effect if on-screen ;;;
 {
 $A2:EF5A 22 70 AD A0 JSL $A0AD70[$A0:AD70]  ;\
 $A2:EF5E D0 07       BNE $07    [$EF67]     ;} If enemy centre is on screen:
@@ -9739,143 +9757,148 @@ $A2:EF67 60          RTS
 }
 
 
-;;; $EF68:  ;;;
+;;; $EF68: Function -  ;;;
 {
 $A2:EF68 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EF6B BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A2:EF6E 9F 1C 78 7E STA $7E781C,x[$7E:78DC]
-$A2:EF72 A9 00 00    LDA #$0000
-$A2:EF75 9F 14 78 7E STA $7E7814,x[$7E:78D4]
+$A2:EF6B BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
+$A2:EF6E 9F 1C 78 7E STA $7E781C,x[$7E:78DC];} Enemy $7E:781C = [enemy Y position]
+$A2:EF72 A9 00 00    LDA #$0000             ;\
+$A2:EF75 9F 14 78 7E STA $7E7814,x[$7E:78D4];} Enemy $7E:7814 = 0
 $A2:EF79 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:EF7D F0 07       BEQ $07    [$EF86]     ;} If enemy is touching Samus from below:
-$A2:EF7F A9 01 00    LDA #$0001
-$A2:EF82 9F 14 78 7E STA $7E7814,x[$7E:78D4]
+$A2:EF7F A9 01 00    LDA #$0001             ;\
+$A2:EF82 9F 14 78 7E STA $7E7814,x[$7E:78D4];} Enemy $7E:7814 = 1
 
-$A2:EF86 BD 80 0F    LDA $0F80,x[$7E:1040]
-$A2:EF89 18          CLC
-$A2:EF8A 7D B0 0F    ADC $0FB0,x[$7E:1070]
-$A2:EF8D 90 03       BCC $03    [$EF92]
-$A2:EF8F FE 7E 0F    INC $0F7E,x[$7E:103E]
-
-$A2:EF92 9D 80 0F    STA $0F80,x[$7E:1040]
-$A2:EF95 BD 7E 0F    LDA $0F7E,x[$7E:103E]
-$A2:EF98 18          CLC
-$A2:EF99 7D B2 0F    ADC $0FB2,x[$7E:1072]
-$A2:EF9C 9D 7E 0F    STA $0F7E,x[$7E:103E]
-$A2:EF9F BF 14 78 7E LDA $7E7814,x[$7E:78D4]
-$A2:EFA3 F0 0B       BEQ $0B    [$EFB0]
+$A2:EF86 BD 80 0F    LDA $0F80,x[$7E:1040]  ;\
+$A2:EF89 18          CLC                    ;|
+$A2:EF8A 7D B0 0F    ADC $0FB0,x[$7E:1070]  ;|
+$A2:EF8D 90 03       BCC $03    [$EF92]     ;|
+$A2:EF8F FE 7E 0F    INC $0F7E,x[$7E:103E]  ;|
+                                            ;} Enemy Y position += [enemy up velocity]
+$A2:EF92 9D 80 0F    STA $0F80,x[$7E:1040]  ;|
+$A2:EF95 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;|
+$A2:EF98 18          CLC                    ;|
+$A2:EF99 7D B2 0F    ADC $0FB2,x[$7E:1072]  ;|
+$A2:EF9C 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;/
+$A2:EF9F BF 14 78 7E LDA $7E7814,x[$7E:78D4];\
+$A2:EFA3 F0 0B       BEQ $0B    [$EFB0]     ;} If [enemy $7E:7814] != 0
 $A2:EFA5 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
 $A2:EFA8 38          SEC                    ;|
 $A2:EFA9 FF 1C 78 7E SBC $7E781C,x[$7E:78DC];} Extra Samus Y displacement = [enemy Y position] - [enemy $7E:781C]
 $A2:EFAD 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
-$A2:EFB0 BF 1E 78 7E LDA $7E781E,x[$7E:78DE]
-$A2:EFB4 DD 7E 0F    CMP $0F7E,x[$7E:103E]
-$A2:EFB7 30 1A       BMI $1A    [$EFD3]
-$A2:EFB9 BF 10 78 7E LDA $7E7810,x[$7E:78D0]
-$A2:EFBD C9 F0 0F    CMP #$0FF0
-$A2:EFC0 F0 0B       BEQ $0B    [$EFCD]
-$A2:EFC2 9D AA 0F    STA $0FAA,x[$7E:106A]
-$A2:EFC5 A9 40 F0    LDA #$F040
-$A2:EFC8 9D A8 0F    STA $0FA8,x[$7E:1068]
-$A2:EFCB 80 06       BRA $06    [$EFD3]
+$A2:EFB0 BF 1E 78 7E LDA $7E781E,x[$7E:78DE];\
+$A2:EFB4 DD 7E 0F    CMP $0F7E,x[$7E:103E]  ;} If [enemy $7E:781E] < [enemy Y position]: return
+$A2:EFB7 30 1A       BMI $1A    [$EFD3]     ;/
+$A2:EFB9 BF 10 78 7E LDA $7E7810,x[$7E:78D0];\
+$A2:EFBD C9 F0 0F    CMP #$0FF0             ;} If [enemy $7E:7810] != FF0h:
+$A2:EFC0 F0 0B       BEQ $0B    [$EFCD]     ;/
+$A2:EFC2 9D AA 0F    STA $0FAA,x[$7E:106A]  ; Enemy $0FAA = [enemy $7E:7810]
+$A2:EFC5 A9 40 F0    LDA #$F040             ;\
+$A2:EFC8 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $F040
+$A2:EFCB 80 06       BRA $06    [$EFD3]     ; Return
 
-$A2:EFCD A9 99 F0    LDA #$F099
-$A2:EFD0 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:EFCD A9 99 F0    LDA #$F099             ;\
+$A2:EFD0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F099
 
 $A2:EFD3 60          RTS
 }
 
 
-;;; $EFD4:  ;;;
+;;; $EFD4: Function -  ;;;
 {
 $A2:EFD4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EFD7 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:EFDA 9F 1C 78 7E STA $7E781C,x[$7E:789C]
-$A2:EFDE A9 00 00    LDA #$0000
-$A2:EFE1 9F 14 78 7E STA $7E7814,x[$7E:7894]
+$A2:EFD7 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A2:EFDA 9F 1C 78 7E STA $7E781C,x[$7E:789C];} Enemy $7E:781C = [enemy Y position]
+$A2:EFDE A9 00 00    LDA #$0000             ;\
+$A2:EFE1 9F 14 78 7E STA $7E7814,x[$7E:7894];} Enemy $7E:7814 = 0
 $A2:EFE5 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:EFE9 F0 07       BEQ $07    [$EFF2]     ;} If enemy is touching Samus from below:
-$A2:EFEB A9 01 00    LDA #$0001
-$A2:EFEE 9F 14 78 7E STA $7E7814,x[$7E:7894]
+$A2:EFEB A9 01 00    LDA #$0001             ;\
+$A2:EFEE 9F 14 78 7E STA $7E7814,x[$7E:7894];} Enemy $7E:7814 = 1
 
-$A2:EFF2 BD 80 0F    LDA $0F80,x[$7E:1000]
-$A2:EFF5 18          CLC
-$A2:EFF6 7D AC 0F    ADC $0FAC,x[$7E:102C]
-$A2:EFF9 90 03       BCC $03    [$EFFE]
-$A2:EFFB FE 7E 0F    INC $0F7E,x[$7E:0FFE]
-
-$A2:EFFE 9D 80 0F    STA $0F80,x[$7E:1000]
-$A2:F001 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:F004 18          CLC
-$A2:F005 7D AE 0F    ADC $0FAE,x[$7E:102E]
-$A2:F008 9D 7E 0F    STA $0F7E,x[$7E:0FFE]
-$A2:F00B BF 14 78 7E LDA $7E7814,x[$7E:7894]
-$A2:F00F F0 0B       BEQ $0B    [$F01C]
+$A2:EFF2 BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
+$A2:EFF5 18          CLC                    ;|
+$A2:EFF6 7D AC 0F    ADC $0FAC,x[$7E:102C]  ;|
+$A2:EFF9 90 03       BCC $03    [$EFFE]     ;|
+$A2:EFFB FE 7E 0F    INC $0F7E,x[$7E:0FFE]  ;|
+                                            ;} Enemy Y position += [enemy down velocity]
+$A2:EFFE 9D 80 0F    STA $0F80,x[$7E:1000]  ;|
+$A2:F001 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;|
+$A2:F004 18          CLC                    ;|
+$A2:F005 7D AE 0F    ADC $0FAE,x[$7E:102E]  ;|
+$A2:F008 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
+$A2:F00B BF 14 78 7E LDA $7E7814,x[$7E:7894];\
+$A2:F00F F0 0B       BEQ $0B    [$F01C]     ;} If [enemy $7E:7814] != 0
 $A2:F011 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A2:F014 38          SEC                    ;|
 $A2:F015 FF 1C 78 7E SBC $7E781C,x[$7E:789C];} Extra Samus Y displacement = [enemy Y position] - [enemy $7E:781C]
 $A2:F019 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
-$A2:F01C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]
-$A2:F01F DF 20 78 7E CMP $7E7820,x[$7E:78A0]
-$A2:F023 30 1A       BMI $1A    [$F03F]
-$A2:F025 BF 12 78 7E LDA $7E7812,x[$7E:7892]
-$A2:F029 C9 F0 0F    CMP #$0FF0
-$A2:F02C F0 0B       BEQ $0B    [$F039]
-$A2:F02E 9D AA 0F    STA $0FAA,x[$7E:102A]
-$A2:F031 A9 72 F0    LDA #$F072
-$A2:F034 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A2:F037 80 06       BRA $06    [$F03F]
+$A2:F01C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
+$A2:F01F DF 20 78 7E CMP $7E7820,x[$7E:78A0];} If [enemy Y position] < [enemy $7E:7820]: return
+$A2:F023 30 1A       BMI $1A    [$F03F]     ;/
+$A2:F025 BF 12 78 7E LDA $7E7812,x[$7E:7892];\
+$A2:F029 C9 F0 0F    CMP #$0FF0             ;} If [enemy $7E:7812] != FF0h:
+$A2:F02C F0 0B       BEQ $0B    [$F039]     ;/
+$A2:F02E 9D AA 0F    STA $0FAA,x[$7E:102A]  ; Enemy $0FAA = [enemy $7E:7812]
+$A2:F031 A9 72 F0    LDA #$F072             ;\
+$A2:F034 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $F072
+$A2:F037 80 06       BRA $06    [$F03F]     ; Return
 
-$A2:F039 A9 99 F0    LDA #$F099
-$A2:F03C 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:F039 A9 99 F0    LDA #$F099             ;\
+$A2:F03C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F099
 
 $A2:F03F 60          RTS
 }
 
 
-;;; $F040:  ;;;
+;;; $F040: Function -  ;;;
 {
 $A2:F040 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F043 DE AA 0F    DEC $0FAA,x[$7E:106A]
-$A2:F046 10 29       BPL $29    [$F071]
-$A2:F048 A9 D4 EF    LDA #$EFD4
-$A2:F04B 9D A8 0F    STA $0FA8,x[$7E:1068]
-$A2:F04E BF 08 78 7E LDA $7E7808,x[$7E:78C8]
-$A2:F052 C9 01 00    CMP #$0001
-$A2:F055 D0 0C       BNE $0C    [$F063]
-$A2:F057 BF 02 78 7E LDA $7E7802,x[$7E:78C2]
-$A2:F05B F0 06       BEQ $06    [$F063]
-$A2:F05D A9 28 EF    LDA #$EF28
-$A2:F060 9D A8 0F    STA $0FA8,x[$7E:1028]
+$A2:F043 DE AA 0F    DEC $0FAA,x[$7E:106A]  ; Decrement enemy $0FAA
+$A2:F046 10 29       BPL $29    [$F071]     ; If [enemy $0FAA] >= 0: return
+$A2:F048 A9 D4 EF    LDA #$EFD4             ;\
+$A2:F04B 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $EFD4
+$A2:F04E BF 08 78 7E LDA $7E7808,x[$7E:78C8];\
+$A2:F052 C9 01 00    CMP #$0001             ;} If [enemy $7E:7808] = 1:
+$A2:F055 D0 0C       BNE $0C    [$F063]     ;/
+$A2:F057 BF 02 78 7E LDA $7E7802,x[$7E:78C2];\
+$A2:F05B F0 06       BEQ $06    [$F063]     ;} If [enemy $7E:7802] != 0:
+$A2:F05D A9 28 EF    LDA #$EF28             ;\
+$A2:F060 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF28
 
 $A2:F063 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F066 BD 78 0F    LDA $0F78,x[$7E:1038]
-$A2:F069 C9 3F D8    CMP #$D83F
-$A2:F06C F0 03       BEQ $03    [$F071]
-$A2:F06E 20 5A EF    JSR $EF5A  [$A2:EF5A]
+$A2:F066 BD 78 0F    LDA $0F78,x[$7E:1038]  ;\
+$A2:F069 C9 3F D8    CMP #$D83F             ;} If [enemy ID] != $D83F (suspensor platform):
+$A2:F06C F0 03       BEQ $03    [$F071]     ;/
+$A2:F06E 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 
 $A2:F071 60          RTS
+}
+
+
+;;; $F072: Function -  ;;;
+{
 $A2:F072 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F075 DE AA 0F    DEC $0FAA,x[$7E:102A]
-$A2:F078 10 1E       BPL $1E    [$F098]
-$A2:F07A 20 5A EF    JSR $EF5A  [$A2:EF5A]
-$A2:F07D A9 68 EF    LDA #$EF68
-$A2:F080 9D A8 0F    STA $0FA8,x[$7E:1028]
-$A2:F083 BF 08 78 7E LDA $7E7808,x[$7E:7888]
-$A2:F087 C9 01 00    CMP #$0001
-$A2:F08A D0 0C       BNE $0C    [$F098]
-$A2:F08C BF 02 78 7E LDA $7E7802,x[$7E:7882]
-$A2:F090 D0 06       BNE $06    [$F098]
-$A2:F092 A9 28 EF    LDA #$EF28
-$A2:F095 9D A8 0F    STA $0FA8,x[$7E:1068]
+$A2:F075 DE AA 0F    DEC $0FAA,x[$7E:102A]  ; Decrement enemy $0FAA
+$A2:F078 10 1E       BPL $1E    [$F098]     ; If [enemy $0FAA] >= 0: return
+$A2:F07A 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
+$A2:F07D A9 68 EF    LDA #$EF68             ;\
+$A2:F080 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68
+$A2:F083 BF 08 78 7E LDA $7E7808,x[$7E:7888];\
+$A2:F087 C9 01 00    CMP #$0001             ;} If [enemy $7E:7808] = 1:
+$A2:F08A D0 0C       BNE $0C    [$F098]     ;/
+$A2:F08C BF 02 78 7E LDA $7E7802,x[$7E:7882];\
+$A2:F090 D0 06       BNE $06    [$F098]     ;} If [enemy $7E:7802] = 0:
+$A2:F092 A9 28 EF    LDA #$EF28             ;\
+$A2:F095 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $EF28
 
 $A2:F098 60          RTS
 }
 
 
-;;; $F099:  ;;;
+;;; $F099: Function - nothing ;;;
 {
 $A2:F099 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F09C 60          RTS
@@ -9884,7 +9907,7 @@ $A2:F09C 60          RTS
 
 ;;; $F09D: Enemy touch - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable timed shutter / rising and falling platform) ;;;
 {
-$A2:F09D 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]
+$A2:F09D 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
 $A2:F0A1 6B          RTL
 }
 
@@ -9892,7 +9915,7 @@ $A2:F0A1 6B          RTL
 ;;; $F0A2: Enemy shot - enemy $D53F/$D5FF (shootable shutter / rising and falling platform) ;;;
 {
 $A2:F0A2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F0A5 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]
+$A2:F0A5 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
 $A2:F0A9 6B          RTL
 }
 
@@ -9901,49 +9924,53 @@ $A2:F0A9 6B          RTL
 {
 $A2:F0AA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F0AD 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
-$A2:F0B1 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]
+$A2:F0B1 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
 $A2:F0B5 6B          RTL
 }
 
 
-;;; $F0B6: Power bomb reaction - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable timed shutter / rising and falling platform) ;;;
+;;; $F0B6: Shootable shutter / destroyable timed shutter / rising and falling platform reaction ;;;
 {
+; Power bomb reaction for enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable timed shutter / rising and falling platform)
 $A2:F0B6 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F0B9 BF 0E 78 7E LDA $7E780E,x[$7E:788E]
-$A2:F0BD C9 06 00    CMP #$0006
-$A2:F0C0 30 41       BMI $41    [$F103]
-$A2:F0C2 C9 08 00    CMP #$0008
-$A2:F0C5 F0 0D       BEQ $0D    [$F0D4]
-$A2:F0C7 BF 18 78 7E LDA $7E7818,x[$7E:78D8]
-$A2:F0CB D0 39       BNE $39    [$F106]
-$A2:F0CD A9 01 00    LDA #$0001
-$A2:F0D0 9F 18 78 7E STA $7E7818,x[$7E:78D8]
+$A2:F0B9 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
+$A2:F0BD C9 06 00    CMP #$0006             ;} If [enemy $7E:780E] < 6: go to BRANCH_F103
+$A2:F0C0 30 41       BMI $41    [$F103]     ;/
+$A2:F0C2 C9 08 00    CMP #$0008             ;\
+$A2:F0C5 F0 0D       BEQ $0D    [$F0D4]     ;} If [enemy $7E:780E] != 8:
+$A2:F0C7 BF 18 78 7E LDA $7E7818,x[$7E:78D8];\
+$A2:F0CB D0 39       BNE $39    [$F106]     ;} If [enemy $7E:7818] != 0: return
+$A2:F0CD A9 01 00    LDA #$0001             ;\
+$A2:F0D0 9F 18 78 7E STA $7E7818,x[$7E:78D8];} Enemy $7E:7818 = 1
 
-$A2:F0D4 BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:F0D7 C9 68 EF    CMP #$EF68
-$A2:F0DA D0 02       BNE $02    [$F0DE]
-$A2:F0DC 80 28       BRA $28    [$F106]
+$A2:F0D4 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:F0D7 C9 68 EF    CMP #$EF68             ;} If [enemy function] = $EF68:
+$A2:F0DA D0 02       BNE $02    [$F0DE]     ;/
+$A2:F0DC 80 28       BRA $28    [$F106]     ; Return
 
-$A2:F0DE BD A8 0F    LDA $0FA8,x[$7E:0FA8]
-$A2:F0E1 C9 D4 EF    CMP #$EFD4
-$A2:F0E4 F0 20       BEQ $20    [$F106]
-$A2:F0E6 A9 68 EF    LDA #$EF68
-$A2:F0E9 9D A8 0F    STA $0FA8,x[$7E:0FA8]
-$A2:F0EC BF 00 80 7E LDA $7E8000,x[$7E:8000]
-$A2:F0F0 F0 06       BEQ $06    [$F0F8]
-$A2:F0F2 A9 D4 EF    LDA #$EFD4
-$A2:F0F5 9D A8 0F    STA $0FA8,x[$7E:0FA8]
+$A2:F0DE BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
+$A2:F0E1 C9 D4 EF    CMP #$EFD4             ;} If [enemy function] = $EFD4: return
+$A2:F0E4 F0 20       BEQ $20    [$F106]     ;/
+$A2:F0E6 A9 68 EF    LDA #$EF68             ;\
+$A2:F0E9 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EF68
+$A2:F0EC BF 00 80 7E LDA $7E8000,x[$7E:8000];\
+$A2:F0F0 F0 06       BEQ $06    [$F0F8]     ;} If [enemy $7E:8000] != 0:
+$A2:F0F2 A9 D4 EF    LDA #$EFD4             ;\
+$A2:F0F5 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EFD4
 
-$A2:F0F8 BF 00 80 7E LDA $7E8000,x[$7E:8000]
-$A2:F0FC 49 01 00    EOR #$0001
-$A2:F0FF 9F 00 80 7E STA $7E8000,x[$7E:8000]
+$A2:F0F8 BF 00 80 7E LDA $7E8000,x[$7E:8000];\
+$A2:F0FC 49 01 00    EOR #$0001             ;} Enemy $7E:8000 ^= 1
+$A2:F0FF 9F 00 80 7E STA $7E8000,x[$7E:8000];/
 
-$A2:F103 20 5A EF    JSR $EF5A  [$A2:EF5A]
+; BRANCH_F103
+$A2:F103 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 
 $A2:F106 6B          RTL
 }
 
 
+;;; $F107..F467: Horizontal shootable shutter ;;;
+{
 ;;; $F107:  ;;;
 {
 $A2:F107             dw F230, F243, F254, F25B, F25B
@@ -9953,9 +9980,9 @@ $A2:F107             dw F230, F243, F254, F25B, F25B
 ;;; $F111: Initialisation AI - enemy $D57F (horizontal shootable shutter) ;;;
 {
 $A2:F111 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F114 20 1E F1    JSR $F11E  [$A2:F11E]
-$A2:F117 A9 D4 E9    LDA #$E9D4
-$A2:F11A 9D 92 0F    STA $0F92,x
+$A2:F114 20 1E F1    JSR $F11E  [$A2:F11E]  ; Execute $F11E
+$A2:F117 A9 D4 E9    LDA #$E9D4             ;\
+$A2:F11A 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E9D4 (horizontal shutter)
 $A2:F11D 6B          RTL
 }
 
@@ -10022,8 +10049,8 @@ $A2:F1B9 38          SEC
 $A2:F1BA FF 0A 78 7E SBC $7E780A,x
 $A2:F1BE 9F 22 78 7E STA $7E7822,x
 
-$A2:F1C2 A9 24 F2    LDA #$F224
-$A2:F1C5 9D A8 0F    STA $0FA8,x
+$A2:F1C2 A9 24 F2    LDA #$F224             ;\
+$A2:F1C5 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F224
 $A2:F1C8 AD F6 0A    LDA $0AF6  [$7E:0AF6]
 $A2:F1CB 9F 2A 78 7E STA $7E782A,x
 $A2:F1CF A9 00 00    LDA #$0000
@@ -10118,12 +10145,12 @@ $A2:F25E 60          RTS
 
 ;;; $F25F:  ;;;
 {
-$A2:F25F A9 72 F2    LDA #$F272
-$A2:F262 9D A8 0F    STA $0FA8,x
+$A2:F25F A9 72 F2    LDA #$F272             ;\
+$A2:F262 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272
 $A2:F265 BF 02 78 7E LDA $7E7802,x
 $A2:F269 F0 06       BEQ $06    [$F271]
-$A2:F26B A9 E4 F2    LDA #$F2E4
-$A2:F26E 9D A8 0F    STA $0FA8,x
+$A2:F26B A9 E4 F2    LDA #$F2E4             ;\
+$A2:F26E 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4
 
 $A2:F271 60          RTS
 }
@@ -10166,12 +10193,12 @@ $A2:F2C9 BF 10 78 7E LDA $7E7810,x
 $A2:F2CD C9 F0 0F    CMP #$0FF0
 $A2:F2D0 F0 0B       BEQ $0B    [$F2DD]
 $A2:F2D2 9D AA 0F    STA $0FAA,x
-$A2:F2D5 A9 8C F3    LDA #$F38C
-$A2:F2D8 9D A8 0F    STA $0FA8,x
+$A2:F2D5 A9 8C F3    LDA #$F38C             ;\
+$A2:F2D8 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F38C
 $A2:F2DB 80 06       BRA $06    [$F2E3]
 
-$A2:F2DD A9 D4 F3    LDA #$F3D4
-$A2:F2E0 9D A8 0F    STA $0FA8,x
+$A2:F2DD A9 D4 F3    LDA #$F3D4             ;\
+$A2:F2E0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3D4
 
 $A2:F2E3 60          RTS
 }
@@ -10214,12 +10241,12 @@ $A2:F33B BF 12 78 7E LDA $7E7812,x
 $A2:F33F C9 F0 0F    CMP #$0FF0
 $A2:F342 F0 0B       BEQ $0B    [$F34F]
 $A2:F344 9D AA 0F    STA $0FAA,x
-$A2:F347 A9 B0 F3    LDA #$F3B0
-$A2:F34A 9D A8 0F    STA $0FA8,x
+$A2:F347 A9 B0 F3    LDA #$F3B0             ;\
+$A2:F34A 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3B0
 $A2:F34D 80 06       BRA $06    [$F355]
 
-$A2:F34F A9 D4 F3    LDA #$F3D4
-$A2:F352 9D A8 0F    STA $0FA8,x
+$A2:F34F A9 D4 F3    LDA #$F3D4             ;\
+$A2:F352 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3D4
 
 $A2:F355 60          RTS
 }
@@ -10264,15 +10291,15 @@ $A2:F38B 60          RTS
 $A2:F38C AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F38F DE AA 0F    DEC $0FAA,x
 $A2:F392 10 1B       BPL $1B    [$F3AF]
-$A2:F394 A9 E4 F2    LDA #$F2E4
-$A2:F397 9D A8 0F    STA $0FA8,x
+$A2:F394 A9 E4 F2    LDA #$F2E4             ;\
+$A2:F397 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4
 $A2:F39A BF 08 78 7E LDA $7E7808,x
 $A2:F39E C9 01 00    CMP #$0001
 $A2:F3A1 D0 0C       BNE $0C    [$F3AF]
 $A2:F3A3 BF 02 78 7E LDA $7E7802,x
 $A2:F3A7 F0 06       BEQ $06    [$F3AF]
-$A2:F3A9 A9 43 F2    LDA #$F243
-$A2:F3AC 9D A8 0F    STA $0FA8,x
+$A2:F3A9 A9 43 F2    LDA #$F243             ;\
+$A2:F3AC 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F243
 
 $A2:F3AF 60          RTS
 }
@@ -10283,15 +10310,15 @@ $A2:F3AF 60          RTS
 $A2:F3B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F3B3 DE AA 0F    DEC $0FAA,x
 $A2:F3B6 10 1B       BPL $1B    [$F3D3]
-$A2:F3B8 A9 72 F2    LDA #$F272
-$A2:F3BB 9D A8 0F    STA $0FA8,x
+$A2:F3B8 A9 72 F2    LDA #$F272             ;\
+$A2:F3BB 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272
 $A2:F3BE BF 08 78 7E LDA $7E7808,x
 $A2:F3C2 C9 01 00    CMP #$0001
 $A2:F3C5 D0 0C       BNE $0C    [$F3D3]
 $A2:F3C7 BF 02 78 7E LDA $7E7802,x
 $A2:F3CB D0 06       BNE $06    [$F3D3]
-$A2:F3CD A9 43 F2    LDA #$F243
-$A2:F3D0 9D A8 0F    STA $0FA8,x
+$A2:F3CD A9 43 F2    LDA #$F243             ;\
+$A2:F3D0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F243
 
 $A2:F3D3 60          RTS
 }
@@ -10365,14 +10392,15 @@ $A2:F448 F0 1D       BEQ $1D    [$F467]
 $A2:F44A BF 00 80 7E LDA $7E8000,x
 $A2:F44E 49 01 00    EOR #$0001
 $A2:F451 9F 00 80 7E STA $7E8000,x
-$A2:F455 A9 72 F2    LDA #$F272
-$A2:F458 9D A8 0F    STA $0FA8,x
+$A2:F455 A9 72 F2    LDA #$F272             ;\
+$A2:F458 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272
 $A2:F45B BF 00 80 7E LDA $7E8000,x
 $A2:F45F F0 06       BEQ $06    [$F467]
-$A2:F461 A9 E4 F2    LDA #$F2E4
-$A2:F464 9D A8 0F    STA $0FA8,x
+$A2:F461 A9 E4 F2    LDA #$F2E4             ;\
+$A2:F464 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4
 
 $A2:F467 6B          RTL
+}
 }
 
 
