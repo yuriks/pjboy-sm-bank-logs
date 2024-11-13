@@ -9567,24 +9567,24 @@ $A2:EDFB             dw EF15, EF28, EF39, EF40, EF40
 ;;; $EE05: Initialisation AI - enemy $D5FF (rising and falling platform) ;;;
 {
 $A2:EE05 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EE08 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable timed shutter / rising and falling platform
+$A2:EE08 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable shutter / rising and falling platform
 $A2:EE0B A9 E7 ED    LDA #$EDE7             ;\
 $A2:EE0E 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $EDE7 (rising and falling platform)
 $A2:EE11 6B          RTL
 }
 
 
-;;; $EE12: Initialisation AI - enemy $D53F/$D5BF (shootable shutter / destroyable timed shutter) ;;;
+;;; $EE12: Initialisation AI - enemy $D53F/$D5BF (shootable shutter / destroyable shutter) ;;;
 {
 $A2:EE12 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EE15 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable timed shutter / rising and falling platform
+$A2:EE15 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable shutter / rising and falling platform
 $A2:EE18 A9 AA E9    LDA #$E9AA             ;\
 $A2:EE1B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E9AA (shutter - growth level 3)
 $A2:EE1E 6B          RTL
 }
 
 
-;;; $EE1F: Initialise shootable shutter / destroyable timed shutter / rising and falling platform ;;;
+;;; $EE1F: Initialise shootable shutter / destroyable shutter / rising and falling platform ;;;
 {
 $A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
 $A2:EE22 29 FF 00    AND #$00FF             ;} Enemy $7E:7800 = [enemy initialisation parameter low]
@@ -9654,7 +9654,7 @@ $A2:EED0 60          RTS
 }
 
 
-;;; $EED1: Main AI - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable timed shutter / rising and falling platform) ;;;
+;;; $EED1: Main AI - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable shutter / rising and falling platform) ;;;
 {
 $A2:EED1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EED4 FC A8 0F    JSR ($0FA8,x)[$A2:EF09]; Execute [enemy function]
@@ -9676,7 +9676,7 @@ $A2:EEFA CD 54 0E    CMP $0E54  [$7E:0E54]  ;\
 $A2:EEFD D0 09       BNE $09    [$EF08]     ;} If [A] = [enemy index]:
 $A2:EEFF AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $A2:EF02 F0 04       BEQ $04    [$EF08]     ;} If [Samus contact damage index] != 0:
-$A2:EF04 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
+$A2:EF04 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
 
 $A2:EF08 6B          RTL
 }
@@ -9905,9 +9905,9 @@ $A2:F09C 60          RTS
 }
 
 
-;;; $F09D: Enemy touch - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable timed shutter / rising and falling platform) ;;;
+;;; $F09D: Enemy touch - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable shutter / rising and falling platform) ;;;
 {
-$A2:F09D 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
+$A2:F09D 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
 $A2:F0A1 6B          RTL
 }
 
@@ -9915,23 +9915,23 @@ $A2:F0A1 6B          RTL
 ;;; $F0A2: Enemy shot - enemy $D53F/$D5FF (shootable shutter / rising and falling platform) ;;;
 {
 $A2:F0A2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F0A5 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
+$A2:F0A5 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
 $A2:F0A9 6B          RTL
 }
 
 
-;;; $F0AA: Enemy shot - enemy $B5BF (destroyable timed shutter) ;;;
+;;; $F0AA: Enemy shot - enemy $B5BF (destroyable shutter) ;;;
 {
 $A2:F0AA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F0AD 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
-$A2:F0B1 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable timed shutter / rising and falling platform reaction
+$A2:F0B1 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
 $A2:F0B5 6B          RTL
 }
 
 
-;;; $F0B6: Shootable shutter / destroyable timed shutter / rising and falling platform reaction ;;;
+;;; $F0B6: Shootable shutter / destroyable shutter / rising and falling platform reaction ;;;
 {
-; Power bomb reaction for enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable timed shutter / rising and falling platform)
+; Power bomb reaction for enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable shutter / rising and falling platform)
 $A2:F0B6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F0B9 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
 $A2:F0BD C9 06 00    CMP #$0006             ;} If [enemy $7E:780E] < 6: go to BRANCH_F103
