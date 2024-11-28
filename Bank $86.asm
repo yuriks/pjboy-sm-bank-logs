@@ -11783,11 +11783,11 @@ $86:D1CD 60          RTS
 {
 $86:D1CE 5A          PHY
 $86:D1CF DA          PHX
-$86:D1D0 BD 4B 1A    LDA $1A4B,x[$7E:1A69]
-$86:D1D3 85 12       STA $12    [$7E:0012]
-$86:D1D5 BD 93 1A    LDA $1A93,x[$7E:1AB1]
-$86:D1D8 85 14       STA $14    [$7E:0014]
-$86:D1DA A9 FF E7    LDA #$E7FF
+$86:D1D0 BD 4B 1A    LDA $1A4B,x[$7E:1A69]  ;\
+$86:D1D3 85 12       STA $12    [$7E:0012]  ;} $12 = [enemy projectile X position]
+$86:D1D5 BD 93 1A    LDA $1A93,x[$7E:1AB1]  ;\
+$86:D1D8 85 14       STA $14    [$7E:0014]  ;} $14 = [enemy projectile Y position]
+$86:D1DA A9 FF E7    LDA #$E7FF             ; A = $E7FF (kago)
 $86:D1DD 22 0E 92 A0 JSL $A0920E[$A0:920E]  ; Spawn enemy drops
 $86:D1E1 FA          PLX
 $86:D1E2 7A          PLY

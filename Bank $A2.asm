@@ -9034,7 +9034,7 @@ $A2:E971             dx 0001, 01F4,F4,6121
 }
 
 
-;;; $E978..F497: Shutters ;;;
+;;; $E978..F497: Shutters / up/down movers ;;;
 {
 ;;; $E978: Palette - enemy $D4FF/$D53F/$D57F/$D5BF (shutters) ;;;
 {
@@ -9542,13 +9542,13 @@ $A2:EDB1             dx 0004, 81E0,F8,2102, 8010,F8,2102, 8000,F8,2102, 81F0,F8,
 }
 
 
-;;; $EDC7: Palette - enemy $D5FF (rising and falling platform) ;;;
+;;; $EDC7: Palette - enemy $D5FF (up/down mover platform) ;;;
 {
 $A2:EDC7             dw 3800, 7F5A, 3BE0, 2680, 0920, 4F5A, 36B5, 2610, 1DCE, 5294, 39CE, 2108, 1084, 033B, 0216, 0113
 }
 
 
-;;; $EDE7: Instruction list - rising and falling platform ;;;
+;;; $EDE7: Instruction list - up/down mover platform ;;;
 {
 $A2:EDE7             dx 000A,F468,
                         000A,F474,
@@ -9558,18 +9558,18 @@ $A2:EDE7             dx 000A,F468,
 }
 
 
-;;; $EDFB: Initial function pointers ;;;
+;;; $EDFB: Initial up/down mover function pointers ;;;
 {
 $A2:EDFB             dw EF15, EF28, EF39, EF40, EF40
 }
 
 
-;;; $EE05: Initialisation AI - enemy $D5FF (rising and falling platform) ;;;
+;;; $EE05: Initialisation AI - enemy $D5FF (up/down mover platform) ;;;
 {
 $A2:EE05 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EE08 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable shutter / rising and falling platform
+$A2:EE08 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise up/down mover
 $A2:EE0B A9 E7 ED    LDA #$EDE7             ;\
-$A2:EE0E 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $EDE7 (rising and falling platform)
+$A2:EE0E 9D 92 0F    STA $0F92,x[$7E:1012]  ;} Enemy instruction list pointer = $EDE7 (up/down mover platform)
 $A2:EE11 6B          RTL
 }
 
@@ -9577,14 +9577,14 @@ $A2:EE11 6B          RTL
 ;;; $EE12: Initialisation AI - enemy $D53F/$D5BF (shootable shutter / destroyable shutter) ;;;
 {
 $A2:EE12 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EE15 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise shootable shutter / destroyable shutter / rising and falling platform
+$A2:EE15 20 1F EE    JSR $EE1F  [$A2:EE1F]  ; Initialise up/down mover
 $A2:EE18 A9 AA E9    LDA #$E9AA             ;\
 $A2:EE1B 9D 92 0F    STA $0F92,x[$7E:0F92]  ;} Enemy instruction list pointer = $E9AA (shutter - growth level 3)
 $A2:EE1E 6B          RTL
 }
 
 
-;;; $EE1F: Initialise shootable shutter / destroyable shutter / rising and falling platform ;;;
+;;; $EE1F: Initialise up/down mover ;;;
 {
 $A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
 $A2:EE22 29 FF 00    AND #$00FF             ;} Enemy $7E:7800 = [enemy initialisation parameter low]
@@ -9654,7 +9654,7 @@ $A2:EED0 60          RTS
 }
 
 
-;;; $EED1: Main AI - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable shutter / rising and falling platform) ;;;
+;;; $EED1: Main AI - enemy $D53F/$D5BF/$D5FF (up/down mover) ;;;
 {
 $A2:EED1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EED4 FC A8 0F    JSR ($0FA8,x)[$A2:EF09]; Execute [enemy function]
@@ -9676,13 +9676,13 @@ $A2:EEFA CD 54 0E    CMP $0E54  [$7E:0E54]  ;\
 $A2:EEFD D0 09       BNE $09    [$EF08]     ;} If [A] = [enemy index]:
 $A2:EEFF AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
 $A2:EF02 F0 04       BEQ $04    [$EF08]     ;} If [Samus contact damage index] != 0:
-$A2:EF04 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
+$A2:EF04 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Up/down mover reaction
 
 $A2:EF08 6B          RTL
 }
 
 
-;;; $EF09: Function - initial ;;;
+;;; $EF09: Up/down mover function - initial ;;;
 {
 $A2:EF09 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF0C BF 0E 78 7E LDA $7E780E,x[$7E:780E];\
@@ -9692,7 +9692,7 @@ $A2:EF14 60          RTS
 }
 
 
-;;; $EF15: Initial function - wait for timer ;;;
+;;; $EF15: Initial up/down mover function - wait for timer ;;;
 {
 $A2:EF15 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF18 DE AA 0F    DEC $0FAA,x[$7E:116A]  ; Decrement enemy $0FAA
@@ -9705,7 +9705,7 @@ $A2:EF27 60          RTS
 }
 
 
-;;; $EF28: Function / initial function - wait for Samus to get near ;;;
+;;; $EF28: (Initial) up/down mover function - wait for Samus to get near ;;;
 {
 $A2:EF28 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF2B BF 0C 78 7E LDA $7E780C,x[$7E:788C];\
@@ -9717,7 +9717,7 @@ $A2:EF38 60          RTS
 }
 
 
-;;; $EF39: Initial function - activate ;;;
+;;; $EF39: Initial up/down mover function - activate ;;;
 {
 $A2:EF39 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF3C 20 44 EF    JSR $EF44  [$A2:EF44]
@@ -9725,7 +9725,7 @@ $A2:EF3F 60          RTS
 }
 
 
-;;; $EF40: Initial function - nothing ;;;
+;;; $EF40: Initial up/down mover function - nothing ;;;
 {
 $A2:EF40 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF43 60          RTS
@@ -9757,7 +9757,7 @@ $A2:EF67 60          RTS
 }
 
 
-;;; $EF68: Function -  ;;;
+;;; $EF68: Up/down mover function -  ;;;
 {
 $A2:EF68 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF6B BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
@@ -9805,7 +9805,7 @@ $A2:EFD3 60          RTS
 }
 
 
-;;; $EFD4: Function -  ;;;
+;;; $EFD4: Up/down mover function -  ;;;
 {
 $A2:EFD4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EFD7 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
@@ -9853,7 +9853,7 @@ $A2:F03F 60          RTS
 }
 
 
-;;; $F040: Function -  ;;;
+;;; $F040: Up/down mover function -  ;;;
 {
 $A2:F040 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F043 DE AA 0F    DEC $0FAA,x[$7E:106A]  ; Decrement enemy $0FAA
@@ -9878,7 +9878,7 @@ $A2:F071 60          RTS
 }
 
 
-;;; $F072: Function -  ;;;
+;;; $F072: Up/down mover function -  ;;;
 {
 $A2:F072 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F075 DE AA 0F    DEC $0FAA,x[$7E:102A]  ; Decrement enemy $0FAA
@@ -9898,24 +9898,24 @@ $A2:F098 60          RTS
 }
 
 
-;;; $F099: Function - nothing ;;;
+;;; $F099: Up/down mover function - nothing ;;;
 {
 $A2:F099 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F09C 60          RTS
 }
 
 
-;;; $F09D: Enemy touch - enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable shutter / rising and falling platform) ;;;
+;;; $F09D: Enemy touch - enemy $D53F/$D5BF/$D5FF (up/down mover) ;;;
 {
-$A2:F09D 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
+$A2:F09D 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Up/down mover reaction
 $A2:F0A1 6B          RTL
 }
 
 
-;;; $F0A2: Enemy shot - enemy $D53F/$D5FF (shootable shutter / rising and falling platform) ;;;
+;;; $F0A2: Enemy shot - enemy $D53F/$D5FF (shootable shutter / up/down mover platform) ;;;
 {
 $A2:F0A2 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F0A5 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
+$A2:F0A5 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Up/down mover reaction
 $A2:F0A9 6B          RTL
 }
 
@@ -9924,14 +9924,14 @@ $A2:F0A9 6B          RTL
 {
 $A2:F0AA AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F0AD 22 3D A6 A0 JSL $A0A63D[$A0:A63D]  ; Normal enemy shot AI
-$A2:F0B1 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Shootable shutter / destroyable shutter / rising and falling platform reaction
+$A2:F0B1 22 B6 F0 A2 JSL $A2F0B6[$A2:F0B6]  ; Up/down mover reaction
 $A2:F0B5 6B          RTL
 }
 
 
-;;; $F0B6: Shootable shutter / destroyable shutter / rising and falling platform reaction ;;;
+;;; $F0B6: Up/down mover reaction ;;;
 {
-; Power bomb reaction for enemy $D53F/$D5BF/$D5FF (shootable shutter / destroyable shutter / rising and falling platform)
+; Power bomb reaction for enemy $D53F/$D5BF/$D5FF (up/down mover)
 $A2:F0B6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F0B9 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
 $A2:F0BD C9 06 00    CMP #$0006             ;} If [enemy $7E:780E] < 6: go to BRANCH_F103
@@ -10404,7 +10404,7 @@ $A2:F467 6B          RTL
 }
 
 
-;;; $F468: Shutters spritemaps ;;;
+;;; $F468: Spritemaps - up/down mover platform ;;;
 {
 $A2:F468             dx 0002, 8000,F8,6100, 81F0,F8,2100
 $A2:F474             dx 0002, 8000,F8,6102, 81F0,F8,2102
