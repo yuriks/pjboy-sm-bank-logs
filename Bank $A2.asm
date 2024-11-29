@@ -9587,11 +9587,11 @@ $A2:EE1E 6B          RTL
 ;;; $EE1F: Initialise up/down mover ;;;
 {
 $A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
-$A2:EE22 29 FF 00    AND #$00FF             ;} Enemy $7E:7800 = [enemy initialisation parameter low]
-$A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800];/
+$A2:EE22 29 FF 00    AND #$00FF             ;} A = [enemy initialisation parameter low] (Y speed table index)
+$A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800]; Enemy $7E:7800 = [A] (never read)
 $A2:EE29 0A          ASL A                  ;\
 $A2:EE2A 0A          ASL A                  ;|
-$A2:EE2B 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (linear speed table index)
+$A2:EE2B 0A          ASL A                  ;} Y = [A] * 8 (linear speed table index)
 $A2:EE2C A8          TAY                    ;/
 $A2:EE2D B9 87 81    LDA $8187,y[$A2:81C7]  ;\
 $A2:EE30 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;|
@@ -9602,9 +9602,9 @@ $A2:EE3C 9D B2 0F    STA $0FB2,x[$7E:0FB2]  ;|
 $A2:EE3F B9 8D 81    LDA $818D,y[$A2:81CD]  ;} Enemy up velocity = [$8187 + [Y] + 4].[$8187 + [Y] + 6]
 $A2:EE42 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 $A2:EE45 BD 93 0F    LDA $0F93,x[$7E:0F93]  ;\
-$A2:EE48 29 FF 00    AND #$00FF             ;} Enemy $7E:7802 = [enemy initialisation parameter high]
+$A2:EE48 29 FF 00    AND #$00FF             ;} Enemy primary direction = [enemy initialisation parameter high]
 $A2:EE4B 9F 02 78 7E STA $7E7802,x[$7E:7802];/
-$A2:EE4F 9F 00 80 7E STA $7E8000,x[$7E:8000]; Enemy $7E:8000 = [enemy $7E:7802]
+$A2:EE4F 9F 00 80 7E STA $7E8000,x[$7E:8000]; Enemy reaction direction = [enemy primary direction]
 $A2:EE53 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
 $A2:EE56 29 FF 00    AND #$00FF             ;} Enemy $7E:7804 = [enemy extra properties low]
 $A2:EE59 9F 04 78 7E STA $7E7804,x[$7E:7804];/
@@ -9630,26 +9630,26 @@ $A2:EE86 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
 $A2:EE89 29 FF 00    AND #$00FF             ;} Enemy $7E:780A = [enemy parameter 1 high]
 $A2:EE8C 9F 0A 78 7E STA $7E780A,x[$7E:780A];/
 $A2:EE90 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
-$A2:EE93 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Enemy $7E:780C = [enemy parameter 2]
-$A2:EE97 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy $0FAA = [enemy parameter 2]
+$A2:EE93 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Enemy X proximity / wait time = [enemy parameter 2]
+$A2:EE97 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy function timer = [enemy parameter 2]
 $A2:EE9A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A2:EE9D 9F 1E 78 7E STA $7E781E,x[$7E:781E];} Enemy $7E:781E = [enemy Y position]
+$A2:EE9D 9F 1E 78 7E STA $7E781E,x[$7E:781E];} Enemy minimum Y position = [enemy Y position]
 $A2:EEA1 18          CLC                    ;\
-$A2:EEA2 7F 0A 78 7E ADC $7E780A,x[$7E:780A];} Enemy $7E:7820 = [enemy Y position] + [enemy $7E:780A]
+$A2:EEA2 7F 0A 78 7E ADC $7E780A,x[$7E:780A];} Enemy maximum Y position = [enemy Y position] + [enemy $7E:780A]
 $A2:EEA6 9F 20 78 7E STA $7E7820,x[$7E:7820];/
 $A2:EEAA BF 02 78 7E LDA $7E7802,x[$7E:7802];\
-$A2:EEAE D0 10       BNE $10    [$EEC0]     ;} If [enemy $7E:7802] = 0:
+$A2:EEAE D0 10       BNE $10    [$EEC0]     ;} If [enemy primary direction] = upwards:
 $A2:EEB0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
-$A2:EEB3 9F 20 78 7E STA $7E7820,x[$7E:7820];} Enemy $7E:7820 = [enemy Y position]
+$A2:EEB3 9F 20 78 7E STA $7E7820,x[$7E:7820];} Enemy maximum Y position = [enemy Y position]
 $A2:EEB7 38          SEC                    ;\
-$A2:EEB8 FF 0A 78 7E SBC $7E780A,x[$7E:780A];} Enemy $7E:781E = [enemy Y position] - [enemy $7E:780A]
+$A2:EEB8 FF 0A 78 7E SBC $7E780A,x[$7E:780A];} Enemy minimum Y position = [enemy Y position] - [enemy $7E:780A]
 $A2:EEBC 9F 1E 78 7E STA $7E781E,x[$7E:781E];/
 
 $A2:EEC0 A9 09 EF    LDA #$EF09             ;\
-$A2:EEC3 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EF09
+$A2:EEC3 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EF09 (initial)
 $A2:EEC6 A9 00 00    LDA #$0000             ;\
 $A2:EEC9 9D 88 0F    STA $0F88,x[$7E:0F88]  ;} Enemy extra properties = 0
-$A2:EECC 9F 14 78 7E STA $7E7814,x[$7E:7814]; Enemy $7E:7814 = 0
+$A2:EECC 9F 14 78 7E STA $7E7814,x[$7E:7814]; Enemy moving Samus flag = 0
 $A2:EED0 60          RTS
 }
 
@@ -9659,12 +9659,12 @@ $A2:EED0 60          RTS
 $A2:EED1 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EED4 FC A8 0F    JSR ($0FA8,x)[$A2:EF09]; Execute [enemy function]
 $A2:EED7 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
-$A2:EEDA C9 68 EF    CMP #$EF68             ;} If [enemy function] = $EF68:
+$A2:EEDA C9 68 EF    CMP #$EF68             ;} If [enemy function] = $EF68 (moving up):
 $A2:EEDD D0 02       BNE $02    [$EEE1]     ;/
 $A2:EEDF 80 27       BRA $27    [$EF08]     ; Return
 
 $A2:EEE1 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
-$A2:EEE4 C9 D4 EF    CMP #$EFD4             ;} If [enemy function] = $EFD4: return
+$A2:EEE4 C9 D4 EF    CMP #$EFD4             ;} If [enemy function] = $EFD4 (moving down): return
 $A2:EEE7 F0 1F       BEQ $1F    [$EF08]     ;/
 $A2:EEE9 AD 2C 18    LDA $182C  [$7E:182C]  ;\
 $A2:EEEC 2D 2E 18    AND $182E  [$7E:182E]  ;|
@@ -9695,11 +9695,11 @@ $A2:EF14 60          RTS
 ;;; $EF15: Initial up/down mover function - wait for timer ;;;
 {
 $A2:EF15 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EF18 DE AA 0F    DEC $0FAA,x[$7E:116A]  ; Decrement enemy $0FAA
-$A2:EF1B D0 0A       BNE $0A    [$EF27]     ; If [enemy $0FAA] = 0:
+$A2:EF18 DE AA 0F    DEC $0FAA,x[$7E:116A]  ; Decrement enemy function timer
+$A2:EF1B D0 0A       BNE $0A    [$EF27]     ; If [enemy function timer] = 0:
 $A2:EF1D BF 0C 78 7E LDA $7E780C,x[$7E:780C];\
-$A2:EF21 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy $0FAA = [enemy $7E:780C]
-$A2:EF24 20 44 EF    JSR $EF44  [$A2:EF44]
+$A2:EF21 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = [enemy wait time]
+$A2:EF24 20 44 EF    JSR $EF44  [$A2:EF44]  ; Activate up/down mover
 
 $A2:EF27 60          RTS
 }
@@ -9709,9 +9709,9 @@ $A2:EF27 60          RTS
 {
 $A2:EF28 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF2B BF 0C 78 7E LDA $7E780C,x[$7E:788C];\
-$A2:EF2F 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within [enemy $7E:780C] pixels columns of enemy:
+$A2:EF2F 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within [enemy X proximity] pixels columns of enemy:
 $A2:EF33 F0 03       BEQ $03    [$EF38]     ;/
-$A2:EF35 20 44 EF    JSR $EF44  [$A2:EF44]
+$A2:EF35 20 44 EF    JSR $EF44  [$A2:EF44]  ; Activate up/down mover
 
 $A2:EF38 60          RTS
 }
@@ -9720,7 +9720,7 @@ $A2:EF38 60          RTS
 ;;; $EF39: Initial up/down mover function - activate ;;;
 {
 $A2:EF39 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:EF3C 20 44 EF    JSR $EF44  [$A2:EF44]
+$A2:EF3C 20 44 EF    JSR $EF44  [$A2:EF44]  ; Activate up/down mover
 $A2:EF3F 60          RTS
 }
 
@@ -9732,14 +9732,14 @@ $A2:EF43 60          RTS
 }
 
 
-;;; $EF44:  ;;;
+;;; $EF44: Activate up/down mover ;;;
 {
 $A2:EF44 A9 68 EF    LDA #$EF68             ;\
-$A2:EF47 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68
+$A2:EF47 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68 (moving up)
 $A2:EF4A BF 02 78 7E LDA $7E7802,x[$7E:7882];\
-$A2:EF4E F0 06       BEQ $06    [$EF56]     ;} If [enemy $7E:7802] != 0:
+$A2:EF4E F0 06       BEQ $06    [$EF56]     ;} If [enemy primary direction] != upwards:
 $A2:EF50 A9 D4 EF    LDA #$EFD4             ;\
-$A2:EF53 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EFD4
+$A2:EF53 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EFD4 (moving down)
 
 $A2:EF56 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 $A2:EF59 60          RTS
@@ -9757,17 +9757,17 @@ $A2:EF67 60          RTS
 }
 
 
-;;; $EF68: Up/down mover function -  ;;;
+;;; $EF68: Up/down mover function - moving up ;;;
 {
 $A2:EF68 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF6B BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
-$A2:EF6E 9F 1C 78 7E STA $7E781C,x[$7E:78DC];} Enemy $7E:781C = [enemy Y position]
+$A2:EF6E 9F 1C 78 7E STA $7E781C,x[$7E:78DC];} Enemy previous Y position = [enemy Y position]
 $A2:EF72 A9 00 00    LDA #$0000             ;\
-$A2:EF75 9F 14 78 7E STA $7E7814,x[$7E:78D4];} Enemy $7E:7814 = 0
+$A2:EF75 9F 14 78 7E STA $7E7814,x[$7E:78D4];} Enemy moving Samus flag = 0
 $A2:EF79 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:EF7D F0 07       BEQ $07    [$EF86]     ;} If enemy is touching Samus from below:
 $A2:EF7F A9 01 00    LDA #$0001             ;\
-$A2:EF82 9F 14 78 7E STA $7E7814,x[$7E:78D4];} Enemy $7E:7814 = 1
+$A2:EF82 9F 14 78 7E STA $7E7814,x[$7E:78D4];} Enemy moving Samus flag = 1
 
 $A2:EF86 BD 80 0F    LDA $0F80,x[$7E:1040]  ;\
 $A2:EF89 18          CLC                    ;|
@@ -9781,41 +9781,41 @@ $A2:EF98 18          CLC                    ;|
 $A2:EF99 7D B2 0F    ADC $0FB2,x[$7E:1072]  ;|
 $A2:EF9C 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;/
 $A2:EF9F BF 14 78 7E LDA $7E7814,x[$7E:78D4];\
-$A2:EFA3 F0 0B       BEQ $0B    [$EFB0]     ;} If [enemy $7E:7814] != 0
+$A2:EFA3 F0 0B       BEQ $0B    [$EFB0]     ;} If [enemy moving Samus flag] != 0
 $A2:EFA5 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
 $A2:EFA8 38          SEC                    ;|
-$A2:EFA9 FF 1C 78 7E SBC $7E781C,x[$7E:78DC];} Extra Samus Y displacement = [enemy Y position] - [enemy $7E:781C]
+$A2:EFA9 FF 1C 78 7E SBC $7E781C,x[$7E:78DC];} Extra Samus Y displacement = [enemy Y position] - [enemy previous Y position]
 $A2:EFAD 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
 $A2:EFB0 BF 1E 78 7E LDA $7E781E,x[$7E:78DE];\
-$A2:EFB4 DD 7E 0F    CMP $0F7E,x[$7E:103E]  ;} If [enemy $7E:781E] < [enemy Y position]: return
+$A2:EFB4 DD 7E 0F    CMP $0F7E,x[$7E:103E]  ;} If [enemy minimum Y position] < [enemy Y position]: return
 $A2:EFB7 30 1A       BMI $1A    [$EFD3]     ;/
 $A2:EFB9 BF 10 78 7E LDA $7E7810,x[$7E:78D0];\
 $A2:EFBD C9 F0 0F    CMP #$0FF0             ;} If [enemy $7E:7810] != FF0h:
 $A2:EFC0 F0 0B       BEQ $0B    [$EFCD]     ;/
-$A2:EFC2 9D AA 0F    STA $0FAA,x[$7E:106A]  ; Enemy $0FAA = [enemy $7E:7810]
+$A2:EFC2 9D AA 0F    STA $0FAA,x[$7E:106A]  ; Enemy function timer = [enemy $7E:7810]
 $A2:EFC5 A9 40 F0    LDA #$F040             ;\
-$A2:EFC8 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $F040
+$A2:EFC8 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $F040 (stopped moving up)
 $A2:EFCB 80 06       BRA $06    [$EFD3]     ; Return
 
 $A2:EFCD A9 99 F0    LDA #$F099             ;\
-$A2:EFD0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F099
+$A2:EFD0 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F099 (nothing)
 
 $A2:EFD3 60          RTS
 }
 
 
-;;; $EFD4: Up/down mover function -  ;;;
+;;; $EFD4: Up/down mover function - moving down ;;;
 {
 $A2:EFD4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EFD7 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
-$A2:EFDA 9F 1C 78 7E STA $7E781C,x[$7E:789C];} Enemy $7E:781C = [enemy Y position]
+$A2:EFDA 9F 1C 78 7E STA $7E781C,x[$7E:789C];} Enemy previous Y position = [enemy Y position]
 $A2:EFDE A9 00 00    LDA #$0000             ;\
-$A2:EFE1 9F 14 78 7E STA $7E7814,x[$7E:7894];} Enemy $7E:7814 = 0
+$A2:EFE1 9F 14 78 7E STA $7E7814,x[$7E:7894];} Enemy moving Samus flag = 0
 $A2:EFE5 22 E7 AB A0 JSL $A0ABE7[$A0:ABE7]  ;\
 $A2:EFE9 F0 07       BEQ $07    [$EFF2]     ;} If enemy is touching Samus from below:
 $A2:EFEB A9 01 00    LDA #$0001             ;\
-$A2:EFEE 9F 14 78 7E STA $7E7814,x[$7E:7894];} Enemy $7E:7814 = 1
+$A2:EFEE 9F 14 78 7E STA $7E7814,x[$7E:7894];} Enemy moving Samus flag = 1
 
 $A2:EFF2 BD 80 0F    LDA $0F80,x[$7E:1000]  ;\
 $A2:EFF5 18          CLC                    ;|
@@ -9829,48 +9829,48 @@ $A2:F004 18          CLC                    ;|
 $A2:F005 7D AE 0F    ADC $0FAE,x[$7E:102E]  ;|
 $A2:F008 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A2:F00B BF 14 78 7E LDA $7E7814,x[$7E:7894];\
-$A2:F00F F0 0B       BEQ $0B    [$F01C]     ;} If [enemy $7E:7814] != 0
+$A2:F00F F0 0B       BEQ $0B    [$F01C]     ;} If [enemy moving Samus flag] != 0
 $A2:F011 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A2:F014 38          SEC                    ;|
-$A2:F015 FF 1C 78 7E SBC $7E781C,x[$7E:789C];} Extra Samus Y displacement = [enemy Y position] - [enemy $7E:781C]
+$A2:F015 FF 1C 78 7E SBC $7E781C,x[$7E:789C];} Extra Samus Y displacement = [enemy Y position] - [enemy previous Y position]
 $A2:F019 8D 5C 0B    STA $0B5C  [$7E:0B5C]  ;/
 
 $A2:F01C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
-$A2:F01F DF 20 78 7E CMP $7E7820,x[$7E:78A0];} If [enemy Y position] < [enemy $7E:7820]: return
+$A2:F01F DF 20 78 7E CMP $7E7820,x[$7E:78A0];} If [enemy Y position] < [enemy maximum Y position]: return
 $A2:F023 30 1A       BMI $1A    [$F03F]     ;/
 $A2:F025 BF 12 78 7E LDA $7E7812,x[$7E:7892];\
 $A2:F029 C9 F0 0F    CMP #$0FF0             ;} If [enemy $7E:7812] != FF0h:
 $A2:F02C F0 0B       BEQ $0B    [$F039]     ;/
-$A2:F02E 9D AA 0F    STA $0FAA,x[$7E:102A]  ; Enemy $0FAA = [enemy $7E:7812]
+$A2:F02E 9D AA 0F    STA $0FAA,x[$7E:102A]  ; Enemy function timer = [enemy $7E:7812]
 $A2:F031 A9 72 F0    LDA #$F072             ;\
-$A2:F034 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $F072
+$A2:F034 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $F072 (stopped moving down)
 $A2:F037 80 06       BRA $06    [$F03F]     ; Return
 
 $A2:F039 A9 99 F0    LDA #$F099             ;\
-$A2:F03C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F099
+$A2:F03C 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $F099 (nothing)
 
 $A2:F03F 60          RTS
 }
 
 
-;;; $F040: Up/down mover function -  ;;;
+;;; $F040: Up/down mover function - stopped moving up ;;;
 {
 $A2:F040 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F043 DE AA 0F    DEC $0FAA,x[$7E:106A]  ; Decrement enemy $0FAA
-$A2:F046 10 29       BPL $29    [$F071]     ; If [enemy $0FAA] >= 0: return
+$A2:F043 DE AA 0F    DEC $0FAA,x[$7E:106A]  ; Decrement enemy function timer
+$A2:F046 10 29       BPL $29    [$F071]     ; If [enemy function timer] >= 0: return
 $A2:F048 A9 D4 EF    LDA #$EFD4             ;\
-$A2:F04B 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $EFD4
+$A2:F04B 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $EFD4 (moving down)
 $A2:F04E BF 08 78 7E LDA $7E7808,x[$7E:78C8];\
 $A2:F052 C9 01 00    CMP #$0001             ;} If [enemy $7E:7808] = 1:
 $A2:F055 D0 0C       BNE $0C    [$F063]     ;/
 $A2:F057 BF 02 78 7E LDA $7E7802,x[$7E:78C2];\
-$A2:F05B F0 06       BEQ $06    [$F063]     ;} If [enemy $7E:7802] != 0:
+$A2:F05B F0 06       BEQ $06    [$F063]     ;} If [enemy primary direction] != upwards:
 $A2:F05D A9 28 EF    LDA #$EF28             ;\
-$A2:F060 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF28
+$A2:F060 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF28 (wait for Samus to get near)
 
 $A2:F063 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F066 BD 78 0F    LDA $0F78,x[$7E:1038]  ;\
-$A2:F069 C9 3F D8    CMP #$D83F             ;} If [enemy ID] != $D83F (suspensor platform):
+$A2:F069 C9 3F D8    CMP #$D83F             ;} If [enemy ID] != $D83F (suspensor platform): >_<;
 $A2:F06C F0 03       BEQ $03    [$F071]     ;/
 $A2:F06E 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 
@@ -9878,21 +9878,21 @@ $A2:F071 60          RTS
 }
 
 
-;;; $F072: Up/down mover function -  ;;;
+;;; $F072: Up/down mover function - stopped moving down ;;;
 {
 $A2:F072 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F075 DE AA 0F    DEC $0FAA,x[$7E:102A]  ; Decrement enemy $0FAA
-$A2:F078 10 1E       BPL $1E    [$F098]     ; If [enemy $0FAA] >= 0: return
+$A2:F075 DE AA 0F    DEC $0FAA,x[$7E:102A]  ; Decrement enemy function timer
+$A2:F078 10 1E       BPL $1E    [$F098]     ; If [enemy function timer] >= 0: return
 $A2:F07A 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 $A2:F07D A9 68 EF    LDA #$EF68             ;\
-$A2:F080 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68
+$A2:F080 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68 (moving up)
 $A2:F083 BF 08 78 7E LDA $7E7808,x[$7E:7888];\
 $A2:F087 C9 01 00    CMP #$0001             ;} If [enemy $7E:7808] = 1:
 $A2:F08A D0 0C       BNE $0C    [$F098]     ;/
 $A2:F08C BF 02 78 7E LDA $7E7802,x[$7E:7882];\
-$A2:F090 D0 06       BNE $06    [$F098]     ;} If [enemy $7E:7802] = 0:
+$A2:F090 D0 06       BNE $06    [$F098]     ;} If [enemy primary direction] = upwards:
 $A2:F092 A9 28 EF    LDA #$EF28             ;\
-$A2:F095 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $EF28
+$A2:F095 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $EF28 (wait for Samus to get near)
 
 $A2:F098 60          RTS
 }
@@ -9939,27 +9939,27 @@ $A2:F0C0 30 41       BMI $41    [$F103]     ;/
 $A2:F0C2 C9 08 00    CMP #$0008             ;\
 $A2:F0C5 F0 0D       BEQ $0D    [$F0D4]     ;} If [enemy $7E:780E] != 8:
 $A2:F0C7 BF 18 78 7E LDA $7E7818,x[$7E:78D8];\
-$A2:F0CB D0 39       BNE $39    [$F106]     ;} If [enemy $7E:7818] != 0: return
+$A2:F0CB D0 39       BNE $39    [$F106]     ;} If [enemy shot activated flag] != 0: return
 $A2:F0CD A9 01 00    LDA #$0001             ;\
-$A2:F0D0 9F 18 78 7E STA $7E7818,x[$7E:78D8];} Enemy $7E:7818 = 1
+$A2:F0D0 9F 18 78 7E STA $7E7818,x[$7E:78D8];} Enemy shot activated flag = 1
 
 $A2:F0D4 BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
-$A2:F0D7 C9 68 EF    CMP #$EF68             ;} If [enemy function] = $EF68:
+$A2:F0D7 C9 68 EF    CMP #$EF68             ;} If [enemy function] = $EF68 (moving up):
 $A2:F0DA D0 02       BNE $02    [$F0DE]     ;/
 $A2:F0DC 80 28       BRA $28    [$F106]     ; Return
 
 $A2:F0DE BD A8 0F    LDA $0FA8,x[$7E:0FA8]  ;\
-$A2:F0E1 C9 D4 EF    CMP #$EFD4             ;} If [enemy function] = $EFD4: return
+$A2:F0E1 C9 D4 EF    CMP #$EFD4             ;} If [enemy function] = $EFD4 (moving down): return
 $A2:F0E4 F0 20       BEQ $20    [$F106]     ;/
 $A2:F0E6 A9 68 EF    LDA #$EF68             ;\
-$A2:F0E9 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EF68
+$A2:F0E9 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EF68 (moving up)
 $A2:F0EC BF 00 80 7E LDA $7E8000,x[$7E:8000];\
-$A2:F0F0 F0 06       BEQ $06    [$F0F8]     ;} If [enemy $7E:8000] != 0:
+$A2:F0F0 F0 06       BEQ $06    [$F0F8]     ;} If [enemy reaction direction] != upwards:
 $A2:F0F2 A9 D4 EF    LDA #$EFD4             ;\
-$A2:F0F5 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EFD4
+$A2:F0F5 9D A8 0F    STA $0FA8,x[$7E:0FA8]  ;} Enemy function = $EFD4 (moving down)
 
 $A2:F0F8 BF 00 80 7E LDA $7E8000,x[$7E:8000];\
-$A2:F0FC 49 01 00    EOR #$0001             ;} Enemy $7E:8000 ^= 1
+$A2:F0FC 49 01 00    EOR #$0001             ;} Enemy reaction direction ^= 1
 $A2:F0FF 9F 00 80 7E STA $7E8000,x[$7E:8000];/
 
 ; BRANCH_F103
