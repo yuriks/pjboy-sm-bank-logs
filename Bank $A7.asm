@@ -96,7 +96,7 @@ $A7:86F3             dw B633,       ; NOP
                         0001,8E93,
                         B63C,       ; Increment Kraid Y position, set screen shaking
                         B65A,       ; Kraid X position -= 3
-                        B64E,       ; Queue sound 76h, sound library 2, max queued sounds allowed = 6 (quake)
+                        B64E,       ; Queue quake sound effect
                         0001,8EA5,
                         B633,       ; NOP
                         B65A,       ; Kraid X position -= 3
@@ -167,7 +167,7 @@ $A7:87BD             dw B633,       ; NOP
                         0001,8E93,
                         B63C,       ; Increment Kraid Y position, set screen shaking
                         B667,       ; Kraid X position -= 3
-                        B64E,       ; Queue sound 76h, sound library 2, max queued sounds allowed = 6 (quake)
+                        B64E,       ; Queue quake sound effect
                         0001,8EA5,
                         B633,       ; NOP
                         B667,       ; Kraid X position -= 3
@@ -226,7 +226,7 @@ $A7:8887             dw B633,       ; NOP
                         B674,       ; Kraid X position += 3
                         0001,8E39,
                         B63C,       ; Increment Kraid Y position, set screen shaking
-                        B64E,       ; Queue sound 76h, sound library 2, max queued sounds allowed = 6 (quake)
+                        B64E,       ; Queue quake sound effect
                         0001,8E27,
                         B633,       ; NOP
                         0014,8E15,
@@ -289,7 +289,7 @@ $A7:893D             dx B633,       ; NOP
                         B683,       ; Move Kraid right
                         0001,8E39,
                         B63C,       ; Increment Kraid Y position, set screen shaking
-                        B64E,       ; Queue sound 76h, sound library 2, max queued sounds allowed = 6 (quake)
+                        B64E,       ; Queue quake sound effect
                         0001,8E27,
                         B633,       ; NOP
                         0014,8E15,
@@ -737,7 +737,7 @@ $A7:96CB             dx 0001, 01FC,FC,21D2
 $A7:96D2             dw 000A,97C8,9788,FFFF
 $A7:96DA             dw 000A,9AC8,9790,97B0
 $A7:96E2             dw 000A,9DC8,9798,97B8
-$A7:96EA             dw AF94                 ; Play Kraid roar sound effect
+$A7:96EA             dw AF94                 ; Queue Kraid roar sound effect
 $A7:96EC             dw 0040,A0C8,97A0,97C0  ; <-- Mouth is fully open
 $A7:96F4             dw 000A,9DC8,9798,97B8
 $A7:96FC             dw 000A,9AC8,9790,97B0
@@ -751,7 +751,7 @@ $A7:970C             dw FFFF
 $A7:970E             dw 0014,97C8,9788,FFFF
 $A7:9716             dw 0014,9AC8,9790,97B0,
                         0014,9DC8,9798,97B8,
-                        AF94                 ; Play Kraid roar sound effect
+                        AF94                 ; Queue Kraid roar sound effect
                         00C0,A0C8,97A0,97C0,
                         0014,9DC8,9798,97B8,
                         0014,9AC8,9790,97B0,
@@ -784,7 +784,7 @@ $A7:9752             dw 000A,9AC8,9790,97B0,
 $A7:9764             dw 0019,97C8,9788,FFFF,
 $A7:976C             dw 0019,9AC8,9790,97B0,
                         0019,9DC8,9798,97B8,
-                        AF9F,                ; Play Kraid dying sound effect
+                        AF9F,                ; Queue Kraid dying sound effect
                         0040,A0C8,97A0,97C0,
                         FFFF
 }
@@ -1859,7 +1859,7 @@ $A7:AF92 80 A9       BRA $A9    [$AF3D]     ; Go to process Kraid instruction li
 }
 
 
-;;; $AF94: Kraid instruction - play Kraid roar sound effect ;;;
+;;; $AF94: Kraid instruction - queue Kraid roar sound effect ;;;
 {
 $A7:AF94 DA          PHX
 $A7:AF95 A9 2D 00    LDA #$002D             ;\
@@ -1869,7 +1869,7 @@ $A7:AF9D 80 E9       BRA $E9    [$AF88]     ; Go to process next Kraid instructi
 }
 
 
-;;; $AF9F: Kraid instruction - play Kraid dying sound effect ;;;
+;;; $AF9F: Kraid instruction - queue Kraid dying sound effect ;;;
 {
 $A7:AF9F DA          PHX
 $A7:AFA0 A9 2E 00    LDA #$002E             ;\
@@ -2509,7 +2509,7 @@ $A7:B64D 6B          RTL
 }
 
 
-;;; $B64E: Instruction - queue sound 76h, sound library 2, max queued sounds allowed = 6 (quake) ;;;
+;;; $B64E: Instruction - queue quake sound effect ;;;
 {
 $A7:B64E DA          PHX
 $A7:B64F 5A          PHY

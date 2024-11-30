@@ -601,11 +601,11 @@ $80:82D5 6B          RTL
 ;;     $05F1..F4: 32-bit result
 
 ; Called by:
-;     $94:84D6: Block collision reaction - horizontal - slope - non-square
-;     $94:ACFE (grapple beam collision detection)
-;     $9B:CA65 (grapple)
-;     $A0:C449: Enemy block collision horizontal reaction - slope - non-square
-;     $A3:E8A5 (geemer)
+;     $94:84D6: Samus block collision reaction - horizontal - slope - non-square
+;     $94:ACFE: Handle grapple beam swinging movement
+;     $9B:CA65: Propel Samus from grapple swing
+;     $A0:C449: Enemy block collision reaction - horizontal - slope - non-square
+;     $A3:E8A5: Adjust enemy X velocity for slopes
 
 ; Exactly 1060 master cycles (78% of a scanline) (1250 if using slowrom).
 
@@ -856,9 +856,9 @@ $80:83F5 6B          RTL
 ;     $88EB: Write 800h bytes of [A] to $7E:3000
 ;     $88FE: Write 800h bytes of [A] to $7E:4000
 ;     $88FE: Write 800h bytes of [A] to $7E:6000
-;     $82:81DD: Initialise PPU registers
-;     $8B:8000
-;     $8B:80DA
+;     $82:81DD: Set up PPU for gameplay
+;     $8B:8000: Set up PPU for title sequence
+;     $8B:80DA: Set up PPU for intro
 $80:83F6 08          PHP
 $80:83F7 8B          PHB
 $80:83F8 4B          PHK
@@ -1081,9 +1081,9 @@ $80:8572 00          BRK
 ;     $90:E9CE: Handle periodic damage to Samus
 ;     $91:DF51: Deal [A] damage to Samus
 ;     $93:8000: Initialise projectile
-;     $93:8071 (super missiles)
+;     $93:8071: Initialise super missile link
 ;     $93:80A0: Initialise (power) bomb
-;     $93:8163: Initialise shinespark echo
+;     $93:8163: Initialise shinespark echo or spazer SBA trail projectile
 ;     $93:81A4: Initialise SBA projectile
 $80:8573 5C 73 85 80 JML $808573[$80:8573]
 }
@@ -1808,11 +1808,11 @@ $80:8B4E 6B          RTL
 
 ; Called by:
 ;     $8B:9537: Process mode 7 object instruction list (used only by baby metroid in title sequence)
-;     $8B:BDF9 with DB:X = $8B:BE74 (back of gunship going to Ceres)
-;     $8B:C345 with DB:X = $8B:C3E6 (front of gunship leaving Ceres) / $8B:C3F0/C3FA (clear Ceres tilemap)
+;     $8B:BDF9: Cinematic function - fly to Ceres - flying into camera with DB:X = $8B:BE74 (back of gunship going to Ceres)
+;     $8B:C345: Cinematic function - Ceres goes boom - Ceres explosions with DB:X = $8B:C3E6 (front of gunship leaving Ceres) / $8B:C3F0/C3FA (clear Ceres tilemap)
 ;     $A6:ACBC (Ceres Ridley)
 ;     $A6:AD27 (Ceres Ridley)
-;     $A6:F8F1: Animate Ceres elevator platform
+;     $A6:F8F1: Animate Ceres elevator platform with DB:X = $A6:F904/F90E (light/dark)
 
 ; CGRAM transfers are supported, but no mode 7 transfers data actually define any CGRAM transfers, so $8B62..8B8A is dead code
 
@@ -2479,10 +2479,10 @@ $80:8FF6 6B          RTL
 ;     $82:E118 with A = 0: Play room music track after [A] frames
 ;     $8B:A613 with A = 5, Y = 14: Cinematic function - intro - queue "the galaxy is at peace" music
 ;     $8B:A66F with A = 5, Y = 14: Cinematic function - intro - set up intro text page 1
-;     $8B:BCA0 with A = 5, Y = 14
-;     $8B:C11B with A = 7, Y = 14
-;     $8B:D480 with A = 5, Y = 14
-;     $8B:DB9E with A = 5, Y = 14
+;     $8B:BCA0 with A = 5, Y = 14: Cinematic function - fly to Ceres - initial
+;     $8B:C11B with A = 7, Y = 14: Cinematic function - Ceres goes boom - initial
+;     $8B:D480 with A = 5, Y = 14: Cinematic function - ending - setup
+;     $8B:DB9E with A = 5, Y = 14: Cinematic function - ending - space view - change music
 ;     $92:ED24 with A = 1, Y = 14: Play Samus fanfare
 
 ; If [A] is negative, the low byte is a music data index, otherwise [A] is a music track
@@ -3946,7 +3946,7 @@ $80:99C7             dw                                                         
 ; Called by:
 ;     $9A79: Initialise HUD
 ;     $84:89A9: Instruction - collect [[Y]] ammo missile tank
-;     $91:E355: Debug. Give ammo, all items and switch to next beam configuration if newly pressed B
+;     $91:E355: Debug. Handle debug mode select + L + B
 $80:99CF 08          PHP
 $80:99D0 8B          PHB
 $80:99D1 4B          PHK                    ;\
@@ -3980,7 +3980,7 @@ $80:9A0D 6B          RTL
 ; Called by:
 ;     $9A79: Initialise HUD
 ;     $84:89D2: Instruction - collect [[Y]] ammo super missile tank
-;     $91:E355: Debug. Give ammo, all items and switch to next beam configuration if newly pressed B
+;     $91:E355: Debug. Handle debug mode select + L + B
 $80:9A0E 08          PHP
 $80:9A0F DA          PHX
 $80:9A10 5A          PHY
@@ -3999,7 +3999,7 @@ $80:9A1C 80 2E       BRA $2E    [$9A4C] ; Write 2x2 tile icon to HUD tilemap
 ; Called by:
 ;     $9A79: Initialise HUD
 ;     $84:89FB: Instruction - collect [[Y]] ammo power bomb tank
-;     $91:E355: Debug. Give ammo, all items and switch to next beam configuration if newly pressed B
+;     $91:E355: Debug. Handle debug mode select + L + B
 $80:9A1E 08          PHP
 $80:9A1F DA          PHX
 $80:9A20 5A          PHY
@@ -4018,7 +4018,7 @@ $80:9A2C 80 1E       BRA $1E    [$9A4C] ; Write 2x2 tile icon to HUD tilemap
 ; Called by:
 ;     $9A79: Initialise HUD
 ;     $84:891A: Instruction - pick up equipment [[Y]], add grapple to HUD and display grapple message box
-;     $91:E355: Debug. Give ammo, all items and switch to next beam configuration if newly pressed B
+;     $91:E355: Debug. Handle debug mode select + L + B
 $80:9A2E 08          PHP
 $80:9A2F DA          PHX
 $80:9A30 5A          PHY
@@ -4037,7 +4037,7 @@ $80:9A3C 80 0E       BRA $0E    [$9A4C] ; Write 2x2 tile icon to HUD tilemap
 ; Called by:
 ;     $9A79: Initialise HUD
 ;     $84:8941: Instruction - pick up equipment [[Y]], add x-ray to HUD and display x-ray message box
-;     $91:E355: Debug. Give ammo, all items and switch to next beam configuration if newly pressed B
+;     $91:E355: Debug. Handle debug mode select + L + B
 $80:9A3E 08          PHP
 $80:9A3F DA          PHX
 $80:9A40 5A          PHY
@@ -4507,9 +4507,9 @@ $80:9DD3             dw 2C09, 2C00, 2C01, 2C02, 2C03, 2C04, 2C05, 2C06, 2C07, 2C
 ;;     Carry: Set if timer has reached zero, otherwise clear
 
 ; Called by:
-;     $90:E0E6
-;     $90:E12E: Push Samus out of Ceres Ridley's way
-;     $90:E1C8
+;     $90:E0E6: Timer / Samus hack handler - handle timer
+;     $90:E12E: Timer / Samus hack handler - push Samus out of Ceres Ridley's way
+;     $90:E1C8: Timer / Samus hack handler - pushing Samus out of Ceres Ridley's way
 $80:9DE7 8B          PHB
 $80:9DE8 4B          PHK                    ;\
 $80:9DE9 AB          PLB                    ;} DB = $80
@@ -4696,10 +4696,10 @@ $80:9F4C             db 01, 02, 02, 01, 02, 02, 01, 02, 02, 01, 02, 02, 02, 01, 
 ;     $82:8388: Game state 21h (blackout from Ceres)
 ;     $82:E1B7: Game state Ah (loading next room)
 ;     $82:E288: Game state Bh (loading next room)
-;     $90:E0E6
-;     $90:E114
-;     $90:E12E: Push Samus out of Ceres Ridley's way
-;     $90:E1C8
+;     $90:E0E6: Timer / Samus hack handler - handle timer
+;     $90:E114: Timer / Samus hack handler - draw timer
+;     $90:E12E: Timer / Samus hack handler - push Samus out of Ceres Ridley's way
+;     $90:E1C8: Timer / Samus hack handler - pushing Samus out of Ceres Ridley's way
 $80:9F6C 8B          PHB
 $80:9F6D 4B          PHK                    ;\
 $80:9F6E AB          PLB                    ;} DB = $80
@@ -5281,16 +5281,16 @@ $80:A3A9 80 34       BRA $34    [$A3DF]     ; Go to update BG graphics when scro
 {
 ; Called by
 ;     $82:8B44: Game state 8 (main gameplay)
-;     $82:E310: Handles door transitions - scroll screen to alignment
-;     $82:E675
+;     $82:E310: Door transition function - scroll screen to alignment
+;     $82:E675: Unused. Door transition function
 $80:A3AB AD 78 0A    LDA $0A78  [$7E:0A78]  ;\
 $80:A3AE F0 01       BEQ $01    [$A3B1]     ;} If time frozen: return
 $80:A3B0 6B          RTL                    ;/
 
 $80:A3B1 08          PHP
 $80:A3B2 8B          PHB
-$80:A3B3 4B          PHK
-$80:A3B4 AB          PLB
+$80:A3B3 4B          PHK                    ;\
+$80:A3B4 AB          PLB                    ;} DB = $80
 $80:A3B5 C2 30       REP #$30
 $80:A3B7 AD 11 09    LDA $0911  [$7E:0911]  ;\
 $80:A3BA 18          CLC                    ;|
@@ -6632,7 +6632,7 @@ $80:AD1C 60          RTS
 ;;; $AD1D: Draw top row of screen for upwards door transition ;;;
 {
 ; Called by:
-;     $82:E353: Handles door transitions - fix doors moving up
+;     $82:E353: Door transition function - fix doors moving up
 
 ; See $AF89
 $80:AD1D 9C 25 09    STZ $0925  [$7E:0925]  ; Door transition frame counter = 0
@@ -6648,7 +6648,7 @@ $80:AD2F 6B          RTL
 ;;; $AD30: Door transition scrolling setup ;;;
 {
 ; Called by:
-;     $82:E38E: Handles door transitions - set up scrolling
+;     $82:E38E: Door transition function - set up scrolling
 $80:AD30 C2 30       REP #$30
 $80:AD32 AD 27 09    LDA $0927  [$7E:0927]  ;\
 $80:AD35 8D 11 09    STA $0911  [$7E:0911]  ;} Layer 1 X position = [door destination X position]
@@ -6779,7 +6779,11 @@ $80:AE28 60          RTS
 
 ;;; $AE29: Update BG scroll offsets ;;;
 {
-; Called by door transition scrolling setup
+; Called by:
+;     $AD4A: Door transition scrolling setup - right
+;     $AD74: Door transition scrolling setup - left
+;     $AD9E: Door transition scrolling setup - down
+;     $ADC8: Door transition scrolling setup - up
 $80:AE29 A5 B1       LDA $B1    [$7E:00B1]  ;\
 $80:AE2B 38          SEC                    ;|
 $80:AE2C ED 11 09    SBC $0911  [$7E:0911]  ;} BG1 X offset = [BG1 X scroll] - [layer 1 X position]

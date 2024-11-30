@@ -1,4 +1,4 @@
-;;; $8000: Tiles - enemy $D5FF/$D83F (rising and falling platform / suspensor platform) ;;;
+;;; $8000: Tiles - enemy $D5FF/$D83F (up/down mover platform / suspensor platform) ;;;
 {
 ; |--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 ; |        |  CCCCCC|        |  CCCCCC|        |  CCCCCC|        |  CCCCCC|        |        |        |        |        |        |        |        |

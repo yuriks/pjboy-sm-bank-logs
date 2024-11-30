@@ -796,7 +796,7 @@ $AA:B96C             dx C377,       ; Set stepped left with left foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         000A,A4FA,
                         C567,BBDE,  ; Call $BBDE (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C58B,BC96,  ; Go to $BC96 (jumping backwards) and jump backwards if Samus is less 20h pixels in front of Bomb Torizo
@@ -821,7 +821,7 @@ $AA:B9B6             dx C3A0,       ; Set stepped left with right foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         000A,A5A4,
                         C567,BB5C,  ; Call $BB5C (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C58B,BCD2,  ; Go to $BCD2 (jumping backwards) and jump backwards if Samus is less 20h pixels in front of Bomb Torizo
@@ -850,7 +850,7 @@ $AA:BA04             dx 806B,C828,  ; Enemy movement function = $C828 (attacking
                         0008,A69C,
                         0008,A6B6,
                         0010,A6D0,
-                        C610,       ; Play shot torizo sound effect
+                        C610,       ; Queue shot torizo sound effect
                         8123,0003   ; Timer = 3
 $AA:BA26             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
                         813A,0010,  ; Wait 10h frames
@@ -873,7 +873,7 @@ $AA:BA46             dx 806B,C828,  ; Enemy movement function = $C828 (attacking
                         0008,A738,
                         0008,A752,
                         0010,A76C,
-                        C610,       ; Play shot torizo sound effect
+                        C610,       ; Queue shot torizo sound effect
                         8123,0003   ; Timer = 3
 $AA:BA68             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
                         813A,0010,  ; Wait 10h frames
@@ -1044,7 +1044,7 @@ $AA:BC78             dx 806B,C82C,      ; Enemy movement function = $C82C (jumpi
                         C2ED,BC88       ; Enemy link instruction = $BC88
 $AA:BC80             dx 0005,B014,
                         80ED,BC80       ; Go to $BC80
-$AA:BC88             dx C618,           ; Play torizo footsteps sound effect
+$AA:BC88             dx C618,           ; Queue torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
                         C2D9,BD52,D259, ; Go to $BD52 (faceless - walking left - left leg moving) if face blown up, else go to $D259 (Golden Torizo - walking left - left leg moving) if Golden Torizo
                         80ED,B9B6       ; Go to $B9B6 (walking left - left leg moving)
@@ -1063,7 +1063,7 @@ $AA:BCAE             dx 806B,C82C,      ; Enemy movement function = $C82C (jumpi
                         C2ED,BCBE       ; Enemy link instruction = $BCBE
 $AA:BCB6             dx 0005,B014,
                         80ED,BCB6       ; Go to $BCB6
-$AA:BCBE             dx C618,           ; Play torizo footsteps sound effect
+$AA:BCBE             dx C618,           ; Queue torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
                         C2D9,BD18,CDAF, ; Go to $BD18 (faceless - walking left - right leg moving) if face blown up, else go to $CDAF (Golden Torizo - landed from backwards jump - facing left - left foot forward) if Golden Torizo
                         C5A4,BA46,BAF2, ; Call $BA46 (spewing orbs) or $BAF2 (sonic booms) for Bomb Torizo attack
@@ -1083,7 +1083,7 @@ $AA:BCEA             dx 806B,C82C,      ; Enemy movement function = $C82C (jumpi
                         C2ED,BCFA       ; Enemy link instruction = $BCFA
 $AA:BCF2             dx 0005,B014,
                         80ED,BCF2       ; Go to $BCF2
-$AA:BCFA             dx C618,           ; Play torizo footsteps sound effect
+$AA:BCFA             dx C618,           ; Queue torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
                         C2D9,BD52,CDB9, ; Go to $BD52 (faceless - walking left - left leg moving) if face blown up, else go to $CDB9 (Golden Torizo - landed from backwards jump - facing left - right foot forward) if Golden Torizo
                         C5A4,BA04,BA88, ; Call $BA04 (spewing orbs) or $BA88 (sonic booms) for Bomb Torizo attack
@@ -1105,7 +1105,7 @@ $AA:BD18             dx C377,       ; Set stepped left with left foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0001,A4FA,
                         C567,BBDE,  ; Call $BBDE (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C4E5,0002,  ; Bomb Torizo walking movement - faceless - index 2
@@ -1126,7 +1126,7 @@ $AA:BD52             dx C3A0,       ; Set stepped left with right foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0001,A5A4,
                         C567,BB5C,  ; Call $BB5C (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C4E5,000C,  ; Bomb Torizo walking movement - faceless - index Ch
@@ -1183,7 +1183,7 @@ $AA:BDE2             dx C38A,       ; Set stepped right with right foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         000A,AA98,
                         C567,C058,  ; Call $C058 (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C58B,C110,  ; Go to $C110 (jumping backwards) and jump backwards if Samus is less 20h pixels in front of Bomb Torizo
@@ -1209,7 +1209,7 @@ $AA:BE30             dx C3B6,       ; Set stepped right with left foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         000A,AB42,
                         C567,BFD6,  ; Call $BFD6 (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C58B,C14C,  ; Go to $C14C (jumping backwards) and jump backwards if Samus is less 20h pixels in front of Bomb Torizo
@@ -1238,7 +1238,7 @@ $AA:BE7E             dx 806B,C828,  ; Enemy movement function = $C828 (attacking
                         0008,AC3A,
                         0008,AC54,
                         0010,AC6E,
-                        C610,       ; Play shot torizo sound effect
+                        C610,       ; Queue shot torizo sound effect
                         8123,0003   ; Timer = 3
 $AA:BEA0             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
                         813A,0010,  ; Wait 10h frames
@@ -1261,7 +1261,7 @@ $AA:BEC0             dx 806B,C828,  ; Enemy movement function = $C828 (attacking
                         0008,ACD6,
                         0008,ACF0,
                         0010,AD0A,
-                        C610,       ; Play shot torizo sound effect
+                        C610,       ; Queue shot torizo sound effect
                         8123,0003   ; Timer = 3
 $AA:BEE2             dx C5CB,       ; Spawn Bomb Torizo's chozo orbs
                         813A,0010,  ; Wait 10h frames
@@ -1432,7 +1432,7 @@ $AA:C0F2             dx 806B,C82C,      ; Enemy movement function = $C82C (jumpi
                         C2ED,C102       ; Enemy link instruction = $C102
 $AA:C0FA             dx 0005,B062,
                         80ED,C0FA       ; Go to $C0FA
-$AA:C102             dx C618,           ; Play torizo footsteps sound effect
+$AA:C102             dx C618,           ; Queue torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
                         C2D9,C1CC,D315, ; Go to $C1CC (faceless - walking right - right leg moving) if face blown up, else go to $D315 (Golden Torizo - walking right - right leg moving) if Golden Torizo
                         80ED,BE30       ; Go to $BE30 (walking right - right leg moving)
@@ -1451,7 +1451,7 @@ $AA:C128             dx 806B,C82C,      ; Enemy movement function = $C82C (jumpi
                         C2ED,C138       ; Enemy link instruction = $C138
 $AA:C130             dx 0005,B062,
                         80ED,C130       ; Go to $C130
-$AA:C138             dx C618,           ; Play torizo footsteps sound effect
+$AA:C138             dx C618,           ; Queue torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
                         C2D9,C192,CDC3, ; Go to $C192 (faceless - walking right - left leg moving) if face blown up, else go to $CDC3 (Golden Torizo - landed from backwards jump - facing right - right foot forward) if Golden Torizo
                         C5A4,BEC0,BF6C, ; Call $BEC0 (spewing orbs) or $BF6C (sonic booms) for Bomb Torizo attack
@@ -1471,7 +1471,7 @@ $AA:C164             dx 806B,C82C,      ; Enemy movement function = $C82C (jumpi
                         C2ED,C174       ; Enemy link instruction = $C174
 $AA:C16C             dx 0005,B062,
                         80ED,C16C       ; Go to $C16C
-$AA:C174             dx C618,           ; Play torizo footsteps sound effect
+$AA:C174             dx C618,           ; Queue torizo footsteps sound effect
                         C34A,           ; Spawn torizo landing dust clouds
                         C2D9,C1CC,CDCD, ; Go to $C1CC (faceless - walking right - right leg moving) if face blown up, else go to $CDCD (Golden Torizo - landed from backwards jump - facing right - left foot forward) if Golden Torizo
                         C5A4,BE7E,BF02, ; Call $BE7E (spewing orbs) or $BF02 (sonic booms) for Bomb Torizo attack
@@ -1493,7 +1493,7 @@ $AA:C192             dx C38A,       ; Set stepped right with right foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0001,AA98,
                         C567,C058,  ; Call $C058 (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C4E5,0016,  ; Bomb Torizo walking movement - faceless - index 16h
@@ -1514,7 +1514,7 @@ $AA:C1CC             dx C3B6,       ; Set stepped right with left foot state
                         B09C,C6FF,  ; Enemy function = $C6FF (normal movement)
                         806B,C752,  ; Enemy movement function = $C752 (walking)
                         C35B,       ; Spawn low-health initial drool if health is low
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0001,AB42,
                         C567,BFD6,  ; Call $BFD6 (explosive swipe) if Samus is less than 38h pixels in front of torizo
                         C4E5,0020,  ; Bomb Torizo walking movement - faceless - index 20h
@@ -2152,7 +2152,7 @@ $AA:C60F 6B          RTL
 }
 
 
-;;; $C610: Instruction - play shot torizo sound effect ;;;
+;;; $C610: Instruction - queue shot torizo sound effect ;;;
 {
 $AA:C610 A9 27 00    LDA #$0027             ;\
 $AA:C613 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 27h, sound library 2, max queued sounds allowed = 6 (shot torizo)
@@ -2160,7 +2160,7 @@ $AA:C617 6B          RTL
 }
 
 
-;;; $C618: Instruction - play torizo footsteps sound effect ;;;
+;;; $C618: Instruction - queue torizo footsteps sound effect ;;;
 {
 $AA:C618 A9 4B 00    LDA #$004B             ;\
 $AA:C61B 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 4Bh, sound library 2, max queued sounds allowed = 6 (chozo / torizo footsteps)
@@ -2682,7 +2682,7 @@ $AA:C9CB             dx 814B,0600,AFE200,6D00,  ; Transfer 600h bytes from $AF:E
                         B09C,C6BF               ; Enemy function = $C6BF (simple movement)
 $AA:C9E6             dx 0001,AA30,
                         CACE,C9E6,              ; Go to $C9E6 if not hit ground
-                        C618,                   ; Play torizo footsteps sound effect
+                        C618,                   ; Queue torizo footsteps sound effect
                         0003,AA30,
                         C41E,0004,              ; Sitting down movement - index 4
                         0004,AA26,
@@ -2782,7 +2782,7 @@ $AA:CAFF             dx 806B,D5ED,  ; Enemy movement function = $D5ED (attacking
                         0003,A6B6,
                         0006,A6D0,
                         8123,0006   ; Timer = 6
-$AA:CB1F             dx C610,       ; Play shot torizo sound effect
+$AA:CB1F             dx C610,       ; Queue shot torizo sound effect
                         D4F3,       ; Spawn Golden Torizo's chozo orbs
                         813A,0006,  ; Wait 6 frames
                         8110,CB1F,  ; Decrement timer and go to $CB1F if non-zero
@@ -2805,7 +2805,7 @@ $AA:CB41             dx 806B,D5ED,  ; Enemy movement function = $D5ED (attacking
                         0003,A752,
                         0006,A76C,
                         8123,0006   ; Timer = 6
-$AA:CB61             dx C610,       ; Play shot torizo sound effect
+$AA:CB61             dx C610,       ; Queue shot torizo sound effect
                         D4F3,       ; Spawn Golden Torizo's chozo orbs
                         813A,0006,  ; Wait 6 frames
                         8110,CB61,  ; Decrement timer and go to $CB61 if non-zero
@@ -2892,7 +2892,7 @@ $AA:CC57             dx 806B,D5ED,  ; Enemy movement function = $D5ED (attacking
                         0003,AC54,
                         0006,AC6E,
                         8123,0006   ; Timer = 6
-$AA:CC77             dx C610,       ; Play shot torizo sound effect
+$AA:CC77             dx C610,       ; Queue shot torizo sound effect
                         D4F3,       ; Spawn Golden Torizo's chozo orbs
                         813A,0006,  ; Wait 6 frames
                         8110,CC77,  ; Decrement timer and go to $CC77 if non-zero
@@ -2915,7 +2915,7 @@ $AA:CC99             dx 806B,D5ED,  ; Enemy movement function = $D5ED (attacking
                         0003,ACF0,
                         0006,AD0A,
                         8123,0006   ; Timer = 6
-$AA:CCB9             dx C610,       ; Play shot torizo sound effect
+$AA:CCB9             dx C610,       ; Queue shot torizo sound effect
                         D4F3,       ; Spawn Golden Torizo's chozo orbs
                         813A,0006,  ; Wait 6 frames
                         8110,CCB9,  ; Decrement timer and go to $CCB9 if non-zero
@@ -3387,7 +3387,7 @@ $AA:D203             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
 $AA:D20D             dx C377,       ; Set stepped left with left foot state
                         B09C,D5E6,  ; Enemy function = $D5E6 (normal movement)
                         806B,D5F1,  ; Enemy movement function = $D5F1 (walking)
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0008,A4FA,
                         D4BA,BC60,  ; Go to $BC60 (jumping forwards) and jump forwards if Samus is at least 70h pixels in front of Golden Torizo
                         D4FD,BC96,  ; Go to $BC96 (jumping backwards) and jump backwards if Samus is less than 20h pixels in front of Golden Torizo
@@ -3412,7 +3412,7 @@ $AA:D20D             dx C377,       ; Set stepped left with left foot state
 $AA:D259             dx C3A0,       ; Set stepped left with right foot state
                         B09C,D5E6,  ; Enemy function = $D5E6 (normal movement)
                         806B,D5F1,  ; Enemy movement function = $D5F1 (walking)
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0008,A5A4,
                         D3EA,CF59,  ; Go to $CF59 (sit down attack) if Samus is a medium distance behind torizo and morphed
                         D4BA,BC60,  ; Go to $BC60 (jumping forwards) and jump forwards if Samus is at least 70h pixels in front of Golden Torizo
@@ -3458,7 +3458,7 @@ $AA:D2BF             dx B09C,C6BF,  ; Enemy function = $C6BF (simple movement)
 $AA:D2C9             dx C38A,       ; Set stepped right with right foot state
                         B09C,D5E6,  ; Enemy function = $D5E6 (normal movement)
                         806B,D5F1,  ; Enemy movement function = $D5F1 (walking)
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0008,AA98,
                         D4BA,C0DA,  ; Go to $C0DA (jumping forwards) and jump forwards if Samus is at least 70h pixels in front of Golden Torizo
                         D4FD,C110,  ; Go to $C110 (jumping backwards) and jump backwards if Samus is less than 20h pixels in front of Golden Torizo
@@ -3483,7 +3483,7 @@ $AA:D2C9             dx C38A,       ; Set stepped right with right foot state
 $AA:D315             dx C3B6,       ; Set stepped right with left foot state
                         B09C,D5E6,  ; Enemy function = $D5E6 (normal movement)
                         806B,D5F1,  ; Enemy movement function = $D5F1 (walking)
-                        C618,       ; Play torizo footsteps sound effect
+                        C618,       ; Queue torizo footsteps sound effect
                         0008,AB42,
                         D3EA,CFC5,  ; Go to $CFC5 (sit down attack) if Samus is a medium distance behind torizo and morphed
                         D4BA,C0DA,  ; Go to $C0DA (jumping forwards) and jump forwards if Samus is at least 70h pixels in front of Golden Torizo
@@ -5153,7 +5153,7 @@ $AA:E3A7             dx 8074,       ; Enemy function = RTS
                         0008,F034,
                         E5D8,0024,  ; Chozo statue movement - index 24h
                         0030,F08B,
-                        E57F,       ; Play chozo grabs Samus sound effect
+                        E57F,       ; Queue chozo grabs Samus sound effect
                         E5D8,0026,  ; Chozo statue movement - index 26h
                         0040,F0E2,
                         0006,F4B4,
@@ -5244,7 +5244,7 @@ $AA:E461             dw 8074,       ; Enemy function = RTS
                         0008,E839,
                         E5D8,0004,  ; Chozo statue movement - index 4
                         0050,E890,
-                        E57F,       ; Play chozo grabs Samus sound effect
+                        E57F,       ; Queue chozo grabs Samus sound effect
                         E5D8,0006,  ; Chozo statue movement - index 6
                         0080,E8E7,
                         0006,ECB9,
@@ -5265,7 +5265,7 @@ $AA:E49D             dw 000B,ED15,
 $AA:E4C1             dw E5D8,0016,  ; Chozo statue movement - index 16h
                         E58F,FFF8,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -8
                         0008,EC49,
-                        E587,       ; Play chozo footsteps sound effect
+                        E587,       ; Queue chozo footsteps sound effect
                         E5D8,0008,  ; Chozo statue movement - index 8
                         E58F,FFEC,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -14h
                         000B,E943,
@@ -5278,7 +5278,7 @@ $AA:E4C1             dw E5D8,0016,  ; Chozo statue movement - index 16h
                         E5D8,000E,  ; Chozo statue movement - index Eh
                         E58F,FFF8,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -8
                         0008,EA8E,
-                        E587,       ; Play chozo footsteps sound effect
+                        E587,       ; Queue chozo footsteps sound effect
                         E5D8,0010,  ; Chozo statue movement - index 10h
                         E58F,FFEC,  ; Spawn chozo spike clearing footstep enemy projectile with X offset -14h
                         000B,EAFE,
@@ -5315,7 +5315,7 @@ $AA:E4C1             dw E5D8,0016,  ; Chozo statue movement - index 16h
 }
 
 
-;;; $E57F: Instruction - play chozo grabs Samus sound effect ;;;
+;;; $E57F: Instruction - queue chozo grabs Samus sound effect ;;;
 {
 $AA:E57F A9 1C 00    LDA #$001C             ;\
 $AA:E582 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 1Ch, sound library 2, max queued sounds allowed = 6 (chozo grabs Samus)
@@ -5323,7 +5323,7 @@ $AA:E586 6B          RTL
 }
 
 
-;;; $E587: Instruction - play chozo footsteps sound effect ;;;
+;;; $E587: Instruction - queue chozo footsteps sound effect ;;;
 {
 $AA:E587 A9 4B 00    LDA #$004B             ;\
 $AA:E58A 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 4Bh, sound library 2, max queued sounds allowed = 6 (chozo / torizo footsteps)

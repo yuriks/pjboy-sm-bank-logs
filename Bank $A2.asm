@@ -662,7 +662,7 @@ $A2:8B80             dx 9381,       ; Crawl
 ;;; $8BD2: Instruction list - mini-tatori - spinning ;;;
 {
 $A2:8BD2             dx 0001,9519,
-                        94D1,       ; Play tatori spinning sound effect
+                        94D1,       ; Queue tatori spinning sound effect
                         0004,9519,
                         0005,9520,
                         0005,9527,
@@ -685,7 +685,7 @@ $A2:8BEE             dx 0010,95E5,
 ;;; $8C02: Instruction list - tatori - spinning ;;;
 {
 $A2:8C02             dx 0001,9535,
-                        94D1,       ; Play tatori spinning sound effect
+                        94D1,       ; Queue tatori spinning sound effect
                         0004,9535,
                         0005,96E9,
                         0005,96C9,
@@ -1852,7 +1852,7 @@ $A2:94D0 6B          RTL
 }
 
 
-;;; $94D1: Instruction - play tatori spinning sound effect ;;;
+;;; $94D1: Instruction - queue tatori spinning sound effect ;;;
 {
 $A2:94D1 A9 3A 00    LDA #$003A             ;\
 $A2:94D4 22 CB 90 80 JSL $8090CB[$80:90CB]  ;} Queue sound 3Ah, sound library 2, max queued sounds allowed = 6 (tatori spinning)
@@ -2032,7 +2032,7 @@ $A2:9A6B 6B          RTL
 ;;; $9A6C: Set enemy instruction list ;;;
 {
 $A2:9A6C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:9A6F 9D 92 0F    STA $0F92,x[$7E:10D2]
+$A2:9A6F 9D 92 0F    STA $0F92,x[$7E:10D2]  ; Enemy instruction list pointer = [A]
 $A2:9A72 A9 01 00    LDA #$0001             ;\
 $A2:9A75 9D 94 0F    STA $0F94,x[$7E:10D4]  ;} Enemy instruction timer = 1
 $A2:9A78 9E 90 0F    STZ $0F90,x[$7E:10D0]  ; Enemy timer = 0
@@ -7071,7 +7071,7 @@ $A2:CA4B             dx 0001,CB87,
 {
 $A2:CA51             dx 0010,CB87,
                         0010,CB91,
-                        CB6B,       ; Play splashed out of water sound effect
+                        CB6B,       ; Queue splashed out of water sound effect
                         0010,CB9B,
                         0002,CBA5,
                         0003,CBAF,
@@ -7132,7 +7132,7 @@ $A2:CADB             dx 0001,CC1D,
 $A2:CAE1             dx 0010,CC1D,
                         0010,CC27,
                         0010,CC31,
-                        CB6B,       ; Play splashed out of water sound effect
+                        CB6B,       ; Queue splashed out of water sound effect
                         0002,CC3B,
                         0003,CC45,
                         0004,CC4F,
@@ -7181,7 +7181,7 @@ $A2:CB43             dx 0007,CCA9,
 }
 
 
-;;; $CB6B: Instruction - play splashed out of water sound effect ;;;
+;;; $CB6B: Instruction - queue splashed out of water sound effect ;;;
 {
 $A2:CB6B DA          PHX
 $A2:CB6C 5A          PHY
@@ -9542,6 +9542,8 @@ $A2:EDB1             dx 0004, 81E0,F8,2102, 8010,F8,2102, 8000,F8,2102, 81F0,F8,
 }
 
 
+;;; $EDC7..F106: Up/down movers ;;;
+{
 ;;; $EDC7: Palette - enemy $D5FF (up/down mover platform) ;;;
 {
 $A2:EDC7             dw 3800, 7F5A, 3BE0, 2680, 0920, 4F5A, 36B5, 2610, 1DCE, 5294, 39CE, 2108, 1084, 033B, 0216, 0113
@@ -9587,11 +9589,11 @@ $A2:EE1E 6B          RTL
 ;;; $EE1F: Initialise up/down mover ;;;
 {
 $A2:EE1F BD 92 0F    LDA $0F92,x[$7E:0F92]  ;\
-$A2:EE22 29 FF 00    AND #$00FF             ;} A = [enemy initialisation parameter low] (Y speed table index)
-$A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800]; Enemy $7E:7800 = [A] (never read)
+$A2:EE22 29 FF 00    AND #$00FF             ;} Enemy Y speed table index = [A] = [enemy initialisation parameter low]
+$A2:EE25 9F 00 78 7E STA $7E7800,x[$7E:7800];/
 $A2:EE29 0A          ASL A                  ;\
 $A2:EE2A 0A          ASL A                  ;|
-$A2:EE2B 0A          ASL A                  ;} Y = [A] * 8 (linear speed table index)
+$A2:EE2B 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (linear speed table index)
 $A2:EE2C A8          TAY                    ;/
 $A2:EE2D B9 87 81    LDA $8187,y[$A2:81C7]  ;\
 $A2:EE30 9D AE 0F    STA $0FAE,x[$7E:0FAE]  ;|
@@ -9606,43 +9608,43 @@ $A2:EE48 29 FF 00    AND #$00FF             ;} Enemy primary direction = [enemy 
 $A2:EE4B 9F 02 78 7E STA $7E7802,x[$7E:7802];/
 $A2:EE4F 9F 00 80 7E STA $7E8000,x[$7E:8000]; Enemy reaction direction = [enemy primary direction]
 $A2:EE53 BD 88 0F    LDA $0F88,x[$7E:0F88]  ;\
-$A2:EE56 29 FF 00    AND #$00FF             ;} Enemy $7E:7804 = [enemy extra properties low]
+$A2:EE56 29 FF 00    AND #$00FF             ;} Enemy moved up rest time parameter = [enemy extra properties low]
 $A2:EE59 9F 04 78 7E STA $7E7804,x[$7E:7804];/
 $A2:EE5D 0A          ASL A                  ;\
 $A2:EE5E 0A          ASL A                  ;|
-$A2:EE5F 0A          ASL A                  ;} Enemy $7E:7810 = [enemy $7E:7804] * 10h
+$A2:EE5F 0A          ASL A                  ;} Enemy moved up rest time = [enemy moved up rest time parameter] * 10h
 $A2:EE60 0A          ASL A                  ;|
 $A2:EE61 9F 10 78 7E STA $7E7810,x[$7E:7810];/
 $A2:EE65 BD 89 0F    LDA $0F89,x[$7E:0F89]  ;\
-$A2:EE68 29 FF 00    AND #$00FF             ;} Enemy $7E:7806 = [enemy extra properties high]
+$A2:EE68 29 FF 00    AND #$00FF             ;} Enemy moved down rest time parameter = [enemy extra properties high]
 $A2:EE6B 9F 06 78 7E STA $7E7806,x[$7E:7806];/
 $A2:EE6F 0A          ASL A                  ;\
 $A2:EE70 0A          ASL A                  ;|
-$A2:EE71 0A          ASL A                  ;} Enemy $7E:7812 = [enemy $7E:7806] * 10h
+$A2:EE71 0A          ASL A                  ;} Enemy moved down rest time = [enemy moved down rest time parameter] * 10h
 $A2:EE72 0A          ASL A                  ;|
 $A2:EE73 9F 12 78 7E STA $7E7812,x[$7E:7812];/
 $A2:EE77 BD B4 0F    LDA $0FB4,x[$7E:0FB4]  ;\
-$A2:EE7A 29 FF 00    AND #$00FF             ;} Enemy $7E:7808 = [enemy parameter 1 low]
+$A2:EE7A 29 FF 00    AND #$00FF             ;} Enemy trigger mode = [enemy parameter 1 low]
 $A2:EE7D 9F 08 78 7E STA $7E7808,x[$7E:7808];/
 $A2:EE81 0A          ASL A                  ;\
-$A2:EE82 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy $7E:780E = [enemy $7E:7808] * 2
+$A2:EE82 9F 0E 78 7E STA $7E780E,x[$7E:780E];} Enemy initial function index = [enemy trigger mode] * 2
 $A2:EE86 BD B5 0F    LDA $0FB5,x[$7E:0FB5]  ;\
-$A2:EE89 29 FF 00    AND #$00FF             ;} Enemy $7E:780A = [enemy parameter 1 high]
+$A2:EE89 29 FF 00    AND #$00FF             ;} Enemy Y distance = [enemy parameter 1 high]
 $A2:EE8C 9F 0A 78 7E STA $7E780A,x[$7E:780A];/
 $A2:EE90 BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $A2:EE93 9F 0C 78 7E STA $7E780C,x[$7E:780C];} Enemy X proximity / wait time = [enemy parameter 2]
-$A2:EE97 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy function timer = [enemy parameter 2]
+$A2:EE97 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ; Enemy function timer = [enemy wait time]
 $A2:EE9A BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A2:EE9D 9F 1E 78 7E STA $7E781E,x[$7E:781E];} Enemy minimum Y position = [enemy Y position]
 $A2:EEA1 18          CLC                    ;\
-$A2:EEA2 7F 0A 78 7E ADC $7E780A,x[$7E:780A];} Enemy maximum Y position = [enemy Y position] + [enemy $7E:780A]
+$A2:EEA2 7F 0A 78 7E ADC $7E780A,x[$7E:780A];} Enemy maximum Y position = [enemy Y position] + [enemy Y distance]
 $A2:EEA6 9F 20 78 7E STA $7E7820,x[$7E:7820];/
 $A2:EEAA BF 02 78 7E LDA $7E7802,x[$7E:7802];\
 $A2:EEAE D0 10       BNE $10    [$EEC0]     ;} If [enemy primary direction] = upwards:
 $A2:EEB0 BD 7E 0F    LDA $0F7E,x[$7E:0F7E]  ;\
 $A2:EEB3 9F 20 78 7E STA $7E7820,x[$7E:7820];} Enemy maximum Y position = [enemy Y position]
 $A2:EEB7 38          SEC                    ;\
-$A2:EEB8 FF 0A 78 7E SBC $7E780A,x[$7E:780A];} Enemy minimum Y position = [enemy Y position] - [enemy $7E:780A]
+$A2:EEB8 FF 0A 78 7E SBC $7E780A,x[$7E:780A];} Enemy minimum Y position = [enemy Y position] - [enemy Y distance]
 $A2:EEBC 9F 1E 78 7E STA $7E781E,x[$7E:781E];/
 
 $A2:EEC0 A9 09 EF    LDA #$EF09             ;\
@@ -9686,7 +9688,7 @@ $A2:EF08 6B          RTL
 {
 $A2:EF09 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF0C BF 0E 78 7E LDA $7E780E,x[$7E:780E];\
-$A2:EF10 AA          TAX                    ;} Execute [$EDFB + [enemy $7E:780E]]
+$A2:EF10 AA          TAX                    ;} Execute [$EDFB + [enemy initial function index]]
 $A2:EF11 FC FB ED    JSR ($EDFB,x)[$A2:EF40];/
 $A2:EF14 60          RTS
 }
@@ -9698,7 +9700,7 @@ $A2:EF15 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:EF18 DE AA 0F    DEC $0FAA,x[$7E:116A]  ; Decrement enemy function timer
 $A2:EF1B D0 0A       BNE $0A    [$EF27]     ; If [enemy function timer] = 0:
 $A2:EF1D BF 0C 78 7E LDA $7E780C,x[$7E:780C];\
-$A2:EF21 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = [enemy wait time]
+$A2:EF21 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy function timer = [enemy wait time] (no effect)
 $A2:EF24 20 44 EF    JSR $EF44  [$A2:EF44]  ; Activate up/down mover
 
 $A2:EF27 60          RTS
@@ -9774,14 +9776,14 @@ $A2:EF89 18          CLC                    ;|
 $A2:EF8A 7D B0 0F    ADC $0FB0,x[$7E:1070]  ;|
 $A2:EF8D 90 03       BCC $03    [$EF92]     ;|
 $A2:EF8F FE 7E 0F    INC $0F7E,x[$7E:103E]  ;|
-                                            ;} Enemy Y position += [enemy up velocity]
+                                            ;} Enemy Y position += [enemy up velocity] (add with carry, what's that? >_<;)
 $A2:EF92 9D 80 0F    STA $0F80,x[$7E:1040]  ;|
 $A2:EF95 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;|
 $A2:EF98 18          CLC                    ;|
 $A2:EF99 7D B2 0F    ADC $0FB2,x[$7E:1072]  ;|
 $A2:EF9C 9D 7E 0F    STA $0F7E,x[$7E:103E]  ;/
 $A2:EF9F BF 14 78 7E LDA $7E7814,x[$7E:78D4];\
-$A2:EFA3 F0 0B       BEQ $0B    [$EFB0]     ;} If [enemy moving Samus flag] != 0
+$A2:EFA3 F0 0B       BEQ $0B    [$EFB0]     ;} If [enemy moving Samus flag] != 0:
 $A2:EFA5 BD 7E 0F    LDA $0F7E,x[$7E:103E]  ;\
 $A2:EFA8 38          SEC                    ;|
 $A2:EFA9 FF 1C 78 7E SBC $7E781C,x[$7E:78DC];} Extra Samus Y displacement = [enemy Y position] - [enemy previous Y position]
@@ -9791,9 +9793,9 @@ $A2:EFB0 BF 1E 78 7E LDA $7E781E,x[$7E:78DE];\
 $A2:EFB4 DD 7E 0F    CMP $0F7E,x[$7E:103E]  ;} If [enemy minimum Y position] < [enemy Y position]: return
 $A2:EFB7 30 1A       BMI $1A    [$EFD3]     ;/
 $A2:EFB9 BF 10 78 7E LDA $7E7810,x[$7E:78D0];\
-$A2:EFBD C9 F0 0F    CMP #$0FF0             ;} If [enemy $7E:7810] != FF0h:
+$A2:EFBD C9 F0 0F    CMP #$0FF0             ;} If [enemy moved up rest time] != FFh * 10h:
 $A2:EFC0 F0 0B       BEQ $0B    [$EFCD]     ;/
-$A2:EFC2 9D AA 0F    STA $0FAA,x[$7E:106A]  ; Enemy function timer = [enemy $7E:7810]
+$A2:EFC2 9D AA 0F    STA $0FAA,x[$7E:106A]  ; Enemy function timer = [enemy moved up rest time]
 $A2:EFC5 A9 40 F0    LDA #$F040             ;\
 $A2:EFC8 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $F040 (stopped moving up)
 $A2:EFCB 80 06       BRA $06    [$EFD3]     ; Return
@@ -9829,7 +9831,7 @@ $A2:F004 18          CLC                    ;|
 $A2:F005 7D AE 0F    ADC $0FAE,x[$7E:102E]  ;|
 $A2:F008 9D 7E 0F    STA $0F7E,x[$7E:0FFE]  ;/
 $A2:F00B BF 14 78 7E LDA $7E7814,x[$7E:7894];\
-$A2:F00F F0 0B       BEQ $0B    [$F01C]     ;} If [enemy moving Samus flag] != 0
+$A2:F00F F0 0B       BEQ $0B    [$F01C]     ;} If [enemy moving Samus flag] != 0:
 $A2:F011 BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A2:F014 38          SEC                    ;|
 $A2:F015 FF 1C 78 7E SBC $7E781C,x[$7E:789C];} Extra Samus Y displacement = [enemy Y position] - [enemy previous Y position]
@@ -9839,9 +9841,9 @@ $A2:F01C BD 7E 0F    LDA $0F7E,x[$7E:0FFE]  ;\
 $A2:F01F DF 20 78 7E CMP $7E7820,x[$7E:78A0];} If [enemy Y position] < [enemy maximum Y position]: return
 $A2:F023 30 1A       BMI $1A    [$F03F]     ;/
 $A2:F025 BF 12 78 7E LDA $7E7812,x[$7E:7892];\
-$A2:F029 C9 F0 0F    CMP #$0FF0             ;} If [enemy $7E:7812] != FF0h:
+$A2:F029 C9 F0 0F    CMP #$0FF0             ;} If [enemy moved down rest time] != FFh * 10h:
 $A2:F02C F0 0B       BEQ $0B    [$F039]     ;/
-$A2:F02E 9D AA 0F    STA $0FAA,x[$7E:102A]  ; Enemy function timer = [enemy $7E:7812]
+$A2:F02E 9D AA 0F    STA $0FAA,x[$7E:102A]  ; Enemy function timer = [enemy moved down rest time]
 $A2:F031 A9 72 F0    LDA #$F072             ;\
 $A2:F034 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $F072 (stopped moving down)
 $A2:F037 80 06       BRA $06    [$F03F]     ; Return
@@ -9861,7 +9863,7 @@ $A2:F046 10 29       BPL $29    [$F071]     ; If [enemy function timer] >= 0: re
 $A2:F048 A9 D4 EF    LDA #$EFD4             ;\
 $A2:F04B 9D A8 0F    STA $0FA8,x[$7E:1068]  ;} Enemy function = $EFD4 (moving down)
 $A2:F04E BF 08 78 7E LDA $7E7808,x[$7E:78C8];\
-$A2:F052 C9 01 00    CMP #$0001             ;} If [enemy $7E:7808] = 1:
+$A2:F052 C9 01 00    CMP #$0001             ;} If [enemy trigger mode] = 1 (proximity):
 $A2:F055 D0 0C       BNE $0C    [$F063]     ;/
 $A2:F057 BF 02 78 7E LDA $7E7802,x[$7E:78C2];\
 $A2:F05B F0 06       BEQ $06    [$F063]     ;} If [enemy primary direction] != upwards:
@@ -9887,7 +9889,7 @@ $A2:F07A 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound ef
 $A2:F07D A9 68 EF    LDA #$EF68             ;\
 $A2:F080 9D A8 0F    STA $0FA8,x[$7E:1028]  ;} Enemy function = $EF68 (moving up)
 $A2:F083 BF 08 78 7E LDA $7E7808,x[$7E:7888];\
-$A2:F087 C9 01 00    CMP #$0001             ;} If [enemy $7E:7808] = 1:
+$A2:F087 C9 01 00    CMP #$0001             ;} If [enemy trigger mode] = 1 (proximity):
 $A2:F08A D0 0C       BNE $0C    [$F098]     ;/
 $A2:F08C BF 02 78 7E LDA $7E7802,x[$7E:7882];\
 $A2:F090 D0 06       BNE $06    [$F098]     ;} If [enemy primary direction] = upwards:
@@ -9934,10 +9936,10 @@ $A2:F0B5 6B          RTL
 ; Power bomb reaction for enemy $D53F/$D5BF/$D5FF (up/down mover)
 $A2:F0B6 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F0B9 BF 0E 78 7E LDA $7E780E,x[$7E:788E];\
-$A2:F0BD C9 06 00    CMP #$0006             ;} If [enemy $7E:780E] < 6: go to BRANCH_F103
+$A2:F0BD C9 06 00    CMP #$0006             ;} If [enemy initial function index] < 6: go to BRANCH_NON_SHOOTABLE
 $A2:F0C0 30 41       BMI $41    [$F103]     ;/
 $A2:F0C2 C9 08 00    CMP #$0008             ;\
-$A2:F0C5 F0 0D       BEQ $0D    [$F0D4]     ;} If [enemy $7E:780E] != 8:
+$A2:F0C5 F0 0D       BEQ $0D    [$F0D4]     ;} If [enemy initial function index] != 8 (always shootable):
 $A2:F0C7 BF 18 78 7E LDA $7E7818,x[$7E:78D8];\
 $A2:F0CB D0 39       BNE $39    [$F106]     ;} If [enemy shot activated flag] != 0: return
 $A2:F0CD A9 01 00    LDA #$0001             ;\
@@ -9962,300 +9964,301 @@ $A2:F0F8 BF 00 80 7E LDA $7E8000,x[$7E:8000];\
 $A2:F0FC 49 01 00    EOR #$0001             ;} Enemy reaction direction ^= 1
 $A2:F0FF 9F 00 80 7E STA $7E8000,x[$7E:8000];/
 
-; BRANCH_F103
+; BRANCH_NON_SHOOTABLE
 $A2:F103 20 5A EF    JSR $EF5A  [$A2:EF5A]  ; Play gate opening/closing sound effect if on-screen
 
 $A2:F106 6B          RTL
 }
+}
 
 
-;;; $F107..F467: Horizontal shootable shutter ;;;
+;;; $F107..F467: Horizontal shutter ;;;
 {
-;;; $F107:  ;;;
+;;; $F107: Initial horizontal shutter function pointers ;;;
 {
 $A2:F107             dw F230, F243, F254, F25B, F25B
 }
 
 
-;;; $F111: Initialisation AI - enemy $D57F (horizontal shootable shutter) ;;;
+;;; $F111: Initialisation AI - enemy $D57F (horizontal shutter) ;;;
 {
 $A2:F111 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F114 20 1E F1    JSR $F11E  [$A2:F11E]  ; Execute $F11E
+$A2:F114 20 1E F1    JSR $F11E  [$A2:F11E]  ; Initialise horizontal shutter
 $A2:F117 A9 D4 E9    LDA #$E9D4             ;\
 $A2:F11A 9D 92 0F    STA $0F92,x            ;} Enemy instruction list pointer = $E9D4 (horizontal shutter)
 $A2:F11D 6B          RTL
 }
 
 
-;;; $F11E:  ;;;
+;;; $F11E: Initialise horizontal shutter ;;;
 {
-$A2:F11E BD 92 0F    LDA $0F92,x
-$A2:F121 29 FF 00    AND #$00FF
-$A2:F124 9F 00 78 7E STA $7E7800,x
-$A2:F128 0A          ASL A
-$A2:F129 0A          ASL A
-$A2:F12A 0A          ASL A
-$A2:F12B A8          TAY
-$A2:F12C B9 87 81    LDA $8187,y
-$A2:F12F 9D AE 0F    STA $0FAE,x
-$A2:F132 B9 89 81    LDA $8189,y
-$A2:F135 9D AC 0F    STA $0FAC,x
-$A2:F138 B9 8B 81    LDA $818B,y
-$A2:F13B 9D B2 0F    STA $0FB2,x
-$A2:F13E B9 8D 81    LDA $818D,y
-$A2:F141 9D B0 0F    STA $0FB0,x
-$A2:F144 BD 93 0F    LDA $0F93,x
-$A2:F147 29 FF 00    AND #$00FF
-$A2:F14A 9F 02 78 7E STA $7E7802,x
-$A2:F14E 49 01 00    EOR #$0001
-$A2:F151 9F 00 80 7E STA $7E8000,x
-$A2:F155 BD 88 0F    LDA $0F88,x
-$A2:F158 29 FF 00    AND #$00FF
-$A2:F15B 9F 04 78 7E STA $7E7804,x
-$A2:F15F 0A          ASL A
-$A2:F160 0A          ASL A
-$A2:F161 0A          ASL A
-$A2:F162 0A          ASL A
-$A2:F163 9F 10 78 7E STA $7E7810,x
-$A2:F167 BD 89 0F    LDA $0F89,x
-$A2:F16A 29 FF 00    AND #$00FF
-$A2:F16D 9F 06 78 7E STA $7E7806,x
-$A2:F171 0A          ASL A
-$A2:F172 0A          ASL A
-$A2:F173 0A          ASL A
-$A2:F174 0A          ASL A
-$A2:F175 9F 12 78 7E STA $7E7812,x
-$A2:F179 BD B4 0F    LDA $0FB4,x
-$A2:F17C 29 FF 00    AND #$00FF
-$A2:F17F 9F 08 78 7E STA $7E7808,x
-$A2:F183 0A          ASL A
-$A2:F184 9F 0E 78 7E STA $7E780E,x
-$A2:F188 BD B5 0F    LDA $0FB5,x
-$A2:F18B 29 FF 00    AND #$00FF
-$A2:F18E 9F 0A 78 7E STA $7E780A,x
-$A2:F192 BD B6 0F    LDA $0FB6,x
-$A2:F195 9F 0C 78 7E STA $7E780C,x
-$A2:F199 9D AA 0F    STA $0FAA,x
-$A2:F19C BD 7A 0F    LDA $0F7A,x
-$A2:F19F 9F 22 78 7E STA $7E7822,x
-$A2:F1A3 18          CLC
-$A2:F1A4 7F 0A 78 7E ADC $7E780A,x
-$A2:F1A8 9F 24 78 7E STA $7E7824,x
-$A2:F1AC BF 02 78 7E LDA $7E7802,x
-$A2:F1B0 D0 10       BNE $10    [$F1C2]
-$A2:F1B2 BD 7A 0F    LDA $0F7A,x
-$A2:F1B5 9F 24 78 7E STA $7E7824,x
-$A2:F1B9 38          SEC
-$A2:F1BA FF 0A 78 7E SBC $7E780A,x
-$A2:F1BE 9F 22 78 7E STA $7E7822,x
+$A2:F11E BD 92 0F    LDA $0F92,x            ;\
+$A2:F121 29 FF 00    AND #$00FF             ;} Enemy Y speed table index = [A] = [enemy initialisation parameter low]
+$A2:F124 9F 00 78 7E STA $7E7800,x          ;/
+$A2:F128 0A          ASL A                  ;\
+$A2:F129 0A          ASL A                  ;|
+$A2:F12A 0A          ASL A                  ;} Y = [enemy Y speed table index] * 8 (linear speed table index)
+$A2:F12B A8          TAY                    ;/
+$A2:F12C B9 87 81    LDA $8187,y            ;\
+$A2:F12F 9D AE 0F    STA $0FAE,x            ;|
+$A2:F132 B9 89 81    LDA $8189,y            ;} Enemy right velocity = [$8187 + [Y]].[$8187 + [Y] + 2]
+$A2:F135 9D AC 0F    STA $0FAC,x            ;/
+$A2:F138 B9 8B 81    LDA $818B,y            ;\
+$A2:F13B 9D B2 0F    STA $0FB2,x            ;|
+$A2:F13E B9 8D 81    LDA $818D,y            ;} Enemy left velocity = [$8187 + [Y] + 4].[$8187 + [Y] + 6]
+$A2:F141 9D B0 0F    STA $0FB0,x            ;/
+$A2:F144 BD 93 0F    LDA $0F93,x            ;\
+$A2:F147 29 FF 00    AND #$00FF             ;} Enemy primary direction = [enemy initialisation parameter high]
+$A2:F14A 9F 02 78 7E STA $7E7802,x          ;/
+$A2:F14E 49 01 00    EOR #$0001             ;\
+$A2:F151 9F 00 80 7E STA $7E8000,x          ;} Enemy reaction direction = [enemy primary direction] ^ 1
+$A2:F155 BD 88 0F    LDA $0F88,x            ;\
+$A2:F158 29 FF 00    AND #$00FF             ;} Enemy moved left rest time parameter = [enemy extra properties low]
+$A2:F15B 9F 04 78 7E STA $7E7804,x          ;/
+$A2:F15F 0A          ASL A                  ;\
+$A2:F160 0A          ASL A                  ;|
+$A2:F161 0A          ASL A                  ;} Enemy moved left rest time = [enemy moved left rest time parameter] * 10h
+$A2:F162 0A          ASL A                  ;|
+$A2:F163 9F 10 78 7E STA $7E7810,x          ;/
+$A2:F167 BD 89 0F    LDA $0F89,x            ;\
+$A2:F16A 29 FF 00    AND #$00FF             ;} Enemy moved right rest time parameter = [enemy extra properties high]
+$A2:F16D 9F 06 78 7E STA $7E7806,x          ;/
+$A2:F171 0A          ASL A                  ;\
+$A2:F172 0A          ASL A                  ;|
+$A2:F173 0A          ASL A                  ;} Enemy moved right rest time = [enemy moved right rest time parameter] * 10h
+$A2:F174 0A          ASL A                  ;|
+$A2:F175 9F 12 78 7E STA $7E7812,x          ;/
+$A2:F179 BD B4 0F    LDA $0FB4,x            ;\
+$A2:F17C 29 FF 00    AND #$00FF             ;} Enemy trigger mode = [enemy parameter 1 low]
+$A2:F17F 9F 08 78 7E STA $7E7808,x          ;/
+$A2:F183 0A          ASL A                  ;\
+$A2:F184 9F 0E 78 7E STA $7E780E,x          ;} Enemy initial function index = [enemy trigger mode] * 2
+$A2:F188 BD B5 0F    LDA $0FB5,x            ;\
+$A2:F18B 29 FF 00    AND #$00FF             ;} Enemy X distance = [enemy parameter 1 high]
+$A2:F18E 9F 0A 78 7E STA $7E780A,x          ;/
+$A2:F192 BD B6 0F    LDA $0FB6,x            ;\
+$A2:F195 9F 0C 78 7E STA $7E780C,x          ;} Enemy X proximity / wait time = [enemy parameter 2]
+$A2:F199 9D AA 0F    STA $0FAA,x            ; Enemy function timer = [enemy wait time]
+$A2:F19C BD 7A 0F    LDA $0F7A,x            ;\
+$A2:F19F 9F 22 78 7E STA $7E7822,x          ;} Enemy minimum X position = [enemy X position]
+$A2:F1A3 18          CLC                    ;\
+$A2:F1A4 7F 0A 78 7E ADC $7E780A,x          ;} Enemy maximum X position = [enemy X position] + [enemy X distance]
+$A2:F1A8 9F 24 78 7E STA $7E7824,x          ;/
+$A2:F1AC BF 02 78 7E LDA $7E7802,x          ;\
+$A2:F1B0 D0 10       BNE $10    [$F1C2]     ;} If [enemy primary direction] = leftwards:
+$A2:F1B2 BD 7A 0F    LDA $0F7A,x            ;\
+$A2:F1B5 9F 24 78 7E STA $7E7824,x          ;} Enemy maximum X position = [enemy X position]
+$A2:F1B9 38          SEC                    ;\
+$A2:F1BA FF 0A 78 7E SBC $7E780A,x          ;} Enemy minimum X position = [enemy X position] - [enemy X distance]
+$A2:F1BE 9F 22 78 7E STA $7E7822,x          ;/
 
 $A2:F1C2 A9 24 F2    LDA #$F224             ;\
-$A2:F1C5 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F224
-$A2:F1C8 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:F1CB 9F 2A 78 7E STA $7E782A,x
-$A2:F1CF A9 00 00    LDA #$0000
-$A2:F1D2 9D 88 0F    STA $0F88,x
-$A2:F1D5 9F 14 78 7E STA $7E7814,x
-$A2:F1D9 9F 16 78 7E STA $7E7816,x
+$A2:F1C5 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F224 (initial)
+$A2:F1C8 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:F1CB 9F 2A 78 7E STA $7E782A,x          ;} Enemy $7E:782A = [Samus X position] (never read)
+$A2:F1CF A9 00 00    LDA #$0000             ;\
+$A2:F1D2 9D 88 0F    STA $0F88,x            ;} Enemy extra properties = 0
+$A2:F1D5 9F 14 78 7E STA $7E7814,x          ; Enemy $7E:7814 = 0 (never read)
+$A2:F1D9 9F 16 78 7E STA $7E7816,x          ; Enemy $7E:7816 = 0 (never read)
 $A2:F1DD 60          RTS
 }
 
 
-;;; $F1DE: Main AI - enemy $D57F (horizontal shootable shutter) ;;;
+;;; $F1DE: Main AI - enemy $D57F (horizontal shutter) ;;;
 {
 $A2:F1DE AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F1E1 FC A8 0F    JSR ($0FA8,x)
-$A2:F1E4 BD A8 0F    LDA $0FA8,x
-$A2:F1E7 C9 72 F2    CMP #$F272
-$A2:F1EA D0 02       BNE $02    [$F1EE]
-$A2:F1EC 80 27       BRA $27    [$F215]
+$A2:F1E1 FC A8 0F    JSR ($0FA8,x)          ; Execute [enemy function]
+$A2:F1E4 BD A8 0F    LDA $0FA8,x            ;\
+$A2:F1E7 C9 72 F2    CMP #$F272             ;} If [enemy function] = $F272 (moving left):
+$A2:F1EA D0 02       BNE $02    [$F1EE]     ;/
+$A2:F1EC 80 27       BRA $27    [$F215]     ; Return
+                                            
+$A2:F1EE BD A8 0F    LDA $0FA8,x            ;\
+$A2:F1F1 C9 E4 F2    CMP #$F2E4             ;} If [enemy function] = $F2E4 (moving right): return
+$A2:F1F4 F0 1F       BEQ $1F    [$F215]     ;/
+$A2:F1F6 AD 2C 18    LDA $182C  [$7E:182C]  ;\
+$A2:F1F9 2D 2E 18    AND $182E  [$7E:182E]  ;|
+$A2:F1FC 2D 30 18    AND $1830  [$7E:1830]  ;} A = (enemy index when Samus collides with solid enemy)
+$A2:F1FF 2D 32 18    AND $1832  [$7E:1832]  ;/
+$A2:F202 C9 FF FF    CMP #$FFFF             ;\
+$A2:F205 F0 0E       BEQ $0E    [$F215]     ;} >_<;
+$A2:F207 CD 54 0E    CMP $0E54  [$7E:0E54]  ;\
+$A2:F20A D0 09       BNE $09    [$F215]     ;} If [A] = [enemy index]:
+$A2:F20C AD 6E 0A    LDA $0A6E  [$7E:0A6E]  ;\
+$A2:F20F F0 04       BEQ $04    [$F215]     ;} If [Samus contact damage index] != 0:
+$A2:F211 22 1A F4 A2 JSL $A2F41A[$A2:F41A]  ; Horizontal shutter reaction
 
-$A2:F1EE BD A8 0F    LDA $0FA8,x
-$A2:F1F1 C9 E4 F2    CMP #$F2E4
-$A2:F1F4 F0 1F       BEQ $1F    [$F215]
-$A2:F1F6 AD 2C 18    LDA $182C  [$7E:182C]
-$A2:F1F9 2D 2E 18    AND $182E  [$7E:182E]
-$A2:F1FC 2D 30 18    AND $1830  [$7E:1830]
-$A2:F1FF 2D 32 18    AND $1832  [$7E:1832]
-$A2:F202 C9 FF FF    CMP #$FFFF
-$A2:F205 F0 0E       BEQ $0E    [$F215]
-$A2:F207 CD 54 0E    CMP $0E54  [$7E:0E54]
-$A2:F20A D0 09       BNE $09    [$F215]
-$A2:F20C AD 6E 0A    LDA $0A6E  [$7E:0A6E]
-$A2:F20F F0 04       BEQ $04    [$F215]
-$A2:F211 22 1A F4 A2 JSL $A2F41A[$A2:F41A]
-
-$A2:F215 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:F218 9F 2A 78 7E STA $7E782A,x
-$A2:F21C AD F8 0A    LDA $0AF8  [$7E:0AF8]
-$A2:F21F 9F 2C 78 7E STA $7E782C,x
+$A2:F215 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:F218 9F 2A 78 7E STA $7E782A,x          ;} Enemy $7E:782A = [Samus X position] (never read)
+$A2:F21C AD F8 0A    LDA $0AF8  [$7E:0AF8]  ;\
+$A2:F21F 9F 2C 78 7E STA $7E782C,x          ;} Enemy $7E:782C = [Samus X subposition] (never read)
 $A2:F223 6B          RTL
 }
 
 
-;;; $F224:  ;;;
+;;; $F224: Horizontal shutter function - initial ;;;
 {
 $A2:F224 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F227 BF 0E 78 7E LDA $7E780E,x
-$A2:F22B AA          TAX
-$A2:F22C FC 07 F1    JSR ($F107,x)
+$A2:F227 BF 0E 78 7E LDA $7E780E,x          ;\
+$A2:F22B AA          TAX                    ;} Execute [$F107 + [enemy initial function index]]
+$A2:F22C FC 07 F1    JSR ($F107,x)          ;/
 $A2:F22F 60          RTS
 }
 
 
-;;; $F230:  ;;;
+;;; $F230: Initial horizontal shutter function - wait for timer ;;;
 {
 $A2:F230 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F233 DE AA 0F    DEC $0FAA,x
-$A2:F236 D0 0A       BNE $0A    [$F242]
-$A2:F238 BF 0C 78 7E LDA $7E780C,x
-$A2:F23C 9D AA 0F    STA $0FAA,x
-$A2:F23F 20 5F F2    JSR $F25F  [$A2:F25F]
+$A2:F233 DE AA 0F    DEC $0FAA,x            ; Decrement enemy function timer
+$A2:F236 D0 0A       BNE $0A    [$F242]     ; If [enemy function timer] = 0:
+$A2:F238 BF 0C 78 7E LDA $7E780C,x          ;\
+$A2:F23C 9D AA 0F    STA $0FAA,x            ;} Enemy function timer = [enemy wait time] (no effect)
+$A2:F23F 20 5F F2    JSR $F25F  [$A2:F25F]  ; Activate horizontal shutter
 
 $A2:F242 60          RTS
 }
 
 
-;;; $F243:  ;;;
+;;; $F243: (Initial) horizontal shutter function - wait for Samus to get near ;;;
 {
 $A2:F243 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F246 BF 0C 78 7E LDA $7E780C,x          ;\
-$A2:F24A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within [enemy $7E:780C] pixels columns of enemy:
+$A2:F24A 22 0B AF A0 JSL $A0AF0B[$A0:AF0B]  ;} If Samus is within [enemy X proximity] pixels columns of enemy:
 $A2:F24E F0 03       BEQ $03    [$F253]     ;/
-$A2:F250 20 5F F2    JSR $F25F  [$A2:F25F]
+$A2:F250 20 5F F2    JSR $F25F  [$A2:F25F]  ; Activate horizontal shutter
 
 $A2:F253 60          RTS
 }
 
 
-;;; $F254:  ;;;
+;;; $F254: Initial horizontal shutter function - activate ;;;
 {
 $A2:F254 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F257 20 5F F2    JSR $F25F  [$A2:F25F]
+$A2:F257 20 5F F2    JSR $F25F  [$A2:F25F]  ; Activate horizontal shutter
 $A2:F25A 60          RTS
 }
 
 
-;;; $F25B:  ;;;
+;;; $F25B: Initial horizontal shutter function - nothing ;;;
 {
 $A2:F25B AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F25E 60          RTS
 }
 
 
-;;; $F25F:  ;;;
+;;; $F25F: Activate horizontal shutter ;;;
 {
 $A2:F25F A9 72 F2    LDA #$F272             ;\
-$A2:F262 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272
-$A2:F265 BF 02 78 7E LDA $7E7802,x
-$A2:F269 F0 06       BEQ $06    [$F271]
+$A2:F262 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272 (moving left)
+$A2:F265 BF 02 78 7E LDA $7E7802,x          ;\
+$A2:F269 F0 06       BEQ $06    [$F271]     ;} If [enemy primary direction] != leftwards:
 $A2:F26B A9 E4 F2    LDA #$F2E4             ;\
-$A2:F26E 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4
+$A2:F26E 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4 (moving right)
 
 $A2:F271 60          RTS
 }
 
 
-;;; $F272:  ;;;
+;;; $F272: Horizontal shutter function - moving left ;;;
 {
 $A2:F272 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F275 BD 7A 0F    LDA $0F7A,x
-$A2:F278 9F 1A 78 7E STA $7E781A,x
-$A2:F27C A9 00 00    LDA #$0000
-$A2:F27F 9F 26 78 7E STA $7E7826,x
+$A2:F275 BD 7A 0F    LDA $0F7A,x            ;\
+$A2:F278 9F 1A 78 7E STA $7E781A,x          ;} Enemy previous X position = [enemy X position]
+$A2:F27C A9 00 00    LDA #$0000             ;\
+$A2:F27F 9F 26 78 7E STA $7E7826,x          ;} Enemy moving Samus flag = 0
 $A2:F283 22 67 AC A0 JSL $A0AC67[$A0:AC67]  ;\
 $A2:F287 F0 0F       BEQ $0F    [$F298]     ;} If enemy is touching Samus:
-$A2:F289 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:F28C DD 7A 0F    CMP $0F7A,x
-$A2:F28F 10 07       BPL $07    [$F298]
-$A2:F291 A9 01 00    LDA #$0001
-$A2:F294 9F 26 78 7E STA $7E7826,x
+$A2:F289 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:F28C DD 7A 0F    CMP $0F7A,x            ;} If [Samus X position] < [enemy X position]:
+$A2:F28F 10 07       BPL $07    [$F298]     ;/
+$A2:F291 A9 01 00    LDA #$0001             ;\
+$A2:F294 9F 26 78 7E STA $7E7826,x          ;} Enemy moving Samus flag = 1
 
-$A2:F298 18          CLC
-$A2:F299 BD 7C 0F    LDA $0F7C,x
-$A2:F29C 7D B0 0F    ADC $0FB0,x
-$A2:F29F 9D 7C 0F    STA $0F7C,x
-$A2:F2A2 BD 7A 0F    LDA $0F7A,x
-$A2:F2A5 7D B2 0F    ADC $0FB2,x
-$A2:F2A8 9D 7A 0F    STA $0F7A,x
-$A2:F2AB BF 26 78 7E LDA $7E7826,x
-$A2:F2AF F0 0F       BEQ $0F    [$F2C0]
+$A2:F298 18          CLC                    ;\
+$A2:F299 BD 7C 0F    LDA $0F7C,x            ;|
+$A2:F29C 7D B0 0F    ADC $0FB0,x            ;|
+$A2:F29F 9D 7C 0F    STA $0F7C,x            ;} Enemy X position += [enemy left velocity]
+$A2:F2A2 BD 7A 0F    LDA $0F7A,x            ;|
+$A2:F2A5 7D B2 0F    ADC $0FB2,x            ;|
+$A2:F2A8 9D 7A 0F    STA $0F7A,x            ;/
+$A2:F2AB BF 26 78 7E LDA $7E7826,x          ;\
+$A2:F2AF F0 0F       BEQ $0F    [$F2C0]     ;} If [enemy moving Samus flag] != 0:
 $A2:F2B1 BD B0 0F    LDA $0FB0,x            ;\
 $A2:F2B4 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
-$A2:F2B7 BD B2 0F    LDA $0FB2,x            ;} Extra Samus X displacement = [enemy $0FB2].[enemy $0FB0]
+$A2:F2B7 BD B2 0F    LDA $0FB2,x            ;} Extra Samus X displacement = [enemy left velocity]
 $A2:F2BA 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
-$A2:F2BD 20 56 F3    JSR $F356  [$A2:F356]
+$A2:F2BD 20 56 F3    JSR $F356  [$A2:F356]  ; Eject Samus if pressing right
 
-$A2:F2C0 BF 22 78 7E LDA $7E7822,x
-$A2:F2C4 DD 7A 0F    CMP $0F7A,x[$7E:0F82]
-$A2:F2C7 30 1A       BMI $1A    [$F2E3]
-$A2:F2C9 BF 10 78 7E LDA $7E7810,x
-$A2:F2CD C9 F0 0F    CMP #$0FF0
-$A2:F2D0 F0 0B       BEQ $0B    [$F2DD]
-$A2:F2D2 9D AA 0F    STA $0FAA,x
+$A2:F2C0 BF 22 78 7E LDA $7E7822,x          ;\
+$A2:F2C4 DD 7A 0F    CMP $0F7A,x[$7E:0F82]  ;} If [enemy minimum X position] < [enemy X position]: return
+$A2:F2C7 30 1A       BMI $1A    [$F2E3]     ;/
+$A2:F2C9 BF 10 78 7E LDA $7E7810,x          ;\
+$A2:F2CD C9 F0 0F    CMP #$0FF0             ;} If [enemy moved left rest time] != FFh * 10h:
+$A2:F2D0 F0 0B       BEQ $0B    [$F2DD]     ;/
+$A2:F2D2 9D AA 0F    STA $0FAA,x            ; Enemy function timer = [enemy moved left rest time]
 $A2:F2D5 A9 8C F3    LDA #$F38C             ;\
-$A2:F2D8 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F38C
-$A2:F2DB 80 06       BRA $06    [$F2E3]
+$A2:F2D8 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F38C (stopped moving left)
+$A2:F2DB 80 06       BRA $06    [$F2E3]     ; Return
 
 $A2:F2DD A9 D4 F3    LDA #$F3D4             ;\
-$A2:F2E0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3D4
+$A2:F2E0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3D4 (nothing)
 
 $A2:F2E3 60          RTS
 }
 
 
-;;; $F2E4:  ;;;
+;;; $F2E4: Horizontal shutter function - moving right ;;;
 {
 $A2:F2E4 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F2E7 BD 7A 0F    LDA $0F7A,x
-$A2:F2EA 9F 1A 78 7E STA $7E781A,x
-$A2:F2EE A9 00 00    LDA #$0000
-$A2:F2F1 9F 26 78 7E STA $7E7826,x
+$A2:F2E7 BD 7A 0F    LDA $0F7A,x            ;\
+$A2:F2EA 9F 1A 78 7E STA $7E781A,x          ;} Enemy previous X position = [enemy X position]
+$A2:F2EE A9 00 00    LDA #$0000             ;\
+$A2:F2F1 9F 26 78 7E STA $7E7826,x          ;} Enemy moving Samus flag = 0
 $A2:F2F5 22 67 AC A0 JSL $A0AC67[$A0:AC67]  ;\
 $A2:F2F9 F0 0F       BEQ $0F    [$F30A]     ;} If enemy is touching Samus:
-$A2:F2FB AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:F2FE DD 7A 0F    CMP $0F7A,x
-$A2:F301 30 07       BMI $07    [$F30A]
-$A2:F303 A9 01 00    LDA #$0001
-$A2:F306 9F 26 78 7E STA $7E7826,x
-
-$A2:F30A 18          CLC
-$A2:F30B BD 7C 0F    LDA $0F7C,x
-$A2:F30E 7D AC 0F    ADC $0FAC,x
-$A2:F311 9D 7C 0F    STA $0F7C,x
-$A2:F314 BD 7A 0F    LDA $0F7A,x
-$A2:F317 7D AE 0F    ADC $0FAE,x
-$A2:F31A 9D 7A 0F    STA $0F7A,x
-$A2:F31D BF 26 78 7E LDA $7E7826,x
-$A2:F321 F0 0F       BEQ $0F    [$F332]
+$A2:F2FB AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:F2FE DD 7A 0F    CMP $0F7A,x            ;} If [Samus X position] >= [enemy X position]:
+$A2:F301 30 07       BMI $07    [$F30A]     ;/
+$A2:F303 A9 01 00    LDA #$0001             ;\
+$A2:F306 9F 26 78 7E STA $7E7826,x          ;} Enemy moving Samus flag = 1
+                                            
+$A2:F30A 18          CLC                    ;\
+$A2:F30B BD 7C 0F    LDA $0F7C,x            ;|
+$A2:F30E 7D AC 0F    ADC $0FAC,x            ;|
+$A2:F311 9D 7C 0F    STA $0F7C,x            ;} Enemy X position += [enemy right velocity]
+$A2:F314 BD 7A 0F    LDA $0F7A,x            ;|
+$A2:F317 7D AE 0F    ADC $0FAE,x            ;|
+$A2:F31A 9D 7A 0F    STA $0F7A,x            ;/
+$A2:F31D BF 26 78 7E LDA $7E7826,x          ;\
+$A2:F321 F0 0F       BEQ $0F    [$F332]     ;} If [enemy moving Samus flag] != 0:
 $A2:F323 BD AC 0F    LDA $0FAC,x            ;\
 $A2:F326 8D 56 0B    STA $0B56  [$7E:0B56]  ;|
-$A2:F329 BD AE 0F    LDA $0FAE,x            ;} Extra Samus X displacement = [enemy $0FAE].[enemy $0FAC]
+$A2:F329 BD AE 0F    LDA $0FAE,x            ;} Extra Samus X displacement = [enemy right velocity]
 $A2:F32C 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
-$A2:F32F 20 71 F3    JSR $F371  [$A2:F371]
+$A2:F32F 20 71 F3    JSR $F371  [$A2:F371]  ; Eject Samus if pressing left
 
-$A2:F332 BD 7A 0F    LDA $0F7A,x
-$A2:F335 DF 24 78 7E CMP $7E7824,x
-$A2:F339 30 1A       BMI $1A    [$F355]
-$A2:F33B BF 12 78 7E LDA $7E7812,x
-$A2:F33F C9 F0 0F    CMP #$0FF0
-$A2:F342 F0 0B       BEQ $0B    [$F34F]
-$A2:F344 9D AA 0F    STA $0FAA,x
+$A2:F332 BD 7A 0F    LDA $0F7A,x            ;\
+$A2:F335 DF 24 78 7E CMP $7E7824,x          ;} If [enemy X position] < [enemy maximum X position]: return
+$A2:F339 30 1A       BMI $1A    [$F355]     ;/
+$A2:F33B BF 12 78 7E LDA $7E7812,x          ;\
+$A2:F33F C9 F0 0F    CMP #$0FF0             ;} If [enemy moved right rest time] != FFh * 10h:
+$A2:F342 F0 0B       BEQ $0B    [$F34F]     ;/
+$A2:F344 9D AA 0F    STA $0FAA,x            ; Enemy function timer = [enemy moved right rest time]
 $A2:F347 A9 B0 F3    LDA #$F3B0             ;\
-$A2:F34A 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3B0
-$A2:F34D 80 06       BRA $06    [$F355]
+$A2:F34A 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3B0 (stopped moving right)
+$A2:F34D 80 06       BRA $06    [$F355]     ; Return
 
 $A2:F34F A9 D4 F3    LDA #$F3D4             ;\
-$A2:F352 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3D4
+$A2:F352 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F3D4 (nothing)
 
 $A2:F355 60          RTS
 }
 
 
-;;; $F356:  ;;;
+;;; $F356: Eject Samus if pressing right ;;;
 {
-$A2:F356 BF 26 78 7E LDA $7E7826,x
-$A2:F35A F0 14       BEQ $14    [$F370]
+$A2:F356 BF 26 78 7E LDA $7E7826,x          ;\
+$A2:F35A F0 14       BEQ $14    [$F370]     ;} If [enemy moving Samus flag] = 0: return
 $A2:F35C A5 8B       LDA $8B    [$7E:008B]  ;\
 $A2:F35E 29 00 01    AND #$0100             ;} If not pressing right: return
 $A2:F361 F0 0D       BEQ $0D    [$F370]     ;/
@@ -10263,16 +10266,16 @@ $A2:F363 AD 58 0B    LDA $0B58  [$7E:0B58]  ;\
 $A2:F366 18          CLC                    ;|
 $A2:F367 69 FC FF    ADC #$FFFC             ;} Extra Samus X displacement -= 4
 $A2:F36A 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
-$A2:F36D 9C 5A 0B    STZ $0B5A  [$7E:0B5A]
+$A2:F36D 9C 5A 0B    STZ $0B5A  [$7E:0B5A]  ; Extra Samus X subdisplacement = 0
 
 $A2:F370 60          RTS
 }
 
 
-;;; $F371:  ;;;
+;;; $F371: Eject Samus if pressing left ;;;
 {
-$A2:F371 BF 26 78 7E LDA $7E7826,x
-$A2:F375 F0 14       BEQ $14    [$F38B]
+$A2:F371 BF 26 78 7E LDA $7E7826,x          ;\
+$A2:F375 F0 14       BEQ $14    [$F38B]     ;} If [enemy moving Samus flag] = 0: return
 $A2:F377 A5 8B       LDA $8B    [$7E:008B]  ;\
 $A2:F379 29 00 02    AND #$0200             ;} If not pressing left: return
 $A2:F37C F0 0D       BEQ $0D    [$F38B]     ;/
@@ -10280,124 +10283,125 @@ $A2:F37E AD 58 0B    LDA $0B58  [$7E:0B58]  ;\
 $A2:F381 18          CLC                    ;|
 $A2:F382 69 04 00    ADC #$0004             ;} Extra Samus X displacement += 4
 $A2:F385 8D 58 0B    STA $0B58  [$7E:0B58]  ;/
-$A2:F388 9C 5A 0B    STZ $0B5A  [$7E:0B5A]
+$A2:F388 9C 5A 0B    STZ $0B5A  [$7E:0B5A]  ; Extra Samus X subdisplacement = 0
 
 $A2:F38B 60          RTS
 }
 
 
-;;; $F38C:  ;;;
+;;; $F38C: Horizontal shutter function - stopped moving left ;;;
 {
 $A2:F38C AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F38F DE AA 0F    DEC $0FAA,x
-$A2:F392 10 1B       BPL $1B    [$F3AF]
+$A2:F38F DE AA 0F    DEC $0FAA,x            ; Decrement enemy function timer
+$A2:F392 10 1B       BPL $1B    [$F3AF]     ; If [enemy function timer] >= 0: return
 $A2:F394 A9 E4 F2    LDA #$F2E4             ;\
-$A2:F397 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4
-$A2:F39A BF 08 78 7E LDA $7E7808,x
-$A2:F39E C9 01 00    CMP #$0001
-$A2:F3A1 D0 0C       BNE $0C    [$F3AF]
-$A2:F3A3 BF 02 78 7E LDA $7E7802,x
-$A2:F3A7 F0 06       BEQ $06    [$F3AF]
+$A2:F397 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4 (moving right)
+$A2:F39A BF 08 78 7E LDA $7E7808,x          ;\
+$A2:F39E C9 01 00    CMP #$0001             ;} If [enemy trigger mode] = 1 (proximity):
+$A2:F3A1 D0 0C       BNE $0C    [$F3AF]     ;/
+$A2:F3A3 BF 02 78 7E LDA $7E7802,x          ;\
+$A2:F3A7 F0 06       BEQ $06    [$F3AF]     ;} If [enemy primary direction] != leftwards:
 $A2:F3A9 A9 43 F2    LDA #$F243             ;\
-$A2:F3AC 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F243
+$A2:F3AC 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F243 (wait for Samus to get near)
 
 $A2:F3AF 60          RTS
 }
 
 
-;;; $F3B0:  ;;;
+;;; $F3B0: Horizontal shutter function - stopped moving right ;;;
 {
 $A2:F3B0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F3B3 DE AA 0F    DEC $0FAA,x
-$A2:F3B6 10 1B       BPL $1B    [$F3D3]
+$A2:F3B3 DE AA 0F    DEC $0FAA,x            ; Decrement enemy function timer
+$A2:F3B6 10 1B       BPL $1B    [$F3D3]     ; If [enemy function timer] >= 0: return
 $A2:F3B8 A9 72 F2    LDA #$F272             ;\
-$A2:F3BB 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272
-$A2:F3BE BF 08 78 7E LDA $7E7808,x
-$A2:F3C2 C9 01 00    CMP #$0001
-$A2:F3C5 D0 0C       BNE $0C    [$F3D3]
-$A2:F3C7 BF 02 78 7E LDA $7E7802,x
-$A2:F3CB D0 06       BNE $06    [$F3D3]
+$A2:F3BB 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272 (moving left)
+$A2:F3BE BF 08 78 7E LDA $7E7808,x          ;\
+$A2:F3C2 C9 01 00    CMP #$0001             ;} If [enemy trigger mode] = 1 (proximity):
+$A2:F3C5 D0 0C       BNE $0C    [$F3D3]     ;/
+$A2:F3C7 BF 02 78 7E LDA $7E7802,x          ;\
+$A2:F3CB D0 06       BNE $06    [$F3D3]     ;} If [enemy primary direction] = leftwards:
 $A2:F3CD A9 43 F2    LDA #$F243             ;\
-$A2:F3D0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F243
+$A2:F3D0 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F243 (wait for Samus to get near)
 
 $A2:F3D3 60          RTS
 }
 
 
-;;; $F3D4:  ;;;
+;;; $F3D4: Horizontal shutter function - nothing ;;;
 {
 $A2:F3D4 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F3D7 60          RTS
 }
 
 
-;;; $F3D8: Enemy touch - enemy $D57F (horizontal shootable shutter) ;;;
+;;; $F3D8: Enemy touch - enemy $D57F (horizontal shutter) ;;;
 {
 $A2:F3D8 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F3DB BD A8 0F    LDA $0FA8,x
-$A2:F3DE C9 D4 F3    CMP #$F3D4
-$A2:F3E1 D0 2A       BNE $2A    [$F40D]
-$A2:F3E3 AD F6 0A    LDA $0AF6  [$7E:0AF6]
-$A2:F3E6 DD 7A 0F    CMP $0F7A,x
-$A2:F3E9 10 12       BPL $12    [$F3FD]
+$A2:F3DB BD A8 0F    LDA $0FA8,x            ;\
+$A2:F3DE C9 D4 F3    CMP #$F3D4             ;} If [enemy function] != $F3D4 (nothing): return
+$A2:F3E1 D0 2A       BNE $2A    [$F40D]     ;/
+$A2:F3E3 AD F6 0A    LDA $0AF6  [$7E:0AF6]  ;\
+$A2:F3E6 DD 7A 0F    CMP $0F7A,x            ;} If [Samus X position] < [enemy X position]:
+$A2:F3E9 10 12       BPL $12    [$F3FD]     ;/
 $A2:F3EB A5 8B       LDA $8B    [$7E:008B]  ;\
 $A2:F3ED 29 00 01    AND #$0100             ;} If not pressing right: return
 $A2:F3F0 F0 1B       BEQ $1B    [$F40D]     ;/
 $A2:F3F2 A9 FC FF    LDA #$FFFC             ;\
 $A2:F3F5 8D 58 0B    STA $0B58  [$7E:0B58]  ;} Extra Samus X displacement = -4
-$A2:F3F8 9C 5A 0B    STZ $0B5A  [$7E:0B5A]
-$A2:F3FB 80 10       BRA $10    [$F40D]
+$A2:F3F8 9C 5A 0B    STZ $0B5A  [$7E:0B5A]  ; Extra Samus X subdisplacement = 0
+$A2:F3FB 80 10       BRA $10    [$F40D]     ; Return
 
 $A2:F3FD A5 8B       LDA $8B    [$7E:008B]  ;\
 $A2:F3FF 29 00 02    AND #$0200             ;} If not pressing left: return
 $A2:F402 F0 09       BEQ $09    [$F40D]     ;/
 $A2:F404 A9 04 00    LDA #$0004             ;\
 $A2:F407 8D 58 0B    STA $0B58  [$7E:0B58]  ;} Extra Samus X displacement = 4
-$A2:F40A 9C 5A 0B    STZ $0B5A  [$7E:0B5A]
+$A2:F40A 9C 5A 0B    STZ $0B5A  [$7E:0B5A]  ; Extra Samus X subdisplacement = 0
 
 $A2:F40D 6B          RTL
 }
 
 
-;;; $F40E: Enemy shot - enemy $D57F (horizontal shootable shutter) ;;;
+;;; $F40E: Enemy shot - enemy $D57F (horizontal shutter) ;;;
 {
 $A2:F40E AE 54 0E    LDX $0E54  [$7E:0E54]
 $A2:F411 22 A7 A6 A0 JSL $A0A6A7[$A0:A6A7]  ; Normal enemy shot AI - no death check, no enemy shot graphic
-$A2:F415 22 1A F4 A2 JSL $A2F41A[$A2:F41A]
+$A2:F415 22 1A F4 A2 JSL $A2F41A[$A2:F41A]  ; Horizontal shutter reaction
 $A2:F419 6B          RTL
 }
 
 
-;;; $F41A: Power bomb reaction - enemy $D57F (horizontal shootable shutter) ;;;
+;;; $F41A: Horizontal shutter reaction ;;;
 {
+; Power bomb reaction for enemy $D57F (horizontal shutter)
 $A2:F41A AE 54 0E    LDX $0E54  [$7E:0E54]
-$A2:F41D BF 0E 78 7E LDA $7E780E,x
-$A2:F421 C9 06 00    CMP #$0006
-$A2:F424 30 41       BMI $41    [$F467]
-$A2:F426 C9 08 00    CMP #$0008
-$A2:F429 F0 0D       BEQ $0D    [$F438]
-$A2:F42B BF 18 78 7E LDA $7E7818,x
-$A2:F42F D0 36       BNE $36    [$F467]
-$A2:F431 A9 01 00    LDA #$0001
-$A2:F434 9F 18 78 7E STA $7E7818,x
-
-$A2:F438 BD A8 0F    LDA $0FA8,x
-$A2:F43B C9 72 F2    CMP #$F272
-$A2:F43E D0 02       BNE $02    [$F442]
-$A2:F440 80 25       BRA $25    [$F467]
-
-$A2:F442 BD A8 0F    LDA $0FA8,x
-$A2:F445 C9 E4 F2    CMP #$F2E4
-$A2:F448 F0 1D       BEQ $1D    [$F467]
-$A2:F44A BF 00 80 7E LDA $7E8000,x
-$A2:F44E 49 01 00    EOR #$0001
-$A2:F451 9F 00 80 7E STA $7E8000,x
+$A2:F41D BF 0E 78 7E LDA $7E780E,x          ;\
+$A2:F421 C9 06 00    CMP #$0006             ;} If [enemy initial function index] < 6: return
+$A2:F424 30 41       BMI $41    [$F467]     ;/
+$A2:F426 C9 08 00    CMP #$0008             ;\
+$A2:F429 F0 0D       BEQ $0D    [$F438]     ;} If [enemy initial function index] != 8 (always shootable):
+$A2:F42B BF 18 78 7E LDA $7E7818,x          ;\
+$A2:F42F D0 36       BNE $36    [$F467]     ;} If [enemy shot activated flag] != 0: return
+$A2:F431 A9 01 00    LDA #$0001             ;\
+$A2:F434 9F 18 78 7E STA $7E7818,x          ;} Enemy shot activated flag = 1
+                                            
+$A2:F438 BD A8 0F    LDA $0FA8,x            ;\
+$A2:F43B C9 72 F2    CMP #$F272             ;} If [enemy function] = $F272 (moving left):
+$A2:F43E D0 02       BNE $02    [$F442]     ;/
+$A2:F440 80 25       BRA $25    [$F467]     ; Return
+                                            
+$A2:F442 BD A8 0F    LDA $0FA8,x            ;\
+$A2:F445 C9 E4 F2    CMP #$F2E4             ;} If [enemy function] = $F2E4 (moving right): return
+$A2:F448 F0 1D       BEQ $1D    [$F467]     ;/
+$A2:F44A BF 00 80 7E LDA $7E8000,x          ;\
+$A2:F44E 49 01 00    EOR #$0001             ;} Enemy reaction direction ^= 1
+$A2:F451 9F 00 80 7E STA $7E8000,x          ;/
 $A2:F455 A9 72 F2    LDA #$F272             ;\
-$A2:F458 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272
-$A2:F45B BF 00 80 7E LDA $7E8000,x
-$A2:F45F F0 06       BEQ $06    [$F467]
+$A2:F458 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F272 (moving left)
+$A2:F45B BF 00 80 7E LDA $7E8000,x          ;\
+$A2:F45F F0 06       BEQ $06    [$F467]     ;} If [enemy reaction direction] != leftwards:
 $A2:F461 A9 E4 F2    LDA #$F2E4             ;\
-$A2:F464 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4
+$A2:F464 9D A8 0F    STA $0FA8,x            ;} Enemy function = $F2E4 (moving right)
 
 $A2:F467 6B          RTL
 }

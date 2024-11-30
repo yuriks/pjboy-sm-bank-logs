@@ -6679,7 +6679,7 @@ $B4:E92D             dx D97F, 0100, 0100, 0000, 2000, 0000, 0001, 0000,
 $B4:E940             dx D4FF, 0300, 0088, 0000, A800, 0000, 004C, 0008,
                         FFFF, 00
 
-; Enemy $D53F/$D57F/$D5BF/$D5FF (shutter / rising and falling platform)
+; Enemy $D53F/$D57F/$D5BF/$D5FF (shutter / up/down mover platform)
 $B4:E953             dx D53F, 0100, 0100, 0020, A800, 0A0A, 2003, 0000,
                         FFFF, 00
 
@@ -7052,7 +7052,7 @@ $B4:F488             db 00,00,00,FF,00,00 ;                      100.0%         
 $B4:F48E             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D1FF (polyp)
 $B4:F494             db 00,00,00,FF,00,00 ;                      100.0%
 $B4:F49A             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $EC3F (Mother Brain brain)
-$B4:F4A0             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D4FF/$D53F/$D57F/$D5BF/$D5FF/$ECBF/$ED3F (shutter / rising and falling platform / Shitroid in cutscene / torizo corpse)
+$B4:F4A0             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $D4FF/$D53F/$D57F/$D5BF/$D5FF/$ECBF/$ED3F (shutter / up/down mover platform / Shitroid in cutscene / torizo corpse)
 $B4:F4A6             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F493 (silver wall space pirate)
 $B4:F4AC             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F613 (silver ninja space pirate)
 $B4:F4B2             db 00,00,00,FF,00,00 ;                      100.0%               - enemy $F793 (silver walking space pirate)

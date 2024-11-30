@@ -780,7 +780,7 @@ $A6:8CFB             dw 3800, 3E7F, 2DFD, 10FB, 0097, 73FF, 53FF, 37FF, 17FF, 24
 
 ;;; $8D1B: Instruction list - graphics part ;;;
 {
-$A6:8D1B             dx 8DAF,       ; Play fire pillar sound effect
+$A6:8D1B             dx 8DAF,       ; Queue fire pillar sound effect
                         0002,9082,
                         8E13,       ; Activity frame 0
                         0002,9089,
@@ -838,7 +838,7 @@ $A6:8DA9             dx 0002,9082,
 }
 
 
-;;; $8DAF: Instruction - play fire pillar sound effect ;;;
+;;; $8DAF: Instruction - queue fire pillar sound effect ;;;
 {
 $A6:8DAF DA          PHX
 $A6:8DB0 5A          PHY
@@ -10860,7 +10860,7 @@ $A6:F598             dw F695,        ; Set enemy as tangible
                         F6B3         ; Set enemy as visible
 $A6:F59C             dw 0002,FA13,
                         F63E,F59C,   ; Go to $F59C if Samus is not within 30h pixels
-                        F6BD,        ; Queue sound 2Ch, sound library 3, max queued sounds allowed = 6 (Ceres door opening)
+                        F6BD,        ; Queue Ceres door opening sound effect
                         0005,FA3D,
                         0005,FA67,
                         0005,FA87,
@@ -10890,7 +10890,7 @@ $A6:F5EA             dw F695,        ; Set enemy as tangible
                         F6B3         ; Set enemy as visible
 $A6:F5EE             dw 0002,F95F,
                         F63E,F5EE,   ; Go to $F5EE if Samus is not within 30h pixels
-                        F6BD,        ; Queue sound 2Ch, sound library 3, max queued sounds allowed = 6 (Ceres door opening)
+                        F6BD,        ; Queue Ceres door opening sound effect
                         0005,F989,
                         0005,F9B3,
                         0005,F9D3,
@@ -11051,7 +11051,7 @@ $A6:F6BC 6B          RTL
 }
 
 
-;;; $F6BD: Instruction - queue sound 2Ch, sound library 3, max queued sounds allowed = 6 ;;;
+;;; $F6BD: Instruction - queue Ceres door opening sound effect ;;;
 {
 $A6:F6BD A9 2C 00    LDA #$002C             ;\
 $A6:F6C0 22 4D 91 80 JSL $80914D[$80:914D]  ;} Queue sound 2Ch, sound library 3, max queued sounds allowed = 6 (Ceres door opening)

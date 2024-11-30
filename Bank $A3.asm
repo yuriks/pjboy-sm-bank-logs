@@ -4818,7 +4818,7 @@ $A3:B75E             dw 0020,BF7D,
 
 ;;; $B772: Instruction list - core - growth level 0 - growing ;;;
 {
-$A3:B772             dw BA78,       ; Play acquired suit sound effect
+$A3:B772             dw BA78,       ; Queue acquired suit sound effect
                         0004,BFA7,
                         0008,BFAE,
                         0004,BFA7,
@@ -4842,7 +4842,7 @@ $A3:B790             dw 0010,C00C,
 
 ;;; $B7A4: Instruction list - core - growth level 1 - growing ;;;
 {
-$A3:B7A4             dw BA78,       ; Play acquired suit sound effect
+$A3:B7A4             dw BA78,       ; Queue acquired suit sound effect
                         0004,C063,
                         0008,C079,
                         0004,C063,
@@ -4866,7 +4866,7 @@ $A3:B7C2             dw 000C,C0E6,
 
 ;;; $B7D6: Instruction list - core - growth level 2 - growing ;;;
 {
-$A3:B7D6             dw BA78,       ; Play acquired suit sound effect
+$A3:B7D6             dw BA78,       ; Queue acquired suit sound effect
                         0004,C13D,
                         0008,C15A,
                         0004,C13D,
@@ -4902,7 +4902,7 @@ $A3:B7F4             dw 0008,C1CE,
 
 ;;; $B838: Instruction list - core - growth level 3 - growing ;;;
 {
-$A3:B838             dw BA78,       ; Play acquired suit sound effect
+$A3:B838             dw BA78,       ; Queue acquired suit sound effect
                         0004,C2D3,
                         0008,C2F0,
                         0004,C2D3,
@@ -4934,7 +4934,7 @@ $A3:B85A             dw 0006,C411,
 
 ;;; $B88A: Instruction list - core - growth level 4 - growing ;;;
 {
-$A3:B88A             dw BA78,       ; Play acquired suit sound effect
+$A3:B88A             dw BA78,       ; Queue acquired suit sound effect
                         0004,C516,
                         0008,C533,
                         0004,C516,
@@ -4959,7 +4959,7 @@ $A3:B8AC             dw 0020,BF84,
 
 ;;; $B8C0: Instruction list - shell - growth level 0 - growing ;;;
 {
-$A3:B8C0             dw BA78,       ; Play acquired suit sound effect
+$A3:B8C0             dw BA78,       ; Queue acquired suit sound effect
                         0004,804D,
                         0008,804D,
                         0004,804D,
@@ -4983,7 +4983,7 @@ $A3:B8DE             dw 0010,C013,
 
 ;;; $B8F2: Instruction list - shell - growth level 1 - growing ;;;
 {
-$A3:B8F2             dw BA78,       ; Play acquired suit sound effect
+$A3:B8F2             dw BA78,       ; Queue acquired suit sound effect
                         0004,804D,
                         0008,804D,
                         0004,804D,
@@ -5007,7 +5007,7 @@ $A3:B910             dw 000C,C0ED,
 
 ;;; $B924: Instruction list - shell - growth level 2 - growing ;;;
 {
-$A3:B924             dw BA78,       ; Play acquired suit sound effect
+$A3:B924             dw BA78,       ; Queue acquired suit sound effect
                         0004,C144,
                         0008,C161,
                         0004,C144,
@@ -5043,7 +5043,7 @@ $A3:B942             dw 0008,C1D5,
 
 ;;; $B986: Instruction list - shell - growth level 3 - growing ;;;
 {
-$A3:B986             dw BA78,       ; Play acquired suit sound effect
+$A3:B986             dw BA78,       ; Queue acquired suit sound effect
                         0004,C2DA,
                         0008,C2F7,
                         0004,C2DA,
@@ -5075,7 +5075,7 @@ $A3:B9A8             dw 0006,C418,
 
 ;;; $B9D8: Instruction list - shell - growth level 4 - growing ;;;
 {
-$A3:B9D8             dw BA78,       ; Play acquired suit sound effect
+$A3:B9D8             dw BA78,       ; Queue acquired suit sound effect
                         0004,C51D,
                         0008,C53A,
                         0004,C51D,
@@ -5137,7 +5137,7 @@ $A3:BA3C             dw 0002,C5AE,
 }
 
 
-;;; $BA78: Instruction - play acquired suit sound effect ;;;
+;;; $BA78: Instruction - queue acquired suit sound effect ;;;
 {
 $A3:BA78 5A          PHY
 $A3:BA79 DA          PHX

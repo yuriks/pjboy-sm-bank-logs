@@ -12,6 +12,8 @@ $A8:8687             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 158C, 03
 }
 
 
+;;; $86A7..878E: Instruction lists ;;;
+{
 ;;; $86A7: Instruction list -  ;;;
 {
 $A8:86A7             dx 000A,8B59,
@@ -92,8 +94,8 @@ $A8:876F             dx 0001,8D7A,
 ;;; $8775: Instruction list -  ;;;
 {
 $A8:8775             dx 879B,       ; ???
-                        8123,0008,  ; Timer = 0008h
-                        878F        ; ???
+                        8123,0008,  ; Timer = 8
+                        878F        ; Queue evir spit sound effect
 $A8:877D             dx 0008,8D64,
                         87B6,       ; ???
                         8110,877D,  ; Decrement timer and go to $877D if non-zero
@@ -101,9 +103,12 @@ $A8:877D             dx 0008,8D64,
                         87CB,       ; ???
                         812F        ; Sleep
 }
+}
 
 
-;;; $878F: Instruction ;;;
+;;; $878F..DF: Instructions ;;;
+{
+;;; $878F: Instruction - queue evir spit sound effect ;;;
 {
 $A8:878F DA          PHX
 $A8:8790 5A          PHY
@@ -157,6 +162,7 @@ $A8:87D9 A9 34 8A    LDA #$8A34
 $A8:87DC 9D AC 0F    STA $0FAC,x[$7E:102C]
 $A8:87DF 6B          RTL
 }
+}
 
 
 ;;; $87E0: Initialisation AI - enemy $E63F (evir) ;;;
@@ -168,7 +174,7 @@ $A8:87E8 20 38 88    JSR $8838  [$A8:8838]  ; Set evir facing direction
 $A8:87EB BD B6 0F    LDA $0FB6,x[$7E:0FB6]  ;\
 $A8:87EE 29 FF 00    AND #$00FF             ;|
 $A8:87F1 0A          ASL A                  ;|
-$A8:87F2 0A          ASL A                  ;} Y = [enemy parameter 2 low] * 8
+$A8:87F2 0A          ASL A                  ;} Y = [enemy parameter 2 low] * 8 (linear speed table index)
 $A8:87F3 0A          ASL A                  ;|
 $A8:87F4 A8          TAY                    ;/
 $A8:87F5 B9 87 81    LDA $8187,y[$A8:81C7]  ;\
@@ -184,7 +190,6 @@ $A8:8814 29 FF 00    AND #$00FF             ;|
 $A8:8817 4A          LSR A                  ;} Enemy $0FB0 = [enemy parameter 2 high] >> 1
 $A8:8818 9D B0 0F    STA $0FB0,x[$7E:0FB0]  ;/
 $A8:881B 80 09       BRA $09    [$8826]
-
                                             ; Else ([enemy parameter 1] != 0):
 $A8:881D 20 66 88    JSR $8866  [$A8:8866]  ; Slave evir AI
 $A8:8820 A9 04 00    LDA #$0004             ;\
@@ -218,7 +223,7 @@ $A8:8859 F0 07       BEQ $07    [$8862]     ;} If [enemy facing direction] != le
 $A8:885B A9 0B 87    LDA #$870B             ;\
 $A8:885E 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy next instruction pointer = $870B
 
-$A8:8862 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process evir instruction pointer queue
+$A8:8862 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8865 60          RTS
 }
 
@@ -239,7 +244,7 @@ $A8:887F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 
 $A8:8882 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:8885 A9 C3 86    LDA #$86C3             ;\
 $A8:8888 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy next instruction pointer = $86C3
-$A8:888C 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process evir instruction pointer queue
+$A8:888C 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:888F 80 1E       BRA $1E    [$88AF]
 
 $A8:8891 BD 3A 0F    LDA $0F3A,x[$7E:0F7A]  ;\ Else ([enemy facing direction] = right):
@@ -252,7 +257,7 @@ $A8:889F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 
 $A8:88A2 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:88A5 A9 27 87    LDA #$8727             ;\
 $A8:88A8 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy next instruction pointer = $8727
-$A8:88AC 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Process evir instruction pointer queue
+$A8:88AC 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 
 $A8:88AF 60          RTS
 }
@@ -263,7 +268,7 @@ $A8:88AF 60          RTS
 $A8:88B0 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:88B3 A9 6F 87    LDA #$876F
 $A8:88B6 9F 04 78 7E STA $7E7804,x[$7E:7884]
-$A8:88BA 20 E8 8A    JSR $8AE8  [$A8:8AE8]
+$A8:88BA 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:88BD BD 16 0F    LDA $0F16,x[$7E:0F96]
 $A8:88C0 9D 96 0F    STA $0F96,x[$7E:1016]
 $A8:88C3 BD 18 0F    LDA $0F18,x[$7E:0F98]
@@ -396,14 +401,14 @@ $A8:89AA F0 0F       BEQ $0F    [$89BB]
 $A8:89AC BD AA 0F    LDA $0FAA,x[$7E:102A]  ; >_<;
 $A8:89AF A9 6F 87    LDA #$876F
 $A8:89B2 9F 04 78 7E STA $7E7804,x[$7E:7884]
-$A8:89B6 20 E8 8A    JSR $8AE8  [$A8:8AE8]
+$A8:89B6 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:89B9 80 15       BRA $15    [$89D0]
 
 $A8:89BB BF 18 78 7E LDA $7E7818,x[$7E:7898]
 $A8:89BF F0 0C       BEQ $0C    [$89CD]
 $A8:89C1 A9 75 87    LDA #$8775
 $A8:89C4 9F 04 78 7E STA $7E7804,x[$7E:7884]
-$A8:89C8 20 E8 8A    JSR $8AE8  [$A8:8AE8]
+$A8:89C8 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:89CB 80 03       BRA $03    [$89D0]
 
 $A8:89CD 20 D4 89    JSR $89D4  [$A8:89D4]
@@ -442,7 +447,7 @@ $A8:8A15 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
 $A8:8A18 9F 14 78 7E STA $7E7814,x[$7E:7894];/
 $A8:8A1C A9 6F 87    LDA #$876F
 $A8:8A1F 9F 04 78 7E STA $7E7804,x[$7E:7884]
-$A8:8A23 20 E8 8A    JSR $8AE8  [$A8:8AE8]
+$A8:8A23 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8A26 A9 01 00    LDA #$0001
 $A8:8A29 9F 16 78 7E STA $7E7816,x[$7E:7896]
 $A8:8A2D A9 3B 8A    LDA #$8A3B
@@ -499,7 +504,7 @@ $A8:8A80 BF 18 78 7E LDA $7E7818,x[$7E:7898]
 $A8:8A84 D0 1D       BNE $1D    [$8AA3]
 $A8:8A86 A9 6F 87    LDA #$876F
 $A8:8A89 9F 04 78 7E STA $7E7804,x
-$A8:8A8D 20 E8 8A    JSR $8AE8  [$A8:8AE8]
+$A8:8A8D 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8A90 A9 00 00    LDA #$0000
 $A8:8A93 9F 18 78 7E STA $7E7818,x
 $A8:8A97 9F 16 78 7E STA $7E7816,x
@@ -535,20 +540,20 @@ $A8:8AD6 A9 01 00    LDA #$0001
 $A8:8AD9 9F 18 78 7E STA $7E7818,x[$7E:7898]
 $A8:8ADD A9 75 87    LDA #$8775
 $A8:8AE0 9F 04 78 7E STA $7E7804,x[$7E:7884]
-$A8:8AE4 20 E8 8A    JSR $8AE8  [$A8:8AE8]
+$A8:8AE4 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 
 $A8:8AE7 60          RTS
 }
 
 
-;;; $8AE8: Process evir instruction pointer queue ;;;
+;;; $8AE8: Set evir instruction list ;;;
 {
 $A8:8AE8 AE 54 0E    LDX $0E54  [$7E:0E54]
 $A8:8AEB BF 04 78 7E LDA $7E7804,x[$7E:7804];\
-$A8:8AEF DF 02 78 7E CMP $7E7802,x[$7E:7802];} If [enemy $7E:7804] = [enemy $7E:7802]: return
+$A8:8AEF DF 02 78 7E CMP $7E7802,x[$7E:7802];} If [enemy instruction list] != [enemy new instruction list]:
 $A8:8AF3 F0 10       BEQ $10    [$8B05]     ;/
-$A8:8AF5 9D 92 0F    STA $0F92,x[$7E:0F92]  ; Enemy instruction pointer = [enemy $7E:7804]
-$A8:8AF8 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy $7E:7802 = [enemy instruction pointer]
+$A8:8AF5 9D 92 0F    STA $0F92,x[$7E:0F92]  ; Enemy instruction list pointer = [enemy new instruction list]
+$A8:8AF8 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy instruction list = [enemy new instruction list]
 $A8:8AFC A9 01 00    LDA #$0001             ;\
 $A8:8AFF 9D 94 0F    STA $0F94,x[$7E:0F94]  ;} Enemy instruction timer = 1
 $A8:8B02 9E 90 0F    STZ $0F90,x[$7E:0F90]  ; Enemy timer = 0
@@ -2000,7 +2005,7 @@ $A8:9F4F             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 1DCE, 00
 {
 $A8:9F6F             dx 0005,A8EE,
                         0003,A909,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,A91A,
                         0003,A909,
                         80ED,9F6F   ; Go to $9F6F
@@ -2011,7 +2016,7 @@ $A8:9F6F             dx 0005,A8EE,
 {
 $A8:9F85             dx 0005,A935,
                         0003,A946,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,A961,
                         0003,A946,
                         80ED,9F85   ; Go to $9F85
@@ -2022,7 +2027,7 @@ $A8:9F85             dx 0005,A935,
 {
 $A8:9F9B             dx 0005,A972,
                         0003,A98D,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,A99E,
                         0003,A98D,
                         80ED,9F9B   ; Go to $9F9B
@@ -2033,7 +2038,7 @@ $A8:9F9B             dx 0005,A972,
 {
 $A8:9FB1             dx 0005,A9B9,
                         0003,A9CA,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,A9E5,
                         0003,A9CA,
                         80ED,9FB1   ; Go to $9FB1
@@ -2044,7 +2049,7 @@ $A8:9FB1             dx 0005,A9B9,
 {
 $A8:9FC7             dx 0005,A9F6,
                         0003,AA11,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,AA22,
                         0003,AA11,
                         80ED,9FC7   ; Go to $9FC7
@@ -2055,7 +2060,7 @@ $A8:9FC7             dx 0005,A9F6,
 {
 $A8:9FDD             dx 0005,AA3D,
                         0003,AA4E,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,AA69,
                         0003,AA4E,
                         80ED,9FDD   ; Go to $9FDD
@@ -2066,7 +2071,7 @@ $A8:9FDD             dx 0005,AA3D,
 {
 $A8:9FF3             dx 0005,AA7A,
                         0003,AA95,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,AAA6,
                         0003,AA95,
                         80ED,9FF3   ; Go to $9FF3
@@ -2077,7 +2082,7 @@ $A8:9FF3             dx 0005,AA7A,
 {
 $A8:A009             dx 0005,AAC1,
                         0003,AAD2,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         0050,AAED,
                         0003,AAD2,
                         80ED,A009   ; Go to $A009
@@ -2093,7 +2098,7 @@ $A8:A027             dx 0050,A91A,
                         0003,A909,
                         0005,A8EE,
                         0003,A909,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         80ED,A027   ; Go to $A027
 }
 
@@ -2107,7 +2112,7 @@ $A2:A045             dx 0050,A91A,
                         0003,A909,
                         0005,A8EE,
                         0003,A909,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         80ED,A045   ; Go to $A045
 }
 
@@ -2121,7 +2126,7 @@ $A2:A063             dx 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
                         0003,AA11,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         80ED,A063   ; Go to $A063
 }
 
@@ -2135,7 +2140,7 @@ $A2:A081             dx 0050,AA22,
                         0003,AA11,
                         0005,A9F6,
                         0003,AA11,
-                        A133,       ; Play yapping maw sound effect if on screen
+                        A133,       ; Queue yapping maw sound effect if on screen
                         80ED,A081   ; Go to $A081
 }
 }
@@ -2234,7 +2239,7 @@ $A8:A132 6B          RTL
 }
 
 
-;;; $A133: Instruction - play yapping maw sound effect if on screen ;;;
+;;; $A133: Instruction - queue yapping maw sound effect if on screen ;;;
 {
 $A8:A133 5A          PHY
 $A8:A134 DA          PHX
@@ -6256,7 +6261,7 @@ $A8:C6ED             dx 000A,D22F,
                         D0D2,       ; Try shooting laser up-left and go to $C8D1 if so
                         0009,D2AB,
                         000A,D2E9,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         000A,D327,
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
@@ -6266,7 +6271,7 @@ $A8:C6ED             dx 000A,D22F,
                         000A,D41F,
                         000A,D45D,
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         000A,D49B,
                         CD09,       ; Facing left - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         0001,D1F1,
@@ -6280,14 +6285,14 @@ $A8:C6ED             dx 000A,D22F,
 {
 $A8:C73F             dx 0001,D49B,
                         000A,D49B,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D45D,
                         000A,D41F,
                         000A,D3E1,
                         000A,D3A3,
                         000A,D365,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D327,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6297,7 +6302,7 @@ $A8:C73F             dx 0001,D49B,
                         000A,D22F,
                         000A,D1F1,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         000A,D49B,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D45D,
@@ -6305,7 +6310,7 @@ $A8:C73F             dx 0001,D49B,
                         000A,D3E1,
                         000A,D3A3,
                         000A,D365,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D327,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6321,14 +6326,14 @@ $A8:C73F             dx 0001,D49B,
 ;;; $C7BB: Instruction list - facing left - shot - Samus is ahead ;;;
 {
 $A8:C7BB             dx 0005,D49B,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D45D,
                         0005,D41F,
                         0005,D3E1,
                         0005,D3A3,
                         0005,D365,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D327,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
@@ -6338,7 +6343,7 @@ $A8:C7BB             dx 0005,D49B,
                         0005,D22F,
                         0005,D1F1,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D49B,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D45D,
@@ -6346,7 +6351,7 @@ $A8:C7BB             dx 0005,D49B,
                         0005,D3E1,
                         0005,D3A3,
                         0005,D365,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
                         0005,D327,
                         CE85,       ; Facing left - move backwards, go to $C6E9 if hit wall
@@ -6361,13 +6366,13 @@ $A8:C7BB             dx 0005,D49B,
 
 ;;; $C833: Instruction list - facing left - shot - Samus is behind ;;;
 {
-$A8:C833             dx D091,       ; Play work robot sound effect if on screen
+$A8:C833             dx D091,       ; Queue work robot sound effect if on screen
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D22F,
                         0005,D26D,
                         0005,D2AB,
                         0005,D2E9,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D327,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
@@ -6377,7 +6382,7 @@ $A8:C833             dx D091,       ; Play work robot sound effect if on screen
                         0005,D41F,
                         0005,D45D,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D49B,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D1F1,
@@ -6385,7 +6390,7 @@ $A8:C833             dx D091,       ; Play work robot sound effect if on screen
                         0005,D26D,
                         0005,D2AB,
                         0005,D2E9,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D327,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
@@ -6395,7 +6400,7 @@ $A8:C833             dx D091,       ; Play work robot sound effect if on screen
                         0005,D41F,
                         0005,D45D,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D49B,
                         CDA4,       ; Facing left - move forwards, go to $C73F if hit wall
                         0005,D1F1,
@@ -6416,7 +6421,7 @@ $A8:C8B1             dx 0005,D1F1,
 $A8:C8BD             dx 0005,D22F,
                         0002,D1F1,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         000A,D49B,
                         80ED,C8E9   ; Go to $C8E9 (facing left - laser shot recoil)
 }
@@ -6429,7 +6434,7 @@ $A8:C8D1             dx 0005,D2AB,
                         0002,D22F,
                         0004,D1F1,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0004,D49B
 }
 
@@ -6442,7 +6447,7 @@ $A8:C8E9             dx CDEA,       ; Facing left - move backwards, go to $C6E9 
                         0005,D3E1,
                         0005,D3A3,
                         0005,D365,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D327,
                         CDEA,       ; Facing left - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6479,7 +6484,7 @@ $A8:C931             dx 0001,D4D9,
                         D0C6,       ; Try shooting laser up-right and go to $CB1D if so
                         0009,D593,
                         000A,D5D1,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         000A,D60F,
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
@@ -6489,7 +6494,7 @@ $A8:C931             dx 0001,D4D9,
                         000A,D707,
                         000A,D745,
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         000A,D783,
                         CECF,       ; Facing right - move forwards, go to $C73F if hit wall, go to $CB65 if approaching a fall
                         80ED,C931   ; Go to $C931
@@ -6500,14 +6505,14 @@ $A8:C931             dx 0001,D4D9,
 {
 $A8:C985             dx 0001,D783,
                         000A,D783,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D745,
                         000A,D707,
                         000A,D6C9,
                         000A,D68B,
                         000A,D64D,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D60F,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6516,7 +6521,7 @@ $A8:C985             dx 0001,D783,
                         000A,D555,
                         000A,D517,
                         000A,D4D9,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D783,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6525,7 +6530,7 @@ $A8:C985             dx 0001,D783,
                         000A,D6C9,
                         000A,D68B,
                         000A,D64D,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D60F,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -6542,14 +6547,14 @@ $A8:C985             dx 0001,D783,
 {
 $A8:CA01             dx 0001,D783,
                         0005,D783,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         0005,D745,
                         0005,D707,
                         0005,D6C9,
                         0005,D68B,
                         0005,D64D,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         0005,D60F,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
@@ -6559,7 +6564,7 @@ $A8:CA01             dx 0001,D783,
                         0005,D517,
                         0005,D4D9,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D783,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         0005,D745,
@@ -6567,7 +6572,7 @@ $A8:CA01             dx 0001,D783,
                         0005,D6C9,
                         0005,D68B,
                         0005,D64D,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
                         000A,D60F,
                         D04B,       ; Facing right - move backwards, go to $C6E9 if hit wall
@@ -6583,24 +6588,24 @@ $A8:CA01             dx 0001,D783,
 ;;; $CA7D: Instruction list - facing right - shot - Samus is behind ;;;
 {
 $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D4D9,
                         0005,D517,
                         0005,D555,
                         0005,D593,
                         0005,D5D1,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         0005,D60F,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D64D,
                         0005,D68B,
                         0005,D6C9,
                         0005,D707,
                         0005,D745,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D783,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         0005,D4D9,
@@ -6608,7 +6613,7 @@ $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F 
                         0005,D555,
                         0005,D593,
                         0005,D5D1,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         0005,D60F,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
@@ -6618,7 +6623,7 @@ $A8:CA7D             dx CF6A,       ; Facing right - move forwards, go to $C73F 
                         0005,D707,
                         0005,D745,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         0005,D783,
                         CF6A,       ; Facing right - move forwards, go to $C73F if hit wall
                         CECB        ; Go to $C92D (facing right - walking forwards)
@@ -6637,7 +6642,7 @@ $A8:CAFD             dx 0005,D4D9,
 {
 $A8:CB09             dx 0005,D517,
                         0002,D4D9,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D783,
                         80ED,CB35   ; Go to $CB35 (facing right - laser shot recoil)
@@ -6650,7 +6655,7 @@ $A8:CB1D             dx 0005,D593,
                         0002,D555,
                         0002,D517,
                         0004,D4D9,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         0004,D783
 }
@@ -6664,7 +6669,7 @@ $A8:CB35             dx CFB0,       ; Facing right - move backwards, go to $C6E9
                         0005,D6C9,
                         0005,D68B,
                         0005,D64D,
-                        D091,       ; Play work robot sound effect if on screen
+                        D091,       ; Queue work robot sound effect if on screen
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
                         000A,D60F,
                         CFB0,       ; Facing right - move backwards, go to $C6E9 if hit wall, go to $C91B if approaching a fall
@@ -7318,7 +7323,7 @@ $A8:D090 6B          RTL
 }
 
 
-;;; $D091: Instruction - play work robot sound effect if on screen ;;;
+;;; $D091: Instruction - queue work robot sound effect if on screen ;;;
 {
 $A8:D091 DA          PHX
 $A8:D092 5A          PHY

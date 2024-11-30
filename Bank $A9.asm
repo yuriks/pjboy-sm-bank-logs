@@ -13720,7 +13720,7 @@ $A9:F93A             dx 000A,F9A8,
                         000A,FA40,
                         000A,FAD8,
                         000A,FA40,
-                        F994,F93A,  ; Go to $F93A or play Shitroid feels remorse sound effect
+                        F994,F93A,  ; Go to $F93A or queue Shitroid feels remorse sound effect
                         0006,F9A8,
                         0005,FA40,
                         0004,FAD8,
@@ -13744,7 +13744,7 @@ $A9:F993 6B          RTL
 }
 
 
-;;; $F994: Instruction - go to [[Y]] or play Shitroid feels remorse sound effect ;;;
+;;; $F994: Instruction - go to [[Y]] or queue Shitroid feels remorse sound effect ;;;
 {
 $A9:F994 AD E5 05    LDA $05E5  [$7E:05E5]  ;\
 $A9:F997 10 0A       BPL $0A    [$F9A3]     ;} If [random number] & 8000h != 0:
