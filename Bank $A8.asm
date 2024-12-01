@@ -16,7 +16,7 @@ $A8:8687             dw 3800, 57FF, 42F7, 0929, 00A5, 4F5A, 36B5, 2610, 158C, 03
 {
 ;;; $86A7: Instruction list -  ;;;
 {
-$A8:86A7             dx 000A,8B59,
+$A8:86A7             dw 000A,8B59,
                         000A,8B88,
                         000A,8BB7,
                         000A,8BE6,
@@ -28,7 +28,7 @@ $A8:86A7             dx 000A,8B59,
 
 ;;; $86C3: Instruction list -  ;;;
 {
-$A8:86C3             dx 000A,8CA2,
+$A8:86C3             dw 000A,8CA2,
                         000A,8CBD,
                         000A,8CD8,
                         000A,8CF3,
@@ -51,7 +51,7 @@ $A8:86C3             dx 000A,8CA2,
 
 ;;; $870B: Instruction list -  ;;;
 {
-$A8:870B             dx 000A,8D81,
+$A8:870B             dw 000A,8D81,
                         000A,8DB0,
                         000A,8DDF,
                         000A,8E0E,
@@ -63,7 +63,7 @@ $A8:870B             dx 000A,8D81,
 
 ;;; $8727: Instruction list -  ;;;
 {
-$A8:8727             dx 000A,8ECA,
+$A8:8727             dw 000A,8ECA,
                         000A,8EE5,
                         000A,8F00,
                         000A,8F1B,
@@ -86,17 +86,17 @@ $A8:8727             dx 000A,8ECA,
 
 ;;; $876F: Instruction list -  ;;;
 {
-$A8:876F             dx 0001,8D7A,
+$A8:876F             dw 0001,8D7A,
                         812F        ; Sleep
 }
 
 
 ;;; $8775: Instruction list -  ;;;
 {
-$A8:8775             dx 879B,       ; ???
+$A8:8775             dw 879B,       ; ???
                         8123,0008,  ; Timer = 8
                         878F        ; Queue evir spit sound effect
-$A8:877D             dx 0008,8D64,
+$A8:877D             dw 0008,8D64,
                         87B6,       ; ???
                         8110,877D,  ; Decrement timer and go to $877D if non-zero
                         0010,8D7A,
@@ -197,7 +197,7 @@ $A8:8823 9D 9A 0F    STA $0F9A,x[$7E:0FDA]  ;} Enemy layer = 4
 
 $A8:8826 A9 00 00    LDA #$0000             ;\
 $A8:8829 9F 00 78 7E STA $7E7800,x[$7E:7800];} Enemy $7E:7800 = 0
-$A8:882D 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy $7E:7802 = 0
+$A8:882D 9F 02 78 7E STA $7E7802,x[$7E:7802]; Enemy instruction list = 0
 $A8:8831 A9 22 89    LDA #$8922             ;\
 $A8:8834 9D AC 0F    STA $0FAC,x[$7E:0FAC]  ;} Enemy function = $8922
 $A8:8837 6B          RTL
@@ -217,11 +217,11 @@ $A8:8849 A9 01 00    LDA #$0001             ;\ Else ([Samus X position] >= [enem
 $A8:884C 9D AA 0F    STA $0FAA,x[$7E:0FAA]  ;} Enemy facing direction = right
 
 $A8:884F A9 A7 86    LDA #$86A7             ;\
-$A8:8852 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy next instruction pointer = $86A7
+$A8:8852 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy new instruction list = $86A7
 $A8:8856 BD AA 0F    LDA $0FAA,x[$7E:0FAA]  ;\
 $A8:8859 F0 07       BEQ $07    [$8862]     ;} If [enemy facing direction] != left:
 $A8:885B A9 0B 87    LDA #$870B             ;\
-$A8:885E 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy next instruction pointer = $870B
+$A8:885E 9F 04 78 7E STA $7E7804,x[$7E:7804];} Enemy new instruction list = $870B
 
 $A8:8862 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8865 60          RTS
@@ -243,7 +243,7 @@ $A8:887E 18          CLC                    ;|
 $A8:887F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 1) Y position] + Ah
 $A8:8882 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:8885 A9 C3 86    LDA #$86C3             ;\
-$A8:8888 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy next instruction pointer = $86C3
+$A8:8888 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy new instruction list = $86C3
 $A8:888C 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:888F 80 1E       BRA $1E    [$88AF]
 
@@ -256,7 +256,7 @@ $A8:889E 18          CLC                    ;|
 $A8:889F 69 0A 00    ADC #$000A             ;} Enemy Y position = [enemy ([X] - 1) Y position] + Ah
 $A8:88A2 9D 7E 0F    STA $0F7E,x[$7E:0FBE]  ;/
 $A8:88A5 A9 27 87    LDA #$8727             ;\
-$A8:88A8 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy next instruction pointer = $8727
+$A8:88A8 9F 04 78 7E STA $7E7804,x[$7E:7844];} Enemy new instruction list = $8727
 $A8:88AC 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 
 $A8:88AF 60          RTS
@@ -266,8 +266,8 @@ $A8:88AF 60          RTS
 ;;; $88B0: Initialisation AI - enemy $E67F (evir projectile) ;;;
 {
 $A8:88B0 AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:88B3 A9 6F 87    LDA #$876F
-$A8:88B6 9F 04 78 7E STA $7E7804,x[$7E:7884]
+$A8:88B3 A9 6F 87    LDA #$876F             ;\
+$A8:88B6 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F
 $A8:88BA 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:88BD BD 16 0F    LDA $0F16,x[$7E:0F96]
 $A8:88C0 9D 96 0F    STA $0F96,x[$7E:1016]
@@ -317,7 +317,7 @@ $A8:891A 60          RTS
 ;;; $891B: Main AI - enemy $E63F (evir) ;;;
 {
 $A8:891B AE 54 0E    LDX $0E54  [$7E:0E54]
-$A8:891E FC AC 0F    JSR ($0FAC,x)[$A8:8922]
+$A8:891E FC AC 0F    JSR ($0FAC,x)[$A8:8922]; Execute [enemy function]
 $A8:8921 6B          RTL
 }
 
@@ -399,21 +399,21 @@ $A8:89A4 D0 2A       BNE $2A    [$89D0]
 $A8:89A6 BF 16 78 7E LDA $7E7816,x[$7E:7896]
 $A8:89AA F0 0F       BEQ $0F    [$89BB]
 $A8:89AC BD AA 0F    LDA $0FAA,x[$7E:102A]  ; >_<;
-$A8:89AF A9 6F 87    LDA #$876F
-$A8:89B2 9F 04 78 7E STA $7E7804,x[$7E:7884]
+$A8:89AF A9 6F 87    LDA #$876F             ;\
+$A8:89B2 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F
 $A8:89B6 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:89B9 80 15       BRA $15    [$89D0]
 
 $A8:89BB BF 18 78 7E LDA $7E7818,x[$7E:7898]
 $A8:89BF F0 0C       BEQ $0C    [$89CD]
-$A8:89C1 A9 75 87    LDA #$8775
-$A8:89C4 9F 04 78 7E STA $7E7804,x[$7E:7884]
+$A8:89C1 A9 75 87    LDA #$8775             ;\
+$A8:89C4 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $8775
 $A8:89C8 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:89CB 80 03       BRA $03    [$89D0]
 
 $A8:89CD 20 D4 89    JSR $89D4  [$A8:89D4]
 
-$A8:89D0 FC AC 0F    JSR ($0FAC,x)[$A8:8A34]
+$A8:89D0 FC AC 0F    JSR ($0FAC,x)[$A8:8A34]; Execute [enemy function]
 $A8:89D3 6B          RTL
 }
 
@@ -445,8 +445,8 @@ $A8:8A0D 22 C6 B0 A0 JSL $A0B0C6[$A0:B0C6]  ;|
 $A8:8A11 9F 12 78 7E STA $7E7812,x[$7E:7892];} Enemy $7E:7812 = 4 * -sin([$16] * pi / 80h) * FFh / 100h
 $A8:8A15 AD 38 0E    LDA $0E38  [$7E:0E38]  ;|
 $A8:8A18 9F 14 78 7E STA $7E7814,x[$7E:7894];/
-$A8:8A1C A9 6F 87    LDA #$876F
-$A8:8A1F 9F 04 78 7E STA $7E7804,x[$7E:7884]
+$A8:8A1C A9 6F 87    LDA #$876F             ;\
+$A8:8A1F 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $876F
 $A8:8A23 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8A26 A9 01 00    LDA #$0001
 $A8:8A29 9F 16 78 7E STA $7E7816,x[$7E:7896]
@@ -502,8 +502,8 @@ $A8:8A7B BD 1E 0F    LDA $0F1E,x[$7E:0F9E]
 $A8:8A7E D0 30       BNE $30    [$8AB0]
 $A8:8A80 BF 18 78 7E LDA $7E7818,x[$7E:7898]
 $A8:8A84 D0 1D       BNE $1D    [$8AA3]
-$A8:8A86 A9 6F 87    LDA #$876F
-$A8:8A89 9F 04 78 7E STA $7E7804,x
+$A8:8A86 A9 6F 87    LDA #$876F             ;\
+$A8:8A89 9F 04 78 7E STA $7E7804,x          ;} Enemy new instruction list = $876F
 $A8:8A8D 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 $A8:8A90 A9 00 00    LDA #$0000
 $A8:8A93 9F 18 78 7E STA $7E7818,x
@@ -538,8 +538,8 @@ $A8:8AD0 A9 78 8A    LDA #$8A78
 $A8:8AD3 9D AC 0F    STA $0FAC,x[$7E:102C]
 $A8:8AD6 A9 01 00    LDA #$0001
 $A8:8AD9 9F 18 78 7E STA $7E7818,x[$7E:7898]
-$A8:8ADD A9 75 87    LDA #$8775
-$A8:8AE0 9F 04 78 7E STA $7E7804,x[$7E:7884]
+$A8:8ADD A9 75 87    LDA #$8775             ;\
+$A8:8AE0 9F 04 78 7E STA $7E7804,x[$7E:7884];} Enemy new instruction list = $8775
 $A8:8AE4 20 E8 8A    JSR $8AE8  [$A8:8AE8]  ; Set evir instruction list
 
 $A8:8AE7 60          RTS
@@ -564,15 +564,15 @@ $A8:8B05 60          RTS
 
 ;;; $8B06: Enemy shot - enemy $E63F (evir) ;;;
 {
-$A8:8B06 22 23 80 A8 JSL $A88023[$A8:8023]
-$A8:8B0A 80 0A       BRA $0A    [$8B16]
+$A8:8B06 22 23 80 A8 JSL $A88023[$A8:8023]  ; Normal enemy touch AI
+$A8:8B0A 80 0A       BRA $0A    [$8B16]     ; Go to evir shared contact reaction
 }
 
 
 ;;; $8B0C: Power bomb reaction - enemy $E63F (evir) ;;;
 {
-$A8:8B0C 22 37 80 A8 JSL $A88037[$A8:8037]
-$A8:8B10 80 04       BRA $04    [$8B16]
+$A8:8B0C 22 37 80 A8 JSL $A88037[$A8:8037]  ; Normal enemy power bomb AI
+$A8:8B10 80 04       BRA $04    [$8B16]     ; Go to evir shared contact reaction
 }
 
 
@@ -621,14 +621,14 @@ $A8:8BB7             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,
 $A8:8BE6             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FD,2108, 8001,04,2108, 81FF,09,210C, 01FE,12,2126, 01FE,0A,2125
 $A8:8C15             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FD,2108, 8001,04,2108, 81FF,0A,210C, 01FE,11,2126, 01FE,09,2125
 $A8:8C44             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FC,2108, 8001,03,2108, 81FF,09,210C, 01FE,10,2126, 01FE,08,2125
-$A8:8C73             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FB,2108, 8001,01,2108, 81FF,07,210C, 01FE,10,2126, 01FE,08,2125
+$A8:8C73             dx 0009, 81FE,FB,2106, 81EE,FB,2104, 81FE,EB,2102, 81EE,EB,2100, 8002,FB,2108, 8001,01,2108, 81FF,07,210C, 01FE,10,2126, 01FE,08,2125 ; Unused
 $A8:8CA2             dx 0005, 0000,F8,2123, 01F8,F8,2122, 0002,FC,2124, 01FE,F4,2121, 01F6,F4,2120
 $A8:8CBD             dx 0005, 01FE,F4,2123, 01F6,F4,2122, 0000,F8,2124, 0002,FC,2123, 01FA,FC,2122
 $A8:8CD8             dx 0005, 01FE,F4,2124, 01F8,F8,2122, 0000,F8,2123, 0002,FC,2121, 01FA,FC,2120
 $A8:8CF3             dx 0006, 01FE,F4,2123, 01F6,F4,2122, 01F8,F8,2120, 0000,F8,2121, 0002,FC,2123, 01FA,FC,2122
 $A8:8D13             dx 0003, 01FE,F4,2124, 0000,F8,2124, 0002,FC,2124
-$A8:8D24             dx 0006, 01FE,F4,2123, 01F6,F4,2122, 01F8,F8,2122, 0000,F8,2123, 0002,FC,2123, 01FA,FC,2122
-$A8:8D44             dx 0006, 01FE,F4,2121, 01F6,F4,2120, 0000,F8,2121, 01F8,F8,2120, 0002,FC,2121, 01FA,FC,2120
+$A8:8D24             dx 0006, 01FE,F4,2123, 01F6,F4,2122, 01F8,F8,2122, 0000,F8,2123, 0002,FC,2123, 01FA,FC,2122 ; Unused
+$A8:8D44             dx 0006, 01FE,F4,2121, 01F6,F4,2120, 0000,F8,2121, 01F8,F8,2120, 0002,FC,2121, 01FA,FC,2120 ; Unused
 $A8:8D64             dx 0004, 0000,00,A128, 01F8,00,A127, 0000,F8,2128, 01F8,F8,2127
 $A8:8D7A             dx 0001, 81F8,F8,210E
 $A8:8D81             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FB,6108, 81EF,01,6108, 81F1,07,610C, 01FA,10,6126, 01FA,08,6125
@@ -637,14 +637,14 @@ $A8:8DDF             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,
 $A8:8E0E             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FD,6108, 81EF,04,6108, 81F1,09,610C, 01FA,12,6126, 01FA,0A,6125
 $A8:8E3D             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FD,6108, 81EF,04,6108, 81F1,0A,610C, 01FA,11,6126, 01FA,09,6125
 $A8:8E6C             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FC,6108, 81EF,03,6108, 81F1,09,610C, 01FA,10,6126, 01FA,08,6125
-$A8:8E9B             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FB,6108, 81EF,01,6108, 81F1,07,610C, 01FA,10,6126, 01FA,08,6125
+$A8:8E9B             dx 0009, 81F2,FB,6106, 8002,FB,6104, 81F2,EB,6102, 8002,EB,6100, 81EE,FB,6108, 81EF,01,6108, 81F1,07,610C, 01FA,10,6126, 01FA,08,6125 ; Unused
 $A8:8ECA             dx 0005, 01F8,F8,6123, 0000,F8,6122, 01FA,F4,6121, 0002,F4,6120, 01F6,FC,6124
 $A8:8EE5             dx 0005, 01FA,F4,6123, 0002,F4,6122, 01F8,F8,6124, 01F6,FC,6123, 01FE,FC,6122
 $A8:8F00             dx 0005, 01FA,F4,6124, 01F8,F8,6123, 0000,F8,6122, 01F6,FC,6121, 01FE,FC,6120
 $A8:8F1B             dx 0006, 01FA,F4,6123, 0002,F4,6122, 0000,F8,6120, 01F8,F8,6121, 01F6,FC,6123, 01FE,FC,6122
 $A8:8F3B             dx 0003, 01F6,FC,6124, 01F8,F8,6124, 01FA,F4,6124
-$A8:8F4C             dx 0006, 01FA,F4,6123, 0002,F4,6122, 01F8,F8,6123, 0000,F8,6122, 01F6,FC,6123, 01FE,FC,6122
-$A8:8F6C             dx 0006, 01FA,F4,6121, 0002,F4,6120, 0000,F8,6120, 01F8,F8,6121, 01F6,FC,6121, 01FE,FC,6120
+$A8:8F4C             dx 0006, 01FA,F4,6123, 0002,F4,6122, 01F8,F8,6123, 0000,F8,6122, 01F6,FC,6123, 01FE,FC,6122 ; Unused
+$A8:8F6C             dx 0006, 01FA,F4,6121, 0002,F4,6120, 0000,F8,6120, 01F8,F8,6121, 01F6,FC,6121, 01FE,FC,6120 ; Unused
 }
 }
 
