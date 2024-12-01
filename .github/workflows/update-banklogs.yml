@@ -20,6 +20,9 @@ jobs:
         run: |
           curl https://patrickjohnston.org/ziplogs.php -o banklogs.zip
           unzip -ao banklogs.zip \*.asm
+      - name: Fetch additional files
+        run: |
+          wget https://patrickjohnston.org/ASM/Lists/Super%20Metroid/{RAM%20map,SRAM%20map,VRAM%20map,Enemy%20RAM}.asm
       - name: Commit new changes
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
