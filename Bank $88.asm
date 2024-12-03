@@ -8530,9 +8530,9 @@ $88:E95F 8F 07 90 7E STA $7E9007[$7E:9007]  ;|
 $88:E963 A9 00 00    LDA #$0000             ;|
 $88:E966 8F 09 90 7E STA $7E9009[$7E:9009]  ;/
 $88:E96A A9 01 00    LDA #$0001             ;\
-$88:E96D 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Enemy 1 $0FAC = 1
-$88:E970 9E 2C 19    STZ $192C,x[$7E:192C]  ; HDMA object $192C = 0
-$88:E973 9E 38 19    STZ $1938,x[$7E:1938]  ; HDMA object $1938 = 0
+$88:E96D 8D EC 0F    STA $0FEC  [$7E:0FEC]  ;} Enemy 1 activated flag = 1
+$88:E970 9E 2C 19    STZ $192C,x[$7E:192C]  ;\
+$88:E973 9E 38 19    STZ $1938,x[$7E:1938]  ;} HDMA object angular width = 0.0
 $88:E976 A9 00 00    LDA #$0000             ;\
 $88:E979 8F 80 90 7E STA $7E9080[$7E:9080]  ;} Morph ball eye beam angular width delta = 0.0
 $88:E97D 8F 82 90 7E STA $7E9082[$7E:9082]  ;/
@@ -8638,7 +8638,7 @@ $88:EA3D C2 30       REP #$30
 $88:EA3F A9 10 00    LDA #$0010             ;\
 $88:EA42 8D 86 19    STA $1986  [$7E:1986]  ;} Layer blending configuration = 10h (normal, but BG3 is disabled inside window 1)
 $88:EA45 AD EC 0F    LDA $0FEC  [$7E:0FEC]  ;\
-$88:EA48 D0 13       BNE $13    [$EA5D]     ;} If [enemy 1 $0FAC] = 0:
+$88:EA48 D0 13       BNE $13    [$EA5D]     ;} If [enemy 1 activated flag] = 0:
 $88:EA4A AE B2 18    LDX $18B2  [$7E:18B2]
 $88:EA4D BD CC 18    LDA $18CC,x[$7E:18CC]  ;\
 $88:EA50 1A          INC A                  ;|
